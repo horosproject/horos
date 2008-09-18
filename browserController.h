@@ -421,6 +421,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 
 - (NSArray*) KeyImages: (id) sender;
 - (NSArray*) ROIImages: (id) sender;
+- (NSArray*) ROIsAndKeyImages: (id) sender;
 
 - (void) refreshColumns;
 - (void) outlineViewRefresh;

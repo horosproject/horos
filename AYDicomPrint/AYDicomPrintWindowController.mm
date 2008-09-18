@@ -139,6 +139,8 @@
 	[sender setEnabled: NO];
 	
 	[self _createPrintjob: nil];
+	
+	[self cancel: self];
 }
 
 - (IBAction) verifyConnection: (id) sender

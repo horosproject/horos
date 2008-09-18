@@ -69,7 +69,7 @@ static NSHost *currentHost = 0L;
 		
 		if( [c length] > 8 )
 		{
-			NSString *domainName = [c substringFromIndex: len - 8];
+			NSString *domainName = [c substringFromIndex: [c length] - 8];
 
 			if([domainName isEqualToString: @"hcuge.ch"])
 			{
@@ -108,7 +108,7 @@ static NSHost *currentHost = 0L;
 		
 		if( [c length] > 8 )
 		{
-			NSString *domainName = [c substringFromIndex: len - 8];
+			NSString *domainName = [c substringFromIndex: [c length] - 8];
 
 			if([domainName isEqualToString: @"unige.ch"])
 			{

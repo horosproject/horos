@@ -33,18 +33,6 @@
 #include "nifti1.h"
 #include "nifti1_io.h"
 
-/************  Modifications *************************************************************************************
-*	Version 2.3
-*	20051214	LP	Modified DICOM decoding merge all DR, DX, RF series in a study into one study.
-*	20051216	LP	Will separate series based on Echo Time (TE)
-*	20051225	LP	Fixed bug when parsing with DCMFramework Added width and height
-*	20060116	LP	Added NSUserDefaults for splitting series by Echo and combining CR,DR, RF series
-*
-*	20060303	LP	Moved character set encoding to a cataegory of NSString - DICOMToNSString - to allow conversion of 
-*					DICOM to NSStrings elsewher ein OsiriX
-*
-*******************************************************************************************************************/
-
 extern NSString * convertDICOM( NSString *inputfile);
 extern NSLock	*PapyrusLock;
 

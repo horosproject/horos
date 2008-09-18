@@ -1271,6 +1271,8 @@
 		AB94E72606343D91003E4C48 /* MutableArrayCategory.h in Headers */ = {isa = PBXBuildFile; fileRef = AB94E72406343D91003E4C48 /* MutableArrayCategory.h */; };
 		AB95C0390A2B08ED00380C65 /* FileNotFound.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB95C0380A2B08ED00380C65 /* FileNotFound.tif */; };
 		AB95C03A0A2B08ED00380C65 /* FileNotFound.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB95C0380A2B08ED00380C65 /* FileNotFound.tif */; };
+		AB9693C00E823E3A00F09EEA /* ROIsAndKeys.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB9693BF0E823E3A00F09EEA /* ROIsAndKeys.tif */; };
+		AB9693C10E823E3A00F09EEA /* ROIsAndKeys.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB9693BF0E823E3A00F09EEA /* ROIsAndKeys.tif */; };
 		AB97238F0C684B4E00DC727C /* OsiriXDB_Previous_DataModel1.1.mom in Resources */ = {isa = PBXBuildFile; fileRef = AB9723890C684B4E00DC727C /* OsiriXDB_Previous_DataModel1.1.mom */; };
 		AB9723900C684B4E00DC727C /* OsiriXDB_Previous_DataModel1.5.mom in Resources */ = {isa = PBXBuildFile; fileRef = AB97238A0C684B4E00DC727C /* OsiriXDB_Previous_DataModel1.5.mom */; };
 		AB9723910C684B4E00DC727C /* OsiriXDB_Previous_DataModel2.0.mom in Resources */ = {isa = PBXBuildFile; fileRef = AB97238B0C684B4E00DC727C /* OsiriXDB_Previous_DataModel2.0.mom */; };
@@ -8812,6 +8814,7 @@
 		AB94E72306343D91003E4C48 /* MutableArrayCategory.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = MutableArrayCategory.m; sourceTree = "<group>"; };
 		AB94E72406343D91003E4C48 /* MutableArrayCategory.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = MutableArrayCategory.h; sourceTree = "<group>"; };
 		AB95C0380A2B08ED00380C65 /* FileNotFound.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = FileNotFound.tif; sourceTree = "<group>"; };
+		AB9693BF0E823E3A00F09EEA /* ROIsAndKeys.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ROIsAndKeys.tif; sourceTree = "<group>"; };
 		AB9723890C684B4E00DC727C /* OsiriXDB_Previous_DataModel1.1.mom */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = OsiriXDB_Previous_DataModel1.1.mom; sourceTree = "<group>"; };
 		AB97238A0C684B4E00DC727C /* OsiriXDB_Previous_DataModel1.5.mom */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = OsiriXDB_Previous_DataModel1.5.mom; sourceTree = "<group>"; };
 		AB97238B0C684B4E00DC727C /* OsiriXDB_Previous_DataModel2.0.mom */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = OsiriXDB_Previous_DataModel2.0.mom; sourceTree = "<group>"; };
@@ -13171,6 +13174,7 @@
 		ABBB647A063587B200D9531F /* Icons */ = {
 			isa = PBXGroup;
 			children = (
+				AB9693BF0E823E3A00F09EEA /* ROIsAndKeys.tif */,
 				ABBB647B063587B200D9531F /* 2DBlending.tif */,
 				ABBB647C063587B200D9531F /* 3D.tif */,
 				CEF6A441080324E0001A8BF7 /* 3DCut.tif */,
@@ -21453,6 +21457,7 @@
 				CE40ED590D86D634007C6D49 /* 3DPosition.xib in Resources */,
 				CEAE02E00DE7E33B00E9BD01 /* DICOMDestination.tif in Resources */,
 				8483ABA60E1BE33900C21B31 /* crossCursor.tif in Resources */,
+				AB9693C00E823E3A00F09EEA /* ROIsAndKeys.tif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21843,6 +21848,7 @@
 				CE40ED5A0D86D634007C6D49 /* 3DPosition.xib in Resources */,
 				CEAE02E10DE7E33B00E9BD01 /* DICOMDestination.tif in Resources */,
 				8483ABA70E1BE33900C21B31 /* crossCursor.tif in Resources */,
+				AB9693C10E823E3A00F09EEA /* ROIsAndKeys.tif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
