@@ -13944,7 +13944,7 @@ int i,j,l;
 			if( inc > 2.5) inc = 2.5;
 			
 			[[NSUserDefaults standardUserDefaults] setFloat: fontSizeCopy * inc forKey: @"FONTSIZE"];
-			[NSFont resetFont: NO];
+			[NSFont resetFont: 0];
 			[[NSNotificationCenter defaultCenter] postNotificationName:@"changeGLFontNotification" object: self];
 		}
 		
@@ -13990,7 +13990,7 @@ int i,j,l;
 		if( fontSizeCopy != [[NSUserDefaults standardUserDefaults] floatForKey: @"FONTSIZE"])
 		{
 			[[NSUserDefaults standardUserDefaults] setFloat: fontSizeCopy forKey: @"FONTSIZE"];
-			[NSFont resetFont: NO];
+			[NSFont resetFont: 0];
 			[[NSNotificationCenter defaultCenter] postNotificationName:@"changeGLFontNotification" object: self];
 		}
 		

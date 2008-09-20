@@ -12,17 +12,6 @@
      PURPOSE.
 =========================================================================*/
 
-/***************************************** Modifications *********************************************
-
-Version 2.3
-	20051227	LP	Preliminary: Adding ability to import and export DICOM presentation states.
-					Added ***UID to keep track of Series, SOP, and referenced UIDs.
-	20060318	RBR	Added menu item 'Display Name Only' to not display statistical data.
-	
-	
-*/
-
-
 #import "AppController.h"
 #import "StringTexture.h"
 #include <OpenGL/gl.h>
@@ -38,7 +27,7 @@ Version 2.3
 #define ROIVERSION		8
 
 static		float					deg2rad = M_PI / 180.0f; 
-
+static		float					fontHeight = 0;
 static		NSString				*defaultName;
 static		int						gUID = 0;
 
@@ -301,6 +290,11 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 @synthesize textualBoxLine1, textualBoxLine2, textualBoxLine3, textualBoxLine4, textualBoxLine5, textualBoxLine6;
 @synthesize groupID;
 @synthesize isLayerOpacityConstant, canColorizeLayer, displayTextualData, clickPoint;
+
++(void) setFontHeight: (float) f
+{
+	fontHeight = f;
+}
 
 +(void) saveDefaultSettings
 {
@@ -1168,7 +1162,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 
 	float xx, yy, rotation = 0, ratio;
 	
-	line *= 12;
+	line *= fontHeight;
 	
 	xx = x + 1.0f;
 	yy = y + (line + 1.0);
@@ -3241,7 +3235,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			NSPoint tPt;
 			
 			tPt.x = drawRect.origin.x + 4;
-			tPt.y = drawRect.origin.y + (12 + 2);
+			tPt.y = drawRect.origin.y + (fontHeight + 2);
 			
 			long line = 0;
 			
@@ -3286,7 +3280,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	maxWidth = [self maxStringWidth:l5 max: maxWidth];	if( l5[0]) line++;
 	maxWidth = [self maxStringWidth:l5 max: maxWidth];	if( l6[0]) line++;
 	
-	drawRect.size.height = line * 12 + 4;
+	drawRect.size.height = line * fontHeight + 4;
 	drawRect.size.width = maxWidth + 8;
 	
 	BOOL moved;

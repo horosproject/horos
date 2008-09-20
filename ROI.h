@@ -160,6 +160,7 @@ enum
 + (void) setDefaultName:(NSString*) n;
 /** Return the default name */
 + (NSString*) defaultName;
++ (void) setFontHeight: (float) f;
 
 - (void) setDefaultName:(NSString*) n;
 - (NSString*) defaultName;

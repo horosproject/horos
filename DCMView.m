@@ -679,7 +679,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	}
 }
 
-+ (NSSize)sizeOfString:(NSString *)string forFont:(NSFont *)font
++ (NSSize) sizeOfString:(NSString *)string forFont:(NSFont *)font
 {
 	NSDictionary *attr = [NSDictionary dictionaryWithObject:font forKey:NSFontAttributeName];
 	NSAttributedString *attrString = [[[NSAttributedString alloc] initWithString:string attributes:attr] autorelease];
@@ -1163,7 +1163,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 {
 	BOOL valid = NO;
 	
-    if ([item action] == @selector( roiSaveSelected:) || [item action] == @selector( increaseThickness:) || [item action] == @selector( decreaseThickness:) || [item action] == @selector( increaseFontSize:) || [item action] == @selector( decreaseFontSize:))
+    if ([item action] == @selector( roiSaveSelected:) || [item action] == @selector( increaseThickness:) || [item action] == @selector( decreaseThickness:))
 	{
 		for( id loopItem in curRoiList)
 		{
@@ -1296,7 +1296,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				[roi release];
 			}
 		}
-		else {
+		else
+		{
 			// Single ROI - assume current slice
 			
 			NSArray *pointsStringArray = [xml objectForKey: @"ROIPoints"];
@@ -1356,7 +1357,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		// Unselect all ROIs
 		for( long i = 0 ; i < [curRoiList count] ; i++) [[curRoiList objectAtIndex: i] setROIMode: ROI_sleep];
 		
-		for( long i = 0 ; i < [roiArray count] ; i++) {
+		for( long i = 0 ; i < [roiArray count] ; i++)
+		{
 			[[roiArray objectAtIndex: i] setOriginAndSpacing :curDCM.pixelSpacingX : curDCM.pixelSpacingY :NSMakePoint( curDCM.originX, curDCM.originY)];
 			[[roiArray objectAtIndex: i] setROIMode: ROI_selected];
 			[[roiArray objectAtIndex: i] setRoiFont: labelFontListGL :labelFontListGLSize :self];
@@ -1474,15 +1476,18 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     [self setNeedsDisplay:YES];
 }
 
-- (void)flipVertical: (id)sender {
+- (void)flipVertical: (id)sender
+{
 	self.yFlipped = !yFlipped;
 }
 
-- (void)flipHorizontal: (id)sender {
+- (void)flipHorizontal: (id)sender
+{
 	self.xFlipped = !xFlipped;
 }
 
-- (void) DrawNSStringGL:(NSString*)str :(GLuint)fontL :(long)x :(long)y rightAlignment:(BOOL)right useStringTexture:(BOOL)stringTex {
+- (void) DrawNSStringGL:(NSString*)str :(GLuint)fontL :(long)x :(long)y rightAlignment:(BOOL)right useStringTexture:(BOOL)stringTex
+{
 	if(right)
 		[self DrawNSStringGL:str :fontL :x :y align:DCMViewTextAlignRight useStringTexture:stringTex];
 	else
@@ -1769,7 +1774,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		if( dcmRoiList) curRoiList = [[dcmRoiList objectAtIndex: curImage] retain];
 		else 			curRoiList = [[NSMutableArray alloc] initWithCapacity:0];
 		
-		for( int i = 0; i < [curRoiList count]; i++ ) {
+		for( int i = 0; i < [curRoiList count]; i++ )
+		{
 			[[curRoiList objectAtIndex:i ] setRoiFont: labelFontListGL :labelFontListGLSize :self];
 			[[curRoiList objectAtIndex:i ] recompute];
 			// Unselect previous ROIs
@@ -4193,16 +4199,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	return [self menu]; 
 }
 
-- (IBAction) decreaseFontSize: (id) sender
-{
-	
-}
-
-- (IBAction) increaseFontSize: (id) sender
-{
-	
-}
-
 - (IBAction) decreaseThickness: (id) sender
 {
 	for( ROI *r in curRoiList)
@@ -5356,7 +5352,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	fontListGL = glGenLists (150);
 	fontGL = [[NSFont fontWithName: [[NSUserDefaults standardUserDefaults] stringForKey:@"FONTNAME"] size: [[NSUserDefaults standardUserDefaults] floatForKey: @"FONTSIZE"]] retain];
 	if( fontGL == 0L) fontGL = [[NSFont fontWithName:@"Geneva" size:14] retain];
-	[fontGL makeGLDisplayListFirst:' ' count:150 base: fontListGL :fontListGLSize :NO];
+	[fontGL makeGLDisplayListFirst:' ' count:150 base: fontListGL :fontListGLSize :0];
 	stringSize = [DCMView sizeOfString:@"B" forFont:fontGL];
 }
 
@@ -5405,7 +5401,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	// Get pixel format from OpenGL
 	NSOpenGLPixelFormatAttribute attrs[] = { NSOpenGLPFADoubleBuffer, NSOpenGLPFADepthSize, (NSOpenGLPixelFormatAttribute)32, 0};
     NSOpenGLPixelFormat* pixFmt = [[[NSOpenGLPixelFormat alloc] initWithAttributes:attrs] autorelease];
-    if ( !pixFmt ) {
+    if ( !pixFmt )
+	{
     //        NSRunCriticalAlertPanel(NSLocalizedString(@"OPENGL ERROR",nil), NSLocalizedString(@"Not able to run Quartz Extreme: OpenGL+Quartz. Update your video hardware!",nil), NSLocalizedString(@"OK",nil), nil, nil);
 	//		exit(1);
     }
@@ -5459,7 +5456,12 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
            selector: @selector(changeGLFontNotification:)
                name:  @"changeGLFontNotification" 
              object: nil];
-			
+	
+	[nc addObserver: self
+           selector: @selector(changeLabelGLFontNotification:)
+               name:  @"changeLabelGLFontNotification" 
+             object: nil];
+	
 	[nc	addObserver: self
 			selector: @selector(changeWLWW:)
 				name: @"changeWLWW"
@@ -5467,7 +5469,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
     colorTransfer = NO;
 	
-	for ( unsigned int i = 0; i < 256; i++ ) {
+	for ( unsigned int i = 0; i < 256; i++ )
+	{
 		alphaTable[i] = 0xFF;
 		opaqueTable[i] = 0xFF;
 		redTable[i] = i;
@@ -5507,10 +5510,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	fontColor = nil;
 	
 	[self initFont];
-		
-	labelFontListGL = glGenLists (150);
-	labelFont = [[NSFont fontWithName:@"Monaco" size:12] retain];
-	[labelFont makeGLDisplayListFirst:' ' count:150 base: labelFontListGL :labelFontListGLSize :YES];
+	
+	[[NSNotificationCenter defaultCenter] postNotificationName:@"changeLabelGLFontNotification" object: self];
+	[[NSNotificationCenter defaultCenter] postNotificationName:@"changeGLFontNotification" object: self];
 	
     currentTool =  [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULTLEFTTOOL"];
     
@@ -5530,8 +5532,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	[[NSNotificationCenter defaultCenter] removeObserver: self];
 }
 
-- (void)windowWillClose:(NSNotification *)notification {
-	if( [notification object] == [self window])	{
+- (void)windowWillClose:(NSNotification *)notification
+{
+	if( [notification object] == [self window])
+	{
 		[self prepareToRelease];
 	}
 }
@@ -6566,26 +6570,20 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	[self orientationCorrectedToView: vectors];
 	// Left
 	[self getOrientationText:string :vectors :YES];
-	[self DrawCStringGL: string : labelFontListGL :6 :2+size.size.height/2 rightAlignment: NO useStringTexture: YES];
+	[self DrawCStringGL: string : fontListGL :6 :2+size.size.height/2 rightAlignment: NO useStringTexture: YES];
 	
 	// Right
-	float offset = 28;
 	[self getOrientationText:string :vectors :NO];
-
-	// Vary Position of Right string depending on length
-	if (strlen(string) == 1)
-		offset = 16;
-	else if (strlen(string) == 2)
-		offset = 22;
-	[self DrawCStringGL: string : labelFontListGL :size.size.width - offset :2+size.size.height/2 rightAlignment: NO useStringTexture: YES];
+	[self DrawCStringGL: string : fontListGL :size.size.width - (2 + stringSize.width * strlen(string)) :2+size.size.height/2 rightAlignment: NO useStringTexture: YES];
+	
 	//Top 
 	[self getOrientationText:string :vectors+3 :YES];
-	[self DrawCStringGL: string : labelFontListGL :size.size.width/2 :15 rightAlignment: NO useStringTexture: YES];
+	[self DrawCStringGL: string : fontListGL :size.size.width/2 :stringSize.height + 3 rightAlignment: NO useStringTexture: YES];
 	
 	if( curDCM.laterality ) [self DrawNSStringGL: curDCM.laterality : fontListGL :size.size.width/2 :12 + stringSize.height];
 	//Bottom
 	[self getOrientationText:string :vectors+3 :NO];
-	[self DrawCStringGL: string : labelFontListGL :size.size.width/2 :2+size.size.height - 6 rightAlignment: NO useStringTexture: YES];
+	[self DrawCStringGL: string : fontListGL :size.size.width/2 :2+size.size.height - 6 rightAlignment: NO useStringTexture: YES];
 }
 
 -(void) getThickSlabThickness:(float*) thickness location:(float*) location
@@ -6593,8 +6591,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	*thickness = curDCM.sliceThickness;
 	*location = curDCM.sliceLocation;
 	
-	if( curDCM.sliceThickness != 0 && curDCM.sliceLocation != 0) {
-		if( curDCM.stack > 1) {
+	if( curDCM.sliceThickness != 0 && curDCM.sliceLocation != 0)
+	{
+		if( curDCM.stack > 1)
+		{
 			
 			long maxVal = flippedData? maxVal = curImage-curDCM.stack : curImage+curDCM.stack;
 			
@@ -6651,7 +6651,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	{
 		if(!iChatFontListGL) iChatFontListGL = glGenLists(150);
 		iChatFontGL = [NSFont systemFontOfSize: 12];
-		[iChatFontGL makeGLDisplayListFirst:' ' count:150 base:iChatFontListGL :iChatFontListGLSize :YES];
+		[iChatFontGL makeGLDisplayListFirst:' ' count:150 base:iChatFontListGL :iChatFontListGLSize :1];
 		iChatStringSize = [DCMView sizeOfString:@"B" forFont:iChatFontGL];
 	}
 	
@@ -6830,13 +6830,16 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 									else [tempString2 appendFormat: NSLocalizedString( @"Fused Image : X: %d px Y: %d px Value: %2.2f", @"No special characters for this string, only ASCII characters."), (int)blendingMouseXPos, (int)blendingMouseYPos, blendingPixelMouseValue];
 								}
 								
-								if( curDCM.displaySUVValue ) {
-									if( [curDCM hasSUV] == YES && curDCM.SUVConverted == NO) {
+								if( curDCM.displaySUVValue )
+								{
+									if( [curDCM hasSUV] == YES && curDCM.SUVConverted == NO)
+									{
 										[tempString3 appendFormat: NSLocalizedString( @"SUV: %.2f", @"SUV: Standard Uptake Value - No special characters for this string, only ASCII characters."), [self getSUV]];
 									}
 								}
 								
-								if( blendingView ) {
+								if( blendingView )
+								{
 									if( [[blendingView curDCM] displaySUVValue] && [[blendingView curDCM] hasSUV] && [[blendingView curDCM] SUVConverted] == NO)
 									{
 										[tempString4 appendFormat: NSLocalizedString( @"SUV (fused image): %.2f", @"SUV: Standard Uptake Value - No special characters for this string, only ASCII characters."), [self getBlendedSUV]];
@@ -6856,7 +6859,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						}
 						else if([[annot objectAtIndex:j] isEqualToString:@"Image Position"] && fullText)
 						{
-							if( curDCM.stack > 1) {
+							if( curDCM.stack > 1)
+							{
 								long maxVal;
 								
 								if(flippedData) maxVal = curImage-curDCM.stack+1;
@@ -6963,7 +6967,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 							
 							if( curDCM.sliceThickness != 0 && curDCM.sliceLocation != 0)
 							{
-								if( curDCM.stack > 1) {
+								if( curDCM.stack > 1)
+								{
 									float vv, pp;
 									
 									[self getThickSlabThickness: &vv location: &pp];
@@ -6978,8 +6983,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 									else
 										[tempString appendFormat: NSLocalizedString( @"Thickness: %0.2f mm Location: %0.2f mm", 0L), fabs( vv), pp];								
 								}
-								else if( fullText) {
-									if (curDCM.sliceThickness < 1.0 && curDCM.sliceThickness != 0.0) {
+								else if( fullText)
+								{
+									if (curDCM.sliceThickness < 1.0 && curDCM.sliceThickness != 0.0)
+									{
 										if( fabs( curDCM.sliceLocation) < 1.0 && curDCM.sliceLocation != 0.0)
 											[tempString appendFormat: NSLocalizedString( @"Thickness: %0.2f %cm Location: %0.2f %cm", 0L), curDCM.sliceThickness * 1000.0, 0xB5, curDCM.sliceLocation * 1000.0, 0xB5];
 										else
@@ -6994,7 +7001,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 								 NSString        *nsstring = 0L;	 
 
 								 if ( curDCM.viewPosition ) [tempString appendFormat: NSLocalizedString( @"Position: %@ ", 0L), curDCM.viewPosition];	 
-								 if ( curDCM.patientPosition ) {	 
+								 if ( curDCM.patientPosition )
+								 {	 
 									if(curDCM.viewPosition) [tempString appendString: curDCM.patientPosition];	 
 									else [tempString appendFormat: NSLocalizedString( @"Position: %@ ", 0L), curDCM.patientPosition];	 
 								 }	 
@@ -7475,7 +7483,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				
 				glLineWidth(1.0);
 				glBegin(GL_LINES);
-				for( long i = 0; i < 256; i++ ) {
+				for( int i = 0; i < 256; i++ )
+				{
 					glColor3ub ( redTable[ i], greenTable[ i], blueTable[ i]);
 					
 					glVertex2f(  widthhalf - BARPOSX1, heighthalf - (-128.f + i));
@@ -7488,25 +7497,27 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				glVertex2f(  widthhalf - BARPOSX2 ,heighthalf -  -128.f);		glVertex2f(  widthhalf - BARPOSX2, heighthalf - 127.f);
 				glEnd();
 				
-				if( curWW < 50 ) {
+				if( curWW < 50 )
+				{
 					tempString = [NSString stringWithFormat: @"%0.4f", curWL - curWW/2];
-					[self DrawNSStringGL: tempString : labelFontListGL :widthhalf - BARPOSX1: heighthalf - -133 rightAlignment: YES useStringTexture: NO];
+					[self DrawNSStringGL: tempString : fontListGL :widthhalf - BARPOSX1: heighthalf - -133 rightAlignment: YES useStringTexture: NO];
 					
 					tempString = [NSString stringWithFormat: @"%0.4f", curWL];
-					[self DrawNSStringGL: tempString : labelFontListGL :widthhalf - BARPOSX1: heighthalf - 0 rightAlignment: YES useStringTexture: NO];
+					[self DrawNSStringGL: tempString : fontListGL :widthhalf - BARPOSX1: heighthalf - 0 rightAlignment: YES useStringTexture: NO];
 					
 					tempString = [NSString stringWithFormat: @"%0.4f", curWL + curWW/2];
-					[self DrawNSStringGL: tempString : labelFontListGL :widthhalf - BARPOSX1: heighthalf - 120 rightAlignment: YES useStringTexture: NO];
+					[self DrawNSStringGL: tempString : fontListGL :widthhalf - BARPOSX1: heighthalf - 120 rightAlignment: YES useStringTexture: NO];
 				}
-				else {
+				else
+				{
 					tempString = [NSString stringWithFormat: @"%0.0f", curWL - curWW/2];
-					[self DrawNSStringGL: tempString : labelFontListGL :widthhalf - BARPOSX1: heighthalf - -133 rightAlignment: YES useStringTexture: NO];
+					[self DrawNSStringGL: tempString : fontListGL :widthhalf - BARPOSX1: heighthalf - -133 rightAlignment: YES useStringTexture: NO];
 					
 					tempString = [NSString stringWithFormat: @"%0.0f", curWL];
-					[self DrawNSStringGL: tempString : labelFontListGL :widthhalf - BARPOSX1: heighthalf - 0 rightAlignment: YES useStringTexture: NO];
+					[self DrawNSStringGL: tempString : fontListGL :widthhalf - BARPOSX1: heighthalf - 0 rightAlignment: YES useStringTexture: NO];
 					
 					tempString = [NSString stringWithFormat: @"%0.0f", curWL + curWW/2];
-					[self DrawNSStringGL: tempString : labelFontListGL :widthhalf - BARPOSX1: heighthalf - 120 rightAlignment: YES useStringTexture: NO];
+					[self DrawNSStringGL: tempString : fontListGL :widthhalf - BARPOSX1: heighthalf - 120 rightAlignment: YES useStringTexture: NO];
 				}
 			} //clutBars == barOrigin || clutBars == barBoth
 			
@@ -7521,7 +7532,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					float			bwl, bww;
 					NSString		*tempString = 0L;
 					
-					if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut Mode"] isEqualToString: @"B/W Inverse"]) {
+					if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut Mode"] isEqualToString: @"B/W Inverse"])
+					{
 						bred = PETredTable;
 						bgreen = PETgreenTable;
 						bblue = PETblueTable;
@@ -7533,12 +7545,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					
 					heighthalf = 0;
 					
-//						glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
-//						glScalef (2.0f /(xFlipped ? -(drawingFrameRect.size.width) : drawingFrameRect.size.width), -2.0f / (yFlipped ? -(drawingFrameRect.size.height) : drawingFrameRect.size.height), 1.0f);
-					
 					glLineWidth(1.0);
 					glBegin(GL_LINES);
-					for( long i = 0; i < 256; i++ ) {
+					for( long i = 0; i < 256; i++ )
+					{
 						glColor3ub ( bred[ i], bgreen[ i], bblue[ i]);
 						
 						glVertex2f(  -widthhalf + BBARPOSX1, heighthalf - (-128.f + i));
@@ -7553,25 +7563,26 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					
 					[blendingView getWLWW: &bwl :&bww];
 					
-					if( curWW < 50) {
+					if( curWW < 50)
+					{
 						tempString = [NSString stringWithFormat: @"%0.4f", bwl - bww/2];
-						[self DrawNSStringGL: tempString : labelFontListGL :-widthhalf + BBARPOSX1 + 4: heighthalf - -133];
+						[self DrawNSStringGL: tempString : fontListGL :-widthhalf + BBARPOSX1 + 4: heighthalf - -133];
 						
 						tempString = [NSString stringWithFormat: @"%0.4f", bwl];
-						[self DrawNSStringGL: tempString : labelFontListGL :-widthhalf + BBARPOSX1 + 4: heighthalf - 0];
+						[self DrawNSStringGL: tempString : fontListGL :-widthhalf + BBARPOSX1 + 4: heighthalf - 0];
 						
 						tempString = [NSString stringWithFormat: @"%0.4f", bwl + bww/2];
-						[self DrawNSStringGL: tempString : labelFontListGL :-widthhalf + BBARPOSX1 + 4: heighthalf - 120];
+						[self DrawNSStringGL: tempString : fontListGL :-widthhalf + BBARPOSX1 + 4: heighthalf - 120];
 					}
 					else {
 						tempString = [NSString stringWithFormat: @"%0.0f", bwl - bww/2];
-						[self DrawNSStringGL: tempString : labelFontListGL :-widthhalf + BBARPOSX1 + 4: heighthalf - -133];
+						[self DrawNSStringGL: tempString : fontListGL :-widthhalf + BBARPOSX1 + 4: heighthalf - -133];
 						
 						tempString = [NSString stringWithFormat: @"%0.0f", bwl];
-						[self DrawNSStringGL: tempString : labelFontListGL :-widthhalf + BBARPOSX1 + 4: heighthalf - 0];
+						[self DrawNSStringGL: tempString : fontListGL :-widthhalf + BBARPOSX1 + 4: heighthalf - 0];
 						
 						tempString = [NSString stringWithFormat: @"%0.0f", bwl + bww/2];
-						[self DrawNSStringGL: tempString : labelFontListGL :-widthhalf + BBARPOSX1 + 4: heighthalf - 120];
+						[self DrawNSStringGL: tempString : fontListGL :-widthhalf + BBARPOSX1 + 4: heighthalf - 120];
 					}
 				}
 			} //blendingView
@@ -9744,6 +9755,46 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	if( [stringID isEqualToString:@"FinalView"] == YES) [self blendingPropagate];
 }
 
+- (void) increaseFontSize:(id) sender
+{
+	if( [[NSUserDefaults standardUserDefaults] floatForKey: @"LabelFONTSIZE"] < 60)
+	{
+		[[NSUserDefaults standardUserDefaults] setFloat: [[NSUserDefaults standardUserDefaults] floatForKey: @"LabelFONTSIZE"] + 1 forKey: @"LabelFONTSIZE"];
+		[NSFont resetFont: 2];
+		[[NSNotificationCenter defaultCenter] postNotificationName:@"changeLabelGLFontNotification" object: sender];
+	}
+}
+
+- (void) decreaseFontSize:(id) sender
+{
+	if( [[NSUserDefaults standardUserDefaults] floatForKey: @"LabelFONTSIZE"] > 6)
+	{
+		[[NSUserDefaults standardUserDefaults] setFloat: [[NSUserDefaults standardUserDefaults] floatForKey: @"LabelFONTSIZE"] - 1 forKey: @"LabelFONTSIZE"];
+		[NSFont resetFont: 2];
+		[[NSNotificationCenter defaultCenter] postNotificationName:@"changeLabelGLFontNotification" object: sender];
+	}
+}
+
+- (void) changeLabelGLFontNotification:(NSNotification*) note
+{
+	[[self openGLContext] makeCurrentContext];
+	
+	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+	
+	glDeleteLists (labelFontListGL, 150);
+	labelFontListGL = glGenLists (150);
+	
+	[labelFont release];
+	
+	labelFont = [[NSFont fontWithName: [[NSUserDefaults standardUserDefaults] stringForKey:@"LabelFONTNAME"] size: [[NSUserDefaults standardUserDefaults] floatForKey: @"LabelFONTSIZE"]] retain];
+	if( labelFont == 0L) labelFont = [[NSFont fontWithName:@"Monaco" size:12] retain];
+	
+	[labelFont makeGLDisplayListFirst:' ' count:150 base: labelFontListGL :labelFontListGLSize :2];
+	[ROI setFontHeight: [DCMView sizeOfString: @"B" forFont: labelFont].height];
+	
+	[self setNeedsDisplay:YES];
+}
+
 - (void) changeGLFontNotification:(NSNotification*) note
 {
 	[[self openGLContext] makeCurrentContext];
@@ -9758,7 +9809,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	fontGL = [[NSFont fontWithName: [[NSUserDefaults standardUserDefaults] stringForKey:@"FONTNAME"] size: [[NSUserDefaults standardUserDefaults] floatForKey: @"FONTSIZE"]] retain];
 	if( fontGL == 0L) fontGL = [[NSFont fontWithName:@"Geneva" size:14] retain];
 	
-	[fontGL makeGLDisplayListFirst:' ' count:150 base: fontListGL :fontListGLSize :NO];
+	[fontGL makeGLDisplayListFirst:' ' count:150 base: fontListGL :fontListGLSize :0];
 	stringSize = [DCMView sizeOfString:@"B" forFont:fontGL];
 	
 	[stringTextureCache release];
@@ -9774,7 +9825,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	[[NSUserDefaults standardUserDefaults] setObject: [newFont fontName] forKey: @"FONTNAME"];
 	[[NSUserDefaults standardUserDefaults] setFloat: [newFont pointSize] forKey: @"FONTSIZE"];
-	[NSFont resetFont: NO];
+	[NSFont resetFont: 0];
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"changeGLFontNotification" object: sender];
 }

@@ -41,10 +41,9 @@
 @implementation NSFont (withay_OpenGL)
 
 static  BOOL					openGLLoggingEnabled = YES;
-static  NSMutableArray			*imageArray = 0L, *imageArrayPreview = 0L;
-static  long					charSizeArray[ MAXCOUNT], charSizeArrayPreview[ MAXCOUNT];
-static  unsigned char			*charPtrArray[ MAXCOUNT], *charPtrArrayPreview[ MAXCOUNT];
-
+static  NSMutableArray			*imageArray = 0L, *imageArrayPreview = 0L,  *imageArrayROI = 0L;
+static  long					charSizeArray[ MAXCOUNT], charSizeArrayPreview[ MAXCOUNT], charSizeArrayROI[ MAXCOUNT];
+static  unsigned char			*charPtrArray[ MAXCOUNT], *charPtrArrayPreview[ MAXCOUNT], *charPtrArrayROI[ MAXCOUNT];
 
 /*
  * Enable/disable logging, class-wide, not object-wide
@@ -54,37 +53,51 @@ static  unsigned char			*charPtrArray[ MAXCOUNT], *charPtrArrayPreview[ MAXCOUNT
    openGLLoggingEnabled = logEnabled;
 }
 
-+ (void) resetFont: (BOOL) preview
++ (void) resetFont: (int) fontType
 {
-	long i;
+	int i;
 	
-	if( preview == NO)
+	switch( fontType)
 	{
-		if( imageArray)
-		{
-			for( i = 0; i < MAXCOUNT; i++)
+		case 0:
+			if( imageArray)
 			{
-				free( charPtrArray[ i]);
+				for( i = 0; i < MAXCOUNT; i++)
+				{
+					free( charPtrArray[ i]);
+				}
+				[imageArray release];
+				imageArray = 0L;
 			}
-			[imageArray release];
-			imageArray = 0L;
-		}
-	}
-	else
-	{
-		if( imageArrayPreview)
-		{
-			for( i = 0; i < MAXCOUNT; i++)
+		break;
+		
+		case 1:
+			if( imageArrayPreview)
 			{
-				free( charPtrArrayPreview[ i]);
+				for( i = 0; i < MAXCOUNT; i++)
+				{
+					free( charPtrArrayPreview[ i]);
+				}
+				[imageArrayPreview release];
+				imageArrayPreview = 0L;
 			}
-			[imageArrayPreview release];
-			imageArrayPreview = 0L;
-		}
+		break;
+		
+		case 2:
+			if( imageArrayROI)
+			{
+				for( i = 0; i < MAXCOUNT; i++)
+				{
+					free( charPtrArrayROI[ i]);
+				}
+				[imageArrayROI release];
+				imageArrayROI = 0L;
+			}
+		break;
 	}
 }
 
-+ (void) initFontImage:(unichar)first count:(int)count font:(NSFont*) font previewFont:(BOOL) preview
++ (void) initFontImage:(unichar)first count:(int)count font:(NSFont*) font fontType:(int) fontType
 {
 	GLint				curListIndex;
 	NSColor				*blackColor;
@@ -99,23 +112,25 @@ static  unsigned char			*charPtrArray[ MAXCOUNT], *charPtrArrayPreview[ MAXCOUNT
 	NSMutableArray		*curArray;
 	long				*curSizeArray, i;
 
-	if( preview) 
+	switch( fontType)
 	{
-		curArray = imageArrayPreview;
-		curSizeArray = charSizeArrayPreview;
-	}
-	else
-	{
-		curArray = imageArray;
-		curSizeArray = charSizeArray;
-	}
-	
-	NSLog( @"glFont created");
-	
-	for( i = 0; i < MAXCOUNT; i++)
-	{
-		if( preview) charPtrArrayPreview[ i] = 0;
-		else charPtrArray[ i] = 0;
+		case 1:
+			curArray = imageArrayPreview;
+			curSizeArray = charSizeArrayPreview;
+			for( i = 0; i < MAXCOUNT; i++) charPtrArrayPreview[ i] = 0;
+		break;
+		
+		case 0:
+			curArray = imageArray;
+			curSizeArray = charSizeArray;
+			for( i = 0; i < MAXCOUNT; i++) charPtrArray[ i] = 0;
+		break;
+		
+		case 2:
+			curArray = imageArrayROI;
+			curSizeArray = charSizeArrayROI;
+			for( i = 0; i < MAXCOUNT; i++) charPtrArrayROI[ i] = 0;
+		break;
 	}
 	
 	if( curArray == 0L) curArray = [[NSMutableArray alloc] initWithCapacity:0];
@@ -138,7 +153,7 @@ static  unsigned char			*charPtrArray[ MAXCOUNT], *charPtrArrayPreview[ MAXCOUNT
 			charRect.size = charSize;
 			charRect = NSIntegralRect( charRect );
 		}	
-		theImage = [ [ NSImage alloc ] initWithSize:NSMakeSize( 0, 0 ) ];
+		theImage = [[NSImage alloc ] initWithSize:NSMakeSize( 0, 0 ) ];
 		curSizeArray[ currentUnichar] = charRect.size.width;
 		[ theImage setSize:charRect.size ];
 		[ theImage lockFocus ];
@@ -148,29 +163,47 @@ static  unsigned char			*charPtrArray[ MAXCOUNT], *charPtrArrayPreview[ MAXCOUNT
 		[ currentChar drawInRect:charRect withAttributes:attribDict ];
 		[ theImage unlockFocus ];
 
-		bitmap = [ NSBitmapImageRep imageRepWithData:[ theImage TIFFRepresentationUsingCompression:NSTIFFCompressionNone factor:0 ] ];
+		bitmap = [NSBitmapImageRep imageRepWithData:[ theImage TIFFRepresentationUsingCompression:NSTIFFCompressionNone factor:0]];
 
 		[curArray addObject: bitmap];
 		[theImage release];
 			
-		if( preview) charPtrArrayPreview[ currentUnichar] = [NSFont createCharacterWithImage:[curArray objectAtIndex: currentUnichar - first]];
-		else charPtrArray[ currentUnichar] = [NSFont createCharacterWithImage:[curArray objectAtIndex: currentUnichar - first]];
+		switch( fontType)
+		{
+			case 1:
+				charPtrArrayPreview[ currentUnichar] = [NSFont createCharacterWithImage:[curArray objectAtIndex: currentUnichar - first]];
+			break;
+			
+			case 0:
+				charPtrArray[ currentUnichar] = [NSFont createCharacterWithImage:[curArray objectAtIndex: currentUnichar - first]];
+			break;
+			
+			case 2:
+				charPtrArrayROI[ currentUnichar] = [NSFont createCharacterWithImage:[curArray objectAtIndex: currentUnichar - first]];
+			break;
+		}
 	}
 
-	if( preview) 
+	switch( fontType)
 	{
-		imageArrayPreview = curArray;
-	}
-	else
-	{
-		imageArray = curArray;
+		case 1:
+			imageArrayPreview = curArray;
+		break;
+		
+		case 0:
+			imageArray = curArray;
+		break;
+		
+		case 2:
+			imageArrayROI = curArray;
+		break;
 	}
 }
 
 /*
  * Create the set of display lists for the bitmaps
  */
-- (BOOL) makeGLDisplayListFirst:(unichar)first count:(int)count base:(GLint)base :(long*) charSizeArrayIn :(BOOL) preview
+- (BOOL) makeGLDisplayListFirst:(unichar)first count:(int)count base:(GLint)base :(long*) charSizeArrayIn :(int) fontType
 {
 	GLint curListIndex;
 	NSColor *blackColor;
@@ -187,27 +220,33 @@ static  unsigned char			*charPtrArray[ MAXCOUNT], *charPtrArrayPreview[ MAXCOUNT
 	NSMutableArray  *curArray;
 	long *curSizeArray;
 	
-	if( imageArray == 0L && preview == NO)
+	switch( fontType)
 	{
-		[NSFont initFontImage:' ' count:150 font:self previewFont:NO];
+		case 0:
+			if( imageArray == 0L)
+				[NSFont initFontImage:' ' count:150 font:self fontType: fontType];
+			
+			curArray = imageArray;
+			curSizeArray = charSizeArray;
+		break;
+		
+		case 1:
+			if( imageArrayPreview == 0L)
+				[NSFont initFontImage:' ' count:150 font:self fontType: fontType];
+			
+			curArray = imageArrayPreview;
+			curSizeArray = charSizeArrayPreview;
+		break;
+		
+		case 2:
+			if( imageArrayROI == 0L)
+				[NSFont initFontImage:' ' count:150 font:self fontType: fontType];
+				
+			curArray = imageArrayROI;
+			curSizeArray = charSizeArrayROI;
+		break;
 	}
 	
-	if( imageArrayPreview == 0L && preview == YES)
-	{
-		[NSFont initFontImage:' ' count:150 font:self previewFont:YES];
-	}
-
-	if( preview) 
-	{
-		curArray = imageArrayPreview;
-		curSizeArray = charSizeArrayPreview;
-	}
-	else
-	{
-		curArray = imageArray;
-		curSizeArray = charSizeArray;
-	}
-		
    // Make sure a list isn't already under construction
    glGetIntegerv( GL_LIST_INDEX, &curListIndex );
    if( curListIndex != 0 )
@@ -235,8 +274,21 @@ static  unsigned char			*charPtrArray[ MAXCOUNT], *charPtrArrayPreview[ MAXCOUNT
 		NSBitmapImageRep *bitmap = [curArray objectAtIndex: currentUnichar - first];
 		
 		glNewList( dListNum, GL_COMPILE );
-		if( preview) glBitmap( [bitmap pixelsWide ], [bitmap pixelsHigh], 0, 0, [bitmap  pixelsWide], 0, charPtrArrayPreview[ currentUnichar]);
-		else glBitmap( [bitmap pixelsWide ], [bitmap pixelsHigh], 0, 0, [bitmap  pixelsWide], 0, charPtrArray[ currentUnichar]);
+		
+		switch( fontType)
+		{
+			case 0:
+				glBitmap( [bitmap pixelsWide ], [bitmap pixelsHigh], 0, 0, [bitmap  pixelsWide], 0, charPtrArray[ currentUnichar]);
+			break;
+			
+			case 1:
+				glBitmap( [bitmap pixelsWide ], [bitmap pixelsHigh], 0, 0, [bitmap  pixelsWide], 0, charPtrArrayPreview[ currentUnichar]);
+			break;
+			
+			case 2:
+				glBitmap( [bitmap pixelsWide ], [bitmap pixelsHigh], 0, 0, [bitmap  pixelsWide], 0, charPtrArrayROI[ currentUnichar]);
+			break;
+		}
 		glEndList();
    }
 
