@@ -3748,78 +3748,91 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						
 						curROI = aNewROI = [[ROI alloc] initWithType: tool : curDCM.pixelSpacingX :curDCM.pixelSpacingY :NSMakePoint( curDCM.originX, curDCM.originY)];
 											
-						if ( [ROI defaultName] != nil ) {
+						if ( [ROI defaultName] != nil )
+						{
 							[aNewROI setName: [ROI defaultName]];
 						}
-						else { 
-							switch( tool) {
-								case  tOval:
-									roiName = [NSString stringWithString:@"Oval "];
+						else
+						{
+							if( [[NSUserDefaults standardUserDefaults] boolForKey: @"EmptyNameForNewROIs"] == NO)
+							{
+								switch( tool)
+								{
+									case  tOval:
+										roiName = [NSString stringWithString:@"Oval "];
 									break;
-								//JJCP
-								case tDynAngle:
-									roiName = [NSString stringWithString:@"Dynamic Angle "];
-									break;
-								//JJCP
-								case tAxis:
-									roiName = [NSString stringWithString:@"Bone Axis "];
-									break;
-								case tOPolygon:
-								case tCPolygon:
-									roiName = [NSString stringWithString:@"Polygon "];
+										
+									case tDynAngle:
+										roiName = [NSString stringWithString:@"Dynamic Angle "];
 									break;
 									
-								case tAngle:
-									roiName = [NSString stringWithString:@"Angle "];
+									case tAxis:
+										roiName = [NSString stringWithString:@"Bone Axis "];
 									break;
 									
-								case tArrow:
-									roiName = [NSString stringWithString:@"Arrow "];
+									case tOPolygon:
+									case tCPolygon:
+										roiName = [NSString stringWithString:@"Polygon "];
 									break;
+										
+									case tAngle:
+										roiName = [NSString stringWithString:@"Angle "];
+									break;
+										
+									case tArrow:
+										roiName = [NSString stringWithString:@"Arrow "];
+									break;
+									
+									case tPlain:
+									case tPencil:
+										roiName = [NSString stringWithString:@"ROI "];
+									break;
+										
+									case tMesure:
+										roiName = [NSString stringWithString:@"Measurement "];
+									break;
+										
+									case tROI:
+										roiName = [NSString stringWithString:@"Rectangle "];
+									break;
+										
+									case t2DPoint:
+										roiName = [NSString stringWithString:@"Point "];
+									break;
+								}
 								
-								case tPlain:
-								case tPencil:
-									roiName = [NSString stringWithString:@"ROI "];
-									break;
-									
-								case tMesure:
-									roiName = [NSString stringWithString:@"Measurement "];
-									break;
-									
-								case tROI:
-									roiName = [NSString stringWithString:@"Rectangle "];
-									break;
-									
-								case t2DPoint:
-									roiName = [NSString stringWithString:@"Point "];
-									break;
-							}
-							
-							if( roiName ) {
-								counter = 1;
-								
-								do {
-									existsAlready = NO;
-									
-									finalName = [roiName stringByAppendingFormat:@"%d", counter++];
-									
-									for( int i = 0; i < [dcmRoiList count]; i++) {
-										for( int x = 0; x < [[dcmRoiList objectAtIndex: i] count]; x++) {
-											if( [[[[dcmRoiList objectAtIndex: i] objectAtIndex: x] name] isEqualToString: finalName]) {
-												existsAlready = YES;
+								if( roiName )
+								{
+									counter = 1;
+									do
+									{
+										existsAlready = NO;
+										
+										finalName = [roiName stringByAppendingFormat:@"%d", counter++];
+										
+										for( int i = 0; i < [dcmRoiList count]; i++)
+										{
+											for( int x = 0; x < [[dcmRoiList objectAtIndex: i] count]; x++)
+											{
+												if( [[[[dcmRoiList objectAtIndex: i] objectAtIndex: x] name] isEqualToString: finalName])
+												{
+													existsAlready = YES;
+												}
 											}
 										}
-									}
+										
+									} while (existsAlready != NO);
 									
-								} while (existsAlready != NO);
-								
-								[aNewROI setName: finalName];
+									[aNewROI setName: finalName];
+								}
 							}
 						}
 						
 						// Create aliases of current ROI to the entire series
-						if (([event modifierFlags] & NSShiftKeyMask) && !([event modifierFlags] & NSCommandKeyMask)) {
-							for( int i = 0; i < [dcmRoiList count]; i++) {
+						if (([event modifierFlags] & NSShiftKeyMask) && !([event modifierFlags] & NSCommandKeyMask))
+						{
+							for( int i = 0; i < [dcmRoiList count]; i++)
+							{
 								[[dcmRoiList objectAtIndex: i] addObject: aNewROI];
 							}
 						}
@@ -3844,9 +3857,12 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				}
 			}
 			
-			for( int x = 0; x < [dcmRoiList count]; x++ ) {
-				for( int i = 0; i < [[dcmRoiList objectAtIndex: x] count]; i++) {
-					if( [[[dcmRoiList objectAtIndex: x] objectAtIndex: i] valid] == NO) {
+			for( int x = 0; x < [dcmRoiList count]; x++ )
+			{
+				for( int i = 0; i < [[dcmRoiList objectAtIndex: x] count]; i++)
+				{
+					if( [[[dcmRoiList objectAtIndex: x] objectAtIndex: i] valid] == NO)
+					{
 						[[dcmRoiList objectAtIndex: x] removeObjectAtIndex: i];
 						i--;
 					}

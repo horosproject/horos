@@ -713,6 +713,7 @@ static NSHost *currentHost = 0L;
 	[defaultValues setObject:@"1" forKey:@"magnifyingLens"];
 	[defaultValues setObject:@"12" forKey:@"LabelFONTSIZE"];
 	[defaultValues setObject:@"Geneva" forKey:@"LabelFONTNAME"];
+	[defaultValues setObject:@"1" forKey:@"EmptyNameForNewROIs"];
 	
 	// ** DELETEFILELISTENER
 	[defaultValues setObject:@"1" forKey:@"DELETEFILELISTENER"];

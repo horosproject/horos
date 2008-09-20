@@ -3164,12 +3164,17 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 {
 	BOOL moved;
 	
+	if( line1[0] == 0 && line2[0] == 0  && line3[0] == 0  && line4[0] == 0  && line5[0] == 0  && line6[0] == 0 )
+	{
+		drawRect = NSMakeRect(0, 0, 0, 0);
+		return;
+	}
+	
 	drawRect = [self findAnEmptySpaceForMyRect: drawRect : &moved];
-	//JJCP
+	
 	if(type == tDynAngle || type == tAxis ||type == tCPolygon || type == tOPolygon || type == tPencil) moved = YES;
 
 //	if( type == tCPolygon || type == tOPolygon || type == tPencil) moved = YES;
-	
 //	if( fabs( offsetTextBox_x) > 0 || fabs( offsetTextBox_y) > 0) moved = NO;
 	
 	if( moved && ![curView suppressLabels] && self.isTextualDataDisplayed )	// Draw bezier line
@@ -3214,9 +3219,10 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 		[curView applyImageTransformation];
 	}
 
-	if( self.isTextualDataDisplayed ) {
-		if( type != tText) {
-			
+	if( self.isTextualDataDisplayed )
+	{
+		if( type != tText)
+		{
 			//glEnable(GL_POLYGON_SMOOTH);
 			CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 			glEnable(GL_BLEND);
