@@ -275,6 +275,10 @@
 		{
 			[[BrowserController currentBrowser] openDatabasePath: [fileArray objectAtIndex: 0]];
 		}
+		else if( [fileArray count] == 1 && [[[fileArray objectAtIndex: 0] pathExtension] isEqualToString: @"albums"])  // It's a database albums file !
+		{
+			[[BrowserController currentBrowser] addAlbumsFile: [fileArray objectAtIndex: 0]];
+		}
 		else
 		{
 			NSArray	*newImages = [[BrowserController currentBrowser] addFilesAndFolderToDatabase: fileArray];

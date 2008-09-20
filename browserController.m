@@ -1917,22 +1917,28 @@ static NSArray*	statesArray = nil;
 	[wait release];
 }
 
-- (void)openDatabaseInBonjour: (NSString*)path { 
+- (void)openDatabaseInBonjour: (NSString*)path
+{ 
 	[self openDatabaseIn: path Bonjour: YES];
 }
 
-- (IBAction)openDatabase: (id)sender {
+- (IBAction)openDatabase: (id)sender
+{
 	NSOpenPanel		*oPanel		= [NSOpenPanel openPanel];
 	
-	if ([oPanel runModalForDirectory:documentsDirectory() file:nil types:[NSArray arrayWithObject:@"sql"]] == NSFileHandlingPanelOKButton) {
-		if( [currentDatabasePath isEqualToString: [oPanel filename]] == NO && [oPanel filename] != nil ) {
+	if ([oPanel runModalForDirectory:documentsDirectory() file:nil types:[NSArray arrayWithObject:@"sql"]] == NSFileHandlingPanelOKButton)
+	{
+		if( [currentDatabasePath isEqualToString: [oPanel filename]] == NO && [oPanel filename] != nil )
+		{
 			[self openDatabaseIn: [oPanel filename] Bonjour:NO];
 		}
 	}
 }
 
-- (IBAction)createDatabase: (id)sender {
-	if( isCurrentDatabaseBonjour )	{
+- (IBAction)createDatabase: (id)sender
+{
+	if( isCurrentDatabaseBonjour )
+	{
 		NSRunInformationalAlertPanel(NSLocalizedString(@"Database", 0L), NSLocalizedString(@"Cannot create a SQL Index file for a distant database.", 0L), NSLocalizedString(@"OK",nil), nil, nil);
 		return;
 	}
@@ -7955,17 +7961,87 @@ static BOOL withReset = NO;
 
 - (void) saveAlbums:(id) sender
 {
+	NSMutableArray *albums = [NSMutableArray array];
 	
+	[self.managedObjectContext lock];
+	
+	NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+	[dbRequest setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"Album"]];
+	[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
+	NSError *error = nil;
+	NSArray *albumArray = [self.managedObjectContext executeFetchRequest:dbRequest error:&error];
+	
+	if( [albumArray count])
+	{
+		NSManagedObject *album;
+		for( album in albumArray )
+		{
+			[albums addObject: [NSDictionary dictionaryWithObjectsAndKeys:	[album valueForKey: @"name"], @"name", 
+																			[album valueForKey: @"predicateString"], @"predicateString", 
+																			[album valueForKey: @"smartAlbum"], @"smartAlbum",
+																			0L ]];
+		}
+		
+		NSSavePanel *sPanel	= [NSSavePanel savePanel];
+		
+		[sPanel setRequiredFileType:@"albums"];
+		
+		if ([sPanel runModalForDirectory: 0L file:NSLocalizedString(@"DatabaseAlbums.albums", nil)] == NSFileHandlingPanelOKButton)
+		{
+			[albums writeToFile: [sPanel filename] atomically: YES];
+		}
+	}
+	else NSRunInformationalAlertPanel(NSLocalizedString(@"Save Albums", 0L), NSLocalizedString(@"There are no albums to save.", 0L), NSLocalizedString(@"OK",nil), nil, nil);
+	
+	[self.managedObjectContext unlock];
 }
 
-- (void) replaceAlbums:(id) sender
+- (void) addAlbumsFile: (NSString*) file
 {
+	NSArray *albums = [NSArray arrayWithContentsOfFile: file];
+		
+		[self.managedObjectContext lock];
 	
+		NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+		[dbRequest setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"Album"]];
+		[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
+		NSError *error = nil;
+		NSMutableArray *albumArray = [NSMutableArray arrayWithArray: [self.managedObjectContext executeFetchRequest: dbRequest error: &error]];
+		
+		for( NSDictionary *dict in albums)
+		{
+			if( [[albumArray valueForKey: @"name"] containsString: [dict valueForKey: @"name"]] == NO)
+			{
+				NSManagedObject	*a = [NSEntityDescription insertNewObjectForEntityForName:@"Album" inManagedObjectContext: self.managedObjectContext];
+				
+				[a setValue: [dict valueForKey: @"name"] forKey:@"name"];
+				
+				if( [dict valueForKey: @"smartAlbum"])
+					[a setValue: [dict valueForKey: @"smartAlbum"] forKey:@"smartAlbum"];
+				else
+					[a setValue: [NSNumber numberWithBool: NO]
+ forKey:@"smartAlbum"];
+					
+				[a setValue: [dict valueForKey: @"predicateString"] forKey:@"predicateString"];
+			}
+		}
+		
+		needDBRefresh = YES;
+		[albumTable reloadData];
+		
+		[self.managedObjectContext unlock];
+		
+		[self outlineViewRefresh];
 }
 
 - (void) addAlbums:(id) sender
 {
+	NSOpenPanel		*oPanel		= [NSOpenPanel openPanel];
 	
+	if ([oPanel runModalForDirectory: 0L file:nil types:[NSArray arrayWithObject:@"albums"]] == NSFileHandlingPanelOKButton)
+	{
+		[self addAlbumsFile: [oPanel filename]];
+	}
 }
 
 - (void)createContextualMenu
@@ -7975,14 +8051,13 @@ static BOOL withReset = NO;
 	NSMenu *albumContextual	= [[[NSMenu alloc] initWithTitle:NSLocalizedString(@"Albums", nil)] autorelease];
 	
 	item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Save Albums", nil)  action:@selector( saveAlbums:) keyEquivalent:@""] autorelease];
+	[item setTarget:self];
 	[albumContextual addItem:item];
 	
 	[albumContextual addItem: [NSMenuItem separatorItem]];
 	
-	item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Replace Albums", nil)  action:@selector( replaceAlbums:) keyEquivalent:@""] autorelease];
-	[albumContextual addItem:item];
-	
 	item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Add Albums", nil)  action:@selector( addAlbums:) keyEquivalent:@""] autorelease];
+	[item setTarget:self];
 	[albumContextual addItem:item];
 	
 	[albumTable setMenu: albumContextual];
@@ -8135,7 +8210,8 @@ static BOOL withReset = NO;
 #pragma mark-
 #pragma mark Albums functions
 
-- (IBAction)addSmartAlbum: (id)sender{
+- (IBAction)addSmartAlbum: (id)sender
+{
 	SmartWindowController *smartWindowController = [[SmartWindowController alloc] init];
 	NSWindow *sheet = [smartWindowController window];
 	
@@ -8151,7 +8227,8 @@ static BOOL withReset = NO;
     [NSApp endSheet: sheet];
     [sheet orderOut: self];
 	NSMutableArray *criteria = [smartWindowController criteria];
-	if ([criteria count] > 0 ) {
+	if ([criteria count] > 0 )
+	{
 		NSError				*error = 0L;
 		NSString			*name;
 		long				i = 2;
@@ -8179,7 +8256,8 @@ static BOOL withReset = NO;
 		NSString *format = [NSString string];
 		
 		BOOL first = YES;
-		for( NSString *search in criteria )	{
+		for( NSString *search in criteria )
+		{
 			if ( first ) first = NO;
 			else format = [format stringByAppendingFormat: NSLocalizedString(@" AND ", nil)];
 			
@@ -8525,12 +8603,14 @@ static BOOL needToRezoom;
 	{
 		if( displayEmptyDatabase) return 0L;
 		
-		if([[aTableColumn identifier] isEqualToString:@"no"] ) {
+		if([[aTableColumn identifier] isEqualToString:@"no"] )
+		{
 			int albumNo = [self.albumArray count];
 			
 			if( albumNoOfStudiesCache == nil || [albumNoOfStudiesCache count] != albumNo || [[albumNoOfStudiesCache objectAtIndex: rowIndex] isEqualToString:@""] == YES)
 			{
-				if( albumNoOfStudiesCache == nil || [albumNoOfStudiesCache count] != albumNo ) {
+				if( albumNoOfStudiesCache == nil || [albumNoOfStudiesCache count] != albumNo )
+				{
 					[albumNoOfStudiesCache release];
 					
 					albumNoOfStudiesCache = [[NSMutableArray alloc] initWithCapacity: albumNo];
@@ -8538,7 +8618,8 @@ static BOOL needToRezoom;
 					for( int i = 0; i < albumNo; i++) [albumNoOfStudiesCache addObject:@""];
 				}
 				
-				if( rowIndex == 0 )	{
+				if( rowIndex == 0 )
+				{
 					// Find all studies
 					NSFetchRequest	*dbRequest = [[[NSFetchRequest alloc] init] autorelease];
 					[dbRequest setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"Study"]];
@@ -8556,16 +8637,19 @@ static BOOL needToRezoom;
 					if( [albumNoOfStudiesCache count] > rowIndex)
 						[albumNoOfStudiesCache replaceObjectAtIndex:rowIndex withObject: [NSString stringWithFormat:@"%@", [numFmt stringForObjectValue:[NSNumber numberWithInt:[studiesArray count]]]]];
 				}
-				else {
+				else
+				{
 					NSManagedObject	*object = [self.albumArray  objectAtIndex: rowIndex];
 					
-					if( [[object valueForKey:@"smartAlbum"] boolValue] == YES )	{
+					if( [[object valueForKey:@"smartAlbum"] boolValue] == YES )
+					{
 						NSManagedObjectContext *context = self.managedObjectContext;
 						
 						[context retain];
 						[context lock];
 						
-						@try {
+						@try
+						{
 							// Find all studies
 							NSError			*error = nil;
 							NSFetchRequest	*dbRequest = [[[NSFetchRequest alloc] init] autorelease];
@@ -8579,7 +8663,8 @@ static BOOL needToRezoom;
 								[albumNoOfStudiesCache replaceObjectAtIndex:rowIndex withObject: [NSString stringWithFormat:@"%@", [numFmt stringForObjectValue:[NSNumber numberWithInt:[studiesArray count]]]]];
 						}
 						
-						@catch( NSException *ne) {
+						@catch( NSException *ne)
+						{
 							NSLog(@"TableView exception: %@", ne.description );
 							if( [albumNoOfStudiesCache count] > rowIndex)
 								[albumNoOfStudiesCache replaceObjectAtIndex:rowIndex withObject:@"err"];
@@ -8598,13 +8683,16 @@ static BOOL needToRezoom;
 			
 			return [albumNoOfStudiesCache objectAtIndex: rowIndex];
 		}
-		else {
+		else
+		{
 			NSManagedObject	*object = [self.albumArray  objectAtIndex: rowIndex];
 			return [object valueForKey:@"name"];
 		}
 	}
-	else if ([aTableView isEqual:bonjourServicesList] )	{
-		if([[aTableColumn identifier] isEqualToString:@"Source"] ) {
+	else if ([aTableView isEqual:bonjourServicesList] )
+	{
+		if([[aTableColumn identifier] isEqualToString:@"Source"] )
+		{
 			if (bonjourBrowser!=nil)
 			{
 				NSDictionary *dict = nil;
@@ -8614,7 +8702,8 @@ static BOOL needToRezoom;
 				else if( [[dict valueForKey:@"type"] isEqualToString:@"bonjour"]) return [[dict valueForKey:@"service"] name];
 				else return [dict valueForKey:@"Description"];
 			}
-			else {
+			else
+			{
 				return NSLocalizedString(@"Local Default Database", nil);
 			}
 		}

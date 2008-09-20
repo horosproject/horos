@@ -358,7 +358,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (void) processOpenViewerDICOMFromArray:(NSArray*) toOpenArray movie:(BOOL) movieViewer viewer: (ViewerController*) viewer;
 - (void) setDatabaseValue:(id) object item:(id) item forKey:(NSString*) key;
 - (void) setupToolbar;
-
+- (void) addAlbumsFile: (NSString*) file;
 - (NSString*) getDatabaseFolderFor: (NSString*) path;
 - (NSString*) getDatabaseIndexFileFor: (NSString*) path;
 - (IBAction) copyToDBFolder: (id) sender;
