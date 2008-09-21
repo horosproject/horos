@@ -126,10 +126,8 @@ static const char *GetPrivateIP()
 			NetworkMoveDataHandler *moveDataHandler = [NetworkMoveDataHandler moveDataHandler];
 			[dictionary setObject:moveDataHandler  forKey:@"receivedDataHandler"];
 			
-			for( int i = 0; i < [array count] ; i++)
+			for( DCMTKQueryNode	*object in array)
 			{
-				DCMTKQueryNode	*object = [array objectAtIndex: i];
-
 				[dictionary setObject: [object valueForKey:@"calledAET"] forKey:@"calledAET"];
 				[dictionary setObject: [object valueForKey:@"hostname"] forKey:@"hostname"];
 				[dictionary setObject: [object valueForKey:@"port"] forKey:@"port"];
