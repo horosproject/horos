@@ -1731,7 +1731,7 @@ OFCondition newDicomElement(DcmElement *&newElement,
        */
       if (newTag.getEVR() != EVR_UNKNOWN)
       {
-		if( newTag.getEVR() != EVR_SQ)	// ANR
+		if( newTag.getEVR() != EVR_SQ)	// ANR - 2008
 		{
 			tag.setVR(newTag.getVR());
 			evr = tag.getEVR();
