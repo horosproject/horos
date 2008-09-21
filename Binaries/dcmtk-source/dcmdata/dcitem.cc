@@ -1737,6 +1737,10 @@ OFCondition newDicomElement(DcmElement *&newElement,
 			evr = tag.getEVR();
 			readAsUN = OFTrue;
 		}
+		else
+		{
+			printf( "******************* ******************* ******************* if( newTag.getEVR() != EVR_SQ)	// ANR - 2008 ******************* \r");
+		}
 	  }
     }
 
