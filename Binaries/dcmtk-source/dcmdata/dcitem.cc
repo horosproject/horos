@@ -1731,10 +1731,13 @@ OFCondition newDicomElement(DcmElement *&newElement,
        */
       if (newTag.getEVR() != EVR_UNKNOWN)
       {
-        tag.setVR(newTag.getVR());
-        evr = tag.getEVR();
-        readAsUN = OFTrue;
-      }
+		if( newTag.getEVR() != EVR_SQ)	// ANR
+		{
+			tag.setVR(newTag.getVR());
+			evr = tag.getEVR();
+			readAsUN = OFTrue;
+		}
+	  }
     }
 
     /* depending on the VR of the tag which was passed, create the new object */
