@@ -255,12 +255,35 @@ static const char *GetPrivateIP()
 		
 		if( savedPresets == 0L) savedPresets = [NSDictionary dictionary];
 		
-		if( [savedPresets objectForKey: [[presetsPopup selectedItem] title]])
+		NSMutableDictionary *presets = [NSMutableDictionary dictionary];
+		
+		NSString *psName = [presetName stringValue];
+		
+		if( NSRunInformationalAlertPanel(	NSLocalizedString(@"DICOM Nodes", 0L),
+												 NSLocalizedString(@"Do you want to include the DICOM Nodes in the Preset filter?", 0L),
+												 NSLocalizedString(@"Yes",nil),
+												 NSLocalizedString(@"No",nil),
+												 0L) == NSAlertDefaultReturn)
+		{
+			NSMutableArray *srcArray = [NSMutableArray array];
+			for( id src in sourcesArray)
+			{
+				if( [[src valueForKey: @"activated"] boolValue] == YES)
+					[srcArray addObject: [src valueForKey: @"AddressAndPort"]];
+			}
+			
+			if( [srcArray count] == 0 && [sourcesTable selectedRow] >= 0)
+				[srcArray addObject: [[sourcesArray objectAtIndex: [sourcesTable selectedRow]] valueForKey: @"AddressAndPort"]];
+			
+			[presets setValue: srcArray forKey: @"DICOMNodes"];
+			
+			psName = [psName stringByAppendingString: NSLocalizedString( @" & DICOM Nodes", 0L)];
+		}
+		
+		if( [savedPresets objectForKey: psName])
 		{
 			if (NSRunCriticalAlertPanel( NSLocalizedString(@"Add Preset", nil),  NSLocalizedString(@"A Preset with the same name already exists. Should I replace it with the current one?", nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), nil) != NSAlertDefaultReturn) return;
 		}
-		
-		NSMutableDictionary *presets = [NSMutableDictionary dictionary];
 		
 		[presets setValue: [searchFieldName stringValue] forKey: @"searchFieldName"];
 		[presets setValue: [searchFieldID stringValue] forKey: @"searchFieldID"];
@@ -289,7 +312,7 @@ static const char *GetPrivateIP()
 		[presets setValue: [NSNumber numberWithDouble: [[searchBirth dateValue] timeIntervalSinceReferenceDate]] forKey: @"searchBirth"];
 		
 		NSMutableDictionary *m = [NSMutableDictionary dictionaryWithDictionary: savedPresets];
-		[m setValue: presets forKey: [presetName stringValue]];
+		[m setValue: presets forKey: psName];
 		
 		[[NSUserDefaults standardUserDefaults] setObject: m forKey:@"QRPresets"];
 		
@@ -326,9 +349,56 @@ static const char *GetPrivateIP()
 	{
 		NSDictionary *savedPresets = [[NSUserDefaults standardUserDefaults] dictionaryForKey:@"QRPresets"];
 		
-		if( [savedPresets objectForKey: [[presetsPopup selectedItem] title]])
+		if( [savedPresets objectForKey: [sender title]])
 		{
 			NSDictionary *presets = [savedPresets objectForKey: [sender title]];
+			
+			if( [presets valueForKey: @"DICOMNodes"])
+			{
+				NSArray *r = [presets valueForKey: @"DICOMNodes"];
+				
+				if( [r count])
+				{
+					[self willChangeValueForKey:@"sourcesArray"];
+					
+					for( id src in sourcesArray)
+					{
+						[src setValue: [NSNumber numberWithBool: NO] forKey: @"activated"];
+					}
+					
+					if( [r count] == 1)
+					{
+						for( id src in sourcesArray)
+						{
+							if( [[src valueForKey: @"AddressAndPort"] isEqualToString: [r lastObject]])
+								[sourcesTable selectRow: [sourcesArray indexOfObject: src] byExtendingSelection: NO];
+						}
+					}
+					else
+					{
+						BOOL first = YES;
+						
+						for( id v in r)
+						{
+							for( id src in sourcesArray)
+							{
+								if( [[src valueForKey: @"AddressAndPort"] isEqualToString: v])
+								{
+									[src setValue: [NSNumber numberWithBool: YES] forKey: @"activated"];
+									
+									if( first)
+									{
+										first = NO;
+										[sourcesTable selectRow: [sourcesArray indexOfObject: src] byExtendingSelection: NO];
+									}
+								}
+							}
+						}
+					}
+					
+					[self didChangeValueForKey:@"sourcesArray"];
+				}
+			}
 			
 			if( [presets valueForKey: @"searchFieldName"])
 				[searchFieldName setStringValue: [presets valueForKey: @"searchFieldName"]];
@@ -971,7 +1041,7 @@ static const char *GetPrivateIP()
 	NSString			*port;
 	NSNetService		*netService = nil;
 	id					aServer;
-	int					i, selectedServer, selectedRow;
+	int					i, selectedServer;
 	BOOL				atLeastOneSource = NO, noChecked = YES, error = NO;
 	
 	[autoQueryLock lock];
@@ -995,8 +1065,6 @@ static const char *GetPrivateIP()
 	{
 		selectedServer = [sourcesTable selectedRow];
 	}
-	
-	selectedRow = [sourcesTable selectedRow];
 	
 	atLeastOneSource = NO;
 	BOOL firstResults = YES;

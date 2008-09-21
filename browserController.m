@@ -14051,7 +14051,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 {
 	if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask)	// Query selected patient
 		[self querySelectedStudy: self];
-	else {
+	else
+	{
 		[self.window makeKeyAndOrderFront:sender];
 		
 		if(![QueryController currentQueryController]) [[QueryController alloc] init];
