@@ -982,8 +982,8 @@ public:
 					
 			//	[exportDCM setPixelSpacing: 1 :1];
 				
-				err = [exportDCM writeDCMFile: 0L];
-				if( err)  NSRunCriticalAlertPanel( NSLocalizedString(@"Error", nil),  NSLocalizedString( @"Error during the creation of the DICOM File!", 0L), NSLocalizedString(@"OK", nil), nil, nil);
+				NSString *f = [exportDCM writeDCMFile: 0L];
+				if( f == 0L) NSRunCriticalAlertPanel( NSLocalizedString(@"Error", nil),  NSLocalizedString( @"Error during the creation of the DICOM File!", 0L), NSLocalizedString(@"OK", nil), nil, nil);
 				
 				free( dataPtr);
 			}
@@ -1034,7 +1034,7 @@ public:
 					if( aCamera->GetParallelProjection())
 						[dcmSequence setPixelSpacing: [self getResolution] :[self getResolution]];
 					
-					err = [dcmSequence writeDCMFile: 0L];
+					NSString *f = [dcmSequence writeDCMFile: 0L];
 					
 					free( dataPtr);
 				}
@@ -1108,7 +1108,7 @@ public:
 					if( aCamera->GetParallelProjection())
 						[dcmSequence setPixelSpacing: [self getResolution] :[self getResolution]];
 					
-					err = [dcmSequence writeDCMFile: 0L];
+					NSString *f = [dcmSequence writeDCMFile: 0L];
 					
 					free( dataPtr);
 				}

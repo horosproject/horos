@@ -433,7 +433,7 @@
 						[dcmSequence setPixelSpacing: resolution :resolution];
 				}
 				
-				err = [dcmSequence writeDCMFile: 0L];
+				NSString *f = [dcmSequence writeDCMFile: 0L];
 				
 				free( dataPtr);
 				

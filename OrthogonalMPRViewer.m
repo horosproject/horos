@@ -1318,8 +1318,8 @@ NSString * documentsDirectory();
 		[exportDCM setPosition: imOrigin];
 		[exportDCM setPixelData: data samplePerPixel:spp bitsPerPixel:bpp width: width height: height];
 		
-		err = [exportDCM writeDCMFile: 0L];
-		if( err)  NSRunCriticalAlertPanel( NSLocalizedString(@"Error", nil),  NSLocalizedString(@"Error during the creation of the DICOM File!", nil), NSLocalizedString(@"OK", nil), nil, nil);
+		NSString *f = [exportDCM writeDCMFile: 0L];
+		if( f == 0L) NSRunCriticalAlertPanel( NSLocalizedString(@"Error", nil),  NSLocalizedString(@"Error during the creation of the DICOM File!", nil), NSLocalizedString(@"OK", nil), nil, nil);
 		
 		free( data);
 	}

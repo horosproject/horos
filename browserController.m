@@ -15254,7 +15254,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	NSArray*	allPlugins = [[PluginManager pluginsDict] allKeys];
 	
-	for( NSString *plugin in allPlugins ) {
+	for( NSString *plugin in allPlugins )
+	{
 		NSBundle		*bundle = [[PluginManager pluginsDict] objectForKey: plugin];
 		NSDictionary	*info = [bundle infoDictionary];
 		
@@ -15270,7 +15271,8 @@ static volatile int numberOfThreadsForJPEG = 0;
     return array;
 }
 
-- (void)toolbarWillAddItem:(NSNotification *) notif {
+- (void)toolbarWillAddItem:(NSNotification *) notif
+{
     // Optional delegate method:  Before an new item is added to the toolbar, this notification is posted.
     // This is the best place to notice a new item is going into the toolbar.  For instance, if you need to 
     // cache a reference to the toolbar item or need to set up some initial state, this is the best place 
@@ -15384,15 +15386,32 @@ static volatile int numberOfThreadsForJPEG = 0;
 				
 				[d setObject: im forKey:@"im"];
 				
-				[d setObject: [im valueForKeyPath: @"series.windowWidth"] forKey:@"windowWidth"];
-				[d setObject: [im valueForKeyPath: @"series.windowLevel"] forKey:@"windowLevel"];
-				[d setObject: [im valueForKeyPath: @"series.rotationAngle"] forKey:@"rotationAngle"];
-				[d setObject: [im valueForKeyPath: @"series.yFlipped"] forKey:@"yFlipped"];
-				[d setObject: [im valueForKeyPath: @"series.xFlipped"] forKey:@"xFlipped"];
-				[d setObject: [im valueForKeyPath: @"series.xOffset"] forKey:@"xOffset"];
-				[d setObject: [im valueForKeyPath: @"series.yOffset"] forKey:@"yOffset"];
-				[d setObject: [im valueForKeyPath: @"series.displayStyle"] forKey:@"displayStyle"];
-				[d setObject: [im valueForKeyPath: @"series.scale"] forKey:@"scale"];
+				if( [im valueForKeyPath: @"series.windowWidth"])
+					[d setObject: [im valueForKeyPath: @"series.windowWidth"] forKey:@"windowWidth"];
+				
+				if( [im valueForKeyPath: @"series.windowLevel"])
+					[d setObject: [im valueForKeyPath: @"series.windowLevel"] forKey:@"windowLevel"];
+				
+				if( [im valueForKeyPath: @"series.rotationAngle"])
+					[d setObject: [im valueForKeyPath: @"series.rotationAngle"] forKey:@"rotationAngle"];
+				
+				if( [im valueForKeyPath: @"series.yFlipped"])
+					[d setObject: [im valueForKeyPath: @"series.yFlipped"] forKey:@"yFlipped"];
+				
+				if( [im valueForKeyPath: @"series.xFlipped"])
+					[d setObject: [im valueForKeyPath: @"series.xFlipped"] forKey:@"xFlipped"];
+				
+				if( [im valueForKeyPath: @"series.xOffset"])
+					[d setObject: [im valueForKeyPath: @"series.xOffset"] forKey:@"xOffset"];
+				
+				if( [im valueForKeyPath: @"series.yOffset"])
+					[d setObject: [im valueForKeyPath: @"series.yOffset"] forKey:@"yOffset"];
+				
+				if( [im valueForKeyPath: @"series.displayStyle"])
+					[d setObject: [im valueForKeyPath: @"series.displayStyle"] forKey:@"displayStyle"];
+				
+				if( [im valueForKeyPath: @"series.scale"])
+					[d setObject: [im valueForKeyPath: @"series.scale"] forKey:@"scale"];
 				
 				[copySettings addObject: d];
 			}
@@ -15408,18 +15427,34 @@ static volatile int numberOfThreadsForJPEG = 0;
 			{
 				NSManagedObject *im = [d objectForKey: @"im"];
 				
-				[im setValue: [d valueForKey: @"windowWidth"] forKey:@"windowWidth"];
-				[im setValue: [d valueForKey: @"windowLevel"] forKey:@"windowLevel"];
-				[im setValue: [d valueForKey: @"rotationAngle"] forKey:@"rotationAngle"];
-				[im setValue: [d valueForKey: @"yFlipped"] forKey:@"yFlipped"];
-				[im setValue: [d valueForKey: @"xFlipped"] forKey:@"xFlipped"];
-				[im setValue: [d valueForKey: @"xOffset"] forKey:@"xOffset"];
-				[im setValue: [d valueForKey: @"yOffset"] forKey:@"yOffset"];
+				if( [im valueForKeyPath: @"windowWidth"])
+					[im setValue: [d valueForKey: @"windowWidth"] forKey:@"windowWidth"];
+				
+				if( [im valueForKeyPath: @"windowLevel"])
+					[im setValue: [d valueForKey: @"windowLevel"] forKey:@"windowLevel"];
+				
+				if( [im valueForKeyPath: @"rotationAngle"])
+					[im setValue: [d valueForKey: @"rotationAngle"] forKey:@"rotationAngle"];
+				
+				if( [im valueForKeyPath: @"yFlipped"])
+					[im setValue: [d valueForKey: @"yFlipped"] forKey:@"yFlipped"];
+				
+				if( [im valueForKeyPath: @"xFlipped"])
+					[im setValue: [d valueForKey: @"xFlipped"] forKey:@"xFlipped"];
+				
+				if( [im valueForKeyPath: @"xOffset"])
+					[im setValue: [d valueForKey: @"xOffset"] forKey:@"xOffset"];
+				
+				if( [im valueForKeyPath: @"yOffset"])
+					[im setValue: [d valueForKey: @"yOffset"] forKey:@"yOffset"];
 				
 				if( [[d valueForKeyPath: @"displayStyle"] intValue] == 2)
 					[im setValue: [NSNumber numberWithFloat: [[im valueForKeyPath: @"series.scale"] floatValue] * [[v imageView] frame].size.width] forKey:@"scale"];
 				else
-					[im setValue: [d valueForKey: @"scale"] forKey:@"scale"];
+				{
+					if( [d valueForKey: @"scale"])
+						[im setValue: [d valueForKey: @"scale"] forKey:@"scale"];
+				}
 			}
 		}
 			

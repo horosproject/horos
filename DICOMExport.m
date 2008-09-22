@@ -218,7 +218,7 @@ extern BrowserController	*browserWindow;
 	slicePosition = p;
 }
 
-- (long) writeDCMFile: (NSString*) dstPath
+- (NSString*) writeDCMFile: (NSString*) dstPath
 {
 	if( dstPath == 0L)
 	{
@@ -424,7 +424,7 @@ extern BrowserController	*browserWindow;
 				
 				default:
 					NSLog(@"Unsupported bpp: %d", bpp);
-					return -1;
+					return 0L;
 				break;
 			}
 			
@@ -545,20 +545,20 @@ extern BrowserController	*browserWindow;
 			[dcmDst setAttribute:attr];
 
 			[dcmDst writeToFile:dstPath withTransferSyntax:[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax] quality:DCMLosslessQuality atomically:YES];
-//			NSLog( dstPath);
+			
 			if( squaredata)
 				free( squaredata);
 			squaredata = 0L;
 			
-			return 0;
+			return dstPath;
 		}
 		@catch (NSException *e)
 		{
 			NSLog( @"WriteDCMFile failed : %@", e);
-			return -1;
+			return 0L;
 		}
 	}
-	else return -1;
+	else return 0L;
 }
 
 @end

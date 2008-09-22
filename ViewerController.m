@@ -14397,17 +14397,17 @@ int i,j,l;
 	[NSApp beginSheet: quicktimeWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
 }
 
-- (void) exportDICOMFileInt:(int) screenCapture
+- (NSString*) exportDICOMFileInt:(int) screenCapture
 {
-	[self exportDICOMFileInt:screenCapture withName:[dcmSeriesName stringValue]];
+	return [self exportDICOMFileInt:screenCapture withName:[dcmSeriesName stringValue]];
 }
 
-- (void) exportDICOMFileInt:(int)screenCapture withName:(NSString*)name;
+- (NSString*) exportDICOMFileInt:(int)screenCapture withName:(NSString*)name;
 {
-	[self exportDICOMFileInt:(int)screenCapture withName:(NSString*)name allViewers: NO];
+	return [self exportDICOMFileInt:(int)screenCapture withName:(NSString*)name allViewers: NO];
 }
 
-- (void) exportDICOMFileInt:(int)screenCapture withName:(NSString*)name allViewers: (BOOL) allViewers
+- (NSString*) exportDICOMFileInt:(int)screenCapture withName:(NSString*)name allViewers: (BOOL) allViewers
 {
 	DCMPix *curPix = [imageView curDCM];
 	NSArray *viewers = [ViewerController getDisplayed2DViewers];
@@ -14606,6 +14606,8 @@ int i,j,l;
 	}
 	else data = [imageView getRawPixelsWidth:&width height:&height spp:&spp bpp:&bpp screenCapture:screenCapture force8bits:force8bits removeGraphical:YES squarePixels:YES allTiles:[[NSUserDefaults standardUserDefaults] boolForKey:@"includeAllTiledViews"] allowSmartCropping:YES origin: imOrigin spacing: imSpacing];
 	
+	NSString *f = 0L;
+	
 	if( data)
 	{
 		if( exportDCM == 0L) exportDCM = [[DICOMExport alloc] init];
@@ -14636,8 +14638,8 @@ int i,j,l;
 				
 		[exportDCM setPixelData: data samplePerPixel:spp bitsPerPixel:bpp width: width height: height];
 		
-		err = [exportDCM writeDCMFile: 0L];
-		if( err)  NSRunCriticalAlertPanel( NSLocalizedString(@"Error", nil),  NSLocalizedString(@"Error during the creation of the DICOM File!", nil), NSLocalizedString(@"OK", nil), nil, nil);
+		f = [exportDCM writeDCMFile: 0L];
+		if( f == 0L) NSRunCriticalAlertPanel( NSLocalizedString(@"Error", nil),  NSLocalizedString(@"Error during the creation of the DICOM File!", nil), NSLocalizedString(@"OK", nil), nil, nil);
 		
 		free( data);
 	}
@@ -14646,6 +14648,8 @@ int i,j,l;
 	{
 		[DCMView setCLUTBARS: clutBarsCopy ANNOTATIONS: annotCopy];
 	}
+	
+	return f;
 }
 
 -(id) findPlayStopButton
@@ -14666,7 +14670,7 @@ int i,j,l;
 
 -(IBAction) endExportDICOMFileSettings:(id) sender
 {
-	long i, curImage;
+	int i, curImage;
 	
     [dcmExportWindow orderOut:sender];
     
@@ -14674,13 +14678,17 @@ int i,j,l;
     
     if( [sender tag])   //User clicks OK Button
     {
+		NSMutableArray *producedFiles = [NSMutableArray array];
+		
 		if( [[dcmSelection selectedCell] tag] == 0)
 		{
-			[self exportDICOMFileInt:[[dcmFormat selectedCell] tag] withName:[dcmSeriesName stringValue] allViewers: [dcmAllViewers state]];
+			NSString* s = [self exportDICOMFileInt:[[dcmFormat selectedCell] tag] withName:[dcmSeriesName stringValue] allViewers: [dcmAllViewers state]];
+			
+			if( s) [producedFiles addObject: s];
 		}
 		else
 		{
-			long from, to, interval;
+			int from, to, interval;
 			
 			from = [dcmFrom intValue]-1;
 			to = [dcmTo intValue];
@@ -14734,15 +14742,14 @@ int i,j,l;
 					[imageView sendSyncMessage: 0];
 					[self adjustSlider];
 					
-					[self exportDICOMFileInt:[[dcmFormat selectedCell] tag] withName:[dcmSeriesName stringValue] allViewers: [dcmAllViewers state]];
+					NSString* s = [self exportDICOMFileInt:[[dcmFormat selectedCell] tag] withName:[dcmSeriesName stringValue] allViewers: [dcmAllViewers state]];
+					if( s) [producedFiles addObject: s];
 				}
 				
 				[splash incrementBy: 1];
 				
 				if( [splash aborted])
-				{
 					i = to;
-				}
 				
 				[pool release];
 			}
@@ -14762,9 +14769,9 @@ int i,j,l;
 			[[[viewers objectAtIndex: i] imageView] setNeedsDisplay: YES];
 			
 		
-		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportSendToDICOMNode"])
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportSendToDICOMNode"] && [producedFiles count])
 		{
-			
+			[[BrowserController currentBrowser] selectServer: producedFiles];
 		}
 	}
 	

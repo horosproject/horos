@@ -232,8 +232,8 @@
 		[exportDCM setSeriesNumber:5500];
 		[exportDCM setPixelData: dataPtr samplePerPixel:spp bitsPerPixel:bpp width: width height: height];
 		
-		err = [exportDCM writeDCMFile: 0L];
-		if( err)  NSRunCriticalAlertPanel( NSLocalizedString(@"Error", 0L),  NSLocalizedString( @"Error during the creation of the DICOM File!", 0L), NSLocalizedString(@"OK", 0L), nil, nil);
+		NSString *f = [exportDCM writeDCMFile: 0L];
+		if( f == 0L) NSRunCriticalAlertPanel( NSLocalizedString(@"Error", 0L),  NSLocalizedString( @"Error during the creation of the DICOM File!", 0L), NSLocalizedString(@"OK", 0L), nil, nil);
 		
 		free( dataPtr);
 	}

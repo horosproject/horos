@@ -62,7 +62,7 @@
 - (long) setPixelNSImage:	(NSImage*) iimage;
 
 // Write the image data
-- (long) writeDCMFile: (NSString*) dstPath;
+- (NSString*) writeDCMFile: (NSString*) dstPath;
 
 - (NSString*) seriesDescription;
 - (void) setSeriesDescription: (NSString*) desc;
