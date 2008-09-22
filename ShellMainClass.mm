@@ -176,6 +176,8 @@ int executeProcess(int argc, char *argv[])
 					
 					Wait *wait = [[Wait alloc] initWithString:NSLocalizedString(@"Receiving files from iDisk...", nil)];
 					
+					[wait setCancel: YES];
+					
 					// Find the DICOM folder
 					if( ![mySession fileExistsAtPath: DICOMpath]) success = [mySession createDirectoryAtPath: DICOMpath attributes:nil];
 					
@@ -192,7 +194,7 @@ int executeProcess(int argc, char *argv[])
 						[wait showWindow: 0L];
 						[[wait progress] setMaxValue: [filesArray count]];
 						
-						for( long i = 0; i < [filesArray count]; i++ )
+						for( long i = 0; i < [filesArray count] && [wait aborted] == NO; i++ )
 						{
 							dstPath = [OUTpath stringByAppendingPathComponent: [NSString stringWithFormat:@"%d", i]];
 							
@@ -244,11 +246,13 @@ int executeProcess(int argc, char *argv[])
 					if( ![mySession fileExistsAtPath: DICOMpath]) [mySession createDirectoryAtPath: DICOMpath attributes:nil];
 					
 					Wait *wait = [[Wait alloc] initWithString:NSLocalizedString(@"Sending files to iDisk...", nil)];
-						
+					
+					[wait setCancel: YES];
+					
 					[wait showWindow: 0L];
 					[[wait progress] setMaxValue: [files2Copy count]];
 					
-					for( long x = 0 ; x < [files2Copy count]; x++ )
+					for( long x = 0 ; x < [files2Copy count] && [wait aborted] == NO; x++ )
 					{
 						NSString			*dstPath, *srcPath = [files2Copy objectAtIndex:x];
 						

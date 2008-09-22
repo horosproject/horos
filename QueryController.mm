@@ -257,11 +257,7 @@ static const char *GetPrivateIP()
 		
 		NSString *psName = [presetName stringValue];
 		
-		if( NSRunInformationalAlertPanel(	NSLocalizedString(@"DICOM Nodes", 0L),
-												 NSLocalizedString(@"Do you want to include the DICOM Nodes in the Preset filter?", 0L),
-												 NSLocalizedString(@"Yes",nil),
-												 NSLocalizedString(@"No",nil),
-												 0L) == NSAlertDefaultReturn)
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"includeDICOMNodes"])
 		{
 			NSMutableArray *srcArray = [NSMutableArray array];
 			for( id src in sourcesArray)
@@ -369,7 +365,10 @@ static const char *GetPrivateIP()
 						for( id src in sourcesArray)
 						{
 							if( [[src valueForKey: @"AddressAndPort"] isEqualToString: [r lastObject]])
+							{
 								[sourcesTable selectRow: [sourcesArray indexOfObject: src] byExtendingSelection: NO];
+								[sourcesTable scrollRowToVisible: [sourcesArray indexOfObject: src]];
+							}
 						}
 					}
 					else
@@ -388,6 +387,7 @@ static const char *GetPrivateIP()
 									{
 										first = NO;
 										[sourcesTable selectRow: [sourcesArray indexOfObject: src] byExtendingSelection: NO];
+										[sourcesTable scrollRowToVisible: [sourcesArray indexOfObject: src]];
 									}
 								}
 							}

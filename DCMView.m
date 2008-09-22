@@ -8167,10 +8167,20 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		}
 		else
 		{
-			if( previousViewSize.width != 0 && previousViewSize.width != rect.size.width)
+			if( previousViewSize.width != 0 && previousViewSize.height != 0)
 			{
-				// Adapted scale to new viewSize!
-				float	yChanged = (rect.size.width ) / previousViewSize.width;
+				float	yChanged;
+				
+				yChanged = (rect.size.height / previousViewSize.height) * ( rect.size.width / previousViewSize.width);
+				
+				if( yChanged < 1)
+				{
+					yChanged = 1 / yChanged;
+					yChanged = 1.0 + (yChanged - 1.0) / 2.0;
+					yChanged = 1 / yChanged;
+				}
+				else
+					yChanged = 1.0 + (yChanged - 1.0) / 2.0;
 				
 				previousViewSize = rect.size;
 				

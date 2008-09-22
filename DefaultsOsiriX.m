@@ -851,7 +851,7 @@ static NSHost *currentHost = 0L;
 	[defaultValues setObject: @"1" forKey: @"Scroll Wheel Reversed"];
 	[defaultValues setObject: @"OsiriX" forKey: @"ALBUMNAME"];
 	[defaultValues setObject: @"1" forKey: @"DisplayCrossReferenceLines"];
-	[defaultValues setObject: @"1" forKey: @"AlwaysScaleToFit"];
+	[defaultValues setObject: @"0" forKey: @"AlwaysScaleToFit"];
 	[defaultValues setObject:@"0" forKey: @"VRDefaultViewSize"];
 	[defaultValues setObject:@"0" forKey: @"RunListenerOnlyIfActive"];
 	[defaultValues setObject:@"0" forKey: @"Ping"];
