@@ -14760,6 +14760,12 @@ int i,j,l;
 		
 		for( i = 0; i < [viewers count]; i++)
 			[[[viewers objectAtIndex: i] imageView] setNeedsDisplay: YES];
+			
+		
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportSendToDICOMNode"])
+		{
+			
+		}
 	}
 	
 	[self adjustSlider];
