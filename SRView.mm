@@ -31,6 +31,7 @@
 #include "vtkImageFlip.h"
 #import "QuicktimeExport.h"
 #import "AppController.h"
+#import "browserController.h"
 #include "vtkRIBExporter.h"
 #include "vtkIVExporter.h"
 #include "vtkOBJExporter.h"

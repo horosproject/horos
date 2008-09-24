@@ -461,6 +461,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (void) createContextualMenu;
 - (void) checkIncomingThread:(id) sender;
 - (void) checkIncoming:(id) sender;
+- (void) checkIncomingNow:(id) sender;
 - (NSArray*) openSubSeries: (NSArray*) toOpenArray;
 - (IBAction) checkMemory:(id) sender;
 - (IBAction) buildAllThumbnails:(id) sender;

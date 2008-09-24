@@ -12686,6 +12686,17 @@ static volatile int numberOfThreadsForJPEG = 0;
 	}
 }
 
+- (void)checkIncomingNow: (id)sender
+{
+	if( isCurrentDatabaseBonjour) return;
+	if( DatabaseIsEdited) return;
+	if( managedObjectContext == nil) return;
+	
+	[checkIncomingLock lock];
+	[self checkIncomingThread: self];
+	[checkIncomingLock unlock];
+}
+
 - (void)checkIncoming: (id)sender
 {
 	if( isCurrentDatabaseBonjour) return;
@@ -12694,7 +12705,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	if( [checkIncomingLock tryLock] )
 	{
-		[NSThread detachNewThreadSelector: @selector(checkIncomingThread:) toTarget:self withObject: self];
+		[NSThread detachNewThreadSelector: @selector( checkIncomingThread:) toTarget:self withObject: self];
 		[checkIncomingLock unlock];
 	}
 	else

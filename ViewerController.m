@@ -14773,7 +14773,7 @@ int i,j,l;
 		for( i = 0; i < [viewers count]; i++)
 			[[[viewers objectAtIndex: i] imageView] setNeedsDisplay: YES];
 		
-		[[BrowserController currentBrowser] checkIncoming: self];
+		[[BrowserController currentBrowser] checkIncomingNow: self];
 		
 		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportSendToDICOMNode"] && [producedFiles count])
 		{
