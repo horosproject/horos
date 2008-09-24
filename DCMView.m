@@ -4172,7 +4172,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
 					   [NSNumber numberWithInt:curImage], @"curImage", event, @"event", nil];
 
-	if ( pluginOverridesMouse ) {
+	if ( pluginOverridesMouse )
+	{
 		[nc postNotificationName: @"PLUGINrightMouseUp" object: self userInfo: userInfo];
 	}
 	else 
@@ -8171,16 +8172,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			{
 				float	yChanged;
 				
-				yChanged = (rect.size.height / previousViewSize.height) * ( rect.size.width / previousViewSize.width);
-				
-				if( yChanged < 1)
-				{
-					yChanged = 1 / yChanged;
-					yChanged = 1.0 + (yChanged - 1.0) / 2.0;
-					yChanged = 1 / yChanged;
-				}
-				else
-					yChanged = 1.0 + (yChanged - 1.0) / 2.0;
+				yChanged = sqrt( (rect.size.height / previousViewSize.height) * ( rect.size.width / previousViewSize.width));
 				
 				previousViewSize = rect.size;
 				
