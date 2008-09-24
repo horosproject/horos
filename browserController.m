@@ -3090,7 +3090,8 @@ static NSArray*	statesArray = nil;
 	return filesOutput;
 }
 
-- (IBAction) endReBuildDatabase:(id) sender {
+- (IBAction) endReBuildDatabase:(id) sender
+{
 	[NSApp endSheet: rebuildWindow];
 	[rebuildWindow orderOut: self];
 	
@@ -14023,7 +14024,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[self selectServer: objects];
 }
 
-- (IBAction)querySelectedStudy: (id)sender {
+- (IBAction)querySelectedStudy: (id)sender
+{
 	[self.window makeKeyAndOrderFront:sender];
 	
     if( [QueryController currentQueryController] == 0L) [[QueryController alloc] init];

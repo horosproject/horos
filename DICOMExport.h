@@ -73,4 +73,5 @@
 - (void) setOrientation: (float*) o;
 - (void) setPosition: (float*) p;
 - (void) setSlicePosition: (float) p;
+- (NSString*) SOPInstanceUID;
 @end

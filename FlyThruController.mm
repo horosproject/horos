@@ -19,7 +19,7 @@
 #import "DICOMExport.h"
 #import "Window3DController.h"
 #import "Wait.h"
-
+#import "BrowserController.h"
 #import "VRControllerVPRO.h"
 
 @implementation FlyThruController
@@ -447,6 +447,8 @@
 		[progress release];
 		
 		[dcmSequence release];
+		
+		[[BrowserController currentBrowser] checkIncoming: self];
 	}
 	
 	[FTAdapter endMovieGenerating];

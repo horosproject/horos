@@ -525,13 +525,10 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 			long xpx, ypx;
 			xpx = (long)startingPoint.x;
 			ypx = (long)startingPoint.y;
-			NSLog(@"xpx : %d, ypx: %d", xpx, ypx);
 			float mouseValue = [[[srcViewer imageView] curDCM] getPixelValueX:(long)startingPoint.x Y:(long)startingPoint.y];
 			float interval = [[parameters objectAtIndex:0] floatValue];
 			loV = mouseValue - interval/2.0;
 			upV = mouseValue + interval/2.0;
-			NSLog(@"startingPoint.x : %f, startingPoint.y: %f", startingPoint.x, startingPoint.y);
-			NSLog(@"mouseValue : %f, loV: %f, upV: %f", mouseValue, loV, upV);
 		}
 		else if (algorithmNumber==1)
 		{
@@ -717,11 +714,9 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 			{
 				int currentImageIndex = [[srcViewer imageView] curImage];
 				
-				for( int i = 0; i < [[srcViewer pixList] count]; i++)
+				for( NSArray *rois in [srcViewer roiList])
 				{
-					[srcViewer setImageIndex: i];
-					[[srcViewer imageView] selectAll: self];
-					[srcViewer mergeBrushROI: self];
+					[srcViewer mergeBrushROI: self ROIs: rois ROIList: rois];
 				}
 				
 				[[srcViewer imageView] setIndex: currentImageIndex];

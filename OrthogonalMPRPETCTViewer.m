@@ -14,8 +14,7 @@
 
 #import "OrthogonalMPRPETCTViewer.h"
 #import "OrthogonalMPRPETCTView.h"
-
-//#import "OrthogonalMIPPETViewer.h"
+#import "BrowserController.h"
 #import "Mailer.h"
 #import "DICOMExport.h"
 #import "wait.h"
@@ -2327,6 +2326,8 @@ NSString * documentsDirectory();
 			[splash close];
 			[splash release];
 		}
+		
+		[[BrowserController currentBrowser] checkIncoming: self];
 	}
 }
 

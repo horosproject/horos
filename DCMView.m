@@ -8172,7 +8172,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			{
 				float	yChanged;
 				
-				yChanged = sqrt( (rect.size.height / previousViewSize.height) * ( rect.size.width / previousViewSize.width));
+				yChanged = sqrt( (rect.size.height / previousViewSize.height) * (rect.size.width / previousViewSize.width));
 				
 				previousViewSize = rect.size;
 				

@@ -77,7 +77,7 @@ extern "C"
 #define D2R 0.01745329251994329576923690768    // degrees to radians
 #define R2D 57.2957795130823208767981548141    // radians to degrees
 
-#define BONEVALUE 250
+//#define BONEVALUE 250
 #define BONEOPACITY 1.1
 
 static			NSRecursiveLock			*drawLock = 0L;
@@ -932,8 +932,6 @@ public:
 	
 	if( dataPtr)
 	{
-		if( exportDCM == 0L) exportDCM = [[DICOMExport alloc] init];
-		
 		[exportDCM setSourceFile: [firstObject sourceFile]];
 		[exportDCM setSeriesDescription: [dcmSeriesName stringValue]];
 		[exportDCM setSeriesNumber:5500];
@@ -950,6 +948,8 @@ public:
 		
 		free( dataPtr);
 	}
+	
+	[[BrowserController currentBrowser] checkIncoming: self];
 }
 
 #define DATABASEPATH @"/DATABASE.noindex/"
@@ -1036,6 +1036,8 @@ public:
 			[progress release];
 			
 			[dcmSequence release];
+			
+			[[BrowserController currentBrowser] checkIncoming: self];
 		}
 		else // A 3D sequence
 		{
@@ -1124,6 +1126,8 @@ public:
 			[progress release];
 			
 			[dcmSequence release];
+			
+			[[BrowserController currentBrowser] checkIncoming: self];
 		}
 		
 		[self restoreViewSizeAfterMatrix3DExport];
@@ -3066,38 +3070,39 @@ public:
 			// clicked point (2D coordinate)
 			_mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView: 0L];
 			
-			long	pix[ 3], i;
-			float	pos[ 3], value;
-	
-			if( [self get3DPixelUnder2DPositionX:_mouseLocStart.x Y:_mouseLocStart.y pixel:pix position:pos value:&value maxOpacity: BONEOPACITY minValue: BONEVALUE])
+			long pix[ 3], i;
+			float pos[ 3], value;
+			float minValue = [[NSUserDefaults standardUserDefaults] floatForKey: @"VRGrowingRegionValue"];
+			
+			if( [self get3DPixelUnder2DPositionX:_mouseLocStart.x Y:_mouseLocStart.y pixel:pix position:pos value:&value maxOpacity: BONEOPACITY minValue: minValue])
 			{
 				WaitRendering	*waiting = [[WaitRendering alloc] init:NSLocalizedString(@"Applying Bone Removal...", nil)];
 				[waiting showWindow:self];
 				
 				NSArray	*roiList = 0L;
 				
-				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"useFastGrowingRegionWithVolume"])
-				{
-					NSLog( @"fastGrowingRegionWithVolume");
-					NSPoint seedPoint;
-					seedPoint.x = pix[ 0];
-					seedPoint.y = pix[ 1];
-					
-					long seed[ 3];
-					
-					seed[ 0] = (long) seedPoint.x;
-					seed[ 1] = (long) seedPoint.y;
-					seed[ 2] = pix[ 2];
-					
-					roiList =	[ITKSegmentation3D fastGrowingRegionWithVolume:		data
-																		width:		[[pixList objectAtIndex: 0] pwidth]
-																		height:		[[pixList objectAtIndex: 0] pheight]
-																		depth:		[pixList count]
-																		seedPoint:	seed
-																		from:		BONEVALUE
-																		pixList:	pixList];
-				}
-				else
+//				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"useFastGrowingRegionWithVolume"])
+//				{
+//					NSLog( @"fastGrowingRegionWithVolume");
+//					NSPoint seedPoint;
+//					seedPoint.x = pix[ 0];
+//					seedPoint.y = pix[ 1];
+//					
+//					long seed[ 3];
+//					
+//					seed[ 0] = (long) seedPoint.x;
+//					seed[ 1] = (long) seedPoint.y;
+//					seed[ 2] = pix[ 2];
+//					
+//					roiList =	[ITKSegmentation3D fastGrowingRegionWithVolume:		data
+//																		width:		[[pixList objectAtIndex: 0] pwidth]
+//																		height:		[[pixList objectAtIndex: 0] pheight]
+//																		depth:		[pixList count]
+//																		seedPoint:	seed
+//																		from:		BONEVALUE
+//																		pixList:	pixList];
+//				}
+//				else
 				{
 					NSLog( @"ITKSegmentation3D");
 					
@@ -3114,8 +3119,9 @@ public:
 														:-1						// slice = -1 means 3D region growing
 														:seedPoint				// startingPoint
 														:1						// algorithmNumber, 1 = threshold connected with low & up threshold
-														:[NSArray arrayWithObjects:	[NSNumber numberWithFloat:BONEVALUE],
-																					[NSNumber numberWithFloat:2000],nil]// algo parameters
+														:[NSArray arrayWithObjects:	[NSNumber numberWithFloat: [[NSUserDefaults standardUserDefaults] floatForKey: @"VRGrowingRegionValue"] -[[NSUserDefaults standardUserDefaults] floatForKey: @"VRGrowingRegionInterval"]/2.],
+																					[NSNumber numberWithFloat: [[NSUserDefaults standardUserDefaults] floatForKey: @"VRGrowingRegionValue"] +[[NSUserDefaults standardUserDefaults] floatForKey: @"VRGrowingRegionInterval"]/2.],
+																					nil]// algo parameters
 														:0						// setIn
 														:0.0					// inValue
 														:0						// setOut

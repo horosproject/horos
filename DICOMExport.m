@@ -546,6 +546,7 @@ extern BrowserController	*browserWindow;
 
 			[dcmDst writeToFile:dstPath withTransferSyntax:[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax] quality:DCMLosslessQuality atomically:YES];
 			
+			
 			if( squaredata)
 				free( squaredata);
 			squaredata = 0L;
@@ -559,6 +560,11 @@ extern BrowserController	*browserWindow;
 		}
 	}
 	else return 0L;
+}
+
+- (NSString*) SOPInstanceUID
+{
+	return [dcmDst attributeValueWithName: @"SOPInstanceUID"];
 }
 
 @end

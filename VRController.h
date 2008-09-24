@@ -61,7 +61,9 @@
 	IBOutlet NSPopUpButton  *enginePopup;
 		
 	IBOutlet NSWindow       *shadingEditWindow;
-
+	IBOutlet NSWindow       *growingRegionWindow;
+	BOOL					growingSet;
+	
 	IBOutlet NSButton		*shadingCheck;
 	IBOutlet NSTextField    *shadingValues;
 
@@ -234,7 +236,8 @@
 - (void)showCLUTOpacityPanel:(id)sender;
 - (void)loadAdvancedCLUTOpacity:(id)sender;
 - (void)delete16BitCLUT:(NSWindow*)sheet returnCode:(int)returnCode contextInfo:(void*)contextInfo;
-
+- (IBAction) editGrowingRegion:(id) sender;
+- (IBAction) endEditGrowingRegion:(id) sender;
 - (NSMutableDictionary*)getCurrent3DSettings;
 - (IBAction)save3DSettings:(id)sender;
 - (NSArray*)find3DSettingsGroups;

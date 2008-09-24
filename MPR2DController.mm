@@ -1280,8 +1280,6 @@ extern NSString * documentsDirectory();
 		
 		if( data)
 		{
-			if( exportDCM == 0L) exportDCM = [[DICOMExport alloc] init];
-			
 			[exportDCM setSourceFile: [[fileList objectAtIndex:0] valueForKey:@"completePath"]];
 			[exportDCM setSeriesDescription:@"MPR-2D"];
 			[exportDCM setSeriesNumber:5400];
@@ -1308,6 +1306,8 @@ extern NSString * documentsDirectory();
 			
 			free( data);
 		}
+		
+		[[BrowserController currentBrowser] checkIncoming: self];
 		
 		[[NSUserDefaults standardUserDefaults] setInteger: annotCopy forKey: @"ANNOTATIONS"];
 	}

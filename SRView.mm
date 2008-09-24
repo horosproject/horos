@@ -543,8 +543,6 @@ typedef struct _xyzArray
 			
 			if( dataPtr)
 			{
-				if( exportDCM == 0L) exportDCM = [[DICOMExport alloc] init];
-				
 				[exportDCM setSourceFile: [firstObject sourceFile]];
 				[exportDCM setSeriesDescription: [dcmSeriesName stringValue]];
 				[exportDCM setSeriesNumber:5500];
@@ -640,6 +638,8 @@ typedef struct _xyzArray
 			
 			[dcmSequence release];
 		}
+		
+		[[BrowserController currentBrowser] checkIncoming: self];
 		
 		[self restoreViewSizeAfterMatrix3DExport];
 	}

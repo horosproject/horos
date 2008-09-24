@@ -19,6 +19,7 @@
 #import "Mailer.h"
 #import "DICOMExport.h"
 #import "wait.h"
+#import "BrowserController.h"
 
 static NSString* 	PETCTToolbarIdentifier					= @"MPROrtho Viewer Toolbar Identifier";
 static NSString*	AdjustSplitViewToolbarItemIdentifier	= @"sameSizeSplitView";
@@ -1426,6 +1427,8 @@ NSString * documentsDirectory();
 			
 			[splash close];
 			[splash release];
+			
+			[[BrowserController currentBrowser] checkIncoming: self];
 		}
 	}
 }

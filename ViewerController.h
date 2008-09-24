@@ -547,6 +547,7 @@ enum
 - (void) roiLoadFromSeries: (NSString*) filename;
 - (void) offsetMatrixSetting: (int) twentyFiveCodes;
 - (IBAction) mergeBrushROI: (id) sender;
+- (IBAction) mergeBrushROI: (id) sender ROIs: (NSArray*) s ROIList: (NSArray*) roiList;
 - (IBAction) subSumSlider:(id) sender;
 - (IBAction) subSharpen:(id) sender;
 - (void) displayWarningIfGantryTitled;
@@ -993,8 +994,8 @@ enum
 - (IBAction)ungroupSelectedROIs:(id)sender;
 
 - (void) turnOffSyncSeriesBetweenStudies:(id) sender;
-- (NSString*) exportDICOMFileInt:(int)screenCapture withName:(NSString*)name;
-- (NSString*) exportDICOMFileInt:(int)screenCapture withName:(NSString*)name allViewers: (BOOL) allViewers;
+- (NSDictionary*) exportDICOMFileInt:(int)screenCapture withName:(NSString*)name;
+- (NSDictionary*) exportDICOMFileInt:(int)screenCapture withName:(NSString*)name allViewers: (BOOL) allViewers;
 
 #pragma mark-
 #pragma mark 12 Bit

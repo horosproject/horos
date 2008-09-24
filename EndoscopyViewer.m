@@ -21,6 +21,7 @@
 #import "EndoscopyVRView.h"
 #import "EndoscopyFlyThruController.h"
 #import "OrthogonalMPRController.h"
+#import "BrowserController.h"
 
 static NSString* 	EndoscopyToolbarIdentifier				= @"Endoscopy Viewer Toolbar Identifier";
 static NSString*	endo3DToolsToolbarItemIdentifier		= @"3DTools";
@@ -1065,6 +1066,8 @@ static NSString*	CenterlineToolbarItemIdentifier			= @"Centerline";
 			[(OrthogonalMPRViewer*) currentFocusedView exportDICOMFile:self];
 		}
 	}
+	
+	[[BrowserController currentBrowser] checkIncoming: self];
 }
 
 -(unsigned char*) getRawPixels:(long*) width :(long*) height :(long*) spp :(long*) bpp

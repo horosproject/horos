@@ -17,7 +17,7 @@
 #import "DCMView.h"
 #import "DICOMExport.h"
 #import "ROIVolumeController.h"
-
+#import "BrowserController.h"
 #include <OpenGL/OpenGL.h>
 #include <OpenGL/CGLCurrent.h>
 #include "math.h"
@@ -239,6 +239,8 @@
 	}
 
 	[exportDCM release];
+	
+	[[BrowserController currentBrowser] checkIncoming: self];
 }
 
 - (void) CloseViewerNotification: (NSNotification*) note

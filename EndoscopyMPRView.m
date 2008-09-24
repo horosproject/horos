@@ -18,6 +18,7 @@
 #import "DCMPix.h"
 #import "Mailer.h"
 #import "DICOMExport.h"
+#import "BrowserController.h"
 
 extern	NSString * documentsDirectory();
 extern  short		annotations;
@@ -408,7 +409,6 @@ extern  short		annotations;
 		
 		if( data)
 		{
-			//if( exportDCM == 0L) exportDCM = [[DICOMExport alloc] init];
 			DICOMExport *exportDCM = [[DICOMExport alloc] init];
 			 
 			[exportDCM setSourceFile: [[[controller originalDCMFilesList] objectAtIndex:[self indexForPix:[self curImage]]] valueForKey:@"completePath"]];
@@ -445,6 +445,8 @@ extern  short		annotations;
 	{
 		[(EndoscopyViewer*)[[self window] windowController] exportDICOMFile:sender];
 	}
+	
+	[[BrowserController currentBrowser] checkIncoming: self];
 }
 
 - (NSBitmapImageRep *)bitmapImageRepForCachingDisplayInRect:(NSRect)aRect

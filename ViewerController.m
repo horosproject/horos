@@ -12056,15 +12056,13 @@ int i,j,l;
 	return -1;
 }
 
-- (IBAction) mergeBrushROI: (id) sender
+- (IBAction) mergeBrushROI: (id) sender ROIs: (NSArray*) s ROIList: (NSMutableArray*) roiListContained
 {
-	NSMutableArray *selectedROIs = [self selectedROIs];
-	
-	if( [selectedROIs count])
+	if( [s count])
 	{
 		NSMutableArray *rois = [NSMutableArray array];
 		
-		for( ROI *r in selectedROIs)
+		for( ROI *r in s)
 		{
 			if( [r type] == tPlain) [rois addObject: r];
 		}
@@ -12083,10 +12081,15 @@ int i,j,l;
 			for( ROI *r in rois)
 			{
 				[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object: r userInfo: 0L];
-				[[roiList[ curMovieIndex] objectAtIndex: [imageView curImage]] removeObject: r];
+				[roiListContained removeObject: r];
 			}
 		}
 	}
+}
+
+- (IBAction) mergeBrushROI: (id) sender
+{
+	return [self mergeBrushROI: sender ROIs: [self selectedROIs] ROIList: [roiList[ curMovieIndex] objectAtIndex: [imageView curImage]] ];
 }
 
 - (IBAction) convertBrushPolygon: (id) sender
@@ -14397,21 +14400,22 @@ int i,j,l;
 	[NSApp beginSheet: quicktimeWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
 }
 
-- (NSString*) exportDICOMFileInt:(int) screenCapture
+- (NSDictionary*) exportDICOMFileInt:(int) screenCapture
 {
 	return [self exportDICOMFileInt:screenCapture withName:[dcmSeriesName stringValue]];
 }
 
-- (NSString*) exportDICOMFileInt:(int)screenCapture withName:(NSString*)name;
+- (NSDictionary*) exportDICOMFileInt:(int)screenCapture withName:(NSString*)name;
 {
 	return [self exportDICOMFileInt:(int)screenCapture withName:(NSString*)name allViewers: NO];
 }
 
-- (NSString*) exportDICOMFileInt:(int)screenCapture withName:(NSString*)name allViewers: (BOOL) allViewers
+- (NSDictionary*) exportDICOMFileInt:(int)screenCapture withName:(NSString*)name allViewers: (BOOL) allViewers
 {
 	DCMPix *curPix = [imageView curDCM];
 	NSArray *viewers = [ViewerController getDisplayed2DViewers];
 	long annotCopy,clutBarsCopy;
+	NSString *sopuid = 0L;
 	
 	long	width, height, spp, bpp, err, i, x;
 	float	cwl, cww;
@@ -14640,6 +14644,7 @@ int i,j,l;
 		
 		f = [exportDCM writeDCMFile: 0L];
 		if( f == 0L) NSRunCriticalAlertPanel( NSLocalizedString(@"Error", nil),  NSLocalizedString(@"Error during the creation of the DICOM File!", nil), NSLocalizedString(@"OK", nil), nil, nil);
+		else sopuid = [exportDCM SOPInstanceUID];
 		
 		free( data);
 	}
@@ -14649,7 +14654,7 @@ int i,j,l;
 		[DCMView setCLUTBARS: clutBarsCopy ANNOTATIONS: annotCopy];
 	}
 	
-	return f;
+	return [NSDictionary dictionaryWithObjectsAndKeys: f, @"file", sopuid, @"SOPInstanceUID", 0L];
 }
 
 -(id) findPlayStopButton
@@ -14682,7 +14687,7 @@ int i,j,l;
 		
 		if( [[dcmSelection selectedCell] tag] == 0)
 		{
-			NSString* s = [self exportDICOMFileInt:[[dcmFormat selectedCell] tag] withName:[dcmSeriesName stringValue] allViewers: [dcmAllViewers state]];
+			NSDictionary* s = [self exportDICOMFileInt:[[dcmFormat selectedCell] tag] withName:[dcmSeriesName stringValue] allViewers: [dcmAllViewers state]];
 			
 			if( s) [producedFiles addObject: s];
 		}
@@ -14742,7 +14747,7 @@ int i,j,l;
 					[imageView sendSyncMessage: 0];
 					[self adjustSlider];
 					
-					NSString* s = [self exportDICOMFileInt:[[dcmFormat selectedCell] tag] withName:[dcmSeriesName stringValue] allViewers: [dcmAllViewers state]];
+					NSDictionary* s = [self exportDICOMFileInt:[[dcmFormat selectedCell] tag] withName:[dcmSeriesName stringValue] allViewers: [dcmAllViewers state]];
 					if( s) [producedFiles addObject: s];
 				}
 				
@@ -14767,11 +14772,32 @@ int i,j,l;
 		
 		for( i = 0; i < [viewers count]; i++)
 			[[[viewers objectAtIndex: i] imageView] setNeedsDisplay: YES];
-			
+		
+		[[BrowserController currentBrowser] checkIncoming: self];
 		
 		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportSendToDICOMNode"] && [producedFiles count])
 		{
-			[[BrowserController currentBrowser] selectServer: producedFiles];
+			NSMutableArray *imagesForThisStudy = [NSMutableArray array];
+			
+			for( NSManagedObject *s in [[[self currentStudy] valueForKey: @"series"] allObjects])
+				[imagesForThisStudy addObjectsFromArray: [[s valueForKey: @"images"] allObjects]];
+			
+			NSArray *sopArray = [producedFiles valueForKey: @"SOPInstanceUID"];
+			
+			NSMutableArray *objects = [NSMutableArray array];
+			for( NSString *sop in sopArray)
+			{
+				for( DicomImage *im in imagesForThisStudy)
+				{
+					if( [[im sopInstanceUID] isEqualToString: sop])
+						[objects addObject: im];
+				}
+			}
+			
+			if( [objects count] != [producedFiles count])
+				NSLog( @"WARNING !! [objects count] != [producedFiles count]");
+			
+			[[BrowserController currentBrowser] selectServer: objects];
 		}
 	}
 	

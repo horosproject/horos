@@ -967,8 +967,6 @@ public:
 			
 			if( dataPtr)
 			{
-				if( exportDCM == 0L) exportDCM = [[DICOMExport alloc] init];
-				
 				[exportDCM setSourceFile: [firstObject sourceFile]];
 				[exportDCM setSeriesDescription: [dcmSeriesName stringValue]];
 				[exportDCM setSeriesNumber:5600];
@@ -987,6 +985,8 @@ public:
 				
 				free( dataPtr);
 			}
+			
+			[[BrowserController currentBrowser] checkIncoming: self];
 		}
 		// 4th dimension
 		else if( [[dcmExportMode selectedCell] tag] == 2)
@@ -1048,6 +1048,8 @@ public:
 			[progress release];
 			
 			[dcmSequence release];
+			
+			[[BrowserController currentBrowser] checkIncoming: self];
 		}
 		else // A 3D sequence
 		{
@@ -1133,6 +1135,8 @@ public:
 			[progress release];
 			
 			[dcmSequence release];
+			
+			[[BrowserController currentBrowser] checkIncoming: self];
 		}
 		
 		[self restoreViewSizeAfterMatrix3DExport];

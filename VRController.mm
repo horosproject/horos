@@ -12,16 +12,6 @@
      PURPOSE.
 =========================================================================*/
 
-
-/*
-
-MODIFICATION HISTORY
-
-	20060110	DDP	Reducing the variable duplication of userDefault objects (work in progress).
-
-  
-*/
-
 #import "AppController.h"
 #import "VRController.h"
 #import "DCMView.h"
@@ -484,11 +474,11 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 			
 			return 0L;
 		}
-		else
-		{
-			free( testPtr);
-		}
+		else free( testPtr);
 	}
+
+	[[NSUserDefaults standardUserDefaults] setFloat: 1125 forKey: @"VRGrowingRegionValue"];
+	[[NSUserDefaults standardUserDefaults] setFloat: 1750 forKey: @"VRGrowingRegionInterval"];
 	
 //	// ** RESAMPLE START
 //	
@@ -748,15 +738,15 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 	[nc addObserver:self selector:@selector(updateROIVolume:) name:@"ROIVolumePropertiesChanged" object:nil];
 #endif
 
-	// allow bones removal only for CT or SC scans
-	if( [[viewer2D modality] isEqualToString:@"CT"] == NO && [[viewer2D modality] isEqualToString:@"SC"])
-	{
-		[[toolsMatrix cellWithTag:21] setEnabled:NO];
-	}
-	else
-	{
-		[[toolsMatrix cellWithTag:21] setEnabled:YES];
-	}
+//	// allow bones removal only for CT or SC scans
+//	if( [[viewer2D modality] isEqualToString:@"CT"] == NO && [[viewer2D modality] isEqualToString:@"SC"])
+//	{
+//		[[toolsMatrix cellWithTag:21] setEnabled:NO];
+//	}
+//	else
+//	{
+//		[[toolsMatrix cellWithTag:21] setEnabled:YES];
+//	}
 
 	if( [renderingMode isEqualToString:@"MIP"])
 		[self setModeIndex: 1];
@@ -1182,8 +1172,6 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 
 -(void) setDefaultTool:(id) sender
 {
-	//Sender may be matrix or menu. LP 12/3/05
-	
 	int tag;
 	if ([sender isKindOfClass:[NSMatrix class]])
 		tag = [[sender selectedCell] tag];
@@ -1194,13 +1182,17 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
     {
         [self setCurrentTool:tag];
     }
-
 }
 
 - (void) setCurrentTool:(short) newTool
 {
+	if( ([[viewer2D modality] isEqualToString:@"CT"] == NO && growingSet == NO) || ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSAlternateKeyMask))
+	{
+		[self editGrowingRegion: self];
+		growingSet = YES;
+	}
+	
 	[view setCurrentTool: newTool];
-		//select matrix tool
 	[toolsMatrix selectCellWithTag:newTool];
 }
 
@@ -1627,7 +1619,8 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 //    [window makeKeyAndOrderFront:nil];
 }
 
-- (IBAction)customizeViewerToolBar:(id)sender {
+- (IBAction)customizeViewerToolBar:(id)sender
+{
     [toolbar runCustomizationPalette:sender];
 }
 
@@ -1636,16 +1629,17 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
     // The toolbar will use this method to obtain toolbar items that can be displayed in the customization sheet, or in the toolbar itself 
     NSToolbarItem *toolbarItem = [[NSToolbarItem alloc] initWithItemIdentifier: itemIdent];
     
-     if ([itemIdent isEqualToString: QTExportVRToolbarItemIdentifier]) {
-        
-	[toolbarItem setLabel: NSLocalizedString(@"Export QTVR",nil)];
-	[toolbarItem setPaletteLabel: NSLocalizedString(@"Export QTVR",nil)];
-        [toolbarItem setToolTip: NSLocalizedString(@"Export this image in a Quicktime VR file",nil)];
-	[toolbarItem setImage: [NSImage imageNamed: QTExportVRToolbarItemIdentifier]];
-	[toolbarItem setTarget: view];
-	[toolbarItem setAction: @selector(exportQuicktime3DVR:)];
+	if ([itemIdent isEqualToString: QTExportVRToolbarItemIdentifier])
+	{
+		[toolbarItem setLabel: NSLocalizedString(@"Export QTVR",nil)];
+		[toolbarItem setPaletteLabel: NSLocalizedString(@"Export QTVR",nil)];
+		[toolbarItem setToolTip: NSLocalizedString(@"Export this image in a Quicktime VR file",nil)];
+		[toolbarItem setImage: [NSImage imageNamed: QTExportVRToolbarItemIdentifier]];
+		[toolbarItem setTarget: view];
+		[toolbarItem setAction: @selector(exportQuicktime3DVR:)];
     }
-	else if ([itemIdent isEqualToString: StereoIdentifier]) {
+	else if ([itemIdent isEqualToString: StereoIdentifier])
+	{
         
 	[toolbarItem setLabel: NSLocalizedString(@"Stereo",nil)];
 	[toolbarItem setPaletteLabel:NSLocalizedString(@"Stereo",nil)];
@@ -1874,16 +1868,17 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
         
         [[wlwwPopup cell] setUsesItemFromMenu:YES];
     }
-     else if([itemIdent isEqualToString: ToolsToolbarItemIdentifier]) {
-	// Set up the standard properties 
-	[toolbarItem setLabel: NSLocalizedString(@"Mouse button function",nil)];
-	[toolbarItem setPaletteLabel: NSLocalizedString(@"Mouse button function",nil)];
-	[toolbarItem setToolTip: NSLocalizedString(@"Change the mouse function",nil)];
+     else if([itemIdent isEqualToString: ToolsToolbarItemIdentifier])
+	 {
+		 // Set up the standard properties 
+		 [toolbarItem setLabel: NSLocalizedString(@"Mouse button function",nil)];
+		 [toolbarItem setPaletteLabel: NSLocalizedString(@"Mouse button function",nil)];
+		 [toolbarItem setToolTip: NSLocalizedString(@"Change the mouse function",nil)];
 	
-	// Use a custom view, a text field, for the search item 
-	[toolbarItem setView: toolsView];
-	[toolbarItem setMinSize:NSMakeSize(NSWidth([toolsView frame]), NSHeight([toolsView frame]))];
-	[toolbarItem setMaxSize:NSMakeSize(NSWidth([toolsView frame]), NSHeight([toolsView frame]))];
+		 // Use a custom view, a text field, for the search item 
+		 [toolbarItem setView: toolsView];
+		 [toolbarItem setMinSize:NSMakeSize(NSWidth([toolsView frame]), NSHeight([toolsView frame]))];
+		 [toolbarItem setMaxSize:NSMakeSize(NSWidth([toolsView frame]), NSHeight([toolsView frame]))];
     }
 	
 	else if([itemIdent isEqualToString: FlyThruToolbarItemIdentifier]) {
@@ -2892,6 +2887,31 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 - (void)drawerDidOpen:(NSNotification *)sender
 {
 	[[self window] zoom:self];
+}
+
+-(IBAction) endEditGrowingRegion:(id) sender
+{
+	[growingRegionWindow orderOut: sender];
+	
+	[NSApp endSheet: growingRegionWindow returnCode: [sender tag]];
+	
+	if( [sender tag])
+	{
+		
+	}
+	else
+	{
+		[[NSUserDefaults standardUserDefaults] setFloat: 1125 forKey: @"VRGrowingRegionValue"];
+		[[NSUserDefaults standardUserDefaults] setFloat: 1750 forKey: @"VRGrowingRegionInterval"];
+	}
+}
+
+- (IBAction) editGrowingRegion:(id) sender
+{
+	[[NSUserDefaults standardUserDefaults] setFloat: [[pixList[ 0] objectAtIndex: 0] minValueOfSeries] forKey: @"VRGrowingRegionMin"];
+	[[NSUserDefaults standardUserDefaults] setFloat: [[pixList[ 0] objectAtIndex: 0] maxValueOfSeries] forKey: @"VRGrowingRegionMax"];
+	
+	[NSApp beginSheet: growingRegionWindow modalForWindow:[self window] modalDelegate:self didEndSelector:0L contextInfo:(void*) 0L];
 }
 
 #pragma mark-
