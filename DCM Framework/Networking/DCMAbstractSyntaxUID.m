@@ -189,11 +189,11 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 	static NSString *BasicColorPrintManagementMetaSOPClassUID = @".2.840.10008.5.1.1.18";
 	
 	//some misc UIDs that I'm not using yet
-	/*
+	
 	static NSString *StorageService = @"1.2.840.10008.4.2";
 	static NSString *MediaCreationManagement = @"1.2.840.10008.5.1.4.1.1.2.1";
 	static NSString *SpatialRegistrationStorage = @"1.2.840.10008.5.1.4.1.1.66.1";
-	static NSString *Spatial Fiducials Storage = @"1.2.840.10008.5.1.4.1.1.66.2";
+	static NSString *SpatialFiducialsStorage = @"1.2.840.10008.5.1.4.1.1.66.2";
 	static NSString *OphthalmicPhotography8BitImageStorage = @"1.2.840.10008.5.1.4.1.1.77.1.5.1";
 	static NSString *OphthalmicPhotography16BitImageStorage = @"1.2.840.10008.5.1.4.1.1.77.1.5.2";
 	static NSString *StereometricRelationshipStorage = @"1.2.840.10008.5.1.4.1.1.77.1.5.3";
@@ -202,7 +202,6 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 	static NSString *GeneralRelevantPatientInformationQuerySOP = @"1.2.840.10008.5.1.4.37.1"; 
 	static NSString *BreastImagingRelevantPatientInformationQuery = @"1.2.840.10008.5.1.4.37.2";
 	static NSString	*CardiacRelevantPatientInformationQuery = @"1.2.840.10008.5.1.4.37.3";
-	*/
 
 
 
@@ -406,8 +405,9 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 		    || [sopClassUID isEqualToString:PETImageStorage]
 		    || [sopClassUID isEqualToString:RTImageStorage]
 			|| [sopClassUID isEqualToString:PDFStorageClassUID]
+			|| [sopClassUID isEqualToString:OphthalmicPhotography8BitImageStorage]
+			|| [sopClassUID isEqualToString:OphthalmicPhotography16BitImageStorage]
 		);
-		//JF 2006-10-11 added PDFStorageClassUID
 }
 
 + (NSArray *)imageSyntaxes{
@@ -445,6 +445,8 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 		    PETImageStorage ,
 		    RTImageStorage ,
 			PDFStorageClassUID ,
+			OphthalmicPhotography8BitImageStorage,
+			OphthalmicPhotography16BitImageStorage,
 			nil];
 	}
 
