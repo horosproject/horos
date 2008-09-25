@@ -546,11 +546,11 @@ OFCondition DJCodecEncoder::encodeTrueLossless(
     }
 
     //check whether enough raw data is available for encoding
-    if (bytesAllocated * samplesPerPixel * columns * rows * OFstatic_cast(unsigned int,numberOfFrames) > length)
-    {
-      CERR << "True lossless encoder: Can not change representation, not enough data" << endl;
-      result = EC_CannotChangeRepresentation;
-    }
+//    if (bytesAllocated * samplesPerPixel * columns * rows * OFstatic_cast(unsigned int,numberOfFrames) > length)
+//    {
+//      CERR << "True lossless encoder: Can not change representation, not enough data" << endl;
+//      result = EC_CannotChangeRepresentation;
+//    }
 
     // byte swap pixel data to little endian if bits allocated is 8
     if ((gLocalByteOrder == EBO_BigEndian) && (bitsAllocated == 8))
