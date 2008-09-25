@@ -545,7 +545,7 @@ SInt32 osVersion()
 //———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 NSRect screenFrame()
-	{
+{
 	int i = 0;
 	float height = 0.0;
 	float width = 0.0;
@@ -564,11 +564,13 @@ NSRect screenFrame()
 			{
 				screenRect = [[[NSScreen screens] objectAtIndex: 1] visibleFrame];
 			}
-			else if ( screenCount > 2) {
+			else if ( screenCount > 2)
+			{
 				//multiple monitors. Need to span at least two monitors for viewing if they are the same size.
 				height = [[[NSScreen screens] objectAtIndex:1] frame].size.height;
 				singleWidth = width = [[[NSScreen screens] objectAtIndex:1] frame].size.width;
-				for (i = 2; i < screenCount; i ++) {
+				for (i = 2; i < screenCount; i ++)
+				{
 					frame = [[[NSScreen screens] objectAtIndex:i] frame];
 					if (frame.size.height == height && frame.size.width == singleWidth)
 						width =+ frame.size.width;
@@ -587,11 +589,12 @@ NSRect screenFrame()
 		case 2:		// use all screens
 			height = [[[NSScreen screens] objectAtIndex:0] frame].size.height;
 			singleWidth = width = [[[NSScreen screens] objectAtIndex:0] frame].size.width;
-			for (i = 1; i < screenCount; i ++) {
-					frame = [[[NSScreen screens] objectAtIndex:i] frame];
-					if (frame.size.height == height && frame.size.width == singleWidth)
-						width =+ frame.size.width;
-				}	
+			for (i = 1; i < screenCount; i ++)
+			{
+				frame = [[[NSScreen screens] objectAtIndex:i] frame];
+				if (frame.size.height == height && frame.size.width == singleWidth)
+					width =+ frame.size.width;
+			}
 			screenRect = NSMakeRect([[[NSScreen screens] objectAtIndex:0] frame].origin.x, 
 										[[[NSScreen screens] objectAtIndex:0] frame].origin.y,
 										width,
@@ -2812,9 +2815,45 @@ static BOOL initialized = NO;
 	}
 }
 
+- (NSArray*) orderedScreens
+{
+	NSMutableArray *srcScreens = [NSMutableArray arrayWithArray: [NSScreen screens]];
+	NSMutableArray *dstScreens = [NSMutableArray array];
+	
+	while( [srcScreens count])
+	{
+		float minY = 1000000, minX = 1000000;
+		
+		NSScreen *screen = 0L;
+		for( NSScreen *s in srcScreens)
+		{
+			if( [s visibleFrame].origin.y <= minY)
+			{
+				if( [s visibleFrame].origin.x < minX)
+				{
+					minY = [s visibleFrame].origin.y;
+					minX = [s visibleFrame].origin.x;
+					screen = s;
+				}
+			}
+		}
+		
+		if( screen)
+		{
+			[dstScreens addObject: screen];
+			[srcScreens removeObject: screen];
+		}
+	}
+	
+	[dstScreens removeObject: [dbWindow screen]];
+	[dstScreens addObject: [dbWindow screen]];
+	
+	return dstScreens;
+}
+
 - (int) currentRowForViewer: (ViewerController*) v
 {
-	NSUInteger i = [[NSScreen screens] indexOfObject: [[v window] screen]];
+	NSUInteger i = [[self orderedScreens] indexOfObject: [[v window] screen]];
 	if( i == NSNotFound) i = 0;
 	i++;
 	
@@ -2833,7 +2872,7 @@ static BOOL initialized = NO;
 
 - (NSPoint) windowCenter: (NSWindow*) w
 {
-	NSUInteger i = [[NSScreen screens] indexOfObject: [w screen]];
+	NSUInteger i = [[self orderedScreens] indexOfObject: [w screen]];
 	if( i == NSNotFound) i = 0;
 	i++;
 	
