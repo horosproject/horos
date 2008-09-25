@@ -3170,6 +3170,12 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 		return;
 	}
 	
+	if(!displayTextualData)
+	{
+		drawRect = NSMakeRect(0, 0, 0, 0);
+		return;
+	}
+	
 	drawRect = [self findAnEmptySpaceForMyRect: drawRect : &moved];
 	
 	if(type == tDynAngle || type == tAxis ||type == tCPolygon || type == tOPolygon || type == tPencil) moved = YES;
