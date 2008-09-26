@@ -300,21 +300,22 @@
 	
 	m_ImageDataBytes = [[NSMutableData alloc] initWithCapacity: ([imageRepresentation bytesPerRow] * [imageRepresentation size].height) + 1];
 	
-	float monoR, monoG, monoB;
+	float monoR, monoG, monoB, r;
 	unsigned char grayValue = 0;
-	Ptr bitMapDataPtr = (char *) [imageRepresentation bitmapData];
+	unsigned char * bitMapDataPtr = (unsigned char *) [imageRepresentation bitmapData];
 
 	int i;
 	for(i = 0; i < [imageRepresentation size].height; i++)
 	{
-		char *sourceBuffer = bitMapDataPtr + i * [imageRepresentation bytesPerRow];
+		unsigned char *sourceBuffer = bitMapDataPtr + i * [imageRepresentation bytesPerRow];
 
 		int x;
 		for(x = 0; x <  [imageRepresentation size].width; x++)
 		{
-			monoR = 0.299 * (float) *sourceBuffer++;
-			monoG = 0.587 * (float) *sourceBuffer++;
-			monoB = 0.114 * (float) *sourceBuffer++;
+			monoR = 0.299 * (float) *sourceBuffer++;	//76.245
+			monoG = 0.587 * (float) *sourceBuffer++;	//149.685
+			monoB = 0.114 * (float) *sourceBuffer++;	//29.07
+			
 			grayValue = roundf(monoR + monoG + monoB);
 			[m_ImageDataBytes appendBytes: &grayValue length: 1];
 			//*destBuffer++ = grayValue;
@@ -875,7 +876,7 @@
 		fwrite("US", 2, 1, outFile);
 		dummyShort = CFSwapInt16HostToLittle(0x0002);
 		fwrite(&dummyShort, 2, 1, outFile);
-		dummyShort = CFSwapInt16HostToLittle(0x0001);
+		dummyShort = CFSwapInt16HostToLittle(0x0000);
 		fwrite(&dummyShort, 2, 1, outFile);
 	}
 
