@@ -31,6 +31,7 @@ static NSString*	CollapseAllItemsToolbarItemIdentifier	= @"minus-large";
 static NSString*	SearchToolbarItemIdentifier				= @"Search";
 static NSString*	EditingToolbarItemIdentifier			= @"Editing";
 static NSString*	SortSeriesToolbarItemIdentifier			= @"SortSeries";
+static NSString*	VerifyToolbarItemIdentifier				= @"Validator";
 
 static BOOL showWarning = YES;
 
@@ -858,6 +859,41 @@ static BOOL showWarning = YES;
 	}
 }
 
+- (IBAction) validatorWebSite:(id) sender;
+{
+	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.dclunie.com/dicom3tools/dciodvfy.html"]];
+}
+
+- (IBAction) verify:(id) sender
+{
+	if( isDICOM == NO)
+	{
+		NSRunCriticalAlertPanel(NSLocalizedString(@"DICOM Validator", nil), NSLocalizedString(@"DICOM Validator requires a DICOM file.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+		return;
+	}
+	
+	NSTask *theTask = [[NSTask alloc] init];
+
+	NSPipe *thePipe = [NSPipe pipe];
+	[theTask setStandardError: thePipe];
+	
+	[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/dciodvfy"]];
+	[theTask setArguments: [NSMutableArray arrayWithObject: srcFile]];		
+	[theTask setStandardOutput:thePipe];
+	[theTask launch];
+	[theTask waitUntilExit];
+	
+	
+	NSData *resData = [[thePipe fileHandleForReading] availableData];
+	NSString *resString = [[[NSString alloc] initWithData:resData encoding:NSUTF8StringEncoding] autorelease];
+	
+	[validatorText setString: resString];
+	
+	[validatorWindow makeKeyAndOrderFront: self];
+	
+	[theTask release];
+}
+
 - (IBAction) sortSeries: (id) sender
 {
 	NSIndexSet* selectedRowIndexes = [table selectedRowIndexes];
@@ -1136,6 +1172,15 @@ static BOOL showWarning = YES;
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector( sortSeries:)];
     }
+	else if ([itemIdent isEqual: VerifyToolbarItemIdentifier])
+	{
+		[toolbarItem setLabel: NSLocalizedString(@"Validator", 0L)];
+		[toolbarItem setPaletteLabel: NSLocalizedString(@"Validator", 0L)];
+		[toolbarItem setToolTip: NSLocalizedString(@"Validate the DICOM format", 0L)];
+		[toolbarItem setImage: [NSImage imageNamed: @"NSInfo"]];
+		[toolbarItem setTarget: self];	
+		[toolbarItem setAction: @selector( verify:)];
+    }
     else {
 	// itemIdent refered to a toolbar item that is not provide or supported by us or cocoa 
 	// Returning nil will inform the toolbar this kind of item is not supported 
@@ -1155,6 +1200,7 @@ static BOOL showWarning = YES;
 										NSToolbarFlexibleSpaceItemIdentifier,
 										EditingToolbarItemIdentifier,
 										SortSeriesToolbarItemIdentifier,
+										VerifyToolbarItemIdentifier,
 										NSToolbarFlexibleSpaceItemIdentifier,
 										SearchToolbarItemIdentifier,
 										nil];
@@ -1174,6 +1220,7 @@ static BOOL showWarning = YES;
 										CollapseAllItemsToolbarItemIdentifier,
 										EditingToolbarItemIdentifier,
 										SortSeriesToolbarItemIdentifier,
+										VerifyToolbarItemIdentifier,
 										SearchToolbarItemIdentifier,
 										nil];
 }

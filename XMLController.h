@@ -48,6 +48,9 @@
 	IBOutlet NSComboBox			*dicomFieldsCombo;
 	IBOutlet NSTextField		*addGroup, *addElement, *addValue;
 	
+	IBOutlet NSWindow			*validatorWindow;
+	IBOutlet NSTextView			*validatorText;
+	
 	BOOL						dontListenToIndexChange;
 }
 
@@ -62,6 +65,7 @@
 - (IBAction) setGroupElement: (id) sender;
 - (IBAction) executeAdd:(id) sender;
 - (IBAction) switchDICOMEditing:(id) sender;
+- (IBAction) validatorWebSite:(id) sender;
 - (void) reload:(id) sender;
 
 - (void) expandAllItems: (id) sender;

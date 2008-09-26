@@ -345,6 +345,8 @@
 		7EF9708808C8FB74002B5087 /* DCMNDeleteRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF9708608C8FB74002B5087 /* DCMNDeleteRequest.m */; };
 		7EF9708D08C8FB86002B5087 /* DCMNDeleteResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EF9708B08C8FB86002B5087 /* DCMNDeleteResponse.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7EF9708E08C8FB86002B5087 /* DCMNDeleteResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF9708C08C8FB86002B5087 /* DCMNDeleteResponse.m */; };
+		8440039A0E8CF99500A00EBD /* dciodvfy in Resources */ = {isa = PBXBuildFile; fileRef = 844003990E8CF99500A00EBD /* dciodvfy */; };
+		8440039B0E8CF99500A00EBD /* dciodvfy in Resources */ = {isa = PBXBuildFile; fileRef = 844003990E8CF99500A00EBD /* dciodvfy */; };
 		8483ABA60E1BE33900C21B31 /* crossCursor.tif in Resources */ = {isa = PBXBuildFile; fileRef = 8483ABA50E1BE33900C21B31 /* crossCursor.tif */; };
 		8483ABA70E1BE33900C21B31 /* crossCursor.tif in Resources */ = {isa = PBXBuildFile; fileRef = 8483ABA50E1BE33900C21B31 /* crossCursor.tif */; };
 		A90202BE0B980CD60001A00B /* PluginManagerController.h in Headers */ = {isa = PBXBuildFile; fileRef = A90202BA0B980CD60001A00B /* PluginManagerController.h */; };
@@ -8501,6 +8503,7 @@
 		7EF9708608C8FB74002B5087 /* DCMNDeleteRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMNDeleteRequest.m; sourceTree = "<group>"; };
 		7EF9708B08C8FB86002B5087 /* DCMNDeleteResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMNDeleteResponse.h; sourceTree = "<group>"; };
 		7EF9708C08C8FB86002B5087 /* DCMNDeleteResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMNDeleteResponse.m; sourceTree = "<group>"; };
+		844003990E8CF99500A00EBD /* dciodvfy */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = dciodvfy; path = Binaries/dciodvfy; sourceTree = "<group>"; };
 		8483ABA50E1BE33900C21B31 /* crossCursor.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = crossCursor.tif; path = Cursors/crossCursor.tif; sourceTree = "<group>"; };
 		A90202BA0B980CD60001A00B /* PluginManagerController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = PluginManagerController.h; sourceTree = "<group>"; };
 		A90202BB0B980CD60001A00B /* PluginManagerController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = PluginManagerController.m; sourceTree = "<group>"; };
@@ -12238,6 +12241,7 @@
 				CE897DD30C21D951005C669E /* texture.tif */,
 				B78675430AD9C56400731977 /* diameter570frame512.pbm */,
 				B78675440AD9C56400731977 /* diameter1140frame1024.pbm */,
+				844003990E8CF99500A00EBD /* dciodvfy */,
 				CE8CAB0A0B4715DD0068DBAE /* DICOMPrint */,
 				AB7250370ADE6F5D00A212A0 /* Decompress */,
 				AB9DCD7A09A9C47800AA19E7 /* ReportTemplate.rtf */,
@@ -21458,6 +21462,7 @@
 				CEAE02E00DE7E33B00E9BD01 /* DICOMDestination.tif in Resources */,
 				8483ABA60E1BE33900C21B31 /* crossCursor.tif in Resources */,
 				AB9693C00E823E3A00F09EEA /* ROIsAndKeys.tif in Resources */,
+				8440039A0E8CF99500A00EBD /* dciodvfy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21849,6 +21854,7 @@
 				CEAE02E10DE7E33B00E9BD01 /* DICOMDestination.tif in Resources */,
 				8483ABA70E1BE33900C21B31 /* crossCursor.tif in Resources */,
 				AB9693C10E823E3A00F09EEA /* ROIsAndKeys.tif in Resources */,
+				8440039B0E8CF99500A00EBD /* dciodvfy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21876,7 +21882,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd \"$SRCROOT/Binaries\"\nunzip -uo DCMTK.zip\nunzip -uo LibTiff.zip\nunzip -uo VTKLibs.zip\nunzip -uo DB_Previous_Models.zip\nunzip -uo DicomImporter.mdimporter.zip\nunzip -uo PAGES.zip\nunzip -uo OsiriXReport.template.zip\nunzip -uo ILCrashReporter.framework.zip\nunzip -uo Growl.framework.zip\nunzip -uo 3DconnexionClient.framework.zip\nunzip -uo openjpeg.zip\n\ncd \"$SRCROOT/AYDicomPrint\"\nunzip -uo libdcmprintscu.dylib.zip\nunzip -uo libxerces-c.27.dylib.zip\nunzip -uo xercesc.zip\n\ncd \"$SRCROOT/Binaries/Jasper\"\nunzip -uo libjasper.a.zip\n\ncd $SRCROOT\nunzip -uo DotMacKit.framework.zip\nunzip -uo VTKHeaders.zip\nunzip -uo ITK180.zip\n\ncd $SRCROOT\ncd VolumePRO\nunzip -uo vli3.framework.zip\n\nexit 0\n";
+			shellScript = "cd \"$SRCROOT/Binaries\"\nunzip -uo DCMTK.zip\nunzip -uo LibTiff.zip\nunzip -uo VTKLibs.zip\nunzip -uo DB_Previous_Models.zip\nunzip -uo DicomImporter.mdimporter.zip\nunzip -uo PAGES.zip\nunzip -uo OsiriXReport.template.zip\nunzip -uo ILCrashReporter.framework.zip\nunzip -uo Growl.framework.zip\nunzip -uo 3DconnexionClient.framework.zip\nunzip -uo openjpeg.zip\nunzip -uo dciodvfy.zip\n\ncd \"$SRCROOT/AYDicomPrint\"\nunzip -uo libdcmprintscu.dylib.zip\nunzip -uo libxerces-c.27.dylib.zip\nunzip -uo xercesc.zip\n\ncd \"$SRCROOT/Binaries/Jasper\"\nunzip -uo libjasper.a.zip\n\ncd $SRCROOT\nunzip -uo DotMacKit.framework.zip\nunzip -uo VTKHeaders.zip\nunzip -uo ITK180.zip\n\ncd $SRCROOT\ncd VolumePRO\nunzip -uo vli3.framework.zip\n\nexit 0\n";
 		};
 		A9EDB1D50ACBC39700D8B534 /* SVN Revision number */ = {
 			isa = PBXShellScriptBuildPhase;
