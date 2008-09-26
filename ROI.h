@@ -156,6 +156,10 @@ enum
 @property(retain) ROI *parentROI;
 @property double sliceThickness;
 
+- (void) setColor:(RGBColor) a globally: (BOOL) g;
+- (void) setThickness:(float) a globally: (BOOL) g;
+- (void) setOpacity:(float)newOpacity globally: (BOOL) g;
+
 /** Set default ROI name (if not set, then default name is the currentTool) */
 + (void) setDefaultName:(NSString*) n;
 /** Return the default name */

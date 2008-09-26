@@ -548,18 +548,26 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 	}
 }
 
-- (void) setOpacity:(float)newOpacity
+- (void) setOpacity:(float) a
 {
-	ROIOpacity = opacity = newOpacity;
+	[self setOpacity: a globally: YES];
+}
+
+- (void) setOpacity:(float)newOpacity globally: (BOOL) g
+{
+	opacity = newOpacity;
 	
 	if( type == tPlain)
 	{
-		ROIRegionOpacity = opacity;
+		if( g)
+			ROIRegionOpacity = opacity;
 	}
 	else if(type == tLayerROI)
 	{
 		while( [ctxArray count]) [self deleteTexture: [ctxArray lastObject]];
 	}
+	else if( g)
+		ROIOpacity = opacity;
 }
 
 - (DCMPix*)pix {
@@ -2833,18 +2841,30 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 
 - (void) setColor:(RGBColor) a
 {
+	[self setColor: a globally: YES];
+}
+
+- (void) setColor:(RGBColor) a globally: (BOOL) g
+{
 	color = a;
+	
 	if( type == tText)
 	{
-		ROITextColorR = color.red;	//[[NSUserDefaults standardUserDefaults] setFloat:color.red forKey:@"ROITextColorR"];
-		ROITextColorG = color.green;	//[[NSUserDefaults standardUserDefaults] setFloat:color.green forKey:@"ROITextColorG"];
-		ROITextColorB = color.blue;	//[[NSUserDefaults standardUserDefaults] setFloat:color.blue forKey:@"ROITextColorB"];
+		if( g)
+		{
+			ROITextColorR = color.red;	//[[NSUserDefaults standardUserDefaults] setFloat:color.red forKey:@"ROITextColorR"];
+			ROITextColorG = color.green;	//[[NSUserDefaults standardUserDefaults] setFloat:color.green forKey:@"ROITextColorG"];
+			ROITextColorB = color.blue;	//[[NSUserDefaults standardUserDefaults] setFloat:color.blue forKey:@"ROITextColorB"];
+		}
 	}
 	else if( type == tPlain)
 	{
-		ROIRegionColorR = color.red;	//[[NSUserDefaults standardUserDefaults] setFloat:color.red forKey:@"ROIRegionColorR"];
-		ROIRegionColorG = color.green;	//[[NSUserDefaults standardUserDefaults] setFloat:color.green forKey:@"ROIRegionColorG"];
-		ROIRegionColorB = color.blue;	//[[NSUserDefaults standardUserDefaults] setFloat:color.blue forKey:@"ROIRegionColorB"];
+		if( g)
+		{
+			ROIRegionColorR = color.red;	//[[NSUserDefaults standardUserDefaults] setFloat:color.red forKey:@"ROIRegionColorR"];
+			ROIRegionColorG = color.green;	//[[NSUserDefaults standardUserDefaults] setFloat:color.green forKey:@"ROIRegionColorG"];
+			ROIRegionColorB = color.blue;	//[[NSUserDefaults standardUserDefaults] setFloat:color.blue forKey:@"ROIRegionColorB"];
+		}
 	}
 	else if( type == tLayerROI)
 	{
@@ -2856,15 +2876,23 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 	}
 	else
 	{
-		ROIColorR = color.red;		//[[NSUserDefaults standardUserDefaults] setFloat:color.red forKey:@"ROIColorR"];
-		ROIColorG = color.green;		//[[NSUserDefaults standardUserDefaults] setFloat:color.green forKey:@"ROIColorG"];
-		ROIColorB = color.blue;		//[[NSUserDefaults standardUserDefaults] setFloat:color.blue forKey:@"ROIColorB"];
+		if( g)
+		{
+			ROIColorR = color.red;		//[[NSUserDefaults standardUserDefaults] setFloat:color.red forKey:@"ROIColorR"];
+			ROIColorG = color.green;		//[[NSUserDefaults standardUserDefaults] setFloat:color.green forKey:@"ROIColorG"];
+			ROIColorB = color.blue;		//[[NSUserDefaults standardUserDefaults] setFloat:color.blue forKey:@"ROIColorB"];
+		}
 	}
 }
 
 - (void) setThickness:(float) a
 {
-	int v = a ;	// To reduce the Opengl memory leak - PointSize LineWidth
+	[self setThickness: a globally: YES];
+}
+
+- (void) setThickness:(float) a globally: (BOOL) g
+{
+	int v = a;	// To reduce the Opengl memory leak - PointSize LineWidth
 	
 	if( v < 1) v = 1;
 	if( v > 20) v = 20;
@@ -2873,15 +2901,18 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 	
 	if( type == tPlain)
 	{
-		ROIRegionThickness = thickness;	//[[NSUserDefaults standardUserDefaults] setFloat:thickness forKey:@"ROIRegionThickness"];
+		if( g)
+			ROIRegionThickness = thickness;	//[[NSUserDefaults standardUserDefaults] setFloat:thickness forKey:@"ROIRegionThickness"];
 	}
 	else if( type == tArrow)
 	{
-		ROIArrowThickness = thickness;
+		if( g)
+			ROIArrowThickness = thickness;
 	}
 	else if( type == tText)
 	{
-		ROITextThickness = thickness;	//[[NSUserDefaults standardUserDefaults] setFloat:thickness forKey:@"ROITextThickness"];
+		if( g)
+			ROITextThickness = thickness;	//[[NSUserDefaults standardUserDefaults] setFloat:thickness forKey:@"ROITextThickness"];
 		
 		[stanStringAttrib release];
 		
@@ -2895,7 +2926,8 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 	}
 	else
 	{
-		ROIThickness = thickness;
+		if( g)
+			ROIThickness = thickness;
 	}
 }
 
