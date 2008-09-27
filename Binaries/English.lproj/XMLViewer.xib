@@ -3,7 +3,7 @@
 	<data>
 		<int key="IBDocument.SystemTarget">1050</int>
 		<string key="IBDocument.SystemVersion">9F33</string>
-		<string key="IBDocument.InterfaceBuilderVersion">672</string>
+		<string key="IBDocument.InterfaceBuilderVersion">670</string>
 		<string key="IBDocument.AppKitVersion">949.34</string>
 		<string key="IBDocument.HIToolboxVersion">352.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
@@ -582,7 +582,7 @@
 												<int key="NSCellFlags">75628032</int>
 												<int key="NSCellFlags2">0</int>
 												<reference key="NSContents" ref="198777562"/>
-												<object class="NSFont" key="NSSupport">
+												<object class="NSFont" key="NSSupport" id="839037455">
 													<string key="NSName">LucidaGrande</string>
 													<double key="NSSize">1.200000e+01</double>
 													<int key="NSfFlags">16</int>
@@ -1042,7 +1042,7 @@ eHQAAAAAQ29weXJpZ2h0IEFwcGxlIENvbXB1dGVyLCBJbmMuLCAyMDA1AAAAAA</bytes>
 										<object class="NSTextView" id="191596800">
 											<reference key="NSNextResponder" ref="817851768"/>
 											<int key="NSvFlags">2322</int>
-											<string key="NSFrameSize">{799, 48}</string>
+											<string key="NSFrameSize">{799, 75}</string>
 											<reference key="NSSuperview" ref="817851768"/>
 											<object class="NSTextContainer" key="NSTextContainer" id="866040028">
 												<object class="NSLayoutManager" key="NSLayoutManager">
@@ -1050,183 +1050,119 @@ eHQAAAAAQ29weXJpZ2h0IEFwcGxlIENvbXB1dGVyLCBJbmMuLCAyMDA1AAAAAA</bytes>
 														<object class="NSMutableString" key="NSString">
 															<characters key="NS.bytes">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum Et harumd und lookum like Greek to me, dereud facilis est er expedit distinct. Nam liber te conscient to factor tum poen legum odioque civiuda</characters>
 														</object>
-														<object class="NSMutableArray" key="NSAttributes">
+														<object class="NSDictionary" key="NSAttributes">
 															<bool key="EncodedWithXMLCoder">YES</bool>
-															<object class="NSDictionary">
+															<object class="NSMutableArray" key="dict.sortedKeys">
 																<bool key="EncodedWithXMLCoder">YES</bool>
-																<object class="NSMutableArray" key="dict.sortedKeys">
-																	<bool key="EncodedWithXMLCoder">YES</bool>
-																	<string>NSFont</string>
-																	<string>NSParagraphStyle</string>
-																</object>
-																<object class="NSMutableArray" key="dict.values">
-																	<bool key="EncodedWithXMLCoder">YES</bool>
-																	<object class="NSFont">
-																		<string key="NSName">LucidaGrande</string>
-																		<double key="NSSize">1.000000e+01</double>
-																		<int key="NSfFlags">2843</int>
-																	</object>
-																	<object class="NSParagraphStyle">
-																		<int key="NSAlignment">3</int>
-																		<object class="NSArray" key="NSTabStops">
-																			<bool key="EncodedWithXMLCoder">YES</bool>
-																			<object class="NSTextTab" id="639225791">
-																				<double key="NSLocation">0.000000e+00</double>
-																			</object>
-																			<object class="NSTextTab" id="407984202">
-																				<double key="NSLocation">5.600000e+01</double>
-																			</object>
-																			<object class="NSTextTab" id="640799505">
-																				<double key="NSLocation">1.120000e+02</double>
-																			</object>
-																			<object class="NSTextTab" id="434898612">
-																				<double key="NSLocation">1.680000e+02</double>
-																			</object>
-																			<object class="NSTextTab" id="412049331">
-																				<double key="NSLocation">2.240000e+02</double>
-																			</object>
-																			<object class="NSTextTab" id="1017532818">
-																				<double key="NSLocation">2.800000e+02</double>
-																			</object>
-																			<object class="NSTextTab" id="645324405">
-																				<double key="NSLocation">3.360000e+02</double>
-																			</object>
-																			<object class="NSTextTab" id="698125531">
-																				<double key="NSLocation">3.920000e+02</double>
-																			</object>
-																			<object class="NSTextTab" id="890340808">
-																				<double key="NSLocation">4.480000e+02</double>
-																			</object>
-																			<object class="NSTextTab" id="613112550">
-																				<double key="NSLocation">5.040000e+02</double>
-																			</object>
-																			<object class="NSTextTab" id="619288811">
-																				<double key="NSLocation">5.600000e+02</double>
-																			</object>
-																			<object class="NSTextTab" id="899823297">
-																				<double key="NSLocation">6.160000e+02</double>
-																			</object>
-																			<object class="NSTextTab" id="576572961">
-																				<double key="NSLocation">6.720000e+02</double>
-																			</object>
-																			<object class="NSTextTab" id="455761785">
-																				<double key="NSLocation">7.280000e+02</double>
-																			</object>
-																			<object class="NSTextTab" id="408527550">
-																				<double key="NSLocation">7.840000e+02</double>
-																			</object>
-																			<object class="NSTextTab" id="828999803">
-																				<double key="NSLocation">8.400000e+02</double>
-																			</object>
-																			<object class="NSTextTab" id="901913893">
-																				<double key="NSLocation">8.960000e+02</double>
-																			</object>
-																			<object class="NSTextTab" id="524352498">
-																				<double key="NSLocation">9.520000e+02</double>
-																			</object>
-																			<object class="NSTextTab" id="901319756">
-																				<double key="NSLocation">1.008000e+03</double>
-																			</object>
-																			<object class="NSTextTab" id="558327692">
-																				<double key="NSLocation">1.064000e+03</double>
-																			</object>
-																			<object class="NSTextTab" id="613713448">
-																				<double key="NSLocation">1.120000e+03</double>
-																			</object>
-																			<object class="NSTextTab" id="756604630">
-																				<double key="NSLocation">1.176000e+03</double>
-																			</object>
-																			<object class="NSTextTab" id="680761908">
-																				<double key="NSLocation">1.232000e+03</double>
-																			</object>
-																			<object class="NSTextTab" id="934839955">
-																				<double key="NSLocation">1.288000e+03</double>
-																			</object>
-																			<object class="NSTextTab" id="755792108">
-																				<double key="NSLocation">1.344000e+03</double>
-																			</object>
-																			<object class="NSTextTab" id="774743">
-																				<double key="NSLocation">1.400000e+03</double>
-																			</object>
-																			<object class="NSTextTab" id="736823507">
-																				<double key="NSLocation">1.456000e+03</double>
-																			</object>
-																			<object class="NSTextTab" id="880431174">
-																				<double key="NSLocation">1.512000e+03</double>
-																			</object>
-																			<object class="NSTextTab" id="486437887">
-																				<double key="NSLocation">1.568000e+03</double>
-																			</object>
-																			<object class="NSTextTab" id="458056826">
-																				<double key="NSLocation">1.624000e+03</double>
-																			</object>
-																			<object class="NSTextTab" id="624539119">
-																				<double key="NSLocation">1.680000e+03</double>
-																			</object>
-																			<object class="NSTextTab" id="51919855">
-																				<double key="NSLocation">1.736000e+03</double>
-																			</object>
+																<string>NSFont</string>
+																<string>NSParagraphStyle</string>
+															</object>
+															<object class="NSMutableArray" key="dict.values">
+																<bool key="EncodedWithXMLCoder">YES</bool>
+																<reference ref="839037455"/>
+																<object class="NSParagraphStyle">
+																	<int key="NSAlignment">3</int>
+																	<object class="NSArray" key="NSTabStops">
+																		<bool key="EncodedWithXMLCoder">YES</bool>
+																		<object class="NSTextTab">
+																			<double key="NSLocation">0.000000e+00</double>
+																		</object>
+																		<object class="NSTextTab">
+																			<double key="NSLocation">5.600000e+01</double>
+																		</object>
+																		<object class="NSTextTab">
+																			<double key="NSLocation">1.120000e+02</double>
+																		</object>
+																		<object class="NSTextTab">
+																			<double key="NSLocation">1.680000e+02</double>
+																		</object>
+																		<object class="NSTextTab">
+																			<double key="NSLocation">2.240000e+02</double>
+																		</object>
+																		<object class="NSTextTab">
+																			<double key="NSLocation">2.800000e+02</double>
+																		</object>
+																		<object class="NSTextTab">
+																			<double key="NSLocation">3.360000e+02</double>
+																		</object>
+																		<object class="NSTextTab">
+																			<double key="NSLocation">3.920000e+02</double>
+																		</object>
+																		<object class="NSTextTab">
+																			<double key="NSLocation">4.480000e+02</double>
+																		</object>
+																		<object class="NSTextTab">
+																			<double key="NSLocation">5.040000e+02</double>
+																		</object>
+																		<object class="NSTextTab">
+																			<double key="NSLocation">5.600000e+02</double>
+																		</object>
+																		<object class="NSTextTab">
+																			<double key="NSLocation">6.160000e+02</double>
+																		</object>
+																		<object class="NSTextTab">
+																			<double key="NSLocation">6.720000e+02</double>
+																		</object>
+																		<object class="NSTextTab">
+																			<double key="NSLocation">7.280000e+02</double>
+																		</object>
+																		<object class="NSTextTab">
+																			<double key="NSLocation">7.840000e+02</double>
+																		</object>
+																		<object class="NSTextTab">
+																			<double key="NSLocation">8.400000e+02</double>
+																		</object>
+																		<object class="NSTextTab">
+																			<double key="NSLocation">8.960000e+02</double>
+																		</object>
+																		<object class="NSTextTab">
+																			<double key="NSLocation">9.520000e+02</double>
+																		</object>
+																		<object class="NSTextTab">
+																			<double key="NSLocation">1.008000e+03</double>
+																		</object>
+																		<object class="NSTextTab">
+																			<double key="NSLocation">1.064000e+03</double>
+																		</object>
+																		<object class="NSTextTab">
+																			<double key="NSLocation">1.120000e+03</double>
+																		</object>
+																		<object class="NSTextTab">
+																			<double key="NSLocation">1.176000e+03</double>
+																		</object>
+																		<object class="NSTextTab">
+																			<double key="NSLocation">1.232000e+03</double>
+																		</object>
+																		<object class="NSTextTab">
+																			<double key="NSLocation">1.288000e+03</double>
+																		</object>
+																		<object class="NSTextTab">
+																			<double key="NSLocation">1.344000e+03</double>
+																		</object>
+																		<object class="NSTextTab">
+																			<double key="NSLocation">1.400000e+03</double>
+																		</object>
+																		<object class="NSTextTab">
+																			<double key="NSLocation">1.456000e+03</double>
+																		</object>
+																		<object class="NSTextTab">
+																			<double key="NSLocation">1.512000e+03</double>
+																		</object>
+																		<object class="NSTextTab">
+																			<double key="NSLocation">1.568000e+03</double>
+																		</object>
+																		<object class="NSTextTab">
+																			<double key="NSLocation">1.624000e+03</double>
+																		</object>
+																		<object class="NSTextTab">
+																			<double key="NSLocation">1.680000e+03</double>
+																		</object>
+																		<object class="NSTextTab">
+																			<double key="NSLocation">1.736000e+03</double>
 																		</object>
 																	</object>
 																</object>
 															</object>
-															<object class="NSDictionary">
-																<bool key="EncodedWithXMLCoder">YES</bool>
-																<object class="NSMutableArray" key="dict.sortedKeys">
-																	<bool key="EncodedWithXMLCoder">YES</bool>
-																	<string>NSFont</string>
-																	<string>NSParagraphStyle</string>
-																</object>
-																<object class="NSMutableArray" key="dict.values">
-																	<bool key="EncodedWithXMLCoder">YES</bool>
-																	<object class="NSFont">
-																		<string key="NSName">LucidaGrande-Bold</string>
-																		<double key="NSSize">1.000000e+01</double>
-																		<int key="NSfFlags">16</int>
-																	</object>
-																	<object class="NSParagraphStyle">
-																		<int key="NSAlignment">3</int>
-																		<object class="NSArray" key="NSTabStops">
-																			<bool key="EncodedWithXMLCoder">YES</bool>
-																			<reference ref="639225791"/>
-																			<reference ref="407984202"/>
-																			<reference ref="640799505"/>
-																			<reference ref="434898612"/>
-																			<reference ref="412049331"/>
-																			<reference ref="1017532818"/>
-																			<reference ref="645324405"/>
-																			<reference ref="698125531"/>
-																			<reference ref="890340808"/>
-																			<reference ref="613112550"/>
-																			<reference ref="619288811"/>
-																			<reference ref="899823297"/>
-																			<reference ref="576572961"/>
-																			<reference ref="455761785"/>
-																			<reference ref="408527550"/>
-																			<reference ref="828999803"/>
-																			<reference ref="901913893"/>
-																			<reference ref="524352498"/>
-																			<reference ref="901319756"/>
-																			<reference ref="558327692"/>
-																			<reference ref="613713448"/>
-																			<reference ref="756604630"/>
-																			<reference ref="680761908"/>
-																			<reference ref="934839955"/>
-																			<reference ref="755792108"/>
-																			<reference ref="774743"/>
-																			<reference ref="736823507"/>
-																			<reference ref="880431174"/>
-																			<reference ref="486437887"/>
-																			<reference ref="458056826"/>
-																			<reference ref="624539119"/>
-																			<reference ref="51919855"/>
-																		</object>
-																	</object>
-																</object>
-															</object>
-														</object>
-														<object class="NSMutableData" key="NSAttributeInfo">
-															<bytes key="NS.bytes">GQAEAQgADAEiAAcBhAQAA</bytes>
 														</object>
 														<nil key="NSDelegate"/>
 													</object>
@@ -2581,9 +2517,11 @@ eHQAAAAAQ29weXJpZ2h0IEFwcGxlIENvbXB1dGVyLCBJbmMuLCAyMDA1AAAAAA</bytes>
 							<string>setTagName:</string>
 							<string>switchDICOMEditing:</string>
 							<string>validatorWebSite:</string>
+							<string>verify:</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
 							<string>id</string>
 							<string>id</string>
 							<string>id</string>

@@ -66,6 +66,7 @@
 - (IBAction) executeAdd:(id) sender;
 - (IBAction) switchDICOMEditing:(id) sender;
 - (IBAction) validatorWebSite:(id) sender;
+- (IBAction) verify:(id) sender;
 - (void) reload:(id) sender;
 
 - (void) expandAllItems: (id) sender;

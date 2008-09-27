@@ -461,6 +461,11 @@ static BOOL showWarning = YES;
 	
 	[table reloadData];
 	[table expandItem:[table itemAtRow:0] expandChildren:NO];
+	
+	if( [validatorWindow isVisible])
+	{
+		[self verify: self];
+	}
 }
 
 - (void)refresh:(NSNotification*) notif;
@@ -890,6 +895,7 @@ static BOOL showWarning = YES;
 	[validatorText setString: resString];
 	
 	[validatorWindow makeKeyAndOrderFront: self];
+	[validatorWindow setTitle: srcFile];
 	
 	[theTask release];
 }
