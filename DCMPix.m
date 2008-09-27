@@ -2541,13 +2541,15 @@ BOOL gUSEPAPYRUSDCMPIX;
 		if( total) *total = itotal;
 		if( mean) *mean = imean;
 	}
-	else {
+	else
+	{
 		NSMutableArray  *ptsTemp = [roi splinePoints];
 		NSPointInt		*pts;
 		
 		pts = (NSPointInt*) malloc( ptsTemp.count * sizeof(NSPointInt) );
 		no = [ptsTemp count];
-		for( int i = 0; i < no; i++ ) {
+		for( int i = 0; i < no; i++ )
+		{
 			pts[ i].x = [[ptsTemp objectAtIndex: i] point].x;
 			pts[ i].y = [[ptsTemp objectAtIndex: i] point].y;
 		}
@@ -2556,15 +2558,18 @@ BOOL gUSEPAPYRUSDCMPIX;
 		NSPointInt *pTemp;
 		BOOL clip = NO;
 		
-		for( int i = 0; i < no && clip == NO; i++) {
+		for( int i = 0; i < no && clip == NO; i++)
+		{
 			if( pts[ i].x < 0) clip = YES;
 			if( pts[ i].y < 0) clip = YES;
 			if( pts[ i].x >= width) clip = YES;
 			if( pts[ i].y >= height) clip = YES;
 		}
 		
-		if( no == 1 ) {
-			if( clip ) {
+		if( no == 1 )
+		{
+			if( clip )
+			{
 				if( max) *max = 0;
 				if( min) *min = 0;
 				if( mean) *mean = 0;
@@ -2583,7 +2588,8 @@ BOOL gUSEPAPYRUSDCMPIX;
 				if( total) *total = val;
 				if( dev) *dev = 0;
 			}
-			else {
+			else
+			{
 				float	*curPix = &fImage[ (pts[ 0].y * width) + pts[ 0].x];
 				
 				float val = *curPix;
@@ -2595,8 +2601,10 @@ BOOL gUSEPAPYRUSDCMPIX;
 				if( dev) *dev = 0;
 			}
 		}
-		else {
-			if( clip ) {
+		else
+		{
+			if( clip )
+			{
 				long newNo;
 				
 				pTemp = (NSPointInt*) malloc( sizeof(NSPointInt) * 4 * no);
@@ -2616,7 +2624,8 @@ BOOL gUSEPAPYRUSDCMPIX;
 			
 			if( count != 0) imean = itotal / count;
 			
-			if( dev != 0L && count > 0) {
+			if( dev != 0L && count > 0)
+			{
 				idev = 0 ;
 				
 				ras_FillPolygon( pts, no, fImage, width, height, pixArray.count, 0, 0, NO, 0, NO, isRGB, YES, 0L, 0L, 0L, 0L, &idev, imean, 2, 0, NO);
@@ -2633,8 +2642,15 @@ BOOL gUSEPAPYRUSDCMPIX;
 		free( pts);
 	}
 	
-	if( *max == -99999) *max = 0;
-	if( *min == 99999) *min = 0;
+	if( max)
+	{
+		if( *max == -99999) *max = 0;
+	}
+	
+	if( min)
+	{
+		if( *min == 99999) *min = 0;
+	}
 }
 
 - (void) computeROI:(ROI*) roi :(float*) mean :(float *)total :(float *)dev :(float *)min :(float *)max
