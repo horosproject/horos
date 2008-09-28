@@ -913,7 +913,7 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
 	}
 	else
 	{
-		NSRunInformationalAlertPanel(NSLocalizedString(@"Plugin Update Completed", @""), NSLocalizedString(@"All your plugins are now up to date.", @""), NSLocalizedString(@"OK", @""), nil, nil);
+		NSRunInformationalAlertPanel(NSLocalizedString(@"Plugin Update Completed", @""), NSLocalizedString(@"All your plugins are now up to date. Restart OsiriX to use the new or updated plugins.", @""), NSLocalizedString(@"OK", @""), nil, nil);
 		startedUpdateProcess = NO;
 	}
 }
