@@ -2140,11 +2140,11 @@ static volatile int numberOfThreadsForRelisce = 0;
 		if( showWindow == YES && wasAlreadyVisible == NO)
 			[[self window] orderFront:self];
 			
-		if( showWindow && [[NSUserDefaults standardUserDefaults] boolForKey: @"AlwaysScaleToFit"] == NO)
-		{
-			if( wasAlreadyVisible)
-				[imageView setScaleValue: scaleValue * [imageView frame].size.width / previousHeight];
-		}
+//		if( showWindow && [[NSUserDefaults standardUserDefaults] boolForKey: @"AlwaysScaleToFit"] == NO)
+//		{
+//			if( wasAlreadyVisible)
+//				[imageView setScaleValue: scaleValue * [imageView frame].size.width / previousHeight];
+//		}
 	}
 	else
 	{

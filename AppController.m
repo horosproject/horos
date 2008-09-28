@@ -669,7 +669,7 @@ static NSDate *lastWarningDate = 0L;
 
 + (void) resizeWindowWithAnimation:(NSWindow*) window newSize: (NSRect) newWindowFrame
 {
-	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"NSWindowsSetFrameAnimate"])
+	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"NSWindowsSetFrameAnimate"])	//
 	{
 		NSDictionary *windowResize = [NSDictionary dictionaryWithObjectsAndKeys:
 									 window, NSViewAnimationTargetKey,
@@ -2897,6 +2897,13 @@ static BOOL initialized = NO;
 	NSMutableArray		*studyList = [NSMutableArray array];
 	int					keyWindow = 0, numberOfMonitors;	
 	NSArray				*screens = [self viewerScreens];
+	BOOL				fixedTiling = [[NSUserDefaults standardUserDefaults] boolForKey: @"FixedTiling"];
+	int					fixedTilingRows = [[NSUserDefaults standardUserDefaults] integerForKey: @"FixedTilingRows"];
+	int					fixedTilingColumns = [[NSUserDefaults standardUserDefaults] integerForKey: @"fixedTilingColumns"];
+	
+//	fixedTiling = YES;
+//	fixedTilingColumns = 2;
+//	fixedTilingRows = 2;
 	
 	numberOfMonitors = [screens count];
 	
@@ -2957,12 +2964,51 @@ static BOOL initialized = NO;
 		count--;
 	}
 	
+	NSMutableArray *hiddenWindows = [NSMutableArray array];
+	
 	// Add the hidden windows
 	for( i = 0; i < [viewersList count]; i++)
 	{
-		if( [[[viewersList objectAtIndex: i] window] isVisible] == NO) [cResult addObject: [viewersList objectAtIndex: i]];
+		if( [[[viewersList objectAtIndex: i] window] isVisible] == NO)
+		{
+			[hiddenWindows addObject: [viewersList objectAtIndex: i]];
+			[cResult addObject: [viewersList objectAtIndex: i]];
+		}
 	}
+	
 	viewersList = cResult;
+	
+//	if( fixedTiling)
+//	{
+//		while( [viewersList count] > fixedTilingRows * fixedTilingColumns * numberOfMonitors)
+//		{
+//			for( int i = 0; i < [viewersList count] ; i++)
+//			{
+//				if( [[[viewersList objectAtIndex: i] window] isKeyWindow] == NO)
+//				{
+//					if( [hiddenWindows count])
+//					{
+//						[[[hiddenWindows lastObject] window] setFrame: [[[viewersList objectAtIndex: i] window] frame] display: NO];
+//						[[[hiddenWindows lastObject] window] makeKeyAndOrderFront : self]; 
+//						
+//						[viewersList removeObject: [hiddenWindows lastObject]];
+//						
+//						[[[viewersList objectAtIndex: i] window] close];
+//						
+//						[viewersList replaceObjectAtIndex: i withObject: [hiddenWindows lastObject]];
+//						
+//						[hiddenWindows removeLastObject];
+//					}
+//					else
+//					{
+//						[[[viewersList objectAtIndex: i] window] close];
+//						[viewersList removeObjectAtIndex: i];
+//					}
+//					break;
+//				}
+//			}
+//		}
+//	}
 	
 	for( i = 0; i < [viewersList count]; i++)
 	{
@@ -3021,7 +3067,14 @@ static BOOL initialized = NO;
 	
 	int rows = [[[[WindowLayoutManager sharedWindowLayoutManager] currentHangingProtocol] objectForKey:@"Rows"] intValue];
 	int columns = [[[[WindowLayoutManager sharedWindowLayoutManager] currentHangingProtocol] objectForKey:@"Columns"] intValue];
-
+	
+//	if( fixedTiling)
+//	{
+//		rows = fixedTilingRows;
+//		columns = fixedTilingColumns;
+//	}
+//	else
+	
 	if (![[WindowLayoutManager sharedWindowLayoutManager] currentHangingProtocol] || viewerCount < rows * columns)
 	{
 		if (landscape)

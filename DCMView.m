@@ -8986,8 +8986,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 {
 	if( x <= 0) return;
 	
-	if( x != scaleValue) {
-		if( scaleValue) {
+	if( x != scaleValue)
+	{
+		if( scaleValue)
+		{
 			[self setOriginX:((origin.x * x) / scaleValue) Y:((origin.y * x) / scaleValue)];
 			
 			originOffset.x = ((originOffset.x * x) / scaleValue);
@@ -8995,6 +8997,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		}
 		
 		scaleValue = x;
+		
 		if( scaleValue < 0.01) scaleValue = 0.01;
 		if( scaleValue > 100) scaleValue = 100;
 		
@@ -9055,19 +9058,22 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	}
 }
 
-- (long) indexForPix: (long) pixIndex {
+- (long) indexForPix: (long) pixIndex
+{
 	if ([[[dcmFilesList objectAtIndex:0] valueForKey:@"numberOfFrames"] intValue] == 1)
 		return pixIndex;
 	else
 		return 0;
 }
 
--(void) setAlpha:(float) a {
+-(void) setAlpha:(float) a
+{
 	float   val, ii;
 	float   src[ 256];
 	long i;
 	
-	switch( blendingMode ) {
+	switch( blendingMode )
+	{
 		case 0:				// LINEAR FUSION
 			for( i = 0; i < 256; i++ ) src[ i] = i;
 		break;

@@ -6443,8 +6443,10 @@ static NSArray*	statesArray = nil;
 					BOOL found = NO;
 					
 					// Is a viewer containing this study opened? -> select it
-					for( ViewerController *vc in viewersList ) {
-						if( study == [[[vc fileList] objectAtIndex: 0] valueForKeyPath:@"series.study"] ) {
+					for( ViewerController *vc in viewersList )
+					{
+						if( study == [[[vc fileList] objectAtIndex: 0] valueForKeyPath:@"series.study"] )
+						{
 							[[vc window] makeKeyAndOrderFront: self];
 							found = YES;
 						}
@@ -6458,7 +6460,7 @@ static NSArray*	statesArray = nil;
 		}
 		
 		// Generate an answer containing the elements
-		NSMutableString *a = [NSMutableString stringWithString: @"<array><data>"];
+		NSMutableString *a = [NSMutableString stringWithString: @"<value><array><data>"];
 		
 		for( NSManagedObject *obj in array )
 		{
@@ -6469,16 +6471,16 @@ static NSArray*	statesArray = nil;
 			for (NSString *keyname in [allCommittedValues allKeys])	// My first Objective-C 2.0 'for loop', Antoine - 9/8/07
 			{
 				@try
-			{
-				if( [[allCommittedValues valueForKey: keyname] isKindOfClass:[NSString class]] ||
-				   [[allCommittedValues valueForKey: keyname] isKindOfClass:[NSDate class]] ||
-				   [[allCommittedValues valueForKey: keyname] isKindOfClass:[NSNumber class]])
+				{
+					if( [[allCommittedValues valueForKey: keyname] isKindOfClass:[NSString class]] ||
+					[[allCommittedValues valueForKey: keyname] isKindOfClass:[NSDate class]] ||
+					[[allCommittedValues valueForKey: keyname] isKindOfClass:[NSNumber class]])
 					[c appendFormat: @"<member><name>%@</name><value>%@</value></member>", keyname, [[allCommittedValues valueForKey: keyname] description]];
-			}
+				}
 				
-			@catch (NSException * e)
-			{
-			}
+				@catch (NSException * e)
+				{
+				}
 			}
 			
 			[c appendString: @"</struct>"];
@@ -6486,40 +6488,42 @@ static NSArray*	statesArray = nil;
 			[a appendString: c];
 		}
 		
-		[a appendString: @"</data></array>"];
+		[a appendString: @"</data></array></value>"];
 		
 		if( elements)
 			*elements = a;
 		
-		if( [execute isEqualToString: @"Delete"] ) {
-			@try
+		if( [execute isEqualToString: @"Delete"] )
 		{
-			[context retain];
-			[context lock];
-			
-			for( NSManagedObject *curElement in array ) {
-				NSManagedObject	*study = 0L;
+			@try
+			{
+				[context retain];
+				[context lock];
 				
-				if( [[curElement valueForKey: @"type"] isEqualToString: @"Image"]) study = [curElement valueForKeyPath: @"series.study"];
-				else if( [[curElement valueForKey: @"type"] isEqualToString: @"Series"]) study = [curElement valueForKeyPath: @"study"];
-				else if( [[curElement valueForKey: @"type"] isEqualToString: @"Study"]) study = curElement;
-				else NSLog( @"DB selectObject : Unknown table");
+				for( NSManagedObject *curElement in array )
+				{
+					NSManagedObject	*study = 0L;
+					
+					if( [[curElement valueForKey: @"type"] isEqualToString: @"Image"]) study = [curElement valueForKeyPath: @"series.study"];
+					else if( [[curElement valueForKey: @"type"] isEqualToString: @"Series"]) study = [curElement valueForKeyPath: @"study"];
+					else if( [[curElement valueForKey: @"type"] isEqualToString: @"Study"]) study = curElement;
+					else NSLog( @"DB selectObject : Unknown table");
+					
+					if( study)
+						[context deleteObject: study];
+				}
 				
-				if( study)
-					[context deleteObject: study];
+				[self saveDatabase: currentDatabasePath];
+				
+				[context unlock];
+				[context release];
 			}
 			
-			[self saveDatabase: currentDatabasePath];
-			
-			[context unlock];
-			[context release];
-		}
-			
 			@catch (NSException * e)
-		{
-			NSLog( @"******* BrowserController findObject Exception - Delete");
-			NSLog( [e description]);
-		}
+			{
+				NSLog( @"******* BrowserController findObject Exception - Delete");
+				NSLog( [e description]);
+			}
 		}
 		
 		return 0;
@@ -6534,9 +6538,11 @@ static NSArray*	statesArray = nil;
 	NSArray					*winList = [NSApp windows];
 	NSMutableArray			*viewersList = [[NSMutableArray alloc] initWithCapacity:0];
 	
-	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"nextPatientToAllViewers"] )	{
+	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"nextPatientToAllViewers"] )
+	{
 		// If multiple viewer are opened, apply it to the entire list
-		for( NSWindow *win in winList )	{
+		for( NSWindow *win in winList )
+		{
 			if( [[win windowController] isKindOfClass:[ViewerController class]])
 			{
 				[viewersList addObject: [win windowController]];
@@ -6545,7 +6551,8 @@ static NSArray*	statesArray = nil;
 		viewer = [viewersList objectAtIndex: 0];
 		curImage = [[viewer fileList] objectAtIndex: 0];
 	}
-	else {
+	else
+	{
 		[viewersList addObject: viewer];
 	}
 	
@@ -6553,7 +6560,8 @@ static NSArray*	statesArray = nil;
 	
 	NSInteger index = [outlineViewArray indexOfObject: study];
 	
-	if( index != NSNotFound ) {
+	if( index != NSNotFound )
+	{
 		BOOL				found = NO;
 		NSManagedObject		*nextStudy;
 		do {
@@ -6593,15 +6601,18 @@ static NSArray*	statesArray = nil;
 		// If multiple viewer are opened, apply it to the entire list
 		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"nextSeriesToAllViewers"])
 		{
-			for( NSWindow *win in winList )	{
-				if( [[win windowController] isKindOfClass:[ViewerController class]]) {
+			for( NSWindow *win in winList )
+			{
+				if( [[win windowController] isKindOfClass:[ViewerController class]])
+				{
 					[viewersList addObject: [win windowController]];
 				}
 			}
 			viewer = [viewersList objectAtIndex: 0];
 			curImage = [[viewer fileList] objectAtIndex: 0];
 		}
-		else {
+		else
+		{
 			[viewersList addObject: viewer];
 		}
 	}
@@ -10555,25 +10566,30 @@ static BOOL needToRezoom;
 
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 
-- (void)newViewerDICOM: (id)sender {
+- (void)newViewerDICOM: (id)sender
+{
 	NSManagedObject		*item = [databaseOutline itemAtRow: [databaseOutline selectedRow]];
 	
-	if (sender == Nil && [[oMatrix selectedCells] count] == 1 && [[item valueForKey:@"type"] isEqualToString:@"Study"] == YES )	{
+	if (sender == Nil && [[oMatrix selectedCells] count] == 1 && [[item valueForKey:@"type"] isEqualToString:@"Study"] == YES )
+	{
 		NSArray *array = [self databaseSelection];
 		
 		BOOL savedValue = [[NSUserDefaults standardUserDefaults] boolForKey:@"automaticWorkspaceLoad"];
 		
 		if( [array count] > 1 && savedValue == YES) [[NSUserDefaults standardUserDefaults] setBool: NO forKey:@"automaticWorkspaceLoad"];
 		
-		for( id obj in array ) {
+		for( id obj in array )
+		{
 			[databaseOutline selectRow: [databaseOutline rowForItem: obj] byExtendingSelection: NO];
 			[self databaseOpenStudy: obj];
 		}
 		
 		if( [array count] > 1 && savedValue == YES) [[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"automaticWorkspaceLoad"];
 	}
-	else {
-		if( [self isUsingExternalViewer: [matrixViewArray objectAtIndex: [[oMatrix selectedCell] tag]]] == NO )	{
+	else
+	{
+		if( [self isUsingExternalViewer: [matrixViewArray objectAtIndex: [[oMatrix selectedCell] tag]]] == NO )
+		{
 			[self viewerDICOMInt:NO	dcmFile: [self databaseSelection] viewer: nil];
 		}
 	}
