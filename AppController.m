@@ -3175,13 +3175,13 @@ static BOOL initialized = NO;
 	else if( viewerCount <= columns) 
 	{
 		int columnsPerScreen = ceil(((float) columns / numberOfMonitors));
-
 		int extraViewers = viewerCount % numberOfMonitors;
+		
 		for( i = 0; i < viewerCount; i++)
 		{
 			int monitorIndex = (int) i /columnsPerScreen;
 			int viewerPosition = i % columnsPerScreen;
-			NSScreen *screen = [screens objectAtIndex:monitorIndex];
+			NSScreen *screen = [screens objectAtIndex: monitorIndex];
 			NSRect frame = [screen visibleFrame];
 			
 			if( USETOOLBARPANEL) frame.size.height -= [ToolbarPanelController fixedHeight];
@@ -3194,22 +3194,40 @@ static BOOL initialized = NO;
 				
 			frame.origin.x += (frame.size.width * viewerPosition);
 			
+			if( [hiddenWindows count])	// We have new viewers to insert !
+			{
+				if( [[[viewersList objectAtIndex:i] window] screen] != screen)
+				{
+					[viewersList removeObject: [hiddenWindows lastObject]];
+					[viewersList insertObject: [hiddenWindows lastObject] atIndex: i];
+					
+					[hiddenWindows removeObject: [hiddenWindows lastObject]];
+				}
+			}
+			
 			[[viewersList objectAtIndex:i] setWindowFrame:frame showWindow:YES animate: YES];
 		}
 	}
 	//adjust for actual number of rows needed
 	else if (viewerCount <=  columns * rows)  
 	{
-		int columnsPerScreen = ceil(((float) columns / (float) numberOfMonitors));
-//		NSLog( @"rows: %d", rows);
-//		NSLog( @"columns: %d", columns);
-//		NSLog( @"------");
+		int columnsPerScreen = columns;
+		int rowsPerScreen = rows;
+		
+		if( rows >= columns)
+		{
+			rowsPerScreen = ceil(((float) rows / (float) numberOfMonitors));
+		}
+		else
+		{
+			columnsPerScreen = ceil(((float) columns / (float) numberOfMonitors));
+		}
 		
 		BOOL lastScreen = NO;
 		
 		for( i = 0; i < viewerCount; i++)
 		{
-			int monitorIndex =  i / (columnsPerScreen*rows);
+			int monitorIndex =  i / (columnsPerScreen*rowsPerScreen);
 			
 			if( monitorIndex == numberOfMonitors) monitorIndex = numberOfMonitors-1;
 			
@@ -3219,19 +3237,19 @@ static BOOL initialized = NO;
 				
 				lastScreen = YES;
 				
-				while( rows*columnsPerScreen > remaining)
+				while( rowsPerScreen*columnsPerScreen > remaining)
 				{
-					rows--;
+					rowsPerScreen--;
 					
-					if( rows*columnsPerScreen > remaining)
+					if( rowsPerScreen*columnsPerScreen > remaining)
 						columnsPerScreen--;
 				}
 				
-				while( rows*columnsPerScreen < remaining)
-					rows++;
+				while( rowsPerScreen*columnsPerScreen < remaining)
+					rowsPerScreen++;
 			}
 			
-			int posInScreen = i % (columnsPerScreen*rows);
+			int posInScreen = i % (columnsPerScreen*rowsPerScreen);
 			int row = posInScreen / columnsPerScreen;
 			int column = posInScreen % columnsPerScreen;
 			
@@ -3251,15 +3269,15 @@ static BOOL initialized = NO;
 			temp = frame.size.width / columnsPerScreen;
 			frame.size.width = temp * columnsPerScreen;
 			
-			temp = frame.size.height / rows;
-			frame.size.height = temp * rows;
+			temp = frame.size.height / rowsPerScreen;
+			frame.size.height = temp * rowsPerScreen;
 			
 			NSRect visibleFrame = frame;
 			frame.size.width /= columnsPerScreen;
 			frame.origin.x += (frame.size.width * column);
 			
-			frame.size.height /= rows;
-			frame.origin.y += frame.size.height * ((rows - 1) - row);
+			frame.size.height /= rowsPerScreen;
+			frame.origin.y += frame.size.height * ((rowsPerScreen - 1) - row);
 
 			if( lastScreen)
 			{
@@ -3270,13 +3288,21 @@ static BOOL initialized = NO;
 				}
 			}
 			
+			if( [hiddenWindows count])	// We have new viewers to insert !
+			{
+				if( [[[viewersList objectAtIndex:i] window] screen] != screen)
+				{
+					[viewersList removeObject: [hiddenWindows lastObject]];
+					[viewersList insertObject: [hiddenWindows lastObject] atIndex: i];
+					
+					[hiddenWindows removeObject: [hiddenWindows lastObject]];
+				}
+			}
+			
 			[[viewersList objectAtIndex:i] setWindowFrame:frame showWindow:YES animate: YES];
 		}
 	}
-	else
-	{
-		NSLog(@"NO tiling");
-	}
+	else NSLog(@"NO tiling");
 	
 	[AppController checkForPreferencesUpdate: NO];
 	[[NSUserDefaults standardUserDefaults] setBool: origCopySettings forKey: @"COPYSETTINGS"];
@@ -3299,10 +3325,7 @@ static BOOL initialized = NO;
 		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOHIDEMATRIX"])
 		{
 			for( id v in viewersList)
-			{
 				[v autoHideMatrix];
-				
-			}
 		}
 		
 		[[[viewersList objectAtIndex: keyWindow] imageView] becomeMainWindow];
