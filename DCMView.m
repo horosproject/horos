@@ -1758,17 +1758,20 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	[self setOriginX: newXX*cos(rotation*deg2rad) + newYY*sin(rotation*deg2rad) Y: newXX*sin(rotation*deg2rad) - newYY*cos(rotation*deg2rad)];
 }
 
-- (void) scaleToFit
+- (float) scaleToFitForDCMPix: (DCMPix*) d
 {
 	NSRect  sizeView = [self bounds];
 	
-	if( sizeView.size.width / curDCM.pwidth < sizeView.size.height / curDCM.pheight / curDCM.pixelRatio )
-		self.scaleValue = sizeView.size.width / curDCM.pwidth;
+	if( sizeView.size.width / d.pwidth < sizeView.size.height / d.pheight / d.pixelRatio )
+		return sizeView.size.width / d.pwidth;
 	else
-		self.scaleValue = sizeView.size.height / curDCM.pheight /curDCM.pixelRatio;
-	
+		return sizeView.size.height / d.pheight /d.pixelRatio;
+}
+
+- (void) scaleToFit
+{
+	self.scaleValue = [self scaleToFitForDCMPix: curDCM];
 	origin.x = origin.y = 0;
-	
 	[self setNeedsDisplay:YES];
 }
 
@@ -2150,7 +2153,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 		BOOL done = NO;
 		
-		if( [self is2DViewer] == YES) {
+		if( [self is2DViewer] == YES)
+		{
 			if( ([[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"CR"]  && IndependentCRWLWW) || COPYSETTINGSINSERIES == NO)
 			{
 				if( curWW != curDCM.ww || curWL != curDCM.wl || [curDCM updateToApply] == YES)
@@ -2165,7 +2169,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			}
 		}
 		
-		if( done == NO) {
+		if( done == NO)
+		{
 			if( curWW != curDCM.ww || curWL != curDCM.wl || [curDCM updateToApply] == YES)
 			{
 				[self reapplyWindowLevel];
@@ -3752,7 +3757,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				}
 				else // Start drawing a new ROI !
 				{
-					if( curROI) {
+					if( curROI)
+					{
 						drawingROI = [curROI mouseRoiDown:tempPt :scaleValue];
 						
 						if( drawingROI == NO) curROI = nil;
@@ -3760,7 +3766,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						if( [curROI ROImode] == ROI_selected)
 							[[NSNotificationCenter defaultCenter] postNotificationName: @"roiSelected" object: curROI userInfo: nil];
 					}
-					else {
+					else
+					{
 						// Unselect previous ROIs
 						for( int i = 0; i < [curRoiList count]; i++) [[curRoiList objectAtIndex: i] setROIMode : ROI_sleep];
 						
@@ -3872,7 +3879,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						}
 						
 						drawingROI = [aNewROI mouseRoiDown: tempPt :scaleValue];
-
+						
 						if( drawingROI == NO) curROI = nil;
 						
 						if( [aNewROI ROImode] == ROI_selected)
@@ -3881,7 +3888,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:	aNewROI,							@"ROI",
 																								[NSNumber numberWithInt:curImage],	@"sliceNumber", 
 																								nil];
-					   
+						
 						[[NSNotificationCenter defaultCenter] postNotificationName: @"addROI" object:self userInfo:userInfo];
 						
 						[aNewROI release];
@@ -8180,12 +8187,29 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			{
 				if( [self is2DViewer])
 					[[self windowController] setUpdateTilingViewsValue: YES];
-					
-				origin.x = origin.y = 0;
+				
 				[self scaleToFit];
 				
 				if( [self is2DViewer] == YES)
 				{
+					if( ([[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"CR"]  && IndependentCRWLWW) || COPYSETTINGSINSERIES == NO)
+					{
+						ViewerController *v = [self windowController];
+						
+						for( int i = 0 ; i < [v  maxMovieIndex]; i++)
+						{
+							for( DCMPix *pix in [v pixList: i])
+							{
+								if( pix != curDCM)
+								{
+									[pix.imageObj setValue: [NSNumber numberWithFloat: [self scaleToFitForDCMPix: pix]] forKey: @"scale"];
+									[pix.imageObj setValue: [NSNumber numberWithFloat: 0] forKey:@"xOffset"];
+									[pix.imageObj setValue: [NSNumber numberWithFloat: 0] forKey:@"yOffset"];
+								}
+							}
+						}
+					}
+					
 					[[self windowController] setUpdateTilingViewsValue: NO];
 					
 					if( [[self window] isMainWindow])
@@ -8212,7 +8236,28 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				else yChanged = 0.01;
 				
 				if( [self is2DViewer])
+				{
 					[[self windowController] setUpdateTilingViewsValue: YES];
+				
+					if( ([[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"CR"]  && IndependentCRWLWW) || COPYSETTINGSINSERIES == NO)
+					{
+						ViewerController *v = [self windowController];
+						
+						for( int i = 0 ; i < [v  maxMovieIndex]; i++)
+						{
+							for( DCMPix *pix in [v pixList: i])
+							{
+								if( pix != curDCM)
+								{
+									float s = [[pix.imageObj valueForKey: @"scale"] floatValue];
+									
+									if( s)
+										[pix.imageObj setValue: [NSNumber numberWithFloat: s * yChanged] forKey: @"scale"];
+								}
+							}
+						}
+					}
+				}
 				
 				self.scaleValue = scaleValue * yChanged;
 				
@@ -10350,14 +10395,15 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 		if( ([self is2DViewer] == YES && [[NSUserDefaults standardUserDefaults] boolForKey:@"AlwaysScaleToFit"] == NO) || COPYSETTINGSINSERIES == NO)
 		{
-			NSPoint o = NSMakePoint(0 , 0);
+			NSPoint o = NSMakePoint( HUGE_VALF, HUGE_VALF);
+			
 			if( [image valueForKey:@"xOffset"])  o.x = [[image valueForKey:@"xOffset"] floatValue];
 			else if( !onlyImage) o.x = [[series valueForKey:@"xOffset"] floatValue];
 			
 			if( [image valueForKey:@"yOffset"])  o.y = [[image valueForKey:@"yOffset"] floatValue];
 			else if( !onlyImage) o.y = [[series valueForKey:@"yOffset"] floatValue];
 			
-			if( o.x != 0 || o.y != 0)
+			if( o.x != HUGE_VALF && o.y != HUGE_VALF)
 				[self setOrigin: o];
 		}
 		
@@ -10995,13 +11041,23 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 #pragma mark -
 #pragma mark Window Controler methods.
-- (id)windowController{
+- (id) windowController
+{
 	return [[self window] windowController];
 }
 
-- (BOOL)is2DViewer
+- (BOOL) is2DViewer
 {
-	return [[self windowController] is2DViewer];
+	if( is2DViewerCached)
+		return is2DViewerValue;
+	
+	if( [self window])
+	{
+		is2DViewerCached = YES;
+		is2DViewerValue = [[self windowController] is2DViewer];
+	}
+	
+	return is2DViewerValue;
 }
 
 #pragma mark -

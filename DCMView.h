@@ -265,6 +265,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 	
 	BOOL			exceptionDisplayed;
 	BOOL			COPYSETTINGSINSERIES;
+	BOOL			is2DViewerCached, is2DViewerValue;
 	
 	char*	lensTexture;
 	int LENSSIZE;
@@ -379,6 +380,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 - (void) setOriginX:(float) x Y:(float) y;
 - (void) setOriginOffset:(NSPoint) x;
 - (void) scaleToFit;
+- (float) scaleToFitForDCMPix: (DCMPix*) d;
 - (void) scaleBy2AndCenterShutter;
 - (void) setBlendingFactor:(float) f;
 - (void) sliderAction:(id) sender;

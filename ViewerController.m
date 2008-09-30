@@ -2771,7 +2771,6 @@ static volatile int numberOfThreadsForRelisce = 0;
 	return YES;
 }
 
-
 - (void)closeAllWindows:(NSNotification *)note
 {
 	if (![[note object] isEqual:self])
