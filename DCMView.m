@@ -1153,6 +1153,12 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			[[NSNotificationCenter defaultCenter] postNotificationName: @"roiSelected" object: loopItem1 userInfo: nil];
 		}
 		
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"markROIImageAsKeyImage"])
+		{
+			if( [self is2DViewer] == YES && [self isKeyImage] == NO)
+				[[self windowController] setKeyImage: self];
+		}
+		
 		[curRoiList addObjectsFromArray: roiArray];
 	}
 	
@@ -1259,8 +1265,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		NSDictionary*	xml = [NSDictionary dictionaryWithContentsOfFile: [filenames objectAtIndex:i]];
 		NSArray*		roiArray = [xml objectForKey: @"ROI array"];
 		
-		if ( roiArray ) {
-			for ( int j = 0; j < [roiArray count]; j++ ) {
+		if ( roiArray )
+		{
+			for ( int j = 0; j < [roiArray count]; j++ )
+			{
 				NSDictionary *roiDict = [roiArray objectAtIndex: j];
 				
 				int sliceIndex = [[roiDict objectForKey: @"Slice"] intValue] - 1;
@@ -1289,6 +1297,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				
 				roi.points =pointsArray;
 				[roi setRoiFont: labelFontListGL :labelFontListGLSize :self];
+				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"markROIImageAsKeyImage"])
+				{
+					if( [self is2DViewer] == YES && [self isKeyImage] == NO)
+						[[self windowController] setKeyImage: self];
+				}
 				
 				[roiList addObject: roi];
 				[[NSNotificationCenter defaultCenter] postNotificationName: @"roiSelected" object: roi userInfo: nil];
@@ -1321,6 +1334,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				roi.points = pointsArray;
 				roi.ROImode = ROI_selected;
 				[roi setRoiFont: labelFontListGL :labelFontListGLSize :self];
+				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"markROIImageAsKeyImage"])
+				{
+					if( [self is2DViewer] == YES && [self isKeyImage] == NO)
+						[[self windowController] setKeyImage: self];
+				}
 				
 				[curRoiList addObject: roi];
 				[[NSNotificationCenter defaultCenter] postNotificationName: @"roiSelected" object: roi userInfo: nil];
@@ -1362,6 +1380,12 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			[[roiArray objectAtIndex: i] setOriginAndSpacing :curDCM.pixelSpacingX : curDCM.pixelSpacingY :NSMakePoint( curDCM.originX, curDCM.originY)];
 			[[roiArray objectAtIndex: i] setROIMode: ROI_selected];
 			[[roiArray objectAtIndex: i] setRoiFont: labelFontListGL :labelFontListGLSize :self];
+		}
+		
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"markROIImageAsKeyImage"])
+		{
+			if( [self is2DViewer] == YES && [self isKeyImage] == NO)
+					[[self windowController] setKeyImage: self];
 		}
 		
 		[curRoiList addObjectsFromArray: roiArray];
@@ -2109,7 +2133,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		[curRoiList release];
 		
 		if( dcmRoiList) curRoiList = [[dcmRoiList objectAtIndex: curImage] retain];
-		else {
+		else
+		{
 			curRoiList = [[NSMutableArray alloc] initWithCapacity:0];
 		}
 
@@ -3839,6 +3864,13 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						else [curRoiList addObject: aNewROI];
 						
 						[aNewROI setRoiFont: labelFontListGL :labelFontListGLSize :self];
+						
+						if( [[NSUserDefaults standardUserDefaults] boolForKey: @"markROIImageAsKeyImage"])
+						{
+							if( [self is2DViewer] == YES && [self isKeyImage] == NO)
+								[[self windowController] setKeyImage: self];
+						}
+						
 						drawingROI = [aNewROI mouseRoiDown: tempPt :scaleValue];
 
 						if( drawingROI == NO) curROI = nil;
