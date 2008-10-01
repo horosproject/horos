@@ -84,12 +84,11 @@ static char *GetPrivateIP()
 - (void)toggleSharing:(BOOL)boo
 {
     uint16_t chosenPort;
-    if(!listeningSocket) {
-
+    if(!listeningSocket)
+	{
         // Here, create the socket from traditional BSD socket calls, and then set up an NSFileHandle with
         //that to listen for incoming connections.
 		
-			
 		if(fdForListening) close(fdForListening);
 		fdForListening= 0L;
 	
@@ -158,7 +157,8 @@ static char *GetPrivateIP()
 			OsiriXDBCurrentPort = chosenPort;
 
 			// Once we're here, we know bind must have returned, so we can start the listen
-			if(listen(fdForListening, 1) == 0) {
+			if(listen(fdForListening, 1) == 0)
+			{
 				listeningSocket = [[NSFileHandle alloc] initWithFileDescriptor:fdForListening closeOnDealloc:NO];
 			}
 			else listeningSocket = 0L;
@@ -169,7 +169,7 @@ static char *GetPrivateIP()
 	{
         // lazily instantiate the NSNetService object that will advertise on our behalf.  Passing in "" for the domain causes the service
         // to be registered in the default registration domain, which will currently always be "local"
-        netService = [[NSNetService alloc] initWithDomain:@"" type:@"_osirixdbsharing._tcp." name:serviceName port:chosenPort];
+        netService = [[NSNetService alloc] initWithDomain:@"" type:@"_osirixdbsharing._tcp." name: serviceName port:chosenPort];
         [netService setDelegate:self];
 		
 		NSMutableDictionary *params = [NSMutableDictionary dictionary];

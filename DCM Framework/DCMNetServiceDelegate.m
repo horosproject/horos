@@ -92,7 +92,6 @@ static NSLock *currentHostLock = 0L;
 	[_dicomServices release];
 	[_dicomNetBrowser release];
 	[super dealloc];
-	
 }
 
 - (NSArray *)dicomServices
@@ -206,7 +205,8 @@ static NSLock *currentHostLock = 0L;
 		{
 			NSArray					*dicomServices		= [[DCMNetServiceDelegate sharedNetServiceDelegate] dicomServices];
 			
-			for( int i = 0 ; i < [dicomServices count] ; i++) {
+			for( int i = 0 ; i < [dicomServices count] ; i++)
+			{
 				NSNetService*	aServer = [dicomServices objectAtIndex: i];
 				
 				NSString		*hostname;
@@ -214,13 +214,26 @@ static NSLock *currentHostLock = 0L;
 				
 				hostname = [DCMNetServiceDelegate gethostnameAndPort:&port forService: aServer];
 				
-				if( hostname) {
+				if( hostname)
+				{
+					NSDictionary *dict = [NSNetService dictionaryFromTXTRecordData: [aServer TXTRecordData]];
+					NSString *description = 0L;
+					
+					if( [dict valueForKey: @"serverDescription"])
+					{
+						description = [[[NSString alloc] initWithData: [dict valueForKey: @"serverDescription"] encoding:NSUTF8StringEncoding] autorelease];
+					}
+					else
+					{
+						description = [NSString stringWithFormat:@"%@ (Bonjour)", [aServer hostName]];
+					}
+					
 					[serversArray addObject: [NSDictionary dictionaryWithObjectsAndKeys:	hostname, @"Address",
 																							[aServer name], @"AETitle",
 																							[NSString stringWithFormat:@"%d", port], @"Port",
 																							[NSNumber numberWithBool:YES] , @"QR",
 																							[NSNumber numberWithBool:YES] , @"Send",
-																							[NSString stringWithFormat:@"%@ (Bonjour)", [aServer hostName]], @"Description",
+																							description, @"Description",
 																							[NSNumber numberWithInt:0], @"Transfer Syntax",
 																							0L]];
 				}
@@ -232,8 +245,10 @@ static NSLock *currentHostLock = 0L;
 	}
 	else serversArray = [NSMutableArray arrayWithArray: cachedServersArray];
 	
-	if( send) {
-		for( int i = 0 ; i < [serversArray count] ; i++) {
+	if( send)
+	{
+		for( int i = 0 ; i < [serversArray count] ; i++)
+		{
 			if( [[serversArray objectAtIndex: i] valueForKey:@"Send"] != 0L && [[[serversArray objectAtIndex: i] valueForKey:@"Send"] boolValue] == NO)
 			{
 				[serversArray removeObjectAtIndex: i];
@@ -243,7 +258,8 @@ static NSLock *currentHostLock = 0L;
 	}
 	
 	if( QR)	{
-		for( int i = 0 ; i < [serversArray count] ; i++ ) {
+		for( int i = 0 ; i < [serversArray count] ; i++ )
+		{
 			if( [[serversArray objectAtIndex: i] valueForKey:@"QR"] != 0L && [[[serversArray objectAtIndex: i] valueForKey:@"QR"] boolValue] == NO)
 			{
 				[serversArray removeObjectAtIndex: i];
@@ -272,16 +288,17 @@ static NSLock *currentHostLock = 0L;
 	NSString			*hostname = nil;
 	NSString			*portString = nil;
 	
-	for ( NSData *addr in [sender addresses] ) {
+	for ( NSData *addr in [sender addresses] )
+	{
 		result = (struct sockaddr *)[addr bytes];
 	
 		int family = result->sa_family;
-		if (family == AF_INET) {
-			if (inet_ntop(AF_INET, &((struct sockaddr_in *)result)->sin_addr, buffer, sizeof(buffer))) {
+		if (family == AF_INET)
+		{
+			if (inet_ntop(AF_INET, &((struct sockaddr_in *)result)->sin_addr, buffer, sizeof(buffer)))
+			{
 				hostname = [NSString stringWithCString:buffer];
 				portString = [NSString stringWithFormat:@"%d", ntohs(((struct sockaddr_in *)result)->sin_port)];
-				
-				//NSLog( @"%@:%@", hostname, portString);
 				
 				if(port) *port = [portString intValue];
 			}

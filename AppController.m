@@ -1113,6 +1113,11 @@ static NSDate *lastWarningDate = 0L;
 	NSLog( @"startDICOMBonjour");
 
 	BonjourDICOMService = [[NSNetService  alloc] initWithDomain:@"" type:@"_dicom._tcp." name: [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] port:[[[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"] intValue]];
+	
+	NSString *description = [[BrowserController currentBrowser] serviceName];
+	
+	if( description && [description length] > 0)
+		[BonjourDICOMService setTXTRecordData: [NSNetService dataFromTXTRecordDictionary: [NSDictionary dictionaryWithObject: description forKey: @"serverDescription"]]];
 	[BonjourDICOMService setDelegate: self];
 	[BonjourDICOMService publish];
 	

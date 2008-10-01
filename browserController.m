@@ -15645,13 +15645,15 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (long)currentBonjourService { return [bonjourServicesList selectedRow] - 1; }
 
-- (void)setCurrentBonjourService: (int)index {
+- (void)setCurrentBonjourService: (int)index
+{
 	dontLoadSelectionSource = YES;
 	[bonjourServicesList selectRow: index+1 byExtendingSelection: NO];
 	dontLoadSelectionSource = NO;
 }
 
-- (NSString*)getLocalDCMPath: (NSManagedObject*)obj : (long)no {
+- (NSString*)getLocalDCMPath: (NSManagedObject*)obj : (long)no
+{
 	if( isCurrentDatabaseBonjour) return [bonjourBrowser getDICOMFile: [bonjourServicesList selectedRow]-1 forObject: obj noOfImages: no];
 	else return [obj valueForKey:@"completePath"];
 }
@@ -15667,11 +15669,17 @@ static volatile int numberOfThreadsForJPEG = 0;
 	return c;
 }
 
+- (NSString*) serviceName
+{
+	return [bonjourPublisher serviceName];
+}
+
 - (void)setServiceName: (NSString*)title
 {
 	if( title && [title length] > 0 )
 		[bonjourPublisher setServiceName: title];
-	else {
+	else
+	{
 		[bonjourPublisher setServiceName: [self defaultSharingName]];
 		[bonjourServiceName setStringValue: [self defaultSharingName]];
 	}

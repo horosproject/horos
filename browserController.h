@@ -448,7 +448,8 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 //bonjour
 - (void) getDICOMROIFiles:(NSArray*) files;
 - (void) setBonjourDatabaseValue:(NSManagedObject*) obj value:(id) value forKey:(NSString*) key;
-- (void)setServiceName:(NSString*) title;
+- (void) setServiceName:(NSString*) title;
+- (NSString*) serviceName;
 - (IBAction)toggleBonjourSharing:(id) sender;
 - (void) setBonjourSharingEnabled:(BOOL) boo;
 - (void) bonjourWillPublish;
