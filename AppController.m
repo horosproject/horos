@@ -2933,46 +2933,54 @@ static BOOL initialized = NO;
 	}
 	
 	NSMutableArray	*cResult = [NSMutableArray array];
-	int count = [cWindows count];
-	while( count > 0)
+	
+	@try
 	{
-		int index = 0;
-		int row = [self currentRowForViewer: [cWindows objectAtIndex: index]];
-		
-		for( x = 0; x < [cWindows count]; x++)
+		int count = [cWindows count];
+		while( count > 0)
 		{
-			if( [self currentRowForViewer: [cWindows objectAtIndex: x]] < row)
+			int index = 0;
+			int row = [self currentRowForViewer: [cWindows objectAtIndex: index]];
+			
+			for( x = 0; x < [cWindows count]; x++)
 			{
-				row = [self currentRowForViewer: [cWindows objectAtIndex: x]];
-				index = x;
+				if( [self currentRowForViewer: [cWindows objectAtIndex: x]] < row)
+				{
+					row = [self currentRowForViewer: [cWindows objectAtIndex: x]];
+					index = x;
+				}
 			}
-		}
-		
-		float minX = [self windowCenter: [[cWindows objectAtIndex: index] window]].x;
-		
-		for( x = 0; x < [cWindows count]; x++)
-		{
-			if( [self windowCenter: [[cWindows objectAtIndex: x] window]].x < minX && [self currentRowForViewer: [cWindows objectAtIndex: x]] <= row)
+			
+			float minX = [self windowCenter: [[cWindows objectAtIndex: index] window]].x;
+			
+			for( x = 0; x < [cWindows count]; x++)
 			{
-				minX = [self windowCenter: [[cWindows objectAtIndex: x] window]].x;
-				index = x;
+				if( [self windowCenter: [[cWindows objectAtIndex: x] window]].x < minX && [self currentRowForViewer: [cWindows objectAtIndex: x]] <= row)
+				{
+					minX = [self windowCenter: [[cWindows objectAtIndex: x] window]].x;
+					index = x;
+				}
 			}
+			
+			[cResult addObject: [cWindows objectAtIndex: index]];
+			[cWindows removeObjectAtIndex: index];
+			count--;
 		}
-		
-		[cResult addObject: [cWindows objectAtIndex: index]];
-		[cWindows removeObjectAtIndex: index];
-		count--;
+	}
+	@catch ( NSException *e)
+	{
+		NSLog( @"***** 1: %@", e);
 	}
 	
 	NSMutableArray *hiddenWindows = [NSMutableArray array];
 	
 	// Add the hidden windows
-	for( i = 0; i < [viewersList count]; i++)
+	for( ViewerController *v in viewersList)
 	{
-		if( [[[viewersList objectAtIndex: i] window] isVisible] == NO)
+		if( [[v window] isVisible] == NO)
 		{
-			[hiddenWindows addObject: [viewersList objectAtIndex: i]];
-			[cResult addObject: [viewersList objectAtIndex: i]];
+			[hiddenWindows addObject: v];
+			[cResult addObject: v];
 		}
 	}
 	
@@ -3033,32 +3041,39 @@ static BOOL initialized = NO;
 		}
 	}
 	
-	if( keepSameStudyOnSameScreen == YES && identical == NO)
+	@try
 	{
-		//get 2D viewer study arrays
-		for( i = 0; i < [viewersList count]; i++)
+		if( keepSameStudyOnSameScreen == YES && identical == NO)
 		{
-			NSString	*studyUID = [[[[viewersList objectAtIndex: i] fileList] objectAtIndex: 0] valueForKeyPath:@"series.study.studyInstanceUID"];
-			
-			BOOL found = NO;
-			// loop through and add to correct array if present
-			for( x = 0; x < [studyList count]; x++)
+			//get 2D viewer study arrays
+			for( i = 0; i < [viewersList count]; i++)
 			{
-				if( [[[[[[studyList objectAtIndex: x] objectAtIndex: 0] fileList] objectAtIndex: 0] valueForKeyPath:@"series.study.studyInstanceUID"] isEqualToString: studyUID])
+				NSString	*studyUID = [[[[viewersList objectAtIndex: i] fileList] objectAtIndex: 0] valueForKeyPath:@"series.study.studyInstanceUID"];
+				
+				BOOL found = NO;
+				// loop through and add to correct array if present
+				for( x = 0; x < [studyList count]; x++)
 				{
-					[[studyList objectAtIndex: x] addObject: [viewersList objectAtIndex: i]];
-					found = YES;
+					if( [[[[[[studyList objectAtIndex: x] objectAtIndex: 0] fileList] objectAtIndex: 0] valueForKeyPath:@"series.study.studyInstanceUID"] isEqualToString: studyUID])
+					{
+						[[studyList objectAtIndex: x] addObject: [viewersList objectAtIndex: i]];
+						found = YES;
+					}
+				}
+				// create new array for current UID
+				if( found == NO)
+				{
+					[studyList addObject: [NSMutableArray array]];
+					[[studyList lastObject] addObject: [viewersList objectAtIndex: i]];
 				}
 			}
-			// create new array for current UID
-			if( found == NO)
-			{
-				[studyList addObject: [NSMutableArray array]];
-				[[studyList lastObject] addObject: [viewersList objectAtIndex: i]];
-			}
 		}
+		else keepSameStudyOnSameScreen = NO;
 	}
-	else keepSameStudyOnSameScreen = NO;
+	@catch ( NSException *e)
+	{
+		NSLog( @"***** 2: %@", e);
+	}
 	
 	int viewerCount = [viewersList count];
 	
@@ -3110,23 +3125,31 @@ static BOOL initialized = NO;
 	
 	if( keepSameStudyOnSameScreen && numberOfMonitors > 1)
 	{
-		NSLog(@"Tile Windows with keepSameStudyOnSameScreen == YES");
-		
-		for( i = 0; i < numberOfMonitors && i < [studyList count]; i++)
+		@try
 		{
-			NSMutableArray	*viewersForThisScreen = [studyList objectAtIndex:i];
+			NSLog(@"Tile Windows with keepSameStudyOnSameScreen == YES");
 			
-			if( i == numberOfMonitors -1 || i == [studyList count]-1)
+			for( i = 0; i < numberOfMonitors && i < [studyList count]; i++)
 			{
-				// Take all remaining studies
+				NSMutableArray	*viewersForThisScreen = [studyList objectAtIndex:i];
 				
-				for ( x = i+1; x < [studyList count]; x++)
+				if( i == numberOfMonitors -1 || i == [studyList count]-1)
 				{
-					[viewersForThisScreen addObjectsFromArray: [studyList objectAtIndex: x]];
+					// Take all remaining studies
+					
+					for ( x = i+1; x < [studyList count]; x++)
+					{
+						[viewersForThisScreen addObjectsFromArray: [studyList objectAtIndex: x]];
+					}
 				}
+				
+				[self displayViewers: viewersForThisScreen OnThisScreen: [screens objectAtIndex:i]];
 			}
 			
-			[self displayViewers: viewersForThisScreen OnThisScreen: [screens objectAtIndex:i]];
+		}
+		@catch ( NSException *e)
+		{
+			NSLog( @"***** 3: %@", e);
 		}
 	}
 	
