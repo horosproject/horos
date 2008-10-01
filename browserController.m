@@ -4838,8 +4838,15 @@ static NSArray*	statesArray = nil;
 		NSMutableArray *i = [NSMutableArray arrayWithArray: [[toolbar items] valueForKey: @"itemIdentifier"]];
 		if( [i containsString: OpenKeyImagesAndROIsToolbarItemIdentifier])
 		{
-			if( [[self ROIsAndKeyImages: 0L] count] == 0) ROIsAndKeyImagesButtonAvailable = NO;
-			else ROIsAndKeyImagesButtonAvailable = YES;
+			if( [index count] > 10)
+			{
+				ROIsAndKeyImagesButtonAvailable = YES;
+			}
+			else
+			{
+				if( [[self ROIsAndKeyImages: 0L] count] == 0) ROIsAndKeyImagesButtonAvailable = NO;
+				else ROIsAndKeyImagesButtonAvailable = YES;
+			}
 		}
 	}
 	else
@@ -11633,15 +11640,15 @@ static NSArray*	openSubSeriesArray = 0L;
 	}
 	else if( [menuItem action] == @selector( viewerDICOMROIsImages:))
 	{
-		if( [[self ROIImages: menuItem] count] == 0) return NO;
+		if( [[databaseOutline selectedRowIndexes] count] < 20 && [[self ROIImages: menuItem] count] == 0) return NO;
 	}
 	else if( [menuItem action] == @selector( viewerKeyImagesAndROIsImages:))
 	{
-		if( [[self ROIsAndKeyImages: menuItem] count] == 0) return NO;
+		if( [[databaseOutline selectedRowIndexes] count] < 20 && [[self ROIsAndKeyImages: menuItem] count] == 0) return NO;
 	}
 	else if( [menuItem action] == @selector( viewerDICOMKeyImages:))
 	{
-		if( [[self KeyImages: menuItem] count] == 0) return NO;
+		if( [[databaseOutline selectedRowIndexes] count] < 20 && [[self KeyImages: menuItem] count] == 0) return NO;
 	}
 	else if( [menuItem action] == @selector( createROIsFromRTSTRUCT:))
 	{
