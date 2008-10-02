@@ -220,12 +220,30 @@ static NSLock *currentHostLock = 0L;
 					NSString *description = 0L;
 					
 					if( [dict valueForKey: @"serverDescription"])
-					{
 						description = [[[NSString alloc] initWithData: [dict valueForKey: @"serverDescription"] encoding:NSUTF8StringEncoding] autorelease];
-					}
 					else
-					{
 						description = [NSString stringWithFormat:@"%@ (Bonjour)", [aServer hostName]];
+					
+					int transferSyntax = 2;
+					
+					if( [dict valueForKey: @"preferredSyntax"])
+					{
+						NSString *ts = [[[NSString alloc] initWithData: [dict valueForKey: @"preferredSyntax"] encoding:NSUTF8StringEncoding] autorelease];
+						
+						if( [ts isEqualToString: @"LittleEndianImplicit"])
+							transferSyntax = 0;
+							
+						if( [ts isEqualToString: @"JPEGProcess14SV1TransferSyntax"])
+							transferSyntax = 21;
+							
+						if( [ts isEqualToString: @"JPEG2000LosslessOnly"])
+							transferSyntax = 26;
+							
+						if( [ts isEqualToString: @"JPEG2000"])
+							transferSyntax = 27;
+							
+						if( [ts isEqualToString: @"RLELossless"])
+							transferSyntax = 22;
 					}
 					
 					[serversArray addObject: [NSDictionary dictionaryWithObjectsAndKeys:	hostname, @"Address",
@@ -234,7 +252,7 @@ static NSLock *currentHostLock = 0L;
 																							[NSNumber numberWithBool:YES] , @"QR",
 																							[NSNumber numberWithBool:YES] , @"Send",
 																							description, @"Description",
-																							[NSNumber numberWithInt:0], @"Transfer Syntax",
+																							[NSNumber numberWithInt: transferSyntax], @"Transfer Syntax",
 																							0L]];
 				}
 			}

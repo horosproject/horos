@@ -1115,9 +1115,35 @@ static NSDate *lastWarningDate = 0L;
 	BonjourDICOMService = [[NSNetService  alloc] initWithDomain:@"" type:@"_dicom._tcp." name: [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] port:[[[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"] intValue]];
 	
 	NSString *description = [[BrowserController currentBrowser] serviceName];
+	NSMutableDictionary *dict = [NSMutableDictionary dictionary];
 	
 	if( description && [description length] > 0)
-		[BonjourDICOMService setTXTRecordData: [NSNetService dataFromTXTRecordDictionary: [NSDictionary dictionaryWithObject: description forKey: @"serverDescription"]]];
+		[dict setValue: description forKey: @"serverDescription"];
+	
+	switch( [[NSUserDefaults standardUserDefaults] integerForKey: @"preferredSyntaxForIncoming"])
+	{
+		case 0:
+			[dict setValue: @"LittleEndianImplicit" forKey: @"preferredSyntax"];
+		break;
+		case 21:
+			[dict setValue: @"JPEGProcess14SV1TransferSyntax" forKey: @"preferredSyntax"];
+		break;
+		case 26:
+			[dict setValue: @"JPEG2000LosslessOnly" forKey: @"preferredSyntax"];
+		break;
+		case 27:
+			[dict setValue: @"JPEG2000" forKey: @"preferredSyntax"];
+		break;
+		case 22:
+			[dict setValue: @"RLELossless" forKey: @"preferredSyntax"];
+		break;
+		default:
+			[dict setValue: @"LittleEndianExplicit" forKey: @"preferredSyntax"];
+		break;
+	}
+	
+	[BonjourDICOMService setTXTRecordData: [NSNetService dataFromTXTRecordDictionary: dict]];
+		
 	[BonjourDICOMService setDelegate: self];
 	[BonjourDICOMService publish];
 	

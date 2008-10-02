@@ -2,13 +2,13 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="7.02">
 	<data>
 		<int key="IBDocument.SystemTarget">1050</int>
-		<string key="IBDocument.SystemVersion">9E17</string>
-		<string key="IBDocument.InterfaceBuilderVersion">670</string>
-		<string key="IBDocument.AppKitVersion">949.33</string>
+		<string key="IBDocument.SystemVersion">9F33</string>
+		<string key="IBDocument.InterfaceBuilderVersion">672</string>
+		<string key="IBDocument.AppKitVersion">949.34</string>
 		<string key="IBDocument.HIToolboxVersion">352.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="127"/>
+			<integer value="417"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -1210,9 +1210,9 @@
 												<string key="NSKeyEquivalent"/>
 												<int key="NSPeriodicDelay">400</int>
 												<int key="NSPeriodicInterval">75</int>
-												<object class="NSMenuItem" key="NSMenuItem" id="1046239636">
+												<object class="NSMenuItem" key="NSMenuItem" id="817472079">
 													<reference key="NSMenu" ref="828694654"/>
-													<string key="NSTitle">Explicit Little Endian</string>
+													<string key="NSTitle">Implicit Little Endian - Only</string>
 													<string key="NSKeyEquiv"/>
 													<int key="NSKeyEquivModMask">1048576</int>
 													<int key="NSMnemonicLoc">2147483647</int>
@@ -1220,7 +1220,6 @@
 													<reference key="NSOnImage" ref="108188148"/>
 													<reference key="NSMixedImage" ref="904057702"/>
 													<string key="NSAction">_popUpItemAction:</string>
-													<int key="NSTag">2</int>
 													<reference key="NSTarget" ref="1053763513"/>
 												</object>
 												<bool key="NSMenuItemRespectAlignment">YES</bool>
@@ -1228,7 +1227,18 @@
 													<string key="NSTitle">OtherViews</string>
 													<object class="NSMutableArray" key="NSMenuItems">
 														<bool key="EncodedWithXMLCoder">YES</bool>
-														<reference ref="1046239636"/>
+														<object class="NSMenuItem" id="1046239636">
+															<reference key="NSMenu" ref="828694654"/>
+															<string key="NSTitle">Explicit Little Endian</string>
+															<string key="NSKeyEquiv"/>
+															<int key="NSKeyEquivModMask">1048576</int>
+															<int key="NSMnemonicLoc">2147483647</int>
+															<reference key="NSOnImage" ref="108188148"/>
+															<reference key="NSMixedImage" ref="904057702"/>
+															<string key="NSAction">_popUpItemAction:</string>
+															<int key="NSTag">2</int>
+															<reference key="NSTarget" ref="1053763513"/>
+														</object>
 														<object class="NSMenuItem" id="798653918">
 															<reference key="NSMenu" ref="828694654"/>
 															<string key="NSTitle">JPEG Lossless</string>
@@ -1315,19 +1325,10 @@
 															<int key="NSTag">-1</int>
 															<reference key="NSTarget" ref="1053763513"/>
 														</object>
-														<object class="NSMenuItem" id="817472079">
-															<reference key="NSMenu" ref="828694654"/>
-															<string key="NSTitle">Implicit Little Endian - Only</string>
-															<string key="NSKeyEquiv"/>
-															<int key="NSKeyEquivModMask">1048576</int>
-															<int key="NSMnemonicLoc">2147483647</int>
-															<reference key="NSOnImage" ref="108188148"/>
-															<reference key="NSMixedImage" ref="904057702"/>
-															<string key="NSAction">_popUpItemAction:</string>
-															<reference key="NSTarget" ref="1053763513"/>
-														</object>
+														<reference ref="817472079"/>
 													</object>
 												</object>
+												<int key="NSSelectedIndex">8</int>
 												<int key="NSPreferredEdge">1</int>
 												<bool key="NSUsesItemFromMenu">YES</bool>
 												<bool key="NSAltersState">YES</bool>
@@ -2858,12 +2859,12 @@
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
-					<string>{{665, 445}, {719, 685}}</string>
+					<string>{{572, 445}, {719, 685}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{665, 445}, {719, 685}}</string>
+					<string>{{572, 445}, {719, 685}}</string>
 					<reference ref="9"/>
 					<string>{{770, 336}, {725, 672}}</string>
-					<reference ref="9"/>
+					<reference ref="6"/>
 					<reference ref="9"/>
 					<string>{3.40282e+38, 3.40282e+38}</string>
 					<string>{224.663, 10}</string>
@@ -3036,7 +3037,7 @@ YWNPU1guIEkgd291bGQgcmVjb21tZW5kIG5vdCB1c2luZyAxMDQuA</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{182, 474}, {313, 173}}</string>
+					<string>{{754, 752}, {313, 173}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
