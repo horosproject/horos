@@ -2292,10 +2292,10 @@ static BOOL initialized = NO;
 	
 	NSLog(@"No of screens: %d", [[NSScreen screens] count]);
 	
-	for( int i = 0; i < [[NSScreen screens] count]; i++)
+	for( int i = 0; i < 10; i++)
 		toolbarPanel[ i] = [[ToolbarPanelController alloc] initForScreen: i];
 	
-	for( int i = 0; i < [[NSScreen screens] count]; i++)
+	for( int i = 0; i < 10; i++)
 		[toolbarPanel[ i] fixSize];
 		
 //	if( USETOOLBARPANEL) [[toolbarPanel window] makeKeyAndOrderFront:self];

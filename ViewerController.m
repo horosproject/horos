@@ -3285,6 +3285,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 				[self buildMatrixPreview];
 			}
 		}
+		
+		[splitView saveDefault:@"SPLITVIEWER"];
 	}
 }
 
