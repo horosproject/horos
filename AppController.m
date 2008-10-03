@@ -2793,58 +2793,120 @@ static BOOL initialized = NO;
 	[self checkAllWindowsAreVisible: sender makeKey: NO];
 }
 
-- (void) displayViewers: (NSArray*) viewers OnThisScreen: (NSScreen*) screen
+- (void) displayViewers: (NSArray*) viewers monitorIndex: (int) monitorIndex screens: (NSArray*) screens numberOfMonitors:(int) numberOfMonitors rowsPerScreen:(int) rowsPerScreen columnsPerScreen:(int) columnsPerScreen
 {
-	NSRect screenRect = [screen visibleFrame];
-	BOOL landscape = (screenRect.size.width/screenRect.size.height > 1) ? YES : NO;
-
-	int rows = 1,  columns = 1, viewerCount = [viewers count];
+	BOOL strechWindows = [[NSUserDefaults standardUserDefaults] boolForKey: @"StrechWindows"];
+	BOOL lastScreen = NO;
 	
-	while (viewerCount > (rows * columns))
+	for( int i = 0; i < [viewers count]; i++)
 	{
-		float ratio = ((float)columns/(float)rows);
+		if( monitorIndex == numberOfMonitors-1 && strechWindows == YES && lastScreen == NO)
+		{
+			int remaining = [viewers count] - i;
 		
-		if (ratio > 1.5 && landscape)
-			rows ++;
-		else 
-			columns ++;
-	}
-	
-	int i;
-	
-	for( i = 0; i < viewerCount; i++)
-	{
-		int row = i/columns;
-		int columnIndex = (i - (row * columns));
-		int viewerPosition = i;
+			lastScreen = YES;
 		
+			while( rowsPerScreen*columnsPerScreen > remaining)
+			{
+				rowsPerScreen--;
+				
+				if( rowsPerScreen*columnsPerScreen > remaining)
+					columnsPerScreen--;
+			}
+		
+			while( rowsPerScreen*columnsPerScreen < remaining)
+				rowsPerScreen++;
+		}
+		
+		int posInScreen = i % (columnsPerScreen*rowsPerScreen);
+		int row = posInScreen / columnsPerScreen;
+		int column = posInScreen % columnsPerScreen;
+		
+		NSScreen *screen = [screens objectAtIndex: monitorIndex];
 		NSRect frame = [screen visibleFrame];
 
 		if( USETOOLBARPANEL) frame.size.height -= [ToolbarPanelController fixedHeight];
 		frame = [NavigatorView adjustIfScreenAreaIf4DNavigator: frame];
-		
+
 		int temp;
-			
-//		temp = frame.size.width / columnsPerScreen;
-//		frame.size.width = temp * columnsPerScreen;
-//		
-//		temp = frame.size.height / rows;
-//		frame.size.height = temp * rows;
-		
-		frame.size.width /= columns;
-		frame.origin.x += (frame.size.width * columnIndex);
-		
-		if( i == viewerCount-1)
+
+		temp = frame.size.width / columnsPerScreen;
+		frame.size.width = temp * columnsPerScreen;
+
+		temp = frame.size.height / rowsPerScreen;
+		frame.size.height = temp * rowsPerScreen;
+
+		NSRect visibleFrame = frame;
+		frame.size.width /= columnsPerScreen;
+		frame.origin.x += (frame.size.width * column);
+
+		frame.size.height /= rowsPerScreen;
+		frame.origin.y += frame.size.height * ((rowsPerScreen - 1) - row);
+
+		if( lastScreen)
 		{
-			frame.size.width = [screen visibleFrame].size.width - (frame.origin.x - [screen visibleFrame].origin.x);
+			if( i + columnsPerScreen >= [viewers count] && strechWindows == YES)
+			{
+				frame.size.height += frame.origin.y - visibleFrame.origin.y;
+				frame.origin.y = visibleFrame.origin.y;
+			}
 		}
-		
-		frame.size.height /= rows;
-		frame.origin.y += frame.size.height * ((rows - 1) - row);
-		
+
 		[[viewers objectAtIndex:i] setWindowFrame:frame showWindow:YES animate: YES];
 	}
 }
+
+//{
+//	NSRect screenRect = [screen visibleFrame];
+//	BOOL landscape = (screenRect.size.width/screenRect.size.height > 1) ? YES : NO;
+//
+//	int rows = 1,  columns = 1, viewerCount = [viewers count];
+//	
+//	while (viewerCount > (rows * columns))
+//	{
+//		float ratio = ((float)columns/(float)rows);
+//		
+//		if (ratio > 1.5 && landscape)
+//			rows ++;
+//		else 
+//			columns ++;
+//	}
+//	
+//	int i;
+//	
+//	for( i = 0; i < viewerCount; i++)
+//	{
+//		int row = i/columns;
+//		int columnIndex = (i - (row * columns));
+//		int viewerPosition = i;
+//		
+//		NSRect frame = [screen visibleFrame];
+//
+//		if( USETOOLBARPANEL) frame.size.height -= [ToolbarPanelController fixedHeight];
+//		frame = [NavigatorView adjustIfScreenAreaIf4DNavigator: frame];
+//		
+//		int temp;
+//			
+////		temp = frame.size.width / columnsPerScreen;
+////		frame.size.width = temp * columnsPerScreen;
+////		
+////		temp = frame.size.height / rows;
+////		frame.size.height = temp * rows;
+//		
+//		frame.size.width /= columns;
+//		frame.origin.x += (frame.size.width * columnIndex);
+//		
+//		if( i == viewerCount-1)
+//		{
+//			frame.size.width = [screen visibleFrame].size.width - (frame.origin.x - [screen visibleFrame].origin.x);
+//		}
+//		
+//		frame.size.height /= rows;
+//		frame.origin.y += frame.size.height * ((rows - 1) - row);
+//		
+//		[[viewers objectAtIndex:i] setWindowFrame:frame showWindow:YES animate: YES];
+//	}
+//}
 
 - (NSArray*) orderedScreens
 {
@@ -3174,7 +3236,7 @@ static BOOL initialized = NO;
 					}
 				}
 				
-				[self displayViewers: viewersForThisScreen OnThisScreen: [screens objectAtIndex:i]];
+				[self displayViewers: viewersForThisScreen monitorIndex: i screens: screens numberOfMonitors: numberOfMonitors rowsPerScreen: rows columnsPerScreen: columns];
 			}
 			
 		}
@@ -3269,91 +3331,49 @@ static BOOL initialized = NO;
 		int rowsPerScreen = rows;
 		
 		if( rows >= columns)
-		{
 			rowsPerScreen = ceil(((float) rows / (float) numberOfMonitors));
-		}
 		else
-		{
 			columnsPerScreen = ceil(((float) columns / (float) numberOfMonitors));
-		}
 		
 		BOOL lastScreen = NO;
 		
-		for( i = 0; i < viewerCount; i++)
+		NSMutableArray *viewersForThisScreen = [NSMutableArray array];
+		
+		int previousIndex = 0;
+		int monitorIndex;
+		
+		if( viewerCount)
 		{
-			int monitorIndex =  i / (columnsPerScreen*rowsPerScreen);
-			
-			if( monitorIndex == numberOfMonitors) monitorIndex = numberOfMonitors-1;
-			
-			if( monitorIndex == numberOfMonitors-1 && strechWindows == YES && lastScreen == NO)
+			for( i = 0; i < viewerCount; i++)
 			{
-				int remaining = viewerCount - i;
+				monitorIndex =  i / (columnsPerScreen*rowsPerScreen);
 				
-				lastScreen = YES;
+				if( monitorIndex == numberOfMonitors) monitorIndex = numberOfMonitors-1;
 				
-				while( rowsPerScreen*columnsPerScreen > remaining)
+				NSScreen *screen = [screens objectAtIndex: monitorIndex];
+				
+				if( monitorIndex != previousIndex)
 				{
-					rowsPerScreen--;
-					
-					if( rowsPerScreen*columnsPerScreen > remaining)
-						columnsPerScreen--;
+					[self displayViewers: viewersForThisScreen monitorIndex: monitorIndex screens: screens numberOfMonitors: numberOfMonitors rowsPerScreen: rowsPerScreen columnsPerScreen: columnsPerScreen];
+					[viewersForThisScreen removeAllObjects];
 				}
 				
-				while( rowsPerScreen*columnsPerScreen < remaining)
-					rowsPerScreen++;
-			}
-			
-			int posInScreen = i % (columnsPerScreen*rowsPerScreen);
-			int row = posInScreen / columnsPerScreen;
-			int column = posInScreen % columnsPerScreen;
-			
-//			NSLog( @"posInScreen %d", posInScreen);
-//			NSLog( @"row %d", row);
-//			NSLog( @"column %d", column);
-//			NSLog( @"------");
-			
-			NSScreen *screen = [screens objectAtIndex: monitorIndex];
-			NSRect frame = [screen visibleFrame];
-			
-			if( USETOOLBARPANEL) frame.size.height -= [ToolbarPanelController fixedHeight];
-			frame = [NavigatorView adjustIfScreenAreaIf4DNavigator: frame];
-			
-			int temp;
-			
-			temp = frame.size.width / columnsPerScreen;
-			frame.size.width = temp * columnsPerScreen;
-			
-			temp = frame.size.height / rowsPerScreen;
-			frame.size.height = temp * rowsPerScreen;
-			
-			NSRect visibleFrame = frame;
-			frame.size.width /= columnsPerScreen;
-			frame.origin.x += (frame.size.width * column);
-			
-			frame.size.height /= rowsPerScreen;
-			frame.origin.y += frame.size.height * ((rowsPerScreen - 1) - row);
-
-			if( lastScreen)
-			{
-				if( i + columnsPerScreen >= viewerCount && strechWindows == YES)
+				if( [hiddenWindows count])	// We have new viewers to insert !
 				{
-					frame.size.height += frame.origin.y - visibleFrame.origin.y;
-					frame.origin.y = visibleFrame.origin.y;
+					if( [[[viewersList objectAtIndex:i] window] screen] != screen)
+					{
+						[viewersList removeObject: [hiddenWindows lastObject]];
+						[viewersList insertObject: [hiddenWindows lastObject] atIndex: i];
+						
+						[hiddenWindows removeObject: [hiddenWindows lastObject]];
+					}
 				}
+				
+				[viewersForThisScreen addObject: [viewersList objectAtIndex:i]];
 			}
 			
-			if( [hiddenWindows count])	// We have new viewers to insert !
-			{
-				if( [[[viewersList objectAtIndex:i] window] screen] != screen)
-				{
-					[viewersList removeObject: [hiddenWindows lastObject]];
-					[viewersList insertObject: [hiddenWindows lastObject] atIndex: i];
-					
-					[hiddenWindows removeObject: [hiddenWindows lastObject]];
-				}
-			}
-			
-			[[viewersList objectAtIndex:i] setWindowFrame:frame showWindow:YES animate: YES];
+			if( [viewersForThisScreen count])
+				[self displayViewers: viewersForThisScreen monitorIndex: monitorIndex screens: screens numberOfMonitors: numberOfMonitors rowsPerScreen: rowsPerScreen columnsPerScreen: columnsPerScreen];
 		}
 	}
 	else NSLog(@"NO tiling");
