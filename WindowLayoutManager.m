@@ -39,8 +39,10 @@ static WindowLayoutManager *sharedLayoutManager = 0L;
 	return sharedLayoutManager;
 }
 
-- (id)init{
-	if (self = [super init]) {
+- (id)init
+{
+	if (self = [super init])
+	{
 //		_windowControllers = [[NSMutableArray alloc] init];
 //		_hangingProtocolInUse = NO;
 //		_seriesSetIndex = 0;

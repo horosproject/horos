@@ -15,6 +15,7 @@
 /*************************************************************
 Manages the Window for creating Calcium Scoring ROIs
 ***************************************************************/
+
 #import "ITKSegmentation3D.h"
 #import "ViewerController.h"
 #import "DCMPix.h"
@@ -23,17 +24,15 @@ Manages the Window for creating Calcium Scoring ROIs
 #import "browserController.h"
 #import <OsiriX/DCM.h>
 #import <OsiriX/DCMNetworking.h>
-
-
-
 #import "CalciumScoringWindowController.h"
-
 
 enum ctTypes {ElectronCTType, MultiSliceCTType};
 @implementation CalciumScoringWindowController
 
-- (id)initWithViewer:(ViewerController *)viewer{
-	if (self = [super initWithWindowNibName:@"CalciumScoring"]) {
+- (id)initWithViewer:(ViewerController *)viewer
+{
+	if (self = [super initWithWindowNibName:@"CalciumScoring"])
+	{
 		_viewer = viewer;
 		[self setUpperThreshold:1500];
 		NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
@@ -48,7 +47,8 @@ enum ctTypes {ElectronCTType, MultiSliceCTType};
 		
 		_vessels = [[NSMutableArray alloc] init];
 		NSString *name;
-		for (name in _vesselNames) {
+		for (name in _vesselNames)
+		{
 			[(NSMutableArray *)_vessels addObject:[NSMutableDictionary dictionaryWithObjectsAndKeys: name, @"vesselName",
 															[NSNumber numberWithFloat:0.0], @"score",
 															[NSNumber numberWithFloat:0.0], @"mass",
@@ -178,12 +178,14 @@ enum ctTypes {ElectronCTType, MultiSliceCTType};
 - (void)setRoiName:(NSString *)roiName{
 	[_roiName release];
 	_roiName = [roiName retain];
-	if (![_vesselNames containsObject:roiName]) {
+	if (![_vesselNames containsObject:roiName])
+	{
 		NSArray *vesselNames = [_vesselNames arrayByAddingObject:roiName];
 		[self setVesselNames:vesselNames];
 		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"vesselName like %@", roiName];
 		NSArray *filteredVessels = [_vessels filteredArrayUsingPredicate:predicate];
-		if ([filteredVessels count] == 0) {
+		if ([filteredVessels count] == 0)
+		{
 			NSMutableArray *vessels = [NSMutableArray arrayWithArray:_vessels];
 			[vessels insertObject:[NSMutableDictionary dictionaryWithObjectsAndKeys: roiName, @"vesselName",
 															[NSNumber numberWithFloat:0.0], @"score",
@@ -349,7 +351,8 @@ enum ctTypes {ElectronCTType, MultiSliceCTType};
 		
 		// Add Dates
 		DCMCalendarDate *date = [DCMCalendarDate dicomDateWithDate:[study valueForKey:@"date"]];
-		if (date) {
+		if (date)
+		{
 			NSLog(@"Date: %@", [study valueForKey:@"date"]);
 			[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[DCMCalendarDate dicomDateWithDate:[study valueForKey:@"date"]]] forName:@"StudyDate"];
 		}
@@ -420,27 +423,33 @@ enum ctTypes {ElectronCTType, MultiSliceCTType};
 	
 	NSArray *roiList = [_viewer roisWithName:name];
 	ROI *roi ;
-	for (roi in roiList) {
+	for (roi in roiList)
+	{
 		[roi setDisplayCalciumScoring:YES];
-		if (addROIs) {
+		if (addROIs)
+		{
 			RGBColor aColor;
 			[_rois addObject:roi];
-			if ([[roi name] isEqualToString:NSLocalizedString(@"Left Coronary Artery", nil)]) {
+			if ([[roi name] isEqualToString:NSLocalizedString(@"Left Coronary Artery", nil)])
+			{
 					aColor.red = 65535;
 					aColor.green =0;
 					aColor.blue = 0;
 			}	
-			else if ([[roi name] isEqualToString:NSLocalizedString(@"Left Anterior Descending Artery", nil)]) {
+			else if ([[roi name] isEqualToString:NSLocalizedString(@"Left Anterior Descending Artery", nil)])
+			{
 					aColor.red = 0;
 					aColor.green =0;
 					aColor.blue = 65535;
 			}
-			else if ([[roi name] isEqualToString:NSLocalizedString(@"Left Circumflex Artery", nil)]) {
+			else if ([[roi name] isEqualToString:NSLocalizedString(@"Left Circumflex Artery", nil)])
+			{
 					aColor.red = 65535;
 					aColor.green =65535;
 					aColor.blue = 0;
 			}
-			else if ([[roi name] isEqualToString:NSLocalizedString(@"Right Coronary Artery", nil)]) {
+			else if ([[roi name] isEqualToString:NSLocalizedString(@"Right Coronary Artery", nil)])
+			{	
 					aColor.red = 65535;
 					aColor.green =0;
 					aColor.blue = 65535;
@@ -464,10 +473,12 @@ enum ctTypes {ElectronCTType, MultiSliceCTType};
 	float totalMass = 0.0;
 	float totalVolume = 0.0;
 	NSMutableDictionary *vessel;
-	for (vessel in _vessels) {
+	for (vessel in _vessels)
+	{
 		NSString *vesselName = [vessel objectForKey:@"vesselName"];
 		//NSLog(@"vessel: %@", vesselName);
-		if ([vesselName isEqualToString:NSLocalizedString(@"Total", nil)]) {
+		if ([vesselName isEqualToString:NSLocalizedString(@"Total", nil)])
+		{
 			[vessel setValue:[NSNumber numberWithFloat:totalScore] forKey:@"score"];
 			[vessel setValue:[NSNumber numberWithFloat:totalMass] forKey:@"mass"];
 			[vessel setValue:[NSNumber numberWithFloat:totalVolume] forKey:@"volume"];
@@ -481,7 +492,8 @@ enum ctTypes {ElectronCTType, MultiSliceCTType};
 		float segmentScore = 0.0;
 		float segmentMass = 0.0;
 		float segmentVolume = 0.0;
-		while (roi = [enumerator nextObject]) {
+		while (roi = [enumerator nextObject])
+		{
 			//NSLog(@"roi: %@", [roi name]);
 			[roi setCalciumThreshold:_lowerThreshold];
 			totalScore += [roi calciumScore];
@@ -562,7 +574,8 @@ enum ctTypes {ElectronCTType, MultiSliceCTType};
 	NSInteger years;
 	NSInteger days;
 	NSInteger months;
-	if (dob && studyDate) {
+	if (dob && studyDate)
+	{
 		[studyDate years:&years
 		 months:&months
 		 days:&days

@@ -2548,9 +2548,6 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (void) windowDidBecomeMain:(NSNotification *)aNotification
 {
-	[appController willChangeValueForKey:@"viewer"];
-	[appController didChangeValueForKey:@"viewer"];
-
 	[self refreshToolbar];
 	[self updateNavigator];
 }

@@ -63,7 +63,8 @@ AppController			*appController = 0L;
 DCMTKQueryRetrieveSCP   *dcmtkQRSCP = 0L;
 NSString				*dicomListenerIP = 0L;
 NSLock					*PapyrusLock = 0L;			// Papyrus is NOT thread-safe
-
+NSMutableArray			*accumulateAnimationsArray = 0L;
+BOOL					accumulateAnimations = NO;
 
 enum	{kSuccess = 0,
         kCouldNotFindRequestedProcess = -1, 
@@ -677,12 +678,18 @@ static NSDate *lastWarningDate = 0L;
 									 NSViewAnimationEndFrameKey,
 									 nil];
 		
-		NSViewAnimation * animation = [[[NSViewAnimation alloc]  initWithViewAnimations: [NSArray arrayWithObjects: windowResize, nil]] autorelease];
-		
-		[animation setAnimationBlockingMode: NSAnimationBlocking];
-		[animation setDuration: 0.15];
-		
-		[animation startAnimation];
+		if( accumulateAnimations)
+		{
+			if( accumulateAnimationsArray == 0L) accumulateAnimationsArray = [[NSMutableArray array] retain];
+			[accumulateAnimationsArray addObject: windowResize];
+		}
+		else
+		{
+			NSViewAnimation * animation = [[[NSViewAnimation alloc]  initWithViewAnimations: [NSArray arrayWithObjects: windowResize, nil]] autorelease];
+			[animation setAnimationBlockingMode: NSAnimationBlocking];
+			[animation setDuration: 0.15];
+			[animation startAnimation];
+		}
 	}
 	else
 	{
@@ -2798,6 +2805,9 @@ static BOOL initialized = NO;
 	BOOL strechWindows = [[NSUserDefaults standardUserDefaults] boolForKey: @"StrechWindows"];
 	BOOL lastScreen = NO;
 	
+	int OcolumnsPerScreen = columnsPerScreen;
+	int OrowsPerScreen = rowsPerScreen;
+	
 	for( int i = 0; i < [viewers count]; i++)
 	{
 		if( monitorIndex == numberOfMonitors-1 && strechWindows == YES && lastScreen == NO)
@@ -2818,7 +2828,7 @@ static BOOL initialized = NO;
 				rowsPerScreen++;
 		}
 		
-		int posInScreen = i % (columnsPerScreen*rowsPerScreen);
+		int posInScreen = i % (OcolumnsPerScreen*OrowsPerScreen);
 		int row = posInScreen / columnsPerScreen;
 		int column = posInScreen % columnsPerScreen;
 		
@@ -3171,17 +3181,11 @@ static BOOL initialized = NO;
 	int viewerCount = [viewersList count];
 	
 	screenRect = [[screens objectAtIndex:0] visibleFrame];
+	
 	BOOL landscape = (screenRect.size.width/screenRect.size.height > 1) ? YES : NO;
 	
 	int rows = [[[[WindowLayoutManager sharedWindowLayoutManager] currentHangingProtocol] objectForKey:@"Rows"] intValue];
 	int columns = [[[[WindowLayoutManager sharedWindowLayoutManager] currentHangingProtocol] objectForKey:@"Columns"] intValue];
-	
-//	if( fixedTiling)
-//	{
-//		rows = fixedTilingRows;
-//		columns = fixedTilingColumns;
-//	}
-//	else
 	
 	if (![[WindowLayoutManager sharedWindowLayoutManager] currentHangingProtocol] || viewerCount < rows * columns)
 	{
@@ -3202,7 +3206,7 @@ static BOOL initialized = NO;
 	{
 		float ratioValue;
 		
-		if( landscape) ratioValue = 1.5;
+		if( landscape) ratioValue = numberOfMonitors;
 		else ratioValue = 1.0;
 	
 		while (viewerCount > (rows * columns))
@@ -3215,6 +3219,8 @@ static BOOL initialized = NO;
 				columns ++;
 		}
 	}
+	
+	accumulateAnimations = YES;
 	
 	if( keepSameStudyOnSameScreen && numberOfMonitors > 1)
 	{
@@ -3330,10 +3336,7 @@ static BOOL initialized = NO;
 		int columnsPerScreen = columns;
 		int rowsPerScreen = rows;
 		
-		if( rows >= columns)
-			rowsPerScreen = ceil(((float) rows / (float) numberOfMonitors));
-		else
-			columnsPerScreen = ceil(((float) columns / (float) numberOfMonitors));
+		columnsPerScreen = ceil(((float) columns / (float) numberOfMonitors));
 		
 		BOOL lastScreen = NO;
 		
@@ -3376,7 +3379,28 @@ static BOOL initialized = NO;
 				[self displayViewers: viewersForThisScreen monitorIndex: monitorIndex screens: screens numberOfMonitors: numberOfMonitors rowsPerScreen: rowsPerScreen columnsPerScreen: columnsPerScreen];
 		}
 	}
-	else NSLog(@"NO tiling");
+	else
+		NSLog(@"NO tiling");
+	
+	accumulateAnimations = NO;
+	if( [accumulateAnimationsArray count])
+	{
+		[OSIWindowController setDontEnterMagneticFunctions: YES];
+		
+		NSViewAnimation * animation = [[[NSViewAnimation alloc]  initWithViewAnimations: accumulateAnimationsArray] autorelease];
+		[animation setAnimationBlockingMode: NSAnimationBlocking];
+		
+		if( [accumulateAnimationsArray count] == 1)
+			[animation setDuration: 0.20];
+		else
+			[animation setDuration: 0.40];
+		[animation startAnimation];
+		
+		[accumulateAnimationsArray release];
+		accumulateAnimationsArray = 0L;
+		
+		[OSIWindowController setDontEnterMagneticFunctions: NO];
+	}
 	
 	[AppController checkForPreferencesUpdate: NO];
 	[[NSUserDefaults standardUserDefaults] setBool: origCopySettings forKey: @"COPYSETTINGS"];

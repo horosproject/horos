@@ -4297,9 +4297,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	}
 	
 	// We have dragged before timer went off turn off timer and contine with drag
-	if (_dragInProgress == NO && ([event deltaX] != 0 || [event deltaY] != 0)) {
+	if (_dragInProgress == NO && ([event deltaX] != 0 || [event deltaY] != 0))
 		[self deleteMouseDownTimer];
-	}
 	
 	// we are dragging don't do anything
 	if (_dragInProgress == YES) return;

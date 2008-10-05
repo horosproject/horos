@@ -991,7 +991,8 @@ NSString * documentsDirectory();
     // The toolbar will use this method to obtain toolbar items that can be displayed in the customization sheet, or in the toolbar itself 
     NSToolbarItem *toolbarItem = [[NSToolbarItem alloc] initWithItemIdentifier: itemIdent];
     
-	if ([itemIdent isEqual: MailToolbarItemIdentifier]) {
+	if ([itemIdent isEqual: MailToolbarItemIdentifier])
+	{
         
 	[toolbarItem setLabel: NSLocalizedString(@"Email",nil)];
 	[toolbarItem setPaletteLabel: NSLocalizedString(@"Email",nil)];
@@ -1000,7 +1001,8 @@ NSString * documentsDirectory();
 	[toolbarItem setTarget: self];
 	[toolbarItem setAction: @selector(sendMail:)];
     }
-	else if ([itemIdent isEqual: ExportToolbarItemIdentifier]) {
+	else if ([itemIdent isEqual: ExportToolbarItemIdentifier])
+	{
         
 	[toolbarItem setLabel: NSLocalizedString(@"DICOM File",nil)];
 	[toolbarItem setPaletteLabel:NSLocalizedString( @"Save as DICOM",nil)];
@@ -1009,7 +1011,8 @@ NSString * documentsDirectory();
 	[toolbarItem setTarget: self];
 	[toolbarItem setAction: @selector(exportDICOMFile:)];
     }
-	else if([itemIdent isEqual: ToolsToolbarItemIdentifier]) {
+	else if([itemIdent isEqual: ToolsToolbarItemIdentifier])
+	{
 	// Set up the standard properties 
 	[toolbarItem setLabel: NSLocalizedString(@"Mouse button function",nil)];
 	[toolbarItem setPaletteLabel: NSLocalizedString(@"Mouse button function",nil)];
@@ -1021,7 +1024,8 @@ NSString * documentsDirectory();
 	[toolbarItem setMaxSize:NSMakeSize(NSWidth([toolsView frame]),NSHeight([toolsView frame]))];
 
     }
-/*	 else if([itemIdent isEqual: ThickSlabToolbarItemIdentifier]) {
+/*	 else if([itemIdent isEqual: ThickSlabToolbarItemIdentifier])
+	{
 	// Set up the standard properties 
 	[toolbarItem setLabel: NSLocalizedString(@"Thick Slab", @"Thick Slab")];
 	[toolbarItem setPaletteLabel: NSLocalizedString(@"Thick Slab", @"Thick Slab")];
@@ -1031,7 +1035,8 @@ NSString * documentsDirectory();
 	[toolbarItem setMinSize:NSMakeSize(NSWidth([ThickSlabView frame]), NSHeight([ThickSlabView frame]))];
 	[toolbarItem setMinSize:NSMakeSize(NSWidth([ThickSlabView frame]) + 100, NSHeight([ThickSlabView frame]))];
     }*/
-	 else if([itemIdent isEqual: BlendingToolbarItemIdentifier]) {
+	 else if([itemIdent isEqual: BlendingToolbarItemIdentifier])
+	{
 	// Set up the standard properties 
 	[toolbarItem setLabel: NSLocalizedString(@"Fusion",nil)];
 	[toolbarItem setPaletteLabel:NSLocalizedString( @"Fusion",nil)];
@@ -1042,7 +1047,8 @@ NSString * documentsDirectory();
 	[toolbarItem setMinSize:NSMakeSize(NSWidth([blendingToolView frame]), NSHeight([blendingToolView frame]))];
 	[toolbarItem setMinSize:NSMakeSize(NSWidth([blendingToolView frame]), NSHeight([blendingToolView frame]))];
     }
-	else if ([itemIdent isEqual: VRPanelToolbarItemIdentifier]) {
+	else if ([itemIdent isEqual: VRPanelToolbarItemIdentifier])
+	{
 		[toolbarItem setLabel:NSLocalizedString(@"3D Panel", 0L)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"3D Panel",nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"3D Panel",nil)];
@@ -1060,7 +1066,8 @@ NSString * documentsDirectory();
 		[toolbarItem setTarget:self];
 		[toolbarItem setAction:@selector(threeDPanel:)];
     }
-	else if ([itemIdent isEqual: SameWidthSplitViewToolbarItemIdentifier]) {
+	else if ([itemIdent isEqual: SameWidthSplitViewToolbarItemIdentifier])
+	{
 		[toolbarItem setLabel:NSLocalizedString(@"Same Widths", 0L)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Same Widths",nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"Same widths for the 3 columns",nil)];
@@ -1069,7 +1076,8 @@ NSString * documentsDirectory();
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(adjustWidthSplitView)];
     }
-	else if ([itemIdent isEqual: SameHeightSplitViewToolbarItemIdentifier]) {
+	else if ([itemIdent isEqual: SameHeightSplitViewToolbarItemIdentifier])
+	{
 		[toolbarItem setLabel:NSLocalizedString(@"Same Heights", 0L)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Same Heights",nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"Same heights for the 3 rows",nil)];
@@ -1078,7 +1086,8 @@ NSString * documentsDirectory();
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(adjustHeightSplitView)];
     }
-	else if ([itemIdent isEqual: TurnSplitViewToolbarItemIdentifier]) {
+	else if ([itemIdent isEqual: TurnSplitViewToolbarItemIdentifier])
+	{
 		if (![modalitySplitView isVertical])
 		{
 			[toolbarItem setLabel:NSLocalizedString(@"Horizontal", 0L)];
@@ -1096,7 +1105,8 @@ NSString * documentsDirectory();
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(turnModalitySplitView)];
     }
-	else if ([itemIdent isEqualToString: ResetToolbarItemIdentifier]) {
+	else if ([itemIdent isEqualToString: ResetToolbarItemIdentifier])
+	{
 		[toolbarItem setLabel: NSLocalizedString(@"Reset", nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Reset", nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"Reset image to original view", nil)];
@@ -1104,7 +1114,8 @@ NSString * documentsDirectory();
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(resetImage:)];
     }
-	else if ([itemIdent isEqualToString: FlipVolumeToolbarItemIdentifier]) {
+	else if ([itemIdent isEqualToString: FlipVolumeToolbarItemIdentifier])
+	{
 		[toolbarItem setLabel: NSLocalizedString(@"Flip Volume", nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Flip Volume", nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"Flip Volume", nil)];
@@ -1126,7 +1137,8 @@ NSString * documentsDirectory();
 
 		[[wlwwPopup cell] setUsesItemFromMenu:YES];
 	}
-	else if([itemIdent isEqualToString: MovieToolbarItemIdentifier]) {
+	else if([itemIdent isEqualToString: MovieToolbarItemIdentifier])
+	{
 	// Set up the standard properties 
 	[toolbarItem setLabel: NSLocalizedString(@"4D Player", nil)];
 	[toolbarItem setPaletteLabel: NSLocalizedString(@"4D Player", nil)];
@@ -2477,7 +2489,8 @@ NSString * documentsDirectory();
     }
     // Recursively check all the subviews in the view
     enumerator = [ [aView subviews] objectEnumerator];
-    while (view = [enumerator nextObject]) {
+    while (view = [enumerator nextObject])
+	{
         [self checkView:view :OnOff];
     }
 }
