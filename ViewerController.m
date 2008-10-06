@@ -8625,6 +8625,19 @@ NSMutableArray		*array;
 		[v updateImage: self];
 }
 
+- (void)deleteOpacity:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo
+{
+    if( returnCode == 1)
+    {
+		NSMutableDictionary *clutDict	= [[[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"OPACITY"] mutableCopy] autorelease];
+		[clutDict removeObjectForKey: (id) contextInfo];
+		[[NSUserDefaults standardUserDefaults] setObject: clutDict forKey: @"OPACITY"];
+		
+		lastMenuNotification = 0L;
+        [[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curCLUTMenu userInfo: 0L];
+    }
+}
+
 - (void) ApplyOpacity: (id) sender
 {
     if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask)
