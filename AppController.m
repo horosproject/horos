@@ -3206,18 +3206,22 @@ static BOOL initialized = NO;
 	{
 		float ratioValue;
 		
-		if( landscape) ratioValue = numberOfMonitors;
+		if( landscape) ratioValue = 1.5;
 		else ratioValue = 1.0;
-	
-		while (viewerCount > (rows * columns))
+		
+		float viewerCountPerScreen = (float) viewerCount / (float) numberOfMonitors;
+		
+		while (viewerCountPerScreen > (rows * columns))
 		{
-			float ratio = ((float)columns/(float)rows)/numberOfMonitors;
+			float ratio = (float) columns / (float) rows;
 			
-			if (ratio >= ratioValue)
+			if (ratio > ratioValue)
 				rows ++;
 			else 
 				columns ++;
 		}
+		
+		columns *= numberOfMonitors;
 	}
 	
 	accumulateAnimations = YES;
@@ -3357,8 +3361,10 @@ static BOOL initialized = NO;
 				
 				if( monitorIndex != previousIndex)
 				{
-					[self displayViewers: viewersForThisScreen monitorIndex: monitorIndex screens: screens numberOfMonitors: numberOfMonitors rowsPerScreen: rowsPerScreen columnsPerScreen: columnsPerScreen];
+					[self displayViewers: viewersForThisScreen monitorIndex: previousIndex screens: screens numberOfMonitors: numberOfMonitors rowsPerScreen: rowsPerScreen columnsPerScreen: columnsPerScreen];
 					[viewersForThisScreen removeAllObjects];
+					
+					previousIndex = monitorIndex;
 				}
 				
 				if( [hiddenWindows count])	// We have new viewers to insert !

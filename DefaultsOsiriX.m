@@ -867,6 +867,8 @@ static NSHost *currentHost = 0L;
 	[defaultValues setObject:@"1" forKey:@"highLightViewer"];
 	[defaultValues setObject:@"1" forKey:@"ROIArrowThickness"];
 	[defaultValues setObject:@"1" forKey:@"showErrorsIfQueryFailed"];
+	[defaultValues setObject:@"1" forKey:@"loopScrollWheel"];
+	
 	
 	// ** ROI Default
 	[defaultValues setObject:[NSNumber numberWithFloat: 2] forKey:@"ROIThickness"];

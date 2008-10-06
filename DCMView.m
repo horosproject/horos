@@ -4082,14 +4082,16 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				{
 					float change = reverseScrollWheel * [theEvent deltaY] / 2.5f;
 					
-					if( change > 0) {
+					if( change > 0)
+					{
 						change = ceil( change);
 						if( change < 1) change = 1;
 						
 						inc = curDCM.stack * change;
 						curImage += inc;
 					}
-					else {
+					else
+					{
 						change = floor( change);
 						if( change > -1) change = -1;
 						
@@ -4119,10 +4121,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					}
 				}
 			}
-			else if( fabs( deltaX) > 0.7 ) {
+			else if( fabs( deltaX) > 0.7 )
+			{
 				[self mouseMoved: theEvent];	// Update some variables...
-				
-//				NSLog(@"delta x: %f", deltaX);
 				
 				float sScaleValue = scaleValue;
 				
@@ -4141,11 +4142,13 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				[self setNeedsDisplay:YES];
 			}
 			
-			if( [dcmPixList count] > 3) {
+			if( [dcmPixList count] > 3 && [[NSUserDefaults standardUserDefaults] boolForKey:@"loopScrollWheel"])
+			{
 				if( curImage < 0) curImage = [dcmPixList count]-1;
 				if( curImage >= [dcmPixList count]) curImage = 0;
 			}
-			else {
+			else
+			{
 				if( curImage < 0) curImage = 0;
 				if( curImage >= [dcmPixList count]) curImage = [dcmPixList count]-1;
 			}
@@ -4153,9 +4156,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			if( listType == 'i') [self setIndex:curImage];
 			else [self setIndexWithReset:curImage :YES];
 			
-			if( matrix ) {
+			if( matrix )
 				[matrix selectCellAtRow :curImage/[[BrowserController currentBrowser] COLUMN] column:curImage%[[BrowserController currentBrowser] COLUMN]];
-			}
 			
 			if( [self is2DViewer] == YES)
 				[[self windowController] adjustSlider];    //mouseDown:theEvent];
