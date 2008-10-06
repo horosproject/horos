@@ -41,22 +41,19 @@ static 	NSMutableDictionary *associatedScreen = 0L;
 - (void) fixSize
 {
 	NSRect  dstframe;
-	NSRect screenRect    = [[[NSScreen screens] objectAtIndex: screen] visibleFrame];
+	NSArray *screens = [NSScreen screens];
 	
-//	if( [[[self window] toolbar] isVisible] == NO) dstframe.size.height = 12;
-//	else dstframe.size.height = [ToolbarPanelController fixedHeight];
-
-//	if( [[[self window] toolbar] isVisible] == NO)
-//		[[[self window] toolbar] setVisible: YES];
-
-	dstframe.size.height = [ToolbarPanelController fixedHeight];
-	dstframe.size.width = screenRect.size.width;
-	dstframe.origin.x = screenRect.origin.x;
-	dstframe.origin.y = screenRect.origin.y + screenRect.size.height -dstframe.size.height;
-	
-//	NSLog(@"X: %2.2f Y:%2.2f", dstframe.origin.x, dstframe.origin.y);
-	
-	[[self window] setFrame: dstframe display: NO];
+	if( [screens count] > screen)
+	{
+		NSRect screenRect = [[screens objectAtIndex: screen] visibleFrame];
+		
+		dstframe.size.height = [ToolbarPanelController fixedHeight];
+		dstframe.size.width = screenRect.size.width;
+		dstframe.origin.x = screenRect.origin.x;
+		dstframe.origin.y = screenRect.origin.y + screenRect.size.height -dstframe.size.height;
+		
+		[[self window] setFrame: dstframe display: NO];
+	}
 }
 
 - (id)initForScreen: (long) s

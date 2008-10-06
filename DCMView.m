@@ -1868,8 +1868,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	[curDCM release];
 	curDCM = 0L;
 		
-	if( dcmPixList != c) {
-		
+	if( dcmPixList != c)
+	{
 		if( dcmPixList) [dcmPixList release];
 		dcmPixList = c;
 		[dcmPixList retain];
@@ -1895,8 +1895,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		}
     }
 	
-	if( dcmFilesList != d) {
-		
+	if( dcmFilesList != d)
+	{
 		if( dcmFilesList) [dcmFilesList release];
 		dcmFilesList = d;
 		[dcmFilesList retain];
@@ -1904,8 +1904,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	flippedData = NO;
 	
-	if( dcmRoiList != e) {
-		
+	if( dcmRoiList != e)
+	{
 		if( dcmRoiList) [dcmRoiList release];
 		dcmRoiList = e;
 		[dcmRoiList retain];
@@ -1913,8 +1913,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
     listType = type;
 	
-	if( dcmPixList) {
-		if( reset == YES) {
+	if( dcmPixList)
+	{
+		if( reset == YES)
+		{
 			[self setIndexWithReset: firstImage :YES];
 			[self updatePresentationStateFromSeries];
 		}
@@ -5708,7 +5710,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	float originA[ 3], originA2[ 3], originB[ 3];
 	
 	originA[ 0] = oPix.originX; originA[ 1 ] = oPix.originY; originA[ 2 ] = oPix.originZ;
-	if( oPix2) {
+	if( oPix2)
+	{
 		originA2[ 0 ] = oPix2.originX; originA2[ 1 ] = oPix2.originY; originA2[ 2 ] = oPix2.originZ;
 	}
 	originB[ 0] = curDCM.originX; originB[ 1] = curDCM.originY; originB[ 2] = curDCM.originZ;
@@ -6484,8 +6487,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 - (double)pixelSpacingX { return curDCM.pixelSpacingX; }
 - (double)pixelSpacingY { return curDCM.pixelSpacingY; }
 
-- (void)getOrientationText:(char *) orientation : (float *) vector :(BOOL) inv {
-	
+- (void)getOrientationText:(char *) orientation : (float *) vector :(BOOL) inv
+{
+	orientation[ 0] = 0;
+
 	NSString *orientationX;
 	NSString *orientationY;
 	NSString *orientationZ;
@@ -6510,22 +6515,28 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	float absZ = fabs( vector[ 2]);
 	
 	// get first 3 AXIS
-	for ( int i=0; i < 3; ++i) {
+	for ( int i=0; i < 3; ++i)
+	{
 		if (absX>.2 && absX>=absY && absX>=absZ)
 		{
 			[optr appendString: orientationX]; absX=0;
 		}
-		else if (absY>.2 && absY>=absX && absY>=absZ)	{
+		else if (absY>.2 && absY>=absX && absY>=absZ)
+		{
 			[optr appendString: orientationY]; absY=0;
-		} else if (absZ>.2 && absZ>=absX && absZ>=absY) {
+		}
+		else if (absZ>.2 && absZ>=absX && absZ>=absY)
+		{
 			[optr appendString: orientationZ]; absZ=0;
-		} else break;
+		}
+		else break;
 	}
 	
 	strcpy( orientation, [optr UTF8String]);
 }
 
--(void) setSlab:(float)s {
+-(void) setSlab:(float)s
+{
 	slab = s;
 	[self setNeedsDisplay:true];
 }
@@ -6584,14 +6595,14 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 }
 //===================================================================
 
-- (long) findPlaneAndPoint:(float*) pt :(float*) location {
-	
+- (long) findPlaneAndPoint:(float*) pt :(float*) location
+{
 	long	ii = -1;
 	float	vectors[ 9], orig[ 3], locationTemp[ 3];
 	float	distance = 999999, tempDistance;
 	
-	for( long i = 0; i < [dcmPixList count]; i++) {
-		
+	for( long i = 0; i < [dcmPixList count]; i++)
+	{
 		[[dcmPixList objectAtIndex: i] orientation: vectors];
 		
 		orig[ 0] = [[dcmPixList objectAtIndex: i] originX];
@@ -6600,7 +6611,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 		tempDistance = [self pbase_Plane: pt :orig :&(vectors[ 6]) :locationTemp];
 		
-		if( tempDistance < distance) {
+		if( tempDistance < distance)
+		{
 			location[ 0] = locationTemp[ 0];
 			location[ 1] = locationTemp[ 1];
 			location[ 2] = locationTemp[ 2];
@@ -6609,9 +6621,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		}
 	}
 	
-	if( ii != -1 ) {
-		NSLog(@"Distance: %2.2f, Index: %d", distance, ii);
-		
+	if( ii != -1 )
+	{
 		if( distance > curDCM.sliceThickness * 2) ii = -1;
 	}
 	
@@ -6625,6 +6636,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	float   vectors[ 9];
 	
 	[self orientationCorrectedToView: vectors];
+	
 	// Left
 	[self getOrientationText:string :vectors :YES];
 	[self DrawCStringGL: string : fontListGL :6 :2+size.size.height/2 rightAlignment: NO useStringTexture: YES];
@@ -6638,6 +6650,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	[self DrawCStringGL: string : fontListGL :size.size.width/2 :stringSize.height + 3 rightAlignment: NO useStringTexture: YES];
 	
 	if( curDCM.laterality ) [self DrawNSStringGL: curDCM.laterality : fontListGL :size.size.width/2 :12 + stringSize.height];
+	
 	//Bottom
 	[self getOrientationText:string :vectors+3 :NO];
 	[self DrawCStringGL: string : fontListGL :size.size.width/2 :2+size.size.height - 6 rightAlignment: NO useStringTexture: YES];
@@ -6652,7 +6665,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	{
 		if( curDCM.stack > 1)
 		{
-			
 			long maxVal = flippedData? maxVal = curImage-curDCM.stack : curImage+curDCM.stack;
 			
 			if( maxVal < 0) maxVal = curImage;
@@ -6916,6 +6928,46 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						}
 						else if([[annot objectAtIndex:j] isEqualToString:@"Image Position"] && fullText)
 						{
+							NSString *orientationStack = @"";
+							if( volumicSeries == YES && [dcmPixList count] > 1)
+							{
+								double interval3d;
+								double xd = [[dcmPixList objectAtIndex: 1] originX] - [[dcmPixList objectAtIndex: 0] originX];
+								double yd = [[dcmPixList objectAtIndex: 1] originY] - [[dcmPixList objectAtIndex: 0] originY];
+								double zd = [[dcmPixList objectAtIndex: 1] originZ] - [[dcmPixList objectAtIndex: 0] originZ];
+								
+								interval3d = sqrt(xd*xd + yd*yd + zd*zd);
+								xd /= interval3d;	yd /= interval3d;	zd /= interval3d;
+								
+								float v[ 3] = { xd, yd, zd};
+								char stackOrientationStart[ 10], stackOrientationEnd[ 10];
+								if( flippedData == NO)
+								{
+									[self getOrientationText: stackOrientationStart : v : YES];
+									[self getOrientationText: stackOrientationEnd : v : NO];
+								}
+								else
+								{
+									[self getOrientationText: stackOrientationStart : v : NO];
+									[self getOrientationText: stackOrientationEnd : v : YES];
+								}
+								
+								if( stackOrientationStart[ 0] != 0 && stackOrientationEnd[ 0] != 0)
+								{
+									float pos;
+									
+									if( flippedData) pos = (float) ([dcmPixList count] - curImage) / (float) [dcmPixList count];
+									else pos = (float) curImage / (float) [dcmPixList count];
+									
+									if( pos < 0.4)
+										orientationStack = [NSString stringWithFormat: @" %c (%c -> %c)", stackOrientationStart[ 0], stackOrientationStart[ 0], stackOrientationEnd[ 0]];
+									else if( pos > 0.6)
+										orientationStack = [NSString stringWithFormat: @" %c (%c -> %c)", stackOrientationEnd[ 0], stackOrientationStart[ 0], stackOrientationEnd[ 0]];
+									else
+										orientationStack = [NSString stringWithFormat: @" (%c -> %c)", stackOrientationStart[ 0], stackOrientationEnd[ 0]];
+								}
+							}
+							
 							if( curDCM.stack > 1)
 							{
 								long maxVal;
@@ -6926,13 +6978,13 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 								if(maxVal < 0) maxVal = 0;
 								if(maxVal > [dcmPixList count]) maxVal = [dcmPixList count];
 								
-								if( flippedData) [tempString appendFormat: NSLocalizedString( @"Im: %ld-%ld/%ld", @"No special characters for this string, only ASCII characters."), (long) [dcmPixList count] - curImage, [dcmPixList count] - maxVal, (long) [dcmPixList count]];
-								else [tempString appendFormat: NSLocalizedString( @"Im: %ld-%ld/%ld", @"No special characters for this string, only ASCII characters."), (long) curImage+1, maxVal, (long) [dcmPixList count]];
+								if( flippedData) [tempString appendFormat: NSLocalizedString( @"Im: %ld-%ld/%ld %@", @"No special characters for this string, only ASCII characters."), (long) [dcmPixList count] - curImage, [dcmPixList count] - maxVal, (long) [dcmPixList count], orientationStack];
+								else [tempString appendFormat: NSLocalizedString( @"Im: %ld-%ld/%ld %@", @"No special characters for this string, only ASCII characters."), (long) curImage+1, maxVal, (long) [dcmPixList count], orientationStack];
 							} 
 							else if( fullText)
 							{
-								if( flippedData) [tempString appendFormat: NSLocalizedString( @"Im: %ld/%ld", @"No special characters for this string, only ASCII characters."), (long) [dcmPixList count] - curImage, (long) [dcmPixList count]];
-								else [tempString appendFormat: NSLocalizedString( @"Im: %ld/%ld", @"No special characters for this string, only ASCII characters."), (long) curImage+1, (long) [dcmPixList count]];
+								if( flippedData) [tempString appendFormat: NSLocalizedString( @"Im: %ld/%ld %@", @"No special characters for this string, only ASCII characters."), (long) [dcmPixList count] - curImage, (long) [dcmPixList count], orientationStack];
+								else [tempString appendFormat: NSLocalizedString( @"Im: %ld/%ld %@", @"No special characters for this string, only ASCII characters."), (long) curImage+1, (long) [dcmPixList count], orientationStack];
 							}
 
 							useStringTexture = NO;
