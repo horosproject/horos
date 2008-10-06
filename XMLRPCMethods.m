@@ -339,7 +339,7 @@
 					
 					for( id loopItem5 in viewersList)
 					{
-						NSMutableString *c = [NSMutableString stringWithString: @"<struct>"];
+						NSMutableString *c = [NSMutableString stringWithString: @"<value><struct>"];
 						
 						NSManagedObject *series = [[loopItem5 imageView] seriesObj];
 						
@@ -360,7 +360,7 @@
 							}
 						}
 						
-						[c appendString: @"</struct>"];
+						[c appendString: @"</struct></value>"];
 						
 						[a appendString: c];
 					}
@@ -395,7 +395,7 @@
 					
 					for( id loopItem4 in viewersList)
 					{
-						NSMutableString *c = [NSMutableString stringWithString: @"<struct>"];
+						NSMutableString *c = [NSMutableString stringWithString: @"<value><struct>"];
 						
 						NSManagedObject *study = [[[loopItem4 imageView] seriesObj] valueForKey:@"study"];
 						
@@ -416,7 +416,7 @@
 							}
 						}
 						
-						[c appendString: @"</struct>"];
+						[c appendString: @"</struct></value>"];
 						
 						[a appendString: c];
 					}

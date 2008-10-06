@@ -6471,7 +6471,7 @@ static NSArray*	statesArray = nil;
 		
 		for( NSManagedObject *obj in array )
 		{
-			NSMutableString *c = [NSMutableString stringWithString: @"<struct>"];
+			NSMutableString *c = [NSMutableString stringWithString: @"<value><struct>"];
 			
 			NSDictionary *allCommittedValues = [obj committedValuesForKeys:nil];
 			
@@ -6490,7 +6490,7 @@ static NSArray*	statesArray = nil;
 				}
 			}
 			
-			[c appendString: @"</struct>"];
+			[c appendString: @"</struct></value>"];
 			
 			[a appendString: c];
 		}
