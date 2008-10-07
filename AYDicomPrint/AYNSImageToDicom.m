@@ -288,11 +288,14 @@
 //********************************************************************************************
 - (struct rawData) _convertRGBToGrayscale: (NSImage *) image
 {
-	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
 	NSBitmapImageRep *imageRepresentation = [NSBitmapImageRep imageRepWithData: [image TIFFRepresentation]];
 	
+	struct rawData rawImage;
+	rawImage.imageData = nil;
+	rawImage.bytesWritten = 0;
+	
 	if( [imageRepresentation samplesPerPixel] != 3)
-		NSLog( @"******* WARNING [imageRepresentation samplesPerPixel] != 3");
+		return rawImage;
 	
 	long bytesWritten = 0;
 	if(m_ImageDataBytes)
@@ -321,7 +324,6 @@
 			
 			grayValue = roundf(monoR + monoG + monoB);
 			[m_ImageDataBytes appendBytes: &grayValue length: 1];
-			//*destBuffer++ = grayValue;
 			bytesWritten++;
 		}
 	}
@@ -330,13 +332,9 @@
 	{
 		grayValue = 0;
 		[m_ImageDataBytes appendBytes: &grayValue length: 1];
-		//*destBuffer++ = '\0';
 		bytesWritten++;
 	}
 	
-	//[imageRepresentation release];
-	[pool release];
-	struct rawData rawImage;
 	rawImage.imageData = nil;
 	rawImage.bytesWritten = bytesWritten;
 	return rawImage;
