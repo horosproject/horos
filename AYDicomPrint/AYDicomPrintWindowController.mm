@@ -333,15 +333,7 @@
 	int columns = [[imageDisplayFormat substringWithRange: NSMakeRange([imageDisplayFormat length] - 3, 1)] intValue];
 	int ipp = rows * columns;
 	
-	// create temporary directory
-	if (!NSTemporaryDirectory())
-	{
-		[self performSelectorOnMainThread: @selector(_setProgressMessage:) withObject: @"Can't write to temporary directory." waitUntilDone: NO];
-		[pool release];
-		return;
-	}
-	
-	NSString *destPath = [NSString stringWithFormat: @"%@/dicomPrint", NSTemporaryDirectory()];
+	NSString *destPath = @"/tmp/dicomPrint/";
 	NSFileManager *fileManager = [NSFileManager defaultManager];
 	
 	// remove destination directory

@@ -207,16 +207,8 @@
 {
 	NSImage *currentImage = [[viewer imageView] nsimage: NO]; //NO=image sized by window
 
-/*	currentImage = [DCMPix resizeIfNecessary: currentImage dcmPix: [[viewer imageView] curDCM]];
-	[currentImage lockFocus];*/
-		
 	NSDictionary *patientInfoDict = [self _getAnnotationDictionary: viewer];
 	
-/*	NSRect imageRect = NSMakeRect(0.0, 0.0, [currentImage size].width, [currentImage size].height);
-	if (annotations)
-		[self _drawAnnotationsInRect: imageRect forTile: patientInfoDict isPrinting: YES];
-	[currentImage unlockFocus];*/
-		
 	NSString *imagePath = [self _writeDICOMHeaderAndData: patientInfoDict destinationPath: destPath imageData: currentImage colorPrint: colorPrint];
 	
 	if( imagePath == 0L)
@@ -232,17 +224,18 @@
 - (NSString*) generateUniqueFileName:(NSString*) destinationPath
 {
 	NSTimeInterval secs = [NSDate timeIntervalSinceReferenceDate];
-	NSString *filePath = [NSString stringWithFormat: @"%@/%ld", destinationPath, (long) secs];
+	NSString *filePath = [destinationPath stringByAppendingPathComponent: [NSString stringWithFormat: @"%ld", (long) secs]];
 	int index = 0;
 	BOOL isDir = YES;
 	
 	if (![[NSFileManager defaultManager] fileExistsAtPath:destinationPath isDirectory:&isDir] && isDir)
 		[[NSFileManager defaultManager] createDirectoryAtPath:destinationPath attributes:nil];
 	
-	NSString *tempFilePath = [NSString stringWithFormat: @"%@_%d.dcm", filePath, index]; 		
+	NSString *tempFilePath;
+	
 	do
 	{
-		tempFilePath = [NSString stringWithFormat: @"%@_%d.dcm", filePath, index];
+		tempFilePath = [filePath stringByAppendingFormat: @"-%d.dcm", index];
 		index++;
 	}while( [[NSFileManager defaultManager] fileExistsAtPath: tempFilePath] == YES);
 	
