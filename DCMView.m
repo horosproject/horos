@@ -9118,7 +9118,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 -(void) setScaleValueCentered:(float) x
 {
-	if( x <= 0) return;
+	if( x < 0.01 ) return;
+	if( x > 100) return;
 	
 	if( x != scaleValue)
 	{
@@ -9161,8 +9162,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 -(void) setScaleValue:(float) x
 {
-	if( x < 0.01 ) x = 0.01;
-	if( x > 100) x = 100;
+	if( x < 0.01 ) return;
+	if( x > 100) return;
 	
 	if( scaleValue != x )
 	{
