@@ -2720,7 +2720,8 @@ static BOOL initialized = NO;
 		NSScreen *screen;
 		position = i;
 		int current = 0;
-		while (screen = [enumerator nextObject]) {
+		while (screen = [enumerator nextObject])
+		{
 			if (x < [screen frame].origin.x)
 			{
 				position = current;
@@ -2740,7 +2741,6 @@ static BOOL initialized = NO;
 	else if( [arrangedViewers count] > 1) [arrangedViewers removeObject: [dbWindow screen]];
 	
 	return arrangedViewers;
-		
 }
 
 //- (NSRect) resizeWindow:(NSWindow*) win	withInRect:(NSRect) destRect
