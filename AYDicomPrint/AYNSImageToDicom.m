@@ -1031,8 +1031,7 @@
 	if( rawImage.bytesWritten)
 	{
 		fwrite([m_ImageDataBytes bytes], [m_ImageDataBytes length], 1, outFile);
-
-		//m_ImageDataBytes
+		
 		fseek(outFile, dataSizePos, 0);
 		rawImage.bytesWritten = CFSwapInt32HostToLittle(rawImage.bytesWritten);
 		fwrite(&rawImage.bytesWritten, 4, 1, outFile);
@@ -1041,10 +1040,6 @@
 			[m_ImageDataBytes release];
 			m_ImageDataBytes = nil;
 		}
-		// only free grayscale char buffer
-		//if (!colorPrint)
-		//	free(rawImage.imageData);
-
 		//end element and end sequence
 		//go to end of image
 		fseek (outFile, 0, SEEK_END);
