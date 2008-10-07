@@ -1026,7 +1026,7 @@
 	else
 		rawImage = [self _convertRGBToGrayscale: image];
 	
-	if( rawImage.bytesWritten)
+	if( rawImage.bytesWritten && m_ImageDataBytes)
 	{
 		fwrite([m_ImageDataBytes bytes], [m_ImageDataBytes length], 1, outFile);
 		
