@@ -219,8 +219,6 @@
 		
 	NSString *imagePath = [self _writeDICOMHeaderAndData: patientInfoDict destinationPath: destPath imageData: currentImage colorPrint: colorPrint];
 	
-	// masu 2006-10-04
-	
 	if( imagePath == 0L)
 	{
 		NSLog( @"WARNING imagePath == 0L");
@@ -256,29 +254,34 @@
 {
 	NSBitmapImageRep *imageRepresentation = [NSBitmapImageRep imageRepWithData: [image TIFFRepresentation]];
 	
-	if( [imageRepresentation samplesPerPixel] != 3)
-		NSLog( @"******* WARNING [imageRepresentation samplesPerPixel] != 3");
-	
-	//unsigned char *imageData = [imageRepresentation bitmapData];
-	long bytesWritten = [imageRepresentation bytesPerRow] * [imageRepresentation size].height;
-	if(m_ImageDataBytes)
-	{
-		[m_ImageDataBytes release];
-		m_ImageDataBytes = nil;
-	}
-	
-	m_ImageDataBytes = [[NSMutableData alloc] initWithBytes: [imageRepresentation bitmapData] length: bytesWritten];
-	if(bytesWritten % 2 != 0)
-	{
-		//imageData[bytesWritten] = '\0';
-		[m_ImageDataBytes appendBytes: '\0' length: 1];
-		bytesWritten++;
-	}
-
 	struct rawData rawImage;
+	
 	rawImage.imageData = nil;
-	rawImage.bytesWritten = bytesWritten;
-
+	rawImage.bytesWritten = 0;
+	
+	if( [imageRepresentation samplesPerPixel] != 3) return rawImage;
+	
+	if( imageRepresentation)
+	{
+		long bytesWritten = [imageRepresentation bytesPerRow] * [imageRepresentation size].height;
+		if(m_ImageDataBytes)
+		{
+			[m_ImageDataBytes release];
+			m_ImageDataBytes = nil;
+		}
+		
+		m_ImageDataBytes = [[NSMutableData alloc] initWithBytes: [imageRepresentation bitmapData] length: bytesWritten];
+		if(bytesWritten % 2 != 0)
+		{
+			[m_ImageDataBytes appendBytes: '\0' length: 1];
+			bytesWritten++;
+		}
+		
+		rawImage.bytesWritten = bytesWritten;
+		
+		return rawImage;
+	}
+	
 	return rawImage;
 }
 
@@ -1024,42 +1027,45 @@
 		rawImage = [self _convertImageToBitmap: image];
 	else
 		rawImage = [self _convertRGBToGrayscale: image];
-	//fwrite(rawImage.imageData, rawImage.bytesWritten, 1, outFile);
-	fwrite([m_ImageDataBytes bytes], [m_ImageDataBytes length], 1, outFile);
-
-	//m_ImageDataBytes
-	fseek(outFile, dataSizePos, 0);
-	rawImage.bytesWritten = CFSwapInt32HostToLittle(rawImage.bytesWritten);
-	fwrite(&rawImage.bytesWritten, 4, 1, outFile);
-	if(m_ImageDataBytes)
-	{
-		[m_ImageDataBytes release];
-		m_ImageDataBytes = nil;
-	}
-	// only free grayscale char buffer
-	//if (!colorPrint)
-	//	free(rawImage.imageData);
-
-	//end element and end sequence
-	//go to end of image
-	fseek (outFile, 0, SEEK_END);
-	dummyShort = CFSwapInt16HostToLittle(0xFFFE);
-	//end element and end sequence
-	fwrite(&dummyShort, 2, 1, outFile);
-	dummyShort = CFSwapInt16HostToLittle(0xE00D);
-	fwrite(&dummyShort, 2, 1, outFile);
-	dummyLong = CFSwapInt32HostToLittle(0x00000000);
-	fwrite(&dummyLong, 4, 1, outFile);
-	dummyShort = CFSwapInt16HostToLittle(0xFFFE);
-	fwrite(&dummyShort, 2, 1, outFile);
-	dummyShort = CFSwapInt16HostToLittle(0xE0DD);
-	fwrite(&dummyShort, 2, 1, outFile);
-	dummyLong = CFSwapInt32HostToLittle(0x00000000);
-	fwrite(&dummyLong, 4, 1, outFile);
 	
+	if( rawImage.bytesWritten)
+	{
+		fwrite([m_ImageDataBytes bytes], [m_ImageDataBytes length], 1, outFile);
 
-	fclose(outFile);
+		//m_ImageDataBytes
+		fseek(outFile, dataSizePos, 0);
+		rawImage.bytesWritten = CFSwapInt32HostToLittle(rawImage.bytesWritten);
+		fwrite(&rawImage.bytesWritten, 4, 1, outFile);
+		if(m_ImageDataBytes)
+		{
+			[m_ImageDataBytes release];
+			m_ImageDataBytes = nil;
+		}
+		// only free grayscale char buffer
+		//if (!colorPrint)
+		//	free(rawImage.imageData);
 
+		//end element and end sequence
+		//go to end of image
+		fseek (outFile, 0, SEEK_END);
+		dummyShort = CFSwapInt16HostToLittle(0xFFFE);
+		//end element and end sequence
+		fwrite(&dummyShort, 2, 1, outFile);
+		dummyShort = CFSwapInt16HostToLittle(0xE00D);
+		fwrite(&dummyShort, 2, 1, outFile);
+		dummyLong = CFSwapInt32HostToLittle(0x00000000);
+		fwrite(&dummyLong, 4, 1, outFile);
+		dummyShort = CFSwapInt16HostToLittle(0xFFFE);
+		fwrite(&dummyShort, 2, 1, outFile);
+		dummyShort = CFSwapInt16HostToLittle(0xE0DD);
+		fwrite(&dummyShort, 2, 1, outFile);
+		dummyLong = CFSwapInt32HostToLittle(0x00000000);
+		fwrite(&dummyLong, 4, 1, outFile);
+		
+		fclose(outFile);
+	}
+	else return 0L;
+	
 	return path;
 }
 

@@ -430,11 +430,12 @@
 		for (j = i * ipp; j < MIN(i * ipp + ipp, [images count]); j++)
 		{
 			NSXMLElement *imagebox = [NSXMLElement elementWithName: @"imagebox"];
-
+			
 			[imagebox addAttribute: [NSXMLNode attributeWithName: @"image_file" stringValue: [images objectAtIndex: j]]];
 			[imagebox addAttribute: [NSXMLNode attributeWithName: @"image_position" stringValue: [NSString stringWithFormat: @"%d", k++]]];
-
-			[filmbox addChild: imagebox];
+			
+			if( [[images objectAtIndex: j] length] > 0)
+				[filmbox addChild: imagebox];
 		}
 
 		[filmsession addChild: filmbox];
