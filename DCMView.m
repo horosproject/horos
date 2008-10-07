@@ -1707,7 +1707,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		case tRotate:
 			if( [event type] != NSKeyDown)
 			{
-				if( [event clickCount] == 2 && gClickCountSet == NO && isKeyView == YES)
+				if( [event clickCount] == 2 && gClickCountSet == NO && isKeyView == YES && [[self window] isKeyWindow] == YES)
 				{
 					gClickCountSet = YES;
 					
@@ -1731,7 +1731,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	[self setNeedsDisplay:YES];
 }
 
-- (void) gClickCountSetReset {
+- (void) gClickCountSetReset
+{
 	gClickCountSet = NO;
 }
 
@@ -5603,12 +5604,12 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 {
 	if( dcmPixList == 0L) return;
 	
-	if( numberOf2DViewer > 1   && isKeyView)	//&&  [[self window] isMainWindow] == YES
+	if( numberOf2DViewer > 1 && isKeyView)	//&&  [[self window] isMainWindow] == YES
     {
 		DCMPix	*thickDCM;
 		
-		if( curDCM.stack > 1) {
-			
+		if( curDCM.stack > 1)
+		{
 			long maxVal = flippedData? curImage-(curDCM.stack-1) : curImage+curDCM.stack-1;
 			if( maxVal < 0) maxVal = 0;
 			if( maxVal >= [dcmPixList count]) maxVal = [dcmPixList count]-1;
@@ -7344,7 +7345,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 		BOOL noBlending = NO;
 		
-		if( [self is2DViewer] == YES) {
+		if( [self is2DViewer] == YES)
+		{
 			if( isKeyView == NO) noBlending = YES;
 		}	
 		
@@ -7733,7 +7735,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				}
 			}  //drawLines for ImageView Frames
 			
-			if ((_imageColumns > 1 || _imageRows > 1) && [self is2DViewer] == YES && stringID == 0L ) {
+			if ((_imageColumns > 1 || _imageRows > 1) && [self is2DViewer] == YES && stringID == 0L )
+			{
 				float heighthalf = drawingFrameRect.size.height/2 - 1;
 				float widthhalf = drawingFrameRect.size.width/2 - 1;
 				
@@ -7746,7 +7749,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					glVertex2f(  widthhalf, -heighthalf);
 				glEnd();
 				glLineWidth(1.0);
-				if (isKeyView && [[self window] isMainWindow]) {
+				if (isKeyView && [[self window] isMainWindow])
+				{
 					float heighthalf = drawingFrameRect.size.height/2 - 1;
 					float widthhalf = drawingFrameRect.size.width/2 - 1;
 					
@@ -10248,8 +10252,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	return [super resignFirstResponder];
 }
 
--(void) updateCurrentImage: (NSNotification*) note {
-	if( stringID == 0L)	{
+-(void) updateCurrentImage: (NSNotification*) note
+{
+	if( stringID == 0L)
+	{
 		DCMView *otherView = [note object];
 		
 		if ([[[note object] superview] isEqual:[self superview]] && ![otherView isEqual: self]) 
@@ -10257,7 +10263,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	}
 }
 
--(void)newImageViewisKey:(NSNotification *)note{
+-(void)newImageViewisKey:(NSNotification *)note
+{
 	if ([note object] != self)
 		isKeyView = NO;
 }
