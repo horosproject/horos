@@ -6116,9 +6116,9 @@ static ViewerController *draggedController = 0L;
 			{
 				long moviePixWidth = [[pixList[ 0] objectAtIndex: 0] pwidth];
 				long moviePixHeight = [[pixList[ 0] objectAtIndex: 0] pheight];
-
+				
 				if (moviePixWidth == moviePixHeight) enableSubtraction = TRUE;
-
+				
 				long j;
 				for( j = 0 ; j < runSize; j++)
 				{

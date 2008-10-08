@@ -1342,19 +1342,17 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
     U = ( ( ( Point.x - startPoint.x ) * ( endPoint.x - startPoint.x ) ) +
         ( ( Point.y - startPoint.y ) * ( endPoint.y - startPoint.y ) ) );
 		
-	U /= ( LineMag * LineMag );
-
-    if( U < -0.2f || U > 1.2f )
+	U /= ( LineMag * LineMag);
+	
+    if( U < -0.01f || U > 1.01f)
 	{
 		*Distance = 100;
-		return 0;   // closest point does not fall within the line segment
+		return 0;
 	}
 	
     Intersection.x = startPoint.x + U * ( endPoint.x - startPoint.x );
     Intersection.y = startPoint.y + U * ( endPoint.y - startPoint.y );
 
-//    Intersection.Z = LineStart->Z + U * ( endPoint->Z - LineStart->Z );
- 
     *Distance = [self Magnitude: Point :Intersection];
  
     return 1;
@@ -1689,9 +1687,10 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 				float distance;
 				NSMutableArray *splinePoints = [self splinePoints: scale];
 				
-				for( int i = 0; i < ([splinePoints count] - 1); i++ )	{
-					
+				for( int i = 0; i < ([splinePoints count] - 1); i++ )
+				{
 					[self DistancePointLine:pt :[[splinePoints objectAtIndex:i] point] : [[splinePoints objectAtIndex:(i+1)] point] :&distance];
+					
 					if( distance*scale < 5.0)
 					{
 						imode = ROI_selected;
@@ -3188,7 +3187,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			type == tPlain) drawTextBox = NO;
 			
 	}
-
+	
 	return drawTextBox;
 }
 
@@ -4004,6 +4003,81 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					}
 					else
 						sprintf (line2, "Length: %0.3f pix", [self Length:[[points objectAtIndex:0] point] :[[points objectAtIndex:1] point]]);
+					
+					// If there is another line, compute cobb's angle
+					if( curView)
+					{
+						NSArray *roiList = curView.curRoiList;
+						
+						NSUInteger index = [roiList indexOfObject: self];
+						if( index != NSNotFound)
+						{
+							if( index > 0)
+							{
+								for( int i = 0 ; i < index; i++)
+								{
+									ROI *r = [roiList objectAtIndex: i];
+									
+									if( [r type] == tMesure)
+									{
+										NSArray *B = [r points];
+										NSPoint	u1 = [[[self points] objectAtIndex: 0] point], u2 = [[[self points] objectAtIndex: 1] point], v1 = [[B objectAtIndex: 0] point], v2 = [[B objectAtIndex: 1] point];
+										
+										float pX = [pix pixelSpacingX];
+										float pY = [pix pixelSpacingY];
+										
+										if( pX == 0 || pY == 0)
+										{
+											pX = 1;
+											pY = 1;
+										}
+										
+										NSPoint a1, a2, b1, b2;
+										a1 = NSMakePoint(u1.x * pX, u1.y * pY);
+										a2 = NSMakePoint(u2.x * pX, u2.y * pY);
+										b1 = NSMakePoint(v1.x * pX, v1.y * pY);
+										b2 = NSMakePoint(v2.x * pX, v2.y * pY);
+										
+										NSPoint a = NSMakePoint( a1.x + (a2.x - a1.x)/2, a1.y + (a2.y - a1.y)/2);
+										
+										float slope1 = (a2.y - a1.y) / (a2.x - a1.x);
+										slope1 = -1./slope1;
+										float or1 = a.y - slope1*a.x;
+										
+										float slope2 = (b2.y - b1.y) / (b2.x - b1.x);
+										float or2 = b1.y - slope2*b1.x;
+										
+										float xx = (or2 - or1) / (slope1 - slope2);
+										
+										NSPoint d = NSMakePoint( xx, or1 + xx*slope1);
+										
+										NSPoint b = [self ProjectionPointLine: a :b1 :b2];
+										
+										b.x = b.x + (d.x - b.x)/2.;
+										b.y = b.y + (d.y - b.y)/2.;
+										
+										slope2 = -1./slope2;
+										or2 = b.y - slope2*b.x;
+										
+										xx = (or2 - or1) / (slope1 - slope2);
+										
+										NSPoint c = NSMakePoint( xx, or1 + xx*slope1);
+										
+										float angle = [self Angle:b :c :d];
+										
+										NSString *rName = r.name;
+										
+										if( rName)
+											sprintf (line3, "Cobb's Angle: %0.3f with: %@", angle, rName);
+										else
+											sprintf (line3, "Cobb's Angle: %0.3f", angle);
+										
+										break;
+									}
+								}
+							}
+						}
+					}
 				}
 				[self prepareTextualData:line1 :line2 :line3 :line4 :line5 :line6 location:tPt];
 			}

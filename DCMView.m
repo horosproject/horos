@@ -462,7 +462,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 @implementation DCMView
 
-@synthesize showDescriptionInLarge;
+@synthesize showDescriptionInLarge, curRoiList;
 @synthesize drawingFrameRect, dontEnterReshape;
 @synthesize rectArray;
 @synthesize flippedData;
@@ -3529,26 +3529,33 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			tempPt = [self ConvertFromNSView2GL:tempPt];
 			
 			BOOL clickInROI = NO;
-			for( int i = 0; i < [curRoiList count]; i++) {
-				if([[curRoiList objectAtIndex: i] clickInROI:tempPt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue :YES]) {
+			for( int i = 0; i < [curRoiList count]; i++)
+			{
+				if([[curRoiList objectAtIndex: i] clickInROI:tempPt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue :YES])
+				{
 					clickInROI = YES;
 				}
 			}
 
-			if(!clickInROI) {
-				for( int i = 0; i < [curRoiList count]; i++) {
-					if([[curRoiList objectAtIndex: i] clickInROI:tempPt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue :NO]) {
+			if(!clickInROI)
+			{
+				for( int i = 0; i < [curRoiList count]; i++)
+				{
+					if([[curRoiList objectAtIndex: i] clickInROI:tempPt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue :NO])
+					{
 						clickInROI = YES;
 					}
 				}
 			}
 			
-			if(clickInROI) {
+			if(clickInROI)
+			{
 				currentTool = tPencil;
 				tool = tPencil;
 				repulsorROIEdition = YES;
 			}
-			else {
+			else
+			{
 				[self deleteMouseDownTimer];
 				repulsorColorTimer = [[NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(setAlphaRepulsor:) userInfo:event repeats:YES] retain];
 				repulsorAlpha = 0.1;
@@ -3582,7 +3589,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					{
 						points = [r points];
 																																				  
-						for( int j=0; j<[points count]; j++ ) {
+						for( int j=0; j<[points count]; j++ )
+						{
 							NSPoint pt = [[points objectAtIndex:j] point];
 							float dx = (pt.x-tempPt.x);
 							float dx2 = dx * dx;
@@ -3597,18 +3605,22 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				if(repulsorRadius<2) repulsorRadius = 2;
 				if(repulsorRadius>curDCM.pwidth/2) repulsorRadius = curDCM.pwidth/2;
 				
-				if( [curRoiList count] == 0 || distance == 0) {
+				if( [curRoiList count] == 0 || distance == 0)
+				{
 					NSRunCriticalAlertPanel(NSLocalizedString(@"Repulsor",nil),NSLocalizedString(@"The Repulsor tool works only if there are ROIs on the image.",nil), NSLocalizedString(@"OK",nil), nil,nil);
 				}
 			}
 		}
 		
-		if(tool == tROISelector) {
+		if(tool == tROISelector)
+		{
 			ROISelectorSelectedROIList = [[NSMutableArray arrayWithCapacity:0] retain];
 			
 			// if shift key is pressed, we need to keep track of the ROIs that were selected before the click 
-			if([event modifierFlags] & NSShiftKeyMask) {
-				for( int i=0; i<[curRoiList count]; i++ ) {
+			if([event modifierFlags] & NSShiftKeyMask)
+			{
+				for( int i=0; i<[curRoiList count]; i++ )
+				{
 					if([[curRoiList objectAtIndex:i] ROImode]==ROI_selected)
 						[ROISelectorSelectedROIList addObject:[curRoiList objectAtIndex:i]];
 				}
@@ -3686,7 +3698,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			
 			if( roiFound == NO)
 			{
-				for( int i = 0; i < [curRoiList count]; i++) {
+				for( int i = 0; i < [curRoiList count]; i++)
+				{
 					if( [[curRoiList objectAtIndex: i] clickInROI: tempPt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue :NO])
 					{
 						selected = i;
@@ -3695,9 +3708,12 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				}
 			}
 					
-			if (([event modifierFlags] & NSShiftKeyMask) && !([event modifierFlags] & NSCommandKeyMask) ) {
-				if( selected != -1 ) {
-					if( [[curRoiList objectAtIndex: selected] ROImode] == ROI_selected) {
+			if (([event modifierFlags] & NSShiftKeyMask) && !([event modifierFlags] & NSCommandKeyMask) )
+			{
+				if( selected != -1 )
+				{
+					if( [[curRoiList objectAtIndex: selected] ROImode] == ROI_selected)
+					{
 						[[curRoiList objectAtIndex: selected] setROIMode: ROI_sleep];
 						// unselect all ROIs in the same group
 						[[self windowController] setMode:ROI_sleep toROIGroupWithID:[[curRoiList objectAtIndex:selected] groupID]];
@@ -3705,7 +3721,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					}
 				}
 			}
-			else {
+			else
+			{
 				if( selected == -1 || ( [[curRoiList objectAtIndex: selected] ROImode] != ROI_selected &&  [[curRoiList objectAtIndex: selected] ROImode] != ROI_selectedModify))
 				{
 					// Unselect previous ROIs
@@ -4196,7 +4213,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	[[self window] makeKeyAndOrderFront: self];
 	[[self window] makeFirstResponder: self];
 	
-	if ( pluginOverridesMouse ) {
+	if ( pluginOverridesMouse )
+	{
 		NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
 		NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
 			[NSNumber numberWithInt:curImage], @"curImage", event, @"event", nil];
@@ -4236,9 +4254,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	[self mouseDragged:(NSEvent *)event];
 }
 
-- (void)rightMouseDragged:(NSEvent *)event {
+- (void)rightMouseDragged:(NSEvent *)event
+{
 	
-	if ( pluginOverridesMouse ) {
+	if ( pluginOverridesMouse )
+	{
 		[self mouseMoved: event];	// Update some variables...
 		NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
 		NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
@@ -4343,8 +4363,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		}
 		
 		/********** Actions for Various Tools *********************/
-		else {
-			switch (tool) {
+		else
+		{
+			switch (tool)
+			{
 				case t3DRotate:[self mouseDragged3DRotate:event];
 					break;
 				case tCross: [self mouseDraggedCrosshair:event];
@@ -4506,9 +4528,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 
 // Method for mouse dragging while 3D rotate. Does nothing
-- (void)mouseDragged3DRotate:(NSEvent *)event{}
+- (void)mouseDragged3DRotate:(NSEvent *)event
+{}
 
-- (void)mouseDraggedCrosshair:(NSEvent *)event{
+- (void)mouseDraggedCrosshair:(NSEvent *)event
+{
 	//Moved OrthogonalMPRView specific code to that class
 	
 	NSRect  frame = [self frame];
@@ -10794,7 +10818,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	_dragInProgress = NO;
 }
 
-- (NSArray *)namesOfPromisedFilesDroppedAtDestination:(NSURL *)dropDestination{
+- (NSArray *)namesOfPromisedFilesDroppedAtDestination:(NSURL *)dropDestination
+{
 	NSString *name = [[self dicomImage] valueForKeyPath:@"series.study.name"];
 	name = @"OsiriX";
 	name = [name stringByAppendingPathExtension:@"jpg"];
@@ -10809,7 +10834,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	return array;
 }
 
-- (void)deleteMouseDownTimer{
+- (void)deleteMouseDownTimer
+{
 	[_mouseDownTimer invalidate];
 	[_mouseDownTimer release];
 	_mouseDownTimer = nil;

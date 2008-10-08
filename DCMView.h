@@ -274,7 +274,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 }
 
 @property(readonly) NSRect drawingFrameRect;
-@property(readonly) NSMutableArray *rectArray;
+@property(readonly) NSMutableArray *rectArray, *curRoiList;
 @property BOOL COPYSETTINGSINSERIES, flippedData, dontEnterReshape, showDescriptionInLarge;
 @property(readonly) NSMutableArray *dcmPixList,  *dcmRoiList;
 @property(readonly) NSArray *dcmFilesList;
