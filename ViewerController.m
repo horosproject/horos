@@ -1734,7 +1734,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 		
 		[self setPostprocessed: YES];
 		
-		if( newViewer == NO) [orientationMatrix selectCellWithTag: currentOrientationTool];
+		if( newViewer == NO)
+			[orientationMatrix selectCellWithTag: currentOrientationTool];
 
 		float   iwl, iww;
 		[imageView getWLWW:&iwl :&iww];
@@ -3147,9 +3148,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 			if( found == NO)
 			{
 				ViewerController *newViewer = [[BrowserController currentBrowser] loadSeries :[[sender selectedCell] representedObject] :self :YES keyImagesOnly: displayOnlyKeyImages];
-
-				[NSApp sendAction: @selector(checkAllWindowsAreVisible:) to:0L from: self];
-					
+				
 				[self matrixPreviewSelectCurrentSeries];
 				[self updateNavigator];
 			}
@@ -5912,7 +5911,9 @@ static ViewerController *draggedController = 0L;
 }
 
 - (void) startLoadImageThread
-{	
+{
+	originalOrientation = -1;
+	
 	stopThreadLoadImage = NO;
 //	[self loadImageData: self];
 	[NSThread detachNewThreadSelector: @selector(loadImageData:) toTarget: self withObject: nil];
@@ -17522,7 +17523,7 @@ long i;
 
 - (IBAction) findNextPreviousKeyImage:(id)sender
 {
-	if( postprocessed || currentOrientationTool != originalOrientation)
+	if( postprocessed)
 	{
 		NSRunAlertPanel(NSLocalizedString(@"Key Images", nil), NSLocalizedString(@"This dataset has been post processed (reslicing, MPR, ...). You cannot create/modify/search key images. Revert to the original series or create a secondary capture series to do this.", nil), NSLocalizedString(@"OK", nil), nil, nil);
 		return;
@@ -17574,7 +17575,7 @@ long i;
 
 - (IBAction) keyImageDisplayButton:(id) sender
 {
-	if( postprocessed || currentOrientationTool != originalOrientation)
+	if( postprocessed)
 	{
 		NSRunAlertPanel(NSLocalizedString(@"Key Images", nil), NSLocalizedString(@"This dataset has been post processed (reslicing, MPR, ...). You cannot create/modify/search key images. Revert to the original series or create a secondary capture series to do this.", nil), NSLocalizedString(@"OK", nil), nil, nil);
 		return;
@@ -17621,7 +17622,7 @@ long i;
 
 - (IBAction) setROIsImagesKeyImages:(id)sender
 {
-	if( postprocessed || currentOrientationTool != originalOrientation)
+	if( postprocessed)
 	{
 		NSRunAlertPanel(NSLocalizedString(@"Key Images", nil), NSLocalizedString(@"This dataset has been post processed (reslicing, MPR, ...). You cannot create/modify/search key images. Revert to the original series or create a secondary capture series to do this.", nil), NSLocalizedString(@"OK", nil), nil, nil);
 		return;
@@ -17661,7 +17662,7 @@ long i;
 
 - (IBAction) setAllNonKeyImages:(id)sender
 {
-	if( postprocessed || currentOrientationTool != originalOrientation)
+	if( postprocessed)
 	{
 		NSRunAlertPanel(NSLocalizedString(@"Key Images", nil), NSLocalizedString(@"This dataset has been post processed (reslicing, MPR, ...). You cannot create/modify/search key images. Revert to the original series or create a secondary capture series to do this.", nil), NSLocalizedString(@"OK", nil), nil, nil);
 		return;
@@ -17689,7 +17690,7 @@ long i;
 
 - (IBAction) setAllKeyImages:(id)sender
 {
-	if( postprocessed || currentOrientationTool != originalOrientation)
+	if( postprocessed)
 	{
 		NSRunAlertPanel(NSLocalizedString(@"Key Images", nil), NSLocalizedString(@"This dataset has been post processed (reslicing, MPR, ...). You cannot create/modify/search key images. Revert to the original series or create a secondary capture series to do this.", nil), NSLocalizedString(@"OK", nil), nil, nil);
 		return;
@@ -17717,7 +17718,7 @@ long i;
 
 - (IBAction) setKeyImage:(id)sender
 {
-	if( postprocessed || currentOrientationTool != originalOrientation)
+	if( postprocessed)
 	{
 		NSRunAlertPanel(NSLocalizedString(@"Key Images", nil), NSLocalizedString(@"This dataset has been post processed (reslicing, MPR, ...). You cannot create/modify/search key images. Revert to the original series or create a secondary capture series to do this.", nil), NSLocalizedString(@"OK", nil), nil, nil);
 		return;
