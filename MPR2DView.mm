@@ -1182,7 +1182,6 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 	}
 	else
 	{
-		[oView setMPRAngle: 0];
 		[oView setOrigin: NSMakePoint( 0, 0)];
 		
 		[oView setScaleValue: 1.0];
