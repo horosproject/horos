@@ -301,42 +301,51 @@ static int hotKeyToolCrossTable[] =
 	}
 	else if( [item action] == @selector( setAllKeyImages:))
 	{
-		for( int x = 0 ; x < maxMovieIndex ; x++)
+		if( postprocessed == NO)
 		{
-			for( NSManagedObject *o in fileList[ x])
+			for( int x = 0 ; x < maxMovieIndex ; x++)
 			{
-				if( [[o valueForKey: @"isKeyImage"] boolValue] == NO)
+				for( NSManagedObject *o in fileList[ x])
 				{
-					valid = YES;
-					break;
+					if( [[o valueForKey: @"isKeyImage"] boolValue] == NO)
+					{
+						valid = YES;
+						break;
+					}
 				}
 			}
 		}
 	}
 	else if( [item action] == @selector( setAllNonKeyImages:))
 	{
-		for( int x = 0 ; x < maxMovieIndex ; x++)
+		if( postprocessed == NO)
 		{
-			for( NSManagedObject *o in fileList[ x])
+			for( int x = 0 ; x < maxMovieIndex ; x++)
 			{
-				if( [[o valueForKey: @"isKeyImage"] boolValue] == YES)
+				for( NSManagedObject *o in fileList[ x])
 				{
-					valid = YES;
-					break;
+					if( [[o valueForKey: @"isKeyImage"] boolValue] == YES)
+					{
+						valid = YES;
+						break;
+					}
 				}
 			}
 		}
 	}
 	else if( [item action] == @selector( findNextPreviousKeyImage:))
 	{
-		for( int x = 0 ; x < [fileList[ curMovieIndex] count]; x++)
+		if( postprocessed == NO)
 		{
-			NSManagedObject *o = [fileList[ curMovieIndex] objectAtIndex: x];
-			
-			if( [[o valueForKey: @"isKeyImage"] boolValue] == YES)
+			for( int x = 0 ; x < [fileList[ curMovieIndex] count]; x++)
 			{
-				valid = YES;
-				break;
+				NSManagedObject *o = [fileList[ curMovieIndex] objectAtIndex: x];
+				
+				if( [[o valueForKey: @"isKeyImage"] boolValue] == YES)
+				{
+					valid = YES;
+					break;
+				}
 			}
 		}
 	}
@@ -17484,22 +17493,31 @@ long i;
 
 - (IBAction) keyImageCheckBox:(id) sender
 {
-	[[fileList[curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] setValue:[NSNumber numberWithBool:[sender state]] forKey:@"isKeyImage"];
-	
-	if([[BrowserController currentBrowser] isCurrentDatabaseBonjour])
+	if( postprocessed == NO)
 	{
-		[[BrowserController currentBrowser] setBonjourDatabaseValue:[fileList[curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] value:[NSNumber numberWithBool:[sender state]] forKey:@"isKeyImage"];
+		[[fileList[curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] setValue:[NSNumber numberWithBool:[sender state]] forKey:@"isKeyImage"];
+		
+		if([[BrowserController currentBrowser] isCurrentDatabaseBonjour])
+		{
+			[[BrowserController currentBrowser] setBonjourDatabaseValue:[fileList[curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] value:[NSNumber numberWithBool:[sender state]] forKey:@"isKeyImage"];
+		}
+		
+		[self buildMatrixPreview: NO];
+		
+		[imageView setNeedsDisplay:YES];
+		
+		[[BrowserController currentBrowser] saveDatabase: 0L];
 	}
-	
-	[self buildMatrixPreview: NO];
-	
-	[imageView setNeedsDisplay:YES];
-	
-	[[BrowserController currentBrowser] saveDatabase: 0L];
 }
 
 - (IBAction) findNextPreviousKeyImage:(id)sender
 {
+	if( postprocessed)
+	{
+		NSRunAlertPanel(NSLocalizedString(@"Key Images", nil), NSLocalizedString(@"This dataset has been post processed (reslicing, MPR, ...). You cannot create/modify/search key images. Create a secondary capture series to do this.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+		return;
+	}
+	
 	[self checkEverythingLoaded];
 	
 	BOOL tag = [sender tag];
@@ -17546,6 +17564,12 @@ long i;
 
 - (IBAction) keyImageDisplayButton:(id) sender
 {
+	if( postprocessed)
+	{
+		NSRunAlertPanel(NSLocalizedString(@"Key Images", nil), NSLocalizedString(@"This dataset has been post processed (reslicing, MPR, ...). You cannot create/modify/search key images. Create a secondary capture series to do this.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+		return;
+	}
+	
 	NSManagedObject	*series = [[fileList[curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] valueForKey:@"series"];
 	
 	[self checkEverythingLoaded];
@@ -17587,6 +17611,12 @@ long i;
 
 - (IBAction) setROIsImagesKeyImages:(id)sender
 {
+	if( postprocessed)
+	{
+		NSRunAlertPanel(NSLocalizedString(@"Key Images", nil), NSLocalizedString(@"This dataset has been post processed (reslicing, MPR, ...). You cannot create/modify/search key images. Create a secondary capture series to do this.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+		return;
+	}
+	
 	NSNumber *yes = [NSNumber numberWithBool: YES];
 	
 	for( int x = 0 ; x < maxMovieIndex ; x++)
@@ -17621,6 +17651,12 @@ long i;
 
 - (IBAction) setAllNonKeyImages:(id)sender
 {
+	if( postprocessed)
+	{
+		NSRunAlertPanel(NSLocalizedString(@"Key Images", nil), NSLocalizedString(@"This dataset has been post processed (reslicing, MPR, ...). You cannot create/modify/search key images. Create a secondary capture series to do this.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+		return;
+	}
+	
 	NSNumber *yes = [NSNumber numberWithBool: NO];
 	
 	for( int x = 0 ; x < maxMovieIndex ; x++)
@@ -17643,6 +17679,12 @@ long i;
 
 - (IBAction) setAllKeyImages:(id)sender
 {
+	if( postprocessed)
+	{
+		NSRunAlertPanel(NSLocalizedString(@"Key Images", nil), NSLocalizedString(@"This dataset has been post processed (reslicing, MPR, ...). You cannot create/modify/search key images. Create a secondary capture series to do this.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+		return;
+	}
+	
 	NSNumber *yes = [NSNumber numberWithBool: YES];
 	
 	for( int x = 0 ; x < maxMovieIndex ; x++)
@@ -17665,12 +17707,25 @@ long i;
 
 - (IBAction) setKeyImage:(id)sender
 {
+	if( postprocessed)
+	{
+		NSRunAlertPanel(NSLocalizedString(@"Key Images", nil), NSLocalizedString(@"This dataset has been post processed (reslicing, MPR, ...). You cannot create/modify/search key images. Create a secondary capture series to do this.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+		return;
+	}
+	
 	[keyImageCheck setState: ![keyImageCheck state]];
 	[self keyImageCheckBox: keyImageCheck];
 }
 
 - (void) adjustKeyImage
 {
+	if( postprocessed)
+	{
+		[keyImageCheck setEnabled: NO];
+		[keyImagePopUpButton setEnabled: NO];
+		return;
+	}
+	
 	if( [fileList[ curMovieIndex] count] != 1)
 	{
 		if( [fileList[ curMovieIndex] objectAtIndex: 0] == [fileList[ curMovieIndex] lastObject])
@@ -17699,7 +17754,11 @@ long i;
 	}
 }
 
-- (BOOL)isKeyImage:(int)index{
+- (BOOL)isKeyImage:(int)index
+{
+	if( postprocessed)
+		return NO;
+	
 	return [[[fileList[curMovieIndex] objectAtIndex:[self indexForPix:index]] valueForKey:@"isKeyImage"] boolValue];
 }
 
@@ -17935,13 +17994,16 @@ sourceRef);
 
 #pragma mark-
 #pragma mark current Core Data Objects
-- (NSManagedObject *)currentStudy{
+- (NSManagedObject *)currentStudy
+{
 	return [[imageView seriesObj] valueForKey:@"study"];
 }
-- (NSManagedObject *)currentSeries{
+- (NSManagedObject *)currentSeries
+{
 	return [imageView seriesObj];
 }
-- (NSManagedObject *)currentImage{
+- (NSManagedObject *)currentImage
+{
 	return [imageView imageObj];
 }
 
