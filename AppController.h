@@ -174,6 +174,7 @@ extern "C"
 - (NSString*) privateIP;
 - (void) killDICOMListenerWait:(BOOL) w;
 - (BOOL) echoTest;
+- (void) runPreferencesUpdateCheck:(NSTimer*) timer;
 + (void) checkForPreferencesUpdate: (BOOL) b;
 
 #pragma mark-

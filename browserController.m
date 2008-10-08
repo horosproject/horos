@@ -5458,6 +5458,16 @@ static NSArray*	statesArray = nil;
   		}
 		
 		[[NSUserDefaults standardUserDefaults] setObject:dict forKey:@"COLUMNSDATABASE"];
+		
+		[[AppController sharedAppController] runPreferencesUpdateCheck: 0L];
+		
+//		NSLog( [sender representedObject]);
+//		
+//		for( NSTableColumn *c in [databaseOutline tableColumns])
+//		{
+//			if( [[c identifier] isEqualToString: [sender representedObject]])
+//				[databaseOutline selectColumn: [databaseOutline columnWithIdentifier: [c identifier]] byExtendingSelection: NO];
+//		}
 	}
 }
 
@@ -6639,7 +6649,8 @@ static NSArray*	statesArray = nil;
 	NSError	*error = nil;
 	NSArray *studiesArray = [context executeFetchRequest:dbRequest error:&error];
 	
-	if ([studiesArray count] > 0 && [studiesArray indexOfObject:study] != NSNotFound ) {
+	if ([studiesArray count] > 0 && [studiesArray indexOfObject:study] != NSNotFound )
+	{
 		NSSortDescriptor * sort = [[NSSortDescriptor alloc] initWithKey:@"date" ascending:NO];
 		NSArray * sortDescriptors = [NSArray arrayWithObject: sort];
 		[sort release];
