@@ -322,6 +322,17 @@ static const char *GetPrivateIP()
 	[NSApp beginSheet: presetWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
 }
 
+- (void) emptyPreset:(id) sender
+{
+	[searchFieldName setStringValue: @""];
+	[searchFieldID setStringValue: @""];
+	[searchFieldAN setStringValue: @""];
+	[searchFieldStudyDescription setStringValue: @""];
+	[dateFilterMatrix selectCellWithTag: 0];
+	[modalityFilterMatrix deselectAllCells];
+	[PatientModeMatrix selectTabViewItemAtIndex: 0];
+}
+
 - (void) applyPreset:(id) sender
 {
 	if([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask)
@@ -464,6 +475,9 @@ static const char *GetPrivateIP()
 	[menu addItemWithTitle: @"" action:0L keyEquivalent: @""];
 	
 	NSDictionary *savedPresets = [[NSUserDefaults standardUserDefaults] dictionaryForKey:@"QRPresets"];
+	
+	[menu addItemWithTitle: NSLocalizedString( @"Empty Preset", 0L) action:@selector( emptyPreset:) keyEquivalent:@""];
+	[menu addItem: [NSMenuItem separatorItem]];
 	
 	if( [savedPresets count] == 0)
 	{

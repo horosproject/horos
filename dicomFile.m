@@ -114,6 +114,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 
 @implementation DicomFile
 
+
 - (BOOL) containsString: (NSString*) s inArray: (NSArray*) a
 {
 	for( NSString *v in a)

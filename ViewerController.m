@@ -17948,54 +17948,67 @@ sourceRef);
 
 #pragma mark-
 #pragma mark Convience methods for accessing values in the current imageView
--(float)curWW{
+-(float)curWW
+{
 	return [imageView curWW];
 }
 
--(float)curWL{
+-(float)curWL
+{
 	return [imageView curWL];
 }
 
-- (void)setWL:(float)cwl  WW:(float)cww{
+- (void)setWL:(float)cwl  WW:(float)cww
+{
 	[imageView setWLWW:cwl :cww];
 }
 
-- (BOOL)xFlipped{
+- (BOOL)xFlipped
+{
 		return [imageView xFlipped];
 }
 	
-- (BOOL)yFlipped{
+- (BOOL)yFlipped
+{
 	return [imageView yFlipped];
 }
 
-- (float)rotation{
+- (float)rotation
+{
 	return [imageView angle];
 }
 
-- (void)setRotation:(float)rotation{
+- (void)setRotation:(float)rotation
+{
 	[imageView setRotation:rotation];
 }
 
-- (void)setOrigin:(NSPoint) o{
+- (void)setOrigin:(NSPoint) o
+{
 	[imageView setOrigin:o];
 }
 
-- (float)scaleValue{
+- (float)scaleValue
+{
 	return [imageView scaleValue];
 }
 
-- (void)setScaleValue:(float)scaleValue{
+- (void)setScaleValue:(float)scaleValue
+{
 	[imageView setScaleValue:scaleValue];
 }
 
-- (void)setYFlipped:(BOOL) v{
+- (void)setYFlipped:(BOOL) v
+{
 	[imageView setYFlipped:(BOOL) v];
 }
-- (void)setXFlipped:(BOOL) v{
+- (void)setXFlipped:(BOOL) v
+{
 	[imageView setXFlipped:(BOOL) v];
 }
 
-- (SeriesView *) seriesView{
+- (SeriesView *) seriesView
+{
 	return seriesView;
 }
 
@@ -18019,14 +18032,16 @@ sourceRef);
 	 int tag;
      NSMenuItem *item;
 
-    if ([sender class] == [NSMenuItem class]) {
+    if ([sender class] == [NSMenuItem class])
+	{
         NSArray *menuItems = [[sender menu] itemArray];
         for(item in menuItems)
             [item setState:NSOffState];
         tag = [(NSMenuItem *)sender tag];
     }
 	
-	if (tag < 16) {
+	if (tag < 16)
+	{
 		rows = (tag / 4) + 1;
 		columns =  (tag %  4) + 1;
 	}
@@ -18052,8 +18067,9 @@ sourceRef);
 	}
 }
 
-- (IBAction)centerline: (id)sender{
-		BOOL	found = NO;
+- (IBAction)centerline: (id)sender
+{
+	BOOL	found = NO;
 	NSArray *winList = [NSApp windows];
 	
 	for( id loopItem in winList)
