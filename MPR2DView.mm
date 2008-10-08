@@ -168,37 +168,37 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 
 -(void) angleBetween: (float*) v1 :(float*)  v2 :(float*)  axis :(float*) angle
 {
-		float	n1[3], n2[3];
-		
-        // turn vectors into unit vectors 
-		[self normalize: v1 : n1];
-		[self normalize: v2 : n2];
-		
-		*angle = acos( n1[0]*n2[0] + n1[1]*n2[1] + n1[2]*n2[2]);
-		
-		NSLog(@"Angle: %2.2f", *angle/deg2rad);
-		
-        //angle = Math.acos( sfvec3f.dot(n1,n2) );
-		
-        // if no noticable rotation is available return zero rotation
-        // this way we avoid Cross product artifacts 
-        if( fabs( *angle) < 0.0001 )
-		{
-			NSLog(@"No rotation");
-			axis[ 0] = 0;	axis[ 1] = 0;	axis[ 2] = 0;	*angle = 0;
-		}
-		
-		// in this case there are 2 lines on the same axis 
-        if( fabs( fabs( *angle) - 3.1415926) < 0.001)
-		{ 
-			NSLog(@"Same axis");
-		//	n1 = n1.Rotx( 0.5f ); 
-			// there are an infinite number of normals 
-			// in this case. Anyone of these normals will be 
-			// a valid rotation (180 degrees). so I rotate the curr axis by 0.5 radians this way we get one of these normals 
-      }
-		
-		[self vectorCross:n1 :n2 :axis];
+	float	n1[3], n2[3];
+	
+	// turn vectors into unit vectors 
+	[self normalize: v1 : n1];
+	[self normalize: v2 : n2];
+	
+	*angle = acos( n1[0]*n2[0] + n1[1]*n2[1] + n1[2]*n2[2]);
+	
+	NSLog(@"Angle: %2.2f", *angle/deg2rad);
+	
+	//angle = Math.acos( sfvec3f.dot(n1,n2) );
+	
+	// if no noticable rotation is available return zero rotation
+	// this way we avoid Cross product artifacts 
+	if( fabs( *angle) < 0.0001 )
+	{
+		NSLog(@"No rotation");
+		axis[ 0] = 0;	axis[ 1] = 0;	axis[ 2] = 0;	*angle = 0;
+	}
+	
+	// in this case there are 2 lines on the same axis 
+	if( fabs( fabs( *angle) - 3.1415926) < 0.001)
+	{ 
+		NSLog(@"Same axis");
+	//	n1 = n1.Rotx( 0.5f ); 
+		// there are an infinite number of normals 
+		// in this case. Anyone of these normals will be 
+		// a valid rotation (180 degrees). so I rotate the curr axis by 0.5 radians this way we get one of these normals 
+  }
+	
+	[self vectorCross:n1 :n2 :axis];
 }
 
 -(void) axView:(id) sender
@@ -1183,7 +1183,6 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 	else
 	{
 		[oView setMPRAngle: 0];
-		[perpendicularView setMPRAngle: 0];
 		[oView setOrigin: NSMakePoint( 0, 0)];
 		
 		[oView setScaleValue: 1.0];
@@ -1194,11 +1193,9 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 		
 		[perpendicularView setOrigin: NSMakePoint( 0, 0)];
 		[perpendicularView setScaleValue: 1.0];
-		[perpendicularView setRotation: 90];
 
 		[finalView setOrigin: NSMakePoint( 0, 0)];
 		[finalView setScaleValue: 1.0];
-		[finalView setRotation: 0];
 		
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"crossMove" object: @"Original" userInfo: [NSDictionary dictionaryWithObject:@"set" forKey:@"action"]];
 	}
