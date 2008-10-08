@@ -5454,20 +5454,12 @@ static NSArray*	statesArray = nil;
   			NSString*	key = [titleArray objectAtIndex: i];
   
   			if( [key length] > 0)
-  				[dict setValue:[NSNumber numberWithInt:[[[columnsMenu itemArray] objectAtIndex: i] state]] forKey: key];
+  				[dict setValue: [NSNumber numberWithInt: [[[columnsMenu itemArray] objectAtIndex: i] state]] forKey: key];
   		}
 		
 		[[NSUserDefaults standardUserDefaults] setObject:dict forKey:@"COLUMNSDATABASE"];
 		
 		[[AppController sharedAppController] runPreferencesUpdateCheck: 0L];
-		
-//		NSLog( [sender representedObject]);
-//		
-//		for( NSTableColumn *c in [databaseOutline tableColumns])
-//		{
-//			if( [[c identifier] isEqualToString: [sender representedObject]])
-//				[databaseOutline selectColumn: [databaseOutline columnWithIdentifier: [c identifier]] byExtendingSelection: NO];
-//		}
 	}
 }
 

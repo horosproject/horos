@@ -106,6 +106,7 @@
         {
             [self addTableColumn:column];
             [self sizeLastColumnToFit];
+			[self moveColumn: [self columnWithIdentifier: [column identifier]] toColumn: 1];
             [self setNeedsDisplay:YES];
         }
     }
