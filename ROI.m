@@ -4005,7 +4005,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 						sprintf (line2, "Length: %0.3f pix", [self Length:[[points objectAtIndex:0] point] :[[points objectAtIndex:1] point]]);
 					
 					// If there is another line, compute cobb's angle
-					if( curView)
+					if( curView && [[NSUserDefaults standardUserDefaults] boolForKey: @"displayCobbAngle"])
 					{
 						NSArray *roiList = curView.curRoiList;
 						
@@ -4067,8 +4067,11 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 										
 										NSString *rName = r.name;
 										
+										if( [rName isEqualToString: @"Unnamed"] || [rName isEqualToString: NSLocalizedString( @"Unamed", 0L)])
+											rName = 0L;
+										
 										if( rName)
-											sprintf (line3, "Cobb's Angle: %0.3f with: %@", angle, rName);
+											sprintf (line3, "Cobb's Angle: %0.3f with: %s", angle, [rName UTF8String]);
 										else
 											sprintf (line3, "Cobb's Angle: %0.3f", angle);
 										
