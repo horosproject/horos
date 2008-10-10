@@ -654,12 +654,12 @@ static NSMenu					*fusionPluginsMenu = 0L;
 
 #pragma mark Deletion
 
-+ (void)deletePluginWithName:(NSString*)pluginName;
++ (NSString*) deletePluginWithName:(NSString*)pluginName;
 {
 	NSMutableArray *pluginsPaths = [NSMutableArray arrayWithArray:[PluginManager activeDirectories]];
 	[pluginsPaths addObjectsFromArray:[PluginManager inactiveDirectories]];
 	
-    NSString *path;
+    NSString *path, *returnPath = 0L;
 	NSString *trashDir = [NSHomeDirectory() stringByAppendingPathComponent:@".Trash"];
 	
 	for(path in pluginsPaths)
@@ -684,6 +684,8 @@ static NSMenu					*fusionPluginsMenu = 0L;
 
 				}
 				
+				returnPath = path;
+				
 //				// delete
 //				BOOL deleted = [[NSFileManager defaultManager] removeFileAtPath:[NSString stringWithFormat:@"%@/%@", path, name] handler:nil];
 //				if(!deleted)
@@ -696,6 +698,8 @@ static NSMenu					*fusionPluginsMenu = 0L;
 			}
 		}
 	}
+	
+	return returnPath;
 }
 
 #pragma mark plugins

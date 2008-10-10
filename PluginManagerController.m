@@ -427,12 +427,15 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
 		[[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
 	}
 	
-	//NSString *userPluginsDirectoryPath = [PluginManager userActivePluginsDirectoryPath];
+	NSString *oldPath = [PluginManager deletePluginWithName: [pluginPath lastPathComponent]];
 	
 	// determine in which directory to install the plugin (default = user active dir, or if the plugin was already installed: in the same dir)	
-	NSString *installDirectoryPath = [PluginManager userActivePluginsDirectoryPath]; // default = user active directory
-	
-	[PluginManager deletePluginWithName: [pluginPath lastPathComponent]];
+	NSString *installDirectoryPath;
+
+	if( oldPath)
+		installDirectoryPath = oldPath;
+	else
+		installDirectoryPath = [PluginManager userActivePluginsDirectoryPath]; // default = user active directory
 	
 	[PluginManager movePluginFromPath:pluginPath toPath:installDirectoryPath];	
 	

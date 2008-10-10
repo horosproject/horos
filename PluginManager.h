@@ -52,7 +52,7 @@
 + (void)activatePluginWithName:(NSString*)pluginName;
 + (void)deactivatePluginWithName:(NSString*)pluginName;
 + (void)changeAvailabilityOfPluginWithName:(NSString*)pluginName to:(NSString*)availability;
-+ (void)deletePluginWithName:(NSString*)pluginName;
++ (NSString*)deletePluginWithName:(NSString*)pluginName;
 + (NSArray*)pluginsList;
 + (void)createDirectory:(NSString*)directoryPath;
 + (NSArray*)availabilities;
