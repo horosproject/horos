@@ -3,12 +3,12 @@
 	<data>
 		<int key="IBDocument.SystemTarget">1050</int>
 		<string key="IBDocument.SystemVersion">9F33</string>
-		<string key="IBDocument.InterfaceBuilderVersion">667</string>
+		<string key="IBDocument.InterfaceBuilderVersion">672</string>
 		<string key="IBDocument.AppKitVersion">949.34</string>
 		<string key="IBDocument.HIToolboxVersion">352.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="6"/>
+			<integer value="111"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -708,7 +708,7 @@
 										<object class="NSButton" id="56345334">
 											<reference key="NSNextResponder" ref="710719863"/>
 											<int key="NSvFlags">256</int>
-											<string key="NSFrame">{{600, 370}, {78, 32}}</string>
+											<string key="NSFrame">{{557, 370}, {121, 32}}</string>
 											<reference key="NSSuperview" ref="710719863"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSButtonCell" key="NSCell" id="357197575">
@@ -731,12 +731,12 @@
 										<object class="NSTextField" id="503138392">
 											<reference key="NSNextResponder" ref="710719863"/>
 											<int key="NSvFlags">256</int>
-											<string key="NSFrame">{{19, 381}, {75, 17}}</string>
+											<string key="NSFrame">{{-1, 381}, {95, 17}}</string>
 											<reference key="NSSuperview" ref="710719863"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSTextFieldCell" key="NSCell" id="175925515">
 												<int key="NSCellFlags">67239424</int>
-												<int key="NSCellFlags2">4194304</int>
+												<int key="NSCellFlags2">71303168</int>
 												<string key="NSContents">Modality:</string>
 												<reference key="NSSupport" ref="282660100"/>
 												<reference key="NSControlView" ref="503138392"/>
@@ -1481,12 +1481,12 @@
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
-					<string>{{306, 701}, {726, 455}}</string>
+					<string>{{306, 461}, {726, 455}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{306, 701}, {726, 455}}</string>
+					<string>{{306, 461}, {726, 455}}</string>
 					<reference ref="9"/>
 					<string>{{81, 33}, {726, 745}}</string>
-					<reference ref="9"/>
+					<integer value="0"/>
 					<reference ref="9"/>
 					<string>{3.40282e+38, 3.40282e+38}</string>
 					<string>{224.663, 10}</string>

@@ -2,9 +2,9 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="7.02">
 	<data>
 		<int key="IBDocument.SystemTarget">1050</int>
-		<string key="IBDocument.SystemVersion">9E17</string>
-		<string key="IBDocument.InterfaceBuilderVersion">670</string>
-		<string key="IBDocument.AppKitVersion">949.33</string>
+		<string key="IBDocument.SystemVersion">9F33</string>
+		<string key="IBDocument.InterfaceBuilderVersion">672</string>
+		<string key="IBDocument.AppKitVersion">949.34</string>
 		<string key="IBDocument.HIToolboxVersion">352.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -92,7 +92,7 @@
 						<object class="NSTextField" id="203583737">
 							<reference key="NSNextResponder" ref="866985817"/>
 							<int key="NSvFlags">256</int>
-							<string key="NSFrame">{{17, 187}, {150, 17}}</string>
+							<string key="NSFrame">{{6, 187}, {161, 17}}</string>
 							<reference key="NSSuperview" ref="866985817"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="635186925">
@@ -140,7 +140,7 @@
 						<object class="NSTextField" id="487707830">
 							<reference key="NSNextResponder" ref="866985817"/>
 							<int key="NSvFlags">256</int>
-							<string key="NSFrame">{{18, 157}, {149, 17}}</string>
+							<string key="NSFrame">{{6, 157}, {161, 17}}</string>
 							<reference key="NSSuperview" ref="866985817"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="851545278">
@@ -172,7 +172,7 @@
 						<object class="NSMatrix" id="995218247">
 							<reference key="NSNextResponder" ref="866985817"/>
 							<int key="NSvFlags">268</int>
-							<string key="NSFrame">{{79, 40}, {249, 58}}</string>
+							<string key="NSFrame">{{79, 40}, {343, 58}}</string>
 							<reference key="NSSuperview" ref="866985817"/>
 							<bool key="NSEnabled">YES</bool>
 							<int key="NSNumRows">3</int>
@@ -228,7 +228,7 @@
 									<int key="NSPeriodicInterval">75</int>
 								</object>
 							</object>
-							<string key="NSCellSize">{249, 18}</string>
+							<string key="NSCellSize">{343, 18}</string>
 							<string key="NSIntercellSpacing">{4, 2}</string>
 							<int key="NSMatrixFlags">1143472128</int>
 							<string key="NSCellClass">NSActionCell</string>
@@ -298,7 +298,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<object class="NSTextField" id="1025931440">
 							<reference key="NSNextResponder" ref="866985817"/>
 							<int key="NSvFlags">256</int>
-							<string key="NSFrame">{{6, 81}, {61, 17}}</string>
+							<string key="NSFrame">{{-3, 81}, {70, 17}}</string>
 							<reference key="NSSuperview" ref="866985817"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="448380518">
@@ -1273,12 +1273,12 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
-					<string>{{0, 1331}, {531, 214}}</string>
+					<string>{{0, 702}, {531, 214}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{0, 1331}, {531, 214}}</string>
+					<string>{{0, 702}, {531, 214}}</string>
 					<reference ref="9"/>
 					<string>{{511, 608}, {531, 214}}</string>
-					<reference ref="9"/>
+					<integer value="0"/>
 					<reference ref="9"/>
 					<string>{3.40282e+38, 3.40282e+38}</string>
 					<string>{213, 107}</string>

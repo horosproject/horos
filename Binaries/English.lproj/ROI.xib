@@ -2,9 +2,9 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="7.02">
 	<data>
 		<int key="IBDocument.SystemTarget">1050</int>
-		<string key="IBDocument.SystemVersion">9E17</string>
-		<string key="IBDocument.InterfaceBuilderVersion">670</string>
-		<string key="IBDocument.AppKitVersion">949.33</string>
+		<string key="IBDocument.SystemVersion">9F33</string>
+		<string key="IBDocument.InterfaceBuilderVersion">672</string>
+		<string key="IBDocument.AppKitVersion">949.34</string>
 		<string key="IBDocument.HIToolboxVersion">352.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -200,7 +200,7 @@
 						<object class="NSButton" id="659122666">
 							<reference key="NSNextResponder" ref="298016655"/>
 							<int key="NSvFlags">292</int>
-							<string key="NSFrame">{{66, 31}, {100, 28}}</string>
+							<string key="NSFrame">{{27, 31}, {132, 28}}</string>
 							<reference key="NSSuperview" ref="298016655"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="247315497">
@@ -223,7 +223,7 @@
 						<object class="NSButton" id="33356351">
 							<reference key="NSNextResponder" ref="298016655"/>
 							<int key="NSvFlags">292</int>
-							<string key="NSFrame">{{196, 56}, {100, 28}}</string>
+							<string key="NSFrame">{{157, 56}, {132, 28}}</string>
 							<reference key="NSSuperview" ref="298016655"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="614790943">
@@ -482,7 +482,7 @@
 						<object class="NSButton" id="748955429">
 							<reference key="NSNextResponder" ref="298016655"/>
 							<int key="NSvFlags">292</int>
-							<string key="NSFrame">{{66, 56}, {100, 28}}</string>
+							<string key="NSFrame">{{27, 56}, {132, 28}}</string>
 							<reference key="NSSuperview" ref="298016655"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="654042810">
@@ -505,7 +505,7 @@
 						<object class="NSButton" id="666318109">
 							<reference key="NSNextResponder" ref="298016655"/>
 							<int key="NSvFlags">292</int>
-							<string key="NSFrame">{{196, 31}, {100, 28}}</string>
+							<string key="NSFrame">{{157, 31}, {132, 28}}</string>
 							<reference key="NSSuperview" ref="298016655"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="603208382">
@@ -528,7 +528,7 @@
 						<object class="NSButton" id="407569300">
 							<reference key="NSNextResponder" ref="298016655"/>
 							<int key="NSvFlags">292</int>
-							<string key="NSFrame">{{66, 6}, {100, 28}}</string>
+							<string key="NSFrame">{{27, 6}, {132, 28}}</string>
 							<reference key="NSSuperview" ref="298016655"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="575668682">
@@ -551,7 +551,7 @@
 						<object class="NSButton" id="686900290">
 							<reference key="NSNextResponder" ref="298016655"/>
 							<int key="NSvFlags">256</int>
-							<string key="NSFrame">{{173, 132}, {147, 18}}</string>
+							<string key="NSFrame">{{150, 132}, {170, 18}}</string>
 							<reference key="NSSuperview" ref="298016655"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="1061609112">
@@ -985,19 +985,19 @@
 							<reference ref="445135122"/>
 							<reference ref="898679784"/>
 							<reference ref="595287252"/>
-							<reference ref="659122666"/>
-							<reference ref="33356351"/>
 							<reference ref="833841367"/>
 							<reference ref="489250292"/>
 							<reference ref="323259333"/>
 							<reference ref="142226045"/>
 							<reference ref="1059689953"/>
-							<reference ref="748955429"/>
-							<reference ref="666318109"/>
-							<reference ref="407569300"/>
 							<reference ref="686900290"/>
 							<reference ref="857955488"/>
 							<reference ref="22936511"/>
+							<reference ref="659122666"/>
+							<reference ref="33356351"/>
+							<reference ref="748955429"/>
+							<reference ref="666318109"/>
+							<reference ref="407569300"/>
 						</object>
 						<reference key="parent" ref="706077639"/>
 					</object>
@@ -1392,12 +1392,12 @@
 					<bool key="EncodedWithXMLCoder">YES</bool>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{1053, 1018}, {311, 248}}</string>
+					<string>{{146, 542}, {311, 248}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{1053, 1018}, {311, 248}}</string>
+					<string>{{146, 542}, {311, 248}}</string>
 					<reference ref="9"/>
 					<string>{{138, 680}, {311, 248}}</string>
-					<reference ref="9"/>
+					<integer value="0" id="6"/>
 					<reference ref="9"/>
 					<string>{3.40282e+38, 3.40282e+38}</string>
 					<string>{311, 248}</string>
@@ -1435,7 +1435,7 @@
 					<string>{{1101, 1176}, {263, 107}}</string>
 					<reference ref="9"/>
 					<string>{{422, 273}, {263, 107}}</string>
-					<reference ref="9"/>
+					<reference ref="6"/>
 					<reference ref="9"/>
 					<string>{3.40282e+38, 3.40282e+38}</string>
 					<string>{213, 107}</string>
@@ -1615,7 +1615,7 @@
 			</object>
 		</object>
 		<int key="IBDocument.localizationMode">0</int>
-		<string key="IBDocument.LastKnownRelativeProjectPath">../../../OsiriX.xcodeproj</string>
+		<string key="IBDocument.LastKnownRelativeProjectPath">../../OsiriX.xcodeproj</string>
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
 	</data>
 </archive>
