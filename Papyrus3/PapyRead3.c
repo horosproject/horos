@@ -63,6 +63,9 @@ extern PapyShort ExtractJPEGlossy16 (PapyShort inFileNb, PapyUChar *ioImage8P, P
 extern short Altivec;
 extern short UseOpenJpeg;
 
+
+static char **globalElementPtrs = 0L;
+
 /********************************************************************************/
 /*										*/
 /*	Papy3GetElement : gets the value(s) of the specified element		*/
@@ -2608,7 +2611,7 @@ PutBufferInElement3 (PapyShort inFileNb, unsigned char *ioBuffP, PapyULong inEle
 		*ioBufPosP += inElemLength;
 		
 		#define MAXLIST 10000
-		char *ptrs[ MAXLIST];
+		if( globalElementPtrs == 0L) globalElementPtrs = malloc( sizeof( char*) * MAXLIST);
 		
 		j = inElemLength;
 		while( j-- > 0)
@@ -2628,7 +2631,7 @@ PutBufferInElement3 (PapyShort inFileNb, unsigned char *ioBuffP, PapyULong inEle
 				else
 					ptr[ len] = '\0';
 				
-				ptrs[ pos] = ptr;
+				globalElementPtrs[ pos] = ptr;
 				pos++;
 				if( pos >= MAXLIST)
 				{
@@ -2646,7 +2649,7 @@ PutBufferInElement3 (PapyShort inFileNb, unsigned char *ioBuffP, PapyULong inEle
 		if( ioElemP->value == 0L) return -1;
 
 		for( i = 0 ; i < pos; i++)
-			ioElemP->value[ i].a = ptrs[ i];
+			ioElemP->value[ i].a = globalElementPtrs[ i];
 	 }
       break;
           
