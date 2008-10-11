@@ -2607,7 +2607,7 @@ PutBufferInElement3 (PapyShort inFileNb, unsigned char *ioBuffP, PapyULong inEle
 		char * previousCharWrkP = theCharWrkP = (char*) ioBuffP + *ioBufPosP;
 		*ioBufPosP += inElemLength;
 		
-		#define MAXLIST 50
+		#define MAXLIST 10000
 		char *ptrs[ MAXLIST];
 		
 		j = inElemLength;
