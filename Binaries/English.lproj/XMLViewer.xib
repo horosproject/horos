@@ -3,12 +3,12 @@
 	<data>
 		<int key="IBDocument.SystemTarget">1050</int>
 		<string key="IBDocument.SystemVersion">9F33</string>
-		<string key="IBDocument.InterfaceBuilderVersion">672</string>
+		<string key="IBDocument.InterfaceBuilderVersion">670</string>
 		<string key="IBDocument.AppKitVersion">949.34</string>
 		<string key="IBDocument.HIToolboxVersion">352.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="40"/>
+			<integer value="137"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -429,7 +429,7 @@
 				<string key="NSWindowContentMaxSize">{3.40282e+38, 3.40282e+38}</string>
 				<string key="NSWindowContentMinSize">{213, 107}</string>
 				<object class="NSView" key="NSWindowView" id="154960176">
-					<reference key="NSNextResponder"/>
+					<nil key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<object class="NSMutableArray" key="NSSubviews">
 						<bool key="EncodedWithXMLCoder">YES</bool>
@@ -719,7 +719,6 @@
 						</object>
 					</object>
 					<string key="NSFrameSize">{507, 215}</string>
-					<reference key="NSSuperview"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {2560, 1577}}</string>
 				<string key="NSMinSize">{213, 129}</string>
@@ -1019,14 +1018,15 @@ eHQAAAAAQ29weXJpZ2h0IEFwcGxlIENvbXB1dGVyLCBJbmMuLCAyMDA1AAAAAA</bytes>
 			<object class="NSWindowTemplate" id="1025725603">
 				<int key="NSWindowStyleMask">31</int>
 				<int key="NSWindowBacking">2</int>
-				<string key="NSWindowRect">{{196, 219}, {814, 291}}</string>
+				<string key="NSWindowRect">{{150, 1142}, {814, 291}}</string>
 				<int key="NSWTFlags">1677721600</int>
 				<string key="NSWindowTitle">DICOM Validator</string>
 				<string key="NSWindowClass">NSPanel</string>
 				<nil key="NSViewClass"/>
-				<string key="NSWindowContentMaxSize">{3.40282e+38, 3.40282e+38}</string>
+				<string key="NSWindowContentMaxSize">{10000, 10000}</string>
+				<string key="NSWindowContentMinSize">{814, 291}</string>
 				<object class="NSView" key="NSWindowView" id="485664143">
-					<nil key="NSNextResponder"/>
+					<reference key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<object class="NSMutableArray" key="NSSubviews">
 						<bool key="EncodedWithXMLCoder">YES</bool>
@@ -1306,8 +1306,10 @@ eHQAAAAAQ29weXJpZ2h0IEFwcGxlIENvbXB1dGVyLCBJbmMuLCAyMDA1AAAAAA</bytes>
 						</object>
 					</object>
 					<string key="NSFrameSize">{814, 291}</string>
+					<reference key="NSSuperview"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {1280, 938}}</string>
+				<string key="NSScreenRect">{{0, 0}, {2560, 1578}}</string>
+				<string key="NSMinSize">{814, 307}</string>
 				<string key="NSMaxSize">{3.40282e+38, 3.40282e+38}</string>
 				<string key="NSFrameAutosaveName">DICOMValidator</string>
 			</object>
@@ -2190,6 +2192,10 @@ eHQAAAAAQ29weXJpZ2h0IEFwcGxlIENvbXB1dGVyLCBJbmMuLCAyMDA1AAAAAA</bytes>
 					<string>137.IBPluginDependency</string>
 					<string>137.IBWindowTemplateEditedContentRect</string>
 					<string>137.NSWindowTemplate.visibleAtLaunch</string>
+					<string>137.windowTemplate.hasMaxSize</string>
+					<string>137.windowTemplate.hasMinSize</string>
+					<string>137.windowTemplate.maxSize</string>
+					<string>137.windowTemplate.minSize</string>
 					<string>138.IBPluginDependency</string>
 					<string>139.IBPluginDependency</string>
 					<string>140.IBPluginDependency</string>
@@ -2298,10 +2304,14 @@ eHQAAAAAQ29weXJpZ2h0IEFwcGxlIENvbXB1dGVyLCBJbmMuLCAyMDA1AAAAAA</bytes>
 					<reference ref="9"/>
 					<reference ref="9"/>
 					<reference ref="9"/>
-					<string>{{67, 576}, {814, 291}}</string>
+					<string>{{150, 1142}, {814, 291}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{67, 576}, {814, 291}}</string>
+					<string>{{150, 1142}, {814, 291}}</string>
 					<reference ref="8"/>
+					<integer value="0"/>
+					<integer value="1"/>
+					<string>{814, 291}</string>
+					<string>{814, 291}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
