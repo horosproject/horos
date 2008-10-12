@@ -1022,7 +1022,7 @@ static NSArray*	statesArray = nil;
 	[DicomFile setFilesAreFromCDMedia: NO];
 	
 	if( addFailed )
-	]{
+	{
 		NSLog(@"adding failed....");
 		
 		return nil;
