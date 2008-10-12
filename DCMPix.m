@@ -11262,7 +11262,8 @@ END_CREATE_ROIS:
 	
 	if( fExternalOwnedImage == nil )
 	{
-		if( fImage != nil )	{
+		if( fImage != nil )
+		{
 			free(fImage);
 			fImage = 0L;
 		}
@@ -11276,6 +11277,9 @@ END_CREATE_ROIS:
 
 - (void)dealloc
 {
+//	static noaa = 0;
+//	NSLog( @"dealloc pix: %d", noaa++);
+	
 	if( shutterPolygonal) free( shutterPolygonal);
 	
 	[self clearCachedPapyGroups];

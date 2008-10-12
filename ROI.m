@@ -570,11 +570,14 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		ROIOpacity = opacity;
 }
 
-- (DCMPix*)pix {
-	if ( pix )	{
+- (DCMPix*)pix
+{
+	if ( pix )
+	{
 		return pix;
 	}
-	else {
+	else
+	{
 		NSLog( @"***** warning pix == [curView curDCM]");
 		
 		return pix = [curView.curDCM retain];
@@ -846,11 +849,11 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 	
 	while( [ctxArray count]) [self deleteTexture: [ctxArray lastObject]];
 	[ctxArray release];
+	
+	if( [textArray count]) NSLog( @"** not all texture were deleted...");
 	[textArray release];
-	if( [textArray count]) NSLog( @"** ROI.m dealloc not all texture were deleted...");
 	
 	if (textureBuffer) free(textureBuffer);
-		
 	
 	[uniqueID release];
 	[points release];
@@ -863,11 +866,9 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 	roiLock = 0;
 	
 	[layerImageJPEG release];
-//	[layerImageWhenSelectedJPEG release];
 
 	[layerReferenceFilePath release];
 	[layerImage release];
-//	[layerImageWhenSelected release];
 	[layerColor release];
 	
 	[textualBoxLine1 release];
@@ -1228,6 +1229,22 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 -(float) Area
 {
 	return [self Area: [self splinePoints]];
+}
+
+-(float) AngleUncorrected:(NSPoint) p2 :(NSPoint) p1 :(NSPoint) p3
+{
+  float 		ax,ay,bx,by;
+  float			val, angle;
+  
+  ax = p2.x - p1.x;
+  ay = p2.y - p1.y;
+  bx = p3.x - p1.x;
+  by = p3.y - p1.y;
+  
+  if (ax == 0 && ay == 0) return 0;
+  val = ((ax * bx) + (ay * by)) / (sqrt(ax*ax + ay*ay) * sqrt(bx*bx + by*by));
+  angle = acos (val) / deg2rad;
+  return angle;
 }
 
 -(float) Angle:(NSPoint) p2 :(NSPoint) p1 :(NSPoint) p3
@@ -4023,8 +4040,8 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 										NSArray *B = [r points];
 										NSPoint	u1 = [[[self points] objectAtIndex: 0] point], u2 = [[[self points] objectAtIndex: 1] point], v1 = [[B objectAtIndex: 0] point], v2 = [[B objectAtIndex: 1] point];
 										
-										float pX = [pix pixelSpacingX];
-										float pY = [pix pixelSpacingY];
+										float pX = [curView.curDCM pixelSpacingX];
+										float pY = [curView.curDCM pixelSpacingY];
 										
 										if( pX == 0 || pY == 0)
 										{
@@ -4038,44 +4055,46 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 										b1 = NSMakePoint(v1.x * pX, v1.y * pY);
 										b2 = NSMakePoint(v2.x * pX, v2.y * pY);
 										
-										NSPoint a = NSMakePoint( a1.x + (a2.x - a1.x)/2, a1.y + (a2.y - a1.y)/2);
-										
-										float slope1 = (a2.y - a1.y) / (a2.x - a1.x);
-										slope1 = -1./slope1;
-										float or1 = a.y - slope1*a.x;
-										
-										float slope2 = (b2.y - b1.y) / (b2.x - b1.x);
-										float or2 = b1.y - slope2*b1.x;
-										
-										float xx = (or2 - or1) / (slope1 - slope2);
-										
-										NSPoint d = NSMakePoint( xx, or1 + xx*slope1);
-										
-										NSPoint b = [self ProjectionPointLine: a :b1 :b2];
-										
-										b.x = b.x + (d.x - b.x)/2.;
-										b.y = b.y + (d.y - b.y)/2.;
-										
-										slope2 = -1./slope2;
-										or2 = b.y - slope2*b.x;
-										
-										xx = (or2 - or1) / (slope1 - slope2);
-										
-										NSPoint c = NSMakePoint( xx, or1 + xx*slope1);
-										
-										float angle = [self Angle:b :c :d];
-										
-										NSString *rName = r.name;
-										
-										if( [rName isEqualToString: @"Unnamed"] || [rName isEqualToString: NSLocalizedString( @"Unamed", 0L)])
-											rName = 0L;
-										
-										if( rName)
-											sprintf (line3, "Cobb's Angle: %0.3f with: %s", angle, [rName UTF8String]);
-										else
-											sprintf (line3, "Cobb's Angle: %0.3f", angle);
-										
-										break;
+										if( (a2.x - a1.x) != 0 && (b2.x - b1.x) != 0)
+										{
+											NSPoint a = NSMakePoint( a1.x + (a2.x - a1.x)/2, a1.y + (a2.y - a1.y)/2);
+											
+											float slope1 = (a2.y - a1.y) / (a2.x - a1.x);
+											slope1 = -1./slope1;
+											float or1 = a.y - slope1*a.x;
+											
+											float slope2 = (b2.y - b1.y) / (b2.x - b1.x);
+											float or2 = b1.y - slope2*b1.x;
+											
+											float xx = (or2 - or1) / (slope1 - slope2);
+											
+											NSPoint d = NSMakePoint( xx, or1 + xx*slope1);
+											
+											NSPoint b = [self ProjectionPointLine: a :b1 :b2];
+											
+											b.x = b.x + (d.x - b.x)/2.;
+											b.y = b.y + (d.y - b.y)/2.;
+											
+											slope2 = -1./slope2;
+											or2 = b.y - slope2*b.x;
+											
+											xx = (or2 - or1) / (slope1 - slope2);
+											
+											NSPoint c = NSMakePoint( xx, or1 + xx*slope1);
+											float angle = [self AngleUncorrected :b :c :d];
+											
+											NSString *rName = r.name;
+											
+											if( [rName isEqualToString: @"Unnamed"] || [rName isEqualToString: NSLocalizedString( @"Unamed", 0L)])
+												rName = 0L;
+											
+											if( rName)
+												sprintf (line3, "Cobb's Angle: %0.3f with: %s", angle, [rName UTF8String]);
+											else
+												sprintf (line3, "Cobb's Angle: %0.3f", angle);
+											
+											break;
+										}
 									}
 								}
 							}
@@ -4580,7 +4599,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				c = NSMakePoint( xx, or1 + xx*slope1);
 				
 				//Angle given by b,c,d points
-				angle = [self Angle:b :c :d];
+				angle = [self AngleUncorrected:b :c :d];
 			}
 			//TEXTO
 			line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0; line6[0] = 0;

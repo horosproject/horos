@@ -1826,12 +1826,15 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		[curDCM checkImageAvailble :curWW :curWL];
 		
 		NSRect  sizeView = [self bounds];
-		if( sizeToFit && [self is2DViewer] == NO) {
+		if( sizeToFit && [self is2DViewer] == NO)
+		{
 			[self scaleToFit];
 		}
 		
-		if( [self is2DViewer] == YES) {
-			if( curDCM.sourceFile ) {
+		if( [self is2DViewer] == YES)
+		{
+			if( curDCM.sourceFile )
+			{
 				if( [self is2DViewer] == YES) [[self window] setRepresentedFilename: curDCM.sourceFile];
 			}
 		}
@@ -1849,7 +1852,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		else
 			yearOld = [[NSString stringWithFormat:@"%@ / %@", [[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.yearOld"], [[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.yearOldAcquisition"]] retain];
 	}
-	else {
+	else
+	{
 		[curDCM release];
 		curDCM = 0L;
 		curImage = -1;
@@ -2766,7 +2770,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 		if( crossMove >= 0) tool = tCross;
 		
-		if( tool == tCross && ![self.stringID isEqualToString:@"OrthogonalMPRVIEW"]) {
+		if( tool == tCross && ![self.stringID isEqualToString:@"OrthogonalMPRVIEW"])
+		{
 			[nc postNotificationName: @"crossMove" object: stringID userInfo: [NSDictionary dictionaryWithObject:@"mouseUp" forKey:@"action"]];
 		}
 		
@@ -2802,24 +2807,30 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			}
 		}
 		
-		if( [self roiTool: tool] ) {
+		if( [self roiTool: tool] )
+		{
 			NSRect      size = [self frame];
 			NSPoint     eventLocation = [event locationInWindow];
 			NSPoint		tempPt = [self convertPoint:eventLocation fromView: 0L];
 			
 			tempPt = [self ConvertFromNSView2GL:tempPt];
 			
-			for( long i = 0; i < [curRoiList count]; i++) {
+			for( long i = 0; i < [curRoiList count]; i++)
+			{
 				[[curRoiList objectAtIndex:i] mouseRoiUp: tempPt];
 				
-				if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected)	{
+				if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected)
+				{
 					[nc postNotificationName: @"roiSelected" object: [curRoiList objectAtIndex:i] userInfo: nil];
 					break;
 				}
 			}
 			
-			for( long i = 0; i < [curRoiList count]; i++) {
-				if( [[curRoiList objectAtIndex: i] valid] == NO) {
+			for( long i = 0; i < [curRoiList count]; i++)
+			{
+				if( [[curRoiList objectAtIndex: i] valid] == NO)
+				{
+					[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object: [curRoiList objectAtIndex:i] userInfo: 0L];
 					[curRoiList removeObjectAtIndex: i];
 					i--;
 				}
@@ -2828,7 +2839,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			[self setNeedsDisplay:YES];
 		}
 		
-		if(repulsorROIEdition) {
+		if(repulsorROIEdition)
+		{
 			currentTool = tRepulsor;
 			tool = tRepulsor;
 			repulsorROIEdition = NO;
@@ -2846,13 +2858,15 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			[self setNeedsDisplay:YES];
 		}
 
-		if(selectorROIEdition) {
+		if(selectorROIEdition)
+		{
 			currentTool = tROISelector;
 			tool = tROISelector;
 			selectorROIEdition = NO;
 		}
 		
-		if(tool == tROISelector) {
+		if(tool == tROISelector)
+		{
 			[ROISelectorSelectedROIList release];
 			ROISelectorSelectedROIList = 0L;
 			

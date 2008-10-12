@@ -5626,7 +5626,6 @@ static ViewerController *draggedController = 0L;
 	}
 	[self loadROI:0];
 	
-	
 	[imageView setDCM:pixList[0] :fileList[0] :roiList[0] :imageIndex :'i' :!sameSeries];
 	
 	if( sameSeries)
