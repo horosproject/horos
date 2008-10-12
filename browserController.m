@@ -8962,7 +8962,12 @@ static BOOL needToRezoom;
 			NSString	*path = [dict valueForKey:@"Path"];
 			
 			if( [type isEqualToString:@"dicomDestination"])
-				[(ImageAndTextCell*) aCell setImage:[NSImage imageNamed:@"DICOMDestination.tif"]];
+			{
+				if( [dict valueForKey: @"icon"] && [NSImage imageNamed: [dict valueForKey: @"icon"]])
+					[(ImageAndTextCell*) aCell setImage:[NSImage imageNamed: [dict valueForKey: @"icon"]]];
+				else
+					[(ImageAndTextCell*) aCell setImage:[NSImage imageNamed:@"DICOMDestination.tif"]];
+			}
 			
 			if( [type isEqualToString:@"fixedIP"])
 				[(ImageAndTextCell*) aCell setImage:[NSImage imageNamed:@"FixedIP.tif"]];

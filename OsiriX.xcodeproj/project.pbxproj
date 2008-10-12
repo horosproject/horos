@@ -3803,6 +3803,8 @@
 		BFF9D57D09CDCA5600B3B940 /* dcmqrdbq.mm in Sources */ = {isa = PBXBuildFile; fileRef = BFF9D57909CDCA5600B3B940 /* dcmqrdbq.mm */; };
 		CE0144190923A64300F46597 /* KFSplitView.m in Sources */ = {isa = PBXBuildFile; fileRef = A9EDB2CE091A473E00EE86AF /* KFSplitView.m */; };
 		CE01441A0923A64400F46597 /* KFSplitView.h in Headers */ = {isa = PBXBuildFile; fileRef = A9EDB2CD091A473E00EE86AF /* KFSplitView.h */; };
+		CE03A3CC0EA2AE0300951EF4 /* iPhone.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE03A3CB0EA2AE0300951EF4 /* iPhone.tiff */; };
+		CE03A3CD0EA2AE0300951EF4 /* iPhone.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE03A3CB0EA2AE0300951EF4 /* iPhone.tiff */; };
 		CE0718FE0C71D5F3006332F3 /* OsiriXDB_DataModel.xcdatamodel in Sources */ = {isa = PBXBuildFile; fileRef = CE0718FD0C71D5F3006332F3 /* OsiriXDB_DataModel.xcdatamodel */; };
 		CE0718FF0C71D5F3006332F3 /* OsiriXDB_DataModel.xcdatamodel in Sources */ = {isa = PBXBuildFile; fileRef = CE0718FD0C71D5F3006332F3 /* OsiriXDB_DataModel.xcdatamodel */; };
 		CE0817B90C0FEEAE00BBD907 /* iPodEjectOff.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE0817B70C0FEEAE00BBD907 /* iPodEjectOff.tif */; };
@@ -10277,6 +10279,7 @@
 		BFF97D6C0BDE8BE6008333CF /* ShadingArrayController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ShadingArrayController.m; sourceTree = "<group>"; };
 		BFF9D57809CDCA5600B3B940 /* dcmqrdbq.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dcmqrdbq.h; sourceTree = "<group>"; };
 		BFF9D57909CDCA5600B3B940 /* dcmqrdbq.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = dcmqrdbq.mm; sourceTree = "<group>"; };
+		CE03A3CB0EA2AE0300951EF4 /* iPhone.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = iPhone.tiff; sourceTree = "<group>"; };
 		CE0718FD0C71D5F3006332F3 /* OsiriXDB_DataModel.xcdatamodel */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = wrapper.xcdatamodel; path = OsiriXDB_DataModel.xcdatamodel; sourceTree = "<group>"; };
 		CE0817B70C0FEEAE00BBD907 /* iPodEjectOff.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = iPodEjectOff.tif; sourceTree = "<group>"; };
 		CE0817B80C0FEEAE00BBD907 /* iPodEjectOn.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = iPodEjectOn.tif; sourceTree = "<group>"; };
@@ -13178,6 +13181,7 @@
 		ABBB647A063587B200D9531F /* Icons */ = {
 			isa = PBXGroup;
 			children = (
+				CE03A3CB0EA2AE0300951EF4 /* iPhone.tiff */,
 				AB9693BF0E823E3A00F09EEA /* ROIsAndKeys.tif */,
 				ABBB647B063587B200D9531F /* 2DBlending.tif */,
 				ABBB647C063587B200D9531F /* 3D.tif */,
@@ -21463,6 +21467,7 @@
 				8483ABA60E1BE33900C21B31 /* crossCursor.tif in Resources */,
 				AB9693C00E823E3A00F09EEA /* ROIsAndKeys.tif in Resources */,
 				8440039A0E8CF99500A00EBD /* dciodvfy in Resources */,
+				CE03A3CC0EA2AE0300951EF4 /* iPhone.tiff in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21855,6 +21860,7 @@
 				8483ABA70E1BE33900C21B31 /* crossCursor.tif in Resources */,
 				AB9693C10E823E3A00F09EEA /* ROIsAndKeys.tif in Resources */,
 				8440039B0E8CF99500A00EBD /* dciodvfy in Resources */,
+				CE03A3CD0EA2AE0300951EF4 /* iPhone.tiff in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

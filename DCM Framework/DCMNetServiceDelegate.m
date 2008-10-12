@@ -246,14 +246,22 @@ static NSLock *currentHostLock = 0L;
 							transferSyntax = 22;
 					}
 					
-					[serversArray addObject: [NSDictionary dictionaryWithObjectsAndKeys:	hostname, @"Address",
-																							[aServer name], @"AETitle",
-																							[NSString stringWithFormat:@"%d", port], @"Port",
-																							[NSNumber numberWithBool:YES] , @"QR",
-																							[NSNumber numberWithBool:YES] , @"Send",
-																							description, @"Description",
-																							[NSNumber numberWithInt: transferSyntax], @"Transfer Syntax",
-																							0L]];
+					NSMutableDictionary *s = [NSMutableDictionary dictionaryWithObjectsAndKeys:	hostname, @"Address",
+																									[aServer name], @"AETitle",
+																									[NSString stringWithFormat:@"%d", port], @"Port",
+																									[NSNumber numberWithBool:YES] , @"QR",
+																									[NSNumber numberWithBool:YES] , @"Send",
+																									description, @"Description",
+																									[NSNumber numberWithInt: transferSyntax], @"Transfer Syntax",
+																									0L];
+					
+					if( [dict valueForKey: @"icon"])
+					{
+						NSString *icon = [[[NSString alloc] initWithData: [dict valueForKey: @"icon"] encoding:NSUTF8StringEncoding] autorelease];
+						[s setObject: icon forKey: @"icon"];
+					}
+					
+					[serversArray addObject: s];
 				}
 			}
 		}
