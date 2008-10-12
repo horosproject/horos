@@ -195,7 +195,8 @@ static NSArray*	statesArray = nil;
 
 + (BrowserController*) currentBrowser { return browserWindow; }
 + (NSArray*) statesArray { return statesArray; }
-+ (void) updateActivity {
++ (void) updateActivity
+{
 	gLastActivity = [NSDate timeIntervalSinceReferenceDate];
 }
 
@@ -1020,7 +1021,8 @@ static NSArray*	statesArray = nil;
 	
 	[DicomFile setFilesAreFromCDMedia: NO];
 	
-	if( addFailed ) {
+	if( addFailed )
+	]{
 		NSLog(@"adding failed....");
 		
 		return nil;
@@ -1803,10 +1805,12 @@ static NSArray*	statesArray = nil;
 	
 	// FIRST DOWNLOAD FILES TO LOCAL DATABASE
 	
-	for( NSURL *url in URLs ) {
+	for( NSURL *url in URLs )
+	{
 		NSData *data = [NSData dataWithContentsOfURL: url];
 		
-		if( data ) {
+		if( data )
+		{
 			NSString *dstPath = [self getNewFileDatabasePath:@"dcm"];		
 			[data writeToFile:dstPath  atomically:YES];
 			[localFiles addObject:dstPath];
@@ -1817,20 +1821,25 @@ static NSArray*	statesArray = nil;
 	return [self addFilesAndFolderToDatabase: localFiles];
 }
 
-- (void)addURLToDatabaseEnd: (id)sender {
-	if( [sender tag] == 1 )	{
+- (void)addURLToDatabaseEnd: (id)sender
+{
+	if( [sender tag] == 1)
+	{
 		[[NSUserDefaults standardUserDefaults] setObject: [urlString stringValue] forKey: @"LASTURL"];
 		NSArray *result = [self addURLToDatabaseFiles: [NSArray arrayWithObject: [NSURL URLWithString: [urlString stringValue]]]];
 		
-		if( [result count] == 0 ) {
+		if( [result count] == 0 )
+		{
 			NSRunCriticalAlertPanel(NSLocalizedString(@"URL Error",nil), NSLocalizedString(@"I'm not able to download this file.",nil),NSLocalizedString( @"OK",nil), nil, nil);
 		}
-		else {
+		else
+		{
 			[urlWindow orderOut:sender];
 			[NSApp endSheet: urlWindow returnCode:[sender tag]];
 		}
 	}
-	else {
+	else
+	{
 		[urlWindow orderOut:sender];
 		[NSApp endSheet: urlWindow returnCode:[sender tag]];
 	}
@@ -2055,8 +2064,8 @@ static NSArray*	statesArray = nil;
 			error = nil;
 			NSArray *albums = [previousContext executeFetchRequest:dbRequest error:&error];
 			albumProperties = [[[[previousModel entitiesByName] objectForKey:@"Album"] attributesByName] allKeys];
-			for( NSManagedObject *previousAlbum in albums ) {
-				
+			for( NSManagedObject *previousAlbum in albums )
+			{
 				currentAlbumTable = [NSEntityDescription insertNewObjectForEntityForName:@"Album" inManagedObjectContext: currentContext];
 				
 				for ( NSString *name in albumProperties )
@@ -2413,20 +2422,24 @@ static NSArray*	statesArray = nil;
 			
 			NSString	*db = [NSString stringWithContentsOfFile: [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"DBFOLDER_LOCATION"]];
 			
-			if( db == nil ) {
+			if( db == nil )
+			{
 				NSString	*p = [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"DATABASE.noindex"];
 				
-				if( [[NSFileManager defaultManager] fileExistsAtPath: p] ) {
+				if( [[NSFileManager defaultManager] fileExistsAtPath: p] )
+				{
 					db = [[path stringByDeletingLastPathComponent] stringByDeletingLastPathComponent]; 
 				}
-				else {
+				else
+				{
 					db = [self.documentsDirectory stringByDeletingLastPathComponent];
 				}
 			}
 			
 			return db;
 		}
-		else {
+		else
+		{
 			return path;
 		}
 	}
@@ -2470,23 +2483,27 @@ static NSArray*	statesArray = nil;
 	// First, is it the default DB ?
 	NSString *defaultPath = [self documentsDirectoryFor: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULT_DATABASELOCATION"] url: [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"]];
 	
-	if( [[defaultPath stringByAppendingPathComponent:@"Database.sql"] isEqualToString: path] ) {
+	if( [[defaultPath stringByAppendingPathComponent:@"Database.sql"] isEqualToString: path] )
+	{
 		found = YES;
 		i = 0;
 		NSLog( @"default DB");
 	}
 	
 	// Second, is it the selected DB ?
-	if( found == NO && [bonjourServicesList selectedRow] > 0) {
+	if( found == NO && [bonjourServicesList selectedRow] > 0)
+	{
 		NSString	*cPath = [[[bonjourBrowser services] objectAtIndex: [bonjourServicesList selectedRow]-1] valueForKey:@"Path"];
 		
 		BOOL isDirectory;
 		
-		if( [[NSFileManager defaultManager] fileExistsAtPath:cPath isDirectory: &isDirectory]) {
+		if( [[NSFileManager defaultManager] fileExistsAtPath:cPath isDirectory: &isDirectory])
+		{
 			if( isDirectory) cPath = [[cPath stringByAppendingPathComponent: @"OsiriX Data"] stringByAppendingPathComponent: @"Database.sql"];
 		}
 		
-		if( [cPath isEqualToString: path]) {
+		if( [cPath isEqualToString: path])
+		{
 			NSLog( @"selected DB");
 			
 			found = YES;
@@ -2495,24 +2512,30 @@ static NSArray*	statesArray = nil;
 	}
 	
 	// Third, is it available in the list ?
-	if( found == NO) {
+	if( found == NO)
+	{
 		for( NSDictionary *service in [bonjourBrowser services] )
 		{
 			NSString	*type = [service valueForKey:@"type"];
 			
-			if( [type isEqualToString:@"localPath"] ) {
+			if( [type isEqualToString:@"localPath"] )
+			{
 				NSString	*cPath = [service valueForKey:@"Path"];
 				BOOL		isDirectory;
 				
-				if( [[[cPath pathExtension] lowercaseString] isEqualToString:@"sql"]) {
-					if( [path isEqualToString: cPath]) {
+				if( [[[cPath pathExtension] lowercaseString] isEqualToString:@"sql"])
+				{
+					if( [path isEqualToString: cPath])
+					{
 						found = YES;
 						i = [[bonjourBrowser services] indexOfObject: service] + 1;
 						break;
 					}
 				}
-				else {
-					if( [cPath isEqualToString: DBFolderLocation] && [[path lastPathComponent] isEqualToString:@"Database.sql"]) {
+				else
+				{
+					if( [cPath isEqualToString: DBFolderLocation] && [[path lastPathComponent] isEqualToString:@"Database.sql"])
+					{
 						found = YES;
 						i = [[bonjourBrowser services] indexOfObject: service] + 1;
 						break;
@@ -2652,7 +2675,8 @@ static NSArray*	statesArray = nil;
 		{
 			[self recomputePatientUIDs];
 		}
-		@catch (NSException *ne) {
+		@catch (NSException *ne)
+		{
 			NSLog( @"recomputePatientUIDs exception: %@ %@", [ne name], [ne reason]);
 		}
 		
@@ -2745,7 +2769,8 @@ static NSArray*	statesArray = nil;
 				[self outlineViewRefresh];
 		}
 		
-		@catch( NSException *ne ) {
+		@catch( NSException *ne )
+		{
 			NSLog( [ne name]);
 			NSLog( [ne reason]);
 		}
@@ -2754,7 +2779,8 @@ static NSArray*	statesArray = nil;
 	return retError;
 }
 
-- (void)selectThisStudy: (id)study {
+- (void)selectThisStudy: (id)study
+{
 	NSLog( [study description]);
 	[self outlineViewRefresh];
 	
@@ -2878,7 +2904,8 @@ static NSArray*	statesArray = nil;
 	[pool release];
 }
 
-- (NSMutableArray*)copyFilesIntoDatabaseIfNeeded: (NSMutableArray*)filesInput {
+- (NSMutableArray*)copyFilesIntoDatabaseIfNeeded: (NSMutableArray*)filesInput
+{
 	return [self copyFilesIntoDatabaseIfNeeded: filesInput async: NO];
 }
 
@@ -2982,7 +3009,8 @@ static NSArray*	statesArray = nil;
 			{
 				NSLog(@"not the main drive!");
 			}
-			else {
+			else
+			{
 				return filesInput;
 			}
 		}
@@ -3004,7 +3032,8 @@ static NSArray*	statesArray = nil;
 												 NSLocalizedString(@"Should I copy these files in OsiriX Database folder, or only copy links to these files?",@"Should I copy these files in OsiriX Database folder, or only copy links to these files?"),
 												 NSLocalizedString(@"Copy Files",@"Copy Files"),
 												 NSLocalizedString(@"Cancel",@"Cancel"),
-												 NSLocalizedString(@"Copy Links",@"Copy Links"))) {
+												 NSLocalizedString(@"Copy Links",@"Copy Links")))
+												{
 				case NSAlertDefaultReturn:
 					break;
 				case NSAlertOtherReturn:
@@ -3299,7 +3328,8 @@ static NSArray*	statesArray = nil;
 		{
 			
 			FILE *fp = fopen( [[aFile valueForKey:@"completePath"] UTF8String], "r");
-			if( fp ) {
+			if( fp )
+			{
 				fclose( fp);
 			}
 			else
@@ -3382,7 +3412,8 @@ static NSArray*	statesArray = nil;
 
 - (IBAction) ReBuildDatabaseSheet: (id)sender
 {
-	if( isCurrentDatabaseBonjour) {
+	if( isCurrentDatabaseBonjour)
+	{
 		NSRunInformationalAlertPanel(NSLocalizedString(@"Database Cleaning", 0L), NSLocalizedString(@"Cannot rebuild a distant database.", 0L), NSLocalizedString(@"OK",nil), nil, nil);
 		return;
 	}
@@ -3410,7 +3441,8 @@ static NSArray*	statesArray = nil;
 	long totalFiles = 0;
 	NSString	*aPath = [documentsDirectory() stringByAppendingPathComponent:DATABASEPATH];
 	NSArray	*dirContent = [[NSFileManager defaultManager] directoryContentsAtPath:aPath];
-	for(NSString *name in dirContent ) {
+	for(NSString *name in dirContent )
+	{
 		NSString * itemPath = [aPath stringByAppendingPathComponent: name];
 		totalFiles += [[[[NSFileManager defaultManager] fileAttributesAtPath: itemPath traverseLink: YES] objectForKey: NSFileReferenceCount] intValue];
 	}
@@ -3419,11 +3451,13 @@ static NSArray*	statesArray = nil;
 	
 	long durationFor1000;
 	
-	if( [[NSUserDefaults standardUserDefaults] integerForKey: @"TOOLKITPARSER"] == 0) {
+	if( [[NSUserDefaults standardUserDefaults] integerForKey: @"TOOLKITPARSER"] == 0)
+	{
 		durationFor1000 = 18;
 		[warning setHidden: NO];
 	}
-	else {
+	else
+	{
 		durationFor1000 = 9;
 		[warning setHidden: YES];
 	}
@@ -3774,14 +3808,16 @@ static NSArray*	statesArray = nil;
 						
 						unlockedStudies = [NSMutableArray arrayWithArray: studiesArray];
 						
-						for( long i = 0; i < [unlockedStudies count]; i++ ) {
+						for( long i = 0; i < [unlockedStudies count]; i++ )
+						{
 							if( [[[unlockedStudies objectAtIndex: i] valueForKey:@"lockedStudy"] boolValue] == YES)	{
 								[unlockedStudies removeObjectAtIndex: i];
 								i--;
 							}
 						}
 						
-						if( [unlockedStudies count] > 2) {
+						if( [unlockedStudies count] > 2)
+						{
 							for( long i = 0; i < [unlockedStudies count]; i++ )	{
 								NSString	*patientID = [[unlockedStudies objectAtIndex: i] valueForKey:@"patientID"];
 								long		to, from = i;
@@ -3797,7 +3833,8 @@ static NSArray*	statesArray = nil;
 								NSDate *openedDate = [[unlockedStudies objectAtIndex: i] valueForKey:@"dateOpened"];
 								if( openedDate == 0L) openedDate = [[unlockedStudies objectAtIndex: i] valueForKey:@"dateAdded"];
 								
-								if( [openedDate timeIntervalSinceNow] < openedInterval ) {
+								if( [openedDate timeIntervalSinceNow] < openedInterval )
+								{
 									oldestOpenedStudy = [unlockedStudies objectAtIndex: i];
 									openedInterval = [openedDate timeIntervalSinceNow];
 								}
@@ -3825,15 +3862,19 @@ static NSArray*	statesArray = nil;
 							}
 						}
 						
-						if( [defaults boolForKey:@"AUTOCLEANINGSPACEPRODUCED"] ) {
-							if( oldestStudy) {
+						if( [defaults boolForKey:@"AUTOCLEANINGSPACEPRODUCED"] )
+						{
+							if( oldestStudy)
+							{
 								NSLog( @"delete oldestStudy: %@", [oldestStudy valueForKey:@"patientUID"]);
 								[context deleteObject: oldestStudy];
 							}
 						}
 						
-						if ( [defaults boolForKey:@"AUTOCLEANINGSPACEOPENED"] ) {
-							if( oldestOpenedStudy) {
+						if ( [defaults boolForKey:@"AUTOCLEANINGSPACEOPENED"] )
+						{
+							if( oldestOpenedStudy)
+							{
 								NSLog( @"delete oldestOpenedStudy: %@", [oldestOpenedStudy valueForKey:@"patientUID"]);
 								[context deleteObject: oldestOpenedStudy];
 							}
@@ -3900,12 +3941,14 @@ static NSArray*	statesArray = nil;
 #pragma mark-
 #pragma mark OutlineView Search & Time Interval Functions
 
-- (IBAction)search: (id)sender {
+- (IBAction)search: (id)sender
+{
 	[self outlineViewRefresh];
 	[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
 }
 
-- (IBAction)setSearchType: (id)sender {
+- (IBAction)setSearchType: (id)sender
+{
 
 	if( searchType == 0 && [[NSUserDefaults standardUserDefaults] boolForKey: @"HIDEPATIENTNAME"])
 		[searchField setTextColor: [NSColor whiteColor]];
@@ -3922,7 +3965,8 @@ static NSArray*	statesArray = nil;
 	[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
 }
 
-- (IBAction)customIntervalNow:(id) sender {
+- (IBAction)customIntervalNow:(id) sender
+{
 	if( [sender tag] == 0 )	{
 		[customStart setDateValue: [NSCalendarDate dateWithYear:[[NSCalendarDate date] yearOfCommonEra] month:[[NSCalendarDate date] monthOfYear] day:[[NSCalendarDate date] dayOfMonth] hour:0 minute:0 second:0 timeZone: 0L]];
 		[customStart2 setDateValue: [NSCalendarDate dateWithYear:[[NSCalendarDate date] yearOfCommonEra] month:[[NSCalendarDate date] monthOfYear] day:[[NSCalendarDate date] dayOfMonth] hour:0 minute:0 second:0 timeZone: 0L]];
@@ -3934,7 +3978,8 @@ static NSArray*	statesArray = nil;
 	}
 }
 
-- (IBAction)endCustomInterval: (id)sender {
+- (IBAction)endCustomInterval: (id)sender
+{
 	if( [sender tag] == 1 )	{
 		[timeIntervalStart release];		timeIntervalStart = [[customStart dateValue] retain];
 		[timeIntervalEnd release];			timeIntervalEnd = [[customEnd dateValue] retain];
@@ -3948,8 +3993,10 @@ static NSArray*	statesArray = nil;
 	[self outlineViewRefresh];
 }
 
-- (void) computeTimeInterval {
-	switch( timeIntervalType) {
+- (void) computeTimeInterval
+{
+	switch( timeIntervalType)
+	{
 		case 0:	// None
 			[timeIntervalStart release];		timeIntervalStart = 0L;
 			[timeIntervalEnd release];			timeIntervalEnd = 0L;
@@ -3990,7 +4037,8 @@ static NSArray*	statesArray = nil;
 		}
 			break;
 			
-		case 5: {	// One week
+		case 5:
+		{	// One week
 			
 			NSCalendarDate *now		= [NSCalendarDate calendarDate];
 			NSCalendarDate *oneWeek = [now dateByAddingYears:0 months:0 days:-7 hours:0 minutes:0 seconds:0];
@@ -4087,14 +4135,17 @@ static NSArray*	statesArray = nil;
 	return predicate;
 }
 
-- (NSPredicate*)smartAlbumPredicate: (NSManagedObject*)album {
+- (NSPredicate*)smartAlbumPredicate: (NSManagedObject*)album
+{
 	NSPredicate	*pred = nil;
 	
-	@try {
+	@try
+	{
 		pred = [self smartAlbumPredicateString: [album valueForKey:@"predicateString"]];
 	}
 	
-	@catch( NSException *ne) {
+	@catch( NSException *ne)
+	{
 		pred = [NSPredicate predicateWithValue: NO];
 		
 		NSLog( @"filter error %@ : %@", [ne name] ,[ne reason]);
@@ -4602,16 +4653,19 @@ static NSArray*	statesArray = nil;
 	return [[self imagesArray: item] valueForKey: @"completePath"];
 }
 
-- (void)deleteEmptyFoldersForDatabaseOutlineSelection {
+- (void)deleteEmptyFoldersForDatabaseOutlineSelection
+{
 	NSEnumerator		*rowEnumerator = [databaseOutline selectedRowEnumerator];
 	NSNumber			*row;
 	NSManagedObject		*curObj;
 	NSManagedObjectContext	*context = self.managedObjectContext;
 	
-	while ( row = [rowEnumerator nextObject] ) {
+	while ( row = [rowEnumerator nextObject] )
+	{
 		curObj = [databaseOutline itemAtRow:[row intValue]];
 		
-		if( [[curObj valueForKey:@"type"] isEqualToString:@"Series"] ) {
+		if( [[curObj valueForKey:@"type"] isEqualToString:@"Series"] )
+		{
 			if( [[curObj valueForKey:@"images"] count] == 0)
 				[context deleteObject: curObj];
 		}
@@ -4624,14 +4678,16 @@ static NSArray*	statesArray = nil;
 	}
 }
 
-- (NSManagedObject *)firstObjectForDatabaseOutlineSelection {
+- (NSManagedObject *)firstObjectForDatabaseOutlineSelection
+{
 	NSManagedObject		*aFile = [databaseOutline itemAtRow:[databaseOutline selectedRow]];
 	
 	if( [[aFile valueForKey:@"type"] isEqualToString:@"Study"])	{
 		aFile = [[aFile valueForKey:@"series"] anyObject];
 	}
 	
-	if( [[aFile valueForKey:@"type"] isEqualToString:@"Series"]) {
+	if( [[aFile valueForKey:@"type"] isEqualToString:@"Series"])
+	{
 		aFile = [[aFile valueForKey:@"images"] anyObject];
 	}
 	
@@ -4762,13 +4818,15 @@ static NSArray*	statesArray = nil;
 		BOOL	refreshMatrix = YES;
 		long	nowFiles = [[item valueForKey:@"noFiles"] intValue];
 		
-		if( previousItem == item) {
+		if( previousItem == item)
+		{
 			if( nowFiles == previousNoOfFiles) refreshMatrix = NO;
 		}
 		
 		previousNoOfFiles = nowFiles;
 		
-		if( refreshMatrix) {
+		if( refreshMatrix)
+		{
 			shouldDie = YES;
 			[matrixLoadIconsLock lock];
 			[matrixLoadIconsLock unlock];
@@ -5092,11 +5150,13 @@ static NSArray*	statesArray = nil;
 		
 		if( [[album valueForKey:@"smartAlbum"] boolValue] == NO)
 			result = NSRunInformationalAlertPanel(NSLocalizedString(@"Delete/Remove images", 0L), NSLocalizedString(@"Do you want to only remove the selected images from the current album or delete them from the database?", 0L), NSLocalizedString(@"Delete",nil), NSLocalizedString(@"Cancel",nil), NSLocalizedString(@"Remove from current album",nil));
-		else {
+		else
+		{
 			result = NSRunInformationalAlertPanel(NSLocalizedString(@"Delete images", 0L), NSLocalizedString(@"Are you sure you want to delete the selected images?", 0L), NSLocalizedString(@"OK",nil), NSLocalizedString(@"Cancel",nil), nil);
 		}
 	}
-	else {
+	else
+	{
 		result = NSRunInformationalAlertPanel(NSLocalizedString(@"Delete images", 0L), NSLocalizedString(@"Are you sure you want to delete the selected images?", 0L), NSLocalizedString(@"OK",nil), NSLocalizedString(@"Cancel",nil), nil);
 	}
 	
@@ -5891,12 +5951,14 @@ static NSArray*	statesArray = nil;
 	return YES;
 }
 
-- (void) setDraggedItems:(NSArray*) pbItems {
+- (void) setDraggedItems:(NSArray*) pbItems
+{
 	[draggedItems release];
 	draggedItems = [pbItems retain];
 }
 
-- (void)outlineViewItemWillCollapse:(NSNotification *)notification {
+- (void)outlineViewItemWillCollapse:(NSNotification *)notification
+{
 	[managedObjectContext retain];
 	[managedObjectContext lock];
 	
@@ -5906,7 +5968,8 @@ static NSArray*	statesArray = nil;
 	
 	NSManagedObject	*image = 0L;
 	
-	if( [matrixViewArray count] > 0 ) {
+	if( [matrixViewArray count] > 0 )
+	{
 		image = [matrixViewArray objectAtIndex: 0];
 		if( [[image valueForKey:@"type"] isEqualToString:@"Image"]) [self findAndSelectFile: 0L image: image shouldExpand :NO];
 	}
@@ -5915,7 +5978,8 @@ static NSArray*	statesArray = nil;
 	[managedObjectContext release];
 }
 
-- (void)outlineViewItemWillExpand:(NSNotification *)notification {
+- (void)outlineViewItemWillExpand:(NSNotification *)notification
+{
 	[managedObjectContext retain];
 	[managedObjectContext lock];
 	
@@ -5927,13 +5991,17 @@ static NSArray*	statesArray = nil;
 	[managedObjectContext release];
 }
 
-- (BOOL)isUsingExternalViewer: (NSManagedObject*)item {
-	if ([[item valueForKey:@"type"] isEqualToString:@"Series"] ) {
+- (BOOL)isUsingExternalViewer: (NSManagedObject*)item
+{
+	if ([[item valueForKey:@"type"] isEqualToString:@"Series"] )
+	{
 		// ZIP files with XML descriptor
-		if([[item valueForKey:@"noFiles"] intValue] == 1 ) {
+		if([[item valueForKey:@"noFiles"] intValue] == 1 )
+		{
 			NSSet *imagesSet = [item valueForKeyPath: @"images.fileType"];
 			NSArray *imagesArray = [imagesSet allObjects];
-			if([[imagesArray objectAtIndex:0] isEqualToString:@"XMLDESCRIPTOR"] ) {
+			if([[imagesArray objectAtIndex:0] isEqualToString:@"XMLDESCRIPTOR"] )
+			{
 				NSLog(@"******** XMLDESCRIPTOR ********");
 				
 				NSSavePanel *savePanel = [NSSavePanel savePanel];
@@ -5987,10 +6055,12 @@ static NSArray*	statesArray = nil;
 	return NO;
 }
 
-- (void) databaseOpenStudy: (NSManagedObject*) item {
-	
-	if ([[item valueForKey:@"type"] isEqualToString:@"Series"])	{
-		if( [self isUsingExternalViewer: item] == NO ) {
+- (void) databaseOpenStudy: (NSManagedObject*) item
+{	
+	if ([[item valueForKey:@"type"] isEqualToString:@"Series"])
+	{
+		if( [self isUsingExternalViewer: item] == NO )
+		{
 			// DICOM & others
 			[self viewerDICOMInt :NO  dcmFile: [NSArray arrayWithObject:item] viewer:0L];
 			
@@ -6001,7 +6071,8 @@ static NSArray*	statesArray = nil;
 		// files with XML descriptor, do nothing
 		NSSet *imagesSet = [item valueForKeyPath: @"series.images.fileType"];
 		NSArray *imagesArray = [[[imagesSet allObjects] objectAtIndex:0] allObjects];
-		if([imagesArray count]==1 ) {
+		if([imagesArray count]==1 )
+		{
 			if([[imagesArray objectAtIndex:0] isEqualToString:@"XMLDESCRIPTOR"]) return;
 		}
 		
@@ -6213,7 +6284,8 @@ static NSArray*	statesArray = nil;
 	{
 		NSManagedObject		*curObj = [matrixViewArray objectAtIndex: [[oMatrix selectedCell] tag]];
 		
-		if( [[curObj valueForKey:@"type"] isEqualToString:@"Image"] ) { 
+		if( [[curObj valueForKey:@"type"] isEqualToString:@"Image"] )
+		{ 
 			files = [self filesForDatabaseMatrixSelection: dicomFiles];
 			
 			if( [databaseOutline isItemExpanded: [curObj valueForKeyPath:@"series.study"]])
@@ -6221,7 +6293,8 @@ static NSArray*	statesArray = nil;
 			
 			//	[self findAndSelectFile:0L image:[dicomFiles objectAtIndex: 0] shouldExpand:NO];
 		}
-		else {
+		else
+		{
 			files = [self filesForDatabaseMatrixSelection: dicomFiles];
 			[self findAndSelectFile:0L image:[dicomFiles objectAtIndex: 0] shouldExpand:YES];
 		}
@@ -6296,11 +6369,13 @@ static NSArray*	statesArray = nil;
 				NSArray *studiesArray = [context executeFetchRequest:dbRequest error:&error];
 				
 				index = [[studiesArray  valueForKey:@"studyInstanceUID"] indexOfObject:[curFile elementForKey: @"studyID"]];
-				if( index != NSNotFound ) {
+				if( index != NSNotFound )
+				{
 					study = [studiesArray objectAtIndex: index];
 					NSArray		*seriesArray = [[study valueForKey:@"series"] allObjects];
 					index = [[seriesArray valueForKey:@"seriesInstanceUID"] indexOfObject:[curFile elementForKey: @"seriesID"]];
-					if( index != NSNotFound ) {
+					if( index != NSNotFound )
+					{
 						seriesTable = [seriesArray objectAtIndex: index];
 						NSArray		*imagesArray = [[seriesTable valueForKey:@"images"] allObjects] ;
 						index = [[imagesArray valueForKey:@"sopInstanceUID"] indexOfObject:[curFile elementForKey: @"SOPUID"]];
@@ -6575,9 +6650,11 @@ static NSArray*	statesArray = nil;
 	{
 		BOOL				found = NO;
 		NSManagedObject		*nextStudy;
-		do {
+		do
+		{
 			index += direction;
-			if( index >= 0 && index < [outlineViewArray count] ) {
+			if( index >= 0 && index < [outlineViewArray count] )
+			{
 				nextStudy = [outlineViewArray objectAtIndex: index];
 				
 				if( [[nextStudy valueForKey:@"patientID"] isEqualToString:[study valueForKey:@"patientID"]] == NO || [[nextStudy valueForKey:@"name"] isEqualToString:[study valueForKey:@"name"]] == NO)
@@ -6659,7 +6736,8 @@ static NSArray*	statesArray = nil;
 		
 		NSInteger index = [seriesArray indexOfObject: currentSeries];
 		
-		if( index != NSNotFound ) {
+		if( index != NSNotFound )
+		{
 			if( direction == 0)	// Called from loadNextPatient
 			{
 				if( firstViewer == NO) direction = 1;
@@ -6667,12 +6745,15 @@ static NSArray*	statesArray = nil;
 			
 			index += direction*[viewersList count];
 			if( index < 0) index = 0;
-			if( index < [seriesArray count ] ) {
-				for( ViewerController *vc in viewersList ) {
+			if( index < [seriesArray count ] )
+			{
+				for( ViewerController *vc in viewersList )
+				{
 					if( index >= 0 && index < [seriesArray count] )	{
 						[self openViewerFromImages :[NSArray arrayWithObject: [self childrenArray: [seriesArray objectAtIndex: index]]] movie: NO viewer:vc keyImagesOnly: keyImages];
 					}
-					else {
+					else
+					{
 						// CREATE AN EMPTY SERIES !!!!
 						
 						NSMutableArray  *viewerPix = [[NSMutableArray alloc] initWithCapacity:0];
@@ -6717,7 +6798,8 @@ static NSArray*	statesArray = nil;
 	return [self openViewerFromImages :[NSArray arrayWithObject: [self childrenArray: series]] movie: NO viewer :viewer keyImagesOnly:keyImages];
 }
 
-- (IBAction)copy: (id)sender {
+- (IBAction)copy: (id)sender
+{
     NSPasteboard	*pb = [NSPasteboard generalPasteboard];
 	
 	[pb declareTypes:[NSArray arrayWithObject:NSStringPboardType] owner:self];
@@ -6726,7 +6808,8 @@ static NSArray*	statesArray = nil;
 	NSMutableString		*string = [NSMutableString string];
 	NSNumber			*row;
 	
-	while (row = [rowEnumerator nextObject] ) {
+	while (row = [rowEnumerator nextObject] )
+	{
 		NSManagedObject   *aFile = [databaseOutline itemAtRow:[row intValue]];
 		
 		if( aFile )	{
@@ -6831,7 +6914,7 @@ static BOOL withReset = NO;
 	
     NSButtonCell    *cell = [oMatrix selectedCell];
     if( cell)
-    {
+	{
 		if( [cell isEnabled] == YES)
 		{
 			if( [cell tag] >= [matrixViewArray count]) return;
@@ -6849,7 +6932,8 @@ static BOOL withReset = NO;
 				DCMPix*     dcmPix = 0L;
 				dcmPix = [[DCMPix alloc] myinit: [image valueForKey:@"completePath"] :[animationSlider intValue] :noOfImages :0L :[animationSlider intValue] :[[image valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:image];
 				
-				if( dcmPix ) {
+				if( dcmPix )
+				{
 					float   wl, ww;
 					int     row, column;
 					
@@ -6874,11 +6958,13 @@ static BOOL withReset = NO;
 						[oMatrix selectCellWithTag: [animationSlider intValue]];
 				}
 					
-				if( [images count] ) { 
+				if( [images count] )
+				{ 
 					if( [images count] > 1) noOfImages = [images count];
 					else noOfImages = [[[images objectAtIndex:0] valueForKey:@"numberOfFrames"] intValue];
 					
-					if( [images count] > 1 || noOfImages == 1 ) {
+					if( [images count] > 1 || noOfImages == 1 )
+					{
 						animate = YES;
 						
 						if( [animationSlider intValue] >= [images count]) return;
@@ -6888,7 +6974,8 @@ static BOOL withReset = NO;
 							DCMPix*     dcmPix = nil;
 							dcmPix = [[DCMPix alloc] myinit: [[images objectAtIndex: [animationSlider intValue]] valueForKey:@"completePath"] :[animationSlider intValue] :[images count] :0L :0 :[[[images objectAtIndex: [animationSlider intValue]] valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:[images objectAtIndex: [animationSlider intValue]]];
 							
-							if( dcmPix ) {
+							if( dcmPix )
+							{
 								float   wl, ww;
 								int     row, column;
 								
@@ -6913,7 +7000,8 @@ static BOOL withReset = NO;
 							DCMPix*     dcmPix = 0L;
 							dcmPix = [[DCMPix alloc] myinit: [[images objectAtIndex: 0] valueForKey:@"completePath"] :[animationSlider intValue] :noOfImages :0L :[animationSlider intValue] :[[[images objectAtIndex: 0] valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:[images objectAtIndex: 0]];
 							
-							if( dcmPix ) {
+							if( dcmPix )
+							{
 								float   wl, ww;
 								int     row, column;
 								
@@ -6933,7 +7021,8 @@ static BOOL withReset = NO;
     }
 }
 
-- (void)previewPerformAnimation: (id)sender {
+- (void)previewPerformAnimation: (id)sender
+{
 	[self setDockIcon];
 	
     // Wait loading all images !!!
@@ -6971,11 +7060,13 @@ static BOOL withReset = NO;
 	
 	int	pos = [animationSlider intValue];
 	
-	if( change > 0 ) {
+	if( change > 0 )
+	{
 		change = ceil( change);
 		pos += change;
 	}
-	else {
+	else
+	{
 		change = floor( change);
 		pos += change;
 	}
@@ -6987,7 +7078,8 @@ static BOOL withReset = NO;
 	[self previewSliderAction: animationSlider];
 }
 
-- (IBAction) matrixPressed: (id)sender {
+- (IBAction) matrixPressed: (id)sender
+{
     id          theCell = [sender selectedCell];
     int         row, column, count, index;
     
@@ -7018,7 +7110,8 @@ static BOOL withReset = NO;
 	{
 		NSManagedObject         *dcmFile = [databaseOutline itemAtRow:[databaseOutline selectedRow]];
 		
-		if( [[dcmFile valueForKey:@"type"] isEqualToString: @"Study"] == NO ) {
+		if( [[dcmFile valueForKey:@"type"] isEqualToString: @"Study"] == NO )
+		{
 			index = [theCell tag];
 			[imageView setIndex: index];
 		}
@@ -7032,12 +7125,14 @@ static BOOL withReset = NO;
     id  theCell = [oMatrix selectedCell];
     int column,row;
     
-    if( [theCell tag] >= 0 ) {
+    if( [theCell tag] >= 0 )
+	{
 		[self viewerDICOM: [[oMatrix menu] itemAtIndex:0]];
     }
 }
 
--(void) matrixInit:(long) noOfImages {
+-(void) matrixInit:(long) noOfImages
+{
 	NSSize size		= [oMatrix cellSize];
 	NSSize space	= [oMatrix intercellSpacing];
 	NSRect frame	= [[oMatrix enclosingScrollView] frame];
@@ -7059,7 +7154,8 @@ static BOOL withReset = NO;
 	
 	[oMatrix renewRows:row columns: COLUMN];
 	
-	for( long i=0; i < row*COLUMN; i++ ) {
+	for( long i=0; i < row*COLUMN; i++ )
+	{
 		NSButtonCell *cell = [oMatrix cellAtRow:i/COLUMN column:i%COLUMN];
 		cell.tag = i;
 		[cell setTransparent: YES];
@@ -7069,7 +7165,8 @@ static BOOL withReset = NO;
 		cell.bezelStyle = NSShadowlessSquareBezelStyle;
 	}
 	
-	for( long i=0; i<noOfImages; i++ ) {
+	for( long i=0; i<noOfImages; i++ )
+	{
 		[[oMatrix cellWithTag: i] setTransparent:NO];
 	}
 	
@@ -7287,22 +7384,31 @@ static BOOL withReset = NO;
 	[pool release];	
 }
 
-- (void)matrixDisplayIcons:(id) sender {
+- (void)matrixDisplayIcons:(id) sender
+{
 	
 	if( bonjourDownloading) return;
 	if( managedObjectContext == 0L) return;
 	
-	@try {
-		if( [previewPix count] ) {
-			if( loadPreviewIndex < [previewPix count] )	{
+	@try
+	{
+		if( [previewPix count] )
+		{
+			if( loadPreviewIndex < [previewPix count] )
+			{
 				long i;
-				for( i = loadPreviewIndex; i < [previewPix count]; i++ ) {
+				for( i = loadPreviewIndex; i < [previewPix count]; i++ )
+				{
 					NSButtonCell *cell = [oMatrix cellAtRow:i/COLUMN column:i%COLUMN];
 					
-					if( [cell isEnabled] == NO ) {
-						if( i < [previewPix count] ) {
-							if( [previewPix objectAtIndex: i] != nil ) {
-								if( i < [matrixViewArray count] ) {
+					if( [cell isEnabled] == NO )
+					{
+						if( i < [previewPix count] )
+						{
+							if( [previewPix objectAtIndex: i] != nil )
+							{
+								if( i < [matrixViewArray count] )
+								{
 									[self matrixNewIcon:i :[matrixViewArray objectAtIndex: i]];
 								}
 							}
@@ -7310,7 +7416,8 @@ static BOOL withReset = NO;
 					}
 				}
 				
-				if( [oMatrix selectedCell] == 0 ) {
+				if( [oMatrix selectedCell] == 0 )
+				{
 					if( [matrixViewArray count] > 0 )
 						[oMatrix selectCellWithTag: 0];
 				}
@@ -7324,12 +7431,14 @@ static BOOL withReset = NO;
 		else [self initAnimationSlider];
 	}
 	
-	@catch( NSException *ne ) {
+	@catch( NSException *ne )
+	{
 		NSLog(@"matrixDisplayIcons exception: %@", [ne description]);
 	}
 }
 
-+ (NSData*)produceJPEGThumbnail: (NSImage*)image {
++ (NSData*)produceJPEGThumbnail: (NSImage*)image
+{
 	NSData *imageData = [image  TIFFRepresentation];
 	
 	NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData:imageData];
@@ -7567,7 +7676,8 @@ static BOOL withReset = NO;
 	[context release];
 }
 
-- (IBAction)rebuildThumbnails: (id)sender {
+- (IBAction)rebuildThumbnails: (id)sender
+{
 	NSInteger				row;
 	NSManagedObjectContext	*context = self.managedObjectContext;
 	NSManagedObjectModel    *model = self.managedObjectModel;
@@ -7577,23 +7687,27 @@ static BOOL withReset = NO;
 	
 	NSIndexSet		*selectedRows = [databaseOutline selectedRowIndexes];
 	
-	if( [databaseOutline selectedRow] >= 0 ) {
+	if( [databaseOutline selectedRow] >= 0 )
+	{
 		shouldDie = YES;
 		[matrixLoadIconsLock lock];
 		[matrixLoadIconsLock unlock];
 		shouldDie = NO;
 		
-		for( NSInteger x = 0; x < selectedRows.count; x++ ) {
+		for( NSInteger x = 0; x < selectedRows.count; x++ )
+		{
 			if( x == 0) row = selectedRows.firstIndex;
 			else row = [selectedRows indexGreaterThanIndex: row];
 			
 			NSManagedObject	*object = [databaseOutline itemAtRow: row];
 			
-			if( [[object valueForKey:@"type"] isEqualToString: @"Study"] ) {
+			if( [[object valueForKey:@"type"] isEqualToString: @"Study"] )
+			{
 				[[self childrenArray: object] setValue:0L forKey:@"thumbnail"];
 			}
 			
-			if( [[object valueForKey:@"type"] isEqualToString: @"Series"] ) {
+			if( [[object valueForKey:@"type"] isEqualToString: @"Series"] )
+			{
 				[object setValue:0L forKey:@"thumbnail"];
 			}
 		}
@@ -7607,7 +7721,8 @@ static BOOL withReset = NO;
 	[self refreshMatrix: self];
 }
 
-- (void)matrixLoadIcons: (NSDictionary*)dict {
+- (void)matrixLoadIcons: (NSDictionary*)dict
+{
 	NSAutoreleasePool               *pool = [[NSAutoreleasePool alloc] init];
 	long							subGroupCount = 1, position = 0;
 	BOOL							imageLevel = [[dict valueForKey: @"imageLevel"] boolValue];
@@ -7616,8 +7731,10 @@ static BOOL withReset = NO;
 	
 	[matrixLoadIconsLock lock];
 	
-	@try {
-		for( long i = 0; i < filesPaths.count; i++ ) {
+	@try
+	{
+		for( long i = 0; i < filesPaths.count; i++ )
+		{
 			NSImage		*thumbnail = nil;
 			
 			thumbnail = [previewPixThumbnails objectAtIndex: i];
@@ -7627,7 +7744,8 @@ static BOOL withReset = NO;
 			
 			DCMPix *dcmPix  = [[DCMPix alloc] myinit:[filesPaths objectAtIndex:i] :position :subGroupCount :0L :frame :0 isBonjour:isCurrentDatabaseBonjour imageObj: [files objectAtIndex: i]];
 			
-			if( dcmPix ) {
+			if( dcmPix )
+			{
 				if( thumbnail == notFoundImage )
 				{
 					[dcmPix revert];	// <- Kill the raw data
@@ -7643,7 +7761,8 @@ static BOOL withReset = NO;
 				
 				if (shouldDie == YES) i = [filesPaths count];
 			}
-			else {
+			else
+			{
 				dcmPix = [[DCMPix alloc] myinitEmpty];
 				[previewPix addObject: dcmPix];
 				[previewPixThumbnails replaceObjectAtIndex: i withObject: notFoundImage];
@@ -7656,7 +7775,8 @@ static BOOL withReset = NO;
 		[self performSelectorOnMainThread:@selector( matrixDisplayIcons:) withObject:0L waitUntilDone: NO];
 	}
 	
-	@catch( NSException *ne) {
+	@catch( NSException *ne)
+	{
 		NSLog(@"matrixLoadIcons exception: %@", ne.description );
 	}
 	
@@ -7803,7 +7923,8 @@ static BOOL withReset = NO;
         int	selectedCellTag = [oMatrix.selectedCell tag];
 		
         COLUMN = newColumn;
-        if( COLUMN == 0) { COLUMN = 1; NSLog(@"ERROR COLUMN = 0");}
+        if( COLUMN == 0)
+			{ COLUMN = 1; NSLog(@"ERROR COLUMN = 0");}
         
 		row = ceil((float)[matrixViewArray count]/(float) newColumn);
 		//	row = ceil((float)[[oMatrix cells] count]/(float)newColumn);
@@ -7814,7 +7935,8 @@ static BOOL withReset = NO;
         [oMatrix sizeToCells];
         
 		
-        for( int i = [previewPix count]; i<row*COLUMN; i++ ) {
+        for( int i = [previewPix count]; i<row*COLUMN; i++ )
+		{
             NSButtonCell *cell = [oMatrix cellAtRow:i/COLUMN column:i%COLUMN];
             [cell setTransparent:YES];
             [cell setEnabled:NO];
@@ -7824,13 +7946,14 @@ static BOOL withReset = NO;
     }
 }
 
-- (BOOL)splitView: (NSSplitView *)sender canCollapseSubview: (NSView *)subview {
+- (BOOL)splitView: (NSSplitView *)sender canCollapseSubview: (NSView *)subview
+{
 	if ([sender isEqual:splitViewVert]) return NO;
 	else return YES;
 }
 
-- (CGFloat)splitView:(NSSplitView *)sender constrainMinCoordinate: (CGFloat)proposedMin ofSubviewAt: (NSInteger)offset {
-	
+- (CGFloat)splitView:(NSSplitView *)sender constrainMinCoordinate: (CGFloat)proposedMin ofSubviewAt: (NSInteger)offset
+{	
 	if ([sender isEqual:sourcesSplitView] )
 	{
 		// minimum size of the top view (db, albums)
@@ -7867,21 +7990,27 @@ static BOOL withReset = NO;
 	}
 }
 
-- (NSManagedObject *)firstObjectForDatabaseMatrixSelection {
+- (NSManagedObject *)firstObjectForDatabaseMatrixSelection
+{
 	NSArray				*cells = [oMatrix selectedCells];
 	NSManagedObject		*aFile = [databaseOutline itemAtRow:[databaseOutline selectedRow]];
 	
-	if( cells != nil && aFile != nil )  {
+	if( cells != nil && aFile != nil ) 
+	{
 		
-		for( NSCell *cell in cells ) {
-			if( [cell isEnabled] == YES ) {
+		for( NSCell *cell in cells )
+		{
+			if( [cell isEnabled] == YES )
+			{
 				NSManagedObject	*curObj = [matrixViewArray objectAtIndex: [cell tag]];
 				
-				if( [[curObj valueForKey:@"type"] isEqualToString:@"Image"] ) {
+				if( [[curObj valueForKey:@"type"] isEqualToString:@"Image"] )
+				{
 					return curObj;
 				}
 				
-				if( [[curObj valueForKey:@"type"] isEqualToString:@"Series"] ) {
+				if( [[curObj valueForKey:@"type"] isEqualToString:@"Series"] )
+				{
 					return [[curObj valueForKey:@"images"] anyObject];
 				}
 			}
@@ -8342,7 +8471,8 @@ static BOOL withReset = NO;
 				NSArray *albumsArray = [context executeFetchRequest:dbRequest error:&error];
 				
 				name = [newAlbumName stringValue];
-				while( [[albumsArray valueForKey:@"name"] indexOfObject: name] != NSNotFound ) {
+				while( [[albumsArray valueForKey:@"name"] indexOfObject: name] != NSNotFound )
+				{
 					name = [NSString stringWithFormat:@"%@ #%d", [newAlbumName stringValue], i++];
 				}
 				
@@ -8413,44 +8543,56 @@ static BOOL withReset = NO;
 
 static BOOL needToRezoom;
 
-- (void)drawerDidClose: (NSNotification *)notification {
-	if( needToRezoom ) {
+- (void)drawerDidClose: (NSNotification *)notification
+{
+	if( needToRezoom )
+	{
 		[self.window zoom:self];
 	}
 }
 
-- (void)drawerWillClose: (NSNotification *)notification {
-	if( self.window.isZoomed ) {
+- (void)drawerWillClose: (NSNotification *)notification
+{
+	if( self.window.isZoomed )
+	{
 		needToRezoom = YES;
 	}
 	else needToRezoom = NO;
 }
 
-- (void)drawerDidOpen: (NSNotification *)notification {
-	if( needToRezoom ) {
+- (void)drawerDidOpen: (NSNotification *)notification
+{
+	if( needToRezoom )
+	{
 		[self.window zoom:self];
 	}
 }
 
-- (void)drawerWillOpen: (NSNotification *)notification {
+- (void)drawerWillOpen: (NSNotification *)notification
+{
 		needToRezoom = self.window.isZoomed;
 }
 
-- (IBAction)smartAlbumHelpButton: (id)sender {
-	if( [sender tag] == 0 )	{
+- (IBAction)smartAlbumHelpButton: (id)sender
+{
+	if( [sender tag] == 0 )
+	{
 		[[NSWorkspace sharedWorkspace] openFile:[[NSBundle mainBundle] pathForResource:@"OsiriXTables" ofType:@"pdf"]];
 	}
 	
-	if( [sender tag] == 1) {
+	if( [sender tag] == 1){
 		[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://developer.apple.com/documentation/Cocoa/Conceptual/Predicates/Articles/pSyntax.html#//apple_ref/doc/uid/TP40001795"]];
 	}
 }
 
-- (IBAction)albumTableDoublePressed: (id)sender {
-	if( albumTable.selectedRow > 0) {
+- (IBAction)albumTableDoublePressed: (id)sender
+{
+	if( albumTable.selectedRow > 0)
+	{
 		NSManagedObject	*album = [self.albumArray objectAtIndex: albumTable.selectedRow];
 		
-		if( [[album valueForKey:@"smartAlbum"] boolValue] == YES ) {
+		if( [[album valueForKey:@"smartAlbum"] boolValue] == YES )
+		{
 			[editSmartAlbumName setStringValue: [album valueForKey:@"name"]];
 			[editSmartAlbumQuery setStringValue: [album valueForKey:@"predicateString"]];
 			
@@ -8474,7 +8616,8 @@ static BOOL needToRezoom;
 			[NSApp endSheet: editSmartAlbum];
 			[editSmartAlbum orderOut: self];
 			
-			if( result == NSRunStoppedResponse ) {
+			if( result == NSRunStoppedResponse )
+			{
 				NSError				*error = nil;
 				NSString			*name;
 				long				i = 2;
@@ -8492,7 +8635,8 @@ static BOOL needToRezoom;
 				
 				if( [[editSmartAlbumName stringValue] isEqualToString: [album valueForKey:@"name"]] == NO )	{
 					name = [editSmartAlbumName stringValue];
-					while( [[albumsArray valueForKey:@"name"] indexOfObject: name] != NSNotFound ) {
+					while( [[albumsArray valueForKey:@"name"] indexOfObject: name] != NSNotFound )
+					{
 						name = [NSString stringWithFormat:@"%@ #%d", [newAlbumName stringValue], i++];
 					}
 					
@@ -8514,7 +8658,8 @@ static BOOL needToRezoom;
 				[context release];
 			}
 		}
-		else {
+		else
+		{
 			[newAlbumName setStringValue: [album valueForKey:@"name"]];
 			
 			[NSApp beginSheet: newAlbum
@@ -8531,7 +8676,8 @@ static BOOL needToRezoom;
 			if( result == NSRunStoppedResponse )	{
 				long				i = 2;
 				
-				if( [[newAlbumName stringValue] isEqualToString: [album valueForKey:@"name"]] == NO ) {
+				if( [[newAlbumName stringValue] isEqualToString: [album valueForKey:@"name"]] == NO )
+				{
 					NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
 					[dbRequest setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"Album"]];
 					[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
@@ -8543,7 +8689,8 @@ static BOOL needToRezoom;
 					NSArray *albumsArray = [context executeFetchRequest:dbRequest error:&error];
 					
 					NSString *name = newAlbumName.stringValue;
-					while( [[albumsArray valueForKey:@"name"] indexOfObject: name] != NSNotFound ) {
+					while( [[albumsArray valueForKey:@"name"] indexOfObject: name] != NSNotFound )
+					{
 						name = [NSString stringWithFormat:@"%@ #%d", [newAlbumName stringValue], i++];
 					}
 					
@@ -8606,15 +8753,19 @@ static BOOL needToRezoom;
 //NSTableView delegate and datasource
 - (NSInteger)numberOfRowsInTableView: (NSTableView *)aTableView
 {	
-	if ([aTableView isEqual:albumTable] ) {
+	if ([aTableView isEqual:albumTable] )
+	{
 		if( displayEmptyDatabase) return 0L;
 		return [self.albumArray count];
 	}
-	else if ([aTableView isEqual:bonjourServicesList] )	{
-		if (bonjourBrowser!=nil ) {
+	else if ([aTableView isEqual:bonjourServicesList] )
+	{
+		if (bonjourBrowser!=nil )
+		{
 			return [[bonjourBrowser services] count]+1;
 		}
-		else {
+		else
+		{
 			return 1;
 		}
 	}
@@ -8760,7 +8911,8 @@ static BOOL needToRezoom;
 		{ 
 			if ([[[self.albumArray objectAtIndex:rowIndex] valueForKey:@"smartAlbum"] boolValue] )
 			{
-				if (isCurrentDatabaseBonjour) {
+				if (isCurrentDatabaseBonjour)
+				{
 					[(ImageAndTextCell*) aCell setImage:[NSImage imageNamed:@"small_sharedSmartAlbum.tiff"]];
 				}
 				else
@@ -8768,11 +8920,14 @@ static BOOL needToRezoom;
 					[(ImageAndTextCell*) aCell setImage:[NSImage imageNamed:@"small_smartAlbum.tiff"]];
 				}
 			}
-			else {
-				if (isCurrentDatabaseBonjour) {
+			else
+			{
+				if (isCurrentDatabaseBonjour)
+				{
 					[(ImageAndTextCell*) aCell setImage:[NSImage imageNamed:@"small_sharedAlbum.tiff"]];
 				}
-				else {
+				else
+				{
 					[(ImageAndTextCell*) aCell setImage:[NSImage imageNamed:@"small_album.tiff"]];
 				}
 			}
@@ -8793,14 +8948,16 @@ static BOOL needToRezoom;
 		NSDictionary *dict = nil;
 		if( rowIndex > 0) dict = [[bonjourBrowser services] objectAtIndex: rowIndex-1];
 		
-		if (rowIndex == 0) {
+		if (rowIndex == 0)
+		{
 			[(ImageAndTextCell*) aCell setImage:[NSImage imageNamed:@"osirix16x16.tiff"]];
 		}
 		else if( [[dict valueForKey:@"type"] isEqualToString:@"bonjour"] )
 		{
 			[(ImageAndTextCell*) aCell setImage:[NSImage imageNamed:@"bonjour.tiff"]];
 		}
-		else {
+		else
+		{
 			NSString	*type = [dict valueForKey:@"type"];
 			NSString	*path = [dict valueForKey:@"Path"];
 			
@@ -9027,22 +9184,26 @@ static BOOL needToRezoom;
 	
 	if ([tableView isEqual:bonjourServicesList] )
 	{
-		if(draggedItems ) {
+		if(draggedItems )
+		{
 			NSManagedObject *curStudy, *curImage;
 			NSString		*filePath, *destPath;
 			
 			NSMutableArray		*imagesArray = [NSMutableArray arrayWithCapacity:0];
 			long				noOfFiles = 0;
 			
-			for( NSManagedObject *object in draggedItems ) {
+			for( NSManagedObject *object in draggedItems )
+			{
 				
-				if( [[object valueForKey:@"type"] isEqualToString:@"Study"] ) {
+				if( [[object valueForKey:@"type"] isEqualToString:@"Study"] )
+				{
 					for ( NSManagedObject *curSerie in [object valueForKey:@"series"] )	{
 						[imagesArray addObjectsFromArray: [[curSerie valueForKey:@"images"] allObjects]];
 					}
 				}
 				
-				if( [[object valueForKey:@"type"] isEqualToString:@"Series"] ) {
+				if( [[object valueForKey:@"type"] isEqualToString:@"Series"] )
+				{
 					[imagesArray addObjectsFromArray: [[object valueForKey:@"images"] allObjects]];
 				}
 			}
@@ -9074,11 +9235,13 @@ static BOOL needToRezoom;
 				NSString	*dbFolder = 0L;
 				NSString	*sqlFile = 0L;
 				
-				if( row == 0 ) {
+				if( row == 0 )
+				{
 					dbFolder = [[self documentsDirectoryFor: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULT_DATABASELOCATION"] url: [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"]] stringByDeletingLastPathComponent];
 					sqlFile = [[dbFolder stringByAppendingPathComponent:@"OsiriX Data"] stringByAppendingPathComponent:@"Database.sql"];
 				}
-				else {
+				else
+				{
 					dbFolder = [self getDatabaseFolderFor: [object valueForKey: @"Path"]];
 					sqlFile = [self getDatabaseIndexFileFor: [object valueForKey: @"Path"]];				
 				}
@@ -9101,7 +9264,8 @@ static BOOL needToRezoom;
 						[[splash progress] setMaxValue:[imagesArray count]];
 						
 						NSMutableArray		*packArray = [NSMutableArray arrayWithCapacity: [imagesArray count]];
-						for( NSManagedObject *img in imagesArray ) {
+						for( NSManagedObject *img in imagesArray )
+						{
 							NSString	*sendPath = [self getLocalDCMPath: img :10];
 							[packArray addObject: sendPath];
 							
@@ -9316,7 +9480,8 @@ static BOOL needToRezoom;
 						
 						[[NSFileManager defaultManager] copyPath:filePath toPath:destPath handler:nil];
 						
-						if([[filePath pathExtension] isEqualToString:@"zip"]) {
+						if([[filePath pathExtension] isEqualToString:@"zip"])
+						{
 							// it is a ZIP
 							NSString *xmlPath = [[filePath stringByDeletingPathExtension] stringByAppendingPathExtension:@"xml"];
 							NSString *xmlDestPath = [[destPath stringByDeletingPathExtension] stringByAppendingPathExtension:@"xml"];
@@ -9478,7 +9643,8 @@ static BOOL needToRezoom;
 {
 	if( [tv isEqual: bonjourServicesList])
 	{
-		if( row > 0 ) {
+		if( row > 0 )
+		{
 			NSString		*result = nil;
 			NSDictionary	*dcmNode = [[bonjourBrowser services] objectAtIndex: row-1];
 			
@@ -9774,7 +9940,8 @@ static BOOL needToRezoom;
 		
 		if( result == NSAlertDefaultReturn && toOpenArray != nil )
 		{
-			if( movieViewer == NO) {
+			if( movieViewer == NO)
+			{
 				//				NSLog(@"I will try to allocate: %d Mb", (mem * sizeof(float)) / (1024 * 1024));
 				//				
 				//				fVolumePtr = malloc(mem * sizeof(float));
@@ -10090,24 +10257,30 @@ static BOOL needToRezoom;
 			toOpenArray = splittedSeries;
 		}
 		
-		if( [toOpenArray count] == 1 ) {
+		if( [toOpenArray count] == 1 )
+		{
 			NSRunCriticalAlertPanel( NSLocalizedString(@"4D Player",@"4D Player"), NSLocalizedString(@"To see an animated series, you have to select multiple series of the same area at different times: e.g. a cardiac CT", 0L), NSLocalizedString(@"OK",nil), nil, nil);
 			movieError = YES;
 		}
-		else if( [toOpenArray count] >= 200 ) {
+		else if( [toOpenArray count] >= 200 )
+		{
 			NSRunCriticalAlertPanel( NSLocalizedString(@"4D Player",@"4D Player"), NSLocalizedString(@"4D Player is limited to a maximum number of 200 series.", 0L), NSLocalizedString(@"OK",nil), nil, nil);
 			movieError = YES;
 		}
-		else {
+		else
+		{
 			numberImages = -1;
 			
-			for( unsigned long x = 0; x < [toOpenArray count]; x++ ) {
+			for( unsigned long x = 0; x < [toOpenArray count]; x++ )
+			{
 				NSLog( @"%d", [[toOpenArray objectAtIndex: x] count]);
 				
-				if( numberImages == -1 ) {
+				if( numberImages == -1 )
+				{
 					numberImages = [[toOpenArray objectAtIndex: x] count];
 				}
-				else if( [[toOpenArray objectAtIndex: x] count] != numberImages ) {
+				else if( [[toOpenArray objectAtIndex: x] count] != numberImages )
+				{
 					NSRunCriticalAlertPanel( NSLocalizedString(@"4D Player",@"4D Player"),  NSLocalizedString(@"In the current version, all series must contain the same number of images.",@"In the current version, all series must contain the same number of images."), NSLocalizedString(@"OK",nil), nil, nil);
 					movieError = YES;
 					x = [toOpenArray count];
@@ -10126,7 +10299,8 @@ static BOOL needToRezoom;
 			
 			[splittedSeries addObject: [NSMutableArray array]];
 			
-			if( [singleSeries count] > 1 ) {
+			if( [singleSeries count] > 1 )
+			{
 				[[splittedSeries lastObject] addObject: [singleSeries objectAtIndex: 0]];
 				
 				interval = [[[singleSeries objectAtIndex: 0] valueForKey:@"sliceLocation"] floatValue] - [[[singleSeries objectAtIndex: 1] valueForKey:@"sliceLocation"] floatValue];
@@ -10156,7 +10330,8 @@ static BOOL needToRezoom;
 					previousLocation = [[[singleSeries objectAtIndex: 0] valueForKey:@"sliceLocation"] floatValue];
 					
 					for( int x = 1; x < [singleSeries count]; x++ )	{
-						if( [[[singleSeries objectAtIndex: x] valueForKey:@"sliceLocation"] floatValue] - previousLocation == 0 ) {
+						if( [[[singleSeries objectAtIndex: x] valueForKey:@"sliceLocation"] floatValue] - previousLocation == 0 )
+						{
 							if( repetition)
 								if( repetition != x - previousPos)
 									fixedRepetition = NO;
@@ -10304,7 +10479,8 @@ static BOOL needToRezoom;
 					  contextInfo: nil];
 				
 				int result = [NSApp runModalForWindow: subOpenWindow];
-				if( result == 2 ) {
+				if( result == 2 )
+				{
 					[supOpenButtons selectCellWithTag: 2];
 					
 					if( [subOpenMatrix3D selectedColumn] < 0)
@@ -10321,7 +10497,8 @@ static BOOL needToRezoom;
 				{
 					NSLog( @"Open all 4D");
 				}
-				else {
+				else
+				{
 					result = [supOpenButtons selectedTag];
 				}
 				
@@ -10730,17 +10907,20 @@ static NSArray*	openSubSeriesArray = 0L;
 	return newArray;
 }
 
-- (IBAction) checkMemory:(id) sender {
+- (IBAction) checkMemory:(id) sender
+{
 	unsigned long mem;
 	
-	if( [self computeEnoughMemory: [self produceNewArray: openSubSeriesArray] :&mem] ) {
+	if( [self computeEnoughMemory: [self produceNewArray: openSubSeriesArray] :&mem] )
+	{
 		[notEnoughMem setHidden: YES];
 		[enoughMem setHidden: NO];
 		[subSeriesOKButton setEnabled: YES];
 		
 		[memoryMessage setStringValue: [NSString stringWithFormat: @"Enough Memory ! (%d MB needed)",  mem * sizeof(float)]];
 	}
-	else {
+	else
+	{
 		[notEnoughMem setHidden: NO];
 		[enoughMem setHidden: YES];
 		[subSeriesOKButton setEnabled: NO];
@@ -10749,13 +10929,15 @@ static NSArray*	openSubSeriesArray = 0L;
 	}
 }
 
-- (void) setSubInterval: (id)sender {
+- (void) setSubInterval: (id)sender
+{
 	subInterval = [sender intValue];
 	
 	[self checkMemory: self];
 }
 
-- (void) setSubFrom: (id)sender {
+- (void) setSubFrom: (id)sender
+{
 	subFrom = [sender intValue];
 	
 	if( managedObjectContext == 0L) return;
@@ -10769,7 +10951,8 @@ static NSArray*	openSubSeriesArray = 0L;
 	[self checkMemory: self];
 }
 
-- (void)setSubTo: (id)sender {
+- (void)setSubTo: (id)sender
+{
 	subTo = [sender intValue];
 	
 	if( managedObjectContext == 0L) return;
@@ -10783,13 +10966,14 @@ static NSArray*	openSubSeriesArray = 0L;
 	[self checkMemory: self];
 }
 
-- (NSArray*)openSubSeries: (NSArray*)toOpenArray {
+- (NSArray*)openSubSeries: (NSArray*)toOpenArray
+{
 	openSubSeriesArray = [toOpenArray retain];
 	
 	NSLog( @"[[NSApp mainWindow] level]: %d", [[NSApp mainWindow] level]);
 	NSLog( @"[[NSApp keyWindow] level]: %d", [[NSApp keyWindow] level]);
 	
-	if( [[NSApp mainWindow] level] > NSModalPanelWindowLevel) { NSBeep(); return 0L;}		// To avoid the problem of displaying this sheet when the user is in fullscreen mode
+	if( [[NSApp mainWindow] level] > NSModalPanelWindowLevel){ NSBeep(); return 0L;}		// To avoid the problem of displaying this sheet when the user is in fullscreen mode
 	if( [[NSApp keyWindow] level] > NSModalPanelWindowLevel) { NSBeep(); return 0L;}		// To avoid the problem of displaying this sheet when the user is in fullscreen mode
 	
 	[self setValue:[NSNumber numberWithInt:[[toOpenArray objectAtIndex:0] count]] forKey:@"subTo"];
@@ -10811,7 +10995,8 @@ static NSArray*	openSubSeriesArray = 0L;
 	[NSApp endSheet: subSeriesWindow];
 	[subSeriesWindow orderOut: self];
 	
-	if( result == NSRunStoppedResponse ) {
+	if( result == NSRunStoppedResponse )
+	{
 		[openSubSeriesArray release];
 		
 		return [self produceNewArray: toOpenArray];
@@ -10829,7 +11014,8 @@ static NSArray*	openSubSeriesArray = 0L;
 #pragma mark GUI functions
 
 
-+ (unsigned int)_currentModifierFlags {
++ (unsigned int)_currentModifierFlags
+{
     unsigned int flags = 0;
     UInt32 currentKeyModifiers = GetCurrentKeyModifiers();
     if (currentKeyModifiers & cmdKey)
@@ -10846,7 +11032,8 @@ static NSArray*	openSubSeriesArray = 0L;
 
 // For the DB: fullscreen is equivalent to 'go to the search field'
 
-- (IBAction)fullScreenMenu: (id)sender {
+- (IBAction)fullScreenMenu: (id)sender
+{
 	// Is the item available in the toolbar?
 	NSArray	*visibleItems = [toolbar visibleItems];
 	
@@ -10916,12 +11103,14 @@ static NSArray*	openSubSeriesArray = 0L;
 		
 		[[NSUserDefaults standardUserDefaults] setObject: filteredArray forKey: @"localDatabasePaths"];
 		
-		if( [BrowserController _currentModifierFlags] & NSShiftKeyMask && [BrowserController _currentModifierFlags] & NSAlternateKeyMask ) {
+		if( [BrowserController _currentModifierFlags] & NSShiftKeyMask && [BrowserController _currentModifierFlags] & NSAlternateKeyMask )
+		{
 			NSLog( @"WARNING ---- Protected Mode Activated");
 			[DCMPix setRunOsiriXInProtectedMode: YES];
 		}
 		
-		if( [DCMPix isRunOsiriXInProtectedModeActivated] ) {
+		if( [DCMPix isRunOsiriXInProtectedModeActivated] )
+		{
 			NSRunCriticalAlertPanel(NSLocalizedString(@"Protected Mode", nil), NSLocalizedString(@"OsiriX is now running in Protected Mode (shift + option keys at startup): no images are displayed, allowing you to delete crashing or corrupted images/studies.", nil), NSLocalizedString(@"OK", nil), nil, nil);
 		}
 		
@@ -11481,11 +11670,13 @@ static NSArray*	openSubSeriesArray = 0L;
 	[sourcesSplitView restoreDefault:@"SPLITSOURCE"];
 }
 
-- (IBAction)customize:(id)sender {
+- (IBAction)customize:(id)sender
+{
     [toolbar runCustomizationPalette:sender];
 }
 
-- (IBAction)showhide:(id)sender {
+- (IBAction)showhide:(id)sender
+{
     [toolbar setVisible:![toolbar isVisible]];
 }
 
@@ -11548,7 +11739,8 @@ static NSArray*	openSubSeriesArray = 0L;
     [splitViewVert saveDefault:@"SPLITVERT2"];
     [splitViewHorz saveDefault:@"SPLITHORZ2"];
 	
-	if( [[databaseOutline sortDescriptors] count] >= 1 ) {
+	if( [[databaseOutline sortDescriptors] count] >= 1 )
+	{
 		NSDictionary	*sort = [NSDictionary	dictionaryWithObjectsAndKeys: [NSNumber numberWithBool:[[[databaseOutline sortDescriptors] objectAtIndex: 0] ascending]], @"order", [[[databaseOutline sortDescriptors] objectAtIndex: 0] key], @"key", 0L];
 		[[NSUserDefaults standardUserDefaults] setObject:sort forKey: @"databaseSortDescriptor"];
 	}
@@ -11746,7 +11938,8 @@ static NSArray*	openSubSeriesArray = 0L;
 	return YES;
 }
 
-- (BOOL)is2DViewer { return NO; }
+- (BOOL)is2DViewer
+{ return NO; }
 
 - (IBAction)customizeViewerToolBar:(id)sender
 {
@@ -11915,7 +12108,8 @@ static NSArray*	openSubSeriesArray = 0L;
 				NSString    *aPath = mediaPath;
 				NSDirectoryEnumerator *enumer = [[NSFileManager defaultManager] enumeratorAtPath:aPath];
 				
-				if( enumer ==nil ) {
+				if( enumer ==nil )
+				{
 					aPath = [NSString stringWithFormat:@"/Volumes/Untitled"];
 					enumer = [[NSFileManager defaultManager] enumeratorAtPath:aPath];
 				}
@@ -12126,7 +12320,8 @@ static NSArray*	openSubSeriesArray = 0L;
 	return NO;
 }
 
-- (void)listenerAnonymizeFiles: (NSArray*)files {
+- (void)listenerAnonymizeFiles: (NSArray*)files
+{
 	
 	NSArray				*array = [NSArray arrayWithObjects: [DCMAttributeTag tagWithName:@"PatientsName"], @"******", nil];
 	NSMutableArray		*tags = [NSMutableArray array];
@@ -12147,7 +12342,8 @@ static NSArray*	openSubSeriesArray = 0L;
 {
 	CFStringRef resolvedPath = nil;
 	CFURLRef	url = CFURLCreateWithFileSystemPath(NULL /*allocator*/, (CFStringRef)inPath, kCFURLPOSIXPathStyle, NO /*isDirectory*/);
-	if (url != NULL) {
+	if (url != NULL)
+	{
 		FSRef fsRef;
 		if (CFURLGetFSRef(url, &fsRef))
 		{
@@ -12196,7 +12392,8 @@ static NSArray*	openSubSeriesArray = 0L;
 	 if it exists see if it is a file or symbolic link
 	 if it is a file, create a folder else leave it
 	 */
-	else {	
+	else
+	{	
 		NSDictionary *attrs = [[NSFileManager defaultManager] fileAttributesAtPath:path traverseLink:YES];
 		if (![[attrs objectForKey:NSFileType] isEqualToString:NSFileTypeDirectory]) 
 			[[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];				
@@ -12381,7 +12578,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	BOOL				finished;
 	
 	finished = NO;
-	do {
+	do
+	{
 		[processorsLock lockWhenCondition: 1];
 		if( numberOfThreadsForJPEG <= 0)
 		{
@@ -12833,7 +13031,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	}
 }
 
--(void) exportQuicktimeInt:(NSArray*) dicomFiles2Export :(NSString*) path :(BOOL) html {
+-(void) exportQuicktimeInt:(NSArray*) dicomFiles2Export :(NSString*) path :(BOOL) html
+{
 	int					t;
 	NSString			*dest;
 	Wait                *splash = [[Wait alloc] initWithString:NSLocalizedString(@"Export...", 0L) :NO];
@@ -12879,7 +13078,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 		if (![[NSFileManager defaultManager] fileExistsAtPath:tempPath]) [[NSFileManager defaultManager] createDirectoryAtPath:tempPath attributes:nil];
 		else
 		{
-			if( first ) {
+			if( first )
+			{
 				if( NSRunInformationalAlertPanel( NSLocalizedString(@"Export", nil), [NSString stringWithFormat: NSLocalizedString(@"A folder already exists. Should I replace it? It will delete the entire content of this folder (%@)", nil), [tempPath lastPathComponent]], NSLocalizedString(@"Replace", nil), NSLocalizedString(@"Cancel", nil), 0L) == NSAlertDefaultReturn)
 				{
 					[[NSFileManager defaultManager] removeFileAtPath:tempPath handler:nil];
@@ -12891,7 +13091,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 		first = NO;
 		
 		tempPath = [tempPath stringByAppendingPathComponent: [NSString stringWithFormat: @"%@ - %@", asciiString( [curImage valueForKeyPath: @"series.study.studyName"]), [curImage valueForKeyPath: @"series.study.id"]]];
-		if( [[curImage valueForKeyPath: @"series.study.id"] isEqualToString:previousStudy] == NO ) {
+		if( [[curImage valueForKeyPath: @"series.study.id"] isEqualToString:previousStudy] == NO )
+		{
 			previousStudy = [curImage valueForKeyPath: @"series.study.id"];
 			previousSeries = -1;
 		}
@@ -12949,7 +13150,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 				float curWW = 0;
 				float curWL = 0;
 				
-				if( [[curImage valueForKey:@"series"] valueForKey:@"windowWidth"] ) {
+				if( [[curImage valueForKey:@"series"] valueForKey:@"windowWidth"] )
+				{
 					curWW = [[[curImage valueForKey:@"series"] valueForKey:@"windowWidth"] floatValue];
 					curWL = [[[curImage valueForKey:@"series"] valueForKey:@"windowLevel"] floatValue];
 				}
@@ -12969,10 +13171,12 @@ static volatile int numberOfThreadsForJPEG = 0;
 		if( [splash aborted] ) break;
 	}
 	
-	if( [imagesArray count] > 1 ) {
+	if( [imagesArray count] > 1 )
+	{
 		[self writeMovie: imagesArray name: [previousPath stringByAppendingString:@".mov"]];
 	}
-	else if( [imagesArray count] == 1 ) {
+	else if( [imagesArray count] == 1 )
+	{
 		NSArray *representations = [[imagesArray objectAtIndex: 0] representations];
 		NSData *bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
 		[bitmapData writeToFile:[previousPath stringByAppendingString:@".jpg"] atomically:YES];
@@ -12997,14 +13201,16 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[splash release];
 }
 
-- (void)exportQuicktime: (id)sender {
+- (void)exportQuicktime: (id)sender
+{
 	NSOpenPanel			*sPanel			= [NSOpenPanel openPanel];
 	
 	NSMutableArray *dicomFiles2Export = [NSMutableArray array];
 	NSMutableArray *filesToExport;
 	
 	NSLog( [sender description]);
-	if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu] ) {
+	if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu] )
+	{
 		filesToExport = [self filesForDatabaseMatrixSelection: dicomFiles2Export];
 		NSLog(@"Files from contextual menu: %d", [filesToExport count]);
 	}
@@ -13020,12 +13226,14 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	[sPanel setAccessoryView:exportQuicktimeView];
 	
-	if ([sPanel runModalForDirectory:0L file:0L types:0L] == NSFileHandlingPanelOKButton) {
+	if ([sPanel runModalForDirectory:0L file:0L types:0L] == NSFileHandlingPanelOKButton)
+	{
 		[self exportQuicktimeInt: dicomFiles2Export :[[sPanel filenames] objectAtIndex:0] :[exportHTMLButton state]];
 	}
 }
 
-- (void) exportImageAs:(NSString*) format sender:(id) sender {
+- (void) exportImageAs:(NSString*) format sender:(id) sender
+{
 	NSOpenPanel			*sPanel			= [NSOpenPanel openPanel];
 	long				previousSeries = -1;
 	long				serieCount		= 0;
@@ -13033,7 +13241,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	NSMutableArray *dicomFiles2Export = [NSMutableArray array];
 	NSMutableArray *filesToExport;
 	
-	if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu] ) {
+	if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu] )
+	{
 		filesToExport = [self filesForDatabaseMatrixSelection: dicomFiles2Export];
 		NSLog(@"Files from contextual menu: %d", [filesToExport count]);
 	}
@@ -13047,7 +13256,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[sPanel setTitle: NSLocalizedString(@"Export",0L)];
 	[sPanel setCanCreateDirectories:YES];
 	
-	if ([sPanel runModalForDirectory:0L file:0L types:0L] == NSFileHandlingPanelOKButton ) {
+	if ([sPanel runModalForDirectory:0L file:0L types:0L] == NSFileHandlingPanelOKButton )
+	{
 		NSString			*dest, *path = [[sPanel filenames] objectAtIndex:0];
 		Wait                *splash = [[Wait alloc] initWithString:NSLocalizedString(@"Export...", 0L)];
 		BOOL				addDICOMDIR = [addDICOMDIRButton state];
@@ -13056,7 +13266,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[splash showWindow:self];
 		[[splash progress] setMaxValue:[filesToExport count]];
 		
-		for( int i = 0; i < [filesToExport count]; i++ ) {
+		for( int i = 0; i < [filesToExport count]; i++ )
+		{
 			NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 			NSManagedObject	*curImage = [dicomFiles2Export objectAtIndex:i];
 			NSString *extension = format;
@@ -13065,7 +13276,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 			
 			// Find the PATIENT folder
 			if (![[NSFileManager defaultManager] fileExistsAtPath:tempPath]) [[NSFileManager defaultManager] createDirectoryAtPath:tempPath attributes:nil];
-			else {
+			else
+			{
 				if( i == 0)	{
 					if( NSRunInformationalAlertPanel( NSLocalizedString(@"Export", nil), [NSString stringWithFormat: NSLocalizedString(@"A folder already exists. Should I replace it? It will delete the entire content of this folder (%@)", nil), [tempPath lastPathComponent]], NSLocalizedString(@"Replace", nil), NSLocalizedString(@"Cancel", nil), 0L) == NSAlertDefaultReturn)
 					{
@@ -13091,7 +13303,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 			
 			long imageNo = [[curImage valueForKey:@"instanceNumber"] intValue];
 			
-			if( previousSeries != [[curImage valueForKeyPath: @"series.id"] intValue]) {
+			if( previousSeries != [[curImage valueForKeyPath: @"series.id"] intValue])
+			{
 				previousSeries = [[curImage valueForKeyPath: @"series.id"] intValue];
 				serieCount++;
 			}
@@ -13099,7 +13312,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 			dest = [NSString stringWithFormat:@"%@/IM-%4.4d-%4.4d.%@", tempPath, serieCount, imageNo, extension];
 			
 			int t = 2;
-			while( [[NSFileManager defaultManager] fileExistsAtPath: dest] ) {
+			while( [[NSFileManager defaultManager] fileExistsAtPath: dest] )
+			{
 				if (!addDICOMDIR)
 					dest = [NSString stringWithFormat:@"%@/IM-%4.4d-%4.4d #%d.%@", tempPath, serieCount, imageNo, t, extension];
 				else
@@ -13109,11 +13323,13 @@ static volatile int numberOfThreadsForJPEG = 0;
 			
 			DCMPix* dcmPix = [[DCMPix alloc] myinit: [curImage valueForKey:@"completePathResolved"] :0 :1 :0L :0 :[[curImage valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:curImage];
 			
-			if( dcmPix ) {
+			if( dcmPix )
+			{
 				float curWW = 0;
 				float curWL = 0;
 				
-				if( [[curImage valueForKey:@"series"] valueForKey:@"windowWidth"] ) {
+				if( [[curImage valueForKey:@"series"] valueForKey:@"windowWidth"] )
+				{
 					curWW = [[[curImage valueForKey:@"series"] valueForKey:@"windowWidth"] floatValue];
 					curWL = [[[curImage valueForKey:@"series"] valueForKey:@"windowLevel"] floatValue];
 				}
@@ -13123,12 +13339,14 @@ static volatile int numberOfThreadsForJPEG = 0;
 				else
 					[dcmPix checkImageAvailble :[dcmPix savedWW] :[dcmPix savedWL]];
 				
-				if( [format isEqualToString:@"jpg"] ) {
+				if( [format isEqualToString:@"jpg"] )
+				{
 					NSArray *representations = [[dcmPix image] representations];
 					NSData *bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
 					[bitmapData writeToFile:dest atomically:YES];
 				}
-				else {
+				else
+				{
 					[[[dcmPix image] TIFFRepresentation] writeToFile:dest atomically:YES];
 				}
 				
@@ -13631,7 +13849,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	return result;
 }
 
-- (void)exportDICOMFile: (id)sender {
+- (void)exportDICOMFile: (id)sender
+{
 	NSOpenPanel			*sPanel			= [NSOpenPanel openPanel];
 	
 	[sPanel setCanChooseDirectories:YES];
@@ -13645,7 +13864,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	[compressionMatrix selectCellWithTag: [[NSUserDefaults standardUserDefaults] integerForKey: @"Compression Mode for Export"]];
 	
-	if ([sPanel runModalForDirectory:nil file:nil types:nil] == NSFileHandlingPanelOKButton) {
+	if ([sPanel runModalForDirectory:nil file:nil types:nil] == NSFileHandlingPanelOKButton)
+	{
 		NSMutableArray *dicomFiles2Export = [NSMutableArray array];
 		NSMutableArray *filesToExport;
 		
@@ -13653,7 +13873,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[wait showWindow:self];
 		
 		NSLog( [sender description]);
-		if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu] ) {
+		if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu] )
+		{
 			//Burn additional Files. Not just images. Add SRs
 			filesToExport = [self filesForDatabaseMatrixSelection: dicomFiles2Export onlyImages:YES];
 			NSLog(@"Files from contextual menu: %d", [filesToExport count]);
@@ -13669,7 +13890,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	}
 }
 
-- (void) setBurnerWindowControllerToNIL {
+- (void) setBurnerWindowControllerToNIL
+{
 	burnerWindowController = nil;
 }
 
@@ -13685,7 +13907,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	return YES;
 }
 
-- (void)burnDICOM: (id)sender {
+- (void)burnDICOM: (id)sender
+{
 	if( burnerWindowController == nil )	{
 		NSMutableArray *managedObjects = [[NSMutableArray alloc] init];
 		NSMutableArray *filesToBurn;
@@ -13697,7 +13920,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 		
 		[burnerWindowController showWindow:self];
 	}
-	else {
+	else
+	{
 		[[burnerWindowController window] makeKeyAndOrderFront:self];
 //		NSAlert *alert = [NSAlert alertWithMessageText:@"OsiriX" 
 //										 defaultButton:@"OK" 
@@ -13725,7 +13949,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 		NSString	*extension = [file pathExtension];
 		if([extension isEqualToString:@"" ]) extension = [NSString stringWithString:@"dcm"];
-		else {   // Added by rbrakes - check to see if "extension" includes only numbers (UID perhaps?).
+		else
+		{   // Added by rbrakes - check to see if "extension" includes only numbers (UID perhaps?).
 			int num;
 			NSScanner *scanner = [NSScanner scannerWithString: extension];
 			if ( [scanner scanInt: &num] && [scanner isAtEnd] ) extension = [NSString stringWithString:@"dcm"];
@@ -14090,7 +14315,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	NSManagedObject		*item = [databaseOutline itemAtRow:[index firstIndex]];			
 	NSManagedObject		*studySelected;
 	
-	if (item) {	
+	if (item)
+	{	
 		if ([[[item entity] name] isEqual:@"Study"])
 			studySelected = item;
 		else
@@ -14198,7 +14424,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	{
 		// Is it currently selected? -> switch back to default DB path
 		int row = [bonjourServicesList selectedRow];
-		if( row > 0 ) {
+		if( row > 0 )
+		{
 			if( [[[[bonjourBrowser services] objectAtIndex: row-1] valueForKey:@"Path"] isEqualToString: sNewDrive])
 				[self resetToLocalDatabase];
 		}
@@ -14349,7 +14576,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[self displayBonjourServices];
 }
 
-- (void)storeSCPComplete: (id)sender {
+- (void)storeSCPComplete: (id)sender
+{
 	//release storescp when done
 	[sender release];
 }
@@ -14378,7 +14606,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	if ([openPanel runModalForTypes:nil] == NSOKButton){
 		NSData *data = [NSData dataWithContentsOfFile:[openPanel filename]];
-		if (data) {
+		if (data)
+		{
 			
 			NSString *patientName = [[rdPatientForm cellWithTag:0] stringValue];
 			NSString *patientID = [[rdPatientForm cellWithTag:1] stringValue];
@@ -14403,7 +14632,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 			BOOL isSigned = YES;
 			BOOL isLittleEndian = YES;
 			NSString *photometricInterpretation = @"MONOCHROME2";
-			switch (pixelType) {
+			switch (pixelType)
+			{
 				case 0:  spp = 3;
 					numberBytes = 1;
 					photometricInterpretation = @"RGB";
@@ -14556,13 +14786,16 @@ static volatile int numberOfThreadsForJPEG = 0;
 #pragma mark -
 #pragma mark RTSTRUCT
 
-- (void)createROIsFromRTSTRUCT: (id)sender {
+- (void)createROIsFromRTSTRUCT: (id)sender
+{
 	NSMutableArray *filesArray = [NSMutableArray array];
 	NSMutableArray *filePaths = [self filesForDatabaseMatrixSelection: filesArray];
 	
-	for ( int i = 0; i < [filesArray count]; i++ ) {
+	for ( int i = 0; i < [filesArray count]; i++ )
+	{
 		NSString *modality = [[filesArray objectAtIndex: i] valueForKey: @"modality"];
-		if ( [modality isEqualToString: @"RTSTRUCT"] ) {
+		if ( [modality isEqualToString: @"RTSTRUCT"] )
+		{
 			DCMObject *dcmObj = [DCMObject objectWithContentsOfFile: [filePaths objectAtIndex: i ] decodingPixelData: NO];
 			DCMPix *pix = [previewPix objectAtIndex: 0];  // Should only be one DCMPix associated w/ an RTSTRUCT
 			
@@ -14571,7 +14804,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	}
 }
 
-- (void)rtstructNotification: (NSNotification *)note {
+- (void)rtstructNotification: (NSNotification *)note
+{
 	BOOL visible = [[[note userInfo] objectForKey: @"RTSTRUCTProgressBar"] boolValue];
 	if ( visible ) [self setRtstructProgressPercent: [[[note userInfo] objectForKey: @"RTSTRUCTProgressPercent"] floatValue]];
 	[self setRtstructProgressBar: visible];
@@ -14655,7 +14889,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	NSIndexSet			*index = [databaseOutline selectedRowIndexes];
 	NSManagedObject		*item = [databaseOutline itemAtRow:[index firstIndex]];
 	
-	if( item ) {
+	if( item )
+	{
 		NSManagedObject *studySelected;
 		
 		[checkBonjourUpToDateThreadLock lock];
@@ -14669,7 +14904,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 		
 		if( result == NSAlertDefaultReturn)
 		{
-			if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSMODE"] intValue] == 3 ) {
+			if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSMODE"] intValue] == 3 )
+			{
 				NSBundle *plugin = [[PluginManager reportPlugins] objectForKey: [[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSPLUGIN"]];
 				
 				if( plugin)
@@ -14678,7 +14914,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 					[filter deleteReportForStudy: studySelected];
 					//[filter report: studySelected action: @"deleteReport"];
 				}
-				else {
+				else
+				{
 					NSRunAlertPanel( NSLocalizedString(@"Report Error", nil), NSLocalizedString(@"Report Plugin not available.", nil), nil, nil, nil);
 					return;
 				}
@@ -14858,7 +15095,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 							[report createNewReport: studySelected destination: [NSString stringWithFormat: @"%@/REPORTS/", documentsDirectory()] type:reportsMode];					
 							[report release];
 						}
-						else {
+						else
+						{
 							//structured report code here
 							//Osirix will open DICOM Structured Reports
 							//Release Old Controller
@@ -15667,7 +15905,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	return @"";
 }
 
-- (long)currentBonjourService { return [bonjourServicesList selectedRow] - 1; }
+- (long)currentBonjourService
+{ return [bonjourServicesList selectedRow] - 1; }
 
 - (void)setCurrentBonjourService: (int)index
 {
@@ -15862,7 +16101,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[self performSelector:@selector( bonjourServiceClickedProceed:) withObject: sender afterDelay: 0.1];
 }
 
-- (NSString*) localDatabasePath {
+- (NSString*) localDatabasePath
+{
 	return [documentsDirectory() stringByAppendingPathComponent:DATAFILEPATH];
 }
 
@@ -15876,7 +16116,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	long			result;
     id				filter = [[PluginManager plugins] objectForKey:name];
 	
-	if (filter==nil) {
+	if (filter==nil)
+	{
 		NSRunAlertPanel(NSLocalizedString(@"Plugins Error", nil), NSLocalizedString(@"OsiriX cannot launch the selected plugin.", nil), nil, nil, nil);
 		return;
 	}
@@ -15933,15 +16174,20 @@ static volatile int numberOfThreadsForJPEG = 0;
 	return fixedDocumentsDirectory;
 }
 
-- (char *)cfixedDocumentsDirectory { return cfixedDocumentsDirectory; }
-- (char *)cfixedIncomingDirectory{ return cfixedIncomingDirectory;}
+- (char *)cfixedDocumentsDirectory
+{ return cfixedDocumentsDirectory; }
 
-- (NSString *)documentsDirectory {
+- (char *)cfixedIncomingDirectory
+{ return cfixedIncomingDirectory;}
+
+- (NSString *)documentsDirectory
+{
 	NSString	*dir = documentsDirectory();
 	return dir;
 }
 
-- (NSString *) documentsDirectoryFor:(int) mode url:(NSString*) url {
+- (NSString *) documentsDirectoryFor:(int) mode url:(NSString*) url
+{
 	NSString	*dir = documentsDirectoryFor( mode, url);
 	return dir;
 }
@@ -15974,11 +16220,14 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];	
 }
 
-- (IBAction)searchForCurrentPatient: (id)sender {
-	if( [databaseOutline selectedRow] != -1 ) {
+- (IBAction)searchForCurrentPatient: (id)sender
+{
+	if( [databaseOutline selectedRow] != -1 )
+	{
 		NSManagedObject   *aFile = [databaseOutline itemAtRow:[databaseOutline selectedRow]];
 		
-		if( aFile ) {
+		if( aFile )
+		{
 			if([[aFile valueForKey:@"type"] isEqualToString:@"Study"])
 				[self setSearchString: [aFile valueForKey:@"name"]];
 			else
@@ -16133,7 +16382,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	NSError	*error = nil;
 	NSArray *studiesArray = [context executeFetchRequest:dbRequest error:&error];
 	
-	if ([studiesArray count] > 0 && [studiesArray indexOfObject:study] != NSNotFound) {
+	if ([studiesArray count] > 0 && [studiesArray indexOfObject:study] != NSNotFound)
+	{
 		NSSortDescriptor * sort = [[NSSortDescriptor alloc] initWithKey:@"date" ascending:NO];
 		NSArray * sortDescriptors = [NSArray arrayWithObject: sort];
 		[sort release];

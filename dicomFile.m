@@ -1319,7 +1319,8 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				fseek(fp, TIF_CZ_LSMINFO + 64, SEEK_SET);
 				fread( &SCANTYPE, 4, 1, fp);			SCANTYPE = EndianU32_LtoN( SCANTYPE);
 	
-				switch (SCANTYPE) {
+				switch (SCANTYPE)
+				{
 				case 3:
 					NoOfFrames = TIMESTACKSIZE;
 					NoOfSeries = NUMBER_OF_CHANNELS;
@@ -2026,28 +2027,32 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				[dicomElements setObject:serie forKey:@"seriesDescription"];
 				
 				 val = Papy3GetElement (theGroupP, papInstitutionNameGr, &nbVal, &itemType);
-				if (val != NULL) {
+				if (val != NULL)
+				{
 					NSString *institution = [[DicomFile stringWithBytes: (char*) val->a encodings:encoding] retain];
 					[dicomElements setObject:institution forKey:@"institutionName"];
 					[institution release];
 				}
 				
 				val = Papy3GetElement (theGroupP, papReferringPhysiciansNameGr, &nbVal, &itemType);
-				if (val != NULL) {
+				if (val != NULL)
+				{
 					NSString *physician = [[DicomFile stringWithBytes: (char*) val->a encodings:encoding] retain];
 					[dicomElements setObject:physician forKey:@"referringPhysiciansName"];
 					[physician release];
 				}
 				
 				val = Papy3GetElement (theGroupP, papPerformingPhysiciansNameGr, &nbVal, &itemType);
-				if (val != NULL) {
+				if (val != NULL)
+				{
 					NSString *physician = [[DicomFile stringWithBytes: (char*) val->a encodings:encoding] retain];
 					[dicomElements setObject:physician forKey:@"performingPhysiciansName"];
 					[physician release];
 				}
 				
 				val = Papy3GetElement (theGroupP, papAccessionNumberGr, &nbVal, &itemType);
-				if (val != NULL) {
+				if (val != NULL)
+				{
 					[dicomElements setObject:[[[NSString alloc] initWithCString: val->a encoding: NSASCIIStringEncoding] autorelease] forKey:@"accessionNumber"];
 				}
 				
@@ -2091,7 +2096,8 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				
 				// Patient Age
 				val = Papy3GetElement (theGroupP, papPatientsAgeGr, &nbVal, &itemType);
-				if (val != NULL) {  
+				if (val != NULL)
+				{  
 					NSString *patientAge =  [[[NSString alloc] initWithCString:val->a encoding: NSASCIIStringEncoding] autorelease];
 					[dicomElements setObject:patientAge forKey:@"patientAge"];
 					
@@ -2099,7 +2105,8 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				}
 				//Patient BD
 				val = Papy3GetElement (theGroupP, papPatientsBirthDateGr, &nbVal, &itemType);
-				if (val != NULL) {  
+				if (val != NULL)
+				{  
 					NSString		*patientDOB =  [[[NSString alloc] initWithCString:val->a encoding: NSASCIIStringEncoding] autorelease];
 					NSCalendarDate	*DOB = [NSCalendarDate dateWithString: patientDOB calendarFormat:@"%Y%m%d"];
 					
@@ -2109,7 +2116,8 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				}
 				//Patients Sex
 				val = Papy3GetElement (theGroupP, papPatientsSexGr, &nbVal, &itemType);
-				if (val != NULL) {  
+				if (val != NULL)
+				{  
 					NSString *patientsSex =  [[[NSString alloc] initWithCString:val->a encoding: NSASCIIStringEncoding] autorelease];
 					[dicomElements setObject:patientsSex forKey:@"patientSex"];
 					//NSLog(@"Patient's Sex %@", patientsSex);
@@ -2605,14 +2613,16 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			
 		if (study = [[DicomFile NSreplaceBadCharacter: [dcmObject attributeValueWithName:@"StudyDescription"]] retain])
 			[dicomElements setObject:study forKey:@"studyDescription"];
-		else {
+		else
+		{
 			study = [[NSString stringWithString:@"unnamed"] retain];
 			[dicomElements setObject:study forKey:@"studyDescription"];
 		}
 		
 		if (Modality = [[dcmObject attributeValueWithName:@"Modality"] retain])
 			[dicomElements setObject:Modality forKey:@"modality"];
-		else {
+		else
+		{
 			Modality = [@"OT" retain];
 			[dicomElements setObject:Modality forKey:@"modality"];
 		}
@@ -2670,7 +2680,8 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		else if ((serie = [[DicomFile NSreplaceBadCharacter: [dcmObject attributeValueWithName:@"instanceNumber"]] retain]) && modalityNoSC)
 			[dicomElements setObject:serie forKey:@"seriesDescription"]; //JF20070103
 		else if (!modalityNoSC) serie = [@"unnamed" retain]; //JF20070103 		
-		else {
+		else
+		{
 			serie = [@"unnamed" retain];
 			[dicomElements setObject:serie forKey:@"seriesDescription"];
 		}
@@ -2689,14 +2700,16 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			
 		if (name = [[DicomFile NSreplaceBadCharacter: [dcmObject attributeValueWithName:@"PatientsName"]] retain])
 			[dicomElements setObject:name forKey:@"patientName"];
-		else {
+		else
+		{
 			name = [@"No name" retain];
 			[dicomElements setObject:name forKey:@"patientName"];
 		}
 			
 		if (patientID = [[dcmObject attributeValueWithName:@"PatientID"] retain])
 			[dicomElements setObject:[dcmObject attributeValueWithName:@"PatientID"] forKey:@"patientID"];
-		else {
+		else
+		{
 			patientID = [@"" retain];
 			[dicomElements setObject:patientID forKey:@"patientID"];
 		}
@@ -2781,7 +2794,8 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		
 		// Series Number
 		
-		if (seriesNo = [[dcmObject attributeValueWithName:@"SeriesNumber"] retain]) {
+		if (seriesNo = [[dcmObject attributeValueWithName:@"SeriesNumber"] retain])
+		{
 		}
 		else
 			seriesNo = [[NSString alloc] initWithString: @"0"];
@@ -2795,7 +2809,8 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		if (studyID = [[dcmObject attributeValueWithName:@"StudyInstanceUID"] retain])
 			[dicomElements setObject:[dcmObject attributeValueWithName:@"StudyInstanceUID"] forKey:@"studyID"];
 			
-		if (studyIDs = [[dcmObject attributeValueWithName:@"StudyID"] retain]) {
+		if (studyIDs = [[dcmObject attributeValueWithName:@"StudyID"] retain])
+		{
 		}
 		else 
 			studyIDs = [@"0" retain];
@@ -3127,9 +3142,10 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	return [[DicomFile NSreplaceBadCharacter: string] uppercaseString];
 }
 
-- (long) NoOfFrames { return NoOfFrames;}
+- (long) NoOfFrames{ return NoOfFrames;}
 
-- (NSMutableDictionary *)dicomElements {
+- (NSMutableDictionary *)dicomElements
+{
 	return dicomElements;
 }
 
@@ -3153,7 +3169,8 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		height = [[decoder height] floatValue];
 		[self extractSeriesStudyImageNumbersFromFileName:[[filePath lastPathComponent] stringByDeletingPathExtension]];
 		
-		if ([decoder patientName] != nil) {
+		if ([decoder patientName] != nil)
+		{
 			name = [[decoder patientName] retain];
 		}
 		else 
@@ -3449,11 +3466,13 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	return NO;
 }
 
-- (int)commentsGroup {
+- (int)commentsGroup
+{
 	return COMMENTSGROUP;
 }
 
-- (int)commentsElement {
+- (int)commentsElement
+{
 	return COMMENTSELEMENT;
 }
 
