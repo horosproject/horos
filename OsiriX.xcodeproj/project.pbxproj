@@ -1269,6 +1269,8 @@
 		AB9139B906839830006F3936 /* PIC.icns in Resources */ = {isa = PBXBuildFile; fileRef = AB9139B706839830006F3936 /* PIC.icns */; };
 		AB9139BA06839830006F3936 /* lsm.icns in Resources */ = {isa = PBXBuildFile; fileRef = AB9139B806839830006F3936 /* lsm.icns */; };
 		AB92A3A90642B32D0048DC15 /* SmallLogo.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB92A3A70642B32D0048DC15 /* SmallLogo.tif */; };
+		AB932A960EA38DEF0006DF1B /* CobbAngle.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB932A950EA38DEF0006DF1B /* CobbAngle.tif */; };
+		AB932A970EA38DEF0006DF1B /* CobbAngle.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB932A950EA38DEF0006DF1B /* CobbAngle.tif */; };
 		AB94E72506343D91003E4C48 /* MutableArrayCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = AB94E72306343D91003E4C48 /* MutableArrayCategory.m */; };
 		AB94E72606343D91003E4C48 /* MutableArrayCategory.h in Headers */ = {isa = PBXBuildFile; fileRef = AB94E72406343D91003E4C48 /* MutableArrayCategory.h */; };
 		AB95C0390A2B08ED00380C65 /* FileNotFound.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB95C0380A2B08ED00380C65 /* FileNotFound.tif */; };
@@ -8816,6 +8818,7 @@
 		AB9139B706839830006F3936 /* PIC.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = PIC.icns; sourceTree = "<group>"; };
 		AB9139B806839830006F3936 /* lsm.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = lsm.icns; sourceTree = "<group>"; };
 		AB92A3A70642B32D0048DC15 /* SmallLogo.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SmallLogo.tif; sourceTree = "<group>"; };
+		AB932A950EA38DEF0006DF1B /* CobbAngle.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = CobbAngle.tif; sourceTree = "<group>"; };
 		AB94E72306343D91003E4C48 /* MutableArrayCategory.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = MutableArrayCategory.m; sourceTree = "<group>"; };
 		AB94E72406343D91003E4C48 /* MutableArrayCategory.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = MutableArrayCategory.h; sourceTree = "<group>"; };
 		AB95C0380A2B08ED00380C65 /* FileNotFound.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = FileNotFound.tif; sourceTree = "<group>"; };
@@ -13181,6 +13184,7 @@
 		ABBB647A063587B200D9531F /* Icons */ = {
 			isa = PBXGroup;
 			children = (
+				AB932A950EA38DEF0006DF1B /* CobbAngle.tif */,
 				CE03A3CB0EA2AE0300951EF4 /* iPhone.tiff */,
 				AB9693BF0E823E3A00F09EEA /* ROIsAndKeys.tif */,
 				ABBB647B063587B200D9531F /* 2DBlending.tif */,
@@ -21468,6 +21472,7 @@
 				AB9693C00E823E3A00F09EEA /* ROIsAndKeys.tif in Resources */,
 				8440039A0E8CF99500A00EBD /* dciodvfy in Resources */,
 				CE03A3CC0EA2AE0300951EF4 /* iPhone.tiff in Resources */,
+				AB932A960EA38DEF0006DF1B /* CobbAngle.tif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21861,6 +21866,7 @@
 				AB9693C10E823E3A00F09EEA /* ROIsAndKeys.tif in Resources */,
 				8440039B0E8CF99500A00EBD /* dciodvfy in Resources */,
 				CE03A3CD0EA2AE0300951EF4 /* iPhone.tiff in Resources */,
+				AB932A970EA38DEF0006DF1B /* CobbAngle.tif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

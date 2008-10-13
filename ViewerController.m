@@ -143,6 +143,7 @@ static NSString*	PrintToolbarItemIdentifier			= @"Print.icns";
 static NSString*	LUT12BitToolbarItemIdentifier		= @"LUT12Bit";
 static NSString*	NavigatorToolbarItemIdentifier		= @"Navigator";
 static NSString*	ThreeDPositionToolbarItemIdentifier	= @"3DPosition";
+static NSString*	CobbAngleToolbarItemIdentifier		= @"CobbAngle";
 
 static NSArray*		DefaultROINames;
 
@@ -4194,6 +4195,10 @@ static ViewerController *draggedController = 0L;
     [toolbar runCustomizationPalette:sender];
 }
 
+- (IBAction) switchCobbAngle:(id) sender
+{
+	[[NSUserDefaults standardUserDefaults] setBool: ![[NSUserDefaults standardUserDefaults] boolForKey: @"displayCobbAngle"] forKey: @"displayCobbAngle"];
+}
 
 - (NSToolbarItem *) toolbar: (NSToolbar *)toolbar itemForItemIdentifier: (NSString *) itemIdent willBeInsertedIntoToolbar:(BOOL) willBeInserted {
     // Required delegate method:  Given an item identifier, this method returns an item 
@@ -4698,6 +4703,15 @@ static ViewerController *draggedController = 0L;
 		[toolbarItem setMinSize:NSMakeSize(NSWidth([display12bitToolbarItemView frame]), NSHeight([display12bitToolbarItemView frame]))];
 		[toolbarItem setMaxSize:NSMakeSize(NSWidth([display12bitToolbarItemView frame]),NSHeight([display12bitToolbarItemView frame]))];
     }
+	else if([itemIdent isEqualToString: CobbAngleToolbarItemIdentifier])
+	{
+		[toolbarItem setLabel:NSLocalizedString(@"Cobb's", nil)];
+		[toolbarItem setPaletteLabel:NSLocalizedString(@"Cobb's", nil)];
+		[toolbarItem setToolTip:NSLocalizedString(@"3Cobb's", nil)];
+		[toolbarItem setImage:[NSImage imageNamed:@"CobbAngle.tif"]];
+		[toolbarItem setTarget: 0L];
+		[toolbarItem setAction:@selector( switchCobbAngle:)];
+    }
 	else if([itemIdent isEqualToString:ThreeDPositionToolbarItemIdentifier])
 	{
 		[toolbarItem setLabel:NSLocalizedString(@"3D Pos", nil)];
@@ -4765,7 +4779,8 @@ static ViewerController *draggedController = 0L;
 										nil];
 }
 
-- (NSArray *) toolbarAllowedItemIdentifiers: (NSToolbar *) toolbar {
+- (NSArray *) toolbarAllowedItemIdentifiers: (NSToolbar *) toolbar
+{
     // Required delegate method:  Returns the list of all allowed items by identifier.  By default, the toolbar 
     // does not assume any items are allowed, even the separator.  So, every allowed item must be explicitly listed   
     // The set of allowed items is used to construct the customization palette 
@@ -4815,6 +4830,7 @@ static ViewerController *draggedController = 0L;
 														VRPanelToolbarItemIdentifier,
 														NavigatorToolbarItemIdentifier,
 														ThreeDPositionToolbarItemIdentifier,
+														CobbAngleToolbarItemIdentifier,
 														nil];
 	
 	if([AppController canDisplay12Bit]) array = [array arrayByAddingObject: LUT12BitToolbarItemIdentifier];

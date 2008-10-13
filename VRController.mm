@@ -1186,10 +1186,13 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 
 - (void) setCurrentTool:(short) newTool
 {
-	if( ([[viewer2D modality] isEqualToString:@"CT"] == NO && growingSet == NO) || ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSAlternateKeyMask))
+	if( newTool == tBonesRemoval)
 	{
-		[self editGrowingRegion: self];
-		growingSet = YES;
+		if( ([[viewer2D modality] isEqualToString:@"CT"] == NO && growingSet == NO) || ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSAlternateKeyMask))
+		{
+			[self editGrowingRegion: self];
+			growingSet = YES;
+		}
 	}
 	
 	[view setCurrentTool: newTool];
