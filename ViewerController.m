@@ -6034,7 +6034,7 @@ static ViewerController *draggedController = 0L;
 	while( [[self window] isVisible] == NO && checkEverythingLoaded == NO)
 		[NSThread sleepForTimeInterval: 0.1];
 	
-	NSLog(@"LOADING: Start loading images");
+//	NSLog(@"LOADING: Start loading images");
 	
 	for( x = 0; x < maxMovieIndex; x++)
 	{
@@ -6164,7 +6164,7 @@ static ViewerController *draggedController = 0L;
 		}
 	}
 	
-	NSLog(@"LOADING: All images loaded");
+//	NSLog(@"LOADING: All images loaded");
 	
 	loadingPercentage = 1;
 	

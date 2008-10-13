@@ -10004,7 +10004,7 @@ static BOOL needToRezoom;
 		{
 			for( unsigned long x = 0; x < [toOpenArray count]; x++ )
 			{
-				NSLog(@"Current block to malloc: %d Mb", (memBlockSize[ x] * sizeof( float)) / (1024*1024));
+//				NSLog(@"Current block to malloc: %d Mb", (memBlockSize[ x] * sizeof( float)) / (1024*1024));
 				fVolumePtr = malloc( memBlockSize[ x] * sizeof(float));
 				unsigned long mem = 0;
 				
