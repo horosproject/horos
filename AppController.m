@@ -62,7 +62,7 @@ short					Altivec = 1, UseOpenJpeg = 1;
 AppController			*appController = 0L;
 DCMTKQueryRetrieveSCP   *dcmtkQRSCP = 0L;
 NSString				*dicomListenerIP = 0L;
-NSLock					*PapyrusLock = 0L;			// Papyrus is NOT thread-safe
+NSRecursiveLock			*PapyrusLock = 0L;			// Papyrus is NOT thread-safe
 NSMutableArray			*accumulateAnimationsArray = 0L;
 BOOL					accumulateAnimations = NO;
 
@@ -1718,7 +1718,7 @@ static NSDate *lastWarningDate = 0L;
 	self = [super init];
 	appController = self;
 	
-	PapyrusLock = [[NSLock alloc] init];
+	PapyrusLock = [[NSRecursiveLock alloc] init];
 	[[NSAppleEventManager sharedAppleEventManager] setEventHandler:self andSelector:@selector(getUrl:withReplyEvent:) forEventClass:kInternetEventClass andEventID:kAEGetURL];
 	
 	[IChatTheatreDelegate sharedDelegate];

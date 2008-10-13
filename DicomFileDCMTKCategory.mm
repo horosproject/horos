@@ -55,8 +55,7 @@
 //#include "itkFlipImageFilter.h"
 //#undef id
 
-extern NSLock	*PapyrusLock;
-
+extern NSRecursiveLock *PapyrusLock;
 
 @implementation DicomFile (DicomFileDCMTKCategory)
 

@@ -106,7 +106,7 @@ extern AppController *appController;
 extern NSThread *mainThread;
 extern BOOL NEEDTOREBUILD, COMPLETEREBUILD;
 extern NSMutableDictionary *DATABASECOLUMNS;
-extern NSLock *PapyrusLock;
+extern NSRecursiveLock *PapyrusLock;
 
 long DATABASEINDEX;
 

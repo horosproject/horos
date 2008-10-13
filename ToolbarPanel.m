@@ -32,10 +32,14 @@ static 	NSMutableDictionary *associatedScreen = 0L;
 - (void) checkPosition
 {
 	NSRect frame = [[self window] frame];
-	NSPoint o = NSMakePoint([[[NSScreen screens] objectAtIndex: screen] visibleFrame].origin.x, [[[NSScreen screens] objectAtIndex: screen] visibleFrame].origin.y+[[[NSScreen screens] objectAtIndex: screen] visibleFrame].size.height);
 	
-	[[self window] setFrameTopLeftPoint: o];		// fixSize will be called by this function
-	[self fixSize];
+	if( [[NSScreen screens] count] > screen)
+	{
+		NSPoint o = NSMakePoint([[[NSScreen screens] objectAtIndex: screen] visibleFrame].origin.x, [[[NSScreen screens] objectAtIndex: screen] visibleFrame].origin.y+[[[NSScreen screens] objectAtIndex: screen] visibleFrame].size.height);
+	
+		[[self window] setFrameTopLeftPoint: o];		// fixSize will be called by this function
+		[self fixSize];
+	}
 }
 
 - (void) fixSize
@@ -135,26 +139,29 @@ static 	NSMutableDictionary *associatedScreen = 0L;
 	
 	if( [[[aNotification object] windowController] isKindOfClass:[ViewerController class]])
 	{
-		if( [[aNotification object] screen] == [[NSScreen screens] objectAtIndex: screen])
+		if( [[NSScreen screens] count] > screen)
 		{
-			[[viewer window] orderFront: self];
-			
-			[[self window] orderBack:self];
-			[toolbar setVisible:YES];
-			[[self window] orderWindow: NSWindowBelow relativeTo: [[viewer window] windowNumber]];
-			
-			if( [[viewer window] isVisible] == NO)
+			if( [[aNotification object] screen] == [[NSScreen screens] objectAtIndex: screen])
 			{
+				[[viewer window] orderFront: self];
+				
 				[[self window] orderBack:self];
-				NSLog( @"problem.... ToolbarPanel.m");
+				[toolbar setVisible:YES];
+				[[self window] orderWindow: NSWindowBelow relativeTo: [[viewer window] windowNumber]];
+				
+				if( [[viewer window] isVisible] == NO)
+				{
+					[[self window] orderBack:self];
+					NSLog( @"problem.... ToolbarPanel.m");
+				}
+	//			NSLog(@"show toolbar");
 			}
-//			NSLog(@"show toolbar");
-		}
-		else
-		{
-			[self setToolbar: 0L viewer: 0L];
-			[[self window] orderOut:self];
-			NSLog(@"hide toolbar");
+			else
+			{
+				[self setToolbar: 0L viewer: 0L];
+				[[self window] orderOut:self];
+				NSLog(@"hide toolbar");
+			}
 		}
 	}
 //	else
@@ -197,7 +204,10 @@ static 	NSMutableDictionary *associatedScreen = 0L;
 		
 		[[self window] orderOut: self];
 		
-		[associatedScreen setObject: [[self window] screen] forKey: [NSValue valueWithPointer: toolbar]];
+		if( [[self window] screen])
+			[associatedScreen setObject: [[self window] screen] forKey: [NSValue valueWithPointer: toolbar]];
+		else
+			[associatedScreen removeObjectForKey: [NSValue valueWithPointer: toolbar]];
 		
 		[[self window] setToolbar: 0L];
 //		[[self window] orderOut: self];
@@ -229,7 +239,11 @@ static 	NSMutableDictionary *associatedScreen = 0L;
 				if( [[NSScreen screens] count] > 1)
 					[[self window] setToolbar: 0L];
 				[[self window] setToolbar: toolbar];
-				[associatedScreen setObject: [[self window] screen] forKey: [NSValue valueWithPointer: toolbar]];
+				
+				if( [[self window] screen])
+					[associatedScreen setObject: [[self window] screen] forKey: [NSValue valueWithPointer: toolbar]];
+				else
+					[associatedScreen removeObjectForKey: [NSValue valueWithPointer: toolbar]];
 			}
 		}
 		else [[self window] orderOut: self];
@@ -251,7 +265,11 @@ static 	NSMutableDictionary *associatedScreen = 0L;
 		{
 			if( [[NSScreen screens] count] > 1)
 				[[self window] setToolbar: 0L];	//To avoid the stupid add an item in customize toolbar.....
-			[associatedScreen setObject: [[self window] screen] forKey: [NSValue valueWithPointer: toolbar]];
+				
+			if( [[self window] screen])
+				[associatedScreen setObject: [[self window] screen] forKey: [NSValue valueWithPointer: toolbar]];
+			else
+				[associatedScreen removeObjectForKey: [NSValue valueWithPointer: toolbar]];
 		}
 		
 		[[self window] setToolbar: toolbar];

@@ -3508,7 +3508,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			{
 				crossMove = 1;
 			}
-			else {
+			else
+			{
 				// TESTE SUR LA LIGNE !!!
 				float		distance;
 				NSPoint		cross1 = cross, cross2 = cross;
@@ -3754,10 +3755,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					curROI = 0L;
 					
 					// Bring the selected ROI to the first position in array
-					ROI	*roi = [[curRoiList objectAtIndex: selected] retain];
-					[[self windowController] bringToFrontROI:roi];
+					ROI *roi = [curRoiList objectAtIndex: selected];
+					[[self windowController] bringToFrontROI: roi];
 					
-					selected = [curRoiList indexOfObject:roi];//0;
+					selected = [curRoiList indexOfObject: roi];//0;
 					
 					long roiVal = [[curRoiList objectAtIndex: selected] clickInROI: tempPt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue :YES];
 					if( roiVal == ROI_sleep) roiVal = [[curRoiList objectAtIndex: selected] clickInROI: tempPt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue :NO];
@@ -3929,6 +3930,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						[[NSNotificationCenter defaultCenter] postNotificationName: @"addROI" object:self userInfo:userInfo];
 						
 						[aNewROI release];
+						
+						[[self windowController] bringToFrontROI: aNewROI];
 					}
 				}
 			}
@@ -5818,7 +5821,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 }
 
 -(void) sync:(NSNotification*)note
-{	
+{
+	if( avoidRecursiveSync) return;
+	
+	avoidRecursiveSync = YES;
+
 	if (![[[note object] superview] isEqual:[self superview]] && [self is2DViewer])
 	{
 		BOOL	stringOK = NO;
@@ -5839,7 +5846,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 		if( [self is2DViewer] == YES)
 		{
-			if( [[self windowController] windowWillClose]) return;
+			if( [[self windowController] windowWillClose])
+			{
+				avoidRecursiveSync = NO;
+				return;
+			}
 		}
 		
 		if( [note object] != self && isKeyView == YES && matrix == 0 && stringID == 0L && [[note object] stringID] == 0L && curImage > -1 )   //|| [[[note object] stringID] isEqualToString:@"Original"] == YES))   // Dont change the browser preview....
@@ -5867,10 +5878,16 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			if( [instructions valueForKey: @"offsetsync"] == 0L)
 			{
 				NSLog(@"err offsetsync");
+				avoidRecursiveSync = NO;
 				return;
 			}
 			
-			if( [instructions valueForKey: @"view"] == 0L) { NSLog(@"err view");	return;}
+			if( [instructions valueForKey: @"view"] == 0L)
+			{
+				NSLog(@"err view");
+				avoidRecursiveSync = NO;
+				return;
+			}
 			
 			if( [instructions valueForKey: @"point3DX"])
 			{
@@ -6090,6 +6107,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		if( [[self window] isMainWindow])
 			[self sendSyncMessage: 0];
 	}
+	
+	avoidRecursiveSync = NO;
 }
 
 -(void) roiSelected:(NSNotification*) note

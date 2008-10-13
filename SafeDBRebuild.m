@@ -26,7 +26,7 @@
 #endif
 
 
-NSLock	*PapyrusLock = 0L;
+NSRecursiveLock	*PapyrusLock = 0L;
 NSMutableDictionary *fileFormatPlugins = 0L;
 
 NSMutableArray			*preProcessPlugins = 0L;

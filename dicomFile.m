@@ -34,7 +34,7 @@
 #include "nifti1_io.h"
 
 extern NSString * convertDICOM( NSString *inputfile);
-extern NSLock	*PapyrusLock;
+extern NSRecursiveLock *PapyrusLock;
 
 static BOOL DEFAULTSSET = NO;
 static int TOOLKITPARSER = NO, PREFERPAPYRUSFORCD = NO;

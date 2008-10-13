@@ -868,7 +868,7 @@ static NSHost *currentHost = 0L;
 	[defaultValues setObject:@"1" forKey:@"ROIArrowThickness"];
 	[defaultValues setObject:@"1" forKey:@"showErrorsIfQueryFailed"];
 	[defaultValues setObject:@"1" forKey:@"loopScrollWheel"];
-	[defaultValues setObject:@"1" forKey:@"displayCobbAngle"];
+	[defaultValues setObject:@"0" forKey:@"displayCobbAngle"];
 	
 	// ** ROI Default
 	[defaultValues setObject:[NSNumber numberWithFloat: 2] forKey:@"ROIThickness"];

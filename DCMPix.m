@@ -71,8 +71,8 @@ NSString * convertDICOM( NSString *inputfile);
 NSString* filenameWithDate( NSString *inputfile);
 extern NSString* documentsDirectory();
 
-extern NSLock	*PapyrusLock;
-extern short		Altivec;
+extern NSRecursiveLock *PapyrusLock;
+extern short Altivec;
 
 void ConvertFloatToNative (float *theFloat)
 {
@@ -5946,39 +5946,47 @@ END_CREATE_ROIS:
 {
 	NSString *groupKey = [NSString stringWithFormat:@"%d", group];
 	
+	[PapyrusLock lock];
+	
+	SElement *theGroupP = 0L;
+	
 	if( [cachedPapyGroups valueForKey: groupKey] == nil )
 	{
 		int theErr = 0;
+		
 		
 		if (gIsPapyFile [fileNb] == DICOM10) theErr = Papy3FSeek (gPapyFile [fileNb], SEEK_SET, 132L);
 		
 		if( theErr == 0 )
 		{
-			SElement *theGroupP = 0L;
-			
 			theErr = Papy3GotoGroupNb (fileNb, group);
 			
 			if( theErr >= 0 && Papy3GroupRead(fileNb, &theGroupP) > 0)
 			{
 				[cachedPapyGroups setValue: [NSValue valueWithPointer: theGroupP]  forKey: groupKey];
-				
-				return theGroupP;
 			}
 		}
 	}
-	else return [[cachedPapyGroups valueForKey: groupKey] pointerValue];
+	else theGroupP = [[cachedPapyGroups valueForKey: groupKey] pointerValue];
 	
-	return nil;
+	[PapyrusLock unlock];
+	
+	return theGroupP;
 }
 
 - (void) clearCachedPapyGroups
 {
-	for( NSValue *pointer in [cachedPapyGroups allValues] )	{
+	[PapyrusLock lock];
+	
+	for( NSValue *pointer in [cachedPapyGroups allValues] )
+	{
 		SElement *theGroupP = (SElement*) [pointer pointerValue];
 		Papy3GroupFree ( &theGroupP, TRUE);
 	}
 	
 	[cachedPapyGroups removeAllObjects];
+	
+	[PapyrusLock unlock];
 }
 
 - (BOOL) loadDICOMPapyrus // PLEASE, KEEP BOTH FUNCTIONS FOR TESTING PURPOSE. THANKS
@@ -6062,7 +6070,8 @@ END_CREATE_ROIS:
 #endif
 		
 		theGroupP = (SElement*) [self getPapyGroup: 0x0008 fileNb: fileNb];
-		if( theGroupP )	{
+		if( theGroupP )
+		{
 			val = Papy3GetElement (theGroupP, papRecommendedDisplayFrameRateGr, &nbVal, &elemType );
 			if ( val ) cineRate = atof( val->a);	//[[NSString stringWithFormat:@"%0.1f", ] floatValue];
 			
