@@ -134,12 +134,16 @@ enum
 	NSTimeInterval	groupID;		// timestamp of a ROI group. Grouped ROI will be selected/deleted together.
 	
 	BOOL			displayTextualData;
+	
+	BOOL			locked;
+	BOOL			selectable;
 }
 
 @property(readonly) int textureWidth, textureHeight;
 @property(readonly) int textureDownRightCornerX,textureDownRightCornerY, textureUpLeftCornerX, textureUpLeftCornerY;
 @property(readonly) unsigned char *textureBuffer;
 @property float opacity;
+@property BOOL locked, selectable;
 @property(retain) NSString *name, *comments;
 @property(readonly) long type;
 @property(setter=setROIMode:) long ROImode;

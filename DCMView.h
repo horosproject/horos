@@ -441,6 +441,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 - (void) switchShowDescriptionInLarge;
 - (void) deleteLens;
 - (void)getOrientationText:(char *) orientation : (float *) vector :(BOOL) inv;
+- (NSMutableArray*) selectedROIs;
 
 // methods to access global variables (for plugins)
 + (BOOL) display2DMPRLines;

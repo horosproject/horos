@@ -24,7 +24,7 @@
 #import "ITKSegmentation3D.h"
 
 #define CIRCLERESOLUTION 200
-#define ROIVERSION		8
+#define ROIVERSION 9
 
 static		float					deg2rad = M_PI / 180.0f; 
 static		float					fontHeight = 0;
@@ -270,7 +270,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 
 @implementation ROI
 
-@synthesize textureWidth, textureHeight, textureBuffer;
+@synthesize textureWidth, textureHeight, textureBuffer, locked, selectable;
 @synthesize textureDownRightCornerX,textureDownRightCornerY, textureUpLeftCornerX, textureUpLeftCornerY;
 @synthesize opacity;
 @synthesize name, comments, type, ROImode = mode, thickness;
@@ -708,6 +708,17 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 			canResizeLayer = [[coder decodeObject] boolValue];
 		}
 		
+		if( fileVersion >= 9)
+		{
+			selectable = [[coder decodeObject] boolValue];
+			locked = [[coder decodeObject] boolValue];
+		}
+		else
+		{
+			selectable = YES;
+			locked = NO;
+		}
+		
 		[points retain];
 		[name retain];
 		[comments retain];
@@ -822,6 +833,10 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 	
 	// ROIVERSION = 8
 	[coder encodeObject:[NSNumber numberWithBool:canResizeLayer]];
+	
+	// ROIVERSION = 9
+	[coder encodeObject:[NSNumber numberWithBool: selectable]];
+	[coder encodeObject:[NSNumber numberWithBool: locked]];
 }
 
 - (NSData*) data { return [NSArchiver archivedDataWithRootObject: self]; }
@@ -980,6 +995,9 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		textArray = [[NSMutableArray arrayWithCapacity: 10] retain];
 		
 		long i,j;
+		
+		selectable = YES;
+		locked = NO;
         type = tPlain;
 		mode = ROI_sleep;
 		parentROI = 0L;
@@ -1035,7 +1053,9 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		
 		ctxArray = [[NSMutableArray arrayWithCapacity: 10] retain];
 		textArray = [[NSMutableArray arrayWithCapacity: 10] retain];
-
+		
+		selectable = YES;
+		locked = NO;
         type = itype;
 		mode = ROI_sleep;
 		parentROI = 0L;
@@ -1139,13 +1159,6 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
     }
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: 0L];
     return self;
-}
-
-- (id)initWithDICOMPresentationState:(DCMObject *)presentationState
-		referencedSOPInstanceUID:(NSString *)referencedSOPInstanceUID
-		referencedSOPClassUID:(NSString *)referencedSOPClassUID{
-		
-	return nil;
 }
 
 - (long) maxStringWidth:( char *) cstr max:(long) max
@@ -1491,8 +1504,8 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		MyPoint			*tempPoint;
 		float			angle;
 		
-		for( long i = 0; i < CIRCLERESOLUTION ; i++ ) {
-
+		for( long i = 0; i < CIRCLERESOLUTION ; i++ )
+		{
 			angle = i * 2 * M_PI /CIRCLERESOLUTION;
 		  
 			tempPoint = [[MyPoint alloc] initWithPoint: NSMakePoint( rect.origin.x + rect.size.width*cos(angle), rect.origin.y + rect.size.height*sin(angle))];
@@ -1507,8 +1520,8 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 	{
 		NSMutableArray  *tempArray = [ITKSegmentation3D extractContour:textureBuffer width:textureWidth height:textureHeight];
 		
-		for( long i = 0; i < [tempArray count]; i++) {
-			
+		for( long i = 0; i < [tempArray count]; i++)
+		{
 			MyPoint	*pt = [tempArray objectAtIndex: i];
 			[pt move: textureUpLeftCornerX :textureUpLeftCornerY];
 		}
@@ -1519,9 +1532,11 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 	return points;
 }
 
-- (void) setPoints: (NSMutableArray*) pts {
-	
+- (void) setPoints: (NSMutableArray*) pts
+{
 	if ( type == tROI || type == tOval || type == t2DPoint) return;  // Doesn't make sense to set points for these types.
+	
+	if( locked) return;
 	
 	[points removeAllObjects];
 	for ( long i = 0; i < [pts count]; i++ )
@@ -1542,10 +1557,13 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 	long		i, j;
 	long		xmin, xmax, ymin, ymax;
 	long		imode = ROI_sleep;
-
+	
+	if( selectable == NO)
+		return ROI_sleep;
+	
 	if( mode == ROI_drawing)
 	{
-		return 0;
+		return ROI_sleep;
 	}
 	
 	clickInTextBox = NO;
@@ -1939,16 +1957,27 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 {
 	MyPoint				*mypt;
 	
+	if( selectable == NO)
+	{
+		mode = ROI_sleep;
+		return NO;
+	}
+	
 	if( mode == ROI_sleep)
 	{
 		mode = ROI_drawing;
+	}
+	
+	if( locked)
+	{
+		return NO;
 	}
 	
 	if( [self.comments isEqualToString: @"morphing generated"] ) self.comments = @"";
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: 0L];
 	
-	if (type==tPlain)
+	if (type == tPlain)
 	{
 		if (textureFirstPoint==0)
 		{
@@ -1971,7 +2000,6 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		
 		previousPoint = pt;
 		
-				
 		return NO;
 	}
 	
@@ -2070,6 +2098,8 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 
 - (void) rotate: (float) angle :(NSPoint) center
 {
+	if( locked) return;
+
     float theta;
     float dtheta;
     long intUpper;
@@ -2118,6 +2148,8 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 - (void) resize: (float) factor :(NSPoint) center
 {
 	if(![self canResize]) return;
+	
+	if( locked) return;
 	
     long intUpper;
     float new_x;
@@ -2244,6 +2276,8 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 
 - (void) roiMove:(NSPoint) offset :(BOOL) sendNotification
 {
+	if( locked) return;
+
 	if( mode == ROI_selected)
 	{
 		switch( type)
@@ -2486,11 +2520,11 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 	int		radsqr = (width*width)/4;
 	int		rad = width/2;
 	
-	for( int x = 0; x < rad; x++ ) {
-		
+	for( int x = 0; x < rad; x++ )
+	{
 		xsqr = x*x;
-		for( int y = 0 ; y < rad; y++) {
-			
+		for( int y = 0 ; y < rad; y++)
+		{
 			if((xsqr + y*y) < radsqr)
 			{
 				buf[ rad+x + (rad+y)*width] = val;
@@ -2505,12 +2539,18 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 
 - (BOOL) mouseRoiDragged:(NSPoint) pt :(unsigned int) modifier :(float) scale
 {
+	if( locked)
+		return NO;
+		
+	if( selectable == NO)
+		return NO;
+
 	[roiLock lock];
 
 	BOOL		action = NO;
 	BOOL		textureGrowDownX=YES,textureGrowDownY=YES;
 	float		oldTextureUpLeftCornerX,oldTextureUpLeftCornerY,offsetTextureX,offsetTextureY;
-	
+		
 	if( type == tText || type == t2DPoint)
 	{
 		action = NO;
@@ -2949,6 +2989,9 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 
 - (BOOL) deleteSelectedPoint
 {
+	if( locked)
+		return NO;
+
 	switch( type)
 	{
 		case tPlain:
@@ -3352,7 +3395,8 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 		tPt.y = [[points objectAtIndex: 0] y];
 		tPt.x = [[points objectAtIndex: 0] x];
 		
-		for( long i = 0; i < [points count]; i++ ) {
+		for( long i = 0; i < [points count]; i++ )
+		{
 			if( [[points objectAtIndex:i] y] > ymin)
 			{
 				ymin = [[points objectAtIndex:i] y];
@@ -3400,6 +3444,9 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	if( curView == 0L && prepareTextualData == YES) {NSLog(@"curView == 0L! We will not draw this ROI..."); return;}
 	
 	[roiLock lock];
+
+	if( selectable == NO)
+		mode = ROI_sleep;
 	
 	pixelSpacingX = spacingX;
 	pixelSpacingY = spacingY;

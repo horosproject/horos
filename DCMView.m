@@ -3579,14 +3579,17 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				float pixSpacingRatio = 1.0;
 				if ( self.pixelSpacingY != 0 && self.pixelSpacingX != 0 )
 					pixSpacingRatio = self.pixelSpacingY / self.pixelSpacingX;
-					
+				
+				NSArray *roiArray = [self selectedROIs];
+				if( [roiArray count] == 0) roiArray = curRoiList;
+				
 				float distance = 0;
-				if( [curRoiList count]>0 )
+				if( [roiArray count]>0)
 				{
-					ROI *r = [curRoiList objectAtIndex:0];
+					ROI *r = [roiArray objectAtIndex:0];
 					if( r.type != tPlain)
 					{
-						NSPoint pt = [[[[curRoiList objectAtIndex:0] points] objectAtIndex:0] point];
+						NSPoint pt = [[[[roiArray objectAtIndex:0] points] objectAtIndex:0] point];
 						float dx = (pt.x-tempPt.x);
 						float dx2 = dx * dx;
 						float dy = (pt.y-tempPt.y)*pixSpacingRatio;
@@ -3596,9 +3599,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				}
 				
 				NSMutableArray *points;
-				for( int i=0; i<[curRoiList count]; i++ )
+				for( int i=0; i<[roiArray count]; i++ )
 				{
-					ROI *r = [curRoiList objectAtIndex: i];
+					ROI *r = [roiArray objectAtIndex: i];
 					if( r.type != tPlain)
 					{
 						points = [r points];
@@ -3616,10 +3619,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					}
 				}
 				repulsorRadius = (int) ((distance + 0.5) * 0.8);
-				if(repulsorRadius<2) repulsorRadius = 2;
+				if(repulsorRadius < 2) repulsorRadius = 2;
 				if(repulsorRadius>curDCM.pwidth/2) repulsorRadius = curDCM.pwidth/2;
 				
-				if( [curRoiList count] == 0 || distance == 0)
+				if( [roiArray count] == 0 || distance == 0)
 				{
 					NSRunCriticalAlertPanel(NSLocalizedString(@"Repulsor",nil),NSLocalizedString(@"The Repulsor tool works only if there are ROIs on the image.",nil), NSLocalizedString(@"OK",nil), nil,nil);
 				}
@@ -4450,7 +4453,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 {
 	NSRect  frame = [self frame];
 	NSPoint current = [self currentPointInView:event];
-
+	
 	// Command and Alternate rotate ROI
 	if (([event modifierFlags] & NSCommandKeyMask) && ([event modifierFlags] & NSAlternateKeyMask))
 	{
@@ -4466,7 +4469,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 		for( int i = 0; i < [curRoiList count]; i++ )
 		{
-			if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected) [[curRoiList objectAtIndex:i] rotate: offset.x :rotatePoint];
+			if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected)
+				[[curRoiList objectAtIndex:i] rotate: offset.x :rotatePoint];
 		}
 	}
 	// Command and Shift scale
@@ -4485,7 +4489,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 		for( int i = 0; i < [curRoiList count]; i++)
 		{
-			if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected) [[curRoiList objectAtIndex:i] resize: ss :rotatePoint];
+			if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected)
+				[[curRoiList objectAtIndex:i] resize: ss :rotatePoint];
 		}
 	}
 	// Move ROI
@@ -4920,20 +4925,23 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	{
 		ROI *r = [roiArray objectAtIndex:i];
 		
-		if([r type] != tAxis && [r type] != tDynAngle && [r type] != tPlain) //JJCP
+		if([r type] != tAxis && [r type] != tDynAngle && [r type] != tPlain && r.locked == NO)
 		{		
 			points = [r points];
 			int n = 0;
-			for( int j=0; j<[points count]; j++ ) {
+			for( int j=0; j<[points count]; j++ )
+			{
 				NSPoint pt = [[points objectAtIndex:j] point];
-				if( NSPointInRect(pt, repulsorRect) ) {
+				if( NSPointInRect(pt, repulsorRect) )
+				{
 					float dx = (pt.x-tempPt.x);
 					float dx2 = dx * dx;
 					float dy = (pt.y-tempPt.y)*pixSpacingRatio;
 					float dy2 = dy * dy;
 					float d = sqrt(dx2 + dy2);
 					
-					if( d < repulsorRadius ) {
+					if( d < repulsorRadius )
+					{
 						if([r type] == t2DPoint)
 							[r setROIRect:NSOffsetRect([r rect],dx/d*repulsorRadius-dx,dy/d*repulsorRadius-dy)];
 						else
@@ -4942,16 +4950,19 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						pt.x += dx/d*repulsorRadius-dx;
 						pt.y += dy/d*repulsorRadius-dy;
 						
-						for( int delta = -1; delta <= 1; delta++ ) {
+						for( int delta = -1; delta <= 1; delta++ )
+						{
 							int k = j+delta;
-							if([r type] == tCPolygon || [r type] == tPencil) {
+							if([r type] == tCPolygon || [r type] == tPencil)
+							{
 								if(k==-1)
 									k = [points count]-1;
 								else if(k==[points count])
 									k = 0;
 							}
 							
-							if(k!=j && k>=0 && k<[points count]) {
+							if(k!=j && k>=0 && k<[points count])
+							{
 								NSPoint pt2 = [[points objectAtIndex:k] point];
 								float dx = (pt2.x-pt.x);
 								float dx2 = dx * dx;
@@ -4959,11 +4970,13 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 								float dy2 = dy * dy;
 								float d = sqrt(dx2 + dy2);
 								
-								if( d<=minD && d<repulsorRadius ) {
+								if( d<=minD && d<repulsorRadius )
+								{
 									[points removeObjectAtIndex:k];
 									if(delta==-1) j--;
 								}
-								else if((d>=maxD || d>=repulsorRadius) && n<maxN) {
+								else if((d>=maxD || d>=repulsorRadius) && n<maxN)
+								{
 									NSPoint pt3;
 									pt3.x = (pt2.x+pt.x)/2.0;
 									pt3.y = (pt2.y+pt.y)/2.0;
@@ -8032,7 +8045,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			} //annotations >= annotBase
 		} //Annotation  != None
 			
-		if(repulsorRadius != 0) {
+		if(repulsorRadius != 0)
+		{
 			glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
 			glScalef (2.0f / drawingFrameRect.size.width, -2.0f /  drawingFrameRect.size.height, 1.0f); // scale to port per pixel scale
 			glTranslatef (-(drawingFrameRect.size.width) / 2.0f, -(drawingFrameRect.size.height) / 2.0f, 0.0f); // translate center to upper left
@@ -8040,7 +8054,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			[self drawRepulsorToolArea];
 		}
 		
-		if(ROISelectorStartPoint.x!=ROISelectorEndPoint.x || ROISelectorStartPoint.y!=ROISelectorEndPoint.y) {
+		if(ROISelectorStartPoint.x!=ROISelectorEndPoint.x || ROISelectorStartPoint.y!=ROISelectorEndPoint.y)
+		{
 			glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
 			glScalef (2.0f / drawingFrameRect.size.width, -2.0f /  drawingFrameRect.size.height, 1.0f); // scale to port per pixel scale
 			glTranslatef (-(drawingFrameRect.size.width) / 2.0f, -(drawingFrameRect.size.height) / 2.0f, 0.0f); // translate center to upper left
