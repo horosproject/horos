@@ -3365,7 +3365,8 @@ typedef struct _xyzArray
 	_dragInProgress = NO;
 }
 
-- (NSArray *)namesOfPromisedFilesDroppedAtDestination:(NSURL *)dropDestination{
+- (NSArray *)namesOfPromisedFilesDroppedAtDestination:(NSURL *)dropDestination
+{
 	NSString *name = @"OsiriX";
 	name = [name stringByAppendingPathExtension:@"jpg"];
 	NSArray *array = [NSArray arrayWithObject:name];

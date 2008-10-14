@@ -136,18 +136,33 @@ static NSString *albumDragType = @"Osirix Album drag";
 
 - (NSArray *)namesOfPromisedFilesDroppedAtDestination:(NSURL *)dropDestination
 {
-	if( [[[dropDestination path] lastPathComponent] isEqualToString:@".Trash"])
+	NSArray *r = 0L;
+	
+	if( avoidRecursive == NO)
 	{
-		[[BrowserController currentBrowser] delItem: [[[[BrowserController currentBrowser] oMatrix] menu] itemAtIndex: 0]];
-		return 0L;
-	}
-	else
-	{
-		NSMutableArray	*dicomFiles2Export = [NSMutableArray array];
-		NSArray			*filesToExport = [[BrowserController currentBrowser] filesForDatabaseMatrixSelection: dicomFiles2Export];
+		avoidRecursive = YES;
 		
-		return [[BrowserController currentBrowser] exportDICOMFileInt: [dropDestination path] files: filesToExport objects: dicomFiles2Export];
+		@try 
+		{
+			if( [[[dropDestination path] lastPathComponent] isEqualToString:@".Trash"])
+			{
+				[[BrowserController currentBrowser] delItem: [[[[BrowserController currentBrowser] oMatrix] menu] itemAtIndex: 0]];
+			}
+			else
+			{
+				NSMutableArray	*dicomFiles2Export = [NSMutableArray array];
+				NSArray			*filesToExport = [[BrowserController currentBrowser] filesForDatabaseMatrixSelection: dicomFiles2Export];
+				
+				r = [[BrowserController currentBrowser] exportDICOMFileInt: [dropDestination path] files: filesToExport objects: dicomFiles2Export];
+			}
+		}
+		@catch (NSException * e)
+		{
+		}
+		avoidRecursive = NO;
 	}
+	
+	return r;
 }
 
 - (NSDragOperation) draggingSourceOperationMaskForLocal:(BOOL)isLocal

@@ -809,25 +809,25 @@ NSString* asciiString (NSString* name);
 			
 			@try
 			{
-			NSTask		*todo = [[[NSTask alloc]init]autorelease];
-			[todo setLaunchPath: @"/usr/bin/lipo"];
-			
-			NSArray *args = [NSArray arrayWithObjects: pathExecutable, @"-remove", @"x86_64", @"-remove", @"ppc64", @"-output", pathLightExecutable, 0L];
+				NSTask		*todo = [[[NSTask alloc]init]autorelease];
+				[todo setLaunchPath: @"/usr/bin/lipo"];
+				
+				NSArray *args = [NSArray arrayWithObjects: pathExecutable, @"-remove", @"x86_64", @"-remove", @"ppc64", @"-output", pathLightExecutable, 0L];
 
-			[todo setArguments:args];
-			[todo launch];
-			[todo waitUntilExit];
-			
-			// **********
-			
-			todo = [[[NSTask alloc]init]autorelease];
-			[todo setLaunchPath: @"/usr/bin/mv"];
+				[todo setArguments:args];
+				[todo launch];
+				[todo waitUntilExit];
+				
+				// **********
+				
+				todo = [[[NSTask alloc]init]autorelease];
+				[todo setLaunchPath: @"/usr/bin/mv"];
 
-			args = [NSArray arrayWithObjects:pathLightExecutable, pathExecutable, @"-f", 0L];
+				args = [NSArray arrayWithObjects:pathLightExecutable, pathExecutable, @"-f", 0L];
 
-			[todo setArguments:args];
-			[todo launch];
-			[todo waitUntilExit];
+				[todo setArguments:args];
+				[todo launch];
+				[todo waitUntilExit];
 			}
 			
 			@catch( NSException *ne)
@@ -835,9 +835,11 @@ NSString* asciiString (NSString* name);
 				NSLog( @"lipo / mv exception");
 			}
 			
-			[[NSFileManager defaultManager] removeFileAtPath: pathExecutable handler: 0L];
-			[[NSFileManager defaultManager] movePath: pathLightExecutable toPath: pathExecutable handler: 0L];
-			
+			if( [[NSFileManager defaultManager] fileExistsAtPath: pathLightExecutable])
+			{
+				[[NSFileManager defaultManager] removeFileAtPath: pathExecutable handler: 0L];
+				[[NSFileManager defaultManager] movePath: pathLightExecutable toPath: pathExecutable handler: 0L];
+			}
 			// **********
 		}
 		

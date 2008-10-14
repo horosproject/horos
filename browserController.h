@@ -238,10 +238,12 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	
 	BOOL							ROIsAndKeyImagesButtonAvailable;
 	
-	BOOL							rtstructProgressBar;  // make visible
+	BOOL							rtstructProgressBar;
 	float							rtstructProgressPercent;
 	
 	int								DicomDirScanDepth;
+	
+	BOOL							avoidRecursive;
 	
 	IBOutlet PluginManagerController *pluginManagerController;
 }

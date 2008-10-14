@@ -5557,6 +5557,8 @@ static ViewerController *draggedController = 0L;
 		return;
 	}
 	
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"ViewerWillChangeNotification" object: self userInfo: 0L];
+	
 	[self clear8bitRepresentations];
 	
 	[self setFusionMode: 0];
@@ -5876,6 +5878,8 @@ static ViewerController *draggedController = 0L;
 	
 	for( ViewerController *v in [ViewerController getDisplayed2DViewers])
 		[v buildMatrixPreview: NO];
+	
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"ViewerDidChangeNotification" object: self userInfo: 0L];
 }
 
 - (void) showWindowTransition
@@ -15363,6 +15367,12 @@ int i,j,l;
 			for( i = 0, fileIndex = 1; i < [pixList[ curMovieIndex] count]; i++)
 			{
 				BOOL export = YES;
+				int index;
+				
+				if( [imageView flippedData])
+					index = [pixList[curMovieIndex] count] -i -1;
+				else
+					index = i;
 				
 				if( [[imageSelection selectedCell] tag] == 1)	// All images
 				{
@@ -15373,20 +15383,20 @@ int i,j,l;
 				{
 					NSManagedObject	*image;
 					
-					image = [[self fileList] objectAtIndex: i];
+					image = [[self fileList] objectAtIndex: index];
 					
 					export = [[image valueForKey:@"isKeyImage"] boolValue];
 				}
 				
 				if( [[imageSelection selectedCell] tag] == 0)	// Current image only
 				{
-					if( i == [imageView curImage]) export = YES;
+					if( index == [imageView curImage]) export = YES;
 					else export = NO;
 				}
 				
 				if( export)
 				{
-					[imageView setIndex:i];
+					[imageView setIndex: index];
 					[imageView sendSyncMessage: 0];
 					[[seriesView imageViews] makeObjectsPerformSelector:@selector(display)];
 					
@@ -15405,7 +15415,7 @@ int i,j,l;
 						
 						[bitmapData writeToFile: jpegFile atomically:YES];
 						
-						NSManagedObject	*curImage = [fileList[0] objectAtIndex:0];
+						NSManagedObject	*curImage = [fileList[ 0] objectAtIndex:0];
 						
 						NSDictionary *exifDict = [NSDictionary dictionaryWithObjectsAndKeys:
 															@"Exported from OsiriX", kCGImagePropertyExifUserComment,

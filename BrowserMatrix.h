@@ -17,6 +17,7 @@ PURPOSE.
 
 @interface BrowserMatrix : NSMatrix
 {
+	BOOL avoidRecursive;
 }
 
 @end

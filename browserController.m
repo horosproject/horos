@@ -5912,18 +5912,33 @@ static NSArray*	statesArray = nil;
 
 - (NSArray *)outlineView:(NSOutlineView *)outlineView namesOfPromisedFilesDroppedAtDestination:(NSURL *)dropDestination forDraggedItems:(NSArray *)items
 {
-	if( [[[dropDestination path] lastPathComponent] isEqualToString:@".Trash"] )
+	NSArray *r = 0L;
+	
+	if( avoidRecursive == NO)
 	{
-		[self delItem:  nil];
-		return nil;
-	}
-	else
-	{
-		NSMutableArray *dicomFiles2Export = [NSMutableArray array];
-		NSArray *filesToExport = [self filesForDatabaseOutlineSelection: dicomFiles2Export];
+		avoidRecursive = YES;
 		
-		return [self exportDICOMFileInt: [dropDestination path] files: filesToExport objects: dicomFiles2Export];
+		@try 
+		{
+			if( [[[dropDestination path] lastPathComponent] isEqualToString:@".Trash"] )
+			{
+				[self delItem:  nil];
+			}
+			else
+			{
+				NSMutableArray *dicomFiles2Export = [NSMutableArray array];
+				NSArray *filesToExport = [self filesForDatabaseOutlineSelection: dicomFiles2Export];
+				
+				r = [self exportDICOMFileInt: [dropDestination path] files: filesToExport objects: dicomFiles2Export];
+			}
+		}
+		@catch (NSException * e)
+		{
+		}
+		avoidRecursive = NO;
 	}
+	
+	return r;
 }
 
 - (BOOL)outlineView:(NSOutlineView *)olv writeItems:(NSArray*)pbItems toPasteboard:(NSPasteboard*)pboard
