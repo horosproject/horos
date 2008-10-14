@@ -7382,7 +7382,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	if( needToLoadTexture || iChatRunning)
 		[self loadTexturesCompute];
 	
-	if( noScale) {
+	if( noScale)
+	{
 		self.scaleValue = 1.0f;
 		[self setOriginX: 0 Y: 0];
 	}

@@ -41,7 +41,7 @@
 #import "NavigatorView.h"
 #import "WindowLayoutManager.h"
 #import "QueryController.h"
-
+#import "NSSplitViewSave.h"
 #import "altivecFunctions.h"
 
 #import "PluginManagerController.h"
@@ -1693,6 +1693,8 @@ static NSDate *lastWarningDate = 0L;
 	// DELETE THE DECOMPRESSION DIRECTORY...
 	NSString *decompressionDirectory = [documentsDirectory() stringByAppendingPathComponent:@"/DECOMPRESSION/"];
 	if ([[NSFileManager defaultManager] fileExistsAtPath:decompressionDirectory]) [[NSFileManager defaultManager] removeFileAtPath:decompressionDirectory handler: 0L];
+
+	[NSSplitView saveSplitView];
 }
 
 
@@ -2169,6 +2171,8 @@ static BOOL initialized = NO;
 
 - (void) applicationDidFinishLaunching:(NSNotification*) aNotification
 {
+	[NSSplitView loadSplitView];
+	
     [[[NSWorkspace sharedWorkspace] notificationCenter]
             addObserver:self
             selector:@selector(switchHandler:)
