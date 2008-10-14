@@ -101,7 +101,7 @@ static volatile int sendControllerObjects = 0;
 		_offisTS = [[NSUserDefaults standardUserDefaults] integerForKey:@"syntaxListOffis"];
 		
 		_readyForRelease = NO;
-		_lock = [[NSLock alloc] init];
+		_lock = [[NSRecursiveLock alloc] init];
 		[_lock  lock];
 		sendControllerObjects++;
 		
@@ -149,7 +149,6 @@ static volatile int sendControllerObjects = 0;
 	[_transferSyntaxString release];
 	[_numberFiles release];
 	[_lock lock];
-	sendControllerObjects--;
 	[_lock unlock];
 	[_lock release];
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -366,7 +365,7 @@ static volatile int sendControllerObjects = 0;
 - (void) sendDICOMFilesOffis:(NSArray *) objectsToSend
 {
 	NSAutoreleasePool   *pool = [[NSAutoreleasePool alloc] init];
-
+	
 	NSString *calledAET = [[self server] objectForKey:@"AETitle"];
 	NSString *hostname = [[self server] objectForKey:@"Address"];
 	NSString *destPort = [[self server] objectForKey:@"Port"];
@@ -407,20 +406,22 @@ static volatile int sendControllerObjects = 0;
 	[info setObject:[NSNumber numberWithBool:YES] forKey:@"Sent"];
 	[info setObject:calledAET forKey:@"CalledAET"];
 	
-	[self performSelectorOnMainThread:@selector(closeSendPanel:) withObject:nil waitUntilDone:YES];	
+	sendControllerObjects--;
+	
+	[self performSelectorOnMainThread:@selector(closeSendPanel:) withObject:nil waitUntilDone: YES];	
 		
 	[pool release];
 	
 	//need to unlock to allow release of self after send complete
-	[_lock performSelectorOnMainThread:@selector(unlock) withObject:0L waitUntilDone:NO];
+	[_lock performSelectorOnMainThread:@selector(unlock) withObject:0L waitUntilDone: NO];
 }
 
-- (void)closeSendPanel:(id)sender{
+- (void)closeSendPanel:(id)sender
+{
 	[_waitSendWindow close];			
 	[_waitSendWindow release];			
 	_waitSendWindow = 0L;	
 }
-
 
 - (void) setSendMessageThread:(NSDictionary*) info
 {
