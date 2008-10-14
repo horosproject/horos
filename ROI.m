@@ -38,6 +38,7 @@ static float ROIRegionThickness, ROIRegionColorR, ROIRegionColorG, ROIRegionColo
 static BOOL ROITEXTIFSELECTED, ROITEXTNAMEONLY;
 static BOOL ROIDefaultsLoaded = NO;
 static BOOL splineForROI = NO;
+static BOOL displayCobbAngle = NO;
 
 int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 {
@@ -343,6 +344,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 	ROITEXTIFSELECTED = [[NSUserDefaults standardUserDefaults] boolForKey: @"ROITEXTIFSELECTED"];
 	ROITEXTNAMEONLY = [[NSUserDefaults standardUserDefaults] boolForKey: @"ROITEXTNAMEONLY"];
 	splineForROI = [[NSUserDefaults standardUserDefaults] boolForKey: @"splineForROI"];
+	displayCobbAngle = [[NSUserDefaults standardUserDefaults] boolForKey: @"displayCobbAngle"];
 	
 	ROIDefaultsLoaded = YES;
 }
@@ -3972,7 +3974,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			{
 				
 				// If there is another line, compute cobb's angle
-				if( curView && [[NSUserDefaults standardUserDefaults] boolForKey: @"displayCobbAngle"])
+				if( curView && displayCobbAngle)
 				{
 					NSArray *roiList = curView.curRoiList;
 					
@@ -4124,7 +4126,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 						sprintf (line2, "Length: %0.3f pix", [self Length:[[points objectAtIndex:0] point] :[[points objectAtIndex:1] point]]);
 					
 					// If there is another line, compute cobb's angle
-					if( curView && [[NSUserDefaults standardUserDefaults] boolForKey: @"displayCobbAngle"])
+					if( curView && displayCobbAngle)
 					{
 						NSArray *roiList = curView.curRoiList;
 						
