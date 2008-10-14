@@ -93,6 +93,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 	NSString		*yearOld;
 	
 	ROI				*curROI;
+	int				volumicData;
 	BOOL			drawingROI, noScale, volumicSeries;
 	DCMView			*blendingView;
 	float			blendingFactor, blendingFactorStart;

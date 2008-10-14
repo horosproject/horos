@@ -7244,6 +7244,7 @@ static ViewerController *draggedController = 0L;
 - (void) computeIntervalAsync
 {
 	[self computeIntervalFlipNow: [NSNumber numberWithBool: NO]];
+	[imageView setNeedsDisplay: YES];
 }
 
 -(float) computeIntervalFlipNow: (NSNumber*) flipNowNumber
@@ -14139,6 +14140,7 @@ int i,j,l;
 	{
 		[printFrom setIntValue: 1];
 		[printTo setIntValue: [pixList[ curMovieIndex] count]];
+		[printInterval setIntValue: 1];
 	}
 	else
 	{

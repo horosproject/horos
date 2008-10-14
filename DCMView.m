@@ -193,7 +193,7 @@ short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2, float
     float    az = (u[2] >= 0 ? u[2] : -u[2]);
 	
     // test if the two planes are parallel
-    if ((ax+ay+az) < 0.01)
+    if ((ax+ay+az) < 0.05)
 	{   // Pn1 and Pn2 are near parallel
         // test if disjoint or coincide
         //Vector   v = Pn2.V0 - Pn1.V0;
@@ -201,18 +201,20 @@ short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2, float
         //if (dot(Pn1.n, v) == 0)         // Pn2.V0 lies in Pn1
         //    return -2;                   // Pn1 and Pn2 coincide
         //else 
-            return -1;                   // Pn1 and Pn2 are disjoint
+		return -1;                   // Pn1 and Pn2 are disjoint
     }
 	
     // Pn1 and Pn2 intersect in a line
     // first determine max abs coordinate of cross product
     int      maxc;                      // max coordinate
-    if (ax > ay) {
+    if (ax > ay)
+	{
         if (ax > az)
              maxc = 1;
         else maxc = 3;
     }
-    else {
+    else
+	{
         if (ay > az)
              maxc = 2;
         else maxc = 3;
@@ -225,7 +227,8 @@ short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2, float
     d1 = -DOT(Pn1, Pv1); 		// note: could be pre-stored with plane
     d2 = -DOT(Pn2, Pv2); 		// ditto
 	
-    switch (maxc) {            // select max coordinate
+    switch (maxc)
+	{            // select max coordinate
     case 1:                    // intersect with x=0
         iP[0] = 0;
         iP[1] = (d2*Pn1[2] - d1*Pn2[2]) / u[0];
@@ -1872,7 +1875,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	[curDCM release];
 	curDCM = 0L;
-		
+	
+	volumicData = -1;
+	
 	if( dcmPixList != c)
 	{
 		if( dcmPixList) [dcmPixList release];
@@ -7000,42 +7005,48 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						else if([[annot objectAtIndex:j] isEqualToString:@"Image Position"] && fullText)
 						{
 							NSString *orientationStack = @"";
-							if( volumicSeries == YES && [dcmPixList count] > 1)
+							if( [self is2DViewer] && [[self windowController] isEverythingLoaded] == YES)
 							{
-								double interval3d;
-								double xd = [[dcmPixList objectAtIndex: 1] originX] - [[dcmPixList objectAtIndex: 0] originX];
-								double yd = [[dcmPixList objectAtIndex: 1] originY] - [[dcmPixList objectAtIndex: 0] originY];
-								double zd = [[dcmPixList objectAtIndex: 1] originZ] - [[dcmPixList objectAtIndex: 0] originZ];
+								if( volumicData == -1)
+									volumicData = [[self windowController] isDataVolumicIn4D: NO];
 								
-								interval3d = sqrt(xd*xd + yd*yd + zd*zd);
-								xd /= interval3d;	yd /= interval3d;	zd /= interval3d;
-								
-								float v[ 3] = { xd, yd, zd};
-								char stackOrientationStart[ 10], stackOrientationEnd[ 10];
-								if( flippedData == NO)
+								if( volumicSeries == YES && [dcmPixList count] > 1 && volumicData == YES)
 								{
-									[self getOrientationText: stackOrientationStart : v : YES];
-									[self getOrientationText: stackOrientationEnd : v : NO];
-								}
-								else
-								{
-									[self getOrientationText: stackOrientationStart : v : NO];
-									[self getOrientationText: stackOrientationEnd : v : YES];
-								}
-								
-								if( stackOrientationStart[ 0] != 0 && stackOrientationEnd[ 0] != 0)
-								{
-									float pos;
+									double interval3d;
+									double xd = [[dcmPixList objectAtIndex: 1] originX] - [[dcmPixList objectAtIndex: 0] originX];
+									double yd = [[dcmPixList objectAtIndex: 1] originY] - [[dcmPixList objectAtIndex: 0] originY];
+									double zd = [[dcmPixList objectAtIndex: 1] originZ] - [[dcmPixList objectAtIndex: 0] originZ];
 									
-									if( flippedData) pos = (float) ([dcmPixList count] - curImage) / (float) [dcmPixList count];
-									else pos = (float) curImage / (float) [dcmPixList count];
+									interval3d = sqrt(xd*xd + yd*yd + zd*zd);
+									xd /= interval3d;	yd /= interval3d;	zd /= interval3d;
 									
-									if( pos < 0.4)
-										orientationStack = [NSString stringWithFormat: @" %c (%c -> %c)", stackOrientationStart[ 0], stackOrientationStart[ 0], stackOrientationEnd[ 0]];
-									else if( pos > 0.6)
-										orientationStack = [NSString stringWithFormat: @" %c (%c -> %c)", stackOrientationEnd[ 0], stackOrientationStart[ 0], stackOrientationEnd[ 0]];
+									float v[ 3] = { xd, yd, zd};
+									char stackOrientationStart[ 10], stackOrientationEnd[ 10];
+									if( flippedData == NO)
+									{
+										[self getOrientationText: stackOrientationStart : v : YES];
+										[self getOrientationText: stackOrientationEnd : v : NO];
+									}
 									else
-										orientationStack = [NSString stringWithFormat: @" (%c -> %c)", stackOrientationStart[ 0], stackOrientationEnd[ 0]];
+									{
+										[self getOrientationText: stackOrientationStart : v : NO];
+										[self getOrientationText: stackOrientationEnd : v : YES];
+									}
+									
+									if( stackOrientationStart[ 0] != 0 && stackOrientationEnd[ 0] != 0)
+									{
+										float pos;
+										
+										if( flippedData) pos = (float) ([dcmPixList count] - curImage) / (float) [dcmPixList count];
+										else pos = (float) curImage / (float) [dcmPixList count];
+										
+										if( pos < 0.4)
+											orientationStack = [NSString stringWithFormat: @" %c (%c -> %c)", stackOrientationStart[ 0], stackOrientationStart[ 0], stackOrientationEnd[ 0]];
+										else if( pos > 0.6)
+											orientationStack = [NSString stringWithFormat: @" %c (%c -> %c)", stackOrientationEnd[ 0], stackOrientationStart[ 0], stackOrientationEnd[ 0]];
+										else
+											orientationStack = [NSString stringWithFormat: @" (%c -> %c)", stackOrientationStart[ 0], stackOrientationEnd[ 0]];
+									}
 								}
 							}
 							
@@ -7535,7 +7546,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				glBegin(GL_LINE_LOOP);
 				
 				#define CIRCLERESOLUTION 20
-				for( long i = 0; i < CIRCLERESOLUTION ; i++ ) {
+				for( long i = 0; i < CIRCLERESOLUTION ; i++ )
+				{
 				  float alpha = i * 2 * M_PI /CIRCLERESOLUTION;
 				  glVertex2f( crossB.x + BS*cos(alpha), crossB.y + BS*sin(alpha)/curDCM.pixelRatio);
 				}
@@ -7756,7 +7768,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						tempString = [NSString stringWithFormat: @"%0.4f", bwl + bww/2];
 						[self DrawNSStringGL: tempString : fontListGL :-widthhalf + BBARPOSX1 + 4: heighthalf - 120];
 					}
-					else {
+					else
+					{
 						tempString = [NSString stringWithFormat: @"%0.0f", bwl - bww/2];
 						[self DrawNSStringGL: tempString : fontListGL :-widthhalf + BBARPOSX1 + 4: heighthalf - -133];
 						
@@ -7913,7 +7926,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 //			glScalef (2.0f / drawingFrameRect.size.width, -2.0f /  drawingFrameRect.size.height, 1.0f);
 			if( stringID )
 			{
-				if( [stringID isEqualToString:@"OrthogonalMPRVIEW"]) {
+				if( [stringID isEqualToString:@"OrthogonalMPRVIEW"])
+				{
 					[self subDrawRect: aRect];
 					self.scaleValue = scaleValue;
 				}
@@ -8006,7 +8020,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			
 			glColor3f (0.0f, 1.0f, 0.0f);
 			
-			 if( annotations >= annotBase) {
+			 if( annotations >= annotBase)
+			 {
 				//** PIXELSPACING LINES
 				float yOffset = 24;
 				float xOffset = 32;
@@ -8014,18 +8029,18 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				//float yOffset = 12;
 				glLineWidth( 1.0);
 				glBegin(GL_LINES);
-				if( curDCM.pixelSpacingX != 0 && curDCM.pixelSpacingX * 1000.0 < 1) {
-					
+				if( curDCM.pixelSpacingX != 0 && curDCM.pixelSpacingX * 1000.0 < 1)
+				{
 					glVertex2f(scaleValue  * (-0.02/curDCM.pixelSpacingX), drawingFrameRect.size.height/2 - yOffset); 
 					glVertex2f(scaleValue  * (0.02/curDCM.pixelSpacingX), drawingFrameRect.size.height/2 - yOffset);
 
 					glVertex2f(-drawingFrameRect.size.width/2 + xOffset , scaleValue  * (-0.02/curDCM.pixelSpacingY*curDCM.pixelRatio)); 
 					glVertex2f(-drawingFrameRect.size.width/2 + xOffset , scaleValue  * (0.02/curDCM.pixelSpacingY*curDCM.pixelRatio));
 
-					for ( short i = -20; i<=20; i++ ) {
+					for ( short i = -20; i<=20; i++ )
+					{
 						short length = ( i % 10 == 0 )? 10 : 5;
-
-					
+						
 						glVertex2f(i*scaleValue *0.001/curDCM.pixelSpacingX, drawingFrameRect.size.height/2 - yOffset);
 						glVertex2f(i*scaleValue *0.001/curDCM.pixelSpacingX, drawingFrameRect.size.height/2 - yOffset - length);
 						
@@ -8033,14 +8048,16 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						glVertex2f(-drawingFrameRect.size.width/2 + xOffset,  i* scaleValue * 0.001/curDCM.pixelSpacingY*curDCM.pixelRatio);
 					}
 				}
-				else if( curDCM.pixelSpacingX != 0 && curDCM.pixelSpacingY != 0) {
+				else if( curDCM.pixelSpacingX != 0 && curDCM.pixelSpacingY != 0)
+				{
 					glVertex2f(scaleValue  * (-50/curDCM.pixelSpacingX), drawingFrameRect.size.height/2 - yOffset); 
 					glVertex2f(scaleValue  * (50/curDCM.pixelSpacingX), drawingFrameRect.size.height/2 - yOffset);
 					
 					glVertex2f(-drawingFrameRect.size.width/2 + xOffset , scaleValue  * (-50/curDCM.pixelSpacingY*curDCM.pixelRatio)); 
 					glVertex2f(-drawingFrameRect.size.width/2 + xOffset , scaleValue  * (50/curDCM.pixelSpacingY*curDCM.pixelRatio));
 
-					for ( short i = -5; i<=5; i++ ) {
+					for ( short i = -5; i<=5; i++ )
+					{
 						short length = (i % 5 == 0) ? 10 : 5;
 					
 						glVertex2f(i*scaleValue *10/curDCM.pixelSpacingX, drawingFrameRect.size.height/2 - yOffset);
@@ -8104,7 +8121,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			if(!iChatCursorTextureBuffer) {
 				NSLog(@"generate iChatCursor Texture Buffer");
 				NSImage *iChatCursorImage;
-				if (iChatCursorImage = [[NSCursor pointingHandCursor] image]) {
+				if (iChatCursorImage = [[NSCursor pointingHandCursor] image])
+				{
 					iChatCursorHotSpot = [[NSCursor pointingHandCursor] hotSpot];
 					iChatCursorImageSize = [iChatCursorImage size];
 					
@@ -8125,7 +8143,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			}
 
 			// draw the cursor in the iChat Theatre View
-			if(iChatCursorTextureBuffer) {
+			if(iChatCursorTextureBuffer)
+			{
 				eventLocation.x -= iChatCursorHotSpot.x;
 				eventLocation.y -= iChatCursorHotSpot.y;
 				

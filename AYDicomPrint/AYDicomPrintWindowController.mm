@@ -106,6 +106,7 @@
 	{
 		[entireSeriesFrom setIntValue: 1];
 		[entireSeriesTo setIntValue: [[m_CurrentViewer pixList] count]];
+		[entireSeriesInterval setIntValue: 1];
 	}
 	else
 	{
