@@ -3921,6 +3921,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 								[[self windowController] setKeyImage: self];
 						}
 						
+						[[self windowController] bringToFrontROI: aNewROI];
+						
 						drawingROI = [aNewROI mouseRoiDown: tempPt :scaleValue];
 						
 						if( drawingROI == NO) curROI = nil;
@@ -3935,8 +3937,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						[[NSNotificationCenter defaultCenter] postNotificationName: @"addROI" object:self userInfo:userInfo];
 						
 						[aNewROI release];
-						
-						[[self windowController] bringToFrontROI: aNewROI];
 					}
 				}
 			}
