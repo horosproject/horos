@@ -70,7 +70,7 @@ typedef struct NSPointInt NSPointInt;
 NSString * convertDICOM( NSString *inputfile);
 NSString* filenameWithDate( NSString *inputfile);
 extern NSString* documentsDirectory();
-
+extern NSThread *mainThread;
 extern NSRecursiveLock *PapyrusLock;
 extern short Altivec;
 
