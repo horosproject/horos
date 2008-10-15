@@ -21,6 +21,9 @@
 /** \brief Category saves splitView state to User Defaults */
 @interface NSSplitView(Defaults)
 
++ (void) saveSplitView;
++ (void) loadSplitView;
+
 - (void) restoreDefault: (NSString *) defaultName;
 - (void) saveDefault: (NSString *) defaultName;
 
