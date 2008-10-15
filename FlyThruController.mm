@@ -423,7 +423,8 @@
 				[dcmSequence setPixelData: dataPtr samplePerPixel:spp bitsPerPixel:bpp width: width height: height];
 				
 				[[controller3D view] getOrientation: o];
-				[dcmSequence setOrientation: o];
+				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"exportOrientationIn3DExport"])
+					[dcmSequence setOrientation: o];
 				
 				if( [controller3D isKindOfClass: [VRController class]] ||  [controller3D isKindOfClass: [VRPROController class]])
 				{
