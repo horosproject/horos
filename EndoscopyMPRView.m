@@ -423,7 +423,9 @@ extern  short		annotations;
 			[exportDCM setSlicePosition: [curPix sliceLocation]];
 			
 			[self orientationCorrectedToView: o];	// <- Because we do screen capture !!!!! We need to apply the rotation of the image
-			[exportDCM setOrientation: o];
+			
+			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"exportOrientationIn3DExport"])
+				[exportDCM setOrientation: o];
 			
 			NSPoint tempPt = [self ConvertFromUpLeftView2GL: NSMakePoint( 0, 0)];				// <- Because we do screen capture !!!!!
 			[curPix convertPixX: tempPt.x pixY: tempPt.y toDICOMCoords: o pixelCenter: YES];

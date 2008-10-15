@@ -550,7 +550,8 @@ typedef struct _xyzArray
 				[exportDCM setPixelData: dataPtr samplePerPixel:spp bitsPerPixel:bpp width: width height: height];
 				
 				[self getOrientation: o];
-				[exportDCM setOrientation: o];
+				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"exportOrientationIn3DExport"])
+					[exportDCM setOrientation: o];
 				
 //				if( aCamera->GetParallelProjection())
 //					[exportDCM setPixelSpacing: [self getResolution] :[self getResolution]];
