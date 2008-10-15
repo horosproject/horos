@@ -938,7 +938,8 @@ public:
 		[exportDCM setPixelData: dataPtr samplePerPixel:spp bitsPerPixel:bpp width: width height: height];
 		
 		[self getOrientation: o];
-		[exportDCM setOrientation: o];
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"exportOrientationIn3DExport"])
+			[exportDCM setOrientation: o];
 		
 		if( aCamera->GetParallelProjection())
 			[exportDCM setPixelSpacing: [self getResolution] :[self getResolution]];
@@ -1015,7 +1016,9 @@ public:
 				if( dataPtr)
 				{
 					[self getOrientation: o];
-					[dcmSequence setOrientation: o];
+					
+					if( [[NSUserDefaults standardUserDefaults] boolForKey: @"exportOrientationIn3DExport"])
+						[dcmSequence setOrientation: o];
 					
 					[dcmSequence setPixelData: dataPtr samplePerPixel:spp bitsPerPixel:bpp width: width height: height];
 			//		[dcmSequence setPixelSpacing: 1 :1];
@@ -1087,7 +1090,8 @@ public:
 				if( dataPtr)
 				{
 					[self getOrientation: o];
-					[dcmSequence setOrientation: o];
+					if( [[NSUserDefaults standardUserDefaults] boolForKey: @"exportOrientationIn3DExport"])
+						[dcmSequence setOrientation: o];
 					
 					[dcmSequence setPixelData: dataPtr samplePerPixel:spp bitsPerPixel:bpp width: width height: height];
 				
