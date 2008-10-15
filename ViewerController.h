@@ -474,6 +474,7 @@ enum
 
 /** Set the postprocessed flag */
 - (void) setPostprocessed:(BOOL) v;
+- (BOOL) isPostprocessed;
 
 /** returns postprocessed status */
 - (BOOL) postprocessed;

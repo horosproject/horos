@@ -816,6 +816,11 @@ static int hotKeyToolCrossTable[] =
 	[imageView setWLWW:iwl :iww];
 }
 
+- (BOOL) isPostprocessed
+{
+	return postprocessed;
+}
+
 - (void) setPostprocessed:(BOOL) v
 {
 	postprocessed = v;

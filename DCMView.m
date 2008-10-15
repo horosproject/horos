@@ -1158,7 +1158,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"markROIImageAsKeyImage"])
 		{
-			if( [self is2DViewer] == YES && [self isKeyImage] == NO)
+			if( [self is2DViewer] == YES && [self isKeyImage] == NO && [[self windowController] isPostprocessed] == NO)
 				[[self windowController] setKeyImage: self];
 		}
 		
@@ -1302,7 +1302,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				[roi setRoiFont: labelFontListGL :labelFontListGLSize :self];
 				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"markROIImageAsKeyImage"])
 				{
-					if( [self is2DViewer] == YES && [self isKeyImage] == NO)
+					if( [self is2DViewer] == YES && [self isKeyImage] == NO && [[self windowController] isPostprocessed] == NO)
 						[[self windowController] setKeyImage: self];
 				}
 				
@@ -1339,7 +1339,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				[roi setRoiFont: labelFontListGL :labelFontListGLSize :self];
 				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"markROIImageAsKeyImage"])
 				{
-					if( [self is2DViewer] == YES && [self isKeyImage] == NO)
+					if( [self is2DViewer] == YES && [self isKeyImage] == NO && [[self windowController] isPostprocessed] == NO)
 						[[self windowController] setKeyImage: self];
 				}
 				
@@ -1387,7 +1387,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"markROIImageAsKeyImage"])
 		{
-			if( [self is2DViewer] == YES && [self isKeyImage] == NO)
+			if( [self is2DViewer] == YES && [self isKeyImage] == NO && [[self windowController] isPostprocessed] == NO)
 					[[self windowController] setKeyImage: self];
 		}
 		
@@ -3917,7 +3917,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						
 						if( [[NSUserDefaults standardUserDefaults] boolForKey: @"markROIImageAsKeyImage"])
 						{
-							if( [self is2DViewer] == YES && [self isKeyImage] == NO)
+							if( [self is2DViewer] == YES && [self isKeyImage] == NO && [[self windowController] isPostprocessed] == NO)
 								[[self windowController] setKeyImage: self];
 						}
 						
