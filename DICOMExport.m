@@ -201,16 +201,12 @@ extern BrowserController	*browserWindow;
 
 - (void) setOrientation: (float*) o
 {
-	long i;
-	
-	for( i = 0; i < 6; i++) orientation[ i] = o[ i];
+	for( int i = 0; i < 6; i++) orientation[ i] = o[ i];
 }
 
 - (void) setPosition: (float*) p
 {
-	long i;
-	
-	for( i = 0; i < 3; i++) position[ i] = p[ i];
+	for( int i = 0; i < 3; i++) position[ i] = p[ i];
 }
 
 - (void) setSlicePosition: (float) p
