@@ -1400,21 +1400,24 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	}
 }
 
--(IBAction) copy:(id) sender {
-	
+-(IBAction) copy:(id) sender
+{
     NSPasteboard	*pb = [NSPasteboard generalPasteboard];
 	BOOL			roiSelected = NO;
 	NSMutableArray  *roiSelectedArray = [NSMutableArray arrayWithCapacity:0];
 	
-	for( long i = 0; i < [curRoiList count]; i++) {
-		if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected) {
+	for( long i = 0; i < [curRoiList count]; i++)
+	{
+		if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected)
+		{
 			roiSelected = YES;
 			
 			[roiSelectedArray addObject: [curRoiList objectAtIndex:i]];
 		}
 	}
 
-	if( roiSelected == NO) {
+	if( roiSelected == NO)
+	{
 		NSImage *im;
 		
 		[pb declareTypes:[NSArray arrayWithObject:NSTIFFPboardType] owner:self];
@@ -1423,15 +1426,19 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 		[pb setData: [[NSBitmapImageRep imageRepWithData: [im TIFFRepresentation]] representationUsingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]] forType:NSTIFFPboardType];
 	}
-	else {
+	else
+	{
 		[pb declareTypes:[NSArray arrayWithObjects:@"ROIObject", NSStringPboardType, nil] owner:nil];
 		[pb setData: [NSArchiver archivedDataWithRootObject: roiSelectedArray] forType:@"ROIObject"];
 		
 		NSMutableString		*r = [NSMutableString string];
 		
-		for( long i = 0 ; i < [roiSelectedArray count] ; i++ ) {
+		for( long i = 0 ; i < [roiSelectedArray count] ; i++ )
+		{
 			[r appendString: [[roiSelectedArray objectAtIndex: i] description]];
-			if( i != [roiSelectedArray count]-1) [r appendString:@"\r"];
+			
+			if( i != [roiSelectedArray count]-1)
+				[r appendString:@"\r"];
 		}
 		
 		[pb setString: r  forType:NSStringPboardType];
