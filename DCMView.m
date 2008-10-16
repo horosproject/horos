@@ -1114,7 +1114,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	}
 }
 
-- (void) stopROIEditing {
+- (void) stopROIEditing
+{
 	[self stopROIEditingForce: NO];
 }
 
@@ -1125,8 +1126,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 //		[[self controller] blendingPropagate: self];
 //	}
 //	else 
-	if( blendingView ) {
-		if( [stringID isEqualToString:@"Original"] ) {
+	if( blendingView )
+	{
+		if( [stringID isEqualToString:@"Original"] )
+		{
 			float fValue = self.scaleValue / self.pixelSpacing;
 			blendingView.scaleValue = fValue * blendingView.pixelSpacing;
 		}
@@ -1376,13 +1379,14 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		NSMutableArray*	roiArray = [NSUnarchiver unarchiveObjectWithData: archived_data];
 		
 		// Unselect all ROIs
-		for( long i = 0 ; i < [curRoiList count] ; i++) [[curRoiList objectAtIndex: i] setROIMode: ROI_sleep];
+		for( ROI *r in curRoiList) [r setROIMode: ROI_sleep];
 		
-		for( long i = 0 ; i < [roiArray count] ; i++)
+		for( ROI *r in roiArray)
 		{
-			[[roiArray objectAtIndex: i] setOriginAndSpacing :curDCM.pixelSpacingX : curDCM.pixelSpacingY :NSMakePoint( curDCM.originX, curDCM.originY)];
-			[[roiArray objectAtIndex: i] setROIMode: ROI_selected];
-			[[roiArray objectAtIndex: i] setRoiFont: labelFontListGL :labelFontListGLSize :self];
+			r.isAliased = NO;
+			[r setOriginAndSpacing :curDCM.pixelSpacingX : curDCM.pixelSpacingY :NSMakePoint( curDCM.originX, curDCM.originY)];
+			[r setROIMode: ROI_selected];
+			[r setRoiFont: labelFontListGL :labelFontListGLSize :self];
 		}
 		
 		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"markROIImageAsKeyImage"])
@@ -3917,6 +3921,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 							{
 								[[dcmRoiList objectAtIndex: i] addObject: aNewROI];
 							}
+							
+							aNewROI.isAliased = YES;
 						}
 						else [curRoiList addObject: aNewROI];
 						

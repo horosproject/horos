@@ -9410,7 +9410,7 @@ extern NSString * documentsDirectory();
 		
 		for( i = 0; i < [fileList[ mIndex] count]; i++)
 		{
-			if( [[pixList[mIndex] objectAtIndex:i] generated] == NO)
+			if( [[pixList[ mIndex] objectAtIndex:i] generated] == NO)
 			{
 				NSString	*str;
 				
@@ -9434,8 +9434,23 @@ extern NSString * documentsDirectory();
 				{
 					[[roiList[ mIndex] objectAtIndex:i] addObjectsFromArray:array];
 					
-					for( id loopItem1 in array)
-						[imageView roiSet: loopItem1];
+					for( ROI *r in array)
+					{
+						if( r.isAliased)
+						{
+							// propagate it to the entire series
+							for( x = 0; x < [pixList[ mIndex] count]; x++)
+							{
+								if( x != i)
+								{
+									[[roiList[ mIndex] objectAtIndex: x] addObject: r];
+								}
+							}
+						}
+					}
+					
+					for( ROI *r in array)
+						[imageView roiSet: r];
 				}
 			}
 		}
@@ -9467,16 +9482,29 @@ extern NSString * documentsDirectory();
 				@try
 				{
 					NSString *str = [image SRPathForFrame: [[pixList[mIndex] objectAtIndex:i] frameNo]];
+					NSMutableArray *roisArray = 0L;
 					
 					if( [[roiList[ mIndex] objectAtIndex: i] count] > 0)
 					{
-						NSArray	*roisArray = [roiList[ mIndex] objectAtIndex: i];
+						NSMutableArray *aliasROIs = [NSMutableArray array];
 						
-						for( id loopItem2 in roisArray)
-							[loopItem2 setPix: [pixList[mIndex] objectAtIndex:i]];
+						roisArray = [NSMutableArray arrayWithArray: [roiList[ mIndex] objectAtIndex: i]];
 						
+						for( ROI *r in roisArray)
+						{
+							[r setPix: [pixList[mIndex] objectAtIndex:i]];
+							
+							if( r.isAliased && i != [fileList[ mIndex] count]/2)
+								[aliasROIs addObject: r];
+						}
+						
+						[roisArray removeObjectsInArray: aliasROIs];
+					}
+					
+					if( [roisArray count])
+					{
 						NSString	*path = [ROISRConverter archiveROIsAsDICOM: roisArray  toPath: str forImage:image];
-						
+					
 						if( path)
 						{
 							[newDICOMSR addObject: path];
@@ -11286,6 +11314,8 @@ int i,j,l;
 					{
 						ROI *newROI = [NSUnarchiver unarchiveObjectWithData: [NSArchiver archivedDataWithRootObject: [selectedROIs objectAtIndex: i]]];
 						
+						newROI.isAliased = NO;
+						
 						[[roiList[curMovieIndex] objectAtIndex: x] addObject: newROI];
 					}
 				}
@@ -11387,7 +11417,6 @@ int i,j,l;
 				
 				if( [selectedROIs count] > 0)
 				{
-					
 					for( x = startImage; x < upToImage; x++)
 					{
 						if( x != [imageView curImage])
@@ -11398,6 +11427,7 @@ int i,j,l;
 								{
 									ROI *newROI = [NSUnarchiver unarchiveObjectWithData: [NSArchiver archivedDataWithRootObject: [selectedROIs objectAtIndex: i]]];
 									
+									newROI.isAliased = NO;
 									[[roiList[curMovieIndex] objectAtIndex: x] addObject: newROI];
 								}
 							}
@@ -11623,6 +11653,9 @@ int i,j,l;
 	
 	a = [NSUnarchiver unarchiveObjectWithData: [NSArchiver archivedDataWithRootObject: a]];
 	b = [NSUnarchiver unarchiveObjectWithData: [NSArchiver archivedDataWithRootObject: b]];
+	
+	a.isAliased = NO;
+	b.isAliased = NO;
 	
 	a = [self isoContourROI: a numberOfPoints: maxPoints];
 	b = [self isoContourROI: b numberOfPoints: maxPoints];

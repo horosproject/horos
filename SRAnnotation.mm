@@ -261,6 +261,7 @@
 		BOOL newROI = YES;
 		ROI *roi;
 		NSData *newROIData = [aROI data];
+		
 		while ((roi = [enumerator nextObject]) && newROI)
 		{
 			if ([newROIData isEqualToData:[roi data]])

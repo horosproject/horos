@@ -343,7 +343,8 @@ NSString* asciiString (NSString* name);
 	NSLog(cdName);
 }
 
--(NSString *)folderToBurn{
+-(NSString *)folderToBurn
+{
 	return [NSString stringWithFormat:@"/tmp/%@",cdName];
 }
 
@@ -364,7 +365,8 @@ NSString* asciiString (NSString* name);
 	{
 		DRTrack*	track = [self createTrack];
 
-		if (track){
+		if (track)
+		{
 			DRBurnSetupPanel*	bsp = [DRBurnSetupPanel setupPanel];
 
 			// We'll be the delegate for the setup panel. This allows us to show off some 
@@ -392,11 +394,11 @@ NSString* asciiString (NSString* name);
 	[misc2 setEnabled: YES];
 	[misc3 setEnabled: YES];
 	[misc4 setEnabled: YES];
-
 }
 
 
-- (DRTrack *) createTrack{
+- (DRTrack *) createTrack
+{
 	DRFolder* rootFolder = [DRFolder folderWithPath:[self folderToBurn]];		
 	return [DRTrack trackForRootFolder:rootFolder];
 }
@@ -405,7 +407,8 @@ NSString* asciiString (NSString* name);
 //------------------------------------------------------------------------------------------------------------------------------------
 #pragma mark•
 
-- (BOOL) validateMenuItem:(id)sender{
+- (BOOL) validateMenuItem:(id)sender
+{
 
 	if ([sender action] == @selector(terminate:))
 		return (burning == NO);		// No quitting while a burn is going on
@@ -516,8 +519,6 @@ NSString* asciiString (NSString* name);
 	runBurnAnimation = NO;
 }
 
-
-
 /* OK, nothing fancy here. we just want to illustrate that it's possible for a delegate of the 
 	progress panel to alter how the burn is handled once it completes. You may want to put up
 	your own dialog, sent a notification if you're in the background, or just ignore it no matter what.
@@ -537,10 +538,11 @@ NSString* asciiString (NSString* name);
 		NSDictionary*	errorStatus = [burnStatus objectForKey:DRErrorStatusKey];
 		NSString*		errorString = [errorStatus objectForKey:DRErrorStatusErrorStringKey];
 		
-		NSLog(@"The burn failed (%@)!", errorString);
+		NSRunCriticalAlertPanel( NSLocalizedString( @"Burning failed", 0L), errorString, NSLocalizedString( @"OK", 0L), nil, nil);
 	}
 	else
 		NSLog(@"Burn finished fine");
+	
 	burning=NO;
 	[[self window] performClose:nil];
 	//[[NSApplication sharedApplication] terminate: self];
@@ -574,7 +576,8 @@ NSString* asciiString (NSString* name);
 	
 	if ((isExtracting || isSettingUpBurn || burning))
 		return NO;
-	else {
+	else
+	{
 		NSFileManager *manager = [NSFileManager defaultManager];
 		[manager removeFileAtPath: [self folderToBurn] handler:nil];
 		[manager removeFileAtPath: [NSString stringWithFormat:@"/tmp/burnAnonymized"] handler:nil];

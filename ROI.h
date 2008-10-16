@@ -137,13 +137,14 @@ enum
 	
 	BOOL			locked;
 	BOOL			selectable;
+	BOOL			isAliased;
 }
 
 @property(readonly) int textureWidth, textureHeight;
 @property(readonly) int textureDownRightCornerX,textureDownRightCornerY, textureUpLeftCornerX, textureUpLeftCornerY;
 @property(readonly) unsigned char *textureBuffer;
 @property float opacity;
-@property BOOL locked, selectable;
+@property BOOL locked, selectable, isAliased;
 @property(retain) NSString *name, *comments;
 @property(readonly) long type;
 @property(setter=setROIMode:) long ROImode;

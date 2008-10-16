@@ -24,7 +24,7 @@
 #import "ITKSegmentation3D.h"
 
 #define CIRCLERESOLUTION 200
-#define ROIVERSION 9
+#define ROIVERSION 10
 
 static		float					deg2rad = M_PI / 180.0f; 
 static		float					fontHeight = 0;
@@ -271,7 +271,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 
 @implementation ROI
 
-@synthesize textureWidth, textureHeight, textureBuffer, locked, selectable;
+@synthesize textureWidth, textureHeight, textureBuffer, locked, selectable, isAliased;
 @synthesize textureDownRightCornerX,textureDownRightCornerY, textureUpLeftCornerX, textureUpLeftCornerY;
 @synthesize opacity;
 @synthesize name, comments, type, ROImode = mode, thickness;
@@ -721,6 +721,15 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 			locked = NO;
 		}
 		
+		if( fileVersion >= 10)
+		{
+			isAliased = [[coder decodeObject] boolValue];
+		}
+		else
+		{
+			isAliased = NO;
+		}
+		
 		[points retain];
 		[name retain];
 		[comments retain];
@@ -839,6 +848,9 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 	// ROIVERSION = 9
 	[coder encodeObject:[NSNumber numberWithBool: selectable]];
 	[coder encodeObject:[NSNumber numberWithBool: locked]];
+	
+	// ROIVERSION = 10
+	[coder encodeObject:[NSNumber numberWithBool: isAliased]];
 }
 
 - (NSData*) data { return [NSArchiver archivedDataWithRootObject: self]; }
@@ -3972,7 +3984,6 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			}
 			else
 			{
-				
 				// If there is another line, compute cobb's angle
 				if( curView && displayCobbAngle)
 				{
