@@ -31,7 +31,7 @@
 {
 	MyPoint *p = [[[self class] allocWithZone: zone] init];
 	
-	[p setPoint: [self point]];
+	p->pt = pt;
 	
 	return p;
 }

@@ -701,7 +701,7 @@ static int hotKeyToolCrossTable[] =
 			
 			for( i = 0; i < maxMovieIndex; i++)
 			{
-				NSArray *r = [NSUnarchiver unarchiveObjectWithData: [rois objectAtIndex: i]];
+				NSArray *r = [rois objectAtIndex: i];
 				
 				for( x = 0; x < [roiList[ i] count] ; x++)
 				{
@@ -756,7 +756,11 @@ static int hotKeyToolCrossTable[] =
 		
 		for( i = 0; i < maxMovieIndex; i++)
 		{
-			[rois addObject: [NSArchiver archivedDataWithRootObject: roiList[ i]]];
+			NSMutableArray *array = [NSMutableArray array];
+			for( ROI *r in roiList[ i])
+				[array addObject: [[r copy] autorelease]];
+				
+			[rois addObject: array];
 		}
 		
 		return [NSDictionary dictionaryWithObjectsAndKeys: string, @"type", rois, @"rois", 0L];

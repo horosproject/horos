@@ -623,11 +623,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		if (type==tPlain)
 		{
 			textureWidth=[[coder decodeObject] intValue];
-//			oldTextureWidth=
-			[[coder decodeObject] intValue];
 			textureHeight=[[coder decodeObject] intValue];
-//			oldTextureHeight=
-			[[coder decodeObject] intValue];
 			
 			textureUpLeftCornerX=[[coder decodeObject] intValue];
 			textureUpLeftCornerY=[[coder decodeObject] intValue];
@@ -635,7 +631,6 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 			textureDownRightCornerY=[[coder decodeObject] intValue];
 			
 			unsigned char* pointerBuff=(unsigned char*)[[coder decodeObject] bytes];
-//			tempTextureBuffer=(unsigned char*)malloc(textureWidth*textureHeight*sizeof(unsigned char));
 			textureBuffer=(unsigned char*)malloc(textureWidth*textureHeight*sizeof(unsigned char));
 
 			for( long j=0; j<textureHeight; j++ ) {
@@ -761,6 +756,104 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: 0L];
     
     return self;
+}
+
+- (id) copyWithZone:(NSZone *)zone
+{
+	ROI *c = [[[self class] allocWithZone: zone] init];
+	
+	c->uniqueID = [[NSNumber numberWithInt: gUID++] retain];
+	c->groupID = 0.0;
+	c->PointUnderMouse = -1;
+	c->selectedModifyPoint = -1;
+	
+	c->parentROI = 0L;
+	
+	c->points = [points copy];
+	
+	c->rect = rect;
+	c->type = type;
+	c->needQuartz = needQuartz;
+	c->thickness = thickness;
+	c->fill = fill;
+	c->opacity = opacity;
+	c->color = color;
+	c->name = [name copy];
+	c->comments = [comments copy];
+	c->pixelSpacingX = pixelSpacingX;
+	c->imageOrigin = imageOrigin;
+	c->pixelSpacingY = pixelSpacingY;
+	
+	if (c->type == tPlain)
+	{
+		c->textureWidth = textureWidth;
+		c->textureHeight = textureHeight;
+		
+		c->textureUpLeftCornerX = textureUpLeftCornerX;
+		c->textureUpLeftCornerY = textureUpLeftCornerY;
+		c->textureDownRightCornerX = textureDownRightCornerX;
+		c->textureDownRightCornerY = textureDownRightCornerY;
+		
+		c->textureBuffer = (unsigned char*) malloc( textureWidth*textureHeight*sizeof(unsigned char));
+		memcpy( c->textureBuffer, textureBuffer, textureWidth*textureHeight*sizeof(unsigned char));
+	}
+	
+	c->zPositions = [zPositions copy];
+	
+	c->offsetTextBox_x = offsetTextBox_x;
+	c->offsetTextBox_y = offsetTextBox_y;
+	
+	c->_calciumThreshold = _calciumThreshold;
+	c->_displayCalciumScoring = _displayCalciumScoring;
+
+	c->groupID = groupID;
+	if (c->type == tLayerROI)
+	{
+		c->layerImageJPEG = [layerImageJPEG copy];
+		c->layerImage = [[NSImage alloc] initWithData: c->layerImageJPEG];
+		
+		while( [ctxArray count]) [self deleteTexture: [ctxArray lastObject]];
+	}
+	c->textualBoxLine1 = [textualBoxLine1 copy];
+	c->textualBoxLine2 = [textualBoxLine2 copy];
+	c->textualBoxLine3 = [textualBoxLine3 copy];
+	c->textualBoxLine4 = [textualBoxLine4 copy];
+	c->textualBoxLine5 = [textualBoxLine5 copy];
+
+	c->isLayerOpacityConstant = isLayerOpacityConstant;
+	c->canColorizeLayer = canColorizeLayer;
+	c->layerColor = [layerColor copy];
+	c->displayTextualData = displayTextualData;
+
+	c->canResizeLayer = canResizeLayer;
+
+	c->selectable = selectable;
+	c->locked = locked;
+
+	c->isAliased = isAliased;
+	
+	c->mode = ROI_sleep;
+	
+	c->previousPoint.x = c->previousPoint.y = -1000;
+	
+	c->fontListGL = -1;
+	c->stringTex = 0L;
+	c->rmean = c->rmax = c->rmin = c->rdev = c->rtotal = -1;
+	c->Brmean = c->Brmax = c->Brmin = c->Brdev = c->Brtotal = -1;
+	c->mousePosMeasure = -1;
+	
+	c->ctxArray = [[NSMutableArray arrayWithCapacity: 10] retain];
+	c->textArray = [[NSMutableArray arrayWithCapacity: 10] retain];
+	
+	// init fonts for use with strings
+	NSFont * font =[NSFont fontWithName:@"Helvetica" size: 12.0 + c->thickness*2];
+	c->stanStringAttrib = [[NSMutableDictionary dictionary] retain];
+	[c->stanStringAttrib setObject:font forKey:NSFontAttributeName];
+	[c->stanStringAttrib setObject:[NSColor whiteColor] forKey:NSForegroundColorAttributeName];
+	
+	[c reduceTextureIfPossible];
+	
+	return c;
 }
 
 - (void) encodeWithCoder:(NSCoder*) coder

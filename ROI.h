@@ -54,7 +54,7 @@ enum
 *	tDynAngle = Dynamic Angle\n
 */
 
-@interface ROI : NSObject <NSCoding>
+@interface ROI : NSObject <NSCoding, NSCopying>
 {
 	NSLock			*roiLock;
 	
