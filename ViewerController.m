@@ -9317,7 +9317,7 @@ NSMutableArray		*array;
 					{
 						ROI *curROI = [[[bc roiList] objectAtIndex: x] objectAtIndex:i];
 						
-						curROI = [NSUnarchiver unarchiveObjectWithData: [NSArchiver archivedDataWithRootObject: curROI]];
+						curROI = [[curROI copy] autorelease];
 						
 						[curROI setOriginAndSpacing:[[imageView curDCM] pixelSpacingX] :[[imageView curDCM] pixelSpacingY] :NSMakePoint( [[imageView curDCM] originX], [[imageView curDCM] originY])];
 						[imageView roiSet: curROI];
@@ -11316,7 +11316,7 @@ int i,j,l;
 				{
 					for( i = 0; i < [selectedROIs count]; i++)
 					{
-						ROI *newROI = [NSUnarchiver unarchiveObjectWithData: [NSArchiver archivedDataWithRootObject: [selectedROIs objectAtIndex: i]]];
+						ROI *newROI = [[[selectedROIs objectAtIndex: i] copy] autorelease];
 						
 						newROI.isAliased = NO;
 						
@@ -11429,7 +11429,7 @@ int i,j,l;
 							{
 								for( i = 0; i < [selectedROIs count]; i++)
 								{
-									ROI *newROI = [NSUnarchiver unarchiveObjectWithData: [NSArchiver archivedDataWithRootObject: [selectedROIs objectAtIndex: i]]];
+									ROI *newROI = [[[selectedROIs objectAtIndex: i] copy] autorelease];
 									
 									newROI.isAliased = NO;
 									[[roiList[curMovieIndex] objectAtIndex: x] addObject: newROI];
@@ -11482,7 +11482,7 @@ int i,j,l;
 							{
 								for( i = 0; i < [selectedROIs count]; i++)
 								{
-									ROI *newROI = [NSUnarchiver unarchiveObjectWithData: [NSArchiver archivedDataWithRootObject: [selectedROIs objectAtIndex: i]]];
+									ROI *newROI = [[[selectedROIs objectAtIndex: i] copy] autorelease];
 									
 									[[roiList[ x] objectAtIndex: [imageView curImage]] addObject: newROI];
 								}
@@ -11655,8 +11655,8 @@ int i,j,l;
 	
 	ROI* inputROI = a;
 	
-	a = [NSUnarchiver unarchiveObjectWithData: [NSArchiver archivedDataWithRootObject: a]];
-	b = [NSUnarchiver unarchiveObjectWithData: [NSArchiver archivedDataWithRootObject: b]];
+	a = [[a copy] autorelease];
+	b = [[b copy] autorelease];
 	
 	a.isAliased = NO;
 	b.isAliased = NO;
