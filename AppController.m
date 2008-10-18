@@ -53,6 +53,7 @@ ToolbarPanelController *toolbarPanel[10] = {0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 
 static NSMenu *mainMenuCLUTMenu = 0L, *mainMenuWLWWMenu = 0L, *mainMenuConvMenu = 0L;
 static NSDictionary *previousWLWWKeys = 0L, *previousCLUTKeys = 0L, *previousConvKeys = 0L;
 static BOOL checkForPreferencesUpdate = YES;
+static PluginManager *pluginManager = 0L;
 
 NSThread				*mainThread;
 BOOL					NEEDTOREBUILD = NO;
@@ -1873,7 +1874,7 @@ static BOOL initialized = NO;
 				[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"autoRetrieving"];
 				[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"ROITEXTNAMEONLY"];
 				
-				[[PluginManager alloc] init];
+				pluginManager = [[PluginManager alloc] init];
 				
 				
 				//Add Endoscopy LUT, WL/WW, shading to existing prefs
@@ -2200,12 +2201,28 @@ static BOOL initialized = NO;
 
 	if( [[NSUserDefaults standardUserDefaults] integerForKey: @"TOOLKITPARSER"] == 0 || [[NSUserDefaults standardUserDefaults] boolForKey:@"USEPAPYRUSDCMPIX"] == NO)
 		[self growlTitle: NSLocalizedString( @"Warning!", nil) description: NSLocalizedString( @"DCM Framework is selected as the DICOM reader/parser. The performances of this toolkit are slower.", nil)  name:@"newfiles"];
+		
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"checkForUpdatesPlugins"])
+		[NSThread detachNewThreadSelector:@selector(checkForUpdates:) toTarget:pluginManager withObject:pluginManager];
 }
 
 - (void) applicationWillFinishLaunching: (NSNotification *) aNotification
 {
 	BOOL dialog = NO;
 	
+	if( dialog == NO)
+	{
+		
+	}
+	
+	[PluginManager setMenus: filtersMenu :roisMenu :othersMenu :dbMenu];
+    
+	theTask = nil;
+	
+	appController = self;
+	[self initDCMTK];
+	[self restartSTORESCP];
+
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"doNotUseGrowl"] == NO)
 	{
 		[GrowlApplicationBridge setGrowlDelegate:self];
@@ -2236,46 +2253,6 @@ static BOOL initialized = NO;
 			}
 		}
 	}
-
-	if( dialog == NO)
-	{
-		if( [[NSDate date] timeIntervalSinceDate: [NSCalendarDate dateWithYear:2008 month:8 day:30 hour:1 minute:1 second:1 timeZone:0L]] < 0 && [[NSDate date] timeIntervalSinceDate: [NSCalendarDate dateWithYear:2008 month:6 day:20 hour:1 minute:1 second:1 timeZone:0L]] > 0)
-		{
-			NSString *alertSuppress = @"osirix course";
-			if ([[NSUserDefaults standardUserDefaults] boolForKey: alertSuppress] == NO)
-			{
-				NSAlert* alert = [NSAlert new];
-				[alert setMessageText: NSLocalizedString(@"OsiriX Course - 12/13 Sept 2008", 0L)];
-				[alert setInformativeText: NSLocalizedString(@"Don't miss a unique opportunity to become an expert in OsiriX : The OsiriX Course\r\rCupertino, California, USA\r12-13 September 2008\r", nil)];
-				[alert setShowsSuppressionButton:YES ];
-				[alert addButtonWithTitle: NSLocalizedString(@"Continue", nil)];
-				[alert addButtonWithTitle: NSLocalizedString(@"More Informations", nil)];
-				
-				if( [alert runModal] == NSAlertFirstButtonReturn)
-				{
-					
-				}
-				else
-					[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.osirix-viewer.com/Cupertino-Course.html"]];
-				
-				if ([[alert suppressionButton] state] == NSOnState)
-					[[NSUserDefaults standardUserDefaults] setBool:YES forKey:alertSuppress];
-			}
-		}
-	}
-	
-//	DOClient	*client = [[DOClient alloc] init];
-//	[client connect];
-//	[client log:@"Happy Xmas 2006"];
-	
-	[PluginManager setMenus: filtersMenu :roisMenu :othersMenu :dbMenu];
-    NSLog(@"Finishing Launching");
-    
-	theTask = nil;
-	
-	appController = self;
-	[self initDCMTK];
-	[self restartSTORESCP];
 	
 	NSNotificationCenter *nc;
     nc = [NSNotificationCenter defaultCenter];
