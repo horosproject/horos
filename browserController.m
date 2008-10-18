@@ -6788,7 +6788,7 @@ static NSArray*	statesArray = nil;
 						
 						volumeData = [[NSData alloc] initWithBytesNoCopy:fVolumePtr length:100 * 100 * sizeof(float) freeWhenDone:YES]; 
 						
-						[vc changeImageData:viewerPix :filesAr :volumeData :NO];
+						[vc changeImageData:viewerPix :filesAr :volumeData :YES];
 						[vc startLoadImageThread];
 						
 						[volumeData release];
@@ -10105,7 +10105,7 @@ static BOOL needToRezoom;
 								if( viewer )
 								{
 									//reuse of existing viewer
-									[viewer changeImageData:viewerPix[0] :filesAr :volumeData :YES];
+									[viewer changeImageData:viewerPix[0] :filesAr :volumeData :NO];
 									[viewer startLoadImageThread];
 								}
 								else
@@ -10124,7 +10124,7 @@ static BOOL needToRezoom;
 								if( viewer)
 								{
 									//reuse of existing viewer
-									[viewer changeImageData:viewerPix[0] :[NSMutableArray arrayWithArray:correspondingObjects] :volumeData :YES];
+									[viewer changeImageData:viewerPix[0] :[NSMutableArray arrayWithArray:correspondingObjects] :volumeData :NO];
 									[viewer startLoadImageThread];
 								}
 								else

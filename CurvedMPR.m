@@ -589,7 +589,7 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 		}
 		else
 		{
-			[viewerController changeImageData: newPixListPer :newDcmListPer :newData :NO];
+			[viewerController changeImageData: newPixListPer :newDcmListPer :newData :YES];
 		}
 	}
 }
@@ -975,7 +975,7 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 		}
 		else
 		{
-			[viewerController changeImageData: newPixList :newDcmList :newData :NO];
+			[viewerController changeImageData: newPixList :newDcmList :newData :YES];
 		}
 		
 		[viewerController setImageIndex: (thickSlab-1)/2];

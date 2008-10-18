@@ -46,6 +46,10 @@ static BOOL showWarning = YES;
 {
 }
 
+- (void) syncThumbnails
+{
+}
+
 - (void) refreshToolbar
 {
 }

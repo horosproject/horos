@@ -5336,7 +5336,7 @@ static ViewerController *draggedController = 0L;
 	redoQueue = [[NSMutableArray alloc] initWithCapacity: 0];
 	
 	[self viewerControllerInit];
-	[self changeImageData:f :d :v :NO];
+	[self changeImageData:f :d :v :YES];
 	
 	NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
 	[nc addObserver: self
@@ -5515,7 +5515,7 @@ static ViewerController *draggedController = 0L;
 	[seriesView selectFirstTilingView];
 }
 
--(void) changeImageData:(NSMutableArray*)f :(NSMutableArray*)d :(NSData*) v :(BOOL) applyTransition
+-(void) changeImageData:(NSMutableArray*)f :(NSMutableArray*)d :(NSData*) v :(BOOL) newViewerWindow
 {
 	BOOL		sameSeries = NO;
 	long		i, imageIndex;
@@ -5556,7 +5556,7 @@ static ViewerController *draggedController = 0L;
 	long minWindows = 1;
 	if( [self FullScreenON]) minWindows++;
 	
-	if( [[appController FindRelatedViewers:pixList[0]] count] > minWindows)
+	if( newViewerWindow == NO && [[appController FindRelatedViewers:pixList[0]] count] > minWindows)
 	{
 		NSLog( @"changeImageData not possible with other post-processing windows opened");
 		return;
