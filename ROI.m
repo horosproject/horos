@@ -4293,7 +4293,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 											
 											NSString *rName = r.name;
 											
-											if( [rName isEqualToString: @"Unnamed"] || [rName isEqualToString: NSLocalizedString( @"Unamed", 0L)])
+											if( [rName isEqualToString: @"Unnamed"] || [rName isEqualToString: NSLocalizedString( @"Unnamed", 0L)])
 												rName = 0L;
 											
 											if( rName)
