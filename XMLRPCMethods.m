@@ -120,8 +120,72 @@
 			
 			NSMutableDictionary	*httpServerMessage = [NSMutableDictionary dictionaryWithObjectsAndKeys: selName, @"MethodName", doc, @"NSXMLDocument", [NSNumber numberWithBool: NO], @"Processed", ipAddressString, @"peerAddress", 0L];
 			
-			#pragma mark DBWindowFind
+			#pragma mark DisplayStudy
 			
+			// ********************************************
+			// Method: DisplayStudy / DisplaySeries
+			//
+			// Parameters:
+			// PatientID:  0010,0020
+			// StudyID:  0020,0010 (DisplayStudy)
+			// or
+			// SeriesInstanceUID: 0020,000e (DisplaySeries)
+			//
+			// Example: {PatientID: "1100697", StudyID: "A10043712203"}
+			// Example: {PatientID: "1100697", SeriesInstanceUID: "1.3.12.2.1107.5.1.4.54693.30000007120706534864000001110"}
+			// Response: {error: "0", elements: array of elements corresponding to the request}
+			
+			if ([selName isEqual:@"DisplayStudy"] || [selName isEqual:@"DisplaySeries"])
+			{
+				if( [[httpServerMessage valueForKey: @"Processed"] boolValue] == NO)							// Is this order already processed ?
+				{
+					NSArray *keys = [doc nodesForXPath:@"methodCall/params//member/name" error:&error];
+					NSArray *values = [doc nodesForXPath:@"methodCall/params//member/value" error:&error];
+					if (2 != [keys count] || 2 != [values count])
+					{
+						CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 400, NULL, kCFHTTPVersion1_1); // Bad Request
+						[mess setResponse:response];
+						CFRelease(response);
+						return;
+					}
+					
+					int i;
+					NSMutableDictionary *paramDict = [NSMutableDictionary dictionary];
+					for( i = 0; i < [keys count]; i++)
+						[paramDict setValue: [[values objectAtIndex: i] objectValue] forKey: [[keys objectAtIndex: i] objectValue]];	
+					
+					// *****
+					
+					NSString *listOfElements = 0L;
+					NSNumber *ret = 0L;
+					
+					if ([selName isEqual:@"DisplayStudy"])
+					{
+						ret = [NSNumber numberWithInt: [[BrowserController currentBrowser]	findObject:	[NSString stringWithFormat: @"patientID =='%@' AND id == '%@'", [paramDict valueForKey:@"PatientID"], [paramDict valueForKey:@"StudyID"]] table: @"Study" execute: @"Open" elements: &listOfElements]];
+					}
+					
+					if ([selName isEqual:@"DisplaySeries"])
+					{
+						ret = [NSNumber numberWithInt: [[BrowserController currentBrowser]	findObject:	[NSString stringWithFormat: @"study.patientID =='%@' AND seriesDICOMUID == '%@'", [paramDict valueForKey:@"PatientID"], [paramDict valueForKey:@"SeriesInstanceUID"]] table: @"Series" execute: @"Open" elements: &listOfElements]];
+					}
+					
+					// *****
+					NSString *xml;
+					if( listOfElements)
+						xml = [NSString stringWithFormat: @"<?xml version=\"1.0\"?><methodResponse><params><param><value><struct><member><name>error</name><value>%@</value></member><member><name>elements</name>%@</member></struct></value></param></params></methodResponse>", [ret stringValue], listOfElements];
+					else
+						xml = [NSString stringWithFormat: @"<?xml version=\"1.0\"?><methodResponse><params><param><value><struct><member><name>error</name><value>%@</value></member></struct></value></param></params></methodResponse>", [ret stringValue]];
+						
+					NSError *error = nil;
+					NSXMLDocument *doc = [[[NSXMLDocument alloc] initWithXMLString:xml options:NSXMLNodeOptionsNone error:&error] autorelease];
+					[httpServerMessage setValue: [NSNumber numberWithBool: YES] forKey: @"Processed"];
+					[httpServerMessage setValue: doc forKey: @"NSXMLDocumentResponse"];
+					[httpServerMessage setValue: [NSNumber numberWithBool: YES] forKey: @"Processed"];		// To tell to other XML-RPC that we processed this order
+				}
+			}
+			
+			#pragma mark DBWindowFind
+
 			// ********************************************
 			// Method: DBWindowFind
 			//

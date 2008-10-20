@@ -6554,7 +6554,14 @@ static NSArray*	statesArray = nil;
 					}
 					
 					if( found == NO)
-						[browserWindow viewerDICOM: self];
+					{
+						if( [table isEqualToString: @"Series"])
+						{
+							[self findAndSelectFile:0L image: [[element valueForKey: @"images"] anyObject] shouldExpand:NO];
+							[self databaseOpenStudy: element];
+						}
+						else [browserWindow viewerDICOM: self];
+					}
 				}
 			}
 			else return -1;

@@ -153,7 +153,7 @@ static int readNextToken(const char *c, int& pos, DcmTagKey& key, Uint32& idx)
     spos = ++lpos;
     while ((c[lpos] >= '0')&&(c[lpos] <= '9')) ++lpos;
     if (c[lpos] != ']') return 0; // parse error
-    unsigned int newindex = 0;
+    long unsigned int newindex = 0;
     if (1 != sscanf(c+spos,"%lu", &newindex)) return 0; // parse error
     idx = OFstatic_cast(Uint32, newindex);
     pos = ++lpos;
