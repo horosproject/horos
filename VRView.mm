@@ -3190,6 +3190,8 @@ public:
 				[waiting release];
 				
 				[[controller viewer2D] roiIntDeleteAllROIsWithSameName:@"BoneRemovalAlgorithmROIUniqueName"];
+				
+				[[controller viewer2D] needsDisplayUpdate];
 			}
 			
 			NSLog( @"**** Bone Removal End");
