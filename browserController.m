@@ -7563,31 +7563,43 @@ static BOOL withReset = NO;
 		NSInteger tag = 0;
 		
 		NSString *uri = [NSString stringWithContentsOfFile: recoveryPath];
+		NSManagedObject *studyObject = 0L;
 		
-		NSManagedObject *studyObject = [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: uri]]];
-		
-		int r = NSRunAlertPanel( NSLocalizedString(@"Corrupted files", nil), [NSString stringWithFormat:NSLocalizedString(@"A corrupted study crashed OsiriX:\r\r%@ / %@\r\rThis file will be deleted.\r\rYou can run OsiriX in Protected Mode (shift + option keys at startup) if you have more crashes.\r\rShould I delete this corrupted study? (Highly recommended)", nil), [studyObject valueForKey:@"name"], [studyObject valueForKey:@"studyName"], 0L], NSLocalizedString(@"OK", 0L), NSLocalizedString(@"Cancel", 0L), nil);
-		if( r == NSAlertDefaultReturn)
+		@try
 		{
-			[context lock];
-			[context retain];
-			
-			@try
+			studyObject = [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: uri]]];
+		}
+		
+		@catch( NSException *ne)
+		{
+			NSLog(@"buildAllThumbnails exception: %@", [ne description]);
+		}
+		
+		if( studyObject)
+		{
+			int r = NSRunAlertPanel( NSLocalizedString(@"Corrupted files", nil), [NSString stringWithFormat:NSLocalizedString(@"A corrupted study crashed OsiriX:\r\r%@ / %@\r\rThis file will be deleted.\r\rYou can run OsiriX in Protected Mode (shift + option keys at startup) if you have more crashes.\r\rShould I delete this corrupted study? (Highly recommended)", nil), [studyObject valueForKey:@"name"], [studyObject valueForKey:@"studyName"], 0L], NSLocalizedString(@"OK", 0L), NSLocalizedString(@"Cancel", 0L), nil);
+			if( r == NSAlertDefaultReturn)
 			{
-				[context deleteObject: studyObject];
-				[self saveDatabase: currentDatabasePath];
-			}
+				[context lock];
+				[context retain];
 				
-			@catch( NSException *ne)
-			{
-				NSLog(@"buildAllThumbnails exception: %@", [ne description]);
+				@try
+				{
+					[context deleteObject: studyObject];
+					[self saveDatabase: currentDatabasePath];
+				}
+					
+				@catch( NSException *ne)
+				{
+					NSLog(@"buildAllThumbnails exception: %@", [ne description]);
+				}
+				
+				[context unlock];
+				[context release];
+				
+				[self outlineViewRefresh];
+				[self refreshMatrix: self];
 			}
-			
-			[context unlock];
-			[context release];
-			
-			[self outlineViewRefresh];
-			[self refreshMatrix: self];
 		}
 		
 		displayEmptyDatabase = NO;

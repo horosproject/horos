@@ -1686,6 +1686,14 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	else fileNb = Papy3FileOpen ( (char*) [filePath UTF8String], (PAPY_FILE) 0, TRUE, 0);
 	if( fileNb < 0)
 	{
+		if( [self getDicomFileDCMTK] == 0)	// First, try with dcmtk
+		{
+			[PapyrusLock unlock];
+			return 0;
+		}
+		
+		// And if it failed, try to convert it...
+		
 		converted = convertDICOM( filePath);
 		fileNb = Papy3FileOpen (  (char*) [converted UTF8String], (PAPY_FILE) 0, TRUE, 0);
 	}
@@ -2465,25 +2473,19 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			returnValue = 0;   // success
 		}
 	}
+	
+	if ([sopClassUID isEqualToString:[DCMAbstractSyntaxUID pdfStorageClassUID]])
+		return [self getDicomFileDCMTK];
+		
+	if( converted)
+	{
+		if ([[NSFileManager defaultManager] fileExistsAtPath:converted])
+			[[NSFileManager defaultManager] removeFileAtPath:converted handler: 0L];
+	}
 	else
 	{
-		if ([sopClassUID isEqualToString:[DCMAbstractSyntaxUID pdfStorageClassUID]])
-			return [self getDicomFileDCMTK];
-		
-		if( converted)
-		{
-			if ([[NSFileManager defaultManager] fileExistsAtPath:converted])
-			{
-				[[NSFileManager defaultManager] removeFileAtPath:converted handler: 0L];
-			}
-		}
-		else
-		{
-			if( forceConverted == NO)
-			{
-				returnValue = [self getDicomFilePapyrus: YES];
-			}
-		}
+		if( forceConverted == NO)
+			returnValue = [self getDicomFilePapyrus: YES];
 	}
 	
 	[PapyrusLock unlock];

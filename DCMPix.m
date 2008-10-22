@@ -7455,8 +7455,6 @@ END_CREATE_ROIS:
 						}
 						
 						// PIXEL DATA
-						[PapyrusLock lock];
-						
 						if( gUseJPEGColorSpace)
 						{
 							if( gArrCompression [fileNb] == JPEG_LOSSLESS || gArrCompression [fileNb] == JPEG_LOSSY)
@@ -7473,7 +7471,6 @@ END_CREATE_ROIS:
 						}
 						
 						oImage = (short*) Papy3GetPixelData (fileNb, ee+1, theGroupP, ImagePixel);
-						[PapyrusLock unlock];
 						
 						if( oImage == 0L) // It's probably a problem with JPEG... try to convert to classic DICOM with DCMTK dcmdjpeg
 						{
