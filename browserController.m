@@ -13009,7 +13009,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 		NSMutableDictionary *dict;
 		
 		dict = [NSMutableDictionary dictionary];
+		
 		[self performSelectorOnMainThread: @selector( createEmptyMovie:) withObject: dict waitUntilDone: YES];
+		
 		QTMovie *empty = [dict objectForKey:@"movie"];
 		
 		[empty attachToCurrentThread];
@@ -13018,6 +13020,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		
 		dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: [fileName stringByAppendingString:@"temp"], @"file", 0L];
 		[self performSelectorOnMainThread: @selector( movieWithFile:) withObject: dict waitUntilDone: YES];
+		
 		mMovie = [dict objectForKey:@"movie"];
 		
 		[mMovie attachToCurrentThread];

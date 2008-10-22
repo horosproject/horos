@@ -209,7 +209,10 @@ extern NSThread					*mainThread;
 
 //	if( [lockArray objectForKey: [outFile lastPathComponent]] == 0L) [lockArray setObject: [[[NSLock alloc] init] autorelease] forKey: [outFile lastPathComponent]];
 //	[[lockArray objectForKey: [outFile lastPathComponent]] lock];
-
+	
+	NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
+	[context lock];
+	
 	NSMutableArray *imagesArray = [NSMutableArray array];
 	
 	if(![[NSFileManager defaultManager] fileExistsAtPath: outFile])
@@ -243,6 +246,8 @@ extern NSThread					*mainThread;
 			}
 		}
 		
+		[context unlock];	// It's important because writeMovie will call performonmainthread !!!
+		
 		[[BrowserController currentBrowser] writeMovie:imagesArray name:fileName];
 		
 		if( isiPhone)
@@ -250,7 +255,11 @@ extern NSThread					*mainThread;
 			[self exportMovieToiPhone:fileName newFileName:outFile];
 			[[NSFileManager defaultManager] removeFileAtPath:fileName handler:nil];
 		}
+		
+		[context lock];
 	}
+	
+	[context unlock];
 	
 //	[[lockArray objectForKey: [outFile lastPathComponent]] unlock];
 	
@@ -341,6 +350,23 @@ extern NSThread					*mainThread;
 }
 
 - (void)HTTPConnection:(HTTPConnection *)conn didReceiveRequest:(HTTPServerRequest *)mess
+{
+	[[[BrowserController currentBrowser] managedObjectContext] lock];
+	
+	@try
+	{
+		[self HTTPConnectionProtected:conn didReceiveRequest:mess];
+	}
+	
+	@catch (NSException * e)
+	{
+		NSLog( @"HTTPConnection WebServices : %@", e);
+	}
+	
+	[[[BrowserController currentBrowser] managedObjectContext] unlock];
+}
+
+- (void)HTTPConnectionProtected:(HTTPConnection *)conn didReceiveRequest:(HTTPServerRequest *)mess
 {
 //	NSLog(@"HTTPConnection");
 		
@@ -853,7 +879,11 @@ extern NSThread					*mainThread;
 						
 					NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: isiPhone], @"isiPhone", fileURL, @"fileURL", fileName, @"fileName", outFile, @"outFile", mess, @"mess", parameters, @"parameters", dicomImageArray, @"dicomImageArray", [NSThread currentThread], @"thread", contentRange, @"contentRange", 0L];
 					
+					[[[BrowserController currentBrowser] managedObjectContext] unlock];	// It's important because writeMovie will call performonmainthread !!!
+					
 					[self generateMovie: dict];
+					
+					[[[BrowserController currentBrowser] managedObjectContext] lock];
 					
 //					[NSThread detachNewThreadSelector:@selector( generateMovie:) toTarget: self withObject: dict];		// <- not very stable......
 					
@@ -1072,6 +1102,10 @@ extern NSThread					*mainThread;
 
 - (NSMutableString*)htmlStudyListForStudies:(NSArray*)studies;
 {
+	NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
+	
+	[context lock];
+	
 	NSMutableString *templateString = [NSMutableString stringWithContentsOfFile:[webDirectory stringByAppendingPathComponent:@"studyList.html"]];
 	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_Home%" withString:NSLocalizedString(@"Home", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 	
@@ -1114,12 +1148,18 @@ extern NSThread					*mainThread;
 	}
 	
 	[returnHTML appendString:templateStringEnd];
-
+	
+	[context unlock];
+	
 	return returnHTML;
 }
 
 - (NSMutableString*)htmlStudy:(DicomStudy*)study parameters:(NSDictionary*)parameters isiPhone:(BOOL)isiPhone;
 {
+	NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
+	
+	[context lock];
+	
 	NSMutableString *templateString = [NSMutableString stringWithContentsOfFile:[webDirectory stringByAppendingPathComponent:@"study.html"]];
 	
 	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_PatientInfo%" withString:NSLocalizedString(@"Patient Info", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
@@ -1287,6 +1327,8 @@ extern NSThread					*mainThread;
 		[returnHTML replaceOccurrencesOfString:@"%CheckAllLabel%" withString:NSLocalizedString(@"Check All", @"") options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
 		[returnHTML replaceOccurrencesOfString:@"%CheckAllChecked%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
 	}
+	
+	[context unlock];
 	
 	return returnHTML;
 }

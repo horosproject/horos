@@ -73,6 +73,23 @@
 
 - (void)HTTPConnection:(HTTPConnection *)conn didReceiveRequest:(HTTPServerRequest *)mess
 {
+	[[[BrowserController currentBrowser] managedObjectContext] lock];
+	
+	@try
+	{
+		[self HTTPConnectionProtected:conn didReceiveRequest:mess];
+	}
+	
+	@catch (NSException * e)
+	{
+		NSLog( @"HTTPConnection WebServices : %@", e);
+	}
+	
+	[[[BrowserController currentBrowser] managedObjectContext] unlock];
+}
+
+- (void)HTTPConnectionProtected:(HTTPConnection *)conn didReceiveRequest:(HTTPServerRequest *)mess
+{
     CFHTTPMessageRef request = [mess request];
 	
 //	NSDictionary *allHeaderFields = [(id)CFHTTPMessageCopyAllHeaderFields(request) autorelease];

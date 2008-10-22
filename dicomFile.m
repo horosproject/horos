@@ -1666,7 +1666,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		
 -(short) getDicomFilePapyrus :(BOOL) forceConverted
 {
-	int					itemType;
+	int					itemType, returnValue = -1;
 	long				cardiacTime = -1;
 	short				x, theErr;
 	PapyShort           fileNb, imageNb;
@@ -1689,8 +1689,6 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		converted = convertDICOM( filePath);
 		fileNb = Papy3FileOpen (  (char*) [converted UTF8String], (PAPY_FILE) 0, TRUE, 0);
 	}
-	
-	[PapyrusLock unlock];
 	
 	if (fileNb >= 0)
 	{
@@ -2405,12 +2403,9 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			}
 		}
 		*/
-		[PapyrusLock lock];
 		
 		// close and free the file and the associated allocated memory 
 		Papy3FileClose (fileNb, TRUE);
-		
-		[PapyrusLock unlock];
 		
 		if( NoOfFrames > 1) // SERIES ID MUST BE UNIQUE!!!!!
 		{
@@ -2467,31 +2462,33 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		
 		if( name != 0L && studyID != 0L && serieID != 0L && imageID != 0L && width != 0 && height != 0)
 		{
-			return 0;   // success
-		}
-	}
-	
-	if ([sopClassUID isEqualToString:[DCMAbstractSyntaxUID pdfStorageClassUID]]) return [self getDicomFileDCMTK];
-	
-	if( converted)
-	{
-		if ([[NSFileManager defaultManager] fileExistsAtPath:converted])
-		{
-			[[NSFileManager defaultManager] removeFileAtPath:converted handler: 0L];
+			returnValue = 0;   // success
 		}
 	}
 	else
 	{
-		if( forceConverted == NO)
+		if ([sopClassUID isEqualToString:[DCMAbstractSyntaxUID pdfStorageClassUID]])
+			return [self getDicomFileDCMTK];
+		
+		if( converted)
 		{
-			return [self getDicomFilePapyrus: YES];
+			if ([[NSFileManager defaultManager] fileExistsAtPath:converted])
+			{
+				[[NSFileManager defaultManager] removeFileAtPath:converted handler: 0L];
+			}
+		}
+		else
+		{
+			if( forceConverted == NO)
+			{
+				returnValue = [self getDicomFilePapyrus: YES];
+			}
 		}
 	}
 	
+	[PapyrusLock unlock];
 	
-
-	
-	return -1;			// failed
+	return returnValue;
 }
 
 -(short) getDicomFile

@@ -10399,7 +10399,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 - (void) checkCursor
 {
-	if(cursorSet) [cursor set];
+	if(cursorSet == YES && [[self window] isKeyWindow] == YES)
+		[cursor set];
 }
 
 -(void) setCursorForView: (long) tool

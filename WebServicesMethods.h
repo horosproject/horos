@@ -16,7 +16,8 @@
 #import "HTTPServer.h"
 #import "DicomStudy.h"
 
-@interface WebServicesMethods : NSObject {
+@interface WebServicesMethods : NSObject
+{
 	HTTPServer	*httpServ;
 	NSString *webDirectory;
 	NSMutableArray *selectedImages;
@@ -25,6 +26,8 @@
 	NSLock *sendLock, *running;
 	volatile BOOL shouldKeepRunning;
 }
+
+- (void)HTTPConnectionProtected:(HTTPConnection *)conn didReceiveRequest:(HTTPServerRequest *)mess;
 
 - (NSArray*)studiesForPredicate:(NSPredicate *)predicate;
 - (NSArray*)seriesForPredicate:(NSPredicate *)predicate;

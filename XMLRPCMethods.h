@@ -22,4 +22,6 @@
 	HTTPServer	*httpServ;
 }
 
+- (void)HTTPConnectionProtected:(HTTPConnection *)conn didReceiveRequest:(HTTPServerRequest *)mess;
+
 @end
