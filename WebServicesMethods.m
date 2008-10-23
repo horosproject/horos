@@ -21,6 +21,13 @@
 #import <QTKit/QTKit.h>
 #import "DCMNetServiceDelegate.h"
 
+#include <netdb.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <unistd.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+
 extern NSThread					*mainThread;
 
 @interface NSImage (ProportionalScaling)
@@ -368,19 +375,24 @@ extern NSThread					*mainThread;
 
 - (void)HTTPConnectionProtected:(HTTPConnection *)conn didReceiveRequest:(HTTPServerRequest *)mess
 {
-//	NSLog(@"HTTPConnection");
-		
     CFHTTPMessageRef request = [mess request];
-	//NSLog(@"request : %@", request);	
+	
+	char buffer[256];
+	[ipAddressString release];
+	ipAddressString = 0L;
+	struct sockaddr *addr = (struct sockaddr *) [[conn peerAddress] bytes];
+	if( addr->sa_family == AF_INET)
+	{
+		if (inet_ntop(AF_INET, &((struct sockaddr_in *)addr)->sin_addr, buffer, sizeof(buffer)))
+			ipAddressString = [[NSString stringWithCString:buffer] retain];
+	}
 	
 	NSDictionary *allHeaderFields = [(id)CFHTTPMessageCopyAllHeaderFields(request) autorelease];
-	//NSLog(@"allHeaderFields : %@", allHeaderFields);
 	
 	NSString *contentRange = [(id)CFHTTPMessageCopyHeaderFieldValue(request, (CFStringRef)@"Range") autorelease];
-	//NSLog(@"contentRange : %@", contentRange);
 	
 	NSString *userAgent = [(id)CFHTTPMessageCopyHeaderFieldValue(request, (CFStringRef)@"User-Agent") autorelease];
-	//NSLog(@"userAgent : %@", userAgent);
+	
 	NSScanner *scan = [NSScanner scannerWithString:userAgent];
 	BOOL isSafari = NO;
 	while(![scan isAtEnd] && !isSafari)
@@ -611,7 +623,7 @@ extern NSThread					*mainThread;
 			else
 				browsePredicate = [NSPredicate predicateWithValue:NO];
 			
-			if([[parameters allKeys] containsObject:@"dicomSend"])
+			if( [[parameters allKeys] containsObject:@"dicomSend"])
 			{
 				NSString *dicomDestination = [parameters objectForKey:@"dicomDestination"];
 				NSArray *tempArray = [dicomDestination componentsSeparatedByString:@"%3A"];
@@ -641,6 +653,7 @@ extern NSThread					*mainThread;
 						[selectedImages addObjectsFromArray:images];
 					}
 				}
+				
 				[selectedImages retain];
 				[self dicomSend:self];
 			}
@@ -1306,10 +1319,46 @@ extern NSThread					*mainThread;
 		[tempHTML replaceOccurrencesOfString:@"%dicomNodeDescription%" withString:dicomNodeDescription options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 		
 		NSString *selected = @"";
-
-		if([[NSString stringWithFormat:@"%@:%@:%@:%@", dicomNodeAddress, dicomNodePort, dicomNodeAETitle, dicomNodeSyntax] isEqualToString:[[parameters objectForKey:@"dicomDestination"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]])
-			selected = @"selected";
-
+		
+		if( [parameters objectForKey:@"dicomDestination"])
+		{
+			if([[NSString stringWithFormat:@"%@:%@:%@:%@", dicomNodeAddress, dicomNodePort, dicomNodeAETitle, dicomNodeSyntax] isEqualToString:[[parameters objectForKey:@"dicomDestination"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]])
+				selected = @"selected";
+		}
+		else if( ipAddressString)
+		{
+			// Try to match the calling http client in our destination nodes
+			
+			struct sockaddr_in service;
+			const char	*host_name = [[node valueForKey:@"Address"] UTF8String];
+			
+			bzero((char *) &service, sizeof(service));
+			service.sin_family = AF_INET;
+			
+			if( host_name)
+			{
+				if (isalpha(host_name[0]))
+				{
+					struct hostent *hp;
+					
+					hp = gethostbyname( host_name);
+					if( hp) bcopy(hp->h_addr, (char *) &service.sin_addr, hp->h_length);
+					else service.sin_addr.s_addr = inet_addr( host_name);
+				}
+				else service.sin_addr.s_addr = inet_addr( host_name);
+				
+				char buffer[256];
+				
+				if (inet_ntop(AF_INET, &service.sin_addr, buffer, sizeof(buffer)))
+				{
+					if( [[NSString stringWithCString:buffer] isEqualToString: ipAddressString])
+					{
+						selected = @"selected";
+					}
+				}
+			}
+		}
+		
 		[tempHTML replaceOccurrencesOfString:@"%selected%" withString:selected options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 		
 		[returnHTML appendString:tempHTML];

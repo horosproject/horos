@@ -21,6 +21,11 @@ NSString * const TCPServerErrorDomain = @"TCPServerErrorDomain";
 
 @implementation TCPServer
 
+- (CFSocketRef) ipv4socket
+{
+	return ipv4socket;
+}
+
 - (id)init {
     return self;
 }

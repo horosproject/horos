@@ -26,17 +26,21 @@ typedef enum {
 
 /** \brief TCP Server for RIS intergration */
 
-@interface TCPServer : NSObject {
+@interface TCPServer : NSObject
+{
+	CFSocketRef ipv4socket;
+    CFSocketRef ipv6socket;
+	
 @private
     id delegate;
     NSString *domain;
     NSString *name;
     NSString *type;
     uint16_t port;
-    CFSocketRef ipv4socket;
-    CFSocketRef ipv6socket;
     NSNetService *netService;
 }
+
+- (CFSocketRef) ipv4socket;
 
 - (id)delegate;
 - (void)setDelegate:(id)value;

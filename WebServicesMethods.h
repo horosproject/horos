@@ -25,6 +25,7 @@
 	NSMutableDictionary *lockArray;
 	NSLock *sendLock, *running;
 	volatile BOOL shouldKeepRunning;
+	NSString *ipAddressString;
 }
 
 - (void)HTTPConnectionProtected:(HTTPConnection *)conn didReceiveRequest:(HTTPServerRequest *)mess;
