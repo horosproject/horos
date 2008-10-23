@@ -28,10 +28,9 @@ typedef enum {
 
 @interface TCPServer : NSObject
 {
+@private
 	CFSocketRef ipv4socket;
     CFSocketRef ipv6socket;
-	
-@private
     id delegate;
     NSString *domain;
     NSString *name;
@@ -39,8 +38,6 @@ typedef enum {
     uint16_t port;
     NSNetService *netService;
 }
-
-- (CFSocketRef) ipv4socket;
 
 - (id)delegate;
 - (void)setDelegate:(id)value;
