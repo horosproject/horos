@@ -185,7 +185,13 @@ PURPOSE.
 	{
 		float volume = [viewer computeVolume:[curRoiList objectAtIndex:row] points:0L error: 0L];
 		
-		if( volume) return [NSString stringWithFormat:@"%2.2f", volume];
+		if( volume)
+		{
+			if( volume < 10)
+				return [NSString stringWithFormat:@"%2.5f", volume];
+			else
+				return [NSString stringWithFormat:@"%2.2f", volume];
+		}
 		else return [NSString stringWithString:@"n/a"];
 	}
 	
