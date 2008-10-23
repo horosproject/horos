@@ -3499,18 +3499,26 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			
 			int pos = flippedData? [dcmPixList count] -1 -curImage : curImage;
 			
-			NSDictionary *instructions = [[[NSDictionary alloc] initWithObjectsAndKeys:     self, @"view",
-																							[NSNumber numberWithLong: pos],@"Pos",
-																							[NSNumber numberWithFloat:[[dcmPixList objectAtIndex:curImage] sliceLocation]],@"Location", 
-																							[[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.studyInstanceUID"], @"studyID", 
-																							curDCM, @"DCMPix",
-																							[NSNumber numberWithFloat: syncRelativeDiff],@"offsetsync",
-																							[NSNumber numberWithFloat: location[0]],@"point3DX",
-																							[NSNumber numberWithFloat: location[1]],@"point3DY",
-																							[NSNumber numberWithFloat: location[2]],@"point3DZ",
-																							thickDCM, @"DCMPix2",
-																							nil]
-																							autorelease];
+			NSMutableDictionary *instructions = [NSMutableDictionary dictionary];
+			
+			[instructions setObject: self forKey: @"view"];
+			[instructions setObject: [NSNumber numberWithLong: pos] forKey: @"Pos"];
+			[instructions setObject: [NSNumber numberWithFloat:[[dcmPixList objectAtIndex:curImage] sliceLocation]] forKey: @"Location"];
+			
+			if( [[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.studyInstanceUID"])
+				[instructions setObject: [[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.studyInstanceUID"] forKey: @"studyID"];
+			
+			if( curDCM)
+				[instructions setObject: curDCM forKey: @"DCMPix"];
+			
+			[instructions setObject: [NSNumber numberWithFloat: syncRelativeDiff] forKey: @"offsetsync"];
+			[instructions setObject: [NSNumber numberWithFloat: location[0]] forKey: @"point3DX"];
+			[instructions setObject: [NSNumber numberWithFloat: location[1]] forKey: @"point3DY"];
+			[instructions setObject: [NSNumber numberWithFloat: location[2]] forKey: @"point3DZ"];
+			
+			if( thickDCM)
+				[instructions setObject: thickDCM forKey: @"DCMPix2"];
+			
 			NSNotificationCenter *nc;
 			nc = [NSNotificationCenter defaultCenter];
 			[nc postNotificationName: @"sync" object: self userInfo: instructions];
@@ -5694,16 +5702,22 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 		if( flippedData) inc = -inc;
 		
-        NSDictionary *instructions = [[[NSDictionary alloc] initWithObjectsAndKeys:     self, @"view",
-																						[NSNumber numberWithLong:pos],@"Pos",
-                                                                                        [NSNumber numberWithLong:inc], @"Direction",
-																						[NSNumber numberWithFloat:[[dcmPixList objectAtIndex:curImage] sliceLocation]],@"Location", 
-																						[[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.studyInstanceUID"], @"studyID", 
-																						[NSNumber numberWithFloat: syncRelativeDiff],@"offsetsync",
-																						curDCM, @"DCMPix",
-																						thickDCM, @"DCMPix2", // WARNING thickDCM can be nil!! nothing after this one...
-																						nil]
-                                                                                        autorelease];
+        NSMutableDictionary *instructions = [NSMutableDictionary dictionary]; 
+		
+		[instructions setObject: self forKey: @"view"];
+		[instructions setObject: [NSNumber numberWithInt: pos] forKey: @"Pos"];
+        [instructions setObject: [NSNumber numberWithInt: inc] forKey: @"Direction"];
+		[instructions setObject: [NSNumber numberWithFloat: [[dcmPixList objectAtIndex:curImage] sliceLocation]] forKey: @"Location"];
+		[instructions setObject: [NSNumber numberWithFloat: syncRelativeDiff] forKey: @"offsetsync"];
+		
+		if( [[dcmFilesList objectAtIndex: [self indexForPix:curImage]] valueForKeyPath:@"series.study.studyInstanceUID"])
+			[instructions setObject: [[dcmFilesList objectAtIndex: [self indexForPix:curImage]] valueForKeyPath:@"series.study.studyInstanceUID"] forKey: @"studyID"]; 
+		
+		if( curDCM)
+			[instructions setObject: curDCM forKey: @"DCMPix"];
+		
+		if( thickDCM)
+			[instructions setObject: thickDCM forKey: @"DCMPix2"]; // WARNING thickDCM can be nil!! nothing after this one...
         
 		if( stringID == 0L)		//|| [stringID isEqualToString:@"Original"])
 		{
@@ -5848,7 +5862,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	{
 		BOOL	stringOK = NO;
 		
-		long prevImage = curImage;
+		int prevImage = curImage;
 		
 	//	if( stringID)
 	//	{
@@ -5875,15 +5889,15 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		{
 			NSDictionary *instructions = [note userInfo];
 			
-			long		diff = [[instructions valueForKey: @"Direction"] longValue];
-			long		pos = [[instructions valueForKey: @"Pos"] longValue];
+			int			diff = [[instructions valueForKey: @"Direction"] intValue];
+			int			pos = [[instructions valueForKey: @"Pos"] intValue];
 			float		loc = [[instructions valueForKey: @"Location"] floatValue];
 			float		offsetsync = [[instructions valueForKey: @"offsetsync"] floatValue];
 			NSString	*oStudyId = [instructions valueForKey: @"studyID"];
 			DCMPix		*oPix = [instructions valueForKey: @"DCMPix"];
 			DCMPix		*oPix2 = [instructions valueForKey: @"DCMPix2"];
 			DCMView		*otherView = [instructions valueForKey: @"view"];
-			long		stack = [oPix stack];
+			int			stack = [oPix stack];
 			float		destPoint3D[ 3];
 			BOOL		point3D = NO;
 
@@ -5954,7 +5968,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					{
 						float	resultPoint[ 3];
 						
-						long newIndex = [self findPlaneAndPoint: destPoint3D :resultPoint];
+						int newIndex = [self findPlaneAndPoint: destPoint3D :resultPoint];
 						
 						if( newIndex != -1)
 						{
@@ -5996,7 +6010,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 							{
 								BOOL	noSlicePosition, everythingLoaded = YES;
 								float   firstSliceLocation;
-								long	index, i;
+								int		index, i;
 								float   smallestdiff = -1, fdiff, slicePosition;
 								
 								noSlicePosition = NO;
@@ -6684,13 +6698,13 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 }
 //===================================================================
 
-- (long) findPlaneAndPoint:(float*) pt :(float*) location
+- (int) findPlaneAndPoint:(float*) pt :(float*) location
 {
-	long	ii = -1;
+	int		ii = -1;
 	float	vectors[ 9], orig[ 3], locationTemp[ 3];
 	float	distance = 999999, tempDistance;
 	
-	for( long i = 0; i < [dcmPixList count]; i++)
+	for( int i = 0; i < [dcmPixList count]; i++)
 	{
 		[[dcmPixList objectAtIndex: i] orientation: vectors];
 		
