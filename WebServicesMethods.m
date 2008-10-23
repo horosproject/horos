@@ -377,16 +377,6 @@ extern NSThread					*mainThread;
 {
     CFHTTPMessageRef request = [mess request];
 	
-	char buffer[256];
-	[ipAddressString release];
-	ipAddressString = 0L;
-	struct sockaddr *addr = (struct sockaddr *) [[conn peerAddress] bytes];
-	if( addr->sa_family == AF_INET)
-	{
-		if (inet_ntop(AF_INET, &((struct sockaddr_in *)addr)->sin_addr, buffer, sizeof(buffer)))
-			ipAddressString = [[NSString stringWithCString:buffer] retain];
-	}
-	
 	NSDictionary *allHeaderFields = [(id)CFHTTPMessageCopyAllHeaderFields(request) autorelease];
 	
 	NSString *contentRange = [(id)CFHTTPMessageCopyHeaderFieldValue(request, (CFStringRef)@"Range") autorelease];
@@ -588,6 +578,7 @@ extern NSThread					*mainThread;
 				browsePredicate = [NSPredicate predicateWithValue:YES];
 				pageTitle = NSLocalizedString(@"Study List", @"");
 			}
+			
 			NSMutableString *html = [self htmlStudyListForStudies:[self studiesForPredicate:browsePredicate]];
 			
 			if([parameters objectForKey:@"album"])
@@ -661,6 +652,17 @@ extern NSThread					*mainThread;
 			NSArray *studies = [self studiesForPredicate:browsePredicate];
 			if([studies count]==1)
 			{
+				// We want the ip address of the client
+				char buffer[256];
+				[ipAddressString release];
+				ipAddressString = 0L;
+				struct sockaddr *addr = (struct sockaddr *) [[conn peerAddress] bytes];
+				if( addr->sa_family == AF_INET)
+				{
+					if (inet_ntop(AF_INET, &((struct sockaddr_in *)addr)->sin_addr, buffer, sizeof(buffer)))
+						ipAddressString = [[NSString stringWithCString:buffer] retain];
+				}
+				
 				NSMutableString *html = [self htmlStudy:[studies lastObject] parameters:parameters isiPhone:isiPhone];
 				[html replaceOccurrencesOfString:@"%StudyID%" withString:[parameters objectForKey:@"id"] options:NSLiteralSearch range:NSMakeRange(0, [html length])];
 				
@@ -1352,9 +1354,7 @@ extern NSThread					*mainThread;
 				if (inet_ntop(AF_INET, &service.sin_addr, buffer, sizeof(buffer)))
 				{
 					if( [[NSString stringWithCString:buffer] isEqualToString: ipAddressString])
-					{
 						selected = @"selected";
-					}
 				}
 			}
 		}
