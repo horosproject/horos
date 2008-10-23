@@ -424,7 +424,7 @@ enum
 - (IBAction) roiDeleteAll:(id) sender;
 
 /**  methods to access global variables */
-+ (long) numberOf2DViewer;
++ (int) numberOf2DViewer;
 
 // UNDOCUMENTED FUNCTIONS
 // For more informations: rossetantoine@bluewin.ch

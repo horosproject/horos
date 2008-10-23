@@ -69,7 +69,6 @@ extern		ToolbarPanelController		*toolbarPanel[10];
 extern		AppController				*appController;
 			short						syncro = syncroLOC;
 static		float						deg2rad = 3.14159265358979/180.0; 
-extern		int							numberOf2DViewer;
 			BOOL						display2DMPRLines = YES;
 extern		NSMutableDictionary			*plugins;
 static		unsigned char				*PETredTable = 0L, *PETgreenTable = 0L, *PETblueTable = 0L;
@@ -1910,7 +1909,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		{
 			if( [dcmPixList count] > 1)
 			{
-				if( [[dcmPixList objectAtIndex: 0] sliceLocation] == [[dcmPixList objectAtIndex: [dcmPixList count]-1] sliceLocation]) volumicSeries = NO;
+				if( [[dcmPixList objectAtIndex: 0] sliceLocation] == [[dcmPixList lastObject] sliceLocation]) volumicSeries = NO;
 			}
 			else volumicSeries = NO;
 		}
@@ -5377,7 +5376,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	[self setNeedsDisplay: YES];
 }
 
--(void) subtract:(DCMView*) bV {
+-(void) subtract:(DCMView*) bV
+{
 	[curDCM imageArithmeticSubtraction: [bV curDCM]];
 	
 	[self reapplyWindowLevel];
@@ -5385,13 +5385,15 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	[self setNeedsDisplay: YES];
 }
 
--(void) getCLUT:( unsigned char**) r : (unsigned char**) g : (unsigned char**) b {
+-(void) getCLUT:( unsigned char**) r : (unsigned char**) g : (unsigned char**) b
+{
 	*r = redTable;
 	*g = greenTable;
 	*b = blueTable;
 }
 
-- (void) setCLUT:( unsigned char*) r : (unsigned char*) g : (unsigned char*) b {
+- (void) setCLUT:( unsigned char*) r : (unsigned char*) g : (unsigned char*) b
+{
 	BOOL needUpdate = YES;
 	
 	if( r == 0)	// -> BW
@@ -5400,11 +5402,14 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	}
 	else if( memcmp( redTable, r, 256) == 0 && memcmp( greenTable, g, 256) == 0 && memcmp( blueTable, b, 256) == 0) needUpdate = NO;
 	
-	if( needUpdate) {
-		if( r ) {
+	if( needUpdate)
+	{
+		if( r )
+		{
 			BOOL BWCLUT = YES;
 			
-			for( int i = 0; i < 256; i++) {
+			for( int i = 0; i < 256; i++)
+			{
 				redTable[i] = r[i];
 				greenTable[i] = g[i];
 				blueTable[i] = b[i];
@@ -5412,12 +5417,14 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				if( redTable[i] != i || greenTable[i] != i || blueTable[i] != i) BWCLUT = NO;
 			}
 			
-			if( BWCLUT) {
+			if( BWCLUT)
+			{
 				colorTransfer = NO;
 				if( colorBuf) free(colorBuf);
 				colorBuf = 0L;
 			}
-			else {
+			else
+			{
 				colorTransfer = YES;
 			}
 		}
@@ -5426,7 +5433,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			if( colorBuf) free(colorBuf);
 			colorBuf = 0L;
 			
-			for( int i = 0; i < 256; i++ ) {
+			for( int i = 0; i < 256; i++ )
+			{
 				redTable[i] = i;
 				greenTable[i] = i;
 				blueTable[i] = i;
@@ -5684,7 +5692,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 {
 	if( dcmPixList == 0L) return;
 	
-	if( numberOf2DViewer > 1 && isKeyView)	//&&  [[self window] isMainWindow] == YES
+	if( [ViewerController numberOf2DViewer] > 1 && isKeyView)	//&&  [[self window] isMainWindow] == YES
     {
 		DCMPix	*thickDCM;
 		
@@ -5721,9 +5729,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
         
 		if( stringID == 0L)		//|| [stringID isEqualToString:@"Original"])
 		{
-			NSNotificationCenter *nc;
-			nc = [NSNotificationCenter defaultCenter];
-			[nc postNotificationName: @"sync" object: self userInfo: instructions];
+			[[NSNotificationCenter defaultCenter] postNotificationName: @"sync" object: self userInfo: instructions];
 		}
 		// most subclasses just need this. NO sync notification for subclasses.
 		if( blendingView) // We have to reload the blending image..
@@ -5853,11 +5859,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 }
 
 -(void) sync:(NSNotification*)note
-{
-	if( avoidRecursiveSync) return;
-	
-	avoidRecursiveSync = YES;
-
+{	
 	if (![[[note object] superview] isEqual:[self superview]] && [self is2DViewer])
 	{
 		BOOL	stringOK = NO;
@@ -5879,11 +5881,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		if( [self is2DViewer] == YES)
 		{
 			if( [[self windowController] windowWillClose])
-			{
-				avoidRecursiveSync = NO;
 				return;
-			}
 		}
+		
+		if( avoidRecursiveSync) return;
+		avoidRecursiveSync = YES;
 		
 		if( [note object] != self && isKeyView == YES && matrix == 0 && stringID == 0L && [[note object] stringID] == 0L && curImage > -1 )   //|| [[[note object] stringID] isEqualToString:@"Original"] == YES))   // Dont change the browser preview....
 		{
@@ -5900,7 +5902,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			int			stack = [oPix stack];
 			float		destPoint3D[ 3];
 			BOOL		point3D = NO;
-
+			
 			if( otherView == blendingView || self == [otherView blendingView])
 			{
 				syncOnLocationImpossible = NO;
@@ -6136,11 +6138,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			}
 		}
 		
+		avoidRecursiveSync = NO;
+		
 		if( [[self window] isMainWindow])
 			[self sendSyncMessage: 0];
 	}
-	
-	avoidRecursiveSync = NO;
 }
 
 -(void) roiSelected:(NSNotification*) note
@@ -7821,7 +7823,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 			//FRAME RECT IF MORE THAN 1 WINDOW and IF THIS WINDOW IS THE FRONTMOST : BORDER AROUND THE IMAGE
 			
-			if(( numberOf2DViewer > 1 && [self is2DViewer] == YES && stringID == 0L) || [stringID isEqualToString:@"OrthogonalMPRVIEW"])
+			if(( [ViewerController numberOf2DViewer] > 1 && [self is2DViewer] == YES && stringID == 0L) || [stringID isEqualToString:@"OrthogonalMPRVIEW"])
 			{
 				// draw line around key View
 				
@@ -8995,7 +8997,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 	if( stringID == 0L && originalSize == NO)
 	{
-		if( numberOf2DViewer > 1 || _imageColumns != 1 || _imageRows != 1 || [self isKeyImage] == YES)
+		if( [ViewerController numberOf2DViewer] > 1 || _imageColumns != 1 || _imageRows != 1 || [self isKeyImage] == YES)
 		{
 			if( [self is2DViewer] && (_imageColumns != 1 || _imageRows != 1))
 			{

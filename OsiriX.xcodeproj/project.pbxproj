@@ -629,6 +629,8 @@
 		AB154F850627413600BD57AF /* SRController.h in Headers */ = {isa = PBXBuildFile; fileRef = AB154F810627413600BD57AF /* SRController.h */; };
 		AB17D1C90AF2137C00231B11 /* SmallPrinter.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB17D1C80AF2137C00231B11 /* SmallPrinter.tif */; };
 		AB17D1CB0AF2137C00231B11 /* SmallPrinter.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB17D1C80AF2137C00231B11 /* SmallPrinter.tif */; };
+		AB1B31A10EB06AFA0061FA40 /* Jet.plist in Resources */ = {isa = PBXBuildFile; fileRef = AB1B31A00EB06AFA0061FA40 /* Jet.plist */; };
+		AB1B31A20EB06AFA0061FA40 /* Jet.plist in Resources */ = {isa = PBXBuildFile; fileRef = AB1B31A00EB06AFA0061FA40 /* Jet.plist */; };
 		AB1C9FAF0B009073001DB0D2 /* PAGES in Resources */ = {isa = PBXBuildFile; fileRef = B7CDAC730AB3003200068D70 /* PAGES */; };
 		AB1CB35C0618A37E00CD966B /* MyPoint.h in Headers */ = {isa = PBXBuildFile; fileRef = AB1CB35A0618A37E00CD966B /* MyPoint.h */; };
 		AB1CB35D0618A37E00CD966B /* MyPoint.m in Sources */ = {isa = PBXBuildFile; fileRef = AB1CB35B0618A37E00CD966B /* MyPoint.m */; };
@@ -8695,6 +8697,7 @@
 		AB154F800627413600BD57AF /* SRController.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = SRController.mm; sourceTree = "<group>"; };
 		AB154F810627413600BD57AF /* SRController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SRController.h; sourceTree = "<group>"; };
 		AB17D1C80AF2137C00231B11 /* SmallPrinter.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SmallPrinter.tif; sourceTree = "<group>"; };
+		AB1B31A00EB06AFA0061FA40 /* Jet.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Jet.plist; sourceTree = "<group>"; };
 		AB1CB35A0618A37E00CD966B /* MyPoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyPoint.h; sourceTree = "<group>"; };
 		AB1CB35B0618A37E00CD966B /* MyPoint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyPoint.m; sourceTree = "<group>"; };
 		AB2C24E00677861300A08910 /* PluginFilter.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = PluginFilter.m; sourceTree = "<group>"; };
@@ -12321,6 +12324,7 @@
 				CE5EABC20935E702006D85DD /* Hue1.plist */,
 				CE5EABC10935E702006D85DD /* Hue2.plist */,
 				CE5EABC00935E702006D85DD /* ired.plist */,
+				AB1B31A00EB06AFA0061FA40 /* Jet.plist */,
 				CE286C100964196C001A4573 /* Localizable.strings */,
 				CE5F9D730AE813A40042280F /* localizedTemplatesPages */,
 				ABD7BC4D063F00A900E24B0E /* NIH.plist */,
@@ -21473,6 +21477,7 @@
 				8440039A0E8CF99500A00EBD /* dciodvfy in Resources */,
 				CE03A3CC0EA2AE0300951EF4 /* iPhone.tiff in Resources */,
 				AB932A960EA38DEF0006DF1B /* CobbAngle.tif in Resources */,
+				AB1B31A10EB06AFA0061FA40 /* Jet.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21867,6 +21872,7 @@
 				8440039B0E8CF99500A00EBD /* dciodvfy in Resources */,
 				CE03A3CD0EA2AE0300951EF4 /* iPhone.tiff in Resources */,
 				AB932A970EA38DEF0006DF1B /* CobbAngle.tif in Resources */,
+				AB1B31A20EB06AFA0061FA40 /* Jet.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

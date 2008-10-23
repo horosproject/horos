@@ -159,7 +159,7 @@ static NSMenu *convolutionPresetsMenu = 0L;
 static NSMenu *opacityPresetsMenu = 0L;
 static NSNotification *lastMenuNotification = 0L;
 
-long numberOf2DViewer = 0;
+int numberOf2DViewer = 0;
 
 NSString * documentsDirectory();
 NSString* convertDICOM( NSString *inputfile);
@@ -3061,7 +3061,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	return [[fileList[ curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] valueForKeyPath:@"series.modality"];
 }
 
-+ (long) numberOf2DViewer
++ (int) numberOf2DViewer
 {
 	return numberOf2DViewer;
 }
@@ -5158,6 +5158,17 @@ static ViewerController *draggedController = 0L;
 	[imageView setIndex: [imageView curImage]]; //refresh viewer only
 }
 
+- (IBAction) resetCLUT:(id) sender
+{
+	if( NSRunInformationalAlertPanel( NSLocalizedString(@"Reset CLUT List", nil), NSLocalizedString(@"Are you sure you want to reset the entire CLUT list to the default list?", nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), 0L) == NSAlertDefaultReturn)
+	{
+		[[NSUserDefaults standardUserDefaults] removeObjectForKey: @"CLUT"];
+		[[NSUserDefaults standardUserDefaults] setObject: [[DefaultsOsiriX getDefaults] objectForKey: @"CLUT"] forKey: @"CLUT"];
+		
+		lastMenuNotification = 0L;
+        [[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: 0L];
+	}
+}
 
 - (IBAction) AddOpacity:(id) sender
 {
@@ -5232,6 +5243,8 @@ static ViewerController *draggedController = 0L;
 		}
 		[clutPresetsMenu addItem: [NSMenuItem separatorItem]];
 		[clutPresetsMenu addItemWithTitle: NSLocalizedString(@"8-bit CLUT Editor", nil) action:@selector (AddCLUT:) keyEquivalent:@""];
+		[clutPresetsMenu addItem: [NSMenuItem separatorItem]];
+		[clutPresetsMenu addItemWithTitle: NSLocalizedString(@"Reset CLUT List", nil) action:@selector (resetCLUT:) keyEquivalent:@""];
 
 		[clutPopup setTitle: curCLUTMenu];
 	}
@@ -13704,7 +13717,7 @@ int i,j,l;
     }
     else
     {
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"notificationStopPlaying" object:0L userInfo: 0L];
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"notificationStopPlaying" object: self userInfo: 0L];
 		
         timer = [[NSTimer scheduledTimerWithTimeInterval:0 target:self selector:@selector(performAnimation:) userInfo:nil repeats:YES] retain];
         [[NSRunLoop currentRunLoop] addTimer:timer forMode:NSModalPanelRunLoopMode];

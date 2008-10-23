@@ -147,12 +147,12 @@ static NSHost *currentHost = 0L;
 
 + (void) addCLUT: (NSString*) filename dictionary: (NSMutableDictionary*) clutValues
 {
-	if( [[NSBundle mainBundle] pathForResource:filename ofType:@"plist"])
-		[clutValues setObject:[NSDictionary dictionaryWithContentsOfFile: [[NSBundle mainBundle] pathForResource:filename ofType:@"plist"]] forKey: filename];
+	NSDictionary *d = [NSDictionary dictionaryWithContentsOfFile: [[NSBundle mainBundle] pathForResource:filename ofType:@"plist"]];
+	
+	if( d)
+		[clutValues setObject: d forKey: filename];
 	else
-	{
 		NSLog(@"CLUT plist not found: %@", filename);
-	}
 }
 
 + (void) addConvolutionFilter: (short) size :(short*) vals :(NSString*) name :(NSMutableDictionary*) convValues
@@ -545,30 +545,30 @@ static NSHost *currentHost = 0L;
 	}
 	
 	#ifdef OSIRIX_VIEWER
-	[self addCLUT: @"VR Muscles-Bones"  dictionary: clutValues];
-	[self addCLUT: @"VR Bones"  dictionary: clutValues];
-	[self addCLUT: @"VR Red Vessels"  dictionary: clutValues];
-	[self addCLUT: @"BlackBody"  dictionary: clutValues];	
-	[self addCLUT: @"Flow"  dictionary: clutValues];		
-	[self addCLUT: @"GEcolor"  dictionary: clutValues];	
-	[self addCLUT: @"Spectrum"  dictionary: clutValues];	
-	[self addCLUT: @"NIH"  dictionary: clutValues];	
-	[self addCLUT: @"HotIron"  dictionary: clutValues];	
-	[self addCLUT: @"GrayRainbow"  dictionary: clutValues];	
-
-	[self addCLUT: @"UCLA"  dictionary: clutValues];			
-	[self addCLUT: @"Stern"  dictionary: clutValues];		
-	[self addCLUT: @"Ratio"  dictionary: clutValues];		
-	[self addCLUT: @"Rainbow3"  dictionary: clutValues];		
-	[self addCLUT: @"Rainbow2"  dictionary: clutValues];		
-	[self addCLUT: @"Rainbow"  dictionary: clutValues];	
-	[self addCLUT: @"ired"  dictionary: clutValues];		
-	[self addCLUT: @"Hue1"  dictionary: clutValues];		
-	[self addCLUT: @"Hue2"  dictionary: clutValues];		
-	[self addCLUT: @"HotMetal"  dictionary: clutValues];	
-	[self addCLUT: @"HotGreen"  dictionary: clutValues];	
-
-	[defaultValues setObject:clutValues forKey:@"CLUT"];
+	[DefaultsOsiriX addCLUT: @"VR Muscles-Bones" dictionary: clutValues];
+	[DefaultsOsiriX addCLUT: @"VR Bones" dictionary: clutValues];
+	[DefaultsOsiriX addCLUT: @"VR Red Vessels" dictionary: clutValues];
+	[DefaultsOsiriX addCLUT: @"BlackBody" dictionary: clutValues];
+	[DefaultsOsiriX addCLUT: @"Flow" dictionary: clutValues];
+	[DefaultsOsiriX addCLUT: @"GEcolor" dictionary: clutValues];
+	[DefaultsOsiriX addCLUT: @"Spectrum" dictionary: clutValues];
+	[DefaultsOsiriX addCLUT: @"NIH" dictionary: clutValues];
+	[DefaultsOsiriX addCLUT: @"HotIron" dictionary: clutValues];
+	[DefaultsOsiriX addCLUT: @"GrayRainbow" dictionary: clutValues];
+	[DefaultsOsiriX addCLUT: @"UCLA" dictionary: clutValues];
+	[DefaultsOsiriX addCLUT: @"Stern" dictionary: clutValues];
+	[DefaultsOsiriX addCLUT: @"Ratio" dictionary: clutValues];
+	[DefaultsOsiriX addCLUT: @"Rainbow3" dictionary: clutValues];
+	[DefaultsOsiriX addCLUT: @"Rainbow2" dictionary: clutValues];
+	[DefaultsOsiriX addCLUT: @"Rainbow" dictionary: clutValues];
+	[DefaultsOsiriX addCLUT: @"ired" dictionary: clutValues];
+	[DefaultsOsiriX addCLUT: @"Hue1" dictionary: clutValues];
+	[DefaultsOsiriX addCLUT: @"Hue2" dictionary: clutValues];		
+	[DefaultsOsiriX addCLUT: @"HotMetal" dictionary: clutValues];	
+	[DefaultsOsiriX addCLUT: @"HotGreen" dictionary: clutValues];	
+	[DefaultsOsiriX addCLUT: @"Jet" dictionary: clutValues];
+	
+	[defaultValues setObject: clutValues forKey: @"CLUT"];
 	#endif
 	
 	// ** PREFERENCES - SERVERS
