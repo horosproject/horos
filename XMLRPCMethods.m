@@ -50,7 +50,9 @@
 			NSLog(@"Error starting HTTP XMLRPC Server: %@", error);
 			NSRunCriticalAlertPanel( NSLocalizedString(@"HTTP XMLRPC Server Error", 0L),  [NSString stringWithFormat: NSLocalizedString(@"Error starting HTTP XMLRPC Server: %@", 0L), error], NSLocalizedString(@"OK",nil), nil, nil);
 			httpServ = 0L;
-		} else {
+		}
+		else
+		{
 			NSLog(@"******** Starting HTTP XMLRPC server on port %d", [httpServ port]);
 		}
 	}

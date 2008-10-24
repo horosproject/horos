@@ -108,6 +108,11 @@ extern NSThread					*mainThread;
 	return (!aString)? @"" : aString;
 }
 
+- (void) error: (NSString*) error
+{
+	NSRunCriticalAlertPanel( NSLocalizedString(@"HTTP Web Server Error", 0L),  [NSString stringWithFormat: NSLocalizedString(@"Error starting HTTP Web Server: %@", 0L), error], NSLocalizedString(@"OK",nil), nil, nil);	
+}
+
 - (void) serverThread
 {
 	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
@@ -125,23 +130,26 @@ extern NSThread					*mainThread;
 	if (![httpServ start:&error])
 	{
 		NSLog(@"Error starting HTTP Web Server: %@", error);
-		NSRunCriticalAlertPanel( NSLocalizedString(@"HTTP Web Server Error", 0L),  [NSString stringWithFormat: NSLocalizedString(@"Error starting HTTP Web Server: %@", 0L), error], NSLocalizedString(@"OK",nil), nil, nil);
 		httpServ = 0L;
+		[self performSelectorOnMainThread: @selector(error:) withObject:error waitUntilDone: NO];
 	}
 	else
 	{
 		NSLog(@"******** Starting HTTP Web Server on port %d", [httpServ port]);
 	}
 	
-	shouldKeepRunning = YES;
-	
-	NSRunLoop *theRL = [NSRunLoop currentRunLoop];
-	
-	[running lock];
-	
-	while (shouldKeepRunning && [theRL runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]]);
-	
-	[running unlock];
+	if( httpServ)
+	{
+		shouldKeepRunning = YES;
+		
+		NSRunLoop *theRL = [NSRunLoop currentRunLoop];
+		
+		[running lock];
+		
+		while (shouldKeepRunning && [theRL runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]]);
+		
+		[running unlock];
+	}
 	
 	[pool release];
 }
