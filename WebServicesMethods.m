@@ -28,6 +28,8 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
+#define maxResolution 1024
+
 extern NSThread					*mainThread;
 
 @interface NSImage (ProportionalScaling)
@@ -232,6 +234,19 @@ extern NSThread					*mainThread;
 	
 	if(![[NSFileManager defaultManager] fileExistsAtPath: outFile])
 	{
+		int maxWidth, maxHeight;
+		
+		if( isiPhone)
+		{
+			maxWidth = 300; // for the poster frame of the movie to fit in the iphone screen (vertically)
+			maxHeight = 310;
+		}
+		else
+		{
+			maxWidth = maxResolution;
+			maxHeight = maxResolution;
+		}
+					
 		for (DicomImage *im in dicomImageArray)
 		{
 			for (int x = 0; x < [[im valueForKey:@"numberOfFrames"] intValue]; x++)
@@ -255,7 +270,34 @@ extern NSThread					*mainThread;
 						[dcmPix checkImageAvailble:[dcmPix savedWW] :[dcmPix savedWL]];
 					
 					NSImage *im = [dcmPix image];
-					[imagesArray addObject: im];
+					
+					int width = [dcmPix pwidth];
+					int height = [dcmPix pheight];
+					
+					BOOL resize = NO;
+		
+					if(width>maxWidth)
+					{
+						height = height * maxWidth / width;
+						width = maxWidth;
+						resize = YES;
+					}
+					
+					if(height>maxHeight)
+					{
+						width = width * maxHeight / height;
+						height = maxHeight;
+						resize = YES;
+					}
+					
+					NSImage *newImage;
+				
+					if( resize)
+						newImage = [im imageByScalingProportionallyToSize:NSMakeSize(width, height)];
+					else
+						newImage = im;
+					
+					[imagesArray addObject: newImage];
 					[dcmPix release];
 				}
 			}
@@ -750,19 +792,27 @@ extern NSThread					*mainThread;
 				DicomImage *lastImage = [imagesArray lastObject];
 				int width = [[lastImage valueForKey:@"width"] intValue];
 				int height = [[lastImage valueForKey:@"height"] intValue];
-				//NSLog(@"w: %d, h: %d", width, height);
-				int maxWidth = 480;
-				int maxHeight = 360;
-				if(isiPhone)
+				
+				int maxWidth = width;
+				int maxHeight = height;
+				
+				if( isiPhone)
 				{
 					maxWidth = 300; // for the poster frame of the movie to fit in the iphone screen (vertically)
 					maxHeight = 310;
 				}
+				else
+				{
+					maxWidth = maxResolution;
+					maxHeight = maxResolution;
+				}
+				
 				if(width>maxWidth)
 				{
 					height = (float)height * (float)maxWidth / (float)width;
 					width = maxWidth;
 				}
+				
 				if(height>maxHeight)
 				{
 					width = (float)width * (float)maxHeight / (float)height;
@@ -836,19 +886,42 @@ extern NSThread					*mainThread;
 				float width = [image size].width;
 				float height = [image size].height;
 				
-				if(width>480)
+				int maxWidth = width;
+				int maxHeight = height;
+				
+				if( isiPhone)
 				{
-					height = (float)height * 480.0 / (float)width;
-					width = 480;
+					maxWidth = 300; // for the poster frame of the movie to fit in the iphone screen (vertically)
+					maxHeight = 310;
 				}
-				if(height>360)
+				else
 				{
-					width = (float)width * 360.0 / (float)height;
-					height = 360;
+					maxWidth = maxResolution;
+					maxHeight = maxResolution;
 				}
 				
-				NSImage *newImage = [image imageByScalingProportionallyToSize:NSMakeSize(width, height)];
+				BOOL resize = NO;
 				
+				if(width>maxWidth)
+				{
+					height =  height * maxWidth / width;
+					width = maxWidth;
+					resize = YES;
+				}
+				if(height>maxHeight)
+				{
+					width = width * maxHeight / height;
+					height = maxHeight;
+					resize = YES;
+				}
+				
+				NSImage *newImage;
+				
+				if( resize)
+					newImage = [image imageByScalingProportionallyToSize:NSMakeSize(width, height)];
+				else
+					newImage = image;
+					
 				NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData:[newImage TIFFRepresentation]];
 				NSDictionary *imageProps = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:1.0] forKey:NSImageCompressionFactor];
 				data = [imageRep representationUsingType:NSPNGFileType properties:imageProps];

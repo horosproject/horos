@@ -13951,7 +13951,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (void)burnDICOM: (id)sender
 {
-	if( burnerWindowController == nil )	{
+	if( burnerWindowController == nil )
+	{
 		NSMutableArray *managedObjects = [[NSMutableArray alloc] init];
 		NSMutableArray *filesToBurn;
 		//Burn additional Files. Not just images. Add SRs
@@ -13964,13 +13965,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 	}
 	else
 	{
+		NSRunInformationalAlertPanel( NSLocalizedString(@"Burn", nil), NSLocalizedString(@"A burn session is already opened. Close it to burn a new study.", nil), NSLocalizedString(@"OK", nil), 0L, 0L);
+		
 		[[burnerWindowController window] makeKeyAndOrderFront:self];
-//		NSAlert *alert = [NSAlert alertWithMessageText:@"OsiriX" 
-//										 defaultButton:@"OK" 
-//									   alternateButton:nil 
-//										   otherButton:nil 
-//							 informativeTextWithFormat:@"Burn in Progress. Please Wait."];
-//		[alert runModal];
 	}
 }
 

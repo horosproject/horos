@@ -626,7 +626,8 @@ NSString* asciiString (NSString* name);
 	return asciiString([title uppercaseString]);
 }
 
-- (void)setup:(id)sender{
+- (void)setup:(id)sender
+{
 	//NSLog(@"Set up burn");
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	isThrobbing = NO;
@@ -656,7 +657,8 @@ NSString* asciiString (NSString* name);
 //------------------------------------------------------------------------------------------------------------------------------------
 #pragma mark•
 
-- (void)addDICOMDIRUsingDCMTK{
+- (void)addDICOMDIRUsingDCMTK
+{
 	NSString *burnFolder = [self folderToBurn];
 	NSString *dicomdirPath = [NSString stringWithFormat:@"%@/DICOMDIR",burnFolder];
 	NSString *subFolder = [NSString stringWithFormat:@"%@/IMAGES",burnFolder];
