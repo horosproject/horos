@@ -429,8 +429,9 @@ extern NSThread					*mainThread;
 		
 		isiPhone = isiPhoneOS && isWebKit;
 	}
-	
-	//NSLog(@"isiPhone : %d", isiPhone);
+//	
+//	if( isiPhone)
+//		NSLog(@"isiPhone : %d", isiPhone);
 	
     NSString *vers = [(id)CFHTTPMessageCopyVersion(request) autorelease];
 //	NSLog(@"vers : %@", vers);
