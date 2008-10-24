@@ -178,7 +178,8 @@
 					
 					if ([selName isEqual:@"DisplayStudy"])
 					{
-						ret = [NSNumber numberWithInt: [[BrowserController currentBrowser]	findObject:	[NSString stringWithFormat: @"patientID =='%@' AND id == '%@'", [paramDict valueForKey:@"PatientID"], [paramDict valueForKey:@"StudyID"]] table: @"Study" execute: @"Open" elements: &listOfElements]];
+						//ret = [NSNumber numberWithInt: [[BrowserController currentBrowser]	findObject:	[NSString stringWithFormat: @"patientID =='%@' AND id == '%@'", [paramDict valueForKey:@"PatientID"], [paramDict valueForKey:@"StudyID"]] table: @"Study" execute: @"Open" elements: &listOfElements]];
+						ret = [NSNumber numberWithInt:[[BrowserController currentBrowser] findObject:[NSString stringWithFormat: @"patientID =='%@' AND studyInstanceUID == '%@'", [paramDict valueForKey:@"PatientID"], [paramDict valueForKey:@"StudyInstanceUID"]] table: @"Study" execute: @"Open" elements: &listOfElements]];
 					}
 					
 					if ([selName isEqual:@"DisplaySeries"])
