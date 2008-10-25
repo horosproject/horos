@@ -12,17 +12,6 @@
      PURPOSE.
 =========================================================================*/
 
-/***************************************** Modifications *********************************************
-
-Version 2.3
-
-	20051229	LP	Fixed bug in paths method. Now accesses completePath.
-	20060101	DDP	Changed yearOld to return in the format 5 y or 23 d rather than 5 yo or 23 do,
-					as this is more internationally generic.
-				
-	
-****************************************************************************************************/
-
 #import "DicomStudy.h"
 #import "DicomSeries.h"
 #import <OsiriX/DCMAbstractSyntaxUID.h>
@@ -220,6 +209,8 @@ Version 2.3
 {
 	if( [[self primitiveValueForKey:@"numberOfImages"] intValue] == 0)
 	{
+		[[self managedObjectContext] lock];
+		
 		NSSet	*series = [self valueForKey:@"series"];
 		NSArray	*array = [series allObjects];
 		
@@ -237,6 +228,8 @@ Version 2.3
 		[self setPrimitiveValue:no forKey:@"numberOfImages"];
 		[self didChangeValueForKey: @"numberOfImages"];
 		
+		[[self managedObjectContext] unlock];
+		
 		return no;
 	}
 	else return [self primitiveValueForKey:@"numberOfImages"];
@@ -247,13 +240,16 @@ Version 2.3
 
 - (NSSet*) paths
 {
-//	NSLog(@"keyPath: %@", [[self valueForKeyPath:@"series.images.completePath"] description]);
+	[[self managedObjectContext] lock];
+	
 	NSSet *sets = [self valueForKeyPath: @"series.images.completePath"];
 	NSMutableSet *set = [NSMutableSet set];
-//	NSEnumerator *enumerator = [[self primitiveValueForKey:@"series"] objectEnumerator];
-	id subset;
-	for (subset in sets)
+	
+	for (id subset in sets)
 		[set unionSet: subset];
+		
+	[[self managedObjectContext] unlock];
+	
 	return set;
 }
 
@@ -262,12 +258,17 @@ Version 2.3
 
 - (NSSet*) keyImages
 {
+	[[self managedObjectContext] lock];
+	
 	NSMutableSet *set = [NSMutableSet set];
 	NSEnumerator *enumerator = [[self primitiveValueForKey: @"series"] objectEnumerator];
 	
 	id object;
 	while (object = [enumerator nextObject])
 		[set unionSet:[object keyImages]];
+		
+	[[self managedObjectContext] unlock];
+	
 	return set;
 }
 
@@ -276,81 +277,152 @@ Version 2.3
 
 - (NSArray *)imageSeries
 {
-	NSArray *array = [self primitiveValueForKey: @"series"];
+	[[self managedObjectContext] lock];
 	
-	NSMutableArray *newArray = [NSMutableArray array];
-	id series;
-	for (series in array){
-		if ([DCMAbstractSyntaxUID isImageStorage:[series valueForKey:@"seriesSOPClassUID"]] || [DCMAbstractSyntaxUID isRadiotherapy:[series valueForKey:@"seriesSOPClassUID"]] || [series valueForKey:@"seriesSOPClassUID"] == nil)
-			[newArray addObject:series];
+	NSMutableArray *newArray = 0L;
+	
+	@try
+	{
+		NSArray *array = [self primitiveValueForKey: @"series"];
+		
+		newArray = [NSMutableArray array];
+		for (id series in array)
+		{
+			if ([DCMAbstractSyntaxUID isImageStorage:[series valueForKey:@"seriesSOPClassUID"]] || [DCMAbstractSyntaxUID isRadiotherapy:[series valueForKey:@"seriesSOPClassUID"]] || [series valueForKey:@"seriesSOPClassUID"] == nil)
+				[newArray addObject:series];
+		}
 	}
+	@catch (NSException *e)
+	{
+		NSLog( @"imageSeries exception: %@", e);
+	}
+	
+	[[self managedObjectContext] unlock];
+	
 	return newArray;
 }
 
 - (NSArray *)reportSeries
 {
-	NSArray *array = [self primitiveValueForKey: @"series"] ;
-	NSMutableArray *newArray = [NSMutableArray array];
-	id series;
-	for (series in array)
+	[[self managedObjectContext] lock];
+	
+	NSMutableArray *newArray = 0L;
+	@try
 	{
-		if ([DCMAbstractSyntaxUID isStructuredReport:[series valueForKey:@"seriesSOPClassUID"]])
+		NSArray *array = [self primitiveValueForKey: @"series"] ;
+		
+		newArray = [NSMutableArray array];
+		
+		for (id series in array)
 		{
-			if( [[series valueForKey:@"id"] intValue] != 5002 || [[series valueForKey:@"name"] isEqualToString: @"OsiriX ROI SR"] == NO)		// We dont want the OsiriX ROIs SR
-				[newArray addObject:series];
+			if ([DCMAbstractSyntaxUID isStructuredReport:[series valueForKey:@"seriesSOPClassUID"]])
+			{
+				if( [[series valueForKey:@"id"] intValue] != 5002 || [[series valueForKey:@"name"] isEqualToString: @"OsiriX ROI SR"] == NO)		// We dont want the OsiriX ROIs SR
+					[newArray addObject:series];
+			}
 		}
 	}
+	@catch (NSException *e)
+	{
+		NSLog( @"imageSeries exception: %@", e);
+	}
+	
+	[[self managedObjectContext] unlock];
+	
 	return newArray;
 }
 
-- (NSArray *)structuredReports{
-	NSArray *array = [self primitiveValueForKey:@"reportSeries"];
-	NSMutableSet *set = [NSMutableSet set];
-	id series;
-	for (series in array)
-		[set unionSet:[series primitiveValueForKey:@"images"]];
+- (NSArray *)structuredReports
+{
+	[[self managedObjectContext] lock];
+	
+	NSMutableSet *set = 0L;
+	
+	@try
+	{
+		NSArray *array = [self primitiveValueForKey:@"reportSeries"];
+		set = [NSMutableSet set];
+		
+		for (id series in array)
+			[set unionSet:[series primitiveValueForKey:@"images"]];
+		
+	}
+	@catch (NSException *e)
+	{
+		NSLog( @"imageSeries exception: %@", e);
+	}
+	
+	[[self managedObjectContext] unlock];
+	
 	return [set allObjects];
 }
 
-- (NSArray *)keyObjectSeries{
+- (NSArray *)keyObjectSeries
+{
+	[[self managedObjectContext] lock];
+	
 	NSArray *array = [self primitiveValueForKey: @"series"] ;
 	NSMutableArray *newArray = [NSMutableArray array];
-	id series;
-	for (series in array){
+	
+	for (id series in array)
+	{
 		if ([[DCMAbstractSyntaxUID keyObjectSelectionDocumentStorage] isEqualToString:[series valueForKey:@"seriesSOPClassUID"]])
 			[newArray addObject:series];
 	}
+	
+	[[self managedObjectContext] unlock];
+	
 	return newArray;
 }
 
-- (NSArray *)keyObjects{
+- (NSArray *)keyObjects
+{
+	[[self managedObjectContext] lock];
+	
 	NSArray *array = [self keyObjectSeries];
 	NSMutableSet *set = [NSMutableSet set];
-	id series;
-	for (series in array)
+	
+	for (id series in array)
 		[set unionSet:[series primitiveValueForKey:@"images"]];
+	
+	[[self managedObjectContext] unlock];
+	
 	return [set allObjects];
 }
 
-- (NSArray *)presentationStateSeries{
+- (NSArray *)presentationStateSeries
+{
+	[[self managedObjectContext] lock];
+	
 	NSArray *array = [self primitiveValueForKey: @"series"] ;
 	NSMutableArray *newArray = [NSMutableArray array];
-	id series;
-	for (series in array){
+	
+	for (id series in array)
+	{
 		if ([DCMAbstractSyntaxUID isPresentationState:[series valueForKey:@"seriesSOPClassUID"]])
 			[newArray addObject:series];
 	}
+	
+	[[self managedObjectContext] unlock];
+	
 	return newArray;
 }
 
-- (NSArray *)waveFormSeries{
+- (NSArray *)waveFormSeries
+{
+	[[self managedObjectContext] lock];
+	
 	NSArray *array = [self primitiveValueForKey: @"series"] ;
 	NSMutableArray *newArray = [NSMutableArray array];
-	id series;
-	for (series in array){
+	
+	for (id series in array)
+	{
 		if ([DCMAbstractSyntaxUID isWaveform:[series valueForKey:@"seriesSOPClassUID"]])
 			[newArray addObject:series];
 	}
+	
+	[[self managedObjectContext] unlock];
+	
 	return newArray;
 }
 
@@ -358,6 +430,8 @@ Version 2.3
 {
 	NSArray *array = [self primitiveValueForKey: @"series"] ;
 	if ([array count] < 1)  return 0L;
+	
+	[[self managedObjectContext] lock];
 	
 	NSMutableArray *newArray = [NSMutableArray array];
 	for( DicomSeries *series in array)
@@ -369,17 +443,20 @@ Version 2.3
 	if( [newArray count] > 1)
 	{
 		NSLog( @"****** multiple (%d) roiSRSeries?? Delete the extra series...", [newArray count]);
-		int i;
-		for( i = 1 ; i < [newArray count] ; i++)
+		
+		for( int i = 1 ; i < [newArray count] ; i++)
 			[[self managedObjectContext] deleteObject: [newArray objectAtIndex: i]]; 
 	}
+	
+	[[self managedObjectContext] unlock];
 	
 	if( [newArray count]) return [newArray objectAtIndex: 0];
 	
 	return 0L;
 }
 
-- (NSDictionary *)dictionary{
+- (NSDictionary *)dictionary
+{
 	NSMutableDictionary *dict = [NSMutableDictionary dictionary];
 	if ([self primitiveValueForKey:@"name"])
 		[dict  setObject: [self primitiveValueForKey:@"name"] forKey: @"Patients Name"];

@@ -1879,7 +1879,7 @@ static char *GetPrivateIP()
 			[paths addObject: [curImage valueForKey:@"path"]];
 			[dicomFileNames addObject: dicomFileName];
 			
-			size += [[curImage valueForKeyPath:@"width"] intValue] * [[curImage valueForKeyPath:@"height"] intValue] * 2 * [[curImage valueForKeyPath:@"numberOfFrames"] intValue];
+			size += [[curImage valueForKey:@"width"] intValue] * [[curImage valueForKey:@"height"] intValue] * 2 * [[curImage valueForKey:@"numberOfFrames"] intValue];
 			
 			if([[[curImage valueForKey:@"path"] pathExtension] isEqualToString:@"zip"])
 			{

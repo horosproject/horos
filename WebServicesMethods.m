@@ -828,7 +828,7 @@ extern NSThread					*mainThread;
 				[templateString replaceOccurrencesOfString:@"%height%" withString:[NSString stringWithFormat:@"%d", height] options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 			}
 			
-			NSString *seriesName = [WebServicesMethods nonNilString:[[series lastObject] valueForKeyPath:@"name"]];
+			NSString *seriesName = [WebServicesMethods nonNilString:[[series lastObject] valueForKey:@"name"]];
 			[templateString replaceOccurrencesOfString:@"%PageTitle%" withString:seriesName options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 			
 			NSString *studyName = [WebServicesMethods nonNilString:[[series lastObject] valueForKeyPath:@"study.name"]];
@@ -996,7 +996,7 @@ extern NSThread					*mainThread;
 			NSArray *studies = [self studiesForPredicate:browsePredicate];
 			if([studies count]==1)
 			{
-				NSString *reportFilePath = [[studies lastObject] valueForKeyPath:@"reportURL"];
+				NSString *reportFilePath = [[studies lastObject] valueForKey:@"reportURL"];
 				//NSLog(@"reportFilePath: %@", reportFilePath);
 				
 				reportType = [reportFilePath pathExtension];
@@ -1185,7 +1185,7 @@ extern NSThread					*mainThread;
 	}
 	else
 	{
-		studiesArray = [[album valueForKeyPath:@"studies"] allObjects];
+		studiesArray = [[album valueForKey:@"studies"] allObjects];
 	}
 
 	return studiesArray;
@@ -1212,9 +1212,9 @@ extern NSThread					*mainThread;
 	{
 		NSMutableString *tempHTML = [NSMutableString stringWithString:studyListItemString];
 		// asciiString?
-		[tempHTML replaceOccurrencesOfString:@"%StudyListItemName%" withString:[WebServicesMethods nonNilString:[study valueForKeyPath:@"name"]] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+		[tempHTML replaceOccurrencesOfString:@"%StudyListItemName%" withString:[WebServicesMethods nonNilString:[study valueForKey:@"name"]] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 		
-		NSArray *seriesArray = [study valueForKeyPath:@"imageSeries"] ; //imageSeries
+		NSArray *seriesArray = [study valueForKey:@"imageSeries"] ; //imageSeries
 		int count = 0;
 		for(DicomSeries *series in seriesArray)
 		{
@@ -1224,17 +1224,17 @@ extern NSThread					*mainThread;
 		NSDateFormatter *dateFormat = [[[NSDateFormatter alloc] init] autorelease];
 		[dateFormat setDateFormat:[[NSUserDefaults standardUserDefaults] stringForKey:@"DBDateFormat2"]];
 
-		NSString *date = [dateFormat stringFromDate:[study valueForKeyPath:@"date"]];
+		NSString *date = [dateFormat stringFromDate:[study valueForKey:@"date"]];
 		
 		[tempHTML replaceOccurrencesOfString:@"%StudyDate%" withString:[NSString stringWithFormat:@"%@", [WebServicesMethods iPhoneCompatibleNumericalFormat:date]] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 		[tempHTML replaceOccurrencesOfString:@"%SeriesCount%" withString:[NSString stringWithFormat:@"%d Series", count] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
-		[tempHTML replaceOccurrencesOfString:@"%StudyComment%" withString:[WebServicesMethods nonNilString:[study valueForKeyPath:@"comment"]] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+		[tempHTML replaceOccurrencesOfString:@"%StudyComment%" withString:[WebServicesMethods nonNilString:[study valueForKey:@"comment"]] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 		
 		NSString *stateText = @"";
-		if( [[study valueForKeyPath:@"stateText"] intValue])
-			stateText = [[BrowserController statesArray] objectAtIndex: [[study valueForKeyPath:@"stateText"] intValue]];
+		if( [[study valueForKey:@"stateText"] intValue])
+			stateText = [[BrowserController statesArray] objectAtIndex: [[study valueForKey:@"stateText"] intValue]];
 		[tempHTML replaceOccurrencesOfString:@"%StudyState%" withString:[WebServicesMethods nonNilString:stateText] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
-		[tempHTML replaceOccurrencesOfString:@"%StudyListItemID%" withString:[WebServicesMethods nonNilString:[study valueForKeyPath:@"studyInstanceUID"]] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+		[tempHTML replaceOccurrencesOfString:@"%StudyListItemID%" withString:[WebServicesMethods nonNilString:[study valueForKey:@"studyInstanceUID"]] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 		[returnHTML appendString:tempHTML];
 	}
 	
@@ -1292,7 +1292,7 @@ extern NSThread					*mainThread;
 	
 	NSArray *tempArray, *tempArray2;
 	
-	if([study valueForKeyPath:@"reportURL"] && !isiPhone)
+	if([study valueForKey:@"reportURL"] && !isiPhone)
 	{
 		[templateString replaceOccurrencesOfString:@"%LocalizedLabel_GetReport%" withString:NSLocalizedString(@"Download Report", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 		[templateString replaceOccurrencesOfString:@"%Report%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
@@ -1313,11 +1313,11 @@ extern NSThread					*mainThread;
 	
 	NSMutableString *returnHTML = [NSMutableString stringWithString:templateStringStart];
 							
-	[returnHTML replaceOccurrencesOfString:@"%PageTitle%" withString:[WebServicesMethods nonNilString:[study valueForKeyPath:@"name"]] options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
-	[returnHTML replaceOccurrencesOfString:@"%PatientID%" withString:[WebServicesMethods nonNilString:[study valueForKeyPath:@"patientID"]] options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
-	[returnHTML replaceOccurrencesOfString:@"%PatientName%" withString:[WebServicesMethods nonNilString:[study valueForKeyPath:@"name"]] options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
-	[returnHTML replaceOccurrencesOfString:@"%StudyComment%" withString:[WebServicesMethods nonNilString:[study valueForKeyPath:@"comment"]] options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
-	NSString *stateText = [[BrowserController statesArray] objectAtIndex: [[study valueForKeyPath:@"stateText"] intValue]];
+	[returnHTML replaceOccurrencesOfString:@"%PageTitle%" withString:[WebServicesMethods nonNilString:[study valueForKey:@"name"]] options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
+	[returnHTML replaceOccurrencesOfString:@"%PatientID%" withString:[WebServicesMethods nonNilString:[study valueForKey:@"patientID"]] options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
+	[returnHTML replaceOccurrencesOfString:@"%PatientName%" withString:[WebServicesMethods nonNilString:[study valueForKey:@"name"]] options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
+	[returnHTML replaceOccurrencesOfString:@"%StudyComment%" withString:[WebServicesMethods nonNilString:[study valueForKey:@"comment"]] options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
+	NSString *stateText = [[BrowserController statesArray] objectAtIndex: [[study valueForKey:@"stateText"] intValue]];
 	[returnHTML replaceOccurrencesOfString:@"%StudyState%" withString:[WebServicesMethods nonNilString:stateText] options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
 
 	NSDateFormatter *dobDateFormat = [[[NSDateFormatter alloc] init] autorelease];
@@ -1325,10 +1325,10 @@ extern NSThread					*mainThread;
 	NSDateFormatter *dateFormat = [[[NSDateFormatter alloc] init] autorelease];
 	[dateFormat setDateFormat: [[NSUserDefaults standardUserDefaults] stringForKey:@"DBDateFormat2"]];
 
-	[returnHTML replaceOccurrencesOfString:@"%PatientDOB%" withString:[WebServicesMethods nonNilString:[dobDateFormat stringFromDate:[study valueForKeyPath:@"dateOfBirth"]]] options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
-	[returnHTML replaceOccurrencesOfString:@"%StudyDate%" withString:[WebServicesMethods iPhoneCompatibleNumericalFormat:[WebServicesMethods nonNilString:[dateFormat stringFromDate:[study valueForKeyPath:@"date"]]]] options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
+	[returnHTML replaceOccurrencesOfString:@"%PatientDOB%" withString:[WebServicesMethods nonNilString:[dobDateFormat stringFromDate:[study valueForKey:@"dateOfBirth"]]] options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
+	[returnHTML replaceOccurrencesOfString:@"%StudyDate%" withString:[WebServicesMethods iPhoneCompatibleNumericalFormat:[WebServicesMethods nonNilString:[dateFormat stringFromDate:[study valueForKey:@"date"]]]] options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
 	
-	NSArray *seriesArray = [study valueForKeyPath:@"imageSeries"];
+	NSArray *seriesArray = [study valueForKey:@"imageSeries"];
 
 	NSSortDescriptor * sortid = [[NSSortDescriptor alloc] initWithKey:@"seriesInstanceUID" ascending:YES selector:@selector(numericCompare:)];		//id
 	NSSortDescriptor * sortdate = [[NSSortDescriptor alloc] initWithKey:@"date" ascending:YES];
@@ -1343,9 +1343,9 @@ extern NSThread					*mainThread;
 	for(DicomSeries *series in seriesArray)
 	{
 		NSMutableString *tempHTML = [NSMutableString stringWithString:seriesListItemString];
-		[tempHTML replaceOccurrencesOfString:@"%SeriesName%" withString:[WebServicesMethods nonNilString:[series valueForKeyPath:@"name"]] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
-		[tempHTML replaceOccurrencesOfString:@"%thumbnail%" withString:[NSString stringWithFormat:@"thumbnail?id=%@", [WebServicesMethods nonNilString:[series valueForKeyPath:@"seriesInstanceUID"]]] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
-		[tempHTML replaceOccurrencesOfString:@"%SeriesID%" withString:[WebServicesMethods nonNilString:[series valueForKeyPath:@"seriesInstanceUID"]] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+		[tempHTML replaceOccurrencesOfString:@"%SeriesName%" withString:[WebServicesMethods nonNilString:[series valueForKey:@"name"]] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+		[tempHTML replaceOccurrencesOfString:@"%thumbnail%" withString:[NSString stringWithFormat:@"thumbnail?id=%@", [WebServicesMethods nonNilString:[series valueForKey:@"seriesInstanceUID"]]] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+		[tempHTML replaceOccurrencesOfString:@"%SeriesID%" withString:[WebServicesMethods nonNilString:[series valueForKey:@"seriesInstanceUID"]] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 		int nbFiles = [[series valueForKey:@"noFiles"] intValue];
 		if( nbFiles <= 1)
 		{

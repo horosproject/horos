@@ -710,12 +710,14 @@ NSString* sopInstanceUIDDecode( unsigned char *r)
 	return delete;
 }
 
-- (NSSet *)paths{
+- (NSSet *)paths
+{
 	return [NSSet setWithObject:[self completePath]];
 }
 
 // DICOM Presentation State
-- (DCMSequenceAttribute *)graphicAnnotationSequence{
+- (DCMSequenceAttribute *)graphicAnnotationSequence
+{
 	//main sequnce that includes the graphics overlays : ROIs and annotation
 	DCMSequenceAttribute *graphicAnnotationSequence = [DCMSequenceAttribute sequenceAttributeWithName:@"GraphicAnnotationSequence"];
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -735,8 +737,6 @@ NSString* sopInstanceUIDDecode( unsigned char *r)
 	
 	DCMAttribute *graphicAnnotationUnitsAttr = [DCMAttribute attributeWithAttributeTag:[DCMAttributeTag tagWithName:@"GraphicAnnotationUnits"]];
 	[graphicAnnotationUnitsAttr setValues:[NSMutableArray arrayWithObject:@"PIXEL"]];
-	
-	
 	
 	//loop through the ROIs and add
 	NSSet *rois = [self primitiveValueForKey:@"rois"];
@@ -788,7 +788,8 @@ NSString* sopInstanceUIDDecode( unsigned char *r)
 	#endif
 }
 
-- (NSDictionary *)dictionary{
+- (NSDictionary *)dictionary
+{
 	NSMutableDictionary *dict = [NSMutableDictionary dictionary];
 	return dict;
 }

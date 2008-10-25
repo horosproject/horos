@@ -90,28 +90,47 @@
 
 - (NSSet *)paths
 {
-	return  [self valueForKeyPath:@"images.completePath"];
+	[[self managedObjectContext] lock];
+	
+	NSSet *set = [self valueForKeyPath:@"images.completePath"];
+	
+	[[self managedObjectContext] unlock];
+	
+	return set;
 }
 
 - (NSSet *)keyImages
 {
+	[[self managedObjectContext] lock];
+	
 	NSArray *imageArray = [[self primitiveValueForKey:@"images"] allObjects];
 	NSPredicate *predicate = [NSPredicate predicateWithFormat:@"isKeyImage == YES"]; 
-	return [NSSet setWithArray:[imageArray filteredArrayUsingPredicate:predicate]];
+	NSSet *set = [NSSet setWithArray:[imageArray filteredArrayUsingPredicate:predicate]];
+	
+	[[self managedObjectContext] unlock];
+	
+	return set;
 }
 
 - (NSArray *)sortedImages
 {
+	[[self managedObjectContext] lock];
+	
 	NSArray *imageArray = [[self primitiveValueForKey:@"images"] allObjects];
-	//sort by instance Number
+	
 	NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"instanceNumber" ascending:YES];
 	NSArray *sortDescriptors= [NSArray arrayWithObject:sortDescriptor];
 	[sortDescriptor release];
+	
+	[[self managedObjectContext] unlock];
+	
 	return [imageArray sortedArrayUsingDescriptors:sortDescriptors];
 }
 
 - (NSString *)dicomSeriesInstanceUID
 {
+	[[self managedObjectContext] lock];
+	
 	//core data stores the series uid int the form: seriesNumber, uid,  a bunch of other strings
 	int seriesNumber = 0;
 	if ([self primitiveValueForKey:@"id"])
@@ -120,6 +139,9 @@
 	NSString *numberString = [NSString stringWithFormat:@"%8.8d",seriesNumber];
 	NSString *uid = [self primitiveValueForKey:@"seriesInstanceUID"];
 	NSArray *array = [uid componentsSeparatedByString:@" "];
+	
+	[[self managedObjectContext] unlock];
+	
 	if ([array count] < 2)
 		return uid;
 		

@@ -170,9 +170,9 @@ extern NSString *documentsDirectory();
 		
 		if(lastImageOfSeries)
 		{
-			seriesName = asciiString( [NSMutableString stringWithString:[[series objectAtIndex:i] valueForKeyPath: @"name"]]);
+			seriesName = asciiString( [NSMutableString stringWithString:[[series objectAtIndex:i] valueForKey: @"name"]]);
 			fileName = [NSMutableString stringWithFormat:@"%@ - %@", asciiString( [[series objectAtIndex:i] valueForKeyPath:@"study.studyName"]), [[series objectAtIndex:i] valueForKeyPath:@"study.id"]];
-			[fileName appendFormat:@"/%@_%@", seriesName, [[series objectAtIndex:i] valueForKeyPath: @"id"]];
+			[fileName appendFormat:@"/%@_%@", seriesName, [[series objectAtIndex:i] valueForKey: @"id"]];
 			
 			thumbnailName = [NSMutableString stringWithFormat:@"%@_thumb.jpg", fileName];
 			htmlName = [NSMutableString stringWithFormat:@"%@.html", fileName];
@@ -183,7 +183,7 @@ extern NSString *documentsDirectory();
 			[tempListItemTemplate replaceOccurrencesOfString:@"%series_i_file%" withString:[QTExportHTMLSummary nonNilString:htmlName] options:NSLiteralSearch range:NSMakeRange(0, [tempListItemTemplate length])];
 			[tempListItemTemplate replaceOccurrencesOfString:@"%series_i_thumbnail%" withString:[QTExportHTMLSummary nonNilString:thumbnailName] options:NSLiteralSearch range:NSMakeRange(0, [tempListItemTemplate length])];
 			[tempListItemTemplate replaceOccurrencesOfString:@"%series_i_name%" withString:[QTExportHTMLSummary nonNilString:seriesName] options:NSLiteralSearch range:NSMakeRange(0, [tempListItemTemplate length])];
-			[tempListItemTemplate replaceOccurrencesOfString:@"%series_i_id%" withString:[QTExportHTMLSummary nonNilString:[NSString stringWithFormat:@"%@",[[series objectAtIndex:i] valueForKeyPath: @"id"]]] options:NSLiteralSearch range:NSMakeRange(0, [tempListItemTemplate length])];
+			[tempListItemTemplate replaceOccurrencesOfString:@"%series_i_id%" withString:[QTExportHTMLSummary nonNilString:[NSString stringWithFormat:@"%@",[[series objectAtIndex:i] valueForKey: @"id"]]] options:NSLiteralSearch range:NSMakeRange(0, [tempListItemTemplate length])];
 			[tempListItemTemplate replaceOccurrencesOfString:@"%series_i_images_count%" withString:[QTExportHTMLSummary nonNilString:[NSString stringWithFormat:@"%d",imagesCount]] options:NSLiteralSearch range:NSMakeRange(0, [tempListItemTemplate length])];
 			[tempSeriesList appendString:tempListItemTemplate];
 			
@@ -230,15 +230,15 @@ extern NSString *documentsDirectory();
 {
 	NSMutableString *tempHTML = [NSMutableString stringWithString:seriesTemplate];
 	
-	[tempHTML replaceOccurrencesOfString:@"%series_name%" withString:[QTExportHTMLSummary nonNilString:[series valueForKeyPath:@"name"]] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+	[tempHTML replaceOccurrencesOfString:@"%series_name%" withString:[QTExportHTMLSummary nonNilString:[series valueForKey:@"name"]] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 	[tempHTML replaceOccurrencesOfString:@"%patient_name%" withString:[QTExportHTMLSummary nonNilString:[series valueForKeyPath:@"study.name"]] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 	[tempHTML replaceOccurrencesOfString:@"%patient_dateOfBirth%" withString:[QTExportHTMLSummary nonNilString:[dateFormat stringFromDate: [series valueForKeyPath:@"study.dateOfBirth"] ]] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
-	[tempHTML replaceOccurrencesOfString:@"%series_name%" withString:[QTExportHTMLSummary nonNilString:[series valueForKeyPath:@"name"]] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
-	[tempHTML replaceOccurrencesOfString:@"%series_id%" withString:[QTExportHTMLSummary nonNilString:[NSString stringWithFormat:@"%@",[series valueForKeyPath: @"id"]]] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+	[tempHTML replaceOccurrencesOfString:@"%series_name%" withString:[QTExportHTMLSummary nonNilString:[series valueForKey:@"name"]] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+	[tempHTML replaceOccurrencesOfString:@"%series_id%" withString:[QTExportHTMLSummary nonNilString:[NSString stringWithFormat:@"%@",[series valueForKey: @"id"]]] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 	[tempHTML replaceOccurrencesOfString:@"%series_images_count%" withString:[QTExportHTMLSummary nonNilString:[NSString stringWithFormat:@"%d", imagesCount]] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 
 	NSString *studyName = asciiString([series valueForKeyPath:@"study.studyName"]);
-	NSMutableString *fileName = [NSMutableString stringWithFormat:@"./%@_%@", asciiString([NSMutableString stringWithString:[series valueForKeyPath: @"name"]]), [series valueForKeyPath: @"id"]];
+	NSMutableString *fileName = [NSMutableString stringWithFormat:@"./%@_%@", asciiString([NSMutableString stringWithString:[series valueForKey: @"name"]]), [series valueForKey: @"id"]];
 	NSString *extension = (imagesCount>1)? @"mov": @"jpg";
 	[fileName appendFormat:@".%@",extension];
 	

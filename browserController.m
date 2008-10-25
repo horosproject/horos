@@ -828,7 +828,7 @@ static NSArray*	statesArray = nil;
 								NSManagedObject *album;
 								for( album in albumArray )
 								{
-									if([[album valueForKeyPath:@"name"] isEqualToString: [curDict valueForKey:@"album"]])
+									if([[album valueForKey:@"name"] isEqualToString: [curDict valueForKey:@"album"]])
 										break;
 								}
 								
@@ -840,7 +840,7 @@ static NSArray*	statesArray = nil;
 									
 									for ( album in albumArray )
 									{
-										if ( [[album valueForKeyPath:@"name"] isEqualToString: @"other"] )
+										if ( [[album valueForKey:@"name"] isEqualToString: @"other"] )
 											break;
 									}
 									
@@ -5355,7 +5355,7 @@ static NSArray*	statesArray = nil;
 									
 									if( [series valueForKey:@"study"] != study )
 									{
-										study = [series valueForKeyPath:@"study"];
+										study = [series valueForKey:@"study"];
 										
 										if([studiesArray containsObject: study] == NO )
 										{
@@ -6518,7 +6518,7 @@ static NSArray*	statesArray = nil;
 			NSManagedObject	*study = 0L;
 			
 			if( [[element valueForKey: @"type"] isEqualToString: @"Image"]) study = [element valueForKeyPath: @"series.study"];
-			else if( [[element valueForKey: @"type"] isEqualToString: @"Series"]) study = [element valueForKeyPath: @"study"];
+			else if( [[element valueForKey: @"type"] isEqualToString: @"Series"]) study = [element valueForKey: @"study"];
 			else if( [[element valueForKey: @"type"] isEqualToString: @"Study"]) study = element;
 			else NSLog( @"DB selectObject : Unknown table");
 			
@@ -6613,7 +6613,7 @@ static NSArray*	statesArray = nil;
 					NSManagedObject	*study = 0L;
 					
 					if( [[curElement valueForKey: @"type"] isEqualToString: @"Image"]) study = [curElement valueForKeyPath: @"series.study"];
-					else if( [[curElement valueForKey: @"type"] isEqualToString: @"Series"]) study = [curElement valueForKeyPath: @"study"];
+					else if( [[curElement valueForKey: @"type"] isEqualToString: @"Series"]) study = [curElement valueForKey: @"study"];
 					else if( [[curElement valueForKey: @"type"] isEqualToString: @"Study"]) study = curElement;
 					else NSLog( @"DB selectObject : Unknown table");
 					
@@ -6729,7 +6729,7 @@ static NSArray*	statesArray = nil;
 	
 	// FIND ALL STUDIES of this patient
 	NSManagedObject		*study = [curImage valueForKeyPath:@"series.study"];
-	NSManagedObject		*currentSeries = [curImage valueForKeyPath:@"series"];
+	NSManagedObject		*currentSeries = [curImage valueForKey:@"series"];
 	
 	NSPredicate *predicate = [NSPredicate predicateWithFormat:  @"(patientID == %@)", [study valueForKey:@"patientID"]];
 	NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
@@ -9399,7 +9399,7 @@ static BOOL needToRezoom;
 									
 									if( [series valueForKey:@"study"] != study)
 									{
-										study = [series valueForKeyPath:@"study"];
+										study = [series valueForKey:@"study"];
 											
 										if([studiesArray containsObject: study] == NO)
 										{
@@ -14557,7 +14557,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 					NSManagedObject	*image = [[[seriesArray objectAtIndex:i] valueForKey:@"images"] anyObject];
 					if( [[image  valueForKey:@"completePath"] compare:sNewDrive options:NSCaseInsensitiveSearch range:range] == 0 )
 					{
-						NSManagedObject	*study = [[seriesArray objectAtIndex:i] valueForKeyPath:@"study"];
+						NSManagedObject	*study = [[seriesArray objectAtIndex:i] valueForKey:@"study"];
 						
 						needsUpdate = YES;
 						
@@ -15757,28 +15757,28 @@ static volatile int numberOfThreadsForJPEG = 0;
 			{
 				NSManagedObject *im = [d objectForKey: @"im"];
 				
-				if( [im valueForKeyPath: @"windowWidth"])
+				if( [im valueForKey: @"windowWidth"])
 					[im setValue: [d valueForKey: @"windowWidth"] forKey:@"windowWidth"];
 				
-				if( [im valueForKeyPath: @"windowLevel"])
+				if( [im valueForKey: @"windowLevel"])
 					[im setValue: [d valueForKey: @"windowLevel"] forKey:@"windowLevel"];
 				
-				if( [im valueForKeyPath: @"rotationAngle"])
+				if( [im valueForKey: @"rotationAngle"])
 					[im setValue: [d valueForKey: @"rotationAngle"] forKey:@"rotationAngle"];
 				
-				if( [im valueForKeyPath: @"yFlipped"])
+				if( [im valueForKey: @"yFlipped"])
 					[im setValue: [d valueForKey: @"yFlipped"] forKey:@"yFlipped"];
 				
-				if( [im valueForKeyPath: @"xFlipped"])
+				if( [im valueForKey: @"xFlipped"])
 					[im setValue: [d valueForKey: @"xFlipped"] forKey:@"xFlipped"];
 				
-				if( [im valueForKeyPath: @"xOffset"])
+				if( [im valueForKey: @"xOffset"])
 					[im setValue: [d valueForKey: @"xOffset"] forKey:@"xOffset"];
 				
-				if( [im valueForKeyPath: @"yOffset"])
+				if( [im valueForKey: @"yOffset"])
 					[im setValue: [d valueForKey: @"yOffset"] forKey:@"yOffset"];
 				
-				if( [[d valueForKeyPath: @"displayStyle"] intValue] == 2)
+				if( [[d valueForKey: @"displayStyle"] intValue] == 2)
 					[im setValue: [NSNumber numberWithFloat: [[im valueForKeyPath: @"series.scale"] floatValue] * [[v imageView] frame].size.width] forKey:@"scale"];
 				else
 				{
