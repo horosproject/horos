@@ -1864,6 +1864,8 @@ static char *GetPrivateIP()
 	
 	// TRY TO LOAD MULTIPLE DICOM FILES AT SAME TIME -> better network performances
 	
+	[[[BrowserController currentBrowser] managedObjectContext] lock];
+	
 	NSSortDescriptor	*sort = [[[NSSortDescriptor alloc] initWithKey:@"instanceNumber" ascending:YES] autorelease];
 	NSArray				*images = [[[[image valueForKey: @"series"] valueForKey:@"images"] allObjects] sortedArrayUsingDescriptors: [NSArray arrayWithObject: sort]];
 	NSInteger			size = 0, i = [images indexOfObject: image];
@@ -1912,6 +1914,8 @@ static char *GetPrivateIP()
 		i++;
 		
 	}while( size < FILESSIZE*noOfImages && i < [images count]);
+	
+	[[[BrowserController currentBrowser] managedObjectContext] unlock];
 	
 	[self connectToServer: index message:@"DICOM"];
 	

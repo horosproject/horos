@@ -1108,7 +1108,6 @@ char currentDestinationMoveAET[ 60] = "";
 	
 	NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
 	
-	[context retain];
 	[context lock];
 	
 	@try
@@ -1139,7 +1138,6 @@ char currentDestinationMoveAET[ 60] = "";
 	}
 	
 	[context unlock];
-	[context release];
 	
 	return EC_Normal;
 }

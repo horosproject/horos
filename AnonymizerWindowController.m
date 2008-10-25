@@ -189,8 +189,9 @@
 	NSString *file;
 	NSManagedObject *dcm;
 	
-	int i;
-	for( i = 0; i < [filesToAnonymize count]; i++)
+	[[[BrowserController currentBrowser] managedObjectContext] lock];
+	
+	for( int i = 0; i < [filesToAnonymize count]; i++)
 	{
 		file = [filesToAnonymize objectAtIndex: i];
 		dcm = [dcmObjects objectAtIndex: i];
@@ -260,6 +261,8 @@
 		[pool release];
 		[splash incrementBy:1];
 	}
+	
+	[[[BrowserController currentBrowser] managedObjectContext] unlock];
 	
 	[splash close];
 	[splash release];

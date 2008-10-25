@@ -65,6 +65,8 @@ extern void* sopInstanceUIDEncode( NSString *sopuid);
 	
 	BOOL AddIt = NO;
 	
+	[[[BrowserController currentBrowser] managedObjectContext] lock];
+	
 	//Check to see if there is already a roi Series.
 	if( roiSRSeries)
 	{
@@ -79,6 +81,8 @@ extern void* sopInstanceUIDEncode( NSString *sopuid);
 			AddIt = YES;
 	}
 	else AddIt = YES;
+	
+	[[[BrowserController currentBrowser] managedObjectContext] unlock];
 	
 	[sr release];
 	

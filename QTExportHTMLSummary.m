@@ -272,9 +272,13 @@ extern NSString *documentsDirectory();
 
 - (void)createHTMLfiles;
 {
+	[[[BrowserController currentBrowser] managedObjectContext] lock];
+
 	[self createHTMLPatientsList];
 	[self createHTMLStudiesList];
 	[self createHTMLExtraDirectory];
+	
+	[[[BrowserController currentBrowser] managedObjectContext] unlock];
 }
 
 - (void)createHTMLPatientsList;

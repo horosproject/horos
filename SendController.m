@@ -380,6 +380,8 @@ static volatile int sendControllerObjects = 0;
 	
 	objectsToSend = [objectsToSend sortedArrayUsingDescriptors: sortDescriptors];
 	
+	[[[BrowserController currentBrowser] managedObjectContext] lock];
+	
 	for( id loopItem in objectsToSend)
 	{
 		if( [previousPatientUID isEqualToString: [loopItem valueForKeyPath:@"series.study.patientUID"]])
@@ -399,6 +401,8 @@ static volatile int sendControllerObjects = 0;
 	}
 	
 	if( [samePatientArray count]) [self executeSend: samePatientArray];
+	
+	[[[BrowserController currentBrowser] managedObjectContext] unlock];
 	
 	NSMutableDictionary *info = [NSMutableDictionary dictionary];
 	[info setObject:[NSNumber numberWithInt:[objectsToSend count]] forKey:@"SendTotal"];

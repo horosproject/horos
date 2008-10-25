@@ -59,9 +59,13 @@
 
 - (NSString *) localstring
 {
+	[[self managedObjectContext] lock];
+	
 	NSManagedObject	*obj = [[self valueForKey:@"images"] anyObject];
 	
 	BOOL local = [[obj valueForKey:@"inDatabaseFolder"] boolValue];
+	
+	[[self managedObjectContext] unlock];
 	
 	if( local) return @"L";
 	else return @"";
@@ -73,6 +77,8 @@
 	{
 		NSNumber	*no;
 		
+		[[self managedObjectContext] lock];
+		
 		if( [DCMAbstractSyntaxUID isStructuredReport: [self valueForKey: @"seriesSOPClassUID"]] == NO)
 		{
 			no = [NSNumber numberWithInt: [[self valueForKey:@"images"] count]];
@@ -82,6 +88,8 @@
 			[self didChangeValueForKey: @"numberOfImages"];
 		}
 		else no = [NSNumber numberWithInt: 0];
+		
+		[[self managedObjectContext] unlock];
 		
 		return no;
 	}

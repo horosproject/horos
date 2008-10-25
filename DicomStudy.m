@@ -106,9 +106,13 @@
 
 - (NSString *) localstring
 {
+	[[self managedObjectContext] lock];
+	
 	NSManagedObject	*obj = [[[[self valueForKey:@"series"] anyObject] valueForKey:@"images"] anyObject];
 	
 	BOOL local = [[obj valueForKey:@"inDatabaseFolder"] boolValue];
+	
+	[[self managedObjectContext] unlock];
 	
 	if( local) return @"L";
 	else return @"";
@@ -490,7 +494,6 @@
 	return dict;
 }
 
-
 - (NSComparisonResult)compareName:(DicomStudy*)study;
 {
 	return [[self valueForKey:@"name"] caseInsensitiveCompare:[study valueForKey:@"name"]];
@@ -498,7 +501,13 @@
 
 - (NSString*) albumsNames
 {
-	return [[[[self valueForKey: @"albums"] allObjects] valueForKey:@"name"] componentsJoinedByString:@"/"];
+	[[self managedObjectContext] lock];
+	
+	NSString * s = [[[[self valueForKey: @"albums"] allObjects] valueForKey:@"name"] componentsJoinedByString:@"/"];
+	
+	[[self managedObjectContext] unlock];
+	
+	return s;
 }
 
 @end

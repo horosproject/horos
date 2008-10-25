@@ -113,7 +113,8 @@ NSString* asciiString (NSString* name);
 	return self;
 }
 
-- (id)initWithFiles:(NSArray *)theFiles managedObjects:(NSArray *)managedObjects{
+- (id)initWithFiles:(NSArray *)theFiles managedObjects:(NSArray *)managedObjects
+{
 	if (self = [super initWithWindowNibName:@"BurnViewer"])
 	{
 		[self copyDefaultsSettings];
@@ -125,17 +126,25 @@ NSString* asciiString (NSString* name);
 		id managedObject;
 		id patient = nil;
 		_multiplePatients = NO;
-		for (managedObject in managedObjects){
+		
+		[[[BrowserController currentBrowser] managedObjectContext] lock];
+		
+		for (managedObject in managedObjects)
+		{
 			id newPatient = [managedObject valueForKeyPath:@"series.study.patientUID"];
 			
 			if (patient == nil)
 				patient = newPatient;
-			else if (![patient isEqualToString:newPatient]) {
+			else if (![patient isEqualToString:newPatient])
+			{
 				_multiplePatients = YES;
 				break;
 			}
 			patient = newPatient;
 		}
+		
+		[[[BrowserController currentBrowser] managedObjectContext] unlock];
+		
 		burning = NO;
 		
 		[[self window] center];
@@ -876,6 +885,8 @@ NSString* asciiString (NSString* name);
 		{
 			NSMutableArray *studies = [NSMutableArray array];
 			
+			[[[BrowserController currentBrowser] managedObjectContext] lock];
+			
 			for( NSManagedObject *im in dbObjects)
 			{
 				if( [im valueForKeyPath:@"series.study.reportURL"])
@@ -889,6 +900,8 @@ NSString* asciiString (NSString* name);
 			{
 				[manager copyPath: [study valueForKey:@"reportURL"] toPath: [NSString stringWithFormat:@"%@/Report-%@ %@.%@", burnFolder, [study valueForKey:@"modality"], [BrowserController DateTimeWithSecondsFormat: [study valueForKey:@"date"]], [[study valueForKey:@"reportURL"] pathExtension]] handler:nil]; 
 			}
+			
+			[[[BrowserController currentBrowser] managedObjectContext] unlock];
 		}
 		
 		[finalSizeField performSelectorOnMainThread:@selector(setStringValue:) withObject:[NSString stringWithFormat:@"Final files size to burn: %3.2fMB", (float) ([[self getSizeOfDirectory: burnFolder] longLongValue] / 1024)] waitUntilDone:YES];

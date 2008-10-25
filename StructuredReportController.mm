@@ -59,7 +59,8 @@ static NSString *addKeyImagesToolbarIdentifier = @"smallKeyPlus.tif";
 		NSEnumerator *enumerator = [[study valueForKey:@"reportSeries"] objectEnumerator];
 		id  series;
 		NSMutableSet *set = [NSMutableSet set];
-		while (series = [enumerator nextObject]){
+		while (series = [enumerator nextObject])
+		{
 			NSSet *children = [series valueForKey:@"images"];
 			if (children)
 				[set unionSet:children];

@@ -354,31 +354,35 @@ void addFilesToDatabaseSafe(NSArray* newFilesArray, NSManagedObjectContext* cont
 									
 									NSManagedObject *album = nil;
 
-									for( int i=0 ; i<[albumArray count] ; i++ )	{
-										if([[[albumArray objectAtIndex: i] valueForKeyPath:@"name"]
+									for( int i=0 ; i<[albumArray count] ; i++ )
+									{
+										if([[[albumArray objectAtIndex: i] valueForKey:@"name"]
 												isEqualToString: [curDict valueForKey:@"album"]])
 										{
 											album = [albumArray objectAtIndex: i];
 										}
 									}
 									
-									if (album == nil) {
-
-										for( int i=0 ; i<[albumArray count] ; i++ ) {
-											if([[[albumArray objectAtIndex: i] valueForKeyPath:@"name"] isEqualToString: @"other"])
+									if (album == nil)
+									{
+										for( int i=0 ; i<[albumArray count] ; i++ )
+										{
+											if([[[albumArray objectAtIndex: i] valueForKey:@"name"] isEqualToString: @"other"])
 											{
 												album = [albumArray objectAtIndex: i];
 											}
 										}
 										
-										if (album == nil) {
+										if (album == nil)
+										{
 											album = [NSEntityDescription insertNewObjectForEntityForName:@"Album" inManagedObjectContext: context];
 											[album setValue:@"other" forKey:@"name"];
 										}
 									}
 									
 									// add the file to the album
-									if ([[album valueForKey:@"smartAlbum"] boolValue] == NO) {
+									if ([[album valueForKey:@"smartAlbum"] boolValue] == NO)
+									{
 										NSMutableSet	*studies = [album mutableSetValueForKey: @"studies"];	
 										[studies addObject: [image valueForKeyPath:@"series.study"]];
 									}

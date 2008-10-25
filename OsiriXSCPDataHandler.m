@@ -154,7 +154,8 @@ NSString * const OsiriXFileReceivedNotification = @"OsiriXFileReceivedNotificati
 				if (error) 
 					NSLog(@"error: %@", [error description]);
 					
-				if ([fetchArray count]) {
+				if ([fetchArray count])
+				{
 					//NSLog(@"found object to move: %@", [fetchArray description]);
 					NSMutableSet *set = [NSMutableSet set];
 					id object;
@@ -163,7 +164,8 @@ NSString * const OsiriXFileReceivedNotification = @"OsiriXFileReceivedNotificati
 					}
 					numberMoving = [set count];
 					// need to modify objects in case server is netService
-					if ([set count]) {
+					if ([set count])
+					{
 						//	NSLog(@"get ready to move");
 							NSArray *filesToSend = [set allObjects];
 							NSArray *objects; 							

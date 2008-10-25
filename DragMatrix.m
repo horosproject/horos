@@ -108,7 +108,8 @@ NSString *pasteBoardTypeCover = @"KeyImages";
  * Called after the user releases the drag object.  Here we perform the
  * result of the dragging.
 *****************************************************************************/
-- (BOOL)performDragOperation:(id <NSDraggingInfo>)sender {
+- (BOOL)performDragOperation:(id <NSDraggingInfo>)sender
+{
 	if ([sender draggingSource] == self)
 		return NO;
 	
@@ -116,7 +117,8 @@ NSString *pasteBoardTypeCover = @"KeyImages";
     NSArray *types;
     pboard = [sender draggingPasteboard];
     types = [pboard types];
-    if ([types indexOfObject:pasteBoardTypeCover] != NSNotFound) {
+    if ([types indexOfObject:pasteBoardTypeCover] != NSNotFound)
+	{
         NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
 		NSDictionary *dict;
 		//[arrayController setSelectedObjects:[NSArray arrayWithObject:[[arrayController content] objectAtIndex:srcCol]]];

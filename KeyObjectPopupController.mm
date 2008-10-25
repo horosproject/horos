@@ -75,18 +75,20 @@
 	NSEnumerator *enumerator = [_reports objectEnumerator];
 	id report;
 	[_menu addItem:[NSMenuItem separatorItem]];
-	while (report = [enumerator nextObject]) {
+	while (report = [enumerator nextObject])
+	{
 		NSMenuItem *item = [[[NSMenuItem alloc] initWithTitle:[report valueForKey:@"keyObjectType"] action:@selector(useKeyObjectNote:) keyEquivalent:@""] autorelease];
 		[_menu addItem:	item];
 		[item setTarget:self];	
 	}
 }
 
-- (IBAction)useKeyObjectNote:(id)sender{
-
+- (IBAction)useKeyObjectNote:(id)sender
+{
 	NSInteger index = [_popupButton indexOfSelectedItem] - 5;
 	[_popupButton selectItemAtIndex:[_viewerController displayOnlyKeyImages]];
-	if (index > -1) {
+	if (index > -1)
+	{
 		NSArray *imageInSeries = [[series valueForKey:@"images"] allObjects];
 		NSArray *references = [[_reports objectAtIndex:index] referencedObjects];
 

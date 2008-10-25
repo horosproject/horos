@@ -71,7 +71,8 @@ static NSString  *pasteBoardTypeCover = @"KeyImages";
  * Called after the user releases the drag object.  Here we perform the
  * result of the dragging.
 *****************************************************************************/
-- (BOOL)performDragOperation:(id <NSDraggingInfo>)sender {
+- (BOOL)performDragOperation:(id <NSDraggingInfo>)sender
+{
 	if ([sender draggingSource] == self)
 		return NO;
 	
@@ -81,21 +82,24 @@ static NSString  *pasteBoardTypeCover = @"KeyImages";
     types = [pboard types];
 	NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
 	NSDictionary *dict;
-    if ([types indexOfObject:pasteBoardTypeCover] != NSNotFound) {
-
+    if ([types indexOfObject:pasteBoardTypeCover] != NSNotFound)
+	{
 		//[arrayController setSelectedObjects:[NSArray arrayWithObject:[[arrayController content] objectAtIndex:srcCol]]];
 		NSArray *array = [[sender draggingSource] selection];
 		//NSLog(@"Selection: 
         dict = [NSDictionary dictionaryWithObject:array forKey:@"images"];
         [nc postNotificationName:@"DragMatrixImageMoved" object:self userInfo:dict];
     }
-	if ([types indexOfObject:pasteBoardOsiriX] != NSNotFound) {
+	
+	if ([types indexOfObject:pasteBoardOsiriX] != NSNotFound)
+	{
 		NSArray *array = nil;
 		 id image = [(DCMView *)[sender draggingSource] dicomImage];
 		 if (image)
 			array = [NSArray arrayWithObject:image];
 		//NSLog(@"Selection: 
-		if (array) {
+		if (array)
+		{
 			dict = [NSDictionary dictionaryWithObject:array forKey:@"images"];
 			[nc postNotificationName:@"DragMatrixImageMoved" object:self userInfo:dict];
 		}

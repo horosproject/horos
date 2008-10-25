@@ -142,7 +142,8 @@
 	return self;
 }
 
-- (DcmDataset *)queryPrototype{
+- (DcmDataset *)queryPrototype
+{
 	DcmDataset *dataset = new DcmDataset();
 	dataset-> insertEmptyElement(DCM_SeriesDescription, OFTrue);
 	dataset-> insertEmptyElement(DCM_SeriesDate, OFTrue);
@@ -159,7 +160,8 @@
 	
 }
 
-- (DcmDataset *)moveDataset{
+- (DcmDataset *)moveDataset
+{
 	DcmDataset *dataset = new DcmDataset();
 	dataset-> putAndInsertString(DCM_StudyInstanceUID, [_uid UTF8String], OFTrue);
 	dataset-> putAndInsertString(DCM_QueryRetrieveLevel, "STUDY", OFTrue);

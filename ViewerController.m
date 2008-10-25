@@ -3533,16 +3533,20 @@ static volatile int numberOfThreadsForRelisce = 0;
 					if( [name length] > 15) name = [name substringToIndex: 15];
 					
 					NSString	*type = 0L;
-					long count = [[curSeries valueForKey:@"noFiles"] intValue];
+					int count = [[curSeries valueForKey:@"noFiles"] intValue];
 					if( count == 1)
 					{
+						[[[BrowserController currentBrowser] managedObjectContext] lock];
+						
 						type = NSLocalizedString( @"Image", 0L);
-						long frames = [[[[curSeries valueForKey:@"images"] anyObject] valueForKey:@"numberOfFrames"] intValue];
+						int frames = [[[[curSeries valueForKey:@"images"] anyObject] valueForKey:@"numberOfFrames"] intValue];
 						if( frames > 1)
 						{
 							count = frames;
 							type = NSLocalizedString( @"Frames", @"Frames: for example, 50 Frames in a series");
 						}
+						
+						[[[BrowserController currentBrowser] managedObjectContext] unlock];
 					}
 					else type = NSLocalizedString( @"Images", 0L);
 					
@@ -5579,7 +5583,11 @@ static ViewerController *draggedController = 0L;
 		return;
 	}
 	
+	// *****************
+	
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"ViewerWillChangeNotification" object: self userInfo: 0L];
+	
+	[[[BrowserController currentBrowser] managedObjectContext] lock];
 	
 	[self clear8bitRepresentations];
 	
@@ -5900,6 +5908,8 @@ static ViewerController *draggedController = 0L;
 	
 	for( ViewerController *v in [ViewerController getDisplayed2DViewers])
 		[v buildMatrixPreview: NO];
+	
+	[[[BrowserController currentBrowser] managedObjectContext] unlock];
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"ViewerDidChangeNotification" object: self userInfo: 0L];
 }
@@ -9406,6 +9416,8 @@ extern NSString * documentsDirectory();
 	if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && isDir)
 		[[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
 	
+	[[[BrowserController currentBrowser] managedObjectContext] lock];
+	
 	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"SAVEROIS"])
 	{
 		if( [[BrowserController currentBrowser] isCurrentDatabaseBonjour])
@@ -9472,6 +9484,8 @@ extern NSString * documentsDirectory();
 			}
 		}
 	}
+	
+	[[[BrowserController currentBrowser] managedObjectContext] unlock];
 }
 
 - (void) saveROI:(long) mIndex
@@ -9484,6 +9498,8 @@ extern NSString * documentsDirectory();
 	
 	if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && isDir)
 		[[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
+	
+	[[[BrowserController currentBrowser] managedObjectContext] lock];
 	
 	NSMutableArray	*newDICOMSR = [NSMutableArray array];
 	
@@ -9585,6 +9601,8 @@ extern NSString * documentsDirectory();
 			}
 		}
 	}
+	
+	[[[BrowserController currentBrowser] managedObjectContext] unlock];
 	
 	if( toBeSaved)
 	{
@@ -13427,8 +13445,6 @@ int i,j,l;
     [d retain];
     fileList[ maxMovieIndex] = d;
 	
-//	NSLog( [d valueForKeyPath:@"series.id"]);
-	
 	// Prepare pixList for image thick slab
 	for( i = 0; i < [pixList[maxMovieIndex] count]; i++)
 	{
@@ -14886,8 +14902,12 @@ int i,j,l;
 		{
 			NSMutableArray *imagesForThisStudy = [NSMutableArray array];
 			
+			[[[BrowserController currentBrowser] managedObjectContext] lock];
+			
 			for( NSManagedObject *s in [[[self currentStudy] valueForKey: @"series"] allObjects])
 				[imagesForThisStudy addObjectsFromArray: [[s valueForKey: @"images"] allObjects]];
+			
+			[[[BrowserController currentBrowser] managedObjectContext] unlock];
 			
 			NSArray *sopArray = [producedFiles valueForKey: @"SOPInstanceUID"];
 			

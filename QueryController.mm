@@ -531,6 +531,8 @@ static const char *GetPrivateIP()
 	NSIndexSet* indices = [outlineView selectedRowIndexes];
 	BOOL extendingSelection = NO;
 	
+	[[[BrowserController currentBrowser] managedObjectContext] lock];
+	
 	for( int i = [indices firstIndex]; i != [indices lastIndex]+1; i++)
 	{
 		if( [indices containsIndex: i])
@@ -545,6 +547,8 @@ static const char *GetPrivateIP()
 			}
 		} 
 	}
+	
+	[[[BrowserController currentBrowser] managedObjectContext] unlock];
 	
 	if( extendingSelection)
 	{
@@ -662,7 +666,6 @@ static const char *GetPrivateIP()
 	{
 		NSManagedObjectContext		*context = [[BrowserController currentBrowser] managedObjectContext];
 		
-		[context retain];
 		[context lock];
 		
 		@try
@@ -675,7 +678,6 @@ static const char *GetPrivateIP()
 		}
 		
 		[context unlock];
-		[context release];
 	}
 	
 	return seriesArray;
@@ -1756,10 +1758,9 @@ static const char *GetPrivateIP()
 	
 	NSArray						*studyArray, *seriesArray;
 	BOOL						success = NO;
-
-	[context retain];
+	
 	[context lock];
-
+	
 	@try
 	{
 		if( [item isMemberOfClass:[DCMTKStudyQueryNode class]] == YES)
@@ -1835,7 +1836,6 @@ static const char *GetPrivateIP()
 	}
 	
 	[context unlock];
-	[context release];
 }
 
 - (IBAction) view:(id) sender
