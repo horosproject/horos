@@ -12,15 +12,6 @@
      PURPOSE.
 =========================================================================*/
 
-/***************************************** Modifications *********************************************
-
-Version 2.3
-	20060109	LP	Testing using dcmtk tool dcmgpdir for creating DICOMDIR
-	20060116	LP	Fixed bug in assigning image paths using dcmtk dcmmkdir
-	
-*****************************************************************************************************/
-
-
 
 #import "WaitRendering.h"
 #import "BurnerWindowController.h"
