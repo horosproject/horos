@@ -12,11 +12,6 @@
      PURPOSE.
 =========================================================================*/
 
-/***************************************** Modifications *********************************************
-
-Version 2.3
-	20050111	LP	Using vDSP to find min and max.  Will use min for rescale intercept for non CTs with signed pixel Representation
-***************************************************************************************************/
 
 #import "DCMPixelDataAttribute.h"
 #import "DCM.h"

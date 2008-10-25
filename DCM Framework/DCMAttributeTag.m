@@ -12,14 +12,6 @@
      PURPOSE.
 =========================================================================*/
 
-/***************************************** Modifications *********************************************
-
-Version 2.3
-
-	2005 20051220	LP	Minor code optimizing replaced some NSDictionary with CF Dictionary calls. 
-			Added _stringValue. Changed from convenience  method to alloc NSString
-			
-****************************************************************************************************/
 
 #import "DCMAttributeTag.h"
 #import "DCM.h"

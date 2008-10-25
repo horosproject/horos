@@ -13,33 +13,6 @@
 =========================================================================*/
 
 
-/***************************************** MODIFICATION HISTORY *********************************************
-
-Version 2.3
-
-	20060114	DDP	Moving duplicated and common inherited code up from children.
-					: endClut and its variables.
-					: ApplyCLUT, AddCLUT and clutAction.
-					: UpdateCLUTMenu, clutPopup.
-					: The next stage is probably to create an intermediary class between the 3D controllers and ViewerController,
-					  which both inherit from NSWindowController (one step at a time though).
-					: offFullScreen (was called offFullscren).
-	20060115	DDP	: CLUTChanged, deleteCLUT.
-					: Declared ApplyCLUTString, but this currently remains overriden in children.
-					: endNameWLWW.
-					: endOpacity, ApplyOpacity, deleteOpacity, deleteWLWW, wlwwPopup, OpacityPopup.
-					Moved #defines of DATABASEPATH and STATEDATABASE into this header file.
-	20060116	DDP Corrected introduced error failing the endoscopy viewer.  This file now refers to [self view] instead of view.
-
-
-
-*/
-
-
-
-
-
-
 #import "Window3DController.h"
 #import "Mailer.h"
 #import "Papyrus3/Papyrus3.h"

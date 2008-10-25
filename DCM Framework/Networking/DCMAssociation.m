@@ -13,13 +13,6 @@
 =========================================================================*/
 
 
-/***************************************** Modifications *********************************************
-
-Version 2.3
-	20051221	LP	Modified send:asCommand:presentationContext: to get rid of NSAutoreleasePools
-
-*****************************************************************************************************/
-
 /*************
 The networking code of the DCMFramework is predominantly a port of the 11/4/04 version of the java pixelmed toolkit by David Clunie.
 htt://www.pixelmed.com   
