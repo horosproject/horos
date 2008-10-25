@@ -26,15 +26,7 @@
 	@"RLE"
 *************************************************/
 
-/***************************************** Modifications *********************************************
-
-Version 2.3
-	20060109	LP	Don't need enviromemtal variable DICOMPATH with new DCMTK tools. The dicom dictionary is built in.
-
-******************************************************************************************************/
-	
-
-
+#import "BrowserController.h"
 #import "SendController.h"
 #import "Wait.h"
 #import <OsiriX/DCMNetServiceDelegate.h>

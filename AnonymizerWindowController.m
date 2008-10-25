@@ -16,6 +16,7 @@
 #import <OsiriX/DCM.h>
 #import "Wait.h"
 #import "ButtonAndTextCell.h"
+#import "BrowserController.h"
 
 @implementation AnonymizerWindowController
 
