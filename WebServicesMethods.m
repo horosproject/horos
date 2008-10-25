@@ -334,7 +334,9 @@ extern NSThread					*mainThread;
 		data = [data subdataWithRange:range];
 	}
 	
-	[dict setObject: data forKey: @"data"];
+	if( data)
+		[dict setObject: data forKey: @"data"];
+	
 	[dict setObject: [NSNumber numberWithInt: totalLength] forKey: @"totalLength"];
 	
 	// The answer HAS to be performed on the same thread as the http server
@@ -451,7 +453,7 @@ extern NSThread					*mainThread;
 	
 	BOOL isiPhone = isSafari && isMobile; // works only with Mobile Safari
 	
-	if(!isiPhone) // look for Mobile Webkit (used in Mobile OsiriX)
+	if(!isiPhone) // look
 	{
 		scan = [NSScanner scannerWithString:userAgent];
 		BOOL isiPhoneOS = NO;
@@ -461,15 +463,15 @@ extern NSThread					*mainThread;
 			[scan setScanLocation:[scan scanLocation]+1];
 		}
 		
-		scan = [NSScanner scannerWithString:userAgent];
-		BOOL isWebKit = NO;
-		while(![scan isAtEnd] && !isWebKit)
-		{
-			isWebKit = [scan scanString:@"AppleWebKit" intoString:nil];
-			[scan setScanLocation:[scan scanLocation]+1];
-		}
+//		scan = [NSScanner scannerWithString:userAgent];
+//		BOOL isWebKit = NO;
+//		while(![scan isAtEnd] && !isWebKit)
+//		{
+//			isWebKit = [scan scanString:@"AppleWebKit" intoString:nil];
+//			[scan setScanLocation:[scan scanLocation]+1];
+//		}
 		
-		isiPhone = isiPhoneOS && isWebKit;
+		isiPhone = isiPhoneOS;
 	}
 //	
 //	if( isiPhone)
@@ -889,16 +891,8 @@ extern NSThread					*mainThread;
 				int maxWidth = width;
 				int maxHeight = height;
 				
-				if( isiPhone)
-				{
-					maxWidth = 300; // for the poster frame of the movie to fit in the iphone screen (vertically)
-					maxHeight = 310;
-				}
-				else
-				{
-					maxWidth = maxResolution;
-					maxHeight = maxResolution;
-				}
+				maxWidth = maxResolution;
+				maxHeight = maxResolution;
 				
 				BOOL resize = NO;
 				

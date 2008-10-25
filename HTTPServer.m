@@ -151,6 +151,7 @@
         [requests release];
         requests = nil;
         [self release];
+		
         // This last line removes the implicit retain the HTTPConnection
         // has on itself, given by the HTTPServer when it abandoned the
         // new connection.
@@ -162,6 +163,9 @@
 // request available.
 - (BOOL)processIncomingBytes
 {
+	if( isValid == NO)
+		return NO;
+	
 	if( closeTimer)
 		[closeTimer setFireDate: [[closeTimer fireDate] addTimeInterval: 1]];
 	
@@ -195,6 +199,9 @@
         return NO;
     }
     
+	if( isValid == NO)
+		return NO;
+	
     HTTPServerRequest *request = [[HTTPServerRequest alloc] initWithRequest:working connection:self];
     if (!requests)
         requests = [[NSMutableArray alloc] init];
@@ -219,6 +226,9 @@
 	
 	CFRelease(working);
 	[request release];
+	
+	if( isValid == NO)
+		return NO;
 	
     return YES;
 }
@@ -339,13 +349,16 @@
 
 - (void)stream:(NSStream *)stream handleEvent:(NSStreamEvent)streamEvent
 {
+	if( isValid == NO) return;
+	
     switch(streamEvent)
 	{
     case NSStreamEventHasBytesAvailable:;
         uint8_t buf[16 * 1024];
         uint8_t *buffer = NULL;
         NSUInteger len = 0;
-        if (![istream getBuffer:&buffer length:&len]) {
+        if (![istream getBuffer:&buffer length:&len])
+		{
             int amount = [istream read:buf maxLength:sizeof(buf)];
             buffer = buf;
             len = amount;
@@ -356,7 +369,7 @@
             }
             [ibuffer appendBytes:buffer length:len];
         }
-        do {} while ([self processIncomingBytes]);
+        do {} while (isValid && [self processIncomingBytes]);
         break;
     case NSStreamEventHasSpaceAvailable:;
         [self processOutgoingBytes];
