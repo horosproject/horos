@@ -323,6 +323,7 @@
 				[closeTimer invalidate];
 				[closeTimer release];
 				closeTimer = [[NSTimer scheduledTimerWithTimeInterval: 60 target: self selector: @selector( closeTimerFunction:)  userInfo:0 repeats: NO] retain];
+				[[NSRunLoop currentRunLoop] addTimer: closeTimer forMode: [server runloopmode]];
 			}
 		}
 		
