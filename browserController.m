@@ -10660,6 +10660,8 @@ static BOOL needToRezoom;
 {
 	if( [selectedLines count] == 0) return;
 	
+	[managedObjectContext lock];
+	
 	@try
 	{
 		NSManagedObject		*selectedLine = [selectedLines objectAtIndex: 0];
@@ -10793,6 +10795,8 @@ static BOOL needToRezoom;
 		
 		NSRunAlertPanel( NSLocalizedString(@"Opening Error", nil), [NSString stringWithFormat: NSLocalizedString(@"Opening Error : %@", nil), e] , nil, nil, nil);
 	}
+	
+	[managedObjectContext unlock];
 }
 
 - (void)viewerDICOM: (id)sender
@@ -10813,6 +10817,8 @@ static BOOL needToRezoom;
 - (void)newViewerDICOM: (id)sender
 {
 	NSManagedObject		*item = [databaseOutline itemAtRow: [databaseOutline selectedRow]];
+	
+	[managedObjectContext lock];
 	
 	if (sender == Nil && [[oMatrix selectedCells] count] == 1 && [[item valueForKey:@"type"] isEqualToString:@"Study"] == YES )
 	{
@@ -10837,6 +10843,9 @@ static BOOL needToRezoom;
 			[self viewerDICOMInt:NO	dcmFile: [self databaseSelection] viewer: nil];
 		}
 	}
+	
+	[managedObjectContext unlock];
+	
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"OsiriX Did Load New Object" object:item userInfo:nil];
 }
 
