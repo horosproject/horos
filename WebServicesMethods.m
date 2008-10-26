@@ -124,6 +124,7 @@ extern NSThread					*mainThread;
 	[httpServ setName:@"OsiriXWebServer"];
 	[httpServ setPort:[[NSUserDefaults standardUserDefaults] integerForKey:@"httpWebServerPort"]];
 	[httpServ setDelegate:self];
+	[httpServ setRunloopmode: @"OsiriXWebServerRunLoop"];
 
 	NSString *bundlePath = [NSMutableString stringWithString:[[NSBundle mainBundle] resourcePath]];
 	webDirectory = [[bundlePath stringByAppendingPathComponent:@"WebServicesHTML"] retain];
@@ -148,7 +149,7 @@ extern NSThread					*mainThread;
 		
 		[running lock];
 		
-		while (shouldKeepRunning && [theRL runMode: @"OsiriXWebServerRunLoop" beforeDate:[NSDate distantFuture]]);
+		while (shouldKeepRunning && [theRL runMode: @"OsiriXWebServerRunLoop" beforeDate:[NSDate distantFuture]]);	//NSDefaultRunLoopMode
 		
 		[running unlock];
 	}

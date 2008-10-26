@@ -21,15 +21,29 @@ NSString * const TCPServerErrorDomain = @"TCPServerErrorDomain";
 
 @implementation TCPServer
 
-- (id)init {
+- (id)init
+{
     return self;
 }
+
+- (NSString *)runloopmode {
+    return runloopmode;
+}
+
+- (void)setRunloopmode:(NSString *)value {
+    if (runloopmode != value) {
+        [runloopmode release];
+        runloopmode = [value copy];
+    }
+}
+
 
 - (void)dealloc {
     [self stop];
     [domain release];
     [name release];
     [type release];
+	[runloopmode release];
     [super dealloc];
 }
 
@@ -181,15 +195,18 @@ static void TCPServerAcceptCallBack(CFSocketRef socket, CFSocketCallBackType typ
         ipv6socket = NULL;
         return NO;
     }
-
+	
     // set up the run loop sources for the sockets
-    CFRunLoopRef cfrl = CFRunLoopGetCurrent();
+    if( runloopmode == 0L)
+		[self setRunloopmode: kCFRunLoopCommonModes];
+	
+	CFRunLoopRef cfrl = CFRunLoopGetCurrent();
     CFRunLoopSourceRef source4 = CFSocketCreateRunLoopSource(kCFAllocatorDefault, ipv4socket, 0);
-    CFRunLoopAddSource(cfrl, source4, (CFStringRef) @"OsiriXWebServerRunLoop");
+    CFRunLoopAddSource(cfrl, source4, (CFStringRef) runloopmode);
     CFRelease(source4);
 
     CFRunLoopSourceRef source6 = CFSocketCreateRunLoopSource(kCFAllocatorDefault, ipv6socket, 0);
-    CFRunLoopAddSource(cfrl, source6, (CFStringRef) @"OsiriXWebServerRunLoop");
+    CFRunLoopAddSource(cfrl, source6, (CFStringRef) runloopmode);
     CFRelease(source6);
 
     // we can only publish the service if we have a type to publish with

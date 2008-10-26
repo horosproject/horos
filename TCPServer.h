@@ -28,6 +28,8 @@ typedef enum {
 
 @interface TCPServer : NSObject
 {
+	NSString *runloopmode;
+	
 @private
 	CFSocketRef ipv4socket;
     CFSocketRef ipv6socket;
@@ -41,6 +43,9 @@ typedef enum {
 
 - (id)delegate;
 - (void)setDelegate:(id)value;
+
+- (NSString *)runloopmode;
+- (void)setRunloopmode:(NSString *)value;
 
 - (NSString *)domain;
 - (void)setDomain:(NSString *)value;

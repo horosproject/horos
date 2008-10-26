@@ -14,6 +14,7 @@
 
 #import "QTExportHTMLSummary.h"
 #import "AppController.h"
+#import "BrowserController.h"
 
 extern NSString *documentsDirectory();
 

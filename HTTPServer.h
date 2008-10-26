@@ -61,7 +61,7 @@
 	NSTimer *closeTimer;
 }
 
-- (id)initWithPeerAddress:(NSData *)addr inputStream:(NSInputStream *)istr outputStream:(NSOutputStream *)ostr forServer:(HTTPServer *)serv;
+- (id)initWithPeerAddress:(NSData *)addr inputStream:(NSInputStream *)istr outputStream:(NSOutputStream *)ostr forServer:(HTTPServer *)serv runloopMode: (NSString*) r;
 
 - (id)delegate;
 - (void)setDelegate:(id)value;

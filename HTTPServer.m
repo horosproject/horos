@@ -47,7 +47,7 @@
 
 // Converts the TCPServer delegate notification into the HTTPServer delegate method.
 - (void)handleNewConnectionFromAddress:(NSData *)addr inputStream:(NSInputStream *)istr outputStream:(NSOutputStream *)ostr {
-    HTTPConnection *connection = [[connClass alloc] initWithPeerAddress:addr inputStream:istr outputStream:ostr forServer:self];
+    HTTPConnection *connection = [[connClass alloc] initWithPeerAddress:addr inputStream:istr outputStream:ostr forServer:self runloopMode: runloopmode];
     [connection setDelegate:[self delegate]];
     if ([self delegate] && [[self delegate] respondsToSelector:@selector(HTTPServer:didMakeNewConnection:)]) { 
         [[self delegate] HTTPServer:self didMakeNewConnection:connection];
@@ -72,15 +72,15 @@
     return nil;
 }
 
-- (id)initWithPeerAddress:(NSData *)addr inputStream:(NSInputStream *)istr outputStream:(NSOutputStream *)ostr forServer:(HTTPServer *)serv {
+- (id)initWithPeerAddress:(NSData *)addr inputStream:(NSInputStream *)istr outputStream:(NSOutputStream *)ostr forServer:(HTTPServer *)serv runloopMode: (NSString*) r {
     peerAddress = [addr copy];
     server = serv;
     istream = [istr retain];
     ostream = [ostr retain];
     [istream setDelegate:self];
     [ostream setDelegate:self];
-    [istream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode: @"OsiriXWebServerRunLoop"];		//kCFRunLoopCommonModes
-    [ostream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode: @"OsiriXWebServerRunLoop"];		//kCFRunLoopCommonModes
+    [istream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode: r];		//kCFRunLoopCommonModes
+    [ostream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode: r];		//kCFRunLoopCommonModes
     [istream open];
     [ostream open];
     isValid = YES;
