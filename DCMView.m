@@ -7811,7 +7811,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				}
 			} //blendingView
 		} //[self is2DViewer] == YES
-
 		
 		if (annotations != annotNone)
 		{

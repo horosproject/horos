@@ -5721,8 +5721,10 @@ END_CREATE_ROIS:
 			free(oImage);
 			oImage = (short*) tmpImage;
 		}
-		
-		
+		else if( bitsAllocated == 32)
+		{
+			NSLog( @"unsupported 32 bits");
+		}
 		else if( bitsAllocated == 8)
 		{	// Planar 8
 			//-> 16 bits image
