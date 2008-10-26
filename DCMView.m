@@ -3518,9 +3518,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			if( thickDCM)
 				[instructions setObject: thickDCM forKey: @"DCMPix2"];
 			
-			NSNotificationCenter *nc;
-			nc = [NSNotificationCenter defaultCenter];
-			[nc postNotificationName: @"sync" object: self userInfo: instructions];
+			[[NSNotificationCenter defaultCenter] postNotificationName: @"sync" object: self userInfo: instructions];
 		}
 		
 		if( cross.x != -9999 && cross.y != -9999)
@@ -6806,7 +6804,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	//draw line around edge for key Images only in 2D Viewer
 	
-	if ([self isKeyImage] && stringID == 0L) {
+	if ([self isKeyImage] && stringID == 0L)
+	{
 		glLineWidth(8.0);
 		glColor3f (1.0f, 1.0f, 0.0f);
 		glBegin(GL_LINE_LOOP);
