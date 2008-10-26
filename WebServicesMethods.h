@@ -26,6 +26,7 @@
 	NSLock *sendLock, *running;
 	volatile BOOL shouldKeepRunning;
 	NSString *ipAddressString;
+	NSNetService *bonjourService;
 }
 
 - (void)HTTPConnectionProtected:(HTTPConnection *)conn didReceiveRequest:(HTTPServerRequest *)mess;

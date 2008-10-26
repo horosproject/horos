@@ -169,6 +169,8 @@ extern NSThread					*mainThread;
 		NSString *path = @"/tmp/osirixwebservices";
 		[[NSFileManager defaultManager] removeFileAtPath: path handler:nil];
 		
+		bonjourService = [[NSNetService alloc] initWithDomain:@"" type: @"_osirixwebserver._tcp." name: [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] port:[[NSUserDefaults standardUserDefaults] integerForKey:@"httpWebServerPort"]];
+		
 		[NSThread detachNewThreadSelector:@selector(serverThread) toTarget:self withObject:0L];
 	}
 	return self;
