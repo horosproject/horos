@@ -148,7 +148,7 @@ extern NSThread					*mainThread;
 		
 		[running lock];
 		
-		while (shouldKeepRunning && [theRL runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]]);
+		while (shouldKeepRunning && [theRL runMode: @"OsiriXWebServerRunLoop" beforeDate:[NSDate distantFuture]]);
 		
 		[running unlock];
 	}

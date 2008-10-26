@@ -185,11 +185,11 @@ static void TCPServerAcceptCallBack(CFSocketRef socket, CFSocketCallBackType typ
     // set up the run loop sources for the sockets
     CFRunLoopRef cfrl = CFRunLoopGetCurrent();
     CFRunLoopSourceRef source4 = CFSocketCreateRunLoopSource(kCFAllocatorDefault, ipv4socket, 0);
-    CFRunLoopAddSource(cfrl, source4, kCFRunLoopCommonModes);
+    CFRunLoopAddSource(cfrl, source4, (CFStringRef) @"OsiriXWebServerRunLoop");
     CFRelease(source4);
 
     CFRunLoopSourceRef source6 = CFSocketCreateRunLoopSource(kCFAllocatorDefault, ipv6socket, 0);
-    CFRunLoopAddSource(cfrl, source6, kCFRunLoopCommonModes);
+    CFRunLoopAddSource(cfrl, source6, (CFStringRef) @"OsiriXWebServerRunLoop");
     CFRelease(source6);
 
     // we can only publish the service if we have a type to publish with

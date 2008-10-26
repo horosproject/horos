@@ -79,8 +79,8 @@
     ostream = [ostr retain];
     [istream setDelegate:self];
     [ostream setDelegate:self];
-    [istream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:(id)kCFRunLoopCommonModes];
-    [ostream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:(id)kCFRunLoopCommonModes];
+    [istream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode: @"OsiriXWebServerRunLoop"];		//kCFRunLoopCommonModes
+    [ostream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode: @"OsiriXWebServerRunLoop"];		//kCFRunLoopCommonModes
     [istream open];
     [ostream open];
     isValid = YES;
