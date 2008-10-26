@@ -8108,9 +8108,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					NSLog( @"drawTextualData Annotations Exception : %@", e);
 				}
 				
-			} //annotations >= annotBase
+			}
+		
 		} //Annotation  != None
-			
+		
 		if(repulsorRadius != 0)
 		{
 			glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
