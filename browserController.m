@@ -11710,6 +11710,12 @@ static NSArray*	openSubSeriesArray = 0L;
 		NSLog(@"AwakeFromNib exception: %@", [ne description]);
 		NSString *path = [documentsDirectory() stringByAppendingPathComponent:@"/Loading"];
 		[path writeToFile:path atomically:NO encoding : NSUTF8StringEncoding error: nil];
+		
+		NSString *message = [NSString stringWithFormat: NSLocalizedString(@"A problem occured during start-up of OsiriX:\r\r%@",nil), [ne description]];
+		
+		NSRunCriticalAlertPanel(NSLocalizedString(@"Error",nil), message, NSLocalizedString( @"OK",nil), nil, nil);
+		
+		exit( 0);
 	}
 	
 	[wait close];

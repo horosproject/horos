@@ -64,8 +64,8 @@ static char *GetPrivateIP()
 
 - (void) waitTheLock
 {
-	[lock lock];
-	[lock unlock];
+	[[[BrowserController currentBrowser] managedObjectContext] lock];
+	[[[BrowserController currentBrowser] managedObjectContext] unlock];
 }
 
 + (NSString*) bonjour2local: (NSString*) str
@@ -90,7 +90,8 @@ static char *GetPrivateIP()
 	return dicomFileName;
 }
 
-- (id) initWithBrowserController: (BrowserController*) bC bonjourPublisher:(BonjourPublisher*) bPub{
+- (id) initWithBrowserController: (BrowserController*) bC bonjourPublisher:(BonjourPublisher*) bPub
+{
 	self = [super init];
 	if (self != nil)
 	{
@@ -113,7 +114,6 @@ static char *GetPrivateIP()
 		resolveServiceThreadLock = [[NSLock alloc] init];
 		async = [[NSLock alloc] init];
 		asyncWrite = [[NSLock alloc] init];
-		lock = [[NSLock alloc] init];
 		browser = [[NSNetServiceBrowser alloc] init];
 		services = [[NSMutableArray array] retain];
 		
@@ -179,7 +179,6 @@ static char *GetPrivateIP()
 	[FileModificationDate release];
 	[filePathToLoad release];
 	[tempDatabaseFile release];
-	[lock release];
 	[async release];
 	[asyncWrite release];
 	[browser release];
@@ -1383,14 +1382,14 @@ static char *GetPrivateIP()
 
 - (NSDictionary*) getDICOMDestinationInfo:(int) index
 {
-	[lock lock];
+	[[[BrowserController currentBrowser] managedObjectContext] lock];
 	
 	[dicomListener release];
 	dicomListener = 0L;
 	
 	[self connectToServer: index message:@"GETDI"];
 	
-	[lock unlock];
+	[[[BrowserController currentBrowser] managedObjectContext] unlock];
 	
 	if( dicomListener == 0L)
 	{
@@ -1403,12 +1402,12 @@ static char *GetPrivateIP()
 
 - (BOOL) isBonjourDatabaseUpToDate: (int) index
 {
-	if( [lock tryLock] == NO) return YES;
-	[lock unlock];
+	if( [[[BrowserController currentBrowser] managedObjectContext] tryLock] == NO) return YES;
+	[[[BrowserController currentBrowser] managedObjectContext] unlock];
 	
 	BOOL result;
 	
-	[lock lock];
+	[[[BrowserController currentBrowser] managedObjectContext] lock];
 	
 	[self connectToServer: index message:@"VERSI"];
 	
@@ -1421,14 +1420,14 @@ static char *GetPrivateIP()
  		NSLog( @"date: %@ versus: %@", [[NSDate dateWithTimeIntervalSinceReferenceDate:localVersion] description], [[NSDate dateWithTimeIntervalSinceReferenceDate:BonjourDatabaseVersion] description]);
 	}
 	
-	[lock unlock];
+	[[[BrowserController currentBrowser] managedObjectContext] unlock];
 	
 	return result;
 }
 
 - (void) removeStudies: (NSArray*) studies fromAlbum: (NSManagedObject*) album bonjourIndex:(int) index
 {
-	[lock lock];
+	[[[BrowserController currentBrowser] managedObjectContext] lock];
 	
 	[albumStudies release];
 	[albumUID release];
@@ -1446,12 +1445,12 @@ static char *GetPrivateIP()
 	[self connectToServer: index message:@"VERSI"];
 	localVersion = BonjourDatabaseVersion;
 	
-	[lock unlock];
+	[[[BrowserController currentBrowser] managedObjectContext] unlock];
 }
 
 - (void) addStudies: (NSArray*) studies toAlbum: (NSManagedObject*) album bonjourIndex:(int) index
 {
-	[lock lock];
+	[[[BrowserController currentBrowser] managedObjectContext] lock];
 	
 	[albumStudies release];
 	[albumUID release];
@@ -1469,12 +1468,12 @@ static char *GetPrivateIP()
 	[self connectToServer: index message:@"VERSI"];
 	localVersion = BonjourDatabaseVersion;
 	
-	[lock unlock];
+	[[[BrowserController currentBrowser] managedObjectContext] unlock];
 }
 
 - (void) setBonjourDatabaseValue:(int) index item:(NSManagedObject*) obj value:(id) value forKey:(NSString*) key
 {
-	[lock lock];
+	[[[BrowserController currentBrowser] managedObjectContext] lock];
 	
 	[setValueObject release];
 	[setValueValue release];
@@ -1491,7 +1490,7 @@ static char *GetPrivateIP()
 	[self connectToServer: index message:@"VERSI"];
 	localVersion = BonjourDatabaseVersion;
 	
-	[lock unlock];
+	[[[BrowserController currentBrowser] managedObjectContext] unlock];
 }
 
 - (NSDate*) getFileModification:(NSString*) pathFile index:(int) index 
@@ -1505,7 +1504,7 @@ static char *GetPrivateIP()
 		return [fattrs objectForKey:NSFileModificationDate];
 	}
 	
-	[lock lock];
+	[[[BrowserController currentBrowser] managedObjectContext] lock];
 	
 	[filePathToLoad release];
 	
@@ -1518,7 +1517,7 @@ static char *GetPrivateIP()
 		modificationDate = [NSDate dateWithString: FileModificationDate];
 	}
 	
-	[lock unlock];
+	[[[BrowserController currentBrowser] managedObjectContext] unlock];
 	return modificationDate;
 }
 
@@ -1533,7 +1532,7 @@ static char *GetPrivateIP()
 	if( [[NSFileManager defaultManager] fileExistsAtPath:returnedFile]) return returnedFile;
 	else returnedFile = 0L;
 	
-	[lock lock];
+	[[[BrowserController currentBrowser] managedObjectContext] lock];
 	
 	[filePathToLoad release];
 	filePathToLoad = [pathFile retain];
@@ -1545,7 +1544,7 @@ static char *GetPrivateIP()
 		returnedFile = [BonjourBrowser bonjour2local: filePathToLoad];
 	}
 	
-	[lock unlock];
+	[[[BrowserController currentBrowser] managedObjectContext] unlock];
 	
 	return returnedFile;
 }
@@ -1554,7 +1553,7 @@ static char *GetPrivateIP()
 {
 	BOOL succeed = NO;
 	
-	[lock lock];
+	[[[BrowserController currentBrowser] managedObjectContext] lock];
 	
 	[filePathToLoad release];
 	
@@ -1567,7 +1566,7 @@ static char *GetPrivateIP()
 		succeed = YES;
 	}
 	
-	[lock unlock];
+	[[[BrowserController currentBrowser] managedObjectContext] unlock];
 	
 	return succeed;
 }
@@ -1584,7 +1583,7 @@ static char *GetPrivateIP()
 	if( serviceBeingResolvedIndex != index)
 		newConnection = YES;
 	
-	[lock lock];
+	[[[BrowserController currentBrowser] managedObjectContext] lock];
 	
 	[dbFileName release];
 	dbFileName = 0L;
@@ -1610,7 +1609,7 @@ static char *GetPrivateIP()
 		
 		if( [modelVersion isEqualToString:[[NSUserDefaults standardUserDefaults] stringForKey: @"DATABASEVERSION"]] == NO)
 		{
-			[lock unlock];
+			[[[BrowserController currentBrowser] managedObjectContext] unlock];
 			[waitWindow end];
 			[waitWindow release];
 			waitWindow = 0L;
@@ -1646,7 +1645,7 @@ static char *GetPrivateIP()
 				
 				if( resolved == NO || wrongPassword == YES)
 				{
-					[lock unlock];
+					[[[BrowserController currentBrowser] managedObjectContext] unlock];
 					[waitWindow end];
 					[waitWindow release];
 					waitWindow = 0L;
@@ -1736,7 +1735,7 @@ static char *GetPrivateIP()
 	[waitWindow release];
 	waitWindow = 0L;
 	
-	[lock unlock];
+	[[[BrowserController currentBrowser] managedObjectContext] unlock];
 	
 	return returnedPath;
 }
@@ -1766,7 +1765,7 @@ static char *GetPrivateIP()
 		if( [dict valueForKey: @"Port"] == 0L) return NO;
 	}
 	
-	[lock lock];
+	[[[BrowserController currentBrowser] managedObjectContext] lock];
 	
 	[paths release];
 	paths = [ip retain];
@@ -1787,7 +1786,7 @@ static char *GetPrivateIP()
 	
 	[self connectToServer: indexFrom message:@"DCMSE"];
 	
-	[lock unlock];
+	[[[BrowserController currentBrowser] managedObjectContext] unlock];
 	
 	return YES;
 }
@@ -1800,21 +1799,21 @@ static char *GetPrivateIP()
 		if( [[NSFileManager defaultManager] fileExistsAtPath: loopItem] == NO) return NO;
 	}
 	
-	[lock lock];
+	[[[BrowserController currentBrowser] managedObjectContext] lock];
 	
 	[paths release];
 	paths = [ip retain];
 	
 	[self connectToServer: index message:@"SENDD"];
 	
-	[lock unlock];
+	[[[BrowserController currentBrowser] managedObjectContext] unlock];
 	
 	return YES;
 }
 
 - (void) getDICOMROIFiles:(int) index roisPaths:(NSArray*) roisPaths
 {
-	[lock lock];
+	[[[BrowserController currentBrowser] managedObjectContext] lock];
 	
 	[dicomFileNames release];
 	dicomFileNames = [[NSMutableArray alloc] initWithCapacity: 0];
@@ -1840,19 +1839,19 @@ static char *GetPrivateIP()
 	if( [dicomFileNames count] > 0)
 		[self connectToServer: index message:@"DICOM"];
 	
-	[lock unlock];
+	[[[BrowserController currentBrowser] managedObjectContext] unlock];
 }
 
 - (NSString*) getDICOMFile:(int) index forObject:(NSManagedObject*) image noOfImages: (int) noOfImages
 {
-	[lock lock];
+	[[[BrowserController currentBrowser] managedObjectContext] lock];
 	
 	// Does this file already exist?
 	NSString	*dicomFileName = [BonjourBrowser uniqueLocalPath: image];
 	
 	if( [[NSFileManager defaultManager] fileExistsAtPath: dicomFileName])
 	{
-		[lock unlock];
+		[[[BrowserController currentBrowser] managedObjectContext] unlock];
 		return dicomFileName;
 	}
 	
@@ -1925,7 +1924,7 @@ static char *GetPrivateIP()
 	else if( [[NSFileManager defaultManager] fileExistsAtPath: [dicomFileNames objectAtIndex: 0]] == NO) returnString =  0L;
 	else returnString = [NSString stringWithString: [dicomFileNames objectAtIndex: 0]];
 	
-	[lock unlock];
+	[[[BrowserController currentBrowser] managedObjectContext] unlock];
 	
 	return returnString;
 }
