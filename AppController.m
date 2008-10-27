@@ -743,23 +743,28 @@ static NSDate *lastWarningDate = 0L;
 //———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 #pragma mark-
 
--(IBAction)osirix64bit:(id)sender{
+-(IBAction)osirix64bit:(id)sender
+{
 	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.osirix-viewer.com/OsiriX-64bit.html"]];
 }
 
--(IBAction)sendEmail:(id)sender{
+-(IBAction)sendEmail:(id)sender
+{
 	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"mailto:rossetantoine@osirix-viewer.com"]]; 
 }
 
--(IBAction)openOsirixWebPage:(id)sender{
+-(IBAction)openOsirixWebPage:(id)sender
+{
 	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.osirix-viewer.com"]];
 }
 
--(IBAction)help:(id)sender{
+-(IBAction)help:(id)sender
+{
 	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.osirix-viewer.com/Learning.html"]];
 }
 
--(IBAction)openOsirixDiscussion:(id)sender{
+-(IBAction)openOsirixDiscussion:(id)sender
+{
 	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://groups.yahoo.com/group/osirix/"]];
 }
 

@@ -1529,7 +1529,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			(NIfTI->magic[2] == '1')                           &&
 			(NIfTI->magic[3] == '\0') )
 		{
-			name = [DicomFile NSreplaceBadCharacter: [filePath lastPathComponent]]; 
+			name = [[DicomFile NSreplaceBadCharacter: [filePath lastPathComponent]] retain];
 			patientID = [[NSString alloc] initWithString:name];
 			studyID = [[NSString alloc] initWithString:name];
 			serieID = [[NSString alloc] initWithString:[[filePath lastPathComponent] stringByDeletingPathExtension]];
@@ -1570,6 +1570,8 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				return 0;   // success
 			}
 		}
+		
+		free( NIfTI);
 	}
 	
 	return -1;
@@ -1582,8 +1584,8 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	NSString	*extension = [[file pathExtension] lowercaseString];
 	NSXMLDocument *xmlDoc;
 	
-	NSXMLElement *rootElement = [[NSXMLElement alloc] initWithName:@"NIfTIObject"];
-	xmlDoc = [[NSXMLDocument alloc] initWithRootElement: rootElement];
+	NSXMLElement *rootElement = [[[NSXMLElement alloc] initWithName:@"NIfTIObject"] autorelease];
+	xmlDoc = [[[NSXMLDocument alloc] initWithRootElement: rootElement] autorelease];
 	
 	// Process NIfTI header
 	
@@ -1591,7 +1593,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	{
 		NIfTI = nifti_image_read( [file UTF8String], 0);
 		 
-		returnString = [[NSString alloc] initWithCString: nifti_image_to_ascii( NIfTI)];
+		returnString = [[[NSString alloc] initWithCString: nifti_image_to_ascii( NIfTI)] autorelease];
 		NSLog(@"NIFTI INFO:  %@", returnString);
 		
 		// Now build the XML document
@@ -1621,13 +1623,13 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 					NSLog(@"key value %@,%@", key, value);
 					
 					// Create node, then add to xml
-					NSXMLElement *node = [[NSXMLElement alloc] initWithName: key];
+					NSXMLElement *node = [[[NSXMLElement alloc] initWithName: key] autorelease];
 					[node addAttribute:[NSXMLNode attributeWithName:@"group" stringValue:@""]];
 					[node addAttribute:[NSXMLNode attributeWithName:@"element" stringValue:@""]];
 					[node addAttribute:[NSXMLNode attributeWithName:@"vr" stringValue:@""]];
 					[node addAttribute:[NSXMLNode attributeWithName:@"attributeTag" stringValue:@""]];
 					
-					NSXMLElement *childNode = [[NSXMLElement alloc] initWithName:@"value" stringValue:value];
+					NSXMLElement *childNode = [[[NSXMLElement alloc] initWithName:@"value" stringValue:value] autorelease];
 					[childNode addAttribute:[NSXMLNode attributeWithName:@"number" stringValue:@"0"]];
 					[node addChild:childNode];
 					
@@ -1644,14 +1646,14 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			ext = NIfTI->ext_list;
 			for ( c = 0; c < NIfTI->num_ext; c++ )
 			{
-				NSXMLElement *node = [[NSXMLElement alloc] initWithName:
-					[@"extension: ecode " stringByAppendingString:[NSString stringWithFormat:@"%i", ext->ecode]]];
+				NSXMLElement *node = [[[NSXMLElement alloc] initWithName:
+					[@"extension: ecode " stringByAppendingString:[NSString stringWithFormat:@"%i", ext->ecode]]] autorelease];
 				[node addAttribute:[NSXMLNode attributeWithName:@"group" stringValue:@""]];
 				[node addAttribute:[NSXMLNode attributeWithName:@"element" stringValue:@""]];
 				[node addAttribute:[NSXMLNode attributeWithName:@"vr" stringValue:@""]];
 				[node addAttribute:[NSXMLNode attributeWithName:@"attributeTag" stringValue:@""]];
 				
-				NSXMLElement *childNode = [[NSXMLElement alloc] initWithName:@"value" stringValue:[NSString stringWithCString:ext->edata]];
+				NSXMLElement *childNode = [[[NSXMLElement alloc] initWithName:@"value" stringValue:[NSString stringWithCString:ext->edata]] autorelease];
 				[childNode addAttribute:[NSXMLNode attributeWithName:@"number" stringValue:@"0"]];
 				[node addChild:childNode];
 				

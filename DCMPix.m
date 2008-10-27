@@ -2910,8 +2910,8 @@ BOOL gUSEPAPYRUSDCMPIX;
 
 - (void)origin: (float*)o { [self CheckLoad];	o[ 0] = originX; o[ 1] = originY; o[ 2] = originZ; }
 - (void)originDouble: (double*)o { [self CheckLoad];	o[ 0] = originX; o[ 1] = originY; o[ 2] = originZ; }
-- (void)setOrigin: (float*)o { [self CheckLoad];	originX = o[ 0]; originY = o[ 1]; originZ = o[ 2]; }
-- (void)setOriginDouble: (double*)o { [self CheckLoad];	originX = o[ 0]; originY = o[ 1]; originZ = o[ 2]; };
+- (void)setOrigin: (float*)o { originX = o[ 0]; originY = o[ 1]; originZ = o[ 2]; }
+- (void)setOriginDouble: (double*)o { originX = o[ 0]; originY = o[ 1]; originZ = o[ 2]; };
 
 - (double)sliceLocation{ [self CheckLoad]; return sliceLocation;}
 - (void)setSliceLocation: (double)l { [self CheckLoad]; sliceLocation = l;}
@@ -8477,7 +8477,7 @@ END_CREATE_ROIS:
 								}
 								//NSLog(@"Loop is done for frame number %i \n", (int) frameNo);
 							}
-								break;
+							break;
 								
 							case 4:
 								memcpy( oImage, [fileData bytes] + frameNo*(realheight * realwidth * 2), realheight * realwidth * 2);
@@ -8493,9 +8493,9 @@ END_CREATE_ROIS:
 										ptr++;
 									}
 								}
-								break;
+							break;
 								
-								case 8:
+							case 8:
 								{
 									unsigned int   *bufPtr;
 									short			*ptr;
@@ -8513,38 +8513,34 @@ END_CREATE_ROIS:
 										else *ptr++ = *bufPtr++;
 									}
 								}
-								break; 
+							break; 
 								
-								case 16:
+							case 16:
 								if( fExternalOwnedImage)
-								{
 									fImage = fExternalOwnedImage;
-								}
 								else
-								{
-									fImage = malloc(width*height*sizeof(float) + 100);
-								}
+									fImage = malloc( (width+1) * (height+1) * sizeof(float) + 100);
+								
+								if( [fileData length] < realheight * realwidth * sizeof(float))
+									NSLog( @"****** [fileData length] < realheight * realwidth * sizeof(float)");
 								
 								for( i = 0; i < height;i++)
-								{
-									memcpy( fImage + i * width, [fileData bytes]+ frameNo * (realheight * realwidth)*sizeof(float) + i*realwidth*sizeof(float), width*sizeof(float));
-								}
+									memcpy( fImage + i * width, [fileData bytes]+ frameNo * (realheight * realwidth)*sizeof(float) + i*realwidth*sizeof(float), width * sizeof(float));
 								
 								free(oImage);
 								oImage = 0L;
-								break; 
+							break; 
 								
-								case 128:
+							case 128:
 								//								fi.fileType = FileInfo.RGB_PLANAR; 		// DT_RGB
 								//								bitsallocated = 24;
 								NSLog(@"unsupported... please send me this file");
-								break; 
+							break; 
 						}
 						
 						[fileData release];
 						
 						// CONVERSION TO FLOAT
-						
 						
 						if( datatype != 16)
 						{
@@ -8666,7 +8662,7 @@ END_CREATE_ROIS:
 								// this means that jcod is S2I or I2S.
 								// So set orient[3,4,5] to orient[6,7,8]
 								float	orient[ 9]; 
-								[self orientation: orient];								
+								for( int i = 0 ; i < 9; i ++) orient[ i] = orientation[ i];
 								
 								orient[ 3] = orient[ 6];
 								orient[ 4] = orient[ 7];
@@ -8687,7 +8683,8 @@ END_CREATE_ROIS:
 								// Shift.
 								float	orient[ 9];
 								int t6, t7, t8;
-								[self orientation: orient];								
+								
+								for( int i = 0 ; i < 9; i ++) orient[ i] = orientation[ i];
 								
 								t6 = orient[ 6];
 								t7 = orient[ 7];
@@ -8743,7 +8740,8 @@ END_CREATE_ROIS:
 						{
 							// Flip orientation horizontally
 							float	orient[ 9];
-							[self orientation: orient];
+							for( int i = 0 ; i < 9; i ++) orient[ i] = orientation[ i];
+							
 							orient[ 0] *= -1;
 							orient[ 1] *= -1;
 							orient[ 2] *= -1;
@@ -8760,7 +8758,9 @@ END_CREATE_ROIS:
 						{
 							// Flip orientation vertically
 							float	orient[ 9];
-							[self orientation: orient];
+							
+							for( int i = 0 ; i < 9; i ++) orient[ i] = orientation[ i];
+							
 							orient[ 3] *= -1;
 							orient[ 4] *= -1;
 							orient[ 5] *= -1;
@@ -9748,8 +9748,6 @@ END_CREATE_ROIS:
 
 -(void) setOrientationDouble:(double*) c
 {
-	[self CheckLoad]; 
-	
 	for( int i = 0 ; i < 6; i ++) orientation[ i] = c[ i];
 	
 	double length = sqrt(orientation[0]*orientation[0] + orientation[1]*orientation[1] + orientation[2]*orientation[2]);
