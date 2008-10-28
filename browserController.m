@@ -15812,7 +15812,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 				if( [im valueForKey: @"yOffset"])
 					[im setValue: [d valueForKey: @"yOffset"] forKey:@"yOffset"];
 				
-				if( [[d valueForKey: @"displayStyle"] intValue] == 2)
+				if( [[d valueForKey: @"displayStyle"] intValue] == 3)
+					[im setValue: [NSNumber numberWithFloat: [[im valueForKeyPath: @"series.scale"] floatValue] * sqrt( [[v imageView] frame].size.height * [[v imageView] frame].size.width)] forKey:@"scale"];
+				else if( [[d valueForKey: @"displayStyle"] intValue] == 2)
 					[im setValue: [NSNumber numberWithFloat: [[im valueForKeyPath: @"series.scale"] floatValue] * [[v imageView] frame].size.width] forKey:@"scale"];
 				else
 				{

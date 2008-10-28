@@ -9264,8 +9264,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		if( [self is2DViewer])
 		{
 			// Series Level
-			[[self seriesObj] setValue:[NSNumber numberWithFloat: scaleValue / [self frame].size.width] forKey:@"scale"];
-			[[self seriesObj] setValue:[NSNumber numberWithInt: 2] forKey: @"displayStyle"];	//displayStyle = 2  -> scaleValue is proportional to view width
+			[[self seriesObj] setValue:[NSNumber numberWithFloat: scaleValue / sqrt( [self frame].size.height * [self frame].size.width)] forKey:@"scale"];
+			
+			[[self seriesObj] setValue:[NSNumber numberWithInt: 3] forKey: @"displayStyle"];	//displayStyle = 2  -> scaleValue is proportional to view width
 			
 			// Image Level
 			if( ([[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"CR"]  && IndependentCRWLWW) || COPYSETTINGSINSERIES == NO)
@@ -9297,8 +9298,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		if( [self is2DViewer] && firstTimeDisplay)
 		{
 			// Series Level
-			[[self seriesObj] setValue:[NSNumber numberWithFloat: scaleValue / [self frame].size.width] forKey:@"scale"];
-			[[self seriesObj] setValue:[NSNumber numberWithInt: 2] forKey: @"displayStyle"];	//displayStyle = 2  -> scaleValue is proportional to view width
+			[[self seriesObj] setValue:[NSNumber numberWithFloat: scaleValue / sqrt( [self frame].size.height * [self frame].size.width)] forKey:@"scale"];
+			[[self seriesObj] setValue:[NSNumber numberWithInt: 3] forKey: @"displayStyle"];	//displayStyle = 2  -> scaleValue is proportional to view width
 			
 			// Image Level
 			if( ([[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"CR"]  && IndependentCRWLWW) || COPYSETTINGSINSERIES == NO)
@@ -10552,15 +10553,17 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 		if( ([self is2DViewer] && firstTimeDisplay && [[NSUserDefaults standardUserDefaults] boolForKey:@"AlwaysScaleToFit"] == NO) || COPYSETTINGSINSERIES == NO)
 		{
-			if( [image valueForKey:@"scale"]) [self setScaleValue: [[image valueForKey:@"scale"] floatValue]];
+			if( [image valueForKey:@"scale"])
+				[self setScaleValue: [[image valueForKey:@"scale"] floatValue]];
 			else if( !onlyImage)
 			{
 				if( [series valueForKey:@"scale"])
 				{
 					if( [[series valueForKey:@"scale"] floatValue] != 0)
 					{
-						//displayStyle = 2  -> scaleValue is proportional to view height
-						if( [[series valueForKey:@"displayStyle"] intValue] == 2)
+						if( [[series valueForKey:@"displayStyle"] intValue] == 3)
+							[self setScaleValue: [[series valueForKey:@"scale"] floatValue] * sqrt( [self frame].size.height * [self frame].size.width)];
+						else if( [[series valueForKey:@"displayStyle"] intValue] == 2)
 							[self setScaleValue: [[series valueForKey:@"scale"] floatValue] * [self frame].size.width];
 						else
 							[self setScaleValue: [[series valueForKey:@"scale"] floatValue]];
