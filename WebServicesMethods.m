@@ -693,8 +693,9 @@ extern NSThread					*mainThread;
 				NSArray *seriesArray;
 				for(NSString* selectedID in [parameters objectForKey:@"selected"])
 				{
-					NSPredicate *browsePredicate = [NSPredicate predicateWithFormat:@"seriesInstanceUID == %@", [[selectedID stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding] stringByReplacingOccurrencesOfString:@"+" withString:@" "]];
-					seriesArray = [self seriesForPredicate:browsePredicate];
+					NSPredicate *pred = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", [parameters objectForKey:@"id"], [[selectedID stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding] stringByReplacingOccurrencesOfString:@"+" withString:@" "]];
+					
+					seriesArray = [self seriesForPredicate: pred];
 					for(NSManagedObject *series in seriesArray)
 					{
 						NSArray *images = [[series valueForKey:@"images"] allObjects];
@@ -738,7 +739,10 @@ extern NSThread					*mainThread;
 			NSPredicate *browsePredicate;
 			if([[parameters allKeys] containsObject:@"id"])
 			{
-				browsePredicate = [NSPredicate predicateWithFormat:@"seriesInstanceUID == %@", [[parameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+				if( [[parameters allKeys] containsObject:@"studyID"])
+					browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", [[parameters objectForKey:@"studyID"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[parameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+				else
+					browsePredicate = [NSPredicate predicateWithFormat:@"seriesInstanceUID == %@", [[parameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
 			}
 			else
 				browsePredicate = [NSPredicate predicateWithValue:NO];
@@ -771,12 +775,17 @@ extern NSThread					*mainThread;
 			NSPredicate *browsePredicate;
 			if([[parameters allKeys] containsObject:@"id"])
 			{
-				browsePredicate = [NSPredicate predicateWithFormat:@"seriesInstanceUID == %@", [[parameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+				if( [[parameters allKeys] containsObject:@"studyID"])
+					browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", [[parameters objectForKey:@"studyID"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[parameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+				else
+					browsePredicate = [NSPredicate predicateWithFormat:@"seriesInstanceUID == %@", [[parameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
 			}
 			else
 				browsePredicate = [NSPredicate predicateWithValue:NO];
+			
 			NSArray *series = [self seriesForPredicate:browsePredicate];
 			NSArray *imagesArray = [[[series lastObject] valueForKey:@"images"] allObjects];
+			
 			if([imagesArray count] == 1 && [[[imagesArray lastObject] valueForKey: @"numberOfFrames"] intValue] <= 1)
 			{
 				[templateString replaceOccurrencesOfString:@"<!--[if !IE]>-->" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
@@ -845,9 +854,12 @@ extern NSThread					*mainThread;
 		else if([fileURL isEqualToString:@"/image"])
 		{
 			NSPredicate *browsePredicate;
-			if([[parameters allKeys] containsObject:@"id"])
+			if( [[parameters allKeys] containsObject:@"id"])
 			{
-				browsePredicate = [NSPredicate predicateWithFormat:@"seriesInstanceUID == %@", [[parameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+				if( [[parameters allKeys] containsObject:@"studyID"])
+					browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", [[parameters objectForKey:@"studyID"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[parameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+				else
+					browsePredicate = [NSPredicate predicateWithFormat:@"seriesInstanceUID == %@", [[parameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
 			}
 			else
 				browsePredicate = [NSPredicate predicateWithValue:NO];
@@ -933,7 +945,10 @@ extern NSThread					*mainThread;
 			NSPredicate *browsePredicate;
 			if([[parameters allKeys] containsObject:@"id"])
 			{
-				browsePredicate = [NSPredicate predicateWithFormat:@"seriesInstanceUID == %@", [[parameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+				if( [[parameters allKeys] containsObject:@"studyID"])
+					browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", [[parameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[parameters objectForKey:@"studyID"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+				else
+					browsePredicate = [NSPredicate predicateWithFormat:@"seriesInstanceUID == %@", [[parameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
 			}
 			else
 				browsePredicate = [NSPredicate predicateWithValue:NO];
@@ -1348,8 +1363,9 @@ extern NSThread					*mainThread;
 	{
 		NSMutableString *tempHTML = [NSMutableString stringWithString:seriesListItemString];
 		[tempHTML replaceOccurrencesOfString:@"%SeriesName%" withString:[WebServicesMethods nonNilString:[series valueForKey:@"name"]] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
-		[tempHTML replaceOccurrencesOfString:@"%thumbnail%" withString:[NSString stringWithFormat:@"thumbnail?id=%@", [WebServicesMethods nonNilString:[series valueForKey:@"seriesInstanceUID"]]] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+		[tempHTML replaceOccurrencesOfString:@"%thumbnail%" withString:[NSString stringWithFormat:@"thumbnail?id=%@&studyID=%@", [WebServicesMethods nonNilString:[series valueForKey:@"seriesInstanceUID"]], [WebServicesMethods nonNilString:[study valueForKey:@"studyInstanceUID"]]] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 		[tempHTML replaceOccurrencesOfString:@"%SeriesID%" withString:[WebServicesMethods nonNilString:[series valueForKey:@"seriesInstanceUID"]] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+		
 		int nbFiles = [[series valueForKey:@"noFiles"] intValue];
 		if( nbFiles <= 1)
 		{
