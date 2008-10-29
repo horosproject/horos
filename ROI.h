@@ -12,9 +12,6 @@
      PURPOSE.
 =========================================================================*/
 
-
-
-
 #import <Foundation/Foundation.h>
 #import "MyPoint.h"
 
@@ -105,8 +102,8 @@ enum
 	
 	float			mousePosMeasure;
 	
-	StringTexture			*stringTex;
-	NSMutableDictionary		*stanStringAttrib;
+	StringTexture	*stringTex;
+	NSMutableDictionary	*stanStringAttrib;
 	
 	ROI*			parentROI;
 	
@@ -138,12 +135,14 @@ enum
 	BOOL			locked;
 	BOOL			selectable;
 	BOOL			isAliased;
+	int				originalIndexForAlias;
 }
 
 @property(readonly) int textureWidth, textureHeight;
 @property(readonly) int textureDownRightCornerX,textureDownRightCornerY, textureUpLeftCornerX, textureUpLeftCornerY;
 @property(readonly) unsigned char *textureBuffer;
 @property float opacity;
+@property int originalIndexForAlias;
 @property BOOL locked, selectable, isAliased;
 @property(retain) NSString *name, *comments;
 @property(readonly) long type;

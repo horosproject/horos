@@ -3927,6 +3927,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 								[[dcmRoiList objectAtIndex: i] addObject: aNewROI];
 							}
 							
+							aNewROI.originalIndexForAlias = curImage;
 							aNewROI.isAliased = YES;
 						}
 						else [curRoiList addObject: aNewROI];

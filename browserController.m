@@ -6663,7 +6663,7 @@ static NSArray*	statesArray = nil;
 	NSArray					*winList = [NSApp windows];
 	NSMutableArray			*viewersList = [[NSMutableArray alloc] initWithCapacity:0];
 	
-	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"nextPatientToAllViewers"] )
+	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"nextSeriesToAllViewers"] )
 	{
 		// If multiple viewer are opened, apply it to the entire list
 		for( NSWindow *win in winList )
@@ -6769,7 +6769,8 @@ static NSArray*	statesArray = nil;
 		
 		NSArray	*seriesArray = [NSArray array];
 		
-		for(NSManagedObject	*curStudy in studiesArray )	{				
+		for(NSManagedObject	*curStudy in studiesArray )
+		{				
 			seriesArray = [seriesArray arrayByAddingObjectsFromArray: [self childrenArray: curStudy]];
 		}
 		
@@ -6788,7 +6789,8 @@ static NSArray*	statesArray = nil;
 			{
 				for( ViewerController *vc in viewersList )
 				{
-					if( index >= 0 && index < [seriesArray count] )	{
+					if( index >= 0 && index < [seriesArray count] )
+					{
 						[self openViewerFromImages :[NSArray arrayWithObject: [self childrenArray: [seriesArray objectAtIndex: index]]] movie: NO viewer:vc keyImagesOnly: keyImages];
 					}
 					else

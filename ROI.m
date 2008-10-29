@@ -271,7 +271,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 
 @implementation ROI
 
-@synthesize textureWidth, textureHeight, textureBuffer, locked, selectable, isAliased;
+@synthesize textureWidth, textureHeight, textureBuffer, locked, selectable, isAliased, originalIndexForAlias;
 @synthesize textureDownRightCornerX,textureDownRightCornerY, textureUpLeftCornerX, textureUpLeftCornerY;
 @synthesize opacity;
 @synthesize name, comments, type, ROImode = mode, thickness;
