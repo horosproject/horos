@@ -292,6 +292,9 @@ static int hotKeyToolCrossTable[] =
 {
 	BOOL valid = NO;
 	
+	if( [[fileList[ 0] lastObject] isKindOfClass:[NSManagedObject class]] == NO)
+		return NO;
+	
 	if( [item action] == @selector( resetWindowsState:))
 	{
 		NSArray				*studiesArray = [ViewerController getDisplayedStudies];
@@ -4898,8 +4901,9 @@ static ViewerController *draggedController = 0L;
 
 - (BOOL) validateToolbarItem: (NSToolbarItem *) toolbarItem
 {
-    // Optional method:  This message is sent to us since we are the target of some toolbar item actions 
-    // (for example:  of the save items action) 
+	if( [[fileList[ 0] lastObject] isKindOfClass:[NSManagedObject class]] == NO)
+		return NO;
+	
     BOOL enable = YES;
     if ([[toolbarItem itemIdentifier] isEqualToString: PlayToolbarItemIdentifier])
     {
