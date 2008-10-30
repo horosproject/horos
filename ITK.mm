@@ -96,7 +96,7 @@
 		voxelSpacingY  = [firstObject pixelSpacingY];  
 		voxelSpacingZ  = [firstObject sliceInterval]; 
 		
-		if( voxelSpacingZ == 0 || [pixList count] == 1) voxelSpacingZ = 1;
+		if( voxelSpacingZ == 0 || [pixList count] == 1) voxelSpacingZ = 0.1;
 		
 		// get data
 		if( slice == -1)
