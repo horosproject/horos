@@ -2830,8 +2830,6 @@ static volatile int numberOfThreadsForRelisce = 0;
 		{
 			if( [viewer windowWillClose] == NO)
 			{
-				
-					
 				[[viewer window] close];	//performClose: self
 			}
 		}
