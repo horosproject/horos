@@ -1424,12 +1424,12 @@ extern NSThread					*mainThread;
 			
 			NSArray *sArray = [s componentsSeparatedByString: @":"];
 			
-			if( [[sArray objectAtIndex: 0] isEqualToString: dicomNodeAddress] && 
-				[[sArray objectAtIndex: 1] isEqualToString: dicomNodePort])
-				selected = @"selected";
-//			
-//			if([[NSString stringWithFormat:@"%@:%@:%@", dicomNodeAddress, dicomNodePort, dicomNodeAETitle] isEqualToString: s])
-//				selected = @"selected";
+			if( [sArray count] >= 2)
+			{
+				if( [[sArray objectAtIndex: 0] isEqualToString: dicomNodeAddress] && 
+					[[sArray objectAtIndex: 1] isEqualToString: dicomNodePort])
+					selected = @"selected";
+			}
 		}
 		else if( ipAddressString)
 		{
