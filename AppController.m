@@ -1639,7 +1639,8 @@ static NSDate *lastWarningDate = 0L;
 				if( [[window windowController] isKindOfClass:[PluginManagerController class]])
 					[[window windowController] refreshPluginList];
 			}
-
+			
+			NSRunInformationalAlertPanel(NSLocalizedString(@"Plugin Update Completed", @""), NSLocalizedString(@"All your plugins are now up to date. Restart OsiriX to use the new or updated plugins.", @""), NSLocalizedString(@"OK", @""), nil, nil);
 		}
 	}
 }
