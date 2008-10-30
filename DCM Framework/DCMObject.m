@@ -111,7 +111,11 @@ static unsigned int globallyUnique = 100000;
 	
 	if (DEBUG)
 		NSLog(@"TransferSyntax: %@", object.transferSyntax );
-		
+
+	[object newStudyInstanceUID];
+	[object newSeriesInstanceUID];
+	[object newSOPInstanceUID];
+
 	DCMTransferSyntax *ts = object.transferSyntax;
 	if (!ts.isExplicit ) ts = [DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax];
 	return [object  writeToFile:destination withTransferSyntax:ts quality: DCMLosslessQuality atomically:YES];
