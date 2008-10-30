@@ -1950,6 +1950,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 - (void) dealloc
 {
 	NSLog(@"DCMView released");
+	 [[NSNotificationCenter defaultCenter] removeObserver: self];
 	[self deleteMouseDownTimer];
 	
 	[matrix release];
@@ -1976,10 +1977,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 	[stringID release];
 	stringID = 0L;
-	
-    NSNotificationCenter *nc;
-    nc = [NSNotificationCenter defaultCenter];
-    [nc removeObserver: self];
 	
 	[[self openGLContext] makeCurrentContext];
 	

@@ -96,7 +96,7 @@ extern  ToolbarPanelController  *toolbarPanel[ 10];
 extern  AppController			*appController;
 extern  BOOL					USETOOLBARPANEL;
 
-static	BOOL					SYNCSERIES = NO, ViewBoundsDidChangeProtect = NO;
+static	BOOL					SYNCSERIES = NO, ViewBoundsDidChangeProtect = NO, recursiveCloseWindowsProtected = NO;
 static	NSLock					*globalLoadImageLock = 0L;
 
 static NSString* 	ViewerToolbarIdentifier				= @"Viewer Toolbar Identifier";
@@ -598,7 +598,7 @@ static int hotKeyToolCrossTable[] =
 			[dict setObject: [NSNumber numberWithInt: [[win imageView] rows]] forKey:@"rows"];
 			[dict setObject: [NSNumber numberWithInt: [[win imageView] columns]] forKey:@"columns"];
 			
-			if( [imageView flippedData]) indexImage = [self getNumberOfImages] -1 -[[[win seriesView] firstView] curImage];
+			if( [[win imageView] flippedData]) indexImage = [win getNumberOfImages] -1 -[[[win seriesView] firstView] curImage];
 			else indexImage = [[[win seriesView] firstView] curImage];
 			
 			[dict setObject: [NSNumber numberWithInt: indexImage] forKey:@"index"];
@@ -2203,10 +2203,15 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (BOOL)windowShouldClose:(id)sender
 {
-	if (([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSShiftKeyMask) || ([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSAlternateKeyMask))
+	if( [[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSAlternateKeyMask)
+		return NO;
+		
+	if( [[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSShiftKeyMask)
 	{
-		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"automaticWorkspaceSave"]) [self saveWindowsState: self];
-		[ViewerController closeAllWindows];
+		[NSObject cancelPreviousPerformRequestsWithTarget: appController selector:@selector( closeAllViewers:) object:0L];
+		[appController performSelector: @selector( closeAllViewers:) withObject:0L afterDelay: 0.1];
+		
+		return NO;
 	}
 	
 	return YES;
@@ -2576,12 +2581,16 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (void) windowDidBecomeMain:(NSNotification *)aNotification
 {
+	if( recursiveCloseWindowsProtected) return;
+	
 	[self refreshToolbar];
 	[self updateNavigator];
 }
 
 - (void) windowDidBecomeKey:(NSNotification *)aNotification
 {
+	if( recursiveCloseWindowsProtected) return;
+	
 	[self refreshToolbar];
 	[self updateNavigator];
 }
@@ -2798,15 +2807,37 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 + (void)closeAllWindows
 {
+	if( recursiveCloseWindowsProtected) return;
+	recursiveCloseWindowsProtected = YES;
+	
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"CloseAllViewersNotification" object: 0L userInfo: 0L];
 	
-	for (ViewerController* viewer in [ViewerController getDisplayed2DViewers])
+	NSArray *v = [ViewerController getDisplayed2DViewers];
+	
+	if( [v count])
 	{
-		if( [viewer FullScreenON])
-			[viewer fullScreenMenu: self];
+		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"automaticWorkspaceSave"]) [[v lastObject] saveWindowsState: self];
+		
+		for (ViewerController* viewer in v)
+		{
+			if( [viewer FullScreenON])
+				[viewer fullScreenMenu: self];
 			
-		[[viewer window] close];
+			[[viewer window] orderOut: self];
+		}
+		
+		for (ViewerController* viewer in v)
+		{
+			if( [viewer windowWillClose] == NO)
+			{
+				
+					
+				[[viewer window] close];	//performClose: self
+			}
+		}
 	}
+	
+	recursiveCloseWindowsProtected = NO;
 }
 
 - (void)applicationDidResignActive:(NSNotification *)aNotification
@@ -17999,9 +18030,7 @@ sourceRef);
 - (IBAction) databaseWindow : (id) sender
 {
 	if (!([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask))
-	{	
-		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"automaticWorkspaceSave"]) [self saveWindowsState: self];
-		
+	{
 		[ViewerController closeAllWindows];
 	}
 	else
