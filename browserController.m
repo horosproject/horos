@@ -6495,6 +6495,8 @@ static NSArray*	statesArray = nil;
 	NSArray					*array = 0L;
 	NSManagedObjectContext	*context = self.managedObjectContext;
 	
+	[self checkIncomingNow: self];
+	
 	@try
 	{
 		NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
@@ -6591,20 +6593,21 @@ static NSArray*	statesArray = nil;
 		{
 			NSMutableString *c = [NSMutableString stringWithString: @"<value><struct>"];
 			
-			NSDictionary *allCommittedValues = [obj committedValuesForKeys:nil];
+			NSArray *allKeys = [[[[self.managedObjectModel entitiesByName] objectForKey: table] attributesByName] allKeys];
 			
-			for (NSString *keyname in [allCommittedValues allKeys])	// My first Objective-C 2.0 'for loop', Antoine - 9/8/07
+			for (NSString *keyname in allKeys)
 			{
 				@try
 				{
-					if( [[allCommittedValues valueForKey: keyname] isKindOfClass:[NSString class]] ||
-					[[allCommittedValues valueForKey: keyname] isKindOfClass:[NSDate class]] ||
-					[[allCommittedValues valueForKey: keyname] isKindOfClass:[NSNumber class]])
-					[c appendFormat: @"<member><name>%@</name><value>%@</value></member>", keyname, [[allCommittedValues valueForKey: keyname] description]];
+					if( [[obj valueForKey: keyname] isKindOfClass:[NSString class]] ||
+					[[obj valueForKey: keyname] isKindOfClass:[NSDate class]] ||
+					[[obj valueForKey: keyname] isKindOfClass:[NSNumber class]])
+					[c appendFormat: @"<member><name>%@</name><value>%@</value></member>", keyname, [[obj valueForKey: keyname] description]];
 				}
 				
 				@catch (NSException * e)
 				{
+					NSLog( @"findObject exception: %@", e);
 				}
 			}
 			
