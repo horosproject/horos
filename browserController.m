@@ -6126,7 +6126,7 @@ static NSArray*	statesArray = nil;
 			NSMutableArray *seriesToOpen =  [NSMutableArray array];
 			NSMutableArray *viewersToLoad = [NSMutableArray array];
 			
-			[[NSNotificationCenter defaultCenter] postNotificationName:@"Close All Viewers" object:0L userInfo: 0L];
+			[ViewerController closeAllWindows];
 			
 			for( NSDictionary *dict in viewers)
 			{
@@ -12397,7 +12397,6 @@ static NSArray*	openSubSeriesArray = 0L;
 
 - (void)listenerAnonymizeFiles: (NSArray*)files
 {
-	
 	NSArray				*array = [NSArray arrayWithObjects: [DCMAttributeTag tagWithName:@"PatientsName"], @"******", nil];
 	NSMutableArray		*tags = [NSMutableArray array];
 	
@@ -12405,7 +12404,7 @@ static NSArray*	openSubSeriesArray = 0L;
 	
 	for( NSString *file in files )
 	{
-		NSString			*destPath = [file stringByAppendingString:@"temp"];
+		NSString *destPath = [file stringByAppendingString:@"temp"];
 		
 		[DCMObject anonymizeContentsOfFile: file  tags:tags  writingToFile:destPath];
 		[[NSFileManager defaultManager] removeFileAtPath: file handler: nil];

@@ -223,7 +223,7 @@
 - (void)removePlanarAndRescaleAttributes;
 
 /** Anonymize DCMAttributeTag or replace with aValue if present */
-- (void)anonyimizeAttributeForTag:(DCMAttributeTag *)tag replacingWith:(id)aValue;
+- (void)anonymizeAttributeForTag:(DCMAttributeTag *)tag replacingWith:(id)aValue;
 
 /** Create a new study instance UID */
 - (void)newStudyInstanceUID;

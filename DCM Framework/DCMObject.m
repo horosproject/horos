@@ -62,52 +62,56 @@ static unsigned int globallyUnique = 100000;
 	return [[[DCMObject alloc] init] autorelease];
 }
 
-+ (BOOL)anonymizeContentsOfFile:(NSString *)file  tags:(NSArray *)tags  writingToFile:(NSString *)destination{
++ (BOOL)anonymizeContentsOfFile:(NSString *)file  tags:(NSArray *)tags  writingToFile:(NSString *)destination
+{
 	DCMObject *object = [DCMObject objectWithContentsOfFile:file decodingPixelData:NO];
+	
 	[object removePrivateTags];
-
-	for ( NSArray *tagArray in tags ) {
+	
+	for ( NSArray *tagArray in tags )
+	{
 		DCMAttributeTag *tag = [tagArray objectAtIndex:0];
 		
 		id value = nil;
 		if ([tagArray count] > 1)
 			value = [tagArray objectAtIndex:1];
 		
-		[object anonyimizeAttributeForTag:tag replacingWith:value];
+		[object anonymizeAttributeForTag:tag replacingWith:value];
+		
 		//NSLog( [value description] );
 		if ([tag.name isEqualToString: @"PatientID"])
-
-
-		
-
-			[object anonyimizeAttributeForTag:[DCMAttributeTag tagWithName:@"OtherPatientIDs"] replacingWith:value];
+			[object anonymizeAttributeForTag:[DCMAttributeTag tagWithName:@"OtherPatientIDs"] replacingWith:value];
+			
 		if ([tag.name isEqualToString: @"InstanceCreationDate"]) {		
-			[object anonyimizeAttributeForTag:[DCMAttributeTag tagWithName:@"ContentDate"] replacingWith:value];
-			[object anonyimizeAttributeForTag:[DCMAttributeTag tagWithName:@"AcquisitionDate"] replacingWith:value];
+			[object anonymizeAttributeForTag:[DCMAttributeTag tagWithName:@"ContentDate"] replacingWith:value];
+			[object anonymizeAttributeForTag:[DCMAttributeTag tagWithName:@"AcquisitionDate"] replacingWith:value];
 		}
+		
 		if ([tag.name isEqualToString: @"InstanceCreationTime"]) {
 			NSLog(@"InstanceCreationTime");
-			[object anonyimizeAttributeForTag:[DCMAttributeTag tagWithName:@"ContentTime"] replacingWith:value];
-			[object anonyimizeAttributeForTag:[DCMAttributeTag tagWithName:@"AcquisitionTime"] replacingWith:value];
+			[object anonymizeAttributeForTag:[DCMAttributeTag tagWithName:@"ContentTime"] replacingWith:value];
+			[object anonymizeAttributeForTag:[DCMAttributeTag tagWithName:@"AcquisitionTime"] replacingWith:value];
 		}
+		
 		if ([tag.name isEqualToString: @"AcquisitionDatetime"] ) {
-			[object anonyimizeAttributeForTag:[DCMAttributeTag tagWithName:@"AcquisitionDate"] replacingWith:value];
-			[object anonyimizeAttributeForTag:[DCMAttributeTag tagWithName:@"AcquisitionTime"] replacingWith:value];
+			[object anonymizeAttributeForTag:[DCMAttributeTag tagWithName:@"AcquisitionDate"] replacingWith:value];
+			[object anonymizeAttributeForTag:[DCMAttributeTag tagWithName:@"AcquisitionTime"] replacingWith:value];
 		}
 	}
 	
 	//get rid of some other tags containing addresses and phone numbers
 	if ([object attributeValueWithName:@"InstitutionAddress"])
 		[object setAttributeValues:[NSMutableArray array] forName:@"InstitutionAddress"];
+		
 	if ([object attributeValueWithName:@"PatientsAddress"])
 		[object setAttributeValues:[NSMutableArray array] forName:@"PatientsAddress"];
+		
 	if ([object attributeValueWithName:@"PatientsTelephoneNumbers"])
 		[object setAttributeValues:[NSMutableArray array] forName:@"PatientsTelephoneNumbers"];
 	
-	
-	
 	if (DEBUG)
 		NSLog(@"TransferSyntax: %@", object.transferSyntax );
+		
 	DCMTransferSyntax *ts = object.transferSyntax;
 	if (!ts.isExplicit ) ts = [DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax];
 	return [object  writeToFile:destination withTransferSyntax:ts quality: DCMLosslessQuality atomically:YES];
@@ -1028,7 +1032,7 @@ PixelRepresentation
 }
 
 
-- (void)anonyimizeAttributeForTag:(DCMAttributeTag *)tag replacingWith:(id)aValue{
+- (void)anonymizeAttributeForTag:(DCMAttributeTag *)tag replacingWith:(id)aValue{
 	DCMAttribute *attr = [attributes objectForKey: tag.stringValue];
 	//Add attr is aValue exists create attr if absent and add new value
 	if (aValue && !attr) {
@@ -1042,7 +1046,7 @@ PixelRepresentation
 	  Change will depend on vr.  Change date to 1/1/2000.  Change strings to  something.  change numbers to 0.
 	  
 	*/
-	// NSLog(@"anonyimizeAttributeForTag:%@  aValue%@", tag, aValue);
+	// NSLog(@"anonymizeAttributeForTag:%@  aValue%@", tag, aValue);
 //	if ([(DCMAttributeTag *)[attr attrTag] isEquaToTag:[DCMAttributeTag tagWithName:@"PatientsSex"]])
 //		[attr setValues:[NSMutableArray array]];
 //	if ([(DCMAttributeTag *)[attr attrTag] isEquaToTag:[DCMAttributeTag tagWithName:@"PatientsBirthDate"]])

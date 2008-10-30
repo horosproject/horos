@@ -328,6 +328,7 @@ enum
 
 /** Array of all 2D Viewers */
 + (NSMutableArray*) getDisplayed2DViewers;
++ (void) closeAllWindows;
 
 /**  Create a new 2D Viewer
 * @param pixList Array of DCMPix objects
@@ -682,7 +683,6 @@ enum
 - (void) exportJPEG:(id) sender;
 
 /** Notification to close all windows */
-- (void)closeAllWindows:(NSNotification *)note;
 - (NSMutableArray*) generateROINamesArray;
 - (ThickSlabController*) thickSlabController;
 - (IBAction) AddOpacity:(id) sender;

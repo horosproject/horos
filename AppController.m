@@ -3433,7 +3433,7 @@ static BOOL initialized = NO;
 
 - (IBAction) closeAllViewers: (id) sender
 {
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"Close All Viewers" object: self userInfo: Nil];
+	[ViewerController closeAllWindows];
 }
 
 - (void) startDICOMBonjourSearch

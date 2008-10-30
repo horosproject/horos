@@ -2796,13 +2796,16 @@ static volatile int numberOfThreadsForRelisce = 0;
 	return YES;
 }
 
-- (void)closeAllWindows:(NSNotification *)note
++ (void)closeAllWindows
 {
-	if (![[note object] isEqual:self])
+	[[NSNotificationCenter defaultCenter] postNotificationName:@"CloseAllViewersNotification" object: 0L userInfo: 0L];
+	
+	for (ViewerController* viewer in [ViewerController getDisplayed2DViewers])
 	{
-		if( FullScreenOn == YES ) [self fullScreenMenu: self];
-		NSLog(@"close");
-		[[self window] close];
+		if( [viewer FullScreenON])
+			[viewer fullScreenMenu: self];
+			
+		[[viewer window] close];
 	}
 }
 

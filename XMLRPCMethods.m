@@ -427,16 +427,16 @@
 						
 						NSManagedObject *series = [[loopItem5 imageView] seriesObj];
 						
-						NSDictionary *allCommittedValues = [series committedValuesForKeys:nil];
-			
-						for (NSString *keyname in [allCommittedValues allKeys])
+						NSArray *allKeys = [[[[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey: @"Series"] attributesByName] allKeys];
+						
+						for (NSString *keyname in allKeys)
 						{
 							@try
 							{
-								if( [[allCommittedValues valueForKey: keyname] isKindOfClass:[NSString class]] ||
-									[[allCommittedValues valueForKey: keyname] isKindOfClass:[NSDate class]] ||
-									[[allCommittedValues valueForKey: keyname] isKindOfClass:[NSNumber class]])
-								[c appendFormat: @"<member><name>%@</name><value>%@</value></member>", keyname, [[allCommittedValues valueForKey: keyname] description]];
+								if( [[series valueForKey: keyname] isKindOfClass:[NSString class]] ||
+									[[series valueForKey: keyname] isKindOfClass:[NSDate class]] ||
+									[[series valueForKey: keyname] isKindOfClass:[NSNumber class]])
+								[c appendFormat: @"<member><name>%@</name><value>%@</value></member>", keyname, [[series valueForKey: keyname] description]];
 							}
 							
 							@catch (NSException * e)
@@ -483,16 +483,16 @@
 						
 						NSManagedObject *study = [[[loopItem4 imageView] seriesObj] valueForKey:@"study"];
 						
-						NSDictionary *allCommittedValues = [study committedValuesForKeys:nil];
-			
-						for (NSString *keyname in [allCommittedValues allKeys])
+						NSArray *allKeys = [[[[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey: @"Study"] attributesByName] allKeys];
+						
+						for (NSString *keyname in allKeys)
 						{
 							@try
 							{
-								if( [[allCommittedValues valueForKey: keyname] isKindOfClass:[NSString class]] ||
-									[[allCommittedValues valueForKey: keyname] isKindOfClass:[NSDate class]] ||
-									[[allCommittedValues valueForKey: keyname] isKindOfClass:[NSNumber class]])
-								[c appendFormat: @"<member><name>%@</name><value>%@</value></member>", keyname, [[allCommittedValues valueForKey: keyname] description]];
+								if( [[study valueForKey: keyname] isKindOfClass:[NSString class]] ||
+									[[study valueForKey: keyname] isKindOfClass:[NSDate class]] ||
+									[[study valueForKey: keyname] isKindOfClass:[NSNumber class]])
+								[c appendFormat: @"<member><name>%@</name><value>%@</value></member>", keyname, [[study valueForKey: keyname] description]];
 							}
 							
 							@catch (NSException * e)
