@@ -1420,8 +1420,16 @@ extern NSThread					*mainThread;
 		
 		if( [parameters objectForKey:@"dicomDestination"])
 		{
-			if([[NSString stringWithFormat:@"%@:%@:%@:%@", dicomNodeAddress, dicomNodePort, dicomNodeAETitle, dicomNodeSyntax] isEqualToString:[[parameters objectForKey:@"dicomDestination"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]])
+			NSString * s = [[parameters objectForKey:@"dicomDestination"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+			
+			NSArray *sArray = [s componentsSeparatedByString: @":"];
+			
+			if( [[sArray objectAtIndex: 0] isEqualToString: dicomNodeAddress] && 
+				[[sArray objectAtIndex: 1] isEqualToString: dicomNodePort])
 				selected = @"selected";
+//			
+//			if([[NSString stringWithFormat:@"%@:%@:%@", dicomNodeAddress, dicomNodePort, dicomNodeAETitle] isEqualToString: s])
+//				selected = @"selected";
 		}
 		else if( ipAddressString)
 		{
