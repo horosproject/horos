@@ -616,6 +616,8 @@ static NSDate *lastWarningDate = 0L;
 
 @implementation AppController
 
+@synthesize checkAllWindowsAreVisibleIsOff;
+
 - (void) pause
 {
 	[[[BrowserController currentBrowser] checkIncomingLock] lock];
@@ -1738,7 +1740,7 @@ static NSDate *lastWarningDate = 0L;
 	return self;
 }
 
-+ (id)sharedAppController {
++ (AppController*) sharedAppController {
 	return appController;
 }
 //
@@ -2757,6 +2759,8 @@ static BOOL initialized = NO;
 
 - (void) checkAllWindowsAreVisible:(id) sender makeKey: (BOOL) makeKey
 {
+	if( checkAllWindowsAreVisibleIsOff) return;
+
 	NSArray *winList = [NSApp windows];
 	NSWindow *last = 0L;
 	

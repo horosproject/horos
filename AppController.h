@@ -106,14 +106,18 @@ extern "C"
 	DCMNetServiceDelegate			*dicomNetServiceDelegate;
 	XMLRPCMethods					*XMLRPCServer;
 	WebServicesMethods				*webServer;
+	
+	BOOL							checkAllWindowsAreVisibleIsOff;
 }
+
+@property BOOL checkAllWindowsAreVisibleIsOff;
 
 #pragma mark-
 #pragma mark initialization of the main event loop singleton
 
 + (void) createNoIndexDirectoryIfNecessary:(NSString*) path;
 + (void) displayImportantNotice:(id) sender;
-+ (id) sharedAppController; /**< Return the shared AppController instance */
++ (AppController*) sharedAppController; /**< Return the shared AppController instance */
 + (void)checkForPagesTemplate; /**< Check for Pages report template */
 + (void) resizeWindowWithAnimation:(NSWindow*) window newSize: (NSRect) newWindowFrame;
 + (NSThread*) mainThread;

@@ -6181,6 +6181,11 @@ static NSArray*	statesArray = nil;
 			
 			if( [seriesToOpen count] > 0 && [viewersToLoad count] == [seriesToOpen count])
 			{
+				WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Opening...", nil)];
+				[wait showWindow:self];
+				
+				[AppController sharedAppController].checkAllWindowsAreVisibleIsOff = YES;
+				
 				for( int i = 0 ; i < [seriesToOpen count]; i++ )
 				{
 					NSMutableArray * toOpenArray = [NSMutableArray array];
@@ -6247,10 +6252,14 @@ static NSArray*	statesArray = nil;
 					}
 				}
 				
+				[AppController sharedAppController].checkAllWindowsAreVisibleIsOff = NO;
 				[[AppController sharedAppController] checkAllWindowsAreVisible: self];
 				
 				if( [displayedViewers count] > 0)
 					[[[displayedViewers objectAtIndex: 0] window] makeKeyAndOrderFront: self];
+				
+				[wait close];
+				[wait release];
 				
 				windowsStateApplied = YES;
 			}
