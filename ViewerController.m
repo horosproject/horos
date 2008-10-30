@@ -2206,7 +2206,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	if (([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSShiftKeyMask) || ([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSAlternateKeyMask))
 	{
 		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"automaticWorkspaceSave"]) [self saveWindowsState: self];
-		[[NSNotificationCenter defaultCenter] postNotificationName:@"Close All Viewers" object:self userInfo: 0L];
+		[ViewerController closeAllWindows];
 	}
 	
 	return YES;
@@ -16344,7 +16344,6 @@ int i,j,l;
     [nc addObserver:self selector:@selector(UpdateOpacityMenu:) name:@"UpdateOpacityMenu" object:nil];
     [nc addObserver:self selector:@selector(CloseViewerNotification:) name:@"CloseViewerNotification" object:nil];
 	[nc addObserver:self selector:@selector(recomputeROI:) name:@"recomputeROI" object:nil];
-	[nc addObserver:self selector:@selector(closeAllWindows:) name:@"Close All Viewers" object:nil];
 	[nc addObserver:self selector:@selector(notificationStopPlaying:) name:@"notificationStopPlaying" object:nil];
 	[nc addObserver:self selector:@selector(notificationiChatBroadcast:) name:@"notificationiChatBroadcast" object:nil];
 	[nc addObserver:self selector:@selector(notificationSyncSeries:) name:@"notificationSyncSeries" object:nil];
@@ -18002,8 +18001,8 @@ sourceRef);
 	if (!([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask))
 	{	
 		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"automaticWorkspaceSave"]) [self saveWindowsState: self];
-		[[NSNotificationCenter defaultCenter] postNotificationName:@"Close All Viewers" object:self userInfo: 0L];	
-		[[self window] close];
+		
+		[ViewerController closeAllWindows];
 	}
 	else
 		[[BrowserController currentBrowser] showDatabase:self];
