@@ -569,6 +569,7 @@ enum
 - (void) changeImageData:(NSMutableArray*)f :(NSMutableArray*)d :(NSData*) v :(BOOL) applyTransition;
 - (IBAction) loadSerie:(id) sender;
 - (IBAction) loadPatient:(id) sender;
+- (void) loadSeries:(int) direction;
 - (void) offFullScreen;
 - (float) frame4DRate;
 - (long) maxMovieIndex;

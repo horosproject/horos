@@ -17529,6 +17529,11 @@ long i;
 	[[BrowserController currentBrowser] loadNextPatient:[fileList[0] objectAtIndex:0] :[sender tag] :self :YES keyImagesOnly: displayOnlyKeyImages];
 }
 
+-(void) loadSeries:(int) dir
+{
+	[[BrowserController currentBrowser] loadNextSeries:[fileList[0] objectAtIndex:0] :dir :self :YES keyImagesOnly: displayOnlyKeyImages];
+}
+
 -(IBAction) loadSerie:(id) sender
 {
 	// tag=-1 backwards, tag=1 forwards, tag=3 ???
@@ -17541,7 +17546,6 @@ long i;
 	else
 	{
 		[[BrowserController currentBrowser] loadNextSeries:[fileList[0] objectAtIndex:0] :[sender tag] :self :YES keyImagesOnly: displayOnlyKeyImages];
-
 	}
 }
 

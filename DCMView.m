@@ -4203,7 +4203,50 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				[self setNeedsDisplay:YES];
 			}
 			
-			if( [dcmPixList count] > 3 && [[NSUserDefaults standardUserDefaults] boolForKey:@"loopScrollWheel"])
+			if( [self is2DViewer] && [[NSUserDefaults standardUserDefaults] boolForKey:@"scrollThroughSeries"])
+			{
+				int imIndex = curImage;
+				
+				if( flippedData)
+					imIndex = [dcmPixList count]-1-imIndex;
+				
+				if( imIndex < 0)
+				{
+					NSArray *seriesArray = [[BrowserController currentBrowser] childrenArray: [[self seriesObj] valueForKey: @"study"]];
+					NSInteger index = [seriesArray indexOfObject: [self seriesObj]];
+					
+					if( index != NSNotFound)
+					{
+						if( index > 0)
+						{
+							[[self windowController] loadSeries: -1];
+							
+							if( flippedData) curImage = 0;
+							else curImage = [dcmPixList count]-1;
+						}
+					}
+				}
+				else if( imIndex >= [dcmPixList count])
+				{
+					NSArray *seriesArray = [[BrowserController currentBrowser] childrenArray: [[self seriesObj] valueForKey: @"study"]];
+					NSInteger index = [seriesArray indexOfObject: [self seriesObj]];
+					
+					if( index != NSNotFound)
+					{
+						if( index + 1 < [seriesArray count])
+						{
+							[[self windowController] loadSeries: 1];
+							
+							if( flippedData) curImage = [dcmPixList count]-1;
+							else curImage = 0;
+						}
+					}
+				}
+				
+				if( curImage < 0) curImage = 0;
+				if( curImage >= [dcmPixList count]) curImage = [dcmPixList count]-1;
+			}
+			else if( [dcmPixList count] > 3 && [[NSUserDefaults standardUserDefaults] boolForKey:@"loopScrollWheel"])
 			{
 				if( curImage < 0) curImage = [dcmPixList count]-1;
 				if( curImage >= [dcmPixList count]) curImage = 0;
@@ -4223,8 +4266,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			if( [self is2DViewer] == YES)
 				[[self windowController] adjustSlider];    //mouseDown:theEvent];
 				
-			if( stringID) {
-				if( [stringID isEqualToString:@"Perpendicular"] || [stringID isEqualToString:@"Original"]  || [stringID isEqualToString:@"FinalView"] || [stringID isEqualToString:@"FinalViewBlending"])
+			if( stringID)
+			{
+				if( [stringID isEqualToString: @"Perpendicular"] || [stringID isEqualToString:@"Original"]  || [stringID isEqualToString:@"FinalView"] || [stringID isEqualToString:@"FinalViewBlending"])
 					[[self windowController] adjustSlider];
 			}
 			

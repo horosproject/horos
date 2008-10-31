@@ -165,6 +165,7 @@ static BOOL showWarning = YES;
 		break;
 		
 		case 2:
+			{
 			NSLog( @"study level");
 			
 			NSArray	*allSeries =  [[BrowserController currentBrowser] childrenArray: [imObj valueForKeyPath:@"series.study"]];
@@ -176,6 +177,41 @@ static BOOL showWarning = YES;
 			}
 			
 			return [result valueForKey:@"completePath"];
+			}
+		break;
+			
+		case 3:
+			{
+			NSLog( @"patient level");
+			
+			NSPredicate *predicate = [NSPredicate predicateWithFormat:  @"(patientID == %@)", [imObj valueForKeyPath:@"series.study.patientID"]];
+			NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+			[dbRequest setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey:@"Study"]];
+			[dbRequest setPredicate: predicate];
+			
+			[[[BrowserController currentBrowser] managedObjectContext] lock];
+			
+			NSError	*error = nil;
+			NSMutableArray *result = [NSMutableArray array];
+			NSArray *studiesArray = [[[BrowserController currentBrowser] managedObjectContext] executeFetchRequest:dbRequest error:&error];
+			
+			[[[BrowserController currentBrowser] managedObjectContext] unlock];
+			
+			if ([studiesArray count] > 0)
+			{
+				for( NSManagedObject *s in studiesArray)
+				{
+					NSArray	*allSeries =  [[BrowserController currentBrowser] childrenArray: s];
+					
+					for( NSManagedObject *w in allSeries)
+					{
+						[result addObjectsFromArray: [[BrowserController currentBrowser] childrenArray: w]];
+					}
+				}
+			}
+			
+			return [result valueForKey:@"completePath"];
+			}
 		break;
 	}
 	
