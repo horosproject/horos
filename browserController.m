@@ -7195,7 +7195,7 @@ static BOOL withReset = NO;
 	NSSize space	= [oMatrix intercellSpacing];
 	NSRect frame	= [[oMatrix enclosingScrollView] frame];
 	
-	long minrow;
+	[matrixLoadIconsLock lock];
 	
 	setDCMDone = NO;
 	loadPreviewIndex = 0;
@@ -7233,6 +7233,8 @@ static BOOL withReset = NO;
 	[imageView setDCM:0L :0L :0L :0 :0L :YES];
 	
 	[self matrixDisplayIcons: self];
+	
+	[matrixLoadIconsLock unlock];
 }
 
 - (void)matrixNewIcon:(long) index: (NSManagedObject*)curFile
@@ -7442,7 +7444,6 @@ static BOOL withReset = NO;
 
 - (void)matrixDisplayIcons:(id) sender
 {
-	
 	if( bonjourDownloading) return;
 	if( managedObjectContext == 0L) return;
 	
@@ -7595,8 +7596,10 @@ static BOOL withReset = NO;
 		[self refreshMatrix: self];
 		
 		NSInteger tag = 0;
-		
 		NSString *uri = [NSString stringWithContentsOfFile: recoveryPath];
+		
+		[[NSFileManager defaultManager] removeFileAtPath: recoveryPath handler: 0L];
+		
 		NSManagedObject *studyObject = 0L;
 		
 		@try
@@ -7801,7 +7804,7 @@ static BOOL withReset = NO;
 	
 	@try
 	{
-		for( long i = 0; i < filesPaths.count; i++ )
+		for( int i = 0; i < filesPaths.count; i++ )
 		{
 			NSImage		*thumbnail = nil;
 			
