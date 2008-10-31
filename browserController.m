@@ -6611,7 +6611,12 @@ static NSArray*	statesArray = nil;
 					if( [[obj valueForKey: keyname] isKindOfClass:[NSString class]] ||
 					[[obj valueForKey: keyname] isKindOfClass:[NSDate class]] ||
 					[[obj valueForKey: keyname] isKindOfClass:[NSNumber class]])
-					[c appendFormat: @"<member><name>%@</name><value>%@</value></member>", keyname, [[obj valueForKey: keyname] description]];
+					{
+						NSString *value = [[obj valueForKey: keyname] description];
+						value = (NSString*)CFXMLCreateStringByEscapingEntities(NULL, (CFStringRef)value, NULL);
+						[c appendFormat: @"<member><name>%@</name><value>%@</value></member>", keyname, value];
+					}
+					
 				}
 				
 				@catch (NSException * e)
