@@ -436,7 +436,11 @@
 								if( [[series valueForKey: keyname] isKindOfClass:[NSString class]] ||
 									[[series valueForKey: keyname] isKindOfClass:[NSDate class]] ||
 									[[series valueForKey: keyname] isKindOfClass:[NSNumber class]])
-								[c appendFormat: @"<member><name>%@</name><value>%@</value></member>", keyname, [[series valueForKey: keyname] description]];
+								{
+									NSString *value = [[series valueForKey: keyname] description];
+									value = (NSString*)CFXMLCreateStringByEscapingEntities(NULL, (CFStringRef)value, NULL);
+									[c appendFormat: @"<member><name>%@</name><value>%@</value></member>", keyname, value];
+								}
 							}
 							
 							@catch (NSException * e)
@@ -492,7 +496,11 @@
 								if( [[study valueForKey: keyname] isKindOfClass:[NSString class]] ||
 									[[study valueForKey: keyname] isKindOfClass:[NSDate class]] ||
 									[[study valueForKey: keyname] isKindOfClass:[NSNumber class]])
-								[c appendFormat: @"<member><name>%@</name><value>%@</value></member>", keyname, [[study valueForKey: keyname] description]];
+								{
+									NSString *value = [[study valueForKey: keyname] description];
+									value = (NSString*)CFXMLCreateStringByEscapingEntities(NULL, (CFStringRef)value, NULL);
+									[c appendFormat: @"<member><name>%@</name><value>%@</value></member>", keyname, value];
+								}
 							}
 							
 							@catch (NSException * e)
