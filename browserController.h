@@ -212,7 +212,8 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	NSLock							*deleteQueue, *deleteInProgress;
 	
 	NSMutableArray					*autoroutingQueueArray;
-	NSLock							*autoroutingQueue, *autoroutingInProgress, *matrixLoadIconsLock;
+	NSLock							*autoroutingQueue, *autoroutingInProgress;
+	NSRecursiveLock					*matrixLoadIconsLock;
 	NSMutableDictionary				*autoroutingPreviousStudies;
 	
 	NSConditionLock					*processorsLock;

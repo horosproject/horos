@@ -93,7 +93,7 @@ BrowserController  *browserWindow = nil;
 static mach_port_t	gMasterPort;
 static NSString *albumDragType = @"Osirix Album drag";
 static Wait *waitSendWindow = 0L;
-
+static BOOL loadingIsOver = NO;
 static NSMenu *contextual = nil;
 static NSMenu *contextualRT = nil;  // Alternate menus for RT objects (which often don't have images)
 
@@ -4155,6 +4155,7 @@ static NSArray*	statesArray = nil;
 - (void) outlineViewRefresh		// This function creates the 'root' array for the outlineView
 {
 	if( databaseOutline == 0L) return;
+	if( loadingIsOver == NO) return;
 	
 	NSError				*error =nil;
 	NSFetchRequest		*request = [[[NSFetchRequest alloc] init] autorelease];
@@ -4804,7 +4805,9 @@ static NSArray*	statesArray = nil;
 }
 
 - (void)outlineViewSelectionDidChange: (NSNotification *)aNotification
-{	
+{
+	if( loadingIsOver == NO) return;
+
 	NSIndexSet			*index = [databaseOutline selectedRowIndexes];
 	NSManagedObject		*item = [databaseOutline itemAtRow:[index firstIndex]];
 	
@@ -11219,7 +11222,7 @@ static NSArray*	openSubSeriesArray = 0L;
 //		[numFmt setFormat:@"0"];
 //		[numFmt setHasThousandSeparators: YES];
 		
-		matrixLoadIconsLock = [[NSLock alloc] init];
+		matrixLoadIconsLock = [[NSRecursiveLock alloc] init];
 		checkBonjourUpToDateThreadLock = [[NSLock alloc] init];
 		checkIncomingLock = [[NSRecursiveLock alloc] init];
 		decompressArrayLock = [[NSLock alloc] init];
@@ -11754,6 +11757,10 @@ static NSArray*	openSubSeriesArray = 0L;
 		else
 			[albumDrawer close];
 	}
+	
+	loadingIsOver = YES;
+	
+	[self outlineViewRefresh];
 	
 	[self.window makeKeyAndOrderFront: self];
 	
