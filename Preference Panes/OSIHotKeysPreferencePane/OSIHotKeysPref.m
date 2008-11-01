@@ -90,7 +90,7 @@ static OSIHotKeysPref *currentKeysPref = 0L;
 											[NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Closed Polygon Tool", nil), @"action", nil],
 											[NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Pencil Tool", nil), @"action", nil],
 											[NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"3D Point Tool", nil), @"action", nil],
-											[NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Plain Tool", nil), @"action", nil],
+											[NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Brush Tool", nil), @"action", nil],
 											[NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Bone Removal Tool", nil), @"action", nil],
 											[NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"3D Rotate Tool", nil), @"action", nil],
 											[NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Camera Tool", nil), @"action", nil],

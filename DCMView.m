@@ -1694,22 +1694,27 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	NSEvent *event = [[NSApplication sharedApplication] currentEvent];
 	
-	switch( currentTool) {
+	switch( currentTool)
+	{
 		case tPlain:
-			if ([self is2DViewer] == YES) {
+			if ([self is2DViewer] == YES)
+			{
 				[[self windowController] brushTool: self];
 			}
 		break;
 		
 		case tZoom:
-			if( [event type] != NSKeyDown) {
-				if( [event clickCount] == 2) {
+			if( [event type] != NSKeyDown)
+			{
+				if( [event clickCount] == 2)
+				{
 					[self setOriginX: 0 Y: 0];
 					self.rotation = 0.0f;
 					[self scaleToFit];
 				}
 				
-				if( [event clickCount] == 3) {
+				if( [event clickCount] == 3)
+				{
 					[self setOriginX: 0 Y: 0];
 					self.rotation = 0.0f;
 					self.scaleValue = 1.0f;
@@ -2235,18 +2240,21 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	[drawLock unlock];
 }
 
--(BOOL) acceptsFirstMouse:(NSEvent*) theEvent {
+-(BOOL) acceptsFirstMouse:(NSEvent*) theEvent
+{
 	if( currentTool >= 5) return NO;  // A ROI TOOL !
 	else return YES;
 }
 
-- (BOOL)acceptsFirstResponder {
+- (BOOL)acceptsFirstResponder
+{
 	if( curDCM == 0L) return NO;
 	
      return YES;
 }
 
-- (void) keyDown:(NSEvent *)event {
+- (void) keyDown:(NSEvent *)event
+{
 	unichar		c = [[event characters] characterAtIndex:0];
 	long		xMove = 0, yMove = 0, val;
 	BOOL		Jog = NO;
@@ -9817,17 +9825,25 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		}
 		else
 		{
-			rowBytes = *tW;
-			
-			src.data = curDCM.baseAddr;
-			src.rowBytes = curDCM.pwidth;
-			dst.rowBytes = rowBytes;
+			if( FULL32BITPIPELINE)
+			{
+				rowBytes = *tW * 4;
+				src.data = curDCM.fImage;
+				src.rowBytes = curDCM.pwidth*4;
+				dst.rowBytes = rowBytes;
+			}
+			else
+			{
+				rowBytes = *tW;
+				src.data = curDCM.baseAddr;
+				src.rowBytes = curDCM.pwidth;
+				dst.rowBytes = rowBytes;
+			}
 		}
 		
 		dst.width = *tW;
 		dst.height = *tH;
 		
-
 		if( *rBAddrSize < rowBytes * *tH )
 		{
 			if( *rAddr) free( *rAddr);
@@ -9841,9 +9857,14 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			dst.data = baseAddr;
 			
 			if( (colorTransfer == YES) || (blending == YES) || (isRGB == YES) || ([curDCM thickSlabVRActivated] == YES))
-				vImageScale_ARGB8888( &src, &dst, 0L, QUALITY);						//resampledTempAddr - RANDOM CRASHES WITH the temp ptr during image blending.....
+				vImageScale_ARGB8888( &src, &dst, 0L, QUALITY);	
 			else
-				vImageScale_Planar8( &src, &dst, 0L, QUALITY);						//resampledTempAddr - RANDOM CRASHES WITH the temp ptr during image blending.....
+			{
+				if( FULL32BITPIPELINE)
+					vImageScale_PlanarF( &src, &dst, 0L, QUALITY);
+				else
+					vImageScale_Planar8( &src, &dst, 0L, QUALITY);
+			}
 		}
 		else
 		{
@@ -9853,7 +9874,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				rowBytes = curDCM.pwidth;
 				baseAddr = (char*) *colorBufPtr;
 			}
-			else {
+			else
+			{
 				*tW = curDCM.pwidth;
 				rowBytes = curDCM.pwidth;
 				baseAddr = curDCM.baseAddr;
@@ -9920,7 +9942,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				{
 					unsigned char *pBuffer;
 					
-					if( isRGB == YES || [curDCM thickSlabVRActivated] == YES) {
+					if( isRGB == YES || [curDCM thickSlabVRActivated] == YES)
+					{
 						pBuffer =   (unsigned char*) baseAddr +			
 									offsetY * rowBytes +				
 									offsetX * 4;						
@@ -9930,13 +9953,16 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 									offsetY * rowBytes * 4 +     
 									offsetX * 4;						
 									
-					else {
-						if( FULL32BITPIPELINE ) {
+					else
+					{
+						if( FULL32BITPIPELINE )
+						{
 							pBuffer =  (unsigned char*) baseAddr +			
 										offsetY * rowBytes*4 +      
 										offsetX;
 						}
-						else {
+						else
+						{
 							pBuffer =  (unsigned char*) baseAddr +			
 										offsetY * rowBytes +      
 										offsetX;
@@ -9977,8 +10003,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						if( isRGB == YES || [curDCM thickSlabVRActivated] == YES) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8, pBuffer);
 						#endif
 						else if( (colorTransfer == YES) || (blending == YES)) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8, pBuffer);
-						else {
-							NSLog( @"FLOAT");
+						else
+						{
 							float min = curWL - curWW / 2;
 							float max = curWL + curWW / 2;
 							
