@@ -12266,7 +12266,11 @@ static NSArray*	openSubSeriesArray = 0L;
 							break;
 					}
 				}
-				else NSRunCriticalAlertPanel(NSLocalizedString(@"DICOMDIR",nil), NSLocalizedString(@"No DICOMDIR file has been found on this CD/DVD. Unable to load images.",nil),NSLocalizedString( @"OK",nil), nil, nil);
+				else
+				{
+					if( sender)
+						NSRunCriticalAlertPanel(NSLocalizedString(@"DICOMDIR",nil), NSLocalizedString(@"No DICOMDIR file has been found on this CD/DVD. Unable to load images.",nil),NSLocalizedString( @"OK",nil), nil, nil);
+				}
 			}
 			else
 			{
@@ -14453,11 +14457,12 @@ static volatile int numberOfThreadsForJPEG = 0;
 	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"MOUNT"] == NO) return;
 	
 	NSString *sNewDrive = [[ notification userInfo] objectForKey : @"NSDevicePath"];
-	NSLog(sNewDrive);
+	
+	NSLog( sNewDrive);
 	
 	if( [BrowserController isItCD: sNewDrive] == YES )
 	{
-		[self ReadDicomCDRom:self];
+		[self ReadDicomCDRom: 0L];
 	}
 	
 	[self displayBonjourServices];
