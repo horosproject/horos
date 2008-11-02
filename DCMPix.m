@@ -50,6 +50,14 @@
 #define PREVIEWSIZE 70.0
 #endif
 
+BOOL gUserDefaultsSet = NO;
+BOOL gUseShutter = NO;
+BOOL gDisplayDICOMOverlays = YES;
+BOOL gUseVOILUT = NO;
+BOOL gUseJPEGColorSpace = NO;
+BOOL gUSEPAPYRUSDCMPIX = YES;
+BOOL gFULL32BITPIPELINE = NO;
+
 BOOL	anonymizedAnnotations = NO;
 BOOL	runOsiriXInProtectedMode = NO;
 BOOL	quicktimeRunning = NO;
@@ -1114,7 +1122,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 
 @implementation DCMPix
 
-@synthesize countstackMean, stackDirection;
+@synthesize countstackMean, stackDirection, full32bitPipeline, needToCompute8bitRepresentation;
 @synthesize frameNo;
 @synthesize minValueOfSeries, maxValueOfSeries;
 @synthesize isRGB, pwidth = width, pheight = height;
@@ -1203,13 +1211,6 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 //	}
 //}
 
-BOOL gUserDefaultsSet = NO;
-BOOL gUseShutter;
-BOOL gDisplayDICOMOverlays;
-BOOL gUseVOILUT;
-BOOL gUseJPEGColorSpace;
-BOOL gUSEPAPYRUSDCMPIX;
-
 + (void) resetUserDefaults
 {
 	gUserDefaultsSet = NO;
@@ -1230,12 +1231,14 @@ BOOL gUSEPAPYRUSDCMPIX;
 		gUseVOILUT = [[NSUserDefaults standardUserDefaults] boolForKey:@"UseVOILUT"];
 		gUSEPAPYRUSDCMPIX = [[NSUserDefaults standardUserDefaults] boolForKey:@"USEPAPYRUSDCMPIX"];
 		gUseJPEGColorSpace = [[NSUserDefaults standardUserDefaults] boolForKey:@"UseJPEGColorSpace"];
+		gFULL32BITPIPELINE = [[NSUserDefaults standardUserDefaults] boolForKey:@"FULL32BITPIPELINE"];
 		
 #ifdef STATIC_DICOM_LIB
 		gUSEPAPYRUSDCMPIX = YES;
 		gUseShutter = NO;
 		gDisplayDICOMOverlays = NO;
 		gUseJPEGColorSpace = NO;
+		gFULL32BITPIPELINE = NO;
 #endif
 		
 		//		NSLog( @"gUseShutter == %d", gUseShutter);
@@ -9153,7 +9156,8 @@ END_CREATE_ROIS:
 		{
 			NSLog(@"not able to load the image...");
 			
-			if( fExternalOwnedImage )	{
+			if( fExternalOwnedImage )
+			{
 				fImage = fExternalOwnedImage;
 			}
 			else
@@ -10754,78 +10758,10 @@ END_CREATE_ROIS:
 	}
 }
 
-- (void) changeWLWW:(float)newWL :(float)newWW
+- (void) compute8bitRepresentation
 {
-//	{
-//	GammaFunction f = vImageCreateGammaFunction( 2.0, kvImageGamma_UseGammaValue_half_precision, 0 );	
-//	
-//	vImage_Buffer	src, dst;
-//	
-//	src.height = 512;
-//	src.width = 512;
-//	src.rowBytes = src.width * sizeof( float);
-//	src.data = calloc( src.rowBytes * src.height, 1);
-//
-//	dst.height = 512;
-//	dst.width = 512;
-//	dst.rowBytes = dst.width * sizeof( char);
-//	dst.data = calloc( src.rowBytes * src.height, 1);
-//	
-//	vImageGamma_PlanarFtoPlanar8 (&src, &dst, f, 0);
-//	
-//	free( src.data);
-//	free( dst.data);
-//	
-//	vImageDestroyGammaFunction( f);
-//	
-//	NSLog( @"succeed");
-//	}
-
-	if( baseAddr == nil )
-	{
-		[self checkImageAvailble:newWW :newWL];
-		return;
-	}
-	
 	float			iwl, iww;
 	
-	[self CheckLoad]; 
-	
-	if( newWW !=0 || newWL != 0)   // new values to be applied
-	{
-		if( fullww > 256 )
-		{
-			if( newWW < 1) newWW = 2;
-			
-			if( newWL - newWW/2 == 0 )
-			{
-				//				newWW = (int) newWW;
-				//				newWL = (int) newWL;
-				
-				newWL = newWW/2;
-			}
-			else
-			{
-				newWW = (int) newWW;
-				newWL = (int) newWL;
-			}
-		}
-		
-        if( newWW < 0.001) newWW = 0.001;
-        
-        ww = newWW;
-        wl = newWL;
-    }
-	else                          // need to compute best values... problem with subtraction performed afterwards
-	{
-		[self computePixMinPixMax];
-		
-		ww = fullww;
-		wl = fullwl;
-	}
-	
-	// --------------------------------
-    
 	if( fixed8bitsWLWW )
 	{
 		iww = 256;
@@ -10837,10 +10773,10 @@ END_CREATE_ROIS:
 		iwl = wl;
 	}
 	
-	// ----------------------------------------------------------- iww, iwl contain computMinPixMax or newWW, newWL
-    
-    if( baseAddr)
+	if( baseAddr)
 	{
+		needToCompute8bitRepresentation = NO;
+		
 		updateToBeApplied = NO;
 		
 		float  min, max;
@@ -11038,12 +10974,57 @@ END_CREATE_ROIS:
 		
 		[self applyShutter];		
     }
+}
+
+- (void) changeWLWW:(float)newWL :(float)newWW
+{
+	if( baseAddr == nil )
+	{
+		[self checkImageAvailble:newWW :newWL];
+		return;
+	}
 	
-//	for( int i = 0 ; i < height; i++)
-//	{
-//		for( int x = 0 ; x < width ; x++)
-//			fImage[ i*width + x] = i;
-//	}
+	[self CheckLoad]; 
+	
+	if( newWW !=0 || newWL != 0)   // new values to be applied
+	{
+		if( fullww > 256 )
+		{
+			if( newWW < 1) newWW = 2;
+			
+			if( newWL - newWW/2 == 0 )
+			{
+				//				newWW = (int) newWW;
+				//				newWL = (int) newWL;
+				
+				newWL = newWW/2;
+			}
+			else
+			{
+				newWW = (int) newWW;
+				newWL = (int) newWL;
+			}
+		}
+		
+        if( newWW < 0.001) newWW = 0.001;
+        
+        ww = newWW;
+        wl = newWL;
+    }
+	else                          // need to compute best values... problem with subtraction performed afterwards
+	{
+		[self computePixMinPixMax];
+		
+		ww = fullww;
+		wl = fullwl;
+	}
+	
+	// ----------------------------------------------------------- iww, iwl contain computMinPixMax or newWW, newWL
+    
+    if( baseAddr)
+	{
+		needToCompute8bitRepresentation = YES;
+	}
 }
 
 #pragma mark-

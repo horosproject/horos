@@ -15844,11 +15844,9 @@ int i,j,l;
 {
 	// This function will free about 1/4 of the data
 	
-	int i, x;
-	
-	for( i = 0; i < maxMovieIndex; i++)
+	for( int i = 0; i < maxMovieIndex; i++)
 	{
-		for( x = 0; x < [pixList[ i] count]; x++)
+		for( int x = 0; x < [pixList[ i] count]; x++)
 		{
 			if( [pixList[ i] objectAtIndex:x] != [imageView curDCM])
 				[[pixList[ i] objectAtIndex:x] kill8bitsImage];

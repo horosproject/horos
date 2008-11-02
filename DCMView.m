@@ -5277,7 +5277,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			iww = otherPix.ww;
 			iwl = otherPix.wl;
 			
-			if( iww != [[blendingView curDCM] ww] || iwl != [[blendingView curDCM] wl]) {
+			if( iww != [[blendingView curDCM] ww] || iwl != [[blendingView curDCM] wl])
+			{
 				[blendingView setWLWW: iwl :iww];
 				[self loadTextures];
 				[self setNeedsDisplay:YES];
@@ -5299,7 +5300,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		if( curWLWWSUVConverted && [self is2DViewer])
 			curWLWWSUVFactor = [[self windowController] factorPET2SUV];
 	}
-	else {
+	else
+	{
 		curWW = ww;
 		curWL = wl;
 		curWLWWSUVConverted = NO;
@@ -5420,7 +5422,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	[self setIndex: curImage];
 }
 
--(void) multiply:(DCMView*) bV {
+-(void) multiply:(DCMView*) bV
+{
 	[curDCM imageArithmeticMultiplication: [bV curDCM]];
 	
 	[self reapplyWindowLevel];
@@ -9295,6 +9298,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 {
 	if( x < 0.01 ) return;
 	if( x > 100) return;
+	if( isnan( x)) return;
 	
 	if( x != scaleValue)
 	{
@@ -9310,6 +9314,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 		if( scaleValue < 0.01) scaleValue = 0.01;
 		if( scaleValue > 100) scaleValue = 100;
+		if( isnan( scaleValue)) scaleValue = 100;
 		
 		if( [self softwareInterpolation] || [blendingView softwareInterpolation])
 			[self loadTextures];
@@ -9340,6 +9345,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 {
 	if( x < 0.01 ) return;
 	if( x > 100) return;
+	if( isnan( x)) return;
 	
 	if( scaleValue != x )
 	{
@@ -9639,6 +9645,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	unsigned char* currentAlphaTable = alphaTable;
 	
+	BOOL intFULL32BITPIPELINE = FULL32BITPIPELINE;
+	
+	if( [ViewerController numberOf2DViewer] > 3)
+		intFULL32BITPIPELINE = NO;
+	
 	if( blending == NO) currentAlphaTable = opaqueTable;
 	
 	if(  rT == 0L)
@@ -9654,10 +9665,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	}
 	
 //	if( mainThread != [NSThread currentThread])
-//	{
 //		NSLog(@"Warning! OpenGL activity NOT in the main thread???");
-//	}
-	
+		
     if( texture)
 	{
 		CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
@@ -9671,10 +9680,25 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	{
 		return texture;		// == 0L
 	}
-
+	
 	BOOL isRGB = curDCM.isRGB;
 	
+	if( [curDCM transferFunctionPtr])
+		intFULL32BITPIPELINE = NO;
+	
+	if( [curDCM stack] > 1)
+		intFULL32BITPIPELINE = NO;
+	
 	if( curDCM.isLUT12Bit) isRGB = YES;
+	
+	if( isRGB)
+		intFULL32BITPIPELINE = NO;
+	
+	if( (colorTransfer == YES) || (blending == YES))
+		intFULL32BITPIPELINE = NO;
+		
+	if( curDCM.needToCompute8bitRepresentation == YES && intFULL32BITPIPELINE == NO)
+		[curDCM compute8bitRepresentation];
 	
 	if( isRGB == YES)
 	{
@@ -9713,7 +9737,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				//vImageTableLookUp_ARGB8888( &dest, &dest, (Pixel_8*) &cblueTable, (Pixel_8*) &cgreenTable, (Pixel_8*) &credTable, (Pixel_8*) currentAlphaTable, 0);
 				//#endif
 			}
-			else {
+			else
+			{
 				//#if __BIG_ENDIAN__
 				vImageTableLookUp_ARGB8888( &dest, &dest, (Pixel_8*) currentAlphaTable, (Pixel_8*) rT, (Pixel_8*) gT, (Pixel_8*) bT, 0);
 				//#else
@@ -9788,7 +9813,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		else vImageTableLookUp_ARGB8888( &dest8, &dest8, (Pixel_8*) currentAlphaTable, (Pixel_8*) rT, (Pixel_8*) gT, (Pixel_8*) bT, 0);
 	}
 
-
 	glEnable(TEXTRECTMODE);
     
 	char *baseAddr = 0L;
@@ -9835,7 +9859,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		}
 		else
 		{
-			if( FULL32BITPIPELINE)
+			if( intFULL32BITPIPELINE)
 			{
 				rowBytes = *tW * 4;
 				src.data = curDCM.fImage;
@@ -9872,7 +9896,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				vImageScale_ARGB8888( &src, &dst, 0L, QUALITY);	
 			else
 			{
-				if( FULL32BITPIPELINE)
+				if( intFULL32BITPIPELINE)
 				{
 					if( TextureComputed32bitPipeline == NO)
 						vImageScale_PlanarF( &src, &dst, 0L, QUALITY);
@@ -9898,7 +9922,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			}
 		}
 	}
-	else if( FULL32BITPIPELINE)
+	else if( intFULL32BITPIPELINE)
 	{
 		*tW = curDCM.pwidth;
 		rowBytes = curDCM.pwidth*4;
@@ -9932,7 +9956,15 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			baseAddr = curDCM.baseAddr;
 		}
 	}
-
+	
+	if( intFULL32BITPIPELINE == NO)
+	{
+		TextureComputed32bitPipeline = NO;
+		curDCM.full32bitPipeline = NO;
+	}
+	else
+		curDCM.full32bitPipeline = YES;
+	
 	glPixelStorei (GL_UNPACK_ROW_LENGTH, *tW);
 	*tX = GetTextureNumFromTextureDim (*tW, maxTextureSize, false, f_ext_texture_rectangle);
 	*tY = GetTextureNumFromTextureDim (*tH, maxTextureSize, false, f_ext_texture_rectangle);
@@ -9966,7 +9998,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 								
 				else
 				{
-					if( FULL32BITPIPELINE )
+					if( intFULL32BITPIPELINE )
 					{
 						pBuffer =  (unsigned char*) baseAddr +			
 									offsetY * rowBytes*4 +      
@@ -9989,7 +10021,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				
 				if (f_arb_texture_rectangle && f_ext_texture_rectangle)
 				{
-					if( *tW > 1024 && *tH > 1024 || [self class] == [OrthogonalMPRPETCTView class] || [self class] == [OrthogonalMPRView class])
+					if( *tW >= 1024 && *tH >= 1024 || [self class] == [OrthogonalMPRPETCTView class] || [self class] == [OrthogonalMPRView class])
 					{
 						glTexParameteri (TEXTRECTMODE, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_CACHED_APPLE);		//<- this produce 'artefacts' when changing WL&WW for small matrix in RGB images... if	GL_UNPACK_CLIENT_STORAGE_APPLE is set to 1
 					}
@@ -10010,7 +10042,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				
 				glColor4f (1.0f, 1.0f, 1.0f, 1.0f);
 				
-				if( FULL32BITPIPELINE )
+				if( intFULL32BITPIPELINE )
 				{					
 					#if __BIG_ENDIAN__
 					if( isRGB == YES || [curDCM thickSlabVRActivated] == YES) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8_REV, pBuffer);

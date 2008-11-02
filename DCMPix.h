@@ -179,6 +179,8 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 /** 12 bit monitors */
 	BOOL				isLUT12Bit;
 	unsigned char		*LUT12baseAddr;
+	
+	BOOL				full32bitPipeline, needToCompute8bitRepresentation;
 }
 
 @property long frameNo;
@@ -281,7 +283,7 @@ Note setter is different to not break existing usage. :-( */
 @property float radionuclideTotalDoseCorrected;
 @property(retain) NSCalendarDate *acquisitionTime;
 @property(retain) NSCalendarDate *radiopharmaceuticalStartTime;
-@property BOOL SUVConverted;
+@property BOOL SUVConverted, full32bitPipeline, needToCompute8bitRepresentation;
 @property(readonly) BOOL hasSUV;
 @property float decayFactor;
 @property(retain) NSString *units, *decayCorrection;
@@ -304,7 +306,7 @@ Note setter is different to not break existing usage. :-( */
 */
 + (BOOL) IsPoint:(NSPoint) x inPolygon:(NSPoint*) poly size:(int) count; 
 
-
+- (void) compute8bitRepresentation;
 - (void) changeWLWW:(float)newWL :(float)newWW;  /**< Change window level to window width to the new values */
 - (void) computePixMinPixMax;  /**< Compute the min and max values in the image */
 

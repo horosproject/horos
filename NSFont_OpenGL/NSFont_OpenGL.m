@@ -264,7 +264,7 @@ static  unsigned char			*charPtrArray[ MAXCOUNT], *charPtrArrayPreview[ MAXCOUNT
    glPixelStorei( GL_UNPACK_SKIP_PIXELS, 0 );
    glPixelStorei( GL_UNPACK_ROW_LENGTH, 0 );
    glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
-
+	
    retval = TRUE;
    for( dListNum = base, currentUnichar = first; currentUnichar < first + count;
         dListNum++, currentUnichar++ )
