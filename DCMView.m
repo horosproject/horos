@@ -9876,6 +9876,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				{
 					if( TextureComputed32bitPipeline == NO)
 						vImageScale_PlanarF( &src, &dst, 0L, QUALITY);
+					TextureComputed32bitPipeline = YES;
 				}
 				else
 					vImageScale_Planar8( &src, &dst, 0L, QUALITY);
@@ -10030,8 +10031,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						
 						glPixelTransferf( GL_RED_BIAS, 0);		//glPixelTransferf( GL_GREEN_BIAS, 0);		glPixelTransferf( GL_BLUE_BIAS, 0);
 						glPixelTransferf( GL_RED_SCALE, 1);		//glPixelTransferf( GL_GREEN_SCALE, 1);		glPixelTransferf( GL_BLUE_SCALE, 1);
-						
-						TextureComputed32bitPipeline = YES;
 					}
 				}
 				else
