@@ -9653,25 +9653,18 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		[curDCM changeWLWW :127 : 256];
 	}
 	
-	if( mainThread != [NSThread currentThread])
-	{
+//	if( mainThread != [NSThread currentThread])
+//	{
 //		NSLog(@"Warning! OpenGL activity NOT in the main thread???");
-	}
+//	}
 	
     if( texture)
 	{
-		if( FULL32BITPIPELINE && TextureComputed32bitPipeline)
-		{
+		CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 			
-		}
-		else
-		{
-			CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-				
-			glDeleteTextures( *tX * *tY, texture);
-			free( (char*) texture);
-			texture = 0L;
-		}
+		glDeleteTextures( *tX * *tY, texture);
+		free( (char*) texture);
+		texture = 0L;
 	}
 	
 	if( curDCM == 0L)	// No image
@@ -9728,8 +9721,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				//#endif
 			}
 		}
-		else if( redFactor != 1.0 || greenFactor != 1.0 || blueFactor != 1.0) {
-
+		else if( redFactor != 1.0 || greenFactor != 1.0 || blueFactor != 1.0)
+		{
 			unsigned char  credTable[256], cgreenTable[256], cblueTable[256];
 			
 			vImage_Buffer src, dest;
@@ -9938,16 +9931,17 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			baseAddr = curDCM.baseAddr;
 		}
 	}
+
+	glPixelStorei (GL_UNPACK_ROW_LENGTH, *tW);
+	*tX = GetTextureNumFromTextureDim (*tW, maxTextureSize, false, f_ext_texture_rectangle);
+	*tY = GetTextureNumFromTextureDim (*tH, maxTextureSize, false, f_ext_texture_rectangle);
 	
-	if( FULL32BITPIPELINE && TextureComputed32bitPipeline)
+	texture = (GLuint *) malloc (sizeof (GLuint) * *tX * *tY);
+	
+	if( *tX * *tY > 1) NSLog(@"NoOfTextures: %d", *tX * *tY);
+	glTextureRangeAPPLE(TEXTRECTMODE, *tW * *tH * 4, baseAddr);
+	glGenTextures (*tX * *tY, texture);
 	{
-		float min = curWL - curWW / 2;
-		float max = curWL + curWW / 2;
-		
-		glPixelTransferf( GL_RED_BIAS, -min/(max-min));
-		glPixelTransferf( GL_RED_SCALE, 1./(max-min));
-		
-		
 		int k = 0, offsetX = 0, currWidth, currHeight;
 		for ( int x = 0; x < *tX; x++)
 		{
@@ -9958,145 +9952,103 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			{
 				unsigned char *pBuffer;
 				
-				pBuffer =  (unsigned char*) baseAddr +			
-							 offsetY * rowBytes*4 +      
-							 offsetX;
-				
-				currHeight = GetNextTextureSize (*tH - offsetY, maxTextureSize, f_ext_texture_rectangle);
-				
+				if( isRGB == YES || [curDCM thickSlabVRActivated] == YES)
+				{
+					pBuffer =   (unsigned char*) baseAddr +			
+								offsetY * rowBytes +				
+								offsetX * 4;						
+				}
+				else if( (colorTransfer == YES) || (blending == YES))
+					pBuffer =   (unsigned char*) baseAddr +		
+								offsetY * rowBytes * 4 +     
+								offsetX * 4;						
+								
+				else
+				{
+					if( FULL32BITPIPELINE )
+					{
+						pBuffer =  (unsigned char*) baseAddr +			
+									offsetY * rowBytes*4 +      
+									offsetX;
+					}
+					else
+					{
+						pBuffer =  (unsigned char*) baseAddr +			
+									offsetY * rowBytes +      
+									offsetX;
+					}
+				}
+				currHeight = GetNextTextureSize (*tH - offsetY, maxTextureSize, f_ext_texture_rectangle); // use remaining to determine next texture size
 				glBindTexture (TEXTRECTMODE, texture[k++]);
 				
-				glTexImage2D (TEXTRECTMODE, 0, GL_LUMINANCE_FLOAT32_APPLE, *tW, *tH, 0, GL_LUMINANCE, GL_FLOAT, baseAddr);
+				glTexParameterf (TEXTRECTMODE, GL_TEXTURE_PRIORITY, 1.0f);
 				
-		
+				if (f_ext_client_storage) glPixelStorei (GL_UNPACK_CLIENT_STORAGE_APPLE, 1);	// Incompatible with GL_TEXTURE_STORAGE_HINT_APPLE
+				else  glPixelStorei (GL_UNPACK_CLIENT_STORAGE_APPLE, 0);
+				
+				if (f_arb_texture_rectangle && f_ext_texture_rectangle)
+				{
+					if( *tW > 1024 && *tH > 1024 || [self class] == [OrthogonalMPRPETCTView class] || [self class] == [OrthogonalMPRView class])
+					{
+						glTexParameteri (TEXTRECTMODE, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_CACHED_APPLE);		//<- this produce 'artefacts' when changing WL&WW for small matrix in RGB images... if	GL_UNPACK_CLIENT_STORAGE_APPLE is set to 1
+					}
+				}
+					
+				if( NOINTERPOLATION)
+				{
+					glTexParameteri (TEXTRECTMODE, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+					glTexParameteri (TEXTRECTMODE, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+				}
+				else
+				{
+					glTexParameteri (TEXTRECTMODE, GL_TEXTURE_MIN_FILTER, GL_LINEAR);	//GL_LINEAR_MIPMAP_LINEAR
+					glTexParameteri (TEXTRECTMODE, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	//GL_LINEAR_MIPMAP_LINEAR
+				}
+				glTexParameteri (TEXTRECTMODE, GL_TEXTURE_WRAP_S, edgeClampParam);
+				glTexParameteri (TEXTRECTMODE, GL_TEXTURE_WRAP_T, edgeClampParam);
+				
+				glColor4f (1.0f, 1.0f, 1.0f, 1.0f);
+				
+				if( FULL32BITPIPELINE )
+				{					
+					#if __BIG_ENDIAN__
+					if( isRGB == YES || [curDCM thickSlabVRActivated] == YES) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8_REV, pBuffer);
+					#else
+					if( isRGB == YES || [curDCM thickSlabVRActivated] == YES) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8, pBuffer);
+					#endif
+					else if( (colorTransfer == YES) || (blending == YES)) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8, pBuffer);
+					else
+					{
+						float min = curWL - curWW / 2;
+						float max = curWL + curWW / 2;
+						
+						glPixelTransferf( GL_RED_BIAS, -min/(max-min));
+						glPixelTransferf( GL_RED_SCALE, 1./(max-min));
+						glTexImage2D (TEXTRECTMODE, 0, GL_LUMINANCE_FLOAT32_APPLE, currWidth, currHeight, 0, GL_LUMINANCE, GL_FLOAT, pBuffer);
+						//GL_RGBA, GL_LUMINANCE, GL_INTENSITY12, GL_INTENSITY16, GL_LUMINANCE12, GL_LUMINANCE16, 
+						// GL_LUMINANCE_FLOAT16_APPLE, GL_LUMINANCE_FLOAT32_APPLE, GL_RGBA_FLOAT32_APPLE, GL_RGBA_FLOAT16_APPLE
+						
+						glPixelTransferf( GL_RED_BIAS, 0);		//glPixelTransferf( GL_GREEN_BIAS, 0);		glPixelTransferf( GL_BLUE_BIAS, 0);
+						glPixelTransferf( GL_RED_SCALE, 1);		//glPixelTransferf( GL_GREEN_SCALE, 1);		glPixelTransferf( GL_BLUE_SCALE, 1);
+						
+						TextureComputed32bitPipeline = YES;
+					}
+				}
+				else
+				{
+					#if __BIG_ENDIAN__
+					if( isRGB == YES || [curDCM thickSlabVRActivated] == YES) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8_REV, pBuffer);
+					else if( (colorTransfer == YES) || (blending == YES)) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8_REV, pBuffer);
+					#else
+					if( isRGB == YES || [curDCM thickSlabVRActivated] == YES) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8, pBuffer);
+					else if( (colorTransfer == YES) || (blending == YES)) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8, pBuffer);
+					#endif
+					else glTexImage2D (TEXTRECTMODE, 0, GL_INTENSITY8, currWidth, currHeight, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, pBuffer);
+				}
+				
 				offsetY += currHeight;
 			}
 			offsetX += currWidth;
-		}
-		
-		glPixelTransferf( GL_RED_BIAS, 0);
-		glPixelTransferf( GL_RED_SCALE, 1);
-	}
-	else
-	{
-		glPixelStorei (GL_UNPACK_ROW_LENGTH, *tW);
-		*tX = GetTextureNumFromTextureDim (*tW, maxTextureSize, false, f_ext_texture_rectangle);
-		*tY = GetTextureNumFromTextureDim (*tH, maxTextureSize, false, f_ext_texture_rectangle);
-		
-		texture = (GLuint *) malloc (sizeof (GLuint) * *tX * *tY);
-		
-		if( *tX * *tY > 1) NSLog(@"NoOfTextures: %d", *tX * *tY);
-		glTextureRangeAPPLE(TEXTRECTMODE, *tW * *tH * 4, baseAddr);
-		glGenTextures (*tX * *tY, texture);
-		{
-			int k = 0, offsetX = 0, currWidth, currHeight;
-			for ( int x = 0; x < *tX; x++)
-			{
-				currWidth = GetNextTextureSize (*tW - offsetX, maxTextureSize, f_ext_texture_rectangle);
-				
-				int offsetY = 0;
-				for ( int y = 0; y < *tY; y++)
-				{
-					unsigned char *pBuffer;
-					
-					if( isRGB == YES || [curDCM thickSlabVRActivated] == YES)
-					{
-						pBuffer =   (unsigned char*) baseAddr +			
-									offsetY * rowBytes +				
-									offsetX * 4;						
-					}
-					else if( (colorTransfer == YES) || (blending == YES))
-						pBuffer =   (unsigned char*) baseAddr +		
-									offsetY * rowBytes * 4 +     
-									offsetX * 4;						
-									
-					else
-					{
-						if( FULL32BITPIPELINE )
-						{
-							pBuffer =  (unsigned char*) baseAddr +			
-										offsetY * rowBytes*4 +      
-										offsetX;
-						}
-						else
-						{
-							pBuffer =  (unsigned char*) baseAddr +			
-										offsetY * rowBytes +      
-										offsetX;
-						}
-					}
-					currHeight = GetNextTextureSize (*tH - offsetY, maxTextureSize, f_ext_texture_rectangle); // use remaining to determine next texture size
-					glBindTexture (TEXTRECTMODE, texture[k++]);
-					
-					glTexParameterf (TEXTRECTMODE, GL_TEXTURE_PRIORITY, 1.0f);
-					
-					if (f_ext_client_storage) glPixelStorei (GL_UNPACK_CLIENT_STORAGE_APPLE, 1);	// Incompatible with GL_TEXTURE_STORAGE_HINT_APPLE
-					else  glPixelStorei (GL_UNPACK_CLIENT_STORAGE_APPLE, 0);
-					
-					if (f_arb_texture_rectangle && f_ext_texture_rectangle)
-					{
-						if( *tW > 1024 && *tH > 1024 || [self class] == [OrthogonalMPRPETCTView class] || [self class] == [OrthogonalMPRView class])
-						{
-							glTexParameteri (TEXTRECTMODE, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_CACHED_APPLE);		//<- this produce 'artefacts' when changing WL&WW for small matrix in RGB images... if	GL_UNPACK_CLIENT_STORAGE_APPLE is set to 1
-						}
-					}
-						
-					if( NOINTERPOLATION)
-					{
-						glTexParameteri (TEXTRECTMODE, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-						glTexParameteri (TEXTRECTMODE, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-					}
-					else
-					{
-						glTexParameteri (TEXTRECTMODE, GL_TEXTURE_MIN_FILTER, GL_LINEAR);	//GL_LINEAR_MIPMAP_LINEAR
-						glTexParameteri (TEXTRECTMODE, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	//GL_LINEAR_MIPMAP_LINEAR
-					}
-					glTexParameteri (TEXTRECTMODE, GL_TEXTURE_WRAP_S, edgeClampParam);
-					glTexParameteri (TEXTRECTMODE, GL_TEXTURE_WRAP_T, edgeClampParam);
-					
-					glColor4f (1.0f, 1.0f, 1.0f, 1.0f);
-					
-					if( FULL32BITPIPELINE )
-					{					
-						#if __BIG_ENDIAN__
-						if( isRGB == YES || [curDCM thickSlabVRActivated] == YES) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8_REV, pBuffer);
-						#else
-						if( isRGB == YES || [curDCM thickSlabVRActivated] == YES) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8, pBuffer);
-						#endif
-						else if( (colorTransfer == YES) || (blending == YES)) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8, pBuffer);
-						else
-						{
-							float min = curWL - curWW / 2;
-							float max = curWL + curWW / 2;
-							
-							glPixelTransferf( GL_RED_BIAS, -min/(max-min));
-							glPixelTransferf( GL_RED_SCALE, 1./(max-min));
-							glTexImage2D (TEXTRECTMODE, 0, GL_LUMINANCE_FLOAT32_APPLE, currWidth, currHeight, 0, GL_LUMINANCE, GL_FLOAT, pBuffer);
-							//GL_RGBA, GL_LUMINANCE, GL_INTENSITY12, GL_INTENSITY16, GL_LUMINANCE12, GL_LUMINANCE16, 
-							// GL_LUMINANCE_FLOAT16_APPLE, GL_LUMINANCE_FLOAT32_APPLE, GL_RGBA_FLOAT32_APPLE, GL_RGBA_FLOAT16_APPLE
-							
-							glPixelTransferf( GL_RED_BIAS, 0);		//glPixelTransferf( GL_GREEN_BIAS, 0);		glPixelTransferf( GL_BLUE_BIAS, 0);
-							glPixelTransferf( GL_RED_SCALE, 1);		//glPixelTransferf( GL_GREEN_SCALE, 1);		glPixelTransferf( GL_BLUE_SCALE, 1);
-							
-							TextureComputed32bitPipeline = YES;
-						}
-					}
-					else
-					{
-						#if __BIG_ENDIAN__
-						if( isRGB == YES || [curDCM thickSlabVRActivated] == YES) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8_REV, pBuffer);
-						else if( (colorTransfer == YES) || (blending == YES)) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8_REV, pBuffer);
-						#else
-						if( isRGB == YES || [curDCM thickSlabVRActivated] == YES) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8, pBuffer);
-						else if( (colorTransfer == YES) || (blending == YES)) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8, pBuffer);
-						#endif
-						else glTexImage2D (TEXTRECTMODE, 0, GL_INTENSITY8, currWidth, currHeight, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, pBuffer);
-					}
-					
-					offsetY += currHeight;
-				}
-				offsetX += currWidth;
-			}
 		}
 	}
     glDisable (TEXTRECTMODE);
