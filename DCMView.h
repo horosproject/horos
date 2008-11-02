@@ -273,6 +273,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 	float LENSRATIO;
 	BOOL cursorhidden;
 	BOOL avoidRecursiveSync;
+	BOOL TextureComputed32bitPipeline;
 }
 
 @property(readonly) NSRect drawingFrameRect;

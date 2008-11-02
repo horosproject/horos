@@ -1803,6 +1803,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 - (void) setIndexWithReset:(short) index :(BOOL) sizeToFit
 {
+	TextureComputed32bitPipeline = NO;
+	
 	if( dcmPixList && index != -1)
 	{
 		[[self window] setAcceptsMouseMovedEvents: YES];
@@ -2136,7 +2138,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 - (void) setIndex:(short) index
 {
 	[drawLock lock];
-
+	
+	TextureComputed32bitPipeline = NO;
+	
 	BOOL	keepIt;
 	
 	[self stopROIEditing];
@@ -6622,6 +6626,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					// use remaining to determine next texture size
 					currTextureHeight = GetNextTextureSize (tH - offsetY, maxTextureSize, f_ext_texture_rectangle) - effectiveTextureMod; // effective texture height for drawing
 					glBindTexture(TEXTRECTMODE, texture[k++]); // work through textures in same order as stored, setting each texture name as current in turn
+					
 					DrawGLImageTile (GL_TRIANGLE_STRIP, curDCM.pwidth, curDCM.pheight, scaleValue,		//
 										currTextureWidth, currTextureHeight, // draw this single texture on two tris 
 										offsetX,  offsetY, 
@@ -9655,11 +9660,18 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
     if( texture)
 	{
-		CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-		
-		glDeleteTextures( *tX * *tY, texture);
-		free( (char*) texture);
-		texture = 0L;
+		if( FULL32BITPIPELINE && TextureComputed32bitPipeline)
+		{
+			
+		}
+		else
+		{
+			CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+				
+			glDeleteTextures( *tX * *tY, texture);
+			free( (char*) texture);
+			texture = 0L;
+		}
 	}
 	
 	if( curDCM == 0L)	// No image
@@ -9692,10 +9704,12 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			dest.rowBytes = dest.width*4;
 			dest.data = curDCM.baseAddr;
 			
-			if( redFactor != 1.0 || greenFactor != 1.0 || blueFactor != 1.0) {
+			if( redFactor != 1.0 || greenFactor != 1.0 || blueFactor != 1.0)
+			{
 				unsigned char  credTable[256], cgreenTable[256], cblueTable[256];
 				
-				for( long i = 0; i < 256; i++) {
+				for( long i = 0; i < 256; i++)
+				{
 					credTable[ i] = rT[ i] * redFactor;
 					cgreenTable[ i] = gT[ i] * greenFactor;
 					cblueTable[ i] = bT[ i] * blueFactor;
@@ -9732,7 +9746,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			dest.rowBytes = dest.width*4;
 			dest.data = curDCM.baseAddr;
 			
-			for( long i = 0; i < 256; i++ ) {
+			for( long i = 0; i < 256; i++ )
+			{
 				credTable[ i] = rT[ i] * redFactor;
 				cgreenTable[ i] = gT[ i] * greenFactor;
 				cblueTable[ i] = bT[ i] * blueFactor;
@@ -9765,10 +9780,12 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 		vImageConvert_Planar8toARGB8888(&src8, &src8, &src8, &src8, &dest8, 0);
 		
-		if( redFactor != 1.0 || greenFactor != 1.0 || blueFactor != 1.0) {
+		if( redFactor != 1.0 || greenFactor != 1.0 || blueFactor != 1.0)
+		{
 			unsigned char  credTable[256], cgreenTable[256], cblueTable[256];
 			
-			for( long i = 0; i < 256; i++ ) {
+			for( long i = 0; i < 256; i++ )
+			{
 				credTable[ i] = rT[ i] * redFactor;
 				cgreenTable[ i] = gT[ i] * greenFactor;
 				cblueTable[ i] = bT[ i] * blueFactor;
@@ -9849,6 +9866,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			if( *rAddr) free( *rAddr);
 			*rAddr = malloc( rowBytes * *tH);
 			*rBAddrSize = rowBytes * *tH;
+			
+			TextureComputed32bitPipeline = NO;
 		}
 		
 		if( *rAddr) 
@@ -9861,7 +9880,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			else
 			{
 				if( FULL32BITPIPELINE)
-					vImageScale_PlanarF( &src, &dst, 0L, QUALITY);
+				{
+					if( TextureComputed32bitPipeline == NO)
+						vImageScale_PlanarF( &src, &dst, 0L, QUALITY);
+				}
 				else
 					vImageScale_Planar8( &src, &dst, 0L, QUALITY);
 			}
@@ -9917,28 +9939,63 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		}
 	}
 	
-
-    glPixelStorei (GL_UNPACK_ROW_LENGTH, *tW); // set image width in groups (pixels), accounts for border this ensures proper image alignment row to row
-    // get number of textures x and y
-    // extract the number of horiz. textures needed to tile image
-    *tX = GetTextureNumFromTextureDim (*tW, maxTextureSize, false, f_ext_texture_rectangle); //OVERLAP
-    // extract the number of horiz. textures needed to tile image
-    *tY = GetTextureNumFromTextureDim (*tH, maxTextureSize, false, f_ext_texture_rectangle); //OVERLAP
-	
-	texture = (GLuint *) malloc ((long) sizeof (GLuint) * *tX * *tY);
-	
-//	NSLog( @"%d %d - No Of Textures: %d", *tW, *tH, *tX * *tY);
-	if( *tX * *tY > 1) NSLog(@"NoOfTextures: %d", *tX * *tY);
-	glTextureRangeAPPLE(TEXTRECTMODE, *tW * *tH * 4, baseAddr);
-	glGenTextures (*tX * *tY, texture); // generate textures names need to support tiling
-    {
-            long k = 0, offsetX = 0, currWidth, currHeight; // texture iterators, texture name iterator, image offsets for tiling, current texture width and height
-            for ( long x = 0; x < *tX; x++) // for all horizontal textures
-            {
-				currWidth = GetNextTextureSize (*tW - offsetX, maxTextureSize, f_ext_texture_rectangle); // use remaining to determine next texture size 
+	if( FULL32BITPIPELINE && TextureComputed32bitPipeline)
+	{
+		float min = curWL - curWW / 2;
+		float max = curWL + curWW / 2;
+		
+		glPixelTransferf( GL_RED_BIAS, -min/(max-min));
+		glPixelTransferf( GL_RED_SCALE, 1./(max-min));
+		
+		
+		int k = 0, offsetX = 0, currWidth, currHeight;
+		for ( int x = 0; x < *tX; x++)
+		{
+			currWidth = GetNextTextureSize (*tW - offsetX, maxTextureSize, f_ext_texture_rectangle);
+			
+			int offsetY = 0;
+			for ( int y = 0; y < *tY; y++)
+			{
+				unsigned char *pBuffer;
 				
-				long offsetY = 0; // reset vertical offest for every column
-				for ( long y = 0; y < *tY; y++) // for all vertical textures
+				pBuffer =  (unsigned char*) baseAddr +			
+							 offsetY * rowBytes*4 +      
+							 offsetX;
+				
+				currHeight = GetNextTextureSize (*tH - offsetY, maxTextureSize, f_ext_texture_rectangle);
+				
+				glBindTexture (TEXTRECTMODE, texture[k++]);
+				
+				glTexImage2D (TEXTRECTMODE, 0, GL_LUMINANCE_FLOAT32_APPLE, *tW, *tH, 0, GL_LUMINANCE, GL_FLOAT, baseAddr);
+				
+		
+				offsetY += currHeight;
+			}
+			offsetX += currWidth;
+		}
+		
+		glPixelTransferf( GL_RED_BIAS, 0);
+		glPixelTransferf( GL_RED_SCALE, 1);
+	}
+	else
+	{
+		glPixelStorei (GL_UNPACK_ROW_LENGTH, *tW);
+		*tX = GetTextureNumFromTextureDim (*tW, maxTextureSize, false, f_ext_texture_rectangle);
+		*tY = GetTextureNumFromTextureDim (*tH, maxTextureSize, false, f_ext_texture_rectangle);
+		
+		texture = (GLuint *) malloc (sizeof (GLuint) * *tX * *tY);
+		
+		if( *tX * *tY > 1) NSLog(@"NoOfTextures: %d", *tX * *tY);
+		glTextureRangeAPPLE(TEXTRECTMODE, *tW * *tH * 4, baseAddr);
+		glGenTextures (*tX * *tY, texture);
+		{
+			int k = 0, offsetX = 0, currWidth, currHeight;
+			for ( int x = 0; x < *tX; x++)
+			{
+				currWidth = GetNextTextureSize (*tW - offsetX, maxTextureSize, f_ext_texture_rectangle);
+				
+				int offsetY = 0;
+				for ( int y = 0; y < *tY; y++)
 				{
 					unsigned char *pBuffer;
 					
@@ -9976,18 +10033,21 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					if (f_ext_client_storage) glPixelStorei (GL_UNPACK_CLIENT_STORAGE_APPLE, 1);	// Incompatible with GL_TEXTURE_STORAGE_HINT_APPLE
 					else  glPixelStorei (GL_UNPACK_CLIENT_STORAGE_APPLE, 0);
 					
-					if (f_arb_texture_rectangle && f_ext_texture_rectangle) {
-						if( *tW > 2048 && *tH > 2048 || [self class] == [OrthogonalMPRPETCTView class] || [self class] == [OrthogonalMPRView class])
+					if (f_arb_texture_rectangle && f_ext_texture_rectangle)
+					{
+						if( *tW > 1024 && *tH > 1024 || [self class] == [OrthogonalMPRPETCTView class] || [self class] == [OrthogonalMPRView class])
 						{
 							glTexParameteri (TEXTRECTMODE, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_CACHED_APPLE);		//<- this produce 'artefacts' when changing WL&WW for small matrix in RGB images... if	GL_UNPACK_CLIENT_STORAGE_APPLE is set to 1
 						}
 					}
 						
-					if( NOINTERPOLATION) {
+					if( NOINTERPOLATION)
+					{
 						glTexParameteri (TEXTRECTMODE, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 						glTexParameteri (TEXTRECTMODE, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 					}
-					else {
+					else
+					{
 						glTexParameteri (TEXTRECTMODE, GL_TEXTURE_MIN_FILTER, GL_LINEAR);	//GL_LINEAR_MIPMAP_LINEAR
 						glTexParameteri (TEXTRECTMODE, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	//GL_LINEAR_MIPMAP_LINEAR
 					}
@@ -9996,7 +10056,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					
 					glColor4f (1.0f, 1.0f, 1.0f, 1.0f);
 					
-					if( FULL32BITPIPELINE ) {					
+					if( FULL32BITPIPELINE )
+					{					
 						#if __BIG_ENDIAN__
 						if( isRGB == YES || [curDCM thickSlabVRActivated] == YES) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8_REV, pBuffer);
 						#else
@@ -10009,22 +10070,19 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 							float max = curWL + curWW / 2;
 							
 							glPixelTransferf( GL_RED_BIAS, -min/(max-min));
-//							glPixelTransferf( GL_GREEN_BIAS, -min/(max-min));
-//							glPixelTransferf( GL_BLUE_BIAS, -min/(max-min));
-
 							glPixelTransferf( GL_RED_SCALE, 1./(max-min));
-//							glPixelTransferf( GL_GREEN_SCALE,  1./(max-min));
-//							glPixelTransferf( GL_BLUE_SCALE,  1./(max-min));
-							
 							glTexImage2D (TEXTRECTMODE, 0, GL_LUMINANCE_FLOAT32_APPLE, currWidth, currHeight, 0, GL_LUMINANCE, GL_FLOAT, pBuffer);
 							//GL_RGBA, GL_LUMINANCE, GL_INTENSITY12, GL_INTENSITY16, GL_LUMINANCE12, GL_LUMINANCE16, 
 							// GL_LUMINANCE_FLOAT16_APPLE, GL_LUMINANCE_FLOAT32_APPLE, GL_RGBA_FLOAT32_APPLE, GL_RGBA_FLOAT16_APPLE
-						
+							
 							glPixelTransferf( GL_RED_BIAS, 0);		//glPixelTransferf( GL_GREEN_BIAS, 0);		glPixelTransferf( GL_BLUE_BIAS, 0);
 							glPixelTransferf( GL_RED_SCALE, 1);		//glPixelTransferf( GL_GREEN_SCALE, 1);		glPixelTransferf( GL_BLUE_SCALE, 1);
+							
+							TextureComputed32bitPipeline = YES;
 						}
 					}
-					else {
+					else
+					{
 						#if __BIG_ENDIAN__
 						if( isRGB == YES || [curDCM thickSlabVRActivated] == YES) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8_REV, pBuffer);
 						else if( (colorTransfer == YES) || (blending == YES)) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8_REV, pBuffer);
@@ -10035,13 +10093,12 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						else glTexImage2D (TEXTRECTMODE, 0, GL_INTENSITY8, currWidth, currHeight, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, pBuffer);
 					}
 					
-					offsetY += currHeight;// - 2 * 1; // OVERLAP, offset in for the amount of texture used, 
-					//  since we are overlapping the effective texture used is 2 texels less than texture width
+					offsetY += currHeight;
 				}
-				offsetX += currWidth;// - 2 * 1; // OVERLAP, offset in for the amount of texture used, 
-				//  since we are overlapping the effective texture used is 2 texels less than texture width
-            }
-    }
+				offsetX += currWidth;
+			}
+		}
+	}
     glDisable (TEXTRECTMODE);
 	
 	return texture;
