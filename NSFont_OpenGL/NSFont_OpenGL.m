@@ -265,6 +265,8 @@ static  unsigned char			*charPtrArray[ MAXCOUNT], *charPtrArrayPreview[ MAXCOUNT
    glPixelStorei( GL_UNPACK_ROW_LENGTH, 0 );
    glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
 	
+//   glPixelStorei (GL_UNPACK_CLIENT_STORAGE_APPLE, 1);
+   
    retval = TRUE;
    for( dListNum = base, currentUnichar = first; currentUnichar < first + count;
         dListNum++, currentUnichar++ )

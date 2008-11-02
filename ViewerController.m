@@ -2826,7 +2826,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 			[[viewer window] orderOut: self];
 		}
 		
-		for (ViewerController* viewer in v)
+		for (ViewerController*  viewer in v)
 		{
 			if( [viewer windowWillClose] == NO)
 			{

@@ -10016,12 +10016,14 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				
 				glTexParameterf (TEXTRECTMODE, GL_TEXTURE_PRIORITY, 1.0f);
 				
-				if (f_ext_client_storage) glPixelStorei (GL_UNPACK_CLIENT_STORAGE_APPLE, 1);	// Incompatible with GL_TEXTURE_STORAGE_HINT_APPLE
-				else  glPixelStorei (GL_UNPACK_CLIENT_STORAGE_APPLE, 0);
+				if (f_ext_client_storage)
+					glPixelStorei (GL_UNPACK_CLIENT_STORAGE_APPLE, 1);	// Incompatible with GL_TEXTURE_STORAGE_HINT_APPLE
+				else 
+					glPixelStorei (GL_UNPACK_CLIENT_STORAGE_APPLE, 0);
 				
 				if (f_arb_texture_rectangle && f_ext_texture_rectangle)
 				{
-					if( *tW >= 1024 && *tH >= 1024 || [self class] == [OrthogonalMPRPETCTView class] || [self class] == [OrthogonalMPRView class])
+//					if( *tW >= 1024 && *tH >= 1024 || [self class] == [OrthogonalMPRPETCTView class] || [self class] == [OrthogonalMPRView class])
 					{
 						glTexParameteri (TEXTRECTMODE, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_CACHED_APPLE);		//<- this produce 'artefacts' when changing WL&WW for small matrix in RGB images... if	GL_UNPACK_CLIENT_STORAGE_APPLE is set to 1
 					}
