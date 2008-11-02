@@ -8671,7 +8671,6 @@ NSMutableArray		*array;
 {
 	NSDictionary		*aOpacity;
 	NSArray				*array;
-	int					i;
 	
 	if( [str isEqualToString:NSLocalizedString(@"Linear Table", nil)])
 	{
@@ -8688,9 +8687,10 @@ NSMutableArray		*array;
 		
 		[[[OpacityPopup menu] itemAtIndex:0] setTitle:str];
 		
-		for( i = 0; i < [pixList[ curMovieIndex] count]; i++)
+		for( int x = 0; x < maxMovieIndex; x++)
 		{
-			[[pixList[ curMovieIndex] objectAtIndex: i] setTransferFunction: 0L];
+			for( int i = 0; i < [pixList[ x] count]; i++)
+				[[pixList[ x] objectAtIndex: i] setTransferFunction: 0L];
 		}
 		
 		[self updateImage:self];
@@ -8716,9 +8716,11 @@ NSMutableArray		*array;
 		
 		
 			NSData	*table = [OpacityTransferView tableWith4096Entries: [aOpacity objectForKey:@"Points"]];
-			for( i = 0; i < [pixList[ curMovieIndex] count]; i++)
+			
+			for( int x = 0; x < maxMovieIndex; x++)
 			{
-				[[pixList[ curMovieIndex] objectAtIndex: i] setTransferFunction: table];
+				for( int i = 0; i < [pixList[ x] count]; i++)
+					[[pixList[ x] objectAtIndex: i] setTransferFunction: table];
 			}
 		}
 		[self updateImage:self];
@@ -13513,10 +13515,13 @@ int i,j,l;
 	[moviePosSlider setEnabled: YES];
 	[moviePlayStop setEnabled: YES];
 	
-//	int z = curMovieIndex;
-//	curMovieIndex = maxMovieIndex-1;
-//	[self computeInterval];
-//	curMovieIndex = z;
+	if( [pixList[ 0] count])
+	{
+		NSData *tf = [[pixList[ 0] lastObject] transferFunction];
+		
+		for( DCMPix *d in pixList[ maxMovieIndex-1])
+			[d setTransferFunction: tf];
+	}
 }
 
 -(void) deleteSeries:(id) sender
@@ -13739,6 +13744,8 @@ int i,j,l;
 				[[loopItem windowController] MovieStop: self];
 			}
 		}
+		
+		[self checkEverythingLoaded];
 		
         movieTimer = [[NSTimer scheduledTimerWithTimeInterval:0 target:self selector:@selector(performMovieAnimation:) userInfo:nil repeats:YES] retain];
         [[NSRunLoop currentRunLoop] addTimer:movieTimer forMode:NSModalPanelRunLoopMode];
