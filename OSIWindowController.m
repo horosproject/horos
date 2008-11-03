@@ -382,6 +382,11 @@ extern  ToolbarPanelController  *toolbarPanel[ 10];
 	[super dealloc];
 }
 
+- (void) removeLastItemFromUndoQueue
+{
+	NSLog( @"OSIWindowController removeLastItemFromUndoQueue CALL SUPER ??");
+}
+
 - (void) addToUndoQueue:(NSString*) what
 {
 	NSLog( @"OSIWindowController addToUndoQueue CALL SUPER ??");

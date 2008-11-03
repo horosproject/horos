@@ -755,19 +755,29 @@ static int hotKeyToolCrossTable[] =
 	{
 		NSMutableArray	*rois = [NSMutableArray array];
 		
-		int i;
-		
-		for( i = 0; i < maxMovieIndex; i++)
+		for( int i = 0; i < maxMovieIndex; i++)
 		{
 			NSMutableArray *array = [NSMutableArray array];
-			for( ROI *r in roiList[ i])
-				[array addObject: [[r copy] autorelease]];
+			for( NSArray *ar in roiList[ i])
+			{
+				NSMutableArray	*a = [NSMutableArray array];
 				
+				for( ROI *r in ar)
+					[a addObject: [[r copy] autorelease]];
+				
+				[array addObject: a];
+			}
 			[rois addObject: array];
 		}
 		
 		return [NSDictionary dictionaryWithObjectsAndKeys: string, @"type", rois, @"rois", 0L];
 	}
+}
+
+- (void) removeLastItemFromUndoQueue
+{
+	if( [undoQueue count])
+		[undoQueue removeLastObject];
 }
 
 - (void) addToUndoQueue:(NSString*) string

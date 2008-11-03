@@ -9492,6 +9492,11 @@ END_CREATE_ROIS:
 
 - (DCMPix*) renderWithRotation:(float) r scale:(float) scale xFlipped:(BOOL) xF yFlipped: (BOOL) yF
 {
+	return [self renderWithRotation: r scale: scale xFlipped: xF yFlipped: yF backgroundOffset: -1024];
+}
+
+- (DCMPix*) renderWithRotation:(float) r scale:(float) scale xFlipped:(BOOL) xF yFlipped: (BOOL) yF backgroundOffset: (float) bgO
+{
 	if( [self isRGB]) return 0L;
 	
 	NSRect dstRect = [self usefulRectWithRotation: r scale:(float) scale xFlipped:(BOOL) xF yFlipped: (BOOL) yF];
@@ -9610,7 +9615,7 @@ END_CREATE_ROIS:
 			if( v % 90 == 0)
 				vImageRotate_PlanarF( &src, &dst, 0L, -rot, [self minValueOfSeries], kvImageHighQualityResampling);
 			else
-				vImageRotate_PlanarF( &src, &dst, 0L, -rot, [self minValueOfSeries]-1024, kvImageHighQualityResampling+kvImageBackgroundColorFill);
+				vImageRotate_PlanarF( &src, &dst, 0L, -rot, [self minValueOfSeries] + bgO, kvImageHighQualityResampling+kvImageBackgroundColorFill);
 		}
 		
 		if( src.data != [self fImage]) free( src.data);
@@ -9654,7 +9659,7 @@ END_CREATE_ROIS:
 {
 	if( [self isRGB]) return 0L;
 	
-	DCMPix *newPix = [self renderWithRotation: r scale: scale xFlipped: xF yFlipped:  yF];
+	DCMPix *newPix = [self renderWithRotation: r scale: scale xFlipped: xF yFlipped:  yF backgroundOffset: 0];
 	if( newPix == 0L) return 0L;
 	
 	vImage_Buffer src;

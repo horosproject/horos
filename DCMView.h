@@ -477,7 +477,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 // Making it easie to modify mouseDragged:
 - (NSPoint)currentPointInView:(NSEvent *)event;
 - (BOOL)checkROIsForHitAtPoint:(NSPoint)point forEvent:(NSEvent *)event;
-- (void)mouseDraggedForROIs:(NSEvent *)event;
+- (BOOL)mouseDraggedForROIs:(NSEvent *)event;
 - (void)mouseDraggedCrosshair:(NSEvent *)event;
 - (void)mouseDragged3DRotate:(NSEvent *)event;
 - (void)mouseDraggedZoom:(NSEvent *)event;

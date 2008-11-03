@@ -4456,7 +4456,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			
 			// if we have action the ROI is being drawn. Don't move and rotate ROI
 			if( action == NO) // Is there a selected ROI -> rotate or move it
-				[self mouseDraggedForROIs: event];
+				action = [self mouseDraggedForROIs: event];
 		}
 		
 		/********** Actions for Various Tools *********************/
@@ -4529,8 +4529,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 }
 
 // Modifies the Selected ROIs for the drag. Can rotate, scalem move the ROI or the Text Box.
-- (void)mouseDraggedForROIs:(NSEvent *)event
+- (BOOL) mouseDraggedForROIs:(NSEvent *)event
 {
+	BOOL action = NO;
 	NSRect  frame = [self frame];
 	NSPoint current = [self currentPointInView:event];
 	
@@ -4550,7 +4551,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		for( int i = 0; i < [curRoiList count]; i++ )
 		{
 			if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected)
+			{
+				action = YES;
 				[[curRoiList objectAtIndex:i] rotate: offset.x :rotatePoint];
+			}
 		}
 	}
 	// Command and Shift scale
@@ -4570,7 +4574,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		for( int i = 0; i < [curRoiList count]; i++)
 		{
 			if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected)
+			{
+				action = YES;
 				[[curRoiList objectAtIndex:i] resize: ss :rotatePoint];
+			}
 		}
 	}
 	// Move ROI
@@ -4607,6 +4614,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			{
 				if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected)
 				{
+					action = YES;
 					[[curRoiList objectAtIndex: i] setTextBoxOffset: offset];
 				}
 			}
@@ -4618,11 +4626,14 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			{
 				if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected)
 				{
+					action = YES;
 					[[curRoiList objectAtIndex:i] roiMove: offset];
 				}
 			}
 		}
 	}
+	
+	return action;
 }
 
 
@@ -8845,7 +8856,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		DCMPix *dcm = curDCM;
 		
 		if( [self xFlipped] || [self yFlipped] || [self rotation] != 0)
-			dcm = [curDCM renderWithRotation: [self rotation] scale: 1.0 xFlipped: [self xFlipped] yFlipped: [self yFlipped]];
+			dcm = [curDCM renderWithRotation: [self rotation] scale: 1.0 xFlipped: [self xFlipped] yFlipped: [self yFlipped] backgroundOffset: 0];
 		
 		if( imOrigin)
 		{	

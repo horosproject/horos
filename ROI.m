@@ -769,7 +769,12 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 	
 	c->parentROI = 0L;
 	
-	c->points = [points copy];
+	NSMutableArray *a = [[NSMutableArray array] retain];
+	
+	for( MyPoint *p in points)
+		[a addObject: [[p copy] autorelease]];
+		
+	c->points = a;
 	
 	c->rect = rect;
 	c->type = type;
@@ -798,7 +803,10 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		memcpy( c->textureBuffer, textureBuffer, textureWidth*textureHeight*sizeof(unsigned char));
 	}
 	
-	c->zPositions = [zPositions copy];
+	NSMutableArray *z = [[NSMutableArray array] retain];
+	for( NSNumber *p in zPositions)
+		[z addObject: [[p copy] autorelease]];
+	c->zPositions = z;
 	
 	c->offsetTextBox_x = offsetTextBox_x;
 	c->offsetTextBox_y = offsetTextBox_y;
@@ -1611,7 +1619,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		MyPoint			*tempPoint;
 		float			angle;
 		
-		for( long i = 0; i < CIRCLERESOLUTION ; i++ )
+		for( int i = 0; i < CIRCLERESOLUTION ; i++ )
 		{
 			angle = i * 2 * M_PI /CIRCLERESOLUTION;
 		  
@@ -3812,8 +3820,8 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			glColor4f (color.red / 65535., color.green / 65535., color.blue / 65535., opacity);
 
 			glBegin(GL_LINE_LOOP);
-			for( long i = 0; i < CIRCLERESOLUTION ; i++ ) {
-
+			for( int i = 0; i < CIRCLERESOLUTION ; i++ )
+			{
 			  angle = i * 2 * M_PI /CIRCLERESOLUTION;
 			  
 			  if( pixelSpacingX != 0 && pixelSpacingY != 0 )
@@ -4408,26 +4416,22 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 		{
 			float angle;
 			
-			glColor4f (color.red / 65535., color.green / 65535., color.blue / 65535., opacity);
-			glLineWidth(thickness);
+			glColor4f( color.red / 65535., color.green / 65535., color.blue / 65535., opacity);
+			glLineWidth( thickness);
 			
 			NSRect rrect = rect;
 			
 			if( rrect.size.height < 0)
-			{
 				rrect.size.height = -rrect.size.height;
-			}
 			
 			if( rrect.size.width < 0)
-			{
 				rrect.size.width = -rrect.size.width;
-			}
 			
 			int resol = (rrect.size.height + rrect.size.width) * 1.5 * scaleValue;
 			
 			glBegin(GL_LINE_LOOP);
-			for( long i = 0; i < resol ; i++ ) {
-
+			for( int i = 0; i < resol ; i++ )
+			{
 				angle = i * 2 * M_PI /resol;
 			  
 			  glVertex2f( (rrect.origin.x + rrect.size.width*cos(angle) - offsetx)*scaleValue, (rrect.origin.y + rrect.size.height*sin(angle)- offsety)*scaleValue);
@@ -4436,8 +4440,8 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			
 			glPointSize( thickness);
 			glBegin( GL_POINTS);
-			for( long i = 0; i < resol ; i++ ) {
-
+			for( int i = 0; i < resol ; i++ )
+			{
 				angle = i * 2 * M_PI /resol;
 			  
 			  glVertex2f( (rrect.origin.x + rrect.size.width*cos(angle) - offsetx)*scaleValue, (rrect.origin.y + rrect.size.height*sin(angle)- offsety)*scaleValue);
@@ -4453,6 +4457,9 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				glVertex2f( (rrect.origin.x - offsetx - rrect.size.width) * scaleValue, (rrect.origin.y + rrect.size.height - offsety) * scaleValue);
 				glVertex2f( (rrect.origin.x + rrect.size.width - offsetx) * scaleValue, (rrect.origin.y + rrect.size.height - offsety) * scaleValue);
 				glVertex2f( (rrect.origin.x + rrect.size.width - offsetx) * scaleValue, (rrect.origin.y - rrect.size.height - offsety) * scaleValue);
+				
+				//Center
+				glVertex2f( (rrect.origin.x - offsetx) * scaleValue, (rrect.origin.y - offsety) * scaleValue);
 				glEnd();
 			}
 			
@@ -4462,13 +4469,15 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			// TEXT
 			
 			line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0;	line6[ 0] = 0;
-			if( self.isTextualDataDisplayed && prepareTextualData) {
-				NSPoint			tPt = self.lowerRightPoint;
-				long			line = 0;
+			if( self.isTextualDataDisplayed && prepareTextualData)
+			{
+				NSPoint tPt = self.lowerRightPoint;
+				long line = 0;
 				
 				if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name UTF8String]);
 				
-				if( ROITEXTNAMEONLY == NO ) {
+				if( ROITEXTNAMEONLY == NO )
+				{
 					if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
 					
 					if( pixelSpacingX != 0 && pixelSpacingY != 0)
@@ -4520,7 +4529,8 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			
 			glBegin(GL_LINE_LOOP);
 			
-			for( long i = 0; i < [points count]; i++) {				
+			for( long i = 0; i < [points count]; i++)
+			{				
 				//NSLog(@"JJCP--	tAxis- New point: %f x, %f y",[[points objectAtIndex:i] x],[[points objectAtIndex:i] y]);
 				glVertex2f( ([[points objectAtIndex: i] x]- offsetx) * scaleValue , ([[points objectAtIndex: i] y]- offsety) * scaleValue );
 				if(i>2)
@@ -4530,7 +4540,8 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				}
 			}
 			glEnd();
-			if( [points count]>3 ){
+			if( [points count]>3 )
+			{
 				for( long i=4;i<[points count];i++ ) [points removeObjectAtIndex: i];
 			}
 			//TEXTO

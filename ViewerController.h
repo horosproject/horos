@@ -436,6 +436,7 @@ enum
 *  This method calls - (id) prepareObjectForUndo:(NSString*) string get the undo object
 */
 - (void) addToUndoQueue:(NSString*) string;
+- (void) removeLastItemFromUndoQueue;
 
 /** Prepare for Undo
 *  returns the undo object
