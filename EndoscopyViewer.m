@@ -1096,6 +1096,7 @@ static NSString*	CenterlineToolbarItemIdentifier			= @"Centerline";
 	sagittalDataPtr = [(EndoscopyMPRView*)[mprController yReslicedView] superGetRawPixels:&widthSag :&heightSag :&sppSag :&bppSag :YES :YES :NO];
 	
 	[[NSUserDefaults standardUserDefaults] setInteger: annotations forKey: @"ANNOTATIONS"];
+	[DCMView setDefaults];
 	
 	[[mprController originalView] setNeedsDisplay: YES];
 	[[mprController xReslicedView] setNeedsDisplay: YES];

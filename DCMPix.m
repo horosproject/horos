@@ -9566,6 +9566,8 @@ END_CREATE_ROIS:
 			if( src.data != [self fImage]) free( src.data);
 			if( dst.data == 0L) return 0L;
 			src = dst;
+			
+			rot *= -1.;
 		}
 		
 		if( yF)
@@ -9578,6 +9580,8 @@ END_CREATE_ROIS:
 			if( src.data != [self fImage]) free( src.data);
 			if( dst.data == 0L) return 0L;
 			src = dst;
+			
+			rot *= -1.;
 		}
 		
 		// Scaling

@@ -442,6 +442,7 @@ extern  short		annotations;
 
 		[[NSUserDefaults standardUserDefaults] setInteger: annotCopy forKey: @"ANNOTATIONS"];
 		[[NSUserDefaults standardUserDefaults] setInteger: clutBarsCopy forKey: @"CLUTBARS"];
+		[DCMView setDefaults];
 	}
 	else
 	{

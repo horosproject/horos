@@ -2168,6 +2168,7 @@ NSString * documentsDirectory();
 
 	[[NSUserDefaults standardUserDefaults] setInteger: annotCopy forKey: @"ANNOTATIONS"];
 	[[NSUserDefaults standardUserDefaults] setInteger: clutBarsCopy forKey: @"CLUTBARS"];
+	[DCMView setDefaults];
 }
 
 -(IBAction) endExportDICOMFileSettings:(id) sender

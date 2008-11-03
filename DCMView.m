@@ -8633,7 +8633,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	if( screenCapture)	// Pixels displayed in current window
 	{
-		for( long i = 0; i < [curRoiList count]; i++)	[[curRoiList objectAtIndex: i] setROIMode: ROI_sleep];
+		for( ROI *r in curRoiList)	[r setROIMode: ROI_sleep];
 		
 		if( force8bits == YES || colorTransfer == YES || curDCM.isRGB == YES || blendingView != 0L || [curDCM SUVConverted] || [[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"PT"] )		// Screen Capture in RGB - 8 bit
 		{
@@ -8712,7 +8712,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						register int ii = *width * *height;
 						register unsigned char	*t_argb = buf;
 						register unsigned char	*t_rgb = buf;
-						while( ii-->0 ) {
+						while( ii-->0 )
+						{
 							*((int*) t_rgb) = *((int*) t_argb);
 							t_argb+=4;
 							t_rgb+=3;
@@ -8776,7 +8777,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				
 				unsigned char	*tempBuf = malloc( rowBytes);
 				
-				for( long i = 0; i < *height/2; i++ ) {
+				for( long i = 0; i < *height/2; i++ )
+				{
 					memcpy( tempBuf, buf + (*height - 1 - i)*rowBytes, rowBytes);
 					memcpy( buf + (*height - 1 - i)*rowBytes, buf + i*rowBytes, rowBytes);
 					memcpy( buf + i*rowBytes, tempBuf, rowBytes);
@@ -8858,7 +8860,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		*width = curDCM.pwidth;
 		*height = curDCM.pheight;
 		
-		if( [curDCM thickSlabVRActivated]) {
+		if( [curDCM thickSlabVRActivated])
+		{
 			force8bits = YES;
 			
 			if( curDCM.stackMode == 4 || curDCM.stackMode == 5) isRGB = YES;
@@ -8873,12 +8876,14 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			
 			long i = *width * *height * *spp * *bpp / 8;
 			buf = malloc( i );
-			if( buf ) {
+			if( buf )
+			{
 				unsigned char *dst = buf, *src = (unsigned char*) curDCM.baseAddr;
 				i = *width * *height;
 				
 				// CONVERT ARGB TO RGB
-				while( i-- > 0) {
+				while( i-- > 0)
+				{
 					src++;
 					*dst++ = *src++;
 					*dst++ = *src++;

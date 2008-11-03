@@ -1284,7 +1284,7 @@ NSString * documentsDirectory();
 {
 	DCMPix *curPix = [[self keyView] curDCM];
 
-	long	annotCopy		= [[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"],
+	int		annotCopy		= [[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"],
 			clutBarsCopy	= [[NSUserDefaults standardUserDefaults] integerForKey: @"CLUTBARS"];
 	long	width, height, spp, bpp, err;
 	float	cwl, cww;
@@ -1312,8 +1312,10 @@ NSString * documentsDirectory();
 		[exportDCM setSliceThickness: [curPix sliceThickness]];
 		[exportDCM setSlicePosition: [curPix sliceLocation]];
 		
-		if( screenCapture) [[self keyView] orientationCorrectedToView: o];	// <- Because we do screen capture !!!!! We need to apply the rotation of the image
-		else [curPix orientation: o];
+		if( screenCapture)
+			[[self keyView] orientationCorrectedToView: o];	// <- Because we do screen capture !!!!! We need to apply the rotation of the image
+		else
+			[curPix orientation: o];
 		[exportDCM setOrientation: o];
 		
 		[exportDCM setPosition: imOrigin];
@@ -1326,6 +1328,7 @@ NSString * documentsDirectory();
 	}
 	[[NSUserDefaults standardUserDefaults] setInteger: annotCopy forKey: @"ANNOTATIONS"];
 	[[NSUserDefaults standardUserDefaults] setInteger: clutBarsCopy forKey: @"CLUTBARS"];
+	[DCMView setDefaults];
 }
 
 -(IBAction) endExportDICOMFileSettings:(id) sender

@@ -1172,6 +1172,7 @@ extern NSString * documentsDirectory();
 		if( err)  NSRunCriticalAlertPanel( NSLocalizedString(@"Error", 0L),  NSLocalizedString( @"Error during the creation of the DICOM File!", 0L), NSLocalizedString(@"OK", 0L), nil, nil);
 		
 		[[NSUserDefaults standardUserDefaults] setInteger: annotCopy forKey: @"ANNOTATIONS"];
+		[DCMView setDefaults];
 	}
 	else
 	{
@@ -1222,6 +1223,7 @@ extern NSString * documentsDirectory();
 		[[BrowserController currentBrowser] checkIncoming: self];
 		
 		[[NSUserDefaults standardUserDefaults] setInteger: annotCopy forKey: @"ANNOTATIONS"];
+		[DCMView setDefaults];
 	}
 }
 
