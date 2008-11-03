@@ -10019,27 +10019,26 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				
 				if( isRGB == YES || [curDCM thickSlabVRActivated] == YES)
 				{
-					pBuffer =   (unsigned char*) baseAddr +			
-								offsetY * rowBytes +				
-								offsetX * 4;						
+					pBuffer =   (unsigned char*) baseAddr +
+								offsetY * rowBytes +
+								offsetX * 4;
 				}
 				else if( (colorTransfer == YES) || (blending == YES))
-					pBuffer =   (unsigned char*) baseAddr +		
-								offsetY * rowBytes * 4 +     
-								offsetX * 4;						
-								
+					pBuffer =   (unsigned char*) baseAddr +
+								offsetY * rowBytes * 4 +
+								offsetX * 4;
 				else
 				{
 					if( intFULL32BITPIPELINE )
 					{
-						pBuffer =  (unsigned char*) baseAddr +			
-									offsetY * rowBytes*4 +      
+						pBuffer =  (unsigned char*) baseAddr +
+									offsetY * rowBytes*4 +
 									offsetX;
 					}
 					else
 					{
-						pBuffer =  (unsigned char*) baseAddr +			
-									offsetY * rowBytes +      
+						pBuffer =  (unsigned char*) baseAddr +
+									offsetY * rowBytes +
 									offsetX;
 					}
 				}

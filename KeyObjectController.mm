@@ -19,8 +19,10 @@
 
 @implementation KeyObjectController
 
-- (id)initWithStudy:(id)study{
-	if (self = [super initWithWindowNibName:@"KeyObjectReport"]) {
+- (id)initWithStudy:(id)study
+{
+	if (self = [super initWithWindowNibName:@"KeyObjectReport"])
+	{
 		_study = [study retain];
 		_title = 113000; // Of Interest
 		NSLog(@"init Key Object controller");

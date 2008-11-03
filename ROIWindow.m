@@ -240,18 +240,18 @@
 	[self release];
 }
 
-- (void) setAllMatchingROIsToSameParamsAs: (ROI*) iROI withNewName: (NSString*) newName {
+- (void) setAllMatchingROIsToSameParamsAs: (ROI*) iROI withNewName: (NSString*) newName
+{	
+	NSArray *roiSeriesList = [curController roiList];	
 	
-	NSArray *roiSeriesList = [curController roiList];
-	
-	
-	for ( NSArray *roiImageList in roiSeriesList ) {
-		
-		for ( ROI *roi in roiImageList ) {
-			
+	for ( NSArray *roiImageList in roiSeriesList )
+	{
+		for ( ROI *roi in roiImageList )
+		{
 			if ( roi == curROI ) continue;
 			
-			if ( [[roi name] isEqualToString: [iROI name]] ) {
+			if ( [[roi name] isEqualToString: [iROI name]] )
+			{
 				[roi setColor: [iROI rgbcolor]];
 				[roi setThickness: [iROI thickness]];
 				[roi setOpacity: [iROI opacity]];
@@ -262,18 +262,20 @@
 	}
 }
 
-- (void) removeAllROIsWithName: (NSString*) roiName {
-		
-	NSArray *roiSeriesList = [curController roiList];
+- (void) removeAllROIsWithName: (NSString*) roiName
+{		
+	NSArray *roiSeriesList = [curController roiList];	
 	
-	
-	for ( NSMutableArray *roiImageList in roiSeriesList ) {
+	for ( NSMutableArray *roiImageList in roiSeriesList )
+	{
 		int j;
 		
-		for ( j = 0; j < [roiImageList count]; j++ ) {
+		for ( j = 0; j < [roiImageList count]; j++ )
+		{
 			ROI *roi = [roiImageList objectAtIndex: j ];
 			
-			if ( [[roi name] isEqualToString: roiName] ) {
+			if ( [[roi name] isEqualToString: roiName] )
+			{
 				[roiImageList removeObjectAtIndex: j];
 				j--;
 			}
@@ -357,17 +359,20 @@
 		// allocate an NSMutableDictionary to hold our preference data
 		xml = [[NSMutableDictionary alloc] init];
 		
-		if ( [self allWithSameName] ) {
+		if ( [self allWithSameName] )
+		{
 			NSArray *roiSeriesList = [curController roiList];
 			NSMutableArray *roiArray = [NSMutableArray arrayWithCapacity: 0];
 			
 			int i;			
-			for ( i = 0; i < [roiSeriesList count]; i++ ) {
+			for ( i = 0; i < [roiSeriesList count]; i++ )
+			{
 				NSArray *roiImageList = [roiSeriesList objectAtIndex: i];
 				
-				for ( ROI *roi in roiImageList ) {
-										
-					if ( [[roi name] isEqualToString: [curROI name]] ) {
+				for ( ROI *roi in roiImageList )
+				{
+					if ( [[roi name] isEqualToString: [curROI name]] )
+					{
 						NSMutableDictionary *roiData = [[NSMutableDictionary alloc] init];
 						
 						[roiData setObject:[NSNumber numberWithInt: i + 1] forKey: @"Slice"];
@@ -391,8 +396,8 @@
 			[xml setObject: roiArray forKey: @"ROI array"];
 		}
 		
-		else {  // Output curROI only
-		
+		else
+		{  // Output curROI only
 			[xml setObject:[curROI comments] forKey:@"Comments"];
 			
 			// Points composing the ROI

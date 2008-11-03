@@ -27,9 +27,11 @@
 
 }
 
-- (id)initWithFrame:(NSRect)frame seriesRows:(int)rows  seriesColumns:(int)columns{
+- (id)initWithFrame:(NSRect)frame seriesRows:(int)rows  seriesColumns:(int)columns
+{
 	 self = [super initWithFrame:frame];
-	 if (self) {
+	 if (self)
+	 {
 		seriesRows = rows;
 		seriesColumns = columns;
 		//tag = theTag;
@@ -37,7 +39,8 @@
 		int count = rows * columns;
 		seriesViews = [[NSMutableArray array] retain];
 		NSRect bounds = [self bounds];
-		for (i = 0 ; i < count; i++) {
+		for (i = 0 ; i < count; i++)
+		{
 			float newWidth = bounds.size.width / seriesColumns;
 			float newHeight = bounds.size.height / seriesRows;
 			float newX = newWidth * (i / seriesColumns);

@@ -29,8 +29,10 @@ static NSString  *pasteBoardTypeCover = @"KeyImages";
  * accept drags from within this app. This is called when we've been loaded
  * from an NIB.
 *****************************************************************************/
-- (id)initWithCoder:(NSCoder *)decoder {
-    if (self = [super initWithCoder:decoder]) {
+- (id)initWithCoder:(NSCoder *)decoder
+{
+    if (self = [super initWithCoder:decoder])
+	{
         [self registerForDraggedTypes:[NSArray arrayWithObjects:pasteBoardTypeCover, pasteBoardOsiriX, nil]];
     }
     return self;
@@ -45,14 +47,17 @@ static NSString  *pasteBoardTypeCover = @"KeyImages";
  * dynamically (as opposed to loaded from a NIB).
 *****************************************************************************/
 - (id)initWithFrame:(NSRect)frame {
-    if (self = [super initWithFrame:frame]) {
+    if (self = [super initWithFrame:frame])
+	{
         [self registerForDraggedTypes:[NSArray arrayWithObjects:pasteBoardTypeCover, pasteBoardOsiriX, nil]];
     }
     return self;
 }
 
-- (BOOL)performKeyEquivalent:(NSEvent *)theEvent{
-	if ([[theEvent characters] characterAtIndex:0] == NSDeleteCharacter) {
+- (BOOL)performKeyEquivalent:(NSEvent *)theEvent
+{
+	if ([[theEvent characters] characterAtIndex:0] == NSDeleteCharacter)
+	{
 		[arrayController remove:self];
 		return YES;
 	}

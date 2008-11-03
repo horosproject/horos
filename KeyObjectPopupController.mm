@@ -22,8 +22,10 @@
 
 @implementation KeyObjectPopupController
 
-- (id)initWithViewerController:(ViewerController *)controller popup:(NSPopUpButton *)popupButton{
-	if (self = [super init]) {
+- (id)initWithViewerController:(ViewerController *)controller popup:(NSPopUpButton *)popupButton
+{
+	if (self = [super init])
+	{
 		//don't retain Viewer. It retains us
 		_popupButton = popupButton;
 		_menu = [_popupButton menu];
@@ -39,7 +41,8 @@
 	[super dealloc];
 }
 
-- (NSArray *)reports{
+- (NSArray *)reports
+{
 	return _reports;
 }
 
@@ -48,19 +51,23 @@
 	_reports = [reports retain];
 }
 
-- (NSMenu *)menu{
+- (NSMenu *)menu
+{
 	return _menu;
 }
 
-- (void)setMenu:(NSMenu *)menu{
+- (void)setMenu:(NSMenu *)menu
+{
 	[_menu release];
 	_reports = [menu retain];
 }
 
-- (void)willPopUp:(NSNotification *)note{
+- (void)willPopUp:(NSNotification *)note
+{
 	//update menu
 	// Remove old Report Type Menu Items
-	if ([_menu numberOfItems] > 4) {
+	if ([_menu numberOfItems] > 4)
+	{
 		int i = [_menu numberOfItems] - 1;
 		while (i >= 4)
 		{

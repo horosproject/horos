@@ -501,7 +501,8 @@ enum algorithmTypes { intervalSegmentationType, thresholdSegmentationType, neigh
 	NSArray *titles= [parameters objectAtIndex:algorithmType];
 	NSArray *defaultValues = [defaultsParameters objectAtIndex:algorithmType];
 	NSFormCell *cell = nil;
-	switch (algorithmType) {
+	switch (algorithmType)
+	{
 		case intervalSegmentationType:	
 				cell = [params cellAtRow:0 column:0] ;
 				[cell setTitleWidth:-1];

@@ -34,7 +34,8 @@
 	NSEnumerator *enumerator = [[self content] objectEnumerator];
 	DicomImage *image;
 	int tag = 0;
-	while (image = [enumerator nextObject]) {
+	while (image = [enumerator nextObject])
+	{
 		NSImage *thumbnail = [image thumbnail];
 		if (thumbnail) {
 			NSButtonCell *cell = [[[NSButtonCell alloc] initImageCell:thumbnail] autorelease];

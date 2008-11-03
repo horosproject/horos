@@ -1331,7 +1331,8 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 -(float) plainArea
 {
 	long x = 0;
-	for( long i = 0; i < textureWidth*textureHeight ; i++ )	{
+	for( long i = 0; i < textureWidth*textureHeight ; i++ )
+	{
 		if( textureBuffer[i] != 0) x++;
 	}
 	
@@ -1538,11 +1539,12 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 			xmin = xmax = [[points objectAtIndex:0] x];
 			ymin = ymax = [[points objectAtIndex:0] y];
 			
-			for( long i = 0; i < [points count]; i++ ) {
-				if( [[points objectAtIndex:i] x] < xmin) xmin = [[points objectAtIndex:i] x];
-				if( [[points objectAtIndex:i] x] > xmax) xmax = [[points objectAtIndex:i] x];
-				if( [[points objectAtIndex:i] y] < ymin) ymin = [[points objectAtIndex:i] y];
-				if( [[points objectAtIndex:i] y] > ymax) ymax = [[points objectAtIndex:i] y];
+			for( MyPoint *p in points)
+			{
+				if( [p x] < xmin) xmin = [p x];
+				if( [p x] > xmax) xmax = [p x];
+				if( [p y] < ymin) ymin = [p y];
+				if( [p y] > ymax) ymax = [p y];
 			}
 			
 			result.x = xmax;
@@ -1635,11 +1637,8 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 	{
 		NSMutableArray  *tempArray = [ITKSegmentation3D extractContour:textureBuffer width:textureWidth height:textureHeight];
 		
-		for( long i = 0; i < [tempArray count]; i++)
-		{
-			MyPoint	*pt = [tempArray objectAtIndex: i];
+		for( MyPoint *pt in tempArray)
 			[pt move: textureUpLeftCornerX :textureUpLeftCornerY];
-		}
 		
 		return tempArray;
 	}
@@ -1759,11 +1758,14 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 					float xi, yj;
 					BOOL found = NO;
 
-					for( int i=-NEIGHBORHOODRADIUS; i<=NEIGHBORHOODRADIUS && !found; i++ ) {
-						for( int j=-NEIGHBORHOODRADIUS; j<=NEIGHBORHOODRADIUS && !found; j++ ) {
+					for( int i=-NEIGHBORHOODRADIUS; i<=NEIGHBORHOODRADIUS && !found; i++ )
+					{
+						for( int j=-NEIGHBORHOODRADIUS; j<=NEIGHBORHOODRADIUS && !found; j++ )
+						{
 							xi = x+i;
 							yj = y+j;
-							if(xi>=0.0 && yj>=0.0 && xi<width && yj<height)	{
+							if(xi>=0.0 && yj>=0.0 && xi<width && yj<height)
+							{
 								
 								NSColor *pixelColor = [bitmap colorAtX:xi y:yj];
 								if([pixelColor alphaComponent]>0.0)
@@ -1860,7 +1862,8 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 				NSMutableArray *splinePoints = [self splinePoints: scale];
 				
 				int i;
-				for( i = 0; i < ([splinePoints count] - 1); i++ )	{
+				for( i = 0; i < ([splinePoints count] - 1); i++ )
+				{
 					
 					[self DistancePointLine:pt :[[splinePoints objectAtIndex:i] point] : [[splinePoints objectAtIndex:(i+1)] point] :&distance];
 					if( distance*scale < 5.0)
@@ -2239,7 +2242,8 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		intXCenter = center.x;
 		intYCenter = center.y;
 		
-		for( long i = 0; i < intUpper; i++)	{ 
+		for( long i = 0; i < intUpper; i++)
+		{ 
 			new_x = cos(theta) * ([[pts objectAtIndex: i] x] - intXCenter) - sin(theta) * ([[pts objectAtIndex: i] y] - intYCenter);
 			new_y = sin(theta) * ([[pts objectAtIndex: i] x] - intXCenter) + cos(theta) * ([[pts objectAtIndex: i] y] - intYCenter);
 			
@@ -2285,7 +2289,8 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		intXCenter = center.x;
 		intYCenter = center.y;
 		
-		for( long i = 0; i < intUpper; i++) { 
+		for( long i = 0; i < intUpper; i++)
+		{ 
 			new_x = ([[pts objectAtIndex: i] x] - intXCenter) * factor;
 			new_y = ([[pts objectAtIndex: i] y] - intYCenter) * factor;
 			

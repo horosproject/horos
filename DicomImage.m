@@ -741,15 +741,18 @@ NSString* sopInstanceUIDDecode( unsigned char *r)
 	//loop through the ROIs and add
 	NSSet *rois = [self primitiveValueForKey:@"rois"];
 	id roi;
-	for (roi in rois){
+	for (roi in rois)
+	{
 		//will be either a Graphic Object sequence or a Text Object Sequence
 		int roiType = [[roi valueForKey:@"roiType"] intValue];
 		NSString *typeString = nil;
-		if (roiType == tText) {// is text 
+		if (roiType == tText)
+		{// is text 
 		}
 		else // is a graphic
 		{
-			switch (roiType) {
+			switch (roiType)
+			{
 				case tOval:
 					typeString = @"ELLIPSE";
 					break;

@@ -27,9 +27,11 @@
 
 }
 
-- (id)initWithFrame:(NSRect)frame seriesRows:(int)rows  seriesColumns:(int)columns{
+- (id)initWithFrame:(NSRect)frame seriesRows:(int)rows  seriesColumns:(int)columns
+{
 	self = [super initWithFrame:frame];
-    if (self) {
+    if (self)
+	{
         seriesRows = rows;
 		seriesColumns = columns;
 		tag = 0;
@@ -46,7 +48,8 @@
 		
 		int matrixSize = imageRows * imageColumns;		
 		imageViews = [[NSMutableArray array] retain];
-		while (tag < matrixSize) {
+		while (tag < matrixSize)
+		{
 			DCMView *dcmView = [[[DCMView alloc] initWithFrame:frame imageRows:imageRows imageColumns:imageColumns] autorelease];			
 			[self addSubview:dcmView];
 			[dcmView setTag:tag++];
@@ -160,7 +163,8 @@
 	float scale = [[imageViews objectAtIndex:0] scaleValue];
 	
 	// remove views
-	if (newSize < currentSize) {
+	if (newSize < currentSize)
+	{
 		[[self window] makeFirstResponder:[imageViews objectAtIndex:0]];
 		for (i = currentSize - 1; i >= newSize ; i--)
 		{
@@ -221,7 +225,8 @@
 		NSButtonCell *theCell = [sender selectedCell];
 		ctag = [theCell tag];
 	}
-	else if (!sender) {
+	else if (!sender)
+	{
 		ctag = [[[note userInfo] valueForKey:@"toolIndex"] intValue];
 	}
 	else
@@ -306,7 +311,8 @@
 
 -(void) ActivateBlending:(ViewerController*) bC blendingFactor:(float)blendingFactor{
 	DCMView *view;
-	for (view in imageViews) {
+	for (view in imageViews)
+	{
 		if( bC)
 			[view setBlending: [bC imageView]];			
 		else

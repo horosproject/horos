@@ -41,8 +41,10 @@ NSString *pasteBoardTypeCover = @"KeyImages";
  * accept drags from within this app. This is called when we've been loaded
  * from an NIB.
 *****************************************************************************/
-- (id)initWithCoder:(NSCoder *)decoder {
-    if (self = [super initWithCoder:decoder]) {
+- (id)initWithCoder:(NSCoder *)decoder
+{
+    if (self = [super initWithCoder:decoder])
+	{
         [self registerForDraggedTypes:[NSArray arrayWithObjects:pasteBoardTypeCover, nil]];
     }
     return self;
@@ -82,13 +84,16 @@ NSString *pasteBoardTypeCover = @"KeyImages";
  * Called when the user drags an object on top of us. The return value tells
  * the caller if we'll accept the object.
 *****************************************************************************/
-- (NSDragOperation)draggingEntered:(id <NSDraggingInfo>)sender { 
+- (NSDragOperation)draggingEntered:(id <NSDraggingInfo>)sender
+{ 
 	[self clearDragDestinationMembers];
-    if ([sender draggingSource] == self) {
+    if ([sender draggingSource] == self)
+	{
 		return NSDragOperationNone;
-    } else {
+    }
+	else
+	{
 		return NSDragOperationEvery;
-
     }
 }
 
