@@ -2154,8 +2154,11 @@ NSString * documentsDirectory();
 		[exportDCM setSliceThickness: [curPix sliceThickness]];
 		[exportDCM setSlicePosition: [curPix sliceLocation]];
 		
-		if( screenCapture) [curView orientationCorrectedToView: o];	// <- Because we do screen capture !!!!! We need to apply the rotation of the image
-		else [curPix orientation: o];
+		[curView orientationCorrectedToView: o];
+		
+//		if( screenCapture) [curView orientationCorrectedToView: o];	// <- Because we do screen capture !!!!! We need to apply the rotation of the image
+//		else [curPix orientation: o];
+		
 		[exportDCM setOrientation: o];
 		[exportDCM setPosition: imOrigin];
 		[exportDCM setPixelData: data samplePerPixel:spp bitsPerPixel:bpp width: width height: height];

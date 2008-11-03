@@ -14808,8 +14808,10 @@ int i,j,l;
 		[exportDCM setSliceThickness: thickness];
 		[exportDCM setSlicePosition: location];
 		
-		if( screenCapture) [imageView orientationCorrectedToView: o];	// <- Because we do screen capture !!!!! We need to apply the rotation of the image
-		else [curPix orientation: o];
+		[imageView orientationCorrectedToView: o];
+//		if( screenCapture) [imageView orientationCorrectedToView: o];	// <- Because we do screen capture !!!!! We need to apply the rotation of the image
+//		else [curPix orientation: o];
+		
 		[exportDCM setOrientation: o];
 		
 		[exportDCM setPosition: imOrigin];

@@ -1312,10 +1312,13 @@ NSString * documentsDirectory();
 		[exportDCM setSliceThickness: [curPix sliceThickness]];
 		[exportDCM setSlicePosition: [curPix sliceLocation]];
 		
-		if( screenCapture)
-			[[self keyView] orientationCorrectedToView: o];	// <- Because we do screen capture !!!!! We need to apply the rotation of the image
-		else
-			[curPix orientation: o];
+		[[self keyView] orientationCorrectedToView: o];
+		
+//		if( screenCapture)
+//			[[self keyView] orientationCorrectedToView: o];	// <- Because we do screen capture !!!!! We need to apply the rotation of the image
+//		else
+//			[curPix orientation: o];
+			
 		[exportDCM setOrientation: o];
 		
 		[exportDCM setPosition: imOrigin];

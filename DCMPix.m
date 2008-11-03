@@ -9604,9 +9604,14 @@ END_CREATE_ROIS:
 		dst.rowBytes = newW*4;
 		dst.data = malloc( dst.height * dst.rowBytes);
 		
-		if( dst.data)
-			vImageRotate_PlanarF( &src, &dst, 0L, -rot, [self minValueOfSeries]-1024, kvImageHighQualityResampling+kvImageBackgroundColorFill);
-			
+		if( dst.data && rot != 0)
+		{
+			int v = r;
+			if( v % 90 == 0)
+				vImageRotate_PlanarF( &src, &dst, 0L, -rot, [self minValueOfSeries], kvImageHighQualityResampling);
+			else
+				vImageRotate_PlanarF( &src, &dst, 0L, -rot, [self minValueOfSeries]-1024, kvImageHighQualityResampling+kvImageBackgroundColorFill);
+		}	
 		if( src.data != [self fImage]) free( src.data);
 		if( dst.data == 0L) return 0L;
 	}
@@ -9780,6 +9785,15 @@ END_CREATE_ROIS:
 	orientation[6] = orientation[1]*orientation[5] - orientation[2]*orientation[4];
 	orientation[7] = orientation[2]*orientation[3] - orientation[0]*orientation[5];
 	orientation[8] = orientation[0]*orientation[4] - orientation[1]*orientation[3];
+	
+	length = sqrt(orientation[6]*orientation[6] + orientation[7]*orientation[7] + orientation[8]*orientation[8]);
+	
+	if( length)
+	{
+		orientation[6] = orientation[ 6] / length;
+		orientation[7] = orientation[ 7] / length;
+		orientation[8] = orientation[ 8] / length;
+	}
 }
 
 -(void) setOrientation:(float*) c

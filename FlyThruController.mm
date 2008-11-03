@@ -423,6 +423,7 @@
 				[dcmSequence setPixelData: dataPtr samplePerPixel:spp bitsPerPixel:bpp width: width height: height];
 				
 				[[controller3D view] getOrientation: o];
+				
 				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"exportOrientationIn3DExport"])
 					[dcmSequence setOrientation: o];
 				

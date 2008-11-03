@@ -8842,29 +8842,34 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	}
 	else // Pixels contained in memory  -> only RGB or 16 bits data
 	{
+		DCMPix *dcm = curDCM;
+		
+		if( [self xFlipped] || [self yFlipped] || [self rotation] != 0)
+			dcm = [curDCM renderWithRotation: [self rotation] scale: 1.0 xFlipped: [self xFlipped] yFlipped: [self yFlipped]];
+		
 		if( imOrigin)
 		{	
-			imOrigin[ 0] = [curDCM originX];
-			imOrigin[ 1] = [curDCM originY];
-			imOrigin[ 2] = [curDCM originZ];
+			imOrigin[ 0] = [dcm originX];
+			imOrigin[ 1] = [dcm originY];
+			imOrigin[ 2] = [dcm originZ];
 		}
 		
 		if( imSpacing)
 		{
-			imSpacing[ 0] = [curDCM pixelSpacingX];
-			imSpacing[ 1] = [curDCM pixelSpacingY];
+			imSpacing[ 0] = [dcm pixelSpacingX];
+			imSpacing[ 1] = [dcm pixelSpacingY];
 		}
 		
-		BOOL	isRGB = curDCM.isRGB;
+		BOOL	isRGB = dcm.isRGB;
 		
-		*width = curDCM.pwidth;
-		*height = curDCM.pheight;
+		*width = dcm.pwidth;
+		*height = dcm.pheight;
 		
-		if( [curDCM thickSlabVRActivated])
+		if( [dcm thickSlabVRActivated])
 		{
 			force8bits = YES;
 			
-			if( curDCM.stackMode == 4 || curDCM.stackMode == 5) isRGB = YES;
+			if( dcm.stackMode == 4 || dcm.stackMode == 5) isRGB = YES;
 		}
 		
 		if( isRGB == YES)
@@ -8878,7 +8883,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			buf = malloc( i );
 			if( buf )
 			{
-				unsigned char *dst = buf, *src = (unsigned char*) curDCM.baseAddr;
+				unsigned char *dst = buf, *src = (unsigned char*) dcm.baseAddr;
 				i = *width * *height;
 				
 				// CONVERT ARGB TO RGB
@@ -8938,7 +8943,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				
 				long i = *width * *height * *spp * *bpp / 8;
 				buf = malloc( i);
-				if( buf ) memcpy( buf, curDCM.baseAddr, *width**height);
+				if( buf ) memcpy( buf, dcm.baseAddr, *width**height);
 			}
 			else	// Give me 16 bits !
 			{
@@ -8955,14 +8960,14 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				dst8.width = *width;
 				dst8.rowBytes = *width * sizeof( short);
 				
-				srcf.data = [curDCM computefImage];
+				srcf.data = [dcm computefImage];
 				
 				long i = *width * *height * *spp * *bpp / 8;
 				buf = malloc( i);
 				if( buf)
 				{
 //					float *tempPETBuf = 0L;
-//					if( [self is2DViewer] && [curDCM SUVConverted])
+//					if( [self is2DViewer] && [dcm SUVConverted])
 //					{
 //						float * copySrcfData = srcf.data;
 //						
@@ -8989,7 +8994,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					}
 				}
 				
-				if( srcf.data != curDCM.fImage ) free( srcf.data );
+				if( srcf.data != dcm.fImage ) free( srcf.data );
 			}
 		}
 		
@@ -9009,7 +9014,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			dstVimage.rowBytes = *width * (*bpp/8) * *spp;
 			dstVimage.data = malloc( dstVimage.rowBytes * dstVimage.height);
 			
-			if( *spp == 3) {
+			if( *spp == 3)
+			{
 				vImage_Buffer	argbsrcVimage, argbdstVimage;
 				
 				argbsrcVimage = srcVimage;
@@ -9533,7 +9539,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			o[ 5] *= -1;
 		}
 		
-		if( xFlipped ) {
+		if( xFlipped )
+		{
 			xRot *= -1;
 			yRot *= -1;
 			
@@ -9565,6 +9572,15 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	o[7] = o[2]*o[3] - o[0]*o[5];
 	o[8] = o[0]*o[4] - o[1]*o[3];
 
+	double length = sqrt(o[ 0]*o[ 0] + o[ 1]*o[ 1] + o[ 2]*o[ 2]);
+	if( length)	{	o[0] = o[ 0] / length;	o[1] = o[ 1] / length;	o[ 2] = o[ 2] / length;	}
+
+	 length = sqrt(o[ 3]*o[ 3] + o[ 4]*o[ 4] + o[ 5]*o[ 5]);
+	if( length)	{	o[ 3] = o[ 3] / length;	o[ 4] = o[ 4] / length;	o[ 5] = o[ 5] / length;	}
+	
+	 length = sqrt(o[ 6]*o[ 6] + o[ 7]*o[ 7] + o[ 8]*o[ 8]);
+	if( length)	{	o[6] = o[ 6] / length;	o[ 7] = o[ 7] / length;	o[ 8] = o[ 8] / length;	}
+	
 	memcpy( correctedOrientation, o, sizeof o );
 }
 
