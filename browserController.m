@@ -913,6 +913,8 @@ static NSArray*	statesArray = nil;
 					dockLabel = [NSString stringWithFormat:@"%d", [addedImagesArray count]];
 					growlString = [NSString stringWithFormat: NSLocalizedString(@"Patient: %@\r%d images added to the database", 0L), [[addedImagesArray objectAtIndex:0] valueForKeyPath:@"series.study.name"], [addedImagesArray count]];
 				}
+				
+				[self executeAutorouting: addedImagesArray];
 			}
 		}
 		@catch( NSException *ne)
@@ -1301,10 +1303,8 @@ static NSArray*	statesArray = nil;
 	}
 }
 
-- (void)OsirixAddToDBNotification: (NSNotification *)note
+- (void) executeAutorouting: (NSArray *)newImages
 {
-	NSArray	*newImages = [[note userInfo] objectForKey:@"OsiriXAddToDBArray"];
-	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOROUTINGACTIVATED"])
 	{
 		NSArray	*autoroutingRules = [[NSUserDefaults standardUserDefaults] arrayForKey: @"AUTOROUTINGDICTIONARY"];

@@ -401,7 +401,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (NSMutableArray *) filesForDatabaseMatrixSelection :(NSMutableArray*) correspondingManagedObjects;
 - (NSMutableArray *) filesForDatabaseMatrixSelection :(NSMutableArray*) correspondingManagedObjects onlyImages:(BOOL) onlyImages;
 - (void)setToolbarReportIconForItem: (NSToolbarItem *)item;
-
+- (void)executeAutorouting: (NSArray *)newImages;
 - (void) resetListenerTimer;
 - (IBAction) smartAlbumHelpButton:(id) sender;
 

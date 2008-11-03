@@ -1433,9 +1433,9 @@ NSString * documentsDirectory();
 			
 			[splash close];
 			[splash release];
-			
-			[[BrowserController currentBrowser] checkIncoming: self];
 		}
+		
+		[[BrowserController currentBrowser] checkIncoming: self];
 	}
 }
 

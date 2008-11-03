@@ -9604,14 +9604,15 @@ END_CREATE_ROIS:
 		dst.rowBytes = newW*4;
 		dst.data = malloc( dst.height * dst.rowBytes);
 		
-		if( dst.data && rot != 0)
+		if( dst.data)
 		{
 			int v = r;
 			if( v % 90 == 0)
 				vImageRotate_PlanarF( &src, &dst, 0L, -rot, [self minValueOfSeries], kvImageHighQualityResampling);
 			else
 				vImageRotate_PlanarF( &src, &dst, 0L, -rot, [self minValueOfSeries]-1024, kvImageHighQualityResampling+kvImageBackgroundColorFill);
-		}	
+		}
+		
 		if( src.data != [self fImage]) free( src.data);
 		if( dst.data == 0L) return 0L;
 	}

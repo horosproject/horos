@@ -542,7 +542,6 @@ extern BrowserController	*browserWindow;
 
 			[dcmDst writeToFile:dstPath withTransferSyntax:[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax] quality:DCMLosslessQuality atomically:YES];
 			
-			
 			if( squaredata)
 				free( squaredata);
 			squaredata = 0L;
