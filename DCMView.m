@@ -4231,7 +4231,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					{
 						if( index > 0)
 						{
-							[NSTimer scheduledTimerWithTimeInterval: 0.1 target: [self windowController] selector: @selector( loadSeries:) userInfo: [NSNumber numberWithInt: -1] repeats:NO];
+							[NSObject cancelPreviousPerformRequestsWithTarget: [self windowController] selector: @selector( loadSeriesDown) object: 0L];
+							[[self windowController] performSelector: @selector( loadSeriesDown) withObject: 0L afterDelay: 0.01];
 						}
 					}
 				}
@@ -4244,7 +4245,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					{
 						if( index + 1 < [seriesArray count])
 						{
-							[NSTimer scheduledTimerWithTimeInterval: 0.1 target: [self windowController] selector: @selector( loadSeries:) userInfo: [NSNumber numberWithInt: 1] repeats:NO];
+							[NSObject cancelPreviousPerformRequestsWithTarget: [self windowController] selector: @selector( loadSeriesUp) object: 0L];
+							[[self windowController] performSelector: @selector( loadSeriesUp) withObject: 0L afterDelay: 0.01];
 						}
 					}
 				}

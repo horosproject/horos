@@ -17562,18 +17562,30 @@ long i;
 	[[BrowserController currentBrowser] loadNextPatient:[fileList[0] objectAtIndex:0] :[sender tag] :self :YES keyImagesOnly: displayOnlyKeyImages];
 }
 
--(void) loadSeries:(NSTimer*) t
+-(void) loadSeries:(NSNumber*) t
 {
-	int dir = [[t userInfo] intValue];
+	int dir = [t intValue];
 	
 	BOOL b = [[NSUserDefaults standardUserDefaults] boolForKey:@"nextSeriesToAllViewers"];
 	
 	if( b)
 		[[NSUserDefaults standardUserDefaults] setBool: NO forKey:@"nextSeriesToAllViewers"];
 	
-	[[BrowserController currentBrowser] loadNextSeries:[fileList[0] objectAtIndex:0] :dir :self :YES keyImagesOnly: displayOnlyKeyImages];
-	
 	int curImage;
+	
+	if( dir == -1)
+	{
+		if( [imageView flippedData]) curImage = 0;
+		else curImage = [[imageView dcmPixList] count]-1;
+	}
+	else
+	{
+		if( [imageView flippedData]) curImage = [[imageView dcmPixList] count]-1;
+		else curImage = 0;
+	}
+	[imageView setIndex: curImage];
+	
+	[[BrowserController currentBrowser] loadNextSeries:[fileList[0] objectAtIndex:0] :dir :self :YES keyImagesOnly: displayOnlyKeyImages];
 	
 	if( dir == -1)
 	{
@@ -17593,6 +17605,16 @@ long i;
 	
 	if( b)
 		[[NSUserDefaults standardUserDefaults] setBool: b forKey:@"nextSeriesToAllViewers"];
+}
+
+-(void) loadSeriesUp
+{
+	[self loadSeries: [NSNumber numberWithInt: 1]];
+}
+
+-(void) loadSeriesDown
+{
+	[self loadSeries: [NSNumber numberWithInt: -1]];
 }
 
 -(IBAction) loadSerie:(id) sender
