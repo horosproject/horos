@@ -5711,23 +5711,30 @@ static ViewerController *draggedController = 0L;
 	if( [d count] == 0) d = 0L;
 	[d retain];
 	fileList[ 0] = d;
-
-	// Prepare roiList
-	roiList[0] = [[NSMutableArray alloc] initWithCapacity: 0];
-	for( i = 0; i < [pixList[0] count]; i++)
-	{
-		[roiList[0] addObject:[NSMutableArray arrayWithCapacity:0]];
-	}
-	[self loadROI:0];
 	
-	[imageView setDCM:pixList[0] :fileList[0] :roiList[0] :imageIndex :'i' :!sameSeries];
-	
-	if( sameSeries)
+	@try
 	{
-		[imageView setIndex: imageIndex];
-//		[imageView updatePresentationStateFromSeries];
+		// Prepare roiList
+		roiList[0] = [[NSMutableArray alloc] initWithCapacity: 0];
+		for( i = 0; i < [pixList[0] count]; i++)
+		{
+			[roiList[0] addObject:[NSMutableArray arrayWithCapacity:0]];
+		}
+		[self loadROI:0];
+		
+		[imageView setDCM:pixList[0] :fileList[0] :roiList[0] :imageIndex :'i' :!sameSeries];
+		
+		if( sameSeries)
+		{
+			[imageView setIndex: imageIndex];
+	//		[imageView updatePresentationStateFromSeries];
+		}
+		else [imageView setIndexWithReset: imageIndex :YES];
 	}
-	else [imageView setIndexWithReset: imageIndex :YES];
+	@catch( NSException *e)
+	{
+		NSLog(@"Exception change image data: %@", e);
+	}
 	
 	DCMPix *curDCM = [pixList[0] objectAtIndex: imageIndex];
 	
@@ -5932,7 +5939,10 @@ static ViewerController *draggedController = 0L;
 	if( previousFusionActivated)
 	{
 		[self setFusionMode: previousFusion];
+		
 		[popFusion selectItemWithTag:previousFusion];
+		
+		[imageView sendSyncMessage: 0];
 	}
 
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTOMATIC FUSE"])
@@ -7261,6 +7271,8 @@ static ViewerController *draggedController = 0L;
 		[self setFusionMode: previousFusion];
 	
 	[popFusion selectItemWithTag:previousFusion];
+	
+	[imageView sendSyncMessage: 0];
 }
 
 - (short) orthogonalOrientation
@@ -8954,7 +8966,7 @@ NSMutableArray		*array;
 		[sliderFusion setEnabled:YES];
 	}
 	
-	[imageView sendSyncMessage: 0];
+//	[imageView sendSyncMessage: 0];
 	
 	float   iwl, iww;
 	[imageView getWLWW:&iwl :&iww];
@@ -8969,6 +8981,8 @@ NSMutableArray		*array;
 		[self setFusionMode: 0];
 	else
 		[self setFusionMode: [[popFusion selectedItem] tag]];
+	
+	[imageView sendSyncMessage: 0];
 }
 
 - (void) popFusionAction:(id) sender
@@ -8979,6 +8993,8 @@ NSMutableArray		*array;
 	[self computeInterval];
 	
 	[self setFusionMode: tag];
+	
+	[imageView sendSyncMessage: 0];
 }
 
 - (void) sliderFusionAction:(id) sender
@@ -17548,7 +17564,15 @@ long i;
 
 -(void) loadSeries:(int) dir
 {
+	BOOL b = [[NSUserDefaults standardUserDefaults] boolForKey:@"nextSeriesToAllViewers"];
+	
+	if( b)
+		[[NSUserDefaults standardUserDefaults] setBool: NO forKey:@"nextSeriesToAllViewers"];
+	
 	[[BrowserController currentBrowser] loadNextSeries:[fileList[0] objectAtIndex:0] :dir :self :YES keyImagesOnly: displayOnlyKeyImages];
+
+	if( b)
+		[[NSUserDefaults standardUserDefaults] setBool: b forKey:@"nextSeriesToAllViewers"];
 }
 
 -(IBAction) loadSerie:(id) sender

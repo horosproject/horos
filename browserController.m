@@ -11315,7 +11315,6 @@ static NSArray*	openSubSeriesArray = 0L;
 		
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(mainWindowHasChanged:) name:NSWindowDidBecomeMainNotification object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(ViewFrameDidChange:) name:NSViewFrameDidChangeNotification object:nil];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(OsirixAddToDBNotification:) name:@"OsirixAddToDBNotification" object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateReportToolbarIcon:) name:@"reportModeChanged" object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateReportToolbarIcon:) name:NSOutlineViewSelectionDidChangeNotification object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateReportToolbarIcon:) name:NSOutlineViewSelectionIsChangingNotification object:nil];
