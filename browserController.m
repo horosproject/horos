@@ -6751,9 +6751,7 @@ static NSArray*	statesArray = nil;
 			for( NSWindow *win in winList )
 			{
 				if( [[win windowController] isKindOfClass:[ViewerController class]])
-				{
 					[viewersList addObject: [win windowController]];
-				}
 			}
 			viewer = [viewersList objectAtIndex: 0];
 			curImage = [[viewer fileList] objectAtIndex: 0];
@@ -6768,7 +6766,7 @@ static NSArray*	statesArray = nil;
 	NSManagedObject		*study = [curImage valueForKeyPath:@"series.study"];
 	NSManagedObject		*currentSeries = [curImage valueForKey:@"series"];
 	
-	NSPredicate *predicate = [NSPredicate predicateWithFormat:  @"(patientID == %@)", [study valueForKey:@"patientID"]];
+	NSPredicate *predicate = [NSPredicate predicateWithFormat: @"(patientID == %@)", [study valueForKey:@"patientID"]];
 	NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
 	[dbRequest setEntity: [[model entitiesByName] objectForKey:@"Study"]];
 	[dbRequest setPredicate: predicate];

@@ -4231,10 +4231,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					{
 						if( index > 0)
 						{
-							[[self windowController] loadSeries: -1];
-							
-							if( flippedData) curImage = 0;
-							else curImage = [dcmPixList count]-1;
+							[NSTimer scheduledTimerWithTimeInterval: 0.1 target: [self windowController] selector: @selector( loadSeries:) userInfo: [NSNumber numberWithInt: -1] repeats:NO];
 						}
 					}
 				}
@@ -4247,10 +4244,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					{
 						if( index + 1 < [seriesArray count])
 						{
-							[[self windowController] loadSeries: 1];
-							
-							if( flippedData) curImage = [dcmPixList count]-1;
-							else curImage = 0;
+							[NSTimer scheduledTimerWithTimeInterval: 0.1 target: [self windowController] selector: @selector( loadSeries:) userInfo: [NSNumber numberWithInt: 1] repeats:NO];
 						}
 					}
 				}
