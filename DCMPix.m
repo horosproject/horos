@@ -1360,6 +1360,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	NSImage				*imageRep = 0L;
 	NSBitmapImageRep	*rep;
 	
+	[self compute8bitRepresentation];
+	
 	if( [self isRGB] == YES)
 	{
 		i = width * height * 3;
@@ -2992,7 +2994,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	[DCMPix checkUserDefaults: NO];
 	
 	cachedPapyGroups = [[NSMutableDictionary dictionary] retain];
-		
+	
+	needToCompute8bitRepresentation = YES;
+	
 	//---------------------------------various
 	pixelRatio = 1.0;
 	checking = [[NSLock alloc] init];
@@ -3029,6 +3033,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
     {
 		[self initParameters];
 		
+		needToCompute8bitRepresentation = YES;
 		generated = YES;
 		imTot = 1;
 		
@@ -8208,6 +8213,8 @@ END_CREATE_ROIS:
 		BOOL success = NO;
 		short *oImage = 0L;
 		
+		needToCompute8bitRepresentation = YES;
+		
 		if( runOsiriXInProtectedMode) return;
 		
 		if( srcFile == 0L) return;
@@ -9216,9 +9223,14 @@ END_CREATE_ROIS:
 - (char*)baseAddr
 {
     [self CheckLoad];
+	
 	if( baseAddr == nil)
 		[self allocate8bitRepresentation];
-    return baseAddr;
+    
+	if( needToCompute8bitRepresentation)
+		[self compute8bitRepresentation];
+	
+	return baseAddr;
 }
 
 - (void)setLUT12baseAddr: (unsigned char*) ptr
@@ -11268,6 +11280,7 @@ END_CREATE_ROIS:
 		}
 	}
 	fImage = 0L;
+	needToCompute8bitRepresentation = YES;
 	
 	[checking unlock];
 	

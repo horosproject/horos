@@ -354,7 +354,9 @@ extern NSThread					*mainThread;
 {
 	CFHTTPMessageRef request = [mess request];
 	
-	CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 200, NULL, kCFHTTPVersion1_1); // OK
+	NSString *vers = [(id)CFHTTPMessageCopyVersion(request) autorelease];
+	
+	CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 200, NULL, (CFStringRef) vers); // OK
 	CFHTTPMessageSetHeaderFieldValue(response, (CFStringRef)@"Content-Length", (CFStringRef)[NSString stringWithFormat:@"%d", [data length]]);
 	if([fileURL isEqualToString:@"/thumbnail"]) CFHTTPMessageSetHeaderFieldValue(response, CFSTR("Content-Type"), CFSTR("image/png"));
 	else if([fileURL isEqualToString:@"/image"]) CFHTTPMessageSetHeaderFieldValue(response, CFSTR("Content-Type"), CFSTR("image/png"));
@@ -369,7 +371,7 @@ extern NSThread					*mainThread;
 			if(rangeStop-rangeStart+1<=totalLength)
 			{
 				CFRelease(response);
-				response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 206, NULL, kCFHTTPVersion1_1); //Partial Content
+				response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 206, NULL, (CFStringRef) vers); //Partial Content
 				CFHTTPMessageSetHeaderFieldValue(response, (CFStringRef)@"Content-Length", (CFStringRef)[NSString stringWithFormat:@"%d", [data length]]);
 				CFHTTPMessageSetHeaderFieldValue(response, CFSTR("Content-Range"), (CFStringRef)[NSString stringWithFormat:@"bytes %d-%d/%d", rangeStart, rangeStop, totalLength]);
 			}
@@ -385,7 +387,7 @@ extern NSThread					*mainThread;
 		if(ifModifiedSince && ![contentRange hasPrefix:@"bytes="])
 		{
 			CFRelease(response);
-			response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 304, NULL, kCFHTTPVersion1_1); 
+			response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 304, NULL, (CFStringRef) vers); 
 		}
 		NSDate *now = [NSDate date];
 		NSString *currentDate = [now descriptionWithCalendarFormat:@"%a, %d %b %Y %H:%M:%S GMT" timeZone:nil locale:nil];
@@ -483,7 +485,8 @@ extern NSThread					*mainThread;
 	
     NSString *vers = [(id)CFHTTPMessageCopyVersion(request) autorelease];
 //	NSLog(@"vers : %@", vers);
-    if (!vers || ![vers isEqual:(id)kCFHTTPVersion1_1]) {
+    if (!vers)
+	{
         CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 505, NULL, vers ? (CFStringRef)vers : kCFHTTPVersion1_0); // Version Not Supported
         [mess setResponse:response];
         CFRelease(response);
@@ -493,7 +496,7 @@ extern NSThread					*mainThread;
     NSString *method = [(id)CFHTTPMessageCopyRequestMethod(request) autorelease];
 //	NSLog(@"method : %@", method);
     if (!method) {
-        CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 400, NULL, kCFHTTPVersion1_1); // Bad Request
+        CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 400, NULL, (CFStringRef) vers); // Bad Request
         [mess setResponse:response];
         CFRelease(response);
         return;
@@ -1072,7 +1075,7 @@ extern NSThread					*mainThread;
 		if( err)
 		{
 			NSLog(@"404 - Not Found : %@", requestedFile);
-			CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 404, NULL, kCFHTTPVersion1_1); // Not found
+			CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 404, NULL, (CFStringRef) vers); // Not found
 			CFHTTPMessageSetHeaderFieldValue(response, (CFStringRef)@"Content-Length", (CFStringRef)[NSString stringWithFormat:@"%d", 0]);
 			[mess setResponse:response];
 			CFRelease(response);
@@ -1087,7 +1090,7 @@ extern NSThread					*mainThread;
 		return;
 	}
 
-    CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 405, NULL, kCFHTTPVersion1_1); // Method Not Allowed
+    CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 405, NULL, (CFStringRef) vers); // Method Not Allowed
 	CFHTTPMessageSetHeaderFieldValue(response, (CFStringRef)@"Content-Length", (CFStringRef)[NSString stringWithFormat:@"%d", 0]);
     [mess setResponse:response];
     CFRelease(response);

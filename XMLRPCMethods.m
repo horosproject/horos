@@ -98,7 +98,7 @@
 //	NSLog( @"%@", allHeaderFields);
 	
     NSString *vers = [(id)CFHTTPMessageCopyVersion(request) autorelease];
-    if (!vers || ![vers isEqual:(id)kCFHTTPVersion1_1]) {
+    if (!vers) {
         CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 505, NULL, vers ? (CFStringRef)vers : kCFHTTPVersion1_0); // Version Not Supported
         [mess setResponse:response];
         CFRelease(response);
@@ -107,7 +107,7 @@
 
     NSString *method = [(id)CFHTTPMessageCopyRequestMethod(request) autorelease];
     if (!method) {
-        CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 400, NULL, kCFHTTPVersion1_1); // Bad Request
+        CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 400, NULL, (CFStringRef) vers); // Bad Request
         [mess setResponse:response];
         CFRelease(response);
         return;
@@ -162,7 +162,7 @@
 					NSArray *values = [doc nodesForXPath:@"methodCall/params//member/value" error:&error];
 					if (2 != [keys count] || 2 != [values count])
 					{
-						CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 400, NULL, kCFHTTPVersion1_1); // Bad Request
+						CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 400, NULL, (CFStringRef) vers); // Bad Request
 						[mess setResponse:response];
 						CFRelease(response);
 						return;
@@ -229,7 +229,7 @@
 					NSArray *values = [doc nodesForXPath:@"methodCall/params//member/value" error:&error];
 					if (3 != [keys count] || 3 != [values count])
 					{
-						CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 400, NULL, kCFHTTPVersion1_1); // Bad Request
+						CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 400, NULL, (CFStringRef) vers); // Bad Request
 						[mess setResponse:response];
 						CFRelease(response);
 						return;
@@ -286,7 +286,7 @@
 					NSArray *values = [doc nodesForXPath:@"methodCall/params//member/value" error:&error];
 					if (1 != [keys count] || 1 != [values count])
 					{
-						CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 400, NULL, kCFHTTPVersion1_1); // Bad Request
+						CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 400, NULL, (CFStringRef) vers); // Bad Request
 						[mess setResponse:response];
 						CFRelease(response);
 						return;
@@ -336,7 +336,7 @@
 					NSArray *values = [doc nodesForXPath:@"methodCall/params//member/value" error:&error];
 					if (1 != [keys count] || 1 != [values count])
 					{
-						CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 400, NULL, kCFHTTPVersion1_1); // Bad Request
+						CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 400, NULL, (CFStringRef) vers); // Bad Request
 						[mess setResponse:response];
 						CFRelease(response);
 						return;
@@ -543,7 +543,7 @@
 					NSArray *values = [doc nodesForXPath:@"methodCall/params//member/value" error:&error];
 					if (1 != [keys count] || 1 != [values count])
 					{
-						CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 400, NULL, kCFHTTPVersion1_1); // Bad Request
+						CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 400, NULL, (CFStringRef) vers); // Bad Request
 						[mess setResponse:response];
 						CFRelease(response);
 						return;
@@ -596,7 +596,7 @@
 					NSArray *values = [doc nodesForXPath:@"methodCall/params//member/value" error:&error];
 					if (1 != [keys count] || 1 != [values count])
 					{
-						CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 400, NULL, kCFHTTPVersion1_1); // Bad Request
+						CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 400, NULL, (CFStringRef) vers); // Bad Request
 						[mess setResponse:response];
 						CFRelease(response);
 						return;
@@ -650,7 +650,7 @@
 					NSArray *values = [doc nodesForXPath:@"methodCall/params//member/value" error:&error];
 					if (2 != [keys count] || 2 != [values count])
 					{
-						CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 400, NULL, kCFHTTPVersion1_1); // Bad Request
+						CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 400, NULL, (CFStringRef) vers); // Bad Request
 						[mess setResponse:response];
 						CFRelease(response);
 						return;
@@ -706,7 +706,7 @@
 				NSLog( @"XML-RPC Message processed. Sending the reponse.");
 				
 				NSData *data = [[httpServerMessage valueForKey: @"NSXMLDocumentResponse"] XMLData];
-				CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 200, NULL, kCFHTTPVersion1_1); // OK
+				CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 200, NULL, (CFStringRef) vers); // OK
 				CFHTTPMessageSetHeaderFieldValue(response, (CFStringRef)@"Content-Length", (CFStringRef)[NSString stringWithFormat:@"%d", [data length]]);
 				CFHTTPMessageSetBody(response, (CFDataRef)data);
 				[mess setResponse:response];
@@ -716,7 +716,7 @@
 			}
 			else
 			{
-				CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 404, NULL, kCFHTTPVersion1_1); // Not found
+				CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 404, NULL, (CFStringRef) vers); // Not found
 				[mess setResponse:response];
 				CFRelease(response);
 				
@@ -724,13 +724,13 @@
 			}
 		}
 		
-        CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 400, NULL, kCFHTTPVersion1_1); // Bad Request
+        CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 400, NULL, (CFStringRef) vers); // Bad Request
         [mess setResponse:response];
         CFRelease(response);
         return;
     }
 
-    CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 405, NULL, kCFHTTPVersion1_1); // Method Not Allowed
+    CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 405, NULL, (CFStringRef) vers); // Method Not Allowed
     [mess setResponse:response];
     CFRelease(response);
 }

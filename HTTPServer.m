@@ -396,8 +396,8 @@
     CFHTTPMessageRef request = [mess request];
 
     NSString *vers = [(id)CFHTTPMessageCopyVersion(request) autorelease];
-    if (!vers || ![vers isEqual:(id)kCFHTTPVersion1_1]) {
-        CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 505, NULL, (CFStringRef)vers); // Version Not Supported
+    if (!vers) {
+        CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 505, NULL, vers ? (CFStringRef)vers : kCFHTTPVersion1_0); // Version Not Supported
         [mess setResponse:response];
         CFRelease(response);
         return;
@@ -405,7 +405,7 @@
 
     NSString *method = [(id)CFHTTPMessageCopyRequestMethod(request) autorelease];
     if (!method) {
-        CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 400, NULL, kCFHTTPVersion1_1); // Bad Request
+        CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 400, NULL, (CFStringRef)vers); // Bad Request
         [mess setResponse:response];
         CFRelease(response);
         return;
@@ -417,13 +417,13 @@
         NSData *data = [NSData dataWithContentsOfURL:url];
 
         if (!data) {
-            CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 404, NULL, kCFHTTPVersion1_1); // Not Found
+            CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 404, NULL, (CFStringRef)vers); // Not Found
             [mess setResponse:response];
             CFRelease(response);
             return;
         }
 
-        CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 200, NULL, kCFHTTPVersion1_1); // OK
+        CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 200, NULL, (CFStringRef)vers); // OK
         CFHTTPMessageSetHeaderFieldValue(response, (CFStringRef)@"Content-Length", (CFStringRef)[NSString stringWithFormat:@"%d", [data length]]);
         if ([method isEqual:@"GET"]) {
             CFHTTPMessageSetBody(response, (CFDataRef)data);
@@ -433,7 +433,7 @@
         return;
     }
 
-    CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 405, NULL, kCFHTTPVersion1_1); // Method Not Allowed
+    CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 405, NULL, (CFStringRef)vers); // Method Not Allowed
     [mess setResponse:response];
     CFRelease(response);
 }
