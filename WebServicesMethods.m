@@ -733,8 +733,9 @@ extern NSThread					*mainThread;
 					NSString *dicomDestination = [parameters objectForKey:@"dicomDestination"];
 					NSArray *tempArray = [dicomDestination componentsSeparatedByString:@"%3A"];
 					NSString *dicomDestinationAETitle = [[tempArray objectAtIndex:2] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+					NSString *dicomDestinationAddress = [[tempArray objectAtIndex:0] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 					
-					[html replaceOccurrencesOfString:@"%LocalizedLabel_SendStatus%" withString: [NSString stringWithFormat: NSLocalizedString( @"Images sent to DICOM node: %@", 0L), dicomDestinationAETitle] options:NSLiteralSearch range:NSMakeRange(0, [html length])];
+					[html replaceOccurrencesOfString:@"%LocalizedLabel_SendStatus%" withString: [NSString stringWithFormat: NSLocalizedString( @"Images sent to DICOM node: %@ - %@", 0L), dicomDestinationAddress, dicomDestinationAETitle] options:NSLiteralSearch range:NSMakeRange(0, [html length])];
 				}
 					else
 					[html replaceOccurrencesOfString:@"%LocalizedLabel_SendStatus%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [html length])];
