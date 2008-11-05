@@ -171,7 +171,16 @@
 					int i;
 					NSMutableDictionary *paramDict = [NSMutableDictionary dictionary];
 					for( i = 0; i < [keys count]; i++)
-						[paramDict setValue: [[values objectAtIndex: i] objectValue] forKey: [[keys objectAtIndex: i] objectValue]];	
+					{
+						id value;
+						
+						if( [[[values objectAtIndex: i] objectValue] isKindOfClass:[NSString class]])
+							value = [(NSString*)CFXMLCreateStringByUnescapingEntities(NULL, (CFStringRef)value, NULL) autorelease];
+						else
+							value = [[values objectAtIndex: i] objectValue];
+						
+						[paramDict setValue: value  forKey: [[keys objectAtIndex: i] objectValue]];
+					}
 					
 					// *****
 					
@@ -238,7 +247,16 @@
 					int i;
 					NSMutableDictionary *paramDict = [NSMutableDictionary dictionary];
 					for( i = 0; i < [keys count]; i++)
-						[paramDict setValue: [[values objectAtIndex: i] objectValue] forKey: [[keys objectAtIndex: i] objectValue]];	
+					{
+						id value;
+						
+						if( [[[values objectAtIndex: i] objectValue] isKindOfClass:[NSString class]])
+							value = [(NSString*)CFXMLCreateStringByUnescapingEntities(NULL, (CFStringRef)value, NULL) autorelease];
+						else
+							value = [[values objectAtIndex: i] objectValue];
+						
+						[paramDict setValue: value  forKey: [[keys objectAtIndex: i] objectValue]];
+					}
 					
 					// *****
 					
@@ -295,7 +313,16 @@
 					int i;
 					NSMutableDictionary *paramDict = [NSMutableDictionary dictionary];
 					for( i = 0; i < [keys count]; i++)
-						[paramDict setValue: [[values objectAtIndex: i] objectValue] forKey: [[keys objectAtIndex: i] objectValue]];	
+					{
+						id value;
+						
+						if( [[[values objectAtIndex: i] objectValue] isKindOfClass:[NSString class]])
+							value = [(NSString*)CFXMLCreateStringByUnescapingEntities(NULL, (CFStringRef)value, NULL) autorelease];
+						else
+							value = [[values objectAtIndex: i] objectValue];
+						
+						[paramDict setValue: value  forKey: [[keys objectAtIndex: i] objectValue]];
+					}
 					
 					// *****
 					
@@ -345,8 +372,16 @@
 					int i;
 					NSMutableDictionary *paramDict = [NSMutableDictionary dictionary];
 					for( i = 0; i < [keys count]; i++)
-						[paramDict setValue: [[values objectAtIndex: i] objectValue] forKey: [[keys objectAtIndex: i] objectValue]];	
-					
+					{
+						id value;
+						
+						if( [[[values objectAtIndex: i] objectValue] isKindOfClass:[NSString class]])
+							value = [(NSString*)CFXMLCreateStringByUnescapingEntities(NULL, (CFStringRef)value, NULL) autorelease];
+						else
+							value = [[values objectAtIndex: i] objectValue];
+							
+						[paramDict setValue: value  forKey: [[keys objectAtIndex: i] objectValue]];
+					}
 					// *****
 					
 					NSTableView	*albumTable = [[BrowserController currentBrowser] albumTable];
@@ -438,7 +473,7 @@
 									[[series valueForKey: keyname] isKindOfClass:[NSNumber class]])
 								{
 									NSString *value = [[series valueForKey: keyname] description];
-									value = (NSString*)CFXMLCreateStringByEscapingEntities(NULL, (CFStringRef)value, NULL);
+									value = [(NSString*)CFXMLCreateStringByEscapingEntities(NULL, (CFStringRef)value, NULL) autorelease];
 									[c appendFormat: @"<member><name>%@</name><value>%@</value></member>", keyname, value];
 								}
 							}
@@ -498,7 +533,7 @@
 									[[study valueForKey: keyname] isKindOfClass:[NSNumber class]])
 								{
 									NSString *value = [[study valueForKey: keyname] description];
-									value = (NSString*)CFXMLCreateStringByEscapingEntities(NULL, (CFStringRef)value, NULL);
+									value = [(NSString*)CFXMLCreateStringByEscapingEntities(NULL, (CFStringRef)value, NULL) autorelease];
 									[c appendFormat: @"<member><name>%@</name><value>%@</value></member>", keyname, value];
 								}
 							}
@@ -552,7 +587,16 @@
 					int i;
 					NSMutableDictionary *paramDict = [NSMutableDictionary dictionary];
 					for( i = 0; i < [keys count]; i++)
-						[paramDict setValue: [[values objectAtIndex: i] objectValue] forKey: [[keys objectAtIndex: i] objectValue]];	
+					{
+						id value;
+						
+						if( [[[values objectAtIndex: i] objectValue] isKindOfClass:[NSString class]])
+							value = [(NSString*)CFXMLCreateStringByUnescapingEntities(NULL, (CFStringRef)value, NULL) autorelease];
+						else
+							value = [[values objectAtIndex: i] objectValue];
+						
+						[paramDict setValue: value  forKey: [[keys objectAtIndex: i] objectValue]];
+					}	
 					
 					// *****
 					
@@ -605,7 +649,16 @@
 					int i;
 					NSMutableDictionary *paramDict = [NSMutableDictionary dictionary];
 					for( i = 0; i < [keys count]; i++)
-						[paramDict setValue: [[values objectAtIndex: i] objectValue] forKey: [[keys objectAtIndex: i] objectValue]];	
+					{
+						id value;
+						
+						if( [[[values objectAtIndex: i] objectValue] isKindOfClass:[NSString class]])
+							value = [(NSString*)CFXMLCreateStringByUnescapingEntities(NULL, (CFStringRef)value, NULL) autorelease];
+						else
+							value = [[values objectAtIndex: i] objectValue];
+						
+						[paramDict setValue: value  forKey: [[keys objectAtIndex: i] objectValue]];
+					}
 					
 					// *****
 					
@@ -659,7 +712,16 @@
 					int i;
 					NSMutableDictionary *paramDict = [NSMutableDictionary dictionary];
 					for( i = 0; i < [keys count]; i++)
-						[paramDict setValue: [[values objectAtIndex: i] objectValue] forKey: [[keys objectAtIndex: i] objectValue]];	
+					{
+						id value;
+						
+						if( [[[values objectAtIndex: i] objectValue] isKindOfClass:[NSString class]])
+							value = [(NSString*)CFXMLCreateStringByUnescapingEntities(NULL, (CFStringRef)value, NULL) autorelease];
+						else
+							value = [[values objectAtIndex: i] objectValue];
+						
+						[paramDict setValue: value  forKey: [[keys objectAtIndex: i] objectValue]];
+					}
 					
 					// *****
 					

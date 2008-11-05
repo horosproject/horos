@@ -6616,7 +6616,7 @@ static NSArray*	statesArray = nil;
 					[[obj valueForKey: keyname] isKindOfClass:[NSNumber class]])
 					{
 						NSString *value = [[obj valueForKey: keyname] description];
-						value = (NSString*)CFXMLCreateStringByEscapingEntities(NULL, (CFStringRef)value, NULL);
+						value = [(NSString*)CFXMLCreateStringByEscapingEntities(NULL, (CFStringRef)value, NULL)  autorelease];
 						[c appendFormat: @"<member><name>%@</name><value>%@</value></member>", keyname, value];
 					}
 					
