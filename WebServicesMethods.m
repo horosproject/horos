@@ -678,9 +678,9 @@ extern NSThread					*mainThread;
 			{
 				NSString *dicomDestination = [parameters objectForKey:@"dicomDestination"];
 				NSArray *tempArray = [dicomDestination componentsSeparatedByString:@"%3A"];
-				NSString *dicomDestinationAddress = [tempArray objectAtIndex:0];
+				NSString *dicomDestinationAddress = [[tempArray objectAtIndex:0] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 				NSString *dicomDestinationPort = [tempArray objectAtIndex:1];
-				NSString *dicomDestinationAETitle = [tempArray objectAtIndex:2];
+				NSString *dicomDestinationAETitle = [[tempArray objectAtIndex:2] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 				NSString *dicomDestinationSyntax = [tempArray objectAtIndex:3];
 								
 				[selectedDICOMNode release];
@@ -725,7 +725,19 @@ extern NSThread					*mainThread;
 				}
 				
 				NSMutableString *html = [self htmlStudy:[studies lastObject] parameters:parameters isiPhone:isiPhone];
+				
 				[html replaceOccurrencesOfString:@"%StudyID%" withString:[parameters objectForKey:@"id"] options:NSLiteralSearch range:NSMakeRange(0, [html length])];
+				
+				if( [[parameters allKeys] containsObject:@"dicomSend"])
+				{
+					NSString *dicomDestination = [parameters objectForKey:@"dicomDestination"];
+					NSArray *tempArray = [dicomDestination componentsSeparatedByString:@"%3A"];
+					NSString *dicomDestinationAETitle = [[tempArray objectAtIndex:2] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+					
+					[html replaceOccurrencesOfString:@"%LocalizedLabel_SendStatus%" withString: [NSString stringWithFormat: NSLocalizedString( @"Images sent to DICOM node: %@", 0L), dicomDestinationAETitle] options:NSLiteralSearch range:NSMakeRange(0, [html length])];
+				}
+					else
+					[html replaceOccurrencesOfString:@"%LocalizedLabel_SendStatus%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [html length])];
 				
 				if([parameters objectForKey:@"browse"])[html replaceOccurrencesOfString:@"%browse%" withString:[NSString stringWithFormat:@"&browse=%@",[parameters objectForKey:@"browse"]] options:NSLiteralSearch range:NSMakeRange(0, [html length])];
 				else [html replaceOccurrencesOfString:@"%browse%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [html length])];
