@@ -120,6 +120,8 @@
         NSData *data = [(id)CFHTTPMessageCopyBody(request) autorelease];
         NSXMLDocument *doc = [[[NSXMLDocument alloc] initWithData:data options:NSXMLNodeOptionsNone error:&error] autorelease];
 		
+		NSString *encoding = [doc characterEncoding];
+		
 		NSLog( [doc description]);
 		
         NSArray *array = [doc nodesForXPath:@"//methodName" error:&error];
@@ -174,7 +176,7 @@
 					{
 						id value;
 						
-						if( [[[values objectAtIndex: i] objectValue] isKindOfClass:[NSString class]])
+						if( [encoding isEqualToString:@"UTF-8"] == NO && [[[values objectAtIndex: i] objectValue] isKindOfClass:[NSString class]])
 							value = [(NSString*)CFXMLCreateStringByUnescapingEntities(NULL, (CFStringRef)[[values objectAtIndex: i] objectValue], NULL) autorelease];
 						else
 							value = [[values objectAtIndex: i] objectValue];
@@ -250,7 +252,7 @@
 					{
 						id value;
 						
-						if( [[[values objectAtIndex: i] objectValue] isKindOfClass:[NSString class]])
+						if( [encoding isEqualToString:@"UTF-8"] == NO && [[[values objectAtIndex: i] objectValue] isKindOfClass:[NSString class]])
 							value = [(NSString*)CFXMLCreateStringByUnescapingEntities(NULL, (CFStringRef)[[values objectAtIndex: i] objectValue], NULL) autorelease];
 						else
 							value = [[values objectAtIndex: i] objectValue];
@@ -319,7 +321,7 @@
 					{
 						id value;
 						
-						if( [[[values objectAtIndex: i] objectValue] isKindOfClass:[NSString class]])
+						if( [encoding isEqualToString:@"UTF-8"] == NO &&  [[[values objectAtIndex: i] objectValue] isKindOfClass:[NSString class]])
 							value = [(NSString*)CFXMLCreateStringByUnescapingEntities(NULL, (CFStringRef)[[values objectAtIndex: i] objectValue], NULL) autorelease];
 						else
 							value = [[values objectAtIndex: i] objectValue];
@@ -378,7 +380,7 @@
 					{
 						id value;
 						
-						if( [[[values objectAtIndex: i] objectValue] isKindOfClass:[NSString class]])
+						if( [encoding isEqualToString:@"UTF-8"] == NO &&  [[[values objectAtIndex: i] objectValue] isKindOfClass:[NSString class]])
 							value = [(NSString*)CFXMLCreateStringByUnescapingEntities(NULL, (CFStringRef)[[values objectAtIndex: i] objectValue], NULL) autorelease];
 						else
 							value = [[values objectAtIndex: i] objectValue];
@@ -594,7 +596,7 @@
 					{
 						id value;
 						
-						if( [[[values objectAtIndex: i] objectValue] isKindOfClass:[NSString class]])
+						if( [encoding isEqualToString:@"UTF-8"] == NO && [[[values objectAtIndex: i] objectValue] isKindOfClass:[NSString class]])
 							value = [(NSString*)CFXMLCreateStringByUnescapingEntities(NULL, (CFStringRef)[[values objectAtIndex: i] objectValue], NULL) autorelease];
 						else
 							value = [[values objectAtIndex: i] objectValue];
@@ -656,7 +658,7 @@
 					{
 						id value;
 						
-						if( [[[values objectAtIndex: i] objectValue] isKindOfClass:[NSString class]])
+						if( [encoding isEqualToString:@"UTF-8"] == NO && [[[values objectAtIndex: i] objectValue] isKindOfClass:[NSString class]])
 							value = [(NSString*)CFXMLCreateStringByUnescapingEntities(NULL, (CFStringRef)[[values objectAtIndex: i] objectValue], NULL) autorelease];
 						else
 							value = [[values objectAtIndex: i] objectValue];
@@ -719,7 +721,7 @@
 					{
 						id value;
 						
-						if( [[[values objectAtIndex: i] objectValue] isKindOfClass:[NSString class]])
+						if( [encoding isEqualToString:@"UTF-8"] == NO && [[[values objectAtIndex: i] objectValue] isKindOfClass:[NSString class]])
 							value = [(NSString*)CFXMLCreateStringByUnescapingEntities(NULL, (CFStringRef)[[values objectAtIndex: i] objectValue], NULL) autorelease];
 						else
 							value = [[values objectAtIndex: i] objectValue];
