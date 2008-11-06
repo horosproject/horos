@@ -2740,21 +2740,18 @@ static NSArray*	statesArray = nil;
 			NSManagedObjectContext *context = self.managedObjectContext;
 			NSError *error = nil;
 			
-			[[bonjourPublisher subConnectionLock] lock];
-			
 			[context retain];
 			[context lock];
 			
 			[context save: &error];
-			if (error )	{
+			if (error )
+			{
 				NSLog(@"error saving DB: %@", [[error userInfo] description]);
 				NSLog( @"saveDatabase ERROR: %@", [error localizedDescription]);
 				retError = -1L;
 			}
 			[context unlock];
 			[context release];
-			
-			[[bonjourPublisher subConnectionLock] unlock];
 			
 			if( path == nil) path = currentDatabasePath;
 			
@@ -5424,8 +5421,6 @@ static NSArray*	statesArray = nil;
 			WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Updating database...", nil)];
 			[wait showWindow:self];
 			
-			[[bonjourPublisher subConnectionLock] lock];
-			
 			[context save: 0L];
 			@try
 			{
@@ -5459,8 +5454,6 @@ static NSArray*	statesArray = nil;
 				NSLog( @"Exception during delItem");
 				NSLog( [ne description]);
 			}
-			
-			[[bonjourPublisher subConnectionLock] unlock];
 			
 			[wait close];
 			[wait release];

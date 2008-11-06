@@ -25363,11 +25363,7 @@
 				);
 				PREBINDING = NO;
 				PRODUCT_NAME = OsiriX;
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
+				WARNING_CFLAGS = "";
 			};
 			name = Development;
 		};
@@ -25688,11 +25684,7 @@
 				);
 				PREBINDING = YES;
 				PRODUCT_NAME = OsiriX;
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
+				WARNING_CFLAGS = "";
 			};
 			name = "Development 64-bits";
 		};
@@ -26081,11 +26073,7 @@
 				);
 				PREBINDING = NO;
 				PRODUCT_NAME = OsiriX;
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
+				WARNING_CFLAGS = "";
 			};
 			name = "Deployment Universal 32-bit";
 		};
@@ -26478,11 +26466,7 @@
 				);
 				PREBINDING = YES;
 				PRODUCT_NAME = OsiriX;
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
+				WARNING_CFLAGS = "";
 			};
 			name = "Deployment Universal 64-bit";
 		};

@@ -29,7 +29,6 @@
 	BrowserController	*interfaceOsiriX;
 	
 	NSLock				*connectionLock, *dicomSendLock;
-	NSRecursiveLock		*subConnectionLock;
 }
 
 - (id)initWithBrowserController: (BrowserController*) bC;
@@ -48,7 +47,6 @@
 
 - (void)setServiceName:(NSString *) newName;
 - (NSString *) serviceName;
-- (NSRecursiveLock*) subConnectionLock;
 - (int) OsiriXDBCurrentPort;
 
 @end

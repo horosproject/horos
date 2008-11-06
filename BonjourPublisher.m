@@ -62,7 +62,6 @@ static char *GetPrivateIP()
 		netService = 0L;
 		
 		connectionLock = [[NSLock alloc] init];
-		subConnectionLock = [[NSRecursiveLock alloc] init];
 	}
 	return self;
 }
@@ -279,7 +278,7 @@ static char *GetPrivateIP()
 
 	[incomingConnection retain];
 	
-	[subConnectionLock lock];
+	[[[BrowserController currentBrowser] managedObjectContext] lock];
 	
 	@try
 	{
@@ -997,7 +996,7 @@ static char *GetPrivateIP()
 		NSLog( @"Exception in ConnectionReceived - Communication Interrupted : %@", ne);
 	}
 	
-	[subConnectionLock unlock];
+	[[[BrowserController currentBrowser] managedObjectContext] unlock];
 	
 	[incomingConnection closeFile];
 	[incomingConnection release];
@@ -1006,11 +1005,6 @@ static char *GetPrivateIP()
 	if( saveDB) [interfaceOsiriX performSelectorOnMainThread:@selector( saveDatabase:) withObject:0L waitUntilDone: YES];			// This has to be performed on the main thread
 	
 	[mPool release];
-}
-
-- (NSRecursiveLock*) subConnectionLock
-{
-	return subConnectionLock;
 }
 
 - (void) connectionReceived:(NSNotification *)aNotification
