@@ -830,63 +830,87 @@ static NSDate *lastWarningDate = 0L;
 	
 	NS_DURING
 	
-	if( [[previousDefaults valueForKey: @"DisplayDICOMOverlays"] intValue]				!=		[defaults integerForKey: @"DisplayDICOMOverlays"])
+	if( [[previousDefaults valueForKey: @"DisplayDICOMOverlays"] intValue] != [defaults integerForKey: @"DisplayDICOMOverlays"])
 		revertViewer = YES;
-	if( [[previousDefaults valueForKey: @"ROITEXTNAMEONLY"] intValue]				!=		[defaults integerForKey: @"ROITEXTNAMEONLY"])
+	if( [[previousDefaults valueForKey: @"ROITEXTNAMEONLY"] intValue] != [defaults integerForKey: @"ROITEXTNAMEONLY"])
 		refreshViewer = YES;
-	if( [[previousDefaults valueForKey: @"ROITEXTIFSELECTED"] intValue]				!=		[defaults integerForKey: @"ROITEXTIFSELECTED"])
+	if( [[previousDefaults valueForKey: @"ROITEXTIFSELECTED"] intValue] != [defaults integerForKey: @"ROITEXTIFSELECTED"])
 		refreshViewer = YES;
-	if ([[previousDefaults valueForKey: @"PET Blending CLUT"]		isEqualToString:	[defaults stringForKey: @"PET Blending CLUT"]] == NO) 
-		recomputePETBlending = YES;
-	if( [[previousDefaults valueForKey: @"COPYSETTINGS"] intValue]				!=		[defaults integerForKey: @"COPYSETTINGS"])
+	if( [[previousDefaults valueForKey: @"PET Blending CLUT"] isKindOfClass: [NSString class]])
+	{
+		if ([[previousDefaults valueForKey: @"PET Blending CLUT"] isEqualToString: [defaults stringForKey: @"PET Blending CLUT"]] == NO) 
+			recomputePETBlending = YES;
+	}
+	else NSLog( @"*** isKindOfClass NSString");
+	if( [[previousDefaults valueForKey: @"COPYSETTINGS"] intValue] != [defaults integerForKey: @"COPYSETTINGS"])
 		refreshViewer = YES;
-	if( [[previousDefaults valueForKey: @"DBDateFormat2"]			isEqualToString:	[defaults stringForKey: @"DBDateFormat2"]] == NO)
-		refreshDatabase = YES;
-	if( [[previousDefaults valueForKey: @"DBDateOfBirthFormat2"]			isEqualToString:	[defaults stringForKey: @"DBDateOfBirthFormat2"]] == NO)
-		refreshDatabase = YES;
-	if ([[previousDefaults valueForKey: @"DICOMTimeout"]intValue]		!=		[defaults integerForKey: @"DICOMTimeout"])
+	if( [[previousDefaults valueForKey: @"DBDateFormat2"] isKindOfClass:[NSString class]])
+	{
+		if( [[previousDefaults valueForKey: @"DBDateFormat2"] isEqualToString: [defaults stringForKey: @"DBDateFormat2"]] == NO)
+			refreshDatabase = YES;
+	}
+	else NSLog( @"*** isKindOfClass NSString");
+	if( [[previousDefaults valueForKey: @"DBDateOfBirthFormat2"] isKindOfClass:[NSString class]])
+	{
+		if( [[previousDefaults valueForKey: @"DBDateOfBirthFormat2"] isEqualToString: [defaults stringForKey: @"DBDateOfBirthFormat2"]] == NO)
+			refreshDatabase = YES;
+	}
+	else NSLog( @"*** isKindOfClass NSString");
+	if ([[previousDefaults valueForKey: @"DICOMTimeout"]intValue] != [defaults integerForKey: @"DICOMTimeout"])
 		restartListener = YES;
-	if ([[previousDefaults valueForKey: @"UseHostNameForAETitle"] intValue]		!=		[defaults integerForKey: @"UseHostNameForAETitle"])
+	if ([[previousDefaults valueForKey: @"UseHostNameForAETitle"] intValue] != [defaults integerForKey: @"UseHostNameForAETitle"])
 		restartListener = YES;
-	if ([[previousDefaults valueForKey: @"preferredSyntaxForIncoming"]intValue]		!=		[defaults integerForKey: @"preferredSyntaxForIncoming"])
+	if ([[previousDefaults valueForKey: @"preferredSyntaxForIncoming"]intValue] != [defaults integerForKey: @"preferredSyntaxForIncoming"])
 		restartListener = YES;
-	if ([[previousDefaults valueForKey: @"httpXMLRPCServer"]intValue]		!=		[defaults integerForKey: @"httpXMLRPCServer"])
+	if ([[previousDefaults valueForKey: @"httpXMLRPCServer"]intValue] != [defaults integerForKey: @"httpXMLRPCServer"])
 		restartListener = YES;
-	if ([[previousDefaults valueForKey: @"httpXMLRPCServerPort"]intValue]		!=		[defaults integerForKey: @"httpXMLRPCServerPort"])
+	if ([[previousDefaults valueForKey: @"httpXMLRPCServerPort"]intValue] != [defaults integerForKey: @"httpXMLRPCServerPort"])
 		restartListener = YES;
-	if ([[previousDefaults valueForKey: @"httpWebServer"]intValue]		!=		[defaults integerForKey: @"httpWebServer"])
+	if ([[previousDefaults valueForKey: @"httpWebServer"]intValue] != [defaults integerForKey: @"httpWebServer"])
 		restartListener = YES;
-	if ([[previousDefaults valueForKey: @"httpWebServerPort"]intValue]		!=		[defaults integerForKey: @"httpWebServerPort"])
+	if ([[previousDefaults valueForKey: @"httpWebServerPort"]intValue] != [defaults integerForKey: @"httpWebServerPort"])
 		restartListener = YES;
-	if ([[previousDefaults valueForKey: @"LISTENERCHECKINTERVAL"]intValue]		!=		[defaults integerForKey: @"LISTENERCHECKINTERVAL"])
+	if ([[previousDefaults valueForKey: @"LISTENERCHECKINTERVAL"]intValue] != [defaults integerForKey: @"LISTENERCHECKINTERVAL"])
 		restartListener = YES;
-	if ([[previousDefaults valueForKey: @"SINGLEPROCESS"]intValue]				!=		[defaults integerForKey: @"SINGLEPROCESS"])
+	if ([[previousDefaults valueForKey: @"SINGLEPROCESS"]intValue] != [defaults integerForKey: @"SINGLEPROCESS"])
 		restartListener = YES;
-	if ([[previousDefaults valueForKey: @"AETITLE"]					isEqualToString:	[defaults stringForKey: @"AETITLE"]] == NO)
+	if( [[previousDefaults valueForKey: @"AETITLE"] isKindOfClass:[NSString class]])
+	{
+		if ([[previousDefaults valueForKey: @"AETITLE"] isEqualToString: [defaults stringForKey: @"AETITLE"]] == NO)
+			restartListener = YES;
+	}
+	else NSLog( @"*** isKindOfClass NSString");
+	if( [[previousDefaults valueForKey: @"STORESCPEXTRA"] isKindOfClass:[NSString class]])
+	{
+		if ([[previousDefaults valueForKey: @"STORESCPEXTRA"] isEqualToString: [defaults stringForKey: @"STORESCPEXTRA"]] == NO)
+			restartListener = YES;
+	}
+	else NSLog( @"*** isKindOfClass NSString");
+	if ([[previousDefaults valueForKey: @"AEPORT"] intValue] != [defaults integerForKey: @"AEPORT"])
 		restartListener = YES;
-	if ([[previousDefaults valueForKey: @"STORESCPEXTRA"]			isEqualToString:	[defaults stringForKey: @"STORESCPEXTRA"]] == NO)
-		restartListener = YES;
-	if ([[previousDefaults valueForKey: @"AEPORT"] intValue]		!= [defaults integerForKey: @"AEPORT"])
-		restartListener = YES;
-	if ([[previousDefaults valueForKey: @"AETransferSyntax"]		isEqualToString:	[defaults stringForKey: @"AETransferSyntax"]] == NO)
-		restartListener = YES;
+	if( [[previousDefaults valueForKey: @"AETransferSyntax"] isKindOfClass:[NSString class]])
+	{
+		if ([[previousDefaults valueForKey: @"AETransferSyntax"] isEqualToString: [defaults stringForKey: @"AETransferSyntax"]] == NO)
+			restartListener = YES;
+	}
+	else NSLog( @"*** isKindOfClass NSString");
 	if ([[previousDefaults valueForKey: @"addNewIncomingFilesToDefaultDBOnly"]intValue] !=	[defaults integerForKey: @"addNewIncomingFilesToDefaultDBOnly"])
 		restartListener = YES;
-	if ([[previousDefaults valueForKey: @"STORESCP"] intValue]					!=		[defaults integerForKey: @"STORESCP"])
+	if ([[previousDefaults valueForKey: @"STORESCP"] intValue] != [defaults integerForKey: @"STORESCP"])
 		restartListener = YES;
-	if ([[previousDefaults valueForKey: @"USESTORESCP"] intValue]				!=		[defaults integerForKey: @"USESTORESCP"])
+	if ([[previousDefaults valueForKey: @"USESTORESCP"] intValue] != [defaults integerForKey: @"USESTORESCP"])
 		restartListener = YES;
-	if ([[previousDefaults valueForKey: @"HIDEPATIENTNAME"] intValue]			!=		[defaults integerForKey: @"HIDEPATIENTNAME"])
+	if ([[previousDefaults valueForKey: @"HIDEPATIENTNAME"] intValue] != [defaults integerForKey: @"HIDEPATIENTNAME"])
 		refreshDatabase = YES;
-	if ([[previousDefaults valueForKey: @"COLUMNSDATABASE"]			isEqualToDictionary:[defaults objectForKey: @"COLUMNSDATABASE"]] == NO)
+	if ([[previousDefaults valueForKey: @"COLUMNSDATABASE"] isEqualToDictionary:[defaults objectForKey: @"COLUMNSDATABASE"]] == NO)
 		refreshColumns = YES;	
-	if ([[previousDefaults valueForKey: @"SERIESORDER"]intValue]				!=		[defaults integerForKey: @"SERIESORDER"])
+	if ([[previousDefaults valueForKey: @"SERIESORDER"]intValue] != [defaults integerForKey: @"SERIESORDER"])
 		refreshDatabase = YES;
-	if ([[previousDefaults valueForKey: @"KeepStudiesOfSamePatientTogether"]intValue]				!=		[defaults integerForKey: @"KeepStudiesOfSamePatientTogether"])
+	if ([[previousDefaults valueForKey: @"KeepStudiesOfSamePatientTogether"]intValue] != [defaults integerForKey: @"KeepStudiesOfSamePatientTogether"])
 		refreshDatabase = YES;
-	if ([[previousDefaults valueForKey: @"NOINTERPOLATION"]intValue]				!=		[defaults integerForKey: @"NOINTERPOLATION"])
+	if ([[previousDefaults valueForKey: @"NOINTERPOLATION"]intValue] != [defaults integerForKey: @"NOINTERPOLATION"])
 		refreshViewer = YES;
-	if ([[previousDefaults valueForKey: @"SOFTWAREINTERPOLATION"]intValue]				!=		[defaults integerForKey: @"SOFTWAREINTERPOLATION"])
+	if ([[previousDefaults valueForKey: @"SOFTWAREINTERPOLATION"]intValue] != [defaults integerForKey: @"SOFTWAREINTERPOLATION"])
 		refreshViewer = YES;
 	
 	[previousDefaults release];

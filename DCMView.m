@@ -5525,11 +5525,15 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	if( PETgreenTable != 0L) free( PETgreenTable);
 	if( PETblueTable != 0L) free( PETblueTable);
 	
-	NSDictionary		*aCLUT = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"CLUT"] objectForKey: [[NSUserDefaults standardUserDefaults] stringForKey:@"PET Blending CLUT"]];
+	PETredTable = 0L;
+	PETgreenTable = 0L;
+	PETblueTable = 0L;
+	
+	NSDictionary *aCLUT = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"CLUT"] objectForKey: [[NSUserDefaults standardUserDefaults] stringForKey:@"PET Blending CLUT"]];
 	if( aCLUT)
 	{
-		long				i;
-		NSArray				*array;
+		int i;
+		NSArray *array;
 		
 		PETredTable = malloc( 256);
 		PETgreenTable = malloc( 256);
@@ -5568,7 +5572,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 - (id)initWithFrameInt:(NSRect)frameRect
 {	
-	if( PETredTable == 0L) [DCMView computePETBlendingCLUT];
+	if( PETredTable == 0L)
+		[DCMView computePETBlendingCLUT];
 	
 	yearOld = 0L;
 	drawingFrameRect = [self frame];

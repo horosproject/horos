@@ -8451,92 +8451,36 @@ short				matrix[25];
 
 -(void) ApplyCLUTString:(NSString*) str
 {
-	if( [str isEqualToString:NSLocalizedString(@"No CLUT", nil)] == YES)
+	if( blendingController && [[[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut Mode"] isEqualToString: @"B/W Inverse"])
 	{
-		int i, x;
-		for ( x = 0; x < maxMovieIndex; x++)
-		{
-			for ( i = 0; i < [pixList[ x] count]; i ++) [[pixList[ x] objectAtIndex:i] setBlackIndex: 0];
-		}
+		NSString *c = [[NSUserDefaults standardUserDefaults] stringForKey: @"PET Blending CLUT"];
+		[[NSUserDefaults standardUserDefaults] setValue: str forKey: @"PET Blending CLUT"];
+		[DCMView computePETBlendingCLUT];
+		[[NSUserDefaults standardUserDefaults] setValue: c forKey: @"PET Blending CLUT"];
 		
-		[imageView setCLUT: 0L :0L :0L];
-		if( thickSlab)
-		{
-			[thickSlab setCLUT:0L :0L :0L];
-		}
+		[curCLUTMenu release];
+		curCLUTMenu = [str copy];
 		
-		[imageView setIndex:[imageView curImage]];
-		
-		if( str != curCLUTMenu)
-		{
-			[curCLUTMenu release];
-			curCLUTMenu = [str retain];
-		}
-		
-		lastMenuNotification = 0L;
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: 0L];
-		
-		[[[clutPopup menu] itemAtIndex:0] setTitle:str];
-		
-		[self propagateSettings];
+		[[[clutPopup menu] itemAtIndex:0] setTitle: str];
 	}
 	else
 	{
-		NSDictionary		*aCLUT;
-		NSArray				*array;
-		long				i;
-		unsigned char		red[256], green[256], blue[256];
-		
-		aCLUT = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"CLUT"] objectForKey:str];
-		if( aCLUT)
+		if( [str isEqualToString:NSLocalizedString(@"No CLUT", nil)] == YES)
 		{
-			array = [aCLUT objectForKey:@"Red"];
-			for( i = 0; i < 256; i++)
-			{
-				red[i] = [[array objectAtIndex: i] longValue];
-			}
-			
-			array = [aCLUT objectForKey:@"Green"];
-			for( i = 0; i < 256; i++)
-			{
-				green[i] = [[array objectAtIndex: i] longValue];
-			}
-			
-			array = [aCLUT objectForKey:@"Blue"];
-			for( i = 0; i < 256; i++)
-			{
-				blue[i] = [[array objectAtIndex: i] longValue];
-			}
-			
-			if( thickSlab)
-			{
-				[thickSlab setCLUT:red :green :blue];
-			}
-			
-			int darkness = 256 * 3;
-			int darknessIndex = 0;
-			
-			for( i = 0; i < 256; i++)
-			{
-				if( red[i] + green[i] + blue[i] < darkness)
-				{
-					darknessIndex = i;
-					darkness = red[i] + green[i] + blue[i];
-				}
-			}
-			
-			int x;
+			int i, x;
 			for ( x = 0; x < maxMovieIndex; x++)
 			{
-				for ( i = 0; i < [pixList[ x] count]; i ++)
-				{
-					[[pixList[ x] objectAtIndex:i] setBlackIndex: darknessIndex];
-				}
+				for ( i = 0; i < [pixList[ x] count]; i ++) [[pixList[ x] objectAtIndex:i] setBlackIndex: 0];
 			}
 			
-			[imageView setCLUT:red :green: blue];
+			[imageView setCLUT: 0L :0L :0L];
+			if( thickSlab)
+			{
+				[thickSlab setCLUT:0L :0L :0L];
+			}
 			
 			[imageView setIndex:[imageView curImage]];
+			
 			if( str != curCLUTMenu)
 			{
 				[curCLUTMenu release];
@@ -8546,8 +8490,79 @@ short				matrix[25];
 			lastMenuNotification = 0L;
 			[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: 0L];
 			
-			[self propagateSettings];
 			[[[clutPopup menu] itemAtIndex:0] setTitle:str];
+			
+			[self propagateSettings];
+		}
+		else
+		{
+			NSDictionary		*aCLUT;
+			NSArray				*array;
+			long				i;
+			unsigned char		red[256], green[256], blue[256];
+			
+			aCLUT = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"CLUT"] objectForKey:str];
+			if( aCLUT)
+			{
+				array = [aCLUT objectForKey:@"Red"];
+				for( i = 0; i < 256; i++)
+				{
+					red[i] = [[array objectAtIndex: i] longValue];
+				}
+				
+				array = [aCLUT objectForKey:@"Green"];
+				for( i = 0; i < 256; i++)
+				{
+					green[i] = [[array objectAtIndex: i] longValue];
+				}
+				
+				array = [aCLUT objectForKey:@"Blue"];
+				for( i = 0; i < 256; i++)
+				{
+					blue[i] = [[array objectAtIndex: i] longValue];
+				}
+				
+				if( thickSlab)
+				{
+					[thickSlab setCLUT:red :green :blue];
+				}
+				
+				int darkness = 256 * 3;
+				int darknessIndex = 0;
+				
+				for( i = 0; i < 256; i++)
+				{
+					if( red[i] + green[i] + blue[i] < darkness)
+					{
+						darknessIndex = i;
+						darkness = red[i] + green[i] + blue[i];
+					}
+				}
+				
+				int x;
+				for ( x = 0; x < maxMovieIndex; x++)
+				{
+					for ( i = 0; i < [pixList[ x] count]; i ++)
+					{
+						[[pixList[ x] objectAtIndex:i] setBlackIndex: darknessIndex];
+					}
+				}
+				
+				[imageView setCLUT:red :green: blue];
+				
+				[imageView setIndex:[imageView curImage]];
+				if( str != curCLUTMenu)
+				{
+					[curCLUTMenu release];
+					curCLUTMenu = [str retain];
+				}
+				
+				lastMenuNotification = 0L;
+				[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: 0L];
+				
+				[self propagateSettings];
+				[[[clutPopup menu] itemAtIndex:0] setTitle:str];
+			}
 		}
 	}
 	
@@ -9184,9 +9199,18 @@ NSMutableArray		*array;
 			
 			[seriesView ActivateBlending:blendingController blendingFactor:[blendingSlider floatValue]];
 		}
+		
+		if( blendingController && [[[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut Mode"] isEqualToString: @"B/W Inverse"])
+		{
+			[curCLUTMenu release];
+			curCLUTMenu = [[[NSUserDefaults standardUserDefaults] stringForKey: @"PET Blending CLUT"] copy];
+		}
 	}
 	else
 	{
+		[curCLUTMenu release];
+		curCLUTMenu = [NSLocalizedString(@"No CLUT", nil) retain];
+		
 		[imageView setBlending: 0L];
 		[blendingSlider setEnabled:NO];
 		[blendingPercentage setStringValue:@"-"];
@@ -9197,6 +9221,9 @@ NSMutableArray		*array;
 	[self buildMatrixPreview: NO];
 	
 	[imageView sendSyncMessage: 0];
+	
+	[self ApplyCLUTString:curCLUTMenu];
+	[self refreshMenus];
 }
 
 -(ViewerController*) blendedWindow
