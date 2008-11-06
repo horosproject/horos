@@ -268,9 +268,12 @@
 																									elements: &listOfElements]];
 					
 					// *****
+					
+					// Use  <?xml version=\"1.0\" encoding=\"UTF-8\"?>  ??? 
+					
 					NSString *xml;
 					if( listOfElements)
-						xml = [NSString stringWithFormat: @"<?xml version=\"1.0\"?><methodResponse><params><param><value><struct><member><name>error</name><value>%@</value></member><member><name>elements</name>%@</member></struct></value></param></params></methodResponse>", [ret stringValue], listOfElements];
+						xml = [NSString stringWithFormat: @"<?xml version=\"1.0\" encoding=\"UTF-8\"?><methodResponse><params><param><value><struct><member><name>error</name><value>%@</value></member><member><name>elements</name>%@</member></struct></value></param></params></methodResponse>", [ret stringValue], listOfElements];
 					else
 						xml = [NSString stringWithFormat: @"<?xml version=\"1.0\"?><methodResponse><params><param><value><struct><member><name>error</name><value>%@</value></member></struct></value></param></params></methodResponse>", [ret stringValue]];
 						
