@@ -1377,13 +1377,13 @@ char* dcmGenerateUniqueIdentifier(char* uid, const char* prefix)
         addUIDComponent(uid, SITE_INSTANCE_UID_ROOT);
     }
 
-    sprintf(buf, ".%lu", hostIdentifier);
+    sprintf(buf, ".%u", hostIdentifier);
     addUIDComponent(uid, buf);
 
-    sprintf(buf, ".%lu", forcePositive(getpid()));
+    sprintf(buf, ".%u", forcePositive(getpid()));
     addUIDComponent(uid, buf);
 
-    sprintf(buf, ".%lu", forcePositive(OFstatic_cast(long, time(NULL))));
+    sprintf(buf, ".%u", forcePositive(OFstatic_cast(long, time(NULL))));
     addUIDComponent(uid, buf);
 
     sprintf(buf, ".%u", counter);

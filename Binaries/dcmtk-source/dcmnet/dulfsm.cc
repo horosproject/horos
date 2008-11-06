@@ -2928,7 +2928,7 @@ sendPDataTCP(PRIVATE_ASSOCIATIONKEY ** association,
     else if (maxLength < 14)
     {
        char buf[256];
-       sprintf(buf, "DUL Cannot send P-DATA PDU because receiver's max PDU size of %lu is illegal (must be > 12)", maxLength);
+       sprintf(buf, "DUL Cannot send P-DATA PDU because receiver's max PDU size of %u is illegal (must be > 12)", maxLength);
        cond = makeDcmnetCondition(DULC_ILLEGALPDULENGTH, OF_error, buf);
     }
     else maxLength -= 12;

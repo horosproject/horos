@@ -752,9 +752,9 @@ int DiImage::writeFrameToDataset(DcmItem &dataset,
             dataset.tagExists(DCM_VOILUTSequence))
         {
             delete dataset.remove(DCM_VOILUTSequence);
-            sprintf(buffer, "%lu", DicomImageClass::maxval(bitsStored, 0) / 2);
+            sprintf(buffer, "%u", DicomImageClass::maxval(bitsStored, 0) / 2);
             dataset.putAndInsertString(DCM_WindowCenter, buffer);
-            sprintf(buffer, "%lu", DicomImageClass::maxval(bitsStored, 0));
+            sprintf(buffer, "%u", DicomImageClass::maxval(bitsStored, 0));
             dataset.putAndInsertString(DCM_WindowWidth, buffer);
         }
         delete dataset.remove(DCM_WindowCenterWidthExplanation);

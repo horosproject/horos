@@ -277,7 +277,7 @@ int DcmQueryRetrieveConfig::readConfigLines(FILE *cnffp)
       }
       else if (!strcmp("MaxPDUSize", mnemonic)) {
       	 unsigned int ul = 0;
-         sscanf(valueptr, "%lu", &ul);
+         sscanf(valueptr, "%u", &ul);
          maxPDUSize_ = OFstatic_cast(Uint32, ul);
       }
       else if (!strcmp("MaxAssociations", mnemonic)) {
@@ -790,7 +790,7 @@ void DcmQueryRetrieveConfig::printConfig()
             CNF_VendorTable.HostEntries[i].Peers[j].HostName, CNF_VendorTable.HostEntries[i].Peers[j].PortNumber);
       }
    }
-   printf("\nGlobal Parameters:\n%s\n%s\n%s\n%s\n%s\n%d\n%lu\n%d\n",
+   printf("\nGlobal Parameters:\n%s\n%s\n%s\n%s\n%s\n%d\n%u\n%d\n",
       applicationTitle_.c_str(), applicationContext_.c_str(), implementationClass_.c_str(),
       implementationVersion_.c_str(), networkType_.c_str(), networkTCPPort_, OFstatic_cast(unsigned int, maxPDUSize_),
       maxAssociations_);

@@ -222,7 +222,7 @@ DVInterface::DVInterface(const char *config_file, OFBool useLog)
     referenceTime = OFstatic_cast(unsigned int, time(NULL));
     /* initialize printJobIdentifier with a string comprising the current time */
     char buf[20];
-    sprintf(buf, "%lu", referenceTime);
+    sprintf(buf, "%u", referenceTime);
     printJobIdentifier = buf;
     /* initialize reference time with "yesterday" */
     if (referenceTime >= 86400) referenceTime -= 86400; // subtract one day
@@ -2462,7 +2462,7 @@ OFCondition DVInterface::startQueryRetrieveServer()
     if (timeout > 0)
     {
       char str_timeout[20];
-      sprintf(str_timeout, "%lu", OFstatic_cast(unsigned int, timeout));
+      sprintf(str_timeout, "%u", OFstatic_cast(unsigned int, timeout));
       execl(server_application, server_application, "-c", config_filename.c_str(), "--allow-shutdown",
         "--timeout", str_timeout, NULL);
     }
@@ -2492,7 +2492,7 @@ OFCondition DVInterface::startQueryRetrieveServer()
 
   if (timeout > 0)
   {
-    sprintf(commandline, "%s -c %s --allow-shutdown --timeout %lu",
+    sprintf(commandline, "%s -c %s --allow-shutdown --timeout %u",
       server_application, config_filename.c_str(), (unsigned int) timeout);
   }
   else
@@ -3486,7 +3486,7 @@ OFCondition DVInterface::startPrintSpooler()
   unsigned int sleepingTime = getSpoolerSleep();
   if (sleepingTime==0) sleepingTime=1; // default
   char sleepStr[20];
-  sprintf(sleepStr, "%lu", sleepingTime);
+  sprintf(sleepStr, "%u", sleepingTime);
   OFBool detailedLog = getDetailedLog();
 
   OFCondition result = EC_Normal;
@@ -3957,7 +3957,7 @@ OFCondition DVInterface::spoolStoredPrintFromDB(const char *studyUID, const char
     if (printerFilmSessionLabel.size() >0) fprintf(outf,"label        %s\n", printerFilmSessionLabel.c_str());
     if (printerPriority.size() >0)         fprintf(outf,"priority     %s\n", printerPriority.c_str());
     if (printerOwnerID.size() >0)          fprintf(outf,"owner_id     %s\n", printerOwnerID.c_str());
-    if (printerNumberOfCopies >0)          fprintf(outf,"copies       %lu\n", printerNumberOfCopies);
+    if (printerNumberOfCopies >0)          fprintf(outf,"copies       %u\n", printerNumberOfCopies);
 
     fclose(outf);
     if (0 != rename(tempFilename.c_str(), spoolFilename.c_str()))
@@ -4025,7 +4025,7 @@ OFCondition DVInterface::printSCUcreateBasicFilmSession(DVPSPrintMessageHandler&
 
   if ((EC_Normal==result)&&(printerNumberOfCopies > 0))
   {
-    sprintf(buf, "%lu", printerNumberOfCopies);
+    sprintf(buf, "%u", printerNumberOfCopies);
     delem = new DcmIntegerString(DCM_NumberOfCopies);
     if (delem) result = delem->putString(buf); else result=EC_IllegalCall;
     if (EC_Normal==result) result = dset.insert(delem, OFTrue /*replaceOld*/);

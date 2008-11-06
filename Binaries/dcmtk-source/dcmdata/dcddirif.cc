@@ -4766,7 +4766,7 @@ void DicomDirInterface::setDefaultValue(DcmDirectoryRecord *record,
             sprintf(buffer + strlen(buffer), "%06lu", number);
         } else {
             /* create a number string only */
-            sprintf(buffer, "%lu", number);
+            sprintf(buffer, "%u", number);
         }
         record->putAndInsertString(key, buffer);
         /* create warning message */

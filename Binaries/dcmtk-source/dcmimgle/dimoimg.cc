@@ -2070,7 +2070,7 @@ int DiMonoImage::writePPM(FILE *stream,
             if (bits == MI_PastelColor)
                 fprintf(stream, "P3\n%u %u\n255\n", Columns, Rows);
             else
-                fprintf(stream, "P2\n%u %u\n%lu\n", Columns, Rows, DicomImageClass::maxval(bits));
+                fprintf(stream, "P2\n%u %u\n%u\n", Columns, Rows, DicomImageClass::maxval(bits));
             int ok = OutputData->writePPM(stream);
             deleteOutputData();
             return ok;
@@ -2096,7 +2096,7 @@ int DiMonoImage::writeRawPPM(FILE *stream,
             if (bits == MI_PastelColor)
                 fprintf(stream, "P6\n%u %u\n255\n", Columns, Rows);
             else
-                fprintf(stream, "P5\n%u %u\n%lu\n", Columns, Rows, DicomImageClass::maxval(bits));
+                fprintf(stream, "P5\n%u %u\n%u\n", Columns, Rows, DicomImageClass::maxval(bits));
             fwrite(OutputData->getData(), OFstatic_cast(size_t, OutputData->getCount()), OutputData->getItemSize(), stream);
             deleteOutputData();
             return 1;

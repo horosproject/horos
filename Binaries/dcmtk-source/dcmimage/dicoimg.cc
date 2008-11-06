@@ -696,7 +696,7 @@ int DiColorImage::writePPM(FILE *stream,
             getOutputData(frame, bits);
             if (OutputData != NULL)
             {
-                fprintf(stream, "P3\n%u %u\n%lu\n", Columns, Rows, DicomImageClass::maxval(bits));
+                fprintf(stream, "P3\n%u %u\n%u\n", Columns, Rows, DicomImageClass::maxval(bits));
                 int ok = OutputData->writePPM(stream);
                 deleteOutputData();
                 return ok;

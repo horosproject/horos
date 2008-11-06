@@ -917,7 +917,7 @@ int main(int argc, char *argv[])
   {
     if (geteuid() != 0)
     {
-      fprintf(stderr, "storescp: cannot listen on port %lu, insufficient privileges\n", opt_port);
+      fprintf(stderr, "storescp: cannot listen on port %u, insufficient privileges\n", opt_port);
       return 1;
     }
   }
@@ -1466,7 +1466,7 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
     }
     if (opt_verbose)
     {
-      printf("Association Acknowledged (Max Send PDV: %lu)\n", assoc->sendPDVLength);
+      printf("Association Acknowledged (Max Send PDV: %u)\n", assoc->sendPDVLength);
       if (ASC_countAcceptedPresentationContexts(assoc->params) == 0)
         printf("    (but no valid presentation contexts)\n");
       if (opt_debug) ASC_dumpParameters(assoc->params, COUT);

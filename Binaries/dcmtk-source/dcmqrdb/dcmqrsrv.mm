@@ -1152,7 +1152,7 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 
         if (options_.verbose_)
         {
-            printf("Association Acknowledged (Max Send PDV: %lu)\n",
+            printf("Association Acknowledged (Max Send PDV: %u)\n",
                    assoc->sendPDVLength);
             if (ASC_countAcceptedPresentationContexts(assoc->params) == 0)
                 printf("    (but no valid presentation contexts)\n");

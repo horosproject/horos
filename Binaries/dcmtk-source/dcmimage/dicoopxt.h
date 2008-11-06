@@ -216,7 +216,7 @@ class DiColorOutputPixelTemplate
             register int j;
             for (i = FrameSize; i != 0; --i)
                 for (j = 3; j != 0; --j)
-                    fprintf(stream, "%lu ", OFstatic_cast(unsigned int, *(p++)));
+                    fprintf(stream, "%u ", OFstatic_cast(unsigned int, *(p++)));
             return 1;
         }
         return 0;

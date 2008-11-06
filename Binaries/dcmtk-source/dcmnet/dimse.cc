@@ -1196,7 +1196,7 @@ DIMSE_receiveCommand(T_ASC_Association * assoc,
         {
             /* This should NEVER happen.  See Part 7, Annex F. */
             char buf2[256];
-            sprintf(buf2, "DIMSE: Odd Fragment Length: %lu", pdv.fragmentLength);
+            sprintf(buf2, "DIMSE: Odd Fragment Length: %u", pdv.fragmentLength);
             cond = makeDcmnetCondition(DIMSEC_RECEIVEFAILED, OF_error, buf2);
             break;
         }
@@ -1493,7 +1493,7 @@ DIMSE_receiveDataSetInFile(T_ASC_Association *assoc,
           {
             /* This should NEVER happen.  See Part 7, Annex F. */
             char buf2[256]; 
-            sprintf(buf2, "DIMSE: Odd Fragment Length: %lu", pdv.fragmentLength);
+            sprintf(buf2, "DIMSE: Odd Fragment Length: %u", pdv.fragmentLength);
             cond = makeDcmnetCondition(DIMSEC_RECEIVEFAILED, OF_error, buf2);
             last = OFTrue; // terminate loop
           }
@@ -1665,7 +1665,7 @@ DIMSE_receiveDataSetInMemory(T_ASC_Association * assoc,
             if ((pdv.fragmentLength % 2) != 0) 
             {
                 char buf2[256];
-                sprintf(buf2, "DIMSE: Odd Fragment Length: %lu", pdv.fragmentLength);
+                sprintf(buf2, "DIMSE: Odd Fragment Length: %u", pdv.fragmentLength);
                 cond = makeDcmnetCondition(DIMSEC_RECEIVEFAILED, OF_error, buf2);
                 last = OFTrue;
             }

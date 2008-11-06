@@ -1050,7 +1050,7 @@ const char *DSRTypes::numberToString(const size_t number,
     if (stringValue != NULL)
     {
         /* unsigned int */
-        sprintf(stringValue, "%lu", OFstatic_cast(unsigned int, number));
+        sprintf(stringValue, "%u", OFstatic_cast(unsigned int, number));
     }
     return stringValue;
 }
@@ -1063,7 +1063,7 @@ size_t DSRTypes::stringToNumber(const char *stringValue)
     {
         unsigned int lu_value = 0;
         /* unsigned int */
-        if (sscanf(stringValue, "%lu", &lu_value) == 1)
+        if (sscanf(stringValue, "%u", &lu_value) == 1)
             result = OFstatic_cast(size_t, lu_value);
     }
     return result;

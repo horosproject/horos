@@ -349,7 +349,7 @@ WlmDataSourceStatusType WlmDataSourceFileSystem::StartFindRequest( DcmDataset &f
   // dump some information if required
   if( verbose )
   {
-    sprintf( msg, "Matching results: %lu matching records found in worklist files.", numOfMatchingRecords );
+    sprintf( msg, "Matching results: %u matching records found in worklist files.", numOfMatchingRecords );
     DumpMessage( msg );
   }
 
@@ -374,7 +374,7 @@ WlmDataSourceStatusType WlmDataSourceFileSystem::StartFindRequest( DcmDataset &f
       // dump some information if required
       if( verbose )
       {
-        sprintf( msg, "  Processing matching result no. %lu.", i );
+        sprintf( msg, "  Processing matching result no. %u.", i );
         DumpMessage( msg );
       }
 

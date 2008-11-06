@@ -194,7 +194,7 @@ OFCondition DcmUnsignedLong::getOFString(OFString &stringVal,
     {
         /* ... and convert it to a character string */
         char buffer[32];
-        sprintf(buffer, "%lu", OFstatic_cast(unsigned int, uintVal));
+        sprintf(buffer, "%u", OFstatic_cast(unsigned int, uintVal));
         /* assign result */
         stringVal = buffer;
     }

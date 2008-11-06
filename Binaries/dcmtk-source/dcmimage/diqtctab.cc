@@ -550,7 +550,7 @@ void DcmQuantColorTable::setDescriptionString(OFString& str) const
 {
   char buf[100];
 
-  sprintf(buf, "Converted to PALETTE COLOR %lu/0/%u with DCMTK %s",
+  sprintf(buf, "Converted to PALETTE COLOR %u/0/%u with DCMTK %s",
     (numColors > 65535) ? 0 : numColors, (sizeof(DcmQuantComponent) == 1) ? 8 : 16,
     OFFIS_DCMTK_VERSION);
 

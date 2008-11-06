@@ -420,7 +420,7 @@ unsigned int DVConfiguration::getTargetMaxPDU(const char *targetID)
   unsigned int result = 0;
   if (c)
   {
-    if (1 != sscanf(c, "%lu", &result)) result=0;
+    if (1 != sscanf(c, "%u", &result)) result=0;
   }
   return result;
 }
@@ -431,7 +431,7 @@ Sint32 DVConfiguration::getTargetTimeout(const char *targetID)
   signed int result = -1; // default is -1
   if (c)
   {
-    if (1 != sscanf(c, "%ld", &result)) result=0;
+    if (1 != sscanf(c, "%d", &result)) result=0;
   }
   return (Sint32) result;
 }
@@ -531,7 +531,7 @@ unsigned int DVConfiguration::getQueryRetrieveMaxPDU()
   unsigned int result = 0;
   if (c)
   {
-    if (1 != sscanf(c, "%lu", &result)) result=0;
+    if (1 != sscanf(c, "%u", &result)) result=0;
   }
   return result;
 }
@@ -542,7 +542,7 @@ Sint32 DVConfiguration::getQueryRetrieveTimeout()
   signed int result = -1; // default is -1
   if (c)
   {
-    if (1 != sscanf(c, "%ld", &result)) result=0;
+    if (1 != sscanf(c, "%d", &result)) result=0;
   }
   return (Sint32) result;
 }
@@ -553,7 +553,7 @@ unsigned int DVConfiguration::getQueryRetrieveMaxAssociations()
   unsigned int result = 0;
   if (c)
   {
-    if (1 != sscanf(c, "%lu", &result)) result=0;
+    if (1 != sscanf(c, "%u", &result)) result=0;
   }
   return result;
 }
@@ -588,7 +588,7 @@ unsigned int DVConfiguration::getSpoolerSleep()
   unsigned int result = 0;
   if (c)
   {
-    if (1 != sscanf(c, "%lu", &result)) result=0;
+    if (1 != sscanf(c, "%u", &result)) result=0;
   }
   return result;
 }
@@ -752,7 +752,7 @@ Uint32 DVConfiguration::getMaxPreviewResolutionX()
   {
     unsigned int result = 0;
     unsigned int dummy = 0;
-    if (2 == sscanf(c, "%lu\\%lu", &result, &dummy)) return (Uint32) result;
+    if (2 == sscanf(c, "%u\\%u", &result, &dummy)) return (Uint32) result;
   }
   return 0;
 }
@@ -764,7 +764,7 @@ Uint32 DVConfiguration::getMaxPreviewResolutionY()
   {
     unsigned int result = 0;
     unsigned int dummy = 0;
-    if (2 == sscanf(c, "%lu\\%lu", &dummy, &result)) return (Uint32) result;
+    if (2 == sscanf(c, "%u\\%u", &dummy, &result)) return (Uint32) result;
   }
   return 0;
 }
@@ -1079,7 +1079,7 @@ Uint32 DVConfiguration::getMinPrintResolutionX()
   {
     unsigned int result = 0;
     unsigned int dummy = 0;
-    if (2 == sscanf(c, "%lu\\%lu", &result, &dummy)) return (Uint32) result;
+    if (2 == sscanf(c, "%u\\%u", &result, &dummy)) return (Uint32) result;
   }
   return 0;
 }
@@ -1091,7 +1091,7 @@ Uint32 DVConfiguration::getMinPrintResolutionY()
   {
     unsigned int result = 0;
     unsigned int dummy = 0;
-    if (2 == sscanf(c, "%lu\\%lu", &dummy, &result)) return (Uint32) result;
+    if (2 == sscanf(c, "%u\\%u", &dummy, &result)) return (Uint32) result;
   }
   return 0;
 }
@@ -1103,7 +1103,7 @@ Uint32 DVConfiguration::getMaxPrintResolutionX()
   {
     unsigned int result = 0;
     unsigned int dummy = 0;
-    if (2 == sscanf(c, "%lu\\%lu", &result, &dummy)) return (Uint32) result;
+    if (2 == sscanf(c, "%u\\%u", &result, &dummy)) return (Uint32) result;
   }
   return 0;
 }
@@ -1115,7 +1115,7 @@ Uint32 DVConfiguration::getMaxPrintResolutionY()
   {
     unsigned int result = 0;
     unsigned int dummy = 0;
-    if (2 == sscanf(c, "%lu\\%lu", &dummy, &result)) return (Uint32) result;
+    if (2 == sscanf(c, "%u\\%u", &dummy, &result)) return (Uint32) result;
   }
   return 0;
 }
@@ -1263,7 +1263,7 @@ Uint32 DVConfiguration::getTargetPrinterPortraitDisplayFormatRows(const char *ta
   unsigned int rows=0;
   unsigned int columns=0;
   copyValue(getConfigEntry(L2_COMMUNICATION, targetID, L0_DISPLAYFORMAT), idx, value);
-  if (2==sscanf(value.c_str(), "%lu,%lu", &columns, &rows)) return rows;
+  if (2==sscanf(value.c_str(), "%u,%u", &columns, &rows)) return rows;
   return 0;
 }
 
@@ -1273,7 +1273,7 @@ Uint32 DVConfiguration::getTargetPrinterPortraitDisplayFormatColumns(const char 
   unsigned int rows=0;
   unsigned int columns=0;
   copyValue(getConfigEntry(L2_COMMUNICATION, targetID, L0_DISPLAYFORMAT), idx, value);
-  if (2==sscanf(value.c_str(), "%lu,%lu", &columns, &rows)) return columns;
+  if (2==sscanf(value.c_str(), "%u,%u", &columns, &rows)) return columns;
   return 0;
 }
 

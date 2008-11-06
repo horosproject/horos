@@ -486,7 +486,7 @@ OFCommandLine::E_ParamValueStatus OFCommandLine::getParam(const int pos,
 {
     if (findParam(pos))
     {
-        if (sscanf((*ArgumentIterator).c_str(), "%li", &value) == 1)
+        if (sscanf((*ArgumentIterator).c_str(), "%i", &value) == 1)
             return PVS_Normal;
         return PVS_Invalid;
     }
@@ -531,7 +531,7 @@ OFCommandLine::E_ParamValueStatus OFCommandLine::getParam(const int pos,
 {
     if (findParam(pos))
     {
-        if (sscanf((*ArgumentIterator).c_str(), "%lu", &value) == 1)
+        if (sscanf((*ArgumentIterator).c_str(), "%u", &value) == 1)
             return PVS_Normal;
         return PVS_Invalid;
     }
@@ -759,7 +759,7 @@ OFCommandLine::E_ValueStatus OFCommandLine::getValue(OFCmdSignedInt &value)
 {
     if (++ArgumentIterator != ArgumentList.end())
     {
-        if (sscanf((*ArgumentIterator).c_str(), "%li", &value) == 1)
+        if (sscanf((*ArgumentIterator).c_str(), "%i", &value) == 1)
             return VS_Normal;
         return VS_Invalid;
     }
@@ -801,7 +801,7 @@ OFCommandLine::E_ValueStatus OFCommandLine::getValue(OFCmdUnsignedInt &value)
 {
     if (++ArgumentIterator != ArgumentList.end())
     {
-        if (sscanf((*ArgumentIterator).c_str(), "%lu", &value) == 1)
+        if (sscanf((*ArgumentIterator).c_str(), "%u", &value) == 1)
             return VS_Normal;
         return VS_Invalid;
     }

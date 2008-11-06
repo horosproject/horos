@@ -179,7 +179,7 @@ void DVSignatureHandler::printSignatureItemPosition(DcmStack& stack, ostream& os
           {
             if (sq->getItem(m) == elem)
             {
-              sprintf(buf, "[%lu]", m);
+              sprintf(buf, "[%u]", m);
               os << buf;
               printed = OFTrue;
             }

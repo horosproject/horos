@@ -268,7 +268,7 @@ void DVPSStoredPrint::updateCache()
     unsigned int rows=0;
     char format[30];
     aString.copy(format,OFString_npos,9);
-    if (2==sscanf(format, "%lu,%lu", &columns, &rows))
+    if (2==sscanf(format, "%u,%u", &columns, &rows))
     {
       currentNumCols = columns;
       currentNumRows = rows;
@@ -1019,7 +1019,7 @@ OFCondition DVPSStoredPrint::setImageDisplayFormat(unsigned int columns, unsigne
 {
   if ((columns==0)||(rows==0)) return EC_IllegalCall;
   char newFormat[80];
-  sprintf(newFormat, "STANDARD\\%lu,%lu", columns, rows);
+  sprintf(newFormat, "STANDARD\\%u,%u", columns, rows);
   
   OFCondition result = imageDisplayFormat.putString(newFormat);
   if (EC_Normal == result)
@@ -2318,13 +2318,13 @@ OFBool DVPSStoredPrint::printSCPCreate(
             found = OFTrue;
             break;
           } else {
-            if (1 == sscanf(aString.c_str(), "%lu", &l)) supportsNumericDensity = OFTrue;
+            if (1 == sscanf(aString.c_str(), "%u", &l)) supportsNumericDensity = OFTrue;
           }
         }
         if ((! found) && supportsNumericDensity)
         {
           // the density was not found in the list; check whether it is numerical
-          if (1 == sscanf(theBorderDensity.c_str(), "%lu", &l)) found = OFTrue;
+          if (1 == sscanf(theBorderDensity.c_str(), "%u", &l)) found = OFTrue;
         }
           
         if (! found)
@@ -2380,13 +2380,13 @@ OFBool DVPSStoredPrint::printSCPCreate(
             found = OFTrue;
             break;
           } else {
-            if (1 == sscanf(aString.c_str(), "%lu", &l)) supportsNumericDensity = OFTrue;
+            if (1 == sscanf(aString.c_str(), "%u", &l)) supportsNumericDensity = OFTrue;
           }
         }
         if ((! found) && supportsNumericDensity)
         {
           // the density was not found in the list; check whether it is numerical
-          if (1 == sscanf(theEIDensity.c_str(), "%lu", &l)) found = OFTrue;
+          if (1 == sscanf(theEIDensity.c_str(), "%u", &l)) found = OFTrue;
         }
           
         if (! found)
@@ -3070,13 +3070,13 @@ OFBool DVPSStoredPrint::printSCPSet(
             found = OFTrue;
             break;
           } else {
-            if (1 == sscanf(aString.c_str(), "%lu", &l)) supportsNumericDensity = OFTrue;
+            if (1 == sscanf(aString.c_str(), "%u", &l)) supportsNumericDensity = OFTrue;
           }
         }
         if ((! found) && supportsNumericDensity)
         {
           // the density was not found in the list; check whether it is numerical
-          if (1 == sscanf(theBorderDensity.c_str(), "%lu", &l)) found = OFTrue;
+          if (1 == sscanf(theBorderDensity.c_str(), "%u", &l)) found = OFTrue;
         }
           
         if (! found)
@@ -3129,13 +3129,13 @@ OFBool DVPSStoredPrint::printSCPSet(
             found = OFTrue;
             break;
           } else {
-            if (1 == sscanf(aString.c_str(), "%lu", &l)) supportsNumericDensity = OFTrue;
+            if (1 == sscanf(aString.c_str(), "%u", &l)) supportsNumericDensity = OFTrue;
           }
         }
         if ((! found) && supportsNumericDensity)
         {
           // the density was not found in the list; check whether it is numerical
-          if (1 == sscanf(theEIDensity.c_str(), "%lu", &l)) found = OFTrue;
+          if (1 == sscanf(theEIDensity.c_str(), "%u", &l)) found = OFTrue;
         }
           
         if (! found)

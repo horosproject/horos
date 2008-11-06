@@ -714,7 +714,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_attachAssociation()
     }
 
     if (verbose) {
-        printf("Association Accepted (Max Send PDV: %lu)\n",
+        printf("Association Accepted (Max Send PDV: %u)\n",
           assoc->sendPDVLength);
     }
 

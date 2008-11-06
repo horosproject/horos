@@ -225,7 +225,7 @@ class DiMonoOutputPixelTemplate
         {
             register unsigned int i;
             for (i = 0; i < FrameSize; ++i)
-                fprintf(stream, "%lu ", OFstatic_cast(unsigned int, Data[i]));
+                fprintf(stream, "%u ", OFstatic_cast(unsigned int, Data[i]));
             return 1;
         }
         if (ColorData != NULL)

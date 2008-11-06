@@ -493,7 +493,7 @@ OFCondition WlmActivityManager::WaitForAssociation( T_ASC_Network * net )
     // Dump some information if required.
     if( opt_verbose )
     {
-      sprintf( msg, "Association Acknowledged (Max Send PDV: %lu)\n", assoc->sendPDVLength );
+      sprintf( msg, "Association Acknowledged (Max Send PDV: %u)\n", assoc->sendPDVLength );
       DumpMessage( msg );
 
       if( ASC_countAcceptedPresentationContexts( assoc->params ) == 0 )
@@ -1081,7 +1081,7 @@ static void AddStatusDetail( DcmDataset **statusDetail, const DcmElement *elem, 
       lo = new DcmLongString( *((DcmLongString*)elem) );
       if( lo->getLength() > vr.getMaxValueLength() && logStream != NULL )
       {
-        sprintf( msg, "AddStatusDetail: INTERNAL ERROR: value too large (max %lu) for %s: ", (unsigned int)(vr.getMaxValueLength()), vr.getVRName() );
+        sprintf( msg, "AddStatusDetail: INTERNAL ERROR: value too large (max %u) for %s: ", (unsigned int)(vr.getMaxValueLength()), vr.getVRName() );
         logStream->lockCout();
         logStream->getCout() << msg << endl;
         logStream->unlockCout();
@@ -1098,7 +1098,7 @@ static void AddStatusDetail( DcmDataset **statusDetail, const DcmElement *elem, 
       at = new DcmAttributeTag( *((DcmAttributeTag*)elem) );
       if( at->getLength() > vr.getMaxValueLength() )
       {
-        sprintf( msg, "AddStatusDetail: INTERNAL ERROR: value too large (max %lu) for %s: ", (unsigned int)(vr.getMaxValueLength()), vr.getVRName() );
+        sprintf( msg, "AddStatusDetail: INTERNAL ERROR: value too large (max %u) for %s: ", (unsigned int)(vr.getMaxValueLength()), vr.getVRName() );
         logStream->lockCout();
         logStream->getCout() << msg << endl;
         logStream->unlockCout();

@@ -606,7 +606,7 @@ const OFString &OFStandard::convertToMarkupString(const OFString &sourceString,
             if (convertNonASCII && (charValue > 127))
             {
                 char buffer[16];
-                sprintf(buffer, "%lu", OFstatic_cast(unsigned int, charValue));
+                sprintf(buffer, "%u", OFstatic_cast(unsigned int, charValue));
                 /* convert > #127 to Unicode (ISO Latin-1), what is about < #32 ? */
                 markupString += "&#";
                 markupString += buffer;
