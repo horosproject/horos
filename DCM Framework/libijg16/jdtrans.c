@@ -130,7 +130,7 @@ transdecode_master_selection (j_decompress_ptr cinfo)
     } else {
       nscans = 1;
     }
-    cinfo->progress->pass_counter = 0L;
+    cinfo->progress->pass_counter = 0;
     cinfo->progress->pass_limit = (long) cinfo->total_iMCU_rows * nscans;
     cinfo->progress->completed_passes = 0;
     cinfo->progress->total_passes = 1;

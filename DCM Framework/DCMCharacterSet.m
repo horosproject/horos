@@ -37,7 +37,7 @@ char* DCMreplaceInvalidCharacter( char* str ) {
 
 + (NSString*) NSreplaceBadCharacter: (NSString*) str
 {
-	if( str == 0L) return 0L;
+	if( str == nil) return nil;
 	
 	NSMutableString	*mutable = [NSMutableString stringWithString: str];
 	
@@ -59,7 +59,7 @@ char* DCMreplaceInvalidCharacter( char* str ) {
 
 + (NSString *) stringWithBytes:(char *) str length:(unsigned) length encodings: (NSStringEncoding*) encodings
 {
-	if( str == 0L) return 0L;
+	if( str == nil) return nil;
 	
 	char c;
 	int i, x, from, index;
@@ -100,7 +100,7 @@ char* DCMreplaceInvalidCharacter( char* str ) {
 {
 	NSStringEncoding	encoding = NSISOLatin1StringEncoding;
 	
-	if( characterSet == 0L) return encoding;
+	if( characterSet == nil) return encoding;
 	if( [characterSet isEqualToString:@""]) return encoding;
 	
 	if ( [characterSet isEqualToString:@"ISO_IR 100"]) encoding = NSISOLatin1StringEncoding; 	
@@ -135,7 +135,7 @@ char* DCMreplaceInvalidCharacter( char* str ) {
 		_characterSet = [characterSet retain];
 		encoding = NSISOLatin1StringEncoding;
 		
-		if( encodings == 0L)
+		if( encodings == nil)
 			encodings = (NSStringEncoding*) malloc( 10 * sizeof( NSStringEncoding));
 		
 		for( int i = 0; i < 10; i++) encodings[ i] = NSISOLatin1StringEncoding;

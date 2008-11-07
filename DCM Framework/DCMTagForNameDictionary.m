@@ -27,7 +27,7 @@ static DCMTagForNameDictionary *sharedTagForNameDictionary;
 	else
 		bundle = [NSBundle mainBundle];
 	NSString *path = [bundle pathForResource:@"nameDictionary" ofType:@"plist"];
-	if( path == 0L) NSLog(@"Cannot find nameDictionary");
+	if( path == nil) NSLog(@"Cannot find nameDictionary");
 		sharedTagForNameDictionary = [[NSDictionary dictionaryWithContentsOfFile:path] retain];
 		
 	if (DEBUG)

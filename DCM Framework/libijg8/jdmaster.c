@@ -318,7 +318,7 @@ master_selection (j_decompress_ptr cinfo)
       /* For a nonprogressive multiscan file, estimate 1 scan per component. */
       nscans = cinfo->num_components;
     }
-    cinfo->progress->pass_counter = 0L;
+    cinfo->progress->pass_counter = 0;
     cinfo->progress->pass_limit = (long) cinfo->total_iMCU_rows * nscans;
     cinfo->progress->completed_passes = 0;
     cinfo->progress->total_passes = (cinfo->enable_2pass_quant ? 3 : 2);

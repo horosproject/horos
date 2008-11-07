@@ -104,7 +104,7 @@ static int defaultTimeout = 5000; // in milliseconds
 		NSException *exception = nil;
 		NS_DURING
 			terminate = NO;
-			socketHandle = 0L;
+			socketHandle = nil;
 			ARTIM = nil;
 			dataHandler = [[params objectForKey:@"receivedDataHandler"] retain];
 			//socketHandle =  [[params objectForKey:@"socketHandle"] retain];
@@ -263,7 +263,7 @@ static int defaultTimeout = 5000; // in milliseconds
 	[ARTIM release];
 	[dataHandler release];
 	[socketHandle release];
-	socketHandle = 0L;
+	socketHandle = nil;
 	[_dataLock release];
 	[_incomingData release];
 	//[timeStamp release];
@@ -447,7 +447,7 @@ static int defaultTimeout = 5000; // in milliseconds
 
 	if ([socketData length] == 0)
 	{
-		if (ARTIM == 0L) [self startARTIM:nil];
+		if (ARTIM == nil) [self startARTIM:nil];
 	}
 	else [self invalidateARTIM:nil];
 	
@@ -733,7 +733,7 @@ static int defaultTimeout = 5000; // in milliseconds
 
 - (void)send:(NSData *)data{
 	//NSLog(@"send data length: %d bufferSize; %d", [data length], receivedBufferSize);
-	if( socketHandle == 0L)
+	if( socketHandle == nil)
 	{
 		NSLog(@"already released !!??");
 		return;
@@ -861,7 +861,7 @@ static int defaultTimeout = 5000; // in milliseconds
 
 	NS_DURING
 		[socketHandle release];
-		socketHandle = 0L;
+		socketHandle = nil;
 	NS_HANDLER
 	NS_ENDHANDLER
 }

@@ -19,11 +19,11 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
-static DCMNetServiceDelegate *_netServiceDelegate = 0L;
-static NSHost *currentHost = 0L;
+static DCMNetServiceDelegate *_netServiceDelegate = nil;
+static NSHost *currentHost = nil;
 static BOOL bugFixedForDNSResolve = NO;
-static NSMutableArray *cachedServersArray = 0L;
-static NSLock *currentHostLock = 0L;
+static NSMutableArray *cachedServersArray = nil;
+static NSLock *currentHostLock = nil;
 
 @implementation DCMNetServiceDelegate
 
@@ -36,9 +36,9 @@ static NSLock *currentHostLock = 0L;
 
 +(NSHost*) currentHost
 {
-	if( currentHostLock == 0L) currentHostLock = [[NSLock alloc] init];
+	if( currentHostLock == nil) currentHostLock = [[NSLock alloc] init];
 	[currentHostLock lock];
-	if( currentHost == 0L)
+	if( currentHost == nil)
 	{
 		NSLog( @"*** currentHost");
 		currentHost = [[NSHost currentHost] retain];
@@ -179,7 +179,7 @@ static NSLock *currentHostLock = 0L;
 
 + (NSArray *) DICOMServersListSendOnly: (BOOL) send QROnly:(BOOL) QR cached:(BOOL) cached
 {
-	NSMutableArray *serversArray = 0L;
+	NSMutableArray *serversArray = nil;
 	
 	if( cached == NO)	// Important - forked processes will fail here
 	{
@@ -197,7 +197,7 @@ static NSLock *currentHostLock = 0L;
 		}
 	}
 	
-	if( cached == NO || cachedServersArray == 0L)
+	if( cached == NO || cachedServersArray == nil)
 	{
 		serversArray = [NSMutableArray arrayWithArray: [[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"]];
 		
@@ -217,7 +217,7 @@ static NSLock *currentHostLock = 0L;
 				if( hostname)
 				{
 					NSDictionary *dict = [NSNetService dictionaryFromTXTRecordData: [aServer TXTRecordData]];
-					NSString *description = 0L;
+					NSString *description = nil;
 					
 					if( [dict valueForKey: @"serverDescription"])
 						description = [[[NSString alloc] initWithData: [dict valueForKey: @"serverDescription"] encoding:NSUTF8StringEncoding] autorelease];
@@ -253,7 +253,7 @@ static NSLock *currentHostLock = 0L;
 																									[NSNumber numberWithBool:YES] , @"Send",
 																									description, @"Description",
 																									[NSNumber numberWithInt: transferSyntax], @"Transfer Syntax",
-																									0L];
+																									nil];
 					
 					if( [dict valueForKey: @"icon"])
 					{
@@ -275,7 +275,7 @@ static NSLock *currentHostLock = 0L;
 	{
 		for( int i = 0 ; i < [serversArray count] ; i++)
 		{
-			if( [[serversArray objectAtIndex: i] valueForKey:@"Send"] != 0L && [[[serversArray objectAtIndex: i] valueForKey:@"Send"] boolValue] == NO)
+			if( [[serversArray objectAtIndex: i] valueForKey:@"Send"] != nil && [[[serversArray objectAtIndex: i] valueForKey:@"Send"] boolValue] == NO)
 			{
 				[serversArray removeObjectAtIndex: i];
 				i--;
@@ -286,7 +286,7 @@ static NSLock *currentHostLock = 0L;
 	if( QR)	{
 		for( int i = 0 ; i < [serversArray count] ; i++ )
 		{
-			if( [[serversArray objectAtIndex: i] valueForKey:@"QR"] != 0L && [[[serversArray objectAtIndex: i] valueForKey:@"QR"] boolValue] == NO)
+			if( [[serversArray objectAtIndex: i] valueForKey:@"QR"] != nil && [[[serversArray objectAtIndex: i] valueForKey:@"QR"] boolValue] == NO)
 			{
 				[serversArray removeObjectAtIndex: i];
 				i--;

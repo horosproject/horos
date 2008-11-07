@@ -408,7 +408,7 @@ PixelRepresentation
 }
 
 - (id)initWithContentsOfFile:(NSString *)file decodingPixelData:(BOOL)decodePixelData{
-	if([[NSFileManager defaultManager] fileExistsAtPath:file] == NO) return 0L;
+	if([[NSFileManager defaultManager] fileExistsAtPath:file] == NO) return nil;
 	NSData *aData = [NSData dataWithContentsOfMappedFile:file];
 	return [self initWithData:aData decodingPixelData:decodePixelData] ;
 }
@@ -547,7 +547,7 @@ PixelRepresentation
 		else {
 		// get vr
 
-			NSString *vr = 0L;
+			NSString *vr = nil;
 			long vl = 0;
 			if (isExplicit) 
 			{
@@ -1674,7 +1674,7 @@ PixelRepresentation
 	}
 		
 	NSXMLDocument *xmlDocument = [[[NSXMLDocument alloc] initWithRootElement:rootElement] autorelease];
-	NSError *error = 0L;
+	NSError *error = nil;
 	if(![xmlDocument validateAndReturnError:&error])
 	NSLog(@"xml Document erorr:\n%@", [error description]);
 	return xmlDocument;

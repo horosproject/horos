@@ -168,7 +168,7 @@ htt://www.pixelmed.com
 {
 	NSLog( @"netServiceDidStop");
 	[netService release];
-	netService = 0L;
+	netService = nil;
 }
 
 - (void)netService:(NSNetService *)sender didUpdateTXTRecordData:(NSData *)data{

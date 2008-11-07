@@ -2014,10 +2014,10 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 	
 	NSLog(@"convertPaletteToRGB");
 	BOOL			fSetClut = NO, fSetClut16 = NO;
-	unsigned char   *clutRed = 0L, *clutGreen = 0L, *clutBlue = 0L;
+	unsigned char   *clutRed = nil, *clutGreen = nil, *clutBlue = nil;
 	int		clutEntryR = 0, clutEntryG = 0, clutEntryB = 0;
 	unsigned short		clutDepthR, clutDepthG, clutDepthB;
-	unsigned short	*shortRed = 0L, *shortGreen = 0L, *shortBlue = 0L;
+	unsigned short	*shortRed = nil, *shortGreen = nil, *shortBlue = nil;
 	long height = _rows;
 	long width = _columns;
 	long realwidth = width;
@@ -2372,7 +2372,7 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 	if( fSetClut)
 	{
 		
-		if( clutRed != 0L && clutGreen != 0L && clutBlue != 0L)
+		if( clutRed != nil && clutGreen != nil && clutBlue != nil)
 		{
 			unsigned char   *bufPtr = (unsigned char*) [data bytes];
 			unsigned short	*bufPtr16 = (unsigned short*) [data bytes];
@@ -2463,18 +2463,18 @@ NS_HANDLER
 	rgbData = nil;
 	NSLog(@"Exception converting Palette to RGB: %@", localException.name);
 NS_ENDHANDLER
-	if( clutRed != 0L)
+	if( clutRed != nil)
 		free(clutRed);
-	if ( clutGreen != 0L)
+	if ( clutGreen != nil)
 		free(clutGreen);
-	if (clutBlue != 0L)
+	if (clutBlue != nil)
 		free(clutBlue);
 		
-	if (shortRed != 0L)
+	if (shortRed != nil)
 		free(shortRed);
-	if (shortGreen != 0L)	
+	if (shortGreen != nil)	
 		free(shortGreen);
-	if (shortBlue != 0L)
+	if (shortBlue != nil)
 		free(shortBlue);
 	//NSLog(@"end palette conversion end length: %d", [rgbData length]);
 	_pixelDepth = 8;	
@@ -2516,7 +2516,7 @@ NS_ENDHANDLER
       if ([theKind isEqualToString:@"YBR_FULL"])
       {
           // loop on the pixels of the image
-          for (loop = 0L, pYBR = (unsigned char *)[ybrData bytes]; loop < size; loop++, pYBR += 3)
+          for (loop = 0, pYBR = (unsigned char *)[ybrData bytes]; loop < size; loop++, pYBR += 3)
           {
             // get the Y, B and R channels from the original image
 //            y = (int) pYBR [0];
@@ -2594,7 +2594,7 @@ NS_ENDHANDLER
         else if ([theKind isEqualToString:@"YBR_PARTIAL_422"])
         {
           // loop on the pixels of the image
-          for (loop = 0L, pYBR = (unsigned char *)[ybrData bytes]; loop < (size / 2); loop++)
+          for (loop = 0, pYBR = (unsigned char *)[ybrData bytes]; loop < (size / 2); loop++)
           {
             // get the Y, B and R channels from the original image
             y  = (int) pYBR [0];
@@ -2647,7 +2647,7 @@ NS_ENDHANDLER
       pR = (unsigned char *) (pB + size);
         
       // loop on the pixels of the image
-      for (loop = 0L; loop < size; loop++, pY++, pB++, pR++)
+      for (loop = 0; loop < size; loop++, pY++, pB++, pR++)
       {
 	  		a = (int) *pY;
 		b = (int) *pB;
@@ -3111,7 +3111,7 @@ NS_ENDHANDLER
 		NSMutableData *data = nil;
 		if (!_isDecoded){
 			if ( transferSyntax.isEncapsulated ) {
-				if( singleThread == 0L) singleThread = [[NSLock alloc] init];
+				if( singleThread == nil) singleThread = [[NSLock alloc] init];
 				[singleThread lock];	// These JPEG decompressors are NOT thread-safe....
 				
 				short depth = 0;

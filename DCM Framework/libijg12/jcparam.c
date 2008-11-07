@@ -48,7 +48,7 @@ jpeg_add_quant_table (j_compress_ptr cinfo, int which_tbl,
   for (i = 0; i < DCTSIZE2; i++) {
     temp = ((long) basic_table[i] * scale_factor + 50L) / 100L;
     /* limit the values to the valid range */
-    if (temp <= 0L) temp = 1L;
+    if (temp <= 0) temp = 1L;
     if (temp > 32767L) temp = 32767L; /* max quantizer needed for 12 bits */
     if (force_baseline && temp > 255L)
       temp = 255L;		/* limit to baseline range if requested */
