@@ -306,7 +306,7 @@
 	[filesToAnonymize release];
 	filesToAnonymize = nil;
 	[dcmObjects release];
-	dcmObjects = 0L;
+	dcmObjects = nil;
 }
 
 - (BOOL) cancelled
@@ -335,13 +335,13 @@
 	[sPanel setCanChooseDirectories:YES];
 	[sPanel setCanChooseFiles:NO];
 	[sPanel setAllowsMultipleSelection:NO];
-	[sPanel setMessage: NSLocalizedString(@"Select the location where to save the DICOM anonymized files:",0L)];
-	[sPanel setPrompt: NSLocalizedString(@"Anonymize",0L)];
-	[sPanel setTitle: NSLocalizedString(@"Anonymize",0L)];
+	[sPanel setMessage: NSLocalizedString(@"Select the location where to save the DICOM anonymized files:",nil)];
+	[sPanel setPrompt: NSLocalizedString(@"Anonymize",nil)];
+	[sPanel setTitle: NSLocalizedString(@"Anonymize",nil)];
 	
 	BOOL isDir;
 	NSString *path;
-	if ([sPanel runModalForDirectory:0L file:NSLocalizedString(@"DICOM Export Folder", nil)] == NSFileHandlingPanelOKButton)
+	if ([sPanel runModalForDirectory:nil file:NSLocalizedString(@"DICOM Export Folder", nil)] == NSFileHandlingPanelOKButton)
 	{
 		path = [[sPanel filenames] objectAtIndex:0];
 		
@@ -355,7 +355,7 @@
 	[filesToAnonymize release];
 	filesToAnonymize = nil;
 	[dcmObjects release];
-	dcmObjects = 0L;
+	dcmObjects = nil;
 	
 	[[NSUserDefaults standardUserDefaults] setObject: templates forKey:@"anonymizeTemplate"];
 }

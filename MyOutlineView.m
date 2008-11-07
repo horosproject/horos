@@ -179,6 +179,8 @@
             //to tell them we aren't interested
         
     }
+	
+	return NSDragOperationNone;
 }
 
 - (void)draggingExited:(id <NSDraggingInfo>)sender

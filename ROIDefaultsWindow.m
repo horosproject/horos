@@ -60,7 +60,7 @@
 
 - (NSUInteger)comboBox:(NSComboBox *)aComboBox indexOfItemWithStringValue:(NSString *)aString
 {
-	if( roiNames == 0L) roiNames = [[self generateROINamesArray] retain];
+	if( roiNames == nil) roiNames = [[self generateROINamesArray] retain];
 	
 	long i;
 	
@@ -68,11 +68,13 @@
 	{
 		if( [[roiNames objectAtIndex: i] isEqualToString: aString]) return i;
 	}
+	
+	return 0;
 }
 
 - (NSInteger)numberOfItemsInComboBox:(NSComboBox *)aComboBox
 {
-	if( roiNames == 0L) roiNames = [[self generateROINamesArray] retain];
+	if( roiNames == nil) roiNames = [[self generateROINamesArray] retain];
 	return [roiNames count];
 }
 
@@ -80,7 +82,7 @@
 {
     if ( index > -1 )
     {
-		if( roiNames == 0L) roiNames = [[self generateROINamesArray] retain];
+		if( roiNames == nil) roiNames = [[self generateROINamesArray] retain];
 		return [roiNames objectAtIndex: index];
     }
     

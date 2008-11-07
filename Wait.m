@@ -29,7 +29,7 @@
 {
 	[startTime release];
 	
-	if( session != 0L) [NSApp endModalSession:session];
+	if( session != nil) [NSApp endModalSession:session];
 	
 	[super dealloc];
 }
@@ -110,14 +110,14 @@
 	[[self window] setLevel: NSModalPanelWindowLevel];
 	if( str) [text setStringValue:str];
 	
-	startTime = 0L;
+	startTime = nil;
 	lastTimeFrame = 0;
 	lastTimeFrameUpdate = 0;
-	session = 0L;
+	session = nil;
 	cancel = NO;
 	aborted = NO;
 	openSession = useSession;
-	_target = 0L;
+	_target = nil;
 	firstTime = [NSDate timeIntervalSinceReferenceDate];
 	
 	return self;

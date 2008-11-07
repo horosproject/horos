@@ -58,12 +58,12 @@
 
 -(void) end
 {
-	if( startTime == 0L) return;	// NOT STARTED
+	if( startTime == nil) return;	// NOT STARTED
 	
 	[[self window] orderOut:self];
 	
 	NSLog(@"end");
-	if( session != 0L)
+	if( session != nil)
 	{
 		[NSApp abortModal];
 		[NSApp endModalSession:session];
@@ -75,20 +75,20 @@
 	}
 	
 	[startTime release];
-	startTime = 0L;
+	startTime = nil;
 	
-	session = 0L;
+	session = nil;
 	stop = YES;
 }
 
 -(void) resetLastDuration
 {
-	lastDuration = 0L;
+	lastDuration = 0;
 }
 
 -(void) start
 {
-	if( startTime == 0L)
+	if( startTime == nil)
 	{
 		aborted = NO;
 		stop = NO;
@@ -125,13 +125,13 @@
 -(BOOL) run
 {
 	if( stop) return NO;
-	if( startTime == 0L) return YES;
+	if( startTime == nil) return YES;
 	
 	if( cancel)
 	{
 		NSTimeInterval  thisTime = [NSDate timeIntervalSinceReferenceDate];
 		
-		if( session == 0L) session = [NSApp beginModalSessionForWindow:[self window]];
+		if( session == nil) session = [NSApp beginModalSessionForWindow:[self window]];
 		
 		[NSApp runModalSession:session];
 		
@@ -200,10 +200,10 @@
 {
 	self = [super initWithWindowNibName:@"WaitRendering"];
 	string = [str retain];
-	session = 0L;
+	session = nil;
 	cancel = NO;
 	lastDuration = 0;
-	startTime = 0L;
+	startTime = nil;
 	
 	[[self window] center];
 	[[self window] setLevel: NSModalPanelWindowLevel];

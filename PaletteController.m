@@ -47,7 +47,7 @@ PURPOSE.
 //	{
 //		float r, g, b;
 //	
-//		[[sender color] getRed:&r green:&g blue:&b alpha:0L];
+//		[[sender color] getRed:&r green:&g blue:&b alpha:nil];
 //	
 //		RGBColor c;
 //		
@@ -56,7 +56,7 @@ PURPOSE.
 //		c.blue = b * 65535.;
 //		
 //		[(ROI*) [selectedRois objectAtIndex:i] setColor:c];
-//		[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:[selectedRois objectAtIndex:i] userInfo: 0L];
+//		[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:[selectedRois objectAtIndex:i] userInfo: nil];
 //	}
 //}
 
@@ -88,7 +88,7 @@ PURPOSE.
 //	for( i = 0; i < [selectedRois count]; i++)
 //	{
 //		[(ROI*) [selectedRois objectAtIndex:i] setOpacity:[sender floatValue]];
-//		[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:[selectedRois objectAtIndex:i] userInfo: 0L];
+//		[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:[selectedRois objectAtIndex:i] userInfo: nil];
 //	}
 //	
 //}

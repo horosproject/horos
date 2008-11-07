@@ -318,7 +318,7 @@
 		}
 		else if( [requests count] == 0)
 		{
-			if( closeTimer == 0L)
+			if( closeTimer == nil)
 			{
 				[closeTimer invalidate];
 				[closeTimer release];

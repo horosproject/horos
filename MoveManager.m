@@ -15,7 +15,7 @@
 
 #import "MoveManager.h"
 
-static MoveManager *sharedManager = 0L;
+static MoveManager *sharedManager = nil;
 
 @implementation MoveManager
 

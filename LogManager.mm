@@ -71,7 +71,7 @@ LogManager *currentLogManager;
 	if( [[BrowserController currentBrowser] isNetworkLogsActive])
 	{
 		NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContextLoadIfNecessary: NO];
-		if( context == 0L) return;
+		if( context == nil) return;
 		
 		if( [[BrowserController currentBrowser] isCurrentDatabaseBonjour]) return;
 		
@@ -172,7 +172,7 @@ LogManager *currentLogManager;
 								[_currentLogs setObject:logEntry forKey:uid];
 							}
 							
-							if( logEntry != 0L && [logEntry isDeleted] == NO)
+							if( logEntry != nil && [logEntry isDeleted] == NO)
 							{
 								[logEntry setValue:[NSString stringWithUTF8String: logMessage] forKey:@"message"];
 								[logEntry setValue:[NSNumber numberWithInt: [[NSString stringWithUTF8String: logNumberTotal] intValue]] forKey:@"numberImages"];

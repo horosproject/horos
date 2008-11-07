@@ -35,7 +35,7 @@
 
 - (NSUInteger)comboBox:(NSComboBox *)aComboBox indexOfItemWithStringValue:(NSString *)aString
 {
-	if( roiNames == 0L) roiNames = [curController generateROINamesArray];
+	if( roiNames == nil) roiNames = [curController generateROINamesArray];
 	
 	long i;
 	
@@ -49,7 +49,7 @@
 
 - (NSInteger)numberOfItemsInComboBox:(NSComboBox *)aComboBox
 {
-	if( roiNames == 0L) roiNames = [curController generateROINamesArray];
+	if( roiNames == nil) roiNames = [curController generateROINamesArray];
 	return [roiNames count];
 }
 
@@ -57,7 +57,7 @@
 {
     if ( index > -1 )
     {
-		if( roiNames == 0L) roiNames = [curController generateROINamesArray];
+		if( roiNames == nil) roiNames = [curController generateROINamesArray];
 		return [roiNames objectAtIndex: index];
     }
     
@@ -75,7 +75,7 @@
 	[panel setCanSelectHiddenExtension:NO];
 	[panel setRequiredFileType:@"roi"];
 	
-	if( [panel runModalForDirectory:0L file:[[selectedROIs objectAtIndex:0] name]] == NSFileHandlingPanelOKButton)
+	if( [panel runModalForDirectory:nil file:[[selectedROIs objectAtIndex:0] name]] == NSFileHandlingPanelOKButton)
 	{
 		[NSArchiver archiveRootObject: selectedROIs toFile :[panel filename]];
 	}
@@ -85,7 +85,7 @@
 {
     [[NSNotificationCenter defaultCenter] removeObserver: self];
 	[previousName release];
-	previousName = 0L;
+	previousName = nil;
 	
 	[super dealloc];
 }
@@ -94,7 +94,7 @@
 {
 	if( [note object] == curController)
 	{
-		[self windowWillClose: 0L];
+		[self windowWillClose: nil];
 	}
 }
 
@@ -102,7 +102,7 @@
 {
 	if( [note object] == curROI)
 	{
-		[self windowWillClose: 0L];
+		[self windowWillClose: nil];
 	}
 }
 
@@ -137,7 +137,7 @@
 			[loopItem setPixelSpacingY: newResolution];
 		}
 		
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"recomputeROI" object:curController userInfo: 0L];
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"recomputeROI" object:curController userInfo: nil];
 	}
 	
     [NSApp endSheet:recalibrateWindow];
@@ -161,7 +161,7 @@
 	[curROI setComments: [NSString stringWithString: [comments string]]];	// stringWithString is very important - see NSText string !
 	[curROI setName: [name stringValue]];
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:curROI userInfo: 0L];
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:curROI userInfo: nil];
 
 	curController = c;
 	curROI = iroi;
@@ -216,7 +216,7 @@
 	
 	getName = [[NSTimer scheduledTimerWithTimeInterval: 0.1 target:self selector:@selector( getName:) userInfo:0 repeats: YES] retain];
 	
-	roiNames = 0L;
+	roiNames = nil;
 	
 	[self setROI: iroi :c];
 		
@@ -227,15 +227,15 @@
 {
 	[getName invalidate];
 	[getName release];
-	getName = 0L;
+	getName = nil;
 	
 	[ROI saveDefaultSettings];
 	
 	[curROI setComments: [NSString stringWithString: [comments string]]]; 	// stringWithString is very important - see NSText string !
 	[curROI setName: [name stringValue]];
-	curROI = 0L;
+	curROI = nil;
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:curROI userInfo: 0L];
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:curROI userInfo: nil];
 	
 	[self release];
 }
@@ -256,7 +256,7 @@
 				[roi setThickness: [iROI thickness]];
 				[roi setOpacity: [iROI opacity]];
 				if ( newName ) [roi setName: newName];
-				[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:roi userInfo: 0L];
+				[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:roi userInfo: nil];
 			}
 		}
 	}
@@ -283,7 +283,7 @@
 	}
 	[[curController imageView] setNeedsDisplay: YES];
 	
-	[self windowWillClose: 0L];
+	[self windowWillClose: nil];
 }
 
 - (IBAction) setTextData:(id) sender
@@ -291,13 +291,13 @@
 	if ( [self allWithSameName] ) [self setAllMatchingROIsToSameParamsAs: curROI withNewName: [sender stringValue]];
 	
 	[curROI setName: [sender stringValue]];
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:curROI userInfo: 0L];
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:curROI userInfo: nil];
 }
 
 - (IBAction) setThickness:(NSSlider*) sender
 {
 	[curROI setThickness: [sender floatValue]];
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:curROI userInfo: 0L];
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:curROI userInfo: nil];
 	
 	if ( [self allWithSameName] ) [self setAllMatchingROIsToSameParamsAs: curROI withNewName: [curROI name]];
 }
@@ -305,7 +305,7 @@
 - (IBAction) setOpacity:(NSSlider*) sender
 {
 	[curROI setOpacity: [sender floatValue]];
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:curROI userInfo: 0L];
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:curROI userInfo: nil];
 	
 	if ( [self allWithSameName] ) [self setAllMatchingROIsToSameParamsAs: curROI withNewName: [curROI name]];
 }
@@ -316,7 +316,7 @@
 	
 	CGFloat r, g, b;
 	
-	[[sender color] getRed:&r green:&g blue:&b alpha:0L];
+	[[sender color] getRed:&r green:&g blue:&b alpha:nil];
 	
 	RGBColor c;
 	
@@ -325,11 +325,11 @@
 	c.blue = b * 65535.;
 	
 	[curROI setColor:c];
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:curROI userInfo: 0L];
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:curROI userInfo: nil];
 	
 	if ( [self allWithSameName] ) [self setAllMatchingROIsToSameParamsAs: curROI withNewName: [curROI name]];
 
-	[comments setTextColor:0L];
+	[comments setTextColor:nil];
 }
 
 - (IBAction) exportData:(id) sender
@@ -351,7 +351,7 @@
 	[panel setCanSelectHiddenExtension:NO];
 	[panel setRequiredFileType:@"xml"];
 	
-	if( [panel runModalForDirectory:0L file:[curROI name]] == NSFileHandlingPanelOKButton)
+	if( [panel runModalForDirectory:nil file:[curROI name]] == NSFileHandlingPanelOKButton)
 	{
 		NSMutableDictionary *xml;
 		NSMutableArray		*points, *temp;
@@ -440,7 +440,7 @@
 	
 	if( found == NO)
 	{
-		if( [[curROI points] count] > 0L)
+		if( [[curROI points] count] > 0)
 		{
 			HistoWindow* roiWin = [[HistoWindow alloc] initWithROI: curROI];
 			[roiWin showWindow:self];

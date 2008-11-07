@@ -43,7 +43,7 @@ static NSString *StudyDescription = @"StudyDescription";
 static NSString *PatientBirthDate = @"PatientBirthDate";
 static NSString *Modality = @"Modality";
 
-static QueryController	*currentQueryController = 0L;
+static QueryController	*currentQueryController = nil;
 
 static const char *GetPrivateIP()
 {
@@ -63,8 +63,8 @@ static const char *GetPrivateIP()
 
 + (NSArray*) queryStudyInstanceUID:(NSString*) an server: (NSDictionary*) aServer
 {
-	QueryArrayController *qm = 0L;
-	NSArray *array = 0L;
+	QueryArrayController *qm = nil;
+	NSArray *array = nil;
 	
 	@try
 	{
@@ -73,7 +73,7 @@ static const char *GetPrivateIP()
 		NSString *hostname = [aServer objectForKey:@"Address"];
 		NSString *port = [aServer objectForKey:@"Port"];
 		
-		qm = [[[QueryArrayController alloc] initWithCallingAET:myAET calledAET:theirAET  hostName:hostname port:port netService:0L] autorelease];
+		qm = [[[QueryArrayController alloc] initWithCallingAET:myAET calledAET:theirAET  hostName:hostname port:port netService:nil] autorelease];
 		
 		NSString *filterValue = [an stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 		
@@ -100,7 +100,7 @@ static const char *GetPrivateIP()
 
 + (int) queryAndRetrieveAccessionNumber:(NSString*) an server: (NSDictionary*) aServer
 {
-	QueryArrayController *qm = 0L;
+	QueryArrayController *qm = nil;
 	int error = 0;
 	
 	@try
@@ -110,7 +110,7 @@ static const char *GetPrivateIP()
 		NSString *hostname = [aServer objectForKey:@"Address"];
 		NSString *port = [aServer objectForKey:@"Port"];
 
-		qm = [[QueryArrayController alloc] initWithCallingAET:myAET calledAET:theirAET  hostName:hostname port:port netService:0L];
+		qm = [[QueryArrayController alloc] initWithCallingAET:myAET calledAET:theirAET  hostName:hostname port:port netService:nil];
 		
 		NSString *filterValue = [an stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 		
@@ -202,7 +202,7 @@ static const char *GetPrivateIP()
 //		else
 //		{
 //			NSAlert* alert = [NSAlert new];
-//			[alert setMessageText: NSLocalizedString(@"Auto-Retrieving", 0L)];
+//			[alert setMessageText: NSLocalizedString(@"Auto-Retrieving", nil)];
 //			[alert setInformativeText: NSLocalizedString(@"Are you sure that you want to activate the Auto-Retrieving function : each study displayed in the Query & Retrieve list will be automatically retrieved to destination computer.\r\r(Only 10 studies is retrieved each time. Next 10 studies during next 'refresh'.)", nil)];
 //			[alert setShowsSuppressionButton:YES ];
 //			[alert addButtonWithTitle: NSLocalizedString(@"Yes", nil)];
@@ -251,7 +251,7 @@ static const char *GetPrivateIP()
 		
 		NSDictionary *savedPresets = [[NSUserDefaults standardUserDefaults] dictionaryForKey:@"QRPresets"];
 		
-		if( savedPresets == 0L) savedPresets = [NSDictionary dictionary];
+		if( savedPresets == nil) savedPresets = [NSDictionary dictionary];
 		
 		NSMutableDictionary *presets = [NSMutableDictionary dictionary];
 		
@@ -271,7 +271,7 @@ static const char *GetPrivateIP()
 			
 			[presets setValue: srcArray forKey: @"DICOMNodes"];
 			
-			psName = [psName stringByAppendingString: NSLocalizedString( @" & DICOM Nodes", 0L)];
+			psName = [psName stringByAppendingString: NSLocalizedString( @" & DICOM Nodes", nil)];
 		}
 		
 		if( [savedPresets objectForKey: psName])
@@ -472,16 +472,16 @@ static const char *GetPrivateIP()
 	
 	[menu setAutoenablesItems: NO];
 	
-	[menu addItemWithTitle: @"" action:0L keyEquivalent: @""];
+	[menu addItemWithTitle: @"" action:nil keyEquivalent: @""];
 	
 	NSDictionary *savedPresets = [[NSUserDefaults standardUserDefaults] dictionaryForKey:@"QRPresets"];
 	
-	[menu addItemWithTitle: NSLocalizedString( @"Empty Preset", 0L) action:@selector( emptyPreset:) keyEquivalent:@""];
+	[menu addItemWithTitle: NSLocalizedString( @"Empty Preset", nil) action:@selector( emptyPreset:) keyEquivalent:@""];
 	[menu addItem: [NSMenuItem separatorItem]];
 	
 	if( [savedPresets count] == 0)
 	{
-		[[menu addItemWithTitle: NSLocalizedString( @"No Presets Saved", 0L) action:0L keyEquivalent: @""] setEnabled: NO];
+		[[menu addItemWithTitle: NSLocalizedString( @"No Presets Saved", nil) action:nil keyEquivalent: @""] setEnabled: NO];
 	}
 	else
 	{
@@ -492,7 +492,7 @@ static const char *GetPrivateIP()
 	}
 	
 	[menu addItem: [NSMenuItem separatorItem]];
-	[menu addItemWithTitle: NSLocalizedString( @"Add current settings as a new Preset", 0L) action:@selector( addPreset:) keyEquivalent:@""];
+	[menu addItemWithTitle: NSLocalizedString( @"Add current settings as a new Preset", nil) action:@selector( addPreset:) keyEquivalent:@""];
 }
 
 - (BOOL)validateMenuItem:(NSMenuItem *)item
@@ -542,7 +542,7 @@ static const char *GetPrivateIP()
 			if( [studyArray count] > 0)
 			{
 				NSManagedObject	*series =  [[[BrowserController currentBrowser] childrenArray: [studyArray objectAtIndex: 0]] objectAtIndex:0];
-				[[BrowserController currentBrowser] findAndSelectFile:0L image:[[series valueForKey:@"images"] anyObject] shouldExpand:NO extendingSelection: extendingSelection];
+				[[BrowserController currentBrowser] findAndSelectFile:nil image:[[series valueForKey:@"images"] anyObject] shouldExpand:NO extendingSelection: extendingSelection];
 				extendingSelection = YES;
 			}
 		} 
@@ -600,7 +600,7 @@ static const char *GetPrivateIP()
 	if( DatabaseIsEdited == NO)
 	{
 		[studyArrayInstanceUID release];
-		studyArrayInstanceUID = 0L;
+		studyArrayInstanceUID = nil;
 		[outlineView reloadData];
 	}
 }
@@ -659,10 +659,10 @@ static const char *GetPrivateIP()
 
 - (NSArray*) localSeries:(id) item
 {
-	NSArray *seriesArray = 0L;
+	NSArray *seriesArray = nil;
 	NSManagedObject *study = [[self localStudy: [outlineView parentForItem: item]] lastObject];
 	
-	if( [item isMemberOfClass:[DCMTKSeriesQueryNode class]] == YES && study != 0L)
+	if( [item isMemberOfClass:[DCMTKSeriesQueryNode class]] == YES && study != nil)
 	{
 		NSManagedObjectContext		*context = [[BrowserController currentBrowser] managedObjectContext];
 		
@@ -685,9 +685,9 @@ static const char *GetPrivateIP()
 
 - (void) computeStudyArrayInstanceUID
 {
-	if( lastComputeStudyArrayInstanceUID == 0L || studyArrayInstanceUID == 0L || [NSDate timeIntervalSinceReferenceDate] - lastComputeStudyArrayInstanceUID > 1)
+	if( lastComputeStudyArrayInstanceUID == 0 || studyArrayInstanceUID == 0 || [NSDate timeIntervalSinceReferenceDate] - lastComputeStudyArrayInstanceUID > 1)
 	{
-		NSError						*error = 0L;
+		NSError						*error = nil;
 		NSFetchRequest				*request = [[[NSFetchRequest alloc] init] autorelease];
 		NSManagedObjectContext		*context = [[BrowserController currentBrowser] managedObjectContext];
 		NSPredicate					*predicate = [NSPredicate predicateWithValue: YES];
@@ -726,7 +726,7 @@ static const char *GetPrivateIP()
 	{
 		@try
 		{
-			if( studyArrayInstanceUID == 0L) [self computeStudyArrayInstanceUID];
+			if( studyArrayInstanceUID == nil) [self computeStudyArrayInstanceUID];
 			
 			NSUInteger index = [studyArrayInstanceUID indexOfObject:[item valueForKey: @"uid"]];
 			
@@ -736,12 +736,12 @@ static const char *GetPrivateIP()
 		@catch (NSException * e)
 		{
 			[studyArrayInstanceUID release];
-			studyArrayInstanceUID = 0L;
-			return 0L;
+			studyArrayInstanceUID = nil;
+			return nil;
 		}
 	}
 	
-	return 0L;
+	return nil;
 }
 
 - (NSString *)outlineView:(NSOutlineView *)ov toolTipForCell:(NSCell *)cell rect:(NSRectPointer)rect tableColumn:(NSTableColumn *)tableColumn item:(id)item mouseLocation:(NSPoint)mouseLocation;
@@ -813,7 +813,7 @@ static const char *GetPrivateIP()
 
 				[(ImageAndTextCell *)cell setImage:[NSImage pieChartImageWithPercentage:percentage]];
 			}
-			else [(ImageAndTextCell *)cell setImage: 0L];
+			else [(ImageAndTextCell *)cell setImage: nil];
 		}
 		else if( [item isMemberOfClass:[DCMTKSeriesQueryNode class]] == YES)
 		{
@@ -832,9 +832,9 @@ static const char *GetPrivateIP()
 				
 				[(ImageAndTextCell *)cell setImage:[NSImage pieChartImageWithPercentage:percentage]];
 			}
-			else [(ImageAndTextCell *)cell setImage: 0L];
+			else [(ImageAndTextCell *)cell setImage: nil];
 		}
-		else [(ImageAndTextCell *)cell setImage: 0L];
+		else [(ImageAndTextCell *)cell setImage: nil];
 		
 		[cell setFont: [NSFont boldSystemFontOfSize:13]];
 		[cell setLineBreakMode: NSLineBreakByTruncatingMiddle];
@@ -857,7 +857,7 @@ static const char *GetPrivateIP()
 			if( [studyArray count] > 0)
 			{
 				if( [[[studyArray objectAtIndex: 0] valueForKey:@"stateText"] intValue] == 0)
-					return 0L;
+					return nil;
 				else
 					return [[studyArray objectAtIndex: 0] valueForKey: @"stateText"];
 			}
@@ -868,7 +868,7 @@ static const char *GetPrivateIP()
 			if( [seriesArray count])
 			{
 				if( [[[seriesArray objectAtIndex: 0] valueForKey:@"stateText"] intValue] == 0)
-					return 0L;
+					return nil;
 				else
 					return [[seriesArray objectAtIndex: 0] valueForKey: @"stateText"];
 			}
@@ -890,7 +890,7 @@ static const char *GetPrivateIP()
 				return [[seriesArray objectAtIndex: 0] valueForKey: @"comment"];
 		}
 	}
-	else if ( [[tableColumn identifier] isEqualToString: @"Button"] == NO && [tableColumn identifier] != 0L)
+	else if ( [[tableColumn identifier] isEqualToString: @"Button"] == NO && [tableColumn identifier] != nil)
 	{
 		if( [[tableColumn identifier] isEqualToString: @"numberImages"])
 		{
@@ -1197,7 +1197,7 @@ static const char *GetPrivateIP()
 					
 					if (queryItem)
 					{						
-						[self performQuery: 0L];
+						[self performQuery: nil];
 					}
 					// if filter is empty and there is no date the query may be prolonged and fail. Ask first. Don't run if cancelled
 					else
@@ -1217,7 +1217,7 @@ static const char *GetPrivateIP()
 								else
 								{
 									NSAlert* alert = [NSAlert new];
-									[alert setMessageText: NSLocalizedString(@"Query", 0L)];
+									[alert setMessageText: NSLocalizedString(@"Query", nil)];
 									[alert setInformativeText: NSLocalizedString(@"No query parameters provided. The query may take a long time.", nil)];
 									[alert setShowsSuppressionButton:YES ];
 									[alert addButtonWithTitle: NSLocalizedString(@"Continue", nil)];
@@ -1237,7 +1237,7 @@ static const char *GetPrivateIP()
 						
 						if( doit)
 						{
-							[self performQuery: 0L];
+							[self performQuery: nil];
 						}
 						else i = [sourcesArray count];
 					}
@@ -1267,7 +1267,7 @@ static const char *GetPrivateIP()
 //				{
 //					NSString	*response = [NSString stringWithFormat: @"%@  /  %@:%d\r\r", theirAET, hostname, [port intValue]];
 //				
-//					response = [response stringByAppendingString:NSLocalizedString(@"Connection failed to this DICOM node (c-echo failed)", 0L)];
+//					response = [response stringByAppendingString:NSLocalizedString(@"Connection failed to this DICOM node (c-echo failed)", nil)];
 //					
 //					NSRunCriticalAlertPanel( NSLocalizedString(@"Query Error", nil), response, NSLocalizedString(@"Continue", nil), nil, nil) ;
 //				}
@@ -1278,7 +1278,7 @@ static const char *GetPrivateIP()
 				{
 					NSString	*response = [NSString stringWithFormat: @"%@  /  %@:%d\r\r", theirAET, hostname, [port intValue]];
 				
-					response = [response stringByAppendingString:NSLocalizedString(@"Connection failed to this DICOM node (ping failed)", 0L)];
+					response = [response stringByAppendingString:NSLocalizedString(@"Connection failed to this DICOM node (ping failed)", nil)];
 				
 					NSRunCriticalAlertPanel( NSLocalizedString(@"Query Error", nil), response, NSLocalizedString(@"Continue", nil), nil, nil) ;
 					
@@ -1484,9 +1484,9 @@ static const char *GetPrivateIP()
 			}
 			NSLog( @"-------");
 			
-			NSString *desc = [NSString stringWithFormat: NSLocalizedString( @"Will auto-retrieve %d studies", 0L), [selectedItems count]];
+			NSString *desc = [NSString stringWithFormat: NSLocalizedString( @"Will auto-retrieve %d studies", nil), [selectedItems count]];
 			
-			[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Q&R Auto-Retrieve", 0L) description: desc name: @"newfiles"];
+			[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Q&R Auto-Retrieve", nil) description: desc name: @"newfiles"];
 		}
 		else
 		{
@@ -1503,7 +1503,7 @@ static const char *GetPrivateIP()
 		[self performSelectorOnMainThread: @selector( displayAndRetrieveQueryResults) withObject:0 waitUntilDone: NO];
 	else
 	{
-		[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Q&R Auto-Retrieve", 0L) description: @"Failed..." name: @"newfiles"];
+		[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Q&R Auto-Retrieve", nil) description: @"Failed..." name: @"newfiles"];
 	}
 	
 	[pool release];
@@ -1519,9 +1519,9 @@ static const char *GetPrivateIP()
 			{
 				if( [autoQueryLock tryLock])
 				{
-					[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Q&R Auto-Query", 0L) description: NSLocalizedString( @"Refreshing...", 0L) name: @"newfiles"];
+					[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Q&R Auto-Query", nil) description: NSLocalizedString( @"Refreshing...", nil) name: @"newfiles"];
 					
-					[NSThread detachNewThreadSelector: @selector( autoQueryThread) toTarget: self withObject: 0L];
+					[NSThread detachNewThreadSelector: @selector( autoQueryThread) toTarget: self withObject: nil];
 					
 					autoQueryRemainingSecs = 60*[[NSUserDefaults standardUserDefaults] integerForKey: @"autoRefreshQueryResults"]; 
 					
@@ -1545,7 +1545,7 @@ static const char *GetPrivateIP()
 		autoQueryRemainingSecs = 60*[[NSUserDefaults standardUserDefaults] integerForKey: @"autoRefreshQueryResults"];
 		[autoQueryCounter setStringValue: [NSString stringWithFormat: @"%2.2d:%2.2d", (int) (autoQueryRemainingSecs/60), (int) (autoQueryRemainingSecs%60)]];
 		
-		QueryTimer = [[NSTimer scheduledTimerWithTimeInterval: 1 target:self selector:@selector( autoQueryTimerFunction:) userInfo:0L repeats:YES] retain];
+		QueryTimer = [[NSTimer scheduledTimerWithTimeInterval: 1 target:self selector:@selector( autoQueryTimerFunction:) userInfo:nil repeats:YES] retain];
 	}
 	else
 	{
@@ -1553,7 +1553,7 @@ static const char *GetPrivateIP()
 		
 		[QueryTimer invalidate];
 		[QueryTimer release];
-		QueryTimer = 0L;
+		QueryTimer = nil;
 	}
 }
 
@@ -1606,7 +1606,7 @@ static const char *GetPrivateIP()
 			}
 			else
 			{
-				WaitRendering *wait = 0L;
+				WaitRendering *wait = nil;
 				
 				if( showGUI)
 				{
@@ -1708,7 +1708,7 @@ static const char *GetPrivateIP()
 		[dictionary setObject:[object valueForKey:@"port"] forKey:@"port"];
 		[dictionary setObject:[object valueForKey:@"transferSyntax"] forKey:@"transferSyntax"];
 
-		NSDictionary	*dstDict = 0L;
+		NSDictionary	*dstDict = nil;
 		
 		if( [sendToPopup indexOfSelectedItem] != 0)
 		{
@@ -1752,7 +1752,7 @@ static const char *GetPrivateIP()
 	
 	[[BrowserController currentBrowser] checkIncoming: self];
 	
-	NSError						*error = 0L;
+	NSError						*error = nil;
 	NSFetchRequest				*request = [[[NSFetchRequest alloc] init] autorelease];
 	NSManagedObjectContext		*context = [[BrowserController currentBrowser] managedObjectContext];
 	
@@ -1776,10 +1776,10 @@ static const char *GetPrivateIP()
 				NSManagedObject	*study = [studyArray objectAtIndex: 0];
 				NSManagedObject	*series =  [[[BrowserController currentBrowser] childrenArray: study] objectAtIndex:0];
 				
-				if( [[BrowserController currentBrowser] findAndSelectFile:0L image:[[series valueForKey:@"images"] anyObject] shouldExpand:NO] == NO)
+				if( [[BrowserController currentBrowser] findAndSelectFile:nil image:[[series valueForKey:@"images"] anyObject] shouldExpand:NO] == NO)
 				{
 					[[BrowserController currentBrowser] showEntireDatabase];
-					if( [[BrowserController currentBrowser] findAndSelectFile:0L image:[[series valueForKey:@"images"] anyObject] shouldExpand:NO]) success = YES;
+					if( [[BrowserController currentBrowser] findAndSelectFile:nil image:[[series valueForKey:@"images"] anyObject] shouldExpand:NO]) success = YES;
 				}
 				else success = YES;
 				
@@ -1806,7 +1806,7 @@ static const char *GetPrivateIP()
 				[[BrowserController currentBrowser] openViewerFromImages: [NSArray arrayWithObject: [[BrowserController currentBrowser] childrenArray: series]] movie: nil viewer :nil keyImagesOnly:NO];
 				
 				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
-					[NSApp sendAction: @selector(tileWindows:) to:0L from: self];
+					[NSApp sendAction: @selector(tileWindows:) to:nil from: self];
 				else
 					[[AppController sharedAppController] checkAllWindowsAreVisible: self makeKey: YES];
 					
@@ -1865,7 +1865,7 @@ static const char *GetPrivateIP()
 	if ( [m length])
 		modalityQueryFilter = [[QueryFilter queryFilterWithObject:m ofSearchType:searchExactMatch  forKey:@"ModalitiesinStudy"] retain];
 	else
-		modalityQueryFilter = [[QueryFilter queryFilterWithObject: 0L ofSearchType:searchExactMatch  forKey:@"ModalitiesinStudy"] retain];
+		modalityQueryFilter = [[QueryFilter queryFilterWithObject: nil ofSearchType:searchExactMatch  forKey:@"ModalitiesinStudy"] retain];
 }
 
 
@@ -1873,7 +1873,7 @@ static const char *GetPrivateIP()
 {
 	[dateQueryFilter release];
 	[timeQueryFilter release];
-	timeQueryFilter = 0L;
+	timeQueryFilter = nil;
 	
 	if( [sender selectedTag] == 5)
 	{
@@ -1892,7 +1892,7 @@ static const char *GetPrivateIP()
 		[fromDate setEnabled: NO];
 		[toDate setEnabled: NO];
 		
-		DCMCalendarDate *date = 0L;
+		DCMCalendarDate *date = nil;
 		
 		int searchType = searchAfter;
 		
@@ -2097,7 +2097,7 @@ static const char *GetPrivateIP()
 			}
 	}
 	
-	return 0L;
+	return nil;
 }
 
 - (void) refreshSources
@@ -2116,9 +2116,9 @@ static const char *GetPrivateIP()
 	{
 		NSDictionary *server = [self findCorrespondingServer: [savedArray objectAtIndex:i] inServers: serversArray];
 		
-		if( server && ([[server valueForKey:@"QR"] boolValue] == YES || [server valueForKey:@"QR"] == 0L ))
+		if( server && ([[server valueForKey:@"QR"] boolValue] == YES || [server valueForKey:@"QR"] == nil ))
 		{
-			[sourcesArray addObject: [NSMutableDictionary dictionaryWithObjectsAndKeys:[[savedArray objectAtIndex: i] valueForKey:@"activated"], @"activated", [server valueForKey:@"Description"], @"name", [server valueForKey:@"AETitle"], @"AETitle", [NSString stringWithFormat:@"%@:%@", [server valueForKey:@"Address"], [server valueForKey:@"Port"]], @"AddressAndPort", server, @"server", 0L]];
+			[sourcesArray addObject: [NSMutableDictionary dictionaryWithObjectsAndKeys:[[savedArray objectAtIndex: i] valueForKey:@"activated"], @"activated", [server valueForKey:@"Description"], @"name", [server valueForKey:@"AETitle"], @"AETitle", [NSString stringWithFormat:@"%@:%@", [server valueForKey:@"Address"], [server valueForKey:@"Port"]], @"AddressAndPort", server, @"server", nil]];
 			
 			[serversArray removeObject: server];
 		}
@@ -2130,9 +2130,9 @@ static const char *GetPrivateIP()
 		
 		NSLog( [server description]);
 		
-		if( ([[server valueForKey:@"QR"] boolValue] == YES || [server valueForKey:@"QR"] == 0L ))
+		if( ([[server valueForKey:@"QR"] boolValue] == YES || [server valueForKey:@"QR"] == nil ))
 		
-			[sourcesArray addObject: [NSMutableDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool: NO], @"activated", [server valueForKey:@"Description"], @"name", [server valueForKey:@"AETitle"], @"AETitle", [NSString stringWithFormat:@"%@:%@", [server valueForKey:@"Address"], [server valueForKey:@"Port"]], @"AddressAndPort", server, @"server", 0L]];
+			[sourcesArray addObject: [NSMutableDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool: NO], @"activated", [server valueForKey:@"Description"], @"name", [server valueForKey:@"AETitle"], @"AETitle", [NSString stringWithFormat:@"%@:%@", [server valueForKey:@"Address"], [server valueForKey:@"Port"]], @"AddressAndPort", server, @"server", nil]];
 	}
 	
 	[sourcesTable reloadData];
@@ -2148,7 +2148,7 @@ static const char *GetPrivateIP()
 	serversArray = [[[DCMNetServiceDelegate DICOMServersList] mutableCopy] autorelease];
 	
 	NSString *ip = [NSString stringWithCString:GetPrivateIP()];
-	[sendToPopup addItemWithTitle: [NSString stringWithFormat: NSLocalizedString( @"This Computer - %@/%@:%@", 0L), [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"], ip, [[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"]]];
+	[sendToPopup addItemWithTitle: [NSString stringWithFormat: NSLocalizedString( @"This Computer - %@/%@:%@", nil), [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"], ip, [[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"]]];
 
 	[[sendToPopup menu] addItem: [NSMenuItem separatorItem]];
 	
@@ -2173,13 +2173,13 @@ static const char *GetPrivateIP()
 			NSRunCriticalAlertPanel(NSLocalizedString(@"DICOM Query & Retrieve",nil),NSLocalizedString( @"No DICOM locations available. See Preferences to add DICOM locations.",nil),NSLocalizedString( @"OK",nil), nil, nil);
 		}
 		
-		queryFilters = 0L;
-		dateQueryFilter = 0L;
-		timeQueryFilter = 0L;
-		modalityQueryFilter = 0L;
-		currentQueryKey = 0L;
-		echoSuccess = 0L;
-		activeMoves = 0L;
+		queryFilters = nil;
+		dateQueryFilter = nil;
+		timeQueryFilter = nil;
+		modalityQueryFilter = nil;
+		currentQueryKey = nil;
+		echoSuccess = nil;
+		activeMoves = nil;
 		
 //		partiallyInDatabase = [[NSImage imageNamed:@"QRpartiallyInDatabase.tif"] retain];
 //		alreadyInDatabase = [[NSImage imageNamed:@"QRalreadyInDatabase.tif"] retain];
@@ -2193,7 +2193,7 @@ static const char *GetPrivateIP()
 //		displayLock = [[NSLock alloc] init];
 		
 		sourcesArray = [[[NSUserDefaults standardUserDefaults] objectForKey: @"SavedQueryArray"] mutableCopy];
-		if( sourcesArray == 0L) sourcesArray = [[NSMutableArray array] retain];
+		if( sourcesArray == nil) sourcesArray = [[NSMutableArray array] retain];
 		
 		[self refreshSources];
 				
@@ -2221,7 +2221,7 @@ static const char *GetPrivateIP()
 	NSLog( @"dealloc QueryController");
 	[NSObject cancelPreviousPerformRequestsWithTarget: pressedKeys];
 	[pressedKeys release];
-	[fromDate setDateValue: [NSCalendarDate dateWithYear:[[NSCalendarDate date] yearOfCommonEra] month:[[NSCalendarDate date] monthOfYear] day:[[NSCalendarDate date] dayOfMonth] hour:0 minute:0 second:0 timeZone: 0L]];
+	[fromDate setDateValue: [NSCalendarDate dateWithYear:[[NSCalendarDate date] yearOfCommonEra] month:[[NSCalendarDate date] monthOfYear] day:[[NSCalendarDate date] dayOfMonth] hour:0 minute:0 second:0 timeZone: nil]];
 	[queryManager release];
 	[queryFilters release];
 	[dateQueryFilter release];
@@ -2237,13 +2237,13 @@ static const char *GetPrivateIP()
 	
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[studyArrayCache release];
-	studyArrayCache = 0L;
+	studyArrayCache = nil;
 	[studyArrayInstanceUID release];
-	studyArrayInstanceUID = 0L;
+	studyArrayInstanceUID = nil;
 	
 	[super dealloc];
 	
-	currentQueryController = 0L;
+	currentQueryController = nil;
 }
 
 - (void)windowDidLoad
@@ -2279,18 +2279,18 @@ static const char *GetPrivateIP()
 	NSMenu *menu = [[[NSMenu alloc] initWithTitle:@"Tools"] autorelease];
 	NSMenuItem *item;
 	
-	item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Retrieve the images", 0L) action: @selector( retrieve:) keyEquivalent:@""] autorelease];
+	item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Retrieve the images", nil) action: @selector( retrieve:) keyEquivalent:@""] autorelease];
 	[item setTarget: self];		[menu addItem: item];
 
-	item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Retrieve and display the images", 0L) action: @selector( retrieveAndView:) keyEquivalent:@""] autorelease];
+	item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Retrieve and display the images", nil) action: @selector( retrieveAndView:) keyEquivalent:@""] autorelease];
 	[item setTarget: self];		[menu addItem: item];
 	
-	item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Query all studies of this patient", 0L) action: @selector( querySelectedStudy:) keyEquivalent:@""] autorelease];
+	item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Query all studies of this patient", nil) action: @selector( querySelectedStudy:) keyEquivalent:@""] autorelease];
 	[item setTarget: self];		[menu addItem: item];
 	
 	[menu addItem: [NSMenuItem separatorItem]];
 	
-	item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Delete the local images", 0L) action: @selector( deleteSelection:) keyEquivalent:@""] autorelease];
+	item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Delete the local images", nil) action: @selector( deleteSelection:) keyEquivalent:@""] autorelease];
 	[item setTarget: self];		[menu addItem: item];
 	
 	[outlineView setMenu: menu];
@@ -2313,8 +2313,8 @@ static const char *GetPrivateIP()
 	[buttonCell setBezelStyle: NSRoundRectBezelStyle]; // was NSRegularSquareBezelStyle
 	[tableColumn setDataCell:buttonCell];
 	
-	[fromDate setDateValue: [NSCalendarDate dateWithYear:[[NSCalendarDate date] yearOfCommonEra] month:[[NSCalendarDate date] monthOfYear] day:[[NSCalendarDate date] dayOfMonth] hour:0 minute:0 second:0 timeZone: 0L]];
-	[toDate setDateValue: [NSCalendarDate dateWithYear:[[NSCalendarDate date] yearOfCommonEra] month:[[NSCalendarDate date] monthOfYear] day:[[NSCalendarDate date] dayOfMonth] hour:0 minute:0 second:0 timeZone: 0L]];
+	[fromDate setDateValue: [NSCalendarDate dateWithYear:[[NSCalendarDate date] yearOfCommonEra] month:[[NSCalendarDate date] monthOfYear] day:[[NSCalendarDate date] dayOfMonth] hour:0 minute:0 second:0 timeZone: nil]];
+	[toDate setDateValue: [NSCalendarDate dateWithYear:[[NSCalendarDate date] yearOfCommonEra] month:[[NSCalendarDate date] monthOfYear] day:[[NSCalendarDate date] dayOfMonth] hour:0 minute:0 second:0 timeZone: nil]];
 	
 }
 

@@ -48,8 +48,8 @@
 		if (![httpServ start:&error])
 		{
 			NSLog(@"Error starting HTTP XMLRPC Server: %@", error);
-			NSRunCriticalAlertPanel( NSLocalizedString(@"HTTP XMLRPC Server Error", 0L),  [NSString stringWithFormat: NSLocalizedString(@"Error starting HTTP XMLRPC Server: %@", 0L), error], NSLocalizedString(@"OK",nil), nil, nil);
-			httpServ = 0L;
+			NSRunCriticalAlertPanel( NSLocalizedString(@"HTTP XMLRPC Server Error", nil),  [NSString stringWithFormat: NSLocalizedString(@"Error starting HTTP XMLRPC Server: %@", nil), error], NSLocalizedString(@"OK",nil), nil, nil);
+			httpServ = nil;
 		}
 		else
 		{
@@ -139,7 +139,7 @@
 					ipAddressString = [NSString stringWithCString:buffer];
 			}
 			
-			NSMutableDictionary	*httpServerMessage = [NSMutableDictionary dictionaryWithObjectsAndKeys: selName, @"MethodName", doc, @"NSXMLDocument", [NSNumber numberWithBool: NO], @"Processed", ipAddressString, @"peerAddress", 0L];
+			NSMutableDictionary	*httpServerMessage = [NSMutableDictionary dictionaryWithObjectsAndKeys: selName, @"MethodName", doc, @"NSXMLDocument", [NSNumber numberWithBool: NO], @"Processed", ipAddressString, @"peerAddress", nil];
 			
 			#pragma mark DisplayStudy
 			
@@ -186,8 +186,8 @@
 					
 					// *****
 					
-					NSString *listOfElements = 0L;
-					NSNumber *ret = 0L;
+					NSString *listOfElements = nil;
+					NSNumber *ret = nil;
 					
 					if ([selName isEqual:@"DisplayStudy"])
 					{
@@ -262,7 +262,7 @@
 					
 					// *****
 					
-					NSString *listOfElements = 0L;
+					NSString *listOfElements = nil;
 					
 					NSNumber *ret = [NSNumber numberWithInt: [[BrowserController currentBrowser]	findObject:	[paramDict valueForKey:@"request"]
 																									table: [paramDict valueForKey:@"table"]
@@ -732,7 +732,7 @@
 					// *****
 					
 					NSArray *sources = [DCMNetServiceDelegate DICOMServersList];
-					NSDictionary *sourceServer = 0L;
+					NSDictionary *sourceServer = nil;
 					NSNumber *ret = [NSNumber numberWithInt: 0];
 					
 					for( NSDictionary *s in sources)

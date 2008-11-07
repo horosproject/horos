@@ -41,7 +41,7 @@
 @implementation NSFont (withay_OpenGL)
 
 static  BOOL					openGLLoggingEnabled = YES;
-static  NSMutableArray			*imageArray = 0L, *imageArrayPreview = 0L,  *imageArrayROI = 0L;
+static  NSMutableArray			*imageArray = nil, *imageArrayPreview = nil,  *imageArrayROI = nil;
 static  long					charSizeArray[ MAXCOUNT], charSizeArrayPreview[ MAXCOUNT], charSizeArrayROI[ MAXCOUNT];
 static  unsigned char			*charPtrArray[ MAXCOUNT], *charPtrArrayPreview[ MAXCOUNT], *charPtrArrayROI[ MAXCOUNT];
 
@@ -67,7 +67,7 @@ static  unsigned char			*charPtrArray[ MAXCOUNT], *charPtrArrayPreview[ MAXCOUNT
 					free( charPtrArray[ i]);
 				}
 				[imageArray release];
-				imageArray = 0L;
+				imageArray = nil;
 			}
 		break;
 		
@@ -79,7 +79,7 @@ static  unsigned char			*charPtrArray[ MAXCOUNT], *charPtrArrayPreview[ MAXCOUNT
 					free( charPtrArrayPreview[ i]);
 				}
 				[imageArrayPreview release];
-				imageArrayPreview = 0L;
+				imageArrayPreview = nil;
 			}
 		break;
 		
@@ -91,7 +91,7 @@ static  unsigned char			*charPtrArray[ MAXCOUNT], *charPtrArrayPreview[ MAXCOUNT
 					free( charPtrArrayROI[ i]);
 				}
 				[imageArrayROI release];
-				imageArrayROI = 0L;
+				imageArrayROI = nil;
 			}
 		break;
 	}
@@ -133,7 +133,7 @@ static  unsigned char			*charPtrArray[ MAXCOUNT], *charPtrArrayPreview[ MAXCOUNT
 		break;
 	}
 	
-	if( curArray == 0L) curArray = [[NSMutableArray alloc] initWithCapacity:0];
+	if( curArray == nil) curArray = [[NSMutableArray alloc] initWithCapacity:0];
 	else [curArray removeAllObjects];
 
 	blackColor = [ NSColor blackColor ];
@@ -223,7 +223,7 @@ static  unsigned char			*charPtrArray[ MAXCOUNT], *charPtrArrayPreview[ MAXCOUNT
 	switch( fontType)
 	{
 		case 0:
-			if( imageArray == 0L)
+			if( imageArray == nil)
 				[NSFont initFontImage:' ' count:150 font:self fontType: fontType];
 			
 			curArray = imageArray;
@@ -231,7 +231,7 @@ static  unsigned char			*charPtrArray[ MAXCOUNT], *charPtrArrayPreview[ MAXCOUNT
 		break;
 		
 		case 1:
-			if( imageArrayPreview == 0L)
+			if( imageArrayPreview == nil)
 				[NSFont initFontImage:' ' count:150 font:self fontType: fontType];
 			
 			curArray = imageArrayPreview;
@@ -239,7 +239,7 @@ static  unsigned char			*charPtrArray[ MAXCOUNT], *charPtrArrayPreview[ MAXCOUNT
 		break;
 		
 		case 2:
-			if( imageArrayROI == 0L)
+			if( imageArrayROI == nil)
 				[NSFont initFontImage:' ' count:150 font:self fontType: fontType];
 				
 			curArray = imageArrayROI;
@@ -322,7 +322,7 @@ static  unsigned char			*charPtrArray[ MAXCOUNT], *charPtrArrayPreview[ MAXCOUNT
    if( newBuffer == NULL )
    {
 		NSLog(@"Failed to calloc() memory in");
-		return 0L;
+		return nil;
    }
 
    movingBuffer = newBuffer;

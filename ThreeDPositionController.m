@@ -20,7 +20,7 @@
 #import "DCMView.h"
 #import "OrthogonalMPRPETCTViewer.h"
 
-static ThreeDPositionController *nav = 0L;
+static ThreeDPositionController *nav = nil;
 
 @implementation ThreeDPositionController
 
@@ -112,7 +112,7 @@ static ThreeDPositionController *nav = 0L;
 {
 	[viewerController executeRevert];
 	
-	[self movePositionPosition: 0L];
+	[self movePositionPosition: nil];
 }
 
 - (IBAction) changeMatrixMode:(id) sender
@@ -204,7 +204,7 @@ static ThreeDPositionController *nav = 0L;
 {
 	[viewer checkEverythingLoaded];
 	
-	if( viewerController == 0L)
+	if( viewerController == nil)
 	{
 		[matrixMode selectCellWithTag: [viewer currentOrientationTool]];
 		[self changeMatrixMode: self];
@@ -241,7 +241,7 @@ static ThreeDPositionController *nav = 0L;
 - (void)dealloc
 {
 	NSLog(@"ThreeDPositionController dealloc");
-	nav = 0L;
+	nav = nil;
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[viewerController release];
 	[super dealloc];

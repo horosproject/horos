@@ -124,13 +124,13 @@
 	criteria = [[NSMutableArray array] retain];
 	for (view in subviews)
 	{
-		NSString *predicateString = 0L;
-		NSString *value = 0L;
+		NSString *predicateString = nil;
+		NSString *value = nil;
 		NSInteger searchType;
 		
 		NSString *key = [[view filterKeyPopup] titleOfSelectedItem];
 		// Modality	
-		if ([key isEqualToString:NSLocalizedString(@"Modality", 0L)])
+		if ([key isEqualToString:NSLocalizedString(@"Modality", nil)])
 		{
 			switch ([[view searchTypePopup] indexOfSelectedItem]) {
 				case osiCR: value = @"CR";
@@ -168,7 +168,7 @@
 			predicateString = [NSString stringWithFormat:@"modality CONTAINS[cd] '%@'", value];
 		}
 		// Study status	
-		else if ([key isEqualToString:NSLocalizedString(@"Study Status", 0L)])
+		else if ([key isEqualToString:NSLocalizedString(@"Study Status", nil)])
 		{
 			switch ([[view searchTypePopup] indexOfSelectedItem]) {
 				case empty: value = @"0";
@@ -189,7 +189,7 @@
 		// Dates		
 		else if ([key isEqualToString:NSLocalizedString(@"Study Date", nil)] == YES || [key isEqualToString:NSLocalizedString(@"Date Added", nil)])
 		{
-			NSDate		*date = 0L;
+			NSDate		*date = nil;
 			NSString	*field;
 			
 			if ([key isEqualToString:NSLocalizedString(@"Study Date", nil)]) field = [NSString stringWithString: @"date"];
@@ -244,29 +244,29 @@
 			value = [[view valueField] stringValue];
 		}
 		
-		if ([key isEqualToString:NSLocalizedString(@"Patient Name", 0L)])
+		if ([key isEqualToString:NSLocalizedString(@"Patient Name", nil)])
 			key = @"name";
-		else if ([key isEqualToString:NSLocalizedString(@"Patient ID", 0L)])
+		else if ([key isEqualToString:NSLocalizedString(@"Patient ID", nil)])
 			key = @"patientID";
-		else if ([key isEqualToString:NSLocalizedString(@"Study ID", 0L)])
+		else if ([key isEqualToString:NSLocalizedString(@"Study ID", nil)])
 			key = @"id";
-		else if ([key isEqualToString:NSLocalizedString(@"Study Description", 0L)])
+		else if ([key isEqualToString:NSLocalizedString(@"Study Description", nil)])
 			key = @"studyName";
-		else if ([key isEqualToString:NSLocalizedString(@"Referring Physician", 0L)])
+		else if ([key isEqualToString:NSLocalizedString(@"Referring Physician", nil)])
 			key = @"referringPhysician";
-		else if ([key isEqualToString:NSLocalizedString(@"Performing Physician", 0L)])
+		else if ([key isEqualToString:NSLocalizedString(@"Performing Physician", nil)])
 			key = @"performingPhysician";
-		else if ([key isEqualToString:NSLocalizedString(@"Institution", 0L)])	
+		else if ([key isEqualToString:NSLocalizedString(@"Institution", nil)])	
 			key = @"institutionName";
-		else if ([key isEqualToString:NSLocalizedString(@"Comments", 0L)])	
+		else if ([key isEqualToString:NSLocalizedString(@"Comments", nil)])	
 			key = @"comment";
-		else if ([key isEqualToString:NSLocalizedString(@"Study Status", 0L)])
+		else if ([key isEqualToString:NSLocalizedString(@"Study Status", nil)])
 		{
 			key = @"stateText";
 			predicateString = [NSString stringWithFormat:@"stateText == %d", [value intValue]];
 		}
 		
-		if( predicateString == 0L)
+		if( predicateString == nil)
 		{
 			if( [value isEqualToString:@""]) value = @"OT";
 			

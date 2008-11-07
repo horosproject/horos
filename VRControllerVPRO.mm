@@ -80,7 +80,7 @@ static NSString*	ModeToolbarItemIdentifier			= @"Mode";
 
 -(void) revertSeries:(id) sender
 {
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"revertSeriesNotification" object: pixList[ curMovieIndex] userInfo: 0L];
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"revertSeriesNotification" object: pixList[ curMovieIndex] userInfo: nil];
 }
 
 +(BOOL) available
@@ -337,10 +337,10 @@ static NSString*	ModeToolbarItemIdentifier			= @"Mode";
 	// MEMORY TEST: The renderer needs to have the volume in short
 	{
 		char	*testPtr = (char*) malloc( [firstObject pwidth] * [firstObject pheight] * [pix count] * sizeof( short) + 4UL * 1024UL * 1024UL);
-		if( testPtr == 0L)
+		if( testPtr == nil)
 		{
 			NSRunCriticalAlertPanel( NSLocalizedString(@"Not Enough Memory",nil), NSLocalizedString( @"Not enough memory (RAM) to use the 3D engine.",nil), NSLocalizedString(@"OK",nil), nil, nil);
-			return 0L;
+			return nil;
 		}
 		else
 		{
@@ -348,7 +348,7 @@ static NSString*	ModeToolbarItemIdentifier			= @"Mode";
 		}
 	}
 	
-	for( i = 0; i < 100; i++) undodata[ i] = 0L;
+	for( i = 0; i < 100; i++) undodata[ i] = nil;
 	
 	curMovieIndex = 0;
 	maxMovieIndex = 1;
@@ -375,7 +375,7 @@ static NSString*	ModeToolbarItemIdentifier			= @"Mode";
 		else
 		{
 			NSRunCriticalAlertPanel( NSLocalizedString(@"Slice interval/thickness", nil),  NSLocalizedString(@"Problems with slice thickness/interval to do a 3D reconstruction.", nil), NSLocalizedString(@"OK", nil), nil, nil);
-			return 0L;
+			return nil;
 		}
     }
     
@@ -388,7 +388,7 @@ static NSString*	ModeToolbarItemIdentifier			= @"Mode";
     if( err)
     {
         NSRunCriticalAlertPanel( NSLocalizedString(@"Images size", nil),  NSLocalizedString(@"These images don't have the same height and width to allow a 3D reconstruction...", nil), NSLocalizedString(@"OK", nil), nil, nil);
-        return 0L;
+        return nil;
     }
     
     // CHECK IMAGE SIZE
@@ -402,7 +402,7 @@ static NSString*	ModeToolbarItemIdentifier			= @"Mode";
 //		}
 //		if( err)
 //		{
-//			if( NSRunCriticalAlertPanel( @"Slices location",  @"Slice thickness/interval is not exactly equal for all images. This could distord the 3D reconstruction...", @"Continue", @"Cancel", nil) != NSAlertDefaultReturn) return 0L;
+//			if( NSRunCriticalAlertPanel( @"Slices location",  @"Slice thickness/interval is not exactly equal for all images. This could distord the 3D reconstruction...", @"Continue", @"Cancel", nil) != NSAlertDefaultReturn) return nil;
 //			err = 0;
 //		}
 //	}
@@ -417,11 +417,11 @@ static NSString*	ModeToolbarItemIdentifier			= @"Mode";
     if( err != 0)
     {
         //[self dealloc];
-        return 0L;
+        return nil;
     }
 	
 	blendingController = bC;
-	blendingController = 0L;	//BLENDING IS NOT AVAILABLE IN THIS VERSION - ANR
+	blendingController = nil;	//BLENDING IS NOT AVAILABLE IN THIS VERSION - ANR
 	if( blendingController) // Blending! Activate image fusion
 	{
 		[view setBlendingPixSource: blendingController];
@@ -433,7 +433,7 @@ static NSString*	ModeToolbarItemIdentifier			= @"Mode";
 	
 	viewer2D = vC;
 	
-	curWLWWMenu = [NSLocalizedString(@"Other", 0L) retain];
+	curWLWWMenu = [NSLocalizedString(@"Other", nil) retain];
 	
 	NSNotificationCenter *nc;
     nc = [NSNotificationCenter defaultCenter];
@@ -452,7 +452,7 @@ static NSString*	ModeToolbarItemIdentifier			= @"Mode";
 					name: @"CloseViewerNotification"
 					object: nil];
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: 0L];
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: nil];
 	
 	curCLUTMenu = [NSLocalizedString(@"No CLUT", nil) retain];
 	
@@ -461,7 +461,7 @@ static NSString*	ModeToolbarItemIdentifier			= @"Mode";
                name: @"UpdateCLUTMenu"
              object: nil];
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: 0L];
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: nil];
 	
 	curOpacityMenu = [NSLocalizedString(@"Linear Table", nil) retain];
 	
@@ -470,7 +470,7 @@ static NSString*	ModeToolbarItemIdentifier			= @"Mode";
                name: @"UpdateOpacityMenu"
              object: nil];
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: 0L];
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: nil];
 	
 	[nc addObserver: self
            selector: @selector(CLUTChanged:)
@@ -537,7 +537,7 @@ static NSString*	ModeToolbarItemIdentifier			= @"Mode";
 	
 	NSDictionary *dict = [NSDictionary dictionaryWithContentsOfFile: str];
 	
-	if( [viewer2D postprocessed]) dict = 0L;
+	if( [viewer2D postprocessed]) dict = nil;
 	
 	[view set3DStateDictionary:dict];
 	
@@ -595,7 +595,7 @@ static NSString*	ModeToolbarItemIdentifier			= @"Mode";
 		float*	data = (float*) [volumeData[ i] bytes];
 		long	memSize = [firstObject pwidth] * [firstObject pheight] * [pixList[ i] count] * sizeof( short);
 		
-		if( undodata[ i] == 0L)
+		if( undodata[ i] == nil)
 		{
 			undodata[ i] = (float*) malloc( memSize);
 		}
@@ -670,7 +670,7 @@ static NSString*	ModeToolbarItemIdentifier			= @"Mode";
 //		float*	data = (float*) [volumeData[ i] bytes];
 //		long	memSize = [firstObject pwidth] * [firstObject pheight] * [pixList[ i] count] * sizeof( float);
 //		
-//		if( undodata[ i] == 0L)
+//		if( undodata[ i] == nil)
 //		{
 //			undodata[ i] = (float*) malloc( memSize);
 //		}
@@ -735,7 +735,7 @@ static NSString*	ModeToolbarItemIdentifier			= @"Mode";
 	}
 	[fileList release];
 	
-	[toolbar setDelegate: 0L];
+	[toolbar setDelegate: nil];
 	[toolbar release];
 	[_renderingMode release];
 	
@@ -806,7 +806,7 @@ static NSString*	ModeToolbarItemIdentifier			= @"Mode";
 {
     if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask)
     {
-        NSBeginAlertSheet( NSLocalizedString(@"Delete a WL/WW preset", nil), NSLocalizedString(@"Delete", nil), NSLocalizedString(@"Cancel", nil), nil, [self window], self, @selector(deleteWLWW:returnCode:contextInfo:), NULL, [[sender title] retain], [NSString stringWithFormat: NSLocalizedString( @"Are you sure you want to delete preset : '%@'?", 0L), [sender title]]);
+        NSBeginAlertSheet( NSLocalizedString(@"Delete a WL/WW preset", nil), NSLocalizedString(@"Delete", nil), NSLocalizedString(@"Cancel", nil), nil, [self window], self, @selector(deleteWLWW:returnCode:contextInfo:), NULL, [[sender title] retain], [NSString stringWithFormat: NSLocalizedString( @"Are you sure you want to delete preset : '%@'?", nil), [sender title]]);
     }
     else
     {
@@ -838,7 +838,7 @@ static NSString*	ModeToolbarItemIdentifier			= @"Mode";
 		[curWLWWMenu release];
 		curWLWWMenu = [[sender title] retain];
 	}
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: 0L];
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: nil];
 }
 
 static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
@@ -926,7 +926,7 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 
 -(void) ApplyCLUTString:(NSString*) str
 {
-	if( str == 0L) return;
+	if( str == nil) return;
 	
 	if( curCLUTMenu != str)
 	{
@@ -936,10 +936,10 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 	
 	if( [str isEqualToString:NSLocalizedString(@"No CLUT", nil)] == YES)
 	{
-		[view setCLUT: 0L :0L :0L];
+		[view setCLUT: nil :nil :nil];
 		[view changeColorWith: [NSColor colorWithDeviceRed:0.0 green:0.0 blue:0.0 alpha:1.0]];
 		
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: 0L];
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: nil];
 		
 		[[[clutPopup menu] itemAtIndex:0] setTitle:str];
 	}
@@ -973,12 +973,12 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 			
 			[view setCLUT:red :green: blue];
 			
-			if( [curCLUTMenu isEqualToString: NSLocalizedString( @"B/W Inverse", 0L)] || [curCLUTMenu isEqualToString:( @"B/W Inverse")])
+			if( [curCLUTMenu isEqualToString: NSLocalizedString( @"B/W Inverse", nil)] || [curCLUTMenu isEqualToString:( @"B/W Inverse")])
 				[view changeColorWith: [NSColor colorWithDeviceRed:1.0 green:1.0 blue:1.0 alpha:1.0]];
 			else 
 				[view changeColorWith: [NSColor colorWithDeviceRed:0.0 green:0.0 blue:0.0 alpha:1.0]];
 				
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: 0L];
+			[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: nil];
 			
 			[[[clutPopup menu] itemAtIndex:0] setTitle: curCLUTMenu];
 		}
@@ -994,7 +994,7 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 	NSArray				*array;
 	long				i;
 	
-	if( str == 0L) return;
+	if( str == nil) return;
 	
 	if( curOpacityMenu != str)
 	{
@@ -1005,7 +1005,7 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 	if( [str isEqualToString:@"Linear Table"])
 	{
 		[view setOpacity:[NSArray array]];
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: 0L];
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: nil];
 		
 		[[[OpacityPopup menu] itemAtIndex:0] setTitle:str];
 	}
@@ -1017,7 +1017,7 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 			array = [aOpacity objectForKey:@"Points"];
 			
 			[view setOpacity:array];
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: 0L];
+			[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: nil];
 			
 			[[[OpacityPopup menu] itemAtIndex:0] setTitle: curOpacityMenu];
 		}
@@ -1537,7 +1537,7 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 	[panel setCanSelectHiddenExtension:YES];
 	[panel setRequiredFileType:@"jpg"];
 	
-	if( [panel runModalForDirectory:0L file:@"3D VR Image"] == NSFileHandlingPanelOKButton)
+	if( [panel runModalForDirectory:nil file:@"3D VR Image"] == NSFileHandlingPanelOKButton)
 	{
 		NSImage *im = [view nsimage:NO];
 		
@@ -1582,7 +1582,7 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 	[panel setCanSelectHiddenExtension:YES];
 	[panel setRequiredFileType:@"tif"];
 	
-	if( [panel runModalForDirectory:0L file:@"3D VR Image"] == NSFileHandlingPanelOKButton)
+	if( [panel runModalForDirectory:nil file:@"3D VR Image"] == NSFileHandlingPanelOKButton)
 	{
 		NSImage *im = [view nsimage:NO];
 		
@@ -1615,7 +1615,7 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 			return [w windowController];
 	}
 	
-	return 0L;
+	return nil;
 }
 
 - (IBAction) flyThruControllerInit:(id) sender

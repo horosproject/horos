@@ -134,7 +134,7 @@
 {
 	if( [m_pages intValue] > 10 && [[m_ImageSelection selectedCell] tag] == eAllImages)
 	{
-		if( NSRunInformationalAlertPanel( NSLocalizedString(@"DICOM Print", nil), [NSString stringWithFormat: NSLocalizedString(@"Are you really sure you want to print %d pages?", nil), [m_pages intValue]] , NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), 0L) != NSAlertDefaultReturn) return;
+		if( NSRunInformationalAlertPanel( NSLocalizedString(@"DICOM Print", nil), [NSString stringWithFormat: NSLocalizedString(@"Are you really sure you want to print %d pages?", nil), [m_pages intValue]] , NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), nil) != NSAlertDefaultReturn) return;
 	}
 	
 	[sender setEnabled: NO];
@@ -361,7 +361,7 @@
 	if( from < 0) from = 0;
 	if( to == from) to = from+1;
 
-	NSDictionary	*options = [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: [[m_ImageSelection selectedCell] tag]], @"mode", [NSNumber numberWithInt: from], @"from", [NSNumber numberWithInt: to], @"to", [NSNumber numberWithInt: [entireSeriesInterval intValue]], @"interval", 0L];
+	NSDictionary	*options = [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: [[m_ImageSelection selectedCell] tag]], @"mode", [NSNumber numberWithInt: from], @"from", [NSNumber numberWithInt: to], @"to", [NSNumber numberWithInt: [entireSeriesInterval intValue]], @"interval", nil];
 	
 	NSLog( [options description]);
 	
@@ -480,7 +480,7 @@
 
 	NSTask *theTask = [[NSTask alloc] init];
 	
-	[theTask setArguments: [NSArray arrayWithObjects: logPath, baseName, xmlPath, 0L]];
+	[theTask setArguments: [NSArray arrayWithObjects: logPath, baseName, xmlPath, nil]];
 	[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/DICOMPrint"]];
 	[theTask launch];
 	while( [theTask isRunning]) [NSThread sleepForTimeInterval: 0.01];
@@ -491,7 +491,7 @@
 
 	if (status != 0)
 	{
-		[self performSelectorOnMainThread:@selector(errorMessage:) withObject:[NSArray arrayWithObjects: NSLocalizedString(@"Print failed", nil), NSLocalizedString(@"Couldn't print images.", nil), NSLocalizedString(@"OK", nil), 0L] waitUntilDone:YES];
+		[self performSelectorOnMainThread:@selector(errorMessage:) withObject:[NSArray arrayWithObjects: NSLocalizedString(@"Print failed", nil), NSLocalizedString(@"Couldn't print images.", nil), NSLocalizedString(@"OK", nil), nil] waitUntilDone:YES];
 	}
 
 	// remove temporary files

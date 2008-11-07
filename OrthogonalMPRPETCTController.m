@@ -24,6 +24,8 @@
 	[super initWithPixList: pix : files : vData : vC : bC : newViewer];
 
 	isBlending = (bC != nil);
+	
+	return self;
 }
 
 - (void) setCrossPosition: (float) x: (float) y: (id) sender
@@ -138,9 +140,9 @@
 
 - (void) stopBlending
 {
-	[originalView setBlending: 0L];
-	[xReslicedView setBlending: 0L];
-	[yReslicedView setBlending: 0L];
+	[originalView setBlending: nil];
+	[xReslicedView setBlending: nil];
+	[yReslicedView setBlending: nil];
 }
 
 - (void) reslice: (long) x: (long) y: (OrthogonalMPRView*) sender
@@ -326,9 +328,9 @@
 {
 	[super setWLWW: iwl : iww];
 	[viewer setWLWW: iwl : iww : self];
-	[self setCurWLWWMenu: NSLocalizedString(@"Other", 0L)];
+	[self setCurWLWWMenu: NSLocalizedString(@"Other", nil)];
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"changeWLWW" object: [originalView curDCM] userInfo:0L];
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"changeWLWW" object: [originalView curDCM] userInfo:nil];
 }
 
 - (void) superSetWLWW:(float) iwl :(float) iww

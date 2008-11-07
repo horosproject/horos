@@ -225,9 +225,9 @@ enum ctTypes {ElectronCTType, MultiSliceCTType};
 		ymm = location[1];
 		zmm = location[2];
 		
-		[self setStartingPointPixelPosition:[NSString stringWithFormat:NSLocalizedString(@"px:\t\tx:%d y:%d", 0L), xpx, ypx]];
-		[self setStartingPointWorldPosition:[NSString stringWithFormat:NSLocalizedString(@"mm:\t\tx:%2.2f y:%2.2f z:%2.2f", 0L), xmm, ymm, zmm]];
-		[self setStartingPointValue:[NSString stringWithFormat:NSLocalizedString(@"value:\t%2.2f", 0L), [[[_viewer imageView] curDCM] getPixelValueX: xpx Y:ypx]]];
+		[self setStartingPointPixelPosition:[NSString stringWithFormat:NSLocalizedString(@"px:\t\tx:%d y:%d", nil), xpx, ypx]];
+		[self setStartingPointWorldPosition:[NSString stringWithFormat:NSLocalizedString(@"mm:\t\tx:%2.2f y:%2.2f z:%2.2f", nil), xmm, ymm, zmm]];
+		[self setStartingPointValue:[NSString stringWithFormat:NSLocalizedString(@"value:\t%2.2f", nil), [[[_viewer imageView] curDCM] getPixelValueX: xpx Y:ypx]]];
 		_startingPoint = NSMakePoint(xpx, ypx);
 		
 		[self compute: self];
@@ -295,7 +295,7 @@ enum ctTypes {ElectronCTType, MultiSliceCTType};
 }
 
 -(IBAction) preview:(id) sender {
-	[self computeROIsWithName:NSLocalizedString( @"Segmentation Preview", 0L) addROIs:NO];
+	[self computeROIsWithName:NSLocalizedString( @"Segmentation Preview", nil) addROIs:NO];
 }
 
 -(IBAction) compute:(id) sender {
@@ -384,7 +384,7 @@ enum ctTypes {ElectronCTType, MultiSliceCTType};
 - (void)computeROIsWithName:(NSString *)name addROIs:(BOOL)addROIs;
 {
 	int p;	
-	[_viewer roiDeleteWithName: NSLocalizedString( @"Segmentation Preview", 0L)];
+	[_viewer roiDeleteWithName: NSLocalizedString( @"Segmentation Preview", nil)];
 	
 	if ( _startingPoint.x == 0 && _startingPoint.y == 0)
 	{
@@ -404,7 +404,7 @@ enum ctTypes {ElectronCTType, MultiSliceCTType};
 					nil];
 						
 		[itk regionGrowing3D	: _viewer
-								: 0L
+								: nil
 								: slice
 								: _startingPoint
 								: 1  //threshold upper and lower limits type

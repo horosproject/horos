@@ -35,7 +35,7 @@
 
 @end
 
-static ShellMainClass	*mainClass = 0L;
+static ShellMainClass	*mainClass = nil;
 
 // WHY THIS EXTERNAL APPLICATION FOR QUICKTIME?
 
@@ -159,7 +159,7 @@ int executeProcess(int argc, char *argv[])
 			NSString        *dstPath, *OUTpath = @"/tmp/filesFromiDisk";
 			NSString		*DICOMpath = @"Documents/DICOM";
 			
-			[[NSFileManager defaultManager] removeFileAtPath: OUTpath handler: 0L];
+			[[NSFileManager defaultManager] removeFileAtPath: OUTpath handler: nil];
 			[[NSFileManager defaultManager] createDirectoryAtPath: OUTpath attributes:nil];
 			
 			DMMemberAccount		*myDotMacMemberAccount = [DMMemberAccount accountFromPreferencesWithApplicationID:@"----"];
@@ -191,14 +191,14 @@ int executeProcess(int argc, char *argv[])
 						
 						NSLog( [filesArray description]);
 						
-						[wait showWindow: 0L];
+						[wait showWindow: nil];
 						[[wait progress] setMaxValue: [filesArray count]];
 						
 						for( long i = 0; i < [filesArray count] && [wait aborted] == NO; i++ )
 						{
 							dstPath = [OUTpath stringByAppendingPathComponent: [NSString stringWithFormat:@"%d", i]];
 							
-							[mySession movePath: [filesArray objectAtIndex: i] toPath: dstPath handler: 0L];
+							[mySession movePath: [filesArray objectAtIndex: i] toPath: dstPath handler: nil];
 							
 							[filesArray replaceObjectAtIndex:i withObject: dstPath];
 							
@@ -206,20 +206,20 @@ int executeProcess(int argc, char *argv[])
 						}
 						
 						if( deleteFolder)
-							[mySession removeFileAtPath: DICOMpath handler: 0L];
+							[mySession removeFileAtPath: DICOMpath handler: nil];
 					}
 					
 					[wait close];
 					[wait release];
 				}
-				else NSRunCriticalAlertPanel(NSLocalizedString(@"iDisk?", 0L), NSLocalizedString(@"Unable to contact dotMac service.", 0L), NSLocalizedString(@"OK",nil),nil, nil);
+				else NSRunCriticalAlertPanel(NSLocalizedString(@"iDisk?", nil), NSLocalizedString(@"Unable to contact dotMac service.", nil), NSLocalizedString(@"OK",nil),nil, nil);
 			}
-			else NSRunCriticalAlertPanel(NSLocalizedString(@"iDisk?", 0L), NSLocalizedString(@"Unable to contact dotMac service.", 0L), NSLocalizedString(@"OK",nil),nil, nil);
+			else NSRunCriticalAlertPanel(NSLocalizedString(@"iDisk?", nil), NSLocalizedString(@"Unable to contact dotMac service.", nil), NSLocalizedString(@"OK",nil),nil, nil);
 			
 			if( [filesArray count])
 			{
-				[[NSFileManager defaultManager] removeFileAtPath: @"/tmp/files2load" handler: 0L];
-				[filesArray writeToFile: @"/tmp/files2load" atomically: 0L];
+				[[NSFileManager defaultManager] removeFileAtPath: @"/tmp/files2load" handler: nil];
+				[filesArray writeToFile: @"/tmp/files2load" atomically: nil];
 			}
 		}
 		
@@ -249,7 +249,7 @@ int executeProcess(int argc, char *argv[])
 					
 					[wait setCancel: YES];
 					
-					[wait showWindow: 0L];
+					[wait showWindow: nil];
 					[[wait progress] setMaxValue: [files2Copy count]];
 					
 					for( long x = 0 ; x < [files2Copy count] && [wait aborted] == NO; x++ )
@@ -263,7 +263,7 @@ int executeProcess(int argc, char *argv[])
 						
 						if( ![mySession fileExistsAtPath: dstPath]) [mySession copyPath: srcPath toPath: dstPath handler:nil];
 						else {
-								if( NSRunInformationalAlertPanel( NSLocalizedString(@"Export", nil), [NSString stringWithFormat: NSLocalizedString(@"A folder already exists. Should I replace it? It will delete the entire content of this folder (%@)", nil), [srcPath lastPathComponent]], NSLocalizedString(@"Replace", nil), NSLocalizedString(@"Cancel", nil), 0L) == NSAlertDefaultReturn)
+								if( NSRunInformationalAlertPanel( NSLocalizedString(@"Export", nil), [NSString stringWithFormat: NSLocalizedString(@"A folder already exists. Should I replace it? It will delete the entire content of this folder (%@)", nil), [srcPath lastPathComponent]], NSLocalizedString(@"Replace", nil), NSLocalizedString(@"Cancel", nil), nil) == NSAlertDefaultReturn)
 								{
 									[mySession removeFileAtPath: dstPath handler:nil];
 									[mySession copyPath: srcPath toPath: dstPath handler:nil];
@@ -286,7 +286,7 @@ int executeProcess(int argc, char *argv[])
 		{
 			int frameNo = [[NSString stringWithCString:argv[ 3]] intValue];
 			
-			QTMovie *movie = [[QTMovie alloc] initWithFile:path error: 0L];
+			QTMovie *movie = [[QTMovie alloc] initWithFile:path error: nil];
 			
 			if( movie)
 			{
@@ -331,7 +331,7 @@ int executeProcess(int argc, char *argv[])
 		{
 			[NSRunLoop currentRunLoop];
 			
-			QTMovie *aMovie = [[QTMovie alloc] initWithFile:path error: 0L];
+			QTMovie *aMovie = [[QTMovie alloc] initWithFile:path error: nil];
 			
 			NSLog( @"getExportSettings : %@", path);
 			
@@ -391,7 +391,7 @@ int executeProcess(int argc, char *argv[])
 						// **************************
 						
 						NSString	*dataPath = [NSString stringWithCString:argv[ 5]];
-						[[NSFileManager defaultManager] removeFileAtPath: dataPath handler: 0L];
+						[[NSFileManager defaultManager] removeFileAtPath: dataPath handler: nil];
 						[data writeToFile: dataPath atomically: YES];
 					}
 				}
@@ -534,7 +534,7 @@ CHECK;
 // This object is the delegate of its NSNetServiceBrowser object.
 - (void)netServiceBrowser:(NSNetServiceBrowser *)aNetServiceBrowser didFindService:(NSNetService *)aNetService moreComing:(BOOL)moreComing
 {
-	NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: aNetService, @"service", @"bonjour", @"type", 0L];
+	NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: aNetService, @"service", @"bonjour", @"type", nil];
 	
 	[aNetService retain];
 	[aNetService setDelegate:self];

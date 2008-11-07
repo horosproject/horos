@@ -639,7 +639,7 @@ storeSCU(T_ASC_Association * assoc, const char *fname)
     DcmDataset *statusDetail = NULL;
 	char outfname[ 4096];
 	
-	sprintf( outfname, "%s/%s/%d.dcm", [[BrowserController currentBrowser] cfixedDocumentsDirectory], "TEMP", seed++);
+	sprintf( outfname, "%s/%s/%ld.dcm", [[BrowserController currentBrowser] cfixedDocumentsDirectory], "TEMP", seed++);
 
     unsuccessfulStoreEncountered = OFTrue; // assumption
 	
@@ -903,7 +903,7 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 				NSStringEncoding	encoding[ 10];
 				for( int i = 0; i < 10; i++) encoding[ i] = NSISOLatin1StringEncoding;
 
-				if (fileformat.getDataset()->findAndGetString(DCM_SpecificCharacterSet, string, OFFalse).good() && string != 0L)
+				if (fileformat.getDataset()->findAndGetString(DCM_SpecificCharacterSet, string, OFFalse).good() && string != nil)
 				{
 					NSArray	*c = [[NSString stringWithCString:string] componentsSeparatedByString:@"\\"];
 
@@ -916,11 +916,11 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 					}
 				}
 
-				if (fileformat.getDataset()->findAndGetString(DCM_PatientsName, string, OFFalse).good() && string != 0L)
+				if (fileformat.getDataset()->findAndGetString(DCM_PatientsName, string, OFFalse).good() && string != nil)
 					_patientName = [[DicomFile stringWithBytes: (char*) string encodings:encoding] retain];
 				else _patientName = [[NSString stringWithString:@"Unnamed"] retain];
 				
-				if (fileformat.getDataset()->findAndGetString(DCM_StudyDescription, string, OFFalse).good() && string != 0L)
+				if (fileformat.getDataset()->findAndGetString(DCM_StudyDescription, string, OFFalse).good() && string != nil)
 					_studyDescription = [[DicomFile stringWithBytes: (char*) string encodings:encoding] retain];
 				else _studyDescription = [[NSString stringWithString:@"Unnamed"] retain];
 			}
@@ -948,11 +948,11 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 	
 - (void)run:(id)sender
 {
-	NSException* localException = 0L;
+	NSException* localException = nil;
 	
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
-	[[AppController sharedAppController] growlTitle: NSLocalizedString( @"DICOM Send", 0L) description: [NSString stringWithFormat: NSLocalizedString(@"%d files to send.\rTo: %@ - %@", 0L), [_filesToSend count], _calledAET, _hostname] name:@"result"];
+	[[AppController sharedAppController] growlTitle: NSLocalizedString( @"DICOM Send", nil) description: [NSString stringWithFormat: NSLocalizedString(@"%d files to send.\rTo: %@ - %@", nil), [_filesToSend count], _calledAET, _hostname] name:@"result"];
 	
 	NSString *osiriXFolder = [[BrowserController currentBrowser] documentsDirectory];
 //	NSString *tempFolder = [NSString stringWithFormat:@"/tmp/DICOMSend_%@-%@", _callingAET, [[NSDate date] description]];
@@ -1399,7 +1399,7 @@ NS_DURING
 
 		/* dump general information concerning the establishment of the network connection if required */
 		if (opt_verbose) {
-			printf("Association Accepted (Max Send PDV: %lu)\n",
+			printf("Association Accepted (Max Send PDV: %u)\n",
 					assoc->sendPDVLength);
 		}
 
@@ -1586,12 +1586,12 @@ NS_ENDHANDLER
 			_numberErrors = _numberOfFiles - _numberSent;
 			[userInfo setObject:[NSNumber numberWithInt:_numberErrors] forKey:@"ErrorCount"];
 			
-			[[AppController sharedAppController] growlTitle: NSLocalizedString( @"DICOM Send", 0L) description: [NSString stringWithFormat: NSLocalizedString(@"Errors ! %d of %d files generated errors.", 0L), _numberErrors, _numberOfFiles]  name:@"result"];
+			[[AppController sharedAppController] growlTitle: NSLocalizedString( @"DICOM Send", nil) description: [NSString stringWithFormat: NSLocalizedString(@"Errors ! %d of %d files generated errors.", nil), _numberErrors, _numberOfFiles]  name:@"result"];
 		}
 		else
 		{
 			[userInfo setObject:@"Complete" forKey:@"Message"];
-			[[AppController sharedAppController] growlTitle: NSLocalizedString( @"DICOM Send", 0L) description: NSLocalizedString(@"Done !", 0L) name:@"result"];
+			[[AppController sharedAppController] growlTitle: NSLocalizedString( @"DICOM Send", nil) description: NSLocalizedString(@"Done !", nil) name:@"result"];
 		}
 		
 		[self performSelectorOnMainThread:@selector(updateLogEntry:) withObject:userInfo waitUntilDone:NO];
@@ -1615,7 +1615,7 @@ NS_ENDHANDLER
 	if( [[BrowserController currentBrowser] isNetworkLogsActive] == NO) return;
 	
 	NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContextLoadIfNecessary: NO];
-	if( context == 0L) return;
+	if( context == nil) return;
 	
 	[context retain];
 	[context lock];

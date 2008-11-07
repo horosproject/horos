@@ -337,9 +337,9 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 											imageOrigin:NSMakePoint([[pixList objectAtIndex: i] originX], [[pixList objectAtIndex: i] originY])];
 			if( [theNewROI reduceTextureIfPossible] == NO)	// NO means that the ROI is NOT empty
 			{
-				[roiList addObject: [NSDictionary dictionaryWithObjectsAndKeys: theNewROI, @"roi", [pixList objectAtIndex: i], @"curPix", 0L]];
+				[roiList addObject: [NSDictionary dictionaryWithObjectsAndKeys: theNewROI, @"roi", [pixList objectAtIndex: i], @"curPix", nil]];
 //				[[roiList objectAtIndex:i] addObject:theNewROI];		// roiList
-//				[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:theNewROI userInfo: 0L];	
+//				[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:theNewROI userInfo: nil];	
 //				[theNewROI setROIMode: ROI_selected];
 //				[[NSNotificationCenter defaultCenter] postNotificationName: @"roiSelected" object:theNewROI userInfo: nil];
 			}
@@ -458,7 +458,7 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 
 + (NSMutableArray*) extractContour:(unsigned char*) map width:(long) width height:(long) height
 {
-   [self extractContour:map width:width height:height numPoints: 100];
+   return [self extractContour:map width:width height:height numPoints: 100];
 }
 
 -(void) dealloc
@@ -511,9 +511,9 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 	typedef itk::NeighborhoodConnectedImageFilter< InternalImageType, InternalImageType > NeighborhoodConnectedFilterType;
 	typedef itk::ConfidenceConnectedImageFilter< InternalImageType, InternalImageType > ConfidenceConnectedFilterType;
 	
-	ConnectedThresholdFilterType::Pointer thresholdFilter = 0L;
-	NeighborhoodConnectedFilterType::Pointer neighborhoodFilter = 0L;
-	ConfidenceConnectedFilterType::Pointer confidenceFilter = 0L;
+	ConnectedThresholdFilterType::Pointer thresholdFilter = nil;
+	NeighborhoodConnectedFilterType::Pointer neighborhoodFilter = nil;
+	ConfidenceConnectedFilterType::Pointer confidenceFilter = nil;
 	// connected threshold filter
 	if (algorithmNumber==0 || algorithmNumber==1)
 	{
@@ -586,9 +586,9 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 		caster->SetInput(confidenceFilter->GetOutput());	// <- FLOAT TO CHAR
 	}
 
-	WaitRendering	*wait = 0L;
+	WaitRendering	*wait = nil;
 	
-	if( slice == -1) wait = [[WaitRendering alloc] init: NSLocalizedString(@"Propagating Region...", 0L)];
+	if( slice == -1) wait = [[WaitRendering alloc] init: NSLocalizedString(@"Propagating Region...", nil)];
 	[wait showWindow:self];
 	
 	NSLog(@"RegionGrowing starts...");
@@ -687,9 +687,9 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 													imageOrigin:NSMakePoint([[[srcViewer imageView] curDCM] originX], [[[srcViewer imageView] curDCM] originY])];
 					
 					[[[srcViewer roiList] objectAtIndex:i] addObject:theNewROI];
-					[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:theNewROI userInfo: 0L];	
+					[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:theNewROI userInfo: nil];	
 					
-					if( [newname isEqualToString: NSLocalizedString( @"Segmentation Preview", 0L)])
+					if( [newname isEqualToString: NSLocalizedString( @"Segmentation Preview", nil)])
 					{
 						RGBColor color;
 						
@@ -745,9 +745,9 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 			[theNewROI setSliceThickness:[[[srcViewer imageView] curDCM] sliceThickness]];
 			[[[srcViewer roiList] objectAtIndex:slice] addObject:theNewROI];
 			[[srcViewer imageView] roiSet];
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:theNewROI userInfo: 0L];
+			[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:theNewROI userInfo: nil];
 			
-			if( [newname isEqualToString: NSLocalizedString( @"Segmentation Preview", 0L)])
+			if( [newname isEqualToString: NSLocalizedString( @"Segmentation Preview", nil)])
 			{
 				RGBColor color;
 				
@@ -1033,7 +1033,7 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 
 	//Segmentation Filter
 	typedef itk::ConnectedThresholdImageFilter<FloatImageType, CharImageType > ConnectedThresholdFilterType;	
-	ConnectedThresholdFilterType::Pointer thresholdFilter = 0L;
+	ConnectedThresholdFilterType::Pointer thresholdFilter = nil;
 	thresholdFilter = ConnectedThresholdFilterType::New();
 			
 	thresholdFilter->SetLower(-2000.0);
@@ -1099,9 +1099,9 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 
 	
 	
-	WaitRendering	*wait = 0L;
+	WaitRendering	*wait = nil;
 	
-	wait = [[WaitRendering alloc] init: NSLocalizedString(@"Propagating Region...", 0L)];
+	wait = [[WaitRendering alloc] init: NSLocalizedString(@"Propagating Region...", nil)];
 	[wait showWindow:self];
 	
 

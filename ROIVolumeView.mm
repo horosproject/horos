@@ -57,7 +57,7 @@
 
 -(unsigned char*) getRawPixels:(long*) width :(long*) height :(long*) spp :(long*) bpp :(BOOL) screenCapture :(BOOL) force8bits
 {
-	unsigned char	*buf = 0L;
+	unsigned char	*buf = nil;
 	long			i;
 	
 	NSRect size = [self bounds];
@@ -153,7 +153,7 @@
 	else colorSpace = NSCalibratedWhiteColorSpace;
 
 	rep = [[[NSBitmapImageRep alloc]
-			 initWithBitmapDataPlanes:0L
+			 initWithBitmapDataPlanes:nil
 						   pixelsWide:width
 						   pixelsHigh:height
 						bitsPerSample:bpp
@@ -181,7 +181,7 @@
 	[panel setCanSelectHiddenExtension:YES];
 	[panel setRequiredFileType:@"jpg"];
 	
-	if( [panel runModalForDirectory:0L file:@"Volume Image"] == NSFileHandlingPanelOKButton)
+	if( [panel runModalForDirectory:nil file:@"Volume Image"] == NSFileHandlingPanelOKButton)
 	{
 		NSImage *im = [self nsimage:NO];
 		
@@ -232,8 +232,8 @@
 		[exportDCM setSeriesNumber:5500];
 		[exportDCM setPixelData: dataPtr samplePerPixel:spp bitsPerPixel:bpp width: width height: height];
 		
-		NSString *f = [exportDCM writeDCMFile: 0L];
-		if( f == 0L) NSRunCriticalAlertPanel( NSLocalizedString(@"Error", 0L),  NSLocalizedString( @"Error during the creation of the DICOM File!", 0L), NSLocalizedString(@"OK", 0L), nil, nil);
+		NSString *f = [exportDCM writeDCMFile: nil];
+		if( f == nil) NSRunCriticalAlertPanel( NSLocalizedString(@"Error", nil),  NSLocalizedString( @"Error during the creation of the DICOM File!", nil), NSLocalizedString(@"OK", nil), nil, nil);
 		
 		free( dataPtr);
 	}
@@ -312,11 +312,11 @@
     profile->SetPoints( points);
 	points->Delete();
 
-	vtkDelaunay3D *delaunayTriangulator = 0L;
-	vtkPolyDataNormals *polyDataNormals = 0L;
-	vtkDecimatePro *isoDeci = 0L;
-	vtkSmoothPolyDataFilter * pSmooth = 0L;
-	vtkDataSet*	output = 0L;
+	vtkDelaunay3D *delaunayTriangulator = nil;
+	vtkPolyDataNormals *polyDataNormals = nil;
+	vtkDecimatePro *isoDeci = nil;
+	vtkSmoothPolyDataFilter * pSmooth = nil;
+	vtkDataSet*	output = nil;
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"UseDelaunayFor3DRoi"])
 	{
@@ -555,7 +555,7 @@
 	// *****************Texture
 	NSString	*location = [[NSUserDefaults standardUserDefaults] stringForKey:@"textureLocation"];
 	
-	if( location == 0L || [location isEqualToString:@""])
+	if( location == nil || [location isEqualToString:@""])
 		location = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"texture.tif"];
 	
 	vtkTIFFReader *bmpread = vtkTIFFReader::New();
@@ -687,7 +687,7 @@
 //
 //	NSString	*location = [[NSUserDefaults standardUserDefaults] stringForKey:@"textureLocation"];
 //
-//	if( location == 0L || [location isEqualToString:@""])
+//	if( location == nil || [location isEqualToString:@""])
 //		location = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"texture.tif"];
 //	
 //	vtkTIFFReader *bmpread = vtkTIFFReader::New();
@@ -842,7 +842,7 @@
 	else roiVolumeActor->GetProperty()->SetColor( 1, 1, 1);
 	
 	if( tex) roiVolumeActor->SetTexture(texture);
-	else roiVolumeActor->SetTexture( 0L);
+	else roiVolumeActor->SetTexture( nil);
 	
 	[self setNeedsDisplay: YES];
 }

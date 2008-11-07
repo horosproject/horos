@@ -80,9 +80,9 @@ extern "C"
 //#define BONEVALUE 250
 #define BONEOPACITY 1.1
 
-static			NSRecursiveLock			*drawLock = 0L;
+static			NSRecursiveLock			*drawLock = nil;
 
-static VRView	*snVRView = 0L;
+static VRView	*snVRView = nil;
 
 typedef struct _xyzArray
 {
@@ -287,7 +287,7 @@ public:
 
 + (BOOL) getCroppingBox:(double*) a :(vtkVolume *) volume :(vtkBoxWidget*) croppingBox
 {
-	if( volume == 0L) return NO;
+	if( volume == nil) return NO;
 
 	vtkVolumeMapper *mapper = (vtkVolumeMapper*) volume->GetMapper();
 	if( mapper)
@@ -347,7 +347,7 @@ public:
 {
 	long	i;
 	
-	if( volume == 0L) return;
+	if( volume == nil) return;
 	
 	vtkVolumeMapper *mapper = (vtkVolumeMapper*) volume->GetMapper();
 	if( mapper)
@@ -493,7 +493,7 @@ public:
 
 - (void) setBlendingMode: (long) modeID
 {
-	if( blendingController == 0L) return;
+	if( blendingController == nil) return;
 	
 	switch( modeID)
 	{
@@ -565,7 +565,7 @@ public:
 	
 	NSLog(@"Engine: %d", engineID);
 	
-	WaitRendering	*www = 0L;
+	WaitRendering	*www = nil;
 	
 	if( showWait) www = [[WaitRendering alloc] init:@"Preparing 3D data..."];
 	[www start];
@@ -575,7 +575,7 @@ public:
 	switch( engineID)
 	{
 		case 0:		// RAY CAST
-			if( volumeMapper == 0L)
+			if( volumeMapper == nil)
 			{
 				volumeMapper = vtkFixedPointVolumeRayCastMapper::New();
 				volumeMapper->SetInput((vtkDataSet *) reader->GetOutput());
@@ -586,7 +586,7 @@ public:
 		break;
 		
 		case 1:		// TEXTURE
-			if( textureMapper == 0L)
+			if( textureMapper == nil)
 			{
 				textureMapper = vtkVolumeTextureMapper3D::New();
 				textureMapper->SetInput((vtkDataSet *) reader->GetOutput());
@@ -600,14 +600,14 @@ public:
 		break;
 		
 		case 2:		// BOTH
-			if( volumeMapper == 0L)
+			if( volumeMapper == nil)
 			{
 				volumeMapper = vtkFixedPointVolumeRayCastMapper::New();
 				volumeMapper->SetInput((vtkDataSet *) reader->GetOutput());
 			}
 			volumeMapper->SetMinimumImageSampleDistance( LOD);
 			
-			if( textureMapper == 0L)
+			if( textureMapper == nil)
 			{
 				textureMapper = vtkVolumeTextureMapper3D::New();
 				textureMapper->SetInput((vtkDataSet *) reader->GetOutput());
@@ -648,7 +648,7 @@ public:
 
 - (void) setBlendingEngine: (long) engineID
 {
-	if( blendingController == 0L) return;
+	if( blendingController == nil) return;
 	
 	double a[ 6];
 	
@@ -664,7 +664,7 @@ public:
 	switch( engineID)
 	{
 		case 0:		// RAY CAST
-			if( blendingVolumeMapper == 0L)
+			if( blendingVolumeMapper == nil)
 			{
 				blendingVolumeMapper = vtkFixedPointVolumeRayCastMapper::New();
 				blendingVolumeMapper->SetInput((vtkDataSet *) blendingReader->GetOutput());
@@ -675,7 +675,7 @@ public:
 		break;
 		
 		case 1:		// TEXTURE
-			if( blendingTextureMapper == 0L)
+			if( blendingTextureMapper == nil)
 			{
 				blendingTextureMapper = vtkVolumeTextureMapper3D::New();
 				blendingTextureMapper->SetInput((vtkDataSet *) blendingReader->GetOutput());
@@ -689,14 +689,14 @@ public:
 		break;
 		
 		case 2:		// BOTH
-			if( blendingVolumeMapper == 0L)
+			if( blendingVolumeMapper == nil)
 			{
 				blendingVolumeMapper = vtkFixedPointVolumeRayCastMapper::New();
 				blendingVolumeMapper->SetInput((vtkDataSet *) blendingReader->GetOutput());
 			}
 			blendingVolumeMapper->SetMinimumImageSampleDistance( LOD);
 			
-			if( blendingTextureMapper == 0L)
+			if( blendingTextureMapper == nil)
 			{
 				blendingTextureMapper = vtkVolumeTextureMapper3D::New();
 				blendingTextureMapper->SetInput((vtkDataSet *) blendingReader->GetOutput());
@@ -924,7 +924,7 @@ public:
 	float	cwl, cww;
 	float	o[ 9];
 	
-	if( exportDCM == 0L) exportDCM = [[DICOMExport alloc] init];
+	if( exportDCM == nil) exportDCM = [[DICOMExport alloc] init];
 	
 	[self renderImageWithBestQuality: bestRenderingMode waitDialog: NO];
 	unsigned char *dataPtr = [self getRawPixels:&width :&height :&spp :&bpp :YES :YES];
@@ -944,8 +944,8 @@ public:
 		if( aCamera->GetParallelProjection())
 			[exportDCM setPixelSpacing: [self getResolution] :[self getResolution]];
 		
-		NSString *f = [exportDCM writeDCMFile: 0L];
-		if( f == 0L) NSRunCriticalAlertPanel( NSLocalizedString(@"Error", 0L),  NSLocalizedString( @"Error during the creation of the DICOM File!", 0L), NSLocalizedString(@"OK", 0L), nil, nil);
+		NSString *f = [exportDCM writeDCMFile: nil];
+		if( f == nil) NSRunCriticalAlertPanel( NSLocalizedString(@"Error", nil),  NSLocalizedString( @"Error during the creation of the DICOM File!", nil), NSLocalizedString(@"OK", nil), nil, nil);
 		
 		free( dataPtr);
 	}
@@ -1023,7 +1023,7 @@ public:
 					[dcmSequence setPixelData: dataPtr samplePerPixel:spp bitsPerPixel:bpp width: width height: height];
 			//		[dcmSequence setPixelSpacing: 1 :1];
 					
-					NSString *f = [dcmSequence writeDCMFile: 0L];
+					NSString *f = [dcmSequence writeDCMFile: nil];
 					
 					free( dataPtr);
 				}
@@ -1098,7 +1098,7 @@ public:
 					if( aCamera->GetParallelProjection())
 						[dcmSequence setPixelSpacing: [self getResolution] :[self getResolution]];
 					
-					NSString *f = [dcmSequence writeDCMFile: 0L];
+					NSString *f = [dcmSequence writeDCMFile: nil];
 					
 					free( dataPtr);
 				}
@@ -1176,7 +1176,7 @@ public:
 
 - (void) exportDICOMFile:(id) sender
 {
-	if( exportDCMWindow == 0L)
+	if( exportDCMWindow == nil)
 	{
 		NSRunAlertPanel(NSLocalizedString(@"Not available", nil), NSLocalizedString(@"This function is not available for this window.", nil), NSLocalizedString(@"OK", nil), nil, nil);
 	}
@@ -1184,7 +1184,7 @@ public:
 	[self setCurrentdcmExport: dcmExportMode];
 	if( [[[self window] windowController] movieFrames] > 1) [[dcmExportMode cellWithTag:2] setEnabled: YES];
 	else [[dcmExportMode cellWithTag:2] setEnabled: NO];
-	[NSApp beginSheet: exportDCMWindow modalForWindow:[self window] modalDelegate:self didEndSelector:0L contextInfo:(void*) 0L];
+	[NSApp beginSheet: exportDCMWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:(void*) nil];
 }
 
 -(float) rotation {return rotationValue;}
@@ -1273,7 +1273,7 @@ public:
 
 -(IBAction) switchProjection:(id) sender
 {
-	if( sender == 0L) return;
+	if( sender == nil) return;
 	
 //	projectionMode = [[sender selectedCell] tag];
 //	switch( [[sender selectedCell] tag])
@@ -1397,7 +1397,7 @@ public:
 
 -(IBAction) exportQuicktime3DVR:(id) sender
 {
-	if( export3DVRWindow == 0L)
+	if( export3DVRWindow == nil)
 	{
 		NSRunAlertPanel(NSLocalizedString(@"Not available", nil), NSLocalizedString(@"This function is not available for this window.", nil), NSLocalizedString(@"OK", nil), nil, nil);
 	}
@@ -1405,14 +1405,14 @@ public:
 	if ([[NSUserDefaults standardUserDefaults] integerForKey: @"MAPPERMODEVR"] == 1 ) { [[VRquality cellWithTag: 1] setEnabled: NO]; if( [[VRquality selectedCell] tag] == 1) [VRquality selectCellWithTag: 0];}
 	else [[VRquality cellWithTag: 1] setEnabled: YES];
 	
-	[NSApp beginSheet: export3DVRWindow modalForWindow:[self window] modalDelegate:self didEndSelector:0L contextInfo:(void*) 0L];
+	[NSApp beginSheet: export3DVRWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:(void*) nil];
 }
 
 - (IBAction) exportQuicktime:(id) sender
 {
 	long i;
 	
-	if( export3DWindow == 0L)
+	if( export3DWindow == nil)
 	{
 		NSRunAlertPanel(NSLocalizedString(@"Not available", nil), NSLocalizedString(@"This function is not available for this window.", nil), NSLocalizedString(@"OK", nil), nil, nil);
 	}
@@ -1423,9 +1423,9 @@ public:
 //	if( [[[self window] windowController] movieFrames] > 1)
 	if( [controller movieFrames] > 1)
 	{
-		if( NSRunInformationalAlertPanel( NSLocalizedString(@"Quicktime Export", nil), NSLocalizedString(@"Should I export the temporal series or the 3D scene?", nil), NSLocalizedString(@"3D Scene", nil), NSLocalizedString(@"Temporal Series", nil), 0L) == NSAlertDefaultReturn)
+		if( NSRunInformationalAlertPanel( NSLocalizedString(@"Quicktime Export", nil), NSLocalizedString(@"Should I export the temporal series or the 3D scene?", nil), NSLocalizedString(@"3D Scene", nil), NSLocalizedString(@"Temporal Series", nil), nil) == NSAlertDefaultReturn)
 		{
-						[NSApp beginSheet: export3DWindow modalForWindow:[self window] modalDelegate:self didEndSelector:0L contextInfo:(void*) 0L];
+						[NSApp beginSheet: export3DWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:(void*) nil];
 		}
 		else
 		{
@@ -1434,7 +1434,7 @@ public:
 			[mov release];
 		}
 	}
-	else [NSApp beginSheet: export3DWindow modalForWindow:[self window] modalDelegate:self didEndSelector:0L contextInfo:(void*) 0L];
+	else [NSApp beginSheet: export3DWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:(void*) nil];
 }
 
 -(BOOL) acceptsFirstMouse:(NSEvent*) theEvent
@@ -1455,7 +1455,7 @@ public:
 //- (void) deleteStartRenderingTime
 //{
 //	[startRenderingTime release];
-//	startRenderingTime = 0L;
+//	startRenderingTime = nil;
 //}
 //
 //-(void) startRendering
@@ -1489,7 +1489,7 @@ public:
 {
 	if([note object] == blendingController) // our blended serie is closing itself....
 	{
-		[self setBlendingPixSource:0L];
+		[self setBlendingPixSource:nil];
 		[self setNeedsDisplay:YES];
 	}
 }
@@ -1581,13 +1581,13 @@ public:
 {
     if ( self = [super initWithFrame:frame] )
     {
-		NSTrackingArea *cursorTracking = [[[NSTrackingArea alloc] initWithRect: [self visibleRect] options: (NSTrackingCursorUpdate | NSTrackingInVisibleRect | NSTrackingMouseEnteredAndExited | NSTrackingActiveInKeyWindow) owner: self userInfo: 0L] autorelease];
+		NSTrackingArea *cursorTracking = [[[NSTrackingArea alloc] initWithRect: [self visibleRect] options: (NSTrackingCursorUpdate | NSTrackingInVisibleRect | NSTrackingMouseEnteredAndExited | NSTrackingActiveInKeyWindow) owner: self userInfo: nil] autorelease];
 		
 		[self addTrackingArea: cursorTracking];
 	
 		rotate = NO;
 		
-		splash = 0L;	//[[WaitRendering alloc] init:NSLocalizedString(@"Rendering...", nil)];
+		splash = nil;	//[[WaitRendering alloc] init:NSLocalizedString(@"Rendering...", nil)];
 		currentTool = t3DRotate;
 		[self setCursorForView: currentTool];
 		
@@ -1599,45 +1599,45 @@ public:
 		blendingOFFSET16 = 1500;
 		
 		renderingMode = 0;	// VR, MIP = 1
-		blendingController = 0L;
+		blendingController = nil;
 		blendingFactor = 128.;
-		blendingVolume = 0L;
-		exportDCM = 0L;
-		currentOpacityArray = 0L;
-		textWLWW = 0L;
-		cursor = 0L;
+		blendingVolume = nil;
+		exportDCM = nil;
+		currentOpacityArray = nil;
+		textWLWW = nil;
+		cursor = nil;
 		ROIPoints = [[NSMutableArray array] retain];
 		
-		dataFRGB = 0L;
+		dataFRGB = nil;
 		
 		isViewportResizable = YES;
 		
-		data8 = 0L;
+		data8 = nil;
 		
-		opacityTransferFunction = 0L;
-		volumeProperty = 0L;
-		compositeFunction = 0L;
-		red = 0L;
-		green = 0L;
-		blue = 0L;
-		pixList = 0L;
+		opacityTransferFunction = nil;
+		volumeProperty = nil;
+		compositeFunction = nil;
+		red = nil;
+		green = nil;
+		blue = nil;
+		pixList = nil;
 		
 		firstTime = YES;
 		ROIUPDATE = NO;
 		
-		aCamera = 0L;
+		aCamera = nil;
 		
 		needToFlip = NO;
 		blendingNeedToFlip = NO;
 		
 		// MAPPERS
-		textureMapper = 0L;
-		volumeMapper = 0L;
-//		shearWarpMapper = 0L;
+		textureMapper = nil;
+		volumeMapper = nil;
+//		shearWarpMapper = nil;
 		
-		blendingTextureMapper = 0L;
-		blendingVolumeMapper = 0L;
-//		blendingShearWarpMapper = 0L;
+		blendingTextureMapper = nil;
+		blendingVolumeMapper = nil;
+//		blendingShearWarpMapper = nil;
 		
 		noWaitDialog = NO;
 		
@@ -1676,7 +1676,7 @@ public:
 		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"autorotate3D"] && [[[self window] windowController] isKindOfClass:[VRController class]])
 			startAutoRotate = [[NSTimer scheduledTimerWithTimeInterval:60*3 target:self selector:@selector(startAutoRotate:) userInfo:nil repeats:NO] retain];
 		
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowWillClose:) name: NSWindowWillCloseNotification object: 0L];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowWillClose:) name: NSWindowWillCloseNotification object: nil];
 		advancedCLUT = NO;
 		
 		if( MPProcessors() > 4)
@@ -1696,11 +1696,11 @@ public:
 	{
 		[startAutoRotate invalidate];
 		[startAutoRotate release];
-		startAutoRotate = 0L;
+		startAutoRotate = nil;
 		
 		[autoRotate invalidate];
 		[autoRotate release];
-		autoRotate = 0L;
+		autoRotate = nil;
 		
 		[self deleteMouseDownTimer];
 		[self deleteRightMouseDownTimer];
@@ -1779,7 +1779,7 @@ public:
 	double	temp[ 3];
 	float	ambient, diffuse, specular, specularpower;
 	
-	if( aCamera == 0L) return 0L;
+	if( aCamera == nil) return nil;
 	
 	NSMutableDictionary *dict = [NSMutableDictionary dictionary];
 	
@@ -1788,16 +1788,16 @@ public:
 	[dict setObject:[NSNumber numberWithBool:[firstObject SUVConverted]] forKey:@"SUVConverted"];
 	
 	aCamera->GetPosition( temp);
-	[dict setObject:[NSArray arrayWithObjects: [NSNumber numberWithFloat:temp[0]],  [NSNumber numberWithFloat:temp[1]],  [NSNumber numberWithFloat:temp[2]], 0L] forKey:@"CameraPosition"];
+	[dict setObject:[NSArray arrayWithObjects: [NSNumber numberWithFloat:temp[0]],  [NSNumber numberWithFloat:temp[1]],  [NSNumber numberWithFloat:temp[2]], nil] forKey:@"CameraPosition"];
 	aCamera->GetViewUp( temp);
-	[dict setObject:[NSArray arrayWithObjects: [NSNumber numberWithFloat:temp[0]],  [NSNumber numberWithFloat:temp[1]],  [NSNumber numberWithFloat:temp[2]], 0L] forKey:@"CameraViewUp"];
+	[dict setObject:[NSArray arrayWithObjects: [NSNumber numberWithFloat:temp[0]],  [NSNumber numberWithFloat:temp[1]],  [NSNumber numberWithFloat:temp[2]], nil] forKey:@"CameraViewUp"];
 	aCamera->GetFocalPoint( temp);
-	[dict setObject:[NSArray arrayWithObjects: [NSNumber numberWithFloat:temp[0]],  [NSNumber numberWithFloat:temp[1]],  [NSNumber numberWithFloat:temp[2]], 0L] forKey:@"CameraFocalPoint"];
+	[dict setObject:[NSArray arrayWithObjects: [NSNumber numberWithFloat:temp[0]],  [NSNumber numberWithFloat:temp[1]],  [NSNumber numberWithFloat:temp[2]], nil] forKey:@"CameraFocalPoint"];
 	aCamera->GetClippingRange( temp);
-	[dict setObject:[NSArray arrayWithObjects: [NSNumber numberWithFloat:temp[0]],  [NSNumber numberWithFloat:temp[1]], 0L] forKey:@"CameraClipping"];
+	[dict setObject:[NSArray arrayWithObjects: [NSNumber numberWithFloat:temp[0]],  [NSNumber numberWithFloat:temp[1]], nil] forKey:@"CameraClipping"];
 
 	[self getShadingValues:&ambient :&diffuse :&specular :&specularpower];
-	[dict setObject:[NSArray arrayWithObjects: [NSNumber numberWithFloat:ambient],  [NSNumber numberWithFloat:diffuse], [NSNumber numberWithFloat:specular],  [NSNumber numberWithFloat:specularpower], 0L] forKey:@"ShadingValues"];
+	[dict setObject:[NSArray arrayWithObjects: [NSNumber numberWithFloat:ambient],  [NSNumber numberWithFloat:diffuse], [NSNumber numberWithFloat:specular],  [NSNumber numberWithFloat:specularpower], nil] forKey:@"ShadingValues"];
 	[dict setObject:[NSNumber numberWithLong:volumeProperty->GetShade()] forKey:@"ShadingFlag"];
 	[dict setObject:[NSNumber numberWithLong:projectionMode] forKey:@"Projection"];
 	
@@ -1806,7 +1806,7 @@ public:
 
 - (void) drawRect:(NSRect)aRect
 {
-	if( drawLock == 0L) drawLock = [[NSRecursiveLock alloc] init];
+	if( drawLock == nil) drawLock = [[NSRecursiveLock alloc] init];
 	
 	BOOL iChatRunning = [[IChatTheatreDelegate sharedDelegate] isIChatTheatreRunning];
 	
@@ -1886,7 +1886,7 @@ public:
 	[[NSNotificationCenter defaultCenter] removeObserver: self];
 	
 	
-	[self setBlendingPixSource: 0L];
+	[self setBlendingPixSource: nil];
 	
 //	cbStart->Delete();
 	opacityTransferFunction->Delete();
@@ -1935,7 +1935,7 @@ public:
 	Line2DText->Delete();
 		
     [pixList release];
-    pixList = 0L;
+    pixList = nil;
 	
 	if( dataFRGB) free( dataFRGB);
 	
@@ -2195,7 +2195,7 @@ public:
 		aRenderer->ResetCameraClippingRange();
 		
 		[self setNeedsDisplay:YES];
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: 0L];
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: nil];
 	}
 }
 
@@ -2219,9 +2219,9 @@ public:
 	long	pix[ 3];
 	float	pos[ 3], value;
 	
-	NSPoint mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView: 0L];
+	NSPoint mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView: nil];
 	
-	NSMutableString *s = [NSMutableString stringWithFormat: NSLocalizedString( @"View Size: %d x %d", 0L), (int) [self frame].size.width, (int) [self frame].size.height];
+	NSMutableString *s = [NSMutableString stringWithFormat: NSLocalizedString( @"View Size: %d x %d", nil), (int) [self frame].size.width, (int) [self frame].size.height];
 	
 	if( [self get3DPixelUnder2DPositionX:mouseLocStart.x Y:mouseLocStart.y pixel:pix position:pos value:&value])
 	{
@@ -2233,15 +2233,15 @@ public:
 		NSString	*mmLoc = [[NSString stringWithFormat: @"X:%.2f Y:%.2f Z:%.2f (mm)", pos[ 0], pos[ 1], pos[ 2]] stringByPaddingToLength: 38 withString: @" " startingAtIndex: 0];
 		NSString	*val = [[NSString stringWithFormat: @"%.2f", value] stringByPaddingToLength: 9 withString: @" " startingAtIndex:  0];
 		
-		[s appendFormat: NSLocalizedString( @"   Pixel: %@    %@ %@", 0L), val, pixLoc, mmLoc];
+		[s appendFormat: NSLocalizedString( @"   Pixel: %@    %@ %@", nil), val, pixLoc, mmLoc];
 	}
 	
 	if( measureLength)
 	{
 		if( measureLength < .1)
-			[s appendFormat: NSLocalizedString( @"   Measurement: %2.2f %cm ", 0L), measureLength * 10000.0, 0xB5];
+			[s appendFormat: NSLocalizedString( @"   Measurement: %2.2f %cm ", nil), measureLength * 10000.0, 0xB5];
 		else
-			[s appendFormat: NSLocalizedString( @"   Measurement: %2.2f cm ", 0L), measureLength];
+			[s appendFormat: NSLocalizedString( @"   Measurement: %2.2f cm ", nil), measureLength];
 	}
 	
 	[pixelInformation setStringValue: s];
@@ -2578,7 +2578,7 @@ public:
 					[self getInteractor]->SetEventInformation((int) mouseLoc.x, (int) mouseLoc.y, controlDown, shiftDown);
 					[self computeOrientationText];
 					[self getInteractor]->InvokeEvent(vtkCommand::MouseMoveEvent, NULL);
-					[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: 0L];
+					[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: nil];
 					break;
 				
 				case t3DRotate:
@@ -2587,14 +2587,14 @@ public:
 					[self getInteractor]->SetEventInformation((int)mouseLoc.x, (int)mouseLoc.y, controlDown, shiftDown);
 					[self computeOrientationText];
 					[self getInteractor]->InvokeEvent(vtkCommand::MouseMoveEvent, NULL);
-					[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: 0L];
+					[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: nil];
 					break;
 				case tTranslate:
 					shiftDown = 1;
 					controlDown = 0;
 					[self getInteractor]->SetEventInformation((int) mouseLoc.x, (int) mouseLoc.y, controlDown, shiftDown);
 					[self getInteractor]->InvokeEvent(vtkCommand::MouseMoveEvent, NULL);					
-					[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: 0L];
+					[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: nil];
 					break;
 				case tZoom:
 					[self rightMouseDragged:theEvent];
@@ -2607,7 +2607,7 @@ public:
 					aRenderer->ResetCameraClippingRange();
 					[self computeOrientationText];
 					[self setNeedsDisplay:YES];
-					[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: 0L];
+					[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: nil];
 					break;
 			default:
 				break;
@@ -2637,7 +2637,7 @@ public:
 		[self getInteractor]->SetEventInformation((int) mouseLoc.x, (int) mouseLoc.y, controlDown, shiftDown);
 		[self computeLength];
 		[self getInteractor]->InvokeEvent(vtkCommand::MouseMoveEvent, NULL);
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: 0L];
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: nil];
 	}
 	else
 	{
@@ -2648,7 +2648,7 @@ public:
 		aCamera->OrthogonalizeViewUp();
 		aRenderer->ResetCameraClippingRange();
 		[self setNeedsDisplay:YES];
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: 0L];
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: nil];
 	}
 	
 	croppingBox->SetHandleSize( 0.005);
@@ -2690,7 +2690,7 @@ public:
 				}
 				
 				[self getInteractor]->InvokeEvent(vtkCommand::LeftButtonReleaseEvent, NULL);
-				[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: 0L];
+				[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: nil];
 				break;
 			case tZoom:
 				//[self rightMouseUp:theEvent];
@@ -2727,7 +2727,7 @@ public:
 			[self setNeedsDisplay:YES];
 		}
 		
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: 0L];
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: nil];
 	}
 }
 
@@ -2778,7 +2778,7 @@ public:
 		_mouseDownTimer = [[NSTimer scheduledTimerWithTimeInterval:1.0 target:self   selector:@selector(startDrag:) userInfo:theEvent  repeats:NO] retain];
 	}
 	
-	mouseLocPre = _mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView: 0L];
+	mouseLocPre = _mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView: nil];
 	
 	if( [theEvent clickCount] > 1 && (tool != t3Dpoint))
 	{
@@ -2788,7 +2788,7 @@ public:
 		if( [self get3DPixelUnder2DPositionX:_mouseLocStart.x Y:_mouseLocStart.y pixel:pix position:pos value:&value])
 		{
 			NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:	[NSNumber numberWithInt: pix[0]], @"x", [NSNumber numberWithInt: pix[1]], @"y", [NSNumber numberWithInt: pix[2]], @"z",
-																				0L];
+																				nil];
 			[[NSNotificationCenter defaultCenter] postNotificationName: @"Display3DPoint" object:pixList  userInfo: dict];
 		}
 		
@@ -2834,7 +2834,7 @@ public:
 			
 			// Click point 3D to 2D
 			
-			_mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView: 0L];
+			_mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView: nil];
 			
 			aRenderer->SetDisplayPoint( _mouseLocStart.x, _mouseLocStart.y, 0);
 			aRenderer->DisplayToWorld();
@@ -2876,7 +2876,7 @@ public:
 			
 			// Click point 3D to 2D
 			
-			_mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView: 0L];
+			_mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView: nil];
 			
 			aRenderer->SetDisplayPoint( _mouseLocStart.x, _mouseLocStart.y, 0);
 			aRenderer->DisplayToWorld();
@@ -3053,7 +3053,7 @@ public:
 					pix[2] = [[[controller sliceNumber2DPointsArray] objectAtIndex:[self selected3DPointIndex]] intValue];
 					
 					NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:	[NSNumber numberWithInt: pix[0]], @"x", [NSNumber numberWithInt: pix[1]], @"y", [NSNumber numberWithInt: pix[2]], @"z",
-																						0L];
+																						nil];
 					[[NSNotificationCenter defaultCenter] postNotificationName: @"Display3DPoint" object:pixList  userInfo: dict];
 					
 //					NSLog(@"mouseLocationOnScreen : %f, %f", [point3DInfoPanel frame].origin.x, [point3DInfoPanel frame].origin.y);
@@ -3072,7 +3072,7 @@ public:
 			NSLog( @"**** Undo");
 						
 			// clicked point (2D coordinate)
-			_mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView: 0L];
+			_mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView: nil];
 			
 			long pix[ 3], i;
 			float pos[ 3], value;
@@ -3083,7 +3083,7 @@ public:
 				WaitRendering	*waiting = [[WaitRendering alloc] init:NSLocalizedString(@"Applying Bone Removal...", nil)];
 				[waiting showWindow:self];
 				
-				NSArray	*roiList = 0L;
+				NSArray	*roiList = nil;
 				
 //				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"useFastGrowingRegionWithVolume"])
 //				{
@@ -3165,7 +3165,7 @@ public:
 				
 				for( NSDictionary *rr in roiList)
 				{
-					[roiToProceed addObject: [NSDictionary dictionaryWithObjectsAndKeys:  [rr objectForKey:@"roi"], @"roi", [rr objectForKey:@"curPix"], @"curPix", @"setPixelRoi", @"action", nsnewValue, @"newValue", nsminValue, @"minValue", nsmaxValue, @"maxValue", nsoutside, @"outside", nsaddition, @"addition", 0L]];
+					[roiToProceed addObject: [NSDictionary dictionaryWithObjectsAndKeys:  [rr objectForKey:@"roi"], @"roi", [rr objectForKey:@"curPix"], @"curPix", @"setPixelRoi", @"action", nsnewValue, @"newValue", nsminValue, @"minValue", nsmaxValue, @"maxValue", nsoutside, @"outside", nsaddition, @"addition", nil]];
 				}
 				
 				[[controller viewer2D] roiSetStartScheduler: roiToProceed];
@@ -3520,7 +3520,7 @@ public:
 	NSMutableSet *unitsSet = [NSMutableSet set];
 	for ( i = 0; i < stackMax; i++ )
 	{
-		[unitsSet addObject: [NSArray arrayWithObjects: [NSNumber numberWithInt:i], [NSNumber numberWithInt:stackOrientation], [NSNumber numberWithInt: c], [ROIList objectAtIndex: i], [NSNumber numberWithInt: blendedSeries], [NSNumber numberWithBool: addition], [NSNumber numberWithFloat: newVal], 0L]];
+		[unitsSet addObject: [NSArray arrayWithObjects: [NSNumber numberWithInt:i], [NSNumber numberWithInt:stackOrientation], [NSNumber numberWithInt: c], [ROIList objectAtIndex: i], [NSNumber numberWithInt: blendedSeries], [NSNumber numberWithBool: addition], [NSNumber numberWithFloat: newVal], nil]];
 	}
 	// Perform work schedule
 	[sched performScheduleForWorkUnits:unitsSet];
@@ -3594,7 +3594,7 @@ public:
 
 - (void) processFlyTo
 {
-//		NSPoint mousePoint = [self convertPoint: [[self window] mouseLocationOutsideOfEventStream] fromView: 0L];
+//		NSPoint mousePoint = [self convertPoint: [[self window] mouseLocationOutsideOfEventStream] fromView: nil];
 //		long	pix[ 3];
 //		float	value;
 //		[self get3DPixelUnder2DPositionX:mousePoint.x Y:mousePoint.y pixel:pix position:flyToDestination value:&value];
@@ -3605,7 +3605,7 @@ public:
 	[self display];
 	if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD);
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: 0L];
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: nil];
 }
 
 - (void) keyUp:(NSEvent *)event
@@ -3627,7 +3627,7 @@ public:
 	{
 		if( aCamera->GetParallelProjection() == NO && flyto == NO)
 		{
-			NSPoint mousePoint = [self convertPoint: [[self window] mouseLocationOutsideOfEventStream] fromView: 0L];
+			NSPoint mousePoint = [self convertPoint: [[self window] mouseLocationOutsideOfEventStream] fromView: nil];
 			long	pix[ 3];
 			float	value;
 			
@@ -3658,7 +3658,7 @@ public:
 		NSLog( @"360 degree rotation - 100 images - END");
 		NSLog( @"360 degree rotation - Result in [s]: %f", -[now timeIntervalSinceNow]);
 		
-		[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Performance Test", 0L) description: [NSString stringWithFormat: NSLocalizedString(@"360 degree rotation - 100 images\rResult in [s] : %f", 0L), -[now timeIntervalSinceNow]] name:@"result"];
+		[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Performance Test", nil) description: [NSString stringWithFormat: NSLocalizedString(@"360 degree rotation - 100 images\rResult in [s] : %f", nil), -[now timeIntervalSinceNow]] name:@"result"];
 	}
 	else if( c == 27)
 	{
@@ -3746,7 +3746,7 @@ public:
 	ROIUPDATE = NO;
 	//[[NSNotificationCenter defaultCenter] postNotificationName: @"updateVolumeData" object: pixList userInfo: 0];	<- This is slow
 	
-	cropcallback->Execute(croppingBox, 0, 0L);
+	cropcallback->Execute(croppingBox, 0, nil);
 	
 	[scheduler release];
 	
@@ -3863,7 +3863,7 @@ public:
 
 -(void) setBlendingWLWW:(float) iwl :(float) iww
 {
-	if( blendingController == 0L) return;
+	if( blendingController == nil) return;
 
     double newValues[2];
     
@@ -4444,10 +4444,10 @@ public:
 			blendingDst8.rowBytes = [blendingFirstObject pwidth] * sizeof(short);
 			
 			blendingData8 = (char*) malloc( blendingDst8.height * blendingDst8.width * sizeof(short));
-			if( blendingData8 == 0L)
+			if( blendingData8 == nil)
 			{
 				[blendingPixList release];
-				blendingController = 0L;
+				blendingController = nil;
 				return;
 			}
 			
@@ -4541,7 +4541,7 @@ public:
 			blendingVolumeProperty->SetScalarOpacity( blendingOpacityTransferFunction);
 		}
 		
-		[self setBlendingCLUT:0L :0L :0L];
+		[self setBlendingCLUT:nil :nil :nil];
 
 		blendingVolumeProperty->SetInterpolationTypeToLinear();
 		
@@ -4597,7 +4597,7 @@ public:
 //		NSLog(@"%0.1f / %0.1f / %0.1f", ( blendingnormal[0]), ( blendingnormal[ 1]),  (blendingnormal[ 2]));
 		
 		cropcallback->setBlendingVolume( blendingVolume);
-//		cropcallback->Execute(croppingBox, 0, 0L);
+//		cropcallback->Execute(croppingBox, 0, nil);
 		
 	    aRenderer->AddVolume( blendingVolume);
 	}
@@ -4608,13 +4608,13 @@ public:
 			aRenderer->RemoveVolume( blendingVolume);
 			
 			blendingVolume->Delete();
-			blendingVolume = 0L;
+			blendingVolume = nil;
 			
 			if( blendingVolumeMapper) blendingVolumeMapper->Delete();
 			if( blendingTextureMapper) blendingTextureMapper->Delete();
 			
-			blendingVolumeMapper = 0L;
-			blendingTextureMapper = 0L;
+			blendingVolumeMapper = nil;
+			blendingTextureMapper = nil;
 			
 			blendingOpacityTransferFunction->Delete();
 			blendingCompositeFunction->Delete();
@@ -4623,10 +4623,10 @@ public:
 			blendingReader->Delete();
 			
 			if(blendingData8) free(blendingData8);
-			blendingData8 = 0L;
+			blendingData8 = nil;
 			
 			[blendingPixList release];
-			blendingPixList = 0L;
+			blendingPixList = nil;
 		}
 	}
 }
@@ -4683,9 +4683,9 @@ public:
 	}
 		
 	if( volumeMapper) volumeMapper->Delete();
-	volumeMapper = 0L;
+	volumeMapper = nil;
 	if( textureMapper) textureMapper->Delete();
-	textureMapper = 0L;
+	textureMapper = nil;
 	
 	[self setEngine: [[NSUserDefaults standardUserDefaults] integerForKey: @"MAPPERMODEVR"] showWait: NO];
 
@@ -4893,7 +4893,7 @@ public:
 		dst8.rowBytes = [firstObject pwidth] * sizeof(short);
 		
 		data8 = (char*) malloc( dst8.height * dst8.width * sizeof(short));
-		if( data8 == 0L) return -1;
+		if( data8 == nil) return -1;
 		
 		dst8.data = data8;
 		srcf.data = data;
@@ -5067,7 +5067,7 @@ public:
 		}
 		
 		
-		[self setCLUT:0L :0L :0L];
+		[self setCLUT:nil :nil :nil];
 		
 		[self setShadingValues:0.15 :0.9 :0.3 :15];
 
@@ -5139,7 +5139,7 @@ public:
 		croppingBox->OutlineCursorWiresOff();
 		
 		cropcallback = vtkMyCallbackVR::New();
-		cropcallback->setBlendingVolume( 0L);
+		cropcallback->setBlendingVolume( nil);
 		croppingBox->AddObserver(vtkCommand::InteractionEvent, cropcallback);
 			
 		textWLWW = vtkTextActor::New();
@@ -5361,7 +5361,7 @@ public:
 {
 	[drawLock lock];
 	
-	unsigned char	*buf = 0L;
+	unsigned char	*buf = nil;
 	int				i;
 	
 	NSRect size = [self bounds];
@@ -5462,7 +5462,7 @@ public:
 	else colorSpace = NSCalibratedWhiteColorSpace;
 
 	rep = [[[NSBitmapImageRep alloc]
-			 initWithBitmapDataPlanes:0L
+			 initWithBitmapDataPlanes:nil
 						   pixelsWide:width
 						   pixelsHigh:height
 						bitsPerSample:bpp
@@ -5551,12 +5551,12 @@ public:
 	NSString		*str = [VRController getUniqueFilenameScissorStateFor: [firstObject imageObj]];	
 	NSData			*volumeData;
 	long			volumeSize = [firstObject pheight] * [pixList count] * [firstObject pwidth] * sizeof(float);
-	WaitRendering	*waiting = 0L;
+	WaitRendering	*waiting = nil;
 	
 	switch( [[sender selectedCell] tag])
 	{
 		case 2:
-			[[NSFileManager defaultManager] removeFileAtPath: str handler: 0L];
+			[[NSFileManager defaultManager] removeFileAtPath: str handler: nil];
 		break;
 		
 		case 1:	// Load
@@ -5572,7 +5572,7 @@ public:
 					memcpy( data, [volumeData bytes], volumeSize);
 					[[NSNotificationCenter defaultCenter] postNotificationName: @"updateVolumeData" object: pixList userInfo: 0];
 					
-					cropcallback->Execute(croppingBox, 0, 0L);
+					cropcallback->Execute(croppingBox, 0, nil);
 				}
 				else NSRunAlertPanel(NSLocalizedString(@"3D Scissor State", nil), NSLocalizedString(@"No saved data are available.", nil), NSLocalizedString(@"OK", nil), nil, nil);
 				
@@ -5641,7 +5641,7 @@ public:
 	aCamera->SetParallelScale(parallelScale);
 	
 	aCamera->SetParallelProjection(aVtkCamera->GetParallelProjection());
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: 0L];
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: nil];
 	[self setNeedsDisplay:YES];
 }
 
@@ -5724,7 +5724,7 @@ double pos[3], focal[3], vUp[3],  fpVector[3];
 	aCamera->OrthogonalizeViewUp();
 	aRenderer->ResetCameraClippingRange();
 
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: 0L];
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: nil];
 
 }
 
@@ -5790,7 +5790,7 @@ double pos[3], focal[3], vUp[3],  fpVector[3];
 	aCamera->SetEyeAngle(eyeAngle);
 	aCamera->SetParallelScale(parallelScale);
 	aRenderer->ResetCameraClippingRange();
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: 0L];
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: nil];
 }
 
 - (void) setLowResolutionCamera: (Camera*) cam
@@ -5982,7 +5982,7 @@ double pos[3], focal[3], vUp[3],  fpVector[3];
 
 - (BOOL) get3DPixelUnder2DPositionX:(float) x Y:(float) y pixel: (long*) pix position:(float*) position value:(float*) val
 {
-	[self get3DPixelUnder2DPositionX:(float) x Y:(float) y pixel: (long*) pix position:(float*) position value:(float*) val maxOpacity: 1.1 minValue: 0];
+	return [self get3DPixelUnder2DPositionX:(float) x Y:(float) y pixel: (long*) pix position:(float*) position value:(float*) val maxOpacity: 1.1 minValue: 0];
 }
 
 - (BOOL) get3DPixelUnder2DPositionX:(float) x Y:(float) y pixel: (long*) pix position:(float*) position value:(float*) val maxOpacity: (float) maxOpacity minValue: (float) minValue
@@ -6515,7 +6515,7 @@ double pos[3], focal[3], vUp[3],  fpVector[3];
 	point3DDefaultColorBlue = [[NSUserDefaults standardUserDefaults] floatForKey:@"points3DcolorBlue"];
 	point3DDefaultColorAlpha = [[NSUserDefaults standardUserDefaults] floatForKey:@"points3DcolorAlpha"];
 	
-	if(a==0.0)
+	if(point3DDefaultColorAlpha==0.0)
 	{
 		point3DDefaultColorRed = 0.0;
 		point3DDefaultColorGreen = 1.0;
@@ -6769,14 +6769,14 @@ double pos[3], focal[3], vUp[3],  fpVector[3];
 			int index = 1;
 			switch (key){
 				case DefaultWWWLHotKeyAction: // default WW/WL
-								wwwlMenuString = NSLocalizedString(@"Default WL & WW", 0L);	// default WW/WL
+								wwwlMenuString = NSLocalizedString(@"Default WL & WW", nil);	// default WW/WL
 								[windowController applyWLWWForString:wwwlMenuString];
-								[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: wwwlMenuString userInfo: 0L];
+								[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: wwwlMenuString userInfo: nil];
 						break;
 				case FullDynamicWWWLHotKeyAction:  // full dynamic WW/WL
-								wwwlMenuString = NSLocalizedString(@"Full dynamic", 0L);	
+								wwwlMenuString = NSLocalizedString(@"Full dynamic", nil);	
 								[windowController applyWLWWForString:wwwlMenuString];	
-								[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: wwwlMenuString userInfo: 0L];								
+								[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: wwwlMenuString userInfo: nil];								
 						break;
 				
 				case Preset1WWWLHotKeyAction:																	// 1 - 9 will be presets WW/WL
@@ -6792,7 +6792,7 @@ double pos[3], focal[3], vUp[3],  fpVector[3];
 					{
 								wwwlMenuString = [wwwlValues objectAtIndex:key-Preset1WWWLHotKeyAction];
 								[windowController applyWLWWForString:wwwlMenuString];
-								[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: wwwlMenuString userInfo: 0L];
+								[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: wwwlMenuString userInfo: nil];
 					}	
 					break;
 				
@@ -7226,7 +7226,7 @@ double pos[3], focal[3], vUp[3],  fpVector[3];
 	snStopped = YES;
 	
 	[snCloseEventTimer release];
-	snCloseEventTimer = 0L;
+	snCloseEventTimer = nil;
 }
 
 #if USE3DCONNEXION
@@ -7238,7 +7238,7 @@ double pos[3], focal[3], vUp[3],  fpVector[3];
 	if(InstallConnexionHandlers != NULL)
 	{
 		// Install message handler and register our client
-		error = InstallConnexionHandlers(VRSpaceNavigatorMessageHandler, 0L, 0L);
+		error = InstallConnexionHandlers(VRSpaceNavigatorMessageHandler, nil, nil);
 
 		// This takes over in our application only
 		snConnexionClientID = RegisterConnexionClient('OsiX', (UInt8*) "\pOsiriX", kConnexionClientModeTakeOver, kConnexionMaskAll);
@@ -7301,7 +7301,7 @@ void VRSpaceNavigatorMessageHandler(io_connect_t connection, natural_t messageTy
 						{
 							[vV->snCloseEventTimer invalidate];
 							[vV->snCloseEventTimer release];
-							vV->snCloseEventTimer = 0L;
+							vV->snCloseEventTimer = nil;
 						}
 						
 						// *** zoom ***					
@@ -7382,7 +7382,7 @@ void VRSpaceNavigatorMessageHandler(io_connect_t connection, natural_t messageTy
 							[vV setNeedsDisplay:YES];
 						}
 												
-						[[NSNotificationCenter defaultCenter] postNotificationName:@"VRCameraDidChange" object:vV userInfo:0L];
+						[[NSNotificationCenter defaultCenter] postNotificationName:@"VRCameraDidChange" object:vV userInfo:nil];
 						[vV computeOrientationText];
 						
 						[vV displayLowRes];
@@ -7399,18 +7399,18 @@ void VRSpaceNavigatorMessageHandler(io_connect_t connection, natural_t messageTy
 						{
 							if( vV->projectionMode != 2) [vV coView:nil];
 							else [vV yaw:180.0];
-							[[NSNotificationCenter defaultCenter] postNotificationName:@"VRCameraDidChange" object:vV userInfo:0L];
+							[[NSNotificationCenter defaultCenter] postNotificationName:@"VRCameraDidChange" object:vV userInfo:nil];
 						}
 						else if(state->buttons==2) // right button pressed
 						{
 							if( vV->projectionMode != 2) [vV saView:nil];
 							else [vV yaw:90.0];
-							[[NSNotificationCenter defaultCenter] postNotificationName:@"VRCameraDidChange" object:vV userInfo:0L];
+							[[NSNotificationCenter defaultCenter] postNotificationName:@"VRCameraDidChange" object:vV userInfo:nil];
 						}
 						else if(state->buttons==3) // both button are presed
 						{
 							if( vV->projectionMode != 2) [vV saViewOpposite:nil];
-							[[NSNotificationCenter defaultCenter] postNotificationName:@"VRCameraDidChange" object:vV userInfo:0L];
+							[[NSNotificationCenter defaultCenter] postNotificationName:@"VRCameraDidChange" object:vV userInfo:nil];
 						}
                         break;
                 }

@@ -23,7 +23,7 @@
     {
         NSDictionary* props = (NSDictionary*) CGImageSourceCopyPropertiesAtIndex(source, 0, NULL);
 		
-		NSString *type = 0L;
+		NSString *type = nil;
 		
 		if( [format isEqualToString:@"tiff"]) type = @"public.tiff";
 		if( [format isEqualToString:@"jpeg"]) type = @"public.jpeg";

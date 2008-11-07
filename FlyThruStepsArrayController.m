@@ -105,7 +105,7 @@
 			NSOpenPanel	*oPanel = [NSOpenPanel openPanel];
 			[oPanel setAllowsMultipleSelection:NO];
 			[oPanel setCanChooseDirectories:NO];
-			int result = [oPanel runModalForDirectory:0L file:nil types:[NSArray arrayWithObject:@"xml"]];
+			int result = [oPanel runModalForDirectory:nil file:nil types:[NSArray arrayWithObject:@"xml"]];
 
 			if (result == NSOKButton) 
 			{	
@@ -134,7 +134,7 @@
 			[panel setCanSelectHiddenExtension:NO];
 			[panel setRequiredFileType:@"xml"];
 
-			if( [panel runModalForDirectory:0L file:@"OsiriX Fly Through"] == NSFileHandlingPanelOKButton)
+			if( [panel runModalForDirectory:nil file:@"OsiriX Fly Through"] == NSFileHandlingPanelOKButton)
 			{
 				NSMutableDictionary *xml;
 				xml = [flyThruController.flyThru exportToXML];

@@ -22,7 +22,7 @@
 
 static BOOL isHcugeCh = NO, isUnigeCh = NO, testIsHugDone = NO, testIsUniDone = NO;
 static NSString *hostName = @"";
-static NSHost *currentHost = 0L;
+static NSHost *currentHost = nil;
 
 @implementation DefaultsOsiriX
 
@@ -31,7 +31,7 @@ static NSHost *currentHost = 0L;
 	#ifdef OSIRIX_VIEWER
 	return [DCMNetServiceDelegate currentHost];
 	#else
-	if( currentHost == 0L)
+	if( currentHost == nil)
 		currentHost = [[NSHost currentHost] retain];
 	#endif
 	
@@ -222,19 +222,19 @@ static NSHost *currentHost = 0L;
 	NSMutableDictionary *wlwwValues = [NSMutableDictionary dictionary];
 	
 	iww = 1400;          iwl = -500;
-	[wlwwValues setObject:[NSArray arrayWithObjects:[NSNumber numberWithFloat:iwl], [NSNumber numberWithFloat:iww], 0L] forKey:@"CT - Pulmonary"];
+	[wlwwValues setObject:[NSArray arrayWithObjects:[NSNumber numberWithFloat:iwl], [NSNumber numberWithFloat:iww], nil] forKey:@"CT - Pulmonary"];
 	
 	iww = 1500;          iwl = 300;
-	[wlwwValues setObject:[NSArray arrayWithObjects:[NSNumber numberWithFloat:iwl], [NSNumber numberWithFloat:iww], 0L] forKey:@"CT - Bone"];
+	[wlwwValues setObject:[NSArray arrayWithObjects:[NSNumber numberWithFloat:iwl], [NSNumber numberWithFloat:iww], nil] forKey:@"CT - Bone"];
 	
 	iww = 100;          iwl = 50;
-	[wlwwValues setObject:[NSArray arrayWithObjects:[NSNumber numberWithFloat:iwl], [NSNumber numberWithFloat:iww], 0L] forKey:@"CT - Brain"];
+	[wlwwValues setObject:[NSArray arrayWithObjects:[NSNumber numberWithFloat:iwl], [NSNumber numberWithFloat:iww], nil] forKey:@"CT - Brain"];
 	
 	iww = 350;          iwl = 40;
-	[wlwwValues setObject:[NSArray arrayWithObjects:[NSNumber numberWithFloat:iwl], [NSNumber numberWithFloat:iww], 0L] forKey:@"CT - Abdomen"];
+	[wlwwValues setObject:[NSArray arrayWithObjects:[NSNumber numberWithFloat:iwl], [NSNumber numberWithFloat:iww], nil] forKey:@"CT - Abdomen"];
 	
 	iww = 700;          iwl = -300;
-	[wlwwValues setObject:[NSArray arrayWithObjects:[NSNumber numberWithFloat:iwl], [NSNumber numberWithFloat:iww], 0L] forKey:@"VR - Endoscopy"];
+	[wlwwValues setObject:[NSArray arrayWithObjects:[NSNumber numberWithFloat:iwl], [NSNumber numberWithFloat:iww], nil] forKey:@"VR - Endoscopy"];
 	
 	[defaultValues setObject:wlwwValues forKey:@"WLWW3"];
 	
@@ -467,16 +467,16 @@ static NSHost *currentHost = 0L;
 		// Points & Colors
 		NSMutableArray *colors = [NSMutableArray arrayWithCapacity:0], *points = [NSMutableArray arrayWithCapacity:0];
 		
-		[colors addObject:[NSArray arrayWithObjects: [NSNumber numberWithFloat: 0], [NSNumber numberWithFloat: 0], [NSNumber numberWithFloat: 0], 0L]];
+		[colors addObject:[NSArray arrayWithObjects: [NSNumber numberWithFloat: 0], [NSNumber numberWithFloat: 0], [NSNumber numberWithFloat: 0], nil]];
 		[points addObject:[NSNumber numberWithLong: 0]];
 		
-		[colors addObject:[NSArray arrayWithObjects: [NSNumber numberWithFloat: 1], [NSNumber numberWithFloat: 0], [NSNumber numberWithFloat: 0], 0L]];
+		[colors addObject:[NSArray arrayWithObjects: [NSNumber numberWithFloat: 1], [NSNumber numberWithFloat: 0], [NSNumber numberWithFloat: 0], nil]];
 		[points addObject:[NSNumber numberWithLong: 128]];
 		
-		[colors addObject:[NSArray arrayWithObjects: [NSNumber numberWithFloat: 1], [NSNumber numberWithFloat: 1], [NSNumber numberWithFloat: 0], 0L]];
+		[colors addObject:[NSArray arrayWithObjects: [NSNumber numberWithFloat: 1], [NSNumber numberWithFloat: 1], [NSNumber numberWithFloat: 0], nil]];
 		[points addObject:[NSNumber numberWithLong: 192]];
 		
-		[colors addObject:[NSArray arrayWithObjects: [NSNumber numberWithFloat: 1], [NSNumber numberWithFloat: 1], [NSNumber numberWithFloat: 1], 0L]];
+		[colors addObject:[NSArray arrayWithObjects: [NSNumber numberWithFloat: 1], [NSNumber numberWithFloat: 1], [NSNumber numberWithFloat: 1], nil]];
 		[points addObject:[NSNumber numberWithLong: 256]];
 		
 		[aCLUTFilter setObject:colors forKey:@"Colors"];
@@ -503,10 +503,10 @@ static NSHost *currentHost = 0L;
 		// Points & Colors
 		NSMutableArray *colors = [NSMutableArray arrayWithCapacity:0], *points = [NSMutableArray arrayWithCapacity:0];
 		
-		[colors addObject:[NSArray arrayWithObjects: [NSNumber numberWithFloat: 1], [NSNumber numberWithFloat: 1], [NSNumber numberWithFloat: 1], 0L]];
+		[colors addObject:[NSArray arrayWithObjects: [NSNumber numberWithFloat: 1], [NSNumber numberWithFloat: 1], [NSNumber numberWithFloat: 1], nil]];
 		[points addObject:[NSNumber numberWithLong: 0]];
 		
-		[colors addObject:[NSArray arrayWithObjects: [NSNumber numberWithFloat: 0], [NSNumber numberWithFloat: 0], [NSNumber numberWithFloat: 0], 0L]];
+		[colors addObject:[NSArray arrayWithObjects: [NSNumber numberWithFloat: 0], [NSNumber numberWithFloat: 0], [NSNumber numberWithFloat: 0], nil]];
 		[points addObject:[NSNumber numberWithLong: 256]];
 		
 		[aCLUTFilter setObject:colors forKey:@"Colors"];
@@ -534,8 +534,8 @@ static NSHost *currentHost = 0L;
 		[points addObject:[NSNumber numberWithLong: 0]];
 		[points addObject:[NSNumber numberWithLong: 255]];
 		
-		[colors addObject:[NSArray arrayWithObjects: [NSNumber numberWithFloat: 1], [NSNumber numberWithFloat: 1], [NSNumber numberWithFloat: 1], 0L]];
-		[colors addObject:[NSArray arrayWithObjects: [NSNumber numberWithFloat: 0], [NSNumber numberWithFloat: 0], [NSNumber numberWithFloat: 0], 0L]];
+		[colors addObject:[NSArray arrayWithObjects: [NSNumber numberWithFloat: 1], [NSNumber numberWithFloat: 1], [NSNumber numberWithFloat: 1], nil]];
+		[colors addObject:[NSArray arrayWithObjects: [NSNumber numberWithFloat: 0], [NSNumber numberWithFloat: 0], [NSNumber numberWithFloat: 0], nil]];
 
 		
 		[aCLUTFilter setObject:colors forKey:@"Colors"];
@@ -594,7 +594,7 @@ static NSHost *currentHost = 0L;
 	[defaultValues setObject:[NSMutableArray arrayWithObject:@"Osirix"] forKey:@"ROUTING CALENDARS"];
 	
 	// ** AETITLE
-	if( [defaultValues objectForKey:@"AETITLE"] == 0L)
+	if( [defaultValues objectForKey:@"AETITLE"] == nil)
 	{
 		#ifdef OSIRIX_VIEWER
 		char s[_POSIX_HOST_NAME_MAX+1];

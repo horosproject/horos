@@ -848,7 +848,7 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 						}
 						else if(view==1) // coronal
 						{
-							float *srcIm = 0L, *srcIm1 = 0L;
+							float *srcIm = nil, *srcIm1 = nil;
 							
 							if( [[roiViewer imageView] flippedData])
 							{
@@ -869,7 +869,7 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 						}
 						else if(view==2) // saggital
 						{
-							float *srcIm = 0L, *srcIm1 = 0L;
+							float *srcIm = nil, *srcIm1 = nil;
 							
 							if( [[roiViewer imageView] flippedData])
 							{
@@ -1002,7 +1002,7 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 //
 //	fileList = [NSMutableArray array];
 //	pixList = [NSMutableArray array];
-//	volumeData = 0L;
+//	volumeData = nil;
 //
 //	float factor = 0.5;
 //	while ( ![ViewerController resampleDataFromPixArray:pix fileArray:files inPixArray:pixList fileArray:fileList data:&volumeData withXFactor:factor yFactor:factor zFactor:factor] && factor<=0.8)
@@ -1043,6 +1043,8 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 		return [self initWithObjects:pix :files :vData :roi :roiV :t forAxial:NO forCoronal:YES forSagittal:NO];
 	else if(view==2)
 		return [self initWithObjects:pix :files :vData :roi :roiV :t forAxial:NO forCoronal:NO forSagittal:YES];
+	
+	return nil;
 }
 
 - (id) initWithObjects:(NSMutableArray*) pix :(NSArray*) files :(NSData*) vData :(ROI*) roi :(ViewerController*) roiV :(long) t forAxial:(BOOL)axial forCoronal:(BOOL)coronal forSagittal:(BOOL)saggital
@@ -1063,7 +1065,7 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 
 	fileList = [NSMutableArray array];
 	pixList = [NSMutableArray array];
-	volumeData = 0L;
+	volumeData = nil;
 
 	float factor = 0.5;
 	while ( ![ViewerController resampleDataFromPixArray:pix fileArray:files inPixArray:pixList fileArray:fileList data:&volumeData withXFactor:factor yFactor:factor zFactor:1.0] && factor<=0.8)

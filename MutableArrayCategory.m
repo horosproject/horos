@@ -81,7 +81,7 @@ NSInteger sortByAddress(id roi1, id roi2, void *context)
 {
 	NSArray *a = [self sortedArrayUsingFunction: sortByAddress context: 0];
 	
-	id lastObject = 0L;
+	id lastObject = nil;
 	
 	for( id s in a)
 	{
@@ -95,7 +95,7 @@ NSInteger sortByAddress(id roi1, id roi2, void *context)
 {
 	NSArray *a = [self sortedArrayUsingSelector: @selector(caseInsensitiveCompare:)];
 	
-	NSString *lastString = 0L;
+	NSString *lastString = nil;
 	
 	for( NSString *s in a)
 	{

@@ -98,11 +98,12 @@
 	case 11: return [_object descriptionWithCalendarFormat:@"%Y%m%d-%Y%m%d" timeZone:nil locale:nil];  //today pm
 	}
 	
+	return nil;
 }
 
 - (NSString *)withinDateString{
 	DCMCalendarDate *endDate = [DCMCalendarDate date];
-	NSCalendarDate *startDate = 0L;
+	NSCalendarDate *startDate = nil;
 	
 	NSString *today = [endDate dateString];
 	NSString *dateRange = today;

@@ -136,7 +136,7 @@ moveCallback(void *callbackData, T_DIMSE_C_MoveRQ *request,
 //	if( [[BrowserController currentBrowser] isNetworkLogsActive] == NO) return;
 //	
 //	NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContextLoadIfNecessary: NO];
-//	if( context == 0L) return;
+//	if( context == nil) return;
 //	
 //    OFCondition cond = EC_Normal;
 //    MyCallbackInfo *myCallbackData;
@@ -505,7 +505,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 }
 
 - (DcmDataset *)moveDataset{
-
+	return nil;
 }
 
 // values are a NSDictionary the key for the value is @"value" key for the name is @"name"  name is the tag descriptor from the tag dictionary
@@ -706,7 +706,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 
 - (BOOL)setupNetworkWithSyntax:(const char *)abstractSyntax dataset:(DcmDataset *)dataset
 {
-	return [self setupNetworkWithSyntax:(const char *)abstractSyntax dataset:(DcmDataset *)dataset destination: 0L];
+	return [self setupNetworkWithSyntax:(const char *)abstractSyntax dataset:(DcmDataset *)dataset destination: nil];
 }
 
 //common network code for move and query
@@ -1032,7 +1032,7 @@ NS_HANDLER
 		NSString	*response = [NSString stringWithFormat: @"%@  /  %@:%d\r\r%@\r%@", _calledAET, _hostname, _port, [queryException name], [queryException description]];
 		
 		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"showErrorsIfQueryFailed"])
-			[self performSelectorOnMainThread:@selector(errorMessage:) withObject:[NSArray arrayWithObjects: NSLocalizedString(@"Query Failed (1)", nil), response, NSLocalizedString(@"Continue", nil), 0L] waitUntilDone:YES];
+			[self performSelectorOnMainThread:@selector(errorMessage:) withObject:[NSArray arrayWithObjects: NSLocalizedString(@"Query Failed (1)", nil), response, NSLocalizedString(@"Continue", nil), nil] waitUntilDone:YES];
 		else
 			[[AppController sharedAppController] growlTitle: NSLocalizedString(@"Query Failed (1)", nil) description: response name: @"newfiles"];
 			
@@ -1173,7 +1173,7 @@ NS_ENDHANDLER
 			  }
 			
 			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"showErrorsIfQueryFailed"])
-				[self performSelectorOnMainThread:@selector(errorMessage:) withObject:[NSArray arrayWithObjects: NSLocalizedString(@"Query Failed (2)", nil), response, NSLocalizedString(@"Continue", nil), 0L] waitUntilDone:YES];
+				[self performSelectorOnMainThread:@selector(errorMessage:) withObject:[NSArray arrayWithObjects: NSLocalizedString(@"Query Failed (2)", nil), response, NSLocalizedString(@"Continue", nil), nil] waitUntilDone:YES];
 			else
 				[[AppController sharedAppController] growlTitle: NSLocalizedString(@"Query Failed (2)", nil) description: response name: @"newfiles"];
 				
@@ -1234,7 +1234,7 @@ NS_ENDHANDLER
 
 - (OFCondition) cmove:(T_ASC_Association *)assoc network:(T_ASC_Network *)net dataset:(DcmDataset *)dataset
 {
-	return [self cmove:(T_ASC_Association *)assoc network:(T_ASC_Network *)net dataset:(DcmDataset *)dataset destination: (char*) 0L];
+	return [self cmove:(T_ASC_Association *)assoc network:(T_ASC_Network *)net dataset:(DcmDataset *)dataset destination: (char*) nil];
 }
 
 - (OFCondition) cmove:(T_ASC_Association *)assoc network:(T_ASC_Network *)net dataset:(DcmDataset *)dataset destination: (char*) destination
@@ -1256,7 +1256,7 @@ NS_ENDHANDLER
 
 - (OFCondition)moveSCU:(T_ASC_Association *)assoc  network:(T_ASC_Network *)net dataset:( DcmDataset *)dataset
 {
-	return [self moveSCU:(T_ASC_Association *)assoc  network:(T_ASC_Network *)net dataset:( DcmDataset *)dataset destination: 0L];
+	return [self moveSCU:(T_ASC_Association *)assoc  network:(T_ASC_Network *)net dataset:( DcmDataset *)dataset destination: nil];
 }
 
 - (OFCondition)moveSCU:(T_ASC_Association *)assoc  network:(T_ASC_Network *)net dataset:( DcmDataset *)dataset destination: (char*) destination
@@ -1324,7 +1324,7 @@ NS_ENDHANDLER
 		{
 			DIMSE_printCMoveRSP(stdout, &rsp);
 			
-			[self performSelectorOnMainThread:@selector(errorMessage:) withObject:[NSArray arrayWithObjects: NSLocalizedString(@"Move Failed", nil), [NSString stringWithCString: DU_cmoveStatusString(rsp.DimseStatus)], NSLocalizedString(@"Continue", nil), 0L] waitUntilDone:YES];
+			[self performSelectorOnMainThread:@selector(errorMessage:) withObject:[NSArray arrayWithObjects: NSLocalizedString(@"Move Failed", nil), [NSString stringWithCString: DU_cmoveStatusString(rsp.DimseStatus)], NSLocalizedString(@"Continue", nil), nil] waitUntilDone:YES];
 		}
 		
         if (_verbose)
@@ -1338,7 +1338,7 @@ NS_ENDHANDLER
     }
 	else
 	{
-		[self performSelectorOnMainThread:@selector(errorMessage:) withObject:[NSArray arrayWithObjects: NSLocalizedString(@"Move Failed", nil), [NSString stringWithCString: DU_cmoveStatusString(rsp.DimseStatus)], NSLocalizedString(@"Continue", nil), 0L] waitUntilDone:YES];
+		[self performSelectorOnMainThread:@selector(errorMessage:) withObject:[NSArray arrayWithObjects: NSLocalizedString(@"Move Failed", nil), [NSString stringWithCString: DU_cmoveStatusString(rsp.DimseStatus)], NSLocalizedString(@"Continue", nil), nil] waitUntilDone:YES];
         errmsg("Move Failed:");
         DimseCondition::dump(cond);
     }

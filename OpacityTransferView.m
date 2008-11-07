@@ -205,7 +205,7 @@
 
 - (IBAction) renderButton:(id) sender
 {
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"OpacityChanged" object: self userInfo: 0L];
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"OpacityChanged" object: self userInfo: nil];
 }
 
 - (void) setCurrentCLUT :( unsigned char*) r : (unsigned char*) g : (unsigned char*) b

@@ -99,7 +99,7 @@ float	iY, aY;
 	
 	[[self window] setFrameAutosaveName:@"PlotWindow"];
 	
-	data = 0L;
+	data = nil;
 	curROI = iroi;
 	
 	[[self window] setTitle: [NSString stringWithFormat:NSLocalizedString(@"Plot of '%@' line", nil), [curROI name]]];

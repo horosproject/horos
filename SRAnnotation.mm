@@ -24,7 +24,7 @@
 
 + (NSString*) getImageRefSOPInstanceUID:(NSString*) path;
 {
-	NSString	*result = 0L;
+	NSString	*result = nil;
 	DSRDocument	*document = new DSRDocument();
 	
 	OFCondition status;
@@ -55,7 +55,7 @@
 
 + (NSString*) getFilenameFromSR:(NSString*) path;
 {
-	NSString	*result = 0L;
+	NSString	*result = nil;
 	DSRDocument	*document = new DSRDocument();
 	
 	OFCondition status;
@@ -435,6 +435,8 @@
 	
 	if( fileformat)
 		delete fileformat;
+	
+	return YES;
 }
 
 - (void)saveAsHTML;

@@ -2141,7 +2141,7 @@ int nifti_get_filesize( const char *pathname )
 
    if( pathname == NULL || *pathname == '\0' ) return -1 ;
    fp = znzopen(pathname,"rb",0); if( znz_isnull(fp) ) return -1 ;
-   znzseek(fp,0L,SEEK_END) ; len = znztell(fp) ;
+   znzseek(fp,nil,SEEK_END) ; len = znztell(fp) ;
    znzclose(fp) ; return len ;
 }
 

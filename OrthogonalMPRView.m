@@ -28,7 +28,7 @@
 	[super initWithFrame:frameRect];
 	[self setStringID:@"OrthogonalMPRVIEW"];
 	displayResliceAxes = 1;
-	controller = 0L;
+	controller = nil;
 	
 	// thick slab axes distance
 	thickSlabX = 0;
@@ -37,7 +37,7 @@
 	crossPositionX = 0;
 	crossPositionY = 0;
 	
-	curWLWWMenu = [NSLocalizedString(@"Other", 0L) retain];
+	curWLWWMenu = [NSLocalizedString(@"Other", nil) retain];
 	curCLUTMenu = [NSLocalizedString(@"No CLUT", nil) retain];
 	curOpacityMenu = [NSLocalizedString(@"Linear Table", nil) retain];
 	
@@ -91,7 +91,7 @@
 
 - (void) setPixList: (NSMutableArray*) pix :(NSArray*) files
 {
-	[self setPixList: pix : files : 0L];
+	[self setPixList: pix : files : nil];
 }
 
 - (NSMutableArray*) pixList
@@ -225,7 +225,7 @@
 
 - (void) getWLWW:(float*) wl :(float*) ww
 {
-	if( curDCM == 0L) NSLog(@"curDCM 0L");
+	if( curDCM == nil) NSLog(@"curDCM nil");
 	else
 	{
 		if(wl) *wl = [curDCM wl];
@@ -723,14 +723,14 @@
 			switch (key){
 			
 				case DefaultWWWLHotKeyAction:	// default WW/WL
-						wwwlMenuString = NSLocalizedString(@"Default WL & WW", 0L);	// default WW/WL
+						wwwlMenuString = NSLocalizedString(@"Default WL & WW", nil);	// default WW/WL
 						[windowController applyWLWWForString:wwwlMenuString];
-						[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: wwwlMenuString userInfo: 0L];
+						[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: wwwlMenuString userInfo: nil];
 						break;
 				case FullDynamicWWWLHotKeyAction:											// full dynamic WW/WL
-						wwwlMenuString = NSLocalizedString(@"Full dynamic", 0L);	
+						wwwlMenuString = NSLocalizedString(@"Full dynamic", nil);	
 						[windowController applyWLWWForString:wwwlMenuString];	
-						[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: wwwlMenuString userInfo: 0L];		
+						[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: wwwlMenuString userInfo: nil];		
 						break;
 				
 				case Preset1WWWLHotKeyAction:			// 1 - 9 will be presets WW/WL
@@ -746,7 +746,7 @@
 					{
 						wwwlMenuString = [wwwlValues objectAtIndex:key-Preset1WWWLHotKeyAction];
 						[windowController applyWLWWForString:wwwlMenuString];
-						[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: wwwlMenuString userInfo: 0L];
+						[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: wwwlMenuString userInfo: nil];
 					}	
 					break;
 				
@@ -791,7 +791,7 @@
 	NSPoint   eventLocation = [event locationInWindow];
 	if ( [event type] != NSRightMouseDown)
 	{
-		eventLocation = [self convertPoint:eventLocation fromView: 0L];
+		eventLocation = [self convertPoint:eventLocation fromView: nil];
 		eventLocation = [self ConvertFromNSView2GL:eventLocation];
 		
 		if ( [self isKindOfClass: [OrthogonalMPRView class]] ) {
@@ -860,7 +860,7 @@
 - (void)mouseDraggedWindowLevel: (NSEvent *)event {
 	NSPoint current = [self currentPointInView:event];
 
-	if( blendingView == 0L)
+	if( blendingView == nil)
 	{
 		float WWAdapter = startWW / 100.0;
 
@@ -925,14 +925,14 @@
 		{
 			[[self windowController] setCurWLWWMenu: [DCMView findWLWWPreset: curWL :curWW :curDCM]];
 		}
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: [DCMView findWLWWPreset: curWL :curWW :curDCM] userInfo: 0L];
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: [DCMView findWLWWPreset: curWL :curWW :curDCM] userInfo: nil];
 		
 
 		// change Window level
 		[self setWLWW: curWL :curWW];
 
 		
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"changeWLWW" object: curDCM userInfo:0L];
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"changeWLWW" object: curDCM userInfo:nil];
 		
 		if( [curDCM SUVConverted] == NO)
 		{

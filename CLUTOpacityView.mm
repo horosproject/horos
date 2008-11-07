@@ -64,7 +64,7 @@
 	if( histogram)
 	{
 		free( histogram);
-		histogram = 0L;
+		histogram = nil;
 	}
 	didResizeVRVIew = NO;
 	[self updateView];
@@ -681,7 +681,7 @@
 
 - (void)drawRect:(NSRect)rect
 {
-	if( histogram == 0L)
+	if( histogram == nil)
 		[self computeHistogram];
 	
 	[backgroundColor set];
@@ -1892,7 +1892,7 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 	[path appendString:name];
 	[path appendString:@".plist"];
 	[clut writeToFile:path atomically:YES];
-	[[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateCLUTMenu" object:name userInfo:0L];
+	[[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateCLUTMenu" object:name userInfo:nil];
 	[[vrView controller] setCurCLUTMenu:name];
 }
 

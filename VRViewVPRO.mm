@@ -711,8 +711,8 @@ public:
 			if( textureMapper) textureMapper->Delete();
 //			if( shearWarpMapper) shearWarpMapper->Delete();
 			
-			textureMapper = 0L;
-//			shearWarpMapper = 0L;
+			textureMapper = nil;
+//			shearWarpMapper = nil;
 			
 			volumeMapper = vtkVolumeRayCastMapper::New();
 			volumeMapper->SetVolumeRayCastFunction( compositeFunction);
@@ -731,8 +731,8 @@ public:
 			if( volumeMapper) volumeMapper->Delete();
 //			if( shearWarpMapper) shearWarpMapper->Delete();
 			
-			volumeMapper = 0L;
-//			shearWarpMapper = 0L;
+			volumeMapper = nil;
+//			shearWarpMapper = nil;
 			
 			textureMapper = vtkOpenGLVolumeProVP1000Mapper::New();
 			textureMapper->SetInput((vtkDataSet *) reader->GetOutput());
@@ -753,8 +753,8 @@ public:
 //			if( volumeMapper) volumeMapper->Delete();
 //			if( textureMapper) textureMapper->Delete();
 
-			volumeMapper = 0L;
-			textureMapper = 0L;
+			volumeMapper = nil;
+			textureMapper = nil;
 			
 			// SHEAR-WARP - NOT IMPLEMENTED IN THIS VERSION
 		break;
@@ -765,7 +765,7 @@ public:
 
 - (void) setBlendingEngine: (long) engineID
 {
-	if( blendingController == 0L) return;
+	if( blendingController == nil) return;
 	
 	switch( engineID)
 	{
@@ -775,8 +775,8 @@ public:
 			if( blendingTextureMapper) blendingTextureMapper->Delete();
 //			if( blendingShearWarpMapper) blendingShearWarpMapper->Delete();
 			
-			blendingTextureMapper = 0L;
-//			blendingShearWarpMapper = 0L;
+			blendingTextureMapper = nil;
+//			blendingShearWarpMapper = nil;
 			
 			blendingVolumeMapper = vtkVolumeRayCastMapper::New();
 			blendingVolumeMapper->SetVolumeRayCastFunction( blendingCompositeFunction);
@@ -793,8 +793,8 @@ public:
 			if( blendingVolumeMapper) blendingVolumeMapper->Delete();
 //			if( blendingShearWarpMapper) blendingShearWarpMapper->Delete();
 			
-			blendingVolumeMapper = 0L;
-//			blendingShearWarpMapper = 0L;
+			blendingVolumeMapper = nil;
+//			blendingShearWarpMapper = nil;
 			
 			blendingTextureMapper = vtkOpenGLVolumeProVP1000Mapper::New();
 			blendingTextureMapper->SetInput(blendingReader->GetOutput());
@@ -808,8 +808,8 @@ public:
 //			if( blendingVolumeMapper) blendingVolumeMapper->Delete();
 //			if( blendingTextureMapper) blendingTextureMapper->Delete();
 
-			blendingVolumeMapper = 0L;
-			blendingTextureMapper = 0L;
+			blendingVolumeMapper = nil;
+			blendingTextureMapper = nil;
 			
 			// SHEAR-WARP - NOT IMPLEMENTED IN THIS VERSION
 		break;
@@ -961,7 +961,7 @@ public:
 			float	cwl, cww;
 			float	o[ 9];
 			
-			if( exportDCM == 0L) exportDCM = [[DICOMExport alloc] init];
+			if( exportDCM == nil) exportDCM = [[DICOMExport alloc] init];
 			
 			unsigned char *dataPtr = [self getRawPixels:&width :&height :&spp :&bpp :YES :YES];
 			
@@ -981,8 +981,8 @@ public:
 					
 			//	[exportDCM setPixelSpacing: 1 :1];
 				
-				NSString *f = [exportDCM writeDCMFile: 0L];
-				if( f == 0L) NSRunCriticalAlertPanel( NSLocalizedString(@"Error", nil),  NSLocalizedString( @"Error during the creation of the DICOM File!", 0L), NSLocalizedString(@"OK", nil), nil, nil);
+				NSString *f = [exportDCM writeDCMFile: nil];
+				if( f == nil) NSRunCriticalAlertPanel( NSLocalizedString(@"Error", nil),  NSLocalizedString( @"Error during the creation of the DICOM File!", nil), NSLocalizedString(@"OK", nil), nil, nil);
 				
 				free( dataPtr);
 			}
@@ -1035,7 +1035,7 @@ public:
 					if( aCamera->GetParallelProjection())
 						[dcmSequence setPixelSpacing: [self getResolution] :[self getResolution]];
 					
-					NSString *f = [dcmSequence writeDCMFile: 0L];
+					NSString *f = [dcmSequence writeDCMFile: nil];
 					
 					free( dataPtr);
 				}
@@ -1111,7 +1111,7 @@ public:
 					if( aCamera->GetParallelProjection())
 						[dcmSequence setPixelSpacing: [self getResolution] :[self getResolution]];
 					
-					NSString *f = [dcmSequence writeDCMFile: 0L];
+					NSString *f = [dcmSequence writeDCMFile: nil];
 					
 					free( dataPtr);
 				}
@@ -1149,7 +1149,7 @@ public:
 	[self setCurrentdcmExport: dcmExportMode];
 	if( [[[self window] windowController] movieFrames] > 1) [[dcmExportMode cellWithTag:2] setEnabled: YES];
 	else [[dcmExportMode cellWithTag:2] setEnabled: NO];
-	[NSApp beginSheet: exportDCMWindow modalForWindow:[self window] modalDelegate:self didEndSelector:0L contextInfo:(void*) 0L];
+	[NSApp beginSheet: exportDCMWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:(void*) nil];
 }
 
 -(IBAction) endQuicktimeSettings:(id) sender
@@ -1360,7 +1360,7 @@ public:
 
 -(IBAction) exportQuicktime3DVR:(id) sender
 {
-	[NSApp beginSheet: export3DVRWindow modalForWindow:[self window] modalDelegate:self didEndSelector:0L contextInfo:(void*) 0L];
+	[NSApp beginSheet: export3DVRWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:(void*) nil];
 }
 
 - (IBAction) exportQuicktime:(id) sender
@@ -1369,9 +1369,9 @@ public:
 	
 	if( [[[self window] windowController] movieFrames] > 1)
 	{
-		if( NSRunInformationalAlertPanel( NSLocalizedString(@"Quicktime Export", nil), NSLocalizedString(@"Should I export the temporal series or the 3D scene?", nil), NSLocalizedString(@"3D Scene", nil), NSLocalizedString(@"Temporal Series", nil), 0L) == NSAlertDefaultReturn)
+		if( NSRunInformationalAlertPanel( NSLocalizedString(@"Quicktime Export", nil), NSLocalizedString(@"Should I export the temporal series or the 3D scene?", nil), NSLocalizedString(@"3D Scene", nil), NSLocalizedString(@"Temporal Series", nil), nil) == NSAlertDefaultReturn)
 		{
-			[NSApp beginSheet: export3DWindow modalForWindow:[self window] modalDelegate:self didEndSelector:0L contextInfo:(void*) 0L];
+			[NSApp beginSheet: export3DWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:(void*) nil];
 		}
 		else
 		{
@@ -1382,7 +1382,7 @@ public:
 			[mov release];
 		}
 	}
-	else [NSApp beginSheet: export3DWindow modalForWindow:[self window] modalDelegate:self didEndSelector:0L contextInfo:(void*) 0L];
+	else [NSApp beginSheet: export3DWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:(void*) nil];
 }
 
 -(BOOL) acceptsFirstMouse:(NSEvent*) theEvent
@@ -1431,7 +1431,7 @@ public:
 {
 	if([note object] == blendingController) // our blended serie is closing itself....
 	{
-		[self setBlendingPixSource:0L];
+		[self setBlendingPixSource:nil];
 	}
 }
 
@@ -1475,7 +1475,7 @@ public:
 {
     if ( self = [super initWithFrame:frame] )
     {
-		NSTrackingArea *cursorTracking = [[[NSTrackingArea alloc] initWithRect: [self visibleRect] options: (NSTrackingCursorUpdate | NSTrackingInVisibleRect | NSTrackingMouseEnteredAndExited | NSTrackingActiveInKeyWindow) owner: self userInfo: 0L] autorelease];
+		NSTrackingArea *cursorTracking = [[[NSTrackingArea alloc] initWithRect: [self visibleRect] options: (NSTrackingCursorUpdate | NSTrackingInVisibleRect | NSTrackingMouseEnteredAndExited | NSTrackingActiveInKeyWindow) owner: self userInfo: nil] autorelease];
 		
 		[self addTrackingArea: cursorTracking];
 		
@@ -1491,22 +1491,22 @@ public:
 		currentTool = t3DRotate;
 		[self setCursorForView: currentTool];
 		
-		blendingController = 0L;
+		blendingController = nil;
 		blendingFactor = 0.5;
-		blendingVolume = 0L;
-		exportDCM = 0L;
-		cursor = 0L;
+		blendingVolume = nil;
+		exportDCM = nil;
+		cursor = nil;
 		
 		ROIUPDATE = NO;
 		
 		// MAPPERS
-		textureMapper = 0L;
-		volumeMapper = 0L;
-//		shearWarpMapper = 0L;
+		textureMapper = nil;
+		volumeMapper = nil;
+//		shearWarpMapper = nil;
 		
-		blendingTextureMapper = 0L;
-		blendingVolumeMapper = 0L;
-//		blendingShearWarpMapper = 0L;
+		blendingTextureMapper = nil;
+		blendingVolumeMapper = nil;
+//		blendingShearWarpMapper = nil;
 		
 		noWaitDialog = NO;
 		
@@ -1533,7 +1533,7 @@ public:
 				 object: nil];
 				 
 		autoRotate = [[NSTimer scheduledTimerWithTimeInterval:0.25 target:self selector:@selector(autoRotate:) userInfo:nil repeats:YES] retain];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowWillClose:) name: NSWindowWillCloseNotification object: 0L];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowWillClose:) name: NSWindowWillCloseNotification object: nil];
     }
     
     return self;
@@ -1545,7 +1545,7 @@ public:
 	{
 		[autoRotate invalidate];
 		[autoRotate release];
-		autoRotate = 0L;
+		autoRotate = nil;
 		
 		[[NSNotificationCenter defaultCenter] removeObserver: self];
 	}
@@ -1604,16 +1604,16 @@ public:
 	[dict setObject:[NSNumber numberWithFloat:ww] forKey:@"WW"];
 	
 	aCamera->GetPosition( temp);
-	[dict setObject:[NSArray arrayWithObjects: [NSNumber numberWithFloat:temp[0]],  [NSNumber numberWithFloat:temp[1]],  [NSNumber numberWithFloat:temp[2]], 0L] forKey:@"CameraPosition"];
+	[dict setObject:[NSArray arrayWithObjects: [NSNumber numberWithFloat:temp[0]],  [NSNumber numberWithFloat:temp[1]],  [NSNumber numberWithFloat:temp[2]], nil] forKey:@"CameraPosition"];
 	aCamera->GetViewUp( temp);
-	[dict setObject:[NSArray arrayWithObjects: [NSNumber numberWithFloat:temp[0]],  [NSNumber numberWithFloat:temp[1]],  [NSNumber numberWithFloat:temp[2]], 0L] forKey:@"CameraViewUp"];
+	[dict setObject:[NSArray arrayWithObjects: [NSNumber numberWithFloat:temp[0]],  [NSNumber numberWithFloat:temp[1]],  [NSNumber numberWithFloat:temp[2]], nil] forKey:@"CameraViewUp"];
 	aCamera->GetFocalPoint( temp);
-	[dict setObject:[NSArray arrayWithObjects: [NSNumber numberWithFloat:temp[0]],  [NSNumber numberWithFloat:temp[1]],  [NSNumber numberWithFloat:temp[2]], 0L] forKey:@"CameraFocalPoint"];
+	[dict setObject:[NSArray arrayWithObjects: [NSNumber numberWithFloat:temp[0]],  [NSNumber numberWithFloat:temp[1]],  [NSNumber numberWithFloat:temp[2]], nil] forKey:@"CameraFocalPoint"];
 	aCamera->GetClippingRange( temp);
-	[dict setObject:[NSArray arrayWithObjects: [NSNumber numberWithFloat:temp[0]],  [NSNumber numberWithFloat:temp[1]], 0L] forKey:@"CameraClipping"];
+	[dict setObject:[NSArray arrayWithObjects: [NSNumber numberWithFloat:temp[0]],  [NSNumber numberWithFloat:temp[1]], nil] forKey:@"CameraClipping"];
 
 	[self getShadingValues:&ambient :&diffuse :&specular :&specularpower];
-	[dict setObject:[NSArray arrayWithObjects: [NSNumber numberWithFloat:ambient],  [NSNumber numberWithFloat:diffuse], [NSNumber numberWithFloat:specular],  [NSNumber numberWithFloat:specularpower], 0L] forKey:@"ShadingValues"];
+	[dict setObject:[NSArray arrayWithObjects: [NSNumber numberWithFloat:ambient],  [NSNumber numberWithFloat:diffuse], [NSNumber numberWithFloat:specular],  [NSNumber numberWithFloat:specularpower], nil] forKey:@"ShadingValues"];
 	[dict setObject:[NSNumber numberWithLong:volumeProperty->GetShade()] forKey:@"ShadingFlag"];
 	[dict setObject:[NSNumber numberWithLong:projectionMode] forKey:@"Projection"];
 	
@@ -1640,7 +1640,7 @@ public:
 
 //	cropcallback->Delete();
 	
-	[self setBlendingPixSource: 0L];
+	[self setBlendingPixSource: nil];
 	
 //	cbStart->Delete();
 	opacityTransferFunction->Delete();
@@ -1675,7 +1675,7 @@ public:
 	Line2DText->Delete();
 	
     [pixList release];
-    pixList = 0L;
+    pixList = nil;
 	
 	if( isRGB) free( dataFRGB);
 	
@@ -1876,7 +1876,7 @@ public:
 	noWaitDialog = YES;
 	tool = currentTool;
 	
-	mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView: 0L];
+	mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView: nil];
 	
 	if( [theEvent clickCount] > 1 && (tool != t3Dpoint))
 	{
@@ -1886,7 +1886,7 @@ public:
 		if( [self get3DPixelUnder2DPositionX:mouseLocStart.x Y:mouseLocStart.y pixel:pix position:pos value:&value])
 		{
 			NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:	[NSNumber numberWithInt: pix[0]], @"x", [NSNumber numberWithInt: pix[1]], @"y", [NSNumber numberWithInt: pix[2]], @"z",
-																				0L];
+																				nil];
 			[[NSNotificationCenter defaultCenter] postNotificationName: @"Display3DPoint" object:pixList  userInfo: dict];
 		}
 		
@@ -2004,7 +2004,7 @@ public:
 			
 			// Click point 3D to 2D
 			
-			mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView: 0L];
+			mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView: nil];
 			
 			aRenderer->SetDisplayPoint( mouseLocStart.x, mouseLocStart.y, 0);
 			aRenderer->DisplayToWorld();
@@ -2050,7 +2050,7 @@ public:
 			
 			// Click point 3D to 2D
 			
-			mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView: 0L];
+			mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView: nil];
 			
 			aRenderer->SetDisplayPoint( mouseLocStart.x, mouseLocStart.y, 0);
 			aRenderer->DisplayToWorld();
@@ -2487,7 +2487,7 @@ public:
 			NSLog( @"**** Undo");
 			
 			// clicked point (2D coordinate)
-			mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView: 0L];
+			mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView: nil];
 			
 			// world point
 			double	*worldPointClicked;
@@ -2763,7 +2763,7 @@ public:
 				{
 					NSDictionary	*rr = [roiList objectAtIndex: i];
 					
-					[roiToProceed addObject: [NSDictionary dictionaryWithObjectsAndKeys: [rr objectForKey:@"roi"], @"roi", [rr objectForKey:@"curPix"], @"curPix", @"setPixelRoi", @"action", nsnewValue, @"newValue", nsminValue, @"minValue", nsmaxValue, @"maxValue", nsoutside, @"outside", 0L]];
+					[roiToProceed addObject: [NSDictionary dictionaryWithObjectsAndKeys: [rr objectForKey:@"roi"], @"roi", [rr objectForKey:@"curPix"], @"curPix", @"setPixelRoi", @"action", nsnewValue, @"newValue", nsminValue, @"minValue", nsmaxValue, @"maxValue", nsoutside, @"outside", nil]];
 				}
 				
 				[[[[self window] windowController] viewer2D] roiSetStartScheduler: roiToProceed];
@@ -3094,7 +3094,7 @@ public:
 		NSMutableSet *unitsSet = [NSMutableSet set];
 		for ( i = 0; i < stackMax; i++ )
 		{
-			[unitsSet addObject: [NSArray arrayWithObjects: [NSNumber numberWithInt:i], [NSNumber numberWithInt:stackOrientation], [NSNumber numberWithInt: c], [ROIList objectAtIndex: i], 0L]];
+			[unitsSet addObject: [NSArray arrayWithObjects: [NSNumber numberWithInt:i], [NSNumber numberWithInt:stackOrientation], [NSNumber numberWithInt: c], [ROIList objectAtIndex: i], nil]];
 		}
 		// Perform work schedule
 		[sched performScheduleForWorkUnits:unitsSet];
@@ -3667,7 +3667,7 @@ public:
 
 
 		blendingColorTransferFunction = vtkColorTransferFunction::New();
-		[self setBlendingCLUT:0L :0L :0L];
+		[self setBlendingCLUT:nil :nil :nil];
 		
 		blendingOpacityTransferFunction = vtkPiecewiseFunction::New();
 		[self setBlendingFactor:blendingFactor];
@@ -3729,7 +3729,7 @@ public:
 //		NSLog(@"%0.1f / %0.1f / %0.1f", ( blendingnormal[0]), ( blendingnormal[ 1]),  (blendingnormal[ 2]));
 		
 		cropcallback->setBlendingVolume( blendingVolume);
-//		cropcallback->Execute(croppingBox, 0, 0L);
+//		cropcallback->Execute(croppingBox, 0, nil);
 		
 	    aRenderer->AddVolume( blendingVolume);
 	}
@@ -3740,7 +3740,7 @@ public:
 			aRenderer->RemoveVolume( blendingVolume);
 			
 			blendingVolume->Delete();
-			blendingVolume = 0L;
+			blendingVolume = nil;
 			
 			if( blendingVolumeMapper) blendingVolumeMapper->Delete();
 			if( blendingTextureMapper) blendingTextureMapper->Delete();
@@ -3915,7 +3915,7 @@ public:
 	
 //	data8 = (char*) malloc( dst8.height * dst8.width * sizeof(char));
 	data8 = (char*) malloc( dst8.height * dst8.width * sizeof(short));
-	if( data8 == 0L)
+	if( data8 == nil)
 	{
 		[pix release];
 		return -1;
@@ -4114,7 +4114,7 @@ public:
 //		flip->SetFilteredAxis(2);
 //		sliceThickness = fabs( sliceThickness);
 //	}
-//	else flip = 0L;
+//	else flip = nil;
 	
 //	reader->SetDataSpacing( 1, 1, sliceThickness);
 	if( [firstObject pixelSpacingX] == 0 || [firstObject pixelSpacingY] == 0) reader->SetDataSpacing( 1, 1, sliceThickness);
@@ -4148,7 +4148,7 @@ public:
 	
 	colorTransferFunction = vtkColorTransferFunction::New();
 //	colorTransferFunction->ClampingOff();
-	[self setCLUT:0L :0L :0L];
+	[self setCLUT:nil :nil :nil];
 	
 	volumeProperty = vtkVolumeProperty::New();
     volumeProperty->SetColor( colorTransferFunction);
@@ -4280,7 +4280,7 @@ public:
 //	croppingBox->PlaceWidget( origin[ 0], origin[ 0] + size[ 0], origin[ 1], origin[ 1] + size[ 1], origin[ 2], origin[ 2] + size[ 2]);
 	
 	cropcallback = vtkMyCallbackVP::New();
-	cropcallback->setBlendingVolume( 0L);
+	cropcallback->setBlendingVolume( nil);
 	croppingBox->AddObserver(vtkCommand::InteractionEvent, cropcallback);
 	
 /*	planeWidget = vtkPlaneWidget::New();
@@ -4514,7 +4514,7 @@ public:
 
 -(unsigned char*) getRawPixels:(long*) width :(long*) height :(long*) spp :(long*) bpp :(BOOL) screenCapture :(BOOL) force8bits
 {
-	unsigned char	*buf = 0L;
+	unsigned char	*buf = nil;
 	long			i;
 
 	NSRect size = [self bounds];
@@ -4610,7 +4610,7 @@ public:
 	else colorSpace = NSCalibratedWhiteColorSpace;
 	
 	rep = [[[NSBitmapImageRep alloc]
-			 initWithBitmapDataPlanes:0L
+			 initWithBitmapDataPlanes:nil
 						   pixelsWide:width
 						   pixelsHigh:height
 						bitsPerSample:bpp
@@ -4712,12 +4712,12 @@ public:
 	NSString		*str = [VRController getUniqueFilenameScissorStateFor: [firstObject imageObj]];
 	NSData			*volumeData;
 	long			volumeSize = [firstObject pheight] * [pixList count] * [firstObject pwidth] * sizeof(float);
-	WaitRendering	*waiting = 0L;
+	WaitRendering	*waiting = nil;
 	
 	switch( [[sender selectedCell] tag])
 	{
 		case 2:
-			[[NSFileManager defaultManager] removeFileAtPath: str handler: 0L];
+			[[NSFileManager defaultManager] removeFileAtPath: str handler: nil];
 		break;
 		
 		case 1:	// Load

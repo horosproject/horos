@@ -28,7 +28,7 @@ char currentDestinationMoveAET[ 60] = "";
 - (NSPredicate*) predicateWithString: (NSString*) s forField: (NSString*) f
 {
 	NSString *v = [s stringByReplacingOccurrencesOfString:@"*" withString:@""];
-	NSPredicate *predicate = 0L;
+	NSPredicate *predicate = nil;
 	
 	if( [s characterAtIndex: 0] == '*' && [s characterAtIndex: [s length]-1] == '*')
 		predicate = [NSPredicate predicateWithFormat:@"%K CONTAINS[cd] %@", f, v];
@@ -71,10 +71,10 @@ char currentDestinationMoveAET[ 60] = "";
 	else if (strcmp(sType, "IMAGE") == 0)
 		compoundPredicate = [NSPredicate predicateWithFormat:@"series.study.hasDICOM == %d", YES];
 	
-	NSString *dcmstartTime = 0L;
-	NSString *dcmendTime = 0L;
-	NSString *dcmstartDate = 0L;
-	NSString *dcmendDate = 0L;
+	NSString *dcmstartTime = nil;
+	NSString *dcmendTime = nil;
+	NSString *dcmstartDate = nil;
+	NSString *dcmendDate = nil;
 	
 	int elemCount = (int)(dataset->card());
     for (int elemIndex=0; elemIndex<elemCount; elemIndex++)
@@ -480,7 +480,7 @@ char currentDestinationMoveAET[ 60] = "";
 			} 
 			else if (key == DCM_SOPInstanceUID)
 			{
-				char *string = 0L;
+				char *string = nil;
 				
 				if (dcelem->getString(string).good() && string != NULL)
 				{
@@ -521,8 +521,8 @@ char currentDestinationMoveAET[ 60] = "";
 	{
 		NSPredicate *predicate = nil;
 		
-		NSTimeInterval startDate = 0L;
-		NSTimeInterval endDate = 0L;
+		NSTimeInterval startDate = nil;
+		NSTimeInterval endDate = nil;
 		
 		if( dcmstartDate)
 		{
@@ -786,7 +786,7 @@ char currentDestinationMoveAET[ 60] = "";
 - (OFCondition)prepareFindForDataSet:( DcmDataset *)dataset
 {
 	NSManagedObjectModel *model = [[BrowserController currentBrowser] managedObjectModel];
-	NSError *error = 0L;
+	NSError *error = nil;
 	NSEntityDescription *entity;
 	NSPredicate *predicate = [self predicateForDataset:dataset];
 	NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
@@ -808,7 +808,7 @@ char currentDestinationMoveAET[ 60] = "";
 		[request setEntity:entity];
 		[request setPredicate:predicate];
 					
-		error = 0L;
+		error = nil;
 		
 		NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
 		
@@ -816,7 +816,7 @@ char currentDestinationMoveAET[ 60] = "";
 		[context lock];
 		
 		[findArray release];
-		findArray = 0L;
+		findArray = nil;
 		
 		@try
 		{
@@ -904,7 +904,7 @@ char currentDestinationMoveAET[ 60] = "";
 				unsigned int random = (unsigned int)time(NULL);
 				sprintf( logFiles->logUID, "%d%s", random, logFiles->logPatientName);
 
-				fprintf (pFile, "%s\r%s\r%s\r%d\r%s\r%s\r%d\r%d\r%s\r%s\r\%d\r", logFiles->logPatientName, logFiles->logStudyDescription, logFiles->logCallingAET, logFiles->logStartTime, logFiles->logMessage, logFiles->logUID, logFiles->logNumberReceived, logFiles->logEndTime, logFiles->logType, logFiles->logEncoding, logFiles->logNumberTotal);
+				fprintf (pFile, "%s\r%s\r%s\r%ld\r%s\r%s\r%d\r%ld\r%s\r%s\r\%d\r", logFiles->logPatientName, logFiles->logStudyDescription, logFiles->logCallingAET, logFiles->logStartTime, logFiles->logMessage, logFiles->logUID, logFiles->logNumberReceived, logFiles->logEndTime, logFiles->logType, logFiles->logEncoding, logFiles->logNumberTotal);
 				
 				fclose (pFile);
 				strcpy( newdir, dir);
@@ -935,7 +935,7 @@ char currentDestinationMoveAET[ 60] = "";
 				unsigned int random = (unsigned int)time(NULL);
 				sprintf( logFiles->logUID, "%d%s", random, logFiles->logPatientName);
 				
-				fprintf (pFile, "%s\r%s\r%s\r%d\r%s\r%s\r%d\r%d\r%s\r%s\r\%d\r", logFiles->logPatientName, logFiles->logStudyDescription, logFiles->logCallingAET, logFiles->logStartTime, logFiles->logMessage, logFiles->logUID, logFiles->logNumberReceived, logFiles->logEndTime, logFiles->logType, logFiles->logEncoding, logFiles->logNumberTotal);
+				fprintf (pFile, "%s\r%s\r%s\r%ld\r%s\r%s\r%d\r%ld\r%s\r%s\r\%d\r", logFiles->logPatientName, logFiles->logStudyDescription, logFiles->logCallingAET, logFiles->logStartTime, logFiles->logMessage, logFiles->logUID, logFiles->logNumberReceived, logFiles->logEndTime, logFiles->logType, logFiles->logEncoding, logFiles->logNumberTotal);
 				
 				fclose (pFile);
 				strcpy( newdir, dir);
@@ -950,7 +950,7 @@ char currentDestinationMoveAET[ 60] = "";
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	NSManagedObjectModel *model = [[BrowserController currentBrowser] managedObjectModel];
-	NSError *error = 0L;
+	NSError *error = nil;
 	NSEntityDescription *entity;
 	NSPredicate *predicate = [self predicateForDataset:dataset];
 	NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
@@ -972,14 +972,14 @@ char currentDestinationMoveAET[ 60] = "";
 	[request setEntity:entity];
 	[request setPredicate:predicate];
 	
-	error = 0L;
+	error = nil;
 	
 	NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
 	
 	[context retain];
 	[context lock];
 	
-	NSArray *array = 0L;
+	NSArray *array = nil;
 	
 	OFCondition cond = EC_IllegalParameter;
 	
@@ -996,7 +996,7 @@ char currentDestinationMoveAET[ 60] = "";
 		{
 			for( int i = 0 ; i < moveArraySize; i++) free( moveArray[ i]);
 			free( moveArray);
-			moveArray = 0L;
+			moveArray = nil;
 			moveArraySize = 0;
 			
 			cond = EC_IllegalParameter;
@@ -1042,7 +1042,7 @@ char currentDestinationMoveAET[ 60] = "";
 			
 			for( int i = 0 ; i < moveArraySize; i++) free( moveArray[ i]);
 			free( moveArray);
-			moveArray = 0L;
+			moveArray = nil;
 			moveArraySize = 0;
 			
 			moveArraySize = [tempMoveArray count];
@@ -1176,7 +1176,7 @@ char currentDestinationMoveAET[ 60] = "";
 			logFiles->logNumberReceived++;
 			logFiles->logEndTime = time (NULL);
 			
-			fprintf (pFile, "%s\r%s\r%s\r%d\r%s\r%s\r%d\r%d\r%s\r%s\r\%d\r", logFiles->logPatientName, logFiles->logStudyDescription, logFiles->logCallingAET, logFiles->logStartTime, logFiles->logMessage, logFiles->logUID, logFiles->logNumberReceived, logFiles->logEndTime, logFiles->logType, logFiles->logEncoding, logFiles->logNumberTotal);
+			fprintf (pFile, "%s\r%s\r%s\r%ld\r%s\r%s\r%d\r%ld\r%s\r%s\r\%d\r", logFiles->logPatientName, logFiles->logStudyDescription, logFiles->logCallingAET, logFiles->logStartTime, logFiles->logMessage, logFiles->logUID, logFiles->logNumberReceived, logFiles->logEndTime, logFiles->logType, logFiles->logEncoding, logFiles->logNumberTotal);
 			
 			fclose (pFile);
 			strcpy( newdir, dir);
@@ -1190,7 +1190,7 @@ char currentDestinationMoveAET[ 60] = "";
 		if( logFiles)
 			free( logFiles);
 		
-		logFiles = 0L;
+		logFiles = nil;
 	}
 	
 	return ret;

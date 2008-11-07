@@ -81,11 +81,11 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 //	// WL/WW Menu	
 	curWLWWMenu = [NSLocalizedString(@"Other", nil) retain];
 	[nc addObserver:self selector:@selector(UpdateWLWWMenu:) name:@"UpdateWLWWMenu" object:nil];
-	[nc postNotificationName: @"UpdateWLWWMenu" object:curWLWWMenu userInfo:0L];
+	[nc postNotificationName: @"UpdateWLWWMenu" object:curWLWWMenu userInfo:nil];
 		
-	subtractedOriginalBuffer = 0L;
-	subtractedXReslicedBuffer = 0L;
-	subtractedYReslicedBuffer = 0L;
+	subtractedOriginalBuffer = nil;
+	subtractedXReslicedBuffer = nil;
+	subtractedYReslicedBuffer = nil;
 	
 	xShift = 0;
 	yShift = 0;
@@ -139,17 +139,17 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 	if(subtractedOriginalBuffer)
 	{
 		free(subtractedOriginalBuffer);
-		subtractedOriginalBuffer = 0L;
+		subtractedOriginalBuffer = nil;
 	}
 	if(subtractedXReslicedBuffer)
 	{
 		free(subtractedXReslicedBuffer);
-		subtractedXReslicedBuffer = 0L;
+		subtractedXReslicedBuffer = nil;
 	}
 	if(subtractedYReslicedBuffer)
 	{
 		free(subtractedYReslicedBuffer);
-		subtractedYReslicedBuffer = 0L;
+		subtractedYReslicedBuffer = nil;
 	}
 	
 //	[[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -445,7 +445,7 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 		if(subtractedOriginalBuffer)
 		{	
 			free(subtractedOriginalBuffer);
-			subtractedOriginalBuffer = 0L;
+			subtractedOriginalBuffer = nil;
 		}
 		subtractedOriginalBuffer = malloc(byteCount);
 
@@ -556,7 +556,7 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 		if(subtractedXReslicedBuffer)
 		{
 			free(subtractedXReslicedBuffer);
-			subtractedXReslicedBuffer = 0L;
+			subtractedXReslicedBuffer = nil;
 		}
 		subtractedXReslicedBuffer = malloc(byteCount);
 		
@@ -668,7 +668,7 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 		if(subtractedYReslicedBuffer)
 		{
 			free(subtractedYReslicedBuffer);
-			subtractedYReslicedBuffer = 0L;
+			subtractedYReslicedBuffer = nil;
 		}
 		subtractedYReslicedBuffer = malloc(byteCount);
 	
@@ -926,14 +926,14 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 	[super setWLWW:iwl :iww];
 	[injectedMPRController setWLWW: iwl : iww];
 	[injectedMPRController setCurWLWWMenu:curWLWWMenu];
-//	curWLWWMenu = NSLocalizedString(@"Other", 0L);
+//	curWLWWMenu = NSLocalizedString(@"Other", nil);
 }
 
 -(void) windowDidBecomeKey:(NSNotification *)aNotification
 {
-//	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: 0L];
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: 0L];
-	//[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateConvolutionMenu" object: curConvMenu userInfo: 0L];
+//	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: nil];
+	//[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateConvolutionMenu" object: curConvMenu userInfo: nil];
 	//[self refreshSubtractedViews];
 }
 
@@ -1085,7 +1085,7 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 	dstVimage.width = width*factor;
 	dstVimage.rowBytes = width*factor*4;
 	
-	vImageScale_PlanarF(&srcVimage, &dstVimage, 0L, kvImageHighQualityResampling);
+	vImageScale_PlanarF(&srcVimage, &dstVimage, nil, kvImageHighQualityResampling);
 }
 
 #pragma mark-
@@ -1139,7 +1139,7 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 				
 		DCMPix	*injectedDCM = [[viewer pixList] objectAtIndex: [[notInjectedViewer pixList] indexOfObject: [rr objectForKey:@"curPix"]]];
 		
-		[roiToProceed addObject: [NSDictionary dictionaryWithObjectsAndKeys:  [rr objectForKey:@"roi"], @"roi", injectedDCM, @"curPix", @"setPixelRoi", @"action", nsnewValue, @"newValue", nsminValue, @"minValue", nsmaxValue, @"maxValue", nsoutside, @"outside", 0L]];
+		[roiToProceed addObject: [NSDictionary dictionaryWithObjectsAndKeys:  [rr objectForKey:@"roi"], @"roi", injectedDCM, @"curPix", @"setPixelRoi", @"action", nsnewValue, @"newValue", nsminValue, @"minValue", nsmaxValue, @"maxValue", nsoutside, @"outside", nil]];
 	}
 	//NSLog( @"end for");
 	[viewer roiSetStartScheduler: roiToProceed];
@@ -1210,7 +1210,7 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 			[newAxialPix setArrayPix: pix :i];
 			[newAxialPix release];
 		
-			[unitsSet addObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: i], @"slice", pixList, @"pixList", pix, @"pix", [NSValue valueWithPointer:fVolumePtr + i*curWidth*curHeight], @"volumePtr", 0L]];
+			[unitsSet addObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: i], @"slice", pixList, @"pixList", pix, @"pix", [NSValue valueWithPointer:fVolumePtr + i*curWidth*curHeight], @"volumePtr", nil]];
 		}
 		
 		// Perform work schedule
@@ -1807,6 +1807,8 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 {
 	NSDictionary *llPresets = [[NSUserDefaults standardUserDefaults] dictionaryForKey:@"LLSubtractionParameters"];
 	NSDictionary *settings = [llPresets objectForKey:title];
+	
+	return settings;
 }
 
 - (void)applySettingsForTitle:(NSString*)title;

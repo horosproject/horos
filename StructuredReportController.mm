@@ -272,7 +272,7 @@ static NSString *addKeyImagesToolbarIdentifier = @"smallKeyPlus.tif";
 	if ([[_report keyImages] count] > 0) {
 		NSArray *images = [NSMutableArray arrayWithObject:[_report keyImages]];
 		[browser openViewerFromImages :images movie: nil viewer :nil keyImagesOnly:NO];	
-		[NSApp sendAction: @selector(tileWindows:) to:0L from: browser];
+		[NSApp sendAction: @selector(tileWindows:) to:nil from: browser];
 	}
 	else {
 		NSAlert *alert = [NSAlert alertWithError:nil];

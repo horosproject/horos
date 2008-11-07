@@ -122,7 +122,7 @@ int i,j,k,l;
 	}
 	
 	NSLog(@"Memory problem in: MSRGSegmentation/buildMarkerWithStackHeigt !");
-	NSRunAlertPanel( NSLocalizedString( @"Memory Error", 0L), NSLocalizedString( @"Sorry, but there is not enough memory", 0), nil, nil, nil);
+	NSRunAlertPanel( NSLocalizedString( @"Memory Error", nil), NSLocalizedString( @"Sorry, but there is not enough memory", 0), nil, nil, nil);
 	return NO;
 }
 -(BOOL) buildMarkerBufferWithStackHeigth
@@ -187,7 +187,7 @@ int i,j,k,l;
 	}
 	
 	NSLog(@"Memory problem in: MSRGSegmentation/buildMarkerWithStackHeigt !");
-	NSRunAlertPanel( NSLocalizedString( @"Memory Error", 0L), NSLocalizedString( @"Sorry, but there is not enough memory", 0), nil, nil, nil);
+	NSRunAlertPanel( NSLocalizedString( @"Memory Error", nil), NSLocalizedString( @"Sorry, but there is not enough memory", 0), nil, nil, nil);
 	return NO;
 }
 
@@ -227,7 +227,7 @@ int i,j,k,l;
 	 }
 	 
 	 NSLog(@"Memory problem in : MSRGSegmentation/buildCriteriaBufferFor2DColorImageWithStackHeigt !");
-	 NSRunAlertPanel( NSLocalizedString( @"Memory Error", 0L), NSLocalizedString( @"Sorry, but there is not enough memory", 0), nil, nil, nil);
+	 NSRunAlertPanel( NSLocalizedString( @"Memory Error", nil), NSLocalizedString( @"Sorry, but there is not enough memory", 0), nil, nil, nil);
 	 */
 	return NO;
 	
@@ -268,10 +268,10 @@ int i,j,k,l;
 	 }
 	 
 	 NSLog(@"Memory problem in : MSRGSegmentation/buildCriteriaBufferWithStackHeigt !");
-	 NSRunAlertPanel( NSLocalizedString( @"Memory Error", 0L), NSLocalizedString( @"Sorry, but there is not enough memory", 0), nil, nil, nil);
+	 NSRunAlertPanel( NSLocalizedString( @"Memory Error", nil), NSLocalizedString( @"Sorry, but there is not enough memory", 0), nil, nil, nil);
 	 
 	 */
-	
+	return NO;
 }
 
 - (id) start3DMSRGSegmentationWithOneCriterion {
@@ -356,7 +356,7 @@ int i,j,k,l;
 		[markerViewer addRoiFromFullStackBuffer:msrg->GetOutput()->GetBufferPointer()];
 		free(markerBuffer);
 	}
-	
+	return nil;
 }
 
 - (id) start2DMSRGSegmentationWithOneCriterion {
@@ -438,7 +438,7 @@ int i,j,k,l;
 		[markerViewer addPlainRoiToCurrentSliceFromBuffer:msrg->GetOutput()->GetBufferPointer()];
 		free(markerBuffer);
 	}
-	
+	return nil;
 }
 - (id) start2DMSRGSegmentationWithTwoCriteria {
 	NSLog(@"start start2DMSRGSegmentationWithTwoCriteria ...");
@@ -519,7 +519,7 @@ int i,j,k,l;
 		[markerViewer addPlainRoiToCurrentSliceFromBuffer:msrg->GetOutput()->GetBufferPointer()];
 		free(markerBuffer);
 	}
-	
+	return nil;
 }
 
 - (id) start2DColorMSRGSegmentation {
@@ -604,7 +604,7 @@ int i,j,k,l;
 		[markerViewer addRoiFromFullStackBuffer:msrg->GetOutput()->GetBufferPointer()];
 		free(markerBuffer);
 	}
-	
+	return nil;
 }
 
 - (id) startMSRGSegmentation
@@ -630,5 +630,7 @@ int i,j,k,l;
 		if ((depth==1) && [curPix isRGB])
 			[self start2DColorMSRGSegmentation];
 	}
+	
+	return nil;
 }
 @end

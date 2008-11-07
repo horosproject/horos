@@ -148,7 +148,7 @@
 //		dst8.rowBytes = [firstObject pwidth] * sizeof(short);
 //		
 //		data8 = (char*) malloc( dst8.height * dst8.width * sizeof(short));
-//		if( data8 == 0L) return -1;
+//		if( data8 == nil) return -1;
 //		
 //		dst8.data = data8;
 //		srcf.data = data;
@@ -315,7 +315,7 @@
 	}
 	
 	
-	[self setCLUT:0L :0L :0L];
+	[self setCLUT:nil :nil :nil];
 	
 	[self setShadingValues:0.15 :0.9 :0.3 :15];
 
@@ -419,7 +419,7 @@
 	croppingBox->OutlineCursorWiresOff();
 //	
 //	cropcallback = vtkMyCallbackVR::New();
-//	cropcallback->setBlendingVolume( 0L);
+//	cropcallback->setBlendingVolume( nil);
 //	croppingBox->AddObserver(vtkCommand::InteractionEvent, cropcallback);
 //		
 	textWLWW = vtkTextActor::New();
@@ -559,8 +559,8 @@
 - (void) dealloc
 {
 	NSLog(@"VRPresetPreview dealloc");
-	volumeMapper = 0L;
-	data8 = 0L;
+	volumeMapper = nil;
+	data8 = nil;
 	[super dealloc];
 }
 

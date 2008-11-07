@@ -161,7 +161,7 @@
 	NSOpenGLContext *currentContext = [NSOpenGLContext currentContext];
 	CGLContextObj cgl_ctx = [currentContext CGLContextObj];
 	
-	if( currentContext == 0L)
+	if( currentContext == nil)
 	{
 		NSLog( @"********* NO CURRENT CONTEXT for genTexture");
 		return 0;
@@ -220,7 +220,7 @@
 - (void) drawWithBounds:(NSRect)bounds
 {
 	NSOpenGLContext *currentContext = [NSOpenGLContext currentContext];
-	GLuint texName = 0L;
+	GLuint texName = 0;
 	NSUInteger index = [ctxArray indexOfObjectIdenticalTo: currentContext];
 	if( index != NSNotFound)
 		texName = [[textArray objectAtIndex: index] intValue];
@@ -301,7 +301,7 @@
 - (void) drawAtPoint:(NSPoint)point ratio:(float) ratio
 {
 	NSOpenGLContext *currentContext = [NSOpenGLContext currentContext];
-	GLuint texName = 0L;
+	GLuint texName = 0;
 	NSUInteger index = [ctxArray indexOfObjectIdenticalTo: currentContext];
 	if( index != NSNotFound)
 		texName = [[textArray objectAtIndex: index] intValue];

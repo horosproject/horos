@@ -138,7 +138,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 
 + (NSString*) NSreplaceBadCharacter: (NSString*) str
 {
-	if( str == 0L) return 0L;
+	if( str == nil) return nil;
 	
 	NSMutableString	*mutable = [NSMutableString stringWithString: str];
 	
@@ -161,7 +161,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 
 + (NSString *) stringWithBytes:(char *) str encodings: (NSStringEncoding*) encoding
 {
-	if( str == 0L) return 0L;
+	if( str == nil) return nil;
 
 	char				c;
 	int					i, x, from, len = strlen( str), index;
@@ -338,7 +338,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			success = YES;
 		}
 		
-		NIfTI = 0L;
+		NIfTI = nil;
 	}
 	return success;
 }
@@ -379,7 +379,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 
 + (BOOL) isDICOMFile:(NSString *) file
 {
-	return [DicomFile isDICOMFile:file compressed:0L];
+	return [DicomFile isDICOMFile:file compressed:nil];
 }
 
 + (BOOL) isXMLDescriptedFile:(NSString *) file
@@ -481,7 +481,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			
 			
 			date = [NSDate dateWithNaturalLanguageString:datetime_string];
-			if (date == 0L)
+			if (date == nil)
 				date = [[[[NSFileManager defaultManager] fileAttributesAtPath:filePath traverseLink:NO ] fileCreationDate] retain];
 			
 			[dicomElements setObject:studyID forKey:@"studyID"];
@@ -798,7 +798,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				fileType = [[NSString stringWithString:@"IMAGE"] retain];
 				
 				Movie			mov = [movie QTMovie];
-				TimeValue		aTime = 0L;
+				TimeValue		aTime = 0;
 				OSType			mediatype = 'eyes';
 				Rect			tempRect;
 				
@@ -826,7 +826,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 												   aTime,
 												   1,
 												   &aTime,
-												   0L);
+												   nil);
 					if (aTime != -1) NoOfFrames++;
 				} while (aTime != -1);
 				
@@ -853,7 +853,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			#else
 			[QTMovie enterQTKitOnThreadDisablingThreadSafetyProtection];
 			
-			QTMovie *movie = [[QTMovie alloc] initWithURL:[NSURL fileURLWithPath:filePath] error: 0L];
+			QTMovie *movie = [[QTMovie alloc] initWithURL:[NSURL fileURLWithPath:filePath] error: nil];
 			if( movie)
 			{
 				name = [[NSString alloc] initWithString:[filePath lastPathComponent]];
@@ -1000,7 +1000,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 //				[dicomElements setObject:[NSNumber numberWithInt:[imageID intValue]] forKey:@"imageID"];
 //				[dicomElements setObject:fileType forKey:@"fileType"];
 //
-//				if( name != 0L & studyID != 0L & serieID != 0L & imageID != 0L)
+//				if( name != nil & studyID != nil & serieID != nil & imageID != nil)
 //				{
 //					return 0;   // success
 //				}
@@ -1089,7 +1089,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			[dicomElements setObject:[NSNumber numberWithInt:[imageID intValue]] forKey:@"imageID"];
 			[dicomElements setObject:fileType forKey:@"fileType"];
 			
-			if( name != 0L & studyID != 0L & serieID != 0L & imageID != 0L & NoOfFrames>0)
+			if( name != nil & studyID != nil & serieID != nil & imageID != nil & NoOfFrames>0)
 			{
 				return 0;   // success
 			}
@@ -1460,7 +1460,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				Modality = [[NSString alloc] initWithString:@"ANZ"];
 				
 				date = [[NSCalendarDate alloc] initWithString:[NSString stringWithCString: Analyze->hist.exp_date] calendarFormat:@"%Y%m%d"];
-				if(date == 0L) date = [[[[NSFileManager defaultManager] fileAttributesAtPath:filePath traverseLink:NO ] fileCreationDate] retain];
+				if(date == nil) date = [[[[NSFileManager defaultManager] fileAttributesAtPath:filePath traverseLink:NO ] fileCreationDate] retain];
 				
 				short endian = Analyze->dime.dim[ 0];		// dim[0] 
 				if ((endian < 0) || (endian > 15)) 
@@ -1495,7 +1495,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				[dicomElements setObject:[NSNumber numberWithInt:[imageID intValue]] forKey:@"imageID"];
 				[dicomElements setObject:fileType forKey:@"fileType"];
 				
-				if( name != 0L & studyID != 0L & serieID != 0L & imageID != 0L)
+				if( name != nil & studyID != nil & serieID != nil & imageID != nil)
 				{
 					return 0;   // success
 				}
@@ -1565,7 +1565,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			[dicomElements setObject:fileType forKey:@"fileType"];
 			
 			
-			if( name != 0L & studyID != 0L & serieID != 0L & imageID != 0L)
+			if( name != nil & studyID != nil & serieID != nil & imageID != nil)
 			{
 				return 0;   // success
 			}
@@ -1675,11 +1675,11 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	PapyULong           nbVal;
 	UValue_T            *val;
 	SElement			*theGroupP;
-	NSString			*converted = 0L;
+	NSString			*converted = nil;
 	NSStringEncoding	encoding[ 10];
 	NSString *echoTime = nil;
 	NSString *sopClassUID = nil;
-	NSMutableArray *imageTypeArray = 0L;
+	NSMutableArray *imageTypeArray = nil;
 	
 	[PapyrusLock lock];
 	
@@ -1719,7 +1719,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			
 			if (gIsPapyFile [fileNb] == DICOM10) theErr = Papy3FSeek (gPapyFile [fileNb], SEEK_SET, 132L);
 			
-			NSString *characterSet = 0L;
+			NSString *characterSet = nil;
 			for( int i = 0; i < 10; i++) encoding[ i] = NSISOLatin1StringEncoding;
 			
 			if (COMMENTSAUTOFILL == YES || CHECKFORLAVIM == YES)
@@ -1760,7 +1760,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				
 				if( CHECKFORLAVIM == YES)
 				{
-					NSString	*album = 0L;
+					NSString	*album = nil;
 					
 					theErr = Papy3GotoGroupNb (fileNb, 0x0020);
 					if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
@@ -1903,15 +1903,15 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 						val+=2;
 						imageType = [[NSString alloc] initWithCString:val->a encoding: NSASCIIStringEncoding];
 					}
-					else imageType = 0L;
+					else imageType = nil;
 				}
-				else imageType = 0L;
+				else imageType = nil;
 				
 				if( imageType) [dicomElements setObject:imageType forKey:@"imageType"];
 				
 				val = Papy3GetElement (theGroupP, papSOPInstanceUIDGr, &nbVal, &itemType);
 				if (val != NULL) SOPUID = [[NSString alloc] initWithCString:val->a encoding: NSASCIIStringEncoding];
-				else SOPUID = 0L;
+				else SOPUID = nil;
 				if( SOPUID) [dicomElements setObject:SOPUID forKey:@"SOPUID"];
 				
 				// TEST
@@ -2022,7 +2022,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 								}
 								else date = [[NSCalendarDate alloc] initWithString:studyDate calendarFormat:@"%Y%m%d"];
 							}
-							else date = [[NSCalendarDate dateWithYear:1901 month:1 day:1 hour:0 minute:0 second:0 timeZone:0L] retain];
+							else date = [[NSCalendarDate dateWithYear:1901 month:1 day:1 hour:0 minute:0 second:0 timeZone:nil] retain];
 						}
 					}
 				}
@@ -2089,7 +2089,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				if (val != NULL)
 				{
 					name = [[DicomFile stringWithBytes: (char*) val->a encodings:encoding] retain];
-					if(name == 0L) name = [[NSString alloc] initWithCString: val->a encoding: encoding[ 0]];
+					if(name == nil) name = [[NSString alloc] initWithCString: val->a encoding: encoding[ 0]];
 				}
 				else name = [[NSString alloc] initWithString:@"No name"];
 				[dicomElements setObject:name forKey:@"patientName"];
@@ -2193,7 +2193,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 					[imageID release];
 					imageID = [[NSString alloc] initWithFormat:@"%5d", val];
 				}
-				else imageID = 0L;
+				else imageID = nil;
 				
 				// Compute slice location
 				
@@ -2258,7 +2258,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				
 				[dicomElements setObject:[NSNumber numberWithFloat: location] forKey:@"sliceLocation"];
 				
-				if( imageID == 0L || [imageID intValue] >= 99999)
+				if( imageID == nil || [imageID intValue] >= 99999)
 				{
 					int val = 10000 + location*10.;
 					imageID = [[NSString alloc] initWithFormat:@"%5d", val];
@@ -2276,7 +2276,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 //				}
 //				else sliceLocation = [[NSString alloc] initWithFormat:@"%7d", 1];
 				
-				seriesNo = 0L;
+				seriesNo = nil;
 				val = Papy3GetElement (theGroupP, papSeriesNumberGr, &nbVal, &itemType);
 				if (val != NULL)
 				{
@@ -2321,7 +2321,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 					serieID = n;
 				}
 				
-				if( serie != 0L && useSeriesDescription)
+				if( serie != nil && useSeriesDescription)
 				{
 					NSString	*n;
 					
@@ -2400,7 +2400,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			NoOfFrames = gArrNbImages [fileNb];
 			NoOfSeries = 1;
 			
-			if( patientID == 0L) patientID = [[NSString alloc] initWithString:@""];
+			if( patientID == nil) patientID = [[NSString alloc] initWithString:@""];
 		}
 		/*
 		// Go to groups 0s0042 for Encapsulated Document Possible PDF
@@ -2426,7 +2426,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		
 		[dicomElements setObject:[self patientUID] forKey:@"patientUID"];
 		
-		if( serieID == 0L) serieID = [[NSString alloc] initWithString:name];
+		if( serieID == nil) serieID = [[NSString alloc] initWithString:name];
 		
 		if( [Modality isEqualToString:@"US"] && oneFileOnSeriesForUS)
 		{
@@ -2448,21 +2448,21 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		else
 			[dicomElements setObject:serieID forKey:@"seriesID"];
 
-		if( studyID == 0L)
+		if( studyID == nil)
 		{
 			studyID = [[NSString alloc] initWithString:name];
 			[dicomElements setObject:studyID forKey:@"studyID"];
 		}
 		
-		if( imageID == 0L)
+		if( imageID == nil)
 		{
 			imageID = [[NSString alloc] initWithString:name];
 			[dicomElements setObject:imageID forKey:@"SOPUID"];
 		}
 	
-		if( date == 0L)
+		if( date == nil)
 		{
-			date = [[NSCalendarDate dateWithYear:1901 month:1 day:1 hour:0 minute:0 second:0 timeZone:0L] retain];
+			date = [[NSCalendarDate dateWithYear:1901 month:1 day:1 hour:0 minute:0 second:0 timeZone:nil] retain];
 			[dicomElements setObject:date forKey:@"studyDate"];
 		}
 		
@@ -2470,7 +2470,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		
 		//NSLog(@"DicomElements:  %@ %@" ,NSStringFromClass([dicomElements class]) ,[dicomElements description]);
 		
-		if( name != 0L && studyID != 0L && serieID != 0L && imageID != 0L && width != 0 && height != 0)
+		if( name != nil && studyID != nil && serieID != nil && imageID != nil && width != 0 && height != 0)
 		{
 			returnValue = 0;   // success
 		}
@@ -2482,7 +2482,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	if( converted)
 	{
 		if ([[NSFileManager defaultManager] fileExistsAtPath:converted])
-			[[NSFileManager defaultManager] removeFileAtPath:converted handler: 0L];
+			[[NSFileManager defaultManager] removeFileAtPath:converted handler: nil];
 	}
 	else
 	{
@@ -2552,7 +2552,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				//CT Philips :	0x0040:0x1400
 				//CT GE :	Pas encore dŽfini
 				//Autres modalitŽs :	A dŽfinir.
-				NSString			*field = 0L, *album = 0L;
+				NSString			*field = nil, *album = nil;
 				
 				field = [dcmObject attributeValueForKey: @"0020,4000"];
 				if( field)
@@ -2659,7 +2659,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		}
 		else
 		{
-			date = [[NSCalendarDate dateWithYear:1901 month:1 day:1 hour:0 minute:0 second:0 timeZone:0L] retain];
+			date = [[NSCalendarDate dateWithYear:1901 month:1 day:1 hour:0 minute:0 second:0 timeZone:nil] retain];
 		}
 		
 		[dicomElements setObject:date forKey:@"studyDate"];
@@ -2777,7 +2777,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		
 		[dicomElements setObject:[NSNumber numberWithFloat: location] forKey:@"sliceLocation"];
 		
-		if( imageID == 0L || [imageID intValue] >= 99999)
+		if( imageID == nil || [imageID intValue] >= 99999)
 		{
 			int val = 10000 + location*10.;
 			imageID = [[NSString alloc] initWithFormat:@"%5d", val];
@@ -2849,7 +2849,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			serieID = n;
 		}
 		
-		if( serie != 0L && useSeriesDescription)
+		if( serie != nil && useSeriesDescription)
 		{
 			NSString	*n;
 			
@@ -2888,7 +2888,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			serieID = newSerieID;
 		}
 		
-		if( serieID == 0L)  
+		if( serieID == nil)  
 			serieID = [[NSString alloc] initWithString:name];
 		
 		if( [Modality isEqualToString:@"US"] && oneFileOnSeriesForUS)
@@ -2936,7 +2936,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 
 - (id) initRandom
 {
-	id returnVal = 0L;
+	id returnVal = nil;
 	
 	if( self = [super init])
 	{
@@ -2946,22 +2946,22 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		
 		width = 1;
 		height = 1;
-		name = 0L;
-		study = 0L;
-		serie = 0L;
-		date = 0L;
-		Modality = 0L;
+		name = nil;
+		study = nil;
+		serie = nil;
+		date = nil;
+		Modality = nil;
 		filePath = [[NSString alloc] initWithFormat:@"protp/aksidkoa/saodkireks/ksidjaiskd/orkerofk%d", random()];
-		SOPUID = 0L;
-		fileType = 0L;
+		SOPUID = nil;
+		fileType = nil;
 		NoOfSeries = 1;
-		studyID = 0L;
-		serieID = 0L;
-		imageID = 0L;
-		patientID = 0L;
-		studyIDs = 0L;
-		seriesNo = 0L;
-		imageType = 0L;
+		studyID = nil;
+		serieID = nil;
+		imageID = nil;
+		patientID = nil;
+		studyIDs = nil;
+		seriesNo = nil;
+		imageType = nil;
 		
 		dicomElements = [[NSMutableDictionary dictionary] retain];
 		
@@ -2985,7 +2985,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 
 - (id) init:(NSString*) f DICOMOnly:(BOOL) DICOMOnly
 {
-	id returnVal = 0L;
+	id returnVal = nil;
 //	NSLog(@"Init dicomFile: %d", DICOMOnly);
 	if( self = [super init])
 	{
@@ -2995,25 +2995,25 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		
 		width = 1;
 		height = 1;
-		name = 0L;
-		study = 0L;
-		serie = 0L;
-		date = 0L;
-		Modality = 0L;
+		name = nil;
+		study = nil;
+		serie = nil;
+		date = nil;
+		Modality = nil;
 		filePath = f;
-		SOPUID = 0L;
-		fileType = 0L;
+		SOPUID = nil;
+		fileType = nil;
 		NoOfSeries = 1;
 		
 		[filePath retain];
 		
-		studyID = 0L;
-		serieID = 0L;
-		imageID = 0L;
-		patientID = 0L;
-		studyIDs = 0L;
-		seriesNo = 0L;
-		imageType = 0L;
+		studyID = nil;
+		serieID = nil;
+		imageID = nil;
+		patientID = nil;
+		studyIDs = nil;
+		seriesNo = nil;
+		imageType = nil;
 		
 		dicomElements = [[NSMutableDictionary dictionary] retain];
 		
@@ -3027,7 +3027,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			{
 				[self release];
 				
-				returnVal = 0L;
+				returnVal = nil;
 			}
 		}
 		else
@@ -3072,7 +3072,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			{
 				[self release];
 				
-				returnVal = 0L;
+				returnVal = nil;
 			}
 		}
 	}
@@ -3378,7 +3378,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			patientID = [[xmlData objectForKey:@"patientID"] retain];
 			studyIDs = [studyID retain];
 			seriesNo = [[NSString alloc] initWithString:@"0"];
-			imageType = 0L;
+			imageType = nil;
 			
 			[dicomElements setObject:[xmlData objectForKey:@"album"] forKey:@"album"];
 			[dicomElements setObject:name forKey:@"patientName"];

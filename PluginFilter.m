@@ -105,7 +105,7 @@
 		return new2DViewer;
 	}
 	
-	return 0L;
+	return nil;
 }
 
 - (NSArray*) viewerControllersList

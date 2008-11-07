@@ -55,22 +55,22 @@
 
 + (BOOL)verifyRequiredConditions:(NSArray*)pixA :(NSArray*)pixB;
 {
-	NSMutableString *alertMessage = [NSMutableString stringWithString: NSLocalizedString( @"The two series must have:", 0L) ];
+	NSMutableString *alertMessage = [NSMutableString stringWithString: NSLocalizedString( @"The two series must have:", nil) ];
 	
 	BOOL samePixelSpacing, sameImagesCount, sameImagesLocations=NO;
 	samePixelSpacing = [LLScoutViewer haveSamePixelSpacing:pixA :pixB];
 	sameImagesCount = [LLScoutViewer haveSameImagesCount:pixA :pixB];
 		
 	if(!samePixelSpacing)
-		[alertMessage appendString: NSLocalizedString( @"\n - the same pixels spacing", 0L)];
+		[alertMessage appendString: NSLocalizedString( @"\n - the same pixels spacing", nil)];
 	
 	if(!sameImagesCount)
-		[alertMessage appendString: NSLocalizedString( @"\n - the same number of images", 0L)];
+		[alertMessage appendString: NSLocalizedString( @"\n - the same number of images", nil)];
 	else
 	{
 		sameImagesLocations = [LLScoutViewer haveSameImagesLocations:pixA :pixB];
 		if(!sameImagesLocations)
-			[alertMessage appendString:NSLocalizedString(  @"\n - the same location for each image", 0L)];
+			[alertMessage appendString:NSLocalizedString(  @"\n - the same location for each image", nil)];
 	}
 	
 	BOOL error = !samePixelSpacing || !sameImagesCount || !sameImagesLocations;
@@ -142,21 +142,21 @@
 	{
 		w = [mprViewerTop window];
 		[mprViewerTop release];
-		mprViewerTop = 0L;
+		mprViewerTop = nil;
 		[w close];
 	}
 	if(mprVieweMiddle)
 	{
 		w = [mprVieweMiddle window];
 		[mprVieweMiddle release];
-		mprVieweMiddle = 0L;
+		mprVieweMiddle = nil;
 		[w close];
 	}
 	if(mprViewerBottom)
 	{
 		w = [mprViewerBottom window];
 		[mprViewerBottom release];
-		mprViewerBottom = 0L;
+		mprViewerBottom = nil;
 		[w close];
 	}
 
@@ -229,21 +229,21 @@
 	{
 		w = [mprViewerTop window];
 		[mprViewerTop release];
-		mprViewerTop = 0L;
+		mprViewerTop = nil;
 		[w close];
 	}
 	if(mprVieweMiddle && (topChanged || bottomChanged))
 	{
 		w = [mprVieweMiddle window];
 		[mprVieweMiddle release];
-		mprVieweMiddle = 0L;
+		mprVieweMiddle = nil;
 		[w close];
 	}
 	if(mprViewerBottom && bottomChanged)
 	{
 		w = [mprViewerBottom window];
 		[mprViewerBottom release];
-		mprViewerBottom = 0L;
+		mprViewerBottom = nil;
 		[w close];
 	}
 }
@@ -337,28 +337,28 @@
 	{	
 		NSWindow *w = [llViewer window];
 		//[llViewer release];
- 		//llViewer = 0L;
+ 		//llViewer = nil;
 		[w close];	
-		llViewer = 0L;
+		llViewer = nil;
 	}
 	
 	if(mprViewerTop)
 	{	
 		NSWindow *w = [mprViewerTop window];
 		[w close];	
-		mprViewerTop = 0L;
+		mprViewerTop = nil;
 	}
 	if(mprVieweMiddle)
 	{	
 		NSWindow *w = [mprVieweMiddle window];
 		[w close];	
-		mprVieweMiddle = 0L;
+		mprVieweMiddle = nil;
 	}
 	if(mprViewerBottom)
 	{	
 		NSWindow *w = [mprViewerBottom window];
 		[w close];	
-		mprViewerBottom = 0L;
+		mprViewerBottom = nil;
 	}	
 	
 	if(index==0)

@@ -211,9 +211,9 @@
 	
 	NSString *imagePath = [self _writeDICOMHeaderAndData: patientInfoDict destinationPath: destPath imageData: currentImage colorPrint: colorPrint];
 	
-	if( imagePath == 0L)
+	if( imagePath == nil)
 	{
-		NSLog( @"WARNING imagePath == 0L");
+		NSLog( @"WARNING imagePath == nil");
 		imagePath = @"";
 	}
 	return imagePath;
@@ -1050,7 +1050,7 @@
 		
 		fclose(outFile);
 	}
-	else return 0L;
+	else return nil;
 	
 	return path;
 }

@@ -58,8 +58,8 @@ static char *GetPrivateIP()
 		interfaceOsiriX = bC;
 		
 		fdForListening = 0;
-		listeningSocket = 0L;
-		netService = 0L;
+		listeningSocket = nil;
+		netService = nil;
 		
 		connectionLock = [[NSLock alloc] init];
 	}
@@ -89,7 +89,7 @@ static char *GetPrivateIP()
         //that to listen for incoming connections.
 		
 		if(fdForListening) close(fdForListening);
-		fdForListening= 0L;
+		fdForListening= 0;
 	
         struct sockaddr_in serverAddress;
         socklen_t namelen = sizeof(serverAddress);
@@ -140,8 +140,8 @@ static char *GetPrivateIP()
 				else
 				{
 					NSAlert* alert = [NSAlert new];
-					[alert setMessageText: NSLocalizedString(@"Bonjour Port", 0L)];
-					[alert setInformativeText : NSLocalizedString(@"Cannot use port 8780 for Bonjour sharing. It is already used, another port will be selected.", 0L)];
+					[alert setMessageText: NSLocalizedString(@"Bonjour Port", nil)];
+					[alert setInformativeText : NSLocalizedString(@"Cannot use port 8780 for Bonjour sharing. It is already used, another port will be selected.", nil)];
 					[alert setShowsSuppressionButton:YES];
 					[alert runModal];
 					if ([[alert suppressionButton] state] == NSOnState)
@@ -160,7 +160,7 @@ static char *GetPrivateIP()
 			{
 				listeningSocket = [[NSFileHandle alloc] initWithFileDescriptor:fdForListening closeOnDealloc:NO];
 			}
-			else listeningSocket = 0L;
+			else listeningSocket = nil;
 		}
     }
 
@@ -237,7 +237,7 @@ static char *GetPrivateIP()
 {
 	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
 	
-	if( dicomSendLock == 0L) dicomSendLock = [[NSLock alloc] init];
+	if( dicomSendLock == nil) dicomSendLock = [[NSLock alloc] init];
 	[dicomSendLock lock];
 	
 	DCMTKStoreSCU *storeSCU = [[DCMTKStoreSCU alloc]	initWithCallingAET: [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] 
@@ -262,7 +262,7 @@ static char *GetPrivateIP()
 	}
 	
 	[storeSCU release];
-	storeSCU = 0L;
+	storeSCU = nil;
 	
 	[dicomSendLock unlock];
 	
@@ -284,7 +284,7 @@ static char *GetPrivateIP()
 	{
 		NSData				*readData;
 		NSMutableData		*data = [NSMutableData dataWithCapacity: 512*512*2*2];
-		NSMutableData		*representationToSend = 0L;
+		NSMutableData		*representationToSend = nil;
 		
 		if( incomingConnection)
 		{
@@ -293,7 +293,7 @@ static char *GetPrivateIP()
 			
 			if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"DBSIZ" length: 6]])
 			{
-				[interfaceOsiriX saveDatabase: 0L];
+				[interfaceOsiriX saveDatabase: nil];
 				NSString *databasePath = [interfaceOsiriX localDatabasePath];
 				
 				NSDictionary *fattrs = [[NSFileManager defaultManager] fileAttributesAtPath: databasePath traverseLink: YES];
@@ -309,7 +309,7 @@ static char *GetPrivateIP()
 			}
 			else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"DATAB" length: 6]])
 			{
-				[interfaceOsiriX saveDatabase: 0L];
+				[interfaceOsiriX saveDatabase: nil];
 				
 				// we send the database SQL file
 				NSString *databasePath = [interfaceOsiriX localDatabasePath];
@@ -330,7 +330,7 @@ static char *GetPrivateIP()
 			{
 				NSString *address = [NSString stringWithCString:GetPrivateIP()];
 				
-				NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys: address, @"Address", [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"], @"AETitle", [[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"], @"Port", @"0", @"Transfer Syntax", 0L];
+				NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys: address, @"Address", [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"], @"AETitle", [[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"], @"Port", @"0", @"Transfer Syntax", nil];
 				
 				representationToSend = [NSMutableData dataWithData: [NSArchiver archivedDataWithRootObject: dictionary]];
 			}
@@ -391,7 +391,7 @@ static char *GetPrivateIP()
 				
 				int val = 0;
 				
-				if( [incomingPswd isEqualToString: [interfaceOsiriX bonjourPassword]] || [interfaceOsiriX bonjourPassword] == 0L)
+				if( [incomingPswd isEqualToString: [interfaceOsiriX bonjourPassword]] || [interfaceOsiriX bonjourPassword] == nil)
 				{
 					val = NSSwapHostIntToBig(1);
 				}
@@ -438,7 +438,7 @@ static char *GetPrivateIP()
 					pos += fileSize;
 				}
 				
-				representationToSend = 0L;
+				representationToSend = nil;
 			}
 			else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"ADDAL" length: 6]])
 			{
@@ -490,7 +490,7 @@ static char *GetPrivateIP()
 					[context release];
 				}
 				
-				representationToSend = 0L;
+				representationToSend = nil;
 			}
 			else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"REMAL" length: 6]])
 			{
@@ -542,7 +542,7 @@ static char *GetPrivateIP()
 					[context release];
 				}
 				
-				representationToSend = 0L;
+				representationToSend = nil;
 			}
 			else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"SETVA" length: 6]])
 			{
@@ -565,9 +565,9 @@ static char *GetPrivateIP()
 				
 				// We read the string
 				NSString *value;
-				if( stringSize == 0L)
+				if( stringSize == 0)
 				{
-					value = 0L;
+					value = nil;
 				}
 				else
 				{
@@ -602,9 +602,9 @@ static char *GetPrivateIP()
 						{
 							if( [key isEqualToString: @"reportURL"] == YES)
 							{
-								if( value == 0L)
+								if( value == nil)
 								{
-									[[NSFileManager defaultManager] removeFileAtPath:[item valueForKeyPath: key] handler:0L];
+									[[NSFileManager defaultManager] removeFileAtPath:[item valueForKeyPath: key] handler:nil];
 								}
 								else if( [[key pathComponents] count] == 1)
 								{
@@ -695,7 +695,7 @@ static char *GetPrivateIP()
 
 					if(result==0)
 					{
-						[[NSFileManager defaultManager] removeFileAtPath: path handler: 0L];
+						[[NSFileManager defaultManager] removeFileAtPath: path handler: nil];
 						
 						path = [[path stringByDeletingLastPathComponent] stringByAppendingFormat:@"/%@", zipFileName];
 						NSLog(@"path : %@", path);
@@ -746,7 +746,7 @@ static char *GetPrivateIP()
 				
 				NSString	*localpath = [[documentsDirectory() stringByAppendingPathComponent: @"/REPORTS/"] stringByAppendingPathComponent: [path lastPathComponent]];
 				
-				[[NSFileManager defaultManager] removeFileAtPath: localpath handler:0L];
+				[[NSFileManager defaultManager] removeFileAtPath: localpath handler:nil];
 				[[data subdataWithRange: NSMakeRange(pos,dataSize)] writeToFile: localpath atomically:YES];
 				pos += dataSize;
 				
@@ -756,7 +756,7 @@ static char *GetPrivateIP()
 					
 					NSString *reportFileName = [localpath stringByDeletingPathExtension];
 					
-					[[NSFileManager defaultManager] removeFileAtPath: reportFileName handler: 0L];
+					[[NSFileManager defaultManager] removeFileAtPath: reportFileName handler: nil];
 					
 					NSLog(@"subConnectionReceived  reportFileName : %@", reportFileName);
 					// unzip the file
@@ -863,7 +863,7 @@ static char *GetPrivateIP()
 					[localPaths addObject: path];
 				}
 				
-				NSDictionary	*todo = [NSDictionary dictionaryWithObjectsAndKeys: Address, @"Address", TransferSyntax, @"Transfer Syntax", Port, @"Port", AETitle, @"AETitle", localPaths, @"Files", 0L];
+				NSDictionary	*todo = [NSDictionary dictionaryWithObjectsAndKeys: Address, @"Address", TransferSyntax, @"Transfer Syntax", Port, @"Port", AETitle, @"AETitle", localPaths, @"Files", nil];
 				
 				[NSThread detachNewThreadSelector:@selector( sendDICOMFilesToOsiriXNode:) toTarget:self withObject: todo];
 			}
@@ -1001,8 +1001,8 @@ static char *GetPrivateIP()
 	[incomingConnection closeFile];
 	[incomingConnection release];
 	
-	if( refreshDB) [interfaceOsiriX performSelectorOnMainThread:@selector( refreshDatabase:) withObject:0L waitUntilDone: YES];		// This has to be performed on the main thread
-	if( saveDB) [interfaceOsiriX performSelectorOnMainThread:@selector( saveDatabase:) withObject:0L waitUntilDone: YES];			// This has to be performed on the main thread
+	if( refreshDB) [interfaceOsiriX performSelectorOnMainThread:@selector( refreshDatabase:) withObject:nil waitUntilDone: YES];		// This has to be performed on the main thread
+	if( saveDB) [interfaceOsiriX performSelectorOnMainThread:@selector( saveDatabase:) withObject:nil waitUntilDone: YES];			// This has to be performed on the main thread
 	
 	[mPool release];
 }
@@ -1047,7 +1047,7 @@ static char *GetPrivateIP()
 	[listeningSocket release];
     listeningSocket = nil;
 	[netService release];
-	netService = 0L;
+	netService = nil;
 }
 
 - (NSNetService*) netService

@@ -86,8 +86,8 @@
 	NSMutableArray *stack = [NSMutableArray array];
 	NSMutableArray *centerlinePoints = [NSMutableArray array];
 
-	vtkDecimatePro *decimate = 0L;
-	vtkDataSet*	output = 0L;
+	vtkDecimatePro *decimate = nil;
+	vtkDataSet*	output = nil;
 	
 	BOOL atEnd = NO;
 	

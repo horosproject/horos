@@ -48,23 +48,23 @@
 
 #define BUILTIN_DCMTK YES
 
-ToolbarPanelController *toolbarPanel[10] = {0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L};
+ToolbarPanelController *toolbarPanel[10] = {nil, nil, nil, nil, nil, nil, nil, nil, nil, nil};
 
-static NSMenu *mainMenuCLUTMenu = 0L, *mainMenuWLWWMenu = 0L, *mainMenuConvMenu = 0L;
-static NSDictionary *previousWLWWKeys = 0L, *previousCLUTKeys = 0L, *previousConvKeys = 0L;
+static NSMenu *mainMenuCLUTMenu = nil, *mainMenuWLWWMenu = nil, *mainMenuConvMenu = nil;
+static NSDictionary *previousWLWWKeys = nil, *previousCLUTKeys = nil, *previousConvKeys = nil;
 static BOOL checkForPreferencesUpdate = YES;
-static PluginManager *pluginManager = 0L;
+static PluginManager *pluginManager = nil;
 
 NSThread				*mainThread;
 BOOL					NEEDTOREBUILD = NO;
 BOOL					COMPLETEREBUILD = NO;
 BOOL					USETOOLBARPANEL = NO;
 short					Altivec = 1, UseOpenJpeg = 1;
-AppController			*appController = 0L;
-DCMTKQueryRetrieveSCP   *dcmtkQRSCP = 0L;
-NSString				*dicomListenerIP = 0L;
-NSRecursiveLock			*PapyrusLock = 0L;			// Papyrus is NOT thread-safe
-NSMutableArray			*accumulateAnimationsArray = 0L;
+AppController			*appController = nil;
+DCMTKQueryRetrieveSCP   *dcmtkQRSCP = nil;
+NSString				*dicomListenerIP = nil;
+NSRecursiveLock			*PapyrusLock = nil, *STORESCP = nil;			// Papyrus is NOT thread-safe
+NSMutableArray			*accumulateAnimationsArray = nil;
 BOOL					accumulateAnimations = NO;
 
 enum	{kSuccess = 0,
@@ -325,7 +325,7 @@ NSString * documentsDirectoryFor( int mode, NSString *url)
 	char s[1024];
 	FSSpec spec;
 	FSRef ref;
-	NSString *path = 0L;
+	NSString *path = nil;
 	
 	switch( mode)
 	{
@@ -353,7 +353,7 @@ NSString * documentsDirectoryFor( int mode, NSString *url)
 		break;
 	}
 	
-	NSString*dir = 0L;
+	NSString*dir = nil;
 	dir = [path stringByAppendingPathComponent:@"/REPORTS/"];
 	if ([[NSFileManager defaultManager] fileExistsAtPath: dir] == NO)
 		[[NSFileManager defaultManager] createDirectoryAtPath: dir attributes:nil];
@@ -392,7 +392,7 @@ NSString* filenameWithDate( NSString *inputfile)
 	createDate = [fattrs objectForKey:NSFileModificationDate];
 	fileSize = [fattrs objectForKey:NSFileSize];
 	
-	if( createDate == 0L) createDate = [NSDate date];
+	if( createDate == nil) createDate = [NSDate date];
 	
 	return [[[[inputfile lastPathComponent] stringByDeletingPathExtension] stringByAppendingFormat:@"%@-%d-%@", [createDate descriptionWithCalendarFormat:@"%Y-%m-%d-%H-%M-%S" timeZone:nil locale:nil], [fileSize intValue], [[inputfile stringByDeletingLastPathComponent]lastPathComponent]] stringByAppendingString:@".dcm"];
 }
@@ -424,7 +424,7 @@ NSString* convertDICOM( NSString *inputfile)
 //	NSLog(inputfile);
 //	if ([[NSFileManager defaultManager] fileExistsAtPath:outputfile])
 //	{
-//		//[[NSFileManager defaultManager] removeFileAtPath:outputfile handler: 0L];
+//		//[[NSFileManager defaultManager] removeFileAtPath:outputfile handler: nil];
 //		//NSLog(@"Already converted...");
 //		return outputfile;
 //	}
@@ -612,7 +612,7 @@ NSRect screenFrame()
 
 //———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
-static NSDate *lastWarningDate = 0L;
+static NSDate *lastWarningDate = nil;
 
 @implementation AppController
 
@@ -632,24 +632,24 @@ static NSDate *lastWarningDate = 0L;
 	
 	if( ![[NSFileManager defaultManager] fileExistsAtPath: path] && [[NSFileManager defaultManager] fileExistsAtPath: [path stringByDeletingPathExtension]])
 	{
-		[[NSFileManager defaultManager] movePath:[path stringByDeletingPathExtension] toPath:path handler: 0L];
+		[[NSFileManager defaultManager] movePath:[path stringByDeletingPathExtension] toPath:path handler: nil];
 		newFolder = YES;
 	}
 	
 	if( ![[NSFileManager defaultManager] fileExistsAtPath: path])
 	{
-		[[NSFileManager defaultManager] createDirectoryAtPath: path attributes: 0L];
+		[[NSFileManager defaultManager] createDirectoryAtPath: path attributes: nil];
 		newFolder = YES;
 	}
 	
 	if( [[NSFileManager defaultManager] fileExistsAtPath: [path stringByDeletingPathExtension]])
-		[[NSFileManager defaultManager] removeFileAtPath: [path stringByDeletingPathExtension] handler: 0L];
+		[[NSFileManager defaultManager] removeFileAtPath: [path stringByDeletingPathExtension] handler: nil];
 	
 	if( newFolder)
 	{
 		NSLog( @"check noindex folder attributes");
 		
-		NSDictionary *d = [[NSFileManager defaultManager] attributesOfItemAtPath:path error: 0L];
+		NSDictionary *d = [[NSFileManager defaultManager] attributesOfItemAtPath:path error: nil];
 	
 		if( d && [[d objectForKey: NSFileExtensionHidden] boolValue] == NO)
 		{
@@ -663,7 +663,7 @@ static NSDate *lastWarningDate = 0L;
 
 + (void) pause
 {
-	[[AppController sharedAppController] performSelectorOnMainThread: @selector( pause) withObject: 0L waitUntilDone: NO];
+	[[AppController sharedAppController] performSelectorOnMainThread: @selector( pause) withObject: nil waitUntilDone: NO];
 }
 
 + (NSThread*) mainThread
@@ -683,7 +683,7 @@ static NSDate *lastWarningDate = 0L;
 		
 		if( accumulateAnimations)
 		{
-			if( accumulateAnimationsArray == 0L) accumulateAnimationsArray = [[NSMutableArray array] retain];
+			if( accumulateAnimationsArray == nil) accumulateAnimationsArray = [[NSMutableArray array] retain];
 			[accumulateAnimationsArray addObject: windowResize];
 		}
 		else
@@ -704,9 +704,9 @@ static NSDate *lastWarningDate = 0L;
 {
 	if( [[NSUserDefaults standardUserDefaults] integerForKey: @"lastWarningDay"] != [[NSCalendarDate date] dayOfYear])
 	{
-		if( lastWarningDate == 0L || [lastWarningDate timeIntervalSinceNow] < -60*60*16)
+		if( lastWarningDate == nil || [lastWarningDate timeIntervalSinceNow] < -60*60*16)
 		{
-			int result = NSRunCriticalAlertPanel( NSLocalizedString( @"Important Notice", 0L), NSLocalizedString( @"This version of OsiriX, being a free open-source software (FOSS), is not certified as a commercial medical device (FDA or CE-1).\r\rPlease check with local compliance office for possible limitations in its clinical use.\r\rFor a FDA / CE-1 certified version, please check our partners web page:\r\rhttp://www.osirix-viewer.com/Partners.html\r", 0L), NSLocalizedString( @"I agree", 0L), NSLocalizedString( @"Quit", 0L), NSLocalizedString( @"Partners", 0L));
+			int result = NSRunCriticalAlertPanel( NSLocalizedString( @"Important Notice", nil), NSLocalizedString( @"This version of OsiriX, being a free open-source software (FOSS), is not certified as a commercial medical device (FDA or CE-1).\r\rPlease check with local compliance office for possible limitations in its clinical use.\r\rFor a FDA / CE-1 certified version, please check our partners web page:\r\rhttp://www.osirix-viewer.com/Partners.html\r", nil), NSLocalizedString( @"I agree", nil), NSLocalizedString( @"Quit", nil), NSLocalizedString( @"Partners", nil));
 			
 			if( result == NSAlertOtherReturn)
 			{
@@ -934,7 +934,7 @@ static NSDate *lastWarningDate = 0L;
 		if( showRestartNeeded == YES)
 		{
 			showRestartNeeded = NO;
-			NSRunAlertPanel( NSLocalizedString( @"DICOM Listener", 0L), NSLocalizedString( @"Restart OsiriX to apply these changes.", 0L), NSLocalizedString( @"OK", 0L), nil, nil);
+			NSRunAlertPanel( NSLocalizedString( @"DICOM Listener", nil), NSLocalizedString( @"Restart OsiriX to apply these changes.", nil), NSLocalizedString( @"OK", nil), nil, nil);
 		}
 	}
 	
@@ -968,7 +968,7 @@ static NSDate *lastWarningDate = 0L;
 	{
 		[[NSUserDefaults standardUserDefaults] setBool: NO forKey:@"updateServers"];
 		[[QueryController currentQueryController] refreshSources];
-		[[NSNotificationCenter defaultCenter] postNotificationName:@"OsiriXServerArray has changed" object:0L];
+		[[NSNotificationCenter defaultCenter] postNotificationName:@"OsiriXServerArray has changed" object:nil];
 	}
 	
 	UseOpenJpeg = [[NSUserDefaults standardUserDefaults] boolForKey:@"UseOpenJpegForJPEG2000"];
@@ -1016,10 +1016,10 @@ static NSDate *lastWarningDate = 0L;
 	{
 		[updateTimer invalidate];
 		[updateTimer release];
-		updateTimer = 0L;
+		updateTimer = nil;
 	}
 	
-	updateTimer = [[NSTimer scheduledTimerWithTimeInterval: 1 target: self selector:@selector(runPreferencesUpdateCheck:) userInfo:0L repeats: NO] retain];
+	updateTimer = [[NSTimer scheduledTimerWithTimeInterval: 1 target: self selector:@selector(runPreferencesUpdateCheck:) userInfo:nil repeats: NO] retain];
 }
 
 -(void) UpdateWLWWMenu: (NSNotification*) note
@@ -1031,7 +1031,7 @@ static NSDate *lastWarningDate = 0L;
     NSArray     *keys;
     NSArray     *sortedKeys;
     
-	if( mainMenuWLWWMenu == 0L)
+	if( mainMenuWLWWMenu == nil)
 	{
 		mainMenu = [NSApp mainMenu];
 		viewerMenu = [[mainMenu itemWithTitle:NSLocalizedString(@"2D Viewer", nil)] submenu];
@@ -1048,10 +1048,10 @@ static NSDate *lastWarningDate = 0L;
 		i = [mainMenuWLWWMenu numberOfItems];
 		while(i-- > 0) [mainMenuWLWWMenu removeItemAtIndex:0];   
 		
-		[mainMenuWLWWMenu addItemWithTitle:NSLocalizedString(@"Default WL & WW", 0L) action:@selector (ApplyWLWW:) keyEquivalent:@"l"];
+		[mainMenuWLWWMenu addItemWithTitle:NSLocalizedString(@"Default WL & WW", nil) action:@selector (ApplyWLWW:) keyEquivalent:@"l"];
 		
-		[mainMenuWLWWMenu addItemWithTitle:NSLocalizedString(@"Other", 0L) action:@selector (ApplyWLWW:) keyEquivalent:@""];
-		[mainMenuWLWWMenu addItemWithTitle:NSLocalizedString(@"Full dynamic", 0L) action:@selector (ApplyWLWW:) keyEquivalent:@"y"];
+		[mainMenuWLWWMenu addItemWithTitle:NSLocalizedString(@"Other", nil) action:@selector (ApplyWLWW:) keyEquivalent:@""];
+		[mainMenuWLWWMenu addItemWithTitle:NSLocalizedString(@"Full dynamic", nil) action:@selector (ApplyWLWW:) keyEquivalent:@"y"];
 		
 		[mainMenuWLWWMenu addItem: [NSMenuItem separatorItem]];
 		
@@ -1076,7 +1076,7 @@ static NSDate *lastWarningDate = 0L;
 	NSArray     *keys;
 	NSArray     *sortedKeys;
 	
-	if( mainMenuConvMenu == 0L)
+	if( mainMenuConvMenu == nil)
 	{
 		mainMenu = [NSApp mainMenu];
 		viewerMenu = [[mainMenu itemWithTitle:NSLocalizedString(@"2D Viewer", nil)] submenu];
@@ -1093,7 +1093,7 @@ static NSDate *lastWarningDate = 0L;
 		i = [mainMenuConvMenu numberOfItems];
 		while(i-- > 0) [mainMenuConvMenu removeItemAtIndex:0];    
 		
-		[mainMenuConvMenu addItemWithTitle:NSLocalizedString(@"No Filter", 0L) action:@selector (ApplyConv:) keyEquivalent:@""];
+		[mainMenuConvMenu addItemWithTitle:NSLocalizedString(@"No Filter", nil) action:@selector (ApplyConv:) keyEquivalent:@""];
 		
 		[mainMenuConvMenu addItem: [NSMenuItem separatorItem]];
 		
@@ -1102,7 +1102,7 @@ static NSDate *lastWarningDate = 0L;
 			[mainMenuConvMenu addItemWithTitle:[sortedKeys objectAtIndex:i] action:@selector (ApplyConv:) keyEquivalent:@""];
 		}
 		[mainMenuConvMenu addItem: [NSMenuItem separatorItem]];
-		[mainMenuConvMenu addItemWithTitle:NSLocalizedString(@"Add a Filter", 0L) action:@selector (AddConv:) keyEquivalent:@""];
+		[mainMenuConvMenu addItemWithTitle:NSLocalizedString(@"Add a Filter", nil) action:@selector (AddConv:) keyEquivalent:@""];
 	}
 }
 
@@ -1115,7 +1115,7 @@ static NSDate *lastWarningDate = 0L;
     NSArray     *keys;
     NSArray     *sortedKeys;
     
-	if( mainMenuCLUTMenu == 0L)
+	if( mainMenuCLUTMenu == nil)
 	{
 		mainMenu = [NSApp mainMenu];
 		viewerMenu = [[mainMenu itemWithTitle:NSLocalizedString(@"2D Viewer", nil)] submenu];
@@ -1238,7 +1238,13 @@ static NSDate *lastWarningDate = 0L;
 		
 		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"USESTORESCP"])
 		{
-			[NSThread detachNewThreadSelector: @selector(startSTORESCP:) toTarget: self withObject: self];
+			if( [STORESCP tryLock])
+			{
+				[NSThread detachNewThreadSelector: @selector(startSTORESCP:) toTarget: self withObject: self];
+				
+				[STORESCP unlock];
+			}
+			else NSRunCriticalAlertPanel( NSLocalizedString( @"DICOM Listener Error", nil), NSLocalizedString( @"Cannot start DICOM Listener. Another thread is already running. Restart OsiriX.", nil), NSLocalizedString( @"OK", nil), nil, nil);
 		}
 	}
 	
@@ -1248,22 +1254,22 @@ static NSDate *lastWarningDate = 0L;
 	
 	[BonjourDICOMService stop];
 	[BonjourDICOMService release];
-	BonjourDICOMService = 0L;
+	BonjourDICOMService = nil;
 
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"publishDICOMBonjour"])
 	{
 		//Start DICOM Bonjour 
-		[NSTimer scheduledTimerWithTimeInterval: 10 target: self selector: @selector( startDICOMBonjour:) userInfo: 0L repeats: NO];
+		[NSTimer scheduledTimerWithTimeInterval: 10 target: self selector: @selector( startDICOMBonjour:) userInfo: nil repeats: NO];
 	}
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"httpXMLRPCServer"])
 	{
-		if(XMLRPCServer == 0L) XMLRPCServer = [[XMLRPCMethods alloc] init];
+		if(XMLRPCServer == nil) XMLRPCServer = [[XMLRPCMethods alloc] init];
 	}
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"httpWebServer"])
 	{
-		if(webServer == 0L) webServer = [[WebServicesMethods alloc] init];
+		if(webServer == nil) webServer = [[WebServicesMethods alloc] init];
 	}
 }
 
@@ -1292,7 +1298,7 @@ static NSDate *lastWarningDate = 0L;
 {
 	NSLog( @"netServiceDidStop");
 	[BonjourDICOMService release];
-	BonjourDICOMService = 0L;
+	BonjourDICOMService = nil;
 }
 
 - (void)netServiceWillPublish:(NSNetService *)sender
@@ -1308,15 +1314,15 @@ static NSDate *lastWarningDate = 0L;
 
 -(void) displayListenerError: (NSString*) err
 {
-	NSRunCriticalAlertPanel( NSLocalizedString( @"DICOM Listener Error", 0L), err, NSLocalizedString( @"OK", 0L), nil, nil);
+	NSRunCriticalAlertPanel( NSLocalizedString( @"DICOM Listener Error", nil), err, NSLocalizedString( @"OK", nil), nil, nil);
 }
 
 -(void) startSTORESCP:(id) sender
 {
 	// this method is always executed as a new thread detached from the NSthread command of RestartSTORESCP method
+
+	[STORESCP lock];
 	
-	if (BUILTIN_DCMTK)
-	{
 		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 		
 		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"UseHostNameForAETitle"])
@@ -1333,7 +1339,7 @@ static NSDate *lastWarningDate = 0L;
 		int port = [[[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"] intValue];
 		NSDictionary *params = nil;
 		
-		if( dicomListenerIP == 0L)
+		if( dicomListenerIP == nil)
 			dicomListenerIP = [[self privateIP] retain];
 
 		dcmtkQRSCP = [[DCMTKQueryRetrieveSCP alloc] initWithPort:port  aeTitle:(NSString *)aeTitle  extraParamaters:(NSDictionary *)params];
@@ -1341,9 +1347,10 @@ static NSDate *lastWarningDate = 0L;
 		
 		
 		[pool release];
-		
+	
+	[STORESCP unlock];
+	
 		return;
-	}
 	
 //	// this method is always executed as a new thread detached from the NSthread command of RestartSTORESCP method
 //	// this implies it needs it's own pool of objects
@@ -1368,7 +1375,7 @@ static NSDate *lastWarningDate = 0L;
 //	[theArguments addObject: [[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"]];
 //	[theArguments addObject: @"--fork"];
 //
-//	if( [[NSUserDefaults standardUserDefaults] stringForKey: @"STORESCPEXTRA"] != 0L &&
+//	if( [[NSUserDefaults standardUserDefaults] stringForKey: @"STORESCPEXTRA"] != nil &&
 //		[[[NSUserDefaults standardUserDefaults] stringForKey: @"STORESCPEXTRA"] isEqualToString:@""] == NO ) {
 //		
 //		NSLog([[NSUserDefaults standardUserDefaults] stringForKey: @"STORESCPEXTRA"]);
@@ -1479,7 +1486,7 @@ static NSDate *lastWarningDate = 0L;
 		}
 	}
 	
-	if( [BrowserController currentBrowser] != 0L)
+	if( [BrowserController currentBrowser] != nil)
 	{
 		filesArray = [[BrowserController currentBrowser] copyFilesIntoDatabaseIfNeeded:filesArray];
 		
@@ -1630,7 +1637,7 @@ static NSDate *lastWarningDate = 0L;
 				{
 					// first, try with NSFileManager
 					
-					if( [[NSFileManager defaultManager] removeFileAtPath: pathToDelete handler: 0L] == NO)			// Please leave this line! ANR
+					if( [[NSFileManager defaultManager] removeFileAtPath: pathToDelete handler: nil] == NO)			// Please leave this line! ANR
 					{
 						NSMutableArray *args = [NSMutableArray array];
 						[args addObject:@"-r"];
@@ -1639,11 +1646,11 @@ static NSDate *lastWarningDate = 0L;
 						[[BLAuthentication sharedInstance] executeCommand:@"/bin/rm" withArgs:args];
 					}
 					
-					[[NSFileManager defaultManager] removeFileAtPath: pathToDelete handler: 0L];			// Please leave this line! ANR
+					[[NSFileManager defaultManager] removeFileAtPath: pathToDelete handler: nil];			// Please leave this line! ANR
 					
 					if( [[NSFileManager defaultManager] fileExistsAtPath: pathToDelete])
 					{
-						NSRunAlertPanel( NSLocalizedString( @"Plugins Installation", 0L), NSLocalizedString( @"Failed to remove previous version of the plugin.", 0L), NSLocalizedString( @"OK", 0L), nil, nil);
+						NSRunAlertPanel( NSLocalizedString( @"Plugins Installation", nil), NSLocalizedString( @"Failed to remove previous version of the plugin.", nil), NSLocalizedString( @"OK", nil), nil, nil);
 						move = NO;
 					}
 				}
@@ -1703,7 +1710,7 @@ static NSDate *lastWarningDate = 0L;
 	
 	[BonjourDICOMService stop];
 	[BonjourDICOMService release];
-	BonjourDICOMService = 0L;
+	BonjourDICOMService = nil;
 
     quitting = YES;
     [theTask interrupt];
@@ -1721,15 +1728,15 @@ static NSDate *lastWarningDate = 0L;
 	
 	// DELETE THE TEMP DIRECTORY...
 	NSString *tempDirectory = [documentsDirectory() stringByAppendingPathComponent:@"/TEMP/"];
-	if ([[NSFileManager defaultManager] fileExistsAtPath:tempDirectory]) [[NSFileManager defaultManager] removeFileAtPath:tempDirectory handler: 0L];
+	if ([[NSFileManager defaultManager] fileExistsAtPath:tempDirectory]) [[NSFileManager defaultManager] removeFileAtPath:tempDirectory handler: nil];
 	
 	// DELETE THE DUMP DIRECTORY...
 	NSString *dumpDirectory = [documentsDirectory() stringByAppendingPathComponent:@"/DUMP/"];
-	if ([[NSFileManager defaultManager] fileExistsAtPath:dumpDirectory]) [[NSFileManager defaultManager] removeFileAtPath:dumpDirectory handler: 0L];
+	if ([[NSFileManager defaultManager] fileExistsAtPath:dumpDirectory]) [[NSFileManager defaultManager] removeFileAtPath:dumpDirectory handler: nil];
 	
 	// DELETE THE DECOMPRESSION DIRECTORY...
 	NSString *decompressionDirectory = [documentsDirectory() stringByAppendingPathComponent:@"/DECOMPRESSION/"];
-	if ([[NSFileManager defaultManager] fileExistsAtPath:decompressionDirectory]) [[NSFileManager defaultManager] removeFileAtPath:decompressionDirectory handler: 0L];
+	if ([[NSFileManager defaultManager] fileExistsAtPath:decompressionDirectory]) [[NSFileManager defaultManager] removeFileAtPath:decompressionDirectory handler: nil];
 
 	[NSSplitView saveSplitView];
 }
@@ -1758,6 +1765,7 @@ static NSDate *lastWarningDate = 0L;
 	appController = self;
 	
 	PapyrusLock = [[NSRecursiveLock alloc] init];
+	STORESCP = [[NSRecursiveLock alloc] init];
 	[[NSAppleEventManager sharedAppleEventManager] setEventHandler:self andSelector:@selector(getUrl:withReplyEvent:) forEventClass:kInternetEventClass andEventID:kAEGetURL];
 	
 	[IChatTheatreDelegate sharedDelegate];
@@ -1818,9 +1826,9 @@ static BOOL initialized = NO;
 		if ( self == [AppController class] && initialized == NO)
 		{
 //			#if __LP64__
-//			if( [[NSDate date] timeIntervalSinceDate: [NSCalendarDate dateWithYear:2007 month:12 day:20 hour:1 minute:1 second:1 timeZone:0L]] > 0 || [[NSUserDefaults standardUserDefaults] boolForKey:@"Outdated"])
+//			if( [[NSDate date] timeIntervalSinceDate: [NSCalendarDate dateWithYear:2007 month:12 day:20 hour:1 minute:1 second:1 timeZone:nil]] > 0 || [[NSUserDefaults standardUserDefaults] boolForKey:@"Outdated"])
 //			{
-//				NSRunCriticalAlertPanel(NSLocalizedString(@"Outdated Version", 0L), NSLocalizedString(@"Please update your application. Available on the web site.", 0L), NSLocalizedString(@"OK", 0L), nil, nil);
+//				NSRunCriticalAlertPanel(NSLocalizedString(@"Outdated Version", nil), NSLocalizedString(@"Please update your application. Available on the web site.", nil), NSLocalizedString(@"OK", nil), nil, nil);
 //				[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"Outdated"];
 //				exit( 0);
 //			}
@@ -1833,8 +1841,8 @@ static BOOL initialized = NO;
 //				}
 //				else {
 //					NSAlert* alert = [NSAlert new];
-//					[alert setMessageText: NSLocalizedString(@"OsiriX 64-bit Warning", 0L)];
-//					[alert setInformativeText:     NSLocalizedString(@"This is a preview version of OsiriX 64-bit. You SHOULD NOT use it for any scientific or clinical activities.", 0L)];
+//					[alert setMessageText: NSLocalizedString(@"OsiriX 64-bit Warning", nil)];
+//					[alert setInformativeText:     NSLocalizedString(@"This is a preview version of OsiriX 64-bit. You SHOULD NOT use it for any scientific or clinical activities.", nil)];
 //					[alert setShowsSuppressionButton:YES];
 //					[alert runModal];
 //					if ([[alert suppressionButton] state] == NSOnState)
@@ -1847,7 +1855,7 @@ static BOOL initialized = NO;
 						
 			if( [[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundlePackageType"] isEqualToString: @"APPL"])
 			{
-				[NSThread detachNewThreadSelector: @selector( DNSResolve:) toTarget: self withObject: 0L];
+				[NSThread detachNewThreadSelector: @selector( DNSResolve:) toTarget: self withObject: nil];
 				
 				[AppController cleanOsiriXSubProcesses];
 								
@@ -1868,7 +1876,7 @@ static BOOL initialized = NO;
 				
 				if (hasMacOSXLeopard() == NO)
 				{
-					NSRunCriticalAlertPanel(NSLocalizedString(@"MacOS X", 0L), NSLocalizedString(@"This application requires MacOS X 10.5 or higher. Please upgrade your operating system.", 0L), NSLocalizedString(@"OK", 0L), nil, nil);
+					NSRunCriticalAlertPanel(NSLocalizedString(@"MacOS X", nil), NSLocalizedString(@"This application requires MacOS X 10.5 or higher. Please upgrade your operating system.", nil), NSLocalizedString(@"OK", nil), nil, nil);
 					exit(0);
 				}
 				
@@ -2000,8 +2008,8 @@ static BOOL initialized = NO;
 					[points addObject:[NSNumber numberWithLong: 0]];
 					[points addObject:[NSNumber numberWithLong: 255]];
 			
-					[colors addObject:[NSArray arrayWithObjects: [NSNumber numberWithFloat: 1], [NSNumber numberWithFloat: 1], [NSNumber numberWithFloat: 1], 0L]];
-					[colors addObject:[NSArray arrayWithObjects: [NSNumber numberWithFloat: 0], [NSNumber numberWithFloat: 0], [NSNumber numberWithFloat: 0], 0L]];
+					[colors addObject:[NSArray arrayWithObjects: [NSNumber numberWithFloat: 1], [NSNumber numberWithFloat: 1], [NSNumber numberWithFloat: 1], nil]];
+					[colors addObject:[NSArray arrayWithObjects: [NSNumber numberWithFloat: 0], [NSNumber numberWithFloat: 0], [NSNumber numberWithFloat: 0], nil]];
 
 			
 					[aCLUTFilter setObject:colors forKey:@"Colors"];
@@ -2015,7 +2023,7 @@ static BOOL initialized = NO;
 				NSMutableDictionary *wlwwValues = [[[[NSUserDefaults standardUserDefaults] objectForKey:@"WLWW3"] mutableCopy] autorelease];
 				NSDictionary *wwwl = [wlwwValues objectForKey:@"VR - Endoscopy"];
 				if (!wwwl) {
-					[wlwwValues setObject:[NSArray arrayWithObjects:[NSNumber numberWithFloat:-300], [NSNumber numberWithFloat:700], 0L] forKey:@"VR - Endoscopy"];
+					[wlwwValues setObject:[NSArray arrayWithObjects:[NSNumber numberWithFloat:-300], [NSNumber numberWithFloat:700], nil] forKey:@"VR - Endoscopy"];
 					[[NSUserDefaults standardUserDefaults] setObject:wlwwValues forKey:@"WLWW3"];
 				}
 				
@@ -2023,7 +2031,7 @@ static BOOL initialized = NO;
 				NSString *path = [documentsDirectory() stringByAppendingPathComponent:@"/Loading"];
 				if ([[NSFileManager defaultManager] fileExistsAtPath:path])
 				{
-					int result = NSRunInformationalAlertPanel(NSLocalizedString(@"OsiriX crashed during last startup", 0L), NSLocalizedString(@"Previous crash is maybe related to a corrupt database or corrupted images.\r\rShould I run OsiriX in Protected Mode (recommended) (no images displayed)? To allow you to delete the crashing/corrupted images/studies.\r\rOr Should I rebuild the local database? All albums, comments and status will be lost.", 0L), NSLocalizedString(@"Continue normaly",nil), NSLocalizedString(@"Protected Mode",nil), NSLocalizedString(@"Rebuild Database",nil));
+					int result = NSRunInformationalAlertPanel(NSLocalizedString(@"OsiriX crashed during last startup", nil), NSLocalizedString(@"Previous crash is maybe related to a corrupt database or corrupted images.\r\rShould I run OsiriX in Protected Mode (recommended) (no images displayed)? To allow you to delete the crashing/corrupted images/studies.\r\rOr Should I rebuild the local database? All albums, comments and status will be lost.", nil), NSLocalizedString(@"Continue normaly",nil), NSLocalizedString(@"Protected Mode",nil), NSLocalizedString(@"Rebuild Database",nil));
 					
 					if( result == NSAlertOtherReturn)
 					{
@@ -2033,7 +2041,7 @@ static BOOL initialized = NO;
 					if( result == NSAlertAlternateReturn) [DCMPix setRunOsiriXInProtectedMode: YES];
 				}
 				
-				[path writeToFile:path atomically:NO encoding: NSUTF8StringEncoding error: 0L];
+				[path writeToFile:path atomically:NO encoding: NSUTF8StringEncoding error: nil];
 				
 				NSString *reportsDirectory = [documentsDirectory() stringByAppendingPathComponent:@"/REPORTS/"];
 				if ([[NSFileManager defaultManager] fileExistsAtPath:reportsDirectory] == NO) [[NSFileManager defaultManager] createDirectoryAtPath:reportsDirectory attributes:nil];
@@ -2045,7 +2053,7 @@ static BOOL initialized = NO;
 				
 				// DELETE & CREATE THE TEMP DIRECTORY...
 				NSString *tempDirectory = [documentsDirectory() stringByAppendingPathComponent:@"/TEMP/"];
-				if ([[NSFileManager defaultManager] fileExistsAtPath:tempDirectory]) [[NSFileManager defaultManager] removeFileAtPath:tempDirectory handler: 0L];
+				if ([[NSFileManager defaultManager] fileExistsAtPath:tempDirectory]) [[NSFileManager defaultManager] removeFileAtPath:tempDirectory handler: nil];
 				if ([[NSFileManager defaultManager] fileExistsAtPath:tempDirectory] == NO) [[NSFileManager defaultManager] createDirectoryAtPath:tempDirectory attributes:nil];
 				
 				NSString *dumpDirectory = [documentsDirectory() stringByAppendingPathComponent:@"/DUMP/"];
@@ -2057,11 +2065,11 @@ static BOOL initialized = NO;
 				
 				reportFile = [documentsDirectory() stringByAppendingPathComponent:@"/ReportTemplate.doc"];
 				if ([[NSFileManager defaultManager] fileExistsAtPath:reportFile] == NO)
-					[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/ReportTemplate.doc"] toPath:[documentsDirectory() stringByAppendingPathComponent:@"/ReportTemplate.doc"] handler:0L];
+					[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/ReportTemplate.doc"] toPath:[documentsDirectory() stringByAppendingPathComponent:@"/ReportTemplate.doc"] handler:nil];
 
 				reportFile = [documentsDirectory() stringByAppendingPathComponent:@"/ReportTemplate.rtf"];
 				if ([[NSFileManager defaultManager] fileExistsAtPath:reportFile] == NO)
-					[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/ReportTemplate.rtf"] toPath:[documentsDirectory() stringByAppendingPathComponent:@"/ReportTemplate.rtf"] handler:0L];
+					[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/ReportTemplate.rtf"] toPath:[documentsDirectory() stringByAppendingPathComponent:@"/ReportTemplate.rtf"] handler:nil];
 				
 				[AppController checkForHTMLTemplates];
 				[AppController checkForPagesTemplate];
@@ -2089,12 +2097,12 @@ static BOOL initialized = NO;
 //				templateFile = [htmlTemplatesDirectory stringByAppendingPathComponent:@"QTExportPatientsTemplate.html"];
 //				NSLog(templateFile);
 //				if ([[NSFileManager defaultManager] fileExistsAtPath:templateFile] == NO)
-//					[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/QTExportPatientsTemplate.html"] toPath:templateFile handler:0L];
+//					[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/QTExportPatientsTemplate.html"] toPath:templateFile handler:nil];
 //
 //				templateFile = [htmlTemplatesDirectory stringByAppendingPathComponent:@"QTExportStudiesTemplate.html"];
 //				NSLog(templateFile);
 //				if ([[NSFileManager defaultManager] fileExistsAtPath:templateFile] == NO)
-//					[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/QTExportStudiesTemplate.html"] toPath:templateFile handler:0L];
+//					[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/QTExportStudiesTemplate.html"] toPath:templateFile handler:nil];
 //					
 //				// CHECK FOR THE HTML EXTRA DIRECTORY
 //				
@@ -2105,7 +2113,7 @@ static BOOL initialized = NO;
 //				// CSS file
 //				NSString *cssFile = [htmlExtraDirectory stringByAppendingPathComponent:@"style.css"];
 //				if ([[NSFileManager defaultManager] fileExistsAtPath:cssFile] == NO)
-//					[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/QTExportStyle.css"] toPath:cssFile handler:0L];				
+//					[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/QTExportStyle.css"] toPath:cssFile handler:nil];				
 			}
 		}
 	}
@@ -2137,12 +2145,12 @@ static BOOL initialized = NO;
 
 - (NSDictionary *) registrationDictionaryForGrowl
 {
-	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"doNotUseGrowl"]) return 0L;
+	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"doNotUseGrowl"]) return nil;
 	
     NSArray *notifications;
-    notifications = [NSArray arrayWithObjects: @"newfiles", @"delete", @"result", 0L];
+    notifications = [NSArray arrayWithObjects: @"newfiles", @"delete", @"result", nil];
 
-    NSDictionary *dict = 0L;
+    NSDictionary *dict = nil;
 	
 //	#if !__LP64__
     dict = [NSDictionary dictionaryWithObjectsAndKeys:
@@ -2271,7 +2279,7 @@ static BOOL initialized = NO;
 				dialog = YES;
 				
 				NSAlert* alert = [NSAlert new];
-				[alert setMessageText: NSLocalizedString(@"Growl !", 0L)];
+				[alert setMessageText: NSLocalizedString(@"Growl !", nil)];
 				[alert setInformativeText: NSLocalizedString(@"Did you know that OsiriX supports Growl? An amazing notification system for MacOS. You can download it for free on Internet.", nil)];
 				[alert setShowsSuppressionButton:YES ];
 				[alert addButtonWithTitle: NSLocalizedString(@"Continue", nil)];
@@ -2308,9 +2316,9 @@ static BOOL initialized = NO;
              object: nil];
 	
 			 
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: NSLocalizedString(@"No CLUT", 0L) userInfo: 0L];
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: NSLocalizedString(@"Other", 0L) userInfo: 0L];
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateConvolutionMenu" object:NSLocalizedString( @"No Filter", 0L) userInfo: 0L];
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: NSLocalizedString(@"No CLUT", nil) userInfo: nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: NSLocalizedString(@"Other", nil) userInfo: nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateConvolutionMenu" object:NSLocalizedString( @"No Filter", nil) userInfo: nil];
 	
 	NSLog(@"No of screens: %d", [[NSScreen screens] count]);
 	
@@ -2329,7 +2337,7 @@ static BOOL initialized = NO;
 	
 	if (startCount==0)			// Replaces FIRSTTIME.
 	{
-		switch( NSRunInformationalAlertPanel( NSLocalizedString(@"OsiriX Updates", 0L), NSLocalizedString( @"Would you like to activate automatic checking for updates?", 0L), NSLocalizedString( @"Yes", 0L), NSLocalizedString( @"No", 0L), 0L))
+		switch( NSRunInformationalAlertPanel( NSLocalizedString(@"OsiriX Updates", nil), NSLocalizedString( @"Would you like to activate automatic checking for updates?", nil), NSLocalizedString( @"Yes", nil), NSLocalizedString( @"No", nil), nil))
 		{
 			case 0:
 				[[NSUserDefaults standardUserDefaults] setObject: @"NO" forKey: @"CheckOsiriXUpdates2"];
@@ -2343,7 +2351,7 @@ static BOOL initialized = NO;
 		{
 //			if ([[NSUserDefaults standardUserDefaults] integerForKey: @"STARTCOUNT"] > 20)
 //			{
-//				switch( NSRunInformationalAlertPanel(@"OsiriX", @"Thank you for using OsiriX!\rDo you agree to answer a small survey to improve OsiriX?", @"Yes, sure!", @"Maybe next time", 0L))
+//				switch( NSRunInformationalAlertPanel(@"OsiriX", @"Thank you for using OsiriX!\rDo you agree to answer a small survey to improve OsiriX?", @"Yes, sure!", @"Maybe next time", nil))
 //				{
 //					case 1:
 //					{
@@ -2431,7 +2439,7 @@ static BOOL initialized = NO;
 	//		[oPanel setAllowsMultipleSelection:NO];
 	//		[oPanel setCanChooseDirectories:NO];
 	//	
-	//		[oPanel runModalForDirectory:0L file:nil types:0L];
+	//		[oPanel runModalForDirectory:nil file:nil types:nil];
 	//		
 	//		fp = fopen ([[[oPanel filenames] objectAtIndex:0] UTF8String], "r");
 	//		
@@ -2442,10 +2450,10 @@ static BOOL initialized = NO;
 	//			  case 'S' : // rgb specified by a multiple of 256
 	//					 fscanf (fp, "%li %li %li %li", &nb, &r, &g, &b);
 	//				 
-	//				 if (nb >= 0L && nb < 256L &&
-	//					 r >= 0L && r < 256L &&
-	//					 g >= 0L && g < 256L &&
-	//					 b >= 0L && b < 256L) 
+	//				 if (nb >= nil && nb < 256L &&
+	//					 r >= nil && r < 256L &&
+	//					 g >= nil && g < 256L &&
+	//					 b >= nil && b < 256L) 
 	//				{
 	//				   red[nb] = (int) (r );
 	//				   green[nb] = (int) (g );
@@ -2456,10 +2464,10 @@ static BOOL initialized = NO;
 	//			  case 'L' : // rgb specified by real values
 	//					 fscanf (fp, "%li %li %li %li", &nb, &r, &g, &b);
 	//				 
-	//				 if (nb >= 0L && nb < 256L &&
-	//					 r >= 0L && r <= 65535L &&
-	//					 g >= 0L && g <= 65535L &&
-	//					 b >= 0L && b <= 65535L) 
+	//				 if (nb >= nil && nb < 256L &&
+	//					 r >= nil && r <= 65535L &&
+	//					 g >= nil && g <= 65535L &&
+	//					 b >= nil && b <= 65535L) 
 	//				{
 	//				   red[nb] = (int) r / 256;
 	//				   green[nb] = (int) g / 256;
@@ -2510,22 +2518,22 @@ static BOOL initialized = NO;
 {
 	if( [msg isEqualToString:@"LISTENER"])
 	{
-		NSRunAlertPanel( NSLocalizedString( @"DICOM Listener Error", 0L), NSLocalizedString( @"OsiriX listener cannot start. Is the Port valid? Is there another process using this Port?\r\rSee Listener - Preferences.", 0L), NSLocalizedString( @"OK", 0L), nil, nil);
+		NSRunAlertPanel( NSLocalizedString( @"DICOM Listener Error", nil), NSLocalizedString( @"OsiriX listener cannot start. Is the Port valid? Is there another process using this Port?\r\rSee Listener - Preferences.", nil), NSLocalizedString( @"OK", nil), nil, nil);
 	}
 	
 	if( [msg isEqualToString:@"UPTODATE"])
 	{
-		NSRunAlertPanel( NSLocalizedString( @"OsiriX is up-to-date", 0L), NSLocalizedString( @"You have the most recent version of OsiriX.", 0L), NSLocalizedString( @"OK", 0L), nil, nil);
+		NSRunAlertPanel( NSLocalizedString( @"OsiriX is up-to-date", nil), NSLocalizedString( @"You have the most recent version of OsiriX.", nil), NSLocalizedString( @"OK", nil), nil, nil);
 	}
 	
 	if( [msg isEqualToString:@"ERROR"])
 	{
-		NSRunAlertPanel( NSLocalizedString( @"No Internet connection", 0L), NSLocalizedString( @"Unable to check latest version available.", 0L), NSLocalizedString( @"OK", 0L), nil, nil);
+		NSRunAlertPanel( NSLocalizedString( @"No Internet connection", nil), NSLocalizedString( @"Unable to check latest version available.", nil), NSLocalizedString( @"OK", nil), nil, nil);
 	}
 	
 	if( [msg isEqualToString:@"UPDATE"])
 	{
-		int button = NSRunAlertPanel( NSLocalizedString( @"New Version Available", 0L), NSLocalizedString( @"A new version of OsiriX is available. Would you like to download the new version now?", 0L), NSLocalizedString( @"OK", 0L), NSLocalizedString( @"Cancel", 0L), nil);
+		int button = NSRunAlertPanel( NSLocalizedString( @"New Version Available", nil), NSLocalizedString( @"A new version of OsiriX is available. Would you like to download the new version now?", nil), NSLocalizedString( @"OK", nil), NSLocalizedString( @"Cancel", nil), nil);
 		
 		if (NSOKButton == button)
 		{
@@ -2549,7 +2557,7 @@ static BOOL initialized = NO;
 	else
 		url=[NSURL URLWithString:@"http://pubimage.hcuge.ch:8080/version.xml"];
 	
-	if( url == 0L)
+	if( url == nil)
 	{
 		if (hasMacOSXLeopard())
 			url=[NSURL URLWithString:@"http://www.osirix-viewer.com/versionLeopard.xml"];
@@ -2591,7 +2599,7 @@ static BOOL initialized = NO;
 - (void) URL: (NSURL*) sender resourceDidFailLoadingWithReason: (NSString*) reason
 {
 	if (verboseUpdateCheck)
-		NSRunAlertPanel( NSLocalizedString( @"No connection available", 0L), reason, NSLocalizedString( @"OK", 0L), nil, nil);
+		NSRunAlertPanel( NSLocalizedString( @"No connection available", nil), reason, NSLocalizedString( @"OK", nil), nil, nil);
 }	
 
 //———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
@@ -2644,7 +2652,7 @@ static BOOL initialized = NO;
 	
     [browserController release];
 	[dcmtkQRSCP release];
-	dcmtkQRSCP = 0L;
+	dcmtkQRSCP = nil;
 	
 	[IChatTheatreDelegate releaseSharedDelegate];
 	
@@ -2666,7 +2674,7 @@ static BOOL initialized = NO;
 		}
 	}
 	
-	return 0L;
+	return nil;
 }
 
 - (NSArray*) FindRelatedViewers:(NSMutableArray*) pixList
@@ -2748,7 +2756,7 @@ static BOOL initialized = NO;
 		[arrangedViewers insertObject:aScreen atIndex:position];
 	}
 	
-	if( [self dbScreen] == 0L)
+	if( [self dbScreen] == nil)
 	{
 		[arrangedViewers removeObject: [dbWindow screen]];
 		[arrangedViewers addObject: [dbWindow screen]];
@@ -2787,7 +2795,7 @@ static BOOL initialized = NO;
 	if( checkAllWindowsAreVisibleIsOff) return;
 
 	NSArray *winList = [NSApp windows];
-	NSWindow *last = 0L;
+	NSWindow *last = nil;
 	
 	for( NSWindow *loopItem in winList)
 	{
@@ -2944,7 +2952,7 @@ static BOOL initialized = NO;
 	{
 		float minY = 1000000, minX = 1000000;
 		
-		NSScreen *screen = 0L;
+		NSScreen *screen = nil;
 		for( NSScreen *s in srcScreens)
 		{
 			if( [s visibleFrame].origin.y <= minY)
@@ -3420,7 +3428,7 @@ static BOOL initialized = NO;
 		[animation startAnimation];
 		
 		[accumulateAnimationsArray release];
-		accumulateAnimationsArray = 0L;
+		accumulateAnimationsArray = nil;
 		
 		[OSIWindowController setDontEnterMagneticFunctions: NO];
 	}
@@ -3524,17 +3532,17 @@ static BOOL initialized = NO;
 	templateFile = [htmlTemplatesDirectory stringByAppendingPathComponent:@"QTExportPatientsTemplate.html"];
 	NSLog(templateFile);
 	if ([[NSFileManager defaultManager] fileExistsAtPath:templateFile] == NO)
-		[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/QTExportPatientsTemplate.html"] toPath:templateFile handler:0L];
+		[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/QTExportPatientsTemplate.html"] toPath:templateFile handler:nil];
 
 	templateFile = [htmlTemplatesDirectory stringByAppendingPathComponent:@"QTExportStudiesTemplate.html"];
 	NSLog(templateFile);
 	if ([[NSFileManager defaultManager] fileExistsAtPath:templateFile] == NO)
-		[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/QTExportStudiesTemplate.html"] toPath:templateFile handler:0L];
+		[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/QTExportStudiesTemplate.html"] toPath:templateFile handler:nil];
 
 	templateFile = [htmlTemplatesDirectory stringByAppendingPathComponent:@"QTExportSeriesTemplate.html"];
 	NSLog(templateFile);
 	if ([[NSFileManager defaultManager] fileExistsAtPath:templateFile] == NO)
-		[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/QTExportSeriesTemplate.html"] toPath:templateFile handler:0L];
+		[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/QTExportSeriesTemplate.html"] toPath:templateFile handler:nil];
 	
 	// HTML-extra directory
 	NSString *htmlExtraDirectory = [htmlTemplatesDirectory stringByAppendingPathComponent:@"html-extra/"];
@@ -3544,7 +3552,7 @@ static BOOL initialized = NO;
 	// CSS file
 	NSString *cssFile = [htmlExtraDirectory stringByAppendingPathComponent:@"style.css"];
 	if ([[NSFileManager defaultManager] fileExistsAtPath:cssFile] == NO)
-		[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/QTExportStyle.css"] toPath:cssFile handler:0L];
+		[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/QTExportStyle.css"] toPath:cssFile handler:nil];
 }
 
 #pragma mark-
@@ -3580,7 +3588,7 @@ static BOOL initialized = NO;
 	NSString *reportFile = [templateDirectory stringByAppendingPathComponent:@"/OsiriX Basic Report.template"];
 	if ([[NSFileManager defaultManager] fileExistsAtPath:reportFile] == NO)
 	{
-		[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/OsiriX Report.template"] toPath:[templateDirectory stringByAppendingPathComponent:@"/OsiriX Basic Report.template"] handler:0L];
+		[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/OsiriX Report.template"] toPath:[templateDirectory stringByAppendingPathComponent:@"/OsiriX Basic Report.template"] handler:nil];
 	}
 	
 	// Pages templates in the OsiriX Data folder

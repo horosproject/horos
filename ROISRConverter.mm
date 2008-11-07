@@ -32,10 +32,10 @@ extern void* sopInstanceUIDEncode( NSString *sopuid);
 	NSData *archiveData = nil;
 	DcmFileFormat fileformat;
 	OFCondition status = fileformat.loadFile([path UTF8String]);
-	if( status != EC_Normal) return 0L;
+	if( status != EC_Normal) return nil;
 	
 	OFString name;
-	const Uint8 *buffer = 0L;
+	const Uint8 *buffer = nil;
 	unsigned int length;
 	
 	if (fileformat.getDataset()->findAndGetUint8Array(DCM_EncapsulatedDocument, buffer, &length, OFFalse).good())	//DCM_EncapsulatedDocument   //DCM_OsirixROI
@@ -86,12 +86,12 @@ extern void* sopInstanceUIDEncode( NSString *sopuid);
 	
 	[sr release];
 	
-	if( seriesInstanceUID == 0L)	//Add it NOW to the DB! We need the seriesInstanceUID for the others
+	if( seriesInstanceUID == nil)	//Add it NOW to the DB! We need the seriesInstanceUID for the others
 	{
 		[[BrowserController currentBrowser] addFilesToDatabase: [NSArray arrayWithObject: path]];
 	}
 	else if( AddIt) return path;
 	
-	return 0L;
+	return nil;
 }
 @end

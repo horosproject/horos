@@ -57,7 +57,7 @@ extern NSString * documentsDirectory();
 	{
 		valid = YES;
 		
-		NSString	*str = 0L;
+		NSString	*str = nil;
 		
 		@try
 		{
@@ -91,12 +91,12 @@ extern NSString * documentsDirectory();
 
 - (NSArray*) pixList
 {
-	return 0L;
+	return nil;
 }
 
 - (NSArray*) fileList
 {
-	return 0L;
+	return nil;
 }
 
 - (void)printOperationDidRun:(NSPrintOperation *)printOperation
@@ -150,7 +150,7 @@ extern NSString * documentsDirectory();
 	[printOperation runOperationModalForWindow:[self window]
 		delegate:self
 		didRunSelector: @selector(printOperationDidRun:success:contextInfo:)
-		contextInfo:0L];
+		contextInfo:nil];
 }
 
 //====================================================================================================================================================================================================================
@@ -184,7 +184,7 @@ extern NSString * documentsDirectory();
 
 - (ViewerController*) blendingController
 {
-	return 0L;
+	return nil;
 }
 
 
@@ -192,7 +192,7 @@ extern NSString * documentsDirectory();
 
 - (id) view
 {
-	return 0L;
+	return nil;
 }
 
 -(long) movieFrames { return 1;}
@@ -229,6 +229,8 @@ extern NSString * documentsDirectory();
 {
 // Override
 	NSLog(@"Error: inherited [Window3DController roiVolumes] should not be called");
+	
+	return nil;
 }
 
 //====================================================================================================================================================================================================================
@@ -334,7 +336,7 @@ static float oldsetww, oldsetwl;
     if( [sender tag])					//User clicks OK Button
     {
 		NSMutableDictionary *presetsDict = [[[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"WLWW3"] mutableCopy] autorelease];
-        [presetsDict setObject:[NSArray arrayWithObjects:[NSNumber numberWithFloat:iwl], [NSNumber numberWithFloat:iww], 0L] forKey:[newName stringValue]];
+        [presetsDict setObject:[NSArray arrayWithObjects:[NSNumber numberWithFloat:iwl], [NSNumber numberWithFloat:iww], nil] forKey:[newName stringValue]];
 		[[NSUserDefaults standardUserDefaults] setObject: presetsDict forKey: @"WLWW3"];
 		
 		if( curWLWWMenu != [newName stringValue])
@@ -342,7 +344,7 @@ static float oldsetww, oldsetwl;
 			[curWLWWMenu release];
 			curWLWWMenu = [[newName stringValue] retain];
 		}
-        [[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: 0L];
+        [[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: nil];
     }
 }
 
@@ -358,7 +360,7 @@ static float oldsetww, oldsetwl;
 		NSMutableDictionary *presetsDict = [[[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"WLWW3"] mutableCopy] autorelease];
         [presetsDict removeObjectForKey: name];
 		[[NSUserDefaults standardUserDefaults] setObject: presetsDict forKey: @"WLWW3"];
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: 0L];
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: nil];
     }
 	
 	[name release];
@@ -439,7 +441,7 @@ static float oldsetww, oldsetwl;
 			[curCLUTMenu release];
 			curCLUTMenu = [[clutName stringValue] retain];
         }
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: 0L];
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: nil];
 		
 		[self ApplyCLUTString: curCLUTMenu];
     }
@@ -457,8 +459,8 @@ static float oldsetww, oldsetwl;
     if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask)
     {
         NSBeginAlertSheet(NSLocalizedString(@"Remove a Color Look Up Table", nil), NSLocalizedString(@"Delete", nil), NSLocalizedString(@"Cancel", nil), nil, [self window],
-		  self, @selector(deleteCLUT:returnCode:contextInfo:), NULL, [sender title], [NSString stringWithFormat: NSLocalizedString( @"Are you sure you want to delete this CLUT : '%@'", 0L), [sender title]]);
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: 0L];
+		  self, @selector(deleteCLUT:returnCode:contextInfo:), NULL, [sender title], [NSString stringWithFormat: NSLocalizedString( @"Are you sure you want to delete this CLUT : '%@'", nil), [sender title]]);
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: nil];
 	}
 	else if ([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSAlternateKeyMask)
     {
@@ -472,7 +474,7 @@ static float oldsetww, oldsetwl;
 		aCLUT = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"CLUT"] objectForKey: curCLUTMenu];
 		if (aCLUT)
 		{
-			if( [aCLUT objectForKey:@"Points"] != 0L)
+			if( [aCLUT objectForKey:@"Points"] != nil)
 			{
 				[self clutAction:self];
 				[clutName setStringValue: [sender title]];
@@ -533,7 +535,7 @@ static float oldsetww, oldsetwl;
 		[clutDict removeObjectForKey: (id) contextInfo];
 		[[NSUserDefaults standardUserDefaults] setObject: clutDict forKey: @"CLUT"];
 
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: 0L];
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: nil];
     }
 }
 
@@ -600,7 +602,7 @@ static float oldsetww, oldsetwl;
     {
         NSBeginAlertSheet(NSLocalizedString(@"Remove an Opacity Table",nil), NSLocalizedString(@"Delete",nil), NSLocalizedString(@"Cancel", nil), nil, [self window], self, @selector(deleteOpacity:returnCode:contextInfo:), NULL, [sender title],
 		  [NSString stringWithFormat: NSLocalizedString(@"Are you sure you want to delete this Opacity Table : '%@'?", Nil), [sender title]]);
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: 0L];
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: nil];
 	}
 	else if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSAlternateKeyMask)
     {
@@ -638,7 +640,7 @@ static float oldsetww, oldsetwl;
 				[OpacityView setCurrentCLUT:red :green: blue];
 			}
 	
-			if( [aOpacity objectForKey:@"Points"] != 0L)
+			if( [aOpacity objectForKey:@"Points"] != nil)
 			{
 				[OpacityName setStringValue: curOpacityMenu];
 				
@@ -683,7 +685,7 @@ static float oldsetww, oldsetwl;
 		// Apply it!
 		
 		[self ApplyOpacityString: [OpacityName stringValue]];
-        [[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: 0L];
+        [[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: nil];
     }
 	else
 	{
@@ -702,7 +704,7 @@ static float oldsetww, oldsetwl;
 		[opacityDict removeObjectForKey: (id) contextInfo];
 		[[NSUserDefaults standardUserDefaults] setObject: opacityDict forKey: @"OPACITY"];
         
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: 0L];
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: nil];
     }
 }
 

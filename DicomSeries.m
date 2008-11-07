@@ -35,7 +35,7 @@
 - (void) setDate:(NSDate*) date
 {
 	[dicomTime release];
-	dicomTime = 0L;
+	dicomTime = nil;
 	
 	[self willChangeValueForKey: @"date"];
 	[self setPrimitiveValue: date forKey:@"date"];

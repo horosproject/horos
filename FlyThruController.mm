@@ -67,7 +67,7 @@
 }
 
 - (void)setupController {
-	controller3D = 0L;
+	controller3D = nil;
 	
 	[[self window] setDelegate:self];   //In order to receive the windowWillClose notification!
 //	[[self window] setBackgroundColor:[NSColor blackColor]];
@@ -435,7 +435,7 @@
 						[dcmSequence setPixelSpacing: resolution :resolution];
 				}
 				
-				NSString *f = [dcmSequence writeDCMFile: 0L];
+				NSString *f = [dcmSequence writeDCMFile: nil];
 				
 				free( dataPtr);
 				

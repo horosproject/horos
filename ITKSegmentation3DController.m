@@ -41,7 +41,7 @@ enum algorithmTypes { intervalSegmentationType, thresholdSegmentationType, neigh
 		}
 	}
 	
-	return 0L;
+	return nil;
 }
 
 -(void) dealloc
@@ -56,7 +56,7 @@ enum algorithmTypes { intervalSegmentationType, thresholdSegmentationType, neigh
 
 - (void)windowWillClose:(NSNotification *)notification
 {
-	[viewer roiDeleteWithName: NSLocalizedString( @"Segmentation Preview", 0L)];
+	[viewer roiDeleteWithName: NSLocalizedString( @"Segmentation Preview", nil)];
 	
 	NSLog(@"windowWillClose");
 	
@@ -86,20 +86,20 @@ enum algorithmTypes { intervalSegmentationType, thresholdSegmentationType, neigh
 	self = [super initWithWindowNibName:@"ITKSegmentation"];
 	
 	viewer = v;
-	resultsViewer = 0L;
+	resultsViewer = nil;
 	startingPoint = NSMakePoint(0, 0);
 	
-	algorithms = [NSArray arrayWithObjects:	NSLocalizedString( @"Threshold (interval)", 0L),
-											NSLocalizedString( @"Threshold (lower/upper bounds)", 0L),
-											NSLocalizedString( @"Neighborhood", 0L),
-											NSLocalizedString( @"Confidence", 0L),
+	algorithms = [NSArray arrayWithObjects:	NSLocalizedString( @"Threshold (interval)", nil),
+											NSLocalizedString( @"Threshold (lower/upper bounds)", nil),
+											NSLocalizedString( @"Neighborhood", nil),
+											NSLocalizedString( @"Confidence", nil),
 											nil];
 	[algorithms retain];
 	
-	parameters = [NSArray arrayWithObjects:	[NSArray arrayWithObjects:NSLocalizedString( @"Interval", 0L), nil],
-											[NSArray arrayWithObjects:NSLocalizedString( @"Lower Threshold", 0L), NSLocalizedString( @"Upper Threshold", 0L), nil],
-											[NSArray arrayWithObjects:NSLocalizedString( @"Lower Threshold", 0L), NSLocalizedString( @"Upper Threshold", 0L), NSLocalizedString( @"Radius (pix.)", 0L), nil],
-											[NSArray arrayWithObjects:NSLocalizedString( @"Multiplier", 0L), NSLocalizedString( @"Num. of Iterations", 0L), NSLocalizedString( @"Initial Radius (pix.)", 0L), nil],
+	parameters = [NSArray arrayWithObjects:	[NSArray arrayWithObjects:NSLocalizedString( @"Interval", nil), nil],
+											[NSArray arrayWithObjects:NSLocalizedString( @"Lower Threshold", nil), NSLocalizedString( @"Upper Threshold", nil), nil],
+											[NSArray arrayWithObjects:NSLocalizedString( @"Lower Threshold", nil), NSLocalizedString( @"Upper Threshold", nil), NSLocalizedString( @"Radius (pix.)", nil), nil],
+											[NSArray arrayWithObjects:NSLocalizedString( @"Multiplier", nil), NSLocalizedString( @"Num. of Iterations", nil), NSLocalizedString( @"Initial Radius (pix.)", nil), nil],
 											nil];
 	[parameters retain];
 	
@@ -140,7 +140,7 @@ enum algorithmTypes { intervalSegmentationType, thresholdSegmentationType, neigh
 
 -(void) CloseViewerNotification:(NSNotification*) note
 {
-	if( [note object] == resultsViewer) resultsViewer = 0L;
+	if( [note object] == resultsViewer) resultsViewer = nil;
 	
 	if( [note object] == viewer)
 	{
@@ -196,9 +196,9 @@ enum algorithmTypes { intervalSegmentationType, thresholdSegmentationType, neigh
 		ymm = location[1];
 		zmm = location[2];
 		
-		[startingPointPixelPosition setStringValue:[NSString stringWithFormat:NSLocalizedString(@"px:\t\tx:%d y:%d", 0L), xpx, ypx]];
-		[startingPointWorldPosition setStringValue:[NSString stringWithFormat:NSLocalizedString(@"mm:\t\tx:%2.2f y:%2.2f z:%2.2f", 0L), xmm, ymm, zmm]];
-		[startingPointValue setStringValue:[NSString stringWithFormat:NSLocalizedString(@"value:\t%2.2f", 0L), [[[viewer imageView] curDCM] getPixelValueX: xpx Y:ypx]]];
+		[startingPointPixelPosition setStringValue:[NSString stringWithFormat:NSLocalizedString(@"px:\t\tx:%d y:%d", nil), xpx, ypx]];
+		[startingPointWorldPosition setStringValue:[NSString stringWithFormat:NSLocalizedString(@"mm:\t\tx:%2.2f y:%2.2f z:%2.2f", nil), xmm, ymm, zmm]];
+		[startingPointValue setStringValue:[NSString stringWithFormat:NSLocalizedString(@"value:\t%2.2f", nil), [[[viewer imageView] curDCM] getPixelValueX: xpx Y:ypx]]];
 		startingPoint = NSMakePoint(xpx, ypx);
 		
 		[self preview: viewer];
@@ -258,7 +258,7 @@ enum algorithmTypes { intervalSegmentationType, thresholdSegmentationType, neigh
 		return new2DViewer;
 	}
 	
-	return 0L;
+	return nil;
 }
 
 - (void) windowDidLoad
@@ -277,7 +277,7 @@ enum algorithmTypes { intervalSegmentationType, thresholdSegmentationType, neigh
 	f = fd / 1000.;
 	[[NSUserDefaults standardUserDefaults] setFloat: f forKey: @"growingRegionInterval"];
 	
-	NSString *name = NSLocalizedString( @"Segmentation Preview", 0L);
+	NSString *name = NSLocalizedString( @"Segmentation Preview", nil);
 	
 	[viewer roiDeleteWithName: name];
 	
@@ -333,7 +333,7 @@ enum algorithmTypes { intervalSegmentationType, thresholdSegmentationType, neigh
 				}
 				
 				[itk regionGrowing3D	: viewer
-										: 0L
+										: nil
 										: slice
 										: startingPoint
 										: algo //[[params cellAtIndex: 1] floatValue]
@@ -379,7 +379,7 @@ enum algorithmTypes { intervalSegmentationType, thresholdSegmentationType, neigh
 		return;
 	}
 	
-	[viewer roiDeleteWithName: NSLocalizedString( @"Segmentation Preview", 0L)];
+	[viewer roiDeleteWithName: NSLocalizedString( @"Segmentation Preview", nil)];
 	
 	long slice;
 	int previousMovieIndex = [viewer curMovieIndex];
@@ -400,11 +400,11 @@ enum algorithmTypes { intervalSegmentationType, thresholdSegmentationType, neigh
 			ITKSegmentation3D	*itk = [[ITKSegmentation3D alloc] initWith:[viewer pixList] :[viewer volumePtr] :slice];
 			if( itk)
 			{
-				ViewerController	*v = 0L;
+				ViewerController	*v = nil;
 				
 				if( [[outputResult selectedCell] tag] == 1)
 				{
-					if( resultsViewer == 0L)
+					if( resultsViewer == nil)
 					{
 						long currentImageIndex = [[viewer imageView] curImage];
 						resultsViewer = [self duplicateCurrent2DViewerWindow];

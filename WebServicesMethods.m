@@ -112,7 +112,7 @@ extern NSThread					*mainThread;
 
 - (void) error: (NSString*) error
 {
-	NSRunCriticalAlertPanel( NSLocalizedString(@"HTTP Web Server Error", 0L),  [NSString stringWithFormat: NSLocalizedString(@"Error starting HTTP Web Server: %@", 0L), error], NSLocalizedString(@"OK",nil), nil, nil);	
+	NSRunCriticalAlertPanel( NSLocalizedString(@"HTTP Web Server Error", nil),  [NSString stringWithFormat: NSLocalizedString(@"Error starting HTTP Web Server: %@", nil), error], NSLocalizedString(@"OK",nil), nil, nil);	
 }
 
 - (void) serverThread
@@ -133,7 +133,7 @@ extern NSThread					*mainThread;
 	if (![httpServ start:&error])
 	{
 		NSLog(@"Error starting HTTP Web Server: %@", error);
-		httpServ = 0L;
+		httpServ = nil;
 		[self performSelectorOnMainThread: @selector(error:) withObject:error waitUntilDone: NO];
 	}
 	else
@@ -173,7 +173,7 @@ extern NSThread					*mainThread;
 		bonjourService = [[NSNetService alloc] initWithDomain:@"" type: @"_osirixwebserver._tcp." name: [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] port:[[NSUserDefaults standardUserDefaults] integerForKey:@"httpWebServerPort"]];
 		[bonjourService publish];
 		
-		[NSThread detachNewThreadSelector:@selector(serverThread) toTarget:self withObject:0L];
+		[NSThread detachNewThreadSelector:@selector(serverThread) toTarget:self withObject:nil];
 	}
 	return self;
 }
@@ -228,7 +228,7 @@ extern NSThread					*mainThread;
 	NSArray *dicomImageArray = [dict objectForKey: @"dicomImageArray"];
 	BOOL isiPhone = [[dict objectForKey:@"isiPhone"] boolValue];
 
-//	if( [lockArray objectForKey: [outFile lastPathComponent]] == 0L) [lockArray setObject: [[[NSLock alloc] init] autorelease] forKey: [outFile lastPathComponent]];
+//	if( [lockArray objectForKey: [outFile lastPathComponent]] == nil) [lockArray setObject: [[[NSLock alloc] init] autorelease] forKey: [outFile lastPathComponent]];
 //	[[lockArray objectForKey: [outFile lastPathComponent]] lock];
 	
 	NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
@@ -255,7 +255,7 @@ extern NSThread					*mainThread;
 		{
 			for (int x = 0; x < [[im valueForKey:@"numberOfFrames"] intValue]; x++)
 			{
-				DCMPix* dcmPix = [[DCMPix alloc] myinit:[im valueForKey:@"completePathResolved"] :0 :1 :0L :x :[[im valueForKeyPath:@"series.id"] intValue] isBonjour:NO imageObj:im];
+				DCMPix* dcmPix = [[DCMPix alloc] myinit:[im valueForKey:@"completePathResolved"] :0 :1 :nil :x :[[im valueForKeyPath:@"series.id"] intValue] isBonjour:NO imageObj:im];
 			  
 				if(dcmPix)
 				{
@@ -605,7 +605,7 @@ extern NSThread					*mainThread;
 			else if([(NSString*)[parameters objectForKey:@"browse"] isEqualToString:@"6hours"])
 			{
 				NSCalendarDate *now = [NSCalendarDate calendarDate];
-				browsePredicate = [NSPredicate predicateWithFormat: @"dateAdded >= CAST(%lf, \"NSDate\")", [[NSCalendarDate dateWithYear:[now yearOfCommonEra] month:[now monthOfYear] day:[now dayOfMonth] hour:[now hourOfDay]-6 minute:[now minuteOfHour] second:[now secondOfMinute] timeZone:0L] timeIntervalSinceReferenceDate]];
+				browsePredicate = [NSPredicate predicateWithFormat: @"dateAdded >= CAST(%lf, \"NSDate\")", [[NSCalendarDate dateWithYear:[now yearOfCommonEra] month:[now monthOfYear] day:[now dayOfMonth] hour:[now hourOfDay]-6 minute:[now minuteOfHour] second:[now secondOfMinute] timeZone:nil] timeIntervalSinceReferenceDate]];
 				pageTitle = NSLocalizedString(@"Last 6 hours", @"");
 			}
 			else if([(NSString*)[parameters objectForKey:@"browse"] isEqualToString:@"all"])
@@ -716,7 +716,7 @@ extern NSThread					*mainThread;
 				// We want the ip address of the client
 				char buffer[256];
 				[ipAddressString release];
-				ipAddressString = 0L;
+				ipAddressString = nil;
 				struct sockaddr *addr = (struct sockaddr *) [[conn peerAddress] bytes];
 				if( addr->sa_family == AF_INET)
 				{
@@ -735,7 +735,7 @@ extern NSThread					*mainThread;
 					NSString *dicomDestinationAETitle = [[tempArray objectAtIndex:2] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 					NSString *dicomDestinationAddress = [[tempArray objectAtIndex:0] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 					
-					[html replaceOccurrencesOfString:@"%LocalizedLabel_SendStatus%" withString: [NSString stringWithFormat: NSLocalizedString( @"Images sent to DICOM node: %@ - %@", 0L), dicomDestinationAddress, dicomDestinationAETitle] options:NSLiteralSearch range:NSMakeRange(0, [html length])];
+					[html replaceOccurrencesOfString:@"%LocalizedLabel_SendStatus%" withString: [NSString stringWithFormat: NSLocalizedString( @"Images sent to DICOM node: %@ - %@", nil), dicomDestinationAddress, dicomDestinationAETitle] options:NSLiteralSearch range:NSMakeRange(0, [html length])];
 				}
 					else
 					[html replaceOccurrencesOfString:@"%LocalizedLabel_SendStatus%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [html length])];
@@ -895,7 +895,7 @@ extern NSThread					*mainThread;
 					im = [dicomImageArray objectAtIndex:[dicomImageArray count]/2];
 				}
 				
-				DCMPix* dcmPix = [[DCMPix alloc] myinit:[im valueForKey:@"completePathResolved"] :0 :1 :0L :[[[dicomImageArray lastObject] valueForKey: @"numberOfFrames"] intValue]/2 :[[im valueForKeyPath:@"series.id"] intValue] isBonjour:NO imageObj:im];
+				DCMPix* dcmPix = [[DCMPix alloc] myinit:[im valueForKey:@"completePathResolved"] :0 :1 :nil :[[[dicomImageArray lastObject] valueForKey: @"numberOfFrames"] intValue]/2 :[[im valueForKeyPath:@"series.id"] intValue] isBonjour:NO imageObj:im];
 				  
 				if(dcmPix)
 				{
@@ -1003,7 +1003,7 @@ extern NSThread					*mainThread;
 					else
 						outFile = fileName;
 						
-					NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: isiPhone], @"isiPhone", fileURL, @"fileURL", fileName, @"fileName", outFile, @"outFile", mess, @"mess", parameters, @"parameters", dicomImageArray, @"dicomImageArray", [NSThread currentThread], @"thread", contentRange, @"contentRange", 0L];
+					NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: isiPhone], @"isiPhone", fileURL, @"fileURL", fileName, @"fileName", outFile, @"outFile", mess, @"mess", parameters, @"parameters", dicomImageArray, @"dicomImageArray", [NSThread currentThread], @"thread", contentRange, @"contentRange", nil];
 					
 					[[[BrowserController currentBrowser] managedObjectContext] unlock];	// It's important because writeMovie will call performonmainthread !!!
 					
@@ -1175,8 +1175,8 @@ extern NSThread					*mainThread;
 	NSSortDescriptor * sortid = [[NSSortDescriptor alloc] initWithKey:@"seriesInstanceUID" ascending:YES selector:@selector(numericCompare:)];		//id
 	NSSortDescriptor * sortdate = [[NSSortDescriptor alloc] initWithKey:@"date" ascending:YES];
 	NSArray * sortDescriptors;
-	if ([[NSUserDefaults standardUserDefaults] integerForKey: @"SERIESORDER"] == 0) sortDescriptors = [NSArray arrayWithObjects: sortid, sortdate, 0L];
-	if ([[NSUserDefaults standardUserDefaults] integerForKey: @"SERIESORDER"] == 1) sortDescriptors = [NSArray arrayWithObjects: sortdate, sortid, 0L];
+	if ([[NSUserDefaults standardUserDefaults] integerForKey: @"SERIESORDER"] == 0) sortDescriptors = [NSArray arrayWithObjects: sortid, sortdate, nil];
+	if ([[NSUserDefaults standardUserDefaults] integerForKey: @"SERIESORDER"] == 1) sortDescriptors = [NSArray arrayWithObjects: sortdate, sortid, nil];
 	[sortid release];
 	[sortdate release];
 		
@@ -1368,8 +1368,8 @@ extern NSThread					*mainThread;
 	NSSortDescriptor * sortid = [[NSSortDescriptor alloc] initWithKey:@"seriesInstanceUID" ascending:YES selector:@selector(numericCompare:)];		//id
 	NSSortDescriptor * sortdate = [[NSSortDescriptor alloc] initWithKey:@"date" ascending:YES];
 	NSArray * sortDescriptors;
-	if ([[NSUserDefaults standardUserDefaults] integerForKey: @"SERIESORDER"] == 0) sortDescriptors = [NSArray arrayWithObjects: sortid, sortdate, 0L];
-	if ([[NSUserDefaults standardUserDefaults] integerForKey: @"SERIESORDER"] == 1) sortDescriptors = [NSArray arrayWithObjects: sortdate, sortid, 0L];
+	if ([[NSUserDefaults standardUserDefaults] integerForKey: @"SERIESORDER"] == 0) sortDescriptors = [NSArray arrayWithObjects: sortid, sortdate, nil];
+	if ([[NSUserDefaults standardUserDefaults] integerForKey: @"SERIESORDER"] == 1) sortDescriptors = [NSArray arrayWithObjects: sortdate, sortid, nil];
 	[sortid release];
 	[sortdate release];
 		
@@ -1505,7 +1505,7 @@ extern NSThread					*mainThread;
 
 - (NSTimeInterval)startOfDay:(NSCalendarDate *)day
 {
-	NSCalendarDate	*start = [NSCalendarDate dateWithYear:[day yearOfCommonEra] month:[day monthOfYear] day:[day dayOfMonth] hour:0 minute:0 second:0 timeZone: 0L];
+	NSCalendarDate	*start = [NSCalendarDate dateWithYear:[day yearOfCommonEra] month:[day monthOfYear] day:[day dayOfMonth] hour:0 minute:0 second:0 timeZone: nil];
 	return [start timeIntervalSinceReferenceDate];
 }
 
@@ -1522,7 +1522,7 @@ extern NSThread					*mainThread;
 
 - (void)dicomSend:(id)sender;
 {	
-	NSDictionary *todo = [NSDictionary dictionaryWithObjectsAndKeys: [selectedDICOMNode objectForKey:@"Address"], @"Address", [selectedDICOMNode objectForKey:@"Transfer Syntax"], @"Transfer Syntax", [selectedDICOMNode objectForKey:@"Port"], @"Port", [selectedDICOMNode objectForKey:@"AETitle"], @"AETitle", [selectedImages valueForKey: @"completePath"], @"Files", 0L];
+	NSDictionary *todo = [NSDictionary dictionaryWithObjectsAndKeys: [selectedDICOMNode objectForKey:@"Address"], @"Address", [selectedDICOMNode objectForKey:@"Transfer Syntax"], @"Transfer Syntax", [selectedDICOMNode objectForKey:@"Port"], @"Port", [selectedDICOMNode objectForKey:@"AETitle"], @"AETitle", [selectedImages valueForKey: @"completePath"], @"Files", nil];
 	[NSThread detachNewThreadSelector:@selector(dicomSendToDo:) toTarget:self withObject:todo];
 }
 
@@ -1530,7 +1530,7 @@ extern NSThread					*mainThread;
 {
 	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
 	
-	if( sendLock == 0L) sendLock = [[NSLock alloc] init];
+	if( sendLock == nil) sendLock = [[NSLock alloc] init];
 	
 	[sendLock lock];
 	
@@ -1558,7 +1558,7 @@ extern NSThread					*mainThread;
 	[sendLock unlock];
 	
 	[storeSCU release];
-	storeSCU = 0L;
+	storeSCU = nil;
 	
 	[pool release];
 }
@@ -1704,14 +1704,14 @@ extern NSThread					*mainThread;
                               [NSNumber numberWithBool:YES], QTMovieIsActiveAttribute,
                               nil];
 
-	QTMovie *aMovie = 0L;
+	QTMovie *aMovie = nil;
 	
     // create a QTMovie from the file
 	if( mainThread != [NSThread currentThread])
 	{
 		[QTMovie enterQTKitOnThread];
 		
-		NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: inFile, @"file", 0L];
+		NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: inFile, @"file", nil];
 		[self performSelectorOnMainThread: @selector( movieWithFile:) withObject: dict waitUntilDone: YES];
 		aMovie = [dict objectForKey:@"movie"];
 		[aMovie attachToCurrentThread];

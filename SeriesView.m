@@ -316,7 +316,7 @@
 		if( bC)
 			[view setBlending: [bC imageView]];			
 		else
-			[view setBlending: 0L];
+			[view setBlending: nil];
 		
 		[view setBlendingFactor: blendingFactor];
 	}

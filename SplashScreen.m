@@ -112,7 +112,7 @@ BOOL useQuartz() {
 
 - (IBAction) switchVersion:(id) sender
 {
-	NSMutableString *currVersionNumber = 0L;
+	NSMutableString *currVersionNumber = nil;
 	
 	if( versionType)
 	{

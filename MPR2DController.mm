@@ -71,7 +71,7 @@ extern NSString * documentsDirectory();
 	{
 		curMovieIndex = [cur intValue];
 		
-		[originalView setDCM: pixList[curMovieIndex] :fileList :0L :0 :'i' :NO];
+		[originalView setDCM: pixList[curMovieIndex] :fileList :nil :0 :'i' :NO];
 		[originalView setFlippedData: [[viewerController imageView] flippedData]];
 		[originalView setIndex: [originalView curImage]];
 		
@@ -281,7 +281,7 @@ extern NSString * documentsDirectory();
 {
 	curMovieIndex = [moviePosSlider intValue];
 	
-	[originalView setDCM:pixList[curMovieIndex] :fileList :0L :0 :'i' :NO];
+	[originalView setDCM:pixList[curMovieIndex] :fileList :nil :0 :'i' :NO];
 	[originalView setFlippedData: [[viewerController imageView] flippedData]];
 	[originalView setIndex:[originalView curImage]];
 	
@@ -307,7 +307,7 @@ extern NSString * documentsDirectory();
 		
 		[moviePosSlider setIntValue: curMovieIndex];
 		
-		[originalView setDCM:pixList[curMovieIndex] :fileList :0L :0 :'i' :NO];
+		[originalView setDCM:pixList[curMovieIndex] :fileList :nil :0 :'i' :NO];
 		[originalView setFlippedData: [[viewerController imageView] flippedData]];
 		[originalView setIndex:[originalView curImage]];
 		
@@ -382,13 +382,13 @@ extern NSString * documentsDirectory();
     short           err = 0;
 	BOOL			testInterval = YES;
 	
-	movieTimer = 0L;
-	blendingController = 0L;
-	viewerController = 0L;
+	movieTimer = nil;
+	blendingController = nil;
+	viewerController = nil;
 	curMovieIndex = 0;
 	maxMovieIndex = 1;
 	curCLUTMenu = [NSLocalizedString(@"No CLUT", nil) retain];
-	exportDCM = 0L;
+	exportDCM = nil;
 	
     DCMPix  *firstObject	= [pix objectAtIndex:0];
     float   sliceThickness  = fabs( [firstObject sliceInterval]);   //fabs( [firstObject sliceLocation] - [[pix objectAtIndex:1] sliceLocation]);
@@ -403,7 +403,7 @@ extern NSString * documentsDirectory();
 		else
 		{
 			NSRunCriticalAlertPanel( NSLocalizedString(@"Slice interval/thickness",nil),  NSLocalizedString(@"Problems with slice thickness/interval to do a 3D reconstruction.",nil), NSLocalizedString(@"OK",nil), nil, nil);
-			return 0L;
+			return nil;
 		}
     }
     
@@ -416,7 +416,7 @@ extern NSString * documentsDirectory();
     if( err)
     {
         NSRunCriticalAlertPanel(NSLocalizedString( @"Images size",nil), NSLocalizedString( @"These images don't have the same height and width to allow a 3D reconstruction...",nil),NSLocalizedString( @"OK",nil), nil, nil);
-        return 0L;
+        return nil;
     }
     
     // CHECK IMAGE SIZE
@@ -430,7 +430,7 @@ extern NSString * documentsDirectory();
 //		}
 //		if( err)
 //		{
-//			if( NSRunCriticalAlertPanel( @"Slices location",  @"Slice thickness/interval is not exactly equal for all images. This could distord the 3D reconstruction...", @"Continue", @"Cancel", nil) != NSAlertDefaultReturn) return 0L;
+//			if( NSRunCriticalAlertPanel( @"Slices location",  @"Slice thickness/interval is not exactly equal for all images. This could distord the 3D reconstruction...", @"Continue", @"Cancel", nil) != NSAlertDefaultReturn) return nil;
 //			err = 0;
 //		}
 //	}
@@ -456,7 +456,7 @@ extern NSString * documentsDirectory();
 	[slider setNumberOfTickMarks:[pixList[0] count]];
 	[slider setIntValue:[pixList[0] count]/2];
 	
-	[originalView setDCM:pixList[0] :files :0L :[pixList[0] count]/2 :'i' :YES];
+	[originalView setDCM:pixList[0] :files :nil :[pixList[0] count]/2 :'i' :YES];
 	[originalView setFlippedData: [[viewerController imageView] flippedData]];
 	[originalView setStringID:@"Original"];
 	
@@ -465,7 +465,7 @@ extern NSString * documentsDirectory();
     if( err != 0)
     {
        // [self dealloc];
-        return 0L;
+        return nil;
     }
 	
 
@@ -499,9 +499,9 @@ extern NSString * documentsDirectory();
                name: @"UpdateOpacityMenu"
              object: nil];
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: 0L];
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: nil];
 	
-	curWLWWMenu = [NSLocalizedString(@"Other", 0L) retain];
+	curWLWWMenu = [NSLocalizedString(@"Other", nil) retain];
 	
 	NSNotificationCenter *nc;
     nc = [NSNotificationCenter defaultCenter];
@@ -510,14 +510,14 @@ extern NSString * documentsDirectory();
                name: @"UpdateWLWWMenu"
              object: nil];
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: 0L];
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: nil];
 
     [nc addObserver: self
            selector: @selector(UpdateCLUTMenu:)
                name: @"UpdateCLUTMenu"
              object: nil];
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: 0L];
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: nil];
 
 	[nc addObserver: self
            selector: @selector(CLUTChanged:)
@@ -550,7 +550,7 @@ extern NSString * documentsDirectory();
 
 -(id) initWithPix:(NSMutableArray*) pix :(NSArray*) files :(NSData*) vData :(ViewerController*) bC
 {
-	return [self initWithPix:(NSMutableArray*) pix :(NSArray*) files :(NSData*) vData :(ViewerController*) bC :0L];
+	return [self initWithPix:(NSMutableArray*) pix :(NSArray*) files :(NSData*) vData :(ViewerController*) bC :nil];
 }
 
 -(void) save3DState
@@ -590,7 +590,7 @@ extern NSString * documentsDirectory();
 
 - (IBAction) resetImage:(id) sender
 {
-	[view set3DStateDictionary: 0L];
+	[view set3DStateDictionary: nil];
 }
 
 -(void) dealloc
@@ -616,7 +616,7 @@ extern NSString * documentsDirectory();
 	
 	NSLog(@"Dealloc MPR2DController B");
 	
-	[toolbar setDelegate: 0L];
+	[toolbar setDelegate: nil];
 	[toolbar release];
 	
 	[viewerController release];
@@ -699,13 +699,13 @@ extern NSString * documentsDirectory();
 {
 	NSString *menuString = [sender title];
 	
-	if( [menuString isEqualToString:NSLocalizedString(@"Other", 0L)] == YES)
+	if( [menuString isEqualToString:NSLocalizedString(@"Other", nil)] == YES)
 	{
 	}
-	else if( [menuString isEqualToString:NSLocalizedString(@"Default WL & WW", 0L)] == YES)
+	else if( [menuString isEqualToString:NSLocalizedString(@"Default WL & WW", nil)] == YES)
 	{
 	}
-	else if( [menuString isEqualToString:NSLocalizedString(@"Full dynamic", 0L)] == YES)
+	else if( [menuString isEqualToString:NSLocalizedString(@"Full dynamic", nil)] == YES)
 	{
 	}
 	else
@@ -715,20 +715,20 @@ extern NSString * documentsDirectory();
 	
 	[self applyWLWWForString: menuString];
 		
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: 0L];
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: nil];
 }
 
 - (void)applyWLWWForString:(NSString *) menuString
 {
-	if( [menuString isEqualToString:NSLocalizedString(@"Other", 0L)] == YES)
+	if( [menuString isEqualToString:NSLocalizedString(@"Other", nil)] == YES)
 	{
 		//[imageView setWLWW:0 :0];
 	}
-	else if( [menuString isEqualToString:NSLocalizedString(@"Default WL & WW", 0L)] == YES)
+	else if( [menuString isEqualToString:NSLocalizedString(@"Default WL & WW", nil)] == YES)
 	{
 		[view adjustWLWW:[[pixList[0] objectAtIndex:0] savedWL] :[[pixList[0] objectAtIndex:0] savedWW] :@"set"];
 	}
-	else if( [menuString isEqualToString:NSLocalizedString(@"Full dynamic", 0L)] == YES)
+	else if( [menuString isEqualToString:NSLocalizedString(@"Full dynamic", nil)] == YES)
 	{
 		[view adjustWLWW:0 :0 :@"set"];
 	}
@@ -777,13 +777,13 @@ extern NSString * documentsDirectory();
 {
 	if( [str isEqualToString:NSLocalizedString(@"No CLUT", nil)] == YES)
 	{
-		[view setCLUT: 0L :0L :0L];
+		[view setCLUT: nil :nil :nil];
 		if( curCLUTMenu != str)
 		{
 			[curCLUTMenu release];
 			curCLUTMenu = [str retain];
 		}
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: 0L];
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: nil];
 		
 		[[[clutPopup menu] itemAtIndex:0] setTitle:str];
 	}
@@ -821,7 +821,7 @@ extern NSString * documentsDirectory();
 				[curCLUTMenu release];
 				curCLUTMenu = [str retain];
 			}
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: 0L];
+			[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: nil];
 			
 			[[[clutPopup menu] itemAtIndex:0] setTitle:str];
 		}
@@ -848,7 +848,7 @@ extern NSString * documentsDirectory();
 			[curOpacityMenu release];
 			curOpacityMenu = [str retain];
 		}
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: 0L];
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: nil];
 		
 		[[[OpacityPopup menu] itemAtIndex:0] setTitle:str];
 	}
@@ -865,7 +865,7 @@ extern NSString * documentsDirectory();
 				[curOpacityMenu release];
 				curOpacityMenu = [str retain];
 			}
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: 0L];
+			[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: nil];
 			
 			[[[OpacityPopup menu] itemAtIndex:0] setTitle:str];
 		}
@@ -1100,7 +1100,7 @@ extern NSString * documentsDirectory();
 	
 	if( maxMovieIndex > 1)
 	{
-		if( NSRunInformationalAlertPanel( NSLocalizedString(@"DICOM Export", nil), NSLocalizedString(@"Should I export the temporal series or only the current image?", nil), NSLocalizedString(@"Current Image", nil), NSLocalizedString(@"Temporal Series", nil), 0L) == NSAlertDefaultReturn)
+		if( NSRunInformationalAlertPanel( NSLocalizedString(@"DICOM Export", nil), NSLocalizedString(@"Should I export the temporal series or only the current image?", nil), NSLocalizedString(@"Current Image", nil), NSLocalizedString(@"Temporal Series", nil), nil) == NSAlertDefaultReturn)
 		{
 			export4DData = NO;
 		}
@@ -1129,7 +1129,7 @@ extern NSString * documentsDirectory();
 			
 			curMovieIndex = i;
 			
-			[originalView setDCM: pixList[curMovieIndex] :fileList :0L :0 :'i' :NO];
+			[originalView setDCM: pixList[curMovieIndex] :fileList :nil :0 :'i' :NO];
 			[originalView setFlippedData: [[viewerController imageView] flippedData]];
 			[originalView setIndex: [originalView curImage]];
 			
@@ -1153,14 +1153,14 @@ extern NSString * documentsDirectory();
 //				[[[view finalView] curDCM] convertPixX: tempPt.x pixY: tempPt.y toDICOMCoords: o pixelCenter: YES];
 //				[exportDCM setPosition: o];
 				
-				if( fabs( o[6]) > fabs(o[7]) && fabs( o[6]) > fabs(o[8])) [exportDCM setSlicePosition: pos[ 0]];
-				if( fabs( o[7]) > fabs(o[6]) && fabs( o[7]) > fabs(o[8])) [exportDCM setSlicePosition: pos[ 1]];
-				if( fabs( o[8]) > fabs(o[6]) && fabs( o[8]) > fabs(o[7])) [exportDCM setSlicePosition: pos[ 2]];
+//				if( fabs( o[6]) > fabs(o[7]) && fabs( o[6]) > fabs(o[8])) [exportDCM setSlicePosition: pos[ 0]];
+//				if( fabs( o[7]) > fabs(o[6]) && fabs( o[7]) > fabs(o[8])) [exportDCM setSlicePosition: pos[ 1]];
+//				if( fabs( o[8]) > fabs(o[6]) && fabs( o[8]) > fabs(o[7])) [exportDCM setSlicePosition: pos[ 2]];
 
 				[[view finalView] getWLWW:&cwl :&cww];
 				[dcmSequence setDefaultWWWL: (long) cww : (long) cwl];
 				
-				NSString *f = [dcmSequence writeDCMFile: 0L];
+				NSString *f = [dcmSequence writeDCMFile: nil];
 				free( data);
 			}
 			
@@ -1169,7 +1169,7 @@ extern NSString * documentsDirectory();
 		
 		[dcmSequence release];
 		
-		if( err)  NSRunCriticalAlertPanel( NSLocalizedString(@"Error", 0L),  NSLocalizedString( @"Error during the creation of the DICOM File!", 0L), NSLocalizedString(@"OK", 0L), nil, nil);
+		if( err)  NSRunCriticalAlertPanel( NSLocalizedString(@"Error", nil),  NSLocalizedString( @"Error during the creation of the DICOM File!", nil), NSLocalizedString(@"OK", nil), nil, nil);
 		
 		[[NSUserDefaults standardUserDefaults] setInteger: annotCopy forKey: @"ANNOTATIONS"];
 		[DCMView setDefaults];
@@ -1185,7 +1185,7 @@ extern NSString * documentsDirectory();
 		[[NSUserDefaults standardUserDefaults] setInteger: annotGraphics forKey: @"ANNOTATIONS"];
 		[DCMView setDefaults];
 		
-		if( exportDCM == 0L) exportDCM = [[DICOMExport alloc] init];
+		if( exportDCM == nil) exportDCM = [[DICOMExport alloc] init];
 		
 		float imOrigin[ 3], imSpacing[ 2];
 		unsigned char *data = [[view finalView] getRawPixelsWidth:&width height:&height spp:&spp bpp:&bpp screenCapture:YES force8bits:NO removeGraphical:YES squarePixels:YES allTiles:NO allowSmartCropping:YES origin: imOrigin spacing: imSpacing];
@@ -1207,15 +1207,15 @@ extern NSString * documentsDirectory();
 			//[[[view finalView] curDCM] convertPixX: tempPt.x pixY: tempPt.y toDICOMCoords: o pixelCenter: YES];
 			//[exportDCM setPosition: o];
 			
-			if( fabs( o[6]) > fabs(o[7]) && fabs( o[6]) > fabs(o[8])) [exportDCM setSlicePosition: pos[ 0]];
-			if( fabs( o[7]) > fabs(o[6]) && fabs( o[7]) > fabs(o[8])) [exportDCM setSlicePosition: pos[ 1]];
-			if( fabs( o[8]) > fabs(o[6]) && fabs( o[8]) > fabs(o[7])) [exportDCM setSlicePosition: pos[ 2]];
+//			if( fabs( o[6]) > fabs(o[7]) && fabs( o[6]) > fabs(o[8])) [exportDCM setSlicePosition: pos[ 0]];
+//			if( fabs( o[7]) > fabs(o[6]) && fabs( o[7]) > fabs(o[8])) [exportDCM setSlicePosition: pos[ 1]];
+//			if( fabs( o[8]) > fabs(o[6]) && fabs( o[8]) > fabs(o[7])) [exportDCM setSlicePosition: pos[ 2]];
 			
 			[[view finalView] getWLWW:&cwl :&cww];
 			[exportDCM setDefaultWWWL: (long) cww : (long) cwl];
 			
-			NSString *f = [exportDCM writeDCMFile: 0L];
-			if( f == 0L) NSRunCriticalAlertPanel( NSLocalizedString(@"Error", 0L),  NSLocalizedString( @"Error during the creation of the DICOM File!", 0L), NSLocalizedString(@"OK", 0L), nil, nil);
+			NSString *f = [exportDCM writeDCMFile: nil];
+			if( f == nil) NSRunCriticalAlertPanel( NSLocalizedString(@"Error", nil),  NSLocalizedString( @"Error during the creation of the DICOM File!", nil), NSLocalizedString(@"OK", nil), nil, nil);
 			
 			free( data);
 		}
@@ -1264,7 +1264,7 @@ extern NSString * documentsDirectory();
 	[panel setCanSelectHiddenExtension:YES];
 	[panel setRequiredFileType:@"jpg"];
 	
-	if( [panel runModalForDirectory:0L file:@"2D MPR Image"] == NSFileHandlingPanelOKButton)
+	if( [panel runModalForDirectory:nil file:@"2D MPR Image"] == NSFileHandlingPanelOKButton)
 	{
 		NSImage *im = [view nsimage:NO];
 		
@@ -1290,7 +1290,7 @@ extern NSString * documentsDirectory();
 	[panel setCanSelectHiddenExtension:YES];
 	[panel setRequiredFileType:@"tif"];
 	
-	if( [panel runModalForDirectory:0L file:@"2D MPR Image"] == NSFileHandlingPanelOKButton)
+	if( [panel runModalForDirectory:nil file:@"2D MPR Image"] == NSFileHandlingPanelOKButton)
 	{
 		NSImage *im = [view nsimage:NO];
 		

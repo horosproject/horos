@@ -60,7 +60,7 @@ extern "C"
 }
 #endif
 
-static SRView	*snSRView = 0L;
+static SRView	*snSRView = nil;
 
 typedef struct _xyzArray
 {
@@ -333,7 +333,7 @@ typedef struct _xyzArray
 		case 5: [panel setRequiredFileType:@"stl"];	break;
 	}
 	
-	if( [panel runModalForDirectory:0L file:@"3DFile"] == NSFileHandlingPanelOKButton)
+	if( [panel runModalForDirectory:nil file:@"3DFile"] == NSFileHandlingPanelOKButton)
 	{
 		BOOL orientationSwitch = NO;
 		
@@ -477,14 +477,14 @@ typedef struct _xyzArray
 
 -(IBAction) exportQuicktime3DVR:(id) sender
 {
-	[NSApp beginSheet: export3DVRWindow modalForWindow:[self window] modalDelegate:self didEndSelector:0L contextInfo:(void*) 0L];
+	[NSApp beginSheet: export3DVRWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:(void*) nil];
 }
 
 - (IBAction) exportQuicktime :(id) sender
 {
 	long i;
 	
-    [NSApp beginSheet: export3DWindow modalForWindow:[self window] modalDelegate:self didEndSelector:0L contextInfo:(void*) 0L];
+    [NSApp beginSheet: export3DWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:(void*) nil];
 }
 
 - (void)checkView:(NSView *)aView :(BOOL) OnOff
@@ -536,7 +536,7 @@ typedef struct _xyzArray
 			float	cwl, cww;
 			float	o[ 9];
 			
-			if( exportDCM == 0L) exportDCM = [[DICOMExport alloc] init];
+			if( exportDCM == nil) exportDCM = [[DICOMExport alloc] init];
 			
 			//[self renderImageWithBestQuality: bestRenderingMode waitDialog: NO];
 			unsigned char *dataPtr = [self getRawPixels:&width :&height :&spp :&bpp :YES :YES];
@@ -556,8 +556,8 @@ typedef struct _xyzArray
 //				if( aCamera->GetParallelProjection())
 //					[exportDCM setPixelSpacing: [self getResolution] :[self getResolution]];
 				
-				NSString *f = [exportDCM writeDCMFile: 0L];
-				if( f == 0L) NSRunCriticalAlertPanel( NSLocalizedString(@"Error", 0L),  NSLocalizedString( @"Error during the creation of the DICOM File!", 0L), NSLocalizedString(@"OK", 0L), nil, nil);
+				NSString *f = [exportDCM writeDCMFile: nil];
+				if( f == nil) NSRunCriticalAlertPanel( NSLocalizedString(@"Error", nil),  NSLocalizedString( @"Error during the creation of the DICOM File!", nil), NSLocalizedString(@"OK", nil), nil, nil);
 				
 				free( dataPtr);
 			}
@@ -608,7 +608,7 @@ typedef struct _xyzArray
 //					if( aCamera->GetParallelProjection())
 //						[dcmSequence setPixelSpacing: [self getResolution] :[self getResolution]];
 					
-					NSString *f = [dcmSequence writeDCMFile: 0L];
+					NSString *f = [dcmSequence writeDCMFile: nil];
 					
 					free( dataPtr);
 				}
@@ -653,7 +653,7 @@ typedef struct _xyzArray
 	[self setCurrentdcmExport: dcmExportMode];
 	//if( [[[self window] windowController] movieFrames] > 1) [[dcmExportMode cellWithTag:2] setEnabled: YES];
 	//else [[dcmExportMode cellWithTag:2] setEnabled: NO];
-	[NSApp beginSheet: exportDCMWindow modalForWindow:[self window] modalDelegate:self didEndSelector:0L contextInfo:(void*) 0L];
+	[NSApp beginSheet: exportDCMWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:(void*) nil];
 }
 
 -(BOOL) acceptsFirstMouse:(NSEvent*) theEvent
@@ -715,7 +715,7 @@ typedef struct _xyzArray
 {
 	if([note object] == blendingController) // our blended serie is closing itself....
 	{
-		[self setBlendingPixSource:0L];
+		[self setBlendingPixSource:nil];
 	}
 }
 
@@ -756,29 +756,29 @@ typedef struct _xyzArray
 	NSLog(@"SRView initWithFrame");
     if ( self = [super initWithFrame:frame] )
     {
-		NSTrackingArea *cursorTracking = [[[NSTrackingArea alloc] initWithRect: [self visibleRect] options: (NSTrackingCursorUpdate | NSTrackingInVisibleRect | NSTrackingMouseEnteredAndExited | NSTrackingActiveInKeyWindow) owner: self userInfo: 0L] autorelease];
+		NSTrackingArea *cursorTracking = [[[NSTrackingArea alloc] initWithRect: [self visibleRect] options: (NSTrackingCursorUpdate | NSTrackingInVisibleRect | NSTrackingMouseEnteredAndExited | NSTrackingActiveInKeyWindow) owner: self userInfo: nil] autorelease];
 		
 		[self addTrackingArea: cursorTracking];
 		
 		splash = [[WaitRendering alloc] init:@"Rendering..."];
 //		[[splash window] makeKeyAndOrderFront:self];
 		
-		cursor = 0L;
-		isoExtractor[ 0] = isoExtractor[ 1] = 0L;
-		isoResample = 0L;
+		cursor = nil;
+		isoExtractor[ 0] = isoExtractor[ 1] = nil;
+		isoResample = nil;
 		
-		BisoExtractor[ 0] = BisoExtractor[ 1] = 0L;
-		BisoResample = 0L;
+		BisoExtractor[ 0] = BisoExtractor[ 1] = nil;
+		BisoResample = nil;
 		
 		currentTool = t3DRotate;
 		[self setCursorForView: currentTool];
 		
-		blendingController = 0L;
+		blendingController = nil;
 		blendingFactor = 0.5;
-		blendingReader = 0L;
-//		cbStart = 0L;
+		blendingReader = nil;
+//		cbStart = nil;
 		
-		exportDCM = 0L;
+		exportDCM = nil;
 		
 		noWaitDialog = NO;
 		
@@ -805,7 +805,7 @@ typedef struct _xyzArray
 		
 		[self connect2SpaceNavigator];
 		
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowWillClose:) name: NSWindowWillCloseNotification object: 0L];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowWillClose:) name: NSWindowWillCloseNotification object: nil];
     }
     
     return self;
@@ -833,7 +833,7 @@ typedef struct _xyzArray
 	
     [[NSNotificationCenter defaultCenter] removeObserver: self];
 
-	[self setBlendingPixSource: 0L];
+	[self setBlendingPixSource: nil];
 	
 	for( i = 0 ; i < 2; i++)
 	{
@@ -862,7 +862,7 @@ typedef struct _xyzArray
 	//	aRenderer->Delete();
 	
     [pixList release];
-    pixList = 0L;
+    pixList = nil;
 	
 	[point3DActorArray release];
 	[point3DPositionsArray release];
@@ -1124,7 +1124,7 @@ typedef struct _xyzArray
 	}
 
 		
-	mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView: 0L];
+	mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView: nil];
 	_mouseLocStart = mouseLocStart;
 	
 	if( mouseLocStart.x < 10 && mouseLocStart.y < 10)
@@ -1215,7 +1215,7 @@ typedef struct _xyzArray
 			[self convert3Dto2Dpoint:dc :sc];
 			
 			NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:	[NSNumber numberWithInt: sc[0]*[firstObject pixelSpacingX]], @"x", [NSNumber numberWithInt: sc[1]*[firstObject pixelSpacingY]], @"y", [NSNumber numberWithInt: sc[2]], @"z",
-																				0L];
+																				nil];
 			
 			[[NSNotificationCenter defaultCenter] postNotificationName: @"Display3DPoint" object:pixList  userInfo: dict];
 			
@@ -1754,7 +1754,7 @@ typedef struct _xyzArray
 			blendingFlip->SetFlipAboutOrigin( TRUE);
 			blendingFlip->SetFilteredAxis(2);
 		}
-		else blendingFlip = 0L;
+		else blendingFlip = nil;
 		
 		matriceBlending = vtkMatrix4x4::New();
 		matriceBlending->Element[0][0] = blendingcosines[0];			matriceBlending->Element[1][0] = blendingcosines[1];			matriceBlending->Element[2][0] = blendingcosines[2];			matriceBlending->Element[3][0] = 0;
@@ -1770,7 +1770,7 @@ typedef struct _xyzArray
 			matriceBlending->Delete();
 			if( blendingFlip) blendingFlip->Delete();
 			blendingReader->Delete();
-			blendingReader = 0L;
+			blendingReader = nil;
 			[blendingPixList release];
 		}
 	}
@@ -1807,13 +1807,13 @@ typedef struct _xyzArray
 		iso[ actor]->Delete();
 		
 		if( isoSmoother[ actor]) isoSmoother[ actor]->Delete();
-		isoSmoother[ actor] = 0L;
+		isoSmoother[ actor] = nil;
 		
 		if( isoDeci[ actor]) isoDeci[ actor]->Delete();
-		isoDeci[ actor] = 0L;
+		isoDeci[ actor] = nil;
 	}
 	
-	isoExtractor[ actor] = 0L;
+	isoExtractor[ actor] = nil;
 }
 
 - (void) BdeleteActor:(long) actor
@@ -1827,13 +1827,13 @@ typedef struct _xyzArray
 		BisoMapper[ actor]->Delete();
 		Biso[ actor]->Delete();
 		if(BisoSmoother[ actor]) BisoSmoother[ actor]->Delete();
-		BisoSmoother[ actor] = 0L;
+		BisoSmoother[ actor] = nil;
 		
 		if(BisoDeci[ actor]) BisoDeci[ actor]->Delete();
-		BisoDeci[ actor] = 0L;
+		BisoDeci[ actor] = nil;
 	}
 	
-	BisoExtractor[ actor] = 0L;
+	BisoExtractor[ actor] = nil;
 }
 
 - (void) changeActor:(long) actor :(float) resolution :(float) transparency :(float) r :(float) g :(float) b :(float) isocontour :(BOOL) useDecimate :(float) decimateVal :(BOOL) useSmooth :(long) smoothVal
@@ -1850,7 +1850,7 @@ typedef struct _xyzArray
 	if( resolution == 1.0)
 	{
 		if( isoResample) isoResample->Delete();
-		isoResample = 0L;
+		isoResample = nil;
 	}
 	else
 	{
@@ -1977,7 +1977,7 @@ typedef struct _xyzArray
 	{
 		if( BisoResample) BisoResample->Delete();
 		
-		BisoResample = 0L;
+		BisoResample = nil;
 	}
 	else
 	{
@@ -2160,7 +2160,7 @@ typedef struct _xyzArray
 			flip->SetFlipAboutOrigin( TRUE);
 			flip->SetFilteredAxis(2);
 		}
-		else flip = 0L;
+		else flip = nil;
 			
 		// PLANE
 		
@@ -2241,7 +2241,7 @@ typedef struct _xyzArray
 	//	croppingBox->SetInsideOut( true);
 	//	croppingBox->OutlineCursorWiresOff();
 	//	cropcallback = vtkMyCallback::New();
-	//	cropcallback->setBlendingVolume( 0L);
+	//	cropcallback->setBlendingVolume( nil);
 	//	croppingBox->AddObserver(vtkCommand::InteractionEvent, cropcallback);
 		
 	/*	planeWidget = vtkPlaneWidget::New();
@@ -2432,7 +2432,7 @@ typedef struct _xyzArray
 
 -(unsigned char*) getRawPixels:(long*) width :(long*) height :(long*) spp :(long*) bpp :(BOOL) screenCapture :(BOOL) force8bits
 {
-	unsigned char	*buf = 0L;
+	unsigned char	*buf = nil;
 	long			i;
 	
 //	if( screenCapture)	// Pixels displayed in current window -> only RGB 8 bits data
@@ -2506,7 +2506,7 @@ typedef struct _xyzArray
 	else colorSpace = NSCalibratedWhiteColorSpace;
 	
 	rep = [[[NSBitmapImageRep alloc]
-			 initWithBitmapDataPlanes:0L
+			 initWithBitmapDataPlanes:nil
 						   pixelsWide:width
 						   pixelsHigh:height
 						bitsPerSample:bpp
@@ -3496,7 +3496,7 @@ typedef struct _xyzArray
 	snStopped = YES;
 	
 	[snCloseEventTimer release];
-	snCloseEventTimer = 0L;
+	snCloseEventTimer = nil;
 }
 
 #if USE3DCONNEXION
@@ -3508,7 +3508,7 @@ typedef struct _xyzArray
 	if(InstallConnexionHandlers != NULL)
 	{
 		// Install message handler and register our client
-		error = InstallConnexionHandlers(SRSpaceNavigatorMessageHandler, 0L, 0L);
+		error = InstallConnexionHandlers(SRSpaceNavigatorMessageHandler, nil, nil);
 
 		// This takes over in our application only
 		snConnexionClientID = RegisterConnexionClient('OsiX', (UInt8*) "\pOsiriX", kConnexionClientModeTakeOver, kConnexionMaskAll);
@@ -3571,7 +3571,7 @@ void SRSpaceNavigatorMessageHandler(io_connect_t connection, natural_t messageTy
 						{
 							[sV->snCloseEventTimer invalidate];
 							[sV->snCloseEventTimer release];
-							sV->snCloseEventTimer = 0L;
+							sV->snCloseEventTimer = nil;
 						}
 						
 						// *** zoom ***					

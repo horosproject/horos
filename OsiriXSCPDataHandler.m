@@ -29,11 +29,11 @@ NSString * const OsiriXFileReceivedNotification = @"OsiriXFileReceivedNotificati
 {
 	for( int i = 0 ; i < moveArraySize; i++) free( moveArray[ i]);
 	free( moveArray);
-	moveArray = 0L;
+	moveArray = nil;
 	moveArraySize = 0;
 	
 	if( logFiles) free( logFiles);
-	logFiles = 0L;
+	logFiles = nil;
 	
 	
 	if( specificCharacterSet)
@@ -131,7 +131,7 @@ NSString * const OsiriXFileReceivedNotification = @"OsiriXFileReceivedNotificati
 //				}
 //				NSLog(@"Server: %@", [server description]);
 				NSManagedObjectModel *model = [[BrowserController currentBrowser] managedObjectModel];
-				NSError *error = 0L;
+				NSError *error = nil;
 				NSString *searchType = [object attributeValueWithName:@"Query/RetrieveLevel"];
 				NSEntityDescription *entity;
 				NSPredicate *predicate = [self predicateForObject:object];
@@ -147,7 +147,7 @@ NSString * const OsiriXFileReceivedNotification = @"OsiriXFileReceivedNotificati
 				[request setEntity:entity];
 				[request setPredicate:predicate];
 				
-				error = 0L;
+				error = nil;
 				NSManagedObjectContext	*context = [[BrowserController currentBrowser] managedObjectContext];
 				NSArray *fetchArray = [context executeFetchRequest:request error:&error];
 				
@@ -243,7 +243,7 @@ NSString * const OsiriXFileReceivedNotification = @"OsiriXFileReceivedNotificati
 		*/
 		//NSLog(@"query");
 		NSManagedObjectModel *model = [[BrowserController currentBrowser] managedObjectModel];
-		NSError *error = 0L;
+		NSError *error = nil;
 		NSString *searchType = [object attributeValueWithName:@"Query/RetrieveLevel"];
 		NSEntityDescription *entity;
 		NSPredicate *predicate = [self predicateForObject:object];
@@ -261,7 +261,7 @@ NSString * const OsiriXFileReceivedNotification = @"OsiriXFileReceivedNotificati
 		//[request setPredicate: [NSPredicate predicateWithValue:YES]];
 		
 		NS_DURING
-		error = 0L;
+		error = nil;
 		NSManagedObjectContext	*context = [[BrowserController currentBrowser] managedObjectContext];
 		NSArray *fetchArray = [context executeFetchRequest:request error:&error];
 		if (!error && [fetchArray count]) {
@@ -765,14 +765,14 @@ NSString * const OsiriXFileReceivedNotification = @"OsiriXFileReceivedNotificati
 
 -(NSTimeInterval) endOfDay:(NSCalendarDate *)day
 {
-	NSCalendarDate *start = [NSCalendarDate dateWithYear:[day yearOfCommonEra] month:[day monthOfYear] day:[day dayOfMonth] hour:0 minute:0 second:0 timeZone: 0L];
+	NSCalendarDate *start = [NSCalendarDate dateWithYear:[day yearOfCommonEra] month:[day monthOfYear] day:[day dayOfMonth] hour:0 minute:0 second:0 timeZone: nil];
 	NSCalendarDate *end = [start dateByAddingYears:0 months:0 days:0 hours:24 minutes:0 seconds:0];
 	return [end timeIntervalSinceReferenceDate];
 }
 
 -(NSTimeInterval) startOfDay:(NSCalendarDate *)day
 {
-	NSCalendarDate	*start = [NSCalendarDate dateWithYear:[day yearOfCommonEra] month:[day monthOfYear] day:[day dayOfMonth] hour:0 minute:0 second:0 timeZone: 0L];
+	NSCalendarDate	*start = [NSCalendarDate dateWithYear:[day yearOfCommonEra] month:[day monthOfYear] day:[day dayOfMonth] hour:0 minute:0 second:0 timeZone: nil];
 	return [start timeIntervalSinceReferenceDate];
 }
 @end

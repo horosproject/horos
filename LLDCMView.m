@@ -35,7 +35,7 @@
     {
 		[[self window] setAcceptsMouseMovedEvents: YES];
 
-		curROI = 0L;
+		curROI = nil;
 		
 		origin.x = origin.y = 0;
 		curImage = index; 

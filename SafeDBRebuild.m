@@ -26,15 +26,15 @@
 #endif
 
 
-NSRecursiveLock	*PapyrusLock = 0L;
-NSMutableDictionary *fileFormatPlugins = 0L;
+NSRecursiveLock	*PapyrusLock = nil;
+NSMutableDictionary *fileFormatPlugins = nil;
 
-NSMutableArray			*preProcessPlugins = 0L;
-NSMutableDictionary		*reportPlugins = 0L;
-NSMutableDictionary		*plugins = 0L, *pluginsDict = 0L;
-NSThread				*mainThread = 0L;
+NSMutableArray			*preProcessPlugins = nil;
+NSMutableDictionary		*reportPlugins = nil;
+NSMutableDictionary		*plugins = nil, *pluginsDict = nil;
+NSThread				*mainThread = nil;
 BOOL					NEEDTOREBUILD = NO;
-NSMutableDictionary		*DATABASECOLUMNS = 0L;
+NSMutableDictionary		*DATABASECOLUMNS = nil;
 short					Altivec = 0, UseOpenJpeg = 0;
 
 NSString* convertDICOM( NSString *inputfile) {
@@ -43,9 +43,9 @@ NSString* convertDICOM( NSString *inputfile) {
 
 void addFilesToDatabaseSafe(NSArray* newFilesArray, NSManagedObjectContext* context, NSManagedObjectModel* model, NSString* INpath, BOOL COMMENTSAUTOFILL)
 {
-	NSString				*curPatientUID = 0L, *curStudyID = 0L, *curSerieID = 0L;
+	NSString				*curPatientUID = nil, *curStudyID = nil, *curSerieID = nil;
 	NSInteger				index;
-	NSError					*error = 0L;
+	NSError					*error = nil;
 	BOOL					addFailed = NO;
 	NSManagedObject			*image, *seriesTable, *study, *album;
 	NSDate					*today = [NSDate date];
@@ -61,7 +61,7 @@ void addFilesToDatabaseSafe(NSArray* newFilesArray, NSManagedObjectContext* cont
 	NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
 	[dbRequest setEntity: [[model entitiesByName] objectForKey:@"Study"]];
 	[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
-	error = 0L;
+	error = nil;
 	NSArray *studiesArray;
 	@try
 	{
@@ -71,7 +71,7 @@ void addFilesToDatabaseSafe(NSArray* newFilesArray, NSManagedObjectContext* cont
 	{
 		NSLog(@"addFilesToDatabaseSafe exception: %@", [ne description]);
 		NSLog(@"addFilesToDatabaseSafe executeFetchRequest failed for studiesArray.");
-		error = [NSError errorWithDomain:@"OsiriXDomain" code:1 userInfo: 0L];
+		error = [NSError errorWithDomain:@"OsiriXDomain" code:1 userInfo: nil];
 	}
 	if (error)
 	{
@@ -91,12 +91,12 @@ void addFilesToDatabaseSafe(NSArray* newFilesArray, NSManagedObjectContext* cont
 			{
 				NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 				
-				DicomFile		*curFile = 0L;
-				NSDictionary	*curDict = 0L;
+				DicomFile		*curFile = nil;
+				NSDictionary	*curDict = nil;
 				
 				curFile = [[DicomFile alloc] init: newFile];
 				
-				if(curFile == 0L && [[newFile pathExtension] isEqualToString:@"zip"] == YES)
+				if(curFile == nil && [[newFile pathExtension] isEqualToString:@"zip"] == YES)
 				{
 					NSString *filePathWithoutExtension = [newFile stringByDeletingPathExtension];
 					NSString *xmlFilePath = [filePathWithoutExtension stringByAppendingString:@".xml"];
@@ -134,16 +134,16 @@ void addFilesToDatabaseSafe(NSArray* newFilesArray, NSManagedObjectContext* cont
 						
 						if( [newFile isEqualToString: destPath] == NO)
 						{
-							[[NSFileManager defaultManager] removeFileAtPath:destPath handler:0L];
+							[[NSFileManager defaultManager] removeFileAtPath:destPath handler:nil];
 							if( [newFile length] >= [INpath length] && [newFile compare:INpath options:NSLiteralSearch range:NSMakeRange(0, [INpath length])] == NSOrderedSame)
 							{
 								NSLog( @"ROI SR MOVE :%@ to :%@", newFile, destPath);
-								[[NSFileManager defaultManager] movePath:newFile toPath:destPath handler: 0L];
+								[[NSFileManager defaultManager] movePath:newFile toPath:destPath handler: nil];
 							}
 							else
 							{
 								NSLog( @"ROI SR COPY :%@ to :%@", newFile, destPath);
-								[[NSFileManager defaultManager] copyPath:newFile toPath:destPath handler: 0L];
+								[[NSFileManager defaultManager] copyPath:newFile toPath:destPath handler: nil];
 							}
 						}
 						
@@ -210,7 +210,7 @@ void addFilesToDatabaseSafe(NSArray* newFilesArray, NSManagedObjectContext* cont
 								[studiesArray release];
 								studiesArray = [newStudiesArray retain];
 								
-								[curSerieID release];	curSerieID = 0L;
+								[curSerieID release];	curSerieID = nil;
 								
 							}
 							else
@@ -325,7 +325,7 @@ void addFilesToDatabaseSafe(NSArray* newFilesArray, NSManagedObjectContext* cont
 							
 								[seriesTable setValue:[NSNumber numberWithInt:0]  forKey:@"numberOfImages"];
 								[study setValue:[NSNumber numberWithInt:0]  forKey:@"numberOfImages"];
-								[seriesTable setValue: 0L forKey:@"thumbnail"];
+								[seriesTable setValue: nil forKey:@"thumbnail"];
 								
 								// Relations
 								[image setValue:seriesTable forKey:@"series"];
@@ -336,7 +336,7 @@ void addFilesToDatabaseSafe(NSArray* newFilesArray, NSManagedObjectContext* cont
 									{
 										[seriesTable setValue:[curDict objectForKey: @"commentsAutoFill"] forKey:@"comment"];
 										
-										if( [study valueForKey:@"comment"] == 0L || [[study valueForKey:@"comment"] isEqualToString:@""])
+										if( [study valueForKey:@"comment"] == nil || [[study valueForKey:@"comment"] isEqualToString:@""])
 										{
 											[study setValue:[curDict objectForKey: @"commentsAutoFill"] forKey:@"comment"];
 										}
@@ -349,7 +349,7 @@ void addFilesToDatabaseSafe(NSArray* newFilesArray, NSManagedObjectContext* cont
 									NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
 									[dbRequest setEntity: [[model entitiesByName] objectForKey:@"Album"]];
 									[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
-									error = 0L;
+									error = nil;
 									NSArray *albumArray = [context executeFetchRequest:dbRequest error:&error];
 									
 									NSManagedObject *album = nil;
@@ -393,7 +393,7 @@ void addFilesToDatabaseSafe(NSArray* newFilesArray, NSManagedObjectContext* cont
 					[curFile release];
 					
 					[curDict release];
-					curDict = 0L;
+					curDict = nil;
 				}
 				[pool release];
 			}
@@ -464,7 +464,7 @@ int main(int argc, const char *argv[])
 			
 				NSURL *url = [NSURL fileURLWithPath: [[INpath stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"/Database.sql"]];
 				
-				NSError *error = 0L;
+				NSError *error = nil;
 				if (![coordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:url options:nil error:&error])
 				{
 					NSLog( [error localizedDescription]);
@@ -480,7 +480,7 @@ int main(int argc, const char *argv[])
 				addFilesToDatabaseSafe( newFilesArray ,context ,model ,INpath ,COMMENTSAUTOFILL);
 	//			[BrowserController addFilesToDatabaseSafe: newFilesArray context: context model: model databasePath:INpath COMMENTSAUTOFILL: COMMENTSAUTOFILL];
 
-				error = 0L;
+				error = nil;
 				[context save: &error];
 				
 				[model release];

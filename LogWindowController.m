@@ -26,6 +26,7 @@
 }
 
 - (NSManagedObjectContext *)managedObjectContext{
+	return nil;
 }
 	
 -(void) awakeFromNib
@@ -47,7 +48,7 @@
 	
 	if( [[BrowserController currentBrowser] isNetworkLogsActive] == NO)
 	{
-		if( NSRunInformationalAlertPanel(@"Network Logs", @"Network Logs are currently off. Do you want to activate them?\r\rYou can activate or de-activate them in the Preferences - Listener window.", @"Activate", @"Cancel", 0L) == 1)
+		if( NSRunInformationalAlertPanel(@"Network Logs", @"Network Logs are currently off. Do you want to activate them?\r\rYou can activate or de-activate them in the Preferences - Listener window.", @"Activate", @"Cancel", nil) == 1)
 		{
 			[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"NETWORKLOGS"];
 			[[BrowserController currentBrowser] setNetworkLogs];

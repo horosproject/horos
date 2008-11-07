@@ -93,7 +93,7 @@
 
 - (void)performQuery: (BOOL) showError
 {
-	if( queryLock == 0L) queryLock = [[NSLock alloc] init];
+	if( queryLock == nil) queryLock = [[NSLock alloc] init];
 
 	[queryLock lock];
 	

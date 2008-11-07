@@ -23,7 +23,7 @@
 	
 	if (lastImage != nil)
 	{
-		NSPoint pt = [controlView convertPoint:[theEvent locationInWindow] fromView:0L];
+		NSPoint pt = [controlView convertPoint:[theEvent locationInWindow] fromView:nil];
 		NSSize	imageSize;
 		NSRect	imageFrame, cellFrameOut;
 			
@@ -45,7 +45,7 @@
 				[controlView display];
 			}
 			
-			[[BrowserController currentBrowser] performSelector:@selector( AlternateButtonPressed:) withObject:0L afterDelay: 0.02];
+			[[BrowserController currentBrowser] performSelector:@selector( AlternateButtonPressed:) withObject:nil afterDelay: 0.02];
 		}
 		else
 		{

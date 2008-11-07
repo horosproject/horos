@@ -56,7 +56,7 @@ static BOOL showWarning = YES;
 
 - (id) imageView
 {
-	return 0L;
+	return nil;
 }
 
 - (void) propagateSettings
@@ -90,7 +90,7 @@ static BOOL showWarning = YES;
 	NSMutableString	*result = [NSMutableString string];
 	
 	id parent = node;
-	id child = 0L;
+	id child = nil;
 	BOOL first = TRUE;
 	
 	do
@@ -215,7 +215,7 @@ static BOOL showWarning = YES;
 		break;
 	}
 	
-	return 0L;
+	return nil;
 }
 
 - (void) updateDB:(NSArray*) files
@@ -245,9 +245,9 @@ static BOOL showWarning = YES;
 			
 			NSString	*path = [NSString stringWithFormat:@"(%@,%@)", [NSString stringWithFormat:@"%04x", group], [NSString stringWithFormat:@"%04x", element]];
 			
-			[groupsAndElements addObjectsFromArray: [NSArray arrayWithObjects: @"-i", [NSString stringWithFormat: @"%@=%@", path, [addValue stringValue]], 0L]];
+			[groupsAndElements addObjectsFromArray: [NSArray arrayWithObjects: @"-i", [NSString stringWithFormat: @"%@=%@", path, [addValue stringValue]], nil]];
 			
-			NSMutableArray	*params = [NSMutableArray arrayWithObjects:@"dcmodify", @"--verbose", @"--ignore-errors", 0L];
+			NSMutableArray	*params = [NSMutableArray arrayWithObjects:@"dcmodify", @"--verbose", @"--ignore-errors", nil];
 			[params addObjectsFromArray:  groupsAndElements];
 			
 			NSArray	*files = [self arrayOfFiles];
@@ -255,7 +255,7 @@ static BOOL showWarning = YES;
 			{
 				[params addObjectsFromArray: files];
 				
-				WaitRendering		*wait = 0L;
+				WaitRendering		*wait = nil;
 				if( [files count] > 1)
 				{
 					wait = [[WaitRendering alloc] init: NSLocalizedString(@"Updating Files...", nil)];
@@ -265,13 +265,13 @@ static BOOL showWarning = YES;
 				[self modifyDicom: params];
 				
 				for( int i = 0; i < [files count]; i++)
-					[[NSFileManager defaultManager] removeFileAtPath:[[files objectAtIndex: i] stringByAppendingString:@".bak"] handler:0L];
+					[[NSFileManager defaultManager] removeFileAtPath:[[files objectAtIndex: i] stringByAppendingString:@".bak"] handler:nil];
 				
 				[self updateDB: files];
 				
 				[wait close];
 				[wait release];
-				wait = 0L;
+				wait = nil;
 				
 				[self reload: self];
 				
@@ -288,7 +288,7 @@ static BOOL showWarning = YES;
 		}
 		else
 		{
-			NSRunAlertPanel( NSLocalizedString( @"Add DICOM Field", 0L), NSLocalizedString( @"Illegal group / element values", 0L), NSLocalizedString( @"OK", 0L), 0L, 0L);
+			NSRunAlertPanel( NSLocalizedString( @"Add DICOM Field", nil), NSLocalizedString( @"Illegal group / element values", nil), NSLocalizedString( @"OK", nil), nil, nil);
 			return;
 		}
 	}
@@ -301,7 +301,7 @@ static BOOL showWarning = YES;
 - (IBAction) addDICOMField:(id) sender
 {
 	[self setGroupElement: self];
-	[NSApp beginSheet: addWindow modalForWindow:[self window] modalDelegate:self didEndSelector: 0L contextInfo:0L];
+	[NSApp beginSheet: addWindow modalForWindow:[self window] modalDelegate:self didEndSelector: nil contextInfo:nil];
 }
 
 - (IBAction) switchDICOMEditing:(id) sender
@@ -417,9 +417,9 @@ static BOOL showWarning = YES;
     [panel setCanSelectHiddenExtension:NO];
     [panel setRequiredFileType:@"xml"];
     
-    if( [panel runModalForDirectory:0L file:[[self window]title]] == NSFileHandlingPanelOKButton)
+    if( [panel runModalForDirectory:nil file:[[self window]title]] == NSFileHandlingPanelOKButton)
     {
-		[[xmlDocument XMLString] writeToFile:[panel filename] atomically:NO encoding : NSUTF8StringEncoding error: 0L];
+		[[xmlDocument XMLString] writeToFile:[panel filename] atomically:NO encoding : NSUTF8StringEncoding error: nil];
     }
 }
 
@@ -430,10 +430,10 @@ static BOOL showWarning = YES;
     [panel setCanSelectHiddenExtension:NO];
     [panel setRequiredFileType:@"txt"];
     
-    if( [panel runModalForDirectory:0L file:[[self window]title]] == NSFileHandlingPanelOKButton)
+    if( [panel runModalForDirectory:nil file:[[self window]title]] == NSFileHandlingPanelOKButton)
     {
 		DCMObject *dcmObject = [DCMObject objectWithContentsOfFile:srcFile decodingPixelData:NO];
-		[[dcmObject description] writeToFile: [panel filename] atomically:NO encoding : NSUTF8StringEncoding error: 0L];
+		[[dcmObject description] writeToFile: [panel filename] atomically:NO encoding : NSUTF8StringEncoding error: nil];
     }
 }
 
@@ -459,7 +459,7 @@ static BOOL showWarning = YES;
 		}
 	}
 	
-	return 0L;
+	return nil;
 }
 
 - (void) changeImageObject:(NSManagedObject*) image
@@ -475,7 +475,7 @@ static BOOL showWarning = YES;
 	srcFile = [[image valueForKey:@"completePath"] retain];
 	
 	[xmlDocument release];
-	xmlDocument = 0L;
+	xmlDocument = nil;
 	
 	if([DicomFile isDICOMFile:srcFile])
 	{
@@ -574,15 +574,15 @@ static BOOL showWarning = YES;
 	
 	[xmlDocument release];
     
-	[toolbar setDelegate: 0L];
+	[toolbar setDelegate: nil];
 	[toolbar release];
 	
     [super dealloc];
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
 	{
-		[NSObject cancelPreviousPerformRequestsWithTarget: [AppController sharedAppController] selector:@selector(tileWindows:) object:0L];
-		[[AppController sharedAppController] performSelector: @selector(tileWindows:) withObject:0L afterDelay: 0.1];
+		[NSObject cancelPreviousPerformRequestsWithTarget: [AppController sharedAppController] selector:@selector(tileWindows:) object:nil];
+		[[AppController sharedAppController] performSelector: @selector(tileWindows:) withObject:nil afterDelay: 0.1];
 	}
 }
 
@@ -625,7 +625,7 @@ static BOOL showWarning = YES;
 			return NO;
 		else if([item childCount] == 1 && [[[item children] objectAtIndex:0] kind] == NSXMLTextKind)
 			return NO;
-		else if([item childCount] == 0L)
+		else if([item childCount] == 0)
 			return NO;
 		else
 			return YES;
@@ -634,7 +634,7 @@ static BOOL showWarning = YES;
 
 - (id)outlineView:(NSOutlineView *)outlineView child:(NSInteger)index ofItem:(id)item
 {
-        if( item == 0L)
+        if( item == nil)
         {
             return [xmlDocument childAtIndex:index];
         }
@@ -801,7 +801,7 @@ static BOOL showWarning = YES;
 		
 		if( [[item attributeForName:@"group"] stringValue] && [[item attributeForName:@"element"] stringValue])
 		{
-			[groupsAndElements addObjectsFromArray: [NSArray arrayWithObjects: @"-i", [NSString stringWithFormat: @"%@=%@", path, object], 0L]];
+			[groupsAndElements addObjectsFromArray: [NSArray arrayWithObjects: @"-i", [NSString stringWithFormat: @"%@=%@", path, object], nil]];
 		}
 		else // A multiple value or a sequence, not an element
 		{
@@ -818,7 +818,7 @@ static BOOL showWarning = YES;
 				
 				[values replaceObjectAtIndex: index withObject: object];
 				
-				[groupsAndElements addObjectsFromArray: [NSArray arrayWithObjects: @"-i", [NSString stringWithFormat: @"%@=%@", path, [values componentsJoinedByString:@"\\"]], 0L]];
+				[groupsAndElements addObjectsFromArray: [NSArray arrayWithObjects: @"-i", [NSString stringWithFormat: @"%@=%@", path, [values componentsJoinedByString:@"\\"]], nil]];
 			}
 			else
 			{
@@ -829,7 +829,7 @@ static BOOL showWarning = YES;
 	
 	if( [groupsAndElements count])
 	{
-		NSMutableArray	*params = [NSMutableArray arrayWithObjects:@"dcmodify", @"--verbose", @"--ignore-errors", 0L];
+		NSMutableArray	*params = [NSMutableArray arrayWithObjects:@"dcmodify", @"--verbose", @"--ignore-errors", nil];
 		
 		[params addObjectsFromArray:  groupsAndElements];
 		
@@ -839,7 +839,7 @@ static BOOL showWarning = YES;
 		{
 			[params addObjectsFromArray: files];
 			
-			WaitRendering		*wait = 0L;
+			WaitRendering		*wait = nil;
 			if( [files count] > 1)
 			{
 				wait = [[WaitRendering alloc] init: NSLocalizedString(@"Updating Files...", nil)];
@@ -851,7 +851,7 @@ static BOOL showWarning = YES;
 				[self modifyDicom: params];
 				
 				for( id loopItem in files)
-					[[NSFileManager defaultManager] removeFileAtPath:[loopItem stringByAppendingString:@".bak"] handler:0L];
+					[[NSFileManager defaultManager] removeFileAtPath:[loopItem stringByAppendingString:@".bak"] handler:nil];
 				
 				[self updateDB: files];
 			}
@@ -861,7 +861,7 @@ static BOOL showWarning = YES;
 			}
 			[wait close];
 			[wait release];
-			wait = 0L;
+			wait = nil;
 			
 			[self reload: self];
 		}
@@ -892,7 +892,7 @@ static BOOL showWarning = YES;
 		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ALLOWDICOMEDITING"] && isDICOM && editingActivated && [[NSFileManager defaultManager] isWritableFileAtPath: [imObj valueForKey:@"completePath"]])
 		{
 			allowSelectionChange = NO;
-			[self performSelector:@selector(setObject:) withObject: [NSArray arrayWithObjects: item, object, 0L] afterDelay: 0];
+			[self performSelector:@selector(setObject:) withObject: [NSArray arrayWithObjects: item, object, nil] afterDelay: 0];
 		}
 		else
 		{
@@ -946,7 +946,7 @@ static BOOL showWarning = YES;
 	
 	if( [selectedRowIndexes count] != 1)
 	{
-		NSRunAlertPanel( NSLocalizedString( @"Sort Series Images", 0L) , NSLocalizedString( @"Select an element to use to sort the images of the series.", 0L), NSLocalizedString( @"OK", 0L), 0L, 0L);
+		NSRunAlertPanel( NSLocalizedString( @"Sort Series Images", nil) , NSLocalizedString( @"Select an element to use to sort the images of the series.", nil), NSLocalizedString( @"OK", nil), nil, nil);
 		return;
 	}
 	
@@ -955,7 +955,7 @@ static BOOL showWarning = YES;
 	
 	if( index > 0 && item && [[item attributeForName:@"group"] objectValue] && [[item attributeForName:@"element"] objectValue])
 	{
-		if( NSRunInformationalAlertPanel( NSLocalizedString( @"Sort Series Images", 0L), NSLocalizedString(@"Are you sure you want to re-sort the series images according to this field?", 0L), NSLocalizedString(@"OK", 0L), NSLocalizedString(@"Cancel", 0L), 0L) == NSAlertDefaultReturn)
+		if( NSRunInformationalAlertPanel( NSLocalizedString( @"Sort Series Images", nil), NSLocalizedString(@"Are you sure you want to re-sort the series images according to this field?", nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), nil) == NSAlertDefaultReturn)
 		{
 			unsigned gr = 0, el = 0;
 			
@@ -976,13 +976,13 @@ static BOOL showWarning = YES;
 			@catch( NSException *e)
 			{
 				NSLog( @"%@", e);
-				NSRunAlertPanel( NSLocalizedString( @"Sort Series Images", 0L) , NSLocalizedString( @"Select an element to use to sort the images of the series.", 0L), NSLocalizedString( @"OK", 0L), 0L, 0L);
+				NSRunAlertPanel( NSLocalizedString( @"Sort Series Images", nil) , NSLocalizedString( @"Select an element to use to sort the images of the series.", nil), NSLocalizedString( @"OK", nil), nil, nil);
 			}
 			
 			dontListenToIndexChange = NO;
 		}
 	}
-	else NSRunAlertPanel( NSLocalizedString( @"Sort Series Images", 0L) , NSLocalizedString( @"Select an element to use to sort the images of the series.", 0L), NSLocalizedString( @"OK", 0L), 0L, 0L);
+	else NSRunAlertPanel( NSLocalizedString( @"Sort Series Images", nil) , NSLocalizedString( @"Select an element to use to sort the images of the series.", nil), NSLocalizedString( @"OK", nil), nil, nil);
 }
 
 - (void)keyDown:(NSEvent *)event
@@ -993,10 +993,9 @@ static BOOL showWarning = YES;
 	
 	if( editingActivated && [[NSFileManager defaultManager] isWritableFileAtPath: [imObj valueForKey:@"completePath"]] && [[NSUserDefaults standardUserDefaults] boolForKey:@"ALLOWDICOMEDITING"] && isDICOM && (c == NSDeleteFunctionKey || c == NSDeleteCharacter || c == NSBackspaceCharacter))
 	{
-		if( NSRunInformationalAlertPanel( NSLocalizedString( @"DICOM Editing", 0L), NSLocalizedString(@"Are you sure you want to delete selected field(s)?", 0L), NSLocalizedString(@"OK", 0L), NSLocalizedString(@"Cancel", 0L), 0L) == NSAlertDefaultReturn)
+		if( NSRunInformationalAlertPanel( NSLocalizedString( @"DICOM Editing", nil), NSLocalizedString(@"Are you sure you want to delete selected field(s)?", nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), nil) == NSAlertDefaultReturn)
 		{
 			NSIndexSet*			selectedRowIndexes = [table selectedRowIndexes];
-			NSMutableString*	copyString = [NSMutableString string];
 			NSInteger			index;
 			NSMutableArray		*groupsAndElements = [NSMutableArray array];
 			
@@ -1012,7 +1011,7 @@ static BOOL showWarning = YES;
 						
 						if( [[item attributeForName:@"group"] stringValue] && [[item attributeForName:@"element"] stringValue])
 						{
-							[groupsAndElements addObjectsFromArray: [NSArray arrayWithObjects: @"-e", path, 0L]];
+							[groupsAndElements addObjectsFromArray: [NSArray arrayWithObjects: @"-e", path, nil]];
 						}
 						else // A multiple value or a sequence, not an element
 						{
@@ -1029,14 +1028,14 @@ static BOOL showWarning = YES;
 								
 								[values removeObjectAtIndex: index];
 								
-								[groupsAndElements addObjectsFromArray: [NSArray arrayWithObjects: @"-i", [NSString stringWithFormat: @"%@=%@", path, [values componentsJoinedByString:@"\\"]], 0L]];
+								[groupsAndElements addObjectsFromArray: [NSArray arrayWithObjects: @"-i", [NSString stringWithFormat: @"%@=%@", path, [values componentsJoinedByString:@"\\"]], nil]];
 							}
 							else
 							{
 								NSLog( @"A sequence");
 //								
 //								NSString	*path = [self getPath: (NSXMLElement*) [item parent]];
-//								[groupsAndElements addObjectsFromArray: [NSArray arrayWithObjects: @"-e", path, 0L]];
+//								[groupsAndElements addObjectsFromArray: [NSArray arrayWithObjects: @"-e", path, nil]];
 							}
 						}
 					}
@@ -1045,7 +1044,7 @@ static BOOL showWarning = YES;
 			
 			if( [groupsAndElements count])
 			{
-				NSMutableArray	*params = [NSMutableArray arrayWithObjects:@"dcmodify", @"--verbose", @"--ignore-errors", 0L];
+				NSMutableArray	*params = [NSMutableArray arrayWithObjects:@"dcmodify", @"--verbose", @"--ignore-errors", nil];
 				
 				[params addObjectsFromArray:  groupsAndElements];
 				
@@ -1055,7 +1054,7 @@ static BOOL showWarning = YES;
 				{
 					[params addObjectsFromArray: files];
 					
-					WaitRendering		*wait = 0L;
+					WaitRendering		*wait = nil;
 					if( [files count] > 1)
 					{
 						wait = [[WaitRendering alloc] init: NSLocalizedString(@"Updating Files...", nil)];
@@ -1066,7 +1065,7 @@ static BOOL showWarning = YES;
 					{
 						[self modifyDicom: params];
 						for( id loopItem in files)
-							[[NSFileManager defaultManager] removeFileAtPath:[loopItem stringByAppendingString:@".bak"] handler:0L];
+							[[NSFileManager defaultManager] removeFileAtPath:[loopItem stringByAppendingString:@".bak"] handler:nil];
 					
 						[self updateDB: files];
 					}
@@ -1076,7 +1075,7 @@ static BOOL showWarning = YES;
 					}
 					[wait close];
 					[wait release];
-					wait = 0L;
+					wait = nil;
 					
 					[self reload: self];
 				}
@@ -1187,42 +1186,42 @@ static BOOL showWarning = YES;
 		[toolbarItem setMaxSize:NSMakeSize(NSWidth([searchView frame]), NSHeight([searchView frame]))];
     }
 	else if ([itemIdent isEqual: ExportTextToolbarItemIdentifier]) {       
-		[toolbarItem setLabel: NSLocalizedString(@"Export Text", 0L)];
-		[toolbarItem setPaletteLabel: NSLocalizedString(@"Export Text", 0L)];
-		[toolbarItem setToolTip: NSLocalizedString(@"Export these XML Data in a Text File", 0L)];
+		[toolbarItem setLabel: NSLocalizedString(@"Export Text", nil)];
+		[toolbarItem setPaletteLabel: NSLocalizedString(@"Export Text", nil)];
+		[toolbarItem setToolTip: NSLocalizedString(@"Export these XML Data in a Text File", nil)];
 		[toolbarItem setImage: [NSImage imageNamed: ExportToolbarItemIdentifier]];
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(exportText:)];
     }
 	else if ([itemIdent isEqual: ExpandAllItemsToolbarItemIdentifier]) {
-		[toolbarItem setLabel: NSLocalizedString(@"Expand All", 0L)];
-		[toolbarItem setPaletteLabel: NSLocalizedString(@"Expand All Items", 0L)];
-		[toolbarItem setToolTip: NSLocalizedString(@"Expand All Items", 0L)];
+		[toolbarItem setLabel: NSLocalizedString(@"Expand All", nil)];
+		[toolbarItem setPaletteLabel: NSLocalizedString(@"Expand All Items", nil)];
+		[toolbarItem setToolTip: NSLocalizedString(@"Expand All Items", nil)];
 		[toolbarItem setImage: [NSImage imageNamed: ExpandAllItemsToolbarItemIdentifier]];
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(deepExpandAllItems:)];
     }
 	else if ([itemIdent isEqual: CollapseAllItemsToolbarItemIdentifier]) {
-		[toolbarItem setLabel: NSLocalizedString(@"Collapse All", 0L)];
-		[toolbarItem setPaletteLabel: NSLocalizedString(@"Collapse All Items", 0L)];
-		[toolbarItem setToolTip: NSLocalizedString(@"Collapse All Items", 0L)];
+		[toolbarItem setLabel: NSLocalizedString(@"Collapse All", nil)];
+		[toolbarItem setPaletteLabel: NSLocalizedString(@"Collapse All Items", nil)];
+		[toolbarItem setToolTip: NSLocalizedString(@"Collapse All Items", nil)];
 		[toolbarItem setImage: [NSImage imageNamed: CollapseAllItemsToolbarItemIdentifier]];
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(deepCollapseAllItems:)];
     }
 	else if ([itemIdent isEqual: SortSeriesToolbarItemIdentifier]) {
-		[toolbarItem setLabel: NSLocalizedString(@"Sort Images", 0L)];
-		[toolbarItem setPaletteLabel: NSLocalizedString(@"Sort Images", 0L)];
-		[toolbarItem setToolTip: NSLocalizedString(@"Sort Series Images by selected element", 0L)];
+		[toolbarItem setLabel: NSLocalizedString(@"Sort Images", nil)];
+		[toolbarItem setPaletteLabel: NSLocalizedString(@"Sort Images", nil)];
+		[toolbarItem setToolTip: NSLocalizedString(@"Sort Series Images by selected element", nil)];
 		[toolbarItem setImage: [NSImage imageNamed: @"Revert.tiff"]];
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector( sortSeries:)];
     }
 	else if ([itemIdent isEqual: VerifyToolbarItemIdentifier])
 	{
-		[toolbarItem setLabel: NSLocalizedString(@"Validator", 0L)];
-		[toolbarItem setPaletteLabel: NSLocalizedString(@"Validator", 0L)];
-		[toolbarItem setToolTip: NSLocalizedString(@"Validate the DICOM format", 0L)];
+		[toolbarItem setLabel: NSLocalizedString(@"Validator", nil)];
+		[toolbarItem setPaletteLabel: NSLocalizedString(@"Validator", nil)];
+		[toolbarItem setToolTip: NSLocalizedString(@"Validate the DICOM format", nil)];
 		[toolbarItem setImage: [NSImage imageNamed: @"NSInfo"]];
 		[toolbarItem setTarget: self];	
 		[toolbarItem setAction: @selector( verify:)];
@@ -1415,7 +1414,7 @@ static BOOL showWarning = YES;
 {
 	if( [dictionaryArray count] == 0) [self prepareDictionaryArray];
 	
-	if( [uncompletedString length] == 0) return 0L;
+	if( [uncompletedString length] == 0) return nil;
 	
 	
 	for( id loopItem in dictionaryArray)
@@ -1426,7 +1425,7 @@ static BOOL showWarning = YES;
 		}
 	}
 	
-	return 0L;
+	return nil;
 }
 
 - (NSInteger) numberOfItemsInComboBox:(NSComboBox *)aComboBox

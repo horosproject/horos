@@ -26,9 +26,9 @@ NSString * documentsDirectory();
 	NSTask			*theTask = [[NSTask alloc] init];
 	
 	NSString *newPath = [[srcPath stringByDeletingLastPathComponent] stringByAppendingPathComponent: @"tempMovie"];
-	[[NSFileManager defaultManager] removeFileAtPath: newPath handler: 0L];
+	[[NSFileManager defaultManager] removeFileAtPath: newPath handler: nil];
 	
-	[theTask setArguments: [NSArray arrayWithObjects:@"generateQTVR", srcPath, [NSString stringWithFormat:@"%d", frames], 0L]];
+	[theTask setArguments: [NSArray arrayWithObjects:@"generateQTVR", srcPath, [NSString stringWithFormat:@"%d", frames], nil]];
 	
 	NSString	*stringPath = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"/32-bit shell.app/Contents/MacOS/32-bit shell"];
 	if( [[NSFileManager defaultManager] fileExistsAtPath: stringPath])
@@ -311,7 +311,7 @@ NSString * documentsDirectory();
 - (NSArray *)availableComponents
 {
 	NSMutableArray *array = [NSMutableArray array];
-	NSDictionary *dictionary = 0L;
+	NSDictionary *dictionary = nil;
 	
 	dictionary = [NSDictionary dictionaryWithObjectsAndKeys:
 		[NSString stringWithString: @"Quicktime Movie"], @"name",
@@ -345,10 +345,10 @@ NSString * documentsDirectory();
 	// QTKit is currently very limited.... The only solution for 64-bit app -> 32-bit process. Is Apple really investing in Quicktime anymore ??
 	
 	NSString		*prefString = [NSString stringWithFormat:@"Quicktime Export:%d", [[component valueForKey:@"subtype"] unsignedLongValue]];
-	NSData			*data = 0L;
+	NSData			*data = nil;
 	NSTask			*theTask = [[NSTask alloc] init];
 	
-	NSImage *frame = 0L;
+	NSImage *frame = nil;
 	NSDictionary *attributes = [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool:YES], QTMovieExport,
 			[NSNumber numberWithBool:YES], QTMovieFlatten,
 			nil];
@@ -356,17 +356,17 @@ NSString * documentsDirectory();
 	[aMovie writeToFile: @"/tmp/QTExportOsiriX64bits-Movie" withAttributes: attributes];
 	
 	NSString	*tempComponentPath = [NSString stringWithString:@"/tmp/QTExportOsiriX64bits-Component"];
-	[[NSFileManager defaultManager] removeFileAtPath: tempComponentPath handler: 0L];
+	[[NSFileManager defaultManager] removeFileAtPath: tempComponentPath handler: nil];
 	[component writeToFile: tempComponentPath atomically: YES];
 	
 	NSString	*tempDataPath = [NSString stringWithString:@"/tmp/QTExportOsiriX64bits-DataIN"];
-	[[NSFileManager defaultManager] removeFileAtPath: tempDataPath handler: 0L];
+	[[NSFileManager defaultManager] removeFileAtPath: tempDataPath handler: nil];
 	[[[NSUserDefaults standardUserDefaults] dataForKey: prefString] writeToFile: tempDataPath atomically: YES];
 	
 	NSString	*tempDataPathOUT = [NSString stringWithString:@"/tmp/QTExportOsiriX64bits-DataOUT"];
-	[[NSFileManager defaultManager] removeFileAtPath: tempDataPathOUT handler: 0L];
+	[[NSFileManager defaultManager] removeFileAtPath: tempDataPathOUT handler: nil];
 	
-	[theTask setArguments: [NSArray arrayWithObjects:@"getExportSettings", @"/tmp/QTExportOsiriX64bits-Movie", tempComponentPath, tempDataPath, tempDataPathOUT, 0L]];
+	[theTask setArguments: [NSArray arrayWithObjects:@"getExportSettings", @"/tmp/QTExportOsiriX64bits-Movie", tempComponentPath, tempDataPath, tempDataPathOUT, nil]];
 	
 	NSString	*stringPath = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"/32-bit shell.app/Contents/MacOS/32-bit shell"];
 	if( [[NSFileManager defaultManager] fileExistsAtPath: stringPath])
@@ -390,7 +390,7 @@ NSString * documentsDirectory();
 
 - (BOOL) writeMovie:(QTMovie *)movie toFile:(NSString *)file withComponent:(NSDictionary *)component withExportSettings:(NSData *)exportSettings
 {
-	NSDictionary *attributes = 0L;
+	NSDictionary *attributes = nil;
 	
 	if( component && exportSettings)
 	{
@@ -414,6 +414,8 @@ NSString * documentsDirectory();
 	
 	[wait close];
 	[wait release];
+	
+	return YES;
 }
 
 - (IBAction) setRate:(id) sender
@@ -451,8 +453,8 @@ NSString * documentsDirectory();
 	{
 		result = NSFileHandlingPanelOKButton;
 		
-		[[NSFileManager defaultManager] removeFileAtPath: [documentsDirectory() stringByAppendingFormat:@"/TEMP/IPHOTO/"] handler: 0L];
-		[[NSFileManager defaultManager] createDirectoryAtPath: [documentsDirectory() stringByAppendingFormat:@"/TEMP/IPHOTO/"] attributes: 0L];
+		[[NSFileManager defaultManager] removeFileAtPath: [documentsDirectory() stringByAppendingFormat:@"/TEMP/IPHOTO/"] handler: nil];
+		[[NSFileManager defaultManager] createDirectoryAtPath: [documentsDirectory() stringByAppendingFormat:@"/TEMP/IPHOTO/"] attributes: nil];
 		
 		fileName = [documentsDirectory() stringByAppendingFormat:@"/TEMP/OsiriXMovie.mov"];
 	}
@@ -472,7 +474,7 @@ NSString * documentsDirectory();
 		
 		[self changeExportType: self];
 		
-		result = [panel runModalForDirectory:0L file:name];
+		result = [panel runModalForDirectory:nil file:name];
 		
 		fileName = [panel filename];
 	}
@@ -481,12 +483,12 @@ NSString * documentsDirectory();
 	{
 		int				maxImage, myState, curSample = 0;
 		QTTime			curTime;
-		QTMovie			*mMovie = 0L;
+		QTMovie			*mMovie = nil;
 		BOOL			aborted = NO;
 		
 		if( produceFiles == NO)
 		{
-			[[QTMovie movie] writeToFile: [fileName stringByAppendingString:@"temp"] withAttributes: 0L];
+			[[QTMovie movie] writeToFile: [fileName stringByAppendingString:@"temp"] withAttributes: nil];
 			
 			mMovie = [QTMovie movieWithFile:[fileName stringByAppendingString:@"temp"] error:nil];
 			[mMovie setAttribute:[NSNumber numberWithBool:YES] forKey:QTMovieEditableAttribute];
@@ -546,12 +548,12 @@ NSString * documentsDirectory();
 		
 		if( produceFiles == NO && aborted == NO)
 		{
-			[[NSFileManager defaultManager] removeFileAtPath:fileName handler:0L];
+			[[NSFileManager defaultManager] removeFileAtPath:fileName handler:nil];
 			
 			if( aborted == NO)
 			{
-				NSData	*exportSettings = 0L;
-				id		component = 0L;
+				NSData	*exportSettings = nil;
+				id		component = nil;
 				
 				if( [exportTypes count])
 				{
@@ -572,11 +574,11 @@ NSString * documentsDirectory();
 			}
 		}
 		
-		[[NSFileManager defaultManager] removeFileAtPath:[fileName stringByAppendingString:@"temp"] handler:0L];
+		[[NSFileManager defaultManager] removeFileAtPath:[fileName stringByAppendingString:@"temp"] handler:nil];
 		return fileName;
 	}
 	
-	return 0L;
+	return nil;
 }
 
 @end

@@ -214,7 +214,7 @@ NSString * documentsDirectory();
            selector: @selector(UpdateCLUTMenu:)
                name: @"UpdateCLUTMenu"
              object: nil];
-	[nc postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: 0L];
+	[nc postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: nil];
 
 	// WL/WW Menu	
 	curWLWWMenu = [NSLocalizedString(@"Other", nil) retain];
@@ -222,12 +222,12 @@ NSString * documentsDirectory();
            selector: @selector(UpdateWLWWMenu:)
                name: @"UpdateWLWWMenu"
              object: nil];
-	[nc postNotificationName: @"UpdateWLWWMenu" object: curCLUTMenu userInfo: 0L];
+	[nc postNotificationName: @"UpdateWLWWMenu" object: curCLUTMenu userInfo: nil];
 
 	// Opacity Menu
 	curOpacityMenu = [NSLocalizedString(@"Linear Table", nil) retain];
 	[nc addObserver:self selector:@selector(UpdateOpacityMenu:) name:@"UpdateOpacityMenu" object:nil];
-	[nc postNotificationName:@"UpdateOpacityMenu" object:curOpacityMenu userInfo:0L];
+	[nc postNotificationName:@"UpdateOpacityMenu" object:curOpacityMenu userInfo:nil];
 
 	// 4D
 	curMovieIndex = 0;
@@ -305,7 +305,7 @@ NSString * documentsDirectory();
 		[curCLUTMenu release];
 		curCLUTMenu = [str retain];
 	}
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: 0L];		
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: nil];		
 	[[[clutPopup menu] itemAtIndex:0] setTitle:str];
 }
 
@@ -451,7 +451,7 @@ NSString * documentsDirectory();
 		curWLWWMenu = [menuString retain];
 	}
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: 0L];
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: nil];
 }
 
 - (void) ApplyWLWW:(id) sender
@@ -523,11 +523,11 @@ NSString * documentsDirectory();
 			[curOpacityMenu release];
 			curOpacityMenu = [str retain];
 		}
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: 0L];
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: nil];
 		
 		[[[OpacityPopup menu] itemAtIndex:0] setTitle:str];
 		
-		[[[self keyView] controller] setTransferFunction: 0L];
+		[[[self keyView] controller] setTransferFunction: nil];
 	}
 	else
 	{
@@ -541,7 +541,7 @@ NSString * documentsDirectory();
 				[curOpacityMenu release];
 				curOpacityMenu = [str retain];
 			}
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: 0L];
+			[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: nil];
 			
 			[[[OpacityPopup menu] itemAtIndex:0] setTitle:str];
 			
@@ -870,12 +870,12 @@ NSString * documentsDirectory();
         movieTimer = nil;
 	}
 	
-    [[self window] setDelegate:0L];
+    [[self window] setDelegate:nil];
 	
-	[originalSplitView setDelegate:0L];	
-	[xReslicedSplitView setDelegate:0L];
-	[yReslicedSplitView setDelegate:0L];
-	[modalitySplitView setDelegate:0L];
+	[originalSplitView setDelegate:nil];	
+	[xReslicedSplitView setDelegate:nil];
+	[yReslicedSplitView setDelegate:nil];
+	[modalitySplitView setDelegate:nil];
 	
 	[self release];
 }
@@ -891,9 +891,9 @@ NSString * documentsDirectory();
 	|| [PETController containsView: [self keyView]]
 	|| [PETCTController containsView: [self keyView]])
 	{
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: [(OrthogonalMPRPETCTView*)[self keyView] curCLUTMenu] userInfo: 0L];
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: [(OrthogonalMPRPETCTView*)[self keyView] curWLWWMenu] userInfo: 0L];
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: [(OrthogonalMPRPETCTView*)[self keyView] curOpacityMenu] userInfo: 0L];
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: [(OrthogonalMPRPETCTView*)[self keyView] curCLUTMenu] userInfo: nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: [(OrthogonalMPRPETCTView*)[self keyView] curWLWWMenu] userInfo: nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: [(OrthogonalMPRPETCTView*)[self keyView] curOpacityMenu] userInfo: nil];
 	}
 }
 
@@ -925,7 +925,7 @@ NSString * documentsDirectory();
 
 - (IBAction) changeBlendingFactor:(id) sender
 {
-	if( sender == 0L) sender = blendingSlider;
+	if( sender == nil) sender = blendingSlider;
 	 
 	[PETCTController setBlendingFactor:[sender floatValue]];
 }
@@ -1049,7 +1049,7 @@ NSString * documentsDirectory();
     }
 	else if ([itemIdent isEqual: VRPanelToolbarItemIdentifier])
 	{
-		[toolbarItem setLabel:NSLocalizedString(@"3D Panel", 0L)];
+		[toolbarItem setLabel:NSLocalizedString(@"3D Panel", nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"3D Panel",nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"3D Panel",nil)];
 		[toolbarItem setImage:[NSImage imageNamed:VRPanelToolbarItemIdentifier]];
@@ -1068,7 +1068,7 @@ NSString * documentsDirectory();
     }
 	else if ([itemIdent isEqual: SameWidthSplitViewToolbarItemIdentifier])
 	{
-		[toolbarItem setLabel:NSLocalizedString(@"Same Widths", 0L)];
+		[toolbarItem setLabel:NSLocalizedString(@"Same Widths", nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Same Widths",nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"Same widths for the 3 columns",nil)];
 		[toolbarItem setImage:[NSImage imageNamed:@"sameWidthsSplitView"]];
@@ -1078,7 +1078,7 @@ NSString * documentsDirectory();
     }
 	else if ([itemIdent isEqual: SameHeightSplitViewToolbarItemIdentifier])
 	{
-		[toolbarItem setLabel:NSLocalizedString(@"Same Heights", 0L)];
+		[toolbarItem setLabel:NSLocalizedString(@"Same Heights", nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Same Heights",nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"Same heights for the 3 rows",nil)];
 		[toolbarItem setImage:[NSImage imageNamed:@"sameHeightsSplitView"]];
@@ -1090,14 +1090,14 @@ NSString * documentsDirectory();
 	{
 		if (![modalitySplitView isVertical])
 		{
-			[toolbarItem setLabel:NSLocalizedString(@"Horizontal", 0L)];
+			[toolbarItem setLabel:NSLocalizedString(@"Horizontal", nil)];
 			[toolbarItem setPaletteLabel: NSLocalizedString(@"Horizontal",nil)];
 			[toolbarItem setToolTip: NSLocalizedString(@"Modality in row",nil)];
 			[toolbarItem setImage:[NSImage imageNamed:@"horizontalSplitView"]];
 		}
 		else
 		{
-			[toolbarItem setLabel:NSLocalizedString(@"Vertical", 0L)];
+			[toolbarItem setLabel:NSLocalizedString(@"Vertical", nil)];
 			[toolbarItem setPaletteLabel: NSLocalizedString(@"Vertical",nil)];
 			[toolbarItem setToolTip: NSLocalizedString(@"Modality in column",nil)];
 			[toolbarItem setImage:[NSImage imageNamed:@"verticalSplitView"]];
@@ -2026,7 +2026,7 @@ NSString * documentsDirectory();
 	[panel setCanSelectHiddenExtension:YES];
 	[panel setRequiredFileType:@"jpg"];
 	
-	if( [panel runModalForDirectory:0L file:[[filesList objectAtIndex:0] valueForKeyPath:@"series.name"]] == NSFileHandlingPanelOKButton)
+	if( [panel runModalForDirectory:nil file:[[filesList objectAtIndex:0] valueForKeyPath:@"series.name"]] == NSFileHandlingPanelOKButton)
 	{		
 		if( all)
 		{
@@ -2141,7 +2141,7 @@ NSString * documentsDirectory();
 	
 	if( data)
 	{
-		if( exportDCM == 0L) exportDCM = [[DICOMExport alloc] init];
+		if( exportDCM == nil) exportDCM = [[DICOMExport alloc] init];
 		
 		[exportDCM setSourceFile: [[[[curView controller] originalDCMFilesList] objectAtIndex:[self indexForPix:[curView curImage]]] valueForKey:@"completePath"]];
 		[exportDCM setSeriesDescription: [dcmSeriesName stringValue]];
@@ -2163,8 +2163,8 @@ NSString * documentsDirectory();
 		[exportDCM setPosition: imOrigin];
 		[exportDCM setPixelData: data samplePerPixel:spp bitsPerPixel:bpp width: width height: height];
 		
-		NSString *f = [exportDCM writeDCMFile: 0L];
-		if( f == 0L) NSRunCriticalAlertPanel( NSLocalizedString(@"Error", nil),  NSLocalizedString(@"Error during the creation of the DICOM File!", nil), NSLocalizedString(@"OK", nil), nil, nil);
+		NSString *f = [exportDCM writeDCMFile: nil];
+		if( f == nil) NSRunCriticalAlertPanel( NSLocalizedString(@"Error", nil),  NSLocalizedString(@"Error during the creation of the DICOM File!", nil), NSLocalizedString(@"OK", nil), nil, nil);
 		
 		free( data);
 	}
@@ -2293,7 +2293,7 @@ NSString * documentsDirectory();
 			[splash showWindow:self];
 			[[splash progress] setMaxValue:(int)((to-from)/interval)];
 
-			if( exportDCM == 0L) exportDCM = [[DICOMExport alloc] init];
+			if( exportDCM == nil) exportDCM = [[DICOMExport alloc] init];
 			[exportDCM setSeriesNumber:5300 + [[NSCalendarDate date] minuteOfHour]  + [[NSCalendarDate date] secondOfMinute]];	//Try to create a unique series number... Do you have a better idea??
 			[exportDCM setSeriesDescription: [dcmSeriesName stringValue]];
 			
@@ -2592,7 +2592,7 @@ NSString * documentsDirectory();
 	int index = [[CTController originalView] curImage];
 	BOOL wasDataFlipped = [[CTController originalView] flippedData];
 	
-	[self initPixList: 0L];
+	[self initPixList: nil];
 	
 	curMovieIndex = i;
 	if( curMovieIndex < 0) curMovieIndex = maxMovieIndex-1;

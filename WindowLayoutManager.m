@@ -29,7 +29,7 @@
 #import "PlaceholderWindowController.h"
 #import "OrthogonalMPRPETCTViewer.h"
 
-static WindowLayoutManager *sharedLayoutManager = 0L;
+static WindowLayoutManager *sharedLayoutManager = nil;
 
 @implementation WindowLayoutManager
 

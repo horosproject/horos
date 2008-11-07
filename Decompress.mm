@@ -77,7 +77,7 @@ int main(int argc, const char *argv[])
 	
 		NSString	*path = [NSString stringWithCString:argv[ 1]];
 		NSString	*what = [NSString stringWithCString:argv[ 2]];
-		NSString	*dest = 0L;
+		NSString	*dest = nil;
 		
 		if(argv[ 3]) dest = [NSString stringWithCString:argv[ 3]];
 		
@@ -86,7 +86,7 @@ int main(int argc, const char *argv[])
 			OFCondition cond;
 			OFBool status = YES;
 			const char *fname = (const char *)[path UTF8String];
-			const char *destination = 0L;
+			const char *destination = nil;
 			
 			if( dest && [dest isEqualToString:path] == NO) destination = (const char *)[dest UTF8String];
 			else
@@ -156,7 +156,7 @@ int main(int argc, const char *argv[])
 			OFBool status = YES;
 			const char *fname = (const char *)[path UTF8String];
 			
-			const char *destination = 0L;
+			const char *destination = nil;
 			
 			if( dest) destination = (const char *)[dest UTF8String];
 			else
@@ -181,7 +181,7 @@ int main(int argc, const char *argv[])
 				
 				if( dest == path) [[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
 				
-				[[NSFileManager defaultManager] movePath:[path stringByAppendingString:@" temp"] toPath:dest handler: 0L];
+				[[NSFileManager defaultManager] movePath:[path stringByAppendingString:@" temp"] toPath:dest handler: nil];
 			}
 			else if (filexfer.getXfer() != EXS_LittleEndianExplicit)
 			{

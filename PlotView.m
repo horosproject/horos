@@ -72,7 +72,7 @@
     self = [super initWithFrame:frame];
     if (self)
 	{
-		dataArray = 0L;
+		dataArray = nil;
 		dataSize = 0;
 		curMousePosition = -1;
     }
@@ -100,7 +100,7 @@
 	
 	float   maxX = (aRect.origin.x+aRect.size.width)/256.;
 	
-	if( dataArray == 0L) return;
+	if( dataArray == nil) return;
 	if( dataSize < 2) return;
 	
 	[[NSColor whiteColor] set];

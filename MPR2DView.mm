@@ -239,7 +239,7 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 {
 	if([note object] == blendingController) // our blended serie is closing itself....
 	{
-		[self setBlendingPixSource:0L];
+		[self setBlendingPixSource:nil];
 	}
 }
 
@@ -253,13 +253,13 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 		interval = 0;
 		currentTool = tZoom;
 		blendingFactor = 0.5;
-		blendingAxial = 0L;
+		blendingAxial = nil;
 		firstTime = YES;
 		firstTimeBlending = YES;
 		thickSlabMode = 0;
 		thickSlab = 2;
 		thickSlabGap = 2;
-		blendingSliceTransform = 0L;
+		blendingSliceTransform = nil;
 		
 		thickSlabCtl = [[ThickSlabController alloc] init];
 		
@@ -282,7 +282,7 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 
     }
     
-	reader = 0L;
+	reader = nil;
 	
 //	long negativeOne = -1;
 //	[[self openGLContext] setValues:&negativeOne forParameter:NSOpenGLCPSurfaceOrder];
@@ -293,7 +293,7 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 //    [[self openGLContext] setValues:&swap forParameter:NSOpenGLCPSwapInterval];
 
 	slicePt[ 0] = slicePt[ 1] = slicePt[ 2] = 0;
-	line = 0L;
+	line = nil;
 
 
     return self;
@@ -304,7 +304,7 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
     NSLog(@"Dealloc MPRView2D");
     [[NSNotificationCenter defaultCenter] removeObserver: self];
 		
-	[self setBlendingPixSource:0L];
+	[self setBlendingPixSource:nil];
 	
 	if( reader)
 	{
@@ -334,22 +334,22 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 		
 //		aRenderer->Delete();
 		[pixList release];
-		pixList = 0L;
+		pixList = nil;
 		
 		[filesList release];
-		filesList = 0L;
+		filesList = nil;
 		
 		[perPixList release];
-		perPixList = 0L;
+		perPixList = nil;
 		
 		[finalPixList release];
-		finalPixList = 0L;
+		finalPixList = nil;
 		
 		[finalPixListBlending release];
-		finalPixListBlending = 0L;
+		finalPixListBlending = nil;
 		
 		[thickSlabCtl release];
-		thickSlabCtl = 0L;
+		thickSlabCtl = nil;
 	}
 	
     [super dealloc];
@@ -715,7 +715,7 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 	
 	if( thickSlabMode == 4 || thickSlabMode == 5)
 	{
-		[finalView setCLUT:0L :0L: 0L];
+		[finalView setCLUT:nil :nil: nil];
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"crossMove" object: @"Original" userInfo: [NSDictionary dictionaryWithObject:@"set" forKey:@"action"]];
 	}
 	else
@@ -765,7 +765,7 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 	{
 		[thickSlabCtl setCLUT:r :g :b];
 		
-		[finalView setCLUT:0L :0L: 0L];
+		[finalView setCLUT:nil :nil: nil];
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"crossMove" object: @"Original" userInfo: [NSDictionary dictionaryWithObject:@"set" forKey:@"action"]];
 //		[finalView setWLWW: 127 :255];
 	}
@@ -986,7 +986,7 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 			
 			if( blendingSliceTransform) blendingSliceTransform->Delete();
 			
-			blendingAxial = 0L;
+			blendingAxial = nil;
 			
 			[blendingPixList release];
 			[filesListBlending release];
@@ -1574,7 +1574,7 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 			{
 				case 4:
 				case 5:
-					if( fullVolume != 0L)
+					if( fullVolume != nil)
 					{
 						memcpy( fullVolume + width * height * uu, im, width * height * sizeof(float));
 					}
@@ -1618,7 +1618,7 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 		{
 			DCMPix*		mypix;
 			// we have a volume and no blending controller thick slab mode 4 or 5
-			if( fullVolume != 0L && blendingController == 0L && (thickSlabMode == 4 || thickSlabMode == 5))
+			if( fullVolume != nil && blendingController == nil && (thickSlabMode == 4 || thickSlabMode == 5))
 			{
 				unsigned char   *rgbaImage;
 				
@@ -1649,7 +1649,7 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 			if( firstTime)
 			{
 				firstTime = NO;
-				[finalView setDCM:finalPixList :filesList :0L :0 :'i' :YES];
+				[finalView setDCM:finalPixList :filesList :nil :0 :'i' :YES];
 				[finalView setStringID:@"FinalView"];
 			//	[finalView setRotation: 90];
 			
@@ -1726,9 +1726,9 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 		}
 		
 		// BLENDING VIEW
-		if( blendingController == 0L)
+		if( blendingController == nil)
 		{
-			[finalView setBlending: 0L];
+			[finalView setBlending: nil];
 		}
 		else
 		{
@@ -1763,7 +1763,7 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 				{
 					case 4:
 					case 5:
-						if( fullVolumeBlending != 0L)
+						if( fullVolumeBlending != nil)
 						{
 							memcpy( im, fullVolumeBlending + width * height * uu, width * height * sizeof(float));
 						}
@@ -1807,7 +1807,7 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 			
 			if( uu == thickSlabCount - 1)
 			{
-				if( fullVolumeBlending != 0L && (thickSlabMode == 4 || thickSlabMode == 5))
+				if( fullVolumeBlending != nil && (thickSlabMode == 4 || thickSlabMode == 5))
 				{
 					unsigned char   *rgbaImage;
 					
@@ -1837,7 +1837,7 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 					[finalPixList addObject: mypix];
 					[mypix release];
 					
-					[finalView setBlending: 0L];
+					[finalView setBlending: nil];
 				//	[finalView setWLWW:swl :sww];
 					[finalView setIndex:0];
 				}
@@ -1853,7 +1853,7 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 					if( firstTimeBlending)
 					{
 						firstTimeBlending = NO;
-						[finalViewBlending setDCM:finalPixListBlending :filesListBlending :0L :0 :'i' :YES];
+						[finalViewBlending setDCM:finalPixListBlending :filesListBlending :nil :0 :'i' :YES];
 						[finalViewBlending setStringID:@"FinalViewBlending"];
 					//	[finalView setRotation: 90];
 					
@@ -1906,7 +1906,7 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 	float			thickSlabLowRes = 1.0;
 	long			uu;
 	vtkImageData	*tempIm;
-//	float			*imResult = 0L, *imResultBlending = 0L, *fullVolume = 0L, *fullVolumeBlending = 0L;
+//	float			*imResult = nil, *imResultBlending = nil, *fullVolume = nil, *fullVolumeBlending = nil;
 	
 	if( thickSlabMode == 0) thickSlabCount = 1;
 	else thickSlabCount = thickSlab;
@@ -1952,10 +1952,10 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 		angle = [oView angle];
 		angle2 = [perpendicularView angle];
 		
-	//	[oView cross3D : 0L :0L :&oZ];
+	//	[oView cross3D : nil :nil :&oZ];
 	//	oZ = oZ * sliceThickness;   //[firstObject sliceThickness];
 		
-		[perpendicularView cross3D : &oX :&oY :0L];  // oZ contains only slice position!!!
+		[perpendicularView cross3D : &oX :&oY :nil];  // oZ contains only slice position!!!
 		
 		//vtkImageData
 		vtkImageData*   imData = rotatePerpendicular->GetOutput();
@@ -1990,7 +1990,7 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 			
 			if( cx.y != cxPrev.y)
 			{
-				[self scrollWheelInt: cxPrev.y - cx.y :0L];
+				[self scrollWheelInt: cxPrev.y - cx.y :nil];
 				[perpendicularView setCrossPrev: cx];
 				
 				noPerOffset = YES;
@@ -2103,7 +2103,7 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 			if( firstTime)
 			{
 				//firstTime = NO;
-				[perpendicularView setDCM:perPixList :filesList :0L :0 :'i' :YES];
+				[perpendicularView setDCM:perPixList :filesList :nil :0 :'i' :YES];
 				[perpendicularView setStringID:@"Perpendicular"];
 			//	[perpendicularView setRotation: 90];
 				
@@ -2272,10 +2272,10 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 		}
 	}
 	
-	fullVolume = 0L;
-	fullVolumeBlending = 0L;
-	imResult  = 0L;
-	imResultBlending = 0L;
+	fullVolume = nil;
+	fullVolumeBlending = nil;
+	imResult  = nil;
+	imResultBlending = nil;
 	
 	
 //	// Create a scheduler

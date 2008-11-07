@@ -45,14 +45,14 @@
 			switch (key){
 			
 				case DefaultWWWLHotKeyAction:	// default WW/WL
-						wwwlMenuString = NSLocalizedString(@"Default WL & WW", 0L);	// default WW/WL
+						wwwlMenuString = NSLocalizedString(@"Default WL & WW", nil);	// default WW/WL
 						[windowController applyWLWWForString:wwwlMenuString];
-						[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: wwwlMenuString userInfo: 0L];
+						[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: wwwlMenuString userInfo: nil];
 						break;
 				case FullDynamicWWWLHotKeyAction:											// full dynamic WW/WL
-						wwwlMenuString = NSLocalizedString(@"Full dynamic", 0L);	
+						wwwlMenuString = NSLocalizedString(@"Full dynamic", nil);	
 						[windowController applyWLWWForString:wwwlMenuString];	
-						[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: wwwlMenuString userInfo: 0L];		
+						[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: wwwlMenuString userInfo: nil];		
 						break;
 						
 				case Preset1WWWLHotKeyAction:																	// 1 - 9 will be presets WW/WL
@@ -68,7 +68,7 @@
 					{
 								wwwlMenuString = [wwwlValues objectAtIndex:key-Preset1WWWLHotKeyAction];
 								[windowController applyWLWWForString:wwwlMenuString];
-								[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: wwwlMenuString userInfo: 0L];
+								[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: wwwlMenuString userInfo: nil];
 					}	
 					break;
 				

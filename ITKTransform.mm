@@ -135,7 +135,7 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 //	}
 //	printf ("\n\n");
 	
-	WaitRendering *splash = 0L;
+	WaitRendering *splash = nil;
 	
 	if( noOfImages > 2)
 		splash = [[WaitRendering alloc] init:NSLocalizedString(@"Resampling...", nil)];
@@ -162,12 +162,12 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 		
 		return fVolumePtr;
 	}
-	else return 0L;
+	else return nil;
 }
 
 + (float*) reorient2Dimage: (double*) theParameters firstObject: (DCMPix*) firstObject firstObjectOriginal: (DCMPix*) firstObjectOriginal length: (long*) length
 {
-	float *p = 0L;
+	float *p = nil;
 	int size = [firstObjectOriginal pwidth] * [firstObjectOriginal pheight];
 	
 	float *tempPtr = (float*) malloc( size * 2 * sizeof( float));
@@ -177,7 +177,7 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 		memcpy( tempPtr, [firstObjectOriginal fImage], size * sizeof( float));
 		memcpy( tempPtr + size, [firstObjectOriginal fImage], size * sizeof( float));
 		
-		ITK *itk = [[ITK alloc] initWith: [NSArray arrayWithObjects: firstObjectOriginal, firstObjectOriginal, 0L] : tempPtr : -1];
+		ITK *itk = [[ITK alloc] initWith: [NSArray arrayWithObjects: firstObjectOriginal, firstObjectOriginal, nil] : tempPtr : -1];
 		
 		p = [ITKTransform resampleWithParameters: theParameters firstObject: firstObject firstObjectOriginal: firstObjectOriginal noOfImages: 1 length: length itkImage: itk];
 		
@@ -204,7 +204,7 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 - (ViewerController*) createNewViewerWithBuffer:(float*)fVolumePtr length: (long) length resampleOnViewer:(ViewerController*)referenceViewer
 {
 	long				i;
-	ViewerController	*new2DViewer = 0L;
+	ViewerController	*new2DViewer = nil;
 	float				wl, ww;
 	
 	// First calculate the amount of memory needed for the new serie

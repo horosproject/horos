@@ -25,7 +25,7 @@
 	
 	NSString *path = [[NSBundle mainBundle] pathForResource: source ofType:@"html"];
 	
-	if( path == 0L) path = [[NSBundle mainBundle] pathForResource:@"iChatTheatre-English" ofType:@"html"];
+	if( path == nil) path = [[NSBundle mainBundle] pathForResource:@"iChatTheatre-English" ofType:@"html"];
 	
 	[[[IChatTheatreDelegate sharedDelegate] web] setMainFrameURL:path];
 	

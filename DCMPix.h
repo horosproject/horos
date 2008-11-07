@@ -489,7 +489,7 @@ Note setter is different to not break existing usage. :-( */
 - (NSString*) getDICOMFieldValueForGroup:(int)group element:(int)element DCMLink:(DCMObject*)dcmObject;
 /**  calls 
 * myinit:(NSString*) s :(long) pos :(long) tot :(float*) ptr :(long) f :(long) ss isBonjour:(BOOL) hello imageObj: (NSManagedObject*) iO
-* with hello = NO and iO = 0L
+* with hello = NO and iO = nil
 */
 - (id) myinit:(NSString*) s :(long) pos :(long) tot :(float*) ptr :(long) f :(long) ss;
 

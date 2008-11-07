@@ -52,7 +52,7 @@ extern BrowserController *browserWindow;
 }
 
 - (void)save:(id)sender{
-	NSError *error = 0L;
+	NSError *error = nil;
 	if (![[browserWindow managedObjectContext]  save: &error])
 	{
 		NSString *localizedDescription = [error localizedDescription];

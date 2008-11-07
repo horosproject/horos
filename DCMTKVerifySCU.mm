@@ -383,7 +383,7 @@ static const char* transferSyntaxes[] = {
 	
 	    /* dump general information concerning the establishment of the network connection if required */
     if (_verbose) {
-        printf("Association Accepted (Max Send PDV: %lu)\n",
+        printf("Association Accepted (Max Send PDV: %u)\n",
                 assoc->sendPDVLength);
     }
 	

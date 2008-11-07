@@ -20,11 +20,11 @@
 #import "BLAuthentication.h"
 #import "PluginManagerController.h"
 
-static NSMutableDictionary		*plugins = 0L, *pluginsDict = 0L, *fileFormatPlugins = 0L;
-static NSMutableDictionary		*reportPlugins = 0L;
+static NSMutableDictionary		*plugins = nil, *pluginsDict = nil, *fileFormatPlugins = nil;
+static NSMutableDictionary		*reportPlugins = nil;
 
-static NSMutableArray			*preProcessPlugins = 0L;
-static NSMenu					*fusionPluginsMenu = 0L;
+static NSMutableArray			*preProcessPlugins = nil;
+static NSMenu					*fusionPluginsMenu = nil;
 
 @implementation PluginManager
 
@@ -102,7 +102,7 @@ static NSMenu					*fusionPluginsMenu = 0L;
 					}
 					else
 					{
-						[item setTarget:0L];	// FIRST RESPONDER !
+						[item setTarget:nil];	// FIRST RESPONDER !
 						[item setAction:@selector(executeFilter:)];
 					}
 					
@@ -115,7 +115,7 @@ static NSMenu					*fusionPluginsMenu = 0L;
 				{
 					if( [filtersMenu indexOfItemWithTitle: pluginName] == -1)
 					{
-						subMenuItem = [filtersMenu insertItemWithTitle:pluginName action:0L keyEquivalent:@"" atIndex:[filtersMenu numberOfItems]];
+						subMenuItem = [filtersMenu insertItemWithTitle:pluginName action:nil keyEquivalent:@"" atIndex:[filtersMenu numberOfItems]];
 						[filtersMenu setSubmenu:subMenu forItem:subMenuItem];
 					}
 				}
@@ -123,7 +123,7 @@ static NSMenu					*fusionPluginsMenu = 0L;
 				{
 					if( [roisMenu indexOfItemWithTitle: pluginName] == -1)
 					{
-						subMenuItem = [roisMenu insertItemWithTitle:pluginName action:0L keyEquivalent:@"" atIndex:[roisMenu numberOfItems]];
+						subMenuItem = [roisMenu insertItemWithTitle:pluginName action:nil keyEquivalent:@"" atIndex:[roisMenu numberOfItems]];
 						[roisMenu setSubmenu:subMenu forItem:subMenuItem];
 					}
 				}
@@ -131,7 +131,7 @@ static NSMenu					*fusionPluginsMenu = 0L;
 				{
 					if( [fusionPluginsMenu indexOfItemWithTitle: pluginName] == -1)
 					{
-						subMenuItem = [fusionPluginsMenu insertItemWithTitle:pluginName action:0L keyEquivalent:@"" atIndex:[roisMenu numberOfItems]];
+						subMenuItem = [fusionPluginsMenu insertItemWithTitle:pluginName action:nil keyEquivalent:@"" atIndex:[roisMenu numberOfItems]];
 						[fusionPluginsMenu setSubmenu:subMenu forItem:subMenuItem];
 					}
 				}
@@ -139,7 +139,7 @@ static NSMenu					*fusionPluginsMenu = 0L;
 				{
 					if( [dbMenu indexOfItemWithTitle: pluginName] == -1)
 					{
-						subMenuItem = [dbMenu insertItemWithTitle:pluginName action:0L keyEquivalent:@"" atIndex:[dbMenu numberOfItems]];
+						subMenuItem = [dbMenu insertItemWithTitle:pluginName action:nil keyEquivalent:@"" atIndex:[dbMenu numberOfItems]];
 						[dbMenu setSubmenu:subMenu forItem:subMenuItem];
 					}
 				} 
@@ -147,7 +147,7 @@ static NSMenu					*fusionPluginsMenu = 0L;
 				{
 					if( [othersMenu indexOfItemWithTitle: pluginName] == -1)
 					{
-						subMenuItem = [othersMenu insertItemWithTitle:pluginName action:0L keyEquivalent:@"" atIndex:[othersMenu numberOfItems]];
+						subMenuItem = [othersMenu insertItemWithTitle:pluginName action:nil keyEquivalent:@"" atIndex:[othersMenu numberOfItems]];
 						[othersMenu setSubmenu:subMenu forItem:subMenuItem];
 					}
 				}
@@ -172,7 +172,7 @@ static NSMenu					*fusionPluginsMenu = 0L;
 				}
 				else
 				{
-					[item setTarget:0L];	// FIRST RESPONDER !
+					[item setTarget:nil];	// FIRST RESPONDER !
 					[item setAction:@selector(executeFilter:)];
 				}
 				
@@ -304,7 +304,7 @@ static NSMenu					*fusionPluginsMenu = 0L;
 		CFRelease(url);
 	}
 	
-	if( resolvedPath == 0L) return inPath;
+	if( resolvedPath == nil) return inPath;
 	else return [(NSString *) resolvedPath autorelease];
 }
 
@@ -346,7 +346,7 @@ static NSMenu					*fusionPluginsMenu = 0L;
 	reportPlugins = [[NSMutableDictionary alloc] init];
 	
 	fusionPluginsMenu = [[NSMenu alloc] initWithTitle:@""];
-	[fusionPluginsMenu insertItemWithTitle:NSLocalizedString(@"Select a fusion plug-in", nil) action:0L keyEquivalent:@"" atIndex:0];
+	[fusionPluginsMenu insertItemWithTitle:NSLocalizedString(@"Select a fusion plug-in", nil) action:nil keyEquivalent:@"" atIndex:0];
 	
     for ( path in paths )
 	{
@@ -359,7 +359,7 @@ static NSMenu					*fusionPluginsMenu = 0L;
 			{
 				NSBundle *plugin = [NSBundle bundleWithPath: [PluginManager pathResolved: [path stringByAppendingPathComponent:name]]];
 				
-				if( plugin == 0L)
+				if( plugin == nil)
 					NSLog( @"Bundle opening failed for: %@", [path stringByAppendingPathComponent:name]);
 				else
 				{
@@ -656,7 +656,7 @@ static NSMenu					*fusionPluginsMenu = 0L;
 	NSMutableArray *pluginsPaths = [NSMutableArray arrayWithArray:[PluginManager activeDirectories]];
 	[pluginsPaths addObjectsFromArray:[PluginManager inactiveDirectories]];
 	
-    NSString *path, *returnPath = 0L;
+    NSString *path, *returnPath = nil;
 	NSString *trashDir = [NSHomeDirectory() stringByAppendingPathComponent:@".Trash"];
 	
 	for(path in pluginsPaths)
@@ -764,7 +764,7 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
 					NSURL *bundleURL = [NSURL fileURLWithPath:[PluginManager pathResolved:[path stringByAppendingPathComponent:name]]];
 					CFDictionaryRef bundleInfoDict = CFBundleCopyInfoDictionaryInDirectory((CFURLRef)bundleURL);
 								
-					CFStringRef versionString = 0L;
+					CFStringRef versionString = nil;
 					if(bundleInfoDict != NULL)
 						versionString = CFDictionaryGetValue(bundleInfoDict, CFSTR("CFBundleVersion"));
 					

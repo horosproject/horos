@@ -113,9 +113,9 @@ static id aedesc_to_id(AEDesc *desc)
 	
 	NSString	*path = [documentsDirectory() stringByAppendingFormat:@"/TEMP/Report.txt"];
 	
-	[[NSFileManager defaultManager] removeFileAtPath:path handler:0L];
+	[[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
 	
-	[file writeToFile: path atomically: YES encoding: NSUTF8StringEncoding error: 0L];
+	[file writeToFile: path atomically: YES encoding: NSUTF8StringEncoding error: nil];
 	
 	return path;
 }
@@ -196,7 +196,7 @@ static id aedesc_to_id(AEDesc *desc)
 //			BOOL failed = NO;
 //			
 //			
-//			if( [[NSFileManager defaultManager] movePath:[documentsDirectory() stringByAppendingFormat:@"/OsiriX-temp-report.doc"] toPath:destinationFile handler: 0L] == NO)
+//			if( [[NSFileManager defaultManager] movePath:[documentsDirectory() stringByAppendingFormat:@"/OsiriX-temp-report.doc"] toPath:destinationFile handler: nil] == NO)
 //			{
 //				char	s[1024];
 //				FSSpec	spec;
@@ -206,7 +206,7 @@ static id aedesc_to_id(AEDesc *desc)
 //				{
 //					FSRefMakePath(&ref, (UInt8 *)s, sizeof(s));
 //					
-//					if( [[NSFileManager defaultManager] movePath: [[NSString stringWithUTF8String: s] stringByAppendingPathComponent:@"/OsiriX-temp-report.doc"] toPath:destinationFile handler: 0L] == NO)
+//					if( [[NSFileManager defaultManager] movePath: [[NSString stringWithUTF8String: s] stringByAppendingPathComponent:@"/OsiriX-temp-report.doc"] toPath:destinationFile handler: nil] == NO)
 //						failed = YES;
 //				}
 //				else failed = YES;
@@ -225,7 +225,7 @@ static id aedesc_to_id(AEDesc *desc)
 		case 1:
 		{
 			NSString	*destinationFile = [NSString stringWithFormat:@"%@%@.%@", path, uniqueFilename, @"rtf"];
-			[[NSFileManager defaultManager] copyPath:[documentsDirectory() stringByAppendingFormat:@"/ReportTemplate.rtf"] toPath:destinationFile handler: 0L];
+			[[NSFileManager defaultManager] copyPath:[documentsDirectory() stringByAppendingFormat:@"/ReportTemplate.rtf"] toPath:destinationFile handler: nil];
 			
 			NSDictionary                *attr;
 			NSMutableAttributedString	*rtf = [[NSMutableAttributedString alloc] initWithRTF: [NSData dataWithContentsOfFile:destinationFile] documentAttributes:&attr];
@@ -366,9 +366,9 @@ static id aedesc_to_id(AEDesc *desc)
 #if __LP64__
 	NSTask *theTask = [[NSTask alloc] init];
 	
-	[[NSFileManager defaultManager] removeFileAtPath: @"/tmp/osascript" handler:0L];
+	[[NSFileManager defaultManager] removeFileAtPath: @"/tmp/osascript" handler:nil];
 	[txt writeToFile:@"/tmp/osascript" atomically:YES];
-	[theTask setArguments: [NSArray arrayWithObjects: @"OSAScript", @"/tmp/osascript", 0L]];
+	[theTask setArguments: [NSArray arrayWithObjects: @"OSAScript", @"/tmp/osascript", nil]];
 	[theTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"/32-bit shell.app/Contents/MacOS/32-bit shell"]];
 	[theTask launch];
 	[theTask waitUntilExit];

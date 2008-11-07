@@ -57,7 +57,7 @@ NSString* asciiString (NSString* name);
 	[savePanel setRequiredFileType:@"dmg"];
 	[savePanel setTitle:@"Save as DMG"];
 	
-	if( [savePanel runModalForDirectory:0L file: [[self folderToBurn] lastPathComponent]] == NSFileHandlingPanelOKButton)
+	if( [savePanel runModalForDirectory:nil file: [[self folderToBurn] lastPathComponent]] == NSFileHandlingPanelOKButton)
 	{
 		WaitRendering		*wait = [[WaitRendering alloc] init: NSLocalizedString(@"Writing DMG file...", nil)];
 		[wait showWindow:self];
@@ -270,7 +270,7 @@ NSString* asciiString (NSString* name);
 		else
 		{
 			[anonymizedFiles release];
-			anonymizedFiles = 0L;
+			anonymizedFiles = nil;
 		}
 		
 		if (cdName != nil && [cdName length] > 0) {
@@ -279,7 +279,7 @@ NSString* asciiString (NSString* name);
 			[NSThread detachNewThreadSelector:@selector(performBurn:) toTarget:self withObject:nil];
 		}
 		else
-			NSBeginAlertSheet( NSLocalizedString( @"Burn Warning", 0L) , NSLocalizedString( @"OK", 0L), nil, nil, nil, nil, nil, nil, nil, NSLocalizedString( @"Please add CD name", 0L));
+			NSBeginAlertSheet( NSLocalizedString( @"Burn Warning", nil) , NSLocalizedString( @"OK", nil), nil, nil, nil, nil, nil, nil, nil, NSLocalizedString( @"Please add CD name", nil));
 	}
 }
 
@@ -356,7 +356,7 @@ NSString* asciiString (NSString* name);
 	
 	if( sizeInMb >= 610)
 	{
-		int result = NSRunInformationalAlertPanel(NSLocalizedString(@"Burning", 0L), [NSString stringWithFormat: NSLocalizedString(@"The data to burn is larger than a CD size (610 MB), you need a DVD to burn this amount of data (%d MB).", 0L), sizeInMb], NSLocalizedString(@"Burn",nil), NSLocalizedString(@"Cancel",nil), nil);
+		int result = NSRunInformationalAlertPanel(NSLocalizedString(@"Burning", nil), [NSString stringWithFormat: NSLocalizedString(@"The data to burn is larger than a CD size (610 MB), you need a DVD to burn this amount of data (%d MB).", nil), sizeInMb], NSLocalizedString(@"Burn",nil), NSLocalizedString(@"Cancel",nil), nil);
 		
 		if( result != NSAlertDefaultReturn) continueToBurn = NO;
 	}
@@ -538,7 +538,7 @@ NSString* asciiString (NSString* name);
 		NSDictionary*	errorStatus = [burnStatus objectForKey:DRErrorStatusKey];
 		NSString*		errorString = [errorStatus objectForKey:DRErrorStatusErrorStringKey];
 		
-		NSRunCriticalAlertPanel( NSLocalizedString( @"Burning failed", 0L), errorString, NSLocalizedString( @"OK", 0L), nil, nil);
+		NSRunCriticalAlertPanel( NSLocalizedString( @"Burning failed", nil), errorString, NSLocalizedString( @"OK", nil), nil, nil);
 	}
 	else
 		NSLog(@"Burn finished fine");
@@ -558,7 +558,7 @@ NSString* asciiString (NSString* name);
 	
 	[self restoreDefaultsSettings];
 	
-	[[self window] setDelegate: 0L];
+	[[self window] setDelegate: nil];
 	
 	isIrisAnimation = NO;
 	isThrobbing = NO;
@@ -588,7 +588,7 @@ NSString* asciiString (NSString* name);
 		[files release];
 		files = nil;
 		[anonymizedFiles release];
-		anonymizedFiles = 0L;
+		anonymizedFiles = nil;
 		
 		//[filesTableView reloadData];
 		
@@ -613,7 +613,7 @@ NSString* asciiString (NSString* name);
 
 - (NSString*) defaultTitle
 {
-	NSString *title = 0L;
+	NSString *title = nil;
 	
 	if ([files count] > 0)
 	{
@@ -640,7 +640,7 @@ NSString* asciiString (NSString* name);
 	[NSThread detachNewThreadSelector:@selector(irisAnimation:) toTarget:self withObject:nil];
 	[burnButton setEnabled:YES];
 	
-	NSString *title = 0L;
+	NSString *title = nil;
 	
 	if (_multiplePatients || [[NSUserDefaults standardUserDefaults] boolForKey:@"anonymizedBeforeBurning"])
 	{
@@ -817,7 +817,7 @@ NSString* asciiString (NSString* name);
 				NSTask		*todo = [[[NSTask alloc]init]autorelease];
 				[todo setLaunchPath: @"/usr/bin/lipo"];
 				
-				NSArray *args = [NSArray arrayWithObjects: pathExecutable, @"-remove", @"x86_64", @"-remove", @"ppc64", @"-output", pathLightExecutable, 0L];
+				NSArray *args = [NSArray arrayWithObjects: pathExecutable, @"-remove", @"x86_64", @"-remove", @"ppc64", @"-output", pathLightExecutable, nil];
 
 				[todo setArguments:args];
 				[todo launch];
@@ -828,7 +828,7 @@ NSString* asciiString (NSString* name);
 				todo = [[[NSTask alloc]init]autorelease];
 				[todo setLaunchPath: @"/usr/bin/mv"];
 
-				args = [NSArray arrayWithObjects:pathLightExecutable, pathExecutable, @"-f", 0L];
+				args = [NSArray arrayWithObjects:pathLightExecutable, pathExecutable, @"-f", nil];
 
 				[todo setArguments:args];
 				[todo launch];
@@ -842,8 +842,8 @@ NSString* asciiString (NSString* name);
 			
 			if( [[NSFileManager defaultManager] fileExistsAtPath: pathLightExecutable])
 			{
-				[[NSFileManager defaultManager] removeFileAtPath: pathExecutable handler: 0L];
-				[[NSFileManager defaultManager] movePath: pathLightExecutable toPath: pathExecutable handler: 0L];
+				[[NSFileManager defaultManager] removeFileAtPath: pathExecutable handler: nil];
+				[[NSFileManager defaultManager] movePath: pathLightExecutable toPath: pathExecutable handler: nil];
 			}
 			// **********
 		}

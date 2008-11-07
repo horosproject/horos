@@ -60,7 +60,7 @@ extern		BrowserController  *browserWindow;
 			
 			[browserWindow addFilesAndFolderToDatabase: [NSArray arrayWithObject: convertedPath]];
 			
-			if( [browserWindow findAndSelectFile: convertedPath image: 0L shouldExpand :YES])
+			if( [browserWindow findAndSelectFile: convertedPath image: nil shouldExpand :YES])
 			{
 				NSLog(@"done!");
 			}
@@ -73,7 +73,7 @@ extern		BrowserController  *browserWindow;
 		
 		NSArray	*files = [browserWindow addURLToDatabaseFiles: [NSArray arrayWithObject: [NSURL URLWithString:url]]];
 		
-		if( [browserWindow findAndSelectFile: [[files objectAtIndex:0] valueForKey:@"completePath"] image: 0L shouldExpand: NO])
+		if( [browserWindow findAndSelectFile: [[files objectAtIndex:0] valueForKey:@"completePath"] image: nil shouldExpand: NO])
 		{
 			NSLog(@"done!");
 		}

@@ -132,7 +132,7 @@
 //- (id) tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row
 //{
 ////NSLog(@"tableView:objectValueForTableColumn:row:");
-//	if( viewer == 0L) return 0L;
+//	if( viewer == nil) return nil;
 //	
 //	if( [tableColumn isEqualTo:columnDisplay])
 //	{
@@ -166,7 +166,7 @@
 ////	{
 ////		return [[roiVolumes objectAtIndex:row] color];
 ////	}
-//	return 0L;
+//	return nil;
 //}
 
 // delegate method
@@ -184,15 +184,15 @@
 {
 	[[NSNotificationCenter defaultCenter] removeObserver: self];
 	NSLog( @"ROIVolumeManager windowWillClose");
-	[tableView setDataSource: 0L];
-	[controllerAlias setContent: 0L];
+	[tableView setDataSource: nil];
+	[controllerAlias setContent: nil];
 	[self release];
 }
 
 - (void) dealloc
 {
 	NSLog( @"ROIVolumeManager dealloc");
-	viewer = 0L;
+	viewer = nil;
 	[roiVolumes release];
     [[NSNotificationCenter defaultCenter] removeObserver: self];
 	[super dealloc];

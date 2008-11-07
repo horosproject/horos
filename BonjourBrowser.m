@@ -31,7 +31,7 @@
 
 static BOOL bugFixedForDNSResolve = NO;
 static int TIMEOUT	= 10;
-static NSLock *resolveServiceThreadLock = 0L;
+static NSLock *resolveServiceThreadLock = nil;
 #define USEZIP NO
 
 #define OSIRIXRUNMODE @"OsiriXLoopMode"
@@ -70,7 +70,7 @@ static char *GetPrivateIP()
 
 + (NSString*) bonjour2local: (NSString*) str
 {
-	if( str == 0L) return 0L;
+	if( str == nil) return nil;
 	
 	NSMutableString	*destPath = [NSMutableString string];
 	
@@ -130,22 +130,22 @@ static char *GetPrivateIP()
 		publisher = bPub;
 		
 		tempDatabaseFile = [[self databaseFilePathForService: @"incomingDatabaseFile"] retain];
-		dbFileName = 0L;
-		dicomFileNames = 0L;
-		paths = 0L;
-		path = 0L;
-		filePathToLoad = 0L;
-		FileModificationDate = 0L;
+		dbFileName = nil;
+		dicomFileNames = nil;
+		paths = nil;
+		path = nil;
+		filePathToLoad = nil;
+		FileModificationDate = nil;
 		
 		localVersion = 0;
 		BonjourDatabaseVersion = 0;
 		
 		resolved = YES;
 		
-		setValueObject = 0L;
-		setValueValue = 0L;
-		setValueKey = 0L;
-		modelVersion = 0L;
+		setValueObject = nil;
+		setValueValue = nil;
+		setValueKey = nil;
+		modelVersion = nil;
 		
 		[browser setDelegate:self];
 		
@@ -234,8 +234,8 @@ static char *GetPrivateIP()
 				if( [[dict valueForKey:@"type"] isEqualToString:@"bonjour"]) dbFileName = [[self databaseFilePathForService:[[dict valueForKey:@"service"] name]] retain];
 				else dbFileName = [[self databaseFilePathForService:[dict valueForKey:@"Description"]] retain];
 				
-				[[NSFileManager defaultManager] removeFileAtPath: dbFileName handler:0L];
-				[[NSFileManager defaultManager] movePath: tempDatabaseFile toPath: dbFileName handler: 0L];
+				[[NSFileManager defaultManager] removeFileAtPath: dbFileName handler:nil];
+				[[NSFileManager defaultManager] movePath: tempDatabaseFile toPath: dbFileName handler: nil];
 				
 //				success = [data writeToFile: dbFileName atomically:YES];
 			}
@@ -247,10 +247,10 @@ static char *GetPrivateIP()
 			if ( strcmp( messageToRemoteService, "GETDI") == 0)
 			{
 				[dicomListener release];
-				dicomListener = 0L;
+				dicomListener = nil;
 			
 				dicomListener = [NSUnarchiver unarchiveObjectWithData: data];
-				if( dicomListener == 0L) dicomListener = [NSDictionary dictionary];
+				if( dicomListener == nil) dicomListener = [NSDictionary dictionary];
 				
 				dicomListener = [dicomListener retain];
 				
@@ -264,7 +264,7 @@ static char *GetPrivateIP()
 			else if ( strcmp( messageToRemoteService, "RFILE") == 0)
 			{
 				BOOL isPages = [[filePathToLoad pathExtension] isEqualToString:@"pages"];
-				NSString *zipFilePathToLoad = 0L;
+				NSString *zipFilePathToLoad = nil;
 				if(isPages)
 				{
 					zipFilePathToLoad = [filePathToLoad stringByAppendingString:@".zip"];
@@ -273,10 +273,10 @@ static char *GetPrivateIP()
 				
 			
 				NSString *destPath = [BonjourBrowser bonjour2local: zipFilePathToLoad];
-				[[NSFileManager defaultManager] removeFileAtPath: destPath handler:0L];
+				[[NSFileManager defaultManager] removeFileAtPath: destPath handler:nil];
 				
 				int	pos = 0, size;
-				NSData	*curData = 0L;
+				NSData	*curData = nil;
 				
 				// The File
 				size = NSSwapBigIntToHost( *((int*)[[data subdataWithRange: NSMakeRange(pos, 4)] bytes]));
@@ -418,7 +418,7 @@ static char *GetPrivateIP()
 //	
 //	[[NSNotificationCenter defaultCenter] removeObserver:self name:NSFileHandleReadToEndOfFileCompletionNotification object: [note object]];
 //	[[note object] release];
-//	currentConnection = 0L;
+//	currentConnection = nil;
 //
 //	if( data)
 //	{
@@ -436,7 +436,7 @@ static char *GetPrivateIP()
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
-	if( currentDataPtr != 0L)
+	if( currentDataPtr != nil)
 	{
 		[asyncWrite lock];
 		
@@ -466,10 +466,10 @@ static char *GetPrivateIP()
 	if( incomingData && length)
 	{
 		[async lock];
-		if( currentDataPtr == 0L)
+		if( currentDataPtr == nil)
 		{
 			currentDataPtr = malloc( BonjourDatabaseIndexFileSize);
-			currentDataPos = 0L;
+			currentDataPos = 0;
 		}
 		
 		if( currentDataPtr)
@@ -479,7 +479,7 @@ static char *GetPrivateIP()
 				NSLog( @"error: currentDataPos + length > BonjourDatabaseIndexFileSize");
 				[currentConnection closeFile];
 				[currentConnection release];
-				currentConnection = 0L;
+				currentConnection = nil;
 			}
 			else
 				memcpy( currentDataPtr + currentDataPos, [incomingData bytes], length);
@@ -502,20 +502,20 @@ static char *GetPrivateIP()
 		[async lock];
 		[asyncWrite lock];
 		
-		BOOL success = [self processTheData: 0L];
+		BOOL success = [self processTheData: nil];
 		
 		if( currentDataPtr)
 		{
 			free( currentDataPtr);
-			currentDataPtr = 0L;
+			currentDataPtr = nil;
 		}
-		currentDataPos = 0L;
+		currentDataPos = 0;
 		
 		resolved = YES;
 		
 		[currentConnection closeFile];
 		[currentConnection release];
-		currentConnection = 0L;
+		currentConnection = nil;
 		
 		[asyncWrite unlock];
 		[async unlock];
@@ -611,9 +611,9 @@ static char *GetPrivateIP()
 					[toTransfer appendBytes:&stringSize length: 4];
 					[toTransfer appendBytes:string length: strlen( string)+1];
 					
-					if( setValueValue == 0L)
+					if( setValueValue == nil)
 					{
-						string = 0L;
+						string = nil;
 						stringSize = 0;
 					}
 					else if( [setValueValue isKindOfClass:[NSNumber class]])
@@ -667,7 +667,7 @@ static char *GetPrivateIP()
 						
 						NSString *zipFileName = [NSString stringWithFormat:@"%@.zip", [filePathToLoad lastPathComponent]];
 						
-						[[NSFileManager defaultManager] removeFileAtPath: [[filePathToLoad stringByDeletingLastPathComponent] stringByAppendingPathComponent: zipFileName] handler: 0L];
+						[[NSFileManager defaultManager] removeFileAtPath: [[filePathToLoad stringByDeletingLastPathComponent] stringByAppendingPathComponent: zipFileName] handler: nil];
 						
 						// zip the directory into a single archive file
 						NSTask *zipTask   = [[NSTask alloc] init];
@@ -700,7 +700,7 @@ static char *GetPrivateIP()
 					[toTransfer appendData: fileData];
 					
 					if( isPages)
-						[[NSFileManager defaultManager] removeFileAtPath: filePathToLoad handler: 0L];
+						[[NSFileManager defaultManager] removeFileAtPath: filePathToLoad handler: nil];
 				}
 				
 				if (strcmp( messageToRemoteService, "DICOM") == 0)
@@ -807,7 +807,7 @@ static char *GetPrivateIP()
 					NSLog(@"connectToService [currentConnection writeData: toTransfer] exception: %@", e);
 					[currentConnection closeFile];
 					[currentConnection release];
-					currentConnection = 0L;
+					currentConnection = nil;
 					resolved = NO;
 					succeed = NO;
 				}
@@ -817,7 +817,7 @@ static char *GetPrivateIP()
 					// *************
 					if ((strcmp( messageToRemoteService, "DATAB") == 0))
 					{
-						NSData *readData = 0L;
+						NSData *readData = nil;
 						
 						@try
 						{
@@ -835,7 +835,7 @@ static char *GetPrivateIP()
 					}
 					else
 					{
-						NSData *readData = 0L;
+						NSData *readData = nil;
 						NSMutableData *data = [NSMutableData dataWithCapacity: 512*512*2*20];
 						
 						@try
@@ -855,7 +855,7 @@ static char *GetPrivateIP()
 							
 							[currentConnection closeFile];
 							[currentConnection release];
-							currentConnection = 0L;
+							currentConnection = nil;
 							
 							resolved = YES;
 						}
@@ -874,7 +874,7 @@ static char *GetPrivateIP()
 //				[[NSNotificationCenter defaultCenter] removeObserver:self name:NSFileHandleReadCompletionNotification object: currentConnection];
 //				[[NSNotificationCenter defaultCenter] removeObserver:self name:NSFileHandleReadToEndOfFileCompletionNotification object: currentConnection];
 				[currentConnection release];
-				currentConnection = 0L;
+				currentConnection = nil;
 			}
 		}
 		else
@@ -928,7 +928,7 @@ static char *GetPrivateIP()
 	int			i;
 	NSArray		*dbArray = [DCMNetServiceDelegate DICOMServersListSendOnly:YES QROnly:NO];
 	
-	if( dbArray == 0L) dbArray = [NSArray array];
+	if( dbArray == nil) dbArray = [NSArray array];
 	
 	for( i = 0; i < [services count]; i++)
 	{
@@ -954,7 +954,7 @@ static char *GetPrivateIP()
 	NSArray		*dbArray = [[NSUserDefaults standardUserDefaults] arrayForKey: @"localDatabasePaths"];
 	NSString	*defaultPath = documentsDirectoryFor( [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULT_DATABASELOCATION"], [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"]);
 	
-	if( dbArray == 0L) dbArray = [NSArray array];
+	if( dbArray == nil) dbArray = [NSArray array];
 	
 	for( i = 0; i < [services count]; i++)
 	{
@@ -983,7 +983,7 @@ static char *GetPrivateIP()
 {
 	int i = [[BrowserController currentBrowser] currentBonjourService];
 	
-	NSDictionary	*selectedDict = 0L;
+	NSDictionary	*selectedDict = nil;
 	
 	if( i >= 0) selectedDict = [[services objectAtIndex: i] retain];
 	
@@ -1055,7 +1055,7 @@ static char *GetPrivateIP()
 	bzero((char *) &service, sizeof(service));
 	service.sin_family = AF_INET;
 	
-	if( host_name == 0L) return NO;
+	if( host_name == nil) return NO;
 	
 	if (isalpha(host_name[0]))
 	{
@@ -1137,7 +1137,7 @@ static char *GetPrivateIP()
 	}
 	else
 	{
-		NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: aNetService, @"service", @"bonjour", @"type", 0L];
+		NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: aNetService, @"service", @"bonjour", @"type", nil];
 		
 		[services addObject:dict];
 		
@@ -1157,8 +1157,8 @@ static char *GetPrivateIP()
 		{
 			NSTask *theTask = [[NSTask alloc] init];
 			
-			[[NSFileManager defaultManager] removeFileAtPath: @"/tmp/dnsresolve" handler:0L];
-			[theTask setArguments: [NSArray arrayWithObjects: @"DNSResolve", @"/tmp/dnsresolve", 0L]];
+			[[NSFileManager defaultManager] removeFileAtPath: @"/tmp/dnsresolve" handler:nil];
+			[theTask setArguments: [NSArray arrayWithObjects: @"DNSResolve", @"/tmp/dnsresolve", nil]];
 			[theTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"/32-bit shell.app/Contents/MacOS/32-bit shell"]];
 			[theTask launch];
 			[theTask waitUntilExit];
@@ -1233,7 +1233,7 @@ static char *GetPrivateIP()
 	strcpy( messageToRemoteService, msg);
 	resolved = YES;
 	
-	NSDictionary	*dict = 0L;
+	NSDictionary	*dict = nil;
 	
 	if( index >= 0) dict = [services objectAtIndex:index];
 	
@@ -1256,9 +1256,9 @@ static char *GetPrivateIP()
 		else
 		{
 			if( bugFixedForDNSResolve == NO)
-				NSRunCriticalAlertPanel( NSLocalizedString( @"Bonjour Error", 0L), NSLocalizedString( @"There is a bug in MacOS 10.5 for 64-bit application. Bonjour addresses cannot be resolved. Try to add this OsiriX workstation as a fixed node in Locations-Preferences.", 0L), NSLocalizedString(@"OK", 0L), 0, 0);
+				NSRunCriticalAlertPanel( NSLocalizedString( @"Bonjour Error", nil), NSLocalizedString( @"There is a bug in MacOS 10.5 for 64-bit application. Bonjour addresses cannot be resolved. Try to add this OsiriX workstation as a fixed node in Locations-Preferences.", nil), NSLocalizedString(@"OK", nil), 0, 0);
 			else
-				NSRunCriticalAlertPanel( NSLocalizedString( @"Bonjour Error", 0L), NSLocalizedString( @"This address wasn't resolved. Try to add this OsiriX workstation as a fixed node in Locations-Preferences.", 0L), NSLocalizedString(@"OK", 0L), 0, 0);
+				NSRunCriticalAlertPanel( NSLocalizedString( @"Bonjour Error", nil), NSLocalizedString( @"This address wasn't resolved. Try to add this OsiriX workstation as a fixed node in Locations-Preferences.", nil), NSLocalizedString(@"OK", nil), 0, 0);
 			
 			resolved = NO;
 			succeed = NO;
@@ -1309,13 +1309,13 @@ static char *GetPrivateIP()
 
 - (BOOL) connectToServer:(int) index message:(NSString*) message
 {
-	WaitRendering	*w = 0L;
+	WaitRendering	*w = nil;
 	
 	connectToServerAborted = NO;
 	
 	w = waitWindow;
 
-	NSDictionary	*dict = [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: index], @"index", message, @"msg", 0L];
+	NSDictionary	*dict = [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: index], @"index", message, @"msg", nil];
 	
 	long previousPercentage = 0;
 	
@@ -1367,7 +1367,7 @@ static char *GetPrivateIP()
 			[NSThread sleepForTimeInterval: 0.002];
 		
 		[currentConnection release];
-		currentConnection = 0L;
+		currentConnection = nil;
 		
 		resolved = NO;
 		
@@ -1385,13 +1385,13 @@ static char *GetPrivateIP()
 	[[[BrowserController currentBrowser] managedObjectContext] lock];
 	
 	[dicomListener release];
-	dicomListener = 0L;
+	dicomListener = nil;
 	
 	[self connectToServer: index message:@"GETDI"];
 	
 	[[[BrowserController currentBrowser] managedObjectContext] unlock];
 	
-	if( dicomListener == 0L)
+	if( dicomListener == nil)
 	{
 		NSLog( @"empty");
 		dicomListener = [[NSDictionary dictionary] retain];
@@ -1495,8 +1495,8 @@ static char *GetPrivateIP()
 
 - (NSDate*) getFileModification:(NSString*) pathFile index:(int) index 
 {
-	NSMutableString	*returnedFile = 0L;
-	NSDate			*modificationDate = 0L;
+	NSMutableString	*returnedFile = nil;
+	NSDate			*modificationDate = nil;
 	
 	if( [[NSFileManager defaultManager] fileExistsAtPath: [BonjourBrowser bonjour2local: pathFile]])
 	{
@@ -1523,14 +1523,14 @@ static char *GetPrivateIP()
 
 - (NSString*) getFile:(NSString*) pathFile index:(int) index 
 {
-	NSString	*returnedFile = 0L;
+	NSString	*returnedFile = nil;
 	
 	// Does the file already exist?
 	
 	returnedFile = [BonjourBrowser bonjour2local: pathFile];
 	
 	if( [[NSFileManager defaultManager] fileExistsAtPath:returnedFile]) return returnedFile;
-	else returnedFile = 0L;
+	else returnedFile = nil;
 	
 	[[[BrowserController currentBrowser] managedObjectContext] lock];
 	
@@ -1586,17 +1586,17 @@ static char *GetPrivateIP()
 	[[[BrowserController currentBrowser] managedObjectContext] lock];
 	
 	[dbFileName release];
-	dbFileName = 0L;
+	dbFileName = nil;
 	
 	isPasswordProtected = NO;
 
 	if( showWaitingWindow)
 		waitWindow = [[WaitRendering alloc] init: NSLocalizedString(@"Connecting to OsiriX database...", nil)];
 	else
-		waitWindow = 0L;
+		waitWindow = nil;
 
 	BonjourDatabaseIndexFileSize = 0;
-	currentDataPos = 0L;
+	currentDataPos = 0;
 
 	[waitWindow showWindow:self];
 	[waitWindow setCancel: YES];
@@ -1612,11 +1612,11 @@ static char *GetPrivateIP()
 			[[[BrowserController currentBrowser] managedObjectContext] unlock];
 			[waitWindow end];
 			[waitWindow release];
-			waitWindow = 0L;
+			waitWindow = nil;
 			
-			NSRunAlertPanel( NSLocalizedString( @"Bonjour Database", 0L), NSLocalizedString( @"Database structure is not identical. Use the SAME version of OsiriX on clients and servers to correct the problem.", 0L), nil, nil, nil);
+			NSRunAlertPanel( NSLocalizedString( @"Bonjour Database", nil), NSLocalizedString( @"Database structure is not identical. Use the SAME version of OsiriX on clients and servers to correct the problem.", nil), nil, nil, nil);
 			
-			return 0L;
+			return nil;
 		}
 		
 		if( newConnection)
@@ -1635,7 +1635,7 @@ static char *GetPrivateIP()
 			if( isPasswordProtected)
 			{
 				[password release];
-				password = 0L;
+				password = nil;
 				
 				password = [[interfaceOsiriX askPassword] retain];
 				
@@ -1648,12 +1648,12 @@ static char *GetPrivateIP()
 					[[[BrowserController currentBrowser] managedObjectContext] unlock];
 					[waitWindow end];
 					[waitWindow release];
-					waitWindow = 0L;
+					waitWindow = nil;
 					
-					NSRunAlertPanel( NSLocalizedString( @"Bonjour Database", 0L), NSLocalizedString( @"Wrong password.", 0L), nil, nil, nil);
+					NSRunAlertPanel( NSLocalizedString( @"Bonjour Database", nil), NSLocalizedString( @"Wrong password.", nil), nil, nil, nil);
 					serviceBeingResolvedIndex = -1;
 					
-					return 0L;
+					return nil;
 				}
 			}
 			
@@ -1669,14 +1669,14 @@ static char *GetPrivateIP()
 					{
 						[async lock];
 						free( currentDataPtr);
-						currentDataPtr = 0L;
+						currentDataPtr = nil;
 						[async unlock];
 					}
 					
 					// For async writing
-					[[NSFileManager defaultManager] removeFileAtPath: tempDatabaseFile handler: 0L];
-					[[NSFileManager defaultManager] createFileAtPath: tempDatabaseFile contents:0L attributes:0L];
-					lastAsyncPos = 0L;
+					[[NSFileManager defaultManager] removeFileAtPath: tempDatabaseFile handler: nil];
+					[[NSFileManager defaultManager] createFileAtPath: tempDatabaseFile contents:nil attributes:nil];
+					lastAsyncPos = 0;
 					[async lock];
 					[async unlock];
 					
@@ -1691,39 +1691,39 @@ static char *GetPrivateIP()
 					else
 					{
 						[dbFileName release];
-						dbFileName = 0L;
+						dbFileName = nil;
 					}
 					
 					if( currentDataPtr)
 					{
 						[async lock];
 						free( currentDataPtr);
-						currentDataPtr = 0L;
+						currentDataPtr = nil;
 						[async unlock];
 					}
 				}
 				else
 				{
 					[dbFileName release];
-					dbFileName = 0L;
+					dbFileName = nil;
 				}
 			}
 			else
 			{
 				[dbFileName release];
-				dbFileName = 0L;
+				dbFileName = nil;
 			}
 		}
 		else
 		{
 			[dbFileName release];
-			dbFileName = 0L;
+			dbFileName = nil;
 		}
 	}
 	else
 	{
 		[dbFileName release];
-		dbFileName = 0L;
+		dbFileName = nil;
 	}
 	
 	NSString *returnedPath = dbFileName;
@@ -1733,7 +1733,7 @@ static char *GetPrivateIP()
 	[waitWindow end];
 	[waitWindow close];
 	[waitWindow release];
-	waitWindow = 0L;
+	waitWindow = nil;
 	
 	[[[BrowserController currentBrowser] managedObjectContext] unlock];
 	
@@ -1753,7 +1753,7 @@ static char *GetPrivateIP()
 		[dict addEntriesFromDictionary: [self getDICOMDestinationInfo: indexTo]];
 		[services replaceObjectAtIndex:indexTo withObject: dict];
 		
-		if( [dict valueForKey: @"Port"] == 0L) return NO;
+		if( [dict valueForKey: @"Port"] == nil) return NO;
 	}
 	
 	if( indexFrom >= 0)	// indexFrom == -1: this computer
@@ -1762,7 +1762,7 @@ static char *GetPrivateIP()
 		[dict addEntriesFromDictionary: [self getDICOMDestinationInfo: indexFrom]];
 		[services replaceObjectAtIndex:indexFrom withObject: dict];
 		
-		if( [dict valueForKey: @"Port"] == 0L) return NO;
+		if( [dict valueForKey: @"Port"] == nil) return NO;
 	}
 	
 	[[[BrowserController currentBrowser] managedObjectContext] lock];
@@ -1779,7 +1779,7 @@ static char *GetPrivateIP()
 	{
 		NSString *address = [NSString stringWithCString:GetPrivateIP()];
 		
-		dicomDestination = [NSDictionary dictionaryWithObjectsAndKeys: address, @"Address", [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"], @"AETitle", [[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"], @"Port", @"0", @"Transfer Syntax", 0L];
+		dicomDestination = [NSDictionary dictionaryWithObjectsAndKeys: address, @"Address", [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"], @"AETitle", [[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"], @"Port", @"0", @"Transfer Syntax", nil];
 		
 		[dicomDestination retain];
 	}
@@ -1920,8 +1920,8 @@ static char *GetPrivateIP()
 	
 	NSString	*returnString;
 	
-	if( [dicomFileNames count] == 0) returnString = 0L;
-	else if( [[NSFileManager defaultManager] fileExistsAtPath: [dicomFileNames objectAtIndex: 0]] == NO) returnString =  0L;
+	if( [dicomFileNames count] == 0) returnString = nil;
+	else if( [[NSFileManager defaultManager] fileExistsAtPath: [dicomFileNames objectAtIndex: 0]] == NO) returnString =  nil;
 	else returnString = [NSString stringWithString: [dicomFileNames objectAtIndex: 0]];
 	
 	[[[BrowserController currentBrowser] managedObjectContext] unlock];

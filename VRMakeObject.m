@@ -197,12 +197,12 @@ OSErr VRObject_CreateVRWorld (QTAtomContainer *theVRWorld, QTAtomContainer *theN
 		myErr = VRObject_AddStr255ToAtomContainer(myVRWorld, kParentAtomIsContainer, myStr, &myID);
 		myVRWorldHeaderAtom.nameAtomID = EndianU32_NtoB(myID);
 	} else
-		myVRWorldHeaderAtom.nameAtomID = EndianU32_NtoB(0L);
+		myVRWorldHeaderAtom.nameAtomID = EndianU32_NtoB(0);
 	
 	myVRWorldHeaderAtom.defaultNodeID = EndianU32_NtoB(kDefaultNodeID);
-	myVRWorldHeaderAtom.vrWorldFlags = EndianU32_NtoB(0L);
-	myVRWorldHeaderAtom.reserved1 = EndianU32_NtoB(0L);
-	myVRWorldHeaderAtom.reserved2 = EndianU32_NtoB(0L);
+	myVRWorldHeaderAtom.vrWorldFlags = EndianU32_NtoB(0);
+	myVRWorldHeaderAtom.reserved1 = EndianU32_NtoB(0);
+	myVRWorldHeaderAtom.reserved2 = EndianU32_NtoB(0);
 
 	// add the atom to the atom container (the VR world)
 	myErr = QTInsertChild(myVRWorld, kParentAtomIsContainer, kQTVRWorldHeaderAtomType, 1, 1, sizeof(QTVRWorldHeaderAtom), &myVRWorldHeaderAtom, NULL);
@@ -234,9 +234,9 @@ OSErr VRObject_CreateVRWorld (QTAtomContainer *theVRWorld, QTAtomContainer *theN
 	myPanoImagingAtom.correction = EndianU32_NtoB(kQTVRFullCorrection);
 	myPanoImagingAtom.imagingValidFlags = EndianU32_NtoB(kQTVRValidCorrection | kQTVRValidQuality | kQTVRValidDirectDraw);
 	for (myIndex = 0; myIndex < 6; myIndex++)
-		myPanoImagingAtom.imagingProperties[myIndex] = EndianU32_NtoB(0L);
-	myPanoImagingAtom.reserved1 = EndianU32_NtoB(0L);
-	myPanoImagingAtom.reserved2 = EndianU32_NtoB(0L);
+		myPanoImagingAtom.imagingProperties[myIndex] = EndianU32_NtoB(0);
+	myPanoImagingAtom.reserved1 = EndianU32_NtoB(0);
+	myPanoImagingAtom.reserved2 = EndianU32_NtoB(0);
 	
 	// add a panorama imaging atom for kQTVRMotion state
 	myPanoImagingAtom.quality = EndianU32_NtoB(codecLowQuality);
@@ -315,9 +315,9 @@ OSErr VRObject_CreateVRWorld (QTAtomContainer *theVRWorld, QTAtomContainer *theN
 	myNodeHeaderAtom.minorVersion = EndianU16_NtoB(kQTVRMinorVersion);
 	myNodeHeaderAtom.nodeType = EndianU32_NtoB(theNodeType);
 	myNodeHeaderAtom.nodeID = EndianU32_NtoB(kDefaultNodeID);
-	myNodeHeaderAtom.commentAtomID = EndianU32_NtoB(0L);
-	myNodeHeaderAtom.reserved1 = EndianU32_NtoB(0L);
-	myNodeHeaderAtom.reserved2 = EndianU32_NtoB(0L);
+	myNodeHeaderAtom.commentAtomID = EndianU32_NtoB(0);
+	myNodeHeaderAtom.reserved1 = EndianU32_NtoB(0);
+	myNodeHeaderAtom.reserved2 = EndianU32_NtoB(0);
 	
 	// insert the node name string into the node info atom container
 	if (false) {
@@ -327,7 +327,7 @@ OSErr VRObject_CreateVRWorld (QTAtomContainer *theVRWorld, QTAtomContainer *theN
 		myErr = VRObject_AddStr255ToAtomContainer(myNodeInfo, kParentAtomIsContainer, myStr, &myID);
 		myNodeHeaderAtom.nameAtomID = EndianU32_NtoB(myID);
 	} else
-		myNodeHeaderAtom.nameAtomID = EndianU32_NtoB(0L);
+		myNodeHeaderAtom.nameAtomID = EndianU32_NtoB(0);
 	
 	// insert the node header atom into the node info atom container
 	myErr = QTInsertChild(myNodeInfo, kParentAtomIsContainer, kQTVRNodeHeaderAtomType, 1, 1, sizeof(QTVRNodeHeaderAtom), &myNodeHeaderAtom, NULL);

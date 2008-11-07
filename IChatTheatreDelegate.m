@@ -25,21 +25,21 @@
 #import "VRPresetPreview.h"
 #import "VRView.h"
 
-static IChatTheatreDelegate	*iChatDelegate = 0L;
+static IChatTheatreDelegate	*iChatDelegate = nil;
 
 @implementation IChatTheatreDelegate
 
 @synthesize web;
 
-+ (IChatTheatreDelegate*) releaseSharedDelegate
++ (void) releaseSharedDelegate
 {
 	[iChatDelegate release];
-	iChatDelegate = 0L;
+	iChatDelegate = nil;
 }
 
 + (IChatTheatreDelegate*) sharedDelegate
 {
-	if( iChatDelegate == 0L) iChatDelegate = [[IChatTheatreDelegate alloc] init];
+	if( iChatDelegate == nil) iChatDelegate = [[IChatTheatreDelegate alloc] init];
 	return iChatDelegate;
 }
 

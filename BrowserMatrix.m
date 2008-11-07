@@ -110,7 +110,7 @@ static NSString *albumDragType = @"Osirix Album drag";
 		NSPasteboard *pboard = [NSPasteboard pasteboardWithName: NSDragPboard]; 
 		
 		[pboard declareTypes:[NSArray arrayWithObjects:  albumDragType, NSFilesPromisePboardType, NSFilenamesPboardType, NSStringPboardType, nil]  owner:self];
-		[pboard setPropertyList:0L forType:albumDragType];
+		[pboard setPropertyList:nil forType:albumDragType];
 		[pboard setPropertyList:[NSArray arrayWithObject:@"dcm"] forType:NSFilesPromisePboardType];
 		
 		NSMutableArray	*objects = [NSMutableArray array];
@@ -136,7 +136,7 @@ static NSString *albumDragType = @"Osirix Album drag";
 
 - (NSArray *)namesOfPromisedFilesDroppedAtDestination:(NSURL *)dropDestination
 {
-	NSArray *r = 0L;
+	NSArray *r = nil;
 	
 	if( avoidRecursive == NO)
 	{
@@ -185,7 +185,7 @@ static NSString *albumDragType = @"Osirix Album drag";
 		[NSEvent startPeriodicEventsAfterDelay: 0 withPeriod:0.001];
 		
 		NSDate	*start = [NSDate date];
-		NSEvent *ev = 0L;
+		NSEvent *ev = nil;
 		
 		do
 		{

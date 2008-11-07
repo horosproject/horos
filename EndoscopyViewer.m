@@ -101,7 +101,7 @@ static NSString*	CenterlineToolbarItemIdentifier			= @"Centerline";
            selector: @selector(Update2DCLUTMenu:)
                name: @"Update2DCLUTMenu"
              object: nil];
-	[nc postNotificationName: @"Update2DCLUTMenu" object: cur2DCLUTMenu userInfo: 0L];
+	[nc postNotificationName: @"Update2DCLUTMenu" object: cur2DCLUTMenu userInfo: nil];
 	
 	// WL/WW Menu	
 	cur2DWLWWMenu = NSLocalizedString(@"Other", nil);
@@ -109,7 +109,7 @@ static NSString*	CenterlineToolbarItemIdentifier			= @"Centerline";
            selector: @selector(Update2DWLWWMenu:)
                name: @"Update2DWLWWMenu"
              object: nil];
-	[nc postNotificationName: @"Update2DWLWWMenu" object: cur2DWLWWMenu userInfo: 0L];
+	[nc postNotificationName: @"Update2DWLWWMenu" object: cur2DWLWWMenu userInfo: nil];
 
 	
 	// camera representation
@@ -122,7 +122,7 @@ static NSString*	CenterlineToolbarItemIdentifier			= @"Centerline";
 
 - (void) dealloc {
 	[pixList release];
-	[toolbar setDelegate: 0L];
+	[toolbar setDelegate: nil];
 	[toolbar release];
 	[super dealloc];
 }
@@ -570,7 +570,7 @@ static NSString*	CenterlineToolbarItemIdentifier			= @"Centerline";
 {
 	[mprController ApplyCLUTString: str];
 	cur2DCLUTMenu = str;
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"Update2DCLUTMenu" object: cur2DCLUTMenu userInfo: 0L];		
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"Update2DCLUTMenu" object: cur2DCLUTMenu userInfo: nil];		
 	[[[clut2DPopup menu] itemAtIndex:0] setTitle:str];
 }
 
@@ -609,7 +609,7 @@ static NSString*	CenterlineToolbarItemIdentifier			= @"Centerline";
 {
 	[mprController setWLWW: iwl : iww];
 	[mprController setCurWLWWMenu:cur2DWLWWMenu];
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"Update2DWLWWMenu" object: cur2DWLWWMenu userInfo: 0L];
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"Update2DWLWWMenu" object: cur2DWLWWMenu userInfo: nil];
 }
 
 -(void) Update2DWLWWMenu: (NSNotification*) note
@@ -662,8 +662,8 @@ static NSString*	CenterlineToolbarItemIdentifier			= @"Centerline";
 	}
 	
 	[[[wlww2DPopup menu] itemAtIndex:0] setTitle:[sender title]];
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"Update2DWLWWMenu" object: cur2DWLWWMenu userInfo: 0L];
-	cur2DWLWWMenu = NSLocalizedString(@"Other", 0L);
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"Update2DWLWWMenu" object: cur2DWLWWMenu userInfo: nil];
+	cur2DWLWWMenu = NSLocalizedString(@"Other", nil);
 }
 
 - (void) setCur2DWLWWMenu: (NSString*) wlww
@@ -673,7 +673,7 @@ static NSString*	CenterlineToolbarItemIdentifier			= @"Centerline";
 
 - (long) movieFrames
 {
-	[vrController movieFrames];
+	return [vrController movieFrames];
 }
 
 #pragma mark-
@@ -705,10 +705,10 @@ static NSString*	CenterlineToolbarItemIdentifier			= @"Centerline";
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"Window3DClose" object: self userInfo: 0];
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"Window3DClose" object: vrController userInfo: 0];	//<- to close the FlyThru controller !
 	
-    [[self window] setDelegate:0L];
+    [[self window] setDelegate:nil];
 	
-	[topSplitView setDelegate:0L];	
-	[bottomSplitView setDelegate:0L];
+	[topSplitView setDelegate:nil];	
+	[bottomSplitView setDelegate:nil];
 	
 	[self release];
 }
@@ -1019,7 +1019,7 @@ static NSString*	CenterlineToolbarItemIdentifier			= @"Centerline";
 - (void) exportDICOMFile:(id) sender
 {
 	[[self window] makeFirstResponder: (NSView*) [vrController view]];
-	[NSApp beginSheet: exportDCMWindow modalForWindow:[self window] modalDelegate:self didEndSelector:0L contextInfo:(void*) 0L];
+	[NSApp beginSheet: exportDCMWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:(void*) nil];
 }
 
 -(IBAction) endDCMExportSettings:(id) sender
@@ -1048,8 +1048,8 @@ static NSString*	CenterlineToolbarItemIdentifier			= @"Centerline";
 			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"exportOrientationIn3DExport"])
 				[exportDCM setOrientation: o];
 			
-			NSString *f = [exportDCM writeDCMFile: 0L];
-			if( f == 0L) NSRunCriticalAlertPanel( NSLocalizedString(@"Error", 0L),  NSLocalizedString( @"Error during the creation of the DICOM File!", 0L), NSLocalizedString(@"OK", 0L), nil, nil);
+			NSString *f = [exportDCM writeDCMFile: nil];
+			if( f == nil) NSRunCriticalAlertPanel( NSLocalizedString(@"Error", nil),  NSLocalizedString( @"Error during the creation of the DICOM File!", nil), NSLocalizedString(@"OK", nil), nil, nil);
 			free(dataPtr);
 		}
 	}

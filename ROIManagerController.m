@@ -20,7 +20,7 @@ PURPOSE.
 
 - (id) initWithViewer:(ViewerController*) v
 {
-	viewer = 0L;
+	viewer = nil;
 	
 	self = [super initWithWindowNibName:@"ROIManager"];
 	
@@ -54,7 +54,7 @@ PURPOSE.
 	DCMPix	*curPix = [[viewer pixList] objectAtIndex:0];
 	pixelSpacingZ = [curPix sliceInterval];
 	
-	[self fireUpdate: 0L];
+	[self fireUpdate: nil];
 	
 	return self;
 }
@@ -71,7 +71,7 @@ PURPOSE.
 	
 
 //	[editedROI setName:anObject];
-//	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:editedROI userInfo: 0L];
+//	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:editedROI userInfo: nil];
 	
 	[viewer renameSeriesROIwithName: [editedROI name] newName:anObject];
 	
@@ -107,13 +107,13 @@ PURPOSE.
 	
 		[viewer deleteSeriesROIwithName: [selectedRoi name]];
 	
-//		[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:selectedRoi userInfo: 0L];
+//		[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:selectedRoi userInfo: nil];
 //		[curRoiList removeObject:selectedRoi];
 		
 		index = [indexSet indexLessThanIndex:index];
 	}
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"updateView" object:0L userInfo: 0L];
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"updateView" object:nil userInfo: nil];
 }
 
 //- (void)tableViewSelectionDidChange:(NSNotification *)aNotification
@@ -135,7 +135,7 @@ PURPOSE.
 //			[curROI setROIMode: ROI_sleep];
 //		}
 //		
-//		[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:curROI userInfo: 0L];
+//		[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:curROI userInfo: nil];
 //	}
 //}
 
@@ -146,7 +146,7 @@ PURPOSE.
 
 - (void) fireUpdate: (NSNotification*) note
 {
-	[NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(roiListModification:) userInfo:0L repeats:NO];
+	[NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(roiListModification:) userInfo:nil repeats:NO];
 }
 
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView
@@ -160,7 +160,7 @@ PURPOSE.
     objectValueForTableColumn:(NSTableColumn *)tableColumn
             row:(NSInteger)row
 {
-	if( viewer == 0L) return 0L;
+	if( viewer == nil) return nil;
 	
 	int i,indic;
 	float area=0.0;
@@ -183,7 +183,7 @@ PURPOSE.
 	
 	if( [[tableColumn identifier] isEqualToString:@"volume"])
 	{
-		float volume = [viewer computeVolume:[curRoiList objectAtIndex:row] points:0L error: 0L];
+		float volume = [viewer computeVolume:[curRoiList objectAtIndex:row] points:nil error: nil];
 		
 		if( volume)
 		{
@@ -195,7 +195,7 @@ PURPOSE.
 		else return [NSString stringWithString:@"n/a"];
 	}
 	
-	return 0L;
+	return nil;
 }
 
 // delegate method setROIMode
@@ -222,8 +222,8 @@ PURPOSE.
 - (void) dealloc
 {
 	NSLog( @"ROIManager dealloc");
-	[tableView setDataSource: 0L];
-	viewer = 0L;
+	[tableView setDataSource: nil];
+	viewer = nil;
 	
     [[NSNotificationCenter defaultCenter] removeObserver: self];
 	

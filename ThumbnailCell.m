@@ -21,6 +21,6 @@
 	
 	rightClick = NO;
 	
-	return 0L;
+	return nil;
 }
 @end

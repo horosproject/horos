@@ -72,8 +72,8 @@
 
 - (void) prepareForRelease
 {
-	_cocoaRenderWindow->SetWindowId( 0L);
-	_cocoaRenderWindow->SetDisplayId( 0L);
+	_cocoaRenderWindow->SetWindowId( nil);
+	_cocoaRenderWindow->SetDisplayId( nil);
 }
 
 - (BOOL)mouseDownCanMoveWindow

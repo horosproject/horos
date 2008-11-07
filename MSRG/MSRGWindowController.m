@@ -23,8 +23,8 @@ PURPOSE.
 	viewer = v;
 	viewersList=[list retain];
 	NSMutableArray*
-		BoundingROIStart=0L;
-	BoundingROIEnd=0L;
+		BoundingROIStart=nil;
+	BoundingROIEnd=nil;
 	
 	NSNotificationCenter *nc;
     nc = [NSNotificationCenter defaultCenter];
@@ -131,14 +131,14 @@ PURPOSE.
 		{
 			if ( [note object]==BoundingROIStart)
 			{
-				NSRunAlertPanel( NSLocalizedString( @"Bounding Box Removed", 0L), NSLocalizedString( @"You've just removed your bounding box !", 0), nil, nil, nil);
+				NSRunAlertPanel( NSLocalizedString( @"Bounding Box Removed", nil), NSLocalizedString( @"You've just removed your bounding box !", 0), nil, nil, nil);
 				[ActivateBoundingBoxButton setState:NSOffState];
 			}
 		} else
 		{
 			if (( [note object]==BoundingROIStart) || ( [note object]==BoundingROIEnd))
 			{
-				NSRunAlertPanel( NSLocalizedString( @"Bounding Volume Removed", 0L), NSLocalizedString( @"You've just removed your bounding Volume !", 0), nil, nil, nil);
+				NSRunAlertPanel( NSLocalizedString( @"Bounding Volume Removed", nil), NSLocalizedString( @"You've just removed your bounding Volume !", 0), nil, nil, nil);
 				[ActivateBoundingBoxButton setState:NSOffState];
 			}
 			
@@ -176,13 +176,13 @@ PURPOSE.
 	if (!isBoundingBox)		
 	{
 		[ActivateBoundingBoxButton setState:NSOffState];
-		NSRunAlertPanel( NSLocalizedString( @"NO Bounding Volume", 0L), NSLocalizedString( @"Sorry, but there is no ROI with name: Bounding Box on the current slice", 0), nil, nil, nil);
+		NSRunAlertPanel( NSLocalizedString( @"NO Bounding Volume", nil), NSLocalizedString( @"Sorry, but there is no ROI with name: Bounding Box on the current slice", 0), nil, nil, nil);
 		
 	}
 	if ((isBoundingBox) && (BoundingROIStart==BoundingROIEnd))	
 	{
 		[ActivateBoundingBoxButton setState:NSOffState];
-		NSRunAlertPanel( NSLocalizedString( @"No bounding Volume", 0L), NSLocalizedString( @"Sorry, but there is just one ROI with name: Bounding Box on the stack", 0), nil, nil, nil);
+		NSRunAlertPanel( NSLocalizedString( @"No bounding Volume", nil), NSLocalizedString( @"Sorry, but there is just one ROI with name: Bounding Box on the stack", 0), nil, nil, nil);
 		
 	} 
 	
@@ -210,7 +210,7 @@ PURPOSE.
 	if (!isBoundingBox)		
 	{
 		[ActivateBoundingBoxButton setState:NSOffState];
-		NSRunAlertPanel( NSLocalizedString( @"NO Bounding Box", 0L), NSLocalizedString( @"Sorry, but there is no ROI with name: Bounding Box on the current slice", 0), nil, nil, nil);
+		NSRunAlertPanel( NSLocalizedString( @"NO Bounding Box", nil), NSLocalizedString( @"Sorry, but there is no ROI with name: Bounding Box on the current slice", 0), nil, nil, nil);
 		// create one
 		/*
 		 DCMPix	*curPix = [[viewer pixList] objectAtIndex: [[viewer imageView] curImage]];	
@@ -226,7 +226,7 @@ PURPOSE.
 		 [theNewROI setName:@"Bounding Box"];
 		 
 		 [[[viewer roiList] objectAtIndex: [[viewer imageView] curImage]] addObject:theNewROI];	
-		 [[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:theNewROI userInfo: 0L];
+		 [[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:theNewROI userInfo: nil];
 		 [theNewROI release];
 		 */
 		
@@ -262,11 +262,11 @@ PURPOSE.
 		[self setThicknessParameters];
 		if (BoundingROIStart)
 		{
-			NSLog(@"set BoundingROIStart to 0L");
-			BoundingROIStart=0L;
+			NSLog(@"set BoundingROIStart to nil");
+			BoundingROIStart=nil;
 		}
 		if (BoundingROIEnd)
-			BoundingROIEnd=0L;
+			BoundingROIEnd=nil;
 		
 	}
 	
@@ -456,7 +456,7 @@ PURPOSE.
 			}
 		} 
 	}
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"updateView" object:0L userInfo: 0L];
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"updateView" object:nil userInfo: nil];
 }
 
 -(void)createMarkerROIAtSlice:(int)slice Width:(int)w Height:(int)h PosX:(int)x PosY:(int)y
@@ -491,7 +491,7 @@ PURPOSE.
 									   imageOrigin:NSMakePoint( [curPix originX], [curPix originY])] autorelease];
 	free(buffer);
 	[[[viewer roiList] objectAtIndex: slice] addObject:theNewROI];	
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:theNewROI userInfo: 0L];
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:theNewROI userInfo: nil];
 }
 - (IBAction)frameThicknessChange:(id)sender
 {

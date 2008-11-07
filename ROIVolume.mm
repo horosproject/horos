@@ -29,7 +29,7 @@
 	{
 		NSLog(@"INit ROI Volume");
 		roiList = [[NSMutableArray alloc] initWithCapacity:0];
-		roiVolumeActor = 0L;
+		roiVolumeActor = nil;
 		name = @"";
 		volume = 0.0;
 		red = 0.0;
@@ -61,7 +61,7 @@
 	[roiList release];
 	[properties release];
 	
-	if(roiVolumeActor != 0L)
+	if(roiVolumeActor != nil)
 		roiVolumeActor->Delete();
 	
 	if( textureImage)
@@ -120,7 +120,7 @@
 		
 		DCMPix *curDCM = [curROI pix];
 		// points
-		NSMutableArray	*points = 0L;
+		NSMutableArray	*points = nil;
 					
 		if( [curROI type] == tPlain)
 		{
@@ -147,7 +147,7 @@
 			location[1] *= factor;
 			location[2] *= factor;
 			
-			NSArray	*pt3D = [NSArray arrayWithObjects: [NSNumber numberWithFloat: location[0]], [NSNumber numberWithFloat:location[1]], [NSNumber numberWithFloat:location[2]], 0L];
+			NSArray	*pt3D = [NSArray arrayWithObjects: [NSNumber numberWithFloat: location[0]], [NSNumber numberWithFloat:location[1]], [NSNumber numberWithFloat:location[2]], nil];
 			[pts addObject: pt3D];
 		}		
 	}
@@ -223,10 +223,10 @@
 //		else
 		// VOLUME
 		{
-			vtkDelaunay3D *delaunayTriangulator = 0L;
-			vtkPolyDataNormals *polyDataNormals = 0L;
-			vtkDecimatePro *isoDeci = 0L;
-			vtkDataSet*	output = 0L;
+			vtkDelaunay3D *delaunayTriangulator = nil;
+			vtkPolyDataNormals *polyDataNormals = nil;
+			vtkDecimatePro *isoDeci = nil;
+			vtkDataSet*	output = nil;
 			
 			if( [[NSUserDefaults standardUserDefaults] boolForKey:@"UseDelaunayFor3DRoi"])
 			{
@@ -359,7 +359,7 @@
 			//Texture
 			NSString	*location = [[NSUserDefaults standardUserDefaults] stringForKey:@"textureLocation"];
 			
-			if( location == 0L || [location isEqualToString:@""])
+			if( location == nil || [location isEqualToString:@""])
 				location = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"texture.tif"];
 			
 			vtkTIFFReader *bmpread = vtkTIFFReader::New();
@@ -396,9 +396,10 @@
 
 - (NSValue*) roiVolumeActor
 {
-	if(roiVolumeActor == 0L)
+	if(roiVolumeActor == nil)
 		[self prepareVTKActor];
-	[NSValue valueWithPointer:roiVolumeActor];
+	
+	return [NSValue valueWithPointer:roiVolumeActor];
 }
 
 - (float) volume
@@ -490,7 +491,7 @@
 	if( roiVolumeActor)
 	{
 		if( o) roiVolumeActor->SetTexture( textureImage);
-		else roiVolumeActor->SetTexture( 0L);
+		else roiVolumeActor->SetTexture( nil);
 	}
 	[properties setValue:[NSNumber numberWithBool: textured] forKey:@"texture"];
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"ROIVolumePropertiesChanged" object:self userInfo:[NSDictionary dictionaryWithObject:@"texture" forKey:@"key"]];

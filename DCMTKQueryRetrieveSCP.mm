@@ -143,7 +143,7 @@ void errmsg(const char* msg, ...)
 	if (scp != NULL) {
 		 scp->cleanChildren(OFTrue);  // clean up any child processes 		 
 		 delete scp;
-		 scp = 0L;
+		 scp = nil;
 	}
 
 	[_aeTitle release];

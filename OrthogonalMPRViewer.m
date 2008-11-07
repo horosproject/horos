@@ -140,7 +140,7 @@ NSString * documentsDirectory();
 	//[thickSlabSlider setMaxValue:[controller maxThickSlab]];
 	//[thickSlabSlider setMaxValue:40];
 	
-	exportDCM = 0L;
+	exportDCM = nil;
 	
 	// CLUT Menu
 	curCLUTMenu = [NSLocalizedString(@"No CLUT", nil) retain];
@@ -148,17 +148,17 @@ NSString * documentsDirectory();
 	NSNotificationCenter *nc;
 	nc = [NSNotificationCenter defaultCenter];
 	[nc addObserver:self selector:@selector(UpdateCLUTMenu:) name:@"UpdateCLUTMenu" object:nil];
-	[nc postNotificationName:@"UpdateCLUTMenu" object:curCLUTMenu userInfo:0L];
+	[nc postNotificationName:@"UpdateCLUTMenu" object:curCLUTMenu userInfo:nil];
 
 	// WL/WW Menu
 	curWLWWMenu = [NSLocalizedString(@"Other", nil) retain];
 	[nc addObserver:self selector:@selector(UpdateWLWWMenu:) name:@"UpdateWLWWMenu" object:nil];
-	[nc postNotificationName:@"UpdateWLWWMenu" object:curWLWWMenu userInfo:0L];
+	[nc postNotificationName:@"UpdateWLWWMenu" object:curWLWWMenu userInfo:nil];
 
 	// Opacity Menu
 	curOpacityMenu = [NSLocalizedString(@"Linear Table", nil) retain];
 	[nc addObserver:self selector:@selector(UpdateOpacityMenu:) name:@"UpdateOpacityMenu" object:nil];
-	[nc postNotificationName:@"UpdateOpacityMenu" object:curOpacityMenu userInfo:0L];
+	[nc postNotificationName:@"UpdateOpacityMenu" object:curOpacityMenu userInfo:nil];
 
 	return self;
 }
@@ -231,7 +231,7 @@ NSString * documentsDirectory();
 		[curCLUTMenu release];
 		curCLUTMenu = [str retain];
 	}
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: 0L];		
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: nil];		
 	[[[clutPopup menu] itemAtIndex:0] setTitle:str];
 }
 
@@ -334,7 +334,7 @@ NSString * documentsDirectory();
 	
 	[[[wlwwPopup menu] itemAtIndex:0] setTitle:menuString];
 
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: 0L];
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: nil];
 }
 
 - (void) ApplyWLWW:(id) sender
@@ -410,11 +410,11 @@ NSString * documentsDirectory();
 			[curOpacityMenu release];
 			curOpacityMenu = [str retain];
 		}
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: 0L];
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: nil];
 		
 		[[[OpacityPopup menu] itemAtIndex:0] setTitle:str];
 		
-		[controller setTransferFunction: 0L];
+		[controller setTransferFunction: nil];
 	}
 	else
 	{
@@ -428,7 +428,7 @@ NSString * documentsDirectory();
 				[curOpacityMenu release];
 				curOpacityMenu = [str retain];
 			}
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: 0L];
+			[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: nil];
 			
 			[[[OpacityPopup menu] itemAtIndex:0] setTitle:str];
 			
@@ -520,7 +520,7 @@ NSString * documentsDirectory();
         movieTimer = nil;
 	}
 	
-	[splitView setDelegate: 0L];
+	[splitView setDelegate: nil];
     [[self window] setDelegate:nil];
     [self release];
 }
@@ -532,9 +532,9 @@ NSString * documentsDirectory();
 
 -(void) windowDidBecomeKey:(NSNotification *)aNotification
 {
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: 0L];
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: 0L];
-	//[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateConvolutionMenu" object: curConvMenu userInfo: 0L];
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: nil];
+	//[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateConvolutionMenu" object: curConvMenu userInfo: nil];
 }
 
 #pragma mark-
@@ -588,14 +588,14 @@ NSString * documentsDirectory();
 		{
 			if ([splitView isVertical])
 			{
-				[item setLabel:NSLocalizedString(@"Horizontal", 0L)];
+				[item setLabel:NSLocalizedString(@"Horizontal", nil)];
 				[item setPaletteLabel: NSLocalizedString(@"Horizontal",nil)];
 				[item setToolTip: NSLocalizedString(@"Change View from Vertical to Horizontal",nil)];
 				[item setImage:[NSImage imageNamed:@"horizontalSplitView"]];
 			}
 			else
 			{
-				[item setLabel:NSLocalizedString(@"Vertical", 0L)];
+				[item setLabel:NSLocalizedString(@"Vertical", nil)];
 				[item setPaletteLabel: NSLocalizedString(@"Vertical",nil)];
 				[item setToolTip: NSLocalizedString(@"Change View from Horizontal to Vertical",nil)];
 				[item setImage:[NSImage imageNamed:@"verticalSplitView"]];
@@ -605,14 +605,14 @@ NSString * documentsDirectory();
 		{
 			if ([splitView isVertical])
 			{
-				[item setLabel:NSLocalizedString(@"Same Widths", 0L)];
+				[item setLabel:NSLocalizedString(@"Same Widths", nil)];
 				[item setPaletteLabel: NSLocalizedString(@"Same Widths",nil)];
 				[item setToolTip: NSLocalizedString(@"Set the three views to the same width",nil)];
 				[item setImage:[NSImage imageNamed:@"sameWidthsSplitView"]];
 			}
 			else
 			{
-				[item setLabel:NSLocalizedString(@"Same Heights", 0L)];
+				[item setLabel:NSLocalizedString(@"Same Heights", nil)];
 				[item setPaletteLabel: NSLocalizedString(@"Same Heights",nil)];
 				[item setToolTip: NSLocalizedString(@"Set the three views to the same height",nil)];
 				[item setImage:[NSImage imageNamed:@"sameHeightsSplitView"]];
@@ -790,7 +790,7 @@ NSString * documentsDirectory();
 	{
 		valid = YES;
 		
-		NSString	*str = 0L;
+		NSString	*str = nil;
 		
 		@try
 		{
@@ -942,14 +942,14 @@ NSString * documentsDirectory();
 	else if ([itemIdent isEqual: AdjustSplitViewToolbarItemIdentifier]) {
 		if ([splitView isVertical])
 		{
-			[toolbarItem setLabel:NSLocalizedString(@"Same Widths", 0L)];
+			[toolbarItem setLabel:NSLocalizedString(@"Same Widths", nil)];
 			[toolbarItem setPaletteLabel: NSLocalizedString(@"Same Widths",nil)];
 			[toolbarItem setToolTip: NSLocalizedString(@"Set the three views to the same width",nil)];
 			[toolbarItem setImage:[NSImage imageNamed:@"sameWidthsSplitView"]];
 		}
 		else
 		{
-			[toolbarItem setLabel:NSLocalizedString(@"Same Heights", 0L)];
+			[toolbarItem setLabel:NSLocalizedString(@"Same Heights", nil)];
 			[toolbarItem setPaletteLabel: NSLocalizedString(@"Same Heights",nil)];
 			[toolbarItem setToolTip: NSLocalizedString(@"Set the three views to the same height",nil)];
 			[toolbarItem setImage:[NSImage imageNamed:@"sameHeightsSplitView"]];
@@ -960,14 +960,14 @@ NSString * documentsDirectory();
 	else if ([itemIdent isEqual: TurnSplitViewToolbarItemIdentifier]) {
 		if ([splitView isVertical])
 		{
-			[toolbarItem setLabel:NSLocalizedString(@"Horizontal", 0L)];
+			[toolbarItem setLabel:NSLocalizedString(@"Horizontal", nil)];
 			[toolbarItem setPaletteLabel: NSLocalizedString(@"Horizontal",nil)];
 			[toolbarItem setToolTip: NSLocalizedString(@"Change View from Vertical to Horizontal",nil)];
 			[toolbarItem setImage:[NSImage imageNamed:@"horizontalSplitView"]];
 		}
 		else
 		{
-			[toolbarItem setLabel:NSLocalizedString(@"Vertical", 0L)];
+			[toolbarItem setLabel:NSLocalizedString(@"Vertical", nil)];
 			[toolbarItem setPaletteLabel: NSLocalizedString(@"Vertical",nil)];
 			[toolbarItem setToolTip: NSLocalizedString(@"Change View from Horizontal to Vertical",nil)];
 			[toolbarItem setImage:[NSImage imageNamed:@"verticalSplitView"]];
@@ -984,7 +984,7 @@ NSString * documentsDirectory();
 		[toolbarItem setAction: @selector(resetImage:)];
     }
 	else if ([itemIdent isEqual: VRPanelToolbarItemIdentifier]) {
-		[toolbarItem setLabel:NSLocalizedString(@"3D Panel", 0L)];
+		[toolbarItem setLabel:NSLocalizedString(@"3D Panel", nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"3D Panel",nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"3D Panel",nil)];
 		[toolbarItem setImage:[NSImage imageNamed:VRPanelToolbarItemIdentifier]];
@@ -1089,14 +1089,14 @@ NSString * documentsDirectory();
 	{
 		if ([splitView isVertical])
 		{
-			[item setLabel:NSLocalizedString(@"Horizontal", 0L)];
+			[item setLabel:NSLocalizedString(@"Horizontal", nil)];
 			[item setPaletteLabel: NSLocalizedString(@"Horizontal",nil)];
 			[item setToolTip: NSLocalizedString(@"Change View from Vertical to Horizontal",nil)];
 			[item setImage:[NSImage imageNamed:@"horizontalSplitView"]];
 		}
 		else
 		{
-			[item setLabel:NSLocalizedString(@"Vertical", 0L)];
+			[item setLabel:NSLocalizedString(@"Vertical", nil)];
 			[item setPaletteLabel: NSLocalizedString(@"Vertical",nil)];
 			[item setToolTip: NSLocalizedString(@"Change View from Horizontal to Vertical",nil)];
 			[item setImage:[NSImage imageNamed:@"verticalSplitView"]];
@@ -1106,14 +1106,14 @@ NSString * documentsDirectory();
 	{
 		if ([splitView isVertical])
 		{
-			[item setLabel:NSLocalizedString(@"Same Widths", 0L)];
+			[item setLabel:NSLocalizedString(@"Same Widths", nil)];
 			[item setPaletteLabel: NSLocalizedString(@"Same Widths",nil)];
 			[item setToolTip: NSLocalizedString(@"Set the three views to the same width",nil)];
 			[item setImage:[NSImage imageNamed:@"sameWidthsSplitView"]];
 		}
 		else
 		{
-			[item setLabel:NSLocalizedString(@"Same Heights", 0L)];
+			[item setLabel:NSLocalizedString(@"Same Heights", nil)];
 			[item setPaletteLabel: NSLocalizedString(@"Same Heights",nil)];
 			[item setToolTip: NSLocalizedString(@"Set the three views to the same height",nil)];
 			[item setImage:[NSImage imageNamed:@"sameHeightsSplitView"]];
@@ -1187,7 +1187,7 @@ NSString * documentsDirectory();
 	[panel setCanSelectHiddenExtension:YES];
 	[panel setRequiredFileType:@"jpg"];
 	
-	if( [panel runModalForDirectory:0L file:[[[controller originalDCMFilesList] objectAtIndex:0] valueForKeyPath:@"series.name"]] == NSFileHandlingPanelOKButton)
+	if( [panel runModalForDirectory:nil file:[[[controller originalDCMFilesList] objectAtIndex:0] valueForKeyPath:@"series.name"]] == NSFileHandlingPanelOKButton)
 	{		
 		if( all)
 		{
@@ -1299,7 +1299,7 @@ NSString * documentsDirectory();
 	
 	if( data)
 	{
-		if( exportDCM == 0L) exportDCM = [[DICOMExport alloc] init];
+		if( exportDCM == nil) exportDCM = [[DICOMExport alloc] init];
 		
 		[exportDCM setSourceFile: [[[controller originalDCMFilesList] objectAtIndex:[self indexForPix:[[self keyView] curImage]]] valueForKey:@"completePath"]];
 		[exportDCM setSeriesDescription: [dcmSeriesName stringValue]];
@@ -1324,8 +1324,8 @@ NSString * documentsDirectory();
 		[exportDCM setPosition: imOrigin];
 		[exportDCM setPixelData: data samplePerPixel:spp bitsPerPixel:bpp width: width height: height];
 		
-		NSString *f = [exportDCM writeDCMFile: 0L];
-		if( f == 0L) NSRunCriticalAlertPanel( NSLocalizedString(@"Error", nil),  NSLocalizedString(@"Error during the creation of the DICOM File!", nil), NSLocalizedString(@"OK", nil), nil, nil);
+		NSString *f = [exportDCM writeDCMFile: nil];
+		if( f == nil) NSRunCriticalAlertPanel( NSLocalizedString(@"Error", nil),  NSLocalizedString(@"Error during the creation of the DICOM File!", nil), NSLocalizedString(@"OK", nil), nil, nil);
 		
 		free( data);
 	}
@@ -1405,7 +1405,7 @@ NSString * documentsDirectory();
 			[splash showWindow:self];
 			[[splash progress] setMaxValue:(int)((to-from)/interval)];
 			
-			if( exportDCM == 0L) exportDCM = [[DICOMExport alloc] init];
+			if( exportDCM == nil) exportDCM = [[DICOMExport alloc] init];
 			[exportDCM setSeriesNumber:5600 + [[NSCalendarDate date] minuteOfHour]  + [[NSCalendarDate date] secondOfMinute]];	//Try to create a unique series number... Do you have a better idea??
 			[exportDCM setSeriesDescription: [dcmSeriesName stringValue]];
 			

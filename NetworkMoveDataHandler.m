@@ -30,7 +30,7 @@
 	if (self = [super initWithDebugLevel:debug])
 	{
 //		NSLog(@"Init NetworkMoveHandler");
-		logEntry = 0L;
+		logEntry = nil;
 	}
 	return self;
 }
@@ -45,7 +45,7 @@
 	if( [[BrowserController currentBrowser] isNetworkLogsActive] == NO) return;
 
 	NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContextLoadIfNecessary: NO];
-	if( context == 0L) return;
+	if( context == nil) return;
 	
 	[object retain];
 	NS_DURING

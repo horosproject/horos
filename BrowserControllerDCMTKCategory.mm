@@ -84,7 +84,7 @@
 //	
 //		NSString	*path = a;
 //		NSString	*what = b;
-//		NSString	*dest = 0L;
+//		NSString	*dest = nil;
 //		
 //		dest = c;
 //		
@@ -93,7 +93,7 @@
 //			OFCondition cond;
 //			OFBool status = YES;
 //			const char *fname = (const char *)[path UTF8String];
-//			const char *destination = 0L;
+//			const char *destination = nil;
 //			
 //			if( dest && [dest isEqualToString:path] == NO) destination = (const char *)[dest UTF8String];
 //			else
@@ -165,12 +165,12 @@
 
 - (BOOL)compressDICOMWithJPEG:(NSString *)path
 {
-//	testLocal(path, @"compress", 0L);
+//	testLocal(path, @"compress", nil);
 //	return YES;
 //	
 	NSTask *theTask = [[NSTask alloc] init];
 	
-	[theTask setArguments: [NSArray arrayWithObjects:path, @"compress", 0L]];
+	[theTask setArguments: [NSArray arrayWithObjects:path, @"compress", nil]];
 	[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Decompress"]];
 	[theTask launch];
 //	if( [NSThread currentThread] == [AppController mainThread]) [theTask waitUntilExit];	//<- The problem with this: it calls the current running loop.... problems with current Lock !
@@ -186,7 +186,7 @@
 {
 	NSTask *theTask = [[NSTask alloc] init];
 	
-	[theTask setArguments: [NSArray arrayWithObjects:path, @"decompress", dest,  0L]];
+	[theTask setArguments: [NSArray arrayWithObjects:path, @"decompress", dest,  nil]];
 	[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Decompress"]];
 	[theTask launch];
 //	if( [NSThread currentThread] == [AppController mainThread]) [theTask waitUntilExit];	//<- The problem with this: it calls the current running loop.... problems with current Lock !
@@ -204,6 +204,6 @@
 
 - (BOOL)decompressDICOM:(NSString *)path to:(NSString*) dest
 {
-	[self decompressDICOM: path to: dest deleteOriginal:YES];
+	return [self decompressDICOM: path to: dest deleteOriginal:YES];
 }
 @end

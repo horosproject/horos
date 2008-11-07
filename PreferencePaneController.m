@@ -46,8 +46,8 @@ static OSStatus SetupRight(
             #if ! defined(NDEBUG)
                 fprintf(
                     stderr, 
-                    "Could not create default right (%ld)\n", 
-                    err
+                    "Could not create default right (%d)\n", 
+                    (int) err
                 );
             #endif
             err = noErr;
@@ -262,63 +262,63 @@ extern OSStatus SetupAuthorization(void)
 		case 0:
 		default:
 			pathToPrefPaneBundle = [[NSBundle mainBundle] pathForResource: @"OSIGeneralPreferencePane" ofType: @"prefPane"];
-			[[self window] setTitle: NSLocalizedString( @"General", 0L)];
+			[[self window] setTitle: NSLocalizedString( @"General", nil)];
 			break;
 		case 4:
 			pathToPrefPaneBundle = [[NSBundle mainBundle] pathForResource: @"OSIViewerPreferencePane" ofType: @"prefPane"];	
-			[[self window] setTitle: NSLocalizedString( @"Viewers", 0L)];
+			[[self window] setTitle: NSLocalizedString( @"Viewers", nil)];
 			break;
 		case 2:
 			pathToPrefPaneBundle = [[NSBundle mainBundle] pathForResource: @"OSICDPreferencePane" ofType: @"prefPane"];	
-			[[self window] setTitle: NSLocalizedString( @"CD/DVD", 0L)];
+			[[self window] setTitle: NSLocalizedString( @"CD/DVD", nil)];
 			break;
 		case 1:
 			pathToPrefPaneBundle = [[NSBundle mainBundle] pathForResource: @"OSIDatabasePreferencePane" ofType: @"prefPane"];
-			[[self window] setTitle: NSLocalizedString( @"Database", 0L)];
+			[[self window] setTitle: NSLocalizedString( @"Database", nil)];
 			break;
 		case 9:
 			pathToPrefPaneBundle = [[NSBundle mainBundle] pathForResource: @"OSIListenerPreferencePane" ofType: @"prefPane"];
-			[[self window] setTitle: NSLocalizedString( @"Listener", 0L)];
+			[[self window] setTitle: NSLocalizedString( @"Listener", nil)];
 			break;
 		case 10:
 			pathToPrefPaneBundle = [[NSBundle mainBundle] pathForResource: @"OSILocationsPreferencePane" ofType: @"prefPane"];
-			[[self window] setTitle: NSLocalizedString( @"Locations", 0L)];
+			[[self window] setTitle: NSLocalizedString( @"Locations", nil)];
 			break;
 		case 12:
 			pathToPrefPaneBundle = [[NSBundle mainBundle] pathForResource: @"AYDicomPrint" ofType: @"prefPane"];
-			[[self window] setTitle: NSLocalizedString( @"DICOM Print", 0L)];
+			[[self window] setTitle: NSLocalizedString( @"DICOM Print", nil)];
 			break;
 		case 3:
 			pathToPrefPaneBundle = [[NSBundle mainBundle] pathForResource: @"OSIHangingPreferencePane" ofType: @"prefPane"];
-			[[self window] setTitle: NSLocalizedString( @"Protocols", 0L)];	
+			[[self window] setTitle: NSLocalizedString( @"Protocols", nil)];	
 			break;
 		case 5:
 			pathToPrefPaneBundle = [[NSBundle mainBundle] pathForResource: @"OSI3DPreferencePane" ofType: @"prefPane"];
-			[[self window] setTitle: NSLocalizedString( @"3D", 0L)];
+			[[self window] setTitle: NSLocalizedString( @"3D", nil)];
 			break;
 		case 6:
 			pathToPrefPaneBundle = [[NSBundle mainBundle] pathForResource: @"OSIPETPreferencePane" ofType: @"prefPane"];
-			[[self window] setTitle: NSLocalizedString( @"PET", 0L)];
+			[[self window] setTitle: NSLocalizedString( @"PET", nil)];
 			break;
 		case 11:
 			pathToPrefPaneBundle = [[NSBundle mainBundle] pathForResource: @"OSIAutoroutingPreferencePane" ofType: @"prefPane"];
-			[[self window] setTitle: NSLocalizedString( @"Routing", 0L)];
+			[[self window] setTitle: NSLocalizedString( @"Routing", nil)];
 			break;
 		case 7:
 			pathToPrefPaneBundle = [[NSBundle mainBundle] pathForResource: @"OSIHotKeys" ofType: @"prefPane"];
-			[[self window] setTitle: NSLocalizedString( @"Hot Keys", 0L)];
+			[[self window] setTitle: NSLocalizedString( @"Hot Keys", nil)];
 			break;
 		case 8:
 			pathToPrefPaneBundle = [[NSBundle mainBundle] pathForResource: @"OSICustomImageAnnotations" ofType: @"prefPane"];
-			[[self window] setTitle: NSLocalizedString( @"Annotations", 0L)];
+			[[self window] setTitle: NSLocalizedString( @"Annotations", nil)];
 			break;
 
 	}
 	[[self window] setRepresentedFilename: pathToPrefPaneBundle];
 	
-	if( bundles == 0L) bundles = [[NSMutableDictionary dictionary] retain];
+	if( bundles == nil) bundles = [[NSMutableDictionary dictionary] retain];
 	
-	if( [bundles objectForKey: pathToPrefPaneBundle] == 0L)
+	if( [bundles objectForKey: pathToPrefPaneBundle] == nil)
 	{
 		prefBundle = [NSBundle bundleWithPath: pathToPrefPaneBundle];
 		[bundles setObject: prefBundle forKey: pathToPrefPaneBundle];
@@ -373,7 +373,7 @@ extern OSStatus SetupAuthorization(void)
 	
 	NSRect	finalFrame = [[self window] frame];
 	
-	[[self window] setTitle:NSLocalizedString( @"Preferences", 0L)];
+	[[self window] setTitle:NSLocalizedString( @"Preferences", nil)];
 	[[self window] setRepresentedFilename: @""];
 	
 //	if( [[NSScreen mainScreen] visibleFrame].size.height <= finalFrame.size.height)

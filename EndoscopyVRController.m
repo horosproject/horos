@@ -39,7 +39,7 @@ extern NSString * documentsDirectory();
     short           err = 0;
 	BOOL			testInterval = YES;
 	
-	for( i = 0; i < 100; i++) undodata[ i] = 0L;
+	for( i = 0; i < 100; i++) undodata[ i] = nil;
 	
 //	[[NSUserDefaults standardUserDefaults] setInteger: 1 forKey: @"MAPPERMODEVR"];	// texture mapping
 	
@@ -82,7 +82,7 @@ extern NSString * documentsDirectory();
 		else
 		{
 			NSRunCriticalAlertPanel(NSLocalizedString( @"Slice interval/thickness",nil), NSLocalizedString( @"Problems with slice thickness/interval to do a 3D reconstruction.",nil),NSLocalizedString( @"OK",nil), nil, nil);
-			return 0L;
+			return nil;
 		}
     }
     
@@ -95,7 +95,7 @@ extern NSString * documentsDirectory();
     if( err)
     {
         NSRunCriticalAlertPanel(NSLocalizedString( @"Images size",nil),  NSLocalizedString(@"These images don't have the same height and width to allow a 3D reconstruction...",nil),NSLocalizedString( @"OK",nil), nil, nil);
-        return 0L;
+        return nil;
     }
 
 	[pixList[0] retain];
@@ -112,7 +112,7 @@ extern NSString * documentsDirectory();
     if( err != 0)
     {
         //[self dealloc];
-        return 0L;
+        return nil;
     }
 	
 	blendingController = bC;
@@ -193,7 +193,7 @@ extern NSString * documentsDirectory();
                name: @"updateVolumeData"
              object: nil];
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: 0L];
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: nil];
 	
 	curCLUTMenu = [NSLocalizedString(@"No CLUT", nil) retain];
 	
@@ -202,7 +202,7 @@ extern NSString * documentsDirectory();
                name: @"UpdateCLUTMenu"
              object: nil];
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: 0L];
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: nil];
 	
 	curOpacityMenu = [NSLocalizedString(@"Linear Table", nil) retain];
 	
@@ -211,7 +211,7 @@ extern NSString * documentsDirectory();
                name: @"UpdateOpacityMenu"
              object: nil];
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: 0L];
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: nil];
 	
 	[nc addObserver: self
            selector: @selector(CLUTChanged:)
@@ -272,7 +272,7 @@ extern NSString * documentsDirectory();
 	
 	NSDictionary *dict = [NSDictionary dictionaryWithContentsOfFile: str];
 	
-	if( [viewer2D postprocessed]) dict = 0L;
+	if( [viewer2D postprocessed]) dict = nil;
 	
 	[view set3DStateDictionary:dict];
 	NSLog(@"3d Dict: %@", dict);

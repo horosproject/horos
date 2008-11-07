@@ -24,9 +24,9 @@ NSString *CopiedRowsType = @"COPIED_ROWS_TYPE";
 
 - (void) deleteSelectedRow:(id)sender
 {
-	if( _authView == 0L || [_authView authorizationState] == SFAuthorizationViewUnlockedState)
+	if( _authView == nil || [_authView authorizationState] == SFAuthorizationViewUnlockedState)
 	{
-		if( NSRunInformationalAlertPanel(NSLocalizedString(@"Delete Server", 0L), NSLocalizedString(@"Are you sure you want to delete the selected item?", 0L), NSLocalizedString(@"OK",nil), NSLocalizedString(@"Cancel",nil), nil) == NSAlertDefaultReturn)
+		if( NSRunInformationalAlertPanel(NSLocalizedString(@"Delete Server", nil), NSLocalizedString(@"Are you sure you want to delete the selected item?", nil), NSLocalizedString(@"OK",nil), NSLocalizedString(@"Cancel",nil), nil) == NSAlertDefaultReturn)
 		{
 			[self removeObjectAtArrangedObjectIndex: [tableView selectedRow]];
 		}
@@ -80,7 +80,7 @@ NSString *CopiedRowsType = @"COPIED_ROWS_TYPE";
 		writeRows:(NSArray*)rows
 	 toPasteboard:(NSPasteboard*)pboard
 {
-	if( _authView != 0L)
+	if( _authView != nil)
 	{
 		if( [_authView authorizationState] != SFAuthorizationViewUnlockedState)
 		{
@@ -119,7 +119,7 @@ NSString *CopiedRowsType = @"COPIED_ROWS_TYPE";
 	   proposedDropOperation:(NSTableViewDropOperation)op
 {
 
-	if( _authView != 0L)
+	if( _authView != nil)
 	{
 		if( [_authView authorizationState] != SFAuthorizationViewUnlockedState)
 		{
@@ -172,7 +172,7 @@ NSString *CopiedRowsType = @"COPIED_ROWS_TYPE";
 			  row:(NSInteger)row
 	dropOperation:(NSTableViewDropOperation)op
 {
-	if( _authView != 0L)
+	if( _authView != nil)
 	{
 		if( [_authView authorizationState] != SFAuthorizationViewUnlockedState)
 		{
@@ -187,7 +187,7 @@ NSString *CopiedRowsType = @"COPIED_ROWS_TYPE";
     // if drag source is self, it's a move
     if ([info draggingSource] == tableView) {
 		
-		[self setSortDescriptors: 0L];
+		[self setSortDescriptors: nil];
 		
 		NSArray *rows = [[info draggingPasteboard] propertyListForType:MovedRowsType];
 		NSIndexSet  *indexSet = [self indexSetFromRows:rows];

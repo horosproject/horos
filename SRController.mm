@@ -150,7 +150,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 		else
 		{
 			NSRunCriticalAlertPanel(NSLocalizedString( @"Slice interval/thickness",nil), NSLocalizedString( @"Problems with slice thickness/interval to do a 3D reconstruction.",nil), NSLocalizedString(@"OK",nil), nil, nil);
-			return 0L;
+			return nil;
 		}
     }
     
@@ -163,7 +163,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
     if( err)
     {
         NSRunCriticalAlertPanel( NSLocalizedString(@"Images size",nil),  NSLocalizedString(@"These images don't have the same height and width to allow a 3D reconstruction...",nil), NSLocalizedString(@"OK",nil), nil, nil);
-        return 0L;
+        return nil;
     }
     
     // CHECK IMAGE SIZE
@@ -177,7 +177,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 //		}
 //		if( err)
 //		{
-//			if( NSRunCriticalAlertPanel( @"Slices location",  @"Slice thickness/interval is not exactly equal for all images. This could distord the 3D reconstruction...", @"Continue", @"Cancel", nil) != NSAlertDefaultReturn) return 0L;
+//			if( NSRunCriticalAlertPanel( @"Slices location",  @"Slice thickness/interval is not exactly equal for all images. This could distord the 3D reconstruction...", @"Continue", @"Cancel", nil) != NSAlertDefaultReturn) return nil;
 //			err = 0;
 //		}
 //	}
@@ -194,7 +194,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
     if( err != 0)
     {
        // [self dealloc];
-        return 0L;
+        return nil;
     }
     
 	blendingController = bC;
@@ -271,7 +271,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 //               name: @"UpdateWLWWMenu"
 //             object: nil];
 //	
-//	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: 0L];
+//	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: nil];
 //	
 //	curCLUTMenu = NSLocalizedString(@"No CLUT", nil);
 //	
@@ -280,7 +280,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 //               name: @"UpdateCLUTMenu"
 //             object: nil];
 //	
-//	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: 0L];
+//	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: nil];
 	
 	roiVolumes = [[NSMutableArray alloc] initWithCapacity:0];
 #ifdef roi3Dvolume
@@ -304,7 +304,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
     [pixList release];
 	[volumeData release];
 	
-	[toolbar setDelegate: 0L];
+	[toolbar setDelegate: nil];
 	[toolbar release];
 
 	[roi2DPointsArray release];
@@ -806,7 +806,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
     BOOL enable = YES;
 	if ([[toolbarItem itemIdentifier] isEqual: BSRSettingsToolbarItemIdentifier])
     {
-        if(blendingController == 0L) enable = NO;
+        if(blendingController == nil) enable = NO;
     }
     return enable;
 }
@@ -838,7 +838,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 	[panel setCanSelectHiddenExtension:YES];
 	[panel setRequiredFileType:@"jpg"];
 	
-	if( [panel runModalForDirectory:0L file:@"3D SR Image"] == NSFileHandlingPanelOKButton)
+	if( [panel runModalForDirectory:nil file:@"3D SR Image"] == NSFileHandlingPanelOKButton)
 	{
 		NSImage *im = [view nsimage:NO];
 		
@@ -863,7 +863,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 	[panel setCanSelectHiddenExtension:YES];
 	[panel setRequiredFileType:@"tif"];
 	
-	if( [panel runModalForDirectory:0L file:@"3D SR Image"] == NSFileHandlingPanelOKButton)
+	if( [panel runModalForDirectory:nil file:@"3D SR Image"] == NSFileHandlingPanelOKButton)
 	{
 		NSImage *im = [view nsimage:NO];
 		
@@ -889,7 +889,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 			return [w windowController];
 	}
 	
-	return 0L;
+	return nil;
 }
 
 - (IBAction) flyThruButtonMenu:(id) sender
@@ -959,7 +959,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 			[y2DPointsArray addObject:[NSNumber numberWithFloat:y]];
 			[z2DPointsArray addObject:[NSNumber numberWithFloat:z]];
 			// notify the change
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object: new2DPointROI userInfo: 0L];
+			[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object: new2DPointROI userInfo: nil];
 		}
 	}
 }
@@ -993,7 +993,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 			[[[viewer2D roiList] objectAtIndex: [[sliceNumber2DPointsArray objectAtIndex:cur2DPointIndex] longValue]] removeObject:cur2DPoint];
 			//notify
 			[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:cur2DPoint userInfo: nil];
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"updateView" object:0L userInfo: 0L];
+			[[NSNotificationCenter defaultCenter] postNotificationName: @"updateView" object:nil userInfo: nil];
 
 			// remove 2D point in our list
 			// done by remove3DPoint (through notification)
@@ -1403,12 +1403,10 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 	_smooth = iteration;
 }
 - (void) setFirstColor:(NSColor *)color{
-	_firstColor;
 	_firstColor  = color;
 }
 
 - (void) setSecondColor: (NSColor *)color{
-	_secondColor;
 	_secondColor  = color;
 }
 

@@ -18,7 +18,7 @@
 
 extern BOOL USETOOLBARPANEL;
 
-static 	NSMutableDictionary *associatedScreen = 0L;
+static 	NSMutableDictionary *associatedScreen = nil;
 
 @implementation ToolbarPanelController
 
@@ -66,7 +66,7 @@ static 	NSMutableDictionary *associatedScreen = 0L;
 	
 	if (self = [super initWithWindowNibName:@"ToolbarPanel"])
 	{
-		toolbar = 0L;
+		toolbar = nil;
 		
 //		[[self window] setCollectionBehavior: NSWindowCollectionBehaviorMoveToActiveSpace];
 	}
@@ -158,7 +158,7 @@ static 	NSMutableDictionary *associatedScreen = 0L;
 			}
 			else
 			{
-				[self setToolbar: 0L viewer: 0L];
+				[self setToolbar: nil viewer: nil];
 				[[self window] orderOut:self];
 				NSLog(@"hide toolbar");
 			}
@@ -209,7 +209,7 @@ static 	NSMutableDictionary *associatedScreen = 0L;
 		else
 			[associatedScreen removeObjectForKey: [NSValue valueWithPointer: toolbar]];
 		
-		[[self window] setToolbar: 0L];
+		[[self window] setToolbar: nil];
 //		[[self window] orderOut: self];
 		
 		[associatedScreen removeObjectForKey: [NSValue valueWithPointer: toolbar]];
@@ -225,11 +225,11 @@ static 	NSMutableDictionary *associatedScreen = 0L;
 
 - (void) setToolbar :(NSToolbar*) tb viewer:(ViewerController*) v
 {
-	if( associatedScreen == 0L) associatedScreen = [[NSMutableDictionary alloc] init];
+	if( associatedScreen == nil) associatedScreen = [[NSMutableDictionary alloc] init];
 	
 	if( tb == toolbar)
 	{
-		if( viewer != 0L)
+		if( viewer != nil)
 			[[self window] orderWindow: NSWindowBelow relativeTo: [[viewer window] windowNumber]];
 	
 		if( toolbar)
@@ -237,7 +237,7 @@ static 	NSMutableDictionary *associatedScreen = 0L;
 			if( [associatedScreen objectForKey: [NSValue valueWithPointer: toolbar]] != [[self window] screen])
 			{
 				if( [[NSScreen screens] count] > 1)
-					[[self window] setToolbar: 0L];
+					[[self window] setToolbar: nil];
 				[[self window] setToolbar: toolbar];
 				
 				if( [[self window] screen])
@@ -264,7 +264,7 @@ static 	NSMutableDictionary *associatedScreen = 0L;
 		if( [associatedScreen objectForKey: [NSValue valueWithPointer: toolbar]] != [[self window] screen])
 		{
 			if( [[NSScreen screens] count] > 1)
-				[[self window] setToolbar: 0L];	//To avoid the stupid add an item in customize toolbar.....
+				[[self window] setToolbar: nil];	//To avoid the stupid add an item in customize toolbar.....
 				
 			if( [[self window] screen])
 				[associatedScreen setObject: [[self window] screen] forKey: [NSValue valueWithPointer: toolbar]];

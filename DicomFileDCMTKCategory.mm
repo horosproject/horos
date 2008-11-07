@@ -84,7 +84,7 @@ extern NSRecursiveLock *PapyrusLock;
 	#ifdef OSIRIX_VIEWER
 	int			success = 0;
 	NSString	*extension = [[filePath pathExtension] lowercaseString];
-	char		*err = 0L;
+	char		*err = nil;
 	
 	if( [extension isEqualToString:@"nrrd"] == YES)
 	{
@@ -207,11 +207,11 @@ extern NSRecursiveLock *PapyrusLock;
 	PapyULong           nbVal;
 	UValue_T            *val;
 	SElement			*theGroupP;
-	NSString			*converted = 0L;
+	NSString			*converted = nil;
 	NSStringEncoding	encoding[ 10];
 	NSString *echoTime = nil;
 	const char *string = NULL;
-	NSMutableArray *imageTypeArray = 0L;
+	NSMutableArray *imageTypeArray = nil;
 	
 	DcmFileFormat fileformat;
 	[PapyrusLock lock];
@@ -220,7 +220,7 @@ extern NSRecursiveLock *PapyrusLock;
 	[PapyrusLock unlock];
 	if (status.good())
 	{
-		NSString *characterSet = 0L;
+		NSString *characterSet = nil;
 		for( i = 0; i < 10; i++) encoding[ i] = NSISOLatin1StringEncoding;
 		
 		DcmDataset *dataset = fileformat.getDataset();
@@ -260,7 +260,7 @@ extern NSRecursiveLock *PapyrusLock;
 			
 			if([self checkForLAVIM] == YES)
 			{
-				NSString	*album = 0L;
+				NSString	*album = nil;
 				if (dataset->findAndGetString(DCM_ImageComments, string, OFFalse).good() && string != NULL){
 					album = [NSString stringWithCString:string];					
 					if( [album length] >= 2)
@@ -309,7 +309,7 @@ extern NSRecursiveLock *PapyrusLock;
 		}
 		
 		if ([sopClassUID isEqualToString:[DCMAbstractSyntaxUID pdfStorageClassUID]]){
-			const Uint8 *buffer = 0L;
+			const Uint8 *buffer = nil;
 			unsigned int length;
 			if (dataset->findAndGetUint8Array(DCM_EncapsulatedDocument, buffer, &length, OFFalse).good() && string != NULL){
 				NSData *pdfData = [NSData dataWithBytes:buffer length:(unsigned)length];;
@@ -432,7 +432,7 @@ extern NSRecursiveLock *PapyrusLock;
 			}
 			else date = [[NSCalendarDate alloc] initWithString:studyDate calendarFormat:@"%Y%m%d"];
 		}
-		else date = [[NSCalendarDate dateWithYear:1901 month:1 day:1 hour:0 minute:0 second:0 timeZone:0L] retain];
+		else date = [[NSCalendarDate dateWithYear:1901 month:1 day:1 hour:0 minute:0 second:0 timeZone:nil] retain];
 		
 		if( date) [dicomElements setObject:date forKey:@"studyDate"];
 		
@@ -476,7 +476,7 @@ extern NSRecursiveLock *PapyrusLock;
 		if (dataset->findAndGetString(DCM_PatientsName, string, OFFalse).good() && string != NULL)
 		{
 			name = [[DicomFile stringWithBytes: (char*) string encodings:encoding] retain];
-			if(name == 0L) name = [[NSString alloc] initWithCString: string encoding: encoding[ 0]];
+			if(name == nil) name = [[NSString alloc] initWithCString: string encoding: encoding[ 0]];
 		}
 		else
 			name = [[NSString alloc] initWithString:@"No name"];
@@ -553,7 +553,7 @@ extern NSRecursiveLock *PapyrusLock;
 			[imageID release];
 			imageID = [[NSString alloc] initWithFormat:@"%5d", val];
 		}
-		else imageID = 0L;
+		else imageID = nil;
 		
 		// Compute slice location
 			
@@ -586,7 +586,7 @@ extern NSRecursiveLock *PapyrusLock;
 		
 		[dicomElements setObject:[NSNumber numberWithDouble: (double)location] forKey:@"sliceLocation"];
 		
-		if( imageID == 0L || [imageID intValue] >= 99999)
+		if( imageID == nil || [imageID intValue] >= 99999)
 		{
 			int val = 10000 + location*10.;
 			imageID = [[NSString alloc] initWithFormat:@"%5d", val];
@@ -638,7 +638,7 @@ extern NSRecursiveLock *PapyrusLock;
 			serieID = n;
 		}
 		
-		if( serie != 0L && [self useSeriesDescription])
+		if( serie != nil && [self useSeriesDescription])
 		{
 			NSString	*n;
 			
@@ -696,7 +696,7 @@ extern NSRecursiveLock *PapyrusLock;
 		
 		NoOfSeries = 1;
 			
-		if( patientID == 0L) patientID = [[NSString alloc] initWithString:@""];
+		if( patientID == nil) patientID = [[NSString alloc] initWithString:@""];
 		
 		if( NoOfFrames > 1) // SERIES ID MUST BE UNIQUE!!!!!
 		{
@@ -720,7 +720,7 @@ extern NSRecursiveLock *PapyrusLock;
 		
 		[dicomElements setObject:[self patientUID] forKey:@"patientUID"];
 		
-		if( serieID == 0L) serieID = [[NSString alloc] initWithString:name];
+		if( serieID == nil) serieID = [[NSString alloc] initWithString:name];
 		
 		if( [Modality isEqualToString:@"US"] && [self oneFileOnSeriesForUS])
 		{
@@ -742,21 +742,21 @@ extern NSRecursiveLock *PapyrusLock;
 		else
 			[dicomElements setObject:serieID forKey:@"seriesID"];
 		
-		if( studyID == 0L)
+		if( studyID == nil)
 		{
 			studyID = [[NSString alloc] initWithString:name];
 			[dicomElements setObject:studyID forKey:@"studyID"];
 		}
 		
-		if( imageID == 0L)
+		if( imageID == nil)
 		{
 			imageID = [[NSString alloc] initWithString:name];
 			[dicomElements setObject:imageID forKey:@"SOPUID"];
 		}
 	
-		if( date == 0L)
+		if( date == nil)
 		{
-			date = [[NSCalendarDate dateWithYear:1901 month:1 day:1 hour:0 minute:0 second:0 timeZone:0L] retain];
+			date = [[NSCalendarDate dateWithYear:1901 month:1 day:1 hour:0 minute:0 second:0 timeZone:nil] retain];
 			[dicomElements setObject:date forKey:@"studyDate"];
 		}
 		
@@ -764,7 +764,7 @@ extern NSRecursiveLock *PapyrusLock;
 		
 		//NSLog(@"DicomElements:  %@ %@" ,NSStringFromClass([dicomElements class]) ,[dicomElements description]);
 		
-		if( name != 0L && studyID != 0L && serieID != 0L && imageID != 0L && width != 0 && height != 0)
+		if( name != nil && studyID != nil && serieID != nil && imageID != nil && width != 0 && height != 0)
 		{
 			return 0;   // success
 		}

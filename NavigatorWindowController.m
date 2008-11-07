@@ -16,7 +16,7 @@
 #import "ViewerController.h"
 #import "AppController.h"
 
-static NavigatorWindowController *nav = 0L;
+static NavigatorWindowController *nav = nil;
 
 @implementation NavigatorWindowController
 
@@ -93,7 +93,7 @@ static NavigatorWindowController *nav = 0L;
 {
 //	if( [notif object] == viewerController)
 //	{
-//		[self setViewer: 0L];
+//		[self setViewer: nil];
 //	}
 	
 	if([[ViewerController getDisplayed2DViewers] count] == 0)
@@ -153,7 +153,7 @@ static NavigatorWindowController *nav = 0L;
 - (void)dealloc
 {
 	NSLog(@"NavigatorWindowController dealloc");
-	nav = 0L;
+	nav = nil;
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[viewerController release];
 	[super dealloc];

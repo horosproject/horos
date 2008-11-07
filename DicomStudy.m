@@ -121,7 +121,7 @@
 - (void) setDate:(NSDate*) date
 {
 	[dicomTime release];
-	dicomTime = 0L;
+	dicomTime = nil;
 	
 	[self willChangeValueForKey: @"date"];
 	[self setPrimitiveValue: date forKey:@"date"];
@@ -283,7 +283,7 @@
 {
 	[[self managedObjectContext] lock];
 	
-	NSMutableArray *newArray = 0L;
+	NSMutableArray *newArray = nil;
 	
 	@try
 	{
@@ -310,7 +310,7 @@
 {
 	[[self managedObjectContext] lock];
 	
-	NSMutableArray *newArray = 0L;
+	NSMutableArray *newArray = nil;
 	@try
 	{
 		NSArray *array = [self primitiveValueForKey: @"series"] ;
@@ -340,7 +340,7 @@
 {
 	[[self managedObjectContext] lock];
 	
-	NSMutableSet *set = 0L;
+	NSMutableSet *set = nil;
 	
 	@try
 	{
@@ -433,7 +433,7 @@
 - (NSManagedObject *)roiSRSeries
 {
 	NSArray *array = [self primitiveValueForKey: @"series"] ;
-	if ([array count] < 1)  return 0L;
+	if ([array count] < 1)  return nil;
 	
 	[[self managedObjectContext] lock];
 	
@@ -456,7 +456,7 @@
 	
 	if( [newArray count]) return [newArray objectAtIndex: 0];
 	
-	return 0L;
+	return nil;
 }
 
 - (NSDictionary *)dictionary

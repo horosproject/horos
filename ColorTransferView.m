@@ -41,7 +41,7 @@
 
 - (IBAction) renderButton:(id) sender
 {
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"CLUTChanged" object: self userInfo: 0L];
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"CLUTChanged" object: self userInfo: nil];
 }
 
 -(void) selectPicker:(id) sender
@@ -50,8 +50,8 @@
 	{
 		NSColor *newColor = [[pick color] colorUsingColorSpaceName: NSDeviceRGBColorSpace];
 		
-		[colors replaceObjectAtIndex: curIndex withObject:[NSArray arrayWithObjects: [NSNumber numberWithFloat: [newColor redComponent]], [NSNumber numberWithFloat: [newColor greenComponent]], [NSNumber numberWithFloat: [newColor blueComponent]],0L]]; 
-	//	[[NSNotificationCenter defaultCenter] postNotificationName: @"CLUTChanged" object: self userInfo: 0L];
+		[colors replaceObjectAtIndex: curIndex withObject:[NSArray arrayWithObjects: [NSNumber numberWithFloat: [newColor redComponent]], [NSNumber numberWithFloat: [newColor greenComponent]], [NSNumber numberWithFloat: [newColor blueComponent]],nil]]; 
+	//	[[NSNotificationCenter defaultCenter] postNotificationName: @"CLUTChanged" object: self userInfo: nil];
 		[self setNeedsDisplay:YES];
 	}
 }
@@ -138,12 +138,12 @@
 		
 		NSColor *newColor = [[pick color]  colorUsingColorSpaceName: NSDeviceRGBColorSpace];
 		
-		[colors insertObject:[NSArray arrayWithObjects: [NSNumber numberWithFloat: [newColor redComponent]], [NSNumber numberWithFloat: [newColor greenComponent]], [NSNumber numberWithFloat: [newColor blueComponent]],0L ] atIndex:curIndex];
+		[colors insertObject:[NSArray arrayWithObjects: [NSNumber numberWithFloat: [newColor redComponent]], [NSNumber numberWithFloat: [newColor greenComponent]], [NSNumber numberWithFloat: [newColor blueComponent]],nil ] atIndex:curIndex];
 	}
 	
 	[position setIntValue: center.x/2];
 	
-//	[[NSNotificationCenter defaultCenter] postNotificationName: @"CLUTChanged" object: self userInfo: 0L];
+//	[[NSNotificationCenter defaultCenter] postNotificationName: @"CLUTChanged" object: self userInfo: nil];
 	
     [self setNeedsDisplay:YES];
 }

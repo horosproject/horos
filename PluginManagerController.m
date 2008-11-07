@@ -26,8 +26,8 @@
 #define PLUGIN_SUBMISSION_URL @"http://www.osirix-viewer.com/osirix_plugins/submit_plugin/index.html"
 #define PLUGIN_SUBMISSION_NO_MAIL_APP_URL @"http://www.osirix-viewer.com/osirix_plugins/submit_plugin/index_no_mail_app.html"
 
-static NSArray *CachedPluginsList = 0L;
-static NSDate *CachedPluginsListDate = 0L;
+static NSArray *CachedPluginsList = nil;
+static NSDate *CachedPluginsListDate = nil;
 
 @implementation PluginManagerController
 
@@ -98,11 +98,11 @@ static NSDate *CachedPluginsListDate = 0L;
 
 - (IBAction)delete:(id)sender;
 {
-	if( NSRunInformationalAlertPanel(	NSLocalizedString(@"Delete a plugin", 0L),
-												 NSLocalizedString(@"Are you sure you want to delete the selected plugin?", 0L),
+	if( NSRunInformationalAlertPanel(	NSLocalizedString(@"Delete a plugin", nil),
+												 NSLocalizedString(@"Are you sure you want to delete the selected plugin?", nil),
 												 NSLocalizedString(@"OK",nil),
 												 NSLocalizedString(@"Cancel",nil),
-												 0L) == NSAlertDefaultReturn)
+												 nil) == NSAlertDefaultReturn)
 	{
 		NSArray *pluginsList = [pluginsArrayController arrangedObjects];
 		NSString *pluginName = [[pluginsList objectAtIndex:[pluginTable selectedRow]] objectForKey:@"name"];
@@ -215,10 +215,6 @@ static NSDate *CachedPluginsListDate = 0L;
 		[self refreshPluginList];
 }
 
-- (BOOL)tableView:(NSTableView *)tableView shouldTypeSelectForEvent:(NSEvent *)event withCurrentSearchString:(NSString *)searchString
-{
-	NSLog(@"%@", event);
-}
 #pragma mark -
 #pragma mark web view
 
@@ -237,7 +233,7 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
 	NSString *pluginsListURL = @"";
 	NSArray *pluginsList = nil;
 	
-	if( CachedPluginsListDate == 0L || [CachedPluginsListDate timeIntervalSinceNow] < -10*60)
+	if( CachedPluginsListDate == nil || [CachedPluginsListDate timeIntervalSinceNow] < -10*60)
 	{
 	}
 	else if( CachedPluginsList)
@@ -293,7 +289,7 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
 	
 	[[webView mainFrame] loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:url]]];
 	
-	while( [[webView mainFrame] dataSource] == 0L || [[[webView mainFrame] dataSource] isLoading] == YES || [[[webView mainFrame] provisionalDataSource] isLoading] == YES)
+	while( [[webView mainFrame] dataSource] == nil || [[[webView mainFrame] dataSource] isLoading] == YES || [[[webView mainFrame] provisionalDataSource] isLoading] == YES)
 	{
 		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 0.2]];
 	}

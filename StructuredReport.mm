@@ -694,7 +694,7 @@
 	NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
 	[dbRequest setEntity: [[model entitiesByName] objectForKey:@"Image"]];
 	NSPredicate *predicate = [NSPredicate predicateWithValue:NO];
-	NSError *error = 0L;
+	NSError *error = nil;
 	
 	NSEnumerator *enumerator = [references objectEnumerator];
 	id reference;

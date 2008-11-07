@@ -50,16 +50,16 @@ extern BrowserController	*browserWindow;
 	self = [super init];
 	if (self)
 	{
-		dcmSourcePath = 0L;
-		dcmDst = 0L;
+		dcmSourcePath = nil;
+		dcmDst = nil;
 		
-		data = 0L;
+		data = nil;
 		width = height = spp = bpp = 0;
 		
-		image = 0L;
-		imageData = 0L;
+		image = nil;
+		imageData = nil;
 		freeImageData = NO;
-		imageRepresentation = 0L;
+		imageRepresentation = nil;
 		
 		ww = wl = -1;
 		
@@ -133,14 +133,14 @@ extern BrowserController	*browserWindow;
 	if( image != iimage)
 	{
 		[image release];
-		image = 0L;
+		image = nil;
 		
 		[imageRepresentation release];
-		imageRepresentation = 0L;
+		imageRepresentation = nil;
 		
 		if( freeImageData) free( imageData);
 		freeImageData = NO;
-		imageData = 0L;
+		imageData = nil;
 		
 		image = [iimage retain];
 	}
@@ -216,7 +216,7 @@ extern BrowserController	*browserWindow;
 
 - (NSString*) writeDCMFile: (NSString*) dstPath
 {
-	if( dstPath == 0L)
+	if( dstPath == nil)
 	{
 		BOOL			isDir = YES;
 		long			index = 0;
@@ -233,15 +233,15 @@ extern BrowserController	*browserWindow;
 	}
 	
 	
-	if( width != 0 && height != 0 && data != 0L)
+	if( width != 0 && height != 0 && data != nil)
 	{
 		@try
 		{
-			DCMCalendarDate		*acquisitionDate = [DCMCalendarDate date], *studyDate = 0L, *studyTime = 0L;
-			DCMObject			*dcmObject = 0L;
-			NSString			*patientName = 0L, *patientID = 0L, *studyDescription = 0L, *studyUID = 0L, *studyID = 0L, *charSet = 0L;
-			NSNumber			*seriesNumber = 0L;
-			unsigned char		*squaredata = 0L;
+			DCMCalendarDate		*acquisitionDate = [DCMCalendarDate date], *studyDate = nil, *studyTime = nil;
+			DCMObject			*dcmObject = nil;
+			NSString			*patientName = nil, *patientID = nil, *studyDescription = nil, *studyUID = nil, *studyID = nil, *charSet = nil;
+			NSNumber			*seriesNumber = nil;
+			unsigned char		*squaredata = nil;
 			
 			seriesNumber = [NSNumber numberWithInt:exportSeriesNumber];
 			
@@ -313,7 +313,7 @@ extern BrowserController	*browserWindow;
 						float	*tempFloatSrc = malloc( height * width * sizeof( float));
 						float	*tempFloatDst = malloc( newHeight * width * sizeof( float));
 						
-						if( squaredata != 0L && tempFloatSrc != 0L && tempFloatDst != 0L)
+						if( squaredata != nil && tempFloatSrc != nil && tempFloatDst != nil)
 						{
 							long err;
 							
@@ -342,7 +342,7 @@ extern BrowserController	*browserWindow;
 							dstVimage.width = width;
 							dstVimage.rowBytes = width*sizeof( float);
 							
-							err = vImageScale_PlanarF( &srcVimage, &dstVimage, 0L, kvImageHighQualityResampling);
+							err = vImageScale_PlanarF( &srcVimage, &dstVimage, nil, kvImageHighQualityResampling);
 						//	if( err) NSLog(@"%d", err);
 							
 							// Convert Destination to 16 bits
@@ -420,7 +420,7 @@ extern BrowserController	*browserWindow;
 				
 				default:
 					NSLog(@"Unsupported bpp: %d", bpp);
-					return 0L;
+					return nil;
 				break;
 			}
 			
@@ -483,11 +483,11 @@ extern BrowserController	*browserWindow;
 			
 			if( spacingX != 0 && spacingY != 0)
 			{
-				[dcmDst setAttributeValues:[NSMutableArray arrayWithObjects:[NSNumber numberWithFloat:spacingY], [NSNumber numberWithFloat:spacingX], 0L] forName:@"PixelSpacing"];
+				[dcmDst setAttributeValues:[NSMutableArray arrayWithObjects:[NSNumber numberWithFloat:spacingY], [NSNumber numberWithFloat:spacingX], nil] forName:@"PixelSpacing"];
 			}
 			if( sliceThickness != 0) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithFloat:sliceThickness]] forName:@"SliceThickness"];
-			if( orientation[ 0] != 0 || orientation[ 1] != 0 || orientation[ 2] != 0) [dcmDst setAttributeValues:[NSMutableArray arrayWithObjects:[NSNumber numberWithFloat:orientation[ 0]], [NSNumber numberWithFloat:orientation[ 1]], [NSNumber numberWithFloat:orientation[ 2]], [NSNumber numberWithFloat:orientation[ 3]], [NSNumber numberWithFloat:orientation[ 4]], [NSNumber numberWithFloat:orientation[ 5]], 0L] forName:@"ImageOrientationPatient"];
-			if( position[ 0] != 0 || position[ 1] != 0 || position[ 2] != 0) [dcmDst setAttributeValues:[NSMutableArray arrayWithObjects:[NSNumber numberWithFloat:position[ 0]], [NSNumber numberWithFloat:position[ 1]], [NSNumber numberWithFloat:position[ 2]], 0L] forName:@"ImagePositionPatient"];
+			if( orientation[ 0] != 0 || orientation[ 1] != 0 || orientation[ 2] != 0) [dcmDst setAttributeValues:[NSMutableArray arrayWithObjects:[NSNumber numberWithFloat:orientation[ 0]], [NSNumber numberWithFloat:orientation[ 1]], [NSNumber numberWithFloat:orientation[ 2]], [NSNumber numberWithFloat:orientation[ 3]], [NSNumber numberWithFloat:orientation[ 4]], [NSNumber numberWithFloat:orientation[ 5]], nil] forName:@"ImageOrientationPatient"];
+			if( position[ 0] != 0 || position[ 1] != 0 || position[ 2] != 0) [dcmDst setAttributeValues:[NSMutableArray arrayWithObjects:[NSNumber numberWithFloat:position[ 0]], [NSNumber numberWithFloat:position[ 1]], [NSNumber numberWithFloat:position[ 2]], nil] forName:@"ImagePositionPatient"];
 			if( slicePosition != 0) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithFloat:slicePosition]] forName:@"SliceLocation"];
 			if( spp == 3) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithFloat:0]] forName:@"PlanarConfiguration"];
 			
@@ -544,17 +544,19 @@ extern BrowserController	*browserWindow;
 			
 			if( squaredata)
 				free( squaredata);
-			squaredata = 0L;
+			squaredata = nil;
 			
 			return dstPath;
 		}
 		@catch (NSException *e)
 		{
 			NSLog( @"WriteDCMFile failed : %@", e);
-			return 0L;
+			return nil;
 		}
 	}
-	else return 0L;
+	else return nil;
+	
+	return nil;
 }
 
 - (NSString*) SOPInstanceUID

@@ -112,9 +112,9 @@
 		
 		[self addSeed:[OSIVoxel pointWithX:xpx  y:ypx  z:zpx value:nil]];
 		
-	//	[self setStartingPointPixelPosition:[NSString stringWithFormat:NSLocalizedString(@"px:\t\tx:%d y:%d", 0L), xpx, ypx]];
-	//	[self setStartingPointWorldPosition:[NSString stringWithFormat:NSLocalizedString(@"mm:\t\tx:%2.2f y:%2.2f z:%2.2f", 0L), xmm, ymm, zmm]];
-	//	[self setStartingPointValue:[NSString stringWithFormat:NSLocalizedString(@"value:\t%2.2f", 0L), [[[_viewer imageView] curDCM] getPixelValueX: xpx Y:ypx]]];
+	//	[self setStartingPointPixelPosition:[NSString stringWithFormat:NSLocalizedString(@"px:\t\tx:%d y:%d", nil), xpx, ypx]];
+	//	[self setStartingPointWorldPosition:[NSString stringWithFormat:NSLocalizedString(@"mm:\t\tx:%2.2f y:%2.2f z:%2.2f", nil), xmm, ymm, zmm]];
+	//	[self setStartingPointValue:[NSString stringWithFormat:NSLocalizedString(@"value:\t%2.2f", nil), [[[_viewer imageView] curDCM] getPixelValueX: xpx Y:ypx]]];
 	//	_startingPoint = NSMakePoint(xpx, ypx);
 		
 		//[self compute: self];

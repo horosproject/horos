@@ -374,7 +374,7 @@
 	// Y - CACHE activated only if thick slab and if enough memory is available
 	if( axe != 0)
 	{
-		if( thickSlab > 1 && Ycache == 0L)
+		if( thickSlab > 1 && Ycache == nil)
 		{
 			if(useYcache)
 				Ycache = malloc( newTotal*newY*newX*sizeof(float));
@@ -392,7 +392,7 @@
 				NSMutableSet *unitsSet = [NSMutableSet set];
 				for ( x = 0; x < newY; x += 2)
 				{
-					[unitsSet addObject: [NSDictionary dictionaryWithObjectsAndKeys: @"Ycache", @"action", [NSNumber numberWithInt:x], @"zValue", 0L]];
+					[unitsSet addObject: [NSDictionary dictionaryWithObjectsAndKeys: @"Ycache", @"action", [NSNumber numberWithInt:x], @"zValue", nil]];
 				}
 				
 				// Perform work schedule
@@ -457,7 +457,7 @@
 		{
 			if( stack >= [newPixListX count])
 			{
-				curPix = [[DCMPix alloc] initwithdata: 0L :32 :newX :newY :1 :1 :0 :0 :0 :NO];
+				curPix = [[DCMPix alloc] initwithdata: nil :32 :newX :newY :1 :1 :0 :0 :0 :NO];
 				[curPix copySUVfrom: firstPix];
 				curPix.frameOfReferenceUID = firstPix.frameOfReferenceUID;
 				[newPixListX addObject: curPix];
@@ -469,7 +469,7 @@
 		{
 			if( stack  >= [newPixListY count])
 			{
-				curPix = [[DCMPix alloc] initwithdata: 0L :32 :newX :newY :1 :1 :0 :0 :0 :NO];
+				curPix = [[DCMPix alloc] initwithdata: nil :32 :newX :newY :1 :1 :0 :0 :0 :NO];
 				[curPix copySUVfrom: firstPix];
 				curPix.frameOfReferenceUID = firstPix.frameOfReferenceUID;
 				[newPixListY addObject: curPix];
@@ -554,7 +554,7 @@
 			[newPixListY removeObjectsInRange: NSMakeRange( stack, [newPixListY count]-stack)];
 	}
 	
-	if( processorsLock == 0L)
+	if( processorsLock == nil)
 		processorsLock = [[NSLock alloc] init];
 	
 	numberOfThreadsForCompute = MPProcessors ();
@@ -622,7 +622,7 @@
 	[yCacheComputation unlock];
 	
 	if(Ycache) free(Ycache);
-	Ycache = 0L;
+	Ycache = nil;
 }
 
 - (BOOL)useYcache;

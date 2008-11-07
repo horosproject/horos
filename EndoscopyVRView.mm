@@ -28,7 +28,7 @@
 
 -(unsigned char*) superGetRawPixels:(long*) width :(long*) height :(long*) spp :(long*) bpp :(BOOL) screenCapture :(BOOL) force8bits
 {
-	[super getRawPixels:width :height :spp :bpp :screenCapture :force8bits];
+	return [super getRawPixels:width :height :spp :bpp :screenCapture :force8bits];
 }
 
 -(unsigned char*) getRawPixels:(long*) width :(long*) height :(long*) spp :(long*) bpp :(BOOL) screenCapture :(BOOL) force8bits

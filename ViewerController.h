@@ -764,7 +764,7 @@ enum
 // functions s that plugins can also play with globals
 + (ViewerController *) draggedController;
 + (void) setDraggedController:(ViewerController *) controller;
-- clear8bitRepresentations;
+- (void) clear8bitRepresentations;
 -(void) ApplyConvString:(NSString*) str;
 - (void)checkView:(NSView *)aView :(BOOL) OnOff;
 - (IBAction) applyConvolutionOnSource:(id) sender;

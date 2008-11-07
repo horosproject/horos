@@ -40,7 +40,7 @@
 + (NSStringEncoding)encodingForDICOMCharacterSet:(NSString *)characterSet{
 	NSStringEncoding	encoding = NSISOLatin1StringEncoding;
 	
-	if( characterSet == 0L) return encoding;
+	if( characterSet == nil) return encoding;
 	if( [characterSet isEqualToString:@""]) return encoding;
 	
 	if	   ( [characterSet isEqualToString:@"ISO_IR 100"]) encoding = NSISOLatin1StringEncoding; 	

@@ -52,7 +52,7 @@ extern short Altivec;
 		opacityTransferFunction->AddPoint(0, 0);
 		opacityTransferFunction->AddPoint(255, 1);
 
-		[self setCLUT:0L :0L :0L];
+		[self setCLUT:nil :nil :nil];
 		[self setOpacity:[NSArray array]];
 	}
 	
@@ -102,7 +102,7 @@ extern short Altivec;
 	
 	// GLOBALS
 	
-	imagePtr = 0L;
+	imagePtr = nil;
 	width = w;
 	height = h;
 	count = c;
@@ -125,7 +125,7 @@ extern short Altivec;
 	srcfBlending.height = height * count;
 	srcfBlending.width = width;
 	srcfBlending.rowBytes = width * sizeof(float);
-	srcfBlending.data = 0L;
+	srcfBlending.data = nil;
 
 	dst8.height = height * count;
 	dst8.width = width;
@@ -137,9 +137,9 @@ extern short Altivec;
 	
 	if( dst8.data) free( dst8.data);
 	dst8.data = (char*) malloc( dst8.height * dst8.width * sizeof(char));
-	if( dst8.data == 0L) return;
+	if( dst8.data == nil) return;
 	
-	flipReader = 0L;
+	flipReader = nil;
 	}
 
 -(void) setOpacity:(NSArray*) array
@@ -463,16 +463,16 @@ extern short Altivec;
 		}
 		else
 		{
-			if( processorsLock == 0L)
+			if( processorsLock == nil)
 				processorsLock = [[NSLock alloc] init];
 			
 			numberOfThreadsForCompute = MPProcessors ();
 			for( i = 0; i < MPProcessors ()-1; i++)
 			{
-				[NSThread detachNewThreadSelector: @selector( subRender:) toTarget:self withObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: size], @"size", [NSNumber numberWithInt: i], @"pos", 0L]];
+				[NSThread detachNewThreadSelector: @selector( subRender:) toTarget:self withObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: size], @"size", [NSNumber numberWithInt: i], @"pos", nil]];
 			}
 			
-			[self subRender: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: size], @"size", [NSNumber numberWithInt: i], @"pos", 0L]];
+			[self subRender: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: size], @"size", [NSNumber numberWithInt: i], @"pos", nil]];
 			
 			BOOL done = NO;
 			while( done == NO)

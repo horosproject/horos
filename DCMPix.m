@@ -61,11 +61,11 @@ BOOL gFULL32BITPIPELINE = NO;
 BOOL	anonymizedAnnotations = NO;
 BOOL	runOsiriXInProtectedMode = NO;
 BOOL	quicktimeRunning = NO;
-NSLock	*quicktimeThreadLock = 0L;
+NSLock	*quicktimeThreadLock = nil;
 
-static NSMutableArray *nonLinearWLWWThreads = 0L;
-static NSMutableArray *minmaxThreads = 0L;
-static NSConditionLock *processorsLock = 0L;
+static NSMutableArray *nonLinearWLWWThreads = nil;
+static NSMutableArray *minmaxThreads = nil;
+static NSConditionLock *processorsLock = nil;
 static float deg2rad = 3.14159265358979/180.0; 
 
 struct NSPointInt
@@ -1355,9 +1355,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 
 - (NSImage*) image
 {
-	unsigned char		*buf = 0L;
+	unsigned char		*buf = nil;
 	long				i;
-	NSImage				*imageRep = 0L;
+	NSImage				*imageRep = nil;
 	NSBitmapImageRep	*rep;
 	
 	[self compute8bitRepresentation];
@@ -1382,7 +1382,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		}
 		
 		rep = [[[NSBitmapImageRep alloc]
-				initWithBitmapDataPlanes:0L
+				initWithBitmapDataPlanes:nil
 				pixelsWide:width
 				pixelsHigh:height
 				bitsPerSample:8
@@ -1403,7 +1403,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	else
 	{
 		rep = [[[NSBitmapImageRep alloc]
-				initWithBitmapDataPlanes:0L
+				initWithBitmapDataPlanes:nil
 				pixelsWide:width
 				pixelsHigh:height
 				bitsPerSample:8
@@ -1455,7 +1455,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		{
 			case YBR_FULL :		// YBR_FULL
 		// loop on the pixels of the image
-		for (loop = 0L, pYBR = ybrImage; loop < size; loop++, pYBR += 3)
+		for (loop = 0, pYBR = ybrImage; loop < size; loop++, pYBR += 3)
 		{
             // get the Y, B and R channels from the original image
 			//            y = (int) pYBR [0];
@@ -1532,7 +1532,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		
         case YBR_PARTIAL_422 :	// YBR_PARTIAL_422
 		// loop on the pixels of the image
-		for (loop = 0L, pYBR = ybrImage; loop < (size / 2); loop++)
+		for (loop = 0, pYBR = ybrImage; loop < (size / 2); loop++)
 		{
             // get the Y, B and R channels from the original image
             y  = (int) pYBR [0];
@@ -1590,7 +1590,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	pR = (unsigned char *) (pB + size);
 	
 	// loop on the pixels of the image
-	for (loop = 0L; loop < size; loop++, pY++, pB++, pR++)
+	for (loop = 0; loop < size; loop++, pY++, pB++, pR++)
 	{
 		a = (int) *pY;
 		b = (int) *pB;
@@ -1728,7 +1728,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 - (float*) getROIValue: (long*)numberOfValues : (ROI*)roi : (float**)locations
 {
     long			count = 0, no;
-	float			*values = 0L;
+	float			*values = nil;
 	long			upleftx, uplefty, downrightx, downrighty;
 	NSPoint			*pts;
 	
@@ -1938,7 +1938,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		for( int i = 0; i < pixArray.count; i++ )	[restoreImageCache[ i] release];
 		
 		free( restoreImageCache);
-		restoreImageCache = 0L;
+		restoreImageCache = nil;
 		
 		NSLog( @"free Restore cache");
 	}
@@ -1946,8 +1946,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 
 - (unsigned char*) getMapFromPolygonROI:(ROI*) roi size:(NSSize*) size origin:(NSPoint*) ROIorigin
 {	
-	unsigned char*	map = 0L;
-	float*			tempImage = 0L;
+	unsigned char*	map = nil;
+	float*			tempImage = nil;
 	
 	if( [roi type] == tCPolygon || [roi type] == tOPolygon || [roi type] == tPencil )
 	{
@@ -2024,10 +2024,10 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 //			no = newNo;
 //		}
 		
-		if( ptsInt != 0L && no > 1 )	{
+		if( ptsInt != nil && no > 1 )	{
 			BOOL restore = NO, addition = NO, outside = NO;
 			
-			ras_FillPolygon( ptsInt, no, tempImage, size->width, size->height, [pixArray count], -99999, 99999, outside, 255, addition, NO, NO, 0L, 0L, 0L, 0L, 0L, 0, 2, 0, restore);
+			ras_FillPolygon( ptsInt, no, tempImage, size->width, size->height, [pixArray count], -99999, 99999, outside, 255, addition, NO, NO, nil, nil, nil, nil, nil, 0, 2, 0, restore);
 		}
 		
 		// Convert float to char
@@ -2070,8 +2070,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
     long				no = 0;
 	long				y;
     long				uplefty, downrighty, ims = width * height;
-	struct NSPointInt	*ptsInt = 0L;
-	NSMutableArray		*ptsTemp = 0L;
+	struct NSPointInt	*ptsInt = nil;
+	NSMutableArray		*ptsTemp = nil;
 	float				*fTempImage;
 	BOOL				clip;
 	
@@ -2102,7 +2102,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 					{
 						
 						unsigned char *rgbPtr = (unsigned char*) (fImage + textureUpLeftCornerX + y*width);
-						unsigned char *fTempRestore = 0L;
+						unsigned char *fTempRestore = nil;
 						if( restore) fTempRestore = (unsigned char*) &[restoreImageCache[ stackNo] fImage][textureUpLeftCornerX + y*width];
 						
 						for( long x = textureUpLeftCornerX; x < textureUpLeftCornerX + textWidth; x++)
@@ -2137,7 +2137,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 					else
 					{
 						float *fTempImage = fImage + textureUpLeftCornerX + y*width;
-						float *fTempRestore = 0L;
+						float *fTempRestore = nil;
 						if( restore) fTempRestore = &[restoreImageCache[ stackNo] fImage][textureUpLeftCornerX + y*width];
 						
 						for( long x = textureUpLeftCornerX; x < textureUpLeftCornerX + textWidth; x++)
@@ -2321,7 +2321,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 			}
 		}
 	}
-	else ptsInt = 0L;
+	else ptsInt = nil;
 	
 	if( outside)
 	{
@@ -2440,9 +2440,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		}
 	}
 	
-	if( ptsInt != 0L && no > 1)
+	if( ptsInt != nil && no > 1)
 	{
-		ras_FillPolygon( ptsInt, no, fImage, width, height, pixArray.count, minValue, maxValue, outside, newVal, addition, isRGB, NO, 0L, 0L, 0L, 0L, 0L, 0, orientationStack, stackNo, restore);
+		ras_FillPolygon( ptsInt, no, fImage, width, height, pixArray.count, minValue, maxValue, outside, newVal, addition, isRGB, NO, nil, nil, nil, nil, nil, 0, orientationStack, stackNo, restore);
 	}
 	else
 	{	// Fill the image that contains no ROI :
@@ -2640,7 +2640,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		
 		if( count != 0) imean = itotal / count;
 		
-		if( dev != 0L && count > 0 )
+		if( dev != nil && count > 0 )
 		{
 			idev = 0;
 			
@@ -2765,7 +2765,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 				no = newNo;
 			}
 			
-			ras_FillPolygon( pts, no, fImage, width, height, pixArray.count, 0, 0, NO, 0, NO, isRGB, YES, &imax, &imin, &count, &itotal, 0L, 0, 2, 0, NO);
+			ras_FillPolygon( pts, no, fImage, width, height, pixArray.count, 0, 0, NO, 0, NO, isRGB, YES, &imax, &imin, &count, &itotal, nil, 0, 2, 0, NO);
 			
 			if( max) *max = imax;
 			if( min) *min = imin;
@@ -2773,11 +2773,11 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 			
 			if( count != 0) imean = itotal / count;
 			
-			if( dev != 0L && count > 0)
+			if( dev != nil && count > 0)
 			{
 				idev = 0 ;
 				
-				ras_FillPolygon( pts, no, fImage, width, height, pixArray.count, 0, 0, NO, 0, NO, isRGB, YES, 0L, 0L, 0L, 0L, &idev, imean, 2, 0, NO);
+				ras_FillPolygon( pts, no, fImage, width, height, pixArray.count, 0, 0, NO, 0, NO, isRGB, YES, nil, nil, nil, nil, &idev, imean, 2, 0, NO);
 				
 				*dev = idev;
 				*dev = *dev / (count-1);
@@ -2855,19 +2855,19 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 - (void) freefImageWhenDone:(BOOL) b
 {
 	if( b)
-		fExternalOwnedImage = 0L;
+		fExternalOwnedImage = nil;
 	else
 		fExternalOwnedImage = fImage;
 }
 
 -(void) setfImage:(float*) ptr
 {
-	if( fExternalOwnedImage == 0L)
+	if( fExternalOwnedImage == nil)
 	{
-		if( fImage != 0L)
+		if( fImage != nil)
 		{
 			free(fImage);
-			fImage = 0L;
+			fImage = nil;
 		}
 	}
 	
@@ -2971,7 +2971,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	orientation[6] = orientation[1]*orientation[5] - orientation[2]*orientation[4];
 	orientation[7] = orientation[2]*orientation[3] - orientation[0]*orientation[5];
 	orientation[8] = orientation[0]*orientation[4] - orientation[1]*orientation[3];
-	srcFile = 0L;
+	srcFile = nil;
 	generated = YES;
 	
     return [super init];
@@ -3055,8 +3055,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 			fExternalOwnedImage = im;
 			fImage = im;
 			
-			if( im == 0L)
-				NSLog( @"DCMPix initwithdata ERROR im == 0L");
+			if( im == nil)
+				NSLog( @"DCMPix initwithdata ERROR im == nil");
 		}
 		else
 		{
@@ -3129,19 +3129,19 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 }
 
 - (id) initWithImageObj: (NSManagedObject *)entity{
-	return  [self myinit:[entity valueForKey:@"completePath"] :0 :1 :0L :0L :0L isBonjour:NO imageObj: entity];
+	return  [self myinit:[entity valueForKey:@"completePath"] :0 :1 :nil :0 :0 isBonjour:NO imageObj: entity];
 }
 
  - (id)initWithContentsOfFile: (NSString *)file
 {
-	return  [self myinit:file :0 :1 :0L :0L :0L isBonjour:NO imageObj: 0L];
+	return  [self myinit:file :0 :1 :nil :0 :0 isBonjour:NO imageObj: nil];
 }
 
 - (id) myinit:(NSString*) s :(long) pos :(long) tot :(float*) ptr :(long) f :(long) ss isBonjour:(BOOL) hello imageObj: (NSManagedObject*) iO
 {	
 	// doesn't load pix data, only initializes instance variables
-	if( hello == NO && s != 0L)
-		if( [[NSFileManager defaultManager] fileExistsAtPath:s] == NO) return 0L;
+	if( hello == NO && s != nil)
+		if( [[NSFileManager defaultManager] fileExistsAtPath:s] == NO) return nil;
 	
     if( self = [super init])
     {
@@ -3163,7 +3163,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 
 - (id) myinit:(NSString*) s :(long) pos :(long) tot :(float*) ptr :(long) f :(long) ss
 {
-	return [self myinit: s :pos :tot :ptr :f :ss isBonjour:NO imageObj: 0L];
+	return [self myinit: s :pos :tot :ptr :f :ss isBonjour:NO imageObj: nil];
 }
 
 //- (void) copyFromOther:(DCMPix *) fromDcm
@@ -3231,7 +3231,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 {
 	DCMPix *copy = [[[self class] allocWithZone: zone] myinit:self->srcFile :self->imID :self->imTot :self->fExternalOwnedImage :self->frameNo :self->serieNo];
 	
-	if( copy == 0L)
+	if( copy == nil)
 	{
 		copy = [[[self class] allocWithZone: zone] init];
 		{
@@ -3249,7 +3249,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		}
 	}
 	
-	if( copy == 0L) return 0L;
+	if( copy == nil) return nil;
 	
 	[copy->cachedPapyGroups release];
 	[copy->imageObj release];
@@ -3325,7 +3325,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 
 - (char*) UncompressDICOM : (NSString*) file :( long) imageNb
 {
-	char			*data = 0L;
+	char			*data = nil;
 	
 #ifdef OSIRIX_VIEWER
 	
@@ -3345,7 +3345,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		// then goto group 0x7FE0 
 		if ((err = Papy3GotoGroupNb (fileNb, 0x7FE0)) == 0)
 		{
-			SElement *theGroupP = 0L;
+			SElement *theGroupP = nil;
 			
 			// read group 0x7FE0 from the file 
 			if ((err = Papy3GroupRead (fileNb, &theGroupP)) > 0) 
@@ -3361,7 +3361,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		// close and free the file and the associated allocated memory 
 		Papy3FileClose (fileNb, TRUE);
 	}
-	else convertedDICOM = 0L;
+	else convertedDICOM = nil;
 	
 	[PapyrusLock unlock];
 	
@@ -3563,7 +3563,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		vImageConvert_16SToF( &src16, &dstf, 0, 1, 0);
 		
 		free(oImage);
-		oImage = 0L;
+		oImage = nil;
 		
 		fclose( fp);
 		
@@ -3915,7 +3915,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		}
 		
 		free(oImage);
-		oImage = 0L;
+		oImage = nil;
 		
 		TIFFClose(tif);
 	}
@@ -4296,7 +4296,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		fseek(fp, imageDataOffsetForThisFrame, SEEK_SET);
 		// Then read data according to datatype
 		
-		short *oImage = 0L;
+		short *oImage = nil;
 		
 		switch( DATATYPE)
 		{
@@ -4372,7 +4372,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 				break;
 				
 				case 5:		// float - GJ: I have no test images for this format
-				oImage = 0L;
+				oImage = nil;
 				/*
 				 if( LENGTH2 == 1) fseek(fp, TIF_STRIPOFFSETS + height * width * ((frameNo * NUMBER_OF_CHANNELS)) * 4, SEEK_SET);
 				 else fseek(fp, TIF_STRIPOFFSETS1 + height * width * ((frameNo * NUMBER_OF_CHANNELS)), SEEK_SET);
@@ -4402,7 +4402,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 			
 			free(oImage);
 		}
-		oImage = 0L;
+		oImage = nil;
 		
 		NSSwappedDouble tt;
 		
@@ -4877,7 +4877,7 @@ END_CREATE_ROIS:
 			
 			PapyShort		fileNb;
 			
-			if( srcFile == 0L) fileNb = -1;
+			if( srcFile == nil) fileNb = -1;
 			else fileNb = Papy3FileOpen ( (char*) [srcFile UTF8String], (PAPY_FILE) 0, TRUE, 0);
 				
 			if (fileNb >= 0)
@@ -4913,10 +4913,10 @@ END_CREATE_ROIS:
 	
 	//if (DEBUG) NSLog(@"loadDICOMDCMFramework with file: %@", srcFile);	
 	
-	//	if( pixArray != 0L && frameNo > 0)
+	//	if( pixArray != nil && frameNo > 0)
 	//	{
 	//		NSLog(@"loadDICOMDCMFramework - pixArray already exists, nothing to do");
-	//		while( fImage == 0L) {};
+	//		while( fImage == nil) {};
 	//		[pool release];
 	//		return YES;
 	//	}
@@ -5272,7 +5272,7 @@ END_CREATE_ROIS:
 	if( [dcmObject attributeValueWithName:@"EchoTime"])			echotime = [[dcmObject attributeValueWithName:@"EchoTime"] retain];	
 	if( [dcmObject attributeValueWithName:@"FlipAngle"])		flipAngle = [[dcmObject attributeValueWithName:@"FlipAngle"] retain];
 	if( [dcmObject attributeValueWithName:@"ImageLaterality"])		laterality = [[dcmObject attributeValueWithName:@"ImageLaterality"] retain];	
-	if( laterality == 0L && [dcmObject attributeValueWithName:@"Laterality"])		laterality = [[dcmObject attributeValueWithName:@"Laterality"] retain];	
+	if( laterality == nil && [dcmObject attributeValueWithName:@"Laterality"])		laterality = [[dcmObject attributeValueWithName:@"Laterality"] retain];	
 	if( [dcmObject attributeValueWithName:@"ProtocolName"])		protocolName = [[dcmObject attributeValueWithName:@"ProtocolName"] retain];
 	if( [dcmObject attributeValueWithName:@"ViewPosition"])		viewPosition = [[dcmObject attributeValueWithName:@"ViewPosition"] retain];
 	if( [dcmObject attributeValueWithName:@"PatientPosition"])	patientPosition = [[dcmObject attributeValueWithName:@"PatientPosition"] retain];
@@ -5553,7 +5553,7 @@ END_CREATE_ROIS:
 	
 	maxFrame = [[dcmObject attributeValueWithName:@"NumberofFrames"] intValue];
 	if( maxFrame == 0) maxFrame = 1;
-	if( pixArray == 0L) maxFrame = 1;
+	if( pixArray == nil) maxFrame = 1;
 	//pixelAttr contains the whole PixelData attribute of every frames. Hence needs to be before the loop
 	if ([dcmObject attributeValueWithName:@"PixelData"])
 	{
@@ -5860,7 +5860,7 @@ END_CREATE_ROIS:
 				}
 				
 				free(oImage);
-				oImage = 0L;
+				oImage = nil;
 			}
 			else
 			{
@@ -5960,7 +5960,7 @@ END_CREATE_ROIS:
 	
 	[PapyrusLock lock];
 	
-	SElement *theGroupP = 0L;
+	SElement *theGroupP = nil;
 	
 	if( [cachedPapyGroups valueForKey: groupKey] == nil )
 	{
@@ -6008,7 +6008,7 @@ END_CREATE_ROIS:
 	SElement		*theGroupP;
 	UValue_T		*val, *tmp;
 	BOOL			fSetClut = NO, fSetClut16 = NO, returnValue = NO;
-	unsigned char   *clutRed = 0L, *clutGreen = 0L, *clutBlue = 0L;
+	unsigned char   *clutRed = nil, *clutGreen = nil, *clutBlue = nil;
 	PapyUShort		clutEntryR, clutEntryG, clutEntryB;
 	PapyUShort		clutDepthR, clutDepthG, clutDepthB;
 	
@@ -6022,7 +6022,7 @@ END_CREATE_ROIS:
 	}
 	else
 	{
-		if( srcFile == 0L) fileNb = -1;
+		if( srcFile == nil) fileNb = -1;
 		else
 		{
 			fileNb = Papy3FileOpen ( (char*) [srcFile UTF8String], (PAPY_FILE) 0, TRUE, 0);
@@ -6056,7 +6056,7 @@ END_CREATE_ROIS:
 	{
 		UValue_T		*val3, *tmpVal3;
 		unsigned short	*shortRed, *shortGreen, *shortBlue;
-		NSString		*modalityString = 0L;
+		NSString		*modalityString = nil;
 		
 		imageNb = 1 + frameNo; 
 		
@@ -6084,7 +6084,7 @@ END_CREATE_ROIS:
 				NSString		*cc = [[NSString alloc] initWithCString:val->a encoding: NSASCIIStringEncoding];
 				NSCalendarDate	*cd = [[NSCalendarDate alloc] initWithString:cc calendarFormat:@"%H%M%S"];
 				
-				if( cd == 0L) cd = [[NSCalendarDate alloc] initWithString:cc calendarFormat:@"%H%M"];
+				if( cd == nil) cd = [[NSCalendarDate alloc] initWithString:cc calendarFormat:@"%H%M"];
 				
 				if( cd)
 					acquisitionTime = [[NSCalendarDate	dateWithString: [cd descriptionWithCalendarFormat:@"%Y-%m-%d %H:%M:%S %z"]] retain];
@@ -6505,9 +6505,9 @@ END_CREATE_ROIS:
 			{
 				BOOL found = NO, found16 = NO;
 				
-				clutRed = malloc( 65536);		if( clutRed == 0L) NSLog(@"error clutRed == 0L");
-				clutGreen = malloc( 65536);		if( clutGreen == 0L) NSLog(@"error clutRed == 0L");
-				clutBlue = malloc( 65536);		if( clutBlue == 0L) NSLog(@"error clutRed == 0L");
+				clutRed = malloc( 65536);		if( clutRed == nil) NSLog(@"error clutRed == nil");
+				clutGreen = malloc( 65536);		if( clutGreen == nil) NSLog(@"error clutRed == nil");
+				clutBlue = malloc( 65536);		if( clutBlue == nil) NSLog(@"error clutRed == nil");
 				
 				// initialisation
 				clutEntryR = clutEntryG = clutEntryB = 0;
@@ -6872,11 +6872,11 @@ END_CREATE_ROIS:
 			{
 				val = Papy3GetElement (theGroupP, papUnitsGr, &pos, &elemType );
 				if( val ) units = val? [[NSString stringWithCString:val->a] retain] : nil;
-				else units = 0L;
+				else units = nil;
 				
 				val = Papy3GetElement (theGroupP, papDecayCorrectionGr, &pos, &elemType );
 				if( val ) decayCorrection = val? [[NSString stringWithCString:val->a] retain] : nil;
-				else decayCorrection = 0L;
+				else decayCorrection = nil;
 				
 				val = Papy3GetElement (theGroupP, papDecayFactorGr, &pos, &elemType );
 				if( val ) decayFactor = val? atof( val->a) : 0;
@@ -6906,7 +6906,7 @@ END_CREATE_ROIS:
 									{
 										NSString		*cc = [[NSString alloc] initWithCString:val->a encoding: NSASCIIStringEncoding];
 										NSCalendarDate	*cd = [[NSCalendarDate alloc] initWithString:cc calendarFormat:@"%H%M%S"];
-										if( cd == 0L) cd = [[NSCalendarDate alloc] initWithString:cc calendarFormat:@"%H%M"];
+										if( cd == nil) cd = [[NSCalendarDate alloc] initWithString:cc calendarFormat:@"%H%M"];
 										
 										radiopharmaceuticalStartTime = [[NSCalendarDate	dateWithString: [cd descriptionWithCalendarFormat:@"%Y-%m-%d %H:%M:%S %z"]] retain];
 										
@@ -7315,7 +7315,7 @@ END_CREATE_ROIS:
 								{
 									// get the next element of the list
 									dcmList = dcmList->next;
-									if( dcmList->object->item == 0L) dcmList = 0L;
+									if( dcmList->object->item == nil) dcmList = nil;
 									
 									frameCount++;
 								}
@@ -7431,12 +7431,12 @@ END_CREATE_ROIS:
 			
 			
 	#pragma mark read pixel data	
-			//		if( pixArray == 0L) maxFrame = 1;
+			//		if( pixArray == nil) maxFrame = 1;
 			
 			//		for( ee = 0; ee < maxFrame; ee++)
 			{
-				DCMPix *imPix = 0L;
-				short *oImage = 0L;
+				DCMPix *imPix = nil;
+				short *oImage = nil;
 				
 				//			if( maxFrame > 1)
 				//			{
@@ -7482,12 +7482,12 @@ END_CREATE_ROIS:
 						
 						oImage = (short*) Papy3GetPixelData (fileNb, ee+1, theGroupP, ImagePixel);
 						
-						if( oImage == 0L) // It's probably a problem with JPEG... try to convert to classic DICOM with DCMTK dcmdjpeg
+						if( oImage == nil) // It's probably a problem with JPEG... try to convert to classic DICOM with DCMTK dcmdjpeg
 						{
 							oImage = (short *) [self UncompressDICOM :srcFile :imageNb];
 						}
 						
-						if( oImage == 0L)
+						if( oImage == nil)
 						{
 							NSLog(@"This is really bad..... Please send this file to rossetantoine@bluewin.ch");
 							oImage = malloc( height * width * 2);
@@ -7526,7 +7526,7 @@ END_CREATE_ROIS:
 						// This image has a palette -> Convert it to a RGB image !
 						if( fSetClut)
 						{
-							if( clutRed != 0L && clutGreen != 0L && clutBlue != 0L)
+							if( clutRed != nil && clutGreen != nil && clutBlue != nil)
 							{
 								unsigned char   *bufPtr = (unsigned char*) oImage;
 								unsigned short	*bufPtr16 = (unsigned short*) oImage;
@@ -7833,7 +7833,7 @@ END_CREATE_ROIS:
 						free(oImage);
 					}
 					else imPix->fImage = (float*) oImage;
-					oImage = 0L;
+					oImage = nil;
 					
 					if( oData && gDisplayDICOMOverlays)
 					{
@@ -7889,7 +7889,7 @@ END_CREATE_ROIS:
 						}
 						
 						free(oImage);
-						oImage = 0L;
+						oImage = nil;
 					}
 					else
 					{
@@ -7904,12 +7904,12 @@ END_CREATE_ROIS:
 							
 							src16.data = oImage;
 							
-							if( VOILUT_number != 0 && VOILUT_depth != 0 && VOILUT_table != 0L)
+							if( VOILUT_number != 0 && VOILUT_depth != 0 && VOILUT_table != nil)
 							{
 								[self setVOILUT:VOILUT_first number:VOILUT_number depth:VOILUT_depth table:VOILUT_table image:(unsigned short*) oImage isSigned: fIsSigned];
 								
 								free( VOILUT_table);
-								VOILUT_table = 0L;
+								VOILUT_table = nil;
 							}
 							
 							if( imPix->fExternalOwnedImage)
@@ -7936,7 +7936,7 @@ END_CREATE_ROIS:
 							
 							free(oImage);
 						}
-						oImage = 0L;
+						oImage = nil;
 					}
 					
 					if( oData && gDisplayDICOMOverlays)
@@ -8037,7 +8037,7 @@ END_CREATE_ROIS:
 	width *= 2;
 	
 	unsigned char *srcImage = [TIFFRep bitmapData];
-	unsigned char *argbImage = 0L, *srcPtr = 0L, *tmpPtr = 0L;
+	unsigned char *argbImage = nil, *srcPtr = nil, *tmpPtr = nil;
 	
 	int totSize = height * width * 4;
 	if( fExternalOwnedImage)
@@ -8162,13 +8162,13 @@ END_CREATE_ROIS:
 	   [extension isEqualToString:@"mpeg"] == YES ||
 	   [extension isEqualToString:@"avi"] == YES)
 	{
-		if( quicktimeThreadLock == 0L) quicktimeThreadLock = [[NSLock alloc] init];
+		if( quicktimeThreadLock == nil) quicktimeThreadLock = [[NSLock alloc] init];
 		
 		[quicktimeThreadLock lock];
 		
 		[QTMovie enterQTKitOnThreadDisablingThreadSafetyProtection];
 		
-		NSError	*error = 0L;
+		NSError	*error = nil;
 		
 		QTMovie *movie = [[QTMovie alloc] initWithFile:srcFile error: &error];
 		
@@ -8196,7 +8196,7 @@ END_CREATE_ROIS:
 			
 			[movie release];
 		}
-		else NSLog( @"movie == 0L, %@", [error description]);
+		else NSLog( @"movie == nil, %@", [error description]);
 		
 		[QTMovie exitQTKitOnThread];
 		
@@ -8208,30 +8208,30 @@ END_CREATE_ROIS:
 {
 	BOOL USECUSTOMTIFF = NO;
 	
-	if( fImage == 0L)
+	if( fImage == nil)
 	{
 		BOOL success = NO;
-		short *oImage = 0L;
+		short *oImage = nil;
 		
 		needToCompute8bitRepresentation = YES;
 		
 		if( runOsiriXInProtectedMode) return;
 		
-		if( srcFile == 0L) return;
+		if( srcFile == nil) return;
 		
 		if( isBonjour)
 		{
 #ifdef OSIRIX_VIEWER
 			// LOAD THE FILE FROM BONJOUR SHARED DATABASE
 			
-			if( imageObj == 0L) NSLog( @"We need imageObj for Bonjour loading");
+			if( imageObj == nil) NSLog( @"We need imageObj for Bonjour loading");
 			
 			[srcFile release];
-			srcFile = 0L;
+			srcFile = nil;
 			srcFile = [[BrowserController currentBrowser] getLocalDCMPath: imageObj :0];
 			[srcFile retain];
 			
-			if( srcFile == 0L)
+			if( srcFile == nil)
 			{
 				return;
 			}
@@ -8261,15 +8261,15 @@ END_CREATE_ROIS:
 						convertedDICOM = [convertDICOM( srcFile) retain];
 						success = [self loadDICOMPapyrus];
 						
-						if( success == YES && imageObj != 0L)
+						if( success == YES && imageObj != nil)
 						{
 							if( [[imageObj valueForKey:@"inDatabaseFolder"] boolValue])
 							{
-								[[NSFileManager defaultManager] removeFileAtPath:srcFile handler: 0L];
-								[[NSFileManager defaultManager] movePath:convertedDICOM toPath:srcFile handler: 0L];
+								[[NSFileManager defaultManager] removeFileAtPath:srcFile handler: nil];
+								[[NSFileManager defaultManager] movePath:convertedDICOM toPath:srcFile handler: nil];
 								
 								[convertedDICOM release];
-								convertedDICOM = 0L;
+								convertedDICOM = nil;
 							}
 						}
 					}
@@ -8286,15 +8286,15 @@ END_CREATE_ROIS:
 						convertedDICOM = [convertDICOM( srcFile) retain];
 						success = [self loadDICOMDCMFramework];
 						
-						if( success == YES && imageObj != 0L)
+						if( success == YES && imageObj != nil)
 						{
 							if( [[imageObj valueForKey:@"inDatabaseFolder"] boolValue])
 							{
-								[[NSFileManager defaultManager] removeFileAtPath:srcFile handler: 0L];
-								[[NSFileManager defaultManager] movePath:convertedDICOM toPath:srcFile handler: 0L];
+								[[NSFileManager defaultManager] removeFileAtPath:srcFile handler: nil];
+								[[NSFileManager defaultManager] movePath:convertedDICOM toPath:srcFile handler: nil];
 								
 								[convertedDICOM release];
-								convertedDICOM = 0L;
+								convertedDICOM = nil;
 							}
 						}
 					}
@@ -8319,7 +8319,7 @@ END_CREATE_ROIS:
 			int				realwidth, realheight;
 			PapyULong		i;
 			
-			NSImage		*otherImage = 0L;
+			NSImage		*otherImage = nil;
 			NSString	*extension = [[srcFile pathExtension] lowercaseString];
 			
 #ifdef OSIRIX_VIEWER
@@ -8538,7 +8538,7 @@ END_CREATE_ROIS:
 									memcpy( fImage + i * width, [fileData bytes]+ frameNo * (realheight * realwidth)*sizeof(float) + i*realwidth*sizeof(float), width * sizeof(float));
 								
 								free(oImage);
-								oImage = 0L;
+								oImage = nil;
 							break; 
 								
 							case 128:
@@ -8585,7 +8585,7 @@ END_CREATE_ROIS:
 							vImageConvert_16SToF( &src16, &dstf, 0, 1, 0);
 							
 							free(oImage);
-							oImage = 0L;
+							oImage = nil;
 						}
 						
 						// Set up origins for nifti file.
@@ -8908,7 +8908,7 @@ END_CREATE_ROIS:
 										}
 										
 										free(oImage);
-										oImage = 0L;
+										oImage = nil;
 										break; 
 										
 										case 128:
@@ -8956,14 +8956,14 @@ END_CREATE_ROIS:
 									vImageConvert_16SToF( &src16, &dstf, 0, 1, 0);
 									
 									free(oImage);
-									oImage = 0L;
+									oImage = nil;
 								}
 							}
 						}
 					}
 					
 					free( NIfTI);
-					NIfTI = 0L;
+					NIfTI = nil;
 				}
 				else if( [extension isEqualToString:@"jpg"] == YES ||
 						[extension isEqualToString:@"jpeg"] == YES ||
@@ -9010,7 +9010,7 @@ END_CREATE_ROIS:
 					}
 				}
 			
-			if( otherImage != 0L || USECUSTOMTIFF == YES)
+			if( otherImage != nil || USECUSTOMTIFF == YES)
 			{
 				if( USECUSTOMTIFF) // Is it a 16/32-bit TIFF not supported by Apple???
 				{
@@ -9030,7 +9030,7 @@ END_CREATE_ROIS:
 						[otherImage setScalesWhenResized:YES];
 						[otherImage setSize: newSize];
 						
-						id tempID = [otherImage bestRepresentationForDevice:0L];
+						id tempID = [otherImage bestRepresentationForDevice:nil];
 						
 						if( [tempID isKindOfClass: [NSPDFImageRep class]] )
 						{
@@ -9065,7 +9065,7 @@ END_CREATE_ROIS:
 					OSType			mediatype = 'eyes';
 					long			curFrame;
 					Rect			tempRect;
-					GWorldPtr		ftheGWorld = 0L;
+					GWorldPtr		ftheGWorld = nil;
 					PixMapHandle 	pixMapHandle;
 					Ptr				pixBaseAddr;
 					
@@ -9079,7 +9079,7 @@ END_CREATE_ROIS:
 							   NULL,
 							   (GWorldFlags) keepLocal);
 					
-					SetMovieGWorld (mov, ftheGWorld, 0L);
+					SetMovieGWorld (mov, ftheGWorld, nil);
 					SetMovieActive (mov, TRUE);
 					SetMovieBox (mov, &tempRect);
 					
@@ -9093,7 +9093,7 @@ END_CREATE_ROIS:
 													 aTime,
 													 1,
 													 &aTime,
-													 0L);
+													 nil);
 						if (aTime != -1) curFrame++;
 					}
 					
@@ -9117,7 +9117,7 @@ END_CREATE_ROIS:
 					width = realwidth/2;
 					width *= 2;
 //						rowBytes = GetPixRowBytes(pixMapHandle);
-					oImage = 0L;
+					oImage = nil;
 					srcImage = (unsigned char*) pixBaseAddr;
 					
 					totSize = height * width * 4;
@@ -9175,7 +9175,7 @@ END_CREATE_ROIS:
 			height = 128;
 			width = 128;
 //				rowBytes = width*4;
-			oImage = 0L;
+			oImage = nil;
 			isRGB = NO;
 			
 			for( long i = 0; i < 128*128; i++ ) fImage[ i ] = i;
@@ -9330,9 +9330,9 @@ END_CREATE_ROIS:
 
 -(DCMPix*) mergeWithDCMPix:(DCMPix*) o offset:(NSPoint) oo
 {
-	if( o == 0L) return 0L;
-	if( [o isRGB]) return 0L;
-	if( [self isRGB]) return 0L;
+	if( o == nil) return nil;
+	if( [o isRGB]) return nil;
+	if( [self isRGB]) return nil;
 	
 	int ox = oo.x;
 	int oy = oo.y;
@@ -9509,7 +9509,7 @@ END_CREATE_ROIS:
 
 - (DCMPix*) renderWithRotation:(float) r scale:(float) scale xFlipped:(BOOL) xF yFlipped: (BOOL) yF backgroundOffset: (float) bgO
 {
-	if( [self isRGB]) return 0L;
+	if( [self isRGB]) return nil;
 	
 	NSRect dstRect = [self usefulRectWithRotation: r scale:(float) scale xFlipped:(BOOL) xF yFlipped: (BOOL) yF];
 	
@@ -9578,10 +9578,10 @@ END_CREATE_ROIS:
 			dst = src;
 			dst.data = malloc( dst.height * dst.rowBytes);
 			if( dst.data)
-				vImageHorizontalReflect_PlanarF ( &src, &dst, 0L);
+				vImageHorizontalReflect_PlanarF ( &src, &dst, 0);
 			
 			if( src.data != [self fImage]) free( src.data);
-			if( dst.data == 0L) return 0L;
+			if( dst.data == nil) return nil;
 			src = dst;
 			
 			rot *= -1.;
@@ -9592,10 +9592,10 @@ END_CREATE_ROIS:
 			dst = src;
 			dst.data = malloc( dst.height * dst.rowBytes);
 			if( dst.data)
-				vImageVerticalReflect_PlanarF ( &src, &dst, 0L);
+				vImageVerticalReflect_PlanarF ( &src, &dst, 0);
 			
 			if( src.data != [self fImage]) free( src.data);
-			if( dst.data == 0L) return 0L;
+			if( dst.data == nil) return nil;
 			src = dst;
 			
 			rot *= -1.;
@@ -9608,11 +9608,11 @@ END_CREATE_ROIS:
 		dst.rowBytes = dst.width*4;
 		dst.data = malloc( dst.height * dst.rowBytes);
 		if( dst.data)
-			vImageScale_PlanarF( &src, &dst, 0L, kvImageHighQualityResampling );
+			vImageScale_PlanarF( &src, &dst, nil, kvImageHighQualityResampling );
 		
 		// Rotation
 		if( src.data != [self fImage]) free( src.data);
-		if( dst.data == 0L) return 0L;
+		if( dst.data == nil) return nil;
 		
 		src = dst;
 		
@@ -9625,13 +9625,13 @@ END_CREATE_ROIS:
 		{
 			int v = r;
 			if( v % 90 == 0)
-				vImageRotate_PlanarF( &src, &dst, 0L, -rot, [self minValueOfSeries], kvImageHighQualityResampling);
+				vImageRotate_PlanarF( &src, &dst, nil, -rot, [self minValueOfSeries], kvImageHighQualityResampling);
 			else
-				vImageRotate_PlanarF( &src, &dst, 0L, -rot, [self minValueOfSeries] + bgO, kvImageHighQualityResampling+kvImageBackgroundColorFill);
+				vImageRotate_PlanarF( &src, &dst, nil, -rot, [self minValueOfSeries] + bgO, kvImageHighQualityResampling+kvImageBackgroundColorFill);
 		}
 		
 		if( src.data != [self fImage]) free( src.data);
-		if( dst.data == 0L) return 0L;
+		if( dst.data == nil) return nil;
 	}
 	
 	DCMPix *newPix = [[self copy] autorelease];
@@ -9669,10 +9669,10 @@ END_CREATE_ROIS:
 
 - (DCMPix*) renderInRectSize:(NSSize) rectSize atPosition:(NSPoint) oo rotation:(float) r scale:(float) scale xFlipped:(BOOL) xF yFlipped: (BOOL) yF smartCrop: (BOOL) smartCrop;
 {
-	if( [self isRGB]) return 0L;
+	if( [self isRGB]) return nil;
 	
 	DCMPix *newPix = [self renderWithRotation: r scale: scale xFlipped: xF yFlipped:  yF backgroundOffset: 0];
-	if( newPix == 0L) return 0L;
+	if( newPix == nil) return nil;
 	
 	vImage_Buffer src;
 	vImage_Buffer dst;
@@ -9722,7 +9722,7 @@ END_CREATE_ROIS:
 	
 	if( dst.data)
 		[self drawImage: &src inImage: &dst offset: cov background: [self minValueOfSeries]-1024];
-	else return 0L;
+	else return nil;
 	
 	DCMPix *rPix = [[newPix copy] autorelease];
 	
@@ -9743,7 +9743,7 @@ END_CREATE_ROIS:
 
 - (NSImage*) renderNSImageInRectSize:(NSSize) rectSize atPosition:(NSPoint) oo rotation:(float) r scale:(float) scale xFlipped:(BOOL) xF yFlipped: (BOOL) yF
 {
-	if( [self isRGB]) return 0L;
+	if( [self isRGB]) return nil;
 	
 	DCMPix *newPix = [self renderInRectSize: rectSize atPosition: oo rotation: r scale: scale xFlipped: xF yFlipped: yF];
 	
@@ -10129,7 +10129,7 @@ END_CREATE_ROIS:
 	float val = 0;
 	
 	if( x < 0 || x >= width || y < 0 || y >= height) return 0;
-	if( fImage == 0L) return 0;
+	if( fImage == nil) return 0;
 	
 	if( (stackMode == 1 || stackMode == 2 || stackMode == 3) && stack >= 1)
 	{
@@ -10344,7 +10344,7 @@ END_CREATE_ROIS:
 	long	i = height * width;	
 	float	*result = malloc( i * sizeof(float));
 	
-	if (result == 0L) return input;
+	if (result == nil) return input;
 	
 	float	*firstResultPixel = result + (firstPixelAbs - firstPixel)/2;
 	long	lengthToBeCopied = i - firstPixelAbs;
@@ -10660,7 +10660,7 @@ END_CREATE_ROIS:
 	long			stacksize;
 	unsigned char   *rgbaImage;
 	float			min, max, iwl, iww;
-	float			*fResult = 0L;
+	float			*fResult = nil;
 	
 	if( fixed8bitsWLWW )
 	{
@@ -10719,13 +10719,13 @@ END_CREATE_ROIS:
 			if( processorsLock == nil )
 				processorsLock = [[NSConditionLock alloc] init];
 			
-			if( minmaxThreads == 0L)
+			if( minmaxThreads == nil)
 			{
 				minmaxThreads = [[NSMutableArray array] retain];
 				
 				for( int i = 0; i < MPProcessors(); i++ )
 				{
-					[minmaxThreads addObject: [NSMutableDictionary dictionaryWithObjectsAndKeys: [[[NSConditionLock alloc] initWithCondition: 0] autorelease], @"threadLock", 0L]];
+					[minmaxThreads addObject: [NSMutableDictionary dictionaryWithObjectsAndKeys: [[[NSConditionLock alloc] initWithCondition: 0] autorelease], @"threadLock", nil]];
 					
 					[NSThread detachNewThreadSelector: @selector( computeMaxThread:) toTarget: [[PixThread alloc] init] withObject: [minmaxThreads lastObject]];
 				}
@@ -10842,7 +10842,7 @@ END_CREATE_ROIS:
 			
 			srcf.data = [self computefImage];
 			
-			if( srcf.data == 0L) return;
+			if( srcf.data == nil) return;
 			
 			// CONVERSION TO 8-BIT for displaying
 			
@@ -10882,7 +10882,7 @@ END_CREATE_ROIS:
 				{
 					if( convolution) srcf.data = [self applyConvolutionOnImage: srcf.data RGB: NO];
 					
-					if( transferFunctionPtr == 0L)	// LINEAR
+					if( transferFunctionPtr == nil)	// LINEAR
 					{
 						vImageConvert_PlanarFtoPlanar8( &srcf, &dst8, max, min, 0);
 					}
@@ -10891,13 +10891,13 @@ END_CREATE_ROIS:
 						if( processorsLock == nil )
 							processorsLock = [[NSConditionLock alloc] init];
 						
-						if( nonLinearWLWWThreads == 0L)
+						if( nonLinearWLWWThreads == nil)
 						{
 							nonLinearWLWWThreads = [[NSMutableArray array] retain];
 							
 							for( int i = 0; i < MPProcessors(); i++ )
 							{
-								[nonLinearWLWWThreads addObject: [NSMutableDictionary dictionaryWithObjectsAndKeys: [[[NSConditionLock alloc] initWithCondition: 0] autorelease], @"threadLock", 0L]];
+								[nonLinearWLWWThreads addObject: [NSMutableDictionary dictionaryWithObjectsAndKeys: [[[NSConditionLock alloc] initWithCondition: 0] autorelease], @"threadLock", nil]];
 								[NSThread detachNewThreadSelector: @selector( applyNonLinearWLWWThread:) toTarget:[[PixThread alloc] init] withObject: [nonLinearWLWWThreads lastObject]];
 							}
 						} 
@@ -10969,7 +10969,7 @@ END_CREATE_ROIS:
 			
 			// APPLY WINDOW LEVEL TO RGB IMAGE
 			
-			if( transferFunctionPtr == 0L)	// LINEAR
+			if( transferFunctionPtr == nil)	// LINEAR
 			{
 				for( long i = 0; i < 256; i++ )
 				{
@@ -11068,7 +11068,7 @@ END_CREATE_ROIS:
 - (void) kill8bitsImage
 {	 
 	if( baseAddr) free( baseAddr);
-	baseAddr = 0L;
+	baseAddr = nil;
 }
 
 - (void)checkImageAvailble: (float)newWW : (float)newWL
@@ -11078,14 +11078,14 @@ END_CREATE_ROIS:
 	ww = newWW;
 	wl = newWL;
 	
-	if( baseAddr == 0L)
+	if( baseAddr == nil)
 		[self allocate8bitRepresentation];
 }
 
 - (NSImage*) generateThumbnailImageWithWW: (float)newWW WL: (float)newWL
 {
     int destWidth, destHeight;
-	NSImage *image = 0L;
+	NSImage *image = nil;
 	float ratio;
 	
     [self CheckLoad];
@@ -11096,12 +11096,12 @@ END_CREATE_ROIS:
 	destWidth = (float) width / ratio;
 	destHeight = (float) height / ratio;
     
-	NSBitmapImageRep *bitmapRep = 0L;
+	NSBitmapImageRep *bitmapRep = nil;
 	
 	if( isRGB )
 	{
 		bitmapRep = [[[NSBitmapImageRep alloc] 
-					 initWithBitmapDataPlanes: 0L
+					 initWithBitmapDataPlanes: nil
 					 pixelsWide:destWidth
 					 pixelsHigh:destHeight
 					 bitsPerSample:8
@@ -11116,7 +11116,7 @@ END_CREATE_ROIS:
 	else
 	{
 		bitmapRep = [[[NSBitmapImageRep alloc] 
-					 initWithBitmapDataPlanes: 0L
+					 initWithBitmapDataPlanes: nil
 					 pixelsWide:destWidth
 					 pixelsHigh:destHeight
 					 bitsPerSample:8
@@ -11158,7 +11158,7 @@ END_CREATE_ROIS:
     [self CheckLoad];
 	
 	if( baseAddr) free( baseAddr);
-	baseAddr = 0L;
+	baseAddr = nil;
 	
 	if( isRGB )
 		baseAddr = calloc( ((width*4) + 4) * ((height*4) + 4), 1);
@@ -11276,10 +11276,10 @@ END_CREATE_ROIS:
 		if( fImage != nil )
 		{
 			free(fImage);
-			fImage = 0L;
+			fImage = nil;
 		}
 	}
-	fImage = 0L;
+	fImage = nil;
 	needToCompute8bitRepresentation = YES;
 	
 	[checking unlock];
@@ -11310,7 +11310,7 @@ END_CREATE_ROIS:
 	[viewPosition release];
 	[decayCorrection release];
 	
-	if( fExternalOwnedImage == 0L)
+	if( fExternalOwnedImage == nil)
 	{
 		if( fImage != nil )
 		{
@@ -11323,12 +11323,12 @@ END_CREATE_ROIS:
 	if( baseAddr)
 	{
 		free( baseAddr);
-		baseAddr = 0L;
+		baseAddr = nil;
 	}
 	[imageObj release];
 	
 	[checking release];
-	checking = 0L;
+	checking = nil;
 	
 	if( oData ) free( oData);
 	if( VOILUT_table) free( VOILUT_table);
@@ -11434,7 +11434,7 @@ END_CREATE_ROIS:
 	
 	SElement *inGrOrModP = [self getPapyGroup: group fileNb: fileNb];
 	
-	if( inGrOrModP == 0L) // Papyrus failed... unknown group? Try DCM Framework
+	if( inGrOrModP == nil) // Papyrus failed... unknown group? Try DCM Framework
 	{
 		DCMObject *dcmObject = [DCMObject objectWithContentsOfFile:srcFile decodingPixelData:NO];
 		
@@ -11662,7 +11662,7 @@ END_CREATE_ROIS:
 					{
 						NSDictionary *field = [content objectAtIndex:f];
 						NSString *type = [field objectForKey:@"type"];
-						NSString *value = 0L;
+						NSString *value = nil;
 						
 						if( [type isEqualToString:@"DICOM"])
 						{
@@ -11722,7 +11722,7 @@ END_CREATE_ROIS:
 						else if([type isEqualToString:@"Special"])
 						{
 							value = [field objectForKey:@"field"];
-							if ([value isEqualToString: NSLocalizedString(@"Patient's Actual Age", 0L)] || [value isEqualToString: (@"Patient's Actual Age")])
+							if ([value isEqualToString: NSLocalizedString(@"Patient's Actual Age", nil)] || [value isEqualToString: (@"Patient's Actual Age")])
 							{
 								NSDate *date = [imageObj valueForKeyPath: @"series.study.dateOfBirth"];
 								
@@ -11731,10 +11731,10 @@ END_CREATE_ROIS:
 									int age = -[date timeIntervalSinceNow]/(60*60*24*365);
 									value = [NSString stringWithFormat:@"%d y", age];
 								}
-								else value = 0L;
+								else value = nil;
 							}
 							
-							if ([value isEqualToString: NSLocalizedString(@"Patient's Age At Acquisition", 0L)] || [value isEqualToString: (@"Patient's Age At Acquisition")])
+							if ([value isEqualToString: NSLocalizedString(@"Patient's Age At Acquisition", nil)] || [value isEqualToString: (@"Patient's Age At Acquisition")])
 							{
 								NSDate *date1 = [imageObj valueForKeyPath: @"series.study.dateOfBirth"];
 								NSDate *date2 = [imageObj valueForKeyPath: @"series.study.date"];
@@ -11744,7 +11744,7 @@ END_CREATE_ROIS:
 									int age = -[date1 timeIntervalSinceDate: date2]/(60*60*24*365);
 									value = [NSString stringWithFormat:@"%d y", age];
 								}
-								else value = 0L;
+								else value = nil;
 							}
 							
 							if(value==nil || [value length] == 0) value = @"-";

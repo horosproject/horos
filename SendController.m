@@ -181,11 +181,10 @@ static volatile int sendControllerObjects = 0;
 	return nil;
 }
 
-- (id)setServer:(id)server
+- (void) setServer:(id)server
 {
 	[_server release];
 	_server = [server retain];
-
 }
 
 - (IBAction)selectServer: (id)sender
@@ -256,20 +255,20 @@ static volatile int sendControllerObjects = 0;
 
 		NSMutableArray	*files2Send = [objectsToSend valueForKey: @"completePath"];
 		
-		if( files2Send != 0L && [files2Send count] > 0)
+		if( files2Send != nil && [files2Send count] > 0)
 		{
 			if( !([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSCommandKeyMask && [[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSAlternateKeyMask))
 			{
 				// DONT REMOVE THESE LINES - THANX ANTOINE
 				if( [[PluginManager plugins] valueForKey:@"ComPACS"] != 0)
 				{
-					long result = [[[PluginManager plugins] objectForKey:@"ComPACS"] prepareFilter: 0L];
+					long result = [[[PluginManager plugins] objectForKey:@"ComPACS"] prepareFilter: nil];
 					
 					result = [[[PluginManager plugins] objectForKey:@"ComPACS"] filterImage: [NSString stringWithFormat:@"dicomSEND%@", [[objectsToSend objectAtIndex: 0] valueForKeyPath:@"series.study.patientUID"]]];
 					if( result != 0)
 					{
 						NSRunCriticalAlertPanel(NSLocalizedString(@"DICOM Send",nil),NSLocalizedString( @"Smart card authentification is required for DICOM sending.",nil),NSLocalizedString( @"OK",nil), nil, nil);
-						files2Send = 0L;
+						files2Send = nil;
 					}
 				}
 			}
@@ -351,7 +350,7 @@ static volatile int sendControllerObjects = 0;
 	}
 	
 	[storeSCU release];
-	storeSCU = 0L;
+	storeSCU = nil;
 }
 
 - (void) sendDICOMFilesOffis:(NSArray *) objectsToSend
@@ -364,7 +363,7 @@ static volatile int sendControllerObjects = 0;
 	
 	NSLog(@"Server destination: %@", [[self server] description]);	
 			
-	NSString			*previousPatientUID = 0L;
+	NSString			*previousPatientUID = nil;
 	NSMutableArray		*samePatientArray = [NSMutableArray arrayWithCapacity: [objectsToSend count]];
 	
 	NSSortDescriptor	*sort = [[[NSSortDescriptor alloc] initWithKey:@"series.study.patientUID" ascending:YES] autorelease];
@@ -409,14 +408,14 @@ static volatile int sendControllerObjects = 0;
 	[pool release];
 	
 	//need to unlock to allow release of self after send complete
-	[_lock performSelectorOnMainThread:@selector(unlock) withObject:0L waitUntilDone: NO];
+	[_lock performSelectorOnMainThread:@selector(unlock) withObject:nil waitUntilDone: NO];
 }
 
 - (void)closeSendPanel:(id)sender
 {
 	[_waitSendWindow close];			
 	[_waitSendWindow release];			
-	_waitSendWindow = 0L;	
+	_waitSendWindow = nil;	
 }
 
 - (void) setSendMessageThread:(NSDictionary*) info

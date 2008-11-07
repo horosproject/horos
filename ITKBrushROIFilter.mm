@@ -130,7 +130,7 @@ ImageType::Pointer CreateImagePointerFromBuffer(unsigned char *buffer, int buffe
 		structuringElementRadius *= 2;
 		structuringElementRadius ++;
 		
-		if( kernelErode == 0L) [self computeKernelErode: structuringElementRadius];
+		if( kernelErode == nil) [self computeKernelErode: structuringElementRadius];
 		
 		vImage_Buffer	srcbuf, dstBuf;
 		vImage_Error err;
@@ -193,7 +193,7 @@ ImageType::Pointer CreateImagePointerFromBuffer(unsigned char *buffer, int buffe
 		structuringElementRadius *= 2;
 		structuringElementRadius ++;
 		
-		if( kernelDilate == 0L) [self computeKernelDilate: structuringElementRadius];
+		if( kernelDilate == nil) [self computeKernelDilate: structuringElementRadius];
 				
 		vImage_Buffer	srcbuf, dstBuf;
 		vImage_Error err;

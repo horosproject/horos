@@ -167,7 +167,7 @@ int znzrewind(znzFile stream)
      if (stream->zfptr!=NULL) return gzrewind(stream->zfptr);
   */
 
-  if (stream->zfptr!=NULL) return (int)gzseek(stream->zfptr, 0L, SEEK_SET);
+  if (stream->zfptr!=NULL) return (int)gzseek(stream->zfptr, nil, SEEK_SET);
 #endif
   rewind(stream->nzfptr);
   return 0;

@@ -197,7 +197,7 @@ static void TCPServerAcceptCallBack(CFSocketRef socket, CFSocketCallBackType typ
     }
 	
     // set up the run loop sources for the sockets
-    if( runloopmode == 0L)
+    if( runloopmode == nil)
 		[self setRunloopmode: (NSString*) kCFRunLoopCommonModes];
 	
 	CFRunLoopRef cfrl = CFRunLoopGetCurrent();

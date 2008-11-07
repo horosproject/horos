@@ -101,7 +101,7 @@
 	
 	[[self window] setFrameAutosaveName:@"HistogramWindow"];
 	
-	data = 0L;
+	data = nil;
 	curROI = iroi;
 	
 	[[self window] setTitle: [NSString stringWithFormat:NSLocalizedString(@"Histogram of '%@' ROI", nil), [curROI name]]];

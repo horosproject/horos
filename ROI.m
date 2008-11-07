@@ -599,7 +599,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		
 		fileVersion = [coder versionForClassName: @"ROI"];
 		
-		parentROI = 0L;
+		parentROI = nil;
 		points = [coder decodeObject];
 		rect = NSRectFromString( [coder decodeObject]);
 		type = [[coder decodeObject] floatValue];
@@ -734,7 +734,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		previousPoint.x = previousPoint.y = -1000;
 		
 		fontListGL = -1;
-		stringTex = 0L;
+		stringTex = nil;
 		rmean = rmax = rmin = rdev = rtotal = -1;
 		Brmean = Brmax = Brmin = Brdev = Brtotal = -1;
 		mousePosMeasure = -1;
@@ -753,7 +753,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		[self reduceTextureIfPossible];
     }
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: 0L];
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: nil];
     
     return self;
 }
@@ -767,7 +767,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 	c->PointUnderMouse = -1;
 	c->selectedModifyPoint = -1;
 	
-	c->parentROI = 0L;
+	c->parentROI = nil;
 	
 	NSMutableArray *a = [[NSMutableArray array] retain];
 	
@@ -845,7 +845,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 	c->previousPoint.x = c->previousPoint.y = -1000;
 	
 	c->fontListGL = -1;
-	c->stringTex = 0L;
+	c->stringTex = nil;
 	c->rmean = c->rmax = c->rmin = c->rdev = c->rtotal = -1;
 	c->Brmean = c->Brmax = c->Brmin = c->Brdev = c->Brtotal = -1;
 	c->mousePosMeasure = -1;
@@ -913,7 +913,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 	[coder encodeObject:[NSNumber numberWithDouble:groupID]];
 	if (type==tLayerROI)
 	{
-		if( layerImageJPEG == 0L)
+		if( layerImageJPEG == nil)
 		{
 //			NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData: [layerImage TIFFRepresentation]];
 //			NSDictionary *imageProps = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.3] forKey:NSImageCompressionFactor];
@@ -921,7 +921,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 //			layerImageJPEG = [[imageRep representationUsingType:NSJPEG2000FileType properties:imageProps] retain];	//NSJPEGFileType
 			[self generateEncodedLayerImage];
 		}
-//		if( layerImageWhenSelectedJPEG == 0L)
+//		if( layerImageWhenSelectedJPEG == nil)
 //		{
 //			NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData: [layerImage TIFFRepresentation]];
 //			NSDictionary *imageProps = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.3] forKey:NSImageCompressionFactor];
@@ -975,7 +975,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 
 - (void) dealloc
 {
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:self userInfo: 0L];
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:self userInfo: nil];
 	
 	while( [ctxArray count]) [self deleteTexture: [ctxArray lastObject]];
 	[ctxArray release];
@@ -1082,7 +1082,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		rtotal = -1;
 		Brtotal = -1;
 		
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: 0L];
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: nil];
 	}
 }
 
@@ -1098,7 +1098,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
     if (self)
 	{
 		textureBuffer=(unsigned char*)malloc(tWidth*tHeight*sizeof(unsigned char));
-		if( textureBuffer == 0L) return 0L;
+		if( textureBuffer == nil) return nil;
 		
 		// basic init from other rois ...
 		uniqueID = [[NSNumber numberWithInt: gUID++] retain];
@@ -1115,7 +1115,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		locked = NO;
         type = tPlain;
 		mode = ROI_sleep;
-		parentROI = 0L;
+		parentROI = nil;
 		thickness = 2.0;
 		opacity = 0.5;
 		mousePosMeasure = -1;
@@ -1126,7 +1126,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		zPositions = [[NSMutableArray arrayWithCapacity:0] retain];
 		comments = [[NSString alloc] initWithString:@""];
 		fontListGL = -1;
-		stringTex = 0L;
+		stringTex = nil;
 		rmean = rmax = rmin = rdev = rtotal = -1;
 		Brmean = Brmax = Brmin = Brdev = Brtotal = -1;
 		previousPoint.x = previousPoint.y = -1000;
@@ -1152,7 +1152,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		color.blue = ROIRegionColorB;	//[[NSUserDefaults standardUserDefaults] floatForKey: @"ROIRegionColorB"];
 		opacity = ROIRegionOpacity;		//[[NSUserDefaults standardUserDefaults] floatForKey: @"ROIRegionOpacity"];
 	}
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: 0L];
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: nil];
 	return self;
 }
 
@@ -1173,7 +1173,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		locked = NO;
         type = itype;
 		mode = ROI_sleep;
-		parentROI = 0L;
+		parentROI = nil;
 		
 		previousPoint.x = previousPoint.y = -1000;
 		
@@ -1199,7 +1199,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		comments = [[NSString alloc] initWithString:@""];
 		
 		fontListGL = -1;
-		stringTex = 0L;
+		stringTex = nil;
 		rmean = rmax = rmin = rdev = rtotal = -1;
 		Brmean = Brmax = Brmin = Brdev = Brtotal = -1;
 		
@@ -1272,7 +1272,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		
 		displayTextualData = YES;
     }
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: 0L];
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: nil];
     return self;
 }
 
@@ -2068,7 +2068,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 
 - (BOOL)mouseRoiDown:(NSPoint)pt :(float)scale
 {
-	[self mouseRoiDown:pt :[curView curImage] :scale];
+	return [self mouseRoiDown:pt :[curView curImage] :scale];
 }
 
 - (BOOL)mouseRoiDownIn:(NSPoint)pt :(int)slice :(float)scale
@@ -2093,7 +2093,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 	
 	if( [self.comments isEqualToString: @"morphing generated"] ) self.comments = @"";
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: 0L];
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: nil];
 	
 	if (type == tPlain)
 	{
@@ -2252,7 +2252,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		
 		rtotal = -1;
 		Brtotal = -1;
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: 0L];
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: nil];
 	}
 }
 
@@ -2299,7 +2299,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		
 		rtotal = -1;
 		Brtotal = -1;
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: 0L];
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: nil];
 	}
 }
 
@@ -2391,7 +2391,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 {
 	rtotal = -1;
 	Brtotal = -1;
-//	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: 0L];
+//	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: nil];
 }
 
 - (void) roiMove:(NSPoint) offset :(BOOL) sendNotification
@@ -2427,7 +2427,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		{
 			rtotal = -1;
 			Brtotal = -1;
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: 0L];
+			[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: nil];
 		}
 	}
 }
@@ -2439,7 +2439,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 
 - (BOOL) mouseRoiUp:(NSPoint) pt
 {
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: [NSDictionary dictionaryWithObjectsAndKeys:@"mouseUp", @"action", 0L]];
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: [NSDictionary dictionaryWithObjectsAndKeys:@"mouseUp", @"action", nil]];
 	
 	previousPoint.x = previousPoint.y = -1000;
 	
@@ -2451,7 +2451,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		{
 			rtotal = -1;
 			Brtotal = -1;
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: [NSDictionary dictionaryWithObjectsAndKeys:@"mouseUp", @"action", 0L]];
+			[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: [NSDictionary dictionaryWithObjectsAndKeys:@"mouseUp", @"action", nil]];
 			
 			mode = ROI_selected;
 			return NO;
@@ -2606,7 +2606,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		unsigned char*	newTextureBuffer;
 		
 		newTextureBuffer = calloc( (1+textureWidth)*(1+textureHeight), sizeof(unsigned char));
-		if( newTextureBuffer == 0L)
+		if( newTextureBuffer == nil)
 		{
 			textureWidth = oldTextureWidth;
 			textureHeight = oldTextureHeight;
@@ -2709,7 +2709,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 				
 				int oldTextureHeight = textureHeight;
 				int oldTextureWidth = textureWidth;
-				unsigned char* tempTextureBuffer = 0L;
+				unsigned char* tempTextureBuffer = nil;
 				
 				// copy current Buffer to temp Buffer	
 				if (textureBuffer!=NULL)
@@ -2718,7 +2718,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 					
 					for( long i = 0; i < oldTextureWidth*oldTextureHeight;i++) tempTextureBuffer[i]=textureBuffer[i];
 					free(textureBuffer);
-					textureBuffer = 0L;
+					textureBuffer = nil;
 				}
 				
 				// new width and height
@@ -2780,7 +2780,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 				}
 					
 				free(tempTextureBuffer);
-				tempTextureBuffer = 0L;
+				tempTextureBuffer = nil;
 					
 				oldTextureWidth = textureWidth;
 				oldTextureHeight = textureHeight;	
@@ -2977,7 +2977,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 	if( action)
 	{
 		if ( [self.comments isEqualToString: @"morphing generated"] ) self.comments = @"";
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: 0L];
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: nil];
 	}
 	
 	[roiLock unlock];
@@ -2987,12 +2987,12 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 
 - (void) setName:(NSString*) a
 {
-	if( a == 0L) a = @"";
+	if( a == nil) a = @"";
 	
 	if( name != a)
 	{
 		[name release]; name = [a retain];
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: 0L];
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: nil];
 	}
 	
 	if( type == tText || type == t2DPoint)
@@ -3153,7 +3153,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		break;
 	}
 
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: 0L];
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: nil];
 	
 	return [self valid];
 }
@@ -3260,7 +3260,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 {
 	NSMutableArray		*rectArray = [curView rectArray];
 	
-	if( rectArray == 0L)
+	if( rectArray == nil)
 	{
 		*moved = NO;
 		return dRect;
@@ -3558,10 +3558,10 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	float thicknessCopy = thickness;
 	thickness = thick;
 	
-	if( roiLock == 0L) roiLock = [[NSLock alloc] init];
+	if( roiLock == nil) roiLock = [[NSLock alloc] init];
 	
 	if( fontListGL == -1 && prepareTextualData == YES) {NSLog(@"fontListGL == -1! We will not draw this ROI..."); return;}
-	if( curView == 0L && prepareTextualData == YES) {NSLog(@"curView == 0L! We will not draw this ROI..."); return;}
+	if( curView == nil && prepareTextualData == YES) {NSLog(@"curView == nil! We will not draw this ROI..."); return;}
 	
 	[roiLock lock];
 
@@ -3616,7 +3616,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 //				}
 //				else
 				{
-					GLuint texName = 0L;
+					GLuint texName = 0;
 					NSUInteger index = [ctxArray indexOfObjectIdenticalTo: currentContext];
 					if( index != NSNotFound)
 						texName = [[textArray objectAtIndex: index] intValue];
@@ -3719,7 +3719,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			
 			[self deleteTexture: currentContext];
 			
-			GLuint textureName = 0L;
+			GLuint textureName = 0;
 			
 			glTextureRangeAPPLE(GL_TEXTURE_RECTANGLE_EXT, textureWidth * textureHeight, textureBuffer);
 			glGenTextures (1, &textureName);
@@ -4306,8 +4306,8 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 											
 											NSString *rName = r.name;
 											
-											if( [rName isEqualToString: @"Unnamed"] || [rName isEqualToString: NSLocalizedString( @"Unnamed", 0L)])
-												rName = 0L;
+											if( [rName isEqualToString: @"Unnamed"] || [rName isEqualToString: NSLocalizedString( @"Unnamed", nil)])
+												rName = nil;
 											
 											if( rName)
 												sprintf (line3, "Cobb's Angle: %0.3f with: %s", angle, [rName UTF8String]);
@@ -4589,7 +4589,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			}
 				if((mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing) && highlightIfSelected)
 				{
-					NSPoint tempPt = [curView convertPoint: [[curView window] mouseLocationOutsideOfEventStream] fromView: 0L];
+					NSPoint tempPt = [curView convertPoint: [[curView window] mouseLocationOutsideOfEventStream] fromView: nil];
 					tempPt = [curView ConvertFromNSView2GL:tempPt];
 					
 					glColor3f (0.5f, 0.5f, 1.0f);
@@ -4862,14 +4862,14 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					}
 					sprintf (line2, "Angle: %0.2f", angle);
 					sprintf (line3, "Angle 2: %0.2f",360 - angle);
-					sprintf (line4,"");
+					line4[ 0] = 0;
 					//sprintf (line5,"");
 					[self prepareTextualData:line1 :line2 :line3 :line4 :line5 :line6 location:tPt];
 			}
 			//ROI MODE
 			if((mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing) && highlightIfSelected)
 			{
-				NSPoint tempPt = [curView convertPoint: [[curView window] mouseLocationOutsideOfEventStream] fromView: 0L];
+				NSPoint tempPt = [curView convertPoint: [[curView window] mouseLocationOutsideOfEventStream] fromView: nil];
 				tempPt = [curView ConvertFromNSView2GL:tempPt];
 				
 				glColor3f (0.5f, 0.5f, 1.0f);
@@ -5071,7 +5071,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			{
 				[curView window];
 				
-				NSPoint tempPt = [curView convertPoint: [[curView window] mouseLocationOutsideOfEventStream] fromView: 0L];
+				NSPoint tempPt = [curView convertPoint: [[curView window] mouseLocationOutsideOfEventStream] fromView: nil];
 				tempPt = [curView ConvertFromNSView2GL:tempPt];
 				
 				glColor3f (0.5f, 0.5f, 1.0f);
@@ -5124,7 +5124,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 - (float*) dataValuesAsFloatPointer :(long*) no
 {
 	long				i;
-	float				*data = 0L;
+	float				*data = nil;
 	
 	switch(type)
 	{
@@ -5133,7 +5133,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 		break;
 		
 		default:
-			data = [[self pix] getROIValue:no :self :0L];
+			data = [[self pix] getROIValue:no :self :nil];
 		break;
 	}
 	
@@ -5163,7 +5163,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 
 - (NSMutableDictionary*) dataString
 {
-	NSMutableDictionary*		array = 0L;
+	NSMutableDictionary*		array = nil;
 	NSMutableArray				*ptsTemp = self.points;
 		
 	switch( type)
@@ -5380,7 +5380,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	if( curView)
 		intervalRatio = fabs([[self pix] sliceInterval] / [[self pix] sliceThickness]);
 	else
-		NSLog( @"curView == 0L");
+		NSLog( @"curView == nil");
 	
 	if (intervalRatio > 1)
 		intervalRatio = 1;
@@ -5589,7 +5589,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	
 	[self deleteTexture: currentContext];
 	
-	GLuint textureName = 0L;
+	GLuint textureName = 0;
 	
 	glGenTextures(1, &textureName);
 	glBindTexture(GL_TEXTURE_RECTANGLE_EXT, textureName);

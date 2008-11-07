@@ -173,7 +173,7 @@ extern  short		annotations;
 					//[self setFocalPointY:mouseLoc.y];
 					//[self setCameraFocalPoint];
 					[self setNeedsDisplay:YES];
-					[[NSNotificationCenter defaultCenter] postNotificationName: @"changeFocalPoint" object:self  userInfo: 0L];
+					[[NSNotificationCenter defaultCenter] postNotificationName: @"changeFocalPoint" object:self  userInfo: nil];
 				break;
 				
 				case NSLeftMouseUp:
@@ -204,7 +204,7 @@ extern  short		annotations;
 	//focalShiftY = focalPointY - crossPositionY;
 	[self setFocalShiftX:[self focalShiftX]]; // will recompute focalPointX
 	[self setFocalShiftY:[self focalShiftY]]; // will recompute focalPointX
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"changeFocalPoint" object:self  userInfo: 0L];
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"changeFocalPoint" object:self  userInfo: nil];
 	[(EndoscopyViewer*)[[self controller] viewer] setCamera];
 }
 
@@ -223,7 +223,7 @@ extern  short		annotations;
 - (void) adjustWLWW:(float) wl :(float) ww
 {
 	[super adjustWLWW :wl :ww];
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"Update2DWLWWMenu" object: curWLWWMenu userInfo: 0L];
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"Update2DWLWWMenu" object: curWLWWMenu userInfo: nil];
 }
 
 - (void) setCameraPosition: (float) x : (float) y
@@ -371,7 +371,7 @@ extern  short		annotations;
 	[panel setCanSelectHiddenExtension:YES];
 	[panel setRequiredFileType:@"jpg"];
 	
-	if( [panel runModalForDirectory:0L file:[[[controller originalDCMFilesList] objectAtIndex:0] valueForKeyPath:@"series.name"]] == NSFileHandlingPanelOKButton)
+	if( [panel runModalForDirectory:nil file:[[[controller originalDCMFilesList] objectAtIndex:0] valueForKeyPath:@"series.name"]] == NSFileHandlingPanelOKButton)
 	{		
 			NSImage *im = [self nsimage:NO];
 						
@@ -432,8 +432,8 @@ extern  short		annotations;
 			
 			[exportDCM setPixelData: data samplePerPixel:spp bitsPerPixel:bpp width: width height: height];
 			
-			NSString *f = [exportDCM writeDCMFile: 0L];
-			if( f == 0L) NSRunCriticalAlertPanel( NSLocalizedString(@"Error", nil),  NSLocalizedString(@"Error during the creation of the DICOM File!", nil), NSLocalizedString(@"OK", nil), nil, nil);
+			NSString *f = [exportDCM writeDCMFile: nil];
+			if( f == nil) NSRunCriticalAlertPanel( NSLocalizedString(@"Error", nil),  NSLocalizedString(@"Error during the creation of the DICOM File!", nil), NSLocalizedString(@"OK", nil), nil, nil);
 			
 			[exportDCM release];
 			free( data);
@@ -463,7 +463,7 @@ extern  short		annotations;
 
 -(unsigned char*) superGetRawPixels:(long*) width :(long*) height :(long*) spp :(long*) bpp :(BOOL) screenCapture :(BOOL) force8bits :(BOOL) removeGraphical
 {
-	return [super getRawPixelsWidth:width height:height spp:spp bpp:bpp screenCapture:screenCapture force8bits:force8bits removeGraphical:removeGraphical squarePixels:YES allTiles:NO allowSmartCropping:NO origin:0L spacing:0L];
+	return [super getRawPixelsWidth:width height:height spp:spp bpp:bpp screenCapture:screenCapture force8bits:force8bits removeGraphical:removeGraphical squarePixels:YES allTiles:NO allowSmartCropping:NO origin:nil spacing:nil];
 }
 
 -(unsigned char*) getRawPixels:(long*) width :(long*) height :(long*) spp :(long*) bpp :(BOOL) screenCapture :(BOOL) force8bits :(BOOL) removeGraphical
@@ -471,7 +471,7 @@ extern  short		annotations;
 	if ([(EndoscopyViewer*)[[self window] windowController] exportAllViews])
 		return [(EndoscopyViewer*)[[self window] windowController] getRawPixels:width :height :spp :bpp];
 	else
-		return [super getRawPixelsWidth:width height:height spp:spp bpp:bpp screenCapture:screenCapture force8bits:force8bits removeGraphical:removeGraphical squarePixels:YES allTiles:NO allowSmartCropping:NO origin:0L spacing:0L];
+		return [super getRawPixelsWidth:width height:height spp:spp bpp:bpp screenCapture:screenCapture force8bits:force8bits removeGraphical:removeGraphical squarePixels:YES allTiles:NO allowSmartCropping:NO origin:nil spacing:nil];
 }
 
 @end

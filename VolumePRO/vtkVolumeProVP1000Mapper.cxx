@@ -66,7 +66,7 @@ vtkVolumeProVP1000Mapper::vtkVolumeProVP1000Mapper()
   this->DepthBuffer = NULL;
 
   outDataSize[0] = outDataSize[1] = 0;
-  outData = 0L;
+  outData = nil;
   renderFlag = 1;
   
   maxWindow = 1000;
@@ -986,7 +986,7 @@ void vtkVolumeProVP1000Mapper::Render( vtkRenderer *ren, vtkVolume *vol )
   VLIStatus                 status;
   //return;
   
-  if( renderFlag == 0 && outData != 0L)
+  if( renderFlag == 0 && outData != nil)
   {
 	this->RenderImageBuffer(ren, vol, outDataSize, outData);
   }
@@ -1254,11 +1254,11 @@ void vtkVolumeProVP1000Mapper::Render( vtkRenderer *ren, vtkVolume *vol )
 		 if( outData)
 		 {
 			free( outData);
-			outData = 0L;
+			outData = nil;
 		}
     }
 	
-	if( outData == 0L) outData = (unsigned int*) malloc( outDataSize[0]*outDataSize[1]*4);
+	if( outData == nil) outData = (unsigned int*) malloc( outDataSize[0]*outDataSize[1]*4);
 	
     status = this->ImageBuffer->Unload(outData, this->ImageBuffer->GetOutputLimits());
     

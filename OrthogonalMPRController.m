@@ -69,7 +69,7 @@
 	[originalDCMFilesList release];
 	originalDCMFilesList = [[NSMutableArray alloc] initWithArray:files];
 
-	if( [vC blendingController] == 0L)
+	if( [vC blendingController] == nil)
 	{
 		NSLog( @"originalROIList");
 		[originalROIList release];
@@ -77,7 +77,7 @@
 	}
 	else
 	{
-		originalROIList = 0L;
+		originalROIList = nil;
 	}
 
 	[reslicer release];
@@ -443,7 +443,7 @@
 	
 	if( [str isEqualToString:NSLocalizedString(@"Linear Table", nil)])
 	{
-		[self setTransferFunction: 0L];
+		[self setTransferFunction: nil];
 	}
 	else
 	{
@@ -461,9 +461,9 @@
 {
 	if( [str isEqualToString:NSLocalizedString(@"No CLUT", nil)] == YES)
 	{
-		[originalView setCLUT: 0L :0L :0L];
-		[xReslicedView setCLUT: 0L :0L :0L];
-		[yReslicedView setCLUT: 0L :0L :0L];
+		[originalView setCLUT: nil :nil :nil];
+		[xReslicedView setCLUT: nil :nil :nil];
+		[yReslicedView setCLUT: nil :nil :nil];
 	}
 	else
 	{
@@ -527,9 +527,9 @@
 	[originalView adjustWLWW: iwl : iww];
 	[xReslicedView adjustWLWW: iwl : iww];
 	[yReslicedView adjustWLWW: iwl : iww];
-	[self setCurWLWWMenu: NSLocalizedString(@"Other", 0L)];
+	[self setCurWLWWMenu: NSLocalizedString(@"Other", nil)];
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"changeWLWW" object: [originalView curDCM] userInfo:0L];
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"changeWLWW" object: [originalView curDCM] userInfo:nil];
 }
 
 - (void) setCurWLWWMenu:(NSString*) str

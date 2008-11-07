@@ -142,7 +142,7 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 
 -(void) revertSeries:(id) sender
 {
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"revertSeriesNotification" object: pixList[ curMovieIndex] userInfo: 0L];
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"revertSeriesNotification" object: pixList[ curMovieIndex] userInfo: nil];
 	[appliedConvolutionFilters removeAllObjects];
 	if([presetsPanel isVisible])[self displayPresetsForSelectedGroup];
 }
@@ -275,7 +275,7 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
     i = [[convolutionMenu menu] numberOfItems];
     while(i-- > 0) [[convolutionMenu menu] removeItemAtIndex:0];
 	
-	[[convolutionMenu menu] addItemWithTitle: NSLocalizedString( @"Apply a filter", 0L) action:0L keyEquivalent:@""];
+	[[convolutionMenu menu] addItemWithTitle: NSLocalizedString( @"Apply a filter", nil) action:nil keyEquivalent:@""];
 	
     for( i = 0; i < [sortedKeys count]; i++)
     {
@@ -437,7 +437,7 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 
 -(id) initWithPix:(NSMutableArray*) pix :(NSArray*) f :(NSData*) vData :(ViewerController*) bC :(ViewerController*) vC
 {
-	[self initWithPix:(NSMutableArray*) pix :(NSArray*) f :(NSData*) vData :(ViewerController*) bC :(ViewerController*) vC style:@"standard" mode:@"VR"];
+	return [self initWithPix:(NSMutableArray*) pix :(NSArray*) f :(NSData*) vData :(ViewerController*) bC :(ViewerController*) vC style:@"standard" mode:@"VR"];
 }
 
 - (void) computeMinMax
@@ -467,12 +467,12 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 	// MEMORY TEST: The renderer needs to have the volume in short
 	{
 		char	*testPtr = (char*) malloc( [firstObject pwidth] * [firstObject pheight] * [pix count] * sizeof( short) + 50UL * 1024UL * 1024UL);
-		if( testPtr == 0L)
+		if( testPtr == nil)
 		{
 			if( NSRunAlertPanel( NSLocalizedString(@"Not Enough Memory",nil), NSLocalizedString( @"Not enough memory (RAM) to use the 3D engine.\r\rUpgrade to OsiriX 64-bit to solve this issue.",nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"OsiriX 64-bit", nil), nil) == NSAlertAlternateReturn)
 				[[AppController sharedAppController] osirix64bit: self];
 			
-			return 0L;
+			return nil;
 		}
 		else free( testPtr);
 	}
@@ -487,12 +487,12 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 //	[www start];
 //	
 //	NSMutableArray		*newPix = [NSMutableArray array], *newFiles = [NSMutableArray array];
-//	NSData				*newData = 0L;
+//	NSData				*newData = nil;
 //	
 //	if( [ViewerController resampleDataFromPixArray:pix fileArray:f inPixArray:newPix fileArray:newFiles data:&newData withXFactor:2 yFactor:2 zFactor:2] == NO)
 //	{
 //		NSRunCriticalAlertPanel( NSLocalizedString(@"Not Enough Memory",nil), NSLocalizedString( @"Not enough memory (RAM) to use the 3D engine.",nil), NSLocalizedString(@"OK",nil), nil, nil);
-//		return 0L;
+//		return nil;
 //	}
 //	else
 //	{
@@ -514,7 +514,7 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 	// BY DEFAULT TURN OFF OPENGL ENGINE !
 	[[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"MAPPERMODEVR"];
 	
-	for( i = 0; i < 100; i++) undodata[ i] = 0L;
+	for( i = 0; i < 100; i++) undodata[ i] = nil;
 	
 	curMovieIndex = 0;
 	maxMovieIndex = 1;
@@ -539,7 +539,7 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 		else
 		{
 			NSRunCriticalAlertPanel(NSLocalizedString( @"Slice interval/thickness",nil), NSLocalizedString( @"Problems with slice thickness/interval to do a 3D reconstruction.",nil),NSLocalizedString( @"OK",nil), nil, nil);
-			return 0L;
+			return nil;
 		}
     }
     
@@ -552,7 +552,7 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
     if( err)
     {
         NSRunCriticalAlertPanel(NSLocalizedString( @"Images size",nil),  NSLocalizedString(@"These images don't have the same height and width to allow a 3D reconstruction...",nil),NSLocalizedString( @"OK",nil), nil, nil);
-        return 0L;
+        return nil;
     }
     
     // CHECK IMAGE SIZE
@@ -566,7 +566,7 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 //		}
 //		if( err)
 //		{
-//			if( NSRunCriticalAlertPanel( @"Slices location",  @"Slice thickness/interval is not exactly equal for all images. This could distord the 3D reconstruction...", @"Continue", @"Cancel", nil) != NSAlertDefaultReturn) return 0L;
+//			if( NSRunCriticalAlertPanel( @"Slices location",  @"Slice thickness/interval is not exactly equal for all images. This could distord the 3D reconstruction...", @"Continue", @"Cancel", nil) != NSAlertDefaultReturn) return nil;
 //			err = 0;
 //		}
 //	}
@@ -596,7 +596,7 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 		if( NSRunAlertPanel( NSLocalizedString(@"Not Enough Memory",nil), NSLocalizedString( @"Not enough memory (RAM) to use the 3D engine.\r\rUpgrade to OsiriX 64-bit to solve this issue.",nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"OsiriX 64-bit", nil), nil) == NSAlertAlternateReturn)
 			[[AppController sharedAppController] osirix64bit: self];
         [self release];
-        return 0L;
+        return nil;
     }
 	
 	if( blendingController) // Blending! Activate image fusion
@@ -676,7 +676,7 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
                name: @"updateVolumeData"
              object: nil];
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: 0L];
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: nil];
 	
 	curCLUTMenu = [NSLocalizedString(@"No CLUT", nil) retain];
 	
@@ -685,7 +685,7 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
                name: @"UpdateCLUTMenu"
              object: nil];
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: 0L];
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: nil];
 	
 	curOpacityMenu = [NSLocalizedString(@"Linear Table", nil) retain];
 	
@@ -694,7 +694,7 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
                name: @"UpdateOpacityMenu"
              object: nil];
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: 0L];
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: nil];
 	
 	[nc addObserver: self
            selector: @selector(CLUTChanged:)
@@ -705,7 +705,7 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
            selector: @selector(UpdateConvolutionMenu:)
                name: @"UpdateConvolutionMenu"
              object: nil];
-	 [[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateConvolutionMenu" object: NSLocalizedString( @"No Filter", 0L) userInfo: 0L];
+	 [[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateConvolutionMenu" object: NSLocalizedString( @"No Filter", nil) userInfo: nil];
 			
 	 [nc addObserver: self
            selector: @selector(CloseViewerNotification:)
@@ -851,7 +851,7 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 	
 	NSDictionary *dict = [NSDictionary dictionaryWithContentsOfFile: str];
 	
-	if( [viewer2D postprocessed]) dict = 0L;
+	if( [viewer2D postprocessed]) dict = nil;
 		
 	[view set3DStateDictionary:dict];
 		
@@ -978,7 +978,7 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 		float*	data = (float*) [volumeData[ i] bytes];
 		long	memSize = [firstObject pwidth] * [firstObject pheight] * [pixList[ i] count] * sizeof( short);
 		
-		if( undodata[ i] == 0L)
+		if( undodata[ i] == nil)
 		{
 			undodata[ i] = (float*) malloc( memSize);
 		}
@@ -1078,7 +1078,7 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 		[volumeData[ i] release];
 	}
 	[fileList release];
-	[toolbar setDelegate: 0L];
+	[toolbar setDelegate: nil];
 	[toolbar release];
 	
 	// 3D Points
@@ -1213,13 +1213,13 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 {
 	NSString	*menuString = [sender title];
 	
-	if( [menuString isEqualToString:NSLocalizedString(@"Other", 0L)] == YES)
+	if( [menuString isEqualToString:NSLocalizedString(@"Other", nil)] == YES)
 	{
 	}
-	else if( [menuString isEqualToString:NSLocalizedString(@"Default WL & WW", 0L)] == YES)
+	else if( [menuString isEqualToString:NSLocalizedString(@"Default WL & WW", nil)] == YES)
 	{
 	}
-	else if( [menuString isEqualToString:NSLocalizedString(@"Full dynamic", 0L)] == YES)
+	else if( [menuString isEqualToString:NSLocalizedString(@"Full dynamic", nil)] == YES)
 	{
 	}
 	else
@@ -1229,20 +1229,20 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 	
 	[self applyWLWWForString: menuString];
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: 0L];
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: nil];
 }
 
 - (void)applyWLWWForString:(NSString *)menuString
 {
-	if( [menuString isEqualToString:NSLocalizedString(@"Other", 0L)] == YES)
+	if( [menuString isEqualToString:NSLocalizedString(@"Other", nil)] == YES)
 	{
 		//[imageView setWLWW:0 :0];
 	}
-	else if( [menuString isEqualToString:NSLocalizedString(@"Default WL & WW", 0L)] == YES)
+	else if( [menuString isEqualToString:NSLocalizedString(@"Default WL & WW", nil)] == YES)
 	{
 		[view setWLWW:[[pixList[0] objectAtIndex:0] savedWL] :[[pixList[0] objectAtIndex:0] savedWW]];
 	}
-	else if( [menuString isEqualToString:NSLocalizedString(@"Full dynamic", 0L)] == YES)
+	else if( [menuString isEqualToString:NSLocalizedString(@"Full dynamic", nil)] == YES)
 	{
 		[view setWLWW:0 :0];
 	}
@@ -1341,7 +1341,7 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 {
 	NSString	*previousColorName = [NSString stringWithString: curCLUTMenu];
 	
-	if( str == 0L) return;
+	if( str == nil) return;
 	
 	[OpacityPopup setEnabled:YES];
 	[clutOpacityView cleanup];
@@ -1352,7 +1352,7 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 	
 	[self ApplyOpacityString:curOpacityMenu];
 	
-	if( [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"CLUT"] objectForKey: str] == 0L)
+	if( [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"CLUT"] objectForKey: str] == nil)
 		str = @"No CLUT";
 	
 	if( curCLUTMenu != str)
@@ -1363,12 +1363,12 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 	
 	if( [str isEqualToString:NSLocalizedString(@"No CLUT", nil)] == YES)
 	{
-		[view setCLUT: 0L :0L :0L];
+		[view setCLUT: nil :nil :nil];
 		
-		if( [previousColorName isEqualToString: NSLocalizedString( @"B/W Inverse", 0L)] || [previousColorName isEqualToString:( @"B/W Inverse")])
+		if( [previousColorName isEqualToString: NSLocalizedString( @"B/W Inverse", nil)] || [previousColorName isEqualToString:( @"B/W Inverse")])
 			[view changeColorWith: [NSColor colorWithDeviceRed:0.0 green:0.0 blue:0.0 alpha:1.0]];
 		
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: 0L];
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: nil];
 		
 		[[[clutPopup menu] itemAtIndex:0] setTitle:str];
 	}
@@ -1402,14 +1402,14 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 			
 			[view setCLUT:red :green: blue];
 						
-			if( [curCLUTMenu isEqualToString: NSLocalizedString( @"B/W Inverse", 0L)] || [curCLUTMenu isEqualToString:( @"B/W Inverse")])
+			if( [curCLUTMenu isEqualToString: NSLocalizedString( @"B/W Inverse", nil)] || [curCLUTMenu isEqualToString:( @"B/W Inverse")])
 				[view changeColorWith: [NSColor colorWithDeviceRed:1.0 green:1.0 blue:1.0 alpha:1.0]];
 			else 
 			{
-				if( [previousColorName isEqualToString: NSLocalizedString( @"B/W Inverse", 0L)] || [previousColorName isEqualToString:( @"B/W Inverse")])
+				if( [previousColorName isEqualToString: NSLocalizedString( @"B/W Inverse", nil)] || [previousColorName isEqualToString:( @"B/W Inverse")])
 					[view changeColorWith: [NSColor colorWithDeviceRed:0.0 green:0.0 blue:0.0 alpha:1.0]];
 			}
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: 0L];
+			[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: nil];
 			
 			[[[clutPopup menu] itemAtIndex:0] setTitle: curCLUTMenu];
 		}
@@ -1423,7 +1423,7 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 	NSArray				*array;
 	long				i;
 	
-	if( str == 0L) return;
+	if( str == nil) return;
 	
 	if( curOpacityMenu != str)
 	{
@@ -1434,7 +1434,7 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 	if( [str isEqualToString:@"Linear Table"])
 	{
 		[view setOpacity:[NSArray array]];
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: 0L];
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: nil];
 		
 		[[[OpacityPopup menu] itemAtIndex:0] setTitle:str];
 	}
@@ -1446,7 +1446,7 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 			array = [aOpacity objectForKey:@"Points"];
 			
 			[view setOpacity:array];
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: 0L];
+			[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: nil];
 			
 			[[[OpacityPopup menu] itemAtIndex:0] setTitle: curOpacityMenu];
 		}
@@ -2083,7 +2083,7 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 	[panel setCanSelectHiddenExtension:YES];
 	[panel setRequiredFileType:@"jpg"];
 	
-	if( [panel runModalForDirectory:0L file:@"3D VR Image"] == NSFileHandlingPanelOKButton)
+	if( [panel runModalForDirectory:nil file:@"3D VR Image"] == NSFileHandlingPanelOKButton)
 	{
 		NSImage *im = [view nsimage:NO];
 		
@@ -2128,7 +2128,7 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 	[panel setCanSelectHiddenExtension:YES];
 	[panel setRequiredFileType:@"tif"];
 	
-	if( [panel runModalForDirectory:0L file:@"3D VR Image"] == NSFileHandlingPanelOKButton)
+	if( [panel runModalForDirectory:nil file:@"3D VR Image"] == NSFileHandlingPanelOKButton)
 	{
 		NSImage *im = [view nsimage:NO];
 		
@@ -2174,7 +2174,7 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 			return [w windowController];
 	}
 	
-	return 0L;
+	return nil;
 }
 
 - (void)recordFlyThru;
@@ -2223,7 +2223,7 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 			NSLog( @"%f %f %f", [[x2DPointsArray lastObject] floatValue], [[y2DPointsArray lastObject] floatValue], [[z2DPointsArray lastObject] floatValue]);
 			
 			// notify the change
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object: new2DPointROI userInfo: 0L];
+			[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object: new2DPointROI userInfo: nil];
 		}
 	}
 }
@@ -2270,7 +2270,7 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 			[[[viewer2D roiList] objectAtIndex: [[sliceNumber2DPointsArray objectAtIndex:cur2DPointIndex] longValue]] removeObject:cur2DPoint];
 			//notify
 			[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:cur2DPoint userInfo: nil];
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"updateView" object:0L userInfo: 0L];
+			[[NSNotificationCenter defaultCenter] postNotificationName: @"updateView" object:nil userInfo: nil];
 
 			// remove 2D point in our list
 			// done by remove3DPoint (through notification)
@@ -2790,8 +2790,8 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 	if ([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSShiftKeyMask)
     {
         NSBeginAlertSheet(NSLocalizedString(@"Remove a Color Look Up Table", nil), NSLocalizedString(@"Delete", nil), NSLocalizedString(@"Cancel", nil), nil, [self window],
-		  self, @selector(delete16BitCLUT:returnCode:contextInfo:), NULL, [sender title], [NSString stringWithFormat: NSLocalizedString( @"Are you sure you want to delete this CLUT : '%@'", 0L), [sender title]]);
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: 0L];
+		  self, @selector(delete16BitCLUT:returnCode:contextInfo:), NULL, [sender title], [NSString stringWithFormat: NSLocalizedString( @"Are you sure you want to delete this CLUT : '%@'", nil), [sender title]]);
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: nil];
 	}
 	else
 	{
@@ -2878,7 +2878,7 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 		{
 			[[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
 		}
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object:curCLUTMenu userInfo: 0L];
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object:curCLUTMenu userInfo: nil];
     }
 }
 
@@ -2914,7 +2914,7 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 	[[NSUserDefaults standardUserDefaults] setFloat: [[pixList[ 0] objectAtIndex: 0] minValueOfSeries] forKey: @"VRGrowingRegionMin"];
 	[[NSUserDefaults standardUserDefaults] setFloat: [[pixList[ 0] objectAtIndex: 0] maxValueOfSeries] forKey: @"VRGrowingRegionMax"];
 	
-	[NSApp beginSheet: growingRegionWindow modalForWindow:[self window] modalDelegate:self didEndSelector:0L contextInfo:(void*) 0L];
+	[NSApp beginSheet: growingRegionWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:(void*) nil];
 }
 
 #pragma mark-
@@ -3487,7 +3487,7 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 			
 			[preview setCLUT:red :green: blue];
 		}
-		else [preview setCLUT: 0L :0L :0L];
+		else [preview setCLUT: nil :nil :nil];
 		
 		// opacity
 		NSDictionary *aOpacity = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"OPACITY"] objectForKey:[preset objectForKey:@"opacity"]];
@@ -3510,7 +3510,7 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 		[path appendString:CLUTDATABASE];
 		[path appendString:aClutName];
 
-		NSMutableArray *curves = 0L, *pointColors = 0L;
+		NSMutableArray *curves = nil, *pointColors = nil;
 		
 		if([[NSFileManager defaultManager] fileExistsAtPath:path])
 		{
@@ -3578,7 +3578,7 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 	{
 		NSString *shadingName = [preset objectForKey:@"shading"];
 		NSArray *shadings = [[NSUserDefaults standardUserDefaults] arrayForKey:@"shadingsPresets"];
-		NSDictionary *selectedShading = 0L;
+		NSDictionary *selectedShading = nil;
 		for (i=0; i<[shadings count]; i++)
 		{
 			if([[[shadings objectAtIndex:i] objectForKey:@"name"] isEqualToString:shadingName])

@@ -168,7 +168,7 @@ const float ArrowButtonBottomMargin = 7.0, ArrowButtonRightMargin = 6.0, ArrowBu
 {
 //NSLog(@"mouseDown");
 	NSPoint eventLocation = [event locationInWindow];
-	NSPoint tempPt = [self convertPoint:eventLocation fromView: 0L];
+	NSPoint tempPt = [self convertPoint:eventLocation fromView: nil];
 	NSRect viewFrame = [self frame];
 	tempPt = [self ConvertFromNSView2GL:tempPt];
 	
@@ -214,7 +214,7 @@ const float ArrowButtonBottomMargin = 7.0, ArrowButtonRightMargin = 6.0, ArrowBu
 {
 //NSLog(@"mouseMoved");
 	NSPoint eventLocation = [event locationInWindow];
-	NSPoint tempPt = [self convertPoint:eventLocation fromView: 0L];
+	NSPoint tempPt = [self convertPoint:eventLocation fromView: nil];
 	NSRect viewFrame = [self frame];
 	tempPt = [self ConvertFromNSView2GL:tempPt];
 	
@@ -257,7 +257,7 @@ const float ArrowButtonBottomMargin = 7.0, ArrowButtonRightMargin = 6.0, ArrowBu
 	if(draggingTopLimit || draggingBottomLimit)
 	{
 		NSPoint eventLocation = [event locationInWindow];
-		NSPoint tempPt = [self convertPoint:eventLocation fromView: 0L];
+		NSPoint tempPt = [self convertPoint:eventLocation fromView: nil];
 		NSRect viewFrame = [self frame];
 		tempPt = [self ConvertFromNSView2GL:tempPt];
 		

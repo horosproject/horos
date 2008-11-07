@@ -70,7 +70,7 @@ NSMutableString *s = [NSMutableString stringWithCapacity:1000];
 
 	[s appendString:@"tell composeMessage\n"];
 	 
-	if (isMIME && imagePath != 0L && [[NSFileManager defaultManager] fileExistsAtPath:imagePath])
+	if (isMIME && imagePath != nil && [[NSFileManager defaultManager] fileExistsAtPath:imagePath])
 	{
 		[s appendString:[NSString stringWithFormat:@"set aFile to \"%@\"\n",imagePath]];
 		[s appendString:@"tell content\n"];
@@ -113,9 +113,9 @@ return self;
 #if __LP64__
 	NSTask *theTask = [[NSTask alloc] init];
 	
-	[[NSFileManager defaultManager] removeFileAtPath: @"/tmp/osascript" handler:0L];
+	[[NSFileManager defaultManager] removeFileAtPath: @"/tmp/osascript" handler:nil];
 	[txt writeToFile:@"/tmp/osascript" atomically:YES];
-	[theTask setArguments: [NSArray arrayWithObjects: @"OSAScript", @"/tmp/osascript", 0L]];
+	[theTask setArguments: [NSArray arrayWithObjects: @"OSAScript", @"/tmp/osascript", nil]];
 	[theTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"/32-bit shell.app/Contents/MacOS/32-bit shell"]];
 	[theTask launch];
 	[theTask waitUntilExit];

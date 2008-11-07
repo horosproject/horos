@@ -37,7 +37,7 @@
 	
 	stepCameras = [[NSMutableArray alloc] initWithCapacity:0];
 	pathCameras = [[NSMutableArray alloc] initWithCapacity:0];
-	stepsPositionInPath = 0L;
+	stepsPositionInPath = nil;
 	
 	if (sCamera) [self addCamera: sCamera];
 	self.numberOfFrames = 50;
