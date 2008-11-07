@@ -186,13 +186,13 @@ static void saveDimseFragment(DcmDataset *dset, OFBool isCommand, OFBool isRecei
   char filename[2048];
   if (isCommand)
   {
-    sprintf(filename, "dimse-cmd-%s-%04lu.dcm", transmission, g_dimse_commandCounter);
+    sprintf(filename, "dimse-cmd-%s-%04u.dcm", transmission, g_dimse_commandCounter);
   } else {
     if (g_dimse_dataCounter < 2)
     {
-      sprintf(filename, "dimse-dat-%s-%04lu.dcm", transmission, g_dimse_commandCounter);
+      sprintf(filename, "dimse-dat-%s-%04u.dcm", transmission, g_dimse_commandCounter);
     } else {
-      sprintf(filename, "dimse-dat-%s-%04lu-%02lu.dcm", transmission, g_dimse_commandCounter, g_dimse_dataCounter);
+      sprintf(filename, "dimse-dat-%s-%04u-%02u.dcm", transmission, g_dimse_commandCounter, g_dimse_dataCounter);
     }
   }
 

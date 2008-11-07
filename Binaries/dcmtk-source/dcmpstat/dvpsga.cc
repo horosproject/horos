@@ -194,7 +194,7 @@ OFCondition DVPSGraphicAnnotation::addImageReference(
   if (applicability==DVPSB_currentFrame)
   {
     char frameString[100];
-    sprintf(frameString, "%ld", frame);
+    sprintf(frameString, "%d", frame);
     framenumber = frameString;
   }
   return referencedImageList.addImageReference(sopclassUID, instanceUID, framenumber);

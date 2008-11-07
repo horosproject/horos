@@ -3575,7 +3575,7 @@ OFCondition DVInterface::createPrintJobFilenames(const char *printer, OFString& 
   if (printer==NULL) return EC_IllegalCall;
   char buf[20];
 
-  sprintf(buf, "%04lu", printJobCounter++);
+  sprintf(buf, "%04u", printJobCounter++);
   jobname =  getSpoolFolder();
   jobname += PATH_SEPARATOR;
   jobname += printJobIdentifier;

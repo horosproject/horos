@@ -86,7 +86,7 @@ END_EXTERN_C
 //	if (filexfer.getXfer() == EXS_JPEG2000LosslessOnly || filexfer.getXfer() == EXS_JPEG2000) {
 //		NSString *path = [NSString stringWithCString:fname encoding:[NSString defaultCStringEncoding]];
 //		DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile:path decodingPixelData:YES];
-//		[[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
+//		[[NSFileManager defaultManager] removeFileAtPath:path handler:0L];
 //		[dcmObject writeToFile:path withTransferSyntax:[DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax] quality:1 AET:@"OsiriX" atomically:YES];
 //		[dcmObject release];
 //	}
@@ -100,7 +100,7 @@ END_EXTERN_C
 //		  if (dataset->canWriteXfer(EXS_LittleEndianExplicit))
 //		  {
 //			fileformat.loadAllDataIntoMemory();
-//			[[NSFileManager defaultManager] removeFileAtPath:[NSString stringWithCString:fname] handler:nil];
+//			[[NSFileManager defaultManager] removeFileAtPath:[NSString stringWithCString:fname] handler:0L];
 //			cond = fileformat.saveFile(fname, EXS_LittleEndianExplicit);
 //			status =  (cond.good()) ? YES : NO;
 //			
@@ -500,7 +500,7 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::updateLogEntry(DcmDataset *dat
 	pFile = fopen (dir,"w+");
 	if( pFile)
 	{
-		fprintf (pFile, "%s\r%s\r%s\r%d\r%s\r%s\r%d\r%d\r%s\r%s\r\%d\r", handle->logPatientName, handle->logStudyDescription, handle->logCallingAET, handle->logStartTime, handle->logMessage, handle->logUID, handle->logNumberReceived, handle->logEndTime, "Receive", handle->logSpecificCharacterSet, handle->logNumberReceived);
+		fprintf (pFile, "%s\r%s\r%s\r%ld\r%s\r%s\r%ld\r%ld\r%s\r%s\r\%ld\r", handle->logPatientName, handle->logStudyDescription, handle->logCallingAET, handle->logStartTime, handle->logMessage, handle->logUID, handle->logNumberReceived, handle->logEndTime, "Receive", handle->logSpecificCharacterSet, handle->logNumberReceived);
 		fclose (pFile);
 		strcpy( newdir, dir);
 		strcat( newdir, ".log");
@@ -697,7 +697,7 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::startFindRequest(
 	
 	// Search Core Data here
 	if( handle -> dataHandler == 0L)
-		handle -> dataHandler = [[OsiriXSCPDataHandler requestDataHandlerWithDestinationFolder:nil debugLevel:0] retain];
+		handle -> dataHandler = [[OsiriXSCPDataHandler requestDataHandlerWithDestinationFolder:0L debugLevel:0] retain];
 		
 	cond = [handle->dataHandler prepareFindForDataSet:findRequestIdentifiers];
 	MatchFound = [handle->dataHandler findMatchFound];
@@ -904,7 +904,7 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::nextFindResponse (
 	dbdebug(1, "nextFindResponse () : new dataset\n") ;
 	
 	if( handle -> dataHandler == 0L)
-		handle -> dataHandler = [[OsiriXSCPDataHandler requestDataHandlerWithDestinationFolder:nil debugLevel:0] retain];
+		handle -> dataHandler = [[OsiriXSCPDataHandler requestDataHandlerWithDestinationFolder:0L debugLevel:0] retain];
 		
 	cond = [handle ->dataHandler nextFindObject:*findResponseIdentifiers  isComplete:&isComplete];
 	dbdebug(1, "nextFindResponse () : next response\n") ;
@@ -966,7 +966,7 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::nextMoveResponse(
 	 status->setStatus(STATUS_Pending);
 	 /**** Goto the next matching image number  *****/
 	if( handle -> dataHandler == 0L)
-		handle -> dataHandler = [[OsiriXSCPDataHandler requestDataHandlerWithDestinationFolder:nil debugLevel:0] retain];
+		handle -> dataHandler = [[OsiriXSCPDataHandler requestDataHandlerWithDestinationFolder:0L debugLevel:0] retain];
 		
 	OFCondition cond = [handle->dataHandler nextMoveObject:imageFileName];
 	DcmFileFormat fileformat;
@@ -1160,7 +1160,7 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::startMoveRequest(
 	// Search Core Data here
 	//NSLog(@"search core data for move");
 	if( handle -> dataHandler == 0L)
-		handle -> dataHandler = [[OsiriXSCPDataHandler requestDataHandlerWithDestinationFolder:nil debugLevel:0] retain];
+		handle -> dataHandler = [[OsiriXSCPDataHandler requestDataHandlerWithDestinationFolder:0L debugLevel:0] retain];
 	
 	[handle -> dataHandler setValue: [NSString stringWithUTF8String: handle -> callingAET] forKey: @"callingAET"];
 	
@@ -1234,7 +1234,7 @@ DcmQueryRetrieveOsiriXDatabaseHandle::DcmQueryRetrieveOsiriXDatabaseHandle(
 		handle -> findResponseList = NULL;
 		handle -> uidList = NULL;
 		result = EC_Normal;
-		handle -> dataHandler = NULL;	//[[OsiriXSCPDataHandler requestDataHandlerWithDestinationFolder:nil debugLevel:0] retain];
+		handle -> dataHandler = NULL;	//[[OsiriXSCPDataHandler requestDataHandlerWithDestinationFolder:0L debugLevel:0] retain];
 		handle -> logEntry = NULL;
 		handle -> imageCount = 0;
 		handle -> logCreated = NO;
@@ -1267,7 +1267,7 @@ DcmQueryRetrieveOsiriXDatabaseHandle::~DcmQueryRetrieveOsiriXDatabaseHandle()
 			pFile = fopen (dir,"w+");
 			if( pFile)
 			{
-				fprintf (pFile, "%s\r%s\r%s\r%d\r%s\r%s\r%d\r%d\r%s\r%s\r\%d\r", handle->logPatientName, handle->logStudyDescription, handle->logCallingAET, handle->logStartTime, handle->logMessage, handle->logUID, handle->logNumberReceived, handle->logEndTime, "Receive", handle->logSpecificCharacterSet, handle->logNumberReceived);
+				fprintf (pFile, "%s\r%s\r%s\r%ld\r%s\r%s\r%ld\r%ld\r%s\r%s\r\%ld\r", handle->logPatientName, handle->logStudyDescription, handle->logCallingAET, handle->logStartTime, handle->logMessage, handle->logUID, handle->logNumberReceived, handle->logEndTime, "Receive", handle->logSpecificCharacterSet, handle->logNumberReceived);
 				fclose (pFile);
 				strcpy( newdir, dir);
 				strcat( newdir, ".log");

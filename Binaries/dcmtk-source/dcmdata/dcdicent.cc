@@ -144,7 +144,7 @@ ostream& operator<<(ostream& s, const DcmDictEntry& e) {
 
     const DcmDictEntry* ep = &e;
     if (ep == NULL) {
-        s << "(nil)";
+        s << "(0L)";
         return s;
     }
 

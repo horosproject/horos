@@ -1198,7 +1198,7 @@ OFCondition DVPresentationState::setGammaVOILUT(double gammaValue, DVPSObjectApp
         char gammabuf[16];
         OFStandard::ftoa(gammabuf, sizeof(gammabuf), gammaValue, OFStandard::ftoa_format_f, 3, 1);
 
-        sprintf(explanation, "LUT with gamma %s, descriptor %u/%ld/%u", gammabuf,
+        sprintf(explanation, "LUT with gamma %s, descriptor %u/%d/%u", gammabuf,
                (numberOfEntries < 65536) ? (Uint16)numberOfEntries : 0, firstMapped, numberOfBits);
 
         lutExplanation = new DcmLongString(DCM_LUTExplanation);

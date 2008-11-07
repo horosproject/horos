@@ -284,7 +284,7 @@ void DVPSReferencedImage::removeFrameReference(unsigned int frame, unsigned int 
     {
       if (i != frame)
       {
-      	if (aString.size() ==0) sprintf(str, "%ld", i); else sprintf(str, "\\%ld", i);
+      	if (aString.size() ==0) sprintf(str, "%d", i); else sprintf(str, "\\%d", i);
       	aString += str;
       }
     }

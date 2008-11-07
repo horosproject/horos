@@ -980,7 +980,7 @@ AE_3_AssociateConfirmationAccept(PRIVATE_NETWORKKEY ** /*network*/,
             if ((prvCtx->result == DUL_PRESENTATION_ACCEPT) && (LST_Count(&prvCtx->transferSyntaxList) != 1))
             {
               char buf2[256];
-              sprintf(buf2, "DUL Peer supplied illegal number of transfer syntaxes (%ld)", LST_Count(&prvCtx->transferSyntaxList));
+              sprintf(buf2, "DUL Peer supplied illegal number of transfer syntaxes (%d)", LST_Count(&prvCtx->transferSyntaxList));
               return makeDcmnetCondition(DULC_PEERILLEGALXFERSYNTAXCOUNT, OF_error, buf2);
             }
             subItem = (DUL_SUBITEM*)LST_Head(&prvCtx->transferSyntaxList);
@@ -3292,7 +3292,7 @@ readPDUHead(PRIVATE_ASSOCIATIONKEY ** association,
         if ((*PDUType == DUL_TYPEDATA) && (*PDULength > (*association)->maxPDVInput))
         {
           char buf1[256];
-          sprintf(buf1, "DUL Illegal PDU Length %ld.  Max expected %ld", *PDULength, (*association)->maxPDVInput);
+          sprintf(buf1, "DUL Illegal PDU Length %d.  Max expected %d", *PDULength, (*association)->maxPDVInput);
           cond = makeDcmnetCondition(DULC_ILLEGALPDULENGTH, OF_error, buf1);
         }
     }

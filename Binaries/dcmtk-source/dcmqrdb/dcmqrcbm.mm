@@ -95,7 +95,7 @@ static OFCondition decompressFileFormat(DcmFileFormat fileformat, const char *fn
 	{
 		NSString *path = [NSString stringWithCString:fname encoding:[NSString defaultCStringEncoding]];
 		DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile:path decodingPixelData:YES];
-		[[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
+		[[NSFileManager defaultManager] removeFileAtPath:path handler:0L];
 		[dcmObject writeToFile:path withTransferSyntax:[DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax] quality:1 AET:@"OsiriX" atomically:YES];
 		[dcmObject release];
 	}
@@ -110,7 +110,7 @@ static OFCondition decompressFileFormat(DcmFileFormat fileformat, const char *fn
 		  if (dataset->canWriteXfer(EXS_LittleEndianExplicit))
 		  {
 			fileformat.loadAllDataIntoMemory();
-			[[NSFileManager defaultManager] removeFileAtPath:[NSString stringWithCString:fname] handler:nil];
+			[[NSFileManager defaultManager] removeFileAtPath:[NSString stringWithCString:fname] handler:0L];
 			cond = fileformat.saveFile(fname, EXS_LittleEndianExplicit);
 			status =  (cond.good()) ? YES : NO;
 			
@@ -852,7 +852,7 @@ OFBool DcmQueryRetrieveMoveContext::mapMoveDestination(
 		serverSelection = [serversArray filteredArrayUsingPredicate:serverPredicate];
 	}
 	
-	NSNetService *netService = nil;
+	NSNetService *netService = 0L;
 			
 	if ([serverSelection count] > 0) {
 		id server = [serverSelection objectAtIndex:0];

@@ -4763,7 +4763,7 @@ void DicomDirInterface::setDefaultValue(DcmDirectoryRecord *record,
             /* use at most 10 chars from prefix */
             OFStandard::strlcpy(buffer, prefix, 10 + 1);
             /* append a 6 digits number */
-            sprintf(buffer + strlen(buffer), "%06lu", number);
+            sprintf(buffer + strlen(buffer), "%06u", number);
         } else {
             /* create a number string only */
             sprintf(buffer, "%u", number);

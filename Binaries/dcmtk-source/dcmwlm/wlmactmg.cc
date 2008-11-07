@@ -810,7 +810,7 @@ OFCondition WlmActivityManager::HandleFindSCP( T_ASC_Association *assoc, T_DIMSE
   {
     if( opt_verbose )
     {
-      sprintf( msg, "SLEEPING (after find): %ld secs\n", opt_sleepAfterFind );
+      sprintf( msg, "SLEEPING (after find): %d secs\n", opt_sleepAfterFind );
       DumpMessage( msg );
     }
     OFStandard::sleep( (unsigned int)opt_sleepAfterFind );
@@ -1209,7 +1209,7 @@ static void FindCallback( void *callbackData, OFBool cancelled, T_DIMSE_C_FindRQ
   {
     if( opt_verbose && logStream != NULL )
     {
-      sprintf( msg, "SLEEPING (during find): %ld secs\n", opt_sleepDuringFind );
+      sprintf( msg, "SLEEPING (during find): %d secs\n", opt_sleepDuringFind );
       logStream->lockCout();
       logStream->getCout() << msg << endl;
       logStream->unlockCout();

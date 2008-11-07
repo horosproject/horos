@@ -799,7 +799,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_storeImage(char *sopClass, char *sopI
 
     if (strlen(sopClass) == 0) {
         printf("WARNING: CTN has deleted image, giving up (no sopClass): %s\n",
-         (imgFile)?(imgFile):("(nil)"));
+         (imgFile)?(imgFile):("(0L)"));
         /* give up because if this image is gone, then others are also
          * very likely to have disappeared.  The user should restart
          * the operation when other activities have finished.
@@ -817,7 +817,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_storeImage(char *sopClass, char *sopI
 #endif
     if (lockfd < 0) {
         printf("WARNING: CTN has deleted image, giving up (no imgFile): %s\n",
-         (imgFile)?(imgFile):("(nil)"));
+         (imgFile)?(imgFile):("(0L)"));
         /* give up because if this image is gone, then others are also
          * very likely to have disappeared.  The user should restart
          * the operation when other activities have finished.
