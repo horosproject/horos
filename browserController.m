@@ -90,9 +90,7 @@ BrowserController  *browserWindow = nil;
 #include <IOKit/storage/IOCDMedia.h>
 #include <IOKit/storage/IODVDMedia.h>
 
-static mach_port_t	gMasterPort;
 static NSString *albumDragType = @"Osirix Album drag";
-static Wait *waitSendWindow = nil;
 static BOOL loadingIsOver = NO;
 static NSMenu *contextual = nil;
 static NSMenu *contextualRT = nil;  // Alternate menus for RT objects (which often don't have images)
@@ -155,7 +153,6 @@ static NSString*	OpenKeyImagesAndROIsToolbarItemIdentifier	= @"ROIsAndKeys.tif";
 
 static NSTimeInterval	gLastActivity = 0;
 static BOOL DICOMDIRCDMODE = NO;
-static BOOL autotestdone = NO;
 static BOOL copyThread = YES;
 
 static NSArray*	statesArray = nil;
@@ -343,7 +340,7 @@ static NSArray*	statesArray = nil;
 	NSDate					*today = [NSDate date];
 	NSError					*error = nil;
 	NSString				*curPatientUID = nil, *curStudyID = nil, *curSerieID = nil;
-	NSManagedObject			*seriesTable, *study, *album;
+	NSManagedObject			*seriesTable, *study;
 	DicomImage				*image;
 	NSInteger				index;
 	NSString				*INpath = [dbFolder stringByAppendingPathComponent:DATABASEFPATH];
@@ -947,7 +944,6 @@ static NSArray*	statesArray = nil;
 			if( addFailed == NO)
 			{
 				NSMutableArray		*viewersList = [ViewerController getDisplayed2DViewers];
-				NSArray				*winList = [NSApp windows];
 				
 				for( NSManagedObject *seriesTable in addedSeries )
 				{
@@ -1286,7 +1282,6 @@ static NSArray*	statesArray = nil;
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOROUTINGACTIVATED"])
 	{
 		NSArray	*autoroutingRules = [[NSUserDefaults standardUserDefaults] arrayForKey: @"AUTOROUTINGDICTIONARY"];
-		int i;
 		
 		for ( NSDictionary *routingRule in autoroutingRules)
 		{			
@@ -1791,7 +1786,6 @@ static NSArray*	statesArray = nil;
 
 - (void) addDICOMDIR:(NSString*) dicomdir :(NSMutableArray*) files
 {
-	NSMutableArray				*result		= Nil;
 	DicomDirParser				*parsed		= [[DicomDirParser alloc] init: dicomdir];
 	
 	[parsed parseArray: files];
@@ -1854,8 +1848,6 @@ static NSArray*	statesArray = nil;
 - (IBAction)selectFilesAndFoldersToAdd: (id)sender
 {
     NSOpenPanel         *oPanel = [NSOpenPanel openPanel];
-	
-    BOOL                isDirectory;
     
 	[self.window makeKeyAndOrderFront:sender];
 	
@@ -2046,7 +2038,6 @@ static NSArray*	statesArray = nil;
 			[previousSC addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL: [NSURL fileURLWithPath: currentDatabasePath] options:nil error:&error];
 			[currentSC addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL: [NSURL fileURLWithPath: [documentsDirectory() stringByAppendingPathComponent:@"/Database3.sql"]] options:nil error:&error];
 			
-			NSArray	*previousEntities = [previousModel entities];
 			NSEntityDescription		*currentStudyTable, *currentSeriesTable, *currentImageTable, *currentAlbumTable;
 			NSArray					*albumProperties, *studyProperties, *seriesProperties, *imageProperties;
 						
@@ -2519,7 +2510,6 @@ static NSArray*	statesArray = nil;
 			if( [type isEqualToString:@"localPath"] )
 			{
 				NSString	*cPath = [service valueForKey:@"Path"];
-				BOOL		isDirectory;
 				
 				if( [[[cPath pathExtension] lowercaseString] isEqualToString:@"sql"])
 				{
@@ -2736,7 +2726,6 @@ static NSArray*	statesArray = nil;
 	{
 		@try
 		{
-			NSManagedObjectModel *model = self.managedObjectModel;
 			NSManagedObjectContext *context = self.managedObjectContext;
 			NSError *error = nil;
 			
@@ -2842,7 +2831,6 @@ static NSArray*	statesArray = nil;
 					}
 					else if( studySelected == NO)
 					{
-						NSManagedObject			*study;
 						NSManagedObjectContext	*context = self. managedObjectContext;
 						
 						NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
@@ -3013,7 +3001,6 @@ static NSArray*	statesArray = nil;
 			
 		case cdOnly:
 		{
-			BOOL			isACDDVD = NO;
 			
 			NSLog( [filesInput objectAtIndex:0]);
 			
@@ -3043,11 +3030,9 @@ static NSArray*	statesArray = nil;
 	}
 	
     NSString *OUTpath = [documentsDirectory() stringByAppendingPathComponent:DATABASEPATH];
-	BOOL isDir = YES;
 	
 	[AppController createNoIndexDirectoryIfNecessary: OUTpath];
 	
-	NSString        *pathname;
     NSMutableArray  *filesOutput = [NSMutableArray array];
 	
 	if( async )
@@ -3194,7 +3179,6 @@ static NSArray*	statesArray = nil;
 	
 	NSString	*aPath = [documentsDirectory() stringByAppendingPathComponent:DATABASEPATH];
 	NSString	*incomingPath = [documentsDirectory() stringByAppendingPathComponent:INCOMINGPATH];
-	BOOL		isDir = YES;
 	long		totalFiles = 0;
 	
 	[AppController createNoIndexDirectoryIfNecessary: aPath];
@@ -3432,7 +3416,6 @@ static NSArray*	statesArray = nil;
 	[autoroutingInProgress lock];
 	[autoroutingInProgress unlock];
 	
-	long i;
 	long totalFiles = 0;
 	NSString	*aPath = [documentsDirectory() stringByAppendingPathComponent:DATABASEPATH];
 	NSArray	*dirContent = [[NSFileManager defaultManager] directoryContentsAtPath:aPath];
@@ -3460,7 +3443,6 @@ static NSArray*	statesArray = nil;
 	long totalSeconds = totalFiles * durationFor1000 / 1000;
 	long hours = (totalSeconds / 3600);
 	long minutes = ((totalSeconds / 60) - hours*60);
-	long seconds = (totalSeconds % 60);
 	
 	if( minutes < 1) minutes = 1;
 	
@@ -3792,7 +3774,6 @@ static NSArray*	statesArray = nil;
 					{
 						NSTimeInterval		producedInterval = 0;
 						NSTimeInterval		openedInterval = 0;
-						NSMutableArray		*toBeRemoved = [NSMutableArray arrayWithCapacity: 0];
 						NSManagedObject		*oldestStudy = nil, *oldestOpenedStudy = nil;
 						
 						NSError *error = nil;
@@ -3815,7 +3796,7 @@ static NSArray*	statesArray = nil;
 						{
 							for( long i = 0; i < [unlockedStudies count]; i++ )	{
 								NSString	*patientID = [[unlockedStudies objectAtIndex: i] valueForKey:@"patientID"];
-								long		to, from = i;
+								long		to;
 								
 								if( [[[unlockedStudies objectAtIndex: i] valueForKey:@"date"] timeIntervalSinceNow] < producedInterval)	{
 									if( [[[unlockedStudies objectAtIndex: i] valueForKey:@"dateAdded"] timeIntervalSinceNow] < -60*60*24)	// 24 hours
@@ -4704,7 +4685,6 @@ static NSArray*	statesArray = nil;
 	NSNumber			*row;
 	
 	NSManagedObjectContext	*context = self.managedObjectContext;
-	NSManagedObjectModel    *model = self.managedObjectModel;
 	
 	if( correspondingManagedObjects == nil) correspondingManagedObjects = [NSMutableArray array];
 	
@@ -4842,9 +4822,6 @@ static NSArray*	statesArray = nil;
 			[animationSlider setNumberOfTickMarks:1];
 			[animationSlider setIntValue:0];
 			
-			NSArray			*children = [self childrenArray: item];
-			NSMutableArray	*imagePaths = [NSMutableArray arrayWithCapacity: 0];
-			
 			[matrixViewArray release];
 			
 			if ([[item valueForKey:@"type"] isEqualToString:@"Series"] && 
@@ -4854,7 +4831,7 @@ static NSArray*	statesArray = nil;
 			else
 				matrixViewArray = [[self childrenArray: item] retain];
 			
-			long cellId;
+			long cellId = 0;
 			
 			if( previousItem == item) cellId = [[oMatrix selectedCell] tag];
 			else [oMatrix selectCellWithTag: 0];
@@ -4958,7 +4935,6 @@ static NSArray*	statesArray = nil;
 	if( result == NSAlertDefaultReturn)
 	{
 		NSManagedObjectContext	*context = self.managedObjectContext;
-		NSManagedObjectModel    *model = self.managedObjectModel;
 
 		[context retain];
 		[context lock];
@@ -5062,7 +5038,6 @@ static NSArray*	statesArray = nil;
 	if( result == NSAlertDefaultReturn)
 	{
 		NSManagedObjectContext	*context = self.managedObjectContext;
-		NSManagedObjectModel    *model = self.managedObjectModel;
 		
 		[context retain];
 		[context lock];
@@ -5131,10 +5106,7 @@ static NSArray*	statesArray = nil;
 {
 	NSInteger				result;
 	NSManagedObjectContext	*context = self.managedObjectContext;
-	NSManagedObjectModel    *model = self.managedObjectModel;
-	NSArray					*winList = [NSApp windows];
 	NSMutableArray			*viewersList = [ViewerController getDisplayed2DViewers], *studiesArray = [NSMutableArray arrayWithCapacity:0] , *seriesArray = [NSMutableArray arrayWithCapacity:0];
-	NSError					*error = nil;
 	BOOL					matrixThumbnails = NO;
 	int						animState = [animationCheck state];
 
@@ -6226,12 +6198,8 @@ static NSArray*	statesArray = nil;
 						float y = [[dict valueForKey:@"y"] floatValue];
 						float rotation = [[dict valueForKey:@"rotation"] floatValue];
 						float scale = [[dict valueForKey:@"scale"] floatValue];
-						BOOL xF = [[dict valueForKey:@"xFlipped"] boolValue];
-						BOOL yF = [[dict valueForKey:@"yFlipped"] boolValue];
 						BOOL fD = [[dict valueForKey:@"flippedData"] boolValue];
 						
-						NSString	*studyUID = [dict valueForKey:@"studyInstanceUID"];
-						NSString	*seriesUID = [dict valueForKey:@"seriesInstanceUID"];
 						
 						[v setWindowFrame: r showWindow: NO];
 						[v setImageRows: rows columns: columns];
@@ -6390,7 +6358,6 @@ static NSArray*	statesArray = nil;
 			//We have first to find the image object from the path
 			
 			NSError				*error = nil;
-			NSString			*name;
 			long				index;
 			
 			if( curFile)
@@ -6493,8 +6460,6 @@ static NSArray*	statesArray = nil;
 	if( !execute) return -34;
 	
 	NSError				*error = nil;
-	NSString			*name;
-	NSInteger			index, i;
 	
 	NSManagedObject			*element = nil;
 	NSArray					*array = nil;
@@ -6672,7 +6637,6 @@ static NSArray*	statesArray = nil;
 
 -(void) loadNextPatient:(NSManagedObject *) curImage :(long) direction :(ViewerController*) viewer :(BOOL) firstViewer keyImagesOnly:(BOOL) keyImages
 {
-	NSManagedObjectModel	*model = self.managedObjectModel;
 	NSArray					*winList = [NSApp windows];
 	NSMutableArray			*viewersList = [[NSMutableArray alloc] initWithCapacity:0];
 	
@@ -6987,7 +6951,6 @@ static BOOL withReset = NO;
 				if( dcmPix )
 				{
 					float   wl, ww;
-					int     row, column;
 					
 					[imageView getWLWW:&wl :&ww];
 					
@@ -7029,7 +6992,6 @@ static BOOL withReset = NO;
 							if( dcmPix )
 							{
 								float   wl, ww;
-								int     row, column;
 								
 								[imageView getWLWW:&wl :&ww];
 								
@@ -7055,7 +7017,6 @@ static BOOL withReset = NO;
 							if( dcmPix )
 							{
 								float   wl, ww;
-								int     row, column;
 								
 								[imageView getWLWW:&wl :&ww];
 								
@@ -7133,7 +7094,7 @@ static BOOL withReset = NO;
 - (IBAction) matrixPressed: (id)sender
 {
     id          theCell = [sender selectedCell];
-    int         row, column, count, index;
+    int         index;
     
 	[self.window makeFirstResponder:databaseOutline];
 
@@ -7175,7 +7136,6 @@ static BOOL withReset = NO;
 - (IBAction) matrixDoublePressed:(id)sender
 {
     id  theCell = [oMatrix selectedCell];
-    int column,row;
     
     if( [theCell tag] >= 0 )
 	{
@@ -7185,10 +7145,6 @@ static BOOL withReset = NO;
 
 -(void) matrixInit:(long) noOfImages
 {
-	NSSize size		= [oMatrix cellSize];
-	NSSize space	= [oMatrix intercellSpacing];
-	NSRect frame	= [[oMatrix enclosingScrollView] frame];
-	
 	[matrixLoadIconsLock lock];
 	
 	setDCMDone = NO;
@@ -7246,7 +7202,6 @@ static BOOL withReset = NO;
 		if( i >= [previewPix count]) return;
 		if( i >= [previewPixThumbnails count]) return;
 		
-		DCMPix		*pix = [previewPix objectAtIndex: i];
 		NSImage		*img = nil;
 		
 		img = [previewPixThumbnails objectAtIndex: i];
@@ -7500,7 +7455,6 @@ static BOOL withReset = NO;
 	
 	NSData	*result = nil;
 	
-	int i;
 	
 	if( [imageRep bitsPerPixel] == 8)
 	{
@@ -7588,8 +7542,6 @@ static BOOL withReset = NO;
 		displayEmptyDatabase = YES;
 		[self outlineViewRefresh];
 		[self refreshMatrix: self];
-		
-		NSInteger tag = 0;
 		NSString *uri = [NSString stringWithContentsOfFile: recoveryPath];
 		
 		[[NSFileManager defaultManager] removeFileAtPath: recoveryPath handler: nil];
@@ -7684,10 +7636,8 @@ static BOOL withReset = NO;
 
 - (IBAction) resetWindowsState:(id)sender
 {
-	NSInteger				i, x, z, row, result;
+	NSInteger				x, row;
 	NSManagedObjectContext	*context = self.managedObjectContext;
-	NSManagedObjectModel    *model = self.managedObjectModel;
-	NSError					*error = nil;
 	
 	[context retain];
 	[context lock];
@@ -7745,7 +7695,6 @@ static BOOL withReset = NO;
 {
 	NSInteger				row;
 	NSManagedObjectContext	*context = self.managedObjectContext;
-	NSManagedObjectModel    *model = self.managedObjectModel;
 	
 	[context retain];
 	[context lock];
@@ -7790,7 +7739,6 @@ static BOOL withReset = NO;
 {
 	NSAutoreleasePool               *pool = [[NSAutoreleasePool alloc] init];
 	long							subGroupCount = 1, position = 0;
-	BOOL							imageLevel = [[dict valueForKey: @"imageLevel"] boolValue];
 	NSArray							*files = [dict valueForKey: @"files"];
 	NSArray							*filesPaths = [dict valueForKey: @"filesPaths"];
 	
@@ -7861,7 +7809,6 @@ static BOOL withReset = NO;
 	{
         NSSize size = oMatrix.cellSize;
         NSSize space = oMatrix.intercellSpacing;
-        NSRect frame = oMatrix.enclosingScrollView.frame;
 		
         int pos = proposedPosition;
 		
@@ -7948,7 +7895,6 @@ static BOOL withReset = NO;
 			NSSize space = oMatrix.intercellSpacing;
 			NSRect frame = [[splitViewVert.subviews objectAtIndex: 0] frame];
 			
-			int preWidth = frame.size.width+1;
 			int width = frame.size.width;
 			int cellsize = (size.width + space.width*2);
 			
@@ -7984,7 +7930,7 @@ static BOOL withReset = NO;
 	
     if( newColumn != COLUMN )
 	{
-        int	minrow, row;
+        int	row;
         int	selectedCellTag = [oMatrix.selectedCell tag];
 		
         COLUMN = newColumn;
@@ -8093,7 +8039,6 @@ static BOOL withReset = NO;
 	if( correspondingManagedObjects == nil) correspondingManagedObjects = [NSMutableArray array];
 	
 	NSManagedObjectContext	*context = self.managedObjectContext;
-	NSManagedObjectModel    *model = self.managedObjectModel;
 	
 	[context retain];
 	[context lock];
@@ -8137,7 +8082,6 @@ static BOOL withReset = NO;
 			{
 				if( [splash aborted] == NO)
 				{
-					NSString *p = [self getLocalDCMPath: img :50];
 					
 					[selectedFiles addObject: [self getLocalDCMPath: img :50]];
 					
@@ -8265,7 +8209,7 @@ static BOOL withReset = NO;
 
 - (void)createContextualMenu
 {
-	NSMenuItem		*item, *subItem;
+	NSMenuItem		*item;
 	
 	NSMenu *albumContextual	= [[[NSMenu alloc] initWithTitle:NSLocalizedString(@"Albums", nil)] autorelease];
 	
@@ -8574,7 +8518,6 @@ static BOOL withReset = NO;
 												 NSLocalizedString(@"Cancel",nil),
 												 nil) == NSAlertDefaultReturn)
 				{
-					long					i, x, row;
 					
 					NSManagedObjectContext	*context = self.managedObjectContext;
 					
@@ -8777,7 +8720,6 @@ static BOOL needToRezoom;
 }
 - (NSArray*) albumArray
 {
-	NSString				*dbName = @"main";
 	NSManagedObjectContext	*context = self.managedObjectContext;
 	NSManagedObjectModel	*model = self.managedObjectModel;
 	
@@ -9257,11 +9199,8 @@ static BOOL needToRezoom;
 	{
 		if(draggedItems )
 		{
-			NSManagedObject *curStudy, *curImage;
-			NSString		*filePath, *destPath;
-			
-			NSMutableArray		*imagesArray = [NSMutableArray arrayWithCapacity:0];
-			long				noOfFiles = 0;
+			NSString *filePath, *destPath;
+			NSMutableArray *imagesArray = [NSMutableArray arrayWithCapacity:0];
 			
 			for( NSManagedObject *object in draggedItems )
 			{
@@ -9529,8 +9468,6 @@ static BOOL needToRezoom;
 				if( OnlyDICOM && [[NSUserDefaults standardUserDefaults] boolForKey: @"STORESCP"])
 				{
 					// We will use the DICOM-Store-SCP
-					NSMutableArray	*files = [NSMutableArray arrayWithArray: [imagesArray valueForKey:@"path"]];
-					
 					succeed = [bonjourBrowser retrieveDICOMFilesWithSTORESCU: [bonjourServicesList selectedRow]-1 to: row-1 paths: [imagesArray valueForKey:@"path"]];
 					if( succeed )
 					{
@@ -9717,7 +9654,6 @@ static BOOL needToRezoom;
 	{
 		if( row > 0 )
 		{
-			NSString		*result = nil;
 			NSDictionary	*dcmNode = [[bonjourBrowser services] objectAtIndex: row-1];
 			
 			if( [[dcmNode valueForKey:@"type"] isEqualToString: @"localPath"])
@@ -10250,11 +10186,8 @@ static BOOL needToRezoom;
 
 - (void) processOpenViewerDICOMFromArray:(NSArray*) toOpenArray movie:(BOOL) movieViewer viewer: (ViewerController*) viewer
 {
-	NSInteger			row, column;
-	NSMutableArray		*selectedFilesList;
-	NSArray				*loadList;
-	long				numberImages, multiSeries = 1;
-	BOOL				movieError = NO, multiFrame = NO;
+	long				numberImages;
+	BOOL				movieError = NO;
 
 	WaitRendering		*wait = nil;
 	
@@ -10685,8 +10618,6 @@ static BOOL needToRezoom;
 		NSInteger			row, column;
 		NSMutableArray		*selectedFilesList;
 		NSArray				*loadList;
-		long				numberImages, multiSeries = 1;
-		BOOL				movieError = NO, multiFrame = NO;
 			
 		NSArray				*cells = [oMatrix selectedCells];
 		
@@ -10717,7 +10648,6 @@ static BOOL needToRezoom;
 		}
 		else
 		{
-			BOOL			multipleLines = NO;
 			//////////////////////////////////////
 			// Open series !!!
 			//////////////////////////////////////
@@ -10871,7 +10801,6 @@ static BOOL needToRezoom;
 
 - (void)viewerDICOMMergeSelection: (id)sender
 {
-	NSInteger		index;
 	NSMutableArray	*images = [NSMutableArray arrayWithCapacity:0];
 	
 	if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) [self filesForDatabaseMatrixSelection: images];
@@ -10906,7 +10835,6 @@ static BOOL needToRezoom;
 
 - (void) viewerDICOMKeyImages:(id) sender
 {
-	NSInteger index;
 	NSMutableArray	*selectedItems = [NSMutableArray arrayWithCapacity:0];
 	
 	if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) [self filesForDatabaseMatrixSelection: selectedItems];
@@ -11681,7 +11609,6 @@ static NSArray*	openSubSeriesArray = nil;
 			[bonjourPassword setStringValue: [[NSUserDefaults standardUserDefaults] objectForKey:@"bonjourPassword"]];
 		}
 		
-		ImageAndTextCell *cellBonjour = [[[ImageAndTextCell alloc] init] autorelease];
 		[cell setEditable:NO];
 		[[bonjourServicesList tableColumnWithIdentifier:@"Source"] setDataCell:cell];
 		
@@ -11965,7 +11892,6 @@ static NSArray*	openSubSeriesArray = nil;
 	{
 		if( isCurrentDatabaseBonjour) return NO;
 		
-		NSIndexSet		*selectedRows = [databaseOutline selectedRowIndexes];
 			
 		BOOL matrixThumbnails;
 		
@@ -12176,7 +12102,6 @@ static NSArray*	openSubSeriesArray = nil;
 -(void) ReadDicomCDRom:(id) sender
 {
 	NSArray	*removeableMedia = [[NSWorkspace sharedWorkspace] mountedRemovableMedia];
-	int i;
 	BOOL found = NO;
 	
 	for( NSString *mediaPath in removeableMedia )
@@ -12764,7 +12689,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 			NSString		*ERRpath = [documentsDirectory() stringByAppendingPathComponent:ERRPATH];
 			NSString        *OUTpath = [documentsDirectory() stringByAppendingPathComponent:DATABASEPATH];
 			NSString        *DECOMPRESSIONpath = [documentsDirectory() stringByAppendingPathComponent:DECOMPRESSIONPATH];
-			BOOL			isDir = YES;
 			BOOL			DELETEFILELISTENER = [[NSUserDefaults standardUserDefaults] boolForKey: @"DELETEFILELISTENER"];
 			BOOL			DECOMPRESSDICOMLISTENER = [[NSUserDefaults standardUserDefaults] boolForKey: @"DECOMPRESSDICOMLISTENER"];
 			BOOL			COMPRESSDICOMLISTENER = [[NSUserDefaults standardUserDefaults] boolForKey: @"COMPRESSDICOMLISTENER"];
@@ -13131,10 +13055,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 -(void) exportQuicktimeInt:(NSArray*) dicomFiles2Export :(NSString*) path :(BOOL) html
 {
-	int					t;
-	NSString			*dest;
 	Wait                *splash = [[Wait alloc] initWithString:NSLocalizedString(@"Export...", nil) :NO];
-	BOOL				addDICOMDIR = [addDICOMDIRButton state];
 	NSMutableArray		*imagesArray = [NSMutableArray array];
 	NSString			*tempPath, *previousPath = nil;
 	long				previousSeries = -1;
@@ -13154,7 +13075,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 		BOOL first = YES;
 		for( NSManagedObject *curImage in dicomFiles2Export )
 		{
-			NSString *extension = nil;
 			
 			NSString *conv = asciiString( [curImage valueForKeyPath: @"series.study.name"]);
 			
@@ -14159,7 +14079,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 - (void)loadDICOMFromiPod
 {
 	NSArray *allVolumes = [[NSWorkspace sharedWorkspace] mountedLocalVolumePaths];
-	int index;
 	NSString	*defaultPath = documentsDirectoryFor( [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULT_DATABASELOCATION"], [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"]);
 	
 	for ( NSString *path in allVolumes)
@@ -14273,7 +14192,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (IBAction)sendiDisk: (id)sender
 {
-	int					index;
 	int					success;
 	
 	// Copy the files!
@@ -14482,7 +14400,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 	{
 		if( [seriesArray count] > 0 )
 		{
-			NSMutableArray			*studiesArray = [NSMutableArray arrayWithCapacity:0];
 			NSMutableArray			*viewersList = [ViewerController getDisplayed2DViewers];
 			
 			// Find unavailable files
@@ -15695,7 +15612,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (NSArray*) ROIsAndKeyImages: (id) sender sameSeries: (BOOL*) sameSeries
 {
-	NSInteger index;
 	NSMutableArray *selectedItems = [NSMutableArray arrayWithCapacity:0];
 	
 	if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) [self filesForDatabaseMatrixSelection: selectedItems];
@@ -15764,7 +15680,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	if( [roisImagesArray count])
 	{
-		BOOL propagateSettingsInSeries = YES;
 		
 		NSMutableArray *copySettings = [NSMutableArray array];
 		
@@ -15863,7 +15778,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (NSArray*) ROIImages: (id) sender sameSeries:(BOOL*) sameSeries
 {
-	NSInteger index;
 	NSMutableArray *selectedItems = [NSMutableArray arrayWithCapacity:0];
 	
 	if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) [self filesForDatabaseMatrixSelection: selectedItems];
@@ -15925,7 +15839,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (NSArray*) KeyImages: (id) sender
 {
-	NSInteger index;
 	NSMutableArray *selectedItems = [NSMutableArray arrayWithCapacity:0];
 	
 	if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) [self filesForDatabaseMatrixSelection: selectedItems];
@@ -16398,7 +16311,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 - (NSPredicate *)createFilterPredicate
 {
 	NSPredicate *predicate = nil;
-	NSString *description = nil;
 	NSString	*s;
 	
 	if ([_searchString length] > 0)

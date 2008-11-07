@@ -116,7 +116,6 @@ static NSDate *CachedPluginsListDate = nil;
 - (IBAction)modifiyAvailability:(id)sender;
 {
 	NSArray *pluginsList = [pluginsArrayController arrangedObjects];
-	NSString *pluginAvailability = [[pluginsList objectAtIndex:[pluginTable clickedRow]] objectForKey:@"availability"];
 	NSString *pluginName = [[pluginsList objectAtIndex:[pluginTable clickedRow]] objectForKey:@"name"];
 	
 	[PluginManager changeAvailabilityOfPluginWithName:pluginName to:[[sender selectedCell] title]];

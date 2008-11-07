@@ -844,7 +844,7 @@ Papy3PutImage (PapyShort inFileNb, SElement *inGrOrModP, int inElement, PapyUSho
   SElement	*theElemP;
   int		theErr;
   enum EV_R_T 	theVR;
-  PapyUChar	*theCompPixP;
+  PapyUChar	*theCompPixP = 0L;
 
 #ifdef WRITE_RAW_FILE /* Temporary stuffs for compression evaluation. DAB */
   PAPY_FILE	theFp;	

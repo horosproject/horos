@@ -40,7 +40,6 @@ static NSString *albumDragType = @"Osirix Album drag";
 		}
 		else if( [theEvent modifierFlags] & NSCommandKeyMask )
 		{
-			NSInteger start = [[self cells] indexOfObject: [[self selectedCells] objectAtIndex: 0]];
 			NSInteger end = [[self cells] indexOfObject: [self cellAtRow:row column:column]];
 			
 			if( [[self selectedCells] containsObject:[self cellAtRow:row column:column]])
@@ -179,7 +178,6 @@ static NSString *albumDragType = @"Osirix Album drag";
 	else
 	{		
 		BOOL keepOn = YES;
-		NSPoint mouseLoc = [self convertPoint:[event locationInWindow] fromView:nil];
 		
 		[NSEvent stopPeriodicEvents];
 		[NSEvent startPeriodicEventsAfterDelay: 0 withPeriod:0.001];

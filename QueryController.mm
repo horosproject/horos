@@ -504,7 +504,6 @@ static const char *GetPrivateIP()
 		[[BrowserController currentBrowser] showEntireDatabase];
 	
 		NSIndexSet* indices = [outlineView selectedRowIndexes];
-		BOOL extendingSelection = NO;
 		
 		for( int i = [indices firstIndex]; i != [indices lastIndex]+1; i++)
 		{
@@ -2329,13 +2328,9 @@ static const char *GetPrivateIP()
 {
 	int status = 0;
 	
-	id echoSCU;
 	NSString *theirAET;
 	NSString *hostname;
 	NSString *port;
-	NSString *myAET = [[NSUserDefaults standardUserDefaults] objectForKey:@"AETITLE"];
-	NSMutableArray *objects;
-	NSMutableArray *keys; 
 	
 	theirAET = [aServer objectForKey:@"AETitle"];
 	hostname = [aServer objectForKey:@"Address"];
@@ -2358,8 +2353,6 @@ static const char *GetPrivateIP()
 
 - (IBAction)verify:(id)sender
 {
-	id				aServer;
-	NSString		*message;	
 	int				i;
 	int				status, selectedRow = [sourcesTable selectedRow];
 	
@@ -2373,8 +2366,6 @@ static const char *GetPrivateIP()
 		[sourcesTable scrollRowToVisible: i];
 		
 		NSMutableDictionary *aServer = [sourcesArray objectAtIndex: i];
-		
-		int numberPacketsReceived = 0;
 		
 		switch( [self dicomEcho: [aServer objectForKey:@"server"]])
 		{

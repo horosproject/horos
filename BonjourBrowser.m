@@ -289,7 +289,6 @@ static char *GetPrivateIP()
 				
 				if(isPages)
 				{
-					NSString *reportFileName = [destPath stringByDeletingPathExtension];
 					// unzip the file
 					NSTask *unzipTask   = [[NSTask alloc] init];
 					[unzipTask setLaunchPath:@"/usr/bin/unzip"];
@@ -1495,7 +1494,6 @@ static char *GetPrivateIP()
 
 - (NSDate*) getFileModification:(NSString*) pathFile index:(int) index 
 {
-	NSMutableString	*returnedFile = nil;
 	NSDate			*modificationDate = nil;
 	
 	if( [[NSFileManager defaultManager] fileExistsAtPath: [BonjourBrowser bonjour2local: pathFile]])

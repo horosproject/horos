@@ -27,11 +27,9 @@
 	BOOL returnedVal = YES;
 	if ([hotKey length] > 0)
 	{
-		NSDictionary *userInfo = nil;
 		NSDictionary *wlwwDict = [[NSUserDefaults standardUserDefaults] dictionaryForKey: @"WLWW3"];
 		NSArray *wwwlValues = [[wlwwDict allKeys] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
 	
-		NSArray *wwwl = nil;
 		unichar key = [hotKey characterAtIndex:0];
 
 		if( [[DCMView hotKeyDictionary] objectForKey:hotKey])

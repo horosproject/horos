@@ -61,7 +61,6 @@
 int
 Papy3FCreate (char *inFilenameP, PAPY_FILE inVolume, PAPY_FILE *inFp, void **inFSSpecP)
 {
-  int         err;
   PAPY_FILE   file;
   
   if ((file = fopen (inFilenameP, "rb")) != NULL)
@@ -92,7 +91,6 @@ Papy3FOpen (char *inFilenameP, char inPermission, PAPY_FILE inVolumeNb, PAPY_FIL
             void *inFSSpecP)
 /* inPermission r : read, w : write, a : read/write (all) */
 {
-  PAPY_FILE    file;
 
   switch (inPermission) {
     case 'r' : if ((*outFp = fopen (inFilenameP, "rb")) == NULL) 
@@ -205,7 +203,6 @@ Papy3FWrite (PAPY_FILE inFp, PapyULong *ioBytesToWriteP, PapyULong inNb, void *o
 int
 Papy3FSeek (PAPY_FILE inFp, int inPosMode, PapyLong inOffset)
 {
-  PapyLong startPos, fileLimit;
   long     err;
 
 //  if (inOffset > 1000000L)			// THIS IS EXTREMELY SLOW....

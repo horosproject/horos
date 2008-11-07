@@ -54,6 +54,9 @@ static NSMenu *mainMenuCLUTMenu = nil, *mainMenuWLWWMenu = nil, *mainMenuConvMen
 static NSDictionary *previousWLWWKeys = nil, *previousCLUTKeys = nil, *previousConvKeys = nil;
 static BOOL checkForPreferencesUpdate = YES;
 static PluginManager *pluginManager = nil;
+static unsigned char *LUT12toRGB = nil;
+static BOOL canDisplay12Bit = NO;
+static NSInvocation *fill12BitBufferInvocation = nil;
 
 NSThread				*mainThread;
 BOOL					NEEDTOREBUILD = NO;
@@ -323,7 +326,6 @@ int GetAllPIDsForProcessName(const char* ProcessName,
 NSString * documentsDirectoryFor( int mode, NSString *url)
 {
 	char s[1024];
-	FSSpec spec;
 	FSRef ref;
 	NSString *path = nil;
 	
@@ -627,7 +629,6 @@ static NSDate *lastWarningDate = nil;
 
 + (void) createNoIndexDirectoryIfNecessary:(NSString*) path
 {
-	BOOL isDir;
 	BOOL newFolder = NO;
 	
 	if( ![[NSFileManager defaultManager] fileExistsAtPath: path] && [[NSFileManager defaultManager] fileExistsAtPath: [path stringByDeletingPathExtension]])
@@ -1924,7 +1925,6 @@ static BOOL initialized = NO;
 				//Add Endoscopy LUT, WL/WW, shading to existing prefs
 				// Shading Preset
 				NSMutableArray *shadingArray = [[[[NSUserDefaults standardUserDefaults] objectForKey:@"shadingsPresets"] mutableCopy] autorelease];
-				NSEnumerator *enumerator;
 				NSDictionary *shading;
 				BOOL exists = NO;
 				
@@ -3011,7 +3011,7 @@ static BOOL initialized = NO;
 
 - (void) tileWindows:(id)sender
 {
-	long				i, j, k, x;
+	long				i, x;
 	// Array of open Windows
 	NSArray				*winList = [NSApp windows];
 	// array of viewers
@@ -3286,7 +3286,6 @@ static BOOL initialized = NO;
 	else if (viewerCount <= numberOfMonitors)
 	{
 		int count = [viewersList count];
-		int skipScreen = 0;
 		
 		for( i = 0; i < count; i++)
 		{
@@ -3367,7 +3366,6 @@ static BOOL initialized = NO;
 		
 		columnsPerScreen = ceil(((float) columns / (float) numberOfMonitors));
 		
-		BOOL lastScreen = NO;
 		
 		NSMutableArray *viewersForThisScreen = [NSMutableArray array];
 		

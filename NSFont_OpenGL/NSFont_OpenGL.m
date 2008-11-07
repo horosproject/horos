@@ -99,7 +99,6 @@ static  unsigned char			*charPtrArray[ MAXCOUNT], *charPtrArrayPreview[ MAXCOUNT
 
 + (void) initFontImage:(unichar)first count:(int)count font:(NSFont*) font fontType:(int) fontType
 {
-	GLint				curListIndex;
 	NSColor				*blackColor;
 	NSDictionary		*attribDict;
 	NSString			*currentChar;
@@ -206,16 +205,9 @@ static  unsigned char			*charPtrArray[ MAXCOUNT], *charPtrArrayPreview[ MAXCOUNT
 - (BOOL) makeGLDisplayListFirst:(unichar)first count:(int)count base:(GLint)base :(long*) charSizeArrayIn :(int) fontType
 {
 	GLint curListIndex;
-	NSColor *blackColor;
-	NSDictionary *attribDict;
 	GLint dListNum;
-	NSString *currentChar;
 	unichar currentUnichar;
-	NSSize charSize;
-	NSRect charRect;
-	NSImage *theImage;
 	BOOL retval;
-	NSFont  *fontGL;
 	
 	NSMutableArray  *curArray;
 	long *curSizeArray;

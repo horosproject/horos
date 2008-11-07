@@ -4366,7 +4366,6 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0; line6[0] = 0;
 				if( self.isTextualDataDisplayed && prepareTextualData) {
 					NSPoint			tPt = self.lowerRightPoint;
-					long			line = 0;
 					
 					if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name UTF8String]);
 					else line1[ 0] = 0;

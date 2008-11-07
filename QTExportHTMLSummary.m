@@ -148,7 +148,6 @@ extern NSString *documentsDirectory();
 	NSMutableString *tempListItemTemplate, *tempStudyBlockStart;
 
 	int i, imagesCount = 0;
-	long previousSeries = -1;
 	
 	NSMutableString *fileName, *thumbnailName, *htmlName;
 	NSString *studyDate, *studyTime, *seriesName;
@@ -312,7 +311,6 @@ extern NSString *documentsDirectory();
 {
 	NSFileManager *fileManager = [NSFileManager defaultManager];
 	NSString *htmlExtraDirectory = [documentsDirectory() stringByAppendingPathComponent:@"/HTML_TEMPLATES/html-extra/"];
-	NSArray *directoryContent = [fileManager subpathsAtPath:htmlExtraDirectory];
 	//if([directoryContent count])
 	[fileManager copyPath:htmlExtraDirectory toPath:[rootPath stringByAppendingPathComponent:@"/html-extra/"] handler:NO];
 }

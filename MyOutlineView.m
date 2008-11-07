@@ -227,7 +227,6 @@
 		
 		NSString *desiredType = [paste availableTypeFromArray:types];
 		NSData *carriedData = [paste dataForType:desiredType];
-		long	i;
 	
 		if (nil == carriedData)
 		{
@@ -327,7 +326,6 @@
 	//a list of types that we can accept
     NSString *desiredType = [paste availableTypeFromArray:types];
     NSData *carriedData = [paste dataForType:desiredType];
-	long	i;
 	
     if (nil == carriedData)
     {

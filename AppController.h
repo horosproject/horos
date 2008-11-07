@@ -48,11 +48,7 @@ enum
 	ask = 3
 };
 
-static unsigned char *LUT12toRGB;
-static BOOL canDisplay12Bit;
-static NSInvocation *fill12BitBufferInvocation;
 @class PluginFilter;
-static PluginFilter *totokuPlugin;
 
 #ifdef __cplusplus
 extern "C"

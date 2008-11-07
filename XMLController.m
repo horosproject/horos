@@ -130,7 +130,7 @@ static BOOL showWarning = YES;
 
 -(NSArray*) arrayOfFiles
 {
-	int i, result;
+	int result;
 	
 //	[NSApp beginSheet: levelSelection
 //			modalForWindow:	[self window]
@@ -448,7 +448,6 @@ static BOOL showWarning = YES;
 	// Check if we have already a window displaying this ManagedObject
 	
 	NSArray				*winList = [NSApp windows];
-	NSMutableArray		*l = [NSMutableArray array];
 	
 	for( NSWindow *w in winList)
 	{
@@ -788,8 +787,6 @@ static BOOL showWarning = YES;
 
 - (void) setObject:(NSArray*) array
 {
-	NSMutableString*	copyString = [NSMutableString string];
-	int					index;
 	NSMutableArray		*groupsAndElements = [NSMutableArray array];
 	
 	id item = [array objectAtIndex: 0];

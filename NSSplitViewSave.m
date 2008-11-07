@@ -39,7 +39,6 @@ static float a,b,c,d,e,f,g,h;
 	}
 	
 	NSScanner* scanner = [NSScanner scannerWithString: string];
-	NSRect r0, r1;
 	
 	BOOL didScan =
 	[scanner scanFloat: &a]             &&

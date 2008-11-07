@@ -37,7 +37,6 @@
 		{
 			status = document->read(*fileformat.getDataset());
 			
-			int instanceNumber = [[NSString stringWithFormat:@"%s", document->getInstanceNumber()] intValue];
 			
 			DSRCodedEntryValue codedEntryValue = DSRCodedEntryValue("IHE.10", "99HUG", "Image Reference");
 			if (document->getTree().gotoNamedNode (codedEntryValue, OFTrue, OFTrue) > 0 )
@@ -415,8 +414,7 @@
 	
 	if (dataset != NULL)
 	{
-		//This adds the archived ROI Array  to the SR		
-		ROI *roi = [_rois objectAtIndex:0];
+		//This adds the archived ROI Array  to the SR
 		NSData *data = nil;
 		data = [ NSArchiver archivedDataWithRootObject:_rois];
 		const Uint8 *buffer =  (const Uint8 *)[data bytes];

@@ -579,16 +579,13 @@ bool read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 
 PapyShort ExtractJPEG2000 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelStart, PapyULong *inOffsetTableP, int inImageNb, int inDepth, long offsetSize)
 {
-	PapyUShort		theGroup, theElement;
-	int				theJs, theIs, fmtid;
+	int				fmtid;
 	PapyUChar		theTmpBuf [256];
 	PapyUChar		*theTmpBufP;
-	PapyUChar		*tmpBufPtr2;
-	PapyULong		i, thePos, theSize, theLength, theULong, x, y;
+	PapyULong		i, thePos, theLength, theULong, x, y;
 	PapyShort		theErr;
-	PapyUShort		*theImage16P, theUShort1, theUShort2;
-	PapyUChar		*theValTempP, *theValFinalP, *theCompressedP;
-	PapyUChar		theHigh, theLow;
+	PapyUShort		theUShort1, theUShort2;
+	PapyUChar		*theCompressedP;
 	long			ok = FALSE;
 	
 	Papy3FSeek (gPapyFile [inFileNb], SEEK_SET, (PapyLong) (inPixelStart + inOffsetTableP [inImageNb - 1]));
@@ -692,8 +689,6 @@ PapyShort ExtractJPEG2000 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong i
 		int width = jas_image_cmptwidth(jasImage, 0);
 		int height = jas_image_cmptheight(jasImage, 0);
 		int depth = jas_image_cmptprec(jasImage, 0);
-		int j;
-		int k = 0;
 		fmtname = jas_image_fmttostr(fmtid);
 		//NSLog(@"%s %d %d %d %d %ld\n", fmtname, numcmpts, width, height, depth, (long) jas_image_rawsize(jasImage));
 		int bitDepth = 0;

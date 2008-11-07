@@ -110,7 +110,6 @@
 	
 	float bottomMargin = [[[NSPrintOperation currentOperation] printInfo] bottomMargin]; //90
 	//
-	NSPoint pageNumberPoint = NSMakePoint((borderSize.width - pageNumberSize.width) / 2.0, borderSize.height - (bottomMargin + pageNumberSize.height) / 2.0);
 	NSPoint where2draw = NSMakePoint(20, borderSize.height - (headerHeight+15));
 	[string2draw drawAtPoint: where2draw withAttributes:attribs]; //only invoke this method when an NSView object has focus
 	[self unlockFocus];	

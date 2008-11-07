@@ -392,7 +392,6 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 				noOfPoints = length;
 				for( x = 0; x < noOfPoints; x++)
 				{
-					double	rightLeftX, rightLeftY;
 					double	X1, X2, Y1, Y2, sideXPer;
 					long	xInt, yInt, width, height;
 					

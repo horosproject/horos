@@ -97,7 +97,6 @@ extern  AppController			*appController;
 extern  BOOL					USETOOLBARPANEL;
 
 static	BOOL					SYNCSERIES = NO, ViewBoundsDidChangeProtect = NO, recursiveCloseWindowsProtected = NO;
-static	NSLock					*globalLoadImageLock = nil;
 
 static NSString* 	ViewerToolbarIdentifier				= @"Viewer Toolbar Identifier";
 static NSString*	QTSaveToolbarItemIdentifier			= @"QTExport.icns";
@@ -947,8 +946,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	DCMPix				*lastPix = nil;
 	long				i, newTotal;
 	unsigned char		*emptyData;
-	ViewerController	*new2DViewer;
-	long				imageSize, size, x, y, newX, newY;
+	long				imageSize, size, y, newX, newY;
 	double				orientation[ 9], newXSpace, newYSpace, origin[ 3], sign, ratio;
 	BOOL				square = NO;
 	BOOL				succeed = YES;
@@ -1169,8 +1167,6 @@ static volatile int numberOfThreadsForRelisce = 0;
 				else											// Y - RESLICE
 				{
 					DCMPix	*curPix = [newPixList lastObject];
-					float	*srcPtr;
-					float	*dstPtr;
 					long	rowBytes = [firstPix pwidth]*4;
 					
 					[self waitForAProcessor];
@@ -1586,7 +1582,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (IBAction) squareDataSet:(id) sender
 {
-	int x, y;
+	int y;
 	
 	for( y = 0 ; y < maxMovieIndex; y++)
 	{
@@ -2164,8 +2160,6 @@ static volatile int numberOfThreadsForRelisce = 0;
 	
 	if( rectIdentical == NO)
 	{
-		float scaleValue = [imageView scaleValue];
-		float previousHeight = [imageView frame].size.width;
 		
 		if( showWindow == YES && wasAlreadyVisible == YES)
 			[[self window] orderFront:self];
@@ -2295,7 +2289,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	if( SYNCSERIES)
 	{
 		NSArray		*winList = [NSApp windows];
-		long		i, win = 0;
+		long		win = 0;
 		
 		for( id loopItem in winList)
 		{
@@ -2572,7 +2566,6 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (void) refreshToolbar
 {
-	int i;
 	
 	if (AUTOHIDEMATRIX) [self autoHideMatrix];
 	
@@ -2941,8 +2934,6 @@ static volatile int numberOfThreadsForRelisce = 0;
 	if( lastMenuNotification != note)
 	{
 		//*** Build the menu
-		NSMenu      *mainMenu;
-		NSMenu      *viewerMenu, *convMenu;
 		short       i;
 		NSArray     *keys;
 		NSArray     *sortedKeys;
@@ -3425,7 +3416,6 @@ static volatile int numberOfThreadsForRelisce = 0;
 	NSError					*error = nil;
 	long					i, x, index = 0;
 	NSManagedObject			*curImage = [fileList[0] objectAtIndex:0];
-	BOOL					StoreThumbnailsInDB = YES;
 	NSPoint					origin = [[previewMatrix superview] bounds].origin;
 	
 	BOOL visible = [self checkFrameSize];
@@ -3553,9 +3543,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 				for( i = 0; i < [series count]; i++)
 				{
 					NSManagedObject	*curSeries = [series objectAtIndex:i];
-					NSManagedObject	*curBlendedSeries = [series objectAtIndex:i];
 					
-					int keyImagesNumber = 0, z;
+					int keyImagesNumber = 0;
 	//				NSArray	*keyImagesArray = [[[curSeries valueForKey:@"images"] allObjects] valueForKey:@"isKeyImage"];		<- This is too slow......
 	//				for( z = 0; z < [keyImagesArray count]; z++)
 	//				{
@@ -3656,7 +3645,6 @@ static volatile int numberOfThreadsForRelisce = 0;
 		}
 	}
 	
-	NSInteger row, column;
 	
 	if( showSelected)
 	{
@@ -3803,7 +3791,7 @@ static ViewerController *draggedController = nil;
 - (BOOL)performDragOperation:(id <NSDraggingInfo>)sender
 {
     NSPasteboard	*paste = [sender draggingPasteboard];
-	long			i, x, z, iz, xz;
+	long			i;
 	
 	if( [[paste availableTypeFromArray: [NSArray arrayWithObject: pasteBoardOsiriX]] isEqualToString: pasteBoardOsiriX])
 	{
@@ -3845,7 +3833,6 @@ static ViewerController *draggedController = nil;
 			{
 				//we have a list of file names in an NSData object
 				NSArray				*fileArray = [paste propertyListForType:@"NSFilenamesPboardType"];
-				NSString			*draggedFile = [fileArray objectAtIndex:0];
 				
 				// Find a 2D viewer containing this specific file!
 				
@@ -3910,7 +3897,6 @@ static ViewerController *draggedController = nil;
 								[theNewROI setCanResizeLayer: YES];
 								
 								NSPoint eventLocation = [[self window] convertScreenToBase: [NSEvent mouseLocation]];
-								NSRect size = [imageView frame];
 								eventLocation = [imageView convertPoint:eventLocation fromView:nil];
 								NSPoint imageLocation = [imageView ConvertFromNSView2GL:eventLocation];
 								
@@ -5587,18 +5573,13 @@ static ViewerController *draggedController = nil;
 {
 	BOOL		sameSeries = NO;
 	long		i, imageIndex;
-	long		type;
-	float		startScale;
-	long		startWL;
-	long		diffWL;
-	long		startWW;
 	long		previousColumns = [imageView columns], previousRows = [imageView rows];
 	int			previousFusion = [popFusion selectedTag], previousFusionActivated = [activatedFusion state];
 		
 	NSString	*previousPatientUID = [[[fileList[0] objectAtIndex:0] valueForKeyPath:@"series.study.patientUID"] retain];
 	NSString	*previousStudyInstanceUID = [[[fileList[0] objectAtIndex:0] valueForKeyPath:@"series.study.studyInstanceUID"] retain];
 	float		previousOrientation[ 9];
-	float		previousLocation = 0, previousScale = 0;
+	float		previousLocation = 0;
 	
 	nonVolumicDataWarningDisplayed = YES;
 	
@@ -5973,11 +5954,6 @@ static ViewerController *draggedController = nil;
 
 - (void) showWindowTransition
 {
-	long	type;
-	float   startScale;
-	long	startWL;
-	long	diffWL;
-	long	startWW, i;
 	NSRect	screenRect;
 	
 	switch ([[NSUserDefaults standardUserDefaults] integerForKey: @"MULTIPLESCREENS"])
@@ -6492,7 +6468,6 @@ static ViewerController *draggedController = nil;
 		
 		for( int j = 0 ; j < maxMovieIndex; j ++)
 		{
-			int currentTotal = [pixList[ j] count];
 			
 			for( int x = 0 ; x < [pixList[ j] count] ; x++)
 			{
@@ -7225,8 +7200,6 @@ static ViewerController *draggedController = nil;
 
 - (void) flipData:(char*) ptr :(long) no :(long) x :(long) y
 {
-	long	i, size = x*y;
-	char*	tempData;
 	
 //	NSLog(@"flip data-A");
 //	
@@ -7711,7 +7684,7 @@ static ViewerController *draggedController = nil;
     
     if( [sender tag])   //User clicks OK Button
     {
-		long i, x, y;
+		long i, x;
 		float v[ 9], o[ 3];
 		
 		for( i = 0; i < 9; i++) v[ i] = [[customVectors cellWithTag: i] floatValue];
@@ -7719,9 +7692,7 @@ static ViewerController *draggedController = nil;
 		
 		for( i = 0 ; i < maxMovieIndex; i++)
 		{
-			BOOL	equalVector = YES;
 			int		dir = 2;
-			float	vectors[ 9], vectorsB[ 9];
 			
 			v[6] = v[1]*v[5] - v[2]*v[4];
 			v[7] = v[2]*v[3] - v[0]*v[5];
@@ -7780,7 +7751,7 @@ static ViewerController *draggedController = nil;
 {
 	[customInterval selectText: self];
 	
-	float v[ 9], o[ 3];
+	float v[ 9];
 	int i;
 
 	v[ 0] = 1;		v[ 1] = 0;		v[ 2] = 0;
@@ -8015,7 +7986,6 @@ static float oldsetww, oldsetwl;
 	
 	if( [curConvMenu isEqualToString:NSLocalizedString(@"No Filter", nil)] == NO)
 	{
-		float interval = [self computeInterval];
 		
 		for ( x = 0; x < maxMovieIndex; x++)
 		{
@@ -8153,7 +8123,6 @@ static float oldsetww, oldsetwl;
 - (void) setConv:(short*) m :(short) s :(short) norm
 {
 	long			x, i;
-	BOOL			convolution;
 	short			kernelsize, normalization;
 	short			kernel[ 25];
 	
@@ -8361,7 +8330,6 @@ long				x, y;
 		NSMutableDictionary		*aConvFilter = [NSMutableDictionary dictionary];
 		NSMutableDictionary		*convDict = [[[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"Convolution"] mutableCopy] autorelease];
 		NSMutableArray			*valArray;
-		short					matrix[25];
 		
 		[aConvFilter setObject:[NSNumber numberWithLong:[[sizeMatrix selectedCell] tag]] forKey: @"Size"];
 		[aConvFilter setObject:[NSNumber numberWithLong:[matrixNorm intValue]] forKey: @"Normalization"];
@@ -8394,7 +8362,6 @@ long				x, y;
 {
 long				i, size = [[sizeMatrix selectedCell] tag];
 NSMutableArray		*array;
-long				nomalization = [matrixNorm intValue];
 short				matrix[25];
 
 	array = [self getMatrix:size];	
@@ -8597,9 +8564,6 @@ short				matrix[25];
     else if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSAlternateKeyMask)
     {
 		NSDictionary		*aCLUT;
-		NSArray				*array;
-		long				i;
-		unsigned char		red[256], green[256], blue[256];
 		
 		[self ApplyCLUTString:[sender title]];
 		
@@ -8690,9 +8654,6 @@ short				matrix[25];
 
 - (IBAction) clutAction:(id)sender
 {
-long				i;
-NSMutableArray		*array;
-
 //	[imageView setCLUT:matrix :[[sizeMatrix selectedCell] tag] :[matrixNorm intValue]];
 	[imageView setIndex:[imageView curImage]];
 }
@@ -8863,8 +8824,6 @@ NSMutableArray		*array;
     {
 		NSMutableDictionary		*opacityDict	= [[[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"OPACITY"] mutableCopy] autorelease];
 		NSMutableDictionary		*aOpacityFilter	= [NSMutableDictionary dictionary];
-		NSArray					*points;
-		long					i;
 		
 		[aOpacityFilter setObject: [[[OpacityView getPoints] copy] autorelease] forKey: @"Points"];
 		[opacityDict setObject: aOpacityFilter forKey: [OpacityName stringValue]];
@@ -8930,6 +8889,9 @@ NSMutableArray		*array;
 		
 //		[OpacityPopup setEnabled:YES];
 		
+		if( m == 4) flip = YES;
+		else flip = NO;
+		
 		if( thickSlab == nil)
 		{
 			unsigned char *r, *g, *b;
@@ -8942,9 +8904,6 @@ NSMutableArray		*array;
 			[imageView getCLUT: &r :&g :&b];
 			[thickSlab setCLUT:r :g :b];
 		}
-		
-		if( m == 4) flip = YES;
-		else flip = NO;
 		
 		[thickSlab setFlip: flip];
 		
@@ -9837,7 +9796,6 @@ int i,j,l;
 	RGBColor aColor;
 	//float *r,*g,*b;
 	int nbColor=6;
-	int cpt=0;
 	
 	// color init
 	RGBColor rgbList[6];
@@ -9974,7 +9932,6 @@ int i,j,l;
 	RGBColor aColor;
 	//float *r,*g,*b;
 	int nbColor=6;
-	int cpt=0;
 	
 	// color init
 	RGBColor rgbList[6];
@@ -10330,7 +10287,6 @@ int i,j,l;
 	
 	for( x = 0; x < [pixList[curMovieIndex] count]; x++)
 	{
-		DCMPix	*curDCM = [pixList[curMovieIndex] objectAtIndex: x];
 		
 		for( i = 0; i < [[roiList[curMovieIndex] objectAtIndex: x] count]; i++)
 		{
@@ -10355,7 +10311,6 @@ int i,j,l;
 	
 	for( x = 0; x < [pixList[curMovieIndex] count]; x++)
 	{
-		DCMPix	*curDCM = [pixList[curMovieIndex] objectAtIndex: x];
 		
 		for( i = 0; i < [[roiList[curMovieIndex] objectAtIndex: x] count]; i++)
 		{
@@ -10409,7 +10364,7 @@ int i,j,l;
 
 - (IBAction) roiLoadFromFiles: (id) sender
 {
-    long    i, j, x, result;
+    long result;
     
     NSOpenPanel *oPanel = [NSOpenPanel openPanel];
     [oPanel setAllowsMultipleSelection:YES];
@@ -10441,8 +10396,6 @@ int i,j,l;
 		for( int x = 0; x < [pixList[ y] count]; x++)
 		{
 			NSMutableArray  *roisPerImages = [NSMutableArray  arrayWithCapacity:0];
-			
-			DCMPix	*curDCM = [pixList[ y] objectAtIndex: x];
 			
 			for( int i = 0; i < [[roiList[ y] objectAtIndex: x] count]; i++)
 			{
@@ -10483,7 +10436,6 @@ int i,j,l;
 	
 	for( x = 0; x < [pixList[curMovieIndex] count]; x++)
 	{
-		DCMPix	*curDCM = [pixList[curMovieIndex] objectAtIndex: x];
 		
 		for( i = 0; i < [[roiList[curMovieIndex] objectAtIndex: x] count]; i++)
 		{
@@ -10568,7 +10520,6 @@ int i,j,l;
 	
 	for( x = 0; x < [pixList[curMovieIndex] count]; x++)
 	{
-		DCMPix	*curDCM = [pixList[curMovieIndex] objectAtIndex: x];
 		
 		for( i = 0; i < [[roiList[curMovieIndex] objectAtIndex: x] count]; i++)
 		{
@@ -10617,7 +10568,6 @@ int i,j,l;
 	
 	for( x = 0; x < [pixList[curMovieIndex] count]; x++)
 	{
-		DCMPix	*curDCM = [pixList[curMovieIndex] objectAtIndex: x];
 		
 		for( i = 0; i < [[roiList[curMovieIndex] objectAtIndex: x] count]; i++)
 		{
@@ -10655,10 +10605,9 @@ int i,j,l;
 
 - (IBAction) roiVolume:(id) sender
 {
-	long				i, x, y, globalCount, imageCount;
-	float				volume = 0, prevArea, preLocation, interval;
+	long				i, x;
+	float				volume = 0, preLocation, interval;
 	ROI					*selectedRoi = nil;
-	long				err = 0;
 	NSMutableArray		*pts;
 	
 	[self computeInterval];
@@ -10958,8 +10907,6 @@ int i,j,l;
 - (IBAction) roiSetPixels:(ROI*)aROI :(short)allRois :(BOOL) propagateIn4D :(BOOL)outside :(float)minValue :(float)maxValue :(float)newValue :(BOOL) revert
 {
 	long			i, x, y, z;
-	float			volume = 0;
-	long			err = 0;
 	BOOL			done, proceed;
 	NSMutableArray	*roiToProceed = [NSMutableArray array];
 	NSNumber		*nsnewValue, *nsminValue, *nsmaxValue, *nsoutside, *nsrevert;
@@ -11310,7 +11257,7 @@ int i,j,l;
 
 - (IBAction) roiHistogram:(id) sender
 {
-	long i, x;
+	long i;
 	
 	for( i = 0; i < [[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] count]; i++)
 	{
@@ -11345,7 +11292,7 @@ int i,j,l;
 
 - (IBAction) roiGetInfo:(id) sender
 {
-	long i, x;
+	long i;
 	
 	if( [roiList[curMovieIndex] count] <= [imageView curImage]) return;
 	
@@ -11592,7 +11539,6 @@ int i,j,l;
 		
 		case 1:		// 4D Dimension
 			{
-				long upToImage, startImage;
 				
 				for( i = 0; i < [[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] count]; i++)
 				{
@@ -12327,7 +12273,7 @@ int i,j,l;
 	
 	NSArray *selectedROIs = [self roiApplyWindow: self];
 	
-	int tag, i;
+	int tag;
 	
 	for( ROI *selectedROI in selectedROIs)
 	{
@@ -12473,7 +12419,7 @@ int i,j,l;
 
 -(IBAction) endDisplaySUV:(id) sender
 {
-	long y, x, i;
+	long y, x;
 	
 	if( [sender tag] == 1)
 	{
@@ -12830,7 +12776,6 @@ int i,j,l;
 {
 	BOOL				allFromSameStudy = YES, previousSyncButtonBehaviorIsBetweenStudies = SyncButtonBehaviorIsBetweenStudies;
 	NSMutableArray		*viewersList = [ViewerController getDisplayed2DViewers];
-	NSArray				*winList = [NSApp windows];
 	
 	[viewersList removeObject: self];
 	
@@ -13213,7 +13158,7 @@ int i,j,l;
 		[[[movingViewer pixList] objectAtIndex:0] orientation: vectorSensor];
 		[[[self pixList] objectAtIndex:0] orientation: vectorModel];
 		
-		double translation[ 3], matrix[ 12], length;
+		double matrix[ 12], length;
 		
 		// No translation -> same origin, same study
 		matrix[ 9] = 0;
@@ -13316,7 +13261,7 @@ int i,j,l;
 		[[[movingViewer pixList] objectAtIndex:0] orientation: vectorSensor];
 		[[[self pixList] objectAtIndex:0] orientation: vectorModel];
 		
-		int i,j,k; // 'for' indexes
+		int i,j; // 'for' indexes
 		for (i=0; i<[modelPointROIs count] && pointsNamesMatch2by2 && !triplets; i++)
 		{
 			ROI *curModelPoint2D = [modelPointROIs objectAtIndex:i];
@@ -13452,10 +13397,8 @@ int i,j,l;
 -(IBAction) startMSRG:(id) sender
 {
 	NSLog(@"Start MSRG ....");
-	int i,j,k,l=0;
+	int i;
 	// I - RŽcupŽration des AUTRES ViewerController, nombre de critres
-	
-	NSArray				*winList = [NSApp windows];
 	NSMutableArray		*viewersList = [ViewerController getDisplayed2DViewers];;
 	
 	[viewersList removeObject: self];
@@ -14642,12 +14585,11 @@ int i,j,l;
 
 - (NSDictionary*) exportDICOMFileInt:(int)screenCapture withName:(NSString*)name allViewers: (BOOL) allViewers
 {
-	DCMPix *curPix = [imageView curDCM];
 	NSArray *viewers = [ViewerController getDisplayed2DViewers];
 	long annotCopy,clutBarsCopy;
 	NSString *sopuid = nil;
 	
-	long	width, height, spp, bpp, err, i, x;
+	long	width, height, spp, bpp, i, x;
 	float	cwl, cww;
 	float	o[ 9];
 	
@@ -14891,7 +14833,6 @@ int i,j,l;
 
 -(id) findPlayStopButton
 {
-	unsigned long i, x;
 	
 	NSArray *items = [toolbar items];
 	
@@ -15522,7 +15463,6 @@ int i,j,l;
 	}
 	
 	NSSavePanel     *panel = [NSSavePanel savePanel];
-	BOOL			all = NO;
 	long			i;
 	NSWorkspace		*ws = [NSWorkspace sharedWorkspace];
 	
@@ -15825,7 +15765,6 @@ int i,j,l;
 
 -(id) findiChatButton
 {
-	unsigned long i, x;
 	
 //	for( x = 0; x < [[NSScreen screens] count]; x++)
 	{
@@ -15959,8 +15898,7 @@ int i,j,l;
 - (float) computeVolume:(ROI*) selectedRoi points:(NSMutableArray**) pts generateMissingROIs:(BOOL) generateMissingROIs generatedROIs:(NSMutableArray*) generatedROIs computeData:(NSMutableDictionary*) data error:(NSString**) error
 {
 	long				i, x, y, globalCount, imageCount, lastImageIndex;
-	float				volume, prevArea, preLocation, interval;
-	long				err = 0;
+	float				volume, prevArea, preLocation;
 	ROI					*lastROI;
 	BOOL				missingSlice = NO;
 	NSMutableArray		*theSlices = [NSMutableArray array];
@@ -15979,7 +15917,6 @@ int i,j,l;
 		
 		for( x = 0; x < [pixList[curMovieIndex] count]; x++)
 		{
-			DCMPix	*curDCM = [pixList[curMovieIndex] objectAtIndex: x];
 			imageCount = 0;
 			
 			for( i = 0; i < [[roiList[curMovieIndex] objectAtIndex: x] count]; i++)
@@ -15988,8 +15925,6 @@ int i,j,l;
 				if( [[curROI name] isEqualToString: [selectedRoi name]])
 				{
 					imageCount++;
-					
-					DCMPix *curPix = [pixList[ curMovieIndex] objectAtIndex: x];
 					
 					if( generateMissingROIs)
 					{
@@ -16474,7 +16409,6 @@ int i,j,l;
 	{
 		if( [[popupRoi itemAtIndex: i] image] == nil)
 		{
-			NSString	*filename = nil;
 			
 			[[popupRoi itemAtIndex: i] setImage: [self imageForROI: [[popupRoi itemAtIndex: i] tag]]];
 		}
@@ -16692,7 +16626,6 @@ int i,j,l;
 
 -(IBAction) VRVPROViewer:(id) sender
 {
-	long i;
 	
 	[self checkEverythingLoaded];
 	[self clear8bitRepresentations];
@@ -16906,7 +16839,6 @@ int i,j,l;
 
 -(IBAction) VRViewer:(id) sender
 {
-	long i;
 	
 	[self checkEverythingLoaded];
 	[self clear8bitRepresentations];
@@ -17113,10 +17045,8 @@ int i,j,l;
 	
 	if( [sender tag] == 1)
 	{
-		long	i, x, y;
-		float   volume = 0;
+		long	i;
 		ROI		*selectedRoi = nil;
-		long	err = 0;
 	
 		// Find the first selected
 		for( i = 0; i < [[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] count]; i++)
@@ -17147,8 +17077,6 @@ int i,j,l;
 
 -(IBAction) CurvedMPR:(id) sender
 {
-long i;
-	
 	[self checkEverythingLoaded];
 	[self clear8bitRepresentations];
 	[self squareDataSet: self];			// CurvedMPR works better if pixel are squares !
@@ -17165,10 +17093,8 @@ long i;
 		[self displayAWarningIfNonTrueVolumicData];
 		[self displayWarningIfGantryTitled];
 		
-		long	i, x, y;
-		float   volume = 0;
+		long	i;
 		ROI		*selectedRoi = nil;
-		long	err = 0;
 	
 		// Find the first selected
 		for( i = 0; i < [[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] count]; i++)
@@ -17260,7 +17186,6 @@ long i;
 
 -(IBAction) MPR2DViewer:(id) sender
 {
-	long i;
 	
 	WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Processing...", nil)];
 	[wait showWindow:self];
@@ -17315,7 +17240,6 @@ long i;
 - (OrthogonalMPRViewer *)openOrthogonalMPRViewer
 {
 	OrthogonalMPRViewer *viewer;
-	long i;	
 	[self checkEverythingLoaded];
 	[self clear8bitRepresentations];
 	
@@ -17352,7 +17276,6 @@ long i;
 
 - (OrthogonalMPRPETCTViewer *)openOrthogonalMPRPETCTViewer{
 	OrthogonalMPRPETCTViewer  *viewer;
-	long i;	
 	[self checkEverythingLoaded];
 	[self clear8bitRepresentations];
 	if (viewer = [appController FindViewer :@"PETCT" :pixList[0]])
@@ -17396,7 +17319,6 @@ long i;
 
 -(IBAction) orthogonalMPRViewer:(id) sender
 {
-	long i;
 	
 	[self checkEverythingLoaded];
 	[self clear8bitRepresentations];
@@ -17486,8 +17408,8 @@ long i;
 	}
 }
 
-- (EndoscopyViewer *)openEndoscopyViewer{
-	long i;	
+- (EndoscopyViewer *)openEndoscopyViewer
+{
 	[self checkEverythingLoaded];
 	[self clear8bitRepresentations];
 	EndoscopyViewer *viewer;
@@ -17503,7 +17425,6 @@ long i;
 
 -(IBAction) endoscopyViewer:(id) sender
 {
-	long i;
 	
 	[self checkEverythingLoaded];
 	[self clear8bitRepresentations];

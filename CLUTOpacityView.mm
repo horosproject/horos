@@ -387,7 +387,6 @@
 		float d = maxX - minX;
 		
 		// construct path & locations
-		NSRect smallRect;
 		NSPoint p, pt;
 		for (int j=0; j<[aCurve count]; j++)
 		{
@@ -942,7 +941,7 @@ NSRect rect = drawingRect;
 - (BOOL)clickOnLineAtPosition:(NSPoint)position;
 {
 	int i, j;
-	NSPoint pt0, pt1, p0, p1, newPoint;
+	NSPoint pt0, pt1, p0, p1;
 	float a, b; // line between p0 & p1 : y = a x + b
 	NSAffineTransform* transform = [self transform];
 	NSMutableArray *aCurve, *colors;
@@ -2222,8 +2221,6 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 			NSArray *curveJ = [curves objectAtIndex:j];
 			if([self doesCurve:curveI overlapCurve:curveJ])
 			{
-				int minX = ([[curveJ objectAtIndex:0] pointValue].x < [[curveI objectAtIndex:0] pointValue].x)? [[curveJ objectAtIndex:0] pointValue].x : [[curveI objectAtIndex:0] pointValue].x;
-				int maxX = ([[curveJ lastObject] pointValue].x < [[curveI lastObject] pointValue].x)? [[curveJ lastObject] pointValue].x : [[curveI lastObject] pointValue].x;
 				k=0;
 				l=0;
 				while(k<[curveI count] && l<[curveJ count])

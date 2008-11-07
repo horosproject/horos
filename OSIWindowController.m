@@ -54,10 +54,8 @@ extern  ToolbarPanelController  *toolbarPanel[ 10];
 			{
 				NSEnumerator	*e;
 				NSWindow		*theWindow, *window;
-				NSScreen		*screen;
 				NSValue			*value;
 				NSRect			frame, myFrame;
-				BOOL			hDidChange = NO, vDidChange = NO;
 				
 				theWindow = [aNotification object];
 				myFrame = [theWindow frame];
@@ -225,8 +223,6 @@ extern  ToolbarPanelController  *toolbarPanel[ 10];
 			NSEnumerator	*e;
 			NSWindow		*theWindow, *window;
 			NSRect			frame, myFrame, dstFrame;
-			BOOL			hDidChange = NO, vDidChange = NO;
-			NSScreen		*screen;
 			NSValue			*value;
 			
 			theWindow = [self window];

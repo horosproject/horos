@@ -49,7 +49,6 @@
 #define 		kMax_Error_Level	10
 
 static char		sERRMSG[]	= "Error detected in library Papyrus 3";
-static int		sExitWhenError	= TRUE;
 static int		sCrtErrLevel	= -1;
 EPapyError3		gPapyErrNo	= papNoError;
 EPapyError3		gFirstError	= papNoError;

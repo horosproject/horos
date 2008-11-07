@@ -113,9 +113,7 @@ ExtractJPEGlossy12 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelS
   PapyShort			theErr = 0;
   PapyULong			i, thePos, theLimit;
   int 				theRowStride;	 	/* physical row width in output buffer */
-  int				theLoop;
   PapyUChar			*theWrkChP; 		/* ptr to the image */
-  PapyUChar			*theWrkCh8P; 		/* ptr to the image 8 bits */
   PapyUShort			*theWrkCh16P; 		/* ptr to the image 16 bits */
   PapyUShort			*theBuffer16P;
   PapyUChar			*theBuffer8P;

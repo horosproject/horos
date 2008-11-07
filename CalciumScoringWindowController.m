@@ -383,7 +383,6 @@ enum ctTypes {ElectronCTType, MultiSliceCTType};
 
 - (void)computeROIsWithName:(NSString *)name addROIs:(BOOL)addROIs;
 {
-	int p;	
 	[_viewer roiDeleteWithName: NSLocalizedString( @"Segmentation Preview", nil)];
 	
 	if ( _startingPoint.x == 0 && _startingPoint.y == 0)

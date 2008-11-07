@@ -149,8 +149,6 @@
 	}
 	else if ([[options valueForKey:@"mode"] intValue] == eAllImages)
 	{
-		NSArray *fileList = [currentViewer fileList];
-
 		int i;
 		for (i = [[options valueForKey:@"from"] intValue]; i < [[options valueForKey:@"to"] intValue]; i += [[options valueForKey:@"interval"] intValue])
 		{
@@ -299,7 +297,7 @@
 	
 	m_ImageDataBytes = [[NSMutableData alloc] initWithCapacity: ([imageRepresentation bytesPerRow] * [imageRepresentation size].height) + 1];
 	
-	float monoR, monoG, monoB, r;
+	float monoR, monoG, monoB;
 	unsigned char grayValue = 0;
 	unsigned char * bitMapDataPtr = (unsigned char *) [imageRepresentation bitmapData];
 
@@ -362,7 +360,7 @@
 //********************************************************************************************
 - (void) _drawAnnotationsInRect: (NSRect) imageRect forTile: (NSDictionary*) tileDict  isPrinting:(BOOL) print
 {
-	int i, theLongest = 0;
+	int theLongest = 0;
 	NSArray *values = [tileDict allValues];
 	for (id loopItem in values)
 	{

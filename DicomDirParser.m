@@ -86,7 +86,6 @@ NSString * documentsDirectory();
 	NSMutableArray *result = [[[NSMutableArray alloc] initWithCapacity:0] autorelease];
 	long			i, start, length;
 	char			*buffer;
-	BOOL			firstFile = YES, addExtension = NO;
 	NSString		*file;
 	
 	buffer = (char*)  [data UTF8String];
