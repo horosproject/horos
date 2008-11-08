@@ -38,10 +38,8 @@
 static NSString *PatientName = @"PatientsName";
 static NSString *PatientID = @"PatientID";
 static NSString *AccessionNumber = @"AccessionNumber";
-static NSString *StudyDate = @"StudyDate";
 static NSString *StudyDescription = @"StudyDescription";
 static NSString *PatientBirthDate = @"PatientBirthDate";
-static NSString *Modality = @"Modality";
 
 static QueryController	*currentQueryController = nil;
 

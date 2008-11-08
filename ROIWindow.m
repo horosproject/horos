@@ -68,7 +68,6 @@
 - (IBAction) roiSaveCurrent: (id) sender
 {
 	NSSavePanel     *panel = [NSSavePanel savePanel];
-    short           i;
 	
 	NSMutableArray  *selectedROIs = [NSMutableArray  arrayWithObject:curROI];
 	

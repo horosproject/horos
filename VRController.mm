@@ -261,8 +261,6 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 -(void) UpdateConvolutionMenu: (NSNotification*) note
 {
     //*** Build the menu
-    NSMenu      *mainMenu;
-    NSMenu      *viewerMenu, *convMenu;
     short       i;
     NSArray     *keys;
     NSArray     *sortedKeys;

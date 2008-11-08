@@ -27,11 +27,7 @@
 #define FV_DIMNAME_LENGTH		16
 #define FV_UNITS_LENGTH			64
 
-
-static TIFFExtendProc _TIFFParentExtender = NULL;
-
 extern void FVTIFFInitialize(void);
-static void _FVTIFFDefaultDirectory(TIFF *tif);
 
 typedef unsigned int	FV_MM_HANDLE;						// Size (bytes): 	   4
 

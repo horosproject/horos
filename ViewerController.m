@@ -6542,7 +6542,6 @@ static ViewerController *draggedController = nil;
 		{
 			DCMPix	*firstObject = [originalPixlist objectAtIndex:0];
 			DCMPix	*secondObject = [originalPixlist objectAtIndex:1];
-			DCMPix	*lastObject = [originalPixlist lastObject];
 			
 			[firstObject orientation: vectors];
 			[secondObject orientation: vectorsB];
@@ -9193,7 +9192,6 @@ short				matrix[25];
 
 - (IBAction) endBlendingType:(id) sender
 {
-	long i;
 	
 	[blendingTypeWindow orderOut:sender];
 	[NSApp endSheet:blendingTypeWindow returnCode:[sender tag]];
@@ -9297,7 +9295,6 @@ short				matrix[25];
 						dst8.rowBytes = [srcPix pwidth]; 
 						dst8.data = malloc( [srcPix pheight] * [srcPix pwidth]);
 						
-						long i;
 						
 						cwl = [srcPix wl];
 						cww = [srcPix ww];
@@ -9549,7 +9546,7 @@ extern NSString * documentsDirectory();
 {
 	NSString		*path = [documentsDirectory() stringByAppendingPathComponent:ROIDATABASE];
 	BOOL			isDir = YES, toBeSaved = NO;
-	int				i, x;
+	int				i;
 	
 	if( [[BrowserController currentBrowser] isCurrentDatabaseBonjour] || [[NSUserDefaults standardUserDefaults] boolForKey: @"SAVEROIS"] == NO ) return;
 	
@@ -9690,7 +9687,7 @@ extern NSString * documentsDirectory();
 	[ROINamesArray addObjectsFromArray: DefaultROINames];
 	
 	// Scan all ROIs of current series to find other names!
-	long	y, x, z, i;
+	long	y, x, z;
 	BOOL	first = YES, found;	
 	for( y = 0; y < maxMovieIndex; y++)
 	{
@@ -10732,7 +10729,6 @@ int i,j,l;
 -(IBAction) roiSetPixelsSetup:(id) sender
 {
 	ROI		*selectedRoi = nil;
-	long	i;
 	
 	selectedRoi = [self selectedROI];
 	
@@ -11230,7 +11226,6 @@ int i,j,l;
 - (IBAction) roiPropagateSetup: (id) sender
 {
 	ROI		*selectedRoi = nil;
-	long	i;
 	
 	if( [pixList[curMovieIndex] count] > 1)
 	{
@@ -12685,7 +12680,6 @@ int i,j,l;
 
 -(id) findSyncSeriesButton
 {
-	unsigned long i, x;
 	
 	NSArray *items = [toolbar items];
 	
@@ -13397,7 +13391,6 @@ int i,j,l;
 -(IBAction) startMSRG:(id) sender
 {
 	NSLog(@"Start MSRG ....");
-	int i;
 	// I - Récupération des AUTRES ViewerController, nombre de critères
 	NSMutableArray		*viewersList = [ViewerController getDisplayed2DViewers];;
 	

@@ -1443,7 +1443,6 @@ PapyUShort * CALLINGCONV
 Papy3GetPixelData (PapyShort inFileNb, int inImageNb, SElement *inGrOrModP, int inModuleId)
 {
   PapyUChar	 *theBufP = 0L, theTmpBuf [256], *theTmpBufP;
-  PapyUChar	 *theCharP, theChar0, theChar1;
   PapyUShort theUShort1, theUShort2;
   PapyShort	 theErr;
   int		 theFrameCount = 1, theLoop, ok, theIsModule;
@@ -2094,12 +2093,11 @@ PutBufferInElement3 (PapyShort inFileNb, unsigned char *ioBuffP, PapyULong inEle
   unsigned char *theTmp0P, theTmp1,  *theCharP;
   unsigned char theDoubleArr [8], theIncr;
   PapyLong		  theCurrFilePos, theInitialFilePos = inInitFilePos;
-  PapyULong		  ii, i, j, thePosInSeq, thePosInItem, theSeqSize, theSeqGrSize, theImLength;
-  PapyULong 		theTmpULong, theULong = 0L;
+  PapyULong		  i, j, thePosInSeq, thePosInItem, theSeqSize, theSeqGrSize, theImLength;
+  PapyULong 		theULong = 0L;
   PapyUShort	 	theSeqGrNb, theElemNb, *theTmpUsP;
-  char 			    *theCharValP, *theCharWrkP; 
-  char			    *theStringP, *theP;
-  int 			    theEnumSeqNb, theStringLength, theFirstTime, theIsUndefItemLen, pos;
+  char 			    *theCharWrkP; 
+  int 			    theEnumSeqNb, theFirstTime, theIsUndefItemLen, pos;
   PapyShort		  theErr;
 
 

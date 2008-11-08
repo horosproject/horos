@@ -75,9 +75,7 @@ static		unsigned char				*PETredTable = nil, *PETgreenTable = nil, *PETblueTable
 static		BOOL						NOINTERPOLATION = NO, FULL32BITPIPELINE = NO, SOFTWAREINTERPOLATION = NO, IndependentCRWLWW, pluginOverridesMouse = NO;  // Allows plugins to override mouse click actions.
 static		int							CLUTBARS, ANNOTATIONS = -999, SOFTWAREINTERPOLATION_MAX, DISPLAYCROSSREFERENCELINES = YES;
 static		BOOL						gClickCountSet = NO;
-static		float						margin = 2;
 static		NSDictionary				*_hotKeyDictionary = nil, *_hotKeyModifiersDictionary = nil;
-static		NSMutableArray				*overlayWindows = nil;
 static		NSRecursiveLock				*drawLock = nil;
 
 NSString *pasteBoardOsiriX = @"OsiriX pasteboard";
@@ -1260,7 +1258,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 - (IBAction) roiLoadFromXMLFiles: (NSArray*) filenames
 {
-	int	i, x, result;
+	int	i;
 	
 	// Unselect all ROIs
 	for( i = 0 ; i < [curRoiList count] ; i++) [[curRoiList objectAtIndex: i] setROIMode: ROI_sleep];
@@ -1453,7 +1451,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	[self copy:sender];
 	
 	long	i;
-	BOOL	done = NO;
 	NSTimeInterval groupID;
 
 	[[self windowController] addToUndoQueue:@"roi"];
@@ -1845,7 +1842,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 		[curDCM checkImageAvailble :curWW :curWL];
 		
-		NSRect  sizeView = [self bounds];
 		if( sizeToFit && [self is2DViewer] == NO)
 		{
 			[self scaleToFit];
@@ -1887,8 +1883,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 - (void) setDCM:(NSMutableArray*) c :(NSArray*)d :(NSMutableArray*)e :(short) firstImage :(char) type :(BOOL) reset
 {
 	[drawLock lock];
-	
-	long i;
 	
 	[curDCM release];
 	curDCM = nil;
@@ -2289,7 +2283,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			
 			// NE PAS OUBLIER DE CHANGER EGALEMENT LE CUT !
 			long	i;
-			BOOL	done = NO;
 			NSTimeInterval groupID;
 			
 			[drawLock lock];
@@ -2494,8 +2487,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				self.rotation =rot;
 			}
 			
-			if (currentTool == tNext) {
-				short   inc, now, prev, previmage;
+			if (currentTool == tNext)
+			{
+				short   inc, previmage;
 				
 				if( yMove) val = yMove/abs(yMove);
 				else val = xMove/abs(xMove);
@@ -2833,7 +2827,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 		if( [self roiTool: tool] )
 		{
-			NSRect      size = [self frame];
 			NSPoint     eventLocation = [event locationInWindow];
 			NSPoint		tempPt = [self convertPoint:eventLocation fromView: nil];
 			
@@ -3153,7 +3146,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	[BrowserController updateActivity];
 	
 	NSPoint     eventLocation = [theEvent locationInWindow];
-	NSRect      size = [self frame];
 	
 	if( dcmPixList == nil) return;
 
@@ -3722,7 +3714,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			[[self windowController] addToUndoQueue:@"roi"];
 			
 			BOOL		DoNothing = NO;
-			NSInteger	selected = -1, i, x;
+			NSInteger	selected = -1, i;
 			NSPoint tempPt = [self convertPoint:eventLocation fromView: nil];
 			tempPt = [self ConvertFromNSView2GL:tempPt];
 			
@@ -4429,7 +4421,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
         NSPoint     eventLocation = [event locationInWindow];
         NSPoint     current = [self convertPoint:eventLocation fromView:self];
         short       tool = currentMouseEventTool;
-        NSRect      size = [self frame];
 		
 		[self mouseMoved: event];	// Update some variables...
 		
@@ -4439,7 +4430,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		/**************** ROI actions *********************************/
 		if( [self roiTool: tool])
 		{
-			long	i;
 			BOOL	action = NO;
 			
 			NSPoint tempPt = [self convertPoint:eventLocation fromView: nil];
@@ -4528,7 +4518,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 - (BOOL) mouseDraggedForROIs:(NSEvent *)event
 {
 	BOOL action = NO;
-	NSRect  frame = [self frame];
 	NSPoint current = [self currentPointInView:event];
 	
 	// Command and Alternate rotate ROI
@@ -4539,7 +4528,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		rotatePoint = [self ConvertFromNSView2GL: rotatePoint];
 
 		NSPoint offset;
-		float   xx, yy;
 		
 		offset.x = - (previous.x - current.x) / scaleValue;
 		offset.y =  (previous.y - current.y) / scaleValue;
@@ -4640,9 +4628,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 - (void)mouseDraggedCrosshair:(NSEvent *)event
 {
 	//Moved OrthogonalMPRView specific code to that class
-	
-	NSRect  frame = [self frame];
-	NSPoint current = [self currentPointInView:event];
 	NSPoint   eventLocation = [event locationInWindow];
 	//if( ![[self stringID] isEqualToString:@"OrthogonalMPRVIEW"])
 	//{
@@ -4754,7 +4739,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 // could be cleaned up by subclassing DCMView
 - (void)mouseDraggedImageScroll:(NSEvent *)event
 {
-	short   inc, now, prev, previmage;
+	short   now, prev, previmage;
 	BOOL	movie4Dmove = NO;
 	NSPoint current = [self currentPointInView:event];
 	if( scrollMode == 0)
@@ -4985,7 +4970,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 - (void)mouseDraggedRepulsor:(NSEvent *)event
 {
-	NSRect frame = [self frame];
 	NSPoint eventLocation = [event locationInWindow];
 	NSPoint tempPt = [self convertPoint:eventLocation fromView: nil];
 	
@@ -5181,7 +5165,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			}
 			else {
 				points = [[curRoiList objectAtIndex:i] splinePoints];
-				NSPoint p1, p2;
 				for( int j=0; j<[points count] && !intersected; j++ ) {
 					intersected = [DCMPix IsPoint: [[points objectAtIndex:j] point] inPolygon:polyRect size:4];
 				}
@@ -5929,7 +5912,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 {	
 	if (![[[note object] superview] isEqual:[self superview]] && [self is2DViewer])
 	{
-		BOOL	stringOK = NO;
 		
 		int prevImage = curImage;
 		
@@ -5961,12 +5943,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			int			diff = [[instructions valueForKey: @"Direction"] intValue];
 			int			pos = [[instructions valueForKey: @"Pos"] intValue];
 			float		loc = [[instructions valueForKey: @"Location"] floatValue];
-			float		offsetsync = [[instructions valueForKey: @"offsetsync"] floatValue];
 			NSString	*oStudyId = [instructions valueForKey: @"studyID"];
 			DCMPix		*oPix = [instructions valueForKey: @"DCMPix"];
 			DCMPix		*oPix2 = [instructions valueForKey: @"DCMPix2"];
 			DCMView		*otherView = [instructions valueForKey: @"view"];
-			int			stack = [oPix stack];
 			float		destPoint3D[ 3];
 			BOOL		point3D = NO;
 			
@@ -6863,8 +6843,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 - (void) drawTextualData:(NSRect) size :(long) annotations
 {
-	NSManagedObject   *file = [dcmFilesList objectAtIndex:[self indexForPix:curImage]];
-	
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	
 	//** TEXT INFORMATION
@@ -6971,7 +6949,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		[yRasterIncrement setObject:[NSNumber numberWithInt:-_stringSize.height] forKey:@"LowerRight"];
 		[yRasterIncrement setObject:[NSNumber numberWithInt:-_stringSize.height] forKey:@"LowerMiddle"];
 		
-		int i, j, k, increment;
+		int j, k, increment;
 		NSEnumerator *enumerator;
 		id annot;
 		
@@ -7287,7 +7265,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 							} 
 							else if( curDCM.viewPosition || curDCM.patientPosition )
 							{
-								 NSString        *nsstring = nil;	 
 
 								 if ( curDCM.viewPosition ) [tempString appendFormat: NSLocalizedString( @"Position: %@ ", nil), curDCM.viewPosition];	 
 								 if ( curDCM.patientPosition )
@@ -7372,7 +7349,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	@synchronized (self)
 	{
-		NSRect aRect;
 		
 		[self drawRect: [self frame] withContext: [self openGLContext]];
 	}
@@ -7759,7 +7735,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			{
 				float			heighthalf = drawingFrameRect.size.height/2 - 1;
 				float			widthhalf = drawingFrameRect.size.width/2 - 1;
-				long			yRaster = 1, xRaster, i;
 				NSString		*tempString = nil;
 				
 				//#define BARPOSX1 50.f
@@ -7820,7 +7795,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					unsigned char	*bred, *bgreen, *bblue;
 					float			heighthalf = drawingFrameRect.size.height/2 - 1;
 					float			widthhalf = drawingFrameRect.size.width/2 - 1;
-					long			yRaster = 1, xRaster, i;
 					float			bwl, bww;
 					NSString		*tempString = nil;
 					
@@ -7883,9 +7857,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 		if (annotations != annotNone)
 		{
-			long yRaster = 1, xRaster;
-			char cstr [400], *cptr;
-			
 			glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
 			glScalef (2.0f /(xFlipped ? -(drawingFrameRect.size.width) : drawingFrameRect.size.width), -2.0f / (yFlipped ? -(drawingFrameRect.size.height) : drawingFrameRect.size.height), 1.0f); // scale to port per pixel scale
 
@@ -8210,7 +8181,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			eventLocation = [self convertPoint:eventLocation fromView:nil];
 			eventLocation.y = [self frame].size.height - eventLocation.y;
 			
-			NSSize iChatTheatreViewSize = aRect.size;
 
 			// location of the mouse in the iChat Theatre View			
 			eventLocation = [self convertFromView2iChat:eventLocation];
@@ -10123,7 +10093,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 - (void) sliderAction2DMPR:(id) sender
 {
-	long	x = curImage;
     BOOL	lowRes = NO;
 
 	if( [[[NSApplication sharedApplication] currentEvent] type] == NSLeftMouseDragged) lowRes = YES;
@@ -10872,7 +10841,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	NSRect windowFrame = [window frame];
 	float newWidth = windowFrame.size.width - (frameWidth - curImageWidth) * _imageColumns;
 	float newHeight = windowFrame.size.height - (frameHeight - curImageHeight) * _imageRows;
-	float topLeftY = windowFrame.size.height + windowFrame.origin.y;
 	NSPoint center;
 	center.x = windowFrame.origin.x + windowFrame.size.width/2.0;
 	center.y = windowFrame.origin.y + windowFrame.size.height/2.0;
@@ -11123,7 +11091,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		{
 			key = [[[DCMView hotKeyDictionary] objectForKey:hotKey] intValue];
 			
-			int index = 1;
 			switch (key)
 			{
 				case DefaultWWWLHotKeyAction: [self setWLWW:[[self curDCM] savedWL] :[[self curDCM] savedWW]];	// default WW/WL

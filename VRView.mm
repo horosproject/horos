@@ -920,8 +920,7 @@ public:
 
 - (void) exportDCMCurrentImage
 {
-	long	width, height, spp, bpp, err;
-	float	cwl, cww;
+	long	width, height, spp, bpp;
 	float	o[ 9];
 	
 	if( exportDCM == nil) exportDCM = [[DICOMExport alloc] init];
@@ -1009,7 +1008,7 @@ public:
 			//	aRenderer->AddActor(outlineRect);
 				aRenderer->AddActor(textX);
 
-				long	width, height, spp, bpp, err;
+				long	width, height, spp, bpp;
 				
 				unsigned char *dataPtr = [self getRawPixels:&width :&height :&spp :&bpp :YES :YES];
 				
@@ -1023,7 +1022,7 @@ public:
 					[dcmSequence setPixelData: dataPtr samplePerPixel:spp bitsPerPixel:bpp width: width height: height];
 			//		[dcmSequence setPixelSpacing: 1 :1];
 					
-					NSString *f = [dcmSequence writeDCMFile: nil];
+					[dcmSequence writeDCMFile: nil];
 					
 					free( dataPtr);
 				}
@@ -1083,7 +1082,7 @@ public:
 				
 				[self renderImageWithBestQuality: bestRenderingMode waitDialog: NO];
 				
-				long	width, height, spp, bpp, err;
+				long	width, height, spp, bpp;
 				
 				unsigned char *dataPtr = [self getRawPixels:&width :&height :&spp :&bpp :YES :YES];
 				
@@ -1098,7 +1097,7 @@ public:
 					if( aCamera->GetParallelProjection())
 						[dcmSequence setPixelSpacing: [self getResolution] :[self getResolution]];
 					
-					NSString *f = [dcmSequence writeDCMFile: nil];
+					[dcmSequence writeDCMFile: nil];
 					
 					free( dataPtr);
 				}
@@ -1216,8 +1215,6 @@ public:
 	if( [sender tag])
 	{
 		NSString			*path, *newpath;
-		FSRef				fsref;
-		FSSpec				spec, newspec;
 		QuicktimeExport		*mov;
 		
 		[self setViewSizeToMatrix3DExport];
@@ -1410,7 +1407,6 @@ public:
 
 - (IBAction) exportQuicktime:(id) sender
 {
-	long i;
 	
 	if( export3DWindow == nil)
 	{
@@ -1724,7 +1720,6 @@ public:
 
 -(void) set3DStateDictionary:(NSDictionary*) dict
 {
-	float   temp[ 5];
 	NSArray *tempArray;
 	
 	if( dict)
@@ -6509,7 +6504,6 @@ double pos[3], focal[3], vUp[3],  fpVector[3];
 - (void) load3DPointsDefaultProperties
 {	
 	//color
-	float r, g, b, a;
 	point3DDefaultColorRed = [[NSUserDefaults standardUserDefaults] floatForKey:@"points3DcolorRed"];
 	point3DDefaultColorGreen = [[NSUserDefaults standardUserDefaults] floatForKey:@"points3DcolorGreen"];
 	point3DDefaultColorBlue = [[NSUserDefaults standardUserDefaults] floatForKey:@"points3DcolorBlue"];
@@ -6838,10 +6832,7 @@ double pos[3], focal[3], vUp[3],  fpVector[3];
 	
 	NSArray *curves = [clut objectForKey:@"curves"];
 	NSArray *pointColors = [clut objectForKey:@"colors"];
-	NSArray *name = [clut objectForKey:@"name"];
 	
-	NSArray *firstCurve = [curves objectAtIndex:0];
-	NSArray *firstColors = [pointColors objectAtIndex:0];
 	
 	if( [[NSArchiver archivedDataWithRootObject: clut] isEqualToData: appliedCurves] == NO || (appliedResolution == YES && lowRes == NO))
 	{	

@@ -13,11 +13,15 @@
 =========================================================================*/
 
 
+
 #include "FVTiff.h"
 #include "tiffio.h"
 #include "CoreFoundation/CFByteOrder.h"
 #include "string.h"
 #include <stdio.h>
+
+static TIFFExtendProc _TIFFParentExtender = NULL;
+static void _FVTIFFDefaultDirectory(TIFF *tif);
 
 int FV_Read_DIM_INFO(const char* data, FV_MM_DIM_INFO* info)
 {
@@ -126,7 +130,6 @@ NSXMLDocument * XML_from_FVTiff(NSString* srcFile)
 					else if (line[0] != '[')
 					{
 						NSXMLNode *element;
-						int equalsPos = 0;
 						char* value;
 						value = index(line, '=');
 						if (value)

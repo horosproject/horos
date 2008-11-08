@@ -52,8 +52,6 @@ static NSString*	MovieToolbarItemIdentifier		= @"Movie";
 static NSString*	ExportToolbarItemIdentifier		= @"Export.icns";
 static NSString*	MailToolbarItemIdentifier		= @"Mail.icns";
 
-static		float				deg2rad = 3.14159265358979/180.0; 
-
 extern NSString * documentsDirectory();
 
 @implementation MPR2DController
@@ -138,7 +136,6 @@ extern NSString * documentsDirectory();
 
 - (void) exportQuicktime:(id) sender
 {
-	short selectItem = -1;
 	
 	if( [sender tag] == 1) EXPORT2IPHOTO = YES;
 	else EXPORT2IPHOTO = NO;
@@ -557,7 +554,6 @@ extern NSString * documentsDirectory();
 {
 	NSString		*path = [documentsDirectory() stringByAppendingPathComponent:STATEDATABASE];
 	BOOL			isDir = YES;
-	long			i;
 	
 	if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && isDir)
 	{
@@ -574,7 +570,6 @@ extern NSString * documentsDirectory();
 {
 	NSString		*path = [documentsDirectory() stringByAppendingPathComponent:STATEDATABASE];
 	BOOL			isDir = YES;
-	long			i;
 	
 	if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && isDir)
 	{
@@ -837,7 +832,6 @@ extern NSString * documentsDirectory();
 {
 	NSDictionary		*aOpacity;
 	NSArray				*array;
-	long				i;
 	
 	if( [str isEqualToString:@"Linear Table"])
 	{
@@ -1112,7 +1106,6 @@ extern NSString * documentsDirectory();
 		long	annotCopy = [[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"];
 		long	i, width, height, spp, bpp, err = 0;
 		float	cwl, cww;
-		float	o[ 9], pos[ 3];
 		
 		[[NSUserDefaults standardUserDefaults] setInteger: annotGraphics forKey: @"ANNOTATIONS"];
 		[DCMView setDefaults];
@@ -1177,9 +1170,8 @@ extern NSString * documentsDirectory();
 	else
 	{
 		long	annotCopy = [[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"];
-		long	width, height, spp, bpp, err;
+		long	width, height, spp, bpp;
 		float	cwl, cww;
-		float	o[ 9], pos[ 3];
 				
 		
 		[[NSUserDefaults standardUserDefaults] setInteger: annotGraphics forKey: @"ANNOTATIONS"];

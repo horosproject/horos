@@ -2516,6 +2516,8 @@ static BOOL initialized = NO;
 
 - (void) displayUpdateMessage: (NSString*) msg
 {
+	NSAutoreleasePool   *pool=[[NSAutoreleasePool alloc] init];
+	
 	if( [msg isEqualToString:@"LISTENER"])
 	{
 		NSRunAlertPanel( NSLocalizedString( @"DICOM Listener Error", nil), NSLocalizedString( @"OsiriX listener cannot start. Is the Port valid? Is there another process using this Port?\r\rSee Listener - Preferences.", nil), NSLocalizedString( @"OK", nil), nil, nil);
@@ -2540,6 +2542,8 @@ static BOOL initialized = NO;
 			[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.osirix-viewer.com"]];
 		}
 	}
+	
+	[pool release];
 }
 
 - (IBAction) checkForUpdates: (id) sender
@@ -3020,14 +3024,14 @@ static BOOL initialized = NO;
 	NSRect				screenRect =  screenFrame();
 	// User default to keep studies segregated to separate screens
 	BOOL				keepSameStudyOnSameScreen = [[NSUserDefaults standardUserDefaults] boolForKey: @"KeepStudiesTogetherOnSameScreen"];
-	BOOL				strechWindows = [[NSUserDefaults standardUserDefaults] boolForKey: @"StrechWindows"];
+//	BOOL				strechWindows = [[NSUserDefaults standardUserDefaults] boolForKey: @"StrechWindows"];
 	// Array of arrays of viewers with same StudyUID
 	NSMutableArray		*studyList = [NSMutableArray array];
 	int					keyWindow = 0, numberOfMonitors;	
 	NSArray				*screens = [self viewerScreens];
-	BOOL				fixedTiling = [[NSUserDefaults standardUserDefaults] boolForKey: @"FixedTiling"];
-	int					fixedTilingRows = [[NSUserDefaults standardUserDefaults] integerForKey: @"FixedTilingRows"];
-	int					fixedTilingColumns = [[NSUserDefaults standardUserDefaults] integerForKey: @"fixedTilingColumns"];
+//	BOOL				fixedTiling = [[NSUserDefaults standardUserDefaults] boolForKey: @"FixedTiling"];
+//	int					fixedTilingRows = [[NSUserDefaults standardUserDefaults] integerForKey: @"FixedTilingRows"];
+//	int					fixedTilingColumns = [[NSUserDefaults standardUserDefaults] integerForKey: @"fixedTilingColumns"];
 	
 //	fixedTiling = YES;
 //	fixedTilingColumns = 2;

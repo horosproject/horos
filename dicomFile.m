@@ -164,7 +164,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	if( str == nil) return nil;
 
 	char				c;
-	int					i, x, from, len = strlen( str), index;
+	int					i, from, len = strlen( str), index;
 	NSMutableString		*result = [NSMutableString string];
 	
 	for( i = 0, from = 0, index = 0; i < len; i++)
@@ -267,7 +267,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 
 + (BOOL) isTiffFile:(NSString *) file
 {
-	int success = NO, i;
+	int success = NO;
 	NSString	*extension = [[file pathExtension] lowercaseString];
 	
 	#ifndef STATIC_DICOM_LIB
@@ -291,7 +291,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 
 + (BOOL) isFVTiffFile:(NSString *) file
 {
-	int success = NO, i;
+	int success = NO;
 	NSString	*extension = [[file pathExtension] lowercaseString];
 
 	#ifndef STATIC_DICOM_LIB
@@ -317,7 +317,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	// For more information: http://cni.bwh.harvard.edu/
 	// For questions or suggestions regarding NIfTI integration in OsiriX, please contact zmahdavi@bwh.harvard.edu
 	
-	int success = NO, i;
+	int success = NO;
 	NSString	*extension = [[file pathExtension] lowercaseString];
 	struct nifti_1_header  *NIfTI;
 	
@@ -349,7 +349,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	// return [DCMObject isDICOM:[NSData dataWithContentsOfFile:file]]; <- This is EXTREMELY slow with large files like XA, CR: You have to read the ENTIRE file to test it.
 		
 	BOOL            readable = YES;
-	PapyShort       fileNb, theErr;
+	PapyShort       fileNb;
 
 	[PapyrusLock lock];
 	fileNb = Papy3FileOpen ( (char*) [file UTF8String], (PAPY_FILE) 0, TRUE, 0);
@@ -606,7 +606,6 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				// Try to identify a 2 digit number in the last part of the file.
 				char				strNo[ 5];
 				NSString			*tempString = [[filePath lastPathComponent] stringByDeletingPathExtension];
-				NSRange				range;
 				NSBitmapImageRep	*rep;
 				
 				#ifndef STATIC_DICOM_LIB
@@ -1017,8 +1016,6 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 -(short) getBioradPicFile
 {
 	FILE					*fp;
-	char					*ptr;
-	long					i;
 	struct BioradHeader		header;
 	
 	NSString	*extension = [[filePath pathExtension] lowercaseString];
@@ -1037,7 +1034,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			// GJ: 040609 giving better names
 			NSString	*fileNameStem = [[filePath lastPathComponent] stringByDeletingPathExtension];
 			// Biorad files _usually_ keep the channel number in the last two digits
-			NSString	*channelString = [fileNameStem substringFromIndex:[fileNameStem length]-2];
+			
 			NSString	*imageStem = [fileNameStem substringToIndex:[fileNameStem length]-2];
 			name = [[NSString alloc] initWithString: [filePath lastPathComponent]];
 			patientID = [[NSString alloc] initWithString:name];
@@ -1303,9 +1300,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			{
 				fseek(fp, TIF_CZ_LSMINFO + 8, SEEK_SET);
 				
-				int		DIMENSION_X, DIMENSION_Y, DIMENSION_Z, NUMBER_OF_CHANNELS, TIMESTACKSIZE, DATATYPE, DATATYPE2, SCANTYPE;
-				short   SPECTRALSCAN;
-				double   VOXELSIZE_X, VOXELSIZE_Y, VOXELSIZE_Z;
+				int		DIMENSION_X, DIMENSION_Y, DIMENSION_Z, NUMBER_OF_CHANNELS, TIMESTACKSIZE, DATATYPE, SCANTYPE;
 				
 				fread( &DIMENSION_X, 4, 1, fp);		DIMENSION_X = EndianS32_LtoN( DIMENSION_X);
 				fread( &DIMENSION_Y, 4, 1, fp);		DIMENSION_Y = EndianS32_LtoN( DIMENSION_Y);
@@ -1513,7 +1508,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	// For questions or suggestions regarding NIfTI integration in OsiriX, please contact zmahdavi@bwh.harvard.edu
 
 	struct nifti_1_header  *NIfTI;
-	NSData		*file;
+	
 	NSString	*extension = [[filePath pathExtension] lowercaseString];
 
 	if( (( [extension isEqualToString:@"hdr"] == YES) && 
@@ -1581,7 +1576,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 {
 	NSString	*returnString;
 	nifti_image *NIfTI;
-	NSString	*extension = [[file pathExtension] lowercaseString];
+	
 	NSXMLDocument *xmlDoc;
 	
 	NSXMLElement *rootElement = [[[NSXMLElement alloc] initWithName:@"NIfTIObject"] autorelease];
@@ -1670,7 +1665,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 {
 	int					itemType, returnValue = -1;
 	long				cardiacTime = -1;
-	short				x, theErr;
+	short				theErr;
 	PapyShort           fileNb, imageNb;
 	PapyULong           nbVal;
 	UValue_T            *val;
@@ -2729,8 +2724,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		/*	
 		if ([dcmObject attributeValueWithName:@"ProtocolName"])
 			[dicomElements setObject:[dcmObject attributeValueWithName:@"ProtocolName"] forKey:@"protocolName"];
-		*/	
-		NSString *instanceNumber;
+		*/
 //		NSLog(@"get Instance Number");
 		if (imageID = [dcmObject attributeValueWithName:@"InstanceNumber"])
 		{
@@ -3336,13 +3330,9 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			//NSLog(@"dicomElements : %@", dicomElements);
 			
 			// 
-			CFTreeRef attributesTree, child;
-			CFXMLNodeRef node;
-			CFStringRef nodeName, nodeValue;
+			CFTreeRef attributesTree;
 			attributesTree = CFTreeGetChildAtIndex(cfXMLTree, 0);
 			//NSLog(@"attributesTree: %@", attributesTree);
-
-			int i;
 			// NSMutableDictionary* xmlData = [[NSMutableDictionary alloc] initWithCapacity:14];
 			NSMutableDictionary* xmlData = [NSMutableDictionary dictionaryWithContentsOfFile:pathToXMLDescriptor];
 			

@@ -2380,6 +2380,8 @@ Papy3GroupFree (SElement **ioGroupP, int inDelSeq)
               case OW :
                 theElemP->value->ow = NULL;
                 break;
+			  default:
+				break;
             } /* switch */
       
             efree3 ((void **) &(theElemP->value));
@@ -2407,6 +2409,8 @@ Papy3GroupFree (SElement **ioGroupP, int inDelSeq)
           case OW :
             theElemP->value->ow = NULL;
             break;
+		  default:
+			break;
         } /* switch */
       
         efree3 ((void **) &(theElemP->value));
@@ -2530,6 +2534,8 @@ Papy3ModuleFree (SElement **ioModuleP, int inModuleID, int inDelSeq)
             case OW :
               theElemP->value->ow = NULL;
               break;
+			  default:
+				break;
           } /* switch */
       
           efree3 ((void **) &(theElemP->value));

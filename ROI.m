@@ -1109,8 +1109,6 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		ctxArray = [[NSMutableArray arrayWithCapacity: 10] retain];
 		textArray = [[NSMutableArray arrayWithCapacity: 10] retain];
 		
-		long i,j;
-		
 		selectable = YES;
 		locked = NO;
         type = tPlain;
@@ -1297,7 +1295,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 {
 	if( cstrOut[ 0] == 0) return;
 
-	float xx, yy, rotation = 0, ratio;
+	float xx, yy;
 	
 	line *= fontHeight;
 	
@@ -1577,7 +1575,6 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 
 - (NSMutableArray*) points
 {
-	long i;
 	
 	if(type == t2DPoint)
 	{
@@ -1668,8 +1665,6 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 - (long) clickInROI:(NSPoint) pt :(float) offsetx :(float) offsety :(float) scale :(BOOL) testDrawRect
 {
 	NSRect		arect;
-	long		i, j;
-	long		xmin, xmax, ymin, ymax;
 	long		imode = ROI_sleep;
 	
 	if( selectable == NO)
@@ -3180,8 +3175,6 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 	return val;
 }
 
-static int roundboxtype= 15;
-
 void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, float rad)
 {
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
@@ -3506,7 +3499,6 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	drawRect.size.height = line * fontHeight + 4;
 	drawRect.size.width = maxWidth + 8;
 	
-	BOOL moved;
 	//JJCP
 	if( type == tDynAngle || type == tAxis || type == tCPolygon || type == tOPolygon || type == tPencil)
 	{
@@ -3784,7 +3776,6 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0; line6[0] = 0;
 			if( self.isTextualDataDisplayed && prepareTextualData) {
 				NSPoint tPt = [self lowerRightPoint];
-				long	line = 0;
 				
 				if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name UTF8String]);
 				
@@ -3853,7 +3844,6 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			if( self.isTextualDataDisplayed && prepareTextualData)
 			{
 				NSPoint tPt = self.lowerRightPoint;
-				long	line = 0;
 				
 				if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name UTF8String]);
 				
@@ -3910,7 +3900,6 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			NSPoint tPt = self.lowerRightPoint;
 			tPt.x = (tPt.x - offsetx)*scaleValue  - rect.size.width/2;		tPt.y = (tPt.y - offsety)*scaleValue - rect.size.height/2;
 			
-			GLint matrixMode;
 			
 			glEnable (GL_TEXTURE_RECTANGLE_EXT);
 			
@@ -3950,7 +3939,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			
 			if( type == tArrow)
 			{
-				NSPoint a, b, c;
+				NSPoint a, b;
 				float   slide, adj, op, angle;
 				
 				a.x = ([[points objectAtIndex: 0] x]- offsetx) * scaleValue;
@@ -4225,7 +4214,6 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			if( self.isTextualDataDisplayed && prepareTextualData)
 			{
 				NSPoint tPt = self.lowerRightPoint;
-				long	line = 0;
 				
 				if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name UTF8String]);
 				if( type == tMesure && ROITEXTNAMEONLY == NO)
@@ -4476,7 +4464,6 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			if( self.isTextualDataDisplayed && prepareTextualData)
 			{
 				NSPoint tPt = self.lowerRightPoint;
-				long line = 0;
 				
 				if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name UTF8String]);
 				
@@ -4550,9 +4537,9 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			}
 			//TEXTO
 			line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0; line6[0] = 0;
-			if( self.isTextualDataDisplayed && prepareTextualData) {
+			if( self.isTextualDataDisplayed && prepareTextualData)
+			{
 				NSPoint tPt = self.lowerRightPoint;
-				long	line = 0;
 				float   length;
 				
 				if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name UTF8String]);
@@ -4769,11 +4756,10 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				}
 			}
 			glEnd();
-			if( [points count]>3 ) {
+			if( [points count]>3 )
+			{
 				for( long i=4; i<[points count]; i++ ) [points removeObjectAtIndex: i];
-			}			
-			BOOL plot=NO;
-			BOOL plot2=NO;
+			}
 			NSPoint a1,a2,b1,b2;
 			NSPoint a,b,c,d;
 			float angle=0;
@@ -4826,9 +4812,9 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			}
 			//TEXTO
 			line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0; line6[0] = 0;
-			if( self.isTextualDataDisplayed && prepareTextualData) {
+			if( self.isTextualDataDisplayed && prepareTextualData)
+			{
 					NSPoint tPt = self.lowerRightPoint;
-					long	line = 0;
 					float   length;
 					
 					if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name UTF8String]);
@@ -4925,9 +4911,9 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			if( type == tCPolygon || type == tPencil)
 			{
 				line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0; line6[0] = 0;
-				if( self.isTextualDataDisplayed && prepareTextualData) {
+				if( self.isTextualDataDisplayed && prepareTextualData)
+				{
 					NSPoint tPt = self.lowerRightPoint;
-					long	line = 0;
 					float   length;
 					
 					if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name UTF8String]);
@@ -4988,7 +4974,6 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0; line6[0] = 0;
 				if( self.isTextualDataDisplayed && prepareTextualData) {
 					NSPoint tPt = self.lowerRightPoint;
-					long	line = 0;
 					float   length;
 					
 					if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name UTF8String]);
@@ -5049,9 +5034,9 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				{
 					displayTextualData = YES;
 					line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0; line6[0] = 0;
-					if( self.isTextualDataDisplayed && prepareTextualData) {
+					if( self.isTextualDataDisplayed && prepareTextualData)
+					{
 						NSPoint tPt = self.lowerRightPoint;
-						long	line = 0;
 						float   angle;
 						
 						if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name UTF8String]);
@@ -5122,8 +5107,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 
 - (float*) dataValuesAsFloatPointer :(long*) no
 {
-	long				i;
-	float				*data = nil;
+	float *data = nil;
 	
 	switch(type)
 	{

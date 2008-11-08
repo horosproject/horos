@@ -42,7 +42,6 @@
 {
 	if( [note object] == [curROI pix])
 	{
-		long i;
 		
 		[self changeBin: binSlider];
 	}
@@ -52,7 +51,6 @@
 {
 	if( [note object] == curROI)
 	{
-		long i;
 		
 		if( data) free( data);
 		data = [curROI dataValuesAsFloatPointer: &dataSize];
