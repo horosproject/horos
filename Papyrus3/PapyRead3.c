@@ -2094,12 +2094,11 @@ PutBufferInElement3 (PapyShort inFileNb, unsigned char *ioBuffP, PapyULong inEle
   unsigned char theDoubleArr [8], theIncr;
   PapyLong		  theCurrFilePos, theInitialFilePos = inInitFilePos;
   PapyULong		  i, j, thePosInSeq, thePosInItem, theSeqSize, theSeqGrSize, theImLength;
-  PapyULong 		theULong = 0L;
+  PapyULong 		theULong = 0L, theTmpULong = 0;
   PapyUShort	 	theSeqGrNb, theElemNb, *theTmpUsP;
   char 			    *theCharWrkP; 
   int 			    theEnumSeqNb, theFirstTime, theIsUndefItemLen, pos;
   PapyShort		  theErr;
-
 
   /* extract the element depending on the value representation */
   switch (ioElemP->vr)
