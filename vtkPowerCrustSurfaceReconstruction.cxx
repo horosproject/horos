@@ -1384,14 +1384,7 @@ static neighbor p_neigh={0,0,0};	// EPRO added set to global
 void adapted_main() 
 {
     long    seed = 0, poleid=0;
-    short   shuffle = 1,
-        output = 0,   // TJH: set to 1 if you want output reported to stdout, 0 otherwise
-        hist = 0,
-        vol = 0,
-        ofn = 0,
-        ifn = 0,
-        bad = 0 /* for -B */
-        ;
+    short    bad = 0 /* for -B */ ;
     int /* TJH option, */num_poles=0;
     double  pole_angle;
     char    ofile[50] = "",

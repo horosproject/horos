@@ -63,7 +63,6 @@
 	if ([sender tag] == 0){
 		NS_DURING
 		NSLog(@"close Window");
-		NSString *studyInstanceUID = [_study valueForKey:@"studyInstanceUID"];
 		NSString *path;
 
 		//Save to INCOMING		

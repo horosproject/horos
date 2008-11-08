@@ -3827,7 +3827,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			}
 			glEnd();
 			
-			if((mode == ROI_selected | mode == ROI_selectedModify | mode == ROI_drawing) && highlightIfSelected) glColor4f (0.5f, 0.5f, 1.0f, opacity);
+			if((mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing) && highlightIfSelected) glColor4f (0.5f, 0.5f, 1.0f, opacity);
 			else glColor4f (color.red / 65535., color.green / 65535., color.blue / 65535., opacity);
 			//else glColor4f (1.0f, 0.0f, 0.0f, opacity);
 			
@@ -3883,7 +3883,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 		
 		case tText:
 		{
-			if((mode == ROI_selected | mode == ROI_selectedModify | mode == ROI_drawing) && highlightIfSelected)
+			if((mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing) && highlightIfSelected)
 			{
 				glColor3f (0.5f, 0.5f, 1.0f);
 				glPointSize( 2.0 * 3);
@@ -4334,7 +4334,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				glVertex2f(  (rect.origin.x+ rect.size.width - offsetx)*scaleValue, (rect.origin.y - offsety)*scaleValue);
 			glEnd();
 			
-			if((mode == ROI_selected | mode == ROI_selectedModify | mode == ROI_drawing) && highlightIfSelected)
+			if((mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing) && highlightIfSelected)
 			{
 				glColor3f (0.5f, 0.5f, 1.0f);
 				glPointSize( (1 + sqrt( thickness))*3.5);
@@ -4440,7 +4440,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			}
 			glEnd();
 			
-			if((mode == ROI_selected | mode == ROI_selectedModify | mode == ROI_drawing) && highlightIfSelected)
+			if((mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing) && highlightIfSelected)
 			{
 				glColor3f (0.5f, 0.5f, 1.0f);
 				glPointSize( (1 + sqrt( thickness))*3.5);

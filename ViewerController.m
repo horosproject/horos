@@ -8071,7 +8071,7 @@ static float oldsetww, oldsetwl;
 			{
 				theCell = [convMatrix cellAtRow:y column:x];
 				
-				if( x < 1 | x > 3 | y < 1 | y > 3)
+				if( x < 1 || x > 3 || y < 1 || y > 3)
 				{
 					[theCell setEnabled:NO];
 					[theCell setStringValue:@""];
@@ -8227,7 +8227,7 @@ static float oldsetww, oldsetwl;
 					{
 						NSCell *theCell = [convMatrix cellAtRow:y column:x];
 						
-						if( x < 1 | x > 3 | y < 1 | y > 3)
+						if( x < 1 || x > 3 || y < 1 || y > 3)
 						{
 							[theCell setEnabled:NO];
 							[theCell setStringValue:@""];
@@ -8282,7 +8282,7 @@ long				x, y;
 				{
 					NSCell *theCell = [convMatrix cellAtRow:y column:x];
 					
-					if( x < 1 | x > 3 | y < 1 | y > 3)
+					if( x < 1 || x > 3 || y < 1 || y > 3)
 					{
 					
 					}

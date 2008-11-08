@@ -86,9 +86,6 @@ END_EXTERN_C
 #define OFFIS_CONSOLE_APPLICATION "dcmqrscp"
 #endif
 
-static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
-  OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
-
 #define APPLICATIONTITLE    "DCMQRSCP"
 
 const char *opt_configFileName = "dcmqrscp.cfg";
@@ -160,7 +157,6 @@ void errmsg(const char* msg, ...)
 - (void)run
 {
 	OFCondition cond = EC_Normal;
-    OFCmdUnsignedInt overridePort = 0;
     OFCmdUnsignedInt overrideMaxPDU = 0;
     DcmQueryRetrieveOptions options;
 

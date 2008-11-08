@@ -954,7 +954,6 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 	
 	[[AppController sharedAppController] growlTitle: NSLocalizedString( @"DICOM Send", nil) description: [NSString stringWithFormat: NSLocalizedString(@"%d files to send.\rTo: %@ - %@", nil), [_filesToSend count], _calledAET, _hostname] name:@"result"];
 	
-	NSString *osiriXFolder = [[BrowserController currentBrowser] documentsDirectory];
 //	NSString *tempFolder = [NSString stringWithFormat:@"/tmp/DICOMSend_%@-%@", _callingAET, [[NSDate date] description]];
 	NSMutableArray *paths = [[NSMutableArray alloc] init];
 	

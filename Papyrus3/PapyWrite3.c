@@ -179,6 +179,7 @@ PutString (char *inCharP, enum EV_R_T inVR, unsigned char *ioBufP, PapyULong *io
     
   /* if the string has not an even length it must be padded ... */
   if ((theSize % 2) != 0)
+  {
     /* ...either with a NULL char ... */
     if (inVR == UI) 
     {
@@ -188,7 +189,8 @@ PutString (char *inCharP, enum EV_R_T inVR, unsigned char *ioBufP, PapyULong *io
     }
     /* ... or with a single SPACE */
     else theChP = strcat (theChP, " ");
-
+  }
+  
   /* put the char in the order of occurence (left to right) */
   theCP    = theChP;
   theDupP  = (PapyChar *) ioBufP;
@@ -1914,12 +1916,13 @@ Papy3GroupWrite (PapyShort inFileNb, SElement *ioGroupP, int inFreeGr)
   } /* if ...group 41 */ 
 
   if (inFreeGr == TRUE)
+  {
     if (ioGroupP->group == 0x0041)
     {
       if ((theErr = Papy3GroupFree (&ioGroupP, FALSE)) < 0) RETURN (theErr);
     }
     else if ((theErr = Papy3GroupFree (&ioGroupP, TRUE)) < 0) RETURN (theErr);
-
+  }
   return 0;
     
 } /* endof Papy3GroupWrite */

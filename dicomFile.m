@@ -1086,7 +1086,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			[dicomElements setObject:[NSNumber numberWithInt:[imageID intValue]] forKey:@"imageID"];
 			[dicomElements setObject:fileType forKey:@"fileType"];
 			
-			if( name != nil & studyID != nil & serieID != nil & imageID != nil & NoOfFrames>0)
+			if( name != nil && studyID != nil && serieID != nil && imageID != nil && NoOfFrames>0)
 			{
 				return 0;   // success
 			}
@@ -1490,7 +1490,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				[dicomElements setObject:[NSNumber numberWithInt:[imageID intValue]] forKey:@"imageID"];
 				[dicomElements setObject:fileType forKey:@"fileType"];
 				
-				if( name != nil & studyID != nil & serieID != nil & imageID != nil)
+				if( name != nil && studyID != nil && serieID != nil && imageID != nil)
 				{
 					return 0;   // success
 				}
@@ -1560,7 +1560,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			[dicomElements setObject:fileType forKey:@"fileType"];
 			
 			
-			if( name != nil & studyID != nil & serieID != nil & imageID != nil)
+			if( name != nil && studyID != nil && serieID != nil && imageID != nil)
 			{
 				return 0;   // success
 			}

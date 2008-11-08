@@ -397,7 +397,6 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 - (void)refreshSubtractedViews;
 {
 	//NSLog(@"refreshSubtractedViews");
-	NSAutoreleasePool *tempPool;
 	
 	DCMPix *curPix;
 	int width, height;
@@ -1180,9 +1179,7 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 	if( fVolumePtr)
 	{		
 		DCMPix *newAxialPix;
-		float *buffer, *resampledBuffer;
-		int curWidth, curHeight, byteCount;
-		float o[9];
+		int curWidth, curHeight;
 		
 		curWidth = [[pixList objectAtIndex: 0] pwidth];
 		curHeight = [[pixList objectAtIndex: 0] pheight];
@@ -1195,7 +1192,6 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 			pixList = pixListTemp;
 		}
 		
-		BOOL resample = (xShift%4 != 0) || (yShift%4 != 0);
 		
 		// Create a scheduler
 		id sched = [[StaticScheduler alloc] initForSchedulableObject: self];

@@ -526,8 +526,8 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::startFindRequest(
                 DcmQueryRetrieveDatabaseStatus  *status)
 {
     DB_SmallDcmElmt     elem ;
-    DB_ElementList      *plist = NULL;
-    DB_ElementList      *last = NULL;
+	
+	
     int                 MatchFound ;
     IdxRecord           idxRec ;
     DB_LEVEL            qLevel = PATIENT_LEVEL; // highest legal level for a query in the current model
@@ -1007,9 +1007,6 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::startMoveRequest(
         DcmQueryRetrieveDatabaseStatus  *status)
 {
 	DB_SmallDcmElmt     elem ;
-    DB_ElementList      *plist = NULL;
-    DB_ElementList      *last = NULL;
-    int                 MatchFound ;
     IdxRecord           idxRec ;
     DB_LEVEL            qLevel = PATIENT_LEVEL; // highest legal level for a query in the current model
     DB_LEVEL            lLevel = IMAGE_LEVEL;   // lowest legal level for a query in the current model
@@ -1251,7 +1248,6 @@ DcmQueryRetrieveOsiriXDatabaseHandle::DcmQueryRetrieveOsiriXDatabaseHandle(
 
 DcmQueryRetrieveOsiriXDatabaseHandle::~DcmQueryRetrieveOsiriXDatabaseHandle()
 {
-	int closeresult;
 
 	if (handle)
 	{

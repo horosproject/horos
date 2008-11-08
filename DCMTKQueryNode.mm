@@ -45,9 +45,6 @@
 
 #define OFFIS_CONSOLE_APPLICATION "findscu"
 
-static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
-  OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
-
 /* default application titles */
 #define APPLICATIONTITLE        "FINDSCU"
 #define PEERAPPLICATIONTITLE    "ANY-SCP"
@@ -846,7 +843,6 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	
 #ifdef WITH_OPENSSL
 
-    DcmTLSTransportLayer *tLayer = NULL;
     if (_secureConnection)
     {
 	}
@@ -1269,7 +1265,6 @@ NS_ENDHANDLER
     T_DIMSE_C_MoveRSP   rsp;
     DIC_US              msgId = assoc->nextMsgID++;
     DcmDataset          *rspIds = NULL;
-    const char          *sopClass;
     DcmDataset          *statusDetail = NULL;
     MyCallbackInfo      callbackData;
 		

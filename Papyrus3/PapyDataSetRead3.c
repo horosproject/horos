@@ -258,6 +258,7 @@ ExtractFileMetaInformation3 (PapyShort inFileNb)
   {
     /* DICOMDIR defined SOP Class UID */
     if (gIsPapyFile [inFileNb] == DICOMDIR)
+	{
       if (strcmp (theValP->a, "1.2.840.10008.1.3.10") == 0)
       {
         /* free group 2 as we do not need it anymore */
@@ -265,7 +266,8 @@ ExtractFileMetaInformation3 (PapyShort inFileNb)
         RETURN (theErr);
       } /* if */
       else RETURN (papNotPapyrusFile);
-
+	}
+	
     /* avoid a bug with the old version of PAPYRUS ( < 3.3) */
     theElength = strlen (theValP->a);
     if (theValP->a [theElength - 1] == '0'  && 

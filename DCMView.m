@@ -3271,7 +3271,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						NSPoint tempPt = [self convertPoint:[theEvent locationInWindow] fromView:nil];
 						tempPt = [self ConvertFromNSView2GL:tempPt];
 						
-						if( tempPt.x > cross.x - BS/scaleValue && tempPt.x < cross.x + BS/scaleValue && tempPt.y > cross.y - BS/scaleValue && tempPt.y < cross.y + BS/scaleValue == YES)	//&& [stringID isEqualToString:@"Original"] 
+						if( tempPt.x > cross.x - BS/scaleValue && tempPt.x < cross.x + BS/scaleValue && tempPt.y > cross.y - BS/scaleValue && tempPt.y < cross.y + BS/scaleValue)	//&& [stringID isEqualToString:@"Original"] 
 						{
 							if( [theEvent type] == NSLeftMouseDragged || [theEvent type] == NSLeftMouseDown) [[NSCursor closedHandCursor] set];
 							else [[NSCursor openHandCursor] set];
@@ -3526,7 +3526,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		{
 			NSPoint tempPt = [self convertPoint:eventLocation fromView: nil];
 			tempPt = [self ConvertFromNSView2GL:tempPt];
-			if( tempPt.x > cross.x - BS/scaleValue && tempPt.x < cross.x + BS/scaleValue && tempPt.y > cross.y - BS/scaleValue && tempPt.y < cross.y + BS/scaleValue == YES)	//&& [stringID isEqualToString:@"Original"] 
+			if( tempPt.x > cross.x - BS/scaleValue && tempPt.x < cross.x + BS/scaleValue && tempPt.y > cross.y - BS/scaleValue && tempPt.y < cross.y + BS/scaleValue)	//&& [stringID isEqualToString:@"Original"] 
 			{
 				crossMove = 1;
 			}

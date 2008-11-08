@@ -11128,7 +11128,7 @@ END_CREATE_ROIS:
 	{
 		if( newWW == 0 && newWL == 0 )
 		{
-			if( ww == 0 & wl == 0 )
+			if( ww == 0 && wl == 0 )
 			{
 				[self computePixMinPixMax];
 				ww = fullww;

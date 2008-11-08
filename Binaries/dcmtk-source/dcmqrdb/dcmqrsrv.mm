@@ -617,16 +617,6 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
 {
     OFCondition cond = EC_Normal;
     int i;
-    T_ASC_PresentationContextID movepid, findpid;
-    struct { const char *moveSyntax, *findSyntax; } queryRetrievePairs[] =
-    {
-    { UID_MOVEPatientRootQueryRetrieveInformationModel,
-      UID_FINDPatientRootQueryRetrieveInformationModel },
-    { UID_MOVEStudyRootQueryRetrieveInformationModel,
-      UID_FINDStudyRootQueryRetrieveInformationModel },
-    { UID_MOVEPatientStudyOnlyQueryRetrieveInformationModel,
-      UID_FINDPatientStudyOnlyQueryRetrieveInformationModel}
-    };
 
     DIC_AE calledAETitle;
     ASC_getAPTitles(assoc->params, NULL, calledAETitle, NULL);
@@ -1162,7 +1152,6 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 			T_ASC_PresentationContext pc;
 			
 			ASC_getPresentationContext(assoc->params, i, &pc);
-			const char* l_as = dcmFindNameOfUID(pc.abstractSyntax);
 			
 			if( strcmp( pc.abstractSyntax, UID_FINDPatientRootQueryRetrieveInformationModel) == 0 ||
 				strcmp( pc.abstractSyntax, UID_FINDStudyRootQueryRetrieveInformationModel) == 0 ||

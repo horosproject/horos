@@ -877,7 +877,6 @@ char currentDestinationMoveAET[ 60] = "";
 		strcat( fromTo, currentDestinationMoveAET);
 	}
 	
-	int i = 0;
 	
 	for( NSManagedObject *object in mArray)
 	{

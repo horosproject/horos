@@ -917,7 +917,7 @@ static NSHost *currentHost = nil;
 	
 	//hot key prefs
 	NSMutableDictionary *hotkeys = [NSMutableDictionary dictionary];
-	NSMutableDictionary *hotkeysModifiers = [NSMutableDictionary dictionary];
+	
 	NSString *stringValue;
 	NSArray *array = [NSArray arrayWithObjects:
 						@"~",	//DefaultWWWLHotKeyAction

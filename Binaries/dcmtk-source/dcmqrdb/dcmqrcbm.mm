@@ -147,7 +147,6 @@ static OFBool compressFileFormat(DcmFileFormat fileformat, const char *fname, ch
 	else if  (newXfer == EXS_JPEG2000LosslessOnly)
 	{
 		NSString *path = [NSString stringWithCString:fname encoding:[NSString defaultCStringEncoding]];
-		NSString *outpath = [NSString stringWithCString:outfname encoding:[NSString defaultCStringEncoding]];
 		
 		DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile:path decodingPixelData:YES];
 		
@@ -568,7 +567,7 @@ OFCondition DcmQueryRetrieveMoveContext::buildSubAssociation(T_DIMSE_C_MoveRQ *r
     OFCondition cond = EC_Normal;
     DIC_NODENAME dstHostName;
     DIC_NODENAME dstHostNamePlusPort;
-    int dstPortNumber, preferredSyntax;
+    int dstPortNumber;
     DIC_NODENAME localHostName;
     T_ASC_Parameters *params;
 
@@ -712,7 +711,6 @@ void DcmQueryRetrieveMoveContext::moveNextImage(DcmQueryRetrieveDatabaseStatus *
 	
 	E_TransferSyntax xferSyntax;
 	T_ASC_PresentationContextID presId;
-	const char *sopclass = 0L;
 	char outfname[ 4096];
 	
 	strcpy( outfname, "");
@@ -852,7 +850,6 @@ OFBool DcmQueryRetrieveMoveContext::mapMoveDestination(
 		serverSelection = [serversArray filteredArrayUsingPredicate:serverPredicate];
 	}
 	
-	NSNetService *netService = 0L;
 			
 	if ([serverSelection count] > 0) {
 		id server = [serverSelection objectAtIndex:0];

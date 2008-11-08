@@ -231,7 +231,7 @@ void draw_filled_circle(unsigned char *buf, int width, unsigned char val)
 	
 	unsigned char* binaryBuffer;
 	binaryBuffer = (unsigned char*)malloc(height*width);
-	int i, cptFF=0, cpt00=0;
+	int i;
 	for(i=0; i<height*width; i++)
 		binaryBuffer[i] = (buffer[i]>-1000)? 0xFF : 0x0;
 		

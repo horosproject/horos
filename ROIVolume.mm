@@ -245,7 +245,7 @@
 			{		
 			vtkPowerCrustSurfaceReconstruction *power = vtkPowerCrustSurfaceReconstruction::New();
 			power->SetInput(pointsDataSet);
-			BOOL displayMedialSurface = YES;
+			
 			polyDataNormals = vtkPolyDataNormals::New();
 			polyDataNormals->ConsistencyOn();
 			polyDataNormals->AutoOrientNormalsOn();

@@ -22,8 +22,7 @@ PURPOSE.
 	self = [super initWithWindowNibName:@"MSRGPanel"];
 	viewer = v;
 	viewersList=[list retain];
-	NSMutableArray*
-		BoundingROIStart=nil;
+	
 	BoundingROIEnd=nil;
 	
 	NSNotificationCenter *nc;
@@ -114,11 +113,11 @@ PURPOSE.
 	{
 		if ([[RadioMatrix selectedCell] tag]==0)
 		{
-			BOOL res=[self checkBoundingBoxROIPresentOnCurrentSlice];
+			[self checkBoundingBoxROIPresentOnCurrentSlice];
 		}
 		else
 		{
-			BOOL res=[self checkBoundingBoxROIPresentOnStack];
+			[self checkBoundingBoxROIPresentOnStack];
 		}
 	}
 }
@@ -148,7 +147,7 @@ PURPOSE.
 -(BOOL)checkBoundingBoxROIPresentOnStack
 {
 	int nbImages=[[viewer pixList] count];
-	int i,j;
+	int i;
 	NSMutableArray	*curRoiList;
 	BOOL isBoundingBox=NO;
 	for(i=0;i<nbImages;i++)
@@ -166,9 +165,9 @@ PURPOSE.
 				end=i;
 				BoundingROIEnd=currentROI;
 				isBoundingBox=YES;
-				NSRect rect=[currentROI rect];
-				NSPoint origin=rect.origin;
-				NSSize size=rect.size;
+				
+				
+				
 				[startEndText setStringValue:[NSString stringWithFormat:@"From slice: %d to %d",begin,end]];
 			}
 		}
@@ -201,9 +200,9 @@ PURPOSE.
 		{
 			isBoundingBox=YES;
 			BoundingROIStart=currentROI;
-			NSRect rect=[currentROI rect];
-			NSPoint origin=rect.origin;
-			NSSize size=rect.size;
+			
+			
+			
 			[startEndText setStringValue:[NSString stringWithFormat:@"Slice number:%d",i]];
 		}
 	}
@@ -293,7 +292,7 @@ PURPOSE.
 	 */
 	if ([AddMarkerFrameButton state]==NSOnState)
 	{
-		int i,j;
+		int i;
 		BOOL cleanStack=NO;
 		// Create a frameROI based on the bounding box if one ...
 		

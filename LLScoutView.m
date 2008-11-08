@@ -113,7 +113,6 @@ const float ArrowButtonBottomMargin = 7.0, ArrowButtonRightMargin = 6.0, ArrowBu
 	
 	float radius = ArrowButtonRightSide - centerX + 2.0;
 
-	int i;
 	// circle border
 	glColor3f(0.6f, 0.6f, 0.733f);
 	glPointSize((radius+1.0)*2.0);
@@ -169,7 +168,7 @@ const float ArrowButtonBottomMargin = 7.0, ArrowButtonRightMargin = 6.0, ArrowBu
 //NSLog(@"mouseDown");
 	NSPoint eventLocation = [event locationInWindow];
 	NSPoint tempPt = [self convertPoint:eventLocation fromView: nil];
-	NSRect viewFrame = [self frame];
+	
 	tempPt = [self ConvertFromNSView2GL:tempPt];
 	
 	tempPt.x = (tempPt.x - [[self curDCM] pwidth]/2.0) * scaleValue;
@@ -215,7 +214,7 @@ const float ArrowButtonBottomMargin = 7.0, ArrowButtonRightMargin = 6.0, ArrowBu
 //NSLog(@"mouseMoved");
 	NSPoint eventLocation = [event locationInWindow];
 	NSPoint tempPt = [self convertPoint:eventLocation fromView: nil];
-	NSRect viewFrame = [self frame];
+	
 	tempPt = [self ConvertFromNSView2GL:tempPt];
 	
 	tempPt.x = (tempPt.x - [[self curDCM] pwidth]/2.0) * scaleValue;
@@ -258,13 +257,13 @@ const float ArrowButtonBottomMargin = 7.0, ArrowButtonRightMargin = 6.0, ArrowBu
 	{
 		NSPoint eventLocation = [event locationInWindow];
 		NSPoint tempPt = [self convertPoint:eventLocation fromView: nil];
-		NSRect viewFrame = [self frame];
+		
 		tempPt = [self ConvertFromNSView2GL:tempPt];
 		
 		tempPt.x = (tempPt.x - [[self curDCM] pwidth]/2.0) * scaleValue;
 		tempPt.y = (tempPt.y - [[self curDCM] pheight]/2.0) * scaleValue;
 		
-		int top, bottom, tmp;
+		int top, bottom;
 		if(draggingTopLimit)
 		{
 			top = (tempPt.y/scaleValue)+[[self curDCM] pheight]/2.0;
