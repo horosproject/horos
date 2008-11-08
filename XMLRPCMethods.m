@@ -115,7 +115,6 @@
 	
     if ([method isEqual:@"POST"])
 	{
-		int i;
         NSError *error = nil;
         NSData *data = [(id)CFHTTPMessageCopyBody(request) autorelease];
         NSXMLDocument *doc = [[[NSXMLDocument alloc] initWithData:data options:NSXMLNodeOptionsNone error:&error] autorelease];

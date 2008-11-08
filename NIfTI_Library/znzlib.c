@@ -245,7 +245,6 @@ int znzgetc(znzFile file)
 int znzprintf(znzFile stream, const char *format, ...)
 {
   int retval=0;
-  char *tmpstr;
   va_list va;
   if (stream==NULL) { return 0; }
   va_start(va, format);

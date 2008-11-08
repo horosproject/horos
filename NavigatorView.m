@@ -1032,7 +1032,6 @@ static float deg2rad = 3.14159265358979/180.0;
 	NSClipView *clipView = [[self enclosingScrollView] contentView];
 	NSRect viewBounds = [clipView documentVisibleRect];
 	NSRect viewFrame = [clipView frame];
-	NSSize viewSize = viewFrame.size;
 	
 	int z = [[[self viewer] imageView] curImage];
 	int t = [[self viewer] curMovieIndex];

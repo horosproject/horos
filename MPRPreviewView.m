@@ -39,7 +39,6 @@
 			NSString *wwwlMenuString;
 		
 			
-			int index = 1;
 			switch (key){
 			
 				case DefaultWWWLHotKeyAction:	// default WW/WL

@@ -387,7 +387,7 @@
 		float d = maxX - minX;
 		
 		// construct path & locations
-		NSPoint p, pt;
+		NSPoint pt;
 		for (int j=0; j<[aCurve count]; j++)
 		{
 			pt = [[aCurve objectAtIndex:j] pointValue];
@@ -589,15 +589,6 @@
 - (int)selectedCurveIndex;
 {
 	return selectedCurveIndex;
-	int i, j;
-	int curveIndex = -1;
-	for (i=0; i<[curves count] && curveIndex<0; i++)
-	{
-		NSPoint controlPoint = [self controlPointForCurveAtIndex:i];
-		if((int) selectedPoint.x==(int) controlPoint.x && (float) selectedPoint.y==(float) controlPoint.y)
-			curveIndex = i;
-	}
-	return curveIndex;
 }
 
 - (void)selectCurveAtIndex:(int)i;
@@ -614,8 +605,8 @@
 	nothingChanged = NO;
 	clutChanged = YES;
 	[[undoManager prepareWithInvocationTarget:self] setColors:[NSMutableArray arrayWithArray:[pointColors objectAtIndex:curveIndex]] forCurveAtIndex:curveIndex];
-	int i;
-	for (i=0; i<[[curves objectAtIndex:curveIndex] count]; i++)
+	
+	for (NSUInteger i=0; i<[[curves objectAtIndex:curveIndex] count]; i++)
 	{
 		[[pointColors objectAtIndex:curveIndex] replaceObjectAtIndex:i withObject:color];
 	}
@@ -626,8 +617,8 @@
 	nothingChanged = NO;
 	clutChanged = YES;
 	[[undoManager prepareWithInvocationTarget:self] setColors:[NSMutableArray arrayWithArray:[pointColors objectAtIndex:curveIndex]] forCurveAtIndex:curveIndex];
-	int i;
-	for (i=0; i<[[curves objectAtIndex:curveIndex] count]; i++)
+	
+	for (NSUInteger i=0; i<[[curves objectAtIndex:curveIndex] count]; i++)
 	{
 		[[pointColors objectAtIndex:curveIndex] replaceObjectAtIndex:i withObject:[colors objectAtIndex:i]];
 	}
@@ -638,8 +629,8 @@
 	[[undoManager prepareWithInvocationTarget:self] shiftCurveAtIndex:curveIndex shift:-aShift];
 	NSMutableArray *theCurve = [curves objectAtIndex:curveIndex];
 	NSPoint pt;
-	int i;
-	for (i=0; i<[theCurve count]; i++)
+	
+	for (NSUInteger i=0; i<[theCurve count]; i++)
 	{
 		pt = [[theCurve objectAtIndex:i] pointValue];
 		pt.y += aShift;
@@ -916,10 +907,9 @@ NSRect rect = drawingRect;
 
 - (BOOL)selectControlPointAtPosition:(NSPoint)position;
 {
-	int i;
 	NSPoint controlPoint;
 	
-	for (i=0; i<[curves count]; i++)
+	for ( NSUInteger i=0; i<[curves count]; i++)
 	{
 		controlPoint = [self controlPointForCurveAtIndex:i];
 		if(position.x>=controlPoint.x-pointDiameter && position.y>=controlPoint.y-pointDiameter && position.x<=controlPoint.x+pointDiameter && position.y<=controlPoint.y+pointDiameter)
@@ -1436,7 +1426,7 @@ NSRect rect = drawingRect;
 
 - (IBAction)sendToBack:(id)sender;
 {
-	int i, j;
+	NSUInteger i, j;
 	int curveIndex = -1;
 
 	for (i=0; i<[curves count] && curveIndex<0; i++)

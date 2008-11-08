@@ -98,11 +98,10 @@
 - (id) init
 {
 	self = [super init];
-	if (self != nil) {
+	if (self != nil)
+	{
 		modelPoints = [[NSMutableArray alloc] initWithCapacity:0];
 		sensorPoints = [[NSMutableArray alloc] initWithCapacity:0];
-		double* adRot = NULL;
-		double* adTrans = NULL;
 	}
 	return self;
 }

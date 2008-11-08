@@ -87,7 +87,6 @@
 	NSMutableArray *centerlinePoints = [NSMutableArray array];
 
 	vtkDecimatePro *decimate = nil;
-	vtkDataSet*	output = nil;
 	
 	BOOL atEnd = NO;
 	
@@ -99,7 +98,6 @@
 	float voxelDepth = start.voxelDepth;
 
 	
-	vtkPolyData *medialSurface;
 
 	// Never reach 0.8. Usually around 0.5, but we can hope.
 	[_wait setString:NSLocalizedString(@"Decimating Polygons", nil)];
@@ -120,7 +118,7 @@
 
 
 	vtkIdType i;
-	int j, k, neighbors;			
+	int  neighbors;			
 	double x , y, z;
 	// get all cells around a point
 	data->BuildCells();
@@ -206,8 +204,6 @@
 	[stack  addObject:[NSNumber numberWithInt:startIndex]];
 	vtkIdType currentPoint;
 
-	
-	int count = 0;
 	int currentModelIndex = startIndex; 
 	OSIVoxel *currentModelPoint = startingPoint;
 	x = startingPoint.x; 

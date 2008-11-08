@@ -64,8 +64,7 @@
 	ITKSegmentation3D	*itk = [[ITKSegmentation3D alloc] initWithPix :[viewer2D pixList]  volume:[viewer2D volumePtr]   slice:-1  resampleData:NO];
 	NSArray *centerlinePoints = [[itk endoscopySegmentationForViewer:viewer2D seeds:seeds] copy];
 	[itk release];
-
-	OSIVoxel *firstPoint = [centerlinePoints objectAtIndex:0];
+	
 	count  = [centerlinePoints count] - 1;
 	//NSLog(@"Centerline count: %d", count);
 	NSMutableArray *steps = [NSMutableArray array];

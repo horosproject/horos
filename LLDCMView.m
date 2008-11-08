@@ -71,7 +71,6 @@
 //		NSSize  sizeView = [[self enclosingScrollView] contentSize];
 //		[self setFrameSize:sizeView];
 		
-		NSRect  sizeView = [self bounds];
 		if( sizeToFit || [[[self window] windowController] is2DViewer] == NO) {
 			[self scaleToFit];
 		}

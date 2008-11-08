@@ -237,7 +237,6 @@ extern NSString *documentsDirectory();
 	[tempHTML replaceOccurrencesOfString:@"%series_id%" withString:[QTExportHTMLSummary nonNilString:[NSString stringWithFormat:@"%@",[series valueForKey: @"id"]]] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 	[tempHTML replaceOccurrencesOfString:@"%series_images_count%" withString:[QTExportHTMLSummary nonNilString:[NSString stringWithFormat:@"%d", imagesCount]] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 
-	NSString *studyName = asciiString([series valueForKeyPath:@"study.studyName"]);
 	NSMutableString *fileName = [NSMutableString stringWithFormat:@"./%@_%@", asciiString([NSMutableString stringWithString:[series valueForKey: @"name"]]), [series valueForKey: @"id"]];
 	NSString *extension = (imagesCount>1)? @"mov": @"jpg";
 	[fileName appendFormat:@".%@",extension];
@@ -320,7 +319,6 @@ extern NSString *documentsDirectory();
 	NSFileManager *fileManager = [NSFileManager defaultManager];
 	NSString *htmlContent = [self fillSeriesTemplatesForSeries:series numberOfImages:imagesCount];
 	NSString *patientName = asciiString([NSMutableString stringWithString:[series valueForKeyPath: @"study.name"]]);
-	NSString *studyName = asciiString([NSMutableString stringWithString:[series valueForKeyPath: @"study.studyName"]]);
 	[fileManager createFileAtPath:[rootPath stringByAppendingFormat:@"/%@/%@", patientName, fileName] contents:[htmlContent dataUsingEncoding:NSUTF8StringEncoding] attributes:nil];
 }
 

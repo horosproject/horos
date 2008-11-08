@@ -69,7 +69,7 @@ extern NSRecursiveLock *PapyrusLock;
 
 + (BOOL) isNRRDFile:(NSString *) file
 {
-	int success = NO, i;
+	int success = NO;
 	NSString	*extension = [[file pathExtension] lowercaseString];
 	
 	if( [extension isEqualToString:@"nrrd"] == YES)
@@ -200,14 +200,9 @@ extern NSRecursiveLock *PapyrusLock;
 
 -(short) getDicomFileDCMTK
 {
-	int					itemType, i;
+	int					i;
 	long				cardiacTime = -1;
-	short				x, theErr;
-	PapyShort           fileNb, imageNb;
-	PapyULong           nbVal;
-	UValue_T            *val;
-	SElement			*theGroupP;
-	NSString			*converted = nil;
+
 	NSStringEncoding	encoding[ 10];
 	NSString *echoTime = nil;
 	const char *string = NULL;
@@ -220,7 +215,6 @@ extern NSRecursiveLock *PapyrusLock;
 	[PapyrusLock unlock];
 	if (status.good())
 	{
-		NSString *characterSet = nil;
 		for( i = 0; i < 10; i++) encoding[ i] = NSISOLatin1StringEncoding;
 		
 		DcmDataset *dataset = fileformat.getDataset();
@@ -560,7 +554,6 @@ extern NSRecursiveLock *PapyrusLock;
 		Float64		orientation[9];
 		Float64		origin[ 3];
 		Float64		location = 0;
-		UValue_T    *tmp;
 		int count = 0;
 		
 		origin[0] = origin[1] = origin[2] = 0;

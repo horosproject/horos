@@ -220,7 +220,6 @@ extern NSThread					*mainThread;
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
-	NSString* fileURL  = [dict objectForKey: @"fileURL"];
 	NSString* contentRange = [dict objectForKey: @"contentRange"];
 	NSString *outFile = [dict objectForKey: @"outFile"];
 	NSString *fileName = [dict objectForKey: @"fileName"];
@@ -435,8 +434,6 @@ extern NSThread					*mainThread;
 {
     CFHTTPMessageRef request = [mess request];
 	
-	NSDictionary *allHeaderFields = [(id)CFHTTPMessageCopyAllHeaderFields(request) autorelease];
-	
 	NSString *contentRange = [(id)CFHTTPMessageCopyHeaderFieldValue(request, (CFStringRef)@"Range") autorelease];
 	
 	NSString *userAgent = [(id)CFHTTPMessageCopyHeaderFieldValue(request, (CFStringRef)@"User-Agent") autorelease];
@@ -506,9 +503,6 @@ extern NSThread					*mainThread;
 	
     if ([method isEqual:@"GET"])
 	{
-		int i;
-		NSError *error = nil;
-		
 		NSString *url = [[(id)CFHTTPMessageCopyRequestURL(request) autorelease] description];
 		//NSLog(@"url : %@", url);
 				
@@ -1696,13 +1690,6 @@ extern NSThread					*mainThread;
 {
     NSError *error = nil;
 
-    // create the attributes dictionary for movieWithAttributes
-    NSMutableDictionary *attrs = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-                              (id)inFile,                    QTMovieFileNameAttribute,
-                              [NSNumber numberWithBool:NO],  QTMovieOpenAsyncOKAttribute,
-                              QTMovieApertureModeClean,      QTMovieApertureModeAttribute,
-                              [NSNumber numberWithBool:YES], QTMovieIsActiveAttribute,
-                              nil];
 
 	QTMovie *aMovie = nil;
 	

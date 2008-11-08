@@ -116,7 +116,6 @@ ExtractJPEGlossy12 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelS
   PapyUChar			*theWrkChP; 		/* ptr to the image */
   PapyUShort			*theWrkCh16P; 		/* ptr to the image 16 bits */
   PapyUShort			*theBuffer16P;
-  PapyUChar			*theBuffer8P;
    
   while( alreadyUncompressing == TRUE)
   {

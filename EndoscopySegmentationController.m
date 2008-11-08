@@ -170,7 +170,7 @@
 	[_viewer endoscopyViewer:self];
 	EndoscopyViewer *endoscopyViewer = [_viewer openEndoscopyViewer];
 	[[endoscopyViewer vrController] flyThruControllerInit:self];
-	OSIVoxel *firstPoint = [centerlinePoints objectAtIndex:0];
+	
 	int count  = [centerlinePoints count] - 1;
 	for (int i = 0; i < count; i++) {
 		OSIVoxel *firstPoint = [centerlinePoints objectAtIndex:i];

@@ -114,7 +114,6 @@ ExtractJPEGlossy8 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelSt
   PapyShort			theErr = 0;
   PapyULong			i, thePos, theLimit;
   int 				theRowStride;	 	/* physical row width in output buffer */
-  int				theLoop;
   PapyUChar			*theWrkChP; 		/* ptr to the image */
   PapyUChar			*theWrkCh8P; 		/* ptr to the image 8 bits */
   PapyUShort			*theWrkCh16P; 		/* ptr to the image 16 bits */
@@ -307,9 +306,6 @@ void compressJPEG (int inQuality, char* filename, unsigned char* inImageBuffP, i
 	JSAMPROW			theRowPointer [1];
 	int					theRowStride;
 	unsigned int		j;
-	PapyULong			theDataCount;
-	PapyUChar			*theJPEGBuffP;
-	PapyUShort			*theImBuffP;
 	FILE				*outfile;
 
 	/* Step 1: allocate and initialize JPEG compression object */

@@ -145,8 +145,6 @@ static ThreeDPositionController *nav = nil;
 {
 	float move[ 3] = { 0, 0, 0};
 	
-	DCMPix *d = [[viewerController pixList] objectAtIndex: 0];
-	
 	switch( [matrixMode selectedTag])
 	{
 		case 0:

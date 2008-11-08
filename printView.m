@@ -106,9 +106,6 @@
 	
 	NSMutableDictionary *attribs = [NSMutableDictionary dictionary];  
 	[attribs setObject:[NSFont systemFontOfSize:10] forKey:NSFontAttributeName];
-	NSSize pageNumberSize = [string2draw sizeWithAttributes:attribs];
-	
-	float bottomMargin = [[[NSPrintOperation currentOperation] printInfo] bottomMargin]; //90
 	//
 	NSPoint where2draw = NSMakePoint(20, borderSize.height - (headerHeight+15));
 	[string2draw drawAtPoint: where2draw withAttributes:attribs]; //only invoke this method when an NSView object has focus

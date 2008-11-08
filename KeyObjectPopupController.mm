@@ -100,7 +100,6 @@
 		NSArray *references = [[_reports objectAtIndex:index] referencedObjects];
 
 		NSPredicate *predicate = [NSPredicate predicateWithValue:NO];
-		NSError *error = nil;
 		NSArray *imagesArray = nil;
 		NSEnumerator *enumerator = [references objectEnumerator];
 		id reference;

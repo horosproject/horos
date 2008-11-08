@@ -21,7 +21,6 @@
 	CGImageSourceRef source = CGImageSourceCreateWithURL((CFURLRef)url, NULL);
     if (source)
     {
-        NSDictionary* props = (NSDictionary*) CGImageSourceCopyPropertiesAtIndex(source, 0, NULL);
 		
 		NSString *type = nil;
 		
@@ -35,8 +34,6 @@
 
 			[newProps setObject: exifDict forKey: (NSString*) kCGImagePropertyExifDictionary];
 			CGImageDestinationAddImageFromSource(dest, source, 0, (CFDictionaryRef) newProps);
-			
-			BOOL status = CGImageDestinationFinalize(dest);
 			
 			CFRelease( dest);
 		}
