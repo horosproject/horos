@@ -928,7 +928,6 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 	if (viewer2D && [[viewer2D pixList] count] > 1)
 	{
 		DCMPix *firstDCMPix = [[viewer2D pixList] objectAtIndex: 0];
-		DCMPix *secondDCMPix = [[viewer2D pixList] objectAtIndex: 1];
 		// compute 2D Coordinates
 		double dc[3], sc[3];
 		dc[0] = x;
@@ -937,7 +936,6 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 		[view convert3Dto2Dpoint:dc :sc];
 		
 		// find the slice where we want to introduce the point
-		float sliceInterval = [secondDCMPix sliceLocation] - [firstDCMPix sliceLocation];
 		long sliceNumber = sc[2]+0.5;
 		
 		if (sliceNumber>=0 && sliceNumber<[[viewer2D pixList] count])
@@ -1081,9 +1079,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 - (void)createContextualMenu
 {
 	NSMenu *contextual =  [[NSMenu alloc] initWithTitle:NSLocalizedString(@"Tools", nil)];
-	NSMenu *submenu =  [[NSMenu alloc] initWithTitle:NSLocalizedString(@"Mode", nil)];
 	NSMenuItem *item, *subItem;
-	int i = 0;
 	
 	//tools
 	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Tools", nil) action: nil  keyEquivalent:@""];

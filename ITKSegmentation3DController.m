@@ -412,8 +412,8 @@ enum algorithmTypes { intervalSegmentationType, thresholdSegmentationType, neigh
 						
 						if( [[pixelsSet cellWithTag:1] state] == NSOnState)	// FILL THE IMAGE WITH THE VALUE
 						{
-							long	i, x, y, z;
-							float	*dstImage, *srcImage, value = [[pixelsValue cellWithTag:1] floatValue];
+							long	i, x;
+							float	*dstImage, value = [[pixelsValue cellWithTag:1] floatValue];
 							
 							for( i = 0; i < [[resultsViewer pixList] count]; i++)
 							{
@@ -496,7 +496,7 @@ enum algorithmTypes { intervalSegmentationType, thresholdSegmentationType, neigh
 - (IBAction) changeAlgorithm: (id) sender
 {
 	[self setNumberOfParameters: [[parameters objectAtIndex:[[algorithmPopup selectedItem] tag]] count]];
-	int i;
+
 	int algorithmType = [[algorithmPopup selectedItem] tag];
 	NSArray *titles= [parameters objectAtIndex:algorithmType];
 	NSArray *defaultValues = [defaultsParameters objectAtIndex:algorithmType];

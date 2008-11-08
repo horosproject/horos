@@ -24,7 +24,6 @@ extern		BrowserController  *browserWindow;
 
 - (NSString*) posixStylePathFromHfsPath:(NSString*) s isDirectory:(Boolean)isDirectory
 {
-	OSErr myErr;
 	CFStringRef hfsStyle;
 	CFURLRef url = CFURLCreateWithFileSystemPath(kCFAllocatorDefault, (CFStringRef) s, kCFURLHFSPathStyle, isDirectory);
 

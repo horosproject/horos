@@ -79,7 +79,6 @@ float	iY, aY;
 {
 	if( [note object] == [curROI pix])
 	{
-		long i;
 		
 		[plot setNeedsDisplay: YES];
 	}

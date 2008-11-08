@@ -481,7 +481,7 @@ NSString * documentsDirectory();
 	
 	if( result == NSFileHandlingPanelOKButton)
 	{
-		int				maxImage, myState, curSample = 0;
+		int				maxImage, curSample = 0;
 		QTTime			curTime;
 		QTMovie			*mMovie = nil;
 		BOOL			aborted = NO;

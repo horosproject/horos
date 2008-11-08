@@ -310,7 +310,7 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 
 	DCMPix		*firstObject = [pixList objectAtIndex:0];
 	float		*emptyData, *curData;
-	double		length, remainingL;
+	double		length;
 	long long	size;
 	long		newX, newY, i, x, y, z, xInc, noOfPoints, imageCounter = 0;
 	NSData		*newData;
@@ -367,7 +367,6 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 				double	xPos, yPos, xPosA, yPosA, xPosB, yPosB;
 				double	sideX, sideY, startX, startY;
 				double	angle, perAngle;
-				long	pos, imNo;
 				
 				// joris
 				length = 0;
@@ -392,8 +391,7 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 				noOfPoints = length;
 				for( x = 0; x < noOfPoints; x++)
 				{
-					double	X1, X2, Y1, Y2, sideXPer;
-					long	xInt, yInt, width, height;
+					double	sideXPer;
 					
 					if( xInc % perInterval == 0)
 					{
@@ -432,7 +430,7 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 						for( z = 0; z < newX; z++)
 						{
 							double	rightLeftX, rightLeftY;
-							double	X1, X2, Y1, Y2;
+							
 							long	xInt, yInt, width, height;
 							
 							if( sideX >= 0)
@@ -615,7 +613,7 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 	DCMPix		*firstObject = [pixList objectAtIndex:0];
 	float		*emptyData, *curData;
 	double		length;
-	long		size, newX, newY, i, j, x, y, z, xInc, noOfPoints, thick;
+	long		size, newX, newY, i, j, x, y, xInc, noOfPoints, thick;
 	NSData		*newData;
 	//NSArray		*pts = [selectedROI points];
 	NSArray		*pts = [selectedROI splinePoints];
@@ -699,7 +697,7 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 				double xPos, yPos;
 				double sideX, sideY, startX, startY;
 				double angle, perAngle;
-				long pos, width, height;
+				long  width, height;
 				long maxY;
 				
 				length = 0;
@@ -787,7 +785,6 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 				for(x=0; x<noOfPoints; x++)
 				{
 					double rightLeftX, rightLeftY;
-					double X1, X2, Y1, Y2;
 					long xInt, yInt;
 					//long width, height;
 					
@@ -1048,7 +1045,6 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 
 - (id) initWithObjects:(NSMutableArray*) pix :(NSArray*) files :(NSData*) vData :(ROI*) roi :(ViewerController*) roiV :(long) t forAxial:(BOOL)axial forCoronal:(BOOL)coronal forSagittal:(BOOL)saggital
 {
-	long i;
 	
 	self = [super init];
 	

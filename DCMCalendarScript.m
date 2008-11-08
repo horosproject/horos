@@ -26,7 +26,7 @@
 		NSString *rootScript = [[[NSString alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"iCal script" ofType:@"applescript"]] autorelease];
 		NSString *script = [NSString stringWithFormat:@"set the source_calendar to \"%@\"\n%@", calendar, rootScript];
 		compiledScript = [[NSAppleScript alloc] initWithSource:script];
-		NSDictionary *errorInfo;
+		
 		
 		//Important:  You should access NSAppleScript only from the main thread.
 		[compiledScript performSelectorOnMainThread:@selector(compileAndReturnError:) withObject:nil waitUntilDone: YES];

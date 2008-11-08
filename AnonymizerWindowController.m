@@ -27,7 +27,6 @@
 	NSEnumerator		*enumeratorValue = [[[firstColumnValues cells] arrayByAddingObjectsFromArray: [secondColumnValues cells]] objectEnumerator];
 	
 	NSCell				*cellCheck, *cellValue;
-	DCMAttributeTag		*attrTag;
 	
 	while (cellCheck = [enumeratorCheck nextObject])
 	{
@@ -327,7 +326,6 @@
 	
 	[producedFiles removeAllObjects];
 	
-	long i;
 	sPanel		= [NSOpenPanel openPanel];
 	//[sPanel setAccessoryView: optionsView];
 	[sPanel setAccessoryView:accessoryView];
@@ -339,7 +337,6 @@
 	[sPanel setPrompt: NSLocalizedString(@"Anonymize",nil)];
 	[sPanel setTitle: NSLocalizedString(@"Anonymize",nil)];
 	
-	BOOL isDir;
 	NSString *path;
 	if ([sPanel runModalForDirectory:nil file:NSLocalizedString(@"DICOM Export Folder", nil)] == NSFileHandlingPanelOKButton)
 	{

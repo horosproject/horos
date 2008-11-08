@@ -31,7 +31,6 @@ static 	NSMutableDictionary *associatedScreen = nil;
 
 - (void) checkPosition
 {
-	NSRect frame = [[self window] frame];
 	
 	if( [[NSScreen screens] count] > screen)
 	{

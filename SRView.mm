@@ -441,8 +441,6 @@ typedef struct _xyzArray
 	if( [sender tag])
 	{
 		NSString			*path, *newpath;
-		FSRef				fsref;
-		FSSpec				spec, newspec;
 		QuicktimeExport		*mov;
 		
 		[self setViewSizeToMatrix3DExport];
@@ -482,7 +480,6 @@ typedef struct _xyzArray
 
 - (IBAction) exportQuicktime :(id) sender
 {
-	long i;
 	
     [NSApp beginSheet: export3DWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:(void*) nil];
 }
@@ -532,8 +529,7 @@ typedef struct _xyzArray
 		// CURRENT image only
 		if( [[dcmExportMode selectedCell] tag] == 0)
 		{
-			long	width, height, spp, bpp, err;
-			float	cwl, cww;
+			long	width, height, spp, bpp;
 			float	o[ 9];
 			
 			if( exportDCM == nil) exportDCM = [[DICOMExport alloc] init];
@@ -593,7 +589,7 @@ typedef struct _xyzArray
 				NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
 				
 			//	[self renderImageWithBestQuality: bestRenderingMode waitDialog: NO];
-				long	width, height, spp, bpp, err;
+				long	width, height, spp, bpp;
 				
 				unsigned char *dataPtr = [self getRawPixels:&width :&height :&spp :&bpp :YES :YES];
 				
@@ -608,7 +604,7 @@ typedef struct _xyzArray
 //					if( aCamera->GetParallelProjection())
 //						[dcmSequence setPixelSpacing: [self getResolution] :[self getResolution]];
 					
-					NSString *f = [dcmSequence writeDCMFile: nil];
+					[dcmSequence writeDCMFile: nil];
 					
 					free( dataPtr);
 				}
@@ -922,7 +918,6 @@ typedef struct _xyzArray
 
 - (void) computeOrientationText
 {
-	long			i, j;
 	char			string[ 10];
 	float			vectors[ 9];
 	
@@ -1000,7 +995,7 @@ typedef struct _xyzArray
 	else{
 		int shiftDown;
 		int controlDown;
-		NSPoint mouseLocPre;
+		
 		NSPoint mouseLoc = [self convertPoint: [theEvent locationInWindow] fromView:nil];		
 		switch (_tool) {
 			case tRotate:
@@ -1103,7 +1098,6 @@ typedef struct _xyzArray
 
 - (void)mouseDown:(NSEvent *)theEvent
 {
-    BOOL		keepOn = YES;
     NSPoint		mouseLoc, mouseLocStart, mouseLocPre;
 	short		tool;
 	
@@ -1196,8 +1190,6 @@ typedef struct _xyzArray
 	{
 		if( [theEvent clickCount] > 1 && (tool != t3Dpoint))
 		{
-			long	pix[ 3];
-			float	pos[ 3], value;
 			
 			vtkWorldPointPicker *picker = vtkWorldPointPicker::New();
 			
@@ -1615,7 +1607,6 @@ typedef struct _xyzArray
 -(void) axView:(id) sender
 {
 	float distance = aCamera->GetDistance();
-	float pp = aCamera->GetParallelScale();
 
 	aCamera->SetFocalPoint (0, 0, 0);
 	aCamera->SetPosition (0, 0, -1);
@@ -1638,7 +1629,6 @@ typedef struct _xyzArray
 -(void) saView:(id) sender
 {
 	float distance = aCamera->GetDistance();
-	float pp = aCamera->GetParallelScale();
 
 	aCamera->SetFocalPoint (0, 0, 0);
 	aCamera->SetPosition (1, 0, 0);
@@ -1662,7 +1652,6 @@ typedef struct _xyzArray
 -(void) saViewOpposite:(id) sender
 {
 	float distance = aCamera->GetDistance();
-	float pp = aCamera->GetParallelScale();
 
 	aCamera->SetFocalPoint (0, 0, 0);
 	aCamera->SetPosition (-1, 0, 0);
@@ -1711,7 +1700,6 @@ typedef struct _xyzArray
 
 -(void) setBlendingPixSource:(ViewerController*) bC
 {
-    long i;
 	
 	blendingController = bC;
 	
@@ -3029,13 +3017,12 @@ typedef struct _xyzArray
 - (void) load3DPointsDefaultProperties
 {	
 	//color
-	float r, g, b, a;
 	point3DDefaultColorRed = [[NSUserDefaults standardUserDefaults] floatForKey:@"points3DcolorRed"];
 	point3DDefaultColorGreen = [[NSUserDefaults standardUserDefaults] floatForKey:@"points3DcolorGreen"];
 	point3DDefaultColorBlue = [[NSUserDefaults standardUserDefaults] floatForKey:@"points3DcolorBlue"];
 	point3DDefaultColorAlpha = [[NSUserDefaults standardUserDefaults] floatForKey:@"points3DcolorAlpha"];
 	
-	if(a==0.0)
+	if(point3DDefaultColorAlpha==0.0)
 	{
 		point3DDefaultColorRed = 1.0;
 		point3DDefaultColorGreen = 0.0;

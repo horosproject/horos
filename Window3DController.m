@@ -30,7 +30,6 @@ extern NSString * documentsDirectory();
 - (BOOL)validateMenuItem:(NSMenuItem *)item
 {
 	BOOL valid = NO;
-	int i;
 	
 	if( [item action] == @selector( ApplyCLUT:))
 	{
@@ -392,8 +391,6 @@ static float oldsetww, oldsetwl;
 
 - (IBAction) clutAction: (id) sender
 {
-	long				i;
-	NSMutableArray		*array;
 
 //	[view setCLUT:matrix :[[sizeMatrix selectedCell] tag] :[matrixNorm intValue]];
 //	[imageView setIndex:[imageView curImage]];
@@ -465,9 +462,6 @@ static float oldsetww, oldsetwl;
 	else if ([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSAlternateKeyMask)
     {
 		NSDictionary		*aCLUT;
-		NSArray				*array;
-		long				i;
-		unsigned char		red[256], green[256], blue[256];
 		
 		[self ApplyCLUTString: [sender title]];
 		
@@ -675,8 +669,6 @@ static float oldsetww, oldsetwl;
     {
 		NSMutableDictionary		*opacityDict		= [[[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"OPACITY"] mutableCopy] autorelease];
 		NSMutableDictionary		*aOpacityFilter		= [NSMutableDictionary dictionary];
-		NSArray					*points;
-		long					i;
 		
 		[aOpacityFilter setObject: [[[OpacityView getPoints] copy] autorelease] forKey: @"Points"];
 		[opacityDict setObject: aOpacityFilter forKey: [OpacityName stringValue]];

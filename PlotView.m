@@ -95,10 +95,8 @@
 - (void)drawRect:(NSRect)aRect
 {
 	NSRect  boundsRect=[self bounds];
-	int		index,i;
+	int		index;
 	float	minValue, maxValue;
-	
-	float   maxX = (aRect.origin.x+aRect.size.width)/256.;
 	
 	if( dataArray == nil) return;
 	if( dataSize < 2) return;

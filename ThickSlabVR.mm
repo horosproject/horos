@@ -34,7 +34,6 @@ extern short Altivec;
 
 -(id)initWithFrame:(NSRect)frame
 {
-	long i;
 	
     if ( self = [super initWithFrame:frame] )
     {

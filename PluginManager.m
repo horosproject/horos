@@ -310,9 +310,7 @@ static NSMenu					*fusionPluginsMenu = nil;
 
 + (void) discoverPlugins
 {
-	BOOL		conflict = NO;
     NSString	*appSupport = @"Library/Application Support/OsiriX/";
-    long		i;
 	NSString	*appPath = [[NSBundle mainBundle] builtInPlugInsPath];
     NSString	*userPath = [NSHomeDirectory() stringByAppendingPathComponent:appSupport];
     NSString	*sysPath = [@"/" stringByAppendingPathComponent:appSupport];
@@ -386,8 +384,6 @@ static NSMenu					*fusionPluginsMenu = nil;
 						}
 						else if ( [filterClass instancesRespondToSelector:@selector(filterImage:)] )
 						{
-							NSString	*pluginName = [[plugin infoDictionary] objectForKey:@"CFBundleExecutable"];
-							NSString	*pluginType = [[plugin infoDictionary] objectForKey:@"pluginType"];
 							NSArray		*menuTitles = [[plugin infoDictionary] objectForKey:@"MenuTitles"];
 							
 							if( menuTitles)
@@ -725,7 +721,7 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
     NSString *path;
 	
     NSMutableArray *plugins = [NSMutableArray array];
-	Class filterClass;
+	
     for(path in paths)
 	{
 //		BOOL active = ([path isEqualToString:userActivePath] || [path isEqualToString:sysActivePath]);

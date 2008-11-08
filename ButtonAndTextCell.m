@@ -73,7 +73,6 @@
 }
 
 - (void)drawWithFrame:(NSRect)cellFrame inView:(NSView *)controlView{
-	NSRect buttonFrame = NSMakeRect(cellFrame.origin.x, cellFrame.origin.y, cellFrame.size.width - 130 , cellFrame.size.height);
 	NSRect textFrame = NSMakeRect(cellFrame.origin.x + cellFrame.size.width - 120, cellFrame.origin.y, 120 , cellFrame.size.height);
 	NSLog(@"drawWithFrame:");
 	//[super drawWithFrame:buttonFrame inView:controlView];

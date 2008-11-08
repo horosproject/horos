@@ -162,7 +162,7 @@ extern OSStatus SetupAuthorization(void)
 			
 			[aPane willSelect];
 			/* Add view to window */
-			float y, x, newX, newY, deltaH, deltaW;
+			float y, newY, deltaH;
 			NSRect frameRect = [[self window] frame];
 			NSRect contentFrame = [[self window] contentRectForFrameRect:frameRect];
 			NSRect newRect = NSMakeRect(contentFrame.origin.x, contentFrame.origin.y, [[aPane mainView] frame].size.width, [[aPane mainView] frame].size.height + 30);
@@ -370,8 +370,6 @@ extern OSStatus SetupAuthorization(void)
 	
 	
 	[[self window] setContentMinSize: NSMakeSize(0 , 0)];
-	
-	NSRect	finalFrame = [[self window] frame];
 	
 	[[self window] setTitle:NSLocalizedString( @"Preferences", nil)];
 	[[self window] setRepresentedFilename: @""];

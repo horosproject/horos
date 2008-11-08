@@ -660,8 +660,6 @@ NSString* asciiString (NSString* name);
 - (void)addDICOMDIRUsingDCMTK
 {
 	NSString *burnFolder = [self folderToBurn];
-	NSString *dicomdirPath = [NSString stringWithFormat:@"%@/DICOMDIR",burnFolder];
-	NSString *subFolder = [NSString stringWithFormat:@"%@/IMAGES",burnFolder];
 	
 	NSTask              *theTask;
 	//NSMutableArray *theArguments = [NSMutableArray arrayWithObjects:@"+r", @"-W", @"-Nxc", @"*", nil];

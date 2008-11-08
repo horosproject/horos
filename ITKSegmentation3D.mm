@@ -323,8 +323,6 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 		rPtrZ = rPtr;
 		for( i = 0; i < [pixList count]; i++)
 		{
-			int buffHeight = [[pixList objectAtIndex: i] pheight];
-			int buffWidth = [[pixList objectAtIndex: i] pwidth];
 			
 			ROI *theNewROI = [[ROI alloc]	initWithTexture:rPtrZ
 											textWidth:w
@@ -609,7 +607,7 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 	// PRODUCE A NEW SERIES
 	if( destViewer)
 	{
-		long	i, x, y, z;
+		long	i, x, y;
 		float	*dstImage, *srcImage;
 		long	startSlice, endSlice;
 		
@@ -774,7 +772,7 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 	// ROI type = tPolygon
 	else
 	{
-		long	i, x, y, z;
+		long	i, x;
 		long	startSlice, endSlice;
 		OutputImageType::Pointer frameImage = caster->GetOutput();
 		
@@ -917,7 +915,6 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 					long			ii;
 					ROI				*newROI = [srcViewer newROI: tCPolygon];
 					NSMutableArray  *points = [newROI points];
-					float	resolX, resolY;
 					
 					for( ii = 0; ii < output->GetNumberOfLines(); ii+=2)
 					{
@@ -996,8 +993,8 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 	// Setup 
 	//#define UseApproximateSignedDistanceMapImageFilter
 	DCMPix *curPix = [[srcViewer imageView] curDCM];
-	long minSize = 2;
-	float x,y,z;
+	
+	
 	long width = (int)[curPix pwidth];
 	long height = (int)[curPix pheight];
 	long depth = (int)[[srcViewer pixList] count];
@@ -1009,11 +1006,6 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 	}
 		
 	NSLog(@"width %d height %d depth: %d", width,height,depth);
-	long w = width - minSize;
-	long h = height - minSize;
-	long d = depth - minSize;
-	float maxDistance = 3;
-	long sliceSize = width * height; 
 	const unsigned int Dimension = 3; 
 
 		// Float Pixel Type
@@ -1160,8 +1152,7 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 	isoContour->Delete();
 	
 	// Create Point2D ROIs for now. Need to create pipeline to Flythrough.
-	NSMutableArray  *roiSeriesList = [srcViewer roiList];
-	NSMutableArray  *roiImageList;
+	
 	for (OSIVoxel *point3D in centerlinePoints) {
 	/*
 			NSPoint point = NSMakePoint(point3D.x * resampleX, point3D.y * resampleY);

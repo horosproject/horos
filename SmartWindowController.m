@@ -81,7 +81,6 @@
 		//resize Autoresizing not working.  Need to manually seet window height and origin.
 	int count = [subviews  count];
 	NSRect windowFrame = [[self window] frame];
-	NSRect boxFrame = [filterBox frame];
 	float oldWindowHeight = windowFrame.size.height;
 	float newWindowHeight = windowHeight  + subViewHeight * count;
 	float y = windowFrame.origin.y - (newWindowHeight - oldWindowHeight);

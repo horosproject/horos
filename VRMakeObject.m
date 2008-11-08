@@ -540,7 +540,6 @@ bail:
 
 OSErr VRObject_CreateQTVRMovieVers2x0 (FSSpec *theObjMovSpec, FSSpec *theSrcMovSpec, long maxFrames)
 {
-	Handle							myHandle = NULL;
 	SampleDescriptionHandle			mySampleDesc = NULL;
 	QTVRSampleDescriptionHandle		myQTVRDesc = NULL;
 	QTAtomContainer					myVRWorld;
@@ -831,7 +830,6 @@ OSErr VRObject_ImportVideoTrack (Movie theSrcMovie, Movie theDstMovie, Track *th
 	Media			myDstMedia = NULL;
 	Fixed			myWidth, myHeight;
 	OSType			myType;
-	OSErr			myErr = noErr;
 	
 	ClearMoviesStickyError();
 	

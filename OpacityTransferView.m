@@ -136,7 +136,7 @@
 
 + (NSData*) tableWith4096Entries: (NSArray*) pointsArray
 {
-	int		i, x, cur, last = 0;
+	int		x, cur, last = 0;
 	float	entries256[ 4096];
 	NSPoint prevPoint;
 	
@@ -169,7 +169,7 @@
 
 + (NSData*) tableWith256Entries: (NSArray*) pointsArray
 {
-	int		i, x, cur, last = 0;
+	int		x, cur, last = 0;
 	float	entries256[ 256];
 	NSPoint prevPoint;
 	
@@ -225,7 +225,7 @@
     [[NSColor whiteColor] set];
     NSRectFill([self bounds]);   // Equiv to [[NSBezierPath bezierPathWithRect:[self bounds]] fill]
 
-	long		i, x, cur, last = 0;
+	long		i;
 	NSRect		crect;
 	NSPoint		curPoint;
 	
