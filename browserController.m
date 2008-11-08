@@ -108,11 +108,11 @@ extern NSRecursiveLock *PapyrusLock;
 
 long DATABASEINDEX;
 
-static void
-sig_alrm(int signo)
-{
-    /* nothing to do, just return to wake up the pause */
-}
+//static void
+//sig_alrm(int signo)
+//{
+//    /* nothing to do, just return to wake up the pause */
+//}
 
 NSString *asciiString( NSString* name )
 {
@@ -2650,7 +2650,7 @@ static NSArray*	statesArray = nil;
 	[managedObjectContext release];
 	managedObjectContext = nil;
 	[self setFixedDocumentsDirectory];
-	self.managedObjectContext;
+	[self managedObjectContext];
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"recomputePatientUID"] )
 	{

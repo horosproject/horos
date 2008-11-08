@@ -150,7 +150,7 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 -(void) UpdateOpacityMenu: (NSNotification*) note
 {
     //*** Build the menu
-    short       i;
+    NSUInteger  i;
     NSArray     *keys;
     NSArray     *sortedKeys;
 
@@ -178,7 +178,7 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 -(void) UpdateWLWWMenu: (NSNotification*) note
 {
     //*** Build the menu
-    short       i;
+    NSUInteger i;
     NSArray     *keys;
     NSArray     *sortedKeys;
 
@@ -261,7 +261,7 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 -(void) UpdateConvolutionMenu: (NSNotification*) note
 {
     //*** Build the menu
-    short       i;
+    NSUInteger   i;
     NSArray     *keys;
     NSArray     *sortedKeys;
     
@@ -809,7 +809,6 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 {
 	NSString		*path = [documentsDirectory() stringByAppendingPathComponent:STATEDATABASE];
 	BOOL			isDir = YES;
-	long			i;
 	
 	if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && isDir)
 	{
@@ -930,7 +929,6 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 	BOOL		addition			= [[object objectAtIndex: 5] intValue];
 	float		newVal				= [[object objectAtIndex: 6] intValue];
 	
-	NSArray		*array;
 	int			index;
 		
 	switch( stackOrientation)
@@ -1057,7 +1055,6 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 	// Release Undo system
 	for( i = 0; i < maxMovieIndex; i++)
 	{
-		DCMPix  *firstObject = [pixList[ i] objectAtIndex:0];
 		
 		if( undodata[ i])
 		{
@@ -1154,7 +1151,6 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 - (BOOL)validateMenuItem:(NSMenuItem *)item
 {
 	BOOL valid = NO;
-	int i;
 	
 	if( [item action] == @selector( setDefaultTool:))
 	{
@@ -1419,7 +1415,6 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 {
 	NSDictionary		*aOpacity;
 	NSArray				*array;
-	long				i;
 	
 	if( str == nil) return;
 	
@@ -2191,10 +2186,8 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 	if (viewer2D)
 	{
 		DCMPix *firstDCMPix = [[viewer2D pixList] objectAtIndex: 0];
-		DCMPix *secondDCMPix = [[viewer2D pixList] objectAtIndex: 1];
 		
 		// find the slice where we want to add the point
-		float sliceInterval = [secondDCMPix sliceLocation] - [firstDCMPix sliceLocation];
 		long sliceNumber = (long) (z+0.5);
 		
 		if (sliceNumber>=0 && sliceNumber<[[viewer2D pixList] count])
@@ -2591,7 +2584,7 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 	{	
 		[roiVolumes[m] removeAllObjects];
 
-		for(int i=0; i<[roiNames count]; i++)
+		for(NSUInteger i=0; i<[roiNames count]; i++)
 		{
 			NSArray *roisWithCurrentName = [viewer2D roisWithName:[roiNames objectAtIndex:i] forMovieIndex:m];
 			ROIVolume *volume = [[[ROIVolume alloc] init] autorelease];
@@ -2638,13 +2631,13 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 {
 	for(int m=0; m<maxMovieIndex; m++)
 	{	
-		for(int i=0; i<[roiVolumes[m] count]; i++)
+		for(NSUInteger i=0; i<[roiVolumes[m] count]; i++)
 		{			
 			[self hideROIVolume:[roiVolumes[m] objectAtIndex:i]];
 		}
 	}
 
-	for(int i=0; i<[roiVolumes[curMovieIndex] count]; i++)
+	for(NSUInteger i=0; i<[roiVolumes[curMovieIndex] count]; i++)
 	{
 //		BOOL visible = NO;
 //		for(int n=0; n<maxMovieIndex; n++)
@@ -2663,9 +2656,8 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 	//NSLog(@"-[roiVolumes count] : %d", [roiVolumes count]);
 	BOOL	found = NO;
 	NSArray *winList = [NSApp windows];
-	long i;
 	
-	for(i = 0; i < [winList count]; i++)
+	for(NSUInteger i = 0; i < [winList count]; i++)
 	{
 		if([[[[winList objectAtIndex:i] windowController] windowNibName] isEqualToString:@"ROIVolumeManager"])
 		{
@@ -2690,7 +2682,7 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 	{
 		BOOL found = NO;
 		int index;
-		for(int i=0; i<[roiVolumes[m] count] && !found; i++)
+		for(NSUInteger i=0; i<[roiVolumes[m] count] && !found; i++)
 		{
 			found = changedROIVolume==[roiVolumes[m] objectAtIndex:i];
 			index = i;
@@ -2817,16 +2809,15 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 
 	NSMutableArray *paths = [NSMutableArray arrayWithObjects:path, bundlePath, nil];
 	
-	int i, j;
 	NSMutableArray *clutArray = [NSMutableArray array];
 	BOOL isDir;
 		
-	for (j=0; j<[paths count]; j++)
+	for (NSUInteger j=0; j<[paths count]; j++)
 	{
 		if([[NSFileManager defaultManager] fileExistsAtPath:[paths objectAtIndex:j] isDirectory:&isDir] && isDir)
 		{
 			NSArray *content = [[NSFileManager defaultManager] directoryContentsAtPath:[paths objectAtIndex:j]];
-			for (i=0; i<[content count]; i++)
+			for (NSUInteger i=0; i<[content count]; i++)
 			{
 				if( [[content objectAtIndex:i] length] > 0)
 				{
@@ -2852,7 +2843,7 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 
 	item = [[clutPopup menu] insertItemWithTitle:@"16-bit CLUTs" action:@selector(noAction:) keyEquivalent:@"" atIndex:[[clutPopup menu] numberOfItems]-2];
 
-	for (i=0; i<[clutArray count]; i++)
+	for (NSUInteger i=0; i<[clutArray count]; i++)
 	{
 		item = [[clutPopup menu] insertItemWithTitle:[clutArray objectAtIndex:i] action:@selector(loadAdvancedCLUTOpacity:) keyEquivalent:@"" atIndex:[[clutPopup menu] numberOfItems]-2];
 		if([view isRGB])
@@ -2995,10 +2986,10 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 		if([filters count]>1) [convolutionFiltersString appendString:NSLocalizedString(@"Filters", nil)];
 		else [convolutionFiltersString appendString:NSLocalizedString(@"Filter", nil)];
 		[convolutionFiltersString appendString:@": "];
-		int i;
+		
 		if([filters count]>0)
 		{
-			for(i=0; i<[filters count]-1; i++)
+			for(NSUInteger i=0; i<[filters count]-1; i++)
 			{
 				[convolutionFiltersString appendString:[filters objectAtIndex:i]];
 				[convolutionFiltersString appendString:@", "];
@@ -3028,7 +3019,7 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 		[settingsGroupPopUpButton removeAllItems];
 		
 		NSArray *groups = [self find3DSettingsGroups];
-		for(i=0; i<[groups count]; i++)
+		for(NSUInteger i=0; i<[groups count]; i++)
 		{
 			[settingsGroupPopUpButton addItemWithTitle:[groups objectAtIndex:i]];
 		}
@@ -3129,16 +3120,15 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 	NSMutableArray *settingsGroups = [NSMutableArray array];
 	
 	BOOL isDir = YES;
-	int j;
 	
-	for (j=0; j<[paths count]; j++)
+	for (NSUInteger j=0; j<[paths count]; j++)
 	{
 		NSString *path = [paths objectAtIndex:j];
 		if([[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && isDir)
 		{
 			NSArray *settingsFiles = [[NSFileManager defaultManager] subpathsAtPath:path];
-			int i;
-			for(i=0; i<[settingsFiles count]; i++)
+			
+			for(NSUInteger i=0; i<[settingsFiles count]; i++)
 			{
 				NSString *filePath = [NSString stringWithFormat:@"%@%@", path, [settingsFiles objectAtIndex:i]];
 				if([[filePath pathExtension] isEqualToString:@"plist"])
@@ -3226,8 +3216,8 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 	
 	[presetsGroupPopUpButton removeAllItems];
 	NSArray *groups = [self find3DSettingsGroups];
-	int i;
-	for(i=0; i<[groups count]; i++)
+	
+	for(NSUInteger i=0; i<[groups count]; i++)
 		[presetsGroupPopUpButton addItemWithTitle:[groups objectAtIndex:i]];
 
 	if([presetsGroupPopUpButton numberOfItems]<1)
@@ -3451,8 +3441,6 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 
 - (void)load3DSettingsDictionary:(NSDictionary*)preset forPreview:(VRPresetPreview*)preview;
 {
-	long i;
-	
 	// CLUT
 	NSString *aClutName = [preset objectForKey:@"CLUT"];
 	BOOL advancedCLUT = [[preset objectForKey:@"advancedCLUT"] boolValue];
@@ -3466,19 +3454,19 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 		if(aCLUT)
 		{
 			array = [aCLUT objectForKey:@"Red"];
-			for( i = 0; i < 256; i++)
+			for( NSUInteger i = 0; i < 256; i++)
 			{
 				red[i] = [[array objectAtIndex: i] longValue];
 			}
 			
 			array = [aCLUT objectForKey:@"Green"];
-			for( i = 0; i < 256; i++)
+			for( NSUInteger i = 0; i < 256; i++)
 			{
 				green[i] = [[array objectAtIndex: i] longValue];
 			}
 			
 			array = [aCLUT objectForKey:@"Blue"];
-			for( i = 0; i < 256; i++)
+			for( NSUInteger i = 0; i < 256; i++)
 			{
 				blue[i] = [[array objectAtIndex: i] longValue];
 			}
@@ -3577,7 +3565,7 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 		NSString *shadingName = [preset objectForKey:@"shading"];
 		NSArray *shadings = [[NSUserDefaults standardUserDefaults] arrayForKey:@"shadingsPresets"];
 		NSDictionary *selectedShading = nil;
-		for (i=0; i<[shadings count]; i++)
+		for (NSUInteger i=0; i<[shadings count]; i++)
 		{
 			if([[[shadings objectAtIndex:i] objectForKey:@"name"] isEqualToString:shadingName])
 			{
@@ -3746,10 +3734,10 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 	if([filters count]>1) [convolutionFiltersString appendString:NSLocalizedString(@"Filters", nil)];
 	else [convolutionFiltersString appendString:NSLocalizedString(@"Filter", nil)];
 	[convolutionFiltersString appendString:@": "];
-	int i;
+	
 	if([filters count]>0)
 	{
-		for(i=0; i<[filters count]-1; i++)
+		for(NSUInteger i=0; i<[filters count]-1; i++)
 		{
 			[convolutionFiltersString appendString:[filters objectAtIndex:i]];
 			[convolutionFiltersString appendString:@", "];

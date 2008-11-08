@@ -503,7 +503,7 @@ static const char *GetPrivateIP()
 	
 		NSIndexSet* indices = [outlineView selectedRowIndexes];
 		
-		for( int i = [indices firstIndex]; i != [indices lastIndex]+1; i++)
+		for( NSUInteger i = [indices firstIndex]; i != [indices lastIndex]+1; i++)
 		{
 			if( [indices containsIndex: i])
 			{
@@ -530,7 +530,7 @@ static const char *GetPrivateIP()
 	
 	[[[BrowserController currentBrowser] managedObjectContext] lock];
 	
-	for( int i = [indices firstIndex]; i != [indices lastIndex]+1; i++)
+	for( NSUInteger i = [indices firstIndex]; i != [indices lastIndex]+1; i++)
 	{
 		if( [indices containsIndex: i])
 		{
@@ -1034,10 +1034,9 @@ static const char *GetPrivateIP()
 
 - (BOOL) array: uidArray containsObject: (NSString*) uid
 {
-	int x;
 	BOOL result = NO;
 	
-	for( x = 0 ; x < [uidArray count]; x++)
+	for( NSUInteger x = 0 ; x < [uidArray count]; x++)
 	{
 		if( [[uidArray objectAtIndex: x] isEqualToString: uid]) return YES;
 	}
@@ -1052,7 +1051,7 @@ static const char *GetPrivateIP()
 	NSString			*port;
 	NSNetService		*netService = nil;
 	id					aServer;
-	int					i, selectedServer;
+	int					selectedServer;
 	BOOL				atLeastOneSource = NO, noChecked = YES, error = NO;
 	
 	[autoQueryLock lock];
@@ -1063,7 +1062,7 @@ static const char *GetPrivateIP()
 	[[NSUserDefaults standardUserDefaults] setBool: showError forKey: @"showErrorsIfQueryFailed"];
 	
 	noChecked = YES;
-	for( i = 0; i < [sourcesArray count]; i++)
+	for( NSUInteger i = 0; i < [sourcesArray count]; i++)
 	{
 		if( [[[sourcesArray objectAtIndex: i] valueForKey:@"activated"] boolValue] == YES)
 		{
@@ -1082,7 +1081,7 @@ static const char *GetPrivateIP()
 	
 	NSMutableArray *tempResultArray = [NSMutableArray array];
 	
-	for( i = 0; i < [sourcesArray count]; i++)
+	for( NSUInteger i = 0; i < [sourcesArray count]; i++)
 	{
 		if( [[[sourcesArray objectAtIndex: i] valueForKey:@"activated"] boolValue] == YES || selectedServer == i)
 		{
@@ -1247,11 +1246,10 @@ static const char *GetPrivateIP()
 					}
 					else
 					{
-						int			x;
 						NSArray		*curResult = [queryManager queries];
 						NSArray		*uidArray = [tempResultArray valueForKey: @"uid"];
 						
-						for( x = 0 ; x < [curResult count] ; x++)
+						for( NSUInteger x = 0 ; x < [curResult count] ; x++)
 						{
 							if( [self array: uidArray containsObject: [[curResult objectAtIndex: x] valueForKey:@"uid"]] == NO)
 							{
@@ -1634,9 +1632,7 @@ static const char *GetPrivateIP()
 	
 	if( [selectedRowIndexes count])
 	{
-		NSInteger		index;
-		
-		for (index = [selectedRowIndexes firstIndex]; 1+[selectedRowIndexes lastIndex] != index; ++index)
+		for (NSUInteger index = [selectedRowIndexes firstIndex]; 1+[selectedRowIndexes lastIndex] != index; ++index)
 		{
 		   if ([selectedRowIndexes containsIndex:index])
 				[selectedItems addObject: [outlineView itemAtRow:index]];
@@ -1696,7 +1692,7 @@ static const char *GetPrivateIP()
 	
 	[dictionary setObject:moveDataHandler  forKey:@"receivedDataHandler"];
 	
-	for( int i = 0; i < [array count] ; i++)
+	for( NSUInteger i = 0; i < [array count] ; i++)
 	{
 		DCMTKQueryNode	*object = [array objectAtIndex: i];
 		
@@ -2042,8 +2038,7 @@ static const char *GetPrivateIP()
 	
 	[self refreshSources];
 	
-	int i;
-	for( i = 0; i < [sourcesArray count]; i++)
+	for( NSUInteger i = 0; i < [sourcesArray count]; i++)
 	{
 		if( [[[sourcesArray objectAtIndex: i] valueForKey:@"activated"] boolValue] == YES)
 		{
@@ -2067,8 +2062,7 @@ static const char *GetPrivateIP()
 {
 	[self willChangeValueForKey:@"sourcesArray"];
 	
-	int i;
-	for( i = 0; i < [sourcesArray count]; i++)
+	for( NSUInteger i = 0; i < [sourcesArray count]; i++)
 	{
 		NSMutableDictionary		*source = [NSMutableDictionary dictionaryWithDictionary: [sourcesArray objectAtIndex: i]];
 		
@@ -2083,9 +2077,7 @@ static const char *GetPrivateIP()
 
 - (NSDictionary*) findCorrespondingServer: (NSDictionary*) savedServer inServers : (NSArray*) servers
 {
-	int i;
-	
-	for( i = 0 ; i < [servers count]; i++)
+	for( NSUInteger i = 0 ; i < [servers count]; i++)
 	{
 		if( [[savedServer objectForKey:@"AETitle"] isEqualToString: [[servers objectAtIndex:i] objectForKey:@"AETitle"]] && 
 			[[savedServer objectForKey:@"AddressAndPort"] isEqualToString: [NSString stringWithFormat:@"%@:%@", [[servers objectAtIndex:i] valueForKey:@"Address"], [[servers objectAtIndex:i] valueForKey:@"Port"]]])
@@ -2108,8 +2100,7 @@ static const char *GetPrivateIP()
 	 
 	[sourcesArray removeAllObjects];
 	
-	int i;
-	for( i = 0; i < [savedArray count]; i++)
+	for( NSUInteger i = 0; i < [savedArray count]; i++)
 	{
 		NSDictionary *server = [self findCorrespondingServer: [savedArray objectAtIndex:i] inServers: serversArray];
 		
@@ -2121,7 +2112,7 @@ static const char *GetPrivateIP()
 		}
 	}
 	
-	for( i = 0; i < [serversArray count]; i++)
+	for( NSUInteger i = 0; i < [serversArray count]; i++)
 	{
 		NSDictionary *server = [serversArray objectAtIndex: i];
 		
@@ -2149,7 +2140,7 @@ static const char *GetPrivateIP()
 
 	[[sendToPopup menu] addItem: [NSMenuItem separatorItem]];
 	
-	for( i = 0; i < [serversArray count]; i++)
+	for( NSUInteger i = 0; i < [serversArray count]; i++)
 	{
 		NSDictionary *server = [serversArray objectAtIndex: i];
 		
@@ -2351,14 +2342,13 @@ static const char *GetPrivateIP()
 
 - (IBAction)verify:(id)sender
 {
-	int				i;
 	int				status, selectedRow = [sourcesTable selectedRow];
 	
 	[progressIndicator startAnimation:nil];
 	
 	[self willChangeValueForKey:@"sourcesArray"];
 	
-	for( i = 0 ; i < [sourcesArray count]; i++)
+	for( NSUInteger i = 0 ; i < [sourcesArray count]; i++)
 	{
 		[sourcesTable selectRow: i byExtendingSelection: NO];
 		[sourcesTable scrollRowToVisible: i];

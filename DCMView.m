@@ -7405,7 +7405,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 //	NSOpenGLContext * c = [self openGLContext];
 	
 	[c makeCurrentContext];
-	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+//	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	
 //	GLuint framebuffer, renderbuffer;
 //	GLenum status;

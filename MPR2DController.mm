@@ -1153,7 +1153,7 @@ extern NSString * documentsDirectory();
 				[[view finalView] getWLWW:&cwl :&cww];
 				[dcmSequence setDefaultWWWL: (long) cww : (long) cwl];
 				
-				NSString *f = [dcmSequence writeDCMFile: nil];
+				[dcmSequence writeDCMFile: nil];
 				free( data);
 			}
 			

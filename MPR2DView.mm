@@ -245,7 +245,6 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 
 -(id)initWithFrame:(NSRect)frame
 {
-	long i;
 	
     if ( self = [super initWithFrame:frame] )
     {
@@ -680,9 +679,6 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 
 -(void) setBlendingFactor:(float) a
 {
-	long	i;
-	float   val, ii;
-	double  *RGBA;
 	
 	blendingFactor = a;
 	
@@ -691,8 +687,6 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 
 -(void) setBlendingCLUT:( unsigned char*) r : (unsigned char*) g : (unsigned char*) b
 {
-	long	i;
-	double  *RGBA;
 	
 //	if( r)
 //	{
@@ -739,7 +733,6 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 
 -(void) setCLUT:( unsigned char*) r : (unsigned char*) g : (unsigned char*) b
 {
-	long i;
 
 //	if( r)
 //	{
@@ -812,7 +805,6 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 
 -(void) setBlendingPixSource:(ViewerController*) bC
 {
-    long i;
 	
 	blendingController = bC;
 	
@@ -1017,7 +1009,6 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 -(void) set3DStateDictionary:(NSDictionary*) dict
 {
 	float		temp[ 3];
-	NSArray		*tempArray;
 	DCMView		*oView = [[[self window] windowController] originalView];
 	
 	if( dict)
@@ -1202,7 +1193,6 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 
 -(NSMutableDictionary*) get3DStateDictionary
 {
-	float		oX, oY, oZ;
 	float		angle, angle2;
 	float		temp[3];
 	float		xval, yval;
@@ -1515,7 +1505,6 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 	int				uu = [numb intValue];
 	
 	// angle or original view
-	float angle = [oView angle];
 	// angle of perpendicular view
 	float angle2 = [perpendicularView angle];
 	
@@ -1528,7 +1517,6 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 		int				imExtent[ 6];
 		float			swl, sww;
 		long			width, height;
-		NSPoint			ttO, ttOffset;
 		
 		tempIm->GetWholeExtent( imExtent);
 		//NSLog( @"%d %d %d", imExtent[ 1], imExtent[ 3], imExtent[ 5]);
@@ -1680,7 +1668,6 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 			// COMPUTE NEW COSINES TABLE FOR ORIENTATION INFORMATIONS (H, F, L, R, ...)
 			{
 				float newOrientation[ 9], newOrigin[ 3];
-				float rotangle;
 				long  i;
 
 				for( i=0;i<9;i++) newOrientation[i] = vectors[i];
@@ -1905,7 +1892,6 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 	BOOL			highRes, noPerOffset = NO;
 	float			thickSlabLowRes = 1.0;
 	long			uu;
-	vtkImageData	*tempIm;
 //	float			*imResult = nil, *imResultBlending = nil, *fullVolume = nil, *fullVolumeBlending = nil;
 	
 	if( thickSlabMode == 0) thickSlabCount = 1;
@@ -1915,7 +1901,6 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 	
 	if([[[note userInfo] objectForKey:@"action"] isEqualToString:@"dragged"] == YES && ([[NSApp currentEvent] modifierFlags] & NSShiftKeyMask) == NO && interval > MINIMUMINTERVAL)
 	{
-		long previousCount;
 		
 		rotate->SetInterpolationModeToNearestNeighbor();
 		rotatePerpendicular->SetInterpolationModeToNearestNeighbor();
@@ -2009,7 +1994,7 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 //				[oView setCrossCoordinates: oZ / space[0] : -(-sin((angle)*deg2rad)*-oY + cos((angle)*deg2rad)*oX)/space[1] :NO];
 //				else
 		
-			float valtemp, x, y;
+			float x, y;
 			
 			[oView cross3D : &x :&y :&oZ];
 			
@@ -2116,7 +2101,6 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 		
 		{
 			float newOrientation[ 9], newOrigin[ 3];
-			float rotangle;
 			long  i;
 
 			for( i=0;i<9;i++) newOrientation[i] = vectors[i];

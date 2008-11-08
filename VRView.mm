@@ -2048,7 +2048,6 @@ public:
 	if( aCamera->GetParallelProjection())
 	{
 		double			point1[ 4] = { 0, 0, 0, 0}, point2[ 4] = { 1, 0, 0, 0};
-		char			text[ 256];
 		
 		aRenderer->SetDisplayPoint( point1);
 		aRenderer->DisplayToWorld();
@@ -2138,7 +2137,6 @@ public:
 
 - (void) computeOrientationText
 {
-	long			i, j;
 	char			string[ 10];
 	float			vectors[ 9];
 	
@@ -2525,7 +2523,6 @@ public:
 				if( fabs(mouseLoc.x - _previousLoc.x) > 5. || fabs(mouseLoc.y - _previousLoc.y) > 5.)
 				{
 					double	*pp;
-					long	i;
 					
 					aRenderer->SetDisplayPoint( mouseLoc.x, mouseLoc.y, 0);
 					aRenderer->DisplayToWorld();
@@ -2756,7 +2753,6 @@ public:
 	}
 	snStopped = YES;
 	
-    BOOL		keepOn = YES;
     NSPoint		mouseLoc, mouseLocPre;
 	short		tool;
 	
@@ -2867,7 +2863,6 @@ public:
 		else if( tool == t3DCut)
 		{
 			double	*pp;
-			long	i;
 			
 			// Click point 3D to 2D
 			
@@ -3069,7 +3064,7 @@ public:
 			// clicked point (2D coordinate)
 			_mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView: nil];
 			
-			long pix[ 3], i;
+			long pix[ 3];
 			float pos[ 3], value;
 			float minValue = [[NSUserDefaults standardUserDefaults] floatForKey: @"VRGrowingRegionValue"]-[[NSUserDefaults standardUserDefaults] floatForKey: @"VRGrowingRegionInterval"]/3.;
 			
@@ -3272,7 +3267,7 @@ public:
 	for( tt = 0; tt < roiPts->GetNumberOfPoints(); tt++)
 	{
 		float	point1[ 3], point2[ 3];
-		long	x, y, z;
+		long	x;
 		
 		double	point2D[ 3], *pp;
 		
@@ -3860,7 +3855,6 @@ public:
 {
 	if( blendingController == nil) return;
 
-    double newValues[2];
     
 	blendingWl = iwl;
 	blendingWw = iww;
@@ -4651,9 +4645,7 @@ public:
 
 -(void) movieChangeSource:(float*) volumeData showWait :(BOOL) showWait
 {
-	double a[ 6];
 	WaitRendering	*www;
-	BOOL validBox;
 	
 	if( showWait)
 	{
@@ -5746,7 +5738,7 @@ double pos[3], focal[3], vUp[3],  fpVector[3];
 	// window level
 	if(!advancedCLUT)[self setWLWW:[cam wl] :[cam ww]];
 	// cropping box
-	double min[3], max[3], a[ 6];
+	double a[ 6];
 	a[0] = [[cam minCroppingPlanes] x];
 	a[2] = [[cam minCroppingPlanes] y];
 	a[4] = [[cam minCroppingPlanes] z];
@@ -5773,7 +5765,6 @@ double pos[3], focal[3], vUp[3],  fpVector[3];
 	if([controller is4D])
 		[controller setMovieFrame:[cam movieIndexIn4D]];
 	
-	double distance = aCamera->GetDistance();
 	aCamera->SetPosition(pos);
 	aCamera->SetFocalPoint(focal);
 	//aCamera->SetDistance(distance);
@@ -6746,11 +6737,9 @@ double pos[3], focal[3], vUp[3],  fpVector[3];
 	
 	if ([hotKey length] > 0)
 	{
-		NSDictionary *userInfo = nil;
 		NSDictionary *wlwwDict = [[NSUserDefaults standardUserDefaults] dictionaryForKey: @"WLWW3"];
 		NSArray *wwwlValues = [[wlwwDict allKeys] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
 	
-		NSArray *wwwl = nil;
 		NSString *wwwlMenuString = nil;
 		unichar key = [hotKey characterAtIndex:0];
 		
@@ -6760,7 +6749,6 @@ double pos[3], focal[3], vUp[3],  fpVector[3];
 			id windowController = [[self window] windowController];
 			NSLog( @"hot key: %d", key);
 			
-			int index = 1;
 			switch (key){
 				case DefaultWWWLHotKeyAction: // default WW/WL
 								wwwlMenuString = NSLocalizedString(@"Default WL & WW", nil);	// default WW/WL
