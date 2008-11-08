@@ -137,7 +137,7 @@ extern NSString * documentsDirectory();
 	viewer2D = [vC retain];
 	if (viewer2D)
 	{		
-		long i, j;
+		long i;
 		float x, y, z;
 		NSMutableArray	*curRoiList;
 		ROI	*curROI;
@@ -239,7 +239,7 @@ extern NSString * documentsDirectory();
 {
 	NSString		*path = [documentsDirectory() stringByAppendingPathComponent:STATEDATABASE];
 	BOOL			isDir = YES;
-	long			i;
+	
 	
 	if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && isDir)
 	{
@@ -262,7 +262,7 @@ extern NSString * documentsDirectory();
 	NSLog (@"Load Endoscopy 3d State");
 	NSString		*path = [documentsDirectory() stringByAppendingPathComponent:STATEDATABASE];
 	BOOL			isDir = YES;
-	long			i;
+	
 	
 	if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && isDir)
 	{

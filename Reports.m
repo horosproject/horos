@@ -236,7 +236,7 @@ static id aedesc_to_id(AEDesc *desc)
 			
 			NSManagedObjectModel	*model = [[[study managedObjectContext] persistentStoreCoordinator] managedObjectModel];
 			NSArray *properties = [[[[model entitiesByName] objectForKey:@"Study"] attributesByName] allKeys];
-			NSMutableString	*file = [NSMutableString stringWithString:@""];
+			
 			
 			NSDateFormatter		*date = [[[NSDateFormatter alloc] init] autorelease];
 			[date setDateStyle: NSDateFormatterShortStyle];

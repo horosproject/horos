@@ -118,7 +118,7 @@ extern  short		annotations;
 - (void) mouseDown:(NSEvent *)theEvent
 {
 	NSPoint		focalPointLocation, mouseLocStart, mouseLoc;
-	NSRect      size = [self frame];
+	
 		
 	mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView: self];
 	//mouseLocStart = [self convertPoint:mouseLocStart fromView: self];
@@ -364,8 +364,6 @@ extern  short		annotations;
 - (void) exportJPEG:(id) sender
 {
     NSSavePanel     *panel = [NSSavePanel savePanel];
-	BOOL			all = NO;
-	long			i;
 	NSWorkspace		*ws = [NSWorkspace sharedWorkspace];
 	
 	[panel setCanSelectHiddenExtension:YES];
@@ -396,7 +394,7 @@ extern  short		annotations;
 
 		long	annotCopy		= [[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"],
 				clutBarsCopy	= [[NSUserDefaults standardUserDefaults] integerForKey: @"CLUTBARS"];
-		long	width, height, spp, bpp, err;
+		long	width, height, spp, bpp;
 		float	cwl, cww;
 		float	o[9];
 		

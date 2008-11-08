@@ -95,7 +95,6 @@ static char *GetPrivateIP()
 	self = [super init];
 	if (self != nil)
 	{
-		int i;
 		OSErr err;       
 		SInt32 osVersion;
 		
@@ -501,7 +500,7 @@ static char *GetPrivateIP()
 		[async lock];
 		[asyncWrite lock];
 		
-		BOOL success = [self processTheData: nil];
+		[self processTheData: nil];
 		
 		if( currentDataPtr)
 		{
@@ -729,7 +728,7 @@ static char *GetPrivateIP()
 				
 				if (strcmp( messageToRemoteService, "DCMSE") == 0)
 				{
-					int i, temp, noOfFiles = [paths count];
+					int temp, noOfFiles = [paths count];
 					
 					const char* string;
 					int stringSize;
@@ -772,7 +771,7 @@ static char *GetPrivateIP()
 				
 				if ((strcmp( messageToRemoteService, "SENDD") == 0))
 				{
-					int i, temp, noOfFiles = [paths count];
+					int temp, noOfFiles = [paths count];
 					
 					temp = NSSwapHostIntToBig( noOfFiles);
 					[toTransfer appendBytes:&temp length: 4];
@@ -1740,7 +1739,6 @@ static char *GetPrivateIP()
 
 - (BOOL) retrieveDICOMFilesWithSTORESCU:(int) indexFrom to:(int) indexTo paths:(NSArray*) ip
 {
-	int i;
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"STORESCP"] == NO) return NO;
 	

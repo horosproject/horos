@@ -143,7 +143,7 @@
 -(NSImage*) nsimage:(BOOL) originalSize
 {
 	NSBitmapImageRep	*rep;
-	long				width, height, i, x, spp, bpp;
+	long				width, height, spp, bpp;
 	NSString			*colorSpace;
 	unsigned char		*dataPtr;
 	
@@ -214,9 +214,7 @@
 
 - (void) exportDICOMFile:(id) sender
 {
-	long	width, height, spp, bpp, err;
-	float	cwl, cww;
-	float	o[ 9];
+	long	width, height, spp, bpp;
 	
 	DICOMExport *exportDCM = [[DICOMExport alloc] init];
 	
@@ -361,14 +359,14 @@
 			vtkPoints *medialPoints = data->GetPoints();
 			int nPoints = data->GetNumberOfPoints();
 			vtkIdType i;
-			int j, k, neighbors;			
+			int neighbors;			
 			double x , y, z;
 			// get all cells around a point
 			data->BuildCells();
-			for (int a = 0; a < 5 ;  a++){
-				for (i = 0; i < nPoints; i++) {	
-					vtkIdType ncells;
-					vtkIdList *cellIds = vtkIdList::New();;
+			for (int a = 0; a < 5 ;  a++)
+			{
+				for (i = 0; i < nPoints; i++)
+				{
 					//int j = 0;
 					// count self
 					neighbors = 1;
@@ -401,8 +399,6 @@
 			// input for display
 			polyDataNormals->SetInput(data);
 			
-
-
 			// Find most inferior Point. Rrpresent Rectum
 			// Could be a seed point to generalize.  
 			vtkIdType startingPoint;
