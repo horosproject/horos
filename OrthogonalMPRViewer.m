@@ -24,7 +24,6 @@
 static NSString* 	PETCTToolbarIdentifier					= @"MPROrtho Viewer Toolbar Identifier";
 static NSString*	AdjustSplitViewToolbarItemIdentifier	= @"sameSizeSplitView";
 static NSString*	TurnSplitViewToolbarItemIdentifier		= @"turnSplitView";
-static NSString*	QTExportToolbarItemIdentifier			= @"QTExport.icns";
 static NSString*	iPhotoToolbarItemIdentifier				= @"iPhoto";
 static NSString*	ToolsToolbarItemIdentifier				= @"Tools";
 static NSString*	ThickSlabToolbarItemIdentifier			= @"ThickSlab";
@@ -401,7 +400,7 @@ NSString * documentsDirectory();
 {
 	NSDictionary		*aOpacity;
 	NSArray				*array;
-	int					i;
+	
 	
 	if( [str isEqualToString:NSLocalizedString(@"Linear Table", nil)])
 	{
@@ -757,8 +756,7 @@ NSString * documentsDirectory();
 - (BOOL)validateMenuItem:(NSMenuItem *)item
 {
 	BOOL valid = NO;
-	int i;
-	
+		
 	if( [item action] == @selector( changeTool:))
 	{
 		valid = YES;
@@ -1286,7 +1284,7 @@ NSString * documentsDirectory();
 
 	int		annotCopy		= [[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"],
 			clutBarsCopy	= [[NSUserDefaults standardUserDefaults] integerForKey: @"CLUTBARS"];
-	long	width, height, spp, bpp, err;
+	long	width, height, spp, bpp;
 	float	cwl, cww;
 	float	o[ 9];
 	float	imOrigin[ 3], imSpacing[ 2];
@@ -1695,7 +1693,7 @@ NSString * documentsDirectory();
 - (void) setMovieIndex: (short) i
 {
 	int index = [[controller originalView] curImage];
-	BOOL wasDataFlipped = [[controller originalView] flippedData];
+	
 	
 	curMovieIndex = i;
 	if( curMovieIndex < 0) curMovieIndex = maxMovieIndex-1;

@@ -294,8 +294,6 @@ extern BrowserController	*browserWindow;
 			DCMCalendarDate *seriesDate = acquisitionDate;
 			DCMCalendarDate *seriestime = acquisitionDate;
 			
-			NSNumber *slices = [NSNumber numberWithInt: 1];
-			
 			if( spacingX != 0 && spacingY != 0)
 			{
 				if( spacingX != spacingY)	// Convert to square pixels

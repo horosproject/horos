@@ -413,7 +413,7 @@
 			[FTAdapter setCurrentViewToCamera:[[flyThru pathCameras] objectAtIndex: i]];
 			[FTAdapter getCurrentCameraImage: levelOfDetailType];
 			
-			long	width, height, spp, bpp, err;
+			long	width, height, spp, bpp;
 			
 			unsigned char *dataPtr = [[controller3D view] getRawPixels:&width :&height :&spp :&bpp :YES :YES];
 			float	o[ 9];
@@ -435,7 +435,7 @@
 						[dcmSequence setPixelSpacing: resolution :resolution];
 				}
 				
-				NSString *f = [dcmSequence writeDCMFile: nil];
+				[dcmSequence writeDCMFile: nil];
 				
 				free( dataPtr);
 				

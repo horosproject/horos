@@ -24,7 +24,6 @@ static NSString* 	PETCTToolbarIdentifier						= @"PETCT Viewer Toolbar Identifie
 static NSString*	SameHeightSplitViewToolbarItemIdentifier	= @"sameHeightSplitView";
 static NSString*	SameWidthSplitViewToolbarItemIdentifier		= @"sameWidthSplitView";
 static NSString*	TurnSplitViewToolbarItemIdentifier			= @"turnSplitView";
-static NSString*	QTExportToolbarItemIdentifier				= @"QTExport.icns";
 static NSString*	ToolsToolbarItemIdentifier					= @"Tools";
 static NSString*	ThickSlabToolbarItemIdentifier				= @"ThickSlab";
 static NSString*	BlendingToolbarItemIdentifier				= @"2DBlending";
@@ -32,7 +31,6 @@ static NSString*	MovieToolbarItemIdentifier					= @"Movie";
 static NSString*	ExportToolbarItemIdentifier					= @"Export.icns";
 static NSString*	MailToolbarItemIdentifier					= @"Mail.icns";
 static NSString*	ResetToolbarItemIdentifier					= @"Reset.tiff";
-static NSString*	MIPToolbarItemIdentifier					= @"Empty";
 static NSString*	FlipVolumeToolbarItemIdentifier				= @"Revert.tiff";
 static NSString*	WLWWToolbarItemIdentifier					= @"WLWW";
 static NSString*	VRPanelToolbarItemIdentifier				= @"MIP.tif";
@@ -514,7 +512,7 @@ NSString * documentsDirectory();
 {
 	NSDictionary		*aOpacity;
 	NSArray				*array;
-	int					i;
+	
 	
 	if( [str isEqualToString:NSLocalizedString(@"Linear Table", nil)])
 	{
@@ -2129,7 +2127,7 @@ NSString * documentsDirectory();
 	DCMPix *curPix = [curView curDCM];
 	long	annotCopy		= [[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"],
 			clutBarsCopy	= [[NSUserDefaults standardUserDefaults] integerForKey: @"CLUTBARS"];
-	long	width, height, spp, bpp, err;
+	long	width, height, spp, bpp;
 	float	cwl, cww;
 	float	o[ 9], imOrigin[ 3], imSpacing[ 2];
 	
@@ -2176,7 +2174,7 @@ NSString * documentsDirectory();
 
 -(IBAction) endExportDICOMFileSettings:(id) sender
 {
-	long i, curImage;
+	long i;
 	
     [dcmExportWindow orderOut:sender];
     
@@ -2590,7 +2588,6 @@ NSString * documentsDirectory();
 - (void) setMovieIndex: (short) i
 {
 	int index = [[CTController originalView] curImage];
-	BOOL wasDataFlipped = [[CTController originalView] flippedData];
 	
 	[self initPixList: nil];
 	

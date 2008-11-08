@@ -188,8 +188,6 @@
 		
 		if( currentAxe == 0)		// X - RESLICE
 		{
-			long	rowBytes = [firstPix pwidth];
-			float	*srcPtr;
 			
 			DCMPix *curPix = [newPixListX objectAtIndex: stack];
 			
@@ -296,11 +294,9 @@
 	
 	DCMPix				*lastPix = [originalDCMPixList lastObject];
 	long				i;
-	unsigned char		*emptyData;
-	long				size, x, y;
-	float				orientation[ 9], newXSpace, newYSpace, origin[ 3], ratio, sliceInterval;
+	long				size, x;
+	float				orientation[ 9], newXSpace, newYSpace, origin[ 3], sliceInterval;
 	
-	BOOL square = NO;
 	
 	currentAxe = axe;
 

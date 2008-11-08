@@ -439,7 +439,7 @@
 {
 	NSDictionary		*aOpacity;
 	NSArray				*array;
-	int					i;
+	
 	
 	if( [str isEqualToString:NSLocalizedString(@"Linear Table", nil)])
 	{
@@ -585,7 +585,7 @@
 
 - (void) scrollTool: (long) from : (long) to : (id) sender
 {
-	long x, y, max, xStart, yStart;
+	long x, y, max;
 	if ([sender isEqual: originalView])
 	{
 		max = [[xReslicedView curDCM] pheight];
@@ -1022,7 +1022,6 @@
 			NSString *title;
 			NSString *image;
 			NSNumber *tag;
-			NSMenuItem *subItem;
 			int i = 0;
 			
 			for (title in titles) {

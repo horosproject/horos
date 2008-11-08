@@ -358,8 +358,6 @@ static volatile int sendControllerObjects = 0;
 	NSAutoreleasePool   *pool = [[NSAutoreleasePool alloc] init];
 	
 	NSString *calledAET = [[self server] objectForKey:@"AETitle"];
-	NSString *hostname = [[self server] objectForKey:@"Address"];
-	NSString *destPort = [[self server] objectForKey:@"Port"];
 	
 	NSLog(@"Server destination: %@", [[self server] description]);	
 			

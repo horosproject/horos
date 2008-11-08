@@ -71,7 +71,7 @@
 
 - (void) setPixList: (NSMutableArray*) pix :(NSArray*) files :(NSMutableArray*) rois
 {
-	long i, index;
+	long i;
 	
 	[self setDCM:pix :files :rois :0 :'i' :NO];
 	
@@ -509,7 +509,6 @@
 {
 	DCMView *sender = [note object];
 	ROI *addedROI = [[note userInfo] objectForKey:@"ROI"];
-	int sliceNumber = [[[note userInfo] objectForKey:@"sliceNumber"] intValue];
 	
 	if( [addedROI type] != t2DPoint) return;
 	
@@ -706,11 +705,9 @@
 	BOOL returnedVal = YES;
 	if ([hotKey length] > 0)
 	{
-		NSDictionary *userInfo = nil;
 		NSDictionary *wlwwDict = [[NSUserDefaults standardUserDefaults] dictionaryForKey: @"WLWW3"];
 		NSArray *wwwlValues = [[wlwwDict allKeys] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
 	
-		NSArray *wwwl = nil;
 		unichar key = [hotKey characterAtIndex:0];
 		if( [[DCMView hotKeyDictionary] objectForKey:hotKey])
 		{
@@ -718,8 +715,6 @@
 			OrthogonalMPRViewer *windowController = (OrthogonalMPRViewer *)[self  windowController];
 			NSString *wwwlMenuString;
 		
-			
-			int index = 1;
 			switch (key){
 			
 				case DefaultWWWLHotKeyAction:	// default WW/WL
@@ -785,9 +780,8 @@
 	return returnedVal;
 }
 
-- (void)mouseDraggedCrosshair:(NSEvent *)event {
-	NSRect  frame = [self frame];
-	NSPoint current = [self currentPointInView:event];
+- (void)mouseDraggedCrosshair:(NSEvent *)event
+{
 	NSPoint   eventLocation = [event locationInWindow];
 	if ( [event type] != NSRightMouseDown)
 	{
@@ -803,7 +797,7 @@
 }
 
 - (void)mouseDraggedImageScroll:(NSEvent *) event {
-	short   inc, now, prev, previmage;
+	short   now, prev;
 	BOOL	movie4Dmove = NO;
 	NSPoint current = [self currentPointInView:event];
 	if( scrollMode == 0)
@@ -827,7 +821,7 @@
 
  if( movie4Dmove == NO)
 	{
-		long from, to, startLocation;
+		long from, to;
 		if( scrollMode == 2)
 		{
 			from = current.x;

@@ -218,7 +218,7 @@
 		NSSet	*series = [self valueForKey:@"series"];
 		NSArray	*array = [series allObjects];
 		
-		long sum = 0, i;
+		long sum = 0;
 		
 		for( id loopItem in array)
 		{

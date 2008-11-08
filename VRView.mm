@@ -4364,7 +4364,6 @@ public:
 
 -(void) setBlendingPixSource:(ViewerController*) bC
 {
-    long i;
 	
 	blendingController = bC;
 	
@@ -5297,7 +5296,6 @@ public:
 {
 	NSRect sourceRect = NSMakeRect(0.0, 0.0, [currentImage size].width, [currentImage size].height);
 	NSRect imageRect;
-	float rescale = 1;
 	
 	if( [currentImage size].width > [currentImage size].height)
 	{
@@ -5437,7 +5435,7 @@ public:
 -(NSImage*) nsimage:(BOOL) originalSize
 {
 	NSBitmapImageRep	*rep;
-	long				width, height, i, x, spp, bpp;
+	long				width, height, spp, bpp;
 	NSString			*colorSpace;
 	unsigned char		*dataPtr;
 	
@@ -5689,7 +5687,7 @@ public:
 }
 
 - (void)setCenterlineCamera: (Camera *) cam{
-double pos[3], focal[3], vUp[3],  fpVector[3];
+double pos[3], focal[3], fpVector[3];
 
 	pos[0] = [[cam position] x];
 	pos[1] = [[cam position] y];
@@ -5700,7 +5698,6 @@ double pos[3], focal[3], vUp[3],  fpVector[3];
 	fpVector[0] = focal[0] - pos[0];
 	fpVector[1] = focal[1] - pos[1];
 	fpVector[2] = focal[2] - pos[2];
-	double vMax = fabs(fpVector[0]) + fabs(fpVector[1]) + fabs(fpVector[2]);
 	
 	//double distance = aCamera->GetDistance();
 	aCamera->Dolly(1.0);

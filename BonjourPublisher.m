@@ -442,7 +442,7 @@ static char *GetPrivateIP()
 			}
 			else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"ADDAL" length: 6]])
 			{
-				int pos = 6, size, noOfFiles = 0, stringSize, i;
+				int pos = 6, stringSize;
 				
 				// We read 4 bytes that contain the string size
 				while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
@@ -494,7 +494,7 @@ static char *GetPrivateIP()
 			}
 			else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"REMAL" length: 6]])
 			{
-				int pos = 6, size, noOfFiles = 0, stringSize, i;
+				int pos = 6, stringSize;
 				
 				// We read 4 bytes that contain the string size
 				while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
@@ -546,7 +546,7 @@ static char *GetPrivateIP()
 			}
 			else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"SETVA" length: 6]])
 			{
-				int pos = 6, size, noOfFiles = 0, stringSize, i;
+				int pos = 6, stringSize;
 				
 				// We read 4 bytes that contain the string size
 				while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
@@ -632,7 +632,7 @@ static char *GetPrivateIP()
 			}
 			else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"MFILE" length: 6]])
 			{
-				int pos = 6, stringSize, size;
+				int pos = 6, stringSize;
 				
 				// We read 4 bytes that contain the string size
 				while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
@@ -659,7 +659,7 @@ static char *GetPrivateIP()
 			else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"RFILE" length: 6]])
 			{
 				NSLog(@"subConnectionReceived : RFILE");
-				int pos = 6, stringSize, size;
+				int pos = 6, stringSize;
 				
 				// We read 4 bytes that contain the string size
 				while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
@@ -724,7 +724,7 @@ static char *GetPrivateIP()
 			else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"WFILE" length: 6]])
 			{
 				NSLog(@"subConnectionReceived : WFILE");
-				int pos = 6, stringSize, dataSize, size;
+				int pos = 6, stringSize, dataSize;
 				
 				// We read 4 bytes that contain the string size
 				while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
@@ -788,7 +788,7 @@ static char *GetPrivateIP()
 			{
 				NSMutableArray	*localPaths = [NSMutableArray arrayWithCapacity:0];
 				
-				int pos = 6, size, noOfFiles = 0, stringSize, i;
+				int pos = 6, noOfFiles = 0, stringSize, i;
 				
 				// We read 4 bytes that contain the string size
 				while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
@@ -847,7 +847,6 @@ static char *GetPrivateIP()
 					
 					if( [path UTF8String] [ 0] != '/')
 					{
-						NSString	*extension = [path pathExtension];
 						
 						int val = [[path stringByDeletingPathExtension] intValue];
 						
@@ -905,7 +904,6 @@ static char *GetPrivateIP()
 						}
 						else
 						{
-							NSString	*extension = [path pathExtension];
 							
 							int val = [[path stringByDeletingPathExtension] intValue];
 							

@@ -26,8 +26,6 @@
 static NSString* 	EndoscopyToolbarIdentifier				= @"Endoscopy Viewer Toolbar Identifier";
 static NSString*	endo3DToolsToolbarItemIdentifier		= @"3DTools";
 static NSString*	endoMPRToolsToolbarItemIdentifier		= @"MPRTools";
-static NSString*	endo3DWLWWToolbarItemIdentifier			= @"3DWLWW";
-static NSString*	endoMPRWLWWToolbarItemIdentifier		= @"MPRWLWW";
 static NSString*	FlyThruToolbarItemIdentifier			= @"FlyThru.tif";
 static NSString*	EngineToolbarItemIdentifier				= @"Engine";
 static NSString*	CroppingToolbarItemIdentifier			= @"Cropping.icns";
@@ -226,10 +224,9 @@ static NSString*	CenterlineToolbarItemIdentifier			= @"Centerline";
 
 - (void) setCameraViewUpRepresentation: (Camera*) aCamera
 {
-	float factor = [vrController factor];
 	
 	// coordinates conversion	
-	float viewUp[3], viewUp2D[3];
+	float viewUp[3];
 	viewUp[0] = [[aCamera viewUp] x]*10.0;
 	viewUp[1] = [[aCamera viewUp] y]*10.0;
 	viewUp[2] = [[aCamera viewUp] z]*10.0;
@@ -252,8 +249,7 @@ static NSString*	CenterlineToolbarItemIdentifier			= @"Centerline";
 
 - (void) setCamera
 {
-	double position1[3], focalPoint1[3], focalPoint2[3];
-	double x, y, z;
+	double position1[3], focalPoint1[3];
 	
 	// get the camera
 	// Camera *cam = [[vrController view] camera];
@@ -382,7 +378,7 @@ static NSString*	CenterlineToolbarItemIdentifier			= @"Centerline";
 		// coordinates conversion
 	float pos[3], fp[3];
 	 // The order of the piXList appears reversed in the views relative to the orginal viewer2D
-	int pixCount = [[[mprController originalView] dcmPixList] count];
+	 
 	// tranform coordinates
 
 	[[[[mprController originalView] pixList]	objectAtIndex:round(position.z)]
@@ -686,7 +682,6 @@ static NSString*	CenterlineToolbarItemIdentifier			= @"Centerline";
 
 - (void) CloseViewerNotification: (NSNotification*) note
 {
-	long				i;
 	ViewerController	*v = [note object];
 	
 //	for( i = 0; i < maxMovieIndex; i++)
@@ -1030,7 +1025,7 @@ static NSString*	CenterlineToolbarItemIdentifier			= @"Centerline";
 	if ([exportDCMViewsChoice selectedTag] == 0)
 	{
 		// export the 4 views
-		long	width, height, spp, bpp, err;
+		long	width, height, spp, bpp;
 		unsigned char *dataPtr = [self getRawPixels:&width :&height :&spp :&bpp];
 				
 		// let's write the file on the disk

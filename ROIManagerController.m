@@ -64,10 +64,8 @@ PURPOSE.
    forTableColumn:(NSTableColumn *)aTableColumn
 			  row:(NSInteger)rowIndex
 {
-	int i;
 	NSMutableArray	*curRoiList = [[viewer roiList] objectAtIndex: [[viewer imageView] curImage]];
 	ROI				*editedROI = [curRoiList objectAtIndex: rowIndex];
-	NSString		*oldName = [NSString stringWithString:[editedROI name]];
 	
 
 //	[editedROI setName:anObject];
@@ -91,9 +89,7 @@ PURPOSE.
 
 - (IBAction)deleteROI:(id)sender
 {
-	int i;
 	NSInteger index;
-	NSMutableArray* names = [NSMutableArray arrayWithCapacity:1];
 	NSIndexSet* indexSet = [tableView selectedRowIndexes];
 	index = [indexSet lastIndex];
 	
@@ -162,8 +158,6 @@ PURPOSE.
 {
 	if( viewer == nil) return nil;
 	
-	int i,indic;
-	float area=0.0;
 	NSMutableArray	*curRoiList = [[viewer roiList] objectAtIndex: [[viewer imageView] curImage]];
 	
 	if( [[tableColumn identifier] isEqualToString:@"Index"])

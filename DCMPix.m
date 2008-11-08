@@ -4491,8 +4491,6 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	
 	DCMObject *dcmObject = [dict objectForKey: @"dcmObject"];
 	
-	NSString *dirPath = [documentsDirectory() stringByAppendingPathComponent:@"/ROIs/"];
-	
 	// Get all referenced images up front.
 	// This is better than running a Fetch Request for EVERY ROI since
 	// executeFetchRequest is expensive.
@@ -9280,9 +9278,6 @@ END_CREATE_ROIS:
 	int ox = oo.x;
 	int oy = oo.y;
 	
-	int dstHeight = dst->height;
-	int dstWidth = dst->width;
-	
 	NSRect dstRect = NSMakeRect( 0, 0, dst->width, dst->height);
 	NSRect srcRect = NSMakeRect( ox, oy, src->width, src->height);
 	
@@ -11428,7 +11423,6 @@ END_CREATE_ROIS:
 
 - (NSString*)getDICOMFieldValueForGroup:(int)group element:(int)element papyLink:(PapyShort)fileNb;
 {
-	PapyShort theErr;
 	
 	NSMutableString *field = [NSMutableString string];
 	
@@ -11446,7 +11440,7 @@ END_CREATE_ROIS:
 		int theMaxElem = gArrGroup [theEnumGrNb].size;
 		
 		NSCalendarDate *calendarDate;
-		NSArray *codes = [NSArray arrayWithObjects:@"AE", @"AS", @"AT", @"CS", @"DA", @"DS", @"DT", @"FL", @"FD", @"IS", @"LO", @"LT", @"OB", @"OW", @"PN", @"SH", @"SL", @"SQ", @"SS", @"ST", @"TM", @"UI", @"UL", @"UN", @"USS", @"UT", @"RET", nil];
+		
 		
 		BOOL elementDefinitionFound = NO;
 		

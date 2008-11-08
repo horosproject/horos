@@ -30,8 +30,6 @@
 		
 //	[self setRoiVolumes:[v roiVolumes]];
 	
-	int i;
-	
 	//[[self window] setFrameAutosaveName:@"ROIVolumeManagerWindow"];
 	
 	// register to notification
