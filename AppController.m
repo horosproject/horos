@@ -2516,34 +2516,41 @@ static BOOL initialized = NO;
 
 - (void) displayUpdateMessage: (NSString*) msg
 {
-	NSAutoreleasePool   *pool=[[NSAutoreleasePool alloc] init];
+	[msg retain];
 	
-	if( [msg isEqualToString:@"LISTENER"])
-	{
-		NSRunAlertPanel( NSLocalizedString( @"DICOM Listener Error", nil), NSLocalizedString( @"OsiriX listener cannot start. Is the Port valid? Is there another process using this Port?\r\rSee Listener - Preferences.", nil), NSLocalizedString( @"OK", nil), nil, nil);
-	}
+	NSAutoreleasePool   *pool = [[NSAutoreleasePool alloc] init];
 	
-	if( [msg isEqualToString:@"UPTODATE"])
-	{
-		NSRunAlertPanel( NSLocalizedString( @"OsiriX is up-to-date", nil), NSLocalizedString( @"You have the most recent version of OsiriX.", nil), NSLocalizedString( @"OK", nil), nil, nil);
-	}
-	
-	if( [msg isEqualToString:@"ERROR"])
-	{
-		NSRunAlertPanel( NSLocalizedString( @"No Internet connection", nil), NSLocalizedString( @"Unable to check latest version available.", nil), NSLocalizedString( @"OK", nil), nil, nil);
-	}
-	
-	if( [msg isEqualToString:@"UPDATE"])
-	{
-		int button = NSRunAlertPanel( NSLocalizedString( @"New Version Available", nil), NSLocalizedString( @"A new version of OsiriX is available. Would you like to download the new version now?", nil), NSLocalizedString( @"OK", nil), NSLocalizedString( @"Cancel", nil), nil);
-		
-		if (NSOKButton == button)
+	@synchronized( self)
+	{	
+		if( [msg isEqualToString:@"LISTENER"])
 		{
-			[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.osirix-viewer.com"]];
+			NSRunAlertPanel( NSLocalizedString( @"DICOM Listener Error", nil), NSLocalizedString( @"OsiriX listener cannot start. Is the Port valid? Is there another process using this Port?\r\rSee Listener - Preferences.", nil), NSLocalizedString( @"OK", nil), nil, nil);
+		}
+		
+		if( [msg isEqualToString:@"UPTODATE"])
+		{
+			NSRunAlertPanel( NSLocalizedString( @"OsiriX is up-to-date", nil), NSLocalizedString( @"You have the most recent version of OsiriX.", nil), NSLocalizedString( @"OK", nil), nil, nil);
+		}
+		
+		if( [msg isEqualToString:@"ERROR"])
+		{
+			NSRunAlertPanel( NSLocalizedString( @"No Internet connection", nil), NSLocalizedString( @"Unable to check latest version available.", nil), NSLocalizedString( @"OK", nil), nil, nil);
+		}
+		
+		if( [msg isEqualToString:@"UPDATE"])
+		{
+			int button = NSRunAlertPanel( NSLocalizedString( @"New Version Available", nil), NSLocalizedString( @"A new version of OsiriX is available. Would you like to download the new version now?", nil), NSLocalizedString( @"OK", nil), NSLocalizedString( @"Cancel", nil), nil);
+			
+			if (NSOKButton == button)
+			{
+				[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.osirix-viewer.com"]];
+			}
 		}
 	}
 	
 	[pool release];
+	
+	[msg release];
 }
 
 - (IBAction) checkForUpdates: (id) sender

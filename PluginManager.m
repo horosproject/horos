@@ -874,24 +874,35 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
 
 - (void)displayUpdateMessage:(NSDictionary*)messageDictionary;
 {
-	int button = NSRunAlertPanel( [messageDictionary objectForKey:@"title"], [messageDictionary objectForKey:@"body"], NSLocalizedString(@"Download", @""), NSLocalizedString( @"Cancel", @""), nil);
-		
-	if (NSOKButton == button)
-	{
-		startedUpdateProcess = YES;
-		PluginManagerController *pluginManagerController = [[BrowserController currentBrowser] pluginManagerController];
+	[messageDictionary retain];
 
-		if(pluginManagerController)
-		{
-			NSArray *pluginsToDownload = [messageDictionary objectForKey:@"plugins"];
-			self.downloadQueue = [NSMutableArray arrayWithArray:pluginsToDownload];
+	NSAutoreleasePool   *pool = [[NSAutoreleasePool alloc] init];
+	
+	@synchronized( self)
+	{
+		int button = NSRunAlertPanel( [messageDictionary objectForKey:@"title"], [messageDictionary objectForKey:@"body"], NSLocalizedString(@"Download", @""), NSLocalizedString( @"Cancel", @""), nil);
 			
-			NSLog(@"Download Plugin : %@", [[pluginsToDownload objectAtIndex:0] objectForKey:@"download_url"]);
-			[pluginManagerController setDownloadURL:[[pluginsToDownload objectAtIndex:0] objectForKey:@"download_url"]];
-			[pluginManagerController download:self];
+		if (NSOKButton == button)
+		{
+			startedUpdateProcess = YES;
+			PluginManagerController *pluginManagerController = [[BrowserController currentBrowser] pluginManagerController];
+
+			if(pluginManagerController)
+			{
+				NSArray *pluginsToDownload = [messageDictionary objectForKey:@"plugins"];
+				self.downloadQueue = [NSMutableArray arrayWithArray:pluginsToDownload];
+				
+				NSLog(@"Download Plugin : %@", [[pluginsToDownload objectAtIndex:0] objectForKey:@"download_url"]);
+				[pluginManagerController setDownloadURL:[[pluginsToDownload objectAtIndex:0] objectForKey:@"download_url"]];
+				[pluginManagerController download:self];
+			}
 		}
+		else startedUpdateProcess = NO;
 	}
-	else startedUpdateProcess = NO;
+	
+	[pool release];
+	
+	[messageDictionary release];
 }
 
 -(void)downloadNext:(NSNotification*)notification;
