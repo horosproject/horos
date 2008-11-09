@@ -261,7 +261,10 @@ void errmsg(const char* msg, ...)
 	{
 		errmsg("Error initialising network:");
 		DimseCondition::dump(cond);
-        [[AppController sharedAppController] performSelectorOnMainThread:@selector(displayUpdateMessage:) withObject:@"LISTENER" waitUntilDone:YES];
+		
+		[[AppController sharedAppController].displayMessageLock lock];
+        [[AppController sharedAppController] performSelectorOnMainThread:@selector(displayUpdateMessage:) withObject:@"LISTENER" waitUntilDone: NO];
+		[[AppController sharedAppController].displayMessageLock unlock];
 		return;
     }
 	

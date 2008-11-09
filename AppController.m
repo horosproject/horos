@@ -618,7 +618,7 @@ static NSDate *lastWarningDate = nil;
 
 @implementation AppController
 
-@synthesize checkAllWindowsAreVisibleIsOff;
+@synthesize checkAllWindowsAreVisibleIsOff, displayMessageLock;
 
 - (void) pause
 {
@@ -1767,6 +1767,9 @@ static NSDate *lastWarningDate = nil;
 	
 	PapyrusLock = [[NSRecursiveLock alloc] init];
 	STORESCP = [[NSRecursiveLock alloc] init];
+	displayMessageLock = [[NSLock alloc] init];
+	[displayMessageLock lock];
+	
 	[[NSAppleEventManager sharedAppleEventManager] setEventHandler:self andSelector:@selector(getUrl:withReplyEvent:) forEventClass:kInternetEventClass andEventID:kAEGetURL];
 	
 	[IChatTheatreDelegate sharedDelegate];
@@ -2248,6 +2251,8 @@ static BOOL initialized = NO;
 		
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"checkForUpdatesPlugins"])
 		[NSThread detachNewThreadSelector:@selector(checkForUpdates:) toTarget:pluginManager withObject:pluginManager];
+		
+	[displayMessageLock unlock];
 }
 
 - (void) applicationWillFinishLaunching: (NSNotification *) aNotification
@@ -2516,47 +2521,47 @@ static BOOL initialized = NO;
 
 - (void) displayUpdateMessage: (NSString*) msg
 {
+	[[AppController sharedAppController].displayMessageLock lock];
 	[msg retain];
 	
 	NSAutoreleasePool   *pool = [[NSAutoreleasePool alloc] init];
 	
-	@synchronized( self)
-	{	
-		if( [msg isEqualToString:@"LISTENER"])
-		{
-			NSRunAlertPanel( NSLocalizedString( @"DICOM Listener Error", nil), NSLocalizedString( @"OsiriX listener cannot start. Is the Port valid? Is there another process using this Port?\r\rSee Listener - Preferences.", nil), NSLocalizedString( @"OK", nil), nil, nil);
-		}
+	if( [msg isEqualToString:@"LISTENER"])
+	{
+		NSRunAlertPanel( NSLocalizedString( @"DICOM Listener Error", nil), NSLocalizedString( @"OsiriX listener cannot start. Is the Port valid? Is there another process using this Port?\r\rSee Listener - Preferences.", nil), NSLocalizedString( @"OK", nil), nil, nil);
+	}
+	
+	if( [msg isEqualToString:@"UPTODATE"])
+	{
+		NSRunAlertPanel( NSLocalizedString( @"OsiriX is up-to-date", nil), NSLocalizedString( @"You have the most recent version of OsiriX.", nil), NSLocalizedString( @"OK", nil), nil, nil);
+	}
+	
+	if( [msg isEqualToString:@"ERROR"])
+	{
+		NSRunAlertPanel( NSLocalizedString( @"No Internet connection", nil), NSLocalizedString( @"Unable to check latest version available.", nil), NSLocalizedString( @"OK", nil), nil, nil);
+	}
+	
+	if( [msg isEqualToString:@"UPDATE"])
+	{
+		int button = NSRunAlertPanel( NSLocalizedString( @"New Version Available", nil), NSLocalizedString( @"A new version of OsiriX is available. Would you like to download the new version now?", nil), NSLocalizedString( @"OK", nil), NSLocalizedString( @"Cancel", nil), nil);
 		
-		if( [msg isEqualToString:@"UPTODATE"])
+		if (NSOKButton == button)
 		{
-			NSRunAlertPanel( NSLocalizedString( @"OsiriX is up-to-date", nil), NSLocalizedString( @"You have the most recent version of OsiriX.", nil), NSLocalizedString( @"OK", nil), nil, nil);
-		}
-		
-		if( [msg isEqualToString:@"ERROR"])
-		{
-			NSRunAlertPanel( NSLocalizedString( @"No Internet connection", nil), NSLocalizedString( @"Unable to check latest version available.", nil), NSLocalizedString( @"OK", nil), nil, nil);
-		}
-		
-		if( [msg isEqualToString:@"UPDATE"])
-		{
-			int button = NSRunAlertPanel( NSLocalizedString( @"New Version Available", nil), NSLocalizedString( @"A new version of OsiriX is available. Would you like to download the new version now?", nil), NSLocalizedString( @"OK", nil), NSLocalizedString( @"Cancel", nil), nil);
-			
-			if (NSOKButton == button)
-			{
-				[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.osirix-viewer.com"]];
-			}
+			[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.osirix-viewer.com"]];
 		}
 	}
 	
 	[pool release];
 	
 	[msg release];
+	
+	[[AppController sharedAppController].displayMessageLock unlock];
 }
 
 - (IBAction) checkForUpdates: (id) sender
 {
 	NSURL				*url;
-	NSAutoreleasePool   *pool=[[NSAutoreleasePool alloc] init];
+	NSAutoreleasePool   *pool = [[NSAutoreleasePool alloc] init];
 	
 	if( sender != self) verboseUpdateCheck = YES;
 	else verboseUpdateCheck = NO;
@@ -2589,18 +2594,30 @@ static BOOL initialized = NO;
 			if ([latestVersionNumber intValue] <= [currVersionNumber intValue])
 			{
 				if (verboseUpdateCheck)
-					[self performSelectorOnMainThread:@selector(displayUpdateMessage:) withObject:@"UPTODATE" waitUntilDone:YES];
+				{
+					[[AppController sharedAppController].displayMessageLock lock];
+					[self performSelectorOnMainThread:@selector(displayUpdateMessage:) withObject:@"UPTODATE" waitUntilDone: NO];
+					[[AppController sharedAppController].displayMessageLock unlock];
+				}
 			}
 			else
 			{
 				if ([[NSUserDefaults standardUserDefaults] boolForKey: @"CheckOsiriXUpdates2"] || verboseUpdateCheck == YES)
-					[self performSelectorOnMainThread:@selector(displayUpdateMessage:) withObject:@"UPDATE" waitUntilDone:YES];				
+				{
+					[[AppController sharedAppController].displayMessageLock lock];
+					[self performSelectorOnMainThread:@selector(displayUpdateMessage:) withObject:@"UPDATE" waitUntilDone: NO];
+					[[AppController sharedAppController].displayMessageLock unlock];
+				}
 			}
 		}
 		else
 		{
 			if (verboseUpdateCheck)
-				[self performSelectorOnMainThread:@selector(displayUpdateMessage:) withObject:@"ERROR" waitUntilDone:YES];
+			{
+				[[AppController sharedAppController].displayMessageLock lock];
+				[self performSelectorOnMainThread:@selector(displayUpdateMessage:) withObject:@"ERROR" waitUntilDone: NO];
+				[[AppController sharedAppController].displayMessageLock unlock];
+			}
 		}
 	}
 	
