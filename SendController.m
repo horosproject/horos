@@ -369,29 +369,30 @@ static volatile int sendControllerObjects = 0;
 	
 	objectsToSend = [objectsToSend sortedArrayUsingDescriptors: sortDescriptors];
 	
-	[[[BrowserController currentBrowser] managedObjectContext] lock];
-	
 	for( id loopItem in objectsToSend)
 	{
-		if( [previousPatientUID isEqualToString: [loopItem valueForKeyPath:@"series.study.patientUID"]])
+		[[[BrowserController currentBrowser] managedObjectContext] lock];
+		NSString *patientUID = [loopItem valueForKeyPath:@"series.study.patientUID"];
+		[[[BrowserController currentBrowser] managedObjectContext] unlock];
+		
+		if( [previousPatientUID isEqualToString: patientUID])
 		{
 			[samePatientArray addObject: loopItem];
 		}
 		else
 		{
-			if( [samePatientArray count]) [self executeSend: samePatientArray];
+			if( [samePatientArray count])
+				[self executeSend: samePatientArray];
 			
 			// Reset
 			[samePatientArray removeAllObjects];
 			[samePatientArray addObject: loopItem];
 			
-			previousPatientUID = [loopItem valueForKeyPath:@"series.study.patientUID"];
+			previousPatientUID = [[patientUID copy] autorelease];
 		}
 	}
 	
 	if( [samePatientArray count]) [self executeSend: samePatientArray];
-	
-	[[[BrowserController currentBrowser] managedObjectContext] unlock];
 	
 	NSMutableDictionary *info = [NSMutableDictionary dictionary];
 	[info setObject:[NSNumber numberWithInt:[objectsToSend count]] forKey:@"SendTotal"];
