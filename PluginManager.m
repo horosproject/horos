@@ -798,6 +798,8 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
 	NSURL				*url;
 	NSAutoreleasePool   *pool = [[NSAutoreleasePool alloc] init];
 	
+	[NSThread sleepUntilDate: [NSDate dateWithTimeIntervalSinceNow: 10]];
+	
 	url = [NSURL URLWithString:@"http://www.osirix-viewer.com/osirix_plugins/plugins.plist"];
 	
 	if(url)
