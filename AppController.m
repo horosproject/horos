@@ -618,7 +618,7 @@ static NSDate *lastWarningDate = nil;
 
 @implementation AppController
 
-@synthesize checkAllWindowsAreVisibleIsOff, displayMessageLock;
+@synthesize checkAllWindowsAreVisibleIsOff;
 
 - (void) pause
 {
@@ -1767,8 +1767,6 @@ static NSDate *lastWarningDate = nil;
 	
 	PapyrusLock = [[NSRecursiveLock alloc] init];
 	STORESCP = [[NSRecursiveLock alloc] init];
-	displayMessageLock = [[NSLock alloc] init];
-	[displayMessageLock lock];
 	
 	[[NSAppleEventManager sharedAppleEventManager] setEventHandler:self andSelector:@selector(getUrl:withReplyEvent:) forEventClass:kInternetEventClass andEventID:kAEGetURL];
 	
@@ -2251,8 +2249,8 @@ static BOOL initialized = NO;
 		
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"checkForUpdatesPlugins"])
 		[NSThread detachNewThreadSelector:@selector(checkForUpdates:) toTarget:pluginManager withObject:pluginManager];
-		
-	[displayMessageLock unlock];
+	
+	[NSThread detachNewThreadSelector: @selector(checkForUpdates:) toTarget:self withObject: self];
 }
 
 - (void) applicationWillFinishLaunching: (NSNotification *) aNotification
@@ -2389,8 +2387,6 @@ static BOOL initialized = NO;
 		}
 	}
 	
-	[NSThread detachNewThreadSelector: @selector(checkForUpdates:) toTarget:self withObject: self];
-	
 	/// *****************************
 	/// *****************************
 	// HUG SPECIFIC CODE - DO NOT REMOVE - Thanks! Antoine Rosset
@@ -2521,7 +2517,6 @@ static BOOL initialized = NO;
 
 - (void) displayUpdateMessage: (NSString*) msg
 {
-	[[AppController sharedAppController].displayMessageLock lock];
 	[msg retain];
 	
 	NSAutoreleasePool   *pool = [[NSAutoreleasePool alloc] init];
@@ -2554,8 +2549,6 @@ static BOOL initialized = NO;
 	[pool release];
 	
 	[msg release];
-	
-	[[AppController sharedAppController].displayMessageLock unlock];
 }
 
 - (IBAction) checkForUpdates: (id) sender
@@ -2595,18 +2588,14 @@ static BOOL initialized = NO;
 			{
 				if (verboseUpdateCheck)
 				{
-					[[AppController sharedAppController].displayMessageLock lock];
 					[self performSelectorOnMainThread:@selector(displayUpdateMessage:) withObject:@"UPTODATE" waitUntilDone: NO];
-					[[AppController sharedAppController].displayMessageLock unlock];
 				}
 			}
 			else
 			{
 				if ([[NSUserDefaults standardUserDefaults] boolForKey: @"CheckOsiriXUpdates2"] || verboseUpdateCheck == YES)
 				{
-					[[AppController sharedAppController].displayMessageLock lock];
 					[self performSelectorOnMainThread:@selector(displayUpdateMessage:) withObject:@"UPDATE" waitUntilDone: NO];
-					[[AppController sharedAppController].displayMessageLock unlock];
 				}
 			}
 		}
@@ -2614,9 +2603,7 @@ static BOOL initialized = NO;
 		{
 			if (verboseUpdateCheck)
 			{
-				[[AppController sharedAppController].displayMessageLock lock];
 				[self performSelectorOnMainThread:@selector(displayUpdateMessage:) withObject:@"ERROR" waitUntilDone: NO];
-				[[AppController sharedAppController].displayMessageLock unlock];
 			}
 		}
 	}

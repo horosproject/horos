@@ -865,9 +865,7 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
 								
 			NSDictionary *messageDictionary = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:title, message, pluginsToUpdate, nil] forKeys:[NSArray arrayWithObjects:@"title", @"body", @"plugins", nil]];
 			
-			[[AppController sharedAppController].displayMessageLock lock];
 			[self performSelectorOnMainThread:@selector(displayUpdateMessage:) withObject:messageDictionary waitUntilDone: NO];
-			[[AppController sharedAppController].displayMessageLock unlock];
 		}
 	}
 	
@@ -876,8 +874,6 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
 
 - (void)displayUpdateMessage:(NSDictionary*)messageDictionary;
 {
-	[[AppController sharedAppController].displayMessageLock lock];
-	
 	[messageDictionary retain];
 
 	NSAutoreleasePool   *pool = [[NSAutoreleasePool alloc] init];
@@ -904,8 +900,6 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
 	[pool release];
 	
 	[messageDictionary release];
-	
-	[[AppController sharedAppController].displayMessageLock unlock];
 }
 
 -(void)downloadNext:(NSNotification*)notification;

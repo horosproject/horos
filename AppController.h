@@ -104,11 +104,9 @@ extern "C"
 	WebServicesMethods				*webServer;
 	
 	BOOL							checkAllWindowsAreVisibleIsOff;
-	NSLock							*displayMessageLock;
 }
 
 @property BOOL checkAllWindowsAreVisibleIsOff;
-@property (readonly) NSLock* displayMessageLock;
 
 #pragma mark-
 #pragma mark initialization of the main event loop singleton
