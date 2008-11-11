@@ -186,7 +186,10 @@ static const char *GetPrivateIP()
 {
 	NSLog( @"auto-retrieving switched");
 	
-	[previousAutoRetrieve removeAllObjects];
+	@synchronized( previousAutoRetrieve)
+	{
+		[previousAutoRetrieve removeAllObjects];
+	}
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"autoRetrieving"])
 	{
@@ -1044,6 +1047,64 @@ static const char *GetPrivateIP()
 	return result;
 }
 
+- (NSArray*) queryPatientIDwithoutGUI: (NSString*) patientID
+{
+	NSString			*theirAET;
+	NSString			*hostname;
+	NSString			*port;
+	NSNetService		*netService = nil;
+	id					aServer;
+	int					selectedServer;
+	BOOL				atLeastOneSource = NO, noChecked = YES, error = NO;
+	
+	noChecked = YES;
+	for( NSUInteger i = 0; i < [sourcesArray count]; i++)
+	{
+		if( [[[sourcesArray objectAtIndex: i] valueForKey:@"activated"] boolValue] == YES)
+			noChecked = NO;
+	}
+	
+	selectedServer = -1;
+	if( noChecked)
+		selectedServer = [sourcesTable selectedRow];
+	
+	atLeastOneSource = NO;
+	BOOL firstResults = YES;
+	
+	NSString *filterValue = [patientID stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+	NSMutableArray *result = [NSMutableArray array];
+	
+	if ([filterValue length] > 0)
+	{
+		for( NSUInteger i = 0; i < [sourcesArray count]; i++)
+		{
+			if( [[[sourcesArray objectAtIndex: i] valueForKey:@"activated"] boolValue] == YES || selectedServer == i)
+			{
+				aServer = [[sourcesArray objectAtIndex:i] valueForKey:@"server"];
+				
+				NSString *myAET = [[NSUserDefaults standardUserDefaults] objectForKey:@"AETITLE"]; 			
+				theirAET = [aServer objectForKey:@"AETitle"];
+				hostname = [aServer objectForKey:@"Address"];
+				port = [aServer objectForKey:@"Port"];
+				
+				int numberPacketsReceived = 0;
+				if( [[NSUserDefaults standardUserDefaults] boolForKey:@"Ping"] == NO || (SimplePing( [hostname UTF8String], 1, [[NSUserDefaults standardUserDefaults] integerForKey:@"DICOMTimeout"], 1,  &numberPacketsReceived) == 0 && numberPacketsReceived > 0))
+				{
+					QueryArrayController *qm = [[QueryArrayController alloc] initWithCallingAET:myAET calledAET:theirAET  hostName:hostname port:port netService:netService];
+					
+					[qm addFilter:filterValue forDescription:currentQueryKey];
+					
+					[qm performQuery];
+					
+					[result addObjectsFromArray: [qm queries]];
+				}
+			}
+		}
+	}
+	
+	return result;
+}
+
 -(BOOL) queryWithDisplayingErrors:(BOOL) showError
 {
 	NSString			*theirAET;
@@ -1065,16 +1126,12 @@ static const char *GetPrivateIP()
 	for( NSUInteger i = 0; i < [sourcesArray count]; i++)
 	{
 		if( [[[sourcesArray objectAtIndex: i] valueForKey:@"activated"] boolValue] == YES)
-		{
 			noChecked = NO;
-		}
 	}
 	
 	selectedServer = -1;
 	if( noChecked)
-	{
 		selectedServer = [sourcesTable selectedRow];
-	}
 	
 	atLeastOneSource = NO;
 	BOOL firstResults = YES;
@@ -1377,16 +1434,120 @@ static const char *GetPrivateIP()
 	if( localFiles < totalFiles)
 	{
 		NSString *stringID = [self stringIDForStudy: item];
-		NSNumber *previousNumberOfFiles = [previousAutoRetrieve objectForKey: stringID];
 		
-		// We only want to re-retrieve the study if they are new files compared to last time... we are maybe currently in the middle of a retrieve...
-		
-		if( [previousNumberOfFiles intValue] != totalFiles)
+		@synchronized( previousAutoRetrieve)
 		{
-			[selectedItems addObject: item];
-			[previousAutoRetrieve setValue: [NSNumber numberWithInt: totalFiles] forKey: stringID];
+			NSNumber *previousNumberOfFiles = [previousAutoRetrieve objectForKey: stringID];
+			
+			// We only want to re-retrieve the study if they are new files compared to last time... we are maybe currently in the middle of a retrieve...
+			
+			if( [previousNumberOfFiles intValue] != totalFiles)
+			{
+				[selectedItems addObject: item];
+				[previousAutoRetrieve setValue: [NSNumber numberWithInt: totalFiles] forKey: stringID];
+			}
 		}
 	}
+}
+
+- (void) autoRetrieveThread: (NSArray*) list
+{
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	
+	[autoQueryLock lock];
+	
+	// Start to retrieve the first 10 studies...
+	
+	NSMutableArray *selectedItems = [NSMutableArray array];
+	
+	for( id item in list)
+	{
+		[self addStudyIfNotAvailable: item toArray: selectedItems];
+		if( [selectedItems count] >= 10) break;
+	}
+	
+	if( [selectedItems count])
+	{
+		if( [[NSUserDefaults standardUserDefaults] integerForKey:@"NumberOfPreviousStudyToRetrieve"])
+		{
+			NSMutableArray *previousStudies = [NSMutableArray array];
+			for( id item in selectedItems)
+			{
+				NSArray *studiesOfThisPatient = [self queryPatientIDwithoutGUI: [item valueForKey:@"patientID"]];
+				
+				// Sort the resut by date & time
+				NSMutableArray *sortArray = [NSMutableArray array];
+				[sortArray addObject: [[[NSSortDescriptor alloc] initWithKey:@"date" ascending: NO] autorelease]];
+				[sortArray addObject: [[[NSSortDescriptor alloc] initWithKey:@"time" ascending: NO] autorelease]];
+				studiesOfThisPatient = [studiesOfThisPatient sortedArrayUsingDescriptors: sortArray];
+				
+				int numberOfStudiesAssociated = [[NSUserDefaults standardUserDefaults] integerForKey:@"NumberOfPreviousStudyToRetrieve"];
+				
+				for( id study in studiesOfThisPatient)
+				{
+					// We dont want current study
+					if( [[study valueForKey:@"uid"] isEqualToString: [item valueForKey:@"uid"]] == NO)
+					{
+						BOOL found = YES;
+						
+						if( numberOfStudiesAssociated > 0)
+						{
+							if( [[NSUserDefaults standardUserDefaults] boolForKey:@"retrieveSameModality"])
+							{
+								if( [item valueForKey:@"modality"] && [study valueForKey:@"modality"])
+								{
+									if( [[study valueForKey:@"modality"] rangeOfString: [item valueForKey:@"modality"]].location == NSNotFound) found = NO;						
+								}
+								else found = NO;
+							}
+							
+							if( [[NSUserDefaults standardUserDefaults] boolForKey:@"retrieveSameDescription"])
+							{
+								if( [item valueForKey:@"theDescription"] && [study valueForKey:@"theDescription"])
+								{
+									if( [[study valueForKey:@"theDescription"] rangeOfString: [item valueForKey:@"theDescription"]].location == NSNotFound) found = NO;
+								}
+								else found = NO;
+							}
+							
+							if( found)
+							{
+								[self addStudyIfNotAvailable: study toArray: previousStudies];
+								numberOfStudiesAssociated--;
+							}
+						}
+					}
+				}
+			}
+			
+			[selectedItems addObjectsFromArray: previousStudies];
+			
+			for( id item in selectedItems)
+				[item setShowErrorMessage: NO];
+		}
+		
+		[NSThread detachNewThreadSelector:@selector( performRetrieve:) toTarget:self withObject: selectedItems];
+		
+		NSLog( @"-------");
+		NSLog( @"Will auto-retrieve these items:");
+		for( id item in selectedItems)
+		{
+			NSLog( @"%@ %@ %@ %@", [item valueForKey:@"name"], [item valueForKey:@"patientID"], [item valueForKey:@"accessionNumber"], [item valueForKey:@"date"]);
+		}
+		NSLog( @"-------");
+		
+		NSString *desc = [NSString stringWithFormat: NSLocalizedString( @"Will auto-retrieve %d studies", nil), [selectedItems count]];
+		
+		[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Q&R Auto-Retrieve", nil) description: desc name: @"newfiles"];
+	}
+	else
+	{
+		NSLog( @"--- autoRetrieving is up to date! Nothing to retrieve ---");
+	}
+	
+	[autoQueryLock unlock];
+	
+	[pool release];
 }
 
 - (void) displayAndRetrieveQueryResults
@@ -1395,102 +1556,7 @@ static const char *GetPrivateIP()
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"autoRetrieving"])
 	{
-		// Start to retrieve the first 10 studies...
-		
-		NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithDictionary: [queryManager parameters]];
-		NetworkMoveDataHandler *moveDataHandler = [NetworkMoveDataHandler moveDataHandler];
-		
-		[dictionary setObject: moveDataHandler  forKey:@"receivedDataHandler"];
-		
-		NSMutableArray *selectedItems = [NSMutableArray array];
-		
-		for( id item in resultArray)
-		{
-			[self addStudyIfNotAvailable: item toArray: selectedItems];
-			if( [selectedItems count] >= 10) break;
-		}
-		
-		if( [selectedItems count])
-		{
-			if( [[NSUserDefaults standardUserDefaults] integerForKey:@"NumberOfPreviousStudyToRetrieve"])
-			{
-				NSMutableArray *copyResultArray = [NSMutableArray arrayWithArray: resultArray];
-				NSMutableArray *previousStudies = [NSMutableArray array];
-				for( id item in selectedItems)
-				{
-					NSArray *studiesOfThisPatient = [self queryPatientID: [item valueForKey:@"patientID"]];
-					
-					// Sort the resut by date & time
-					NSMutableArray *sortArray = [NSMutableArray array];
-					[sortArray addObject: [[[NSSortDescriptor alloc] initWithKey:@"date" ascending: NO] autorelease]];
-					[sortArray addObject: [[[NSSortDescriptor alloc] initWithKey:@"time" ascending: NO] autorelease]];
-					studiesOfThisPatient = [studiesOfThisPatient sortedArrayUsingDescriptors: sortArray];
-					
-					int numberOfStudiesAssociated = [[NSUserDefaults standardUserDefaults] integerForKey:@"NumberOfPreviousStudyToRetrieve"];
-					
-					for( id study in studiesOfThisPatient)
-					{
-						// We dont want current study
-						if( [[study valueForKey:@"uid"] isEqualToString: [item valueForKey:@"uid"]] == NO)
-						{
-							BOOL found = YES;
-							
-							if( numberOfStudiesAssociated > 0)
-							{
-								if( [[NSUserDefaults standardUserDefaults] boolForKey:@"retrieveSameModality"])
-								{
-									if( [item valueForKey:@"modality"] && [study valueForKey:@"modality"])
-									{
-										if( [[study valueForKey:@"modality"] rangeOfString: [item valueForKey:@"modality"]].location == NSNotFound) found = NO;						
-									}
-									else found = NO;
-								}
-								
-								if( [[NSUserDefaults standardUserDefaults] boolForKey:@"retrieveSameDescription"])
-								{
-									if( [item valueForKey:@"theDescription"] && [study valueForKey:@"theDescription"])
-									{
-										if( [[study valueForKey:@"theDescription"] rangeOfString: [item valueForKey:@"theDescription"]].location == NSNotFound) found = NO;
-									}
-									else found = NO;
-								}
-								
-								if( found)
-								{
-									[self addStudyIfNotAvailable: study toArray: previousStudies];
-									numberOfStudiesAssociated--;
-								}
-							}
-						}
-					}
-				}
-				
-				[selectedItems addObjectsFromArray: previousStudies];
-				
-				for( id item in selectedItems)
-					[item setShowErrorMessage: NO];
-				
-				[self refreshList: copyResultArray];
-			}
-			
-			[NSThread detachNewThreadSelector:@selector( performRetrieve:) toTarget:self withObject: selectedItems];
-			
-			NSLog( @"-------");
-			NSLog( @"Will auto-retrieve these items:");
-			for( id item in selectedItems)
-			{
-				NSLog( @"%@ %@ %@ %@", [item valueForKey:@"name"], [item valueForKey:@"patientID"], [item valueForKey:@"accessionNumber"], [item valueForKey:@"date"]);
-			}
-			NSLog( @"-------");
-			
-			NSString *desc = [NSString stringWithFormat: NSLocalizedString( @"Will auto-retrieve %d studies", nil), [selectedItems count]];
-			
-			[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Q&R Auto-Retrieve", nil) description: desc name: @"newfiles"];
-		}
-		else
-		{
-			NSLog( @"--- autoRetrieving is up to date! Nothing to retrieve ---");
-		}
+		[NSThread detachNewThreadSelector:@selector( autoRetrieveThread:) toTarget:self withObject: [NSArray arrayWithArray: resultArray]];
 	}
 }
 
@@ -1728,7 +1794,10 @@ static const char *GetPrivateIP()
 			{
 				[object move:dictionary];
 				
-				[previousAutoRetrieve removeObjectForKey: [self stringIDForStudy: object]];
+				@synchronized( previousAutoRetrieve)
+				{
+					[previousAutoRetrieve removeObjectForKey: [self stringIDForStudy: object]];
+				}
 			}
 		}
 	}
