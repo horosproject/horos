@@ -1056,11 +1056,12 @@ static const char *GetPrivateIP()
 	id					aServer;
 	int					selectedServer;
 	BOOL				atLeastOneSource = NO, noChecked = YES, error = NO;
+	NSArray				*copiedSources = [NSArray arrayWithArray: sourcesArray];
 	
 	noChecked = YES;
-	for( NSUInteger i = 0; i < [sourcesArray count]; i++)
+	for( NSUInteger i = 0; i < [copiedSources count]; i++)
 	{
-		if( [[[sourcesArray objectAtIndex: i] valueForKey:@"activated"] boolValue] == YES)
+		if( [[[copiedSources objectAtIndex: i] valueForKey:@"activated"] boolValue] == YES)
 			noChecked = NO;
 	}
 	
@@ -1076,11 +1077,11 @@ static const char *GetPrivateIP()
 	
 	if ([filterValue length] > 0)
 	{
-		for( NSUInteger i = 0; i < [sourcesArray count]; i++)
+		for( NSUInteger i = 0; i < [copiedSources count]; i++)
 		{
-			if( [[[sourcesArray objectAtIndex: i] valueForKey:@"activated"] boolValue] == YES || selectedServer == i)
+			if( [[[copiedSources objectAtIndex: i] valueForKey:@"activated"] boolValue] == YES || selectedServer == i)
 			{
-				aServer = [[sourcesArray objectAtIndex:i] valueForKey:@"server"];
+				aServer = [[copiedSources objectAtIndex:i] valueForKey:@"server"];
 				
 				NSString *myAET = [[NSUserDefaults standardUserDefaults] objectForKey:@"AETITLE"]; 			
 				theirAET = [aServer objectForKey:@"AETitle"];
@@ -1097,6 +1098,8 @@ static const char *GetPrivateIP()
 					[qm performQuery];
 					
 					[result addObjectsFromArray: [qm queries]];
+					
+					[qm release];
 				}
 			}
 		}
