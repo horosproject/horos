@@ -1286,7 +1286,9 @@ static const char *GetPrivateIP()
 	
 	if( [tempResultArray count])
 		[tempResultArray sortUsingDescriptors: [self sortArray]];
-		
+	
+	[autoQueryLock unlock];
+	
 	[self performSelectorOnMainThread:@selector( refreshList: ) withObject: tempResultArray waitUntilDone: YES];
 	
 	if( atLeastOneSource == NO)
@@ -1295,8 +1297,6 @@ static const char *GetPrivateIP()
 			NSRunCriticalAlertPanel( NSLocalizedString(@"Query", nil), NSLocalizedString( @"Please select a DICOM node (check box).", nil), NSLocalizedString(@"Continue", nil), nil, nil) ;
 	}
 	
-	[autoQueryLock unlock];
-	
 	[[NSUserDefaults standardUserDefaults] setBool: showErrorCopy forKey: @"showErrorsIfQueryFailed"];
 	
 	return error;
@@ -1304,9 +1304,13 @@ static const char *GetPrivateIP()
 
 - (void) refreshList: (NSArray*) l
 {
+	[l retain];
+	
 	[resultArray removeAllObjects];
 	[resultArray addObjectsFromArray: l];
 	[self refresh: self];
+	
+	[l release];
 }
 
 - (void) displayQueryResults

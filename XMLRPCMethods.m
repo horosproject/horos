@@ -121,7 +121,7 @@
 		
 		NSString *encoding = [doc characterEncoding];
 		
-		NSLog( [doc description]);
+//		NSLog( [doc description]);
 		
         NSArray *array = [doc nodesForXPath:@"//methodName" error:&error];
 		
@@ -770,7 +770,7 @@
 			// Did someone processed the message?
 			if( [[httpServerMessage valueForKey: @"Processed"] boolValue])
 			{
-				NSLog( @"XML-RPC Message processed. Sending the reponse.");
+//				NSLog( @"XML-RPC Message processed. Sending the reponse.");
 				
 				NSData *data = [[httpServerMessage valueForKey: @"NSXMLDocumentResponse"] XMLData];
 				CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 200, NULL, (CFStringRef) vers); // OK

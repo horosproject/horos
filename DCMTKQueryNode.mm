@@ -1028,7 +1028,7 @@ NS_HANDLER
 		NSString	*response = [NSString stringWithFormat: @"%@  /  %@:%d\r\r%@\r%@", _calledAET, _hostname, _port, [queryException name], [queryException description]];
 		
 		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"showErrorsIfQueryFailed"])
-			[self performSelectorOnMainThread:@selector(errorMessage:) withObject:[NSArray arrayWithObjects: NSLocalizedString(@"Query Failed (1)", nil), response, NSLocalizedString(@"Continue", nil), nil] waitUntilDone:YES];
+			[self performSelectorOnMainThread:@selector(errorMessage:) withObject:[NSArray arrayWithObjects: NSLocalizedString(@"Query Failed (1)", nil), response, NSLocalizedString(@"Continue", nil), nil] waitUntilDone:NO];
 		else
 			[[AppController sharedAppController] growlTitle: NSLocalizedString(@"Query Failed (1)", nil) description: response name: @"newfiles"];
 			
@@ -1169,7 +1169,7 @@ NS_ENDHANDLER
 			  }
 			
 			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"showErrorsIfQueryFailed"])
-				[self performSelectorOnMainThread:@selector(errorMessage:) withObject:[NSArray arrayWithObjects: NSLocalizedString(@"Query Failed (2)", nil), response, NSLocalizedString(@"Continue", nil), nil] waitUntilDone:YES];
+				[self performSelectorOnMainThread:@selector(errorMessage:) withObject:[NSArray arrayWithObjects: NSLocalizedString(@"Query Failed (2)", nil), response, NSLocalizedString(@"Continue", nil), nil] waitUntilDone:NO];
 			else
 				[[AppController sharedAppController] growlTitle: NSLocalizedString(@"Query Failed (2)", nil) description: response name: @"newfiles"];
 				
@@ -1333,7 +1333,7 @@ NS_ENDHANDLER
     }
 	else
 	{
-		[self performSelectorOnMainThread:@selector(errorMessage:) withObject:[NSArray arrayWithObjects: NSLocalizedString(@"Move Failed", nil), [NSString stringWithCString: DU_cmoveStatusString(rsp.DimseStatus)], NSLocalizedString(@"Continue", nil), nil] waitUntilDone:YES];
+		[self performSelectorOnMainThread:@selector(errorMessage:) withObject:[NSArray arrayWithObjects: NSLocalizedString(@"Move Failed", nil), [NSString stringWithCString: DU_cmoveStatusString(rsp.DimseStatus)], NSLocalizedString(@"Continue", nil), nil] waitUntilDone:NO];
         errmsg("Move Failed:");
         DimseCondition::dump(cond);
     }

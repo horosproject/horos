@@ -3477,21 +3477,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						
 			DCMPix	*thickDCM;
 		
-			if( curDCM.stack > 1) {
-				long maxVal;
-				
-//				if( flippedData)
-//				{
-//					maxVal = [dcmPixList count] - ([curDCM ID] + (curDCM.stack-1));
-//					if( maxVal < 0) maxVal = 0;
-//					if( maxVal >= [dcmPixList count]) maxVal = [dcmPixList count]-1;
-//				}
-//				else
-				{
-					maxVal = curImage+(curDCM.stack-1);
-					if( maxVal < 0) maxVal = 0;
-					if( maxVal >= [dcmPixList count]) maxVal = [dcmPixList count]-1;
-				}
+			if( curDCM.stack > 1)
+			{
+				long maxVal = curImage+(curDCM.stack-1);
+				if( maxVal < 0) maxVal = 0;
+				if( maxVal >= [dcmPixList count]) maxVal = [dcmPixList count]-1;
 				
 				thickDCM = [dcmPixList objectAtIndex: maxVal];
 			}
@@ -3519,7 +3509,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			if( thickDCM)
 				[instructions setObject: thickDCM forKey: @"DCMPix2"];
 			
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"sync" object: self userInfo: instructions];
+			if( roiHit == NO)
+				[[NSNotificationCenter defaultCenter] postNotificationName: @"sync" object: self userInfo: instructions];
 		}
 		
 		if( cross.x != -9999 && cross.y != -9999)

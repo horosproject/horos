@@ -999,8 +999,8 @@ static char *GetPrivateIP()
 	[incomingConnection closeFile];
 	[incomingConnection release];
 	
-	if( refreshDB) [interfaceOsiriX performSelectorOnMainThread:@selector( refreshDatabase:) withObject:nil waitUntilDone: YES];		// This has to be performed on the main thread
-	if( saveDB) [interfaceOsiriX performSelectorOnMainThread:@selector( saveDatabase:) withObject:nil waitUntilDone: YES];			// This has to be performed on the main thread
+	if( refreshDB) [interfaceOsiriX performSelectorOnMainThread:@selector( refreshDatabase:) withObject:nil waitUntilDone: NO];		// This has to be performed on the main thread
+	if( saveDB) [interfaceOsiriX performSelectorOnMainThread:@selector( saveDatabase:) withObject:nil waitUntilDone: NO];			// This has to be performed on the main thread
 	
 	[mPool release];
 }

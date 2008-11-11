@@ -35,32 +35,7 @@ extern BrowserController *browserWindow;
 -(NSManagedObjectContext *)managedObjectContext{
 	return [browserWindow managedObjectContext];
 }
-/*
-- (void)removeObjectAtArrangedObjectIndex:(unsigned int)index{
-	id object = nil;
-	if (index < [[self arrangedObjects] count])
-		object = [[self arrangedObjects] objectAtIndex:index];
-	[super removeObjectAtArrangedObjectIndex:(unsigned int)index];	
-	[[browserWindow managedObjectContext] deleteObject:(NSManagedObject *)object];
-	[self save: self];
-}
 
-- (void)remove:(id)sender{
-	NSLog(@"remove");
-	[super remove:sender];
-	[self performSelectorOnMainThread:@selector(save:) withObject:nil waitUntilDone:YES];
-}
-
-- (void)save:(id)sender{
-	NSError *error = nil;
-	if (![[browserWindow managedObjectContext]  save: &error])
-	{
-		NSString *localizedDescription = [error localizedDescription];
-		error = [NSError errorWithDomain:@"OsiriXDomain" code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:error, NSUnderlyingErrorKey, [NSString stringWithFormat:@"Error saving: %@", ((localizedDescription != nil) ? localizedDescription : @"Unknown Error")], NSLocalizedDescriptionKey, nil]];
-		[[NSApplication sharedApplication] presentError:error];
-	}
-}
-*/
 - (IBAction)nothing:(id)sender{
 }
 
