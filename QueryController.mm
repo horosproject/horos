@@ -1093,7 +1093,7 @@ static const char *GetPrivateIP()
 				{
 					QueryArrayController *qm = [[QueryArrayController alloc] initWithCallingAET:myAET calledAET:theirAET  hostName:hostname port:port netService:netService];
 					
-					[qm addFilter:filterValue forDescription:currentQueryKey];
+					[qm addFilter:filterValue forDescription: PatientID];
 					
 					[qm performQuery];
 					
