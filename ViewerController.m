@@ -9502,13 +9502,24 @@ extern NSString * documentsDirectory();
 						str = [[imagePath stringByDeletingLastPathComponent] stringByAppendingPathComponent: [str lastPathComponent]];
 					}
 					
-					NSData *data = [ROISRConverter roiFromDICOM: str];	
+					NSData *data = [ROISRConverter roiFromDICOM: str];
+					
 					//If data, we successfully unarchived from SR style ROI
-					if (data)
-						array = [NSUnarchiver unarchiveObjectWithData:data];
-					else
-						array = [NSUnarchiver unarchiveObjectWithFile: str];
-						
+					
+					array = 0L;
+					
+					@try
+					{
+						if (data)
+							array = [NSUnarchiver unarchiveObjectWithData:data];
+						else
+							array = [NSUnarchiver unarchiveObjectWithFile: str];
+					}
+					@catch (NSException * e)
+					{
+						NSLog( @"failed to read a ROI");
+					}
+					
 					if( array)
 					{
 						[[roiList[ mIndex] objectAtIndex:i] addObjectsFromArray:array];
