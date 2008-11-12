@@ -1106,6 +1106,8 @@ extern NSString * documentsDirectory();
 		long	annotCopy = [[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"];
 		long	i, width, height, spp, bpp, err = 0;
 		float	cwl, cww;
+		BOOL	isSigned;
+		int     offset;
 		
 		[[NSUserDefaults standardUserDefaults] setInteger: annotGraphics forKey: @"ANNOTATIONS"];
 		[DCMView setDefaults];
@@ -1131,7 +1133,7 @@ extern NSString * documentsDirectory();
 			[view movieChangeSource:(float*) [volumeData[ curMovieIndex] bytes]];
 			
 			float imOrigin[ 3], imSpacing[ 2];
-			unsigned char *data = [[view finalView] getRawPixelsWidth:&width height:&height spp:&spp bpp:&bpp screenCapture:YES force8bits:NO removeGraphical:YES squarePixels:YES allTiles:NO allowSmartCropping:YES origin: imOrigin spacing: imSpacing];
+			unsigned char *data = [[view finalView] getRawPixelsWidth:&width height:&height spp:&spp bpp:&bpp screenCapture:YES force8bits:NO removeGraphical:YES squarePixels:YES allTiles:NO allowSmartCropping:YES origin: imOrigin spacing: imSpacing offset: &offset isSigned: &isSigned];
 						
 			if( data)
 			{
@@ -1172,7 +1174,8 @@ extern NSString * documentsDirectory();
 		long	annotCopy = [[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"];
 		long	width, height, spp, bpp;
 		float	cwl, cww;
-				
+		BOOL	isSigned;
+		int     offset;
 		
 		[[NSUserDefaults standardUserDefaults] setInteger: annotGraphics forKey: @"ANNOTATIONS"];
 		[DCMView setDefaults];
@@ -1180,7 +1183,7 @@ extern NSString * documentsDirectory();
 		if( exportDCM == nil) exportDCM = [[DICOMExport alloc] init];
 		
 		float imOrigin[ 3], imSpacing[ 2];
-		unsigned char *data = [[view finalView] getRawPixelsWidth:&width height:&height spp:&spp bpp:&bpp screenCapture:YES force8bits:NO removeGraphical:YES squarePixels:YES allTiles:NO allowSmartCropping:YES origin: imOrigin spacing: imSpacing];
+		unsigned char *data = [[view finalView] getRawPixelsWidth:&width height:&height spp:&spp bpp:&bpp screenCapture:YES force8bits:NO removeGraphical:YES squarePixels:YES allTiles:NO allowSmartCropping:YES origin: imOrigin spacing: imSpacing offset: &offset isSigned: &isSigned];
 
 		
 		if( data)

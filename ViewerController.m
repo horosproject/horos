@@ -14585,6 +14585,8 @@ int i,j,l;
 	long	width, height, spp, bpp, i, x;
 	float	cwl, cww;
 	float	o[ 9];
+	BOOL	isSigned;
+	int     offset;
 	
 	if( screenCapture || allViewers)
 	{
@@ -14752,7 +14754,7 @@ int i,j,l;
 		{
 			long	iwidth, iheight, ispp, ibpp;
 			
-			tempData = [[[viewers objectAtIndex: i] imageView] getRawPixelsWidth:&iwidth height:&iheight spp:&ispp bpp:&ibpp screenCapture:screenCapture force8bits:force8bits removeGraphical:YES squarePixels:YES allTiles:[[NSUserDefaults standardUserDefaults] boolForKey:@"includeAllTiledViews"] allowSmartCropping:NO origin: imOrigin spacing: imSpacing];
+			tempData = [[[viewers objectAtIndex: i] imageView] getRawPixelsWidth:&iwidth height:&iheight spp:&ispp bpp:&ibpp screenCapture:screenCapture force8bits:force8bits removeGraphical:YES squarePixels:YES allTiles:[[NSUserDefaults standardUserDefaults] boolForKey:@"includeAllTiledViews"] allowSmartCropping:NO origin: imOrigin spacing: imSpacing offset: &offset isSigned: &isSigned];
 			
 			NSRect	bounds = [[viewsRect objectAtIndex: i] rectValue];	//[[[viewers objectAtIndex: i] imageView] bounds];
 			

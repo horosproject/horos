@@ -2130,12 +2130,14 @@ NSString * documentsDirectory();
 	long	width, height, spp, bpp;
 	float	cwl, cww;
 	float	o[ 9], imOrigin[ 3], imSpacing[ 2];
+	BOOL	isSigned;
+	int     offset;
 	
 	[[NSUserDefaults standardUserDefaults] setInteger: annotGraphics forKey: @"ANNOTATIONS"];
 	[[NSUserDefaults standardUserDefaults] setInteger: barHide forKey: @"CLUTBARS"];
 	[DCMView setDefaults];
 	
-	unsigned char *data = [curView getRawPixelsWidth:&width height:&height spp:&spp bpp:&bpp screenCapture:screenCapture force8bits:NO removeGraphical:YES squarePixels:NO allTiles:NO allowSmartCropping:YES origin: imOrigin spacing: imSpacing];
+	unsigned char *data = [curView getRawPixelsWidth:&width height:&height spp:&spp bpp:&bpp screenCapture:screenCapture force8bits:NO removeGraphical:YES squarePixels:NO allTiles:NO allowSmartCropping:YES origin: imOrigin spacing: imSpacing offset: &offset isSigned: &isSigned];
 	
 	if( data)
 	{

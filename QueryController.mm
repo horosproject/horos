@@ -1757,7 +1757,9 @@ static const char *GetPrivateIP()
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	[array retain];
-
+	
+	[performRetrievelock lock];
+	
 	NetworkMoveDataHandler *moveDataHandler = [NetworkMoveDataHandler moveDataHandler];
 	NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithDictionary: [queryManager parameters]];
 	
@@ -1811,6 +1813,9 @@ static const char *GetPrivateIP()
 	NSLog(@"Retrieve END");
 	
 	[array release];
+	
+	[performRetrievelock unlock];
+	
 	[pool release];
 }
 
@@ -2254,6 +2259,7 @@ static const char *GetPrivateIP()
 		activeMoves = [[NSMutableDictionary dictionary] retain];
 		previousAutoRetrieve = [[NSMutableDictionary dictionary] retain];
 		autoQueryLock = [[NSRecursiveLock alloc] init];
+		performRetrievelock = [[NSRecursiveLock alloc] init];
 //		displayLock = [[NSLock alloc] init];
 		
 		sourcesArray = [[[NSUserDefaults standardUserDefaults] objectForKey: @"SavedQueryArray"] mutableCopy];
@@ -2273,6 +2279,8 @@ static const char *GetPrivateIP()
 
 - (void)dealloc
 {
+	[performRetrievelock lock];
+	[performRetrievelock unlock];
 	[autoQueryLock lock];
 	[autoQueryLock unlock];
 	
@@ -2296,6 +2304,7 @@ static const char *GetPrivateIP()
 	[sourcesArray release];
 	[resultArray release];
 	[autoQueryLock release];
+	[performRetrievelock release];
 	[QueryTimer invalidate];
 	[QueryTimer release];
 	

@@ -1288,12 +1288,14 @@ NSString * documentsDirectory();
 	float	cwl, cww;
 	float	o[ 9];
 	float	imOrigin[ 3], imSpacing[ 2];
+	int		offset;
+	BOOL	isSigned;
 	
 	[[NSUserDefaults standardUserDefaults] setInteger: annotGraphics forKey: @"ANNOTATIONS"];
 	[[NSUserDefaults standardUserDefaults] setInteger: barHide forKey: @"CLUTBARS"];
 	[DCMView setDefaults];
 	
-	unsigned char *data = [[self keyView] getRawPixelsViewWidth:&width height:&height spp:&spp bpp:&bpp screenCapture:screenCapture force8bits:NO removeGraphical:YES squarePixels:YES allowSmartCropping: YES origin: imOrigin spacing: imSpacing];
+	unsigned char *data = [[self keyView] getRawPixelsViewWidth:&width height:&height spp:&spp bpp:&bpp screenCapture:screenCapture force8bits:NO removeGraphical:YES squarePixels:YES allowSmartCropping: YES origin: imOrigin spacing: imSpacing offset: &offset isSigned: &isSigned];
 	
 	if( data)
 	{
