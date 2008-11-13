@@ -643,7 +643,13 @@ static NSArray*	statesArray = nil;
 							if ([curDict objectForKey: @"hasDICOM"])
 								[study setValue:[curDict objectForKey: @"hasDICOM"] forKey:@"hasDICOM"];
 						}
-						
+						else
+						{
+							if( [[study valueForKey: @"modality"] isEqualToString: @"SR"] || [[study valueForKey: @"modality"] isEqualToString: @"OT"])
+							{
+								[study setValue: [curDict objectForKey: @"modality"] forKey:@"modality"];
+							}
+						}
 						curStudyID = [curDict objectForKey: @"studyID"];
 						curPatientUID = [curDict objectForKey: @"patientUID"];
 						
@@ -2547,11 +2553,6 @@ static NSArray*	statesArray = nil;
 	[self outlineViewRefresh];
 	[self refreshMatrix: self];
 	
-	shouldDie = YES;
-	[matrixLoadIconsLock lock];
-	[matrixLoadIconsLock unlock];
-	shouldDie = NO;
-	
 	[albumTable selectRow:0 byExtendingSelection:NO];
 	
 	NSString	*DBVersion, *DBFolderLocation, *curPath = [self.documentsDirectory stringByDeletingLastPathComponent];
@@ -3639,12 +3640,7 @@ static NSArray*	statesArray = nil;
 				}
 				
 				if( [toBeRemoved count] > 0)							// (DDP: 051109) was > 1, i.e. required at least 2 studies out of date to be removed.
-				{														// Stop thread
-					shouldDie = YES;
-					[matrixLoadIconsLock lock];
-					[matrixLoadIconsLock unlock];
-					shouldDie = NO;
-					
+				{
 					NSLog(@"Will delete: %d studies", [toBeRemoved count]);
 					
 					Wait *wait = [[Wait alloc] initWithString: NSLocalizedString(@"Database Auto-Cleaning...", nil)];
@@ -4812,11 +4808,6 @@ static NSArray*	statesArray = nil;
 		{
 			[[self managedObjectContext] lock];
 			
-			shouldDie = YES;
-			[matrixLoadIconsLock lock];
-			[matrixLoadIconsLock unlock];
-			shouldDie = NO;
-			
 			[animationSlider setEnabled:NO];
 			[animationSlider setMaxValue:0];
 			[animationSlider setNumberOfTickMarks:1];
@@ -4860,15 +4851,13 @@ static NSArray*	statesArray = nil;
 				for( unsigned int i = 0; i < [files count];i++ ) [previewPixThumbnails addObject: notFoundImage];
 			}
 			
-			NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: files, @"files", [files valueForKey:@"completePath"], @"filesPaths",[NSNumber numberWithBool: imageLevel], @"imageLevel", nil];
-			[NSThread detachNewThreadSelector: @selector(matrixLoadIcons:) toTarget: self withObject: dict];
+			[[self managedObjectContext] unlock];
+			
+			NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: files, @"files", [files valueForKey:@"completePath"], @"filesPaths",[NSNumber numberWithBool: imageLevel], @"imageLevel", previewPixThumbnails, @"previewPixThumbnails", previewPix, @"previewPix", nil];
+			[NSThread detachNewThreadSelector: @selector( matrixLoadIcons:) toTarget: self withObject: dict];
 			
 			if( previousItem == item)
-			{
 				[oMatrix selectCellWithTag: cellId];
-			}
-			
-			[[self managedObjectContext] unlock];
 		}
 		
 		if( previousItem != item)
@@ -5119,7 +5108,7 @@ static NSArray*	statesArray = nil;
 	needDBRefresh = YES;
 	
 	[animationCheck setState: NSOffState];
-	
+
 	[context retain];
 	[context lock];
 	
@@ -5144,12 +5133,7 @@ static NSArray*	statesArray = nil;
 		NSIndexSet		*selectedRows = [databaseOutline selectedRowIndexes];
 		
 		if( [databaseOutline selectedRow] >= 0 )
-		{
-			shouldDie = YES;
-			[matrixLoadIconsLock lock];
-			[matrixLoadIconsLock unlock];
-			shouldDie = NO;
-			
+		{			
 			NSMutableArray *studiesToRemove = [NSMutableArray array];
 			NSManagedObject	*album = [self.albumArray objectAtIndex: albumTable.selectedRow];
 			
@@ -5217,11 +5201,6 @@ static NSArray*	statesArray = nil;
 		
 		if( [databaseOutline selectedRow] >= 0 )
 		{
-			shouldDie = YES;
-			[matrixLoadIconsLock lock];
-			[matrixLoadIconsLock unlock];
-			shouldDie = NO;
-			
 			// Are some images locked?
 			
 			NSArray	*lockedImages = [objectsToDelete filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"series.study.lockedStudy == YES"]];
@@ -6427,9 +6406,6 @@ static NSArray*	statesArray = nil;
 			
 			[self matrixDisplayIcons: self];	//Display the icons, if necessary
 			
-			[matrixLoadIconsLock lock];
-			[matrixLoadIconsLock unlock];
-			
 			NSInteger seriesPosition = [seriesArray indexOfObject: [curImage valueForKey:@"series"]];
 			
 			if( seriesPosition != NSNotFound )
@@ -6925,9 +6901,6 @@ static BOOL withReset = NO;
 	BOOL	animate = NO;
 	long	noOfImages = 0;
 	
-	if( [matrixLoadIconsLock tryLock]) [matrixLoadIconsLock unlock];
-	else return;
-	
     NSButtonCell    *cell = [oMatrix selectedCell];
     if( cell)
 	{
@@ -7043,9 +7016,6 @@ static BOOL withReset = NO;
 	if( bonjourDownloading) return;
 	if( animationCheck.state == NSOffState ) return;
 	
-	if( [matrixLoadIconsLock tryLock] ) [matrixLoadIconsLock unlock];
-	else return;
-	
     if( self.window.isKeyWindow == NO ) return;
     if( animationSlider.isEnabled == NO ) return;
 	
@@ -7066,10 +7036,6 @@ static BOOL withReset = NO;
 	else
 		reverseScrollWheel=1.0;
 	float change = reverseScrollWheel * [theEvent deltaY];
-	
-    // Wait loading all images !!!
-	if( [matrixLoadIconsLock tryLock]) [matrixLoadIconsLock unlock];
-	else return;
 	
 	int	pos = [animationSlider intValue];
 	
@@ -7144,9 +7110,7 @@ static BOOL withReset = NO;
 }
 
 -(void) matrixInit:(long) noOfImages
-{
-	[matrixLoadIconsLock lock];
-	
+{	
 	setDCMDone = NO;
 	loadPreviewIndex = 0;
 	
@@ -7183,13 +7147,11 @@ static BOOL withReset = NO;
 	[imageView setDCM:nil :nil :nil :0 :0 :YES];
 	
 	[self matrixDisplayIcons: self];
-	
-	[matrixLoadIconsLock unlock];
 }
 
 - (void)matrixNewIcon:(long) index: (NSManagedObject*)curFile
 {	
-	if( shouldDie == NO )
+//	if( shouldDie == NO )
 	{
 		long		i = index;
 		
@@ -7703,11 +7665,6 @@ static BOOL withReset = NO;
 	
 	if( [databaseOutline selectedRow] >= 0 )
 	{
-		shouldDie = YES;
-		[matrixLoadIconsLock lock];
-		[matrixLoadIconsLock unlock];
-		shouldDie = NO;
-		
 		for( NSInteger x = 0; x < selectedRows.count; x++ )
 		{
 			if( x == 0) row = selectedRows.firstIndex;
@@ -7741,59 +7698,58 @@ static BOOL withReset = NO;
 	long							subGroupCount = 1, position = 0;
 	NSArray							*files = [dict valueForKey: @"files"];
 	NSArray							*filesPaths = [dict valueForKey: @"filesPaths"];
+	NSMutableArray					*ipreviewPixThumbnails = [dict valueForKey: @"previewPixThumbnails"];
+	NSMutableArray					*ipreviewPix = [dict valueForKey: @"previewPix"];
 	
-	[matrixLoadIconsLock lock];
 	
 	@try
 	{
-		for( int i = 0; i < filesPaths.count; i++ )
+		for( int i = 0; i < filesPaths.count; i++)
 		{
 			NSImage		*thumbnail = nil;
 			
-			thumbnail = [previewPixThumbnails objectAtIndex: i];
+			thumbnail = [ipreviewPixThumbnails objectAtIndex: i];
 			
 			int frame = 0;
 			if( [[[files objectAtIndex: i] valueForKey:@"numberOfFrames"] intValue] > 1) frame = [[[files objectAtIndex: i] valueForKey:@"numberOfFrames"] intValue]/2;
 			
 			DCMPix *dcmPix  = [[DCMPix alloc] myinit:[filesPaths objectAtIndex:i] :position :subGroupCount :nil :frame :0 isBonjour:isCurrentDatabaseBonjour imageObj: [files objectAtIndex: i]];
 			
-			if( dcmPix )
+			if( dcmPix)
 			{
-				if( thumbnail == notFoundImage )
+				if( thumbnail == notFoundImage)
 				{
 					[dcmPix revert];	// <- Kill the raw data
 					
 					thumbnail = [dcmPix generateThumbnailImageWithWW:0 WL:0];
 					if( thumbnail == nil) thumbnail = notFoundImage;
 					
-					[previewPixThumbnails replaceObjectAtIndex: i withObject: thumbnail];
+					[ipreviewPixThumbnails replaceObjectAtIndex: i withObject: thumbnail];
 				}
 				
-				[previewPix addObject: dcmPix];
+				[ipreviewPix addObject: dcmPix];
 				[dcmPix release];
 				
-				if (shouldDie == YES) i = [filesPaths count];
+				if(previewPix != ipreviewPix || ipreviewPixThumbnails != previewPixThumbnails)
+					i = [filesPaths count];
 			}
 			else
 			{
 				dcmPix = [[DCMPix alloc] myinitEmpty];
-				[previewPix addObject: dcmPix];
-				[previewPixThumbnails replaceObjectAtIndex: i withObject: notFoundImage];
+				[ipreviewPix addObject: dcmPix];
+				[ipreviewPixThumbnails replaceObjectAtIndex: i withObject: notFoundImage];
 				[dcmPix release];
 			}
 		}
 		
-		shouldDie = NO;
-		
-		[self performSelectorOnMainThread:@selector( matrixDisplayIcons:) withObject:nil waitUntilDone: NO];
+		if(previewPix != ipreviewPix || ipreviewPixThumbnails != previewPixThumbnails)
+			[self performSelectorOnMainThread:@selector( matrixDisplayIcons:) withObject:nil waitUntilDone: NO];
 	}
 	
 	@catch( NSException *ne)
 	{
 		NSLog(@"matrixLoadIcons exception: %@", ne.description );
 	}
-	
-	[matrixLoadIconsLock unlock];
 	
     [pool release];
 }
@@ -8518,7 +8474,6 @@ static BOOL withReset = NO;
 												 NSLocalizedString(@"Cancel",nil),
 												 nil) == NSAlertDefaultReturn)
 				{
-					
 					NSManagedObjectContext	*context = self.managedObjectContext;
 					
 					[context retain];
@@ -8526,11 +8481,6 @@ static BOOL withReset = NO;
 					
 					if( albumTable.selectedRow > 0)	// We cannot delete the first item !
 					{
-						shouldDie = YES;
-						[matrixLoadIconsLock lock];
-						[matrixLoadIconsLock unlock];
-						shouldDie = NO;
-						
 						[context deleteObject: [self.albumArray  objectAtIndex: albumTable.selectedRow]];
 					}
 					
@@ -10951,8 +10901,6 @@ static NSArray*	openSubSeriesArray = nil;
 	
 	if( managedObjectContext == nil) return;
 	if( bonjourDownloading) return;
-	if( [matrixLoadIconsLock tryLock]) [matrixLoadIconsLock unlock];
-	else return;
 	
 	[animationSlider setIntValue: subFrom-1];
 	[self previewSliderAction: nil];
@@ -10966,8 +10914,6 @@ static NSArray*	openSubSeriesArray = nil;
 	
 	if( managedObjectContext == nil) return;
 	if( bonjourDownloading) return;
-    if( [matrixLoadIconsLock tryLock]) [matrixLoadIconsLock unlock];
-	else return;
 	
 	[animationSlider setIntValue: subTo-1];
 	[self previewSliderAction: nil];
@@ -11142,7 +11088,6 @@ static NSArray*	openSubSeriesArray = nil;
 //		[numFmt setFormat:@"0"];
 //		[numFmt setHasThousandSeparators: YES];
 		
-		matrixLoadIconsLock = [[NSRecursiveLock alloc] init];
 		checkBonjourUpToDateThreadLock = [[NSLock alloc] init];
 		checkIncomingLock = [[NSRecursiveLock alloc] init];
 		decompressArrayLock = [[NSLock alloc] init];
@@ -11207,7 +11152,7 @@ static NSArray*	openSubSeriesArray = nil;
 		
 		// NSString *str = [[[NSBundle mainBundle] bundlePath] stringByDeletingLastPathComponent];
 		
-		shouldDie = NO;
+//		shouldDie = NO;
 		bonjourDownloading = NO;
 		
 		previewPix = [[NSMutableArray alloc] initWithCapacity:0];

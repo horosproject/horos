@@ -14822,6 +14822,9 @@ int i,j,l;
 				
 		[exportDCM setPixelData: data samplePerPixel:spp bitsPerPixel:bpp width: width height: height];
 		
+		if( bpp == 16 && [[imageView curDCM] minValueOfSeries] < -1024)
+			[exportDCM setSigned: YES];
+		
 		f = [exportDCM writeDCMFile: nil];
 		if( f == nil) NSRunCriticalAlertPanel( NSLocalizedString(@"Error", nil),  NSLocalizedString(@"Error during the creation of the DICOM File!", nil), NSLocalizedString(@"OK", nil), nil, nil);
 		else sopuid = [exportDCM SOPInstanceUID];

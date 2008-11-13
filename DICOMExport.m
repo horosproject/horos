@@ -113,6 +113,11 @@ extern BrowserController	*browserWindow;
 	dcmSourcePath = [isource retain];
 }
 
+- (void) setSigned: (BOOL) s
+{
+	isSigned = s;
+}
+
 - (long) setPixelData:		(unsigned char*) idata
 		samplePerPixel:		(long) ispp
 		bitsPerPixel:		(long) ibpp
@@ -124,6 +129,7 @@ extern BrowserController	*browserWindow;
 	width = iwidth;
 	height = iheight;
 	data = idata;
+	isSigned = NO;
 	
 	return 0;
 }
@@ -396,9 +402,6 @@ extern BrowserController	*browserWindow;
 			int highBit;
 			int bitsAllocated;
 			float numberBytes;
-			BOOL isSigned;
-			
-//			NSLog(@"Current bpp: %d", bpp);
 			
 			switch( bpp)
 			{
@@ -406,14 +409,12 @@ extern BrowserController	*browserWindow;
 					highBit = 7;
 					bitsAllocated = 8;
 					numberBytes = 1;
-					isSigned = NO;
 				break;
 				
 				case 16:			
 					highBit = 15;
 					bitsAllocated = 16;
 					numberBytes = 2;
-					isSigned = NO;
 				break;
 				
 				default:
@@ -493,8 +494,12 @@ extern BrowserController	*browserWindow;
 			{
 				vr = @"OW";
 				
+				if( isSigned == NO)
 				//By default, we use a 1024 rescale intercept !!
-				[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt:-1024]] forName:@"RescaleIntercept"];
+					[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt:-1024]] forName:@"RescaleIntercept"];
+				else
+					[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt: 0]] forName:@"RescaleIntercept"];
+					
 				[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt:1]] forName:@"RescaleSlope"];
 				
 				if( [[dcmObject attributeValueWithName:@"Modality"] isEqualToString:@"CT"]) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject: @"HU"] forName:@"RescaleType"];

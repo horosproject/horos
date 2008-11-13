@@ -101,7 +101,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	
 	NSMutableArray			*albumNoOfStudiesCache;
 	
-    volatile BOOL           shouldDie, bonjourDownloading;
+    volatile BOOL			bonjourDownloading;
 	
 	NSArray							*outlineViewArray, *originalOutlineViewArray;
 	NSArray							*matrixViewArray;
@@ -213,7 +213,6 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	
 	NSMutableArray					*autoroutingQueueArray;
 	NSLock							*autoroutingQueue, *autoroutingInProgress;
-	NSRecursiveLock					*matrixLoadIconsLock;
 	NSMutableDictionary				*autoroutingPreviousStudies;
 	
 	NSConditionLock					*processorsLock;

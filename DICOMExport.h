@@ -28,6 +28,7 @@
 		// Raw data support
 		unsigned char		*data;
 		long				width, height, spp, bpp;
+		BOOL				isSigned;
 		
 		// NSImage support
 		NSImage				*image;
@@ -57,6 +58,8 @@
 		bitsPerPixel:		(long) ibpp
 		width:				(long) iwidth
 		height:				(long) iheight;
+
+- (void) setSigned: (BOOL) s;
 
 // Set Pixel Data from a NSImage
 - (long) setPixelNSImage:	(NSImage*) iimage;

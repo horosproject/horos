@@ -8822,7 +8822,12 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			dst8.data = buf;
 			
 			if( buf)
-				vImageConvert_FTo16U( &srcf, &dst8, -1024,  1, 0);
+			{
+				if( [curDCM minValueOfSeries] < -1024)
+					vImageConvert_FTo16S( &srcf, &dst8, 0,  1, 0);
+				else
+					vImageConvert_FTo16U( &srcf, &dst8, -1024,  1, 0);
+			}
 		}
 	}
 	else // Pixels contained in memory  -> only RGB or 16 bits data
@@ -8975,7 +8980,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 //					else
 					{
 						dst8.data = buf;
-						vImageConvert_FTo16U( &srcf, &dst8, -1024,  1, 0);	//By default, we use a 1024 rescale intercept !!
+						if( [dcm minValueOfSeries] < -1024)
+							vImageConvert_FTo16S( &srcf, &dst8, 0,  1, 0);
+						else
+							vImageConvert_FTo16U( &srcf, &dst8, -1024,  1, 0);
 					}
 				}
 				
