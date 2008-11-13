@@ -620,23 +620,33 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 			pixelSpacingY = [[coder decodeObject] floatValue];
 		}
 		else pixelSpacingY = pixelSpacingX;
-		if (type==tPlain)
+		
+		if (type == tPlain)
 		{
-			textureWidth=[[coder decodeObject] intValue];
-			textureHeight=[[coder decodeObject] intValue];
+			textureWidth = [[coder decodeObject] intValue];
+			[[coder decodeObject] intValue];	// Keep it for backward compatibility & compatibility with encoder
+			textureHeight = [[coder decodeObject] intValue];
+			[[coder decodeObject] intValue];	// Keep it for backward compatibility & compatibility with encoder
 			
-			textureUpLeftCornerX=[[coder decodeObject] intValue];
-			textureUpLeftCornerY=[[coder decodeObject] intValue];
-			textureDownRightCornerX=[[coder decodeObject] intValue];
-			textureDownRightCornerY=[[coder decodeObject] intValue];
+			textureUpLeftCornerX = [[coder decodeObject] intValue];
+			textureUpLeftCornerY = [[coder decodeObject] intValue];
+			textureDownRightCornerX = [[coder decodeObject] intValue];
+			textureDownRightCornerY = [[coder decodeObject] intValue];
 			
-			unsigned char* pointerBuff=(unsigned char*)[[coder decodeObject] bytes];
 			textureBuffer=(unsigned char*)malloc(textureWidth*textureHeight*sizeof(unsigned char));
-
-			for( long j=0; j<textureHeight; j++ ) {
-				for( long i=0; i<textureWidth; i++ ) {
-					textureBuffer[i+j*textureWidth]=pointerBuff[i+j*textureWidth];
+			
+			@try
+			{
+				unsigned char* pointerBuff=(unsigned char*)[[coder decodeObject] bytes];
+				
+				for( int j=0; j<textureHeight; j++ )
+				{
+					for( int i=0; i<textureWidth; i++ )
+						textureBuffer[i+j*textureWidth]=pointerBuff[i+j*textureWidth];
 				}
+			}
+			@catch (NSException * e)
+			{
 			}
 		}
 		
@@ -885,22 +895,18 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 	[coder encodeObject:[NSNumber numberWithFloat:pixelSpacingY]];
 	if (type==tPlain)
 	{
-		/*
-		 int			textureWidth, oldTextureWidth, textureHeight, oldTextureHeight;
-		 unsigned char*	textureBuffer;
-		 unsigned char* tempTextureBuffer;
-		 int textureUpLeftCornerX,textureUpLeftCornerY,textureDownRightCornerX,textureDownRightCornerY;
-		 int textureFirstPoint;
-		 */
 		[coder encodeObject:[NSNumber numberWithInt:textureWidth]];
 		[coder encodeObject:[NSNumber numberWithInt:0]];
+		
 		[coder encodeObject:[NSNumber numberWithInt:textureHeight]];
 		[coder encodeObject:[NSNumber numberWithInt:0]];
 		
 		[coder encodeObject:[NSNumber numberWithInt:textureUpLeftCornerX]];
 		[coder encodeObject:[NSNumber numberWithInt:textureUpLeftCornerY]];
+		
 		[coder encodeObject:[NSNumber numberWithInt:textureDownRightCornerX]];
 		[coder encodeObject:[NSNumber numberWithInt:textureDownRightCornerY]];
+		
 		[coder encodeObject:[NSData dataWithBytes:textureBuffer length:(textureWidth*textureHeight)]];
 	}
 	[coder encodeObject:zPositions];
