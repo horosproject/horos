@@ -395,13 +395,12 @@ enum ctTypes {ElectronCTType, MultiSliceCTType};
 	ITKSegmentation3D	*itk = [[ITKSegmentation3D alloc] initWith:[_viewer pixList] :[_viewer volumePtr] :slice];
 	if( itk)
 	{
-
 		NSLog(@"Lower Threshold: %d", _lowerThreshold);
 		NSArray *parametersArray = [NSArray arrayWithObjects:
 					[NSNumber numberWithInt:_lowerThreshold],
 					[NSNumber numberWithInt:_upperThreshold],
 					nil];
-						
+		
 		[itk regionGrowing3D	: _viewer
 								: nil
 								: slice

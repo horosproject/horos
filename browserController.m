@@ -15910,6 +15910,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 - (IBAction)toggleBonjourSharing: (id)sender
 {
 	[self setBonjourSharingEnabled:([sender state] == NSOnState)];
+	
+	[self switchToDefaultDBIfNeeded];
 }
 
 - (void)setBonjourSharingEnabled:(BOOL)boo
@@ -15945,6 +15947,14 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[self bonjourServiceClicked: bonjourServicesList];
 }
 
+- (void) switchToDefaultDBIfNeeded
+{
+	NSString *defaultPath = [self documentsDirectoryFor: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULT_DATABASELOCATION"] url: [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"]];
+	
+	if( [[self documentsDirectory] isEqualToString: defaultPath] == NO)
+		[self resetToLocalDatabase];
+}
+
 - (void)openDatabasePath: (NSString*)path
 {
 	BOOL isDirectory;
@@ -15972,7 +15982,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[self resetToLocalDatabase];
 	}
 }
-	
+
 - (IBAction)bonjourServiceClickedProceed: (id)sender
 {
 	if( [bonjourServicesList selectedRow] == -1) return;
@@ -16057,7 +16067,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[self waitForRunningProcesses];
 	[bonjourBrowser waitTheLock];
 	
-	[self performSelector:@selector( bonjourServiceClickedProceed:) withObject: sender afterDelay: 0.1];
+	[self performSelector:@selector( bonjourServiceClickedProceed:) withObject: sender afterDelay: 0.01];
 }
 
 - (NSString*) localDatabasePath

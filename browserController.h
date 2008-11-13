@@ -461,6 +461,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (void) displayBonjourServices;
 - (NSString*) askPassword;
 - (void) resetToLocalDatabase;
+- (void) switchToDefaultDBIfNeeded;
 - (void) createContextualMenu;
 - (void) checkIncomingThread:(id) sender;
 - (void) checkIncoming:(id) sender;

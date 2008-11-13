@@ -286,6 +286,34 @@
 				}
 			}
 			
+			#pragma mark SwitchToDefaultDBIfNeeded
+			
+			// ********************************************
+			// Method: SwitchToDefaultDBIfNeeded
+			//
+			// Parameters:
+			// No parameter
+			//
+			// Response: {error: "0"}
+			
+			if ([selName isEqual:@"SwitchToDefaultDBIfNeeded"])
+			{
+				if( [[httpServerMessage valueForKey: @"Processed"] boolValue] == NO)							// Is this order already processed ?
+				{
+					NSNumber *ret = [NSNumber numberWithInt: 0];
+					
+					[[BrowserController currentBrowser] switchToDefaultDBIfNeeded];
+					
+					// Done, we can send the response to the sender
+					
+					NSString *xml = @"<?xml version=\"1.0\"?><methodResponse><params><param><value><struct><member><name>error</name><value>0</value></member></struct></value></param></params></methodResponse>";		// Simple answer, no errors
+					NSError *error = nil;
+					NSXMLDocument *doc = [[[NSXMLDocument alloc] initWithXMLString:xml options:NSXMLNodeOptionsNone error:&error] autorelease];
+					[httpServerMessage setValue: doc forKey: @"NSXMLDocumentResponse"];
+					[httpServerMessage setValue: [NSNumber numberWithBool: YES] forKey: @"Processed"];		// To tell to other XML-RPC that we processed this order
+				}
+			}
+			
 			#pragma mark OpenDB
 			
 			// ********************************************
