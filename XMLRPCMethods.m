@@ -12,6 +12,7 @@
      PURPOSE.
 =========================================================================*/
 
+#import "AppController.h"
 #import "XMLRPCMethods.h"
 #import "BrowserController.h"
 #import "ViewerController.h"
@@ -139,6 +140,10 @@
 			}
 			
 			NSMutableDictionary	*httpServerMessage = [NSMutableDictionary dictionaryWithObjectsAndKeys: selName, @"MethodName", doc, @"NSXMLDocument", [NSNumber numberWithBool: NO], @"Processed", ipAddressString, @"peerAddress", nil];
+			
+			#pragma mark KillOsiriX			
+			if ( [selName isEqual:@"KillOsiriX"])
+				[[AppController sharedAppController] terminate: self];
 			
 			#pragma mark DisplayStudy
 			
