@@ -29,6 +29,7 @@
 		unsigned char		*data;
 		long				width, height, spp, bpp;
 		BOOL				isSigned;
+		int					offset;
 		
 		// NSImage support
 		NSImage				*image;
@@ -60,6 +61,7 @@
 		height:				(long) iheight;
 
 - (void) setSigned: (BOOL) s;
+- (void) setOffset: (int) o;
 
 // Set Pixel Data from a NSImage
 - (long) setPixelNSImage:	(NSImage*) iimage;

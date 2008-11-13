@@ -1323,6 +1323,8 @@ NSString * documentsDirectory();
 		
 		[exportDCM setPosition: imOrigin];
 		[exportDCM setPixelData: data samplePerPixel:spp bitsPerPixel:bpp width: width height: height];
+		[exportDCM setSigned: isSigned];
+		[exportDCM setOffset: offset];
 		
 		NSString *f = [exportDCM writeDCMFile: nil];
 		if( f == nil) NSRunCriticalAlertPanel( NSLocalizedString(@"Error", nil),  NSLocalizedString(@"Error during the creation of the DICOM File!", nil), NSLocalizedString(@"OK", nil), nil, nil);

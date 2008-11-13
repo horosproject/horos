@@ -8610,7 +8610,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	unsigned char	*buf = nil;
 
 	if( isSigned) *isSigned = NO;
-	if( offset) *offset = -1024;
+	if( offset) *offset = 0;
 	
 	if( [self class] == [MPRPreviewView class] ||
 		[self class] == [OrthogonalMPRPETCTView class] ||
@@ -8806,7 +8806,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			*spp = 1;
 			*bpp = 16;
 			
-			vImage_Buffer			srcf, dst8;
+			vImage_Buffer srcf, dst8;
 			
 			srcf.height = *height;
 			srcf.width = *width;
@@ -8824,9 +8824,27 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			if( buf)
 			{
 				if( [curDCM minValueOfSeries] < -1024)
+				{
+					if( isSigned) *isSigned = YES;
+					if( offset) *offset = 0;
+					
 					vImageConvert_FTo16S( &srcf, &dst8, 0,  1, 0);
+				}
 				else
-					vImageConvert_FTo16U( &srcf, &dst8, -1024,  1, 0);
+				{
+					if( isSigned) *isSigned = NO;
+					
+					if( [curDCM minValueOfSeries] >= 0)
+					{
+						if( offset) *offset = 0;
+						vImageConvert_FTo16U( &srcf, &dst8, 0,  1, 0);
+					}
+					else
+					{
+						if( offset) *offset = -1024;
+						vImageConvert_FTo16U( &srcf, &dst8, -1024,  1, 0);
+					}
+				}
 			}
 		}
 	}
@@ -8980,10 +8998,29 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 //					else
 					{
 						dst8.data = buf;
+						
 						if( [dcm minValueOfSeries] < -1024)
+						{
+							if( isSigned) *isSigned = YES;
+							if( offset) *offset = 0;
+							
 							vImageConvert_FTo16S( &srcf, &dst8, 0,  1, 0);
+						}
 						else
-							vImageConvert_FTo16U( &srcf, &dst8, -1024,  1, 0);
+						{
+							if( isSigned) *isSigned = NO;
+							
+							if( [dcm minValueOfSeries] >= 0)
+							{
+								if( offset) *offset = 0;
+								vImageConvert_FTo16U( &srcf, &dst8, 0,  1, 0);
+							}
+							else
+							{
+								if( offset) *offset = -1024;
+								vImageConvert_FTo16U( &srcf, &dst8, -1024,  1, 0);
+							}
+						}
 					}
 				}
 				

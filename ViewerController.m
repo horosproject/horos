@@ -14786,7 +14786,7 @@ int i,j,l;
 			free( tempData);
 		}
 	}
-	else data = [imageView getRawPixelsWidth:&width height:&height spp:&spp bpp:&bpp screenCapture:screenCapture force8bits:force8bits removeGraphical:YES squarePixels:YES allTiles:[[NSUserDefaults standardUserDefaults] boolForKey:@"includeAllTiledViews"] allowSmartCropping:YES origin: imOrigin spacing: imSpacing];
+	else data = [imageView getRawPixelsWidth:&width height:&height spp:&spp bpp:&bpp screenCapture:screenCapture force8bits:force8bits removeGraphical:YES squarePixels:YES allTiles:[[NSUserDefaults standardUserDefaults] boolForKey:@"includeAllTiledViews"] allowSmartCropping:YES origin: imOrigin spacing: imSpacing offset: &offset isSigned: &isSigned];
 	
 	NSString *f = nil;
 	
@@ -14821,9 +14821,8 @@ int i,j,l;
 		[exportDCM setPixelSpacing: imSpacing[ 0] :imSpacing[ 1]];
 				
 		[exportDCM setPixelData: data samplePerPixel:spp bitsPerPixel:bpp width: width height: height];
-		
-		if( bpp == 16 && [[imageView curDCM] minValueOfSeries] < -1024)
-			[exportDCM setSigned: YES];
+		[exportDCM setSigned: isSigned];
+		[exportDCM setOffset: offset];
 		
 		f = [exportDCM writeDCMFile: nil];
 		if( f == nil) NSRunCriticalAlertPanel( NSLocalizedString(@"Error", nil),  NSLocalizedString(@"Error during the creation of the DICOM File!", nil), NSLocalizedString(@"OK", nil), nil, nil);

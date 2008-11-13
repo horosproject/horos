@@ -118,6 +118,11 @@ extern BrowserController	*browserWindow;
 	isSigned = s;
 }
 
+- (void) setOffset: (int) o
+{
+	offset = o;
+}
+
 - (long) setPixelData:		(unsigned char*) idata
 		samplePerPixel:		(long) ispp
 		bitsPerPixel:		(long) ibpp
@@ -129,7 +134,9 @@ extern BrowserController	*browserWindow;
 	width = iwidth;
 	height = iheight;
 	data = idata;
+	
 	isSigned = NO;
+	offset = -1024;
 	
 	return 0;
 }
@@ -495,8 +502,7 @@ extern BrowserController	*browserWindow;
 				vr = @"OW";
 				
 				if( isSigned == NO)
-				//By default, we use a 1024 rescale intercept !!
-					[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt:-1024]] forName:@"RescaleIntercept"];
+					[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt: offset]] forName:@"RescaleIntercept"];
 				else
 					[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt: 0]] forName:@"RescaleIntercept"];
 					

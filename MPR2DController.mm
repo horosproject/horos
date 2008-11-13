@@ -1138,6 +1138,9 @@ extern NSString * documentsDirectory();
 			if( data)
 			{
 				[dcmSequence setPixelData: data samplePerPixel:spp bitsPerPixel:bpp width: width height: height];
+				[dcmSequence setSigned: isSigned];
+				[dcmSequence setOffset: offset];
+				
 				[dcmSequence setPixelSpacing: imSpacing[ 0] :imSpacing[ 1]];
 				[exportDCM setSliceThickness: imSpacing[ 0]];
 				
@@ -1192,6 +1195,9 @@ extern NSString * documentsDirectory();
 			[exportDCM setSeriesDescription:@"MPR-2D"];
 			[exportDCM setSeriesNumber:5400];
 			[exportDCM setPixelData: data samplePerPixel:spp bitsPerPixel:bpp width: width height: height];
+			[exportDCM setSigned: isSigned];
+			[exportDCM setOffset: offset];
+			
 			[exportDCM setPixelSpacing: imSpacing[ 0] :imSpacing[ 1]];
 			[exportDCM setSliceThickness: imSpacing[ 0]];
 			
