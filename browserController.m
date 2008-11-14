@@ -2717,6 +2717,7 @@ static NSArray*	statesArray = nil;
 	[self refreshMatrix: self];
 	
 	[[QueryController currentQueryController] refresh: self];
+	[[LogManager currentLogManager] resetLogs];
 }
 
 -(long)saveDatabase: (NSString*)path

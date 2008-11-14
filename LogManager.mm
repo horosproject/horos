@@ -22,14 +22,17 @@ LogManager *currentLogManager;
 
 @implementation LogManager
 
-+ (id)currentLogManager{
++ (id)currentLogManager
+{
 	if (!currentLogManager)
 		currentLogManager = [[LogManager alloc] init];
 	return currentLogManager;
 }
 
-- (id)init{
-	if (self = [super init]){
+- (id)init
+{
+	if (self = [super init])
+	{
 		_currentLogs = [[NSMutableDictionary alloc] init];
 		_timer = [[NSTimer scheduledTimerWithTimeInterval: 5 target:self selector:@selector(checkLogs:) userInfo:nil repeats:YES] retain];
 	}
@@ -39,17 +42,37 @@ LogManager *currentLogManager;
 - (void) resetLogs
 {
 	NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContextLoadIfNecessary: NO];
-	
+	NSManagedObjectModel *model = [[BrowserController currentBrowser] managedObjectModel];
 	[context retain];
 	[context lock];
 	
 	[_currentLogs removeAllObjects];
 	
+	@try
+	{
+		NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+		[dbRequest setEntity: [[model entitiesByName] objectForKey: @"LogEntry"]];
+		
+		[dbRequest setPredicate: [NSPredicate predicateWithFormat: @"message like[cd] %@", @"In Progress"]];
+		NSError	*error = nil;
+		NSArray *array = [context executeFetchRequest:dbRequest error:&error];
+		
+		for( NSManagedObject *o in array)
+		{
+			[o setValue: @"Incomplete" forKey:@"message"];
+		}
+	}
+	@catch (NSException * e)
+	{
+	}
+	
+	
 	[context unlock];
 	[context release];
 }
 
-- (void)dealloc{
+- (void)dealloc
+{
 	[_currentLogs release];
 	[_timer invalidate];
 	[_timer release];
@@ -60,7 +83,8 @@ LogManager *currentLogManager;
 	NSString *path =  [[[BrowserController currentBrowser] fixedDocumentsDirectory] stringByAppendingPathComponent:@"TEMP"];
 	NSFileManager *manager = [NSFileManager defaultManager];
 	BOOL isDir;
-	if (!([manager fileExistsAtPath:path isDirectory:&isDir] && isDir)) {
+	if (!([manager fileExistsAtPath:path isDirectory:&isDir] && isDir))
+	{
 		[manager createDirectoryAtPath:path attributes:nil];
 	}
 	return path;
