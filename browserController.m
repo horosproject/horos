@@ -6800,14 +6800,38 @@ static NSArray*	statesArray = nil;
 	NSEnumerator		*rowEnumerator = [databaseOutline selectedRowEnumerator];
 	NSMutableString		*string = [NSMutableString string];
 	NSNumber			*row;
+	NSArray				*columns = [[databaseOutline tableColumns] valueForKey:@"identifier"];
+	NSArray				*descriptions = [[databaseOutline tableColumns] valueForKey:@"headerCell"];
 	
-	while (row = [rowEnumerator nextObject] )
+	while (row = [rowEnumerator nextObject])
 	{
 		NSManagedObject   *aFile = [databaseOutline itemAtRow:[row intValue]];
 		
-		if( aFile )	{
+		if( aFile)
+		{
 			if( [string length]) [string appendString: @"\r"];
-			[string appendString: [aFile valueForKey:@"name"]];
+			else
+			{
+				int i = 0;
+				for( NSCell *s in descriptions)
+				{
+					[string appendString: [s stringValue]];
+					i++;
+					if( i !=  [columns count])
+						[string appendFormat: @"%c", NSTabCharacter];
+				}
+				[string appendString: @"\r"];
+			}
+			
+			int i = 0;
+			for( NSString *identifier in columns)
+			{
+				if( [[aFile valueForKey: identifier] description])
+					[string appendString: [[aFile valueForKey: identifier] description]];
+				i++;
+				if( i !=  [columns count])
+					[string appendFormat: @"%c", NSTabCharacter];
+			}
 		}	
 	}
 	
