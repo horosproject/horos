@@ -5540,6 +5540,7 @@ static ViewerController *draggedController = nil;
 	
 	[contextualDictionaryPath release];
 	
+	[backCurCLUTMenu release];
 	[curCLUTMenu release];
 	[curConvMenu release];
 	[curWLWWMenu release];
@@ -8849,7 +8850,10 @@ short				matrix[25];
 
 - (NSString*) curCLUTMenu
 {
-	return curCLUTMenu;
+	if( backCurCLUTMenu)
+		return backCurCLUTMenu;
+	else
+		return curCLUTMenu;
 }
 
 
@@ -9159,14 +9163,21 @@ short				matrix[25];
 			[seriesView ActivateBlending:blendingController blendingFactor:[blendingSlider floatValue]];
 		}
 		
+		[backCurCLUTMenu release];
+		backCurCLUTMenu = 0L;
+		
 		if( blendingController && [[[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut Mode"] isEqualToString: @"B/W Inverse"])
 		{
+			backCurCLUTMenu = [curCLUTMenu copy];
 			[curCLUTMenu release];
 			curCLUTMenu = [[[NSUserDefaults standardUserDefaults] stringForKey: @"PET Blending CLUT"] copy];
 		}
 	}
 	else
 	{
+		[backCurCLUTMenu release];
+		backCurCLUTMenu = 0L;
+		
 		[curCLUTMenu release];
 		curCLUTMenu = [NSLocalizedString(@"No CLUT", nil) retain];
 		
@@ -16698,7 +16709,13 @@ int i,j,l;
 						[viewer setWLWW:iwl :iww];
 					}
 					*/
-					[viewer ApplyCLUTString:curCLUTMenu];
+					
+					NSString *c;
+					
+					if( backCurCLUTMenu) c = backCurCLUTMenu;
+					else c = curCLUTMenu;
+					
+					[viewer ApplyCLUTString: c];
 					float   iwl, iww;
 					[imageView getWLWW:&iwl :&iww];
 					[viewer setWLWW:iwl :iww];
@@ -16937,7 +16954,12 @@ int i,j,l;
 			else mode = @"VR";
 			viewer = [self openVRViewerForMode:mode];
 			
-			[viewer ApplyCLUTString:curCLUTMenu];
+			NSString *c;
+			
+			if( backCurCLUTMenu) c = backCurCLUTMenu;
+			else c = curCLUTMenu;
+			
+			[viewer ApplyCLUTString: c];
 			float   iwl, iww;
 			[imageView getWLWW:&iwl :&iww];
 			[viewer setWLWW:iwl :iww];
@@ -17229,7 +17251,12 @@ int i,j,l;
 		{
 			viewer = [self openMPR2DViewer];
 			
-			[viewer ApplyCLUTString: curCLUTMenu];
+			NSString *c;
+			
+			if( backCurCLUTMenu) c = backCurCLUTMenu;
+			else c = curCLUTMenu;
+			
+			[viewer ApplyCLUTString: c];
 //			[viewer ApplyOpacityString: curOpacityMenu];
 			
 			float   iwl, iww;
@@ -17264,6 +17291,11 @@ int i,j,l;
 		
 	viewer = [[OrthogonalMPRViewer alloc] initWithPixList:pixList[0] :fileList[0] :volumeData[0] :self :nil];
 	
+	NSString *c;
+	
+	if( backCurCLUTMenu) c = backCurCLUTMenu;
+	else c = curCLUTMenu;
+	
 	if( [[pixList[0] objectAtIndex: 0] isRGB] == NO)
 	{
 		if( [[self modality] isEqualToString:@"PT"] == YES || ([[NSUserDefaults standardUserDefaults] boolForKey:@"clutNM"] == YES && [[self modality] isEqualToString:@"NM"] == YES))
@@ -17273,16 +17305,17 @@ int i,j,l;
 			else
 				[viewer ApplyCLUTString: [[NSUserDefaults standardUserDefaults] stringForKey:@"PET Default CLUT"]];
 		}
-		else [viewer ApplyCLUTString:curCLUTMenu];
+		else [viewer ApplyCLUTString: c];
 	}
-	else [viewer ApplyCLUTString:curCLUTMenu];
+	else [viewer ApplyCLUTString: c];
 	
-	[viewer ApplyOpacityString :curOpacityMenu];
+	[viewer ApplyOpacityString: curOpacityMenu];
 	
 	return viewer;
 }
 
-- (OrthogonalMPRPETCTViewer *)openOrthogonalMPRPETCTViewer{
+- (OrthogonalMPRPETCTViewer *)openOrthogonalMPRPETCTViewer
+{
 	OrthogonalMPRPETCTViewer  *viewer;
 	[self checkEverythingLoaded];
 	[self clear8bitRepresentations];
@@ -17294,9 +17327,14 @@ int i,j,l;
 		viewer = [[OrthogonalMPRPETCTViewer alloc] initWithPixList:pixList[0] :fileList[0] :volumeData[0] :self : blendingController];
 		[self place3DViewerWindow: viewer];
 		
-		[[viewer CTController] ApplyCLUTString:curCLUTMenu];
-		[[viewer PETController] ApplyCLUTString:[blendingController curCLUTMenu]];
-		[[viewer PETCTController] ApplyCLUTString:curCLUTMenu];
+		NSString *c;
+		
+		if( backCurCLUTMenu) c = backCurCLUTMenu;
+		else c = curCLUTMenu;
+		
+		[[viewer CTController] ApplyCLUTString: c];
+		[[viewer PETController] ApplyCLUTString: [blendingController curCLUTMenu]];
+		[[viewer PETCTController] ApplyCLUTString: c];
 
 		[[viewer CTController] ApplyOpacityString: curOpacityMenu];
 		[[viewer PETController] ApplyOpacityString:[blendingController curOpacityMenu]];

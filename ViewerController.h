@@ -225,7 +225,7 @@ enum
 	IBOutlet NSMatrix		*roiRenameMatrix;
 	IBOutlet NSWindow		*roiRenameWindow;
 	
-	NSString				*curConvMenu, *curWLWWMenu, *curCLUTMenu, *curOpacityMenu;
+	NSString				*curConvMenu, *curWLWWMenu, *curCLUTMenu, *backCurCLUTMenu, *curOpacityMenu;
 	
 	IBOutlet NSTextField    *stacksFusion;
 	IBOutlet NSSlider       *sliderFusion;
