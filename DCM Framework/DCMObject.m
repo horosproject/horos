@@ -76,13 +76,19 @@ static unsigned int globallyUnique = 100000;
 		if ([tagArray count] > 1)
 			value = [tagArray objectAtIndex:1];
 		
-		[object anonymizeAttributeForTag:tag replacingWith:value];
+		if ([tag.name isEqualToString: @"StudyInstanceUID"])
+		{
+			DCMAttribute *attr = [DCMAttribute attributeWithAttributeTag:tag vr: tag.vr values: [NSArray arrayWithObject: value]];
+			[[object attributes] setObject:attr forKey: tag.stringValue];
+		}
+		else
+			[object anonymizeAttributeForTag:tag replacingWith:value];
 		
 		//NSLog( [value description] );
 		if ([tag.name isEqualToString: @"PatientID"])
 			[object anonymizeAttributeForTag:[DCMAttributeTag tagWithName:@"OtherPatientIDs"] replacingWith:value];
 			
-		if ([tag.name isEqualToString: @"InstanceCreationDate"]) {		
+		if ([tag.name isEqualToString: @"InstanceCreationDate"]) {
 			[object anonymizeAttributeForTag:[DCMAttributeTag tagWithName:@"ContentDate"] replacingWith:value];
 			[object anonymizeAttributeForTag:[DCMAttributeTag tagWithName:@"AcquisitionDate"] replacingWith:value];
 		}
@@ -111,10 +117,10 @@ static unsigned int globallyUnique = 100000;
 	
 	if (DEBUG)
 		NSLog(@"TransferSyntax: %@", object.transferSyntax );
-
-	[object newStudyInstanceUID];
-	[object newSeriesInstanceUID];
-	[object newSOPInstanceUID];
+	
+//	[object newStudyInstanceUID];
+//	[object newSeriesInstanceUID];
+//	[object newSOPInstanceUID];
 
 	DCMTransferSyntax *ts = object.transferSyntax;
 	if (!ts.isExplicit ) ts = [DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax];
@@ -1312,14 +1318,12 @@ PixelRepresentation
 		
 	NSArray *uidValues = [NSArray arrayWithObjects:rootUID, @"1", uidSuffix, nil];
 	NSString *uid = [uidValues componentsJoinedByString:@"."];
-	if( [uid length] > 64)
-		uid = [uid substringToIndex:64];
+	if( [uid length] > 64) uid = [uid substringToIndex:64];
+	
 	DCMAttributeTag *tag = [DCMAttributeTag tagWithName:@"StudyInstanceUID"];
 	NSMutableArray *attrValues = [NSMutableArray arrayWithObject:uid];
 	DCMAttribute *attr = [DCMAttribute attributeWithAttributeTag:tag vr: tag.vr values:attrValues];
 	[attributes setObject:attr forKey: tag.stringValue];
-	//DCMAttribute *attr = [attributes objectForKey:[tag stringValue]];
-	
 }
 
 - (void)newSeriesInstanceUID

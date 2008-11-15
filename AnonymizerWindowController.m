@@ -188,6 +188,7 @@
 		
 	NSString *file;
 	NSManagedObject *dcm;
+	NSArray *tags = [self tags];
 	
 	[[[BrowserController currentBrowser] managedObjectContext] lock];
 	
@@ -249,7 +250,7 @@
 		//	NSLog(@"Wrote xml");
 		@try
 		{
-			[DCMObject anonymizeContentsOfFile:file  tags:[self tags]  writingToFile:dest];
+			[DCMObject anonymizeContentsOfFile:file  tags: tags  writingToFile:dest];
 		}
 		@catch (NSException * e)
 		{
@@ -375,7 +376,19 @@
 	NSEnumerator *enumerator = [[[tagMatrixfirstColumn cells] arrayByAddingObjectsFromArray: [tagMatrixsecondColumn cells]] objectEnumerator];
 	NSCell *cell;
 	[tags removeAllObjects];
+	
 	DCMAttributeTag *attrTag;
+	
+	// StudyInstanceUID
+	NSString *uidSuffix = [DCMObject globallyUniqueString];
+	NSArray *uidValues = [NSArray arrayWithObjects: [DCMObject rootUID], @"1", uidSuffix, nil];
+	NSString *uid = [uidValues componentsJoinedByString:@"."];
+	if( [uid length] > 64) uid = [uid substringToIndex:64];
+
+	attrTag = [DCMAttributeTag tagWithName:@"StudyInstanceUID"];
+	NSArray *a = [NSArray arrayWithObjects: attrTag, uid, nil];
+	[tags addObject: a];
+	
 	while (cell = [enumerator nextObject])
 	{
 		if (DEBUG)

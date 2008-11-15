@@ -49,6 +49,8 @@
 @property(readonly) NSXMLNode *xmlNode; /**< The object as an xml node */
 @property(readonly) NSString *description; /**< Human readable description */
 
++ (NSString*) globallyUniqueString;
+
 /** Quick test to see if data is a DICOM/ACR file.  First looks for the DICM at 128. If that isn't there looks for valid DICOM 3  elements at the start */
 + (BOOL)isDICOM:(NSData *)data;
 
