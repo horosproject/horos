@@ -95,6 +95,8 @@
 {
     CFHTTPMessageRef request = [mess request];
 	
+	// curl -d @/Users/antoinerosset/Desktop/test.xml "http://localhost:8080"
+	
 //	NSDictionary *allHeaderFields = [(id)CFHTTPMessageCopyAllHeaderFields(request) autorelease];
 //	NSLog( @"%@", allHeaderFields);
 	

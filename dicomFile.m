@@ -1114,9 +1114,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			ptr = [file bytes];
 			
 			if( ptr[ 2] == 42)
-			{
 				NSLog(@"LSM File");
-			}
 			
 			name = [[NSString alloc] initWithString: [filePath lastPathComponent]];
 			patientID = [[NSString alloc] initWithString:name];
