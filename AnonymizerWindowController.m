@@ -186,9 +186,9 @@
 	if (DEBUG)
 		NSLog(@"file Count: %d", [filesToAnonymize count]);
 		
-	NSString *file;
+	NSString *file, *currentStudy = 0L;
 	NSManagedObject *dcm;
-	NSArray *tags = [self tags];
+	NSArray *tt = [self tags];
 	
 	[[[BrowserController currentBrowser] managedObjectContext] lock];
 	
@@ -198,66 +198,73 @@
 		dcm = [dcmObjects objectAtIndex: i];
 
 		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];			
-		NSString		*extension		= [file pathExtension], *dest;
-		long			previousSeries	= -1;
-		long			serieCount		= 0;
+		NSString *extension		= [file pathExtension], *dest;
+		long previousSeries	= -1;
+		long serieCount		= 0;
 		
-		if([extension isEqualToString:@""]) extension = [NSString stringWithString:@"dcm"]; 
-		
-		NSString *tempPath;
-		
-		if( [[tagMatrixfirstColumn cellWithTag: 0] state] == NSOnState)
-			tempPath = [path stringByAppendingPathComponent:[[firstColumnValues cellWithTag:0] stringValue]];
-		else
-			tempPath = [path stringByAppendingPathComponent:[dcm valueForKeyPath: @"series.study.name"]];
-			
-		// Find the DICOM-PATIENT folder
-		if (![[NSFileManager defaultManager] fileExistsAtPath:tempPath]) [[NSFileManager defaultManager] createDirectoryAtPath:tempPath attributes:nil];
-		
-		tempPath = [tempPath stringByAppendingPathComponent:[dcm valueForKeyPath: @"series.study.studyName"] ];
-		// Find the DICOM-STUDY folder
-		if (![[NSFileManager defaultManager] fileExistsAtPath:tempPath]) [[NSFileManager defaultManager] createDirectoryAtPath:tempPath attributes:nil];
-		
-		tempPath = [tempPath stringByAppendingPathComponent:[dcm valueForKeyPath: @"series.name"] ];
-		
-		tempPath = [tempPath stringByAppendingFormat:@" - %@", [dcm valueForKeyPath: @"series.id"]];
-		
-		// Find the DICOM-SERIE folder
-		if (![[NSFileManager defaultManager] fileExistsAtPath:tempPath]) [[NSFileManager defaultManager] createDirectoryAtPath:tempPath attributes:nil];
-		
-		long imageNo = [[dcm valueForKey:@"instanceNumber"] intValue];
-		
-		if( previousSeries != [[dcm valueForKeyPath: @"series.id"] intValue])
-		{
-			previousSeries = [[dcm valueForKeyPath: @"series.id"] intValue];
-			serieCount++;
-		}
-		
-		dest = [NSString stringWithFormat:@"%@/IM-%4.4d-%4.4d.%@", tempPath, serieCount, imageNo, extension];
-		
-		int t = 2;
-		while( [[NSFileManager defaultManager] fileExistsAtPath: dest])
-		{
-			dest = [NSString stringWithFormat:@"%@/IM-%4.4d-%4.4d #%d.%@", tempPath, serieCount, imageNo, t, extension];
-			t++;
-		}
-		
-		//DCMObject *dcm = [DCMObject objectWithContentsOfFile:file decodingPixelData:NO];
-		//NSXMLDocument *xmlDoc = [dcm xmlDocument];
-		//NSString *dst = [NSString stringWithFormat:@"%@/Desktop/%@", NSHomeDirectory(), @"test.xml"];
-		//NSLog(dst);
-		//if([[xmlDoc  XMLData] writeToFile:dst atomically:YES])
-		//	NSLog(@"Wrote xml");
 		@try
 		{
-			[DCMObject anonymizeContentsOfFile:file  tags: tags  writingToFile:dest];
+			if( [currentStudy isEqualToString: [dcm valueForKeyPath: @"series.study.studyInstanceUID"]] == NO)
+			{
+				tt = [self tags];	// This will reproduce a new studyInstanceUID
+				currentStudy = [[[dcm valueForKeyPath: @"series.study.studyInstanceUID"] copy] autorelease];
+			}
+			
+			if([extension isEqualToString:@""]) extension = [NSString stringWithString:@"dcm"]; 
+			
+			NSString *tempPath;
+			
+			if( [[tagMatrixfirstColumn cellWithTag: 0] state] == NSOnState)
+				tempPath = [path stringByAppendingPathComponent:[[firstColumnValues cellWithTag:0] stringValue]];
+			else
+				tempPath = [path stringByAppendingPathComponent:[dcm valueForKeyPath: @"series.study.name"]];
+				
+			// Find the DICOM-PATIENT folder
+			if (![[NSFileManager defaultManager] fileExistsAtPath:tempPath]) [[NSFileManager defaultManager] createDirectoryAtPath:tempPath attributes:nil];
+			
+			tempPath = [tempPath stringByAppendingPathComponent:[dcm valueForKeyPath: @"series.study.studyName"] ];
+			// Find the DICOM-STUDY folder
+			if (![[NSFileManager defaultManager] fileExistsAtPath:tempPath]) [[NSFileManager defaultManager] createDirectoryAtPath:tempPath attributes:nil];
+			
+			tempPath = [tempPath stringByAppendingPathComponent:[dcm valueForKeyPath: @"series.name"] ];
+			
+			tempPath = [tempPath stringByAppendingFormat:@" - %@", [dcm valueForKeyPath: @"series.id"]];
+			
+			// Find the DICOM-SERIE folder
+			if (![[NSFileManager defaultManager] fileExistsAtPath:tempPath]) [[NSFileManager defaultManager] createDirectoryAtPath:tempPath attributes:nil];
+			
+			long imageNo = [[dcm valueForKey:@"instanceNumber"] intValue];
+			
+			if( previousSeries != [[dcm valueForKeyPath: @"series.id"] intValue])
+			{
+				previousSeries = [[dcm valueForKeyPath: @"series.id"] intValue];
+				serieCount++;
+			}
+			
+			dest = [NSString stringWithFormat:@"%@/IM-%4.4d-%4.4d.%@", tempPath, serieCount, imageNo, extension];
+			
+			int t = 2;
+			while( [[NSFileManager defaultManager] fileExistsAtPath: dest])
+			{
+				dest = [NSString stringWithFormat:@"%@/IM-%4.4d-%4.4d #%d.%@", tempPath, serieCount, imageNo, t, extension];
+				t++;
+			}
+			
+			//DCMObject *dcm = [DCMObject objectWithContentsOfFile:file decodingPixelData:NO];
+			//NSXMLDocument *xmlDoc = [dcm xmlDocument];
+			//NSString *dst = [NSString stringWithFormat:@"%@/Desktop/%@", NSHomeDirectory(), @"test.xml"];
+			//NSLog(dst);
+			//if([[xmlDoc  XMLData] writeToFile:dst atomically:YES])
+			//	NSLog(@"Wrote xml");
+		
+			[DCMObject anonymizeContentsOfFile:file  tags: tt  writingToFile:dest];
+			
+			[producedFiles addObject: dest];
 		}
 		@catch (NSException * e)
 		{
 			NSLog( @"Exception during anonymization -- [DCMObject anonymizeContentsOfFile:file  tags:[self tags]  writingToFile:dest] : %@", e);
 		}
-		
-		[producedFiles addObject: dest];
 		
 		[pool release];
 		[splash incrementBy:1];
@@ -363,7 +370,8 @@
 	return producedFiles;
 }
 
-- (void)setFilesToAnonymize:(NSArray *)files :(NSArray*)dcm{
+- (void)setFilesToAnonymize:(NSArray *)files :(NSArray*)dcm
+{
 	[filesToAnonymize release];
 	[dcmObjects release];
 	

@@ -6178,14 +6178,11 @@ static NSArray*	statesArray = nil;
 						float y = [[dict valueForKey:@"y"] floatValue];
 						float rotation = [[dict valueForKey:@"rotation"] floatValue];
 						float scale = [[dict valueForKey:@"scale"] floatValue];
-						BOOL fD = [[dict valueForKey:@"flippedData"] boolValue];
-						
 						
 						[v setWindowFrame: r showWindow: NO];
 						[v setImageRows: rows columns: columns];
 						
-						if( fD) [v setImageIndex: [v getNumberOfImages] -1 -index];
-						else [v setImageIndex: index];
+						[v setImageIndex: index];
 						
 						if( [[[v imageView] curDCM] SUVConverted]) [v setWL: wl*[v factorPET2SUV] WW: ww*[v factorPET2SUV]];
 						else [v setWL: wl WW: ww];

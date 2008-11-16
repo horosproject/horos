@@ -618,7 +618,6 @@ static int hotKeyToolCrossTable[] =
 			[dict setObject: [NSNumber numberWithFloat: [[win imageView] rotation]] forKey:@"rotation"];
 			[dict setObject: [NSNumber numberWithBool: [[win imageView] xFlipped]] forKey:@"xFlipped"];
 			[dict setObject: [NSNumber numberWithBool: [[win imageView] xFlipped]] forKey:@"yFlipped"];
-			[dict setObject: [NSNumber numberWithBool: [[win imageView] flippedData]] forKey:@"flippedData"];
 			
 			[dict setObject: [win studyInstanceUID] forKey:@"studyInstanceUID"];
 			
