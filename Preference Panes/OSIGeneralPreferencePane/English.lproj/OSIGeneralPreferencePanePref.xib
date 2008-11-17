@@ -8,7 +8,7 @@
 		<string key="IBDocument.HIToolboxVersion">352.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="6"/>
+			<integer value="129"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -757,6 +757,10 @@ Y2VzIHNldHRpbmdzLg</string>
 				<string key="NSMaxSize">{3.40282e+38, 3.40282e+38}</string>
 			</object>
 			<object class="NSUserDefaultsController" id="122519939">
+				<object class="NSMutableArray" key="NSDeclaredKeys">
+					<bool key="EncodedWithXMLCoder">YES</bool>
+					<string>CheckOsiriXUpdates2</string>
+				</object>
 				<bool key="NSSharedInstance">YES</bool>
 			</object>
 		</object>
@@ -901,22 +905,6 @@ Y2VzIHNldHRpbmdzLg</string>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: values.CheckOsiriXUpdates</string>
-						<reference key="source" ref="830908331"/>
-						<reference key="destination" ref="122519939"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="830908331"/>
-							<reference key="NSDestination" ref="122519939"/>
-							<string key="NSLabel">value: values.CheckOsiriXUpdates</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">values.CheckOsiriXUpdates</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">190</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
 						<string key="label">value: values.checkForUpdatesPlugins</string>
 						<reference key="source" ref="543934802"/>
 						<reference key="destination" ref="122519939"/>
@@ -930,6 +918,22 @@ Y2VzIHNldHRpbmdzLg</string>
 						</object>
 					</object>
 					<int key="connectionID">193</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: values.CheckOsiriXUpdates2</string>
+						<reference key="source" ref="830908331"/>
+						<reference key="destination" ref="122519939"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="830908331"/>
+							<reference key="NSDestination" ref="122519939"/>
+							<string key="NSLabel">value: values.CheckOsiriXUpdates2</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">values.CheckOsiriXUpdates2</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">194</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -1309,7 +1313,7 @@ Y2VzIHNldHRpbmdzLg</string>
 					<string>{{21, 348}, {724, 534}}</string>
 					<reference ref="9"/>
 					<string>{{398, 479}, {724, 534}}</string>
-					<integer value="0"/>
+					<reference ref="8"/>
 					<reference ref="9"/>
 					<string>{3.40282e+38, 3.40282e+38}</string>
 					<string>{213.664, 10}</string>
@@ -1403,7 +1407,7 @@ Y2VzIHNldHRpbmdzLg</string>
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">193</int>
+			<int key="maxID">194</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
