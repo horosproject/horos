@@ -7303,8 +7303,10 @@ static BOOL withReset = NO;
 					{
 						NSManagedObject* aFile = [databaseOutline itemAtRow:[index firstIndex]];
 						
+
 						[imageView setDCM:previewPix :[self imagesArray: aFile preferredObject: oAny] :nil :[[oMatrix selectedCell] tag] :'i' :YES];
 						[imageView setStringID:@"previewDatabase"];
+
 						setDCMDone = YES;
 					}
 				}
@@ -9766,13 +9768,13 @@ static BOOL needToRezoom;
 	NSMutableArray		*viewerPix[ 200];
 	ViewerController	*movieController = nil;
 	ViewerController	*createdViewer = viewer;
-	
+	int					keyImageCount = 0;//JF20081019
 	@try
 	{
 		// NS_DURING (1) keyImages
 		
-		if( keyImages)
-		{
+		//JF20081019 if( keyImages)
+		//JF20081019{
 			NSMutableArray *keyImagesToOpenArray = [NSMutableArray array];
 			
 			for( NSArray *loadList in toOpenArray )
@@ -9787,7 +9789,12 @@ static BOOL needToRezoom;
 				
 				if( [keyImagesArray count] > 0)
 					[keyImagesToOpenArray addObject: keyImagesArray];
+				
+				keyImageCount += [keyImagesArray count];//JF20081019
 			}
+			
+		if ( keyImages)
+		{	//JF20081019
 			
 			if( [keyImagesToOpenArray count] > 0) toOpenArray = keyImagesToOpenArray;
 			else
@@ -10065,13 +10072,15 @@ static BOOL needToRezoom;
 								if( viewer )
 								{
 									//reuse of existing viewer
-									[viewer changeImageData:viewerPix[0] :filesAr :volumeData :NO];
+									//JF20081018 [viewer changeImageData:viewerPix[0] :filesAr :volumeData :NO];
+									[viewer changeImageData:viewerPix[0] :filesAr :volumeData :NO withKeyImageCount:@"MF"];
 									[viewer startLoadImageThread];
 								}
 								else
 								{
 									//creation of new viewer
-									createdViewer = [[ViewerController alloc] initWithPix:viewerPix[0] withFiles:filesAr withVolume:volumeData];
+									//JF20081018 createdViewer = [[ViewerController alloc] initWithPix:viewerPix[0] withFiles:filesAr withVolume:volumeData];
+									createdViewer = [[ViewerController alloc] initWithPix:viewerPix[0] withFiles:filesAr withVolume:volumeData withKeyImageCount:@"MF"];
 									[createdViewer showWindowTransition];
 									[createdViewer startLoadImageThread];
 								}		
@@ -10083,14 +10092,16 @@ static BOOL needToRezoom;
 								//multiframe == NO
 								if( viewer)
 								{
-									//reuse of existing viewer
-									[viewer changeImageData:viewerPix[0] :[NSMutableArray arrayWithArray:correspondingObjects] :volumeData :NO];
+									//reuse of existing viewer 
+									//JF20081018 [viewer changeImageData:viewerPix[0] :[NSMutableArray arrayWithArray:correspondingObjects] :volumeData :NO];
+									[viewer changeImageData:viewerPix[0] :[NSMutableArray arrayWithArray:correspondingObjects] :volumeData :NO withKeyImageCount:[NSString stringWithFormat:@"%d",keyImageCount]];//JF20081018
 									[viewer startLoadImageThread];
 								}
 								else
 								{
 									//creation of new viewer
-									createdViewer = [[ViewerController alloc] initWithPix:viewerPix[0] withFiles:[NSMutableArray arrayWithArray:correspondingObjects] withVolume:volumeData];
+									//JF20081018 createdViewer = [[ViewerController alloc] initWithPix:viewerPix[0] withFiles:[NSMutableArray arrayWithArray:correspondingObjects] withVolume:volumeData];
+									createdViewer = [[ViewerController alloc] initWithPix:viewerPix[0] withFiles:[NSMutableArray arrayWithArray:correspondingObjects] withVolume:volumeData withKeyImageCount:[NSString stringWithFormat:@"%d",keyImageCount]];//JF20081018
 									[createdViewer showWindowTransition];
 									[createdViewer startLoadImageThread];
 								}

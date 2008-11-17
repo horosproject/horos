@@ -5362,10 +5362,16 @@ static ViewerController *draggedController = nil;
 {
 	return [self isDataVolumicIn4D: check4D checkEverythingLoaded: YES];
 }
-
-
+//JF20081018
 - (id) initWithPix:(NSMutableArray*)f withFiles:(NSMutableArray*)d withVolume:(NSData*) v
 {
+	[self initWithPix:f withFiles:d withVolume:v withKeyImageCount:@"?"];
+	return self;
+}
+
+- (id) initWithPix:(NSMutableArray*)f withFiles:(NSMutableArray*)d withVolume:(NSData*) v withKeyImageCount:(NSString*)keyImageCountString
+{
+//JF20081018
 	[self setMagnetic: YES];
 	
 	if( [d count] == 0) d = nil;
@@ -5420,7 +5426,7 @@ static ViewerController *draggedController = nil;
 	
 	if([AppController canDisplay12Bit]) t12BitTimer = [[NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(verify12Bit:) userInfo:nil repeats:YES] retain];
 	else t12BitTimer = nil;
-	
+	[keyImageText setStringValue:keyImageCountString];//JF20081019
 	return self;
 }
 
@@ -5569,8 +5575,15 @@ static ViewerController *draggedController = nil;
 	[seriesView selectFirstTilingView];
 }
 
+//JF20081019	
 -(void) changeImageData:(NSMutableArray*)f :(NSMutableArray*)d :(NSData*) v :(BOOL) newViewerWindow
 {
+	[self changeImageData:f :d :v :newViewerWindow withKeyImageCount:@"?"];
+}
+
+-(void) changeImageData:(NSMutableArray*)f :(NSMutableArray*)d :(NSData*) v :(BOOL) newViewerWindow withKeyImageCount:(NSString*)keyImageCountString
+{
+//JF20081019	
 	BOOL		sameSeries = NO;
 	long		i, imageIndex;
 	long		previousColumns = [imageView columns], previousRows = [imageView rows];
@@ -5946,6 +5959,8 @@ static ViewerController *draggedController = nil;
 	
 	for( ViewerController *v in [ViewerController getDisplayed2DViewers])
 		[v buildMatrixPreview: NO];
+
+	[keyImageText setStringValue: keyImageCountString];//JF20081019
 	
 	[[[BrowserController currentBrowser] managedObjectContext] unlock];
 	
@@ -17738,6 +17753,14 @@ int i,j,l;
 			[[BrowserController currentBrowser] setBonjourDatabaseValue:[fileList[curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] value:[NSNumber numberWithBool:[sender state]] forKey:@"isKeyImage"];
 		}
 		
+//JF20081019
+		if ((![[keyImageText stringValue] isEqualToString:@"MF"]) && (![[keyImageText stringValue] isEqualToString:@"?"]))
+		{
+			if ([sender state]) [keyImageText setStringValue: [NSString stringWithFormat:@"%d", ([[keyImageText stringValue]intValue]+1)]];//JF20081019
+			else                [keyImageText setStringValue: [NSString stringWithFormat:@"%d", ([[keyImageText stringValue]intValue]-1)]];//JF20081019
+		}
+//JF20081019
+		
 		[self buildMatrixPreview: NO];
 		
 		[imageView setNeedsDisplay:YES];
@@ -17905,6 +17928,13 @@ int i,j,l;
 			for( NSManagedObject *o in fileList[ x])
 				[[BrowserController currentBrowser] setBonjourDatabaseValue: o value: yes forKey:@"isKeyImage"];
 	}
+
+//JF20081019
+	if ((![[keyImageText stringValue] isEqualToString:@"MF"]) && (![[keyImageText stringValue] isEqualToString:@"?"]))
+	{
+		[keyImageText setStringValue:@"0"];//JF20081019
+	}
+//JF20081019	
 	
 	[self buildMatrixPreview: NO];
 	[imageView setNeedsDisplay:YES];
@@ -17933,6 +17963,15 @@ int i,j,l;
 			for( NSManagedObject *o in fileList[ x])
 				[[BrowserController currentBrowser] setBonjourDatabaseValue: o value: yes forKey:@"isKeyImage"];
 	}
+	
+	//JF20081019
+	if ((![[keyImageText stringValue] isEqualToString:@"MF"]) && (![[keyImageText stringValue] isEqualToString:@"?"]))
+	{
+		int allFileListObjectCount = 0;//JF20081019
+		for( int x = 0 ; x < maxMovieIndex ; x++) allFileListObjectCount += [fileList[ x] count];//JF20081019
+		[keyImageText setStringValue: [NSString stringWithFormat:@"%d", allFileListObjectCount]];//JF20081019
+	}
+	//JF20081019	
 	
 	[self buildMatrixPreview: NO];
 	[imageView setNeedsDisplay:YES];
