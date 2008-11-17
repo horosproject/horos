@@ -5491,7 +5491,7 @@ END_CREATE_ROIS:
 	[decayCorrection release];
 	decayCorrection = [[dcmObject attributeValueWithName:@"DecayCorrection"] retain];
 	
-	decayFactor = 1.0;	//1.0 / [[dcmObject attributeValueWithName:@"DecayFactor"] floatValue];	 NOT USED FOR NOW.....
+	decayFactor = [[dcmObject attributeValueWithName:@"DecayFactor"] floatValue];
 	
 	DCMSequenceAttribute *radiopharmaceuticalInformationSequence = (DCMSequenceAttribute *)[dcmObject attributeWithName:@"RadiopharmaceuticalInformationSequence"];
 	if( radiopharmaceuticalInformationSequence && radiopharmaceuticalInformationSequence.sequence.count > 0 )

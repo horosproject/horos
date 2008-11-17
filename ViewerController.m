@@ -12384,14 +12384,11 @@ int i,j,l;
 				{
 					factorPET2SUV = [pix philipsFactor];
 				}
-				else factorPET2SUV = [pix patientsWeight] * 1000. / ([pix radionuclideTotalDoseCorrected]);
+				else factorPET2SUV = ([pix patientsWeight] * 1000.) / ([pix radionuclideTotalDoseCorrected] * [pix decayFactor]);
 				
 				i = [pix pheight] * [pix pwidth];
-				
 				while( i--> 0)
-				{
 					*imageData++ *=  factorPET2SUV;
-				}
 				
 				pix.SUVConverted = YES;
 			}
