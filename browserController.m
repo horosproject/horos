@@ -6806,7 +6806,8 @@ static NSArray*	statesArray = nil;
 		
 		if( aFile)
 		{
-			if( [string length]) [string appendString: @"\r"];
+			if( [string length])
+				[string appendString: @"\r"];
 			else
 			{
 				int i = 0;
