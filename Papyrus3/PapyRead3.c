@@ -38,6 +38,7 @@
 #include <string.h>
 #include <math.h>
 
+#include "CoreFoundation/CFByteOrder.h"
 #include "setjmp.h"
 //#include "jpegless.h"       /* interface for JPEG lossless decompressor */
 //#include "jpeglib.h"	    /* interface for JPEG lossy decompressor */
@@ -2279,17 +2280,25 @@ PutBufferInElement3 (PapyShort inFileNb, unsigned char *ioBuffP, PapyULong inEle
         theTmp0P   += *ioBufPosP;
         /* updates the current position in the read buffer */
         *ioBufPosP += 8L;
-    
-        /* extract the element according to the little-endian syntax */
-        for (theIncr = 0; theIncr < 4; theIncr++)
-        {
-          theDoubleArr [2 * theIncr]       = *theTmp0P;
-          theDoubleArr [(2 * theIncr) + 1] = *(theTmp0P + 1);
-          theTmp0P += 2;
-        } /* for ...extraction of the value */
-    
-        theValueTP->fd = *((PapyFloatDouble *) &theDoubleArr);
-        
+		
+		#if __BIG_ENDIAN__
+			uint64_t v, *pp = (uint64_t*) &theTmp0P;
+			
+			v = CFSwapInt64( *pp);
+			
+			double *p = (double*) &v;
+			theValueTP->fd = *p;
+		#else
+			/* extract the element according to the little-endian syntax */
+			for (theIncr = 0; theIncr < 4; theIncr++)
+			{
+			  theDoubleArr [2 * theIncr]       = *theTmp0P;
+			  theDoubleArr [(2 * theIncr) + 1] = *(theTmp0P + 1);
+			  theTmp0P += 2;
+			} /* for ...extraction of the value */
+			theValueTP->fd = *((PapyFloatDouble *) &theDoubleArr);
+        #endif
+		
       } /* for */
 
       break; /* FD */

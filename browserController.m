@@ -10061,7 +10061,11 @@ static BOOL needToRezoom;
 							{
 								NSMutableArray  *filesAr = [[NSMutableArray alloc] initWithCapacity: [viewerPix[0] count]];
 								
-								for( unsigned int i = 0; i < [viewerPix[0] count]; i++) [filesAr addObject:[correspondingObjects objectAtIndex:0]];
+								if( [correspondingObjects count])
+								{
+									for( unsigned int i = 0; i < [viewerPix[0] count]; i++)
+										[filesAr addObject: [correspondingObjects objectAtIndex:0]];
+								}
 								
 								if( viewer )
 								{
