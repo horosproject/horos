@@ -36,6 +36,11 @@
 @class SRController;
 @class EndoscopyViewer;
 @class VRPROController;
+@class ViewerController;
+
+@interface NSObject(OsiriXPluginDraggingDestination)
+- (BOOL)performPluginDragOperation:(id <NSDraggingInfo>)sender destination:(ViewerController*)vc;
+@end
 
 #import "Schedulable.h"
 #import "Scheduler.h"
@@ -314,6 +319,7 @@ enum
 //	BOOL					windowIsMovedByTheUser;
 	
 	ViewerController		*registeredViewer;
+	ViewerController        *blendedWindow;
 	
 	NSMutableArray			*retainedToolbarItems;
 	
@@ -356,7 +362,7 @@ enum
 - (void) replaceSeriesWith:(NSMutableArray*)newPixList :(NSMutableArray*)newDcmList :(NSData*) newData;
 
 /** Return the 'dragged' window, the destination window is contained in the 'viewerController' object of the 'PluginFilter' object */
--(ViewerController*) blendedWindow;
+- (ViewerController*) blendedWindow;
 
 /**  Display a Wait window with the message
 * @param message  The message for the Wait window to display */

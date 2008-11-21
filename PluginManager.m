@@ -25,6 +25,7 @@ static NSMutableDictionary		*reportPlugins = nil;
 
 static NSMutableArray			*preProcessPlugins = nil;
 static NSMenu					*fusionPluginsMenu = nil;
+static NSMutableArray			*fusionPlugins = nil;
 
 @implementation PluginManager
 
@@ -60,6 +61,11 @@ static NSMenu					*fusionPluginsMenu = nil;
 	return fusionPluginsMenu;
 }
 
++ (NSArray*) fusionPlugins
+{
+	return fusionPlugins;
+}
+
 #ifdef OSIRIX_VIEWER
 
 + (void) setMenus:(NSMenu*) filtersMenu :(NSMenu*) roisMenu :(NSMenu*) othersMenu :(NSMenu*) dbMenu
@@ -88,23 +94,34 @@ static NSMenu					*fusionPluginsMenu = nil;
 				
 				for( NSString *menuTitle in menuTitles)
 				{
-					NSMenuItem *item = [[[NSMenuItem alloc] init] autorelease];
-					[item setTitle:menuTitle];
+					NSMenuItem *item;
 					
-					if( [pluginType isEqualToString:@"fusionFilter"])
+					if ([menuTitle isEqual:@"(-"])
 					{
-						[item setTag:-1];		// Useful for fusionFilter
-						[item setAction:@selector(endBlendingType:)];
-					}
-					else if( [pluginType isEqualToString:@"Database"] || [pluginType isEqualToString:@"Report"]){
-						[item setTarget: [BrowserController currentBrowser]];	//  browserWindow responds to DB plugins
-						[item setAction:@selector(executeFilterDB:)];
+						item = [NSMenuItem separatorItem];
 					}
 					else
 					{
-						[item setTarget:nil];	// FIRST RESPONDER !
-						[item setAction:@selector(executeFilter:)];
-					}
+						item = [[[NSMenuItem alloc] init] autorelease];
+						[item setTitle:menuTitle];
+						
+						if( [pluginType isEqualToString:@"fusionFilter"])
+						{
+							[fusionPlugins addObject:[item title]];
+							[item setTag:-((NSInteger) [fusionPlugins count])];		// Useful for fusionFilter
+							[item setAction:@selector(endBlendingType:)];
+						}
+						else if( [pluginType isEqualToString:@"Database"] || [pluginType isEqualToString:@"Report"])
+						{
+							[item setTarget: [BrowserController currentBrowser]];	//  browserWindow responds to DB plugins
+							[item setAction:@selector(executeFilterDB:)];
+						}
+						else
+						{
+							[item setTarget:nil];	// FIRST RESPONDER !
+							[item setAction:@selector(executeFilter:)];
+						}
+ 					}
 					
 					[subMenu insertItem:item atIndex:[subMenu numberOfItems]];
 				}
@@ -335,6 +352,7 @@ static NSMenu					*fusionPluginsMenu = nil;
 	[fileFormatPlugins release];
 	[preProcessPlugins release];
 	[reportPlugins release];
+	[fusionPlugins release];
 	[fusionPluginsMenu release];
 	
     plugins = [[NSMutableDictionary alloc] init];
@@ -342,6 +360,7 @@ static NSMenu					*fusionPluginsMenu = nil;
 	fileFormatPlugins = [[NSMutableDictionary alloc] init];
 	preProcessPlugins = [[NSMutableArray alloc] initWithCapacity:0];
 	reportPlugins = [[NSMutableDictionary alloc] init];
+	fusionPlugins = [[NSMutableArray alloc] initWithCapacity:0];
 	
 	fusionPluginsMenu = [[NSMenu alloc] initWithTitle:@""];
 	[fusionPluginsMenu insertItemWithTitle:NSLocalizedString(@"Select a fusion plug-in", nil) action:nil keyEquivalent:@"" atIndex:0];

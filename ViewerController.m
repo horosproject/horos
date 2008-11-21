@@ -147,7 +147,6 @@ static NSString*	CobbAngleToolbarItemIdentifier		= @"CobbAngle";
 static NSArray*		DefaultROINames;
 
 static  BOOL AUTOHIDEMATRIX								= NO;
-static	ViewerController *blendedwin					= nil;
 static	float deg2rad									= 3.14159265358979/180.0; 
 //static	BOOL dontEnterMagneticFunctions = NO;
 
@@ -3726,35 +3725,22 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 static ViewerController *draggedController = nil;
 
-- (void) completeDragOperation:(ViewerController*) v
+- (void) completeDragOperation:(ViewerController*) vc
 {
-//	// if we are already blending the other way we crash
-//	if ([[v blendingController] isEqual:self])
-//		return;
-	
 	int iz, xz;
 	
-	blendedwin = v;
-	
-	if( [[[blendedwin imageView] curDCM] pwidth] != [[imageView curDCM] pwidth] ||
-		[[[blendedwin imageView] curDCM] pheight] != [[imageView curDCM] pheight])
+	if( [[[vc imageView] curDCM] pwidth] != [[imageView curDCM] pwidth] ||
+		[[[vc imageView] curDCM] pheight] != [[imageView curDCM] pheight])
 		{
 			[blendingTypeMultiply setEnabled: NO];
 			[blendingTypeSubtract setEnabled: NO];
-			
-			[blendingTypeRGB	setEnabled: NO];
+			[blendingTypeRGB setEnabled: NO];
 		}
 		
-	if( [[[blendedwin pixList] objectAtIndex: 0] isRGB])
-	{
-		[blendingTypeRGB	setEnabled: NO];
-	}
-	else
-	{
+	if( [[[vc pixList] objectAtIndex: 0] isRGB])
+		[blendingTypeRGB setEnabled: NO];
 	
-	}
-	
-	if( [[self studyInstanceUID] isEqualToString: [blendedwin studyInstanceUID]] == NO)
+	if( [[self studyInstanceUID] isEqualToString: [vc studyInstanceUID]] == NO)
 		[blendingResample setEnabled: NO];
 	
 	// Prepare fusion plug-ins menu
@@ -3778,11 +3764,11 @@ static ViewerController *draggedController = nil;
 	}
 	[blendingPlugins setMenu: [PluginManager fusionPluginsMenu]];
 	
-	//[self checkEverythingLoaded];
-	//[draggedController checkEverythingLoaded];
+	[blendedWindow release];
+	blendedWindow = [vc retain];
 	
 	// What type of blending?
-	[NSApp beginSheet: blendingTypeWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
+	[NSApp beginSheet: blendingTypeWindow modalForWindow:[self window] modalDelegate:self didEndSelector:@selector(blendingSheetDidEnd:returnCode:contextInfo:) contextInfo:nil];
 	
 	draggedController = nil;
 }
@@ -3806,10 +3792,19 @@ static ViewerController *draggedController = nil;
 	else if( [[paste availableTypeFromArray: [NSArray arrayWithObject: pasteBoardOsiriXPlugin]] isEqualToString: pasteBoardOsiriXPlugin])
 	{
 		// in this case, the drag operation was performed from a plugin.
-		NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithCapacity:2];
-		[userInfo setValue:self forKey:@"destination"];
-		[userInfo setValue:sender forKey:@"dragOperation"];
-		[[NSNotificationCenter defaultCenter] postNotificationName:@"PluginDragOperationNotification" object:nil userInfo:userInfo];
+		id source = [sender draggingSource];
+		
+		if ([source respondsToSelector:@selector(performPluginDragOperation:destination:)])
+		{
+			return [source performPluginDragOperation:sender destination:self];
+		} 
+		else
+		{
+			NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithCapacity:2];
+			[userInfo setValue:self forKey:@"destination"];
+			[userInfo setValue:sender forKey:@"dragOperation"];
+			[[NSNotificationCenter defaultCenter] postNotificationName:@"PluginDragOperationNotification" object:nil userInfo:userInfo];
+		}
 	}
 	else
 	{
@@ -5505,6 +5500,7 @@ static ViewerController *draggedController = nil;
 	[seriesView release];
 	
 	[exportDCM release];
+	[blendedWindow release];
 	
 	if( USETOOLBARPANEL)
 	{
@@ -9197,31 +9193,42 @@ short				matrix[25];
 
 -(ViewerController*) blendedWindow
 {
-	return blendedwin;
+	return blendedWindow;
 }
 
 - (IBAction) endBlendingType:(id) sender
 {
+	int blendingType = [sender tag];
+	
+	if( [sender isKindOfClass:[NSSegmentedControl class]])	//Add RGB
+		blendingType += [sender selectedSegment];
 	
 	[blendingTypeWindow orderOut:sender];
-	[NSApp endSheet:blendingTypeWindow returnCode:[sender tag]];
-	
-	[self clear8bitRepresentations];
-	int blendingType = [sender tag];
-	if (blendingType == -1)
-		[self executeFilter:sender];
-	else
-	{
-		if( [sender isKindOfClass:[NSSegmentedControl class]])	//Add RGB
-			blendingType = 4+[sender selectedSegment];
-		
-		[self blendWithViewer:blendedwin blendingType: blendingType];
-	}
-	blendedwin = nil;
+	[NSApp endSheet:blendingTypeWindow returnCode:blendingType];
 }
+
+- (void)blendingSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo
+{
+	if (returnCode < 0)
+	{
+		returnCode = -returnCode - 1;
+		[self clear8bitRepresentations];
+		[self executeFilterFromString: [[PluginManager fusionPlugins] objectAtIndex:returnCode]];
+	}
+	else if (returnCode > 0)
+	{
+		[self clear8bitRepresentations];
+		[self blendWithViewer:blendedWindow blendingType: returnCode];
+	}
 	
-- (void)blendWithViewer:(ViewerController *)bc blendingType:(int)blendingType{
+	[blendedWindow release];
+	blendedWindow = nil;
+}
+
+- (void)blendWithViewer:(ViewerController *)bc blendingType:(int)blendingType
+{
 	_blendingType = blendingType;
+	
 	long i;
 	switch(blendingType)
 	{
