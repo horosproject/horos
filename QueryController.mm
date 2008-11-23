@@ -679,6 +679,7 @@ static const char *GetPrivateIP()
 		
 		[context unlock];
 	}
+	else NSLog( @"Warning! Not a series class !");
 	
 	return seriesArray;
 }
@@ -740,6 +741,7 @@ static const char *GetPrivateIP()
 			return nil;
 		}
 	}
+	else NSLog( @"Warning! Not a study class !");
 	
 	return nil;
 }
@@ -1659,8 +1661,21 @@ static const char *GetPrivateIP()
 		{
 			if( onlyIfNotAvailable)
 			{
-				if( [[self localStudy: item] count] == 0) [selectedItems addObject: item];
-				NSLog( @"Already here! We don't need to download it...");
+				int localNumber = 0;
+				NSArray *array = 0L;
+				
+				if( [item isMemberOfClass: [DCMTKSeriesQueryNode class]])
+					array = [self localSeries: item];
+				else
+					array = [self localStudy: item];
+				
+				if( [array count])
+					localNumber = [[[array objectAtIndex: 0] valueForKey: @"noFiles"] intValue];
+				
+				if( localNumber < [[item valueForKey:@"numberImages"] intValue])
+					[selectedItems addObject: item];
+				else
+					NSLog( @"Already here! We don't need to download it...");
 			}
 			else [selectedItems addObject: item];
 		}
