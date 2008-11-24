@@ -119,7 +119,11 @@ NSString* sopInstanceUIDDecode( unsigned char *r)
 
 + (NSString*) sopInstanceUIDEncodeString:(NSString*) s
 {
-	return [NSString stringWithUTF8String: sopInstanceUIDEncode( s)];
+	char *str = sopInstanceUIDEncode( s);
+	NSString *nsstring = [NSString stringWithCString: str];
+	free( str);
+	
+	return nsstring;
 }
 
 - (NSArray*) SRPaths

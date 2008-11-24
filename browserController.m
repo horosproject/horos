@@ -2718,6 +2718,12 @@ static NSArray*	statesArray = nil;
 	
 	[[QueryController currentQueryController] refresh: self];
 	[[LogManager currentLogManager] resetLogs];
+	
+	
+//	NSData *str = [DicomImage sopInstanceUIDEncodeString: @"1.2.826.0.1.3680043.2.1143.8797283371159.20060125163148762.58"];
+//	NSLog( sopInstanceUIDDecode( [str bytes]));
+//	
+//	NSPredicate	*predicate = [NSPredicate predicateWithFormat:@"compressedSopInstanceUID == %@", [DicomImage sopInstanceUIDEncodeString: sopInstanceUID]];
 }
 
 -(long)saveDatabase: (NSString*)path
@@ -3716,6 +3722,8 @@ static NSArray*	statesArray = nil;
 			}
 		}
 	}
+	
+	[self autoCleanDatabaseFreeSpace: 0L];
 }
 
 - (void) autoCleanDatabaseFreeSpace: (id)sender
@@ -3736,7 +3744,8 @@ static NSArray*	statesArray = nil;
 			
 			unsigned long long free = [[fsattrs objectForKey:NSFileSystemFreeSize] unsignedLongLongValue];
 			
-			if( free <= 0 ){
+			if( free <= 0 )
+			{
 				NSLog( @"*** autoCleanDatabaseFreeSpace free <= 0 ??");
 				NSLog( currentDatabasePath);
 				
@@ -3748,7 +3757,12 @@ static NSArray*	statesArray = nil;
 			
 			NSLog(@"HD Free Space: %d MB", (long) free);
 			
-			if( (int) free < [[defaults stringForKey:@"AUTOCLEANINGSPACESIZE"] intValue])
+			int freeMemoryRequested = [[defaults stringForKey:@"AUTOCLEANINGSPACESIZE"] intValue];
+			
+			if( sender == 0L)	// Received by the NSTimer : have a larger amount of free memory !
+				freeMemoryRequested = (float) freeMemoryRequested * 1.3;
+			
+			if( (int) free < freeMemoryRequested)
 			{
 				NSLog(@"------------------- Limit Reached - Starting autoCleanDatabaseFreeSpace");
 				
@@ -3868,7 +3882,7 @@ static NSArray*	statesArray = nil;
 						free /= 1024;
 						NSLog(@"HD Free Space: %d MB", (long) free);
 					}
-					while( (long) free < [[defaults stringForKey:@"AUTOCLEANINGSPACESIZE"] intValue] && [unlockedStudies count] > 2);
+					while( (long) free < freeMemoryRequested && [unlockedStudies count] > 2);
 					
 					[self saveDatabase: currentDatabasePath];
 				}
