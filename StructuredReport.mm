@@ -700,10 +700,13 @@
 	id reference;
 	while (reference = [enumerator nextObject])
 	{
-		predicate = [NSCompoundPredicate orPredicateWithSubpredicates:[NSArray arrayWithObjects:predicate, [NSPredicate predicateWithFormat:@"compressedSopInstanceUID == %@", [DicomImage sopInstanceUIDEncodeString: reference]], nil]]; 
+		NSPredicate	*p = [NSComparisonPredicate predicateWithLeftExpression: [NSExpression expressionForKeyPath: @"compressedSopInstanceUID"] rightExpression: [NSExpression expressionForConstantValue: [DicomImage sopInstanceUIDEncodeString: reference]] customSelector: @selector( isEqualToData:)];
+		predicate = [NSCompoundPredicate orPredicateWithSubpredicates:[NSArray arrayWithObjects:predicate, p, nil]]; 
 	}
-	[dbRequest setPredicate: predicate];
-	imagesArray = [[context executeFetchRequest:dbRequest error:&error] retain];
+	[dbRequest setPredicate: [NSPredicate predicateWithValue: YES]];
+	imagesArray = [context executeFetchRequest:dbRequest error:&error];
+	imagesArray = [[imagesArray filteredArrayUsingPredicate: predicate] retain];
+	
 	NS_HANDLER
 	NS_ENDHANDLER
 	return imagesArray;

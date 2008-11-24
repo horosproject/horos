@@ -67,7 +67,6 @@ static inline unsigned char intToChar( int c)
 	return '0';
 }
 
-
 void* sopInstanceUIDEncode( NSString *sopuid)
 {
 	unsigned int	i, x;
@@ -87,14 +86,12 @@ void* sopInstanceUIDEncode( NSString *sopuid)
 		x++;
 	}
 	
-	r[ x] = 0;
-	
 	return r;
 }
 
-NSString* sopInstanceUIDDecode( unsigned char *r)
+NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 {
-	unsigned int	i, x, length = strlen( (char *) r);
+	unsigned int	i, x;
 	char			str[ 1024];
 	
 	for( i = 0, x = 0; i < length; i++)
@@ -117,13 +114,13 @@ NSString* sopInstanceUIDDecode( unsigned char *r)
 
 @implementation DicomImage
 
-+ (NSString*) sopInstanceUIDEncodeString:(NSString*) s
++ (NSData*) sopInstanceUIDEncodeString:(NSString*) s
 {
-	char *str = sopInstanceUIDEncode( s);
-	NSString *nsstring = [NSString stringWithCString: str];
-	free( str);
+	int length = [s length];
+	length ++;
+	length /= 2;
 	
-	return nsstring;
+	return [NSData dataWithBytesNoCopy: sopInstanceUIDEncode( s) length: length freeWhenDone: YES];
 }
 
 - (NSArray*) SRPaths
@@ -182,11 +179,13 @@ NSString* sopInstanceUIDDecode( unsigned char *r)
 //	NSString* uid =  sopInstanceUIDDecode( [[NSData dataWithBytes: ss length: strlen( ss)+1] bytes]);
 //	free( ss);
 	
-	unsigned char* src =  (unsigned char*) [[self primitiveValueForKey:@"compressedSopInstanceUID"] bytes];
+	NSData *data = [self primitiveValueForKey:@"compressedSopInstanceUID"];
+	
+	unsigned char* src =  (unsigned char*) [data bytes];
 	
 	if( src)
 	{
-		NSString* uid =  sopInstanceUIDDecode( src);
+		NSString* uid =  sopInstanceUIDDecode( src, [data length]);
 		
 		[sopInstanceUID release];
 		sopInstanceUID = [uid retain];
@@ -207,8 +206,12 @@ NSString* sopInstanceUIDDecode( unsigned char *r)
 
 	if( s)
 	{
+		int length = [s length];
+		length++;
+		length /= 2;
+		
 		char *ss = sopInstanceUIDEncode( s);
-		[self setValue: [NSData dataWithBytes: ss length: strlen( ss)+1] forKey:@"compressedSopInstanceUID"];
+		[self setValue: [NSData dataWithBytes: ss length: length] forKey:@"compressedSopInstanceUID"];
 		free( ss);
 		
 //		if( [[self sopInstanceUID] isEqualToString: s] == NO)

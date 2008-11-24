@@ -22,9 +22,6 @@
 #include "dsrtypes.h"
 #include "dsrdoc.h"
 
-extern NSString* sopInstanceUIDDecode( unsigned char *r);
-extern void* sopInstanceUIDEncode( NSString *sopuid);
-
 @implementation ROISRConverter
 
 + (NSData *)roiFromDICOM:(NSString *)path
@@ -74,7 +71,7 @@ extern void* sopInstanceUIDEncode( NSString *sopuid);
 		NSString		*sopInstanceUID = [sr sopInstanceUID];
 		
 		NSArray			*srs = [(NSSet *)[roiSRSeries valueForKey:@"images"] allObjects];
-		NSPredicate		*predicate = [NSPredicate predicateWithFormat:@"compressedSopInstanceUID == %@", [DicomImage sopInstanceUIDEncodeString: sopInstanceUID]];
+		NSPredicate		*predicate = [NSComparisonPredicate predicateWithLeftExpression: [NSExpression expressionForKeyPath: @"compressedSopInstanceUID"] rightExpression: [NSExpression expressionForConstantValue: [DicomImage sopInstanceUIDEncodeString: sopInstanceUID]] customSelector: @selector( isEqualToData:)];
 		NSArray			*found = [srs filteredArrayUsingPredicate:predicate];
 		
 		if ([found count] < 1)

@@ -2721,9 +2721,29 @@ static NSArray*	statesArray = nil;
 	
 	
 //	NSData *str = [DicomImage sopInstanceUIDEncodeString: @"1.2.826.0.1.3680043.2.1143.8797283371159.20060125163148762.58"];
-//	NSLog( sopInstanceUIDDecode( [str bytes]));
+//
+//	NSManagedObjectContext	*context = self. managedObjectContext;
+//	NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+//	[dbRequest setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"Image"]];
+//		
+//	[dbRequest setPredicate: [NSPredicate predicateWithValue: YES]];
 //	
-//	NSPredicate	*predicate = [NSPredicate predicateWithFormat:@"compressedSopInstanceUID == %@", [DicomImage sopInstanceUIDEncodeString: sopInstanceUID]];
+//	[context lock];
+//	
+//	NSError *error = nil;
+//	NSArray *studiesArray = [context executeFetchRequest:dbRequest error:&error];
+//	if( [studiesArray count])
+//	{
+//		NSPredicate *predicate = [NSComparisonPredicate predicateWithLeftExpression: [NSExpression expressionForKeyPath: @"compressedSopInstanceUID"] rightExpression: [NSExpression expressionForConstantValue: str] customSelector: @selector( isEqualToData:)];
+//		
+//		studiesArray = [studiesArray filteredArrayUsingPredicate: predicate];
+//		
+//		NSData *d = [[studiesArray lastObject] valueForKey: @"compressedSopInstanceUID"];
+//		
+//		NSLog( @"%@", sopInstanceUIDDecode( [d bytes], [d length]));
+//	}
+//
+//	[context unlock];
 }
 
 -(long)saveDatabase: (NSString*)path

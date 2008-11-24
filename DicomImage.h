@@ -15,7 +15,7 @@
 #import <Cocoa/Cocoa.h>
 #import "DicomImage.h"
 
-NSString* sopInstanceUIDDecode( unsigned char *r);
+NSString* sopInstanceUIDDecode( unsigned char *r, int length);
 void* sopInstanceUIDEncode( NSString *sopuid);
 
 @class DCMSequenceAttribute;
@@ -38,7 +38,7 @@ void* sopInstanceUIDEncode( NSString *sopuid);
 	NSString	*fileType;
 }
 
-+ (NSString*) sopInstanceUIDEncodeString:(NSString*) s;
++ (NSData*) sopInstanceUIDEncodeString:(NSString*) s;
 - (NSString*) uniqueFilename;
 - (NSSet*) paths;
 - (NSString*) completePath;

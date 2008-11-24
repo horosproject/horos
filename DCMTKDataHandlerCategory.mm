@@ -490,7 +490,8 @@ char currentDestinationMoveAET[ 60] = "";
 					int x;
 					for(x = 0; x < [uids count]; x++)
 					{
-						predicateArray = [predicateArray arrayByAddingObject: [NSPredicate predicateWithFormat:@"compressedSopInstanceUID == %@", [DicomImage sopInstanceUIDEncodeString: [uids objectAtIndex: x]]]];
+						NSPredicate	*p = [NSComparisonPredicate predicateWithLeftExpression: [NSExpression expressionForKeyPath: @"compressedSopInstanceUID"] rightExpression: [NSExpression expressionForConstantValue: [DicomImage sopInstanceUIDEncodeString: [uids objectAtIndex: x]]] customSelector: @selector( isEqualToData:)];
+						predicateArray = [predicateArray arrayByAddingObject: p];
 					}
 					
 					predicate = [NSCompoundPredicate orPredicateWithSubpredicates:predicateArray];
@@ -793,7 +794,10 @@ char currentDestinationMoveAET[ 60] = "";
 	const char *sType;
 	dataset->findAndGetString (DCM_QueryRetrieveLevel, sType, OFFalse);
 	OFCondition cond;
-		
+	
+//	sType = "IMAGE";
+//	predicate = [NSComparisonPredicate predicateWithLeftExpression: [NSExpression expressionForKeyPath: @"compressedSopInstanceUID"] rightExpression: [NSExpression expressionForConstantValue: [DicomImage sopInstanceUIDEncodeString: @"1.2.826.0.1.3680043.2.1143.8797283371159.20060125163148762.58"]] customSelector: @selector( isEqualToData:)];
+	
 	if (strcmp(sType, "STUDY") == 0) 
 		entity = [[model entitiesByName] objectForKey:@"Study"];
 	else if (strcmp(sType, "SERIES") == 0) 
@@ -806,7 +810,11 @@ char currentDestinationMoveAET[ 60] = "";
 	if (entity)
 	{
 		[request setEntity:entity];
-		[request setPredicate:predicate];
+		
+		if( strcmp(sType, "IMAGE") == 0)
+			[request setPredicate: [NSPredicate predicateWithValue: YES]];
+		else
+			[request setPredicate: predicate];
 					
 		error = nil;
 		
@@ -821,6 +829,11 @@ char currentDestinationMoveAET[ 60] = "";
 		@try
 		{
 			findArray = [context executeFetchRequest:request error:&error];
+			
+			if( strcmp(sType, "IMAGE") == 0)
+			{
+				findArray = [findArray filteredArrayUsingPredicate: predicate];
+			}
 		}
 		@catch (NSException * e)
 		{
@@ -956,9 +969,6 @@ char currentDestinationMoveAET[ 60] = "";
 	const char *sType;
 	dataset->findAndGetString (DCM_QueryRetrieveLevel, sType, OFFalse);
 	
-//	sType = "IMAGE";
-//	predicate = [NSPredicate predicateWithFormat:@"compressedSopInstanceUID == %@", [DicomImage sopInstanceUIDEncodeString: @"1.3.12.2.1107.5.1.4.51988.4.0.1153171689822390"]];
-	
 	if (strcmp(sType, "STUDY") == 0) 
 		entity = [[model entitiesByName] objectForKey:@"Study"];
 	else if (strcmp(sType, "SERIES") == 0) 
@@ -969,7 +979,11 @@ char currentDestinationMoveAET[ 60] = "";
 		entity = nil;
 	
 	[request setEntity:entity];
-	[request setPredicate:predicate];
+	
+	if( strcmp(sType, "IMAGE") == 0)
+		[request setPredicate: [NSPredicate predicateWithValue: YES]];
+	else
+		[request setPredicate: predicate];
 	
 	error = nil;
 	
@@ -985,6 +999,11 @@ char currentDestinationMoveAET[ 60] = "";
 	@try
 	{
 		array = [context executeFetchRequest:request error:&error];
+		
+		if( strcmp(sType, "IMAGE") == 0)
+		{
+			array = [array filteredArrayUsingPredicate: predicate];
+		}
 		
 		if( [array count] == 0)
 		{
