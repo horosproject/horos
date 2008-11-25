@@ -588,9 +588,7 @@ static NSArray*	statesArray = nil;
 					if( [[curDict objectForKey: @"studyID"] isEqualToString: curStudyID] == YES && [[curDict objectForKey: @"patientUID"] caseInsensitiveCompare: curPatientUID] == NSOrderedSame)
 					{
 						if( [[study valueForKey: @"modality"] isEqualToString: @"SR"] || [[study valueForKey: @"modality"] isEqualToString: @"OT"])
-						{
 							[study setValue: [curDict objectForKey: @"modality"] forKey:@"modality"];
-						}
 					}
 					else
 					{
@@ -649,9 +647,7 @@ static NSArray*	statesArray = nil;
 						else
 						{
 							if( [[study valueForKey: @"modality"] isEqualToString: @"SR"] || [[study valueForKey: @"modality"] isEqualToString: @"OT"])
-							{
 								[study setValue: [curDict objectForKey: @"modality"] forKey:@"modality"];
-							}
 						}
 						curStudyID = [curDict objectForKey: @"studyID"];
 						curPatientUID = [curDict objectForKey: @"patientUID"];
