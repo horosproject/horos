@@ -490,7 +490,7 @@ char currentDestinationMoveAET[ 60] = "";
 					int x;
 					for(x = 0; x < [uids count]; x++)
 					{
-						NSPredicate	*p = [NSComparisonPredicate predicateWithLeftExpression: [NSExpression expressionForKeyPath: @"compressedSopInstanceUID"] rightExpression: [NSExpression expressionForConstantValue: [DicomImage sopInstanceUIDEncodeString: [uids objectAtIndex: x]]] customSelector: @selector( isEqualToData:)];
+						NSPredicate	*p = [NSComparisonPredicate predicateWithLeftExpression: [NSExpression expressionForKeyPath: @"compressedSopInstanceUID"] rightExpression: [NSExpression expressionForConstantValue: [DicomImage sopInstanceUIDEncodeString: [uids objectAtIndex: x]]] customSelector: @selector( isEqualToSopInstanceUID:)];
 						predicateArray = [predicateArray arrayByAddingObject: p];
 					}
 					
@@ -796,7 +796,7 @@ char currentDestinationMoveAET[ 60] = "";
 	OFCondition cond;
 	
 //	sType = "IMAGE";
-//	predicate = [NSComparisonPredicate predicateWithLeftExpression: [NSExpression expressionForKeyPath: @"compressedSopInstanceUID"] rightExpression: [NSExpression expressionForConstantValue: [DicomImage sopInstanceUIDEncodeString: @"1.2.826.0.1.3680043.2.1143.8797283371159.20060125163148762.58"]] customSelector: @selector( isEqualToData:)];
+//	predicate = [NSComparisonPredicate predicateWithLeftExpression: [NSExpression expressionForKeyPath: @"compressedSopInstanceUID"] rightExpression: [NSExpression expressionForConstantValue: [DicomImage sopInstanceUIDEncodeString: @"1.2.826.0.1.3680043.2.1143.8797283371159.20060125163148762.58"]] customSelector: @selector( isEqualToSopInstanceUID:)];
 	
 	if (strcmp(sType, "STUDY") == 0) 
 		entity = [[model entitiesByName] objectForKey:@"Study"];
@@ -812,7 +812,7 @@ char currentDestinationMoveAET[ 60] = "";
 		[request setEntity:entity];
 		
 		if( strcmp(sType, "IMAGE") == 0)
-			[request setPredicate: [NSPredicate predicateWithValue: YES]];
+			[request setPredicate: [NSPredicate predicateWithFormat:@"compressedSopInstanceUID != NIL"]];
 		else
 			[request setPredicate: predicate];
 					
@@ -981,7 +981,7 @@ char currentDestinationMoveAET[ 60] = "";
 	[request setEntity:entity];
 	
 	if( strcmp(sType, "IMAGE") == 0)
-		[request setPredicate: [NSPredicate predicateWithValue: YES]];
+		[request setPredicate: [NSPredicate predicateWithFormat:@"compressedSopInstanceUID != NIL"]];
 	else
 		[request setPredicate: predicate];
 	

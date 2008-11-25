@@ -15,6 +15,7 @@
 #import "DicomImage.h"
 #import <OsiriX/DCM.h>
 #import "DCMView.h"
+#include <zlib.h>
 
 #ifdef OSIRIX_VIEWER
 #import "DCMPix.h"
@@ -111,6 +112,31 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 	
 	return [NSString stringWithCString:str encoding: NSASCIIStringEncoding];
 }
+
+@interface NSData (OsiriX)
+- (BOOL) isEqualToSopInstanceUID:(NSData*) sopInstanceUID;
+@end
+
+@implementation NSData (OsiriX)
+- (BOOL) isEqualToSopInstanceUID:(NSData*) sopInstanceUID
+{
+	const UInt8* bytes = (const UInt8*) [self bytes];
+	NSUInteger length = [self length];
+	if( length == 0) return FALSE;
+	if( bytes[length-1] == 0)
+		length --;
+	
+	const UInt8* sopInstanceUIDBytes = (const UInt8*) [sopInstanceUID bytes];
+	NSUInteger sopInstanceUIDLength = [sopInstanceUID length];
+	if( sopInstanceUIDLength == 0) return FALSE;
+	if (sopInstanceUIDBytes[sopInstanceUIDLength-1] == 0)
+		sopInstanceUIDLength --;
+	
+	if (length == sopInstanceUIDLength)
+		return (memcmp(bytes, sopInstanceUIDBytes, length) == 0);
+	return FALSE;
+}
+@end
 
 @implementation DicomImage
 

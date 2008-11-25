@@ -2719,9 +2719,8 @@ static NSArray*	statesArray = nil;
 	[[QueryController currentQueryController] refresh: self];
 	[[LogManager currentLogManager] resetLogs];
 	
-	
 //	NSData *str = [DicomImage sopInstanceUIDEncodeString: @"1.2.826.0.1.3680043.2.1143.8797283371159.20060125163148762.58"];
-//
+//	
 //	NSManagedObjectContext	*context = self. managedObjectContext;
 //	NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
 //	[dbRequest setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"Image"]];
@@ -2734,7 +2733,7 @@ static NSArray*	statesArray = nil;
 //	NSArray *studiesArray = [context executeFetchRequest:dbRequest error:&error];
 //	if( [studiesArray count])
 //	{
-//		NSPredicate *predicate = [NSComparisonPredicate predicateWithLeftExpression: [NSExpression expressionForKeyPath: @"compressedSopInstanceUID"] rightExpression: [NSExpression expressionForConstantValue: str] customSelector: @selector( isEqualToData:)];
+//		NSPredicate *predicate = [NSComparisonPredicate predicateWithLeftExpression: [NSExpression expressionForKeyPath: @"compressedSopInstanceUID"] rightExpression: [NSExpression expressionForConstantValue: str] customSelector: @selector( isEqualToSopInstanceUID:)];
 //		
 //		studiesArray = [studiesArray filteredArrayUsingPredicate: predicate];
 //		

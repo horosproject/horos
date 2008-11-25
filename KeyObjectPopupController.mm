@@ -105,11 +105,13 @@
 		id reference;
 		while (reference = [enumerator nextObject])
 		{
-			NSPredicate	*p = [NSComparisonPredicate predicateWithLeftExpression: [NSExpression expressionForKeyPath: @"compressedSopInstanceUID"] rightExpression: [NSExpression expressionForConstantValue: [DicomImage sopInstanceUIDEncodeString: reference]] customSelector: @selector( isEqualToData:)];
+			NSPredicate	*p = [NSComparisonPredicate predicateWithLeftExpression: [NSExpression expressionForKeyPath: @"compressedSopInstanceUID"] rightExpression: [NSExpression expressionForConstantValue: [DicomImage sopInstanceUIDEncodeString: reference]] customSelector: @selector( isEqualToSopInstanceUID:)];
 			
 			predicate = [NSCompoundPredicate orPredicateWithSubpredicates:[NSArray arrayWithObjects:predicate, p, nil]]; 
 		}
-		imagesArray = [[imageInSeries filteredArrayUsingPredicate:predicate] retain];
+		NSPredicate		*notNilPredicate = [NSPredicate predicateWithFormat:@"compressedSopInstanceUID != NIL"];
+		imageInSeries = [imageInSeries filteredArrayUsingPredicate: notNilPredicate];
+		imagesArray = [[imageInSeries filteredArrayUsingPredicate: predicate] retain];
 		[[BrowserController currentBrowser] openViewerFromImages:[NSArray arrayWithObject: imagesArray] movie:NO viewer :_viewerController keyImagesOnly:NO];
 	}
 	

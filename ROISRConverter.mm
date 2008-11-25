@@ -71,8 +71,9 @@
 		NSString		*sopInstanceUID = [sr sopInstanceUID];
 		
 		NSArray			*srs = [(NSSet *)[roiSRSeries valueForKey:@"images"] allObjects];
-		NSPredicate		*predicate = [NSComparisonPredicate predicateWithLeftExpression: [NSExpression expressionForKeyPath: @"compressedSopInstanceUID"] rightExpression: [NSExpression expressionForConstantValue: [DicomImage sopInstanceUIDEncodeString: sopInstanceUID]] customSelector: @selector( isEqualToData:)];
-		NSArray			*found = [srs filteredArrayUsingPredicate:predicate];
+		NSPredicate		*predicate = [NSComparisonPredicate predicateWithLeftExpression: [NSExpression expressionForKeyPath: @"compressedSopInstanceUID"] rightExpression: [NSExpression expressionForConstantValue: [DicomImage sopInstanceUIDEncodeString: sopInstanceUID]] customSelector: @selector( isEqualToSopInstanceUID:)];
+		NSPredicate		*notNilPredicate = [NSPredicate predicateWithFormat:@"compressedSopInstanceUID != NIL"];
+		NSArray			*found = [[srs filteredArrayUsingPredicate: notNilPredicate] filteredArrayUsingPredicate: predicate];
 		
 		if ([found count] < 1)
 			AddIt = YES;
