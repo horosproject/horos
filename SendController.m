@@ -95,7 +95,6 @@ static volatile int sendControllerObjects = 0;
 		_readyForRelease = NO;
 		_lock = [[NSRecursiveLock alloc] init];
 		[_lock  lock];
-		sendControllerObjects++;
 		
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setSendMessage:) name:@"DCMSendStatus" object:nil];
 		
@@ -290,6 +289,7 @@ static volatile int sendControllerObjects = 0;
 	else // Cancel
 	{
 		[_lock unlock];	// Will release the object
+		sendControllerObjects--;
 	}
 }
 
