@@ -6538,19 +6538,34 @@ static NSArray*	statesArray = nil;
 					NSMutableArray *viewersList = [ViewerController getDisplayed2DViewers];
 					BOOL found = NO;
 					
-					// Is a viewer containing this study opened? -> select it
-					for( ViewerController *vc in viewersList )
+					if( [[element valueForKey: @"type"] isEqualToString: @"Study"])
 					{
-						if( study == [[[vc fileList] objectAtIndex: 0] valueForKeyPath:@"series.study"] )
+						// Is a viewer containing this study opened? -> select it
+						for( ViewerController *vc in viewersList )
 						{
-							[[vc window] makeKeyAndOrderFront: self];
-							found = YES;
+							if(element == [[[vc fileList] objectAtIndex: 0] valueForKeyPath:@"series.study"] )
+							{
+								[[vc window] makeKeyAndOrderFront: self];
+								found = YES;
+							}
+						}
+					}
+					else if( [[element valueForKey: @"type"] isEqualToString: @"Series"])
+					{
+						// Is a viewer containing this series opened? -> select it
+						for( ViewerController *vc in viewersList )
+						{
+							if(element == [[[vc fileList] objectAtIndex: 0] valueForKeyPath:@"series"] )
+							{
+								[[vc window] makeKeyAndOrderFront: self];
+								found = YES;
+							}
 						}
 					}
 					
 					if( found == NO)
 					{
-						if( [table isEqualToString: @"Series"])
+						if( [[element valueForKey: @"type"] isEqualToString: @"Series"])
 						{
 							[self findAndSelectFile:nil image: [[element valueForKey: @"images"] anyObject] shouldExpand:NO];
 							[self databaseOpenStudy: element];
