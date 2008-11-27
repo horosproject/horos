@@ -13,6 +13,7 @@
 =========================================================================*/
 
 #import "DCMNetServiceDelegate.h"
+#import "SendController.h"
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -234,16 +235,16 @@ static NSLock *currentHostLock = nil;
 							transferSyntax = 0;
 							
 						if( [ts isEqualToString: @"JPEGProcess14SV1TransferSyntax"])
-							transferSyntax = 21;
+							transferSyntax = SendJPEGLossless;
 							
 						if( [ts isEqualToString: @"JPEG2000LosslessOnly"])
-							transferSyntax = 26;
+							transferSyntax = SendJPEG2000Lossless;
 							
 						if( [ts isEqualToString: @"JPEG2000"])
-							transferSyntax = 27;
+							transferSyntax = SendJPEG2000Lossy50;
 							
 						if( [ts isEqualToString: @"RLELossless"])
-							transferSyntax = 22;
+							transferSyntax = SendRLE;
 					}
 					
 					NSMutableDictionary *s = [NSMutableDictionary dictionaryWithObjectsAndKeys:	hostname, @"Address",

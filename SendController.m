@@ -175,7 +175,7 @@ static volatile int sendControllerObjects = 0;
 {
 	NSArray			*serversArray		= [DCMNetServiceDelegate DICOMServersListSendOnly: YES QROnly:NO];
 	
-	if( index > -1 && index < [serversArray count]) return [serversArray objectAtIndex:index];
+	if(	index > -1 && index < [serversArray count]) return [serversArray objectAtIndex:index];
 	
 	return nil;
 }
