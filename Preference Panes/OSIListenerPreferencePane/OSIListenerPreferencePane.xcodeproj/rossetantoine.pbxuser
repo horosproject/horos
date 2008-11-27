@@ -1,8 +1,7 @@
 // !$*UTF8*$!
 {
 	089C1669FE841209C02AAC07 /* Project object */ = {
-		activeArchitecture = i386;
-		activeBuildConfigurationName = "Deployment Universal 32-bit";
+		activeBuildConfigurationName = "Deployment Universal 64-bit";
 		activeExecutable = AB34B70609AA11020057FE0E /* Executable */;
 		activeTarget = 8D202CE80486D31800D8A456 /* OSIListenerPreferencePane */;
 		addToTargets = (
@@ -73,8 +72,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 231055264;
-			PBXWorkspaceStateSaveDate = 231055264;
+			PBXPerProjectTemplateStateSaveDate = 249483730;
+			PBXWorkspaceStateSaveDate = 249483730;
 		};
 		perUserProjectItems = {
 			AB52E74B0A19FC0F00726305 /* PBXTextBookmark */ = AB52E74B0A19FC0F00726305 /* PBXTextBookmark */;
@@ -233,6 +232,11 @@
 			sepNavVisRange = "{0, 1397}";
 			sepNavVisRect = "{{0, 2666}, {1287, 199}}";
 			sepNavWindowFrame = "{{787, 213}, {1245, 871}}";
+		};
+	};
+	F506C040013D9D8001CA16C8 /* OSIListenerPreferencePanePref.tiff */ = {
+		uiCtxt = {
+			sepNavWindowFrame = "{{38, 279}, {1573, 1273}}";
 		};
 	};
 }
