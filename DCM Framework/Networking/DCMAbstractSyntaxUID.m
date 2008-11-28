@@ -362,52 +362,24 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 	return RTImageStorage;
 }
 
-+ (BOOL)isVerification:(NSString *)sopClassUID {
++ (BOOL)isVerification:(NSString *)sopClassUID
+{
 		return sopClassUID != nil && (
 		       [sopClassUID isEqualToString:DCM_Verification]
 		);
 	}
 
-+ (BOOL)isImageStorage:(NSString *)sopClassUID{
-	return sopClassUID != nil && (
-		       [sopClassUID isEqualToString:ComputedRadiographyImageStorage]
-		    || [sopClassUID isEqualToString:DigitalXRayImageStorageForPresentation]
-		    || [sopClassUID isEqualToString:DigitalXRayImageStorageForProcessing]
-		    || [sopClassUID isEqualToString:DigitalMammographyXRayImageStorageForPresentation]
-		    || [sopClassUID isEqualToString:DigitalMammographyXRayImageStorageForProcessing]
-		    || [sopClassUID isEqualToString:DigitalIntraoralXRayImageStorageForPresentation]
-		    || [sopClassUID isEqualToString:DigitalIntraoralXRayImageStorageForProcessing]
-		    || [sopClassUID isEqualToString:CTImageStorage]
-		    || [sopClassUID isEqualToString:EnhancedCTImageStorage]
-		    || [sopClassUID isEqualToString:UltrasoundMultiframeImageStorageRetired]
-		    || [sopClassUID isEqualToString:UltrasoundMultiframeImageStorage]
-		    || [sopClassUID isEqualToString:MRImageStorage]
-		    || [sopClassUID isEqualToString:EnhancedMRImageStorage]
-		    || [sopClassUID isEqualToString:NuclearMedicineImageStorageRetired]
-		    || [sopClassUID isEqualToString:UltrasoundImageStorageRetired]
-		    || [sopClassUID isEqualToString:UltrasoundImageStorage]
-		    || [sopClassUID isEqualToString:SecondaryCaptureImageStorage]
-		    || [sopClassUID isEqualToString:MultiframeSingleBitSecondaryCaptureImageStorage]
-		    || [sopClassUID isEqualToString:MultiframeGrayscaleByteSecondaryCaptureImageStorage]
-		    || [sopClassUID isEqualToString:MultiframeGrayscaleWordSecondaryCaptureImageStorage]
-		    || [sopClassUID isEqualToString:MultiframeTrueColorSecondaryCaptureImageStorage]
-		    || [sopClassUID isEqualToString:XrayAngiographicImageStorage]
-		    || [sopClassUID isEqualToString:XrayRadioFlouroscopicImageStorage]
-		    || [sopClassUID isEqualToString:XrayAngiographicBiplaneImageStorage]
-		    || [sopClassUID isEqualToString:NuclearMedicineImageStorage]
-		    || [sopClassUID isEqualToString:VisibleLightDraftImageStorage]
-			|| [sopClassUID isEqualToString:VideoEndoscopicImageStorage]
-		    || [sopClassUID isEqualToString:VisibleLightMultiFrameDraftImageStorage]
-		    || [sopClassUID isEqualToString:VisibleLightEndoscopicImageStorage]
-		    || [sopClassUID isEqualToString:VisibleLightMicroscopicImageStorage]
-		    || [sopClassUID isEqualToString:VisibleLightSlideCoordinatesMicroscopicImageStorage]
-		    || [sopClassUID isEqualToString:VisibleLightPhotographicImageStorage]
-		    || [sopClassUID isEqualToString:PETImageStorage]
-		    || [sopClassUID isEqualToString:RTImageStorage]
-			|| [sopClassUID isEqualToString:PDFStorageClassUID]
-			|| [sopClassUID isEqualToString:OphthalmicPhotography8BitImageStorage]
-			|| [sopClassUID isEqualToString:OphthalmicPhotography16BitImageStorage]
-		);
++ (BOOL)isImageStorage:(NSString *)sopClassUID
+{
+	if( sopClassUID)
+	{
+		for( NSString *sopUID in [DCMAbstractSyntaxUID imageSyntaxes])
+		{
+			if( [sopClassUID isEqualToString: sopUID]) return YES;
+		}
+	}
+	
+	return NO;
 }
 
 + (NSArray *)imageSyntaxes{
@@ -437,6 +409,7 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 		    XrayAngiographicBiplaneImageStorage ,
 		    NuclearMedicineImageStorage ,
 		    VisibleLightDraftImageStorage ,
+			VideoEndoscopicImageStorage,
 		    VisibleLightMultiFrameDraftImageStorage ,
 		    VisibleLightEndoscopicImageStorage ,
 		    VisibleLightMicroscopicImageStorage ,
