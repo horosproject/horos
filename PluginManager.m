@@ -409,20 +409,23 @@ static NSMutableArray			*fusionPlugins = nil;
 							{
 								PluginFilter*	filter = [filterClass filter];
 								
-								if( [menuTitles count] > 1)
+								for( NSString *menuTitle in menuTitles)
 								{
-									
-									for( NSString *menuTitle in menuTitles)
-									{
-										
-										[plugins setObject:filter forKey:menuTitle];
-										[pluginsDict setObject:plugin forKey:menuTitle];
-									}
+									[plugins setObject:filter forKey:menuTitle];
+									[pluginsDict setObject:plugin forKey:menuTitle];
 								}
-								else
+							}
+							
+							NSArray		*toolbarNames = [[plugin infoDictionary] objectForKey:@"ToolbarNames"];
+							
+							if( toolbarNames)
+							{
+								PluginFilter*	filter = [filterClass filter];
+								
+								for( NSString *toolbarName in toolbarNames)
 								{
-									[plugins setObject:filter forKey: [menuTitles objectAtIndex: 0]];
-									[pluginsDict setObject:plugin forKey:[menuTitles objectAtIndex: 0]];
+									[plugins setObject:filter forKey:toolbarName];
+									[pluginsDict setObject:plugin forKey:toolbarName];
 								}
 							}
 						}

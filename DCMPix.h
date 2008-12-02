@@ -160,7 +160,8 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 	
 	
 	NSString			*convertedDICOM;	
-	BOOL				generated;	
+	BOOL				generated;
+	NSString			*generatedName;
 	NSLock				*checking;
 	
 	BOOL				useVOILUT;
@@ -268,6 +269,7 @@ Note setter is different to not break existing usage. :-( */
 
 @property(readonly) short stack, stackMode;
 @property(readonly) BOOL generated;
+@property(retain) NSString *generatedName;
 @property(retain) NSString *sourceFile;
 
 /** Database links */

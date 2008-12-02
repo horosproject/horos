@@ -1140,7 +1140,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 
 @synthesize serieNo, pixArray;
 @synthesize pixPos, transferFunctionPtr;
-@synthesize stackMode, generated;
+@synthesize stackMode, generated, generatedName;
 @synthesize sourceFile, imageObj;
 @synthesize srcFile, annotationsDictionary;
 
@@ -11305,6 +11305,7 @@ END_CREATE_ROIS:
 	[patientPosition release];
 	[viewPosition release];
 	[decayCorrection release];
+	[generatedName release];
 	
 	if( fExternalOwnedImage == nil)
 	{

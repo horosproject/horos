@@ -23,6 +23,7 @@
 	[super showWindow: sender];
 	[[self window] makeKeyAndOrderFront: sender];
 	[[self window] display];
+	[[self window] flushWindow];
 }
 
 - (void) dealloc

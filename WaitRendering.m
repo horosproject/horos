@@ -22,6 +22,7 @@
 	[super showWindow: sender];
 	[[self window] makeKeyAndOrderFront: sender];
 	[[self window] display];
+	[[self window] flushWindow];
 }
 
 - (void) setCancel:(BOOL) c

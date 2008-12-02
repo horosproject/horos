@@ -3183,7 +3183,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				mouseXPos = imageLocation.x;
 				mouseYPos = imageLocation.y;
 				
-				if( ([theEvent modifierFlags] & NSShiftKeyMask) && !([theEvent modifierFlags] & NSCommandKeyMask) && !([theEvent modifierFlags] & NSControlKeyMask) && mouseDragging == NO)
+				if( ([theEvent modifierFlags] & (NSShiftKeyMask|NSCommandKeyMask|NSControlKeyMask|NSAlternateKeyMask)) == NSShiftKeyMask && mouseDragging == NO)
 				{
 					if( [self roiTool: currentTool] == NO)
 						[self computeMagnifyLens: imageLocation];
@@ -3335,7 +3335,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	else tool = currentTool;
 	
 	if (([event modifierFlags] & NSCommandKeyMask))  tool = tTranslate;
-	if (([event modifierFlags] & NSAlternateKeyMask))  tool = tWL;
+	if (([event modifierFlags] & (NSShiftKeyMask|NSAlternateKeyMask)) == NSAlternateKeyMask)  tool = tWL;
 	if (([event modifierFlags] & NSControlKeyMask) && ([event modifierFlags] & NSAlternateKeyMask))
 	{
 		if( blendingView) tool = tWLBlended;

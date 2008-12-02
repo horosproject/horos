@@ -1997,15 +1997,23 @@ static volatile int numberOfThreadsForRelisce = 0;
 		else
 		{
 			NSDate	*bod = [curImage valueForKeyPath:@"series.study.dateOfBirth"];
+			NSString* windowTitle;
 			
 			if ([[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] == annotFull)
 			{
 				if( [curImage valueForKeyPath:@"series.study.dateOfBirth"])
-					[[self window] setTitle: [NSString stringWithFormat: @"%@ - %@ (%@) - %@ (%@)%@", [curImage valueForKeyPath:@"series.study.name"], [BrowserController DateOfBirthFormat: bod], [curImage valueForKeyPath:@"series.study.yearOld"], [curImage valueForKeyPath:@"series.name"], [[curImage valueForKeyPath:@"series.id"] stringValue], loading]];
+					windowTitle = [NSString stringWithFormat: @"%@ - %@ (%@) - %@ (%@)", [curImage valueForKeyPath:@"series.study.name"], [BrowserController DateOfBirthFormat: bod], [curImage valueForKeyPath:@"series.study.yearOld"], [curImage valueForKeyPath:@"series.name"], [[curImage valueForKeyPath:@"series.id"] stringValue]];
 				else
-					[[self window] setTitle: [NSString stringWithFormat: @"%@ - %@ (%@)%@", [curImage valueForKeyPath:@"series.study.name"], [curImage valueForKeyPath:@"series.name"], [[curImage valueForKeyPath:@"series.id"] stringValue], loading]];
+					windowTitle = [NSString stringWithFormat: @"%@ - %@ (%@)", [curImage valueForKeyPath:@"series.study.name"], [curImage valueForKeyPath:@"series.name"], [[curImage valueForKeyPath:@"series.id"] stringValue]];
 			}	
-			else [[self window] setTitle: [NSString stringWithFormat: @"%@ (%@)%@", [curImage valueForKeyPath:@"series.name"], [[curImage valueForKeyPath:@"series.id"] stringValue], loading]];
+			else windowTitle = [NSString stringWithFormat: @"%@ (%@)", [curImage valueForKeyPath:@"series.name"], [[curImage valueForKeyPath:@"series.id"] stringValue]];
+			
+			if( [[pixList[ curMovieIndex] objectAtIndex:0] generated] && [[pixList[ curMovieIndex] objectAtIndex:0] generatedName])
+				windowTitle = [windowTitle stringByAppendingString: [NSString stringWithFormat: @" - %@", [[pixList[ curMovieIndex] objectAtIndex:0] generatedName]]];
+
+			windowTitle = [windowTitle stringByAppendingString: loading];
+			
+			[[self window] setTitle: windowTitle];
 		}
 	}
 	else [[self window] setTitle: @"Viewer"];
@@ -4779,7 +4787,11 @@ static ViewerController *draggedController = nil;
 			
 			[toolbarItem setLabel: itemIdent];
 			[toolbarItem setPaletteLabel: itemIdent];
-			[toolbarItem setToolTip: itemIdent];
+			NSDictionary* toolTips = [info objectForKey: @"ToolbarToolTips"];
+			if( toolTips )
+				[toolbarItem setToolTip: [toolTips objectForKey: itemIdent]];
+			else
+				[toolbarItem setToolTip: itemIdent];
 			
 			NSImage	*image = [[[NSImage alloc] initWithContentsOfFile:[bundle pathForImageResource:[info objectForKey:@"ToolbarIcon"]]] autorelease];
 			if( !image ) image = [[NSWorkspace sharedWorkspace] iconForFile: [bundle bundlePath]];
@@ -4874,24 +4886,43 @@ static ViewerController *draggedController = nil;
 	
 	if([AppController canDisplay12Bit]) array = [array arrayByAddingObject: LUT12BitToolbarItemIdentifier];
 	
-	NSArray*	allPlugins = [[PluginManager pluginsDict] allKeys];
+	NSArray*		allPlugins = [[PluginManager pluginsDict] allKeys];
+	NSMutableSet*	pluginsItems = [NSMutableSet setWithCapacity: [allPlugins count]];
 	
-	for( id loopItem in allPlugins)
+	for( NSString* plugin in allPlugins)
 	{
-		NSBundle		*bundle = [[PluginManager pluginsDict] objectForKey: loopItem];
+		if ([plugin isEqualToString: @"(-"])
+			continue;
+		
+		NSBundle		*bundle = [[PluginManager pluginsDict] objectForKey: plugin];
 		NSDictionary	*info = [bundle infoDictionary];
+		NSString		*pluginType = [info objectForKey: @"pluginType"];
 		//NSLog(@"plugin %@", [[allPlugins objectAtIndex: i] description]);
-		if( [[info objectForKey:@"pluginType"] isEqualToString: @"imageFilter"] == YES || [[info objectForKey:@"pluginType"] isEqualToString: @"roiTool"] == YES || [[info objectForKey:@"pluginType"] isEqualToString: @"other"] == YES)
-		{	
+		if( [pluginType isEqualToString: @"imageFilter"] == YES || [pluginType isEqualToString: @"roiTool"] == YES || [pluginType isEqualToString: @"other"] == YES)
+		{
+			id allowToolbarIcon = [info objectForKey: @"allowToolbarIcon"];
 			//NSLog(@"allow allowToolbarIcon: %@", [[allPlugins objectAtIndex: i] description]);
-			if( [info objectForKey:@"allowToolbarIcon"])
+			if( allowToolbarIcon)
 			{
 				//NSLog(@"allow allowToolbarIcon %@", [bundle description]);
-				if( [[info objectForKey:@"allowToolbarIcon"] boolValue] == YES) array = [array arrayByAddingObject: loopItem];
+				if( [allowToolbarIcon boolValue] == YES)
+				{
+					NSArray* toolbarNames = [info objectForKey: @"ToolbarNames"];
+					if( toolbarNames)
+					{
+						if( [toolbarNames containsObject: plugin])
+							[pluginsItems addObject: plugin];
+					}
+					else
+						[pluginsItems addObject: plugin];
+				}
 			}
 		}
 	}
-	
+
+	if( [pluginsItems count])
+		array = [array arrayByAddingObjectsFromArray: [pluginsItems allObjects]];
+
 	return array;
 }
 

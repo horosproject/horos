@@ -15505,7 +15505,11 @@ static volatile int numberOfThreadsForJPEG = 0;
 			
 			[toolbarItem setLabel: itemIdent];
 			[toolbarItem setPaletteLabel: itemIdent];
-			[toolbarItem setToolTip: itemIdent];
+			NSDictionary* toolTips = [info objectForKey: @"ToolbarToolTips"];
+			if( toolTips )
+				[toolbarItem setToolTip: [toolTips objectForKey: itemIdent]];
+			else
+				[toolbarItem setToolTip: itemIdent];
 			
 			//			NSLog( @"ICON:");
 			//			NSLog( [info objectForKey:@"ToolbarIcon"]);
@@ -15578,21 +15582,39 @@ static volatile int numberOfThreadsForJPEG = 0;
 			 ToggleDrawerToolbarItemIdentifier,
 			 nil];
 	
-	NSArray*	allPlugins = [[PluginManager pluginsDict] allKeys];
+	NSArray*		allPlugins = [[PluginManager pluginsDict] allKeys];
+	NSMutableSet*	pluginsItems = [NSMutableSet setWithCapacity: [allPlugins count]];
 	
 	for( NSString *plugin in allPlugins )
 	{
+		if ([plugin isEqualToString: @"(-"])
+			continue;
+		
 		NSBundle		*bundle = [[PluginManager pluginsDict] objectForKey: plugin];
 		NSDictionary	*info = [bundle infoDictionary];
 		
-		if( [[info objectForKey:@"pluginType"] isEqualToString: @"Database"] == YES )
+		if( [[info objectForKey: @"pluginType"] isEqualToString: @"Database"] == YES )
 		{
-			if( [info objectForKey:@"allowToolbarIcon"] )
+			id allowToolbarIcon = [info objectForKey: @"allowToolbarIcon"];
+			if( allowToolbarIcon )
 			{
-				if( [[info objectForKey:@"allowToolbarIcon"] boolValue] == YES) array = [array arrayByAddingObject: plugin];
+				if( [allowToolbarIcon boolValue] == YES )
+				{
+					NSArray* toolbarNames = [info objectForKey: @"ToolbarNames"];
+					if( toolbarNames )
+					{
+						if( [toolbarNames containsObject: plugin] )
+							[pluginsItems addObject: plugin];
+					}
+					else
+						[pluginsItems addObject: plugin];
+				}
 			}
 		}
 	}
+	
+	if( [pluginsItems count])
+		array = [array arrayByAddingObjectsFromArray: [pluginsItems allObjects]];
 	
     return array;
 }
