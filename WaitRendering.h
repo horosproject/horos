@@ -33,6 +33,8 @@
 	NSModalSession				session;
 	
 	id							cancelDelegate;
+	
+	NSTimeInterval				displayedTime;
 }
 - (id) init:(NSString*) s;
 - (BOOL) run;

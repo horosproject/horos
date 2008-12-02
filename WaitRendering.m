@@ -19,10 +19,11 @@
 
 - (void) showWindow: (id) sender
 {
-	[super showWindow: sender];
 	[[self window] makeKeyAndOrderFront: sender];
 	[[self window] display];
 	[[self window] flushWindow];
+	
+	displayedTime = [NSDate timeIntervalSinceReferenceDate];
 }
 
 - (void) setCancel:(BOOL) c
@@ -37,7 +38,6 @@
 - (void) thread:(id) sender
 {
 	NSAutoreleasePool               *pool=[[NSAutoreleasePool alloc] init];
-
 	
 	while( stop == NO)
 	{
@@ -55,6 +55,14 @@
 //	[NSApp endModalSession:session];
 	
     [pool release];
+}
+
+- (void) close
+{
+	while( [NSDate timeIntervalSinceReferenceDate] - displayedTime < 0.5)
+		[NSThread sleepForTimeInterval: 0.1];
+	
+	[super close];
 }
 
 -(void) end
@@ -205,6 +213,7 @@
 	cancel = NO;
 	lastDuration = 0;
 	startTime = nil;
+	displayedTime = [NSDate timeIntervalSinceReferenceDate];
 	
 	[[self window] center];
 	[[self window] setLevel: NSModalPanelWindowLevel];

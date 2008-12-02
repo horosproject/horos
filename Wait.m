@@ -24,6 +24,16 @@
 	[[self window] makeKeyAndOrderFront: sender];
 	[[self window] display];
 	[[self window] flushWindow];
+	
+	displayedTime = [NSDate timeIntervalSinceReferenceDate];
+}
+
+- (void) close
+{
+	while( [NSDate timeIntervalSinceReferenceDate] - displayedTime < 0.5)
+		[NSThread sleepForTimeInterval: 0.1];
+	
+	[super close];
 }
 
 - (void) dealloc
@@ -120,6 +130,7 @@
 	openSession = useSession;
 	_target = nil;
 	firstTime = [NSDate timeIntervalSinceReferenceDate];
+	displayedTime = [NSDate timeIntervalSinceReferenceDate];
 	
 	return self;
 }
