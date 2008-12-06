@@ -1475,7 +1475,7 @@ extern NSThread					*mainThread;
 					selected = @"selected";
 			}
 		}
-		else if( ipAddressString)
+		else if( ipAddressString && [[parameters objectForKey: @"dicomcstoreport"] intValue] == 0)
 		{
 			// Try to match the calling http client in our destination nodes
 			
