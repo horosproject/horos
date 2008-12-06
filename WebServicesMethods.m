@@ -530,6 +530,9 @@ extern NSThread					*mainThread;
 		}
 		//NSLog(@"parameters : %@", parameters);	
 		
+		NSString *portString = [parameters objectForKey: @"dicomcstoreport"];
+		if( portString == 0L) portString = @"0";
+		
 		// find the name of the requested file
 		urlComponenents = [(NSString*)[urlComponenents objectAtIndex:0] componentsSeparatedByString:@"?"];
 		NSString *fileURL = [urlComponenents objectAtIndex:0];
@@ -584,7 +587,11 @@ extern NSThread					*mainThread;
 			}
 	
 			[returnHTML appendString:templateStringEnd];
-
+			
+			[returnHTML replaceOccurrencesOfString: @"%DicomCStorePort%" withString: portString options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
+			
+			[returnHTML replaceOccurrencesOfString: @"%DicomCStorePort%" withString: portString options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
+			
 			data = [returnHTML dataUsingEncoding:NSUTF8StringEncoding];
 		}
 		else if([fileURL isEqualToString:@"/studyList"])
@@ -654,7 +661,9 @@ extern NSThread					*mainThread;
 
 			if([parameters objectForKey:@"album"])[html replaceOccurrencesOfString:@"%album%" withString:[NSString stringWithFormat:@"&album=%@",[parameters objectForKey:@"album"]] options:NSLiteralSearch range:NSMakeRange(0, [html length])];
 			else [html replaceOccurrencesOfString:@"%album%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [html length])];
-
+			
+			[html replaceOccurrencesOfString: @"%DicomCStorePort%" withString: portString options:NSLiteralSearch range:NSMakeRange(0, [html length])];
+			
 			data = [html dataUsingEncoding:NSUTF8StringEncoding];
 			err = NO;
 		}
@@ -739,7 +748,9 @@ extern NSThread					*mainThread;
 
 				if([parameters objectForKey:@"search"])[html replaceOccurrencesOfString:@"%search%" withString:[NSString stringWithFormat:@"&search=%@",[parameters objectForKey:@"search"]] options:NSLiteralSearch range:NSMakeRange(0, [html length])];
 				else [html replaceOccurrencesOfString:@"%search%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [html length])];
-			
+				
+				[html replaceOccurrencesOfString: @"%DicomCStorePort%" withString: portString options:NSLiteralSearch range:NSMakeRange(0, [html length])];
+				
 				data = [html dataUsingEncoding:NSUTF8StringEncoding];
 			}
 			err = NO;
@@ -856,7 +867,8 @@ extern NSThread					*mainThread;
 			
 			NSString *studyName = [WebServicesMethods nonNilString:[[series lastObject] valueForKeyPath:@"study.name"]];
 			[templateString replaceOccurrencesOfString:@"%LocalizedLabel_Home%" withString:studyName options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-
+			
+			[templateString replaceOccurrencesOfString: @"%DicomCStorePort%" withString: portString options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 			
 			data = [templateString dataUsingEncoding:NSUTF8StringEncoding];
 			err = NO;

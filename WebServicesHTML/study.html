@@ -32,7 +32,7 @@
 
 <body>
     <h1 id="pageTitle">%PageTitle%</h1>
-    <a id="backButton" class="button" href="studyList?browse=%browse%&search=%search%&album=%album%">%LocalizedLabel_StudyList%</a>
+    <a id="backButton" class="button" href="studyList?dicomcstoreport=%DicomCStorePort%&browse=%browse%&search=%search%&album=%album%">%LocalizedLabel_StudyList%</a>
 	<div id="Home" class="panel">
 		<h2>%LocalizedLabel_SendStatus%</h2>
 		<h2>%LocalizedLabel_PatientInfo%</h2>
@@ -44,7 +44,7 @@
 			<li>%LocalizedLabel_StudyComment%: %StudyComment%</li>
 			<li>%LocalizedLabel_StudyState%: %StudyState%</li>
 		</ul>
-		%Report%<div><a href="report?id=%StudyID%" class="report">%LocalizedLabel_GetReport%</a></div>%/Report%
+		%Report%<div><a href="report?dicomcstoreport=%DicomCStorePort%&id=%StudyID%" class="report">%LocalizedLabel_GetReport%</a></div>%/Report%
 		<form id="selectDicomDestination" name="selectDicomDestination">
 		<h2 style="padding-top:10px">%LocalizedLabel_Series%</h2>
 		<ul id="imageList" class="images">
@@ -56,19 +56,19 @@
 								<input type="checkbox" class="checkbox" name="selected" value="%SeriesID%" %checked% />
 							</td>
 							<td rowspan="2">
-								<a class="series" href="series?id=%SeriesID%&studyID=%StudyID%&browse=%browse%&search=%search%&album=%album%">
+								<a class="series" href="series?dicomcstoreport=%DicomCStorePort%&id=%SeriesID%&studyID=%StudyID%&browse=%browse%&search=%search%&album=%album%">
 									<img src="%thumbnail%" class="thumbnail">
 								</a>
 							</td>
 							<td class="tdSeriesName">
-								<a class="series" href="series?id=%SeriesID%&studyID=%StudyID%&browse=%browse%&search=%search%&album=%album%">
+								<a class="series" href="series?dicomcstoreport=%DicomCStorePort%&id=%SeriesID%&studyID=%StudyID%&browse=%browse%&search=%search%&album=%album%">
 									<span class="SeriesName">%SeriesName%</span>
 								</a>
 							</td>
 						</tr>
 						<tr>
 							<td class="tdSeriesImageNumber">
-								<a class="series" href="series?id=%SeriesID%&studyID=%StudyID%&browse=%browse%&search=%search%&album=%album%">
+								<a class="series" href="series?dicomcstoreport=%DicomCStorePort%&id=%SeriesID%&studyID=%StudyID%&browse=%browse%&search=%search%&album=%album%">
 									<span class="SeriesImageNumber">%SeriesImageNumber%</span>
 								</a>
 							</td>
@@ -95,6 +95,7 @@
 			<input type="hidden" name="search" value="%search%"/>
 			<input type="hidden" name="browse" value="%browse%"/>
 			<input type="hidden" name="album" value="%album%"/>
+			<input type="hidden" name="dicomcstoreport" value="%DicomCStorePort%" name="search"/>
 			<input type="submit" name="dicomSend" id="dicomSend" value="%LocalizedLabel_Send%"/>
 		</form>
     </div>

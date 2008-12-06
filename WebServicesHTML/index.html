@@ -17,21 +17,22 @@
 	<div id="Home" class="panel">
 		<h2 style="padding-top:10px">%LocalizedLabel_SearchPatient%</h2>
 		<form action="/studyList" method="get">
-			<input type="text" id="searchField" id="search" name="search"/>
+			<input type="text" id="search" name="search"/>
+			<input type="hidden" name="dicomcstoreport" value="%DicomCStorePort%" name="search"/>
 			<input type="submit" id="searchButton" value="%LocalizedLabel_SearchButton%"/>
 		</form>	
 		
 		<h2 style="padding-top:10px">%LocalizedLabel_Browse%</h2>
 		<ul>
-			<li class="index"><a href="studyList?browse=6hours">%LocalizedLabel_Last6Hours%</a></li>
-			<li class="index"><a href="studyList?browse=today">%LocalizedLabel_Today%</a></li>
-			<li class="index"><a href="studyList?browse=all">%LocalizedLabel_StudyList%</a></li>
+			<li class="index"><a href="studyList?dicomcstoreport=%DicomCStorePort%&browse=6hours">%LocalizedLabel_Last6Hours%</a></li>
+			<li class="index"><a href="studyList?dicomcstoreport=%DicomCStorePort%&browse=today">%LocalizedLabel_Today%</a></li>
+			<li class="index"><a href="studyList?dicomcstoreport=%DicomCStorePort%&browse=all">%LocalizedLabel_StudyList%</a></li>
 		</ul>
 
 		<h2 style="padding-top:10px">%LocalizedLabel_Albums%</h2>
 		<ul>
 			%AlbumListItem%
-			<li class="index"><a href="studyList?album=%AlbumNameURL%">%AlbumName%</a></li>
+			<li class="index"><a href="studyList?dicomcstoreport=%DicomCStorePort%&album=%AlbumNameURL%">%AlbumName%</a></li>
 			%/AlbumListItem%
 		</ul>
 

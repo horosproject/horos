@@ -13,12 +13,12 @@
 
 <body onorientationchange="updateOrientation()">
     <h1 id="pageTitle">%PageTitle%</h1>
-    <a id="backButton" class="button" href="/">%LocalizedLabel_Home%</a>
+    <a id="backButton" class="button" href="/?dicomcstoreport=%DicomCStorePort%">%LocalizedLabel_Home%</a>
 
 	<ul id="studyList" title="Study List" class="studyList">
         %StudyListItem%
 		<li title="%StudyListItemName%" class="studyListItem">
-			<a href="study?id=%StudyListItemID%%browse%%search%%album%">
+			<a href="study?dicomcstoreport=%DicomCStorePort%&id=%StudyListItemID%%browse%%search%%album%">
 				<span class="StudyListItemName">%StudyListItemName%</span>
 			</a>
 
