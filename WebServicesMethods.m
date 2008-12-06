@@ -740,7 +740,7 @@ extern NSThread					*mainThread;
 					
 					[html replaceOccurrencesOfString:@"%LocalizedLabel_SendStatus%" withString: [NSString stringWithFormat: NSLocalizedString( @"Images sent to DICOM node: %@ - %@", nil), dicomDestinationAddress, dicomDestinationAETitle] options:NSLiteralSearch range:NSMakeRange(0, [html length])];
 				}
-					else
+				else
 					[html replaceOccurrencesOfString:@"%LocalizedLabel_SendStatus%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [html length])];
 				
 				if([parameters objectForKey:@"browse"])[html replaceOccurrencesOfString:@"%browse%" withString:[NSString stringWithFormat:@"&browse=%@",[parameters objectForKey:@"browse"]] options:NSLiteralSearch range:NSMakeRange(0, [html length])];
@@ -1421,7 +1421,29 @@ extern NSThread					*mainThread;
 	if([seriesArray count]<=1) checkAllStyle = @"style='display:none;'";
 	[returnHTML replaceOccurrencesOfString:@"%CheckAllStyle%" withString:checkAllStyle options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
 	
-	NSArray *nodes = [self dicomNodes];
+	if( [[parameters objectForKey: @"dicomcstoreport"] intValue] > 0 && ipAddressString != 0L)
+	{
+		NSString *dicomNodeAddress = ipAddressString;
+		NSString *dicomNodePort = [parameters objectForKey: @"dicomcstoreport"];
+		NSString *dicomNodeAETitle = @"This Computer";
+		
+		NSString *dicomNodeSyntax;
+		if( isiPhone) dicomNodeSyntax = @"5";
+		else dicomNodeSyntax = @"0";
+		NSString *dicomNodeDescription = @"This Computer";
+		
+		NSMutableString *tempHTML = [NSMutableString stringWithString:dicomNodesListItemString];
+		if(isiPhone) [tempHTML replaceOccurrencesOfString:@"[%dicomNodeAddress%:%dicomNodePort%]" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+		[tempHTML replaceOccurrencesOfString:@"%dicomNodeAddress%" withString:dicomNodeAddress options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+		[tempHTML replaceOccurrencesOfString:@"%dicomNodePort%" withString:dicomNodePort options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+		[tempHTML replaceOccurrencesOfString:@"%dicomNodeAETitle%" withString:dicomNodeAETitle options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+		[tempHTML replaceOccurrencesOfString:@"%dicomNodeSyntax%" withString:dicomNodeSyntax options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+		[tempHTML replaceOccurrencesOfString:@"%dicomNodeDescription%" withString:dicomNodeDescription options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+		
+		[returnHTML appendString:tempHTML];
+	}
+	
+	NSArray *nodes = [DCMNetServiceDelegate DICOMServersListSendOnly:YES QROnly:NO];
 	for(NSDictionary *node in nodes)
 	{
 		NSString *dicomNodeAddress = [WebServicesMethods nonNilString:[node objectForKey:@"Address"]];
@@ -1431,7 +1453,7 @@ extern NSThread					*mainThread;
 		NSString *dicomNodeDescription = [WebServicesMethods nonNilString:[node objectForKey:@"Description"]];
 		
 		NSMutableString *tempHTML = [NSMutableString stringWithString:dicomNodesListItemString];
-		if(isiPhone)[tempHTML replaceOccurrencesOfString:@"[%dicomNodeAddress%:%dicomNodePort%]" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+		if(isiPhone) [tempHTML replaceOccurrencesOfString:@"[%dicomNodeAddress%:%dicomNodePort%]" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 		[tempHTML replaceOccurrencesOfString:@"%dicomNodeAddress%" withString:dicomNodeAddress options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 		[tempHTML replaceOccurrencesOfString:@"%dicomNodePort%" withString:dicomNodePort options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 		[tempHTML replaceOccurrencesOfString:@"%dicomNodeAETitle%" withString:dicomNodeAETitle options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
@@ -1513,17 +1535,6 @@ extern NSThread					*mainThread;
 {
 	NSCalendarDate	*start = [NSCalendarDate dateWithYear:[day yearOfCommonEra] month:[day monthOfYear] day:[day dayOfMonth] hour:0 minute:0 second:0 timeZone: nil];
 	return [start timeIntervalSinceReferenceDate];
-}
-
-- (NSArray*)dicomNodes;
-{
-	return [DCMNetServiceDelegate DICOMServersListSendOnly:YES QROnly:NO];
-	NSMutableArray *nodes = [NSMutableArray arrayWithArray:[[NSUserDefaults standardUserDefaults] arrayForKey:@"SERVERS"]];
-	for(NSDictionary *node in nodes)
-	{
-		if(![node objectForKey:@"Send"]) [nodes removeObject:node];
-	}
-	return [NSArray arrayWithArray:nodes];
 }
 
 - (void)dicomSend:(id)sender;

@@ -692,7 +692,7 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject:@"PET" forKey: @"PET Default CLUT"];
 	[defaultValues setObject:@"PET" forKey: @"PET Blending CLUT"];
 	[defaultValues setObject:@"0" forKey:@"NETWORKLOGS"];
-	[defaultValues setObject:@"4096" forKey:@"AEPORT"];
+	[defaultValues setObject:@"11112" forKey:@"AEPORT"];
 	[defaultValues setObject:@"+xi" forKey:@"AETransferSyntax"];
 	[defaultValues setObject:@"" forKey:@"STORESCPEXTRA"];
 	[defaultValues setObject:@"0" forKey:@"ROITEXTIFSELECTED"];

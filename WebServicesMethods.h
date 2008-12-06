@@ -38,7 +38,6 @@
 - (NSMutableString*)htmlStudyListForStudies:(NSArray*)studies;
 - (NSMutableString*)htmlStudy:(DicomStudy*)study parameters:(NSDictionary*)parameters isiPhone:(BOOL)isiPhone;
 - (NSTimeInterval) startOfDay:(NSCalendarDate *)day;
-- (NSArray*)dicomNodes;
 - (void)dicomSend:(id)sender;
 - (void)dicomSendToDo:(NSDictionary*)todo;
 
