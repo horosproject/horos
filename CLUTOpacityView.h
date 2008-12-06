@@ -19,7 +19,8 @@
 #import "VRView.h"
 
 
-@interface CLUTOpacityView : NSView {
+@interface CLUTOpacityView : NSView
+{
 	NSColor *backgroundColor, *histogramColor, *pointsColor, *pointsBorderColor, *curveColor, *selectedPointColor, *textLabelColor;
 	float histogramOpacity;
 	float *volumePointer;

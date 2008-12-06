@@ -72,6 +72,8 @@
 
 - (void)dealloc
 {
+	[NSObject cancelPreviousPerformRequestsWithTarget: self selector: @selector( setCLUTtoVRViewHighRes:) object: nil];
+	
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	
 	if(histogram) free(histogram);
@@ -699,7 +701,7 @@
 	updateView = YES;
 	
 	[self setNeedsDisplay:YES];
-	//if(!nothingChanged)[self setCLUTtoVRView];
+	
 	if(clutChanged)[self setCLUTtoVRView];
 	clutChanged = NO;
 	
@@ -753,6 +755,8 @@
 {
 	if([self isAnyPointSelected])
 	{
+		vrViewLowResolution = YES;
+		
 		int i, j;
 		for (i=0; i<[curves count]; i++)
 		{
@@ -763,7 +767,6 @@
 				if((int) pt.x==(int) selectedPoint.x && (float) pt.y==(float) selectedPoint.y)
 				{
 					[self setColor:[[(NSColorPanel*)[notification object] color] colorUsingColorSpaceName: NSDeviceRGBColorSpace] forPointAtIndex:j inCurveAtIndex:i];
-					vrViewLowResolution = NO;
 					[self updateView];
 					return;
 				}
@@ -1076,8 +1079,9 @@ NSRect rect = drawingRect;
 	
 	BOOL wasInLowResolution = vrViewLowResolution;
 	vrViewLowResolution = NO;
-	//if(!nothingChanged)[self setCLUTtoVRView];
-	if(clutChanged || wasInLowResolution)[self setCLUTtoVRView];
+	
+	if(clutChanged || wasInLowResolution) [self setCLUTtoVRView];
+	
 	[super mouseUp:theEvent];
 }
 
@@ -2062,6 +2066,11 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 	if(clutChanged)[[vrView controller] setCurCLUTMenu:NSLocalizedString(@"16-bit CLUT", nil)];
 }
 
+- (void)setCLUTtoVRViewHighRes;
+{
+	[self setCLUTtoVRView: NO];
+}
+
 - (void)setCLUTtoVRView:(BOOL)lowRes;
 {
 	if( setCLUTtoVRView) return;	// avoid re-entry
@@ -2091,6 +2100,13 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 			[vrView setWLWW: wl : ww];
 	}
 	setCLUTtoVRView = NO;
+	
+	if( lowRes)
+	{
+		[NSObject cancelPreviousPerformRequestsWithTarget: self selector: @selector( setCLUTtoVRViewHighRes) object: nil];
+		[self performSelector: @selector( setCLUTtoVRViewHighRes) withObject:nil afterDelay: 0.5];
+	}
+	else [NSObject cancelPreviousPerformRequestsWithTarget: self selector: @selector( setCLUTtoVRViewHighRes:) object: nil];
 }
 
 - (void)setWL:(float)wl ww:(float)ww;
