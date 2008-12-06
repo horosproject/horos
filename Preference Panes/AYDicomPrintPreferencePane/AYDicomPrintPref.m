@@ -127,7 +127,7 @@
 	[printer setValue: @"BLACK" forKey: @"emptyImageDensity"];
 	[printer setValue: @"Portrait" forKey: @"filmOrientation"];
 	[printer setValue: @"Processor" forKey: @"filmDestination"];
-	[printer setValue: @"NONE" forKey: @"magnificationType"];
+	[printer setValue: @"BILINEAR" forKey: @"magnificationType"];
 	[printer setValue: @"NO" forKey: @"trim"];
 	[printer setValue: @"8 IN x 10 IN" forKey: @"filmSize"];
 	[printer setValue: @"" forKey: @"configurationInformation"];
