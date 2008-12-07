@@ -180,27 +180,37 @@
     // described in the HTTP spec.  And if there is no Content-Length
     // header, then the request is the remainder of the stream bytes.
     
-    if (CFHTTPMessageIsHeaderComplete(working)) {
+    if (CFHTTPMessageIsHeaderComplete(working))
+	{
         NSString *contentLengthValue = [(NSString *)CFHTTPMessageCopyHeaderFieldValue(working, (CFStringRef)@"Content-Length") autorelease];
         
         unsigned contentLength = contentLengthValue ? [contentLengthValue intValue] : 0;
         NSData *body = [(NSData *)CFHTTPMessageCopyBody(working) autorelease];
         unsigned bodyLength = [body length];
-        if (contentLength <= bodyLength) {
+        if (contentLength <= bodyLength)
+		{
             NSData *newBody = [NSData dataWithBytes:[body bytes] length:contentLength];
             [ibuffer setLength:0];
             [ibuffer appendBytes:([body bytes] + contentLength) length:(bodyLength - contentLength)];
             CFHTTPMessageSetBody(working, (CFDataRef)newBody);
-        } else {
+        }
+		else
+		{
             CFRelease(working);
             return NO;
         }
-    } else {
+    }
+	else
+	{
+		CFRelease(working);
         return NO;
     }
     
 	if( isValid == NO)
+	{
+		CFRelease(working);
 		return NO;
+	}
 	
     HTTPServerRequest *request = [[HTTPServerRequest alloc] initWithRequest:working connection:self];
     if (!requests)

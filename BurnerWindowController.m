@@ -163,6 +163,7 @@ NSString* asciiString (NSString* name);
 	[anonymizedFiles release];
 	[filesToBurn release];
 	[dbObjects release];
+	[cdName release];
 	NSLog(@"Burner dealloc");	
 	[super dealloc];
 }
@@ -171,11 +172,13 @@ NSString* asciiString (NSString* name);
 //------------------------------------------------------------------------------------------------------------------------------------
 #pragma mark•
 
-- (NSArray *)filesToBurn{
+- (NSArray *)filesToBurn
+{
 	return filesToBurn;
 }
 
-- (void)setFilesToBurn:(NSArray *)theFiles{
+- (void)setFilesToBurn:(NSArray *)theFiles
+{
 	[filesToBurn release];
 	//filesToBurn = [self extractFileNames:theFiles];
 	filesToBurn = [theFiles retain];
@@ -191,7 +194,8 @@ NSString* asciiString (NSString* name);
 
 
 
-- (NSArray *)extractFileNames:(NSArray *)filenames{
+- (NSArray *)extractFileNames:(NSArray *)filenames
+{
     NSString *pname;
     NSString *fname;
     NSString *pathName;
@@ -199,17 +203,22 @@ NSString* asciiString (NSString* name);
 
     NSMutableArray *fileNames = [[[NSMutableArray alloc] init] autorelease];
 	//NSLog(@"Extract");
-    for (fname in filenames){ 
+    for (fname in filenames)
+	{ 
 		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 		//NSLog(@"fname %@", fname);
         NSFileManager *manager = [NSFileManager defaultManager];
-        if ([manager fileExistsAtPath:fname isDirectory:&isDir] && isDir) {
+        if ([manager fileExistsAtPath:fname isDirectory:&isDir] && isDir)
+		{
             NSDirectoryEnumerator *direnum = [manager enumeratorAtPath:fname];
             //Loop Through directories
-            while (pname = [direnum nextObject]) {
+            while (pname = [direnum nextObject])
+			{
                 pathName = [fname stringByAppendingPathComponent:pname]; //make pathanme
-                if ([manager fileExistsAtPath:pathName isDirectory:&isDir] && !isDir) { //check for directory
-					if ([DCMObject objectWithContentsOfFile:pathName decodingPixelData:NO]){
+                if ([manager fileExistsAtPath:pathName isDirectory:&isDir] && !isDir)
+				{ //check for directory
+					if ([DCMObject objectWithContentsOfFile:pathName decodingPixelData:NO])
+					{
                         [fileNames addObject:pathName];
 					}
                 }
@@ -232,6 +241,7 @@ NSString* asciiString (NSString* name);
 	{
 		[[NSFileManager defaultManager] removeFileAtPath:[self folderToBurn] handler:nil];
 		
+		[cdName release];
 		cdName = [[nameField stringValue] retain];
 		
 		if( [cdName length] <= 0)
@@ -273,7 +283,8 @@ NSString* asciiString (NSString* name);
 			anonymizedFiles = nil;
 		}
 		
-		if (cdName != nil && [cdName length] > 0) {
+		if (cdName != nil && [cdName length] > 0)
+		{
 			runBurnAnimation = YES;
 			[NSThread detachNewThreadSelector:@selector(burnAnimation:) toTarget:self withObject:nil];
 			[NSThread detachNewThreadSelector:@selector(performBurn:) toTarget:self withObject:nil];
@@ -327,8 +338,10 @@ NSString* asciiString (NSString* name);
 	}
 }
 
-- (void)setCDTitle: (NSString *)title{
-	if (title) {
+- (void)setCDTitle: (NSString *)title
+{
+	if (title)
+	{
 		[cdName release];
 		//if ([title length] > 8)
 		//	title = [title substringToIndex:8];
@@ -337,7 +350,8 @@ NSString* asciiString (NSString* name);
 	}
 }
 
--(IBAction)setCDName:(id)sender{	
+-(IBAction)setCDName:(id)sender
+{
 	NSString *name = [[nameField stringValue] uppercaseString];
 	[self setCDTitle:name];
 	NSLog(cdName);
@@ -698,12 +712,13 @@ NSString* asciiString (NSString* name);
 		args = [NSArray arrayWithObjects:@"-ks",path,nil];
 		fromPipe=[NSPipe pipe];
 		fromDu=[fromPipe fileHandleForWriting];
-		NSTask *duTool=[[NSTask alloc]init];
+		NSTask *duTool=[[[NSTask alloc] init] autorelease];
 
 		[duTool setLaunchPath:@"/usr/bin/du"];
 		[duTool setStandardOutput:fromDu];
 		[duTool setArguments:args];
 		[duTool launch];
+		[duTool waitUntilExit];
 		
 		duOutput=[[fromPipe fileHandleForReading] availableData];
 		[duOutput getBytes:aBuffer];

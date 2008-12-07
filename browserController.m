@@ -13951,11 +13951,11 @@ static volatile int numberOfThreadsForJPEG = 0;
 {
 	if( burnerWindowController == nil )
 	{
-		NSMutableArray *managedObjects = [[NSMutableArray alloc] init];
+		NSMutableArray *managedObjects = [NSMutableArray array];
 		NSMutableArray *filesToBurn;
 		//Burn additional Files. Not just images. Add SRs
 		if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) filesToBurn = [self filesForDatabaseMatrixSelection:managedObjects onlyImages:NO];
-		else filesToBurn = [self filesForDatabaseOutlineSelection:managedObjects   onlyImages:NO];
+		else filesToBurn = [self filesForDatabaseOutlineSelection:managedObjects onlyImages:NO];
 		
 		burnerWindowController = [[BurnerWindowController alloc] initWithFiles:filesToBurn managedObjects:managedObjects];
 		
@@ -15521,8 +15521,12 @@ static volatile int numberOfThreadsForJPEG = 0;
 			[toolbarItem setTarget: self];
 			[toolbarItem setAction: @selector(executeFilterFromToolbar:)];
 		}
-		else toolbarItem = nil;
-    }
+		else
+		{
+			[toolbarItem release];
+			toolbarItem = nil;
+		}
+	}
 	
 	return [toolbarItem autorelease];
 }

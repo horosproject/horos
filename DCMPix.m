@@ -5971,9 +5971,14 @@ END_CREATE_ROIS:
 		{
 			theErr = Papy3GotoGroupNb (fileNb, group);
 			
-			if( theErr >= 0 && Papy3GroupRead(fileNb, &theGroupP) > 0)
+			if( theErr >= 0)
 			{
-				[cachedPapyGroups setValue: [NSValue valueWithPointer: theGroupP]  forKey: groupKey];
+				if( Papy3GroupRead(fileNb, &theGroupP) > 0)
+				{
+					[cachedPapyGroups setValue: [NSValue valueWithPointer: theGroupP]  forKey: groupKey];
+				}
+				else
+					NSLog( @"Error while reading a group (Papyrus)");
 			}
 		}
 	}

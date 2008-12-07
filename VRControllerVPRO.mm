@@ -1410,11 +1410,11 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 	[toolbarItem setAction: @selector(flyThruControllerInit:)];
 	
     }
-	else {
-	// itemIdent refered to a toolbar item that is not provide or supported by us or cocoa 
-	// Returning nil will inform the toolbar this kind of item is not supported 
-	toolbarItem = nil;
-    }
+	else
+		{
+			[toolbarItem release];
+			toolbarItem = nil;
+		}
      return [toolbarItem autorelease];
 }
 

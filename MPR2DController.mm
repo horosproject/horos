@@ -1034,7 +1034,10 @@ extern NSString * documentsDirectory();
 		[toolbarItem setMaxSize:NSMakeSize(NSWidth([orientationView frame]), NSHeight([orientationView frame]))];
 	}
     else
-		toolbarItem = nil;
+		{
+			[toolbarItem release];
+			toolbarItem = nil;
+		}
 	
 	return [toolbarItem autorelease];
 }

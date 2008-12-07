@@ -1147,11 +1147,11 @@ NSString * documentsDirectory();
 	[toolbarItem setMinSize:NSMakeSize(NSWidth([movieView frame]), NSHeight([movieView frame]))];
 	[toolbarItem setMaxSize:NSMakeSize(NSWidth([movieView frame]),NSHeight([movieView frame]))];
     }
-    else {
-	// itemIdent refered to a toolbar item that is not provide or supported by us or cocoa 
-	// Returning nil will inform the toolbar this kind of item is not supported 
-	toolbarItem = nil;
-    }
+    else
+		{
+			[toolbarItem release];
+			toolbarItem = nil;
+		}
      return [toolbarItem autorelease];
 }
 

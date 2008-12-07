@@ -1906,11 +1906,11 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 	[toolbarItem setTarget: self];
 	[toolbarItem setAction: @selector(load3DSettings:)];
     }	
-	else {
-	// itemIdent refered to a toolbar item that is not provide or supported by us or cocoa 
-	// Returning nil will inform the toolbar this kind of item is not supported 
-	toolbarItem = nil;
-    }
+	else
+		{
+			[toolbarItem release];
+			toolbarItem = nil;
+		}
 	
      return [toolbarItem autorelease];
 }

@@ -912,11 +912,10 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 		[toolbarItem setAction: @selector(showParametersPanel:)];
     }	
     else
-	{
-		// itemIdent refered to a toolbar item that is not provide or supported by us or cocoa 
-		// Returning nil will inform the toolbar this kind of item is not supported 
-		toolbarItem = nil;
-    }
+		{
+			[toolbarItem release];
+			toolbarItem = nil;
+		}
      return [toolbarItem autorelease];
 }
 

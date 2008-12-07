@@ -4800,7 +4800,11 @@ static ViewerController *draggedController = nil;
 			[toolbarItem setTarget: self];
 			[toolbarItem setAction: @selector(executeFilterFromToolbar:)];
 		}
-		else toolbarItem = nil;
+		else
+		{
+			[toolbarItem release];
+			toolbarItem = nil;
+		}
     }
     return [toolbarItem autorelease];
 }
