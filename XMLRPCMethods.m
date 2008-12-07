@@ -54,7 +54,7 @@
 		}
 		else
 		{
-			NSLog(@"******** Starting HTTP XMLRPC server on port %d", [httpServ port]);
+			NSLog(@"<><><><><><><> Starting HTTP XMLRPC server on port %d", [httpServ port]);
 		}
 	}
 	return self;

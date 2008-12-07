@@ -138,7 +138,7 @@ extern NSThread					*mainThread;
 	}
 	else
 	{
-		NSLog(@"******** Starting HTTP Web Server on port %d", [httpServ port]);
+		NSLog(@"<><><><><><><> Starting HTTP Web Server on port %d", [httpServ port]);
 	}
 	
 	if( httpServ)

@@ -41,7 +41,7 @@ static NSLock *currentHostLock = nil;
 	[currentHostLock lock];
 	if( currentHost == nil)
 	{
-		NSLog( @"*** currentHost");
+		NSLog( @"<><><><><><><> [NSHost currentHost]");
 		currentHost = [[NSHost currentHost] retain];
 	}
 	[currentHostLock unlock];
