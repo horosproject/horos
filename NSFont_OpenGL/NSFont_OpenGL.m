@@ -42,6 +42,7 @@
 
 static  BOOL					openGLLoggingEnabled = YES;
 static  NSMutableArray			*imageArray = nil, *imageArrayPreview = nil,  *imageArrayROI = nil;
+static	BOOL					fontOpenGLInitialized = NO;
 static  long					charSizeArray[ MAXCOUNT], charSizeArrayPreview[ MAXCOUNT], charSizeArrayROI[ MAXCOUNT];
 static  unsigned char			*charPtrArray[ MAXCOUNT], *charPtrArrayPreview[ MAXCOUNT], *charPtrArrayROI[ MAXCOUNT];
 
@@ -57,6 +58,15 @@ static  unsigned char			*charPtrArray[ MAXCOUNT], *charPtrArrayPreview[ MAXCOUNT
 {
 	int i;
 	
+	if( fontOpenGLInitialized == NO)
+	{
+		for( i = 0; i < MAXCOUNT; i++) charPtrArrayPreview[ i] = 0;
+		for( i = 0; i < MAXCOUNT; i++) charPtrArray[ i] = 0;
+		for( i = 0; i < MAXCOUNT; i++) charPtrArrayROI[ i] = 0;
+		
+		fontOpenGLInitialized = YES;
+	}
+	
 	switch( fontType)
 	{
 		case 0:
@@ -64,7 +74,8 @@ static  unsigned char			*charPtrArray[ MAXCOUNT], *charPtrArrayPreview[ MAXCOUNT
 			{
 				for( i = 0; i < MAXCOUNT; i++)
 				{
-					free( charPtrArray[ i]);
+					if( charPtrArray[ i]) free( charPtrArray[ i]);
+					charPtrArray[ i] = 0L;
 				}
 				[imageArray release];
 				imageArray = nil;
@@ -76,7 +87,8 @@ static  unsigned char			*charPtrArray[ MAXCOUNT], *charPtrArrayPreview[ MAXCOUNT
 			{
 				for( i = 0; i < MAXCOUNT; i++)
 				{
-					free( charPtrArrayPreview[ i]);
+					if( charPtrArrayPreview[ i]) free( charPtrArrayPreview[ i]);
+					charPtrArrayPreview[ i] = 0L;
 				}
 				[imageArrayPreview release];
 				imageArrayPreview = nil;
@@ -88,7 +100,8 @@ static  unsigned char			*charPtrArray[ MAXCOUNT], *charPtrArrayPreview[ MAXCOUNT
 			{
 				for( i = 0; i < MAXCOUNT; i++)
 				{
-					free( charPtrArrayROI[ i]);
+					if( charPtrArrayROI[ i]) free( charPtrArrayROI[ i]);
+					charPtrArrayROI[ i] = 0L;
 				}
 				[imageArrayROI release];
 				imageArrayROI = nil;
@@ -110,25 +123,46 @@ static  unsigned char			*charPtrArray[ MAXCOUNT], *charPtrArrayPreview[ MAXCOUNT
 	NSBitmapImageRep	*bitmap;
 	NSMutableArray		*curArray;
 	long				*curSizeArray, i;
-
+	
+	if( fontOpenGLInitialized == NO)
+	{
+		for( i = 0; i < MAXCOUNT; i++) charPtrArrayPreview[ i] = 0;
+		for( i = 0; i < MAXCOUNT; i++) charPtrArray[ i] = 0;
+		for( i = 0; i < MAXCOUNT; i++) charPtrArrayROI[ i] = 0;
+		
+		fontOpenGLInitialized = YES;
+	}
+	
 	switch( fontType)
 	{
 		case 1:
 			curArray = imageArrayPreview;
 			curSizeArray = charSizeArrayPreview;
-			for( i = 0; i < MAXCOUNT; i++) charPtrArrayPreview[ i] = 0;
+			for( i = 0; i < MAXCOUNT; i++)
+			{
+				if( charPtrArrayPreview[ i]) free( charPtrArrayPreview[ i]);
+				charPtrArrayPreview[ i] = 0;
+			}
 		break;
 		
 		case 0:
 			curArray = imageArray;
 			curSizeArray = charSizeArray;
-			for( i = 0; i < MAXCOUNT; i++) charPtrArray[ i] = 0;
+			for( i = 0; i < MAXCOUNT; i++)
+			{
+				if( charPtrArray[ i]) free( charPtrArray[ i]);
+				charPtrArray[ i] = 0;
+			}
 		break;
 		
 		case 2:
 			curArray = imageArrayROI;
 			curSizeArray = charSizeArrayROI;
-			for( i = 0; i < MAXCOUNT; i++) charPtrArrayROI[ i] = 0;
+			for( i = 0; i < MAXCOUNT; i++)
+			{
+				if( charPtrArrayROI[ i]) free( charPtrArrayROI[ i]);
+				charPtrArrayROI[ i] = 0;
+			}
 		break;
 	}
 	

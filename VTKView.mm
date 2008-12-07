@@ -35,7 +35,8 @@
     return _cocoaRenderWindow;
 }
 
--(id)initWithFrame:(NSRect)frame {
+-(id)initWithFrame:(NSRect)frame
+{
 
     if ( self = [super initWithFrame:frame])
 	{
@@ -43,7 +44,8 @@
 		_cocoaRenderWindow = vtkCocoaRenderWindow::New();
 		_cocoaRenderWindow->SetWindowId( [self window]);
 		_cocoaRenderWindow->SetDisplayId( self);
-		NSLog( @"%s", _cocoaRenderWindow->GetWindowName());
+		
+		NSLog( @"VTKView alloc");
 		
 		_cocoaRenderWindow->AddRenderer(_renderer);
         _interactor = vtkCocoaRenderWindowInteractor::New();
@@ -64,6 +66,8 @@
 
 -(void)dealloc
 {
+	NSLog( @"VTKView dealloc");
+	
     _renderer->Delete();
 	_cocoaRenderWindow->Delete();
 	_interactor->Delete();
