@@ -14,6 +14,8 @@
  * custom source managers for other purposes.
  */
 
+#include "jpeg_memsrc.h"
+
 /* this is not a core library module, so it doesn't define JPEG_INTERNALS */
 #include "jinclude8.h"
 #include "jpeglib8.h"

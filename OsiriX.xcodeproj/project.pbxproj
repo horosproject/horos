@@ -28061,6 +28061,10 @@
 					"\"$(SRCROOT)/ITK180/bin\"",
 				);
 				MACOSX_DEPLOYMENT_TARGET = "";
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(OTHER_CFLAGS)",
+					"-Wno-deprecated",
+				);
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
@@ -28385,6 +28389,10 @@
 					"\"$(SRCROOT)/ITK180/bin\"",
 				);
 				MACOSX_DEPLOYMENT_TARGET = "";
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(OTHER_CFLAGS)",
+					"-Wno-deprecated",
+				);
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
@@ -28777,6 +28785,10 @@
 					"\"$(SRCROOT)/ITK180/bin\"",
 				);
 				MACOSX_DEPLOYMENT_TARGET = "";
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(OTHER_CFLAGS)",
+					"-Wno-deprecated",
+				);
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
@@ -29180,6 +29192,10 @@
 					"\"$(SRCROOT)/Binaries/openjpeg\"",
 					"\"$(SRCROOT)/Binaries/VTKLibs\"",
 					"\"$(SRCROOT)/ITK180/bin\"",
+				);
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(OTHER_CFLAGS)",
+					"-Wno-deprecated",
 				);
 				OTHER_LDFLAGS = (
 					"-framework",
