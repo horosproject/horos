@@ -349,6 +349,11 @@
 		8440039B0E8CF99500A00EBD /* dciodvfy in Resources */ = {isa = PBXBuildFile; fileRef = 844003990E8CF99500A00EBD /* dciodvfy */; };
 		8483ABA60E1BE33900C21B31 /* crossCursor.tif in Resources */ = {isa = PBXBuildFile; fileRef = 8483ABA50E1BE33900C21B31 /* crossCursor.tif */; };
 		8483ABA70E1BE33900C21B31 /* crossCursor.tif in Resources */ = {isa = PBXBuildFile; fileRef = 8483ABA50E1BE33900C21B31 /* crossCursor.tif */; };
+		84A679060EEECF2F00AE5C98 /* jpeg_memsrc.c in Sources */ = {isa = PBXBuildFile; fileRef = 84A679050EEECF2F00AE5C98 /* jpeg_memsrc.c */; };
+		84A679070EEECF2F00AE5C98 /* jpeg_memsrc.c in Sources */ = {isa = PBXBuildFile; fileRef = 84A679050EEECF2F00AE5C98 /* jpeg_memsrc.c */; };
+		84A6790E0EEED04000AE5C98 /* jpeg_memsrc.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A6790D0EEED04000AE5C98 /* jpeg_memsrc.h */; };
+		84A6790F0EEED04000AE5C98 /* jpeg_memsrc.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A6790D0EEED04000AE5C98 /* jpeg_memsrc.h */; };
+		84A679170EEED15A00AE5C98 /* jpeg_memsrc.c in Sources */ = {isa = PBXBuildFile; fileRef = 84A679050EEECF2F00AE5C98 /* jpeg_memsrc.c */; };
 		A90202BE0B980CD60001A00B /* PluginManagerController.h in Headers */ = {isa = PBXBuildFile; fileRef = A90202BA0B980CD60001A00B /* PluginManagerController.h */; };
 		A90202BF0B980CD60001A00B /* PluginManagerController.m in Sources */ = {isa = PBXBuildFile; fileRef = A90202BB0B980CD60001A00B /* PluginManagerController.m */; };
 		A90202C00B980CD60001A00B /* PluginManagerController.h in Headers */ = {isa = PBXBuildFile; fileRef = A90202BA0B980CD60001A00B /* PluginManagerController.h */; };
@@ -9408,6 +9413,8 @@
 		7EF9708C08C8FB86002B5087 /* DCMNDeleteResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMNDeleteResponse.m; sourceTree = "<group>"; };
 		844003990E8CF99500A00EBD /* dciodvfy */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = dciodvfy; path = Binaries/dciodvfy; sourceTree = "<group>"; };
 		8483ABA50E1BE33900C21B31 /* crossCursor.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = crossCursor.tif; path = Cursors/crossCursor.tif; sourceTree = "<group>"; };
+		84A679050EEECF2F00AE5C98 /* jpeg_memsrc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = jpeg_memsrc.c; path = Papyrus3/jpeg_memsrc.c; sourceTree = "<group>"; };
+		84A6790D0EEED04000AE5C98 /* jpeg_memsrc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = jpeg_memsrc.h; path = Papyrus3/jpeg_memsrc.h; sourceTree = "<group>"; };
 		A90202BA0B980CD60001A00B /* PluginManagerController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = PluginManagerController.h; sourceTree = "<group>"; };
 		A90202BB0B980CD60001A00B /* PluginManagerController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = PluginManagerController.m; sourceTree = "<group>"; };
 		A9044D370BBAA29200F36689 /* ROISelector.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ROISelector.tiff; sourceTree = "<group>"; };
@@ -14893,6 +14900,8 @@
 			children = (
 				CEDB14A70768392E00375F65 /* Headers */,
 				AB0BD5DC05646BDC00BED927 /* DicomDir */,
+				84A679050EEECF2F00AE5C98 /* jpeg_memsrc.c */,
+				84A6790D0EEED04000AE5C98 /* jpeg_memsrc.h */,
 				AB0BD73505646ED100BED927 /* PapyFileSystemUnix3.c */,
 				AB0BD75705646FD800BED927 /* PapyEallocUnix3.c */,
 				AB0BD5B405646BBF00BED927 /* PapyDataSetWrite3.c */,
@@ -20860,6 +20869,7 @@
 				CE3569FA0EED998F005A823F /* vtkXYPlotWidget.h in Headers */,
 				CE3569FB0EED998F005A823F /* vtkXYZMolReader.h in Headers */,
 				CE3569FC0EED998F005A823F /* vtkZLibDataCompressor.h in Headers */,
+				84A6790E0EEED04000AE5C98 /* jpeg_memsrc.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23364,6 +23374,7 @@
 				CE35703E0EED998F005A823F /* vtkXYPlotWidget.h in Headers */,
 				CE35703F0EED998F005A823F /* vtkXYZMolReader.h in Headers */,
 				CE3570400EED998F005A823F /* vtkZLibDataCompressor.h in Headers */,
+				84A6790F0EEED04000AE5C98 /* jpeg_memsrc.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25708,6 +25719,7 @@
 				CE087B0C0DE9BD6E000E5593 /* GLString.m in Sources */,
 				CE569B750E29612100F4A234 /* ThumbnailCell.m in Sources */,
 				CEAA6F420E50C084008802D2 /* OsiriXSCPDataHandler.m in Sources */,
+				84A679060EEECF2F00AE5C98 /* jpeg_memsrc.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26318,6 +26330,7 @@
 				AB6A77EB0C5A190000BA235F /* dsrdattn.cc in Sources */,
 				CEBD0D320C8BE8D200A724F6 /* PluginManager.m in Sources */,
 				A98FFBE50CA92B58000291C8 /* altivecFunctions.c in Sources */,
+				84A679170EEED15A00AE5C98 /* jpeg_memsrc.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -27388,6 +27401,7 @@
 				CE3DDDB20D8AC94C00AE9588 /* QueryOutlineView.m in Sources */,
 				CE087B0E0DE9BD6E000E5593 /* GLString.m in Sources */,
 				CE569B770E29612100F4A234 /* ThumbnailCell.m in Sources */,
+				84A679070EEECF2F00AE5C98 /* jpeg_memsrc.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -29105,7 +29119,13 @@
 					/usr/include/libxml2,
 					AYDicomPrint,
 				);
+				OTHER_CFLAGS = "";
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(OTHER_CFLAGS)",
+					"-Wno-deprecated",
+				);
 				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.5.sdk";
+				WARNING_CFLAGS = "";
 			};
 			name = "Deployment Universal 64-bit";
 		};

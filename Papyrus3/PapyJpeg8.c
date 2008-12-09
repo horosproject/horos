@@ -25,6 +25,8 @@
 /*                                                                              */
 /********************************************************************************/
 
+#include "jpeg_memsrc.h"
+
 #define DEBUG 0
 
 #ifdef Mac
@@ -167,6 +169,14 @@ ExtractJPEGlossy8 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelSt
 
   /* specify the data source */
   jpeg_stdio_src (&theCInfo, gPapyFile [inFileNb]);
+
+//  if ((theErr = (PapyShort) Papy3FRead (gPapyFile [inFileNb], &i, 1L, theTmpBufP)) < 0)
+//  {
+//	Papy3FClose (&gPapyFile [inFileNb]);
+//	alreadyUncompressing = FALSE;
+//	RETURN (theErr);
+//  } /* if */
+//  jpeg_memory_src(&theCInfo);
   
   /* read file parameter */
   (void) jpeg_read_header (&theCInfo, TRUE);
