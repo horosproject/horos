@@ -1720,7 +1720,8 @@ Papy3GetPixelData (PapyShort inFileNb, int inImageNb, SElement *inGrOrModP, int 
         Papy3FTell (theFp, (PapyLong *) &theRefPoint);
       
         /* allocate memory for the offset table */
-        theOffsetTableP = (PapyULong *) emalloc3 ((PapyULong) (1000L * sizeof (PapyULong)));
+		#define MAX_NUMBER_OF_FRAMES 100000L
+        theOffsetTableP = (PapyULong *) emalloc3 ((PapyULong) (100000L * sizeof (PapyULong)));
       
         while (!ok)
         {
@@ -1747,7 +1748,11 @@ Papy3GetPixelData (PapyShort inFileNb, int inImageNb, SElement *inGrOrModP, int 
           if ((theUShort1 == 0xFFFE) && (theUShort2 == 0xE000))
           {
             theOffsetTableP [theFrameCount] = thePixelStart - theRefPoint;
-            theFrameCount ++;
+			
+			if( theFrameCount >= MAX_NUMBER_OF_FRAMES)
+				fprintf(stdout, "*********** MAJOR MEMORY BUG : theFrameCount > MAX_NUMBER_OF_FRAMES -> THIS APP WILL CRASH !\r");
+            else theFrameCount ++;
+			
             Papy3FSeek (theFp, SEEK_CUR, theULong);
           } /* if */
           else if ((theUShort1 == 0xFFFE) && (theUShort2 == 0xE0DD)) ok = TRUE;
