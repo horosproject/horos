@@ -6111,10 +6111,48 @@ static ViewerController *draggedController = nil;
 	[pool release];
 }
 
+- (void) subLoadingThread: (NSDictionary*) dict
+{
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	
+	NSArray *p = [dict objectForKey: @"pixList"];
+	NSArray *f = [dict objectForKey: @"fileList"];
+	int from = [[dict objectForKey: @"from"] intValue];
+	int to = [[dict objectForKey: @"to"] intValue];
+	int movieIndex = [[dict objectForKey: @"movieIndex"] intValue];
+	
+	for( int i = from; i < to; i++)
+	{
+		if( loadingPauseDelay)
+		{
+			NSLog(@"loadingPause is starting...");
+			
+			while( loadingPauseDelay > [NSDate timeIntervalSinceReferenceDate])
+				[NSThread sleepForTimeInterval: 0.1];
+			
+			NSLog(@"loadingPause is over...");
+		}
+		
+		if( stopThreadLoadImage == NO)
+		{
+			[[BrowserController currentBrowser] getLocalDCMPath: [f objectAtIndex: i] : 5];
+			[[p objectAtIndex: i] CheckLoad];
+		}
+		
+		if( from == 0)
+			loadingPercentage = (float) ((movieIndex*(to-from)) + i) / (float) (maxMovieIndex * (to-from));
+	}
+	
+	[subLoadingThread lock];
+	[subLoadingThread unlockWithCondition: [subLoadingThread condition]-1];
+	
+	[pool release];
+}
+
 -(void) loadImageData:(id) sender
 {
     NSAutoreleasePool   *pool = [[NSAutoreleasePool alloc] init];
-    long				i, x;
+    int					i, x;
 	BOOL				isPET = NO;
 	
 	if( ThreadLoadImageLock == nil)
@@ -6134,53 +6172,76 @@ static ViewerController *draggedController = nil;
 	while( [[self window] isVisible] == NO && checkEverythingLoaded == NO)
 		[NSThread sleepForTimeInterval: 0.1];
 	
-//	NSLog(@"LOADING: Start loading images");
+	NSLog( @"start loading");
 	
 	for( x = 0; x < maxMovieIndex; x++)
 	{
-		for( i = 0 ; i < [pixList[ x] count]; i++)
+		subLoadingThread = [[NSConditionLock alloc] init];
+		
+		int numberOfThreadsForCompute = MPProcessors ();
+		[subLoadingThread lock];
+		[subLoadingThread unlockWithCondition: numberOfThreadsForCompute];
+
+		for( i = 0; i < numberOfThreadsForCompute; i++ )
 		{
-			if( loadingPauseDelay)
-			{
-				NSLog(@"loadingPause is starting...");
-				
-				while( loadingPauseDelay > [NSDate timeIntervalSinceReferenceDate])
-					[NSThread sleepForTimeInterval: 0.1];
-				
-				NSLog(@"loadingPause is over...");
-			}
+			NSMutableDictionary *d = [NSMutableDictionary dictionary];
 			
-			if( stopThreadLoadImage == NO) //there is no interrruption
-			{
-				if ([fileList[ x] count] == [pixList[ x] count]) // I'm not quite sure what this line does, but I'm afraid to take it out. 
-					[[BrowserController currentBrowser] getLocalDCMPath:[fileList[ x] objectAtIndex: i] : 5]; // Anyway, we are not guarantied to have as many files as pixs, so that is why I put in the if() - Joel
-				else
-					[[BrowserController currentBrowser] getLocalDCMPath:[fileList[ x] objectAtIndex: 0] : 5]; 
-				
-				
-				DCMPix* pix = [pixList[ x] objectAtIndex: i];
-				
-				[pix CheckLoad];
-			}
+			[d setObject: pixList[ x] forKey: @"pixList"];
+			[d setObject: fileList[ x] forKey: @"fileList"];
 			
-			loadingPercentage = (float) ((x*[pixList[ x] count]) + i) / (float) (maxMovieIndex * [pixList[ x] count]);
+			int from = (i * [pixList[ x] count]) / numberOfThreadsForCompute;
+			int to = ((i+1) * [pixList[ x] count]) / numberOfThreadsForCompute;
+			
+			[d setObject: [NSNumber numberWithInt: from] forKey: @"from"];
+			[d setObject: [NSNumber numberWithInt: to] forKey: @"to"];
+			[d setObject: [NSNumber numberWithInt: x] forKey: @"movieIndex"];
+			
+			[NSThread detachNewThreadSelector: @selector( subLoadingThread:) toTarget: self withObject: d];
 		}
+		
+		[subLoadingThread lockWhenCondition: 0];
+		[subLoadingThread unlock];
+		
+		loadingPercentage = (float) 1.0;
+		
+		[subLoadingThread release];
 	}
 	
-//	[globalLoadImageLock unlock];
+	NSLog( @"end loading");
 	
-//	BOOL finished = NO;
-//	do
+	
+//	NSLog( @"start loading");
+//	
+//	for( x = 0; x < maxMovieIndex; x++)
 //	{
-//		[processorsLock lockWhenCondition: 1];
-//		if( numberOfThreadsForRelisce <= 0)
+//		for( i = 0 ; i < [pixList[ x] count]; i++)
 //		{
-//			finished = YES;
-//			[processorsLock unlockWithCondition: 1];
+//			if( loadingPauseDelay)
+//			{
+//				NSLog(@"loadingPause is starting...");
+//				
+//				while( loadingPauseDelay > [NSDate timeIntervalSinceReferenceDate])
+//					[NSThread sleepForTimeInterval: 0.1];
+//				
+//				NSLog(@"loadingPause is over...");
+//			}
+//			
+//			if( stopThreadLoadImage == NO) //there is no interrruption
+//			{
+//				if ([fileList[ x] count] == [pixList[ x] count])
+//					[[BrowserController currentBrowser] getLocalDCMPath:[fileList[ x] objectAtIndex: i] : 5];
+//				else
+//					[[BrowserController currentBrowser] getLocalDCMPath:[fileList[ x] objectAtIndex: 0] : 5]; 
+//				
+//				DCMPix* pix = [pixList[ x] objectAtIndex: i];
+//				
+//				[pix CheckLoad];
+//			}
+//			
+//			loadingPercentage = (float) ((x*[pixList[ x] count]) + i) / (float) (maxMovieIndex * [pixList[ x] count]);
 //		}
-//		else [processorsLock unlockWithCondition: 0];
 //	}
-//	while( finished == NO);
+//	NSLog( @"end loading");
 	
 	if( stopThreadLoadImage == NO)	 
 	{	
@@ -6263,8 +6324,6 @@ static ViewerController *draggedController = nil;
 			[self performSelectorOnMainThread:@selector( setShutterOnOffButton:) withObject: [NSNumber numberWithBool: YES] waitUntilDone: NO];
 		}
 	}
-	
-//	NSLog(@"LOADING: All images loaded");
 	
 	loadingPercentage = 1;
 	

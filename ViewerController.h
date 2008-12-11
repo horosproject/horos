@@ -15,8 +15,6 @@
 #import <Cocoa/Cocoa.h>
 #import <AppKit/AppKit.h>
 
-
-
 @class DCMView;
 @class OpacityTransferView;
 @class ColorTransferView;
@@ -63,6 +61,7 @@ enum
 {
 	NSLock	*ThreadLoadImageLock;
 	NSLock	*roiLock;
+	NSConditionLock *subLoadingThread;
 	
 	IBOutlet StudyView		*studyView;
 			SeriesView		*seriesView;

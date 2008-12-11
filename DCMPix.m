@@ -6132,6 +6132,8 @@ END_CREATE_ROIS:
 		}
 	}
 	
+	[PapyrusLock unlock];
+	
 	if (fileNb >= 0)
 	{
 		UValue_T		*val3, *tmpVal3;
@@ -8145,8 +8147,12 @@ END_CREATE_ROIS:
 				if( clutBlue) free( clutBlue);
 			}
 			
+			[PapyrusLock lock];
+			
 			// close and free the file and the associated allocated memory 
 			Papy3FileClose (fileNb, TRUE);
+			
+			[PapyrusLock unlock];
 			
 			if( fabs(pixelSpacingX) / fabs(pixelSpacingY) > 10000 || fabs(pixelSpacingX) / fabs(pixelSpacingY) < 0.0001)
 			{
@@ -8162,7 +8168,7 @@ END_CREATE_ROIS:
 		}
 	}
 	
-	[PapyrusLock unlock];
+//	[PapyrusLock unlock];
 	
 	return returnValue;
 }

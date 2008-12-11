@@ -25,8 +25,6 @@
 /*                                                                              */
 /********************************************************************************/
 
-#include "jpeg_memsrc.h"
-
 #define DEBUG 0
 
 #ifdef Mac
@@ -45,6 +43,7 @@
 #include "jinclude8.h"
 #include "jpeglib8.h"
 #include "jerror8.h"
+#include "jpeg_memsrc.h"
 
 #ifdef MAYO_WAVE
 #include "Mayo.h"	/* interface for wavelet decompressor */
@@ -54,45 +53,6 @@
 #ifndef Papyrus3H 
 #include "Papyrus3.h"
 #endif
-
-/********************************************************************************/
-/*									 	*/
-/*	Needed for the error manager of the JPEG lossy library			*/
-/*										*/
-/********************************************************************************/
-
-struct SErrorMgr 
-{
-  struct jpeg_error_mgr pub;	/* "public" fields */
-
-  jmp_buf setjmp_buffer;	/* for return to caller */
-}; /* struct */
-
-typedef struct SErrorMgr *SErrorMgrP;
-
-/********************************************************************************/
-/*									 	*/
-/* Here's the routine that will replace the standard error_exit method: 	*/
-/* for JPEG lossy								*/
-/*									 	*/
-/********************************************************************************/
-
-METHODDEF(void)
-my_error_exit (j_common_ptr ioCInfo)
-{
-  /* ioCInfo->err really points to a SErrorMgr struct, so coerce pointer */
-  SErrorMgrP theErr = (SErrorMgrP) ioCInfo->err;
-
-  /* Always display the message. */
-  /* We could postpone this until after returning, if we chose. */
-  (*ioCInfo->err->output_message) (ioCInfo);
-
-  /* Return control to the setjmp point */
-
-  longjmp (theErr->setjmp_buffer, 1);
-
-
-} /* endofunction my_error_exit */
 
 /********************************************************************************/
 /*									 	*/
@@ -127,7 +87,7 @@ ExtractJPEGlossy8 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelSt
   }
   alreadyUncompressing = TRUE;
   
-  fprintf(stdout, "ExtractJPEGlossy8\r");
+//  fprintf(stdout, "ExtractJPEGlossy8\r");
   
   /* position the file pointer to the begining of the image */
   Papy3FSeek (gPapyFile [inFileNb], SEEK_SET, (PapyLong) (inPixelStart + inOffsetTableP [inImageNb - 1]));
@@ -294,7 +254,6 @@ ExtractJPEGlossy8 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelSt
   
   /* This is an important step since it will release a good deal of memory. */
   jpeg_destroy_decompress(&theCInfo);
-
 
 	 free( jpegPointer);
 	}

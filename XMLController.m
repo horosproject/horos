@@ -22,6 +22,7 @@
 #import "ViewerController.h"
 #import <OsiriX/DCMObject.h>
 #import "AppController.h"
+#import "DCMPix.h"
 
 static NSString* 	XMLToolbarIdentifier					= @"XML Toolbar Identifier";
 static NSString*	ExportToolbarItemIdentifier				= @"Export.icns";

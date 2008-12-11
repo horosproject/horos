@@ -43,6 +43,7 @@
 #include "jinclude12.h"
 #include "jpeglib12.h"
 #include "jerror12.h"
+#include "jpeg_memsrc.h"
 
 #ifdef MAYO_WAVE
 #include "Mayo.h"	/* interface for wavelet decompressor */
@@ -52,45 +53,6 @@
 #ifndef Papyrus3H 
 #include "Papyrus3.h"
 #endif
-
-/********************************************************************************/
-/*									 	*/
-/*	Needed for the error manager of the JPEG lossy library			*/
-/*										*/
-/********************************************************************************/
-
-struct SErrorMgr 
-{
-  struct jpeg_error_mgr pub;	/* "public" fields */
-
-  jmp_buf setjmp_buffer;	/* for return to caller */
-}; /* struct */
-
-typedef struct SErrorMgr *SErrorMgrP;
-
-/********************************************************************************/
-/*									 	*/
-/* Here's the routine that will replace the standard error_exit method: 	*/
-/* for JPEG lossy								*/
-/*									 	*/
-/********************************************************************************/
-
-METHODDEF(void)
-my_error_exit (j_common_ptr ioCInfo)
-{
-  /* ioCInfo->err really points to a SErrorMgr struct, so coerce pointer */
-  SErrorMgrP theErr = (SErrorMgrP) ioCInfo->err;
-
-  /* Always display the message. */
-  /* We could postpone this until after returning, if we chose. */
-  (*ioCInfo->err->output_message) (ioCInfo);
-
-  /* Return control to the setjmp point */
-  
-  longjmp (theErr->setjmp_buffer, 1);
-
-} /* endofunction my_error_exit */
-
 /********************************************************************************/
 /*									 	*/
 /*	ExtractJPEGlossy : gets and decode JPEG lossy pixel data		*/
@@ -105,18 +67,18 @@ static short volatile alreadyUncompressing = FALSE;
 PapyShort
 ExtractJPEGlossy12 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelStart, PapyULong *inOffsetTableP, int inImageNb, int inDepth, int mode)
 {
-  struct SErrorMgr		theJErr;		 /* the JPEG error manager var */
   struct jpeg_decompress_struct	theCInfo;
   PapyUChar			theTmpBuf [256];
   PapyUChar			*theTmpBufP;
   PapyUShort			theGroup, theElement;
   PapyShort			theErr = 0;
-  PapyULong			i, thePos, theLimit;
+  PapyULong			i, thePos, theLimit, theLength;
   int 				theRowStride;	 	/* physical row width in output buffer */
   PapyUChar			*theWrkChP; 		/* ptr to the image */
   PapyUShort			*theWrkCh16P; 		/* ptr to the image 16 bits */
   PapyUShort			*theBuffer16P;
-   
+	struct jpeg_error_mgr			theJErr;
+
   while( alreadyUncompressing == TRUE)
   {
   }
@@ -139,7 +101,8 @@ ExtractJPEGlossy12 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelS
   thePos     = 0L;
   theGroup   = Extract2Bytes (theTmpBufP, &thePos);
   theElement = Extract2Bytes (theTmpBufP, &thePos);
-    
+  theLength  = Extract4Bytes (theTmpBufP, &thePos);
+  
   /* Pixel data fragment not found when expected */
   if ((theGroup != 0xFFFE) || (theElement != 0xE000))
   {
@@ -147,22 +110,26 @@ ExtractJPEGlossy12 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelS
 	RETURN (papBadArgument);
   }
   
-  /* We set up the normal JPEG error routines, then override error_exit. */
-  theCInfo.err 		 = jpeg_std_error (&theJErr.pub);
-  theJErr.pub.error_exit = my_error_exit;
-  /* Establish the setjmp return context for my_error_exit to use. */
-  if (setjmp (theJErr.setjmp_buffer)) 
-  {
-    jpeg_destroy_decompress (&theCInfo);
-   return -1;
-  }/* if */
-
+  theCInfo.err 		 = jpeg_std_error (&theJErr);
+  
   /* initialize the JPEG decompression object */
   jpeg_create_decompress (&theCInfo);
 
   /* specify the data source */
-  jpeg_stdio_src (&theCInfo, gPapyFile [inFileNb]);
+//  jpeg_stdio_src (&theCInfo, gPapyFile [inFileNb]);
 
+ unsigned char *jpegPointer = (unsigned char*) malloc( theLength);
+  if( jpegPointer && theLength)
+	{
+	  if ((theErr = (PapyShort) Papy3FRead (gPapyFile [inFileNb], &theLength, 1L, jpegPointer)) < 0)
+	  {
+		Papy3FClose (&gPapyFile [inFileNb]);
+		alreadyUncompressing = FALSE;
+		RETURN (theErr);
+	  } /* if */
+	  
+	  jpeg_memory_src( &theCInfo, jpegPointer, theLength);
+	  
   /* read file parameter */
   (void) jpeg_read_header (&theCInfo, TRUE);
 
@@ -241,11 +208,11 @@ ExtractJPEGlossy12 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelS
   /* tell the JPEG decompressor we have finish the decompression */  
   (void) jpeg_finish_decompress (&theCInfo);
   
-  /* MAL added : cf Example.c */
-  /* Step 8: Release JPEG decompression object */
-
   /* This is an important step since it will release a good deal of memory. */
   jpeg_destroy_decompress(&theCInfo);
+  
+	free( jpegPointer);
+	}
 	
   alreadyUncompressing = FALSE;
 
