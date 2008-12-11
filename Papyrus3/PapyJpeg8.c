@@ -108,7 +108,6 @@ static short volatile alreadyUncompressing = FALSE;
 PapyShort
 ExtractJPEGlossy8 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelStart, PapyULong *inOffsetTableP, int inImageNb, int inDepth, int mode)
 {
-  struct SErrorMgr		theJErr;		 /* the JPEG error manager var */
   struct jpeg_decompress_struct	theCInfo;
   PapyUChar			theTmpBuf [256];
   PapyUChar			*theTmpBufP;
@@ -121,6 +120,7 @@ ExtractJPEGlossy8 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelSt
   PapyUShort		*theWrkCh16P; 		/* ptr to the image 16 bits */
   PapyUShort		*theBuffer16P;
   PapyUChar			*theBuffer8P;
+	struct jpeg_error_mgr			theJErr;
    
   while( alreadyUncompressing == TRUE)
   {
@@ -154,17 +154,8 @@ ExtractJPEGlossy8 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelSt
 	RETURN (papBadArgument);
   }
   /* We set up the normal JPEG error routines, then override error_exit. */
-  theCInfo.err 		 = jpeg_std_error (&theJErr.pub);
-  theJErr.pub.error_exit = my_error_exit;
-  /* Establish the setjmp return context for my_error_exit to use. */
-//#ifdef Mac
-  if (setjmp (theJErr.setjmp_buffer)) 
-  {
-    jpeg_destroy_decompress (&theCInfo);
-   return -1;
-  }/* if */
-//#endif
-
+  theCInfo.err 		 = jpeg_std_error (&theJErr);
+  
   /* initialize the JPEG decompression object */
   jpeg_create_decompress (&theCInfo);
 
@@ -301,9 +292,6 @@ ExtractJPEGlossy8 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelSt
   /* tell the JPEG decompressor we have finish the decompression */  
   (void) jpeg_finish_decompress (&theCInfo);
   
-  /* MAL added : cf Example.c */
-  /* Step 8: Release JPEG decompression object */
-
   /* This is an important step since it will release a good deal of memory. */
   jpeg_destroy_decompress(&theCInfo);
 

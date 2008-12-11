@@ -63,6 +63,7 @@ BOOL	runOsiriXInProtectedMode = NO;
 BOOL	quicktimeRunning = NO;
 NSLock	*quicktimeThreadLock = nil;
 
+static NSMutableDictionary *cachedPapyGroups = nil;
 static NSMutableArray *nonLinearWLWWThreads = nil;
 static NSMutableArray *minmaxThreads = nil;
 static NSConditionLock *processorsLock = nil;
@@ -2957,7 +2958,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 
 -(id) myinitEmpty
 {
-	cachedPapyGroups = [[NSMutableDictionary dictionary] retain];
+	if( cachedPapyGroups == nil)
+		cachedPapyGroups = [[NSMutableDictionary dictionary] retain];
 	checking = [[NSLock alloc] init];
 	decayFactor = 1.0;
 	
@@ -2993,7 +2995,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 {
 	[DCMPix checkUserDefaults: NO];
 	
-	cachedPapyGroups = [[NSMutableDictionary dictionary] retain];
+	if( cachedPapyGroups == nil)
+		cachedPapyGroups = [[NSMutableDictionary dictionary] retain];
 	
 	needToCompute8bitRepresentation = YES;
 	
@@ -3251,7 +3254,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	
 	if( copy == nil) return nil;
 	
-	[copy->cachedPapyGroups release];
+//	[copy->cachedPapyGroups release];
 	[copy->imageObj release];
 	[copy->annotationsDictionary release];
 	
@@ -3292,7 +3295,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	copy->viewPosition = [self->viewPosition retain];
 	copy->patientPosition = [self->patientPosition retain];
 	copy->annotationsDictionary = [self->annotationsDictionary retain];
-	copy->cachedPapyGroups = [self->cachedPapyGroups retain];
+//	copy->cachedPapyGroups = [self->cachedPapyGroups retain];
 	
 	copy->patientsWeight = self->patientsWeight;
 	copy->SUVConverted = self->SUVConverted;
@@ -5961,7 +5964,15 @@ END_CREATE_ROIS:
 	
 	SElement *theGroupP = nil;
 	
-	if( [cachedPapyGroups valueForKey: groupKey] == nil )
+	NSMutableDictionary *cachedGroupsForThisFile = [cachedPapyGroups valueForKey: srcFile];
+	
+	if( cachedGroupsForThisFile == nil)
+	{
+		cachedGroupsForThisFile = [NSMutableDictionary dictionary];
+		[cachedPapyGroups setObject: cachedGroupsForThisFile forKey: srcFile];
+	}
+		
+	if( [cachedGroupsForThisFile valueForKey: groupKey] == nil )
 	{
 		int theErr = 0;
 		
@@ -5975,14 +5986,14 @@ END_CREATE_ROIS:
 			{
 				if( Papy3GroupRead(fileNb, &theGroupP) > 0)
 				{
-					[cachedPapyGroups setValue: [NSValue valueWithPointer: theGroupP]  forKey: groupKey];
+					[cachedGroupsForThisFile setValue: [NSValue valueWithPointer: theGroupP]  forKey: groupKey];
 				}
 				else
 					NSLog( @"Error while reading a group (Papyrus)");
 			}
 		}
 	}
-	else theGroupP = [[cachedPapyGroups valueForKey: groupKey] pointerValue];
+	else theGroupP = [[cachedGroupsForThisFile valueForKey: groupKey] pointerValue];
 	
 	[PapyrusLock unlock];
 	
@@ -5993,13 +6004,15 @@ END_CREATE_ROIS:
 {
 	[PapyrusLock lock];
 	
-	for( NSValue *pointer in [cachedPapyGroups allValues] )
+	NSMutableDictionary *cachedGroupsForThisFile = [cachedPapyGroups valueForKey: srcFile];
+	
+	for( NSValue *pointer in [cachedGroupsForThisFile allValues] )
 	{
 		SElement *theGroupP = (SElement*) [pointer pointerValue];
 		Papy3GroupFree ( &theGroupP, TRUE);
 	}
 	
-	[cachedPapyGroups removeAllObjects];
+	[cachedPapyGroups removeObjectForKey: srcFile];
 	
 	[PapyrusLock unlock];
 }
@@ -6016,7 +6029,8 @@ END_CREATE_ROIS:
 	PapyUShort		clutEntryR, clutEntryG, clutEntryB;
 	PapyUShort		clutDepthR, clutDepthG, clutDepthB;
 	
-	[self clearCachedPapyGroups];
+	if( frameNo == 0)
+		[self clearCachedPapyGroups];
 	
 	[PapyrusLock lock];
 	
@@ -7004,336 +7018,318 @@ END_CREATE_ROIS:
 					
 					// End of SUV required values
 				}
-
 			}
 			
 			// End SUV			
 			
 	#pragma mark MR/CT multiframe		
 			// Is it a new MR/CT multi-frame exam?
-			if ((err = Papy3GotoGroupNb (fileNb, 0x5200)) == 0)
+			
+			SElement *groupOverlay = (SElement*) [self getPapyGroup: 0x5200 fileNb: fileNb];
+			if( groupOverlay )
 			{
-				SElement	  *groupOverlay;
+				// ****** ****** ****** ************************************************************************
+				// SHARED FRAME
+				// ****** ****** ****** ************************************************************************
 				
-				NSLog(@"Group 5200 available - Start");
+				val = Papy3GetElement (groupOverlay, papSharedFunctionalGroupsSequence, &nbVal, &elemType);
 				
-				// read group 0x6001 from the file
-				if ((err = Papy3GroupRead (fileNb, &groupOverlay)) > 0)
+				// there is an element
+				if ( val )
 				{
-					NSLog(@"Group 5200 available - Papy3GroupRead done");
-					
-					// ****** ****** ****** ************************************************************************
-					// SHARED FRAME
-					// ****** ****** ****** ************************************************************************
-					
-					val = Papy3GetElement (groupOverlay, papSharedFunctionalGroupsSequence, &nbVal, &elemType);
-					
-					// there is an element
-					if ( val )
+					// there is a sequence
+					if (val->sq )
 					{
-						// there is a sequence
-						if (val->sq )
+						// get a pointer to the first element of the list
+						Papy_List *dcmList = val->sq->object->item;
+						
+						// loop through the elements of the sequence
+						while (dcmList != NULL)
 						{
+							SElement * gr = (SElement *) dcmList->object->group;
 							
-							// get a pointer to the first element of the list
-							Papy_List *dcmList = val->sq->object->item;
+							//NSLog( @"group:%x, element:%x", gr->group, gr->element);
 							
-							// loop through the elements of the sequence
-							while (dcmList != NULL)
+							switch( gr->group)
 							{
-								SElement * gr = (SElement *) dcmList->object->group;
-								
-								//NSLog( @"group:%x, element:%x", gr->group, gr->element);
-								
-								switch( gr->group)
-								{
-									case 0x0020:
-										val3 = Papy3GetElement (gr, papPlaneOrientationSequence, &nbVal, &elemType);
-										if (val3 != NULL && nbVal >= 1)
+								case 0x0020:
+									val3 = Papy3GetElement (gr, papPlaneOrientationSequence, &nbVal, &elemType);
+									if (val3 != NULL && nbVal >= 1)
+									{
+										// there is a sequence
+										if (val3->sq )
 										{
-											// there is a sequence
-											if (val3->sq )
+											Papy_List	  *PixelMatrixSeq;
+											
+											// get a pointer to the first element of the list
+											PixelMatrixSeq = val3->sq->object->item;
+											
+											// loop through the elements of the sequence
+											while (PixelMatrixSeq)
 											{
-												Papy_List	  *PixelMatrixSeq;
+												SElement * gr28 = (SElement *) PixelMatrixSeq->object->group;
 												
-												// get a pointer to the first element of the list
-												PixelMatrixSeq = val3->sq->object->item;
+												//NSLog( @"group:%x, element:%x", gr28->group, gr28->element);
 												
-												// loop through the elements of the sequence
-												while (PixelMatrixSeq)
+												switch( gr28->group)
 												{
-													SElement * gr28 = (SElement *) PixelMatrixSeq->object->group;
-													
-													//NSLog( @"group:%x, element:%x", gr28->group, gr28->element);
-													
-													switch( gr28->group)
-													{
-														case 0x0020:
-															val3 = Papy3GetElement (gr28, papImageOrientationPatientGr, &nbVal, &elemType);
-															if (val3 != NULL && nbVal >= 1)
+													case 0x0020:
+														val3 = Papy3GetElement (gr28, papImageOrientationPatientGr, &nbVal, &elemType);
+														if (val3 != NULL && nbVal >= 1)
+														{
+															tmpVal3 = val3;
+															if( nbVal != 6)
 															{
-																tmpVal3 = val3;
-																if( nbVal != 6)
-																{
-																	NSLog(@"Orientation is NOT 6 !!!");
-																	if( nbVal > 6 ) nbVal = 6;
-																}
-																for ( int j = 0; j < nbVal; j++ )
-																{
-																	orientation[ j]  = atof( tmpVal3->a);
-																	tmpVal3++;
-																}
-																
-																for ( int j = nbVal; j < 6; j++)
-																	orientation[ j] = 0;
+																NSLog(@"Orientation is NOT 6 !!!");
+																if( nbVal > 6 ) nbVal = 6;
 															}
-															break;
-													}
-													
-													// get the next element of the list
-													PixelMatrixSeq = PixelMatrixSeq->next;
-												}
-											}
-										}
-										break;
-										
-										case 0x0028:
-										val3 = Papy3GetElement (gr, papPixelMatrixSequence, &nbVal, &elemType);
-										if (val3 != NULL && nbVal >= 1)
-										{
-											// there is a sequence
-											if (val3->sq != NULL)
-											{
-												Papy_List	  *PixelMatrixSeq;
-												
-												// get a pointer to the first element of the list
-												PixelMatrixSeq = val3->sq->object->item;
-												
-												// loop through the elements of the sequence
-												while (PixelMatrixSeq != NULL)
-												{
-													SElement * gr28 = (SElement *) PixelMatrixSeq->object->group;
-													
-													//NSLog( @"group:%x, element:%x", gr28->group, gr28->element);
-													
-													switch( gr28->group)
-													{
-														case 0x0018:
-															val3 = Papy3GetElement (gr28, papSliceThicknessGr, &nbVal, &elemType);
-															if (val3 != NULL && nbVal >= 1)
+															for ( int j = 0; j < nbVal; j++ )
 															{
-																sliceThickness = atof( val3->a);
+																orientation[ j]  = atof( tmpVal3->a);
+																tmpVal3++;
 															}
-															break;
 															
-															case 0x0028:
-															val3 = Papy3GetElement (gr28, papPixelSpacingGr, &nbVal, &elemType);
-															if (val3 != NULL && nbVal >= 1)
-															{
-																tmp = val3;
-																
-																pixelSpacingY = atof( tmp->a);
-																
-																if( nbVal > 1)
-																{
-																	tmp++;
-																	pixelSpacingX = atof( tmp->a);
-																}
-															}
-															break;
-													}
-													
-													// get the next element of the list
-													PixelMatrixSeq = PixelMatrixSeq->next;
+															for ( int j = nbVal; j < 6; j++)
+																orientation[ j] = 0;
+														}
+														break;
 												}
+												
+												// get the next element of the list
+												PixelMatrixSeq = PixelMatrixSeq->next;
 											}
 										}
-										
-										val3 = Papy3GetElement (gr, papPixelValueTransformationSequence, &nbVal, &elemType);
-										if (val3 != NULL && nbVal >= 1)
+									}
+									break;
+									
+									case 0x0028:
+									val3 = Papy3GetElement (gr, papPixelMatrixSequence, &nbVal, &elemType);
+									if (val3 != NULL && nbVal >= 1)
+									{
+										// there is a sequence
+										if (val3->sq != NULL)
 										{
-											// there is a sequence
-											if (val3->sq)
+											Papy_List	  *PixelMatrixSeq;
+											
+											// get a pointer to the first element of the list
+											PixelMatrixSeq = val3->sq->object->item;
+											
+											// loop through the elements of the sequence
+											while (PixelMatrixSeq != NULL)
 											{
-												// get a pointer to the first element of the list
-												Papy_List *PixelMatrixSeq = val3->sq->object->item;
+												SElement * gr28 = (SElement *) PixelMatrixSeq->object->group;
 												
-												// loop through the elements of the sequence
-												while (PixelMatrixSeq)
+												//NSLog( @"group:%x, element:%x", gr28->group, gr28->element);
+												
+												switch( gr28->group)
 												{
-													SElement * gr28 = (SElement *) PixelMatrixSeq->object->group;
-													
-													//NSLog( @"group:%x, element:%x", gr28->group, gr28->element);
-													
-													switch( gr28->group)
-													{
+													case 0x0018:
+														val3 = Papy3GetElement (gr28, papSliceThicknessGr, &nbVal, &elemType);
+														if (val3 != NULL && nbVal >= 1)
+														{
+															sliceThickness = atof( val3->a);
+														}
+														break;
+														
 														case 0x0028:
-															val3 = Papy3GetElement (gr28, papRescaleInterceptGr, &nbVal, &elemType);
-															if (val3 != NULL && nbVal >= 1)
-															{
-																tmpVal3 = val3;
-																// get the last offset
-																for ( int j = 1; j < nbVal; j++ ) tmpVal3++;
-																offset =  atof( tmpVal3->a);
-															}
+														val3 = Papy3GetElement (gr28, papPixelSpacingGr, &nbVal, &elemType);
+														if (val3 != NULL && nbVal >= 1)
+														{
+															tmp = val3;
 															
-															val3 = Papy3GetElement (gr28, papRescaleSlopeGr, &nbVal, &elemType);
-															if (val3 != NULL && nbVal >= 1)
+															pixelSpacingY = atof( tmp->a);
+															
+															if( nbVal > 1)
 															{
-																tmpVal3 = val3;
-																// get the last slope
-																for ( int j = 1; j < nbVal; j++ ) tmpVal3++;
-																
-																if( atof( tmpVal3->a))
-																	slope  = atof( tmpVal3->a);
+																tmp++;
+																pixelSpacingX = atof( tmp->a);
 															}
-															break;
-													}
-													
-													// get the next element of the list
-													PixelMatrixSeq = PixelMatrixSeq->next;
+														}
+														break;
 												}
+												
+												// get the next element of the list
+												PixelMatrixSeq = PixelMatrixSeq->next;
 											}
 										}
-										
-										break;
-								}
+									}
+									
+									val3 = Papy3GetElement (gr, papPixelValueTransformationSequence, &nbVal, &elemType);
+									if (val3 != NULL && nbVal >= 1)
+									{
+										// there is a sequence
+										if (val3->sq)
+										{
+											// get a pointer to the first element of the list
+											Papy_List *PixelMatrixSeq = val3->sq->object->item;
+											
+											// loop through the elements of the sequence
+											while (PixelMatrixSeq)
+											{
+												SElement * gr28 = (SElement *) PixelMatrixSeq->object->group;
+												
+												//NSLog( @"group:%x, element:%x", gr28->group, gr28->element);
+												
+												switch( gr28->group)
+												{
+													case 0x0028:
+														val3 = Papy3GetElement (gr28, papRescaleInterceptGr, &nbVal, &elemType);
+														if (val3 != NULL && nbVal >= 1)
+														{
+															tmpVal3 = val3;
+															// get the last offset
+															for ( int j = 1; j < nbVal; j++ ) tmpVal3++;
+															offset =  atof( tmpVal3->a);
+														}
+														
+														val3 = Papy3GetElement (gr28, papRescaleSlopeGr, &nbVal, &elemType);
+														if (val3 != NULL && nbVal >= 1)
+														{
+															tmpVal3 = val3;
+															// get the last slope
+															for ( int j = 1; j < nbVal; j++ ) tmpVal3++;
+															
+															if( atof( tmpVal3->a))
+																slope  = atof( tmpVal3->a);
+														}
+														break;
+												}
+												
+												// get the next element of the list
+												PixelMatrixSeq = PixelMatrixSeq->next;
+											}
+										}
+									}
+									
+									break;
+							}
+							
+							// get the next element of the list
+							dcmList = dcmList->next;
+						} // while ...loop through the sequence
+					} // if ...there is a sequence of groups
+				} // if ...val is not NULL
+				
+	#pragma mark code for each frame				
+				// ****** ****** ****** ************************************************************************
+				// PER FRAME
+				// ****** ****** ****** ************************************************************************
+				
+				long frameCount = 0;
+				
+				val = Papy3GetElement (groupOverlay, papPerFrameFunctionalGroupsSequence, &nbVal, &elemType);
+				
+				// there is an element
+				if ( val )
+				{
+					// there is a sequence
+					if (val->sq)
+					{
+						// get a pointer to the first element of the list
+						Papy_List *dcmList = val->sq;
+						
+						// loop through the elements of the sequence
+						while (dcmList)
+						{
+							if( dcmList->object->item)
+							{
+								SElement * gr = (SElement *) dcmList->object->item->object->group;
 								
+								//NSLog(@"frameCount:%d imageNb:%d", frameCount, imageNb);
+								
+								if( frameCount == imageNb-1 )
+								{
+									//NSLog( @"group:%x, element:%x", gr->group, gr->element);
+									
+									switch( gr->group)
+									{
+										case 0x0020:
+											val = Papy3GetElement (gr, papPlanePositionSequence, &nbVal, &elemType);
+											if (val != NULL && nbVal >= 1)
+											{
+												// there is a sequence
+												if (val->sq)
+												{
+													// get a pointer to the first element of the list
+													Papy_List *PlanePositionSequence = val->sq->object->item;
+													
+													// loop through the elements of the sequence
+													while (PlanePositionSequence)
+													{
+														SElement * gr20 = (SElement *) PlanePositionSequence->object->group;
+														
+														//NSLog( @"group:%x, element:%x", gr20->group, gr20->element);
+														
+														switch( gr20->group)
+														{
+															case 0x0020:
+																val3 = Papy3GetElement (gr20, papImagePositionPatientGr, &nbVal, &elemType);
+																if (val3 != NULL && nbVal >= 1)
+																{
+																	tmp = val3;
+																	
+																	originX = atof( tmp->a);
+																	
+																	if( nbVal > 1)
+																	{
+																		tmp++;
+																		originY = atof( tmp->a);
+																	}
+																	
+																	if( nbVal > 2)
+																	{
+																		tmp++;
+																		originZ = atof( tmp->a);
+																	}
+																	
+																	NSLog(@"X:%f Y:%f Z:%f", originX, originY, originZ);
+																	
+																	isOriginDefined = YES;
+																}
+																break;
+																
+																case 0x0028:
+																val3 = Papy3GetElement (gr20, papPixelSpacingGr, &nbVal, &elemType);
+																if (val3 != NULL && nbVal >= 1)
+																{
+																	tmp = val3;
+																	
+																	pixelSpacingY = atof( tmp->a);
+																	
+																	if( nbVal > 1)
+																	{
+																		tmp++;
+																		pixelSpacingX = atof( tmp->a);
+																	}
+																}
+																break;
+														}
+														
+														// get the next element of the list
+														PlanePositionSequence = PlanePositionSequence->next;
+													}
+												}
+											}
+											
+											break;
+									}
+									// STOP THE LOOP
+									dcmList = nil;
+								} // right frame?
+							}
+							
+							if( dcmList )
+							{
 								// get the next element of the list
 								dcmList = dcmList->next;
-							} // while ...loop through the sequence
-						} // if ...there is a sequence of groups
-					} // if ...val is not NULL
-					
-					NSLog( @"Group 5200 available - Shared Group");
-					
-	#pragma mark code for each frame				
-					// ****** ****** ****** ************************************************************************
-					// PER FRAME
-					// ****** ****** ****** ************************************************************************
-					
-					long frameCount = 0;
-					
-					val = Papy3GetElement (groupOverlay, papPerFrameFunctionalGroupsSequence, &nbVal, &elemType);
-					
-					// there is an element
-					if ( val )
-					{
-						// there is a sequence
-						if (val->sq)
-						{
-							// get a pointer to the first element of the list
-							Papy_List *dcmList = val->sq;
-							
-							// loop through the elements of the sequence
-							while (dcmList)
-							{
-								if( dcmList->object->item)
-								{
-									SElement * gr = (SElement *) dcmList->object->item->object->group;
-									
-									//NSLog(@"frameCount:%d imageNb:%d", frameCount, imageNb);
-									
-									if( frameCount == imageNb-1 )
-									{
-										//NSLog( @"group:%x, element:%x", gr->group, gr->element);
-										
-										switch( gr->group)
-										{
-											case 0x0020:
-												val = Papy3GetElement (gr, papPlanePositionSequence, &nbVal, &elemType);
-												if (val != NULL && nbVal >= 1)
-												{
-													// there is a sequence
-													if (val->sq)
-													{
-														// get a pointer to the first element of the list
-														Papy_List *PlanePositionSequence = val->sq->object->item;
-														
-														// loop through the elements of the sequence
-														while (PlanePositionSequence)
-														{
-															SElement * gr20 = (SElement *) PlanePositionSequence->object->group;
-															
-															//NSLog( @"group:%x, element:%x", gr20->group, gr20->element);
-															
-															switch( gr20->group)
-															{
-																case 0x0020:
-																	val3 = Papy3GetElement (gr20, papImagePositionPatientGr, &nbVal, &elemType);
-																	if (val3 != NULL && nbVal >= 1)
-																	{
-																		tmp = val3;
-																		
-																		originX = atof( tmp->a);
-																		
-																		if( nbVal > 1)
-																		{
-																			tmp++;
-																			originY = atof( tmp->a);
-																		}
-																		
-																		if( nbVal > 2)
-																		{
-																			tmp++;
-																			originZ = atof( tmp->a);
-																		}
-																		
-																		NSLog(@"X:%f Y:%f Z:%f", originX, originY, originZ);
-																		
-																		isOriginDefined = YES;
-																	}
-																	break;
-																	
-																	case 0x0028:
-																	val3 = Papy3GetElement (gr20, papPixelSpacingGr, &nbVal, &elemType);
-																	if (val3 != NULL && nbVal >= 1)
-																	{
-																		tmp = val3;
-																		
-																		pixelSpacingY = atof( tmp->a);
-																		
-																		if( nbVal > 1)
-																		{
-																			tmp++;
-																			pixelSpacingX = atof( tmp->a);
-																		}
-																	}
-																	break;
-															}
-															
-															// get the next element of the list
-															PlanePositionSequence = PlanePositionSequence->next;
-														}
-													}
-												}
-												
-												break;
-										}
-										// STOP THE LOOP
-										dcmList = nil;
-									} // right frame?
-								}
+								if( dcmList->object->item == nil) dcmList = nil;
 								
-								if( dcmList )
-								{
-									// get the next element of the list
-									dcmList = dcmList->next;
-									if( dcmList->object->item == nil) dcmList = nil;
-									
-									frameCount++;
-								}
-							} // while ...loop through the sequence
-						} // if ...there is a sequence of groups
-					} // if ...val is not NULL
-					
-					NSLog( @"Group 5200 available - Per Frame Group");
-					
-					// free groupOverlay 0x5200
-					err = Papy3GroupFree (&groupOverlay, TRUE);
-					
-				}//endif ...groupOverlay 0x5200 read
-			}//endif ...groupOverlay 0x5200 found
+								frameCount++;
+							}
+						} // while ...loop through the sequence
+					} // if ...there is a sequence of groups
+				} // if ...val is not NULL
+			}
 			
 	#pragma mark tag group 6000		
 			
@@ -11294,7 +11290,7 @@ END_CREATE_ROIS:
 	
 	[self clearCachedPapyGroups];
 	[frameOfReferenceUID release];
-	[cachedPapyGroups release];
+//	[cachedPapyGroups release];
 	[transferFunction release];
 	[positionerPrimaryAngle release];
 	[positionerSecondaryAngle release];

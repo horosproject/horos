@@ -175,7 +175,6 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 	
 /** custom annotations */
 	NSMutableDictionary *annotationsDictionary;
-	NSMutableDictionary *cachedPapyGroups;
 	
 /** 12 bit monitors */
 	BOOL				isLUT12Bit;
