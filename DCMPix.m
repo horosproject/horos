@@ -3171,7 +3171,6 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 
 //- (void) copyFromOther:(DCMPix *) fromDcm
 //{
-//	[self->cachedPapyGroups release];
 //	[self->imageObj release];
 //	[self->annotationsDictionary release];
 //
@@ -3227,7 +3226,6 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 //	self->minValueOfSeries = fromDcm->minValueOfSeries;
 //	self->maxValueOfSeries = fromDcm->maxValueOfSeries;
 //	self->annotationsDictionary = [fromDcm->annotationsDictionary retain];
-//	self->cachedPapyGroups = [fromDcm->cachedPapyGroups retain];
 //}
 
 - (id) copyWithZone:(NSZone *)zone
@@ -3254,7 +3252,6 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	
 	if( copy == nil) return nil;
 	
-//	[copy->cachedPapyGroups release];
 	[copy->imageObj release];
 	[copy->annotationsDictionary release];
 	
@@ -3295,7 +3292,6 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	copy->viewPosition = [self->viewPosition retain];
 	copy->patientPosition = [self->patientPosition retain];
 	copy->annotationsDictionary = [self->annotationsDictionary retain];
-//	copy->cachedPapyGroups = [self->cachedPapyGroups retain];
 	
 	copy->patientsWeight = self->patientsWeight;
 	copy->SUVConverted = self->SUVConverted;
@@ -6006,13 +6002,18 @@ END_CREATE_ROIS:
 	
 	NSMutableDictionary *cachedGroupsForThisFile = [cachedPapyGroups valueForKey: srcFile];
 	
-	for( NSValue *pointer in [cachedGroupsForThisFile allValues] )
+	if( cachedGroupsForThisFile)
 	{
-		SElement *theGroupP = (SElement*) [pointer pointerValue];
-		Papy3GroupFree ( &theGroupP, TRUE);
+		for( NSValue *pointer in [cachedGroupsForThisFile allValues] )
+		{
+			SElement *theGroupP = (SElement*) [pointer pointerValue];
+			Papy3GroupFree ( &theGroupP, TRUE);
+		}
+		
+		[cachedPapyGroups removeObjectForKey: srcFile];
 	}
 	
-	[cachedPapyGroups removeObjectForKey: srcFile];
+	NSLog( @"cachedPapyGroups: %d", [[cachedPapyGroups allValues] count]);
 	
 	[PapyrusLock unlock];
 }
@@ -11290,7 +11291,6 @@ END_CREATE_ROIS:
 	
 	[self clearCachedPapyGroups];
 	[frameOfReferenceUID release];
-//	[cachedPapyGroups release];
 	[transferFunction release];
 	[positionerPrimaryAngle release];
 	[positionerSecondaryAngle release];
