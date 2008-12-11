@@ -220,6 +220,8 @@ static BOOL showWarning = YES;
 
 - (void) updateDB:(NSArray*) files
 {
+	[DCMPix purgeCachedDictionaries];
+	
 	dontClose = YES;
 	[[BrowserController currentBrowser] addFilesToDatabase: files onlyDICOM:YES safeRebuild:NO produceAddedFiles:NO parseExistingObject:YES];
 	dontClose = NO;

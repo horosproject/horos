@@ -64,6 +64,7 @@ BOOL	quicktimeRunning = NO;
 NSLock	*quicktimeThreadLock = nil;
 
 static NSMutableDictionary *cachedPapyGroups = nil;
+static NSMutableDictionary *cachedDCMFrameworkFiles = nil;
 static NSMutableArray *nonLinearWLWWThreads = nil;
 static NSMutableArray *minmaxThreads = nil;
 static NSConditionLock *processorsLock = nil;
@@ -2960,6 +2961,10 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 {
 	if( cachedPapyGroups == nil)
 		cachedPapyGroups = [[NSMutableDictionary dictionary] retain];
+		
+	if( cachedDCMFrameworkFiles == nil)
+		cachedDCMFrameworkFiles = [[NSMutableDictionary dictionary] retain];
+	
 	checking = [[NSLock alloc] init];
 	decayFactor = 1.0;
 	
@@ -2997,6 +3002,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	
 	if( cachedPapyGroups == nil)
 		cachedPapyGroups = [[NSMutableDictionary dictionary] retain];
+	
+	if( cachedDCMFrameworkFiles == nil)
+		cachedDCMFrameworkFiles = [[NSMutableDictionary dictionary] retain];
 	
 	needToCompute8bitRepresentation = YES;
 	
@@ -4887,6 +4895,8 @@ END_CREATE_ROIS:
 		}
 		else
 		{
+			[self clearCachedDCMFrameworkFiles];
+			
 			DCMObject *dcmObject = [DCMObject objectWithContentsOfFile:srcFile decodingPixelData:NO];
 			[self loadCustomImageAnnotationsPapyLink:-1 DCMLink:dcmObject];
 		}
@@ -4917,10 +4927,32 @@ END_CREATE_ROIS:
 	//		[pool release];
 	//		return YES;
 	//	}
+	DCMObject *dcmObject;
 	
+	if( [cachedDCMFrameworkFiles objectForKey: srcFile])
+	{
+		NSMutableDictionary *dic = [cachedDCMFrameworkFiles objectForKey: srcFile];
+		
+		dcmObject = [dic objectForKey: @"dcmObject"];
+		[dic setObject: [NSNumber numberWithInt: [[dic objectForKey: @"count"] intValue]+1] forKey: @"count"];
+	}
+	else
+	{
+		NSLog( srcFile);
+		dcmObject = [DCMObject objectWithContentsOfFile:srcFile decodingPixelData:NO];
+		
+		if( dcmObject)
+		{
+			NSMutableDictionary *dic = [NSMutableDictionary dictionary];
+			
+			[dic setObject: dcmObject forKey: @"dcmObject"];
+			[dic setObject: [NSNumber numberWithInt: 1] forKey: @"count"];
+			
+			[cachedDCMFrameworkFiles setObject: dic forKey: srcFile];
+		}
+	}
 	
-	DCMObject *dcmObject = [DCMObject objectWithContentsOfFile:srcFile decodingPixelData:NO];
-	if ( dcmObject == nil )
+	if(dcmObject == nil)
 	{
 		NSLog(@"loadDICOMDCMFramework - no DCMObject at srcFile address, nothing to do");
 		[pool release];
@@ -5345,7 +5377,6 @@ END_CREATE_ROIS:
 	{
 		for ( DCMObject *sequenceItem in sharedFunctionalGroupsSequence.sequence )
 		{
-			
 			//get Image Orientation for sequence
 			DCMSequenceAttribute *planeOrientationSequence = (DCMSequenceAttribute *)[sequenceItem attributeWithName:@"PlaneOrientationSequence"];
 			DCMObject *planeOrientationObject = [[planeOrientationSequence sequence] objectAtIndex:0];
@@ -5367,7 +5398,6 @@ END_CREATE_ROIS:
 				pixelSpacingY = [[pixelSpacing objectAtIndex:0] floatValue];
 				pixelSpacingX = [[pixelSpacing objectAtIndex:1] floatValue];
 			}
-			
 			
 			DCMSequenceAttribute *pixelTransformationSequence = (DCMSequenceAttribute *)[sequenceItem attributeWithName:@"PixelValueTransformationSequence"];
 			DCMObject *pixelTransformationSequenceObject = [[pixelTransformationSequence sequence] objectAtIndex:0];
@@ -5398,9 +5428,10 @@ END_CREATE_ROIS:
 			DCMObject *sequenceItem = [[perFrameFunctionalGroupsSequence sequence] objectAtIndex:imageNb];
 			if (sequenceItem)
 			{
-				if ([sequenceItem attributeArrayWithName:@"ImagePositionPatient"])
+				if ([sequenceItem attributeArrayWithName:@"PlanePositionSequence"])
 				{
-					NSArray *ipp = [sequenceItem attributeArrayWithName:@"ImagePositionPatient"];
+					DCMSequenceAttribute *seq = (DCMSequenceAttribute *) [sequenceItem attributeWithName:@"PlanePositionSequence"];
+					NSArray *ipp = [[[seq sequence] objectAtIndex: 0] attributeArrayWithName:@"ImagePositionPatient"];
 					if ([ipp count] >= 3)
 					{
 						originX = [[ipp objectAtIndex:0] floatValue];
@@ -5408,10 +5439,23 @@ END_CREATE_ROIS:
 						originZ = [[ipp objectAtIndex:2] floatValue];
 						isOriginDefined = YES;
 					}
-				}	
-				if ([sequenceItem attributeArrayWithName:@"PixelSpacing"])
+				}
+					
+				if ([sequenceItem attributeArrayWithName:@"PlaneOrientationSequence"])
 				{
-					NSArray *pixelSpacing = [sequenceItem attributeArrayWithName:@"PixelSpacing"];
+					DCMSequenceAttribute *seq = (DCMSequenceAttribute *) [sequenceItem attributeWithName:@"PlaneOrientationSequence"];
+					NSArray *iop = [[[seq sequence] objectAtIndex: 0] attributeArrayWithName:@"ImageOrientationPatient"];
+					orientation[ 0] = 0;	orientation[ 1] = 0;	orientation[ 2] = 0;
+					orientation[ 3] = 0;	orientation[ 4] = 0;	orientation[ 5] = 0;
+					for ( int j = 0; j < iop.count; j++ ) 
+						orientation[ j] = [[iop objectAtIndex:j] floatValue];
+				}
+				
+				if ([sequenceItem attributeArrayWithName:@"PixelMeasuresSequence"])
+				{
+					DCMSequenceAttribute *seq = (DCMSequenceAttribute *) [sequenceItem attributeWithName:@"PixelMeasuresSequence"];
+					sliceThickness = [[[[seq sequence] objectAtIndex: 0] attributeValueWithName:@"SliceThickness"] floatValue];
+					NSArray *pixelSpacing = [[[seq sequence] objectAtIndex: 0] attributeArrayWithName:@"PixelSpacing"];
 					if (pixelSpacing.count >= 2)
 					{
 						pixelSpacingY = [[pixelSpacing objectAtIndex:0] floatValue];
@@ -5996,6 +6040,28 @@ END_CREATE_ROIS:
 	return theGroupP;
 }  
 
++ (void) purgeCachedDictionaries
+{
+	[cachedDCMFrameworkFiles removeAllObjects];
+	[cachedPapyGroups removeAllObjects];
+}
+
+- (void) clearCachedDCMFrameworkFiles
+{
+	if( fImage)
+	{
+		NSMutableDictionary *o = [cachedDCMFrameworkFiles valueForKey: srcFile];
+		
+		if( o)
+		{
+			[o setObject: [NSNumber numberWithInt: [[o objectForKey: @"count"] intValue]-1] forKey: @"count"];
+			
+			if( [[o objectForKey: @"count"] intValue] <= 0)
+				[cachedDCMFrameworkFiles removeObjectForKey: srcFile];
+		}
+	}
+}
+
 - (void) clearCachedPapyGroups
 {
 	[PapyrusLock lock];
@@ -6027,9 +6093,6 @@ END_CREATE_ROIS:
 	unsigned char   *clutRed = nil, *clutGreen = nil, *clutBlue = nil;
 	PapyUShort		clutEntryR, clutEntryG, clutEntryB;
 	PapyUShort		clutDepthR, clutDepthG, clutDepthB;
-	
-	if( frameNo == 0)
-		[self clearCachedPapyGroups];
 	
 	[PapyrusLock lock];
 	
@@ -7128,9 +7191,9 @@ END_CREATE_ROIS:
 														{
 															sliceThickness = atof( val3->a);
 														}
-														break;
+													break;
 														
-														case 0x0028:
+													case 0x0028:
 														val3 = Papy3GetElement (gr28, papPixelSpacingGr, &nbVal, &elemType);
 														if (val3 != NULL && nbVal >= 1)
 														{
@@ -7144,7 +7207,7 @@ END_CREATE_ROIS:
 																pixelSpacingX = atof( tmp->a);
 															}
 														}
-														break;
+													break;
 												}
 												
 												// get the next element of the list
@@ -7261,6 +7324,14 @@ END_CREATE_ROIS:
 																
 																switch( gr20->group)
 																{
+																	case 0x0018:
+																		val3 = Papy3GetElement (gr20, papSliceThicknessGr, &nbVal, &elemType);
+																		if (val3 != NULL && nbVal >= 1)
+																		{
+																			sliceThickness = atof( val3->a);
+																		}
+																	break;
+																	
 																	case 0x0028:
 																		val3 = Papy3GetElement (gr20, papPixelSpacingGr, &nbVal, &elemType);
 																		if (val3 != NULL && nbVal >= 1)
@@ -11356,6 +11427,9 @@ END_CREATE_ROIS:
 	[patientPosition release];					patientPosition = nil;
 	[units release];							units = nil;
 	[decayCorrection release];					decayCorrection = nil;
+
+	[self clearCachedDCMFrameworkFiles];
+	[self clearCachedPapyGroups];
 	
 	if( fExternalOwnedImage == nil )
 	{
@@ -11365,6 +11439,7 @@ END_CREATE_ROIS:
 			fImage = nil;
 		}
 	}
+	
 	fImage = nil;
 	needToCompute8bitRepresentation = YES;
 	
@@ -11378,6 +11453,7 @@ END_CREATE_ROIS:
 	if( shutterPolygonal) free( shutterPolygonal);
 	
 	[self clearCachedPapyGroups];
+	[self clearCachedDCMFrameworkFiles];
 	[frameOfReferenceUID release];
 	[transferFunction release];
 	[positionerPrimaryAngle release];

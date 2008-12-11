@@ -7054,8 +7054,7 @@ static BOOL withReset = NO;
 						   || [[imageView curDCM] frameNo] != [animationSlider intValue]
 						   || [[imageView curDCM] serieNo] != [[[images objectAtIndex: 0] valueForKeyPath:@"series.id"] intValue])
 						{
-							DCMPix*     dcmPix = nil;
-							dcmPix = [[DCMPix alloc] myinit: [[images objectAtIndex: 0] valueForKey:@"completePath"] :[animationSlider intValue] :noOfImages :nil :[animationSlider intValue] :[[[images objectAtIndex: 0] valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:[images objectAtIndex: 0]];
+							DCMPix*     dcmPix = [[DCMPix alloc] myinit: [[images objectAtIndex: 0] valueForKey:@"completePath"] :[animationSlider intValue] :noOfImages :nil :[animationSlider intValue] :[[[images objectAtIndex: 0] valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:[images objectAtIndex: 0]];
 							
 							if( dcmPix )
 							{
@@ -7063,11 +7062,15 @@ static BOOL withReset = NO;
 								
 								[imageView getWLWW:&wl :&ww];
 								
+								DCMPix *previousDcmPix = [[previewPix objectAtIndex: [cell tag]] retain];	// To allow the cached system in DCMPix to avoid reloading
+								
 								[previewPix replaceObjectAtIndex:[cell tag] withObject:(id) dcmPix];
 								[dcmPix release];
 								
 								if( withReset) [imageView setIndexWithReset:[cell tag] :YES];
 								else [imageView setIndex:[cell tag]];
+								
+								[previousDcmPix release];
 							}
 						}
 					}
