@@ -3384,7 +3384,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 -(void) LoadBioradPic
 {
 	FILE		*fp = fopen( [srcFile UTF8String], "r");
-	long		i, realwidth, realheight;
+	long		i, realheight;
 	
 	//NSLog(@"Handling Biorad PIC File in CheckLoad");
 	if( fp)
@@ -3584,7 +3584,6 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 #ifndef STATIC_DICOM_LIB
 	
 	long			i, totSize;
-	int				realwidth;
 	int				w, h, row;
 	short			bpp, count, tifspp;
 	short			dataType = 0;
@@ -4005,7 +4004,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	short shortval;
 	int lsmDebug=0;  // Flag to determine if debugging messages are printed
 	
-	int	realwidth, realheight;
+	int	realheight;
 	
 	int	TIF_NEWSUBFILETYPE = 0; // GJ: flag indicating whether image is "real" or thumbnail 
 	int	LENGTH2, TIF_STRIPOFFSETS; // GJ: Number of channels & offset containing file offset to image data
@@ -4975,7 +4974,7 @@ END_CREATE_ROIS:
 	
 	//-----------------------common----------------------------------------------------------	
 	
-	int					realwidth, realheight;
+	int					realheight;
 	short				maxFrame = 1;
 	short				imageNb = frameNo;
 	short				ee;
@@ -5227,7 +5226,7 @@ END_CREATE_ROIS:
 		}
 	}
 	
-	NSString *modalityString = [dcmObject attributeValueWithName:@"Modality"];
+	modalityString = [dcmObject attributeValueWithName:@"Modality"];
 	
 	// Ultrasounds pixel spacing
 	if( [modalityString isEqualToString:@"US"])
@@ -6082,19 +6081,774 @@ END_CREATE_ROIS:
 	[PapyrusLock unlock];
 }
 
+- (void) papyLoadGroup0x0018: (SElement*) theGroupP file:(PapyShort) fileNb
+{
+	UValue_T *val, *tmp;
+	PapyULong nbVal;
+	int elemType, i;
+	
+	val = Papy3GetElement (theGroupP, papFrameofReferenceUIDGr, &nbVal, &elemType);
+	if ( val ) frameOfReferenceUID = [[NSString stringWithCString:val->a] retain];
+	else frameOfReferenceUID = 0;
+
+	val = Papy3GetElement (theGroupP, papSliceThicknessGr, &nbVal, &elemType);
+	if ( val ) sliceThickness = atof( val->a);
+	else sliceThickness = 0;
+	
+	val = Papy3GetElement (theGroupP, papSpacingBetweenSlicesGr, &nbVal, &elemType);
+	if ( val ) spacingBetweenSlices = atof( val->a);
+	else spacingBetweenSlices = 0;
+	
+	val = Papy3GetElement (theGroupP, papRepetitionTimeGr, &nbVal, &elemType);
+	if ( val ) repetitiontime = [[NSString stringWithFormat:@"%0.1f", atof( val->a)] retain];
+	else repetitiontime = 0;
+	
+	val = Papy3GetElement (theGroupP, papEchoTimeGr, &nbVal, &elemType);
+	if ( val ) echotime = [[NSString stringWithFormat:@"%0.1f", atof( val->a)] retain];
+	else echotime = 0;
+	
+	val = Papy3GetElement (theGroupP, papFlipAngleGr, &nbVal, &elemType);
+	if ( val ) flipAngle = [[NSString stringWithFormat:@"%0.1f", atof( val->a)] retain];
+	else flipAngle = 0;
+	
+	val = Papy3GetElement (theGroupP, papProtocolNameGr, &nbVal, &elemType);
+	if ( val ) protocolName = [[NSString stringWithCString:val->a] retain];
+	else protocolName = 0;
+	
+	val = Papy3GetElement (theGroupP, papViewPositionGr, &nbVal, &elemType);
+	if ( val ) viewPosition = [[NSString stringWithCString:val->a] retain];
+	else viewPosition = 0;
+	
+	val = Papy3GetElement (theGroupP, papPositionerPrimaryAngleGr, &nbVal, &elemType);
+	if ( val ) positionerPrimaryAngle = [[NSNumber numberWithDouble: atof( val->a)] retain];
+	
+	val = Papy3GetElement (theGroupP, papPositionerSecondaryAngleGr, &nbVal, &elemType);
+	if ( val ) positionerSecondaryAngle = [[NSNumber numberWithDouble: atof( val->a)] retain];
+	
+	val = Papy3GetElement (theGroupP, papPatientPositionGr, &nbVal, &elemType);
+	if ( val ) patientPosition = [[NSString stringWithCString:val->a] retain];
+	else patientPosition = 0;
+	
+	val = Papy3GetElement (theGroupP, papCineRateGr, &nbVal, &elemType);
+	if (!cineRate && val != NULL) cineRate = atof( val->a);	//[[NSString stringWithFormat:@"%0.1f", ] floatValue];
+	
+	// Ultrasounds pixel spacing
+	if( [modalityString isEqualToString:@"US"])
+	{
+		val = Papy3GetElement (theGroupP, papSequenceofUltrasoundRegionsGr, &nbVal, &elemType);
+		if ( val != NULL)
+		{
+			if( val->sq != NULL )
+			{
+				BOOL spacingFound = NO;
+				
+				Papy_List	*dcmList = val->sq;
+				while (dcmList != NULL)
+				{
+					if( dcmList->object->item)
+					{
+						SElement *gr = (SElement *)dcmList->object->item->object->group;
+						if ( gr->group == 0x0018 && spacingFound == NO)
+						{
+							int physicalUnitsX = 0;
+							int physicalUnitsY = 0;
+							
+							val = Papy3GetElement (gr, papPhysicalUnitsXDirectionGr, &nbVal, &elemType);
+							if ( val ) physicalUnitsX = val->us;
+							val = Papy3GetElement (gr, papPhysicalUnitsYDirectionGr, &nbVal, &elemType);
+							if ( val ) physicalUnitsY = val->us;
+							
+							if( physicalUnitsX == 3 && physicalUnitsY == 3)	// We want only cm !
+							{
+								double xxx = 0, yyy = 0;
+								
+								val = Papy3GetElement (gr, papPhysicalDeltaXGr, &nbVal, &elemType);
+								if ( val ) xxx = val->fd;
+								val = Papy3GetElement (gr, papPhysicalDeltaYGr, &nbVal, &elemType);
+								if ( val ) yyy = val->fd;
+								
+								if( xxx && yyy)
+								{
+									pixelSpacingX = fabs( xxx) * 10.;	// These are in cm !
+									pixelSpacingY = fabs( yyy) * 10.;
+									spacingFound = YES;
+								}
+							}
+						}
+					}
+					dcmList = dcmList->next;
+				}
+			}
+		}
+	}
+	
+	val = Papy3GetElement (theGroupP, papImagerPixelSpacingGr, &nbVal, &elemType);
+	if ( val )
+	{
+		tmp = val;
+		pixelSpacingY = atof( tmp->a);
+		
+		if( nbVal > 1)
+		{
+			tmp++;
+			pixelSpacingX = atof( tmp->a);
+		}
+	}
+	
+	if(!cineRate)
+	{
+		val = Papy3GetElement (theGroupP, papFrameTimeVectorGr, &nbVal, &elemType);
+		if ( val )
+		{
+			cineRate = 1000./atof( val->a);
+		}
+	}
+	
+	if( gUseShutter)
+	{
+		val = Papy3GetElement (theGroupP, papShutterShapeGr, &nbVal, &elemType);
+		if ( val )
+		{
+			PapyULong nbtmp;
+			
+			for( i = 0 ; i < nbVal; i++)
+			{
+				if( [[NSString stringWithCString:val->a] isEqualToString:@"RECTANGULAR"])
+				{
+					DCMPixShutterOnOff = YES;
+					
+					tmp = Papy3GetElement (theGroupP, papShutterLeftVerticalEdgeGr, &nbtmp, &elemType);
+					if (tmp != NULL) shutterRect_x = atoi( tmp->a);
+					
+					tmp = Papy3GetElement (theGroupP, papShutterRightVerticalEdgeGr, &nbtmp, &elemType);
+					if (tmp != NULL) shutterRect_w = atoi( tmp->a) - shutterRect_x;
+					
+					tmp = Papy3GetElement (theGroupP, papShutterUpperHorizontalEdgeGr, &nbtmp, &elemType);
+					if (tmp != NULL) shutterRect_y = atoi( tmp->a);
+					
+					tmp = Papy3GetElement (theGroupP, papShutterLowerHorizontalEdgeGr, &nbtmp, &elemType);
+					if (tmp != NULL) shutterRect_h = atoi( tmp->a) - shutterRect_y;
+				}
+				else if( [[NSString stringWithCString:val->a] isEqualToString:@"CIRCULAR"])
+				{
+					DCMPixShutterOnOff = YES;
+					
+					tmp = Papy3GetElement (theGroupP, papCenterofCircularShutterGr, &nbtmp, &elemType);
+					if (tmp != NULL && nbtmp == 2)
+					{
+						shutterCircular_x = atoi( tmp->a);
+						tmp++;
+						shutterCircular_y = atoi( tmp->a);
+					}
+					
+					tmp = Papy3GetElement (theGroupP, papRadiusofCircularShutterGr, &nbtmp, &elemType);
+					if (tmp != NULL) shutterCircular_radius = atoi( tmp->a);
+				}
+				else if( [[NSString stringWithCString:val->a] isEqualToString:@"POLYGONAL"])
+				{
+					DCMPixShutterOnOff = YES;
+					
+					tmp = Papy3GetElement (theGroupP, papVerticesofthePolygonalShutterGr, &nbtmp, &elemType);
+					
+					if( shutterPolygonal) free( shutterPolygonal);
+					
+					shutterPolygonalSize = 0;
+					shutterPolygonal = malloc( nbtmp * sizeof( NSPoint) / 2);
+					
+					int y, x;
+					for( y = 0, x = 0 ; y < nbtmp; y+=2, x++)
+					{
+						shutterPolygonal[ x].x = atoi( tmp->a);		tmp++;
+						shutterPolygonal[ x].y = atoi( tmp->a);		tmp++;
+						shutterPolygonalSize++;
+					}
+				}
+				else NSLog( @"Shutter not supported: %@", [NSString stringWithCString:val->a]);
+				
+				val++;
+			}
+		}
+	}
+}
+
+- (void) papyLoadGroup0x0020: (SElement*) theGroupP file:(PapyShort) fileNb
+{
+	UValue_T *val, *val3, *tmp, *tmpVal3;
+	PapyULong nbVal, pos;
+	int elemType, i;
+	
+	originX = 0;
+	originY = 0;
+	originZ = 0;
+	
+	val = Papy3GetElement (theGroupP, papImagePositionPatientGr, &nbVal, &elemType);
+	if ( val )
+	{
+		tmp = val;
+		
+		originX = atof( tmp->a);
+		
+		if( nbVal > 1)
+		{
+			tmp++;
+			originY = atof( tmp->a);
+		}
+		
+		if( nbVal > 2)
+		{
+			tmp++;
+			originZ = atof( tmp->a);
+		}
+		
+		isOriginDefined = YES;
+	}
+	
+	orientation[ 0] = 0;	orientation[ 1] = 0;	orientation[ 2] = 0;
+	orientation[ 3] = 0;	orientation[ 4] = 0;	orientation[ 5] = 0;
+	
+	val = Papy3GetElement (theGroupP, papImageOrientationPatientGr, &nbVal, &elemType);
+	if ( val )
+	{
+		tmpVal3 = val;
+		if( nbVal != 6)
+		{
+			NSLog(@"Orientation is NOT 6 !!!");
+			if( nbVal > 6 ) nbVal = 6;
+		}
+		
+		for ( int j = 0; j < nbVal; j++ )
+		{
+			orientation[ j]  = atof( tmpVal3->a);
+			tmpVal3++;
+		}
+		
+		for ( int j = nbVal; j < 6; j++ )
+			orientation[ j] = 0;
+	}
+	
+	val = Papy3GetElement (theGroupP, papImageLateralityGr, &nbVal, &elemType);
+	if ( val ) laterality = [[NSString stringWithCString:val->a] retain];
+	
+	if( laterality == nil )	{
+		val = Papy3GetElement (theGroupP, papLateralityGr, &nbVal, &elemType);
+		if ( val ) laterality = [[NSString stringWithCString:val->a] retain];
+	}
+}
+
+- (void) papyLoadGroup0x0028: (SElement*) theGroupP file:(PapyShort) fileNb
+{
+	UValue_T *val, *val3, *tmp, *tmpVal3;
+	PapyULong nbVal, pos;
+	int elemType, i;
+
+	val3 = Papy3GetElement (theGroupP, papRescaleInterceptGr, &pos, &elemType);
+	if ( val3 )	{
+		tmpVal3 = val3;
+		// get the last offset
+		for ( int j = 1; j < pos; j++ ) tmpVal3++;
+		offset =  atof( tmpVal3->a);
+	}
+	val3 = Papy3GetElement (theGroupP, papRescaleSlopeGr, &pos, &elemType);
+	if ( val3 )
+	{
+		tmpVal3 = val3;
+		// get the last slope
+		for ( int j = 1; j < pos; j++ ) tmpVal3++;
+		slope = atof( tmpVal3->a);
+		
+		//	NSLog(@"slope:%f", slope);
+		
+		//						if( slope != 0 && fabs( slope) < 0.01)
+		//						{
+		//							while( slope < 0.01)
+		//							{
+		//								slope *= 100.;
+		//							}
+		//						}
+	}
+	
+	val = Papy3GetElement (theGroupP, papBitsAllocatedGr, &nbVal, &elemType);
+	bitsAllocated = (int) val->us;
+	
+//	val = Papy3GetElement (theGroupP, papHighBitGr, &nbVal, &elemType);
+//	highBit = (int) val->us;
+	
+	val = Papy3GetElement (theGroupP, papBitsStoredGr, &nbVal, &elemType);
+	bitsStored = (int) val->us;
+	
+	// extract nb of rows and cols
+	width = height = 0;
+	
+	// ROWS
+	val = Papy3GetElement (theGroupP, papRowsGr, &nbVal, &elemType);
+	if ( val )
+	{
+		height = (int) (*val).us;
+		height /=2;
+		height *=2;
+	}
+	// COLUMNS
+	val = Papy3GetElement (theGroupP, papColumnsGr, &nbVal, &elemType);
+	if ( val )
+	{
+		realwidth = (int) (*val).us;
+		width = realwidth/2;
+		width *=2;
+		
+		if( realwidth != width) NSLog(@"width!=realwidth");
+	}
+	
+	if( shutterRect_w == 0)  shutterRect_w = width;
+	if( shutterRect_h == 0)  shutterRect_h = height;
+	
+	// PIXEL REPRESENTATION
+	val = Papy3GetElement (theGroupP, papPixelRepresentationGr, &nbVal, &elemType);
+	if (val != NULL && val->us == 1) fIsSigned = YES;
+	else fIsSigned = NO;
+	
+	val = Papy3GetElement (theGroupP, papWindowCenterGr, &nbVal, &elemType);
+	if ( val )
+	{
+		savedWL = atof( val->a);
+	}
+	
+	val = Papy3GetElement (theGroupP, papWindowWidthGr, &nbVal, &elemType);
+	if ( val )
+	{
+		savedWW = atof( val->a);
+		if(  savedWW < 0) savedWW =-savedWW;
+	}
+	
+	// PLANAR CONFIGURATION
+	val = Papy3GetElement (theGroupP, papPlanarConfigurationGr, &nbVal, &elemType);
+	if ( val ) fPlanarConf = (int) val->us;
+	else fPlanarConf = 0;
+	
+	pixelRatio = 1.0;
+	
+	val = Papy3GetElement (theGroupP, papPixelSpacingGr, &nbVal, &elemType);
+	if ( val )
+	{
+		tmp = val;
+		
+		pixelSpacingY = atof( tmp->a);
+		
+		if( nbVal > 1)
+		{
+			tmp++;
+			
+			pixelSpacingX = atof( tmp->a);
+		}
+	}
+	
+	val = Papy3GetElement (theGroupP, papPixelAspectRatioGr, &nbVal, &elemType);
+	if ( val )
+	{
+		float ratiox = 1, ratioy = 1;
+		
+		tmp = val;
+		
+		ratiox = atof( tmp->a);
+		
+		if( nbVal > 1)
+		{
+			tmp++;
+			
+			ratioy = atof( tmp->a);
+		}
+		
+		if( ratioy != 0)
+		{
+			pixelRatio = ratiox / ratioy;
+		}
+	}
+	else if( pixelSpacingX != pixelSpacingY)
+	{
+		if( pixelSpacingY != 0 && pixelSpacingX != 0) pixelRatio = pixelSpacingY / pixelSpacingX;
+	}
+	
+	if (gArrPhotoInterpret [fileNb] == PALETTE)
+	{
+		BOOL found = NO, found16 = NO;
+		
+		clutRed = malloc( 65536);		if( clutRed == nil) NSLog(@"error clutRed == nil");
+		clutGreen = malloc( 65536);		if( clutGreen == nil) NSLog(@"error clutRed == nil");
+		clutBlue = malloc( 65536);		if( clutBlue == nil) NSLog(@"error clutRed == nil");
+		
+		// initialisation
+		clutEntryR = clutEntryG = clutEntryB = 0;
+		clutDepthR = clutDepthG = clutDepthB = 0;
+		
+		for ( unsigned int j = 0; j < 65536; j++ )
+		{
+			clutRed[ j] = 0;
+			clutGreen[ j] = 0;
+			clutBlue[ j] = 0;
+		}
+		
+		// read the RED descriptor of the color lookup table
+		val = Papy3GetElement (theGroupP, papRedPaletteColorLookupTableDescriptorGr, &nbVal, &elemType);
+		tmp = val;
+		if ( val )
+		{
+			clutEntryR = tmp->us;
+			tmp++;tmp++;
+			clutDepthR = tmp->us;
+		} // if ...read Red palette color descriptor
+		
+		// read the GREEN descriptor of the color lookup table
+		val = Papy3GetElement (theGroupP, papGreenPaletteColorLookupTableDescriptorGr, &nbVal, &elemType);
+		if ( val )
+		{
+			clutEntryG	= val->us;
+			tmp			= val + 2;
+			clutDepthG	= tmp->us;
+		} // if ...read Green palette color descriptor
+		
+		// read the BLUE descriptor of the color lookup table
+		val = Papy3GetElement (theGroupP, papBluePaletteColorLookupTableDescriptorGr, &nbVal, &elemType);
+		if ( val )
+		{
+			clutEntryB = val->us;
+			tmp     = val + 2;
+			clutDepthB = tmp->us;
+		} // if ...read Blue palette color descriptor
+		
+		if( clutEntryR > 256) NSLog(@"R-Palette > 256");
+		if( clutEntryG > 256) NSLog(@"G-Palette > 256");
+		if( clutEntryB > 256) NSLog(@"B-Palette > 256");
+		
+		val = Papy3GetElement (theGroupP, papSegmentedRedPaletteColorLookupTableDataGr, &nbVal, &elemType);
+		if ( val )	// SEGMENTED PALETTE - 16 BIT !
+		{
+			if (clutDepthR == 16  && clutDepthG == 16  && clutDepthB == 16)
+			{
+				long length, xx, xxindex, jj;
+				unsigned short	*shortRed, *shortGreen, *shortBlue;
+				
+				shortRed = malloc( 65535L * sizeof( unsigned short));
+				shortGreen = malloc( 65535L * sizeof( unsigned short));
+				shortBlue = malloc( 65535L * sizeof( unsigned short));
+				
+				// extract the RED palette clut data
+				val = Papy3GetElement (theGroupP, papSegmentedRedPaletteColorLookupTableDataGr, &nbVal, &elemType);
+				if ( val )
+				{
+					unsigned short  *ptrs =  (unsigned short*) val->a;
+					nbVal = theGroupP[ papSegmentedRedPaletteColorLookupTableDataGr].length / 2;
+					
+					NSLog(@"red");
+					
+					xxindex = 0;
+					for( jj = 0; jj < nbVal;jj++)
+					{
+						NSLog(@"val: %d", ptrs[jj]);
+						switch( ptrs[jj])
+					{
+						case 0:	// Discrete
+							jj++;
+							length = ptrs[jj];
+							NSLog(@"length: %d", length);
+							jj++;
+							for( xx = xxindex; xxindex < xx + length; xxindex++)
+							{
+								shortRed[ xxindex] = ptrs[ jj++];
+								if( xxindex < 256) NSLog(@"%d", shortRed[ xxindex]);
+							}
+							jj--;
+							break;
+							
+							case 1:	// Linear
+							jj++;
+							length = ptrs[jj];
+							for( xx = xxindex; xxindex < xx + length; xxindex++)
+							{
+								shortRed[ xxindex] = shortRed[ xx-1] + ((ptrs[jj+1] - shortRed[ xx-1]) * (1+xxindex - xx)) / (length);
+								//		if( xxindex < 256) NSLog(@"%d", shortRed[ xxindex]);
+							}
+							jj ++;
+							break;
+							
+							case 2: // Indirect
+							NSLog(@"indirect not supported");
+							jj++;
+							length = ptrs[jj];
+							
+							jj += 2;
+							break;
+							
+							default:
+							NSLog(@"Error, Error, OsiriX will soon crash...");
+							break;
+					}
+					}
+					found16 = YES; 	// this is used to let us know we have to look for the other element */
+				}//endif
+				
+				// extract the GREEN palette clut data
+				val = Papy3GetElement (theGroupP, papSegmentedGreenPaletteColorLookupTableDataGr, &nbVal, &elemType);
+				if ( val )
+				{
+					unsigned short  *ptrs =  (unsigned short*) val->a;
+					nbVal = theGroupP[ papSegmentedGreenPaletteColorLookupTableDataGr].length / 2;
+					
+					NSLog(@"green");
+					
+					xxindex = 0;
+					for( jj = 0; jj < nbVal; jj++)
+					{
+						switch( ptrs[jj])
+					{
+						case 0:	// Discrete
+							jj++;
+							length = ptrs[jj];
+							jj++;
+							for( xx = xxindex; xxindex < xx + length; xxindex++)
+							{
+								shortGreen[ xxindex] = ptrs[ jj++];
+								//			if( xxindex < 256) NSLog(@"%d", shortGreen[ xxindex]);
+							}
+							jj--;
+							break;
+							
+							case 1:	// Linear
+							jj++;
+							length = ptrs[jj];
+							for( xx = xxindex; xxindex < xx + length; xxindex++)
+							{
+								shortGreen[ xxindex] = shortGreen[ xx-1] + ((ptrs[jj+1] - shortGreen[ xx-1]) * (1+xxindex - xx)) / (length);
+								//	if( xxindex < 256) NSLog(@"%d", shortGreen[ xxindex]);
+							}
+							jj ++;
+							break;
+							
+							case 2: // Indirect
+							NSLog(@"indirect not supported");
+							jj++;
+							length = ptrs[jj];
+							
+							jj += 2;
+							break;
+							
+							default:
+							NSLog(@"Error, Error, OsiriX will soon crash...");
+							break;
+					}
+					}
+					found16 = YES; 	// this is used to let us know we have to look for the other element */
+					NSLog(@"%d", xxindex);
+				}//endif
+				
+				// extract the BLUE palette clut data
+				val = Papy3GetElement (theGroupP, papSegmentedBluePaletteColorLookupTableDataGr, &nbVal, &elemType);
+				if ( val )
+				{
+					unsigned short  *ptrs =  (unsigned short*) val->a;
+					nbVal = theGroupP[ papSegmentedBluePaletteColorLookupTableDataGr].length / 2;
+					
+					NSLog(@"blue");
+					
+					xxindex = 0;
+					for( jj = 0; jj < nbVal; jj++)
+					{
+						switch( ptrs[jj])
+					{
+						case 0:	// Discrete
+							jj++;
+							length = ptrs[jj];
+							jj++;
+							for( xx = xxindex; xxindex < xx + length; xxindex++)
+							{
+								shortBlue[ xxindex] = ptrs[ jj++];
+								//			if( xxindex < 256) NSLog(@"%d", shortBlue[ xxindex]);
+							}
+							jj--;
+							break;
+							
+							case 1:	// Linear
+							jj++;
+							length = ptrs[jj];
+							for( xx = xxindex; xxindex < xx + length; xxindex++)
+							{
+								shortBlue[ xxindex] = shortBlue[ xx-1] + ((ptrs[jj+1] - shortBlue[ xx-1]) * (xxindex - xx + 1)) / (length);
+								//			if( xxindex < 256) NSLog(@"%d", shortBlue[ xxindex]);
+							}
+							jj ++;
+							break;
+							
+							case 2: // Indirect
+							NSLog(@"indirect not supported");
+							jj++;
+							length = ptrs[jj];
+							
+							jj += 2;
+							break;
+							
+							default:
+							NSLog(@"Error, Error, OsiriX will soon crash...");
+							break;
+					}
+					}
+					found16 = YES; 	// this is used to let us know we have to look for the other element */
+					NSLog(@"%d", xxindex);
+				}//endif
+				
+				for( jj = 0; jj < 65535; jj++)
+				{
+					shortRed[jj] =shortRed[jj]>>8;
+					shortGreen[jj] =shortGreen[jj]>>8;
+					shortBlue[jj] =shortBlue[jj]>>8;
+					
+					//								if( shortRed[jj] == shortGreen[jj] && shortRed[jj] == shortBlue[jj])
+					//								{
+					//									NSLog(@"%d : %d/%d/%d", jj, shortRed[jj], shortGreen[jj], shortBlue[jj]);
+					//								}
+				}
+			}
+			else if (clutDepthR == 8  && clutDepthG == 8  && clutDepthB == 8)
+			{
+				NSLog(@"Segmented palettes for 8 bits ??");
+			}
+			else
+			{
+				NSLog(@"Dont know this kind of DICOM CLUT...");
+			}
+		}
+		// EXTRACT THE PALETTE data only if there is 256 entries and depth is 16 bits
+		else if (clutDepthR == 16  && clutDepthG == 16  && clutDepthB == 16)
+		{
+			if( clutEntryR == 0 && clutEntryG == 0 && clutEntryB == 0)
+			{
+				NSLog( @"****** clutEntryR == 0 && clutEntryG == 0 && clutEntryB == 0");
+				clutEntryR = 65535;
+				clutEntryG = 65535;
+				clutEntryB = 65535;
+			}
+			
+			// extract the RED palette clut data
+			val = Papy3GetElement (theGroupP, papRedPaletteCLUTDataGr, &nbVal, &elemType);
+			if ( val )
+			{
+				unsigned short  *ptrs =  (unsigned short*) val->a;
+				for ( int j = 0; j < clutEntryR; j++, ptrs++ ) clutRed [j] = (int) (*ptrs/256);
+				
+				found = YES; 	// this is used to let us know we have to look for the other element */
+			}//endif
+			
+			// extract the GREEN palette clut data
+			val = Papy3GetElement (theGroupP, papGreenPaletteCLUTDataGr, &nbVal, &elemType);
+			if ( val )
+			{
+				unsigned short  *ptrs = (unsigned short*) val->a;
+				for ( int j = 0; j < clutEntryG; j++, ptrs++ ) clutGreen [j] = (int) (*ptrs/256);
+			}
+			// extract the BLUE palette clut data
+			val = Papy3GetElement (theGroupP, papBluePaletteCLUTDataGr, &nbVal, &elemType);
+			if ( val )
+			{
+				unsigned short  *ptrs =  (unsigned short*) val->a;
+				for ( int j = 0; j < clutEntryB; j++, ptrs++ ) clutBlue [j] = (int) (*ptrs/256);
+			}
+		} // if ...the palette has 256 entries and thus we extract the clut datas
+		else if (clutDepthR == 8  && clutDepthG == 8  && clutDepthB == 8)
+		{
+			// extract the RED palette clut data
+			val = Papy3GetElement (theGroupP, papRedPaletteCLUTDataGr, &nbVal, &elemType);
+			if ( val )
+			{
+				unsigned short  *ptrs =  (unsigned short*) val->a;
+				for ( int j = 0; j < clutEntryR; j++, ptrs++) clutRed [j] = (int) (*ptrs);
+				found = YES; 	// this is used to let us know we have to look for the other element */
+			}//endif
+			
+			// extract the GREEN palette clut data
+			val = Papy3GetElement (theGroupP, papGreenPaletteCLUTDataGr, &nbVal, &elemType);
+			if ( val )
+			{
+				unsigned short  *ptrs =  (unsigned short*) val->a;
+				for ( int j = 0; j < clutEntryG; j++, ptrs++) clutGreen [j] = (int) (*ptrs);
+			}
+			// extract the BLUE palette clut data
+			val = Papy3GetElement (theGroupP, papBluePaletteCLUTDataGr, &nbVal, &elemType);
+			if ( val )
+			{
+				unsigned short  *ptrs =  (unsigned short*) val->a;
+				for ( int j = 0; j < clutEntryB; j++, ptrs++) clutBlue [j] = (int) (*ptrs);
+			}
+		}
+		else
+		{
+			NSLog(@"Dont know this kind of DICOM CLUT...");
+		}
+		
+		// let the rest of the routine know that it should set the clut
+		if (found) fSetClut = YES;
+		if (found16) fSetClut16 = YES;
+	} // endif ...extraction of the color palette
+	
+	if( gUseVOILUT)
+	{
+		val = Papy3GetElement (theGroupP, papVOILUTSequenceGr, &pos, &elemType );
+		
+		// Loop over sequence
+		
+		if ( val != NULL)
+		{
+			if( val->sq != NULL )
+			{
+				Papy_List	*dcmList = val->sq->object->item;
+				if (dcmList != NULL)	// We use ONLY the first VOILut available
+				{
+					SElement *gr = (SElement *)dcmList->object->group;
+					if ( gr->group == 0x0028 )
+					{
+						
+						val = Papy3GetElement (gr, papLUTDescriptorGr, &pos, &elemType );
+						if( val)
+						{
+							VOILUT_number = val->us;		val++;
+							VOILUT_first = val->us;			val++;
+							VOILUT_depth = val->us;			val++;
+						}
+						
+						val = Papy3GetElement (gr, papLUTDataGr, &pos, &elemType );
+						if( val)
+						{
+							VOILUT_number = pos;
+							
+							if( VOILUT_table) free( VOILUT_table);
+							VOILUT_table = malloc( sizeof(unsigned int) * VOILUT_number);
+							for ( int j = 0; j < VOILUT_number; j++ )
+							{
+								VOILUT_table [j] = (unsigned int) val->us;			val++;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
 - (BOOL) loadDICOMPapyrus // PLEASE, KEEP BOTH FUNCTIONS FOR TESTING PURPOSE. THANKS
 {
-	int				elemType, pixmin, pixmax, realwidth, highBit;
+	int				elemType;
 	PapyShort		fileNb, imageNb, maxFrame = 1, ee,  err, theErr;
 	PapyULong		nbVal, i, pos;
 	SElement		*theGroupP;
 	UValue_T		*val, *tmp;
-	BOOL			fSetClut = NO, fSetClut16 = NO, returnValue = NO;
-	unsigned char   *clutRed = nil, *clutGreen = nil, *clutBlue = nil;
-	PapyUShort		clutEntryR, clutEntryG, clutEntryB;
-	PapyUShort		clutDepthR, clutDepthG, clutDepthB;
+	BOOL			returnValue = NO;
 	
 	[PapyrusLock lock];
+		
+	clutRed = nil;
+	clutGreen = nil;
+	clutBlue = nil;
+
+	storedPixmin = storedPixmax = 0;
+	
+	fSetClut = NO;
+	fSetClut16 = NO;
 	
 	if( convertedDICOM )
 	{
@@ -6138,7 +6892,8 @@ END_CREATE_ROIS:
 	{
 		UValue_T		*val3, *tmpVal3;
 		unsigned short	*shortRed, *shortGreen, *shortBlue;
-		NSString		*modalityString = nil;
+		
+		modalityString = nil;
 		
 		imageNb = 1 + frameNo; 
 		
@@ -6180,771 +6935,27 @@ END_CREATE_ROIS:
 		}
 		
 		theGroupP = (SElement*) [self getPapyGroup: 0x0010 fileNb: fileNb];
-		if( theGroupP )	{
+		if( theGroupP )
+		{
 			val = Papy3GetElement (theGroupP, papPatientsWeightGr, &nbVal, &elemType);
 			if ( val ) patientsWeight = atof( val->a);
 			else patientsWeight = 0;
 		}
 		
 		theGroupP = (SElement*) [self getPapyGroup: 0x0018 fileNb: fileNb];
-		if( theGroupP )	{
-			val = Papy3GetElement (theGroupP, papFrameofReferenceUIDGr, &nbVal, &elemType);
-			if ( val ) frameOfReferenceUID = [[NSString stringWithCString:val->a] retain];
-			else frameOfReferenceUID = 0;
-
-			val = Papy3GetElement (theGroupP, papSliceThicknessGr, &nbVal, &elemType);
-			if ( val ) sliceThickness = atof( val->a);
-			else sliceThickness = 0;
+		if( theGroupP)
+			[self papyLoadGroup0x0018: theGroupP file: fileNb];
 			
-			val = Papy3GetElement (theGroupP, papSpacingBetweenSlicesGr, &nbVal, &elemType);
-			if ( val ) spacingBetweenSlices = atof( val->a);
-			else spacingBetweenSlices = 0;
-			
-			val = Papy3GetElement (theGroupP, papRepetitionTimeGr, &nbVal, &elemType);
-			if ( val ) repetitiontime = [[NSString stringWithFormat:@"%0.1f", atof( val->a)] retain];
-			else repetitiontime = 0;
-			
-			val = Papy3GetElement (theGroupP, papEchoTimeGr, &nbVal, &elemType);
-			if ( val ) echotime = [[NSString stringWithFormat:@"%0.1f", atof( val->a)] retain];
-			else echotime = 0;
-			
-			val = Papy3GetElement (theGroupP, papFlipAngleGr, &nbVal, &elemType);
-			if ( val ) flipAngle = [[NSString stringWithFormat:@"%0.1f", atof( val->a)] retain];
-			else flipAngle = 0;
-			
-			val = Papy3GetElement (theGroupP, papProtocolNameGr, &nbVal, &elemType);
-			if ( val ) protocolName = [[NSString stringWithCString:val->a] retain];
-			else protocolName = 0;
-			
-			val = Papy3GetElement (theGroupP, papViewPositionGr, &nbVal, &elemType);
-			if ( val ) viewPosition = [[NSString stringWithCString:val->a] retain];
-			else viewPosition = 0;
-			
-			val = Papy3GetElement (theGroupP, papPositionerPrimaryAngleGr, &nbVal, &elemType);
-			if ( val ) positionerPrimaryAngle = [[NSNumber numberWithDouble: atof( val->a)] retain];
-			
-			val = Papy3GetElement (theGroupP, papPositionerSecondaryAngleGr, &nbVal, &elemType);
-			if ( val ) positionerSecondaryAngle = [[NSNumber numberWithDouble: atof( val->a)] retain];
-			
-			val = Papy3GetElement (theGroupP, papPatientPositionGr, &nbVal, &elemType);
-			if ( val ) patientPosition = [[NSString stringWithCString:val->a] retain];
-			else patientPosition = 0;
-			
-			val = Papy3GetElement (theGroupP, papCineRateGr, &nbVal, &elemType);
-			if (!cineRate && val != NULL) cineRate = atof( val->a);	//[[NSString stringWithFormat:@"%0.1f", ] floatValue];
-			
-			// Ultrasounds pixel spacing
-			if( [modalityString isEqualToString:@"US"])
-			{
-				val = Papy3GetElement (theGroupP, papSequenceofUltrasoundRegionsGr, &nbVal, &elemType);
-				if ( val != NULL)
-				{
-					if( val->sq != NULL )
-					{
-						BOOL spacingFound = NO;
-						
-						Papy_List	*dcmList = val->sq;
-						while (dcmList != NULL)
-						{
-							if( dcmList->object->item)
-							{
-								SElement *gr = (SElement *)dcmList->object->item->object->group;
-								if ( gr->group == 0x0018 && spacingFound == NO)
-								{
-									int physicalUnitsX = 0;
-									int physicalUnitsY = 0;
-									
-									val = Papy3GetElement (gr, papPhysicalUnitsXDirectionGr, &nbVal, &elemType);
-									if ( val ) physicalUnitsX = val->us;
-									val = Papy3GetElement (gr, papPhysicalUnitsYDirectionGr, &nbVal, &elemType);
-									if ( val ) physicalUnitsY = val->us;
-									
-									if( physicalUnitsX == 3 && physicalUnitsY == 3)	// We want only cm !
-									{
-										double xxx = 0, yyy = 0;
-										
-										val = Papy3GetElement (gr, papPhysicalDeltaXGr, &nbVal, &elemType);
-										if ( val ) xxx = val->fd;
-										val = Papy3GetElement (gr, papPhysicalDeltaYGr, &nbVal, &elemType);
-										if ( val ) yyy = val->fd;
-										
-										if( xxx && yyy)
-										{
-											pixelSpacingX = fabs( xxx) * 10.;	// These are in cm !
-											pixelSpacingY = fabs( yyy) * 10.;
-											spacingFound = YES;
-										}
-									}
-								}
-							}
-							dcmList = dcmList->next;
-						}
-					}
-				}
-			}
-			
-			val = Papy3GetElement (theGroupP, papImagerPixelSpacingGr, &nbVal, &elemType);
-			if ( val )
-			{
-				tmp = val;
-				pixelSpacingY = atof( tmp->a);
-				
-				if( nbVal > 1)
-				{
-					tmp++;
-					pixelSpacingX = atof( tmp->a);
-				}
-			}
-			
-			if(!cineRate)
-			{
-				val = Papy3GetElement (theGroupP, papFrameTimeVectorGr, &nbVal, &elemType);
-				if ( val )
-				{
-					cineRate = 1000./atof( val->a);
-				}
-			}
-			
-			if( gUseShutter)
-			{
-				val = Papy3GetElement (theGroupP, papShutterShapeGr, &nbVal, &elemType);
-				if ( val )
-				{
-					PapyULong nbtmp;
-					
-					for( i = 0 ; i < nbVal; i++)
-					{
-						if( [[NSString stringWithCString:val->a] isEqualToString:@"RECTANGULAR"])
-						{
-							DCMPixShutterOnOff = YES;
-							
-							tmp = Papy3GetElement (theGroupP, papShutterLeftVerticalEdgeGr, &nbtmp, &elemType);
-							if (tmp != NULL) shutterRect_x = atoi( tmp->a);
-							
-							tmp = Papy3GetElement (theGroupP, papShutterRightVerticalEdgeGr, &nbtmp, &elemType);
-							if (tmp != NULL) shutterRect_w = atoi( tmp->a) - shutterRect_x;
-							
-							tmp = Papy3GetElement (theGroupP, papShutterUpperHorizontalEdgeGr, &nbtmp, &elemType);
-							if (tmp != NULL) shutterRect_y = atoi( tmp->a);
-							
-							tmp = Papy3GetElement (theGroupP, papShutterLowerHorizontalEdgeGr, &nbtmp, &elemType);
-							if (tmp != NULL) shutterRect_h = atoi( tmp->a) - shutterRect_y;
-						}
-						else if( [[NSString stringWithCString:val->a] isEqualToString:@"CIRCULAR"])
-						{
-							DCMPixShutterOnOff = YES;
-							
-							tmp = Papy3GetElement (theGroupP, papCenterofCircularShutterGr, &nbtmp, &elemType);
-							if (tmp != NULL && nbtmp == 2)
-							{
-								shutterCircular_x = atoi( tmp->a);
-								tmp++;
-								shutterCircular_y = atoi( tmp->a);
-							}
-							
-							tmp = Papy3GetElement (theGroupP, papRadiusofCircularShutterGr, &nbtmp, &elemType);
-							if (tmp != NULL) shutterCircular_radius = atoi( tmp->a);
-						}
-						else if( [[NSString stringWithCString:val->a] isEqualToString:@"POLYGONAL"])
-						{
-							DCMPixShutterOnOff = YES;
-							
-							tmp = Papy3GetElement (theGroupP, papVerticesofthePolygonalShutterGr, &nbtmp, &elemType);
-							
-							if( shutterPolygonal) free( shutterPolygonal);
-							
-							shutterPolygonalSize = 0;
-							shutterPolygonal = malloc( nbtmp * sizeof( NSPoint) / 2);
-							
-							int y, x;
-							for( y = 0, x = 0 ; y < nbtmp; y+=2, x++)
-							{
-								shutterPolygonal[ x].x = atoi( tmp->a);		tmp++;
-								shutterPolygonal[ x].y = atoi( tmp->a);		tmp++;
-								shutterPolygonalSize++;
-							}
-						}
-						else NSLog( @"Shutter not supported: %@", [NSString stringWithCString:val->a]);
-						
-						val++;
-					}
-				}
-			}
-		}
-		
 		theGroupP = (SElement*) [self getPapyGroup: 0x0020 fileNb: fileNb];
 		if( theGroupP)
-		{
-			originX = 0;
-			originY = 0;
-			originZ = 0;
-			
-			val = Papy3GetElement (theGroupP, papImagePositionPatientGr, &nbVal, &elemType);
-			if ( val )
-			{
-				tmp = val;
-				
-				originX = atof( tmp->a);
-				
-				if( nbVal > 1)
-				{
-					tmp++;
-					originY = atof( tmp->a);
-				}
-				
-				if( nbVal > 2)
-				{
-					tmp++;
-					originZ = atof( tmp->a);
-				}
-				
-				isOriginDefined = YES;
-			}
-			
-			orientation[ 0] = 0;	orientation[ 1] = 0;	orientation[ 2] = 0;
-			orientation[ 3] = 0;	orientation[ 4] = 0;	orientation[ 5] = 0;
-			
-			val = Papy3GetElement (theGroupP, papImageOrientationPatientGr, &nbVal, &elemType);
-			if ( val )
-			{
-				tmpVal3 = val;
-				if( nbVal != 6)
-				{
-					NSLog(@"Orientation is NOT 6 !!!");
-					if( nbVal > 6 ) nbVal = 6;
-				}
-				
-				for ( int j = 0; j < nbVal; j++ )
-				{
-					orientation[ j]  = atof( tmpVal3->a);
-					tmpVal3++;
-				}
-				
-				for ( int j = nbVal; j < 6; j++ )
-					orientation[ j] = 0;
-			}
-			
-			val = Papy3GetElement (theGroupP, papImageLateralityGr, &nbVal, &elemType);
-			if ( val ) laterality = [[NSString stringWithCString:val->a] retain];
-			
-			if( laterality == nil )	{
-				val = Papy3GetElement (theGroupP, papLateralityGr, &nbVal, &elemType);
-				if ( val ) laterality = [[NSString stringWithCString:val->a] retain];
-			}
-		}
+			[self papyLoadGroup0x0020: theGroupP file: fileNb];
 		
 		theGroupP = (SElement*) [self getPapyGroup: 0x0028 fileNb: fileNb];
 		if( theGroupP ) // This group is MANDATORY...
 		{
 			maxFrame = gArrNbImages [fileNb];
-			
-			val3 = Papy3GetElement (theGroupP, papRescaleInterceptGr, &pos, &elemType);
-			if ( val3 )	{
-				tmpVal3 = val3;
-				// get the last offset
-				for ( int j = 1; j < pos; j++ ) tmpVal3++;
-				offset =  atof( tmpVal3->a);
-			}
-			val3 = Papy3GetElement (theGroupP, papRescaleSlopeGr, &pos, &elemType);
-			if ( val3 )
-			{
-				tmpVal3 = val3;
-				// get the last slope
-				for ( int j = 1; j < pos; j++ ) tmpVal3++;
-				slope = atof( tmpVal3->a);
-				
-				//	NSLog(@"slope:%f", slope);
-				
-				//						if( slope != 0 && fabs( slope) < 0.01)
-				//						{
-				//							while( slope < 0.01)
-				//							{
-				//								slope *= 100.;
-				//							}
-				//						}
-			}
-			
-			val = Papy3GetElement (theGroupP, papBitsAllocatedGr, &nbVal, &elemType);
-			bitsAllocated = (int) val->us;
-			
-			val = Papy3GetElement (theGroupP, papHighBitGr, &nbVal, &elemType);
-			highBit = (int) val->us;
-			
-			val = Papy3GetElement (theGroupP, papBitsStoredGr, &nbVal, &elemType);
-			bitsStored = (int) val->us;
-			
-			if( bitsStored == 8 && bitsAllocated == 16 && gArrPhotoInterpret [fileNb] == RGB )
-			{
-				bitsAllocated = 8;
-			}
-			
-			// extract nb of rows and cols
-			width = height = 0;
-			
-			// ROWS
-			val = Papy3GetElement (theGroupP, papRowsGr, &nbVal, &elemType);
-			if ( val )
-			{
-				height = (int) (*val).us;
-				height /=2;
-				height *=2;
-			}
-			// COLUMNS
-			val = Papy3GetElement (theGroupP, papColumnsGr, &nbVal, &elemType);
-			if ( val )	{
-				realwidth = (int) (*val).us;
-				width = realwidth/2;
-				width *=2;
-				
-				if( realwidth != width) NSLog(@"width!=realwidth");
-			}
-			
-			if( shutterRect_w == 0)  shutterRect_w = width;
-			if( shutterRect_h == 0)  shutterRect_h = height;
-			
-			// PIXEL REPRESENTATION
-			val = Papy3GetElement (theGroupP, papPixelRepresentationGr, &nbVal, &elemType);
-			if (val != NULL && val->us == 1) fIsSigned = YES;
-			else fIsSigned = NO;
-			
-			val = Papy3GetElement (theGroupP, papWindowCenterGr, &nbVal, &elemType);
-			if ( val )
-			{
-				savedWL = atof( val->a);
-			}
-			
-			val = Papy3GetElement (theGroupP, papWindowWidthGr, &nbVal, &elemType);
-			if ( val )
-			{
-				savedWW = atof( val->a);
-				if(  savedWW < 0) savedWW =-savedWW;
-			}
-			
-			// PLANAR CONFIGURATION
-			val = Papy3GetElement (theGroupP, papPlanarConfigurationGr, &nbVal, &elemType);
-			if ( val ) fPlanarConf = (int) val->us;
-			else fPlanarConf = 0;
-			
-			if (gArrCompression [fileNb] == JPEG_LOSSLESS || gArrCompression [fileNb] == JPEG_LOSSY) 
-				fPlanarConf = 0;
-			
-			// PIXMIN
-			//	val = Papy3GetElement (theGroupP, papSmallestImagePixelValueGr, &nbVal, &elemType);
-			//	if ( val ) pixmin = (int) val->us;
-			//	else pixmin = 0;
-			
-			// PIXMAX
-			//	val = Papy3GetElement (theGroupP, papLargestImagePixelValueGr, &nbVal, &elemType);
-			//	if ( val ) pixmax = (int) val->us;
-			//	else pixmax = 0;
-			
-			pixmin = pixmax = 0;
-			
-			pixelRatio = 1.0;
-			
-			val = Papy3GetElement (theGroupP, papPixelSpacingGr, &nbVal, &elemType);
-			if ( val )
-			{
-				tmp = val;
-				
-				pixelSpacingY = atof( tmp->a);
-				
-				if( nbVal > 1)
-				{
-					tmp++;
-					
-					pixelSpacingX = atof( tmp->a);
-				}
-			}
-			
-			val = Papy3GetElement (theGroupP, papPixelAspectRatioGr, &nbVal, &elemType);
-			if ( val )
-			{
-				float ratiox = 1, ratioy = 1;
-				
-				tmp = val;
-				
-				ratiox = atof( tmp->a);
-				
-				if( nbVal > 1)
-				{
-					tmp++;
-					
-					ratioy = atof( tmp->a);
-				}
-				
-				if( ratioy != 0)
-				{
-					pixelRatio = ratiox / ratioy;
-				}
-			}
-			else if( pixelSpacingX != pixelSpacingY)
-			{
-				if( pixelSpacingY != 0 && pixelSpacingX != 0) pixelRatio = pixelSpacingY / pixelSpacingX;
-			}
-			
-			if (gArrPhotoInterpret [fileNb] == PALETTE)
-			{
-				BOOL found = NO, found16 = NO;
-				
-				clutRed = malloc( 65536);		if( clutRed == nil) NSLog(@"error clutRed == nil");
-				clutGreen = malloc( 65536);		if( clutGreen == nil) NSLog(@"error clutRed == nil");
-				clutBlue = malloc( 65536);		if( clutBlue == nil) NSLog(@"error clutRed == nil");
-				
-				// initialisation
-				clutEntryR = clutEntryG = clutEntryB = 0;
-				clutDepthR = clutDepthG = clutDepthB = 0;
-				
-				for ( unsigned int j = 0; j < 65536; j++ )
-				{
-					clutRed[ j] = 0;
-					clutGreen[ j] = 0;
-					clutBlue[ j] = 0;
-				}
-				
-				// read the RED descriptor of the color lookup table
-				val = Papy3GetElement (theGroupP, papRedPaletteColorLookupTableDescriptorGr, &nbVal, &elemType);
-				tmp = val;
-				if ( val )
-				{
-					clutEntryR = tmp->us;
-					tmp++;tmp++;
-					clutDepthR = tmp->us;
-				} // if ...read Red palette color descriptor
-				
-				// read the GREEN descriptor of the color lookup table
-				val = Papy3GetElement (theGroupP, papGreenPaletteColorLookupTableDescriptorGr, &nbVal, &elemType);
-				if ( val )
-				{
-					clutEntryG	= val->us;
-					tmp			= val + 2;
-					clutDepthG	= tmp->us;
-				} // if ...read Green palette color descriptor
-				
-				// read the BLUE descriptor of the color lookup table
-				val = Papy3GetElement (theGroupP, papBluePaletteColorLookupTableDescriptorGr, &nbVal, &elemType);
-				if ( val )
-				{
-					clutEntryB = val->us;
-					tmp     = val + 2;
-					clutDepthB = tmp->us;
-				} // if ...read Blue palette color descriptor
-				
-				if( clutEntryR > 256) NSLog(@"R-Palette > 256");
-				if( clutEntryG > 256) NSLog(@"G-Palette > 256");
-				if( clutEntryB > 256) NSLog(@"B-Palette > 256");
-				
-				val = Papy3GetElement (theGroupP, papSegmentedRedPaletteColorLookupTableDataGr, &nbVal, &elemType);
-				if ( val )	// SEGMENTED PALETTE - 16 BIT !
-				{
-					if (clutDepthR == 16  && clutDepthG == 16  && clutDepthB == 16)
-					{
-						long			length, xx, xxindex, jj;
-						
-						shortRed = malloc( 65535L * sizeof( unsigned short));
-						shortGreen = malloc( 65535L * sizeof( unsigned short));
-						shortBlue = malloc( 65535L * sizeof( unsigned short));
-						
-						// extract the RED palette clut data
-						val = Papy3GetElement (theGroupP, papSegmentedRedPaletteColorLookupTableDataGr, &nbVal, &elemType);
-						if ( val )
-						{
-							unsigned short  *ptrs =  (unsigned short*) val->a;
-							nbVal = theGroupP[ papSegmentedRedPaletteColorLookupTableDataGr].length / 2;
-							
-							NSLog(@"red");
-							
-							xxindex = 0;
-							for( jj = 0; jj < nbVal;jj++)
-							{
-								NSLog(@"val: %d", ptrs[jj]);
-								switch( ptrs[jj])
-							{
-								case 0:	// Discrete
-									jj++;
-									length = ptrs[jj];
-									NSLog(@"length: %d", length);
-									jj++;
-									for( xx = xxindex; xxindex < xx + length; xxindex++)
-									{
-										shortRed[ xxindex] = ptrs[ jj++];
-										if( xxindex < 256) NSLog(@"%d", shortRed[ xxindex]);
-									}
-									jj--;
-									break;
-									
-									case 1:	// Linear
-									jj++;
-									length = ptrs[jj];
-									for( xx = xxindex; xxindex < xx + length; xxindex++)
-									{
-										shortRed[ xxindex] = shortRed[ xx-1] + ((ptrs[jj+1] - shortRed[ xx-1]) * (1+xxindex - xx)) / (length);
-										//		if( xxindex < 256) NSLog(@"%d", shortRed[ xxindex]);
-									}
-									jj ++;
-									break;
-									
-									case 2: // Indirect
-									NSLog(@"indirect not supported");
-									jj++;
-									length = ptrs[jj];
-									
-									jj += 2;
-									break;
-									
-									default:
-									NSLog(@"Error, Error, OsiriX will soon crash...");
-									break;
-							}
-							}
-							found16 = YES; 	// this is used to let us know we have to look for the other element */
-							NSLog(@"%d", xxindex);
-						}//endif
-						
-						// extract the GREEN palette clut data
-						val = Papy3GetElement (theGroupP, papSegmentedGreenPaletteColorLookupTableDataGr, &nbVal, &elemType);
-						if ( val )
-						{
-							unsigned short  *ptrs =  (unsigned short*) val->a;
-							nbVal = theGroupP[ papSegmentedGreenPaletteColorLookupTableDataGr].length / 2;
-							
-							NSLog(@"green");
-							
-							xxindex = 0;
-							for( jj = 0; jj < nbVal; jj++)
-							{
-								switch( ptrs[jj])
-							{
-								case 0:	// Discrete
-									jj++;
-									length = ptrs[jj];
-									jj++;
-									for( xx = xxindex; xxindex < xx + length; xxindex++)
-									{
-										shortGreen[ xxindex] = ptrs[ jj++];
-										//			if( xxindex < 256) NSLog(@"%d", shortGreen[ xxindex]);
-									}
-									jj--;
-									break;
-									
-									case 1:	// Linear
-									jj++;
-									length = ptrs[jj];
-									for( xx = xxindex; xxindex < xx + length; xxindex++)
-									{
-										shortGreen[ xxindex] = shortGreen[ xx-1] + ((ptrs[jj+1] - shortGreen[ xx-1]) * (1+xxindex - xx)) / (length);
-										//	if( xxindex < 256) NSLog(@"%d", shortGreen[ xxindex]);
-									}
-									jj ++;
-									break;
-									
-									case 2: // Indirect
-									NSLog(@"indirect not supported");
-									jj++;
-									length = ptrs[jj];
-									
-									jj += 2;
-									break;
-									
-									default:
-									NSLog(@"Error, Error, OsiriX will soon crash...");
-									break;
-							}
-							}
-							found16 = YES; 	// this is used to let us know we have to look for the other element */
-							NSLog(@"%d", xxindex);
-						}//endif
-						
-						// extract the BLUE palette clut data
-						val = Papy3GetElement (theGroupP, papSegmentedBluePaletteColorLookupTableDataGr, &nbVal, &elemType);
-						if ( val )
-						{
-							unsigned short  *ptrs =  (unsigned short*) val->a;
-							nbVal = theGroupP[ papSegmentedBluePaletteColorLookupTableDataGr].length / 2;
-							
-							NSLog(@"blue");
-							
-							xxindex = 0;
-							for( jj = 0; jj < nbVal; jj++)
-							{
-								switch( ptrs[jj])
-							{
-								case 0:	// Discrete
-									jj++;
-									length = ptrs[jj];
-									jj++;
-									for( xx = xxindex; xxindex < xx + length; xxindex++)
-									{
-										shortBlue[ xxindex] = ptrs[ jj++];
-										//			if( xxindex < 256) NSLog(@"%d", shortBlue[ xxindex]);
-									}
-									jj--;
-									break;
-									
-									case 1:	// Linear
-									jj++;
-									length = ptrs[jj];
-									for( xx = xxindex; xxindex < xx + length; xxindex++)
-									{
-										shortBlue[ xxindex] = shortBlue[ xx-1] + ((ptrs[jj+1] - shortBlue[ xx-1]) * (xxindex - xx + 1)) / (length);
-										//			if( xxindex < 256) NSLog(@"%d", shortBlue[ xxindex]);
-									}
-									jj ++;
-									break;
-									
-									case 2: // Indirect
-									NSLog(@"indirect not supported");
-									jj++;
-									length = ptrs[jj];
-									
-									jj += 2;
-									break;
-									
-									default:
-									NSLog(@"Error, Error, OsiriX will soon crash...");
-									break;
-							}
-							}
-							found16 = YES; 	// this is used to let us know we have to look for the other element */
-							NSLog(@"%d", xxindex);
-						}//endif
-						
-						for( jj = 0; jj < 65535; jj++)
-						{
-							shortRed[jj] =shortRed[jj]>>8;
-							shortGreen[jj] =shortGreen[jj]>>8;
-							shortBlue[jj] =shortBlue[jj]>>8;
-							
-							//								if( shortRed[jj] == shortGreen[jj] && shortRed[jj] == shortBlue[jj])
-							//								{
-							//									NSLog(@"%d : %d/%d/%d", jj, shortRed[jj], shortGreen[jj], shortBlue[jj]);
-							//								}
-						}
-					}
-					else if (clutDepthR == 8  && clutDepthG == 8  && clutDepthB == 8)
-					{
-						NSLog(@"Segmented palettes for 8 bits ??");
-					}
-					else
-					{
-						NSLog(@"Dont know this kind of DICOM CLUT...");
-					}
-				}
-				// EXTRACT THE PALETTE data only if there is 256 entries and depth is 16 bits
-				else if (clutDepthR == 16  && clutDepthG == 16  && clutDepthB == 16)
-				{
-					if( clutEntryR == 0 && clutEntryG == 0 && clutEntryB == 0)
-					{
-						NSLog( @"****** clutEntryR == 0 && clutEntryG == 0 && clutEntryB == 0");
-						clutEntryR = 65535;
-						clutEntryG = 65535;
-						clutEntryB = 65535;
-					}
-					
-					// extract the RED palette clut data
-					val = Papy3GetElement (theGroupP, papRedPaletteCLUTDataGr, &nbVal, &elemType);
-					if ( val )
-					{
-						unsigned short  *ptrs =  (unsigned short*) val->a;
-						for ( int j = 0; j < clutEntryR; j++, ptrs++ ) clutRed [j] = (int) (*ptrs/256);
-						
-						found = YES; 	// this is used to let us know we have to look for the other element */
-					}//endif
-					
-					// extract the GREEN palette clut data
-					val = Papy3GetElement (theGroupP, papGreenPaletteCLUTDataGr, &nbVal, &elemType);
-					if ( val )
-					{
-						unsigned short  *ptrs = (unsigned short*) val->a;
-						for ( int j = 0; j < clutEntryG; j++, ptrs++ ) clutGreen [j] = (int) (*ptrs/256);
-					}
-					// extract the BLUE palette clut data
-					val = Papy3GetElement (theGroupP, papBluePaletteCLUTDataGr, &nbVal, &elemType);
-					if ( val )
-					{
-						unsigned short  *ptrs =  (unsigned short*) val->a;
-						for ( int j = 0; j < clutEntryB; j++, ptrs++ ) clutBlue [j] = (int) (*ptrs/256);
-					}
-				} // if ...the palette has 256 entries and thus we extract the clut datas
-				else if (clutDepthR == 8  && clutDepthG == 8  && clutDepthB == 8)
-				{
-					// extract the RED palette clut data
-					val = Papy3GetElement (theGroupP, papRedPaletteCLUTDataGr, &nbVal, &elemType);
-					if ( val )
-					{
-						unsigned short  *ptrs =  (unsigned short*) val->a;
-						for ( int j = 0; j < clutEntryR; j++, ptrs++) clutRed [j] = (int) (*ptrs);
-						found = YES; 	// this is used to let us know we have to look for the other element */
-					}//endif
-					
-					// extract the GREEN palette clut data
-					val = Papy3GetElement (theGroupP, papGreenPaletteCLUTDataGr, &nbVal, &elemType);
-					if ( val )
-					{
-						unsigned short  *ptrs =  (unsigned short*) val->a;
-						for ( int j = 0; j < clutEntryG; j++, ptrs++) clutGreen [j] = (int) (*ptrs);
-					}
-					// extract the BLUE palette clut data
-					val = Papy3GetElement (theGroupP, papBluePaletteCLUTDataGr, &nbVal, &elemType);
-					if ( val )
-					{
-						unsigned short  *ptrs =  (unsigned short*) val->a;
-						for ( int j = 0; j < clutEntryB; j++, ptrs++) clutBlue [j] = (int) (*ptrs);
-					}
-				}
-				else
-				{
-					NSLog(@"Dont know this kind of DICOM CLUT...");
-				}
-				
-				// let the rest of the routine know that it should set the clut
-				if (found) fSetClut = YES;
-				if (found16) fSetClut16 = YES;
-			} // endif ...extraction of the color palette
-			
-			if( gUseVOILUT)
-			{
-				val = Papy3GetElement (theGroupP, papVOILUTSequenceGr, &pos, &elemType );
-				
-				// Loop over sequence
-				
-				if ( val != NULL)
-				{
-					if( val->sq != NULL )
-					{
-						Papy_List	*dcmList = val->sq->object->item;
-						if (dcmList != NULL)	// We use ONLY the first VOILut available
-						{
-							SElement *gr = (SElement *)dcmList->object->group;
-							if ( gr->group == 0x0028 )
-							{
-								
-								val = Papy3GetElement (gr, papLUTDescriptorGr, &pos, &elemType );
-								if( val)
-								{
-									VOILUT_number = val->us;		val++;
-									VOILUT_first = val->us;			val++;
-									VOILUT_depth = val->us;			val++;
-								}
-								
-								val = Papy3GetElement (gr, papLUTDataGr, &pos, &elemType );
-								if( val)
-								{
-									VOILUT_number = pos;
-									
-									if( VOILUT_table) free( VOILUT_table);
-									VOILUT_table = malloc( sizeof(unsigned int) * VOILUT_number);
-									for ( int j = 0; j < VOILUT_number; j++ )
-									{
-										VOILUT_table [j] = (unsigned int) val->us;			val++;
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-			
+
+			[self papyLoadGroup0x0028: theGroupP file: fileNb];
 			
 	#pragma mark SUV
 			
@@ -7112,8 +7123,6 @@ END_CREATE_ROIS:
 						{
 							SElement * gr = (SElement *) dcmList->object->group;
 							
-							//NSLog( @"group:%x, element:%x", gr->group, gr->element);
-							
 							switch( gr->group)
 							{
 								case 0x0020:
@@ -7123,7 +7132,7 @@ END_CREATE_ROIS:
 										// there is a sequence
 										if (val3->sq )
 										{
-											Papy_List	  *PixelMatrixSeq;
+											Papy_List *PixelMatrixSeq;
 											
 											// get a pointer to the first element of the list
 											PixelMatrixSeq = val3->sq->object->item;
@@ -7131,32 +7140,11 @@ END_CREATE_ROIS:
 											// loop through the elements of the sequence
 											while (PixelMatrixSeq)
 											{
-												SElement * gr28 = (SElement *) PixelMatrixSeq->object->group;
+												SElement * gr = (SElement *) PixelMatrixSeq->object->group;
 												
-												//NSLog( @"group:%x, element:%x", gr28->group, gr28->element);
-												
-												switch( gr28->group)
+												switch( gr->group)
 												{
-													case 0x0020:
-														val3 = Papy3GetElement (gr28, papImageOrientationPatientGr, &nbVal, &elemType);
-														if (val3 != NULL && nbVal >= 1)
-														{
-															tmpVal3 = val3;
-															if( nbVal != 6)
-															{
-																NSLog(@"Orientation is NOT 6 !!!");
-																if( nbVal > 6 ) nbVal = 6;
-															}
-															for ( int j = 0; j < nbVal; j++ )
-															{
-																orientation[ j]  = atof( tmpVal3->a);
-																tmpVal3++;
-															}
-															
-															for ( int j = nbVal; j < 6; j++)
-																orientation[ j] = 0;
-														}
-														break;
+													case 0x0020: [self papyLoadGroup0x0020: gr file: fileNb]; break;
 												}
 												
 												// get the next element of the list
@@ -7181,35 +7169,12 @@ END_CREATE_ROIS:
 											// loop through the elements of the sequence
 											while (PixelMatrixSeq != NULL)
 											{
-												SElement * gr28 = (SElement *) PixelMatrixSeq->object->group;
+												SElement * gr = (SElement *) PixelMatrixSeq->object->group;
 												
-												//NSLog( @"group:%x, element:%x", gr28->group, gr28->element);
-												
-												switch( gr28->group)
+												switch( gr->group)
 												{
-													case 0x0018:
-														val3 = Papy3GetElement (gr28, papSliceThicknessGr, &nbVal, &elemType);
-														if (val3 != NULL && nbVal >= 1)
-														{
-															sliceThickness = atof( val3->a);
-														}
-													break;
-														
-													case 0x0028:
-														val3 = Papy3GetElement (gr28, papPixelSpacingGr, &nbVal, &elemType);
-														if (val3 != NULL && nbVal >= 1)
-														{
-															tmp = val3;
-															
-															pixelSpacingY = atof( tmp->a);
-															
-															if( nbVal > 1)
-															{
-																tmp++;
-																pixelSpacingX = atof( tmp->a);
-															}
-														}
-													break;
+													case 0x0018: [self papyLoadGroup0x0018: gr file: fileNb]; break;
+													case 0x0028: [self papyLoadGroup0x0028: gr file: fileNb]; break;
 												}
 												
 												// get the next element of the list
@@ -7230,33 +7195,11 @@ END_CREATE_ROIS:
 											// loop through the elements of the sequence
 											while (PixelMatrixSeq)
 											{
-												SElement * gr28 = (SElement *) PixelMatrixSeq->object->group;
+												SElement * gr = (SElement *) PixelMatrixSeq->object->group;
 												
-												//NSLog( @"group:%x, element:%x", gr28->group, gr28->element);
-												
-												switch( gr28->group)
+												switch( gr->group)
 												{
-													case 0x0028:
-														val3 = Papy3GetElement (gr28, papRescaleInterceptGr, &nbVal, &elemType);
-														if (val3 != NULL && nbVal >= 1)
-														{
-															tmpVal3 = val3;
-															// get the last offset
-															for ( int j = 1; j < nbVal; j++ ) tmpVal3++;
-															offset =  atof( tmpVal3->a);
-														}
-														
-														val3 = Papy3GetElement (gr28, papRescaleSlopeGr, &nbVal, &elemType);
-														if (val3 != NULL && nbVal >= 1)
-														{
-															tmpVal3 = val3;
-															// get the last slope
-															for ( int j = 1; j < nbVal; j++ ) tmpVal3++;
-															
-															if( atof( tmpVal3->a))
-																slope  = atof( tmpVal3->a);
-														}
-														break;
+													case 0x0028: [self papyLoadGroup0x0028: gr file: fileNb]; break;
 												}
 												
 												// get the next element of the list
@@ -7326,29 +7269,8 @@ END_CREATE_ROIS:
 																
 																switch( gr20->group)
 																{
-																	case 0x0018:
-																		val3 = Papy3GetElement (gr20, papSliceThicknessGr, &nbVal, &elemType);
-																		if (val3 != NULL && nbVal >= 1)
-																		{
-																			sliceThickness = atof( val3->a);
-																		}
-																	break;
-																	
-																	case 0x0028:
-																		val3 = Papy3GetElement (gr20, papPixelSpacingGr, &nbVal, &elemType);
-																		if (val3 != NULL && nbVal >= 1)
-																		{
-																			tmp = val3;
-																			
-																			pixelSpacingY = atof( tmp->a);
-																			
-																			if( nbVal > 1)
-																			{
-																				tmp++;
-																				pixelSpacingX = atof( tmp->a);
-																			}
-																		}
-																	break;
+																	case 0x0018: [self papyLoadGroup0x0018: gr20 file: fileNb]; break;
+																	case 0x0028: [self papyLoadGroup0x0028: gr20 file: fileNb]; break;
 																}
 																
 																// get the next element of the list
@@ -7371,49 +7293,12 @@ END_CREATE_ROIS:
 															// loop through the elements of the sequence
 															while (seq)
 															{
-																SElement * gr20 = (SElement *) seq->object->group;
+																SElement * gr = (SElement *) seq->object->group;
 																
-																switch( gr20->group)
+																switch( gr->group)
 																{
-																	case 0x0020:
-																		val3 = Papy3GetElement (gr20, papImagePositionPatientGr, &nbVal, &elemType);
-																		if (val3 != NULL && nbVal >= 1)
-																		{
-																			tmp = val3;
-																			
-																			originX = atof( tmp->a);
-																			
-																			if( nbVal > 1)
-																			{
-																				tmp++;
-																				originY = atof( tmp->a);
-																			}
-																			
-																			if( nbVal > 2)
-																			{
-																				tmp++;
-																				originZ = atof( tmp->a);
-																			}
-																			
-																			isOriginDefined = YES;
-																		}
-																	break;
-																	
-																	case 0x0028:
-																		val3 = Papy3GetElement (gr20, papPixelSpacingGr, &nbVal, &elemType);
-																		if (val3 != NULL && nbVal >= 1)
-																		{
-																			tmp = val3;
-																			
-																			pixelSpacingY = atof( tmp->a);
-																			
-																			if( nbVal > 1)
-																			{
-																				tmp++;
-																				pixelSpacingX = atof( tmp->a);
-																			}
-																		}
-																	break;
+																	case 0x0020: [self papyLoadGroup0x0020: gr file: fileNb]; break;
+																	case 0x0028: [self papyLoadGroup0x0028: gr file: fileNb]; break;
 																}
 																
 																// get the next element of the list
@@ -7434,30 +7319,11 @@ END_CREATE_ROIS:
 															// loop through the elements of the sequence
 															while (seq)
 															{
-																SElement * gr20 = (SElement *) seq->object->group;
+																SElement * gr = (SElement *) seq->object->group;
 																
-																switch( gr20->group)
+																switch( gr->group)
 																{
-																	case 0x0020:
-																		val3 = Papy3GetElement (gr20, papImageOrientationPatientGr, &nbVal, &elemType);
-																		if (val3 != NULL && nbVal >= 1)
-																		{
-																			if( nbVal != 6)
-																			{
-																				NSLog(@"Orientation is NOT 6 !!!");
-																				if( nbVal > 6 ) nbVal = 6;
-																			}
-																			
-																			for ( int j = 0; j < nbVal; j++ )
-																			{
-																				orientation[ j]  = atof( val3->a);
-																				val3++;
-																			}
-																			
-																			for ( int j = nbVal; j < 6; j++ )
-																				orientation[ j] = 0;
-																		}
-																	break;
+																	case 0x0020: [self papyLoadGroup0x0020: gr file: fileNb]; break;
 																}
 																
 																// get the next element of the list
@@ -7626,6 +7492,9 @@ END_CREATE_ROIS:
 							if(gArrPhotoInterpret [fileNb] == RGB) fPlanarConf = 0;
 						}
 						
+						if( bitsStored == 8 && bitsAllocated == 16 && gArrPhotoInterpret[ fileNb] == RGB)
+							bitsAllocated = 8;
+						
 						// PIXEL DATA
 						if( gUseJPEGColorSpace)
 						{
@@ -7703,48 +7572,49 @@ END_CREATE_ROIS:
 								//	if( bitsAllocated != 8) NSLog(@"Palette with a non-8 bit image???");
 								
 								switch( bitsAllocated)
-							{
-								case 8:
-									for( y = 0; y < height; y++)
-									{
-										for( x = 0; x < width; x++)
+								{
+									case 8:
+										for( y = 0; y < height; y++)
 										{
-											pixelR = pixelG = pixelB = bufPtr[y*width + x];
-											
-											if( pixelR > clutEntryR) {	pixelR = clutEntryR-1;}
-											if( pixelG > clutEntryG) {	pixelG = clutEntryG-1;}
-											if( pixelB > clutEntryB) {	pixelB = clutEntryB-1;}
-											
-											tmpImage[y*width*3 + x*3 + 0] = clutRed[ pixelR];
-											tmpImage[y*width*3 + x*3 + 1] = clutGreen[ pixelG];
-											tmpImage[y*width*3 + x*3 + 2] = clutBlue[ pixelB];
+											for( x = 0; x < width; x++)
+											{
+												pixelR = pixelG = pixelB = bufPtr[y*width + x];
+												
+												if( pixelR > clutEntryR) {	pixelR = clutEntryR-1;}
+												if( pixelG > clutEntryG) {	pixelG = clutEntryG-1;}
+												if( pixelB > clutEntryB) {	pixelB = clutEntryB-1;}
+												
+												tmpImage[y*width*3 + x*3 + 0] = clutRed[ pixelR];
+												tmpImage[y*width*3 + x*3 + 1] = clutGreen[ pixelG];
+												tmpImage[y*width*3 + x*3 + 2] = clutBlue[ pixelB];
+											}
 										}
-									}
-									break;
-									
-									case 16:
-		#if __BIG_ENDIAN__
-									InverseShorts( (vector unsigned short*) oImage, height * realwidth);
-		#endif
-									
-									for( y = 0; y < height; y++)
-									{
-										for( x = 0; x < width; x++)
+										break;
+										
+										case 16:
+			#if __BIG_ENDIAN__
+										InverseShorts( (vector unsigned short*) oImage, height * realwidth);
+			#endif
+										
+										for( y = 0; y < height; y++)
 										{
-											pixelR = pixelG = pixelB = bufPtr16[y*width + x];
-											
-											//	if( pixelR > clutEntryR) {	pixelR = clutEntryR-1;}
-											//	if( pixelG > clutEntryG) {	pixelG = clutEntryG-1;}
-											//	if( pixelB > clutEntryB) {	pixelB = clutEntryB-1;}
-											
-											tmpImage[y*width*3 + x*3 + 0] = clutRed[ pixelR];
-											tmpImage[y*width*3 + x*3 + 1] = clutGreen[ pixelG];
-											tmpImage[y*width*3 + x*3 + 2] = clutBlue[ pixelB];
+											for( x = 0; x < width; x++)
+											{
+												pixelR = pixelG = pixelB = bufPtr16[y*width + x];
+												
+												//	if( pixelR > clutEntryR) {	pixelR = clutEntryR-1;}
+												//	if( pixelG > clutEntryG) {	pixelG = clutEntryG-1;}
+												//	if( pixelB > clutEntryB) {	pixelB = clutEntryB-1;}
+												
+												tmpImage[y*width*3 + x*3 + 0] = clutRed[ pixelR];
+												tmpImage[y*width*3 + x*3 + 1] = clutGreen[ pixelG];
+												tmpImage[y*width*3 + x*3 + 2] = clutBlue[ pixelB];
+											}
 										}
-									}
-									bitsAllocated = 8;
-									break;
-							}
+										bitsAllocated = 8;
+										break;
+								}
+								
 								isRGB = YES;
 								
 								efree3 ((void **) &oImage);
@@ -8119,15 +7989,15 @@ END_CREATE_ROIS:
 				//	endTime = MyGetTime();
 				//	NSLog([ NSString stringWithFormat: @"%d", ((long) (endTime - startTime))/1000 ]);
 				
-				if( pixmin == 0 && pixmax == 0)
+				if( storedPixmin == 0 && storedPixmax == 0)
 				{
 					wl = 0;
 					ww = 0; //Computed later, only if needed
 				}
 				else
 				{
-					wl = pixmin + (pixmax - pixmin)/2;
-					ww = (pixmax - pixmin);
+					wl = storedPixmin + (storedPixmax - storedPixmin)/2;
+					ww = (storedPixmax - storedPixmin);
 				}
 				
 				if( isRGB)
@@ -8198,7 +8068,8 @@ END_CREATE_ROIS:
 	height = [TIFFRep pixelsHigh];
 	height /= 2;
 	height *= 2;
-	int realwidth = [TIFFRep pixelsWide];
+	
+	realwidth = [TIFFRep pixelsWide];
 	width = realwidth/2;
 	width *= 2;
 	
@@ -8482,7 +8353,7 @@ END_CREATE_ROIS:
 		
 		if( success == NO)	// Is it a NON-DICOM IMAGE ??
 		{
-			int				realwidth, realheight;
+			int				realheight;
 			PapyULong		i;
 			
 			NSImage		*otherImage = nil;

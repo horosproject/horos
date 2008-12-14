@@ -181,6 +181,15 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 	unsigned char		*LUT12baseAddr;
 	
 	BOOL				full32bitPipeline, needToCompute8bitRepresentation;
+
+/** Papyrus Loading variables */	
+	
+	NSString			*modalityString;
+	unsigned short		clutEntryR, clutEntryG, clutEntryB;
+	unsigned short		clutDepthR, clutDepthG, clutDepthB;
+	unsigned char		*clutRed, *clutGreen, *clutBlue;
+	int					realwidth, storedPixmin, storedPixmax;
+	BOOL				fSetClut, fSetClut16;
 }
 
 @property long frameNo;
