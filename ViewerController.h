@@ -112,6 +112,7 @@ enum
 	IBOutlet NSButton		*subCtrlOnOff;
 			 long			subCtrlMaskID;
 			 NSPoint		subCtrlMinMax;
+			 BOOL			subCtrlMinMaxComputed;
 	IBOutlet NSTextField	*subCtrlMaskText;
 
 			 NSPoint		subCtrlOffset;

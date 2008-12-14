@@ -6040,6 +6040,29 @@ static ViewerController *draggedController = nil;
 	return [subCtrlOnOff state];
 }
 
+- (void) computeSubCtrlMinMax
+{
+	if( subCtrlMinMaxComputed) return;
+	
+	subCtrlMinMaxComputed = YES;
+	
+	//define min and max value of the subtraction
+	long subCtrlMin = 1024;
+	long subCtrlMax = 0;
+	
+	DCMPix *pixMask = [[imageView dcmPixList]objectAtIndex:subCtrlMaskID];
+	
+	for ( DCMPix *pix in [imageView dcmPixList])
+	{
+		subCtrlMinMax = [pix subMinMax :[pix fImage] :[pixMask fImage]];
+						
+		if (subCtrlMinMax.x < subCtrlMin) subCtrlMin = subCtrlMinMax.x ;
+		if (subCtrlMinMax.y > subCtrlMax) subCtrlMax = subCtrlMinMax.y ;
+	}
+	subCtrlMinMax.x = subCtrlMin;
+	subCtrlMinMax.y = subCtrlMax;
+}
+
 - (void) enableSubtraction
 {
 	if( enableSubtraction)
@@ -6049,21 +6072,7 @@ static ViewerController *draggedController = nil;
 		subCtrlMaskID = 1;
 		[subCtrlMaskText setStringValue: [NSString stringWithFormat:@"2"]];//changes tool text
 		
-		//define min and max value of the subtraction
-		long subCtrlMin = 1024;
-		long subCtrlMax = 0;
-		long i;
-		for ( i = 0; i < [[imageView dcmPixList] count]; i ++)
-		{
-			subCtrlMinMax = [[[imageView dcmPixList]objectAtIndex:i]   subMinMax:[[[imageView dcmPixList]objectAtIndex:i]fImage]
-																				:[[[imageView dcmPixList]objectAtIndex:subCtrlMaskID]fImage]
-							];
-							
-			if (subCtrlMinMax.x < subCtrlMin) subCtrlMin = subCtrlMinMax.x ;
-			if (subCtrlMinMax.y > subCtrlMax) subCtrlMax = subCtrlMinMax.y ;
-		}
-		subCtrlMinMax.x = subCtrlMin;
-		subCtrlMinMax.y = subCtrlMax;
+		subCtrlMinMaxComputed = NO;
 	}
 	else [subCtrlOnOff setEnabled: NO];
 }
@@ -6250,10 +6259,8 @@ static ViewerController *draggedController = nil;
 
 		for( x = 0; x < maxMovieIndex; x++)	 
 		{	 
-			for( i = 0 ; i < [pixList[ x] count]; i++)	 
+			for( DCMPix* pix in pixList[ x])	 
 			{
-				DCMPix* pix = [pixList[ x] objectAtIndex: i];
-				
 				if( maxValueOfSeries < [pix fullwl] + [pix fullww]/2) maxValueOfSeries = [pix fullwl] + [pix fullww]/2;
 				if( minValueOfSeries > [pix fullwl] - [pix fullww]/2) minValueOfSeries = [pix fullwl] - [pix fullww]/2;
 			}
@@ -6261,10 +6268,10 @@ static ViewerController *draggedController = nil;
 		
 		for( x = 0; x < maxMovieIndex; x++)	 
 		{	 
-			for( i = 0 ; i < [pixList[ x] count]; i++)	 
+			for( DCMPix* pix in pixList[ x])
 			{
-				[[pixList[ x] objectAtIndex: i] setMaxValueOfSeries: maxValueOfSeries];
-				[[pixList[ x] objectAtIndex: i] setMinValueOfSeries: minValueOfSeries];
+				[pix setMaxValueOfSeries: maxValueOfSeries];
+				[pix setMinValueOfSeries: minValueOfSeries];
 			}
 		 }	 
 	}
@@ -6284,22 +6291,20 @@ static ViewerController *draggedController = nil;
 	{
 #pragma mark XA
 		enableSubtraction = FALSE;
+		subCtrlMinMaxComputed = NO;
 		if([[[fileList[ 0] objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"XA"] == YES)
 		{
-			NSLog(@"XA");
-			long runSize = [pixList[ 0] count];
-			if(runSize > 1)
+			if([pixList[ 0] count] > 1)
 			{
 				long moviePixWidth = [[pixList[ 0] objectAtIndex: 0] pwidth];
 				long moviePixHeight = [[pixList[ 0] objectAtIndex: 0] pheight];
 				
 				if (moviePixWidth == moviePixHeight) enableSubtraction = TRUE;
 				
-				long j;
-				for( j = 0 ; j < runSize; j++)
+				for( DCMPix *pix in pixList[ 0])
 				{
-					if ( moviePixWidth != [[pixList[0] objectAtIndex: j] pwidth]) enableSubtraction = FALSE;
-					if ( moviePixHeight != [[pixList[0] objectAtIndex: j] pheight]) enableSubtraction = FALSE;
+					if ( moviePixWidth != [pix pwidth]) enableSubtraction = FALSE;
+					if ( moviePixHeight != [pix pheight]) enableSubtraction = FALSE;
 				}
 			}
 		}
@@ -6836,6 +6841,8 @@ static ViewerController *draggedController = nil;
 
 		long i;	
 		
+		[self computeSubCtrlMinMax];
+		
 		if([subCtrlOnOff state])			// subtraction asked for
 		{
 			[self checkView: subCtrlView :YES];
@@ -6872,7 +6879,9 @@ static ViewerController *draggedController = nil;
 - (IBAction) subCtrlNewMask:(id) sender
 {
 	if (enableSubtraction) 
-	{				
+	{
+		[self computeSubCtrlMinMax];
+		
 		if( [imageView flippedData]) subCtrlMaskID = [pixList[ curMovieIndex] count] - [imageView curImage] -1;
 		else                         subCtrlMaskID = [imageView curImage];//starts at 1;
 		
@@ -6884,16 +6893,16 @@ static ViewerController *draggedController = nil;
 		long i;
 		float newMaskTime = [[[imageView dcmPixList] objectAtIndex:subCtrlMaskID]fImageTime];
 		for ( i = 0; i < [[imageView dcmPixList] count]; i ++)
-				{
-					subCtrlMinMax = [[[imageView dcmPixList]objectAtIndex:i]   subMinMax:[[[imageView dcmPixList]objectAtIndex:i]fImage]
-																						:[[[imageView dcmPixList]objectAtIndex:subCtrlMaskID]fImage]
-								    ];
-					if (subCtrlMinMax.x < subCtrlMin) subCtrlMin = subCtrlMinMax.x ;
-					if (subCtrlMinMax.y > subCtrlMax) subCtrlMax = subCtrlMinMax.y ;
-					
-					[[[imageView dcmPixList] objectAtIndex:i] maskID: subCtrlMaskID];
-					[[[imageView dcmPixList] objectAtIndex:i] maskTime: newMaskTime];
-				}
+		{
+			subCtrlMinMax = [[[imageView dcmPixList]objectAtIndex:i]   subMinMax:[[[imageView dcmPixList]objectAtIndex:i]fImage]
+																				:[[[imageView dcmPixList]objectAtIndex:subCtrlMaskID]fImage]
+							];
+			if (subCtrlMinMax.x < subCtrlMin) subCtrlMin = subCtrlMinMax.x ;
+			if (subCtrlMinMax.y > subCtrlMax) subCtrlMax = subCtrlMinMax.y ;
+			
+			[[[imageView dcmPixList] objectAtIndex:i] maskID: subCtrlMaskID];
+			[[[imageView dcmPixList] objectAtIndex:i] maskTime: newMaskTime];
+		}
 		subCtrlMinMax.x = subCtrlMin;
 		subCtrlMinMax.y = subCtrlMax;
 		
