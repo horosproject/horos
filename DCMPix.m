@@ -4979,8 +4979,6 @@ END_CREATE_ROIS:
 	short				imageNb = frameNo;
 	short				ee;
 	
-	int					pixmin, pixmax;
-	
 #pragma mark *pdf
 	if ([ SOPClassUID isEqualToString:[DCMAbstractSyntaxUID pdfStorageClassUID]])
 	{
@@ -5196,7 +5194,6 @@ END_CREATE_ROIS:
 	
 	fPlanarConf = [[dcmObject attributeValueWithName:@"PlanarConfiguration"] intValue]; 
 	
-	pixmin = pixmax = 0;
 	pixelSpacingX = 0;
 	pixelSpacingY = 0;
 	pixelRatio = 1.0;
@@ -5956,16 +5953,9 @@ END_CREATE_ROIS:
 			}
 		}
 		
-		if( pixmin == 0 && pixmax == 0 )
-		{
-			wl = 0;
-			ww = 0; //Computed later, only if needed
-		}
-		else
-		{
-			wl = pixmin + (pixmax - pixmin)/2;
-			ww = (pixmax - pixmin);
-		}
+		wl = 0;
+		ww = 0; //Computed later, only if needed
+		
 		
 		if( savedWW != 0 )
 		{
@@ -6844,8 +6834,6 @@ END_CREATE_ROIS:
 	clutRed = nil;
 	clutGreen = nil;
 	clutBlue = nil;
-
-	storedPixmin = storedPixmax = 0;
 	
 	fSetClut = NO;
 	fSetClut16 = NO;
@@ -7989,16 +7977,8 @@ END_CREATE_ROIS:
 				//	endTime = MyGetTime();
 				//	NSLog([ NSString stringWithFormat: @"%d", ((long) (endTime - startTime))/1000 ]);
 				
-				if( storedPixmin == 0 && storedPixmax == 0)
-				{
-					wl = 0;
-					ww = 0; //Computed later, only if needed
-				}
-				else
-				{
-					wl = storedPixmin + (storedPixmax - storedPixmin)/2;
-					ww = (storedPixmax - storedPixmin);
-				}
+				wl = 0;
+				ww = 0; //Computed later, only if needed
 				
 				if( isRGB)
 				{
