@@ -6079,35 +6079,27 @@ END_CREATE_ROIS:
 	
 	val = Papy3GetElement (theGroupP, papFrameofReferenceUIDGr, &nbVal, &elemType);
 	if ( val ) frameOfReferenceUID = [[NSString stringWithCString:val->a] retain];
-	else frameOfReferenceUID = 0;
 
 	val = Papy3GetElement (theGroupP, papSliceThicknessGr, &nbVal, &elemType);
 	if ( val ) sliceThickness = atof( val->a);
-	else sliceThickness = 0;
 	
 	val = Papy3GetElement (theGroupP, papSpacingBetweenSlicesGr, &nbVal, &elemType);
 	if ( val ) spacingBetweenSlices = atof( val->a);
-	else spacingBetweenSlices = 0;
 	
 	val = Papy3GetElement (theGroupP, papRepetitionTimeGr, &nbVal, &elemType);
 	if ( val ) repetitiontime = [[NSString stringWithFormat:@"%0.1f", atof( val->a)] retain];
-	else repetitiontime = 0;
 	
 	val = Papy3GetElement (theGroupP, papEchoTimeGr, &nbVal, &elemType);
 	if ( val ) echotime = [[NSString stringWithFormat:@"%0.1f", atof( val->a)] retain];
-	else echotime = 0;
 	
 	val = Papy3GetElement (theGroupP, papFlipAngleGr, &nbVal, &elemType);
 	if ( val ) flipAngle = [[NSString stringWithFormat:@"%0.1f", atof( val->a)] retain];
-	else flipAngle = 0;
 	
 	val = Papy3GetElement (theGroupP, papProtocolNameGr, &nbVal, &elemType);
 	if ( val ) protocolName = [[NSString stringWithCString:val->a] retain];
-	else protocolName = 0;
 	
 	val = Papy3GetElement (theGroupP, papViewPositionGr, &nbVal, &elemType);
 	if ( val ) viewPosition = [[NSString stringWithCString:val->a] retain];
-	else viewPosition = 0;
 	
 	val = Papy3GetElement (theGroupP, papPositionerPrimaryAngleGr, &nbVal, &elemType);
 	if ( val ) positionerPrimaryAngle = [[NSNumber numberWithDouble: atof( val->a)] retain];
@@ -6117,7 +6109,6 @@ END_CREATE_ROIS:
 	
 	val = Papy3GetElement (theGroupP, papPatientPositionGr, &nbVal, &elemType);
 	if ( val ) patientPosition = [[NSString stringWithCString:val->a] retain];
-	else patientPosition = 0;
 	
 	val = Papy3GetElement (theGroupP, papCineRateGr, &nbVal, &elemType);
 	if (!cineRate && val != NULL) cineRate = atof( val->a);	//[[NSString stringWithFormat:@"%0.1f", ] floatValue];
@@ -6293,9 +6284,6 @@ END_CREATE_ROIS:
 		isOriginDefined = YES;
 	}
 	
-	orientation[ 0] = 0;	orientation[ 1] = 0;	orientation[ 2] = 0;
-	orientation[ 3] = 0;	orientation[ 4] = 0;	orientation[ 5] = 0;
-	
 	val = Papy3GetElement (theGroupP, papImageOrientationPatientGr, &nbVal, &elemType);
 	if ( val )
 	{
@@ -6319,7 +6307,8 @@ END_CREATE_ROIS:
 	val = Papy3GetElement (theGroupP, papImageLateralityGr, &nbVal, &elemType);
 	if ( val ) laterality = [[NSString stringWithCString:val->a] retain];
 	
-	if( laterality == nil )	{
+	if( laterality == nil )
+	{
 		val = Papy3GetElement (theGroupP, papLateralityGr, &nbVal, &elemType);
 		if ( val ) laterality = [[NSString stringWithCString:val->a] retain];
 	}
@@ -6358,16 +6347,15 @@ END_CREATE_ROIS:
 	}
 	
 	val = Papy3GetElement (theGroupP, papBitsAllocatedGr, &nbVal, &elemType);
-	bitsAllocated = (int) val->us;
+	if( val)
+		bitsAllocated = (int) val->us;
 	
 //	val = Papy3GetElement (theGroupP, papHighBitGr, &nbVal, &elemType);
 //	highBit = (int) val->us;
 	
 	val = Papy3GetElement (theGroupP, papBitsStoredGr, &nbVal, &elemType);
-	bitsStored = (int) val->us;
-	
-	// extract nb of rows and cols
-	width = height = 0;
+	if( val)
+		bitsStored = (int) val->us;
 	
 	// ROWS
 	val = Papy3GetElement (theGroupP, papRowsGr, &nbVal, &elemType);
@@ -6393,14 +6381,15 @@ END_CREATE_ROIS:
 	
 	// PIXEL REPRESENTATION
 	val = Papy3GetElement (theGroupP, papPixelRepresentationGr, &nbVal, &elemType);
-	if (val != NULL && val->us == 1) fIsSigned = YES;
-	else fIsSigned = NO;
+	if (val != NULL)
+	{
+		if( val->us == 1) fIsSigned = YES;
+		else fIsSigned = NO;
+	}
 	
 	val = Papy3GetElement (theGroupP, papWindowCenterGr, &nbVal, &elemType);
 	if ( val )
-	{
 		savedWL = atof( val->a);
-	}
 	
 	val = Papy3GetElement (theGroupP, papWindowWidthGr, &nbVal, &elemType);
 	if ( val )
@@ -6412,9 +6401,6 @@ END_CREATE_ROIS:
 	// PLANAR CONFIGURATION
 	val = Papy3GetElement (theGroupP, papPlanarConfigurationGr, &nbVal, &elemType);
 	if ( val ) fPlanarConf = (int) val->us;
-	else fPlanarConf = 0;
-	
-	pixelRatio = 1.0;
 	
 	val = Papy3GetElement (theGroupP, papPixelSpacingGr, &nbVal, &elemType);
 	if ( val )
@@ -6837,6 +6823,23 @@ END_CREATE_ROIS:
 	
 	fSetClut = NO;
 	fSetClut16 = NO;
+	
+	fPlanarConf = 0;
+	pixelRatio = 1.0;
+	
+	orientation[ 0] = 0;	orientation[ 1] = 0;	orientation[ 2] = 0;
+	orientation[ 3] = 0;	orientation[ 4] = 0;	orientation[ 5] = 0;
+	
+	frameOfReferenceUID = 0;
+	sliceThickness = 0;
+	spacingBetweenSlices = 0;
+	repetitiontime = 0;
+	echotime = 0;
+	flipAngle = 0;
+	protocolName = 0;
+	viewPosition = 0;
+	patientPosition = 0;
+	width = height = 0;
 	
 	if( convertedDICOM )
 	{
