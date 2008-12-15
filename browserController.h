@@ -246,6 +246,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	BOOL							avoidRecursive;
 	
 	IBOutlet PluginManagerController *pluginManagerController;
+	NSTimeInterval					lastCheckIncoming;
 }
 
 @property(readonly) NSDateFormatter *DateTimeFormat;

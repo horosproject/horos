@@ -4467,7 +4467,8 @@ static NSArray*	statesArray = nil;
 	if( DatabaseIsEdited) return;
 	if( [databaseOutline editedRow] != -1) return;
 	
-	if( needDBRefresh || [[[self.albumArray objectAtIndex: albumTable.selectedRow] valueForKey:@"smartAlbum"] boolValue] == YES )	{
+	if( needDBRefresh || [[[self.albumArray objectAtIndex: albumTable.selectedRow] valueForKey:@"smartAlbum"] boolValue] == YES )
+	{
 		if( [checkIncomingLock tryLock] )
 		{
 			@try
@@ -7622,7 +7623,6 @@ static BOOL withReset = NO;
 		
 		displayEmptyDatabase = NO;
 	}
-	
 	
 	if( [checkIncomingLock tryLock])
 	{	
@@ -12936,6 +12936,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 		
 		[checkIncomingLock unlock];
 		
+		lastCheckIncoming  = [NSDate timeIntervalSinceReferenceDate];
+		
 		[pool release];
 	}
 	@catch (NSException * e)
@@ -12968,6 +12970,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	if( isCurrentDatabaseBonjour) return;
 	if( DatabaseIsEdited) return;
 	if( managedObjectContext == nil) return;
+	if( [NSDate timeIntervalSinceReferenceDate] - lastCheckIncoming < 1) return;
 	
 	if( [checkIncomingLock tryLock])
 	{
@@ -12981,6 +12984,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	if( isCurrentDatabaseBonjour) return;
 	if( DatabaseIsEdited) return;
 	if( managedObjectContext == nil) return;
+	if( [NSDate timeIntervalSinceReferenceDate] - lastCheckIncoming < 1) return;
 	
 	if( [checkIncomingLock tryLock] )
 	{
