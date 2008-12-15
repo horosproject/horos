@@ -143,6 +143,8 @@
 			
 			NSMutableDictionary	*httpServerMessage = [NSMutableDictionary dictionaryWithObjectsAndKeys: selName, @"MethodName", doc, @"NSXMLDocument", [NSNumber numberWithBool: NO], @"Processed", ipAddressString, @"peerAddress", nil];
 			
+			NSLog( @"http XML-RPC MethodName: %@", selName);
+			
 			#pragma mark KillOsiriX			
 			if ( [selName isEqual:@"KillOsiriX"])
 				[[AppController sharedAppController] terminate: self];
