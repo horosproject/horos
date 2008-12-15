@@ -6078,37 +6078,74 @@ END_CREATE_ROIS:
 	int elemType, i;
 	
 	val = Papy3GetElement (theGroupP, papFrameofReferenceUIDGr, &nbVal, &elemType);
-	if ( val ) frameOfReferenceUID = [[NSString stringWithCString:val->a] retain];
-
+	if ( val)
+	{
+		[frameOfReferenceUID release];
+		frameOfReferenceUID = [[NSString stringWithCString:val->a] retain];
+	}
+	
 	val = Papy3GetElement (theGroupP, papSliceThicknessGr, &nbVal, &elemType);
-	if ( val ) sliceThickness = atof( val->a);
+	if ( val)
+		sliceThickness = atof( val->a);
 	
 	val = Papy3GetElement (theGroupP, papSpacingBetweenSlicesGr, &nbVal, &elemType);
 	if ( val ) spacingBetweenSlices = atof( val->a);
 	
 	val = Papy3GetElement (theGroupP, papRepetitionTimeGr, &nbVal, &elemType);
-	if ( val ) repetitiontime = [[NSString stringWithFormat:@"%0.1f", atof( val->a)] retain];
+	if ( val )
+	{
+		[repetitiontime release];
+		repetitiontime = [[NSString stringWithFormat:@"%0.1f", atof( val->a)] retain];
+	}
 	
 	val = Papy3GetElement (theGroupP, papEchoTimeGr, &nbVal, &elemType);
-	if ( val ) echotime = [[NSString stringWithFormat:@"%0.1f", atof( val->a)] retain];
+	if ( val)
+	{
+		[echotime release];
+		echotime = [[NSString stringWithFormat:@"%0.1f", atof( val->a)] retain];
+	}
 	
 	val = Papy3GetElement (theGroupP, papFlipAngleGr, &nbVal, &elemType);
-	if ( val ) flipAngle = [[NSString stringWithFormat:@"%0.1f", atof( val->a)] retain];
+	if ( val)
+	{
+		[flipAngle release];
+		flipAngle = [[NSString stringWithFormat:@"%0.1f", atof( val->a)] retain];
+	}
 	
 	val = Papy3GetElement (theGroupP, papProtocolNameGr, &nbVal, &elemType);
-	if ( val ) protocolName = [[NSString stringWithCString:val->a] retain];
+	if ( val)
+	{
+		[protocolName release];
+		protocolName = [[NSString stringWithCString:val->a] retain];
+	}
 	
 	val = Papy3GetElement (theGroupP, papViewPositionGr, &nbVal, &elemType);
-	if ( val ) viewPosition = [[NSString stringWithCString:val->a] retain];
+	if ( val )
+	{
+		[viewPosition release];
+		viewPosition = [[NSString stringWithCString:val->a] retain];
+	}
 	
 	val = Papy3GetElement (theGroupP, papPositionerPrimaryAngleGr, &nbVal, &elemType);
-	if ( val ) positionerPrimaryAngle = [[NSNumber numberWithDouble: atof( val->a)] retain];
+	if ( val )
+	{
+		[positionerPrimaryAngle release];
+		positionerPrimaryAngle = [[NSNumber numberWithDouble: atof( val->a)] retain];
+	}
 	
 	val = Papy3GetElement (theGroupP, papPositionerSecondaryAngleGr, &nbVal, &elemType);
-	if ( val ) positionerSecondaryAngle = [[NSNumber numberWithDouble: atof( val->a)] retain];
+	if ( val )
+	{
+		[positionerSecondaryAngle release];
+		positionerSecondaryAngle = [[NSNumber numberWithDouble: atof( val->a)] retain];
+	}
 	
 	val = Papy3GetElement (theGroupP, papPatientPositionGr, &nbVal, &elemType);
-	if ( val ) patientPosition = [[NSString stringWithCString:val->a] retain];
+	if ( val )
+	{
+		[patientPosition release];
+		patientPosition = [[NSString stringWithCString:val->a] retain];
+	}
 	
 	val = Papy3GetElement (theGroupP, papCineRateGr, &nbVal, &elemType);
 	if (!cineRate && val != NULL) cineRate = atof( val->a);	//[[NSString stringWithFormat:@"%0.1f", ] floatValue];
@@ -6258,10 +6295,6 @@ END_CREATE_ROIS:
 	PapyULong nbVal, pos;
 	int elemType, i;
 	
-	originX = 0;
-	originY = 0;
-	originZ = 0;
-	
 	val = Papy3GetElement (theGroupP, papImagePositionPatientGr, &nbVal, &elemType);
 	if ( val )
 	{
@@ -6305,12 +6338,20 @@ END_CREATE_ROIS:
 	}
 	
 	val = Papy3GetElement (theGroupP, papImageLateralityGr, &nbVal, &elemType);
-	if ( val ) laterality = [[NSString stringWithCString:val->a] retain];
+	if ( val )
+	{
+		[laterality release];
+		laterality = [[NSString stringWithCString:val->a] retain];
+	}
 	
 	if( laterality == nil )
 	{
 		val = Papy3GetElement (theGroupP, papLateralityGr, &nbVal, &elemType);
-		if ( val ) laterality = [[NSString stringWithCString:val->a] retain];
+		if ( val )
+		{
+			[laterality release];
+			laterality = [[NSString stringWithCString:val->a] retain];
+		}
 	}
 }
 
@@ -6447,6 +6488,10 @@ END_CREATE_ROIS:
 	{
 		BOOL found = NO, found16 = NO;
 		
+		if( clutRed) free( clutRed);
+		if( clutGreen) free( clutGreen);
+		if( clutBlue) free( clutBlue);
+		
 		clutRed = malloc( 65536);		if( clutRed == nil) NSLog(@"error clutRed == nil");
 		clutGreen = malloc( 65536);		if( clutGreen == nil) NSLog(@"error clutRed == nil");
 		clutBlue = malloc( 65536);		if( clutBlue == nil) NSLog(@"error clutRed == nil");
@@ -6501,6 +6546,10 @@ END_CREATE_ROIS:
 			{
 				long length, xx, xxindex, jj;
 				unsigned short	*shortRed, *shortGreen, *shortBlue;
+				
+				if( shortRed) free( shortRed);
+				if( shortGreen) free( shortGreen);
+				if( shortBlue) free( shortBlue);
 				
 				shortRed = malloc( 65535L * sizeof( unsigned short));
 				shortGreen = malloc( 65535L * sizeof( unsigned short));
@@ -6840,6 +6889,10 @@ END_CREATE_ROIS:
 	viewPosition = 0;
 	patientPosition = 0;
 	width = height = 0;
+
+	originX = 0;
+	originY = 0;
+	originZ = 0;
 	
 	if( convertedDICOM )
 	{
