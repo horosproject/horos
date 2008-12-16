@@ -202,7 +202,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	
 	NSString						*fixedDocumentsDirectory;
 	
-	char							cfixedDocumentsDirectory[ 1024], cfixedIncomingDirectory[ 1024];
+	char							cfixedDocumentsDirectory[ 4096], cfixedIncomingDirectory[ 4096];
 	
 	NSTimeInterval					databaseLastModification;
 	

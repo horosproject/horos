@@ -325,7 +325,7 @@ int GetAllPIDsForProcessName(const char* ProcessName,
 
 NSString * documentsDirectoryFor( int mode, NSString *url)
 {
-	char s[1024];
+	char s[ 4096];
 	FSRef ref;
 	NSString *path = nil;
 	
@@ -340,7 +340,8 @@ NSString * documentsDirectoryFor( int mode, NSString *url)
 				
 				path = [[NSString stringWithUTF8String:s] stringByAppendingPathComponent:@"/OsiriX Data"];
 				
-				if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && isDir) [[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
+				if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && isDir)
+					[[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
 			}
 		break;
 			
@@ -355,7 +356,7 @@ NSString * documentsDirectoryFor( int mode, NSString *url)
 		break;
 	}
 	
-	NSString*dir = nil;
+	NSString *dir = nil;
 	dir = [path stringByAppendingPathComponent:@"/REPORTS/"];
 	if ([[NSFileManager defaultManager] fileExistsAtPath: dir] == NO)
 		[[NSFileManager defaultManager] createDirectoryAtPath: dir attributes:nil];
@@ -364,6 +365,9 @@ NSString * documentsDirectoryFor( int mode, NSString *url)
 	if ([[NSFileManager defaultManager] fileExistsAtPath: dir] == NO)
 		[[NSFileManager defaultManager] createDirectoryAtPath: dir attributes:nil];
 	
+	if( path == 0L)
+		NSLog( @"**** documentsDirectoryFor is NIL");
+	
 	return path;
 }
 
@@ -371,7 +375,7 @@ NSString * documentsDirectory()
 {
 	NSString *path = documentsDirectoryFor( [[NSUserDefaults standardUserDefaults] integerForKey: @"DATABASELOCATION"], [[NSUserDefaults standardUserDefaults] stringForKey: @"DATABASELOCATIONURL"]);
 	
-	if (![[NSFileManager defaultManager] fileExistsAtPath:path])	// STILL NOT AVAILABLE??
+	if( [[NSFileManager defaultManager] fileExistsAtPath:path] == NO || path == 0L)	// STILL NOT AVAILABLE??
 	{   // Use the default folder.. and reset this strange URL..
 		
 		[[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"DATABASELOCATION"];

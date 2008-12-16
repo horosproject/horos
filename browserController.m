@@ -16232,6 +16232,12 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[fixedDocumentsDirectory release];
 	fixedDocumentsDirectory = [documentsDirectory() retain];
 	
+	if( fixedDocumentsDirectory == nil)
+	{
+		NSRunAlertPanel( NSLocalizedString(@"Database Location Error", nil), NSLocalizedString(@"Cannot locate Database path.", nil), nil, nil, nil);
+		exit(0);
+	}
+	
 	strcpy( cfixedDocumentsDirectory, [fixedDocumentsDirectory UTF8String]);
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"addNewIncomingFilesToDefaultDBOnly"])
