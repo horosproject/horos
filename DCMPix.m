@@ -4965,10 +4965,6 @@ END_CREATE_ROIS:
 		return NO;
 	}
 	
-#ifdef OSIRIX_VIEWER
-	[self loadCustomImageAnnotationsPapyLink:-1 DCMLink:dcmObject];
-#endif
-	
 	NSString            *SOPClassUID = [dcmObject attributeValueWithName:@"SOPClassUID"];
 	//	NSString			*MediaStorageSOPInstanceUID = [dcmObject attributeValueWithName:@"MediaStorageSOPInstanceUID"];
 	
@@ -5114,6 +5110,10 @@ END_CREATE_ROIS:
 		
 		//[pdfData writeToFile:@"/tmp/dcm.pdf" atomically:YES];
 		//[[NSWorkspace sharedWorkspace] openFile:@"/tmp/dcm.pdf" withApplication:@"Preview"];
+		
+		#ifdef OSIRIX_VIEWER
+			[self loadCustomImageAnnotationsPapyLink:-1 DCMLink:dcmObject];
+		#endif
 		
 		[pool release];
 		return YES;												 
@@ -5979,7 +5979,11 @@ END_CREATE_ROIS:
 	if( pixelSpacingX < 0) pixelSpacingX = -pixelSpacingX;
 	if( pixelSpacingY < 0) pixelSpacingY = -pixelSpacingY;
 	if( pixelSpacingY != 0 && pixelSpacingX != 0) pixelRatio = pixelSpacingY / pixelSpacingX;
-		
+	
+	#ifdef OSIRIX_VIEWER
+		[self loadCustomImageAnnotationsPapyLink:-1 DCMLink:dcmObject];
+	#endif
+	
 	[pool release];
 	
 	return YES;
@@ -6103,6 +6107,13 @@ END_CREATE_ROIS:
 	{
 		[echotime release];
 		echotime = [[NSString stringWithFormat:@"%0.1f", atof( val->a)] retain];
+	}
+	
+	val = Papy3GetElement (theGroupP, papEffectiveEchoTime, &nbVal, &elemType);
+	if ( val)
+	{
+		[echotime release];
+		echotime = [[NSString stringWithFormat:@"%0.1f", val->fd] retain];
 	}
 	
 	val = Papy3GetElement (theGroupP, papFlipAngleGr, &nbVal, &elemType);
@@ -6949,10 +6960,6 @@ END_CREATE_ROIS:
 		
 		if (gIsPapyFile [fileNb] == DICOM10) theErr = Papy3FSeek (gPapyFile [fileNb], SEEK_SET, 132L);
 		
-#ifdef OSIRIX_VIEWER
-		[self loadCustomImageAnnotationsPapyLink:fileNb DCMLink:nil];
-#endif
-		
 		theGroupP = (SElement*) [self getPapyGroup: 0x0008 fileNb: fileNb];
 		if( theGroupP )
 		{
@@ -7169,6 +7176,28 @@ END_CREATE_ROIS:
 							
 							switch( gr->group)
 							{
+								case 0x0018:
+									val3 = Papy3GetElement (gr, papMRTimingAndRelatedParametersSequence, &nbVal, &elemType);
+									if (val3 != NULL && nbVal >= 1)
+									{
+										if (val3->sq )
+										{
+											Papy_List *PixelMatrixSeq = val3->sq->object->item;
+											
+											while (PixelMatrixSeq)
+											{
+												SElement * gr = (SElement *) PixelMatrixSeq->object->group;
+												
+												switch( gr->group)
+												{
+													case 0x0018: [self papyLoadGroup0x0018: gr file: fileNb]; break;
+												}
+												PixelMatrixSeq = PixelMatrixSeq->next;
+											}
+										}
+									}
+								break;
+								
 								case 0x0020:
 									val3 = Papy3GetElement (gr, papPlaneOrientationSequence, &nbVal, &elemType);
 									if (val3 != NULL && nbVal >= 1)
@@ -7176,10 +7205,7 @@ END_CREATE_ROIS:
 										// there is a sequence
 										if (val3->sq )
 										{
-											Papy_List *PixelMatrixSeq;
-											
-											// get a pointer to the first element of the list
-											PixelMatrixSeq = val3->sq->object->item;
+											Papy_List *PixelMatrixSeq = val3->sq->object->item;
 											
 											// loop through the elements of the sequence
 											while (PixelMatrixSeq)
@@ -7196,19 +7222,16 @@ END_CREATE_ROIS:
 											}
 										}
 									}
-									break;
+								break;
 									
-									case 0x0028:
+								case 0x0028:
 									val3 = Papy3GetElement (gr, papPixelMatrixSequence, &nbVal, &elemType);
 									if (val3 != NULL && nbVal >= 1)
 									{
 										// there is a sequence
 										if (val3->sq != NULL)
 										{
-											Papy_List	  *PixelMatrixSeq;
-											
-											// get a pointer to the first element of the list
-											PixelMatrixSeq = val3->sq->object->item;
+											Papy_List	  *PixelMatrixSeq = val3->sq->object->item;
 											
 											// loop through the elements of the sequence
 											while (PixelMatrixSeq != NULL)
@@ -7252,7 +7275,7 @@ END_CREATE_ROIS:
 										}
 									}
 									
-									break;
+								break;
 							}
 							
 							// get the next element of the list
@@ -7296,6 +7319,33 @@ END_CREATE_ROIS:
 											
 											switch( gr->group)
 											{
+												case 0x0018:
+													val = Papy3GetElement (gr, papMREchoSequence, &nbVal, &elemType);
+													if (val != NULL && nbVal >= 1)
+													{
+														// there is a sequence
+														if (val->sq)
+														{
+															// get a pointer to the first element of the list
+															Papy_List *seq = val->sq->object->item;
+															
+															// loop through the elements of the sequence
+															while (seq)
+															{
+																SElement * gr20 = (SElement *) seq->object->group;
+																
+																switch( gr20->group)
+																{
+																	case 0x0018: [self papyLoadGroup0x0018: gr20 file: fileNb]; break;
+																}
+																
+																// get the next element of the list
+																seq = seq->next;
+															}
+														}
+													}
+												break;
+												
 												case 0x0028:
 													val = Papy3GetElement (gr, papPixelMatrixSequence, &nbVal, &elemType);
 													if (val != NULL && nbVal >= 1)
@@ -8052,6 +8102,10 @@ END_CREATE_ROIS:
 				if( clutGreen) free( clutGreen);
 				if( clutBlue) free( clutBlue);
 			}
+			
+			#ifdef OSIRIX_VIEWER
+				[self loadCustomImageAnnotationsPapyLink:fileNb DCMLink:nil];
+			#endif
 			
 			[PapyrusLock lock];
 			
@@ -11740,7 +11794,15 @@ END_CREATE_ROIS:
 						
 						if( [type isEqualToString:@"DICOM"])
 						{
-							if(fileNb>=0)
+							if( [[field objectForKey:@"group"] intValue] == 0x0018 && [[field objectForKey:@"element"] intValue] == 0x0081 && repetitiontime != 0L)	// RepetitionTime
+							{
+								value = repetitiontime;
+							}
+							else if( [[field objectForKey:@"group"] intValue] == 0x0018 && [[field objectForKey:@"element"] intValue] == 0x0080 && echotime != 0L)	// Echotime
+							{	
+								value = echotime;
+							}
+							else if(fileNb>=0)
 								value = [self getDICOMFieldValueForGroup:[[field objectForKey:@"group"] intValue] element:[[field objectForKey:@"element"] intValue] papyLink:fileNb];
 							else if(dcmObject)
 								value = [self getDICOMFieldValueForGroup:[[field objectForKey:@"group"] intValue] element:[[field objectForKey:@"element"] intValue] DCMLink:dcmObject];
