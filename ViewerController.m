@@ -15071,6 +15071,7 @@ int i,j,l;
 		for( i = 0; i < [viewers count]; i++)
 			[[[viewers objectAtIndex: i] imageView] setNeedsDisplay: YES];
 		
+		[NSThread sleepForTimeInterval: 1];
 		[[BrowserController currentBrowser] checkIncomingNow: self];
 		
 		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportSendToDICOMNode"] && [producedFiles count])
