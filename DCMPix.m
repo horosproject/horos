@@ -4881,7 +4881,7 @@ END_CREATE_ROIS:
 		NSMutableDictionary *dic = [cachedDCMFrameworkFiles objectForKey: srcFile];
 		
 		dcmObject = [dic objectForKey: @"dcmObject"];
-		[dic setObject: [NSNumber numberWithInt: [[dic objectForKey: @"count"] intValue]+1] forKey: @"count"];
+		[dic setValue: [NSNumber numberWithInt: [[dic objectForKey: @"count"] intValue]+1] forKey: @"count"];
 	}
 	else
 	{
@@ -4892,8 +4892,8 @@ END_CREATE_ROIS:
 		{
 			NSMutableDictionary *dic = [NSMutableDictionary dictionary];
 			
-			[dic setObject: dcmObject forKey: @"dcmObject"];
-			[dic setObject: [NSNumber numberWithInt: 1] forKey: @"count"];
+			[dic setValue: dcmObject forKey: @"dcmObject"];
+			[dic setValue: [NSNumber numberWithInt: 1] forKey: @"count"];
 			
 			[cachedDCMFrameworkFiles setObject: dic forKey: srcFile];
 		}
@@ -5958,10 +5958,14 @@ END_CREATE_ROIS:
 			cachedGroupsForThisFile = [NSMutableDictionary dictionary];
 			[cachedPapyGroups setObject: cachedGroupsForThisFile forKey: srcFile];
 			[cachedGroupsForThisFile setValue: [NSNumber numberWithInt: fileNb]  forKey: @"fileNb"];
+			[cachedGroupsForThisFile setValue: [NSNumber numberWithInt: 1] forKey: @"count"];
 		}
 	}
 	else
+	{
 		fileNb = [[cachedGroupsForThisFile valueForKey: @"fileNb"] intValue];
+		[cachedGroupsForThisFile setValue: [NSNumber numberWithInt: [[cachedGroupsForThisFile valueForKey: @"count"] intValue] +1] forKey: @"count"];
+	}
 	
 	if( fileNb >= 0)
 	{
@@ -6012,7 +6016,7 @@ END_CREATE_ROIS:
 		
 		if( o)
 		{
-			[o setObject: [NSNumber numberWithInt: [[o objectForKey: @"count"] intValue]-1] forKey: @"count"];
+			[o setValue: [NSNumber numberWithInt: [[o objectForKey: @"count"] intValue]-1] forKey: @"count"];
 			
 			if( [[o objectForKey: @"count"] intValue] <= 0)
 				[cachedDCMFrameworkFiles removeObjectForKey: srcFile];
@@ -6028,17 +6032,21 @@ END_CREATE_ROIS:
 	
 	if( cachedGroupsForThisFile)
 	{
-		int fileNb = [[cachedGroupsForThisFile valueForKey: @"fileNb"] intValue];
-		[cachedGroupsForThisFile removeObjectForKey: @"fileNb"];
+		[cachedGroupsForThisFile setValue: [NSNumber numberWithInt: [[cachedGroupsForThisFile objectForKey: @"count"] intValue]-1] forKey: @"count"];
 		
-		for( NSValue *pointer in [cachedGroupsForThisFile allValues] )
+		if( [[cachedGroupsForThisFile objectForKey: @"count"] intValue] <= 0)
 		{
-			SElement *theGroupP = (SElement*) [pointer pointerValue];
-			Papy3GroupFree ( &theGroupP, TRUE);
-		}
+			int fileNb = [[cachedGroupsForThisFile valueForKey: @"fileNb"] intValue];
 		
-		[cachedPapyGroups removeObjectForKey: srcFile];
-		Papy3FileClose (fileNb, TRUE);
+			for( NSValue *pointer in [cachedGroupsForThisFile allValues] )
+			{
+				SElement *theGroupP = (SElement*) [pointer pointerValue];
+				Papy3GroupFree ( &theGroupP, TRUE);
+			}
+			
+			[cachedPapyGroups removeObjectForKey: srcFile];
+			Papy3FileClose (fileNb, TRUE);
+		}
 	}
 	
 	[PapyrusLock unlock];

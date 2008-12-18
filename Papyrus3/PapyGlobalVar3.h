@@ -45,7 +45,7 @@ WHERE3 char		gPapyrusCompatibility	[2];
 /* the version of this particular PAPYRUS file */
 WHERE3 float	        gPapyrusFileVersion	[kMax_file_open];
 
-
+WHERE3 void *gCachedGroupLength[kMax_file_open];
 
 /* has the PAPYRUS toolkit been initialized or not ? */
 WHERE3 int		gIsPapy3Inited;

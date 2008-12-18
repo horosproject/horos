@@ -195,6 +195,7 @@ Papy3FileOpen (char *inNameP, PAPY_FILE inVRefNum, int inToOpen, void* inFSSpec)
             {
               gPapyFile [theFileNb]    = theFp; 
               gReadOrWrite [theFileNb] = kPAPY_READ;
+			  gCachedGroupLength [theFileNb] = 0L;
     
               /* set the papyrus version number */
               if (thePapyrusFile == PAPYRUS3)
@@ -523,6 +524,8 @@ Papy3FileCreate (char *inNameP, PAPY_FILE inVRefNum, PapyUShort inNbImages,
   else		/* it will be a set of DICOM files */
     gIsPapyFile [theFileNb] = DICOM10;
 
+  gCachedGroupLength[theFileNb] = 0L;
+  
   /* too many open files */
   if (theFileNb < 0) RETURN (theFileNb);
     
@@ -737,11 +740,9 @@ Papy3FileClose (PapyShort inFileNb, int inToClose)
   PapyShort	theErr;
   int		i;
   
-
   /* close the Papyrus file */
   if (inToClose)
     if (Papy3FClose (&(gPapyFile [inFileNb])) != 0) RETURN (papCLOSE_FILE);
-  
   
   /* delete the in memory file representation */
   if ((theErr = DeleteList (inFileNb, &(gArrMemFile [inFileNb]), TRUE, TRUE, TRUE)) < 0)
@@ -801,6 +802,11 @@ Papy3FileClose (PapyShort inFileNb, int inToClose)
   gPatientSummaryItem [inFileNb] = NULL;
   
   gPapyFile [inFileNb] = 0;
+
+  if( gCachedGroupLength[ inFileNb] != 0L)
+	free( gCachedGroupLength[ inFileNb]);
+
+  gCachedGroupLength[ inFileNb] = 0L;
 
   /* reset the incremental number for the file to zero */
   gCurrTmpFilename [inFileNb] = 1;
@@ -1251,6 +1257,13 @@ Papy3GetNextGroupNb (PapyShort inFileNb)
 /*										*/
 /********************************************************************************/
 
+struct cachedGroupStruct
+{
+	int group;
+	int length;
+};
+typedef struct cachedGroupStruct cachedGroupStruct;
+
 PapyShort CALLINGCONV
 Papy3SkipNextGroup (PapyShort inFileNb)
 {
@@ -1262,7 +1275,16 @@ Papy3SkipNextGroup (PapyShort inFileNb)
   int			theErr;
 
   theFp = gPapyFile [inFileNb];
-    
+
+  cachedGroupStruct *cachedGroup = gCachedGroupLength[ inFileNb];
+
+  if( cachedGroup == 0L)
+  {
+	gCachedGroupLength[ inFileNb] = cachedGroup = (cachedGroupStruct*) malloc( 1024L * sizeof( cachedGroupStruct));
+	cachedGroup[0].length = 0;
+	cachedGroup[0].group = 0;
+  }
+  
   i = kLength_length;
   if ((theErr = (PapyShort) Papy3FRead (theFp, &i, 1L, theBuff)) < 0)
   {
@@ -1280,9 +1302,27 @@ Papy3SkipNextGroup (PapyShort inFileNb)
     theErr = Papy3FSeek (theFp, (int) SEEK_CUR, -4L);
     RETURN (theErr)
   } /* if */
-
-  /* if the group length elem is here extract the group length from the buffer */
   
+  /* Try to find the group length in the cache */
+  int z = 0;
+  while( cachedGroup[ z].length != 0 && cachedGroup[ z].group != 0)
+  {
+	if( cachedGroup[ z].group == theGrNb)
+		break;
+	z++;
+	
+	if( z >= 1000)
+		break;
+  }
+  
+  if( cachedGroup[ z].group == theGrNb)
+  {
+	if (Papy3FSeek (theFp, (int) SEEK_CUR, cachedGroup[ z].length - kLength_length) != 0)
+		RETURN (papPositioning);
+	RETURN( papNoError);
+  }
+  
+  /* if the group length elem is here extract the group length from the buffer */
   if (theTempS == 0)
   {
     /* test the VR */
@@ -1295,7 +1335,7 @@ Papy3SkipNextGroup (PapyShort inFileNb)
     } /* else */
     /* if (theTempL != 4L) RETURN (papElemSize); this is to let pass little endian impl gr2 files */
     theGrLength = Extract4Bytes (theBuff, &i);
-	
+
 //	if( theGrLength <= 0)
 	// ANTOINE 2005
 	{
@@ -1313,9 +1353,7 @@ Papy3SkipNextGroup (PapyShort inFileNb)
 		theErr = Papy3FSeek (theFp, (int) SEEK_CUR, (PapyLong) - kLength_length);
 		theGrLength = ComputeUndefinedGroupLength3 (inFileNb, -1L);
 		if( theGrLength == 8)
-		{
 			theGrLength = 28;
-		}
 	}
 	else
 	{
@@ -1332,8 +1370,13 @@ Papy3SkipNextGroup (PapyShort inFileNb)
   if (Papy3FSeek (theFp, (int) SEEK_CUR, (PapyLong) theGrLength) != 0)
     RETURN (papPositioning);
     
+	cachedGroup[ z].group = theGrNb;
+	cachedGroup[ z].length = theGrLength;
+
+	cachedGroup[ z+1].group = 0;
+	cachedGroup[ z+1].length = 0;
+	
   RETURN (papNoError);
-    
 } /* endof Papy3SkipNextGroup */
 
 
