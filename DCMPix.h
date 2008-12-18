@@ -158,8 +158,6 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 	BOOL				fixed8bitsWLWW;	
     float               maxValueOfSeries, minValueOfSeries;
 	
-	
-	NSString			*convertedDICOM;	
 	BOOL				generated;
 	NSString			*generatedName;
 	NSLock				*checking;
@@ -643,7 +641,7 @@ Note setter is different to not break existing usage. :-( */
 * @param group group
 * @param fileNb papyrus file
 */
-- (void *) getPapyGroup: (int)group fileNb: (int)fileNb;
+- (void *) getPapyGroup: (int)group;
 
 /** create ROIs from RTSTRUCT */
 - (void)createROIsFromRTSTRUCT: (DCMObject*)dcmObject;

@@ -1255,13 +1255,12 @@ PapyShort CALLINGCONV
 Papy3SkipNextGroup (PapyShort inFileNb)
 {
   PAPY_FILE		theFp;
-  unsigned char		theBuff [kLength_length];
+  unsigned char	theBuff [kLength_length];
   PapyULong		i;
   PapyULong		theGrLength, theTempL;
-  PapyUShort		theTempS, theGrNb;
+  PapyUShort	theTempS, theGrNb;
   int			theErr;
 
-  
   theFp = gPapyFile [inFileNb];
     
   i = kLength_length;
@@ -1283,8 +1282,6 @@ Papy3SkipNextGroup (PapyShort inFileNb)
   } /* if */
 
   /* if the group length elem is here extract the group length from the buffer */
-  
-  // ANTOINE: J'ai ote ce moceau, incompatible avec le fichier IRM.dcm...
   
   if (theTempS == 0)
   {
@@ -1371,7 +1368,6 @@ Papy3GotoGroupNb (PapyShort inFileNb, PapyShort inGroupNb)
     
   while (theCurrGroupNb < inGroupNb && 
     	 theCurrGroupNb > 0 &&
-	//	theCurrGroupNb != theLastGroupNb &&
 	 theCurrGroupNb >= theStartGroupNb &&
 	 theCurrGroupNb != 0x7FE0)
   {
