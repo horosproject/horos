@@ -1118,7 +1118,6 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 
 	[pool release];
 }
-
 @end
 
 @implementation DCMPix
@@ -1352,6 +1351,46 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	}
 	
 	return currentImage;
+}
+
+- (float) maxValueOfSeries
+{
+	if( maxValueOfSeries == 0)
+	{
+		float tmaxValueOfSeries = -100000;
+		
+		for( DCMPix* pix in pixArray)	 
+		{
+			if( tmaxValueOfSeries < [pix fullwl] + [pix fullww]/2) tmaxValueOfSeries = [pix fullwl] + [pix fullww]/2;
+		}
+		
+		for( DCMPix* pix in pixArray)
+		{
+			[pix setMaxValueOfSeries: tmaxValueOfSeries];
+		}
+	}
+	
+	return maxValueOfSeries;
+}
+
+- (float) minValueOfSeries
+{
+	if( minValueOfSeries == 0)
+	{
+		float tminValueOfSeries = 100000;
+		
+		for( DCMPix* pix in pixArray)	 
+		{
+			if( tminValueOfSeries > [pix fullwl] - [pix fullww]/2) tminValueOfSeries = [pix fullwl] - [pix fullww]/2;
+		}
+		
+		for( DCMPix* pix in pixArray)
+		{
+			[pix setMinValueOfSeries: tminValueOfSeries];
+		}
+	}
+	
+	return minValueOfSeries;
 }
 
 - (NSImage*) image

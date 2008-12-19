@@ -6252,30 +6252,6 @@ static ViewerController *draggedController = nil;
 //	}
 //	NSLog( @"end loading");
 	
-	if( stopThreadLoadImage == NO)	 
-	{	
-		float maxValueOfSeries = -100000;
-		float minValueOfSeries = 100000;
-
-		for( x = 0; x < maxMovieIndex; x++)	 
-		{	 
-			for( DCMPix* pix in pixList[ x])	 
-			{
-				if( maxValueOfSeries < [pix fullwl] + [pix fullww]/2) maxValueOfSeries = [pix fullwl] + [pix fullww]/2;
-				if( minValueOfSeries > [pix fullwl] - [pix fullww]/2) minValueOfSeries = [pix fullwl] - [pix fullww]/2;
-			}
-		}
-		
-		for( x = 0; x < maxMovieIndex; x++)	 
-		{	 
-			for( DCMPix* pix in pixList[ x])
-			{
-				[pix setMaxValueOfSeries: maxValueOfSeries];
-				[pix setMinValueOfSeries: minValueOfSeries];
-			}
-		 }	 
-	}
-	
 	if( stopThreadLoadImage == YES)
 	{
 		ThreadLoadImage = NO;
@@ -12504,9 +12480,6 @@ int i,j,l;
 			}
 			
 			[pix computePixMinPixMax];
-			
-			if( maxValueOfSeries < [pix fullwl] + [pix fullww]/2) maxValueOfSeries = [pix fullwl] + [pix fullww]/2;
-			if( minValueOfSeries > [pix fullwl] - [pix fullww]/2) minValueOfSeries = [pix fullwl] - [pix fullww]/2;
 		}
 	}
 	
@@ -12516,8 +12489,8 @@ int i,j,l;
 	{
 		for( x = 0; x < [pixList[y] count]; x++)
 		{
-			[[pixList[y] objectAtIndex: x] setMaxValueOfSeries: maxValueOfSeries];
-			[[pixList[y] objectAtIndex: x] setMinValueOfSeries: minValueOfSeries];
+			[[pixList[y] objectAtIndex: x] setMaxValueOfSeries: 0];
+			[[pixList[y] objectAtIndex: x] setMinValueOfSeries: 0];
 			
 			[[pixList[y] objectAtIndex: x] setSavedWL: [[pixList[y] objectAtIndex: x] savedWL]* updatefactor];
 			[[pixList[y] objectAtIndex: x] setSavedWW: [[pixList[y] objectAtIndex: x] savedWW]* updatefactor];
@@ -12593,21 +12566,8 @@ int i,j,l;
 					{
 						for( x = 0; x < [pixList[y] count]; x++)
 						{
-							DCMPix	*pix = [pixList[y] objectAtIndex: x];
-							
-							[pix computePixMinPixMax];
-							
-							if( maxValueOfSeries < [pix fullwl] + [pix fullww]/2) maxValueOfSeries = [pix fullwl] + [pix fullww]/2;
-							if( minValueOfSeries > [pix fullwl] - [pix fullww]/2) minValueOfSeries = [pix fullwl] - [pix fullww]/2;
-						}
-					}
-					
-					for( y = 0; y < maxMovieIndex; y++)
-					{
-						for( x = 0; x < [pixList[y] count]; x++)
-						{
-							[[pixList[y] objectAtIndex: x] setMaxValueOfSeries: maxValueOfSeries];
-							[[pixList[y] objectAtIndex: x] setMinValueOfSeries: minValueOfSeries];
+							[[pixList[y] objectAtIndex: x] setMaxValueOfSeries: 0];
+							[[pixList[y] objectAtIndex: x] setMinValueOfSeries: 0];
 						}
 					}
 				break;
