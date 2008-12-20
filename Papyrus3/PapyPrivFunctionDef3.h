@@ -134,8 +134,7 @@ PutBufferInGroup3 	(PapyShort, unsigned char *, SElement *, PapyUShort, PapyULon
 /* 	return : the extracted value						*/
 /*										*/
 /********************************************************************************/
-static inline PapyUShort
-Extract2Bytes (unsigned char *inBufP, PapyULong *ioPosP)
+static __inline__ __attribute__((always_inline)) PapyUShort Extract2Bytes (unsigned char *inBufP, PapyULong *ioPosP)
 
 /*unsigned char *inBufP;				 the buffer to read from */
 /*PapyULong 	*ioPosP;			      the position in the buffer */
@@ -143,15 +142,12 @@ Extract2Bytes (unsigned char *inBufP, PapyULong *ioPosP)
 	PapyUShort 		theUShort;
 	unsigned char		*theCharP;
 	
-	
 	/* points to the right place in the buffer */
 	theCharP  = inBufP;
 	theCharP += *ioPosP;
 	/* updates the current position in the read buffer */
 	*ioPosP += 2;
 	
-	//	if( syntax != BIG_ENDIAN_EXPL)
-{
 	/* extract the element according to the little-endian syntax */
 #if __BIG_ENDIAN__
 	theUShort  = (PapyUShort) (*(theCharP + 1));
@@ -160,14 +156,6 @@ Extract2Bytes (unsigned char *inBufP, PapyULong *ioPosP)
 #else
 	theUShort	= *((PapyUShort*) theCharP);
 #endif
-}
-	//	else
-	//	{
-	//		/* extract the element according to the big-endian syntax */
-	//		theUShort  = (PapyUShort) (*theCharP);
-	//		theUShort  = theUShort << 8;
-	//		theUShort |= (PapyUShort) *(theCharP+1);
-	//	}
 	
 	return theUShort;
 	
@@ -183,15 +171,10 @@ Extract2Bytes (unsigned char *inBufP, PapyULong *ioPosP)
 /*										*/
 /********************************************************************************/
 
-static inline PapyULong
-Extract4Bytes (unsigned char *inBufP, PapyULong *ioPosP)
-
-/*unsigned char *inBufP;				 the buffer to read from */
-/*PapyULong 	*ioPosP;			      the position in the buffer */
+static __inline__ __attribute__((always_inline)) PapyULong Extract4Bytes (unsigned char *inBufP, PapyULong *ioPosP)
 {
 	unsigned char	*theCharP;
-	PapyULong	theULong = 0L;
-    
+	PapyULong	theULong;
     
 	/* points to the right place in the buffer */
 	theCharP  = inBufP;
@@ -199,42 +182,25 @@ Extract4Bytes (unsigned char *inBufP, PapyULong *ioPosP)
 	/* updates the current position in the read buffer */
 	*ioPosP += 4;
 	
-	//	if( syntax != BIG_ENDIAN_EXPL)
-{
-	/* extract the element according to the little-endian syntax */
-#if __BIG_ENDIAN__
-	PapyULong theTmpULong;
+		/* extract the element according to the little-endian syntax */
+	#if __BIG_ENDIAN__
+		PapyULong theTmpULong;
+		
+		theTmpULong  = (PapyULong) (*(theCharP + 3));
+		theTmpULong  = theTmpULong << 24;
+		theULong    |= theTmpULong;
+		theTmpULong  = (PapyULong) (*(theCharP + 2));
+		theTmpULong  = theTmpULong << 16;
+		theULong    |= theTmpULong;
+		theTmpULong  = (PapyULong) (*(theCharP + 1));
+		theTmpULong  = theTmpULong << 8;
+		theULong    |= theTmpULong;
+		theTmpULong  = (PapyULong) *theCharP;
+		theULong    |= theTmpULong;
+	#else
+		theULong	= *((PapyULong*) theCharP);
+	#endif
 	
-	theTmpULong  = (PapyULong) (*(theCharP + 3));
-	theTmpULong  = theTmpULong << 24;
-	theULong    |= theTmpULong;
-	theTmpULong  = (PapyULong) (*(theCharP + 2));
-	theTmpULong  = theTmpULong << 16;
-	theULong    |= theTmpULong;
-	theTmpULong  = (PapyULong) (*(theCharP + 1));
-	theTmpULong  = theTmpULong << 8;
-	theULong    |= theTmpULong;
-	theTmpULong  = (PapyULong) *theCharP;
-	theULong    |= theTmpULong;
-#else
-	theULong	= *((PapyULong*) theCharP);
-#endif
-}
-	//	else
-	//	{
-	//  /* extract the element according to the little-endian syntax */
-	//  theTmpULong  = (PapyULong) (*(theCharP + 0));
-	//  theTmpULong  = theTmpULong << 24;
-	//  theULong    |= theTmpULong;
-	//  theTmpULong  = (PapyULong) (*(theCharP + 1));
-	//  theTmpULong  = theTmpULong << 16;
-	//  theULong    |= theTmpULong;
-	//  theTmpULong  = (PapyULong) (*(theCharP + 2));
-	//  theTmpULong  = theTmpULong << 8;
-	//  theULong    |= theTmpULong;
-	//  theTmpULong  = (PapyULong) (*(theCharP + 3));
-	//  theULong    |= theTmpULong;
-	//	}
 	return theULong;
     
 } /* endof Extract4Bytes */

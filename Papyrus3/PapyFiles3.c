@@ -40,6 +40,8 @@
 #include "Papyrus3.h"
 #endif
 
+#include "PapyPrivFunctionDef3.h"
+
 #ifdef _WINDOWS
 #include <io.h>
 #endif
@@ -1337,7 +1339,6 @@ Papy3SkipNextGroup (PapyShort inFileNb)
     theGrLength = Extract4Bytes (theBuff, &i);
 
 //	if( theGrLength <= 0)
-	// ANTOINE 2005
 	{
 		theErr = Papy3FSeek (theFp, (int) SEEK_CUR, (PapyLong) - kLength_length);
 		theGrLength = ComputeUndefinedGroupLength3 (inFileNb, -1L);
@@ -1921,8 +1922,6 @@ Papy3ExtractItemLength (PapyShort inFileNb)
   return theItemLength;
   
 } /* endof Papy3ExtractItemLength */
-
-
 
 /********************************************************************************/
 /*										*/
