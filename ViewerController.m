@@ -5703,6 +5703,7 @@ static ViewerController *draggedController = nil;
 	maxMovieIndex = 1;
 	subCtrlMaskID = -2;
 	registeredViewer = nil;
+	resampleRatio = 1.0;
 	
 	volumeData[ 0] = v;
 	[volumeData[ 0] retain];
