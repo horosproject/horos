@@ -4924,7 +4924,6 @@ END_CREATE_ROIS:
 	}
 	else
 	{
-		NSLog( srcFile);
 		dcmObject = [DCMObject objectWithContentsOfFile:srcFile decodingPixelData:NO];
 		
 		if( dcmObject)
@@ -5992,6 +5991,8 @@ END_CREATE_ROIS:
 	{
 		fileNb = Papy3FileOpen ( (char*) [srcFile UTF8String], (PAPY_FILE) 0, TRUE, 0);
 		
+		NSLog( @"open: %@", srcFile);
+		
 		if( fileNb >= 0)
 		{
 			cachedGroupsForThisFile = [NSMutableDictionary dictionary];
@@ -6003,37 +6004,46 @@ END_CREATE_ROIS:
 	else
 	{
 		fileNb = [[cachedGroupsForThisFile valueForKey: @"fileNb"] intValue];
-		[cachedGroupsForThisFile setValue: [NSNumber numberWithInt: [[cachedGroupsForThisFile valueForKey: @"count"] intValue] +1] forKey: @"count"];
+		
+		if( group == 0L)
+			[cachedGroupsForThisFile setValue: [NSNumber numberWithInt: [[cachedGroupsForThisFile valueForKey: @"count"] intValue] +1] forKey: @"count"];
 	}
 	
 	if( fileNb >= 0)
 	{
-		if( group != 0L && [cachedGroupsForThisFile valueForKey: groupKey] == nil)
+		if( group == 0)
 		{
-			int theErr = 0;
-			
-			if (gIsPapyFile[ fileNb] == DICOM10) theErr = Papy3FSeek (gPapyFile [fileNb], SEEK_SET, 132L);
-			
-			if( theErr == 0 )
+			theGroupP = (SElement*) 0xFFFFFFFF;
+		}
+		else
+		{
+			if( [cachedGroupsForThisFile valueForKey: groupKey] == nil)
 			{
-				theErr = Papy3GotoGroupNb (fileNb, group);
+				int theErr = 0;
 				
-				if( theErr >= 0)
+				if (gIsPapyFile[ fileNb] == DICOM10) theErr = Papy3FSeek (gPapyFile [fileNb], SEEK_SET, 132L);
+				
+				if( theErr == 0 )
 				{
-					if( Papy3GroupRead(fileNb, &theGroupP) > 0)
+					theErr = Papy3GotoGroupNb (fileNb, group);
+					
+					if( theErr >= 0)
 					{
-						[cachedGroupsForThisFile setValue: [NSValue valueWithPointer: theGroupP]  forKey: groupKey];
+						if( Papy3GroupRead(fileNb, &theGroupP) > 0)
+						{
+							[cachedGroupsForThisFile setValue: [NSValue valueWithPointer: theGroupP]  forKey: groupKey];
+						}
+						else
+							NSLog( @"Error while reading a group (Papyrus)");
 					}
 					else
-						NSLog( @"Error while reading a group (Papyrus)");
-				}
-				else
-				{
-					[cachedGroupsForThisFile setValue: [NSValue valueWithPointer: 0L]  forKey: groupKey];
+					{
+						[cachedGroupsForThisFile setValue: [NSValue valueWithPointer: 0L]  forKey: groupKey];
+					}
 				}
 			}
+			else theGroupP = [[cachedGroupsForThisFile valueForKey: groupKey] pointerValue];
 		}
-		else theGroupP = [[cachedGroupsForThisFile valueForKey: groupKey] pointerValue];
 	}
 	
 	[PapyrusLock unlock];
@@ -6067,6 +6077,8 @@ END_CREATE_ROIS:
 {
 	[PapyrusLock lock];
 	
+	if( fImage)
+	{
 	NSMutableDictionary *cachedGroupsForThisFile = [cachedPapyGroups valueForKey: srcFile];
 	
 	if( cachedGroupsForThisFile)
@@ -6076,7 +6088,9 @@ END_CREATE_ROIS:
 		if( [[cachedGroupsForThisFile objectForKey: @"count"] intValue] <= 0)
 		{
 			int fileNb = [[cachedGroupsForThisFile valueForKey: @"fileNb"] intValue];
-		
+			[cachedGroupsForThisFile removeObjectForKey: @"fileNb"];
+			[cachedGroupsForThisFile removeObjectForKey: @"count"];
+			
 			for( NSValue *pointer in [cachedGroupsForThisFile allValues] )
 			{
 				SElement *theGroupP = (SElement*) [pointer pointerValue];
@@ -6085,7 +6099,10 @@ END_CREATE_ROIS:
 			
 			[cachedPapyGroups removeObjectForKey: srcFile];
 			Papy3FileClose (fileNb, TRUE);
+			
+			NSLog( @"close: %@", srcFile);
 		}
+	}
 	}
 	
 	[PapyrusLock unlock];
@@ -6924,7 +6941,7 @@ END_CREATE_ROIS:
 	originY = 0;
 	originZ = 0;
 	
-	if( [self getPapyGroup: 0x0028])	// This group is mandatory...
+	if( [self getPapyGroup: 0])	// This group is mandatory...
 	{
 		UValue_T		*val3, *tmpVal3;
 		unsigned short	*shortRed, *shortGreen, *shortBlue;
@@ -11483,7 +11500,10 @@ END_CREATE_ROIS:
 {
 	NSMutableString *field = [NSMutableString string];
 	
-	SElement *inGrOrModP = [self getPapyGroup: group];
+	SElement *inGrOrModP = 0L;
+	
+	if( group)
+		inGrOrModP = [self getPapyGroup: group];
 	
 	if( inGrOrModP == nil) // Papyrus failed... unknown group? Try DCM Framework
 	{

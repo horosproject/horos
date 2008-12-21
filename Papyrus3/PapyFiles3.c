@@ -807,7 +807,6 @@ Papy3FileClose (PapyShort inFileNb, int inToClose)
 
   if( gCachedGroupLength[ inFileNb] != 0L)
 	free( gCachedGroupLength[ inFileNb]);
-
   gCachedGroupLength[ inFileNb] = 0L;
 
   /* reset the incremental number for the file to zero */
