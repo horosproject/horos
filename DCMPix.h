@@ -53,7 +53,7 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 
 //	pixel representation
 	BOOL				fIsSigned;
-	short				bitsAllocated, bitsStored, spp;
+	short				bitsAllocated, bitsStored;
     float               slope, offset;
 
 //	image size

@@ -4896,224 +4896,125 @@ END_CREATE_ROIS:
 	#endif
 }
 
-- (BOOL)loadDICOMDCMFramework	// PLEASE, KEEP BOTH FUNCTIONS FOR TESTING PURPOSE. THANKS
+- (void) dcmFrameworkLoad0x0018: (id) dcmObject
 {
-	//	#ifndef STATIC_DICOM_LIB
-	
-	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
-	
-	//________________________exceptions___________________________________________________
-	
-	//if (DEBUG) NSLog(@"loadDICOMDCMFramework with file: %@", srcFile);	
-	
-	//	if( pixArray != nil && frameNo > 0)
-	//	{
-	//		NSLog(@"loadDICOMDCMFramework - pixArray already exists, nothing to do");
-	//		while( fImage == nil) {};
-	//		[pool release];
-	//		return YES;
-	//	}
-	DCMObject *dcmObject;
-	
-	if( [cachedDCMFrameworkFiles objectForKey: srcFile])
+	if( [dcmObject attributeValueWithName:@"FrameofReferenceUID"])
 	{
-		NSMutableDictionary *dic = [cachedDCMFrameworkFiles objectForKey: srcFile];
-		
-		dcmObject = [dic objectForKey: @"dcmObject"];
-		[dic setValue: [NSNumber numberWithInt: [[dic objectForKey: @"count"] intValue]+1] forKey: @"count"];
+		[frameOfReferenceUID release];
+		frameOfReferenceUID = [[dcmObject attributeValueWithName:@"FrameofReferenceUID"] retain];
 	}
-	else
+	if( [dcmObject attributeValueWithName:@"PatientsWeight"]) patientsWeight = [[dcmObject attributeValueWithName:@"PatientsWeight"] floatValue];
+	
+	if( [dcmObject attributeValueWithName:@"SliceThickness"]) sliceThickness = [[dcmObject attributeValueWithName:@"SliceThickness"] floatValue];
+	if( [dcmObject attributeValueWithName:@"SpacingBetweenSlices"]) spacingBetweenSlices = [[dcmObject attributeValueWithName:@"SpacingBetweenSlices"] floatValue];
+	if( [dcmObject attributeValueWithName:@"RepetitionTime"])
 	{
-		dcmObject = [DCMObject objectWithContentsOfFile:srcFile decodingPixelData:NO];
+		[repetitiontime release];
+		repetitiontime = [[dcmObject attributeValueWithName:@"RepetitionTime"] retain];
+	}
+	if( [dcmObject attributeValueWithName:@"EchoTime"])	
+	{
+		[echotime release];
+		echotime = [[dcmObject attributeValueWithName:@"EchoTime"] retain];	
+	}
+	if( [dcmObject attributeValueWithName:@"FlipAngle"])
+	{
+		[flipAngle release];
+		flipAngle = [[dcmObject attributeValueWithName:@"FlipAngle"] retain];
+	}
+	if( [dcmObject attributeValueWithName:@"ProtocolName"])
+	{
+		[protocolName release];
+		protocolName = [[dcmObject attributeValueWithName:@"ProtocolName"] retain];
+	}
+	if( [dcmObject attributeValueWithName:@"ViewPosition"])
+	{
+		[viewPosition release];
+		viewPosition = [[dcmObject attributeValueWithName:@"ViewPosition"] retain];
+	}
+	if( [dcmObject attributeValueWithName:@"PositionerPrimaryAngle"])
+	{
+		[positionerPrimaryAngle release];
+		positionerPrimaryAngle = [[dcmObject attributeValueWithName:@"PositionerPrimaryAngle"] retain];
+	}
+	if( [dcmObject attributeValueWithName:@"PositionerSecondaryAngle"])
+	{
+		[positionerSecondaryAngle release];
+		positionerSecondaryAngle = [[dcmObject attributeValueWithName:@"PositionerSecondaryAngle"] retain];
+	}
+	if( [dcmObject attributeValueWithName:@"PatientPosition"])
+	{
+		[patientPosition release];
+		patientPosition = [[dcmObject attributeValueWithName:@"PatientPosition"] retain];
+	}
+	if( [dcmObject attributeValueWithName:@"RecommendedDisplayFrameRate"])	cineRate = [[dcmObject attributeValueWithName:@"RecommendedDisplayFrameRate"] floatValue]; 
+	if( !cineRate && [dcmObject attributeValueWithName:@"CineRate"]) cineRate = [[dcmObject attributeValueWithName:@"CineRate"] floatValue]; 
+	if (!cineRate)
+	{
+		if( [dcmObject attributeValueWithName:@"FrameTimeVector"])
+			cineRate = 1000. / [[dcmObject attributeValueWithName:@"FrameTimeVector"] floatValue];
+	}
+	
+	if ( gUseShutter)
+	{
+		if( shutterRect_w == 0) shutterRect_w = width;
+		if( shutterRect_h == 0) shutterRect_h = height;
 		
-		if( dcmObject)
+		if( [dcmObject attributeValueWithName:@"ShutterShape"])
 		{
-			NSMutableDictionary *dic = [NSMutableDictionary dictionary];
+			NSArray *shutterArray = [dcmObject attributeArrayWithName:@"ShutterShape"];
 			
-			[dic setValue: dcmObject forKey: @"dcmObject"];
-			[dic setValue: [NSNumber numberWithInt: 1] forKey: @"count"];
-			
-			[cachedDCMFrameworkFiles setObject: dic forKey: srcFile];
+			for( NSString *shutter in shutterArray )
+			{
+				if ( [shutter isEqualToString:@"RECTANGULAR"] )
+				{
+					DCMPixShutterOnOff = YES;
+					
+					shutterRect_x = [[dcmObject attributeValueWithName:@"ShutterLeftVerticalEdge"] floatValue]; 
+					shutterRect_w = [[dcmObject attributeValueWithName:@"ShutterRightVerticalEdge"] floatValue]  - shutterRect_x;
+					shutterRect_y = [[dcmObject attributeValueWithName:@"ShutterUpperHorizontalEdge"] floatValue]; 
+					shutterRect_h = [[dcmObject attributeValueWithName:@"ShutterLowerHorizontalEdge"] floatValue]  - shutterRect_y;
+				}
+				else if( [shutter isEqualToString:@"CIRCULAR"] )
+				{
+					DCMPixShutterOnOff = YES;
+					
+					NSArray *centerArray = [dcmObject attributeArrayWithName:@"CenterofCircularShutter"];
+					
+					if( centerArray.count == 2)
+					{
+						shutterCircular_x = [[centerArray objectAtIndex:0] intValue];
+						shutterCircular_y = [[centerArray objectAtIndex:1] intValue];
+					}
+					
+					shutterCircular_radius = [[dcmObject attributeValueWithName:@"RadiusofCircularShutter"] floatValue];
+				}
+				else if( [shutter isEqualToString:@"POLYGONAL"] )
+				{
+					DCMPixShutterOnOff = YES;
+					
+					NSArray *locArray = [dcmObject attributeArrayWithName:@"VerticesofthePolygonalShutter"];
+					
+					if( shutterPolygonal) free( shutterPolygonal);
+					
+					shutterPolygonalSize = 0;
+					shutterPolygonal = malloc( [locArray count] * sizeof( NSPoint) / 2);
+					for( unsigned int i = 0, x = 0; i < [locArray count]; i+=2, x++ )
+					{
+						shutterPolygonal[ x].x = [[locArray objectAtIndex: i] intValue];
+						shutterPolygonal[ x].y = [[locArray objectAtIndex: i+1] intValue];
+						shutterPolygonalSize++;
+					}
+				}
+				else NSLog( @"Shutter not supported: %@", shutter );
+			}
 		}
 	}
-	
-	if(dcmObject == nil)
-	{
-		NSLog(@"loadDICOMDCMFramework - no DCMObject at srcFile address, nothing to do");
-		[pool release];
-		return NO;
-	}
-	
-	if( dcmObject.transferSyntax.isLittleEndian == NO)
-	{
-		NSLog(@"loadDICOMDCMFramework - we cannot decode BigEndian images");
-		[pool release];
-		return NO;
-	}
-	
-	NSString            *SOPClassUID = [dcmObject attributeValueWithName:@"SOPClassUID"];
-	//	NSString			*MediaStorageSOPInstanceUID = [dcmObject attributeValueWithName:@"MediaStorageSOPInstanceUID"];
-	
-	//-----------------------common----------------------------------------------------------	
-	
-	int					realheight;
-	short				maxFrame = 1;
-	short				imageNb = frameNo;
-	short				ee;
-	
-#pragma mark *pdf
-	if ([ SOPClassUID isEqualToString:[DCMAbstractSyntaxUID pdfStorageClassUID]])
-	{
-		NSLog(@"have PDF");
-		NSData *pdfData = [dcmObject attributeValueWithName:@"EncapsulatedDocument"];
-		NSPDFImageRep *rep = [NSPDFImageRep imageRepWithData:pdfData];	
-		[rep setCurrentPage:frameNo];	
-		NSImage *pdfImage = [[[NSImage alloc] init] autorelease];
-		[pdfImage addRepresentation:rep];
-		[pdfImage setBackgroundColor: [NSColor whiteColor]];
-		/*
-		 NSSize	newSize = [pdfImage size];						
-		 newSize.width *= 1.5;		// Increase PDF resolution to 72 * 1.5 DPI !
-		 newSize.height *= 1.5;		// KEEP THIS VALUE IN SYNC WITH DICOMFILE.M
-		 [pdfImage setScalesWhenResized:YES];
-		 [pdfImage setSize: newSize];
-		 */
-		
-		NSData *tiffData = [pdfImage TIFFRepresentation];
-		//NSString *dest = [NSString stringWithFormat:@"%@/Desktop/pdf.tif", NSHomeDirectory()];
-		
-		NSBitmapImageRep	*TIFFRep = [NSBitmapImageRep imageRepWithData: tiffData];
-		//NSLog(@"tiffRep: %@", [TIFFRep description]);
-		
-		height = [TIFFRep pixelsHigh];
-		height /= 2;
-		height *= 2;
-		realwidth = [TIFFRep pixelsWide];
-		width = realwidth/2;
-		width *= 2;
-		unsigned char *srcImage = [TIFFRep bitmapData];
-		
-		unsigned char   *argbImage, *tmpPtr, *srcPtr;
-		
-		argbImage = malloc( height * width * 4);
-		isRGB = YES;
-		
-		//NSLog(@"height %d", height);
-		//NSLog(@"width %d", width);
-		switch( [TIFFRep bitsPerPixel] )
-		{
-			case 8:
-				NSLog(@"8 bit DICOM PDF");
-				tmpPtr = argbImage;
-				for( int y = 0 ; y < height; y++)
-				{
-					srcPtr = srcImage + y*[TIFFRep bytesPerRow];
-					
-					int x = width;
-					while( x-- > 0 )
-					{
-						tmpPtr++;
-						*tmpPtr++ = *srcPtr;
-						*tmpPtr++ = *srcPtr;
-						*tmpPtr++ = *srcPtr;
-						srcPtr++;
-					}
-					isRGB = NO;
-				}
-				break;
-				
-				case 32:
-				//already argb
-				//argbImage = srcImage;				
-				//NSLog(@"32 bits DICOM PDF");
-				tmpPtr = argbImage;
-				for( int y = 0 ; y < height; y++ )
-				{
-					srcPtr = srcImage + y*[TIFFRep bytesPerRow];
-					int x = width;
-					while( x-- > 0 )
-					{
-						unsigned char r = *srcPtr++;
-						unsigned char g = *srcPtr++;
-						unsigned char b = *srcPtr++;
-						unsigned char a = *srcPtr++;
-						*tmpPtr++ = a;
-						*tmpPtr++ = r;
-						*tmpPtr++ = g;
-						*tmpPtr++ = b;
-					}			
-				}
-				NSLog(@"finished 32  bit");
-				break;
-				
-				case 24:
-				//NSLog(@"loadDICOMDCMFramework 24 bits");
-				tmpPtr = argbImage;
-				for( int y = 0 ; y < height; y++ )
-				{
-					srcPtr = srcImage + y*[TIFFRep bytesPerRow];
-					
-					int x = width;
-					while( x-- > 0 )
-					{
-						unsigned char r = *srcPtr++;
-						unsigned char g = *srcPtr++;
-						unsigned char b = *srcPtr++;
-						unsigned char a = 1.0;
-						*tmpPtr++ = a;
-						*tmpPtr++ = r;
-						*tmpPtr++ = g;
-						*tmpPtr++ = b;
-					}
-				}
-				break;
-				
-				case 48:
-				NSLog(@"48 bits");
-				tmpPtr = argbImage;
-				for( int y = 0 ; y < height; y++ )
-				{
-					srcPtr = srcImage + y*[TIFFRep bytesPerRow];
-					
-					int x = width;
-					while( x-- > 0 )
-					{
-						tmpPtr++;
-						*tmpPtr++ = *srcPtr;	srcPtr += 2;
-						*tmpPtr++ = *srcPtr;	srcPtr += 2;
-						*tmpPtr++ = *srcPtr;	srcPtr += 2;
-					}
-				}
-				break;
-				
-				default:
-				NSLog(@"Error - Unknow...");
-				break;
-		}
-		
-		fImage = (float*) argbImage;
-//		rowBytes = width * 4;
-		
-		//[pdfData writeToFile:@"/tmp/dcm.pdf" atomically:YES];
-		//[[NSWorkspace sharedWorkspace] openFile:@"/tmp/dcm.pdf" withApplication:@"Preview"];
-		
-		#ifdef OSIRIX_VIEWER
-			[self loadCustomImageAnnotationsPapyLink:-1 DCMLink:dcmObject];
-		#endif
-		
-		[pool release];
-		return YES;												 
-	} // end encapsulatedPDF
-	
-	//----------------------------------------------------------------------------------	
-	
-#pragma mark *pixel and image
-	
-	//angles
-	NSNumber *multiframePrimaryAngle = [dcmObject attributeValueWithName:@"PositionerPrimaryAngle"];
-	NSNumber  *multiframeSecondaryAngle = [dcmObject attributeValueWithName:@"PositionerSecondaryAngle"];
-	
-	//orientation
+}
+
+- (void) dcmFrameworkLoad0x0020: (id) dcmObject
+{
+//orientation
 	originX = 0;	originY = 0;	originZ = 0;
 	NSArray *ipp = [dcmObject attributeArrayWithName:@"ImagePositionPatient"];
 	if( ipp )
@@ -5133,20 +5034,28 @@ END_CREATE_ROIS:
 			orientation[ j ] = [[iop objectAtIndex:j] floatValue];
 	}
 	
-	
-	//PixelRepresentation
-	
-	fIsSigned = [[dcmObject attributeValueWithName:@"PixelRepresentation"] intValue];
-	bitsAllocated = [[dcmObject attributeValueWithName:@"BitsAllocated"] intValue]; 
+	if( [dcmObject attributeValueWithName:@"ImageLaterality"])
+	{
+		[laterality release];
+		laterality = [[dcmObject attributeValueWithName:@"ImageLaterality"] retain];	
+	}
+	if( laterality == nil)
+	{
+		[laterality release];
+		laterality = [[dcmObject attributeValueWithName:@"Laterality"] retain];	
+	}
+}
+
+- (void) dcmFrameworkLoad0x0028: (id) dcmObject
+{
+	// Group 0x0028
+
+	if( [dcmObject attributeValueWithName:@"PixelRepresentation"]) fIsSigned = [[dcmObject attributeValueWithName:@"PixelRepresentation"] intValue];
+	if( [dcmObject attributeValueWithName:@"BitsAllocated"]) bitsAllocated = [[dcmObject attributeValueWithName:@"BitsAllocated"] intValue]; 
 	
 	if( [[dcmObject attributeValueWithName:@"BitsStored"] intValue] == 8 && bitsAllocated == 16 && [[dcmObject attributeValueWithName:@"PhotometricInterpretation"] isEqualToString:@"RGB"])
-	{
 		bitsAllocated = 8;
-	}
-	
-	spp = 1;
-	if ([dcmObject attributeValueWithName:@"SamplesperPixel"]) spp = [[dcmObject attributeValueWithName:@"SamplesperPixel"] intValue];
-	
+
 	offset = 0.0;
 	if ([dcmObject attributeValueWithName:@"RescaleIntercept"]) offset = [[dcmObject attributeValueWithName:@"RescaleIntercept"] floatValue];	
 	slope = 1.0;
@@ -5157,7 +5066,6 @@ END_CREATE_ROIS:
 	//width = height = 0;	
 	//NSString *rows = [dcmObject attributeValueWithName:@"Rows"];
 	height = [[dcmObject attributeValueWithName:@"Rows"] intValue];
-	realheight= height;
 	height /= 2;
 	height *= 2;
 	
@@ -5273,83 +5181,196 @@ END_CREATE_ROIS:
 		// palette conversions done by dcm Object
 		isRGB = YES;			
 	} // endif ...extraction of the color palette
+}
+
+- (BOOL)loadDICOMDCMFramework
+{
+	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
 	
-	// Image object dicom tags
-	if( [dcmObject attributeValueWithName:@"FrameofReferenceUID"])	frameOfReferenceUID = [[dcmObject attributeValueWithName:@"FrameofReferenceUID"] retain];
-	if( [dcmObject attributeValueWithName:@"PatientsWeight"])	patientsWeight = [[dcmObject attributeValueWithName:@"PatientsWeight"] floatValue];
-	if( [dcmObject attributeValueWithName:@"SliceThickness"])	sliceThickness = [[dcmObject attributeValueWithName:@"SliceThickness"] floatValue];
-	if( [dcmObject attributeValueWithName:@"SpacingBetweenSlices"]) spacingBetweenSlices = [[dcmObject attributeValueWithName:@"SpacingBetweenSlices"] floatValue];
-	if( [dcmObject attributeValueWithName:@"RepetitionTime"])	repetitiontime = [[dcmObject attributeValueWithName:@"RepetitionTime"] retain];
-	if( [dcmObject attributeValueWithName:@"EchoTime"])			echotime = [[dcmObject attributeValueWithName:@"EchoTime"] retain];	
-	if( [dcmObject attributeValueWithName:@"FlipAngle"])		flipAngle = [[dcmObject attributeValueWithName:@"FlipAngle"] retain];
-	if( [dcmObject attributeValueWithName:@"ImageLaterality"])		laterality = [[dcmObject attributeValueWithName:@"ImageLaterality"] retain];	
-	if( laterality == nil && [dcmObject attributeValueWithName:@"Laterality"])		laterality = [[dcmObject attributeValueWithName:@"Laterality"] retain];	
-	if( [dcmObject attributeValueWithName:@"ProtocolName"])		protocolName = [[dcmObject attributeValueWithName:@"ProtocolName"] retain];
-	if( [dcmObject attributeValueWithName:@"ViewPosition"])		viewPosition = [[dcmObject attributeValueWithName:@"ViewPosition"] retain];
-	if( [dcmObject attributeValueWithName:@"PatientPosition"])	patientPosition = [[dcmObject attributeValueWithName:@"PatientPosition"] retain];
-	if( [dcmObject attributeValueWithName:@"RecommendedDisplayFrameRate"])	cineRate = [[dcmObject attributeValueWithName:@"RecommendedDisplayFrameRate"] floatValue]; 
-	if( !cineRate && [dcmObject attributeValueWithName:@"CineRate"])		cineRate = [[dcmObject attributeValueWithName:@"CineRate"] floatValue]; 
-	if (!cineRate)
-	{
-		if( [dcmObject attributeValueWithName:@"FrameTimeVector"])
-			cineRate = 1000. / [[dcmObject attributeValueWithName:@"FrameTimeVector"] floatValue];
-	}	
+	DCMObject *dcmObject;
 	
-	if ( gUseShutter )
+	if( [cachedDCMFrameworkFiles objectForKey: srcFile])
 	{
-		shutterRect_w = width;
-		shutterRect_h = height;
+		NSMutableDictionary *dic = [cachedDCMFrameworkFiles objectForKey: srcFile];
 		
-		if( [dcmObject attributeValueWithName:@"ShutterShape"] )
+		dcmObject = [dic objectForKey: @"dcmObject"];
+		[dic setValue: [NSNumber numberWithInt: [[dic objectForKey: @"count"] intValue]+1] forKey: @"count"];
+	}
+	else
+	{
+		dcmObject = [DCMObject objectWithContentsOfFile:srcFile decodingPixelData:NO];
+		
+		if( dcmObject)
 		{
-			NSArray *shutterArray = [dcmObject attributeArrayWithName:@"ShutterShape"];
+			NSMutableDictionary *dic = [NSMutableDictionary dictionary];
 			
-			for( NSString *shutter in shutterArray )
-			{
-				if ( [shutter isEqualToString:@"RECTANGULAR"] )
-				{
-					DCMPixShutterOnOff = YES;
-					
-					shutterRect_x = [[dcmObject attributeValueWithName:@"ShutterLeftVerticalEdge"] floatValue]; 
-					shutterRect_w = [[dcmObject attributeValueWithName:@"ShutterRightVerticalEdge"] floatValue]  - shutterRect_x;
-					shutterRect_y = [[dcmObject attributeValueWithName:@"ShutterUpperHorizontalEdge"] floatValue]; 
-					shutterRect_h = [[dcmObject attributeValueWithName:@"ShutterLowerHorizontalEdge"] floatValue]  - shutterRect_y;
-				}
-				else if( [shutter isEqualToString:@"CIRCULAR"] )
-				{
-					DCMPixShutterOnOff = YES;
-					
-					NSArray *centerArray = [dcmObject attributeArrayWithName:@"CenterofCircularShutter"];
-					
-					if( centerArray.count == 2)
-					{
-						shutterCircular_x = [[centerArray objectAtIndex:0] intValue];
-						shutterCircular_y = [[centerArray objectAtIndex:1] intValue];
-					}
-					
-					shutterCircular_radius = [[dcmObject attributeValueWithName:@"RadiusofCircularShutter"] floatValue];
-				}
-				else if( [shutter isEqualToString:@"POLYGONAL"] )
-				{
-					DCMPixShutterOnOff = YES;
-					
-					NSArray *locArray = [dcmObject attributeArrayWithName:@"VerticesofthePolygonalShutter"];
-					
-					if( shutterPolygonal) free( shutterPolygonal);
-					
-					shutterPolygonalSize = 0;
-					shutterPolygonal = malloc( [locArray count] * sizeof( NSPoint) / 2);
-					for( unsigned int i = 0, x = 0; i < [locArray count]; i+=2, x++ )
-					{
-						shutterPolygonal[ x].x = [[locArray objectAtIndex: i] intValue];
-						shutterPolygonal[ x].y = [[locArray objectAtIndex: i+1] intValue];
-						shutterPolygonalSize++;
-					}
-				}
-				else NSLog( @"Shutter not supported: %@", shutter );
-			}
+			[dic setValue: dcmObject forKey: @"dcmObject"];
+			[dic setValue: [NSNumber numberWithInt: 1] forKey: @"count"];
+			
+			[cachedDCMFrameworkFiles setObject: dic forKey: srcFile];
 		}
 	}
+	
+	if(dcmObject == nil)
+	{
+		NSLog(@"loadDICOMDCMFramework - no DCMObject at srcFile address, nothing to do");
+		[pool release];
+		return NO;
+	}
+	
+	if( dcmObject.transferSyntax.isLittleEndian == NO)
+	{
+		NSLog(@"loadDICOMDCMFramework - we cannot decode BigEndian images");
+		[pool release];
+		return NO;
+	}
+	
+	NSString            *SOPClassUID = [dcmObject attributeValueWithName:@"SOPClassUID"];
+	//	NSString			*MediaStorageSOPInstanceUID = [dcmObject attributeValueWithName:@"MediaStorageSOPInstanceUID"];
+	
+	//-----------------------common----------------------------------------------------------	
+	
+	int					realheight;
+	short				maxFrame = 1;
+	short				imageNb = frameNo;
+	short				ee;
+	
+#pragma mark *pdf
+	if ([ SOPClassUID isEqualToString:[DCMAbstractSyntaxUID pdfStorageClassUID]])
+	{
+		NSLog(@"have PDF");
+		NSData *pdfData = [dcmObject attributeValueWithName:@"EncapsulatedDocument"];
+		NSPDFImageRep *rep = [NSPDFImageRep imageRepWithData:pdfData];	
+		[rep setCurrentPage:frameNo];	
+		NSImage *pdfImage = [[[NSImage alloc] init] autorelease];
+		[pdfImage addRepresentation:rep];
+		[pdfImage setBackgroundColor: [NSColor whiteColor]];
+		
+		NSData *tiffData = [pdfImage TIFFRepresentation];
+		//NSString *dest = [NSString stringWithFormat:@"%@/Desktop/pdf.tif", NSHomeDirectory()];
+		
+		NSBitmapImageRep	*TIFFRep = [NSBitmapImageRep imageRepWithData: tiffData];
+		//NSLog(@"tiffRep: %@", [TIFFRep description]);
+		
+		height = [TIFFRep pixelsHigh];
+		height /= 2;
+		height *= 2;
+		realwidth = [TIFFRep pixelsWide];
+		width = realwidth/2;
+		width *= 2;
+		unsigned char *srcImage = [TIFFRep bitmapData];
+		
+		unsigned char   *argbImage, *tmpPtr, *srcPtr;
+		
+		argbImage = malloc( height * width * 4);
+		isRGB = YES;
+		
+		//NSLog(@"height %d", height);
+		//NSLog(@"width %d", width);
+		switch( [TIFFRep bitsPerPixel] )
+		{
+			case 8:
+				NSLog(@"8 bit DICOM PDF");
+				tmpPtr = argbImage;
+				for( int y = 0 ; y < height; y++)
+				{
+					srcPtr = srcImage + y*[TIFFRep bytesPerRow];
+					
+					int x = width;
+					while( x-- > 0 )
+					{
+						tmpPtr++;
+						*tmpPtr++ = *srcPtr;
+						*tmpPtr++ = *srcPtr;
+						*tmpPtr++ = *srcPtr;
+						srcPtr++;
+					}
+					isRGB = NO;
+				}
+				break;
+				
+				case 32:
+				//already argb
+				//argbImage = srcImage;				
+				//NSLog(@"32 bits DICOM PDF");
+				tmpPtr = argbImage;
+				for( int y = 0 ; y < height; y++ )
+				{
+					srcPtr = srcImage + y*[TIFFRep bytesPerRow];
+					int x = width;
+					while( x-- > 0 )
+					{
+						unsigned char r = *srcPtr++;
+						unsigned char g = *srcPtr++;
+						unsigned char b = *srcPtr++;
+						unsigned char a = *srcPtr++;
+						*tmpPtr++ = a;
+						*tmpPtr++ = r;
+						*tmpPtr++ = g;
+						*tmpPtr++ = b;
+					}			
+				}
+				NSLog(@"finished 32  bit");
+				break;
+				
+				case 24:
+				//NSLog(@"loadDICOMDCMFramework 24 bits");
+				tmpPtr = argbImage;
+				for( int y = 0 ; y < height; y++ )
+				{
+					srcPtr = srcImage + y*[TIFFRep bytesPerRow];
+					
+					int x = width;
+					while( x-- > 0 )
+					{
+						unsigned char r = *srcPtr++;
+						unsigned char g = *srcPtr++;
+						unsigned char b = *srcPtr++;
+						unsigned char a = 1.0;
+						*tmpPtr++ = a;
+						*tmpPtr++ = r;
+						*tmpPtr++ = g;
+						*tmpPtr++ = b;
+					}
+				}
+				break;
+				
+				case 48:
+				NSLog(@"48 bits");
+				tmpPtr = argbImage;
+				for( int y = 0 ; y < height; y++ )
+				{
+					srcPtr = srcImage + y*[TIFFRep bytesPerRow];
+					
+					int x = width;
+					while( x-- > 0 )
+					{
+						tmpPtr++;
+						*tmpPtr++ = *srcPtr;	srcPtr += 2;
+						*tmpPtr++ = *srcPtr;	srcPtr += 2;
+						*tmpPtr++ = *srcPtr;	srcPtr += 2;
+					}
+				}
+				break;
+				
+				default:
+				NSLog(@"Error - Unknow...");
+				break;
+		}
+		
+		fImage = (float*) argbImage;
+		
+		#ifdef OSIRIX_VIEWER
+			[self loadCustomImageAnnotationsPapyLink:-1 DCMLink:dcmObject];
+		#endif
+		
+		[pool release];
+		return YES;												 
+	} // end encapsulatedPDF
+	
+	[self dcmFrameworkLoad0x0018: dcmObject];
+	[self dcmFrameworkLoad0x0020: dcmObject];
+	[self dcmFrameworkLoad0x0028: dcmObject];
 	
 #pragma mark *MR/CT functional multiframe
 	
@@ -5532,6 +5553,7 @@ END_CREATE_ROIS:
 		
 		[self computeTotalDoseCorrected];
 	}
+	
 	// Loop over sequence to find injected dose
 	
 	if( [dcmObject attributeValueForKey: @"7053,1000"] )
@@ -5647,29 +5669,12 @@ END_CREATE_ROIS:
 			imPix->DCMPixShutterOnOff = DCMPixShutterOnOff;
 		}
 		
-		//moved outside the loop (same *pixelAttr contains the data for all the frames)
-		//		if ([dcmObject attributeValueWithName:@"PixelData"]) {
-		//			DCMPixelDataAttribute *pixelAttr = (DCMPixelDataAttribute *)[dcmObject attributeWithName:@"PixelData"];
-		
-		
-		//angles
-		[[pixArray objectAtIndex: ee] positionerPrimaryAngle:multiframePrimaryAngle];
-		[[pixArray objectAtIndex: ee] positionerSecondaryAngle:multiframeSecondaryAngle];
-		//NSLog(@"primary angle:%f",[positionerPrimaryAngle floatValue]);
-		//NSLog(@"secondary angle:%f",[positionerSecondaryAngle floatValue]);
-		
 		//get PixelData
 		NSData *pixData = [pixelAttr decodeFrameAtIndex:ee];
 		short *oImage =  malloc([pixData length]);	//pointer to a memory zone where each pixel of the data has a short value reserved
 		[pixData getBytes:oImage];
-		//NSLog(@"image size: %d", ( height * width * 2));
-		//NSLog(@"Data size: %d", [pixData length]);
-		//		}
 		
-		
-		
-		if( oImage == nil ) //there was no data for this frame
-			//create empty image
+		if( oImage == nil ) //there was no data for this frame -> create empty image
 		{
 			NSLog(@"This is really bad..... Please send this file to rossetantoine@bluewin.ch");
 			//NSLog(@"image size: %d", ( height * width * 2));
@@ -5991,8 +5996,6 @@ END_CREATE_ROIS:
 	{
 		fileNb = Papy3FileOpen ( (char*) [srcFile UTF8String], (PAPY_FILE) 0, TRUE, 0);
 		
-		NSLog( @"open: %@", srcFile);
-		
 		if( fileNb >= 0)
 		{
 			cachedGroupsForThisFile = [NSMutableDictionary dictionary];
@@ -6079,30 +6082,28 @@ END_CREATE_ROIS:
 	
 	if( fImage)
 	{
-	NSMutableDictionary *cachedGroupsForThisFile = [cachedPapyGroups valueForKey: srcFile];
-	
-	if( cachedGroupsForThisFile)
-	{
-		[cachedGroupsForThisFile setValue: [NSNumber numberWithInt: [[cachedGroupsForThisFile objectForKey: @"count"] intValue]-1] forKey: @"count"];
+		NSMutableDictionary *cachedGroupsForThisFile = [cachedPapyGroups valueForKey: srcFile];
 		
-		if( [[cachedGroupsForThisFile objectForKey: @"count"] intValue] <= 0)
+		if( cachedGroupsForThisFile)
 		{
-			int fileNb = [[cachedGroupsForThisFile valueForKey: @"fileNb"] intValue];
-			[cachedGroupsForThisFile removeObjectForKey: @"fileNb"];
-			[cachedGroupsForThisFile removeObjectForKey: @"count"];
+			[cachedGroupsForThisFile setValue: [NSNumber numberWithInt: [[cachedGroupsForThisFile objectForKey: @"count"] intValue]-1] forKey: @"count"];
 			
-			for( NSValue *pointer in [cachedGroupsForThisFile allValues] )
+			if( [[cachedGroupsForThisFile objectForKey: @"count"] intValue] <= 0)
 			{
-				SElement *theGroupP = (SElement*) [pointer pointerValue];
-				Papy3GroupFree ( &theGroupP, TRUE);
+				int fileNb = [[cachedGroupsForThisFile valueForKey: @"fileNb"] intValue];
+				[cachedGroupsForThisFile removeObjectForKey: @"fileNb"];
+				[cachedGroupsForThisFile removeObjectForKey: @"count"];
+				
+				for( NSValue *pointer in [cachedGroupsForThisFile allValues] )
+				{
+					SElement *theGroupP = (SElement*) [pointer pointerValue];
+					Papy3GroupFree ( &theGroupP, TRUE);
+				}
+				
+				[cachedPapyGroups removeObjectForKey: srcFile];
+				Papy3FileClose (fileNb, TRUE);
 			}
-			
-			[cachedPapyGroups removeObjectForKey: srcFile];
-			Papy3FileClose (fileNb, TRUE);
-			
-			NSLog( @"close: %@", srcFile);
 		}
-	}
 	}
 	
 	[PapyrusLock unlock];
@@ -6461,8 +6462,8 @@ END_CREATE_ROIS:
 		if( realwidth != width) NSLog(@"width!=realwidth");
 	}
 	
-	if( shutterRect_w == 0)  shutterRect_w = width;
-	if( shutterRect_h == 0)  shutterRect_h = height;
+	if( shutterRect_w == 0) shutterRect_w = width;
+	if( shutterRect_h == 0) shutterRect_h = height;
 	
 	// PIXEL REPRESENTATION
 	val = Papy3GetElement (theGroupP, papPixelRepresentationGr, &nbVal, &elemType);
