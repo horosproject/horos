@@ -4947,7 +4947,7 @@ END_CREATE_ROIS:
 		[patientPosition release];
 		patientPosition = [[dcmObject attributeValueWithName:@"PatientPosition"] retain];
 	}
-	if( [dcmObject attributeValueWithName:@"RecommendedDisplayFrameRate"])	cineRate = [[dcmObject attributeValueWithName:@"RecommendedDisplayFrameRate"] floatValue]; 
+	if( [dcmObject attributeValueWithName:@"RecommendedDisplayFrameRate"]) cineRate = [[dcmObject attributeValueWithName:@"RecommendedDisplayFrameRate"] floatValue]; 
 	if( !cineRate && [dcmObject attributeValueWithName:@"CineRate"]) cineRate = [[dcmObject attributeValueWithName:@"CineRate"] floatValue]; 
 	if (!cineRate)
 	{
@@ -4957,9 +4957,6 @@ END_CREATE_ROIS:
 	
 	if ( gUseShutter)
 	{
-		if( shutterRect_w == 0) shutterRect_w = width;
-		if( shutterRect_h == 0) shutterRect_h = height;
-		
 		if( [dcmObject attributeValueWithName:@"ShutterShape"])
 		{
 			NSArray *shutterArray = [dcmObject attributeArrayWithName:@"ShutterShape"];
@@ -5055,42 +5052,38 @@ END_CREATE_ROIS:
 	
 	if( [[dcmObject attributeValueWithName:@"BitsStored"] intValue] == 8 && bitsAllocated == 16 && [[dcmObject attributeValueWithName:@"PhotometricInterpretation"] isEqualToString:@"RGB"])
 		bitsAllocated = 8;
-
-	offset = 0.0;
-	if ([dcmObject attributeValueWithName:@"RescaleIntercept"]) offset = [[dcmObject attributeValueWithName:@"RescaleIntercept"] floatValue];	
-	slope = 1.0;
+	
+	if ([dcmObject attributeValueWithName:@"RescaleIntercept"]) offset = [[dcmObject attributeValueWithName:@"RescaleIntercept"] floatValue];
 	if ([dcmObject attributeValueWithName:@"RescaleSlope"] ) slope = [[dcmObject attributeValueWithName:@"RescaleSlope"] floatValue]; 
 	
 	// image size
+	if( [dcmObject attributeValueWithName:@"Rows"])
+	{
+		height = [[dcmObject attributeValueWithName:@"Rows"] intValue];
+		height /= 2;
+		height *= 2;
+	}
 	
-	//width = height = 0;	
-	//NSString *rows = [dcmObject attributeValueWithName:@"Rows"];
-	height = [[dcmObject attributeValueWithName:@"Rows"] intValue];
-	height /= 2;
-	height *= 2;
+	if( [dcmObject attributeValueWithName:@"Columns"])
+	{
+		width =  [[dcmObject attributeValueWithName:@"Columns"] intValue];
+		realwidth = width;
+		width = realwidth/2;
+		width *= 2;
+	}
 	
-	//NSString *columns = [dcmObject attributeValueWithName:@"Columns"];
-	width =  [[dcmObject attributeValueWithName:@"Columns"] intValue];
-	realwidth = width;
-	width = realwidth/2;
-	width *= 2;
+	if( shutterRect_w == 0) shutterRect_w = width;
+	if( shutterRect_h == 0) shutterRect_h = height;
 	
 	//window level & width
-	
-	savedWL = 0;
 	if ([dcmObject attributeValueWithName:@"WindowCenter"] && isRGB == NO) savedWL = (int)[[dcmObject attributeValueWithName:@"WindowCenter"] floatValue];
-	savedWW = 0;
 	if ([dcmObject attributeValueWithName:@"WindowWidth"] && isRGB == NO) savedWW =  (int) [[dcmObject attributeValueWithName:@"WindowWidth"] floatValue];
 	if(  savedWW < 0) savedWW =-savedWW;
-	//NSLog(@"ww: %d wl: %d", savedWW, savedWL);
 	
 	//planar configuration
+	if( [dcmObject attributeValueWithName:@"PlanarConfiguration"])
+		fPlanarConf = [[dcmObject attributeValueWithName:@"PlanarConfiguration"] intValue]; 
 	
-	fPlanarConf = [[dcmObject attributeValueWithName:@"PlanarConfiguration"] intValue]; 
-	
-	pixelSpacingX = 0;
-	pixelSpacingY = 0;
-	pixelRatio = 1.0;
 	//pixel Spacing
 	NSArray *pixelSpacing = [dcmObject attributeArrayWithName:@"PixelSpacing"];
 	if(pixelSpacing.count >= 2 )
@@ -5111,46 +5104,41 @@ END_CREATE_ROIS:
 			pixelSpacingY = [[pixelSpacing objectAtIndex:0] floatValue];
 			pixelSpacingX = [[pixelSpacing objectAtIndex:1] floatValue];
 		}
-		else if(pixelSpacing.count >= 1 )	{
+		else if(pixelSpacing.count >= 1 )
+		{
 			pixelSpacingY = [[pixelSpacing objectAtIndex:0] floatValue];
 			pixelSpacingX = [[pixelSpacing objectAtIndex:0] floatValue];
 		}
 	}
 	
-	modalityString = [dcmObject attributeValueWithName:@"Modality"];
+	DCMSequenceAttribute* seq = (DCMSequenceAttribute *)[dcmObject attributeWithName:@"SequenceofUltrasoundRegions"];
 	
-	// Ultrasounds pixel spacing
-	if( [modalityString isEqualToString:@"US"])
+	if (seq)
 	{
-		DCMSequenceAttribute* seq = (DCMSequenceAttribute *)[dcmObject attributeWithName:@"SequenceofUltrasoundRegions"];
+		BOOL spacingFound = NO;
 		
-		if (seq)
+		for ( DCMObject *sequenceItem in seq.sequence )
 		{
-			BOOL spacingFound = NO;
-			
-			for ( DCMObject *sequenceItem in seq.sequence )
+			if( spacingFound == NO)
 			{
-				if( spacingFound == NO)
+				int physicalUnitsX = 0;
+				int physicalUnitsY = 0;
+				
+				physicalUnitsX = [[sequenceItem attributeValueWithName:@"PhysicalUnitsXDirection"] intValue];
+				physicalUnitsY = [[sequenceItem attributeValueWithName:@"PhysicalUnitsYDirection"] intValue];
+				
+				if( physicalUnitsX == 3 && physicalUnitsY == 3)	// We want only cm !
 				{
-					int physicalUnitsX = 0;
-					int physicalUnitsY = 0;
+					double xxx = 0, yyy = 0;
 					
-					physicalUnitsX = [[sequenceItem attributeValueWithName:@"PhysicalUnitsXDirection"] intValue];
-					physicalUnitsY = [[sequenceItem attributeValueWithName:@"PhysicalUnitsYDirection"] intValue];
+					xxx = [[sequenceItem attributeValueWithName:@"PhysicalDeltaX"] doubleValue];
+					yyy = [[sequenceItem attributeValueWithName:@"PhysicalDeltaY"] doubleValue];
 					
-					if( physicalUnitsX == 3 && physicalUnitsY == 3)	// We want only cm !
+					if( xxx && yyy)
 					{
-						double xxx = 0, yyy = 0;
-						
-						xxx = [[sequenceItem attributeValueWithName:@"PhysicalDeltaX"] doubleValue];
-						yyy = [[sequenceItem attributeValueWithName:@"PhysicalDeltaY"] doubleValue];
-						
-						if( xxx && yyy)
-						{
-							pixelSpacingX = fabs( xxx) * 10.;	// These are in cm !
-							pixelSpacingY = fabs( yyy) * 10.;
-							spacingFound = YES;
-						}
+						pixelSpacingX = fabs( xxx) * 10.;	// These are in cm !
+						pixelSpacingY = fabs( yyy) * 10.;
+						spacingFound = YES;
 					}
 				}
 			}
@@ -5170,7 +5158,7 @@ END_CREATE_ROIS:
 			pixelRatio = ratiox / ratioy;
 		}
 	}
-	else if( pixelSpacingX != pixelSpacingY )
+	else if( pixelSpacingX != pixelSpacingY)
 	{
 		if( pixelSpacingY != 0 && pixelSpacingX != 0) pixelRatio = pixelSpacingY / pixelSpacingX;
 	}
@@ -5179,15 +5167,17 @@ END_CREATE_ROIS:
 	if ([[dcmObject attributeValueWithName:@"PhotometricInterpretation"] rangeOfString:@"PALETTE"].location != NSNotFound)
 	{
 		// palette conversions done by dcm Object
-		isRGB = YES;			
-	} // endif ...extraction of the color palette
+		isRGB = YES;
+	}
 }
 
 - (BOOL)loadDICOMDCMFramework
 {
 	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
 	
-	DCMObject *dcmObject;
+	DCMObject *dcmObject = 0L;
+	
+	[PapyrusLock lock];
 	
 	if( [cachedDCMFrameworkFiles objectForKey: srcFile])
 	{
@@ -5211,6 +5201,8 @@ END_CREATE_ROIS:
 		}
 	}
 	
+	[PapyrusLock unlock];
+	
 	if(dcmObject == nil)
 	{
 		NSLog(@"loadDICOMDCMFramework - no DCMObject at srcFile address, nothing to do");
@@ -5225,15 +5217,12 @@ END_CREATE_ROIS:
 		return NO;
 	}
 	
-	NSString            *SOPClassUID = [dcmObject attributeValueWithName:@"SOPClassUID"];
-	//	NSString			*MediaStorageSOPInstanceUID = [dcmObject attributeValueWithName:@"MediaStorageSOPInstanceUID"];
+	NSString *SOPClassUID = [dcmObject attributeValueWithName:@"SOPClassUID"];
 	
 	//-----------------------common----------------------------------------------------------	
 	
-	int					realheight;
-	short				maxFrame = 1;
-	short				imageNb = frameNo;
-	short				ee;
+	short maxFrame = 1;
+	short imageNb = frameNo;
 	
 #pragma mark *pdf
 	if ([ SOPClassUID isEqualToString:[DCMAbstractSyntaxUID pdfStorageClassUID]])
@@ -5368,6 +5357,12 @@ END_CREATE_ROIS:
 		return YES;												 
 	} // end encapsulatedPDF
 	
+	
+	pixelSpacingX = 0;
+	pixelSpacingY = 0;
+	offset = 0.0;
+	slope = 1.0;
+	
 	[self dcmFrameworkLoad0x0018: dcmObject];
 	[self dcmFrameworkLoad0x0020: dcmObject];
 	[self dcmFrameworkLoad0x0028: dcmObject];
@@ -5487,7 +5482,8 @@ END_CREATE_ROIS:
 		if( [dcmObject attributeValueForKey: @"6000,0040"])
 			oType = [[dcmObject attributeValueForKey: @"6000,0040"] characterAtIndex: 0];
 		
-		if( [dcmObject attributeValueForKey: @"6000,0050"] ) 	{
+		if( [dcmObject attributeValueForKey: @"6000,0050"] ) 
+		{
 			oOrigin[ 0] = [[dcmObject attributeValueForKey: @"6000,0050"] intValue];
 			oOrigin[ 1] = [[dcmObject attributeValueForKey: @"6000,0050"] intValue];
 		}
@@ -5604,34 +5600,15 @@ END_CREATE_ROIS:
 	if ([dcmObject attributeValueWithName:@"PixelData"])
 	{
 		DCMPixelDataAttribute *pixelAttr = (DCMPixelDataAttribute *)[dcmObject attributeWithName:@"PixelData"];
+			
+		//=====================================================================
 		
+	#pragma mark *loading a frame
 		
-		
-	//=====================================================================
-	//	for( ee = 0; ee < maxFrame; ee++)
-	{
-		
-#pragma mark *loading a frame		
-		//duplicates DCMPix (one imPix for each frame)
-		
-		NSAutoreleasePool	*subPool = [[NSAutoreleasePool alloc] init];
-		
-		DCMPix	*imPix = nil;
-		
-		//		if( maxFrame > 1)
-		//		{
-		//			imPix = [pixArray objectAtIndex: ee];
-		//			[imPix copyFromOther: self]; // duplicates the class fields
-		//		}
-		//		else
-		
-		imPix = self;
-		ee = imageNb;
-		
-		if ( [modalityString isEqualToString: @"RTDOSE"] )
+		if ( [[dcmObject attributeValueWithName:@"Modality"] isEqualToString: @"RTDOSE"] )
 		{  // Set Z value for each frame
 			NSArray *gridFrameOffsetArray = [dcmObject attributeArrayWithName: @"GridFrameOffsetVector"];  //List of Z values
-			originZ += [[gridFrameOffsetArray objectAtIndex: ee] floatValue];
+			originZ += [[gridFrameOffsetArray objectAtIndex: imageNb] floatValue];
 			if( fabs( orientation[6]) > fabs(orientation[7]) && fabs( orientation[6]) > fabs(orientation[8]) )
 			{
 				sliceLocation = originX;
@@ -5648,29 +5625,29 @@ END_CREATE_ROIS:
 			}	
 		}
 		
-		if( gUseShutter && ee != frameNo && maxFrame > 1 )
+		if( gUseShutter && imageNb != frameNo && maxFrame > 1 )
 		{
-			imPix->shutterRect_x = shutterRect_x;
-			imPix->shutterRect_y = shutterRect_y;
-			imPix->shutterRect_w = shutterRect_w;
-			imPix->shutterRect_h = shutterRect_h;
+			self->shutterRect_x = shutterRect_x;
+			self->shutterRect_y = shutterRect_y;
+			self->shutterRect_w = shutterRect_w;
+			self->shutterRect_h = shutterRect_h;
 			
-			imPix->shutterCircular_x = shutterCircular_x;
-			imPix->shutterCircular_y = shutterCircular_y;
-			imPix->shutterCircular_radius = shutterCircular_radius;
+			self->shutterCircular_x = shutterCircular_x;
+			self->shutterCircular_y = shutterCircular_y;
+			self->shutterCircular_radius = shutterCircular_radius;
 			
 			if( shutterPolygonalSize )
 			{
-				imPix->shutterPolygonalSize = shutterPolygonalSize;
-				imPix->shutterPolygonal = malloc( shutterPolygonalSize * sizeof( NSPoint));
-				memcpy( imPix->shutterPolygonal, shutterPolygonal, shutterPolygonalSize * sizeof( NSPoint ) );
+				self->shutterPolygonalSize = shutterPolygonalSize;
+				self->shutterPolygonal = malloc( shutterPolygonalSize * sizeof( NSPoint));
+				memcpy( self->shutterPolygonal, shutterPolygonal, shutterPolygonalSize * sizeof( NSPoint ) );
 			}
 			
-			imPix->DCMPixShutterOnOff = DCMPixShutterOnOff;
+			self->DCMPixShutterOnOff = DCMPixShutterOnOff;
 		}
 		
 		//get PixelData
-		NSData *pixData = [pixelAttr decodeFrameAtIndex:ee];
+		NSData *pixData = [pixelAttr decodeFrameAtIndex:imageNb];
 		short *oImage =  malloc([pixData length]);	//pointer to a memory zone where each pixel of the data has a short value reserved
 		[pixData getBytes:oImage];
 		
@@ -5694,7 +5671,6 @@ END_CREATE_ROIS:
 		isRGB = NO;
 		inverseVal = NO;
 		
-		
 		NSString *colorspace = [dcmObject attributeValueWithName:@"PhotometricInterpretation"];		
 		if ([colorspace rangeOfString:@"MONOCHROME1"].location != NSNotFound)
 			{inverseVal = YES; savedWL = -savedWL;}													
@@ -5706,22 +5682,15 @@ END_CREATE_ROIS:
 		if ([colorspace rangeOfString:@"YBR"].location != NSNotFound)
 			{fPlanarConf = 0; isRGB = YES;}
 		
-		
-		if (isRGB == YES) // CONVERT RGB TO ARGB FOR BETTER PERFORMANCE THRU VIMAGE
+		if (isRGB == YES)
 		{
-			//NSLog(@"is RGB");		
 			unsigned char   *ptr, *tmpImage;
-			// realwidth = width = tag columns
-			int			loop = (int) height * (int) realwidth;
+			int loop = (int) height * (int) realwidth;
 			tmpImage = malloc (loop * 4L);
 			ptr   = tmpImage;
 			
-			//NSLog(@"height %d width %d loop should be: %d", height , realwidth, (long) height * (long) realwidth);
-			//NSLog(@"loop %d", loop);
-			
 			if( bitsAllocated > 8)
 			{ // RGB_FFF
-				// /*
 				unsigned short   *bufPtr;
 				bufPtr = (unsigned short*) oImage;
 				while( loop-- > 0)
@@ -5730,24 +5699,16 @@ END_CREATE_ROIS:
 					*ptr++	= *bufPtr++;		//ptr++;  bufPtr++;
 					*ptr++	= *bufPtr++;		//ptr++;  bufPtr++;
 					*ptr++	= *bufPtr++;		//ptr++;  bufPtr++;
-					//if (loop % 5000 == 0)
-					//NSLog(@"loop: %d", loop);
 				}
-				
-				// */				
 			}
 			else
 			{ // RGB_888
 				NSLog(@"Convert to ARGB 8 bit");
 				unsigned char   *bufPtr;
 				bufPtr = (unsigned char*) oImage;
-				/*
-				 long vImage_Error;
-				 vImage_Error = vImageConvert_RGB888toARGB8888( bufPtr, NULL, 255, ptr, 0, 0); //0=no flag
-				 */				
 				
-				//loop = totSize/4;
-				while( loop-- > 0 )	{
+				while( loop-- > 0 )
+				{
 					*ptr++	= 255;			//ptr++;
 					*ptr++	= *bufPtr++;		//ptr++;  bufPtr++;
 					*ptr++	= *bufPtr++;		//ptr++;  bufPtr++;
@@ -5774,26 +5735,19 @@ END_CREATE_ROIS:
 			
 			bufPtr = (unsigned char*) oImage;
 			ptr    = tmpImage;
-			/*
-			 int vImage_Error;
-			 vImage_Error = vImageConvert_Planar8to16U (bufPtr, ptr, 0); //0=no flag
-			 */				
 			
 			loop = totSize/2;
 			while( loop-- > 0 )
 			{
 				*ptr++ = *bufPtr++;
-				//	ptr++; bufPtr ++;
 			}
 			free(oImage);
-			//efree3 ((void **) &oImage);
 			oImage =  (short*) tmpImage;
 		}
 		
 		
 		if( realwidth != width )
 		{
-			//NSLog(@"Update width: %d realWidth: %d ", width, realwidth);
 			if( isRGB )
 			{
 				char	*ptr = (char*) oImage;
@@ -5819,25 +5773,24 @@ END_CREATE_ROIS:
 					}
 				}
 			}
-			//NSLog(@"Updated width");
 		}
 		
 		//***********
 		
 		if( isRGB )
 		{
-			if( imPix->fExternalOwnedImage)
+			if( self->fExternalOwnedImage)
 			{
-				imPix->fImage = imPix->fExternalOwnedImage;
-				memcpy( imPix->fImage, oImage, width*height*sizeof(float));
+				self->fImage = self->fExternalOwnedImage;
+				memcpy( self->fImage, oImage, width*height*sizeof(float));
 				free(oImage);
 			}
-			else imPix->fImage = (float*) oImage;
+			else self->fImage = (float*) oImage;
 			oImage = nil;
 			
 			if( oData && gDisplayDICOMOverlays )
 			{
-				unsigned char	*rgbData = (unsigned char*) imPix->fImage;
+				unsigned char	*rgbData = (unsigned char*) self->fImage;
 				
 				for( int y = 0; y < oRows; y++ )
 				{
@@ -5855,20 +5808,19 @@ END_CREATE_ROIS:
 		}
 		else
 		{
-			//NSLog(@"not RGB");
 			if( bitsAllocated == 32 )
 			{
 				unsigned int	*usint = (unsigned int*) oImage;
 				int				*sint = (int*) oImage;
 				float			*tDestF;
 				
-				if( imPix->fExternalOwnedImage)
+				if( self->fExternalOwnedImage)
 				{
-					tDestF = imPix->fImage = imPix->fExternalOwnedImage;
+					tDestF = self->fImage = self->fExternalOwnedImage;
 				}
 				else
 				{
-					tDestF = imPix->fImage = malloc(width*height*sizeof(float) + 100);
+					tDestF = self->fImage = malloc(width*height*sizeof(float) + 100);
 				}
 				
 				if( fIsSigned > 0 )
@@ -5901,16 +5853,16 @@ END_CREATE_ROIS:
 				
 				src16.data = oImage;
 				
-				if( imPix->fExternalOwnedImage)
+				if( self->fExternalOwnedImage)
 				{
-					imPix->fImage = imPix->fExternalOwnedImage;
+					self->fImage = self->fExternalOwnedImage;
 				}
 				else
 				{
-					imPix->fImage = malloc(width*height*sizeof(float) + 100);
+					self->fImage = malloc(width*height*sizeof(float) + 100);
 				}
 				
-				dstf.data = imPix->fImage;
+				dstf.data = self->fImage;
 				
 				if( fIsSigned > 0 )
 				{
@@ -5938,7 +5890,7 @@ END_CREATE_ROIS:
 				{
 					for( int x = 0; x < oColumns; x++ )
 					{
-						if( oData[ y * oColumns + x]) imPix->fImage[ y * width + x] = 0xFF;
+						if( oData[ y * oColumns + x]) self->fImage[ y * width + x] = 0xFF;
 					}
 				}
 			}
@@ -5947,19 +5899,15 @@ END_CREATE_ROIS:
 		wl = 0;
 		ww = 0; //Computed later, only if needed
 		
-		
 		if( savedWW != 0 )
 		{
 			wl = savedWL;
 			ww = savedWW;
 		}
 		
-		[subPool release];
+	#pragma mark *after loading a frame
 		
-#pragma mark *after loading a frame
-		
-		}
-	}//end of 		if ([dcmObject attributeValueWithName:@"PixelData"])
+	}//end of if ([dcmObject attributeValueWithName:@"PixelData"])
 
 	if( fabs(pixelSpacingX) / fabs(pixelSpacingY) > 10000 || fabs(pixelSpacingX) / fabs(pixelSpacingY) < 0.0001)
 	{
@@ -6056,12 +6004,40 @@ END_CREATE_ROIS:
 
 + (void) purgeCachedDictionaries
 {
+	[PapyrusLock lock];
+	
 	[cachedDCMFrameworkFiles removeAllObjects];
+	
+	for( NSString *file in [cachedPapyGroups allValues])
+	{
+		NSMutableDictionary *cachedGroupsForThisFile = [cachedPapyGroups valueForKey: file];
+		
+		if( cachedGroupsForThisFile)
+		{
+			int fileNb = [[cachedGroupsForThisFile valueForKey: @"fileNb"] intValue];
+			[cachedGroupsForThisFile removeObjectForKey: @"fileNb"];
+			[cachedGroupsForThisFile removeObjectForKey: @"count"];
+				
+			for( NSValue *pointer in [cachedGroupsForThisFile allValues] )
+			{
+				SElement *theGroupP = (SElement*) [pointer pointerValue];
+				Papy3GroupFree ( &theGroupP, TRUE);
+			}
+				
+			[cachedPapyGroups removeObjectForKey: file];
+			Papy3FileClose (fileNb, TRUE);
+		}
+	}
+	
 	[cachedPapyGroups removeAllObjects];
+	
+	[PapyrusLock unlock];
 }
 
 - (void) clearCachedDCMFrameworkFiles
 {
+	[PapyrusLock lock];
+	
 	if( fImage)
 	{
 		NSMutableDictionary *o = [cachedDCMFrameworkFiles valueForKey: srcFile];
@@ -6074,6 +6050,8 @@ END_CREATE_ROIS:
 				[cachedDCMFrameworkFiles removeObjectForKey: srcFile];
 		}
 	}
+	
+	[PapyrusLock unlock];
 }
 
 - (void) clearCachedPapyGroups
@@ -10438,10 +10416,6 @@ END_CREATE_ROIS:
 -(long) maskID {return maskID;}
 -(void) maskTime:(float)newMaskTime {maskTime = newMaskTime;}
 -(float) maskTime {return maskTime;}
-//-(void) rot:(float)newRot {rot = newRot;}
-//-(float) rot {return rot;}
-//-(void) ang:(float)newAng {ang = newAng;}
-//-(float) ang {return ang;}
 -(void) positionerPrimaryAngle:(NSNumber*)newPositionerPrimaryAngle
 {
 	if( positionerPrimaryAngle != newPositionerPrimaryAngle)
