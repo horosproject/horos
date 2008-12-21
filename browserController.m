@@ -11002,16 +11002,31 @@ static NSArray*	openSubSeriesArray = nil;
 {
 	openSubSeriesArray = [toOpenArray retain];
 	
-	NSLog( @"[[NSApp mainWindow] level]: %d", [[NSApp mainWindow] level]);
-	NSLog( @"[[NSApp keyWindow] level]: %d", [[NSApp keyWindow] level]);
-	
 	if( [[NSApp mainWindow] level] > NSModalPanelWindowLevel){ NSBeep(); return nil;}		// To avoid the problem of displaying this sheet when the user is in fullscreen mode
 	if( [[NSApp keyWindow] level] > NSModalPanelWindowLevel) { NSBeep(); return nil;}		// To avoid the problem of displaying this sheet when the user is in fullscreen mode
 	
-	[self setValue:[NSNumber numberWithInt:[[toOpenArray objectAtIndex:0] count]] forKey:@"subTo"];
+	BOOL frameMode = NO;
+	DicomImage *image = 0L;
+	
+	if( [toOpenArray count] == 1 && [[toOpenArray lastObject] count] == 1 && [[[[toOpenArray lastObject] lastObject] valueForKey:@"numberOfFrames"] intValue] > 1)
+	{
+		frameMode = YES;
+		image = [[toOpenArray lastObject] lastObject];
+	}
+	
+	if( frameMode)
+	{
+		[self setValue:[NSNumber numberWithInt: [[image valueForKey: @"numberOfFrames"] intValue]] forKey:@"subTo"];
+		[self setValue:[NSNumber numberWithInt: [[image valueForKey: @"numberOfFrames"] intValue]] forKey:@"subMax"];
+	}
+	else
+	{
+		[self setValue:[NSNumber numberWithInt:[[toOpenArray objectAtIndex:0] count]] forKey:@"subTo"];
+		[self setValue:[NSNumber numberWithInt:[[toOpenArray objectAtIndex:0] count]] forKey:@"subMax"];
+	}
+	
 	[self setValue:[NSNumber numberWithInt:1] forKey:@"subFrom"];
 	[self setValue:[NSNumber numberWithInt:2] forKey:@"subInterval"];
-	[self setValue:[NSNumber numberWithInt:[[toOpenArray objectAtIndex:0] count]] forKey:@"subMax"];
 	
 	[NSApp beginSheet: subSeriesWindow
 	   modalForWindow: [NSApp mainWindow]
