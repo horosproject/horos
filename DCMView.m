@@ -9366,8 +9366,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		{
 			// Series Level
 			[[self seriesObj] setValue:[NSNumber numberWithFloat: scaleValue / sqrt( [self frame].size.height * [self frame].size.width)] forKey:@"scale"];
-			
-			[[self seriesObj] setValue:[NSNumber numberWithInt: 3] forKey: @"displayStyle"];	//displayStyle = 2  -> scaleValue is proportional to view width
+			[[self seriesObj] setValue:[NSNumber numberWithInt: 3] forKey: @"displayStyle"];
 			
 			// Image Level
 			if( ([[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"CR"]  && IndependentCRWLWW) || COPYSETTINGSINSERIES == NO)
@@ -9399,15 +9398,18 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 		if( [self is2DViewer] && firstTimeDisplay)
 		{
-			// Series Level
-			[[self seriesObj] setValue:[NSNumber numberWithFloat: scaleValue / sqrt( [self frame].size.height * [self frame].size.width)] forKey:@"scale"];
-			[[self seriesObj] setValue:[NSNumber numberWithInt: 3] forKey: @"displayStyle"];	//displayStyle = 2  -> scaleValue is proportional to view width
-			
-			// Image Level
-			if( ([[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"CR"]  && IndependentCRWLWW) || COPYSETTINGSINSERIES == NO)
-				[[self imageObj] setValue:[NSNumber numberWithFloat:scaleValue] forKey:@"scale"];
-			else
-				[[self imageObj] setValue: nil forKey:@"scale"];
+			if( [[self windowController] isPostprocessed] == NO)
+			{
+				// Series Level
+				[[self seriesObj] setValue:[NSNumber numberWithFloat: scaleValue / sqrt( [self frame].size.height * [self frame].size.width)] forKey:@"scale"];
+				[[self seriesObj] setValue:[NSNumber numberWithInt: 3] forKey: @"displayStyle"];
+				
+				// Image Level
+				if( ([[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"CR"]  && IndependentCRWLWW) || COPYSETTINGSINSERIES == NO)
+					[[self imageObj] setValue:[NSNumber numberWithFloat:scaleValue] forKey:@"scale"];
+				else
+					[[self imageObj] setValue: nil forKey:@"scale"];
+			}
 		}
 		
 		[self updateTilingViews];

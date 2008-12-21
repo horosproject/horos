@@ -5479,12 +5479,9 @@ static ViewerController *draggedController = nil;
 
 	while( ThreadLoadImage)
 		[[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
-
+	
 	if( resampleRatio != 1)
-	{
-		NSManagedObject		*series = [[fileList[ curMovieIndex] objectAtIndex:0] valueForKey:@"series"];
-		[series setValue: [NSNumber numberWithFloat: [[series valueForKey:@"scale"] floatValue] / resampleRatio] forKey:@"scale"];
-	}
+		resampleRatio = 1;
 	
 	for( i = 0; i < maxMovieIndex; i++)
 	{
@@ -6555,7 +6552,7 @@ static ViewerController *draggedController = nil;
 			}
 		}
 		[imageView roiSet];
-
+		[imageView setScaleValue: [imageView scaleValue] * xFactor];
 	}
 
 	return isResampled;

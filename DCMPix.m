@@ -4896,7 +4896,7 @@ END_CREATE_ROIS:
 	#endif
 }
 
-- (void) dcmFrameworkLoad0x0018: (id) dcmObject
+- (void) dcmFrameworkLoad0x0018: (DCMObject*) dcmObject
 {
 	if( [dcmObject attributeValueWithName:@"FrameofReferenceUID"])
 	{
@@ -5009,7 +5009,7 @@ END_CREATE_ROIS:
 	}
 }
 
-- (void) dcmFrameworkLoad0x0020: (id) dcmObject
+- (void) dcmFrameworkLoad0x0020: (DCMObject*) dcmObject
 {
 //orientation
 	originX = 0;	originY = 0;	originZ = 0;
@@ -5043,7 +5043,7 @@ END_CREATE_ROIS:
 	}
 }
 
-- (void) dcmFrameworkLoad0x0028: (id) dcmObject
+- (void) dcmFrameworkLoad0x0028: (DCMObject*) dcmObject
 {
 	// Group 0x0028
 
@@ -5375,36 +5375,27 @@ END_CREATE_ROIS:
 	{
 		for ( DCMObject *sequenceItem in sharedFunctionalGroupsSequence.sequence )
 		{
-			//get Image Orientation for sequence
+			DCMSequenceAttribute *MRTimingAndRelatedParametersSequence = (DCMSequenceAttribute *)[sequenceItem attributeWithName:@"MRTimingAndRelatedParametersSequence"];
+			DCMObject *MRTimingAndRelatedParametersObject = [[MRTimingAndRelatedParametersSequence sequence] objectAtIndex:0];
+			if( MRTimingAndRelatedParametersObject)
+				[self dcmFrameworkLoad0x0020: MRTimingAndRelatedParametersObject];
+			
 			DCMSequenceAttribute *planeOrientationSequence = (DCMSequenceAttribute *)[sequenceItem attributeWithName:@"PlaneOrientationSequence"];
 			DCMObject *planeOrientationObject = [[planeOrientationSequence sequence] objectAtIndex:0];
-			//ImageOrientationPatient
+			if( planeOrientationObject)
+				[self dcmFrameworkLoad0x0020: planeOrientationObject];
 			
-			NSArray *iop = [planeOrientationObject attributeArrayWithName:@"ImageOrientationPatient"];
-			orientation[ 0] = 0;	orientation[ 1] = 0;	orientation[ 2] = 0;
-			orientation[ 3] = 0;	orientation[ 4] = 0;	orientation[ 5] = 0;
-			for ( int j = 0; j < iop.count; j++ ) 
-				orientation[ j] = [[iop objectAtIndex:j] floatValue];
-			
-			// pixelMeasureSequence	
 			DCMSequenceAttribute *pixelMeasureSequence = (DCMSequenceAttribute *)[sequenceItem attributeWithName:@"PixelMeasuresSequence"];
 			DCMObject *pixelMeasureObject = [[pixelMeasureSequence sequence] objectAtIndex:0];
-			sliceThickness = [[pixelMeasureObject attributeValueWithName:@"SliceThickness"] floatValue];
-			NSArray *pixelSpacing = [pixelMeasureObject attributeArrayWithName:@"PixelSpacing"];
-			if (pixelSpacing.count >= 2)
-			{
-				pixelSpacingY = [[pixelSpacing objectAtIndex:0] floatValue];
-				pixelSpacingX = [[pixelSpacing objectAtIndex:1] floatValue];
-			}
+			if( pixelMeasureObject)
+				[self dcmFrameworkLoad0x0018: pixelMeasureObject];
+			if( pixelMeasureObject)
+				[self dcmFrameworkLoad0x0028: pixelMeasureObject];
 			
 			DCMSequenceAttribute *pixelTransformationSequence = (DCMSequenceAttribute *)[sequenceItem attributeWithName:@"PixelValueTransformationSequence"];
 			DCMObject *pixelTransformationSequenceObject = [[pixelTransformationSequence sequence] objectAtIndex:0];
-			//RescaleIntercept
-			offset = [[pixelTransformationSequenceObject attributeValueWithName:@"RescaleIntercept"] floatValue]; 
-			//Rescale Slope
-			
-			if( [[pixelTransformationSequenceObject attributeValueWithName:@"RescaleSlope"] floatValue])
-				slope = [[pixelTransformationSequenceObject attributeValueWithName:@"RescaleSlope"] floatValue];
+			if( pixelTransformationSequenceObject)
+				[self dcmFrameworkLoad0x0028: pixelTransformationSequenceObject];
 		}
 	}
 	
@@ -5426,47 +5417,47 @@ END_CREATE_ROIS:
 			DCMObject *sequenceItem = [[perFrameFunctionalGroupsSequence sequence] objectAtIndex:imageNb];
 			if (sequenceItem)
 			{
-				if ([sequenceItem attributeArrayWithName:@"PlanePositionSequence"])
+				if ([sequenceItem attributeArrayWithName:@"MREchoSequence"])
 				{
-					DCMSequenceAttribute *seq = (DCMSequenceAttribute *) [sequenceItem attributeWithName:@"PlanePositionSequence"];
-					NSArray *ipp = [[[seq sequence] objectAtIndex: 0] attributeArrayWithName:@"ImagePositionPatient"];
-					if ([ipp count] >= 3)
-					{
-						originX = [[ipp objectAtIndex:0] floatValue];
-						originY = [[ipp objectAtIndex:1] floatValue];
-						originZ = [[ipp objectAtIndex:2] floatValue];
-						isOriginDefined = YES;
-					}
-				}
-					
-				if ([sequenceItem attributeArrayWithName:@"PlaneOrientationSequence"])
-				{
-					DCMSequenceAttribute *seq = (DCMSequenceAttribute *) [sequenceItem attributeWithName:@"PlaneOrientationSequence"];
-					NSArray *iop = [[[seq sequence] objectAtIndex: 0] attributeArrayWithName:@"ImageOrientationPatient"];
-					orientation[ 0] = 0;	orientation[ 1] = 0;	orientation[ 2] = 0;
-					orientation[ 3] = 0;	orientation[ 4] = 0;	orientation[ 5] = 0;
-					for ( int j = 0; j < iop.count; j++ ) 
-						orientation[ j] = [[iop objectAtIndex:j] floatValue];
+					DCMSequenceAttribute *seq = (DCMSequenceAttribute *) [sequenceItem attributeWithName:@"MREchoSequence"];
+					DCMObject *object = [[seq sequence] objectAtIndex: 0];
+					if( object)
+						[self dcmFrameworkLoad0x0018: object];
 				}
 				
 				if ([sequenceItem attributeArrayWithName:@"PixelMeasuresSequence"])
 				{
 					DCMSequenceAttribute *seq = (DCMSequenceAttribute *) [sequenceItem attributeWithName:@"PixelMeasuresSequence"];
-					sliceThickness = [[[[seq sequence] objectAtIndex: 0] attributeValueWithName:@"SliceThickness"] floatValue];
-					NSArray *pixelSpacing = [[[seq sequence] objectAtIndex: 0] attributeArrayWithName:@"PixelSpacing"];
-					if (pixelSpacing.count >= 2)
-					{
-						pixelSpacingY = [[pixelSpacing objectAtIndex:0] floatValue];
-						pixelSpacingX = [[pixelSpacing objectAtIndex:1] floatValue];
-					}
+					DCMObject *object = [[seq sequence] objectAtIndex: 0];
+					if( object)
+						[self dcmFrameworkLoad0x0018: object];
+					if( object)
+						[self dcmFrameworkLoad0x0028: object];
+				}
+				
+				if ([sequenceItem attributeArrayWithName:@"PlanePositionSequence"])
+				{
+					DCMSequenceAttribute *seq = (DCMSequenceAttribute *) [sequenceItem attributeWithName:@"PlanePositionSequence"];
+					DCMObject *object = [[seq sequence] objectAtIndex: 0];
+					
+					if( object)
+						[self dcmFrameworkLoad0x0020: object];
+					if( object)
+						[self dcmFrameworkLoad0x0028: object];
+				}
+					
+				if ([sequenceItem attributeArrayWithName:@"PlaneOrientationSequence"])
+				{
+					DCMSequenceAttribute *seq = (DCMSequenceAttribute *) [sequenceItem attributeWithName:@"PlaneOrientationSequence"];
+					DCMObject *object = [[seq sequence] objectAtIndex: 0];
+					if( object)
+						[self dcmFrameworkLoad0x0020: object];
 				}
 			}
-			//NSLog(@"per frame origin x: %f y: %f z: %f", originX, originY, originZ);
-			//NSLog(@"pixelspacing: x: %f y: %f", pixelSpacingX, pixelSpacingY);
 		}
 		else
 		{
-			NSLog(@"No Frame %d in preFrameFunctionalGroupsSequence/", imageNb);
+			NSLog(@"No Frame %d in preFrameFunctionalGroupsSequence", imageNb);
 		}		
 	}
 	
