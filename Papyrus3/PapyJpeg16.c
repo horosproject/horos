@@ -63,8 +63,6 @@
 /*										*/
 /********************************************************************************/
 
-static short volatile alreadyUncompressing = FALSE;
-
 PapyShort
 ExtractJPEGlossy16 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelStart, PapyULong *inOffsetTableP, int inImageNb, int inDepth, int mode)
 {
@@ -82,12 +80,6 @@ ExtractJPEGlossy16 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelS
   PapyUChar			*theBuffer8P;
   struct jpeg_error_mgr			theJErr;
 
-  while( alreadyUncompressing == TRUE)
-  {
-	
-  }
-  alreadyUncompressing = TRUE;
-  
 //  fprintf(stdout, "ExtractJPEGlossy16\r");
   
   /* position the file pointer to the begining of the image */
@@ -99,7 +91,6 @@ ExtractJPEGlossy16 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelS
   if ((theErr = (PapyShort) Papy3FRead (gPapyFile [inFileNb], &i, 1L, theTmpBufP)) < 0)
   {
     Papy3FClose (&gPapyFile [inFileNb]);
-	alreadyUncompressing = FALSE;
     RETURN (theErr);
   } /* if */
     
@@ -111,7 +102,6 @@ ExtractJPEGlossy16 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelS
   /* Pixel data fragment not found when expected */
   if ((theGroup != 0xFFFE) || (theElement != 0xE000))
   {
-	alreadyUncompressing = FALSE;
 	RETURN (papBadArgument);
   }
   
@@ -130,7 +120,6 @@ ExtractJPEGlossy16 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelS
 	  if ((theErr = (PapyShort) Papy3FRead (gPapyFile [inFileNb], &theLength, 1L, jpegPointer)) < 0)
 	  {
 		Papy3FClose (&gPapyFile [inFileNb]);
-		alreadyUncompressing = FALSE;
 		RETURN (theErr);
 	  } /* if */
 	  
@@ -207,8 +196,6 @@ ExtractJPEGlossy16 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelS
 
 	 free( jpegPointer);
 	}
-	
-  alreadyUncompressing = FALSE;
 	
   return theErr;
 

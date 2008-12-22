@@ -63,8 +63,6 @@
 /*										*/
 /********************************************************************************/
 
-static short volatile alreadyUncompressing = FALSE;
-
 PapyShort
 ExtractJPEGlossy8 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelStart, PapyULong *inOffsetTableP, int inImageNb, int inDepth, int mode)
 {
@@ -82,10 +80,6 @@ ExtractJPEGlossy8 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelSt
   PapyUChar			*theBuffer8P;
 	struct jpeg_error_mgr			theJErr;
    
-  while( alreadyUncompressing == TRUE)
-  {
-  }
-  alreadyUncompressing = TRUE;
   
 //  fprintf(stdout, "ExtractJPEGlossy8\r");
   
@@ -98,7 +92,6 @@ ExtractJPEGlossy8 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelSt
   if ((theErr = (PapyShort) Papy3FRead (gPapyFile [inFileNb], &i, 1L, theTmpBufP)) < 0)
   {
     Papy3FClose (&gPapyFile [inFileNb]);
-	alreadyUncompressing = FALSE;
     RETURN (theErr);
   } /* if */
     
@@ -110,7 +103,6 @@ ExtractJPEGlossy8 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelSt
   /* Pixel data fragment not found when expected */
   if ((theGroup != 0xFFFE) || (theElement != 0xE000))
   {
-	alreadyUncompressing = FALSE;
 	RETURN (papBadArgument);
   }
   /* We set up the normal JPEG error routines, then override error_exit. */
@@ -128,7 +120,6 @@ ExtractJPEGlossy8 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelSt
 	  if ((theErr = (PapyShort) Papy3FRead (gPapyFile [inFileNb], &theLength, 1L, jpegPointer)) < 0)
 	  {
 		Papy3FClose (&gPapyFile [inFileNb]);
-		alreadyUncompressing = FALSE;
 		RETURN (theErr);
 	  } /* if */
 	  
@@ -140,7 +131,6 @@ ExtractJPEGlossy8 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelSt
 	  if (theCInfo.data_precision == 12)
 	  {
 		jpeg_destroy_decompress (&theCInfo);
-		alreadyUncompressing = FALSE;
 		return papBadArgument;
 	  }
 
@@ -257,8 +247,6 @@ ExtractJPEGlossy8 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelSt
 
 	 free( jpegPointer);
 	}
-  alreadyUncompressing = FALSE;
-	
   return theErr;
 
 } /* endof ExtractJPEGlossy */
