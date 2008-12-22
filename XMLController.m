@@ -23,6 +23,7 @@
 #import <OsiriX/DCMObject.h>
 #import "AppController.h"
 #import "DCMPix.h"
+#import "MutableArrayCategory.h"
 
 static NSString* 	XMLToolbarIdentifier					= @"XML Toolbar Identifier";
 static NSString*	ExportToolbarItemIdentifier				= @"Export.icns";
@@ -253,9 +254,11 @@ static BOOL showWarning = YES;
 			NSMutableArray	*params = [NSMutableArray arrayWithObjects:@"dcmodify", @"--verbose", @"--ignore-errors", nil];
 			[params addObjectsFromArray:  groupsAndElements];
 			
-			NSArray	*files = [self arrayOfFiles];
+			NSMutableArray	*files = [NSMutableArray arrayWithArray: [self arrayOfFiles]];
 			if( files)
 			{
+				[files removeDuplicatedStrings];
+			
 				[params addObjectsFromArray: files];
 				
 				WaitRendering		*wait = nil;
