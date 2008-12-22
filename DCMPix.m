@@ -5923,8 +5923,6 @@ END_CREATE_ROIS:
 {
 	NSString *groupKey = [NSString stringWithFormat:@"%d", group];
 	
-	[PapyrusLock lock];
-	
 	SElement *theGroupP = nil;
 	
 	NSMutableDictionary *cachedGroupsForThisFile = [cachedPapyGroups valueForKey: srcFile];
@@ -5933,6 +5931,8 @@ END_CREATE_ROIS:
 	
 	if( cachedGroupsForThisFile == nil)
 	{
+		[PapyrusLock lock];
+		
 		fileNb = Papy3FileOpen ( (char*) [srcFile UTF8String], (PAPY_FILE) 0, TRUE, 0);
 		
 		if( fileNb >= 0)
@@ -5942,13 +5942,19 @@ END_CREATE_ROIS:
 			[cachedGroupsForThisFile setValue: [NSNumber numberWithInt: fileNb]  forKey: @"fileNb"];
 			[cachedGroupsForThisFile setValue: [NSNumber numberWithInt: 1] forKey: @"count"];
 		}
+		
+		[PapyrusLock unlock];
 	}
 	else
 	{
 		fileNb = [[cachedGroupsForThisFile valueForKey: @"fileNb"] intValue];
 		
 		if( group == 0L)
+		{
+			[PapyrusLock lock];
 			[cachedGroupsForThisFile setValue: [NSNumber numberWithInt: [[cachedGroupsForThisFile valueForKey: @"count"] intValue] +1] forKey: @"count"];
+			[PapyrusLock unlock];
+		}
 	}
 	
 	if( fileNb >= 0)
@@ -5962,6 +5968,8 @@ END_CREATE_ROIS:
 			if( [cachedGroupsForThisFile valueForKey: groupKey] == nil)
 			{
 				int theErr = 0;
+				
+				[PapyrusLock lock];
 				
 				if (gIsPapyFile[ fileNb] == DICOM10) theErr = Papy3FSeek (gPapyFile [fileNb], SEEK_SET, 132L);
 				
@@ -5983,12 +5991,12 @@ END_CREATE_ROIS:
 						[cachedGroupsForThisFile setValue: [NSValue valueWithPointer: 0L]  forKey: groupKey];
 					}
 				}
+				
+				[PapyrusLock unlock];
 			}
 			else theGroupP = [[cachedGroupsForThisFile valueForKey: groupKey] pointerValue];
 		}
 	}
-	
-	[PapyrusLock unlock];
 	
 	return theGroupP;
 }  
@@ -7519,8 +7527,6 @@ END_CREATE_ROIS:
 	#pragma mark read pixel data
 			if( [[cachedPapyGroups valueForKey: srcFile] valueForKey: @"fileNb"])
 			{
-				[PapyrusLock lock];
-				
 				DCMPix *imPix = nil;
 				short *oImage = nil;
 				
@@ -7528,6 +7534,11 @@ END_CREATE_ROIS:
 				ee = imageNb-1;
 				
 				int fileNb = [[[cachedPapyGroups valueForKey: srcFile] valueForKey: @"fileNb"] intValue];
+				
+				BOOL toBeUnlocked;
+				
+				[PapyrusLock lock];
+				toBeUnlocked = YES;
 				
 				// position the file pointer to the begining of the data set 
 				err = Papy3GotoNumber (fileNb, (PapyShort) ee+1, DataSetID);
@@ -7563,6 +7574,9 @@ END_CREATE_ROIS:
 						}
 						
 						oImage = (short*) Papy3GetPixelData (fileNb, ee+1, theGroupP, ImagePixel);
+						
+						[PapyrusLock unlock];
+						toBeUnlocked = NO;
 						
 						if( oImage == nil)
 						{
@@ -7893,12 +7907,15 @@ END_CREATE_ROIS:
 						
 						//if( fIsSigned == YES && 
 						
+						[PapyrusLock lock];
 						// free group 7FE0 
 						err = Papy3GroupFree (&theGroupP, TRUE);
+						[PapyrusLock unlock];
 					} // endif ...group 7FE0 read 
 				}
 				
-				[PapyrusLock unlock];
+				if( toBeUnlocked)
+					[PapyrusLock unlock];
 				
 		#pragma mark RGB or fPlanar
 				

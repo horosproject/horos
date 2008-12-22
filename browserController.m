@@ -713,151 +713,163 @@ static NSArray*	statesArray = nil;
 						/*******************************************/
 						/*********** Find image object *************/
 						
-						BOOL			local = NO;
+						BOOL local = NO;
 						if( [newFile length] >= [INpath length] && [newFile compare:INpath options:NSLiteralSearch range:NSMakeRange(0, [INpath length])] == NSOrderedSame)
 						{
 							local = YES;
 						}
 						
-						NSArray		*imagesArray = [[seriesTable valueForKey:@"images"] allObjects] ;
-						
-						index = [[imagesArray valueForKey:@"sopInstanceUID"] indexOfObject:[curDict objectForKey: [@"SOPUID" stringByAppendingString:SeriesNum]]];
-						if( index != NSNotFound )
+						NSArray	*imagesArray = [[seriesTable valueForKey:@"images"] allObjects] ;
+						int numberOfFrames = [[curDict objectForKey: @"numberOfFrames"] intValue];
+						if( numberOfFrames == 0) numberOfFrames = 1;
+							
+						for( int f = 0 ; f < numberOfFrames; f++)
 						{
-							image = [imagesArray objectAtIndex: index];
+							index = [[imagesArray valueForKey:@"sopInstanceUID"] indexOfObject:[curDict objectForKey: [@"SOPUID" stringByAppendingString: SeriesNum]]];
 							
-							// Does this image contain a valid image path? If not replace it, with the new one
-							if( [[NSFileManager defaultManager] fileExistsAtPath: [DicomImage completePathForLocalPath: [image valueForKey:@"path"] directory: dbFolder]] == YES && parseExistingObject == NO)
+							if( index != NSNotFound )
 							{
-								if( produceAddedFiles)
-									[addedImagesArray addObject: image];
+								image = [imagesArray objectAtIndex: index];
 								
-								if( local)	// Delete this file, it's already in the DB folder
+								// Does this image contain a valid image path? If not replace it, with the new one
+								if( [[NSFileManager defaultManager] fileExistsAtPath: [DicomImage completePathForLocalPath: [image valueForKey:@"path"] directory: dbFolder]] == YES && parseExistingObject == NO)
 								{
-									if( [[image valueForKey:@"path"] isEqualToString: [newFile lastPathComponent]] == NO)
-										[[NSFileManager defaultManager] removeFileAtPath: newFile handler:nil];
-								}
-								
-								newObject = NO;
-							}
-							else
-							{
-								newObject = YES;
-								[image clearCompletePathCache];
-								
-								if( [[image valueForKey:@"inDatabaseFolder"] boolValue] && [[DicomImage completePathForLocalPath: [image valueForKey:@"path"] directory: dbFolder] isEqualToString: newFile] == NO)
-								{
-									if( [[NSFileManager defaultManager] fileExistsAtPath: [DicomImage completePathForLocalPath: [image valueForKey:@"path"] directory: dbFolder]])
-										[[NSFileManager defaultManager] removeFileAtPath: [DicomImage completePathForLocalPath: [image valueForKey:@"path"] directory: dbFolder] handler:nil];
-								}
-							}
-						}
-						else
-						{
-							image = [NSEntityDescription insertNewObjectForEntityForName:@"Image" inManagedObjectContext:context];
-							
-							newObject = YES;
-						}
-						
-						if( newObject || parseExistingObject)
-						{
-							needDBRefresh = YES;
-							
-							if( DICOMROI == NO)
-							{
-								[study setValue:today forKey:@"dateAdded"];
-								[seriesTable setValue:today forKey:@"dateAdded"];
-							}
-							
-							[image setValue:[curDict objectForKey: [@"imageID" stringByAppendingString:SeriesNum]] forKey:@"instanceNumber"];
-							//[image setValue:[[curDict objectForKey: [@"imageID" stringByAppendingString:SeriesNum]] stringValue] forKey:@"name"];
-							[image setValue:[curDict objectForKey: @"modality"] forKey:@"modality"];
-							
-							if( local) [image setValue: [newFile lastPathComponent] forKey:@"path"];
-							else [image setValue:newFile forKey:@"path"];
-							
-							if( DICOMROI) [image setValue: [NSNumber numberWithBool:YES] forKey:@"inDatabaseFolder"];
-							else [image setValue:[NSNumber numberWithBool:local] forKey:@"inDatabaseFolder"];
-							
-							[image setValue:[curDict objectForKey: @"studyDate"]  forKey:@"date"];
-							
-							[image setValue:[curDict objectForKey: [@"SOPUID" stringByAppendingString:SeriesNum]] forKey:@"sopInstanceUID"];
-							[image setValue:[curDict objectForKey: @"sliceLocation"] forKey:@"sliceLocation"];
-							[image setValue:[[newFile pathExtension] lowercaseString] forKey:@"extension"];
-							[image setValue:[curDict objectForKey: @"fileType"] forKey:@"fileType"];
-							
-							[image setValue:[curDict objectForKey: @"height"] forKey:@"height"];
-							[image setValue:[curDict objectForKey: @"width"] forKey:@"width"];
-							[image setValue:[curDict objectForKey: @"numberOfFrames"] forKey:@"numberOfFrames"];
-							[image setValue:[NSNumber numberWithBool:mountedVolume] forKey:@"mountedVolume"];
-							if( mountedVolume) [seriesTable setValue:[NSNumber numberWithBool:mountedVolume] forKey:@"mountedVolume"];
-							[image setValue:[curDict objectForKey: @"numberOfSeries"] forKey:@"numberOfSeries"];
-							
-							[seriesTable setValue:[NSNumber numberWithInt:0]  forKey:@"numberOfImages"];
-							[study setValue:[NSNumber numberWithInt:0]  forKey:@"numberOfImages"];
-							[seriesTable setValue: nil forKey:@"thumbnail"];
-							
-							// Relations
-							[image setValue:seriesTable forKey:@"series"];
-							
-							if( COMMENTSAUTOFILL)
-							{
-								if([curDict objectForKey: @"commentsAutoFill"])
-								{
-									[seriesTable setValue:[curDict objectForKey: @"commentsAutoFill"] forKey:@"comment"];
+									if( produceAddedFiles)
+										[addedImagesArray addObject: image];
 									
-									if( [study valueForKey:@"comment"] == nil || [[study valueForKey:@"comment"] isEqualToString:@""])
+									if( local)	// Delete this file, it's already in the DB folder
 									{
-										[study setValue:[curDict objectForKey: @"commentsAutoFill"] forKey:@"comment"];
+										if( [[image valueForKey:@"path"] isEqualToString: [newFile lastPathComponent]] == NO)
+											[[NSFileManager defaultManager] removeFileAtPath: newFile handler:nil];
+									}
+									
+									newObject = NO;
+								}
+								else
+								{
+									newObject = YES;
+									[image clearCompletePathCache];
+									
+									if( [[image valueForKey:@"inDatabaseFolder"] boolValue] && [[DicomImage completePathForLocalPath: [image valueForKey:@"path"] directory: dbFolder] isEqualToString: newFile] == NO)
+									{
+										if( [[NSFileManager defaultManager] fileExistsAtPath: [DicomImage completePathForLocalPath: [image valueForKey:@"path"] directory: dbFolder]])
+											[[NSFileManager defaultManager] removeFileAtPath: [DicomImage completePathForLocalPath: [image valueForKey:@"path"] directory: dbFolder] handler:nil];
 									}
 								}
 							}
-							
-							if( produceAddedFiles)
-								[addedImagesArray addObject: image];
-							
-							if( [addedSeries containsObject: seriesTable] == NO) [addedSeries addObject: seriesTable];
-							
-							if([curDict valueForKey:@"album"] !=nil)
+							else
 							{
-								//Find all albums
-								NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-								[dbRequest setEntity: [[model entitiesByName] objectForKey:@"Album"]];
-								[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
-								error = nil;
-								NSArray *albumArray = [context executeFetchRequest:dbRequest error:&error];
+								image = [NSEntityDescription insertNewObjectForEntityForName:@"Image" inManagedObjectContext:context];
 								
-								NSManagedObject *album;
-								for( album in albumArray )
+								newObject = YES;
+							}
+							
+							if( newObject || parseExistingObject)
+							{
+								needDBRefresh = YES;
+								
+								if( DICOMROI == NO)
 								{
-									if([[album valueForKey:@"name"] isEqualToString: [curDict valueForKey:@"album"]])
-										break;
+									[study setValue:today forKey:@"dateAdded"];
+									[seriesTable setValue:today forKey:@"dateAdded"];
 								}
 								
-								if ( album == nil )
+								[image setValue:[curDict objectForKey: @"modality"] forKey:@"modality"];
+								
+								if( numberOfFrames > 1)
 								{
-									//NSString *name = [curDict valueForKey:@"album"];
-									//album = [NSEntityDescription insertNewObjectForEntityForName:@"Album" inManagedObjectContext: context];
-									//[album setValue:name forKey:@"name"];
+									[image setValue:[NSNumber numberWithInt: f] forKey:@"frameID"];
+									[image setValue:[NSNumber numberWithInt: f] forKey:@"instanceNumber"];
+								}
+								else
+									[image setValue:[curDict objectForKey: [@"imageID" stringByAppendingString: SeriesNum]] forKey:@"instanceNumber"];
 									
-									for ( album in albumArray )
+								if( local) [image setValue: [newFile lastPathComponent] forKey:@"path"];
+								else [image setValue:newFile forKey:@"path"];
+								
+								if( DICOMROI) [image setValue: [NSNumber numberWithBool:YES] forKey:@"inDatabaseFolder"];
+								else [image setValue:[NSNumber numberWithBool:local] forKey:@"inDatabaseFolder"];
+								
+								[image setValue:[curDict objectForKey: @"studyDate"]  forKey:@"date"];
+								
+								[image setValue:[curDict objectForKey: [@"SOPUID" stringByAppendingString:SeriesNum]] forKey:@"sopInstanceUID"];
+								[image setValue:[curDict objectForKey: @"sliceLocation"] forKey:@"sliceLocation"];
+								[image setValue:[[newFile pathExtension] lowercaseString] forKey:@"extension"];
+								[image setValue:[curDict objectForKey: @"fileType"] forKey:@"fileType"];
+								
+								[image setValue:[curDict objectForKey: @"height"] forKey:@"height"];
+								[image setValue:[curDict objectForKey: @"width"] forKey:@"width"];
+								[image setValue:[curDict objectForKey: @"numberOfFrames"] forKey:@"numberOfFrames"];
+								[image setValue:[NSNumber numberWithBool:mountedVolume] forKey:@"mountedVolume"];
+								if( mountedVolume) [seriesTable setValue:[NSNumber numberWithBool:mountedVolume] forKey:@"mountedVolume"];
+								[image setValue:[curDict objectForKey: @"numberOfSeries"] forKey:@"numberOfSeries"];
+								
+								[seriesTable setValue:[NSNumber numberWithInt:0]  forKey:@"numberOfImages"];
+								[study setValue:[NSNumber numberWithInt:0]  forKey:@"numberOfImages"];
+								[seriesTable setValue: nil forKey:@"thumbnail"];
+								
+								// Relations
+								[image setValue:seriesTable forKey:@"series"];
+								
+								if( COMMENTSAUTOFILL)
+								{
+									if([curDict objectForKey: @"commentsAutoFill"])
 									{
-										if ( [[album valueForKey:@"name"] isEqualToString: @"other"] )
+										[seriesTable setValue:[curDict objectForKey: @"commentsAutoFill"] forKey:@"comment"];
+										
+										if( [study valueForKey:@"comment"] == nil || [[study valueForKey:@"comment"] isEqualToString:@""])
+										{
+											[study setValue:[curDict objectForKey: @"commentsAutoFill"] forKey:@"comment"];
+										}
+									}
+								}
+								
+								if( produceAddedFiles)
+									[addedImagesArray addObject: image];
+								
+								if( [addedSeries containsObject: seriesTable] == NO) [addedSeries addObject: seriesTable];
+								
+								if([curDict valueForKey:@"album"] !=nil)
+								{
+									//Find all albums
+									NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+									[dbRequest setEntity: [[model entitiesByName] objectForKey:@"Album"]];
+									[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
+									error = nil;
+									NSArray *albumArray = [context executeFetchRequest:dbRequest error:&error];
+									
+									NSManagedObject *album;
+									for( album in albumArray )
+									{
+										if([[album valueForKey:@"name"] isEqualToString: [curDict valueForKey:@"album"]])
 											break;
 									}
 									
 									if ( album == nil )
 									{
-										album = [NSEntityDescription insertNewObjectForEntityForName:@"Album" inManagedObjectContext: context];
-										[album setValue:@"other" forKey:@"name"];
+										//NSString *name = [curDict valueForKey:@"album"];
+										//album = [NSEntityDescription insertNewObjectForEntityForName:@"Album" inManagedObjectContext: context];
+										//[album setValue:name forKey:@"name"];
+										
+										for ( album in albumArray )
+										{
+											if ( [[album valueForKey:@"name"] isEqualToString: @"other"] )
+												break;
+										}
+										
+										if ( album == nil )
+										{
+											album = [NSEntityDescription insertNewObjectForEntityForName:@"Album" inManagedObjectContext: context];
+											[album setValue:@"other" forKey:@"name"];
+										}
 									}
-								}
-								
-								// add the file to the album
-								if ( [[album valueForKey:@"smartAlbum"] boolValue] == NO )
-								{
-									NSMutableSet	*studies = [album mutableSetValueForKey: @"studies"];	
-									[studies addObject: [image valueForKeyPath:@"series.study"]];
+									
+									// add the file to the album
+									if ( [[album valueForKey:@"smartAlbum"] boolValue] == NO )
+									{
+										NSMutableSet *studies = [album mutableSetValueForKey: @"studies"];	
+										[studies addObject: [image valueForKeyPath:@"series.study"]];
+									}
 								}
 							}
 						}
@@ -2937,6 +2949,8 @@ static NSArray*	statesArray = nil;
 		files = [self filesForDatabaseMatrixSelection: objects onlyImages: NO];
 	else
 		files = [self filesForDatabaseOutlineSelection: objects onlyImages: NO];
+	
+	[files removeDuplicatedStringsInSyncWithThisArray: objects];
 	
 	Wait *splash = [[Wait alloc] initWithString: NSLocalizedString(@"Copying linked files into Database...", nil)];
 		
@@ -6805,7 +6819,7 @@ static NSArray*	statesArray = nil;
 						
 						fVolumePtr = malloc(100 * 100 * sizeof(float));
 						
-						DCMPix			*dcmPix = [[DCMPix alloc] myinit:path :0 :1 :fVolumePtr :0 :0];
+						DCMPix *dcmPix = [[DCMPix alloc] myinit:path :0 :1 :fVolumePtr :0 :0];
 						[viewerPix addObject: dcmPix];
 						[dcmPix release];
 						
@@ -6989,7 +7003,7 @@ static BOOL withReset = NO;
 				noOfImages = [[image valueForKey:@"numberOfFrames"] intValue];
 				animate = YES;
 				
-				DCMPix*     dcmPix = nil;
+				DCMPix*dcmPix = nil;
 				dcmPix = [[DCMPix alloc] myinit: [image valueForKey:@"completePath"] :[animationSlider intValue] :noOfImages :nil :[animationSlider intValue] :[[image valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:image];
 				
 				if( dcmPix )
@@ -7028,10 +7042,12 @@ static BOOL withReset = NO;
 						
 						if( [animationSlider intValue] >= [images count]) return;
 						
-						if( [[[imageView curDCM] sourceFile] isEqualToString: [[images objectAtIndex: [animationSlider intValue]] valueForKey:@"completePath"]] == NO)
-						{						
-							DCMPix*     dcmPix = nil;
-							dcmPix = [[DCMPix alloc] myinit: [[images objectAtIndex: [animationSlider intValue]] valueForKey:@"completePath"] :[animationSlider intValue] :[images count] :nil :0 :[[[images objectAtIndex: [animationSlider intValue]] valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:[images objectAtIndex: [animationSlider intValue]]];
+						NSManagedObject *imageObj = [images objectAtIndex: [animationSlider intValue]];
+						
+						if( [[[imageView curDCM] sourceFile] isEqualToString: [[images objectAtIndex: [animationSlider intValue]] valueForKey:@"completePath"]] == NO || [[imageObj valueForKey: @"frameID"] intValue] != [[[imageView imageObj] valueForKey: @"frameID"] intValue])
+						{
+							DCMPix *dcmPix = nil;
+							dcmPix = [[DCMPix alloc] myinit: [imageObj valueForKey:@"completePath"] :[animationSlider intValue] :[images count] :nil :[[imageObj valueForKey: @"frameID"] intValue] :[[imageObj valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj: imageObj];
 							
 							if( dcmPix )
 							{
@@ -7039,11 +7055,15 @@ static BOOL withReset = NO;
 								
 								[imageView getWLWW:&wl :&ww];
 								
+								DCMPix *previousDcmPix = [[previewPix objectAtIndex: [cell tag]] retain];	// To allow the cached system in DCMPix to avoid reloading
+								
 								[previewPix replaceObjectAtIndex:[cell tag] withObject:(id) dcmPix];
 								[dcmPix release];
 								
 								if( withReset) [imageView setIndexWithReset:[cell tag] :YES];
 								else [imageView setIndex:[cell tag]];
+								
+								[previousDcmPix release];
 							}
 						}
 					}
@@ -7537,7 +7557,10 @@ static BOOL withReset = NO;
 			if( [NSData dataWithContentsOfFile: [image valueForKey:@"completePath"]])	// This means the file is readable...
 			{
 				int frame = 0;
-				if( [[image valueForKey:@"numberOfFrames"] intValue] > 1) frame = [[image valueForKey:@"numberOfFrames"] intValue]/2;
+				
+				if( [files count] == 1 && [[image valueForKey:@"numberOfFrames"] intValue] > 1) frame = [[image valueForKey:@"numberOfFrames"] intValue]/2;
+				
+				if( [image valueForKey:@"frameID"]) frame = [[image valueForKey:@"frameID"] intValue];
 				
 				NSLog( @"Build thumbnail for:");
 				NSLog( [image valueForKey:@"completePath"]);
@@ -7785,6 +7808,8 @@ static BOOL withReset = NO;
 			
 			int frame = 0;
 			if( [[[files objectAtIndex: i] valueForKey:@"numberOfFrames"] intValue] > 1) frame = [[[files objectAtIndex: i] valueForKey:@"numberOfFrames"] intValue]/2;
+			
+			if( [[files objectAtIndex: i] valueForKey:@"frameID"]) frame = [[[files objectAtIndex: i] valueForKey:@"frameID"] intValue];
 			
 			DCMPix *dcmPix  = [[DCMPix alloc] myinit:[filesPaths objectAtIndex:i] :position :subGroupCount :nil :frame :0 isBonjour:isCurrentDatabaseBonjour imageObj: [files objectAtIndex: i]];
 			
@@ -10072,7 +10097,7 @@ static BOOL needToRezoom;
 						for( unsigned long i = 0; i < [loadList count]; i++ )
 						{
 							NSManagedObject*  curFile = [loadList objectAtIndex: i];
-							DCMPix* dcmPix = [[DCMPix alloc] myinit: [curFile valueForKey:@"completePath"] :i :[loadList count] :fVolumePtr+mem :0 :[[curFile valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:curFile];
+							DCMPix* dcmPix = [[DCMPix alloc] myinit: [curFile valueForKey:@"completePath"] :i :[loadList count] :fVolumePtr+mem :[[curFile valueForKey:@"frameID"] intValue] :[[curFile valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:curFile];
 							
 							if( dcmPix )
 							{
@@ -10457,7 +10482,7 @@ static BOOL needToRezoom;
 				{
 					NSManagedObject	*oob = [[splittedSeries objectAtIndex:i] objectAtIndex: [[splittedSeries objectAtIndex:i] count] / 2];
 					
-					DCMPix *dcmPix  = [[DCMPix alloc] myinit:[oob valueForKey:@"completePath"] :0 :1 :nil :0 :[[oob valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj: oob];
+					DCMPix *dcmPix  = [[DCMPix alloc] myinit:[oob valueForKey:@"completePath"] :0 :1 :nil :[[oob valueForKey:@"frameID"] intValue] :[[oob valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj: oob];
 					
 					if( dcmPix )
 					{
@@ -10480,7 +10505,7 @@ static BOOL needToRezoom;
 					{
 						NSManagedObject	*oob = [[splittedSeries objectAtIndex: 0] objectAtIndex: i];
 						
-						DCMPix *dcmPix  = [[DCMPix alloc] myinit:[oob valueForKey:@"completePath"] :0 :1 :nil :0 :[[oob valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj: oob];
+						DCMPix *dcmPix  = [[DCMPix alloc] myinit:[oob valueForKey:@"completePath"] :0 :1 :nil :[[oob valueForKey:@"frameID"] intValue] :[[oob valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj: oob];
 						
 						if( dcmPix)
 						{
@@ -10898,16 +10923,10 @@ static NSArray*	openSubSeriesArray = nil;
 	int from = subFrom-1, to = subTo, interval = subInterval;
 	
 	if( interval < 1) interval = 1;
-	//	if( [subSeriesInterval state] == NSOnState) interval = [subSeriesSlider intValue];
-	//	else interval = 1;
-	
-	//	[subSeriesIntervalText setIntValue: [subSeriesSlider intValue]];
-	
-	//	from = [subSeriesFrom intValue]-1;
-	//	to = [subSeriesTo intValue];
 	
 	int max = 0;
-	for( NSArray *loadList in toOpenArray )
+	
+	for( NSArray *loadList in toOpenArray)
 	{		
 		if( max < [loadList count]) max = [loadList count];
 		
@@ -11005,25 +11024,8 @@ static NSArray*	openSubSeriesArray = nil;
 	if( [[NSApp mainWindow] level] > NSModalPanelWindowLevel){ NSBeep(); return nil;}		// To avoid the problem of displaying this sheet when the user is in fullscreen mode
 	if( [[NSApp keyWindow] level] > NSModalPanelWindowLevel) { NSBeep(); return nil;}		// To avoid the problem of displaying this sheet when the user is in fullscreen mode
 	
-	BOOL frameMode = NO;
-	DicomImage *image = 0L;
-	
-	if( [toOpenArray count] == 1 && [[toOpenArray lastObject] count] == 1 && [[[[toOpenArray lastObject] lastObject] valueForKey:@"numberOfFrames"] intValue] > 1)
-	{
-		frameMode = YES;
-		image = [[toOpenArray lastObject] lastObject];
-	}
-	
-	if( frameMode)
-	{
-		[self setValue:[NSNumber numberWithInt: [[image valueForKey: @"numberOfFrames"] intValue]] forKey:@"subTo"];
-		[self setValue:[NSNumber numberWithInt: [[image valueForKey: @"numberOfFrames"] intValue]] forKey:@"subMax"];
-	}
-	else
-	{
-		[self setValue:[NSNumber numberWithInt:[[toOpenArray objectAtIndex:0] count]] forKey:@"subTo"];
-		[self setValue:[NSNumber numberWithInt:[[toOpenArray objectAtIndex:0] count]] forKey:@"subMax"];
-	}
+	[self setValue:[NSNumber numberWithInt:[[toOpenArray objectAtIndex:0] count]] forKey:@"subTo"];
+	[self setValue:[NSNumber numberWithInt:[[toOpenArray objectAtIndex:0] count]] forKey:@"subMax"];
 	
 	[self setValue:[NSNumber numberWithInt:1] forKey:@"subFrom"];
 	[self setValue:[NSNumber numberWithInt:2] forKey:@"subInterval"];
@@ -11033,8 +11035,7 @@ static NSArray*	openSubSeriesArray = nil;
 		modalDelegate: nil
 	   didEndSelector: nil
 		  contextInfo: nil];
-
-
+	
 	[self checkMemory: self];
 	
 	int result = [NSApp runModalForWindow: subSeriesWindow];
@@ -11942,6 +11943,8 @@ static NSArray*	openSubSeriesArray = nil;
 		else
 			files = [self filesForDatabaseOutlineSelection: objects onlyImages: NO];
 		
+		[files removeDuplicatedStringsInSyncWithThisArray: objects];
+		
 		for( NSManagedObject *im in objects)
 		{
 			if( [[im valueForKey: @"inDatabaseFolder"] boolValue] == NO)
@@ -12571,6 +12574,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 		}
 		else filesToExport = [self filesForDatabaseOutlineSelection: dicomFiles2Export];
 		
+		[filesToExport removeDuplicatedStringsInSyncWithThisArray: dicomFiles2Export];
+		
 		NSMutableArray *result = [NSMutableArray array];
 		
 		for( int i = 0 ; i < [filesToExport count] ; i++ )
@@ -12604,6 +12609,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 			filesToExport = [self filesForDatabaseMatrixSelection: dicomFiles2Export];
 		}
 		else filesToExport = [self filesForDatabaseOutlineSelection: dicomFiles2Export];
+		
+		[filesToExport removeDuplicatedStringsInSyncWithThisArray: dicomFiles2Export];
 		
 		NSMutableArray *result = [NSMutableArray array];
 		
@@ -13201,9 +13208,18 @@ static volatile int numberOfThreadsForJPEG = 0;
 			
 			previousPath = [NSString stringWithString: tempPath];
 			
-			for (int x = 0; x < [[curImage valueForKey:@"numberOfFrames"] intValue]; x++)
+			int frames = [[curImage valueForKey:@"numberOfFrames"] intValue];
+			
+			if( [curImage valueForKey:@"frameID"]) frames = 1;
+			
+			for (int x = 0; x < frames; x++)
 			{
-				DCMPix* dcmPix = [[DCMPix alloc] myinit: [curImage valueForKey:@"completePathResolved"] :0 :1 :nil :x :[[curImage valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:curImage];
+				int frame = x;
+				
+				if( [curImage valueForKey:@"frameID"])
+					frame = [[curImage valueForKey:@"frameID"] intValue];
+				
+				DCMPix* dcmPix = [[DCMPix alloc] myinit: [curImage valueForKey:@"completePathResolved"] :0 :1 :nil :frame :[[curImage valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:curImage];
 				
 				if( dcmPix )
 				{
@@ -13383,7 +13399,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 				t++;
 			}
 			
-			DCMPix* dcmPix = [[DCMPix alloc] myinit: [curImage valueForKey:@"completePathResolved"] :0 :1 :nil :0 :[[curImage valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:curImage];
+			DCMPix* dcmPix = [[DCMPix alloc] myinit: [curImage valueForKey:@"completePathResolved"] :0 :1 :nil :[[curImage valueForKey:@"frameID"] intValue] :[[curImage valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:curImage];
 			
 			if( dcmPix )
 			{
@@ -13594,8 +13610,10 @@ static volatile int numberOfThreadsForJPEG = 0;
 		return nil;
 }
 
-- (NSArray*)exportDICOMFileInt: (NSString*) location files: (NSArray*)filesToExport objects: (NSArray*)dicomFiles2Export
+- (NSArray*)exportDICOMFileInt: (NSString*) location files: (NSMutableArray*)filesToExport objects: (NSMutableArray*)dicomFiles2Export
 {
+	[filesToExport removeDuplicatedStringsInSyncWithThisArray: dicomFiles2Export];
+
 	NSString			*dest, *path = location;
 	Wait                *splash = [[Wait alloc] initWithString:NSLocalizedString(@"Export...", nil)];
 	BOOL				addDICOMDIR = [addDICOMDIRButton state];
@@ -13979,6 +13997,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 		if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) filesToBurn = [self filesForDatabaseMatrixSelection:managedObjects onlyImages:NO];
 		else filesToBurn = [self filesForDatabaseOutlineSelection:managedObjects onlyImages:NO];
 		
+		[filesToBurn removeDuplicatedStringsInSyncWithThisArray: managedObjects];
+		
 		burnerWindowController = [[BurnerWindowController alloc] initWithFiles:filesToBurn managedObjects:managedObjects];
 		
 		[burnerWindowController showWindow:self];
@@ -13999,6 +14019,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) filesToAnonymize = [[self filesForDatabaseMatrixSelection: dicomFiles2Anonymize] retain];
 	else filesToAnonymize = [[self filesForDatabaseOutlineSelection: dicomFiles2Anonymize] retain];
+	
+	[filesToAnonymize removeDuplicatedStringsInSyncWithThisArray: dicomFiles2Anonymize];
 	
     [anonymizerController showWindow:self];
 	
@@ -14243,6 +14265,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) files2Copy = [self filesForDatabaseMatrixSelection: dicomFiles2Copy];
 	else files2Copy = [self filesForDatabaseOutlineSelection: dicomFiles2Copy];
 	
+	[files2Copy removeDuplicatedStringsInSyncWithThisArray: dicomFiles2Copy];
+	
 	if( files2Copy )
 	{
 		NSMutableArray	*directories2copy = [NSMutableArray array];
@@ -14353,6 +14377,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) files = [self filesForDatabaseMatrixSelection:objects onlyImages: YES];
 	else files = [self filesForDatabaseOutlineSelection:objects onlyImages: YES];
+	
+	[files removeDuplicatedStringsInSyncWithThisArray: objects];
 	
 	[self selectServer: objects];
 }

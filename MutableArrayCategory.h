@@ -29,6 +29,7 @@
 - (void)mergeWithArray:(NSArray*)array;
 - (BOOL)containsString:(NSString *)string;
 - (void) removeDuplicatedStrings;
+- (void) removeDuplicatedStringsInSyncWithThisArray: (NSMutableArray*) otherArray;
 - (void) removeDuplicatedObjects;
 
 //randomizes the array

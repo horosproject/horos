@@ -35,6 +35,7 @@
 #import "PluginFilter.h"
 #import "PluginManager.h"
 #import "DCMTKStoreSCU.h"
+#import "MutableArrayCategory.h"
 
 static volatile int sendControllerObjects = 0;
 
@@ -173,7 +174,7 @@ static volatile int sendControllerObjects = 0;
 
 - (id)serverAtIndex:(int)index
 {
-	NSArray			*serversArray		= [DCMNetServiceDelegate DICOMServersListSendOnly: YES QROnly:NO];
+	NSArray *serversArray = [DCMNetServiceDelegate DICOMServersListSendOnly: YES QROnly:NO];
 	
 	if(	index > -1 && index < [serversArray count]) return [serversArray objectAtIndex:index];
 	
@@ -353,21 +354,27 @@ static volatile int sendControllerObjects = 0;
 	storeSCU = nil;
 }
 
-- (void) sendDICOMFilesOffis:(NSArray *) objectsToSend
+- (void) sendDICOMFilesOffis:(NSArray *) tempObjectsToSend
 {
 	NSAutoreleasePool   *pool = [[NSAutoreleasePool alloc] init];
+
+	NSSortDescriptor	*sort = [[[NSSortDescriptor alloc] initWithKey:@"series.study.patientUID" ascending:YES] autorelease];
+	NSArray				*sortDescriptors = [NSArray arrayWithObject: sort];
 	
+	tempObjectsToSend = [tempObjectsToSend sortedArrayUsingDescriptors: sortDescriptors];
+
 	NSString *calledAET = [[self server] objectForKey:@"AETitle"];
+	
+	// Remove duplicated files 
+	NSMutableArray *objectsToSend = [NSMutableArray arrayWithArray: tempObjectsToSend];
+	NSMutableArray *paths = [NSMutableArray arrayWithArray: [objectsToSend valueForKey: @"completePathResolved"]];
+	
+	[paths removeDuplicatedStringsInSyncWithThisArray: objectsToSend];
 	
 	NSLog(@"Server destination: %@", [[self server] description]);	
 			
 	NSString			*previousPatientUID = nil;
 	NSMutableArray		*samePatientArray = [NSMutableArray arrayWithCapacity: [objectsToSend count]];
-	
-	NSSortDescriptor	*sort = [[[NSSortDescriptor alloc] initWithKey:@"series.study.patientUID" ascending:YES] autorelease];
-	NSArray				*sortDescriptors = [NSArray arrayWithObject: sort];
-	
-	objectsToSend = [objectsToSend sortedArrayUsingDescriptors: sortDescriptors];
 	
 	for( id loopItem in objectsToSend)
 	{

@@ -105,6 +105,24 @@ NSInteger sortByAddress(id roi1, id roi2, void *context)
 	}
 }
 
+- (void) removeDuplicatedStringsInSyncWithThisArray: (NSMutableArray*) otherArray
+{
+	NSArray *a = [self sortedArrayUsingSelector: @selector(caseInsensitiveCompare:)];
+	
+	NSString *lastString = nil;
+	
+	for( NSString *s in a)
+	{
+		if( [s isEqualToString: lastString])
+		{
+			int index = [self indexOfObject: s];
+			[self removeObjectAtIndex: index];
+			[otherArray removeObjectAtIndex: index];
+		}
+		else lastString = s;
+	}
+}
+
 - (BOOL)containsString:(NSString *)string
 {
 	for( id object in self)

@@ -6186,6 +6186,9 @@ static ViewerController *draggedController = nil;
 		subLoadingThread = [[NSConditionLock alloc] init];
 		
 		int numberOfThreadsForCompute = MPProcessors ();
+		
+		if( numberOfThreadsForCompute > 3) numberOfThreadsForCompute = 3;
+		
 		[subLoadingThread lock];
 		[subLoadingThread unlockWithCondition: numberOfThreadsForCompute];
 
