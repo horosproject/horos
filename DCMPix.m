@@ -6007,7 +6007,7 @@ END_CREATE_ROIS:
 	
 	[cachedDCMFrameworkFiles removeAllObjects];
 	
-	for( NSString *file in [cachedPapyGroups allValues])
+	for( NSString *file in [cachedPapyGroups allKeys])
 	{
 		NSMutableDictionary *cachedGroupsForThisFile = [cachedPapyGroups valueForKey: file];
 		

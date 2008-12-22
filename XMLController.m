@@ -836,10 +836,12 @@ static BOOL showWarning = YES;
 		
 		[params addObjectsFromArray:  groupsAndElements];
 		
-		NSArray	*files = [self arrayOfFiles];
+		NSMutableArray	*files = [NSMutableArray arrayWithArray: [self arrayOfFiles]];
 		
 		if( files)
 		{
+			[files removeDuplicatedStrings];
+		
 			[params addObjectsFromArray: files];
 			
 			WaitRendering		*wait = nil;

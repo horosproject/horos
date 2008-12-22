@@ -793,7 +793,7 @@ static NSArray*	statesArray = nil;
 								[image setValue:[curDict objectForKey: @"studyDate"]  forKey:@"date"];
 								
 								[image setValue:[curDict objectForKey: [@"SOPUID" stringByAppendingString:SeriesNum]] forKey:@"sopInstanceUID"];
-								[image setValue: [[curDict objectForKey: @"sliceLocation"] objectAtIndex: f] forKey:@"sliceLocation"];
+								[image setValue:[curDict objectForKey: @"sliceLocation"] forKey:@"sliceLocation"];
 								[image setValue:[[newFile pathExtension] lowercaseString] forKey:@"extension"];
 								[image setValue:[curDict objectForKey: @"fileType"] forKey:@"fileType"];
 								
@@ -14110,9 +14110,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (void) unmountPath:(NSString*) path
 {
-	WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Volume unmounting...", nil)];
-	[wait showWindow:self];
-	
 	[bonjourServicesList display];
 	
 	int attempts = 0;
@@ -14136,8 +14133,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	[bonjourServicesList display];
 	[bonjourServicesList setNeedsDisplay];
-	[wait close];
-	[wait release];
 	
 	if( attempts == 5 )
 	{
@@ -14603,14 +14598,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 		NSError	*error = nil;
 		NSArray *seriesArray = [[context executeFetchRequest:dbRequest error:&error] filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"mountedVolume == YES"]];
 		
-		Wait *splash = [[Wait alloc] initWithString: NSLocalizedString(@"Unmounting volume...",@"Unmounting volume")];
-		[splash showWindow:self];
-		
 		if( [seriesArray count] > 0 )
 		{
 			NSMutableArray *viewersList = [ViewerController getDisplayed2DViewers];
-			
-			[[splash progress] setMaxValue:[seriesArray count]/50];
 			
 			@try
 			{
@@ -14648,8 +14638,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 						else
 							[context deleteObject: [seriesArray objectAtIndex:i]];
 					}
-					
-					if( i % 50 == 0) [splash incrementBy:1];
 				}
 			}
 			@catch( NSException *ne)
@@ -14667,8 +14655,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 			[self refreshMatrix: self];
 		}
 		
-		[splash close];
-		[splash release];
 		[context unlock];
 		[context release];
 		
