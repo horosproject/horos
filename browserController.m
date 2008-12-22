@@ -793,7 +793,7 @@ static NSArray*	statesArray = nil;
 								[image setValue:[curDict objectForKey: @"studyDate"]  forKey:@"date"];
 								
 								[image setValue:[curDict objectForKey: [@"SOPUID" stringByAppendingString:SeriesNum]] forKey:@"sopInstanceUID"];
-								[image setValue:[curDict objectForKey: @"sliceLocation"] forKey:@"sliceLocation"];
+								[image setValue: [[curDict objectForKey: @"sliceLocation"] objectAtIndex: f] forKey:@"sliceLocation"];
 								[image setValue:[[newFile pathExtension] lowercaseString] forKey:@"extension"];
 								[image setValue:[curDict objectForKey: @"fileType"] forKey:@"fileType"];
 								
@@ -10351,6 +10351,7 @@ static BOOL needToRezoom;
 		{
 			NSArray			*singleSeries = [toOpenArray objectAtIndex: 0];
 			NSMutableArray	*splittedSeries = [NSMutableArray array];
+			NSMutableArray  *intervalArray = [NSMutableArray array];
 			
 			float interval, previousinterval = 0;
 			
@@ -10360,14 +10361,31 @@ static BOOL needToRezoom;
 			{
 				[[splittedSeries lastObject] addObject: [singleSeries objectAtIndex: 0]];
 				
-				interval = [[[singleSeries objectAtIndex: 0] valueForKey:@"sliceLocation"] floatValue] - [[[singleSeries objectAtIndex: 1] valueForKey:@"sliceLocation"] floatValue];
+				if( [[[singleSeries lastObject] valueForKey: @"numberOfFrames"] intValue] > 1)
+				{
+					for( id o in singleSeries)	//We need to extract the *true* sliceLocation
+					{
+						DCMPix *p = [[DCMPix alloc] myinit:[o valueForKey:@"completePath"] :0 :1 :nil :[[o valueForKey:@"frameID"] intValue] :[[o valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj: o];
+						
+						[intervalArray addObject: [NSNumber numberWithFloat: [p sliceLocation]]];
+						
+						[p release];
+					}
+				}
+				else
+				{
+					for( id o in singleSeries)
+						[intervalArray addObject: [NSNumber numberWithFloat: [[o valueForKey:@"sliceLocation"] floatValue]]];
+				}
+				
+				interval = [[intervalArray objectAtIndex: 0] floatValue] - [[intervalArray objectAtIndex: 1] floatValue];
 				
 				if( interval == 0)
 				{ // 4D - 3D
 					int pos3Dindex = 1;
 					for( int x = 1; x < [singleSeries count]; x++)
 					{
-						interval = [[[singleSeries objectAtIndex: x -1] valueForKey:@"sliceLocation"] floatValue] - [[[singleSeries objectAtIndex: x] valueForKey:@"sliceLocation"] floatValue];
+						interval = [[intervalArray objectAtIndex: x -1] floatValue] - [[intervalArray objectAtIndex: x] floatValue];
 						
 						if( interval != 0) pos3Dindex = 0;
 						
@@ -10384,10 +10402,11 @@ static BOOL needToRezoom;
 					int		repetition = 0, previousPos = 0;
 					float	previousLocation;
 					
-					previousLocation = [[[singleSeries objectAtIndex: 0] valueForKey:@"sliceLocation"] floatValue];
+					previousLocation = [[intervalArray objectAtIndex: 0] floatValue];
 					
-					for( int x = 1; x < [singleSeries count]; x++ )	{
-						if( [[[singleSeries objectAtIndex: x] valueForKey:@"sliceLocation"] floatValue] - previousLocation == 0 )
+					for( int x = 1; x < [singleSeries count]; x++ )
+					{
+						if( [[intervalArray objectAtIndex: x] floatValue] - previousLocation == 0 )
 						{
 							if( repetition)
 								if( repetition != x - previousPos)
@@ -10417,7 +10436,7 @@ static BOOL needToRezoom;
 					{
 						for( int x = 1; x < [singleSeries count]; x++)
 						{
-							interval = [[[singleSeries objectAtIndex: x -1] valueForKey:@"sliceLocation"] floatValue] - [[[singleSeries objectAtIndex: x] valueForKey:@"sliceLocation"] floatValue];
+							interval = [[intervalArray objectAtIndex: x -1] floatValue] - [[intervalArray objectAtIndex: x] floatValue];
 							
 							if( [[splittedSeries lastObject] count] > 2)
 							{

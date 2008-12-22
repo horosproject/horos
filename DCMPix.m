@@ -6978,7 +6978,6 @@ END_CREATE_ROIS:
 		theGroupP = (SElement*) [self getPapyGroup: 0x0028];
 		if( theGroupP ) // This group is MANDATORY...
 		{
-
 			[self papyLoadGroup0x0028: theGroupP];
 			
 	#pragma mark SUV
