@@ -2855,7 +2855,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 -(IBAction) fullScreenMenu:(id) sender
 {
-	float scaleValue = [imageView scaleValue];
+//	float scaleValue = [imageView scaleValue];
 	
 	[self setUpdateTilingViewsValue: YES];
 	
@@ -2921,7 +2921,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	
 	[self selectFirstTilingView];
 	
-	[imageView setScaleValue: scaleValue];
+//	[imageView setScaleValue: scaleValue];
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AlwaysScaleToFit"])
 		[imageView scaleToFit];
@@ -8949,14 +8949,23 @@ short				matrix[25];
 
 - (void) setFusionMode:(long) m
 {
-	long i, x;
+	int i, x;
 	
 	if( m != 0)
 	{
-		BOOL volumicData = [self isDataVolumicIn4D: NO checkEverythingLoaded: NO];
-		
-		if( volumicData == NO)
-			m = 0;
+		if( [fileList[ curMovieIndex] count])
+		{
+			int pw = [[[fileList[ curMovieIndex] lastObject] valueForKey:@"width"] intValue];
+			int ph = [[[fileList[ curMovieIndex] lastObject] valueForKey:@"height"] intValue];
+			
+			for( NSManagedObject *f in fileList[ curMovieIndex])
+			{
+				if( pw != [[f valueForKey:@"width"] intValue])
+					m = 0;
+				if( ph != [[f valueForKey:@"height"] intValue])
+					m = 0;
+			}
+		}
 	}
 	
 	// Thick Slab

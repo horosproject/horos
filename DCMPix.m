@@ -11718,11 +11718,11 @@ END_CREATE_ROIS:
 						
 						if( [type isEqualToString:@"DICOM"])
 						{
-							if( [[field objectForKey:@"group"] intValue] == 0x0018 && [[field objectForKey:@"element"] intValue] == 0x0081 && repetitiontime != 0L)	// RepetitionTime
+							if( [[field objectForKey:@"group"] intValue] == 0x0018 && [[field objectForKey:@"element"] intValue] == 0x0080 && repetitiontime != 0L)	// RepetitionTime
 							{
 								value = repetitiontime;
 							}
-							else if( [[field objectForKey:@"group"] intValue] == 0x0018 && [[field objectForKey:@"element"] intValue] == 0x0080 && echotime != 0L)	// Echotime
+							else if( [[field objectForKey:@"group"] intValue] == 0x0018 && [[field objectForKey:@"element"] intValue] == 0x0081 && echotime != 0L)	// Echotime
 							{	
 								value = echotime;
 							}
