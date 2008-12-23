@@ -9552,9 +9552,15 @@ short				matrix[25];
 //class setter and getter
 // of ViewerController class field   static NSArray*	DefaultROINames;
 // used in self generateROINameArray hereafter and in PluginManager.m
-+ (NSArray*) defaultROINames {return DefaultROINames;}
-+ (void) setDefaultROINames: (NSArray*) rn {DefaultROINames = rn;}
++ (NSArray*) defaultROINames
+{
+	return DefaultROINames;
+}
 
++ (void) setDefaultROINames: (NSArray*) rn
+{
+	DefaultROINames = rn;
+}
 
 extern NSString * documentsDirectory();
 

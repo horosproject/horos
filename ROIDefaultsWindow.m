@@ -69,7 +69,7 @@
 		if( [[roiNames objectAtIndex: i] isEqualToString: aString]) return i;
 	}
 	
-	return 0;
+	return NSNotFound;
 }
 
 - (NSInteger)numberOfItemsInComboBox:(NSComboBox *)aComboBox
@@ -83,6 +83,7 @@
     if ( index > -1 )
     {
 		if( roiNames == nil) roiNames = [[self generateROINamesArray] retain];
+		
 		return [roiNames objectAtIndex: index];
     }
     
@@ -109,11 +110,13 @@
 	[self release];
 }
 
-- (IBAction)setDefaultName: (id)sender {
+- (IBAction)setDefaultName: (id)sender
+{
 	[[self window] close];
 }
 
-- (IBAction)unsetDefaultName: (id)sender {
+- (IBAction)unsetDefaultName: (id)sender
+{
 	[ROI setDefaultName: nil];
 }
 
