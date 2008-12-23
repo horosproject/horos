@@ -6587,13 +6587,18 @@ static ViewerController *draggedController = nil;
 	int originWidth = [[originalPixlist objectAtIndex:0] pwidth];
 	int originHeight = [[originalPixlist objectAtIndex:0] pheight];
 	int originZ = [originalPixlist count];
-
+	float sliceInterval = [[originalPixlist objectAtIndex:0] sliceInterval];
+	
+	if( sliceInterval == 0) zFactor = 1.0;
+	
 	newX = (unsigned long long)((float)originWidth / xFactor + 0.5);
 	newY = (unsigned long long)((float)originHeight / yFactor + 0.5);
 	newZ = (unsigned long long)((float)originZ / zFactor + 0.5);
 		
 	if( newZ <= 0) newZ = 1;
 	if( originZ == 1) newZ = 1;
+	
+	if( sliceInterval == 0) newZ = originZ;
 	
 	int maxZ = originZ;
 	if( maxZ < newZ) maxZ = newZ;
@@ -6665,12 +6670,6 @@ static ViewerController *draggedController = nil;
 		}
 		
 		interval *= (float) zFactor;
-		
-		if( interval == 0)
-		{
-			free( emptyData);
-			return NO;
-		}
 		
 		NSMutableArray	*newPixList = [NSMutableArray arrayWithCapacity: 0];
 		NSData *newData = [NSData dataWithBytesNoCopy:emptyData length:size freeWhenDone:YES];
@@ -6756,31 +6755,34 @@ static ViewerController *draggedController = nil;
 		
 		// Z RESAMPLING
 		
-		if( originZ != newZ)
+		if( sliceInterval != 0)
 		{
-			curPix = [newPixList objectAtIndex: 0];
-			
-			for( y = 0; y < newY; y++)
+			if( originZ != newZ)
 			{
-				vImage_Buffer	srcVimage, dstVimage;
+				curPix = [newPixList objectAtIndex: 0];
 				
-				srcImage = [curPix  fImage] + y * newX;
-				dstImage = emptyData + y * newX;
-				
-				srcVimage.data = srcImage;
-				srcVimage.height =  originZ;
-				srcVimage.width = newX;
-				srcVimage.rowBytes = newY*newX*4;
-				
-				dstVimage.data = dstImage;
-				dstVimage.height =  newZ;
-				dstVimage.width = newX;
-				dstVimage.rowBytes = newY*newX*4;
-				
-				if( [curPix isRGB])
-					vImageScale_ARGB8888( &srcVimage, &dstVimage, nil, kvImageHighQualityResampling);
-				else
-					vImageScale_PlanarF( &srcVimage, &dstVimage, nil, kvImageHighQualityResampling);
+				for( y = 0; y < newY; y++)
+				{
+					vImage_Buffer	srcVimage, dstVimage;
+					
+					srcImage = [curPix  fImage] + y * newX;
+					dstImage = emptyData + y * newX;
+					
+					srcVimage.data = srcImage;
+					srcVimage.height =  originZ;
+					srcVimage.width = newX;
+					srcVimage.rowBytes = newY*newX*4;
+					
+					dstVimage.data = dstImage;
+					dstVimage.height =  newZ;
+					dstVimage.width = newX;
+					dstVimage.rowBytes = newY*newX*4;
+					
+					if( [curPix isRGB])
+						vImageScale_ARGB8888( &srcVimage, &dstVimage, nil, kvImageHighQualityResampling);
+					else
+						vImageScale_PlanarF( &srcVimage, &dstVimage, nil, kvImageHighQualityResampling);
+				}
 			}
 		}
 		
