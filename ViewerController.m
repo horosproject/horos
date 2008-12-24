@@ -156,6 +156,7 @@ static NSMenu *clutPresetsMenu = nil;
 static NSMenu *convolutionPresetsMenu = nil;
 static NSMenu *opacityPresetsMenu = nil;
 static NSNotification *lastMenuNotification = nil;
+volatile static int totalNumberOfLoadingThreads = 0;
 
 int numberOf2DViewer = 0;
 
@@ -6181,40 +6182,66 @@ static ViewerController *draggedController = nil;
 	
 	NSLog( @"start loading");
 	
+	subLoadingThread = [[NSConditionLock alloc] init];
+	
 	for( x = 0; x < maxMovieIndex; x++)
 	{
-		subLoadingThread = [[NSConditionLock alloc] init];
+		int numberOfThreadsForCompute = MPProcessors();
 		
-		int numberOfThreadsForCompute = MPProcessors ();
 		if( numberOfThreadsForCompute > 2) numberOfThreadsForCompute = 2;
+		if( totalNumberOfLoadingThreads + numberOfThreadsForCompute > 2) numberOfThreadsForCompute = 1;
 		
-		[subLoadingThread lock];
-		[subLoadingThread unlockWithCondition: numberOfThreadsForCompute];
-
-		for( i = 0; i < numberOfThreadsForCompute; i++ )
+		totalNumberOfLoadingThreads += numberOfThreadsForCompute;
+		
+		NSLog( @"number of loading thread: %d", numberOfThreadsForCompute);
+		
+		if( numberOfThreadsForCompute > 2)
+		{
+			[subLoadingThread lock];
+			[subLoadingThread unlockWithCondition: numberOfThreadsForCompute];
+			
+			for( i = 0; i < numberOfThreadsForCompute; i++ )
+			{
+				NSMutableDictionary *d = [NSMutableDictionary dictionary];
+				
+				[d setObject: pixList[ x] forKey: @"pixList"];
+				[d setObject: fileList[ x] forKey: @"fileList"];
+				
+				int from = (i * [pixList[ x] count]) / numberOfThreadsForCompute;
+				int to = ((i+1) * [pixList[ x] count]) / numberOfThreadsForCompute;
+				
+				[d setObject: [NSNumber numberWithInt: from] forKey: @"from"];
+				[d setObject: [NSNumber numberWithInt: to] forKey: @"to"];
+				[d setObject: [NSNumber numberWithInt: x] forKey: @"movieIndex"];
+				
+				[NSThread detachNewThreadSelector: @selector( subLoadingThread:) toTarget: self withObject: d];
+			}
+			
+			[subLoadingThread lockWhenCondition: 0];
+			[subLoadingThread unlock];
+		}
+		else
 		{
 			NSMutableDictionary *d = [NSMutableDictionary dictionary];
 			
 			[d setObject: pixList[ x] forKey: @"pixList"];
 			[d setObject: fileList[ x] forKey: @"fileList"];
 			
-			int from = (i * [pixList[ x] count]) / numberOfThreadsForCompute;
-			int to = ((i+1) * [pixList[ x] count]) / numberOfThreadsForCompute;
+			int from = 0;
+			int to = [pixList[ x] count];
 			
 			[d setObject: [NSNumber numberWithInt: from] forKey: @"from"];
 			[d setObject: [NSNumber numberWithInt: to] forKey: @"to"];
 			[d setObject: [NSNumber numberWithInt: x] forKey: @"movieIndex"];
-			
-			[NSThread detachNewThreadSelector: @selector( subLoadingThread:) toTarget: self withObject: d];
+			[self subLoadingThread: d];
 		}
 		
-		[subLoadingThread lockWhenCondition: 0];
-		[subLoadingThread unlock];
+		totalNumberOfLoadingThreads -= numberOfThreadsForCompute;
 		
 		loadingPercentage = (float) 1.0;
-		
-		[subLoadingThread release];
 	}
+	
+	[subLoadingThread release];
 	
 	NSLog( @"end loading");
 	

@@ -91,7 +91,7 @@
 /* --- Constant definitions --- */
 
 #ifndef _WINDOWS
-#define kMax_file_open	100
+#define kMax_file_open	32000
 #else
 #define kMax_file_open	20	/* Limitation on the PCs to 20 open files... */
 #endif
