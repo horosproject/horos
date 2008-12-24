@@ -6188,14 +6188,14 @@ static ViewerController *draggedController = nil;
 	{
 		int numberOfThreadsForCompute = MPProcessors();
 		
-		if( numberOfThreadsForCompute > 2) numberOfThreadsForCompute = 2;
-		if( totalNumberOfLoadingThreads + numberOfThreadsForCompute > 2) numberOfThreadsForCompute = 1;
+		#define MAX_THREAD 2
+		
+		if( numberOfThreadsForCompute > MAX_THREAD) numberOfThreadsForCompute = MAX_THREAD;
+		if( totalNumberOfLoadingThreads + numberOfThreadsForCompute > MAX_THREAD) numberOfThreadsForCompute = 1;
 		
 		totalNumberOfLoadingThreads += numberOfThreadsForCompute;
 		
-		NSLog( @"number of loading thread: %d", numberOfThreadsForCompute);
-		
-		if( numberOfThreadsForCompute > 2)
+		if( numberOfThreadsForCompute > 1)
 		{
 			[subLoadingThread lock];
 			[subLoadingThread unlockWithCondition: numberOfThreadsForCompute];
