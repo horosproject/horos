@@ -11720,11 +11720,11 @@ END_CREATE_ROIS:
 						{
 							if( [[field objectForKey:@"group"] intValue] == 0x0018 && [[field objectForKey:@"element"] intValue] == 0x0080 && repetitiontime != 0L)	// RepetitionTime
 							{
-								value = repetitiontime;
+								value = [NSString stringWithFormat:@"%.6g", [repetitiontime floatValue]];
 							}
 							else if( [[field objectForKey:@"group"] intValue] == 0x0018 && [[field objectForKey:@"element"] intValue] == 0x0081 && echotime != 0L)	// Echotime
 							{	
-								value = echotime;
+								value = [NSString stringWithFormat:@"%.6g", [echotime floatValue]];;
 							}
 							else if(fileNb>=0)
 								value = [self getDICOMFieldValueForGroup:[[field objectForKey:@"group"] intValue] element:[[field objectForKey:@"element"] intValue] papyLink:fileNb];
