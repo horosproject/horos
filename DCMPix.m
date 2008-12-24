@@ -5941,6 +5941,9 @@ END_CREATE_ROIS:
 			[cachedPapyGroups setObject: cachedGroupsForThisFile forKey: srcFile];
 			[cachedGroupsForThisFile setValue: [NSNumber numberWithInt: fileNb]  forKey: @"fileNb"];
 			[cachedGroupsForThisFile setValue: [NSNumber numberWithInt: 1] forKey: @"count"];
+			
+			if( [cachedPapyGroups count] >= kMax_file_open)
+				NSLog( @"WARNING: Too much files opened for Papyrus Toolkit");
 		}
 		
 		[PapyrusLock unlock];
@@ -5961,7 +5964,11 @@ END_CREATE_ROIS:
 	{
 		if( group == 0)
 		{
+			#if !__LP64__
 			theGroupP = (SElement*) 0xFFFFFFFF;
+			#else
+			theGroupP = (SElement*) 0xFFFFFFFFFFFFFFFF;
+			#endif
 		}
 		else
 		{
@@ -5981,7 +5988,7 @@ END_CREATE_ROIS:
 					{
 						if( Papy3GroupRead(fileNb, &theGroupP) > 0)
 						{
-							[cachedGroupsForThisFile setValue: [NSValue valueWithPointer: theGroupP]  forKey: groupKey];
+							[cachedGroupsForThisFile setValue: [NSValue valueWithPointer: theGroupP] forKey: groupKey];
 						}
 						else
 							NSLog( @"Error while reading a group (Papyrus)");
@@ -5994,7 +6001,8 @@ END_CREATE_ROIS:
 				
 				[PapyrusLock unlock];
 			}
-			else theGroupP = [[cachedGroupsForThisFile valueForKey: groupKey] pointerValue];
+			else
+			 theGroupP = [[cachedGroupsForThisFile valueForKey: groupKey] pointerValue];
 		}
 	}
 	
@@ -8093,8 +8101,6 @@ END_CREATE_ROIS:
 		}
 	}
 	
-//	[PapyrusLock unlock];
-	
 	return returnValue;
 }
 
@@ -8358,6 +8364,9 @@ END_CREATE_ROIS:
 					if (success == NO && [DCMObject isDICOM:[NSData dataWithContentsOfFile:srcFile]])
 						success = [self loadDICOMPapyrus];
 				}
+				
+				if( [[imageObj valueForKey: @"numberOfFrames"] intValue] <= 1)
+					[self clearCachedPapyGroups];
 			}
 			
 			@catch ( NSException *e)

@@ -64,7 +64,6 @@ FindFreeFile3 ()
 {
   PapyShort i;
   
-
   for (i = 0; i < kMax_file_open; i++)
   {
     if (gPapyFile [i] == 0)
@@ -1268,87 +1267,87 @@ typedef struct cachedGroupStruct cachedGroupStruct;
 PapyShort CALLINGCONV
 Papy3SkipNextGroup (PapyShort inFileNb)
 {
-  PAPY_FILE		theFp;
-  unsigned char	theBuff [kLength_length];
-  PapyULong		i;
-  PapyULong		theGrLength, theTempL;
-  PapyUShort	theTempS, theGrNb;
-  int			theErr;
-
-  theFp = gPapyFile [inFileNb];
-
-  cachedGroupStruct *cachedGroup = gCachedGroupLength[ inFileNb];
-
-  if( cachedGroup == 0L)
-  {
-	gCachedGroupLength[ inFileNb] = cachedGroup = (cachedGroupStruct*) malloc( 1024L * sizeof( cachedGroupStruct));
-	cachedGroup[0].length = 0;
-	cachedGroup[0].group = 0;
-  }
-  
-  i = kLength_length;
-  if ((theErr = (PapyShort) Papy3FRead (theFp, &i, 1L, theBuff)) < 0)
-  {
-    theErr = Papy3FClose (&theFp);
-    RETURN (papReadFile)
-  } /* if */
-    
-  i = 0L;
-  theGrNb  = Extract2Bytes (theBuff, &i);
-  theTempS = Extract2Bytes (theBuff, &i);
-
-  /* DICOMDIR separator  0xFFFE:0xE000 */
-  if ((theGrNb == 0xFFFE) && (theTempS == 0xE000)) 
-  {
-    theErr = Papy3FSeek (theFp, (int) SEEK_CUR, -4L);
-    RETURN (theErr)
-  } /* if */
-  
-  /* Try to find the group length in the cache */
-  int z = 0;
-  while( cachedGroup[ z].length != 0 && cachedGroup[ z].group != 0)
-  {
-	if( cachedGroup[ z].group == theGrNb)
-		break;
-	z++;
+	PAPY_FILE		theFp;
+	unsigned char	theBuff [kLength_length];
+	PapyULong		i;
+	PapyULong		theGrLength, theTempL;
+	PapyUShort	theTempS, theGrNb;
+	int			theErr;
 	
-	if( z >= 1000)
-		break;
-  }
-  
-  if( cachedGroup[ z].group == theGrNb)
-  {
-	if (Papy3FSeek (theFp, (int) SEEK_CUR, cachedGroup[ z].length - kLength_length) != 0)
-		RETURN (papPositioning);
-	RETURN( papNoError);
-  }
-  
-  /* if the group length elem is here extract the group length from the buffer */
-  if (theTempS == 0)
-  {
-    /* test the VR */
-    if (gArrTransfSyntax [inFileNb] == LITTLE_ENDIAN_IMPL && theGrNb != 0x0002)
-      theTempL = Extract4Bytes (theBuff, &i);
-    else 
-    {
-      i += 2L;
-      theTempL = (PapyULong) Extract2Bytes (theBuff, &i);
-    } /* else */
-    /* if (theTempL != 4L) RETURN (papElemSize); this is to let pass little endian impl gr2 files */
-    theGrLength = Extract4Bytes (theBuff, &i);
-
-//	if( theGrLength <= 0)
+	theFp = gPapyFile[ inFileNb];
+	
+	cachedGroupStruct *cachedGroup = gCachedGroupLength[ inFileNb];
+	
+	if( cachedGroup == 0L)
 	{
-		theErr = Papy3FSeek (theFp, (int) SEEK_CUR, (PapyLong) - kLength_length);
-		theGrLength = ComputeUndefinedGroupLength3 (inFileNb, -1L);
+		gCachedGroupLength[ inFileNb] = cachedGroup = (cachedGroupStruct*) malloc( 1024L * sizeof( cachedGroupStruct));
+		cachedGroup[0].length = 0;
+		cachedGroup[0].group = 0;
 	}
-  } /* if ...extract group length from buffer */
-    
-  /* else the group length element not here compute it */
-  else
-  {
+	
+	i = kLength_length;
+	if ((theErr = (PapyShort) Papy3FRead (theFp, &i, 1L, theBuff)) < 0)
+	{
+		theErr = Papy3FClose (&theFp);
+		RETURN (papReadFile)
+	} /* if */
+	
+	i = 0L;
+	theGrNb  = Extract2Bytes (theBuff, &i);
+	theTempS = Extract2Bytes (theBuff, &i);
+	
+	/* DICOMDIR separator  0xFFFE:0xE000 */
+	if ((theGrNb == 0xFFFE) && (theTempS == 0xE000)) 
+	{
+		theErr = Papy3FSeek (theFp, (int) SEEK_CUR, -4L);
+		RETURN (theErr)
+	} /* if */
+	
+	/* Try to find the group length in the cache */
+	int z = 0;
+	while( cachedGroup[ z].length != 0 && cachedGroup[ z].group != 0)
+	{
+		if( cachedGroup[ z].group == theGrNb)
+			break;
+		z++;
+
+		if( z >= 1000)
+			break;
+	}
+	
+	if( cachedGroup[ z].group == theGrNb)
+	{
+		if (Papy3FSeek (theFp, (int) SEEK_CUR, cachedGroup[ z].length - kLength_length) != 0)
+			RETURN (papPositioning);
+		RETURN( papNoError);
+	}
+	
+	/* if the group length elem is here extract the group length from the buffer */
+	if (theTempS == 0)
+	{
+		/* test the VR */
+		if (gArrTransfSyntax [inFileNb] == LITTLE_ENDIAN_IMPL && theGrNb != 0x0002)
+			theTempL = Extract4Bytes (theBuff, &i);
+		else 
+		{
+			i += 2L;
+			theTempL = (PapyULong) Extract2Bytes (theBuff, &i);
+		} /* else */
+		/* if (theTempL != 4L) RETURN (papElemSize); this is to let pass little endian impl gr2 files */
+		theGrLength = Extract4Bytes (theBuff, &i);
+
+		//	if( theGrLength <= 0)
+		{
+			theErr = Papy3FSeek (theFp, (int) SEEK_CUR, (PapyLong) - kLength_length);
+			theGrLength = ComputeUndefinedGroupLength3 (inFileNb, -1L);
+		}
+	} /* if ...extract group length from buffer */
+
+	/* else the group length element not here compute it */
+	else
+	{
 	 /* test the VR */
-    if (gArrTransfSyntax [inFileNb] == LITTLE_ENDIAN_IMPL && theGrNb == 0x0002)
+	if (gArrTransfSyntax [inFileNb] == LITTLE_ENDIAN_IMPL && theGrNb == 0x0002)
 	{
 		theErr = Papy3FSeek (theFp, (int) SEEK_CUR, (PapyLong) - kLength_length);
 		theGrLength = ComputeUndefinedGroupLength3 (inFileNb, -1L);
@@ -1360,23 +1359,23 @@ Papy3SkipNextGroup (PapyShort inFileNb)
 		theErr = Papy3FSeek (theFp, (int) SEEK_CUR, (PapyLong) - kLength_length);
 		theGrLength = ComputeUndefinedGroupLength3 (inFileNb, -1L);
 	}
-  } /* else ...undefined group length */
-    
+	} /* else ...undefined group length */
+
 	if( theGrLength <= 0)
 	{
-		RETURN ( -1); //ANR
+		RETURN ( -1);
 	}
-  /* sets the file pointer at the begining of the next group */
-  if (Papy3FSeek (theFp, (int) SEEK_CUR, (PapyLong) theGrLength) != 0)
-    RETURN (papPositioning);
-    
+	/* sets the file pointer at the begining of the next group */
+	if (Papy3FSeek (theFp, (int) SEEK_CUR, (PapyLong) theGrLength) != 0)
+		RETURN (papPositioning);
+	
 	cachedGroup[ z].group = theGrNb;
 	cachedGroup[ z].length = theGrLength;
-
+	
 	cachedGroup[ z+1].group = 0;
 	cachedGroup[ z+1].length = 0;
 	
-  RETURN (papNoError);
+	RETURN (papNoError);
 } /* endof Papy3SkipNextGroup */
 
 

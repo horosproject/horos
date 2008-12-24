@@ -5406,6 +5406,9 @@ static ViewerController *draggedController = nil;
 	self = [super initWithWindowNibName:@"Viewer"];
 	
 	retainedToolbarItems = [[NSMutableArray alloc] initWithCapacity: 0];
+	
+	subLoadingThread = [[NSConditionLock alloc] init];
+	
 	[self setupToolbar];
 	
 	[ROI loadDefaultSettings];
@@ -5575,6 +5578,7 @@ static ViewerController *draggedController = nil;
 	[processorsLock release];
 	[retainedToolbarItems release];
 	
+	[subLoadingThread release];
 	[toolbar release];
     [super dealloc];
 	
@@ -6159,9 +6163,9 @@ static ViewerController *draggedController = nil;
 
 -(void) loadImageData:(id) sender
 {
-    NSAutoreleasePool   *pool = [[NSAutoreleasePool alloc] init];
-    int					i, x;
-	BOOL				isPET = NO;
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    int i, x;
+	BOOL isPET = NO;
 	
 	if( ThreadLoadImageLock == nil)
 	{
@@ -6179,10 +6183,6 @@ static ViewerController *draggedController = nil;
 	
 	while( [[self window] isVisible] == NO && checkEverythingLoaded == NO)
 		[NSThread sleepForTimeInterval: 0.1];
-	
-	NSLog( @"start loading");
-	
-	subLoadingThread = [[NSConditionLock alloc] init];
 	
 	for( x = 0; x < maxMovieIndex; x++)
 	{
@@ -6240,10 +6240,6 @@ static ViewerController *draggedController = nil;
 		
 		loadingPercentage = (float) 1.0;
 	}
-	
-	[subLoadingThread release];
-	
-	NSLog( @"end loading");
 	
 	
 //	NSLog( @"start loading");
