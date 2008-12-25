@@ -1770,7 +1770,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		}
 		
 		[imageView setScaleValue: previousZooming * [[pixList[ curMovieIndex] objectAtIndex: 0] pixelSpacingX]];
-		
+		[imageView scaleToFit];
 		[imageView setDrawing: YES];
 		
 		[self propagateSettings];

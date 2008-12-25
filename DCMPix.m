@@ -5933,14 +5933,14 @@ END_CREATE_ROIS:
 	
 	SElement *theGroupP = nil;
 	
+	[PapyrusLock lock];
+	
 	NSMutableDictionary *cachedGroupsForThisFile = [cachedPapyGroups valueForKey: srcFile];
 	
 	int fileNb = -1;
 	
 	if( cachedGroupsForThisFile == nil)
 	{
-		[PapyrusLock lock];
-		
 		fileNb = Papy3FileOpen ( (char*) [srcFile UTF8String], (PAPY_FILE) 0, TRUE, 0);
 		
 		if( fileNb >= 0)
@@ -5954,7 +5954,7 @@ END_CREATE_ROIS:
 				NSLog( @"WARNING: Too much files opened for Papyrus Toolkit");
 		}
 		
-		[PapyrusLock unlock];
+		
 	}
 	else
 	{
@@ -5962,9 +5962,7 @@ END_CREATE_ROIS:
 		
 		if( group == 0L)
 		{
-			[PapyrusLock lock];
 			[cachedGroupsForThisFile setValue: [NSNumber numberWithInt: [[cachedGroupsForThisFile valueForKey: @"count"] intValue] +1] forKey: @"count"];
-			[PapyrusLock unlock];
 		}
 	}
 	
@@ -5983,8 +5981,6 @@ END_CREATE_ROIS:
 			if( [cachedGroupsForThisFile valueForKey: groupKey] == nil)
 			{
 				int theErr = 0;
-				
-				[PapyrusLock lock];
 				
 				if (gIsPapyFile[ fileNb] == DICOM10) theErr = Papy3FSeek (gPapyFile [fileNb], SEEK_SET, 132L);
 				
@@ -6006,13 +6002,13 @@ END_CREATE_ROIS:
 						[cachedGroupsForThisFile setValue: [NSValue valueWithPointer: 0L]  forKey: groupKey];
 					}
 				}
-				
-				[PapyrusLock unlock];
 			}
 			else
 			 theGroupP = [[cachedGroupsForThisFile valueForKey: groupKey] pointerValue];
 		}
 	}
+	
+	[PapyrusLock unlock];
 	
 	return theGroupP;
 }  
@@ -6522,6 +6518,8 @@ END_CREATE_ROIS:
 		if( pixelSpacingY != 0 && pixelSpacingX != 0) pixelRatio = pixelSpacingY / pixelSpacingX;
 	}
 	
+	[PapyrusLock lock];
+	
 	if( [[cachedPapyGroups valueForKey: srcFile] valueForKey: @"fileNb"])
 	{
 		int fileNb = [[[cachedPapyGroups valueForKey: srcFile] valueForKey: @"fileNb"] intValue];
@@ -6853,6 +6851,8 @@ END_CREATE_ROIS:
 			if (found16) fSetClut16 = YES;
 		} // endif ...extraction of the color palette
 	}
+	
+	[PapyrusLock unlock];
 	
 	if( gUseVOILUT)
 	{
@@ -7540,6 +7540,10 @@ END_CREATE_ROIS:
 			}
 			
 	#pragma mark read pixel data
+			
+			BOOL toBeUnlocked = YES;
+			[PapyrusLock lock];
+			
 			if( [[cachedPapyGroups valueForKey: srcFile] valueForKey: @"fileNb"])
 			{
 				DCMPix *imPix = nil;
@@ -7549,11 +7553,6 @@ END_CREATE_ROIS:
 				ee = imageNb-1;
 				
 				int fileNb = [[[cachedPapyGroups valueForKey: srcFile] valueForKey: @"fileNb"] intValue];
-				
-				BOOL toBeUnlocked;
-				
-				[PapyrusLock lock];
-				toBeUnlocked = YES;
 				
 				// position the file pointer to the begining of the data set 
 				err = Papy3GotoNumber (fileNb, (PapyShort) ee+1, DataSetID);
@@ -7929,9 +7928,6 @@ END_CREATE_ROIS:
 					} // endif ...group 7FE0 read 
 				}
 				
-				if( toBeUnlocked)
-					[PapyrusLock unlock];
-				
 		#pragma mark RGB or fPlanar
 				
 				//***********
@@ -8088,11 +8084,11 @@ END_CREATE_ROIS:
 				if( clutBlue) free( clutBlue);
 			}
 			
+			if( toBeUnlocked)
+				[PapyrusLock unlock];
+			
 			#ifdef OSIRIX_VIEWER
-			if( [[cachedPapyGroups valueForKey: srcFile] valueForKey: @"fileNb"])
-			{
-				[self loadCustomImageAnnotationsPapyLink: [[[cachedPapyGroups valueForKey: srcFile] valueForKey: @"fileNb"] intValue] DCMLink:nil];
-			}
+			[self loadCustomImageAnnotationsPapyLink: [[[cachedPapyGroups valueForKey: srcFile] valueForKey: @"fileNb"] intValue] DCMLink:nil];
 			#endif
 			
 			if( fabs(pixelSpacingX) / fabs(pixelSpacingY) > 10000 || fabs(pixelSpacingX) / fabs(pixelSpacingY) < 0.0001)
@@ -11363,8 +11359,6 @@ END_CREATE_ROIS:
 {
 	if( shutterPolygonal) free( shutterPolygonal);
 	
-	[self clearCachedPapyGroups];
-	[self clearCachedDCMFrameworkFiles];
 	[frameOfReferenceUID release];
 	[transferFunction release];
 	[positionerPrimaryAngle release];
@@ -11410,7 +11404,8 @@ END_CREATE_ROIS:
 	[annotationsDictionary release];
 	
 	if(LUT12baseAddr) free(LUT12baseAddr);
-	
+	[self clearCachedPapyGroups];
+	[self clearCachedDCMFrameworkFiles];
     [super dealloc];
 }
 

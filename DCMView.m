@@ -4707,7 +4707,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	[self setOriginX: originStart.x + xx Y: originStart.y + yy];
 	
 	//set value for Series Object Presentation State
-	if ([self is2DViewer] == YES)
+	if( [self is2DViewer] == YES && [[self windowController] isPostprocessed] == NO)
 	{
 		[[self seriesObj] setValue:[NSNumber numberWithFloat:origin.x] forKey:@"xOffset"];
 		[[self seriesObj] setValue:[NSNumber numberWithFloat:origin.y] forKey:@"yOffset"];
@@ -9632,20 +9632,23 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	origin.x = x;
 	origin.y = y;
 
-	// Series Level
-	[[self seriesObj]  setValue:[NSNumber numberWithFloat:x] forKey:@"xOffset"];
-	[[self seriesObj]  setValue:[NSNumber numberWithFloat:y] forKey:@"yOffset"];
-	
-	// Image Level
-	if( ([[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"CR"]  && IndependentCRWLWW) || COPYSETTINGSINSERIES == NO)
+	if( [self is2DViewer] == YES && [[self windowController] isPostprocessed] == NO)
 	{
-		[[self imageObj] setValue:[NSNumber numberWithFloat:x] forKey:@"xOffset"];
-		[[self imageObj] setValue:[NSNumber numberWithFloat:y] forKey:@"yOffset"];
-	}
-	else
-	{
-		[[self imageObj] setValue: nil forKey:@"xOffset"];
-		[[self imageObj] setValue: nil forKey:@"yOffset"];
+		// Series Level
+		[[self seriesObj]  setValue:[NSNumber numberWithFloat:x] forKey:@"xOffset"];
+		[[self seriesObj]  setValue:[NSNumber numberWithFloat:y] forKey:@"yOffset"];
+		
+		// Image Level
+		if( ([[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"CR"]  && IndependentCRWLWW) || COPYSETTINGSINSERIES == NO)
+		{
+			[[self imageObj] setValue:[NSNumber numberWithFloat:x] forKey:@"xOffset"];
+			[[self imageObj] setValue:[NSNumber numberWithFloat:y] forKey:@"yOffset"];
+		}
+		else
+		{
+			[[self imageObj] setValue: nil forKey:@"xOffset"];
+			[[self imageObj] setValue: nil forKey:@"yOffset"];
+		}
 	}
 	
 	[self updateTilingViews];
