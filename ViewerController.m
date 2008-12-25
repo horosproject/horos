@@ -88,7 +88,7 @@
 #import "ThumbnailCell.h"
 #import "DicomSeries.h"
 #import "DefaultsOsiriX.h"
-
+#import "dicomFile.h"
 
 @class VRPROController;
 
@@ -6165,7 +6165,7 @@ static ViewerController *draggedController = nil;
 {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     int i, x;
-	BOOL isPET = NO;
+	BOOL isPET = NO, compressed = NO;
 	
 	if( ThreadLoadImageLock == nil)
 	{
@@ -6184,44 +6184,53 @@ static ViewerController *draggedController = nil;
 	while( [[self window] isVisible] == NO && checkEverythingLoaded == NO)
 		[NSThread sleepForTimeInterval: 0.1];
 	
+	[DicomFile isDICOMFile: [[pixList[ 0] objectAtIndex:0] sourceFile] compressed: &compressed];
+	
+	if( compressed)
+		NSLog( @"start loading multiple thread : compressed data");
+	else
+		NSLog( @"start loading single thread");
+		
 	for( x = 0; x < maxMovieIndex; x++)
 	{
-//		int numberOfThreadsForCompute = MPProcessors();
-//		
-//		#define MAX_THREAD 2
-//		
-//		if( numberOfThreadsForCompute > MAX_THREAD) numberOfThreadsForCompute = MAX_THREAD;
-//		if( totalNumberOfLoadingThreads + numberOfThreadsForCompute > MAX_THREAD) numberOfThreadsForCompute = 1;
-//		
-//		totalNumberOfLoadingThreads += numberOfThreadsForCompute;
-//		
-//		if( numberOfThreadsForCompute > 1)
-//		{
-//			[subLoadingThread lock];
-//			[subLoadingThread unlockWithCondition: numberOfThreadsForCompute];
-//			
-//			for( i = 0; i < numberOfThreadsForCompute; i++ )
-//			{
-//				NSMutableDictionary *d = [NSMutableDictionary dictionary];
-//				
-//				[d setObject: pixList[ x] forKey: @"pixList"];
-//				[d setObject: fileList[ x] forKey: @"fileList"];
-//				
-//				int from = (i * [pixList[ x] count]) / numberOfThreadsForCompute;
-//				int to = ((i+1) * [pixList[ x] count]) / numberOfThreadsForCompute;
-//				
-//				[d setObject: [NSNumber numberWithInt: from] forKey: @"from"];
-//				[d setObject: [NSNumber numberWithInt: to] forKey: @"to"];
-//				[d setObject: [NSNumber numberWithInt: x] forKey: @"movieIndex"];
-//				
-//				[NSThread detachNewThreadSelector: @selector( subLoadingThread:) toTarget: self withObject: d];
-//			}
-//			
-//			[subLoadingThread lockWhenCondition: 0];
-//			[subLoadingThread unlock];
-//		}
-//		else
-//		{
+		int mpprocessors = MPProcessors();
+		int numberOfThreadsForCompute = mpprocessors;
+		
+		if( compressed == NO)
+			numberOfThreadsForCompute = 1;
+		
+		if( totalNumberOfLoadingThreads + numberOfThreadsForCompute > mpprocessors)
+			numberOfThreadsForCompute = 1;
+		
+		totalNumberOfLoadingThreads += numberOfThreadsForCompute;
+		
+		if( numberOfThreadsForCompute > 1)
+		{
+			[subLoadingThread lock];
+			[subLoadingThread unlockWithCondition: numberOfThreadsForCompute];
+			
+			for( i = 0; i < numberOfThreadsForCompute; i++ )
+			{
+				NSMutableDictionary *d = [NSMutableDictionary dictionary];
+				
+				[d setObject: pixList[ x] forKey: @"pixList"];
+				[d setObject: fileList[ x] forKey: @"fileList"];
+				
+				int from = (i * [pixList[ x] count]) / numberOfThreadsForCompute;
+				int to = ((i+1) * [pixList[ x] count]) / numberOfThreadsForCompute;
+				
+				[d setObject: [NSNumber numberWithInt: from] forKey: @"from"];
+				[d setObject: [NSNumber numberWithInt: to] forKey: @"to"];
+				[d setObject: [NSNumber numberWithInt: x] forKey: @"movieIndex"];
+				
+				[NSThread detachNewThreadSelector: @selector( subLoadingThread:) toTarget: self withObject: d];
+			}
+			
+			[subLoadingThread lockWhenCondition: 0];
+			[subLoadingThread unlock];
+		}
+		else
+		{
 			NSMutableDictionary *d = [NSMutableDictionary dictionary];
 			
 			[d setObject: pixList[ x] forKey: @"pixList"];
@@ -6234,13 +6243,14 @@ static ViewerController *draggedController = nil;
 			[d setObject: [NSNumber numberWithInt: to] forKey: @"to"];
 			[d setObject: [NSNumber numberWithInt: x] forKey: @"movieIndex"];
 			[self subLoadingThread: d];
-//		}
-//		
-//		totalNumberOfLoadingThreads -= numberOfThreadsForCompute;
+		}
+		
+		totalNumberOfLoadingThreads -= numberOfThreadsForCompute;
 		
 		loadingPercentage = (float) 1.0;
 	}
 	
+	NSLog( @"end loading");
 	
 //	NSLog( @"start loading");
 //	

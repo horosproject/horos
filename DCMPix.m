@@ -83,6 +83,14 @@ extern NSThread *mainThread;
 extern NSRecursiveLock *PapyrusLock;
 extern short Altivec;
 
+void PapyrusLockFunction( int lock)
+{
+	if( lock)
+		[PapyrusLock lock];
+	else
+		[PapyrusLock unlock];
+}
+
 void ConvertFloatToNative (float *theFloat)
 {
 	unsigned int		*myLongPtr;

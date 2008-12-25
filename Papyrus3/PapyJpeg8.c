@@ -54,6 +54,8 @@
 #include "Papyrus3.h"
 #endif
 
+extern void PapyrusLockFunction( int lock);
+
 /********************************************************************************/
 /*									 	*/
 /*	ExtractJPEGlossy : gets and decode JPEG lossy pixel data		*/
@@ -123,6 +125,8 @@ ExtractJPEGlossy8 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelSt
 		RETURN (theErr);
 	  } /* if */
 	  
+	  PapyrusLockFunction( 0);
+	  
 	  jpeg_memory_src( &theCInfo, jpegPointer, theLength);
 	  
 	  /* read file parameter */
@@ -131,6 +135,7 @@ ExtractJPEGlossy8 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelSt
 	  if (theCInfo.data_precision == 12)
 	  {
 		jpeg_destroy_decompress (&theCInfo);
+		PapyrusLockFunction( 1);
 		return papBadArgument;
 	  }
 
@@ -246,6 +251,8 @@ ExtractJPEGlossy8 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelSt
   jpeg_destroy_decompress(&theCInfo);
 
 	 free( jpegPointer);
+	 
+	 PapyrusLockFunction( 1);
 	}
   return theErr;
 
