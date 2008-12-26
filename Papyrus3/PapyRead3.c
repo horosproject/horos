@@ -1448,7 +1448,7 @@ Papy3GetPixelData (PapyShort inFileNb, int inImageNb, SElement *inGrOrModP, int 
   PapyShort	 theErr;
   int		 theFrameCount = 1, theLoop, ok, theIsModule;
   PAPY_FILE	 theFp;
-  PapyULong	 theBytesToRead, i, theULong, thePos, *theOffsetTableP;
+  PapyULong	 theBytesToRead, i, theULong, thePos, *theOffsetTableP = NULL;
   PapyULong	 theRefPoint, thePixelStart;
   SElement 	 *theElemP;	/* work pointer on the element of the module */
   
@@ -1459,8 +1459,6 @@ Papy3GetPixelData (PapyShort inFileNb, int inImageNb, SElement *inGrOrModP, int 
   /* test to learn if the routine was passed a module or a group in parameter */
   if (inGrOrModP->group == 0x0028) theIsModule = TRUE;
   else theIsModule = FALSE;
-  
-  theOffsetTableP = NULL;
   
   /* get the file pointer from the file number */
   theFp = gPapyFile [inFileNb];
@@ -1693,85 +1691,104 @@ Papy3GetPixelData (PapyShort inFileNb, int inImageNb, SElement *inGrOrModP, int 
         theFrameCount = (int) (theULong / 4L);
       
         /* allocate room to store the offset table */
-        theOffsetTableP = (PapyULong *) emalloc3 ((PapyULong) (theFrameCount * sizeof (PapyULong)));
- 
-        for (theLoop = 0; theLoop < theFrameCount; theLoop++)
-        {
-          /* read 4 chars from the file */
-          i           = 4L;
-          thePos      = 0L;
-          theTmpBufP  = (unsigned char *) &theTmpBuf [0];
-          if ((theErr = (PapyShort) Papy3FRead (theFp, &i, 1L, theTmpBufP)) < 0)
-          {
-	    theErr = Papy3FClose (&theFp);
-	    efree3 ((void **) &theOffsetTableP);
-	    return NULL;
-          } /* if */
-          theOffsetTableP [theLoop] = Extract4Bytes (theTmpBufP, &thePos);
-        } /* for */
-     
+		if( gCachedFramesMap[ inFileNb] == 0)
+	    {
+			theOffsetTableP = (PapyULong *) emalloc3 ((PapyULong) (theFrameCount * sizeof (PapyULong)));
+	 
+			for (theLoop = 0; theLoop < theFrameCount; theLoop++)
+			{
+			  /* read 4 chars from the file */
+			  i           = 4L;
+			  thePos      = 0L;
+			  theTmpBufP  = (unsigned char *) &theTmpBuf [0];
+			  if ((theErr = (PapyShort) Papy3FRead (theFp, &i, 1L, theTmpBufP)) < 0)
+			  {
+			theErr = Papy3FClose (&theFp);
+			efree3 ((void **) &theOffsetTableP);
+			return NULL;
+			  } /* if */
+			  theOffsetTableP [theLoop] = Extract4Bytes (theTmpBufP, &thePos);
+			} /* for */
+			
+			gCachedFramesMap[ inFileNb] = theOffsetTableP;
+       }
+	   else theOffsetTableP = gCachedFramesMap[ inFileNb];
+	   
       } /* if */
       else
       {
         ok = FALSE;
         theFrameCount = 0;
       
-        /* initialize a file reference point */
-        Papy3FTell (theFp, (PapyLong *) &theRefPoint);
-      
-        /* allocate memory for the offset table */
-		#define MAX_NUMBER_OF_FRAMES 100000L
-        theOffsetTableP = (PapyULong *) emalloc3 ((PapyULong) (100000L * sizeof (PapyULong)));
-      
-        while (!ok)
-        {
-          /* read fragment information : 0xFFFE, 0xE000, length */
-          Papy3FTell (theFp, (PapyLong *) &thePixelStart);
-        
-          /* read 8 chars from the file */
-          i 	      = 8L;
-          thePos      = 0L;
-          theTmpBufP  = (unsigned char *) &theTmpBuf [0];
-          if ((theErr = (PapyShort) Papy3FRead (theFp, &i, 1L, theTmpBufP)) < 0)
-          {
-			theErr = Papy3FClose (&theFp);
-			efree3 ((void **) &theOffsetTableP);
-			return NULL;
-          } /* if */
-        
-          thePos = 0L;
-          theUShort1 = Extract2Bytes (theTmpBufP, &thePos);
-          theUShort2 = Extract2Bytes (theTmpBufP, &thePos);
-          theULong   = Extract4Bytes (theTmpBufP, &thePos);
-        
-          /* offset table found ? */
-          if ((theUShort1 == 0xFFFE) && (theUShort2 == 0xE000))
-          {
-            theOffsetTableP [theFrameCount] = thePixelStart - theRefPoint;
+	    if( gCachedFramesMap[ inFileNb] == 0)
+	    {
+			/* initialize a file reference point */
+			Papy3FTell (theFp, (PapyLong *) &theRefPoint);
+		  
+			/* allocate memory for the offset table */
+			#define MAX_NUMBER_OF_FRAMES 100000L
+			theOffsetTableP = (PapyULong *) emalloc3 ((PapyULong) (100000L * sizeof (PapyULong)));
+		  
+			while (!ok)
+			{
+			  /* read fragment information : 0xFFFE, 0xE000, length */
+			  Papy3FTell (theFp, (PapyLong *) &thePixelStart);
 			
-			if( theFrameCount >= MAX_NUMBER_OF_FRAMES)
-				fprintf(stdout, "*********** MAJOR MEMORY BUG : theFrameCount > MAX_NUMBER_OF_FRAMES -> THIS APP WILL CRASH !\r");
-            else theFrameCount ++;
+			  /* read 8 chars from the file */
+			  i 	      = 8L;
+			  thePos      = 0L;
+			  theTmpBufP  = (unsigned char *) &theTmpBuf [0];
+			  if ((theErr = (PapyShort) Papy3FRead (theFp, &i, 1L, theTmpBufP)) < 0)
+			  {
+				theErr = Papy3FClose (&theFp);
+				efree3 ((void **) &theOffsetTableP);
+				return NULL;
+			  } /* if */
 			
-            Papy3FSeek (theFp, SEEK_CUR, theULong);
-          } /* if */
-          else if ((theUShort1 == 0xFFFE) && (theUShort2 == 0xE0DD)) ok = TRUE;
-      
-        } /* while */
-      
-        /* position the file pointer on the first image */
-        Papy3FSeek (theFp, SEEK_SET, theRefPoint);
-      
+			  thePos = 0L;
+			  theUShort1 = Extract2Bytes (theTmpBufP, &thePos);
+			  theUShort2 = Extract2Bytes (theTmpBufP, &thePos);
+			  theULong   = Extract4Bytes (theTmpBufP, &thePos);
+			
+			  /* offset table found ? */
+			  if ((theUShort1 == 0xFFFE) && (theUShort2 == 0xE000))
+			  {
+				theOffsetTableP [theFrameCount] = thePixelStart - theRefPoint;
+				
+				if( theFrameCount >= MAX_NUMBER_OF_FRAMES)
+					fprintf(stdout, "*********** MAJOR MEMORY BUG : theFrameCount > MAX_NUMBER_OF_FRAMES -> THIS APP WILL CRASH !\r");
+				else theFrameCount ++;
+				
+				Papy3FSeek (theFp, SEEK_CUR, theULong);
+			  } /* if */
+			  else if ((theUShort1 == 0xFFFE) && (theUShort2 == 0xE0DD)) ok = TRUE;
+			  
+			} /* while */
+		  
+			/* position the file pointer on the first image */
+			Papy3FSeek (theFp, SEEK_SET, theRefPoint);
+			
+			gCachedFramesMap[ inFileNb] = theOffsetTableP;
+        }
+		else theOffsetTableP = gCachedFramesMap[ inFileNb];
+		
       } /* else */
     
     } /* if ...not a Papyrus compressed image */
     else
     {
       /* allocate room to store the offset table */
-      theOffsetTableP = (PapyULong *) emalloc3 ((PapyULong) (sizeof (PapyULong)));
+	  if( gCachedFramesMap[ inFileNb] == 0)
+	  {
+		theOffsetTableP = (PapyULong *) emalloc3 ((PapyULong) (sizeof (PapyULong)));
       
-      /* there is no offset to the JPEG encoded image */
-      theOffsetTableP [0] = 0L;
+		/* there is no offset to the JPEG encoded image */
+		theOffsetTableP [0] = 0L;
+		
+		gCachedFramesMap[ inFileNb] = theOffsetTableP;
+	  }
+	  else theOffsetTableP = gCachedFramesMap[ inFileNb];
+	   
     } /* else ...Papyrus compressed image */
   
     /* get the position of the first pixel */
@@ -1951,8 +1968,6 @@ Papy3GetPixelData (PapyShort inFileNb, int inImageNb, SElement *inGrOrModP, int 
     theElemP->value->a = (char *) theBufP;
   } /* else ...compressed image */
   
-  if (theOffsetTableP != NULL) efree3 ((void **) &theOffsetTableP);
-
   if( theErr)
   {
 	if( theBufP)

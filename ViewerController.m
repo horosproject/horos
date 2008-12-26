@@ -6196,8 +6196,8 @@ static ViewerController *draggedController = nil;
 		int mpprocessors = MPProcessors();
 		int numberOfThreadsForCompute = mpprocessors;
 		
-		if( numberOfThreadsForCompute > 3)
-			numberOfThreadsForCompute = 3;
+		if( numberOfThreadsForCompute > 4)
+			numberOfThreadsForCompute = 4;
 		
 		if( compressed == NO)
 			numberOfThreadsForCompute = 1;

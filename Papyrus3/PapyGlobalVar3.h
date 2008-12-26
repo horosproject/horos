@@ -47,6 +47,8 @@ WHERE3 float	        gPapyrusFileVersion	[kMax_file_open];
 
 WHERE3 void *gCachedGroupLength[kMax_file_open];
 
+WHERE3 void *gCachedFramesMap[kMax_file_open];
+
 /* has the PAPYRUS toolkit been initialized or not ? */
 WHERE3 int		gIsPapy3Inited;
 

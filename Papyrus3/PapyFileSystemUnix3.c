@@ -230,7 +230,11 @@ Papy3FSeek (PAPY_FILE inFp, int inPosMode, PapyLong inOffset)
 	}
 	
 	if( i == kMax_file_open)
+	{
+		if( inOffset != 0)
+			printf("***** Papy3FSeek error !\r");
 		return 0;
+	}
 	
 	if( inPosMode == SEEK_SET)
 	{

@@ -810,6 +810,10 @@ Papy3FileClose (PapyShort inFileNb, int inToClose)
 	free( gCachedGroupLength[ inFileNb]);
   gCachedGroupLength[ inFileNb] = 0L;
 
+  if( gCachedFramesMap[ inFileNb] != 0L)
+	free( gCachedFramesMap[ inFileNb]);
+  gCachedFramesMap[ inFileNb] = 0L;
+	
   /* reset the incremental number for the file to zero */
   gCurrTmpFilename [inFileNb] = 1;
 

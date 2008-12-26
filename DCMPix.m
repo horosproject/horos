@@ -6937,6 +6937,12 @@ END_CREATE_ROIS:
 	{
 		UValue_T		*val3, *tmpVal3;
 		unsigned short	*shortRed, *shortGreen, *shortBlue;
+		int				fileNb = -1;
+		
+		[PapyrusLock lock];
+		if( [[cachedPapyGroups valueForKey: srcFile] valueForKey: @"fileNb"])
+			fileNb = [[[cachedPapyGroups valueForKey: srcFile] valueForKey: @"fileNb"] intValue];
+		[PapyrusLock unlock];
 		
 		modalityString = nil;
 		
@@ -7542,15 +7548,13 @@ END_CREATE_ROIS:
 			BOOL toBeUnlocked = YES;
 			[PapyrusLock lock];
 			
-			if( [[cachedPapyGroups valueForKey: srcFile] valueForKey: @"fileNb"])
+			if( fileNb >= 0)
 			{
 				DCMPix *imPix = nil;
 				short *oImage = nil;
 				
 				imPix = self;
 				ee = imageNb-1;
-				
-				int fileNb = [[[cachedPapyGroups valueForKey: srcFile] valueForKey: @"fileNb"] intValue];
 				
 				// position the file pointer to the begining of the data set 
 				err = Papy3GotoNumber (fileNb, (PapyShort) ee+1, DataSetID);
@@ -8086,7 +8090,7 @@ END_CREATE_ROIS:
 				[PapyrusLock unlock];
 			
 			#ifdef OSIRIX_VIEWER
-			[self loadCustomImageAnnotationsPapyLink: [[[cachedPapyGroups valueForKey: srcFile] valueForKey: @"fileNb"] intValue] DCMLink:nil];
+			[self loadCustomImageAnnotationsPapyLink: fileNb DCMLink:nil];
 			#endif
 			
 			if( fabs(pixelSpacingX) / fabs(pixelSpacingY) > 10000 || fabs(pixelSpacingX) / fabs(pixelSpacingY) < 0.0001)
