@@ -5953,8 +5953,6 @@ END_CREATE_ROIS:
 			if( [cachedPapyGroups count] >= kMax_file_open)
 				NSLog( @"WARNING: Too much files opened for Papyrus Toolkit");
 		}
-		
-		
 	}
 	else
 	{

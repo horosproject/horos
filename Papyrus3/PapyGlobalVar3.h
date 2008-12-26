@@ -53,6 +53,9 @@ WHERE3 int		gIsPapy3Inited;
 /* Papyrus file pointers to the currently open files */
 WHERE3 PAPY_FILE	gPapyFile		[kMax_file_open];
 
+WHERE3 int      	gSeekPos		[kMax_file_open];
+WHERE3 char      	gSeekPosApplied	[kMax_file_open];
+
 /* What is the type of the fiel we are dealing with ? */
 /* DICOM10, PAPYRUS3, DICOM_NOT10, DICOMDIR */
 WHERE3 enum EFile_Type	gIsPapyFile		[kMax_file_open];

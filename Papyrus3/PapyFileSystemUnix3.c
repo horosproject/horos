@@ -46,6 +46,8 @@
 #include "PapyTypeDef3.h"
 #endif
 
+#include "Papyrus3.h"
+
 #ifndef __PapyError3__
 #include "PapyError3.h"
 #endif
@@ -156,20 +158,36 @@ Papy3FRead (PAPY_FILE inFp, PapyULong *ioBytesToReadP, PapyULong inNb, void *ioB
 {
   long  packets = 0;
   
-  packets = (PapyShort)(fread ((char *) ioBufferP, (size_t) *ioBytesToReadP, inNb, inFp));
-  if (packets != inNb)
-  {
-	if( feof(inFp) != 0)
+  int err, i;
+  
+	for (i = 0; i < kMax_file_open; i++)
 	{
-		if( packets == 0) return -1;
-		else return 0;
+		if (gPapyFile [i] == inFp)
+			break;
 	}
-	else
+  
+	if( gSeekPosApplied[ i] == 0)
 	{
-		return -1;
+		gSeekPosApplied[ i] = 1;
+		fseek (inFp, gSeekPos[ i], SEEK_SET);
 	}
-   }
-  else return 0;
+	
+	gSeekPos[ i] += *ioBytesToReadP * inNb;
+  
+	packets = (PapyShort)(fread ((char *) ioBufferP, (size_t) *ioBytesToReadP, inNb, inFp));
+	if (packets != inNb)
+	{
+		if( feof(inFp) != 0)
+		{
+			if( packets == 0) return -1;
+			else return 0;
+		}
+		else
+		{
+			return -1;
+		}
+	}
+	else return 0;
 
 } /* endof Papy3FRead */
 
@@ -186,7 +204,7 @@ Papy3FWrite (PAPY_FILE inFp, PapyULong *ioBytesToWriteP, PapyULong inNb, void *o
 {
   PapyShort  err = 0;
   
-  err = (PapyShort)(fwrite ((char *) outBufferP, (int)*ioBytesToWriteP, inNb, inFp));
+  err = (PapyShort) (fwrite ((char *) outBufferP, (int)*ioBytesToWriteP, inNb, inFp));
 
   return err;
 
@@ -203,22 +221,34 @@ Papy3FWrite (PAPY_FILE inFp, PapyULong *ioBytesToWriteP, PapyULong inNb, void *o
 int
 Papy3FSeek (PAPY_FILE inFp, int inPosMode, PapyLong inOffset)
 {
-  long     err;
-
-//  if (inOffset > 1000000L)			// THIS IS EXTREMELY SLOW....
-//  {
-//    startPos = (PapyLong) ftell (inFp);
-//    /* get the end of file */
-//    err = fseek (inFp, 0L, (int) SEEK_END);
-//    fileLimit = (PapyLong) ftell (inFp);
-//    if (inOffset > fileLimit) return -1;  
-//    err = fseek (inFp, (long) startPos, (int) SEEK_SET);
-//  }
-
-//	startPos = (PapyLong) ftell (inFp);
-
-  err = fseek (inFp, (long) inOffset, inPosMode);
+	int err = 0, i;
   
+	for (i = 0; i < kMax_file_open; i++)
+	{
+		if (gPapyFile [i] == inFp)
+			break;
+	}
+	
+	if( i == kMax_file_open)
+		return 0;
+	
+	if( inPosMode == SEEK_SET)
+	{
+		if( inOffset != gSeekPos[ i])
+		{
+			gSeekPos[ i] = inOffset;
+			gSeekPosApplied [ i] = 0;
+		}
+	}
+	else if( inPosMode == SEEK_CUR)
+	{
+		if( inOffset != 0)
+		{
+			gSeekPos[ i] += inOffset;
+			gSeekPosApplied [ i] = 0;
+		}
+	}
+	
   return err;
 
 } /* endof Papy3FSeek */
@@ -235,9 +265,15 @@ Papy3FSeek (PAPY_FILE inFp, int inPosMode, PapyLong inOffset)
 int
 Papy3FTell (PAPY_FILE inFp, PapyLong *outFilePosP)
 {
-  int err = 0;
+  int err = 0, i;
   
-  *outFilePosP = (PapyLong) ftell (inFp);
+	for (i = 0; i < kMax_file_open; i++)
+	{
+		if (gPapyFile [i] == inFp)
+			break;
+	}
+  
+  *outFilePosP = gSeekPos[ i];
   
   return err;
 

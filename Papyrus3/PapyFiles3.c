@@ -197,7 +197,9 @@ Papy3FileOpen (char *inNameP, PAPY_FILE inVRefNum, int inToOpen, void* inFSSpec)
               gPapyFile [theFileNb]    = theFp; 
               gReadOrWrite [theFileNb] = kPAPY_READ;
 			  gCachedGroupLength [theFileNb] = 0L;
-    
+			  gSeekPos [theFileNb] = 0;
+			  gSeekPosApplied  [theFileNb] = 0;
+			  
               /* set the papyrus version number */
               if (thePapyrusFile == PAPYRUS3)
               {
