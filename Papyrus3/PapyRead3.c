@@ -1212,7 +1212,7 @@ ExtractRLE (PapyShort inFileNb, PapyUShort *ioImage16P, PapyULong inPixelStart,
     theRleP = (PapyUChar *) emalloc3 ((PapyULong) (theRleLen + 10L));
     /* extract the image from the file */
     theErr = Papy3FRead (gPapyFile [inFileNb], (PapyULong *) &theRleLen, 1L, (void *) theRleP);
-
+	
     DecodeRLESegment (inFileNb, ioImage16P, theRleP, theRleLen, theNbOfSegments, 1);
     /* delete rle image */
     efree3 ((void **) &theRleP);
@@ -1714,8 +1714,11 @@ Papy3GetPixelData (PapyShort inFileNb, int inImageNb, SElement *inGrOrModP, int 
 			
 			gCachedFramesMap[ inFileNb] = theOffsetTableP;
        }
-	   else theOffsetTableP = gCachedFramesMap[ inFileNb];
-	   
+	   else
+	   {
+		theOffsetTableP = gCachedFramesMap[ inFileNb];
+		Papy3FSeek (theFp, SEEK_CUR, theULong);
+	   }
       } /* if */
       else
       {
