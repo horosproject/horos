@@ -5953,6 +5953,7 @@ END_CREATE_ROIS:
 			if( [cachedPapyGroups count] >= kMax_file_open)
 				NSLog( @"WARNING: Too much files opened for Papyrus Toolkit");
 		}
+		else NSLog( @"Papy3FileOpen failed : %d", fileNb);
 	}
 	else
 	{
@@ -6002,7 +6003,7 @@ END_CREATE_ROIS:
 				}
 			}
 			else
-			 theGroupP = [[cachedGroupsForThisFile valueForKey: groupKey] pointerValue];
+				theGroupP = [[cachedGroupsForThisFile valueForKey: groupKey] pointerValue];
 		}
 	}
 	
@@ -8105,7 +8106,9 @@ END_CREATE_ROIS:
 			
 			returnValue =  YES;
 		}
+		else NSLog( @"[self getPapyGroup: 0x0028] failed");
 	}
+	else NSLog( @"[self getPapyGroup: 0] failed");
 	
 	return returnValue;
 }

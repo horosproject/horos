@@ -1694,7 +1694,9 @@ Papy3GetPixelData (PapyShort inFileNb, int inImageNb, SElement *inGrOrModP, int 
 		if( gCachedFramesMap[ inFileNb] == 0)
 	    {
 			theOffsetTableP = (PapyULong *) emalloc3 ((PapyULong) (theFrameCount * sizeof (PapyULong)));
-	 
+			if( theOffsetTableP == 0L)
+				printf("Papy3GetPixelData - malloc failed\r");
+			
 			for (theLoop = 0; theLoop < theFrameCount; theLoop++)
 			{
 			  /* read 4 chars from the file */
@@ -1703,9 +1705,9 @@ Papy3GetPixelData (PapyShort inFileNb, int inImageNb, SElement *inGrOrModP, int 
 			  theTmpBufP  = (unsigned char *) &theTmpBuf [0];
 			  if ((theErr = (PapyShort) Papy3FRead (theFp, &i, 1L, theTmpBufP)) < 0)
 			  {
-			theErr = Papy3FClose (&theFp);
-			efree3 ((void **) &theOffsetTableP);
-			return NULL;
+				theErr = Papy3FClose (&theFp);
+				efree3 ((void **) &theOffsetTableP);
+				return NULL;
 			  } /* if */
 			  theOffsetTableP [theLoop] = Extract4Bytes (theTmpBufP, &thePos);
 			} /* for */

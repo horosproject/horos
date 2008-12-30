@@ -39,6 +39,7 @@ enum photometricmode{DCM_UNKNOWN_PHOTOMETRIC, DCM_MONOCHROME1,  DCM_MONOCHROME2,
 	int		_max;
 	DCMTransferSyntax *transferSyntax;
 	BOOL	_isDecoded;
+	NSMutableArray *_framesDecoded;
 	DCMObject *_dcmObject;
 	BOOL  _framesCreated;
 

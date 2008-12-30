@@ -132,7 +132,6 @@ Papy3FileOpen (char *inNameP, PAPY_FILE inVRefNum, int inToOpen, void* inFSSpec)
     UValue_T		*theValP;
     PapyShort           iResult;
     
-    
     iResult = papNoError;
 
     if (inToOpen)
@@ -146,7 +145,6 @@ Papy3FileOpen (char *inNameP, PAPY_FILE inVRefNum, int inToOpen, void* inFSSpec)
     else
       theFp = inVRefNum;
     
-
     if (iResult == papNoError)
     {
       /* set the file pointer at the begining */ 
@@ -155,10 +153,10 @@ Papy3FileOpen (char *inNameP, PAPY_FILE inVRefNum, int inToOpen, void* inFSSpec)
          iResult = papPositioning;
         }
         else
-      {
+        {
         /* test if the "PAPYRUS 3.X" string is at the begining of the file */
         theReadSize = 15L;
-
+		
         if ((theErr = (PapyShort) Papy3FRead (theFp, (PapyULong *) &theReadSize, 1L, theBuff)) < 0)
         {
           iResult = papReadFile;
@@ -167,7 +165,7 @@ Papy3FileOpen (char *inNameP, PAPY_FILE inVRefNum, int inToOpen, void* inFSSpec)
         {
           /* compares the extracted string with the awaited string */
           theBuff [14] = '\0';
-
+		
           /* if the PAPYRUS 3.0 string is not here it could be a basic DICOM file */
           if (strncmp ((char *) theBuff, "PAPYRUS 3.", 10) != 0) 
           {
@@ -183,7 +181,7 @@ Papy3FileOpen (char *inNameP, PAPY_FILE inVRefNum, int inToOpen, void* inFSSpec)
               iResult = papReadFile;
             } /* if ...incompatible version of the PAPYRUS file */
           }
-   
+		  
           if (iResult == papNoError)
           {
             /* find a free place for the file */
@@ -216,19 +214,20 @@ Papy3FileOpen (char *inNameP, PAPY_FILE inVRefNum, int inToOpen, void* inFSSpec)
                 /* put the current value */
                 gPapyrusFileVersion [theFileNb] = (float)atof ((char *) gPapyrusVersion);
               }
-    
+			  
               /* set the transfert syntax to the default one */
               gArrTransfSyntax [theFileNb] = LITTLE_ENDIAN_EXPL;    
-        
+			  
               /* go to the place where the "DICM" prefix should be (position 128) */ 
               if ((theErr = (PapyShort) Papy3FSeek (theFp, (int) SEEK_SET, (PapyLong) 128L)) != 0)
               {
                 iResult = papPositioning;
+				
               }
               else
               {
                 theReadSize = 4L;
-
+				
                 if ((theErr = (PapyShort) Papy3FRead (theFp, (PapyULong *) &theReadSize, 1L, theBuff)) < 0)
                 {
                   iResult = papReadFile;
@@ -269,7 +268,7 @@ Papy3FileOpen (char *inNameP, PAPY_FILE inVRefNum, int inToOpen, void* inFSSpec)
 						iResult = papNotPapyrusFile;
                       }
                     } /* else ...group 0x0008 found */
-      
+					
                     if (iResult == papNoError)
                     {
                       /* try to extract the modality */
@@ -350,6 +349,7 @@ Papy3FileOpen (char *inNameP, PAPY_FILE inVRefNum, int inToOpen, void* inFSSpec)
 					  {
 						//This is a sad reality..... OsiriX is not Big endian savvy for DICOM files............
 						iResult = -1;
+						printf("Transfer Syntax is BIG_ENDIAN_EXPL : unsupported by Papy Toolkit\r");
 						}
 					} /* if ...anything but a DICOM not 10 file */
     
@@ -1287,6 +1287,8 @@ Papy3SkipNextGroup (PapyShort inFileNb)
 	if( cachedGroup == 0L)
 	{
 		gCachedGroupLength[ inFileNb] = cachedGroup = (cachedGroupStruct*) malloc( 1024L * sizeof( cachedGroupStruct));
+		if( cachedGroup == 0L)
+			printf("malloc failed Papy3SkipNextGroup\r");
 		cachedGroup[0].length = 0;
 		cachedGroup[0].group = 0;
 	}
@@ -1352,23 +1354,24 @@ Papy3SkipNextGroup (PapyShort inFileNb)
 	/* else the group length element not here compute it */
 	else
 	{
-	 /* test the VR */
-	if (gArrTransfSyntax [inFileNb] == LITTLE_ENDIAN_IMPL && theGrNb == 0x0002)
-	{
-		theErr = Papy3FSeek (theFp, (int) SEEK_CUR, (PapyLong) - kLength_length);
-		theGrLength = ComputeUndefinedGroupLength3 (inFileNb, -1L);
-		if( theGrLength == 8)
-			theGrLength = 28;
-	}
-	else
-	{
-		theErr = Papy3FSeek (theFp, (int) SEEK_CUR, (PapyLong) - kLength_length);
-		theGrLength = ComputeUndefinedGroupLength3 (inFileNb, -1L);
-	}
+		 /* test the VR */
+		if (gArrTransfSyntax [inFileNb] == LITTLE_ENDIAN_IMPL && theGrNb == 0x0002)
+		{
+			theErr = Papy3FSeek (theFp, (int) SEEK_CUR, (PapyLong) - kLength_length);
+			theGrLength = ComputeUndefinedGroupLength3 (inFileNb, -1L);
+			if( theGrLength == 8)
+				theGrLength = 28;
+		}
+		else
+		{
+			theErr = Papy3FSeek (theFp, (int) SEEK_CUR, (PapyLong) - kLength_length);
+			theGrLength = ComputeUndefinedGroupLength3 (inFileNb, -1L);
+		}
 	} /* else ...undefined group length */
 
 	if( theGrLength <= 0)
 	{
+		printf("error theGrLength <= 0 : %d\r", theGrLength);
 		RETURN ( -1);
 	}
 	/* sets the file pointer at the begining of the next group */
@@ -2133,8 +2136,8 @@ ComputeUndefinedSequenceLength3 (PapyShort inFileNb, PapyULong *ioSeqLengthP)
         i = 4L;
         if (Papy3FRead (gPapyFile [inFileNb], &i, 1L, theBuffP) < 0)
         {
-	  Papy3FClose (&(gPapyFile [inFileNb]));
-	  RETURN (papReadFile)
+			Papy3FClose (&(gPapyFile [inFileNb]));
+			RETURN (papReadFile)
         } /* if */
         *ioSeqLengthP += 4L;
         theBufPos = 0L;
@@ -2228,8 +2231,7 @@ ComputeUndefinedGroupLength3 (PapyShort inFileNb, PapyLong inMaxSize)
     if ((theErr = (PapyShort) Papy3FRead (gPapyFile [inFileNb], &i, 1L, theBuffP)) < 0)
     {
       theErr = (PapyShort) Papy3FClose (&(gPapyFile [inFileNb]));
-/* Modif DRD
-      RETURN (papReadFile) */
+	  printf("ComputeUndefinedGroupLength3\rError\r");
       return 0;
     } /* if */
     

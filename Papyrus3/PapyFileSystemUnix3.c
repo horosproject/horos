@@ -156,8 +156,7 @@ Papy3FDelete (char *inFilenameP, void *inIdentifierP)
 PapyShort
 Papy3FRead (PAPY_FILE inFp, PapyULong *ioBytesToReadP, PapyULong inNb, void *ioBufferP)
 {
-  long  packets = 0;
-  
+  int packets = 0;
   int err, i;
   
 	for (i = 0; i < kMax_file_open; i++)
@@ -165,7 +164,7 @@ Papy3FRead (PAPY_FILE inFp, PapyULong *ioBytesToReadP, PapyULong inNb, void *ioB
 		if (gPapyFile [i] == inFp)
 			break;
 	}
-  
+	
 	if( gSeekPosApplied[ i] == 0)
 	{
 		gSeekPosApplied[ i] = 1;
@@ -174,7 +173,7 @@ Papy3FRead (PAPY_FILE inFp, PapyULong *ioBytesToReadP, PapyULong inNb, void *ioB
 	
 	gSeekPos[ i] += *ioBytesToReadP * inNb;
   
-	packets = (PapyShort)(fread ((char *) ioBufferP, (size_t) *ioBytesToReadP, inNb, inFp));
+	packets = fread ((char *) ioBufferP, (size_t) *ioBytesToReadP, inNb, inFp);
 	if (packets != inNb)
 	{
 		if( feof(inFp) != 0)
@@ -252,6 +251,7 @@ Papy3FSeek (PAPY_FILE inFp, int inPosMode, PapyLong inOffset)
 			gSeekPosApplied [ i] = 0;
 		}
 	}
+	else printf("unknown Papy3FSeek mode\r");
 	
   return err;
 
@@ -277,6 +277,12 @@ Papy3FTell (PAPY_FILE inFp, PapyLong *outFilePosP)
 			break;
 	}
   
+    if( i == kMax_file_open)
+	{
+		printf("***** Papy3FTell error !\r");
+		return -1;
+	}
+	
   *outFilePosP = gSeekPos[ i];
   
   return err;

@@ -444,6 +444,7 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 
 - (void)dealloc {
 	[transferSyntax release];
+	[_framesDecoded release];
 	[super dealloc];
 }
 
@@ -490,13 +491,14 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 		_tag = [tag retain];
 		_valueLength = vl;
 		_values =  nil;
+		_framesDecoded = nil;
 	
 		//NSLog(@"data length: %d", [dicomData length]);
 		if (dicomData) 
 			_values = [[self valuesForVR:_vr length:_valueLength data:dicomData] retain];
 		else
 			_values = [[NSMutableArray array] retain];
-			
+		
 		if (DEBUG) 
 			NSLog( self.description );
 
@@ -3102,15 +3104,32 @@ NS_ENDHANDLER
 	else
 		subData = [self createFrameAtIndex:index];
 	
-	if ([_values count] > 0 && index < _numberOfFrames){
+	if ([_values count] > 0 && index < _numberOfFrames)
+	{
+		if( _framesDecoded == nil)
+		{
+			_framesDecoded = [[NSMutableArray array] retain];
+			for( int i = 0; i < [_values count]; i++)
+				[_framesDecoded addObject: [NSNumber numberWithBool: NO]];
+		}
+		else if( [_framesDecoded count] != [_values count])
+		{
+			int s = [_framesDecoded count];
+			for( int i = s; i < [_values count]; i++)
+				[_framesDecoded addObject: [NSNumber numberWithBool: NO]];
+		}
 		
-			
 		if (DEBUG)
 				NSLog(@"to decoders:%@", transferSyntax.description );
 			// data to decoders
 		NSMutableData *data = nil;
-		if (!_isDecoded){
-			if ( transferSyntax.isEncapsulated ) {
+		
+		if( [[_framesDecoded objectAtIndex: index] boolValue] == NO)
+		{
+			[_framesDecoded replaceObjectAtIndex: index withObject: [NSNumber numberWithBool: YES]];
+			
+			if ( transferSyntax.isEncapsulated )
+			{
 				if( singleThread == nil) singleThread = [[NSLock alloc] init];
 				[singleThread lock];	// These JPEG decompressors are NOT thread-safe....
 				
