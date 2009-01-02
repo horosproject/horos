@@ -3115,7 +3115,7 @@ NS_ENDHANDLER
 		else if( [_framesDecoded count] != [_values count])
 		{
 			int s = [_framesDecoded count];
-			for( int i = s; i < [_values count]; i++)
+			for( int i = s; i <= [_values count]; i++)
 				[_framesDecoded addObject: [NSNumber numberWithBool: NO]];
 		}
 		
@@ -3123,6 +3123,13 @@ NS_ENDHANDLER
 				NSLog(@"to decoders:%@", transferSyntax.description );
 			// data to decoders
 		NSMutableData *data = nil;
+		
+		if( index >= [_framesDecoded count])
+		{
+			int s = [_framesDecoded count];
+			for( int i = s; i <= index; i++)
+				[_framesDecoded addObject: [NSNumber numberWithBool: NO]];
+		}
 		
 		if( [[_framesDecoded objectAtIndex: index] boolValue] == NO)
 		{
