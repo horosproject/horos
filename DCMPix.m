@@ -4957,10 +4957,11 @@ END_CREATE_ROIS:
 	}
 	if( [dcmObject attributeValueWithName:@"RecommendedDisplayFrameRate"]) cineRate = [[dcmObject attributeValueWithName:@"RecommendedDisplayFrameRate"] floatValue]; 
 	if( !cineRate && [dcmObject attributeValueWithName:@"CineRate"]) cineRate = [[dcmObject attributeValueWithName:@"CineRate"] floatValue]; 
-	if (!cineRate)
+	if (!cineRate && [dcmObject attributeValueWithName:@"FrameDelay"]) cineRate = 1000. / [[dcmObject attributeValueWithName:@"FrameDelay"] floatValue];
+	if (!cineRate && [dcmObject attributeValueWithName:@"FrameTimeVector"])
 	{
-		if( [dcmObject attributeValueWithName:@"FrameTimeVector"])
-			cineRate = 1000. / [[dcmObject attributeValueWithName:@"FrameTimeVector"] floatValue];
+		if( [[dcmObject attributeValueWithName:@"FrameTimeVector"] floatValue] > 0)
+			cineRate = 1000. / [[dcmObject attributeValueWithName:@"FrameTimeVector"] floatValue];	
 	}
 	
 	if ( gUseShutter)
@@ -6248,10 +6249,21 @@ END_CREATE_ROIS:
 	
 	if(!cineRate)
 	{
+		val = Papy3GetElement (theGroupP, papFrameDelayGr, &nbVal, &elemType);
+		if ( val )
+		{
+			if( atof( val->a) > 0)
+				cineRate = 1000./atof( val->a);
+		}
+	}
+	
+	if(!cineRate)
+	{
 		val = Papy3GetElement (theGroupP, papFrameTimeVectorGr, &nbVal, &elemType);
 		if ( val )
 		{
-			cineRate = 1000./atof( val->a);
+			if( atof( val->a) > 0)
+				cineRate = 1000./atof( val->a);
 		}
 	}
 	
