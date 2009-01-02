@@ -211,14 +211,14 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 {
 	if( DEFAULTSSET == NO)
 	{
-		if( [[NSUserDefaults standardUserDefaults] objectForKey: @"TOOLKITPARSER"])
+		if( [[NSUserDefaults standardUserDefaults] objectForKey: @"TOOLKITPARSER2"])
 		{
 			NSUserDefaults *sd = [NSUserDefaults standardUserDefaults];
 			
 			DEFAULTSSET = YES;
 			
 			PREFERPAPYRUSFORCD = [sd integerForKey: @"PREFERPAPYRUSFORCD"];
-			TOOLKITPARSER = [sd integerForKey: @"TOOLKITPARSER"];
+			TOOLKITPARSER = [sd integerForKey: @"TOOLKITPARSER2"];
 			COMMENTSAUTOFILL = [sd boolForKey: @"COMMENTSAUTOFILL"];
 			SEPARATECARDIAC4D = [sd boolForKey: @"SEPARATECARDIAC4D"];
 			
@@ -246,7 +246,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			DEFAULTSSET = YES;
 			
 			PREFERPAPYRUSFORCD = [[dict objectForKey: @"PREFERPAPYRUSFORCD"] intValue];
-			TOOLKITPARSER = [[dict objectForKey: @"TOOLKITPARSER"] intValue];
+			TOOLKITPARSER = [[dict objectForKey: @"TOOLKITPARSER2"] intValue];
 			COMMENTSAUTOFILL = [[dict objectForKey: @"COMMENTSAUTOFILL"] intValue];
 			SEPARATECARDIAC4D = [[dict objectForKey: @"SEPARATECARDIAC4D"] intValue];
 			

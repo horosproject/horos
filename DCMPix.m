@@ -1237,7 +1237,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		gUseShutter = [[NSUserDefaults standardUserDefaults] boolForKey:@"UseShutter"];
 		gDisplayDICOMOverlays = [[NSUserDefaults standardUserDefaults] boolForKey:@"DisplayDICOMOverlays"];
 		gUseVOILUT = [[NSUserDefaults standardUserDefaults] boolForKey:@"UseVOILUT"];
-		gUSEPAPYRUSDCMPIX = [[NSUserDefaults standardUserDefaults] boolForKey:@"USEPAPYRUSDCMPIX"];
+		gUSEPAPYRUSDCMPIX = [[NSUserDefaults standardUserDefaults] boolForKey:@"USEPAPYRUSDCMPIX2"];
 		gUseJPEGColorSpace = [[NSUserDefaults standardUserDefaults] boolForKey:@"UseJPEGColorSpace"];
 		gFULL32BITPIPELINE = [[NSUserDefaults standardUserDefaults] boolForKey:@"FULL32BITPIPELINE"];
 		
@@ -4957,7 +4957,11 @@ END_CREATE_ROIS:
 	}
 	if( [dcmObject attributeValueWithName:@"RecommendedDisplayFrameRate"]) cineRate = [[dcmObject attributeValueWithName:@"RecommendedDisplayFrameRate"] floatValue]; 
 	if( !cineRate && [dcmObject attributeValueWithName:@"CineRate"]) cineRate = [[dcmObject attributeValueWithName:@"CineRate"] floatValue]; 
-	if (!cineRate && [dcmObject attributeValueWithName:@"FrameDelay"]) cineRate = 1000. / [[dcmObject attributeValueWithName:@"FrameDelay"] floatValue];
+	if (!cineRate && [dcmObject attributeValueWithName:@"FrameDelay"])
+	{
+		if( [[dcmObject attributeValueWithName:@"FrameDelay"] floatValue] > 0)
+			cineRate = 1000. / [[dcmObject attributeValueWithName:@"FrameDelay"] floatValue];
+	}
 	if (!cineRate && [dcmObject attributeValueWithName:@"FrameTimeVector"])
 	{
 		if( [[dcmObject attributeValueWithName:@"FrameTimeVector"] floatValue] > 0)

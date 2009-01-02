@@ -76,15 +76,15 @@ enum photometricmode{DCM_UNKNOWN_PHOTOMETRIC, DCM_MONOCHROME1,  DCM_MONOCHROME2,
 - (void)decodeData;
 - (BOOL)convertToTransferSyntax:(DCMTransferSyntax *)ts quality:(int)quality;
 - (NSMutableData *)encodeJPEG2000:(NSMutableData *)data quality:(int)quality;
-- (NSMutableData *)convertDataFromLittleEndianToHost:(NSMutableData *)data;
-- (NSMutableData *)convertDataFromBigEndianToHost:(NSMutableData *)data;
+- (NSData *)convertDataFromLittleEndianToHost:(NSMutableData *)data;
+- (NSData *)convertDataFromBigEndianToHost:(NSMutableData *)data;
 - (void)convertLittleEndianToHost;
 - (void)convertBigEndianToHost;
 - (void)convertHostToLittleEndian;
 - (void)convertHostToBigEndian;
-- (NSMutableData *)convertJPEG8ToHost:(NSData *)jpegData;
-- (NSMutableData *)convertJPEG2000ToHost:(NSData *)jpegData;
-- (NSMutableData *)convertRLEToHost:(NSData *)rleData;
+- (NSData *)convertJPEG8ToHost:(NSData *)jpegData;
+- (NSData *)convertJPEG2000ToHost:(NSData *)jpegData;
+- (NSData *)convertRLEToHost:(NSData *)rleData;
 //- (void)decodeRescale:(NSMutableData *)data;
 - (void)encodeRescale:(NSMutableData *)data WithRescaleIntercept:(int)offset;
 - (void)encodeRescale:(NSMutableData *)data WithPixelDepth:(int)pixelDepth;
@@ -96,7 +96,7 @@ enum photometricmode{DCM_UNKNOWN_PHOTOMETRIC, DCM_MONOCHROME1,  DCM_MONOCHROME2,
 - (void)encodeRescaleScalar:(NSMutableData *)data withPixelDepth:(int)pixelDepth;
 - (void)createOffsetTable;
 - (void)interleavePlanes;
-- (NSMutableData *)interleavePlanesInData:(NSMutableData *)data;
+- (NSData *)interleavePlanesInData:(NSData *)data;
 - (NSMutableData *)createFrameAtIndex:(int)index;
 - (void)createFrames;
 - (void)setLossyImageCompressionRatio:(NSMutableData *)data;
@@ -104,10 +104,10 @@ enum photometricmode{DCM_UNKNOWN_PHOTOMETRIC, DCM_MONOCHROME1,  DCM_MONOCHROME2,
 - (void)decodeRescale;
 //RGB data will be interleaved after being converted from Palette or YBR.
 - (void)convertToRGBColorspace;
-- (NSMutableData *)convertDataToRGBColorSpace:(NSMutableData *)data;
-- (NSMutableData *)convertPaletteToRGB:(NSMutableData *)data;
-- (NSMutableData *) convertYBrToRGB:(NSData *)ybrData kind:(NSString *)theKind isPlanar:(BOOL)isPlanar;
-- (NSMutableData *)convertToFloat:(NSMutableData *)data;
+- (NSData *)convertDataToRGBColorSpace:(NSData *)data;
+- (NSData *)convertPaletteToRGB:(NSData *)data;
+- (NSData *) convertYBrToRGB:(NSData *)ybrData kind:(NSString *)theKind isPlanar:(BOOL)isPlanar;
+- (NSData *)convertToFloat:(NSData *)data;
 - (NSMutableData *)decodeFrameAtIndex:(int)index;
 - (NSImage *)imageAtIndex:(int)index ww:(float)ww  wl:(float)wl;
 

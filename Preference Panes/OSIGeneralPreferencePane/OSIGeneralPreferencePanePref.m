@@ -89,18 +89,18 @@
 	//setup GUI
 	[securityOnOff setState:[defaults boolForKey:@"AUTHENTICATION"]];
 	
-	[readerMatrix selectCellWithTag: [defaults boolForKey: @"USEPAPYRUSDCMPIX"]];
-	[parserMatrix selectCellWithTag: [defaults integerForKey: @"TOOLKITPARSER"]];
+	[readerMatrix selectCellWithTag: [defaults boolForKey: @"USEPAPYRUSDCMPIX2"]];
+	[parserMatrix selectCellWithTag: [defaults integerForKey: @"TOOLKITPARSER2"]];
 }
 
 - (IBAction) setReader: (id) sender
 {
-	[[NSUserDefaults standardUserDefaults] setBool:[[sender selectedCell] tag] forKey: @"USEPAPYRUSDCMPIX"];
+	[[NSUserDefaults standardUserDefaults] setBool:[[sender selectedCell] tag] forKey: @"USEPAPYRUSDCMPIX2"];
 }
 
 - (IBAction) setParser: (id) sender
 {
-	[[NSUserDefaults standardUserDefaults] setInteger:[[sender selectedCell] tag] forKey: @"TOOLKITPARSER"];
+	[[NSUserDefaults standardUserDefaults] setInteger:[[sender selectedCell] tag] forKey: @"TOOLKITPARSER2"];
 }
 
 -(IBAction)setUseDCMTK:(id)sender{

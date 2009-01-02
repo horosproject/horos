@@ -801,7 +801,7 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 }
 
 //Pixel Decoding
-- (NSMutableData *)convertDataFromLittleEndianToHost:(NSMutableData *)data{
+- (NSData *)convertDataFromLittleEndianToHost:(NSMutableData *)data{
 
 	void *ptr = malloc([data length]);	// Much faster than using the mutableBytes function
 	if( ptr)
@@ -856,7 +856,7 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 	return data;
 }
 //  Big Endian to host will need Intel Vectorizing rather than Altivec
-- (NSMutableData *)convertDataFromBigEndianToHost:(NSMutableData *)data{
+- (NSData *)convertDataFromBigEndianToHost:(NSMutableData *)data{
 	if (NSHostByteOrder() == NS_LittleEndian){
 		if (_pixelDepth <= 16 && _pixelDepth > 8) {		
 			int i = 0;
@@ -988,7 +988,7 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 	self.transferSyntax = [DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax];
 }
 
-- (NSMutableData *)convertJPEG8ToHost:(NSData *)jpegData{ 
+- (NSData *)convertJPEG8ToHost:(NSData *)jpegData{ 
 	/*
 	NSBitmapImageRep *imageRep = [[NSBitmapImageRep alloc] initWithData:jpegData];
 	if ([imageRep isPlanar])
@@ -1001,7 +1001,7 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 	return [self convertJPEG8LosslessToHost:jpegData];
 }
 
-- (NSMutableData *)convertJPEG2000ToHost:(NSData *)jpegData{
+- (NSData *)convertJPEG2000ToHost:(NSData *)jpegData{
 	//unsigned short		theGroup, theElement;
 	int					 fmtid;
 	//unsigned char		theTmpBuf [256];
@@ -1138,7 +1138,7 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 	return pixelData;
 }
 
-- (NSMutableData *)convertRLEToHost:(NSData *)rleData{
+- (NSData *)convertRLEToHost:(NSData *)rleData{
 	/*
 		RLE header is 64 bytes long as a sequence of 16  unsigned longs.
 		First elements is number of segments.  The next are length of the segments.
@@ -1784,7 +1784,7 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 	[_values insertObject:offsetTable atIndex:0];
 }
 
-- (NSMutableData *)interleavePlanesInData:(NSMutableData *)planarData{
+- (NSData *)interleavePlanesInData:(NSData *)planarData{
 	DCMAttributeTag *tag = [DCMAttributeTag tagWithName:@"PlanarConfiguration"];
 	DCMAttribute *attr = [_dcmObject attributeForTag:(DCMAttributeTag *)tag];
 	int numberofPlanes = [[attr value] intValue];
@@ -1814,7 +1814,7 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 			}
 		}
 		else if (bytes == 2) {
-			unsigned short *planarBuffer = (unsigned short *)[planarData  mutableBytes];
+			unsigned short *planarBuffer = (unsigned short *)[planarData  bytes];
 			unsigned short *bitmapData = (unsigned short *)[interleavedData  mutableBytes];
 			for(i=0; i< _rows; i++){
 				for(j=0; j< _columns; j++){
@@ -1825,7 +1825,7 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 			}
 		}
 		else {
-			unsigned long *planarBuffer = (unsigned long *)[planarData  mutableBytes];
+			unsigned long *planarBuffer = (unsigned long *)[planarData  bytes];
 			unsigned long *bitmapData = (unsigned long *)[interleavedData  mutableBytes];
 			for(i=0; i< _rows; i++){
 				for(j=0; j< _columns; j++){
@@ -1838,7 +1838,7 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 	}
 	//already interleaved
 	else
-		interleavedData = planarData;
+		return planarData;
 	return interleavedData;
 }
 
@@ -1872,7 +1872,7 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 				}
 			}
 			else if (bytes == 2) {
-				unsigned short *planarBuffer = (unsigned short *)[planarData  mutableBytes];
+				unsigned short *planarBuffer = (unsigned short *)[planarData  bytes];
 				unsigned short *bitmapData = (unsigned short *)[interleavedData  mutableBytes];
 				for ( unsigned int i=0; i< _rows; i++ ) {
 					for ( unsigned int j=0; j< _columns; j++ ) {
@@ -1883,7 +1883,7 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 				}
 			}
 			else {
-				unsigned long *planarBuffer = (unsigned long *)[planarData  mutableBytes];
+				unsigned long *planarBuffer = (unsigned long *)[planarData  bytes];
 				unsigned long *bitmapData = (unsigned long *)[interleavedData  mutableBytes];
 				for ( unsigned int i=0; i< _rows; i++ ) {
 					for ( unsigned int j=0; j< _columns; j++ ) {
@@ -2012,7 +2012,7 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 		NSLog(@"min %d max %d", _min, _max);
 }
 
-- (NSMutableData *)convertPaletteToRGB:(NSMutableData *)data{
+- (NSData *)convertPaletteToRGB:(NSData *)data{
 	
 	NSLog(@"convertPaletteToRGB");
 	BOOL			fSetClut = NO, fSetClut16 = NO;
@@ -2484,7 +2484,7 @@ NS_ENDHANDLER
 
 }
 
-- (NSMutableData *) convertYBrToRGB:(NSData *)ybrData kind:(NSString *)theKind isPlanar:(BOOL)isPlanar
+- (NSData *) convertYBrToRGB:(NSData *)ybrData kind:(NSString *)theKind isPlanar:(BOOL)isPlanar
 {
   long			loop, size;
   unsigned char		*pYBR, *pRGB;
@@ -2706,7 +2706,7 @@ NS_ENDHANDLER
   
 }
 
-- (NSMutableData *)convertToFloat:(NSMutableData *)data{
+- (NSData *)convertToFloat:(NSData *)data{
 	NSMutableData *floatData = nil;
 	float rescaleIntercept = 0.0;
 	float rescaleSlope = 1.0;
@@ -2798,9 +2798,9 @@ NS_ENDHANDLER
 	
 	return floatData;	
 }
-- (NSMutableData *)convertDataToRGBColorSpace:(NSMutableData *)data{
+- (NSData *)convertDataToRGBColorSpace:(NSData *)data{
 	//NSLog(@"convert data to  RGB colorspace");
-	NSMutableData *rgbData = nil;
+	NSData *rgbData = nil;
 	NSString *colorspace = [_dcmObject attributeValueWithName:@"PhotometricInterpretation"];
 	BOOL isPlanar = [[_dcmObject attributeValueWithName:@"PlanarConfiguration"] intValue];
 	if ([colorspace hasPrefix:@"YBR"])
@@ -3093,53 +3093,47 @@ NS_ENDHANDLER
 	}
 }
 
-- (NSMutableData *)decodeFrameAtIndex:(int)index{
-	//NSDate *timeStamp = [NSDate date];
-	//NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+- (NSData *)decodeFrameAtIndex:(int)index
+{
+	if( singleThread == nil) singleThread = [[NSLock alloc] init];
+	[singleThread lock];
+
 	BOOL colorspaceIsConverted = NO;
 	NSMutableData *subData = nil;
-	if (_framesCreated) {
+	
+	if( _framesCreated)
+	{
 		subData = [_values objectAtIndex:index];
 	}
 	else
+	{
 		subData = [self createFrameAtIndex:index];
+	}
 	
 	if ([_values count] > 0 && index < _numberOfFrames)
 	{
 		if( _framesDecoded == nil)
 		{
 			_framesDecoded = [[NSMutableArray array] retain];
-			for( int i = 0; i < [_values count]; i++)
+			for( int i = 0; i < _numberOfFrames; i++)
 				[_framesDecoded addObject: [NSNumber numberWithBool: NO]];
 		}
-		else if( [_framesDecoded count] != [_values count])
+		else if( [_framesDecoded count] != _numberOfFrames)
 		{
 			int s = [_framesDecoded count];
-			for( int i = s; i <= [_values count]; i++)
+			for( int i = s; i <= _numberOfFrames; i++)
 				[_framesDecoded addObject: [NSNumber numberWithBool: NO]];
 		}
 		
 		if (DEBUG)
 				NSLog(@"to decoders:%@", transferSyntax.description );
 			// data to decoders
-		NSMutableData *data = nil;
+		NSData *data = nil;
 		
-		if( index >= [_framesDecoded count])
+		if([[_framesDecoded objectAtIndex: index] boolValue] == NO)
 		{
-			int s = [_framesDecoded count];
-			for( int i = s; i <= index; i++)
-				[_framesDecoded addObject: [NSNumber numberWithBool: NO]];
-		}
-		
-		if( [[_framesDecoded objectAtIndex: index] boolValue] == NO)
-		{
-			[_framesDecoded replaceObjectAtIndex: index withObject: [NSNumber numberWithBool: YES]];
-			
 			if ( transferSyntax.isEncapsulated )
-			{
-				if( singleThread == nil) singleThread = [[NSLock alloc] init];
-				[singleThread lock];	// These JPEG decompressors are NOT thread-safe....
-				
+			{				
 				short depth = 0;
 				
 				if( [transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEG2000LosslessTransferSyntax]] == NO &&
@@ -3155,22 +3149,26 @@ NS_ENDHANDLER
 					else NSLog( @"scanJpegDataForBitDepth : %d", depth);
 				}
 				
-				if ([transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEGBaselineTransferSyntax]]) {
+				if ([transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEGBaselineTransferSyntax]])
+				{
 					data = [[[self convertJPEG8ToHost:subData] mutableCopy] autorelease];
 					colorspaceIsConverted = YES;
 
 				}
 				// 8 bit jpegs
-				else if ([transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEGExtendedTransferSyntax]] && depth <= 8) {
+				else if ([transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEGExtendedTransferSyntax]] && depth <= 8)
+				{
 					colorspaceIsConverted = YES;
 					data = [[[self convertJPEG8ToHost:subData] mutableCopy] autorelease];
 
 				}
-				else if ([transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEGLosslessTransferSyntax]] && depth <= 8) {
+				else if ([transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEGLosslessTransferSyntax]] && depth <= 8)
+				{
 					data = [[[self convertJPEG8LosslessToHost:subData] mutableCopy] autorelease];
 
 				}
-				else if ([transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEGLossless14TransferSyntax]] && depth <= 8) { 
+				else if ([transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEGLossless14TransferSyntax]] && depth <= 8)
+				{ 
 					data = [[[self convertJPEG8LosslessToHost:subData] mutableCopy] autorelease];
 
 				}
@@ -3217,28 +3215,27 @@ NS_ENDHANDLER
 					NSLog(@"Unknown compressed transfer syntax: %@", transferSyntax.description);
 
 				}
-				
-				[singleThread unlock];
 			}
 			//non encapsulated
-			else if (_bitsStored > 8) {
-			//else if (_pixelDepth > 8) {
+			else if (_bitsStored > 8)
+			{
 				//Little Endian Data and BigEndian Host
 				if ((NSHostByteOrder() == NS_BigEndian) &&
 				 ([transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax]] || 
-				 [transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax]])) {
+				 [transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax]]))
+				 {
 					data = [self convertDataFromLittleEndianToHost:subData];
+					[_framesDecoded replaceObjectAtIndex: index withObject: [NSNumber numberWithBool: YES]];
 				}
 				//Big Endian Data and little Endian host
-				else  if ((NSHostByteOrder() == NS_LittleEndian) &&
-				 [transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax ExplicitVRBigEndianTransferSyntax]])
+				else  if ((NSHostByteOrder() == NS_LittleEndian) && [transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax ExplicitVRBigEndianTransferSyntax]])
 				 {
 					data = [self convertDataFromBigEndianToHost:subData];
+					[_framesDecoded replaceObjectAtIndex: index withObject: [NSNumber numberWithBool: YES]];
 				}
 				//no swap needed
 				else
 					data = subData;
-			
 			}
 			//everything else
 			else data = subData;
@@ -3262,16 +3259,20 @@ NS_ENDHANDLER
 			}
 		}
 		
-
-		//NSLog(@"End decode frames: %f", -[timeStamp timeIntervalSinceNow]);	
+		[singleThread unlock];
+		
 		return data;
 	}
-	else{
+	else
+	{
+		[singleThread unlock];
+		
 		NSLog(@"No frame %d to decode", index);
 		return nil;
 	}
+	
+	
 	return nil;
-
 }
 
 - (NSImage *)imageAtIndex:(int)index ww:(float)ww  wl:(float)wl{

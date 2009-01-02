@@ -2248,7 +2248,7 @@ static BOOL initialized = NO;
 
 //	[AppController displayImportantNotice: self];
 
-	if( [[NSUserDefaults standardUserDefaults] integerForKey: @"TOOLKITPARSER"] == 0 || [[NSUserDefaults standardUserDefaults] boolForKey:@"USEPAPYRUSDCMPIX"] == NO)
+	if( [[NSUserDefaults standardUserDefaults] integerForKey: @"TOOLKITPARSER2"] == 0 || [[NSUserDefaults standardUserDefaults] boolForKey:@"USEPAPYRUSDCMPIX2"] == NO)
 		[self growlTitle: NSLocalizedString( @"Warning!", nil) description: NSLocalizedString( @"DCM Framework is selected as the DICOM reader/parser. The performances of this toolkit are slower.", nil)  name:@"newfiles"];
 		
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"checkForUpdatesPlugins"])
