@@ -284,7 +284,7 @@ Papy3FileOpen (char *inNameP, PAPY_FILE inVRefNum, int inToOpen, void* inFSSpec)
                         thePapyrusFile = DICOM10; /* neither a DICOM file nor a PAPYRUS one */
 
                       } /* theValp NULL */
-    
+					  
                       /* free the group 8 */
                       theErr = Papy3GroupFree (&theGroupP, TRUE);
     
@@ -364,7 +364,8 @@ Papy3FileOpen (char *inNameP, PAPY_FILE inVRefNum, int inToOpen, void* inFSSpec)
                         /* extraction of the informations regarding groups 41 such as the number */
                         /* of images, the offsets to the data set and the pixel datas.           */
                         /* !!! This is only done for the PAPYRUS 3.X files !!!		     */
-                        if (gIsPapyFile [theFileNb] == PAPYRUS3)
+                        
+						if (gIsPapyFile [theFileNb] == PAPYRUS3)
                         {
                           if ((theErr = ExtractPapyDataSetInformation3 (theFileNb)) < 0) 
                           {
@@ -374,7 +375,7 @@ Papy3FileOpen (char *inNameP, PAPY_FILE inVRefNum, int inToOpen, void* inFSSpec)
 								efree3 ((void **) &(gShadowOwner [theFileNb]));
                           }
                         } /* if ...PAPYRUS file */
-    
+						
                         if (iResult == papNoError)
                         {
                           /* extract some information from group 28 */
@@ -394,7 +395,6 @@ Papy3FileOpen (char *inNameP, PAPY_FILE inVRefNum, int inToOpen, void* inFSSpec)
                           if ((theErr = ExtractGroup28Information (theFileNb)) < 0)
                           {
 								iResult = theErr;
-								
 								if (gShadowOwner [theFileNb] != NULL) 
 									efree3 ((void **) &(gShadowOwner [theFileNb]));
                           }
@@ -411,16 +411,15 @@ Papy3FileOpen (char *inNameP, PAPY_FILE inVRefNum, int inToOpen, void* inFSSpec)
                             if ((theErr = ExtractDicomDataSetInformation3 (theFileNb)) < 0)
                             {
 								iResult = theErr;
-
                             }
                           } /* if */
-							
+						  
                           if (iResult == papNoError)
                           {
                             /* reset the file pointer to its previous position */
                             theErr = Papy3FSeek (gPapyFile [theFileNb], SEEK_SET, theFilePos);
 
-                            iResult=theFileNb;
+                            iResult = theFileNb;
                           }
                         } /* if ...no error 'til yet... */
                       } /* else ... not a DICOMDIR file */
