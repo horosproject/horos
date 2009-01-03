@@ -2345,7 +2345,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				}
 				else
 				{
-				
+					if( [event modifierFlags]  & NSAlternateKeyMask) [[self windowController] setKeyImage:self];
 					inc = -_imageRows * _imageColumns;
 					curImage -= _imageRows * _imageColumns;
 					if( curImage < 0) curImage = 0;
@@ -2368,6 +2368,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				}
 				else
 				{
+					if( [event modifierFlags]  & NSAlternateKeyMask) [[self windowController] setKeyImage:self];
 					inc = _imageRows * _imageColumns;
 					curImage += _imageRows * _imageColumns;
 					if( curImage >= [dcmPixList count]) curImage = [dcmPixList count]-1;

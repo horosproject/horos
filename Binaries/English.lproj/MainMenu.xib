@@ -2,12 +2,13 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="7.02">
 	<data>
 		<int key="IBDocument.SystemTarget">1050</int>
-		<string key="IBDocument.SystemVersion">9F33</string>
-		<string key="IBDocument.InterfaceBuilderVersion">672</string>
-		<string key="IBDocument.AppKitVersion">949.34</string>
-		<string key="IBDocument.HIToolboxVersion">352.00</string>
+		<string key="IBDocument.SystemVersion">9G55</string>
+		<string key="IBDocument.InterfaceBuilderVersion">670</string>
+		<string key="IBDocument.AppKitVersion">949.43</string>
+		<string key="IBDocument.HIToolboxVersion">353.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
+			<integer value="13065"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -1581,7 +1582,8 @@
 								<object class="NSMenuItem" id="309410623">
 									<reference key="NSMenu" ref="986057026"/>
 									<string key="NSTitle">Mark All Images as Key Images</string>
-									<string key="NSKeyEquiv"/>
+									<string key="NSKeyEquiv">k</string>
+									<int key="NSKeyEquivModMask">524288</int>
 									<int key="NSMnemonicLoc">2147483647</int>
 									<reference key="NSOnImage" ref="125626618"/>
 									<reference key="NSMixedImage" ref="973943092"/>
@@ -1589,7 +1591,8 @@
 								<object class="NSMenuItem" id="349084446">
 									<reference key="NSMenu" ref="986057026"/>
 									<string key="NSTitle">Unmark All Images as Key Images</string>
-									<string key="NSKeyEquiv"/>
+									<string key="NSKeyEquiv">K</string>
+									<int key="NSKeyEquivModMask">524288</int>
 									<int key="NSMnemonicLoc">2147483647</int>
 									<reference key="NSOnImage" ref="125626618"/>
 									<reference key="NSMixedImage" ref="973943092"/>
@@ -5011,6 +5014,7 @@
 														</object>
 														<string key="NSFrame">{{1, 17}, {198, 204}}</string>
 														<reference key="NSSuperview" ref="1049765271"/>
+														<reference key="NSNextKeyView" ref="60087972"/>
 														<reference key="NSDocView" ref="60087972"/>
 														<reference key="NSBGColor" ref="629680496"/>
 														<int key="NScvFlags">4</int>
@@ -5043,6 +5047,7 @@
 														</object>
 														<string key="NSFrame">{{1, 0}, {198, 17}}</string>
 														<reference key="NSSuperview" ref="1049765271"/>
+														<reference key="NSNextKeyView" ref="1057650202"/>
 														<reference key="NSDocView" ref="1057650202"/>
 														<reference key="NSBGColor" ref="629680496"/>
 														<int key="NScvFlags">4</int>
@@ -5051,6 +5056,7 @@
 												</object>
 												<string key="NSFrame">{{6, 11}, {200, 222}}</string>
 												<reference key="NSSuperview" ref="672832134"/>
+												<reference key="NSNextKeyView" ref="784281801"/>
 												<int key="NSsFlags">530</int>
 												<reference key="NSVScroller" ref="381726312"/>
 												<reference key="NSHScroller" ref="746770325"/>
@@ -5221,6 +5227,7 @@
 														</object>
 														<string key="NSFrame">{{1, 17}, {198, 335}}</string>
 														<reference key="NSSuperview" ref="470928104"/>
+														<reference key="NSNextKeyView" ref="692127092"/>
 														<reference key="NSDocView" ref="692127092"/>
 														<reference key="NSBGColor" ref="629680496"/>
 														<int key="NScvFlags">4</int>
@@ -5253,6 +5260,7 @@
 														</object>
 														<string key="NSFrame">{{1, 0}, {198, 17}}</string>
 														<reference key="NSSuperview" ref="470928104"/>
+														<reference key="NSNextKeyView" ref="498184908"/>
 														<reference key="NSDocView" ref="498184908"/>
 														<reference key="NSBGColor" ref="629680496"/>
 														<int key="NScvFlags">4</int>
@@ -5261,6 +5269,7 @@
 												</object>
 												<string key="NSFrame">{{6, 11}, {200, 353}}</string>
 												<reference key="NSSuperview" ref="997330803"/>
+												<reference key="NSNextKeyView" ref="1002041640"/>
 												<int key="NSsFlags">530</int>
 												<reference key="NSVScroller" ref="151646305"/>
 												<reference key="NSHScroller" ref="903622272"/>
@@ -8412,13 +8421,13 @@ YXZhaWxhYmxlIHRvIHJlYnVpbGQgdGhlIGRhdGFiYXNlOg</string>
 										<object class="NSMutableArray" key="dict.values">
 											<bool key="EncodedWithXMLCoder">YES</bool>
 											<reference ref="9"/>
-											<object class="NSAttributedString" id="519999567">
-												<string key="NSString">0.</string>
+											<object class="NSAttributedString" id="904589461">
+												<string key="NSString">0,</string>
 												<reference key="NSAttributes" ref="324690644"/>
 											</object>
-											<string>.</string>
+											<string>,</string>
 											<reference ref="193818563"/>
-											<string type="base64-UTF8">Jw</string>
+											<string>.</string>
 											<object class="NSLocale">
 												<string key="NS.identifier">fr_CH</string>
 											</object>
@@ -8431,7 +8440,7 @@ YXZhaWxhYmxlIHRvIHJlYnVpbGQgdGhlIGRhdGFiYXNlOg</string>
 									<string key="NS.negativeformat">-#,##0.</string>
 									<nil key="NS.positiveattrs"/>
 									<nil key="NS.negativeattrs"/>
-									<reference key="NS.zero" ref="519999567"/>
+									<reference key="NS.zero" ref="904589461"/>
 									<object class="NSAttributedString" key="NS.nil">
 										<string key="NSString"/>
 									</object>
@@ -8442,8 +8451,8 @@ YXZhaWxhYmxlIHRvIHJlYnVpbGQgdGhlIGRhdGFiYXNlOg</string>
 									<reference key="NS.min" ref="194147893"/>
 									<reference key="NS.max" ref="194147893"/>
 									<nil key="NS.rounding"/>
-									<string key="NS.decimal">.</string>
-									<string type="base64-UTF8" key="NS.thousand">Jw</string>
+									<string key="NS.decimal">,</string>
+									<string key="NS.thousand">.</string>
 									<bool key="NS.hasthousands">YES</bool>
 									<bool key="NS.localized">YES</bool>
 									<bool key="NS.allowsfloats">YES</bool>
@@ -19230,6 +19239,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<string>169.editorWindowContentRectSynchronizationRect</string>
 					<string>1701.IBPluginDependency</string>
 					<string>1701.ImportedFromIB2</string>
+					<string>1703.IBEditorWindowLastContentRect</string>
 					<string>1703.IBPluginDependency</string>
 					<string>1703.ImportedFromIB2</string>
 					<string>1703.editorWindowContentRectSynchronizationRect</string>
@@ -19261,6 +19271,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<string>19.ImportedFromIB2</string>
 					<string>23.IBPluginDependency</string>
 					<string>23.ImportedFromIB2</string>
+					<string>24.IBEditorWindowLastContentRect</string>
 					<string>24.IBPluginDependency</string>
 					<string>24.ImportedFromIB2</string>
 					<string>29.IBEditorWindowLastContentRect</string>
@@ -19963,7 +19974,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
-					<string>{{565, 765}, {323, 303}}</string>
+					<string>{{500, 1415}, {323, 303}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
 					<string>{{936, 574}, {323, 303}}</string>
@@ -20127,7 +20138,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
-					<string>{{763, 63}, {428, 833}}</string>
+					<string>{{583, -97}, {428, 833}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
 					<string>{{390, 35}, {428, 753}}</string>
@@ -20473,7 +20484,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
-					<string>{{774, 331}, {423, 673}}</string>
+					<string>{{588, 1045}, {423, 673}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
 					<string>{{1034, 437}, {423, 583}}</string>
@@ -20533,7 +20544,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
-					<string>{{411, 995}, {219, 73}}</string>
+					<string>{{346, 1645}, {219, 73}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
 					<string>{{782, 804}, {219, 73}}</string>
@@ -20620,12 +20631,13 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
-					<string>{{873, 1349}, {154, 153}}</string>
+					<string>{{302, 1565}, {154, 153}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
 					<string>{{415, 683}, {154, 153}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
+					<string>{{630, 1605}, {195, 113}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
 					<string>{{608, 675}, {195, 113}}</string>
@@ -20657,9 +20669,10 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
+					<string>{{698, 1575}, {212, 143}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
-					<string>{{536, 896}, {596, 20}}</string>
+					<string>{{356, 736}, {596, 20}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
 					<string>{{163, 788}, {596, 20}}</string>
@@ -20681,7 +20694,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
-					<string>{{831, 373}, {337, 613}}</string>
+					<string>{{260, 123}, {337, 613}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
 					<string>{{706, 407}, {337, 613}}</string>
@@ -21904,6 +21917,13 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 				<object class="IBPartialClassDescription">
 					<string key="className">NSObject</string>
 					<reference key="sourceIdentifier" ref="717738730"/>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier" id="72548236">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">ViewerController.h</string>
+					</object>
 				</object>
 				<object class="IBPartialClassDescription">
 					<string key="className">NSSegmentedControl</string>
@@ -23571,6 +23591,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 							<string>imageSelection</string>
 							<string>keyImageCheck</string>
 							<string>keyImagePopUpButton</string>
+							<string>keyImageText</string>
 							<string>keyImages</string>
 							<string>loopButton</string>
 							<string>matrixName</string>
@@ -23759,6 +23780,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 							<string>NSMatrix</string>
 							<string>NSButton</string>
 							<string>NSPopUpButton</string>
+							<string>NSTextField</string>
 							<string>NSView</string>
 							<string>NSButton</string>
 							<string>NSTextField</string>
@@ -23864,10 +23886,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 							<string>NSTextField</string>
 						</object>
 					</object>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">ViewerController.h</string>
-					</object>
+					<reference key="sourceIdentifier" ref="72548236"/>
 				</object>
 				<object class="IBPartialClassDescription">
 					<string key="className">Window3DController</string>

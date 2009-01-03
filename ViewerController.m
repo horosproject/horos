@@ -5397,6 +5397,12 @@ static ViewerController *draggedController = nil;
 
 - (id) initWithPix:(NSMutableArray*)f withFiles:(NSMutableArray*)d withVolume:(NSData*) v
 {
+	[self initWithPix:f withFiles:d withVolume:v withKeyImageCount:@"?"];
+	return self;
+}
+
+- (id) initWithPix:(NSMutableArray*)f withFiles:(NSMutableArray*)d withVolume:(NSData*) v withKeyImageCount:(NSString*)keyImageCountString
+{
 	[self setMagnetic: YES];
 	
 	if( [d count] == 0) d = nil;
@@ -5454,7 +5460,7 @@ static ViewerController *draggedController = nil;
 	
 	if([AppController canDisplay12Bit]) t12BitTimer = [[NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(verify12Bit:) userInfo:nil repeats:YES] retain];
 	else t12BitTimer = nil;
-	
+	[keyImageText setStringValue:keyImageCountString];
 	return self;
 }
 
@@ -5603,6 +5609,11 @@ static ViewerController *draggedController = nil;
 }
 
 -(void) changeImageData:(NSMutableArray*)f :(NSMutableArray*)d :(NSData*) v :(BOOL) newViewerWindow
+{
+	[self changeImageData:f :d :v :newViewerWindow withKeyImageCount:@"?"];
+}
+
+-(void) changeImageData:(NSMutableArray*)f :(NSMutableArray*)d :(NSData*) v :(BOOL) newViewerWindow withKeyImageCount:(NSString*)keyImageCountString
 {
 	BOOL		sameSeries = NO;
 	long		i, imageIndex;
@@ -5980,6 +5991,8 @@ static ViewerController *draggedController = nil;
 	
 	for( ViewerController *v in [ViewerController getDisplayed2DViewers])
 		[v buildMatrixPreview: NO];
+
+	[keyImageText setStringValue: keyImageCountString];
 	
 	[[[BrowserController currentBrowser] managedObjectContext] unlock];
 	
@@ -17865,6 +17878,12 @@ int i,j,l;
 			[[BrowserController currentBrowser] setBonjourDatabaseValue:[fileList[curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] value:[NSNumber numberWithBool:[sender state]] forKey:@"isKeyImage"];
 		}
 		
+		if ((![[keyImageText stringValue] isEqualToString:@"MF"]) && (![[keyImageText stringValue] isEqualToString:@"?"]))
+		{
+			if ([sender state]) [keyImageText setStringValue: [NSString stringWithFormat:@"%d", ([[keyImageText stringValue]intValue]+1)]];
+			else                [keyImageText setStringValue: [NSString stringWithFormat:@"%d", ([[keyImageText stringValue]intValue]-1)]];
+		}
+		
 		[self buildMatrixPreview: NO];
 		
 		[imageView setNeedsDisplay:YES];
@@ -18032,6 +18051,11 @@ int i,j,l;
 			for( NSManagedObject *o in fileList[ x])
 				[[BrowserController currentBrowser] setBonjourDatabaseValue: o value: yes forKey:@"isKeyImage"];
 	}
+
+	if ((![[keyImageText stringValue] isEqualToString:@"MF"]) && (![[keyImageText stringValue] isEqualToString:@"?"]))
+	{
+		[keyImageText setStringValue:@"0"];
+	}
 	
 	[self buildMatrixPreview: NO];
 	[imageView setNeedsDisplay:YES];
@@ -18061,6 +18085,13 @@ int i,j,l;
 				[[BrowserController currentBrowser] setBonjourDatabaseValue: o value: yes forKey:@"isKeyImage"];
 	}
 	
+	if ((![[keyImageText stringValue] isEqualToString:@"MF"]) && (![[keyImageText stringValue] isEqualToString:@"?"]))
+	{
+		int allFileListObjectCount = 0;
+		for( int x = 0 ; x < maxMovieIndex ; x++) allFileListObjectCount += [fileList[ x] count];
+		[keyImageText setStringValue: [NSString stringWithFormat:@"%d", allFileListObjectCount]];
+	}
+	
 	[self buildMatrixPreview: NO];
 	[imageView setNeedsDisplay:YES];
 	[[BrowserController currentBrowser] saveDatabase: nil];
@@ -18088,7 +18119,17 @@ int i,j,l;
 		[keyImagePopUpButton setEnabled: NO];
 		return;
 	}
-	
+
+	// multiframes
+	// it is impossible in Osirix to select only one frame of a multiframe
+	// the condition below was disabling the possibility to see only key images
+	// but since end of 2008 multiframe cached loading modification, the controls WERE NOT DISABLED at 2D Viewer opening
+	// it is better not disabling them later
+	//
+	// keyImage remains usefull with multiframes in order to make key files, that is sequences or series	
+	//
+	// nota: elsewhere in the programm, the popup is moved back from "key image" to "all images" when all the images are key images
+	/*
 	if( [fileList[ curMovieIndex] count] != 1)
 	{
 		if( [fileList[ curMovieIndex] objectAtIndex: 0] == [fileList[ curMovieIndex] lastObject])
@@ -18101,6 +18142,8 @@ int i,j,l;
 			return;
 		}
 	}
+	*/
+	
 	
 //	[keyImageDisplay setEnabled: YES];
 	[keyImageCheck setEnabled: YES];

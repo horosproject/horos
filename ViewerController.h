@@ -142,6 +142,7 @@ enum
 	IBOutlet NSTextField    *CommentsEditField;
 	
 	IBOutlet NSButton		*keyImageCheck;
+	IBOutlet NSTextField	*keyImageText;
 	
 	
 	IBOutlet NSWindow		*ThickIntervalWindow;
@@ -574,6 +575,7 @@ enum
 - (void) setROITool:(id) sender;
 - (void) setROIToolTag:(int) roitype;
 - (void) changeImageData:(NSMutableArray*)f :(NSMutableArray*)d :(NSData*) v :(BOOL) applyTransition;
+- (void) changeImageData:(NSMutableArray*)f :(NSMutableArray*)d :(NSData*) v :(BOOL) newViewerWindow withKeyImageCount:(NSString*)keyImageCountString;
 - (IBAction) loadSerie:(id) sender;
 - (IBAction) loadPatient:(id) sender;
 - (void) loadSeries:(NSNumber*) t;
@@ -596,6 +598,7 @@ enum
 - (OSErr)getFSRefAtPath:(NSString*)sourceItem ref:(FSRef*)sourceRef;
 - (id) viewCinit:(NSMutableArray*)f :(NSMutableArray*) d :(NSData*) v;
 - (id) initWithPix:(NSMutableArray*)f withFiles:(NSMutableArray*) d withVolume:(NSData*) v;
+- (id) initWithPix:(NSMutableArray*)f withFiles:(NSMutableArray*)d withVolume:(NSData*) v withKeyImageCount:(NSString*)keyImageCountString;
 - (void) speedSliderAction:(id) sender;
 - (void) setupToolbar;
 - (NSToolbar*) toolbar;
