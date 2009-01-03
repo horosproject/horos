@@ -242,9 +242,7 @@ ExtractFileMetaInformation3 (PapyShort inFileNb)
     theErr = Papy3GroupFree (&theGroup2P, TRUE); 
     RETURN (papSyntaxNotImplemented);
   }
-
-
-    
+	
   /* extract the SOP Class UID in order to know the modality of the file */
   theValP = Papy3GetElement (theGroup2P, papMediaStorageSOPClassUIDGr, &theNbVal, &theElemType);
   

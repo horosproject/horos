@@ -19,8 +19,6 @@
 #ifndef PapyPrivFunctionDef3H 
 #define PapyPrivFunctionDef3H
 
-
-
 /* --- functions definitions --- */
 
 
@@ -135,12 +133,11 @@ PutBufferInGroup3 	(PapyShort, unsigned char *, SElement *, PapyUShort, PapyULon
 /*										*/
 /********************************************************************************/
 static __inline__ __attribute__((always_inline)) PapyUShort Extract2Bytes (unsigned char *inBufP, PapyULong *ioPosP)
-
 /*unsigned char *inBufP;				 the buffer to read from */
 /*PapyULong 	*ioPosP;			      the position in the buffer */
 {
-	PapyUShort 		theUShort;
-	unsigned char		*theCharP;
+	PapyUShort theUShort;
+	unsigned char *theCharP;
 	
 	/* points to the right place in the buffer */
 	theCharP  = inBufP;
@@ -170,11 +167,10 @@ static __inline__ __attribute__((always_inline)) PapyUShort Extract2Bytes (unsig
 /* 	return : the extracted value					 	*/
 /*										*/
 /********************************************************************************/
-
 static __inline__ __attribute__((always_inline)) PapyULong Extract4Bytes (unsigned char *inBufP, PapyULong *ioPosP)
 {
-	unsigned char	*theCharP;
-	PapyULong	theULong;
+	unsigned char *theCharP;
+	PapyULong theULong;
     
 	/* points to the right place in the buffer */
 	theCharP  = inBufP;
@@ -185,7 +181,7 @@ static __inline__ __attribute__((always_inline)) PapyULong Extract4Bytes (unsign
 		/* extract the element according to the little-endian syntax */
 	#if __BIG_ENDIAN__
 		PapyULong theTmpULong;
-		
+		theULong = 0L;
 		theTmpULong  = (PapyULong) (*(theCharP + 3));
 		theTmpULong  = theTmpULong << 24;
 		theULong    |= theTmpULong;

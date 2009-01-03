@@ -2249,8 +2249,10 @@ ComputeUndefinedGroupLength3 (PapyShort inFileNb, PapyLong inMaxSize)
     if ((gArrTransfSyntax [inFileNb] == LITTLE_ENDIAN_IMPL && theGrNb != 0x0002) ||
         (theGrNb == 0xFFFE && theElemNb == 0xE000) ||
         (theGrNb == 0xFFFE && theElemNb == 0xE00D))
+	{
        theElemLength = Extract4Bytes (theBuffP, &theBufPos);
-    else
+    }
+	else
     {
       /* extract the VR */
       theBuffP  += theBufPos;
@@ -2295,8 +2297,10 @@ ComputeUndefinedGroupLength3 (PapyShort inFileNb, PapyLong inMaxSize)
         } /* else ...elem not 0x0004, 0x1220 */
       } /* if ...VR = OB, OW, SQ, Un or UT */
       else
-        theElemLength = (PapyULong) Extract2Bytes (theBuffP, &theBufPos); 
-    } /* else ...EXPLICIT VR */
+	  {
+        theElemLength = (PapyULong) Extract2Bytes (theBuffP, &theBufPos);
+	  }
+	} /* else ...EXPLICIT VR */
     
     /* makes sure the element belongs to the group */
     if (theCmpGrNb == theGrNb && theCmpElemNb <= theElemNb && theGroupLength < (PapyULong) inMaxSize)
