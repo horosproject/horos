@@ -3,15 +3,6 @@
 /*	Project  : P A P Y R U S  Toolkit  (Dicomdir library)		        */
 /*	File     : DicomDirDataSetWrite3.c				      	*/
 /*	Function : contains the functions managing the records (writing).	*/
-/*	Authors  : Christian Girard					      	*/
-/*		   Marianne Logean					        */
-/*								   	      	*/
-/*	History  : 05.1997	version 3.51				      	*/
-/*	           02.1999	version 3.6				      	*/
-/*								   	      	*/
-/*	(C) 1997-1999 The University Hospital of Geneva		      		*/
-/*	All Rights Reserved				      	                */
-/*									      	*/
 /********************************************************************************/
 
 #ifdef Mac

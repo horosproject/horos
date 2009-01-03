@@ -4,20 +4,6 @@
 /*	File     : PapyList3.c                                                  */
 /*	Function : Generic list handler for handling the list of modules,       */
 /* 	           objects and sequences in Papyrus 3                           */
-/*	Authors  : Christian Girard                                             */
-/*                 Marianne Logean                                              */
-/*                                                                              */
-/*	History  : 06.1994	version 3.0                                     */
-/*                 06.1995	version 3.1                                     */
-/*                 02.1996	version 3.3                                     */
-/*                 02.1999	version 3.6                                     */
-/*                 04.2001	version 3.7                                     */
-/*                 09.2001      version 3.7  on CVS                             */
-/*                 10.2001      version 3.71 MAJ Dicom par CHG                  */
-/*                                                                              */
-/* 	(C) 1990-2001  The University Hospital of Geneva                        */
-/*	All Rights Reserved                                                     */
-/*                                                                              */
 /********************************************************************************/
 
 #ifdef Mac

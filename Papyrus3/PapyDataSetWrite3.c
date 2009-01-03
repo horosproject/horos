@@ -4,20 +4,6 @@
 /*	File     : PapyDataSetWrite3.c                                          */
 /*	Function : contains the functions that will manage the Data Sets and 	*/
 /*		   the modules (writing).	                                */
-/*	Authors  : Christian Girard                                             */
-/*                 Marianne Logean                                              */
-/*                                                                              */
-/*	History  : 06.1994	version 3.0                                     */
-/*                 06.1995	version 3.1                                     */
-/*                 02.1996	version 3.3                                     */
-/*                 02.1999	version 3.6                                     */
-/*                 04.2001	version 3.7                                     */
-/*                 09.2001      version 3.7  on CVS                             */
-/*                 10.2001      version 3.71 MAJ Dicom par CHG                  */
-/*                                                                              */
-/* 	(C) 1994-2001 The University Hospital of Geneva                         */
-/*	All Rights Reserved                                                     */
-/*                                                                              */
 /********************************************************************************/
 
 #ifdef Mac

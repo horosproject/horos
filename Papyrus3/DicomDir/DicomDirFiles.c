@@ -3,17 +3,6 @@
 /*	Project  : P A P Y R U S  Toolkit (DicomDir library)			*/
 /*	File     : DicomDirFiles3.c						*/
 /*	Function : contains all the file functions	               		*/
-/*	Authors  : Matthieu Funk						*/
-/*		   Christian Girard						*/
-/*		   Jean-Francois Vurlod						*/
-/*		   Marianne Logean						*/
-/*								   	      	*/
-/*	History  : 05.1997	version 3.5					*/
-/*		   02.1999	version 3.6					*/
-/*								   		*/
-/*      (C) 1997-1999 The University Hospital of Geneva			    	*/
-/*	All Rights Reserved					                */
-/*										*/
 /********************************************************************************/
 
 /* ------------------------- includes ---------------------------------------*/

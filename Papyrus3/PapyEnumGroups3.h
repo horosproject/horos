@@ -4,19 +4,6 @@
 /*	File     : PapyEnumGroups3.h                                            */
 /*      Function : contains the declarations of the groups names and of the     */
 /*		   elements names                                               */
-/*	Authors  : Christian Girard                                             */
-/*                                                                              */
-/*	History  : 04.1994	version 3.0                                     */
-/*                 06.1995	version 3.1                                     */
-/*                 02.1996	version 3.3                                     */
-/*                 02.1999	version 3.6                                     */
-/*                 04.2001	version 3.7                                     */
-/*                 09.2001      version 3.7   on CVS                            */
-/*                 10.2001      version 3.71  MAJ Dicom par CHG                 */
-/*                                                                              */
-/* 	(C) 1994-2001 The University Hospital of Geneva                         */
-/*	          All Rights Reserved                                           */
-/*                                                                              */
 /********************************************************************************/
 
 

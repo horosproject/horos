@@ -3,15 +3,6 @@
 /*	Project  : P A P Y R U S  Toolkit                                       */
 /*	File     : PapyMemSystem.h                                              */
 /*	Function : contains calls for asynchronous read                         */
-/*	Authors  : Olivier Baujard                                              */
-/*                                                                              */
-/*	History  : 03.1997	version 3.1                                     */
-/*                 04.2001	version 3.7                                     */
-/*                 09.2001      version 3.7  on CVS                             */
-/*                                                                              */
-/* 	(C) 1990-2001 The University Hospital of Geneva                         */
-/*	All Rights Reserved                                                     */
-/*                                                                              */
 /********************************************************************************/
 
 #ifndef PapyMemSystem3H

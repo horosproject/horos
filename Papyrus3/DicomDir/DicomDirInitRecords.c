@@ -3,14 +3,6 @@
 /*	Project  : P A P Y R U S  Toolkit (Dicomdir library)			*/
 /*	File     : DicomdirInitRecords.c				        */
 /*	Function : contains the Directory record initialisation functions	*/
-/*	Authors  : Marianne Logean					        */
-/*										*/
-/*	History  : 05.1997	version 3.51					*/
-/*		   02.1999	version 3.6					*/
-/*								   		*/
-/*	(C) 1997-1999 The University Hospital of Geneva				*/
-/*	All Rights Reserved					                */
-/*										*/
 /********************************************************************************/
 
 
