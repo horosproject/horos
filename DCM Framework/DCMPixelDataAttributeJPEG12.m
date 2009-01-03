@@ -411,7 +411,7 @@ jpeg12_NSData_dest (j_compress_ptr cinfo, NSMutableData *aData)
 	//initialize jpeg decompressor
 	
 //	if (DEBUG)
-		NSLog(@"decompress JPEG 12 frame length: %d", [jpegData length]);
+//		NSLog(@"decompress JPEG 12 frame length: %d", [jpegData length]);
 	
 	theCInfo.err = jpeg_std_error (&theJErr);
 	jpeg_create_decompress (&theCInfo);

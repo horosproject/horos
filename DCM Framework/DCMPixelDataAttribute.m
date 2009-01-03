@@ -3141,10 +3141,10 @@ NS_ENDHANDLER
 					depth = scanJpegDataForBitDepth( (unsigned char *) [subData bytes], [subData length]);
 					if( depth == 0)
 					{
-						NSLog( @"depth not found (scanJpegDataForBitDepth), will use : %d", _pixelDepth);
+//						NSLog( @"depth not found (scanJpegDataForBitDepth), will use : %d", _pixelDepth);
 						depth = _pixelDepth;
 					}
-					else NSLog( @"scanJpegDataForBitDepth : %d", depth);
+//					else NSLog( @"scanJpegDataForBitDepth : %d", depth);
 				}
 				
 				if ([transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEGBaselineTransferSyntax]])

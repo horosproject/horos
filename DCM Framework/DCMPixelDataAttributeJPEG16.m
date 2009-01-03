@@ -293,7 +293,7 @@ jpeg16_nsdata_src (j_decompress_ptr cinfo, NSData *aData)
 	NSMutableData					*rawData = nil ;
 	//initialize jpeg dcecompressor
 
-	NSLog(@"decompress JPEG 16 frame length: %d", [jpegData length]);
+//	NSLog(@"decompress JPEG 16 frame length: %d", [jpegData length]);
 	
 	theCInfo.err = jpeg_std_error (&theJErr);
 	jpeg_create_decompress (&theCInfo);
