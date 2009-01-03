@@ -165,6 +165,11 @@ Papy3FRead (PAPY_FILE inFp, PapyULong *ioBytesToReadP, PapyULong inNb, void *ioB
 			break;
 	}
 	
+	if( i == kMax_file_open)
+	{
+		printf("***** Papy3FRead error !\r");
+	}
+	
 	if( gSeekPosApplied[ i] == 0)
 	{
 		gSeekPosApplied[ i] = 1;

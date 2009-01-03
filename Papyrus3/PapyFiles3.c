@@ -147,40 +147,13 @@ Papy3FileOpen (char *inNameP, PAPY_FILE inVRefNum, int inToOpen, void* inFSSpec)
     
     if (iResult == papNoError)
     {
-      /* set the file pointer at the begining */ 
         if ((theErr = (PapyShort) Papy3FSeek (theFp, (int) SEEK_SET, (PapyLong) 0L)) != 0)
         {
-         iResult = papPositioning;
+			iResult = papPositioning;
         }
         else
         {
-        /* test if the "PAPYRUS 3.X" string is at the begining of the file */
-        theReadSize = 15L;
-		
-        if ((theErr = (PapyShort) Papy3FRead (theFp, (PapyULong *) &theReadSize, 1L, theBuff)) < 0)
-        {
-          iResult = papReadFile;
-        }
-        else
-        {
-          /* compares the extracted string with the awaited string */
-          theBuff [14] = '\0';
-		
-          /* if the PAPYRUS 3.0 string is not here it could be a basic DICOM file */
-          if (strncmp ((char *) theBuff, "PAPYRUS 3.", 10) != 0) 
-          {
-            thePapyrusFile = DICOM10;
-          }
-    
-          /* test the compatibility flag to ensure the file is readable by this   */
-          /* version of the PAPYRUS toolkit */
-          if (thePapyrusFile == PAPYRUS3)
-          {
-            if ((char) theBuff [13] > gPapyrusCompatibility [0])
-            {
-              iResult = papReadFile;
-            } /* if ...incompatible version of the PAPYRUS file */
-          }
+          thePapyrusFile = DICOM10;
 		  
           if (iResult == papNoError)
           {
@@ -436,7 +409,6 @@ Papy3FileOpen (char *inNameP, PAPY_FILE inVRefNum, int inToOpen, void* inFSSpec)
             } /* if */
 
           } /* if ...no error 'til yet... */
-        } /* else ...no error reading the file looking for the PAPYRUS 3.X str */
       } /* else ...no error setting the file pointer at the begining */
 
       /* if error */
