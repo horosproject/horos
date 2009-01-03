@@ -170,23 +170,7 @@ Papy3FileOpen (char *inNameP, PAPY_FILE inVRefNum, int inToOpen, void* inFSSpec)
 			  gCachedGroupLength [theFileNb] = 0L;
 			  gSeekPos [theFileNb] = 0;
 			  gSeekPosApplied  [theFileNb] = 0;
-			  
-              /* set the papyrus version number */
-              if (thePapyrusFile == PAPYRUS3)
-              {
-                for (i = 0; i < 4; i++)
-                {
-                  theVersion [i] = theBuff [i + 8];
-                }
-                theVersion [4] = '\0';
-                /* convert the result to a float */
-                gPapyrusFileVersion [theFileNb] = (float)atof ((char *) theVersion);
-              } /* if ...it is a PAPYRUS file */
-              else 
-              {
-                /* put the current value */
-                gPapyrusFileVersion [theFileNb] = (float)atof ((char *) gPapyrusVersion);
-              }
+			  gPapyrusFileVersion [theFileNb] = (float)atof ((char *) gPapyrusVersion);
 			  
               /* set the transfert syntax to the default one */
               gArrTransfSyntax [theFileNb] = LITTLE_ENDIAN_EXPL;    

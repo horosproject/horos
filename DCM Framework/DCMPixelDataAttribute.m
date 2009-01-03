@@ -26,7 +26,6 @@
 
 #import "jasper.h"
 
-static volatile NSLock *singleThread;
 static int UseOpenJpeg = 0;
 
 #if __ppc__
@@ -442,7 +441,9 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 	UseOpenJpeg = b;
 }
 
-- (void)dealloc {
+- (void)dealloc
+{
+	[singleThread release];
 	[transferSyntax release];
 	[_framesDecoded release];
 	[super dealloc];
@@ -456,7 +457,9 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 			transferSyntax:(DCMTransferSyntax *)ts
 			dcmObject:(DCMObject *)dcmObject
 			decodeData:(BOOL)decodeData{
-	
+
+	singleThread = [[NSLock alloc] init];
+
 	NSString *theVR = @"OW";
 	BOOL forImplicitUseOW = NO;
 	_dcmObject = dcmObject;
@@ -754,12 +757,10 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 		else if (quality == DCMLowQuality)
 			q = 70;
 		
-		if( singleThread == nil ) singleThread = [[NSLock alloc] init];
-		[singleThread lock];
-		
 		_min = 0;
 		_max = 0;
-		for ( NSMutableData *data in values ) {
+		for ( NSMutableData *data in values )
+		{
 			NSMutableData *newData;
 			if (_pixelDepth <= 8) 
 				newData = [self compressJPEG8:data  compressionSyntax:ts   quality:q];
@@ -773,8 +774,6 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 			[self addFrame:newData];
 
 		}
-		
-		[singleThread unlock];
 		
 		/*
 		for (i = 0; i< [array count]; i++) {
@@ -3095,7 +3094,6 @@ NS_ENDHANDLER
 
 - (NSData *)decodeFrameAtIndex:(int)index
 {
-	if( singleThread == nil) singleThread = [[NSLock alloc] init];
 	[singleThread lock];
 
 	BOOL colorspaceIsConverted = NO;

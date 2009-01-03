@@ -42,7 +42,7 @@ enum photometricmode{DCM_UNKNOWN_PHOTOMETRIC, DCM_MONOCHROME1,  DCM_MONOCHROME2,
 	NSMutableArray *_framesDecoded;
 	DCMObject *_dcmObject;
 	BOOL  _framesCreated;
-
+	NSRecursiveLock *singleThread;
 }
 		
 @property int rows;
