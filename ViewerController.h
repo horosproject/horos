@@ -392,9 +392,6 @@ enum
 - (NSData*)volumeData;
 - (NSData*)volumeData:(long) i;
 
-/** Return the index into fileList that coresponds to the index in pixList */
-- (long) indexForPix: (long) pixIndex;
-
 /**  Return the image pane object */
 - (DCMView*) imageView;
 - (NSArray*) imageViews;

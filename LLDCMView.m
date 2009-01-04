@@ -93,7 +93,7 @@
 //		if( [stringID isEqualToString:@"Original"] == YES) [self blendingPropagate];
 
 		[yearOld release];
-		yearOld = [[[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.yearOld"] retain];
+		yearOld = [[[dcmFilesList objectAtIndex: curImage] valueForKeyPath:@"series.study.yearOld"] retain];
 	}
 }
 

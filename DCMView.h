@@ -327,7 +327,6 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 - (void) applyImageTransformation;
 - (void) initFont;
 - (void) gClickCountSetReset;
-- (long) indexForPix: (long) pixIndex; // Return the index into fileList that coresponds to the index in pixList
 - (int) findPlaneAndPoint:(float*) pt :(float*) location;
 - (unsigned char*) getRawPixels:(long*) width :(long*) height :(long*) spp :(long*) bpp :(BOOL) screenCapture :(BOOL) force8bits;
 

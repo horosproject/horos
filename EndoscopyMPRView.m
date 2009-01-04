@@ -409,7 +409,7 @@ extern  short		annotations;
 		{
 			DICOMExport *exportDCM = [[DICOMExport alloc] init];
 			 
-			[exportDCM setSourceFile: [[[controller originalDCMFilesList] objectAtIndex:[self indexForPix:[self curImage]]] valueForKey:@"completePath"]];
+			[exportDCM setSourceFile: [[[controller originalDCMFilesList] objectAtIndex:[self curImage]] valueForKey:@"completePath"]];
 			[exportDCM setSeriesDescription: @"Endoscopy"];
 			
 			[self getWLWW:&cwl :&cww];

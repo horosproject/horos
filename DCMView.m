@@ -1863,10 +1863,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		[yearOld release];
 		
 		
-		if( [[[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.yearOld"] isEqualToString: [[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.yearOldAcquisition"]])
-			yearOld = [[[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.yearOld"] retain];
+		if( [[[dcmFilesList objectAtIndex: curImage] valueForKeyPath:@"series.study.yearOld"] isEqualToString: [[dcmFilesList objectAtIndex: curImage] valueForKeyPath:@"series.study.yearOldAcquisition"]])
+			yearOld = [[[dcmFilesList objectAtIndex: curImage] valueForKeyPath:@"series.study.yearOld"] retain];
 		else
-			yearOld = [[NSString stringWithFormat:@"%@ / %@", [[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.yearOld"], [[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.yearOldAcquisition"]] retain];
+			yearOld = [[NSString stringWithFormat:@"%@ / %@", [[dcmFilesList objectAtIndex: curImage] valueForKeyPath:@"series.study.yearOld"], [[dcmFilesList objectAtIndex: curImage] valueForKeyPath:@"series.study.yearOldAcquisition"]] retain];
 	}
 	else
 	{
@@ -2204,10 +2204,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 		[yearOld release];
 		
-		if( [[[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.yearOld"] isEqualToString: [[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.yearOldAcquisition"]])
-			yearOld = [[[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.yearOld"] retain];
+		if( [[[dcmFilesList objectAtIndex: curImage] valueForKeyPath:@"series.study.yearOld"] isEqualToString: [[dcmFilesList objectAtIndex: curImage] valueForKeyPath:@"series.study.yearOldAcquisition"]])
+			yearOld = [[[dcmFilesList objectAtIndex: curImage] valueForKeyPath:@"series.study.yearOld"] retain];
 		else
-			yearOld = [[NSString stringWithFormat:@"%@ / %@", [[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.yearOld"], [[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.yearOldAcquisition"]] retain];
+			yearOld = [[NSString stringWithFormat:@"%@ / %@", [[dcmFilesList objectAtIndex: curImage] valueForKeyPath:@"series.study.yearOld"], [[dcmFilesList objectAtIndex: curImage] valueForKeyPath:@"series.study.yearOldAcquisition"]] retain];
 	
 		[[NSNotificationCenter defaultCenter] postNotificationName:@"DCMViewIndexChanged" object:self];
 	}
@@ -3496,8 +3496,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			[instructions setObject: [NSNumber numberWithLong: pos] forKey: @"Pos"];
 			[instructions setObject: [NSNumber numberWithFloat:[[dcmPixList objectAtIndex:curImage] sliceLocation]] forKey: @"Location"];
 			
-			if( [[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.studyInstanceUID"])
-				[instructions setObject: [[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.studyInstanceUID"] forKey: @"studyID"];
+			if( [[dcmFilesList objectAtIndex: curImage] valueForKeyPath:@"series.study.studyInstanceUID"])
+				[instructions setObject: [[dcmFilesList objectAtIndex: curImage] valueForKeyPath:@"series.study.studyInstanceUID"] forKey: @"studyID"];
 			
 			if( curDCM)
 				[instructions setObject: curDCM forKey: @"DCMPix"];
@@ -5760,8 +5760,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		[instructions setObject: [NSNumber numberWithFloat: [[dcmPixList objectAtIndex:curImage] sliceLocation]] forKey: @"Location"];
 		[instructions setObject: [NSNumber numberWithFloat: syncRelativeDiff] forKey: @"offsetsync"];
 		
-		if( [[dcmFilesList objectAtIndex: [self indexForPix:curImage]] valueForKeyPath:@"series.study.studyInstanceUID"])
-			[instructions setObject: [[dcmFilesList objectAtIndex: [self indexForPix:curImage]] valueForKeyPath:@"series.study.studyInstanceUID"] forKey: @"studyID"]; 
+		if( [[dcmFilesList objectAtIndex: curImage] valueForKeyPath:@"series.study.studyInstanceUID"])
+			[instructions setObject: [[dcmFilesList objectAtIndex: curImage] valueForKeyPath:@"series.study.studyInstanceUID"] forKey: @"studyID"]; 
 		
 		if( curDCM)
 			[instructions setObject: curDCM forKey: @"DCMPix"];
@@ -5976,13 +5976,13 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			if( [[self windowController] registeredViewer] == [otherView windowController] || [[otherView windowController] registeredViewer] == [self windowController])
 				registeredViewer = YES;
 			
-			if( [oStudyId isEqualToString:[[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.studyInstanceUID"]] || registeredViewer || [[NSUserDefaults standardUserDefaults] boolForKey:@"SAMESTUDY"] == NO || syncSeriesIndex != -1)  // We received a message from the keyWindow -> display the slice cut to our window!
+			if( [oStudyId isEqualToString:[[dcmFilesList objectAtIndex: curImage] valueForKeyPath:@"series.study.studyInstanceUID"]] || registeredViewer || [[NSUserDefaults standardUserDefaults] boolForKey:@"SAMESTUDY"] == NO || syncSeriesIndex != -1)  // We received a message from the keyWindow -> display the slice cut to our window!
 			{
-				if( [oStudyId isEqualToString:[[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.studyInstanceUID"]] || registeredViewer)
+				if( [oStudyId isEqualToString:[[dcmFilesList objectAtIndex: curImage] valueForKeyPath:@"series.study.studyInstanceUID"]] || registeredViewer)
 				{
 					if( [[self window] isMainWindow] == NO && [[otherView window] isMainWindow] == YES)
 					{
-						if( ([oStudyId isEqualToString:[[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.studyInstanceUID"]] || registeredViewer))
+						if( ([oStudyId isEqualToString:[[dcmFilesList objectAtIndex: curImage] valueForKeyPath:@"series.study.studyInstanceUID"]] || registeredViewer))
 						{
 							[self computeSlice: oPix :oPix2];
 						}
@@ -6076,7 +6076,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 									
 									if( registeredViewer == NO)
 									{
-										if( [oStudyId isEqualToString:[[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.studyInstanceUID"]] == NO || syncSeriesIndex != -1)
+										if( [oStudyId isEqualToString:[[dcmFilesList objectAtIndex: curImage] valueForKeyPath:@"series.study.studyInstanceUID"]] == NO || syncSeriesIndex != -1)
 										{						
 											if( [otherView syncSeriesIndex] != -1)
 											{
@@ -9419,14 +9419,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	}
 }
 
-- (long) indexForPix: (long) pixIndex
-{
-	if ([[[dcmFilesList objectAtIndex:0] valueForKey:@"numberOfFrames"] intValue] == 1)
-		return pixIndex;
-	else
-		return 0;
-}
-
 -(void) setAlpha:(float) a
 {
 	float   val, ii;
@@ -11112,7 +11104,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 }
 
 - (id)dicomImage{
-	return [dcmFilesList objectAtIndex:[self indexForPix:curImage]];
+	return [dcmFilesList objectAtIndex: curImage];
 }
 
 #pragma mark -

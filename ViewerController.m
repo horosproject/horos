@@ -2584,7 +2584,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	{
 		if( fileList[ curMovieIndex] && [[[[fileList[ curMovieIndex] objectAtIndex: 0] valueForKey:@"completePath"] lastPathComponent] isEqualToString:@"Empty.tif"] == NO)
 		{
-			[[BrowserController currentBrowser] findAndSelectFile: nil image:[fileList[ curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] shouldExpand:NO];
+			[[BrowserController currentBrowser] findAndSelectFile: nil image:[fileList[ curMovieIndex] objectAtIndex:[imageView curImage]] shouldExpand:NO];
 		}
 	}
 	
@@ -3104,7 +3104,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 -(NSString*) modality
 {
-	return [[fileList[ curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] valueForKeyPath:@"series.modality"];
+	return [[fileList[ curMovieIndex] objectAtIndex:[imageView curImage]] valueForKeyPath:@"series.modality"];
 }
 
 + (int) numberOf2DViewer
@@ -3689,7 +3689,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (void) updateRepresentedFileName
 {
-	NSString	*path = [[BrowserController currentBrowser] getLocalDCMPath:[fileList[curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] : 0];
+	NSString	*path = [[BrowserController currentBrowser] getLocalDCMPath:[fileList[curMovieIndex] objectAtIndex:[imageView curImage]] : 0];
 	[[self window] setRepresentedFilename: path];
 }
 
@@ -3704,10 +3704,10 @@ static volatile int numberOfThreadsForRelisce = 0;
 {
 	[self checkEverythingLoaded];
 	
-	NSString	*path = [[BrowserController currentBrowser] getLocalDCMPath:[fileList[curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] : 0];
+	NSString	*path = [[BrowserController currentBrowser] getLocalDCMPath:[fileList[curMovieIndex] objectAtIndex:[imageView curImage]] : 0];
 	[[self window] setRepresentedFilename: path];
 	
-	NSManagedObject *im = [fileList[curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]];
+	NSManagedObject *im = [fileList[curMovieIndex] objectAtIndex:[imageView curImage]];
 	
 	if( [XMLController windowForViewer: self])
 		[[[XMLController windowForViewer: self] window] makeKeyAndOrderFront: self];
@@ -5837,21 +5837,21 @@ static ViewerController *draggedController = nil;
 		[self ApplyOpacityString: NSLocalizedString( @"Linear Table", nil)];
 	}
 	
-	NSNumber	*status = [[fileList[ curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] valueForKeyPath:@"series.study.stateText"];
+	NSNumber	*status = [[fileList[ curMovieIndex] objectAtIndex:[imageView curImage]] valueForKeyPath:@"series.study.stateText"];
 	
 	if( status == nil) [StatusPopup selectItemWithTitle: NSLocalizedString(@"empty", nil)];
 	else [StatusPopup selectItemWithTag: [status intValue]];
 	
-	NSString	*com = [[fileList[ curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] valueForKeyPath:@"series.comment"];
+	NSString	*com = [[fileList[ curMovieIndex] objectAtIndex:[imageView curImage]] valueForKeyPath:@"series.comment"];
 	
 	if( com == nil || [com isEqualToString:@""])
-		com = [[fileList[ curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] valueForKeyPath:@"series.study.comment"];
+		com = [[fileList[ curMovieIndex] objectAtIndex:[imageView curImage]] valueForKeyPath:@"series.study.comment"];
 	
 	if( com == nil || [com isEqualToString:@""]) [CommentsField setTitle: NSLocalizedString(@"Add a comment", nil)];
 	else [CommentsField setTitle: com];
 	
 	if( [[[[fileList[ curMovieIndex] objectAtIndex: 0] valueForKey:@"completePath"] lastPathComponent] isEqualToString:@"Empty.tif"] == NO)
-		[[BrowserController currentBrowser] findAndSelectFile: nil image :[fileList[ curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] shouldExpand :NO];
+		[[BrowserController currentBrowser] findAndSelectFile: nil image :[fileList[ curMovieIndex] objectAtIndex:[imageView curImage]] shouldExpand :NO];
 		
 	////////
 	
@@ -6386,14 +6386,6 @@ static ViewerController *draggedController = nil;
 	if( lp)
 		loadingPauseDelay = [NSDate timeIntervalSinceReferenceDate] + 4;
 	else loadingPauseDelay = 0;
-}
-
-- (long) indexForPix: (long) pixIndex
-{
-	if ([[[fileList[curMovieIndex] objectAtIndex:0] valueForKey:@"numberOfFrames"] intValue] == 1)
-		return pixIndex;
-	else
-		return 0;
 }
 
 - (short) getNumberOfImages
@@ -12758,11 +12750,11 @@ int i,j,l;
 	}
 	else //same action as endSetComments, but with composedMenuTitle
 	{
-		[[fileList[ curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] setValue:composedMenuTitle forKeyPath:@"series.comment"];
+		[[fileList[ curMovieIndex] objectAtIndex:[imageView curImage]] setValue:composedMenuTitle forKeyPath:@"series.comment"];
 		
 		if([[BrowserController currentBrowser] isCurrentDatabaseBonjour])
 		{
-			[[BrowserController currentBrowser] setBonjourDatabaseValue:[fileList[curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] value:[CommentsEditField stringValue] forKey:@"series.comment"];
+			[[BrowserController currentBrowser] setBonjourDatabaseValue:[fileList[curMovieIndex] objectAtIndex:[imageView curImage]] value:[CommentsEditField stringValue] forKey:@"series.comment"];
 		}
 		
 		[[[BrowserController currentBrowser] databaseOutline] reloadData];
@@ -13680,7 +13672,7 @@ int i,j,l;
 
 -(void) deleteSeries:(id) sender
 {
-	[[BrowserController currentBrowser] delItemMatrix: [fileList[ curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]]];
+	[[BrowserController currentBrowser] delItemMatrix: [fileList[ curMovieIndex] objectAtIndex:[imageView curImage]]];
 }
 
 - (float) frameRate
@@ -14946,7 +14938,7 @@ int i,j,l;
 	{
 		if( exportDCM == nil) exportDCM = [[DICOMExport alloc] init];
 		
-		[exportDCM setSourceFile: [[fileList[ curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] valueForKey:@"completePath"]];
+		[exportDCM setSourceFile: [[fileList[ curMovieIndex] objectAtIndex:[imageView curImage]] valueForKey:@"completePath"]];
 		
 		if( [[exportDCM seriesDescription] isEqualToString: [dcmSeriesName stringValue]] == NO)
 		{
@@ -15332,7 +15324,7 @@ int i,j,l;
 	{		
 		files2Send = [NSMutableArray arrayWithCapacity:0];
 		
-		[files2Send addObject: [fileList[ curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]]];
+		[files2Send addObject: [fileList[ curMovieIndex] objectAtIndex:[imageView curImage]]];
 	}
 	
 	[[BrowserController currentBrowser] selectServer: files2Send];
@@ -16604,12 +16596,12 @@ int i,j,l;
 	
 	[[self window] setInitialFirstResponder: imageView];
 	
-	NSNumber	*status = [[fileList[ curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] valueForKeyPath:@"series.study.stateText"];
+	NSNumber	*status = [[fileList[ curMovieIndex] objectAtIndex:[imageView curImage]] valueForKeyPath:@"series.study.stateText"];
 	
 	if( status == nil) [StatusPopup selectItemWithTitle: @"empty"];
 	else [StatusPopup selectItemWithTag: [status intValue]];
 	
-	NSString *com = [[fileList[ curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] valueForKeyPath:@"series.comment"];//JF20070103
+	NSString *com = [[fileList[ curMovieIndex] objectAtIndex:[imageView curImage]] valueForKeyPath:@"series.comment"];//JF20070103
 	
 	if( com == nil || [com isEqualToString:@""]) [CommentsField setTitle: NSLocalizedString(@"Add a comment", nil)];
 	else [CommentsField setTitle: com];
@@ -17877,11 +17869,11 @@ int i,j,l;
 {
 	if( postprocessed == NO)
 	{
-		[[fileList[curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] setValue:[NSNumber numberWithBool:[sender state]] forKey:@"isKeyImage"];
+		[[fileList[curMovieIndex] objectAtIndex:[imageView curImage]] setValue:[NSNumber numberWithBool:[sender state]] forKey:@"isKeyImage"];
 		
 		if([[BrowserController currentBrowser] isCurrentDatabaseBonjour])
 		{
-			[[BrowserController currentBrowser] setBonjourDatabaseValue:[fileList[curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] value:[NSNumber numberWithBool:[sender state]] forKey:@"isKeyImage"];
+			[[BrowserController currentBrowser] setBonjourDatabaseValue:[fileList[curMovieIndex] objectAtIndex:[imageView curImage]] value:[NSNumber numberWithBool:[sender state]] forKey:@"isKeyImage"];
 		}
 		
 		[self willChangeValueForKey: @"KeyImageCounter"];
@@ -17955,7 +17947,7 @@ int i,j,l;
 		return;
 	}
 	
-	NSManagedObject	*series = [[fileList[curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] valueForKey:@"series"];
+	NSManagedObject	*series = [[fileList[curMovieIndex] objectAtIndex:[imageView curImage]] valueForKey:@"series"];
 	
 	[self checkEverythingLoaded];
 	
@@ -18147,7 +18139,7 @@ int i,j,l;
 	[keyImagePopUpButton setEnabled: YES];
 	
 	// Update Key Image check box
-	if( [[[fileList[curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] valueForKey:@"isKeyImage"] boolValue] == YES)
+	if( [[[fileList[curMovieIndex] objectAtIndex:[imageView curImage]] valueForKey:@"isKeyImage"] boolValue] == YES)
 	{
 		[keyImageCheck setState: NSOnState];
 	}
@@ -18162,7 +18154,7 @@ int i,j,l;
 	if( postprocessed)
 		return NO;
 	
-	return [[[fileList[curMovieIndex] objectAtIndex:[self indexForPix:index]] valueForKey:@"isKeyImage"] boolValue];
+	return [[[fileList[curMovieIndex] objectAtIndex:index] valueForKey:@"isKeyImage"] boolValue];
 }
 
 #pragma mark-
@@ -18209,11 +18201,11 @@ sourceRef);
 	
 	if( [sender tag] == 1) //series
 	{
-		[[fileList[ curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] setValue:[CommentsEditField stringValue] forKeyPath:@"series.comment"];
+		[[fileList[ curMovieIndex] objectAtIndex:[imageView curImage]] setValue:[CommentsEditField stringValue] forKeyPath:@"series.comment"];
 		
 		if([[BrowserController currentBrowser] isCurrentDatabaseBonjour])
 		{
-			[[BrowserController currentBrowser] setBonjourDatabaseValue:[fileList[curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] value:[CommentsEditField stringValue] forKey:@"series.comment"];
+			[[BrowserController currentBrowser] setBonjourDatabaseValue:[fileList[curMovieIndex] objectAtIndex:[imageView curImage]] value:[CommentsEditField stringValue] forKey:@"series.comment"];
 		}
 		
 		[[[BrowserController currentBrowser] databaseOutline] reloadData];
@@ -18225,11 +18217,11 @@ sourceRef);
 	}
 	else if( [sender tag] == 2) //study
 	{
-		[[fileList[ curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] setValue:[CommentsEditField stringValue] forKeyPath:@"series.study.comment"];
+		[[fileList[ curMovieIndex] objectAtIndex:[imageView curImage]] setValue:[CommentsEditField stringValue] forKeyPath:@"series.study.comment"];
 		
 		if([[BrowserController currentBrowser] isCurrentDatabaseBonjour])
 		{
-			[[BrowserController currentBrowser] setBonjourDatabaseValue:[fileList[curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] value:[CommentsEditField stringValue] forKey:@"series.study.comment"];
+			[[BrowserController currentBrowser] setBonjourDatabaseValue:[fileList[curMovieIndex] objectAtIndex:[imageView curImage]] value:[CommentsEditField stringValue] forKey:@"series.study.comment"];
 		}
 		
 		[[[BrowserController currentBrowser] databaseOutline] reloadData];
@@ -18253,11 +18245,11 @@ sourceRef);
 
 - (void) setStatusValue:(int) v
 {
-	[[fileList[ curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] setValue:[NSNumber numberWithInt: v] forKeyPath:@"series.study.stateText"];
+	[[fileList[ curMovieIndex] objectAtIndex:[imageView curImage]] setValue:[NSNumber numberWithInt: v] forKeyPath:@"series.study.stateText"];
 	
 	if([[BrowserController currentBrowser] isCurrentDatabaseBonjour])
 	{
-		[[BrowserController currentBrowser] setBonjourDatabaseValue:[fileList[curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] value:[NSNumber numberWithInt: v] forKey:@"series.study.stateText"];
+		[[BrowserController currentBrowser] setBonjourDatabaseValue:[fileList[curMovieIndex] objectAtIndex:[imageView curImage]] value:[NSNumber numberWithInt: v] forKey:@"series.study.stateText"];
 	}
 	
 	[StatusPopup selectItemWithTag: v];

@@ -2109,14 +2109,6 @@ NSString * documentsDirectory();
 	}
 }
 
-- (long) indexForPix: (long) pixIndex
-{
-	if ([[[[[[self keyView] controller] originalDCMFilesList] objectAtIndex:0] valueForKey:@"numberOfFrames"] intValue] == 1)
-		return pixIndex;
-	else
-		return 0;
-}
-
 - (void) exportDICOMFileInt :(BOOL) screenCapture
 {
 	[self exportDICOMFileInt:screenCapture view:[self keyView]];
@@ -2143,7 +2135,7 @@ NSString * documentsDirectory();
 	{
 		if( exportDCM == nil) exportDCM = [[DICOMExport alloc] init];
 		
-		[exportDCM setSourceFile: [[[[curView controller] originalDCMFilesList] objectAtIndex:[self indexForPix:[curView curImage]]] valueForKey:@"completePath"]];
+		[exportDCM setSourceFile: [[[[curView controller] originalDCMFilesList] objectAtIndex: [curView curImage]] valueForKey:@"completePath"]];
 		[exportDCM setSeriesDescription: [dcmSeriesName stringValue]];
 		
 		[curView getWLWW:&cwl :&cww];
