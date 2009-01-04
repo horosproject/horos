@@ -6547,20 +6547,13 @@ END_CREATE_ROIS:
 			if( clutGreen) free( clutGreen);
 			if( clutBlue) free( clutBlue);
 			
-			clutRed = malloc( 65536);		if( clutRed == nil) NSLog(@"error clutRed == nil");
-			clutGreen = malloc( 65536);		if( clutGreen == nil) NSLog(@"error clutRed == nil");
-			clutBlue = malloc( 65536);		if( clutBlue == nil) NSLog(@"error clutRed == nil");
+			clutRed = calloc( 65536, 1);		if( clutRed == nil) NSLog(@"error clutRed == nil");
+			clutGreen = calloc( 65536, 1);		if( clutGreen == nil) NSLog(@"error clutRed == nil");
+			clutBlue = calloc( 65536, 1);		if( clutBlue == nil) NSLog(@"error clutRed == nil");
 			
 			// initialisation
 			clutEntryR = clutEntryG = clutEntryB = 0;
 			clutDepthR = clutDepthG = clutDepthB = 0;
-			
-			for ( unsigned int j = 0; j < 65536; j++ )
-			{
-				clutRed[ j] = 0;
-				clutGreen[ j] = 0;
-				clutBlue[ j] = 0;
-			}
 			
 			// read the RED descriptor of the color lookup table
 			val = Papy3GetElement (theGroupP, papRedPaletteColorLookupTableDescriptorGr, &nbVal, &elemType);

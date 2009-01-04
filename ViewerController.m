@@ -2313,6 +2313,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 	}
 	
 	[self release];
+	
+	[[NSCursor arrowCursor] set];
 }
 
 //- (void)windowDidResize:(NSNotification *)aNotification

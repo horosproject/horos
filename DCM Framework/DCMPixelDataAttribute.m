@@ -1142,7 +1142,6 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 		RLE header is 64 bytes long as a sequence of 16  unsigned longs.
 		First elements is number of segments.  The next are length of the segments.
 	*/
-	NSLog(@"convertRLEToHost");
 	unsigned int offsetTable[16];
 	[rleData getBytes:offsetTable  range:NSMakeRange(0, 64)];
 	int i;
@@ -2011,9 +2010,8 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 		NSLog(@"min %d max %d", _min, _max);
 }
 
-- (NSData *)convertPaletteToRGB:(NSData *)data{
-	
-	NSLog(@"convertPaletteToRGB");
+- (NSData *)convertPaletteToRGB:(NSData *)data
+{	
 	BOOL			fSetClut = NO, fSetClut16 = NO;
 	unsigned char   *clutRed = nil, *clutGreen = nil, *clutBlue = nil;
 	int		clutEntryR = 0, clutEntryG = 0, clutEntryB = 0;
@@ -2027,24 +2025,16 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 	NSMutableData *rgbData = nil;
 	NS_DURING
 	//PhotoInterpret
-	if ([[_dcmObject attributeValueWithName:@"PhotometricInterpretation"] rangeOfString:@"PALETTE"].location != NSNotFound) {
+	if ([[_dcmObject attributeValueWithName:@"PhotometricInterpretation"] rangeOfString:@"PALETTE"].location != NSNotFound)
+	{
 		BOOL found = NO, found16 = NO;
-		NSLog(@"PALETTE COLOR");
-		clutRed = malloc( 65536);
-		clutGreen = malloc( 65536);
-		clutBlue = malloc( 65536);
+		clutRed = calloc( 65536, 1);
+		clutGreen = calloc( 65536, 1);
+		clutBlue = calloc( 65536, 1);
 		
 		// initialisation
 		clutEntryR = clutEntryG = clutEntryB = 0;
 		clutDepthR = clutDepthG = clutDepthB = 0;
-		
-		for (j = 0; j < 65536; j++){
-			clutRed[ j] = 0;
-			clutGreen[ j] = 0;
-			clutBlue[ j] = 0;
-		}
-		
-	
 		
 		NSArray *redLUTDescriptor = [_dcmObject attributeArrayWithName:@"RedPaletteColorLookupTableDescriptor"];
 		clutEntryR = (unsigned short)[[redLUTDescriptor objectAtIndex:0] intValue];
@@ -2136,7 +2126,7 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 					NSLog(@"%d", xxindex);
 				}//endif
 				
-											// extract the GREEN palette clut data
+				// extract the GREEN palette clut data
 				NSMutableData *segmentedGreenData = [_dcmObject attributeValueWithName:@"SegmentedGreenPaletteColorLookupTableData"];
 				val = (unsigned short *)[segmentedGreenData bytes];
 				if (val != NULL)
@@ -2195,7 +2185,7 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 					NSLog(@"%d", xxindex);
 				}//endif
 				
-											// extract the BLUE palette clut data
+				// extract the BLUE palette clut data
 				NSMutableData *segmentedBlueData = [_dcmObject attributeValueWithName:@"SegmentedBluePaletteColorLookupTableData"];
 				val = (unsigned short *)[segmentedBlueData  bytes];
 				if (val != NULL)
@@ -2372,7 +2362,6 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 // This image has a palette -> Convert it to a RGB image !
 	if( fSetClut)
 	{
-		
 		if( clutRed != nil && clutGreen != nil && clutBlue != nil)
 		{
 			unsigned char   *bufPtr = (unsigned char*) [data bytes];
@@ -2797,8 +2786,8 @@ NS_ENDHANDLER
 	
 	return floatData;	
 }
-- (NSData *)convertDataToRGBColorSpace:(NSData *)data{
-	//NSLog(@"convert data to  RGB colorspace");
+- (NSData *)convertDataToRGBColorSpace:(NSData *)data
+{
 	NSData *rgbData = nil;
 	NSString *colorspace = [_dcmObject attributeValueWithName:@"PhotometricInterpretation"];
 	BOOL isPlanar = [[_dcmObject attributeValueWithName:@"PlanarConfiguration"] intValue];
@@ -2950,7 +2939,6 @@ NS_ENDHANDLER
 			
 			subData =[_values objectAtIndex:0];
 		}
-		//NSLog(@"interval: %f", -[timestamp timeIntervalSinceNow]);
 	}		
 	return subData;
 }
@@ -3100,13 +3088,9 @@ NS_ENDHANDLER
 	NSMutableData *subData = nil;
 	
 	if( _framesCreated)
-	{
 		subData = [_values objectAtIndex:index];
-	}
 	else
-	{
 		subData = [self createFrameAtIndex:index];
-	}
 	
 	if ([_values count] > 0 && index < _numberOfFrames)
 	{
@@ -3124,151 +3108,134 @@ NS_ENDHANDLER
 		}
 		
 		if (DEBUG)
-				NSLog(@"to decoders:%@", transferSyntax.description );
-			// data to decoders
-		NSData *data = nil;
+			NSLog(@"to decoders:%@", transferSyntax.description );
 		
-		if([[_framesDecoded objectAtIndex: index] boolValue] == NO)
+		// data to decoders
+		NSData *data = subData;
+		
+		if( transferSyntax.isEncapsulated == YES)
 		{
-			if ( transferSyntax.isEncapsulated )
-			{				
-				short depth = 0;
-				
-				if( [transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEG2000LosslessTransferSyntax]] == NO &&
-					[transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEG2000LossyTransferSyntax]]  == NO && 
-					[transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax RLETransferSyntax]] == NO)
-				{
-					depth = scanJpegDataForBitDepth( (unsigned char *) [subData bytes], [subData length]);
-					if( depth == 0)
-					{
-//						NSLog( @"depth not found (scanJpegDataForBitDepth), will use : %d", _pixelDepth);
-						depth = _pixelDepth;
-					}
-//					else NSLog( @"scanJpegDataForBitDepth : %d", depth);
-				}
-				
-				if ([transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEGBaselineTransferSyntax]])
-				{
-					data = [[[self convertJPEG8ToHost:subData] mutableCopy] autorelease];
-					colorspaceIsConverted = YES;
-
-				}
-				// 8 bit jpegs
-				else if ([transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEGExtendedTransferSyntax]] && depth <= 8)
-				{
-					colorspaceIsConverted = YES;
-					data = [[[self convertJPEG8ToHost:subData] mutableCopy] autorelease];
-
-				}
-				else if ([transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEGLosslessTransferSyntax]] && depth <= 8)
-				{
-					data = [[[self convertJPEG8LosslessToHost:subData] mutableCopy] autorelease];
-
-				}
-				else if ([transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEGLossless14TransferSyntax]] && depth <= 8)
-				{ 
-					data = [[[self convertJPEG8LosslessToHost:subData] mutableCopy] autorelease];
-
-				}
-
-					
-				//12 bit jpegs
-				else if ([transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEGExtendedTransferSyntax]] && depth <= 12) {
-					
-					data = [[[self convertJPEG12ToHost:subData] mutableCopy] autorelease];
-
-				}
-				else if ([transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEGLosslessTransferSyntax]] && depth <= 12) {
-					data = [[[self convertJPEG12ToHost:subData] mutableCopy] autorelease];
-
-				}
-				else if ([transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEGLossless14TransferSyntax]] && depth <= 12) {
-					data = [[[self convertJPEG12ToHost:subData] mutableCopy] autorelease];
-
-				}
-
-				//jpeg 16s
-				else if ([transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEGExtendedTransferSyntax]] && depth <= 16) {
-					data = [[[self convertJPEG16ToHost:subData] mutableCopy] autorelease];		
-				}
-				else if ([transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEGLosslessTransferSyntax]] && depth <= 16) {
-					
-					data = [[[self convertJPEG16ToHost:subData] mutableCopy] autorelease];
-					
-				}
-				else if ([transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEGLossless14TransferSyntax]] && depth <= 16) {
-					data = [[[self convertJPEG16ToHost:subData] mutableCopy] autorelease];		
-				}
-				
-				//JPEG 2000
-				else if ([transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEG2000LosslessTransferSyntax]] || [transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEG2000LossyTransferSyntax]] ) {
-					data = [[[self convertJPEG2000ToHost:subData] mutableCopy] autorelease];
-
-				}
-				else if ([transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax RLETransferSyntax]]){
-					data = [[[self convertRLEToHost:subData] mutableCopy] autorelease];
-
-				}
-				else {
-					NSLog(@"Unknown compressed transfer syntax: %@", transferSyntax.description);
-
-				}
+			short depth = 0;
+			
+			[singleThread unlock];
+			
+			if( [transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEG2000LosslessTransferSyntax]] == NO &&
+				[transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEG2000LossyTransferSyntax]]  == NO && 
+				[transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax RLETransferSyntax]] == NO)
+			{
+				depth = scanJpegDataForBitDepth( (unsigned char *) [subData bytes], [subData length]);
+				if( depth == 0)
+					depth = _pixelDepth;
 			}
-			//non encapsulated
-			else if (_bitsStored > 8)
+			
+			if ([transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEGBaselineTransferSyntax]])
+			{
+				data = [self convertJPEG8ToHost:subData];
+				colorspaceIsConverted = YES;
+			}
+			// 8 bit jpegs
+			else if ([transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEGExtendedTransferSyntax]] && depth <= 8)
+			{
+				colorspaceIsConverted = YES;
+				data = [self convertJPEG8ToHost:subData];
+			}
+			else if ([transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEGLosslessTransferSyntax]] && depth <= 8)
+			{
+				data = [self convertJPEG8LosslessToHost:subData];
+			}
+			else if ([transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEGLossless14TransferSyntax]] && depth <= 8)
+			{ 
+				data = [self convertJPEG8LosslessToHost:subData];
+			}
+			//12 bit jpegs
+			else if ([transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEGExtendedTransferSyntax]] && depth <= 12)
+			{
+				data = [self convertJPEG12ToHost:subData];
+			}
+			else if ([transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEGLosslessTransferSyntax]] && depth <= 12)
+			{
+				data = [self convertJPEG12ToHost:subData];
+			}
+			else if ([transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEGLossless14TransferSyntax]] && depth <= 12)
+			{
+				data = [self convertJPEG12ToHost:subData];
+			}
+			//jpeg 16s
+			else if ([transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEGExtendedTransferSyntax]] && depth <= 16)
+			{
+				data = [self convertJPEG16ToHost:subData];		
+			}
+			else if ([transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEGLosslessTransferSyntax]] && depth <= 16)
+			{
+				data = [self convertJPEG16ToHost:subData];
+			}
+			else if ([transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEGLossless14TransferSyntax]] && depth <= 16)
+			{
+				data = [self convertJPEG16ToHost:subData];		
+			}
+			//JPEG 2000
+			else if ([transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEG2000LosslessTransferSyntax]] || [transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEG2000LossyTransferSyntax]] )
+			{
+				data = [self convertJPEG2000ToHost:subData];
+			}
+			else if ([transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax RLETransferSyntax]])
+			{
+				data = [self convertRLEToHost:subData];
+			}
+			else
+			{
+				NSLog(@"Unknown compressed transfer syntax: %@", transferSyntax.description);
+			}
+			
+			[singleThread lock];
+		}
+		
+		//non encapsulated
+		if( transferSyntax.isEncapsulated == NO && _bitsStored > 8)
+		{
+			if( [[_framesDecoded objectAtIndex: index] boolValue] == NO)
 			{
 				//Little Endian Data and BigEndian Host
-				if ((NSHostByteOrder() == NS_BigEndian) &&
-				 ([transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax]] || 
-				 [transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax]]))
-				 {
+				if ((NSHostByteOrder() == NS_BigEndian) && ([transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax]] || [transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax]]))
+				{
 					data = [self convertDataFromLittleEndianToHost:subData];
 					[_framesDecoded replaceObjectAtIndex: index withObject: [NSNumber numberWithBool: YES]];
 				}
 				//Big Endian Data and little Endian host
 				else  if ((NSHostByteOrder() == NS_LittleEndian) && [transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax ExplicitVRBigEndianTransferSyntax]])
-				 {
+				{
 					data = [self convertDataFromBigEndianToHost:subData];
 					[_framesDecoded replaceObjectAtIndex: index withObject: [NSNumber numberWithBool: YES]];
 				}
-				//no swap needed
-				else
-					data = subData;
 			}
-			//everything else
-			else data = subData;
-		} //end if decoded
-		else
-			data = subData;
+		}
+		
+		[singleThread unlock];
 		
 		NSString *colorspace = [_dcmObject attributeValueWithName:@"PhotometricInterpretation"];
-		if (([colorspace hasPrefix:@"YBR"] || [colorspace hasPrefix:@"PALETTE"]) && !colorspaceIsConverted){
+		if (([colorspace hasPrefix:@"YBR"] || [colorspace hasPrefix:@"PALETTE"]) && !colorspaceIsConverted)
+		{
 			data = [self convertDataToRGBColorSpace:data];	
 		}
-		else{
-		int numberofPlanes = [[_dcmObject attributeValueWithName:@"PlanarConfiguration"] intValue];			
-		if (numberofPlanes > 0 && numberofPlanes <= 4)
+		else
+		{
+			int numberofPlanes = [[_dcmObject attributeValueWithName:@"PlanarConfiguration"] intValue];			
+			if (numberofPlanes > 0 && numberofPlanes <= 4)
 			{
-				if( [transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEGExtendedTransferSyntax]] ||
-				[transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEGLosslessTransferSyntax]] )
+				if( [transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEGExtendedTransferSyntax]] || [transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEGLosslessTransferSyntax]] )
 				{
 				}
 				else data = [self interleavePlanesInData:data];
 			}
 		}
 		
-		[singleThread unlock];
-		
 		return data;
 	}
 	else
 	{
 		[singleThread unlock];
-		
-		NSLog(@"No frame %d to decode", index);
 		return nil;
 	}
-	
 	
 	return nil;
 }
