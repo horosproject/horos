@@ -3,17 +3,6 @@
 /*	Project  : P A P Y R U S  Toolkit                                       */
 /*	File     : PapyPrivFunctionDef3.h                                       */
 /*	Function : contains the declarations of the private functions           */
-/*	Authors  : Christian Girard                                             */
-/*                 Marianne Logean                                              */
-/*                                                                              */
-/*	History  : 01.1999	version 3.6                                     */
-/*                 04.2001	version 3.7                                     */
-/*                 09.2001      version 3.7  on CVS                             */
-/*                 10.2001      version 3.71 MAJ Dicom par CHG                  */
-/*                                                                              */
-/* 	(C) 1999-2001 The University Hospital of Geneva                         */
-/*	All Rights Reserved                                                     */
-/*                                                                              */
 /********************************************************************************/
 
 #ifndef PapyPrivFunctionDef3H 

@@ -4877,6 +4877,8 @@ END_CREATE_ROIS:
 			
 			PapyShort fileNb = -1;
 			
+			[self getPapyGroup: 0];
+			
 			if( [[cachedPapyGroups valueForKey: srcFile] valueForKey: @"fileNb"])
 				fileNb = [[[cachedPapyGroups valueForKey: srcFile] valueForKey: @"fileNb"] intValue];
 			
@@ -4891,7 +4893,30 @@ END_CREATE_ROIS:
 		{
 			[self clearCachedDCMFrameworkFiles];
 			
-			DCMObject *dcmObject = [DCMObject objectWithContentsOfFile:srcFile decodingPixelData:NO];
+			DCMObject *dcmObject = 0L;
+			
+			if( [cachedDCMFrameworkFiles objectForKey: srcFile])
+			{
+				NSMutableDictionary *dic = [cachedDCMFrameworkFiles objectForKey: srcFile];
+				
+				dcmObject = [dic objectForKey: @"dcmObject"];
+				[dic setValue: [NSNumber numberWithInt: [[dic objectForKey: @"count"] intValue]+1] forKey: @"count"];
+			}
+			else
+			{
+				dcmObject = [DCMObject objectWithContentsOfFile:srcFile decodingPixelData:NO];
+				
+				if( dcmObject)
+				{
+					NSMutableDictionary *dic = [NSMutableDictionary dictionary];
+				
+					[dic setValue: dcmObject forKey: @"dcmObject"];
+					[dic setValue: [NSNumber numberWithInt: 1] forKey: @"count"];
+					
+					[cachedDCMFrameworkFiles setObject: dic forKey: srcFile];
+				}
+			}
+			
 			[self loadCustomImageAnnotationsPapyLink:-1 DCMLink:dcmObject];
 		}
 	}

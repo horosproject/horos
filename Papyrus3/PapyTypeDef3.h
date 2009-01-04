@@ -5,18 +5,6 @@
 /*	Function : contains the declarations of the constants, the enumerated	*/
 /*		   types, the structures and the type definition for the  	*/
 /*		   PAPYRUS toolkit.                                             */
-/*	Authors  : Christian Girard                                             */
-/*                                                                              */
-/*	History  : 03.1996	version 3.3                                     */
-/*                 01.1999	version 3.6                                     */
-/*                 04.2001	version 3.7                                     */
-/*                 09.2001      version 3.7  on CVS                             */
-/*                 10.2001      version 3.71 MAJ Dicom par CHG                  */
-/*                                                                              */
-/* 	(C) 1996-2001                                                           */
-/*	The University Hospital of Geneva                                       */
-/*	All Rights Reserved                                                     */
-/*                                                                              */
 /********************************************************************************/
 
 #ifndef PapyTypeDef3H
