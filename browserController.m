@@ -9842,7 +9842,6 @@ static BOOL needToRezoom;
 	NSMutableArray		*viewerPix[ 200];
 	ViewerController	*movieController = nil;
 	ViewerController	*createdViewer = viewer;
-	int					keyImageCount = 0;
 	@try
 	{
 		// NS_DURING (1) keyImages
@@ -9861,8 +9860,6 @@ static BOOL needToRezoom;
 				
 				if( [keyImagesArray count] > 0)
 					[keyImagesToOpenArray addObject: keyImagesArray];
-				
-				keyImageCount += [keyImagesArray count];
 			}
 			
 		if ( keyImages)
@@ -10147,13 +10144,13 @@ static BOOL needToRezoom;
 								if( viewer )
 								{
 									//reuse of existing viewer
-									[viewer changeImageData:viewerPix[0] :filesAr :volumeData :NO withKeyImageCount:[NSString stringWithFormat:@"%d",keyImageCount]];
+									[viewer changeImageData:viewerPix[0] :filesAr :volumeData :NO];
 									[viewer startLoadImageThread];
 								}
 								else
 								{
 									//creation of new viewer
-									createdViewer = [[ViewerController alloc] initWithPix:viewerPix[0] withFiles:filesAr withVolume:volumeData withKeyImageCount:[NSString stringWithFormat:@"%d",keyImageCount]];
+									createdViewer = [[ViewerController alloc] initWithPix:viewerPix[0] withFiles:filesAr withVolume:volumeData];
 									[createdViewer showWindowTransition];
 									[createdViewer startLoadImageThread];
 								}		
@@ -10166,13 +10163,13 @@ static BOOL needToRezoom;
 								if( viewer)
 								{
 									//reuse of existing viewer 
-									[viewer changeImageData:viewerPix[0] :[NSMutableArray arrayWithArray:correspondingObjects] :volumeData :NO withKeyImageCount:[NSString stringWithFormat:@"%d",keyImageCount]];
+									[viewer changeImageData:viewerPix[0] :[NSMutableArray arrayWithArray:correspondingObjects] :volumeData :NO ];
 									[viewer startLoadImageThread];
 								}
 								else
 								{
 									//creation of new viewer
-									createdViewer = [[ViewerController alloc] initWithPix:viewerPix[0] withFiles:[NSMutableArray arrayWithArray:correspondingObjects] withVolume:volumeData withKeyImageCount:[NSString stringWithFormat:@"%d",keyImageCount]];
+									createdViewer = [[ViewerController alloc] initWithPix:viewerPix[0] withFiles:[NSMutableArray arrayWithArray:correspondingObjects] withVolume:volumeData];
 									[createdViewer showWindowTransition];
 									[createdViewer startLoadImageThread];
 								}
