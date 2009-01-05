@@ -3813,23 +3813,6 @@
 		CE2C82E30C708B310093C162 /* InstantMessage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2C82E20C708B310093C162 /* InstantMessage.framework */; };
 		CE2C82E50C708B310093C162 /* InstantMessage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2C82E20C708B310093C162 /* InstantMessage.framework */; };
 		CE2C82EC0C708B380093C162 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF5F14C20B14E12700B309B9 /* CoreVideo.framework */; };
-		CE3563B90EED998F005A823F /* algorithm in Resources */ = {isa = PBXBuildFile; fileRef = CE355D750EED998A005A823F /* algorithm */; };
-		CE3563BA0EED998F005A823F /* deque in Resources */ = {isa = PBXBuildFile; fileRef = CE355D760EED998A005A823F /* deque */; };
-		CE3563BB0EED998F005A823F /* exception in Resources */ = {isa = PBXBuildFile; fileRef = CE355D770EED998A005A823F /* exception */; };
-		CE3563BC0EED998F005A823F /* functional in Resources */ = {isa = PBXBuildFile; fileRef = CE355D780EED998A005A823F /* functional */; };
-		CE3563BD0EED998F005A823F /* iterator in Resources */ = {isa = PBXBuildFile; fileRef = CE355D790EED998A005A823F /* iterator */; };
-		CE3563BE0EED998F005A823F /* list in Resources */ = {isa = PBXBuildFile; fileRef = CE355D7A0EED998A005A823F /* list */; };
-		CE3563BF0EED998F005A823F /* map in Resources */ = {isa = PBXBuildFile; fileRef = CE355D7B0EED998A005A823F /* map */; };
-		CE3563C00EED998F005A823F /* memory in Resources */ = {isa = PBXBuildFile; fileRef = CE355D7C0EED998A005A823F /* memory */; };
-		CE3563C10EED998F005A823F /* new in Resources */ = {isa = PBXBuildFile; fileRef = CE355D7D0EED998A005A823F /* new */; };
-		CE3563C20EED998F005A823F /* numeric in Resources */ = {isa = PBXBuildFile; fileRef = CE355D7E0EED998A005A823F /* numeric */; };
-		CE3563C30EED998F005A823F /* queue in Resources */ = {isa = PBXBuildFile; fileRef = CE355D7F0EED998A005A823F /* queue */; };
-		CE3563C40EED998F005A823F /* set in Resources */ = {isa = PBXBuildFile; fileRef = CE355D800EED998A005A823F /* set */; };
-		CE3563C50EED998F005A823F /* stack in Resources */ = {isa = PBXBuildFile; fileRef = CE355D810EED998A005A823F /* stack */; };
-		CE3563C60EED998F005A823F /* stdexcept in Resources */ = {isa = PBXBuildFile; fileRef = CE355D820EED998A005A823F /* stdexcept */; };
-		CE3563C70EED998F005A823F /* string in Resources */ = {isa = PBXBuildFile; fileRef = CE355D830EED998A005A823F /* string */; };
-		CE3563C80EED998F005A823F /* utility in Resources */ = {isa = PBXBuildFile; fileRef = CE355D840EED998A005A823F /* utility */; };
-		CE3563C90EED998F005A823F /* vector in Resources */ = {isa = PBXBuildFile; fileRef = CE355D850EED998A005A823F /* vector */; };
 		CE3563CA0EED998F005A823F /* vtk3DS.h in Headers */ = {isa = PBXBuildFile; fileRef = CE355D860EED998A005A823F /* vtk3DS.h */; };
 		CE3563CB0EED998F005A823F /* vtk3DSImporter.h in Headers */ = {isa = PBXBuildFile; fileRef = CE355D870EED998A005A823F /* vtk3DSImporter.h */; };
 		CE3563CC0EED998F005A823F /* vtk3DWidget.h in Headers */ = {isa = PBXBuildFile; fileRef = CE355D880EED998A005A823F /* vtk3DWidget.h */; };
@@ -3892,8 +3875,6 @@
 		CE3564050EED998F005A823F /* vtkArrayIterator.h in Headers */ = {isa = PBXBuildFile; fileRef = CE355DC10EED998A005A823F /* vtkArrayIterator.h */; };
 		CE3564060EED998F005A823F /* vtkArrayIteratorIncludes.h in Headers */ = {isa = PBXBuildFile; fileRef = CE355DC20EED998A005A823F /* vtkArrayIteratorIncludes.h */; };
 		CE3564070EED998F005A823F /* vtkArrayIteratorTemplate.h in Headers */ = {isa = PBXBuildFile; fileRef = CE355DC30EED998A005A823F /* vtkArrayIteratorTemplate.h */; };
-		CE3564080EED998F005A823F /* vtkArrayIteratorTemplate.txx in Resources */ = {isa = PBXBuildFile; fileRef = CE355DC40EED998A005A823F /* vtkArrayIteratorTemplate.txx */; };
-		CE3564090EED998F005A823F /* vtkArrayIteratorTemplateImplicit.txx in Resources */ = {isa = PBXBuildFile; fileRef = CE355DC50EED998A005A823F /* vtkArrayIteratorTemplateImplicit.txx */; };
 		CE35640A0EED998F005A823F /* vtkArrowSource.h in Headers */ = {isa = PBXBuildFile; fileRef = CE355DC60EED998A005A823F /* vtkArrowSource.h */; };
 		CE35640B0EED998F005A823F /* vtkAssembly.h in Headers */ = {isa = PBXBuildFile; fileRef = CE355DC70EED998A005A823F /* vtkAssembly.h */; };
 		CE35640C0EED998F005A823F /* vtkAssemblyNode.h in Headers */ = {isa = PBXBuildFile; fileRef = CE355DC80EED998A005A823F /* vtkAssemblyNode.h */; };
@@ -4083,8 +4064,6 @@
 		CE3564C40EED998F005A823F /* vtkDataArrayCollectionIterator.h in Headers */ = {isa = PBXBuildFile; fileRef = CE355E800EED998A005A823F /* vtkDataArrayCollectionIterator.h */; };
 		CE3564C50EED998F005A823F /* vtkDataArraySelection.h in Headers */ = {isa = PBXBuildFile; fileRef = CE355E810EED998A005A823F /* vtkDataArraySelection.h */; };
 		CE3564C60EED998F005A823F /* vtkDataArrayTemplate.h in Headers */ = {isa = PBXBuildFile; fileRef = CE355E820EED998A005A823F /* vtkDataArrayTemplate.h */; };
-		CE3564C70EED998F005A823F /* vtkDataArrayTemplate.txx in Resources */ = {isa = PBXBuildFile; fileRef = CE355E830EED998A005A823F /* vtkDataArrayTemplate.txx */; };
-		CE3564C80EED998F005A823F /* vtkDataArrayTemplateImplicit.txx in Resources */ = {isa = PBXBuildFile; fileRef = CE355E840EED998A005A823F /* vtkDataArrayTemplateImplicit.txx */; };
 		CE3564C90EED998F005A823F /* vtkDataCompressor.h in Headers */ = {isa = PBXBuildFile; fileRef = CE355E850EED998A005A823F /* vtkDataCompressor.h */; };
 		CE3564CA0EED998F005A823F /* vtkDataObject.h in Headers */ = {isa = PBXBuildFile; fileRef = CE355E860EED998A005A823F /* vtkDataObject.h */; };
 		CE3564CB0EED998F005A823F /* vtkDataObjectAlgorithm.h in Headers */ = {isa = PBXBuildFile; fileRef = CE355E870EED998A005A823F /* vtkDataObjectAlgorithm.h */; };
@@ -4424,7 +4403,6 @@
 		CE3566190EED998F005A823F /* vtkImageIslandRemoval2D.h in Headers */ = {isa = PBXBuildFile; fileRef = CE355FD50EED998B005A823F /* vtkImageIslandRemoval2D.h */; };
 		CE35661A0EED998F005A823F /* vtkImageIterateFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = CE355FD60EED998B005A823F /* vtkImageIterateFilter.h */; };
 		CE35661B0EED998F005A823F /* vtkImageIterator.h in Headers */ = {isa = PBXBuildFile; fileRef = CE355FD70EED998B005A823F /* vtkImageIterator.h */; };
-		CE35661C0EED998F005A823F /* vtkImageIterator.txx in Resources */ = {isa = PBXBuildFile; fileRef = CE355FD80EED998B005A823F /* vtkImageIterator.txx */; };
 		CE35661D0EED998F005A823F /* vtkImageLaplacian.h in Headers */ = {isa = PBXBuildFile; fileRef = CE355FD90EED998B005A823F /* vtkImageLaplacian.h */; };
 		CE35661E0EED998F005A823F /* vtkImageLogarithmicScale.h in Headers */ = {isa = PBXBuildFile; fileRef = CE355FDA0EED998B005A823F /* vtkImageLogarithmicScale.h */; };
 		CE35661F0EED998F005A823F /* vtkImageLogic.h in Headers */ = {isa = PBXBuildFile; fileRef = CE355FDB0EED998B005A823F /* vtkImageLogic.h */; };
@@ -4453,7 +4431,6 @@
 		CE3566360EED998F005A823F /* vtkImagePermute.h in Headers */ = {isa = PBXBuildFile; fileRef = CE355FF20EED998C005A823F /* vtkImagePermute.h */; };
 		CE3566370EED998F005A823F /* vtkImagePlaneWidget.h in Headers */ = {isa = PBXBuildFile; fileRef = CE355FF30EED998C005A823F /* vtkImagePlaneWidget.h */; };
 		CE3566380EED998F005A823F /* vtkImageProgressIterator.h in Headers */ = {isa = PBXBuildFile; fileRef = CE355FF40EED998C005A823F /* vtkImageProgressIterator.h */; };
-		CE3566390EED998F005A823F /* vtkImageProgressIterator.txx in Resources */ = {isa = PBXBuildFile; fileRef = CE355FF50EED998C005A823F /* vtkImageProgressIterator.txx */; };
 		CE35663A0EED998F005A823F /* vtkImageQuantizeRGBToIndex.h in Headers */ = {isa = PBXBuildFile; fileRef = CE355FF60EED998C005A823F /* vtkImageQuantizeRGBToIndex.h */; };
 		CE35663B0EED998F005A823F /* vtkImageRange3D.h in Headers */ = {isa = PBXBuildFile; fileRef = CE355FF70EED998C005A823F /* vtkImageRange3D.h */; };
 		CE35663C0EED998F005A823F /* vtkImageReader.h in Headers */ = {isa = PBXBuildFile; fileRef = CE355FF80EED998C005A823F /* vtkImageReader.h */; };
@@ -23833,29 +23810,6 @@
 				CE03A3CC0EA2AE0300951EF4 /* iPhone.tiff in Resources */,
 				AB932A960EA38DEF0006DF1B /* CobbAngle.tif in Resources */,
 				AB1B31A10EB06AFA0061FA40 /* Jet.plist in Resources */,
-				CE3563B90EED998F005A823F /* algorithm in Resources */,
-				CE3563BA0EED998F005A823F /* deque in Resources */,
-				CE3563BB0EED998F005A823F /* exception in Resources */,
-				CE3563BC0EED998F005A823F /* functional in Resources */,
-				CE3563BD0EED998F005A823F /* iterator in Resources */,
-				CE3563BE0EED998F005A823F /* list in Resources */,
-				CE3563BF0EED998F005A823F /* map in Resources */,
-				CE3563C00EED998F005A823F /* memory in Resources */,
-				CE3563C10EED998F005A823F /* new in Resources */,
-				CE3563C20EED998F005A823F /* numeric in Resources */,
-				CE3563C30EED998F005A823F /* queue in Resources */,
-				CE3563C40EED998F005A823F /* set in Resources */,
-				CE3563C50EED998F005A823F /* stack in Resources */,
-				CE3563C60EED998F005A823F /* stdexcept in Resources */,
-				CE3563C70EED998F005A823F /* string in Resources */,
-				CE3563C80EED998F005A823F /* utility in Resources */,
-				CE3563C90EED998F005A823F /* vector in Resources */,
-				CE3564080EED998F005A823F /* vtkArrayIteratorTemplate.txx in Resources */,
-				CE3564090EED998F005A823F /* vtkArrayIteratorTemplateImplicit.txx in Resources */,
-				CE3564C70EED998F005A823F /* vtkDataArrayTemplate.txx in Resources */,
-				CE3564C80EED998F005A823F /* vtkDataArrayTemplateImplicit.txx in Resources */,
-				CE35661C0EED998F005A823F /* vtkImageIterator.txx in Resources */,
-				CE3566390EED998F005A823F /* vtkImageProgressIterator.txx in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
