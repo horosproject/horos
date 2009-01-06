@@ -835,6 +835,14 @@ static NSDate *lastWarningDate = nil;
 	
 	NS_DURING
 	
+	
+	if( [[previousDefaults valueForKey: @"FULL32BITPIPELINE"] intValue] != [defaults integerForKey: @"FULL32BITPIPELINE"])
+	{
+		if( [defaults integerForKey: @"FULL32BITPIPELINE"])
+		{
+			NSRunAlertPanel( NSLocalizedString( @"Full 32-bit OpenGL Pipeline", nil), NSLocalizedString( @"Warning. Full 32-bit OpenGL Pipeline is experimental and can produce image distortion with some graphic boards.", nil), NSLocalizedString( @"OK", nil), nil, nil);
+		}
+	}
 	if( [[previousDefaults valueForKey: @"DisplayDICOMOverlays"] intValue] != [defaults integerForKey: @"DisplayDICOMOverlays"])
 		revertViewer = YES;
 	if( [[previousDefaults valueForKey: @"ROITEXTNAMEONLY"] intValue] != [defaults integerForKey: @"ROITEXTNAMEONLY"])
