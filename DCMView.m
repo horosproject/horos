@@ -2088,37 +2088,43 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 - (void) switchCopySettingsInSeries:(id) sender
 {
-	ViewerController *v = [self windowController];
-	
 	COPYSETTINGSINSERIES = !COPYSETTINGSINSERIES;
 	
-	for( int i = 0 ; i < [v  maxMovieIndex]; i++)
+	for( ViewerController *v in [ViewerController getDisplayed2DViewers])
 	{
-		for( DCMPix *pix in [v pixList: i])
+		if( [[v imageView] seriesObj] == [self seriesObj])
 		{
-			[pix changeWLWW :curWL :curWW];
+			[v imageView].COPYSETTINGSINSERIES = COPYSETTINGSINSERIES;
 			
-			if( COPYSETTINGSINSERIES)
+			for( int i = 0 ; i < [v  maxMovieIndex]; i++)
 			{
-				[pix.imageObj setValue: nil forKey:@"windowWidth"];
-				[pix.imageObj setValue: nil forKey:@"windowLevel"];
-				[pix.imageObj setValue: nil forKey:@"scale"];
-				[pix.imageObj setValue: nil forKey:@"rotationAngle"];
-				[pix.imageObj setValue: nil forKey:@"yFlipped"];
-				[pix.imageObj setValue: nil forKey:@"xFlipped"];
-				[pix.imageObj setValue: nil forKey:@"xOffset"];
-				[pix.imageObj setValue: nil forKey:@"yOffset"];
-			}
-			else
-			{
-				[pix.imageObj setValue:[NSNumber numberWithFloat:curWW] forKey:@"windowWidth"];
-				[pix.imageObj setValue:[NSNumber numberWithFloat:curWL] forKey:@"windowLevel"];
-				[pix.imageObj setValue:[NSNumber numberWithFloat:scaleValue] forKey:@"scale"];
-				[pix.imageObj setValue:[NSNumber numberWithFloat:rotation] forKey:@"rotationAngle"];
-				[pix.imageObj setValue:[NSNumber numberWithBool:yFlipped] forKey:@"yFlipped"];
-				[pix.imageObj setValue:[NSNumber numberWithBool:yFlipped] forKey:@"xFlipped"];
-				[pix.imageObj setValue:[NSNumber numberWithFloat:origin.x] forKey:@"xOffset"];
-				[pix.imageObj setValue:[NSNumber numberWithFloat:origin.y] forKey:@"yOffset"];
+				for( DCMPix *pix in [v pixList: i])
+				{
+					[pix changeWLWW :curWL :curWW];
+					
+					if( COPYSETTINGSINSERIES)
+					{
+						[pix.imageObj setValue: nil forKey:@"windowWidth"];
+						[pix.imageObj setValue: nil forKey:@"windowLevel"];
+						[pix.imageObj setValue: nil forKey:@"scale"];
+						[pix.imageObj setValue: nil forKey:@"rotationAngle"];
+						[pix.imageObj setValue: nil forKey:@"yFlipped"];
+						[pix.imageObj setValue: nil forKey:@"xFlipped"];
+						[pix.imageObj setValue: nil forKey:@"xOffset"];
+						[pix.imageObj setValue: nil forKey:@"yOffset"];
+					}
+					else
+					{
+						[pix.imageObj setValue:[NSNumber numberWithFloat:curWW] forKey:@"windowWidth"];
+						[pix.imageObj setValue:[NSNumber numberWithFloat:curWL] forKey:@"windowLevel"];
+						[pix.imageObj setValue:[NSNumber numberWithFloat:scaleValue] forKey:@"scale"];
+						[pix.imageObj setValue:[NSNumber numberWithFloat:rotation] forKey:@"rotationAngle"];
+						[pix.imageObj setValue:[NSNumber numberWithBool:yFlipped] forKey:@"yFlipped"];
+						[pix.imageObj setValue:[NSNumber numberWithBool:yFlipped] forKey:@"xFlipped"];
+						[pix.imageObj setValue:[NSNumber numberWithFloat:origin.x] forKey:@"xOffset"];
+						[pix.imageObj setValue:[NSNumber numberWithFloat:origin.y] forKey:@"yOffset"];
+					}
+				}
 			}
 		}
 	}
@@ -2547,8 +2553,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 - (BOOL) shouldPropagate
 {	
-	if( ([[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"CR"] && IndependentCRWLWW) || COPYSETTINGSINSERIES == NO) return NO;
-	else return YES;
+//	if( ([[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"CR"] && IndependentCRWLWW) || COPYSETTINGSINSERIES == NO)
+//		return NO;
+//	else
+	return YES;
 }
 
 - (void)deleteROIGroupID:(NSTimeInterval)groupID {
@@ -5297,7 +5305,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	if( [self is2DViewer] )
 	{
 		//set value for Series Object Presentation State
-		if( curDCM.SUVConverted == NO) {
+		if( curDCM.SUVConverted == NO)
+		{
 			[[self seriesObj] setValue:[NSNumber numberWithFloat:curWW] forKey:@"windowWidth"];
 			[[self seriesObj] setValue:[NSNumber numberWithFloat:curWL] forKey:@"windowLevel"];
 			
@@ -5307,13 +5316,16 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				[[self imageObj] setValue:[NSNumber numberWithFloat:curWW] forKey:@"windowWidth"];
 				[[self imageObj] setValue:[NSNumber numberWithFloat:curWL] forKey:@"windowLevel"];
 			}
-			else {
+			else
+			{
 				[[self imageObj] setValue: nil forKey:@"windowWidth"];
 				[[self imageObj] setValue: nil forKey:@"windowLevel"];
 			}
 		}
-		else {
-			if( [self is2DViewer] == YES) {
+		else
+		{
+			if( [self is2DViewer] == YES)
+			{
 				[[self seriesObj] setValue:[NSNumber numberWithFloat:curWW / [[self windowController] factorPET2SUV]] forKey:@"windowWidth"];
 				[[self seriesObj] setValue:[NSNumber numberWithFloat:curWL / [[self windowController] factorPET2SUV]] forKey:@"windowLevel"];
 				
@@ -5323,7 +5335,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					[[self imageObj] setValue:[NSNumber numberWithFloat:curWW / [[self windowController] factorPET2SUV]] forKey:@"windowWidth"];
 					[[self imageObj] setValue:[NSNumber numberWithFloat:curWL / [[self windowController] factorPET2SUV]] forKey:@"windowLevel"];
 				}
-				else {
+				else
+				{
 					[[self imageObj] setValue: nil forKey:@"windowWidth"];
 					[[self imageObj] setValue: nil forKey:@"windowLevel"];
 				}
@@ -5377,7 +5390,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				[[self imageObj] setValue:[NSNumber numberWithFloat:curWW / [[self windowController] factorPET2SUV]] forKey:@"windowWidth"];
 				[[self imageObj] setValue:[NSNumber numberWithFloat:curWL / [[self windowController] factorPET2SUV]] forKey:@"windowLevel"];
 			}
-			else {
+			else
+			{
 				[[self imageObj] setValue: nil forKey:@"windowWidth"];
 				[[self imageObj] setValue: nil forKey:@"windowLevel"];
 			}
