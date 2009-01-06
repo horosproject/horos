@@ -110,7 +110,6 @@
     forTableColumn:(NSTableColumn *)aTableColumn
     row:(int)rowIndex
 {
-
 	NSMutableArray *hangingProtocolArray = [[[hangingProtocols objectForKey:modalityForHangingProtocols] mutableCopy] autorelease];
 	
 	NSParameterAssert(rowIndex >= 0 && rowIndex < [hangingProtocolArray count]);
@@ -166,7 +165,10 @@
 }
 
 - (IBAction)setModalityForHangingProtocols:(id)sender
-{	
+{
+	[hangingProtocolTableView validateEditing];
+	[hangingProtocolTableView reloadData];
+	
 	[modalityForHangingProtocols release];
 	
 	modalityForHangingProtocols = [[sender title] retain];
