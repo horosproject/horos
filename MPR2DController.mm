@@ -1224,7 +1224,8 @@ extern NSString * documentsDirectory();
 			free( data);
 		}
 		
-		[[BrowserController currentBrowser] checkIncoming: self];
+		[NSThread sleepForTimeInterval: 1];
+		[[BrowserController currentBrowser] checkIncomingNow: self];
 		
 		[[NSUserDefaults standardUserDefaults] setInteger: annotCopy forKey: @"ANNOTATIONS"];
 		[DCMView setDefaults];

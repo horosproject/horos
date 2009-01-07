@@ -638,7 +638,8 @@ typedef struct _xyzArray
 			[dcmSequence release];
 		}
 		
-		[[BrowserController currentBrowser] checkIncoming: self];
+		[NSThread sleepForTimeInterval: 1];
+		[[BrowserController currentBrowser] checkIncomingNow: self];
 		
 		[self restoreViewSizeAfterMatrix3DExport];
 	}

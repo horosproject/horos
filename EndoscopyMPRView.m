@@ -446,7 +446,8 @@ extern  short		annotations;
 		[(EndoscopyViewer*)[[self window] windowController] exportDICOMFile:sender];
 	}
 	
-	[[BrowserController currentBrowser] checkIncoming: self];
+	[NSThread sleepForTimeInterval: 1];
+	[[BrowserController currentBrowser] checkIncomingNow: self];
 }
 
 - (NSBitmapImageRep *)bitmapImageRepForCachingDisplayInRect:(NSRect)aRect

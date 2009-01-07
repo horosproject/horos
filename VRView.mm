@@ -33,6 +33,7 @@
 #import "DICOMExport.h"
 #import "DefaultsOsiriX.h" // for HotKeys
 #import "IChatTheatreDelegate.h"
+#import "DicomImage.h"
 
 #include "vtkMath.h"
 #include "vtkAbstractPropPicker.h"
@@ -918,16 +919,20 @@ public:
 	}
 }
 
-- (void) exportDCMCurrentImage
+- (NSMutableArray*) exportDCMCurrentImage
 {
-	long	width, height, spp, bpp;
-	float	o[ 9];
+	long width, height, spp, bpp;
+	float o[ 9];
+	NSString *sopuid = nil;
+	NSString *f = nil;
 	
 	if( exportDCM == nil) exportDCM = [[DICOMExport alloc] init];
 	
 	[self renderImageWithBestQuality: bestRenderingMode waitDialog: NO];
 	unsigned char *dataPtr = [self getRawPixels:&width :&height :&spp :&bpp :YES :YES];
 	[self endRenderImageWithBestQuality];
+	
+	NSMutableArray *producedFiles = [NSMutableArray array];
 	
 	if( dataPtr)
 	{
@@ -943,13 +948,17 @@ public:
 		if( aCamera->GetParallelProjection())
 			[exportDCM setPixelSpacing: [self getResolution] :[self getResolution]];
 		
-		NSString *f = [exportDCM writeDCMFile: nil];
+		f = [exportDCM writeDCMFile: nil];
 		if( f == nil) NSRunCriticalAlertPanel( NSLocalizedString(@"Error", nil),  NSLocalizedString( @"Error during the creation of the DICOM File!", nil), NSLocalizedString(@"OK", nil), nil, nil);
+		else sopuid = [exportDCM SOPInstanceUID];
 		
 		free( dataPtr);
 	}
 	
-	[[BrowserController currentBrowser] checkIncoming: self];
+	[NSThread sleepForTimeInterval: 1];
+	[[BrowserController currentBrowser] checkIncomingNow: self];
+	
+	return [NSDictionary dictionaryWithObjectsAndKeys: f, @"file", sopuid, @"SOPInstanceUID", nil];
 }
 
 #define DATABASEPATH @"/DATABASE.noindex/"
@@ -967,6 +976,8 @@ public:
 	if( [[dcmorientation selectedCell] tag] == 1) rotationOrientation = 1;
 	else rotationOrientation = 0;
 	
+	NSMutableArray *producedFiles = [NSMutableArray array];
+	
 	if( [sender tag])
 	{
 		[self setViewSizeToMatrix3DExport];
@@ -974,7 +985,7 @@ public:
 		// CURRENT image only
 		if( [[dcmExportMode selectedCell] tag] == 0)
 		{
-			[self exportDCMCurrentImage];
+			producedFiles = [self exportDCMCurrentImage];
 		}
 		// 4th dimension
 		else if( [[dcmExportMode selectedCell] tag] == 2)
@@ -993,8 +1004,6 @@ public:
 			
 			for( i = 0; i < [[[self window] windowController] movieFrames]; i++)
 			{
-				NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
-				
 				[[[self window] windowController] setMovieFrame: i];
 				
 				if( croppingBox->GetEnabled()) croppingBox->Off();
@@ -1022,7 +1031,9 @@ public:
 					[dcmSequence setPixelData: dataPtr samplePerPixel:spp bitsPerPixel:bpp width: width height: height];
 			//		[dcmSequence setPixelSpacing: 1 :1];
 					
-					[dcmSequence writeDCMFile: nil];
+					NSString *f = [dcmSequence writeDCMFile: nil];
+					if( f)
+						[producedFiles addObject: [NSDictionary dictionaryWithObjectsAndKeys: f, @"file", [dcmSequence SOPInstanceUID], @"SOPInstanceUID", nil]];
 					
 					free( dataPtr);
 				}
@@ -1030,8 +1041,6 @@ public:
 				[progress incrementBy: 1];
 				
 				[self resetAutorotate: self];
-				
-				[pool release];
 			}
 			
 			[progress close];
@@ -1039,7 +1048,8 @@ public:
 			
 			[dcmSequence release];
 			
-			[[BrowserController currentBrowser] checkIncoming: self];
+			[NSThread sleepForTimeInterval: 1];
+			[[BrowserController currentBrowser] checkIncomingNow: self];
 		}
 		else // A 3D sequence
 		{
@@ -1068,8 +1078,6 @@ public:
 			
 			for( i = 0; i < numberOfFrames; i++)
 			{
-				NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
-				
 				if( [[[self window] windowController] movieFrames] > 1)
 				{	
 					short movieIndex = i;
@@ -1097,7 +1105,9 @@ public:
 					if( aCamera->GetParallelProjection())
 						[dcmSequence setPixelSpacing: [self getResolution] :[self getResolution]];
 					
-					[dcmSequence writeDCMFile: nil];
+					NSString *f = [dcmSequence writeDCMFile: nil];
+					if( f)
+						[producedFiles addObject: [NSDictionary dictionaryWithObjectsAndKeys: f, @"file", [dcmSequence SOPInstanceUID], @"SOPInstanceUID", nil]];
 					
 					free( dataPtr);
 				}
@@ -1119,8 +1129,6 @@ public:
 						[self Vertical: (float) rotationValue / (float) numberOfFrames];
 					break;
 				}
-				
-				[pool release];
 			}
 			
 			[self endRenderImageWithBestQuality];
@@ -1129,8 +1137,45 @@ public:
 			[progress release];
 			
 			[dcmSequence release];
+		}
+		
+		[NSThread sleepForTimeInterval: 1];
+		[[BrowserController currentBrowser] checkIncomingNow: self];
+		
+		if( ([[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportSendToDICOMNode"] || [[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportMarkThemAsKeyImages"]) && [producedFiles count])
+		{
+			NSMutableArray *imagesForThisStudy = [NSMutableArray array];
 			
-			[[BrowserController currentBrowser] checkIncoming: self];
+			[[[BrowserController currentBrowser] managedObjectContext] lock];
+			
+			for( NSManagedObject *s in [[[[controller viewer2D] currentStudy] valueForKey: @"series"] allObjects])
+				[imagesForThisStudy addObjectsFromArray: [[s valueForKey: @"images"] allObjects]];
+			
+			[[[BrowserController currentBrowser] managedObjectContext] unlock];
+			
+			NSArray *sopArray = [producedFiles valueForKey: @"SOPInstanceUID"];
+			
+			NSMutableArray *objects = [NSMutableArray array];
+			for( NSString *sop in sopArray)
+			{
+				for( DicomImage *im in imagesForThisStudy)
+				{
+					if( [[im sopInstanceUID] isEqualToString: sop])
+						[objects addObject: im];
+				}
+			}
+			
+			if( [objects count] != [producedFiles count])
+				NSLog( @"WARNING !! [objects count] != [producedFiles count]");
+			
+			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportSendToDICOMNode"])
+				[[BrowserController currentBrowser] selectServer: objects];
+			
+			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportMarkThemAsKeyImages"])
+			{
+				for( DicomImage *im in objects)
+					[im setValue: [NSNumber numberWithBool: YES] forKey: @"isKeyImage"];
+			}
 		}
 		
 		[self restoreViewSizeAfterMatrix3DExport];

@@ -1063,7 +1063,8 @@ static NSString*	CenterlineToolbarItemIdentifier			= @"Centerline";
 		}
 	}
 	
-	[[BrowserController currentBrowser] checkIncoming: self];
+	[NSThread sleepForTimeInterval: 1];
+	[[BrowserController currentBrowser] checkIncomingNow: self];
 }
 
 -(unsigned char*) getRawPixels:(long*) width :(long*) height :(long*) spp :(long*) bpp

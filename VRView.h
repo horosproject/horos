@@ -346,7 +346,7 @@ typedef char* vtkMyCallbackVR;
 - (void) setCroppingBox:(double*) a;
 - (BOOL) croppingBox:(double*) a;
 
-- (void) exportDCMCurrentImage;
+- (NSMutableArray*) exportDCMCurrentImage;
 - (void) renderImageWithBestQuality: (BOOL) best waitDialog: (BOOL) wait;
 - (void) endRenderImageWithBestQuality;
 - (void) resetAutorotate:(id) sender;

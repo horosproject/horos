@@ -2337,7 +2337,8 @@ NSString * documentsDirectory();
 			[splash release];
 		}
 		
-		[[BrowserController currentBrowser] checkIncoming: self];
+		[NSThread sleepForTimeInterval: 1];
+		[[BrowserController currentBrowser] checkIncomingNow: self];
 	}
 }
 

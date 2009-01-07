@@ -6675,8 +6675,12 @@ static NSArray*	statesArray = nil;
 {
 	NSArray					*winList = [NSApp windows];
 	NSMutableArray			*viewersList = [[NSMutableArray alloc] initWithCapacity:0];
+	BOOL					applyToAllViewers = [[NSUserDefaults standardUserDefaults] boolForKey:@"nextSeriesToAllViewers"];
 	
-	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"nextSeriesToAllViewers"] )
+	if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask)
+		applyToAllViewers = !applyToAllViewers;
+	
+	if(  applyToAllViewers)
 	{
 		// If multiple viewer are opened, apply it to the entire list
 		for( NSWindow *win in winList )
@@ -6734,12 +6738,16 @@ static NSArray*	statesArray = nil;
 	NSManagedObjectContext	*context = self.managedObjectContext;
 	NSArray					*winList = [NSApp windows];
 	NSMutableArray			*viewersList = [[NSMutableArray alloc] initWithCapacity:0];
+	BOOL					applyToAllViewers = [[NSUserDefaults standardUserDefaults] boolForKey:@"nextSeriesToAllViewers"];
+	
+	if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask)
+		applyToAllViewers = !applyToAllViewers;
 	
 	if( [viewer FullScreenON]) [viewersList addObject: viewer];
 	else
 	{
 		// If multiple viewer are opened, apply it to the entire list
-		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"nextSeriesToAllViewers"])
+		if( applyToAllViewers)
 		{
 			for( NSWindow *win in winList )
 			{
