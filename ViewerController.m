@@ -5862,6 +5862,18 @@ static ViewerController *draggedController = nil;
 		[self matrixPreviewSelectCurrentSeries];
 	}
 	
+	
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"onlyDisplayImagesOfSamePatient"])
+	{
+		NSString *curPatientUID = [[fileList[0] objectAtIndex:0] valueForKeyPath:@"series.study.patientUID"];
+		
+		for( ViewerController *v in [ViewerController getDisplayed2DViewers])
+		{
+			if( [curPatientUID isEqualToString: [[[v fileList] objectAtIndex:0] valueForKeyPath:@"series.study.patientUID"]] == NO)
+				[[v window] close];
+		}
+	}
+	
 	// If same study, same patient and same orientation, try to go the same position (mm) if available
 	if( [previousStudyInstanceUID isEqualToString: [[fileList[0] objectAtIndex:0] valueForKeyPath:@"series.study.studyInstanceUID"]])
 	{
