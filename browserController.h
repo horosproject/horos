@@ -384,6 +384,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (IBAction)setTimeIntervalType: (id)sender;
 - (IBAction) endCustomInterval:(id) sender;
 - (IBAction) customIntervalNow:(id) sender;
+- (IBAction) saveDBListAs:(id) sender;
 - (IBAction) openDatabase:(id) sender;
 - (IBAction) createDatabase:(id) sender;
 - (void) openDatabaseIn:(NSString*) a Bonjour:(BOOL) isBonjour;

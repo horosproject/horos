@@ -6857,21 +6857,25 @@ static NSArray*	statesArray = nil;
 	return [self openViewerFromImages :[NSArray arrayWithObject: [self childrenArray: series]] movie: NO viewer :viewer keyImagesOnly:keyImages];
 }
 
-- (IBAction)copy: (id)sender
+- (NSString*) exportDBListOnlySelected:(BOOL) onlySelected
 {
-    NSPasteboard	*pb = [NSPasteboard generalPasteboard];
+	NSIndexSet *rowIndex;
 	
-	[pb declareTypes:[NSArray arrayWithObject:NSStringPboardType] owner:self];
+	if( onlySelected) rowIndex = [databaseOutline selectedRowIndexes];
+	else rowIndex = [NSIndexSet indexSetWithIndexesInRange: NSMakeRange( 0, [databaseOutline numberOfRows])];
 	
-	NSEnumerator		*rowEnumerator = [databaseOutline selectedRowEnumerator];
-	NSMutableString		*string = [NSMutableString string];
-	NSNumber			*row;
-	NSArray				*columns = [[databaseOutline tableColumns] valueForKey:@"identifier"];
-	NSArray				*descriptions = [[databaseOutline tableColumns] valueForKey:@"headerCell"];
+	NSMutableString	*string = [NSMutableString string];
+	NSNumber *row;
+	NSArray	*columns = [[databaseOutline tableColumns] valueForKey:@"identifier"];
+	NSArray	*descriptions = [[databaseOutline tableColumns] valueForKey:@"headerCell"];
+	int r;
 	
-	while (row = [rowEnumerator nextObject])
+	for( NSInteger x = 0; x < rowIndex.count; x++ )
 	{
-		NSManagedObject   *aFile = [databaseOutline itemAtRow:[row intValue]];
+		if( x == 0) r = rowIndex.firstIndex;
+		else r = [rowIndex indexGreaterThanIndex: r];
+		
+		NSManagedObject   *aFile = [databaseOutline itemAtRow: r];
 		
 		if( aFile)
 		{
@@ -6902,7 +6906,32 @@ static NSArray*	statesArray = nil;
 		}	
 	}
 	
+	return string;
+}
+
+- (IBAction) copy: (id)sender
+{
+    NSPasteboard	*pb = [NSPasteboard generalPasteboard];
+	
+	[pb declareTypes:[NSArray arrayWithObject:NSStringPboardType] owner:self];
+	
+	NSString *string = [self exportDBListOnlySelected: YES];
+	
 	[pb setString: string forType:NSStringPboardType];
+}
+
+- (IBAction) saveDBListAs:(id) sender
+{
+	NSString *list = [self exportDBListOnlySelected: NO];
+	
+	NSSavePanel *sPanel	= [NSSavePanel savePanel];
+		
+	[sPanel setRequiredFileType:@"csv"];
+	
+	if ([sPanel runModalForDirectory: nil file:NSLocalizedString(@"OsiriX Database List", nil)] == NSFileHandlingPanelOKButton)
+	{
+		[list writeToFile: [sPanel filename] atomically: YES];
+	}
 }
 
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
