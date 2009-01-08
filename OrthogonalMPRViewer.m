@@ -37,9 +37,6 @@ static NSString*	FlipVolumeToolbarItemIdentifier			= @"FlipData.tiff";
 static NSString*	VRPanelToolbarItemIdentifier			= @"MIP.tif";
 
 
-
-NSString * documentsDirectory();
-
 @implementation OrthogonalMPRViewer
 
 - (void) blendingPropagateOriginal:(OrthogonalMPRView*) sender
@@ -1163,11 +1160,11 @@ NSString * documentsDirectory();
 
 	bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
 
-	[bitmapData writeToFile:[documentsDirectory() stringByAppendingFormat:@"/TEMP/OsiriX.jpg"] atomically:YES];
+	[bitmapData writeToFile:[[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP/OsiriX.jpg"] atomically:YES];
 				
 	email = [[Mailer alloc] init];
 	
-	[email sendMail:@"--" to:@"--" subject:@"" isMIME:YES name:@"--" sendNow:NO image: [documentsDirectory() stringByAppendingFormat:@"/TEMP/OsiriX.jpg"]];
+	[email sendMail:@"--" to:@"--" subject:@"" isMIME:YES name:@"--" sendNow:NO image: [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP/OsiriX.jpg"]];
 	
 	[email release];
 }
@@ -1270,7 +1267,7 @@ NSString * documentsDirectory();
 	}
 }
 
-- (void) exportDICOMFileInt :(BOOL) screenCapture
+- (NSDictionary*) exportDICOMFileInt :(BOOL) screenCapture
 {
 	DCMPix *curPix = [[self keyView] curDCM];
 
@@ -1282,6 +1279,7 @@ NSString * documentsDirectory();
 	float	imOrigin[ 3], imSpacing[ 2];
 	int		offset;
 	BOOL	isSigned;
+	NSString *f = nil;
 	
 	[[NSUserDefaults standardUserDefaults] setInteger: annotGraphics forKey: @"ANNOTATIONS"];
 	[[NSUserDefaults standardUserDefaults] setInteger: barHide forKey: @"CLUTBARS"];
@@ -1318,7 +1316,7 @@ NSString * documentsDirectory();
 		[exportDCM setSigned: isSigned];
 		[exportDCM setOffset: offset];
 		
-		NSString *f = [exportDCM writeDCMFile: nil];
+		f = [exportDCM writeDCMFile: nil];
 		if( f == nil) NSRunCriticalAlertPanel( NSLocalizedString(@"Error", nil),  NSLocalizedString(@"Error during the creation of the DICOM File!", nil), NSLocalizedString(@"OK", nil), nil, nil);
 		
 		free( data);
@@ -1326,6 +1324,11 @@ NSString * documentsDirectory();
 	[[NSUserDefaults standardUserDefaults] setInteger: annotCopy forKey: @"ANNOTATIONS"];
 	[[NSUserDefaults standardUserDefaults] setInteger: clutBarsCopy forKey: @"CLUTBARS"];
 	[DCMView setDefaults];
+	
+	if( f)
+		return [NSDictionary dictionaryWithObjectsAndKeys: f, @"file", [exportDCM SOPInstanceUID], @"SOPInstanceUID", nil];
+	else
+		return nil;
 }
 
 -(IBAction) endExportDICOMFileSettings:(id) sender
@@ -1338,9 +1341,11 @@ NSString * documentsDirectory();
     
     if( [sender tag])   //User clicks OK Button
     {
+		NSMutableArray *producedFiles = [NSMutableArray array];
+	
 		if( [[dcmSelection selectedCell] tag] == 0)
 		{
-			[self exportDICOMFileInt: [[dcmFormat selectedCell] tag]];
+			[producedFiles addObject: [self exportDICOMFileInt: [[dcmFormat selectedCell] tag]]];
 		}
 		else
 		{
@@ -1412,7 +1417,7 @@ NSString * documentsDirectory();
 				[splitView display];
 				[view display];
 				
-				[self exportDICOMFileInt:[[dcmFormat selectedCell] tag] ];
+				[producedFiles addObject: [self exportDICOMFileInt:[[dcmFormat selectedCell] tag]]];
 				
 				[splash incrementBy: 1];
 				
@@ -1431,6 +1436,42 @@ NSString * documentsDirectory();
 		
 		[NSThread sleepForTimeInterval: 1];
 		[[BrowserController currentBrowser] checkIncomingNow: self];
+		
+		if( ([[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportSendToDICOMNode"] || [[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportMarkThemAsKeyImages"]) && [producedFiles count])
+		{
+			NSMutableArray *imagesForThisStudy = [NSMutableArray array];
+			
+			[[[BrowserController currentBrowser] managedObjectContext] lock];
+			
+			for( NSManagedObject *s in [[[viewer currentStudy] valueForKey: @"series"] allObjects])
+				[imagesForThisStudy addObjectsFromArray: [[s valueForKey: @"images"] allObjects]];
+			
+			[[[BrowserController currentBrowser] managedObjectContext] unlock];
+			
+			NSArray *sopArray = [producedFiles valueForKey: @"SOPInstanceUID"];
+			
+			NSMutableArray *objects = [NSMutableArray array];
+			for( NSString *sop in sopArray)
+			{
+				for( NSManagedObject *im in imagesForThisStudy)
+				{
+					if( [[im valueForKey: @"sopInstanceUID"] isEqualToString: sop])
+						[objects addObject: im];
+				}
+			}
+			
+			if( [objects count] != [producedFiles count])
+				NSLog( @"WARNING !! [objects count] != [producedFiles count]");
+			
+			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportSendToDICOMNode"])
+				[[BrowserController currentBrowser] selectServer: objects];
+			
+			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportMarkThemAsKeyImages"])
+			{
+				for( NSManagedObject *im in objects)
+					[im setValue: [NSNumber numberWithBool: YES] forKey: @"isKeyImage"];
+			}
+		}
 	}
 }
 

@@ -13,23 +13,11 @@
 =========================================================================*/
 
 
-/*
-
-MODIFICATION HISTORY
-
-	20051212	JH	Created.
-	20060110	DDP	Reducing the variable duplication of userDefault objects (work in progress).
-
-  
-*/
-
 #import "EndoscopyVRController.h"
 #import "EndoscopyFlyThruController.h"
 #import "DCMView.h"
 #import "ROI.h"
 #import "VRView.h"
-
-extern NSString * documentsDirectory();
 
 @implementation EndoscopyVRController
 

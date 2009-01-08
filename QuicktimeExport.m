@@ -16,8 +16,7 @@
 #import "QuicktimeExport.h"
 #import "Wait.h"
 #import "WaitRendering.h"
-
-NSString * documentsDirectory();
+#import "BrowserController.h"
 
 @implementation QuicktimeExport
 
@@ -453,10 +452,10 @@ NSString * documentsDirectory();
 	{
 		result = NSFileHandlingPanelOKButton;
 		
-		[[NSFileManager defaultManager] removeFileAtPath: [documentsDirectory() stringByAppendingFormat:@"/TEMP/IPHOTO/"] handler: nil];
-		[[NSFileManager defaultManager] createDirectoryAtPath: [documentsDirectory() stringByAppendingFormat:@"/TEMP/IPHOTO/"] attributes: nil];
+		[[NSFileManager defaultManager] removeFileAtPath: [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP/IPHOTO/"] handler: nil];
+		[[NSFileManager defaultManager] createDirectoryAtPath: [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP/IPHOTO/"] attributes: nil];
 		
-		fileName = [documentsDirectory() stringByAppendingFormat:@"/TEMP/OsiriXMovie.mov"];
+		fileName = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP/OsiriXMovie.mov"];
 	}
 	else
 	{
@@ -526,7 +525,7 @@ NSString * documentsDirectory();
 				}
 				else
 				{
-					NSString *curFile = [documentsDirectory() stringByAppendingFormat:@"/TEMP/IPHOTO/OsiriX-%4d.jpg", curSample];
+					NSString *curFile = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP/IPHOTO/OsiriX-%4d.jpg", curSample];
 					
 					NSData *bitmapData = [NSBitmapImageRep representationOfImageRepsInArray: [im representations] usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
 					[bitmapData writeToFile:curFile atomically:YES];

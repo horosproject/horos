@@ -12,9 +12,6 @@
      PURPOSE.
 =========================================================================*/
 
-
-
-
 #import "MPR2DController.h"
 #import "MPR2DView.h"
 #import "DCMView.h"
@@ -27,13 +24,6 @@
 #import "iPhoto.h"
 #import "DICOMExport.h"
 #import "DicomImage.h"
-
-extern "C"
-{
-extern BrowserController *browserWindow;
-extern NSString * documentsDirectory();
-extern NSString* convertDICOM( NSString *inputfile);
-}
 
 static	BOOL EXPORT2IPHOTO = NO;
 
@@ -52,9 +42,12 @@ static NSString*	MovieToolbarItemIdentifier		= @"Movie";
 static NSString*	ExportToolbarItemIdentifier		= @"Export.icns";
 static NSString*	MailToolbarItemIdentifier		= @"Mail.icns";
 
-extern NSString * documentsDirectory();
-
 @implementation MPR2DController
+
+- (ViewerController*) viewer
+{
+	return viewerController;
+}
 
 - (IBAction) roiDeleteAll:(id) sender
 {
@@ -128,7 +121,7 @@ extern NSString * documentsDirectory();
 		if( EXPORT2IPHOTO)
 		{
 			iPhoto *ifoto = [[iPhoto alloc] init];
-			[ifoto importIniPhoto: [NSArray arrayWithObject:[documentsDirectory() stringByAppendingFormat:@"/TEMP/IPHOTO/"]]];
+			[ifoto importIniPhoto: [NSArray arrayWithObject:[[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP/IPHOTO/"]]];
 			[ifoto release];
 		}
 	}
@@ -552,7 +545,7 @@ extern NSString * documentsDirectory();
 
 -(void) save3DState
 {
-	NSString		*path = [documentsDirectory() stringByAppendingPathComponent:STATEDATABASE];
+	NSString		*path = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:STATEDATABASE];
 	BOOL			isDir = YES;
 	
 	if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && isDir)
@@ -568,7 +561,7 @@ extern NSString * documentsDirectory();
 
 -(void) load3DState
 {
-	NSString		*path = [documentsDirectory() stringByAppendingPathComponent:STATEDATABASE];
+	NSString		*path = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:STATEDATABASE];
 	BOOL			isDir = YES;
 	
 	if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && isDir)
@@ -1104,6 +1097,8 @@ extern NSString * documentsDirectory();
 		else export4DData = YES;
 	}
 	
+	NSMutableArray *producedFiles = [NSMutableArray array];
+	
 	if( export4DData)
 	{
 		long	annotCopy = [[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"];
@@ -1161,7 +1156,11 @@ extern NSString * documentsDirectory();
 				[[view finalView] getWLWW:&cwl :&cww];
 				[dcmSequence setDefaultWWWL: (long) cww : (long) cwl];
 				
-				[dcmSequence writeDCMFile: nil];
+				NSString *f = [dcmSequence writeDCMFile: nil];
+				
+				if( f)
+					[producedFiles addObject: [NSDictionary dictionaryWithObjectsAndKeys: f, @"file", [dcmSequence SOPInstanceUID], @"SOPInstanceUID", nil]];
+				
 				free( data);
 			}
 			
@@ -1220,15 +1219,53 @@ extern NSString * documentsDirectory();
 			
 			NSString *f = [exportDCM writeDCMFile: nil];
 			if( f == nil) NSRunCriticalAlertPanel( NSLocalizedString(@"Error", nil),  NSLocalizedString( @"Error during the creation of the DICOM File!", nil), NSLocalizedString(@"OK", nil), nil, nil);
-			
+			if( f)
+				[producedFiles addObject: [NSDictionary dictionaryWithObjectsAndKeys: f, @"file", [exportDCM SOPInstanceUID], @"SOPInstanceUID", nil]];
+				
 			free( data);
 		}
 		
-		[NSThread sleepForTimeInterval: 1];
-		[[BrowserController currentBrowser] checkIncomingNow: self];
-		
 		[[NSUserDefaults standardUserDefaults] setInteger: annotCopy forKey: @"ANNOTATIONS"];
 		[DCMView setDefaults];
+	}
+		
+	[NSThread sleepForTimeInterval: 1];
+	[[BrowserController currentBrowser] checkIncomingNow: self];
+	
+	if( ([[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportSendToDICOMNode"] || [[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportMarkThemAsKeyImages"]) && [producedFiles count])
+	{
+		NSMutableArray *imagesForThisStudy = [NSMutableArray array];
+		
+		[[[BrowserController currentBrowser] managedObjectContext] lock];
+		
+		for( NSManagedObject *s in [[[viewerController currentStudy] valueForKey: @"series"] allObjects])
+			[imagesForThisStudy addObjectsFromArray: [[s valueForKey: @"images"] allObjects]];
+		
+		[[[BrowserController currentBrowser] managedObjectContext] unlock];
+		
+		NSArray *sopArray = [producedFiles valueForKey: @"SOPInstanceUID"];
+		
+		NSMutableArray *objects = [NSMutableArray array];
+		for( NSString *sop in sopArray)
+		{
+			for( NSManagedObject *im in imagesForThisStudy)
+			{
+				if( [[im valueForKey: @"sopInstanceUID"] isEqualToString: sop])
+					[objects addObject: im];
+			}
+		}
+		
+		if( [objects count] != [producedFiles count])
+			NSLog( @"WARNING !! [objects count] != [producedFiles count]");
+		
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportSendToDICOMNode"])
+			[[BrowserController currentBrowser] selectServer: objects];
+		
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportMarkThemAsKeyImages"])
+		{
+			for( NSManagedObject *im in objects)
+				[im setValue: [NSNumber numberWithBool: YES] forKey: @"isKeyImage"];
+		}
 	}
 }
 
@@ -1253,10 +1290,10 @@ extern NSString * documentsDirectory();
 		
 		bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
 		
-		[bitmapData writeToFile:[documentsDirectory() stringByAppendingFormat:@"/TEMP/OsiriX.jpg"] atomically:YES];
+		[bitmapData writeToFile:[[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP/OsiriX.jpg"] atomically:YES];
 		
 		ifoto = [[iPhoto alloc] init];
-		[ifoto importIniPhoto: [NSArray arrayWithObject:[documentsDirectory() stringByAppendingFormat:@"/TEMP/OsiriX.jpg"]]];
+		[ifoto importIniPhoto: [NSArray arrayWithObject:[[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP/OsiriX.jpg"]]];
 		[ifoto release];
 	}
 	else [self exportQuicktime: sender];

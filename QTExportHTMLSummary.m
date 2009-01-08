@@ -16,8 +16,6 @@
 #import "AppController.h"
 #import "BrowserController.h"
 
-extern NSString *documentsDirectory();
-
 @implementation QTExportHTMLSummary
 
 +(NSString*)nonNilString:(NSString*)aString;
@@ -66,11 +64,11 @@ extern NSString *documentsDirectory();
 - (void)readTemplates;
 {
 	[AppController checkForHTMLTemplates];
-	patientsListTemplate = [[NSString stringWithContentsOfFile:[documentsDirectory() stringByAppendingFormat:@"/HTML_TEMPLATES/QTExportPatientsTemplate.html"]] retain];
+	patientsListTemplate = [[NSString stringWithContentsOfFile:[[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/HTML_TEMPLATES/QTExportPatientsTemplate.html"]] retain];
 	[AppController checkForHTMLTemplates];
-	examsListTemplate = [[NSString stringWithContentsOfFile:[documentsDirectory() stringByAppendingFormat:@"/HTML_TEMPLATES/QTExportStudiesTemplate.html"]] retain];
+	examsListTemplate = [[NSString stringWithContentsOfFile:[[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/HTML_TEMPLATES/QTExportStudiesTemplate.html"]] retain];
 	[AppController checkForHTMLTemplates];
-	seriesTemplate = [[NSString stringWithContentsOfFile:[documentsDirectory() stringByAppendingFormat:@"/HTML_TEMPLATES/QTExportSeriesTemplate.html"]] retain];
+	seriesTemplate = [[NSString stringWithContentsOfFile:[[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/HTML_TEMPLATES/QTExportSeriesTemplate.html"]] retain];
 }
 
 - (NSString*)fillPatientsListTemplates;
@@ -309,7 +307,7 @@ extern NSString *documentsDirectory();
 - (void)createHTMLExtraDirectory;
 {
 	NSFileManager *fileManager = [NSFileManager defaultManager];
-	NSString *htmlExtraDirectory = [documentsDirectory() stringByAppendingPathComponent:@"/HTML_TEMPLATES/html-extra/"];
+	NSString *htmlExtraDirectory = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:@"/HTML_TEMPLATES/html-extra/"];
 	//if([directoryContent count])
 	[fileManager copyPath:htmlExtraDirectory toPath:[rootPath stringByAppendingPathComponent:@"/html-extra/"] handler:NO];
 }

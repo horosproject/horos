@@ -26,8 +26,6 @@
 
 // BY DEFAULT OSIRIX USES 8780 PORT
 
-extern NSString * documentsDirectory();
-
 #include <netdb.h>
 #include <unistd.h>
 #include <netinet/in.h>
@@ -421,7 +419,7 @@ static char *GetPrivateIP()
 					
 					while ( [data length] < pos + fileSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
 					
-					NSString	*incomingFolder = [documentsDirectory() stringByAppendingPathComponent:@"/INCOMING.noindex"];
+					NSString	*incomingFolder = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:@"/INCOMING.noindex"];
 					NSString	*dstPath;
 					
 					int index = [NSDate timeIntervalSinceReferenceDate];
@@ -608,7 +606,7 @@ static char *GetPrivateIP()
 								}
 								else if( [[key pathComponents] count] == 1)
 								{
-									value = [[documentsDirectory() stringByAppendingPathComponent: @"/REPORTS/"] stringByAppendingPathComponent: [value lastPathComponent]];
+									value = [[[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent: @"/REPORTS/"] stringByAppendingPathComponent: [value lastPathComponent]];
 								}
 							}
 							
@@ -744,7 +742,7 @@ static char *GetPrivateIP()
 				// We read the data
 				while ( [data length] < pos + dataSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
 				
-				NSString	*localpath = [[documentsDirectory() stringByAppendingPathComponent: @"/REPORTS/"] stringByAppendingPathComponent: [path lastPathComponent]];
+				NSString	*localpath = [[[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent: @"/REPORTS/"] stringByAppendingPathComponent: [path lastPathComponent]];
 				
 				[[NSFileManager defaultManager] removeFileAtPath: localpath handler:nil];
 				[[data subdataWithRange: NSMakeRange(pos,dataSize)] writeToFile: localpath atomically:YES];

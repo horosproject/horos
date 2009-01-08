@@ -12,12 +12,7 @@
      PURPOSE.
 =========================================================================*/
 
-
-
-
 #import "DicomDirParser.h"
-
-NSString * documentsDirectory();
 
 @implementation DicomDirParser
 

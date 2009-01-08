@@ -11,6 +11,7 @@
      the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
      PURPOSE.
 =========================================================================*/
+
 #import "SRController.h"
 #import "DCMView.h"
 #import "iPhoto.h"
@@ -19,13 +20,7 @@
 #import "ROI.h"
 #import "ROIVolumeManagerController.h"
 #import "ROIVolume.h"
-
-//#define roi3Dvolume
-
-extern "C"
-{
-extern NSString * documentsDirectory();
-}
+#import "BrowserController.h"
 
 static NSString* 	MIPToolbarIdentifier				= @"SR Toolbar Identifier";
 static NSString*	QTExportToolbarItemIdentifier		= @"QTExport.icns";
@@ -46,12 +41,12 @@ static NSString*	ExportToolbarItemIdentifier			= @"Export.icns";
 static NSString*	OrientationsViewToolbarItemIdentifier		= @"OrientationsView";
 static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorView";
 
-//static NSString*	LODToolbarItemIdentifier		= @"LOD";
-//static NSString*	BlendingToolbarItemIdentifier   = @"2DBlending";
-
-
-
 @implementation SRController
+
+- (ViewerController*) viewer
+{
+	return viewer2D;
+}
 
 - (IBAction) roiDeleteAll:(id) sender
 {
@@ -824,10 +819,10 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 	
 	bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
 	
-	[bitmapData writeToFile:[documentsDirectory() stringByAppendingFormat:@"/TEMP/OsiriX.jpg"] atomically:YES];
+	[bitmapData writeToFile:[[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP/OsiriX.jpg"] atomically:YES];
 	
 	ifoto = [[iPhoto alloc] init];
-	[ifoto importIniPhoto: [NSArray arrayWithObject:[documentsDirectory() stringByAppendingFormat:@"/TEMP/OsiriX.jpg"]]];
+	[ifoto importIniPhoto: [NSArray arrayWithObject:[[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP/OsiriX.jpg"]]];
 	[ifoto release];
 }
 

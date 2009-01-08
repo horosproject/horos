@@ -1021,6 +1021,8 @@ static NSString*	CenterlineToolbarItemIdentifier			= @"Centerline";
 	[exportDCMWindow orderOut:sender];
 	[NSApp endSheet:exportDCMWindow returnCode:[sender tag]];
 	
+	NSMutableArray *producedFiles = [NSMutableArray array];
+	
 	if ([exportDCMViewsChoice selectedTag] == 0)
 	{
 		// export the 4 views
@@ -1044,6 +1046,9 @@ static NSString*	CenterlineToolbarItemIdentifier			= @"Centerline";
 			
 			NSString *f = [exportDCM writeDCMFile: nil];
 			if( f == nil) NSRunCriticalAlertPanel( NSLocalizedString(@"Error", nil),  NSLocalizedString( @"Error during the creation of the DICOM File!", nil), NSLocalizedString(@"OK", nil), nil, nil);
+			if( f)
+				[producedFiles addObject: [NSDictionary dictionaryWithObjectsAndKeys: f, @"file", [exportDCM SOPInstanceUID], @"SOPInstanceUID", nil]];
+			
 			free(dataPtr);
 		}
 	}
@@ -1054,7 +1059,7 @@ static NSString*	CenterlineToolbarItemIdentifier			= @"Centerline";
 		if ([currentFocusedView isEqualTo:[vrController view]])
 		{
 			// 3D view
-			[(VRView*)currentFocusedView exportDCMCurrentImage];
+			[producedFiles addObject: [(VRView*)currentFocusedView exportDCMCurrentImage]];
 		}
 		else
 		{
@@ -1065,6 +1070,42 @@ static NSString*	CenterlineToolbarItemIdentifier			= @"Centerline";
 	
 	[NSThread sleepForTimeInterval: 1];
 	[[BrowserController currentBrowser] checkIncomingNow: self];
+	
+	if( ([[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportSendToDICOMNode"] || [[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportMarkThemAsKeyImages"]) && [producedFiles count])
+	{
+		NSMutableArray *imagesForThisStudy = [NSMutableArray array];
+		
+		[[[BrowserController currentBrowser] managedObjectContext] lock];
+		
+		for( NSManagedObject *s in [[[[mprController viewer] currentStudy] valueForKey: @"series"] allObjects])
+			[imagesForThisStudy addObjectsFromArray: [[s valueForKey: @"images"] allObjects]];
+		
+		[[[BrowserController currentBrowser] managedObjectContext] unlock];
+		
+		NSArray *sopArray = [producedFiles valueForKey: @"SOPInstanceUID"];
+		
+		NSMutableArray *objects = [NSMutableArray array];
+		for( NSString *sop in sopArray)
+		{
+			for( NSManagedObject *im in imagesForThisStudy)
+			{
+				if( [[im valueForKey: @"sopInstanceUID"] isEqualToString: sop])
+					[objects addObject: im];
+			}
+		}
+		
+		if( [objects count] != [producedFiles count])
+			NSLog( @"WARNING !! [objects count] != [producedFiles count]");
+		
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportSendToDICOMNode"])
+			[[BrowserController currentBrowser] selectServer: objects];
+		
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportMarkThemAsKeyImages"])
+		{
+			for( NSManagedObject *im in objects)
+				[im setValue: [NSNumber numberWithBool: YES] forKey: @"isKeyImage"];
+		}
+	}
 }
 
 -(unsigned char*) getRawPixels:(long*) width :(long*) height :(long*) spp :(long*) bpp

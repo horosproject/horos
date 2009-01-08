@@ -12,9 +12,6 @@
      PURPOSE.
 =========================================================================*/
 
-
-
-
 #import <Cocoa/Cocoa.h>
 #import "DCMPix.h"
 #import "ColorTransferView.h"

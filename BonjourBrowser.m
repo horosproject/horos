@@ -36,7 +36,6 @@ static NSLock *resolveServiceThreadLock = nil;
 
 #define OSIRIXRUNMODE @"OsiriXLoopMode"
 
-extern NSString			*documentsDirectory();
 extern NSThread			*mainThread;
 
 volatile static BOOL threadIsRunning = NO;
@@ -74,7 +73,7 @@ static char *GetPrivateIP()
 	
 	NSMutableString	*destPath = [NSMutableString string];
 	
-	[destPath appendString:documentsDirectory()];
+	[destPath appendString:[[BrowserController currentBrowser] documentsDirectory]];
 	[destPath appendString:@"/TEMP/"];
 	[destPath appendString: [str lastPathComponent]];
 
@@ -85,7 +84,7 @@ static char *GetPrivateIP()
 {
 	NSString	*uniqueFileName = [NSString stringWithFormat:@"%@-%@-%@-%d.%@", [image valueForKeyPath:@"series.study.patientUID"], [image valueForKey:@"sopInstanceUID"], [[image valueForKey:@"path"] lastPathComponent], [[image valueForKey:@"instanceNumber"] intValue], [image valueForKey:@"extension"]];
 	
-	NSString	*dicomFileName = [[documentsDirectory() stringByAppendingPathComponent:@"/TEMP/"] stringByAppendingPathComponent: [DicomFile NSreplaceBadCharacter:uniqueFileName]];
+	NSString	*dicomFileName = [[[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:@"/TEMP/"] stringByAppendingPathComponent: [DicomFile NSreplaceBadCharacter:uniqueFileName]];
 
 	return dicomFileName;
 }
@@ -1823,7 +1822,7 @@ static char *GetPrivateIP()
 	
 	for( id loopItem in roisPaths)
 	{
-		NSString	*local = [[documentsDirectory() stringByAppendingPathComponent:@"/TEMP/"] stringByAppendingPathComponent: loopItem];
+		NSString	*local = [[[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:@"/TEMP/"] stringByAppendingPathComponent: loopItem];
 		 
 		if( [[NSFileManager defaultManager] fileExistsAtPath: local] == NO)
 		{
@@ -1928,7 +1927,7 @@ static char *GetPrivateIP()
 - (NSString *) databaseFilePathForService:(NSString*) name
 {
 	NSMutableString *filePath = [NSMutableString stringWithCapacity:0];
-	[filePath appendString:documentsDirectory()];
+	[filePath appendString:[[BrowserController currentBrowser] documentsDirectory]];
 	[filePath appendString:@"/TEMP/"];
 	[filePath appendString:[name stringByAppendingString:@".sql"]];
 	return filePath;

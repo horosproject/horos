@@ -36,8 +36,6 @@ static NSString*	WLWWToolbarItemIdentifier					= @"WLWW";
 static NSString*	VRPanelToolbarItemIdentifier				= @"MIP.tif";
 static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 
-NSString * documentsDirectory();
-
 @implementation OrthogonalMPRPETCTViewer
 
 - (void) CloseViewerNotification: (NSNotification*) note
@@ -2002,11 +2000,11 @@ NSString * documentsDirectory();
 
 	bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
 
-	[bitmapData writeToFile:[documentsDirectory() stringByAppendingFormat:@"/TEMP/OsiriX.jpg"] atomically:YES];
+	[bitmapData writeToFile:[[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP/OsiriX.jpg"] atomically:YES];
 				
 	email = [[Mailer alloc] init];
 	
-	[email sendMail:@"--" to:@"--" subject:@"" isMIME:YES name:@"--" sendNow:NO image: [documentsDirectory() stringByAppendingFormat:@"/TEMP/OsiriX.jpg"]];
+	[email sendMail:@"--" to:@"--" subject:@"" isMIME:YES name:@"--" sendNow:NO image: [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP/OsiriX.jpg"]];
 	
 	[email release];
 }
@@ -2109,12 +2107,12 @@ NSString * documentsDirectory();
 	}
 }
 
-- (void) exportDICOMFileInt :(BOOL) screenCapture
+- (NSDictionary*) exportDICOMFileInt :(BOOL) screenCapture
 {
-	[self exportDICOMFileInt:screenCapture view:[self keyView]];
+	return [self exportDICOMFileInt:screenCapture view:[self keyView]];
 }
 
-- (void) exportDICOMFileInt :(BOOL) screenCapture view:(DCMView*) curView
+- (NSDictionary*) exportDICOMFileInt :(BOOL) screenCapture view:(DCMView*) curView
 {
 	DCMPix *curPix = [curView curDCM];
 	long	annotCopy		= [[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"],
@@ -2124,6 +2122,7 @@ NSString * documentsDirectory();
 	float	o[ 9], imOrigin[ 3], imSpacing[ 2];
 	BOOL	isSigned;
 	int     offset;
+	NSString *f = nil;
 	
 	[[NSUserDefaults standardUserDefaults] setInteger: annotGraphics forKey: @"ANNOTATIONS"];
 	[[NSUserDefaults standardUserDefaults] setInteger: barHide forKey: @"CLUTBARS"];
@@ -2166,6 +2165,11 @@ NSString * documentsDirectory();
 	[[NSUserDefaults standardUserDefaults] setInteger: annotCopy forKey: @"ANNOTATIONS"];
 	[[NSUserDefaults standardUserDefaults] setInteger: clutBarsCopy forKey: @"CLUTBARS"];
 	[DCMView setDefaults];
+	
+	if( f)
+		return [NSDictionary dictionaryWithObjectsAndKeys: f, @"file", [exportDCM SOPInstanceUID], @"SOPInstanceUID", nil];
+	else
+		return nil;
 }
 
 -(IBAction) endExportDICOMFileSettings:(id) sender
@@ -2178,11 +2182,13 @@ NSString * documentsDirectory();
     
     if( [sender tag])   //User clicks OK Button
     {
+		NSMutableArray *producedFiles = [NSMutableArray array];
+		
 		if( [[dcmSelection selectedCell] tag] == 0) // current image only
 		{
 			if([dcmExport3Modalities state]==NSOffState)
 			{
-				[self exportDICOMFileInt: YES];//[[dcmFormat selectedCell] tag]];
+				[producedFiles addObject: [self exportDICOMFileInt: YES]];
 			}
 			else
 			{
@@ -2194,29 +2200,29 @@ NSString * documentsDirectory();
 				if ([[self keyView] isEqualTo:[[[self keyView] controller] originalView]])
 				{
 					[exportDCM setSeriesNumber:nCT];
-					[self exportDICOMFileInt: YES view:[[self CTController] originalView]];
+					[producedFiles addObject: [self exportDICOMFileInt: YES view:[[self CTController] originalView]]];
 					[exportDCM setSeriesNumber:nPETCT];
-					[self exportDICOMFileInt: YES view:[[self PETCTController] originalView]];
+					[producedFiles addObject: [self exportDICOMFileInt: YES view:[[self PETCTController] originalView]]];
 					[exportDCM setSeriesNumber:nPET];
-					[self exportDICOMFileInt: YES view:[[self PETController] originalView]];
+					[producedFiles addObject: [self exportDICOMFileInt: YES view:[[self PETController] originalView]]];
 				}
 				else if ([[self keyView] isEqualTo:[[[self keyView] controller] xReslicedView]])
 				{
 					[exportDCM setSeriesNumber:nCT];
-					[self exportDICOMFileInt: YES view:[[self CTController] xReslicedView]];
+					[producedFiles addObject: [self exportDICOMFileInt: YES view:[[self CTController] xReslicedView]]];
 					[exportDCM setSeriesNumber:nPETCT];
-					[self exportDICOMFileInt: YES view:[[self PETCTController] xReslicedView]];
+					[producedFiles addObject: [self exportDICOMFileInt: YES view:[[self PETCTController] xReslicedView]]];
 					[exportDCM setSeriesNumber:nPET];
-					[self exportDICOMFileInt: YES view:[[self PETController] xReslicedView]];
+					[producedFiles addObject: [self exportDICOMFileInt: YES view:[[self PETController] xReslicedView]]];
 				}
 				else if ([[self keyView] isEqualTo:[[[self keyView] controller] yReslicedView]])
 				{
 					[exportDCM setSeriesNumber:nCT];
-					[self exportDICOMFileInt: YES view:[[self CTController] yReslicedView]];
+					[producedFiles addObject: [self exportDICOMFileInt: YES view:[[self CTController] yReslicedView]]];
 					[exportDCM setSeriesNumber:nPETCT];
-					[self exportDICOMFileInt: YES view:[[self PETCTController] yReslicedView]];
+					[producedFiles addObject: [self exportDICOMFileInt: YES view:[[self PETCTController] yReslicedView]]];
 					[exportDCM setSeriesNumber:nPET];
-					[self exportDICOMFileInt: YES view:[[self PETController] yReslicedView]];
+					[producedFiles addObject: [self exportDICOMFileInt: YES view:[[self PETController] yReslicedView]]];
 				}
 			}
 		}
@@ -2299,7 +2305,7 @@ NSString * documentsDirectory();
 					[modalitySplitView display];
 					
 					NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-					[self exportDICOMFileInt: YES];
+					[producedFiles addObject: [self exportDICOMFileInt: YES]];
 					[pool release];
 					
 					[splash incrementBy: 1];
@@ -2319,11 +2325,11 @@ NSString * documentsDirectory();
 					
 					NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 					[exportDCM setSeriesNumber:nCT];
-					[self exportDICOMFileInt: YES view:viewCT];
+					[producedFiles addObject: [self exportDICOMFileInt: YES view:viewCT]];
 					[exportDCM setSeriesNumber:nPETCT];
-					[self exportDICOMFileInt: YES view:viewPETCT];
+					[producedFiles addObject: [self exportDICOMFileInt: YES view:viewPETCT]];
 					[exportDCM setSeriesNumber:nPET];
-					[self exportDICOMFileInt: YES view:viewPET];
+					[producedFiles addObject: [self exportDICOMFileInt: YES view:viewPET]];
 					[pool release];
 					
 					[splash incrementBy: 1];
@@ -2339,6 +2345,42 @@ NSString * documentsDirectory();
 		
 		[NSThread sleepForTimeInterval: 1];
 		[[BrowserController currentBrowser] checkIncomingNow: self];
+		
+		if( ([[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportSendToDICOMNode"] || [[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportMarkThemAsKeyImages"]) && [producedFiles count])
+		{
+			NSMutableArray *imagesForThisStudy = [NSMutableArray array];
+			
+			[[[BrowserController currentBrowser] managedObjectContext] lock];
+			
+			for( NSManagedObject *s in [[[viewer currentStudy] valueForKey: @"series"] allObjects])
+				[imagesForThisStudy addObjectsFromArray: [[s valueForKey: @"images"] allObjects]];
+			
+			[[[BrowserController currentBrowser] managedObjectContext] unlock];
+			
+			NSArray *sopArray = [producedFiles valueForKey: @"SOPInstanceUID"];
+			
+			NSMutableArray *objects = [NSMutableArray array];
+			for( NSString *sop in sopArray)
+			{
+				for( NSManagedObject *im in imagesForThisStudy)
+				{
+					if( [[im valueForKey: @"sopInstanceUID"] isEqualToString: sop])
+						[objects addObject: im];
+				}
+			}
+			
+			if( [objects count] != [producedFiles count])
+				NSLog( @"WARNING !! [objects count] != [producedFiles count]");
+			
+			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportSendToDICOMNode"])
+				[[BrowserController currentBrowser] selectServer: objects];
+			
+			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportMarkThemAsKeyImages"])
+			{
+				for( NSManagedObject *im in objects)
+					[im setValue: [NSNumber numberWithBool: YES] forKey: @"isKeyImage"];
+			}
+		}
 	}
 }
 

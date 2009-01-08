@@ -919,7 +919,7 @@ public:
 	}
 }
 
-- (NSMutableArray*) exportDCMCurrentImage
+- (NSDictionary*) exportDCMCurrentImage
 {
 	long width, height, spp, bpp;
 	float o[ 9];
@@ -985,7 +985,7 @@ public:
 		// CURRENT image only
 		if( [[dcmExportMode selectedCell] tag] == 0)
 		{
-			producedFiles = [self exportDCMCurrentImage];
+			[producedFiles addObject: [self exportDCMCurrentImage]];
 		}
 		// 4th dimension
 		else if( [[dcmExportMode selectedCell] tag] == 2)

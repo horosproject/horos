@@ -31,12 +31,6 @@
 #import "CLUTOpacityView.h"
 #import "VRPresetPreview.h"
 
-extern "C"
-{
-extern BrowserController *browserWindow;
-extern NSString * documentsDirectory();
-extern NSString* convertDICOM( NSString *inputfile);
-}
 
 static NSString* 	VRStandardToolbarIdentifier		= @"VR Toolbar Identifier";
 static NSString* 	VRPanelToolbarIdentifier		= @"VRPanel Toolbar Identifier";
@@ -808,7 +802,7 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 
 -(void) save3DState
 {
-	NSString		*path = [documentsDirectory() stringByAppendingPathComponent:STATEDATABASE];
+	NSString		*path = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:STATEDATABASE];
 	BOOL			isDir = YES;
 	
 	if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && isDir)
@@ -836,7 +830,7 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 
 -(void) load3DState
 {
-	NSString		*path = [documentsDirectory() stringByAppendingPathComponent:STATEDATABASE];
+	NSString		*path = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:STATEDATABASE];
 	BOOL			isDir = YES;
 	long			i;
 	
@@ -2108,10 +2102,10 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 	
 	bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
 	
-	[bitmapData writeToFile:[documentsDirectory() stringByAppendingFormat:@"/TEMP/OsiriX.jpg"] atomically:YES];
+	[bitmapData writeToFile:[[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP/OsiriX.jpg"] atomically:YES];
 	
 	ifoto = [[iPhoto alloc] init];
-	[ifoto importIniPhoto: [NSArray arrayWithObject:[documentsDirectory() stringByAppendingFormat:@"/TEMP/OsiriX.jpg"]]];
+	[ifoto importIniPhoto: [NSArray arrayWithObject:[[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP/OsiriX.jpg"]]];
 	[ifoto release];
 }
 

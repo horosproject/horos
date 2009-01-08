@@ -69,6 +69,7 @@
 - (void) sendMailImage: (NSImage*) im;
 - (ViewerController*) blendingController;
 - (id) view;
+- (ViewerController*) viewer;
 
 - (void) setWLWW: (float) wl : (float) ww;
 - (void) getWLWW: (float*) wl : (float*) ww;

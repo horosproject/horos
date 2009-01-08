@@ -522,6 +522,8 @@ typedef struct _xyzArray
 	if( [[dcmorientation selectedCell] tag] == 1) rotationOrientation = 1;
 	else rotationOrientation = 0;
 	
+	NSMutableArray *producedFiles = [NSMutableArray array];
+	
 	if( [sender tag])
 	{
 		[self setViewSizeToMatrix3DExport];
@@ -554,6 +556,9 @@ typedef struct _xyzArray
 				
 				NSString *f = [exportDCM writeDCMFile: nil];
 				if( f == nil) NSRunCriticalAlertPanel( NSLocalizedString(@"Error", nil),  NSLocalizedString( @"Error during the creation of the DICOM File!", nil), NSLocalizedString(@"OK", nil), nil, nil);
+				
+				if( f)
+					[producedFiles addObject: [NSDictionary dictionaryWithObjectsAndKeys: f, @"file", [exportDCM SOPInstanceUID], @"SOPInstanceUID", nil]];
 				
 				free( dataPtr);
 			}
@@ -604,7 +609,10 @@ typedef struct _xyzArray
 //					if( aCamera->GetParallelProjection())
 //						[dcmSequence setPixelSpacing: [self getResolution] :[self getResolution]];
 					
-					[dcmSequence writeDCMFile: nil];
+					NSString *f = [dcmSequence writeDCMFile: nil];
+					
+					if( f)
+						[producedFiles addObject: [NSDictionary dictionaryWithObjectsAndKeys: f, @"file", [exportDCM SOPInstanceUID], @"SOPInstanceUID", nil]];
 					
 					free( dataPtr);
 				}
@@ -640,6 +648,42 @@ typedef struct _xyzArray
 		
 		[NSThread sleepForTimeInterval: 1];
 		[[BrowserController currentBrowser] checkIncomingNow: self];
+		
+		if( ([[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportSendToDICOMNode"] || [[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportMarkThemAsKeyImages"]) && [producedFiles count])
+		{
+			NSMutableArray *imagesForThisStudy = [NSMutableArray array];
+			
+			[[[BrowserController currentBrowser] managedObjectContext] lock];
+			
+			for( NSManagedObject *s in [[[[controller viewer2D] currentStudy] valueForKey: @"series"] allObjects])
+				[imagesForThisStudy addObjectsFromArray: [[s valueForKey: @"images"] allObjects]];
+			
+			[[[BrowserController currentBrowser] managedObjectContext] unlock];
+			
+			NSArray *sopArray = [producedFiles valueForKey: @"SOPInstanceUID"];
+			
+			NSMutableArray *objects = [NSMutableArray array];
+			for( NSString *sop in sopArray)
+			{
+				for( NSManagedObject *im in imagesForThisStudy)
+				{
+					if( [[im valueForKey: @"sopInstanceUID"] isEqualToString: sop])
+						[objects addObject: im];
+				}
+			}
+			
+			if( [objects count] != [producedFiles count])
+				NSLog( @"WARNING !! [objects count] != [producedFiles count]");
+			
+			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportSendToDICOMNode"])
+				[[BrowserController currentBrowser] selectServer: objects];
+			
+			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportMarkThemAsKeyImages"])
+			{
+				for( NSManagedObject *im in objects)
+					[im setValue: [NSNumber numberWithBool: YES] forKey: @"isKeyImage"];
+			}
+		}
 		
 		[self restoreViewSizeAfterMatrix3DExport];
 	}

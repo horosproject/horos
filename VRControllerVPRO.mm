@@ -12,18 +12,6 @@
      PURPOSE.
 =========================================================================*/
 
-
-
-/*
-
-MODIFICATION HISTORY
-
-	20060110	DDP	Reducing the variable duplication of userDefault objects (work in progress).
-
-  
-*/
-
-
 #import "VRControllerVPRO.h"
 #import "DCMView.h"
 #import "dicomFile.h"
@@ -33,14 +21,6 @@ MODIFICATION HISTORY
 #import "Accelerate.h"
 #import "iPhoto.h"
 #import "VRViewVPRO.h"
-
-
-extern "C"
-{
-extern BrowserController *browserWindow;
-extern NSString * documentsDirectory();
-extern NSString* convertDICOM( NSString *inputfile);
-}
 
 static NSString* 	MIPToolbarIdentifier				= @"VRPRO Toolbar Identifier";
 static NSString*	QTExportToolbarItemIdentifier		= @"QTExport.icns";
@@ -505,7 +485,7 @@ static NSString*	ModeToolbarItemIdentifier			= @"Mode";
 
 -(void) save3DState
 {
-	NSString		*path = [documentsDirectory() stringByAppendingPathComponent:STATEDATABASE];
+	NSString		*path = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:STATEDATABASE];
 	BOOL			isDir = YES;
 	long			i;
 	
@@ -525,7 +505,7 @@ static NSString*	ModeToolbarItemIdentifier			= @"Mode";
 
 -(void) load3DState
 {
-	NSString		*path = [documentsDirectory() stringByAppendingPathComponent:STATEDATABASE];
+	NSString		*path = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:STATEDATABASE];
 	BOOL			isDir = YES;
 	long			i;
 	
@@ -1568,10 +1548,10 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 	
 	bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
 	
-	[bitmapData writeToFile:[documentsDirectory() stringByAppendingFormat:@"/TEMP/OsiriX.jpg"] atomically:YES];
+	[bitmapData writeToFile:[[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP/OsiriX.jpg"] atomically:YES];
 	
 	ifoto = [[iPhoto alloc] init];
-	[ifoto importIniPhoto: [NSArray arrayWithObject:[documentsDirectory() stringByAppendingFormat:@"/TEMP/OsiriX.jpg"]]];
+	[ifoto importIniPhoto: [NSArray arrayWithObject:[[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP/OsiriX.jpg"]]];
 	[ifoto release];
 }
 

@@ -12,7 +12,7 @@
      PURPOSE.
 =========================================================================*/
 
-
+#import "BrowserController.h"
 #import "Window3DController.h"
 #import "Mailer.h"
 #import "Papyrus3/Papyrus3.h"
@@ -22,10 +22,12 @@
 #import "printView.h"
 #import "VRView.h"
 
-extern NSString* convertDICOM( NSString *inputfile);
-extern NSString * documentsDirectory();
-
 @implementation Window3DController
+
+- (ViewerController*) viewer
+{
+	return nil;
+}
 
 - (BOOL)validateMenuItem:(NSMenuItem *)item
 {
@@ -170,11 +172,11 @@ extern NSString * documentsDirectory();
 
 	bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
 
-	[bitmapData writeToFile:[documentsDirectory() stringByAppendingFormat:@"/TEMP/OsiriX.jpg"] atomically:YES];
+	[bitmapData writeToFile:[[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP/OsiriX.jpg"] atomically:YES];
 				
 	email = [[Mailer alloc] init];
 	
-	[email sendMail:@"--" to:@"--" subject:@"" isMIME:YES name:@"--" sendNow:NO image: [documentsDirectory() stringByAppendingFormat:@"/TEMP/OsiriX.jpg"]];
+	[email sendMail:@"--" to:@"--" subject:@"" isMIME:YES name:@"--" sendNow:NO image: [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP/OsiriX.jpg"]];
 	
 	[email release];
 }

@@ -158,10 +158,7 @@ static NSMenu *opacityPresetsMenu = nil;
 static NSNotification *lastMenuNotification = nil;
 volatile static int totalNumberOfLoadingThreads = 0;
 
-int numberOf2DViewer = 0;
-
-NSString * documentsDirectory();
-NSString* convertDICOM( NSString *inputfile);
+static int numberOf2DViewer = 0;
 
 // compares the names of 2 ROIs.
 // using the option NSNumericSearch => "Point 1" < "Point 5" < "Point 21".
@@ -9614,12 +9611,10 @@ short				matrix[25];
 	DefaultROINames = rn;
 }
 
-extern NSString * documentsDirectory();
-
 #define ROIDATABASE @"/ROIs/"
 - (void) loadROI:(long) mIndex
 {
-	NSString		*path = [documentsDirectory() stringByAppendingPathComponent:ROIDATABASE];
+	NSString		*path = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:ROIDATABASE];
 	BOOL			isDir = YES;
 	long			i, x;
 	NSMutableArray  *array;
@@ -9718,7 +9713,7 @@ extern NSString * documentsDirectory();
 
 - (void) saveROI:(long) mIndex
 {
-	NSString		*path = [documentsDirectory() stringByAppendingPathComponent:ROIDATABASE];
+	NSString		*path = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:ROIDATABASE];
 	BOOL			isDir = YES, toBeSaved = NO;
 	int				i;
 	
@@ -15372,11 +15367,11 @@ int i,j,l;
 //
 //	bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
 //
-//	[bitmapData writeToFile:[documentsDirectory() stringByAppendingFormat:@"/TEMP/OsiriX.jpg"] atomically:YES];
+//	[bitmapData writeToFile:[[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP/OsiriX.jpg"] atomically:YES];
 //				
 //	email = [[Mailer alloc] init];
 //	
-//	[email sendMail:@"--" to:@"--" subject:@"" isMIME:YES name:@"--" sendNow:NO image: [documentsDirectory() stringByAppendingFormat:@"/TEMP/OsiriX.jpg"]];
+//	[email sendMail:@"--" to:@"--" subject:@"" isMIME:YES name:@"--" sendNow:NO image: [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP/OsiriX.jpg"]];
 //	
 //	[email release];
 }
@@ -15400,7 +15395,7 @@ int i,j,l;
 	NSFileManager *fileManager = [NSFileManager defaultManager];
 	
 	//check if the folder PAGES exists in OsiriX document folder
-	NSString *pathToPAGES = [documentsDirectory() stringByAppendingPathComponent:@"/PAGES/"];
+	NSString *pathToPAGES = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:@"/PAGES/"];
 	if (!([fileManager fileExistsAtPath:pathToPAGES]))
 	[fileManager createDirectoryAtPath:pathToPAGES attributes:nil];
 
@@ -15648,8 +15643,8 @@ int i,j,l;
 		
 		if( pathOK == YES)
 		{
-			[[NSFileManager defaultManager] removeFileAtPath: [documentsDirectory() stringByAppendingFormat:@"/TEMP/EXPORT/"] handler:nil];
-			[[NSFileManager defaultManager] createDirectoryAtPath: [documentsDirectory() stringByAppendingFormat:@"/TEMP/EXPORT/"] attributes:nil];
+			[[NSFileManager defaultManager] removeFileAtPath: [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP/EXPORT/"] handler:nil];
+			[[NSFileManager defaultManager] createDirectoryAtPath: [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP/EXPORT/"] attributes:nil];
 		
 			int fileIndex;
 			
@@ -15700,7 +15695,7 @@ int i,j,l;
 					{
 						bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
 
-						NSString *jpegFile = [documentsDirectory() stringByAppendingFormat:@"/TEMP/EXPORT/%4.4d.jpg", fileIndex++];
+						NSString *jpegFile = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP/EXPORT/%4.4d.jpg", fileIndex++];
 						
 						[bitmapData writeToFile: jpegFile atomically:YES];
 						
@@ -15737,7 +15732,7 @@ int i,j,l;
 				}
 			}
 			
-			NSString *root = [documentsDirectory() stringByAppendingFormat:@"/TEMP/EXPORT/"];
+			NSString *root = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP/EXPORT/"];
 			
 			if( [[imageFormat selectedCell] tag] == 2) // iPhoto
 			{
@@ -15777,7 +15772,7 @@ int i,j,l;
 				NSAppleEventDescriptor *listComments = [NSAppleEventDescriptor listDescriptor];
 				
 				int f = 0;
-				NSString *root = [documentsDirectory() stringByAppendingFormat:@"/TEMP/EXPORT/"];
+				NSString *root = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP/EXPORT/"];
 				NSArray *files = [[NSFileManager defaultManager] contentsOfDirectoryAtPath: root error: nil];
 				for( int x = 0; x < [files count] ; x++)
 				{
@@ -15848,7 +15843,7 @@ int i,j,l;
 //				{
 //					bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
 //					
-//					NSString *jpegFile = [documentsDirectory() stringByAppendingFormat:@"/TEMP/OsiriX.jpg"];
+//					NSString *jpegFile = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP/OsiriX.jpg"];
 //					
 //					[bitmapData writeToFile: jpegFile atomically:YES];
 //					

@@ -12,8 +12,6 @@
      PURPOSE.
 =========================================================================*/
 
-extern NSString				*documentsDirectory();
-
 #import "Reports.h"
 #import "DicomFile.h"
 #import "OsiriX/DCM.h"
@@ -111,7 +109,7 @@ static id aedesc_to_id(AEDesc *desc)
 		[file appendFormat: @"%c", NSTabCharacter];
 	}
 	
-	NSString	*path = [documentsDirectory() stringByAppendingFormat:@"/TEMP/Report.txt"];
+	NSString	*path = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP/Report.txt"];
 	
 	[[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
 	
@@ -161,7 +159,7 @@ static id aedesc_to_id(AEDesc *desc)
 {
 	NSString	*sourceData = [self generateReportSourceData: study];
 	
-	[[NSWorkspace sharedWorkspace] openFile:[documentsDirectory() stringByAppendingFormat:@"/ReportTemplate.doc"] withApplication:@"Microsoft Word" andDeactivate:NO];
+	[[NSWorkspace sharedWorkspace] openFile:[[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/ReportTemplate.doc"] withApplication:@"Microsoft Word" andDeactivate:NO];
 	
 	NSMutableString *s = [NSMutableString stringWithCapacity:1000];
 
@@ -196,7 +194,7 @@ static id aedesc_to_id(AEDesc *desc)
 //			BOOL failed = NO;
 //			
 //			
-//			if( [[NSFileManager defaultManager] movePath:[documentsDirectory() stringByAppendingFormat:@"/OsiriX-temp-report.doc"] toPath:destinationFile handler: nil] == NO)
+//			if( [[NSFileManager defaultManager] movePath:[[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/OsiriX-temp-report.doc"] toPath:destinationFile handler: nil] == NO)
 //			{
 //				char	s[1024];
 //				FSSpec	spec;
@@ -225,7 +223,7 @@ static id aedesc_to_id(AEDesc *desc)
 		case 1:
 		{
 			NSString	*destinationFile = [NSString stringWithFormat:@"%@%@.%@", path, uniqueFilename, @"rtf"];
-			[[NSFileManager defaultManager] copyPath:[documentsDirectory() stringByAppendingFormat:@"/ReportTemplate.rtf"] toPath:destinationFile handler: nil];
+			[[NSFileManager defaultManager] copyPath:[[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/ReportTemplate.rtf"] toPath:destinationFile handler: nil];
 			
 			NSDictionary                *attr;
 			NSMutableAttributedString	*rtf = [[NSMutableAttributedString alloc] initWithRTF: [NSData dataWithContentsOfFile:destinationFile] documentAttributes:&attr];

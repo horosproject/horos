@@ -4042,7 +4042,7 @@ public:
 //	
 //	bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
 //	
-//	[bitmapData writeToFile:[documentsDirectory() stringByAppendingFormat:@"/TEMP/VPRO.jpg"] atomically:YES];
+//	[bitmapData writeToFile:[[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP/VPRO.jpg"] atomically:YES];
 //	
 //	[image release];
 	

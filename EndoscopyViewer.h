@@ -27,7 +27,8 @@
 */
 
 
-@interface EndoscopyViewer : OSIWindowController {
+@interface EndoscopyViewer : OSIWindowController
+{
 	IBOutlet OrthogonalMPRController	*mprController;
 	IBOutlet EndoscopyVRController		*vrController;
 	NSMutableArray						*pixList;
@@ -48,8 +49,6 @@
 	IBOutlet NSTextField				*exportDCMSeriesName;
 	
 	BOOL								exportAllViews;
-	
-
 }
 
 
