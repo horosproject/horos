@@ -4924,10 +4924,12 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					
 					if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name UTF8String]);
 					
-					if( ROITEXTNAMEONLY == NO ) {
+					if( ROITEXTNAMEONLY == NO )
+					{
 						if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
 						
-						if( pixelSpacingX != 0 && pixelSpacingY != 0 ) {
+						if( pixelSpacingX != 0 && pixelSpacingY != 0 )
+						{
 							if([self Area] *pixelSpacingX*pixelSpacingY < 1.)
 								sprintf (line2, "Area: %0.1f %cm2", [self Area] *pixelSpacingX*pixelSpacingY * 1000000.0, 0xB5);
 							else
@@ -4960,7 +4962,8 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 							length = 0;
 							long i;
 							
-							for( i = 0; i < [splinePoints count]-1; i++ ) {
+							for( i = 0; i < [splinePoints count]-1; i++ )
+							{
 								length += [self Length:[[splinePoints objectAtIndex:i] point] :[[splinePoints objectAtIndex:i+1] point]];
 							}
 							length += [self Length:[[splinePoints objectAtIndex:i] point] :[[splinePoints objectAtIndex:0] point]];
@@ -4978,17 +4981,19 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			else if( type == tOPolygon)
 			{
 				line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0; line6[0] = 0;
-				if( self.isTextualDataDisplayed && prepareTextualData) {
+				if( self.isTextualDataDisplayed && prepareTextualData)
+				{
 					NSPoint tPt = self.lowerRightPoint;
 					float   length;
 					
 					if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name UTF8String]);
 					
-					if( ROITEXTNAMEONLY == NO ) {
-						
+					if( ROITEXTNAMEONLY == NO )
+					{
 						if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
 						
-						if( pixelSpacingX != 0 && pixelSpacingY != 0 ) {
+						if( pixelSpacingX != 0 && pixelSpacingY != 0 )
+						{
 							if ([self Area] *pixelSpacingX*pixelSpacingY < 1.)
 								sprintf (line2, "Area: %0.1f %cm2", [self Area] *pixelSpacingX*pixelSpacingY * 1000000.0, 0xB5);
 							else
@@ -5020,7 +5025,8 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 						else
 						{
 							length = 0;
-							for( long i = 0; i < [splinePoints count]-1; i++ ) {
+							for( long i = 0; i < [splinePoints count]-1; i++ )
+							{
 								length += [self Length:[[splinePoints objectAtIndex:i] point] :[[splinePoints objectAtIndex:i+1] point]];
 							}
 							
@@ -5028,6 +5034,53 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 								sprintf (line5, "L: %0.1f %cm", length * 10000.0, 0xB5);
 							else
 								sprintf (line5, "Length: %0.3f cm", length);
+							
+							
+							// 3D Length
+							if( curView && pixelSpacingX != 0 && pixelSpacingY != 0)
+							{
+								NSArray *zPosArray = [self zPositions];
+					
+								if( [zPosArray count])
+								{
+									int zPos = [[zPosArray objectAtIndex:0] intValue];
+									for( int i = 1; i < [zPosArray count]; i++)
+									{
+										if( zPos != [[zPosArray objectAtIndex:i] intValue])
+										{
+											if( [zPosArray count] != [points count])
+												NSLog( @"***** [zPosArray count] != [points count]");
+											
+											double sliceInterval = [[self pix] sliceInterval];
+											
+											// Compute 3D distance between each points
+											double distance3d = 0;
+											for( i = 1; i < [points count]-1; i++)
+											{
+												double x[ 3];
+												double y[ 3];
+												
+												
+												x[ 0] = [[points objectAtIndex:i] point].x * pixelSpacingX;
+												x[ 1] = [[points objectAtIndex:i] point].y * pixelSpacingY;
+												x[ 2] = [[zPosArray objectAtIndex:i] intValue] * sliceInterval;
+												
+												y[ 0] = [[points objectAtIndex:i-1] point].x * pixelSpacingX;
+												y[ 1] = [[points objectAtIndex:i-1] point].y * pixelSpacingY;
+												y[ 2] = [[zPosArray objectAtIndex:i-1] intValue] * sliceInterval;
+												
+												distance3d += sqrt((x[0]-y[0])*(x[0]-y[0]) + (x[1]-y[1])*(x[1]-y[1]) +  (x[2]-y[2])*(x[2]-y[2]));
+											}
+											
+											if (length < .1)
+												sprintf (line6, "3D L: %0.1f %cm", distance3d * 10000.0, 0xB5);
+											else
+												sprintf (line6, "3D Length: %0.3f cm", distance3d);
+											break;
+										}
+									}
+								}
+							}
 						}
 					}
 					
