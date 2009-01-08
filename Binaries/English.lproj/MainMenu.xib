@@ -8,6 +8,7 @@
 		<string key="IBDocument.HIToolboxVersion">353.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
+			<integer value="11762"/>
 			<integer value="13734"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
@@ -7234,7 +7235,7 @@ AQAAAA4QAAVDRVNUAENFVAAAAAEBAAABAQ</bytes>
 				<string key="NSWindowContentMaxSize">{3.40282e+38, 3.40282e+38}</string>
 				<string key="NSWindowContentMinSize">{213, 107}</string>
 				<object class="NSView" key="NSWindowView" id="718837428">
-					<nil key="NSNextResponder"/>
+					<reference key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<object class="NSMutableArray" key="NSSubviews">
 						<bool key="EncodedWithXMLCoder">YES</bool>
@@ -7392,8 +7393,25 @@ AQAAAA4QAAVDRVNUAENFVAAAAAEBAAABAQ</bytes>
 								<reference key="NSTextColor" ref="941865959"/>
 							</object>
 						</object>
+						<object class="NSTextField" id="602877314">
+							<reference key="NSNextResponder" ref="718837428"/>
+							<int key="NSvFlags">268</int>
+							<string key="NSFrame">{{320, 254}, {254, 14}}</string>
+							<reference key="NSSuperview" ref="718837428"/>
+							<bool key="NSEnabled">YES</bool>
+							<object class="NSTextFieldCell" key="NSCell" id="254747942">
+								<int key="NSCellFlags">68288064</int>
+								<int key="NSCellFlags2">71435264</int>
+								<string key="NSContents">SQL Query is at Study Level </string>
+								<reference key="NSSupport" ref="26"/>
+								<reference key="NSControlView" ref="602877314"/>
+								<reference key="NSBackgroundColor" ref="762861948"/>
+								<reference key="NSTextColor" ref="851111990"/>
+							</object>
+						</object>
 					</object>
 					<string key="NSFrameSize">{591, 303}</string>
+					<reference key="NSSuperview"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1440, 878}}</string>
 				<string key="NSMinSize">{213, 129}</string>
@@ -15984,6 +16002,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 							<reference ref="1000355454"/>
 							<reference ref="457294566"/>
 							<reference ref="826528958"/>
+							<reference ref="602877314"/>
 						</object>
 						<reference key="parent" ref="1051249471"/>
 					</object>
@@ -17950,6 +17969,20 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						<reference key="object" ref="652206794"/>
 						<reference key="parent" ref="152609316"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">13737</int>
+						<reference key="object" ref="602877314"/>
+						<object class="NSMutableArray" key="children">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<reference ref="254747942"/>
+						</object>
+						<reference key="parent" ref="718837428"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">13738</int>
+						<reference key="object" ref="254747942"/>
+						<reference key="parent" ref="602877314"/>
+					</object>
 				</object>
 			</object>
 			<object class="NSMutableDictionary" key="flattenedProperties">
@@ -19111,6 +19144,8 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<string>13668.ImportedFromIB2</string>
 					<string>13734.IBPluginDependency</string>
 					<string>13734.ImportedFromIB2</string>
+					<string>13737.IBPluginDependency</string>
+					<string>13738.IBPluginDependency</string>
 					<string>1400.IBEditorWindowLastContentRect</string>
 					<string>1400.IBPluginDependency</string>
 					<string>1400.ImportedFromIB2</string>
@@ -19646,9 +19681,9 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
-					<string>{{0, 1242}, {591, 303}}</string>
+					<string>{{851, 305}, {591, 303}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{0, 1242}, {591, 303}}</string>
+					<string>{{851, 305}, {591, 303}}</string>
 					<reference ref="9"/>
 					<string>{{208, 553}, {591, 303}}</string>
 					<reference ref="8"/>
@@ -20511,6 +20546,8 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>{{588, 1045}, {423, 673}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
@@ -20775,7 +20812,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">13736</int>
+			<int key="maxID">13738</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">

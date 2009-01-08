@@ -6877,7 +6877,7 @@ static NSArray*	statesArray = nil;
 		
 		NSManagedObject   *aFile = [databaseOutline itemAtRow: r];
 		
-		if( aFile)
+		if( aFile && [[[aFile entity] name] isEqual:@"Study"])
 		{
 			if( [string length])
 				[string appendString: @"\r"];
@@ -6926,7 +6926,7 @@ static NSArray*	statesArray = nil;
 	
 	NSSavePanel *sPanel	= [NSSavePanel savePanel];
 		
-	[sPanel setRequiredFileType:@"csv"];
+	[sPanel setRequiredFileType:@"txt"];
 	
 	if ([sPanel runModalForDirectory: nil file:NSLocalizedString(@"OsiriX Database List", nil)] == NSFileHandlingPanelOKButton)
 	{
