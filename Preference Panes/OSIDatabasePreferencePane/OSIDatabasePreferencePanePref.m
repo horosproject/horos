@@ -25,6 +25,7 @@ Version 2.4
 #import "PreferencePaneController.h"
 #import "PreferencePaneControllerDCMTK.h"
 #import "PluginManager.h"
+#import "BrowserController.h"
 
 @implementation OSIDatabasePreferencePanePref
 
@@ -234,6 +235,11 @@ Version 2.4
 // {
 //	[[NSUserDefaults standardUserDefaults] setBool:[sender state] forKey:@"KeepStudiesOfSamePatientTogether"];
 // }
+
+- (IBAction)regenerateAutoComments:(id) sender
+{
+	[[BrowserController currentBrowser] regenerateAutoComments: sender];
+}
 
 - (IBAction) setAutoComments:(id) sender
 {

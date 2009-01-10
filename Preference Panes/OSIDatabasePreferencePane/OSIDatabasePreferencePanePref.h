@@ -58,6 +58,7 @@
 - (IBAction)databaseCleaning:(id)sender;
 - (IBAction)setSeriesOrder:(id)sender;
 - (IBAction)setAutoComments:(id) sender;
+- (IBAction)regenerateAutoComments:(id) sender;
 - (IBAction)setReportMode:(id) sender;
 - (IBAction) resetDate:(id) sender;
 - (IBAction) resetDateOfBirth:(id) sender;

@@ -405,6 +405,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (void)executeAutorouting: (NSArray *)newImages;
 - (void) resetListenerTimer;
 - (IBAction) smartAlbumHelpButton:(id) sender;
+- (IBAction) regenerateAutoComments:(id) sender;
 
 - (NSArray*) addFilesToDatabase:(NSArray*) newFilesArray;
 - (NSArray*) addFilesAndFolderToDatabase:(NSArray*) filenames;

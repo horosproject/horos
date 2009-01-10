@@ -1704,6 +1704,81 @@ static NSArray*	statesArray = nil;
 #pragma mark-
 #pragma mark Database functions
 
+- (IBAction) regenerateAutoComments:(id) sender;
+{
+	Wait *splash = [[Wait alloc] initWithString: NSLocalizedString(@"Regenerate Auto Comments...", nil)];
+		
+	[splash showWindow:self];
+	
+	[splash setCancel: YES];
+	
+	NSManagedObjectContext *context = self.managedObjectContext;
+	
+	[context lock];
+	
+	// Find all studies
+	NSFetchRequest	*dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+	[dbRequest setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"Study"]];
+	[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
+	
+	NSError *error = nil;
+	NSArray *studiesArray = [context executeFetchRequest:dbRequest error:&error];
+	
+	[studiesArray setValue: 0L forKey: @"comment"];
+	
+	// Find all series
+	dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+	[dbRequest setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"Series"]];
+	[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
+	error = nil;
+	
+	NSArray *seriesArray = [context executeFetchRequest:dbRequest error:&error];
+	
+	[[splash progress] setMaxValue: [seriesArray count]];
+	
+	for( NSManagedObject *series in seriesArray )
+	{
+		@try
+		{
+			NSManagedObject *o = [[series valueForKey:@"images"] anyObject];
+			
+			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"COMMENTSAUTOFILL"])
+			{			
+				DicomFile	*dcm = [[DicomFile alloc] init: [o valueForKey:@"completePath"]];
+				
+				if( dcm)
+				{
+					if( [dcm elementForKey:@"commentsAutoFill"])
+					{
+						[series setValue: [dcm elementForKey: @"commentsAutoFill"] forKey:@"comment"];
+						
+						NSManagedObject *study = [series valueForKey: @"study"];
+						
+						if( [study valueForKey:@"comment"] == nil || [[study valueForKey:@"comment"] isEqualToString:@""])
+							[study setValue: [dcm elementForKey: @"commentsAutoFill"] forKey:@"comment"];
+					}
+					else [series setValue: 0L forKey:@"comment"];
+				}
+				
+				[dcm release];
+			}
+			else [series setValue: 0L forKey:@"comment"];
+		}
+		@catch ( NSException *e)
+		{
+			NSLog( @"regenerateAutoComments exception : %@", e);
+		}
+		
+		[splash incrementBy:1];
+	}
+	[context unlock];
+	
+	[self outlineViewRefresh];
+	
+	[splash close];
+	[splash release];
+}
+
 - (NSTimeInterval) databaseLastModification
 {
 	if( databaseLastModification == 0) databaseLastModification = [NSDate timeIntervalSinceReferenceDate];

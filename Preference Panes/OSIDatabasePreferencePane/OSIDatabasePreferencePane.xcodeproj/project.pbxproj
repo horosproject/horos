@@ -16,6 +16,7 @@
 		8D202CF40486D31800D8A456 /* PreferencePanes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F506C035013D953901CA16C8 /* PreferencePanes.framework */; };
 		AB58E34A0E41AC80001D3885 /* PluginManager.h in Headers */ = {isa = PBXBuildFile; fileRef = AB58E3490E41AC80001D3885 /* PluginManager.h */; };
 		AB80A1860A19C39700FED357 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB80A1850A19C39700FED357 /* Security.framework */; };
+		CE057CEC0F190CF100E7EA76 /* browserController.h in Headers */ = {isa = PBXBuildFile; fileRef = CE057CEB0F190CF100E7EA76 /* browserController.h */; };
 		CE75CA4B0A23AAFA00D22E9E /* PreferencePaneController.h in Headers */ = {isa = PBXBuildFile; fileRef = CE75CA4A0A23AAFA00D22E9E /* PreferencePaneController.h */; };
 		CECD02AE0D035A7D00A661C5 /* PreferencePaneControllerDCMTK.h in Headers */ = {isa = PBXBuildFile; fileRef = CECD02AD0D035A7D00A661C5 /* PreferencePaneControllerDCMTK.h */; };
 		CEE2B55C0C8871E9003038D3 /* OSIDatabasePreferencePanePref.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEE2B55A0C8871E9003038D3 /* OSIDatabasePreferencePanePref.xib */; };
@@ -31,6 +32,7 @@
 		8D202CF80486D31800D8A456 /* OSIDatabasePreferencePane.prefPane */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OSIDatabasePreferencePane.prefPane; sourceTree = BUILT_PRODUCTS_DIR; };
 		AB58E3490E41AC80001D3885 /* PluginManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PluginManager.h; path = ../../PluginManager.h; sourceTree = SOURCE_ROOT; };
 		AB80A1850A19C39700FED357 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = /Developer/SDKs/MacOSX10.4u.sdk/System/Library/Frameworks/Security.framework; sourceTree = "<absolute>"; };
+		CE057CEB0F190CF100E7EA76 /* browserController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = browserController.h; path = ../../browserController.h; sourceTree = SOURCE_ROOT; };
 		CE75CA4A0A23AAFA00D22E9E /* PreferencePaneController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = PreferencePaneController.h; path = ../../PreferencePaneController.h; sourceTree = SOURCE_ROOT; };
 		CECD02AD0D035A7D00A661C5 /* PreferencePaneControllerDCMTK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PreferencePaneControllerDCMTK.h; path = ../../PreferencePaneControllerDCMTK.h; sourceTree = SOURCE_ROOT; };
 		CEE2B55B0C8871E9003038D3 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/OSIDatabasePreferencePanePref.xib; sourceTree = "<group>"; };
@@ -93,6 +95,7 @@
 				CE75CA4A0A23AAFA00D22E9E /* PreferencePaneController.h */,
 				CECD02AD0D035A7D00A661C5 /* PreferencePaneControllerDCMTK.h */,
 				F506C03C013D9D7901CA16C8 /* OSIDatabasePreferencePanePref.h */,
+				CE057CEB0F190CF100E7EA76 /* browserController.h */,
 				F506C03D013D9D7901CA16C8 /* OSIDatabasePreferencePanePref.m */,
 			);
 			name = Classes;
@@ -145,6 +148,7 @@
 				CE75CA4B0A23AAFA00D22E9E /* PreferencePaneController.h in Headers */,
 				CECD02AE0D035A7D00A661C5 /* PreferencePaneControllerDCMTK.h in Headers */,
 				AB58E34A0E41AC80001D3885 /* PluginManager.h in Headers */,
+				CE057CEC0F190CF100E7EA76 /* browserController.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
