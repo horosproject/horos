@@ -389,6 +389,43 @@ static int hotKeyToolCrossTable[] =
 	{
 		if( [self selectedROI]) valid = YES;
 	}
+	else if( [item action] == @selector( lockSelectedROIs:))
+	{
+		for( ROI *r in [roiList[ curMovieIndex] objectAtIndex: [imageView curImage]])
+		{
+			if( r.locked == NO)
+			{
+				valid = YES;
+				break;
+			}
+		}
+	}
+	else if( [item action] == @selector( unlockSelectedROIs:))
+	{
+		for( ROI *r in [roiList[ curMovieIndex] objectAtIndex: [imageView curImage]])
+		{
+			if( r.locked == YES)
+			{
+				valid = YES;
+				break;
+			}
+		}
+	}
+	else if( [item action] == @selector( makeSelectedROIsUnselectable:))
+	{
+		if( [self selectedROI]) valid = YES;
+	}
+	else if( [item action] == @selector( makeAllROIsSelectable:))
+	{
+		for( ROI *r in [roiList[ curMovieIndex] objectAtIndex: [imageView curImage]])
+		{
+			if( r.selectable == NO)
+			{
+				valid = YES;
+				break;
+			}
+		}
+	}
 	else if( [item action] == @selector( morphoSelectedBrushROI:))
 	{
 		if( [self selectedROI]) valid = YES;
@@ -10698,11 +10735,10 @@ int i,j,l;
 	
 	for( x = 0; x < [pixList[curMovieIndex] count]; x++)
 	{
-		
 		for( i = 0; i < [[roiList[curMovieIndex] objectAtIndex: x] count]; i++)
 		{
 			ROI	*curROI = [[roiList[curMovieIndex] objectAtIndex: x] objectAtIndex: i];
-			if( [[curROI name] isEqualToString: name])
+			if( [[curROI name] isEqualToString: name] && curROI.locked == NO)
 			{
 				[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:curROI userInfo: nil];
 				[[roiList[ curMovieIndex] objectAtIndex: x] removeObject: curROI];
@@ -11373,14 +11409,6 @@ int i,j,l;
 
 - (IBAction) roiDeleteAll:(id) sender
 {
-
-//  you can simply undo (cmd-z) if you want to revert the "Delete all ROIs" actions
-//	int choice = NSRunAlertPanel( NSLocalizedString(@"Delete ALL ROIs in Series?", nil),
-//								  NSLocalizedString(@"Are you sure you wish to delete all ROIs in this series?  This action is not recoverable.", nil),
-//								  NSLocalizedString(@"Cancel", nil), NSLocalizedString(@"Delete ALL ROIs", nil), nil );
-//	
-//	if ( choice == NSAlertDefaultReturn ) return;
-
 	long i, x, y;
 	
 	[self addToUndoQueue: @"roi"];
@@ -11391,13 +11419,16 @@ int i,j,l;
 	{
 		for( x = 0; x < [pixList[y] count]; x++)
 		{
-			//[[roiList[y] objectAtIndex: x] removeAllObjects];
-			for( i = 0; i < [[roiList[y] objectAtIndex: x] count]; i++)
+			for( i = [[roiList[y] objectAtIndex: x] count]-1; i >= 0 ; i--)
 			{
 				ROI *curROI = [[roiList[y] objectAtIndex: x] objectAtIndex:i];
-				[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:curROI userInfo: nil];
+				
+				if( curROI.locked == NO)
+				{
+					[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:curROI userInfo: nil];
+					[[roiList[y] objectAtIndex: x] removeObject: curROI];
+				}
 			}
-			[[roiList[y] objectAtIndex: x] removeAllObjects];
 		}
 	}
 	
@@ -12072,6 +12103,8 @@ int i,j,l;
 
 - (void)setSelectedROIsGrouped:(BOOL)grouped;
 {
+	[self addToUndoQueue: @"roi"];
+	
 	NSArray *curROIList = [roiList[curMovieIndex] objectAtIndex:[imageView curImage]];
 	long mode;
 	
@@ -12110,6 +12143,54 @@ int i,j,l;
 - (IBAction)ungroupSelectedROIs:(id)sender;
 {
 	[self ungroupSelectedROIs];
+}
+
+- (void) setSelectedROIsLocked: (BOOL) locked
+{
+	[self addToUndoQueue: @"roi"];
+	
+	NSArray *curROIList = [roiList[curMovieIndex] objectAtIndex:[imageView curImage]];
+	
+	for(ROI *roi in curROIList)
+	{
+		if( [roi ROImode] == ROI_selected || [roi ROImode] == ROI_selectedModify || [roi ROImode] == ROI_drawing)
+			roi.locked = locked;
+	}
+}
+
+- (IBAction)lockSelectedROIs:(id)sender;
+{
+	[self setSelectedROIsLocked: YES];
+}
+
+- (IBAction)unlockSelectedROIs:(id)sender;
+{
+	[self setSelectedROIsLocked: NO];
+}
+
+- (IBAction) makeSelectedROIsUnselectable:(id)sender;
+{
+	[self addToUndoQueue: @"roi"];
+	
+	NSArray *curROIList = [roiList[curMovieIndex] objectAtIndex:[imageView curImage]];
+	
+	for(ROI *roi in curROIList)
+	{
+		if( [roi ROImode] == ROI_selected || [roi ROImode] == ROI_selectedModify || [roi ROImode] == ROI_drawing)
+			roi.selectable = NO;
+	}
+}
+
+- (IBAction) makeAllROIsSelectable:(id)sender;
+{
+	[self addToUndoQueue: @"roi"];
+	
+	NSArray *curROIList = [roiList[curMovieIndex] objectAtIndex:[imageView curImage]];
+	
+	for(ROI *roi in curROIList)
+	{
+		roi.selectable = YES;
+	}
 }
 
 - (void)bringToFrontROI:(ROI*) roi;

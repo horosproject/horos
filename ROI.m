@@ -5075,7 +5075,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 											if (length < .1)
 												sprintf (line6, "3D L: %0.1f %cm", distance3d * 10000.0, 0xB5);
 											else
-												sprintf (line6, "3D Length: %0.3f cm", distance3d);
+												sprintf (line6, "3D Length: %0.3f cm", distance3d / 10.);
 											break;
 										}
 									}

@@ -3,13 +3,12 @@
 	<data>
 		<int key="IBDocument.SystemTarget">1050</int>
 		<string key="IBDocument.SystemVersion">9G55</string>
-		<string key="IBDocument.InterfaceBuilderVersion">672</string>
+		<string key="IBDocument.InterfaceBuilderVersion">670</string>
 		<string key="IBDocument.AppKitVersion">949.43</string>
 		<string key="IBDocument.HIToolboxVersion">353.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="11762"/>
-			<integer value="13734"/>
+			<integer value="1400"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -2965,6 +2964,60 @@
 									<string key="NSTitle">Ungroup Selected ROIs</string>
 									<string key="NSKeyEquiv">u</string>
 									<int key="NSKeyEquivModMask">1572864</int>
+									<int key="NSMnemonicLoc">2147483647</int>
+									<reference key="NSOnImage" ref="125626618"/>
+									<reference key="NSMixedImage" ref="973943092"/>
+								</object>
+								<object class="NSMenuItem" id="467017838">
+									<reference key="NSMenu" ref="1010933659"/>
+									<bool key="NSIsDisabled">YES</bool>
+									<bool key="NSIsSeparator">YES</bool>
+									<string key="NSTitle"/>
+									<string key="NSKeyEquiv"/>
+									<int key="NSKeyEquivModMask">1048576</int>
+									<int key="NSMnemonicLoc">2147483647</int>
+									<reference key="NSOnImage" ref="125626618"/>
+									<reference key="NSMixedImage" ref="973943092"/>
+								</object>
+								<object class="NSMenuItem" id="594494587">
+									<reference key="NSMenu" ref="1010933659"/>
+									<string key="NSTitle">Lock Selected ROIs</string>
+									<string key="NSKeyEquiv"/>
+									<int key="NSMnemonicLoc">2147483647</int>
+									<reference key="NSOnImage" ref="125626618"/>
+									<reference key="NSMixedImage" ref="973943092"/>
+								</object>
+								<object class="NSMenuItem" id="228692800">
+									<reference key="NSMenu" ref="1010933659"/>
+									<string key="NSTitle">Unlock Selected ROIs</string>
+									<string key="NSKeyEquiv"/>
+									<int key="NSMnemonicLoc">2147483647</int>
+									<reference key="NSOnImage" ref="125626618"/>
+									<reference key="NSMixedImage" ref="973943092"/>
+								</object>
+								<object class="NSMenuItem" id="64163093">
+									<reference key="NSMenu" ref="1010933659"/>
+									<bool key="NSIsDisabled">YES</bool>
+									<bool key="NSIsSeparator">YES</bool>
+									<string key="NSTitle"/>
+									<string key="NSKeyEquiv"/>
+									<int key="NSKeyEquivModMask">1048576</int>
+									<int key="NSMnemonicLoc">2147483647</int>
+									<reference key="NSOnImage" ref="125626618"/>
+									<reference key="NSMixedImage" ref="973943092"/>
+								</object>
+								<object class="NSMenuItem" id="729769436">
+									<reference key="NSMenu" ref="1010933659"/>
+									<string key="NSTitle">Make Selected ROIs Unselectable</string>
+									<string key="NSKeyEquiv"/>
+									<int key="NSMnemonicLoc">2147483647</int>
+									<reference key="NSOnImage" ref="125626618"/>
+									<reference key="NSMixedImage" ref="973943092"/>
+								</object>
+								<object class="NSMenuItem" id="1031050130">
+									<reference key="NSMenu" ref="1010933659"/>
+									<string key="NSTitle">Make All ROIs Selectable</string>
+									<string key="NSKeyEquiv"/>
 									<int key="NSMnemonicLoc">2147483647</int>
 									<reference key="NSOnImage" ref="125626618"/>
 									<reference key="NSMixedImage" ref="973943092"/>
@@ -7235,7 +7288,7 @@ AQAAAA4QAAVDRVNUAENFVAAAAAEBAAABAQ</bytes>
 				<string key="NSWindowContentMaxSize">{3.40282e+38, 3.40282e+38}</string>
 				<string key="NSWindowContentMinSize">{213, 107}</string>
 				<object class="NSView" key="NSWindowView" id="718837428">
-					<reference key="NSNextResponder"/>
+					<nil key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<object class="NSMutableArray" key="NSSubviews">
 						<bool key="EncodedWithXMLCoder">YES</bool>
@@ -7411,7 +7464,6 @@ AQAAAA4QAAVDRVNUAENFVAAAAAEBAAABAQ</bytes>
 						</object>
 					</object>
 					<string key="NSFrameSize">{591, 303}</string>
-					<reference key="NSSuperview"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1440, 878}}</string>
 				<string key="NSMinSize">{213, 129}</string>
@@ -12563,6 +12615,38 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					</object>
 					<int key="connectionID">13736</int>
 				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">lockSelectedROIs:</string>
+						<reference key="source" ref="298258082"/>
+						<reference key="destination" ref="594494587"/>
+					</object>
+					<int key="connectionID">13742</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">unlockSelectedROIs:</string>
+						<reference key="source" ref="298258082"/>
+						<reference key="destination" ref="228692800"/>
+					</object>
+					<int key="connectionID">13743</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">makeSelectedROIsUnselectable:</string>
+						<reference key="source" ref="298258082"/>
+						<reference key="destination" ref="729769436"/>
+					</object>
+					<int key="connectionID">13747</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">makeAllROIsSelectable:</string>
+						<reference key="source" ref="298258082"/>
+						<reference key="destination" ref="1031050130"/>
+					</object>
+					<int key="connectionID">13748</int>
+				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
 				<object class="NSArray" key="orderedObjects">
@@ -13395,6 +13479,12 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 							<reference ref="195451339"/>
 							<reference ref="431473049"/>
 							<reference ref="209270666"/>
+							<reference ref="467017838"/>
+							<reference ref="594494587"/>
+							<reference ref="228692800"/>
+							<reference ref="64163093"/>
+							<reference ref="729769436"/>
+							<reference ref="1031050130"/>
 						</object>
 						<reference key="parent" ref="63428212"/>
 					</object>
@@ -17983,6 +18073,36 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						<reference key="object" ref="254747942"/>
 						<reference key="parent" ref="602877314"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">13739</int>
+						<reference key="object" ref="467017838"/>
+						<reference key="parent" ref="1010933659"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">13740</int>
+						<reference key="object" ref="594494587"/>
+						<reference key="parent" ref="1010933659"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">13741</int>
+						<reference key="object" ref="228692800"/>
+						<reference key="parent" ref="1010933659"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">13744</int>
+						<reference key="object" ref="64163093"/>
+						<reference key="parent" ref="1010933659"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">13745</int>
+						<reference key="object" ref="729769436"/>
+						<reference key="parent" ref="1010933659"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">13746</int>
+						<reference key="object" ref="1031050130"/>
+						<reference key="parent" ref="1010933659"/>
+					</object>
 				</object>
 			</object>
 			<object class="NSMutableDictionary" key="flattenedProperties">
@@ -19146,6 +19266,18 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<string>13734.ImportedFromIB2</string>
 					<string>13737.IBPluginDependency</string>
 					<string>13738.IBPluginDependency</string>
+					<string>13739.IBPluginDependency</string>
+					<string>13739.ImportedFromIB2</string>
+					<string>13740.IBPluginDependency</string>
+					<string>13740.ImportedFromIB2</string>
+					<string>13741.IBPluginDependency</string>
+					<string>13741.ImportedFromIB2</string>
+					<string>13744.IBPluginDependency</string>
+					<string>13744.ImportedFromIB2</string>
+					<string>13745.IBPluginDependency</string>
+					<string>13745.ImportedFromIB2</string>
+					<string>13746.IBPluginDependency</string>
+					<string>13746.ImportedFromIB2</string>
 					<string>1400.IBEditorWindowLastContentRect</string>
 					<string>1400.IBPluginDependency</string>
 					<string>1400.ImportedFromIB2</string>
@@ -20548,7 +20680,19 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{588, 1045}, {423, 673}}</string>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<reference ref="9"/>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<reference ref="9"/>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<reference ref="9"/>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<reference ref="9"/>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<reference ref="9"/>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<reference ref="9"/>
+					<string>{{989, 699}, {423, 773}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
 					<string>{{1034, 437}, {423, 583}}</string>
@@ -20736,7 +20880,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<string>{{698, 1575}, {212, 143}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
-					<string>{{1021, 1188}, {596, 20}}</string>
+					<string>{{586, 1472}, {596, 20}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
 					<string>{{163, 788}, {596, 20}}</string>
@@ -20758,7 +20902,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
-					<string>{{1096, 555}, {338, 633}}</string>
+					<string>{{945, 555}, {338, 633}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
 					<string>{{706, 407}, {337, 613}}</string>
@@ -20812,7 +20956,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">13738</int>
+			<int key="maxID">13748</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -20967,6 +21111,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 							<string>rebuildThumbnails:</string>
 							<string>refreshDatabase:</string>
 							<string>refreshMatrix:</string>
+							<string>regenerateAutoComments:</string>
 							<string>saveDBListAs:</string>
 							<string>search:</string>
 							<string>selectAll3DSeries:</string>
@@ -20988,6 +21133,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
 							<string>id</string>
 							<string>id</string>
 							<string>id</string>
@@ -21570,6 +21716,9 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 							<string>load3DSettings:</string>
 							<string>loadSerie:</string>
 							<string>loadWindowsState:</string>
+							<string>lockSelectedROIs:</string>
+							<string>makeAllROIsSelectable:</string>
+							<string>makeSelectedROIsUnselectable:</string>
 							<string>mergeBrushROI:</string>
 							<string>mergeFusedImages:</string>
 							<string>morphoSelectedBrushROI:</string>
@@ -21639,11 +21788,16 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 							<string>syncronize:</string>
 							<string>threeDPanel:</string>
 							<string>ungroupSelectedROIs:</string>
+							<string>unlockSelectedROIs:</string>
 							<string>useVOILUT:</string>
 							<string>viewXML:</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
 							<string>id</string>
 							<string>id</string>
 							<string>id</string>
@@ -23368,6 +23522,9 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 							<string>loadPatient:</string>
 							<string>loadSerie:</string>
 							<string>loadWindowsState:</string>
+							<string>lockSelectedROIs:</string>
+							<string>makeAllROIsSelectable:</string>
+							<string>makeSelectedROIsUnselectable:</string>
 							<string>mergeBrushROI:</string>
 							<string>morphoSelectedBrushROI:</string>
 							<string>morphoSelectedBrushROIWithRadius:</string>
@@ -23430,6 +23587,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 							<string>turnOffSyncSeriesBetweenStudies:</string>
 							<string>undo:</string>
 							<string>ungroupSelectedROIs:</string>
+							<string>unlockSelectedROIs:</string>
 							<string>updateImage:</string>
 							<string>updateSUVValues:</string>
 							<string>updateSetWLWW:</string>
@@ -23523,9 +23681,13 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 							<string>id</string>
 							<string>id</string>
 							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
 							<string>NSString</string>
 							<string>NSString</string>
 							<string>NSString</string>
+							<string>id</string>
 							<string>id</string>
 							<string>id</string>
 							<string>id</string>

@@ -2282,6 +2282,11 @@ public:
 			[s appendFormat: NSLocalizedString( @"   Measurement: %2.2f cm ", nil), measureLength];
 	}
 	
+	if( aCamera->GetParallelProjection())
+	{
+		[s appendFormat: NSLocalizedString( @"   Scale: %2.3f %% ", nil),  100./([firstObject pixelSpacingX] * aCamera->GetParallelScale())];
+	}
+	
 	[pixelInformation setStringValue: s];
 	
 	[drawLock unlock];

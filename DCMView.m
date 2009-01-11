@@ -1458,13 +1458,15 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	for( i = 0; i < [curRoiList count]; i++)
 	{
-		if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected)
+		ROI *r = [curRoiList objectAtIndex:i];
+		if( [r ROImode] == ROI_selected && r.locked == NO)
 		{
-			groupID = [[curRoiList objectAtIndex:i] groupID];
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:[curRoiList objectAtIndex:i] userInfo: nil];
+			groupID = [r groupID];
+			[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:r userInfo: nil];
 			[curRoiList removeObjectAtIndex:i];
 			i--;
-			if(groupID!=0.0)[self deleteROIGroupID:groupID];
+			if(groupID!=0.0)
+				[self deleteROIGroupID:groupID];
 		}
 	}
 	
@@ -2294,12 +2296,14 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			
 			for( i = 0; i < [curRoiList count]; i++)
 			{
-				if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selectedModify || [[curRoiList objectAtIndex:i] ROImode] == ROI_drawing)
+				ROI *r = [curRoiList objectAtIndex:i];
+				
+				if( [r ROImode] == ROI_selectedModify || [r ROImode] == ROI_drawing)
 				{
-					if( [[curRoiList objectAtIndex:i] deleteSelectedPoint] == NO)
+					if( [r deleteSelectedPoint] == NO && r.locked == NO)
 					{
-						groupID = [[curRoiList objectAtIndex:i] groupID];
-						[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:[curRoiList objectAtIndex:i] userInfo: nil];
+						groupID = [r groupID];
+						[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:r userInfo: nil];
 						[curRoiList removeObjectAtIndex:i];
 						i--;
 						if(groupID!=0.0)[self deleteROIGroupID:groupID];
@@ -2309,10 +2313,12 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			
 			for( i = 0; i < [curRoiList count]; i++)
 			{
-				if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected)
+				ROI *r = [curRoiList objectAtIndex:i];
+				
+				if( [r ROImode] == ROI_selected  && r.locked == NO)
 				{
-					groupID = [[curRoiList objectAtIndex:i] groupID];
-					[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:[curRoiList objectAtIndex:i] userInfo: nil];
+					groupID = [r groupID];
+					[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:r userInfo: nil];
 					[curRoiList removeObjectAtIndex:i];
 					i--;
 					if(groupID!=0.0)[self deleteROIGroupID:groupID];
@@ -2558,12 +2564,14 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	return YES;
 }
 
-- (void)deleteROIGroupID:(NSTimeInterval)groupID {
-	
+- (void)deleteROIGroupID:(NSTimeInterval)groupID
+{
 	[drawLock lock];
 	
-	for( int i=0; i<[curRoiList count]; i++ ) {
-		if([[curRoiList objectAtIndex:i] groupID] == groupID) {
+	for( int i=0; i<[curRoiList count]; i++ )
+	{
+		if([[curRoiList objectAtIndex:i] groupID] == groupID)
+		{
 			[[NSNotificationCenter defaultCenter] postNotificationName:@"removeROI" object:[curRoiList objectAtIndex:i] userInfo:nil];
 			[curRoiList removeObjectAtIndex:i];
 			i--;

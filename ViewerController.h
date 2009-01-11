@@ -998,6 +998,14 @@ enum
 /** Ungroup ROI */
 - (IBAction)ungroupSelectedROIs:(id)sender;
 
+/**  Lock selected ROI together */
+- (IBAction) lockSelectedROIs:(id)sender;
+/** Unlock ROI */
+- (IBAction) unlockSelectedROIs:(id)sender;
+
+- (IBAction) makeSelectedROIsUnselectable:(id)sender;
+- (IBAction) makeAllROIsSelectable:(id)sender;
+
 - (void) turnOffSyncSeriesBetweenStudies:(id) sender;
 - (NSDictionary*) exportDICOMFileInt:(int)screenCapture withName:(NSString*)name;
 - (NSDictionary*) exportDICOMFileInt:(int)screenCapture withName:(NSString*)name allViewers: (BOOL) allViewers;
