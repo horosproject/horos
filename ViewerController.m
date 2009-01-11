@@ -7489,7 +7489,7 @@ static ViewerController *draggedController = nil;
 			{
 				if( fabs( vectors[6]) > fabs(vectors[7]) && fabs( vectors[6]) > fabs(vectors[8]))
 				{
-					NSLog(@"Sagittal");
+//					NSLog(@"Sagittal");
 					interval = [[pixList[ z] objectAtIndex:0] originX] - [[pixList[ z] objectAtIndex:1] originX];
 					
 					if( vectors[6] > 0) interval = -( interval);
@@ -7505,7 +7505,7 @@ static ViewerController *draggedController = nil;
 				
 				if( fabs( vectors[7]) > fabs(vectors[6]) && fabs( vectors[7]) > fabs(vectors[8]))
 				{
-					NSLog(@"Coronal");
+//					NSLog(@"Coronal");
 					interval = [[pixList[ z] objectAtIndex:0] originY] - [[pixList[ z] objectAtIndex:1] originY];
 					
 					if( vectors[7] > 0) interval = -( interval);
@@ -7521,7 +7521,7 @@ static ViewerController *draggedController = nil;
 				
 				if( fabs( vectors[8]) > fabs(vectors[6]) && fabs( vectors[8]) > fabs(vectors[7]))
 				{
-					NSLog(@"Axial");
+//					NSLog(@"Axial");
 					interval = [[pixList[ z] objectAtIndex:0] originZ] - [[pixList[ z] objectAtIndex:1] originZ];
 					
 					if( vectors[8] > 0) interval = -( interval);
@@ -7567,7 +7567,7 @@ static ViewerController *draggedController = nil;
 				yd /= interval3d;
 				zd /= interval3d;
 				
-				NSLog( @"Interval: %f %f", interval, interval3d);
+//				NSLog( @"Interval: %f %f", interval, interval3d);
 				
 				if( interval == 0 && [[pixList[ z] objectAtIndex: 0] originX] == 0 && [[pixList[ z] objectAtIndex: 0] originY] == 0 && [[pixList[ z] objectAtIndex: 0] originZ] == 0)
 				{
@@ -7595,8 +7595,8 @@ static ViewerController *draggedController = nil;
 					}
 				}
 				
-				NSLog( @"Orientation Vector: %d", orientationVector);
-				NSLog( @"Interval: %2.2f", interval);
+//				NSLog( @"Orientation Vector: %d", orientationVector);
+//				NSLog( @"Interval: %2.2f", interval);
 				
 				// FLIP DATA !!!!!! FOR 3D TEXTURE MAPPING !!!!!
 				if( interval < 0 && flipNow == YES)
@@ -7613,7 +7613,7 @@ static ViewerController *draggedController = nil;
 					
 					if( sameSize)
 					{
-						NSLog(@"Flip Data Now");
+//						NSLog(@"Flip Data Now");
 						
 						if( interval3d)
 							interval = fabs( interval3d);	//interval3d;	//-interval;

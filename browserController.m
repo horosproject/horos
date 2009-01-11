@@ -1706,77 +1706,84 @@ static NSArray*	statesArray = nil;
 
 - (IBAction) regenerateAutoComments:(id) sender;
 {
-	Wait *splash = [[Wait alloc] initWithString: NSLocalizedString(@"Regenerate Auto Comments...", nil)];
-		
-	[splash showWindow:self];
-	
-	[splash setCancel: YES];
-	
-	NSManagedObjectContext *context = self.managedObjectContext;
-	
-	[context lock];
-	
-	// Find all studies
-	NSFetchRequest	*dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-	[dbRequest setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"Study"]];
-	[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
-	
-	NSError *error = nil;
-	NSArray *studiesArray = [context executeFetchRequest:dbRequest error:&error];
-	
-	[studiesArray setValue: 0L forKey: @"comment"];
-	
-	// Find all series
-	dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-	[dbRequest setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"Series"]];
-	[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
-	error = nil;
-	
-	NSArray *seriesArray = [context executeFetchRequest:dbRequest error:&error];
-	
-	[[splash progress] setMaxValue: [seriesArray count]];
-	
-	for( NSManagedObject *series in seriesArray )
+	if( NSRunInformationalAlertPanel(	NSLocalizedString(@"Regenerate Auto Comments", nil),
+											 NSLocalizedString(@"Are you sure you want to regenerate the comments field? It will delete the existing comments of all studies and series.", nil),
+											 NSLocalizedString(@"OK",nil),
+											 NSLocalizedString(@"Cancel",nil),
+											 nil) == NSAlertDefaultReturn)
 	{
-		@try
-		{
-			NSManagedObject *o = [[series valueForKey:@"images"] anyObject];
+		Wait *splash = [[Wait alloc] initWithString: NSLocalizedString(@"Regenerate Auto Comments...", nil)];
 			
-			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"COMMENTSAUTOFILL"])
-			{			
-				DicomFile	*dcm = [[DicomFile alloc] init: [o valueForKey:@"completePath"]];
-				
-				if( dcm)
-				{
-					if( [dcm elementForKey:@"commentsAutoFill"])
-					{
-						[series setValue: [dcm elementForKey: @"commentsAutoFill"] forKey:@"comment"];
-						
-						NSManagedObject *study = [series valueForKey: @"study"];
-						
-						if( [study valueForKey:@"comment"] == nil || [[study valueForKey:@"comment"] isEqualToString:@""])
-							[study setValue: [dcm elementForKey: @"commentsAutoFill"] forKey:@"comment"];
-					}
-					else [series setValue: 0L forKey:@"comment"];
-				}
-				
-				[dcm release];
-			}
-			else [series setValue: 0L forKey:@"comment"];
-		}
-		@catch ( NSException *e)
-		{
-			NSLog( @"regenerateAutoComments exception : %@", e);
-		}
+		[splash showWindow:self];
 		
-		[splash incrementBy:1];
+		[splash setCancel: YES];
+		
+		NSManagedObjectContext *context = self.managedObjectContext;
+		
+		[context lock];
+		
+		// Find all studies
+		NSFetchRequest	*dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+		[dbRequest setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"Study"]];
+		[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
+		
+		NSError *error = nil;
+		NSArray *studiesArray = [context executeFetchRequest:dbRequest error:&error];
+		
+		[studiesArray setValue: 0L forKey: @"comment"];
+		
+		// Find all series
+		dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+		[dbRequest setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"Series"]];
+		[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
+		error = nil;
+		
+		NSArray *seriesArray = [context executeFetchRequest:dbRequest error:&error];
+		
+		[[splash progress] setMaxValue: [seriesArray count]];
+		
+		for( NSManagedObject *series in seriesArray )
+		{
+			@try
+			{
+				NSManagedObject *o = [[series valueForKey:@"images"] anyObject];
+				
+				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"COMMENTSAUTOFILL"])
+				{			
+					DicomFile	*dcm = [[DicomFile alloc] init: [o valueForKey:@"completePath"]];
+					
+					if( dcm)
+					{
+						if( [dcm elementForKey:@"commentsAutoFill"])
+						{
+							[series setValue: [dcm elementForKey: @"commentsAutoFill"] forKey:@"comment"];
+							
+							NSManagedObject *study = [series valueForKey: @"study"];
+							
+							if( [study valueForKey:@"comment"] == nil || [[study valueForKey:@"comment"] isEqualToString:@""])
+								[study setValue: [dcm elementForKey: @"commentsAutoFill"] forKey:@"comment"];
+						}
+						else [series setValue: 0L forKey:@"comment"];
+					}
+					
+					[dcm release];
+				}
+				else [series setValue: 0L forKey:@"comment"];
+			}
+			@catch ( NSException *e)
+			{
+				NSLog( @"regenerateAutoComments exception : %@", e);
+			}
+			
+			[splash incrementBy:1];
+		}
+		[context unlock];
+		
+		[self outlineViewRefresh];
+		
+		[splash close];
+		[splash release];
 	}
-	[context unlock];
-	
-	[self outlineViewRefresh];
-	
-	[splash close];
-	[splash release];
 }
 
 - (NSTimeInterval) databaseLastModification
@@ -9906,8 +9913,6 @@ static BOOL needToRezoom;
 				}
 			}
 			
-			NSLog(@"Test memory for: %d Mb", (memBlock * sizeof(float)) / (1024 * 1024));
-			
 			memBlock *= sizeof(float);
 			memBlock += 4096;
 			
@@ -9917,7 +9922,11 @@ static BOOL needToRezoom;
 			
 			max4GB *= 1024 * 1024;
 			
-			if( memBlock >= max4GB) memBlock = 0;	// 4-GB Limit
+			if( memBlock >= max4GB)
+			{
+				memBlock = 0;	// 4-GB Limit
+				NSLog(@"4-GB Memory limit for 32-bit application...", (memBlock) / (1024 * 1024));
+			}
 			#endif
 			
 			if( memBlock > 0)
@@ -9925,7 +9934,12 @@ static BOOL needToRezoom;
 			else
 				testPtr[ x] = nil;
 				
-			if( testPtr[ x] == nil) enoughMemory = NO;
+			if( testPtr[ x] == nil)
+			{
+				enoughMemory = NO;
+				
+				NSLog(@"Failed to allocate memory for: %d Mb", (memBlock) / (1024 * 1024));
+			}
 		}
 		
 	} //end for
@@ -10039,9 +10053,12 @@ static BOOL needToRezoom;
 					
 					if ( memBlock < 256 * 256 ) memBlock = 256 * 256;  // This is the size of array created when when an image doesn't exist, a 256 square graduated gray scale.
 					
-					NSLog(@"Test memory for: %d Mb", (memBlock * sizeof(float)) / (1024 * 1024));
 					testPtr[ x] = malloc( (memBlock * sizeof(float)) + 4096);
-					if( testPtr[ x] == nil) memTestFailed = YES;
+					if( testPtr[ x] == nil)
+					{
+						memTestFailed = YES;
+						NSLog(@"Failed to allocate memory for: %d Mb", (memBlock * sizeof(float)) / (1024 * 1024));
+					}
 					memBlockSize[ x] = memBlock;
 				}
 				
