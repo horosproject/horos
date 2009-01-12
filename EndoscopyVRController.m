@@ -18,6 +18,7 @@
 #import "DCMView.h"
 #import "ROI.h"
 #import "VRView.h"
+#import "BrowserController.h"
 
 @implementation EndoscopyVRController
 
@@ -225,7 +226,7 @@
 
 -(void) save3DState
 {
-	NSString		*path = [documentsDirectory() stringByAppendingPathComponent:STATEDATABASE];
+	NSString		*path = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:STATEDATABASE];
 	BOOL			isDir = YES;
 	
 	
@@ -248,7 +249,7 @@
 -(void) load3DState
 {
 	NSLog (@"Load Endoscopy 3d State");
-	NSString		*path = [documentsDirectory() stringByAppendingPathComponent:STATEDATABASE];
+	NSString		*path = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:STATEDATABASE];
 	BOOL			isDir = YES;
 	
 	

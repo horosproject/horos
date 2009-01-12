@@ -272,7 +272,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 	int LENSSIZE;
 	float LENSRATIO;
 	BOOL cursorhidden;
-	BOOL avoidRecursiveSync;
+	int avoidRecursiveSync;
 	BOOL TextureComputed32bitPipeline;
 }
 

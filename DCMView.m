@@ -5751,49 +5751,55 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	}
 }
 
+- (NSDictionary*) syncMessage:(short) inc
+{
+	DCMPix	*thickDCM;
+		
+	if( curDCM.stack > 1)
+	{
+		long maxVal = flippedData? curImage-(curDCM.stack-1) : curImage+curDCM.stack-1;
+		if( maxVal < 0) maxVal = 0;
+		if( maxVal >= [dcmPixList count]) maxVal = [dcmPixList count]-1;
+		
+		thickDCM = [dcmPixList objectAtIndex: maxVal];
+	}
+	else thickDCM = nil;
+	
+	int pos = flippedData? [dcmPixList count] -1 -curImage : curImage;
+	
+	if( flippedData) inc = -inc;
+	
+	NSMutableDictionary *instructions = [NSMutableDictionary dictionary]; 
+	
+	[instructions setObject: self forKey: @"view"];
+	[instructions setObject: [NSNumber numberWithInt: pos] forKey: @"Pos"];
+	[instructions setObject: [NSNumber numberWithInt: inc] forKey: @"Direction"];
+	[instructions setObject: [NSNumber numberWithFloat: [[dcmPixList objectAtIndex:curImage] sliceLocation]] forKey: @"Location"];
+	[instructions setObject: [NSNumber numberWithFloat: syncRelativeDiff] forKey: @"offsetsync"];
+	
+	if( [[dcmFilesList objectAtIndex: curImage] valueForKeyPath:@"series.study.studyInstanceUID"])
+		[instructions setObject: [[dcmFilesList objectAtIndex: curImage] valueForKeyPath:@"series.study.studyInstanceUID"] forKey: @"studyID"]; 
+	
+	if( curDCM)
+		[instructions setObject: curDCM forKey: @"DCMPix"];
+	
+	if( thickDCM)
+		[instructions setObject: thickDCM forKey: @"DCMPix2"]; // WARNING thickDCM can be nil!! nothing after this one...
+	
+	return instructions;
+}
+
 -(void) sendSyncMessage:(short) inc
 {
 	if( dcmPixList == nil) return;
 	
-	if( [ViewerController numberOf2DViewer] > 1 && isKeyView)	//&&  [[self window] isMainWindow] == YES
+	if( [ViewerController numberOf2DViewer] > 1 && isKeyView)
     {
-		DCMPix	*thickDCM;
-		
-		if( curDCM.stack > 1)
-		{
-			long maxVal = flippedData? curImage-(curDCM.stack-1) : curImage+curDCM.stack-1;
-			if( maxVal < 0) maxVal = 0;
-			if( maxVal >= [dcmPixList count]) maxVal = [dcmPixList count]-1;
-			
-			thickDCM = [dcmPixList objectAtIndex: maxVal];
-		}
-		else thickDCM = nil;
-		
-		int pos = flippedData? [dcmPixList count] -1 -curImage : curImage;
-		
-		if( flippedData) inc = -inc;
-		
-        NSMutableDictionary *instructions = [NSMutableDictionary dictionary]; 
-		
-		[instructions setObject: self forKey: @"view"];
-		[instructions setObject: [NSNumber numberWithInt: pos] forKey: @"Pos"];
-        [instructions setObject: [NSNumber numberWithInt: inc] forKey: @"Direction"];
-		[instructions setObject: [NSNumber numberWithFloat: [[dcmPixList objectAtIndex:curImage] sliceLocation]] forKey: @"Location"];
-		[instructions setObject: [NSNumber numberWithFloat: syncRelativeDiff] forKey: @"offsetsync"];
-		
-		if( [[dcmFilesList objectAtIndex: curImage] valueForKeyPath:@"series.study.studyInstanceUID"])
-			[instructions setObject: [[dcmFilesList objectAtIndex: curImage] valueForKeyPath:@"series.study.studyInstanceUID"] forKey: @"studyID"]; 
-		
-		if( curDCM)
-			[instructions setObject: curDCM forKey: @"DCMPix"];
-		
-		if( thickDCM)
-			[instructions setObject: thickDCM forKey: @"DCMPix2"]; // WARNING thickDCM can be nil!! nothing after this one...
+		NSDictionary *instructions = [self syncMessage: inc];
         
-		if( stringID == nil)		//|| [stringID isEqualToString:@"Original"])
-		{
+		if( stringID == nil)
 			[[NSNotificationCenter defaultCenter] postNotificationName: @"sync" object: self userInfo: instructions];
-		}
+			
 		// most subclasses just need this. NO sync notification for subclasses.
 		if( blendingView) // We have to reload the blending image..
 		{
@@ -5922,10 +5928,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 }
 
 -(void) sync:(NSNotification*)note
-{	
+{
 	if (![[[note object] superview] isEqual:[self superview]] && [self is2DViewer])
 	{
-		
 		int prevImage = curImage;
 		
 	//	if( stringID)
@@ -5946,8 +5951,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				return;
 		}
 		
-		if( avoidRecursiveSync) return;
-		avoidRecursiveSync = YES;
+		if( avoidRecursiveSync > 2) return;
+		avoidRecursiveSync++;
 		
 		if( [note object] != self && isKeyView == YES && matrix == 0 && stringID == nil && [[note object] stringID] == nil && curImage > -1 )   //|| [[[note object] stringID] isEqualToString:@"Original"] == YES))   // Dont change the browser preview....
 		{
@@ -5972,14 +5977,14 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			if( [instructions valueForKey: @"offsetsync"] == nil)
 			{
 				NSLog(@"err offsetsync");
-				avoidRecursiveSync = NO;
+				avoidRecursiveSync--;
 				return;
 			}
 			
 			if( [instructions valueForKey: @"view"] == nil)
 			{
 				NSLog(@"err view");
-				avoidRecursiveSync = NO;
+				avoidRecursiveSync--;
 				return;
 			}
 			
@@ -6198,10 +6203,13 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			}
 		}
 		
-		avoidRecursiveSync = NO;
-		
 		if( [[self window] isMainWindow])
 			[self sendSyncMessage: 0];
+		
+		if( blendingView)
+			[blendingView sync: [NSNotification notificationWithName: @"sync" object: self userInfo: [self syncMessage: 0]]];
+			
+		avoidRecursiveSync --;
 	}
 }
 
@@ -6283,7 +6291,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 - (short)syncro { return syncro; }
 
-- (void)setSyncro:(short) s {
+- (void)setSyncro:(short) s
+{
 	syncro = s;
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"notificationSyncSeries" object:nil userInfo: nil];
