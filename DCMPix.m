@@ -1917,43 +1917,60 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 
 - (BOOL)isInROI: (ROI*)roi: (NSPoint)pt
 {
-	
-	NSMutableArray  *ptsTemp = [roi splinePoints];
 	BOOL			result = NO;
 	long			minx, maxx, miny, maxy;
 	NSPoint			*pts;
 		
     [self CheckLoad];
 	
-	if ( roi )
+	if( roi)
 	{
-		minx = maxx = [[ptsTemp objectAtIndex: 0] x];
-		miny = maxy = [[ptsTemp objectAtIndex: 0] y];
-		
-		// Find the max rectangle of the ROI
-		for( long z = 0; z < ptsTemp.count; z++)
+		if( roi.type == tPlain)
 		{
-			if( minx > [[ptsTemp objectAtIndex: z] x]) minx = [[ptsTemp objectAtIndex: z] x];
-			if( maxx < [[ptsTemp objectAtIndex: z] x]) maxx = [[ptsTemp objectAtIndex: z] x];
-			if( miny > [[ptsTemp objectAtIndex: z] y]) miny = [[ptsTemp objectAtIndex: z] y];
-			if( maxy < [[ptsTemp objectAtIndex: z] y]) maxy = [[ptsTemp objectAtIndex: z] y];
+			unsigned char *buf = roi.textureBuffer;
+			
+			if( pt.x >= roi.textureUpLeftCornerX && pt.x < roi.textureUpLeftCornerX + roi.textureWidth &&
+				pt.y >= roi.textureUpLeftCornerY && pt.y < roi.textureUpLeftCornerY + roi.textureHeight)
+			{
+				int pos = pt.x - roi.textureUpLeftCornerX + (pt.y - roi.textureUpLeftCornerY) * roi.textureWidth;
+				if( buf[ pos]) return YES;
+				else return NO;
+			}
+			else return NO;
 		}
-		
-		if( pt.x < minx || pt.x > maxx) return NO;
-		if( pt.y < miny || pt.y > maxy) return NO;
-		
-		if( roi.type == tROI) return YES;
-		
-		long no = ptsTemp.count;
-		pts = (NSPoint*) malloc( no * sizeof(NSPoint));
-		for( long i = 0; i < no; i++ ) pts[ i] = [[ptsTemp objectAtIndex: i] point];
-		
-		long x = pt.x;
-		long y = pt.y;
-		
-		if( pnpoly( pts, no, x, y))	result = YES;
-		
-		free( pts);
+		else
+		{
+			NSMutableArray  *ptsTemp = [roi splinePoints];
+			
+			minx = maxx = [[ptsTemp objectAtIndex: 0] x];
+			miny = maxy = [[ptsTemp objectAtIndex: 0] y];
+			
+			// Find the max rectangle of the ROI
+			for( MyPoint *pt in ptsTemp)
+			{	
+				if( minx > [pt x]) minx = [pt x];
+				if( maxx < [pt x]) maxx = [pt x];
+				if( miny > [pt y]) miny = [pt y];
+				if( maxy < [pt y]) maxy = [pt y];
+			}
+			
+			if( pt.x < minx || pt.x > maxx) return NO;
+			if( pt.y < miny || pt.y > maxy) return NO;
+			
+			if( roi.type == tROI) return YES;
+			
+			int no = ptsTemp.count;
+			pts = (NSPoint*) malloc( no * sizeof(NSPoint));
+			int i = 0;
+			for( MyPoint *pt in ptsTemp) pts[ i++] = [pt point];
+			
+			long x = pt.x;
+			long y = pt.y;
+			
+			if( pnpoly( pts, no, x, y))	result = YES;
+			
+			free( pts);
+		}
 	}
 	
 	return result;
