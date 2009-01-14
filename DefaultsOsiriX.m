@@ -715,6 +715,7 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject:@"Geneva" forKey:@"LabelFONTNAME"];
 	[defaultValues setObject:@"1" forKey:@"EmptyNameForNewROIs"];
 	[defaultValues setObject:@"1" forKey:@"nextSeriesToAllViewers"];
+	[defaultValues setObject:@"1" forKey:@"dontDeleteStudiesWithComments"];
 	
 	// ** DELETEFILELISTENER
 	[defaultValues setObject:@"1" forKey:@"DELETEFILELISTENER"];

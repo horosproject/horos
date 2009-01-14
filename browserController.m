@@ -3665,6 +3665,7 @@ static NSArray*	statesArray = nil;
 				NSDate				*openedDate = [now addTimeInterval: -[[defaults stringForKey:@"AUTOCLEANINGDATEOPENEDDAYS"] intValue]*60*60*24];
 				NSMutableArray		*toBeRemoved = [NSMutableArray arrayWithCapacity: 0];
 				NSManagedObjectContext *context = self.managedObjectContext;
+				BOOL				dontDeleteStudiesWithComments = [[NSUserDefaults standardUserDefaults] boolForKey: @"dontDeleteStudiesWithComments"];
 				
 				request.entity = [self.managedObjectModel.entitiesByName objectForKey:@"Study"];
 				request.predicate = predicate;
@@ -3712,7 +3713,21 @@ static NSArray*	statesArray = nil;
 						
 						if(  dateProduced == YES && dateOpened == YES)
 						{
-							for( int x = from; x <= to; x++ ) if( [toBeRemoved containsObject:[studiesArray objectAtIndex: x]] == NO && [[[studiesArray objectAtIndex: x] valueForKey:@"lockedStudy"] boolValue] == NO) [toBeRemoved addObject: [studiesArray objectAtIndex: x]];
+							for( int x = from; x <= to; x++ )
+							{
+								if( [toBeRemoved containsObject:[studiesArray objectAtIndex: x]] == NO && [[[studiesArray objectAtIndex: x] valueForKey:@"lockedStudy"] boolValue] == NO)
+								{
+									if( dontDeleteStudiesWithComments)
+									{
+										NSString *str = [[studiesArray objectAtIndex: x] valueForKey: @"comment"];
+										
+										if( str == nil || [str isEqualToString: @""])
+											[toBeRemoved addObject: [studiesArray objectAtIndex: x]];
+									}
+									else
+										[toBeRemoved addObject: [studiesArray objectAtIndex: x]];
+								}
+							}
 						}
 					}
 					
@@ -3885,6 +3900,7 @@ static NSArray*	statesArray = nil;
 				NSArray					*studiesArray = nil;
 				NSMutableArray			*unlockedStudies = nil;
 				NSManagedObjectContext	*context = self.managedObjectContext;
+				BOOL					dontDeleteStudiesWithComments = [[NSUserDefaults standardUserDefaults] boolForKey: @"dontDeleteStudiesWithComments"];
 				
 				[context retain];
 				[context lock];
@@ -3908,11 +3924,23 @@ static NSArray*	statesArray = nil;
 						
 						unlockedStudies = [NSMutableArray arrayWithArray: studiesArray];
 						
-						for( long i = 0; i < [unlockedStudies count]; i++ )
+						for( int i = 0; i < [unlockedStudies count]; i++ )
 						{
-							if( [[[unlockedStudies objectAtIndex: i] valueForKey:@"lockedStudy"] boolValue] == YES)	{
+							if( [[[unlockedStudies objectAtIndex: i] valueForKey:@"lockedStudy"] boolValue] == YES)
+							{
 								[unlockedStudies removeObjectAtIndex: i];
 								i--;
+							}
+							
+							if( dontDeleteStudiesWithComments)
+							{
+								NSString *str = [[unlockedStudies objectAtIndex: i] valueForKey:@"comment"];
+								
+								if( str != nil && [str isEqualToString:@""] == NO)
+								{
+									[unlockedStudies removeObjectAtIndex: i];
+									i--;
+								}
 							}
 						}
 						
@@ -5128,6 +5156,58 @@ static NSArray*	statesArray = nil;
 	[self mergeSeriesExecute: seriesArray];
 }
 
+- (IBAction) unifyStudies:(id) sender
+{
+	NSInteger result = NSRunInformationalAlertPanel(NSLocalizedString(@"Unify Patient Identity", nil), NSLocalizedString(@"Are you sure you want to unify the patient identity of the selected studies? It cannot be cancelled. (The DICOM files will not be modified, only the DB fields.)\r\rWARNING! The Patient Name and ID will be identical for all these studies to the last selected study.", nil), NSLocalizedString(@"OK",nil), NSLocalizedString(@"Cancel",nil), nil);
+	
+	if( result == NSAlertDefaultReturn)
+	{
+		NSManagedObjectContext	*context = self.managedObjectContext;
+		
+		[context retain];
+		[context lock];
+		
+		NSIndexSet		*selectedRows = [databaseOutline selectedRowIndexes];
+		
+		NSManagedObject	*destStudy = [databaseOutline itemAtRow: [databaseOutline selectedRow]];
+		if( [[destStudy valueForKey:@"type"] isEqualToString: @"Study"] == NO) destStudy = [destStudy valueForKey:@"study"];
+		
+		if( [[destStudy valueForKey:@"type"] isEqualToString: @"Study"] == NO) destStudy = [destStudy valueForKey:@"study"];
+		
+		NSLog(@"UNIFY STUDIES: %@", destStudy);
+		
+		for( NSInteger x = 0; x < [selectedRows count] ; x++ )
+		{
+			NSInteger row = ( x == 0 ) ? [selectedRows firstIndex] : [selectedRows indexGreaterThanIndex: row];
+			
+			NSManagedObject	*study = [databaseOutline itemAtRow: row];
+			
+			if( [[study valueForKey:@"type"] isEqualToString: @"Study"] == NO) study = [study valueForKey:@"study"];
+			
+			if( study != destStudy)
+			{
+				if( [[study valueForKey:@"type"] isEqualToString: @"Study"])
+				{
+					[study setValue: [destStudy valueForKey:@"patientID"] forKey: @"patientID"];
+					[study setValue: [destStudy valueForKey:@"patientUID"]  forKey: @"patientUID"];
+					[study setValue: [destStudy valueForKey:@"name"]  forKey: @"name"];
+				}
+			}
+		}
+		
+		[self saveDatabase: currentDatabasePath];
+		
+		[self outlineViewRefresh];
+		
+		[databaseOutline selectRow:[databaseOutline rowForItem: destStudy] byExtendingSelection: NO];
+		[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
+		
+		[self refreshMatrix: self];
+		
+		[context unlock];
+		[context release];
+	}
+}
 
 - (IBAction) mergeStudies:(id) sender
 {
@@ -11657,6 +11737,11 @@ static NSArray*	openSubSeriesArray = nil;
 		[menu addItem: [NSMenuItem separatorItem]];
 		
 		sendItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Merge Selected Studies", nil) action: @selector(mergeStudies:) keyEquivalent:@""];
+		[sendItem setTarget:self];
+		[menu addItem:sendItem];
+		[sendItem release];
+		
+		sendItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Unify patient identity", nil) action: @selector(unifyStudies:) keyEquivalent:@""];
 		[sendItem setTarget:self];
 		[menu addItem:sendItem];
 		[sendItem release];
