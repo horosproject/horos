@@ -334,9 +334,11 @@
 							dstVimage.height =  height;
 							dstVimage.width = width;
 							dstVimage.rowBytes = width*sizeof( float);
-
-							err = vImageConvert_16UToF(&srcVimage, &dstVimage, 0,  1, 0);
-						//	if( err) NSLog(@"%d", err);
+							
+							if( isSigned)
+								err = vImageConvert_16SToF(&srcVimage, &dstVimage, 0,  1, 0);
+							else
+								err = vImageConvert_16UToF(&srcVimage, &dstVimage, 0,  1, 0);
 							
 							// Scale the image
 							srcVimage.data = tempFloatSrc;
@@ -362,9 +364,11 @@
 							dstVimage.height =  newHeight;
 							dstVimage.width = width;
 							dstVimage.rowBytes = width* bpp/8;
-
-							err = vImageConvert_FTo16U( &srcVimage, &dstVimage, 0,  1, 0);
-						//	if( err) NSLog(@"%d", err);
+							
+							if( isSigned)
+								err = vImageConvert_FTo16S( &srcVimage, &dstVimage, 0,  1, 0);
+							else
+								err = vImageConvert_FTo16U( &srcVimage, &dstVimage, 0,  1, 0);
 							
 							spacingY = spacingX;
 							height = newHeight;
