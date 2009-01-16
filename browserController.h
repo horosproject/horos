@@ -346,7 +346,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (void) queryDICOM:(id) sender;
 -(void) exportQuicktimeInt:(NSArray*) dicomFiles2Export :(NSString*) path :(BOOL) html;
 - (IBAction) delItem:(id) sender;
-- (void) delItemMatrix: (NSManagedObject*) obj;
+- (void) delObjects:(NSMutableArray*) objectsToDelete;
 - (IBAction) selectFilesAndFoldersToAdd:(id) sender;
 - (void) showDatabase:(id)sender;
 -(IBAction) matrixPressed:(id)sender;

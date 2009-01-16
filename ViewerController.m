@@ -4493,7 +4493,7 @@ static ViewerController *draggedController = nil;
 	{
 	[toolbarItem setLabel: NSLocalizedString(@"Delete", nil)];
 	[toolbarItem setPaletteLabel: NSLocalizedString(@"Delete", nil)];
-	[toolbarItem setToolTip: NSLocalizedString(@"Delete this series from the database and close window", nil)];
+	[toolbarItem setToolTip: NSLocalizedString(@"Delete this series from the study", nil)];
 	[toolbarItem setImage: [NSImage imageNamed: DeleteToolbarItemIdentifier]];
 	[toolbarItem setTarget: self];
 	[toolbarItem setAction: @selector(deleteSeries:)];
@@ -13764,8 +13764,21 @@ int i,j,l;
 }
 
 -(void) deleteSeries:(id) sender
-{
-	[[BrowserController currentBrowser] delItemMatrix: [fileList[ curMovieIndex] objectAtIndex:[imageView curImage]]];
+{	
+	int result = NSRunInformationalAlertPanel(NSLocalizedString(@"Delete Series", nil), NSLocalizedString(@"Are you sure you want to delete this series?", nil), NSLocalizedString(@"OK",nil), NSLocalizedString(@"Cancel",nil), nil);
+	
+	if( result == NSAlertDefaultReturn)
+	{
+		NSManagedObject *o = [fileList[ curMovieIndex] objectAtIndex:[imageView curImage]];
+		NSManagedObject *s = [o valueForKey: @"series"];
+		
+		NSMutableArray *objectsToDelete = [NSMutableArray array];
+		
+		for( int x = 0 ; x < maxMovieIndex; x++)
+			[objectsToDelete addObjectsFromArray: fileList[ x]];
+		
+		[[BrowserController currentBrowser] delObjects: objectsToDelete];
+	}
 }
 
 - (float) frameRate

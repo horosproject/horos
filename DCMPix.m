@@ -7835,9 +7835,9 @@ END_CREATE_ROIS:
 									unsigned short   *bufPtr;
 									bufPtr = (unsigned short*) oImage;
 									
-		#if __BIG_ENDIAN__
+									#if __BIG_ENDIAN__
 									InverseShorts( (vector unsigned short*) oImage, height * realwidth * 3);
-		#endif
+									#endif
 									
 									if( fPlanarConf > 0)	// PLANAR MODE
 									{
@@ -7880,7 +7880,6 @@ END_CREATE_ROIS:
 										loop = totSize/4;
 										while( loop-- > 0)
 										{
-											
 											*ptr++	= 255;			//ptr++;
 											*ptr++	= bufPtr[ 0 * imsize + x];		//ptr++;  bufPtr++;
 											*ptr++	= bufPtr[ 1 * imsize + x];		//ptr++;  bufPtr++;
@@ -7894,24 +7893,16 @@ END_CREATE_ROIS:
 										loop = totSize/4;
 										while( loop-- > 0)
 										{
-											//	#if __BIG_ENDIAN__
-											*ptr++	= 255;				//ptr++;
-											*ptr++	= *bufPtr++;		//ptr++;  bufPtr++;
-											*ptr++	= *bufPtr++;		//ptr++;  bufPtr++;
-											*ptr++	= *bufPtr++;		//ptr++;  bufPtr++;
-											//	#else
-											//	*ptr++	= *bufPtr++;		//ptr++;  bufPtr++;
-											//	*ptr++	= *bufPtr++;		//ptr++;  bufPtr++;
-											//	*ptr++	= *bufPtr++;		//ptr++;  bufPtr++;
-											//	*ptr++	= 255;				//ptr++;
-											//	#endif
+											*ptr++	= 255;
+											*ptr++	= *bufPtr++;
+											*ptr++	= *bufPtr++;
+											*ptr++	= *bufPtr++;
 										}
 									}
 								}
 								efree3 ((void **) &oImage);
 								oImage = (short*) tmpImage;
 							}
-							
 						}
 						else if( bitsAllocated == 8)	// Black & White 8 bit image -> 16 bits image
 						{
@@ -7929,7 +7920,6 @@ END_CREATE_ROIS:
 							while( loop-- > 0)
 							{
 								*ptr++ = *bufPtr++;
-								//	ptr++; bufPtr ++;
 							}
 							
 							efree3 ((void **) &oImage);
