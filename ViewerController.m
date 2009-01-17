@@ -13771,13 +13771,36 @@ int i,j,l;
 	{
 		NSManagedObject *o = [fileList[ curMovieIndex] objectAtIndex:[imageView curImage]];
 		NSManagedObject *s = [o valueForKey: @"series"];
+		NSManagedObject *seriesToLoad = nil;
+		
+		for( NSManagedObject *series in [[BrowserController currentBrowser] childrenArray: [s valueForKey:@"study"]])
+		{
+			if( series != s)
+			{
+				seriesToLoad = series;
+				break;
+			}
+		}
 		
 		NSMutableArray *objectsToDelete = [NSMutableArray array];
 		
 		for( int x = 0 ; x < maxMovieIndex; x++)
 			[objectsToDelete addObjectsFromArray: fileList[ x]];
 		
+		NSRect frame = [[self window] frame];
+		
 		[[BrowserController currentBrowser] delObjects: objectsToDelete];
+		
+		if( seriesToLoad)
+		{
+			ViewerController *v = [[BrowserController currentBrowser] loadSeries :seriesToLoad :nil :YES keyImagesOnly: displayOnlyKeyImages];
+			[[v window] setFrame: frame display: NO];
+			[v matrixPreviewSelectCurrentSeries];
+			[[AppController sharedAppController] checkAllWindowsAreVisible: v makeKey: YES];
+			[[v window] makeKeyAndOrderFront: v];
+			[v refreshToolbar];
+			[v updateNavigator];
+		}
 	}
 }
 

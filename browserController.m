@@ -5393,6 +5393,13 @@ static NSArray*	statesArray = nil;
 									if( series) [seriesArray addObject: series];
 									[series setValue:[NSNumber numberWithInt:0]  forKey:@"numberOfImages"];
 									[series setValue: nil forKey:@"thumbnail"];
+									
+									// Is a viewer containing this series opened? -> close it
+									for( ViewerController *vc in viewersList )
+									{
+										if( series == [[[vc fileList] objectAtIndex: 0] valueForKey:@"series"])
+											[[vc window] close];
+									}
 								}
 								
 								// ********* STUDY
@@ -5405,15 +5412,14 @@ static NSArray*	statesArray = nil;
 									{
 										if( study) [studiesArray addObject: study];
 										[study setValue:[NSNumber numberWithInt:0]  forKey:@"numberOfImages"];
-									}
-									
-									// Is a viewer containing this study opened? -> close it
-									for( ViewerController *vc in viewersList )
-									{
-										if( study == [[[vc fileList] objectAtIndex: 0] valueForKeyPath:@"series.study"])
+										
+										// Is a viewer containing this series opened? -> close it
+										for( ViewerController *vc in viewersList )
 										{
-//											CLOSE ONLY IF IT CONTAINS THIS SERIES? IMAGES?
-											[[vc window] close];
+											if( study == [[[vc fileList] objectAtIndex: 0] valueForKeyPath:@"series.study"])
+											{
+												[vc buildMatrixPreview];
+											}
 										}
 									}
 								}
