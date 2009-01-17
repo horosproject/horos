@@ -5412,7 +5412,7 @@ static NSArray*	statesArray = nil;
 									{
 										if( study == [[[vc fileList] objectAtIndex: 0] valueForKeyPath:@"series.study"])
 										{
-											CLOSE ONLY IF IT CONTAINS THIS SERIES? IMAGES?
+//											CLOSE ONLY IF IT CONTAINS THIS SERIES? IMAGES?
 											[[vc window] close];
 										}
 									}

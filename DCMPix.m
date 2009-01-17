@@ -11430,7 +11430,7 @@ END_CREATE_ROIS:
 		}
 	}
 	
-    [srcFile release];
+    
 	if( baseAddr)
 	{
 		free( baseAddr);
@@ -11449,8 +11449,12 @@ END_CREATE_ROIS:
 	[annotationsDictionary release];
 	
 	if(LUT12baseAddr) free(LUT12baseAddr);
+	
 	[self clearCachedPapyGroups];
 	[self clearCachedDCMFrameworkFiles];
+	
+	[srcFile release];
+	
     [super dealloc];
 }
 
