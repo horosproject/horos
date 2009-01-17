@@ -385,7 +385,6 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 - (void) setOriginOffset:(NSPoint) x;
 - (void) scaleToFit;
 - (float) scaleToFitForDCMPix: (DCMPix*) d;
-- (void) scaleBy2AndCenterShutter;
 - (void) setBlendingFactor:(float) f;
 - (void) sliderAction:(id) sender;
 - (void) roiSet;

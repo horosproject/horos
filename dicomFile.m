@@ -1939,7 +1939,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 						
 						completeDate = [studyDate stringByAppendingString:studyTime];
 						
-						if( [studyTime length] == 6)
+						if( [studyTime length] >= 6)
 							date = [[NSCalendarDate alloc] initWithString:completeDate calendarFormat:@"%Y%m%d%H%M%S"];
 						else
 							date = [[NSCalendarDate alloc] initWithString:completeDate calendarFormat:@"%Y%m%d%H%M"];
@@ -1962,7 +1962,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 							
 							completeDate = [studyDate stringByAppendingString:studyTime];
 							
-							if( [studyTime length] == 6)
+							if( [studyTime length] >= 6)
 								date = [[NSCalendarDate alloc] initWithString:completeDate calendarFormat:@"%Y%m%d%H%M%S"];
 							else
 								date = [[NSCalendarDate alloc] initWithString:completeDate calendarFormat:@"%Y%m%d%H%M"];
@@ -1985,7 +1985,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 								
 								completeDate = [studyDate stringByAppendingString:studyTime];
 								
-								if( [studyTime length] == 6)
+								if( [studyTime length] >= 6)
 									date = [[NSCalendarDate alloc] initWithString:completeDate calendarFormat:@"%Y%m%d%H%M%S"];
 								else
 									date = [[NSCalendarDate alloc] initWithString:completeDate calendarFormat:@"%Y%m%d%H%M"];
@@ -2008,7 +2008,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 									
 									completeDate = [studyDate stringByAppendingString:studyTime];
 									
-									if( [studyTime length] == 6)
+									if( [studyTime length] >= 6)
 										date = [[NSCalendarDate alloc] initWithString:completeDate calendarFormat:@"%Y%m%d%H%M%S"];
 									else
 										date = [[NSCalendarDate alloc] initWithString:completeDate calendarFormat:@"%Y%m%d%H%M"];
@@ -2593,7 +2593,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				[dicomElements setObject:imageType forKey:@"imageType"];
 		}
 			
-		if (SOPUID =[[dcmObject attributeValueForKey:@"0008,0018"] retain])	//SOPInstanceUID {
+		if (SOPUID =[[dcmObject attributeValueForKey:@"0008,0018"] retain])	//SOPInstanceUID 
 			[dicomElements setObject:SOPUID forKey:@"SOPUID"];
 			
 		if (study = [[DicomFile NSreplaceBadCharacter: [dcmObject attributeValueWithName:@"StudyDescription"]] retain])
@@ -2624,28 +2624,28 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		//NSString *date;
 		if (contDate && contTime)
 		{
-			if( [contTime length] == 6)
+			if( [contTime length] >= 6)
 				date = [[NSCalendarDate alloc] initWithString:[contDate stringByAppendingString:contTime] calendarFormat:@"%Y%m%d%H%M%S"];
 			else
 				date = [[NSCalendarDate alloc] initWithString:[contDate stringByAppendingString:contTime] calendarFormat:@"%Y%m%d%H%M"];
 		}
 		else if (acqDate && acqTime)
 		{
-			if( [acqTime length] == 6)
+			if( [acqTime length] >= 6)
 				date = [[NSCalendarDate alloc] initWithString:[acqDate stringByAppendingString:acqTime] calendarFormat:@"%Y%m%d%H%M%S"];
 			else
 				date = [[NSCalendarDate alloc] initWithString:[acqDate stringByAppendingString:acqTime] calendarFormat:@"%Y%m%d%H%M"];
 		}
 		else if (seriesDate && seriesTime)
 		{
-			if( [seriesTime length] == 6)
+			if( [seriesTime length] >= 6)
 				date = [[NSCalendarDate alloc] initWithString:[seriesDate stringByAppendingString:seriesTime] calendarFormat:@"%Y%m%d%H%M%S"];
 			else
 				date = [[NSCalendarDate alloc] initWithString:[seriesDate stringByAppendingString:seriesTime] calendarFormat:@"%Y%m%d%H%M"];
 		}
 		else if (studyDate && studyTime)
 		{
-			if( [studyTime length] == 6)
+			if( [studyTime length] >= 6)
 				date = [[NSCalendarDate alloc] initWithString:[studyDate stringByAppendingString:studyTime] calendarFormat:@"%Y%m%d%H%M%S"];
 			else
 				date = [[NSCalendarDate alloc] initWithString:[studyDate stringByAppendingString:studyTime] calendarFormat:@"%Y%m%d%H%M"];

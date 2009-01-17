@@ -28,7 +28,7 @@
 		// Raw data support
 		unsigned char		*data;
 		long				width, height, spp, bpp;
-		BOOL				isSigned;
+		BOOL				isSigned, modalityAsSource;
 		int					offset;
 		
 		// NSImage support
@@ -68,7 +68,7 @@
 
 // Write the image data
 - (NSString*) writeDCMFile: (NSString*) dstPath;
-
+- (void) setModalityAsSource: (BOOL) v;
 - (NSString*) seriesDescription;
 - (void) setSeriesDescription: (NSString*) desc;
 - (void) setSeriesNumber: (long) no;

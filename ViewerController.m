@@ -5233,7 +5233,7 @@ static ViewerController *draggedController = nil;
 				[[[imageView dcmPixList] objectAtIndex: i] DCMPixShutterRect:(long)shutterRect.origin.x :(long)shutterRect.origin.y :(long)shutterRect.size.width :(long)shutterRect.size.height];
 				[[[imageView dcmPixList] objectAtIndex: i] DCMPixShutterOnOff: NSOnState];
 			}
-			[imageView scaleBy2AndCenterShutter];
+			[imageView scaleToFit];
 		}
 		else
 		{
@@ -5248,7 +5248,7 @@ static ViewerController *draggedController = nil;
 			else //reuse preconfigured shutterRect
 			{
 				for( i = 0; i < [[imageView dcmPixList] count]; i++) [[[imageView dcmPixList] objectAtIndex: i] DCMPixShutterOnOff: NSOnState];
-				[imageView scaleBy2AndCenterShutter];	
+				[imageView scaleToFit];	
 			}
 		}
 	}
@@ -15096,6 +15096,7 @@ int i,j,l;
 		[exportDCM setPixelData: data samplePerPixel:spp bitsPerPixel:bpp width: width height: height];
 		[exportDCM setSigned: isSigned];
 		[exportDCM setOffset: offset];
+		[exportDCM setModalityAsSource: YES];
 		
 		f = [exportDCM writeDCMFile: nil];
 		if( f == nil) NSRunCriticalAlertPanel( NSLocalizedString(@"Error", nil),  NSLocalizedString(@"Error during the creation of the DICOM File!", nil), NSLocalizedString(@"OK", nil), nil, nil);

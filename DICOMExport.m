@@ -223,6 +223,11 @@
 	slicePosition = p;
 }
 
+- (void) setModalityAsSource: (BOOL) v
+{
+	modalityAsSource = v;
+}
+
 - (NSString*) writeDCMFile: (NSString*) dstPath
 {
 	if( dstPath == nil)
@@ -246,11 +251,15 @@
 	{
 		@try
 		{
-			DCMCalendarDate		*acquisitionDate = [DCMCalendarDate date], *studyDate = nil, *studyTime = nil;
-			DCMObject			*dcmObject = nil;
-			NSString			*patientName = nil, *patientID = nil, *studyDescription = nil, *studyUID = nil, *studyID = nil, *charSet = nil;
-			NSNumber			*seriesNumber = nil;
-			unsigned char		*squaredata = nil;
+			DCMCalendarDate *studyDate = nil, *studyTime = nil;
+			DCMCalendarDate *acquisitionDate = nil, *acquisitionTime = nil;
+			DCMCalendarDate *seriesDate = nil, *seriesTime = nil;
+			DCMCalendarDate *contentDate = nil, *contentTime = nil;
+			
+			DCMObject *dcmObject = nil;
+			NSString *patientName = nil, *patientID = nil, *studyDescription = nil, *studyUID = nil, *studyID = nil, *charSet = nil;
+			NSNumber *seriesNumber = nil;
+			unsigned char *squaredata = nil;
 			
 			seriesNumber = [NSNumber numberWithInt:exportSeriesNumber];
 			
@@ -267,6 +276,12 @@
 					studyID = [dcmObject attributeValueWithName:@"StudyID"];
 					studyDate = [dcmObject attributeValueWithName:@"StudyDate"];
 					studyTime = [dcmObject attributeValueWithName:@"StudyTime"];
+					seriesDate = [dcmObject attributeValueWithName:@"SeriesDate"];
+					seriesTime = [dcmObject attributeValueWithName:@"SeriesTime"];
+					acquisitionDate = [dcmObject attributeValueWithName:@"AcquisitionDate"];
+					acquisitionTime = [dcmObject attributeValueWithName:@"AcquisitionTime"];
+					contentDate = [dcmObject attributeValueWithName:@"ContentDate"];
+					contentTime = [dcmObject attributeValueWithName:@"ContentTime"];
 					charSet = [dcmObject attributeValueWithName:@"SpecificCharacterSet"];
 					
 					if( [seriesNumber intValue] == -1)
@@ -299,9 +314,6 @@
 				studyDate = [DCMCalendarDate date];
 				studyTime = [DCMCalendarDate date];
 			}
-			
-			DCMCalendarDate *seriesDate = acquisitionDate;
-			DCMCalendarDate *seriestime = acquisitionDate;
 			
 			if( spacingX != 0 && spacingY != 0)
 			{
@@ -436,7 +448,7 @@
 			[dcmDst release];
 			dcmDst = [[DCMObject secondaryCaptureObjectWithBitDepth: bpp  samplesPerPixel:spp numberOfFrames:1] retain];
 			
-			//add attributes
+			
 			if( charSet) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:charSet] forName:@"SpecificCharacterSet"];
 			if( studyUID) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:studyUID] forName:@"StudyInstanceUID"];
 			if( exportSeriesUID) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:exportSeriesUID] forName:@"SeriesInstanceUID"];
@@ -454,9 +466,11 @@
 				if([dcmObject attributeValueWithName:@"PatientsSex"]) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject: [dcmObject attributeValueWithName:@"PatientsSex"]] forName:@"PatientsSex"];
 				if([dcmObject attributeValueWithName:@"PatientsBirthDate"]) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject: [dcmObject attributeValueWithName:@"PatientsBirthDate"]] forName:@"PatientsBirthDate"];
 				if([dcmObject attributeValueWithName:@"AccessionNumber"]) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject: [dcmObject attributeValueWithName:@"AccessionNumber"]] forName:@"AccessionNumber"];
-				
 				if([dcmObject attributeValueWithName:@"ReferringPhysiciansName"]) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject: [dcmObject attributeValueWithName:@"ReferringPhysiciansName"]] forName:@"ReferringPhysiciansName"];
 				else [dcmDst setAttributeValues:[NSMutableArray arrayWithObject: @""] forName:@"ReferringPhysiciansName"];
+				
+				if( modalityAsSource)
+					[dcmDst setAttributeValues:[NSMutableArray arrayWithObject: [dcmObject attributeValueWithName:@"Modality"]] forName:@"Modality"];
 			}
 			else
 			{
@@ -469,9 +483,11 @@
 			if( studyDate) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:studyDate] forName:@"StudyDate"];
 			if( studyTime) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:studyTime] forName:@"StudyTime"];
 			if( seriesDate) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:seriesDate] forName:@"SeriesDate"];
-			if( seriestime) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:seriestime] forName:@"SeriesTime"];
+			if( seriesTime) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:seriesTime] forName:@"SeriesTime"];
 			if( acquisitionDate) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:acquisitionDate] forName:@"AcquisitionDate"];
-			if( acquisitionDate) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:acquisitionDate] forName:@"AcquisitionTime"];
+			if( acquisitionTime) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:acquisitionTime] forName:@"AcquisitionTime"];
+			if( contentDate) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:contentDate] forName:@"ContentDate"];
+			if( contentTime) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:contentTime] forName:@"ContentTime"];
 			
 			[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt:exportInstanceNumber++]] forName:@"InstanceNumber"];
 			

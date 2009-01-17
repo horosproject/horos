@@ -1779,23 +1779,33 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 {
 	NSRect  sizeView = [self bounds];
 	
-	if( sizeView.size.width / d.pwidth < sizeView.size.height / d.pheight / d.pixelRatio )
-		return sizeView.size.width / d.pwidth;
+	int w = d.pwidth;
+	int h = d.pheight;
+	
+	if( d.DCMPixShutterOnOff)
+	{
+		w = d.DCMPixShutterRectWidth;
+		h = d.DCMPixShutterRectHeight;
+	}
+	
+	if( sizeView.size.width / w < sizeView.size.height / h / d.pixelRatio )
+		return sizeView.size.width / w;
 	else
-		return sizeView.size.height / d.pheight /d.pixelRatio;
+		return sizeView.size.height / h / d.pixelRatio;
 }
 
 - (void) scaleToFit
 {
 	self.scaleValue = [self scaleToFitForDCMPix: curDCM];
-	origin.x = origin.y = 0;
-	[self setNeedsDisplay:YES];
-}
-
-- (void) scaleBy2AndCenterShutter
-{	
-	[self setOriginX:  ((curDCM.pwidth  * 0.5f ) - ( curDCM.DCMPixShutterRectOriginX + ( curDCM.DCMPixShutterRectWidth  * 0.5f ))) * scaleValue
-				   Y: -((curDCM.pheight * 0.5f ) - ( curDCM.DCMPixShutterRectOriginY + ( curDCM.DCMPixShutterRectHeight * 0.5f ))) * scaleValue];
+	
+	if( curDCM.DCMPixShutterOnOff)
+	{
+		origin.x = ((curDCM.pwidth  * 0.5f ) - ( curDCM.DCMPixShutterRectOriginX + ( curDCM.DCMPixShutterRectWidth  * 0.5f ))) * scaleValue;
+		origin.y = -((curDCM.pheight * 0.5f ) - ( curDCM.DCMPixShutterRectOriginY + ( curDCM.DCMPixShutterRectHeight * 0.5f ))) * scaleValue;
+	}
+	else
+		origin.x = origin.y = 0;
+	
 	[self setNeedsDisplay:YES];
 }
 
@@ -8442,8 +8452,17 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 								if( pix != curDCM)
 								{
 									[pix.imageObj setValue: [NSNumber numberWithFloat: [self scaleToFitForDCMPix: pix]] forKey: @"scale"];
-									[pix.imageObj setValue: [NSNumber numberWithFloat: 0] forKey:@"xOffset"];
-									[pix.imageObj setValue: [NSNumber numberWithFloat: 0] forKey:@"yOffset"];
+									
+									NSPoint o = NSMakePoint( 0, 0);
+									
+									if( pix.DCMPixShutterOnOff)
+									{
+										o.x = ((curDCM.pwidth  * 0.5f ) - ( curDCM.DCMPixShutterRectOriginX + ( curDCM.DCMPixShutterRectWidth  * 0.5f ))) * scaleValue;
+										o.y = -((curDCM.pheight * 0.5f ) - ( curDCM.DCMPixShutterRectOriginY + ( curDCM.DCMPixShutterRectHeight * 0.5f ))) * scaleValue;
+									}
+									
+									[pix.imageObj setValue: [NSNumber numberWithFloat: o.x] forKey:@"xOffset"];
+									[pix.imageObj setValue: [NSNumber numberWithFloat: o.y] forKey:@"yOffset"];
 								}
 							}
 						}
