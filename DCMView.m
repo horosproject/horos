@@ -10616,13 +10616,17 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 -(void)cursorUpdate:(NSEvent *)theEvent
 {
+	[self flagsChanged: theEvent];
     [cursor set];
 }
 
 - (void) checkCursor
 {
 	if(cursorSet == YES && [[self window] isKeyWindow] == YES)
+	{
+		[self flagsChanged: [[NSApplication sharedApplication] currentEvent]];
 		[cursor set];
+	}
 }
 
 -(void) setCursorForView: (long) tool
