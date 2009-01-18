@@ -16188,7 +16188,7 @@ int i,j,l;
 - (float) computeVolume:(ROI*) selectedRoi points:(NSMutableArray**) pts generateMissingROIs:(BOOL) generateMissingROIs generatedROIs:(NSMutableArray*) generatedROIs computeData:(NSMutableDictionary*) data error:(NSString**) error
 {
 	long				i, x, y, globalCount, imageCount, lastImageIndex;
-	float				volume, prevArea, preLocation;
+	double				volume, prevArea, preLocation, location, sliceInterval;
 	ROI					*lastROI;
 	BOOL				missingSlice = NO;
 	NSMutableArray		*theSlices = [NSMutableArray array];
@@ -16251,7 +16251,9 @@ int i,j,l;
 	globalCount = 0;
 	lastImageIndex = -1;
 	preLocation = 0;
+	location = 0;
 	volume = 0;
+	sliceInterval = [[pixList[curMovieIndex] objectAtIndex: 0] sliceInterval];
 	
 	ROI *fROI = nil, *lROI = nil;
 	int	fROIIndex, lROIIndex;
@@ -16261,6 +16263,8 @@ int i,j,l;
 	{
 		DCMPix	*curDCM = [pixList[curMovieIndex] objectAtIndex: x];
 		imageCount = 0;
+		
+		location = x * sliceInterval;
 		
 		for( i = 0; i < [[roiList[curMovieIndex] objectAtIndex: x] count]; i++)
 		{
@@ -16290,10 +16294,10 @@ int i,j,l;
 				}
 				
 				if( preLocation != 0)
-					volume += (([curPix sliceLocation] - preLocation)/10.) * (curArea + prevArea)/2.;
+					volume += ((location - preLocation)/10.) * (curArea + prevArea)/2.;
 				
 				prevArea = curArea;
-				preLocation = [curPix sliceLocation];
+				preLocation = location;
 				
 				if( pts)
 				{
