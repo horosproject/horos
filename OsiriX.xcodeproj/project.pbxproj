@@ -1199,7 +1199,6 @@
 		AB8CC22F067E4147008D5ED7 /* PapyInitModules3.h in Headers */ = {isa = PBXBuildFile; fileRef = AB8CC21C067E4147008D5ED7 /* PapyInitModules3.h */; };
 		AB8CC230067E4147008D5ED7 /* PapyPrivFunctionDef3.h in Headers */ = {isa = PBXBuildFile; fileRef = AB8CC21D067E4147008D5ED7 /* PapyPrivFunctionDef3.h */; };
 		AB8CC231067E4147008D5ED7 /* PapyMemSystem.h in Headers */ = {isa = PBXBuildFile; fileRef = AB8CC21E067E4147008D5ED7 /* PapyMemSystem.h */; };
-		AB8CC232067E4147008D5ED7 /* PapyMemorySystemMac3.h in Headers */ = {isa = PBXBuildFile; fileRef = AB8CC21F067E4147008D5ED7 /* PapyMemorySystemMac3.h */; };
 		AB8CC233067E4147008D5ED7 /* PapyEnumImageGroups3.h in Headers */ = {isa = PBXBuildFile; fileRef = AB8CC220067E4147008D5ED7 /* PapyEnumImageGroups3.h */; };
 		AB8CC234067E4147008D5ED7 /* PapyWild3.h in Headers */ = {isa = PBXBuildFile; fileRef = AB8CC221067E4147008D5ED7 /* PapyWild3.h */; };
 		AB8CC235067E4147008D5ED7 /* PapyTypeDef3.h in Headers */ = {isa = PBXBuildFile; fileRef = AB8CC222067E4147008D5ED7 /* PapyTypeDef3.h */; };
@@ -8008,7 +8007,6 @@
 		CECB02E207539E3900576814 /* PapyInitModules3.h in Headers */ = {isa = PBXBuildFile; fileRef = AB8CC21C067E4147008D5ED7 /* PapyInitModules3.h */; };
 		CECB02E307539E3900576814 /* PapyPrivFunctionDef3.h in Headers */ = {isa = PBXBuildFile; fileRef = AB8CC21D067E4147008D5ED7 /* PapyPrivFunctionDef3.h */; };
 		CECB02E407539E3900576814 /* PapyMemSystem.h in Headers */ = {isa = PBXBuildFile; fileRef = AB8CC21E067E4147008D5ED7 /* PapyMemSystem.h */; };
-		CECB02E507539E3900576814 /* PapyMemorySystemMac3.h in Headers */ = {isa = PBXBuildFile; fileRef = AB8CC21F067E4147008D5ED7 /* PapyMemorySystemMac3.h */; };
 		CECB02E607539E3900576814 /* PapyEnumImageGroups3.h in Headers */ = {isa = PBXBuildFile; fileRef = AB8CC220067E4147008D5ED7 /* PapyEnumImageGroups3.h */; };
 		CECB02E707539E3900576814 /* PapyWild3.h in Headers */ = {isa = PBXBuildFile; fileRef = AB8CC221067E4147008D5ED7 /* PapyWild3.h */; };
 		CECB02E807539E3900576814 /* PapyTypeDef3.h in Headers */ = {isa = PBXBuildFile; fileRef = AB8CC222067E4147008D5ED7 /* PapyTypeDef3.h */; };
@@ -9441,7 +9439,6 @@
 		AB8CC21C067E4147008D5ED7 /* PapyInitModules3.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = PapyInitModules3.h; path = Papyrus3/PapyInitModules3.h; sourceTree = "<group>"; };
 		AB8CC21D067E4147008D5ED7 /* PapyPrivFunctionDef3.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = PapyPrivFunctionDef3.h; path = Papyrus3/PapyPrivFunctionDef3.h; sourceTree = "<group>"; };
 		AB8CC21E067E4147008D5ED7 /* PapyMemSystem.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = PapyMemSystem.h; path = Papyrus3/PapyMemSystem.h; sourceTree = "<group>"; };
-		AB8CC21F067E4147008D5ED7 /* PapyMemorySystemMac3.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = PapyMemorySystemMac3.h; path = Papyrus3/PapyMemorySystemMac3.h; sourceTree = "<group>"; };
 		AB8CC220067E4147008D5ED7 /* PapyEnumImageGroups3.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = PapyEnumImageGroups3.h; path = Papyrus3/PapyEnumImageGroups3.h; sourceTree = "<group>"; };
 		AB8CC221067E4147008D5ED7 /* PapyWild3.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = PapyWild3.h; path = Papyrus3/PapyWild3.h; sourceTree = "<group>"; };
 		AB8CC222067E4147008D5ED7 /* PapyTypeDef3.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = PapyTypeDef3.h; path = Papyrus3/PapyTypeDef3.h; sourceTree = "<group>"; };
@@ -14630,7 +14627,6 @@
 				AB8CC21C067E4147008D5ED7 /* PapyInitModules3.h */,
 				AB8CC21D067E4147008D5ED7 /* PapyPrivFunctionDef3.h */,
 				AB8CC21E067E4147008D5ED7 /* PapyMemSystem.h */,
-				AB8CC21F067E4147008D5ED7 /* PapyMemorySystemMac3.h */,
 				AB8CC220067E4147008D5ED7 /* PapyEnumImageGroups3.h */,
 				AB8CC221067E4147008D5ED7 /* PapyWild3.h */,
 				AB8CC222067E4147008D5ED7 /* PapyTypeDef3.h */,
@@ -18281,7 +18277,6 @@
 				AB8CC22F067E4147008D5ED7 /* PapyInitModules3.h in Headers */,
 				AB8CC230067E4147008D5ED7 /* PapyPrivFunctionDef3.h in Headers */,
 				AB8CC231067E4147008D5ED7 /* PapyMemSystem.h in Headers */,
-				AB8CC232067E4147008D5ED7 /* PapyMemorySystemMac3.h in Headers */,
 				AB8CC233067E4147008D5ED7 /* PapyEnumImageGroups3.h in Headers */,
 				AB8CC234067E4147008D5ED7 /* PapyWild3.h in Headers */,
 				AB8CC235067E4147008D5ED7 /* PapyTypeDef3.h in Headers */,
@@ -20792,7 +20787,6 @@
 				CECB02E207539E3900576814 /* PapyInitModules3.h in Headers */,
 				CECB02E307539E3900576814 /* PapyPrivFunctionDef3.h in Headers */,
 				CECB02E407539E3900576814 /* PapyMemSystem.h in Headers */,
-				CECB02E507539E3900576814 /* PapyMemorySystemMac3.h in Headers */,
 				CECB02E607539E3900576814 /* PapyEnumImageGroups3.h in Headers */,
 				CECB02E707539E3900576814 /* PapyWild3.h in Headers */,
 				CECB02E807539E3900576814 /* PapyTypeDef3.h in Headers */,

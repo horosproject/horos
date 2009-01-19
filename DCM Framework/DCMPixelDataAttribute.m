@@ -1418,8 +1418,8 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 	return jpeg2000Data;
 }
 
-- (void)decodeData{
-	NSLog(@"decode data");
+- (void)decodeData
+{
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	if (!_framesCreated)
 		[self createFrames];
@@ -1432,7 +1432,8 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 	self.transferSyntax = [DCMTransferSyntax OsiriXTransferSyntax];
 	_isDecoded = YES;
 	NSString *colorspace = [_dcmObject attributeValueWithName:@"PhotometricInterpretation"];
-	if ([colorspace hasPrefix:@"YBR"] || [colorspace hasPrefix:@"PALETTE"]){
+	if ([colorspace hasPrefix:@"YBR"] || [colorspace hasPrefix:@"PALETTE"])
+	{
 		//remove Palette stuff
 		NSMutableDictionary *attributes = [_dcmObject attributes];
 		NSMutableArray *keysToRemove = [NSMutableArray array];
@@ -3176,6 +3177,7 @@ NS_ENDHANDLER
 			//JPEG 2000
 			else if ([transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEG2000LosslessTransferSyntax]] || [transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEG2000LossyTransferSyntax]] )
 			{
+				colorspaceIsConverted = YES;
 				data = [self convertJPEG2000ToHost:subData];
 			}
 			else if ([transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax RLETransferSyntax]])
@@ -3222,8 +3224,9 @@ NS_ENDHANDLER
 			int numberofPlanes = [[_dcmObject attributeValueWithName:@"PlanarConfiguration"] intValue];			
 			if (numberofPlanes > 0 && numberofPlanes <= 4)
 			{
-				if( [transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEGExtendedTransferSyntax]] || [transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEGLosslessTransferSyntax]] )
+				if( [transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEGExtendedTransferSyntax]] || [transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEGLosslessTransferSyntax]] || [transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEG2000LosslessTransferSyntax]] || [transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEG2000LossyTransferSyntax]])
 				{
+					[_dcmObject setAttributeValues:[NSArray arrayWithObject: [NSNumber numberWithInt: 0]] forName:@"PlanarConfiguration"];
 				}
 				else data = [self interleavePlanesInData:data];
 			}

@@ -5725,7 +5725,10 @@ END_CREATE_ROIS:
 		if ([colorspace rangeOfString:@"RGB"].location != NSNotFound) isRGB = YES;			
 		/******** dcm Object will do this *******convertYbrToRgb -> planar is converted***/		
 		if ([colorspace rangeOfString:@"YBR"].location != NSNotFound)
-			{fPlanarConf = 0; isRGB = YES;}
+		{
+			fPlanarConf = 0;
+			isRGB = YES;
+		}
 		
 		if (isRGB == YES)
 		{
@@ -6531,7 +6534,8 @@ END_CREATE_ROIS:
 	
 	// PLANAR CONFIGURATION
 	val = Papy3GetElement (theGroupP, papPlanarConfigurationGr, &nbVal, &elemType);
-	if ( val ) fPlanarConf = (int) val->us;
+	if ( val)
+		fPlanarConf = (int) val->us;
 	
 	val = Papy3GetElement (theGroupP, papPixelSpacingGr, &nbVal, &elemType);
 	if ( val )
@@ -7616,9 +7620,10 @@ END_CREATE_ROIS:
 					// read group 0x7FE0 from the file 
 					if ((err = Papy3GroupRead (fileNb, &theGroupP)) > 0) 
 					{
-						if( gArrCompression [fileNb] == JPEG_LOSSLESS || gArrCompression [fileNb] == JPEG_LOSSY)
+						if( gArrCompression [fileNb] == JPEG_LOSSLESS || gArrCompression [fileNb] == JPEG_LOSSY || gArrCompression [fileNb] == JPEG2000)
 						{
-							if(gArrPhotoInterpret [fileNb] == RGB) fPlanarConf = 0;
+							if(gArrPhotoInterpret [fileNb] == RGB)
+								fPlanarConf = 0;
 						}
 						
 						if( bitsStored == 8 && bitsAllocated == 16 && gArrPhotoInterpret[ fileNb] == RGB)
