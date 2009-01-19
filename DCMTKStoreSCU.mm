@@ -1273,16 +1273,13 @@ NS_DURING
 	
 	/* initialize network, i.e. create an instance of T_ASC_Network*. */
     cond = ASC_initializeNetwork(NET_REQUESTOR, 0, opt_acse_timeout, &net);
-    if (cond.bad()) {
+    if (cond.bad())
+	{
         DimseCondition::dump(cond);
 		localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:@"Could create association parameters" userInfo:nil] retain];
 		[localException raise];
         //return;
     }
-	
-
-	
-
 	
 #ifdef WITH_OPENSSL
 
@@ -1296,7 +1293,8 @@ NS_DURING
  /* initialize asscociation parameters, i.e. create an instance of T_ASC_Parameters*. */
     cond = ASC_createAssociationParameters(&params, opt_maxReceivePDULength);
 	DimseCondition::dump(cond);
-    if (cond.bad()) {
+    if (cond.bad())
+	{
         DimseCondition::dump(cond);
 		localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:@"Could create association parameters" userInfo:nil] retain];
 		[localException raise];
@@ -1431,22 +1429,24 @@ NS_DURING
 		
 		[self performSelectorOnMainThread:@selector(updateLogEntry:) withObject:userInfo waitUntilDone:NO];
     }
-
+	
     /* tear down association, i.e. terminate network connection to SCP */
     if (cond == EC_Normal)
     {
-        if (opt_abortAssociation) {
+        if (opt_abortAssociation)
+		{
             if (opt_verbose)
                 printf("Aborting Association\n");
             cond = ASC_abortAssociation(assoc);
-            if (cond.bad()) {
+            if (cond.bad())
+			{
                 errmsg("Association Abort Failed:");
                 DimseCondition::dump(cond);
                 localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:@"Abort Failed" userInfo:nil] retain];
 				[localException raise];
-				//return;
             }
-        } else {
+        } else
+		{
             /* release association */
             if (opt_verbose)
                 printf("Releasing Association\n");
@@ -1457,7 +1457,6 @@ NS_DURING
                 DimseCondition::dump(cond);
                 localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:@"Release Failed" userInfo:nil] retain];
 				[localException raise];
-				//return;
             }
         }
     }
@@ -1467,12 +1466,12 @@ NS_DURING
         if (opt_verbose)
             printf("Aborting Association\n");
         cond = ASC_abortAssociation(assoc);
-        if (cond.bad()) {
+        if (cond.bad())
+		{
             errmsg("Association Abort Failed:");
             DimseCondition::dump(cond);
             localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:@"Abort Failed" userInfo:nil] retain];
 			[localException raise];
-			//return;
         }
     }
     else if (cond == DUL_PEERABORTEDASSOCIATION)
@@ -1486,12 +1485,12 @@ NS_DURING
         if (opt_verbose)
             printf("Aborting Association\n");
         cond = ASC_abortAssociation(assoc);
-        if (cond.bad()) {
+        if (cond.bad())
+		{
             errmsg("Association Abort Failed:");
             DimseCondition::dump(cond);
 			localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:@"Abort Failed" userInfo:nil] retain];
 			[localException raise];
-			//return;
         }
     }
 	
@@ -1500,32 +1499,26 @@ NS_HANDLER
 	NSLog(@"Store Exception: %@", [localException description]);
 NS_ENDHANDLER
 	
-
-
-// CLEANUP
+	// CLEANUP
 
     /* destroy the association, i.e. free memory of T_ASC_Association* structure. This */
     /* call is the counterpart of ASC_requestAssociation(...) which was called above. */
     cond = ASC_destroyAssociation(&assoc);
-    if (cond.bad()) {
-        DimseCondition::dump(cond);  
-		//localException = [NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:@"Destroy Association" userInfo:nil];
-		//[localException raise]; 
-		//return;     
+    if (cond.bad())
+	{
+        DimseCondition::dump(cond);
+		localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:@"Destroy Association" userInfo:nil] retain];
     }
 	
     /* drop the network, i.e. free memory of T_ASC_Network* structure. This call */
     /* is the counterpart of ASC_initializeNetwork(...) which was called above. */
     cond = ASC_dropNetwork(&net);
-    if (cond.bad()) {
+    if (cond.bad())
+	{
         DimseCondition::dump(cond);
-		//localException = [NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:@"Drop Network" userInfo:nil];
-		//[localException raise];
-		//return;
+		localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:@"Drop Network" userInfo:nil] retain];
     }
 	
-
-
 #ifdef HAVE_WINSOCK_H
     WSACleanup();
 #endif
@@ -1548,13 +1541,18 @@ NS_ENDHANDLER
 */
 #endif
 
-    if (opt_haltOnUnsuccessfulStore && unsuccessfulStoreEncountered) {
-        if (lastStatusCode == STATUS_Success) {
-            // there must have been some kind of general network error
-           // exitCode = 0xff;
-        } else {
-           // exitCode = (lastStatusCode >> 8); // only the least significant byte is relevant as exit code
+    if (opt_haltOnUnsuccessfulStore && unsuccessfulStoreEncountered)
+	{
+        if (lastStatusCode == STATUS_Success)
+		{
+           
         }
+		else
+		{
+           
+        }
+		
+		localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:@"Unsuccessful Store Encountered" userInfo:nil] retain];
     }
 
 #ifdef ON_THE_FLY_COMPRESSION
@@ -1578,11 +1576,13 @@ NS_ENDHANDLER
 		[userInfo setObject:[NSNumber numberWithInt:_numberErrors] forKey:@"ErrorCount"];
 		[userInfo setObject:[NSNumber numberWithInt:NO] forKey:@"Sent"];
 		
-		if( _numberSent !=  _numberOfFiles)
+		if( _numberSent != _numberOfFiles || localException != nil)
 		{
 			if( _shouldAbort) [userInfo setObject:@"Aborted" forKey:@"Message"];
 			else [userInfo setObject:@"Incomplete" forKey:@"Message"];
+			
 			_numberErrors = _numberOfFiles - _numberSent;
+			
 			[userInfo setObject:[NSNumber numberWithInt:_numberErrors] forKey:@"ErrorCount"];
 			
 			[[AppController sharedAppController] growlTitle: NSLocalizedString( @"DICOM Send", nil) description: [NSString stringWithFormat: NSLocalizedString(@"Errors ! %d of %d files generated errors.", nil), _numberErrors, _numberOfFiles]  name:@"result"];
@@ -1596,9 +1596,6 @@ NS_ENDHANDLER
 		[self performSelectorOnMainThread:@selector(updateLogEntry:) withObject:userInfo waitUntilDone:NO];
 	}
 
-	//get rid of temp folder
-//	if ([fileManager fileExistsAtPath:tempFolder]) [fileManager removeFileAtPath:tempFolder handler:nil];
-	
 	[paths release];
 	[pool release];
 	
