@@ -2267,6 +2267,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 {
 	[imageView stopROIEditingForce: YES];
 	
+	loadingPauseDelay = 0;
 	stopThreadLoadImage = YES;
 	[ThreadLoadImageLock lock];
 	[ThreadLoadImageLock unlock];
@@ -2319,6 +2320,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		t12BitTimer = nil;
 	}
 	
+	loadingPauseDelay = 0;
 	stopThreadLoadImage = YES;
 	[ThreadLoadImageLock lock];
 	[ThreadLoadImageLock unlock];
@@ -5527,6 +5529,7 @@ static ViewerController *draggedController = nil;
 {
 	int x,i,z;
 	
+	loadingPauseDelay = 0;
 	stopThreadLoadImage = YES;
 	[ThreadLoadImageLock lock];
 	[ThreadLoadImageLock unlock];
@@ -5698,8 +5701,6 @@ static ViewerController *draggedController = nil;
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"ViewerWillChangeNotification" object: self userInfo: nil];
 	
-	[[[BrowserController currentBrowser] managedObjectContext] lock];
-	
 	[self clear8bitRepresentations];
 	
 	[self setFusionMode: 0];
@@ -5726,6 +5727,9 @@ static ViewerController *draggedController = nil;
 
 	// Release previous data
 	[self finalizeSeriesViewing];
+	
+	
+	[[[BrowserController currentBrowser] managedObjectContext] lock];
 	
 	long index2compare;
 	
