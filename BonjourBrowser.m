@@ -85,14 +85,9 @@ static char *GetPrivateIP()
 	NSString	*uniqueFileName = nil;
 	
 	if( [[image valueForKey: @"numberOfFrames"] intValue] > 1)
-	{
 		uniqueFileName = [NSString stringWithFormat:@"%@-%@-%@.%@", [image valueForKeyPath:@"series.study.patientUID"], [image valueForKey:@"sopInstanceUID"], [[[image valueForKey:@"path"] lastPathComponent] stringByDeletingPathExtension], [image valueForKey:@"extension"]];
-	}
 	else
-	{
 		uniqueFileName = [NSString stringWithFormat:@"%@-%@-%@-%d.%@", [image valueForKeyPath:@"series.study.patientUID"], [image valueForKey:@"sopInstanceUID"], [[[image valueForKey:@"path"] lastPathComponent] stringByDeletingPathExtension], [[image valueForKey:@"instanceNumber"] intValue], [image valueForKey:@"extension"]];
-	}
-	
 	
 	NSString *dicomFileName = [[[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:@"/TEMP/"] stringByAppendingPathComponent: [DicomFile NSreplaceBadCharacter:uniqueFileName]];
 
