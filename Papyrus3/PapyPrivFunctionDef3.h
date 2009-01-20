@@ -121,7 +121,7 @@ PutBufferInGroup3 	(PapyShort, unsigned char *, SElement *, PapyUShort, PapyULon
 /* 	return : the extracted value						*/
 /*										*/
 /********************************************************************************/
-static __inline__ __attribute__((always_inline)) PapyUShort Extract2Bytes (unsigned char *inBufP, PapyULong *ioPosP)
+static __inline__ __attribute__((always_inline)) PapyUShort Extract2Bytes (PapyShort inFileNb, unsigned char *inBufP, PapyULong *ioPosP)
 /*unsigned char *inBufP;				 the buffer to read from */
 /*PapyULong 	*ioPosP;			      the position in the buffer */
 {
@@ -136,11 +136,27 @@ static __inline__ __attribute__((always_inline)) PapyUShort Extract2Bytes (unsig
 	
 	/* extract the element according to the little-endian syntax */
 #if __BIG_ENDIAN__
-	theUShort  = (PapyUShort) (*(theCharP + 1));
-	theUShort  = theUShort << 8;
-	theUShort |= (PapyUShort) *theCharP;
+	if (gArrTransfSyntax [inFileNb] != BIG_ENDIAN_EXPL)
+	{
+		theUShort  = (PapyUShort) (*(theCharP + 1));
+		theUShort  = theUShort << 8;
+		theUShort |= (PapyUShort) *theCharP;
+	}
+	else
+	{
+		theUShort	= *((PapyUShort*) theCharP);
+	}
 #else
-	theUShort	= *((PapyUShort*) theCharP);
+	if (gArrTransfSyntax [inFileNb] != BIG_ENDIAN_EXPL)
+	{
+		theUShort = *((PapyUShort*) theCharP);
+	}
+	else
+	{
+		theUShort  = (PapyUShort) (*(theCharP + 1));
+		theUShort  = theUShort << 8;
+		theUShort |= (PapyUShort) *theCharP;
+	}
 #endif
 	
 	return theUShort;
@@ -156,7 +172,7 @@ static __inline__ __attribute__((always_inline)) PapyUShort Extract2Bytes (unsig
 /* 	return : the extracted value					 	*/
 /*										*/
 /********************************************************************************/
-static __inline__ __attribute__((always_inline)) PapyULong Extract4Bytes (unsigned char *inBufP, PapyULong *ioPosP)
+static __inline__ __attribute__((always_inline)) PapyULong Extract4Bytes (PapyShort inFileNb, unsigned char *inBufP, PapyULong *ioPosP)
 {
 	unsigned char *theCharP;
 	PapyULong theULong;
@@ -169,6 +185,8 @@ static __inline__ __attribute__((always_inline)) PapyULong Extract4Bytes (unsign
 	
 		/* extract the element according to the little-endian syntax */
 	#if __BIG_ENDIAN__
+	if (gArrTransfSyntax [inFileNb] == LITTLE_ENDIAN_EXPL)
+	{
 		PapyULong theTmpULong;
 		theULong = 0L;
 		theTmpULong  = (PapyULong) (*(theCharP + 3));
@@ -182,8 +200,32 @@ static __inline__ __attribute__((always_inline)) PapyULong Extract4Bytes (unsign
 		theULong    |= theTmpULong;
 		theTmpULong  = (PapyULong) *theCharP;
 		theULong    |= theTmpULong;
-	#else
+	}
+	else
+	{
 		theULong	= *((PapyULong*) theCharP);
+	}
+	#else
+	if (gArrTransfSyntax [inFileNb] == LITTLE_ENDIAN_EXPL)
+	{
+		theULong	= *((PapyULong*) theCharP);
+	}
+	else
+	{
+		PapyULong theTmpULong;
+		theULong = 0L;
+		theTmpULong  = (PapyULong) (*(theCharP + 3));
+		theTmpULong  = theTmpULong << 24;
+		theULong    |= theTmpULong;
+		theTmpULong  = (PapyULong) (*(theCharP + 2));
+		theTmpULong  = theTmpULong << 16;
+		theULong    |= theTmpULong;
+		theTmpULong  = (PapyULong) (*(theCharP + 1));
+		theTmpULong  = theTmpULong << 8;
+		theULong    |= theTmpULong;
+		theTmpULong  = (PapyULong) *theCharP;
+		theULong    |= theTmpULong;
+	}
 	#endif
 	
 	return theULong;

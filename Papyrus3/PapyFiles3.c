@@ -919,24 +919,24 @@ ReadGroup3 (PapyShort inFileNb, PapyUShort *outGroupNbP, unsigned char **outBuff
   } /* if */
   
   i = 0L;	/* position in the read buffer */
-  *outGroupNbP	= Extract2Bytes (*outBuffP, &i);	/* group number */
-  theElemNb   	= Extract2Bytes (*outBuffP, &i);	/* element number */
+  *outGroupNbP	= Extract2Bytes (inFileNb, *outBuffP, &i);	/* group number */
+  theElemNb   	= Extract2Bytes (inFileNb, *outBuffP, &i);	/* element number */
   
   /* check the transfert syntax */
   if (gArrTransfSyntax [inFileNb] == LITTLE_ENDIAN_EXPL || *outGroupNbP == 0x0002)
   {
     i += 2;	/* moves 2 bytes forward */
-    theTemplGr2 = Extract2Bytes (*outBuffP, &i);
+    theTemplGr2 = Extract2Bytes (inFileNb, *outBuffP, &i);
     theTempL    = (PapyULong) theTemplGr2;		/* element length */
   } /* if ...EXPLICIT VR */
   /* IMPLICIT VR */
-  else theTempL = Extract4Bytes (*outBuffP, &i);	/* element length */
+  else theTempL = Extract4Bytes (inFileNb, *outBuffP, &i);	/* element length */
         
         
   /* length of the group element is present */
   /* or DICOMDIR, so compute it */
   if (theElemNb == 0) /* && *outGroupNbP != 0x0004)*/
-    theGrLength = Extract4Bytes (*outBuffP, &i);
+    theGrLength = Extract4Bytes (inFileNb, *outBuffP, &i);
   /* group with no length set, so compute it */
   else
   {
@@ -1177,7 +1177,7 @@ Papy3GetNextGroupNb (PapyShort inFileNb)
   } /* if */
    
   i = 0L;
-  theGroupNb = Extract2Bytes (theBuff, &i);
+  theGroupNb = Extract2Bytes ( inFileNb, theBuff, &i);
   
   /* resets the file pointer to its previous position */
   if (Papy3FSeek (theFp, (int) SEEK_CUR, (PapyLong) -2L) != 0) RETURN (papPositioning);
@@ -1236,8 +1236,8 @@ Papy3SkipNextGroup (PapyShort inFileNb)
 	} /* if */
 	
 	i = 0L;
-	theGrNb  = Extract2Bytes (theBuff, &i);
-	theTempS = Extract2Bytes (theBuff, &i);
+	theGrNb  = Extract2Bytes (inFileNb, theBuff, &i);
+	theTempS = Extract2Bytes (inFileNb, theBuff, &i);
 	
 	/* DICOMDIR separator  0xFFFE:0xE000 */
 	if ((theGrNb == 0xFFFE) && (theTempS == 0xE000)) 
@@ -1270,14 +1270,14 @@ Papy3SkipNextGroup (PapyShort inFileNb)
 	{
 		/* test the VR */
 		if (gArrTransfSyntax [inFileNb] == LITTLE_ENDIAN_IMPL && theGrNb != 0x0002)
-			theTempL = Extract4Bytes (theBuff, &i);
+			theTempL = Extract4Bytes (inFileNb, theBuff, &i);
 		else 
 		{
 			i += 2L;
-			theTempL = (PapyULong) Extract2Bytes (theBuff, &i);
+			theTempL = (PapyULong) Extract2Bytes (inFileNb, theBuff, &i);
 		} /* else */
 		/* if (theTempL != 4L) RETURN (papElemSize); this is to let pass little endian impl gr2 files */
-		theGrLength = Extract4Bytes (theBuff, &i);
+		theGrLength = Extract4Bytes (inFileNb, theBuff, &i);
 
 		//	if( theGrLength <= 0)
 		{
@@ -1851,12 +1851,12 @@ Papy3ExtractItemLength (PapyShort inFileNb)
 
   /* extract the values from the buffer */
   theBufPos = 0L;
-  theUS = Extract2Bytes (theBuffP, &theBufPos);
+  theUS = Extract2Bytes (inFileNb, theBuffP, &theBufPos);
   if (theUS != 0xFFFE) return (PapyULong) papGroupNumber;
-  theUS = Extract2Bytes (theBuffP, &theBufPos);
+  theUS = Extract2Bytes (inFileNb, theBuffP, &theBufPos);
   if (theUS != 0xE000) return (PapyULong) papElemNumber;
   
-  theItemLength = Extract4Bytes (theBuffP, &theBufPos);
+  theItemLength = Extract4Bytes (inFileNb, theBuffP, &theBufPos);
   if (theItemLength <= 0) return (PapyULong) papElemSize;
   else 
     if (theItemLength == 0xFFFFFFFF) ComputeUndefinedItemLength3 (inFileNb, &theItemLength);
@@ -1909,14 +1909,14 @@ ComputeUndefinedItemLength3 (PapyShort inFileNb, PapyULong *ioItemLengthP)
     /* get the group number, the element number and the element length of the */
     /* group */
     theBufPos = 0L;
-    theGrNb       = Extract2Bytes (theBuffP, &theBufPos);
-    theElemNb     = Extract2Bytes (theBuffP, &theBufPos);
+    theGrNb       = Extract2Bytes (inFileNb, theBuffP, &theBufPos);
+    theElemNb     = Extract2Bytes (inFileNb, theBuffP, &theBufPos);
     
     /* extract the element length depending on the syntax */
     if ((gArrTransfSyntax [inFileNb] == LITTLE_ENDIAN_IMPL && theGrNb != 0x0002) || 
     	(theGrNb == 0xFFFE && theElemNb == 0xE000) ||
     	(theGrNb == 0xFFFE && theElemNb == 0xE00D))
-      theElemLength = Extract4Bytes (theBuffP, &theBufPos);
+      theElemLength = Extract4Bytes (inFileNb, theBuffP, &theBufPos);
     else
     {
       /* extract the VR */
@@ -1944,10 +1944,10 @@ ComputeUndefinedItemLength3 (PapyShort inFileNb, PapyULong *ioItemLengthP)
         } /* if */
         *ioItemLengthP += 4L;
         theBufPos = 0L;
-        theElemLength = Extract4Bytes (theBuffP, &theBufPos);
+        theElemLength = Extract4Bytes (inFileNb, theBuffP, &theBufPos);
       }
       else
-        theElemLength = (PapyULong) Extract2Bytes (theBuffP, &theBufPos); 
+        theElemLength = (PapyULong) Extract2Bytes (inFileNb, theBuffP, &theBufPos); 
     } /* else ...EXPLICIT VR */
     
     /* is it the end of item delimiter ? */
@@ -2040,15 +2040,15 @@ ComputeUndefinedSequenceLength3 (PapyShort inFileNb, PapyULong *ioSeqLengthP)
     /* get the group number, the element number and the element length of the */
     /* item delimiter element */
     theBufPos 	  = 0L;
-    theGrNb       = Extract2Bytes (theBuffP, &theBufPos);
-    theElemNb     = Extract2Bytes (theBuffP, &theBufPos);
+    theGrNb       = Extract2Bytes (inFileNb, theBuffP, &theBufPos);
+    theElemNb     = Extract2Bytes (inFileNb, theBuffP, &theBufPos);
     
     /* extract the element length depending on the syntax */
     if ((gArrTransfSyntax [inFileNb] == LITTLE_ENDIAN_IMPL && theGrNb != 0x0002) || 
     	(theGrNb == 0xFFFE && theElemNb == 0xE000) ||
     	(theGrNb == 0xFFFE && theElemNb == 0xE00D) ||
     	(theGrNb == 0xFFFE && theElemNb == 0xE0DD))
-      theElemLength = Extract4Bytes (theBuffP, &theBufPos);
+      theElemLength = Extract4Bytes (inFileNb, theBuffP, &theBufPos);
     else
     {
       /* extract the VR */
@@ -2076,10 +2076,10 @@ ComputeUndefinedSequenceLength3 (PapyShort inFileNb, PapyULong *ioSeqLengthP)
         } /* if */
         *ioSeqLengthP += 4L;
         theBufPos = 0L;
-        theElemLength = Extract4Bytes (theBuffP, &theBufPos);
+        theElemLength = Extract4Bytes (inFileNb, theBuffP, &theBufPos);
       }
       else
-        theElemLength = (PapyULong) Extract2Bytes (theBuffP, &theBufPos); 
+        theElemLength = (PapyULong) Extract2Bytes (inFileNb, theBuffP, &theBufPos); 
     } /* else ...EXPLICIT VR */
     
     /* is it the sequence delimiter ? */
@@ -2147,8 +2147,8 @@ ComputeUndefinedGroupLength3 (PapyShort inFileNb, PapyLong inMaxSize)
 
   /* get the group number and the element number */
   theBufPos 	= 0L;
-  theGrNb       = Extract2Bytes (theBuffP, &theBufPos);
-  theElemNb     = Extract2Bytes (theBuffP, &theBufPos);
+  theGrNb       = Extract2Bytes (inFileNb, theBuffP, &theBufPos);
+  theElemNb     = Extract2Bytes (inFileNb, theBuffP, &theBufPos);
   
   /* set some comparison variables */
   theCmpGrNb   	= theGrNb;
@@ -2174,8 +2174,8 @@ ComputeUndefinedGroupLength3 (PapyShort inFileNb, PapyLong inMaxSize)
 
     /* get the group number, the element number and the element length */
     theBufPos = 0L;
-    theGrNb       = Extract2Bytes (theBuffP, &theBufPos);
-    theElemNb     = Extract2Bytes (theBuffP, &theBufPos);
+    theGrNb       = Extract2Bytes (inFileNb, theBuffP, &theBufPos);
+    theElemNb     = Extract2Bytes (inFileNb, theBuffP, &theBufPos);
     
     /* reset the VR ... */
     theVR [0] = 'A'; theVR [1] = 'A';
@@ -2185,7 +2185,7 @@ ComputeUndefinedGroupLength3 (PapyShort inFileNb, PapyLong inMaxSize)
         (theGrNb == 0xFFFE && theElemNb == 0xE000) ||
         (theGrNb == 0xFFFE && theElemNb == 0xE00D))
 	{
-       theElemLength = Extract4Bytes (theBuffP, &theBufPos);
+       theElemLength = Extract4Bytes (inFileNb, theBuffP, &theBufPos);
     }
 	else
     {
@@ -2228,12 +2228,12 @@ ComputeUndefinedGroupLength3 (PapyShort inFileNb, PapyLong inMaxSize)
           } /* if */
           theGroupLength += 4L;
           theBufPos       = 0L;
-          theElemLength   = Extract4Bytes (theBuffP, &theBufPos);
+          theElemLength   = Extract4Bytes (inFileNb, theBuffP, &theBufPos);
         } /* else ...elem not 0x0004, 0x1220 */
       } /* if ...VR = OB, OW, SQ, Un or UT */
       else
 	  {
-        theElemLength = (PapyULong) Extract2Bytes (theBuffP, &theBufPos);
+        theElemLength = (PapyULong) Extract2Bytes (inFileNb, theBuffP, &theBufPos);
 	  }
 	} /* else ...EXPLICIT VR */
     

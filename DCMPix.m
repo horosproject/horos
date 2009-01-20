@@ -5264,13 +5264,6 @@ END_CREATE_ROIS:
 		return NO;
 	}
 	
-	if( dcmObject.transferSyntax.isLittleEndian == NO)
-	{
-		NSLog(@"loadDICOMDCMFramework - we cannot decode BigEndian images");
-		[pool release];
-		return NO;
-	}
-	
 	NSString *SOPClassUID = [dcmObject attributeValueWithName:@"SOPClassUID"];
 	
 	//-----------------------common----------------------------------------------------------	

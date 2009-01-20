@@ -77,9 +77,9 @@ ExtractJPEGlossy16 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelS
   } /* if */
     
   thePos     = 0L;
-  theGroup   = Extract2Bytes (theTmpBufP, &thePos);
-  theElement = Extract2Bytes (theTmpBufP, &thePos);
-  theLength  = Extract4Bytes (theTmpBufP, &thePos);
+  theGroup   = Extract2Bytes (inFileNb, theTmpBufP, &thePos);
+  theElement = Extract2Bytes (inFileNb, theTmpBufP, &thePos);
+  theLength  = Extract4Bytes (inFileNb, theTmpBufP, &thePos);
   
   /* Pixel data fragment not found when expected */
   if ((theGroup != 0xFFFE) || (theElement != 0xE000))
