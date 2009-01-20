@@ -154,7 +154,7 @@ static NSString*	OpenROIsToolbarItemIdentifier	= @"ROIs.tif";
 
 static NSTimeInterval	gLastActivity = 0;
 static BOOL DICOMDIRCDMODE = NO;
-static BOOL copyThread = YES;
+static BOOL copyThread = YES, dontShowOpenSubSeries = NO;
 
 static NSArray*	statesArray = nil;
 
@@ -5031,9 +5031,7 @@ static NSArray*	statesArray = nil;
 		if( [i containsString: OpenKeyImagesAndROIsToolbarItemIdentifier] && isCurrentDatabaseBonjour == NO)
 		{
 			if( [index count] > 10)
-			{
 				ROIsAndKeyImagesButtonAvailable = YES;
-			}
 			else
 			{
 				if( [[self ROIsAndKeyImages: nil] count] == 0) ROIsAndKeyImagesButtonAvailable = NO;
@@ -10085,9 +10083,12 @@ static BOOL needToRezoom;
 			}
 		}
 		
-		if (([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSAlternateKeyMask) || ([self computeEnoughMemory: toOpenArray : nil] == NO))
+		if( dontShowOpenSubSeries == NO)
 		{
-			toOpenArray = [self openSubSeries: toOpenArray];
+			if (([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSAlternateKeyMask) || ([self computeEnoughMemory: toOpenArray : nil] == NO))
+			{
+				toOpenArray = [self openSubSeries: toOpenArray];
+			}
 		}
 		
 		// NS_DURING (2) Compute Required Memory
@@ -11106,8 +11107,10 @@ static BOOL needToRezoom;
 	
 	if( [roisImagesArray count])
 	{
+		dontShowOpenSubSeries = YES;
 		[self openViewerFromImages :[NSArray arrayWithObject: roisImagesArray] movie: 0 viewer :nil keyImagesOnly:NO];
-	
+		dontShowOpenSubSeries = NO;
+		
 		if(	[[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
 			[NSApp sendAction: @selector(tileWindows:) to:nil from: self];
 		else
@@ -11126,7 +11129,9 @@ static BOOL needToRezoom;
 	if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) [self filesForDatabaseMatrixSelection: selectedItems];
 	else [self filesForDatabaseOutlineSelection: selectedItems];
 	
+	dontShowOpenSubSeries = YES;
 	[self openViewerFromImages :[NSArray arrayWithObject:selectedItems] movie: 0 viewer :nil keyImagesOnly:YES];
+	dontShowOpenSubSeries = NO;
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
 		[NSApp sendAction: @selector(tileWindows:) to:nil from: self];
@@ -15543,17 +15548,44 @@ static volatile int numberOfThreadsForJPEG = 0;
 // NSToolbar Related Methods
 // ============================================================
 
+- (void)windowDidBecomeKey:(NSNotification *)notification
+{
+	[self flagsChanged: 0L];
+}
+
 - (void) flagsChanged:(NSEvent *)event
 {
 	for( NSToolbarItem *toolbarItem in [toolbar items])
 	{
 		if( [[toolbarItem itemIdentifier] isEqualToString: OpenKeyImagesAndROIsToolbarItemIdentifier])
 		{
-			if([event modifierFlags] & NSCommandKeyMask)
+			if([event modifierFlags] & NSAlternateKeyMask)
+			{
 				[toolbarItem setImage: [NSImage imageNamed: OpenKeyImagesToolbarItemIdentifier]];
-			else if([event modifierFlags] & NSCommandKeyMask)
+				[toolbarItem setAction: @selector(viewerDICOMKeyImages:)];
+				
+				[toolbarItem setLabel: NSLocalizedString(@"Keys", nil)];
+				[toolbarItem setPaletteLabel: NSLocalizedString(@"Keys", nil)];
+				[toolbarItem setToolTip: NSLocalizedString(@"View all Key Images", nil)];
+			}
+			else if([event modifierFlags] & NSShiftKeyMask)
+			{
 				[toolbarItem setImage: [NSImage imageNamed: OpenROIsToolbarItemIdentifier]];
-			else [toolbarItem setImage: [NSImage imageNamed: OpenKeyImagesAndROIsToolbarItemIdentifier]];
+				[toolbarItem setAction: @selector(viewerDICOMROIsImages:)];
+				
+				[toolbarItem setLabel: NSLocalizedString(@"ROIs", nil)];
+				[toolbarItem setPaletteLabel: NSLocalizedString(@"ROIs", nil)];
+				[toolbarItem setToolTip: NSLocalizedString(@"View all ROIs Images", nil)];
+			}
+			else
+			{
+				[toolbarItem setImage: [NSImage imageNamed: OpenKeyImagesAndROIsToolbarItemIdentifier]];
+				[toolbarItem setAction: @selector(viewerKeyImagesAndROIsImages:)];
+				
+				[toolbarItem setLabel: NSLocalizedString(@"ROIs & Keys", nil)];
+				[toolbarItem setPaletteLabel: NSLocalizedString(@"ROIs & Keys", nil)];
+				[toolbarItem setToolTip: NSLocalizedString(@"View all Key Images and ROIs", nil)];
+			}
 		}
 	}
 }
@@ -15720,20 +15752,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[toolbarItem setImage: [NSImage imageNamed: OpenKeyImagesAndROIsToolbarItemIdentifier]];
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(viewerKeyImagesAndROIsImages:)];
-    } 
-	else if ([itemIdent isEqualToString: OpenKeyImagesAndROIsToolbarItemIdentifier])
-	{
-        
-		[toolbarItem setLabel: NSLocalizedString(@"Key Images", nil)];
-		[toolbarItem setPaletteLabel: NSLocalizedString(@"Key Images", nil)];
-		[toolbarItem setToolTip: NSLocalizedString(@"View all Key Images", nil)];
-		[toolbarItem setImage: [NSImage imageNamed: OpenKeyImagesAndROIsToolbarItemIdentifier]];
-		[toolbarItem setTarget: self];
-		[toolbarItem setAction: @selector(viewerDICOMKeyImages:)];
-    } 
+    }
 	else if ([itemIdent isEqualToString: XMLToolbarItemIdentifier])
 	{
-        
 		[toolbarItem setLabel: NSLocalizedString(@"Meta-Data", nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Meta-Data", nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"View meta-data of this image", nil)];
@@ -16054,8 +16075,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 				[copySettings addObject: d];
 			}
 		}
-		
+		dontShowOpenSubSeries = YES;
 		ViewerController *v = [self openViewerFromImages: [NSArray arrayWithObject: roisImagesArray] movie: 0 viewer :nil keyImagesOnly:NO];
+		dontShowOpenSubSeries = NO;
 		
 		if( sameSeries == NO)
 		{
