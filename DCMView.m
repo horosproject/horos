@@ -10624,7 +10624,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 {
 	if(cursorSet == YES && [[self window] isKeyWindow] == YES)
 	{
-		[self flagsChanged: [[NSApplication sharedApplication] currentEvent]];
 		[cursor set];
 	}
 }

@@ -872,8 +872,8 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 			filesToSend:(NSArray *)filesToSend
 			transferSyntax:(int)transferSyntax
 			compression: (float)compression
-			extraParameters:(NSDictionary *)extraParameters{
-	
+			extraParameters:(NSDictionary *)extraParameters
+{
 	if (self = [super init])
 	{
 		//NSLog(@"init hostname: %@", hostname);
