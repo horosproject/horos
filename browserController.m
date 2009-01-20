@@ -149,6 +149,8 @@ static NSString*	SearchToolbarItemIdentifier			= @"Search";
 static NSString*	TimeIntervalToolbarItemIdentifier	= @"TimeInterval";
 static NSString*	XMLToolbarItemIdentifier			= @"XML.icns";
 static NSString*	OpenKeyImagesAndROIsToolbarItemIdentifier	= @"ROIsAndKeys.tif";
+static NSString*	OpenKeyImagesToolbarItemIdentifier	= @"Keys.tif";
+static NSString*	OpenROIsToolbarItemIdentifier	= @"ROIs.tif";
 
 static NSTimeInterval	gLastActivity = 0;
 static BOOL DICOMDIRCDMODE = NO;
@@ -15540,6 +15542,21 @@ static volatile int numberOfThreadsForJPEG = 0;
 // ============================================================
 // NSToolbar Related Methods
 // ============================================================
+
+- (void) flagsChanged:(NSEvent *)event
+{
+	for( NSToolbarItem *toolbarItem in [toolbar items])
+	{
+		if( [[toolbarItem itemIdentifier] isEqualToString: OpenKeyImagesAndROIsToolbarItemIdentifier])
+		{
+			if([event modifierFlags] & NSCommandKeyMask)
+				[toolbarItem setImage: [NSImage imageNamed: OpenKeyImagesToolbarItemIdentifier]];
+			else if([event modifierFlags] & NSCommandKeyMask)
+				[toolbarItem setImage: [NSImage imageNamed: OpenROIsToolbarItemIdentifier]];
+			else [toolbarItem setImage: [NSImage imageNamed: OpenKeyImagesAndROIsToolbarItemIdentifier]];
+		}
+	}
+}
 
 - (void) setupToolbar
 {

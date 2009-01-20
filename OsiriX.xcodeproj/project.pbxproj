@@ -349,6 +349,10 @@
 		8440039B0E8CF99500A00EBD /* dciodvfy in Resources */ = {isa = PBXBuildFile; fileRef = 844003990E8CF99500A00EBD /* dciodvfy */; };
 		8483ABA60E1BE33900C21B31 /* crossCursor.tif in Resources */ = {isa = PBXBuildFile; fileRef = 8483ABA50E1BE33900C21B31 /* crossCursor.tif */; };
 		8483ABA70E1BE33900C21B31 /* crossCursor.tif in Resources */ = {isa = PBXBuildFile; fileRef = 8483ABA50E1BE33900C21B31 /* crossCursor.tif */; };
+		84A220E80F25E41800C6C3EB /* ROIs.tif in Resources */ = {isa = PBXBuildFile; fileRef = 84A220E60F25E41800C6C3EB /* ROIs.tif */; };
+		84A220E90F25E41800C6C3EB /* Keys.tif in Resources */ = {isa = PBXBuildFile; fileRef = 84A220E70F25E41800C6C3EB /* Keys.tif */; };
+		84A220EA0F25E41800C6C3EB /* ROIs.tif in Resources */ = {isa = PBXBuildFile; fileRef = 84A220E60F25E41800C6C3EB /* ROIs.tif */; };
+		84A220EB0F25E41800C6C3EB /* Keys.tif in Resources */ = {isa = PBXBuildFile; fileRef = 84A220E70F25E41800C6C3EB /* Keys.tif */; };
 		84A679060EEECF2F00AE5C98 /* jpeg_memsrc.c in Sources */ = {isa = PBXBuildFile; fileRef = 84A679050EEECF2F00AE5C98 /* jpeg_memsrc.c */; };
 		84A679070EEECF2F00AE5C98 /* jpeg_memsrc.c in Sources */ = {isa = PBXBuildFile; fileRef = 84A679050EEECF2F00AE5C98 /* jpeg_memsrc.c */; };
 		84A6790E0EEED04000AE5C98 /* jpeg_memsrc.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A6790D0EEED04000AE5C98 /* jpeg_memsrc.h */; };
@@ -9136,6 +9140,8 @@
 		7EF9708C08C8FB86002B5087 /* DCMNDeleteResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMNDeleteResponse.m; sourceTree = "<group>"; };
 		844003990E8CF99500A00EBD /* dciodvfy */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = dciodvfy; path = Binaries/dciodvfy; sourceTree = "<group>"; };
 		8483ABA50E1BE33900C21B31 /* crossCursor.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = crossCursor.tif; path = Cursors/crossCursor.tif; sourceTree = "<group>"; };
+		84A220E60F25E41800C6C3EB /* ROIs.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ROIs.tif; sourceTree = "<group>"; };
+		84A220E70F25E41800C6C3EB /* Keys.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Keys.tif; sourceTree = "<group>"; };
 		84A679050EEECF2F00AE5C98 /* jpeg_memsrc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = jpeg_memsrc.c; path = Papyrus3/jpeg_memsrc.c; sourceTree = "<group>"; };
 		84A6790D0EEED04000AE5C98 /* jpeg_memsrc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = jpeg_memsrc.h; path = Papyrus3/jpeg_memsrc.h; sourceTree = "<group>"; };
 		A90202BA0B980CD60001A00B /* PluginManagerController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = PluginManagerController.h; sourceTree = "<group>"; };
@@ -14230,6 +14236,8 @@
 		ABBB647A063587B200D9531F /* Icons */ = {
 			isa = PBXGroup;
 			children = (
+				84A220E60F25E41800C6C3EB /* ROIs.tif */,
+				84A220E70F25E41800C6C3EB /* Keys.tif */,
 				AB932A950EA38DEF0006DF1B /* CobbAngle.tif */,
 				CE03A3CB0EA2AE0300951EF4 /* iPhone.tiff */,
 				AB9693BF0E823E3A00F09EEA /* ROIsAndKeys.tif */,
@@ -23804,6 +23812,8 @@
 				CE03A3CC0EA2AE0300951EF4 /* iPhone.tiff in Resources */,
 				AB932A960EA38DEF0006DF1B /* CobbAngle.tif in Resources */,
 				AB1B31A10EB06AFA0061FA40 /* Jet.plist in Resources */,
+				84A220E80F25E41800C6C3EB /* ROIs.tif in Resources */,
+				84A220E90F25E41800C6C3EB /* Keys.tif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24222,6 +24232,8 @@
 				CE356B0C0EED998F005A823F /* vtkDataArrayTemplateImplicit.txx in Resources */,
 				CE356C600EED998F005A823F /* vtkImageIterator.txx in Resources */,
 				CE356C7D0EED998F005A823F /* vtkImageProgressIterator.txx in Resources */,
+				84A220EA0F25E41800C6C3EB /* ROIs.tif in Resources */,
+				84A220EB0F25E41800C6C3EB /* Keys.tif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
