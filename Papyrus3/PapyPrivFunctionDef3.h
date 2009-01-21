@@ -153,9 +153,9 @@ static __inline__ __attribute__((always_inline)) PapyUShort Extract2Bytes (PapyS
 	}
 	else
 	{
-		theUShort  = (PapyUShort) (*(theCharP + 1));
+		theUShort  = (PapyUShort) *theCharP;
 		theUShort  = theUShort << 8;
-		theUShort |= (PapyUShort) *theCharP;
+		theUShort |= (PapyUShort) (*(theCharP + 1)); 
 	}
 #endif
 	
@@ -214,16 +214,16 @@ static __inline__ __attribute__((always_inline)) PapyULong Extract4Bytes (PapySh
 	{
 		PapyULong theTmpULong;
 		theULong = 0L;
-		theTmpULong  = (PapyULong) (*(theCharP + 3));
+		theTmpULong  = (PapyULong) *theCharP;
 		theTmpULong  = theTmpULong << 24;
 		theULong    |= theTmpULong;
-		theTmpULong  = (PapyULong) (*(theCharP + 2));
+		theTmpULong  = (PapyULong) (*(theCharP + 1));
 		theTmpULong  = theTmpULong << 16;
 		theULong    |= theTmpULong;
-		theTmpULong  = (PapyULong) (*(theCharP + 1));
+		theTmpULong  = (PapyULong) (*(theCharP + 2));
 		theTmpULong  = theTmpULong << 8;
 		theULong    |= theTmpULong;
-		theTmpULong  = (PapyULong) *theCharP;
+		theTmpULong  = (PapyULong) (*(theCharP + 3));
 		theULong    |= theTmpULong;
 	}
 	#endif

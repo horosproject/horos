@@ -282,12 +282,12 @@ Papy3FileOpen (char *inNameP, PAPY_FILE inVRefNum, int inToOpen, void* inFSSpec)
 							efree3 ((void **) &(gShadowOwner [theFileNb]));
                       }
 					  
-					  if( gArrTransfSyntax [theFileNb] == BIG_ENDIAN_EXPL) 
-					  {
-						//This is a sad reality..... OsiriX is not Big endian savvy for DICOM files............
-						iResult = -1;
-						printf("Transfer Syntax is BIG_ENDIAN_EXPL : unsupported by Papy Toolkit\r");
-						}
+//					  if( gArrTransfSyntax [theFileNb] == BIG_ENDIAN_EXPL) 
+//					  {
+//						//This is a sad reality..... OsiriX is not Big endian savvy for DICOM files............
+//						iResult = -1;
+//						printf("Transfer Syntax is BIG_ENDIAN_EXPL : unsupported by Papy Toolkit\r");
+//						}
 					} /* if ...anything but a DICOM not 10 file */
     
                     if (iResult == papNoError)
@@ -1175,10 +1175,16 @@ Papy3GetNextGroupNb (PapyShort inFileNb)
     theErr = Papy3FClose (&theFp);
     RETURN (papReadFile)
   } /* if */
+
+	
+	Papy3FTell ((PAPY_FILE) gPapyFile [inFileNb], (PapyLong *) &i);
+	
+    i = 0L;
+    theGroupNb = Extract2Bytes ( inFileNb, theBuff, &i);
    
-  i = 0L;
-  theGroupNb = Extract2Bytes ( inFileNb, theBuff, &i);
-  
+	if( theGroupNb == 0x0200 && gArrTransfSyntax [inFileNb] == BIG_ENDIAN_EXPL)
+		theGroupNb = 0x0002;
+	
   /* resets the file pointer to its previous position */
   if (Papy3FSeek (theFp, (int) SEEK_CUR, (PapyLong) -2L) != 0) RETURN (papPositioning);
 
@@ -1357,8 +1363,15 @@ Papy3GotoGroupNb (PapyShort inFileNb, PapyShort inGroupNb)
 	 theCurrGroupNb >= theStartGroupNb &&
 	 theCurrGroupNb != 0x7FE0)
   {
-    theErr = Papy3SkipNextGroup (inFileNb);
-    if (theErr < 0) 
+	int thePrevSyntax = gArrTransfSyntax [inFileNb];
+	if( theCurrGroupNb == 0x0002)
+		gArrTransfSyntax [inFileNb] = LITTLE_ENDIAN_EXPL;
+    
+	theErr = Papy3SkipNextGroup (inFileNb);
+    
+	gArrTransfSyntax [inFileNb] = thePrevSyntax;
+	  
+	if (theErr < 0) 
     {
       Papy3FSeek (gPapyFile [inFileNb], (int) SEEK_SET, (PapyLong) theStartPos);
       RETURN (theErr);
