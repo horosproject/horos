@@ -154,7 +154,10 @@ ExtractFileMetaInformation3 (PapyShort inFileNb)
   /* extract the transfert syntax used for the rest of the file */
   theValP = Papy3GetElement (theGroup2P, papTransferSyntaxUIDGr, &theNbVal, &theElemType);
   if (theValP == NULL)
-  {theErr = Papy3GroupFree (&theGroup2P, TRUE); RETURN (papElemOfTypeOneNotFilled);}
+  {
+	theErr = Papy3GroupFree (&theGroup2P, TRUE);
+	RETURN (papElemOfTypeOneNotFilled);
+  }
   
   /* 1.2.840.10008.1.20 is to avoid a bug with the old files... */
   if (strcmp (theValP->a, "1.2.840.10008.1.2") == 0 || strcmp (theValP->a, "1.2.840.10008.1.20") == 0)
@@ -390,7 +393,7 @@ ExtractPapyDataSetInformation3 (PapyShort inFileNb)
   /* so points to the first element of the pointer sequence */
   if (gArrTransfSyntax [inFileNb] == LITTLE_ENDIAN_IMPL)
     Papy3FSeek (gPapyFile [inFileNb], (int) SEEK_SET, (PapyLong) (gOffsetToPtrSeq [inFileNb] + 8L));
-  else if (gArrTransfSyntax [inFileNb] == LITTLE_ENDIAN_EXPL)
+  else if (gArrTransfSyntax [inFileNb] == LITTLE_ENDIAN_EXPL || gArrTransfSyntax [inFileNb] == BIG_ENDIAN_EXPL)
     Papy3FSeek (gPapyFile [inFileNb], (int) SEEK_SET, (PapyLong) (gOffsetToPtrSeq [inFileNb] + 12L));
   
   /* extract the offset to data set and the image and the UID for each image */
@@ -466,8 +469,7 @@ ExtractDicomDataSetInformation3 (PapyShort inFileNb)
   Papy3FTell (gPapyFile [inFileNb], (PapyLong *) &theOffsetImage);
   
   /* add something depending on the transfert syntax */
-  if (gArrTransfSyntax [inFileNb] == LITTLE_ENDIAN_EXPL || 
-      gArrTransfSyntax [inFileNb] == BIG_ENDIAN_EXPL) theOffsetImage += 12L;
+  if (gArrTransfSyntax [inFileNb] == LITTLE_ENDIAN_EXPL || gArrTransfSyntax [inFileNb] == BIG_ENDIAN_EXPL) theOffsetImage += 12L;
   else theOffsetImage += 8L;
   
   

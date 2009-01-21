@@ -10,7 +10,7 @@
 
 /* --- functions definitions --- */
 
-
+#include <libkern/OSByteOrder.h>
 
 /* --- PapyDataSetRead3 --- */
 
@@ -114,6 +114,203 @@ PapyShort
 PutBufferInGroup3 	(PapyShort, unsigned char *, SElement *, PapyUShort, PapyULong, 
 		   	 PapyULong *, PapyLong);
 
+
+static __inline__ __attribute__((always_inline)) unsigned long long UInt64ToHost (PapyShort inFileNb, unsigned char *inBufP)
+{
+	if (gArrTransfSyntax [inFileNb] != BIG_ENDIAN_EXPL)
+		return OSSwapLittleToHostInt64( *((unsigned long long*) inBufP));
+	else
+		return OSSwapBigToHostInt64( *((unsigned long long*) inBufP));
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+static __inline__ __attribute__((always_inline)) PapyULong UInt32ToHost (PapyShort inFileNb, unsigned char *inBufP)
+{
+	if (gArrTransfSyntax [inFileNb] != BIG_ENDIAN_EXPL)
+		return OSSwapLittleToHostInt32( *((PapyULong*) inBufP));
+	else
+		return OSSwapBigToHostInt32( *((PapyULong*) inBufP));
+	
+//	PapyULong theULong;
+	
+//	#if __BIG_ENDIAN__
+//	if (gArrTransfSyntax [inFileNb] != BIG_ENDIAN_EXPL)
+//	{
+//		PapyULong theTmpULong;
+//		theULong = 0L;
+//		theTmpULong  = (PapyULong) (*(inBufP + 3));
+//		theTmpULong  = theTmpULong << 24;
+//		theULong    |= theTmpULong;
+//		theTmpULong  = (PapyULong) (*(inBufP + 2));
+//		theTmpULong  = theTmpULong << 16;
+//		theULong    |= theTmpULong;
+//		theTmpULong  = (PapyULong) (*(inBufP + 1));
+//		theTmpULong  = theTmpULong << 8;
+//		theULong    |= theTmpULong;
+//		theTmpULong  = (PapyULong) *inBufP;
+//		theULong    |= theTmpULong;
+//	}
+//	else
+//	{
+//		theULong	= *((PapyULong*) inBufP);
+//	}
+//	#else
+//	if (gArrTransfSyntax [inFileNb] != BIG_ENDIAN_EXPL)
+//	{
+//		theULong	= *((PapyULong*) inBufP);
+//	}
+//	else
+//	{
+//		PapyULong theTmpULong;
+//		theULong = 0L;
+//		theTmpULong  = (PapyULong) *inBufP;
+//		theTmpULong  = theTmpULong << 24;
+//		theULong    |= theTmpULong;
+//		theTmpULong  = (PapyULong) (*(inBufP + 1));
+//		theTmpULong  = theTmpULong << 16;
+//		theULong    |= theTmpULong;
+//		theTmpULong  = (PapyULong) (*(inBufP + 2));
+//		theTmpULong  = theTmpULong << 8;
+//		theULong    |= theTmpULong;
+//		theTmpULong  = (PapyULong) (*(inBufP + 3));
+//		theULong    |= theTmpULong;
+//	}
+//	#endif
+	
+//	return theULong;
+}
+
+static __inline__ __attribute__((always_inline)) PapyLong Int32ToHost (PapyShort inFileNb, unsigned char *inBufP)
+{
+	if (gArrTransfSyntax [inFileNb] != BIG_ENDIAN_EXPL)
+		return OSSwapLittleToHostInt32( *((PapyLong*) inBufP));
+	else
+		return OSSwapBigToHostInt32( *((PapyLong*) inBufP));
+	
+//	PapyLong theLong;
+//	
+//	#if __BIG_ENDIAN__
+//	if (gArrTransfSyntax [inFileNb] != BIG_ENDIAN_EXPL)
+//	{
+//		PapyLong theTmpLong;
+//		theLong = 0L;
+//		theTmpLong  = (PapyLong) (*(inBufP + 3));
+//		theTmpLong  = theTmpLong << 24;
+//		theLong    |= theTmpLong;
+//		theTmpLong  = (PapyLong) (*(inBufP + 2));
+//		theTmpLong  = theTmpLong << 16;
+//		theLong    |= theTmpLong;
+//		theTmpLong  = (PapyLong) (*(inBufP + 1));
+//		theTmpLong  = theTmpLong << 8;
+//		theLong    |= theTmpLong;
+//		theTmpLong  = (PapyLong) *inBufP;
+//		theLong    |= theTmpLong;
+//	}
+//	else
+//	{
+//		theLong	= *((PapyLong*) inBufP);
+//	}
+//	#else
+//	if (gArrTransfSyntax [inFileNb] != BIG_ENDIAN_EXPL)
+//	{
+//		theLong	= *((PapyLong*) inBufP);
+//	}
+//	else
+//	{
+//		PapyLong theTmpLong;
+//		theLong = 0L;
+//		theTmpLong  = (PapyLong) *inBufP;
+//		theTmpLong  = theTmpLong << 24;
+//		theLong    |= theTmpLong;
+//		theTmpLong  = (PapyLong) (*(inBufP + 1));
+//		theTmpLong  = theTmpLong << 16;
+//		theLong    |= theTmpLong;
+//		theTmpLong  = (PapyLong) (*(inBufP + 2));
+//		theTmpLong  = theTmpLong << 8;
+//		theLong    |= theTmpLong;
+//		theTmpLong  = (PapyLong) (*(inBufP + 3));
+//		theLong    |= theTmpLong;
+//	}
+//	#endif	
+//	return theLong;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+static __inline__ __attribute__((always_inline)) PapyUShort UIntToHost (PapyShort inFileNb, unsigned char *inBufP)
+{
+
+	if (gArrTransfSyntax [inFileNb] != BIG_ENDIAN_EXPL)
+		return OSSwapLittleToHostInt16( *((PapyUShort*) inBufP));
+	else
+		return OSSwapBigToHostInt16( *((PapyUShort*) inBufP));
+
+//	PapyULong theUShort;
+//	
+//#if __BIG_ENDIAN__
+//	if (gArrTransfSyntax [inFileNb] != BIG_ENDIAN_EXPL)
+//	{
+//		theUShort  = (PapyUShort) (*(inBufP + 1));
+//		theUShort  = theUShort << 8;
+//		theUShort |= (PapyUShort) *inBufP;
+//	}
+//	else
+//	{
+//		theUShort	= *((PapyUShort*) inBufP);
+//	}
+//#else
+//	if (gArrTransfSyntax [inFileNb] != BIG_ENDIAN_EXPL)	// NSLi
+//	{
+//		theUShort = *((PapyUShort*) inBufP);
+//	}
+//	else
+//	{
+//		theUShort  = (PapyUShort) *inBufP;
+//		theUShort  = theUShort << 8;
+//		theUShort |= (PapyUShort) (*(inBufP + 1)); 
+//	}
+//#endif
+//	
+//	return theUShort;
+}
+
+static __inline__ __attribute__((always_inline)) PapyShort IntToHost (PapyShort inFileNb, unsigned char *inBufP)
+{
+	if (gArrTransfSyntax [inFileNb] != BIG_ENDIAN_EXPL)
+		return OSSwapLittleToHostInt16( *((PapyShort*) inBufP));
+	else
+		return OSSwapBigToHostInt16( *((PapyShort*) inBufP));
+		
+//	PapyShort theShort;
+//	
+//#if __BIG_ENDIAN__
+//	if (gArrTransfSyntax [inFileNb] != BIG_ENDIAN_EXPL)
+//	{
+//		theShort  = (PapyShort) (*(inBufP + 1));
+//		theShort  = theShort << 8;
+//		theShort |= (PapyShort) *inBufP;
+//	}
+//	else
+//	{
+//		theShort	= *((PapyShort*) inBufP);
+//	}
+//#else
+//	if (gArrTransfSyntax [inFileNb] != BIG_ENDIAN_EXPL)	// NSLi
+//	{
+//		theShort = *((PapyShort*) inBufP);
+//	}
+//	else
+//	{
+//		theShort  = (PapyShort) *inBufP;
+//		theShort  = theShort << 8;
+//		theShort |= (PapyShort) (*(inBufP + 1)); 
+//	}
+//#endif
+//	
+//	return theShort;
+}
+
 /********************************************************************************/
 /*										*/
 /*	Extract2Bytes : extract a 2-Bytes value (USS, SS or AT) from the buf and*/
@@ -134,32 +331,7 @@ static __inline__ __attribute__((always_inline)) PapyUShort Extract2Bytes (PapyS
 	/* updates the current position in the read buffer */
 	*ioPosP += 2;
 	
-	/* extract the element according to the little-endian syntax */
-#if __BIG_ENDIAN__
-	if (gArrTransfSyntax [inFileNb] != BIG_ENDIAN_EXPL)
-	{
-		theUShort  = (PapyUShort) (*(theCharP + 1));
-		theUShort  = theUShort << 8;
-		theUShort |= (PapyUShort) *theCharP;
-	}
-	else
-	{
-		theUShort	= *((PapyUShort*) theCharP);
-	}
-#else
-	if (gArrTransfSyntax [inFileNb] != BIG_ENDIAN_EXPL)
-	{
-		theUShort = *((PapyUShort*) theCharP);
-	}
-	else
-	{
-		theUShort  = (PapyUShort) *theCharP;
-		theUShort  = theUShort << 8;
-		theUShort |= (PapyUShort) (*(theCharP + 1)); 
-	}
-#endif
-	
-	return theUShort;
+	return UIntToHost(inFileNb, theCharP);
 	
 } /* endof Extract2Bytes */
 
@@ -183,52 +355,7 @@ static __inline__ __attribute__((always_inline)) PapyULong Extract4Bytes (PapySh
 	/* updates the current position in the read buffer */
 	*ioPosP += 4;
 	
-		/* extract the element according to the little-endian syntax */
-	#if __BIG_ENDIAN__
-	if (gArrTransfSyntax [inFileNb] == LITTLE_ENDIAN_EXPL)
-	{
-		PapyULong theTmpULong;
-		theULong = 0L;
-		theTmpULong  = (PapyULong) (*(theCharP + 3));
-		theTmpULong  = theTmpULong << 24;
-		theULong    |= theTmpULong;
-		theTmpULong  = (PapyULong) (*(theCharP + 2));
-		theTmpULong  = theTmpULong << 16;
-		theULong    |= theTmpULong;
-		theTmpULong  = (PapyULong) (*(theCharP + 1));
-		theTmpULong  = theTmpULong << 8;
-		theULong    |= theTmpULong;
-		theTmpULong  = (PapyULong) *theCharP;
-		theULong    |= theTmpULong;
-	}
-	else
-	{
-		theULong	= *((PapyULong*) theCharP);
-	}
-	#else
-	if (gArrTransfSyntax [inFileNb] == LITTLE_ENDIAN_EXPL)
-	{
-		theULong	= *((PapyULong*) theCharP);
-	}
-	else
-	{
-		PapyULong theTmpULong;
-		theULong = 0L;
-		theTmpULong  = (PapyULong) *theCharP;
-		theTmpULong  = theTmpULong << 24;
-		theULong    |= theTmpULong;
-		theTmpULong  = (PapyULong) (*(theCharP + 1));
-		theTmpULong  = theTmpULong << 16;
-		theULong    |= theTmpULong;
-		theTmpULong  = (PapyULong) (*(theCharP + 2));
-		theTmpULong  = theTmpULong << 8;
-		theULong    |= theTmpULong;
-		theTmpULong  = (PapyULong) (*(theCharP + 3));
-		theULong    |= theTmpULong;
-	}
-	#endif
-	
-	return theULong;
+	return UInt32ToHost(inFileNb, theCharP);
     
 } /* endof Extract4Bytes */
 

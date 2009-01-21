@@ -1477,7 +1477,7 @@ Papy3GetPixelData (PapyShort inFileNb, int inImageNb, SElement *inGrOrModP, int 
         if (Papy3FSeek (gPapyFile [inFileNb], (int) SEEK_CUR, (PapyLong) 8L) != 0) 
           return NULL;
       } /* if */
-      else if (gArrTransfSyntax [inFileNb] == LITTLE_ENDIAN_EXPL)
+      else if (gArrTransfSyntax [inFileNb] == LITTLE_ENDIAN_EXPL || gArrTransfSyntax [inFileNb] == BIG_ENDIAN_EXPL)
       {
         if (Papy3FSeek (gPapyFile [inFileNb], (int) SEEK_CUR, (PapyLong) 12L) != 0) 
           return NULL;
@@ -1583,17 +1583,36 @@ Papy3GetPixelData (PapyShort inFileNb, int inImageNb, SElement *inGrOrModP, int 
 		  #if __ppc__
 		  if( Altivec)
 		  {
-			 InverseLongs( (vector unsigned int*) theULongP, ii);
+			if( gArrTransfSyntax [inFileNb] != BIG_ENDIAN_EXPL)
+				InverseLongs( (vector unsigned int*) theULongP, ii);
 		  }
 		  else
 		  #endif
 		  
 		  #if __BIG_ENDIAN__
 		  {
+			if( gArrTransfSyntax [inFileNb] != BIG_ENDIAN_EXPL)
+			{
 			  while( ii-- > 0)
 			  {
-				val = (PapyUChar*) theULongP;
-				*theULongP++ = ((unsigned int) (val[3])) << 24 | ((unsigned int) (val[2])) << 16 | ((unsigned int) (val[1])) << 8 | ((unsigned int) (val[0]));
+			    *theULongP++ = OSSwapLittleToHostInt32( *theULongP);
+//				
+//				val = (PapyUChar*) theULongP;
+//				*theULongP++ = ((unsigned int) (val[3])) << 24 | ((unsigned int) (val[2])) << 16 | ((unsigned int) (val[1])) << 8 | ((unsigned int) (val[0]));
+			  }
+			}
+		  }
+		  #else
+		  if( gArrTransfSyntax [inFileNb] != BIG_ENDIAN_EXPL)
+		  {
+		  }
+		  else
+		  {
+			  while( ii-- > 0)
+			  {
+				*theULongP++ = OSSwapBigToHostInt32( *theULongP);
+//				val = (PapyUChar*) theULongP;
+//				*theULongP++ = ((unsigned int) (val[0])) << 24 | ((unsigned int) (val[1])) << 16 | ((unsigned int) (val[2])) << 8 | ((unsigned int) (val[3]));
 			  }
 		  }
 		  #endif
@@ -1608,6 +1627,7 @@ Papy3GetPixelData (PapyShort inFileNb, int inImageNb, SElement *inGrOrModP, int 
 		   #if __ppc__
 		  if( Altivec)
 		  {
+			if( gArrTransfSyntax [inFileNb] != BIG_ENDIAN_EXPL)
 			 InverseShorts( (vector unsigned short*) theUShortP, ii);
 		  }
 		  else
@@ -1615,23 +1635,33 @@ Papy3GetPixelData (PapyShort inFileNb, int inImageNb, SElement *inGrOrModP, int 
 		  
 		  #if __BIG_ENDIAN__
 		  {
+			if( gArrTransfSyntax [inFileNb] != BIG_ENDIAN_EXPL)
+			{
 			  while( ii-- > 0)
 			  {
-				val = *theUShortP;
-				*theUShortP++ = (val >> 8) | (val << 8);   // & 0x00FF  --  & 0xFF00
+			    *theUShortP++ = OSSwapBigToHostInt16( *theUShortP);
+//				val = *theUShortP;
+//				*theUShortP++ = (val >> 8) | (val << 8);   // & 0x00FF  --  & 0xFF00
+			  }
+			}
+		  }
+		  #else
+		  if( gArrTransfSyntax [inFileNb] != BIG_ENDIAN_EXPL)
+		  {
+		  
+		  }
+		  else
+		  {
+			while( ii-- > 0)
+			  {
+				*theUShortP++ = OSSwapBigToHostInt16( *theUShortP);
+//				val = *theUShortP;
+//				*theUShortP++ = (val >> 8) | (val << 8);   // & 0x00FF  --  & 0xFF00
 			  }
 		  }
 		  #endif
 	  }
 	  
-//	  for (i = 0L, theCharP = theBufP; i < (theBytesToRead / 2); i++, theCharP += 2, theUShortP++)
-//      {
-//        theChar0     = *theCharP;
-//        theChar1     = *(theCharP + 1);
-//        *theUShortP  = (PapyUShort) theChar1;
-//    	*theUShortP  = *theUShortP << 8;
-//    	*theUShortP |= (PapyUShort) theChar0;
-//      } /* for */
     } /* if ...more than 8 bits depth image */
     
   } /* if ...module IconImage or photometric interpretation is monochrome/palette/rgb */
@@ -2087,13 +2117,7 @@ PutBufferInElement3 (PapyShort inFileNb, unsigned char *ioBuffP, PapyULong inEle
         /* updates the current position in the read buffer */
         *ioBufPosP += 2L;  
         /* extract the element according to the little-endian syntax */
-		#if __BIG_ENDIAN__
-        theValueTP->ss  = (PapyUShort) (*(theTmp0P + 1));
-        theValueTP->ss  = theValueTP->ss << 8;
-        theValueTP->ss |= (PapyUShort) *theTmp0P;
-		#else
-		theValueTP->ss  = *((PapyUShort*) theTmp0P);
-		#endif
+		theValueTP->ss = IntToHost( inFileNb, theTmp0P);
       } /* for */
 	    
       break; /* SS */
@@ -2114,13 +2138,7 @@ PutBufferInElement3 (PapyShort inFileNb, unsigned char *ioBuffP, PapyULong inEle
         /* updates the current position in the read buffer */
         *ioBufPosP += 2L;  
         /* extract the element according to the little-endian syntax */
-		#if __BIG_ENDIAN__
-        theValueTP->us  = (PapyUShort) (*(theTmp0P + 1));
-        theValueTP->us  = theValueTP->us << 8;
-        theValueTP->us |= (PapyUShort) *theTmp0P;
-		#else
-		 theValueTP->us  = *((PapyUShort*) theTmp0P);
-		#endif
+		theValueTP->us = UIntToHost( inFileNb, theTmp0P);
       } /* for */
 
       break; /* USS */
@@ -2140,22 +2158,9 @@ PutBufferInElement3 (PapyShort inFileNb, unsigned char *ioBuffP, PapyULong inEle
         /* updates the current position in the read buffer */
         *ioBufPosP += 4L;
         /* extract the element according to the little-endian syntax */
-		#if __BIG_ENDIAN__
-        theTmpULong      = (PapyULong) (*(theTmp0P + 3));
-        theTmpULong      = theTmpULong << 24;
-        theULong	 = theTmpULong;
-        theTmpULong      = (PapyULong) (*(theTmp0P + 2));
-        theTmpULong      = theTmpULong << 16;
-        theULong	|= theTmpULong;
-        theTmpULong      = (PapyULong) (*(theTmp0P + 1));
-        theTmpULong      = theTmpULong << 8;
-        theULong	|= theTmpULong;
-        theTmpULong      = (PapyULong) *theTmp0P;
-        theULong        |= theTmpULong;
-        theValueTP->sl   = theULong;
-		#else
-		theValueTP->sl   = *((PapyULong*) theTmp0P);
-		#endif
+		
+		theValueTP->sl = Int32ToHost( inFileNb, theTmp0P);
+		
       } /* for */
 
       break; /* SL */
@@ -2175,22 +2180,7 @@ PutBufferInElement3 (PapyShort inFileNb, unsigned char *ioBuffP, PapyULong inEle
         /* updates the current position in the read buffer */
         *ioBufPosP += 4L;
         /* extract the element according to the little-endian syntax */
-		#if __BIG_ENDIAN__
-        theTmpULong      = (PapyULong) (*(theTmp0P + 3));
-        theTmpULong      = theTmpULong << 24;
-        theULong	 = theTmpULong;
-        theTmpULong      = (PapyULong) (*(theTmp0P + 2));
-        theTmpULong      = theTmpULong << 16;
-        theULong	|= theTmpULong;
-        theTmpULong      = (PapyULong) (*(theTmp0P + 1));
-        theTmpULong      = theTmpULong << 8;
-        theULong        |= theTmpULong;
-        theTmpULong      = (PapyULong) *theTmp0P;
-        theULong        |= theTmpULong;
-        theValueTP->ul   = theULong;
-		#else
-		theValueTP->ul   = *((PapyULong*) theTmp0P);
-		#endif
+		theValueTP->ul = UInt32ToHost( inFileNb, theTmp0P);
       } /* for */
 
       break; /* UL */
@@ -2210,23 +2200,28 @@ PutBufferInElement3 (PapyShort inFileNb, unsigned char *ioBuffP, PapyULong inEle
         /* updates the current position in the read buffer */
         *ioBufPosP += 4L;
         /* extract the element according to the little-endian syntax */
-		#if __BIG_ENDIAN__
-        theTmpULong      = (PapyULong) (*(theTmp0P + 3));
-        theTmpULong      = theTmpULong << 24;
-        theULong	 = theTmpULong;
-        theTmpULong      = (PapyULong) (*(theTmp0P + 2));
-        theTmpULong      = theTmpULong << 16;
-        theULong	|= theTmpULong;
-        theTmpULong      = (PapyULong) (*(theTmp0P + 1));
-        theTmpULong      = theTmpULong << 8;
-        theULong	|= theTmpULong;
-        theTmpULong      = (PapyULong) *theTmp0P;
-        theULong        |= theTmpULong;
-        theValueTP->fl   = (float) theULong;
-		#else
-		theULong		= *((PapyULong*) theTmp0P);
-		theValueTP->fl   = (float) theULong;
-		#endif
+		
+		unsigned int *intPtr = (unsigned int*) &theValueTP->fl;
+		
+		*intPtr = UInt32ToHost( inFileNb, theTmp0P);
+		
+//		#if __BIG_ENDIAN__
+//        theTmpULong      = (PapyULong) (*(theTmp0P + 3));
+//        theTmpULong      = theTmpULong << 24;
+//        theULong	 = theTmpULong;
+//        theTmpULong      = (PapyULong) (*(theTmp0P + 2));
+//        theTmpULong      = theTmpULong << 16;
+//        theULong	|= theTmpULong;
+//        theTmpULong      = (PapyULong) (*(theTmp0P + 1));
+//        theTmpULong      = theTmpULong << 8;
+//        theULong	|= theTmpULong;
+//        theTmpULong      = (PapyULong) *theTmp0P;
+//        theULong        |= theTmpULong;
+//        theValueTP->fl   = (float) theULong;
+//		#else
+//		theULong		= *((PapyULong*) theTmp0P);
+//		theValueTP->fl   = (float) theULong;
+//		#endif
       } /* for */
 
       break; /* FL */
@@ -2246,23 +2241,27 @@ PutBufferInElement3 (PapyShort inFileNb, unsigned char *ioBuffP, PapyULong inEle
         /* updates the current position in the read buffer */
         *ioBufPosP += 8L;
 		
-		#if __BIG_ENDIAN__
-			uint64_t v, *pp = (uint64_t*) &theTmp0P;
-			
-			v = CFSwapInt64( *pp);
-			
-			double *p = (double*) &v;
-			theValueTP->fd = *p;
-		#else
-			/* extract the element according to the little-endian syntax */
-			for (theIncr = 0; theIncr < 4; theIncr++)
-			{
-			  theDoubleArr [2 * theIncr]       = *theTmp0P;
-			  theDoubleArr [(2 * theIncr) + 1] = *(theTmp0P + 1);
-			  theTmp0P += 2;
-			} /* for ...extraction of the value */
-			theValueTP->fd = *((PapyFloatDouble *) &theDoubleArr);
-        #endif
+		unsigned long long *intPtr = (unsigned long long*) &theValueTP->fd;
+		
+		*intPtr = UInt64ToHost(inFileNb, theTmp0P);
+		
+//		#if __BIG_ENDIAN__
+//			uint64_t v, *pp = (uint64_t*) &theTmp0P;
+//			
+//			v = CFSwapInt64( *pp);
+//			
+//			double *p = (double*) &v;
+//			theValueTP->fd = *p;
+//		#else
+//			/* extract the element according to the little-endian syntax */
+//			for (theIncr = 0; theIncr < 4; theIncr++)
+//			{
+//			  theDoubleArr [2 * theIncr]       = *theTmp0P;
+//			  theDoubleArr [(2 * theIncr) + 1] = *(theTmp0P + 1);
+//			  theTmp0P += 2;
+//			} /* for ...extraction of the value */
+//			theValueTP->fd = *((PapyFloatDouble *) &theDoubleArr);
+//        #endif
 		
       } /* for */
 
@@ -2318,13 +2317,7 @@ PutBufferInElement3 (PapyShort inFileNb, unsigned char *ioBuffP, PapyULong inEle
 	
         for (i = 0L, theTmpUsP = ioElemP->value->ow, ioBuffP += *ioBufPosP; i < theImLength; i++, theTmpUsP++, ioBuffP += 2)
         {
-			#if __BIG_ENDIAN__
-			*theTmpUsP  = (PapyUShort) (*(ioBuffP + 1));
-    	    *theTmpUsP  = *theTmpUsP << 8;
-    	    *theTmpUsP |= (PapyUShort) *ioBuffP;
-			#else
-			*theTmpUsP  = *((PapyUShort*) ioBuffP);
-			#endif
+			*theTmpUsP = UIntToHost( inFileNb, ioBuffP);
         } /* for */
        
         /*ioElemP->value->ow = imOW;*/
@@ -2696,36 +2689,26 @@ PutBufferInGroup3 (PapyShort inFileNb, unsigned char *ioBuffP, SElement *ioGroup
     theCharP    = ioBuffP;
     theCharP   += *ioBufPosP;
     /* extract the group number according to the little-endian syntax */
-    #if __BIG_ENDIAN__
-	theGrNb     = (PapyUShort) (*(theCharP + 1));
-    theGrNb     = theGrNb << 8;
-    theGrNb    |= (PapyUShort) *theCharP;
-	#else
-	theGrNb     =  *((PapyUShort*)theCharP);
-	#endif
+    
+	theGrNb = UIntToHost( inFileNb, theCharP);
+	
     /* updates the current position in the read buffer */
     *ioBufPosP += 2L;
     /* points to the right place in the buffer */
     theCharP   += 2;
     
     /* extract the element according to the little-endian syntax */
-	#if __BIG_ENDIAN__
-    theElemNb   = (PapyUShort) (*(theCharP + 1));
-    theElemNb   = theElemNb << 8;
-    theElemNb  |= (PapyUShort) *theCharP;
-	#else
-	theElemNb	= *((PapyUShort*)theCharP);
-	#endif
+	theElemNb = UIntToHost( inFileNb, theCharP);
 	
 	#if DEBUG
 	printf("gr:%x elem:%x\n", theGrNb, theElemNb);
 	#endif
 	
-	if( theGrNb == 0x0018 && theElemNb == 0x9177)
-	{
-		theElemNb++;
-		theElemNb--;
-	}
+//	if( theGrNb == 0x0018 && theElemNb == 0x9177)
+//	{
+//		theElemNb++;
+//		theElemNb--;
+//	}
 	
     /* updates the current position in the read buffer */
     *ioBufPosP += 2L;
@@ -2760,7 +2743,7 @@ PutBufferInGroup3 (PapyShort inFileNb, unsigned char *ioBuffP, SElement *ioGroup
     
     
     /* test wether the transfert syntax is the little-endian explicit VR one */
-    if (gArrTransfSyntax [inFileNb] == LITTLE_ENDIAN_EXPL)
+    if (gArrTransfSyntax [inFileNb] == LITTLE_ENDIAN_EXPL || gArrTransfSyntax [inFileNb] == BIG_ENDIAN_EXPL)
     {
       /* extract the VR */
       theFoo [0] = (char)   *theCharP;
@@ -2784,21 +2767,7 @@ PutBufferInGroup3 (PapyShort inFileNb, unsigned char *ioBuffP, SElement *ioGroup
         theCharP   += 2;
         
         /* extract the element length according to the little-endian explicit VR syntax */
-        #if __BIG_ENDIAN__
-		theTmpULong      = (PapyULong) (*(theCharP + 3));
-        theTmpULong      = theTmpULong << 24;
-        theULong	 = theTmpULong;
-        theTmpULong      = (PapyULong) (*(theCharP + 2));
-        theTmpULong      = theTmpULong << 16;
-        theULong	|= theTmpULong;
-        theTmpULong      = (PapyULong) (*(theCharP + 1));
-        theTmpULong      = theTmpULong << 8;
-        theULong	|= theTmpULong;
-        theTmpULong      = (PapyULong) *theCharP;
-        theULong        |= theTmpULong;
-        #else
-		theULong	= *((PapyULong*) theCharP);
-		#endif
+        theULong = UInt32ToHost( inFileNb, theCharP);
 		
         theElemLength    = theULong;
         
@@ -2808,13 +2777,7 @@ PutBufferInGroup3 (PapyShort inFileNb, unsigned char *ioBuffP, SElement *ioGroup
       else
       {
         /* extract the element length according to the little-endian explicit VR syntax */
-		 #if __BIG_ENDIAN__
-        theElemLengthGr2  = (PapyUShort) (*(theCharP + 1));
-        theElemLengthGr2  = theElemLengthGr2 << 8;
-        theElemLengthGr2 |= (PapyUShort) *theCharP;
-        #else
-		theElemLengthGr2  = *((PapyUShort*) theCharP);
-		#endif
+		theElemLengthGr2 = UIntToHost( inFileNb, theCharP);
 		
         theElemLength     = (PapyULong) theElemLengthGr2;
         
@@ -2827,23 +2790,8 @@ PutBufferInGroup3 (PapyShort inFileNb, unsigned char *ioBuffP, SElement *ioGroup
     else
     {
       /* extract the element length according to the little-endian implicit VR syntax */
-       #if __BIG_ENDIAN__
-	  theTmpULong      = (PapyULong) (*(theCharP + 3));
-      theTmpULong      = theTmpULong << 24;
-      theULong	       = theTmpULong;
-      theTmpULong      = (PapyULong) (*(theCharP + 2));
-      theTmpULong      = theTmpULong << 16;
-      theULong	      |= theTmpULong;
-      theTmpULong      = (PapyULong) (*(theCharP + 1));
-      theTmpULong      = theTmpULong << 8;
-      theULong	      |= theTmpULong;
-      theTmpULong      = (PapyULong) *theCharP;
-      theULong 	      |= theTmpULong;
-      theElemLength    = theULong;
-		#else
-		theElemLength	= *((PapyULong*) theCharP);
-		#endif
-		
+	  theElemLength = UInt32ToHost( inFileNb, theCharP);
+	  
       /* updates the current position in the read buffer */
       *ioBufPosP += 4L;
     } /* else ...little_endian implicit VR */

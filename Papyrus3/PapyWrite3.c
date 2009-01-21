@@ -1172,7 +1172,7 @@ ComputeGroupLength3 (PapyShort inGroupNb, SElement *ioGroupP, PapyULong *outImSe
       theSize += theSize & 1;			/* increment if size is odd */
 	    				 
       theTotalSize += theSize + 8L;		/* group + element + length = 8 */
-      if (inSyntax == LITTLE_ENDIAN_EXPL && (theElemP->vr == OB || theElemP->vr == OW || theElemP->vr == SQ))
+      if (inSyntax == LITTLE_ENDIAN_EXPL || inSyntax == BIG_ENDIAN_EXPL && (theElemP->vr == OB || theElemP->vr == OW || theElemP->vr == SQ))
         theTotalSize += 4L;
 	    
     } /* if ...no introduced value */
@@ -1196,7 +1196,7 @@ ComputeGroupLength3 (PapyShort inGroupNb, SElement *ioGroupP, PapyULong *outImSe
         /* if group 2 (explicit VR) & VR = OB or */
         /* Little_Endian_Explicit & VR = OB, OW, SQ, UN or UT then add 4 to the total length */
         if ((theElemP->group == 0x0002 && theElemP->vr == OB) ||
-            ((inSyntax == LITTLE_ENDIAN_EXPL) && 
+            ((inSyntax == LITTLE_ENDIAN_EXPL || inSyntax == BIG_ENDIAN_EXPL) && 
              ((theElemP->vr == OB) ||
               (theElemP->vr == OW) || 
               (theElemP->vr == SQ)|| 
@@ -1362,7 +1362,7 @@ ioPosP			is the current position in the buffer
       if (gArrTransfSyntax [inFileNb] == LITTLE_ENDIAN_IMPL && theElemP->group != 0x0002)
         Put4Bytes (theElemP->length , (unsigned char *) ioBuffP, ioPosP);
       /* LITTLE_ENDIAN_EXPLICIT VR or group 2 */
-      else if (gArrTransfSyntax [inFileNb] == LITTLE_ENDIAN_EXPL || theElemP->group == 0x0002)
+      else if (gArrTransfSyntax [inFileNb] == LITTLE_ENDIAN_EXPL || gArrTransfSyntax [inFileNb] == BIG_ENDIAN_EXPL || theElemP->group == 0x0002)
       {
         theStringP = (char *) &theString [0];
 	switch (theElemP->vr)
