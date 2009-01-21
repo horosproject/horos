@@ -1043,7 +1043,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		if( res < p.count && res >= 0 )
 		{
 			fNext = [[p objectAtIndex: res] fImage];
-			if( fNext )	{
+			if( fNext )
+			{
 				if( stackMode == 2) vDSP_vmax( fResult + from, 1, fNext + from, 1, fResult + from, 1, size);
 				else if( stackMode == 1) 
 				{
@@ -10084,6 +10085,7 @@ END_CREATE_ROIS:
 	if( direction >= 0) stackDirection = direction;
 	
 	updateToBeApplied = YES;
+	needToCompute8bitRepresentation = YES;
 }
 
 - (void)setSourceFile:(NSString*)s

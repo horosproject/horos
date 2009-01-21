@@ -2039,7 +2039,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	}
 	
 	if( resampledBaseAddr) free( resampledBaseAddr);
-	if( resampledTempAddr) free( resampledTempAddr);
 	if( blendingResampledBaseAddr) free( blendingResampledBaseAddr);
 
 //	[self clearGLContext];
@@ -2149,7 +2148,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 - (void) setIndex:(short) index
 {
 	[drawLock lock];
-	
+
 	TextureComputed32bitPipeline = NO;
 	
 	BOOL	keepIt;
@@ -5421,16 +5420,21 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	thickSlabMode = mode;
 	thickSlabStacks = stacks;
 	
-	for ( int i = 0; i < [dcmPixList count]; i++ ) {
+	for ( int i = 0; i < [dcmPixList count]; i++ )
+	{
 		[[dcmPixList objectAtIndex:i] setFusion:mode :stacks :flippedData];
 	}
 	
-	if( [self is2DViewer]) {
+	if( [self is2DViewer])
+	{
 		NSArray		*views = [[[self windowController] seriesView] imageViews];
 		
 		for ( int i = 0; i < [views count]; i ++)
 			[[views objectAtIndex: i] updateImage];
 	}
+	
+	resampledBaseAddrSize = 0;
+	[curDCM compute8bitRepresentation];
 	
 	[self setIndex: curImage];
 }
@@ -9785,7 +9789,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		intFULL32BITPIPELINE = NO;
 	
 	if( [curDCM stack] > 1)
-		intFULL32BITPIPELINE = NO;
+	{
+		if( curDCM.stackMode == 4 || curDCM.stackMode == 5)
+			intFULL32BITPIPELINE = NO;
+	}
 	
 	if( curDCM.isLUT12Bit) isRGB = YES;
 	
@@ -9913,6 +9920,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 	glEnable(TEXTRECTMODE);
     
+	float *computedfImage = nil;
 	char *baseAddr = nil;
 	int rowBytes = 0;
 	
@@ -9957,10 +9965,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		}
 		else
 		{
-			if( intFULL32BITPIPELINE)
+			if( intFULL32BITPIPELINE == YES && TextureComputed32bitPipeline == NO)
 			{
 				rowBytes = *tW * 4;
-				src.data = curDCM.fImage;
+				computedfImage = [curDCM computefImage];
+				src.data = computedfImage;
 				src.rowBytes = curDCM.pwidth*4;
 				dst.rowBytes = rowBytes;
 			}
@@ -10024,7 +10033,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	{
 		*tW = curDCM.pwidth;
 		rowBytes = curDCM.pwidth*4;
-		baseAddr = (char*) curDCM.fImage;
+		computedfImage = [curDCM computefImage];
+		baseAddr = (char*) computedfImage;
 	}
 	else
 	{
@@ -10182,6 +10192,12 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		}
 	}
     glDisable (TEXTRECTMODE);
+	
+	if( computedfImage)
+	{
+		if( computedfImage != curDCM.fImage)
+			free( computedfImage);
+	}
 	
 	return texture;
 }

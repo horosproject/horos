@@ -245,7 +245,6 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 	BOOL			syncOnLocationImpossible, updateNotificationRunning;
 	
 	char			*resampledBaseAddr, *blendingResampledBaseAddr;
-	char			*resampledTempAddr;
 	BOOL			zoomIsSoftwareInterpolated, firstTimeDisplay;
 	
 	int				resampledBaseAddrSize, blendingResampledBaseAddrSize;
