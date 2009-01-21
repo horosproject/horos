@@ -3010,7 +3010,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	if( colorTransfer)
 		src = (char*) colorBuf;
 		
-	if( zoomIsSoftwareInterpolated)
+	if( zoomIsSoftwareInterpolated == YES && FULL32BITPIPELINE == NO)
 	{
 		src = resampledBaseAddr;
 		dcmWidth = textureWidth;

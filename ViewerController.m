@@ -14869,6 +14869,7 @@ int i,j,l;
 	NSArray *viewers = [ViewerController getDisplayed2DViewers];
 	long annotCopy,clutBarsCopy;
 	NSString *sopuid = nil;
+	BOOL modalityAsSource = NO;
 	
 	long	width, height, spp, bpp, i, x;
 	float	cwl, cww;
@@ -14888,9 +14889,9 @@ int i,j,l;
 	
 	switch( screenCapture)
 	{
-		case 0: /*memory data*/		force8bits = NO; break;
-		case 1: /*screen capture*/	force8bits = YES; break;
-		case 2: /*screen capture*/	force8bits = NO; break;
+		case 0: /*memory data*/		force8bits = NO;	modalityAsSource = YES;		break;
+		case 1: /*screen capture*/	force8bits = YES;	break;
+		case 2: /*screen capture*/	force8bits = NO;	break;
 	}
 	
 	unsigned char *data = nil;
@@ -15100,7 +15101,7 @@ int i,j,l;
 		[exportDCM setPixelData: data samplePerPixel:spp bitsPerPixel:bpp width: width height: height];
 		[exportDCM setSigned: isSigned];
 		[exportDCM setOffset: offset];
-		[exportDCM setModalityAsSource: YES];
+		[exportDCM setModalityAsSource: modalityAsSource];
 		
 		f = [exportDCM writeDCMFile: nil];
 		if( f == nil) NSRunCriticalAlertPanel( NSLocalizedString(@"Error", nil),  NSLocalizedString(@"Error during the creation of the DICOM File!", nil), NSLocalizedString(@"OK", nil), nil, nil);
