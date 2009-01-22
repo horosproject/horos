@@ -13233,15 +13233,17 @@ int i,j,l;
 	
 	if( [vC blendingController])
 	{
-		[vC propagateSettingsToViewer: [vC blendingController]];
+		if( [vC blendingController] != self)
+			[self propagateSettingsToViewer: [vC blendingController]];
+		else
+			[vC refresh];
 	}
 }
 
 -(void) propagateSettings
 {
-	long				i;
-	NSArray				*winList = [NSApp windows];
-	NSMutableArray		*viewersList;
+	NSArray *winList = [NSApp windows];
+	NSMutableArray *viewersList;
 	
 	if( [[[[fileList[0] objectAtIndex: 0] valueForKey:@"completePath"] lastPathComponent] isEqualToString:@"Empty.tif"] == YES) return;
 	
@@ -13252,10 +13254,8 @@ int i,j,l;
 	viewersList = [ViewerController getDisplayed2DViewers];
 	[viewersList removeObject: self];
 	
-	for( i = 0; i < [viewersList count]; i++)
+	for( ViewerController *vC in viewersList)
 	{
-		ViewerController	*vC = [viewersList objectAtIndex: i];
-		
 		if( vC != self)
 		{
 			if( [[vC imageView] shouldPropagate] == YES)
@@ -13308,51 +13308,40 @@ int i,j,l;
 //	[viewersList release];
 	
 	// *** 2D MPR Viewers ***
-	viewersList = [[NSMutableArray alloc] initWithCapacity:0];
+	viewersList = [NSMutableArray array];
 	
-	for( i = 0; i < [winList count]; i++)
+	for( NSWindow *win in winList)
 	{
-		if( [[[[winList objectAtIndex:i] windowController] windowNibName] isEqualToString:@"MPR2D"])
+		if( [[[win windowController] windowNibName] isEqualToString:@"MPR2D"])
 		{
-			if( self != [[winList objectAtIndex:i] windowController]) [viewersList addObject: [[winList objectAtIndex:i] windowController]];
+			if( self != [win windowController]) [viewersList addObject: [win windowController]];
 		}
 	}
 	
-	for( i = 0; i < [viewersList count]; i++)
+	for( MPR2DController *vC in viewersList)
 	{
-		MPR2DController	*vC = [viewersList objectAtIndex: i];
-		
 		if( [vC blendingController])
-		{
 			[vC updateBlendingImage];
-		}
 	}
-	[viewersList release];
 	
 	// *** VR Viewers ***
-	viewersList = [[NSMutableArray alloc] initWithCapacity:0];
+	viewersList = [NSMutableArray array];
 	
-	for( i = 0; i < [winList count]; i++)
+	for( NSWindow *win in winList)
 	{
-		if( [[[[winList objectAtIndex:i] windowController] windowNibName] isEqualToString:@"VR"] == YES || [[[[winList objectAtIndex:i] windowController] windowNibName] isEqualToString:@"VRPanel"] == YES)
+		if( [[[win windowController] windowNibName] isEqualToString:@"VR"] == YES || [[[win windowController] windowNibName] isEqualToString:@"VRPanel"] == YES)
 		{
-			if( self != [[winList objectAtIndex:i] windowController]) [viewersList addObject: [[winList objectAtIndex:i] windowController]];
+			if( self != [win windowController]) [viewersList addObject: [win windowController]];
 		}
 	}
 	
-	for( i = 0; i < [viewersList count]; i++)
+	for( VRController *vC in viewersList)
 	{
-		VRController	*vC = [viewersList objectAtIndex: i];
-		
 		if( [vC blendingController])
-		{
 			[vC updateBlendingImage];
-		}
 	}
-	
-	[viewersList release];
-
 }
+
 #pragma mark Registration
 
 - (ViewerController*) registeredViewer

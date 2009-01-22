@@ -2978,15 +2978,40 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 - (double)originY { [self CheckLoad]; return originY;}
 - (double)originZ { [self CheckLoad]; return originZ;}
 
-- (void)origin: (float*)o { [self CheckLoad];	o[ 0] = originX; o[ 1] = originY; o[ 2] = originZ; }
-- (void)originDouble: (double*)o { [self CheckLoad];	o[ 0] = originX; o[ 1] = originY; o[ 2] = originZ; }
-- (void)setOrigin: (float*)o { originX = o[ 0]; originY = o[ 1]; originZ = o[ 2]; }
-- (void)setOriginDouble: (double*)o { originX = o[ 0]; originY = o[ 1]; originZ = o[ 2]; };
-
+- (void)origin: (float*)o
+{
+	[self CheckLoad];
+	o[ 0] = originX;
+	o[ 1] = originY;
+	o[ 2] = originZ;
+}
+- (void)originDouble: (double*)o
+{
+	[self CheckLoad];
+	o[ 0] = originX;
+	o[ 1] = originY;
+	o[ 2] = originZ;
+}
+- (void)setOrigin: (float*)o
+{
+	originX = o[ 0];
+	originY = o[ 1];
+	originZ = o[ 2];
+}
+- (void)setOriginDouble: (double*)o
+{
+	originX = o[ 0];
+	originY = o[ 1];
+	originZ = o[ 2];
+};
 - (double)sliceLocation{ [self CheckLoad]; return sliceLocation;}
 - (void)setSliceLocation: (double)l { [self CheckLoad]; sliceLocation = l;}
 - (double)sliceThickness { [self CheckLoad]; return sliceThickness;}
-- (void)setSliceThickness: (double)l { [self CheckLoad]; sliceThickness = l;}
+- (void)setSliceThickness: (double)l
+{
+	[self CheckLoad];
+	sliceThickness = l;
+}
 - (double) spacingBetweenSlices { [self CheckLoad]; return spacingBetweenSlices;}
 
 - (double)sliceInterval { [self CheckLoad]; return sliceInterval; }
@@ -5589,7 +5614,35 @@ END_CREATE_ROIS:
 		[self computeTotalDoseCorrected];
 	}
 	
-	// Loop over sequence to find injected dose
+	DCMSequenceAttribute *detectorInformationSequence = (DCMSequenceAttribute *)[dcmObject attributeWithName:@"DetectorInformationSequence"];
+	if( detectorInformationSequence && detectorInformationSequence.sequence.count > 0 )
+	{
+		DCMObject *detectorInformation = [detectorInformationSequence.sequence objectAtIndex:0];
+		
+		NSArray *ipp = [detectorInformation attributeArrayWithName:@"ImagePositionPatient"];
+		if( ipp )
+		{
+			originX = [[ipp objectAtIndex:0] floatValue];
+			originY = [[ipp objectAtIndex:1] floatValue];
+			originZ = [[ipp objectAtIndex:2] floatValue];
+			isOriginDefined = YES;
+		}
+		
+		if( spacingBetweenSlices)
+			originZ += frameNo * spacingBetweenSlices;
+		else
+			originZ += frameNo * sliceThickness;
+			
+		orientation[ 0] = 0;	orientation[ 1] = 0;	orientation[ 2] = 0;
+		orientation[ 3] = 0;	orientation[ 4] = 0;	orientation[ 5] = 0;
+		
+		NSArray *iop = [detectorInformation attributeArrayWithName:@"ImageOrientationPatient"];
+		if( iop )
+		{
+			for ( int j = 0; j < iop.count; j++ ) 
+				orientation[ j ] = [[iop objectAtIndex:j] floatValue];
+		}
+	}
 	
 	if( [dcmObject attributeValueForKey: @"7053,1000"] )
 	{
@@ -7150,7 +7203,10 @@ END_CREATE_ROIS:
 										isOriginDefined = YES;
 									}
 									
-									originZ += frameNo * sliceThickness;
+									if( spacingBetweenSlices)
+										originZ += frameNo * spacingBetweenSlices;
+									else
+										originZ += frameNo * sliceThickness;
 									
 									orientation[ 0] = 0;	orientation[ 1] = 0;	orientation[ 2] = 0;
 									orientation[ 3] = 0;	orientation[ 4] = 0;	orientation[ 5] = 0;
