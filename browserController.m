@@ -5034,8 +5034,23 @@ static NSArray*	statesArray = nil;
 				ROIsAndKeyImagesButtonAvailable = YES;
 			else
 			{
-				if( [[self ROIsAndKeyImages: nil] count] == 0) ROIsAndKeyImagesButtonAvailable = NO;
-				else ROIsAndKeyImagesButtonAvailable = YES;
+				NSEvent *event = [[NSApplication sharedApplication] currentEvent];
+				
+				if([event modifierFlags] & NSAlternateKeyMask)
+				{
+					if( [[self KeyImages: nil] count] == 0) ROIsAndKeyImagesButtonAvailable = NO;
+					else ROIsAndKeyImagesButtonAvailable = YES;
+				}
+				else if([event modifierFlags] & NSShiftKeyMask)
+				{
+					if( [[self ROIImages: nil] count] == 0) ROIsAndKeyImagesButtonAvailable = NO;
+					else ROIsAndKeyImagesButtonAvailable = YES;
+				}
+				else
+				{
+					if( [[self ROIsAndKeyImages: nil] count] == 0) ROIsAndKeyImagesButtonAvailable = NO;
+					else ROIsAndKeyImagesButtonAvailable = YES;
+				}
 			}
 		}
 	}
@@ -15588,6 +15603,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 			}
 		}
 	}
+	
+	[self outlineViewSelectionDidChange: nil];
 }
 
 - (void) setupToolbar
