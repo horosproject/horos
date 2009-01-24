@@ -5814,10 +5814,6 @@ END_CREATE_ROIS:
 			free(oImage);
 			oImage = (short*) tmpImage;
 		}
-		else if( bitsAllocated == 32)
-		{
-			NSLog( @"unsupported 32 bits");
-		}
 		else if( bitsAllocated == 8)
 		{	// Planar 8
 			//-> 16 bits image
@@ -7980,12 +7976,6 @@ END_CREATE_ROIS:
 							efree3 ((void **) &oImage);
 							oImage =  (short*) tmpImage;
 						}
-						//					else if( bitsStored != 16 && fIsSigned == YES && bitsAllocated == 16)
-						//					{
-						//						int totSize = (int) ((int) height * (int) realwidth * 2L);
-						//						
-						//						[self convertToFull16Bits: (unsigned short*) oImage size: totSize BitsAllocated: bitsAllocated BitsStored: bitsStored HighBitPosition: highBit PixelSign: fIsSigned];
-						//					}
 						
 						if( realwidth != width)
 						{
@@ -10977,6 +10967,8 @@ END_CREATE_ROIS:
 	
 	if( baseAddr)
 	{
+		[self CheckLoad];
+		
 		needToCompute8bitRepresentation = NO;
 		
 		updateToBeApplied = NO;

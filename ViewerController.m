@@ -174,7 +174,7 @@ NSInteger sortROIByName(id roi1, id roi2, void *context)
 
 @implementation ViewerController
 
-@synthesize currentOrientationTool;
+@synthesize currentOrientationTool, loadingPercentage;
 
 #define UNDOQUEUESIZE 40
 
@@ -5671,12 +5671,13 @@ static ViewerController *draggedController = nil;
 	
 	if( previousColumns != 1 || previousRows != 1)
 		[self setImageRows: 1 columns: 1];
-	
+
 	[imageView mouseUp: [[NSApplication sharedApplication] currentEvent]];
 	
 	if( pixList)
 	{
 		[self selectFirstTilingView];
+		[imageView updateTilingViews];
 	
 		[[pixList[ 0] objectAtIndex:0] orientation: previousOrientation];
 		previousLocation = [[imageView curDCM] sliceLocation];
@@ -6016,7 +6017,8 @@ static ViewerController *draggedController = nil;
 	
 	[self setUpdateTilingViewsValue: NO];
 	
-	[seriesView selectFirstTilingView];
+	[self selectFirstTilingView];
+	[imageView updateTilingViews];
 	
 	if( previousFusionActivated)
 	{
@@ -6037,8 +6039,6 @@ static ViewerController *draggedController = nil;
 	
 	if( previousColumns != 1 || previousRows != 1)
 		[self setImageRows: previousRows columns: previousColumns];
-	
-	[self selectFirstTilingView];
 	
 	[self setCurWLWWMenu: [DCMView findWLWWPreset: [imageView curWL] :[imageView curWW] :[imageView curDCM]]];
 	
@@ -13864,8 +13864,6 @@ int i,j,l;
     NSTimeInterval  thisTime = [NSDate timeIntervalSinceReferenceDate];
     short           val;
     
-//	if( [self isEverythingLoaded] == NO) return;
-	
 	if( loadingPercentage < 0.5) return;
 	
     if( thisTime - lastMovieTime > 1.0 / [movieRateSlider floatValue])
@@ -13910,8 +13908,6 @@ int i,j,l;
 {
 	NSTimeInterval  thisTime = [NSDate timeIntervalSinceReferenceDate];
 	short           val;
-	
-//	if( [self isEverythingLoaded] == NO) return;
 	
 	if( loadingPercentage < 0.5) return;
 	

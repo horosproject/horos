@@ -330,6 +330,7 @@ enum
 }
 
 @property(readonly) short currentOrientationTool;
+@property(readonly) volatile float loadingPercentage;
 
 /** Array of all 2D Viewers */
 + (NSMutableArray*) getDisplayed2DViewers;

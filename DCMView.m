@@ -1813,7 +1813,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 {
 	TextureComputed32bitPipeline = NO;
 	
-	if( dcmPixList && index != -1)
+	if( dcmPixList)
 	{
 		[[self window] setAcceptsMouseMovedEvents: YES];
 
@@ -1821,6 +1821,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 		curImage = index; 
 		if( curImage >= [dcmPixList count]) curImage = [dcmPixList count] -1;
+		if( curImage < 0) curImage = 0;
 		
 		[curDCM release];
 		curDCM = [[dcmPixList objectAtIndex: curImage] retain];
@@ -1883,7 +1884,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	{
 		[curDCM release];
 		curDCM = nil;
-		curImage = -1;
+		curImage = 0;
 		[curRoiList release];
 		curRoiList = nil;
 		curROI = nil;
@@ -2167,6 +2168,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			
         curImage = index;
         if( curImage >= [dcmPixList count]) curImage = [dcmPixList count] -1;
+		if( curImage < 0) curImage = 0;
 		
 		[curDCM release];
         curDCM = [[dcmPixList objectAtIndex:curImage] retain];
@@ -2231,7 +2233,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	{
 		[curDCM release];
 		curDCM = nil;
-		curImage = -1;
+		curImage = 0;
 		[curRoiList release];
 		curRoiList = nil;
 		curROI = nil;
@@ -6096,9 +6098,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 								
 								noSlicePosition = NO;
 								
-								everythingLoaded = [[self windowController] isEverythingLoaded];
-								
 								everythingLoaded = [[dcmPixList objectAtIndex: 0] isLoaded];
+								
 								if( everythingLoaded)
 									firstSliceLocation = [[dcmPixList objectAtIndex: 0] sliceLocation];
 								else
@@ -6220,7 +6221,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		if( [[self window] isMainWindow])
 			[self sendSyncMessage: 0];
 		
-		if( blendingView)
+		if( blendingView && [note object] != blendingView)
 			[blendingView sync: [NSNotification notificationWithName: @"sync" object: self userInfo: [self syncMessage: 0]]];
 			
 		avoidRecursiveSync --;
@@ -7117,7 +7118,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						else if([[annot objectAtIndex:j] isEqualToString:@"Image Position"] && fullText)
 						{
 							NSString *orientationStack = @"";
-							if( [self is2DViewer] && [[self windowController] isEverythingLoaded] == YES)
+							if( [self is2DViewer] && [[self windowController] isEverythingLoaded] == YES && [[self windowController] loadingPercentage] == 1.0)
 							{
 								if( volumicData == -1)
 									volumicData = [[self windowController] isDataVolumicIn4D: NO];

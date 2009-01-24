@@ -175,7 +175,8 @@
 		}
 	}
 	//add views
-	else if (newSize > currentSize){
+	else if (newSize > currentSize)
+	{
 		for ( i = [imageViews count]; i < rows * columns; i++)
 		{
 			DCMView *dcmView = [[[DCMView alloc] initWithFrame:[self bounds]  imageRows:rows  imageColumns:columns] autorelease];
