@@ -5670,7 +5670,14 @@ static ViewerController *draggedController = nil;
 	nonVolumicDataWarningDisplayed = YES;
 	
 	if( previousColumns != 1 || previousRows != 1)
-		[self setImageRows: 1 columns: 1];
+	{
+		[imageView release];
+		imageView = [[[seriesView imageViews] objectAtIndex:0] retain];
+		[imageView becomeFirstResponder];
+	}
+	
+//	if( previousColumns != 1 || previousRows != 1)
+//		[self setImageRows: 1 columns: 1];
 
 	[imageView mouseUp: [[NSApplication sharedApplication] currentEvent]];
 	
@@ -6037,9 +6044,16 @@ static ViewerController *draggedController = nil;
 	NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:[imageView curImage]]  forKey:@"curImage"];
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"DCMUpdateCurrentImage" object: imageView userInfo: userInfo];
 	
+//	if( previousColumns != 1 || previousRows != 1)
+//		[self setImageRows: previousRows columns: previousColumns];
+
 	if( previousColumns != 1 || previousRows != 1)
-		[self setImageRows: previousRows columns: previousColumns];
-	
+	{
+		[imageView release];
+		imageView = [[[seriesView imageViews] objectAtIndex:0] retain];
+		[imageView becomeFirstResponder];
+	}
+		
 	[self setCurWLWWMenu: [DCMView findWLWWPreset: [imageView curWL] :[imageView curWW] :[imageView curDCM]]];
 	
 	nonVolumicDataWarningDisplayed = NO;
@@ -6459,7 +6473,8 @@ static ViewerController *draggedController = nil;
 	}
 }
 
-- (void)updateImageView:(NSNotification *)note{
+- (void)updateImageView:(NSNotification *)note
+{
 	if ([[self window] isEqual:[[note object] window]])
 	{
 		[imageView release];

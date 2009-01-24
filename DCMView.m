@@ -1813,7 +1813,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 {
 	TextureComputed32bitPipeline = NO;
 	
-	if( dcmPixList)
+	if( dcmPixList && index >= 0)
 	{
 		[[self window] setAcceptsMouseMovedEvents: YES];
 
@@ -1884,7 +1884,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	{
 		[curDCM release];
 		curDCM = nil;
-		curImage = 0;
+		curImage = -1;
 		[curRoiList release];
 		curRoiList = nil;
 		curROI = nil;
@@ -2233,7 +2233,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	{
 		[curDCM release];
 		curDCM = nil;
-		curImage = 0;
+		curImage = -1;
 		[curRoiList release];
 		curRoiList = nil;
 		curROI = nil;
@@ -4004,6 +4004,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 {
 	float reverseScrollWheel;
 	
+	if( curImage < 0) return;
 	if( !drawing) return;
 	if( [[self window] isVisible] == NO) return;
 	if( [self is2DViewer] == YES)
@@ -4305,6 +4306,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 - (void) otherMouseDown:(NSEvent *)event
 {
+	if( curImage < 0) return;
+	
 	[[self window] makeKeyAndOrderFront: self];
 	[[self window] makeFirstResponder: self];
 	
@@ -4313,6 +4316,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 - (void) rightMouseDown:(NSEvent *)event
 {
+	if( curImage < 0) return;
+	
 	[[self window] makeKeyAndOrderFront: self];
 	[[self window] makeFirstResponder: self];
 	
@@ -10395,7 +10400,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 - (BOOL)becomeFirstResponder
 {
-
 	isKeyView = YES;
 	
 	[self updateTilingViews];
@@ -10417,8 +10421,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	}
 	
 	[self becomeKeyWindow];
-	
-	
 	[self setNeedsDisplay:YES];
 	
 	if( [self is2DViewer])
@@ -10531,7 +10533,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			if( flippedData == NO)
 			{
 				if( [self is2DViewer])
+				{
+					[NSObject cancelPreviousPerformRequestsWithTarget:[self windowController] selector: @selector(selectFirstTilingView) object: nil];
 					[[self windowController] performSelector:@selector(selectFirstTilingView) withObject:nil afterDelay:0];
+				}
 			}
 		}
 		else if (curImage >= [dcmPixList count])
@@ -10541,7 +10546,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			if( flippedData)
 			{
 				if( [self is2DViewer])
+				{
+					[NSObject cancelPreviousPerformRequestsWithTarget:[self windowController] selector: @selector(selectFirstTilingView) object: nil];
 					[[self windowController] performSelector:@selector(selectFirstTilingView) withObject:nil afterDelay:0];
+				}
 			}
 		}
 		
