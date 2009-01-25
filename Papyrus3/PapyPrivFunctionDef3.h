@@ -322,7 +322,6 @@ static __inline__ __attribute__((always_inline)) PapyUShort Extract2Bytes (PapyS
 /*unsigned char *inBufP;				 the buffer to read from */
 /*PapyULong 	*ioPosP;			      the position in the buffer */
 {
-	PapyUShort theUShort;
 	unsigned char *theCharP;
 	
 	/* points to the right place in the buffer */
@@ -347,7 +346,6 @@ static __inline__ __attribute__((always_inline)) PapyUShort Extract2Bytes (PapyS
 static __inline__ __attribute__((always_inline)) PapyULong Extract4Bytes (PapyShort inFileNb, unsigned char *inBufP, PapyULong *ioPosP)
 {
 	unsigned char *theCharP;
-	PapyULong theULong;
     
 	/* points to the right place in the buffer */
 	theCharP  = inBufP;
