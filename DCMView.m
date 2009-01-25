@@ -2172,6 +2172,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 		[curDCM release];
         curDCM = [[dcmPixList objectAtIndex:curImage] retain];
+		[curDCM CheckLoad];
 		
 		[curRoiList release];
 		
@@ -2466,7 +2467,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		}
         else
         {
-			NSLog( @"%d", c);
+			NSLog( @"Keydown: %d", c);
 			
 			if( [self actionForHotKey:[event characters]] == NO) [super keyDown:event];
         }
@@ -7123,7 +7124,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						else if([[annot objectAtIndex:j] isEqualToString:@"Image Position"] && fullText)
 						{
 							NSString *orientationStack = @"";
-							if( [self is2DViewer] && [[self windowController] isEverythingLoaded] == YES && [[self windowController] loadingPercentage] == 1.0)
+							if( [self is2DViewer] && [[self windowController] isEverythingLoaded] == YES)
 							{
 								if( volumicData == -1)
 									volumicData = [[self windowController] isDataVolumicIn4D: NO];

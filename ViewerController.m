@@ -6235,7 +6235,10 @@ static ViewerController *draggedController = nil;
 		}
 		
 		if( from == 0)
+		{
 			loadingPercentage = (float) ((movieIndex*(to-from)) + i) / (float) (maxMovieIndex * (to-from));
+			if( loadingPercentage >= 1) loadingPercentage = 0.99;
+		}
 	}
 	
 	[subLoadingThread lock];
@@ -6334,10 +6337,10 @@ static ViewerController *draggedController = nil;
 			}
 			
 			totalNumberOfLoadingThreads -= numberOfThreadsForCompute;
-			
-			loadingPercentage = (float) 1.0;
 		}
 	}
+	
+	loadingPercentage = (float) 1.0;
 	
 	NSLog( @"end loading");
 	
@@ -17910,8 +17913,9 @@ int i,j,l;
 
 - (BOOL) isEverythingLoaded
 {
-	if( ThreadLoadImage) return NO;
-	else return YES;
+	if( ThreadLoadImage == YES) return NO;
+	else if( ThreadLoadImage == NO && loadingPercentage == 1.0) return YES;
+	else return NO;
 }
 
 -(void) checkEverythingLoaded

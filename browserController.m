@@ -10561,8 +10561,6 @@ static BOOL needToRezoom;
 			
 			for( unsigned long x = 0; x < [toOpenArray count]; x++ )
 			{
-				NSLog( @"%d", [[toOpenArray objectAtIndex: x] count]);
-				
 				if( numberImages == -1 )
 				{
 					numberImages = [[toOpenArray objectAtIndex: x] count];
