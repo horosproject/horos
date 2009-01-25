@@ -102,11 +102,11 @@ Papy3FileOpen (char *inNameP, PAPY_FILE inVRefNum, int inToOpen, void* inFSSpec)
 {
     PAPY_FILE		theFp;
     char		theFilename [256];
-    unsigned char 	theBuff [15], theVersion [8];
+    unsigned char 	theBuff [15];
     PapyLong		theFilePos;
     PapyULong		theReadSize, theNbVal;
     PapyShort		theFileNb, theErr;
-    int			i, theElemType;
+    int			theElemType;
     enum EFile_Type	thePapyrusFile = PAPYRUS3;
     SElement		*theGroupP;
     UValue_T		*theValP;
@@ -1421,7 +1421,7 @@ Papy3FindOwnerRange (PapyShort inFileNb, PapyUShort inGroupNb, char *inOwnerStrP
   int		j, found = FALSE;
   PapyShort	theErr = 0;
   PapyUShort	theExtrGrNb, theExtrElemNb, tmpUShort;
-  PapyULong	theElemLength, theStartPos, i, ii, theTmpULong, theULong;
+  PapyULong	theElemLength, theStartPos, i, ii;
   
   
   /* save the current file position */
@@ -1602,7 +1602,7 @@ Papy3GotoElemNb (PapyShort inFileNb, PapyUShort inGroupNb, PapyUShort inElemNb,
   unsigned char	theBuff [10], *theCharP;
   PapyShort	theErr;
   PapyUShort	theTmpElemNb, theLastElemNb, theTmpGrNb, theTmpElemL;
-  PapyULong	theStartPos, i, j, theTmpULong, theULong;
+  PapyULong	theStartPos, i, j;
   int 		found = FALSE;
 
   

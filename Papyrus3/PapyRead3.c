@@ -1576,7 +1576,6 @@ Papy3GetPixelData (PapyShort inFileNb, int inImageNb, SElement *inGrOrModP, int 
 	  {
 		  register PapyULong	*theULongP = (PapyULong *) theBufP;
 		  register long			ii;
-		  register PapyUChar	*val;
 		  
 		  ii = theBytesToRead / 4;
 		  
@@ -1621,7 +1620,6 @@ Papy3GetPixelData (PapyShort inFileNb, int inImageNb, SElement *inGrOrModP, int 
 	  {
 		  register PapyUShort	 *theUShortP = (PapyUShort *) theBufP;
 		  register long			ii;
-		  register PapyUShort val;
 		  
 		  ii = theBytesToRead / 2;
 		   #if __ppc__
@@ -2087,10 +2085,8 @@ PutBufferInElement3 (PapyShort inFileNb, unsigned char *ioBuffP, PapyULong inEle
   SElement		  *theSeqGroupP;
   UValue_T		  *theValueTP;
   unsigned char *theTmp0P, theTmp1,  *theCharP;
-  unsigned char theDoubleArr [8], theIncr;
   PapyLong		  theCurrFilePos, theInitialFilePos = inInitFilePos;
   PapyULong		  i, j, thePosInSeq, thePosInItem, theSeqSize, theSeqGrSize, theImLength;
-  PapyULong 		theULong = 0L, theTmpULong = 0;
   PapyUShort	 	theSeqGrNb, theElemNb, *theTmpUsP;
   char 			    *theCharWrkP; 
   int 			    theEnumSeqNb, theFirstTime, theIsUndefItemLen, pos;
@@ -2637,7 +2633,7 @@ PutBufferInGroup3 (PapyShort inFileNb, unsigned char *ioBuffP, SElement *ioGroup
   SElement		*theArrElemP;
   PapyULong	 	theElemLength;
   PapyULong		j, theInitialBufPos;
-  PapyULong		theTmpULong, theULong = 0L;
+  PapyULong		theULong = 0L;
   PapyLong		theInitialFilePos, theCurrFilePos;
   PapyUShort	 	theGrNb;
   PapyUShort	 	theElemNb, theElemLengthGr2;
