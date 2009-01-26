@@ -53,6 +53,8 @@ FindFreeFile3 ()
     } /* if */
   } /* for */  
   
+  printf( "***** FindFreeFile3 papMaxOpenFile\r");
+  
   RETURN (papMaxOpenFile);
 
 } /* endof FindFreeFile3 */

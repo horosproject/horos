@@ -4930,6 +4930,9 @@ END_CREATE_ROIS:
 				if (gIsPapyFile [fileNb] == DICOM10) Papy3FSeek (gPapyFile [fileNb], SEEK_SET, 132L);
 				
 				[self loadCustomImageAnnotationsPapyLink:fileNb DCMLink:nil];
+				
+				if( [[imageObj valueForKey: @"numberOfFrames"] intValue] <= 1)
+					[self clearCachedPapyGroups];
 			}
 		}
 		else
@@ -4960,7 +4963,8 @@ END_CREATE_ROIS:
 				}
 			}
 			
-			[self loadCustomImageAnnotationsPapyLink:-1 DCMLink:dcmObject];
+			if( dcmObject)
+				[self loadCustomImageAnnotationsPapyLink:-1 DCMLink:dcmObject];
 		}
 	}
 	@catch (NSException * e)
@@ -6046,7 +6050,8 @@ END_CREATE_ROIS:
 			if( [cachedPapyGroups count] >= kMax_file_open)
 				NSLog( @"WARNING: Too much files opened for Papyrus Toolkit");
 		}
-		else NSLog( @"Papy3FileOpen failed : %d", fileNb);
+		else
+			NSLog( @"Papy3FileOpen failed : %d", fileNb);
 	}
 	else
 	{
