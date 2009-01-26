@@ -144,7 +144,7 @@ PapyShort
 Papy3FRead (PAPY_FILE inFp, PapyULong *ioBytesToReadP, PapyULong inNb, void *ioBufferP)
 {
   int packets = 0;
-  int err, i;
+  int i;
   
 	for (i = 0; i < kMax_file_open; i++)
 	{

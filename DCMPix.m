@@ -3216,8 +3216,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		sliceThickness = 0;
 		
 		memset( orientation, 0, sizeof orientation);
-		
+		#ifdef OSIRIX_VIEWER
 		[self loadCustomImageAnnotationsPapyLink:-1 DCMLink:nil];
+		#endif
     }
     return self;
 }
@@ -6427,9 +6428,9 @@ END_CREATE_ROIS:
 
 - (void) papyLoadGroup0x0020: (SElement*) theGroupP
 {
-	UValue_T *val, *val3, *tmp, *tmpVal3;
-	PapyULong nbVal, pos;
-	int elemType, i;
+	UValue_T *val, *tmp, *tmpVal3;
+	PapyULong nbVal;
+	int elemType;
 	
 	val = Papy3GetElement (theGroupP, papImagePositionPatientGr, &nbVal, &elemType);
 	if ( val )
@@ -6495,7 +6496,7 @@ END_CREATE_ROIS:
 {
 	UValue_T *val, *val3, *tmp, *tmpVal3;
 	PapyULong nbVal, pos;
-	int elemType, i;
+	int elemType;
 
 	val3 = Papy3GetElement (theGroupP, papRescaleInterceptGr, &pos, &elemType);
 	if ( val3 )	{
@@ -6997,7 +6998,7 @@ END_CREATE_ROIS:
 - (BOOL) loadDICOMPapyrus // PLEASE, KEEP BOTH FUNCTIONS FOR TESTING PURPOSE. THANKS
 {
 	int				elemType;
-	PapyShort		imageNb, ee,  err, theErr;
+	PapyShort		imageNb, ee,  err;
 	PapyULong		nbVal, i, pos;
 	SElement		*theGroupP;
 	UValue_T		*val, *tmp;

@@ -268,9 +268,9 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 + (BOOL) isTiffFile:(NSString *) file
 {
 	int success = NO;
-	NSString	*extension = [[file pathExtension] lowercaseString];
 	
 	#ifndef STATIC_DICOM_LIB
+	NSString *extension = [[file pathExtension] lowercaseString];
 	
 	if( [extension isEqualToString:@"tiff"] == YES ||
 		[extension isEqualToString:@"stk"] == YES ||
@@ -292,9 +292,11 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 + (BOOL) isFVTiffFile:(NSString *) file
 {
 	int success = NO;
-	NSString	*extension = [[file pathExtension] lowercaseString];
 
 	#ifndef STATIC_DICOM_LIB
+	
+	NSString *extension = [[file pathExtension] lowercaseString];
+	
 	if( [extension isEqualToString:@"tiff"] == YES ||
 		[extension isEqualToString:@"tif"] == YES)
 	{
@@ -402,9 +404,11 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 -(short) getFVTiffFile
 {
 	int success = 0;
-	NSString	*extension = [[filePath pathExtension] lowercaseString];
 	
 	#ifndef STATIC_DICOM_LIB
+	
+	NSString *extension = [[filePath pathExtension] lowercaseString];
+	
 	if( [extension isEqualToString:@"tiff"] == YES ||
 		[extension isEqualToString:@"tif"] == YES)
 	{
@@ -3124,16 +3128,19 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	return dicomElements;
 }
 
-- (id)elementForKey:(id)key{
+- (id)elementForKey:(id)key
+{
 	return [dicomElements objectForKey:key];
 }
 
-- (short)getPluginFile{
+- (short)getPluginFile
+{
+	#ifdef OSIRIX_VIEWER
 	NSString	*extension = [[filePath pathExtension] lowercaseString];	
 	NoOfFrames = 1;	
 	
 	id fileFormatBundle;
-	#ifdef OSIRIX_VIEWER
+	
 	if (fileFormatBundle = [[PluginManager fileFormatPlugins] objectForKey:extension])
 	{
 		fileType = [[NSString stringWithString:@"IMAGE"] retain];
