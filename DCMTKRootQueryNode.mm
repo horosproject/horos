@@ -39,7 +39,8 @@
 										extraParameters:(NSDictionary *)extraParameters] autorelease];
 }
 
-- (DcmDataset *)queryPrototype{
+- (DcmDataset *)queryPrototype
+{
 	DcmDataset *dataset = new DcmDataset();
 	dataset-> insertEmptyElement(DCM_PatientsName, OFTrue);
 	dataset-> insertEmptyElement(DCM_PatientID, OFTrue);
@@ -52,16 +53,17 @@
 	dataset-> insertEmptyElement(DCM_StudyID, OFTrue);
 	dataset-> insertEmptyElement(DCM_NumberOfStudyRelatedInstances, OFTrue);
 	dataset-> insertEmptyElement(DCM_ModalitiesInStudy, OFTrue);
-//	dataset-> insertEmptyElement(DCM_Modality, OFTrue);
 	dataset-> putAndInsertString(DCM_QueryRetrieveLevel, "STUDY", OFTrue);
 	
 	return dataset;
 	
 }
 
-- (void)addChild:(DcmDataset *)dataset{
+- (void)addChild:(DcmDataset *)dataset
+{
 	if (!_children)
 		_children = [[NSMutableArray alloc] init];
+	
 	[_children addObject:[DCMTKStudyQueryNode queryNodeWithDataset:dataset
 			callingAET:_callingAET  
 			calledAET:_calledAET

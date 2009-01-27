@@ -5266,38 +5266,45 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 {
 	DCMPix	*otherPix = [note object];
 	
-	if( [self is2DViewer])
-		[[self windowController] setCurWLWWMenu: [DCMView findWLWWPreset: curWL :curWW :curDCM]];
-	
-	if( ([[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"CR"] && IndependentCRWLWW) || COPYSETTINGSINSERIES == NO) return;
-	
-	if( [dcmPixList containsObject: otherPix] )
+	if( avoidChangeWLWWRecursive == NO)
 	{
-		float iwl, iww;
+		avoidChangeWLWWRecursive = YES;
 		
-		iww = otherPix.ww;
-		iwl = otherPix.wl;
+		if( [self is2DViewer])
+			[[self windowController] setCurWLWWMenu: [DCMView findWLWWPreset: curWL :curWW :curDCM]];
 		
-		if( iww != curDCM.ww || iwl != curDCM.wl)
-			[self setWLWW: iwl :iww];
-	}
-	
-	if( blendingView)
-	{
-		if( [[blendingView dcmPixList] containsObject: otherPix])
+		if( ([[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"CR"] && IndependentCRWLWW) || COPYSETTINGSINSERIES == NO) return;
+		
+		if( [dcmPixList containsObject: otherPix] )
 		{
 			float iwl, iww;
 			
 			iww = otherPix.ww;
 			iwl = otherPix.wl;
 			
-			if( iww != [[blendingView curDCM] ww] || iwl != [[blendingView curDCM] wl])
+			if( iww != curDCM.ww || iwl != curDCM.wl)
+				[self setWLWW: iwl :iww];
+		}
+		
+		if( blendingView)
+		{
+			if( [[blendingView dcmPixList] containsObject: otherPix])
 			{
-				[blendingView setWLWW: iwl :iww];
-				[self loadTextures];
-				[self setNeedsDisplay:YES];
+				float iwl, iww;
+				
+				iww = otherPix.ww;
+				iwl = otherPix.wl;
+				
+				if( iww != [[blendingView curDCM] ww] || iwl != [[blendingView curDCM] wl])
+				{
+					[blendingView setWLWW: iwl :iww];
+					[self loadTextures];
+					[self setNeedsDisplay:YES];
+				}
 			}
 		}
+		
+		avoidChangeWLWWRecursive = NO;
 	}
 }
 
