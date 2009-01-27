@@ -717,6 +717,8 @@ static int hotKeyToolCrossTable[] =
 {
 	if( [u count])
 	{
+		[imageView stopROIEditing];
+		
 		if( [[[u lastObject] objectForKey: @"type"] isEqualToString:@"roi"])
 		{
 			NSMutableArray	*rois = [[u lastObject] objectForKey: @"rois"];

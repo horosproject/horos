@@ -9759,6 +9759,12 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	if( [ViewerController numberOf2DViewer] > 3)
 		intFULL32BITPIPELINE = NO;
 	
+	if( curDCM.pheight >= maxTextureSize) 
+		intFULL32BITPIPELINE = NO;
+	
+	if( curDCM.pwidth >= maxTextureSize) 
+		intFULL32BITPIPELINE = NO;
+	
 	if( blending == NO) currentAlphaTable = opaqueTable;
 	
 	if(  rT == nil)
@@ -9946,6 +9952,12 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		*tW = curDCM.pwidth * resampledScale;
 		*tH = curDCM.pheight * resampledScale;
 		
+		if( *tW >= maxTextureSize) 
+			intFULL32BITPIPELINE = NO;
+		
+		if( *tH >= maxTextureSize) 
+			intFULL32BITPIPELINE = NO;
+		
 		vImage_Buffer src, dst;
 		
 		src.width = curDCM.pwidth;
@@ -10081,10 +10093,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		curDCM.full32bitPipeline = YES;
 	
 	glPixelStorei (GL_UNPACK_ROW_LENGTH, *tW);
-	*tX = GetTextureNumFromTextureDim (*tW, maxTextureSize, false, f_ext_texture_rectangle);
-	*tY = GetTextureNumFromTextureDim (*tH, maxTextureSize, false, f_ext_texture_rectangle);
 	
 	texture = (GLuint *) malloc (sizeof (GLuint) * *tX * *tY);
+	
+	*tX = GetTextureNumFromTextureDim (*tW, maxTextureSize, false, f_ext_texture_rectangle);
+	*tY = GetTextureNumFromTextureDim (*tH, maxTextureSize, false, f_ext_texture_rectangle);
 	
 	if( *tX * *tY > 1) NSLog(@"NoOfTextures: %d", *tX * *tY);
 	glTextureRangeAPPLE(TEXTRECTMODE, *tW * *tH * 4, baseAddr);
