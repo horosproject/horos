@@ -1579,7 +1579,7 @@ Papy3GetPixelData (PapyShort inFileNb, int inImageNb, SElement *inGrOrModP, int 
 		  
 		  ii = theBytesToRead / 4;
 		  
-		  #if __ppc__
+		  #if (__ppc64__) || (__ppc__)
 		  if( Altivec)
 		  {
 			if( gArrTransfSyntax [inFileNb] != BIG_ENDIAN_EXPL)
@@ -1595,9 +1595,6 @@ Papy3GetPixelData (PapyShort inFileNb, int inImageNb, SElement *inGrOrModP, int 
 			  while( ii-- > 0)
 			  {
 			    *theULongP++ = OSSwapLittleToHostInt32( *theULongP);
-//				
-//				val = (PapyUChar*) theULongP;
-//				*theULongP++ = ((unsigned int) (val[3])) << 24 | ((unsigned int) (val[2])) << 16 | ((unsigned int) (val[1])) << 8 | ((unsigned int) (val[0]));
 			  }
 			}
 		  }
@@ -1610,8 +1607,6 @@ Papy3GetPixelData (PapyShort inFileNb, int inImageNb, SElement *inGrOrModP, int 
 			  while( ii-- > 0)
 			  {
 				*theULongP++ = OSSwapBigToHostInt32( *theULongP);
-//				val = (PapyUChar*) theULongP;
-//				*theULongP++ = ((unsigned int) (val[0])) << 24 | ((unsigned int) (val[1])) << 16 | ((unsigned int) (val[2])) << 8 | ((unsigned int) (val[3]));
 			  }
 		  }
 		  #endif
@@ -1622,7 +1617,7 @@ Papy3GetPixelData (PapyShort inFileNb, int inImageNb, SElement *inGrOrModP, int 
 		  register long			ii;
 		  
 		  ii = theBytesToRead / 2;
-		   #if __ppc__
+		  #if (__ppc64__) || (__ppc__)
 		  if( Altivec)
 		  {
 			if( gArrTransfSyntax [inFileNb] != BIG_ENDIAN_EXPL)
@@ -1637,9 +1632,7 @@ Papy3GetPixelData (PapyShort inFileNb, int inImageNb, SElement *inGrOrModP, int 
 			{
 			  while( ii-- > 0)
 			  {
-			    *theUShortP++ = OSSwapBigToHostInt16( *theUShortP);
-//				val = *theUShortP;
-//				*theUShortP++ = (val >> 8) | (val << 8);   // & 0x00FF  --  & 0xFF00
+			    *theUShortP++ = OSSwapLittleToHostInt16( *theUShortP);
 			  }
 			}
 		  }
@@ -1653,8 +1646,6 @@ Papy3GetPixelData (PapyShort inFileNb, int inImageNb, SElement *inGrOrModP, int 
 			while( ii-- > 0)
 			  {
 				*theUShortP++ = OSSwapBigToHostInt16( *theUShortP);
-//				val = *theUShortP;
-//				*theUShortP++ = (val >> 8) | (val << 8);   // & 0x00FF  --  & 0xFF00
 			  }
 		  }
 		  #endif
