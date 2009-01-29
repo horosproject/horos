@@ -1158,15 +1158,19 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 				strcmp( pc.abstractSyntax, UID_FINDPatientStudyOnlyQueryRetrieveInformationModel) == 0 ||
 				strcmp( pc.abstractSyntax, UID_FINDModalityWorklistInformationModel) == 0 ||
 				strcmp( pc.abstractSyntax, UID_FINDGeneralPurposeWorklistInformationModel) == 0)
+				{
 					singleProcess = true;	// switch to singleprocess for find - fork() deadlock problem
-			
+				}
+				
 			if( strcmp( pc.abstractSyntax, UID_MOVEPatientRootQueryRetrieveInformationModel) == 0 ||
 				strcmp( pc.abstractSyntax, UID_GETPatientRootQueryRetrieveInformationModel) == 0 ||
 				strcmp( pc.abstractSyntax, UID_MOVEStudyRootQueryRetrieveInformationModel) == 0 ||
 				strcmp( pc.abstractSyntax, UID_GETStudyRootQueryRetrieveInformationModel) == 0 ||
 				strcmp( pc.abstractSyntax, UID_MOVEPatientStudyOnlyQueryRetrieveInformationModel ) == 0 ||
 				strcmp( pc.abstractSyntax, UID_GETPatientStudyOnlyQueryRetrieveInformationModel) == 0)
+				{
 					moveProcess = true;		// fork() deadlock problem
+				}
 		}
 		
 		if (singleProcess)
