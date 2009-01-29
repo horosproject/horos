@@ -48,7 +48,7 @@
 		_repeatCount = -1;
 		_cancelAfterNResponses = -1;
 		_networkTransferSyntax = EXS_Unknown;
-		_blockMode = DIMSE_BLOCKING;
+		_blockMode = DIMSE_BLOCKING;	//DIMSE_BLOCKING; ANR JANUARY 2009
 		_acse_timeout = _dimse_timeout = [[NSUserDefaults standardUserDefaults] integerForKey:@"DICOMTimeout"];
 
 		//SSL

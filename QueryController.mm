@@ -794,6 +794,16 @@ static const char *GetPrivateIP()
 	return @"";
 }
 
+- (void)outlineViewItemDidCollapse:(NSNotification *)notification
+{
+	DCMTKStudyQueryNode *item = [[notification userInfo] valueForKey: @"NSObject"];
+	
+	if( [item children])
+	{
+		[item purgeChildren];
+	}
+}
+
 - (void)outlineView:(NSOutlineView *)outlineView willDisplayCell:(id)cell forTableColumn:(NSTableColumn *)tableColumn item:(id)item
 {
 	if( [[tableColumn identifier] isEqualToString: @"name"])	// Is this study already available in our local database? If yes, display it in italic

@@ -494,6 +494,11 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 - (NSMutableArray *)children{
 	return _children;
 }
+- (void)purgeChildren
+{
+	[_children release];
+	_children = nil;
+}
 - (void)addChild:(DcmDataset *)dataset{
 
 }
