@@ -154,9 +154,20 @@ void DcmQueryRetrieveSCP::lockFile(void)
 
 void DcmQueryRetrieveSCP::unlockFile(void)
 {
+	BOOL fileExist = YES;
 	char dir[ 1024];
 	sprintf( dir, "%s", "/tmp/lock_process");
-	unlink( dir);
+	
+	int inc = 0;
+	do
+	{
+		int err = unlink( dir);
+		if( err  == 0 || errno == ENOENT) fileExist = NO;
+		
+		usleep( 1000);
+		inc++;
+	}
+	while( fileExist == YES && inc < 100000);
 }
 
 void DcmQueryRetrieveSCP::waitUnlockFile(void)
@@ -176,8 +187,8 @@ void DcmQueryRetrieveSCP::waitUnlockFile(void)
 		usleep( 100000);
 		inc++;
 	}
-	while( fileExist == YES && inc < 3600);	// 3600 = 1 hour
-	if( inc > 3600) NSLog( @"******* waitUnlockFile for 1 hour");
+	while( fileExist == YES && inc < 1800);	// 1800 = 30 min
+	if( inc > 1800) NSLog( @"******* waitUnlockFile for 1 hour");
 }
 
 OFCondition DcmQueryRetrieveSCP::dispatch(T_ASC_Association *assoc, OFBool correctUIDPadding)
@@ -245,6 +256,7 @@ OFCondition DcmQueryRetrieveSCP::dispatch(T_ASC_Association *assoc, OFBool corre
                     break;
 									
                 case DIMSE_C_MOVE_RQ:
+					//* unlockFile(); is done in DCMTKDataHandlerCategory.mm
                     cond = moveSCP(assoc, &msg.msg.CMoveRQ, presID, *dbHandle);
                     break;
 				
@@ -1225,11 +1237,6 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 #ifdef HAVE_FORK
         else
         {
-			NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
-			
-			[[[BrowserController currentBrowser] checkIncomingLock] lock];
-			[context lock]; //Try to avoid deadlock
-			
 			[DCMNetServiceDelegate DICOMServersList];
 			
 			lockFile();
@@ -1260,9 +1267,6 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
                 /* the child process is done so exit */
                 _Exit(3);	//to avoid spin_lock
             }
-			
-			[context unlock];
-			[[[BrowserController currentBrowser] checkIncomingLock] unlock];
 		}
 #endif
     }

@@ -1075,7 +1075,6 @@ char currentDestinationMoveAET[ 60] = "";
 			
 			cond = EC_Normal;
 		}
-
 	}
 	@catch (NSException * e)
 	{
@@ -1091,7 +1090,7 @@ char currentDestinationMoveAET[ 60] = "";
 	
 	BOOL fileExist = YES;
 	char dir[ 1024];
-	sprintf( dir, "%s", "/tmp/move_process");
+	sprintf( dir, "%s", "/tmp/lock_process");
 	
 	int inc = 0;
 	do
