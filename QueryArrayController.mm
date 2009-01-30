@@ -12,9 +12,7 @@
      PURPOSE.
 =========================================================================*/
 
-
-
-
+#import "DefaultsOsiriX.h"
 #import "QueryArrayController.h"
 #import <OsiriX/DCM.h>
 #import <OsiriX/DCMNetworking.h>
@@ -109,31 +107,59 @@
 	[params setObject:[DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax] forKey:@"transferSyntax"];		//
 	[params setObject:[DCMAbstractSyntaxUID studyRootQueryRetrieveInformationModelFind] forKey:@"affectedSOPClassUID"];
 	
-	[rootNode release];
-	rootNode = [[DCMTKRootQueryNode queryNodeWithDataset:nil
-									callingAET:callingAET
-									calledAET:calledAET 
-									hostname:hostname
-									port:[port intValue]
-									transferSyntax: 0		//EXS_LittleEndianExplicit / EXS_JPEGProcess14SV1TransferSyntax
-									compression: nil
-									extraParameters:nil] retain];
-	NSMutableArray *filterArray = [NSMutableArray array];
-	NSEnumerator *enumerator = [filters keyEnumerator];
-	NSString *key;
-	while (key = [enumerator nextObject])
+	BOOL sameAddress = NO;
+	
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"STORESCP"])
 	{
-		if ([filters objectForKey:key])
+		if( [port intValue] == [[NSUserDefaults standardUserDefaults] integerForKey: @"AEPORT"])
 		{
-			NSDictionary *filter = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:[filters objectForKey:key], key, nil] forKeys:[NSArray arrayWithObjects:@"value",  @"name", nil]];
-			[filterArray addObject:filter];
+			for( NSString *s in [[DefaultsOsiriX currentHost] names])
+			{
+				if( [hostname isEqualToString: s])
+					sameAddress = YES;
+			}
+			
+			for( NSString *s in [[DefaultsOsiriX currentHost] addresses])
+			{
+				if( [hostname isEqualToString: s])
+					sameAddress = YES;
+			}
 		}
 	}
 	
-	[rootNode queryWithValues:filterArray];
-	
-	[queries release];
-	queries = [[rootNode children] retain];
+	if( sameAddress)
+	{
+		NSAlert *alert = [NSAlert alertWithMessageText:@"Query Error" defaultButton:@"OK" alternateButton:nil otherButton:nil informativeTextWithFormat:@"%@", @"OsiriX cannot generate a DICOM query on itself."];
+		[alert runModal];
+	}
+	else
+	{
+		[rootNode release];
+		rootNode = [[DCMTKRootQueryNode queryNodeWithDataset:nil
+										callingAET:callingAET
+										calledAET:calledAET 
+										hostname:hostname
+										port:[port intValue]
+										transferSyntax: 0		//EXS_LittleEndianExplicit / EXS_JPEGProcess14SV1TransferSyntax
+										compression: nil
+										extraParameters:nil] retain];
+		NSMutableArray *filterArray = [NSMutableArray array];
+		NSEnumerator *enumerator = [filters keyEnumerator];
+		NSString *key;
+		while (key = [enumerator nextObject])
+		{
+			if ([filters objectForKey:key])
+			{
+				NSDictionary *filter = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:[filters objectForKey:key], key, nil] forKeys:[NSArray arrayWithObjects:@"value",  @"name", nil]];
+				[filterArray addObject:filter];
+			}
+		}
+		
+		[rootNode queryWithValues:filterArray];
+		
+		[queries release];
+		queries = [[rootNode children] retain];
+	}
 	
 	NS_HANDLER
 	if( showError)
