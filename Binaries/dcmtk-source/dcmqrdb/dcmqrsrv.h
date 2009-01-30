@@ -106,6 +106,10 @@ public:
 
 private:
 
+  void lockFile(void);
+  void unlockFile(void);
+  void waitUnlockFile(void);
+	
   /** perform association negotiation for an incoming A-ASSOCIATE request based
    *  on the SCP configuration and option flags. No A-ASSOCIATE response is generated,
    *  this is left to the caller.

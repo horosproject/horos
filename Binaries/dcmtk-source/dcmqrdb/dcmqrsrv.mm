@@ -138,6 +138,48 @@ DcmQueryRetrieveSCP::~DcmQueryRetrieveSCP()
 
 }
 
+void DcmQueryRetrieveSCP::lockFile(void)
+{
+	char dir[ 1024];
+	
+	sprintf( dir, "%s", "/tmp/lock_process");
+	unlink( dir);
+	FILE * pFile = fopen (dir,"w+");
+	if( pFile)
+	{
+		fprintf (pFile, "lock_process");
+		fclose (pFile);
+	}
+}
+
+void DcmQueryRetrieveSCP::unlockFile(void)
+{
+	char dir[ 1024];
+	sprintf( dir, "%s", "/tmp/lock_process");
+	unlink( dir);
+}
+
+void DcmQueryRetrieveSCP::waitUnlockFile(void)
+{
+	BOOL fileExist = YES;
+	int inc = 0;
+	char dir[ 1024];
+	sprintf( dir, "%s", "/tmp/lock_process");
+	
+	do
+	{
+		FILE * pFile = fopen (dir,"r");
+		if( pFile)
+			fclose (pFile);
+		else
+			fileExist = NO;
+		usleep( 100000);
+		inc++;
+	}
+	while( fileExist == YES && inc < 3600);	// 3600 = 1 hour
+	if( inc > 3600) NSLog( @"******* waitUnlockFile for 1 hour");
+}
+
 OFCondition DcmQueryRetrieveSCP::dispatch(T_ASC_Association *assoc, OFBool correctUIDPadding)
 {
     OFCondition cond = EC_Normal;
@@ -187,11 +229,14 @@ OFCondition DcmQueryRetrieveSCP::dispatch(T_ASC_Association *assoc, OFBool corre
             if (cond.good())
             {
                 /* process command */
-                switch (msg.CommandField) {
+                switch (msg.CommandField)
+				{
                 case DIMSE_C_ECHO_RQ:
+					unlockFile();
                     cond = echoSCP(assoc, &msg.msg.CEchoRQ, presID);
                     break;
                 case DIMSE_C_STORE_RQ:
+					unlockFile();
                     cond = storeSCP(assoc, &msg.msg.CStoreRQ, presID, *dbHandle, correctUIDPadding);
                     break;
 				
@@ -200,13 +245,12 @@ OFCondition DcmQueryRetrieveSCP::dispatch(T_ASC_Association *assoc, OFBool corre
                     break;
 									
                 case DIMSE_C_MOVE_RQ:
-//					printf("DIMSE_C_MOVE_RQ\n");
                     cond = moveSCP(assoc, &msg.msg.CMoveRQ, presID, *dbHandle);
                     break;
 				
-               // case DIMSE_C_GET_RQ:
-               //     cond = getSCP(assoc, &msg.msg.CGetRQ, presID, *dbHandle);
-               //     break;
+                case DIMSE_C_GET_RQ:
+                    cond = getSCP(assoc, &msg.msg.CGetRQ, presID, *dbHandle);
+                    break;
                 case DIMSE_C_CANCEL_RQ:
                     //* This is a late cancel request, just ignore it 
                     if (options_.verbose_) {
@@ -1147,31 +1191,31 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
                 ASC_dumpParameters(assoc->params, COUT);
         }
 		
-		for (int i=0; i<ASC_countPresentationContexts(assoc->params); i++)
-		{
-			T_ASC_PresentationContext pc;
-			
-			ASC_getPresentationContext(assoc->params, i, &pc);
-			
-			if( strcmp( pc.abstractSyntax, UID_FINDPatientRootQueryRetrieveInformationModel) == 0 ||
-				strcmp( pc.abstractSyntax, UID_FINDStudyRootQueryRetrieveInformationModel) == 0 ||
-				strcmp( pc.abstractSyntax, UID_FINDPatientStudyOnlyQueryRetrieveInformationModel) == 0 ||
-				strcmp( pc.abstractSyntax, UID_FINDModalityWorklistInformationModel) == 0 ||
-				strcmp( pc.abstractSyntax, UID_FINDGeneralPurposeWorklistInformationModel) == 0)
-				{
-					singleProcess = true;	// switch to singleprocess for find - fork() deadlock problem
-				}
-				
-			if( strcmp( pc.abstractSyntax, UID_MOVEPatientRootQueryRetrieveInformationModel) == 0 ||
-				strcmp( pc.abstractSyntax, UID_GETPatientRootQueryRetrieveInformationModel) == 0 ||
-				strcmp( pc.abstractSyntax, UID_MOVEStudyRootQueryRetrieveInformationModel) == 0 ||
-				strcmp( pc.abstractSyntax, UID_GETStudyRootQueryRetrieveInformationModel) == 0 ||
-				strcmp( pc.abstractSyntax, UID_MOVEPatientStudyOnlyQueryRetrieveInformationModel ) == 0 ||
-				strcmp( pc.abstractSyntax, UID_GETPatientStudyOnlyQueryRetrieveInformationModel) == 0)
-				{
-					moveProcess = true;		// fork() deadlock problem
-				}
-		}
+//		for (int i=0; i<ASC_countPresentationContexts(assoc->params); i++)
+//		{
+//			T_ASC_PresentationContext pc;
+//			
+//			ASC_getPresentationContext(assoc->params, i, &pc);
+//			
+//			if( strcmp( pc.abstractSyntax, UID_FINDPatientRootQueryRetrieveInformationModel) == 0 ||
+//				strcmp( pc.abstractSyntax, UID_FINDStudyRootQueryRetrieveInformationModel) == 0 ||
+//				strcmp( pc.abstractSyntax, UID_FINDPatientStudyOnlyQueryRetrieveInformationModel) == 0 ||
+//				strcmp( pc.abstractSyntax, UID_FINDModalityWorklistInformationModel) == 0 ||
+//				strcmp( pc.abstractSyntax, UID_FINDGeneralPurposeWorklistInformationModel) == 0)
+//				{
+//					singleProcess = true;	// switch to singleprocess for find - fork() deadlock problem
+//				}
+//				
+//			if( strcmp( pc.abstractSyntax, UID_MOVEPatientRootQueryRetrieveInformationModel) == 0 ||
+//				strcmp( pc.abstractSyntax, UID_GETPatientRootQueryRetrieveInformationModel) == 0 ||
+//				strcmp( pc.abstractSyntax, UID_MOVEStudyRootQueryRetrieveInformationModel) == 0 ||
+//				strcmp( pc.abstractSyntax, UID_GETStudyRootQueryRetrieveInformationModel) == 0 ||
+//				strcmp( pc.abstractSyntax, UID_MOVEPatientStudyOnlyQueryRetrieveInformationModel ) == 0 ||
+//				strcmp( pc.abstractSyntax, UID_GETPatientStudyOnlyQueryRetrieveInformationModel) == 0)
+//				{
+//					moveProcess = true;		// fork() deadlock problem
+//				}
+//		}
 		
 		if (singleProcess)
         {
@@ -1183,27 +1227,12 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
         {
 			NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
 			
-			if (singleProcess == NO)
-			{
-				[[[BrowserController currentBrowser] checkIncomingLock] lock];
-				[context lock]; //Try to avoid deadlock
-			}
+			[[[BrowserController currentBrowser] checkIncomingLock] lock];
+			[context lock]; //Try to avoid deadlock
 			
 			[DCMNetServiceDelegate DICOMServersList];
 			
-			char dir[ 1024];
-			
-			if( moveProcess)
-			{
-				sprintf( dir, "%s", "/tmp/move_process");
-				unlink( dir);
-				FILE * pFile = fopen (dir,"w+");
-				if( pFile)
-				{
-					fprintf (pFile, "move_process");
-					fclose (pFile);
-				}
-			}
+			lockFile();
 			
             /* spawn a sub-process to handle the association */
             pid = (int)(fork());
@@ -1219,53 +1248,21 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
                 /* parent process, note process in table */
                 processtable_.addProcessToTable(pid, assoc);
 				
-				if( moveProcess)	//Try to avoid deadlock
-				{
-					BOOL fileExist = YES;
-					int inc = 0;
-					
-					do
-					{
-						FILE * pFile = fopen (dir,"r");
-						if( pFile)
-							fclose (pFile);
-						else
-							fileExist = NO;
-						usleep( 100000);
-						inc++;
-					}
-					while( fileExist == YES && inc < 200);	// 200 = 20 secs
-					if( inc > 200) NSLog( @"******* move process > 200");
-				}
+				waitUnlockFile();
             }
             else
             {
                 /* child process, handle the association */
                 cond = handleAssociation(assoc, options_.correctUIDPadding_);
 				
-				// TO AVOID DEADLOCK
-				
-				BOOL fileExist = YES;
-				int inc = 0;
-				do
-				{
-					int err = unlink( dir);
-					if( err  == 0 || errno == ENOENT) fileExist = NO;
-					
-					usleep( 1000);
-					inc++;
-				}
-				while( fileExist == YES && inc < 100000);
+				unlockFile();
 				
                 /* the child process is done so exit */
                 _Exit(3);	//to avoid spin_lock
             }
 			
-			if (singleProcess == NO)
-			{
-				[context unlock];
-				[[[BrowserController currentBrowser] checkIncomingLock] unlock];
-			}
+			[context unlock];
+			[[[BrowserController currentBrowser] checkIncomingLock] unlock];
 		}
 #endif
     }

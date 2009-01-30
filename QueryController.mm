@@ -662,7 +662,9 @@ static const char *GetPrivateIP()
 	NSArray *seriesArray = nil;
 	NSManagedObject *study = [[self localStudy: [outlineView parentForItem: item]] lastObject];
 	
-	if( [item isMemberOfClass:[DCMTKSeriesQueryNode class]] == YES && study != nil)
+	if( study == nil) return seriesArray;
+	
+	if( [item isMemberOfClass:[DCMTKSeriesQueryNode class]] == YES)
 	{
 		NSManagedObjectContext		*context = [[BrowserController currentBrowser] managedObjectContext];
 		
@@ -679,7 +681,8 @@ static const char *GetPrivateIP()
 		
 		[context unlock];
 	}
-	else NSLog( @"Warning! Not a series class !");
+	else
+		NSLog( @"Warning! Not a series class !");
 	
 	return seriesArray;
 }
