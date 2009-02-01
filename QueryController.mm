@@ -1786,8 +1786,6 @@ static const char *GetPrivateIP()
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	[array retain];
 	
-	[performRetrievelock lock];
-	
 	NetworkMoveDataHandler *moveDataHandler = [NetworkMoveDataHandler moveDataHandler];
 	NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithDictionary: [queryManager parameters]];
 	
@@ -1841,8 +1839,6 @@ static const char *GetPrivateIP()
 	NSLog(@"Retrieve END");
 	
 	[array release];
-	
-	[performRetrievelock unlock];
 	
 	[pool release];
 }
