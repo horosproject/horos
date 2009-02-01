@@ -146,10 +146,7 @@ void DcmQueryRetrieveSCP::lockFile(void)
 	unlink( dir);
 	FILE * pFile = fopen (dir,"w+");
 	if( pFile)
-	{
-		fprintf (pFile, "lock_process");
 		fclose (pFile);
-	}
 }
 
 void DcmQueryRetrieveSCP::unlockFile(void)
