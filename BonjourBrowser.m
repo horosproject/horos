@@ -63,8 +63,10 @@ static char *GetPrivateIP()
 
 - (void) waitTheLock
 {
-	[[[BrowserController currentBrowser] managedObjectContext] lock];
-	[[[BrowserController currentBrowser] managedObjectContext] unlock];
+	NSManagedObjectContext *c = [[BrowserController currentBrowser] managedObjectContext];
+	
+	[c lock];
+	[c unlock];
 }
 
 + (NSString*) bonjour2local: (NSString*) str

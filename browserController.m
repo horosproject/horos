@@ -191,6 +191,29 @@ static NSArray*	statesArray = nil;
 
 @synthesize pluginManagerController;
 
++ (BOOL) tryLock:(id) c during:(NSTimeInterval) sec
+{
+	if( c == nil) return YES;
+	
+	BOOL locked = NO;
+	NSTimeInterval ti = [NSDate timeIntervalSinceReferenceDate] + sec;
+	
+	while( ti - [NSDate timeIntervalSinceReferenceDate] > 0)
+	{
+		if( [c tryLock])
+		{
+			[c unlock];
+			return YES;
+		}
+		
+		[NSThread sleepForTimeInterval: 0.2];
+	}
+	
+	NSLog( @"******* tryLockDuring failed for this lock: %@ (%d sec)", c, sec);
+	
+	return NO;
+}
+
 + (BrowserController*) currentBrowser { return browserWindow; }
 + (NSArray*) statesArray { return statesArray; }
 + (void) updateActivity
@@ -11994,40 +12017,28 @@ static NSArray*	openSubSeriesArray = nil;
 
 - (void)waitForRunningProcesses
 {
-	[bonjourBrowser waitTheLock];
-	
-	[checkIncomingLock lock];
-	[checkIncomingLock unlock];
-	
-	[checkBonjourUpToDateThreadLock lock];
-	[checkBonjourUpToDateThreadLock unlock];
+	[BrowserController tryLock: managedObjectContext during: 120];
+	[BrowserController tryLock: checkIncomingLock during: 120];
+	[BrowserController tryLock: checkBonjourUpToDateThreadLock during: 120];
 	
 	while( [SendController sendControllerObjects] > 0 )
 		[NSThread sleepForTimeInterval: 0.04];
 	
-	[decompressThreadRunning lock];
-	[decompressThreadRunning unlock];
-	
-	[deleteInProgress lock];
-	[deleteInProgress unlock];
-	
+	[BrowserController tryLock: decompressThreadRunning during: 120];
+	[BrowserController tryLock: deleteInProgress during: 120];
+		
 	[self emptyDeleteQueueThread];
 	
-	[deleteInProgress lock];
-	[deleteInProgress unlock];
-	
-	[autoroutingInProgress lock];
-	[autoroutingInProgress unlock];
+	[BrowserController tryLock: deleteInProgress during: 120];
+	[BrowserController tryLock: autoroutingInProgress during: 120];
 	
 	[self emptyAutoroutingQueue:self];
 	
-	[autoroutingInProgress lock];
-	[autoroutingInProgress unlock];
+	[BrowserController tryLock: autoroutingInProgress during: 120];
 	
 	[self syncReportsIfNecessary: previousBonjourIndex];
 	
-	[checkIncomingLock lock];
-	[checkIncomingLock unlock];
+	[BrowserController tryLock: checkIncomingLock during: 120];
 }
 
 - (void) browserPrepareForClose
