@@ -1,10 +1,3 @@
-//
-//  dicomDecompress.m
-//  echoSCU
-//
-//  Created by Lance Pysher on 12/31/04.
-//  Copyright 2004 Macrad, LLC. All rights reserved.
-//
 #import <Foundation/Foundation.h>
 #import <Osirix/DCM.h>
 

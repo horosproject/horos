@@ -1,11 +1,3 @@
-//
-//  DICOMJpg2000Transcoder.m
-//  iRad
-//
-//  Created by Lance Pysher on Mon Mar 08 2004.
-//  Copyright (c) 2004 Macrad LLC. All rights reserved.
-//
-
 #import "DICOMJpg2000Transcoder.h"
 #import "Jasper.h"
 #import "DICOM.h"

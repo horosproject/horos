@@ -1,11 +1,3 @@
-//
-//  AYDicomPrintPref.m
-//  AYDicomPrint
-//
-//  Created by Tobias Hoehmann on 12.06.06.
-//  Copyright (c) 2006 aycan digitalsysteme gmbh. All rights reserved.
-//
-
 #import "AYDicomPrintPref.h"
 
 

@@ -1,9 +1,3 @@
-//
-//  PlaceholderWindowController.h
-//  OsiriX
-//
-//  Created by Lance Pysher on 1/17/07.
-
 /*=========================================================================
   Program:   OsiriX
 

@@ -1,9 +1,3 @@
-//
-//  UpperCaseStringFormatter.m
-//  OSIHangingPreferencePane
-//
-//  Created by Lance Pysher on 1/3/07.
-
 /*=========================================================================
   Program:   OsiriX
 
@@ -11,8 +5,6 @@
   All rights reserved.
   Distributed under GNU - GPL
   
-  See http://homepage.mac.com/rossetantoine/osirix/copyright.html for details.
-
      This software is distributed WITHOUT ANY WARRANTY; without even
      the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
      PURPOSE.

@@ -1,11 +1,3 @@
-//
-//  DCMMutableData.h
-//  DCM Framework
-//
-//  Created by Lance Pysher on Mon Jun 07 2004.
-//  Copyright (c) 2004 Macrad, LLC. All rights reserved.
-//
-
 #import <Foundation/Foundation.h>
 
 @class  DCMTransferSyntax;
