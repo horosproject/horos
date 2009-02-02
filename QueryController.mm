@@ -1686,7 +1686,23 @@ static const char *GetPrivateIP()
 					localNumber = [[[array objectAtIndex: 0] valueForKey: @"noFiles"] intValue];
 				
 				if( localNumber < [[item valueForKey:@"numberImages"] intValue])
-					[selectedItems addObject: item];
+				{
+					NSString *stringID = [self stringIDForStudy: item];
+		
+					@synchronized( previousAutoRetrieve)
+					{
+						NSNumber *previousNumberOfFiles = [previousAutoRetrieve objectForKey: stringID];
+			
+						// We only want to re-retrieve the study if they are new files compared to last time... we are maybe currently in the middle of a retrieve...
+						
+						if( [previousNumberOfFiles intValue] != [[item valueForKey:@"numberImages"] intValue])
+						{
+							[selectedItems addObject: item];
+							[previousAutoRetrieve setValue: [NSNumber numberWithInt: [[item valueForKey:@"numberImages"] intValue]] forKey: stringID];
+						}
+						else NSLog( @"Already in transfer.... We don't need to download it...");
+					}
+				}
 				else
 					NSLog( @"Already here! We don't need to download it...");
 			}

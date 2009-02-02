@@ -624,6 +624,27 @@ static NSDate *lastWarningDate = nil;
 
 @synthesize checkAllWindowsAreVisibleIsOff;
 
+- (void) waitForLockFile:(id) sender
+{
+	BOOL fileExist = YES;
+	int inc = 0;
+	char dir[ 1024];
+	sprintf( dir, "%s", "/tmp/lock_process");
+	
+	do
+	{
+		FILE * pFile = fopen (dir,"r");
+		if( pFile)
+			fclose (pFile);
+		else
+			fileExist = NO;
+		usleep( 100000);
+		inc++;
+	}
+	while( fileExist == YES && inc < 1800);	// 1800 = 30 min
+	if( inc > 1800) NSLog( @"******* AppController waitUnlockFile for 30 min");
+}
+
 - (void) pause
 {
 	[[[BrowserController currentBrowser] checkIncomingLock] lock];

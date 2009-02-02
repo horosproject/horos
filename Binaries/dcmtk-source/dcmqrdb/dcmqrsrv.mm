@@ -1243,6 +1243,8 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 			
 			lockFile();
 			
+//			[[AppController sharedAppController] performSelectorOnMainThread: @selector( waitForLockFile:) withObject: 0 waitUntilDone: NO];
+			
             /* spawn a sub-process to handle the association */
             pid = (int)(fork());
             if (pid < 0)
