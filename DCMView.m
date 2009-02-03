@@ -2473,15 +2473,18 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
         }
         
 		
-		if( Jog == YES) {
-			if (currentTool == tZoom) {
+		if( Jog == YES)
+		{
+			if (currentTool == tZoom)
+			{
 				if( yMove) val = yMove;
 				else val = xMove;
 				
 				self.scaleValue = scaleValue + val / 10.0f;
 			}
 			
-			if (currentTool == tTranslate) {
+			if (currentTool == tTranslate)
+			{
 				float xmove, ymove, xx, yy;
 			//	GLfloat deg2rad = 3.14159265358979/180.0; 
 				
@@ -2497,7 +2500,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				[self setOriginX: origin.x + xx Y: origin.y + yy];
 			}
 			
-			if (currentTool == tRotate) {
+			if (currentTool == tRotate)
+			{
 				if( yMove) val = yMove * 3;
 				else val = xMove * 3;
 				
@@ -2520,37 +2524,43 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				
 				previmage = curImage;
 				
-				if( val < 0) {
+				if( val < 0)
+				{
 					inc = -1;
 					curImage--;
 					if( curImage < 0) curImage = [dcmPixList count]-1;
 				}
-				else if(val> 0) {
+				else if(val> 0)
+				{
 					inc = 1;
 					curImage++;
 					if( curImage >= [dcmPixList count]) curImage = 0;
 				}
 			}
 			
-			if( currentTool == tWL)	{
+			if( currentTool == tWL)
+			{
 				[self setWLWW:curDCM.wl +yMove*10 :curDCM.ww +xMove*10 ];
 			}
 			
 			[self setNeedsDisplay:YES];
 		}
 		
-        if( previmage != curImage) {
+        if( previmage != curImage)
+		{
 			if( listType == 'i') [self setIndex:curImage];
             else [self setIndexWithReset:curImage :YES];
             
-            if( matrix ) {
+            if( matrix )
+			{
                 [matrix selectCellAtRow :curImage/[[BrowserController currentBrowser] COLUMN] column:curImage%[[BrowserController currentBrowser] COLUMN]];
             }
             
 			if( [self is2DViewer] == YES)
 				[[self windowController] adjustSlider];
 			
-			if( stringID) {
+			if( stringID)
+			{
 				if( [stringID isEqualToString:@"Perpendicular"]  || [stringID isEqualToString:@"Original"]  || [stringID isEqualToString:@"FinalView"] || [stringID isEqualToString:@"FinalViewBlending"])
 					[[self windowController] adjustSlider];
 			}
@@ -10415,7 +10425,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	slicePoint3D[ 0] = HUGE_VALF;
 	
 	[self sendSyncMessage: 0];
-		
+	
+	[self flagsChanged: [[NSApplication sharedApplication] currentEvent]];
+	
 	[self setNeedsDisplay:YES];
 }
 
@@ -10451,6 +10463,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	}
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"DCMViewDidBecomeFirstResponder" object:self];
+	
+	[self flagsChanged: [[NSApplication sharedApplication] currentEvent]];
 	
 	return YES;
 }
@@ -11228,9 +11242,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		NSDictionary *userInfo = nil;
 		NSDictionary *wlwwDict = [[NSUserDefaults standardUserDefaults] dictionaryForKey: @"WLWW3"];
 		NSArray *wwwlValues = [[wlwwDict allKeys] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
-	
+		
 		NSArray *wwwl = nil;
+		hotKey = [hotKey lowercaseString];
 		unichar key = [hotKey characterAtIndex:0];
+		
 		if( [[DCMView hotKeyDictionary] objectForKey:hotKey])
 		{
 			key = [[[DCMView hotKeyDictionary] objectForKey:hotKey] intValue];

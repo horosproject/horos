@@ -708,6 +708,7 @@
 		NSDictionary *wlwwDict = [[NSUserDefaults standardUserDefaults] dictionaryForKey: @"WLWW3"];
 		NSArray *wwwlValues = [[wlwwDict allKeys] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
 	
+		hotKey = [hotKey lowercaseString];
 		unichar key = [hotKey characterAtIndex:0];
 		if( [[DCMView hotKeyDictionary] objectForKey:hotKey])
 		{

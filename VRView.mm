@@ -6788,6 +6788,7 @@ double pos[3], focal[3], fpVector[3];
 		NSArray *wwwlValues = [[wlwwDict allKeys] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
 	
 		NSString *wwwlMenuString = nil;
+		hotKey = [hotKey lowercaseString];
 		unichar key = [hotKey characterAtIndex:0];
 		
 		if( [[DCMView hotKeyDictionary] objectForKey:hotKey])
