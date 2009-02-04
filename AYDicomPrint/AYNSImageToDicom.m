@@ -264,7 +264,8 @@
 		m_ImageDataBytes = [[NSMutableData alloc] initWithBytes: [imageRepresentation bitmapData] length: bytesWritten];
 		if(bytesWritten % 2 != 0)
 		{
-			[m_ImageDataBytes appendBytes: '\0' length: 1];
+			char zero = 0;
+			[m_ImageDataBytes appendBytes: &zero length: 1];
 			bytesWritten++;
 		}
 		

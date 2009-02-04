@@ -62,7 +62,7 @@
 #import "ROI.h"
 #import "MyPoint.h"
 #import "OSIVoxel.h"
-
+#import "AppController.h"
 #import "ITKSegmentation3D.h"
 
 /**
@@ -665,68 +665,74 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 		{			
 			unsigned char *buff = caster->GetOutput()->GetBufferPointer();
 			
-		//	[srcViewer addRoiFromFullStackBuffer:buff withName:newname];
-			
-			for( int i = 0; i < [[srcViewer pixList] count]; i++)
+			if( buff)
 			{
-				int buffHeight = [[[srcViewer pixList] objectAtIndex: i] pheight];
-				int buffWidth = [[[srcViewer pixList] objectAtIndex: i] pwidth];
-				
-				if( memchr( buff, 255, buffWidth * buffHeight))
+				for( int i = 0; i < [[srcViewer pixList] count]; i++)
 				{
-					ROI *theNewROI = [[ROI alloc]	initWithTexture:buff
-													textWidth:buffWidth
-													textHeight:buffHeight
-													textName:newname
-													positionX:0
-													positionY:0
-													spacingX:[[[srcViewer imageView] curDCM] pixelSpacingX]
-													spacingY:[[[srcViewer imageView] curDCM] pixelSpacingY]
-													imageOrigin:NSMakePoint([[[srcViewer imageView] curDCM] originX], [[[srcViewer imageView] curDCM] originY])];
+					int buffHeight = [[[srcViewer pixList] objectAtIndex: i] pheight];
+					int buffWidth = [[[srcViewer pixList] objectAtIndex: i] pwidth];
 					
-					[[[srcViewer roiList] objectAtIndex:i] addObject:theNewROI];
-					[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:theNewROI userInfo: nil];	
-					
-					if( [newname isEqualToString: NSLocalizedString( @"Segmentation Preview", nil)])
+					if( memchr( buff, 255, buffWidth * buffHeight))
 					{
-						RGBColor color;
+						ROI *theNewROI = [[ROI alloc]	initWithTexture:buff
+														textWidth:buffWidth
+														textHeight:buffHeight
+														textName:newname
+														positionX:0
+														positionY:0
+														spacingX:[[[srcViewer imageView] curDCM] pixelSpacingX]
+														spacingY:[[[srcViewer imageView] curDCM] pixelSpacingY]
+														imageOrigin:NSMakePoint([[[srcViewer imageView] curDCM] originX], [[[srcViewer imageView] curDCM] originY])];
 						
-						color.red = 0.67*65535.;
-						color.green = 0.90*65535.;
-						color.blue = 0.58*65535.;
+						[[[srcViewer roiList] objectAtIndex:i] addObject:theNewROI];
+						[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:theNewROI userInfo: nil];	
 						
-						[theNewROI setColor: color];
+						if( [newname isEqualToString: NSLocalizedString( @"Segmentation Preview", nil)])
+						{
+							RGBColor color;
+							
+							color.red = 0.67*65535.;
+							color.green = 0.90*65535.;
+							color.blue = 0.58*65535.;
+							
+							[theNewROI setColor: color];
+						}
+						
+						[theNewROI setROIMode: ROI_selected];
+						[[NSNotificationCenter defaultCenter] postNotificationName: @"roiSelected" object:theNewROI userInfo: nil];
+						
+						[theNewROI setSliceThickness:[[[srcViewer imageView] curDCM] sliceThickness]];
+						[theNewROI release];
 					}
 					
-					[theNewROI setROIMode: ROI_selected];
-					[[NSNotificationCenter defaultCenter] postNotificationName: @"roiSelected" object:theNewROI userInfo: nil];
-					
-					[theNewROI setSliceThickness:[[[srcViewer imageView] curDCM] sliceThickness]];
-					[theNewROI release];
+					buff+= buffHeight*buffWidth;
 				}
-				
-				buff+= buffHeight*buffWidth;
-			}
 			
-			if( mergeWithExistingROIs)
-			{
-				int currentImageIndex = [[srcViewer imageView] curImage];
-				
-				for( NSArray *rois in [srcViewer roiList])
+				if( mergeWithExistingROIs)
 				{
-					[srcViewer mergeBrushROI: self ROIs: rois ROIList: rois];
+					int currentImageIndex = [[srcViewer imageView] curImage];
+					
+					for( NSArray *rois in [srcViewer roiList])
+					{
+						[srcViewer mergeBrushROI: self ROIs: rois ROIList: rois];
+					}
+					
+					[[srcViewer imageView] setIndex: currentImageIndex];
+					[[srcViewer imageView] sendSyncMessage:0];
+					[srcViewer adjustSlider];
 				}
-				
-				[[srcViewer imageView] setIndex: currentImageIndex];
-				[[srcViewer imageView] sendSyncMessage:0];
-				[srcViewer adjustSlider];
+			}
+			else
+			{
+				if( NSRunAlertPanel( NSLocalizedString(@"Not Enough Memory",nil), NSLocalizedString( @"Not enough memory (RAM).\r\rUpgrade to OsiriX 64-bit to solve this issue.",nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"OsiriX 64-bit", nil), nil) == NSAlertAlternateReturn)
+					[[AppController sharedAppController] osirix64bit: self];	
 			}
 		}
 		else
 		{
 			// result of the segmentation will only contain one slice.
 			unsigned char *buff = caster->GetOutput()->GetBufferPointer();
-
+			
 			int buffHeight = [[[srcViewer pixList] objectAtIndex: 0] pheight];
 			int buffWidth = [[[srcViewer pixList] objectAtIndex: 0] pwidth];
 

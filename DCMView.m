@@ -11253,10 +11253,13 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			
 			switch (key)
 			{
-				case DefaultWWWLHotKeyAction: [self setWLWW:[[self curDCM] savedWL] :[[self curDCM] savedWW]];	// default WW/WL
-							break;
-				case FullDynamicWWWLHotKeyAction: [self setWLWW:0 :0];											// full dynamic WW/WL
-					break;
+				case DefaultWWWLHotKeyAction:
+					[self setWLWW:[[self curDCM] savedWL] :[[self curDCM] savedWW]];	// default WW/WL
+				break;
+				
+				case FullDynamicWWWLHotKeyAction:
+					[self setWLWW:0 :0];											// full dynamic WW/WL
+				break;
 																							
 				case Preset1WWWLHotKeyAction:																	// 1 - 9 will be presets WW/WL
 				case Preset2WWWLHotKeyAction:
@@ -11280,9 +11283,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				
 				// Flip
 				case FlipVerticalHotKeyAction: [self flipVertical:nil];
-						break;
+				break;
+				
 				case  FlipHorizontalHotKeyAction: [self flipHorizontal:nil];
-						break;
+				break;
 						
 				// mouse functions
 				case WWWLToolHotKeyAction:
