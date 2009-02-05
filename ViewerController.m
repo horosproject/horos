@@ -90,7 +90,7 @@
 #import "DefaultsOsiriX.h"
 #import "dicomFile.h"
 
-@class VRPROController;
+//@class VRPROController;
 
 extern  ToolbarPanelController  *toolbarPanel[ 10];
 extern  AppController			*appController;
@@ -7550,7 +7550,6 @@ static ViewerController *draggedController = nil;
 			{
 				if( fabs( vectors[6]) > fabs(vectors[7]) && fabs( vectors[6]) > fabs(vectors[8]))
 				{
-//					NSLog(@"Sagittal");
 					interval = [[pixList[ z] objectAtIndex:0] originX] - [[pixList[ z] objectAtIndex:1] originX];
 					
 					if( vectors[6] > 0) interval = -( interval);
@@ -7566,7 +7565,6 @@ static ViewerController *draggedController = nil;
 				
 				if( fabs( vectors[7]) > fabs(vectors[6]) && fabs( vectors[7]) > fabs(vectors[8]))
 				{
-//					NSLog(@"Coronal");
 					interval = [[pixList[ z] objectAtIndex:0] originY] - [[pixList[ z] objectAtIndex:1] originY];
 					
 					if( vectors[7] > 0) interval = -( interval);
@@ -7582,7 +7580,6 @@ static ViewerController *draggedController = nil;
 				
 				if( fabs( vectors[8]) > fabs(vectors[6]) && fabs( vectors[8]) > fabs(vectors[7]))
 				{
-//					NSLog(@"Axial");
 					interval = [[pixList[ z] objectAtIndex:0] originZ] - [[pixList[ z] objectAtIndex:1] originZ];
 					
 					if( vectors[8] > 0) interval = -( interval);
@@ -16731,13 +16728,13 @@ int i,j,l;
 				case 5: [[ReconstructionRoi itemAtIndex: i] setImage: [NSImage imageNamed: @"Surface"]];			break;
 				case 6: [[ReconstructionRoi itemAtIndex: i] setImage: [NSImage imageNamed: @"VolumeRendering"]];	break;
 				case 7:
-				if( [VRPROController available] == NO)
+//				if( [VRPROController available] == NO)
 				{
 					[ReconstructionRoi removeItemAtIndex: i];
 					i--;
 				}
-				else
-					[[ReconstructionRoi itemAtIndex: i] setImage: [NSImage imageNamed: @"VolumeRendering"]];
+//				else
+//					[[ReconstructionRoi itemAtIndex: i] setImage: [NSImage imageNamed: @"VolumeRendering"]];
 				break;
 				case 8: [[ReconstructionRoi itemAtIndex: i] setImage: [NSImage imageNamed: @"orthogonalReslice"]];	break;
 				case 9: [[ReconstructionRoi itemAtIndex: i] setImage: [NSImage imageNamed: @"Endoscopy"]];	break;
@@ -16930,147 +16927,148 @@ int i,j,l;
 
 -(IBAction) VRVPROViewer:(id) sender
 {
-	
-	[self checkEverythingLoaded];
-	[self clear8bitRepresentations];
-	
-	if( [self computeInterval] == 0 ||
-		[[pixList[0] objectAtIndex:0] pixelSpacingX] == 0 ||
-		[[pixList[0] objectAtIndex:0] pixelSpacingY] == 0 ||
-		([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask))
-	{
-		[self SetThicknessInterval:sender];
-	}
-	else
-	{
-		[self displayAWarningIfNonTrueVolumicData];
-		
-		[self MovieStop: self];
-		
-		if( [VRPROController available])
-		{
-			if( [VRPROController  hardwareCheck])
-			{
-				VRPROController *viewer = [appController FindViewer :@"VRVPRO" :pixList[0]];
-				
-				if( viewer)
-				{
-					[[viewer window] makeKeyAndOrderFront:self];
-				}
-				else
-				{
-					NSString	*mode;
-					
-					if( [sender tag] == 3) mode = @"MIP";
-					else mode = @"VR";
-					viewer = [self openVRVPROViewerForMode:mode];
-					/*
-					viewer = [[VRPROController alloc] initWithPix:pixList[0] :fileList[0] :volumeData[ 0] :blendingController :self mode: mode];
-					for( i = 1; i < maxMovieIndex; i++)
-					{
-						[viewer addMoviePixList:pixList[ i] :volumeData[ i]];
-					}
-					
-					if( [[self modality] isEqualToString:@"PT"] == YES && [[pixList[0] objectAtIndex: 0] isRGB] == NO)
-					{
-						if( [[imageView curDCM] SUVConverted] == YES)
-						{
-							[viewer setWLWW: 2 : 6];
-						}
-						else
-						{
-							[viewer setWLWW:[[pixList[0] objectAtIndex: 0] maxValueOfSeries]/2 : [[pixList[0] objectAtIndex: 0] maxValueOfSeries]];
-						}
-						
-						if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut Mode"] isEqualToString: @"B/W Inverse"])
-							[viewer ApplyCLUTString: @"B/W Inverse"];
-						else
-							[viewer ApplyCLUTString: [[NSUserDefaults standardUserDefaults] stringForKey:@"PET Default CLUT"]];
-					}
-					else
-					{
-						float   iwl, iww;
-						[imageView getWLWW:&iwl :&iww];
-						[viewer setWLWW:iwl :iww];
-					}
-					*/
-					
-					NSString *c;
-					
-					if( backCurCLUTMenu) c = backCurCLUTMenu;
-					else c = curCLUTMenu;
-					
-					[viewer ApplyCLUTString: c];
-					float   iwl, iww;
-					[imageView getWLWW:&iwl :&iww];
-					[viewer setWLWW:iwl :iww];
-					[viewer load3DState];
-					[self place3DViewerWindow: viewer];
-//					[[viewer window] performZoom:self];
-					[viewer showWindow:self];
-					[[viewer window] makeKeyAndOrderFront:self];
-					[[viewer window] display];
-					[[viewer window] setTitle: [NSString stringWithFormat:@"%@: %@", [[viewer window] title], [[self window] title]]];
-				}
-			}
-		}
-		else NSRunCriticalAlertPanel( NSLocalizedString(@"Error", nil),  NSLocalizedString(@"VolumePRO hardware not detected.", nil), NSLocalizedString(@"OK", nil), nil, nil);
-	}
+//	
+//	[self checkEverythingLoaded];
+//	[self clear8bitRepresentations];
+//	
+//	if( [self computeInterval] == 0 ||
+//		[[pixList[0] objectAtIndex:0] pixelSpacingX] == 0 ||
+//		[[pixList[0] objectAtIndex:0] pixelSpacingY] == 0 ||
+//		([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask))
+//	{
+//		[self SetThicknessInterval:sender];
+//	}
+//	else
+//	{
+//		[self displayAWarningIfNonTrueVolumicData];
+//		
+//		[self MovieStop: self];
+//		
+//		if( [VRPROController available])
+//		{
+//			if( [VRPROController  hardwareCheck])
+//			{
+//				VRPROController *viewer = [appController FindViewer :@"VRVPRO" :pixList[0]];
+//				
+//				if( viewer)
+//				{
+//					[[viewer window] makeKeyAndOrderFront:self];
+//				}
+//				else
+//				{
+//					NSString	*mode;
+//					
+//					if( [sender tag] == 3) mode = @"MIP";
+//					else mode = @"VR";
+//					viewer = [self openVRVPROViewerForMode:mode];
+//					/*
+//					viewer = [[VRPROController alloc] initWithPix:pixList[0] :fileList[0] :volumeData[ 0] :blendingController :self mode: mode];
+//					for( i = 1; i < maxMovieIndex; i++)
+//					{
+//						[viewer addMoviePixList:pixList[ i] :volumeData[ i]];
+//					}
+//					
+//					if( [[self modality] isEqualToString:@"PT"] == YES && [[pixList[0] objectAtIndex: 0] isRGB] == NO)
+//					{
+//						if( [[imageView curDCM] SUVConverted] == YES)
+//						{
+//							[viewer setWLWW: 2 : 6];
+//						}
+//						else
+//						{
+//							[viewer setWLWW:[[pixList[0] objectAtIndex: 0] maxValueOfSeries]/2 : [[pixList[0] objectAtIndex: 0] maxValueOfSeries]];
+//						}
+//						
+//						if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut Mode"] isEqualToString: @"B/W Inverse"])
+//							[viewer ApplyCLUTString: @"B/W Inverse"];
+//						else
+//							[viewer ApplyCLUTString: [[NSUserDefaults standardUserDefaults] stringForKey:@"PET Default CLUT"]];
+//					}
+//					else
+//					{
+//						float   iwl, iww;
+//						[imageView getWLWW:&iwl :&iww];
+//						[viewer setWLWW:iwl :iww];
+//					}
+//					*/
+//					
+//					NSString *c;
+//					
+//					if( backCurCLUTMenu) c = backCurCLUTMenu;
+//					else c = curCLUTMenu;
+//					
+//					[viewer ApplyCLUTString: c];
+//					float   iwl, iww;
+//					[imageView getWLWW:&iwl :&iww];
+//					[viewer setWLWW:iwl :iww];
+//					[viewer load3DState];
+//					[self place3DViewerWindow: viewer];
+////					[[viewer window] performZoom:self];
+//					[viewer showWindow:self];
+//					[[viewer window] makeKeyAndOrderFront:self];
+//					[[viewer window] display];
+//					[[viewer window] setTitle: [NSString stringWithFormat:@"%@: %@", [[viewer window] title], [[self window] title]]];
+//				}
+//			}
+//		}
+//		else NSRunCriticalAlertPanel( NSLocalizedString(@"Error", nil),  NSLocalizedString(@"VolumePRO hardware not detected.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+//	}
 }
 
-- (VRPROController *)openVRVPROViewerForMode:(NSString *)mode{
-	long i;
-	
-	[self checkEverythingLoaded];
-	[self clear8bitRepresentations];	
-	[self MovieStop: self];
-	
-	if( [VRPROController available])
-	{
-		if( [VRPROController  hardwareCheck])
-		{
-			VRPROController *viewer = [appController FindViewer :@"VRVPRO" :pixList[0]];
-
-			if( viewer)
-			{
-				return viewer;
-			}
-			else
-			{		
-				viewer = [[VRPROController alloc] initWithPix:pixList[0] :fileList[0] :volumeData[ 0] :blendingController :self mode: mode];
-				for( i = 1; i < maxMovieIndex; i++)
-				{
-					[viewer addMoviePixList:pixList[ i] :volumeData[ i]];
-				}
-				
-				if( [[self modality] isEqualToString:@"PT"] == YES && [[pixList[0] objectAtIndex: 0] isRGB] == NO)
-				{
-					if( [[imageView curDCM] SUVConverted] == YES)
-					{
-						[viewer setWLWW: 2 : 6];
-					}
-					else
-					{
-						[viewer setWLWW:[[pixList[0] objectAtIndex: 0] maxValueOfSeries]/2 : [[pixList[0] objectAtIndex: 0] maxValueOfSeries]];
-					}
-					
-					if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut Mode"] isEqualToString: @"B/W Inverse"])
-						[viewer ApplyCLUTString: @"B/W Inverse"];
-					else
-						[viewer ApplyCLUTString: [[NSUserDefaults standardUserDefaults] stringForKey:@"PET Default CLUT"]];
-						
-					[viewer ApplyOpacityString: @"Logarithmic Table"];
-				}
-				else
-				{
-					float   iwl, iww;
-					[imageView getWLWW:&iwl :&iww];
-					[viewer setWLWW:iwl :iww];
-				}
-			}
-			return viewer;
-		}
-	}
+- (VRPROController *)openVRVPROViewerForMode:(NSString *)mode
+{
+//	long i;
+//	
+//	[self checkEverythingLoaded];
+//	[self clear8bitRepresentations];	
+//	[self MovieStop: self];
+//	
+//	if( [VRPROController available])
+//	{
+//		if( [VRPROController  hardwareCheck])
+//		{
+//			VRPROController *viewer = [appController FindViewer :@"VRVPRO" :pixList[0]];
+//
+//			if( viewer)
+//			{
+//				return viewer;
+//			}
+//			else
+//			{		
+//				viewer = [[VRPROController alloc] initWithPix:pixList[0] :fileList[0] :volumeData[ 0] :blendingController :self mode: mode];
+//				for( i = 1; i < maxMovieIndex; i++)
+//				{
+//					[viewer addMoviePixList:pixList[ i] :volumeData[ i]];
+//				}
+//				
+//				if( [[self modality] isEqualToString:@"PT"] == YES && [[pixList[0] objectAtIndex: 0] isRGB] == NO)
+//				{
+//					if( [[imageView curDCM] SUVConverted] == YES)
+//					{
+//						[viewer setWLWW: 2 : 6];
+//					}
+//					else
+//					{
+//						[viewer setWLWW:[[pixList[0] objectAtIndex: 0] maxValueOfSeries]/2 : [[pixList[0] objectAtIndex: 0] maxValueOfSeries]];
+//					}
+//					
+//					if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut Mode"] isEqualToString: @"B/W Inverse"])
+//						[viewer ApplyCLUTString: @"B/W Inverse"];
+//					else
+//						[viewer ApplyCLUTString: [[NSUserDefaults standardUserDefaults] stringForKey:@"PET Default CLUT"]];
+//						
+//					[viewer ApplyOpacityString: @"Logarithmic Table"];
+//				}
+//				else
+//				{
+//					float   iwl, iww;
+//					[imageView getWLWW:&iwl :&iww];
+//					[viewer setWLWW:iwl :iww];
+//				}
+//			}
+//			return viewer;
+//		}
+//	}
 	return nil;
 }
 

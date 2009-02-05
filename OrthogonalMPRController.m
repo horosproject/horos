@@ -35,7 +35,8 @@
 {
 	switch( orientationVector)
 	{
-		case 1:
+		case eSagittalPos:
+		case eSagittalNeg:
 			[xReslicedView setXFlipped: YES];
 			if( [xReslicedView rotation] == 0) [xReslicedView setRotation: 90];
 			
@@ -43,13 +44,18 @@
 			if( [yReslicedView rotation] == 0) [yReslicedView setRotation: 90];
 		break;
 		
-		case 2:
+		case eCoronalPos:
+		case eCoronalNeg:
 			[xReslicedView setYFlipped: YES];
 			if( [yReslicedView rotation] == 0) [yReslicedView setRotation: 90];
 		break;
 		
-		case 4:
-			// Classic Axial
+		case eAxialPos:
+		break;
+		
+		case eAxialNeg: 
+			[xReslicedView setYFlipped: YES];
+			[yReslicedView setYFlipped: YES];
 		break;
 		
 		default:

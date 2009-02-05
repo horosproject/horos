@@ -429,7 +429,7 @@
 				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"exportOrientationIn3DExport"])
 					[dcmSequence setOrientation: o];
 				
-				if( [controller3D isKindOfClass: [VRController class]] ||  [controller3D isKindOfClass: [VRPROController class]])
+				if( [controller3D isKindOfClass: [VRController class]])		//||  [controller3D isKindOfClass: [VRPROController class]])
 				{
 					float resolution = [[controller3D view] getResolution];
 					

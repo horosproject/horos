@@ -7634,19 +7634,16 @@ END_CREATE_ROIS:
 			
 			if( fabs( orientation[6]) > fabs(orientation[7]) && fabs( orientation[6]) > fabs(orientation[8]))
 			{
-				//	NSLog(@"Saggital");
 				sliceLocation = originX;
 			}
 			
 			if( fabs( orientation[7]) > fabs(orientation[6]) && fabs( orientation[7]) > fabs(orientation[8]))
 			{
-				//	NSLog(@"Coronal");
 				sliceLocation = originY;
 			}
 			
 			if( fabs( orientation[8]) > fabs(orientation[6]) && fabs( orientation[8]) > fabs(orientation[7]))
 			{
-				//	NSLog(@"Axial");
 				sliceLocation = originZ;
 			}
 			

@@ -136,8 +136,14 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 			[finalViewBlending setRotation: 180];
 		break;
 		
-		case 4:
+		case eAxialPos:
 			[perpendicularView setRotation: 90];
+		break;
+		
+		case eAxialNeg:
+			[perpendicularView setRotation: -90];
+			[finalView setYFlipped: YES];
+			[finalViewBlending setYFlipped: YES];
 		break;
 		
 		default:

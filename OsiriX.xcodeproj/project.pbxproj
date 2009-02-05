@@ -4246,7 +4246,6 @@
 		CE74DEB008CCE0C1005D12A7 /* SagOpposite.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE74DEAF08CCE0C1005D12A7 /* SagOpposite.tif */; };
 		CE77B0740CB9718C00BE873C /* WaitRendering.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F991A0C84724B00CB38F1 /* WaitRendering.xib */; };
 		CE77B0B10CB9719C00BE873C /* WaitRendering.m in Sources */ = {isa = PBXBuildFile; fileRef = ABB218B805CF1E9300D8B619 /* WaitRendering.m */; };
-		CE79DCFC0753A64D005C8051 /* NO-VRControllerVPRO.m in Sources */ = {isa = PBXBuildFile; fileRef = CE79DCFB0753A64D005C8051 /* NO-VRControllerVPRO.m */; };
 		CE7BBFD50C82DCA5000AD12F /* libtiff.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CE7BBFD30C82DCA5000AD12F /* libtiff.dylib */; };
 		CE7BBFD60C82DCA5000AD12F /* libtiff.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE7BBFD40C82DCA5000AD12F /* libtiff.a */; };
 		CE7BBFDB0C82DCA5000AD12F /* libtiff.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CE7BBFD30C82DCA5000AD12F /* libtiff.dylib */; };
@@ -4730,7 +4729,6 @@
 		CEAA6F420E50C084008802D2 /* OsiriXSCPDataHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = BF9201E90883667800A3D77B /* OsiriXSCPDataHandler.m */; };
 		CEAA6F430E50C085008802D2 /* OsiriXSCPDataHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = BF9201E80883667800A3D77B /* OsiriXSCPDataHandler.h */; };
 		CEAE02E00DE7E33B00E9BD01 /* DICOMDestination.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEAE02DF0DE7E33B00E9BD01 /* DICOMDestination.tif */; };
-		CEAEAC530C966FEF001CEA25 /* VRControllerVPRO.h in Headers */ = {isa = PBXBuildFile; fileRef = CE677D1207A6BDDD003B3650 /* VRControllerVPRO.h */; };
 		CEAF4ECF089D6E9400DE46AF /* OsiriXTables.pdf in Resources */ = {isa = PBXBuildFile; fileRef = CEAF4ECC089D6E9400DE46AF /* OsiriXTables.pdf */; };
 		CEB1DA6908A3B1040058C303 /* smalltrash.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEB1DA6608A3B1040058C303 /* smalltrash.tif */; };
 		CEB7179906CE7CBD00084CA5 /* libjasper2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CEB7179706CE7CBD00084CA5 /* libjasper2.a */; };
@@ -7272,8 +7270,6 @@
 		CE0817B80C0FEEAE00BBD907 /* iPodEjectOn.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = iPodEjectOn.tif; sourceTree = "<group>"; };
 		CE087B0A0DE9BD6E000E5593 /* GLString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLString.m; sourceTree = "<group>"; };
 		CE087B0B0DE9BD6E000E5593 /* GLString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLString.h; sourceTree = "<group>"; };
-		CE0B46C7087D2B900052E309 /* VRPROFlyThruAdapter.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = VRPROFlyThruAdapter.m; sourceTree = "<group>"; };
-		CE0B46C8087D2B910052E309 /* VRPROFlyThruAdapter.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = VRPROFlyThruAdapter.h; sourceTree = "<group>"; };
 		CE0CB16F084A623C00C6385F /* DCMPix.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = DCMPix.m; sourceTree = "<group>"; };
 		CE0CB170084A623C00C6385F /* DCMPix.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DCMPix.h; sourceTree = "<group>"; };
 		CE0E08E606A106D700F2C01C /* ThickSlabController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThickSlabController.h; sourceTree = "<group>"; };
@@ -9017,10 +9013,6 @@
 		CE6692D80AF545F90073D923 /* printView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = printView.h; sourceTree = "<group>"; };
 		CE6692D90AF545F90073D923 /* printView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = printView.m; sourceTree = "<group>"; };
 		CE6693C60AF551210073D923 /* libxerces-c.27.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libxerces-c.27.dylib"; path = "AYDicomPrint/libxerces-c.27.dylib"; sourceTree = "<group>"; };
-		CE677D0F07A6BDDD003B3650 /* VRViewVPRO.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = VRViewVPRO.mm; sourceTree = "<group>"; };
-		CE677D1007A6BDDD003B3650 /* VRViewVPRO.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = VRViewVPRO.h; sourceTree = "<group>"; };
-		CE677D1107A6BDDD003B3650 /* VRControllerVPRO.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = VRControllerVPRO.mm; sourceTree = "<group>"; };
-		CE677D1207A6BDDD003B3650 /* VRControllerVPRO.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = VRControllerVPRO.h; sourceTree = "<group>"; };
 		CE6B2E1F08DAFC6500872E84 /* FixedIP.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = FixedIP.tif; sourceTree = "<group>"; };
 		CE6C77EB09739B3100F951C2 /* Rotate3DCursor.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = Rotate3DCursor.tif; path = Cursors/Rotate3DCursor.tif; sourceTree = "<group>"; };
 		CE6C77EC09739B3100F951C2 /* Rotate3DCameraCursor.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = Rotate3DCameraCursor.tif; path = Cursors/Rotate3DCameraCursor.tif; sourceTree = "<group>"; };
@@ -9034,7 +9026,6 @@
 		CE74456806DBA4CB0034D05E /* ITK.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = ITK.mm; sourceTree = "<group>"; };
 		CE74824006C9701200FFA74C /* trash.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = trash.icns; sourceTree = "<group>"; };
 		CE74DEAF08CCE0C1005D12A7 /* SagOpposite.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SagOpposite.tif; sourceTree = "<group>"; };
-		CE79DCFB0753A64D005C8051 /* NO-VRControllerVPRO.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = "NO-VRControllerVPRO.m"; sourceTree = SOURCE_ROOT; };
 		CE7A0F1A0AED55E700540017 /* ShellMainClass.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = ShellMainClass.mm; sourceTree = "<group>"; };
 		CE7BBFD30C82DCA5000AD12F /* libtiff.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libtiff.dylib; sourceTree = "<group>"; };
 		CE7BBFD40C82DCA5000AD12F /* libtiff.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libtiff.a; sourceTree = "<group>"; };
@@ -9083,15 +9074,11 @@
 		CE9DD282086B35050058DD2A /* DicomSeries.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DicomSeries.h; sourceTree = "<group>"; };
 		CE9DD283086B35050058DD2A /* DicomSeries.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = DicomSeries.m; sourceTree = "<group>"; };
 		CEA048460C76E2A600B4CA0A /* DICOMQuickLook.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = DICOMQuickLook.xcodeproj; path = ../DICOMQuickLook/DICOMQuickLook.xcodeproj; sourceTree = SOURCE_ROOT; };
-		CEA0C72607A6B186004E5D9D /* vtkVolumeProVP1000Mapper.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = vtkVolumeProVP1000Mapper.cxx; path = VolumePRO/vtkVolumeProVP1000Mapper.cxx; sourceTree = "<group>"; };
-		CEA0C72907A6B186004E5D9D /* vtkOpenGLVolumeProVP1000Mapper.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = vtkOpenGLVolumeProVP1000Mapper.cxx; path = VolumePRO/vtkOpenGLVolumeProVP1000Mapper.cxx; sourceTree = "<group>"; };
 		CEA20533073A810100F0DAB7 /* iPhoto.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = iPhoto.h; sourceTree = "<group>"; };
 		CEA20534073A810100F0DAB7 /* iPhoto.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = iPhoto.m; sourceTree = "<group>"; };
 		CEA337BA06AD9BF6006D2357 /* iDiskGet.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = iDiskGet.icns; sourceTree = "<group>"; };
 		CEA337BB06AD9BF6006D2357 /* iDiskSend.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = iDiskSend.icns; sourceTree = "<group>"; };
-		CEA65654094EF57000D4E5E5 /* vli.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = vli.h; path = VolumePRO/vli3.framework/Versions/A/Headers/vli.h; sourceTree = "<group>"; };
 		CEA656CB094EF64300D4E5E5 /* vli3.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = vli3.framework; path = VolumePRO/vli3.framework; sourceTree = "<group>"; };
-		CEA65731094EF6FD00D4E5E5 /* vli3.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = vli3.h; path = VolumePRO/vli3.framework/Versions/A/Headers/vli3.h; sourceTree = "<group>"; };
 		CEAE02DF0DE7E33B00E9BD01 /* DICOMDestination.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = DICOMDestination.tif; sourceTree = "<group>"; };
 		CEAF4ECC089D6E9400DE46AF /* OsiriXTables.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = OsiriXTables.pdf; sourceTree = "<group>"; };
 		CEB1DA6608A3B1040058C303 /* smalltrash.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = smalltrash.tif; sourceTree = "<group>"; };
@@ -9202,7 +9189,6 @@
 		CEE1922D08636FA100DED1F0 /* DicomImage.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DicomImage.h; sourceTree = "<group>"; };
 		CEE2144C06B95D3900368199 /* OsiriX.scriptSuite */ = {isa = PBXFileReference; explicitFileType = text.plist.scriptSuite; fileEncoding = 30; path = OsiriX.scriptSuite; sourceTree = "<group>"; };
 		CEE2145706B95D9D00368199 /* English */ = {isa = PBXFileReference; explicitFileType = text.plist.scriptTerminology; fileEncoding = 30; name = English; path = English.lproj/OsiriX.scriptTerminology; sourceTree = "<group>"; };
-		CEE47B5B0838D138009FCE86 /* vtkVolumeProMapper.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = vtkVolumeProMapper.cxx; path = VolumePRO/vtkVolumeProMapper.cxx; sourceTree = "<group>"; };
 		CEE619EE0912C73000C31D78 /* OrientationWidget.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = OrientationWidget.tiff; sourceTree = "<group>"; };
 		CEE67176077D5ECE00E4BB10 /* SyncLock.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SyncLock.tif; sourceTree = "<group>"; };
 		CEE73FC708F44724002A395F /* FVTiff.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = FVTiff.h; sourceTree = "<group>"; };
@@ -9409,7 +9395,6 @@
 				AB154F8A0627414000BD57AF /* SR 3D */,
 				CE0E094306A108E000F2C01C /* ThickSlabVR */,
 				AB6AC6650624AC5C00AFC7AF /* VR/MIP 3D */,
-				CEBFC36607538FEA00E49318 /* VR 3D VolumePRO */,
 				183C862E08563EF0000E6A68 /* Fly Thru */,
 				BF9201E70883664600A3D77B /* Network */,
 				CE88574908AF936200B72DA7 /* ROIVolume */,
@@ -9489,8 +9474,6 @@
 				183C864708563F3A000E6A68 /* SRFlyThruAdapter.m */,
 				183C864808563F3A000E6A68 /* VRFlyThruAdapter.h */,
 				183C864908563F3A000E6A68 /* VRFlyThruAdapter.m */,
-				CE0B46C8087D2B910052E309 /* VRPROFlyThruAdapter.h */,
-				CE0B46C7087D2B900052E309 /* VRPROFlyThruAdapter.m */,
 				BF6F18DA0CAD6ACF006DE602 /* FlyThruStepsArrayController.h */,
 				BF6F18DB0CAD6ACF006DE602 /* FlyThruStepsArrayController.m */,
 				BF84E53D0CB16A2900431BC2 /* FlyThruTableView.h */,
@@ -14234,23 +14217,6 @@
 			name = "Distributed Objects";
 			sourceTree = "<group>";
 		};
-		CEBFC36607538FEA00E49318 /* VR 3D VolumePRO */ = {
-			isa = PBXGroup;
-			children = (
-				CE79DCFB0753A64D005C8051 /* NO-VRControllerVPRO.m */,
-				CEA65654094EF57000D4E5E5 /* vli.h */,
-				CEA65731094EF6FD00D4E5E5 /* vli3.h */,
-				CEA0C72607A6B186004E5D9D /* vtkVolumeProVP1000Mapper.cxx */,
-				CEE47B5B0838D138009FCE86 /* vtkVolumeProMapper.cxx */,
-				CEA0C72907A6B186004E5D9D /* vtkOpenGLVolumeProVP1000Mapper.cxx */,
-				CE677D0F07A6BDDD003B3650 /* VRViewVPRO.mm */,
-				CE677D1007A6BDDD003B3650 /* VRViewVPRO.h */,
-				CE677D1107A6BDDD003B3650 /* VRControllerVPRO.mm */,
-				CE677D1207A6BDDD003B3650 /* VRControllerVPRO.h */,
-			);
-			name = "VR 3D VolumePRO";
-			sourceTree = "<group>";
-		};
 		CEC171F70874839C0021C3FC /* BurnAnimation */ = {
 			isa = PBXGroup;
 			children = (
@@ -15209,7 +15175,6 @@
 				CE882AC60C889B6500D4F982 /* XMLRPCMethods.h in Headers */,
 				CE882B300C889E0200D4F982 /* TCPServer.h in Headers */,
 				CE882B330C889E0200D4F982 /* HTTPServer.h in Headers */,
-				CEAEAC530C966FEF001CEA25 /* VRControllerVPRO.h in Headers */,
 				32E422150C97301600E193CA /* altivecFunctions.h in Headers */,
 				A9BDE5920C9823DC000A161F /* IChatTheatreDelegate.h in Headers */,
 				CED2CF8F0C9B28580047F123 /* PreferencePaneControllerDCMTK.h in Headers */,
@@ -18132,7 +18097,6 @@
 				7E2BE37E0715D2820017898A /* PreferencePaneController.m in Sources */,
 				7ECB4B42072EF9F800C2CFC4 /* DCMCalendarScript.m in Sources */,
 				CEA20538073A810100F0DAB7 /* iPhoto.m in Sources */,
-				CE79DCFC0753A64D005C8051 /* NO-VRControllerVPRO.m in Sources */,
 				7EB4AAE8079494CB007AD271 /* QueryArrayController.mm in Sources */,
 				7E54307807A05ED400500ABB /* BurnerWindowController.m in Sources */,
 				CE3E696207AFB6DE00541E20 /* CurvedMPR.m in Sources */,

@@ -1412,10 +1412,10 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 		if([volumeData length]==0 || [pix count]==0) return;
 		
 		NSArray * newFileArray = [NSArray arrayWithArray:[[[self viewer] fileList] subarrayWithRange:NSMakeRange(0,[pix count])]];
-						
-		if( [VRPROController available])
-			vrPanel = [[VRPROController alloc] initWithPix:pix :newFileArray :(NSData*)volumeData :nil :viewer mode:@"VR"];
-		else
+		
+//		if( [VRPROController available])
+//			vrPanel = [[VRPROController alloc] initWithPix:pix :newFileArray :(NSData*)volumeData :nil :viewer mode:@"VR"];
+//		else
 			vrPanel = [[VRController alloc] initWithPix:pix :newFileArray :(NSData*)volumeData :nil :viewer style:@"standard" mode:@"VR"];
 		
 		[pix release];		

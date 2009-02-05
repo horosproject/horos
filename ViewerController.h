@@ -33,7 +33,7 @@
 @class OrthogonalMPRPETCTViewer;
 @class SRController;
 @class EndoscopyViewer;
-@class VRPROController;
+//@class VRPROController;
 @class ViewerController;
 
 @interface NSObject(OsiriXPluginDraggingDestination)
@@ -942,7 +942,7 @@ enum
 /** Returns the VRPROController for this ViewerController; creating one if necessary 
 * See VRController for modes
 */
-- (VRPROController*)openVRVPROViewerForMode:(NSString *)mode;
+//- (VRPROController*)openVRVPROViewerForMode:(NSString *)mode;
 
 /** Returns the OrthogonalMPRViewer for this ViewerController; creating one if necessary */
 - (OrthogonalMPRViewer *)openOrthogonalMPRViewer;

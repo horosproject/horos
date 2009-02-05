@@ -326,19 +326,25 @@ public:
 		a[ 5] = max[ 2];
 		
 		double origin[3];
-		volume->GetPosition(origin);	//GetOrigin		
+		volume->GetPosition(origin);	//GetOrigin
+		
 		a[0] -= origin[0];		a[1] -= origin[0];
 		a[2] -= origin[1];		a[3] -= origin[1];
 		a[4] -= origin[2];		a[5] -= origin[2];
-
+		
 		double temp;
-		if(fabs(a[0]) > fabs(a[1])) {temp = a[0]; a[0] = a[1]; a[1] = temp;}
-		if(fabs(a[2]) > fabs(a[3])) {temp = a[2]; a[2] = a[3]; a[3] = temp;}
-		if(fabs(a[4]) > fabs(a[5])) {temp = a[4]; a[4] = a[5]; a[5] = temp;}
+		if(fabs(a[0]) > fabs(a[1]))
+		{temp = a[0]; a[0] = a[1]; a[1] = temp;}
+		
+		if(fabs(a[2]) > fabs(a[3]))
+		{temp = a[2]; a[2] = a[3]; a[3] = temp;}
+		
+		if(fabs(a[4]) > fabs(a[5]))
+		{temp = a[4]; a[4] = a[5]; a[5] = temp;}
 		
 		pd->Delete();
 		Transform->Delete();
-
+		
 		return YES;
 	}
 	else return NO;
@@ -354,15 +360,18 @@ public:
 	if( mapper)
 	{
 		mapper->SetCropping(true);
+
+		double min[3], max[3];
 		
-		for( i = 0 ; i < 6; i++)
-		{
-			if( a[ i] < 0) a[ i] = 0;
-		}
+		min[ 0] = a[ 0];
+		min[ 1] = a[ 2];
+		min[ 2] = a[ 4];
+
+		max[ 0] = a[ 1];
+		max[ 1] = a[ 3];
+		max[ 2] = a[ 5];
 		
-	//	NSLog(@"%f %f = %f %f = %f %f",  a[0], a[1], a[2], a[3], a[4], a[5]);
-		
-		mapper->SetCroppingRegionPlanes( a[0], a[1], a[2], a[3], a[4], a[5]);
+		mapper->SetCroppingRegionPlanes( min[0], max[0], min[1], max[1], min[2], max[2]);
 	}
 }
 
@@ -2702,7 +2711,8 @@ public:
 {
 	_hasChanged = YES;
 	[self deleteMouseDownTimer];
-	if (_contextualMenuActive) {
+	if (_contextualMenuActive)
+	{
 		[self rightMouseUp:theEvent];
 		return;
 	}
@@ -2715,8 +2725,10 @@ public:
 	{
 		[self setNeedsDisplay:YES];
 	}
-	else {
-		switch (_tool) {
+	else
+	{
+		switch (_tool)
+		{
 			case tWL:
 			case tWLBlended:
 			case tCamera3D:
@@ -2746,10 +2758,18 @@ public:
 				break;
 		}
 	}
+	
+	double pos[ 3];
+	
+	aCamera->GetFocalPoint( pos);
+	
+	NSLog( @"Camera: %f %f %f", pos[ 0], pos[ 1], pos[ 2]);
+	
 	[drawLock unlock];
 }
 
-- (void)zoomMouseUp:(NSEvent *)theEvent{
+- (void)zoomMouseUp:(NSEvent *)theEvent
+{
 	_hasChanged = YES;
 	if (_tool == tZoom)
 	{
@@ -4955,8 +4975,8 @@ public:
 		if( isRGB)
 		{
 			reader->SetImportVoidPointer(data);
-		reader->SetWholeExtent(0, [firstObject pwidth]-1, 0, [firstObject pheight]-1, 0, [pixList count]-1);	//AVOID VTK BUG
-		reader->SetDataExtentToWholeExtent();
+			reader->SetWholeExtent(0, [firstObject pwidth]-1, 0, [firstObject pheight]-1, 0, [pixList count]-1);	//AVOID VTK BUG
+			reader->SetDataExtentToWholeExtent();
 			reader->SetDataScalarTypeToUnsignedChar();
 			reader->SetNumberOfScalarComponents( 4);
 			
@@ -4964,8 +4984,8 @@ public:
 		else 
 		{
 			reader->SetImportVoidPointer(data8);
-		reader->SetWholeExtent(0, [firstObject pwidth]-1, 0, [firstObject pheight]-1, 0, [pixList count]-1);	//AVOID VTK BUG
-		reader->SetDataExtentToWholeExtent();
+			reader->SetWholeExtent(0, [firstObject pwidth]-1, 0, [firstObject pheight]-1, 0, [pixList count]-1);	//AVOID VTK BUG
+			reader->SetDataExtentToWholeExtent();
 		//	reader->SetDataScalarTypeToFloat();
 			reader->SetDataScalarTypeToUnsignedShort();
 			reader->SetNumberOfScalarComponents( 1);
@@ -5133,6 +5153,7 @@ public:
 		matrice->Element[0][3] = 0;					matrice->Element[1][3] = 0;					matrice->Element[2][3] = 0;					matrice->Element[3][3] = 1;
 
 	//	volume->SetOrigin( [firstObject originX], [firstObject originY], [firstObject originZ]);
+	
 		volume->SetPosition(	factor*[firstObject originX] * matrice->Element[0][0] + factor*[firstObject originY] * matrice->Element[1][0] + factor*[firstObject originZ]*matrice->Element[2][0],
 								factor*[firstObject originX] * matrice->Element[0][1] + factor*[firstObject originY] * matrice->Element[1][1] + factor*[firstObject originZ]*matrice->Element[2][1],
 								factor*[firstObject originX] * matrice->Element[0][2] + factor*[firstObject originY] * matrice->Element[1][2] + factor*[firstObject originZ]*matrice->Element[2][2]);
@@ -5736,8 +5757,9 @@ public:
 	return [self cameraWithThumbnail: YES];
 }
 
-- (void)setCenterlineCamera: (Camera *) cam{
-double pos[3], focal[3], fpVector[3];
+- (void)setCenterlineCamera: (Camera *) cam
+{
+	double pos[3], focal[3], fpVector[3];
 
 	pos[0] = [[cam position] x];
 	pos[1] = [[cam position] y];
@@ -5759,7 +5781,6 @@ double pos[3], focal[3], fpVector[3];
 	aRenderer->ResetCameraClippingRange();
 
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: nil];
-
 }
 
 - (void) setCamera: (Camera*) cam
@@ -5796,11 +5817,31 @@ double pos[3], focal[3], fpVector[3];
 	[VRView setCroppingBox: a :volume];
 	
 	double origin[3];
-	volume->GetPosition(origin);	//GetOrigin		
-	a[0] += origin[0];		a[1] += origin[0];
-	a[2] += origin[1];		a[3] += origin[1];
-	a[4] += origin[2];		a[5] += origin[2];
-	croppingBox->PlaceWidget(a[0], a[1], a[2], a[3], a[4], a[5]);
+	volume->GetPosition(origin);	//GetOrigin
+
+		
+	vtkTransform *Transform = vtkTransform::New();
+	Transform->SetMatrix(volume->GetUserMatrix());
+	Transform->Push();
+	
+	double min[3], max[3];
+		
+	min[ 0] = a[ 0];
+	min[ 1] = a[ 2];
+	min[ 2] = a[ 4];
+
+	max[ 0] = a[ 1];
+	max[ 1] = a[ 3];
+	max[ 2] = a[ 5];
+
+	min[0] += origin[0];		max[0] += origin[0];
+	min[1] += origin[1];		max[1] += origin[1];
+	min[2] += origin[2];		max[2] += origin[2];
+	
+	Transform->TransformPoint( min, min);
+	Transform->TransformPoint( max, max);
+	
+	croppingBox->PlaceWidget(min[0], max[0], min[1], max[1], min[2], max[2]);
 
 	[VRView getCroppingBox: a :blendingVolume :croppingBox];
 	[VRView setCroppingBox: a :blendingVolume];
@@ -5824,6 +5865,8 @@ double pos[3], focal[3], fpVector[3];
 	aCamera->SetParallelScale(parallelScale);
 	aRenderer->ResetCameraClippingRange();
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: nil];
+	
+	NSLog( @"Camera: %f %f %f", focal[ 0], focal[ 1], focal[ 2]);
 }
 
 - (void) setLowResolutionCamera: (Camera*) cam

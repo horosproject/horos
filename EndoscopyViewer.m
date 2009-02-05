@@ -266,7 +266,7 @@ static NSString*	CenterlineToolbarItemIdentifier			= @"Centerline";
 
 	float factor = [vrController factor];
 	float sliceInterval;
-	if ([[[self pixList] objectAtIndex:0] sliceInterval]==0)
+	if ([[[self pixList] objectAtIndex:0] sliceInterval] == 0)
 	{
 		sliceInterval = [[pixList objectAtIndex: 1] sliceLocation]-[[pixList objectAtIndex:0] sliceLocation];
 	}
@@ -292,9 +292,6 @@ static NSString*	CenterlineToolbarItemIdentifier			= @"Centerline";
 						pixY: [(EndoscopyMPRView*)[mprController originalView] focalPointY]
 						toDICOMCoords: focalPoint1
 						pixelCenter: YES];
-	
-	
-
 	
 	float s = (sliceInterval>0)? 1.0: -1.0;
 	
@@ -372,7 +369,8 @@ static NSString*	CenterlineToolbarItemIdentifier			= @"Centerline";
 	[[mprController yReslicedView] setNeedsDisplay:YES];
 }
 
-- (void) setCameraPosition:(OSIVoxel *)position  focalPoint:(OSIVoxel *)focalPoint{
+- (void) setCameraPosition:(OSIVoxel *)position  focalPoint:(OSIVoxel *)focalPoint
+{
 	Camera *curCamera = [[vrController view] cameraWithThumbnail: NO];
 	float factor = [vrController factor];
 		// coordinates conversion

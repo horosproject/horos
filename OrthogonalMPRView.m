@@ -789,7 +789,8 @@
 		eventLocation = [self convertPoint:eventLocation fromView: nil];
 		eventLocation = [self ConvertFromNSView2GL:eventLocation];
 		
-		if ( [self isKindOfClass: [OrthogonalMPRView class]] ) {
+		if ( [self isKindOfClass: [OrthogonalMPRView class]])
+		{
 			[(OrthogonalMPRView*)self setCrossPosition:(float)eventLocation.x : (float)eventLocation.y];
 		}
 		

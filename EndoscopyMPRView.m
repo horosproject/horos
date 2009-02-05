@@ -74,16 +74,23 @@
 	glLineWidth(1.0);
 	glBegin(GL_LINES);
 	glVertex2f(xCrossCenter,yCrossCenter);
-	//glVertex2f(xFocal,yFocal);
-	glVertex2f(	xCrossCenter+focalShiftX*normalizationFactor,
-				yCrossCenter+focalShiftY*normalizationFactor);	//*[self pixelSpacingY]/[self pixelSpacingX]
+	
+	float cfocalShiftX = focalShiftX;
+	float cfocalShiftY = focalShiftY;
+	
+	cfocalShiftX = cfocalShiftX;
+	cfocalShiftY = cfocalShiftY;
+	
+	glVertex2f(	xCrossCenter+cfocalShiftX*normalizationFactor,
+				yCrossCenter+cfocalShiftY*normalizationFactor);	//*[self pixelSpacingY]/[self pixelSpacingX]
 	glEnd();
 				
 	// draw a point at the end of FOCAL POINT vector (handle to move the vector)
 	glPointSize(2.0*near);
 	glBegin(GL_POINTS);	
-	glVertex2f(	xCrossCenter+focalShiftX*normalizationFactor,
-				yCrossCenter+focalShiftY*normalizationFactor);	//*[self pixelSpacingY]/[self pixelSpacingX]
+	
+	glVertex2f(	xCrossCenter+cfocalShiftX*normalizationFactor,
+				yCrossCenter+cfocalShiftY*normalizationFactor);	//*[self pixelSpacingY]/[self pixelSpacingX]
 	glEnd();
 	glPointSize(1.0);
 	
@@ -161,13 +168,13 @@
 			{
 				case NSLeftMouseDragged:
 					focalShiftX = (mouseLoc.x - crossPositionX)*scaleFactor;
-					//focalShiftY = (mouseLoc.y - crossPositionY)/[self pixelSpacingY]*[self pixelSpacingX]*scaleFactor;
 					focalShiftY = (mouseLoc.y - crossPositionY)*scaleFactor;
+					
+					if( xFlipped) focalShiftX = -focalShiftX;
+					if( yFlipped) focalShiftY = -focalShiftY;
+					
 					[self setFocalShiftX:focalShiftX];
 					[self setFocalShiftY:focalShiftY];
-					//[self setFocalPointX:mouseLoc.x];
-					//[self setFocalPointY:mouseLoc.y];
-					//[self setCameraFocalPoint];
 					[self setNeedsDisplay:YES];
 					[[NSNotificationCenter defaultCenter] postNotificationName: @"changeFocalPoint" object:self  userInfo: nil];
 				break;
