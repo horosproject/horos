@@ -283,6 +283,10 @@ static int hotKeyToolCrossTable[] =
 	return seriesArray;
 }
 
+- (long) indexForPix: (long) pixIndex	// for backward compatibility
+{
+	return pixIndex;
+}
 
 - (BOOL)validateMenuItem:(NSMenuItem *)item
 {

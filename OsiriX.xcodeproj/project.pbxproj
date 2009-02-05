@@ -20053,6 +20053,7 @@
 					"$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks",
 					"$(SRCROOT)",
 					"\"$(SRCROOT)/Binaries\"",
+					"\"$(SRCROOT)/../plugins/ROI Enhancement\"",
 				);
 				GCC_ALTIVEC_EXTENSIONS = YES;
 				GCC_AUTO_VECTORIZATION = NO;
@@ -20269,6 +20270,7 @@
 					"$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks",
 					"$(SRCROOT)",
 					"\"$(SRCROOT)/Binaries\"",
+					"\"$(SRCROOT)/../plugins/ROI Enhancement\"",
 				);
 				GCC_ALTIVEC_EXTENSIONS = YES;
 				GCC_AUTO_VECTORIZATION = NO;
@@ -20550,6 +20552,7 @@
 					"$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks",
 					"$(SRCROOT)",
 					"\"$(SRCROOT)/Binaries\"",
+					"\"$(SRCROOT)/../plugins/ROI Enhancement\"",
 				);
 				GCC_ALTIVEC_EXTENSIONS = YES;
 				GCC_AUTO_VECTORIZATION = YES;
@@ -20845,6 +20848,7 @@
 					"$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks",
 					"$(SRCROOT)",
 					"\"$(SRCROOT)/Binaries\"",
+					"\"$(SRCROOT)/../plugins/ROI Enhancement\"",
 				);
 				GCC_ALTIVEC_EXTENSIONS = YES;
 				GCC_AUTO_VECTORIZATION = YES;
