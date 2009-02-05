@@ -14,6 +14,7 @@ PURPOSE.
 
 #import "BrowserMatrix.h"
 #import "BrowserController.h"
+#import "DCMPix.h"
 
 static NSString *albumDragType = @"Osirix Album drag";
 
@@ -155,7 +156,7 @@ static NSString *albumDragType = @"Osirix Album drag";
 				r = [[BrowserController currentBrowser] exportDICOMFileInt: [dropDestination path] files: filesToExport objects: dicomFiles2Export];
 			}
 		}
-		@catch (NSException * e)
+		@catch ( NSException * e)
 		{
 		}
 		avoidRecursive = NO;
@@ -169,9 +170,65 @@ static NSString *albumDragType = @"Osirix Album drag";
 	return NSDragOperationEvery;
 }
 
+- (void) startDragOriginalFrame:(NSEvent *) event
+{
+	[self selectCellEvent: event];
+	[[BrowserController currentBrowser] matrixPressed:self];
+	NSButtonCell *selectedButtonCell = [[self selectedCells] objectAtIndex: 0];
+	NSManagedObject *selectedObject = [[[BrowserController currentBrowser] matrixViewArray] objectAtIndex: [selectedButtonCell tag]];
+	if ([[selectedObject valueForKey:@"type"] isEqualToString:@"Image"])
+	{
+		NS_DURING
+		
+		NSPoint event_location = [event locationInWindow];
+		NSPoint local_point = [self convertPoint:event_location fromView:nil];
+		local_point.x -= 35;
+		local_point.y += 35;    
+		
+		NSImage *selectedButtonCellImage = [selectedButtonCell image];
+		int	thumbnailWidth = [selectedButtonCellImage size].width + 6;		
+		NSImage *thumbnail = [[[NSImage alloc] initWithSize: NSMakeSize( thumbnailWidth, 70+6)] autorelease];		
+		[thumbnail lockFocus];		
+		[[NSColor grayColor] set];
+		NSRectFill(NSMakeRect(0,0,thumbnailWidth, 70+6));		
+		NSRectFill( NSMakeRect( 3, 0, [selectedButtonCellImage size].width, [selectedButtonCellImage size].height));			
+		[selectedButtonCellImage drawAtPoint: NSMakePoint(3, 3) fromRect:NSMakeRect(0,0,[selectedButtonCellImage size].width, [selectedButtonCellImage size].height) operation: NSCompositeCopy fraction: 0.8];
+		[thumbnail unlockFocus];
+		
+		DCMPix *previewPix = [[BrowserController currentBrowser] previewPix:[selectedButtonCell tag]];
+		
+		NSString *jpgPath = [NSString stringWithFormat:@"/tmp/%@.%d.jpg",[[selectedObject valueForKeyPath:@"completePath"] lastPathComponent], [[previewPix imageObj] valueForKey:@"frameID"] ];
+		if (![[NSFileManager defaultManager] fileExistsAtPath:jpgPath])
+		{
+			NSArray *representations = [[previewPix image] representations];
+			NSData *bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
+			[bitmapData writeToFile:jpgPath atomically:YES];
+		}
+		
+		NSPasteboard *pboard = [NSPasteboard pasteboardWithName:NSDragPboard];
+		[pboard declareTypes:[NSArray arrayWithObject:NSFilenamesPboardType] owner:nil];
+		[pboard setPropertyList:[NSArray arrayWithObject:jpgPath] forType:NSFilenamesPboardType];
+		[self dragImage:thumbnail
+					 at:local_point
+				 offset:NSMakeSize(0.0, 0.0)
+				  event:event
+			 pasteboard:pboard
+				 source:self
+			  slideBack:YES];
+		
+		NS_HANDLER
+		NSLog(@"Exception while dragging frame: %@", [localException description]);
+		NS_ENDHANDLER
+	}
+}
+
 - (void) mouseDown:(NSEvent *)event
 {
-	if ([event modifierFlags]  & NSAlternateKeyMask)
+	if(([event modifierFlags]  & NSAlternateKeyMask) && ([event modifierFlags] & NSShiftKeyMask))
+	{
+		[self startDragOriginalFrame: event];
+	}
+	else if ([event modifierFlags]  & NSAlternateKeyMask)
 	{
 		[self startDrag: event];
 	}

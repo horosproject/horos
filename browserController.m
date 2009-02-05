@@ -7143,6 +7143,11 @@ static NSArray*	statesArray = nil;
 
 static BOOL withReset = NO;
 
+- (DCMPix *)previewPix:(int)i
+{
+	return [previewPix objectAtIndex:i];
+}
+
 - (void) initAnimationSlider
 {
 	BOOL	animate = NO;
