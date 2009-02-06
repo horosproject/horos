@@ -198,21 +198,14 @@
 {
 	int no_of_images = 0;
 	
-	
 	NSDictionary *dict = [[m_PrinterController selectedObjects] objectAtIndex: 0];
-	NSMutableString *imageDisplayFormat = [NSMutableString stringWithString: [dict valueForKey: @"imageDisplayFormat"]];
-	[imageDisplayFormat replaceOccurrencesOfString: @" " withString: @"\\" options: nil range: NSMakeRange(0, [imageDisplayFormat length])];
-
-	int rows = [[imageDisplayFormat substringWithRange: NSMakeRange([imageDisplayFormat length] - 1, 1)] intValue];
-	int columns = [[imageDisplayFormat substringWithRange: NSMakeRange([imageDisplayFormat length] - 3, 1)] intValue];
-	int ipp = rows * columns;
-
-	// show alert, if displayFormat is invalid
-	if ([imageDisplayFormat length] < 3)
+	
+	if ([[formatPopUp menu] itemWithTitle: [dict valueForKey: @"imageDisplayFormat"]] == nil)
 	{
-		[m_pages setIntValue: 0];
-		return;
+		[[[m_PrinterController selectedObjects] objectAtIndex: 0] setObject: [[[formatPopUp menu] itemAtIndex: 0] title] forKey:@"imageDisplayFormat"];
 	}
+	
+	int ipp = [[[formatPopUp menu] itemWithTitle: [dict valueForKey: @"imageDisplayFormat"]] tag];
 	
 	if( [[m_ImageSelection selectedCell] tag] == eAllImages)
 	{
@@ -247,9 +240,25 @@
 		}
 	}
 	
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"autoAdjustPrintingFormat"])
+	{
+		NSInteger index = 0, tag;
+		do
+		{
+			tag = [[[formatPopUp menu] itemAtIndex: index] tag];
+			index++;
+		}
+		while( no_of_images >= tag && index < [[formatPopUp menu] numberOfItems]);
+		
+		index--;
+		
+		[[[m_PrinterController selectedObjects] objectAtIndex: 0] setObject: [[[formatPopUp menu] itemAtIndex: index-1] title] forKey:@"imageDisplayFormat"];
+		ipp = [[[formatPopUp menu] itemWithTitle: [dict valueForKey: @"imageDisplayFormat"]] tag];
+	}
+	
 	if( no_of_images == 0) [m_pages setIntValue: 1];
 	else if( no_of_images % ipp == 0)  [m_pages setIntValue: no_of_images / ipp];
-	else [m_pages setIntValue: 1 + no_of_images / ipp];	
+	else [m_pages setIntValue: 1 + no_of_images / ipp];
 }
 
 - (IBAction) setExportMode:(id) sender
@@ -320,19 +329,20 @@
 
 	// filmbox
 	NSMutableString *imageDisplayFormat = [NSMutableString stringWithString: [dict valueForKey: @"imageDisplayFormat"]];
-	[imageDisplayFormat replaceOccurrencesOfString: @" " withString: @"\\" options: nil range: NSMakeRange(0, [imageDisplayFormat length])];
-
+	
 	// show alert, if displayFormat is invalid
-	if ([imageDisplayFormat length] < 3)
+	if ([[formatPopUp menu] itemWithTitle: imageDisplayFormat] == nil)
 	{
 		[self performSelectorOnMainThread: @selector(_setProgressMessage:) withObject: @"The Format you selected is not valid." waitUntilDone: NO];
 		[pool release];
 		return;
 	}
+	
+	int ipp = [[[formatPopUp menu] itemWithTitle: imageDisplayFormat] tag];
 
+	[imageDisplayFormat replaceOccurrencesOfString: @" " withString: @"\\" options: nil range: NSMakeRange(0, [imageDisplayFormat length])];
 	int rows = [[imageDisplayFormat substringWithRange: NSMakeRange([imageDisplayFormat length] - 1, 1)] intValue];
 	int columns = [[imageDisplayFormat substringWithRange: NSMakeRange([imageDisplayFormat length] - 3, 1)] intValue];
-	int ipp = rows * columns;
 	
 	NSString *destPath = @"/tmp/dicomPrint/";
 	NSFileManager *fileManager = [NSFileManager defaultManager];
@@ -366,8 +376,8 @@
 	NSLog( [options description]);
 	
 	float fontSizeCopy = [[NSUserDefaults standardUserDefaults] floatForKey: @"FONTSIZE"];
-		
-	if( columns != 1)
+	
+	if( columns / 2 != 1)
 	{
 		float inc = (1 + ((columns - 1) * 0.35));
 		if( inc > 2.5) inc = 2.5;

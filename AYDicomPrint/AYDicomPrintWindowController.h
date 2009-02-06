@@ -41,7 +41,7 @@
 	IBOutlet NSTextField	*entireSeriesIntervalText, *entireSeriesFromText, *entireSeriesToText;
 	IBOutlet NSTextField	*m_pages;
 	
-	// masu 2006-08-15
+	IBOutlet NSPopUpButton	*formatPopUp;
 	IBOutlet NSTextField	*m_VersionNumberTextField;
 	
 	NSLock					*printing;
