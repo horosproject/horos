@@ -5841,6 +5841,8 @@ public:
 	Transform->TransformPoint( min, min);
 	Transform->TransformPoint( max, max);
 	
+	Transform->Delete();
+	
 	croppingBox->PlaceWidget(min[0], max[0], min[1], max[1], min[2], max[2]);
 
 	[VRView getCroppingBox: a :blendingVolume :croppingBox];
