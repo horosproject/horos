@@ -223,10 +223,10 @@ const float ArrowButtonBottomMargin = 7.0, ArrowButtonRightMargin = 6.0, ArrowBu
 	NSRect rect1 = [self rectForArrowButtonAtIndex:0];
 	NSRect rect2 = [self rectForArrowButtonAtIndex:1];
 	NSRect rect3 = [self rectForArrowButtonAtIndex:2];
-	
+		
 	NSRect rectTopLimit = [self rectForLimitAtIndex:0];
 	NSRect rectBottomLimit = [self rectForLimitAtIndex:1];
-	
+
 	if(NSPointInRect(tempPt, rect1) || NSPointInRect(tempPt, rect2) || NSPointInRect(tempPt, rect3))
 	{
 		[[NSCursor pointingHandCursor] set];

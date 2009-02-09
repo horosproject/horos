@@ -191,15 +191,18 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 	//NSLog(@"LLMPRViewer blendingPropagate");
 	if ([sender isEqual:subtractedOriginalView])
 	{	
-		[self blendingPropagateOriginal: (OrthogonalMPRView*) sender];
+		//[self blendingPropagateOriginal: (OrthogonalMPRView*) sender];
+		[self blendingPropagateOriginal:[controller originalView]];
 	}
 	else if ([sender isEqual:subtractedXReslicedView])
 	{
-		[self blendingPropagateX: (OrthogonalMPRView*) sender];
+		//[self blendingPropagateX: (OrthogonalMPRView*) sender];
+		[self blendingPropagateOriginal:[controller xReslicedView]];
 	}
 	else if ([sender isEqual:subtractedYReslicedView])
 	{
-		[self blendingPropagateY: (OrthogonalMPRView*) sender];
+		//[self blendingPropagateY: (OrthogonalMPRView*) sender];
+		[self blendingPropagateOriginal:[controller yReslicedView]];
 	}
 }
 
@@ -463,6 +466,7 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 			[self applyShiftX:xShift/4 y:yShift/4 toBuffer:subtractedOriginalBuffer withWidth:width height:height];
 		}
 		//newAxialPix = [[[DCMPix alloc] initwithdata:subtractedOriginalBuffer :32 :width :height :pixelSpacingX :pixelSpacingY :[curPix originX] :[curPix originY] :[curPix originZ]] autorelease];
+		//newAxialPix = [[DCMPix alloc] initwithdata:subtractedOriginalBuffer :32 :width :height :pixelSpacingX :pixelSpacingY :[curPix originX] :[curPix originY] :[curPix originZ]];
 		newAxialPix = [[DCMPix alloc] initwithdata:subtractedOriginalBuffer :32 :width :height :pixelSpacingX :pixelSpacingY :[curPix originX] :[curPix originY] :[curPix originZ]];
 		[LLSubtraction subtractDCMPix:[[[controller originalView] dcmPixList] objectAtIndex:i] to:newAxialPix minValueA:injectedMinValue maxValueA:injectedMaxValue minValueB:notInjectedMinValue maxValueB:notInjectedMaxValue minValueSubtraction:subtractionMinValue maxValueSubtraction:subtractionMaxValue displayBones:displayBones bonesThreshold:bonesThreshold];// subtraction
 //		[LLSubtraction dilate:[newAxialPix fImage] withWidth:width height:height structuringElementRadius:dilatationRadius];
@@ -515,7 +519,7 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 	[subtractedOriginalView setRotation: [[controller originalView] rotation]];
 	[subtractedOriginalView setOrigin: [[controller originalView] origin]];
 	[subtractedOriginalView setOriginOffset: [[controller originalView] originOffset]];
-	
+
 	//[axialPixList release];
 //	[newAxialPix release];
 

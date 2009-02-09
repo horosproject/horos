@@ -193,7 +193,7 @@
 
 - (void)setTopLimit:(int)top bottomLimit:(int)bottom;
 {
-	NSLog(@"setTopLimit:%d bottomLimit:%d", top, bottom);
+//	NSLog(@"setTopLimit:%d bottomLimit:%d", top, bottom);
 	
 	int newTopLimit, newBottomLimit;
 	
@@ -253,10 +253,10 @@
 	NSRange pixRange;
 	LLMPRViewer *llViewer;
 	
-	NSLog(@"topLimit: %d, bottomLimit: %d",topLimit, bottomLimit);
-	NSLog(@"[[mprController originalDCMPixList] count]: %d",[[mprController originalDCMPixList] count]);
-	NSLog(@"[dcmPixList count]: %d",[dcmPixList count]);
-	NSLog(@"index: %d",index);
+//	NSLog(@"topLimit: %d, bottomLimit: %d",topLimit, bottomLimit);
+//	NSLog(@"[[mprController originalDCMPixList] count]: %d",[[mprController originalDCMPixList] count]);
+//	NSLog(@"[dcmPixList count]: %d",[dcmPixList count]);
+//	NSLog(@"index: %d",index);
 
 	if([self isStackUpsideDown])
 		NSLog(@"isStackUpsideDown : YES");
@@ -328,7 +328,7 @@
 	}
 
 	NSArray *originalPix, *injectedPix, *originalFiles;
-	NSLog(@"pixRange.location: %d, pixRange.length: %d",pixRange.location, pixRange.length);
+	//NSLog(@"pixRange.location: %d, pixRange.length: %d",pixRange.location, pixRange.length);
 	originalPix = [dcmPixList subarrayWithRange:pixRange];
 	injectedPix = [[blendingViewer pixList:0] subarrayWithRange:pixRange];
 	originalFiles = [dcmFileList subarrayWithRange:pixRange];
@@ -443,9 +443,9 @@
 {
 	if( [dcmPixList count] > 1)
 	{
-		NSLog(@"- (BOOL)isStackUpsideDown;");
-		NSLog(@"[[dcmPixList objectAtIndex:0] sliceLocation] : %f", [[dcmPixList objectAtIndex:0] sliceLocation]);
-		NSLog(@"[[dcmPixList objectAtIndex:1] sliceLocation] : %f", [[dcmPixList objectAtIndex:1] sliceLocation]);
+//		NSLog(@"- (BOOL)isStackUpsideDown;");
+//		NSLog(@"[[dcmPixList objectAtIndex:0] sliceLocation] : %f", [[dcmPixList objectAtIndex:0] sliceLocation]);
+//		NSLog(@"[[dcmPixList objectAtIndex:1] sliceLocation] : %f", [[dcmPixList objectAtIndex:1] sliceLocation]);
 		
 		//if(![[viewer imageView] flippedData])
 			return ([[dcmPixList objectAtIndex:0] sliceLocation] - [[dcmPixList objectAtIndex:1] sliceLocation] < 0);
