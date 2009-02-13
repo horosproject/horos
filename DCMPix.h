@@ -279,7 +279,8 @@ Note setter is different to not break existing usage. :-( */
 @property(retain) NSString *sourceFile;
 
 /** Database links */
-@property(readonly) NSManagedObject *imageObj, *seriesObj;
+@property(readonly) NSManagedObject *seriesObj;
+@property(retain) NSManagedObject *imageObj;
 @property(readonly) NSString *srcFile;
 @property(readonly) NSMutableDictionary *annotationsDictionary;
 

@@ -6273,7 +6273,7 @@ static ViewerController *draggedController = nil;
 		
 	if( [[[fileList[ 0] objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"PT"] == YES) isPET = YES;
 	
-	while( [[self window] isVisible] == NO && checkEverythingLoaded == NO)
+	while( [[self window] isVisible] == NO && checkEverythingLoaded == NO && stopThreadLoadImage == NO)
 		[NSThread sleepForTimeInterval: 0.1];
 	
 	[DicomFile isDICOMFile: [[pixList[ 0] objectAtIndex:0] sourceFile] compressed: &compressed];

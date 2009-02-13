@@ -5875,18 +5875,18 @@ END_CREATE_ROIS:
 		
 		if( isRGB )
 		{
-			if( self->fExternalOwnedImage)
+			if( fExternalOwnedImage)
 			{
-				self->fImage = self->fExternalOwnedImage;
-				memcpy( self->fImage, oImage, width*height*sizeof(float));
+				fImage = fExternalOwnedImage;
+				memcpy( fImage, oImage, width*height*sizeof(float));
 				free(oImage);
 			}
-			else self->fImage = (float*) oImage;
+			else fImage = (float*) oImage;
 			oImage = nil;
 			
 			if( oData && gDisplayDICOMOverlays )
 			{
-				unsigned char	*rgbData = (unsigned char*) self->fImage;
+				unsigned char	*rgbData = (unsigned char*) fImage;
 				
 				for( int y = 0; y < oRows; y++ )
 				{
@@ -5910,13 +5910,13 @@ END_CREATE_ROIS:
 				int				*sint = (int*) oImage;
 				float			*tDestF;
 				
-				if( self->fExternalOwnedImage)
+				if( fExternalOwnedImage)
 				{
-					tDestF = self->fImage = self->fExternalOwnedImage;
+					tDestF = fImage = fExternalOwnedImage;
 				}
 				else
 				{
-					tDestF = self->fImage = malloc(width*height*sizeof(float) + 100);
+					tDestF = fImage = malloc(width*height*sizeof(float) + 100);
 				}
 				
 				if( fIsSigned > 0 )
@@ -5949,16 +5949,16 @@ END_CREATE_ROIS:
 				
 				src16.data = oImage;
 				
-				if( self->fExternalOwnedImage)
+				if( fExternalOwnedImage)
 				{
-					self->fImage = self->fExternalOwnedImage;
+					fImage = fExternalOwnedImage;
 				}
 				else
 				{
-					self->fImage = malloc(width*height*sizeof(float) + 100);
+					fImage = malloc(width*height*sizeof(float) + 100);
 				}
 				
-				dstf.data = self->fImage;
+				dstf.data = fImage;
 				
 				if( fIsSigned > 0 )
 				{
@@ -5986,7 +5986,7 @@ END_CREATE_ROIS:
 				{
 					for( int x = 0; x < oColumns; x++ )
 					{
-						if( oData[ y * oColumns + x]) self->fImage[ y * width + x] = 0xFF;
+						if( oData[ y * oColumns + x]) fImage[ y * width + x] = 0xFF;
 					}
 				}
 			}
@@ -7003,7 +7003,7 @@ END_CREATE_ROIS:
 - (BOOL) loadDICOMPapyrus // PLEASE, KEEP BOTH FUNCTIONS FOR TESTING PURPOSE. THANKS
 {
 	int				elemType;
-	PapyShort		imageNb, ee,  err;
+	PapyShort		imageNb,  err;
 	PapyULong		nbVal, i, pos;
 	SElement		*theGroupP;
 	UValue_T		*val, *tmp;
@@ -7654,14 +7654,10 @@ END_CREATE_ROIS:
 			
 			if( fileNb >= 0)
 			{
-				DCMPix *imPix = nil;
 				short *oImage = nil;
 				
-				imPix = self;
-				ee = imageNb-1;
-				
 				// position the file pointer to the begining of the data set 
-				err = Papy3GotoNumber (fileNb, (PapyShort) ee+1, DataSetID);
+				err = Papy3GotoNumber (fileNb, (PapyShort) imageNb, DataSetID);
 				
 				// then goto group 0x7FE0 
 				if ((err = Papy3GotoGroupNb (fileNb, 0x7FE0)) == 0)
@@ -7694,7 +7690,7 @@ END_CREATE_ROIS:
 							}
 						}
 						
-						oImage = (short*) Papy3GetPixelData (fileNb, ee+1, theGroupP, ImagePixel);
+						oImage = (short*) Papy3GetPixelData (fileNb, imageNb, theGroupP, ImagePixel);
 						
 						[PapyrusLock unlock];
 						toBeUnlocked = NO;
@@ -8024,18 +8020,18 @@ END_CREATE_ROIS:
 				//***********
 				if( isRGB)
 				{
-					if( imPix->fExternalOwnedImage)
+					if( fExternalOwnedImage)
 					{
-						imPix->fImage = imPix->fExternalOwnedImage;
-						memcpy( imPix->fImage, oImage, width*height*sizeof(float));
+						fImage = fExternalOwnedImage;
+						memcpy( fImage, oImage, width*height*sizeof(float));
 						free(oImage);
 					}
-					else imPix->fImage = (float*) oImage;
+					else fImage = (float*) oImage;
 					oImage = nil;
 					
 					if( oData && gDisplayDICOMOverlays)
 					{
-						unsigned char	*rgbData = (unsigned char*) imPix->fImage;
+						unsigned char	*rgbData = (unsigned char*) fImage;
 						int				y, x;
 						
 						for( y = 0; y < oRows; y++)
@@ -8060,13 +8056,13 @@ END_CREATE_ROIS:
 						int				*sint = (int*) oImage;
 						float			*tDestF;
 						
-						if( imPix->fExternalOwnedImage)
+						if( fExternalOwnedImage)
 						{
-							tDestF = imPix->fImage = imPix->fExternalOwnedImage;
+							tDestF = fImage = fExternalOwnedImage;
 						}
 						else
 						{
-							tDestF = imPix->fImage = malloc(width*height*sizeof(float) + 100);
+							tDestF = fImage = malloc(width*height*sizeof(float) + 100);
 						}
 						
 						if( fIsSigned)
@@ -8110,16 +8106,16 @@ END_CREATE_ROIS:
 								VOILUT_table = nil;
 							}
 							
-							if( imPix->fExternalOwnedImage)
+							if( fExternalOwnedImage)
 							{
-								imPix->fImage = imPix->fExternalOwnedImage;
+								fImage = fExternalOwnedImage;
 							}
 							else
 							{
-								imPix->fImage = malloc(width*height*sizeof(float) + 100);
+								fImage = malloc(width*height*sizeof(float) + 100);
 							}
 							
-							dstf.data = imPix->fImage;
+							dstf.data = fImage;
 							
 							if( fIsSigned)
 								vImageConvert_16SToF( &src16, &dstf, offset, slope, 0);
@@ -8145,7 +8141,7 @@ END_CREATE_ROIS:
 						{
 							for( x = 0; x < oColumns; x++)
 							{
-								if( oData[ y * oColumns + x]) imPix->fImage[ y * width + x] = 0xFF;
+								if( oData[ y * oColumns + x]) fImage[ y * width + x] = 0xFF;
 							}
 						}
 					}

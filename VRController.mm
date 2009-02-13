@@ -31,6 +31,8 @@
 #import "CLUTOpacityView.h"
 #import "VRPresetPreview.h"
 
+#define PRESETS_DIRECTORY @"/3DPRESETS/"
+#define CLUTDATABASE @"/CLUTs/"
 
 static NSString* 	VRStandardToolbarIdentifier		= @"VR Toolbar Identifier";
 static NSString* 	VRPanelToolbarIdentifier		= @"VRPanel Toolbar Identifier";
@@ -2776,6 +2778,7 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
     {
         NSBeginAlertSheet(NSLocalizedString(@"Remove a Color Look Up Table", nil), NSLocalizedString(@"Delete", nil), NSLocalizedString(@"Cancel", nil), nil, [self window],
 		  self, @selector(delete16BitCLUT:returnCode:contextInfo:), NULL, [sender title], [NSString stringWithFormat: NSLocalizedString( @"Are you sure you want to delete this CLUT : '%@'", nil), [sender title]]);
+		
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: nil];
 	}
 	else
@@ -2797,10 +2800,10 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 	
 	// path 1 : /OsiriX Data/CLUTs/
 	NSMutableString *path = [NSMutableString stringWithString: [[BrowserController currentBrowser] documentsDirectory]];
-	[path appendString:@"/CLUTs/"];
+	[path appendString: CLUTDATABASE];
 	// path 2 : /resources_bundle_path/CLUTs/
 	NSMutableString *bundlePath = [NSMutableString stringWithString:[[NSBundle mainBundle] resourcePath]];
-	[bundlePath appendString:@"/CLUTs/"];
+	[bundlePath appendString: CLUTDATABASE];
 
 	NSMutableArray *paths = [NSMutableArray arrayWithObjects:path, bundlePath, nil];
 	
@@ -2858,13 +2861,14 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
     if (returnCode==1 && ![view isRGB])
     {
 		NSMutableString *path = [NSMutableString stringWithString: [[BrowserController currentBrowser] documentsDirectory]];
-		[path appendString:@"/CLUTs/"];
+		[path appendString: CLUTDATABASE];
 		[path appendString:(id)contextInfo];
+		[path appendString:@".plist"];
 		
 		if([[NSFileManager defaultManager] fileExistsAtPath:path])
-		{
 			[[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
-		}
+		else
+			NSLog( @"**** Error: CLUT plist not found!");
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object:curCLUTMenu userInfo: nil];
     }
 }
@@ -2906,9 +2910,6 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 
 #pragma mark-
 #pragma mark 3D presets
-
-#define PRESETS_DIRECTORY @"/3DPRESETS/"
-#define CLUTDATABASE @"/CLUTs/"
 
 #pragma mark save current
 

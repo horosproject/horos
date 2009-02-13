@@ -250,6 +250,11 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 			[curPix setDecayFactor: [originalPix decayFactor]];
 			[curPix setUnits: [originalPix units]];
 			
+			
+			[curPix setImageObj: [originalPix imageObj]];
+			
+			[curPix reloadAnnotations];
+			
 			[newPixList addObject: curPix];
 			[newFileList addObject:[[originalViewer fileList] objectAtIndex:0]];
 		}
