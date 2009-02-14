@@ -6345,43 +6345,7 @@ static ViewerController *draggedController = nil;
 			totalNumberOfLoadingThreads -= numberOfThreadsForCompute;
 		}
 	}
-	
-	loadingPercentage = (float) 1.0;
-	
 	NSLog( @"end loading");
-	
-//	NSLog( @"start loading");
-//	
-//	for( x = 0; x < maxMovieIndex; x++)
-//	{
-//		for( i = 0 ; i < [pixList[ x] count]; i++)
-//		{
-//			if( loadingPauseDelay)
-//			{
-//				NSLog(@"loadingPause is starting...");
-//				
-//				while( loadingPauseDelay > [NSDate timeIntervalSinceReferenceDate])
-//					[NSThread sleepForTimeInterval: 0.1];
-//				
-//				NSLog(@"loadingPause is over...");
-//			}
-//			
-//			if( stopThreadLoadImage == NO) //there is no interrruption
-//			{
-//				if ([fileList[ x] count] == [pixList[ x] count])
-//					[[BrowserController currentBrowser] getLocalDCMPath:[fileList[ x] objectAtIndex: i] : 5];
-//				else
-//					[[BrowserController currentBrowser] getLocalDCMPath:[fileList[ x] objectAtIndex: 0] : 5]; 
-//				
-//				DCMPix* pix = [pixList[ x] objectAtIndex: i];
-//				
-//				[pix CheckLoad];
-//			}
-//			
-//			loadingPercentage = (float) ((x*[pixList[ x] count]) + i) / (float) (maxMovieIndex * [pixList[ x] count]);
-//		}
-//	}
-//	NSLog( @"end loading");
 	
 	if( stopThreadLoadImage == YES)
 	{
@@ -6390,6 +6354,8 @@ static ViewerController *draggedController = nil;
 		[ThreadLoadImageLock unlock];
 		return;
 	}
+	
+	loadingPercentage = (float) 1.0;
 	
 	[ThreadLoadImageLock unlock];
 

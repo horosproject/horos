@@ -3042,7 +3042,7 @@ static NSArray*	statesArray = nil;
 	
 	if( isCurrentDatabaseBonjour) return;
 	
-	if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu])
+	if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix)
 	{
 		matrixThumbnails = YES;
 		NSLog( @"copyToDBFolder from matrix");
@@ -4959,6 +4959,38 @@ static NSArray*	statesArray = nil;
 	return [self filesForDatabaseOutlineSelection:correspondingManagedObjects onlyImages: YES];
 }
 
+- (void) resetROIsAndKeysButton
+{
+	ROIsAndKeyImagesButtonAvailable = YES;
+		
+	NSMutableArray *i = [NSMutableArray arrayWithArray: [[toolbar items] valueForKey: @"itemIdentifier"]];
+	if( [i containsString: OpenKeyImagesAndROIsToolbarItemIdentifier] && isCurrentDatabaseBonjour == NO)
+	{
+		if( [[self window] firstResponder] == databaseOutline && [[databaseOutline selectedRowIndexes] count] > 10)
+			ROIsAndKeyImagesButtonAvailable = YES;
+		else
+		{
+			NSEvent *event = [[NSApplication sharedApplication] currentEvent];
+			
+			if([event modifierFlags] & NSAlternateKeyMask)
+			{
+				if( [[self KeyImages: nil] count] == 0) ROIsAndKeyImagesButtonAvailable = NO;
+				else ROIsAndKeyImagesButtonAvailable = YES;
+			}
+			else if([event modifierFlags] & NSShiftKeyMask)
+			{
+				if( [[self ROIImages: nil] count] == 0) ROIsAndKeyImagesButtonAvailable = NO;
+				else ROIsAndKeyImagesButtonAvailable = YES;
+			}
+			else
+			{
+				if( [[self ROIsAndKeyImages: nil] count] == 0) ROIsAndKeyImagesButtonAvailable = NO;
+				else ROIsAndKeyImagesButtonAvailable = YES;
+			}
+		}
+	}
+}
+
 - (void)outlineViewSelectionDidChange: (NSNotification *)aNotification
 {
 	if( loadingIsOver == NO) return;
@@ -5048,34 +5080,7 @@ static NSArray*	statesArray = nil;
 			previousItem = [item retain];
 		}
 		
-		ROIsAndKeyImagesButtonAvailable = YES;
-		
-		NSMutableArray *i = [NSMutableArray arrayWithArray: [[toolbar items] valueForKey: @"itemIdentifier"]];
-		if( [i containsString: OpenKeyImagesAndROIsToolbarItemIdentifier] && isCurrentDatabaseBonjour == NO)
-		{
-			if( [index count] > 10)
-				ROIsAndKeyImagesButtonAvailable = YES;
-			else
-			{
-				NSEvent *event = [[NSApplication sharedApplication] currentEvent];
-				
-				if([event modifierFlags] & NSAlternateKeyMask)
-				{
-					if( [[self KeyImages: nil] count] == 0) ROIsAndKeyImagesButtonAvailable = NO;
-					else ROIsAndKeyImagesButtonAvailable = YES;
-				}
-				else if([event modifierFlags] & NSShiftKeyMask)
-				{
-					if( [[self ROIImages: nil] count] == 0) ROIsAndKeyImagesButtonAvailable = NO;
-					else ROIsAndKeyImagesButtonAvailable = YES;
-				}
-				else
-				{
-					if( [[self ROIsAndKeyImages: nil] count] == 0) ROIsAndKeyImagesButtonAvailable = NO;
-					else ROIsAndKeyImagesButtonAvailable = YES;
-				}
-			}
-		}
+		[self resetROIsAndKeysButton];
 	}
 	else
 	{
@@ -5554,7 +5559,7 @@ static NSArray*	statesArray = nil;
 	BOOL					matrixThumbnails = NO;
 	int						animState = [animationCheck state];
 
-	if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu] )
+	if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix)
 	{
 		matrixThumbnails = YES;
 		NSLog( @"Delete from matrix");
@@ -6480,6 +6485,11 @@ static NSArray*	statesArray = nil;
 	}
 }
 
+- (IBAction) databasePressed:(id)sender
+{
+	[self resetROIsAndKeysButton];
+}
+
 - (IBAction)databaseDoublePressed:(id)sender
 {
 	if( [sender clickedRow] != -1)
@@ -6512,7 +6522,7 @@ static NSArray*	statesArray = nil;
 	NSMutableArray *dicomFiles = [NSMutableArray array];
 	NSMutableArray *files;
 	
-	if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu])
+	if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix)
 	{
 		NSManagedObject		*curObj = [matrixViewArray objectAtIndex: [[oMatrix selectedCell] tag]];
 		
@@ -7399,8 +7409,6 @@ static BOOL withReset = NO;
     id          theCell = [sender selectedCell];
     int         index;
     
-	[self.window makeFirstResponder:databaseOutline];
-
 	if( [theCell tag] >= 0 )
 	{
 		NSManagedObject         *dcmFile = [databaseOutline itemAtRow:[databaseOutline selectedRow]];
@@ -7434,6 +7442,10 @@ static BOOL withReset = NO;
 		
 		[self initAnimationSlider];
     }
+
+	[self.window makeFirstResponder: oMatrix];
+
+	[self resetROIsAndKeysButton];
 }
 
 - (IBAction) matrixDoublePressed:(id)sender
@@ -11076,14 +11088,15 @@ static BOOL needToRezoom;
 
 - (void)viewerDICOM: (id)sender
 {
-	//// key Images if Commmand
-	//if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSCommandKeyMask)  
-	//	[self viewerDICOMKeyImages:sender];		
-	
 	if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask) 
-		[self viewerDICOMMergeSelection:sender];
+		[self viewerDICOMMergeSelection: sender];
 	else
-		[self newViewerDICOM:(id) sender];
+	{
+		if( [[self window] firstResponder] == databaseOutline)
+			[self newViewerDICOM: nil];
+		else
+			[self newViewerDICOM: sender];
+	}
 }
 
 
@@ -11131,7 +11144,7 @@ static BOOL needToRezoom;
 {
 	NSMutableArray	*images = [NSMutableArray arrayWithCapacity:0];
 	
-	if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) [self filesForDatabaseMatrixSelection: images];
+	if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix) [self filesForDatabaseMatrixSelection: images];
 	else [self filesForDatabaseOutlineSelection: images];
 	
 	[self openViewerFromImages :[NSArray arrayWithObject:images] movie: 0 viewer :nil keyImagesOnly:NO];
@@ -11167,7 +11180,7 @@ static BOOL needToRezoom;
 {
 	NSMutableArray	*selectedItems = [NSMutableArray arrayWithCapacity:0];
 	
-	if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) [self filesForDatabaseMatrixSelection: selectedItems];
+	if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix) [self filesForDatabaseMatrixSelection: selectedItems];
 	else [self filesForDatabaseOutlineSelection: selectedItems];
 	
 	dontShowOpenSubSeries = YES;
@@ -11691,6 +11704,7 @@ static NSArray*	openSubSeriesArray = nil;
 		f.size.height = 25;
 		[segmentedAlbumButton setFrame: f];
 		
+		[databaseOutline setAction:@selector(databasePressed:)];
 		[databaseOutline setDoubleAction:@selector(databaseDoublePressed:)];
 		[databaseOutline registerForDraggedTypes:[NSArray arrayWithObjects:NSFilenamesPboardType, nil]];
 		[databaseOutline setAllowsMultipleSelection:YES];
@@ -12741,7 +12755,7 @@ static NSArray*	openSubSeriesArray = nil;
 	NSMutableArray *dicomFiles2Export = [NSMutableArray array];
 	NSMutableArray *filesToExport;
 	
-	if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu] )
+	if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix)
 	{
 		filesToExport = [self filesForDatabaseMatrixSelection: dicomFiles2Export];
 	}
@@ -12841,7 +12855,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		NSMutableArray *dicomFiles2Export = [NSMutableArray array];
 		NSMutableArray *filesToExport;
 		
-		if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu] )
+		if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix)
 		{
 			filesToExport = [self filesForDatabaseMatrixSelection: dicomFiles2Export];
 		}
@@ -12877,7 +12891,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		NSMutableArray *dicomFiles2Export = [NSMutableArray array];
 		NSMutableArray *filesToExport;
 		
-		if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu] )
+		if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix)
 		{
 			filesToExport = [self filesForDatabaseMatrixSelection: dicomFiles2Export];
 		}
@@ -13559,8 +13573,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	NSMutableArray *dicomFiles2Export = [NSMutableArray array];
 	NSMutableArray *filesToExport;
 	
-	NSLog( [sender description]);
-	if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu] )
+	if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix)
 	{
 		filesToExport = [self filesForDatabaseMatrixSelection: dicomFiles2Export];
 		NSLog(@"Files from contextual menu: %d", [filesToExport count]);
@@ -13592,7 +13605,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	NSMutableArray *dicomFiles2Export = [NSMutableArray array];
 	NSMutableArray *filesToExport;
 	
-	if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu] )
+	if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix)
 	{
 		filesToExport = [self filesForDatabaseMatrixSelection: dicomFiles2Export];
 		NSLog(@"Files from contextual menu: %d", [filesToExport count]);
@@ -14226,7 +14239,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[wait showWindow:self];
 		
 		NSLog( [sender description]);
-		if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu] )
+		if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix)
 		{
 			//Burn additional Files. Not just images. Add SRs
 			filesToExport = [self filesForDatabaseMatrixSelection: dicomFiles2Export onlyImages:YES];
@@ -14267,7 +14280,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		NSMutableArray *managedObjects = [NSMutableArray array];
 		NSMutableArray *filesToBurn;
 		//Burn additional Files. Not just images. Add SRs
-		if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) filesToBurn = [self filesForDatabaseMatrixSelection:managedObjects onlyImages:NO];
+		if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix) filesToBurn = [self filesForDatabaseMatrixSelection:managedObjects onlyImages:NO];
 		else filesToBurn = [self filesForDatabaseOutlineSelection:managedObjects onlyImages:NO];
 		
 		[filesToBurn removeDuplicatedStringsInSyncWithThisArray: managedObjects];
@@ -14290,7 +14303,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	NSMutableArray *dicomFiles2Anonymize = [NSMutableArray array];
 	NSMutableArray *filesToAnonymize;
 	
-	if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) filesToAnonymize = [[self filesForDatabaseMatrixSelection: dicomFiles2Anonymize] retain];
+	if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix) filesToAnonymize = [[self filesForDatabaseMatrixSelection: dicomFiles2Anonymize] retain];
 	else filesToAnonymize = [[self filesForDatabaseOutlineSelection: dicomFiles2Anonymize] retain];
 	
 	[filesToAnonymize removeDuplicatedStringsInSyncWithThisArray: dicomFiles2Anonymize];
@@ -14530,7 +14543,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	NSMutableArray *dicomFiles2Copy = [NSMutableArray array];
 	NSMutableArray *files2Copy;
 	
-	if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) files2Copy = [self filesForDatabaseMatrixSelection: dicomFiles2Copy];
+	if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix) files2Copy = [self filesForDatabaseMatrixSelection: dicomFiles2Copy];
 	else files2Copy = [self filesForDatabaseOutlineSelection: dicomFiles2Copy];
 	
 	[files2Copy removeDuplicatedStringsInSyncWithThisArray: dicomFiles2Copy];
@@ -14643,7 +14656,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	NSMutableArray	*objects = [NSMutableArray array];
 	NSMutableArray  *files;
 	
-	if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) files = [self filesForDatabaseMatrixSelection:objects onlyImages: YES];
+	if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix) files = [self filesForDatabaseMatrixSelection:objects onlyImages: YES];
 	else files = [self filesForDatabaseOutlineSelection:objects onlyImages: YES];
 	
 	[files removeDuplicatedStringsInSyncWithThisArray: objects];
@@ -15999,7 +16012,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 {
 	NSMutableArray *selectedItems = [NSMutableArray arrayWithCapacity:0];
 	
-	if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) [self filesForDatabaseMatrixSelection: selectedItems];
+	if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix) [self filesForDatabaseMatrixSelection: selectedItems];
 	else [self filesForDatabaseOutlineSelection: selectedItems];
 
 	if( [[BrowserController currentBrowser] isCurrentDatabaseBonjour])
@@ -16166,7 +16179,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 {
 	NSMutableArray *selectedItems = [NSMutableArray arrayWithCapacity:0];
 	
-	if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) [self filesForDatabaseMatrixSelection: selectedItems];
+	if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix) [self filesForDatabaseMatrixSelection: selectedItems];
 	else [self filesForDatabaseOutlineSelection: selectedItems];
 
 	if( [[BrowserController currentBrowser] isCurrentDatabaseBonjour])
@@ -16227,7 +16240,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 {
 	NSMutableArray *selectedItems = [NSMutableArray arrayWithCapacity:0];
 	
-	if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) [self filesForDatabaseMatrixSelection: selectedItems];
+	if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix) [self filesForDatabaseMatrixSelection: selectedItems];
 	else [self filesForDatabaseOutlineSelection: selectedItems];
 	
 	NSMutableArray *keyImagesArray = [NSMutableArray array];
