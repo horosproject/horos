@@ -8,7 +8,7 @@
 		<string key="IBDocument.HIToolboxVersion">353.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="1400"/>
+			<integer value="11710"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -3436,7 +3436,7 @@
 				<string key="NSWindowContentMaxSize">{9000, 9000}</string>
 				<string key="NSWindowContentMinSize">{600, 600}</string>
 				<object class="NSView" key="NSWindowView" id="1039447468">
-					<nil key="NSNextResponder"/>
+					<reference key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<object class="NSMutableArray" key="NSSubviews">
 						<bool key="EncodedWithXMLCoder">YES</bool>
@@ -4101,7 +4101,7 @@
 															<string key="NSIdentifier">institutionName</string>
 															<double key="NSWidth">1.200000e+02</double>
 															<double key="NSMinWidth">4.000000e+01</double>
-															<double key="NSMaxWidth">2.000000e+02</double>
+															<double key="NSMaxWidth">3.000000e+02</double>
 															<object class="NSTableHeaderCell" key="NSHeaderCell">
 																<int key="NSCellFlags">67239424</int>
 																<int key="NSCellFlags2">0</int>
@@ -4228,7 +4228,7 @@
 												</object>
 											</object>
 											<string key="NSFrame">{{1, 17}, {1102, 299}}</string>
-											<string key="NSBounds">{{4, 0}, {1102, 299}}</string>
+											<string key="NSBounds">{{1096, 0}, {1102, 299}}</string>
 											<reference key="NSSuperview" ref="832526649"/>
 											<reference key="NSNextKeyView" ref="300364488"/>
 											<reference key="NSDocView" ref="300364488"/>
@@ -4253,7 +4253,7 @@
 											<int key="NSsFlags">1</int>
 											<reference key="NSTarget" ref="832526649"/>
 											<string key="NSAction">_doScroller:</string>
-											<double key="NSCurValue">3.561888e-03</double>
+											<double key="NSCurValue">9.759573e-01</double>
 											<double key="NSPercent">4.952809e-01</double>
 										</object>
 										<object class="NSClipView" id="903567248">
@@ -4264,6 +4264,7 @@
 												<reference ref="658526862"/>
 											</object>
 											<string key="NSFrame">{{1, 0}, {1102, 17}}</string>
+											<string key="NSBounds">{{1096, 0}, {1102, 17}}</string>
 											<reference key="NSSuperview" ref="832526649"/>
 											<reference key="NSNextKeyView" ref="658526862"/>
 											<reference key="NSDocView" ref="658526862"/>
@@ -4570,8 +4571,7 @@
 																<int key="NSPeriodicDelay">200</int>
 																<int key="NSPeriodicInterval">25</int>
 															</object>
-															<int key="NSSelectedRow">-1</int>
-															<int key="NSSelectedCol">-1</int>
+															<reference key="NSSelectedCell" ref="595784327"/>
 															<reference key="NSBackgroundColor" ref="999148946"/>
 															<reference key="NSCellBackgroundColor" ref="762861948"/>
 														</object>
@@ -4921,6 +4921,7 @@
 						</object>
 					</object>
 					<string key="NSFrameSize">{1132, 808}</string>
+					<reference key="NSSuperview"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1440, 878}}</string>
 				<string key="NSMinSize">{600, 622}</string>
@@ -20692,7 +20693,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
-					<string>{{989, 699}, {423, 773}}</string>
+					<string>{{981, 692}, {423, 773}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
 					<string>{{1034, 437}, {423, 583}}</string>
@@ -20880,7 +20881,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<string>{{698, 1575}, {212, 143}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
-					<string>{{586, 1472}, {596, 20}}</string>
+					<string>{{578, 1465}, {596, 20}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
 					<string>{{163, 788}, {596, 20}}</string>
@@ -23200,82 +23201,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">VRController.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">VRPROView</string>
-					<string key="superclassName">VTKView</string>
-					<object class="NSMutableDictionary" key="actions">
-						<bool key="EncodedWithXMLCoder">YES</bool>
-						<object class="NSMutableArray" key="dict.sortedKeys">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>endDCMExportSettings:</string>
-							<string>endQuicktimeSettings:</string>
-							<string>endQuicktimeVRSettings:</string>
-							<string>exportQuicktime:</string>
-							<string>scissorStateButtons:</string>
-							<string>setCurrentdcmExport:</string>
-							<string>switchOrientationWidget:</string>
-							<string>switchProjection:</string>
-							<string>switchShading:</string>
-							<string>switchToSeriesRadio:</string>
-						</object>
-						<object class="NSMutableArray" key="dict.values">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-						</object>
-					</object>
-					<object class="NSMutableDictionary" key="outlets">
-						<bool key="EncodedWithXMLCoder">YES</bool>
-						<object class="NSMutableArray" key="dict.sortedKeys">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>VRFrames</string>
-							<string>dcmBox</string>
-							<string>dcmExportMode</string>
-							<string>dcmSeriesName</string>
-							<string>dcmframesSlider</string>
-							<string>dcmorientation</string>
-							<string>dcmrotation</string>
-							<string>export3DVRWindow</string>
-							<string>export3DWindow</string>
-							<string>exportDCMWindow</string>
-							<string>framesSlider</string>
-							<string>orientation</string>
-							<string>projection</string>
-							<string>rotation</string>
-							<string>scissorStateMatrix</string>
-						</object>
-						<object class="NSMutableArray" key="dict.values">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>NSMatrix</string>
-							<string>NSBox</string>
-							<string>NSMatrix</string>
-							<string>NSTextField</string>
-							<string>NSSlider</string>
-							<string>NSMatrix</string>
-							<string>NSMatrix</string>
-							<string>NSWindow</string>
-							<string>NSWindow</string>
-							<string>NSWindow</string>
-							<string>NSSlider</string>
-							<string>NSMatrix</string>
-							<string>NSMatrix</string>
-							<string>NSMatrix</string>
-							<string>NSMatrix</string>
-						</object>
-					</object>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">VRViewVPRO.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
