@@ -119,7 +119,7 @@
     return -1;
 }
 
-- (long) processFiles: (NSArray*) files
+- (long) processFiles: (NSMutableArray*) files
 {
 	
 	return 0;
