@@ -126,72 +126,16 @@ progressCallback(
 static void
 moveCallback(void *callbackData, T_DIMSE_C_MoveRQ *request,
     int responseCount, T_DIMSE_C_MoveRSP *response)
-
 {
 	return;
-	
-//	if( [[BrowserController currentBrowser] isNetworkLogsActive] == NO) return;
-//	
-//	NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContextLoadIfNecessary: NO];
-//	if( context == nil) return;
-//	
-//    OFCondition cond = EC_Normal;
-//    MyCallbackInfo *myCallbackData;
-//
-//    myCallbackData = (MyCallbackInfo*)callbackData;
-//	DCMTKQueryNode *node = myCallbackData -> node;
-//
-//	NSManagedObject *logEntry = [node logEntry];
-//	if (!logEntry)
-//	{
-//		[context retain];
-//		[context lock];
-//		
-//		@try {
-//		logEntry = [NSEntityDescription insertNewObjectForEntityForName:@"LogEntry" inManagedObjectContext:context];
-//		[logEntry setValue:[NSDate date] forKey:@"startTime"];
-//		[logEntry setValue:@"Move" forKey:@"type"];
-//		[logEntry setValue:[node calledAET] forKey:@"destinationName"];
-//		[logEntry setValue:[node callingAET] forKey:@"originName"];
-//		//if (_patientName)
-//		//	[logEntry setValue:_patientName forKey:@"patientName"];
-//		//if (_studyDescription)
-//		//	[logEntry setValue:_studyDescription forKey:@"studyName"];
-//		[node setLogEntry:logEntry];
-//		
-//		}
-//		@catch (NSException * e) {
-//			NSLog( @"moveCallback exception");
-//			NSLog( [e description]);
-//		}
-//
-//		[context unlock];
-//		[context release];
-//	
-//	}	
-//	int numberPending = response -> NumberOfRemainingSubOperations;
-//	int numberSent = response -> NumberOfCompletedSubOperations;
-//	int numberErrors = response -> NumberOfFailedSubOperations + response -> NumberOfWarningSubOperations;
-//	int numberImages = numberPending + numberSent + numberErrors ;
-//	[logEntry setValue:[NSNumber numberWithInt:numberImages] forKey:@"numberImages"];
-//	[logEntry setValue:[NSNumber numberWithInt:numberPending] forKey:@"numberPending"];
-//	[logEntry setValue:[NSNumber numberWithInt:numberSent] forKey:@"numberSent"];
-//	[logEntry setValue:[NSNumber numberWithInt:numberErrors] forKey:@"numberError"];
-//	if (numberPending > 0) {
-//		[logEntry setValue:@"In Progress" forKey:@"message"];
-//	}
-//	else{
-//		[logEntry setValue:@"Complete" forKey:@"message"];
-//	
-//	}
-//	[logEntry setValue:[NSDate date] forKey:@"endTime"];
-//
-//	if (debugLevel > 0) {
-//        printf("Move Response %d: \n", responseCount);
-//        DIMSE_printCMoveRSP(stdout, response);
-//    }
-//
-//   
+}
+
+
+static void
+getCallback(void *callbackData, T_DIMSE_C_GetRQ *request,
+    int responseCount, T_DIMSE_C_GetRSP *response)
+{
+	return;
 }
 
 //static OFCondition
@@ -408,7 +352,8 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 							port:(int)port 
 							transferSyntax:(int)transferSyntax
 							compression: (float)compression
-							extraParameters:(NSDictionary *)extraParameters]){
+							extraParameters:(NSDictionary *)extraParameters])
+		{
 		//_children = [[NSMutableArray alloc] init];
 		debugLevel = [[NSUserDefaults standardUserDefaults] integerForKey:@"NetworkDebugLevel"];
 		
@@ -624,14 +569,26 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 
 - (void) move:(NSDictionary*) dict
 {
-	DcmDataset *dataset = [self moveDataset];
-	if ([self setupNetworkWithSyntax:UID_MOVEStudyRootQueryRetrieveInformationModel dataset:dataset destination: [dict objectForKey:@"moveDestination"]])
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"useCGet"])
 	{
-	
+		DcmDataset *dataset = [self moveDataset];
+		if ([self setupNetworkWithSyntax:UID_MOVEStudyRootQueryRetrieveInformationModel dataset:dataset destination: [dict objectForKey:@"moveDestination"]])
+		{
+		
+		}
+		
+		if (dataset != NULL) delete dataset;
 	}
-	
-	if (dataset != NULL) delete dataset;
-	 
+	else
+	{
+		DcmDataset *dataset = [self moveDataset];
+		if ([self setupNetworkWithSyntax:UID_GETStudyRootQueryRetrieveInformationModel dataset:dataset destination: [dict objectForKey:@"moveDestination"]])
+		{
+		
+		}
+		
+		if (dataset != NULL) delete dataset;
+	}
 }
 
 - (OFCondition) addPresentationContext:(T_ASC_Parameters *)params abstractSyntax:(const char *)abstractSyntax{
@@ -959,7 +916,12 @@ if (_verbose)
 		if( destination) cond = [self cmove:assoc network:net dataset:dataset destination: (char*) [destination UTF8String]];
 		else cond = [self cmove:assoc network:net dataset:dataset];
 	}
-	else {
+	else if (strcmp(abstractSyntax, UID_GETStudyRootQueryRetrieveInformationModel) == 0)
+	{
+		[self cget:assoc network:net dataset:dataset];
+	}
+	else
+	{
 		NSLog(@"Q/R SCU bad Abstract Sytnax: %s", abstractSyntax);
 		//shouldn't get here
 	}
@@ -1255,6 +1217,23 @@ NS_ENDHANDLER
     return cond;
 }
 
+- (OFCondition) cget:(T_ASC_Association *)assoc network:(T_ASC_Network *)net dataset:(DcmDataset *)dataset
+{
+    /* opt_repeatCount specifies how many times a certain file shall be processed */
+    //int n = (int)_repeatCount;
+	int n = 1;
+	OFCondition cond = EC_Normal;
+    /* as long as no error occured and the counter does not equal 0 */
+	//only do move if we aren't already moving
+    while (cond == EC_Normal && n-- && ![[MoveManager sharedManager] containsMove:self]) {
+        /* process file (read file, send C-FIND-RQ, receive C-FIND-RSP messages) */
+        cond = [self getSCU:assoc network:(T_ASC_Network *)net dataset:dataset];
+    }
+
+    /* return result value */
+    return cond;
+}
+
 - (OFCondition)moveSCU:(T_ASC_Association *)assoc  network:(T_ASC_Network *)net dataset:( DcmDataset *)dataset
 {
 	return [self moveSCU:(T_ASC_Association *)assoc  network:(T_ASC_Network *)net dataset:( DcmDataset *)dataset destination: nil];
@@ -1304,12 +1283,14 @@ NS_ENDHANDLER
 		/* set the destination to be me */
 		ASC_getAPTitles(assoc->params, req.MoveDestination, NULL, NULL);
 	}
-
-    OFCondition cond = DIMSE_moveUser(assoc, presId, &req, dataset,
+	
+	OFCondition cond;
+	
+		cond = DIMSE_moveUser(assoc, presId, &req, dataset,
         moveCallback, &callbackData, _blockMode, _dimse_timeout,
         net, subOpCallback, NULL,
         &rsp, &statusDetail, &rspIds , OFTrue);
-
+	
     if (cond == EC_Normal)
 	{
 		if( DICOM_WARNING_STATUS(rsp.DimseStatus))
@@ -1355,6 +1336,104 @@ NS_ENDHANDLER
 
     return cond;
 
+}
+
+- (OFCondition)getSCU:(T_ASC_Association *)assoc  network:(T_ASC_Network *)net dataset:( DcmDataset *)dataset
+{
+	//add self to list of moves. Prevents deallocating  the move if a new query is done
+	[[MoveManager sharedManager] addMove:self];
+
+  T_ASC_PresentationContextID presId;
+    T_DIMSE_C_GetRQ    req;
+    T_DIMSE_C_GetRSP   rsp;
+    DIC_US              msgId = assoc->nextMsgID++;
+    DcmDataset          *rspIds = NULL;
+    DcmDataset          *statusDetail = NULL;
+    MyCallbackInfo      callbackData;
+		
+   // sopClass = querySyntax[opt_queryModel].moveSyntax;
+
+    /* which presentation context should be used */
+    presId = ASC_findAcceptedPresentationContextID(assoc, UID_GETStudyRootQueryRetrieveInformationModel);
+    if (presId == 0) return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
+
+    if (_verbose)
+	{
+        printf("Get SCU RQ: MsgID %d\n", msgId);
+        printf("Request:\n");
+        dataset->print(COUT);
+    }
+	
+    /* prepare the callback data */
+    callbackData.assoc = assoc;
+    callbackData.presId = presId;
+	callbackData.node = self;
+	
+    req.MessageID = msgId;
+    strcpy(req.AffectedSOPClassUID, UID_GETStudyRootQueryRetrieveInformationModel);
+    req.Priority = DIMSE_PRIORITY_MEDIUM;
+    req.DataSetType = DIMSE_DATASET_PRESENT;
+ 
+//	if( destination)
+//	{
+//		strcpy(req.MoveDestination, destination);
+//	}
+//	else
+//	{
+//		/* set the destination to be me */
+//		ASC_getAPTitles(assoc->params, req.MoveDestination, NULL, NULL);
+//	}
+	
+	OFCondition cond;
+	
+	cond = DIMSE_getUser(assoc, presId, &req, dataset, getCallback, &callbackData, _blockMode, _dimse_timeout, net, subOpCallback, NULL, &rsp, &statusDetail, &rspIds);
+	
+    if (cond == EC_Normal)
+	{
+		if( DICOM_WARNING_STATUS(rsp.DimseStatus))
+		{
+			 DIMSE_printCGetRSP(stdout, &rsp);
+		}
+		else if (DICOM_PENDING_STATUS(rsp.DimseStatus))
+		{
+			 DIMSE_printCGetRSP(stdout, &rsp);
+		}
+		else if( rsp.DimseStatus != STATUS_Success && rsp.DimseStatus != STATUS_Pending)
+		{
+			DIMSE_printCGetRSP(stdout, &rsp);
+			
+			[self performSelectorOnMainThread:@selector(errorMessage:) withObject:[NSArray arrayWithObjects: NSLocalizedString(@"Get Failed", nil), [NSString stringWithCString: DU_cmoveStatusString(rsp.DimseStatus)], NSLocalizedString(@"Continue", nil), nil] waitUntilDone:YES];
+		}
+		
+        if (_verbose)
+		{
+            DIMSE_printCGetRSP(stdout, &rsp);
+            if (rspIds != NULL)
+			{
+                printf("Response Identifiers:\n");
+                rspIds->print(COUT);
+			}
+        }
+    }
+	else
+	{
+		[self performSelectorOnMainThread:@selector(errorMessage:) withObject:[NSArray arrayWithObjects: NSLocalizedString(@"Get Failed", nil), [NSString stringWithCString: DU_cmoveStatusString(rsp.DimseStatus)], NSLocalizedString(@"Continue", nil), nil] waitUntilDone:NO];
+        errmsg("Get Failed:");
+        DimseCondition::dump(cond);
+    }
+	
+    if (statusDetail != NULL)
+	{
+        printf("  Status Detail:\n");
+        statusDetail->print(COUT);
+        delete statusDetail;
+    }
+	
+    if (rspIds != NULL) delete rspIds;
+	
+	[[MoveManager sharedManager] removeMove:self];
+	
+    return cond;
 }
 
 - (NSManagedObject *)logEntry{
