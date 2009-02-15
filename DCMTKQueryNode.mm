@@ -572,7 +572,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"useCGet"])
 	{
 		DcmDataset *dataset = [self moveDataset];
-		if ([self setupNetworkWithSyntax:UID_MOVEStudyRootQueryRetrieveInformationModel dataset:dataset destination: [dict objectForKey:@"moveDestination"]])
+		if ([self setupNetworkWithSyntax:UID_GETStudyRootQueryRetrieveInformationModel  dataset:dataset destination: [dict objectForKey:@"moveDestination"]])
 		{
 		
 		}
@@ -582,7 +582,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	else
 	{
 		DcmDataset *dataset = [self moveDataset];
-		if ([self setupNetworkWithSyntax:UID_GETStudyRootQueryRetrieveInformationModel dataset:dataset destination: [dict objectForKey:@"moveDestination"]])
+		if ([self setupNetworkWithSyntax:UID_MOVEStudyRootQueryRetrieveInformationModel dataset:dataset destination: [dict objectForKey:@"moveDestination"]])
 		{
 		
 		}
@@ -918,7 +918,7 @@ if (_verbose)
 	}
 	else if (strcmp(abstractSyntax, UID_GETStudyRootQueryRetrieveInformationModel) == 0)
 	{
-		[self cget:assoc network:net dataset:dataset];
+		cond = [self cget:assoc network:net dataset:dataset];
 	}
 	else
 	{
@@ -1319,7 +1319,7 @@ NS_ENDHANDLER
     }
 	else
 	{
-		[self performSelectorOnMainThread:@selector(errorMessage:) withObject:[NSArray arrayWithObjects: NSLocalizedString(@"Move Failed", nil), [NSString stringWithCString: DU_cmoveStatusString(rsp.DimseStatus)], NSLocalizedString(@"Continue", nil), nil] waitUntilDone:NO];
+		[self performSelectorOnMainThread:@selector(errorMessage:) withObject:[NSArray arrayWithObjects: NSLocalizedString(@"Move Failed", nil), [NSString stringWithCString: cond.text()], NSLocalizedString(@"Continue", nil), nil] waitUntilDone:NO];
         errmsg("Move Failed:");
         DimseCondition::dump(cond);
     }
@@ -1417,7 +1417,7 @@ NS_ENDHANDLER
     }
 	else
 	{
-		[self performSelectorOnMainThread:@selector(errorMessage:) withObject:[NSArray arrayWithObjects: NSLocalizedString(@"Get Failed", nil), [NSString stringWithCString: DU_cmoveStatusString(rsp.DimseStatus)], NSLocalizedString(@"Continue", nil), nil] waitUntilDone:NO];
+		[self performSelectorOnMainThread:@selector(errorMessage:) withObject:[NSArray arrayWithObjects: NSLocalizedString(@"Get Failed", nil), [NSString stringWithCString: cond.text()], NSLocalizedString(@"Continue", nil), nil] waitUntilDone:NO];
         errmsg("Get Failed:");
         DimseCondition::dump(cond);
     }

@@ -716,6 +716,7 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject:@"1" forKey:@"EmptyNameForNewROIs"];
 	[defaultValues setObject:@"1" forKey:@"nextSeriesToAllViewers"];
 	[defaultValues setObject:@"1" forKey:@"dontDeleteStudiesWithComments"];
+//	[defaultValues setObject:@"1" forKey: @"useCGet"];
 	
 	// ** DELETEFILELISTENER
 	[defaultValues setObject:@"1" forKey:@"DELETEFILELISTENER"];

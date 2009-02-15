@@ -1849,8 +1849,10 @@ static const char *GetPrivateIP()
 		}
 	}
 	
+	[NSThread sleepForTimeInterval: 0.5];	// To allow errorMessage on the main thread...
+	
 	for( id item in array)
-		[item setShowErrorMessage: NO];
+		[item setShowErrorMessage: YES];
 	
 	NSLog(@"Retrieve END");
 	
