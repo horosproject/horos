@@ -1320,13 +1320,13 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	{
 		// Rescale image if resolution is too high, compared to the original resolution
 		
-		float MAXSIZE = 1.5;
+		float MAXSIZE = 1.8;
 		
 		int minWidth = [dcmPix pwidth]*MAXSIZE;
 		int minHeight = [dcmPix pheight]*MAXSIZE;
 		
-		if( minWidth < 768) MAXSIZE = 768 / [dcmPix pwidth];
-		if( minHeight < 768) MAXSIZE = 768 / [dcmPix pheight];
+		if( minWidth < 1024) MAXSIZE = 1024 / [dcmPix pwidth];
+		if( minHeight < 1024) MAXSIZE = 1024 / [dcmPix pheight];
 		
 		minWidth = [dcmPix pwidth]*MAXSIZE;
 		minHeight = [dcmPix pheight]*MAXSIZE;

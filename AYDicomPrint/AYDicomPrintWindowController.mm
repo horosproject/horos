@@ -248,12 +248,20 @@
 			tag = [[[formatPopUp menu] itemAtIndex: index] tag];
 			index++;
 		}
-		while( no_of_images >= tag && index < [[formatPopUp menu] numberOfItems]);
+		while( no_of_images > tag && index < [[formatPopUp menu] numberOfItems]);
 		
-		index--;
-		
-		[[[m_PrinterController selectedObjects] objectAtIndex: 0] setObject: [[[formatPopUp menu] itemAtIndex: index-1] title] forKey:@"imageDisplayFormat"];
-		ipp = [[[formatPopUp menu] itemWithTitle: [dict valueForKey: @"imageDisplayFormat"]] tag];
+		if( tag == 2)
+		{
+			if( [[[dict valueForKey: @"filmOrientation"] uppercaseString] isEqualToString: @"PORTRAIT"])
+				[[[m_PrinterController selectedObjects] objectAtIndex: 0] setObject: @"Standard 1,2" forKey:@"imageDisplayFormat"];
+			else
+				[[[m_PrinterController selectedObjects] objectAtIndex: 0] setObject: @"Standard 2,1" forKey:@"imageDisplayFormat"];
+		}
+		else
+		{
+			[[[m_PrinterController selectedObjects] objectAtIndex: 0] setObject: [[[formatPopUp menu] itemWithTag: tag] title] forKey:@"imageDisplayFormat"];
+			ipp = [[[formatPopUp menu] itemWithTitle: [dict valueForKey: @"imageDisplayFormat"]] tag];
+		}
 	}
 	
 	if( no_of_images == 0) [m_pages setIntValue: 1];

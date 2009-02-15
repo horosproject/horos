@@ -14194,9 +14194,7 @@ int i,j,l;
 	int to;
 	int interval;
 	
-	int columns = [[[[printLayout selectedItem] title] substringWithRange: NSMakeRange(0, 1)] intValue];
-	int rows = [[[[printLayout selectedItem] title] substringWithRange: NSMakeRange(2, 1)] intValue];
-	int ipp = columns * rows;
+	int ipp = [[printLayout selectedItem] tag];
 	if( ipp < 1) ipp = 1;
 	
 	switch( [[printSelection selectedCell] tag])
@@ -14245,6 +14243,20 @@ int i,j,l;
 		{
 			count++;
 		}
+	}
+	
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"autoAdjustPrintingFormat"])
+	{
+		NSInteger index = 0, tag, no_of_images = count;
+		do
+		{
+			tag = [[[printLayout menu] itemAtIndex: index] tag];
+			index++;
+		}
+		while( no_of_images > tag && index < [[printLayout menu] numberOfItems]);
+		
+		[printLayout selectItemWithTag: tag];
+		ipp = [[printLayout selectedItem] tag];
 	}
 	
 	if( count % ipp == 0) [printPagesToPrint setStringValue: [NSString stringWithFormat:@"%d pages", count / ipp]];
@@ -14397,7 +14409,9 @@ int i,j,l;
 			{
 				[self setImageIndex: i];
 				NSImage *im = [imageView nsimage: [[printFormat selectedCell] tag]]; //original
-				im = [DCMPix resizeIfNecessary: im dcmPix: [imageView curDCM]];
+				
+				if( columns * rows > 4)
+					im = [DCMPix resizeIfNecessary: im dcmPix: [imageView curDCM]];
 				
 				NSData *bitmapData = [im  TIFFRepresentation];
 				
