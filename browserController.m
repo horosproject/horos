@@ -3042,6 +3042,7 @@ static NSArray*	statesArray = nil;
 	
 	if( isCurrentDatabaseBonjour) return;
 	
+	[self checkResponder];
 	if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix)
 	{
 		matrixThumbnails = YES;
@@ -5558,7 +5559,8 @@ static NSArray*	statesArray = nil;
 	NSManagedObjectContext	*context = self.managedObjectContext;
 	BOOL					matrixThumbnails = NO;
 	int						animState = [animationCheck state];
-
+	
+	[self checkResponder];
 	if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix)
 	{
 		matrixThumbnails = YES;
@@ -6522,6 +6524,8 @@ static NSArray*	statesArray = nil;
 	NSMutableArray *dicomFiles = [NSMutableArray array];
 	NSMutableArray *files;
 	
+	
+	[self checkResponder];
 	if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix)
 	{
 		NSManagedObject		*curObj = [matrixViewArray objectAtIndex: [[oMatrix selectedCell] tag]];
@@ -11144,6 +11148,8 @@ static BOOL needToRezoom;
 {
 	NSMutableArray	*images = [NSMutableArray arrayWithCapacity:0];
 	
+	
+	[self checkResponder];
 	if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix) [self filesForDatabaseMatrixSelection: images];
 	else [self filesForDatabaseOutlineSelection: images];
 	
@@ -11180,6 +11186,8 @@ static BOOL needToRezoom;
 {
 	NSMutableArray	*selectedItems = [NSMutableArray arrayWithCapacity:0];
 	
+	
+	[self checkResponder];
 	if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix) [self filesForDatabaseMatrixSelection: selectedItems];
 	else [self filesForDatabaseOutlineSelection: selectedItems];
 	
@@ -11354,6 +11362,10 @@ static NSArray*	openSubSeriesArray = nil;
 #pragma mark-
 #pragma mark GUI functions
 
+- (void) checkResponder
+{
+
+}
 
 + (unsigned int)_currentModifierFlags
 {
@@ -12755,6 +12767,7 @@ static NSArray*	openSubSeriesArray = nil;
 	NSMutableArray *dicomFiles2Export = [NSMutableArray array];
 	NSMutableArray *filesToExport;
 	
+	[self checkResponder];
 	if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix)
 	{
 		filesToExport = [self filesForDatabaseMatrixSelection: dicomFiles2Export];
@@ -12855,6 +12868,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		NSMutableArray *dicomFiles2Export = [NSMutableArray array];
 		NSMutableArray *filesToExport;
 		
+		[self checkResponder];
 		if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix)
 		{
 			filesToExport = [self filesForDatabaseMatrixSelection: dicomFiles2Export];
@@ -12891,6 +12905,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		NSMutableArray *dicomFiles2Export = [NSMutableArray array];
 		NSMutableArray *filesToExport;
 		
+		[self checkResponder];
 		if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix)
 		{
 			filesToExport = [self filesForDatabaseMatrixSelection: dicomFiles2Export];
@@ -13573,6 +13588,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	NSMutableArray *dicomFiles2Export = [NSMutableArray array];
 	NSMutableArray *filesToExport;
 	
+	[self checkResponder];
 	if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix)
 	{
 		filesToExport = [self filesForDatabaseMatrixSelection: dicomFiles2Export];
@@ -13605,6 +13621,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	NSMutableArray *dicomFiles2Export = [NSMutableArray array];
 	NSMutableArray *filesToExport;
 	
+	[self checkResponder];
 	if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix)
 	{
 		filesToExport = [self filesForDatabaseMatrixSelection: dicomFiles2Export];
@@ -14239,6 +14256,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[wait showWindow:self];
 		
 		NSLog( [sender description]);
+		[self checkResponder];
 		if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix)
 		{
 			//Burn additional Files. Not just images. Add SRs
@@ -14280,6 +14298,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		NSMutableArray *managedObjects = [NSMutableArray array];
 		NSMutableArray *filesToBurn;
 		//Burn additional Files. Not just images. Add SRs
+		[self checkResponder];
 		if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix) filesToBurn = [self filesForDatabaseMatrixSelection:managedObjects onlyImages:NO];
 		else filesToBurn = [self filesForDatabaseOutlineSelection:managedObjects onlyImages:NO];
 		
@@ -14303,6 +14322,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	NSMutableArray *dicomFiles2Anonymize = [NSMutableArray array];
 	NSMutableArray *filesToAnonymize;
 	
+	[self checkResponder];
 	if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix) filesToAnonymize = [[self filesForDatabaseMatrixSelection: dicomFiles2Anonymize] retain];
 	else filesToAnonymize = [[self filesForDatabaseOutlineSelection: dicomFiles2Anonymize] retain];
 	
@@ -14543,6 +14563,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	NSMutableArray *dicomFiles2Copy = [NSMutableArray array];
 	NSMutableArray *files2Copy;
 	
+	[self checkResponder];
 	if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix) files2Copy = [self filesForDatabaseMatrixSelection: dicomFiles2Copy];
 	else files2Copy = [self filesForDatabaseOutlineSelection: dicomFiles2Copy];
 	
@@ -14656,6 +14677,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	NSMutableArray	*objects = [NSMutableArray array];
 	NSMutableArray  *files;
 	
+	[self checkResponder];
 	if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix) files = [self filesForDatabaseMatrixSelection:objects onlyImages: YES];
 	else files = [self filesForDatabaseOutlineSelection:objects onlyImages: YES];
 	
@@ -16012,6 +16034,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 {
 	NSMutableArray *selectedItems = [NSMutableArray arrayWithCapacity:0];
 	
+	[self checkResponder];
 	if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix) [self filesForDatabaseMatrixSelection: selectedItems];
 	else [self filesForDatabaseOutlineSelection: selectedItems];
 
@@ -16179,6 +16202,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 {
 	NSMutableArray *selectedItems = [NSMutableArray arrayWithCapacity:0];
 	
+	[self checkResponder];
 	if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix) [self filesForDatabaseMatrixSelection: selectedItems];
 	else [self filesForDatabaseOutlineSelection: selectedItems];
 
@@ -16240,6 +16264,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 {
 	NSMutableArray *selectedItems = [NSMutableArray arrayWithCapacity:0];
 	
+	[self checkResponder];
 	if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix) [self filesForDatabaseMatrixSelection: selectedItems];
 	else [self filesForDatabaseOutlineSelection: selectedItems];
 	

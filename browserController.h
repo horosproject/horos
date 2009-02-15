@@ -14,13 +14,6 @@
 
 
 #import <Cocoa/Cocoa.h>
-/*
-#import "DCMView.h"
-#import "MyOutlineView.h"
-#import "PreviewView.h"
-#import "QueryController.h"
-#import "AnonymizerWindowController.h"
-*/
 
 @class MPR2DController;
 @class NSCFDate;
@@ -84,8 +77,6 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	
 	NSNumberFormatter		*numFmt;
     
-//	NSData					*notFoundDataThumbnail;
-	
     DCMPix                  *curPreviewPix;
     
     NSTimer                 *timer, *IncomingTimer, *matrixDisplayIcons, *refreshTimer, *databaseCleanerTimer, *bonjourTimer, *deleteQueueTimer, *autoroutingQueueTimer;
@@ -147,7 +138,6 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	
 	IBOutlet NSWindow				*editSmartAlbum;
 	IBOutlet NSTextField			*editSmartAlbumName, *editSmartAlbumQuery;
-//	IBOutlet NSPredicateEditor		*editSmartAlbumPredicate;
 	
 	IBOutlet NSDrawer				*albumDrawer;
 	
@@ -439,6 +429,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (void) refreshSmartAlbums;
 - (void) refreshAlbums;
 - (void) waitForRunningProcesses;
+- (void) checkResponder;
 
 - (NSArray*) imagesPathArray: (NSManagedObject*) item;
 
