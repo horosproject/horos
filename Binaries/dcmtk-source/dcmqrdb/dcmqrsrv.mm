@@ -167,6 +167,32 @@ void DcmQueryRetrieveSCP::unlockFile(void)
 	while( fileExist == YES && inc < 100000);
 }
 
+void DcmQueryRetrieveSCP::waitUnlockFileWithPID(int pid)
+{
+	BOOL fileExist = YES;
+	int inc = 0, rc = pid, state;
+	char dir[ 1024];
+	sprintf( dir, "%s", "/tmp/lock_process");
+	
+	do
+	{
+		FILE * pFile = fopen (dir,"r");
+		if( pFile)
+		{
+			rc = waitpid( pid, &state, WNOHANG);	// Check to see if this pid is still alive?
+			fclose (pFile);
+		}
+		else
+			fileExist = NO;
+		
+		usleep( 100000);
+		inc++;
+	}
+	while( fileExist == YES && inc < 1800 && rc >= 0);	// 1800 = 30 min
+	if( inc > 1800) NSLog( @"******* waitUnlockFile for 1 hour");
+	if( rc < 0) NSLog( @"******* waitUnlockFile : child process died...");
+}
+
 void DcmQueryRetrieveSCP::waitUnlockFile(void)
 {
 	BOOL fileExist = YES;
@@ -1259,7 +1285,7 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
                 /* parent process, note process in table */
                 processtable_.addProcessToTable(pid, assoc);
 				
-				waitUnlockFile();
+				waitUnlockFileWithPID( pid);
             }
             else
             {
