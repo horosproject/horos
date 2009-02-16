@@ -1022,12 +1022,10 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::startMoveRequest(
     // handle->rootLevel = PATIENT_ROOT ;
 	if (strcmp(SOPClassUID, UID_MOVEStudyRootQueryRetrieveInformationModel) == 0)
         handle->rootLevel = STUDY_ROOT ;
-
-	#ifndef NO_GET_SUPPORT
-	//    else if (strcmp( SOPClassUID, UID_GETStudyRootQueryRetrieveInformationModel) == 0)
-    //    handle->rootLevel = STUDY_ROOT ;
-	#endif
-	    else {
+	else if (strcmp( SOPClassUID, UID_GETStudyRootQueryRetrieveInformationModel) == 0)
+        handle->rootLevel = STUDY_ROOT ;
+	else
+	{
         status->setStatus(STATUS_MOVE_Failed_SOPClassNotSupported);
         return (DcmQROsiriXDatabaseError) ;
     }

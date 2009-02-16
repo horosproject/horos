@@ -2265,7 +2265,7 @@
 		BFBF413E09B6828D00545F5E /* dvsighdl.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D9109B6828700545F5E /* dvsighdl.h */; };
 		BFBF413F09B6828D00545F5E /* dcmqrcbf.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D9309B6828700545F5E /* dcmqrcbf.cc */; };
 		BFBF414009B6828D00545F5E /* dcmqrcbf.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D9409B6828700545F5E /* dcmqrcbf.h */; };
-		BFBF414109B6828D00545F5E /* dcmqrcbg.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D9509B6828700545F5E /* dcmqrcbg.cc */; };
+		BFBF414109B6828D00545F5E /* dcmqrcbg.mm in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D9509B6828700545F5E /* dcmqrcbg.mm */; };
 		BFBF414209B6828D00545F5E /* dcmqrcbg.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D9609B6828800545F5E /* dcmqrcbg.h */; };
 		BFBF414409B6828D00545F5E /* dcmqrcbm.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D9809B6828800545F5E /* dcmqrcbm.h */; };
 		BFBF414509B6828D00545F5E /* dcmqrcbs.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D9909B6828800545F5E /* dcmqrcbs.cc */; };
@@ -7017,13 +7017,11 @@
 		BFBF3D9109B6828700545F5E /* dvsighdl.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dvsighdl.h; sourceTree = "<group>"; };
 		BFBF3D9309B6828700545F5E /* dcmqrcbf.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = dcmqrcbf.cc; sourceTree = "<group>"; };
 		BFBF3D9409B6828700545F5E /* dcmqrcbf.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dcmqrcbf.h; sourceTree = "<group>"; };
-		BFBF3D9509B6828700545F5E /* dcmqrcbg.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = dcmqrcbg.cc; sourceTree = "<group>"; };
+		BFBF3D9509B6828700545F5E /* dcmqrcbg.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = dcmqrcbg.mm; sourceTree = "<group>"; };
 		BFBF3D9609B6828800545F5E /* dcmqrcbg.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dcmqrcbg.h; sourceTree = "<group>"; };
-		BFBF3D9709B6828800545F5E /* dcmqrcbm.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = dcmqrcbm.cc; sourceTree = "<group>"; };
 		BFBF3D9809B6828800545F5E /* dcmqrcbm.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dcmqrcbm.h; sourceTree = "<group>"; };
 		BFBF3D9909B6828800545F5E /* dcmqrcbs.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = dcmqrcbs.cc; sourceTree = "<group>"; };
 		BFBF3D9A09B6828800545F5E /* dcmqrcbs.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dcmqrcbs.h; sourceTree = "<group>"; };
-		BFBF3D9B09B6828800545F5E /* dcmqrcnf.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = dcmqrcnf.cc; sourceTree = "<group>"; };
 		BFBF3D9C09B6828800545F5E /* dcmqrcnf.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dcmqrcnf.h; sourceTree = "<group>"; };
 		BFBF3D9D09B6828800545F5E /* dcmqrdba.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dcmqrdba.h; sourceTree = "<group>"; };
 		BFBF3D9E09B6828800545F5E /* dcmqrdbi.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = dcmqrdbi.cc; sourceTree = "<group>"; };
@@ -12058,15 +12056,13 @@
 			children = (
 				BFBF3D9309B6828700545F5E /* dcmqrcbf.cc */,
 				BFBF3D9409B6828700545F5E /* dcmqrcbf.h */,
-				BFBF3D9509B6828700545F5E /* dcmqrcbg.cc */,
+				BFBF3D9509B6828700545F5E /* dcmqrcbg.mm */,
 				BFBF3D9609B6828800545F5E /* dcmqrcbg.h */,
-				BFBF3D9709B6828800545F5E /* dcmqrcbm.cc */,
 				BFDF1D5409E06985008A4EC4 /* dcmqrcbm.mm */,
 				BFBF3D9809B6828800545F5E /* dcmqrcbm.h */,
 				BFBF3D9909B6828800545F5E /* dcmqrcbs.cc */,
 				BFBF3D9A09B6828800545F5E /* dcmqrcbs.h */,
 				BF4CEBD509CB736D0073E928 /* dcmqrcnf.mm */,
-				BFBF3D9B09B6828800545F5E /* dcmqrcnf.cc */,
 				BFBF3D9C09B6828800545F5E /* dcmqrcnf.h */,
 				BFBF3D9D09B6828800545F5E /* dcmqrdba.h */,
 				BFBF3D9E09B6828800545F5E /* dcmqrdbi.cc */,
@@ -18333,7 +18329,7 @@
 				BFBF413B09B6828D00545F5E /* dvpsvwl.cc in Sources */,
 				BFBF413D09B6828D00545F5E /* dvsighdl.cc in Sources */,
 				BFBF413F09B6828D00545F5E /* dcmqrcbf.cc in Sources */,
-				BFBF414109B6828D00545F5E /* dcmqrcbg.cc in Sources */,
+				BFBF414109B6828D00545F5E /* dcmqrcbg.mm in Sources */,
 				BFBF414509B6828D00545F5E /* dcmqrcbs.cc in Sources */,
 				BFBF414C09B6828D00545F5E /* dcmqrdbs.cc in Sources */,
 				BFBF414F09B6828D00545F5E /* dcmqropt.cc in Sources */,
