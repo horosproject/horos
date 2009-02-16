@@ -1,6 +1,7 @@
 #import <Foundation/Foundation.h>
 #import <OsiriX/DCMObject.h>
 #import <OsiriX/DCMTransferSyntax.h>
+#import "DefaultsOsiriX.h"
 
 #undef verify
 #include "osconfig.h" /* make sure OS specific configuration is included first */
@@ -20,6 +21,8 @@
 #include "dcuid.h"
 #include "dcdict.h"
 #include "dcdeftag.h"
+
+extern void dcmtkSetJPEGColorSpace( int);
 
 // WHY THIS EXTERNAL APPLICATION FOR COMPRESS OR DECOMPRESSION?
 
@@ -152,6 +155,11 @@ int main(int argc, const char *argv[])
 		
 		if( [what isEqualToString:@"decompress"])
 		{
+			NSMutableDictionary	*dict = [DefaultsOsiriX getDefaults];
+			[dict addEntriesFromDictionary: [[NSUserDefaults standardUserDefaults] persistentDomainForName:@"com.rossetantoine.osirix"]];
+			
+			dcmtkSetJPEGColorSpace( [[dict objectForKey:@"UseJPEGColorSpace"] intValue]);
+			
 			OFCondition cond;
 			OFBool status = YES;
 			const char *fname = (const char *)[path UTF8String];

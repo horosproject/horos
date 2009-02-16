@@ -1348,6 +1348,7 @@
 		ABE471150A76412700327466 /* jquant2.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3CFA09B6828500545F5E /* jquant2.c */; };
 		ABE471160A76412700327466 /* jutils.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3CFB09B6828500545F5E /* jutils.c */; };
 		ABE471170A76412700327466 /* jversion8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3CFC09B6828500545F5E /* jversion8.h */; };
+		ABE59B850F494CA1004EBF28 /* DefaultsOsiriX.m in Sources */ = {isa = PBXBuildFile; fileRef = AB6FF5960A47D08000C501F0 /* DefaultsOsiriX.m */; };
 		ABEF7E7809A21070006CEC3E /* Reports.h in Headers */ = {isa = PBXBuildFile; fileRef = ABEF7E7609A21070006CEC3E /* Reports.h */; };
 		ABEF7E7909A21070006CEC3E /* Reports.m in Sources */ = {isa = PBXBuildFile; fileRef = ABEF7E7709A21070006CEC3E /* Reports.m */; };
 		ABEF846A09A23EF5006CEC3E /* ReportTemplate.doc in Resources */ = {isa = PBXBuildFile; fileRef = ABEF846909A23EF5006CEC3E /* ReportTemplate.doc */; };
@@ -19149,6 +19150,7 @@
 				AB7252360ADE791700A212A0 /* jcarith.c in Sources */,
 				AB7252370ADE791700A212A0 /* jcapistd.c in Sources */,
 				A98FFBEA0CA92B58000291C8 /* altivecFunctions.c in Sources */,
+				ABE59B850F494CA1004EBF28 /* DefaultsOsiriX.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

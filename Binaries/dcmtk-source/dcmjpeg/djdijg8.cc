@@ -277,6 +277,12 @@ void DJDecompressIJG8Bit::cleanup()
   }
 }
 
+static int DETERMINE_OUTPUT_COLOR_SPACE_FROM_IJG_GUESS = 0;
+
+void dcmtkSetJPEGColorSpace( int v)
+{
+	DETERMINE_OUTPUT_COLOR_SPACE_FROM_IJG_GUESS = v;
+}
 
 OFCondition DJDecompressIJG8Bit::decode(
   Uint8 *compressedFrameBuffer,
@@ -356,7 +362,8 @@ OFCondition DJDecompressIJG8Bit::decode(
     }
     else
     {
-#ifdef DETERMINE_OUTPUT_COLOR_SPACE_FROM_IJG_GUESS
+		if( DETERMINE_OUTPUT_COLOR_SPACE_FROM_IJG_GUESS)
+		{
       // let the IJG library guess the JPEG color space
       // and use it as the value for decompressedColorModel.
       switch (cinfo->jpeg_color_space)
@@ -374,9 +381,9 @@ OFCondition DJDecompressIJG8Bit::decode(
           decompressedColorModel = EPI_Unknown;
           break;
       }
-#else
+	  }
+	else
       decompressedColorModel = EPI_Unknown;
-#endif
 
       // prevent the library from performing any color space conversion
       cinfo->jpeg_color_space = JCS_UNKNOWN;
