@@ -5435,8 +5435,6 @@ static NSArray*	statesArray = nil;
 								if([seriesArray containsObject: series] == NO )
 								{
 									if( series) [seriesArray addObject: series];
-									[series setValue:[NSNumber numberWithInt:0]  forKey:@"numberOfImages"];
-									[series setValue: nil forKey:@"thumbnail"];
 									
 									// Is a viewer containing this series opened? -> close it
 									for( ViewerController *vc in viewersList )
@@ -5455,7 +5453,6 @@ static NSArray*	statesArray = nil;
 									if([studiesArray containsObject: study] == NO )
 									{
 										if( study) [studiesArray addObject: study];
-										[study setValue:[NSNumber numberWithInt:0]  forKey:@"numberOfImages"];
 										
 										// Is a viewer containing this series opened? -> close it
 										for( ViewerController *vc in viewersList )
@@ -5516,11 +5513,16 @@ static NSArray*	statesArray = nil;
 		@try
 		{
 			// Remove series without images !
-			for( NSManagedObject *series in seriesArray )
+			for( NSManagedObject *series in seriesArray)
 			{
 				if( [[series valueForKey:@"images"] count] == 0 )
 				{
 					[context deleteObject: series];
+				}
+				else
+				{
+					[series setValue:[NSNumber numberWithInt:0]  forKey:@"numberOfImages"];
+					[series setValue: nil forKey:@"thumbnail"];	
 				}
 			}
 			
@@ -5534,6 +5536,10 @@ static NSArray*	statesArray = nil;
 				if( [[study valueForKey:@"imageSeries"] count] == 0 )
 				{
 					[context deleteObject: study];
+				}
+				else
+				{
+					[study setValue:[NSNumber numberWithInt:0]  forKey:@"numberOfImages"];
 				}
 			}
 			[self saveDatabase: currentDatabasePath];
@@ -7413,6 +7419,8 @@ static BOOL withReset = NO;
     id          theCell = [sender selectedCell];
     int         index;
     
+	[self.window makeFirstResponder: oMatrix];
+	
 	if( [theCell tag] >= 0 )
 	{
 		NSManagedObject         *dcmFile = [databaseOutline itemAtRow:[databaseOutline selectedRow]];
@@ -7446,9 +7454,7 @@ static BOOL withReset = NO;
 		
 		[self initAnimationSlider];
     }
-
-	[self.window makeFirstResponder: oMatrix];
-
+	
 	[self resetROIsAndKeysButton];
 }
 

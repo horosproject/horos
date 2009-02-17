@@ -181,7 +181,7 @@ void DcmQueryRetrieveSCP::writeErrorMessage( const char *str)
 	}
 }
 
-NSString* DcmQueryRetrieveSCP::getErrorMessage()
+NSString* DcmQueryRetrieveSCP::getErrorMessage()	// see emptyDeleteQueue: for reading this error message
 {
 	NSString *str = [NSString stringWithContentsOfFile: @"/tmp/error_message"];
 	
