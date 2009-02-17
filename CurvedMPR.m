@@ -1053,7 +1053,7 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 	pixList = [NSMutableArray array];
 	volumeData = nil;
 
-	float factor = 1.0;
+	float factor = 0.5;
 	while ( ![ViewerController resampleDataFromPixArray:pix fileArray:files inPixArray:pixList fileArray:fileList data:&volumeData withXFactor:factor yFactor:factor zFactor:1.0] && factor<=0.8)
 	{
 		factor += 0.1;
