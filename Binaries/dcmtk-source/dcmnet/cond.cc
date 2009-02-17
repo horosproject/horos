@@ -52,7 +52,7 @@ const OFConditionConst DIMSEE_BADCOMMANDTYPE(               OFM_dcmnet, DIMSEC_B
 const OFConditionConst DIMSEE_BADDATA(                      OFM_dcmnet, DIMSEC_BADDATA,                      OF_error, "DIMSE Inappropriate data for message");
 const OFConditionConst DIMSEE_BADMESSAGE(                   OFM_dcmnet, DIMSEC_BADMESSAGE,                   OF_error, "DIMSE Badly formed message");
 const OFConditionConst DIMSEE_ILLEGALASSOCIATION(           OFM_dcmnet, DIMSEC_ILLEGALASSOCIATION,           OF_error, "DIMSE Caller passed in an illegal association");
-const OFConditionConst DIMSEE_NODATAAVAILABLE(              OFM_dcmnet, DIMSEC_NODATAAVAILABLE,              OF_error, "DIMSE No data available (timout in non-blocking mode)");
+const OFConditionConst DIMSEE_NODATAAVAILABLE(              OFM_dcmnet, DIMSEC_NODATAAVAILABLE,              OF_error, "DIMSE No data available (timeout in non-blocking mode). Try to increase the timeout parameter in the Listener Preferences.");
 const OFConditionConst DIMSEE_NOVALIDPRESENTATIONCONTEXTID( OFM_dcmnet, DIMSEC_NOVALIDPRESENTATIONCONTEXTID, OF_error, "DIMSE No valid Presentation Context ID");
 const OFConditionConst DIMSEE_NULLKEY(                      OFM_dcmnet, DIMSEC_NULLKEY,                      OF_error, "DIMSE Caller passed in a NULL key");
 const OFConditionConst DIMSEE_OUTOFRESOURCES(               OFM_dcmnet, DIMSEC_OUTOFRESOURCES,               OF_error, "DIMSE Out of resources");

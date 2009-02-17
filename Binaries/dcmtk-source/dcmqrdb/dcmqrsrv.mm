@@ -167,6 +167,29 @@ void DcmQueryRetrieveSCP::unlockFile(void)
 	while( fileExist == YES && inc < 100000);
 }
 
+void DcmQueryRetrieveSCP::writeErrorMessage( const char *str)
+{
+	char dir[ 1024];
+	sprintf( dir, "%s", "/tmp/error_message");
+	unlink( dir);
+	
+	FILE * pFile = fopen (dir,"w+");
+	if( pFile)
+	{
+		fprintf(pFile, str);
+		fclose (pFile);
+	}
+}
+
+NSString* DcmQueryRetrieveSCP::getErrorMessage()
+{
+	NSString *str = [NSString stringWithContentsOfFile: @"/tmp/error_message"];
+	
+	[[NSFileManager defaultManager] removeFileAtPath: @"/tmp/error_message" handler: nil];
+	
+	return str;
+}
+
 void DcmQueryRetrieveSCP::waitUnlockFileWithPID(int pid)
 {
 	BOOL fileExist = YES;
@@ -533,11 +556,14 @@ OFCondition DcmQueryRetrieveSCP::storeSCP(T_ASC_Association * assoc, T_DIMSE_C_S
 
     /* we must still retrieve the data set even if some error has occured */
 
-    if (options_.bitPreserving_) { /* the bypass option can be set on the command line */
+    if (options_.bitPreserving_)
+	{ /* the bypass option can be set on the command line */
         cond = DIMSE_storeProvider(assoc, presId, request, imageFileName, (int)options_.useMetaheader_,
                                    NULL, storeCallback,
                                    (void*)&context, options_.blockMode_, options_.dimse_timeout_);
-    } else {
+    }
+	else
+	{
         cond = DIMSE_storeProvider(assoc, presId, request, (char *)NULL, (int)options_.useMetaheader_,
                                    &dset, storeCallback,
                                    (void*)&context, options_.blockMode_, options_.dimse_timeout_);
@@ -545,10 +571,14 @@ OFCondition DcmQueryRetrieveSCP::storeSCP(T_ASC_Association * assoc, T_DIMSE_C_S
 	
 	static_cast<DcmQueryRetrieveOsiriXDatabaseHandle *>(&dbHandle) -> updateLogEntry(dset);
 
-    if (cond.bad()) {
+    if (cond.bad())
+	{
         DcmQueryRetrieveOptions::errmsg("Store SCP Failed:");
         DimseCondition::dump(cond);
+		
+		writeErrorMessage( cond.text());
     }
+	
     if (!options_.ignoreStoreData_ && (cond.bad() || (context.getStatus() != STATUS_Success)))
     {
       /* remove file */
@@ -1256,6 +1286,11 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
         {
             /* don't spawn a sub-process to handle the association */
             cond = handleAssociation(assoc, options_.correctUIDPadding_);
+			
+			NSString *str = getErrorMessage();
+			
+			if( str)
+				NSRunAlertPanel( NSLocalizedString( @"DICOM Network Error", nil), str, NSLocalizedString( @"OK", nil), nil, nil);
         }
 #ifdef HAVE_FORK
         else
@@ -1286,6 +1321,10 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
                 processtable_.addProcessToTable(pid, assoc);
 				
 				waitUnlockFileWithPID( pid);
+				
+				NSString *str = getErrorMessage();
+				if( str)
+					NSRunAlertPanel( NSLocalizedString( @"DICOM Network Error", nil), str, NSLocalizedString( @"OK", nil), nil, nil);
             }
             else
             {

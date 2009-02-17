@@ -110,7 +110,9 @@ private:
   void unlockFile(void);
   void waitUnlockFile(void);
   void waitUnlockFileWithPID(int pid);
-	
+  void writeErrorMessage( const char *str);
+  NSString* getErrorMessage();
+  
   /** perform association negotiation for an incoming A-ASSOCIATE request based
    *  on the SCP configuration and option flags. No A-ASSOCIATE response is generated,
    *  this is left to the caller.
