@@ -9771,6 +9771,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	unsigned char* currentAlphaTable = alphaTable;
 	
+	BOOL modifiedSourceImage = curDCM.needToCompute8bitRepresentation;
 	BOOL intFULL32BITPIPELINE = FULL32BITPIPELINE;
 	
 	if( [ViewerController numberOf2DViewer] > 3)
@@ -9979,6 +9980,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 		src.width = curDCM.pwidth;
 		src.height = curDCM.pheight;
+		
+		if( modifiedSourceImage == YES)
+			TextureComputed32bitPipeline = NO;
 		
 		if( (isRGB == YES) || ([curDCM thickSlabVRActivated] == YES))
 		{
