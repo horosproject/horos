@@ -2291,9 +2291,14 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		{
 			if( spline) ptsTemp = [roi splinePoints];
 			else ptsTemp = [roi points];
-
+			
+			for(MyPoint *pt in ptsTemp)
+			{
+				NSLog( @"%@", pt);
+			}
+			
 			no = ptsTemp.count;
-
+			
 			ptsInt = (struct NSPointInt*) malloc( no * sizeof( struct NSPointInt));
 
 			for( long i = 0; i < no; i++ )

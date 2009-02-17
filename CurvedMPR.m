@@ -314,7 +314,6 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 	long long	size;
 	long		newX, newY, i, x, y, z, xInc, noOfPoints, imageCounter = 0;
 	NSData		*newData;
-	//NSArray		*pts = [selectedROI points];
 	NSArray		*pts = [selectedROI splinePoints];
 	
 	// Compute size of the curved MPR image
@@ -615,7 +614,6 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 	double		length;
 	long		size, newX, newY, i, j, x, y, xInc, noOfPoints, thick;
 	NSData		*newData;
-	//NSArray		*pts = [selectedROI points];
 	NSArray		*pts = [selectedROI splinePoints];
 	
 	// Compute size of the curved MPR image
@@ -714,7 +712,7 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 						
 						startX = [[pts objectAtIndex:i] x];
 						startY = [[pts objectAtIndex:i] y];
-											
+						
 						width = [[pixList objectAtIndex: 0] pwidth];
 						height = [[pixList objectAtIndex: 0] pheight];
 
@@ -786,7 +784,6 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 				{
 					double rightLeftX, rightLeftY;
 					long xInt, yInt;
-					//long width, height;
 					
 					if( sideX >= 0)
 					{
@@ -807,17 +804,11 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 					
 					if( yInt >= 0 && yInt < height-1 && xInt >= 0 && xInt < width+1)
 					{
-						//long maxY;
-//						if(view==0)
-//							maxY = [pixList count];
-//						else if(view==1)
-//							maxY = [[pixList objectAtIndex: 0] pheight];
-//						else if(view==2)
-//							maxY = [[pixList objectAtIndex: 0] pwidth];
 						long yx1 = yInt * width + xInt+1;
 						long yx = yInt * width + xInt;
 						long y1x1 =  (yInt+1) * width + xInt+1;
 						long y1x = (yInt+1) * width + xInt;
+						
 						double rightLeftXInv = 1.0 - rightLeftX;
 						double rightLeftYInv = 1.0 - rightLeftY;
 						
@@ -1062,7 +1053,7 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 	pixList = [NSMutableArray array];
 	volumeData = nil;
 
-	float factor = 0.5;
+	float factor = 1.0;
 	while ( ![ViewerController resampleDataFromPixArray:pix fileArray:files inPixArray:pixList fileArray:fileList data:&volumeData withXFactor:factor yFactor:factor zFactor:1.0] && factor<=0.8)
 	{
 		factor += 0.1;
@@ -1088,7 +1079,7 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 
 	selectedROI = [NSUnarchiver unarchiveObjectWithData: [NSArchiver archivedDataWithRootObject: roi]];
 	
-	[selectedROI setOriginAndSpacing:[[pixList objectAtIndex:0] pixelSpacingX] : [[pixList objectAtIndex:0] pixelSpacingY] :NSMakePoint([[pixList objectAtIndex:0] originX], [[pixList objectAtIndex:0] originY])];
+	[selectedROI setOriginAndSpacing:[[pixList objectAtIndex:0] pixelSpacingX] : [[pixList objectAtIndex:0] pixelSpacingY] :[roi imageOrigin]];
 	
 	[selectedROI retain];
 	

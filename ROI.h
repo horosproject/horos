@@ -138,6 +138,7 @@ enum
 	int				originalIndexForAlias;
 }
 
+@property NSPoint imageOrigin;
 @property(readonly) int textureWidth, textureHeight;
 @property(readonly) int textureDownRightCornerX,textureDownRightCornerY, textureUpLeftCornerX, textureUpLeftCornerY;
 @property(readonly) unsigned char *textureBuffer;
