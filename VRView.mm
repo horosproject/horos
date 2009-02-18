@@ -5370,7 +5370,7 @@ public:
 		Line2DActor->GetPositionCoordinate()->SetCoordinateSystemToDisplay();
 		Line2DActor->SetMapper( Line2D);
 		Line2DActor->GetProperty()->SetPointSize( 6);	//vtkProperty2D
-		Line2DActor->GetProperty()->SetLineWidth( 3);
+		Line2DActor->GetProperty()->SetLineWidth( 2.5);
 		Line2DActor->GetProperty()->SetColor(1,1,0);
 
 		Line2DText = vtkTextActor::New();

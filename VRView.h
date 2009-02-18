@@ -188,7 +188,6 @@ typedef char* vtkMyCallbackVR;
 	double						blendingtable[256][3];
 	
 	BOOL						needToFlip, blendingNeedToFlip, firstTime;
-//	vtkImageFlip				*flip, *blendingFlip;
 	
 	IBOutlet NSWindow			*export3DWindow;
 	IBOutlet NSSlider			*framesSlider;
@@ -273,8 +272,6 @@ typedef char* vtkMyCallbackVR;
 	
 	double						camPosition[ 3], camFocal[ 3];
 	
-//	NSDate						*startRenderingTime;
-	
 	NSMutableArray				*ROIPoints;
 	
 	vtkPolyData					*ROI3DData;
@@ -285,7 +282,6 @@ typedef char* vtkMyCallbackVR;
 	vtkPolyDataMapper2D			*Line2D;
 	vtkActor2D					*Line2DActor;
 	vtkTextActor				*Line2DText;
-//	vtkCallbackCommand			*cbStart;
 	
 	BOOL						clamping;
 	
