@@ -375,6 +375,65 @@ public:
 	}
 }
 
+- (void) adaptLine2DToResize:(NSRect) newFrame before: (NSRect) beforeFrame
+{
+	vtkPoints *pts = Line2DData->GetPoints();
+
+	if( pts->GetNumberOfPoints() == 2)
+	{
+		double pt1[ 3];
+		pts->GetPoint( 0, pt1);
+		
+		double pt2[ 3];
+		pts->GetPoint( 1, pt2);
+		
+		pts = vtkPoints::New();
+		vtkCellArray *rect = vtkCellArray::New();
+		Line2DData-> SetPoints( pts);		pts->Delete();
+		Line2DData-> SetLines( rect);		rect->Delete();
+		
+		pts = Line2DData->GetPoints();
+		
+		pts->InsertPoint( pts->GetNumberOfPoints(), pt1[0] + (newFrame.size.width - beforeFrame.size.width)/2, pt1[ 1] + (newFrame.size.height - beforeFrame.size.height)/2 , 0);
+		pts->InsertPoint( pts->GetNumberOfPoints(), pt2[0] + (newFrame.size.width - beforeFrame.size.width)/2, pt2[ 1] + (newFrame.size.height - beforeFrame.size.height)/2, 0);
+		
+		rect = vtkCellArray::New();
+		rect->InsertNextCell( pts->GetNumberOfPoints()+1);
+		for( int i = 0; i < pts->GetNumberOfPoints(); i++) rect->InsertCellPoint( i);
+		rect->InsertCellPoint( 0);
+		
+		Line2DData->SetVerts( rect);
+		Line2DData->SetLines( rect);		rect->Delete();			
+		
+		Line2DData->SetPoints( pts);
+		
+		// Move the text
+		
+		pts->GetPoint( 0, pt1);
+		pts->GetPoint( 1, pt2);
+		
+		Line2DText->GetPositionCoordinate()->SetCoordinateSystemToViewport();
+		if( pt1[ 0] > pt2[ 0]) Line2DText->GetPositionCoordinate()->SetValue( pt1[0] + 3, pt1[ 1]);
+		else Line2DText->GetPositionCoordinate()->SetValue( pt2[0], pt2[ 1]);
+	}
+	else
+	{
+		// Delete
+		
+		pts = vtkPoints::New();
+		vtkCellArray *rect = vtkCellArray::New();
+		Line2DData-> SetPoints( pts);		pts->Delete();
+		Line2DData-> SetLines( rect);		rect->Delete();	
+	}
+}
+
+- (void) setFrame: (NSRect) r
+{
+	[self adaptLine2DToResize: r before: [self frame]];
+	
+	[super setFrame: r];
+}
+
 - (BOOL) croppingBox:(double*) a
 {
 	BOOL validBox = [VRView getCroppingBox: a :volume :croppingBox];
@@ -2818,9 +2877,8 @@ public:
 	[drawLock lock];
 	
 	if( snCloseEventTimer)
-	{
 		[snCloseEventTimer fire];
-	}
+	
 	snStopped = YES;
 	
     NSPoint		mouseLoc, mouseLocPre;
@@ -2831,8 +2889,10 @@ public:
 	noWaitDialog = YES;
 	tool = currentTool;
 		
-	if ([theEvent type] == NSLeftMouseDown) {
-		if (_mouseDownTimer) {
+	if ([theEvent type] == NSLeftMouseDown)
+	{
+		if (_mouseDownTimer)
+		{
 			[self deleteMouseDownTimer];
 		}
 		
