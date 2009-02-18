@@ -5576,7 +5576,7 @@ static NSArray*	statesArray = nil;
 	needDBRefresh = YES;
 	
 	[animationCheck setState: NSOffState];
-
+	
 	[context retain];
 	[context lock];
 	
