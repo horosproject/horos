@@ -196,6 +196,7 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 	static NSString *SpatialFiducialsStorage = @"1.2.840.10008.5.1.4.1.1.66.2";
 	static NSString *OphthalmicPhotography8BitImageStorage = @"1.2.840.10008.5.1.4.1.1.77.1.5.1";
 	static NSString *OphthalmicPhotography16BitImageStorage = @"1.2.840.10008.5.1.4.1.1.77.1.5.2";
+	static NSString *FujiPrivateCR = @"1.2.392.200036.9125.1.1.2";
 	static NSString *StereometricRelationshipStorage = @"1.2.840.10008.5.1.4.1.1.77.1.5.3";
 	static NSString *ProcedureLogStorage = @"1.2.840.10008.5.1.4.1.1.88.40";
 	static NSString *InstanceAvailabilityNotification = @"1.2.840.10008.5.1.4.33";
@@ -420,6 +421,7 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 			PDFStorageClassUID ,
 			OphthalmicPhotography8BitImageStorage,
 			OphthalmicPhotography16BitImageStorage,
+			FujiPrivateCR,
 			nil];
 	}
 
