@@ -9251,9 +9251,10 @@ short				matrix[25];
 -(void) ActivateBlending:(ViewerController*) bC
 {
 	if( bC == self) return;
+	if( blendingController == bC) return;
 	
-//	[self checkEverythingLoaded];
-//	[bC checkEverythingLoaded];
+	if( blendingController && bC)
+		[self ActivateBlending: nil];
 	
 	[imageView sendSyncMessage:0];
 	
