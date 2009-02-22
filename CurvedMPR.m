@@ -498,7 +498,10 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 						[pix setFrameNo: imageCounter];
 						[pix setID: imageCounter];
 						[pix copySUVfrom: firstObject];
-						
+						[pix setSourceFile: [firstObject sourceFile]];
+						[pix setImageObj: [firstObject imageObj]];
+						[pix reloadAnnotations];
+			
 						// Set Origin & Orientation
 						float location[ 3 ];
 						[[pixList objectAtIndex: [pixList count]-1] convertPixX: xPosA pixY: yPosA toDICOMCoords: location pixelCenter: NO];
@@ -929,6 +932,9 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 			[pix setTot: thickSlab];
 			[pix setFrameNo: thick];
 			[pix setID: thick];
+			[pix setSourceFile: [firstObject sourceFile]];
+			[pix setImageObj: [firstObject imageObj]];
+			[pix reloadAnnotations];
 		//	[pix setSliceLocation: thick * [firstObject pixelSpacingX]];
 			
 			float newVector[ 9];

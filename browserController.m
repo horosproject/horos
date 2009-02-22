@@ -6390,8 +6390,8 @@ static NSArray*	statesArray = nil;
 			
 			if( [seriesToOpen count] > 0 && [viewersToLoad count] == [seriesToOpen count])
 			{
-				WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Opening...", nil)];
-				[wait showWindow:self];
+				if( waitOpeningWindow == nil) waitOpeningWindow  = [[WaitRendering alloc] init: NSLocalizedString(@"Opening...", nil)];
+				[waitOpeningWindow showWindow:self];
 				
 				[AppController sharedAppController].checkAllWindowsAreVisibleIsOff = YES;
 				
@@ -6460,8 +6460,9 @@ static NSArray*	statesArray = nil;
 				if( [displayedViewers count] > 0)
 					[[[displayedViewers objectAtIndex: 0] window] makeKeyAndOrderFront: self];
 				
-				[wait close];
-				[wait release];
+				[waitOpeningWindow close];
+				[waitOpeningWindow release];
+				waitOpeningWindow = nil;
 				
 				windowsStateApplied = YES;
 			}
@@ -10521,12 +10522,12 @@ static BOOL needToRezoom;
 {
 	long				numberImages;
 	BOOL				movieError = NO;
-
-	WaitRendering		*wait = nil;
 	
 	if( [toOpenArray count] > 2)
-		wait = [[WaitRendering alloc] init: NSLocalizedString(@"Opening...", nil)];
-	[wait showWindow:self];
+	{
+		if( waitOpeningWindow == nil) waitOpeningWindow = [[WaitRendering alloc] init: NSLocalizedString(@"Opening...", nil)];
+	}
+	[waitOpeningWindow showWindow:self];
 
 	numberImages = 0;
 	if( movieViewer == YES) // First check if all series contain same amount of images
@@ -10747,9 +10748,9 @@ static BOOL needToRezoom;
 			
 			if( [splittedSeries count] > 1)
 			{
-				[wait close];
-				[wait release];
-				wait = nil;
+				[waitOpeningWindow close];
+				[waitOpeningWindow release];
+				waitOpeningWindow = nil;
 				
 				[subOpenMatrix3D renewRows: 1 columns: [splittedSeries count]];
 				[subOpenMatrix3D sizeToCells];
@@ -10894,8 +10895,8 @@ static BOOL needToRezoom;
 						
 					case 6:
 						
-						wait = [[WaitRendering alloc] init: NSLocalizedString(@"Opening...", nil)];
-						[wait showWindow:self];
+						if( waitOpeningWindow == nil) waitOpeningWindow = [[WaitRendering alloc] init: NSLocalizedString(@"Opening...", nil)];
+						[waitOpeningWindow showWindow:self];
 						
 						for( NSArray *array in splittedSeries)
 						{
@@ -10919,8 +10920,8 @@ static BOOL needToRezoom;
 							
 							if( openAllWindows)
 							{
-								wait = [[WaitRendering alloc] init: NSLocalizedString(@"Opening...", nil)];
-								[wait showWindow:self];
+								if( waitOpeningWindow == nil) waitOpeningWindow = [[WaitRendering alloc] init: NSLocalizedString(@"Opening...", nil)];
+								[waitOpeningWindow showWindow:self];
 								
 								for( int i = 0; i < [[splittedSeries objectAtIndex: 0] count]; i++)
 								{
@@ -10947,8 +10948,9 @@ static BOOL needToRezoom;
 	if( movieError == NO && toOpenArray != nil )
 		[self openViewerFromImages :toOpenArray movie: movieViewer viewer :viewer keyImagesOnly:NO];
 		
-	[wait close];
-	[wait release];
+	[waitOpeningWindow close];
+	[waitOpeningWindow release];
+	waitOpeningWindow = nil;
 }
 
 - (void) viewerDICOMInt:(BOOL) movieViewer dcmFile:(NSArray *)selectedLines viewer:(ViewerController*) viewer
@@ -11326,6 +11328,8 @@ static NSArray*	openSubSeriesArray = nil;
 
 - (NSArray*)openSubSeries: (NSArray*)toOpenArray
 {
+	[[waitOpeningWindow window] orderOut: self];
+	
 	openSubSeriesArray = [toOpenArray retain];
 	
 	if( [[NSApp mainWindow] level] > NSModalPanelWindowLevel){ NSBeep(); return nil;}		// To avoid the problem of displaying this sheet when the user is in fullscreen mode
@@ -11349,6 +11353,8 @@ static NSArray*	openSubSeriesArray = nil;
 	
 	[NSApp endSheet: subSeriesWindow];
 	[subSeriesWindow orderOut: self];
+	
+	[[waitOpeningWindow window] orderBack: self];
 	
 	if( result == NSRunStoppedResponse )
 	{

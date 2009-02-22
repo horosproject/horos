@@ -1259,6 +1259,12 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 {
 	int	i;
 	
+	if ([[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] == annotNone)
+	{
+		[[NSUserDefaults standardUserDefaults] setInteger: annotGraphics forKey: @"ANNOTATIONS"];
+		[DCMView setDefaults];
+	}
+	
 	// Unselect all ROIs
 	for( i = 0 ; i < [curRoiList count] ; i++) [[curRoiList objectAtIndex: i] setROIMode: ROI_sleep];
 	
@@ -3432,15 +3438,18 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		if( [[self windowController] windowWillClose]) return;
 	}
 	
-	if( [self is2DViewer] == YES && [event type] == NSLeftMouseDown && ([event modifierFlags]& NSDeviceIndependentModifierFlagsMask) == 0)
+	if( [self is2DViewer] == YES && [event type] == NSLeftMouseDown)
 	{
-		NSPoint tempPt = [[[event window] contentView] convertPoint: [event locationInWindow] toView:self];
-		tempPt = [self ConvertFromNSView2GL:tempPt];
-		
-		NSMutableDictionary	*dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithFloat:tempPt.y], @"Y", [NSNumber numberWithLong:tempPt.x],@"X", [NSNumber numberWithBool: NO], @"stopMouseDown", nil];
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"mouseDown" object: [self windowController] userInfo: dict];
-		
-		if( [[dict valueForKey:@"stopMouseDown"] boolValue]) return;
+		if( ([event modifierFlags] & NSShiftKeyMask) == 0 && ([event modifierFlags] & NSControlKeyMask) == 0 && ([event modifierFlags] & NSAlternateKeyMask) == 0 && ([event modifierFlags] & NSCommandKeyMask) == 0)
+		{
+			NSPoint tempPt = [[[event window] contentView] convertPoint: [event locationInWindow] toView:self];
+			tempPt = [self ConvertFromNSView2GL:tempPt];
+			
+			NSMutableDictionary	*dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithFloat:tempPt.y], @"Y", [NSNumber numberWithLong:tempPt.x],@"X", [NSNumber numberWithBool: NO], @"stopMouseDown", nil];
+			[[NSNotificationCenter defaultCenter] postNotificationName: @"mouseDown" object: [self windowController] userInfo: dict];
+			
+			if( [[dict valueForKey:@"stopMouseDown"] boolValue]) return;
+		}
 	}
 	
 	if (_mouseDownTimer)

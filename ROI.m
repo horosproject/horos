@@ -1150,12 +1150,19 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		name = [[NSString alloc] initWithString:tName];
 		displayTextualData = YES;
 		
-		thickness = ROIRegionThickness;	//[[NSUserDefaults standardUserDefaults] floatForKey: @"ROIRegionThickness"];
-		color.red = ROIRegionColorR;	//[[NSUserDefaults standardUserDefaults] floatForKey: @"ROIRegionColorR"];
-		color.green = ROIRegionColorG;	//[[NSUserDefaults standardUserDefaults] floatForKey: @"ROIRegionColorG"];
-		color.blue = ROIRegionColorB;	//[[NSUserDefaults standardUserDefaults] floatForKey: @"ROIRegionColorB"];
-		opacity = ROIRegionOpacity;		//[[NSUserDefaults standardUserDefaults] floatForKey: @"ROIRegionOpacity"];
+		thickness = ROIRegionThickness;	//;
+		color.red = ROIRegionColorR;	//;
+		color.green = ROIRegionColorG;	//;
+		color.blue = ROIRegionColorB;	//;
+		opacity = ROIRegionOpacity;		//;
 	}
+	
+	if ([[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] == annotNone)
+	{
+		[[NSUserDefaults standardUserDefaults] setInteger: annotGraphics forKey: @"ANNOTATIONS"];
+		[DCMView setDefaults];
+	}
+		
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: nil];
 	return self;
 }
@@ -1275,6 +1282,12 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		}
 		
 		displayTextualData = YES;
+		
+		if ([[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] == annotNone)
+		{
+			[[NSUserDefaults standardUserDefaults] setInteger: annotGraphics forKey: @"ANNOTATIONS"];
+			[DCMView setDefaults];
+		}
     }
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: nil];
     return self;

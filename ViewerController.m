@@ -7522,6 +7522,9 @@ static ViewerController *draggedController = nil;
 				{
 					interval = [[pixList[ z] objectAtIndex:0] originX] - [[pixList[ z] objectAtIndex:1] originX];
 					
+					if( interval == 0 && [pixList[ z] count] > 2)
+						interval = [[pixList[ z] objectAtIndex:1] originX] - [[pixList[ z] objectAtIndex:2] originX];
+					
 					if( vectors[6] > 0) interval = -( interval);
 					else interval = ( interval);
 					
@@ -7536,6 +7539,9 @@ static ViewerController *draggedController = nil;
 				if( fabs( vectors[7]) > fabs(vectors[6]) && fabs( vectors[7]) > fabs(vectors[8]))
 				{
 					interval = [[pixList[ z] objectAtIndex:0] originY] - [[pixList[ z] objectAtIndex:1] originY];
+					
+					if( interval == 0 && [pixList[ z] count] > 2)
+						interval = [[pixList[ z] objectAtIndex:1] originY] - [[pixList[ z] objectAtIndex:2] originY];
 					
 					if( vectors[7] > 0) interval = -( interval);
 					else interval = ( interval);
@@ -7552,6 +7558,9 @@ static ViewerController *draggedController = nil;
 				{
 					interval = [[pixList[ z] objectAtIndex:0] originZ] - [[pixList[ z] objectAtIndex:1] originZ];
 					
+					if( interval == 0 && [pixList[ z] count] > 2)
+						interval = [[pixList[ z] objectAtIndex:1] originZ] - [[pixList[ z] objectAtIndex:2] originZ];
+						
 					if( vectors[8] > 0) interval = -( interval);
 					else interval = ( interval);
 					
@@ -7590,6 +7599,15 @@ static ViewerController *draggedController = nil;
 				double zd = [[pixList[ z] objectAtIndex: 1] originZ] - [[pixList[ z] objectAtIndex: 0] originZ];
 				
 				interval3d = sqrt(xd*xd + yd*yd + zd*zd);
+				
+				if( interval3d == 0 && [pixList[ z] count] > 2)
+				{
+					xd = [[pixList[ z] objectAtIndex: 2] originX] - [[pixList[ z] objectAtIndex: 1] originX];
+					yd = [[pixList[ z] objectAtIndex: 2] originY] - [[pixList[ z] objectAtIndex: 1] originY];
+					zd = [[pixList[ z] objectAtIndex: 2] originZ] - [[pixList[ z] objectAtIndex: 1] originZ];
+				
+					interval3d = sqrt(xd*xd + yd*yd + zd*zd);
+				}
 				
 				xd /= interval3d;
 				yd /= interval3d;

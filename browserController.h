@@ -31,6 +31,7 @@
 @class StructuredReportController;
 @class BrowserMatrix;
 @class PluginManagerController;
+@class WaitRendering;
 
 enum RootTypes{PatientRootType, StudyRootType, RandomRootType};
 enum simpleSearchType {PatientNameSearch, PatientIDSearch};
@@ -237,6 +238,8 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	
 	IBOutlet PluginManagerController *pluginManagerController;
 	NSTimeInterval					lastCheckIncoming;
+	
+	WaitRendering					*waitOpeningWindow;
 }
 
 @property(readonly) NSDateFormatter *DateTimeFormat;
