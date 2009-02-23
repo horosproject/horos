@@ -7861,7 +7861,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			{
 				if( clutBars == barFused || clutBars == barBoth)
 				{
-					unsigned char	*bred, *bgreen, *bblue;
+					unsigned char	*bred = nil, *bgreen = nil, *bblue = nil;
 					float			heighthalf = drawingFrameRect.size.height/2 - 1;
 					float			widthhalf = drawingFrameRect.size.width/2 - 1;
 					float			bwl, bww;
@@ -7869,6 +7869,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					
 					if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut Mode"] isEqualToString: @"B/W Inverse"])
 					{
+						if( PETredTable == nil)
+							[DCMView computePETBlendingCLUT];
+						
 						bred = PETredTable;
 						bgreen = PETgreenTable;
 						bblue = PETblueTable;
@@ -7882,12 +7885,15 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					
 					glLineWidth(1.0);
 					glBegin(GL_LINES);
-					for( long i = 0; i < 256; i++ )
+					if( bred)
 					{
-						glColor3ub ( bred[ i], bgreen[ i], bblue[ i]);
-						
-						glVertex2f(  -widthhalf + BBARPOSX1, heighthalf - (-128.f + i));
-						glVertex2f(  -widthhalf + BBARPOSX2, heighthalf - (-128.f + i));
+						for( long i = 0; i < 256; i++ )
+						{
+							glColor3ub ( bred[ i], bgreen[ i], bblue[ i]);
+							
+							glVertex2f(  -widthhalf + BBARPOSX1, heighthalf - (-128.f + i));
+							glVertex2f(  -widthhalf + BBARPOSX2, heighthalf - (-128.f + i));
+						}
 					}
 					glColor3ub ( 128, 128, 128);
 					glVertex2f(  -widthhalf + BBARPOSX1, heighthalf - -128.f);		glVertex2f(  -widthhalf + BBARPOSX2 , heighthalf - -128.f);
