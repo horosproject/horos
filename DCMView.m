@@ -5603,16 +5603,16 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	}
 	else
 	{
-		int i;
-		NSArray *array;
-		
 		PETredTable = malloc( 256);
 		PETgreenTable = malloc( 256);
 		PETblueTable = malloc( 256);
 		
-		for( i = 0; i < 256; i++) PETredTable[i] = i;
-		for( i = 0; i < 256; i++) PETgreenTable[i] = 0;
-		for( i = 0; i < 256; i++) PETblueTable[i] = 255 - i;
+		for(int i = 0; i < 256; i++)
+		{
+			PETredTable[i] = i;
+			PETgreenTable[i] = i;
+			PETblueTable[i] = i;
+		}
 	}
 }
 
@@ -7909,6 +7909,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 							glVertex2f(  -widthhalf + BBARPOSX2, heighthalf - (-128.f + i));
 						}
 					}
+					else
+						NSLog( @"bred == nil");
+					
 					glColor3ub ( 128, 128, 128);
 					glVertex2f(  -widthhalf + BBARPOSX1, heighthalf - -128.f);		glVertex2f(  -widthhalf + BBARPOSX2 , heighthalf - -128.f);
 					glVertex2f(  -widthhalf + BBARPOSX1, heighthalf - 127.f);		glVertex2f(  -widthhalf + BBARPOSX2 , heighthalf - 127.f);
