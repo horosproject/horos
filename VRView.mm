@@ -1974,9 +1974,15 @@ public:
 		
 		////////////////
 		
+		int opacityCopy[ 32767];
 		unsigned short *o = volumeMapper->GetScalarOpacityTable( 0);	// Fake the opacity table to have full '16-bit' image
+		memcpy( opacityCopy, o, 32767 * sizeof( int));
 		for(int i = 0 ; i < 32767; i++)
 			o[ i] = i;
+		
+		volumeMapper->Render( aRenderer, volume);
+		
+		memcpy( o, opacityCopy, 32767 * sizeof( int));
 		
 		vtkFixedPointRayCastImage *rayCastImage = volumeMapper->GetRayCastImage();
 		
@@ -2002,12 +2008,6 @@ public:
 			{
 				int tmp = (((float) *(iptr+0)) * valueFactor) - OFFSET16;
 				
-//				if( tmp < min)
-//					min = tmp;
-//				
-//				if( tmp > max)
-//					max = tmp;
-				
 				if( tmp >= 256)
 					tmp = 255;
 				else if( tmp < 0)
@@ -2020,8 +2020,6 @@ public:
 				iptr+=4;
 			}
 		}
-		
-//		NSLog( @"min = %f, max = %f", min, max);
 		
 		NSBitmapImageRep *rep = [[[NSBitmapImageRep alloc] initWithBitmapDataPlanes: &destFixedPtr pixelsWide:size[ 0] pixelsHigh:size[ 1] bitsPerSample:8 samplesPerPixel:3 hasAlpha:NO isPlanar:NO colorSpaceName: NSCalibratedRGBColorSpace bytesPerRow:size[ 0]*3*8/8 bitsPerPixel:3*8] autorelease];
 		
@@ -5541,11 +5539,15 @@ public:
 
 - (float*) imageInFullDepthWidth: (long*) w height:(long*) h
 {
+	int opacityCopy[ 32767];
 	unsigned short *o = volumeMapper->GetScalarOpacityTable( 0);	// Fake the opacity table to have full '16-bit' image
+	memcpy( opacityCopy, o, 32767 * sizeof( int));
 	for(int i = 0 ; i < 32767; i++)
 		o[ i] = i;
 	
 	volumeMapper->Render( aRenderer, volume);
+	
+	memcpy( o, opacityCopy, 32767 * sizeof( int));
 	
 	vtkFixedPointRayCastImage *rayCastImage = volumeMapper->GetRayCastImage();
 	
@@ -5570,14 +5572,7 @@ public:
 			
 			for ( int i = 0; i < size[0]; i++ )
 			{
-				float tmp = (((float) *(iptr+0)) * valueFactor) - OFFSET16;
-				
-				if( tmp >= 256)
-					tmp = 255;
-				else if( tmp < 0)
-					tmp = 0;
-				
-				*destPtr++ = tmp;
+				*destPtr++ = (((float) *(iptr+0)) * valueFactor) - OFFSET16;
 				
 				iptr+=4;
 			}
