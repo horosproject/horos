@@ -343,6 +343,7 @@ typedef char* vtkMyCallbackVR;
 - (BOOL) croppingBox:(double*) a;
 
 - (NSDictionary*) exportDCMCurrentImage;
+- (NSDictionary*) exportDCMCurrentImageIn16bit: (BOOL) fullDepth;
 - (void) renderImageWithBestQuality: (BOOL) best waitDialog: (BOOL) wait;
 - (void) endRenderImageWithBestQuality;
 - (void) resetAutorotate:(id) sender;

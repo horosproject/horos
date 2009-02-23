@@ -990,6 +990,11 @@ public:
 
 - (NSDictionary*) exportDCMCurrentImage
 {
+	return [self exportDCMCurrentImageIn16bit : NO];
+}
+
+- (NSDictionary*) exportDCMCurrentImageIn16bit: (BOOL) fullDepth
+{
 	long width, height, spp, bpp;
 	float o[ 9];
 	NSString *sopuid = nil;
@@ -998,7 +1003,7 @@ public:
 	if( exportDCM == nil) exportDCM = [[DICOMExport alloc] init];
 	
 	[self renderImageWithBestQuality: bestRenderingMode waitDialog: NO];
-	unsigned char *dataPtr = [self getRawPixels:&width :&height :&spp :&bpp :YES :YES];
+	unsigned char *dataPtr = [self getRawPixels:&width :&height :&spp :&bpp :YES : !fullDepth];
 	[self endRenderImageWithBestQuality];
 	
 	NSMutableArray *producedFiles = [NSMutableArray array];
@@ -1969,6 +1974,10 @@ public:
 		
 		////////////////
 		
+		unsigned short *o = volumeMapper->GetScalarOpacityTable( 0);	// Fake the opacity table to have full '16-bit' image
+		for(int i = 0 ; i < 32767; i++)
+			o[ i] = i;
+		
 		vtkFixedPointRayCastImage *rayCastImage = volumeMapper->GetRayCastImage();
 		
 		unsigned short *im = rayCastImage->GetImage();
@@ -1983,39 +1992,36 @@ public:
 		
 		destPtr = destFixedPtr = (unsigned char*) malloc( fullSize[ 0] * fullSize[ 1] * 3);
 		
+		float min = 1024, max = -1024;
+		
 		for ( int j = 0; j < fullSize[1]; j++ )
 		{
 			iptr = im + 4*j*fullSize[0];
 			
 			for ( int i = 0; i < size[0]; i++ )
 			{
-				int tmp;
-
-				// Red component
-				tmp = (*(iptr+3));
-				*destPtr = tmp / 256;
-
-				// Green component
-				iptr++;
-				destPtr++;
+				int tmp = (((float) *(iptr+0)) * valueFactor) - OFFSET16;
 				
-				tmp = (*(iptr+2));
-				*destPtr = tmp / 256;
-
-				// Green component
-				iptr++;
-				destPtr++;
+//				if( tmp < min)
+//					min = tmp;
+//				
+//				if( tmp > max)
+//					max = tmp;
 				
-				tmp = (*(iptr+1));
-				*destPtr = tmp / 256;
+				if( tmp >= 256)
+					tmp = 255;
+				else if( tmp < 0)
+					tmp = 0;
 				
-				destPtr++;
-				iptr++;
+				*destPtr++ = tmp;
+				*destPtr++ = tmp;
+				*destPtr++ = tmp;
 				
-				// alpha - do nothing
-				iptr++;
+				iptr+=4;
 			}
 		}
+		
+//		NSLog( @"min = %f, max = %f", min, max);
 		
 		NSBitmapImageRep *rep = [[[NSBitmapImageRep alloc] initWithBitmapDataPlanes: &destFixedPtr pixelsWide:size[ 0] pixelsHigh:size[ 1] bitsPerSample:8 samplesPerPixel:3 hasAlpha:NO isPlanar:NO colorSpaceName: NSCalibratedRGBColorSpace bytesPerRow:size[ 0]*3*8/8 bitsPerPixel:3*8] autorelease];
 		
@@ -5533,90 +5539,159 @@ public:
 	return [self nsimageQuicktime];
 }
 
+- (float*) imageInFullDepthWidth: (long*) w height:(long*) h
+{
+	unsigned short *o = volumeMapper->GetScalarOpacityTable( 0);	// Fake the opacity table to have full '16-bit' image
+	for(int i = 0 ; i < 32767; i++)
+		o[ i] = i;
+	
+	volumeMapper->Render( aRenderer, volume);
+	
+	vtkFixedPointRayCastImage *rayCastImage = volumeMapper->GetRayCastImage();
+	
+	unsigned short *im = rayCastImage->GetImage();
+	unsigned short *iptr;
+	float *destPtr, *destFixedPtr;
+	
+	int fullSize[2];
+	rayCastImage->GetImageMemorySize( fullSize);
+	
+	int size[2];
+	rayCastImage->GetImageInUseSize( size);
+	
+	destPtr = destFixedPtr = (float*) malloc( size[0] * fullSize[ 1] * sizeof( float));
+	if( destFixedPtr)
+	{
+		float min = 1024, max = -1024;
+		
+		for ( int j = 0; j < fullSize[1]; j++ )
+		{
+			iptr = im + 4*j*fullSize[0];
+			
+			for ( int i = 0; i < size[0]; i++ )
+			{
+				float tmp = (((float) *(iptr+0)) * valueFactor) - OFFSET16;
+				
+				if( tmp >= 256)
+					tmp = 255;
+				else if( tmp < 0)
+					tmp = 0;
+				
+				*destPtr++ = tmp;
+				
+				iptr+=4;
+			}
+		}
+	}
+	
+	*w = size[0];
+	*h = fullSize[1];
+	
+	return destFixedPtr;
+}
+
 -(unsigned char*) getRawPixels:(long*) width :(long*) height :(long*) spp :(long*) bpp :(BOOL) screenCapture :(BOOL) force8bits
 {
+	unsigned char	*buf = nil;
+	
 	[drawLock lock];
 	
-	unsigned char	*buf = nil;
-	int				i;
+	BOOL fullDepthCapture = NO;
 	
-	NSRect size = [self bounds];
-	
-	*width = (long) size.size.width;
-	*width/=4;
-	*width*=4;
-	*height = (long) size.size.height;
-	*spp = 3;
-	*bpp = 8;
-	
-	[self getVTKRenderWindow]->MakeCurrent();
-//	[[NSOpenGLContext currentContext] flushBuffer];
-	
-	buf = (unsigned char*) malloc( *width * *height * 4 * *bpp/8);
-	if( buf)
+	if( force8bits == NO)	// Only support MIP mode
 	{
-		CGLContextObj cgl_ctx = (CGLContextObj) [[NSOpenGLContext currentContext] CGLContextObj];
+		fullDepthCapture = YES;
 		
-		glReadBuffer(GL_FRONT);
+		if( renderingMode == 0)
+			fullDepthCapture = NO;
+	}
+	
+	if( fullDepthCapture)
+	{
+		float *im = [self imageInFullDepthWidth: width height:height];
+	}
+	else
+	{
+		int				i;
 		
-		#if __BIG_ENDIAN__
-			glReadPixels(0, 0, *width, *height, GL_RGB, GL_UNSIGNED_BYTE, buf);
-		#else
-			glReadPixels(0, 0, *width, *height, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, buf);
-			i = *width * *height;
-			unsigned char	*t_argb = buf;
-			unsigned char	*t_rgb = buf;
-			while( i-->0)
-			{
-				*((int*) t_rgb) = *((int*) t_argb);
-				t_argb+=4;
-				t_rgb+=3;
-			}
-		#endif
+		NSRect size = [self bounds];
 		
-		long rowBytes = *width**spp**bpp/8;
+		*width = (long) size.size.width;
+		*width/=4;
+		*width*=4;
+		*height = (long) size.size.height;
+		*spp = 3;
+		*bpp = 8;
 		
+		[self getVTKRenderWindow]->MakeCurrent();
+	//	[[NSOpenGLContext currentContext] flushBuffer];
+		
+		buf = (unsigned char*) malloc( *width * *height * 4 * *bpp/8);
+		if( buf)
 		{
-			unsigned char	*tempBuf = (unsigned char*) malloc( rowBytes);
+			CGLContextObj cgl_ctx = (CGLContextObj) [[NSOpenGLContext currentContext] CGLContextObj];
 			
-			for( i = 0; i < *height/2; i++)
-			{
-				memcpy( tempBuf, buf + (*height - 1 - i)*rowBytes, rowBytes);
-				memcpy( buf + (*height - 1 - i)*rowBytes, buf + i*rowBytes, rowBytes);
-				memcpy( buf + i*rowBytes, tempBuf, rowBytes);
-			}
+			glReadBuffer(GL_FRONT);
 			
-			free( tempBuf);
-		}
-		
-		//Add the small OsiriX logo at the bottom right of the image
-		NSImage				*logo = [NSImage imageNamed:@"SmallLogo.tif"];
-		NSBitmapImageRep	*TIFFRep = [[NSBitmapImageRep alloc] initWithData: [logo TIFFRepresentation]];
-		
-		for( i = 0; i < [TIFFRep pixelsHigh]; i++)
-		{
-			unsigned char	*srcPtr = ([TIFFRep bitmapData] + i*[TIFFRep bytesPerRow]);
-			unsigned char	*dstPtr = (buf + (*height - [TIFFRep pixelsHigh] + i)*rowBytes + ((*width-10)*3 - [TIFFRep bytesPerRow]));
-			
-			long x = [TIFFRep bytesPerRow]/3;
-			while( x-->0)
-			{
-				if( srcPtr[ 0] != 0 || srcPtr[ 1] != 0 || srcPtr[ 2] != 0)
+			#if __BIG_ENDIAN__
+				glReadPixels(0, 0, *width, *height, GL_RGB, GL_UNSIGNED_BYTE, buf);
+			#else
+				glReadPixels(0, 0, *width, *height, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, buf);
+				i = *width * *height;
+				unsigned char	*t_argb = buf;
+				unsigned char	*t_rgb = buf;
+				while( i-->0)
 				{
-					dstPtr[ 0] = srcPtr[ 0];
-					dstPtr[ 1] = srcPtr[ 1];
-					dstPtr[ 2] = srcPtr[ 2];
+					*((int*) t_rgb) = *((int*) t_argb);
+					t_argb+=4;
+					t_rgb+=3;
+				}
+			#endif
+			
+			long rowBytes = *width**spp**bpp/8;
+			
+			{
+				unsigned char	*tempBuf = (unsigned char*) malloc( rowBytes);
+				
+				for( i = 0; i < *height/2; i++)
+				{
+					memcpy( tempBuf, buf + (*height - 1 - i)*rowBytes, rowBytes);
+					memcpy( buf + (*height - 1 - i)*rowBytes, buf + i*rowBytes, rowBytes);
+					memcpy( buf + i*rowBytes, tempBuf, rowBytes);
 				}
 				
-				dstPtr += 3;
-				srcPtr += 3;
+				free( tempBuf);
 			}
+			
+			//Add the small OsiriX logo at the bottom right of the image
+			NSImage				*logo = [NSImage imageNamed:@"SmallLogo.tif"];
+			NSBitmapImageRep	*TIFFRep = [[NSBitmapImageRep alloc] initWithData: [logo TIFFRepresentation]];
+			
+			for( i = 0; i < [TIFFRep pixelsHigh]; i++)
+			{
+				unsigned char	*srcPtr = ([TIFFRep bitmapData] + i*[TIFFRep bytesPerRow]);
+				unsigned char	*dstPtr = (buf + (*height - [TIFFRep pixelsHigh] + i)*rowBytes + ((*width-10)*3 - [TIFFRep bytesPerRow]));
+				
+				long x = [TIFFRep bytesPerRow]/3;
+				while( x-->0)
+				{
+					if( srcPtr[ 0] != 0 || srcPtr[ 1] != 0 || srcPtr[ 2] != 0)
+					{
+						dstPtr[ 0] = srcPtr[ 0];
+						dstPtr[ 1] = srcPtr[ 1];
+						dstPtr[ 2] = srcPtr[ 2];
+					}
+					
+					dstPtr += 3;
+					srcPtr += 3;
+				}
+			}
+			
+			[TIFFRep release];
 		}
-		
-		[TIFFRep release];
+	//	[[NSOpenGLContext currentContext] flushBuffer];
+		[NSOpenGLContext clearCurrentContext];
 	}
-//	[[NSOpenGLContext currentContext] flushBuffer];
-	[NSOpenGLContext clearCurrentContext];
 	
 	[drawLock unlock];
 	
