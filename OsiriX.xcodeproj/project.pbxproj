@@ -403,6 +403,8 @@
 		A9BDE5920C9823DC000A161F /* IChatTheatreDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = A9BDE5900C9823DC000A161F /* IChatTheatreDelegate.h */; };
 		A9BDE5930C9823DC000A161F /* IChatTheatreDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A9BDE5910C9823DC000A161F /* IChatTheatreDelegate.m */; };
 		A9C63A9C09BD7C5D00E312AE /* cerveau_icon.jpg in Resources */ = {isa = PBXBuildFile; fileRef = A9C63A9B09BD7C5D00E312AE /* cerveau_icon.jpg */; };
+		A9D004EA0F52D4F9007EA2F3 /* VRMPRView.mm in Sources */ = {isa = PBXBuildFile; fileRef = A9D004E80F52D4F9007EA2F3 /* VRMPRView.mm */; settings = {COMPILER_FLAGS = "-I ./ITK180 -I ./ITK180/Code -I ./ITK180/Code/Algorithms -I ./ITK180/Code/BasicFilters -I ./ITK180/Code/Common -I ./ITK180/Code/Numerics -I ./ITK180/Code/IO -I ./ITK180/Code/Numerics/FEM -I ./ITK180/Code/Numerics/Statistics -I ./ITK180/Code/SpatialObject -I ./ITK180/Code/Utilities/MetaIO -I ./ITK180/Code/Utilities/expat -I ./ITK180/Code/Utilities/NrrdIO -I ./ITK180/Code/Utilities/DICOMParser -I ./ITK180/Utilities -I ./ITK180/Utilities/vxl/vcl -I ./ITK180/Utilities/vxl/core"; }; };
+		A9D004EB0F52D4F9007EA2F3 /* VRMPRView.h in Headers */ = {isa = PBXBuildFile; fileRef = A9D004E90F52D4F9007EA2F3 /* VRMPRView.h */; };
 		A9D780B009A4D2A6004302DC /* ITKBrushROIFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = A9D780AA09A4D2A6004302DC /* ITKBrushROIFilter.h */; };
 		A9D780B109A4D2A6004302DC /* ITKBrushROIFilter.mm in Sources */ = {isa = PBXBuildFile; fileRef = A9D780AB09A4D2A6004302DC /* ITKBrushROIFilter.mm */; settings = {COMPILER_FLAGS = "-I ./ITK180 -I ./ITK180/Code -I ./ITK180/Code/Algorithms -I ./ITK180/Code/BasicFilters -I ./ITK180/Code/Common -I ./ITK180/Code/Numerics -I ./ITK180/Code/IO -I ./ITK180/Code/Numerics/FEM -I ./ITK180/Code/Numerics/Statistics -I ./ITK180/Code/SpatialObject -I ./ITK180/Code/Utilities/MetaIO -I ./ITK180/Code/Utilities/expat -I ./ITK180/Code/Utilities/NrrdIO -I ./ITK180/Code/Utilities/DICOMParser -I ./ITK180/Utilities -I ./ITK180/Utilities/vxl/vcl -I ./ITK180/Utilities/vxl/core"; }; };
 		A9DE9538085E0E910019992B /* FlyThruEnd.tiff in Resources */ = {isa = PBXBuildFile; fileRef = A9DE9535085E0E910019992B /* FlyThruEnd.tiff */; };
@@ -5601,6 +5603,8 @@
 		A9BDE5900C9823DC000A161F /* IChatTheatreDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IChatTheatreDelegate.h; sourceTree = "<group>"; };
 		A9BDE5910C9823DC000A161F /* IChatTheatreDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IChatTheatreDelegate.m; sourceTree = "<group>"; };
 		A9C63A9B09BD7C5D00E312AE /* cerveau_icon.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = cerveau_icon.jpg; sourceTree = "<group>"; };
+		A9D004E80F52D4F9007EA2F3 /* VRMPRView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = VRMPRView.mm; sourceTree = "<group>"; };
+		A9D004E90F52D4F9007EA2F3 /* VRMPRView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VRMPRView.h; sourceTree = "<group>"; };
 		A9D780AA09A4D2A6004302DC /* ITKBrushROIFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ITKBrushROIFilter.h; sourceTree = "<group>"; };
 		A9D780AB09A4D2A6004302DC /* ITKBrushROIFilter.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ITKBrushROIFilter.mm; sourceTree = "<group>"; };
 		A9DE9535085E0E910019992B /* FlyThruEnd.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = FlyThruEnd.tiff; sourceTree = "<group>"; };
@@ -10036,6 +10040,8 @@
 				BFBBF20F0BE28E320064E449 /* EndoscopySegmentationController.m */,
 				BF8564100CB2B781005F7178 /* EndoscopyFlyThruController.h */,
 				BF8564110CB2B781005F7178 /* EndoscopyFlyThruController.m */,
+				A9D004E90F52D4F9007EA2F3 /* VRMPRView.h */,
+				A9D004E80F52D4F9007EA2F3 /* VRMPRView.mm */,
 			);
 			name = Endoscopy;
 			sourceTree = "<group>";
@@ -16787,6 +16793,7 @@
 				CE3569FB0EED998F005A823F /* vtkXYZMolReader.h in Headers */,
 				CE3569FC0EED998F005A823F /* vtkZLibDataCompressor.h in Headers */,
 				84A6790E0EEED04000AE5C98 /* jpeg_memsrc.h in Headers */,
+				A9D004EB0F52D4F9007EA2F3 /* VRMPRView.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -18784,6 +18791,7 @@
 				CE569B750E29612100F4A234 /* ThumbnailCell.m in Sources */,
 				CEAA6F420E50C084008802D2 /* OsiriXSCPDataHandler.m in Sources */,
 				84A679060EEECF2F00AE5C98 /* jpeg_memsrc.c in Sources */,
+				A9D004EA0F52D4F9007EA2F3 /* VRMPRView.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
