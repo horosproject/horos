@@ -10119,25 +10119,26 @@ static BOOL needToRezoom;
 	NSMutableArray		*viewerPix[ 200];
 	ViewerController	*movieController = nil;
 	ViewerController	*createdViewer = viewer;
+	
 	@try
 	{
 		// NS_DURING (1) keyImages
 		
-			NSMutableArray *keyImagesToOpenArray = [NSMutableArray array];
+		NSMutableArray *keyImagesToOpenArray = [NSMutableArray array];
+		
+		for( NSArray *loadList in toOpenArray )
+		{
+			NSMutableArray *keyImagesArray = [NSMutableArray array];
 			
-			for( NSArray *loadList in toOpenArray )
-			{
-				NSMutableArray *keyImagesArray = [NSMutableArray array];
-				
-				for( NSManagedObject *image in loadList )
-				{					
-					if( [[image valueForKey:@"isKeyImage"] boolValue] == YES)
-						[keyImagesArray addObject: image];
-				}
-				
-				if( [keyImagesArray count] > 0)
-					[keyImagesToOpenArray addObject: keyImagesArray];
+			for( NSManagedObject *image in loadList )
+			{					
+				if( [[image valueForKey:@"isKeyImage"] boolValue] == YES)
+					[keyImagesArray addObject: image];
 			}
+			
+			if( [keyImagesArray count] > 0)
+				[keyImagesToOpenArray addObject: keyImagesArray];
+		}
 			
 		if ( keyImages)
 		{	

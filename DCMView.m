@@ -7885,9 +7885,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					
 					glLineWidth(1.0);
 					glBegin(GL_LINES);
+					
 					if( bred)
 					{
-						for( long i = 0; i < 256; i++ )
+						for( int i = 0; i < 256; i++ )
 						{
 							glColor3ub ( bred[ i], bgreen[ i], bblue[ i]);
 							

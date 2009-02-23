@@ -5715,6 +5715,7 @@ static ViewerController *draggedController = nil;
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"ViewerWillChangeNotification" object: self userInfo: nil];
 	
+	[self ActivateBlending: nil];
 	[self clear8bitRepresentations];
 	
 	[self setFusionMode: 0];
@@ -9192,7 +9193,8 @@ short				matrix[25];
 
 -(IBAction) blendWindows:(id) sender
 {
-	NSMutableArray *viewers = [ViewerController getDisplayed2DViewers];
+	NSMutableArray *viewersCT = [ViewerController getDisplayed2DViewers];
+	NSMutableArray *viewersPET = [ViewerController getDisplayed2DViewers];
 	int		i, x;
 	BOOL	fused = NO;
 	
@@ -9202,39 +9204,40 @@ short				matrix[25];
 		return;
 	}
 	
-	for( i = 0; i < [viewers count]; i++)
+	for( i = 0; i < [viewersCT count]; i++)
 	{
-		if( [[[viewers objectAtIndex: i] modality] isEqualToString:@"CT"])
+		if( [[[viewersCT objectAtIndex: i] modality] isEqualToString:@"CT"])
 		{
-			for( x = 0; x < [viewers count]; x++)
+			for( x = 0; x < [viewersPET count]; x++)
 			{
-				if( [[[viewers objectAtIndex: x] modality] isEqualToString:@"PT"] && [[[viewers objectAtIndex: x] studyInstanceUID] isEqualToString: [[viewers objectAtIndex: i] studyInstanceUID]])
+				if( x != i)
 				{
-					ViewerController* a = [viewers objectAtIndex: i];
-					
-					if( [a blendingController] == nil)
+					if( [[[viewersPET objectAtIndex: x] modality] isEqualToString:@"PT"] && [[[viewersPET objectAtIndex: x] studyInstanceUID] isEqualToString: [[viewersCT objectAtIndex: i] studyInstanceUID]])
 					{
-						ViewerController* b = [viewers objectAtIndex: x];
+						ViewerController* a = [viewersCT objectAtIndex: i];
 						
-						[viewers removeObject: a];		i--;
-						
-						float orientA[ 9], orientB[ 9], result[ 9];
-						
-						[[[a imageView] curDCM] orientation:orientA];
-						[[[b imageView] curDCM] orientation:orientB];
-						
-						// normal vector of planes
-						
-						result[0] = fabs( orientB[ 6] - orientA[ 6]);
-						result[1] = fabs( orientB[ 7] - orientA[ 7]);
-						result[2] = fabs( orientB[ 8] - orientA[ 8]);
-						
-						if( result[0] + result[1] + result[2] < 0.01) 
+						if( [a blendingController] == nil)
 						{
-							[[a imageView] sendSyncMessage: 0];
-							[a ActivateBlending: b];
+							ViewerController* b = [viewersPET objectAtIndex: x];
 							
-							fused = YES;
+							float orientA[ 9], orientB[ 9], result[ 9];
+							
+							[[[a imageView] curDCM] orientation:orientA];
+							[[[b imageView] curDCM] orientation:orientB];
+							
+							// normal vector of planes
+							
+							result[0] = fabs( orientB[ 6] - orientA[ 6]);
+							result[1] = fabs( orientB[ 7] - orientA[ 7]);
+							result[2] = fabs( orientB[ 8] - orientA[ 8]);
+							
+							if( result[0] + result[1] + result[2] < 0.01) 
+							{
+								[[a imageView] sendSyncMessage: 0];
+								[a ActivateBlending: b];
+								
+								fused = YES;
+							}
 						}
 					}
 				}
