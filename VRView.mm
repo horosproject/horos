@@ -41,6 +41,7 @@
 #include "vtkWorldPointPicker.h"
 #include "vtkOpenGLVolumeTextureMapper3D.h"
 #include "vtkPropAssembly.h"
+#include "vtkFixedPointRayCastImage.h"
 
 #include "vtkSphereSource.h"
 #include "vtkAssemblyPath.h"
@@ -1965,6 +1966,65 @@ public:
 		}
 		
 		_hasChanged = YES;
+		
+		////////////////
+		
+		vtkFixedPointRayCastImage *rayCastImage = volumeMapper->GetRayCastImage();
+		
+		unsigned short *im = rayCastImage->GetImage();
+		unsigned short *iptr;
+		unsigned char *destPtr, *destFixedPtr;
+		
+		int fullSize[2];
+		rayCastImage->GetImageMemorySize( fullSize);
+		
+		int size[2];
+		rayCastImage->GetImageInUseSize( size);
+		
+		destPtr = destFixedPtr = (unsigned char*) malloc( fullSize[ 0] * fullSize[ 1] * 3);
+		
+		for ( int j = 0; j < fullSize[1]; j++ )
+		{
+			iptr = im + 4*j*fullSize[0];
+			
+			for ( int i = 0; i < size[0]; i++ )
+			{
+				int tmp;
+
+				// Red component
+				tmp = (*(iptr+3));
+				*destPtr = tmp / 256;
+
+				// Green component
+				iptr++;
+				destPtr++;
+				
+				tmp = (*(iptr+2));
+				*destPtr = tmp / 256;
+
+				// Green component
+				iptr++;
+				destPtr++;
+				
+				tmp = (*(iptr+1));
+				*destPtr = tmp / 256;
+				
+				destPtr++;
+				iptr++;
+				
+				// alpha - do nothing
+				iptr++;
+			}
+		}
+		
+		NSBitmapImageRep *rep = [[[NSBitmapImageRep alloc] initWithBitmapDataPlanes: &destFixedPtr pixelsWide:size[ 0] pixelsHigh:size[ 1] bitsPerSample:8 samplesPerPixel:3 hasAlpha:NO isPlanar:NO colorSpaceName: NSCalibratedRGBColorSpace bytesPerRow:size[ 0]*3*8/8 bitsPerPixel:3*8] autorelease];
+		
+		NSImage *image = [[[NSImage alloc] init] autorelease];
+		[image addRepresentation:rep];
+		
+		[[image TIFFRepresentation] writeToFile: @"test.tiff" atomically: YES];
+		
+		free( destFixedPtr);
 	}
 	@catch (NSException * e)
 	{
