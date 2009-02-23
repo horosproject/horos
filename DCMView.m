@@ -5601,6 +5601,19 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			PETblueTable[i] = [[array objectAtIndex: i] longValue];
 		}
 	}
+	else
+	{
+		int i;
+		NSArray *array;
+		
+		PETredTable = malloc( 256);
+		PETgreenTable = malloc( 256);
+		PETblueTable = malloc( 256);
+		
+		for( i = 0; i < 256; i++) PETredTable[i] = i;
+		for( i = 0; i < 256; i++) PETgreenTable[i] = 0;
+		for( i = 0; i < 256; i++) PETblueTable[i] = 255 - i;
+	}
 }
 
 - (void) initFont
