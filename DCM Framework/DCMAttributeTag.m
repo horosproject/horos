@@ -65,20 +65,22 @@
 }
 
 - (id) initWithTagString:(NSString *)tagString{
-	if (self = [super init]) {
+	if (self = [super init])
+	{
+		NSScanner *scanner = [NSScanner scannerWithString:tagString];
+		unsigned int uGroup, uElement;
+		[scanner scanHexInt:&uGroup];
+		[scanner scanString:@"," intoString:nil];
+		[scanner scanHexInt:&uElement];
+		_group = (int)uGroup;
+		_element = (int)uElement;
+
 		NSDictionary *dict = [[DCMTagDictionary sharedTagDictionary] objectForKey:tagString];
-		//CFDictionaryRef dict = CFDictionaryGetValue((CFDictionaryRef)[DCMTagDictionary sharedTagDictionary],tagString);
-		if (dict) {
 		
+		if (dict)
+		{
 			_name = [(NSString *)CFDictionaryGetValue((CFDictionaryRef)dict, @"Description") retain];
 			_vr =	[(NSString *)CFDictionaryGetValue((CFDictionaryRef)dict, @"VR") retain];
-			NSScanner *scanner = [NSScanner scannerWithString:tagString];
-			unsigned int uGroup, uElement;
-			[scanner scanHexInt:&uGroup];
-			[scanner scanString:@"," intoString:nil];
-			[scanner scanHexInt:&uElement];
-			_group = (int)uGroup;
-			_element = (int)uElement;
 		}
 		if (!_vr)
 			_vr = @"UN";

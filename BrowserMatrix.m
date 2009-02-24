@@ -269,6 +269,8 @@ static NSString *albumDragType = @"Osirix Album drag";
 		
 		[NSEvent stopPeriodicEvents];
 	}
+	
+	[self.window makeFirstResponder: self];
 }
 
 - (void) rightMouseDown:(NSEvent *)theEvent

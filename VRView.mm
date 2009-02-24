@@ -82,8 +82,8 @@ extern "C"
 //#define BONEVALUE 250
 #define BONEOPACITY 1.1
 
-static			NSRecursiveLock			*drawLock = nil;
-
+static NSRecursiveLock *drawLock = nil;
+static unsigned short *linearOpacity = nil;
 static VRView	*snVRView = nil;
 
 typedef struct _xyzArray
@@ -287,6 +287,19 @@ public:
 
 @implementation VRView
 
++ (unsigned short*) linearOpacity
+{
+	if( linearOpacity == nil)
+	{
+		linearOpacity = (unsigned short*) malloc( 32767 * sizeof(unsigned short));
+		
+		for( int i = 0; i < 32767; i++)
+			linearOpacity[ i] = i;
+	}
+	
+	return linearOpacity;
+}
+	
 + (BOOL) getCroppingBox:(double*) a :(vtkVolume *) volume :(vtkBoxWidget*) croppingBox
 {
 	if( volume == nil) return NO;
@@ -999,11 +1012,19 @@ public:
 	float o[ 9];
 	NSString *sopuid = nil;
 	NSString *f = nil;
+	int offset = 0;
+	BOOL isSigned = NO;
+	BOOL full = fullDepth;
+	
+	if( renderingMode == 0)
+		full = NO;
 	
 	if( exportDCM == nil) exportDCM = [[DICOMExport alloc] init];
 	
-	[self renderImageWithBestQuality: bestRenderingMode waitDialog: NO];
-	unsigned char *dataPtr = [self getRawPixels:&width :&height :&spp :&bpp :YES : !fullDepth];
+	[self renderImageWithBestQuality: bestRenderingMode waitDialog: NO display: !full];
+	
+	unsigned char *dataPtr = [self getRawPixels:&width :&height :&spp :&bpp :YES : !full offset: &offset isSigned: &isSigned];
+	
 	[self endRenderImageWithBestQuality];
 	
 	NSMutableArray *producedFiles = [NSMutableArray array];
@@ -1013,6 +1034,8 @@ public:
 		[exportDCM setSourceFile: [firstObject sourceFile]];
 		[exportDCM setSeriesDescription: [dcmSeriesName stringValue]];
 		[exportDCM setSeriesNumber:5500];
+		[exportDCM setOffset: offset];
+		[exportDCM setSigned: isSigned];
 		[exportDCM setPixelData: dataPtr samplePerPixel:spp bitsPerPixel:bpp width: width height: height];
 		
 		[self getOrientation: o];
@@ -1028,10 +1051,7 @@ public:
 		
 		free( dataPtr);
 	}
-	
-	[NSThread sleepForTimeInterval: 1];
-	[[BrowserController currentBrowser] checkIncomingNow: self];
-	
+		
 	return [NSDictionary dictionaryWithObjectsAndKeys: f, @"file", sopuid, @"SOPInstanceUID", nil];
 }
 
@@ -1059,7 +1079,9 @@ public:
 		// CURRENT image only
 		if( [[dcmExportMode selectedCell] tag] == 0)
 		{
-			[producedFiles addObject: [self exportDCMCurrentImage]];
+			if( [dcmExportDepth selectedTag] == 1 && [dcmExportDepth isEnabled])
+				[producedFiles addObject: [self exportDCMCurrentImageIn16bit: YES]];
+			else [producedFiles addObject: [self exportDCMCurrentImage]];
 		}
 		// 4th dimension
 		else if( [[dcmExportMode selectedCell] tag] == 2)
@@ -1080,39 +1102,45 @@ public:
 			{
 				[[[self window] windowController] setMovieFrame: i];
 				
-				if( croppingBox->GetEnabled()) croppingBox->Off();
-			//	aRenderer->RemoveActor(outlineRect);
-				aRenderer->RemoveActor(textX);
+				if( [dcmExportDepth selectedTag] == 1 && [dcmExportDepth isEnabled])
+					[producedFiles addObject: [self exportDCMCurrentImageIn16bit: YES]];
+				else [producedFiles addObject: [self exportDCMCurrentImage]];
 				
-				noWaitDialog = YES;
-				[self display];
-				noWaitDialog = NO;
-				
-			//	aRenderer->AddActor(outlineRect);
-				aRenderer->AddActor(textX);
-
-				long	width, height, spp, bpp;
-				
-				unsigned char *dataPtr = [self getRawPixels:&width :&height :&spp :&bpp :YES :YES];
-				
-				if( dataPtr)
-				{
-					[self getOrientation: o];
-					
-					if( [[NSUserDefaults standardUserDefaults] boolForKey: @"exportOrientationIn3DExport"])
-						[dcmSequence setOrientation: o];
-					
-					[dcmSequence setPixelData: dataPtr samplePerPixel:spp bitsPerPixel:bpp width: width height: height];
-			//		[dcmSequence setPixelSpacing: 1 :1];
-					
-					NSString *f = [dcmSequence writeDCMFile: nil];
-					if( f)
-						[producedFiles addObject: [NSDictionary dictionaryWithObjectsAndKeys: f, @"file", [dcmSequence SOPInstanceUID], @"SOPInstanceUID", nil]];
-					
-					free( dataPtr);
-				}
+//				if( croppingBox->GetEnabled()) croppingBox->Off();
+//			//	aRenderer->RemoveActor(outlineRect);
+//				aRenderer->RemoveActor(textX);
+//				
+//				noWaitDialog = YES;
+//				[self display];
+//				noWaitDialog = NO;
+//				
+//			//	aRenderer->AddActor(outlineRect);
+//				aRenderer->AddActor(textX);
+//
+//				long	width, height, spp, bpp;
+//				
+//				unsigned char *dataPtr = [self getRawPixels:&width :&height :&spp :&bpp :YES :YES];
+//				
+//				if( dataPtr)
+//				{
+//					[self getOrientation: o];
+//					
+//					if( [[NSUserDefaults standardUserDefaults] boolForKey: @"exportOrientationIn3DExport"])
+//						[dcmSequence setOrientation: o];
+//					
+//					[dcmSequence setPixelData: dataPtr samplePerPixel:spp bitsPerPixel:bpp width: width height: height];
+//			//		[dcmSequence setPixelSpacing: 1 :1];
+//					
+//					NSString *f = [dcmSequence writeDCMFile: nil];
+//					if( f)
+//						[producedFiles addObject: [NSDictionary dictionaryWithObjectsAndKeys: f, @"file", [dcmSequence SOPInstanceUID], @"SOPInstanceUID", nil]];
+//					
+//					free( dataPtr);
+//				}
 				
 				[progress incrementBy: 1];
+				if( [progress aborted])
+					break;
 				
 				[self resetAutorotate: self];
 			}
@@ -1162,36 +1190,38 @@ public:
 					[[[self window] windowController] setMovieFrame: movieIndex];
 				}
 				
-				[self renderImageWithBestQuality: bestRenderingMode waitDialog: NO];
+				if( [dcmExportDepth selectedTag] == 1 && [dcmExportDepth isEnabled])
+					[producedFiles addObject: [self exportDCMCurrentImageIn16bit: YES]];
+				else [producedFiles addObject: [self exportDCMCurrentImage]];
 				
-				long	width, height, spp, bpp;
-				
-				unsigned char *dataPtr = [self getRawPixels:&width :&height :&spp :&bpp :YES :YES];
-				
-				if( dataPtr)
-				{
-					[self getOrientation: o];
-					if( [[NSUserDefaults standardUserDefaults] boolForKey: @"exportOrientationIn3DExport"])
-						[dcmSequence setOrientation: o];
-					
-					[dcmSequence setPixelData: dataPtr samplePerPixel:spp bitsPerPixel:bpp width: width height: height];
-				
-					if( aCamera->GetParallelProjection())
-						[dcmSequence setPixelSpacing: [self getResolution] :[self getResolution]];
-					
-					NSString *f = [dcmSequence writeDCMFile: nil];
-					if( f)
-						[producedFiles addObject: [NSDictionary dictionaryWithObjectsAndKeys: f, @"file", [dcmSequence SOPInstanceUID], @"SOPInstanceUID", nil]];
-					
-					free( dataPtr);
-				}
+//				[self renderImageWithBestQuality: bestRenderingMode waitDialog: NO];
+//				
+//				long	width, height, spp, bpp;
+//				
+//				unsigned char *dataPtr = [self getRawPixels:&width :&height :&spp :&bpp :YES :YES];
+//				
+//				if( dataPtr)
+//				{
+//					[self getOrientation: o];
+//					if( [[NSUserDefaults standardUserDefaults] boolForKey: @"exportOrientationIn3DExport"])
+//						[dcmSequence setOrientation: o];
+//					
+//					[dcmSequence setPixelData: dataPtr samplePerPixel:spp bitsPerPixel:bpp width: width height: height];
+//				
+//					if( aCamera->GetParallelProjection())
+//						[dcmSequence setPixelSpacing: [self getResolution] :[self getResolution]];
+//					
+//					NSString *f = [dcmSequence writeDCMFile: nil];
+//					if( f)
+//						[producedFiles addObject: [NSDictionary dictionaryWithObjectsAndKeys: f, @"file", [dcmSequence SOPInstanceUID], @"SOPInstanceUID", nil]];
+//					
+//					free( dataPtr);
+//				}
 				
 				[progress incrementBy: 1];
 				
 				if( [progress aborted])
-				{
-					i = numberOfFrames;
-				}
+					break;
 				
 				switch( rotationOrientation)
 				{
@@ -1253,6 +1283,9 @@ public:
 		}
 		
 		[self restoreViewSizeAfterMatrix3DExport];
+		
+		[NSThread sleepForTimeInterval: 1];
+		[[BrowserController currentBrowser] checkIncomingNow: self];
 	}
 }
 
@@ -1972,63 +2005,6 @@ public:
 		
 		_hasChanged = YES;
 		
-		////////////////
-		
-		int opacityCopy[ 32767];
-		unsigned short *o = volumeMapper->GetScalarOpacityTable( 0);	// Fake the opacity table to have full '16-bit' image
-		memcpy( opacityCopy, o, 32767 * sizeof( int));
-		for(int i = 0 ; i < 32767; i++)
-			o[ i] = i;
-		
-		volumeMapper->Render( aRenderer, volume);
-		
-		memcpy( o, opacityCopy, 32767 * sizeof( int));
-		
-		vtkFixedPointRayCastImage *rayCastImage = volumeMapper->GetRayCastImage();
-		
-		unsigned short *im = rayCastImage->GetImage();
-		unsigned short *iptr;
-		unsigned char *destPtr, *destFixedPtr;
-		
-		int fullSize[2];
-		rayCastImage->GetImageMemorySize( fullSize);
-		
-		int size[2];
-		rayCastImage->GetImageInUseSize( size);
-		
-		destPtr = destFixedPtr = (unsigned char*) malloc( fullSize[ 0] * fullSize[ 1] * 3);
-		
-		float min = 1024, max = -1024;
-		
-		for ( int j = 0; j < fullSize[1]; j++ )
-		{
-			iptr = im + 4*j*fullSize[0];
-			
-			for ( int i = 0; i < size[0]; i++ )
-			{
-				int tmp = (((float) *(iptr+0)) * valueFactor) - OFFSET16;
-				
-				if( tmp >= 256)
-					tmp = 255;
-				else if( tmp < 0)
-					tmp = 0;
-				
-				*destPtr++ = tmp;
-				*destPtr++ = tmp;
-				*destPtr++ = tmp;
-				
-				iptr+=4;
-			}
-		}
-		
-		NSBitmapImageRep *rep = [[[NSBitmapImageRep alloc] initWithBitmapDataPlanes: &destFixedPtr pixelsWide:size[ 0] pixelsHigh:size[ 1] bitsPerSample:8 samplesPerPixel:3 hasAlpha:NO isPlanar:NO colorSpaceName: NSCalibratedRGBColorSpace bytesPerRow:size[ 0]*3*8/8 bitsPerPixel:3*8] autorelease];
-		
-		NSImage *image = [[[NSImage alloc] init] autorelease];
-		[image addRepresentation:rep];
-		
-		[[image TIFFRepresentation] writeToFile: @"test.tiff" atomically: YES];
-		
-		free( destFixedPtr);
 	}
 	@catch (NSException * e)
 	{
@@ -4366,6 +4342,11 @@ public:
 
 - (void) renderImageWithBestQuality: (BOOL) best waitDialog: (BOOL) wait
 {
+	return [self renderImageWithBestQuality: best waitDialog: wait display: YES];
+}
+
+- (void) renderImageWithBestQuality: (BOOL) best waitDialog: (BOOL) wait display: (BOOL) display
+{
 	[splash setCancel:YES];
 		
 	// REMOVE CROPPING BOX
@@ -4422,11 +4403,14 @@ public:
 		}
 	}
 	
-	if( wait == NO) noWaitDialog = YES;
-	
-	[self display];
-	
-	if( wait == NO) noWaitDialog = NO;
+	if( display)
+	{
+		if( wait == NO) noWaitDialog = YES;
+		
+		[self display];
+		
+		if( wait == NO) noWaitDialog = NO;
+	}
 }
 
 -(void) bestRendering:(id) sender
@@ -5539,15 +5523,12 @@ public:
 
 - (float*) imageInFullDepthWidth: (long*) w height:(long*) h
 {
-	int opacityCopy[ 32767];
+	unsigned short opacityCopy[ 32767];
 	unsigned short *o = volumeMapper->GetScalarOpacityTable( 0);	// Fake the opacity table to have full '16-bit' image
-	memcpy( opacityCopy, o, 32767 * sizeof( int));
-	for(int i = 0 ; i < 32767; i++)
-		o[ i] = i;
-	
+	memcpy( opacityCopy, o, 32767 * sizeof( unsigned short));
+	memcpy( o, [VRView linearOpacity], 32767 * sizeof( unsigned short));
 	volumeMapper->Render( aRenderer, volume);
-	
-	memcpy( o, opacityCopy, 32767 * sizeof( int));
+	memcpy( o, opacityCopy, 32767 * sizeof( unsigned short));
 	
 	vtkFixedPointRayCastImage *rayCastImage = volumeMapper->GetRayCastImage();
 	
@@ -5561,31 +5542,40 @@ public:
 	int size[2];
 	rayCastImage->GetImageInUseSize( size);
 	
-	destPtr = destFixedPtr = (float*) malloc( size[0] * fullSize[ 1] * sizeof( float));
+	destPtr = destFixedPtr = (float*) malloc( size[0] * size[ 1] * sizeof( float));
 	if( destFixedPtr)
 	{
-		float min = 1024, max = -1024;
-		
-		for ( int j = 0; j < fullSize[1]; j++ )
+		for ( int j = 0; j < size[1]; j++ )
 		{
-			iptr = im + 4*j*fullSize[0];
+			iptr = im + 3 + 4*(size[1]-j-1)*fullSize[0];
 			
-			for ( int i = 0; i < size[0]; i++ )
+			int i = size[0];
+			while( i-- > 0)
 			{
-				*destPtr++ = (((float) *(iptr+0)) * valueFactor) - OFFSET16;
-				
+				*destPtr++ = *iptr;	//) * valueFactor) - OFFSET16
 				iptr+=4;
 			}
 		}
 	}
 	
+	float mul = valueFactor;
+	float add = -OFFSET16;
+	
+	vDSP_vsmul( destFixedPtr, 1, &mul, destFixedPtr, 1, size[0] * size[ 1]);
+	vDSP_vsadd( destFixedPtr, 1, &add, destFixedPtr, 1, size[0] * size[ 1]);
+	
 	*w = size[0];
-	*h = fullSize[1];
+	*h = size[1];
 	
 	return destFixedPtr;
 }
 
 -(unsigned char*) getRawPixels:(long*) width :(long*) height :(long*) spp :(long*) bpp :(BOOL) screenCapture :(BOOL) force8bits
+{
+	return [self getRawPixels: width : height : spp : bpp : screenCapture : force8bits offset: nil isSigned: nil];
+}
+
+-(unsigned char*) getRawPixels:(long*) width :(long*) height :(long*) spp :(long*) bpp :(BOOL) screenCapture :(BOOL) force8bits offset:(int*) offset isSigned:(BOOL*) isSigned
 {
 	unsigned char	*buf = nil;
 	
@@ -5603,7 +5593,54 @@ public:
 	
 	if( fullDepthCapture)
 	{
-		float *im = [self imageInFullDepthWidth: width height:height];
+		vImage_Buffer			sf, d8;
+		
+		sf.data = [self imageInFullDepthWidth: width height:height];
+		
+		*spp = 1;
+		*bpp = 16;
+		
+		sf.height = *height;
+		sf.width = *width;
+		sf.rowBytes = *width * sizeof( float);
+		
+		d8.height =  *height;
+		d8.width = *width;
+		d8.rowBytes = *width * sizeof( short);
+		
+		buf = (unsigned char*) malloc( *width * *height * *spp * *bpp / 8);
+		if( buf)
+		{
+			d8.data = buf;
+			
+			if( [controller minimumValue] < -1024)
+			{
+				if( isSigned) *isSigned = YES;
+				if( offset) *offset = 0;
+				
+				vImageConvert_FTo16S( &sf, &d8, 0,  1, 0);
+			}
+			else
+			{
+				if( isSigned) *isSigned = NO;
+				
+				if( [controller minimumValue] >= 0)
+				{
+					if( offset) *offset = 0;
+					vImageConvert_FTo16U( &sf, &d8, 0,  1, 0);
+				}
+				else
+				{
+					if( offset) *offset = -1024;
+					vImageConvert_FTo16U( &sf, &d8, -1024,  1, 0);
+				}
+			}
+		}
+		
+		free( sf.data);
+		
+		*spp = 1;
+		*bpp = 16;
 	}
 	else
 	{

@@ -5633,8 +5633,16 @@ static NSArray*	statesArray = nil;
 		WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Updating database...", nil)];
 		[wait showWindow:self];
 		
-		[self saveDatabase: currentDatabasePath];
-		[self refreshDatabase: self];
+		@try
+		{
+			[self saveDatabase: currentDatabasePath];
+			[self refreshDatabase: self];
+		}
+		@catch( NSException *ne)
+		{
+			NSLog( @"Exception Updating database...");
+			NSLog( [ne description]);
+		}
 		
 		[wait close];
 		[wait release];

@@ -390,12 +390,12 @@
 			case AT:	//Attribute Tag 16bit unsigned integer
             case UL:	//unsigned Long
 				for (i = 0; i< vm; i++)
-					[container addUnsignedLong:[[_values objectAtIndex:i] intValue]];
+					[container addUnsignedLong:[[_values objectAtIndex:i] unsignedLongValue]];
                 break;
             
             case SL:	//signed long
 				for (i = 0; i< vm; i++)
-					[container addSignedLong:[[_values objectAtIndex:i] intValue]];
+					[container addSignedLong:[[_values objectAtIndex:i] signedLongValue]];
                 break;
 			
             case FL:	//floating point Single 4 bytes fixed
@@ -523,7 +523,7 @@
 					values = [NSMutableArray array];
 					for (i = 0; i < count; i ++)
 					{
-						[(NSMutableArray *)values addObject:[NSNumber numberWithInt:[dicomData nextUnsignedLong]]];
+						[(NSMutableArray *)values addObject:[NSNumber numberWithUnsignedLong: [dicomData nextUnsignedLong]]];
 						p += 4;
 					}
 					if( length - p > 0) [dicomData skipLength: length - p];
@@ -537,7 +537,7 @@
 					values = [NSMutableArray array];
 					for (i = 0; i < count; i ++)
 					{
-						[(NSMutableArray *)values addObject:[NSNumber numberWithInt:[dicomData nextSignedLong]]];
+						[(NSMutableArray *)values addObject:[NSNumber numberWithLong:[dicomData nextSignedLong]]];
 						p += 4;
 					}
 					if( length - p > 0) [dicomData skipLength: length - p];

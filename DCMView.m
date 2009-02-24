@@ -9084,52 +9084,28 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				buf = malloc( i);
 				if( buf)
 				{
-//					float *tempPETBuf = nil;
-//					if( [self is2DViewer] && [dcm SUVConverted])
-//					{
-//						float * copySrcfData = srcf.data;
-//						
-//						tempPETBuf = malloc( *width * *height * sizeof( float));
-//						
-//						NSLog( @"getRawPixelsView - convert PET SUV: %f", [[self windowController] factorPET2SUV]);
-//						
-//						float f = 1./[[self windowController] factorPET2SUV];
-//						vDSP_vsmul( srcf.data, 1, &f, tempPETBuf, 1, *width * *height);
-//						
-//						srcf.data = tempPETBuf;
-//						dst8.data = buf;
-//						vImageConvert_FTo16U( &srcf, &dst8, -1024,  1, 0);	//By default, we use a 1024 rescale intercept !!
-//						
-//						free( tempPETBuf);
-//						tempPETBuf = nil;
-//						
-//						srcf.data = copySrcfData;
-//					}
-//					else
+					dst8.data = buf;
+					
+					if( [dcm minValueOfSeries] < -1024)
 					{
-						dst8.data = buf;
+						if( isSigned) *isSigned = YES;
+						if( offset) *offset = 0;
 						
-						if( [dcm minValueOfSeries] < -1024)
+						vImageConvert_FTo16S( &srcf, &dst8, 0,  1, 0);
+					}
+					else
+					{
+						if( isSigned) *isSigned = NO;
+						
+						if( [dcm minValueOfSeries] >= 0)
 						{
-							if( isSigned) *isSigned = YES;
 							if( offset) *offset = 0;
-							
-							vImageConvert_FTo16S( &srcf, &dst8, 0,  1, 0);
+							vImageConvert_FTo16U( &srcf, &dst8, 0,  1, 0);
 						}
 						else
 						{
-							if( isSigned) *isSigned = NO;
-							
-							if( [dcm minValueOfSeries] >= 0)
-							{
-								if( offset) *offset = 0;
-								vImageConvert_FTo16U( &srcf, &dst8, 0,  1, 0);
-							}
-							else
-							{
-								if( offset) *offset = -1024;
-								vImageConvert_FTo16U( &srcf, &dst8, -1024,  1, 0);
-							}
+							if( offset) *offset = -1024;
+							vImageConvert_FTo16U( &srcf, &dst8, -1024,  1, 0);
 						}
 					}
 				}
