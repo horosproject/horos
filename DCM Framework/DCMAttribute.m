@@ -395,7 +395,7 @@
             
             case SL:	//signed long
 				for (i = 0; i< vm; i++)
-					[container addSignedLong:[[_values objectAtIndex:i] signedLongValue]];
+					[container addSignedLong:[[_values objectAtIndex:i] longValue]];
                 break;
 			
             case FL:	//floating point Single 4 bytes fixed
