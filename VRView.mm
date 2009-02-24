@@ -1034,9 +1034,11 @@ public:
 		[exportDCM setSourceFile: [firstObject sourceFile]];
 		[exportDCM setSeriesDescription: [dcmSeriesName stringValue]];
 		[exportDCM setSeriesNumber:5500];
+		
+		[exportDCM setPixelData: dataPtr samplePerPixel:spp bitsPerPixel:bpp width: width height: height];
+		
 		[exportDCM setOffset: offset];
 		[exportDCM setSigned: isSigned];
-		[exportDCM setPixelData: dataPtr samplePerPixel:spp bitsPerPixel:bpp width: width height: height];
 		
 		[self getOrientation: o];
 		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"exportOrientationIn3DExport"])
@@ -1742,9 +1744,9 @@ public:
 		deleteRegion = [[NSLock alloc] init];
 		
 		valueFactor = 1.0;
-		OFFSET16 = 1500;
+		OFFSET16 = -[controller minimumValue];
 		blendingValueFactor = 1.0;
-		blendingOFFSET16 = 1500;
+		blendingOFFSET16 = -[controller minimumValue];
 		
 		renderingMode = 0;	// VR, MIP = 1
 		blendingController = nil;
@@ -4892,7 +4894,7 @@ public:
 		else
 		{
 			valueFactor = 1;
-			OFFSET16 = 1500;
+			OFFSET16 = -[controller minimumValue];
 		}
 	}
 }
@@ -5552,7 +5554,7 @@ public:
 			int i = size[0];
 			while( i-- > 0)
 			{
-				*destPtr++ = *iptr;	//) * valueFactor) - OFFSET16
+				*destPtr++ = *iptr;
 				iptr+=4;
 			}
 		}
@@ -5561,7 +5563,9 @@ public:
 	float mul = valueFactor;
 	float add = -OFFSET16;
 	
-	vDSP_vsmul( destFixedPtr, 1, &mul, destFixedPtr, 1, size[0] * size[ 1]);
+	if( valueFactor != 1)
+		vDSP_vsmul( destFixedPtr, 1, &mul, destFixedPtr, 1, size[0] * size[ 1]);
+	
 	vDSP_vsadd( destFixedPtr, 1, &add, destFixedPtr, 1, size[0] * size[ 1]);
 	
 	*w = size[0];

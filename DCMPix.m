@@ -2569,6 +2569,13 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		}
 	}
 	
+	for( DCMPix* pix in pixArray)
+	{
+		[self computePixMinPixMax];
+		pix.minValueOfSeries = 0;
+		pix.maxValueOfSeries = 0;
+	}
+		
 	if( roi ) free( ptsInt);
 }
 
