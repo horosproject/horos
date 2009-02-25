@@ -342,6 +342,9 @@ typedef char* vtkMyCallbackVR;
 + (void) setCroppingBox:(double*) a :(vtkVolume *) volume;
 - (void) setCroppingBox:(double*) a;
 - (BOOL) croppingBox:(double*) a;
+- (void) showCropCube:(id) sender;
+- (void) restoreFullDepthCapture;
+- (void) prepareFullDepthCapture;
 
 - (NSDictionary*) exportDCMCurrentImage;
 - (NSDictionary*) exportDCMCurrentImageIn16bit: (BOOL) fullDepth;

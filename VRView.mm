@@ -1016,14 +1016,15 @@ public:
 	BOOL isSigned = NO;
 	BOOL full = fullDepth;
 	
-	if( renderingMode == 0)
-		full = NO;
+	if( exportDCM == nil)
+	{
+		exportDCM = [[DICOMExport alloc] init];
+		[exportDCM setSeriesNumber:5500];
+	}
 	
-	if( exportDCM == nil) exportDCM = [[DICOMExport alloc] init];
+	[self renderImageWithBestQuality: bestRenderingMode waitDialog: NO display: YES];
 	
-	[self renderImageWithBestQuality: bestRenderingMode waitDialog: NO display: !full];
-	
-	unsigned char *dataPtr = [self getRawPixels:&width :&height :&spp :&bpp :YES : !full offset: &offset isSigned: &isSigned];
+	unsigned char *dataPtr = [self getRawPixels:&width :&height :&spp :&bpp :YES : !fullDepth offset: &offset isSigned: &isSigned];
 	
 	[self endRenderImageWithBestQuality];
 	
@@ -1033,7 +1034,6 @@ public:
 	{
 		[exportDCM setSourceFile: [firstObject sourceFile]];
 		[exportDCM setSeriesDescription: [dcmSeriesName stringValue]];
-		[exportDCM setSeriesNumber:5500];
 		
 		[exportDCM setPixelData: dataPtr samplePerPixel:spp bitsPerPixel:bpp width: width height: height];
 		
@@ -1045,7 +1045,16 @@ public:
 			[exportDCM setOrientation: o];
 		
 		if( aCamera->GetParallelProjection())
-			[exportDCM setPixelSpacing: [self getResolution] :[self getResolution]];
+		{
+			if( fullDepth)
+			{
+				float r = volumeMapper->GetRayCastImage()->GetImageSampleDistance();
+				
+				[exportDCM setPixelSpacing: [self getResolution]*r :[self getResolution]*r];
+			}
+			else
+				[exportDCM setPixelSpacing: [self getResolution] :[self getResolution]];
+		}
 		
 		f = [exportDCM writeDCMFile: nil];
 		if( f == nil) NSRunCriticalAlertPanel( NSLocalizedString(@"Error", nil),  NSLocalizedString( @"Error during the creation of the DICOM File!", nil), NSLocalizedString(@"OK", nil), nil, nil);
@@ -1076,69 +1085,40 @@ public:
 	
 	if( [sender tag])
 	{
+		BOOL fullDepthCapture = NO;
+		
+		if( [dcmExportDepth selectedTag] == 1 && [dcmExportDepth isEnabled] && renderingMode == 1)
+			fullDepthCapture = YES;
+		
 		[self setViewSizeToMatrix3DExport];
+		
+		if( fullDepthCapture)
+			[self prepareFullDepthCapture];
 		
 		// CURRENT image only
 		if( [[dcmExportMode selectedCell] tag] == 0)
 		{
-			if( [dcmExportDepth selectedTag] == 1 && [dcmExportDepth isEnabled])
-				[producedFiles addObject: [self exportDCMCurrentImageIn16bit: YES]];
-			else [producedFiles addObject: [self exportDCMCurrentImage]];
+			[producedFiles addObject: [self exportDCMCurrentImageIn16bit: fullDepthCapture]];
 		}
 		// 4th dimension
 		else if( [[dcmExportMode selectedCell] tag] == 2)
 		{
 			float			o[ 9];
 			long			i;
-			DICOMExport		*dcmSequence = [[DICOMExport alloc] init];
 			
 			Wait *progress = [[Wait alloc] initWithString:NSLocalizedString(@"Creating a DICOM series", nil)];
 			[progress showWindow:self];
 			[[progress progress] setMaxValue: [[[self window] windowController] movieFrames]];
 			
-			[dcmSequence setSeriesNumber:5250 + [[NSCalendarDate date] minuteOfHour]  + [[NSCalendarDate date] secondOfMinute]];
-			[dcmSequence setSeriesDescription: [dcmSeriesName stringValue]];
-			[dcmSequence setSourceFile: [firstObject sourceFile]];
+			if( exportDCM) [exportDCM release];
+			exportDCM = [[DICOMExport alloc] init];
+			[exportDCM setSeriesNumber:5250 + [[NSCalendarDate date] minuteOfHour]  + [[NSCalendarDate date] secondOfMinute]];
 			
 			for( i = 0; i < [[[self window] windowController] movieFrames]; i++)
 			{
 				[[[self window] windowController] setMovieFrame: i];
 				
-				if( [dcmExportDepth selectedTag] == 1 && [dcmExportDepth isEnabled])
-					[producedFiles addObject: [self exportDCMCurrentImageIn16bit: YES]];
-				else [producedFiles addObject: [self exportDCMCurrentImage]];
-				
-//				if( croppingBox->GetEnabled()) croppingBox->Off();
-//			//	aRenderer->RemoveActor(outlineRect);
-//				aRenderer->RemoveActor(textX);
-//				
-//				noWaitDialog = YES;
-//				[self display];
-//				noWaitDialog = NO;
-//				
-//			//	aRenderer->AddActor(outlineRect);
-//				aRenderer->AddActor(textX);
-//
-//				long	width, height, spp, bpp;
-//				
-//				unsigned char *dataPtr = [self getRawPixels:&width :&height :&spp :&bpp :YES :YES];
-//				
-//				if( dataPtr)
-//				{
-//					[self getOrientation: o];
-//					
-//					if( [[NSUserDefaults standardUserDefaults] boolForKey: @"exportOrientationIn3DExport"])
-//						[dcmSequence setOrientation: o];
-//					
-//					[dcmSequence setPixelData: dataPtr samplePerPixel:spp bitsPerPixel:bpp width: width height: height];
-//			//		[dcmSequence setPixelSpacing: 1 :1];
-//					
-//					NSString *f = [dcmSequence writeDCMFile: nil];
-//					if( f)
-//						[producedFiles addObject: [NSDictionary dictionaryWithObjectsAndKeys: f, @"file", [dcmSequence SOPInstanceUID], @"SOPInstanceUID", nil]];
-//					
-//					free( dataPtr);
-//				}
+				[producedFiles addObject: [self exportDCMCurrentImageIn16bit: fullDepthCapture]];
 				
 				[progress incrementBy: 1];
 				if( [progress aborted])
@@ -1150,8 +1130,6 @@ public:
 			[progress close];
 			[progress release];
 			
-			[dcmSequence release];
-			
 			[NSThread sleepForTimeInterval: 1];
 			[[BrowserController currentBrowser] checkIncomingNow: self];
 		}
@@ -1159,7 +1137,6 @@ public:
 		{
 			long			i;
 			float			o[ 9];
-			DICOMExport		*dcmSequence = [[DICOMExport alloc] init];
 			
 			if( [[[self window] windowController] movieFrames] > 1)
 			{
@@ -1172,9 +1149,9 @@ public:
 			[[progress progress] setMaxValue: numberOfFrames];
 			[progress setCancel:YES];
 			
-			[dcmSequence setSeriesNumber:5500 + [[NSCalendarDate date] minuteOfHour]  + [[NSCalendarDate date] secondOfMinute]];
-			[dcmSequence setSeriesDescription: [dcmSeriesName stringValue]];
-			[dcmSequence setSourceFile: [firstObject sourceFile]];
+			if( exportDCM) [exportDCM release];
+			exportDCM = [[DICOMExport alloc] init];
+			[exportDCM setSeriesNumber:5500 + [[NSCalendarDate date] minuteOfHour]  + [[NSCalendarDate date] secondOfMinute]];
 			
 			if( croppingBox->GetEnabled()) croppingBox->Off();
 			aRenderer->RemoveActor(outlineRect);
@@ -1192,33 +1169,7 @@ public:
 					[[[self window] windowController] setMovieFrame: movieIndex];
 				}
 				
-				if( [dcmExportDepth selectedTag] == 1 && [dcmExportDepth isEnabled])
-					[producedFiles addObject: [self exportDCMCurrentImageIn16bit: YES]];
-				else [producedFiles addObject: [self exportDCMCurrentImage]];
-				
-//				[self renderImageWithBestQuality: bestRenderingMode waitDialog: NO];
-//				
-//				long	width, height, spp, bpp;
-//				
-//				unsigned char *dataPtr = [self getRawPixels:&width :&height :&spp :&bpp :YES :YES];
-//				
-//				if( dataPtr)
-//				{
-//					[self getOrientation: o];
-//					if( [[NSUserDefaults standardUserDefaults] boolForKey: @"exportOrientationIn3DExport"])
-//						[dcmSequence setOrientation: o];
-//					
-//					[dcmSequence setPixelData: dataPtr samplePerPixel:spp bitsPerPixel:bpp width: width height: height];
-//				
-//					if( aCamera->GetParallelProjection())
-//						[dcmSequence setPixelSpacing: [self getResolution] :[self getResolution]];
-//					
-//					NSString *f = [dcmSequence writeDCMFile: nil];
-//					if( f)
-//						[producedFiles addObject: [NSDictionary dictionaryWithObjectsAndKeys: f, @"file", [dcmSequence SOPInstanceUID], @"SOPInstanceUID", nil]];
-//					
-//					free( dataPtr);
-//				}
+				[producedFiles addObject: [self exportDCMCurrentImageIn16bit: fullDepthCapture]];
 				
 				[progress incrementBy: 1];
 				
@@ -1241,9 +1192,10 @@ public:
 			
 			[progress close];
 			[progress release];
-			
-			[dcmSequence release];
 		}
+		
+		if( fullDepthCapture)
+			[self restoreFullDepthCapture];
 		
 		[NSThread sleepForTimeInterval: 1];
 		[[BrowserController currentBrowser] checkIncomingNow: self];
@@ -4329,7 +4281,6 @@ public:
 		if( blendingVolumeMapper) blendingVolumeMapper->SetSampleDistance( [[NSUserDefaults standardUserDefaults] floatForKey: @"BESTRENDERING"]);
 	}
 	
-//	aRenderer->AddActor(outlineRect);
 	aRenderer->AddActor(textX);
 	
 	[splash setCancel:NO];
@@ -5523,14 +5474,46 @@ public:
 	return [self nsimageQuicktime];
 }
 
+- (void) prepareFullDepthCapture
+{
+	if( orientationWidget->GetEnabled()) [self switchOrientationWidget: self];
+	if( croppingBox->GetEnabled()) [self showCropCube: self];
+	aRenderer->RemoveActor(textX);
+	aRenderer->RemoveActor(textWLWW);
+	
+	[self display];
+	
+	vtkPiecewiseFunction *tempOpacity = vtkPiecewiseFunction::New();
+	
+	float start = valueFactor*(OFFSET16 + [controller minimumValue] - 10);
+	float end = valueFactor*(OFFSET16 + [controller minimumValue] + 10);
+	
+	tempOpacity->AddPoint(start, 0);
+	tempOpacity->AddPoint(end, 1);
+	
+	volumeProperty->SetScalarOpacity( tempOpacity);
+	volumeMapper->PerVolumeInitialization( aRenderer, volume);
+	
+	unsigned short *o = volumeMapper->GetScalarOpacityTable( 0);	// Fake the opacity table to have full '16-bit' image
+	memcpy( o, [VRView linearOpacity], 32767 * sizeof( unsigned short));
+	
+	tempOpacity->Delete();
+}
+
+- (void) restoreFullDepthCapture
+{
+	volumeProperty->SetScalarOpacity( opacityTransferFunction);
+	volumeMapper->PerVolumeInitialization( aRenderer, volume);
+	
+	[self switchOrientationWidget: self];
+	
+	aRenderer->AddActor(textX);
+	aRenderer->AddActor(textWLWW);
+}
+
 - (float*) imageInFullDepthWidth: (long*) w height:(long*) h
 {
-	unsigned short opacityCopy[ 32767];
-	unsigned short *o = volumeMapper->GetScalarOpacityTable( 0);	// Fake the opacity table to have full '16-bit' image
-	memcpy( opacityCopy, o, 32767 * sizeof( unsigned short));
-	memcpy( o, [VRView linearOpacity], 32767 * sizeof( unsigned short));
-	volumeMapper->Render( aRenderer, volume);
-	memcpy( o, opacityCopy, 32767 * sizeof( unsigned short));
+//	volumeMapper->Render( aRenderer, volume);
 	
 	vtkFixedPointRayCastImage *rayCastImage = volumeMapper->GetRayCastImage();
 	
@@ -5587,12 +5570,11 @@ public:
 	
 	BOOL fullDepthCapture = NO;
 	
-	if( force8bits == NO)	// Only support MIP mode
+	if( force8bits == NO)
 	{
 		fullDepthCapture = YES;
-		
 		if( renderingMode == 0)
-			fullDepthCapture = NO;
+			NSLog( @"****** warning, you should not be here. 16-bit capture requires MIP mode");
 	}
 	
 	if( fullDepthCapture)
