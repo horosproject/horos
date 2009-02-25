@@ -9,7 +9,6 @@
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
 			<integer value="618"/>
-			<integer value="145"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -39,7 +38,7 @@
 				<string key="NSWindowContentMaxSize">{3.40282e+38, 3.40282e+38}</string>
 				<string key="NSWindowContentMinSize">{213, 107}</string>
 				<object class="NSView" key="NSWindowView" id="283617184">
-					<reference key="NSNextResponder"/>
+					<nil key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<object class="NSMutableArray" key="NSSubviews">
 						<bool key="EncodedWithXMLCoder">YES</bool>
@@ -89,7 +88,6 @@
 						</object>
 					</object>
 					<string key="NSFrameSize">{498, 379}</string>
-					<reference key="NSSuperview"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {2560, 1578}}</string>
 				<string key="NSMinSize">{213, 129}</string>
@@ -3149,7 +3147,7 @@ ZSBtZW51OiBzZWxlY3QgaXQgd2hpbGUgaG9sZGluZyBkb3duIHRoZSBhbHQvb3B0aW9uIGtleS4</str
 						<object class="NSTextField" id="118305012">
 							<reference key="NSNextResponder" ref="56226107"/>
 							<int key="NSvFlags">256</int>
-							<string key="NSFrame">{{294, 278}, {114, 17}}</string>
+							<string key="NSFrame">{{243, 278}, {114, 17}}</string>
 							<reference key="NSSuperview" ref="56226107"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="1034076048">
@@ -3301,7 +3299,7 @@ ZSBtZW51OiBzZWxlY3QgaXQgd2hpbGUgaG9sZGluZyBkb3duIHRoZSBhbHQvb3B0aW9uIGtleS4</str
 						<object class="NSMatrix" id="682613182">
 							<reference key="NSNextResponder" ref="56226107"/>
 							<int key="NSvFlags">268</int>
-							<string key="NSFrame">{{423, 257}, {141, 38}}</string>
+							<string key="NSFrame">{{362, 257}, {222, 38}}</string>
 							<reference key="NSSuperview" ref="56226107"/>
 							<bool key="NSEnabled">YES</bool>
 							<int key="NSNumRows">2</int>
@@ -3311,7 +3309,7 @@ ZSBtZW51OiBzZWxlY3QgaXQgd2hpbGUgaG9sZGluZyBkb3duIHRoZSBhbHQvb3B0aW9uIGtleS4</str
 								<object class="NSButtonCell" id="453342247">
 									<int key="NSCellFlags">-2080244224</int>
 									<int key="NSCellFlags2">0</int>
-									<string key="NSContents">8-bit</string>
+									<string key="NSContents">As displayed in 8-bit RGB</string>
 									<reference key="NSSupport" ref="140508487"/>
 									<reference key="NSControlView" ref="682613182"/>
 									<int key="NSButtonFlags">1211912703</int>
@@ -3325,7 +3323,7 @@ ZSBtZW51OiBzZWxlY3QgaXQgd2hpbGUgaG9sZGluZyBkb3duIHRoZSBhbHQvb3B0aW9uIGtleS4</str
 								<object class="NSButtonCell" id="971287888">
 									<int key="NSCellFlags">67239424</int>
 									<int key="NSCellFlags2">0</int>
-									<string key="NSContents">16-bit</string>
+									<string key="NSContents">As displayed in 16-bit BW</string>
 									<reference key="NSSupport" ref="140508487"/>
 									<int key="NSTag">1</int>
 									<reference key="NSControlView" ref="682613182"/>
@@ -3432,7 +3430,7 @@ QXBwbGUgQ29tcHV0ZXIsIEluYy4sIDIwMDUAAAAAA</bytes>
 									<int key="NSPeriodicInterval">75</int>
 								</object>
 							</object>
-							<string key="NSCellSize">{141, 18}</string>
+							<string key="NSCellSize">{222, 18}</string>
 							<string key="NSIntercellSpacing">{4, 2}</string>
 							<int key="NSMatrixFlags">1151868928</int>
 							<string key="NSCellClass">NSActionCell</string>
@@ -9067,6 +9065,22 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 						<reference key="destination" ref="682613182"/>
 					</object>
 					<int key="connectionID">2268</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">selectedTag: values.exportMIPIn16bits</string>
+						<reference key="source" ref="682613182"/>
+						<reference key="destination" ref="772267479"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="682613182"/>
+							<reference key="NSDestination" ref="772267479"/>
+							<string key="NSLabel">selectedTag: values.exportMIPIn16bits</string>
+							<string key="NSBinding">selectedTag</string>
+							<string key="NSKeyPath">values.exportMIPIn16bits</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">2269</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -14983,7 +14997,7 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">2268</int>
+			<int key="maxID">2269</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -15627,6 +15641,7 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 							<string>sendMail:</string>
 							<string>setCurrentdcmExport:</string>
 							<string>setRenderMode:</string>
+							<string>showCropCube:</string>
 							<string>squareView:</string>
 							<string>switchOrientationWidget:</string>
 							<string>switchProjection:</string>
@@ -15642,6 +15657,7 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 							<string>id</string>
 							<string>id</string>
 							<string>NSColor</string>
+							<string>id</string>
 							<string>id</string>
 							<string>id</string>
 							<string>id</string>

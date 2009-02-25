@@ -1032,6 +1032,9 @@ public:
 	
 	if( dataPtr)
 	{
+		if( fullDepth) [exportDCM setModalityAsSource: YES];
+		else [exportDCM setModalityAsSource: YES];
+		
 		[exportDCM setSourceFile: [firstObject sourceFile]];
 		[exportDCM setSeriesDescription: [dcmSeriesName stringValue]];
 		
@@ -5513,8 +5516,6 @@ public:
 
 - (float*) imageInFullDepthWidth: (long*) w height:(long*) h
 {
-//	volumeMapper->Render( aRenderer, volume);
-	
 	vtkFixedPointRayCastImage *rayCastImage = volumeMapper->GetRayCastImage();
 	
 	unsigned short *im = rayCastImage->GetImage();
@@ -5526,6 +5527,9 @@ public:
 	
 	int size[2];
 	rayCastImage->GetImageInUseSize( size);
+	
+	*w = size[0];
+	*h = size[1];
 	
 	destPtr = destFixedPtr = (float*) malloc( size[0] * size[ 1] * sizeof( float));
 	if( destFixedPtr)
@@ -5543,16 +5547,14 @@ public:
 		}
 	}
 	
-	float mul = valueFactor;
+	float mul = 1./valueFactor;
 	float add = -OFFSET16;
 	
-	if( valueFactor != 1)
+	if( valueFactor != 1 && [firstObject SUVConverted] == NO)
 		vDSP_vsmul( destFixedPtr, 1, &mul, destFixedPtr, 1, size[0] * size[ 1]);
 	
 	vDSP_vsadd( destFixedPtr, 1, &add, destFixedPtr, 1, size[0] * size[ 1]);
-	
-	*w = size[0];
-	*h = size[1];
+
 	
 	return destFixedPtr;
 }
