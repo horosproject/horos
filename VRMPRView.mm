@@ -11,6 +11,7 @@
      the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
      PURPOSE.
 =========================================================================*/
+#define clippingRangeDefine 0.1, 2
 
 #define USE3DCONNEXION 1
 
@@ -1971,62 +1972,6 @@ public:
 		
 		////////////////
 		
-		vtkFixedPointRayCastImage *rayCastImage = volumeMapper->GetRayCastImage();
-		
-		unsigned short *im = rayCastImage->GetImage();
-		unsigned short *iptr;
-		unsigned char *destPtr, *destFixedPtr;
-		
-		int fullSize[2];
-		rayCastImage->GetImageMemorySize( fullSize);
-		
-		int size[2];
-		rayCastImage->GetImageInUseSize( size);
-		
-		destPtr = destFixedPtr = (unsigned char*) malloc( fullSize[ 0] * fullSize[ 1] * 3);
-		
-		for ( int j = 0; j < fullSize[1]; j++ )
-		{
-			iptr = im + 4*j*fullSize[0];
-			
-			for ( int i = 0; i < size[0]; i++ )
-			{
-				int tmp;
-
-				// Red component
-				tmp = (*(iptr+3));
-				*destPtr = tmp / 256;
-
-				// Green component
-				iptr++;
-				destPtr++;
-				
-				tmp = (*(iptr+2));
-				*destPtr = tmp / 256;
-
-				// Green component
-				iptr++;
-				destPtr++;
-				
-				tmp = (*(iptr+1));
-				*destPtr = tmp / 256;
-				
-				destPtr++;
-				iptr++;
-				
-				// alpha - do nothing
-				iptr++;
-			}
-		}
-		
-		NSBitmapImageRep *rep = [[[NSBitmapImageRep alloc] initWithBitmapDataPlanes: &destFixedPtr pixelsWide:size[ 0] pixelsHigh:size[ 1] bitsPerSample:8 samplesPerPixel:3 hasAlpha:NO isPlanar:NO colorSpaceName: NSCalibratedRGBColorSpace bytesPerRow:size[ 0]*3*8/8 bitsPerPixel:3*8] autorelease];
-		
-		NSImage *image = [[[NSImage alloc] init] autorelease];
-		[image addRepresentation:rep];
-		
-		[[image TIFFRepresentation] writeToFile: @"test.tiff" atomically: YES];
-		
-		free( destFixedPtr);
 	}
 	@catch (NSException * e)
 	{
@@ -2360,7 +2305,7 @@ public:
 		aCamera->SetDistance( distance);
 		aCamera->ComputeViewPlaneNormal();
 		aCamera->OrthogonalizeViewUp();
-		aCamera->SetClippingRange(0.1,10.);
+		aCamera->SetClippingRange( clippingRangeDefine);
 		//aRenderer->ResetCameraClippingRange();
 		
 		[self setNeedsDisplay:YES];
@@ -2777,7 +2722,7 @@ public:
 					aCamera->Pitch( -([theEvent deltaY]) / 5.);
 					aCamera->ComputeViewPlaneNormal();
 					aCamera->OrthogonalizeViewUp();
-					aCamera->SetClippingRange(0.1,10.);
+					aCamera->SetClippingRange(clippingRangeDefine);
 					//aRenderer->ResetCameraClippingRange();
 					[self computeOrientationText];
 					[self setNeedsDisplay:YES];
@@ -3751,7 +3696,7 @@ public:
 	aCamera->SetDistance( distance);
 	aRenderer->GetActiveCamera()->OrthogonalizeViewUp();
 	//aRenderer->ResetCameraClippingRange();
-	aCamera->SetClippingRange(0.1,10.);
+	aCamera->SetClippingRange(clippingRangeDefine);
 }
 
 - (void) flyToVoxel:(OSIVoxel *)voxel{
@@ -4458,7 +4403,7 @@ public:
 	aCamera->SetPosition(center[0]+distance*vn[0], center[1]+distance*vn[1], center[2]+distance*vn[2]);
 	aCamera->SetParallelScale( pp);
 	//aRenderer->ResetCameraClippingRange();
-	aCamera->SetClippingRange(0.1,10.);
+	aCamera->SetClippingRange(clippingRangeDefine);
 
 	croppingBox->SetHandleSize( 0.005);
 	[self setNeedsDisplay:YES];
@@ -4486,7 +4431,7 @@ public:
 	aCamera->SetPosition(center[0]+distance*vn[0], center[1]+distance*vn[1], center[2]+distance*vn[2]);
 	aCamera->SetParallelScale( pp);
 	//aRenderer->ResetCameraClippingRange();
-	aCamera->SetClippingRange(0.1,10.);
+	aCamera->SetClippingRange(clippingRangeDefine);
 	
 	croppingBox->SetHandleSize( 0.005);
 	[self setNeedsDisplay:YES];
@@ -4513,7 +4458,7 @@ public:
 	aCamera->SetPosition(center[0]+distance*vn[0], center[1]+distance*vn[1], center[2]+distance*vn[2]);
 	aCamera->SetParallelScale( pp);
 	//aRenderer->ResetCameraClippingRange();
-	aCamera->SetClippingRange(0.1,10.);
+	aCamera->SetClippingRange(clippingRangeDefine);
 	
 	croppingBox->SetHandleSize( 0.005);
 	[self setNeedsDisplay:YES];
@@ -5398,7 +5343,7 @@ public:
 		aRenderer->SetActiveCamera(aCamera);
 		aRenderer->ResetCamera();
 		
-		aCamera->SetClippingRange(0.1,10.);
+		aCamera->SetClippingRange(clippingRangeDefine);
 		
 	//	[self renderWindow]->StereoRenderOn();
 	//	[self renderWindow]->SetStereoTypeToRedBlue();
@@ -5815,7 +5760,7 @@ public:
 		return;
 
 	double clippingRange[2];
-	aVtkCamera->GetClippingRange(clippingRange);
+	aVtkCamera->GetClippingRange( clippingRange);
 	double viewAngle, eyeAngle;
 	viewAngle = aVtkCamera->GetViewAngle();
 	eyeAngle = aVtkCamera->GetEyeAngle();
@@ -5824,8 +5769,8 @@ public:
 	aCamera->SetPosition(pos);
 	aCamera->SetFocalPoint(focal);
 	aCamera->SetViewUp(vUp);
-	//aCamera->SetClippingRange(clippingRange);
-	aCamera->SetClippingRange(0.1,10.);
+	//aCamera->SetClippingRange(clippingRangeDefine);
+	aCamera->SetClippingRange(clippingRangeDefine);
 	aCamera->SetViewAngle(viewAngle);
 	aCamera->SetEyeAngle(eyeAngle);
 	aCamera->SetParallelScale(parallelScale);
@@ -5882,6 +5827,29 @@ public:
 	// thumbnail
 	if( produceThumbnail)
 		[cam setPreviewImage: [self nsimage:TRUE]];
+
+	
+	// Try to compute the cos matrix of my plane
+	double cos[ 9];
+	
+	cos[3] = [[cam viewUp] x] * -1.0;
+	cos[4] = [[cam viewUp] y] * -1.0;
+	cos[5] = [[cam viewUp] z] * -1.0;
+	
+	
+	aCamera->GetDirectionOfProjection( cos+6);
+	
+	cos[0] = cos[7]*cos[5] - cos[8]*cos[4];
+	cos[1] = cos[8]*cos[3] - cos[6]*cos[5];
+	cos[2] = cos[6]*cos[4] - cos[7]*cos[3];
+	
+	cos[0] *= -1.;
+	cos[1] *= -1.;
+	cos[2] *= -1.;
+	
+	NSLog( @"cos: %f %f %f", cos[0], cos[1], cos[2]);
+	NSLog( @"cos: %f %f %f", cos[3], cos[4], cos[5]);
+	NSLog( @"cos: %f %f %f", cos[6], cos[7], cos[8]);
 	
 	return [cam autorelease];
 }
@@ -5914,7 +5882,7 @@ public:
 	aCamera->OrthogonalizeViewUp();
 	//aRenderer->ResetCameraClippingRange();
 	
-	aCamera->SetClippingRange(0.1,10.);
+	aCamera->SetClippingRange(clippingRangeDefine);
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: nil];
 }
@@ -6002,7 +5970,7 @@ public:
 	aCamera->SetEyeAngle(eyeAngle);
 	aCamera->SetParallelScale(parallelScale);
 	//aRenderer->ResetCameraClippingRange();
-	aCamera->SetClippingRange(0.1,10.);
+	aCamera->SetClippingRange(clippingRangeDefine);
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: nil];
 	
 	NSLog( @"Camera: %f %f %f", focal[ 0], focal[ 1], focal[ 2]);
@@ -7368,7 +7336,7 @@ public:
 {
 	aCamera->Yaw(degrees);
 	//aRenderer->ResetCameraClippingRange();
-	aCamera->SetClippingRange(0.1,10.);
+	aCamera->SetClippingRange(clippingRangeDefine);
 	[self setNeedsDisplay:YES];
 }
 

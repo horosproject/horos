@@ -16,7 +16,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-//#define testMPR
+#define testMPR
 
 #ifdef testMPR
 #import "VRMPRView.h"
