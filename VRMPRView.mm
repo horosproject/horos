@@ -2337,18 +2337,18 @@ public:
 	
 	NSMutableString *s = [NSMutableString stringWithFormat: NSLocalizedString( @"View Size: %d x %d", nil), (int) [self frame].size.width, (int) [self frame].size.height];
 	
-	if( [self get3DPixelUnder2DPositionX:mouseLocStart.x Y:mouseLocStart.y pixel:pix position:pos value:&value])
-	{
-		long sliceNo;
-		if( [[[controller viewer2D] imageView] flippedData]) sliceNo = pix[ 2];
-		else sliceNo = [pixList count] -1 -pix[ 2];
-	
-		NSString	*pixLoc = [[NSString stringWithFormat: @"X:%d Y:%d Z:%d (px)", pix[ 0], pix[ 1], sliceNo] stringByPaddingToLength: 23 withString: @" " startingAtIndex: 0];
-		NSString	*mmLoc = [[NSString stringWithFormat: @"X:%.2f Y:%.2f Z:%.2f (mm)", pos[ 0], pos[ 1], pos[ 2]] stringByPaddingToLength: 38 withString: @" " startingAtIndex: 0];
-		NSString	*val = [[NSString stringWithFormat: @"%.2f", value] stringByPaddingToLength: 9 withString: @" " startingAtIndex:  0];
-		
-		[s appendFormat: NSLocalizedString( @"   Pixel: %@    %@ %@", nil), val, pixLoc, mmLoc];
-	}
+//	if( [self get3DPixelUnder2DPositionX:mouseLocStart.x Y:mouseLocStart.y pixel:pix position:pos value:&value])
+//	{
+//		long sliceNo;
+//		if( [[[controller viewer2D] imageView] flippedData]) sliceNo = pix[ 2];
+//		else sliceNo = [pixList count] -1 -pix[ 2];
+//	
+//		NSString	*pixLoc = [[NSString stringWithFormat: @"X:%d Y:%d Z:%d (px)", pix[ 0], pix[ 1], sliceNo] stringByPaddingToLength: 23 withString: @" " startingAtIndex: 0];
+//		NSString	*mmLoc = [[NSString stringWithFormat: @"X:%.2f Y:%.2f Z:%.2f (mm)", pos[ 0], pos[ 1], pos[ 2]] stringByPaddingToLength: 38 withString: @" " startingAtIndex: 0];
+//		NSString	*val = [[NSString stringWithFormat: @"%.2f", value] stringByPaddingToLength: 9 withString: @" " startingAtIndex:  0];
+//		
+//		[s appendFormat: NSLocalizedString( @"   Pixel: %@    %@ %@", nil), val, pixLoc, mmLoc];
+//	}
 	
 	if( measureLength)
 	{
@@ -2915,7 +2915,8 @@ public:
 		long	pix[ 3];
 		float	pos[ 3], value;
 		
-		if( [self get3DPixelUnder2DPositionX:_mouseLocStart.x Y:_mouseLocStart.y pixel:pix position:pos value:&value])
+//		if( )
+		[self get3DPixelUnder2DPositionX:_mouseLocStart.x Y:_mouseLocStart.y pixel:pix position:pos value:&value];
 		{
 			NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:	[NSNumber numberWithInt: pix[0]], @"x", [NSNumber numberWithInt: pix[1]], @"y", [NSNumber numberWithInt: pix[2]], @"z",
 																				nil];
@@ -6461,6 +6462,12 @@ public:
 						position[ 2] = resultPt[2];
 					}
 				}
+			}
+			else
+			{
+				position[ 0] = resultPt[0];
+				position[ 1] = resultPt[1];
+				position[ 2] = resultPt[2];	
 			}
 		}
 	}
