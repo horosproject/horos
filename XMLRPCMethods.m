@@ -797,6 +797,122 @@
 				}
 			}
 			
+			
+			#pragma mark DisplayStudyListByPatientName
+			
+			// ********************************************
+			// Method: DisplayStudyListByPatientName
+			//
+			// Parameters:
+			// PatientName: name of the patient
+			//
+			// Example: {PatientName: "DOE^JOHN"}
+			//
+			// Response: {error: "0"}
+			
+			if ([selName isEqual:@"DisplayStudyListByPatientName"])
+			{
+				if( [[httpServerMessage valueForKey: @"Processed"] boolValue] == NO)							// Is this order already processed ?
+				{
+					NSArray *keys = [doc nodesForXPath:@"methodCall/params//member/name" error:&error];
+					NSArray *values = [doc nodesForXPath:@"methodCall/params//member/value" error:&error];
+					if (1 != [keys count] || 1 != [values count])
+					{
+						CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 400, NULL, (CFStringRef) vers); // Bad Request
+						[mess setResponse:response];
+						CFRelease(response);
+						return;
+					}
+					
+					int i;
+					NSMutableDictionary *paramDict = [NSMutableDictionary dictionary];
+					for( i = 0; i < [keys count]; i++)
+					{
+						id value;
+						
+						if( [encoding isEqualToString:@"UTF-8"] == NO &&  [[[values objectAtIndex: i] objectValue] isKindOfClass:[NSString class]])
+							value = [(NSString*)CFXMLCreateStringByUnescapingEntities(NULL, (CFStringRef)[[values objectAtIndex: i] objectValue], NULL) autorelease];
+						else
+							value = [[values objectAtIndex: i] objectValue];
+						
+						[paramDict setValue: value  forKey: [[keys objectAtIndex: i] objectValue]];
+					}
+					
+					// *****
+					
+					NSNumber *ret = [NSNumber numberWithInt: 0];
+					
+					[[BrowserController currentBrowser] setSearchString:[paramDict valueForKey:@"PatientName"]];
+					
+					// *****
+					NSString *xml = [NSString stringWithFormat: @"<?xml version=\"1.0\"?><methodResponse><params><param><value><struct><member><name>error</name><value>%@</value></member></struct></value></param></params></methodResponse>", [ret stringValue]];
+					
+					NSError *error = nil;
+					NSXMLDocument *doc = [[[NSXMLDocument alloc] initWithXMLString:xml options:NSXMLNodeOptionsNone error:&error] autorelease];
+					[httpServerMessage setValue: [NSNumber numberWithBool: YES] forKey: @"Processed"];
+					[httpServerMessage setValue: doc forKey: @"NSXMLDocumentResponse"];
+					[httpServerMessage setValue: [NSNumber numberWithBool: YES] forKey: @"Processed"];		// To tell to other XML-RPC that we processed this order
+				}
+			}
+			
+			#pragma mark DisplayStudyListByPatientId
+			
+			// ********************************************
+			// Method: DisplayStudyListByPatientId
+			//
+			// Parameters:
+			// PatientID: patient ID
+			//
+			// Example: {id: "0123456789"}
+			//
+			// Response: {error: "0"}
+			
+			if ([selName isEqual:@"DisplayStudyListByPatientId"])
+			{
+				if( [[httpServerMessage valueForKey: @"Processed"] boolValue] == NO)							// Is this order already processed ?
+				{
+					NSArray *keys = [doc nodesForXPath:@"methodCall/params//member/name" error:&error];
+					NSArray *values = [doc nodesForXPath:@"methodCall/params//member/value" error:&error];
+					if (1 != [keys count] || 1 != [values count])
+					{
+						CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 400, NULL, (CFStringRef) vers); // Bad Request
+						[mess setResponse:response];
+						CFRelease(response);
+						return;
+					}
+					
+					int i;
+					NSMutableDictionary *paramDict = [NSMutableDictionary dictionary];
+					for( i = 0; i < [keys count]; i++)
+					{
+						id value;
+						
+						if( [encoding isEqualToString:@"UTF-8"] == NO &&  [[[values objectAtIndex: i] objectValue] isKindOfClass:[NSString class]])
+							value = [(NSString*)CFXMLCreateStringByUnescapingEntities(NULL, (CFStringRef)[[values objectAtIndex: i] objectValue], NULL) autorelease];
+						else
+							value = [[values objectAtIndex: i] objectValue];
+						
+						[paramDict setValue: value  forKey: [[keys objectAtIndex: i] objectValue]];
+					}
+					
+					// *****
+					
+					NSNumber *ret = [NSNumber numberWithInt: 0];
+					
+					[[BrowserController currentBrowser] setSearchString:[paramDict valueForKey:@"PatientID"]];
+					
+					// *****
+					NSString *xml = [NSString stringWithFormat: @"<?xml version=\"1.0\"?><methodResponse><params><param><value><struct><member><name>error</name><value>%@</value></member></struct></value></param></params></methodResponse>", [ret stringValue]];
+					
+					NSError *error = nil;
+					NSXMLDocument *doc = [[[NSXMLDocument alloc] initWithXMLString:xml options:NSXMLNodeOptionsNone error:&error] autorelease];
+					[httpServerMessage setValue: [NSNumber numberWithBool: YES] forKey: @"Processed"];
+					[httpServerMessage setValue: doc forKey: @"NSXMLDocumentResponse"];
+					[httpServerMessage setValue: [NSNumber numberWithBool: YES] forKey: @"Processed"];		// To tell to other XML-RPC that we processed this order
+				}
+			}
+			
+			
 			#pragma mark-
 			#pragma mark Send the XML-RPC as a notification
 			
