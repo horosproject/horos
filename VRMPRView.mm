@@ -11,7 +11,7 @@
      the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
      PURPOSE.
 =========================================================================*/
-#define clippingRangeDefine 0.1, 2
+#define clippingRangeDefine 0.0, 1
 
 #define USE3DCONNEXION 1
 
@@ -5850,6 +5850,18 @@ public:
 	NSLog( @"cos: %f %f %f", cos[0], cos[1], cos[2]);
 	NSLog( @"cos: %f %f %f", cos[3], cos[4], cos[5]);
 	NSLog( @"cos: %f %f %f", cos[6], cos[7], cos[8]);
+	
+	// Try to compute the origin
+	{
+		double cameraPosition[3];
+		aCamera->GetPosition(cameraPosition);
+		
+		cameraPosition[ 0] /= factor;
+		cameraPosition[ 1] /= factor;
+		cameraPosition[ 2] /= factor;
+		
+		NSLog( @"pos: %f %f %f", cameraPosition[ 0], cameraPosition[ 1], cameraPosition[ 2]);
+	}
 	
 	return [cam autorelease];
 }
