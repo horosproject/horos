@@ -5861,6 +5861,32 @@ public:
 		cameraPosition[ 2] /= factor;
 		
 		NSLog( @"pos: %f %f %f", cameraPosition[ 0], cameraPosition[ 1], cameraPosition[ 2]);
+		
+		vtkFixedPointRayCastImage *rayCastImage = volumeMapper->GetRayCastImage();
+		
+		int origin[ 2];
+		
+		rayCastImage->GetImageOrigin( origin);
+		
+		NSLog( @"center origin: %d %d", origin[ 0], origin[ 1]);
+		
+		float r = [self getResolution] * volumeMapper->GetRayCastImage()->GetImageSampleDistance();
+		
+		NSLog( @"resolution: %f", r);
+		
+		int size[2];
+		rayCastImage->GetImageInUseSize( size);
+		
+		float x = -size[ 0] / 2;
+		float y = -size[ 1] / 2;
+		
+		float d[ 3];
+		
+		d[0] = cameraPosition[ 0] + y*cos[3]*r + x*cos[0]*r;
+		d[1] = cameraPosition[ 1] + y*cos[4]*r + x*cos[1]*r;
+		d[2] = cameraPosition[ 2] + y*cos[5]*r + x*cos[2]*r;
+		
+		NSLog( @"x: %f y: %f z: %f", d[ 0], d[ 1], d[ 2]);
 	}
 	
 	return [cam autorelease];
