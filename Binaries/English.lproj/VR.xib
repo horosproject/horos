@@ -8,7 +8,7 @@
 		<string key="IBDocument.HIToolboxVersion">353.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="618"/>
+			<integer value="2270"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -2640,7 +2640,7 @@ ZSBtZW51OiBzZWxlY3QgaXQgd2hpbGUgaG9sZGluZyBkb3duIHRoZSBhbHQvb3B0aW9uIGtleS4</str
 				<string key="NSWindowContentMaxSize">{3.40282e+38, 3.40282e+38}</string>
 				<string key="NSWindowContentMinSize">{548, 208}</string>
 				<object class="NSView" key="NSWindowView" id="56226107">
-					<reference key="NSNextResponder"/>
+					<nil key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<object class="NSMutableArray" key="NSSubviews">
 						<bool key="EncodedWithXMLCoder">YES</bool>
@@ -3493,7 +3493,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						</object>
 					</object>
 					<string key="NSFrameSize">{584, 359}</string>
-					<reference key="NSSuperview"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {2560, 1578}}</string>
 				<string key="NSMinSize">{548, 230}</string>
@@ -6578,6 +6577,75 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 				<string key="NSMinSize">{213, 129}</string>
 				<string key="NSMaxSize">{3.40282e+38, 3.40282e+38}</string>
 			</object>
+			<object class="NSCustomView" id="67304725">
+				<reference key="NSNextResponder"/>
+				<int key="NSvFlags">256</int>
+				<object class="NSMutableArray" key="NSSubviews">
+					<bool key="EncodedWithXMLCoder">YES</bool>
+					<object class="NSTextField" id="280477531">
+						<reference key="NSNextResponder" ref="67304725"/>
+						<int key="NSvFlags">256</int>
+						<string key="NSFrame">{{-2, 16}, {43, 17}}</string>
+						<reference key="NSSuperview" ref="67304725"/>
+						<bool key="NSEnabled">YES</bool>
+						<object class="NSTextFieldCell" key="NSCell" id="747293598">
+							<int key="NSCellFlags">67239424</int>
+							<int key="NSCellFlags2">4194304</int>
+							<string key="NSContents">Thin</string>
+							<reference key="NSSupport" ref="766908030"/>
+							<reference key="NSControlView" ref="280477531"/>
+							<reference key="NSBackgroundColor" ref="347626342"/>
+							<reference key="NSTextColor" ref="868407003"/>
+						</object>
+					</object>
+					<object class="NSSlider" id="766978786">
+						<reference key="NSNextResponder" ref="67304725"/>
+						<int key="NSvFlags">256</int>
+						<string key="NSFrame">{{0, 4}, {117, 16}}</string>
+						<reference key="NSSuperview" ref="67304725"/>
+						<bool key="NSEnabled">YES</bool>
+						<object class="NSSliderCell" key="NSCell" id="31561149">
+							<int key="NSCellFlags">67501824</int>
+							<int key="NSCellFlags2">262144</int>
+							<object class="NSMutableString" key="NSContents">
+								<characters key="NS.bytes"/>
+							</object>
+							<reference key="NSSupport" ref="187470615"/>
+							<reference key="NSControlView" ref="766978786"/>
+							<double key="NSMaxValue">1.000000e+02</double>
+							<double key="NSMinValue">1.000000e+00</double>
+							<double key="NSValue">1.000000e+00</double>
+							<double key="NSAltIncValue">0.000000e+00</double>
+							<int key="NSNumberOfTickMarks">30</int>
+							<int key="NSTickMarkPosition">0</int>
+							<bool key="NSAllowsTickMarkValuesOnly">NO</bool>
+							<bool key="NSVertical">NO</bool>
+						</object>
+					</object>
+					<object class="NSTextField" id="329609238">
+						<reference key="NSNextResponder" ref="67304725"/>
+						<int key="NSvFlags">256</int>
+						<string key="NSFrame">{{68, 16}, {51, 17}}</string>
+						<reference key="NSSuperview" ref="67304725"/>
+						<bool key="NSEnabled">YES</bool>
+						<object class="NSTextFieldCell" key="NSCell" id="39071661">
+							<int key="NSCellFlags">67239424</int>
+							<int key="NSCellFlags2">71303168</int>
+							<string key="NSContents">Thick</string>
+							<reference key="NSSupport" ref="766908030"/>
+							<reference key="NSControlView" ref="329609238"/>
+							<reference key="NSBackgroundColor" ref="347626342"/>
+							<reference key="NSTextColor" ref="868407003"/>
+						</object>
+					</object>
+				</object>
+				<string key="NSFrameSize">{117, 33}</string>
+				<reference key="NSSuperview"/>
+				<object class="NSMutableString" key="NSClassName">
+					<characters key="NS.bytes">NSView</characters>
+				</object>
+				<string key="NSExtension">NSResponder</string>
+			</object>
 		</object>
 		<object class="IBObjectContainer" key="IBDocument.Objects">
 			<object class="NSMutableArray" key="connectionRecords">
@@ -6629,14 +6697,6 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 						<reference key="destination" ref="155329142"/>
 					</object>
 					<int key="connectionID">354</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">LODsliderAction:</string>
-						<reference key="source" ref="125547302"/>
-						<reference key="destination" ref="155329142"/>
-					</object>
-					<int key="connectionID">355</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
@@ -9081,6 +9141,30 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 						</object>
 					</object>
 					<int key="connectionID">2269</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">ClippingRangeView</string>
+						<reference key="source" ref="125547302"/>
+						<reference key="destination" ref="67304725"/>
+					</object>
+					<int key="connectionID">2277</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">LODsliderAction:</string>
+						<reference key="source" ref="125547302"/>
+						<reference key="destination" ref="155329142"/>
+					</object>
+					<int key="connectionID">2279</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">clippingRangeAction:</string>
+						<reference key="source" ref="125547302"/>
+						<reference key="destination" ref="766978786"/>
+					</object>
+					<int key="connectionID">2280</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -13210,6 +13294,60 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 						<reference key="object" ref="525182870"/>
 						<reference key="parent" ref="682613182"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">2270</int>
+						<reference key="object" ref="67304725"/>
+						<object class="NSMutableArray" key="children">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<reference ref="329609238"/>
+							<reference ref="766978786"/>
+							<reference ref="280477531"/>
+						</object>
+						<reference key="parent" ref="733070969"/>
+						<string key="objectName">ClippingRange</string>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">2271</int>
+						<reference key="object" ref="329609238"/>
+						<object class="NSMutableArray" key="children">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<reference ref="39071661"/>
+						</object>
+						<reference key="parent" ref="67304725"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">2272</int>
+						<reference key="object" ref="766978786"/>
+						<object class="NSMutableArray" key="children">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<reference ref="31561149"/>
+						</object>
+						<reference key="parent" ref="67304725"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">2273</int>
+						<reference key="object" ref="280477531"/>
+						<object class="NSMutableArray" key="children">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<reference ref="747293598"/>
+						</object>
+						<reference key="parent" ref="67304725"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">2274</int>
+						<reference key="object" ref="747293598"/>
+						<reference key="parent" ref="280477531"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">2275</int>
+						<reference key="object" ref="31561149"/>
+						<reference key="parent" ref="766978786"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">2276</int>
+						<reference key="object" ref="39071661"/>
+						<reference key="parent" ref="329609238"/>
+					</object>
 				</object>
 			</object>
 			<object class="NSMutableDictionary" key="flattenedProperties">
@@ -13569,6 +13707,15 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 					<string>2265.IBPluginDependency</string>
 					<string>2266.IBPluginDependency</string>
 					<string>2267.IBPluginDependency</string>
+					<string>2270.IBEditorWindowLastContentRect</string>
+					<string>2270.IBPluginDependency</string>
+					<string>2270.ImportedFromIB2</string>
+					<string>2271.IBPluginDependency</string>
+					<string>2271.ImportedFromIB2</string>
+					<string>2272.IBPluginDependency</string>
+					<string>2272.ImportedFromIB2</string>
+					<string>2273.IBPluginDependency</string>
+					<string>2273.ImportedFromIB2</string>
 					<string>234.IBPluginDependency</string>
 					<string>234.ImportedFromIB2</string>
 					<string>235.IBPluginDependency</string>
@@ -13579,6 +13726,7 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 					<string>237.ImportedFromIB2</string>
 					<string>238.IBPluginDependency</string>
 					<string>238.ImportedFromIB2</string>
+					<string>239.IBEditorWindowLastContentRect</string>
 					<string>239.IBPluginDependency</string>
 					<string>239.ImportedFromIB2</string>
 					<string>243.IBPluginDependency</string>
@@ -13632,6 +13780,7 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 					<string>374.ImportedFromIB2</string>
 					<string>375.IBPluginDependency</string>
 					<string>375.ImportedFromIB2</string>
+					<string>386.IBEditorWindowLastContentRect</string>
 					<string>386.IBPluginDependency</string>
 					<string>386.ImportedFromIB2</string>
 					<string>387.IBPluginDependency</string>
@@ -13772,6 +13921,7 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 					<string>550.ImportedFromIB2</string>
 					<string>551.IBPluginDependency</string>
 					<string>551.ImportedFromIB2</string>
+					<string>552.IBEditorWindowLastContentRect</string>
 					<string>552.IBPluginDependency</string>
 					<string>552.ImportedFromIB2</string>
 					<string>563.IBPluginDependency</string>
@@ -13786,6 +13936,7 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 					<string>569.ImportedFromIB2</string>
 					<string>572.IBPluginDependency</string>
 					<string>572.ImportedFromIB2</string>
+					<string>575.IBEditorWindowLastContentRect</string>
 					<string>575.IBPluginDependency</string>
 					<string>575.ImportedFromIB2</string>
 					<string>577.IBPluginDependency</string>
@@ -13894,6 +14045,7 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 					<string>699.ImportedFromIB2</string>
 					<string>700.IBPluginDependency</string>
 					<string>700.ImportedFromIB2</string>
+					<string>702.IBEditorWindowLastContentRect</string>
 					<string>702.IBPluginDependency</string>
 					<string>702.ImportedFromIB2</string>
 					<string>707.IBPluginDependency</string>
@@ -13986,6 +14138,7 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 					<string>882.ImportedFromIB2</string>
 					<string>883.IBPluginDependency</string>
 					<string>883.ImportedFromIB2</string>
+					<string>888.IBEditorWindowLastContentRect</string>
 					<string>888.IBPluginDependency</string>
 					<string>888.ImportedFromIB2</string>
 					<string>899.IBPluginDependency</string>
@@ -14408,6 +14561,7 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<string>{{543, 815}, {117, 33}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -14418,6 +14572,15 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<reference ref="9"/>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<reference ref="9"/>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<reference ref="9"/>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<reference ref="9"/>
+					<string>{{42, 1463}, {305, 36}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -14471,6 +14634,7 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
+					<string>{{21, 1495}, {104, 27}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -14611,6 +14775,7 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
+					<string>{{84, 1417}, {58, 36}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -14625,6 +14790,7 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
+					<string>{{63, 1433}, {68, 43}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -14733,6 +14899,7 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
+					<string>{{0, 1497}, {111, 48}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -14909,6 +15076,7 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
+					<string>{{105, 1387}, {166, 43}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -14997,7 +15165,7 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">2269</int>
+			<int key="maxID">2280</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -15325,6 +15493,7 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 							<string>applyConvolution:</string>
 							<string>applyShading:</string>
 							<string>blendingSlider:</string>
+							<string>clippingRangeAction:</string>
 							<string>close3DSettingsSavePanel:</string>
 							<string>displayPresetsForSelectedGroup:</string>
 							<string>editGrowingRegion:</string>
@@ -15390,6 +15559,7 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 							<string>id</string>
 							<string>id</string>
 							<string>id</string>
+							<string>id</string>
 						</object>
 					</object>
 					<object class="NSMutableDictionary" key="outlets">
@@ -15398,6 +15568,7 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>BackgroundColorView</string>
 							<string>BlendingView</string>
+							<string>ClippingRangeView</string>
 							<string>LODSlider</string>
 							<string>LODView</string>
 							<string>OrientationsView</string>
@@ -15480,6 +15651,7 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>NSView</string>
 							<string>NSView</string>
 							<string>NSView</string>
 							<string>NSSlider</string>

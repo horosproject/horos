@@ -34,36 +34,37 @@
 #define PRESETS_DIRECTORY @"/3DPRESETS/"
 #define CLUTDATABASE @"/CLUTs/"
 
-static NSString* 	VRStandardToolbarIdentifier		= @"VR Toolbar Identifier";
-static NSString* 	VRPanelToolbarIdentifier		= @"VRPanel Toolbar Identifier";
+static NSString* 	VRStandardToolbarIdentifier = @"VR Toolbar Identifier";
+static NSString* 	VRPanelToolbarIdentifier = @"VRPanel Toolbar Identifier";
 
-static NSString*	QTExportToolbarItemIdentifier 	= @"QTExport.icns";
-static NSString*	iPhotoToolbarItemIdentifier 	= @"iPhoto.icns";
+static NSString*	QTExportToolbarItemIdentifier = @"QTExport.icns";
+static NSString*	iPhotoToolbarItemIdentifier = @"iPhoto.icns";
 static NSString*	QTExportVRToolbarItemIdentifier = @"QTExportVR.icns";
-static NSString*	StereoIdentifier				= @"Stereo.icns";
-static NSString*	CaptureToolbarItemIdentifier 	= @"Capture.icns";
-static NSString*	CroppingToolbarItemIdentifier 	= @"Cropping.icns";
+static NSString*	StereoIdentifier = @"Stereo.icns";
+static NSString*	CaptureToolbarItemIdentifier = @"Capture.icns";
+static NSString*	CroppingToolbarItemIdentifier = @"Cropping.icns";
 static NSString*	OrientationToolbarItemIdentifier= @"OrientationWidget.tiff";
-static NSString*	ToolsToolbarItemIdentifier		= @"Tools";
-static NSString*	WLWWToolbarItemIdentifier		= @"WLWW";
-static NSString*	LODToolbarItemIdentifier		= @"LOD";
-static NSString*	BlendingToolbarItemIdentifier   = @"2DBlending";
-static NSString*	MovieToolbarItemIdentifier		= @"Movie";
-static NSString*	ExportToolbarItemIdentifier		= @"Export.icns";
-static NSString*	MailToolbarItemIdentifier		= @"Mail.icns";
+static NSString*	ToolsToolbarItemIdentifier = @"Tools";
+static NSString*	WLWWToolbarItemIdentifier = @"WLWW";
+static NSString*	LODToolbarItemIdentifier = @"LOD";
+static NSString*	BlendingToolbarItemIdentifier = @"2DBlending";
+static NSString*	MovieToolbarItemIdentifier = @"Movie";
+static NSString*	ExportToolbarItemIdentifier = @"Export.icns";
+static NSString*	MailToolbarItemIdentifier = @"Mail.icns";
 static NSString*	ShadingToolbarItemIdentifier	= @"Shading";
-static NSString*	EngineToolbarItemIdentifier		= @"Engine";
+static NSString*	EngineToolbarItemIdentifier = @"Engine";
 static NSString*	PerspectiveToolbarItemIdentifier= @"Perspective";
-static NSString*	ResetToolbarItemIdentifier		= @"Reset.tiff";
-static NSString*	RevertToolbarItemIdentifier		= @"Revert.tiff";
-static NSString*	ModeToolbarItemIdentifier		= @"Mode";
+static NSString*	ResetToolbarItemIdentifier = @"Reset.tiff";
+static NSString*	RevertToolbarItemIdentifier = @"Revert.tiff";
+static NSString*	ModeToolbarItemIdentifier = @"Mode";
 static NSString*	FlyThruToolbarItemIdentifier	= @"FlyThru.tif";
 static NSString*	ScissorStateToolbarItemIdentifier	= @"ScissorState";
-static NSString*	ROIManagerToolbarItemIdentifier		= @"ROIManager.tiff";
-static NSString*	OrientationsViewToolbarItemIdentifier		= @"OrientationsView";
-static NSString*	ConvolutionViewToolbarItemIdentifier		= @"ConvolutionView";
-static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorView";
-static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
+static NSString*	ROIManagerToolbarItemIdentifier = @"ROIManager.tiff";
+static NSString*	OrientationsViewToolbarItemIdentifier = @"OrientationsView";
+static NSString*	ConvolutionViewToolbarItemIdentifier = @"ConvolutionView";
+static NSString*	BackgroundColorViewToolbarItemIdentifier = @"BackgroundColorView";
+static NSString*	PresetsPanelToolbarItemIdentifier = @"3DPresetsPanel.tiff";
+static NSString*	ClippingRangeViewToolbarItemIdentifier = @"ClippingRange";
 
 #include <3DConnexionClient/ConnexionClientAPI.h>
 
@@ -208,6 +209,17 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 	[[wlwwPopup menu] addItemWithTitle:NSLocalizedString(@"Set WL/WW Manually", nil) action:@selector (SetWLWW:) keyEquivalent:@""];
 
 	[[[wlwwPopup menu] itemAtIndex:0] setTitle:curWLWWMenu];
+}
+
+-(void) clippingRangeAction:(id) sender
+{
+	if( [perspectiveMatrix selectedTag] != 1)
+	{
+		[perspectiveMatrix selectCellWithTag: 1];
+		[view switchProjection: perspectiveMatrix];
+	}
+	
+    view.clippingRangeThickness = [sender floatValue];
 }
 
 -(void) LODsliderAction:(id) sender
@@ -1873,42 +1885,51 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 		 [toolbarItem setMinSize:NSMakeSize(NSWidth([toolsView frame]), NSHeight([toolsView frame]))];
 		 [toolbarItem setMaxSize:NSMakeSize(NSWidth([toolsView frame]), NSHeight([toolsView frame]))];
     }
+	else if([itemIdent isEqualToString: FlyThruToolbarItemIdentifier])
+	{
+		// Set up the standard properties 
+		[toolbarItem setLabel: NSLocalizedString(@"Fly Thru",nil)];
+		[toolbarItem setPaletteLabel: NSLocalizedString(@"Fly Thru",nil)];
+		[toolbarItem setToolTip: NSLocalizedString(@"Fly Thru Set up",nil)];
 	
-	else if([itemIdent isEqualToString: FlyThruToolbarItemIdentifier]) {
-	// Set up the standard properties 
-	[toolbarItem setLabel: NSLocalizedString(@"Fly Thru",nil)];
-	[toolbarItem setPaletteLabel: NSLocalizedString(@"Fly Thru",nil)];
-	[toolbarItem setToolTip: NSLocalizedString(@"Fly Thru Set up",nil)];
-	
-	[toolbarItem setImage: [NSImage imageNamed: FlyThruToolbarItemIdentifier]];
-	[toolbarItem setTarget: self];
-	[toolbarItem setAction: @selector(flyThruControllerInit:)];
+		[toolbarItem setImage: [NSImage imageNamed: FlyThruToolbarItemIdentifier]];
+		[toolbarItem setTarget: self];
+		[toolbarItem setAction: @selector(flyThruControllerInit:)];
     }
-	else if ([itemIdent isEqualToString: ROIManagerToolbarItemIdentifier]) {
-	
-	[toolbarItem setLabel: NSLocalizedString(@"ROI Manager",nil)];
-	[toolbarItem setPaletteLabel:NSLocalizedString( @"ROI Manager",nil)];
+	else if ([itemIdent isEqualToString: ROIManagerToolbarItemIdentifier])
+	{
+		[toolbarItem setLabel: NSLocalizedString(@"ROI Manager",nil)];
+		[toolbarItem setPaletteLabel:NSLocalizedString( @"ROI Manager",nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"ROI Manager",nil)];
-	[toolbarItem setImage: [NSImage imageNamed: ROIManagerToolbarItemIdentifier]];
-	[toolbarItem setTarget: self];
-	[toolbarItem setAction: @selector(roiGetManager:)];
+		[toolbarItem setImage: [NSImage imageNamed: ROIManagerToolbarItemIdentifier]];
+		[toolbarItem setTarget: self];
+		[toolbarItem setAction: @selector(roiGetManager:)];
     }
-	else if ([itemIdent isEqualToString: PresetsPanelToolbarItemIdentifier]) {
-	
-	[toolbarItem setLabel: NSLocalizedString(@"3D Presets",nil)];
-	[toolbarItem setPaletteLabel:NSLocalizedString( @"3D Presets",nil)];
+	else if ([itemIdent isEqualToString: PresetsPanelToolbarItemIdentifier])
+	{
+		[toolbarItem setLabel: NSLocalizedString(@"3D Presets",nil)];
+		[toolbarItem setPaletteLabel:NSLocalizedString( @"3D Presets",nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"Show 3D Presets Panel",nil)];
-	[toolbarItem setImage: [NSImage imageNamed: PresetsPanelToolbarItemIdentifier]];
-	[toolbarItem setTarget: self];
-	[toolbarItem setAction: @selector(load3DSettings:)];
-    }	
+		[toolbarItem setImage: [NSImage imageNamed: PresetsPanelToolbarItemIdentifier]];
+		[toolbarItem setTarget: self];
+		[toolbarItem setAction: @selector(load3DSettings:)];
+    }
+	else if( [itemIdent isEqualToString: ClippingRangeViewToolbarItemIdentifier])
+	{
+		[toolbarItem setLabel: NSLocalizedString(@"Clipping",nil)];
+		[toolbarItem setPaletteLabel:NSLocalizedString( @"Clipping",nil)];
+        [toolbarItem setToolTip: NSLocalizedString(@"Clipping",nil)];
+		
+		[toolbarItem setView: ClippingRangeView];
+		[toolbarItem setMinSize: NSMakeSize(NSWidth([ClippingRangeView frame]), NSHeight([ClippingRangeView frame]))];
+	}
 	else
-		{
-			[toolbarItem release];
-			toolbarItem = nil;
-		}
+	{
+		[toolbarItem release];
+		toolbarItem = nil;
+	}
 	
-     return [toolbarItem autorelease];
+	return [toolbarItem autorelease];
 }
 
 - (NSArray *) toolbarDefaultItemIdentifiers: (NSToolbar *) toolbar {
@@ -1993,6 +2014,7 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 											ROIManagerToolbarItemIdentifier,
 											ConvolutionViewToolbarItemIdentifier,
 											BackgroundColorViewToolbarItemIdentifier,
+											ClippingRangeViewToolbarItemIdentifier,
 											nil];
 		
 		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"showGPUEngineRendering"])

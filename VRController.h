@@ -46,7 +46,7 @@
 	
 	NSString				*style;
 	
-    IBOutlet NSView         *toolsView, *WLWWView, *LODView, *BlendingView, *movieView, *shadingView, *engineView, *perspectiveView, *modeView, *scissorStateView;
+    IBOutlet NSView         *toolsView, *WLWWView, *LODView, *ClippingRangeView, *BlendingView, *movieView, *shadingView, *engineView, *perspectiveView, *modeView, *scissorStateView;
 	
 	IBOutlet NSView			*OrientationsView;
 	
@@ -147,6 +147,7 @@
 	NSTimeInterval			flyThruRecordingTimeFrame;
 }
 
+- (IBAction) clippingRangeAction:(id) sender;
 - (IBAction) applyConvolution:(id) sender;
 - (IBAction) setOrientation:(id) sender;
 - (NSString*) style;
@@ -158,6 +159,7 @@
 - (void) updateBlendingImage;
 - (ViewerController*) blendingController;
 - (void) LODsliderAction:(id) sender;
+- (void) clippingRangeAction:(id) sender;
 - (id) initWithPix:(NSMutableArray*) pix :(NSArray*) f :(NSData*) vData :(ViewerController*) bC :(ViewerController*) vC;
 - (id) initWithPix:(NSMutableArray*) pix :(NSArray*) f :(NSData*) vData :(ViewerController*) bC :(ViewerController*) vC style:(NSString*) m mode:(NSString*) renderingMode;
 - (void) setupToolbar;

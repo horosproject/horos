@@ -287,6 +287,33 @@ public:
 
 @implementation VRView
 
+@synthesize clippingRangeThickness, clipRangeActivated;
+
+- (void) setClippingRangeThickness: (float) c
+{
+	clippingRangeThickness = c + 0.01;
+	clipRangeActivated = NO;
+	
+	if( projectionMode != 1)	// Parallel
+	{
+		[self setProjectionMode: 1];	
+		aCamera->SetFocalPoint( volume->GetCenter());
+		aCamera->SetPosition( volume->GetCenter());
+	}
+	
+	if( clippingRangeThickness > 0)
+		clipRangeActivated = YES;
+	
+	if( clipRangeActivated)
+	{
+		aCamera->SetClippingRange( 0.0, clippingRangeThickness);
+	}
+	else
+		aRenderer->ResetCameraClippingRange();
+	
+	[self setNeedsDisplay: YES];
+}
+
 + (unsigned short*) linearOpacity
 {
 	if( linearOpacity == nil)
@@ -1054,6 +1081,19 @@ public:
 				float r = volumeMapper->GetRayCastImage()->GetImageSampleDistance();
 				
 				[exportDCM setPixelSpacing: [self getResolution]*r :[self getResolution]*r];
+
+				if( clipRangeActivated)
+				{
+					float cos[ 9];
+					
+					[self getCosMatrix: cos];
+					[exportDCM setOrientation: cos];
+					
+					float position[ 3];
+					
+					[self getOrigin: position];
+					[exportDCM setPosition: position];
+				}
 			}
 			else
 				[exportDCM setPixelSpacing: [self getResolution] :[self getResolution]];
@@ -1381,25 +1421,6 @@ public:
 {
 	if( sender == nil) return;
 	
-//	projectionMode = [[sender selectedCell] tag];
-//	switch( [[sender selectedCell] tag])
-//	{
-//		case 0:
-//			aCamera->SetParallelProjection( false);
-//			aCamera->SetViewAngle( 30);
-//		break;
-//		
-//		case 2:
-//			aCamera->SetParallelProjection( false);
-//			aCamera->SetViewAngle( 60);
-//		break;
-//		
-//		case 1:
-//			aCamera->SetParallelProjection( true);
-//			aCamera->SetViewAngle( 30);
-//		break;
-//	}
-	
 	[self setProjectionMode: [[sender selectedCell] tag]];
 	
 	if( aCamera->GetParallelProjection())
@@ -1416,8 +1437,6 @@ public:
 			[[controller toolsMatrix] selectCellWithTag: t3DRotate];
 		}
 	}
-	
-//	[self setNeedsDisplay:YES];
 }
 
 - (void) setProjectionMode: (int) mode
@@ -2152,6 +2171,90 @@ public:
     return theMenu;
 }
 
+- (void) getOrigin: (float *) origin
+{
+	double cameraPosition[3];
+	aCamera->GetPosition(cameraPosition);
+	
+	cameraPosition[ 0] /= factor;
+	cameraPosition[ 1] /= factor;
+	cameraPosition[ 2] /= factor;
+	
+	vtkFixedPointRayCastImage *rayCastImage = volumeMapper->GetRayCastImage();
+	
+	float r = [self getResolution] * volumeMapper->GetRayCastImage()->GetImageSampleDistance();
+	
+	int size[2];
+	rayCastImage->GetImageInUseSize( size);
+	
+	// Position of upper left part of the image
+	
+	double *viewport   =  aRenderer->GetViewport();
+	int *renWinSize   =  aRenderer->GetRenderWindow()->GetSize();  
+	// Origin
+	int x1, x2, y1, y2;
+	
+	float sampleDistance = volumeMapper->GetRayCastImage()->GetImageSampleDistance();
+	
+	// turn ImageOrigin into (x1,y1) in window (not viewport!) coordinates.
+	int imageOrigin[2];
+	int imageInUseSize[2];
+	volumeMapper->GetRayCastImage()->GetImageOrigin( imageOrigin );
+	volumeMapper->GetRayCastImage()->GetImageInUseSize( imageInUseSize );
+
+	x1 = static_cast<int> ( viewport[0] * static_cast<float>(renWinSize[0]) + static_cast<float>(imageOrigin[0]) * sampleDistance);
+	y1 = static_cast<int> ( viewport[1] * static_cast<float>(renWinSize[1]) + static_cast<float>(imageOrigin[1]) * sampleDistance);
+
+	int zbufferSize[2];
+	int zbufferOrigin[2];
+
+	// compute z buffer size
+	zbufferSize[0] = static_cast<int>( static_cast<float>(imageInUseSize[0]) * sampleDistance);
+	zbufferSize[1] = static_cast<int>( static_cast<float>(imageInUseSize[1]) * sampleDistance);
+
+	// Use the size to compute (x2,y2) in window coordinates
+	x2 = x1 + zbufferSize[0] - 1;
+	y2 = y1 + zbufferSize[1] - 1;
+	
+	// cameraPosition is in the center of the screen
+	float x = ((float) x1 - (float) renWinSize[ 0]/2.);
+	float y = ((float) y1 - (float) renWinSize[ 1]/2.);
+	
+	float cos[ 9];
+	
+	[self getCosMatrix: cos];
+	
+	origin[0] = cameraPosition[ 0] + y*cos[3]*r + x*cos[0]*r;
+	origin[1] = cameraPosition[ 1] + y*cos[4]*r + x*cos[1]*r;
+	origin[2] = cameraPosition[ 2] + y*cos[5]*r + x*cos[2]*r;
+}
+
+- (void) getCosMatrix: (float *) cos
+{
+	double viewUp[ 3];
+	
+	aCamera->GetViewUp( viewUp);
+	
+	cos[3] = viewUp[ 0] * -1.0;
+	cos[4] = viewUp[ 1] * -1.0;
+	cos[5] = viewUp[ 2] * -1.0;
+	
+	double cos6[ 3];
+	
+	aCamera->GetDirectionOfProjection( cos6);
+	
+	cos[ 6] = cos6[ 0];
+	cos[ 7] = cos6[ 1];
+	cos[ 8] = cos6[ 2];
+	
+	cos[0] = cos[7]*cos[5] - cos[8]*cos[4];
+	cos[1] = cos[8]*cos[3] - cos[6]*cos[5];
+	cos[2] = cos[6]*cos[4] - cos[7]*cos[3];
+	
+	cos[0] *= -1.;
+	cos[1] *= -1.;
+	cos[2] *= -1.;
+}
 
 - (float) getResolution
 {
@@ -2274,9 +2377,8 @@ public:
 	rotate = NO;
 	[self resetAutorotate: self];
 	
-	if( projectionMode != 2)
+	if( projectionMode != 2 && clipRangeActivated == NO)
 	{
-		// Rotate
 		[self Azimuth: [theEvent deltaY] * 2];
 		[self mouseMoved: [[NSApplication sharedApplication] currentEvent]];
 		[self setNeedsDisplay: YES];
@@ -2284,7 +2386,6 @@ public:
 	else
 	{
 		// Endoscopy - Zoom in/out
-		
 		float distance = aCamera->GetDistance();
 		
 		float dolly = [theEvent deltaY] / 40.;
@@ -2295,7 +2396,11 @@ public:
 		aCamera->SetDistance( distance);
 		aCamera->ComputeViewPlaneNormal();
 		aCamera->OrthogonalizeViewUp();
-		aRenderer->ResetCameraClippingRange();
+		
+		if( clipRangeActivated)
+			aCamera->SetClippingRange( 0.0, clippingRangeThickness);
+		else
+			aRenderer->ResetCameraClippingRange();
 		
 		[self setNeedsDisplay:YES];
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: nil];
@@ -2711,7 +2816,12 @@ public:
 					aCamera->Pitch( -([theEvent deltaY]) / 5.);
 					aCamera->ComputeViewPlaneNormal();
 					aCamera->OrthogonalizeViewUp();
-					aRenderer->ResetCameraClippingRange();
+					
+					if( clipRangeActivated)
+						aCamera->SetClippingRange( 0.0, clippingRangeThickness);
+					else
+						aRenderer->ResetCameraClippingRange();
+					
 					[self computeOrientationText];
 					[self setNeedsDisplay:YES];
 					[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: nil];
@@ -2753,7 +2863,12 @@ public:
 		aCamera->SetDistance( distance);
 		aCamera->ComputeViewPlaneNormal();
 		aCamera->OrthogonalizeViewUp();
-		aRenderer->ResetCameraClippingRange();
+		
+		if( clipRangeActivated)
+			aCamera->SetClippingRange( 0.0, clippingRangeThickness);
+		else
+			aRenderer->ResetCameraClippingRange();
+		
 		[self setNeedsDisplay:YES];
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: nil];
 	}
@@ -3683,7 +3798,11 @@ public:
 	aRenderer->GetActiveCamera()->Dolly( 0.15 + 1.0);
 	aCamera->SetDistance( distance);
 	aRenderer->GetActiveCamera()->OrthogonalizeViewUp();
-	aRenderer->ResetCameraClippingRange();
+	
+	if( clipRangeActivated)
+		aCamera->SetClippingRange( 0.0, clippingRangeThickness);
+	else
+		aRenderer->ResetCameraClippingRange();
 }
 
 - (void) flyToVoxel:(OSIVoxel *)voxel{
@@ -4396,7 +4515,12 @@ public:
 	aCamera->GetViewPlaneNormal(vn);
 	aCamera->SetPosition(center[0]+distance*vn[0], center[1]+distance*vn[1], center[2]+distance*vn[2]);
 	aCamera->SetParallelScale( pp);
-	aRenderer->ResetCameraClippingRange();
+	
+	
+	if( clipRangeActivated)
+		aCamera->SetClippingRange( 0.0, clippingRangeThickness);
+	else
+		aRenderer->ResetCameraClippingRange();
 
 	croppingBox->SetHandleSize( 0.005);
 	[self setNeedsDisplay:YES];
@@ -4423,7 +4547,11 @@ public:
 	aCamera->GetViewPlaneNormal(vn);
 	aCamera->SetPosition(center[0]+distance*vn[0], center[1]+distance*vn[1], center[2]+distance*vn[2]);
 	aCamera->SetParallelScale( pp);
-	aRenderer->ResetCameraClippingRange();
+	
+	if( clipRangeActivated)
+		aCamera->SetClippingRange( 0.0, clippingRangeThickness);
+	else
+		aRenderer->ResetCameraClippingRange();
 	
 	croppingBox->SetHandleSize( 0.005);
 	[self setNeedsDisplay:YES];
@@ -4449,7 +4577,11 @@ public:
 	aCamera->GetViewPlaneNormal(vn);
 	aCamera->SetPosition(center[0]+distance*vn[0], center[1]+distance*vn[1], center[2]+distance*vn[2]);
 	aCamera->SetParallelScale( pp);
-	aRenderer->ResetCameraClippingRange();
+	
+	if( clipRangeActivated)
+		aCamera->SetClippingRange( 0.0, clippingRangeThickness);
+	else
+		aRenderer->ResetCameraClippingRange();
 	
 	croppingBox->SetHandleSize( 0.005);
 	[self setNeedsDisplay:YES];
@@ -4474,7 +4606,11 @@ public:
 	aCamera->GetViewPlaneNormal(vn);
 	aCamera->SetPosition(center[0]+distance*vn[0], center[1]+distance*vn[1], center[2]+distance*vn[2]);
 	aCamera->SetParallelScale( pp);
-	aRenderer->ResetCameraClippingRange();
+	
+	if( clipRangeActivated)
+		aCamera->SetClippingRange( 0.0, clippingRangeThickness);
+	else
+		aRenderer->ResetCameraClippingRange();
 
 	croppingBox->SetHandleSize( 0.005);
 	[self setNeedsDisplay:YES];
@@ -5479,8 +5615,8 @@ public:
 
 - (void) prepareFullDepthCapture
 {
-	if( orientationWidget->GetEnabled()) [self switchOrientationWidget: self];
-	if( croppingBox->GetEnabled()) [self showCropCube: self];
+	if( orientationWidget && orientationWidget->GetEnabled()) [self switchOrientationWidget: self];
+	if( croppingBox && croppingBox->GetEnabled()) [self showCropCube: self];
 	aRenderer->RemoveActor(textX);
 	aRenderer->RemoveActor(textWLWW);
 	
@@ -5993,7 +6129,11 @@ public:
 	//aCamera->SetDistance(distance);
 	aCamera->ComputeViewPlaneNormal();
 	aCamera->OrthogonalizeViewUp();
-	aRenderer->ResetCameraClippingRange();
+	
+	if( clipRangeActivated)
+		aCamera->SetClippingRange( 0.0, clippingRangeThickness);
+	else
+		aRenderer->ResetCameraClippingRange();
 
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: nil];
 }
@@ -6080,7 +6220,12 @@ public:
 	aCamera->SetViewAngle(viewAngle);
 	aCamera->SetEyeAngle(eyeAngle);
 	aCamera->SetParallelScale(parallelScale);
-	aRenderer->ResetCameraClippingRange();
+	
+	if( clipRangeActivated)
+		aCamera->SetClippingRange( 0.0, clippingRangeThickness);
+	else
+		aRenderer->ResetCameraClippingRange();
+	
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: nil];
 	
 	NSLog( @"Camera: %f %f %f", focal[ 0], focal[ 1], focal[ 2]);
@@ -7444,8 +7589,13 @@ public:
 
 - (void)yaw:(float)degrees;
 {
-	aCamera->Yaw(degrees);
-	aRenderer->ResetCameraClippingRange();
+	aCamera->Yaw( degrees);
+	
+	if( clipRangeActivated)
+		aCamera->SetClippingRange( 0.0, clippingRangeThickness);
+	else
+		aRenderer->ResetCameraClippingRange();
+	
 	[self setNeedsDisplay:YES];
 }
 

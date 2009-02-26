@@ -336,7 +336,13 @@ typedef char* vtkMyCallbackVR;
 	NSTimer			*snCloseEventTimer;
 	BOOL			snStopped;
 	UInt16			snConnexionClientID;
+	
+	BOOL			clipRangeActivated;
+	float			clippingRangeThickness;
 }
+
+@property BOOL clipRangeActivated;
+@property float clippingRangeThickness;
 
 + (BOOL) getCroppingBox:(double*) a :(vtkVolume *) volume :(vtkBoxWidget*) croppingBox;
 + (void) setCroppingBox:(double*) a :(vtkVolume *) volume;
@@ -432,6 +438,8 @@ typedef char* vtkMyCallbackVR;
 - (void) setMode: (long) modeID;
 - (long) mode;
 - (float) getResolution;
+- (void) getCosMatrix: (float *) cos;
+- (void) getOrigin: (float *) origin;
 
 - (BOOL) isViewportResizable;
 - (void) setViewportResizable: (BOOL) boo;

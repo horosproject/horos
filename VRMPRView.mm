@@ -11,7 +11,7 @@
      the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
      PURPOSE.
 =========================================================================*/
-#define clippingRangeDefine 0.0, 1
+#define clippingRangeDefine 0.01, 10
 
 #define USE3DCONNEXION 1
 
@@ -5830,7 +5830,7 @@ public:
 		[cam setPreviewImage: [self nsimage:TRUE]];
 
 	
-	// Try to compute the cos matrix of my plane
+	// cos Matrix, Resolution & Origin
 	double cos[ 9];
 	
 	cos[3] = [[cam viewUp] x] * -1.0;
@@ -5861,33 +5861,55 @@ public:
 		cameraPosition[ 1] /= factor;
 		cameraPosition[ 2] /= factor;
 		
-		NSLog( @"pos: %f %f %f", cameraPosition[ 0], cameraPosition[ 1], cameraPosition[ 2]);
-		
 		vtkFixedPointRayCastImage *rayCastImage = volumeMapper->GetRayCastImage();
 		
-		int origin[ 2];
-		
-		rayCastImage->GetImageOrigin( origin);
-		
-		NSLog( @"center origin: %d %d", origin[ 0], origin[ 1]);
-		
 		float r = [self getResolution] * volumeMapper->GetRayCastImage()->GetImageSampleDistance();
-		
-		NSLog( @"resolution: %f", r);
 		
 		int size[2];
 		rayCastImage->GetImageInUseSize( size);
 		
-		float x = -size[ 0] / 2;
-		float y = -size[ 1] / 2;
+		// Position of upper left part of the image
 		
-		float d[ 3];
+		double *viewport   =  aRenderer->GetViewport();
+		int *renWinSize   =  aRenderer->GetRenderWindow()->GetSize();  
+		// Origin
+		int x1, x2, y1, y2;
 		
-		d[0] = cameraPosition[ 0] + y*cos[3]*r + x*cos[0]*r;
-		d[1] = cameraPosition[ 1] + y*cos[4]*r + x*cos[1]*r;
-		d[2] = cameraPosition[ 2] + y*cos[5]*r + x*cos[2]*r;
+		float sampleDistance = volumeMapper->GetRayCastImage()->GetImageSampleDistance();
 		
-		NSLog( @"x: %f y: %f z: %f", d[ 0], d[ 1], d[ 2]);
+		if( sampleDistance)
+		{
+			// turn ImageOrigin into (x1,y1) in window (not viewport!) coordinates.
+			int imageOrigin[2];
+			int imageInUseSize[2];
+			volumeMapper->GetRayCastImage()->GetImageOrigin( imageOrigin );
+			volumeMapper->GetRayCastImage()->GetImageInUseSize( imageInUseSize );
+
+			x1 = static_cast<int> ( viewport[0] * static_cast<float>(renWinSize[0]) + static_cast<float>(imageOrigin[0]) * sampleDistance);
+			y1 = static_cast<int> ( viewport[1] * static_cast<float>(renWinSize[1]) + static_cast<float>(imageOrigin[1]) * sampleDistance);
+
+			int zbufferSize[2];
+			int zbufferOrigin[2];
+
+			// compute z buffer size
+			zbufferSize[0] = static_cast<int>( static_cast<float>(imageInUseSize[0]) * sampleDistance);
+			zbufferSize[1] = static_cast<int>( static_cast<float>(imageInUseSize[1]) * sampleDistance);
+
+			// Use the size to compute (x2,y2) in window coordinates
+			x2 = x1 + zbufferSize[0] - 1;
+			y2 = y1 + zbufferSize[1] - 1;
+			
+			// cameraPosition is in the center of the screen
+			
+			float x = ((float) x1 - (float) renWinSize[ 0]/2.);
+			float y = ((float) y1 - (float) renWinSize[ 1]/2.);
+			
+			float d[ 3];
+			
+			d[0] = cameraPosition[ 0] + y*cos[3]*r + x*cos[0]*r;
+			d[1] = cameraPosition[ 1] + y*cos[4]*r + x*cos[1]*r;
+			d[2] = cameraPosition[ 2] + y*cos[5]*r + x*cos[2]*r;
+		}
 	}
 	
 	return [cam autorelease];
