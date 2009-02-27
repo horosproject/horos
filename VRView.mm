@@ -291,7 +291,7 @@ public:
 
 - (void) setClippingRangeThickness: (float) c
 {
-	clippingRangeThickness = c + 0.0001;
+	clippingRangeThickness = 2 + c/factor;
 	clipRangeActivated = NO;
 	
 	if( projectionMode != 1)	// Parallel
@@ -305,7 +305,7 @@ public:
 		clipRangeActivated = YES;
 	
 	if( clipRangeActivated)
-		aCamera->SetClippingRange( 0.0, clippingRangeThickness);
+		aCamera->SetClippingRange( 1, clippingRangeThickness);
 	else
 		aRenderer->ResetCameraClippingRange();
 	
@@ -1097,7 +1097,7 @@ public:
 					
 					[self getOrigin: position];
 					[exportDCM setPosition: position];
-					[exportDCM setSliceThickness: clippingRangeThickness * [self getResolution]];
+					[exportDCM setSliceThickness: clippingRangeThickness * [self getResolution] / r];
 				}
 			}
 			else
@@ -2244,7 +2244,7 @@ public:
 	
 	// Take into account the sliceThickness -> Origin is in the middle of the slice thickness
 	
-	double thickness = clippingRangeThickness * [self getResolution];
+	double thickness = clippingRangeThickness * [self getResolution] / sampleDistance;
 	
 	thickness /= 2.;
 	
@@ -2253,9 +2253,9 @@ public:
 	if( length != 1)
 		NSLog( @"warning length != 1");
 	
-	origin[0] = origin[ 0] + thickness*cos[6]*r;
-	origin[1] = origin[ 1] + thickness*cos[7]*r;
-	origin[2] = origin[ 2] + thickness*cos[8]*r;
+	origin[0] = origin[ 0] + thickness*cos[6];
+	origin[1] = origin[ 1] + thickness*cos[7];
+	origin[2] = origin[ 2] + thickness*cos[8];
 }
 
 - (void) getCosMatrix: (float *) cos
@@ -5692,6 +5692,9 @@ public:
 	*w = size[0];
 	*h = size[1];
 	
+	if( size[0] != fullSize[0] || size[1] != fullSize[1])
+		NSLog( @"****** size[0] != fullSize[0] && size[1] != fullSize[1]");
+	
 	destPtr = destFixedPtr = (unsigned short*) malloc( size[0] * size[ 1] * sizeof( unsigned short));
 	if( destFixedPtr)
 	{
@@ -5816,7 +5819,7 @@ public:
 	}
 	else
 	{
-		int				i;
+		int i;
 		
 		NSRect size = [self bounds];
 		

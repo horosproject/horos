@@ -2453,7 +2453,7 @@ ZSBtZW51OiBzZWxlY3QgaXQgd2hpbGUgaG9sZGluZyBkb3duIHRoZSBhbHQvb3B0aW9uIGtleS4</str
 							<reference key="NSControlView" ref="703477242"/>
 							<int key="NSButtonFlags">109068543</int>
 							<int key="NSButtonFlags2">2</int>
-							<object class="NSCustomResource" key="NSNormalImage">
+							<object class="NSCustomResource" key="NSNormalImage" id="131815323">
 								<string key="NSClassName">NSImage</string>
 								<string key="NSResourceName">3D.tif</string>
 							</object>
@@ -2472,10 +2472,7 @@ ZSBtZW51OiBzZWxlY3QgaXQgd2hpbGUgaG9sZGluZyBkb3duIHRoZSBhbHQvb3B0aW9uIGtleS4</str
 								<string key="NSKeyEquiv"/>
 								<int key="NSKeyEquivModMask">1048576</int>
 								<int key="NSMnemonicLoc">2147483647</int>
-								<object class="NSCustomResource" key="NSImage">
-									<string key="NSClassName">NSImage</string>
-									<string key="NSResourceName">3D.tif</string>
-								</object>
+								<reference key="NSImage" ref="131815323"/>
 								<reference key="NSOnImage" ref="262474482"/>
 								<reference key="NSMixedImage" ref="213116640"/>
 								<string key="NSAction">_popUpItemAction:</string>
@@ -6585,7 +6582,7 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 					<object class="NSTextField" id="280477531">
 						<reference key="NSNextResponder" ref="67304725"/>
 						<int key="NSvFlags">256</int>
-						<string key="NSFrame">{{-2, 16}, {43, 17}}</string>
+						<string key="NSFrame">{{-2, 12}, {43, 17}}</string>
 						<reference key="NSSuperview" ref="67304725"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSTextFieldCell" key="NSCell" id="747293598">
@@ -6601,7 +6598,7 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 					<object class="NSSlider" id="766978786">
 						<reference key="NSNextResponder" ref="67304725"/>
 						<int key="NSvFlags">256</int>
-						<string key="NSFrame">{{0, 4}, {117, 16}}</string>
+						<string key="NSFrameSize">{194, 16}</string>
 						<reference key="NSSuperview" ref="67304725"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSliderCell" key="NSCell" id="31561149">
@@ -6612,11 +6609,11 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 							</object>
 							<reference key="NSSupport" ref="187470615"/>
 							<reference key="NSControlView" ref="766978786"/>
-							<double key="NSMaxValue">1.000000e+02</double>
+							<double key="NSMaxValue">1.000000e+01</double>
 							<double key="NSMinValue">1.000000e+00</double>
 							<double key="NSValue">1.000000e+00</double>
 							<double key="NSAltIncValue">0.000000e+00</double>
-							<int key="NSNumberOfTickMarks">30</int>
+							<int key="NSNumberOfTickMarks">10</int>
 							<int key="NSTickMarkPosition">0</int>
 							<bool key="NSAllowsTickMarkValuesOnly">NO</bool>
 							<bool key="NSVertical">NO</bool>
@@ -6625,7 +6622,7 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 					<object class="NSTextField" id="329609238">
 						<reference key="NSNextResponder" ref="67304725"/>
 						<int key="NSvFlags">256</int>
-						<string key="NSFrame">{{68, 16}, {51, 17}}</string>
+						<string key="NSFrame">{{146, 12}, {51, 17}}</string>
 						<reference key="NSSuperview" ref="67304725"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSTextFieldCell" key="NSCell" id="39071661">
@@ -6639,7 +6636,7 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 						</object>
 					</object>
 				</object>
-				<string key="NSFrameSize">{117, 33}</string>
+				<string key="NSFrameSize">{194, 29}</string>
 				<reference key="NSSuperview"/>
 				<object class="NSMutableString" key="NSClassName">
 					<characters key="NS.bytes">NSView</characters>
@@ -13299,9 +13296,9 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 						<reference key="object" ref="67304725"/>
 						<object class="NSMutableArray" key="children">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<reference ref="329609238"/>
 							<reference ref="766978786"/>
 							<reference ref="280477531"/>
+							<reference ref="329609238"/>
 						</object>
 						<reference key="parent" ref="733070969"/>
 						<string key="objectName">ClippingRange</string>
@@ -14561,7 +14558,7 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{543, 815}, {117, 33}}</string>
+					<string>{{543, 819}, {194, 29}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
