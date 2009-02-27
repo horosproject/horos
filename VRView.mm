@@ -2182,19 +2182,18 @@ public:
 	
 	vtkFixedPointRayCastImage *rayCastImage = volumeMapper->GetRayCastImage();
 	
-	float r = [self getResolution] * volumeMapper->GetRayCastImage()->GetImageSampleDistance();
-	
 	int size[2];
 	rayCastImage->GetImageInUseSize( size);
 	
 	// Position of upper left part of the image
 	
 	double *viewport   =  aRenderer->GetViewport();
-	int *renWinSize   =  aRenderer->GetRenderWindow()->GetSize();  
+	int *renWinSize   =  aRenderer->GetRenderWindow()->GetSize();
+	
 	// Origin
 	int x1, x2, y1, y2;
 	
-	float sampleDistance = volumeMapper->GetRayCastImage()->GetImageSampleDistance();
+	double sampleDistance = volumeMapper->GetRayCastImage()->GetImageSampleDistance();
 	
 	// turn ImageOrigin into (x1,y1) in window (not viewport!) coordinates.
 	int imageOrigin[2];
@@ -2202,27 +2201,29 @@ public:
 	volumeMapper->GetRayCastImage()->GetImageOrigin( imageOrigin );
 	volumeMapper->GetRayCastImage()->GetImageInUseSize( imageInUseSize );
 
-	x1 = static_cast<int> ( viewport[0] * static_cast<float>(renWinSize[0]) + static_cast<float>(imageOrigin[0]) * sampleDistance);
-	y1 = static_cast<int> ( viewport[1] * static_cast<float>(renWinSize[1]) + static_cast<float>(imageOrigin[1]) * sampleDistance);
+	x1 = static_cast<int> ( viewport[0] * static_cast<double>(renWinSize[0]) + static_cast<double>(imageOrigin[0]) * sampleDistance);
+	y1 = static_cast<int> ( viewport[1] * static_cast<double>(renWinSize[1]) + static_cast<double>(imageOrigin[1]) * sampleDistance);
 
 	int zbufferSize[2];
 	int zbufferOrigin[2];
 
 	// compute z buffer size
-	zbufferSize[0] = static_cast<int>( static_cast<float>(imageInUseSize[0]) * sampleDistance);
-	zbufferSize[1] = static_cast<int>( static_cast<float>(imageInUseSize[1]) * sampleDistance);
+	zbufferSize[0] = static_cast<int>( static_cast<double>(imageInUseSize[0]) * sampleDistance);
+	zbufferSize[1] = static_cast<int>( static_cast<double>(imageInUseSize[1]) * sampleDistance);
 
 	// Use the size to compute (x2,y2) in window coordinates
 	x2 = x1 + zbufferSize[0] - 1;
 	y2 = y1 + zbufferSize[1] - 1;
 	
 	// cameraPosition is in the center of the screen
-	float x = ((float) x1 - (float) renWinSize[ 0]/2.);
-	float y = ((float) y1 - (float) renWinSize[ 1]/2.);
+	double x = ((double) x1 - (double) renWinSize[ 0]/2.);
+	double y = ((double) y1 - (double) renWinSize[ 1]/2.);
 	
 	float cos[ 9];
 	
 	[self getCosMatrix: cos];
+	
+	double r = [self getResolution];
 	
 	origin[0] = cameraPosition[ 0] + y*cos[3]*r + x*cos[0]*r;
 	origin[1] = cameraPosition[ 1] + y*cos[4]*r + x*cos[1]*r;
@@ -5655,8 +5656,7 @@ public:
 	vtkFixedPointRayCastImage *rayCastImage = volumeMapper->GetRayCastImage();
 	
 	unsigned short *im = rayCastImage->GetImage();
-	unsigned short *iptr;
-	float *destPtr, *destFixedPtr;
+	unsigned short *destPtr, *destFixedPtr;
 	
 	int fullSize[2];
 	rayCastImage->GetImageMemorySize( fullSize);
@@ -5667,32 +5667,55 @@ public:
 	*w = size[0];
 	*h = size[1];
 	
-	destPtr = destFixedPtr = (float*) malloc( size[0] * size[ 1] * sizeof( float));
+	destPtr = destFixedPtr = (unsigned short*) malloc( size[0] * size[ 1] * sizeof( unsigned short));
 	if( destFixedPtr)
 	{
-		for ( int j = 0; j < size[1]; j++ )
+		unsigned short *iptr = im + 3 + 4*(size[1]-1)*fullSize[0];
+		
+		int j = size[1], rowBytes = 4*fullSize[0];
+		while( j-- > 0)
 		{
-			iptr = im + 3 + 4*(size[1]-j-1)*fullSize[0];
-			
+			unsigned short *iptrTemp = iptr;
 			int i = size[0];
 			while( i-- > 0)
 			{
-				*destPtr++ = *iptr;
-				iptr+=4;
+				*destPtr++ = *iptrTemp;
+				iptrTemp += 4;
 			}
+			
+			iptr -= rowBytes;
 		}
+		
+		float mul = 1./valueFactor;
+		float add = -OFFSET16;
+		
+		if( valueFactor != 1 && [firstObject SUVConverted] == NO)
+			mul = mul;
+		else
+			mul = 1;
+		
+		vImage_Buffer src, dst;
+		
+		src.data = destFixedPtr;
+		src.height = size[ 1];
+		src.width = size[0];
+		src.rowBytes = size[0] * 2;
+		
+		dst.data = malloc( size[0] * size[ 1] * sizeof( float));
+		if( dst.data)
+		{
+			dst.height = size[ 1];
+			dst.width = size[0];
+			dst.rowBytes = size[0] * 4;
+			
+			vImageConvert_16UToF( &src, &dst, add, mul, 0);
+		}
+		free( destFixedPtr);
+		
+		return (float*) dst.data;
 	}
 	
-	float mul = 1./valueFactor;
-	float add = -OFFSET16;
-	
-	if( valueFactor != 1 && [firstObject SUVConverted] == NO)
-		vDSP_vsmul( destFixedPtr, 1, &mul, destFixedPtr, 1, size[0] * size[ 1]);
-	
-	vDSP_vsadd( destFixedPtr, 1, &add, destFixedPtr, 1, size[0] * size[ 1]);
-
-	
-	return destFixedPtr;
+	return nil;
 }
 
 -(unsigned char*) getRawPixels:(long*) width :(long*) height :(long*) spp :(long*) bpp :(BOOL) screenCapture :(BOOL) force8bits
