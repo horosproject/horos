@@ -291,7 +291,7 @@ public:
 
 - (void) setClippingRangeThickness: (float) c
 {
-	clippingRangeThickness = 2 + c/factor;
+	clippingRangeThickness = c;
 	clipRangeActivated = NO;
 	
 	if( projectionMode != 1)	// Parallel
@@ -305,7 +305,7 @@ public:
 		clipRangeActivated = YES;
 	
 	if( clipRangeActivated)
-		aCamera->SetClippingRange( 1, clippingRangeThickness);
+		aCamera->SetClippingRange( 0, clippingRangeThickness);
 	else
 		aRenderer->ResetCameraClippingRange();
 	
