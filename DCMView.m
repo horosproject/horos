@@ -3557,7 +3557,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				[instructions setObject: thickDCM forKey: @"DCMPix2"];
 			
 			if( roiHit == NO)
+			{
 				[[NSNotificationCenter defaultCenter] postNotificationName: @"sync" object: self userInfo: instructions];
+			}
 		}
 		
 		if( cross.x != -9999 && cross.y != -9999)
@@ -6067,30 +6069,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			{
 				if( [oStudyId isEqualToString:[[dcmFilesList objectAtIndex: curImage] valueForKeyPath:@"series.study.studyInstanceUID"]] || registeredViewer)
 				{
-					if( [[self window] isMainWindow] == NO && [[otherView window] isMainWindow] == YES)
-					{
-						if( ([oStudyId isEqualToString:[[dcmFilesList objectAtIndex: curImage] valueForKeyPath:@"series.study.studyInstanceUID"]] || registeredViewer))
-						{
-							[self computeSlice: oPix :oPix2];
-						}
-						else
-						{
-							sliceFromTo[ 0][ 0] = HUGE_VALF;
-							sliceFromTo2[ 0][ 0] = HUGE_VALF;
-							sliceFromToS[ 0][ 0] = HUGE_VALF;
-							sliceFromToE[ 0][ 0] = HUGE_VALF;
-							sliceVector[0] = sliceVector[1] = sliceVector[2] = 0;
-						}
-					}
-					else if( [[otherView window] isMainWindow] == NO)
-					{
-						sliceFromTo[ 0][ 0] = HUGE_VALF;
-						sliceFromTo2[ 0][ 0] = HUGE_VALF;
-						sliceFromToS[ 0][ 0] = HUGE_VALF;
-						sliceFromToE[ 0][ 0] = HUGE_VALF;
-						sliceVector[0] = sliceVector[1] = sliceVector[2] = 0;	
-					}
-					
 					// Double-Click -> find the nearest point on our plane, go to this plane and draw the intersection!
 					if( point3D)
 					{
@@ -6246,6 +6224,33 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				{
 					if( listType == 'i') [self setIndex:curImage];
 					else [self setIndexWithReset:curImage :YES];
+				}
+				
+				if( [oStudyId isEqualToString:[[dcmFilesList objectAtIndex: curImage] valueForKeyPath:@"series.study.studyInstanceUID"]] || registeredViewer)
+				{
+					if( [[self window] isMainWindow] == NO && [[otherView window] isMainWindow] == YES)
+					{
+						if( ([oStudyId isEqualToString:[[dcmFilesList objectAtIndex: curImage] valueForKeyPath:@"series.study.studyInstanceUID"]] || registeredViewer))
+						{
+							[self computeSlice: oPix :oPix2];
+						}
+						else
+						{
+							sliceFromTo[ 0][ 0] = HUGE_VALF;
+							sliceFromTo2[ 0][ 0] = HUGE_VALF;
+							sliceFromToS[ 0][ 0] = HUGE_VALF;
+							sliceFromToE[ 0][ 0] = HUGE_VALF;
+							sliceVector[0] = sliceVector[1] = sliceVector[2] = 0;
+						}
+					}
+					else if( [[otherView window] isMainWindow] == NO)
+					{
+						sliceFromTo[ 0][ 0] = HUGE_VALF;
+						sliceFromTo2[ 0][ 0] = HUGE_VALF;
+						sliceFromToS[ 0][ 0] = HUGE_VALF;
+						sliceFromToE[ 0][ 0] = HUGE_VALF;
+						sliceVector[0] = sliceVector[1] = sliceVector[2] = 0;	
+					}
 				}
 				
 				if( [self is2DViewer] == YES)

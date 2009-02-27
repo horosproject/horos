@@ -305,9 +305,7 @@ public:
 		clipRangeActivated = YES;
 	
 	if( clipRangeActivated)
-	{
 		aCamera->SetClippingRange( 0.0, clippingRangeThickness);
-	}
 	else
 		aRenderer->ResetCameraClippingRange();
 	
@@ -986,7 +984,13 @@ public:
 	if( [[sender selectedCell] tag] == 1) [self checkView: dcmBox :YES];
 	else [self checkView: dcmBox :NO];
 	
-	if ([[NSUserDefaults standardUserDefaults] integerForKey: @"MAPPERMODEVR"] == 1 ) { [[dcmquality cellWithTag: 1] setEnabled: NO]; if( [[dcmquality selectedCell] tag] == 1) [dcmquality selectCellWithTag: 0];}
+	if ([[NSUserDefaults standardUserDefaults] integerForKey: @"MAPPERMODEVR"] == 1 )
+	{
+		[[dcmquality cellWithTag: 1] setEnabled: NO];
+		
+		if( [[dcmquality selectedCell] tag] == 1)
+			[dcmquality selectCellWithTag: 0];
+	}
 	else [[dcmquality cellWithTag: 1] setEnabled: YES];
 }
 
@@ -1093,6 +1097,7 @@ public:
 					
 					[self getOrigin: position];
 					[exportDCM setPosition: position];
+					[exportDCM setSliceThickness: clippingRangeThickness * [self getResolution]];
 				}
 			}
 			else
@@ -1319,7 +1324,6 @@ public:
 		
 		[self restoreViewSizeAfterMatrix3DExport];
 	}
-	
 }
 
 - (void) exportDICOMFile:(id) sender
@@ -1330,8 +1334,16 @@ public:
 	}
 	
 	[self setCurrentdcmExport: dcmExportMode];
+	
 	if( [[[self window] windowController] movieFrames] > 1) [[dcmExportMode cellWithTag:2] setEnabled: YES];
 	else [[dcmExportMode cellWithTag:2] setEnabled: NO];
+	
+	if( renderingMode == 1)
+		[dcmExportDepth setEnabled: YES];
+	else
+	{
+		[dcmExportDepth setEnabled: NO];
+	}
 	[NSApp beginSheet: exportDCMWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:(void*) nil];
 }
 
@@ -2225,9 +2237,20 @@ public:
 	
 	double r = [self getResolution];
 	
+	// Upper Left corner
 	origin[0] = cameraPosition[ 0] + y*cos[3]*r + x*cos[0]*r;
 	origin[1] = cameraPosition[ 1] + y*cos[4]*r + x*cos[1]*r;
 	origin[2] = cameraPosition[ 2] + y*cos[5]*r + x*cos[2]*r;
+	
+	// Take into account the sliceThickness -> Origin is in the middle of the slice thickness
+	
+	double thickness = clippingRangeThickness * [self getResolution];
+	
+	thickness /= 2.;
+	
+	origin[0] = origin[ 0] + thickness*cos[6]*r;
+	origin[1] = origin[ 1] + thickness*cos[7]*r;
+	origin[2] = origin[ 2] + thickness*cos[8]*r;
 }
 
 - (void) getCosMatrix: (float *) cos
@@ -3180,17 +3203,14 @@ public:
 			}
 			
 			mouseLoc = [self convertPoint: [theEvent locationInWindow] fromView:nil];
-
-		//	NSLog( @"x=%d, y=%d", (int) mouseLoc.x, (int) mouseLoc.y);
 			
-			//vtkActor, vtkCamera
-			
-//			aCamera->SetFocalPoint( outlineRect->GetCenter());
-//			aCamera->ComputeViewPlaneNormal();
-//			aCamera->OrthogonalizeViewUp();
-	
 			[self getInteractor]->SetEventInformation((int)mouseLoc.x, (int)mouseLoc.y, controlDown, shiftDown);
 			[self getInteractor]->InvokeEvent(vtkCommand::LeftButtonPressEvent,NULL);
+			
+			if( clipRangeActivated)
+				aCamera->SetClippingRange( 0.0, clippingRangeThickness);
+			else
+				aRenderer->ResetCameraClippingRange();
 		}
 		else if( tool == tTranslate)
 		{
