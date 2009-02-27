@@ -291,7 +291,7 @@ public:
 
 - (void) setClippingRangeThickness: (float) c
 {
-	clippingRangeThickness = c + 0.01;
+	clippingRangeThickness = c + 0.0001;
 	clipRangeActivated = NO;
 	
 	if( projectionMode != 1)	// Parallel
@@ -2247,6 +2247,11 @@ public:
 	double thickness = clippingRangeThickness * [self getResolution];
 	
 	thickness /= 2.;
+	
+	float length = sqrt(cos[6]*cos[6] + cos[7]*cos[7] + cos[8]*cos[8]);
+	
+	if( length != 1)
+		NSLog( @"warning length != 1");
 	
 	origin[0] = origin[ 0] + thickness*cos[6]*r;
 	origin[1] = origin[ 1] + thickness*cos[7]*r;
