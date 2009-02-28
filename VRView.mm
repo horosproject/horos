@@ -317,10 +317,8 @@ public:
 
 - (double) getClippingRangeThicknessInMm
 {
-	Test en changeant la sample distance....
-	
 	if( volumeMapper)
-		return clippingRangeThickness / factor / volumeMapper->GetRayCastImage()->GetImageSampleDistance();
+		return clippingRangeThickness / factor;
 	
 	return 0;
 }

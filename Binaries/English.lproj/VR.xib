@@ -6612,7 +6612,7 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 							</object>
 							<reference key="NSSupport" ref="187470615"/>
 							<reference key="NSControlView" ref="766978786"/>
-							<double key="NSMaxValue">1.000000e+01</double>
+							<double key="NSMaxValue">1.000000e+02</double>
 							<double key="NSMinValue">1.000000e+00</double>
 							<double key="NSValue">1.000000e+00</double>
 							<double key="NSAltIncValue">0.000000e+00</double>
