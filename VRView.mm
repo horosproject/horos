@@ -3280,6 +3280,12 @@ public:
 			// vtkCamera
 			mouseLocPre = _mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView:nil];
 			
+			
+//			float xx = (mouseLocPre.x - [self frame].size.width/2.) / [self frame].size.width/2.;
+//			float yy = (mouseLocPre.y - [self frame].size.height/2.) / [self frame].size.height/2.;
+//			
+//			aCamera->SetWindowCenter( xx, yy);
+			
 			if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD*lowResLODFactor);
 		}
 		else if( tool == t3Dpoint)
