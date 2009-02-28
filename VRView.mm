@@ -289,7 +289,7 @@ public:
 
 @synthesize clippingRangeThickness, clipRangeActivated;
 
-- (void) setClippingRangeThickness: (float) c
+- (void) setClippingRangeThickness: (double) c
 {
 	clippingRangeThickness = c;
 	clipRangeActivated = NO;
@@ -309,7 +309,20 @@ public:
 	else
 		aRenderer->ResetCameraClippingRange();
 	
+	[self willChangeValueForKey:@"clippingRangeThicknessInMm"];
+	[self didChangeValueForKey:@"clippingRangeThicknessInMm"];
+	
 	[self setNeedsDisplay: YES];
+}
+
+- (double) getClippingRangeThicknessInMm
+{
+	Test en changeant la sample distance....
+	
+	if( volumeMapper)
+		return clippingRangeThickness / factor / volumeMapper->GetRayCastImage()->GetImageSampleDistance();
+	
+	return 0;
 }
 
 + (unsigned short*) linearOpacity
@@ -1082,7 +1095,7 @@ public:
 		{
 			if( fullDepth)
 			{
-				float r = volumeMapper->GetRayCastImage()->GetImageSampleDistance();
+				double r = volumeMapper->GetRayCastImage()->GetImageSampleDistance();
 				
 				[exportDCM setPixelSpacing: [self getResolution]*r :[self getResolution]*r];
 
@@ -1097,7 +1110,7 @@ public:
 					
 					[self getOrigin: position];
 					[exportDCM setPosition: position];
-					[exportDCM setSliceThickness: clippingRangeThickness * [self getResolution] / r];
+					[exportDCM setSliceThickness: [self getClippingRangeThicknessInMm]];
 				}
 			}
 			else
@@ -2244,7 +2257,7 @@ public:
 	
 	// Take into account the sliceThickness -> Origin is in the middle of the slice thickness
 	
-	double thickness = clippingRangeThickness * [self getResolution] / sampleDistance;
+	double thickness = clippingRangeThickness / factor / sampleDistance;
 	
 	thickness /= 2.;
 	
@@ -2285,9 +2298,9 @@ public:
 	cos[2] *= -1.;
 }
 
-- (float) getResolution
+- (double) getResolution
 {
-	if( aCamera->GetParallelProjection())
+	if( aCamera && aCamera->GetParallelProjection())
 	{
 		double			point1[ 4] = { 0, 0, 0, 0}, point2[ 4] = { 1, 0, 0, 0};
 		
@@ -2854,6 +2867,13 @@ public:
 					[self computeOrientationText];
 					[self setNeedsDisplay:YES];
 					[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: nil];
+					
+//					// Test
+//					long w, h;
+//					float *im;
+//					im = [self imageInFullDepthWidth: &w height: &h];
+//					free( im);
+//					NSLog( @"w: %d h: %d", w, h);
 					break;
 			default:
 				break;
@@ -5692,8 +5712,8 @@ public:
 	*w = size[0];
 	*h = size[1];
 	
-	if( size[0] != fullSize[0] || size[1] != fullSize[1])
-		NSLog( @"****** size[0] != fullSize[0] && size[1] != fullSize[1]");
+//	if( size[0] != fullSize[0] || size[1] != fullSize[1])
+//		NSLog( @"****** size[0] != fullSize[0] && size[1] != fullSize[1]");
 	
 	destPtr = destFixedPtr = (unsigned short*) malloc( size[0] * size[ 1] * sizeof( unsigned short));
 	if( destFixedPtr)

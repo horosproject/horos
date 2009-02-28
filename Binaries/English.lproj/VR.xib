@@ -3,7 +3,7 @@
 	<data>
 		<int key="IBDocument.SystemTarget">1050</int>
 		<string key="IBDocument.SystemVersion">9G55</string>
-		<string key="IBDocument.InterfaceBuilderVersion">672</string>
+		<string key="IBDocument.InterfaceBuilderVersion">670</string>
 		<string key="IBDocument.AppKitVersion">949.43</string>
 		<string key="IBDocument.HIToolboxVersion">353.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
@@ -2453,7 +2453,7 @@ ZSBtZW51OiBzZWxlY3QgaXQgd2hpbGUgaG9sZGluZyBkb3duIHRoZSBhbHQvb3B0aW9uIGtleS4</str
 							<reference key="NSControlView" ref="703477242"/>
 							<int key="NSButtonFlags">109068543</int>
 							<int key="NSButtonFlags2">2</int>
-							<object class="NSCustomResource" key="NSNormalImage" id="131815323">
+							<object class="NSCustomResource" key="NSNormalImage">
 								<string key="NSClassName">NSImage</string>
 								<string key="NSResourceName">3D.tif</string>
 							</object>
@@ -2472,7 +2472,10 @@ ZSBtZW51OiBzZWxlY3QgaXQgd2hpbGUgaG9sZGluZyBkb3duIHRoZSBhbHQvb3B0aW9uIGtleS4</str
 								<string key="NSKeyEquiv"/>
 								<int key="NSKeyEquivModMask">1048576</int>
 								<int key="NSMnemonicLoc">2147483647</int>
-								<reference key="NSImage" ref="131815323"/>
+								<object class="NSCustomResource" key="NSImage">
+									<string key="NSClassName">NSImage</string>
+									<string key="NSResourceName">3D.tif</string>
+								</object>
 								<reference key="NSOnImage" ref="262474482"/>
 								<reference key="NSMixedImage" ref="213116640"/>
 								<string key="NSAction">_popUpItemAction:</string>
@@ -6635,6 +6638,22 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 							<reference key="NSTextColor" ref="868407003"/>
 						</object>
 					</object>
+					<object class="NSTextField" id="375379333">
+						<reference key="NSNextResponder" ref="67304725"/>
+						<int key="NSvFlags">256</int>
+						<string key="NSFrame">{{59, 12}, {85, 17}}</string>
+						<reference key="NSSuperview" ref="67304725"/>
+						<bool key="NSEnabled">YES</bool>
+						<object class="NSTextFieldCell" key="NSCell" id="149159210">
+							<int key="NSCellFlags">67239424</int>
+							<int key="NSCellFlags2">138412032</int>
+							<string key="NSContents">mmm</string>
+							<reference key="NSSupport" ref="766908030"/>
+							<reference key="NSControlView" ref="375379333"/>
+							<reference key="NSBackgroundColor" ref="347626342"/>
+							<reference key="NSTextColor" ref="868407003"/>
+						</object>
+					</object>
 				</object>
 				<string key="NSFrameSize">{194, 29}</string>
 				<reference key="NSSuperview"/>
@@ -6642,6 +6661,14 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 					<characters key="NS.bytes">NSView</characters>
 				</object>
 				<string key="NSExtension">NSResponder</string>
+			</object>
+			<object class="NSObjectController" id="628694619">
+				<object class="NSMutableArray" key="NSDeclaredKeys">
+					<bool key="EncodedWithXMLCoder">YES</bool>
+					<string>clippingRangeThicknessInMm</string>
+				</object>
+				<bool key="NSEditable">YES</bool>
+				<object class="_NSManagedProxy" key="_NSManagedProxy"/>
 			</object>
 		</object>
 		<object class="IBObjectContainer" key="IBDocument.Objects">
@@ -9162,6 +9189,30 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 						<reference key="destination" ref="766978786"/>
 					</object>
 					<int key="connectionID">2280</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">content</string>
+						<reference key="source" ref="628694619"/>
+						<reference key="destination" ref="606586027"/>
+					</object>
+					<int key="connectionID">2285</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: selection.clippingRangeThicknessInMm</string>
+						<reference key="source" ref="375379333"/>
+						<reference key="destination" ref="628694619"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="375379333"/>
+							<reference key="NSDestination" ref="628694619"/>
+							<string key="NSLabel">value: selection.clippingRangeThicknessInMm</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">selection.clippingRangeThicknessInMm</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">2287</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -13299,6 +13350,7 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 							<reference ref="766978786"/>
 							<reference ref="280477531"/>
 							<reference ref="329609238"/>
+							<reference ref="375379333"/>
 						</object>
 						<reference key="parent" ref="733070969"/>
 						<string key="objectName">ClippingRange</string>
@@ -13344,6 +13396,26 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 						<int key="objectID">2276</int>
 						<reference key="object" ref="39071661"/>
 						<reference key="parent" ref="329609238"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">2281</int>
+						<reference key="object" ref="375379333"/>
+						<object class="NSMutableArray" key="children">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<reference ref="149159210"/>
+						</object>
+						<reference key="parent" ref="67304725"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">2282</int>
+						<reference key="object" ref="149159210"/>
+						<reference key="parent" ref="375379333"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">2283</int>
+						<reference key="object" ref="628694619"/>
+						<reference key="parent" ref="733070969"/>
+						<string key="objectName">VRViewObjectController</string>
 					</object>
 				</object>
 			</object>
@@ -13713,6 +13785,9 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 					<string>2272.ImportedFromIB2</string>
 					<string>2273.IBPluginDependency</string>
 					<string>2273.ImportedFromIB2</string>
+					<string>2281.IBPluginDependency</string>
+					<string>2281.ImportedFromIB2</string>
+					<string>2283.IBPluginDependency</string>
 					<string>234.IBPluginDependency</string>
 					<string>234.ImportedFromIB2</string>
 					<string>235.IBPluginDependency</string>
@@ -14570,6 +14645,9 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<reference ref="9"/>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
@@ -15162,7 +15240,7 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">2280</int>
+			<int key="maxID">2287</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">

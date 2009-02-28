@@ -338,11 +338,11 @@ typedef char* vtkMyCallbackVR;
 	UInt16			snConnexionClientID;
 	
 	BOOL			clipRangeActivated;
-	float			clippingRangeThickness;
+	double			clippingRangeThickness;
 }
 
 @property BOOL clipRangeActivated;
-@property float clippingRangeThickness;
+@property double clippingRangeThickness;
 
 + (BOOL) getCroppingBox:(double*) a :(vtkVolume *) volume :(vtkBoxWidget*) croppingBox;
 + (void) setCroppingBox:(double*) a :(vtkVolume *) volume;
@@ -351,7 +351,7 @@ typedef char* vtkMyCallbackVR;
 - (void) showCropCube:(id) sender;
 - (void) restoreFullDepthCapture;
 - (void) prepareFullDepthCapture;
-
+- (float*) imageInFullDepthWidth: (long*) w height:(long*) h;
 - (NSDictionary*) exportDCMCurrentImage;
 - (NSDictionary*) exportDCMCurrentImageIn16bit: (BOOL) fullDepth;
 - (void) renderImageWithBestQuality: (BOOL) best waitDialog: (BOOL) wait;
@@ -437,7 +437,7 @@ typedef char* vtkMyCallbackVR;
 -(void) bestRendering:(id) sender;
 - (void) setMode: (long) modeID;
 - (long) mode;
-- (float) getResolution;
+- (double) getResolution;
 - (void) getCosMatrix: (float *) cos;
 - (void) getOrigin: (float *) origin;
 
