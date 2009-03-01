@@ -2983,9 +2983,29 @@ public:
 	{
 		switch (_tool)
 		{
+			case tCamera3D:
+			{
+				// Reset window center
+				double xx = 0;
+				double yy = 0;
+				
+				double pWC[ 2];
+				aCamera->GetWindowCenter( pWC);
+				pWC[ 0] *= ([self frame].size.width/2.);
+				pWC[ 1] *= ([self frame].size.height/2.);
+				
+				if( pWC[ 0] != xx && pWC[ 1] != yy)
+				{
+					aCamera->SetWindowCenter( 0, 0);
+					[self panX: ([self frame].size.width/2.) -(pWC[ 0] - xx)*10000. Y: ([self frame].size.height/2.) -(pWC[ 1] - yy) *10000.];
+				}
+				
+				[self setNeedsDisplay:YES];
+			}
+			break;
+			
 			case tWL:
 			case tWLBlended:
-			case tCamera3D:
 				[self setNeedsDisplay:YES];
 				break;
 			case tRotate:
@@ -4154,6 +4174,8 @@ public:
 	
 	if( currentTool == tMesure || previousTool == tMesure)
 	{
+		dontRenderVolumeRenderingOsiriX = 1;
+		
 		vtkPoints		*pts = Line2DData->GetPoints();
 		
 		if( pts->GetNumberOfPoints() != 0)
@@ -4166,12 +4188,15 @@ public:
 			aRenderer->RemoveActor( Line2DText);
 			measureLength = 0;
 			
-			[self setNeedsDisplay:YES];
+			[self display];
 		}
+		
+		dontRenderVolumeRenderingOsiriX = 0;
 	}
 	
 	if( (currentTool == t3DCut && previousTool == t3DCut) || currentTool != t3DCut)
 	{
+		dontRenderVolumeRenderingOsiriX = 1;
 		vtkPoints		*roiPts = ROI3DData->GetPoints();
 		
 		if( roiPts->GetNumberOfPoints() != 0)
@@ -4183,8 +4208,10 @@ public:
 			ROI3DData-> SetLines( rect);		rect->Delete();
 			[ROIPoints removeAllObjects];
 			
-			[self setNeedsDisplay:YES];
+			[self display];
 		}
+		
+		dontRenderVolumeRenderingOsiriX = 0;
 	}
 	
 	if(currentTool!=t3Dpoint && previousTool==t3Dpoint)
