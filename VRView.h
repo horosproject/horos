@@ -339,6 +339,8 @@ typedef char* vtkMyCallbackVR;
 	
 	BOOL			clipRangeActivated;
 	double			clippingRangeThickness;
+	
+	BOOL			dontDraw;
 }
 
 @property BOOL clipRangeActivated;
@@ -529,7 +531,7 @@ typedef char* vtkMyCallbackVR;
 - (void)_iChatStateChanged:(NSNotification *)aNotification;
 
 - (void)yaw:(float)degrees;
-- (void)panX:(float)x Y:(float)y;
+- (void)panX:(double)x Y:(double)y;
 
 - (void)recordFlyThru;
 

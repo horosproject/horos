@@ -291,6 +291,11 @@ public:
 
 - (void) setClippingRangeThickness: (double) c
 {
+	c *= [[NSUserDefaults standardUserDefaults] floatForKey: @"superSampling"];
+	
+	if( c < [[NSUserDefaults standardUserDefaults] floatForKey: @"superSampling"])
+		c = [[NSUserDefaults standardUserDefaults] floatForKey: @"superSampling"] + 0.01;
+
 	clippingRangeThickness = c;
 	clipRangeActivated = NO;
 	
@@ -1953,6 +1958,7 @@ public:
 - (void) drawRect:(NSRect)aRect
 {
 	if( drawLock == nil) drawLock = [[NSRecursiveLock alloc] init];
+	if( dontDraw) return;
 	
 	BOOL iChatRunning = [[IChatTheatreDelegate sharedDelegate] isIChatTheatreRunning];
 	
@@ -3280,13 +3286,24 @@ public:
 			// vtkCamera
 			mouseLocPre = _mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView:nil];
 			
-			
-//			float xx = (mouseLocPre.x - [self frame].size.width/2.) / [self frame].size.width/2.;
-//			float yy = (mouseLocPre.y - [self frame].size.height/2.) / [self frame].size.height/2.;
-//			
-//			aCamera->SetWindowCenter( xx, yy);
-			
 			if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD*lowResLODFactor);
+			
+			if( clipRangeActivated)
+			{
+				double xx = -(mouseLocPre.x - [self frame].size.width/2.);
+				double yy = -(mouseLocPre.y - [self frame].size.height/2.);
+				
+				double pWC[ 2];
+				aCamera->GetWindowCenter( pWC);
+				pWC[ 0] *= ([self frame].size.width/2.);
+				pWC[ 1] *= ([self frame].size.height/2.);
+				
+				if( pWC[ 0] != xx && pWC[ 1] != yy)
+				{
+					aCamera->SetWindowCenter( xx / ([self frame].size.width/2.), yy / ([self frame].size.height/2.));
+					[self panX: ([self frame].size.width/2.) -(pWC[ 0] - xx)*10000. Y: ([self frame].size.height/2.) -(pWC[ 1] - yy) *10000.];
+				}
+			}
 		}
 		else if( tool == t3Dpoint)
 		{
@@ -5293,10 +5310,8 @@ public:
 	//		firstObject = [pixList lastObject];
 	//	}
 		
-		factor = 1.0 / [firstObject pixelSpacingX];
+		factor = [[NSUserDefaults standardUserDefaults] floatForKey: @"superSampling"] / [firstObject pixelSpacingX];
 		NSLog(@"Thickness: %2.2f Factor: %2.2f", sliceThickness, factor);
-	//	factor = 1.0;
-		
 		if( [firstObject pixelSpacingX] == 0 || [firstObject pixelSpacingY] == 0) reader->SetDataSpacing( 1, 1, sliceThickness);
 		else reader->SetDataSpacing( factor*[firstObject pixelSpacingX], factor*[firstObject pixelSpacingY], factor * sliceThickness);
 		
@@ -7674,7 +7689,7 @@ public:
 	[self setNeedsDisplay:YES];
 }
 
-- (void)panX:(float)x Y:(float)y;
+- (void)panX:(double)x Y:(double)y;
 {
 	vtkRenderWindowInteractor *rwi = [self getInteractor];
 
@@ -7695,13 +7710,13 @@ public:
 
 	double *ViewPoint = camera->GetPosition();
 
-	// Compute a translation vector, moving everything 1/10
+	// Compute a translation vector, moving everything
 	// the distance to the cursor. (Arbitrary scale factor)
 
 	double MotionVector[3];
-	MotionVector[0] = 0.01 * (ViewFocus[0] - NewPickPoint[0]);
-	MotionVector[1] = 0.01 * (ViewFocus[1] - NewPickPoint[1]);
-	MotionVector[2] = 0.01 * (ViewFocus[2] - NewPickPoint[2]);
+	MotionVector[0] = 0.0001 * (ViewFocus[0] - NewPickPoint[0]);
+	MotionVector[1] = 0.0001 * (ViewFocus[1] - NewPickPoint[1]);
+	MotionVector[2] = 0.0001 * (ViewFocus[2] - NewPickPoint[2]);
 
 	camera->SetFocalPoint(MotionVector[0] + ViewFocus[0],
 						  MotionVector[1] + ViewFocus[1],
@@ -7856,7 +7871,7 @@ void VRSpaceNavigatorMessageHandler(io_connect_t connection, natural_t messageTy
 						// *** pan ***
 						if( vV->projectionMode != 2)
 						{
-							[vV panX:[vV frame].size.width/2.0+tx*10.0 Y:[vV frame].size.height/2.0-ty*10.0];
+							[vV panX:[vV frame].size.width/2.0+tx*1000.0 Y:[vV frame].size.height/2.0-ty*1000.0];
 							[vV setNeedsDisplay:YES];
 						}
 						// no pan for endoscopy mode
