@@ -85,7 +85,7 @@
 #include "vtkOrientationMarkerWidget.h"
 #include "vtkVolumeTextureMapper2D.h"
 #include "vtkVolumeTextureMapper3D.h"
-//#include "vtkVolumeShearWarpMapper.h"
+#include "OsiriXFixedPointVolumeRayCastMapper.h"
 
 #include "vtkCellArray.h"
 #include "vtkProperty2D.h"
@@ -111,6 +111,7 @@ typedef char* vtkLineWidget;
 typedef char* vtkTextActor;
 typedef char* vtkVolumeRayCastMapper;
 typedef char* vtkFixedPointVolumeRayCastMapper;
+typedef char* OsiriXFixedPointVolumeRayCastMapper;
 typedef char* vtkVolumeRayCastMIPFunction;
 typedef char* vtkVolume;
 
@@ -177,7 +178,7 @@ typedef char* vtkMyCallbackVR;
 	float						blendingWl, blendingWw, measureLength;
 	vtkImageImport				*blendingReader;
 	
-	vtkFixedPointVolumeRayCastMapper		*blendingVolumeMapper;
+	OsiriXFixedPointVolumeRayCastMapper *blendingVolumeMapper;
 	vtkVolumeTextureMapper3D	*blendingTextureMapper;
 	
 	vtkVolume					*blendingVolume;
@@ -253,7 +254,7 @@ typedef char* vtkMyCallbackVR;
 	double						initialCroppingBoxBounds[6];
 	// MAPPERS
 	
-	vtkFixedPointVolumeRayCastMapper			*volumeMapper;
+	OsiriXFixedPointVolumeRayCastMapper *volumeMapper;
 	vtkVolumeTextureMapper3D		*textureMapper;
 	
 	vtkVolume					*volume;
@@ -339,8 +340,6 @@ typedef char* vtkMyCallbackVR;
 	
 	BOOL			clipRangeActivated;
 	double			clippingRangeThickness;
-	
-	BOOL			dontDraw;
 }
 
 @property BOOL clipRangeActivated;
@@ -518,8 +517,8 @@ typedef char* vtkMyCallbackVR;
 - (VRController*)controller;
 - (BOOL)isRGB;
 
-- (vtkFixedPointVolumeRayCastMapper*)volumeMapper;
-- (void)setVolumeMapper:(vtkFixedPointVolumeRayCastMapper*)aVolumeMapper;
+- (OsiriXFixedPointVolumeRayCastMapper*)volumeMapper;
+- (void)setVolumeMapper:(OsiriXFixedPointVolumeRayCastMapper*)aVolumeMapper;
 - (vtkVolume*)volume;
 - (void)setVolume:(vtkVolume*)aVolume;
 - (char*)data8;

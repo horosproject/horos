@@ -82,6 +82,8 @@ extern "C"
 //#define BONEVALUE 250
 #define BONEOPACITY 1.1
 
+extern int dontRenderVolumeRenderingOsiriX;	// See OsiriXFixedPointVolumeRayCastMapper.cxx
+
 static NSRecursiveLock *drawLock = nil;
 static unsigned short *linearOpacity = nil;
 static VRView	*snVRView = nil;
@@ -701,7 +703,7 @@ public:
 		case 0:		// RAY CAST
 			if( volumeMapper == nil)
 			{
-				volumeMapper = vtkFixedPointVolumeRayCastMapper::New();
+				volumeMapper = OsiriXFixedPointVolumeRayCastMapper::New();
 				volumeMapper->SetInput((vtkDataSet *) reader->GetOutput());
 			}
 			volumeMapper->SetMinimumImageSampleDistance( LOD);
@@ -726,7 +728,7 @@ public:
 		case 2:		// BOTH
 			if( volumeMapper == nil)
 			{
-				volumeMapper = vtkFixedPointVolumeRayCastMapper::New();
+				volumeMapper = OsiriXFixedPointVolumeRayCastMapper::New();
 				volumeMapper->SetInput((vtkDataSet *) reader->GetOutput());
 			}
 			volumeMapper->SetMinimumImageSampleDistance( LOD);
@@ -790,7 +792,7 @@ public:
 		case 0:		// RAY CAST
 			if( blendingVolumeMapper == nil)
 			{
-				blendingVolumeMapper = vtkFixedPointVolumeRayCastMapper::New();
+				blendingVolumeMapper = OsiriXFixedPointVolumeRayCastMapper::New();
 				blendingVolumeMapper->SetInput((vtkDataSet *) blendingReader->GetOutput());
 			}
 			blendingVolumeMapper->SetMinimumImageSampleDistance( LOD);
@@ -815,7 +817,7 @@ public:
 		case 2:		// BOTH
 			if( blendingVolumeMapper == nil)
 			{
-				blendingVolumeMapper = vtkFixedPointVolumeRayCastMapper::New();
+				blendingVolumeMapper = OsiriXFixedPointVolumeRayCastMapper::New();
 				blendingVolumeMapper->SetInput((vtkDataSet *) blendingReader->GetOutput());
 			}
 			blendingVolumeMapper->SetMinimumImageSampleDistance( LOD);
@@ -1147,6 +1149,8 @@ public:
 	
 	NSMutableArray *producedFiles = [NSMutableArray array];
 	
+	aRenderer->SetDraw( 1);
+	
 	if( [sender tag])
 	{
 		BOOL fullDepthCapture = NO;
@@ -1347,7 +1351,10 @@ public:
 	if( exportDCMWindow == nil)
 	{
 		NSRunAlertPanel(NSLocalizedString(@"Not available", nil), NSLocalizedString(@"This function is not available for this window.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+		return;
 	}
+	
+	aRenderer->SetDraw( 0);
 	
 	[self setCurrentdcmExport: dcmExportMode];
 	
@@ -1958,7 +1965,6 @@ public:
 - (void) drawRect:(NSRect)aRect
 {
 	if( drawLock == nil) drawLock = [[NSRecursiveLock alloc] init];
-	if( dontDraw) return;
 	
 	BOOL iChatRunning = [[IChatTheatreDelegate sharedDelegate] isIChatTheatreRunning];
 	
@@ -2649,6 +2655,49 @@ public:
 		int controlDown;
 		switch (_tool)
 		{
+			case tMesure:
+			{
+				dontRenderVolumeRenderingOsiriX = 1;
+			
+				double	*pp;
+				long	i;
+				
+				vtkPoints *pts = Line2DData->GetPoints();
+			
+				if( pts->GetNumberOfPoints() > 0)
+				{
+					// Click point 3D to 2D
+					
+					aRenderer->SetDisplayPoint( mouseLoc.x, mouseLoc.y, 0);
+					aRenderer->DisplayToWorld();
+					pp = aRenderer->GetWorldPoint();
+					
+					// Create the 2D Actor
+					
+					aRenderer->SetWorldPoint(pp[0], pp[1], pp[2], 1.0);
+					aRenderer->WorldToDisplay();
+					
+					double *tempPoint = aRenderer->GetDisplayPoint();
+					
+					pts->SetPoint( pts->GetNumberOfPoints()-1, tempPoint[0], tempPoint[ 1], 0);
+					
+					vtkCellArray *rect = vtkCellArray::New();
+					rect->InsertNextCell( pts->GetNumberOfPoints()+1);
+					for( i = 0; i < pts->GetNumberOfPoints(); i++) rect->InsertCellPoint( i);
+					rect->InsertCellPoint( 0);
+					
+					Line2DData->SetVerts( rect);
+					Line2DData->SetLines( rect);		rect->Delete();
+					
+					Line2DData->SetPoints( pts);
+					
+					[self computeLength];
+					
+					[self setNeedsDisplay: YES];
+				}
+			}
+			break;
+			
 			case tWLBlended:	
 				_startWW = blendingWw;
 				_startWL = blendingWl;
@@ -2801,30 +2850,11 @@ public:
 					
 					double *tempPoint = aRenderer->GetDisplayPoint();
 					
-//					NSLog(@"New pt: %2.2f %2.2f", tempPoint[0] , tempPoint[ 1]);
-					
 					[ROIPoints addObject: [NSValue valueWithPoint: NSMakePoint( tempPoint[0], tempPoint[ 1])]];
 					
 					[self generateROI];
 					
-//					vtkPoints *pts = ROI3DData->GetPoints();
-//					pts->InsertPoint( pts->GetNumberOfPoints(), tempPoint[0], tempPoint[ 1], 0);
-//					
-//					vtkCellArray *rect = vtkCellArray::New();
-//					rect->InsertNextCell( pts->GetNumberOfPoints()+1);
-//					for( i = 0; i < pts->GetNumberOfPoints(); i++) rect->InsertCellPoint( i);
-//					rect->InsertCellPoint( 0);
-//					
-//					ROI3DData->SetVerts( rect);
-//					ROI3DData->SetLines( rect);		rect->Delete();
-//					
-//					ROI3DData->SetPoints( pts);
-					
-					if( ROIUPDATE == NO)
-					{
-						ROIUPDATE = YES;
-						[NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(timerUpdate:) userInfo:nil repeats:0]; 
-					}
+					[self setNeedsDisplay: YES];
 					
 					_previousLoc = mouseLoc;
 				}
@@ -2971,10 +3001,13 @@ public:
 				[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: nil];
 				break;
 			case tZoom:
-				//[self rightMouseUp:theEvent];
 				[self zoomMouseUp:(NSEvent *)theEvent];
 				break;
-			case t3DCut:			// <- DO NOTHING !
+			case tMesure:
+			case t3DCut:
+				[self displayIfNeeded];
+				dontRenderVolumeRenderingOsiriX = 0;
+			break;
 			case tBonesRemoval:		// <- DO NOTHING !
 			break;
 			default:
@@ -2982,13 +3015,6 @@ public:
 				break;
 		}
 	}
-	
-	double pos[ 3];
-	
-	aCamera->GetFocalPoint( pos);
-	
-	NSLog( @"Camera: %f %f %f", pos[ 0], pos[ 1], pos[ 2]);
-	
 	[drawLock unlock];
 }
 
@@ -3038,6 +3064,8 @@ public:
 
 - (void)mouseDown:(NSEvent *)theEvent
 {
+	dontRenderVolumeRenderingOsiriX = 0;
+	
 	_hasChanged = YES;
 	[drawLock lock];
 	
@@ -3102,6 +3130,8 @@ public:
 		
 		if( tool == tMesure)
 		{
+			dontRenderVolumeRenderingOsiriX = 1;
+			
 			double	*pp;
 			long	i;
 			
@@ -3148,16 +3178,14 @@ public:
 			Line2DData->SetPoints( pts);
 			
 			[self computeLength];
-				
-			if( ROIUPDATE == NO)
-			{
-				ROIUPDATE = YES;
-				[NSTimer scheduledTimerWithTimeInterval:0.05 target:self selector:@selector(timerUpdate:) userInfo:nil repeats:0]; 
-			}
+			
+			[self setNeedsDisplay: YES];
 		}
 		else if( tool == t3DCut)
 		{
 			double	*pp;
+			
+			dontRenderVolumeRenderingOsiriX = 1;
 			
 			// Click point 3D to 2D
 			
@@ -3179,11 +3207,13 @@ public:
 			[ROIPoints addObject: [NSValue valueWithPoint: NSMakePoint( tempPoint[0], tempPoint[ 1])]];
 			[self generateROI];
 			
-			if( ROIUPDATE == NO)
-			{
-				ROIUPDATE = YES;
-				[NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(timerUpdate:) userInfo:nil repeats:0]; 
-			}
+//			if( ROIUPDATE == NO)
+//			{
+//				ROIUPDATE = YES;
+//				[NSTimer scheduledTimerWithTimeInterval:0.05 target:self selector:@selector(timerUpdate:) userInfo:nil repeats:0]; 
+//			}
+			
+			[self setNeedsDisplay: YES];
 		}
 		else if( tool == tWL)
 		{
@@ -3963,42 +3993,46 @@ public:
 		
 		[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Performance Test", nil) description: [NSString stringWithFormat: NSLocalizedString(@"360 degree rotation - 100 images\rResult in [s] : %f", nil), -[now timeIntervalSinceNow]] name:@"result"];
 	}
-	else if( c == 27)
+	else if( c == 27 && currentTool == t3DCut)
 	{
-//		[[[self window] windowController] offFullScreen];
-		[controller offFullScreen];
-	}
-	else if( (c == 27) && currentTool == t3DCut)
-	{
-		vtkPoints		*roiPts = ROI3DData->GetPoints();
+		vtkPoints *pts = ROI3DData->GetPoints();
 		
-		if( roiPts->GetNumberOfPoints() != 0)
-		{
-			// Delete current ROI
-			vtkPoints *pts = vtkPoints::New();
-			vtkCellArray *rect = vtkCellArray::New();
-			ROI3DData-> SetPoints( pts);		pts->Delete();
-			ROI3DData-> SetLines( rect);		rect->Delete();
-			[ROIPoints removeAllObjects];
-			
-			[self setNeedsDisplay:YES];
-		}
-	}
-	else if( c == NSDeleteCharacter && currentTool == tMesure)
-	{
-		vtkPoints		*pts = ROI3DData->GetPoints();
+		dontRenderVolumeRenderingOsiriX = 1;
 		
 		if( pts->GetNumberOfPoints() != 0)
 		{
 			// Delete current ROI
 			vtkPoints *pts = vtkPoints::New();
 			vtkCellArray *rect = vtkCellArray::New();
-			ROI3DData-> SetPoints( pts);		pts->Delete();
-			ROI3DData-> SetLines( rect);		rect->Delete();
+			ROI3DData-> SetPoints( pts); pts->Delete();
+			ROI3DData-> SetLines( rect); rect->Delete();
 			[ROIPoints removeAllObjects];
 			
-			[self setNeedsDisplay:YES];
+			[self display];
 		}
+		
+		dontRenderVolumeRenderingOsiriX = 0;
+	}
+	else if((c == NSDeleteCharacter || c == 27) && currentTool == tMesure)
+	{
+		vtkPoints *pts = Line2DData->GetPoints();
+		
+		dontRenderVolumeRenderingOsiriX = 1;
+
+		if( pts->GetNumberOfPoints() != 0)
+		{
+			// Delete current ROI
+			vtkPoints *pts = vtkPoints::New();
+			vtkCellArray *rect = vtkCellArray::New();
+			Line2DData-> SetPoints( pts); pts->Delete();
+			Line2DData-> SetLines( rect); rect->Delete();
+			
+			[self computeLength];
+			
+			[self display];
+		}
+		
+		dontRenderVolumeRenderingOsiriX = 0;
 	}
 	else if( (c == NSCarriageReturnCharacter || c == NSEnterCharacter || c == NSDeleteCharacter || c == NSTabCharacter) && currentTool == t3DCut)
 	{
@@ -4038,7 +4072,12 @@ public:
 			[self removeSelected3DPoint];
 		}
 	}
+	else if( c == 27)
+	{
+		[controller offFullScreen];
+	}
 	else if( [self actionForHotKey:[event characters]] == NO) [super keyDown:event];
+	
 }
 
 -(void) schedulerDidFinishSchedule: (Scheduler *)scheduler
@@ -4068,7 +4107,7 @@ public:
 	}
 	
 	[[pixList objectAtIndex: 0] freeRestore];
-	
+
 	[self setNeedsDisplay:YES];
 	
 	[deleteRegion unlock];
@@ -4970,7 +5009,7 @@ public:
 		
 		// Force min/max recomputing
 		if( blendingVolumeMapper) blendingVolumeMapper->Delete();
-		blendingVolumeMapper = vtkFixedPointVolumeRayCastMapper::New();
+		blendingVolumeMapper = OsiriXFixedPointVolumeRayCastMapper::New();
 		blendingVolumeMapper->SetInput((vtkDataSet *) blendingReader->GetOutput());
 		blendingVolumeMapper->SetMinimumImageSampleDistance( LOD);
 		blendingVolume->SetMapper( blendingVolumeMapper);
@@ -7065,22 +7104,30 @@ public:
 
 - (void) sendMail:(id) sender
 {
+	aRenderer->SetDraw( 0);
 	[controller sendMail: sender];
+	aRenderer->SetDraw( 1);
 }
 
 - (void) exportJPEG:(id) sender
 {
+	aRenderer->SetDraw( 0);
 	[controller exportJPEG: sender];
+	aRenderer->SetDraw( 1);
 }
 
 - (void) export2iPhoto:(id) sender
 {
+	aRenderer->SetDraw( 0);
 	[controller export2iPhoto: sender];
+	aRenderer->SetDraw( 1);
 }
 
 - (void) exportTIFF:(id) sender
 {
+	aRenderer->SetDraw( 0);
 	[controller exportTIFF: sender];
+	aRenderer->SetDraw( 1);
 }
 
 #pragma mark-
@@ -7463,12 +7510,12 @@ public:
 	return isRGB;
 }
 
-- (vtkFixedPointVolumeRayCastMapper*)volumeMapper;
+- (OsiriXFixedPointVolumeRayCastMapper*)volumeMapper;
 {
 	return volumeMapper;
 }
 
-- (void)setVolumeMapper:(vtkFixedPointVolumeRayCastMapper*)aVolumeMapper;
+- (void)setVolumeMapper:(OsiriXFixedPointVolumeRayCastMapper*)aVolumeMapper;
 {
 	if(volumeMapper) volumeMapper->Delete();
 	volumeMapper = aVolumeMapper;
