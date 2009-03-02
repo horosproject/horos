@@ -1,10 +1,16 @@
-//
-//  MPRController.h
-//  OsiriX
-//
-//  Created by joris on 2/26/09.
-//  Copyright 2009 The OsiriX Foundation. All rights reserved.
-//
+/*=========================================================================
+  Program:   OsiriX
+
+  Copyright (c) OsiriX Team
+  All rights reserved.
+  Distributed under GNU - GPL
+  
+  See http://www.osirix-viewer.com/copyright.html for details.
+
+     This software is distributed WITHOUT ANY WARRANTY; without even
+     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+     PURPOSE.
+=========================================================================*/
 
 #import <Cocoa/Cocoa.h>
 #import "MPRDCMView.h"
@@ -26,6 +32,6 @@
 }
 
 - (id)initWithDCMPixList:(NSMutableArray*)pix filesList:(NSMutableArray*)files volumeData:(NSData*)volume viewerController:(ViewerController*)viewer fusedViewerController:(ViewerController*)fusedViewer;
-
+- (DCMPix*) emptyPix: (DCMPix*) originalPix width: (long) w height: (long) h;
 
 @end

@@ -1,18 +1,29 @@
-//
-//  MPRDCMView.h
-//  OsiriX
-//
-//  Created by joris on 2/26/09.
-//  Copyright 2009 The OsiriX Foundation. All rights reserved.
-//
+/*=========================================================================
+  Program:   OsiriX
+
+  Copyright (c) OsiriX Team
+  All rights reserved.
+  Distributed under GNU - GPL
+  
+  See http://www.osirix-viewer.com/copyright.html for details.
+
+     This software is distributed WITHOUT ANY WARRANTY; without even
+     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+     PURPOSE.
+=========================================================================*/
 
 #import <Cocoa/Cocoa.h>
 
 #import "DCMView.h"
+#import "VRController.h"
 
-@interface MPRDCMView : DCMView {
+@interface MPRDCMView : DCMView
+{
+	VRController *vrCtrl;
+	DCMPix *pix;
 }
 
-- (void)setDCMPixList:(NSMutableArray*)pix filesList:(NSArray*)files volumeData:(NSData*)volume roiList:(NSMutableArray*)rois firstImage:(short)firstImage type:(char)type reset:(BOOL)reset;
+- (void) setDCMPixList:(NSMutableArray*)pix filesList:(NSArray*)files volumeData:(NSData*)volume roiList:(NSMutableArray*)rois firstImage:(short)firstImage type:(char)type reset:(BOOL)reset;
+- (void) setVRController: (VRController*) v;
 
 @end
