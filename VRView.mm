@@ -332,7 +332,7 @@ public:
 	if( c == NO)
 		[self setClippingRangeThickness: 0];
 	else
-		[self setClippingRangeThickness: 1];
+		[self setClippingRangeThickness: 2];
 	
 	[self resetImage: self];
 }
