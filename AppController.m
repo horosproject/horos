@@ -50,8 +50,8 @@
 
 ToolbarPanelController *toolbarPanel[10] = {nil, nil, nil, nil, nil, nil, nil, nil, nil, nil};
 
-static NSMenu *mainMenuCLUTMenu = nil, *mainMenuWLWWMenu = nil, *mainMenuConvMenu = nil;
-static NSDictionary *previousWLWWKeys = nil, *previousCLUTKeys = nil, *previousConvKeys = nil;
+static NSMenu *mainMenuCLUTMenu = nil, *mainMenuWLWWMenu = nil, *mainMenuConvMenu = nil, *mainOpacityMenu = nil;
+static NSDictionary *previousWLWWKeys = nil, *previousCLUTKeys = nil, *previousConvKeys = nil, *previousOpacityKeys = nil;
 static BOOL checkForPreferencesUpdate = YES;
 static PluginManager *pluginManager = nil;
 static unsigned char *LUT12toRGB = nil;
@@ -1054,6 +1054,44 @@ static NSDate *lastWarningDate = nil;
 	}
 	
 	updateTimer = [[NSTimer scheduledTimerWithTimeInterval: 1 target: self selector:@selector(runPreferencesUpdateCheck:) userInfo:nil repeats: NO] retain];
+}
+
+-(void) UpdateOpacityMenu: (NSNotification*) note
+{
+    //*** Build the menu
+    NSMenu      *mainMenu;
+    NSMenu      *viewerMenu;
+    short       i;
+    NSArray     *keys;
+    NSArray     *sortedKeys;
+    
+	if( mainOpacityMenu == nil)
+	{
+		mainMenu = [NSApp mainMenu];
+		viewerMenu = [[mainMenu itemWithTitle:NSLocalizedString(@"2D Viewer", nil)] submenu];
+		mainOpacityMenu = [[viewerMenu itemWithTitle:NSLocalizedString(@"Opacity", nil)] submenu];
+	}
+	
+	if( [[NSUserDefaults standardUserDefaults] dictionaryForKey: @"OPACITY"] != previousOpacityKeys)
+	{
+		previousOpacityKeys = [[NSUserDefaults standardUserDefaults] dictionaryForKey: @"OPACITY"];
+		keys = [previousOpacityKeys allKeys];
+		
+		sortedKeys = [keys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
+		
+		i = [mainOpacityMenu numberOfItems];
+		while(i-- > 0) [mainOpacityMenu removeItemAtIndex:0];   
+		
+		[mainOpacityMenu addItemWithTitle:NSLocalizedString(@"Linear Table", nil) action:@selector (ApplyOpacity:) keyEquivalent:@""];
+		for( i = 0; i < [sortedKeys count]; i++)
+		{
+			[mainOpacityMenu addItemWithTitle:[sortedKeys objectAtIndex:i] action:@selector (ApplyOpacity:) keyEquivalent:@""];
+		}
+		[mainOpacityMenu addItem: [NSMenuItem separatorItem]];
+		[mainOpacityMenu addItemWithTitle:NSLocalizedString(@"Add an Opacity Table", nil) action:@selector (AddCurrentWLWW:) keyEquivalent:@""];
+	}
+	
+	[[mainOpacityMenu itemWithTitle:[note object]] setState:NSOnState];
 }
 
 -(void) UpdateWLWWMenu: (NSNotification*) note
@@ -2350,8 +2388,12 @@ static BOOL initialized = NO;
            selector: @selector(UpdateCLUTMenu:)
                name: @"UpdateCLUTMenu"
              object: nil];
+	[nc addObserver: self
+           selector: @selector(UpdateOpacityMenu:)
+               name: @"UpdateOpacityMenu"
+             object: nil];
 	
-			 
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: NSLocalizedString(@"Linear Table", nil) userInfo: nil];
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: NSLocalizedString(@"No CLUT", nil) userInfo: nil];
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: NSLocalizedString(@"Other", nil) userInfo: nil];
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateConvolutionMenu" object:NSLocalizedString( @"No Filter", nil) userInfo: nil];
