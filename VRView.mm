@@ -2050,7 +2050,6 @@ public:
 		
 		if( firstTime)
 		{
-			NSLog( @"POP");
 			firstTime = NO;	
 			www = [[WaitRendering alloc] init:NSLocalizedString(@"Preparing 3D data...", nil)];
 			[www start];
@@ -2074,7 +2073,6 @@ public:
 		
 		if( www)
 		{
-			NSLog( @"OPO");
 			[www end];
 			[www close];
 			[www release];
@@ -2596,7 +2594,7 @@ public:
 
 -(void) squareView:(id) sender
 {
-	NSLog(@"%d", [[NSUserDefaults standardUserDefaults] integerForKey:@"VRDefaultViewSize"]);
+//	NSLog(@"%d", [[NSUserDefaults standardUserDefaults] integerForKey:@"VRDefaultViewSize"]);
 	
 	if( [[NSUserDefaults standardUserDefaults] integerForKey:@"VRDefaultViewSize"] == 1) return;
 	
@@ -3172,10 +3170,10 @@ public:
 {
 	_hasChanged = YES;
 	[drawLock lock];
-	NSLog(@"right Mouse Up");
+	
 	[self deleteRightMouseDownTimer];
-	if (_contextualMenuActive) {
-		NSLog(@"Contextual Menu Active on Mouse Up");
+	if (_contextualMenuActive)
+	{
 		_contextualMenuActive = NO;
 		[self getInteractor]->InvokeEvent(vtkCommand::LeftButtonReleaseEvent, NULL);
 		return;

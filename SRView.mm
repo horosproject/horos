@@ -1765,7 +1765,7 @@ typedef struct _xyzArray
 			NSLog(@"Blending slice interval = slice thickness!");
 			blendingSliceThickness = [blendingFirstObject sliceThickness];
 		}
-		NSLog(@"slice: %0.2f", blendingSliceThickness);
+//		NSLog(@"slice: %0.2f", blendingSliceThickness);
 		
 		// PLAN 
 		[blendingFirstObject orientation:blendingcosines];

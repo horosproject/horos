@@ -89,7 +89,7 @@
 		sliceThickness = [firstObject sliceThickness];
 	}
 	
-	NSLog(@"slice: %0.2f", sliceThickness);
+//	NSLog(@"slice: %0.2f", sliceThickness);
 
 	wl = [firstObject wl];
 	ww = [firstObject ww];
