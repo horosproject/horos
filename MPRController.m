@@ -39,29 +39,35 @@
 	
 	[[self window] setWindowController: self];
 	
-	DCMPix *emptyPix = [self emptyPix: originalPix width: 100 height: 100];
+	DCMPix *emptyPix = [self emptyPix: originalPix width: 1000 height: 1000];
 	[mprView1 setDCMPixList:  [NSArray arrayWithObject: emptyPix] filesList: [NSArray arrayWithObject: [files lastObject]] volumeData: [NSData dataWithBytes: [emptyPix fImage] length: [emptyPix pheight] * [emptyPix pwidth] * sizeof( float)] roiList:nil firstImage:0 type:'i' reset:YES];
 	[mprView1 setFlippedData: [[viewer imageView] flippedData]];
 	
-	[mprView2 setDCMPixList: pixList[0] filesList: files volumeData:volume roiList:nil firstImage:[pixList[0] count]/2 type:'i' reset:YES];
-	[mprView2 setFlippedData: [[viewer imageView] flippedData]];	
-	
-	[mprView3 setDCMPixList: pixList[0] filesList: files volumeData:volume roiList:nil firstImage:[pixList[0] count]/2 type:'i' reset:YES];
+	emptyPix = [self emptyPix: originalPix width: 1000 height: 1000];
+	[mprView2 setDCMPixList:  [NSArray arrayWithObject: emptyPix] filesList: [NSArray arrayWithObject: [files lastObject]] volumeData: [NSData dataWithBytes: [emptyPix fImage] length: [emptyPix pheight] * [emptyPix pwidth] * sizeof( float)] roiList:nil firstImage:0 type:'i' reset:YES];
+	[mprView2 setFlippedData: [[viewer imageView] flippedData]];
+
+	emptyPix = [self emptyPix: originalPix width: 1000 height: 1000];
+	[mprView3 setDCMPixList:  [NSArray arrayWithObject: emptyPix] filesList: [NSArray arrayWithObject: [files lastObject]] volumeData: [NSData dataWithBytes: [emptyPix fImage] length: [emptyPix pheight] * [emptyPix pwidth] * sizeof( float)] roiList:nil firstImage:0 type:'i' reset:YES];
 	[mprView3 setFlippedData: [[viewer imageView] flippedData]];
 	
-	vrController = [[VRController alloc] initWithPix:pix :files :volume :fusedViewer :viewer style:@"noNib" mode:@"VR"];
+	vrController = [[VRController alloc] initWithPix:pix :files :volume :fusedViewer :viewer style:@"noNib" mode:@"MIP"];
 	[vrController load3DState];
 	
-	hiddenVRController = [[VRController alloc] initWithPix:pix :files :volume :fusedViewer :viewer style:@"noNib" mode:@"VR"];
+	hiddenVRController = [[VRController alloc] initWithPix:pix :files :volume :fusedViewer :viewer style:@"noNib" mode:@"MIP"];
 	[hiddenVRController load3DState];
 	
 	hiddenVRView = [hiddenVRController view];
-	
-	[hiddenVRView setFrame: NSMakeRect(0, 0, 100, 100)];
+	[hiddenVRView setClipRangeActivated: YES];
+	[hiddenVRView resetImage: self];
+	[hiddenVRView setLOD: 1.0];
 	
 	[mprView1 setVRController: hiddenVRController];
-	[mprView2 setVRController: hiddenVRController];
-	[mprView3 setVRController: hiddenVRController];
+	
+	[mprView1 updateView];
+	
+//	[mprView2 setVRController: hiddenVRController];	un VRController par VRView?
+//	[mprView3 setVRController: hiddenVRController];
 
 
 //	[containerFor3DView addSubview:hiddenVRView];

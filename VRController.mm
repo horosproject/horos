@@ -584,8 +584,8 @@ static NSString*	ClippingRangeViewToolbarItemIdentifier = @"ClippingRange";
 	else if( [style isEqualToString:@"noNib"])
 	{
 		self = [super init];
-		view = [[VRView alloc] initWithFrame:NSMakeRect(0, 0, 100, 100)];
-		[view setController:self];
+		view = [[VRView alloc] initWithFrame:NSMakeRect(0, 0, 1000, 1000)];
+		[view setController: self];
 	}
 	else
 	{

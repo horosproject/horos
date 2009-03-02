@@ -2038,8 +2038,17 @@ public:
 	return dict;
 }
 
+- (void) render
+{
+	volumeMapper->SetIntermixIntersectingGeometry( 0);
+	volumeMapper->Render( aRenderer, volume);
+}
+
 - (void) drawRect:(NSRect)aRect
 {
+	if( [[controller style] isEqualToString: @"noNib"])
+		return;
+	
 	if( drawLock == nil) drawLock = [[NSRecursiveLock alloc] init];
 	
 	BOOL iChatRunning = [[IChatTheatreDelegate sharedDelegate] isIChatTheatreRunning];
@@ -2280,6 +2289,11 @@ public:
     return theMenu;
 }
 
+- (float) imageSampleDistance
+{
+	return volumeMapper->GetRayCastImage()->GetImageSampleDistance();
+}
+
 - (void) getOrigin: (float *) origin
 {
 	double cameraPosition[3];
@@ -2345,11 +2359,6 @@ public:
 	
 	thickness /= 2.;
 	
-	float length = sqrt(cos[6]*cos[6] + cos[7]*cos[7] + cos[8]*cos[8]);
-	
-	if( length != 1)
-		NSLog( @"warning length != 1");
-	
 	origin[0] = origin[ 0] + thickness*cos[6];
 	origin[1] = origin[ 1] + thickness*cos[7];
 	origin[2] = origin[ 2] + thickness*cos[8];
@@ -2358,13 +2367,22 @@ public:
 - (void) getCosMatrix: (float *) cos
 {
 	double viewUp[ 3];
+	double length;
 	
 	aCamera->GetViewUp( viewUp);
 	
 	cos[3] = viewUp[ 0] * -1.0;
 	cos[4] = viewUp[ 1] * -1.0;
 	cos[5] = viewUp[ 2] * -1.0;
-	
+
+	length = sqrt(cos[3]*cos[3] + cos[4]*cos[4] + cos[5]*cos[5]);
+	if( length != 0)
+	{
+		cos[3] = cos[ 3] / length;
+		cos[4] = cos[ 4] / length;
+		cos[5] = cos[ 5] / length;
+	}
+
 	double cos6[ 3];
 	
 	aCamera->GetDirectionOfProjection( cos6);
@@ -2372,6 +2390,14 @@ public:
 	cos[ 6] = cos6[ 0];
 	cos[ 7] = cos6[ 1];
 	cos[ 8] = cos6[ 2];
+
+	length = sqrt(cos[6]*cos[6] + cos[7]*cos[7] + cos[8]*cos[8]);
+	if( length != 0)
+	{
+		cos[6] = cos[ 6] / length;
+		cos[7] = cos[ 7] / length;
+		cos[8] = cos[ 8] / length;
+	}
 	
 	cos[0] = cos[7]*cos[5] - cos[8]*cos[4];
 	cos[1] = cos[8]*cos[3] - cos[6]*cos[5];
@@ -2380,6 +2406,14 @@ public:
 	cos[0] *= -1.;
 	cos[1] *= -1.;
 	cos[2] *= -1.;
+
+	length = sqrt(cos[0]*cos[0] + cos[1]*cos[1] + cos[2]*cos[2]);
+	if( length != 0)
+	{
+		cos[0] = cos[ 0] / length;
+		cos[1] = cos[ 1] / length;
+		cos[2] = cos[ 2] / length;
+	}
 }
 
 - (double) getResolution
@@ -4902,8 +4936,13 @@ public:
 	{
 		LOD = f;
 		
-		if( LOD < 1.3) LOD = 1.3;
-		
+		if( [[controller style] isEqualToString: @"noNib"])
+		{
+		}
+		else
+		{
+			if( LOD < 1.3) LOD = 1.3;
+		}
 		if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD);
 		if( volumeMapper) volumeMapper->SetSampleDistance( [[NSUserDefaults standardUserDefaults] floatForKey: @"BESTRENDERING"]);
 		if( volumeMapper) volumeMapper->SetMaximumImageSampleDistance( LOD*lowResLODFactor);

@@ -15,6 +15,7 @@
 #import <Cocoa/Cocoa.h>
 #import "MPRDCMView.h"
 #import "VRController.h"
+#import "VRView.h"
 
 @interface MPRController : NSWindowController {
 	

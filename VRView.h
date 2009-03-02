@@ -486,13 +486,13 @@ typedef char* vtkMyCallbackVR;
 - (void) computeValueFactor;
 - (void) setRotate: (BOOL) r;
 - (float) factor;
-
+- (float) imageSampleDistance;
 -(void) setViewSizeToMatrix3DExport;
 -(void) restoreViewSizeAfterMatrix3DExport;
 -(void) axView:(id) sender;
 -(void) coView:(id) sender;
 -(void) saViewOpposite:(id) sender;
-
+- (void) render;
 - (void)zoomMouseUp:(NSEvent *)theEvent;
 
 
