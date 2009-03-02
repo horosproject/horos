@@ -3,12 +3,12 @@
 	<data>
 		<int key="IBDocument.SystemTarget">1050</int>
 		<string key="IBDocument.SystemVersion">9G55</string>
-		<string key="IBDocument.InterfaceBuilderVersion">670</string>
+		<string key="IBDocument.InterfaceBuilderVersion">672</string>
 		<string key="IBDocument.AppKitVersion">949.43</string>
 		<string key="IBDocument.HIToolboxVersion">353.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="6"/>
+			<integer value="298"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -147,8 +147,8 @@
 												</object>
 												<reference key="NSControlView" ref="854473728"/>
 												<double key="NSMaxValue">4.000000e+00</double>
-												<double key="NSMinValue">1.000000e+00</double>
-												<double key="NSValue">1.000000e+00</double>
+												<double key="NSMinValue">1.100000e+00</double>
+												<double key="NSValue">1.100000e+00</double>
 												<double key="NSAltIncValue">0.000000e+00</double>
 												<int key="NSNumberOfTickMarks">10</int>
 												<int key="NSTickMarkPosition">1</int>

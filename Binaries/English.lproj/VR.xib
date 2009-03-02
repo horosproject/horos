@@ -9,7 +9,7 @@
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
 			<integer value="575"/>
-			<integer value="2282"/>
+			<integer value="2270"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -6655,17 +6655,21 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 										<string>formatterBehavior</string>
 										<string>maximumFractionDigits</string>
 										<string>minimumFractionDigits</string>
+										<string>negativeSuffix</string>
+										<string>positiveSuffix</string>
 									</object>
 									<object class="NSMutableArray" key="dict.values">
 										<bool key="EncodedWithXMLCoder">YES</bool>
 										<reference ref="9"/>
-										<integer value="1040"/>
+										<reference ref="1299"/>
 										<integer value="2"/>
 										<reference ref="8"/>
+										<string> mm</string>
+										<string> mm</string>
 									</object>
 								</object>
-								<string key="NS.positiveformat">#.##</string>
-								<string key="NS.negativeformat">#.##</string>
+								<string key="NS.positiveformat">#.## mm</string>
+								<string key="NS.negativeformat">#.## mm</string>
 								<nil key="NS.positiveattrs"/>
 								<nil key="NS.negativeattrs"/>
 								<object class="NSAttributedString" key="NS.zero">
