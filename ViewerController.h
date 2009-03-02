@@ -35,6 +35,7 @@
 @class EndoscopyViewer;
 //@class VRPROController;
 @class ViewerController;
+@class MPRController;
 
 @interface NSObject(OsiriXPluginDraggingDestination)
 - (BOOL)performPluginDragOperation:(id <NSDraggingInfo>)sender destination:(ViewerController*)vc;
@@ -958,6 +959,10 @@ enum
 
 /** Returns the SRController for this ViewerController; creating one if necessary */
 - (SRController *)openSRViewer;
+
+/** Returns the MPRController for this ViewerController; creating one if necessary */
+- (MPRController *)openMPRViewer;
+- (IBAction)mprViewer:(id)sender;
 
 /** Current SeriesView */
 - (SeriesView *) seriesView;

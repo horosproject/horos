@@ -327,6 +327,11 @@
 		A932BAEC094D87C90085B58A /* EndoscopyVRController.m in Sources */ = {isa = PBXBuildFile; fileRef = A932BAEA094D87C90085B58A /* EndoscopyVRController.m */; };
 		A932BBBC094DB1110085B58A /* EndoscopyMPRView.h in Headers */ = {isa = PBXBuildFile; fileRef = A932BBBA094DB1110085B58A /* EndoscopyMPRView.h */; };
 		A932BBBD094DB1110085B58A /* EndoscopyMPRView.m in Sources */ = {isa = PBXBuildFile; fileRef = A932BBBB094DB1110085B58A /* EndoscopyMPRView.m */; };
+		A9333D250F56E6800097DAB7 /* MPRDCMView.h in Headers */ = {isa = PBXBuildFile; fileRef = A9333D230F56E6800097DAB7 /* MPRDCMView.h */; };
+		A9333D260F56E6800097DAB7 /* MPRDCMView.m in Sources */ = {isa = PBXBuildFile; fileRef = A9333D240F56E6800097DAB7 /* MPRDCMView.m */; };
+		A9333D310F56E70B0097DAB7 /* MPRController.h in Headers */ = {isa = PBXBuildFile; fileRef = A9333D2F0F56E70B0097DAB7 /* MPRController.h */; };
+		A9333D320F56E70B0097DAB7 /* MPRController.m in Sources */ = {isa = PBXBuildFile; fileRef = A9333D300F56E70B0097DAB7 /* MPRController.m */; };
+		A9333D3A0F56E9670097DAB7 /* MPR.xib in Resources */ = {isa = PBXBuildFile; fileRef = A9333D380F56E9670097DAB7 /* MPR.xib */; };
 		A93CFFA60A516A5100078038 /* LLMPRController.h in Headers */ = {isa = PBXBuildFile; fileRef = A93CFF980A516A5000078038 /* LLMPRController.h */; };
 		A93CFFA70A516A5100078038 /* LLMPRController.m in Sources */ = {isa = PBXBuildFile; fileRef = A93CFF990A516A5000078038 /* LLMPRController.m */; };
 		A93CFFA80A516A5100078038 /* LLMPRView.h in Headers */ = {isa = PBXBuildFile; fileRef = A93CFF9A0A516A5000078038 /* LLMPRView.h */; };
@@ -5529,6 +5534,11 @@
 		A932BAEA094D87C90085B58A /* EndoscopyVRController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EndoscopyVRController.m; sourceTree = "<group>"; };
 		A932BBBA094DB1110085B58A /* EndoscopyMPRView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EndoscopyMPRView.h; sourceTree = "<group>"; };
 		A932BBBB094DB1110085B58A /* EndoscopyMPRView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EndoscopyMPRView.m; sourceTree = "<group>"; };
+		A9333D230F56E6800097DAB7 /* MPRDCMView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MPRDCMView.h; sourceTree = "<group>"; };
+		A9333D240F56E6800097DAB7 /* MPRDCMView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MPRDCMView.m; sourceTree = "<group>"; };
+		A9333D2F0F56E70B0097DAB7 /* MPRController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MPRController.h; sourceTree = "<group>"; };
+		A9333D300F56E70B0097DAB7 /* MPRController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MPRController.m; sourceTree = "<group>"; };
+		A9333D390F56E9670097DAB7 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/MPR.xib; sourceTree = "<group>"; };
 		A93CFF980A516A5000078038 /* LLMPRController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = LLMPRController.h; sourceTree = "<group>"; };
 		A93CFF990A516A5000078038 /* LLMPRController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = LLMPRController.m; sourceTree = "<group>"; };
 		A93CFF9A0A516A5000078038 /* LLMPRView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = LLMPRView.h; sourceTree = "<group>"; };
@@ -9405,6 +9415,7 @@
 				A9F6E4DF08FEAFF80060285A /* PET-CT */,
 				A90D665D094D7071000B425B /* Endoscopy */,
 				A93CFF6E0A5169FE00078038 /* LL */,
+				A9333D280F56E68B0097DAB7 /* MPR 09 */,
 				AB3F4A1D0672674000E61A6C /* Window3DController.h */,
 				AB3F4A1E0672674000E61A6C /* Window3DController.m */,
 				A9F2E557092227A400055899 /* DarkWindow.h */,
@@ -9573,6 +9584,7 @@
 				CE3F992A0C84724B00CB38F1 /* LLScoutView.xib */,
 				CE3F98EA0C84724B00CB38F1 /* LogWindow.xib */,
 				CE3F99380C84724B00CB38F1 /* MainMenu.xib */,
+				A9333D380F56E9670097DAB7 /* MPR.xib */,
 				CE3F98F80C84724B00CB38F1 /* MPR2D.xib */,
 				CE3F98F40C84724B00CB38F1 /* MSRGPanel.xib */,
 				A987B3DF0D5A069200BF89C0 /* Navigator.xib */,
@@ -10042,6 +10054,17 @@
 				BF8564110CB2B781005F7178 /* EndoscopyFlyThruController.m */,
 			);
 			name = Endoscopy;
+			sourceTree = "<group>";
+		};
+		A9333D280F56E68B0097DAB7 /* MPR 09 */ = {
+			isa = PBXGroup;
+			children = (
+				A9333D2F0F56E70B0097DAB7 /* MPRController.h */,
+				A9333D300F56E70B0097DAB7 /* MPRController.m */,
+				A9333D230F56E6800097DAB7 /* MPRDCMView.h */,
+				A9333D240F56E6800097DAB7 /* MPRDCMView.m */,
+			);
+			name = "MPR 09";
 			sourceTree = "<group>";
 		};
 		A93CFF6E0A5169FE00078038 /* LL */ = {
@@ -16794,6 +16817,8 @@
 				CE3569FC0EED998F005A823F /* vtkZLibDataCompressor.h in Headers */,
 				84A6790E0EEED04000AE5C98 /* jpeg_memsrc.h in Headers */,
 				CE291D8E0F5A99B700F95B43 /* OsiriXFixedPointVolumeRayCastMapper.h in Headers */,
+				A9333D250F56E6800097DAB7 /* MPRDCMView.h in Headers */,
+				A9333D310F56E70B0097DAB7 /* MPRController.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -17660,6 +17685,7 @@
 				AB1B31A10EB06AFA0061FA40 /* Jet.plist in Resources */,
 				84A220E80F25E41800C6C3EB /* ROIs.tif in Resources */,
 				84A220E90F25E41800C6C3EB /* Keys.tif in Resources */,
+				A9333D3A0F56E9670097DAB7 /* MPR.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -18792,6 +18818,8 @@
 				CEAA6F420E50C084008802D2 /* OsiriXSCPDataHandler.m in Sources */,
 				84A679060EEECF2F00AE5C98 /* jpeg_memsrc.c in Sources */,
 				CE291D8F0F5A99B700F95B43 /* OsiriXFixedPointVolumeRayCastMapper.cxx in Sources */,
+				A9333D260F56E6800097DAB7 /* MPRDCMView.m in Sources */,
+				A9333D320F56E70B0097DAB7 /* MPRController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -19572,6 +19600,14 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		A9333D380F56E9670097DAB7 /* MPR.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A9333D390F56E9670097DAB7 /* English */,
+			);
+			name = MPR.xib;
+			sourceTree = "<group>";
+		};
 		A987B3DF0D5A069200BF89C0 /* Navigator.xib */ = {
 			isa = PBXVariantGroup;
 			children = (

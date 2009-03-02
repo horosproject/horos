@@ -518,6 +518,7 @@ typedef char* vtkMyCallbackVR;
 - (void)setAdvancedCLUTWithName:(NSString*)name;
 - (BOOL)advancedCLUT;
 - (VRController*)controller;
+- (void)setController:(VRController*)aController;
 - (BOOL)isRGB;
 
 - (OsiriXFixedPointVolumeRayCastMapper*)volumeMapper;

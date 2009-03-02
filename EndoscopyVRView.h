@@ -16,21 +16,11 @@
 
 #import <Cocoa/Cocoa.h>
 
-//#define testMPR
-
-#ifdef testMPR
-#import "VRMPRView.h"
-#else
 #import "VRView.h"
-#endif
 
 /** \brief   VRview for Endoscopy
 */
-#ifdef testMPR
-@interface EndoscopyVRView : VRMPRView {
-#else
 @interface EndoscopyVRView : VRView {
-#endif
 
 }
 

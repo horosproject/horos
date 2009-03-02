@@ -581,6 +581,12 @@ static NSString*	ClippingRangeViewToolbarItemIdentifier = @"ClippingRange";
 
 	if( [style isEqualToString:@"standard"])
 		self = [super initWithWindowNibName:@"VR"];
+	else if( [style isEqualToString:@"noNib"])
+	{
+		self = [super init];
+		view = [[VRView alloc] initWithFrame:NSMakeRect(0, 0, 100, 100)];
+		[view setController:self];
+	}
 	else
 	{
 		self = [super initWithWindowNibName:@"VRPanel"];
@@ -1048,9 +1054,7 @@ static NSString*	ClippingRangeViewToolbarItemIdentifier = @"ClippingRange";
 	long i;
 	
     NSLog(@"Dealloc VRController");
-	
-	[style release];
-	
+		
 	// Release Undo system
 	for( i = 0; i < maxMovieIndex; i++)
 	{
@@ -1103,6 +1107,13 @@ static NSString*	ClippingRangeViewToolbarItemIdentifier = @"ClippingRange";
 	[presetPreview8 prepareForRelease];
 	[presetPreview9 prepareForRelease];
 	[selectedPresetPreview prepareForRelease];
+	
+	if( [style isEqualToString:@"noNib"])
+	{
+		[view release];
+	}
+	
+	[style release];
 }
 
 - (void) CloseViewerNotification: (NSNotification*) note

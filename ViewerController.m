@@ -89,6 +89,7 @@
 #import "DicomSeries.h"
 #import "DefaultsOsiriX.h"
 #import "dicomFile.h"
+#import "MPRController.h"
 
 //@class VRPROController;
 
@@ -17836,6 +17837,60 @@ int i,j,l;
 //		}
 //	}
 //}
+
+
+- (MPRController *)openMPRViewer
+{
+	[self checkEverythingLoaded];
+	[self clear8bitRepresentations];
+	
+	MPRController *viewer;
+	viewer = [appController FindViewer:@"MPR" :pixList[0]];
+	if (viewer)
+		return viewer;
+	
+	viewer = [[MPRController alloc] initWithDCMPixList:pixList[0] filesList:fileList[0] volumeData:volumeData[0] viewerController:self fusedViewerController:blendingController];
+	
+	return viewer;
+}
+
+
+- (IBAction)mprViewer:(id)sender
+{
+	[self checkEverythingLoaded];
+	[self clear8bitRepresentations];
+	
+	if( [self computeInterval] == 0 ||
+	   [[pixList[0] objectAtIndex:0] pixelSpacingX] == 0 ||
+	   [[pixList[0] objectAtIndex:0] pixelSpacingY] == 0 ||
+	   ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask))
+	{
+		[self SetThicknessInterval:sender];
+	}
+	else
+	{
+		[self displayAWarningIfNonTrueVolumicData];
+		[self displayWarningIfGantryTitled];
+		
+		[self MovieStop: self];
+		
+		MPRController *viewer;
+		
+		viewer = [appController FindViewer :@"MPR" :pixList[0]];
+		
+		if( viewer)
+		{
+			[[viewer window] makeKeyAndOrderFront:self];
+		}
+		else
+		{
+			viewer = [self openMPRViewer];
+			[self place3DViewerWindow:viewer];
+			[viewer showWindow:self];
+			[[viewer window] setTitle: [NSString stringWithFormat:@"%@: %@", [[viewer window] title], [[self window] title]]];
+		}
+	}
+}
 
 
 #pragma mark-

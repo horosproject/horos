@@ -5325,6 +5325,7 @@ public:
 	
     [pix retain];
     pixList = pix;
+	NSLog( @"%@", pixList);
 	
 	[self setProjectionMode: 1];
 	
@@ -7679,6 +7680,11 @@ public:
 -(VRController*)controller;
 {
 	return controller;
+}
+
+- (void)setController:(VRController*)aController;
+{
+	controller = aController;
 }
 
 - (BOOL)isRGB;
