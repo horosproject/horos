@@ -341,11 +341,12 @@ typedef char* vtkMyCallbackVR;
 	double			clippingRangeThickness;
 	
 	BOOL			bestRenderingWasGenerated;
+	BOOL			dontResetImage;
 }
 
 @property BOOL clipRangeActivated;
-@property double clippingRangeThickness;
 @property int projectionMode;
+@property double clippingRangeThickness;
 
 + (BOOL) getCroppingBox:(double*) a :(vtkVolume *) volume :(vtkBoxWidget*) croppingBox;
 + (void) setCroppingBox:(double*) a :(vtkVolume *) volume;

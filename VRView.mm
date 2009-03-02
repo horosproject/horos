@@ -289,7 +289,37 @@ public:
 
 @implementation VRView
 
-@synthesize clippingRangeThickness, clipRangeActivated, projectionMode;
+@synthesize clipRangeActivated, projectionMode, clippingRangeThickness;
+
+- (void) checkInVolume
+{
+	if( clipRangeActivated)
+	{
+		double position[ 3];
+		
+		aCamera->GetPosition( position);
+		
+		double bounds[ 6];
+	
+		volume->GetBounds( bounds);
+		
+		if( position[ 0] <= bounds[ 0]) position[ 0] = bounds[ 0];
+		if( position[ 0] >= bounds[ 1]) position[ 0] = bounds[ 1];
+		
+		if( position[ 1] <= bounds[ 2]) position[ 1] = bounds[ 2];
+		if( position[ 1] >= bounds[ 3]) position[ 1] = bounds[ 3];
+		
+		if( position[ 2] <= bounds[ 4]) position[ 2] = bounds[ 4];
+		if( position[ 2] >= bounds[ 5]) position[ 2] = bounds[ 5];
+		
+		aCamera->SetPosition( position);
+	}
+}
+
+- (double) getClippingRangeThickness
+{
+	return clippingRangeThickness / [[NSUserDefaults standardUserDefaults] floatForKey: @"superSampling"];
+}
 
 - (void) setClippingRangeThickness: (double) c
 {
@@ -334,7 +364,8 @@ public:
 	else
 		[self setClippingRangeThickness: 2];
 	
-	[self resetImage: self];
+	if( dontResetImage == NO)
+		[self resetImage: self];
 }
 
 - (double) getClippingRangeThicknessInMm
@@ -1890,6 +1921,7 @@ public:
 	aCamera->SetViewUp (0, 1, 0);
 	aCamera->SetFocalPoint (0, 0, 0);
 	aCamera->SetPosition (0, 0, 1);
+	[self checkInVolume];
 	aCamera->SetRoll(180);
 	aCamera->Dolly(1.5);
 		
@@ -1900,9 +1932,15 @@ public:
 	{
 		double position[ 3];
 		
-		aCamera->GetPosition( position);
-		position[ 0] = 0;
+		double *p = volume->GetCenter();
+		double *x = volume->GetXRange();
+		
+		position[ 0] = x[ 0];
+		position[ 1] = p[ 1];
+		position[ 2] = p[ 2];
+		
 		aCamera->SetPosition( position);
+		[self checkInVolume];
 	}
 	
     [self setNeedsDisplay:YES];
@@ -1941,9 +1979,16 @@ public:
 		aCamera->SetClippingRange( [[tempArray objectAtIndex:0] floatValue], [[tempArray objectAtIndex:1] floatValue]);
 		
 		if( [dict objectForKey:@"Projection"])
-		{
 			[self setProjectionMode: [[dict objectForKey:@"Projection"] intValue]];
+		
+		dontResetImage = YES;
+		if( [dict valueForKey: @"clipRangeActivated"])
+		{
+			self.clipRangeActivated = [[dict valueForKey: @"clipRangeActivated"] boolValue];
+			self.clippingRangeThickness = [[dict valueForKey: @"clippingRangeThickness"] floatValue];
 		}
+		else self.clipRangeActivated = NO;
+		dontResetImage = NO;
 	}
 	else
 	{
@@ -1984,6 +2029,9 @@ public:
 	[dict setObject:[NSArray arrayWithObjects: [NSNumber numberWithFloat:ambient],  [NSNumber numberWithFloat:diffuse], [NSNumber numberWithFloat:specular],  [NSNumber numberWithFloat:specularpower], nil] forKey:@"ShadingValues"];
 	[dict setObject:[NSNumber numberWithLong:volumeProperty->GetShade()] forKey:@"ShadingFlag"];
 	[dict setObject:[NSNumber numberWithLong:projectionMode] forKey:@"Projection"];
+	
+	[dict setObject:[NSNumber numberWithBool:self.clipRangeActivated] forKey:@"clipRangeActivated"];
+	[dict setObject:[NSNumber numberWithFloat: [self getClippingRangeThickness]] forKey:@"clippingRangeThickness"];
 	
 	return dict;
 }
@@ -2468,14 +2516,15 @@ public:
 		
 		float dolly = [theEvent deltaY];
 		
-		if( projectionMode == 2)
-			dolly /= 40;
-		else
-			dolly /= 10;
+		dolly /= 40;
 			
 		if( dolly < -0.9) dolly = -0.9;
 		
 		aCamera->Dolly( 1.0 + dolly); 
+		
+		if( clipRangeActivated)
+			[self checkInVolume];
+		
 		aCamera->SetDistance( distance);
 		aCamera->ComputeViewPlaneNormal();
 		aCamera->OrthogonalizeViewUp();
@@ -2484,10 +2533,6 @@ public:
 			aCamera->SetClippingRange( 0.0, clippingRangeThickness);
 		else
 			aRenderer->ResetCameraClippingRange();
-		
-		double position[ 3];
-		aCamera->GetPosition( position);
-		NSLog( @"%f %f %f", position[ 0], position[ 1], position[ 2]);
 		
 		[self setNeedsDisplay:YES];
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: nil];
@@ -4745,6 +4790,7 @@ public:
 	aCamera->GetFocalPoint(center);
 	aCamera->GetViewPlaneNormal(vn);
 	aCamera->SetPosition(center[0]+distance*vn[0], center[1]+distance*vn[1], center[2]+distance*vn[2]);
+	[self checkInVolume];
 	aCamera->SetParallelScale( pp);
 	
 	
@@ -4777,6 +4823,7 @@ public:
 	aCamera->GetFocalPoint(center);
 	aCamera->GetViewPlaneNormal(vn);
 	aCamera->SetPosition(center[0]+distance*vn[0], center[1]+distance*vn[1], center[2]+distance*vn[2]);
+	[self checkInVolume];
 	aCamera->SetParallelScale( pp);
 	
 	if( clipRangeActivated)
@@ -4807,6 +4854,7 @@ public:
 	aCamera->GetFocalPoint(center);
 	aCamera->GetViewPlaneNormal(vn);
 	aCamera->SetPosition(center[0]+distance*vn[0], center[1]+distance*vn[1], center[2]+distance*vn[2]);
+	[self checkInVolume];
 	aCamera->SetParallelScale( pp);
 	
 	if( clipRangeActivated)
@@ -4836,6 +4884,7 @@ public:
 	aCamera->GetFocalPoint(center);
 	aCamera->GetViewPlaneNormal(vn);
 	aCamera->SetPosition(center[0]+distance*vn[0], center[1]+distance*vn[1], center[2]+distance*vn[2]);
+	[self checkInVolume];
 	aCamera->SetParallelScale( pp);
 	
 	if( clipRangeActivated)
@@ -6294,7 +6343,6 @@ public:
 	double viewAngle, eyeAngle;
 	viewAngle = aVtkCamera->GetViewAngle();
 	eyeAngle = aVtkCamera->GetEyeAngle();
-	
 	
 	aCamera->SetPosition(pos);
 	aCamera->SetFocalPoint(focal);

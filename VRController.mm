@@ -909,7 +909,7 @@ static NSString*	ClippingRangeViewToolbarItemIdentifier = @"ClippingRange";
 	
 	[view getShadingValues: &ambient :&diffuse :&specular :&specularpower];
 	[shadingValues setStringValue: [NSString stringWithFormat:@"Ambient: %2.1f\nDiffuse: %2.1f\nSpecular :%2.1f-%2.1f", ambient, diffuse, specular, specularpower]];
-
+	
 	if(!dict && [_renderingMode isEqualToString:@"VR"])
 	{
 		firstTimeDisplayed = YES;
