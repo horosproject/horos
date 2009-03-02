@@ -205,7 +205,6 @@ typedef char* vtkMyCallbackVR;
 	IBOutlet NSWindow       *export3DVRWindow;
 	IBOutlet NSMatrix		*VRFrames;
 	IBOutlet NSMatrix		*VRquality;
-	IBOutlet NSMatrix		*projection;
 	
 	IBOutlet NSMatrix		*scissorStateMatrix;
 	IBOutlet NSColorWell	*backgroundColor;
@@ -340,10 +339,13 @@ typedef char* vtkMyCallbackVR;
 	
 	BOOL			clipRangeActivated;
 	double			clippingRangeThickness;
+	
+	BOOL			bestRenderingWasGenerated;
 }
 
 @property BOOL clipRangeActivated;
 @property double clippingRangeThickness;
+@property int projectionMode;
 
 + (BOOL) getCroppingBox:(double*) a :(vtkVolume *) volume :(vtkBoxWidget*) croppingBox;
 + (void) setCroppingBox:(double*) a :(vtkVolume *) volume;
@@ -416,7 +418,6 @@ typedef char* vtkMyCallbackVR;
 -(IBAction) switchShading:(id) sender;
 -(long) shading;
 - (void) setEngine: (long) engineID;
--(IBAction) switchProjection:(id) sender;
 - (void) setProjectionMode: (int) mode;
 - (IBAction) resetImage:(id) sender;
 -(void) saView:(id) sender;

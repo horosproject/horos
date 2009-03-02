@@ -289,44 +289,61 @@ public:
 
 @implementation VRView
 
-@synthesize clippingRangeThickness, clipRangeActivated;
+@synthesize clippingRangeThickness, clipRangeActivated, projectionMode;
 
 - (void) setClippingRangeThickness: (double) c
 {
 	c *= [[NSUserDefaults standardUserDefaults] floatForKey: @"superSampling"];
 	
-	if( c < [[NSUserDefaults standardUserDefaults] floatForKey: @"superSampling"])
-		c = [[NSUserDefaults standardUserDefaults] floatForKey: @"superSampling"] + 0.01;
-
 	clippingRangeThickness = c;
-	clipRangeActivated = NO;
 	
-	if( projectionMode != 1)	// Parallel
+	if( c == 0)
+		clipRangeActivated = NO;
+	else
 	{
-		[self setProjectionMode: 1];	
-		aCamera->SetFocalPoint( volume->GetCenter());
-		aCamera->SetPosition( volume->GetCenter());
-	}
-	
-	if( clippingRangeThickness > 0)
+		if( c < [[NSUserDefaults standardUserDefaults] floatForKey: @"superSampling"])
+			c = [[NSUserDefaults standardUserDefaults] floatForKey: @"superSampling"] + 0.01;
+		
 		clipRangeActivated = YES;
+		
+		if( projectionMode != 1)	// Parallel
+		{
+			[self setProjectionMode: 1];	
+			aCamera->SetFocalPoint( volume->GetCenter());
+			aCamera->SetPosition( volume->GetCenter());
+		}
+		
+		[self willChangeValueForKey:@"clippingRangeThicknessInMm"];
+		[self didChangeValueForKey:@"clippingRangeThicknessInMm"];
+	}
 	
 	if( clipRangeActivated)
 		aCamera->SetClippingRange( 0, clippingRangeThickness);
 	else
+	{
+		aCamera->SetClippingRange( 0, 10000);
 		aRenderer->ResetCameraClippingRange();
-	
-	[self willChangeValueForKey:@"clippingRangeThicknessInMm"];
-	[self didChangeValueForKey:@"clippingRangeThicknessInMm"];
-	
+	}
 	[self setNeedsDisplay: YES];
+}
+
+- (void) setClipRangeActivated: (BOOL) c
+{
+	if( c == NO)
+		[self setClippingRangeThickness: 0];
+	else
+		[self setClippingRangeThickness: 1];
+	
+	[self resetImage: self];
 }
 
 - (double) getClippingRangeThicknessInMm
 {
 	if( volumeMapper)
-		return clippingRangeThickness / factor;
-	
+	{
+		if( clipRangeActivated)
+			return clippingRangeThickness / factor;
+	}
 	return 0;
 }
 
@@ -689,7 +706,7 @@ public:
 	
 	[[NSUserDefaults standardUserDefaults] setInteger: engineID forKey:@"MAPPERMODEVR"];
 	
-	NSLog(@"Engine: %d", engineID);
+//	NSLog(@"Engine: %d", engineID);
 	
 	WaitRendering	*www = nil;
 	
@@ -1452,40 +1469,20 @@ public:
 	return volumeProperty->GetShade();
 }
 
--(IBAction) switchProjection:(id) sender
-{
-	if( sender == nil) return;
-	
-	[self setProjectionMode: [[sender selectedCell] tag]];
-	
-	if( aCamera->GetParallelProjection())
-	{
-		[[[controller toolsMatrix] cellWithTag: tMesure] setEnabled: YES];
-	}
-	else
-	{
-		[[[controller toolsMatrix] cellWithTag: tMesure] setEnabled: NO];
-				
-		if( currentTool == tMesure)
-		{
-			[self setCurrentTool: t3DRotate];
-			[[controller toolsMatrix] selectCellWithTag: t3DRotate];
-		}
-	}
-}
-
 - (void) setProjectionMode: (int) mode
 {
 	projectionMode = mode;
+	
+	if( aCamera == nil) return;
+	
+	BOOL wasClipRangeActivated = clipRangeActivated;
+	int wasMode = mode;
+	
 	switch( mode)
 	{
 		case 0:
 			aCamera->SetParallelProjection( false);
 			aCamera->SetViewAngle( 30);
-			
-			aCamera->SetFocalPoint( volume->GetCenter());
-			aCamera->ComputeViewPlaneNormal();
-			aCamera->OrthogonalizeViewUp();
 		break;
 		
 		case 2:
@@ -1497,11 +1494,31 @@ public:
 			aCamera->SetParallelProjection( true);
 			aCamera->SetViewAngle( 30);
 			
-			aCamera->SetFocalPoint( volume->GetCenter());
-			aCamera->ComputeViewPlaneNormal();
-			aCamera->OrthogonalizeViewUp();
 		break;
-	}	
+	}
+	
+	if( clipRangeActivated == NO && (mode == 0 || mode == 1) && (wasMode == 0 || wasMode == 1))
+	{
+		
+	}
+	else
+	{
+		[self resetImage: self];
+	}
+	
+	if( aCamera->GetParallelProjection())
+		[[[controller toolsMatrix] cellWithTag: tMesure] setEnabled: YES];
+	else
+	{
+		[[[controller toolsMatrix] cellWithTag: tMesure] setEnabled: NO];
+		
+		if( currentTool == tMesure)
+		{
+			[self setCurrentTool: t3DRotate];
+			[[controller toolsMatrix] selectCellWithTag: t3DRotate];
+		}
+	}
+	
 	[self setNeedsDisplay:YES];
 }
 
@@ -1878,6 +1895,16 @@ public:
 		
 	aRenderer->ResetCamera();
 	[self saView:self];
+	
+	if( clipRangeActivated)
+	{
+		double position[ 3];
+		
+		aCamera->GetPosition( position);
+		position[ 0] = 0;
+		aCamera->SetPosition( position);
+	}
+	
     [self setNeedsDisplay:YES];
 }
 
@@ -1915,8 +1942,7 @@ public:
 		
 		if( [dict objectForKey:@"Projection"])
 		{
-			[projection selectCellWithTag: [[dict objectForKey:@"Projection"] intValue]];
-			[self switchProjection: projection];
+			[self setProjectionMode: [[dict objectForKey:@"Projection"] intValue]];
 		}
 	}
 	else
@@ -2440,8 +2466,13 @@ public:
 		// Endoscopy - Zoom in/out
 		float distance = aCamera->GetDistance();
 		
-		float dolly = [theEvent deltaY] / 40.;
+		float dolly = [theEvent deltaY];
 		
+		if( projectionMode == 2)
+			dolly /= 40;
+		else
+			dolly /= 10;
+			
 		if( dolly < -0.9) dolly = -0.9;
 		
 		aCamera->Dolly( 1.0 + dolly); 
@@ -2453,6 +2484,10 @@ public:
 			aCamera->SetClippingRange( 0.0, clippingRangeThickness);
 		else
 			aRenderer->ResetCameraClippingRange();
+		
+		double position[ 3];
+		aCamera->GetPosition( position);
+		NSLog( @"%f %f %f", position[ 0], position[ 1], position[ 2]);
 		
 		[self setNeedsDisplay:YES];
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: nil];
@@ -2657,6 +2692,11 @@ public:
 		{
 			case tMesure:
 			{
+				if( bestRenderingWasGenerated)
+				{
+					bestRenderingWasGenerated = NO;
+					[self display];
+				}
 				dontRenderVolumeRenderingOsiriX = 1;
 			
 				double	*pp;
@@ -2870,13 +2910,35 @@ public:
 					break;
 				
 				case t3DRotate:
-					shiftDown = 0;
-					controlDown = 0;
-					[self getInteractor]->SetEventInformation((int)mouseLoc.x, (int)mouseLoc.y, controlDown, shiftDown);
-					[self computeOrientationText];
-					[self getInteractor]->InvokeEvent(vtkCommand::MouseMoveEvent, NULL);
-					[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: nil];
-					break;
+				case tCamera3D:
+				{
+					if( _tool == tCamera3D || clipRangeActivated == YES)
+					{
+						aCamera->Yaw( -([theEvent deltaX]) / 5.);
+						aCamera->Pitch( -([theEvent deltaY]) / 5.);
+						aCamera->ComputeViewPlaneNormal();
+						aCamera->OrthogonalizeViewUp();
+						
+						if( clipRangeActivated)
+							aCamera->SetClippingRange( 0.0, clippingRangeThickness);
+						else
+							aRenderer->ResetCameraClippingRange();
+						
+						[self computeOrientationText];
+						[self setNeedsDisplay:YES];
+						[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: nil];
+					}
+					else
+					{
+						shiftDown = 0;
+						controlDown = 0;
+						[self getInteractor]->SetEventInformation((int)mouseLoc.x, (int)mouseLoc.y, controlDown, shiftDown);
+						[self computeOrientationText];
+						[self getInteractor]->InvokeEvent(vtkCommand::MouseMoveEvent, NULL);
+						[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: nil];
+					}
+				}
+				break;
 				case tTranslate:
 					shiftDown = 1;
 					controlDown = 0;
@@ -2887,28 +2949,7 @@ public:
 				case tZoom:
 					[self rightMouseDragged:theEvent];
 					break;
-				case tCamera3D:
-					aCamera->Yaw( -([theEvent deltaX]) / 5.);
-					aCamera->Pitch( -([theEvent deltaY]) / 5.);
-					aCamera->ComputeViewPlaneNormal();
-					aCamera->OrthogonalizeViewUp();
-					
-					if( clipRangeActivated)
-						aCamera->SetClippingRange( 0.0, clippingRangeThickness);
-					else
-						aRenderer->ResetCameraClippingRange();
-					
-					[self computeOrientationText];
-					[self setNeedsDisplay:YES];
-					[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: nil];
-					
-//					// Test
-//					long w, h;
-//					float *im;
-//					im = [self imageInFullDepthWidth: &w height: &h];
-//					free( im);
-//					NSLog( @"w: %d h: %d", w, h);
-					break;
+				
 			default:
 				break;
 		}
@@ -2917,6 +2958,8 @@ public:
 	croppingBox->SetHandleSize( 0.005);
 	
 	[drawLock unlock];
+	
+	bestRenderingWasGenerated = NO;
 }
 
 - (void)rightMouseDragged:(NSEvent *)theEvent
@@ -2983,24 +3026,39 @@ public:
 	{
 		switch (_tool)
 		{
+			case t3DRotate:
 			case tCamera3D:
 			{
-				// Reset window center
-				double xx = 0;
-				double yy = 0;
-				
-				double pWC[ 2];
-				aCamera->GetWindowCenter( pWC);
-				pWC[ 0] *= ([self frame].size.width/2.);
-				pWC[ 1] *= ([self frame].size.height/2.);
-				
-				if( pWC[ 0] != xx && pWC[ 1] != yy)
+				if( _tool == tCamera3D || clipRangeActivated == YES)
 				{
-					aCamera->SetWindowCenter( 0, 0);
-					[self panX: ([self frame].size.width/2.) -(pWC[ 0] - xx)*10000. Y: ([self frame].size.height/2.) -(pWC[ 1] - yy) *10000.];
+					// Reset window center
+					double xx = 0;
+					double yy = 0;
+					
+					double pWC[ 2];
+					aCamera->GetWindowCenter( pWC);
+					pWC[ 0] *= ([self frame].size.width/2.);
+					pWC[ 1] *= ([self frame].size.height/2.);
+					
+					if( pWC[ 0] != xx && pWC[ 1] != yy)
+					{
+						aCamera->SetWindowCenter( 0, 0);
+						[self panX: ([self frame].size.width/2.) -(pWC[ 0] - xx)*10000. Y: ([self frame].size.height/2.) -(pWC[ 1] - yy) *10000.];
+					}
+					
+					[self setNeedsDisplay:YES];
 				}
-				
-				[self setNeedsDisplay:YES];
+				else
+				{
+					if( volumeMapper)
+					{
+						volumeMapper->SetAutoAdjustSampleDistances( 1);
+						volumeMapper->SetMinimumImageSampleDistance( LOD);
+					}
+					
+					[self getInteractor]->InvokeEvent(vtkCommand::LeftButtonReleaseEvent, NULL);
+					[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: nil];
+				}
 			}
 			break;
 			
@@ -3009,7 +3067,6 @@ public:
 				[self setNeedsDisplay:YES];
 				break;
 			case tRotate:
-			case t3DRotate:
 			case tTranslate:
 				if( volumeMapper)
 				{
@@ -3035,6 +3092,9 @@ public:
 				break;
 		}
 	}
+	
+	bestRenderingWasGenerated = NO;
+	
 	[drawLock unlock];
 }
 
@@ -3150,6 +3210,11 @@ public:
 		
 		if( tool == tMesure)
 		{
+			if( bestRenderingWasGenerated)
+			{
+				bestRenderingWasGenerated = NO;
+				[self display];
+			}
 			dontRenderVolumeRenderingOsiriX = 1;
 			
 			double	*pp;
@@ -3204,6 +3269,12 @@ public:
 		else if( tool == t3DCut)
 		{
 			double	*pp;
+			
+			if( bestRenderingWasGenerated)
+			{
+				bestRenderingWasGenerated = NO;
+				[self display];
+			}
 			
 			dontRenderVolumeRenderingOsiriX = 1;
 			
@@ -3270,26 +3341,52 @@ public:
 			[self getInteractor]->SetEventInformation((int) mouseLoc.x, (int) mouseLoc.y, controlDown, shiftDown);
 			[self getInteractor]->InvokeEvent(vtkCommand::LeftButtonPressEvent,NULL);
 		}
-		else if( tool == t3DRotate)
+		else if( tool == t3DRotate || tool == tCamera3D)
 		{
-			int shiftDown = 0;//([theEvent modifierFlags] & NSShiftKeyMask);
-			int controlDown = 0;//([theEvent modifierFlags] & NSControlKeyMask);
-
-			if( volumeMapper)
+			if( _tool == tCamera3D || clipRangeActivated == YES)
 			{
-				volumeMapper->SetAutoAdjustSampleDistances( 0);
-				volumeMapper->SetImageSampleDistance( LOD*lowResLODFactor);
+				mouseLocPre = _mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView:nil];
+				
+				if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD*lowResLODFactor);
+				
+				if( clipRangeActivated)
+				{
+					double xx = -(mouseLocPre.x - [self frame].size.width/2.);
+					double yy = -(mouseLocPre.y - [self frame].size.height/2.);
+					
+					double pWC[ 2];
+					aCamera->GetWindowCenter( pWC);
+					pWC[ 0] *= ([self frame].size.width/2.);
+					pWC[ 1] *= ([self frame].size.height/2.);
+					
+					if( pWC[ 0] != xx && pWC[ 1] != yy)
+					{
+						aCamera->SetWindowCenter( xx / ([self frame].size.width/2.), yy / ([self frame].size.height/2.));
+						[self panX: ([self frame].size.width/2.) -(pWC[ 0] - xx)*10000. Y: ([self frame].size.height/2.) -(pWC[ 1] - yy) *10000.];
+					}
+				}
 			}
-			
-			mouseLoc = [self convertPoint: [theEvent locationInWindow] fromView:nil];
-			
-			[self getInteractor]->SetEventInformation((int)mouseLoc.x, (int)mouseLoc.y, controlDown, shiftDown);
-			[self getInteractor]->InvokeEvent(vtkCommand::LeftButtonPressEvent,NULL);
-			
-			if( clipRangeActivated)
-				aCamera->SetClippingRange( 0.0, clippingRangeThickness);
 			else
-				aRenderer->ResetCameraClippingRange();
+			{
+				int shiftDown = 0;//([theEvent modifierFlags] & NSShiftKeyMask);
+				int controlDown = 0;//([theEvent modifierFlags] & NSControlKeyMask);
+
+				if( volumeMapper)
+				{
+					volumeMapper->SetAutoAdjustSampleDistances( 0);
+					volumeMapper->SetImageSampleDistance( LOD*lowResLODFactor);
+				}
+				
+				mouseLoc = [self convertPoint: [theEvent locationInWindow] fromView:nil];
+				
+				[self getInteractor]->SetEventInformation((int)mouseLoc.x, (int)mouseLoc.y, controlDown, shiftDown);
+				[self getInteractor]->InvokeEvent(vtkCommand::LeftButtonPressEvent,NULL);
+				
+				if( clipRangeActivated)
+					aCamera->SetClippingRange( 0.0, clippingRangeThickness);
+				else
+					aRenderer->ResetCameraClippingRange();
+			}
 		}
 		else if( tool == tTranslate)
 		{
@@ -3329,30 +3426,6 @@ public:
 				mouseLocPre = _mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView:nil];
 				
 				if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD*lowResLODFactor);
-			}
-		}
-		else if( tool == tCamera3D)
-		{
-			// vtkCamera
-			mouseLocPre = _mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView:nil];
-			
-			if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD*lowResLODFactor);
-			
-			if( clipRangeActivated)
-			{
-				double xx = -(mouseLocPre.x - [self frame].size.width/2.);
-				double yy = -(mouseLocPre.y - [self frame].size.height/2.);
-				
-				double pWC[ 2];
-				aCamera->GetWindowCenter( pWC);
-				pWC[ 0] *= ([self frame].size.width/2.);
-				pWC[ 1] *= ([self frame].size.height/2.);
-				
-				if( pWC[ 0] != xx && pWC[ 1] != yy)
-				{
-					aCamera->SetWindowCenter( xx / ([self frame].size.width/2.), yy / ([self frame].size.height/2.));
-					[self panX: ([self frame].size.width/2.) -(pWC[ 0] - xx)*10000. Y: ([self frame].size.height/2.) -(pWC[ 1] - yy) *10000.];
-				}
 			}
 		}
 		else if( tool == t3Dpoint)
@@ -3549,6 +3622,8 @@ public:
 		
 		croppingBox->SetHandleSize( 0.005);
 	}
+	
+	bestRenderingWasGenerated = NO;
 	noWaitDialog = NO;
 	[drawLock unlock];
 }
@@ -4017,6 +4092,12 @@ public:
 	{
 		vtkPoints *pts = ROI3DData->GetPoints();
 		
+		if( bestRenderingWasGenerated)
+		{
+			bestRenderingWasGenerated = NO;
+			[self display];
+		}
+		
 		dontRenderVolumeRenderingOsiriX = 1;
 		
 		if( pts->GetNumberOfPoints() != 0)
@@ -4037,6 +4118,11 @@ public:
 	{
 		vtkPoints *pts = Line2DData->GetPoints();
 		
+		if( bestRenderingWasGenerated)
+		{
+			bestRenderingWasGenerated = NO;
+			[self display];
+		}
 		dontRenderVolumeRenderingOsiriX = 1;
 
 		if( pts->GetNumberOfPoints() != 0)
@@ -4174,6 +4260,11 @@ public:
 	
 	if( currentTool == tMesure || previousTool == tMesure)
 	{
+		if( bestRenderingWasGenerated)
+		{
+			bestRenderingWasGenerated = NO;
+			[self display];
+		}
 		dontRenderVolumeRenderingOsiriX = 1;
 		
 		vtkPoints		*pts = Line2DData->GetPoints();
@@ -4196,6 +4287,11 @@ public:
 	
 	if( (currentTool == t3DCut && previousTool == t3DCut) || currentTool != t3DCut)
 	{
+		if( bestRenderingWasGenerated)
+		{
+			bestRenderingWasGenerated = NO;
+			[self display];
+		}
 		dontRenderVolumeRenderingOsiriX = 1;
 		vtkPoints		*roiPts = ROI3DData->GetPoints();
 		
@@ -4619,6 +4715,8 @@ public:
 		
 		if( wait == NO) noWaitDialog = NO;
 	}
+	
+	bestRenderingWasGenerated = YES;
 }
 
 -(void) bestRendering:(id) sender
@@ -4786,7 +4884,7 @@ public:
 			NSLog(@"Blending slice interval = slice thickness!");
 			blendingSliceThickness = [blendingFirstObject sliceThickness];
 		}
-		NSLog(@"slice: %0.2f", blendingSliceThickness);
+//		NSLog(@"slice: %0.2f", blendingSliceThickness);
 
 		// PLAN 
 		[blendingFirstObject orientation:blendingcosines];
@@ -5102,22 +5200,25 @@ public:
 
 - (void) computeValueFactor
 {
-	if( [firstObject SUVConverted])
+	if( firstObject)
 	{
-		valueFactor = 4095. / [controller maximumValue];
-		OFFSET16 = 0;
-	}
-	else
-	{
-		if( [controller maximumValue] - [controller minimumValue] > 4095 || [controller maximumValue] - [controller minimumValue] < 50)
+		if( [firstObject SUVConverted])
 		{
-			valueFactor = 4095. / ([controller maximumValue] - [controller minimumValue]);
-			OFFSET16 = -[controller minimumValue];
+			valueFactor = 4095. / [controller maximumValue];
+			OFFSET16 = 0;
 		}
 		else
 		{
-			valueFactor = 1;
-			OFFSET16 = -[controller minimumValue];
+			if( [controller maximumValue] - [controller minimumValue] > 4095 || [controller maximumValue] - [controller minimumValue] < 50)
+			{
+				valueFactor = 4095. / ([controller maximumValue] - [controller minimumValue]);
+				OFFSET16 = -[controller minimumValue];
+			}
+			else
+			{
+				valueFactor = 1;
+				OFFSET16 = -[controller minimumValue];
+			}
 		}
 	}
 }
@@ -5176,7 +5277,7 @@ public:
     [pix retain];
     pixList = pix;
 	
-	projectionMode = 1;
+	[self setProjectionMode: 1];
 	
 	data = volumeData;
 	
@@ -5198,7 +5299,7 @@ public:
 		sliceThickness = [firstObject sliceThickness];
 	}
 	
-	NSLog(@"slice: %0.2f", sliceThickness);
+//	NSLog(@"slice: %0.2f", sliceThickness);
 
 	wl = [firstObject wl];
 	ww = [firstObject ww];

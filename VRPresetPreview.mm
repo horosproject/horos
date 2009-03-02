@@ -31,6 +31,31 @@
     return self;
 }
 
+- (void) computeValueFactor
+{
+	if( firstObject && presetController)
+	{
+		if( [firstObject SUVConverted])
+		{
+			valueFactor = 4095. / [presetController maximumValue];
+			OFFSET16 = 0;
+		}
+		else
+		{
+			if( [presetController maximumValue] - [presetController minimumValue] > 4095 || [presetController maximumValue] - [presetController minimumValue] < 50)
+			{
+				valueFactor = 4095. / ([presetController maximumValue] - [presetController minimumValue]);
+				OFFSET16 = -[presetController minimumValue];
+			}
+			else
+			{
+				valueFactor = 1;
+				OFFSET16 = -[presetController minimumValue];
+			}
+		}
+	}
+}
+
 -(short) setPixSource:(NSMutableArray*)pix :(float*) volumeData
 {
 	short   error = 0;
@@ -166,6 +191,8 @@
 //		vImageConvert_FTo16U( &srcf, &dst8, -OFFSET16, 1./valueFactor, 0);
 	}
 	
+	[self computeValueFactor];
+	
 	reader = vtkImageImport::New();
 	reader->SetWholeExtent(0, [firstObject pwidth]-1, 0, [firstObject pheight]-1, 0, [pixList count]-1);	//AVOID VTK BUG
 	reader->SetDataExtentToWholeExtent();
@@ -235,10 +262,7 @@
 //		firstObject = [pixList lastObject];
 //	}
 	
-	factor = 1.0 / [firstObject pixelSpacingX];
-	NSLog(@"Thickness: %2.2f Factor: %2.2f", sliceThickness, factor);
-//	factor = 1.0;
-	
+	factor = [[NSUserDefaults standardUserDefaults] floatForKey: @"superSampling"] / [firstObject pixelSpacingX];
 	if( [firstObject pixelSpacingX] == 0 || [firstObject pixelSpacingY] == 0) reader->SetDataSpacing( 1, 1, sliceThickness);
 	else reader->SetDataSpacing( factor*[firstObject pixelSpacingX], factor*[firstObject pixelSpacingY], factor * sliceThickness);
 	

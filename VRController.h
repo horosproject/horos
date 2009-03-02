@@ -63,9 +63,7 @@
 	
 	IBOutlet NSButton		*shadingCheck;
 	IBOutlet NSTextField    *shadingValues;
-
-	IBOutlet NSMatrix		*perspectiveMatrix;
-
+	
 	IBOutlet NSView			*convolutionView;
 	IBOutlet NSPopUpButton	*convolutionMenu;
 	
@@ -147,7 +145,6 @@
 	NSTimeInterval			flyThruRecordingTimeFrame;
 }
 
-- (IBAction) clippingRangeAction:(id) sender;
 - (IBAction) applyConvolution:(id) sender;
 - (IBAction) setOrientation:(id) sender;
 - (NSString*) style;
@@ -159,7 +156,6 @@
 - (void) updateBlendingImage;
 - (ViewerController*) blendingController;
 - (void) LODsliderAction:(id) sender;
-- (void) clippingRangeAction:(id) sender;
 - (id) initWithPix:(NSMutableArray*) pix :(NSArray*) f :(NSData*) vData :(ViewerController*) bC :(ViewerController*) vC;
 - (id) initWithPix:(NSMutableArray*) pix :(NSArray*) f :(NSData*) vData :(ViewerController*) bC :(ViewerController*) vC style:(NSString*) m mode:(NSString*) renderingMode;
 - (void) setupToolbar;

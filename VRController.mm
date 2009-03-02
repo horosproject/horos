@@ -141,7 +141,8 @@ static NSString*	ClippingRangeViewToolbarItemIdentifier = @"ClippingRange";
 {
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"revertSeriesNotification" object: pixList[ curMovieIndex] userInfo: nil];
 	[appliedConvolutionFilters removeAllObjects];
-	if([presetsPanel isVisible])[self displayPresetsForSelectedGroup];
+	if([presetsPanel isVisible])
+		[self displayPresetsForSelectedGroup];
 }
 
 -(void) UpdateOpacityMenu: (NSNotification*) note
@@ -209,17 +210,6 @@ static NSString*	ClippingRangeViewToolbarItemIdentifier = @"ClippingRange";
 	[[wlwwPopup menu] addItemWithTitle:NSLocalizedString(@"Set WL/WW Manually", nil) action:@selector (SetWLWW:) keyEquivalent:@""];
 
 	[[[wlwwPopup menu] itemAtIndex:0] setTitle:curWLWWMenu];
-}
-
--(void) clippingRangeAction:(id) sender
-{
-	if( [perspectiveMatrix selectedTag] != 1)
-	{
-		[perspectiveMatrix selectCellWithTag: 1];
-		[view switchProjection: perspectiveMatrix];
-	}
-	
-    view.clippingRangeThickness = [sender floatValue];
 }
 
 -(void) LODsliderAction:(id) sender
@@ -3373,11 +3363,7 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 			
 		// projection
 		int projection = [[preset objectForKey:@"projection"] intValue];
-		if([perspectiveMatrix selectedTag]!=projection)
-		{
-			[perspectiveMatrix selectCellWithTag: projection];
-			[view switchProjection: perspectiveMatrix];
-		}
+		view.projectionMode = projection;
 					
 		// background color
 		float red = [[preset objectForKey:@"backgroundColorRedComponent"] floatValue];
