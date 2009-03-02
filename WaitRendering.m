@@ -71,7 +71,6 @@
 	
 	[[self window] orderOut:self];
 	
-	NSLog(@"end");
 	if( session != nil)
 	{
 		[NSApp abortModal];
@@ -101,7 +100,7 @@
 	{
 		aborted = NO;
 		stop = NO;
-		NSLog(@"start");
+		
 		lastTimeFrame = 0;
 		startTime = [[NSDate date] retain];
 		

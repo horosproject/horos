@@ -18,8 +18,6 @@
 
 -(id)initWithFrame:(NSRect)frame
 {
-	NSLog(@"VRPresetPreview initWithFrame");
-
     if ( self = [super initWithFrame:frame] )
     {
 		lowResLODFactor = 1.0;

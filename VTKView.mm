@@ -45,8 +45,6 @@
 		_cocoaRenderWindow->SetWindowId( [self window]);
 		_cocoaRenderWindow->SetDisplayId( self);
 		
-		NSLog( @"VTKView alloc");
-		
 		_cocoaRenderWindow->AddRenderer(_renderer);
         _interactor = vtkCocoaRenderWindowInteractor::New();
 		_interactor->SetRenderWindow(_cocoaRenderWindow);
