@@ -1120,23 +1120,23 @@ public:
 				double r = volumeMapper->GetRayCastImage()->GetImageSampleDistance();
 				
 				[exportDCM setPixelSpacing: [self getResolution]*r :[self getResolution]*r];
-
-				if( clipRangeActivated)
-				{
-					float cos[ 9];
-					
-					[self getCosMatrix: cos];
-					[exportDCM setOrientation: cos];
-					
-					float position[ 3];
-					
-					[self getOrigin: position];
-					[exportDCM setPosition: position];
-					[exportDCM setSliceThickness: [self getClippingRangeThicknessInMm]];
-				}
 			}
 			else
 				[exportDCM setPixelSpacing: [self getResolution] :[self getResolution]];
+			
+			if( clipRangeActivated)
+			{
+				float cos[ 9];
+				
+				[self getCosMatrix: cos];
+				[exportDCM setOrientation: cos];
+				
+				float position[ 3];
+				
+				[self getOrigin: position];
+				[exportDCM setPosition: position];
+				[exportDCM setSliceThickness: [self getClippingRangeThicknessInMm]];
+			}
 		}
 		
 		f = [exportDCM writeDCMFile: nil];
