@@ -5325,7 +5325,6 @@ public:
 	
     [pix retain];
     pixList = pix;
-	NSLog( @"%@", pixList);
 	
 	[self setProjectionMode: 1];
 	
@@ -5934,69 +5933,72 @@ public:
 
 - (float*) imageInFullDepthWidth: (long*) w height:(long*) h
 {
-	vtkFixedPointRayCastImage *rayCastImage = volumeMapper->GetRayCastImage();
-	
-	unsigned short *im = rayCastImage->GetImage();
-	unsigned short *destPtr, *destFixedPtr;
-	
-	int fullSize[2];
-	rayCastImage->GetImageMemorySize( fullSize);
-	
-	int size[2];
-	rayCastImage->GetImageInUseSize( size);
-	
-	*w = size[0];
-	*h = size[1];
-	
-//	if( size[0] != fullSize[0] || size[1] != fullSize[1])
-//		NSLog( @"****** size[0] != fullSize[0] && size[1] != fullSize[1]");
-	
-	destPtr = destFixedPtr = (unsigned short*) malloc( size[0] * size[ 1] * sizeof( unsigned short));
-	if( destFixedPtr)
+	if( volumeMapper)
 	{
-		unsigned short *iptr = im + 3 + 4*(size[1]-1)*fullSize[0];
+		vtkFixedPointRayCastImage *rayCastImage = volumeMapper->GetRayCastImage();
 		
-		int j = size[1], rowBytes = 4*fullSize[0];
-		while( j-- > 0)
+		unsigned short *im = rayCastImage->GetImage();
+		unsigned short *destPtr, *destFixedPtr;
+		
+		int fullSize[2];
+		rayCastImage->GetImageMemorySize( fullSize);
+		
+		int size[2];
+		rayCastImage->GetImageInUseSize( size);
+		
+		*w = size[0];
+		*h = size[1];
+		
+	//	if( size[0] != fullSize[0] || size[1] != fullSize[1])
+	//		NSLog( @"****** size[0] != fullSize[0] && size[1] != fullSize[1]");
+		
+		destPtr = destFixedPtr = (unsigned short*) malloc( size[0] * size[ 1] * sizeof( unsigned short));
+		if( destFixedPtr)
 		{
-			unsigned short *iptrTemp = iptr;
-			int i = size[0];
-			while( i-- > 0)
+			unsigned short *iptr = im + 3 + 4*(size[1]-1)*fullSize[0];
+			
+			int j = size[1], rowBytes = 4*fullSize[0];
+			while( j-- > 0)
 			{
-				*destPtr++ = *iptrTemp;
-				iptrTemp += 4;
+				unsigned short *iptrTemp = iptr;
+				int i = size[0];
+				while( i-- > 0)
+				{
+					*destPtr++ = *iptrTemp;
+					iptrTemp += 4;
+				}
+				
+				iptr -= rowBytes;
 			}
 			
-			iptr -= rowBytes;
-		}
-		
-		float mul = 1./valueFactor;
-		float add = -OFFSET16;
-		
-		if( valueFactor != 1 && [firstObject SUVConverted] == NO)
-			mul = mul;
-		else
-			mul = 1;
-		
-		vImage_Buffer src, dst;
-		
-		src.data = destFixedPtr;
-		src.height = size[ 1];
-		src.width = size[0];
-		src.rowBytes = size[0] * 2;
-		
-		dst.data = malloc( size[0] * size[ 1] * sizeof( float));
-		if( dst.data)
-		{
-			dst.height = size[ 1];
-			dst.width = size[0];
-			dst.rowBytes = size[0] * 4;
+			float mul = 1./valueFactor;
+			float add = -OFFSET16;
 			
-			vImageConvert_16UToF( &src, &dst, add, mul, 0);
+			if( valueFactor != 1 && [firstObject SUVConverted] == NO)
+				mul = mul;
+			else
+				mul = 1;
+			
+			vImage_Buffer src, dst;
+			
+			src.data = destFixedPtr;
+			src.height = size[ 1];
+			src.width = size[0];
+			src.rowBytes = size[0] * 2;
+			
+			dst.data = malloc( size[0] * size[ 1] * sizeof( float));
+			if( dst.data)
+			{
+				dst.height = size[ 1];
+				dst.width = size[0];
+				dst.rowBytes = size[0] * 4;
+				
+				vImageConvert_16UToF( &src, &dst, add, mul, 0);
+			}
+			free( destFixedPtr);
+			
+			return (float*) dst.data;
 		}
-		free( destFixedPtr);
-		
-		return (float*) dst.data;
 	}
 	
 	return nil;

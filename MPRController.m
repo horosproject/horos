@@ -50,9 +50,15 @@
 	[mprView3 setFlippedData: [[viewer imageView] flippedData]];
 	
 	vrController = [[VRController alloc] initWithPix:pix :files :volume :fusedViewer :viewer style:@"noNib" mode:@"VR"];
+	[vrController load3DState];
+	
 	hiddenVRController = [[VRController alloc] initWithPix:pix :files :volume :fusedViewer :viewer style:@"noNib" mode:@"VR"];
+	[hiddenVRController load3DState];
+	
 	hiddenVRView = [hiddenVRController view];
-
+	
+	[hiddenVRView setFrame: NSMakeRect(0, 0, 100, 100)];
+	
 	[mprView1 setVRController: hiddenVRController];
 	[mprView2 setVRController: hiddenVRController];
 	[mprView3 setVRController: hiddenVRController];
