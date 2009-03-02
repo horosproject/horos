@@ -16963,9 +16963,9 @@
 			productReference = 7E0B3A3F067526CD00908593 /* OsiriX.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		AB28B42E05B7921E00A9906C /* gcc */ = {
+		AB28B42E05B7921E00A9906C /* OsiriX */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 7E76BEC6085757B70073649A /* Build configuration list for PBXNativeTarget "gcc" */;
+			buildConfigurationList = 7E76BEC6085757B70073649A /* Build configuration list for PBXNativeTarget "OsiriX" */;
 			buildPhases = (
 				AB28B42A05B7921E00A9906C /* Headers */,
 				AB28B42B05B7921E00A9906C /* Resources */,
@@ -16979,7 +16979,7 @@
 			dependencies = (
 				4A2ADDFD078D3C6200416F53 /* PBXTargetDependency */,
 			);
-			name = gcc;
+			name = OsiriX;
 			productName = Deployment;
 			productReference = ABA71D3F06726B1800335A62 /* OsiriX.app */;
 			productType = "com.apple.product-type.application";
@@ -17141,7 +17141,7 @@
 			);
 			projectRoot = "";
 			targets = (
-				AB28B42E05B7921E00A9906C /* gcc */,
+				AB28B42E05B7921E00A9906C /* OsiriX */,
 				7E0B3A3E067526CD00908593 /* DCM Framework */,
 				CE9CED800C75BD8C00752D4B /* DCM StaticLibrary */,
 				4A2F5931078D148300C514A2 /* Unzip Binaries */,
@@ -21322,7 +21322,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Development;
 		};
-		7E76BEC6085757B70073649A /* Build configuration list for PBXNativeTarget "gcc" */ = {
+		7E76BEC6085757B70073649A /* Build configuration list for PBXNativeTarget "OsiriX" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				7E76BEC7085757B70073649A /* Development */,

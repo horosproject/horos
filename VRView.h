@@ -341,7 +341,8 @@ typedef char* vtkMyCallbackVR;
 	double			clippingRangeThickness;
 	
 	BOOL			bestRenderingWasGenerated;
-	BOOL			dontResetImage;
+	float superSampling;
+	BOOL dontResetImage;
 }
 
 @property BOOL clipRangeActivated;

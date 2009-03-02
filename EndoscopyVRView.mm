@@ -22,6 +22,8 @@
     if ( self = [super initWithFrame:frame] )
     {
 		[self connect2SpaceNavigator];
+		
+		superSampling = 4.0;
 	}
 	return self;
 }
@@ -47,7 +49,8 @@
 {
 }
 
-- (void) setShadingValues:(float) ambient :(float) diffuse :(float) specular :(float) specularpower{
+- (void) setShadingValues:(float) ambient :(float) diffuse :(float) specular :(float) specularpower
+{
 	[super setShadingValues:(float) ambient :(float) diffuse :(float) specular :(float) specularpower];
 }
 

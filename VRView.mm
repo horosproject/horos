@@ -323,7 +323,7 @@ public:
 
 - (void) setClippingRangeThickness: (double) c
 {
-	c *= [[NSUserDefaults standardUserDefaults] floatForKey: @"superSampling"];
+	c *= superSampling;
 	
 	clippingRangeThickness = c;
 	
@@ -331,8 +331,8 @@ public:
 		clipRangeActivated = NO;
 	else
 	{
-		if( c < [[NSUserDefaults standardUserDefaults] floatForKey: @"superSampling"])
-			c = [[NSUserDefaults standardUserDefaults] floatForKey: @"superSampling"] + 0.01;
+		if( c < superSampling)
+			c = superSampling + 0.01;
 		
 		clipRangeActivated = YES;
 		
@@ -1816,6 +1816,8 @@ public:
 		ROIPoints = [[NSMutableArray array] retain];
 		
 		dataFRGB = nil;
+		
+		superSampling = [[NSUserDefaults standardUserDefaults] floatForKey: @"superSampling"];
 		
 		isViewportResizable = YES;
 		
@@ -5524,7 +5526,7 @@ public:
 	//		firstObject = [pixList lastObject];
 	//	}
 		
-		factor = [[NSUserDefaults standardUserDefaults] floatForKey: @"superSampling"] / [firstObject pixelSpacingX];
+		factor = superSampling / [firstObject pixelSpacingX];
 		NSLog(@"Thickness: %2.2f Factor: %2.2f", sliceThickness, factor);
 		if( [firstObject pixelSpacingX] == 0 || [firstObject pixelSpacingY] == 0) reader->SetDataSpacing( 1, 1, sliceThickness);
 		else reader->SetDataSpacing( factor*[firstObject pixelSpacingX], factor*[firstObject pixelSpacingY], factor * sliceThickness);
@@ -6682,7 +6684,7 @@ public:
 	center[1]=y;
 	center[2]=z;
 	[point3DPositionsArray addObject:[NSValue value:center withObjCType:@encode(float[3])]];
-	[point3DRadiusArray addObject:[NSNumber numberWithFloat:radius]];
+	[point3DRadiusArray addObject:[NSNumber numberWithFloat:radius * superSampling]];
 	[point3DColorsArray addObject:[NSColor colorWithCalibratedRed:r green:g blue:b alpha:1.0]];
 	
 	[self add3DPointActor: sphereActor];
