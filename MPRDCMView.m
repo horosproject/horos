@@ -23,6 +23,8 @@
 	[super setDCM:pixList :files :rois :firstImage :type :reset];
 	
 	pix = [pixList lastObject];
+	
+	currentTool = t3DRotate;
 }
 
 - (void) setVRView: (VRView*) v
@@ -42,6 +44,9 @@
 - (void) updateView
 {
 	long h, w;
+	float previousWW, previousWL;
+	
+	[self getWLWW: &previousWL :&previousWW];
 	
 	[vrView setFrame: [self frame]];
 	
@@ -75,10 +80,8 @@
 		[vrView getOrientation: orientation];
 		[pix setOrientation: orientation];
 		
-		float wwl, www;
 		
-		[vrView getWLWW: &wwl :&www];
-		[self setWLWW: wwl :www];
+		[self setWLWW: previousWL :previousWW];
 		
 		[self setScaleValue: [vrView imageSampleDistance]];
 	}
@@ -116,21 +119,36 @@
 
 - (void) mouseDown:(NSEvent *)theEvent
 {
-	[vrView mouseDown: theEvent];
+	long tool = [self getTool: theEvent];
+	
+	if( tool == tWL)
+		[super mouseDown: theEvent];
+	else
+		[vrView mouseDown: theEvent];
 	
 	[self updateView];
 }
 
 - (void) mouseUp:(NSEvent *)theEvent
 {
-	[vrView mouseUp: theEvent];
+	long tool = [self getTool: theEvent];
+	
+	if( tool == tWL)
+		[super mouseUp: theEvent];
+	else
+		[vrView mouseUp: theEvent];
 	
 	[self updateView];
 }
 
 - (void) mouseDragged:(NSEvent *)theEvent
 {
-	[vrView mouseDragged: theEvent];
+	long tool = [self getTool: theEvent];
+	
+	if( tool == tWL)
+		[super mouseDragged: theEvent];
+	else
+		[vrView mouseDragged: theEvent];
 	
 	[self updateView];
 }
