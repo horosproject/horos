@@ -2868,84 +2868,91 @@ public:
 				[self setNeedsDisplay:YES];
 			break;
 
-			case tWL:	
-				_startWW = ww;
-				_startWL = wl;
-				_startMin = wl - ww/2;
-				_startMax = wl + ww/2;
-				WWAdapter  = _startWW / 100.0;
-				
-				if( [[[controller viewer2D] modality] isEqualToString:@"PT"] || ([[NSUserDefaults standardUserDefaults] boolForKey:@"mouseWindowingNM"] == YES && [[[controller viewer2D] modality] isEqualToString:@"NM"] == YES))
+			case tWL:
+				if( [[controller style] isEqualToString: @"noNib"])
 				{
-					switch( [[NSUserDefaults standardUserDefaults] integerForKey: @"PETWindowingMode"])
+					
+				}
+				else
+				{
+					_startWW = ww;
+					_startWL = wl;
+					_startMin = wl - ww/2;
+					_startMax = wl + ww/2;
+					WWAdapter  = _startWW / 100.0;
+					
+					if( [[[controller viewer2D] modality] isEqualToString:@"PT"] || ([[NSUserDefaults standardUserDefaults] boolForKey:@"mouseWindowingNM"] == YES && [[[controller viewer2D] modality] isEqualToString:@"NM"] == YES))
 					{
-						case 0:
-							wl =  (_startWL - (long) ([theEvent deltaY])*WWAdapter);
-							ww =  (_startWW + (long) ([theEvent deltaX])*WWAdapter);
+						switch( [[NSUserDefaults standardUserDefaults] integerForKey: @"PETWindowingMode"])
+						{
+							case 0:
+								wl =  (_startWL - (long) ([theEvent deltaY])*WWAdapter);
+								ww =  (_startWW + (long) ([theEvent deltaX])*WWAdapter);
+								
+								if( ww < 0.1) ww = 0.1;
+							break;
 							
-							if( ww < 0.1) ww = 0.1;
-						break;
-						
-						case 1:
-							endlevel = _startMax + (-[theEvent deltaY]) * WWAdapter ;
+							case 1:
+								endlevel = _startMax + (-[theEvent deltaY]) * WWAdapter ;
+								
+								wl =  (endlevel - _startMin) / 2 + [[NSUserDefaults standardUserDefaults] integerForKey: @"PETMinimumValue"];
+								ww = endlevel - _startMin;
+								
+								if( ww < 0.1) ww = 0.1;
+								if( wl - ww/2 < 0) wl = ww/2;
+							break;
 							
-							wl =  (endlevel - _startMin) / 2 + [[NSUserDefaults standardUserDefaults] integerForKey: @"PETMinimumValue"];
-							ww = endlevel - _startMin;
-							
-							if( ww < 0.1) ww = 0.1;
-							if( wl - ww/2 < 0) wl = ww/2;
-						break;
-						
-						case 2:
-							endlevel = _startMax - ([theEvent deltaY]) * WWAdapter ;
-							startlevel = _startMin + ([theEvent deltaX]) * WWAdapter ;
-							
-							if( startlevel < 0) startlevel = 0;
-							
-							wl = startlevel + (endlevel - startlevel) / 2;
-							ww = endlevel - startlevel;
-							
-							if( ww < 0.1) ww = 0.1;
-							if( wl - ww/2 < 0) wl = ww/2;
-						break;
+							case 2:
+								endlevel = _startMax - ([theEvent deltaY]) * WWAdapter ;
+								startlevel = _startMin + ([theEvent deltaX]) * WWAdapter ;
+								
+								if( startlevel < 0) startlevel = 0;
+								
+								wl = startlevel + (endlevel - startlevel) / 2;
+								ww = endlevel - startlevel;
+								
+								if( ww < 0.1) ww = 0.1;
+								if( wl - ww/2 < 0) wl = ww/2;
+							break;
+						}
 					}
-				}
-				else
-				{
-					wl =  (_startWL - (long) ([theEvent deltaY])*WWAdapter);
-					ww =  (_startWW + (long) ([theEvent deltaX])*WWAdapter);
-				}
-				
-				if( ww < 0.1) ww = 0.1;
-				
-				[self setOpacity: currentOpacityArray];
-				
-				if( isRGB)
-					colorTransferFunction->BuildFunctionFromTable( wl-ww/2, wl+ww/2, 255, (double*) &table);
-				else if (advancedCLUT)
-				{
-					[clutOpacityView setWL:wl ww:ww];
-					[clutOpacityView setCLUTtoVRView:YES];
-					[drawLock unlock];
-					return;
-				}
-				else
-					colorTransferFunction->BuildFunctionFromTable( valueFactor*(OFFSET16 + wl-ww/2), valueFactor*(OFFSET16 + wl+ww/2), 255, (double*) &table);
-				
+					else
+					{
+						wl =  (_startWL - (long) ([theEvent deltaY])*WWAdapter);
+						ww =  (_startWW + (long) ([theEvent deltaX])*WWAdapter);
+					}
+					
+					if( ww < 0.1) ww = 0.1;
+					
+					[self setOpacity: currentOpacityArray];
+					
+					if( isRGB)
+						colorTransferFunction->BuildFunctionFromTable( wl-ww/2, wl+ww/2, 255, (double*) &table);
+					else if (advancedCLUT)
+					{
+						[clutOpacityView setWL:wl ww:ww];
+						[clutOpacityView setCLUTtoVRView:YES];
+						[drawLock unlock];
+						return;
+					}
+					else
+						colorTransferFunction->BuildFunctionFromTable( valueFactor*(OFFSET16 + wl-ww/2), valueFactor*(OFFSET16 + wl+ww/2), 255, (double*) &table);
+					
 
-				if( [[[controller viewer2D] modality] isEqualToString:@"PT"] || ([[NSUserDefaults standardUserDefaults] boolForKey:@"mouseWindowingNM"] == YES && [[[controller viewer2D] modality] isEqualToString:@"NM"] == YES))
-				{
-					if( ww < 50) sprintf(WLWWString, "From: %0.4f   To: %0.4f ", wl-ww/2, wl+ww/2);
-					else sprintf(WLWWString, "From: %0.f   To: %0.f ", wl-ww/2, wl+ww/2);
+					if( [[[controller viewer2D] modality] isEqualToString:@"PT"] || ([[NSUserDefaults standardUserDefaults] boolForKey:@"mouseWindowingNM"] == YES && [[[controller viewer2D] modality] isEqualToString:@"NM"] == YES))
+					{
+						if( ww < 50) sprintf(WLWWString, "From: %0.4f   To: %0.4f ", wl-ww/2, wl+ww/2);
+						else sprintf(WLWWString, "From: %0.f   To: %0.f ", wl-ww/2, wl+ww/2);
+					}
+					else
+					{
+						if( ww < 50) sprintf(WLWWString, "WL: %0.4f WW: %0.4f ", wl, ww);
+						else sprintf(WLWWString, "WL: %0.f WW: %0.f ", wl, ww);
+					}
+					
+					textWLWW->SetInput( WLWWString);
+					[self setNeedsDisplay:YES];
 				}
-				else
-				{
-					if( ww < 50) sprintf(WLWWString, "WL: %0.4f WW: %0.4f ", wl, ww);
-					else sprintf(WLWWString, "WL: %0.f WW: %0.f ", wl, ww);
-				}
-				
-				textWLWW->SetInput( WLWWString);
-				[self setNeedsDisplay:YES];
 			break;
 				
 			case t3DCut:
