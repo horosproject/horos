@@ -21,6 +21,7 @@
 {
 	VRView *vrView;
 	DCMPix *pix;
+	Camera *cam;
 }
 
 - (void) setDCMPixList:(NSMutableArray*)pix filesList:(NSArray*)files volumeData:(NSData*)volume roiList:(NSMutableArray*)rois firstImage:(short)firstImage type:(char)type reset:(BOOL)reset;

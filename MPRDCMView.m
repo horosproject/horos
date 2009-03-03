@@ -37,6 +37,7 @@
 - (void) dealloc
 {
 	[vrView restoreFullDepthCapture];
+	[cam release];
 	
 	[super dealloc];
 }
@@ -47,12 +48,13 @@
 	float previousWW, previousWL;
 	
 	[self getWLWW: &previousWL :&previousWW];
-	
 	[vrView setFrame: [self frame]];
-	
 	[vrView render];
 	
 	float *imagePtr = [vrView imageInFullDepthWidth: &w height: &h];
+	
+	[cam release];
+	cam = [[vrView cameraWithThumbnail: NO] retain];
 	
 	if( imagePtr)
 	{
@@ -91,6 +93,9 @@
 
 - (void)scrollWheel:(NSEvent *)theEvent
 {
+	if( cam)
+		[vrView setCamera: cam];
+	
 	[vrView scrollWheel: theEvent];
 	
 	[self updateView];
@@ -98,6 +103,9 @@
 
 - (void)rightMouseDown:(NSEvent *)theEvent
 {
+	if( cam)
+		[vrView setCamera: cam];
+	
 	[vrView rightMouseDown: theEvent];
 	
 	[self updateView];
@@ -105,6 +113,9 @@
 
 - (void)rightMouseDragged:(NSEvent *)theEvent
 {
+	if( cam)
+		[vrView setCamera: cam];
+	
 	[vrView rightMouseDragged: theEvent];
 	
 	[self updateView];
@@ -112,6 +123,9 @@
 
 - (void)rightMouseUp:(NSEvent *)theEvent
 {
+	if( cam)
+		[vrView setCamera: cam];
+	
 	[vrView rightMouseUp: theEvent];
 	
 	[self updateView];
@@ -120,6 +134,9 @@
 - (void) mouseDown:(NSEvent *)theEvent
 {
 	long tool = [self getTool: theEvent];
+
+	if( cam)
+		[vrView setCamera: cam];
 	
 	if( tool == tWL)
 		[super mouseDown: theEvent];
@@ -132,6 +149,9 @@
 - (void) mouseUp:(NSEvent *)theEvent
 {
 	long tool = [self getTool: theEvent];
+	
+	if( cam)
+		[vrView setCamera: cam];
 	
 	if( tool == tWL)
 		[super mouseUp: theEvent];

@@ -65,16 +65,15 @@
 	[hiddenVRView resetImage: self];
 	[hiddenVRView setLOD: 1.0];
 	
-	[mprView1 setVRView: [hiddenVRController view]];
+	[mprView1 setVRView: hiddenVRView];
 	[mprView1 updateView];
 	
-//	[mprView2 setVRController: hiddenVRController];	un VRController par VRView?
-//	[mprView3 setVRController: hiddenVRController];
-
-
-//	[containerFor3DView addSubview:hiddenVRView];
-//	[hiddenVRView setFrame:containerFor3DView.frame];
-		
+	[mprView2 setVRView: hiddenVRView];
+	[mprView2 updateView];
+	
+	[mprView3 setVRView: hiddenVRView];
+	[mprView3 updateView];
+	
 	return self;
 }
 

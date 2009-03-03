@@ -70,6 +70,7 @@ static NSString*	ClippingRangeViewToolbarItemIdentifier = @"ClippingRange";
 
 @implementation VRController
 
+
 //- (float) ambient
 //{
 //	return [view ambient];
@@ -763,6 +764,7 @@ static NSString*	ClippingRangeViewToolbarItemIdentifier = @"ClippingRange";
 	
 	if( [style isEqualToString: @"noNib"] == NO)
 	{
+		NSLog( @"presets start");
 		presetPreviewArray = [[NSMutableArray alloc] initWithCapacity:0];
 		if(presetPreview1)[presetPreviewArray addObject:presetPreview1];
 		if(presetPreview2)[presetPreviewArray addObject:presetPreview2];
@@ -792,6 +794,8 @@ static NSString*	ClippingRangeViewToolbarItemIdentifier = @"ClippingRange";
 		if(presetName7) [presetNameArray addObject:presetName7];
 		if(presetName8) [presetNameArray addObject:presetName8];
 		if(presetName9) [presetNameArray addObject:presetName9];
+		
+		NSLog( @"presets end");
 	}
 	[nc addObserver:self selector:@selector(windowWillCloseNotification:) name:@"NSWindowWillCloseNotification" object:nil];
 	[nc addObserver:self selector:@selector(windowWillMoveNotification:) name:@"NSWindowWillMoveNotification" object:nil];

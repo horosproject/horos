@@ -5944,25 +5944,28 @@ public:
 
 - (void) prepareFullDepthCapture
 {
-	volumeMapper->SetIntermixIntersectingGeometry( 0);
-	
-	[self display];
-	
-	vtkPiecewiseFunction *tempOpacity = vtkPiecewiseFunction::New();
-	
-	float start = valueFactor*(OFFSET16 + [controller minimumValue] - 10);
-	float end = valueFactor*(OFFSET16 + [controller maximumValue] + 10);
-	
-	tempOpacity->AddPoint(start, 0);
-	tempOpacity->AddPoint(end, 1);
-	
-	volumeProperty->SetScalarOpacity( tempOpacity);
-	volumeMapper->PerVolumeInitialization( aRenderer, volume);
-	
-	unsigned short *o = volumeMapper->GetScalarOpacityTable( 0);	// Fake the opacity table to have full '16-bit' image
-	memcpy( o, [VRView linearOpacity], 32767 * sizeof( unsigned short));
-	
-	tempOpacity->Delete();
+	if( volumeMapper)
+	{
+		volumeMapper->SetIntermixIntersectingGeometry( 0);
+		
+		[self display];
+		
+		vtkPiecewiseFunction *tempOpacity = vtkPiecewiseFunction::New();
+		
+		float start = valueFactor*(OFFSET16 + [controller minimumValue] - 10);
+		float end = valueFactor*(OFFSET16 + [controller maximumValue] + 10);
+		
+		tempOpacity->AddPoint(start, 0);
+		tempOpacity->AddPoint(end, 1);
+		
+		volumeProperty->SetScalarOpacity( tempOpacity);
+		volumeMapper->PerVolumeInitialization( aRenderer, volume);
+		
+		unsigned short *o = volumeMapper->GetScalarOpacityTable( 0);	// Fake the opacity table to have full '16-bit' image
+		memcpy( o, [VRView linearOpacity], 32767 * sizeof( unsigned short));
+		
+		tempOpacity->Delete();
+	}
 }
 
 - (void) restoreFullDepthCapture
@@ -6579,8 +6582,6 @@ public:
 		aRenderer->ResetCameraClippingRange();
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: nil];
-	
-	NSLog( @"Camera: %f %f %f", focal[ 0], focal[ 1], focal[ 2]);
 }
 
 - (void) setLowResolutionCamera: (Camera*) cam
