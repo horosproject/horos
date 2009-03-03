@@ -34,6 +34,8 @@
 
 - (void) dealloc
 {
+	[vrView restoreFullDepthCapture];
+	
 	[super dealloc];
 }
 

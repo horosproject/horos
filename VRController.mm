@@ -1052,9 +1052,12 @@ static NSString*	ClippingRangeViewToolbarItemIdentifier = @"ClippingRange";
 -(void) dealloc
 {
 	long i;
+	BOOL styleNoNib = NO;
 	
     NSLog(@"Dealloc VRController");
-		
+	
+	[style release];
+	
 	// Release Undo system
 	for( i = 0; i < maxMovieIndex; i++)
 	{
@@ -1107,13 +1110,6 @@ static NSString*	ClippingRangeViewToolbarItemIdentifier = @"ClippingRange";
 	[presetPreview8 prepareForRelease];
 	[presetPreview9 prepareForRelease];
 	[selectedPresetPreview prepareForRelease];
-	
-	if( [style isEqualToString:@"noNib"])
-	{
-		[view release];
-	}
-	
-	[style release];
 }
 
 - (void) CloseViewerNotification: (NSNotification*) note
