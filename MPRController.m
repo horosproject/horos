@@ -62,7 +62,7 @@
 	[hiddenVRView resetImage: self];
 	[hiddenVRView setLOD: 1.0];
 	
-	[mprView1 setVRController: hiddenVRController];
+	[mprView1 setVRView: [hiddenVRController view]];
 	[mprView1 updateView];
 	
 //	[mprView2 setVRController: hiddenVRController];	un VRController par VRView?

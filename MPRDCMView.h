@@ -19,11 +19,11 @@
 
 @interface MPRDCMView : DCMView
 {
-	VRController *vrCtrl;
+	VRView *vrView;
 	DCMPix *pix;
 }
 
 - (void) setDCMPixList:(NSMutableArray*)pix filesList:(NSArray*)files volumeData:(NSData*)volume roiList:(NSMutableArray*)rois firstImage:(short)firstImage type:(char)type reset:(BOOL)reset;
-- (void) setVRController: (VRController*) v;
+- (void) setVRView: (VRView*) v;
 - (void) updateView;
 @end
