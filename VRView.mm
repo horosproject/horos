@@ -4516,6 +4516,9 @@ public:
 
 -(void) setOpacity:(NSArray*) array
 {
+	if( [[controller style] isEqualToString: @"noNib"])
+		return;
+	
 	long		i;
 	NSPoint		pt;
 	float		start, end;

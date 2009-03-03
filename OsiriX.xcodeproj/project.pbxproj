@@ -290,6 +290,7 @@
 		7EF9708D08C8FB86002B5087 /* DCMNDeleteResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EF9708B08C8FB86002B5087 /* DCMNDeleteResponse.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7EF9708E08C8FB86002B5087 /* DCMNDeleteResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF9708C08C8FB86002B5087 /* DCMNDeleteResponse.m */; };
 		8440039A0E8CF99500A00EBD /* dciodvfy in Resources */ = {isa = PBXBuildFile; fileRef = 844003990E8CF99500A00EBD /* dciodvfy */; };
+		8459A7270F5D63EF00146B28 /* VREmpty.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8459A7250F5D63EF00146B28 /* VREmpty.xib */; };
 		8483ABA60E1BE33900C21B31 /* crossCursor.tif in Resources */ = {isa = PBXBuildFile; fileRef = 8483ABA50E1BE33900C21B31 /* crossCursor.tif */; };
 		84A220E80F25E41800C6C3EB /* ROIs.tif in Resources */ = {isa = PBXBuildFile; fileRef = 84A220E60F25E41800C6C3EB /* ROIs.tif */; };
 		84A220E90F25E41800C6C3EB /* Keys.tif in Resources */ = {isa = PBXBuildFile; fileRef = 84A220E70F25E41800C6C3EB /* Keys.tif */; };
@@ -5497,6 +5498,7 @@
 		7EF9708B08C8FB86002B5087 /* DCMNDeleteResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMNDeleteResponse.h; sourceTree = "<group>"; };
 		7EF9708C08C8FB86002B5087 /* DCMNDeleteResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMNDeleteResponse.m; sourceTree = "<group>"; };
 		844003990E8CF99500A00EBD /* dciodvfy */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = dciodvfy; path = Binaries/dciodvfy; sourceTree = "<group>"; };
+		8459A7260F5D63EF00146B28 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/VREmpty.xib; sourceTree = "<group>"; };
 		8483ABA50E1BE33900C21B31 /* crossCursor.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = crossCursor.tif; path = Cursors/crossCursor.tif; sourceTree = "<group>"; };
 		84A220E60F25E41800C6C3EB /* ROIs.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ROIs.tif; sourceTree = "<group>"; };
 		84A220E70F25E41800C6C3EB /* Keys.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Keys.tif; sourceTree = "<group>"; };
@@ -9610,6 +9612,7 @@
 				CE3F99180C84724B00CB38F1 /* ThickSlab.xib */,
 				CE3F98F00C84724B00CB38F1 /* ToolbarPanel.xib */,
 				CE3F99360C84724B00CB38F1 /* Viewer.xib */,
+				8459A7250F5D63EF00146B28 /* VREmpty.xib */,
 				CE3F99300C84724B00CB38F1 /* VR.xib */,
 				CE3F99200C84724B00CB38F1 /* VRPanel.xib */,
 				CE3F99220C84724B00CB38F1 /* VRVPRO.xib */,
@@ -17686,6 +17689,7 @@
 				84A220E80F25E41800C6C3EB /* ROIs.tif in Resources */,
 				84A220E90F25E41800C6C3EB /* Keys.tif in Resources */,
 				A9333D3A0F56E9670097DAB7 /* MPR.xib in Resources */,
+				8459A7270F5D63EF00146B28 /* VREmpty.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -19600,6 +19604,14 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		8459A7250F5D63EF00146B28 /* VREmpty.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				8459A7260F5D63EF00146B28 /* English */,
+			);
+			name = VREmpty.xib;
+			sourceTree = "<group>";
+		};
 		A9333D380F56E9670097DAB7 /* MPR.xib */ = {
 			isa = PBXVariantGroup;
 			children = (

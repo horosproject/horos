@@ -54,7 +54,7 @@
 	vrController = [[VRController alloc] initWithPix:pix :files :volume :fusedViewer :viewer style:@"noNib" mode:@"MIP"];
 	[vrController load3DState];
 	
-	hiddenVRController = [[VRController alloc] initWithPix:pix :files :volume :fusedViewer :viewer style:@"VRPanel" mode:@"MIP"];
+	hiddenVRController = [[VRController alloc] initWithPix:pix :files :volume :fusedViewer :viewer style:@"noNib" mode:@"MIP"];
 	[hiddenVRController load3DState];
 	
 	[[hiddenVRController window] orderBack: self];
