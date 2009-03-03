@@ -584,7 +584,7 @@ static NSString*	ClippingRangeViewToolbarItemIdentifier = @"ClippingRange";
 	else if( [style isEqualToString:@"noNib"])
 	{
 		self = [super init];
-		view = [[VRView alloc] initWithFrame:NSMakeRect(0, 0, 1000, 1000)];
+		view = [[VRView alloc] initWithFrame:NSMakeRect(0, 0, 100, 100)];
 		[view setController: self];
 	}
 	else
@@ -763,36 +763,38 @@ static NSString*	ClippingRangeViewToolbarItemIdentifier = @"ClippingRange";
 	
 	appliedConvolutionFilters = [[NSMutableArray alloc] initWithCapacity:0];
 	
-	presetPreviewArray = [[NSMutableArray alloc] initWithCapacity:0];
-	if(presetPreview1)[presetPreviewArray addObject:presetPreview1];
-	if(presetPreview2)[presetPreviewArray addObject:presetPreview2];
-	if(presetPreview3)[presetPreviewArray addObject:presetPreview3];
-	if(presetPreview4)[presetPreviewArray addObject:presetPreview4];
-	if(presetPreview5)[presetPreviewArray addObject:presetPreview5];
-	if(presetPreview6)[presetPreviewArray addObject:presetPreview6];
-	if(presetPreview7)[presetPreviewArray addObject:presetPreview7];
-	if(presetPreview8)[presetPreviewArray addObject:presetPreview8];
-	if(presetPreview9)[presetPreviewArray addObject:presetPreview9];
-	
-	int ii;
-	for (ii=0; ii<[presetPreviewArray count]; ii++)
+	if( [style isEqualToString: @"noNib"] == NO)
 	{
-		[[presetPreviewArray objectAtIndex:ii] setPixSource:pixList[0] :(float*) [volumeData[0] bytes]];
-		[[presetPreviewArray objectAtIndex:ii] setData8:[view data8]];
-		[[presetPreviewArray objectAtIndex:ii] setVolumeMapper:[view volumeMapper]];
+		presetPreviewArray = [[NSMutableArray alloc] initWithCapacity:0];
+		if(presetPreview1)[presetPreviewArray addObject:presetPreview1];
+		if(presetPreview2)[presetPreviewArray addObject:presetPreview2];
+		if(presetPreview3)[presetPreviewArray addObject:presetPreview3];
+		if(presetPreview4)[presetPreviewArray addObject:presetPreview4];
+		if(presetPreview5)[presetPreviewArray addObject:presetPreview5];
+		if(presetPreview6)[presetPreviewArray addObject:presetPreview6];
+		if(presetPreview7)[presetPreviewArray addObject:presetPreview7];
+		if(presetPreview8)[presetPreviewArray addObject:presetPreview8];
+		if(presetPreview9)[presetPreviewArray addObject:presetPreview9];
+		
+		int ii;
+		for (ii=0; ii<[presetPreviewArray count]; ii++)
+		{
+			[[presetPreviewArray objectAtIndex:ii] setPixSource:pixList[0] :(float*) [volumeData[0] bytes]];
+			[[presetPreviewArray objectAtIndex:ii] setData8:[view data8]];
+			[[presetPreviewArray objectAtIndex:ii] setVolumeMapper:[view volumeMapper]];
+		}
+		
+		presetNameArray = [[NSMutableArray alloc] initWithCapacity:0];
+		if(presetName1) [presetNameArray addObject:presetName1];
+		if(presetName2) [presetNameArray addObject:presetName2];
+		if(presetName3) [presetNameArray addObject:presetName3];
+		if(presetName4) [presetNameArray addObject:presetName4];
+		if(presetName5) [presetNameArray addObject:presetName5];
+		if(presetName6) [presetNameArray addObject:presetName6];
+		if(presetName7) [presetNameArray addObject:presetName7];
+		if(presetName8) [presetNameArray addObject:presetName8];
+		if(presetName9) [presetNameArray addObject:presetName9];
 	}
-	
-	presetNameArray = [[NSMutableArray alloc] initWithCapacity:0];
-	if(presetName1) [presetNameArray addObject:presetName1];
-	if(presetName2) [presetNameArray addObject:presetName2];
-	if(presetName3) [presetNameArray addObject:presetName3];
-	if(presetName4) [presetNameArray addObject:presetName4];
-	if(presetName5) [presetNameArray addObject:presetName5];
-	if(presetName6) [presetNameArray addObject:presetName6];
-	if(presetName7) [presetNameArray addObject:presetName7];
-	if(presetName8) [presetNameArray addObject:presetName8];
-	if(presetName9) [presetNameArray addObject:presetName9];
-	
 	[nc addObserver:self selector:@selector(windowWillCloseNotification:) name:@"NSWindowWillCloseNotification" object:nil];
 	[nc addObserver:self selector:@selector(windowWillMoveNotification:) name:@"NSWindowWillMoveNotification" object:nil];
 	
