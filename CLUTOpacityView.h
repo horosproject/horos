@@ -53,7 +53,7 @@
 	float mousePositionX;
 	
 	NSRect drawingRect, sideBarRect;
-	NSRect addCurveButtonRect, removeSelectedCurveButtonRect, saveButtonRect;
+	NSRect addCurveButtonRect, removeSelectedCurveButtonRect, saveButtonRect, closeButtonRect;
 	BOOL isAddCurveButtonHighlighted, isRemoveSelectedCurveButtonHighlighted, isSaveButtonHighlighted;
 	
 	NSPoint mouseDraggingStartPoint;
@@ -135,6 +135,7 @@
 #pragma mark Custom GUI
 - (void)drawSideBar:(NSRect)rect;
 - (void)drawAddCurveButton:(NSRect)rect;
+- (void)drawCloseButton:(NSRect)rect;
 - (void)drawRemoveSelectedCurveButton:(NSRect)rect;
 - (void)drawSaveButton:(NSRect)rect;
 - (BOOL)clickInSideBarAtPosition:(NSPoint)position;

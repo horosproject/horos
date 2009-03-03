@@ -2040,15 +2040,11 @@ public:
 
 - (void) render
 {
-	volumeMapper->SetIntermixIntersectingGeometry( 0);
 	volumeMapper->Render( aRenderer, volume);
 }
 
 - (void) drawRect:(NSRect)aRect
 {
-	if( [[controller style] isEqualToString: @"noNib"])
-		return;
-	
 	if( drawLock == nil) drawLock = [[NSRecursiveLock alloc] init];
 	
 	BOOL iChatRunning = [[IChatTheatreDelegate sharedDelegate] isIChatTheatreRunning];
@@ -4634,6 +4630,9 @@ public:
 
 - (void) setWLWW:(float) iwl :(float) iww
 {
+	if( [[controller style] isEqualToString: @"noNib"])
+		return;
+	
 	if( iwl == 0 && iww == 0)
 	{
 		iwl = [[pixList objectAtIndex:0] fullwl];
@@ -5942,7 +5941,7 @@ public:
 	vtkPiecewiseFunction *tempOpacity = vtkPiecewiseFunction::New();
 	
 	float start = valueFactor*(OFFSET16 + [controller minimumValue] - 10);
-	float end = valueFactor*(OFFSET16 + [controller minimumValue] + 10);
+	float end = valueFactor*(OFFSET16 + [controller maximumValue] + 10);
 	
 	tempOpacity->AddPoint(start, 0);
 	tempOpacity->AddPoint(end, 1);

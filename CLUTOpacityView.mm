@@ -1500,11 +1500,13 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 	float buttonsMargin = 5.0;
 	float buttonSize = 15.0;
 	
-	addCurveButtonRect = NSMakeRect(rect.origin.x+leftMargin, rect.origin.y+rect.size.height-2.0*topMargin-buttonSize, buttonSize, buttonSize);
+	closeButtonRect = NSMakeRect(rect.origin.x+leftMargin, rect.origin.y+rect.size.height-2.0*topMargin-buttonSize, buttonSize, buttonSize);
+	addCurveButtonRect = NSMakeRect(closeButtonRect.origin.x, closeButtonRect.origin.y-closeButtonRect.size.height-buttonsMargin, buttonSize, buttonSize);
 	removeSelectedCurveButtonRect = NSMakeRect(addCurveButtonRect.origin.x, addCurveButtonRect.origin.y-addCurveButtonRect.size.height-buttonsMargin, buttonSize, buttonSize);
 	
 	saveButtonRect = NSMakeRect(addCurveButtonRect.origin.x, 2.0*buttonsMargin, buttonSize, buttonSize);
 	
+	[self drawCloseButton:closeButtonRect];
 	[self drawAddCurveButton:addCurveButtonRect];
 	[self drawRemoveSelectedCurveButton:removeSelectedCurveButtonRect];
 	[self drawSaveButton:saveButtonRect];
@@ -1540,6 +1542,34 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 //	
 //	[line stroke];
 //}
+- (void)drawCloseButton:(NSRect)rect;
+{
+	NSBezierPath *path = [NSBezierPath bezierPathWithOvalInRect:rect];
+	[path setLineWidth:1.5];
+	if(isAddCurveButtonHighlighted)
+		[[NSColor darkGrayColor] set];
+	else
+		[backgroundColor set];
+	[path fill];
+	[[NSColor whiteColor] set];
+	[path stroke];
+	
+	NSBezierPath *line = [NSBezierPath bezierPath];
+	[line setLineWidth:2.0];
+	NSPoint p1, p2;
+	float lineLength = 7;
+	p1 = NSMakePoint(rect.origin.x+4, rect.origin.y);
+	p2 = NSMakePoint(p1.x+lineLength, p1.y+rect.size.height);
+	[line moveToPoint:p1];
+	[line lineToPoint:p2];
+	
+	p1 = NSMakePoint(rect.origin.x+4, rect.origin.y+rect.size.height);
+	p2 = NSMakePoint(p1.x+lineLength, rect.origin.y);
+	[line moveToPoint:p1];
+	[line lineToPoint:p2];
+	
+	[line stroke];
+}
 
 - (void)drawAddCurveButton:(NSRect)rect;
 {

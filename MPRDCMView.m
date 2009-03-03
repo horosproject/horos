@@ -28,6 +28,8 @@
 - (void) setVRView: (VRView*) v
 {
 	vrView = v;
+	
+	[vrView prepareFullDepthCapture];
 }
 
 - (void) dealloc
