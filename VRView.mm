@@ -5935,10 +5935,7 @@ public:
 
 - (void) prepareFullDepthCapture
 {
-	if( orientationWidget && orientationWidget->GetEnabled()) [self switchOrientationWidget: self];
-	if( croppingBox && croppingBox->GetEnabled()) [self showCropCube: self];
-	aRenderer->RemoveActor(textX);
-	aRenderer->RemoveActor(textWLWW);
+	volumeMapper->SetIntermixIntersectingGeometry( 0);
 	
 	[self display];
 	
@@ -5961,13 +5958,12 @@ public:
 
 - (void) restoreFullDepthCapture
 {
+	volumeMapper->SetIntermixIntersectingGeometry( 1);
+	
 	volumeProperty->SetScalarOpacity( opacityTransferFunction);
 	volumeMapper->PerVolumeInitialization( aRenderer, volume);
 	
-	[self switchOrientationWidget: self];
-	
-	aRenderer->AddActor(textX);
-	aRenderer->AddActor(textWLWW);
+	[self setNeedsDisplay: YES];
 }
 
 - (float*) imageInFullDepthWidth: (long*) w height:(long*) h
