@@ -63,7 +63,7 @@
 	hiddenVRView = [hiddenVRController view];
 	[hiddenVRView setClipRangeActivated: YES];
 	[hiddenVRView resetImage: self];
-	[hiddenVRView setLOD: 1.0];
+	[hiddenVRView setLOD: 2.0];
 	
 	[mprView1 setVRView: hiddenVRView];
 	[mprView1 updateView];

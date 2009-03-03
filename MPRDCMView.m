@@ -141,9 +141,10 @@
 	if( tool == tWL)
 		[super mouseDown: theEvent];
 	else
+	{
 		[vrView mouseDown: theEvent];
-	
-	[self updateView];
+		[self updateView];
+	}
 }
 
 - (void) mouseUp:(NSEvent *)theEvent
@@ -156,9 +157,10 @@
 	if( tool == tWL)
 		[super mouseUp: theEvent];
 	else
+	{
 		[vrView mouseUp: theEvent];
-	
-	[self updateView];
+		[self updateView];
+	}
 }
 
 - (void) mouseDragged:(NSEvent *)theEvent
@@ -168,9 +170,10 @@
 	if( tool == tWL)
 		[super mouseDragged: theEvent];
 	else
+	{
 		[vrView mouseDragged: theEvent];
-	
-	[self updateView];
+		[self updateView];
+	}
 }
 @end
  
