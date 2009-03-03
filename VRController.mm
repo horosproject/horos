@@ -584,9 +584,6 @@ static NSString*	ClippingRangeViewToolbarItemIdentifier = @"ClippingRange";
 	else if( [style isEqualToString:@"noNib"])
 	{
 		self = [super initWithWindowNibName:@"VREmpty"];
-//		self = [super initWithWindow: [[[NSWindow alloc] initWithContentRect:NSMakeRect(0, 0, 100, 100) styleMask: NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO] autorelease]];
-//		view = [[VRView alloc] initWithFrame:NSMakeRect(0, 0, 100, 100)];
-//		[view setController: self];
 	}
 	else
 	{
@@ -798,11 +795,6 @@ static NSString*	ClippingRangeViewToolbarItemIdentifier = @"ClippingRange";
 	}
 	[nc addObserver:self selector:@selector(windowWillCloseNotification:) name:@"NSWindowWillCloseNotification" object:nil];
 	[nc addObserver:self selector:@selector(windowWillMoveNotification:) name:@"NSWindowWillMoveNotification" object:nil];
-	
-	if( [style isEqualToString: @"noNib"])
-	{
-		[[self window] setContentView: view];	
-	}
 	
     return self;
 }
