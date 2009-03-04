@@ -104,4 +104,19 @@
 	return pixList[ curMovieIndex];
 }
 
+- (IBAction)setTool:(id)sender;
+{
+	NSLog(@"setTool");
+	NSLog(@"sender tag : %d", [sender tag]);
+	NSLog(@"sender tag : %d", [[(NSMatrix*)sender selectedCell] tag]);
+	
+	int toolIndex = [[(NSMatrix*)sender selectedCell] tag];
+	
+	[mprView1 setCurrentTool:toolIndex];
+	[mprView2 setCurrentTool:toolIndex];
+	[mprView3 setCurrentTool:toolIndex];
+	
+}
+
+
 @end

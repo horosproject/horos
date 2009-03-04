@@ -35,4 +35,6 @@
 - (id)initWithDCMPixList:(NSMutableArray*)pix filesList:(NSMutableArray*)files volumeData:(NSData*)volume viewerController:(ViewerController*)viewer fusedViewerController:(ViewerController*)fusedViewer;
 - (DCMPix*) emptyPix: (DCMPix*) originalPix width: (long) w height: (long) h;
 
+- (IBAction)setTool:(id)sender;
+
 @end
