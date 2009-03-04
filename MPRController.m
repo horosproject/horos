@@ -57,8 +57,9 @@
 	hiddenVRController = [[VRController alloc] initWithPix:pix :files :volume :fusedViewer :viewer style:@"noNib" mode:@"MIP"];
 	[hiddenVRController load3DState];
 	
+	[[hiddenVRController window] setLevel: 0];	//NSNormalWindowLevel
 	[[hiddenVRController window] orderBack: self];
-	[[hiddenVRController window] orderOut: self];
+//	[[hiddenVRController window] orderOut: self];
 	
 	hiddenVRView = [hiddenVRController view];
 	[hiddenVRView setClipRangeActivated: YES];
@@ -67,18 +68,22 @@
 	
 	[mprView1 setVRView: hiddenVRView];
 	[mprView1 updateView];
+	[mprView1 setWLWW: [originalPix wl] :[originalPix ww]];
 	
 	[mprView2 setVRView: hiddenVRView];
 	[mprView2 updateView];
+	[mprView2 setWLWW: [originalPix wl] :[originalPix ww]];
 	
 	[mprView3 setVRView: hiddenVRView];
 	[mprView3 updateView];
+	[mprView3 setWLWW: [originalPix wl] :[originalPix ww]];
 	
 	return self;
 }
 
 - (void) dealloc
 {
+	[[hiddenVRController window] orderOut: self];
 	[vrController release];
 	[hiddenVRController release];
 	[super dealloc];

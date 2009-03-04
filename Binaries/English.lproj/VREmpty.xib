@@ -8,7 +8,7 @@
 		<string key="IBDocument.HIToolboxVersion">353.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="881"/>
+			<integer value="880"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -2795,7 +2795,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<reference key="NSControlView" ref="708420842"/>
 							<int key="NSButtonFlags">109068543</int>
 							<int key="NSButtonFlags2">2</int>
-							<object class="NSCustomResource" key="NSNormalImage">
+							<object class="NSCustomResource" key="NSNormalImage" id="203907967">
 								<string key="NSClassName">NSImage</string>
 								<string key="NSResourceName">3D.tif</string>
 							</object>
@@ -2814,10 +2814,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 								<string key="NSKeyEquiv"/>
 								<int key="NSKeyEquivModMask">1048576</int>
 								<int key="NSMnemonicLoc">2147483647</int>
-								<object class="NSCustomResource" key="NSImage">
-									<string key="NSClassName">NSImage</string>
-									<string key="NSResourceName">3D.tif</string>
-								</object>
+								<reference key="NSImage" ref="203907967"/>
 								<reference key="NSOnImage" ref="674947622"/>
 								<reference key="NSMixedImage" ref="985787702"/>
 								<string key="NSAction">_popUpItemAction:</string>
@@ -4301,9 +4298,9 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<string key="NSMaxSize">{3.40282e+38, 3.40282e+38}</string>
 			</object>
 			<object class="NSWindowTemplate" id="271157796">
-				<int key="NSWindowStyleMask">159</int>
+				<int key="NSWindowStyleMask">15</int>
 				<int key="NSWindowBacking">2</int>
-				<string key="NSWindowRect">{{153, 1159}, {1492, 381}}</string>
+				<string key="NSWindowRect">{{153, 1168}, {490, 372}}</string>
 				<int key="NSWTFlags">-1334312960</int>
 				<string key="NSWindowTitle">3D Panel</string>
 				<object class="NSMutableString" key="NSWindowClass">
@@ -4322,17 +4319,17 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<object class="NSCustomView" id="10257548">
 							<reference key="NSNextResponder" ref="446525197"/>
 							<int key="NSvFlags">274</int>
-							<string key="NSFrame">{{0, 9}, {490, 372}}</string>
+							<string key="NSFrameSize">{490, 372}</string>
 							<reference key="NSSuperview" ref="446525197"/>
 							<string key="NSClassName">VRView</string>
 							<string key="NSExtension">NSOpenGLView</string>
 						</object>
 					</object>
-					<string key="NSFrameSize">{1492, 381}</string>
+					<string key="NSFrameSize">{490, 372}</string>
 					<reference key="NSSuperview"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {2560, 1578}}</string>
-				<string key="NSMinSize">{200, 216}</string>
+				<string key="NSMinSize">{200, 222}</string>
 				<string key="NSMaxSize">{3.40282e+38, 3.40282e+38}</string>
 			</object>
 			<object class="NSCustomView" id="222162871">
@@ -9083,9 +9080,9 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					</object>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
-					<string>{{37, 738}, {1492, 381}}</string>
+					<string>{{37, 747}, {490, 372}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{37, 738}, {1492, 381}}</string>
+					<string>{{37, 747}, {490, 372}}</string>
 					<reference ref="9"/>
 					<reference ref="8"/>
 					<reference ref="9"/>
@@ -9526,8 +9523,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<string>movieRateSlider</string>
 							<string>movieTextSlide</string>
 							<string>movieView</string>
-							<string>mpr2</string>
-							<string>mpr3</string>
 							<string>nextPresetPageButton</string>
 							<string>numberOfPresetInGroupTextField</string>
 							<string>perspectiveView</string>
@@ -9612,8 +9607,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<string>NSSlider</string>
 							<string>NSTextField</string>
 							<string>NSView</string>
-							<string>VRPresetPreview</string>
-							<string>VRPresetPreview</string>
 							<string>NSButton</string>
 							<string>NSTextField</string>
 							<string>NSView</string>
