@@ -534,7 +534,8 @@ public:
 
 - (void) setFrame: (NSRect) r
 {
-	[self adaptLine2DToResize: r before: [self frame]];
+	if( [[controller style] isEqualToString:@"noNib"] == NO)
+		[self adaptLine2DToResize: r before: [self frame]];
 	
 	[super setFrame: r];
 }
@@ -2043,6 +2044,10 @@ public:
 	aRenderer->SetDraw( 0);
 	
 	dontRenderVolumeRenderingOsiriX = 0;
+	
+	_cocoaRenderWindow->UpdateContext();
+	_cocoaRenderWindow->MakeCurrent();
+	
 	volumeMapper->Render( aRenderer, volume);
 	dontRenderVolumeRenderingOsiriX = 1;
 }
