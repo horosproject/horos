@@ -12495,7 +12495,7 @@ static NSArray*	openSubSeriesArray = nil;
 		
 		[[NSWorkspace sharedWorkspace] getFileSystemInfoForPath: mediaPath isRemovable:&isRemovable isWritable:&isWritable isUnmountable:&isUnmountable description:&description type:&type];
 		
-		if( isRemovable == YES && isWritable == NO )
+		if( isRemovable == YES)
 		{
 			// ADD ALL FILES OF THIS VOLUME TO THE DATABASE!
 			NSMutableArray  *filesArray = [[[NSMutableArray alloc] initWithCapacity:0] autorelease];
