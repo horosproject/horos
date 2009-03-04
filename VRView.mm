@@ -5999,16 +5999,19 @@ public:
 	//	if( size[0] != fullSize[0] || size[1] != fullSize[1])
 	//		NSLog( @"****** size[0] != fullSize[0] && size[1] != fullSize[1]");
 		
-		destPtr = destFixedPtr = (unsigned short*) malloc( size[0] * size[ 1] * sizeof( unsigned short));
+		*w /= 2;
+		*w *= 2;
+		
+		destPtr = destFixedPtr = (unsigned short*) malloc( *w * *h * sizeof( unsigned short));
 		if( destFixedPtr)
 		{
-			unsigned short *iptr = im + 3 + 4*(size[1]-1)*fullSize[0];
+			unsigned short *iptr = im + 3 + 4*(*h-1)*fullSize[0];
 			
-			int j = size[1], rowBytes = 4*fullSize[0];
+			int j = *h, rowBytes = 4*fullSize[0];
 			while( j-- > 0)
 			{
 				unsigned short *iptrTemp = iptr;
-				int i = size[0];
+				int i = *w;
 				while( i-- > 0)
 				{
 					*destPtr++ = *iptrTemp;
@@ -6029,16 +6032,16 @@ public:
 			vImage_Buffer src, dst;
 			
 			src.data = destFixedPtr;
-			src.height = size[ 1];
-			src.width = size[0];
-			src.rowBytes = size[0] * 2;
+			src.height = *h;
+			src.width = *w;
+			src.rowBytes = *w * 2;
 			
-			dst.data = malloc( size[0] * size[ 1] * sizeof( float));
+			dst.data = malloc( *w * *h * sizeof( float));
 			if( dst.data)
 			{
-				dst.height = size[ 1];
-				dst.width = size[0];
-				dst.rowBytes = size[0] * 4;
+				dst.height = *h;
+				dst.width = *w;
+				dst.rowBytes = *w * 4;
 				
 				vImageConvert_16UToF( &src, &dst, add, mul, 0);
 			}
