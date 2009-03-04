@@ -52,6 +52,7 @@
 	[[vrView window] setFrame: [self frame] display: NO];
 	[vrView setFrame: [self frame]];
 	[vrView render];
+	//[vrView display];
 	
 	float *imagePtr = [vrView imageInFullDepthWidth: &w height: &h];
 	
@@ -88,7 +89,6 @@
 		float orientation[ 9];
 		[vrView getOrientation: orientation];
 		[pix setOrientation: orientation];
-		
 		
 		[self setWLWW: previousWL :previousWW];
 		[self setScaleValue: [vrView imageSampleDistance]];
