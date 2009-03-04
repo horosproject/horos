@@ -6002,7 +6002,7 @@ public:
 		*w /= 2;
 		*w *= 2;
 		
-		destPtr = destFixedPtr = (unsigned short*) malloc( *w * *h * sizeof( unsigned short));
+		destPtr = destFixedPtr = (unsigned short*) malloc( (*w+1) * (*h+1) * sizeof( unsigned short));
 		if( destFixedPtr)
 		{
 			unsigned short *iptr = im + 3 + 4*(*h-1)*fullSize[0];
@@ -6036,7 +6036,7 @@ public:
 			src.width = *w;
 			src.rowBytes = *w * 2;
 			
-			dst.data = malloc( *w * *h * sizeof( float));
+			dst.data = malloc( (*w+1) * (*h+1) * sizeof( float));
 			if( dst.data)
 			{
 				dst.height = *h;

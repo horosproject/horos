@@ -49,10 +49,9 @@
 	
 	[self getWLWW: &previousWL :&previousWW];
 	
-	[[vrView window] setFrame: [self frame] display: NO];
-	[vrView setFrame: [self frame]];
+	if( [vrView frame].size.width != [self frame].size.width || [vrView frame].size.height != [self frame].size.height)
+		[vrView setFrame: [self frame]];
 	[vrView render];
-	//[vrView display];
 	
 	float *imagePtr = [vrView imageInFullDepthWidth: &w height: &h];
 	

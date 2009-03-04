@@ -59,7 +59,7 @@
 	
 	[[hiddenVRController window] setLevel: 0];	//NSNormalWindowLevel
 	[[hiddenVRController window] orderBack: self];
-//	[[hiddenVRController window] orderOut: self];
+	[[hiddenVRController window] orderOut: self];
 	
 	hiddenVRView = [hiddenVRController view];
 	[hiddenVRView setClipRangeActivated: YES];
