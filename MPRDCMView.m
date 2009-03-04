@@ -18,6 +18,8 @@
 
 @implementation MPRDCMView
 
+@synthesize pix;
+
 - (void) setDCMPixList:(NSMutableArray*)pixList filesList:(NSArray*)files volumeData:(NSData*)volume roiList:(NSMutableArray*)rois firstImage:(short)firstImage type:(char)type reset:(BOOL)reset;
 {
 	[super setDCM:pixList :files :rois :firstImage :type :reset];
@@ -25,12 +27,13 @@
 	pix = [pixList lastObject];
 	
 	currentTool = t3DRotate;
+	
+	windowController = [self windowController];
 }
 
 - (void) setVRView: (VRView*) v
 {
 	vrView = v;
-	
 	[vrView prepareFullDepthCapture];
 }
 
@@ -75,13 +78,9 @@
 		}
 		else
 		{
-			[pix setNeedToCompute8bitRepresentation: YES];
-			[pix kill8bitsImage];
-			
 			[pix setfImage: imagePtr];
 			[pix setPwidth: w];
 			[pix setPheight: h];
-			[pix baseAddr];
 			[self setIndex: 0];
 		}
 		
@@ -99,19 +98,44 @@
 		
 		[self setWLWW: previousWL :previousWW];
 		[self setScaleValue: [vrView imageSampleDistance]];
+		
+		[windowController computeCrossReferenceLines];
 	}
 	
 	[self setNeedsDisplay: YES];
 }
 
+
+- (void) subDrawRect: (NSRect) r
+{
+	if( crossLinesA[ 0][ 0] != HUGE_VALF)
+		[self drawCrossLines: crossLinesA ctx: [[NSOpenGLContext currentContext] CGLContextObj] green: YES];
+	
+	if( crossLinesB[ 0][ 0] != HUGE_VALF)
+		[self drawCrossLines: crossLinesB ctx: [[NSOpenGLContext currentContext] CGLContextObj] green: YES];
+}
+
+- (void) setCrossReferenceLines: (float[2][3]) a and: (float[2][3]) b
+{
+	crossLinesA[ 0][ 0] = a[ 0][ 0];
+	crossLinesA[ 0][ 1] = a[ 0][ 1];
+	crossLinesA[ 0][ 2] = a[ 0][ 2];
+	crossLinesA[ 1][ 0] = a[ 1][ 0];
+	crossLinesA[ 1][ 1] = a[ 1][ 1];
+	crossLinesA[ 1][ 2] = a[ 1][ 2];
+	
+	crossLinesB[ 0][ 0] = b[ 0][ 0];
+	crossLinesB[ 0][ 1] = b[ 0][ 1];
+	crossLinesB[ 0][ 2] = b[ 0][ 2];
+	crossLinesB[ 1][ 0] = b[ 1][ 0];
+	crossLinesB[ 1][ 1] = b[ 1][ 1];
+	crossLinesB[ 1][ 2] = b[ 1][ 2];
+}
+
 - (void)scrollWheel:(NSEvent *)theEvent
 {
-	if( cam)
-	{
-		[self checkForFrame];
-		
-		[vrView setCamera: cam];
-	}
+	[self checkForFrame];
+	[vrView setCamera: cam];
 	
 	[vrView scrollWheel: theEvent];
 	
@@ -120,12 +144,8 @@
 
 - (void)rightMouseDown:(NSEvent *)theEvent
 {
-	if( cam)
-	{
-		[self checkForFrame];
-		
-		[vrView setCamera: cam];
-	}
+	[self checkForFrame];
+	[vrView setCamera: cam];
 	
 	[vrView rightMouseDown: theEvent];
 	
@@ -134,12 +154,8 @@
 
 - (void)rightMouseDragged:(NSEvent *)theEvent
 {
-	if( cam)
-	{
-		[self checkForFrame];
-		
-		[vrView setCamera: cam];
-	}
+	[self checkForFrame];
+	[vrView setCamera: cam];
 	
 	[vrView rightMouseDragged: theEvent];
 	
@@ -148,12 +164,8 @@
 
 - (void)rightMouseUp:(NSEvent *)theEvent
 {
-	if( cam)
-	{
-		[self checkForFrame];
-		
-		[vrView setCamera: cam];
-	}
+	[self checkForFrame];
+	[vrView setCamera: cam];
 	
 	[vrView rightMouseUp: theEvent];
 	
@@ -164,12 +176,8 @@
 {
 	long tool = [self getTool: theEvent];
 
-	if( cam)
-	{
-		[self checkForFrame];
-		
-		[vrView setCamera: cam];
-	}
+	[self checkForFrame];
+	[vrView setCamera: cam];
 	
 	if( tool == tWL)
 		[super mouseDown: theEvent];
@@ -184,12 +192,8 @@
 {
 	long tool = [self getTool: theEvent];
 	
-	if( cam)
-	{
-		[self checkForFrame];
-		
-		[vrView setCamera: cam];
-	}
+	[self checkForFrame];
+	[vrView setCamera: cam];
 	
 	if( tool == tWL)
 		[super mouseUp: theEvent];
@@ -203,6 +207,9 @@
 - (void) mouseDragged:(NSEvent *)theEvent
 {
 	long tool = [self getTool: theEvent];
+	
+	[self checkForFrame];
+	[vrView setCamera: cam];
 	
 	if( tool == tWL)
 		[super mouseDragged: theEvent];

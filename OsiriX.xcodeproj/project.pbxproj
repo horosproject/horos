@@ -9417,7 +9417,7 @@
 				A9F6E4DF08FEAFF80060285A /* PET-CT */,
 				A90D665D094D7071000B425B /* Endoscopy */,
 				A93CFF6E0A5169FE00078038 /* LL */,
-				A9333D280F56E68B0097DAB7 /* MPR 09 */,
+				A9333D280F56E68B0097DAB7 /* MPR */,
 				AB3F4A1D0672674000E61A6C /* Window3DController.h */,
 				AB3F4A1E0672674000E61A6C /* Window3DController.m */,
 				A9F2E557092227A400055899 /* DarkWindow.h */,
@@ -10059,7 +10059,7 @@
 			name = Endoscopy;
 			sourceTree = "<group>";
 		};
-		A9333D280F56E68B0097DAB7 /* MPR 09 */ = {
+		A9333D280F56E68B0097DAB7 /* MPR */ = {
 			isa = PBXGroup;
 			children = (
 				A9333D2F0F56E70B0097DAB7 /* MPRController.h */,
@@ -10067,7 +10067,7 @@
 				A9333D230F56E6800097DAB7 /* MPRDCMView.h */,
 				A9333D240F56E6800097DAB7 /* MPRDCMView.m */,
 			);
-			name = "MPR 09";
+			name = MPR;
 			sourceTree = "<group>";
 		};
 		A93CFF6E0A5169FE00078038 /* LL */ = {

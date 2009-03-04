@@ -6510,7 +6510,9 @@ public:
 }
 
 - (void) setCamera: (Camera*) cam
-{	
+{
+	if( cam == nil) return;
+	
 	double pos[3], focal[3], vUp[3];
 	pos[0] = [[cam position] x];
 	pos[1] = [[cam position] y];

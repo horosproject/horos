@@ -2485,6 +2485,8 @@ typedef struct _xyzArray
 			[self getVTKRenderWindow]->MakeCurrent();
 //			[[NSOpenGLContext currentContext] flushBuffer];
 			
+			CGLContextObj cgl_ctx = (CGLContextObj) [[NSOpenGLContext currentContext] CGLContextObj];
+			
 			glReadBuffer(GL_FRONT);
 			
 			#if __BIG_ENDIAN__

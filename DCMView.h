@@ -21,7 +21,9 @@
 #include <OpenGL/gl.h>
 #include <OpenGL/glext.h>
 #include <OpenGL/glu.h>
-
+#include <OpenGL/CGLMacro.h>
+#include <OpenGL/CGLCurrent.h>
+#include <OpenGL/CGLContext.h>
 
 #define STAT_UPDATE					0.6f
 #define IMAGE_COUNT					1
@@ -445,6 +447,8 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 - (void) deleteLens;
 - (void)getOrientationText:(char *) orientation : (float *) vector :(BOOL) inv;
 - (NSMutableArray*) selectedROIs;
+- (void) computeSliceIntersection: (DCMPix*) oPix sliceFromTo: (float[2][3]) sft vector: (float*) vectorB origin: (float*) originB;
+- (void) drawCrossLines:(float[2][3]) sft ctx: (CGLContextObj) cgl_ctx green: (BOOL) green;
 
 // methods to access global variables (for plugins)
 + (BOOL) display2DMPRLines;

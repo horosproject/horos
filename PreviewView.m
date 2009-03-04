@@ -19,6 +19,8 @@
 
 - (void) initFont
 {
+	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+	
 	fontListGL = glGenLists (150);
 	fontGL = [NSFont systemFontOfSize: 12];
 	[fontGL makeGLDisplayListFirst:' ' count:150 base: fontListGL :fontListGLSize :1];

@@ -61,6 +61,7 @@
 	float normalizationFactor = maxSize/vectNorm;
 	
 	//normalizationFactor = 1.0;
+	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	
 	// antialiasing
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );

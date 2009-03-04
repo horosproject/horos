@@ -8089,9 +8089,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			
 			//**SLICE CUR FOR 3D MPR
 //			glScalef (2.0f / drawingFrameRect.size.width, -2.0f /  drawingFrameRect.size.height, 1.0f);
-			if( stringID )
+//			if( stringID )
 			{
-				if( [stringID isEqualToString:@"OrthogonalMPRVIEW"])
+//				if( [stringID isEqualToString:@"OrthogonalMPRVIEW"])
 				{
 					[self subDrawRect: aRect];
 					self.scaleValue = scaleValue;

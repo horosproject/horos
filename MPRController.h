@@ -17,6 +17,8 @@
 #import "VRController.h"
 #import "VRView.h"
 
+@class MPRDCMView;
+
 @interface MPRController : NSWindowController {
 	
 	IBOutlet NSSplitView *topSplitView, *bottomSplitView;
@@ -35,6 +37,7 @@
 - (id)initWithDCMPixList:(NSMutableArray*)pix filesList:(NSMutableArray*)files volumeData:(NSData*)volume viewerController:(ViewerController*)viewer fusedViewerController:(ViewerController*)fusedViewer;
 - (DCMPix*) emptyPix: (DCMPix*) originalPix width: (long) w height: (long) h;
 
+- (void) computeCrossReferenceLines;
 - (IBAction)setTool:(id)sender;
 
 @end

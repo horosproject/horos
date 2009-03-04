@@ -13,6 +13,7 @@
 =========================================================================*/
 
 #import "MPRController.h"
+extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2, float *u, float *iP);
 
 
 @implementation MPRController
@@ -55,11 +56,13 @@
 	[vrController load3DState];
 	
 	hiddenVRController = [[VRController alloc] initWithPix:pix :files :volume :fusedViewer :viewer style:@"noNib" mode:@"MIP"];
-	[hiddenVRController load3DState];
 	
-	[[hiddenVRController window] setLevel: 0];	//NSNormalWindowLevel
+	// To avoid the "invalid drawable" message
+	[[hiddenVRController window] setLevel: 0];
 	[[hiddenVRController window] orderBack: self];
-//	[[hiddenVRController window] orderOut: self];
+	[[hiddenVRController window] orderOut: self];
+
+	[hiddenVRController load3DState];
 	
 	hiddenVRView = [hiddenVRController view];
 	[hiddenVRView setClipRangeActivated: YES];
@@ -67,18 +70,24 @@
 	[hiddenVRView setLOD: 1.0];
 	
 	[mprView1 setVRView: hiddenVRView];
-	[mprView1 updateView];
 	[mprView1 setWLWW: [originalPix wl] :[originalPix ww]];
 	
 	[mprView2 setVRView: hiddenVRView];
-	[mprView2 updateView];
 	[mprView2 setWLWW: [originalPix wl] :[originalPix ww]];
 	
 	[mprView3 setVRView: hiddenVRView];
-	[mprView3 updateView];
 	[mprView3 setWLWW: [originalPix wl] :[originalPix ww]];
 	
 	return self;
+}
+
+- (void) showWindow:(id) sender
+{
+	[mprView1 updateView];
+	[mprView2 updateView];
+	[mprView3 updateView];
+	
+	[super showWindow: sender];
 }
 
 - (void) dealloc
@@ -88,11 +97,6 @@
 	[hiddenVRController release];
 	[super dealloc];
 }
-
-//- (void)windowWillLoad
-//{
-//	[hiddenVRView setFrame:containerFor3DView.frame];
-//}
 
 - (BOOL) is2DViewer
 {
@@ -115,8 +119,47 @@
 	[mprView1 setCurrentTool:toolIndex];
 	[mprView2 setCurrentTool:toolIndex];
 	[mprView3 setCurrentTool:toolIndex];
-	
 }
 
+- (void) computeCrossReferenceLinesBetween: (MPRDCMView*) mp1 and:(MPRDCMView*) mp2 result: (float[2][3]) s
+{
+	float vectorA[ 9], vectorB[ 9];
+	float originA[ 3], originB[ 3];
+	
+	originA[ 0] = mp2.pix.originX; originA[ 1] = mp2.pix.originY; originA[ 2] = mp2.pix.originZ;
+	originB[ 0] = mp1.pix.originX; originB[ 1] = mp1.pix.originY; originB[ 2] = mp1.pix.originZ;
+	
+	[mp2.pix orientation: vectorA];
+	[mp1.pix orientation: vectorB];
+	
+	float slicePoint[ 3];
+	float sliceVector[ 3];
+	
+	if( intersect3D_2Planes( vectorA+6, originA, vectorB+6, originB, sliceVector, slicePoint) == noErr)
+	{
+		[mp1 computeSliceIntersection: mp2.pix sliceFromTo: s vector: vectorB origin: originB];
+	}
+}
 
+- (void) computeCrossReferenceLines
+{
+	float a[2][3];
+	float b[2][3];
+	
+	[self computeCrossReferenceLinesBetween: mprView1 and: mprView2 result: a];
+	[self computeCrossReferenceLinesBetween: mprView1 and: mprView3 result: b];
+	[mprView1 setCrossReferenceLines: a and: b];
+	
+	[self computeCrossReferenceLinesBetween: mprView2 and: mprView1 result: a];
+	[self computeCrossReferenceLinesBetween: mprView2 and: mprView3 result: b];
+	[mprView2 setCrossReferenceLines: a and: b];
+	
+	[self computeCrossReferenceLinesBetween: mprView3 and: mprView1 result: a];
+	[self computeCrossReferenceLinesBetween: mprView3 and: mprView2 result: b];
+	[mprView3 setCrossReferenceLines: a and: b];
+	
+	[mprView1 setNeedsDisplay: YES];
+	[mprView2 setNeedsDisplay: YES];
+	[mprView3 setNeedsDisplay: YES];
+}
 @end

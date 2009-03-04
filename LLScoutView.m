@@ -38,7 +38,9 @@
 }
 
 - (void)subDrawRect:(NSRect)aRect
-{	
+{
+	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_BLEND);
 	glEnable(GL_POINT_SMOOTH);
@@ -112,7 +114,9 @@ const float ArrowButtonBottomMargin = 7.0, ArrowButtonRightMargin = 6.0, ArrowBu
 	centerY = position-(ArrowButtonBottomMargin+ArrowButtonTriangleHalfBasis)*[curDCM pixelSpacingX]/[curDCM pixelSpacingY];
 	
 	float radius = ArrowButtonRightSide - centerX + 2.0;
-
+	
+	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+	
 	// circle border
 	glColor3f(0.6f, 0.6f, 0.733f);
 	glPointSize((radius+1.0)*2.0);
