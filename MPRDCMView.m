@@ -42,6 +42,16 @@
 	[super dealloc];
 }
 
+- (void) checkForFrame
+{
+	NSRect frame = [self frame];
+	NSPoint o = [self convertPoint: NSMakePoint(0, 0) toView:0L];
+	frame.origin = o;
+	
+	if( NSEqualRects( frame, [vrView frame]) == NO)
+		[vrView setFrame: frame];
+}
+
 - (void) updateView
 {
 	long h, w;
@@ -98,8 +108,7 @@
 {
 	if( cam)
 	{
-		if( [vrView frame].size.width != [self frame].size.width || [vrView frame].size.height != [self frame].size.height)
-			[vrView setFrame: [self frame]];
+		[self checkForFrame];
 		
 		[vrView setCamera: cam];
 	}
@@ -113,8 +122,7 @@
 {
 	if( cam)
 	{
-		if( [vrView frame].size.width != [self frame].size.width || [vrView frame].size.height != [self frame].size.height)
-			[vrView setFrame: [self frame]];
+		[self checkForFrame];
 		
 		[vrView setCamera: cam];
 	}
@@ -128,8 +136,7 @@
 {
 	if( cam)
 	{
-		if( [vrView frame].size.width != [self frame].size.width || [vrView frame].size.height != [self frame].size.height)
-			[vrView setFrame: [self frame]];
+		[self checkForFrame];
 		
 		[vrView setCamera: cam];
 	}
@@ -143,8 +150,7 @@
 {
 	if( cam)
 	{
-		if( [vrView frame].size.width != [self frame].size.width || [vrView frame].size.height != [self frame].size.height)
-			[vrView setFrame: [self frame]];
+		[self checkForFrame];
 		
 		[vrView setCamera: cam];
 	}
@@ -160,8 +166,7 @@
 
 	if( cam)
 	{
-		if( [vrView frame].size.width != [self frame].size.width || [vrView frame].size.height != [self frame].size.height)
-			[vrView setFrame: [self frame]];
+		[self checkForFrame];
 		
 		[vrView setCamera: cam];
 	}
@@ -181,8 +186,7 @@
 	
 	if( cam)
 	{
-		if( [vrView frame].size.width != [self frame].size.width || [vrView frame].size.height != [self frame].size.height)
-			[vrView setFrame: [self frame]];
+		[self checkForFrame];
 		
 		[vrView setCamera: cam];
 	}

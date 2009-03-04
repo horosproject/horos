@@ -2223,7 +2223,8 @@ public:
 	_hasChanged = YES;
 	[drawLock lock];
 	_contextualMenuActive = NO;
-	if (_rightMouseDownTimer) {
+	if (_rightMouseDownTimer)
+	{
 		[self deleteRightMouseDownTimer];
 	}
 //	if (!([theEvent modifierFlags] & NSControlKeyMask)) 	
@@ -2712,9 +2713,10 @@ public:
 	
 	_hasChanged = YES;
 
-	if (_dragInProgress == NO && ([theEvent deltaX] != 0 || [theEvent deltaY] != 0)) {
-			[self deleteMouseDownTimer];
-		}
+	if (_dragInProgress == NO && ([theEvent deltaX] != 0 || [theEvent deltaY] != 0))
+	{
+		[self deleteMouseDownTimer];
+	}
 		
 	if (_dragInProgress == YES) return;
 
@@ -3060,9 +3062,10 @@ public:
 	NSPoint mouseLoc = [self convertPoint: [theEvent locationInWindow] fromView:nil];
 	float distance ;
 	
-	if (([theEvent deltaX] != 0 || [theEvent deltaY] != 0)) {
-			[self deleteRightMouseDownTimer];
-		}
+	if (([theEvent deltaX] != 0 || [theEvent deltaY] != 0))
+	{
+		[self deleteRightMouseDownTimer];
+	}
 	
 	if( projectionMode != 2)
 	{
@@ -3260,7 +3263,8 @@ public:
 			[self deleteMouseDownTimer];
 		}
 		
-		_mouseDownTimer = [[NSTimer scheduledTimerWithTimeInterval:1.0 target:self   selector:@selector(startDrag:) userInfo:theEvent  repeats:NO] retain];
+		if( [[controller style] isEqualToString: @"noNib"] == NO)
+			_mouseDownTimer = [[NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(startDrag:) userInfo:theEvent  repeats:NO] retain];
 	}
 	
 	mouseLocPre = _mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView: nil];
