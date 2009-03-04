@@ -48,6 +48,8 @@
 	float previousWW, previousWL;
 	
 	[self getWLWW: &previousWL :&previousWW];
+	
+	[[vrView window] setFrame: [self frame] display: NO];
 	[vrView setFrame: [self frame]];
 	[vrView render];
 	
@@ -71,6 +73,8 @@
 			[pix setfImage: imagePtr];
 			[pix setPwidth: w];
 			[pix setPheight: h];
+			[pix baseAddr];
+			[self setIndex: 0];
 		}
 		
 		float porigin[ 3];
@@ -87,7 +91,6 @@
 		
 		
 		[self setWLWW: previousWL :previousWW];
-		
 		[self setScaleValue: [vrView imageSampleDistance]];
 	}
 	
