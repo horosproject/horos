@@ -2040,7 +2040,11 @@ public:
 
 - (void) render
 {
+	aRenderer->SetDraw( 0);
+	
+	dontRenderVolumeRenderingOsiriX = 0;
 	volumeMapper->Render( aRenderer, volume);
+	dontRenderVolumeRenderingOsiriX = 1;
 }
 
 - (void) drawRect:(NSRect)aRect

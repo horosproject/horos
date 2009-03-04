@@ -49,8 +49,6 @@
 	
 	[self getWLWW: &previousWL :&previousWW];
 	
-	if( [vrView frame].size.width != [self frame].size.width || [vrView frame].size.height != [self frame].size.height)
-		[vrView setFrame: [self frame]];
 	[vrView render];
 	
 	float *imagePtr = [vrView imageInFullDepthWidth: &w height: &h];
@@ -99,7 +97,12 @@
 - (void)scrollWheel:(NSEvent *)theEvent
 {
 	if( cam)
+	{
+		if( [vrView frame].size.width != [self frame].size.width || [vrView frame].size.height != [self frame].size.height)
+			[vrView setFrame: [self frame]];
+		
 		[vrView setCamera: cam];
+	}
 	
 	[vrView scrollWheel: theEvent];
 	
@@ -109,7 +112,12 @@
 - (void)rightMouseDown:(NSEvent *)theEvent
 {
 	if( cam)
+	{
+		if( [vrView frame].size.width != [self frame].size.width || [vrView frame].size.height != [self frame].size.height)
+			[vrView setFrame: [self frame]];
+		
 		[vrView setCamera: cam];
+	}
 	
 	[vrView rightMouseDown: theEvent];
 	
@@ -119,7 +127,12 @@
 - (void)rightMouseDragged:(NSEvent *)theEvent
 {
 	if( cam)
+	{
+		if( [vrView frame].size.width != [self frame].size.width || [vrView frame].size.height != [self frame].size.height)
+			[vrView setFrame: [self frame]];
+		
 		[vrView setCamera: cam];
+	}
 	
 	[vrView rightMouseDragged: theEvent];
 	
@@ -129,7 +142,12 @@
 - (void)rightMouseUp:(NSEvent *)theEvent
 {
 	if( cam)
+	{
+		if( [vrView frame].size.width != [self frame].size.width || [vrView frame].size.height != [self frame].size.height)
+			[vrView setFrame: [self frame]];
+		
 		[vrView setCamera: cam];
+	}
 	
 	[vrView rightMouseUp: theEvent];
 	
@@ -141,7 +159,12 @@
 	long tool = [self getTool: theEvent];
 
 	if( cam)
+	{
+		if( [vrView frame].size.width != [self frame].size.width || [vrView frame].size.height != [self frame].size.height)
+			[vrView setFrame: [self frame]];
+		
 		[vrView setCamera: cam];
+	}
 	
 	if( tool == tWL)
 		[super mouseDown: theEvent];
@@ -157,7 +180,12 @@
 	long tool = [self getTool: theEvent];
 	
 	if( cam)
+	{
+		if( [vrView frame].size.width != [self frame].size.width || [vrView frame].size.height != [self frame].size.height)
+			[vrView setFrame: [self frame]];
+		
 		[vrView setCamera: cam];
+	}
 	
 	if( tool == tWL)
 		[super mouseUp: theEvent];

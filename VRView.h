@@ -444,7 +444,6 @@ typedef char* vtkMyCallbackVR;
 - (double) getResolution;
 - (void) getCosMatrix: (float *) cos;
 - (void) getOrigin: (float *) origin;
-
 - (BOOL) isViewportResizable;
 - (void) setViewportResizable: (BOOL) boo;
 
