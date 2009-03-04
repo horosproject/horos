@@ -92,7 +92,6 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 
 - (void) dealloc
 {
-	[[hiddenVRController window] orderOut: self];
 	[vrController release];
 	[hiddenVRController release];
 	[super dealloc];
@@ -125,6 +124,9 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 {
 	float vectorA[ 9], vectorB[ 9];
 	float originA[ 3], originB[ 3];
+
+	s[ 0][ 0] = HUGE_VALF; s[ 0][ 1] = HUGE_VALF; s[ 0][ 2] = HUGE_VALF;
+	s[ 1][ 0] = HUGE_VALF; s[ 1][ 1] = HUGE_VALF; s[ 1][ 2] = HUGE_VALF;
 	
 	originA[ 0] = mp2.pix.originX; originA[ 1] = mp2.pix.originY; originA[ 2] = mp2.pix.originZ;
 	originB[ 0] = mp1.pix.originX; originB[ 1] = mp1.pix.originY; originB[ 2] = mp1.pix.originZ;
