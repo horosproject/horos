@@ -143,7 +143,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 	}
 }
 
-- (void) computeCrossReferenceLines
+- (void) computeCrossReferenceLines:(MPRDCMView*) sender
 {
 	float a[2][3];
 	float b[2][3];
@@ -159,6 +159,9 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 	[self computeCrossReferenceLinesBetween: mprView3 and: mprView1 result: a];
 	[self computeCrossReferenceLinesBetween: mprView3 and: mprView2 result: b];
 	[mprView3 setCrossReferenceLines: a and: b];
+	
+	// Center other views on the sender view
+	Camera *cam = [sender camera];
 	
 	[mprView1 setNeedsDisplay: YES];
 	[mprView2 setNeedsDisplay: YES];

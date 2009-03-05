@@ -2943,6 +2943,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		}
 	}
 	
+	[self kill8bitsImage];
+	
 	fImage = ptr;
 	
 	if( fExternalOwnedImage)
@@ -11230,7 +11232,8 @@ END_CREATE_ROIS:
 #pragma mark-
 
 - (void) kill8bitsImage
-{	 
+{
+	needToCompute8bitRepresentation = YES;
 	if( baseAddr) free( baseAddr);
 	baseAddr = nil;
 }
