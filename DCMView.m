@@ -9815,8 +9815,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
     if( texture)
 	{
-		CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-			
 		glDeleteTextures( *tX * *tY, texture);
 		free( (char*) texture);
 		texture = nil;
@@ -10128,10 +10126,13 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	glPixelStorei (GL_UNPACK_ROW_LENGTH, *tW);
 	
-	texture = (GLuint *) malloc (sizeof (GLuint) * *tX * *tY);
-	
 	*tX = GetTextureNumFromTextureDim (*tW, maxTextureSize, false, f_ext_texture_rectangle);
 	*tY = GetTextureNumFromTextureDim (*tH, maxTextureSize, false, f_ext_texture_rectangle);
+	
+	if( *tX * *tY == 0)
+		NSLog(@"****** *tX * *tY");
+	
+	texture = (GLuint *) malloc (sizeof (GLuint) * *tX * *tY);
 	
 	if( *tX * *tY > 1) NSLog(@"NoOfTextures: %d", *tX * *tY);
 	glTextureRangeAPPLE(TEXTRECTMODE, *tW * *tH * 4, baseAddr);

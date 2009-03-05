@@ -342,10 +342,10 @@ typedef char* vtkMyCallbackVR;
 	
 	BOOL			bestRenderingWasGenerated;
 	float superSampling;
-	BOOL dontResetImage;
+	BOOL dontResetImage, keep3DRotateCentered;
 }
 
-@property BOOL clipRangeActivated;
+@property BOOL clipRangeActivated, keep3DRotateCentered;
 @property int projectionMode;
 @property double clippingRangeThickness;
 

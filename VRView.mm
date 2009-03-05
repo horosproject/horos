@@ -289,7 +289,7 @@ public:
 
 @implementation VRView
 
-@synthesize clipRangeActivated, projectionMode, clippingRangeThickness;
+@synthesize clipRangeActivated, projectionMode, clippingRangeThickness, keep3DRotateCentered;
 
 - (void) checkInVolume
 {
@@ -3125,19 +3125,22 @@ public:
 			{
 				if( _tool == tCamera3D || clipRangeActivated == YES)
 				{
-					// Reset window center
-					double xx = 0;
-					double yy = 0;
-					
-					double pWC[ 2];
-					aCamera->GetWindowCenter( pWC);
-					pWC[ 0] *= ([self frame].size.width/2.);
-					pWC[ 1] *= ([self frame].size.height/2.);
-					
-					if( pWC[ 0] != xx && pWC[ 1] != yy)
+					if( keep3DRotateCentered == NO)
 					{
-						aCamera->SetWindowCenter( 0, 0);
-						[self panX: ([self frame].size.width/2.) -(pWC[ 0] - xx)*10000. Y: ([self frame].size.height/2.) -(pWC[ 1] - yy) *10000.];
+						// Reset window center
+						double xx = 0;
+						double yy = 0;
+						
+						double pWC[ 2];
+						aCamera->GetWindowCenter( pWC);
+						pWC[ 0] *= ([self frame].size.width/2.);
+						pWC[ 1] *= ([self frame].size.height/2.);
+						
+						if( pWC[ 0] != xx && pWC[ 1] != yy)
+						{
+							aCamera->SetWindowCenter( 0, 0);
+							[self panX: ([self frame].size.width/2.) -(pWC[ 0] - xx)*10000. Y: ([self frame].size.height/2.) -(pWC[ 1] - yy) *10000.];
+						}
 					}
 					
 					[self setNeedsDisplay:YES];
@@ -3446,18 +3449,21 @@ public:
 				
 				if( clipRangeActivated)
 				{
-					double xx = -(mouseLocPre.x - [self frame].size.width/2.);
-					double yy = -(mouseLocPre.y - [self frame].size.height/2.);
-					
-					double pWC[ 2];
-					aCamera->GetWindowCenter( pWC);
-					pWC[ 0] *= ([self frame].size.width/2.);
-					pWC[ 1] *= ([self frame].size.height/2.);
-					
-					if( pWC[ 0] != xx && pWC[ 1] != yy)
+					if( keep3DRotateCentered == NO)
 					{
-						aCamera->SetWindowCenter( xx / ([self frame].size.width/2.), yy / ([self frame].size.height/2.));
-						[self panX: ([self frame].size.width/2.) -(pWC[ 0] - xx)*10000. Y: ([self frame].size.height/2.) -(pWC[ 1] - yy) *10000.];
+						double xx = -(mouseLocPre.x - [self frame].size.width/2.);
+						double yy = -(mouseLocPre.y - [self frame].size.height/2.);
+						
+						double pWC[ 2];
+						aCamera->GetWindowCenter( pWC);
+						pWC[ 0] *= ([self frame].size.width/2.);
+						pWC[ 1] *= ([self frame].size.height/2.);
+						
+						if( pWC[ 0] != xx && pWC[ 1] != yy)
+						{
+							aCamera->SetWindowCenter( xx / ([self frame].size.width/2.), yy / ([self frame].size.height/2.));
+							[self panX: ([self frame].size.width/2.) -(pWC[ 0] - xx)*10000. Y: ([self frame].size.height/2.) -(pWC[ 1] - yy) *10000.];
+						}
 					}
 				}
 			}
@@ -6442,7 +6448,9 @@ public:
 	
 	// creation of the Camera
 	Camera *cam = [[Camera alloc] init];
-	[cam setPosition: [[[Point3D alloc] initWithValues:pos[0] :pos[1] :pos[2]] autorelease]];
+	Point3D *pt = [[[Point3D alloc] initWithValues:pos[0] :pos[1] :pos[2]] autorelease];
+	
+	[cam setPosition: pt];
 	[cam setFocalPoint: [[[Point3D alloc] initWithValues:focal[0] :focal[1] :focal[2]] autorelease]];
 	[cam setViewUp: [[[Point3D alloc] initWithValues:vUp[0] :vUp[1] :vUp[2]] autorelease]];
 	[cam setClippingRangeFrom: clippingRange[0] To: clippingRange[1]];

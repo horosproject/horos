@@ -16,9 +16,11 @@
 #import "VRController.h"
 #import "VRView.h"
 
+static float deg2rad = 3.14159265358979/180.0; 
+
 @implementation MPRDCMView
 
-@synthesize pix, camera;
+@synthesize pix, camera, angleMPR;
 
 - (void) setDCMPixList:(NSMutableArray*)pixList filesList:(NSArray*)files volumeData:(NSData*)volume roiList:(NSMutableArray*)rois firstImage:(short)firstImage type:(char)type reset:(BOOL)reset;
 {
@@ -37,12 +39,10 @@
 	[vrView prepareFullDepthCapture];
 }
 
-- (void) dealloc
+- (void) saveCamera
 {
-	[vrView restoreFullDepthCapture];
 	[camera release];
-	
-	[super dealloc];
+	camera = [[vrView cameraWithThumbnail: NO] retain];
 }
 
 - (void) checkForFrame
@@ -53,6 +53,51 @@
 	
 	if( NSEqualRects( frame, [vrView frame]) == NO)
 		[vrView setFrame: frame];
+}
+
+- (void) restoreCamera
+{
+	[self checkForFrame];
+	[vrView setCamera: camera];
+}
+
+- (void) dealloc
+{
+	[vrView restoreFullDepthCapture];
+	[camera release];
+	
+	[super dealloc];
+}
+
+- (void) computeAngleMPR: (BOOL) A
+{
+	float v[ 2];
+	float width = [self frame].size.width/2;
+	float height = [self frame].size.height/2;
+	
+	if( A)
+	{
+		v[ 0] = crossLinesA[ 0][ 0] - crossLinesA[ 1][ 0];
+		v[ 1] = crossLinesA[ 0][ 1] - crossLinesA[ 1][ 1];
+	}
+	else
+	{
+		v[ 0] = crossLinesB[ 0][ 0] - crossLinesB[ 1][ 0];
+		v[ 1] = crossLinesB[ 0][ 1] - crossLinesB[ 1][ 1];
+	}
+	double length = sqrt(v[0]*v[0] + v[1]*v[1]);
+	
+	if( length != 0 && v[0] != 0)
+	{
+		v[ 0] /= length;
+		v[ 1] /= length;
+		
+		angleMPR = acos( v[ 0]) / deg2rad;
+		
+		if( v[ 1] < 0)
+			angleMPR = 270 - angleMPR;
+	}
+	else angleMPR = 0;
 }
 
 - (void) updateView
@@ -66,8 +111,7 @@
 	
 	float *imagePtr = [vrView imageInFullDepthWidth: &w height: &h];
 	
-	[camera release];
-	camera = [[vrView cameraWithThumbnail: NO] retain];
+	[self saveCamera];
 	
 	if( imagePtr)
 	{
@@ -135,8 +179,7 @@
 
 - (void)scrollWheel:(NSEvent *)theEvent
 {
-	[self checkForFrame];
-	[vrView setCamera: camera];
+	[self restoreCamera];
 	
 	[vrView scrollWheel: theEvent];
 	
@@ -145,8 +188,7 @@
 
 - (void)rightMouseDown:(NSEvent *)theEvent
 {
-	[self checkForFrame];
-	[vrView setCamera: camera];
+	[self restoreCamera];
 	
 	[vrView rightMouseDown: theEvent];
 	
@@ -155,8 +197,7 @@
 
 - (void)rightMouseDragged:(NSEvent *)theEvent
 {
-	[self checkForFrame];
-	[vrView setCamera: camera];
+	[self restoreCamera];
 	
 	[vrView rightMouseDragged: theEvent];
 	
@@ -165,8 +206,7 @@
 
 - (void)rightMouseUp:(NSEvent *)theEvent
 {
-	[self checkForFrame];
-	[vrView setCamera: camera];
+	[self restoreCamera];
 	
 	[vrView rightMouseUp: theEvent];
 	
@@ -177,8 +217,7 @@
 {
 	long tool = [self getTool: theEvent];
 
-	[self checkForFrame];
-	[vrView setCamera: camera];
+	[self restoreCamera];
 	
 	if( tool == tWL)
 		[super mouseDown: theEvent];
@@ -193,8 +232,7 @@
 {
 	long tool = [self getTool: theEvent];
 	
-	[self checkForFrame];
-	[vrView setCamera: camera];
+	[self restoreCamera];
 	
 	if( tool == tWL)
 		[super mouseUp: theEvent];
@@ -209,8 +247,7 @@
 {
 	long tool = [self getTool: theEvent];
 	
-	[self checkForFrame];
-	[vrView setCamera: camera];
+	[self restoreCamera];
 	
 	if( tool == tWL)
 		[super mouseDragged: theEvent];
