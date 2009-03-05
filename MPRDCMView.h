@@ -34,6 +34,7 @@
 @property (readonly) Camera *camera;
 @property float angleMPR;
 
++ (BOOL)is2DTool:(short)tool;
 - (void) setDCMPixList:(NSMutableArray*)pix filesList:(NSArray*)files volumeData:(NSData*)volume roiList:(NSMutableArray*)rois firstImage:(short)firstImage type:(char)type reset:(BOOL)reset;
 - (void) setVRView: (VRView*) v;
 - (void) updateView;
@@ -41,4 +42,5 @@
 - (void) saveCamera;
 - (void) restoreCamera;
 - (void) computeAngleMPR: (BOOL) A;
+
 @end

@@ -13,13 +13,14 @@
 =========================================================================*/
 
 #import <Cocoa/Cocoa.h>
+#import "OSIWindowController.h"
 #import "MPRDCMView.h"
 #import "VRController.h"
 #import "VRView.h"
 
 @class MPRDCMView;
 
-@interface MPRController : NSWindowController {
+@interface MPRController : OSIWindowController {
 	
 	IBOutlet NSSplitView *topSplitView, *bottomSplitView;
 	IBOutlet NSView *containerFor3DView;
@@ -39,5 +40,8 @@
 
 - (void) computeCrossReferenceLines:(MPRDCMView*) sender;
 - (IBAction)setTool:(id)sender;
+
+- (void)bringToFrontROI:(ROI*) roi;
+
 
 @end

@@ -111,11 +111,15 @@ static float deg2rad = 3.14159265358979/180.0;
 - (IBAction)setTool:(id)sender;
 {
 	NSLog(@"setTool");
-	NSLog(@"sender tag : %d", [sender tag]);
-	NSLog(@"sender tag : %d", [[(NSMatrix*)sender selectedCell] tag]);
+	int toolIndex;
 	
-	int toolIndex = [[(NSMatrix*)sender selectedCell] tag];
+	if([sender isKindOfClass:[NSMatrix class]])
+		toolIndex = [[sender selectedCell] tag];
+	else if([sender respondsToSelector:@selector(tag)])
+		toolIndex = [sender tag];
 	
+	NSLog(@"toolIndex : %d", toolIndex);
+		
 	[mprView1 setCurrentTool:toolIndex];
 	[mprView2 setCurrentTool:toolIndex];
 	[mprView3 setCurrentTool:toolIndex];
@@ -265,4 +269,8 @@ static float deg2rad = 3.14159265358979/180.0;
 	[mprView2 setNeedsDisplay: YES];
 	[mprView3 setNeedsDisplay: YES];
 }
+
+- (void)bringToFrontROI:(ROI*) roi;
+{}
+
 @end

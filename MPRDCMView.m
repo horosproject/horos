@@ -22,6 +22,32 @@ static float deg2rad = 3.14159265358979/180.0;
 
 @synthesize pix, camera, angleMPR;
 
++ (BOOL)is2DTool:(short)tool;
+{
+	switch( tool)
+	{
+		case tWL:
+		case tMesure:
+		case tROI:
+		case tOval:
+		case tOPolygon:
+		case tCPolygon:
+		case tAngle:
+		case tArrow:
+		case tText:
+		case tPencil:
+		case tPlain:
+		case t2DPoint:
+		case tRepulsor:
+		case tLayerROI:
+		case tROISelector:
+			return YES;
+		break;
+	}
+	
+	return NO;
+}
+
 - (void) setDCMPixList:(NSMutableArray*)pixList filesList:(NSArray*)files volumeData:(NSData*)volume roiList:(NSMutableArray*)rois firstImage:(short)firstImage type:(char)type reset:(BOOL)reset;
 {
 	[super setDCM:pixList :files :rois :firstImage :type :reset];
@@ -219,13 +245,13 @@ static float deg2rad = 3.14159265358979/180.0;
 
 	[self restoreCamera];
 	
-	if( tool == tWL)
+	if([MPRDCMView is2DTool:tool])
 		[super mouseDown: theEvent];
 	else
 	{
 		[vrView mouseDown: theEvent];
 		[self updateView];
-	}
+	}	
 }
 
 - (void) mouseUp:(NSEvent *)theEvent
@@ -234,7 +260,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	
 	[self restoreCamera];
 	
-	if( tool == tWL)
+	if([MPRDCMView is2DTool:tool])
 		[super mouseUp: theEvent];
 	else
 	{
@@ -249,7 +275,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	
 	[self restoreCamera];
 	
-	if( tool == tWL)
+	if([MPRDCMView is2DTool:tool])
 		[super mouseDragged: theEvent];
 	else
 	{
@@ -257,5 +283,6 @@ static float deg2rad = 3.14159265358979/180.0;
 		[self updateView];
 	}
 }
+
 @end
  
