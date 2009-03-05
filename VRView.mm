@@ -291,6 +291,18 @@ public:
 
 @synthesize clipRangeActivated, projectionMode, clippingRangeThickness, keep3DRotateCentered;
 
+- (float) scale
+{
+	return aCamera->GetParallelScale();
+}
+
+- (void) setScale:(float) s
+{
+	aCamera->SetParallelScale( s);
+	
+	[self setNeedsDisplay: YES];
+}
+
 - (void) checkInVolume
 {
 	if( clipRangeActivated)
@@ -2426,7 +2438,7 @@ public:
 {
 	if( aCamera && aCamera->GetParallelProjection())
 	{
-		double			point1[ 4] = { 0, 0, 0, 0}, point2[ 4] = { 1, 0, 0, 0};
+		double point1[ 4] = { 0, 0, 0, 0}, point2[ 4] = { 1, 0, 0, 0};
 		
 		aRenderer->SetDisplayPoint( point1);
 		aRenderer->DisplayToWorld();
@@ -2448,7 +2460,7 @@ public:
 
 - (void) computeLength
 {
-	vtkPoints		*pts = Line2DData->GetPoints();
+	vtkPoints *pts = Line2DData->GetPoints();
 	
 	if( pts->GetNumberOfPoints() == 2)
 	{
@@ -2556,7 +2568,7 @@ public:
 		
 		float dolly = [theEvent deltaY];
 		
-		dolly /= 40;
+		dolly /= 40.;
 			
 		if( dolly < -0.9) dolly = -0.9;
 		
@@ -6595,7 +6607,7 @@ public:
 	aCamera->SetFocalPoint(focal);
 	//aCamera->SetDistance(distance);
 	// Compute view plane from position and focalPoint
-	//aCamera->ComputeViewPlaneNormal();
+	aCamera->ComputeViewPlaneNormal();
 	aCamera->SetViewUp(vUp);
 	//aCamera->SetClippingRange(clippingRange);
 	aCamera->SetViewAngle(viewAngle);
@@ -6603,7 +6615,10 @@ public:
 	aCamera->SetParallelScale(parallelScale);
 	
 	if( clipRangeActivated)
+	{
+		aCamera->SetDistance( 40.);
 		aCamera->SetClippingRange( 0.0, clippingRangeThickness);
+	}
 	else
 		aRenderer->ResetCameraClippingRange();
 	

@@ -20,7 +20,7 @@ static float deg2rad = 3.14159265358979/180.0;
 
 @implementation MPRDCMView
 
-@synthesize pix, camera, angleMPR;
+@synthesize pix, camera, angleMPR, vrView;
 
 + (BOOL)is2DTool:(short)tool;
 {
@@ -95,37 +95,6 @@ static float deg2rad = 3.14159265358979/180.0;
 	[super dealloc];
 }
 
-- (void) computeAngleMPR: (BOOL) A
-{
-	float v[ 2];
-	float width = [self frame].size.width/2;
-	float height = [self frame].size.height/2;
-	
-	if( A)
-	{
-		v[ 0] = crossLinesA[ 0][ 0] - crossLinesA[ 1][ 0];
-		v[ 1] = crossLinesA[ 0][ 1] - crossLinesA[ 1][ 1];
-	}
-	else
-	{
-		v[ 0] = crossLinesB[ 0][ 0] - crossLinesB[ 1][ 0];
-		v[ 1] = crossLinesB[ 0][ 1] - crossLinesB[ 1][ 1];
-	}
-	double length = sqrt(v[0]*v[0] + v[1]*v[1]);
-	
-	if( length != 0 && v[0] != 0)
-	{
-		v[ 0] /= length;
-		v[ 1] /= length;
-		
-		angleMPR = acos( v[ 0]) / deg2rad;
-		
-		if( v[ 1] < 0)
-			angleMPR = 270 - angleMPR;
-	}
-	else angleMPR = 0;
-}
-
 - (void) updateView
 {
 	long h, w;
@@ -179,11 +148,24 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (void) subDrawRect: (NSRect) r
 {
+	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+	
+	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+	glEnable(GL_BLEND);
+	glEnable(GL_POINT_SMOOTH);
+	glEnable(GL_LINE_SMOOTH);
+	glEnable(GL_POLYGON_SMOOTH);
+			
 	if( crossLinesA[ 0][ 0] != HUGE_VALF)
-		[self drawCrossLines: crossLinesA ctx: [[NSOpenGLContext currentContext] CGLContextObj] green: YES];
+		[self drawCrossLines: crossLinesA ctx: cgl_ctx green: YES];
 	
 	if( crossLinesB[ 0][ 0] != HUGE_VALF)
-		[self drawCrossLines: crossLinesB ctx: [[NSOpenGLContext currentContext] CGLContextObj] green: YES];
+		[self drawCrossLines: crossLinesB ctx: cgl_ctx green: YES];
+		
+	glDisable(GL_LINE_SMOOTH);
+	glDisable(GL_POLYGON_SMOOTH);
+	glDisable(GL_POINT_SMOOTH);
+	glDisable(GL_BLEND);
 }
 
 - (void) setCrossReferenceLines: (float[2][3]) a and: (float[2][3]) b
@@ -205,6 +187,9 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (void)scrollWheel:(NSEvent *)theEvent
 {
+	if( [[self window] firstResponder] != self)
+		[[self window] makeFirstResponder: self];
+		
 	[self restoreCamera];
 	
 	[vrView scrollWheel: theEvent];
@@ -214,6 +199,9 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (void)rightMouseDown:(NSEvent *)theEvent
 {
+	if( [[self window] firstResponder] != self)
+		[[self window] makeFirstResponder: self];
+
 	[self restoreCamera];
 	
 	[vrView rightMouseDown: theEvent];
@@ -241,12 +229,18 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (void) mouseDown:(NSEvent *)theEvent
 {
+	if( [[self window] firstResponder] != self)
+		[[self window] makeFirstResponder: self];
+
 	long tool = [self getTool: theEvent];
 
 	[self restoreCamera];
 	
 	if([MPRDCMView is2DTool:tool])
+	{
 		[super mouseDown: theEvent];
+		[windowController propagateWLWW: self];
+	}
 	else
 	{
 		[vrView mouseDown: theEvent];
@@ -261,7 +255,10 @@ static float deg2rad = 3.14159265358979/180.0;
 	[self restoreCamera];
 	
 	if([MPRDCMView is2DTool:tool])
+	{
 		[super mouseUp: theEvent];
+		[windowController propagateWLWW: self];
+	}
 	else
 	{
 		[vrView mouseUp: theEvent];
@@ -276,7 +273,10 @@ static float deg2rad = 3.14159265358979/180.0;
 	[self restoreCamera];
 	
 	if([MPRDCMView is2DTool:tool])
+	{
 		[super mouseDragged: theEvent];
+		[windowController propagateWLWW: self];
+	}
 	else
 	{
 		[vrView mouseDragged: theEvent];

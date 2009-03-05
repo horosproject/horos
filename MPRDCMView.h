@@ -33,6 +33,7 @@
 @property (readonly) DCMPix *pix;
 @property (readonly) Camera *camera;
 @property float angleMPR;
+@property (readonly) VRView *vrView;
 
 + (BOOL)is2DTool:(short)tool;
 - (void) setDCMPixList:(NSMutableArray*)pix filesList:(NSArray*)files volumeData:(NSData*)volume roiList:(NSMutableArray*)rois firstImage:(short)firstImage type:(char)type reset:(BOOL)reset;
@@ -41,6 +42,5 @@
 - (void) setCrossReferenceLines: (float[2][3]) a and: (float[2][3]) b;
 - (void) saveCamera;
 - (void) restoreCamera;
-- (void) computeAngleMPR: (BOOL) A;
 
 @end

@@ -40,7 +40,7 @@
 
 - (void) computeCrossReferenceLines:(MPRDCMView*) sender;
 - (IBAction)setTool:(id)sender;
-
+- (void) propagateWLWW:(MPRDCMView*) sender;
 - (void)bringToFrontROI:(ROI*) roi;
 
 

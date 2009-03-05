@@ -148,6 +148,13 @@ static float deg2rad = 3.14159265358979/180.0;
 	}
 }
 
+- (void) propagateWLWW:(MPRDCMView*) sender
+{
+	[mprView1 setWLWW: [sender curWL] :[sender curWW]];
+	[mprView2 setWLWW: [sender curWL] :[sender curWW]];
+	[mprView3 setWLWW: [sender curWL] :[sender curWW]];
+}
+
 - (void) computeCrossReferenceLines:(MPRDCMView*) sender
 {
 	float a[2][3];
@@ -183,6 +190,8 @@ static float deg2rad = 3.14159265358979/180.0;
 		
 		if( sender == mprView1)
 		{
+			#define VectorLength 10.
+			
 			float angle = mprView1.angleMPR;
 			XYZ vector, rotationVector;
 			rotationVector.x = cos[ 6];	rotationVector.y = cos[ 7];	rotationVector.z = cos[ 8];
@@ -192,10 +201,13 @@ static float deg2rad = 3.14159265358979/180.0;
 			x = position.x + vector.x;	y = position.y + vector.y;	z = position.z + vector.z;
 			mprView2.camera.focalPoint = [Point3D pointWithX:x y:y z:z];
 			
-			vector.x = cos[ 0];	vector.y = cos[ 1];	vector.z = cos[ 2];
+			vector.x = cos[ 0]*VectorLength;	vector.y = cos[ 1]*VectorLength;	vector.z = cos[ 2]*VectorLength;
 			vector =  ArbitraryRotate(vector, angle*deg2rad, rotationVector);
 			x = position.x + vector.x;	y = position.y + vector.y;	z = position.z + vector.z;
 			mprView3.camera.focalPoint = [Point3D pointWithX:x y:y z:z];
+			
+			mprView2.camera.parallelScale = sender.camera.parallelScale;
+			mprView3.camera.parallelScale = sender.camera.parallelScale;
 		}
 		
 		if( sender == mprView2)
@@ -209,28 +221,34 @@ static float deg2rad = 3.14159265358979/180.0;
 			x = position.x + vector.x;	y = position.y + vector.y;	z = position.z + vector.z;
 			mprView3.camera.focalPoint = [Point3D pointWithX:x y:y z:z];
 			
-			vector.x = cos[ 0];	vector.y = cos[ 1];	vector.z = cos[ 2];
+			vector.x = cos[ 0]*VectorLength;	vector.y = cos[ 1]*VectorLength;	vector.z = cos[ 2]*VectorLength;
 			vector =  ArbitraryRotate(vector, angle*deg2rad, rotationVector);
 			x = position.x + vector.x;	y = position.y + vector.y;	z = position.z + vector.z;
 			mprView1.camera.focalPoint = [Point3D pointWithX:x y:y z:z];
+			
+			mprView3.camera.parallelScale = sender.camera.parallelScale;
+			mprView1.camera.parallelScale = sender.camera.parallelScale;
 		}
 		
-//		if( sender == mprView3)
-//		{
-//			float angle = mprView3.angleMPR;
-//			XYZ vector, rotationVector;
-//			rotationVector.x = cos[ 6];	rotationVector.y = cos[ 7];	rotationVector.z = cos[ 8];
-//			
-//			vector.x = cos[ 3];	vector.y = cos[ 4];	vector.z = cos[ 5];
-//			vector =  ArbitraryRotate(vector, angle*deg2rad, rotationVector);
-//			x = position.x + vector.x;	y = position.y + vector.y;	z = position.z + vector.z;
-//			mprView2.camera.focalPoint = [Point3D pointWithX:x y:y z:z];
-//			
-//			vector.x = cos[ 0];	vector.y = cos[ 1];	vector.z = cos[ 2];
-//			vector =  ArbitraryRotate(vector, angle*deg2rad, rotationVector);
-//			x = position.x + vector.x;	y = position.y + vector.y;	z = position.z + vector.z;
-//			mprView1.camera.focalPoint = [Point3D pointWithX:x y:y z:z];
-//		}
+		if( sender == mprView3)
+		{
+			float angle = mprView3.angleMPR;
+			XYZ vector, rotationVector;
+			rotationVector.x = cos[ 6];	rotationVector.y = cos[ 7];	rotationVector.z = cos[ 8];
+			
+			vector.x = cos[ 3];	vector.y = cos[ 4];	vector.z = cos[ 5];
+			vector =  ArbitraryRotate(vector, angle*deg2rad, rotationVector);
+			x = position.x + vector.x;	y = position.y + vector.y;	z = position.z + vector.z;
+			mprView2.camera.focalPoint = [Point3D pointWithX:x y:y z:z];
+			
+			vector.x = -cos[ 0]*VectorLength;	vector.y = -cos[ 1]*VectorLength;	vector.z = -cos[ 2]*VectorLength;
+			vector =  ArbitraryRotate(vector, angle*deg2rad, rotationVector);
+			x = position.x + vector.x;	y = position.y + vector.y;	z = position.z + vector.z;
+			mprView1.camera.focalPoint = [Point3D pointWithX:x y:y z:z];
+			
+			mprView2.camera.parallelScale = sender.camera.parallelScale;
+			mprView1.camera.parallelScale = sender.camera.parallelScale;
+		}
 		
 		if( sender != mprView1)
 		{
@@ -252,16 +270,50 @@ static float deg2rad = 3.14159265358979/180.0;
 		
 		if( sender == mprView1)
 		{
-//			[mprView1 computeAngleMPR: YES];
-//			[mprView2 computeAngleMPR: YES];
-//			
-//			NSLog( @"mpr1 : %2.2f", mprView1.angleMPR);
-//			NSLog( @"mpr2 : %2.2f", mprView2.angleMPR);
+			float o[ 9], orientation[ 9], sc[ 2];
+			[sender.pix orientation: o];
+			
+			[mprView2.pix orientation: orientation];
+			sc[ 0 ] = o[ 6 ] * orientation[ 0 ] + o[ 7 ] * orientation[ 1 ] + o[ 8 ] * orientation[ 2 ];
+			sc[ 1 ] = o[ 6 ] * orientation[ 3 ] + o[ 7 ] * orientation[ 4 ] + o[ 8 ] * orientation[ 5 ];
+			mprView2.angleMPR = (atan2( sc[1], sc[0]) - atan2(0, 1)) / deg2rad;
+			
+			[mprView3.pix orientation: orientation];
+			sc[ 0 ] = o[ 6 ] * orientation[ 0 ] + o[ 7 ] * orientation[ 1 ] + o[ 8 ] * orientation[ 2 ];
+			sc[ 1 ] = o[ 6 ] * orientation[ 3 ] + o[ 7 ] * orientation[ 4 ] + o[ 8 ] * orientation[ 5 ];
+			mprView3.angleMPR = ((atan2( sc[1], sc[0]) - atan2(0, 1)) / deg2rad) - 180.;
 		}
 		
 		if( sender == mprView2)
 		{
-//			[mprView1 computeAngleMPR: NO];
+			float o[ 9], orientation[ 9], sc[ 2];
+			[sender.pix orientation: o];
+			
+			[mprView1.pix orientation: orientation];
+			sc[ 0 ] = o[ 6 ] * orientation[ 0 ] + o[ 7 ] * orientation[ 1 ] + o[ 8 ] * orientation[ 2 ];
+			sc[ 1 ] = o[ 6 ] * orientation[ 3 ] + o[ 7 ] * orientation[ 4 ] + o[ 8 ] * orientation[ 5 ];
+			mprView1.angleMPR = ((atan2( sc[1], sc[0]) - atan2(0, 1)) / deg2rad) - 90.;
+			
+			[mprView3.pix orientation: orientation];
+			sc[ 0 ] = o[ 6 ] * orientation[ 0 ] + o[ 7 ] * orientation[ 1 ] + o[ 8 ] * orientation[ 2 ];
+			sc[ 1 ] = o[ 6 ] * orientation[ 3 ] + o[ 7 ] * orientation[ 4 ] + o[ 8 ] * orientation[ 5 ];
+			mprView3.angleMPR = ((atan2( sc[1], sc[0]) - atan2(0, 1)) / deg2rad) - 90.;
+		}
+		
+		if( sender == mprView3)
+		{
+			float o[ 9], orientation[ 9], sc[ 2];
+			[sender.pix orientation: o];
+			
+			[mprView1.pix orientation: orientation];
+			sc[ 0 ] = o[ 6 ] * orientation[ 0 ] + o[ 7 ] * orientation[ 1 ] + o[ 8 ] * orientation[ 2 ];
+			sc[ 1 ] = o[ 6 ] * orientation[ 3 ] + o[ 7 ] * orientation[ 4 ] + o[ 8 ] * orientation[ 5 ];
+			mprView1.angleMPR = ((atan2( sc[1], sc[0]) - atan2(0, 1)) / deg2rad);
+			
+			[mprView2.pix orientation: orientation];
+			sc[ 0 ] = o[ 6 ] * orientation[ 0 ] + o[ 7 ] * orientation[ 1 ] + o[ 8 ] * orientation[ 2 ];
+			sc[ 1 ] = o[ 6 ] * orientation[ 3 ] + o[ 7 ] * orientation[ 4 ] + o[ 8 ] * orientation[ 5 ];
+			mprView2.angleMPR = ((atan2( sc[1], sc[0]) - atan2(0, 1)) / deg2rad) - 90.;
 		}
 	}
 		
