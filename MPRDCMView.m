@@ -78,9 +78,13 @@
 		}
 		else
 		{
+			[pix setNeedToCompute8bitRepresentation: YES];
+			[pix kill8bitsImage];
+			
 			[pix setfImage: imagePtr];
 			[pix setPwidth: w];
 			[pix setPheight: h];
+			
 			[self setIndex: 0];
 		}
 		
