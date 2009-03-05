@@ -94,6 +94,7 @@ static NSString *albumDragType = @"Osirix Album drag";
 static BOOL loadingIsOver = NO;
 static NSMenu *contextual = nil;
 static NSMenu *contextualRT = nil;  // Alternate menus for RT objects (which often don't have images)
+static int DicomDirScanDepth;
 
 extern void compressJPEG (int inQuality, char* filename, unsigned char* inImageBuffP, int inImageHeight, int inImageWidth, int monochrome);
 extern BOOL hasMacOSXTiger();
@@ -12451,7 +12452,7 @@ static NSArray*	openSubSeriesArray = nil;
 	[deleteQueue unlock];
 }
 
-- (NSString*)_findFirstDicomdirOnCDMedia: (NSString*)startDirectory found: (BOOL)found
++ (NSString*)_findFirstDicomdirOnCDMedia: (NSString*)startDirectory found: (BOOL)found
 {
 	DicomDirScanDepth++;
 	
@@ -12475,7 +12476,7 @@ static NSArray*	openSubSeriesArray = nil;
 			if ([fileManager fileExistsAtPath:filePath isDirectory:&isDirectory] )
 			{
 				if(isDirectory == YES && DicomDirScanDepth < 3)	{
-					if((filePath = [self _findFirstDicomdirOnCDMedia: filePath found:found]) != nil)
+					if((filePath = [BrowserController _findFirstDicomdirOnCDMedia: filePath found:found]) != nil)
 						return filePath;
 				}
 			}
@@ -12499,180 +12500,183 @@ static NSArray*	openSubSeriesArray = nil;
 		
 		[[NSWorkspace sharedWorkspace] getFileSystemInfoForPath: mediaPath isRemovable:&isRemovable isWritable:&isWritable isUnmountable:&isUnmountable description:&description type:&type];
 		
-		// hasDICOMDIR ?
+		if( isRemovable == YES)
 		{
-			NSString *aPath = mediaPath;
-			NSDirectoryEnumerator *enumer = [[NSFileManager defaultManager] enumeratorAtPath:aPath];
-			
-			if( enumer == nil)
-				aPath = [NSString stringWithFormat:@"/Volumes/Untitled"];
-			
-			DicomDirScanDepth = 0;
-			aPath = [self _findFirstDicomdirOnCDMedia: aPath found: FALSE];
-			
-			if( [[NSFileManager defaultManager] fileExistsAtPath:aPath])
-				hasDICOMDIR = YES;
-		}
-		
-		if( isRemovable == YES && hasDICOMDIR == YES)
-		{
-			// ADD ALL FILES OF THIS VOLUME TO THE DATABASE!
-			NSMutableArray  *filesArray = [[[NSMutableArray alloc] initWithCapacity:0] autorelease];
-			
-			found = YES;
-			
-			if ([[NSUserDefaults standardUserDefaults] boolForKey: @"USEDICOMDIR"])
+			// hasDICOMDIR ?
 			{
-				NSString    *aPath = mediaPath;
+				NSString *aPath = mediaPath;
 				NSDirectoryEnumerator *enumer = [[NSFileManager defaultManager] enumeratorAtPath:aPath];
 				
-				if( enumer == nil )
-				{
+				if( enumer == nil)
 					aPath = [NSString stringWithFormat:@"/Volumes/Untitled"];
-					enumer = [[NSFileManager defaultManager] enumeratorAtPath:aPath];
-				}
 				
-				// DICOMDIR should be located at the root level
 				DicomDirScanDepth = 0;
-				aPath = [self _findFirstDicomdirOnCDMedia: aPath found: FALSE];
+				aPath = [BrowserController _findFirstDicomdirOnCDMedia: aPath found: FALSE];
 				
-				if( [[NSFileManager defaultManager] fileExistsAtPath:aPath] )
+				if( [[NSFileManager defaultManager] fileExistsAtPath:aPath])
+					hasDICOMDIR = YES;
+			}
+			
+			if(  hasDICOMDIR == YES)
+			{
+				// ADD ALL FILES OF THIS VOLUME TO THE DATABASE!
+				NSMutableArray  *filesArray = [[[NSMutableArray alloc] initWithCapacity:0] autorelease];
+				
+				found = YES;
+				
+				if ([[NSUserDefaults standardUserDefaults] boolForKey: @"USEDICOMDIR"])
 				{
-					int mode = [[NSUserDefaults standardUserDefaults] integerForKey: @"STILLMOVIEMODE"];
+					NSString    *aPath = mediaPath;
+					NSDirectoryEnumerator *enumer = [[NSFileManager defaultManager] enumeratorAtPath:aPath];
 					
-					@try
+					if( enumer == nil )
 					{
-						[self addDICOMDIR: aPath :filesArray];
+						aPath = [NSString stringWithFormat:@"/Volumes/Untitled"];
+						enumer = [[NSFileManager defaultManager] enumeratorAtPath:aPath];
 					}
 					
-					@catch (NSException *e)
+					// DICOMDIR should be located at the root level
+					DicomDirScanDepth = 0;
+					aPath = [BrowserController _findFirstDicomdirOnCDMedia: aPath found: FALSE];
+					
+					if( [[NSFileManager defaultManager] fileExistsAtPath:aPath] )
 					{
-						NSLog( e.description );
+						int mode = [[NSUserDefaults standardUserDefaults] integerForKey: @"STILLMOVIEMODE"];
+						
+						@try
+						{
+							[self addDICOMDIR: aPath :filesArray];
+						}
+						
+						@catch (NSException *e)
+						{
+							NSLog( e.description );
+						}
+						
+						
+						switch ( mode )
+						{
+							case 0: // ALL FILES
+								
+								break;
+								
+							case 1: //EXCEPT STILL
+								for( int i = 0; i < [filesArray count]; i++ )
+								{
+									if( [[[filesArray objectAtIndex:i] lastPathComponent] isEqualToString:@"STILL"] == YES )
+									{
+										[filesArray removeObjectAtIndex:i];
+										i--;
+									}
+								}
+								break;
+								
+								case 2: //EXCEPT MOVIE
+								for( int i = 0; i < [filesArray count]; i++ )
+								{
+									if( [[[filesArray objectAtIndex:i] lastPathComponent] isEqualToString:@"MOVIE"] == YES )
+									{
+										[filesArray removeObjectAtIndex:i];
+										i--;
+									}
+								}
+								break;
+						}
 					}
-					
-					
-					switch ( mode )
+					else
 					{
-						case 0: // ALL FILES
-							
-							break;
-							
-						case 1: //EXCEPT STILL
-							for( int i = 0; i < [filesArray count]; i++ )
-							{
-								if( [[[filesArray objectAtIndex:i] lastPathComponent] isEqualToString:@"STILL"] == YES )
-								{
-									[filesArray removeObjectAtIndex:i];
-									i--;
-								}
-							}
-							break;
-							
-							case 2: //EXCEPT MOVIE
-							for( int i = 0; i < [filesArray count]; i++ )
-							{
-								if( [[[filesArray objectAtIndex:i] lastPathComponent] isEqualToString:@"MOVIE"] == YES )
-								{
-									[filesArray removeObjectAtIndex:i];
-									i--;
-								}
-							}
-							break;
+						if( sender)
+							NSRunCriticalAlertPanel(NSLocalizedString(@"DICOMDIR",nil), NSLocalizedString(@"No DICOMDIR file has been found on this CD/DVD. Unable to load images.",nil),NSLocalizedString( @"OK",nil), nil, nil);
 					}
 				}
 				else
 				{
-					if( sender)
-						NSRunCriticalAlertPanel(NSLocalizedString(@"DICOMDIR",nil), NSLocalizedString(@"No DICOMDIR file has been found on this CD/DVD. Unable to load images.",nil),NSLocalizedString( @"OK",nil), nil, nil);
-				}
-			}
-			else
-			{
-				NSString    *pathname;
-				NSString    *aPath = mediaPath;
-				NSDirectoryEnumerator *enumer = [[NSFileManager defaultManager] enumeratorAtPath:aPath];
-				
-				if( enumer == nil )
-				{
-					aPath = [NSString stringWithFormat:@"/Volumes/Untitled"];
-					enumer = [[NSFileManager defaultManager] enumeratorAtPath:aPath];
-				}
-				
-				while (pathname = [enumer nextObject])
-				{
-					NSString * itemPath = [aPath stringByAppendingPathComponent:pathname];
-					id fileType = [[enumer fileAttributes] objectForKey:NSFileType];
+					NSString    *pathname;
+					NSString    *aPath = mediaPath;
+					NSDirectoryEnumerator *enumer = [[NSFileManager defaultManager] enumeratorAtPath:aPath];
 					
-					if ([fileType isEqual:NSFileTypeRegular])
+					if( enumer == nil )
 					{
-						BOOL	addFile = YES;
+						aPath = [NSString stringWithFormat:@"/Volumes/Untitled"];
+						enumer = [[NSFileManager defaultManager] enumeratorAtPath:aPath];
+					}
+					
+					while (pathname = [enumer nextObject])
+					{
+						NSString * itemPath = [aPath stringByAppendingPathComponent:pathname];
+						id fileType = [[enumer fileAttributes] objectForKey:NSFileType];
 						
-						switch ([[NSUserDefaults standardUserDefaults] integerForKey: @"STILLMOVIEMODE"])
+						if ([fileType isEqual:NSFileTypeRegular])
 						{
-						case 0: // ALL FILES
+							BOOL	addFile = YES;
 							
-							break;
-							
-						case 1: //EXCEPT STILL
-							if( [[itemPath lastPathComponent] isEqualToString:@"STILL"] == YES) addFile = NO;
-							break;
-							
-							case 2: //EXCEPT MOVIE
-							if( [[itemPath lastPathComponent] isEqualToString:@"MOVIE"] == YES) addFile = NO;
-							break;
-						}
-						
-						if( [[itemPath lastPathComponent] isEqualToString:@"DICOMDIR"] == YES)
-							addFile = NO;
-						
-						if( [[[itemPath lastPathComponent] uppercaseString] isEqualToString:@".DS_STORE"] == YES)
-							addFile = NO;
-						
-						if( [[itemPath lastPathComponent] length] > 0 && [[itemPath lastPathComponent] characterAtIndex: 0] == '.')
-							addFile = NO;
-						
-						for( NSString *s in [itemPath pathComponents])
-						{
-							NSString *e = [s pathExtension];
-							
-							if( [e isEqualToString:@""] || [[e lowercaseString] isEqualToString:@"dcm"] || [[e lowercaseString] isEqualToString:@"img"] || [[e lowercaseString] isEqualToString:@"im"]  || [[e lowercaseString] isEqualToString:@"dicom"])
+							switch ([[NSUserDefaults standardUserDefaults] integerForKey: @"STILLMOVIEMODE"])
 							{
+							case 0: // ALL FILES
+								
+								break;
+								
+							case 1: //EXCEPT STILL
+								if( [[itemPath lastPathComponent] isEqualToString:@"STILL"] == YES) addFile = NO;
+								break;
+								
+								case 2: //EXCEPT MOVIE
+								if( [[itemPath lastPathComponent] isEqualToString:@"MOVIE"] == YES) addFile = NO;
+								break;
 							}
-							else
-							{
+							
+							if( [[itemPath lastPathComponent] isEqualToString:@"DICOMDIR"] == YES)
 								addFile = NO;
+							
+							if( [[[itemPath lastPathComponent] uppercaseString] isEqualToString:@".DS_STORE"] == YES)
+								addFile = NO;
+							
+							if( [[itemPath lastPathComponent] length] > 0 && [[itemPath lastPathComponent] characterAtIndex: 0] == '.')
+								addFile = NO;
+							
+							for( NSString *s in [itemPath pathComponents])
+							{
+								NSString *e = [s pathExtension];
+								
+								if( [e isEqualToString:@""] || [[e lowercaseString] isEqualToString:@"dcm"] || [[e lowercaseString] isEqualToString:@"img"] || [[e lowercaseString] isEqualToString:@"im"]  || [[e lowercaseString] isEqualToString:@"dicom"])
+								{
+								}
+								else
+								{
+									addFile = NO;
+								}
 							}
+							
+							if( addFile) [filesArray addObject:itemPath];
+							else NSLog(@"skip this file: %@", [itemPath lastPathComponent]);
 						}
+					}
+					
+				}
+				
+				[self autoCleanDatabaseFreeSpace: self];
+				
+				NSMutableArray	*newfilesArray = [self copyFilesIntoDatabaseIfNeeded:filesArray async: YES];
+				
+				if( newfilesArray == filesArray)
+				{
+					mountedVolume = YES;
+					NSArray	*newImages = [self addFilesToDatabase:filesArray :YES];
+					mountedVolume = NO;
+					
+					[self outlineViewRefresh];
+					
+					if( [newImages count] > 0)
+					{
+						NSManagedObject		*object = [[newImages objectAtIndex: 0] valueForKeyPath:@"series.study"];
 						
-						if( addFile) [filesArray addObject:itemPath];
-						else NSLog(@"skip this file: %@", [itemPath lastPathComponent]);
+						[databaseOutline selectRow: [databaseOutline rowForItem: object] byExtendingSelection: NO];
+						[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
 					}
 				}
 				
+				[self autoCleanDatabaseFreeSpace: self];
 			}
-			
-			[self autoCleanDatabaseFreeSpace: self];
-			
-			NSMutableArray	*newfilesArray = [self copyFilesIntoDatabaseIfNeeded:filesArray async: YES];
-			
-			if( newfilesArray == filesArray)
-			{
-				mountedVolume = YES;
-				NSArray	*newImages = [self addFilesToDatabase:filesArray :YES];
-				mountedVolume = NO;
-				
-				[self outlineViewRefresh];
-				
-				if( [newImages count] > 0)
-				{
-					NSManagedObject		*object = [[newImages objectAtIndex: 0] valueForKeyPath:@"series.study"];
-					
-					[databaseOutline selectRow: [databaseOutline rowForItem: object] byExtendingSelection: NO];
-					[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
-				}
-			}
-			
-			[self autoCleanDatabaseFreeSpace: self];
 		}
 	}
 	
@@ -12720,16 +12724,28 @@ static NSArray*	openSubSeriesArray = nil;
 			NSLog( mediaPath );
 			if( [[mediaPath commonPrefixWithString: path options: NSCaseInsensitiveSearch] isEqualToString: mediaPath] )
 			{
-				BOOL		isWritable, isUnmountable, isRemovable;
+				BOOL		isWritable, isUnmountable, isRemovable, hasDICOMDIR = NO;
 				NSString	*description, *type;
 				
 				[[NSWorkspace sharedWorkspace] getFileSystemInfoForPath: mediaPath isRemovable:&isRemovable isWritable:&isWritable isUnmountable:&isUnmountable description:&description type:&type];
 				
-				NSLog( path );
-				
-				if( isRemovable == YES && isWritable == NO )
+				if( isRemovable == YES)
 				{
-					return YES;
+					// hasDICOMDIR ?
+					NSString *aPath = mediaPath;
+					NSDirectoryEnumerator *enumer = [[NSFileManager defaultManager] enumeratorAtPath:aPath];
+					
+					if( enumer == nil)
+						aPath = [NSString stringWithFormat:@"/Volumes/Untitled"];
+					
+					DicomDirScanDepth = 0;
+					aPath = [BrowserController _findFirstDicomdirOnCDMedia: aPath found: FALSE];
+					
+					if( [[NSFileManager defaultManager] fileExistsAtPath:aPath])
+						hasDICOMDIR = YES;
+						
+					if(  hasDICOMDIR == YES)
+						return YES;
 				}
 			}
 		}
@@ -14909,6 +14925,12 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[self displayBonjourServices];
 	}
 	
+	
+	if( [BrowserController isItCD: sNewDrive] == YES)
+		checkForMountedFiles = YES;
+	else
+		checkForMountedFiles = NO;
+	
 	//Are we currently copying files from a CD (separate thread?) -> stop it !
 	copyThread = NO;
 }
@@ -14919,6 +14941,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	NSRange		range;
 	
 	if( isCurrentDatabaseBonjour) return;
+	if( checkForMountedFiles == NO) return;
 	
 	NSLog(@"volume unmounted");
 	
@@ -14934,7 +14957,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	NSManagedObjectContext		*context = self.managedObjectContext;
 	NSManagedObjectModel		*model = self.managedObjectModel;
 	
-	if( [context tryLock] )
+	if( [context tryLock])
 	{
 		[context retain];
 		

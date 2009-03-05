@@ -232,14 +232,14 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	BOOL							rtstructProgressBar;
 	float							rtstructProgressPercent;
 	
-	int								DicomDirScanDepth;
-	
 	BOOL							avoidRecursive;
 	
 	IBOutlet PluginManagerController *pluginManagerController;
 	NSTimeInterval					lastCheckIncoming;
 	
 	WaitRendering					*waitOpeningWindow;
+	
+	BOOL							checkForMountedFiles;
 }
 
 @property(readonly) NSDateFormatter *DateTimeFormat;
@@ -387,7 +387,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (IBAction) ReBuildDatabaseSheet: (id)sender;
 - (void) previewSliderAction:(id) sender;
 - (void) addHelpMenu;
-- (NSString*) _findFirstDicomdirOnCDMedia: (NSString*)startDirectory found:(BOOL) found;
++ (NSString*) _findFirstDicomdirOnCDMedia: (NSString*)startDirectory found:(BOOL) found;
 + (BOOL)isItCD:(NSString*) path;
 - (void)storeSCPComplete:(id)sender;
 - (NSMutableArray *) filesForDatabaseOutlineSelection :(NSMutableArray*) correspondingDicomFile;

@@ -5923,11 +5923,18 @@ static ViewerController *draggedController = nil;
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"onlyDisplayImagesOfSamePatient"])
 	{
 		NSString *curPatientUID = [[fileList[0] objectAtIndex:0] valueForKeyPath:@"series.study.patientUID"];
+		NSString *curPatientID = [[fileList[0] objectAtIndex:0] valueForKeyPath:@"series.study.patientID"];
 		
 		for( ViewerController *v in [ViewerController getDisplayed2DViewers])
 		{
-			if( [curPatientUID isEqualToString: [[[v fileList] objectAtIndex:0] valueForKeyPath:@"series.study.patientUID"]] == NO)
-				[[v window] close];
+			NSString *pUID = [[[v fileList] objectAtIndex:0] valueForKeyPath:@"series.study.patientUID"];
+			NSString *pID = [[[v fileList] objectAtIndex:0] valueForKeyPath:@"series.study.patientID"];
+			
+			if( [curPatientUID isEqualToString: pUID] == NO)
+			{
+				if( [curPatientID isEqualToString: pID] == NO)
+					[[v window] close];
+			}
 		}
 	}
 	
