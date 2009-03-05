@@ -153,7 +153,6 @@ static 	NSMutableDictionary *associatedScreen = nil;
 					[[self window] orderBack:self];
 					NSLog( @"problem.... ToolbarPanel.m");
 				}
-	//			NSLog(@"show toolbar");
 			}
 			else
 			{
@@ -163,11 +162,6 @@ static 	NSMutableDictionary *associatedScreen = nil;
 			}
 		}
 	}
-//	else
-//	{
-//		[[self window] orderOut:self];
-//		NSLog(@"hide toolbar");
-//	}
 	
 	[[self window] setFrame:[[self window] frame] display:YES];
 }

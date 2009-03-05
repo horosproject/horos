@@ -7057,31 +7057,35 @@ static NSArray*	statesArray = nil;
 					}
 					else
 					{
-						// CREATE AN EMPTY SERIES !!!!
+						// Close the view
 						
-						NSMutableArray  *viewerPix = [[NSMutableArray alloc] initWithCapacity:0];
-						NSMutableArray  *filesAr = [[NSMutableArray alloc] initWithCapacity:0];
-						float			*fVolumePtr = nil;
-						NSData			*volumeData = nil;
-						NSString		*path = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Empty.tif"];
+						[vc close];
 						
-						NSDictionary	*curFile = [NSDictionary dictionaryWithObjectsAndKeys:path, @"completePath", @"xxx", @"uniqueFilename", @"OT", @"modality", nil];
-						[filesAr addObject: curFile];
-						
-						fVolumePtr = malloc(100 * 100 * sizeof(float));
-						
-						DCMPix *dcmPix = [[DCMPix alloc] myinit:path :0 :1 :fVolumePtr :0 :0];
-						[viewerPix addObject: dcmPix];
-						[dcmPix release];
-						
-						volumeData = [[NSData alloc] initWithBytesNoCopy:fVolumePtr length:100 * 100 * sizeof(float) freeWhenDone:YES]; 
-						
-						[vc changeImageData:viewerPix :filesAr :volumeData :YES];
-						[vc startLoadImageThread];
-						
-						[volumeData release];
-						[viewerPix release];
-						[filesAr release];
+//						// CREATE AN EMPTY SERIES !!!!
+//						
+//						NSMutableArray  *viewerPix = [[NSMutableArray alloc] initWithCapacity:0];
+//						NSMutableArray  *filesAr = [[NSMutableArray alloc] initWithCapacity:0];
+//						float			*fVolumePtr = nil;
+//						NSData			*volumeData = nil;
+//						NSString		*path = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Empty.tif"];
+//						
+//						NSDictionary	*curFile = [NSDictionary dictionaryWithObjectsAndKeys:path, @"completePath", @"xxx", @"uniqueFilename", @"OT", @"modality", nil];
+//						[filesAr addObject: curFile];
+//						
+//						fVolumePtr = malloc(100 * 100 * sizeof(float));
+//						
+//						DCMPix *dcmPix = [[DCMPix alloc] myinit:path :0 :1 :fVolumePtr :0 :0];
+//						[viewerPix addObject: dcmPix];
+//						[dcmPix release];
+//						
+//						volumeData = [[NSData alloc] initWithBytesNoCopy:fVolumePtr length:100 * 100 * sizeof(float) freeWhenDone:YES]; 
+//						
+//						[vc changeImageData:viewerPix :filesAr :volumeData :YES];
+//						[vc startLoadImageThread];
+//						
+//						[volumeData release];
+//						[viewerPix release];
+//						[filesAr release];
 					}
 					
 					index++;
@@ -12497,7 +12501,8 @@ static NSArray*	openSubSeriesArray = nil;
 		
 		// hasDICOMDIR ?
 		{
-			NSString    *aPath = mediaPath;
+			NSString *aPath = mediaPath;
+			NSDirectoryEnumerator *enumer = [[NSFileManager defaultManager] enumeratorAtPath:aPath];
 			
 			if( enumer == nil)
 				aPath = [NSString stringWithFormat:@"/Volumes/Untitled"];
