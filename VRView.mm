@@ -291,18 +291,6 @@ public:
 
 @synthesize clipRangeActivated, projectionMode, clippingRangeThickness, keep3DRotateCentered;
 
-- (float) scale
-{
-	return aCamera->GetParallelScale();
-}
-
-- (void) setScale:(float) s
-{
-	aCamera->SetParallelScale( s);
-	
-	[self setNeedsDisplay: YES];
-}
-
 - (void) checkInVolume
 {
 	if( clipRangeActivated)
