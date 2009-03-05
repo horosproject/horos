@@ -18,7 +18,7 @@
 
 @implementation MPRDCMView
 
-@synthesize pix;
+@synthesize pix, camera;
 
 - (void) setDCMPixList:(NSMutableArray*)pixList filesList:(NSArray*)files volumeData:(NSData*)volume roiList:(NSMutableArray*)rois firstImage:(short)firstImage type:(char)type reset:(BOOL)reset;
 {
@@ -40,7 +40,7 @@
 - (void) dealloc
 {
 	[vrView restoreFullDepthCapture];
-	[cam release];
+	[camera release];
 	
 	[super dealloc];
 }
@@ -66,8 +66,8 @@
 	
 	float *imagePtr = [vrView imageInFullDepthWidth: &w height: &h];
 	
-	[cam release];
-	cam = [[vrView cameraWithThumbnail: NO] retain];
+	[camera release];
+	camera = [[vrView cameraWithThumbnail: NO] retain];
 	
 	if( imagePtr)
 	{
@@ -100,7 +100,7 @@
 		[self setWLWW: previousWL :previousWW];
 		[self setScaleValue: [vrView imageSampleDistance]];
 		
-		[windowController computeCrossReferenceLines];
+		[windowController computeCrossReferenceLines: self];
 	}
 	
 	[self setNeedsDisplay: YES];
@@ -136,7 +136,7 @@
 - (void)scrollWheel:(NSEvent *)theEvent
 {
 	[self checkForFrame];
-	[vrView setCamera: cam];
+	[vrView setCamera: camera];
 	
 	[vrView scrollWheel: theEvent];
 	
@@ -146,7 +146,7 @@
 - (void)rightMouseDown:(NSEvent *)theEvent
 {
 	[self checkForFrame];
-	[vrView setCamera: cam];
+	[vrView setCamera: camera];
 	
 	[vrView rightMouseDown: theEvent];
 	
@@ -156,7 +156,7 @@
 - (void)rightMouseDragged:(NSEvent *)theEvent
 {
 	[self checkForFrame];
-	[vrView setCamera: cam];
+	[vrView setCamera: camera];
 	
 	[vrView rightMouseDragged: theEvent];
 	
@@ -166,7 +166,7 @@
 - (void)rightMouseUp:(NSEvent *)theEvent
 {
 	[self checkForFrame];
-	[vrView setCamera: cam];
+	[vrView setCamera: camera];
 	
 	[vrView rightMouseUp: theEvent];
 	
@@ -178,7 +178,7 @@
 	long tool = [self getTool: theEvent];
 
 	[self checkForFrame];
-	[vrView setCamera: cam];
+	[vrView setCamera: camera];
 	
 	if( tool == tWL)
 		[super mouseDown: theEvent];
@@ -194,7 +194,7 @@
 	long tool = [self getTool: theEvent];
 	
 	[self checkForFrame];
-	[vrView setCamera: cam];
+	[vrView setCamera: camera];
 	
 	if( tool == tWL)
 		[super mouseUp: theEvent];
@@ -210,7 +210,7 @@
 	long tool = [self getTool: theEvent];
 	
 	[self checkForFrame];
-	[vrView setCamera: cam];
+	[vrView setCamera: camera];
 	
 	if( tool == tWL)
 		[super mouseDragged: theEvent];

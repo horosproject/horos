@@ -22,14 +22,15 @@
 {
 	VRView *vrView;
 	DCMPix *pix;
-	Camera *cam;
+	Camera *camera;
 	MPRController *windowController;
 	
 	float crossLinesA[2][3];
 	float crossLinesB[2][3];
 }
 
-@property (readonly) DCMPix  *pix;
+@property (readonly) DCMPix *pix;
+@property (readonly) Camera *camera;
 
 - (void) setDCMPixList:(NSMutableArray*)pix filesList:(NSArray*)files volumeData:(NSData*)volume roiList:(NSMutableArray*)rois firstImage:(short)firstImage type:(char)type reset:(BOOL)reset;
 - (void) setVRView: (VRView*) v;

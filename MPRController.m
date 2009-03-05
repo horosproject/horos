@@ -161,7 +161,14 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 	[mprView3 setCrossReferenceLines: a and: b];
 	
 	// Center other views on the sender view
-	Camera *cam = [sender camera];
+	if( sender)
+	{
+		Camera *cam = sender.camera;
+		
+		mprView1.camera.position = cam.position;
+		mprView2.camera.position = cam.position;
+		mprView3.camera.position = cam.position;
+	}
 	
 	[mprView1 setNeedsDisplay: YES];
 	[mprView2 setNeedsDisplay: YES];
