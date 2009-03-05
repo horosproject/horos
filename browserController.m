@@ -12490,12 +12490,26 @@ static NSArray*	openSubSeriesArray = nil;
 	
 	for( NSString *mediaPath in removeableMedia )
 	{
-		BOOL		isWritable, isUnmountable, isRemovable;
+		BOOL		isWritable, isUnmountable, isRemovable, hasDICOMDIR = NO;
 		NSString	*description, *type;
 		
 		[[NSWorkspace sharedWorkspace] getFileSystemInfoForPath: mediaPath isRemovable:&isRemovable isWritable:&isWritable isUnmountable:&isUnmountable description:&description type:&type];
 		
-		if( isRemovable == YES)
+		// hasDICOMDIR ?
+		{
+			NSString    *aPath = mediaPath;
+			
+			if( enumer == nil)
+				aPath = [NSString stringWithFormat:@"/Volumes/Untitled"];
+			
+			DicomDirScanDepth = 0;
+			aPath = [self _findFirstDicomdirOnCDMedia: aPath found: FALSE];
+			
+			if( [[NSFileManager defaultManager] fileExistsAtPath:aPath])
+				hasDICOMDIR = YES;
+		}
+		
+		if( isRemovable == YES && hasDICOMDIR == YES)
 		{
 			// ADD ALL FILES OF THIS VOLUME TO THE DATABASE!
 			NSMutableArray  *filesArray = [[[NSMutableArray alloc] initWithCapacity:0] autorelease];
@@ -12507,18 +12521,13 @@ static NSArray*	openSubSeriesArray = nil;
 				NSString    *aPath = mediaPath;
 				NSDirectoryEnumerator *enumer = [[NSFileManager defaultManager] enumeratorAtPath:aPath];
 				
-				if( enumer ==nil )
+				if( enumer == nil )
 				{
 					aPath = [NSString stringWithFormat:@"/Volumes/Untitled"];
 					enumer = [[NSFileManager defaultManager] enumeratorAtPath:aPath];
 				}
 				
 				// DICOMDIR should be located at the root level
-				// DICOMDIR should be located at the root level
-				// masu 07.10.2005 a Dicomdir is not necessarily in the root.
-				// so search for the firstdicomdir file on disk
-				// !!! on MAC OS X the pathes are casesensitive and in a dicomdir the pathes
-				// are stored in uppercase
 				DicomDirScanDepth = 0;
 				aPath = [self _findFirstDicomdirOnCDMedia: aPath found: FALSE];
 				
@@ -12677,17 +12686,17 @@ static NSArray*	openSubSeriesArray = nil;
 			}
 			else
 			{
-				if( [[[device status] valueForKey: DRDeviceIsBusyKey] boolValue] == NO &&[[[device status] valueForKey: DRDeviceMediaStateKey] isEqualToString:DRDeviceMediaStateNone])
+				if( [[[device status] valueForKey: DRDeviceIsBusyKey] boolValue] == NO && [[[device status] valueForKey: DRDeviceMediaStateKey] isEqualToString:DRDeviceMediaStateNone])
 					[device openTray];
 				else
 				{
-					[appController growlTitle: NSLocalizedString( @"CD/DVD", nil) description: NSLocalizedString(@"Please wait. CD/DVD is loading...", nil) name:@"newfiles"];
+					[appController growlTitle: NSLocalizedString( @"CD/DVD", nil) description: NSLocalizedString(@"Cannot find a valid DICOM CD/DVD format.", nil) name:@"newfiles"];
 					return;
 				}
 			}
 		}
 		
-		NSRunCriticalAlertPanel(NSLocalizedString(@"No CD or DVD has been found...",@"No CD or DVD has been found..."),NSLocalizedString(@"Please insert a DICOM CD or DVD.",@"Please insert a DICOM CD or DVD."), NSLocalizedString(@"OK",nil), nil, nil);
+		NSRunCriticalAlertPanel(NSLocalizedString(@"No CD or DVD has been found...", nil),NSLocalizedString(@"Please insert a DICOM CD or DVD.", nil), NSLocalizedString(@"OK",nil), nil, nil);
 	}
 }
 
