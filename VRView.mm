@@ -4347,6 +4347,11 @@ public:
 	return currentTool;
 }
 
+- (int) _tool
+{
+	return _tool;
+}
+
 - (void) setCurrentTool:(short) i
 {
 	NSLog(@"setCurrentTool: %d", i);

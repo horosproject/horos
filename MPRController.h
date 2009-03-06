@@ -35,6 +35,8 @@
 	short curMovieIndex, maxMovieIndex;
 }
 
++ (double) angleBetweenVector:(float*) a andPlane:(float*) orientation;
+
 - (id)initWithDCMPixList:(NSMutableArray*)pix filesList:(NSMutableArray*)files volumeData:(NSData*)volume viewerController:(ViewerController*)viewer fusedViewerController:(ViewerController*)fusedViewer;
 - (DCMPix*) emptyPix: (DCMPix*) originalPix width: (long) w height: (long) h;
 

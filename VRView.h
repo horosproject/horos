@@ -392,6 +392,7 @@ typedef char* vtkMyCallbackVR;
 -(void) setLOD:(float)f;
 -(void) setCurrentTool:(short) i;
 - (int) currentTool;
+- (int) _tool;
 -(id)initWithFrame:(NSRect)frame;
 -(short)setPixSource:(NSMutableArray*)pix :(float*) volumeData;
 -(void)dealloc;

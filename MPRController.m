@@ -18,6 +18,16 @@ static float deg2rad = 3.14159265358979/180.0;
 
 @implementation MPRController
 
++ (double) angleBetweenVector:(float*) a andPlane:(float*) orientation
+{
+	double sc[ 2];
+	
+	sc[ 0 ] = a[ 0] * orientation[ 0 ] + a[ 1] * orientation[ 1 ] + a[ 2] * orientation[ 2 ];
+	sc[ 1 ] = a[ 0] * orientation[ 3 ] + a[ 1] * orientation[ 4 ] + a[ 2] * orientation[ 5 ];
+	
+	return ((atan2( sc[1], sc[0])) / deg2rad);
+}
+
 - (DCMPix*) emptyPix: (DCMPix*) originalPix width: (long) w height: (long) h
 {
 	long size = sizeof( float) * w * h;
@@ -270,18 +280,15 @@ static float deg2rad = 3.14159265358979/180.0;
 		
 		if( sender == mprView1)
 		{
-			float o[ 9], orientation[ 9], sc[ 2];
+			float o[ 9], orientation[ 9];
+			
 			[sender.pix orientation: o];
 			
 			[mprView2.pix orientation: orientation];
-			sc[ 0 ] = o[ 6 ] * orientation[ 0 ] + o[ 7 ] * orientation[ 1 ] + o[ 8 ] * orientation[ 2 ];
-			sc[ 1 ] = o[ 6 ] * orientation[ 3 ] + o[ 7 ] * orientation[ 4 ] + o[ 8 ] * orientation[ 5 ];
-			mprView2.angleMPR = (atan2( sc[1], sc[0]) - atan2(0, 1)) / deg2rad;
+			mprView2.angleMPR = [MPRController angleBetweenVector: o+6 andPlane:orientation];
 			
 			[mprView3.pix orientation: orientation];
-			sc[ 0 ] = o[ 6 ] * orientation[ 0 ] + o[ 7 ] * orientation[ 1 ] + o[ 8 ] * orientation[ 2 ];
-			sc[ 1 ] = o[ 6 ] * orientation[ 3 ] + o[ 7 ] * orientation[ 4 ] + o[ 8 ] * orientation[ 5 ];
-			mprView3.angleMPR = ((atan2( sc[1], sc[0]) - atan2(0, 1)) / deg2rad) - 180.;
+			mprView3.angleMPR = [MPRController angleBetweenVector: o+6 andPlane:orientation]-180.;
 		}
 		
 		if( sender == mprView2)
@@ -290,14 +297,10 @@ static float deg2rad = 3.14159265358979/180.0;
 			[sender.pix orientation: o];
 			
 			[mprView1.pix orientation: orientation];
-			sc[ 0 ] = o[ 6 ] * orientation[ 0 ] + o[ 7 ] * orientation[ 1 ] + o[ 8 ] * orientation[ 2 ];
-			sc[ 1 ] = o[ 6 ] * orientation[ 3 ] + o[ 7 ] * orientation[ 4 ] + o[ 8 ] * orientation[ 5 ];
-			mprView1.angleMPR = ((atan2( sc[1], sc[0]) - atan2(0, 1)) / deg2rad) - 90.;
+			mprView1.angleMPR = [MPRController angleBetweenVector: o+6 andPlane:orientation]-90.;
 			
 			[mprView3.pix orientation: orientation];
-			sc[ 0 ] = o[ 6 ] * orientation[ 0 ] + o[ 7 ] * orientation[ 1 ] + o[ 8 ] * orientation[ 2 ];
-			sc[ 1 ] = o[ 6 ] * orientation[ 3 ] + o[ 7 ] * orientation[ 4 ] + o[ 8 ] * orientation[ 5 ];
-			mprView3.angleMPR = ((atan2( sc[1], sc[0]) - atan2(0, 1)) / deg2rad) - 90.;
+			mprView3.angleMPR = [MPRController angleBetweenVector: o+6 andPlane:orientation]-90.;
 		}
 		
 		if( sender == mprView3)
@@ -306,14 +309,10 @@ static float deg2rad = 3.14159265358979/180.0;
 			[sender.pix orientation: o];
 			
 			[mprView1.pix orientation: orientation];
-			sc[ 0 ] = o[ 6 ] * orientation[ 0 ] + o[ 7 ] * orientation[ 1 ] + o[ 8 ] * orientation[ 2 ];
-			sc[ 1 ] = o[ 6 ] * orientation[ 3 ] + o[ 7 ] * orientation[ 4 ] + o[ 8 ] * orientation[ 5 ];
-			mprView1.angleMPR = ((atan2( sc[1], sc[0]) - atan2(0, 1)) / deg2rad);
+			mprView1.angleMPR = [MPRController angleBetweenVector: o+6 andPlane:orientation];
 			
 			[mprView2.pix orientation: orientation];
-			sc[ 0 ] = o[ 6 ] * orientation[ 0 ] + o[ 7 ] * orientation[ 1 ] + o[ 8 ] * orientation[ 2 ];
-			sc[ 1 ] = o[ 6 ] * orientation[ 3 ] + o[ 7 ] * orientation[ 4 ] + o[ 8 ] * orientation[ 5 ];
-			mprView2.angleMPR = ((atan2( sc[1], sc[0]) - atan2(0, 1)) / deg2rad) - 90.;
+			mprView2.angleMPR = [MPRController angleBetweenVector: o+6 andPlane:orientation]-90.;
 		}
 	}
 		
