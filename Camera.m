@@ -21,7 +21,7 @@
 
 @synthesize index, position, focalPoint, viewUp, previewImage, is4D, viewAngle, eyeAngle,
 			parallelScale, clippingRangeNear, clippingRangeFar, ww, wl, fusionPercentage,
-			movieIndexIn4D, minCroppingPlanes, maxCroppingPlanes;
+			movieIndexIn4D, minCroppingPlanes, maxCroppingPlanes, windowCenterX, windowCenterY;
 
 
 -(id) init
@@ -70,7 +70,8 @@
 	self.maxCroppingPlanes = c.maxCroppingPlanes;
 	
 	self.fusionPercentage = c.fusionPercentage;
-	
+	self.windowCenterX = c.windowCenterX;
+	self.windowCenterY = c.windowCenterY;
 	self.previewImage = c.previewImage;
 	return self;
 }

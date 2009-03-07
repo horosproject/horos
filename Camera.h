@@ -28,7 +28,7 @@
 	Point3D *position, *viewUp, *focalPoint, *minCroppingPlanes, *maxCroppingPlanes;
 	float clippingRangeNear, clippingRangeFar, viewAngle, eyeAngle, parallelScale;
 	NSImage *previewImage;
-	float wl, ww, fusionPercentage;
+	float wl, ww, fusionPercentage, windowCenterX, windowCenterY;
 	BOOL is4D;
 	long movieIndexIn4D;
 	int index;
@@ -51,6 +51,7 @@
 @property float wl;
 @property float fusionPercentage;
 @property long movieIndexIn4D;
+@property float windowCenterX, windowCenterY;
 
 - (id)init;
 - (id)initWithCamera:(Camera *)c;

@@ -124,9 +124,8 @@ static float deg2rad = 3.14159265358979/180.0;
 			
 			[self setIndex: 0];
 		}
-		
 		float porigin[ 3];
-		[vrView getOrigin: porigin];
+		[vrView getOrigin: porigin windowCentered: YES];
 		[pix setOrigin: porigin];
 		
 		float resolution = [vrView getResolution] * [vrView imageSampleDistance];
@@ -224,7 +223,7 @@ static float deg2rad = 3.14159265358979/180.0;
 }
 
 - (void) setCrossReferenceLines: (float[2][3]) a and: (float[2][3]) b
-{
+{	
 	crossLinesA[ 0][ 0] = a[ 0][ 0];
 	crossLinesA[ 0][ 1] = a[ 0][ 1];
 	crossLinesA[ 0][ 2] = a[ 0][ 2];
@@ -403,13 +402,16 @@ static float deg2rad = 3.14159265358979/180.0;
 	{
 		if( moveCenter)
 		{
-			[vrView setWindowCenter: NSMakePoint( self.frame.size.width/2., self.frame.size.height/2.)];
+			camera.windowCenterX = 0;
+			camera.windowCenterY = 0;
 			[self restoreCamera];
 			[self updateView];
 		}
 		
 		rotateLines = NO;
 		moveCenter = NO;
+		
+		[cursor set];
 	}
 	else
 	{
@@ -478,13 +480,18 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (void) mouseMoved: (NSEvent *) theEvent
 {
-	if( [self mouseOnLines: [self convertPoint:[theEvent locationInWindow] fromView:nil]])
-	{
-		[[NSCursor openHandCursor] set];
-	}
-	else [cursor set];
+	NSView* view = [[[theEvent window] contentView] hitTest:[theEvent locationInWindow]];
 	
-	[super mouseMoved: theEvent];
+	if( view == self)
+	{
+		[super mouseMoved: theEvent];
+		
+		if( [self mouseOnLines: [self convertPoint:[theEvent locationInWindow] fromView:nil]])
+		{
+			[[NSCursor openHandCursor] set];
+		}
+	}
+	else [view mouseMoved:theEvent];
 }
 
 #pragma mark-

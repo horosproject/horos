@@ -2302,6 +2302,11 @@ public:
 
 - (void) getOrigin: (float *) origin
 {
+	return [self getOrigin: origin windowCentered: NO];
+}
+
+- (void) getOrigin: (float *) origin windowCentered:(BOOL) wc
+{
 	double cameraPosition[3];
 	aCamera->GetPosition(cameraPosition);
 	
@@ -2348,9 +2353,12 @@ public:
 	double x = ((double) x1 - (double) renWinSize[ 0]/2.);
 	double y = ((double) y1 - (double) renWinSize[ 1]/2.);
 	
-	NSPoint wC = [self windowCenter];
-	x -= wC.x;
-	y -= wC.y;
+	if( wc)
+	{
+		NSPoint wC = [self windowCenter];
+		x -= wC.x;
+		y -= wC.y;
+	}
 	
 	float cos[ 9];
 	
@@ -6479,7 +6487,9 @@ public:
 	// data extraction from the vtkCamera
 	
 	double pos[3], focal[3], vUp[3];
+	double pWC[ 2];
 	
+	aCamera->GetWindowCenter( pWC);
 	aCamera->GetPosition(pos);
 	aCamera->GetFocalPoint(focal);
 	aCamera->OrthogonalizeViewUp();
@@ -6494,6 +6504,9 @@ public:
 	// creation of the Camera
 	Camera *cam = [[Camera alloc] init];
 	Point3D *pt = [[[Point3D alloc] initWithValues:pos[0] :pos[1] :pos[2]] autorelease];
+	
+	cam.windowCenterX = pWC[ 0];
+	cam.windowCenterY = pWC[ 1];
 	
 	[cam setPosition: pt];
 	[cam setFocalPoint: [[[Point3D alloc] initWithValues:focal[0] :focal[1] :focal[2]] autorelease]];
@@ -6566,7 +6579,9 @@ public:
 {
 	if( cam == nil) return;
 	
-	double pos[3], focal[3], vUp[3];
+	double pos[3], focal[3], vUp[3], pWC[ 2];
+	pWC[0] = cam.windowCenterX;
+	pWC[1] = cam.windowCenterY;
 	pos[0] = [[cam position] x];
 	pos[1] = [[cam position] y];
 	pos[2] = [[cam position] z];
@@ -6636,6 +6651,7 @@ public:
 	if([controller is4D])
 		[controller setMovieFrame:[cam movieIndexIn4D]];
 	
+	aCamera->SetWindowCenter( pWC[0], pWC[1]);
 	aCamera->SetPosition(pos);
 	aCamera->SetFocalPoint(focal);
 	//aCamera->SetDistance(distance);

@@ -7851,7 +7851,7 @@ static ViewerController *draggedController = nil;
 		switch( [contextInfo tag])
 		{
 			case 1: [self MPR2DViewer:contextInfo];		break;  //2DMPR
-//			case 2: [self MPRViewer:contextInfo];		break;  //3DMPR
+			case 10: [self MPRViewer:contextInfo];		break;  //3DMPR
 			case 3: [self VRViewer:contextInfo];		break;  //MIP
 			case 4: [self VRViewer:contextInfo];		break;  //VR
 			case 5: [self SRViewer:contextInfo];		break;  //SR
@@ -16752,6 +16752,7 @@ int i,j,l;
 				break;
 				case 8: [[ReconstructionRoi itemAtIndex: i] setImage: [NSImage imageNamed: @"orthogonalReslice"]];	break;
 				case 9: [[ReconstructionRoi itemAtIndex: i] setImage: [NSImage imageNamed: @"Endoscopy"]];	break;
+				case 10: [[ReconstructionRoi itemAtIndex: i] setImage: [NSImage imageNamed: @"MPR"]];	break;
 			}
 		}
 	}
