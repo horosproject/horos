@@ -483,6 +483,8 @@ static float deg2rad = 3.14159265358979/180.0;
 		[[NSCursor openHandCursor] set];
 	}
 	else [cursor set];
+	
+	[super mouseMoved: theEvent];
 }
 
 #pragma mark-
