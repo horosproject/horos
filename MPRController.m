@@ -94,11 +94,15 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (void) showWindow:(id) sender
 {
-	[mprView1 updateView];
-	[mprView2 updateView];
-	[mprView3 updateView];
+	// Default Init -- To be finished.....
+	[mprView1.vrView saView: self];
+	[mprView1 scrollWheel: [[NSApplication sharedApplication] currentEvent]];
+	mprView2.camera.viewUp = [Point3D pointWithX:0 y:-1 z:0];
+	[[self window] makeFirstResponder: mprView1];
+	[self computeCrossReferenceLines: mprView1];
 	
 	[super showWindow: sender];
+	
 }
 
 - (void) dealloc
@@ -206,8 +210,8 @@ static float deg2rad = 3.14159265358979/180.0;
 			XYZ vector, rotationVector;
 			rotationVector.x = cos[ 6];	rotationVector.y = cos[ 7];	rotationVector.z = cos[ 8];
 			
-			vector.x = cos[ 3];	vector.y = cos[ 4];	vector.z = cos[ 5];
-			vector =  ArbitraryRotate(vector, angle*deg2rad, rotationVector);
+			vector.x = cos[ 3]*VectorLength;	vector.y = cos[ 4]*VectorLength;	vector.z = cos[ 5]*VectorLength;
+			vector =  ArbitraryRotate(vector, (angle-180.)*deg2rad, rotationVector);
 			x = position.x + vector.x;	y = position.y + vector.y;	z = position.z + vector.z;
 			mprView2.camera.focalPoint = [Point3D pointWithX:x y:y z:z];
 			
@@ -226,13 +230,13 @@ static float deg2rad = 3.14159265358979/180.0;
 			XYZ vector, rotationVector;
 			rotationVector.x = cos[ 6];	rotationVector.y = cos[ 7];	rotationVector.z = cos[ 8];
 			
-			vector.x = cos[ 3];	vector.y = cos[ 4];	vector.z = cos[ 5];
+			vector.x = cos[ 3]*VectorLength;	vector.y = cos[ 4]*VectorLength;	vector.z = cos[ 5]*VectorLength;
 			vector =  ArbitraryRotate(vector, angle*deg2rad, rotationVector);
 			x = position.x + vector.x;	y = position.y + vector.y;	z = position.z + vector.z;
 			mprView3.camera.focalPoint = [Point3D pointWithX:x y:y z:z];
 			
 			vector.x = cos[ 0]*VectorLength;	vector.y = cos[ 1]*VectorLength;	vector.z = cos[ 2]*VectorLength;
-			vector =  ArbitraryRotate(vector, angle*deg2rad, rotationVector);
+			vector =  ArbitraryRotate(vector, (angle-180.)*deg2rad, rotationVector);
 			x = position.x + vector.x;	y = position.y + vector.y;	z = position.z + vector.z;
 			mprView1.camera.focalPoint = [Point3D pointWithX:x y:y z:z];
 			
@@ -246,8 +250,8 @@ static float deg2rad = 3.14159265358979/180.0;
 			XYZ vector, rotationVector;
 			rotationVector.x = cos[ 6];	rotationVector.y = cos[ 7];	rotationVector.z = cos[ 8];
 			
-			vector.x = cos[ 3];	vector.y = cos[ 4];	vector.z = cos[ 5];
-			vector =  ArbitraryRotate(vector, angle*deg2rad, rotationVector);
+			vector.x = cos[ 3]*VectorLength;	vector.y = cos[ 4]*VectorLength;	vector.z = cos[ 5]*VectorLength;
+			vector =  ArbitraryRotate(vector, (angle-180.)*deg2rad, rotationVector);
 			x = position.x + vector.x;	y = position.y + vector.y;	z = position.z + vector.z;
 			mprView2.camera.focalPoint = [Point3D pointWithX:x y:y z:z];
 			
@@ -285,7 +289,7 @@ static float deg2rad = 3.14159265358979/180.0;
 			[sender.pix orientation: o];
 			
 			[mprView2.pix orientation: orientation];
-			mprView2.angleMPR = [MPRController angleBetweenVector: o+6 andPlane:orientation];
+			mprView2.angleMPR = [MPRController angleBetweenVector: o+6 andPlane:orientation]-180.;
 			
 			[mprView3.pix orientation: orientation];
 			mprView3.angleMPR = [MPRController angleBetweenVector: o+6 andPlane:orientation]-180.;
@@ -297,10 +301,10 @@ static float deg2rad = 3.14159265358979/180.0;
 			[sender.pix orientation: o];
 			
 			[mprView1.pix orientation: orientation];
-			mprView1.angleMPR = [MPRController angleBetweenVector: o+6 andPlane:orientation]-90.;
+			mprView1.angleMPR = [MPRController angleBetweenVector: o+6 andPlane:orientation]+90.;
 			
 			[mprView3.pix orientation: orientation];
-			mprView3.angleMPR = [MPRController angleBetweenVector: o+6 andPlane:orientation]-90.;
+			mprView3.angleMPR = [MPRController angleBetweenVector: o+6 andPlane:orientation]+90.;
 		}
 		
 		if( sender == mprView3)

@@ -4870,6 +4870,15 @@ public:
 	[self setNeedsDisplay:YES];
 }
 
+-(void) center:(id) sender
+{
+//	float distance = aCamera->GetDistance();
+//	
+//	aCamera->SetPosition( volume->GetCenter());	// vtkVolume
+//	
+//	aCamera->SetDistance( distance);
+}
+
 -(void) saView:(id) sender
 {
 	float distance = aCamera->GetDistance();
@@ -6606,6 +6615,8 @@ public:
 	aCamera->SetViewAngle(viewAngle);
 	aCamera->SetEyeAngle(eyeAngle);
 	aCamera->SetParallelScale(parallelScale);
+	
+//	aCamera->OrthogonalizeViewUp();
 	
 	if( clipRangeActivated)
 	{
