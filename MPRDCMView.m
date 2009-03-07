@@ -185,6 +185,52 @@ static float deg2rad = 3.14159265358979/180.0;
 	crossLinesB[ 1][ 2] = b[ 1][ 2];
 }
 
+#pragma mark-
+#pragma mark Mouse Events	
+
+#define BS 10.
+
+- (int) mouseOnLines: (NSPoint) mouseLocation
+{
+	mouseLocation = [self ConvertFromNSView2GL: mouseLocation];
+	
+	mouseLocation.x *= curDCM.pixelSpacingX;
+	mouseLocation.y *= curDCM.pixelSpacingY;
+	
+	// Intersection of the lines
+	
+	NSPoint a1 = NSMakePoint( crossLinesA[ 0][ 0], crossLinesA[ 0][ 1]);
+	NSPoint a2 = NSMakePoint( crossLinesA[ 1][ 0], crossLinesA[ 1][ 1]);
+	
+	NSPoint b1 = NSMakePoint( crossLinesB[ 0][ 0], crossLinesB[ 0][ 1]);
+	NSPoint b2 = NSMakePoint( crossLinesB[ 1][ 0], crossLinesB[ 1][ 1]);
+	
+	NSPoint r;
+	
+	if( [DCMView intersectionBetweenTwoLinesA1: a1 A2: a2 B1: b1 B2: b2 result: &r])
+	{
+		if( mouseLocation.x > r.x - BS/scaleValue && mouseLocation.x < r.x + BS/scaleValue && mouseLocation.y > r.y - BS/scaleValue && mouseLocation.y < r.y + BS/scaleValue)
+		{
+			return 2;
+		}
+		else
+		{
+			float distance1, distance2;
+			
+			[DCMView DistancePointLine:mouseLocation :a1 :a2 :&distance1];
+			[DCMView DistancePointLine:mouseLocation :b1 :b2 :&distance2];
+			
+			if( distance1 * scaleValue < 10 || distance2 * scaleValue < 10)
+			{
+				return 1;
+			}
+			else [cursor set];
+		}
+	}
+	
+	return 0;
+}
+
 - (void)scrollWheel:(NSEvent *)theEvent
 {
 	if( [[self window] firstResponder] != self)
@@ -293,6 +339,17 @@ static float deg2rad = 3.14159265358979/180.0;
 		[self updateView];
 	}
 }
+
+- (void) mouseMoved: (NSEvent *) theEvent
+{
+	if( [self mouseOnLines: [self convertPoint:[theEvent locationInWindow] fromView:nil]])
+	{
+		if( [theEvent type] == NSLeftMouseDragged || [theEvent type] == NSLeftMouseDown) [[NSCursor closedHandCursor] set];
+		else [[NSCursor openHandCursor] set];
+	}
+}
+
+#pragma mark-
 
 @end
  

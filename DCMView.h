@@ -325,6 +325,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 + (long) lengthOfString:( char *) cstr forFont:(long *)fontSizeArray;
 + (BOOL) intersectionBetweenTwoLinesA1:(NSPoint) a1 A2:(NSPoint) a2 B1:(NSPoint) b1 B2:(NSPoint) b2 result:(NSPoint*) r;
 + (float) Magnitude:( NSPoint) Point1 :(NSPoint) Point2;
++ (int) DistancePointLine: (NSPoint) Point :(NSPoint) startPoint :(NSPoint) endPoint :(float*) Distance;
 - (BOOL) softwareInterpolation;
 - (void) applyImageTransformation;
 - (void) initFont;
