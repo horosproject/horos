@@ -7435,20 +7435,20 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	}
 }
 
-- (void) drawCrossLines:(float[2][3]) sft ctx: (CGLContextObj) cgl_ctx green: (BOOL) green
+- (void) drawCrossLines:(float[2][3]) sft ctx: (CGLContextObj) cgl_ctx
 {
-	if( green)
-		glColor3f (0.0f, 0.6f, 0.0f);
-	else
-		glColor3f (1.0f, 0.6f, 0.0f);
-		
+	return [self drawCrossLines: sft ctx:  cgl_ctx perpendicular: NO];
+}
+
+- (void) drawCrossLines:(float[2][3]) sft ctx: (CGLContextObj) cgl_ctx perpendicular:(BOOL) perpendicular
+{
 	glLineWidth(2.0);
 	glBegin(GL_LINES);
 		glVertex2f( scaleValue*(sft[ 0][ 0]/curDCM.pixelSpacingX-curDCM.pwidth/2.), scaleValue*(sft[ 0][ 1]/curDCM.pixelSpacingY - curDCM.pheight /2.));
 		glVertex2f( scaleValue*(sft[ 1][ 0]/curDCM.pixelSpacingX-curDCM.pwidth/2.), scaleValue*(sft[ 1][ 1]/curDCM.pixelSpacingY - curDCM.pheight /2.));
 	glEnd();
 	
-	if( green)
+	if( perpendicular)
 	{
 		float a[ 2];	// perpendicular vector
 		
@@ -8108,14 +8108,17 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					{
 						if( sliceFromToS[ 0][ 0] != HUGE_VALF)
 						{
-							[self drawCrossLines: sliceFromToS ctx: cgl_ctx green: NO];
-							[self drawCrossLines: sliceFromToE ctx: cgl_ctx green: NO];
+							glColor3f (1.0f, 0.6f, 0.0f);
+							
+							[self drawCrossLines: sliceFromToS ctx: cgl_ctx perpendicular: NO];
+							[self drawCrossLines: sliceFromToE ctx: cgl_ctx perpendicular: NO];
 						}
 						
-						[self drawCrossLines: sliceFromTo ctx: cgl_ctx green: YES];
+						glColor3f (0.0f, 0.6f, 0.0f);
+						[self drawCrossLines: sliceFromTo ctx: cgl_ctx perpendicular: YES];
 						
 						if( sliceFromTo2[ 0][ 0] != HUGE_VALF)
-							[self drawCrossLines: sliceFromTo2 ctx: cgl_ctx green: YES];
+							[self drawCrossLines: sliceFromTo2 ctx: cgl_ctx perpendicular: YES];
 					}
 				}
 				

@@ -494,7 +494,8 @@ typedef char* vtkMyCallbackVR;
 -(void) saViewOpposite:(id) sender;
 - (void) render;
 - (void)zoomMouseUp:(NSEvent *)theEvent;
-
+- (void) setWindowCenter: (NSPoint) loc;
+- (NSPoint) windowCenter;
 
 // export
 - (void) sendMail:(id) sender;

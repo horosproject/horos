@@ -59,8 +59,9 @@ static float deg2rad = 3.14159265358979/180.0;
 	windowController = [self windowController];
 }
 
-- (void) setVRView: (VRView*) v
+- (void) setVRView: (VRView*) v viewID:(int) i
 {
+	viewID = i;
 	vrView = v;
 	[vrView prepareFullDepthCapture];
 }
@@ -145,7 +146,6 @@ static float deg2rad = 3.14159265358979/180.0;
 	[self setNeedsDisplay: YES];
 }
 
-
 - (void) subDrawRect: (NSRect) r
 {
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
@@ -155,13 +155,68 @@ static float deg2rad = 3.14159265358979/180.0;
 	glEnable(GL_POINT_SMOOTH);
 	glEnable(GL_LINE_SMOOTH);
 	glEnable(GL_POLYGON_SMOOTH);
-			
-	if( crossLinesA[ 0][ 0] != HUGE_VALF)
-		[self drawCrossLines: crossLinesA ctx: cgl_ctx green: YES];
 	
-	if( crossLinesB[ 0][ 0] != HUGE_VALF)
-		[self drawCrossLines: crossLinesB ctx: cgl_ctx green: YES];
+	
+	switch( viewID)
+	{
+		case 1:
+			glColor4f (0.0f, 1.0f, 0.0f, 1.0f);
+			if( crossLinesA[ 0][ 0] != HUGE_VALF)
+				[self drawCrossLines: crossLinesA ctx: cgl_ctx];
+			
+			glColor4f (0.0f, 0.0f, 1.0f, 1.0f);
+			if( crossLinesB[ 0][ 0] != HUGE_VALF)
+				[self drawCrossLines: crossLinesB ctx: cgl_ctx];
+		break;
 		
+		case 2:
+			glColor4f (1.0f, 0.0f, 0.0f, 1.0f);
+			if( crossLinesA[ 0][ 0] != HUGE_VALF)
+				[self drawCrossLines: crossLinesA ctx: cgl_ctx];
+			
+			glColor4f (0.0f, 0.0f, 1.0f, 1.0f);
+			if( crossLinesB[ 0][ 0] != HUGE_VALF)
+				[self drawCrossLines: crossLinesB ctx: cgl_ctx];
+		break;
+		
+		case 3:
+			glColor4f (1.0f, 0.0f, 0.0f, 1.0f);
+			if( crossLinesA[ 0][ 0] != HUGE_VALF)
+				[self drawCrossLines: crossLinesA ctx: cgl_ctx];
+			
+			glColor4f (0.0f, 1.0f, 0.0f, 1.0f);
+			if( crossLinesB[ 0][ 0] != HUGE_VALF)
+				[self drawCrossLines: crossLinesB ctx: cgl_ctx];
+		break;
+	}
+	
+	switch( viewID)
+	{
+		case 1:
+			glColor4f (1.0f, 0.0f, 0.0f, 1.0f);
+		break;
+		
+		case 2:
+			glColor4f (0.0f, 1.0f, 0.0f, 1.0f);
+		break;
+		
+		case 3:
+			glColor4f (0.0f, 0.0f, 1.0f, 1.0f);
+		break;
+	}
+	
+	float heighthalf = self.frame.size.height/2 - 1;
+	float widthhalf = self.frame.size.width/2 - 1;
+	
+	glLineWidth(6.0);
+	glBegin(GL_LINE_LOOP);
+		glVertex2f(  -widthhalf, -heighthalf);
+		glVertex2f(  -widthhalf, heighthalf);
+		glVertex2f(  widthhalf, heighthalf);
+		glVertex2f(  widthhalf, -heighthalf);
+	glEnd();
+	glLineWidth(1.0);
+					
 	glDisable(GL_LINE_SMOOTH);
 	glDisable(GL_POLYGON_SMOOTH);
 	glDisable(GL_POINT_SMOOTH);
@@ -324,7 +379,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	else
 	{
 		long tool = [self getTool: theEvent];
-
+		
 		[self restoreCamera];
 		
 		if([MPRDCMView is2DTool:tool])
@@ -346,6 +401,13 @@ static float deg2rad = 3.14159265358979/180.0;
 	
 	if( rotateLines || moveCenter)
 	{
+		if( moveCenter)
+		{
+			[vrView setWindowCenter: NSMakePoint( self.frame.size.width/2., self.frame.size.height/2.)];
+			[self restoreCamera];
+			[self updateView];
+		}
+		
 		rotateLines = NO;
 		moveCenter = NO;
 	}
@@ -380,12 +442,12 @@ static float deg2rad = 3.14159265358979/180.0;
 		
 		angleMPR -= rotateLinesStartAngle;
 		
-		[self restoreCamera];
 		[self updateView];
 	}
 	else if( moveCenter)
 	{
-		
+		[vrView setWindowCenter: [self convertPoint: [theEvent locationInWindow] fromView: nil]];
+		[self updateView];
 	}
 	else
 	{

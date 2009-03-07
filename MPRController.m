@@ -80,13 +80,13 @@ static float deg2rad = 3.14159265358979/180.0;
 	[hiddenVRView setLOD: 2.0];
 	hiddenVRView.keep3DRotateCentered = YES;
 	
-	[mprView1 setVRView: hiddenVRView];
+	[mprView1 setVRView: hiddenVRView viewID: 1];
 	[mprView1 setWLWW: [originalPix wl] :[originalPix ww]];
 	
-	[mprView2 setVRView: hiddenVRView];
+	[mprView2 setVRView: hiddenVRView viewID: 2];
 	[mprView2 setWLWW: [originalPix wl] :[originalPix ww]];
 	
-	[mprView3 setVRView: hiddenVRView];
+	[mprView3 setVRView: hiddenVRView viewID: 3];
 	[mprView3 setWLWW: [originalPix wl] :[originalPix ww]];
 	
 	return self;
