@@ -4698,7 +4698,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			newAngle += 90;
 			newAngle = 360 - newAngle;
 			
-		//	NSLog(@"%2.2f", newAngle);
 			if( switchAngle == -1)
 			{
 				if( fabs( newAngle - angle) > 90 && fabs( newAngle - angle) < 270)
@@ -4708,16 +4707,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				else switchAngle = 0;
 			}
 			
-		//	NSLog(@"AV: old angle: %2.2f new angle: %2.2f", angle, newAngle);
-			
 			if( switchAngle == 1)
 			{
-		//		NSLog(@"switch");
 				newAngle -= 180;
 				if( newAngle < 0) newAngle += 360;
 			}
-			
-		//	NSLog(@"AP: old angle: %2.2f new angle: %2.2f", angle, newAngle);
 			
 			[self setMPRAngle: newAngle];
 		}

@@ -28,6 +28,11 @@
 	
 	float crossLinesA[2][3];
 	float crossLinesB[2][3];
+	
+	BOOL rotateLines;
+	BOOL moveCenter;
+	
+	float rotateLinesStartAngle;
 }
 
 @property (readonly) DCMPix *pix;

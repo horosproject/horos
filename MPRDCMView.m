@@ -190,25 +190,41 @@ static float deg2rad = 3.14159265358979/180.0;
 
 #define BS 10.
 
-- (int) mouseOnLines: (NSPoint) mouseLocation
+- (float) angleBetween:(NSPoint) mouseLocation center:(NSPoint) center
 {
-	mouseLocation = [self ConvertFromNSView2GL: mouseLocation];
+	mouseLocation.x -= center.x;
+	mouseLocation.y -= center.y;
 	
-	mouseLocation.x *= curDCM.pixelSpacingX;
-	mouseLocation.y *= curDCM.pixelSpacingY;
-	
-	// Intersection of the lines
-	
+	return -atan2( mouseLocation.x, mouseLocation.y) / deg2rad;
+}
+
+- (NSPoint) centerLines
+{
 	NSPoint a1 = NSMakePoint( crossLinesA[ 0][ 0], crossLinesA[ 0][ 1]);
 	NSPoint a2 = NSMakePoint( crossLinesA[ 1][ 0], crossLinesA[ 1][ 1]);
 	
 	NSPoint b1 = NSMakePoint( crossLinesB[ 0][ 0], crossLinesB[ 0][ 1]);
 	NSPoint b2 = NSMakePoint( crossLinesB[ 1][ 0], crossLinesB[ 1][ 1]);
 	
-	NSPoint r;
+	NSPoint r = NSMakePoint( 0, 0);
 	
-	if( [DCMView intersectionBetweenTwoLinesA1: a1 A2: a2 B1: b1 B2: b2 result: &r])
+	[DCMView intersectionBetweenTwoLinesA1: a1 A2: a2 B1: b1 B2: b2 result: &r];
+	
+	return r;
+}
+
+- (int) mouseOnLines: (NSPoint) mouseLocation
+{
+	// Intersection of the lines
+	NSPoint r = [self centerLines];
+	
+	if( r.x != 0 || r.y != 0)
 	{
+		mouseLocation = [self ConvertFromNSView2GL: mouseLocation];
+		
+		mouseLocation.x *= curDCM.pixelSpacingX;
+		mouseLocation.y *= curDCM.pixelSpacingY;
+		
 		if( mouseLocation.x > r.x - BS/scaleValue && mouseLocation.x < r.x + BS/scaleValue && mouseLocation.y > r.y - BS/scaleValue && mouseLocation.y < r.y + BS/scaleValue)
 		{
 			return 2;
@@ -217,6 +233,12 @@ static float deg2rad = 3.14159265358979/180.0;
 		{
 			float distance1, distance2;
 			
+			NSPoint a1 = NSMakePoint( crossLinesA[ 0][ 0], crossLinesA[ 0][ 1]);
+			NSPoint a2 = NSMakePoint( crossLinesA[ 1][ 0], crossLinesA[ 1][ 1]);
+			
+			NSPoint b1 = NSMakePoint( crossLinesB[ 0][ 0], crossLinesB[ 0][ 1]);
+			NSPoint b2 = NSMakePoint( crossLinesB[ 1][ 0], crossLinesB[ 1][ 1]);			
+			
 			[DCMView DistancePointLine:mouseLocation :a1 :a2 :&distance1];
 			[DCMView DistancePointLine:mouseLocation :b1 :b2 :&distance2];
 			
@@ -224,7 +246,6 @@ static float deg2rad = 3.14159265358979/180.0;
 			{
 				return 1;
 			}
-			else [cursor set];
 		}
 	}
 	
@@ -247,7 +268,10 @@ static float deg2rad = 3.14159265358979/180.0;
 {
 	if( [[self window] firstResponder] != self)
 		[[self window] makeFirstResponder: self];
-
+	
+	rotateLines = NO;
+	moveCenter = NO;
+	
 	[self restoreCamera];
 	
 	[vrView rightMouseDown: theEvent];
@@ -277,66 +301,116 @@ static float deg2rad = 3.14159265358979/180.0;
 {
 	if( [[self window] firstResponder] != self)
 		[[self window] makeFirstResponder: self];
-
-	long tool = [self getTool: theEvent];
-
-	[self restoreCamera];
 	
-	if([MPRDCMView is2DTool:tool])
+	rotateLines = NO;
+	moveCenter = NO;
+	
+	int mouseOnLines = [self mouseOnLines: [self convertPoint:[theEvent locationInWindow] fromView:nil]];
+	if( mouseOnLines == 2)
 	{
-		[super mouseDown: theEvent];
-		[windowController propagateWLWW: self];
+		moveCenter = YES;
+		[[NSCursor closedHandCursor] set];
+	}
+	else if( mouseOnLines == 1)
+	{
+		rotateLines = YES;
+		
+		NSPoint mouseLocation = [self ConvertFromNSView2GL: [self convertPoint: [theEvent locationInWindow] fromView: nil]];
+		mouseLocation.x *= curDCM.pixelSpacingX;	mouseLocation.y *= curDCM.pixelSpacingY;
+		rotateLinesStartAngle = [self angleBetween: mouseLocation center: [self centerLines]] - angleMPR;
+		
+		[[NSCursor closedHandCursor] set];
 	}
 	else
 	{
-		[vrView mouseDown: theEvent];
-		[self updateView];
-	}	
+		long tool = [self getTool: theEvent];
+
+		[self restoreCamera];
+		
+		if([MPRDCMView is2DTool:tool])
+		{
+			[super mouseDown: theEvent];
+			[windowController propagateWLWW: self];
+		}
+		else
+		{
+			[vrView mouseDown: theEvent];
+			[self updateView];
+		}
+	}
 }
 
 - (void) mouseUp:(NSEvent *)theEvent
 {
-	long tool = [self getTool: theEvent];
-	
 	[self restoreCamera];
 	
-	if([MPRDCMView is2DTool:tool])
+	if( rotateLines || moveCenter)
 	{
-		[super mouseUp: theEvent];
-		[windowController propagateWLWW: self];
+		rotateLines = NO;
+		moveCenter = NO;
 	}
 	else
 	{
-		[vrView mouseUp: theEvent];
-		[self updateView];
+		long tool = [self getTool: theEvent];
+		
+		if([MPRDCMView is2DTool:tool])
+		{
+			[super mouseUp: theEvent];
+			[windowController propagateWLWW: self];
+		}
+		else
+		{
+			[vrView mouseUp: theEvent];
+			[self updateView];
+		}
 	}
 }
 
 - (void) mouseDragged:(NSEvent *)theEvent
 {
-	long tool = [self getTool: theEvent];
-	
 	[self restoreCamera];
 	
-	if([MPRDCMView is2DTool:tool])
+	if( rotateLines)
 	{
-		[super mouseDragged: theEvent];
-		[windowController propagateWLWW: self];
+		[[NSCursor closedHandCursor] set];
+		
+		NSPoint mouseLocation = [self ConvertFromNSView2GL: [self convertPoint: [theEvent locationInWindow] fromView: nil]];
+		mouseLocation.x *= curDCM.pixelSpacingX;	mouseLocation.y *= curDCM.pixelSpacingY;
+		angleMPR = [self angleBetween: mouseLocation center: [self centerLines]];
+		
+		angleMPR -= rotateLinesStartAngle;
+		
+		[self restoreCamera];
+		[self updateView];
+	}
+	else if( moveCenter)
+	{
+		
 	}
 	else
 	{
-		float before[ 9], after[ 9];
-		if( [vrView _tool] == tRotate)
-			[self.pix orientation: before];
+		long tool = [self getTool: theEvent];
 		
-		[vrView mouseDragged: theEvent];
-		
-		if( [vrView _tool] == tRotate)
+		if([MPRDCMView is2DTool:tool])
 		{
-			[vrView getCosMatrix: after];
-			angleMPR -= [MPRController angleBetweenVector: after andPlane: before];
+			[super mouseDragged: theEvent];
+			[windowController propagateWLWW: self];
 		}
-		[self updateView];
+		else
+		{
+			float before[ 9], after[ 9];
+			if( [vrView _tool] == tRotate)
+				[self.pix orientation: before];
+			
+			[vrView mouseDragged: theEvent];
+			
+			if( [vrView _tool] == tRotate)
+			{
+				[vrView getCosMatrix: after];
+				angleMPR -= [MPRController angleBetweenVector: after andPlane: before];
+			}
+			[self updateView];
+		}
 	}
 }
 
@@ -344,9 +418,9 @@ static float deg2rad = 3.14159265358979/180.0;
 {
 	if( [self mouseOnLines: [self convertPoint:[theEvent locationInWindow] fromView:nil]])
 	{
-		if( [theEvent type] == NSLeftMouseDragged || [theEvent type] == NSLeftMouseDown) [[NSCursor closedHandCursor] set];
-		else [[NSCursor openHandCursor] set];
+		[[NSCursor openHandCursor] set];
 	}
+	else [cursor set];
 }
 
 #pragma mark-
