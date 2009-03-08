@@ -91,7 +91,7 @@ void vtkFixedPointVolumeRayCastMapperFillInMinMaxVolume( T *dataPtr, unsigned sh
   int sx1, sx2, sy1, sy2, sz1, sz2;
   int x, y, z;
   
-  T *dptr = dataPtr;
+  
 
   int                 z_start, z_limit;
   
@@ -101,7 +101,19 @@ void vtkFixedPointVolumeRayCastMapperFillInMinMaxVolume( T *dataPtr, unsigned sh
                   fullDim[2] );
 
   z_start = (z_start<0)?(0):(z_start);
+  
   z_limit = (z_limit>fullDim[2])?(fullDim[2]):(z_limit);
+  
+  T *dptr = dataPtr;
+  
+  if ( independent )
+  {
+	dptr += z_start * fullDim[1] * fullDim[0] * smallDim[3];
+  }
+  else
+  {
+	dptr += components * z_start * fullDim[1] * fullDim[0] * smallDim[3];
+  }
   
   for ( k = z_start; k < z_limit; k++ )
     {
