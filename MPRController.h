@@ -20,8 +20,8 @@
 
 @class MPRDCMView;
 
-@interface MPRController : OSIWindowController {
-	
+@interface MPRController : Window3DController
+{
 	IBOutlet NSSplitView *topSplitView, *bottomSplitView;
 	IBOutlet NSView *containerFor3DView;
 	
@@ -33,6 +33,14 @@
 	NSMutableArray *filesList[200], *pixList[200];
 	NSData *volumeData[200];
 	short curMovieIndex, maxMovieIndex;
+	
+	// 4D Data support
+	NSTimeInterval lastMovieTime;
+    NSTimer	*movieTimer;
+	
+	// Clipping Range
+	float clippingRangeThickness;
+	int clippingRangeMode;
 }
 
 + (double) angleBetweenVector:(float*) a andPlane:(float*) orientation;

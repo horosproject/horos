@@ -289,7 +289,7 @@ public:
 
 @implementation VRView
 
-@synthesize clipRangeActivated, projectionMode, clippingRangeThickness, keep3DRotateCentered;
+@synthesize clipRangeActivated, projectionMode, clippingRangeThickness, keep3DRotateCentered, dontResetImage;
 
 - (void) checkInVolume
 {
@@ -6067,9 +6067,6 @@ public:
 		
 		*w = size[0];
 		*h = size[1];
-		
-	//	if( size[0] != fullSize[0] || size[1] != fullSize[1])
-	//		NSLog( @"****** size[0] != fullSize[0] && size[1] != fullSize[1]");
 		
 		*w /= 2;
 		*w *= 2;

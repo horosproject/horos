@@ -13,6 +13,7 @@
 =========================================================================*/
 
 #import "MPRController.h"
+
 extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2, float *u, float *iP);
 static float deg2rad = 3.14159265358979/180.0; 
 
@@ -48,6 +49,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	filesList[0] = files;
 	volumeData[0] = volume;
 	
+	[[self window] setDelegate:self];
 	[[self window] setWindowController: self];
 	
 	DCMPix *emptyPix = [self emptyPix: originalPix width: 100 height: 100];
@@ -107,8 +109,8 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (void) dealloc
 {
-	[vrController release];
-	[hiddenVRController release];
+	[vrController close];
+	[hiddenVRController close];
 	[super dealloc];
 }
 
@@ -117,7 +119,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	return NO;
 }
 
-- (NSMutableArray*) pixList
+- (NSArray*) pixList
 {
 	return pixList[ curMovieIndex];
 }
@@ -327,5 +329,61 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (void)bringToFrontROI:(ROI*) roi;
 {}
+
+#pragma mark GUI ObjectController - Cocoa Bindings
+
+- (void) setClippingRangeThickness:(float) f
+{
+	clippingRangeThickness = f;
+	
+	[mprView1 restoreCamera];
+	mprView1.vrView.dontResetImage = YES;
+	[mprView1.vrView setClippingRangeThickness: f];
+	[mprView1 updateView];
+	
+	[mprView2 restoreCamera];
+	mprView2.vrView.dontResetImage = YES;
+	[mprView2.vrView setClippingRangeThickness: f];
+	[mprView2 updateView];
+	
+	[mprView3 restoreCamera];
+	mprView3.vrView.dontResetImage = YES;
+	[mprView3.vrView setClippingRangeThickness: f];
+	[mprView3 updateView];
+}
+
+- (void) setClippingRangeMode:(int) f
+{
+	clippingRangeMode = f;
+	
+	[mprView1.vrView setMode: clippingRangeMode];
+	[mprView1 updateView];
+	
+	[mprView2.vrView setMode: clippingRangeMode];
+	[mprView2 updateView];
+
+	[mprView3.vrView setMode: clippingRangeMode];
+	[mprView3 updateView];
+}
+
+#pragma mark NSWindow Notifications action
+
+- (void)windowWillClose:(NSNotification *)notification
+{
+	if( [notification object] == [self window])
+	{
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"Window3DClose" object: self userInfo: 0];
+		
+		if( movieTimer)
+		{
+			[movieTimer invalidate];
+			[movieTimer release];
+			movieTimer = nil;
+		}
+		
+		[[self window] setDelegate:nil];
+		[self release];
+	}
+}
 
 @end

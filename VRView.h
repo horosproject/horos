@@ -345,7 +345,7 @@ typedef char* vtkMyCallbackVR;
 	BOOL dontResetImage, keep3DRotateCentered;
 }
 
-@property BOOL clipRangeActivated, keep3DRotateCentered;
+@property BOOL clipRangeActivated, keep3DRotateCentered, dontResetImage;
 @property int projectionMode;
 @property double clippingRangeThickness;
 
