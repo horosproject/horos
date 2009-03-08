@@ -27,7 +27,7 @@
 	
 	IBOutlet MPRDCMView *mprView1, *mprView2, *mprView3;
 
-	VRController *vrController, *hiddenVRController;
+	VRController *hiddenVRController;
 	VRView *vrView, *hiddenVRView;
 	
 	NSMutableArray *filesList[200], *pixList[200];

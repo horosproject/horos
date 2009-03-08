@@ -41,7 +41,7 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (id)initWithDCMPixList:(NSMutableArray*)pix filesList:(NSMutableArray*)files volumeData:(NSData*)volume viewerController:(ViewerController*)viewer fusedViewerController:(ViewerController*)fusedViewer;
 {
-	if(![super initWithWindowNibName:@"MPR"]) return nil;
+	self = [super initWithWindowNibName:@"MPR"];
 	
 	DCMPix *originalPix = [pix lastObject];
 	
@@ -63,9 +63,6 @@ static float deg2rad = 3.14159265358979/180.0;
 	emptyPix = [self emptyPix: originalPix width: 100 height: 100];
 	[mprView3 setDCMPixList:  [NSMutableArray arrayWithObject: emptyPix] filesList: [NSArray arrayWithObject: [files lastObject]] volumeData: [NSData dataWithBytes: [emptyPix fImage] length: [emptyPix pheight] * [emptyPix pwidth] * sizeof( float)] roiList:nil firstImage:0 type:'i' reset:YES];
 	[mprView3 setFlippedData: [[viewer imageView] flippedData]];
-	
-	vrController = [[VRController alloc] initWithPix:pix :files :volume :fusedViewer :viewer style:@"noNib" mode:@"MIP"];
-	[vrController load3DState];
 	
 	hiddenVRController = [[VRController alloc] initWithPix:pix :files :volume :fusedViewer :viewer style:@"noNib" mode:@"MIP"];
 	
@@ -104,13 +101,11 @@ static float deg2rad = 3.14159265358979/180.0;
 	[self computeCrossReferenceLines: mprView1];
 	
 	[super showWindow: sender];
-	
 }
 
 - (void) dealloc
 {
-	[vrController close];
-	[hiddenVRController close];
+	
 	[super dealloc];
 }
 
@@ -405,7 +400,10 @@ static float deg2rad = 3.14159265358979/180.0;
 			movieTimer = nil;
 		}
 		
+		[hiddenVRController close];
+		
 		[[self window] setDelegate:nil];
+		[[self window] setWindowController:nil];
 		[self release];
 	}
 }
