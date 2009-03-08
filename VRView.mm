@@ -3273,6 +3273,13 @@ public:
 	double xx = -(loc.x - [self frame].size.width/2.);
 	double yy = -(loc.y - [self frame].size.height/2.);
 	
+//	double r = [self getResolution];
+//	double thickness = [self getClippingRangeThicknessInMm];
+//	
+//	xx += (thickness/2.)/r;
+//	yy += (thickness/2.)/r;
+	
+	
 	double pWC[ 2];
 	aCamera->GetWindowCenter( pWC);
 	pWC[ 0] *= ([self frame].size.width/2.);
@@ -6654,9 +6661,22 @@ public:
 	// 4D
 	if([controller is4D])
 		[controller setMovieFrame:[cam movieIndexIn4D]];
+
+//	double r = [self getResolution];
+//	double thickness = [self getClippingRangeThicknessInMm];
+//	
+//	pWC[ 0] *= ([self frame].size.width/2.);
+//	pWC[ 1] *= ([self frame].size.height/2.);
+//	
+//	pWC[0] -= (thickness/2.)/r;
+//	pWC[1] -= (thickness/2.)/r;
+//	
+//	pWC[ 0] /= ([self frame].size.width/2.);
+//	pWC[ 1] /= ([self frame].size.height/2.);
 	
 	//vtkCamera
 	aCamera->SetWindowCenter( pWC[0], pWC[1]);
+	
 	aCamera->SetPosition( pos);
 	aCamera->SetFocalPoint( focal);
 	

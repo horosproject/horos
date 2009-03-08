@@ -195,12 +195,20 @@ static float deg2rad = 3.14159265358979/180.0;
 		Camera *cam = sender.camera;
 		Point3D *position = cam.position;
 		Point3D *viewUp = cam.viewUp;
+		float halfthickness = [sender.vrView getClippingRangeThicknessInMm]/2.;
+		float r = [sender.vrView getResolution];
 		float cos[ 9];
 		[sender.pix orientation: cos];
 		
-		mprView1.camera.position = position;
-		mprView2.camera.position = position;
-		mprView3.camera.position = position;
+		NSLog( @"%2.2f", r);
+		NSLog( @"%2.2f", [sender.vrView factor]);
+		halfthickness /= 2.;
+		
+		position = [Point3D pointWithX: position.x + halfthickness*cos[ 6] y:position.y + halfthickness*cos[ 7] z:position.z + halfthickness*cos[ 8]];
+		
+		if( sender != mprView1) mprView1.camera.position = position;
+		if( sender != mprView2) mprView2.camera.position = position;
+		if( sender != mprView3) mprView3.camera.position = position;
 		
 		if( sender == mprView1)
 		{
@@ -215,11 +223,17 @@ static float deg2rad = 3.14159265358979/180.0;
 			x = position.x + vector.x;	y = position.y + vector.y;	z = position.z + vector.z;
 			mprView2.camera.focalPoint = [Point3D pointWithX:x y:y z:z];
 			
+			Point3D *p = mprView2.camera.position;
+			mprView2.camera.position = [Point3D pointWithX: p.x + halfthickness*-vector.x y:p.y + halfthickness*-vector.y z:p.z + halfthickness*-vector.z];
+			
 			vector.x = cos[ 0]*VectorLength;	vector.y = cos[ 1]*VectorLength;	vector.z = cos[ 2]*VectorLength;
 			vector =  ArbitraryRotate(vector, angle*deg2rad, rotationVector);
 			x = position.x + vector.x;	y = position.y + vector.y;	z = position.z + vector.z;
 			mprView3.camera.focalPoint = [Point3D pointWithX:x y:y z:z];
-			
+
+			p = mprView3.camera.position;
+			mprView3.camera.position = [Point3D pointWithX: p.x + halfthickness*-vector.x y:p.y + halfthickness*-vector.y z:p.z + halfthickness*-vector.z];
+
 			mprView2.camera.parallelScale = sender.camera.parallelScale;
 			mprView3.camera.parallelScale = sender.camera.parallelScale;
 		}

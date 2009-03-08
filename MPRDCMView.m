@@ -125,7 +125,7 @@ static float deg2rad = 3.14159265358979/180.0;
 			[self setIndex: 0];
 		}
 		float porigin[ 3];
-		[vrView getOrigin: porigin windowCentered: YES sliceMiddle: NO];
+		[vrView getOrigin: porigin windowCentered: YES sliceMiddle: YES];
 		[pix setOrigin: porigin];
 		
 		float resolution = [vrView getResolution] * [vrView imageSampleDistance];
@@ -169,7 +169,7 @@ static float deg2rad = 3.14159265358979/180.0;
 				glLineWidth(2.0);
 				[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: 0];
 				
-				glLineWidth(0.5);
+				glLineWidth(1.0);
 				[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: -thickness/2.];
 				[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: thickness/2.];
 			}
@@ -179,7 +179,7 @@ static float deg2rad = 3.14159265358979/180.0;
 				glLineWidth(2.0);
 				[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: 0];
 				
-				glLineWidth(0.5);
+				glLineWidth(1.0);
 				[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: -thickness/2.];
 				[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: thickness/2.];
 			}
