@@ -125,7 +125,7 @@ static float deg2rad = 3.14159265358979/180.0;
 			[self setIndex: 0];
 		}
 		float porigin[ 3];
-		[vrView getOrigin: porigin windowCentered: YES sliceMiddle: NO];
+		[vrView getOrigin: porigin windowCentered: YES];
 		[pix setOrigin: porigin];
 		
 		float resolution = [vrView getResolution] * [vrView imageSampleDistance];
@@ -135,6 +135,7 @@ static float deg2rad = 3.14159265358979/180.0;
 		float orientation[ 9];
 		[vrView getOrientation: orientation];
 		[pix setOrientation: orientation];
+		[pix setSliceThickness: [vrView getClippingRangeThicknessInMm]];
 		
 		[self setWLWW: previousWL :previousWW];
 		[self setScaleValue: [vrView imageSampleDistance]];
@@ -144,6 +145,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	
 	[self setNeedsDisplay: YES];
 }
+
 
 - (void) subDrawRect: (NSRect) r
 {
@@ -155,17 +157,32 @@ static float deg2rad = 3.14159265358979/180.0;
 	glEnable(GL_LINE_SMOOTH);
 	glEnable(GL_POLYGON_SMOOTH);
 	
+	// All pix have the same thickness
+	float thickness = [pix sliceThickness];
 	
 	switch( viewID)
 	{
 		case 1:
 			glColor4f (0.0f, 1.0f, 0.0f, 1.0f);
 			if( crossLinesA[ 0][ 0] != HUGE_VALF)
-				[self drawCrossLines: crossLinesA ctx: cgl_ctx];
-			
+			{
+				glLineWidth(2.0);
+				[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: -thickness/2.];
+				
+				glLineWidth(0.5);
+				[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: 0];
+				[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: -thickness];
+			}
 			glColor4f (0.0f, 0.0f, 1.0f, 1.0f);
 			if( crossLinesB[ 0][ 0] != HUGE_VALF)
-				[self drawCrossLines: crossLinesB ctx: cgl_ctx];
+			{
+				glLineWidth(2.0);
+				[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: -thickness/2.];
+				
+				glLineWidth(0.5);
+				[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: 0];
+				[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: -thickness];
+			}
 		break;
 		
 		case 2:

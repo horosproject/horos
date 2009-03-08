@@ -7437,38 +7437,58 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 - (void) drawCrossLines:(float[2][3]) sft ctx: (CGLContextObj) cgl_ctx
 {
-	return [self drawCrossLines: sft ctx:  cgl_ctx perpendicular: NO];
+	return [self drawCrossLines: sft ctx:  cgl_ctx perpendicular: NO withShift: 0];
 }
 
-- (void) drawCrossLines:(float[2][3]) sft ctx: (CGLContextObj) cgl_ctx perpendicular:(BOOL) perpendicular
+- (void) drawCrossLines:(float[2][3]) sft ctx: (CGLContextObj) cgl_ctx withShift: (double) shift
 {
-	glLineWidth(2.0);
-	glBegin(GL_LINES);
-		glVertex2f( scaleValue*(sft[ 0][ 0]/curDCM.pixelSpacingX-curDCM.pwidth/2.), scaleValue*(sft[ 0][ 1]/curDCM.pixelSpacingY - curDCM.pheight /2.));
-		glVertex2f( scaleValue*(sft[ 1][ 0]/curDCM.pixelSpacingX-curDCM.pwidth/2.), scaleValue*(sft[ 1][ 1]/curDCM.pixelSpacingY - curDCM.pheight /2.));
-	glEnd();
+	return [self drawCrossLines: sft ctx:  cgl_ctx perpendicular: NO withShift: shift];
+}
+
+- (void) drawCrossLines:(float[2][3]) sft ctx: (CGLContextObj) cgl_ctx perpendicular: (BOOL) perpendicular
+{
+	return [self drawCrossLines: sft ctx:  cgl_ctx perpendicular: perpendicular withShift: 0];
+}
+
+- (void) drawCrossLines:(float[2][3]) sft ctx: (CGLContextObj) cgl_ctx perpendicular:(BOOL) perpendicular withShift:(double) shift
+{
+	float a[ 2] = {0, 0};	// perpendicular vector
+	float c[2][3];
 	
-	if( perpendicular)
+	for( int i = 0; i < 2; i++)
+		for( int x = 0; x < 3; x++)
+			c[i][x] = sft[i][x];
+	
+	if( perpendicular || shift != 0)
 	{
-		float a[ 2];	// perpendicular vector
-		
-		a[ 1] = sft[ 0][ 0] - sft[ 1][ 0];
-		a[ 0] = sft[ 0][ 1] - sft[ 1][ 1];
+		a[ 1] = c[ 0][ 0] - c[ 1][ 0];
+		a[ 0] = c[ 0][ 1] - c[ 1][ 1];
 		
 		double t = a[ 1]*a[ 1] + a[ 0]*a[ 0];
 		t = sqrt(t);
 		a[0] = a[0]/t;
 		a[1] = a[1]/t;
 		
+		c[ 0][ 0] += a[0]*shift;	c[ 0][ 1] -= a[1]*shift;
+		c[ 1][ 0] += a[0]*shift;	c[ 1][ 1] -= a[1]*shift;
+	}
+	
+	glBegin(GL_LINES);
+		glVertex2f( scaleValue*(c[ 0][ 0]/curDCM.pixelSpacingX-curDCM.pwidth/2.), scaleValue*(c[ 0][ 1]/curDCM.pixelSpacingY - curDCM.pheight /2.));
+		glVertex2f( scaleValue*(c[ 1][ 0]/curDCM.pixelSpacingX-curDCM.pwidth/2.), scaleValue*(c[ 1][ 1]/curDCM.pixelSpacingY - curDCM.pheight /2.));
+	glEnd();
+	
+	if( perpendicular)
+	{
 		glLineWidth(1.0);
 		glBegin(GL_LINES);
-			glVertex2f( scaleValue*((sft[ 0][ 0]+a[0]*sliceFromToThickness/2.)/curDCM.pixelSpacingX-curDCM.pwidth/2.), scaleValue*((sft[ 0][ 1]-a[1]*sliceFromToThickness/2.)/curDCM.pixelSpacingY - curDCM.pheight /2.));
-			glVertex2f( scaleValue*((sft[ 1][ 0]+a[0]*sliceFromToThickness/2.)/curDCM.pixelSpacingX-curDCM.pwidth/2.), scaleValue*((sft[ 1][ 1]-a[1]*sliceFromToThickness/2.)/curDCM.pixelSpacingY - curDCM.pheight /2.));
+			glVertex2f( scaleValue*((c[ 0][ 0]+a[0]*sliceFromToThickness/2.)/curDCM.pixelSpacingX-curDCM.pwidth/2.), scaleValue*((c[ 0][ 1]-a[1]*sliceFromToThickness/2.)/curDCM.pixelSpacingY - curDCM.pheight /2.));
+			glVertex2f( scaleValue*((c[ 1][ 0]+a[0]*sliceFromToThickness/2.)/curDCM.pixelSpacingX-curDCM.pwidth/2.), scaleValue*((c[ 1][ 1]-a[1]*sliceFromToThickness/2.)/curDCM.pixelSpacingY - curDCM.pheight /2.));
 		glEnd();
 		
 		glBegin(GL_LINES);
-			glVertex2f( scaleValue*((sft[ 0][ 0]-a[0]*sliceFromToThickness/2.)/curDCM.pixelSpacingX-curDCM.pwidth/2.), scaleValue*((sft[ 0][ 1]+a[1]*sliceFromToThickness/2.)/curDCM.pixelSpacingY - curDCM.pheight /2.));
-			glVertex2f( scaleValue*((sft[ 1][ 0]-a[0]*sliceFromToThickness/2.)/curDCM.pixelSpacingX-curDCM.pwidth/2.), scaleValue*((sft[ 1][ 1]+a[1]*sliceFromToThickness/2.)/curDCM.pixelSpacingY - curDCM.pheight /2.));
+			glVertex2f( scaleValue*((c[ 0][ 0]-a[0]*sliceFromToThickness/2.)/curDCM.pixelSpacingX-curDCM.pwidth/2.), scaleValue*((c[ 0][ 1]+a[1]*sliceFromToThickness/2.)/curDCM.pixelSpacingY - curDCM.pheight /2.));
+			glVertex2f( scaleValue*((c[ 1][ 0]-a[0]*sliceFromToThickness/2.)/curDCM.pixelSpacingX-curDCM.pwidth/2.), scaleValue*((c[ 1][ 1]+a[1]*sliceFromToThickness/2.)/curDCM.pixelSpacingY - curDCM.pheight /2.));
 		glEnd();
 	}
 }
@@ -8110,15 +8130,22 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						{
 							glColor3f (1.0f, 0.6f, 0.0f);
 							
+							glLineWidth(2.0);
 							[self drawCrossLines: sliceFromToS ctx: cgl_ctx perpendicular: NO];
+							
+							glLineWidth(2.0);
 							[self drawCrossLines: sliceFromToE ctx: cgl_ctx perpendicular: NO];
 						}
 						
 						glColor3f (0.0f, 0.6f, 0.0f);
+						glLineWidth(2.0);
 						[self drawCrossLines: sliceFromTo ctx: cgl_ctx perpendicular: YES];
 						
 						if( sliceFromTo2[ 0][ 0] != HUGE_VALF)
+						{
+							glLineWidth(2.0);
 							[self drawCrossLines: sliceFromTo2 ctx: cgl_ctx perpendicular: YES];
+						}
 					}
 				}
 				

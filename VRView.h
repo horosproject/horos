@@ -498,6 +498,7 @@ typedef char* vtkMyCallbackVR;
 - (void)zoomMouseUp:(NSEvent *)theEvent;
 - (void) setWindowCenter: (NSPoint) loc;
 - (NSPoint) windowCenter;
+- (double) getClippingRangeThicknessInMm;
 
 // export
 - (void) sendMail:(id) sender;
