@@ -195,14 +195,12 @@ static float deg2rad = 3.14159265358979/180.0;
 		Camera *cam = sender.camera;
 		Point3D *position = cam.position;
 		Point3D *viewUp = cam.viewUp;
+		float cos[ 9];
+		[sender.pix orientation: cos];
 		
 		mprView1.camera.position = position;
 		mprView2.camera.position = position;
 		mprView3.camera.position = position;
-		
-		float cos[ 9];
-		
-		[sender.pix orientation: cos];
 		
 		if( sender == mprView1)
 		{

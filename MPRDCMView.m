@@ -125,7 +125,7 @@ static float deg2rad = 3.14159265358979/180.0;
 			[self setIndex: 0];
 		}
 		float porigin[ 3];
-		[vrView getOrigin: porigin windowCentered: YES];
+		[vrView getOrigin: porigin windowCentered: YES sliceMiddle: NO];
 		[pix setOrigin: porigin];
 		
 		float resolution = [vrView getResolution] * [vrView imageSampleDistance];

@@ -2379,7 +2379,7 @@ public:
 	// Take into account the sliceThickness -> Origin is in the middle of the slice thickness
 	if( sliceMiddle)
 	{
-		double thickness = clippingRangeThickness / factor / sampleDistance;
+		double thickness = clippingRangeThickness / factor;
 		
 		thickness /= 2.;
 		
@@ -6655,9 +6655,12 @@ public:
 	if([controller is4D])
 		[controller setMovieFrame:[cam movieIndexIn4D]];
 	
+	//vtkCamera
 	aCamera->SetWindowCenter( pWC[0], pWC[1]);
-	aCamera->SetPosition(pos);
-	aCamera->SetFocalPoint(focal);
+	aCamera->SetPosition( pos);
+	aCamera->SetFocalPoint( focal);
+	
+	
 	//aCamera->SetDistance(distance);
 	// Compute view plane from position and focalPoint
 	aCamera->ComputeViewPlaneNormal();
