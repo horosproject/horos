@@ -188,21 +188,49 @@ static float deg2rad = 3.14159265358979/180.0;
 		case 2:
 			glColor4f (1.0f, 0.0f, 0.0f, 1.0f);
 			if( crossLinesA[ 0][ 0] != HUGE_VALF)
-				[self drawCrossLines: crossLinesA ctx: cgl_ctx];
+			{
+				glLineWidth(2.0);
+				[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: 0];
+				
+				glLineWidth(1.0);
+				[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: -thickness/2.];
+				[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: thickness/2.];
+			}
 			
 			glColor4f (0.0f, 0.0f, 1.0f, 1.0f);
 			if( crossLinesB[ 0][ 0] != HUGE_VALF)
-				[self drawCrossLines: crossLinesB ctx: cgl_ctx];
+			{
+				glLineWidth(2.0);
+				[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: 0];
+				
+				glLineWidth(1.0);
+				[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: -thickness/2.];
+				[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: thickness/2.];
+			}
 		break;
 		
 		case 3:
 			glColor4f (1.0f, 0.0f, 0.0f, 1.0f);
 			if( crossLinesA[ 0][ 0] != HUGE_VALF)
-				[self drawCrossLines: crossLinesA ctx: cgl_ctx];
+			{
+				glLineWidth(2.0);
+				[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: 0];
+				
+				glLineWidth(1.0);
+				[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: -thickness/2.];
+				[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: thickness/2.];
+			}
 			
 			glColor4f (0.0f, 1.0f, 0.0f, 1.0f);
 			if( crossLinesB[ 0][ 0] != HUGE_VALF)
-				[self drawCrossLines: crossLinesB ctx: cgl_ctx];
+			{
+				glLineWidth(2.0);
+				[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: 0];
+				
+				glLineWidth(1.0);
+				[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: -thickness/2.];
+				[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: thickness/2.];
+			}
 		break;
 	}
 	

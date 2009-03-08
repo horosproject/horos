@@ -195,15 +195,11 @@ static float deg2rad = 3.14159265358979/180.0;
 		Camera *cam = sender.camera;
 		Point3D *position = cam.position;
 		Point3D *viewUp = cam.viewUp;
-		float halfthickness = [sender.vrView getClippingRangeThicknessInMm]/2.;
-		float r = [sender.vrView getResolution];
+		float halfthickness = sender.vrView.clippingRangeThickness / 2.;
 		float cos[ 9];
 		[sender.pix orientation: cos];
 		
-		NSLog( @"%2.2f", r);
-		NSLog( @"%2.2f", [sender.vrView factor]);
-		halfthickness /= 2.;
-		
+		// Correct slice position according to slice center (VR: position is the beginning of the slice)
 		position = [Point3D pointWithX: position.x + halfthickness*cos[ 6] y:position.y + halfthickness*cos[ 7] z:position.z + halfthickness*cos[ 8]];
 		
 		if( sender != mprView1) mprView1.camera.position = position;
@@ -212,25 +208,25 @@ static float deg2rad = 3.14159265358979/180.0;
 		
 		if( sender == mprView1)
 		{
-			#define VectorLength 10.
-			
 			float angle = mprView1.angleMPR;
 			XYZ vector, rotationVector;
 			rotationVector.x = cos[ 6];	rotationVector.y = cos[ 7];	rotationVector.z = cos[ 8];
 			
-			vector.x = cos[ 3]*VectorLength;	vector.y = cos[ 4]*VectorLength;	vector.z = cos[ 5]*VectorLength;
+			vector.x = cos[ 3];	vector.y = cos[ 4];	vector.z = cos[ 5];
 			vector =  ArbitraryRotate(vector, (angle-180.)*deg2rad, rotationVector);
 			x = position.x + vector.x;	y = position.y + vector.y;	z = position.z + vector.z;
 			mprView2.camera.focalPoint = [Point3D pointWithX:x y:y z:z];
 			
+			// Correct slice position according to slice center (VR: position is the beginning of the slice)
 			Point3D *p = mprView2.camera.position;
 			mprView2.camera.position = [Point3D pointWithX: p.x + halfthickness*-vector.x y:p.y + halfthickness*-vector.y z:p.z + halfthickness*-vector.z];
 			
-			vector.x = cos[ 0]*VectorLength;	vector.y = cos[ 1]*VectorLength;	vector.z = cos[ 2]*VectorLength;
+			vector.x = cos[ 0];	vector.y = cos[ 1];	vector.z = cos[ 2];
 			vector =  ArbitraryRotate(vector, angle*deg2rad, rotationVector);
 			x = position.x + vector.x;	y = position.y + vector.y;	z = position.z + vector.z;
 			mprView3.camera.focalPoint = [Point3D pointWithX:x y:y z:z];
-
+			
+			// Correct slice position according to slice center (VR: position is the beginning of the slice)
 			p = mprView3.camera.position;
 			mprView3.camera.position = [Point3D pointWithX: p.x + halfthickness*-vector.x y:p.y + halfthickness*-vector.y z:p.z + halfthickness*-vector.z];
 
@@ -244,15 +240,23 @@ static float deg2rad = 3.14159265358979/180.0;
 			XYZ vector, rotationVector;
 			rotationVector.x = cos[ 6];	rotationVector.y = cos[ 7];	rotationVector.z = cos[ 8];
 			
-			vector.x = cos[ 3]*VectorLength;	vector.y = cos[ 4]*VectorLength;	vector.z = cos[ 5]*VectorLength;
+			vector.x = cos[ 3];	vector.y = cos[ 4];	vector.z = cos[ 5];
 			vector =  ArbitraryRotate(vector, angle*deg2rad, rotationVector);
 			x = position.x + vector.x;	y = position.y + vector.y;	z = position.z + vector.z;
 			mprView3.camera.focalPoint = [Point3D pointWithX:x y:y z:z];
 			
-			vector.x = cos[ 0]*VectorLength;	vector.y = cos[ 1]*VectorLength;	vector.z = cos[ 2]*VectorLength;
+			// Correct slice position according to slice center (VR: position is the beginning of the slice)
+			Point3D *p = mprView3.camera.position;
+			mprView3.camera.position = [Point3D pointWithX: p.x + halfthickness*-vector.x y:p.y + halfthickness*-vector.y z:p.z + halfthickness*-vector.z];
+			
+			vector.x = cos[ 0];	vector.y = cos[ 1];	vector.z = cos[ 2];
 			vector =  ArbitraryRotate(vector, (angle-180.)*deg2rad, rotationVector);
 			x = position.x + vector.x;	y = position.y + vector.y;	z = position.z + vector.z;
 			mprView1.camera.focalPoint = [Point3D pointWithX:x y:y z:z];
+			
+			// Correct slice position according to slice center (VR: position is the beginning of the slice)
+			p = mprView1.camera.position;
+			mprView1.camera.position = [Point3D pointWithX: p.x + halfthickness*-vector.x y:p.y + halfthickness*-vector.y z:p.z + halfthickness*-vector.z];
 			
 			mprView3.camera.parallelScale = sender.camera.parallelScale;
 			mprView1.camera.parallelScale = sender.camera.parallelScale;
@@ -264,15 +268,23 @@ static float deg2rad = 3.14159265358979/180.0;
 			XYZ vector, rotationVector;
 			rotationVector.x = cos[ 6];	rotationVector.y = cos[ 7];	rotationVector.z = cos[ 8];
 			
-			vector.x = cos[ 3]*VectorLength;	vector.y = cos[ 4]*VectorLength;	vector.z = cos[ 5]*VectorLength;
+			vector.x = cos[ 3];	vector.y = cos[ 4];	vector.z = cos[ 5];
 			vector =  ArbitraryRotate(vector, (angle-180.)*deg2rad, rotationVector);
 			x = position.x + vector.x;	y = position.y + vector.y;	z = position.z + vector.z;
 			mprView2.camera.focalPoint = [Point3D pointWithX:x y:y z:z];
 			
-			vector.x = -cos[ 0]*VectorLength;	vector.y = -cos[ 1]*VectorLength;	vector.z = -cos[ 2]*VectorLength;
+			// Correct slice position according to slice center (VR: position is the beginning of the slice)
+			Point3D *p = mprView2.camera.position;
+			mprView2.camera.position = [Point3D pointWithX: p.x + halfthickness*-vector.x y:p.y + halfthickness*-vector.y z:p.z + halfthickness*-vector.z];
+			
+			vector.x = -cos[ 0];	vector.y = -cos[ 1];	vector.z = -cos[ 2];
 			vector =  ArbitraryRotate(vector, angle*deg2rad, rotationVector);
 			x = position.x + vector.x;	y = position.y + vector.y;	z = position.z + vector.z;
 			mprView1.camera.focalPoint = [Point3D pointWithX:x y:y z:z];
+			
+			// Correct slice position according to slice center (VR: position is the beginning of the slice)
+			p = mprView1.camera.position;
+			mprView1.camera.position = [Point3D pointWithX: p.x + halfthickness*-vector.x y:p.y + halfthickness*-vector.y z:p.z + halfthickness*-vector.z];
 			
 			mprView2.camera.parallelScale = sender.camera.parallelScale;
 			mprView1.camera.parallelScale = sender.camera.parallelScale;
