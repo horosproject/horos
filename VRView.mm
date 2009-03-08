@@ -2307,6 +2307,11 @@ public:
 
 - (void) getOrigin: (float *) origin windowCentered:(BOOL) wc
 {
+	return [self getOrigin: origin windowCentered: wc sliceMiddle: YES];
+}
+
+- (void) getOrigin: (float *) origin windowCentered:(BOOL) wc sliceMiddle:(BOOL) sliceMiddle
+{
 	double cameraPosition[3];
 	aCamera->GetPosition(cameraPosition);
 	
@@ -2321,8 +2326,8 @@ public:
 	
 	// Position of upper left part of the image
 	
-	double *viewport   =  aRenderer->GetViewport();
-	int *renWinSize   =  aRenderer->GetRenderWindow()->GetSize();
+	double *viewport = aRenderer->GetViewport();
+	int *renWinSize = aRenderer->GetRenderWindow()->GetSize();
 	
 	// Origin
 	int x1, x2, y1, y2;
@@ -2372,14 +2377,16 @@ public:
 	origin[2] = cameraPosition[ 2] + y*cos[5]*r + x*cos[2]*r;
 	
 	// Take into account the sliceThickness -> Origin is in the middle of the slice thickness
-	
-	double thickness = clippingRangeThickness / factor / sampleDistance;
-	
-	thickness /= 2.;
-	
-	origin[0] = origin[ 0] + thickness*cos[6];
-	origin[1] = origin[ 1] + thickness*cos[7];
-	origin[2] = origin[ 2] + thickness*cos[8];
+	if( sliceMiddle)
+	{
+		double thickness = clippingRangeThickness / factor / sampleDistance;
+		
+		thickness /= 2.;
+		
+		origin[0] = origin[ 0] + thickness*cos[6];
+		origin[1] = origin[ 1] + thickness*cos[7];
+		origin[2] = origin[ 2] + thickness*cos[8];
+	}
 }
 
 - (void) getCosMatrix: (float *) cos
