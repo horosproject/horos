@@ -45,7 +45,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	switch( tool)
 	{
 		case tWL:
-			if( vrView.renderingMode == 1) return YES; // MIP
+			if( vrView.renderingMode == 1 || vrView.renderingMode == 3) return YES; // MIP
 			else return NO; // VR
 		break;
 		

@@ -6157,6 +6157,11 @@ public:
 	{
 		vtkFixedPointRayCastImage *rayCastImage = volumeMapper->GetRayCastImage();
 		
+		if( renderingMode == 3)
+			volumeProperty->SetScalarOpacityUnitDistance( clippingRangeThickness * factor);
+		else
+			volumeProperty->SetScalarOpacityUnitDistance( 1);
+			
 		unsigned short *im = rayCastImage->GetImage();
 		
 		int fullSize[2];
@@ -6171,7 +6176,7 @@ public:
 		*w /= 2;
 		*w *= 2;
 		
-		if( renderingMode == 1)		// MIP
+		if( renderingMode == 1 || renderingMode == 3)		// MIP
 		{
 			unsigned short *destPtr, *destFixedPtr;
 			
@@ -6185,6 +6190,8 @@ public:
 				while( j-- > 0)
 				{
 					unsigned short *iptrTemp = iptr;
+					if( renderingMode == 3)
+						iptrTemp += 3;
 					int i = *w;
 					while( i-- > 0)
 					{

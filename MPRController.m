@@ -436,7 +436,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	[mprView2.vrView setMode: clippingRangeMode];
 	[mprView3.vrView setMode: clippingRangeMode];
 	
-	if( clippingRangeMode == 1)	// MIP
+	if( clippingRangeMode == 1 || clippingRangeMode == 3)	// MIP - Mean
 	{
 		[mprView1.vrView prepareFullDepthCapture];
 		[mprView2.vrView prepareFullDepthCapture];
