@@ -409,6 +409,9 @@
 		A9BDE5920C9823DC000A161F /* IChatTheatreDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = A9BDE5900C9823DC000A161F /* IChatTheatreDelegate.h */; };
 		A9BDE5930C9823DC000A161F /* IChatTheatreDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A9BDE5910C9823DC000A161F /* IChatTheatreDelegate.m */; };
 		A9C63A9C09BD7C5D00E312AE /* cerveau_icon.jpg in Resources */ = {isa = PBXBuildFile; fileRef = A9C63A9B09BD7C5D00E312AE /* cerveau_icon.jpg */; };
+		A9D18CD90F6504FA00476DBD /* Synchronization.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A9D18CD80F6504FA00476DBD /* Synchronization.pdf */; };
+		A9D18CE30F650FF300476DBD /* Synchronization.png in Resources */ = {isa = PBXBuildFile; fileRef = A9D18CE20F650FF300476DBD /* Synchronization.png */; };
+		A9D18CE60F65120000476DBD /* RotateAxisCursor.png in Resources */ = {isa = PBXBuildFile; fileRef = A9D18CE50F65120000476DBD /* RotateAxisCursor.png */; };
 		A9D780B009A4D2A6004302DC /* ITKBrushROIFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = A9D780AA09A4D2A6004302DC /* ITKBrushROIFilter.h */; };
 		A9D780B109A4D2A6004302DC /* ITKBrushROIFilter.mm in Sources */ = {isa = PBXBuildFile; fileRef = A9D780AB09A4D2A6004302DC /* ITKBrushROIFilter.mm */; settings = {COMPILER_FLAGS = "-I ./ITK180 -I ./ITK180/Code -I ./ITK180/Code/Algorithms -I ./ITK180/Code/BasicFilters -I ./ITK180/Code/Common -I ./ITK180/Code/Numerics -I ./ITK180/Code/IO -I ./ITK180/Code/Numerics/FEM -I ./ITK180/Code/Numerics/Statistics -I ./ITK180/Code/SpatialObject -I ./ITK180/Code/Utilities/MetaIO -I ./ITK180/Code/Utilities/expat -I ./ITK180/Code/Utilities/NrrdIO -I ./ITK180/Code/Utilities/DICOMParser -I ./ITK180/Utilities -I ./ITK180/Utilities/vxl/vcl -I ./ITK180/Utilities/vxl/core"; }; };
 		A9DE9538085E0E910019992B /* FlyThruEnd.tiff in Resources */ = {isa = PBXBuildFile; fileRef = A9DE9535085E0E910019992B /* FlyThruEnd.tiff */; };
@@ -5615,6 +5618,9 @@
 		A9BDE5900C9823DC000A161F /* IChatTheatreDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IChatTheatreDelegate.h; sourceTree = "<group>"; };
 		A9BDE5910C9823DC000A161F /* IChatTheatreDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IChatTheatreDelegate.m; sourceTree = "<group>"; };
 		A9C63A9B09BD7C5D00E312AE /* cerveau_icon.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = cerveau_icon.jpg; sourceTree = "<group>"; };
+		A9D18CD80F6504FA00476DBD /* Synchronization.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = Synchronization.pdf; sourceTree = "<group>"; };
+		A9D18CE20F650FF300476DBD /* Synchronization.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Synchronization.png; sourceTree = "<group>"; };
+		A9D18CE50F65120000476DBD /* RotateAxisCursor.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = RotateAxisCursor.png; sourceTree = "<group>"; };
 		A9D780AA09A4D2A6004302DC /* ITKBrushROIFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ITKBrushROIFilter.h; sourceTree = "<group>"; };
 		A9D780AB09A4D2A6004302DC /* ITKBrushROIFilter.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ITKBrushROIFilter.mm; sourceTree = "<group>"; };
 		A9DE9535085E0E910019992B /* FlyThruEnd.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = FlyThruEnd.tiff; sourceTree = "<group>"; };
@@ -12355,6 +12361,9 @@
 				BFD4BFF106F2A96900EC9A90 /* RotateCursor.tif */,
 				BFD4BFF206F2A96900EC9A90 /* StackCursor.tif */,
 				BFD4BFF306F2A96900EC9A90 /* ZoomCursor.tif */,
+				A9D18CD80F6504FA00476DBD /* Synchronization.pdf */,
+				A9D18CE20F650FF300476DBD /* Synchronization.png */,
+				A9D18CE50F65120000476DBD /* RotateAxisCursor.png */,
 			);
 			name = Cursors;
 			path = Binaries/Icons/Cursors;
@@ -17690,6 +17699,9 @@
 				84A220E90F25E41800C6C3EB /* Keys.tif in Resources */,
 				A9333D3A0F56E9670097DAB7 /* MPR.xib in Resources */,
 				8459A7270F5D63EF00146B28 /* VREmpty.xib in Resources */,
+				A9D18CD90F6504FA00476DBD /* Synchronization.pdf in Resources */,
+				A9D18CE30F650FF300476DBD /* Synchronization.png in Resources */,
+				A9D18CE60F65120000476DBD /* RotateAxisCursor.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

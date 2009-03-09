@@ -15,8 +15,26 @@
 #import "MPRDCMView.h"
 #import "VRController.h"
 #import "VRView.h"
+#import "DCMCursor.h"
 
 static float deg2rad = 3.14159265358979/180.0; 
+
+#define VIEW_1_RED 1.0f
+#define VIEW_1_GREEN 1.0f
+#define VIEW_1_BLUE 0.0f
+#define VIEW_1_ALPHA 1.0f
+
+#define VIEW_2_RED 0.6f
+#define VIEW_2_GREEN 0.0f
+#define VIEW_2_BLUE 1.0f
+#define VIEW_2_ALPHA 1.0f
+
+#define VIEW_3_RED 0.0f
+#define VIEW_3_GREEN 0.9f
+#define VIEW_3_BLUE 1.0f
+#define VIEW_3_ALPHA 1.0f
+
+#define VIEW_COLOR_LABEL_SIZE 13
 
 @implementation MPRDCMView
 
@@ -169,7 +187,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	switch( viewID)
 	{
 		case 1:
-			glColor4f (0.0f, 1.0f, 0.0f, 1.0f);
+			glColor4f (VIEW_2_RED, VIEW_2_GREEN, VIEW_2_BLUE, VIEW_2_ALPHA);
 			if( crossLinesA[ 0][ 0] != HUGE_VALF)
 			{
 				glLineWidth(2.0);
@@ -179,7 +197,7 @@ static float deg2rad = 3.14159265358979/180.0;
 				[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: -thickness/2.];
 				[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: thickness/2.];
 			}
-			glColor4f (0.0f, 0.0f, 1.0f, 1.0f);
+			glColor4f (VIEW_3_RED, VIEW_3_GREEN, VIEW_3_BLUE, VIEW_3_ALPHA);
 			if( crossLinesB[ 0][ 0] != HUGE_VALF)
 			{
 				glLineWidth(2.0);
@@ -192,7 +210,7 @@ static float deg2rad = 3.14159265358979/180.0;
 		break;
 		
 		case 2:
-			glColor4f (1.0f, 0.0f, 0.0f, 1.0f);
+			glColor4f (VIEW_1_RED, VIEW_1_GREEN, VIEW_1_BLUE, VIEW_1_ALPHA);
 			if( crossLinesA[ 0][ 0] != HUGE_VALF)
 			{
 				glLineWidth(2.0);
@@ -203,7 +221,7 @@ static float deg2rad = 3.14159265358979/180.0;
 				[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: thickness/2.];
 			}
 			
-			glColor4f (0.0f, 0.0f, 1.0f, 1.0f);
+			glColor4f (VIEW_3_RED, VIEW_3_GREEN, VIEW_3_BLUE, VIEW_3_ALPHA);
 			if( crossLinesB[ 0][ 0] != HUGE_VALF)
 			{
 				glLineWidth(2.0);
@@ -216,7 +234,7 @@ static float deg2rad = 3.14159265358979/180.0;
 		break;
 		
 		case 3:
-			glColor4f (1.0f, 0.0f, 0.0f, 1.0f);
+			glColor4f (VIEW_1_RED, VIEW_1_GREEN, VIEW_1_BLUE, VIEW_1_ALPHA);
 			if( crossLinesA[ 0][ 0] != HUGE_VALF)
 			{
 				glLineWidth(2.0);
@@ -227,7 +245,7 @@ static float deg2rad = 3.14159265358979/180.0;
 				[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: thickness/2.];
 			}
 			
-			glColor4f (0.0f, 1.0f, 0.0f, 1.0f);
+			glColor4f (VIEW_2_RED, VIEW_2_GREEN, VIEW_2_BLUE, VIEW_2_ALPHA);
 			if( crossLinesB[ 0][ 0] != HUGE_VALF)
 			{
 				glLineWidth(2.0);
@@ -243,27 +261,27 @@ static float deg2rad = 3.14159265358979/180.0;
 	switch( viewID)
 	{
 		case 1:
-			glColor4f (1.0f, 0.0f, 0.0f, 1.0f);
+			glColor4f (VIEW_1_RED, VIEW_1_GREEN, VIEW_1_BLUE, VIEW_1_ALPHA);
 		break;
 		
 		case 2:
-			glColor4f (0.0f, 1.0f, 0.0f, 1.0f);
+			glColor4f (VIEW_2_RED, VIEW_2_GREEN, VIEW_2_BLUE, VIEW_2_ALPHA);
 		break;
 		
 		case 3:
-			glColor4f (0.0f, 0.0f, 1.0f, 1.0f);
+			glColor4f (VIEW_3_RED, VIEW_3_GREEN, VIEW_3_BLUE, VIEW_3_ALPHA);
 		break;
 	}
 	
 	float heighthalf = self.frame.size.height/2 - 1;
 	float widthhalf = self.frame.size.width/2 - 1;
 	
-	glLineWidth(6.0);
-	glBegin(GL_LINE_LOOP);
-		glVertex2f(  -widthhalf, -heighthalf);
-		glVertex2f(  -widthhalf, heighthalf);
-		glVertex2f(  widthhalf, heighthalf);
-		glVertex2f(  widthhalf, -heighthalf);
+	glLineWidth(2.0);
+	glBegin(GL_POLYGON);
+		glVertex2f(widthhalf-VIEW_COLOR_LABEL_SIZE, -heighthalf+VIEW_COLOR_LABEL_SIZE);
+		glVertex2f(widthhalf-VIEW_COLOR_LABEL_SIZE, -heighthalf);
+		glVertex2f(widthhalf, -heighthalf);
+		glVertex2f(widthhalf, -heighthalf+VIEW_COLOR_LABEL_SIZE);
 	glEnd();
 	glLineWidth(1.0);
 					
@@ -424,7 +442,7 @@ static float deg2rad = 3.14159265358979/180.0;
 		mouseLocation.x *= curDCM.pixelSpacingX;	mouseLocation.y *= curDCM.pixelSpacingY;
 		rotateLinesStartAngle = [self angleBetween: mouseLocation center: [self centerLines]] - angleMPR;
 		
-		[[NSCursor closedHandCursor] set];
+		[[NSCursor rotateAxisCursor] set];
 	}
 	else
 	{
@@ -489,7 +507,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	
 	if( rotateLines)
 	{
-		[[NSCursor closedHandCursor] set];
+		[[NSCursor rotateAxisCursor] set];
 		
 		[vrView setLODLow: YES];
 		
@@ -542,9 +560,14 @@ static float deg2rad = 3.14159265358979/180.0;
 	{
 		[super mouseMoved: theEvent];
 		
-		if( [self mouseOnLines: [self convertPoint:[theEvent locationInWindow] fromView:nil]])
+		int mouseOnLines = [self mouseOnLines: [self convertPoint:[theEvent locationInWindow] fromView:nil]];
+		if( mouseOnLines==2)
 		{
 			[[NSCursor openHandCursor] set];
+		}
+		else if( mouseOnLines==1)
+		{
+			[[NSCursor rotateAxisCursor] set];
 		}
 	}
 	else [view mouseMoved:theEvent];

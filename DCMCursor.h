@@ -28,4 +28,6 @@
 +(id)rotate3DCameraCursor;
 +(id)bonesRemovalCursor;
 +(id)crossCursor;
++(id)rotateAxisCursor;
+
 @end

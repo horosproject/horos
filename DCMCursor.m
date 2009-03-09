@@ -25,6 +25,7 @@ static NSCursor *stackCursor;
 static NSCursor *contrastCursor;
 static NSCursor *bonesRemovalCursor;
 static NSCursor *crossROICursor;
+static NSCursor *rotateAxisCursor;
 
 @implementation NSCursor (DCMCursor)
 
@@ -81,6 +82,13 @@ static NSCursor *crossROICursor;
 	if (!bonesRemovalCursor)
 		bonesRemovalCursor = [[NSCursor alloc] initWithImage:[NSImage imageNamed:@"BonesRemovalCursor.tif"] hotSpot:NSMakePoint(7,7)];
 	return bonesRemovalCursor;
+}
+
++ (id) rotateAxisCursor
+{
+	if (!rotateAxisCursor)
+		rotateAxisCursor = [[NSCursor alloc] initWithImage:[NSImage imageNamed:@"RotateAxisCursor.png"] hotSpot:NSMakePoint(7,7)];
+	return rotateAxisCursor;
 }
 
 @end
