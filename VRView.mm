@@ -291,12 +291,32 @@ public:
 
 @synthesize clipRangeActivated, projectionMode, clippingRangeThickness, keep3DRotateCentered, dontResetImage, renderingMode, currentOpacityArray;
 
+- (BOOL) checkPointInVolume: (double*) position
+{
+	double bounds[ 6];
+
+	volume->GetBounds( bounds);
+	
+	if( position[ 0] <= bounds[ 0]) return NO;
+	if( position[ 0] >= bounds[ 1]) return NO;
+	
+	if( position[ 1] <= bounds[ 2]) return NO;
+	if( position[ 1] >= bounds[ 3]) return NO;
+	
+	if( position[ 2] <= bounds[ 4]) return NO;
+	if( position[ 2] >= bounds[ 5]) return NO;
+
+	return YES;
+}
+
 - (void) checkInVolume
 {
 	if( clipRangeActivated)
 	{
 		double position[ 3];
+		double distance;
 		
+		distance = aCamera->GetDistance();
 		aCamera->GetPosition( position);
 		
 		double bounds[ 6];
@@ -313,6 +333,7 @@ public:
 		if( position[ 2] >= bounds[ 5]) position[ 2] = bounds[ 5];
 		
 		aCamera->SetPosition( position);
+		aCamera->SetDistance( distance);
 	}
 }
 
@@ -2564,35 +2585,36 @@ public:
 	}
 	else
 	{
-		double position[ 3];
+		double position[ 3], focal[ 3];
 		float cos[ 9];
 		double distance = aCamera->GetDistance();
 		
 		[self getCosMatrix: cos];
 		
 		aCamera->GetPosition( position);
+		aCamera->GetFocalPoint( focal);
 		
 		position[ 0] = position[ 0] + cos[ 6] * [theEvent deltaY] * factor;
 		position[ 1] = position[ 1] + cos[ 7] * [theEvent deltaY] * factor;
 		position[ 2] = position[ 2] + cos[ 8] * [theEvent deltaY] * factor;
-		
-		aCamera->SetPosition( position);
-		aCamera->SetDistance( distance);
-		
-		
-//		// Endoscopy - Zoom in/out
-//		float distance = aCamera->GetDistance();
-//		
-//		float dolly = [theEvent deltaY];
-//		
-//		dolly /= 40.;
-//			
-//		if( dolly < -0.9) dolly = -0.9;
-//		
-//		aCamera->Dolly( 1.0 + dolly); 
+
+		focal[ 0] = focal[ 0] + cos[ 6] * [theEvent deltaY] * factor;
+		focal[ 1] = focal[ 1] + cos[ 7] * [theEvent deltaY] * factor;
+		focal[ 2] = focal[ 2] + cos[ 8] * [theEvent deltaY] * factor;
 		
 		if( clipRangeActivated)
-			[self checkInVolume];
+		{
+			if( [self checkPointInVolume: position])
+			{
+				aCamera->SetPosition( position);
+				aCamera->SetFocalPoint( focal);
+			}
+		}
+		else
+		{
+			aCamera->SetPosition( position);
+			aCamera->SetFocalPoint( focal);
+		}
 		
 		aCamera->SetDistance( distance);
 		aCamera->ComputeViewPlaneNormal();
