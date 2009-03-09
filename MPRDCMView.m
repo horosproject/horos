@@ -670,6 +670,10 @@ static float deg2rad = 3.14159265358979/180.0;
 		{
 			[[NSCursor rotateAxisCursor] set];
 		}
+		else
+		{
+			[cursor set];
+		}
 		
 		[self updateMousePosition: theEvent];
 	}
