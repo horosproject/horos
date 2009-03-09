@@ -5046,6 +5046,17 @@ public:
 	}
 }
 
+- (void) setLODLow:(BOOL) l
+{
+	if( volumeMapper)
+	{
+		if( l) volumeMapper->SetMinimumImageSampleDistance( LOD*lowResLODFactor);
+		else volumeMapper->SetMinimumImageSampleDistance( LOD);
+		
+		[self setNeedsDisplay: YES];
+	}
+}
+
 -(void) setBlendingPixSource:(ViewerController*) bC
 {
 	

@@ -499,6 +499,7 @@ typedef char* vtkMyCallbackVR;
 - (void) setWindowCenter: (NSPoint) loc;
 - (NSPoint) windowCenter;
 - (double) getClippingRangeThicknessInMm;
+- (void) setLODLow:(BOOL) l;
 
 // export
 - (void) sendMail:(id) sender;

@@ -445,16 +445,18 @@ static float deg2rad = 3.14159265358979/180.0;
 	
 	if( rotateLines || moveCenter)
 	{
+		[vrView setLODLow: NO];
 		if( moveCenter)
 		{
 			camera.windowCenterX = 0;
 			camera.windowCenterY = 0;
-			[self restoreCamera];
-			[self updateView];
 		}
 		
 		rotateLines = NO;
 		moveCenter = NO;
+
+		[self restoreCamera];
+		[self updateView];
 		
 		[cursor set];
 	}
@@ -483,6 +485,8 @@ static float deg2rad = 3.14159265358979/180.0;
 	{
 		[[NSCursor closedHandCursor] set];
 		
+		[vrView setLODLow: YES];
+		
 		NSPoint mouseLocation = [self ConvertFromNSView2GL: [self convertPoint: [theEvent locationInWindow] fromView: nil]];
 		mouseLocation.x *= curDCM.pixelSpacingX;	mouseLocation.y *= curDCM.pixelSpacingY;
 		angleMPR = [self angleBetween: mouseLocation center: [self centerLines]];
@@ -493,6 +497,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	}
 	else if( moveCenter)
 	{
+		[vrView setLODLow: YES];
 		[vrView setWindowCenter: [self convertPoint: [theEvent locationInWindow] fromView: nil]];
 		[self updateView];
 	}
