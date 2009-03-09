@@ -19,7 +19,7 @@ static float deg2rad = 3.14159265358979/180.0;
 
 @implementation MPRController
 
-@synthesize clippingRangeThickness, clippingRangeMode;
+@synthesize clippingRangeThickness, clippingRangeMode, mousePosition, mouseViewID;
 
 + (double) angleBetweenVector:(float*) a andPlane:(float*) orientation
 {
@@ -110,6 +110,7 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (void) dealloc
 {
+	[mousePosition release];
 	
 	[super dealloc];
 }
@@ -370,6 +371,16 @@ static float deg2rad = 3.14159265358979/180.0;
 		}
 	}
 		
+	[mprView1 setNeedsDisplay: YES];
+	[mprView2 setNeedsDisplay: YES];
+	[mprView3 setNeedsDisplay: YES];
+}
+
+- (void) setMousePosition:(Point3D*) pt
+{
+	[mousePosition release];
+	mousePosition = [pt retain];
+	
 	[mprView1 setNeedsDisplay: YES];
 	[mprView2 setNeedsDisplay: YES];
 	[mprView3 setNeedsDisplay: YES];

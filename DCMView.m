@@ -7120,7 +7120,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						{
 							useStringTexture = NO;
 							
-							if(mouseXPos!=0 && mouseYPos!=0)
+							if(mouseXPos!=0 || mouseYPos!=0)
 							{
 								if( curDCM.isRGB ) [tempString appendFormat: NSLocalizedString( @"X: %d px Y: %d px Value: R:%ld G:%ld B:%ld", @"No special characters for this string, only ASCII characters."), (int)mouseXPos, (int)mouseYPos, pixelMouseValueR, pixelMouseValueG, pixelMouseValueB];
 								else [tempString appendFormat: NSLocalizedString( @"X: %d px Y: %d px Value: %2.2f", @"No special characters for this string, only ASCII characters."), (int)mouseXPos, (int)mouseYPos, pixelMouseValue];
@@ -7234,7 +7234,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 							
 							if( stringID == nil || [stringID isEqualToString:@"OrthogonalMPRVIEW"] || [stringID isEqualToString:@"FinalView"])
 							{
-								if( mouseXPos != 0 && mouseYPos != 0)
+								if( mouseXPos != 0 || mouseYPos != 0)
 								{
 									float location[ 3 ];
 									

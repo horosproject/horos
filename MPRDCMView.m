@@ -170,6 +170,25 @@ static float deg2rad = 3.14159265358979/180.0;
 	[self setNeedsDisplay: YES];
 }
 
+- (void) colorForView:(int) v
+{
+	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+	
+	switch( v)
+	{
+		case 1:
+			glColor4f (VIEW_1_RED, VIEW_1_GREEN, VIEW_1_BLUE, VIEW_1_ALPHA);
+		break;
+		
+		case 2:
+			glColor4f (VIEW_2_RED, VIEW_2_GREEN, VIEW_2_BLUE, VIEW_2_ALPHA);
+		break;
+		
+		case 3:
+			glColor4f (VIEW_3_RED, VIEW_3_GREEN, VIEW_3_BLUE, VIEW_3_ALPHA);
+		break;
+	}
+}
 
 - (void) subDrawRect: (NSRect) r
 {
@@ -306,20 +325,7 @@ static float deg2rad = 3.14159265358979/180.0;
 		break;
 	}
 	
-	switch( viewID)
-	{
-		case 1:
-			glColor4f (VIEW_1_RED, VIEW_1_GREEN, VIEW_1_BLUE, VIEW_1_ALPHA);
-		break;
-		
-		case 2:
-			glColor4f (VIEW_2_RED, VIEW_2_GREEN, VIEW_2_BLUE, VIEW_2_ALPHA);
-		break;
-		
-		case 3:
-			glColor4f (VIEW_3_RED, VIEW_3_GREEN, VIEW_3_BLUE, VIEW_3_ALPHA);
-		break;
-	}
+	[self colorForView: viewID];
 	
 	float heighthalf = self.frame.size.height/2 - 1;
 	float widthhalf = self.frame.size.width/2 - 1;
@@ -332,7 +338,26 @@ static float deg2rad = 3.14159265358979/180.0;
 		glVertex2f(widthhalf, -heighthalf+VIEW_COLOR_LABEL_SIZE);
 	glEnd();
 	glLineWidth(1.0);
-					
+	
+	// Mouse Position
+	if( viewID != windowController.mouseViewID)
+	{
+		[self colorForView: windowController.mouseViewID];
+		Point3D *pt = windowController.mousePosition;
+		float sc[ 2], dc[ 3] = { pt.x, pt.y, pt.z};
+		
+		[pix convertDICOMCoords: dc toSliceCoords: sc pixelCenter: YES];
+		
+		glPointSize( 10);
+		glBegin( GL_POINTS);
+		sc[0] = sc[ 0] / curDCM.pixelSpacingX;
+		sc[1] = sc[ 1] / curDCM.pixelSpacingY;
+		sc[0] -= curDCM.pwidth * 0.5f;
+		sc[1] -= curDCM.pheight * 0.5f;
+		glVertex2f( scaleValue*sc[ 0], scaleValue*sc[ 1]);
+		glEnd();
+	}
+	
 	glDisable(GL_LINE_SMOOTH);
 	glDisable(GL_POLYGON_SMOOTH);
 	glDisable(GL_POINT_SMOOTH);
@@ -427,12 +452,14 @@ static float deg2rad = 3.14159265358979/180.0;
 {
 	if( [[self window] firstResponder] != self)
 		[[self window] makeFirstResponder: self];
-		
+	
 	[self restoreCamera];
 	
 	[vrView scrollWheel: theEvent];
 	
 	[self updateView];
+	
+	[self updateMousePosition: theEvent];
 }
 
 - (void)rightMouseDown:(NSEvent *)theEvent
@@ -457,6 +484,8 @@ static float deg2rad = 3.14159265358979/180.0;
 	[vrView rightMouseDragged: theEvent];
 	
 	[self updateView];
+	
+	[self updateMousePosition: theEvent];
 }
 
 - (void)rightMouseUp:(NSEvent *)theEvent
@@ -466,6 +495,8 @@ static float deg2rad = 3.14159265358979/180.0;
 	[vrView rightMouseUp: theEvent];
 	
 	[self updateView];
+	
+	[self updateMousePosition: theEvent];
 }
 
 - (void) mouseDown:(NSEvent *)theEvent
@@ -547,6 +578,8 @@ static float deg2rad = 3.14159265358979/180.0;
 			[self updateView];
 		}
 	}
+	
+	[self updateMousePosition: theEvent];
 }
 
 - (void) mouseDragged:(NSEvent *)theEvent
@@ -600,6 +633,19 @@ static float deg2rad = 3.14159265358979/180.0;
 			[self updateView];
 		}
 	}
+	
+	[self updateMousePosition: theEvent];
+}
+
+- (void) updateMousePosition: (NSEvent*) theEvent
+{
+	float location[ 3];
+
+	[pix convertPixX: mouseXPos pixY: mouseYPos toDICOMCoords: location pixelCenter: YES];
+
+	Point3D *pt = [Point3D pointWithX: location[ 0] y: location[ 1] z: location[ 2]];
+	windowController.mousePosition = pt;
+	windowController.mouseViewID = viewID;
 }
 
 - (void) mouseMoved: (NSEvent *) theEvent
@@ -619,8 +665,13 @@ static float deg2rad = 3.14159265358979/180.0;
 		{
 			[[NSCursor rotateAxisCursor] set];
 		}
+		
+		[self updateMousePosition: theEvent];
 	}
-	else [view mouseMoved:theEvent];
+	else
+	{
+		[view mouseMoved:theEvent];
+	}
 }
 
 #pragma mark-

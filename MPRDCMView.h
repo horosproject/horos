@@ -48,5 +48,6 @@
 - (void) setCrossReferenceLines: (float[2][3]) a and: (float[2][3]) b;
 - (void) saveCamera;
 - (void) restoreCamera;
+- (void) updateMousePosition: (NSEvent*) theEvent;
 
 @end

@@ -38,13 +38,17 @@
 	NSTimeInterval lastMovieTime;
     NSTimer	*movieTimer;
 	
+	Point3D *mousePosition;
+	int mouseViewID;
+	
 	// Clipping Range
 	float clippingRangeThickness;
 	int clippingRangeMode;
 }
 
 @property float clippingRangeThickness;
-@property int clippingRangeMode;
+@property int clippingRangeMode, mouseViewID;
+@property (retain) Point3D *mousePosition;
 
 + (double) angleBetweenVector:(float*) a andPlane:(float*) orientation;
 
