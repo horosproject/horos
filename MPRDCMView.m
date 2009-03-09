@@ -34,7 +34,7 @@ static float deg2rad = 3.14159265358979/180.0;
 #define VIEW_3_BLUE 1.0f
 #define VIEW_3_ALPHA 1.0f
 
-#define VIEW_COLOR_LABEL_SIZE 13
+#define VIEW_COLOR_LABEL_SIZE 25
 
 @implementation MPRDCMView
 

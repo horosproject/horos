@@ -438,6 +438,11 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (void)windowWillClose:(NSNotification *)notification
 {
+	if( [notification object] == [hiddenVRController window])
+	{
+		hiddenVRController = nil;
+	}
+	
 	if( [notification object] == [self window])
 	{
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"Window3DClose" object: self userInfo: 0];
