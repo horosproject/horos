@@ -3213,7 +3213,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 		[[self openGLContext] makeCurrentContext];	// Important for iChat compatibility
 		
-		[self checkCursor];
+//		[self checkCursor];
 		
 		BOOL	needUpdate = NO;
 		

@@ -421,7 +421,9 @@ static float deg2rad = 3.14159265358979/180.0;
 		mouseLocation.x *= curDCM.pixelSpacingX;
 		mouseLocation.y *= curDCM.pixelSpacingY;
 		
-		if( mouseLocation.x > r.x - BS/scaleValue && mouseLocation.x < r.x + BS/scaleValue && mouseLocation.y > r.y - BS/scaleValue && mouseLocation.y < r.y + BS/scaleValue)
+		float f = scaleValue * curDCM.pixelSpacingX;
+		
+		if( mouseLocation.x > r.x - BS* f && mouseLocation.x < r.x + BS* f && mouseLocation.y > r.y - BS* f && mouseLocation.y < r.y + BS* f)
 		{
 			return 2;
 		}
@@ -437,6 +439,9 @@ static float deg2rad = 3.14159265358979/180.0;
 			
 			[DCMView DistancePointLine:mouseLocation :a1 :a2 :&distance1];
 			[DCMView DistancePointLine:mouseLocation :b1 :b2 :&distance2];
+			
+			distance1 /= curDCM.pixelSpacingX;
+			distance2 /= curDCM.pixelSpacingX;
 			
 			if( distance1 * scaleValue < 10 || distance2 * scaleValue < 10)
 			{
