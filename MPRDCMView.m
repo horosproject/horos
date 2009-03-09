@@ -201,7 +201,7 @@ static float deg2rad = 3.14159265358979/180.0;
 				}
 				else
 				{
-					glLineWidth(1.0);
+					glLineWidth(2.0);
 					[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: 0];
 				}
 			}
@@ -219,7 +219,7 @@ static float deg2rad = 3.14159265358979/180.0;
 				}
 				else
 				{
-					glLineWidth(1.0);
+					glLineWidth(2.0);
 					[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: 0];
 				}
 			}
@@ -240,7 +240,7 @@ static float deg2rad = 3.14159265358979/180.0;
 				}
 				else
 				{
-					glLineWidth(1.0);
+					glLineWidth(2.0);
 					[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: 0];
 				}
 			}
@@ -259,7 +259,7 @@ static float deg2rad = 3.14159265358979/180.0;
 				}
 				else
 				{
-					glLineWidth(1.0);
+					glLineWidth(2.0);
 					[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: 0];
 				}
 			}
@@ -280,7 +280,7 @@ static float deg2rad = 3.14159265358979/180.0;
 				}
 				else
 				{
-					glLineWidth(1.0);
+					glLineWidth(2.0);
 					[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: 0];
 				}
 			}
@@ -299,7 +299,7 @@ static float deg2rad = 3.14159265358979/180.0;
 				}
 				else
 				{
-					glLineWidth(1.0);
+					glLineWidth(2.0);
 					[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: 0];
 				}
 			}
