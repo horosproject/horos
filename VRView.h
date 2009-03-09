@@ -349,6 +349,7 @@ typedef char* vtkMyCallbackVR;
 @property int projectionMode;
 @property double clippingRangeThickness;
 @property long renderingMode;
+@property (readonly) NSArray* currentOpacityArray;
 
 + (BOOL) getCroppingBox:(double*) a :(vtkVolume *) volume :(vtkBoxWidget*) croppingBox;
 + (void) setCroppingBox:(double*) a :(vtkVolume *) volume;

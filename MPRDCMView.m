@@ -190,22 +190,38 @@ static float deg2rad = 3.14159265358979/180.0;
 			glColor4f (VIEW_2_RED, VIEW_2_GREEN, VIEW_2_BLUE, VIEW_2_ALPHA);
 			if( crossLinesA[ 0][ 0] != HUGE_VALF)
 			{
-				glLineWidth(2.0);
-				[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: 0];
-				
-				glLineWidth(1.0);
-				[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: -thickness/2.];
-				[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: thickness/2.];
+				if( thickness > 2)
+				{
+					glLineWidth(2.0);
+					[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: 0];
+					
+					glLineWidth(1.0);
+					[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: -thickness/2.];
+					[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: thickness/2.];
+				}
+				else
+				{
+					glLineWidth(1.0);
+					[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: 0];
+				}
 			}
 			glColor4f (VIEW_3_RED, VIEW_3_GREEN, VIEW_3_BLUE, VIEW_3_ALPHA);
 			if( crossLinesB[ 0][ 0] != HUGE_VALF)
 			{
-				glLineWidth(2.0);
-				[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: 0];
+				if( thickness > 2)
+				{
+					glLineWidth(2.0);
+					[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: 0];
 				
-				glLineWidth(1.0);
-				[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: -thickness/2.];
-				[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: thickness/2.];
+					glLineWidth(1.0);
+					[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: -thickness/2.];
+					[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: thickness/2.];
+				}
+				else
+				{
+					glLineWidth(1.0);
+					[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: 0];
+				}
 			}
 		break;
 		
@@ -213,23 +229,39 @@ static float deg2rad = 3.14159265358979/180.0;
 			glColor4f (VIEW_1_RED, VIEW_1_GREEN, VIEW_1_BLUE, VIEW_1_ALPHA);
 			if( crossLinesA[ 0][ 0] != HUGE_VALF)
 			{
-				glLineWidth(2.0);
-				[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: 0];
-				
-				glLineWidth(1.0);
-				[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: -thickness/2.];
-				[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: thickness/2.];
+				if( thickness > 2)
+				{
+					glLineWidth(2.0);
+					[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: 0];
+					
+					glLineWidth(1.0);
+					[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: -thickness/2.];
+					[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: thickness/2.];
+				}
+				else
+				{
+					glLineWidth(1.0);
+					[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: 0];
+				}
 			}
 			
 			glColor4f (VIEW_3_RED, VIEW_3_GREEN, VIEW_3_BLUE, VIEW_3_ALPHA);
 			if( crossLinesB[ 0][ 0] != HUGE_VALF)
 			{
-				glLineWidth(2.0);
-				[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: 0];
-				
-				glLineWidth(1.0);
-				[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: -thickness/2.];
-				[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: thickness/2.];
+				if( thickness > 2)
+				{
+					glLineWidth(2.0);
+					[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: 0];
+					
+					glLineWidth(1.0);
+					[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: -thickness/2.];
+					[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: thickness/2.];
+				}
+				else
+				{
+					glLineWidth(1.0);
+					[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: 0];
+				}
 			}
 		break;
 		
@@ -237,23 +269,39 @@ static float deg2rad = 3.14159265358979/180.0;
 			glColor4f (VIEW_1_RED, VIEW_1_GREEN, VIEW_1_BLUE, VIEW_1_ALPHA);
 			if( crossLinesA[ 0][ 0] != HUGE_VALF)
 			{
-				glLineWidth(2.0);
-				[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: 0];
-				
-				glLineWidth(1.0);
-				[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: -thickness/2.];
-				[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: thickness/2.];
+				if( thickness > 2)
+				{
+					glLineWidth(2.0);
+					[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: 0];
+					
+					glLineWidth(1.0);
+					[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: -thickness/2.];
+					[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: thickness/2.];
+				}
+				else
+				{
+					glLineWidth(1.0);
+					[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: 0];
+				}
 			}
 			
 			glColor4f (VIEW_2_RED, VIEW_2_GREEN, VIEW_2_BLUE, VIEW_2_ALPHA);
 			if( crossLinesB[ 0][ 0] != HUGE_VALF)
 			{
-				glLineWidth(2.0);
-				[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: 0];
-				
-				glLineWidth(1.0);
-				[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: -thickness/2.];
-				[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: thickness/2.];
+				if( thickness > 2)
+				{
+					glLineWidth(2.0);
+					[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: 0];
+					
+					glLineWidth(1.0);
+					[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: -thickness/2.];
+					[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: thickness/2.];
+				}
+				else
+				{
+					glLineWidth(1.0);
+					[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: 0];
+				}
 			}
 		break;
 	}
@@ -509,7 +557,8 @@ static float deg2rad = 3.14159265358979/180.0;
 	{
 		[[NSCursor rotateAxisCursor] set];
 		
-		[vrView setLODLow: YES];
+		if( [pix sliceThickness] > 2)
+			[vrView setLODLow: YES];
 		
 		NSPoint mouseLocation = [self ConvertFromNSView2GL: [self convertPoint: [theEvent locationInWindow] fromView: nil]];
 		mouseLocation.x *= curDCM.pixelSpacingX;	mouseLocation.y *= curDCM.pixelSpacingY;
@@ -547,6 +596,7 @@ static float deg2rad = 3.14159265358979/180.0;
 				[vrView getCosMatrix: after];
 				angleMPR -= [MPRController angleBetweenVector: after andPlane: before];
 			}
+			
 			[self updateView];
 		}
 	}

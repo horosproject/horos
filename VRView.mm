@@ -289,7 +289,7 @@ public:
 
 @implementation VRView
 
-@synthesize clipRangeActivated, projectionMode, clippingRangeThickness, keep3DRotateCentered, dontResetImage, renderingMode;
+@synthesize clipRangeActivated, projectionMode, clippingRangeThickness, keep3DRotateCentered, dontResetImage, renderingMode, currentOpacityArray;
 
 - (void) checkInVolume
 {
@@ -2044,10 +2044,10 @@ public:
 	aRenderer->SetDraw( 0);
 	
 	dontRenderVolumeRenderingOsiriX = 0;
+	volumeMapper->SetIntermixIntersectingGeometry( 0);
 	
 	_cocoaRenderWindow->UpdateContext();
 	_cocoaRenderWindow->MakeCurrent();
-	
 	volumeMapper->Render( aRenderer, volume);
 	dontRenderVolumeRenderingOsiriX = 1;
 }
@@ -2242,9 +2242,8 @@ public:
 	ROIUPDATE = NO;
 }
 
-
-
-- (NSMenu *)defaultMenu {
+- (NSMenu *)defaultMenu
+{
     NSMenu *theMenu = [[[NSMenu alloc] initWithTitle:@"Contextual Menu"] autorelease];
 	NSMenuItem *item;
     item = [theMenu insertItemWithTitle:NSLocalizedString(@"Levels", nil) action:@selector(setDefaultTool:) keyEquivalent:@"" atIndex:0];
@@ -2899,11 +2898,6 @@ public:
 			break;
 
 			case tWL:
-				if( [[controller style] isEqualToString: @"noNib"])
-				{
-					
-				}
-				else
 				{
 					_startWW = ww;
 					_startWL = wl;
@@ -4600,9 +4594,6 @@ public:
 
 -(void) setOpacity:(NSArray*) array
 {
-	if( [[controller style] isEqualToString: @"noNib"])
-		return;
-	
 	long		i;
 	NSPoint		pt;
 	float		start, end;
@@ -4717,9 +4708,6 @@ public:
 
 - (void) setWLWW:(float) iwl :(float) iww
 {
-	if( [[controller style] isEqualToString: @"noNib"])
-		return;
-	
 	if( iwl == 0 && iww == 0)
 	{
 		iwl = [[pixList objectAtIndex:0] fullwl];
@@ -6173,9 +6161,9 @@ public:
 						destPtr++;
 						iptrTemp++;
 						
-						*destPtr++ = *iptrTemp++ / 256;
-						*destPtr++ = *iptrTemp++ / 256;
-						*destPtr++ = *iptrTemp++ / 256;
+						*destPtr++ = *iptrTemp++ >> 7;
+						*destPtr++ = *iptrTemp++ >> 7;
+						*destPtr++ = *iptrTemp++ >> 7;
 					}
 					
 					iptr -= rowBytes;
@@ -6219,52 +6207,66 @@ public:
 		sf.data = [self imageInFullDepthWidth: width height:height isRGB: &rgb];
 		
 		if( rgb)
-			NSLog( @"ERROR isRGB is TRUE");
-		
-		*spp = 1;
-		*bpp = 16;
-		
-		sf.height = *height;
-		sf.width = *width;
-		sf.rowBytes = *width * sizeof( float);
-		
-		d8.height =  *height;
-		d8.width = *width;
-		d8.rowBytes = *width * sizeof( short);
-		
-		buf = (unsigned char*) malloc( *width * *height * *spp * *bpp / 8);
-		if( buf)
 		{
-			d8.data = buf;
+			*spp = 3;
+			*bpp = 8;
 			
-			if( [controller minimumValue] < -1024)
+			buf = (unsigned char*) sf.data;
+			
+			int i = *width * *height;
+			unsigned char *t_argb = buf+1;
+			unsigned char *t_rgb = buf;
+			while( i-->0)
 			{
-				if( isSigned) *isSigned = YES;
-				if( offset) *offset = 0;
-				
-				vImageConvert_FTo16S( &sf, &d8, 0,  1, 0);
+				*((int*) t_rgb) = *((int*) t_argb);
+				t_argb+=4;
+				t_rgb+=3;
 			}
-			else
+		}
+		else
+		{
+			*spp = 1;
+			*bpp = 16;
+			
+			sf.height = *height;
+			sf.width = *width;
+			sf.rowBytes = *width * sizeof( float);
+			
+			d8.height =  *height;
+			d8.width = *width;
+			d8.rowBytes = *width * sizeof( short);
+			
+			buf = (unsigned char*) malloc( *width * *height * *spp * *bpp / 8);
+			if( buf)
 			{
-				if( isSigned) *isSigned = NO;
+				d8.data = buf;
 				
-				if( [controller minimumValue] >= 0)
+				if( [controller minimumValue] < -1024)
 				{
+					if( isSigned) *isSigned = YES;
 					if( offset) *offset = 0;
-					vImageConvert_FTo16U( &sf, &d8, 0,  1, 0);
+					
+					vImageConvert_FTo16S( &sf, &d8, 0,  1, 0);
 				}
 				else
 				{
-					if( offset) *offset = -1024;
-					vImageConvert_FTo16U( &sf, &d8, -1024,  1, 0);
+					if( isSigned) *isSigned = NO;
+					
+					if( [controller minimumValue] >= 0)
+					{
+						if( offset) *offset = 0;
+						vImageConvert_FTo16U( &sf, &d8, 0,  1, 0);
+					}
+					else
+					{
+						if( offset) *offset = -1024;
+						vImageConvert_FTo16U( &sf, &d8, -1024,  1, 0);
+					}
 				}
 			}
+			
+			free( sf.data);
 		}
-		
-		free( sf.data);
-		
-		*spp = 1;
-		*bpp = 16;
 	}
 	else
 	{

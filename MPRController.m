@@ -19,6 +19,8 @@ static float deg2rad = 3.14159265358979/180.0;
 
 @implementation MPRController
 
+@synthesize clippingRangeThickness, clippingRangeMode;
+
 + (double) angleBetweenVector:(float*) a andPlane:(float*) orientation
 {
 	double sc[ 2];
@@ -87,13 +89,16 @@ static float deg2rad = 3.14159265358979/180.0;
 	
 	[mprView3 setVRView: hiddenVRView viewID: 3];
 	[mprView3 setWLWW: [originalPix wl] :[originalPix ww]];
-	
+		
 	return self;
 }
 
 - (void) showWindow:(id) sender
 {
 	// Default Init -- To be finished.....
+	[self setClippingRangeMode: 1]; // MIP
+	[self setClippingRangeThickness: 1];
+	
 	[mprView1.vrView saView: self];
 	[mprView1 scrollWheel: [[NSApplication sharedApplication] currentEvent]];
 	mprView2.camera.viewUp = [Point3D pointWithX:0 y:-1 z:0];
@@ -285,21 +290,45 @@ static float deg2rad = 3.14159265358979/180.0;
 			mprView1.camera.parallelScale = sender.camera.parallelScale;
 		}
 		
+		float l, w;
+		[sender.vrView getWLWW: &l : &w];
+			
 		if( sender != mprView1)
 		{
 			[mprView1 restoreCamera];
+			
+			if( clippingRangeMode == 0) // VR mode
+			{
+				[mprView1.vrView setOpacity: [sender.vrView currentOpacityArray]];
+				[mprView1.vrView setWLWW: l : w];
+			}
+			
 			[mprView1 updateView];
 		}
 		
 		if( sender != mprView2)
 		{
 			[mprView2 restoreCamera];
+			
+			if( clippingRangeMode == 0) // VR mode
+			{
+				[mprView2.vrView setOpacity: [sender.vrView currentOpacityArray]];
+				[mprView2.vrView setWLWW: l : w];
+			}
+			
 			[mprView2 updateView];
 		}
 		
 		if( sender != mprView3)
 		{
 			[mprView3 restoreCamera];
+			
+			if( clippingRangeMode == 0) // VR mode
+			{
+				[mprView3.vrView setOpacity: [sender.vrView currentOpacityArray]];
+				[mprView3.vrView setWLWW: l : w];
+			}
+			
 			[mprView3 updateView];
 		}
 		
@@ -374,6 +403,23 @@ static float deg2rad = 3.14159265358979/180.0;
 - (void) setClippingRangeMode:(int) f
 {
 	clippingRangeMode = f;
+	
+	if( clippingRangeMode == 1)	// MIP
+	{
+		[mprView1.vrView prepareFullDepthCapture];
+		[mprView2.vrView prepareFullDepthCapture];
+		[mprView3.vrView prepareFullDepthCapture];
+	}
+	else
+	{
+		[mprView1.vrView restoreFullDepthCapture];
+		[mprView2.vrView restoreFullDepthCapture];
+		[mprView3.vrView restoreFullDepthCapture];
+		
+		[mprView1 setWLWW:128 :256];
+		[mprView2 setWLWW:128 :256];
+		[mprView3 setWLWW:128 :256];
+	}
 	
 	[mprView1 restoreCamera];
 	[mprView1.vrView setMode: clippingRangeMode];
