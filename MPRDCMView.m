@@ -94,6 +94,17 @@ static float deg2rad = 3.14159265358979/180.0;
 	camera = [[vrView cameraWithThumbnail: NO] retain];
 }
 
+- (void) setFrame:(NSRect)frameRect
+{
+	if( NSEqualRects( frameRect, [self frame]) == NO)
+	{
+		[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector( updateViewsAccordingToFrame:) object: nil];
+		[windowController performSelector: @selector( updateViewsAccordingToFrame:) withObject: nil afterDelay: 0.1];
+	}
+	
+	[super setFrame: frameRect];
+}
+
 - (void) checkForFrame
 {
 	NSRect frame = [self frame];
@@ -101,7 +112,9 @@ static float deg2rad = 3.14159265358979/180.0;
 	frame.origin = o;
 	
 	if( NSEqualRects( frame, [vrView frame]) == NO)
+	{
 		[vrView setFrame: frame];
+	}
 }
 
 - (void) restoreCamera
@@ -327,8 +340,8 @@ static float deg2rad = 3.14159265358979/180.0;
 	
 	[self colorForView: viewID];
 	
-	float heighthalf = self.frame.size.height/2 - 1;
-	float widthhalf = self.frame.size.width/2 - 1;
+	float heighthalf = self.frame.size.height/2;
+	float widthhalf = self.frame.size.width/2;
 	
 	glLineWidth(2.0);
 	glBegin(GL_POLYGON);

@@ -498,6 +498,7 @@ typedef char* vtkMyCallbackVR;
 -(void) coView:(id) sender;
 -(void) saViewOpposite:(id) sender;
 - (void) render;
+- (void) goToCenter;
 - (void)zoomMouseUp:(NSEvent *)theEvent;
 - (void) setWindowCenter: (NSPoint) loc;
 - (NSPoint) windowCenter;

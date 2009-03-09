@@ -93,17 +93,28 @@ static float deg2rad = 3.14159265358979/180.0;
 	return self;
 }
 
+- (void) updateViewsAccordingToFrame:(id) sender	// see setFrame in MPRDCMView.m
+{
+	[mprView3 restoreCamera];
+	[mprView3 updateView];
+}
+
 - (void) showWindow:(id) sender
 {
-	// Default Init -- To be finished.....
+	// Default Init
 	[self setClippingRangeMode: 1]; // MIP
 	[self setClippingRangeThickness: 1];
 	
-	[mprView1.vrView saView: self];
-	[mprView1 scrollWheel: [[NSApplication sharedApplication] currentEvent]];
-	mprView2.camera.viewUp = [Point3D pointWithX:0 y:-1 z:0];
 	[[self window] makeFirstResponder: mprView1];
-	[self computeCrossReferenceLines: mprView1];
+	[mprView1.vrView saView: self];
+	[mprView1.vrView goToCenter];
+	
+	mprView2.camera.viewUp = [Point3D pointWithX:0 y:-1 z:0];
+	[mprView1 updateView];
+	
+	[[self window] makeFirstResponder: mprView2];
+	[mprView2 restoreCamera];
+	[mprView2 updateView];
 	
 	[super showWindow: sender];
 }
@@ -177,6 +188,10 @@ static float deg2rad = 3.14159265358979/180.0;
 	float a[2][3];
 	float b[2][3];
 	
+	if( sender != mprView1) mprView1.camera.parallelScale = sender.camera.parallelScale;
+	if( sender != mprView2) mprView2.camera.parallelScale = sender.camera.parallelScale;
+	if( sender != mprView3) mprView3.camera.parallelScale = sender.camera.parallelScale;
+	
 	[self computeCrossReferenceLinesBetween: mprView1 and: mprView2 result: a];
 	[self computeCrossReferenceLinesBetween: mprView1 and: mprView3 result: b];
 	[mprView1 setCrossReferenceLines: a and: b];
@@ -190,8 +205,10 @@ static float deg2rad = 3.14159265358979/180.0;
 	[mprView3 setCrossReferenceLines: a and: b];
 	
 	// Center other views on the sender view
-	if( sender && [sender isKeyView] == YES)
+	if( sender && [sender isKeyView] == YES && avoidReentry == NO)
 	{
+		avoidReentry = YES;
+		
 		float x, y, z;
 		Camera *cam = sender.camera;
 		Point3D *position = cam.position;
@@ -230,9 +247,6 @@ static float deg2rad = 3.14159265358979/180.0;
 			// Correct slice position according to slice center (VR: position is the beginning of the slice)
 			p = mprView3.camera.position;
 			mprView3.camera.position = [Point3D pointWithX: p.x + halfthickness*-vector.x y:p.y + halfthickness*-vector.y z:p.z + halfthickness*-vector.z];
-
-			mprView2.camera.parallelScale = sender.camera.parallelScale;
-			mprView3.camera.parallelScale = sender.camera.parallelScale;
 		}
 		
 		if( sender == mprView2)
@@ -258,9 +272,6 @@ static float deg2rad = 3.14159265358979/180.0;
 			// Correct slice position according to slice center (VR: position is the beginning of the slice)
 			p = mprView1.camera.position;
 			mprView1.camera.position = [Point3D pointWithX: p.x + halfthickness*-vector.x y:p.y + halfthickness*-vector.y z:p.z + halfthickness*-vector.z];
-			
-			mprView3.camera.parallelScale = sender.camera.parallelScale;
-			mprView1.camera.parallelScale = sender.camera.parallelScale;
 		}
 		
 		if( sender == mprView3)
@@ -286,9 +297,6 @@ static float deg2rad = 3.14159265358979/180.0;
 			// Correct slice position according to slice center (VR: position is the beginning of the slice)
 			p = mprView1.camera.position;
 			mprView1.camera.position = [Point3D pointWithX: p.x + halfthickness*-vector.x y:p.y + halfthickness*-vector.y z:p.z + halfthickness*-vector.z];
-			
-			mprView2.camera.parallelScale = sender.camera.parallelScale;
-			mprView1.camera.parallelScale = sender.camera.parallelScale;
 		}
 		
 		float l, w;
@@ -374,6 +382,8 @@ static float deg2rad = 3.14159265358979/180.0;
 	[mprView1 setNeedsDisplay: YES];
 	[mprView2 setNeedsDisplay: YES];
 	[mprView3 setNeedsDisplay: YES];
+	
+	avoidReentry = NO;
 }
 
 - (void) setMousePosition:(Point3D*) pt

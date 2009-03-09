@@ -33,6 +33,7 @@
 	NSMutableArray *filesList[200], *pixList[200];
 	NSData *volumeData[200];
 	short curMovieIndex, maxMovieIndex;
+	BOOL avoidReentry;
 	
 	// 4D Data support
 	NSTimeInterval lastMovieTime;

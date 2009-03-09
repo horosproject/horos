@@ -309,6 +309,30 @@ public:
 	return YES;
 }
 
+- (void) goToCenter
+{
+	double bounds[ 6];
+	
+	volume->GetBounds( bounds);
+	
+	float cos[ 9];
+	
+	[self getCosMatrix: cos];
+	
+	double center[ 3] = { bounds[ 0] + (bounds[ 1] - bounds[ 0])/2., bounds[ 2] + (bounds[ 3] - bounds[ 2])/2., bounds[ 4] + (bounds[ 5] - bounds[ 4])/2.};
+	
+	aCamera->SetPosition( center);
+	
+	center[ 0] = center[ 0] + cos[ 6];
+	center[ 1] = center[ 1] + cos[ 7];
+	center[ 2] = center[ 2] + cos[ 8];
+	
+	aCamera->SetFocalPoint( center);
+	
+	aCamera->OrthogonalizeViewUp();
+	aCamera->ComputeViewPlaneNormal();
+}
+
 - (void) checkInVolume
 {
 	if( clipRangeActivated)
