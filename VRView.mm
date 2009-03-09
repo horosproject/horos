@@ -1721,10 +1721,7 @@ public:
 - (long) getTool: (NSEvent*) event
 {
 	long tool;	
-	if(([event type] == NSRightMouseDown || [event type] == NSRightMouseDragged || [event type] == NSRightMouseUp) && !_contextualMenuActive) {
-		tool = tZoom;
-		//NSLog(@"Right Mouse Tool");
-	}
+	if(([event type] == NSRightMouseDown || [event type] == NSRightMouseDragged || [event type] == NSRightMouseUp) && !_contextualMenuActive) tool = tZoom;
 	else if( [event type] == NSOtherMouseDown || [event type] == NSOtherMouseDragged || [event type] == NSOtherMouseUp) tool = tTranslate;
 	else tool = currentTool;
 	
@@ -1732,14 +1729,8 @@ public:
 	if (([event modifierFlags] & NSShiftKeyMask))  tool = tZoom;
 	if (([event modifierFlags] & NSCommandKeyMask))  tool = tTranslate;
 	if (([event modifierFlags] & NSAlternateKeyMask))  tool = tWL;
-	if (([event modifierFlags] & NSCommandKeyMask) && ([event modifierFlags] & NSAlternateKeyMask))
-	{
-		tool = tWLBlended;
-	}
-	if (([event modifierFlags] & NSCommandKeyMask) && ([event modifierFlags] & NSControlKeyMask))
-	{
-		tool = tCamera3D;
-	}
+	if (([event modifierFlags] & NSCommandKeyMask) && ([event modifierFlags] & NSAlternateKeyMask)) tool = tRotate;
+	if (([event modifierFlags] & NSCommandKeyMask) && ([event modifierFlags] & NSControlKeyMask)) tool = tCamera3D;
 	
 	return tool;
 }
@@ -2041,15 +2032,19 @@ public:
 
 - (void) render
 {
-	aRenderer->SetDraw( 0);
-	
-	dontRenderVolumeRenderingOsiriX = 0;
-	volumeMapper->SetIntermixIntersectingGeometry( 0);
-	
-	_cocoaRenderWindow->UpdateContext();
-	_cocoaRenderWindow->MakeCurrent();
-	volumeMapper->Render( aRenderer, volume);
-	dontRenderVolumeRenderingOsiriX = 1;
+	if( volumeMapper)
+	{
+		aRenderer->SetDraw( 0);
+		
+		dontRenderVolumeRenderingOsiriX = 0;
+		volumeMapper->SetIntermixIntersectingGeometry( 0);
+		
+		_cocoaRenderWindow->UpdateContext();
+		_cocoaRenderWindow->MakeCurrent();
+		volumeMapper->Render( aRenderer, volume);
+		
+		dontRenderVolumeRenderingOsiriX = 1;
+	}
 }
 
 - (void) drawRect:(NSRect)aRect
@@ -2569,16 +2564,32 @@ public:
 	}
 	else
 	{
-		// Endoscopy - Zoom in/out
-		float distance = aCamera->GetDistance();
+		double position[ 3];
+		float cos[ 9];
+		double distance = aCamera->GetDistance();
 		
-		float dolly = [theEvent deltaY];
+		[self getCosMatrix: cos];
 		
-		dolly /= 40.;
-			
-		if( dolly < -0.9) dolly = -0.9;
+		aCamera->GetPosition( position);
 		
-		aCamera->Dolly( 1.0 + dolly); 
+		position[ 0] = position[ 0] + cos[ 6] * [theEvent deltaY] * factor;
+		position[ 1] = position[ 1] + cos[ 7] * [theEvent deltaY] * factor;
+		position[ 2] = position[ 2] + cos[ 8] * [theEvent deltaY] * factor;
+		
+		aCamera->SetPosition( position);
+		aCamera->SetDistance( distance);
+		
+		
+//		// Endoscopy - Zoom in/out
+//		float distance = aCamera->GetDistance();
+//		
+//		float dolly = [theEvent deltaY];
+//		
+//		dolly /= 40.;
+//			
+//		if( dolly < -0.9) dolly = -0.9;
+//		
+//		aCamera->Dolly( 1.0 + dolly); 
 		
 		if( clipRangeActivated)
 			[self checkInVolume];
@@ -3324,13 +3335,35 @@ public:
 		long	pix[ 3];
 		float	pos[ 3], value;
 		
-		if( [self get3DPixelUnder2DPositionX:_mouseLocStart.x Y:_mouseLocStart.y pixel:pix position:pos value:&value])
+		if( clipRangeActivated)
 		{
-			NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:	[NSNumber numberWithInt: pix[0]], @"x", [NSNumber numberWithInt: pix[1]], @"y", [NSNumber numberWithInt: pix[2]], @"z",
-																				nil];
+			float position[ 3], sc[ 3], cos[ 9], r = [self getResolution];
+			
+			[self getOrigin: position];
+			[self getCosMatrix: cos];
+			
+			position[0] = ([self frame].size.height - _mouseLocStart.y)*cos[3]*r + _mouseLocStart.x*cos[0]*r +position[0];
+			position[1] = ([self frame].size.height - _mouseLocStart.y)*cos[4]*r + _mouseLocStart.x*cos[1]*r +position[1];
+			position[2] = ([self frame].size.height - _mouseLocStart.y)*cos[5]*r + _mouseLocStart.x*cos[2]*r +position[2];
+			
+			[firstObject convertDICOMCoords: position toSliceCoords: sc pixelCenter: YES];
+			
+			sc[ 0] /= [firstObject pixelSpacingX];
+			sc[ 1] /= [firstObject pixelSpacingY];
+			sc[ 2] /= [firstObject sliceInterval];
+			
+			NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: sc[0]], @"x", [NSNumber numberWithInt: sc[1]], @"y", [NSNumber numberWithInt: sc[2]], @"z", nil];
 			[[NSNotificationCenter defaultCenter] postNotificationName: @"Display3DPoint" object:pixList  userInfo: dict];
 		}
-		
+		else
+		{
+			if( [self get3DPixelUnder2DPositionX:_mouseLocStart.x Y:_mouseLocStart.y pixel:pix position:pos value:&value])
+			{
+				NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:	[NSNumber numberWithInt: pix[0]], @"x", [NSNumber numberWithInt: pix[1]], @"y", [NSNumber numberWithInt: pix[2]], @"z",
+																					nil];
+				[[NSNotificationCenter defaultCenter] postNotificationName: @"Display3DPoint" object:pixList  userInfo: dict];
+			}
+		}
 		[drawLock unlock];
 		return;
 	}
@@ -3786,7 +3819,7 @@ public:
 	DCMPix			*fObject = [pxList objectAtIndex: 0];
 
 	NSLog(@"Scissor Start");
-//			[[[self window] windowController] prepareUndo];
+//	[[[self window] windowController] prepareUndo];
 	[controller prepareUndo];
 	
 	vtkMatrix4x4 *ActorMatrix;
@@ -4594,6 +4627,8 @@ public:
 
 -(void) setOpacity:(NSArray*) array
 {
+	if( fullDepthMode) return;
+
 	long		i;
 	NSPoint		pt;
 	float		start, end;
@@ -4708,6 +4743,8 @@ public:
 
 - (void) setWLWW:(float) iwl :(float) iww
 {
+	if( fullDepthMode) return;
+	
 	if( iwl == 0 && iww == 0)
 	{
 		iwl = [[pixList objectAtIndex:0] fullwl];
@@ -6029,16 +6066,14 @@ public:
 
 - (void) prepareFullDepthCapture
 {
-	if( volumeMapper && renderingMode == 1)
+	if( volumeMapper)
 	{
 		volumeMapper->SetIntermixIntersectingGeometry( 0);
 		
-		[self display];
-		
 		vtkPiecewiseFunction *tempOpacity = vtkPiecewiseFunction::New();
 		
-		float start = valueFactor*(OFFSET16 + [controller minimumValue] - 10);
-		float end = valueFactor*(OFFSET16 + [controller maximumValue] + 10);
+		float start = valueFactor*(OFFSET16 + [controller minimumValue]);
+		float end = valueFactor*(OFFSET16 + [controller maximumValue]);
 		
 		tempOpacity->AddPoint(start, 0);
 		tempOpacity->AddPoint(end, 1);
@@ -6050,17 +6085,21 @@ public:
 		memcpy( o, [VRView linearOpacity], 32767 * sizeof( unsigned short));
 		
 		tempOpacity->Delete();
+		
+		fullDepthMode = 1;
 	}
 }
 
 - (void) restoreFullDepthCapture
 {
-	if( volumeMapper && renderingMode == 1)
+	if( volumeMapper)
 	{
 		volumeMapper->SetIntermixIntersectingGeometry( 1);
 		
 		volumeProperty->SetScalarOpacity( opacityTransferFunction);
 		volumeMapper->PerVolumeInitialization( aRenderer, volume);
+		
+		fullDepthMode = 0;
 		
 		[self setNeedsDisplay: YES];
 	}

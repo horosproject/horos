@@ -3425,7 +3425,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	return nil;
 }
 
-- (void)mouseDown:(NSEvent *)event
+- (void) mouseDown:(NSEvent *)event
 {	
 	currentMouseEventTool = -1;
 	
@@ -3471,7 +3471,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 		[self mouseMoved: event];	// Update some variables...
 		
-		start = previous = [self convertPoint:eventLocation fromView:self];
+		start = previous = [self convertPoint:eventLocation fromView: nil];
         
 		BOOL roiHit = NO;
 		
@@ -3595,6 +3595,16 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			}
 		}
 		else crossMove = -1;
+		
+		if( tool == tRotate)
+		{
+			NSPoint current = [self currentPointInView:event];
+	
+			current.x -= [self frame].size.width/2.;
+			current.y -= [self frame].size.height/2.;
+			
+			rotationStart -= atan2( current.x, current.y) / deg2rad;
+		}
 		
 		if(tool == tRepulsor)
 		{
@@ -4464,7 +4474,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		[drawLock lock];
 	
         NSPoint     eventLocation = [event locationInWindow];
-        NSPoint     current = [self convertPoint:eventLocation fromView:self];
+        NSPoint     current = [self convertPoint:eventLocation fromView: nil];
         short       tool = currentMouseEventTool;
 		
 		[self mouseMoved: event];	// Update some variables...
@@ -4541,7 +4551,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 - (NSPoint)currentPointInView:(NSEvent *)event
 {
 	NSPoint     eventLocation = [event locationInWindow];
-	return [self convertPoint:eventLocation fromView:self];
+	return [self convertPoint:eventLocation fromView: nil];
 }
 
 // Check to see if an roi is selected at the Open GL point
@@ -4763,11 +4773,15 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 }
 
 //Method for rotating
-- (void)mouseDraggedRotate:(NSEvent *)event {
+- (void)mouseDraggedRotate:(NSEvent *)event
+{
 	NSPoint current = [self currentPointInView:event];
 	
-	float rot= rotationStart - (current.x - start.x);
-
+	current.x -= [self frame].size.width/2.;
+	current.y -= [self frame].size.height/2.;
+	
+	float rot = rotationStart + atan2( current.x, current.y) / deg2rad;
+	
 	while( rot < 0) rot += 360;
 	while( rot > 360) rot -= 360;
 	

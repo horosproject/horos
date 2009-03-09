@@ -413,7 +413,18 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (void) setClippingRangeMode:(int) f
 {
+	float pWL, pWW;
+	
+	if( clippingRangeMode == 1) // MIP
+		[mprView1 getWLWW: &pWL :&pWW];
+	else
+		[mprView1.vrView getWLWW: &pWL :&pWW];
+	
 	clippingRangeMode = f;
+	
+	[mprView1.vrView setMode: clippingRangeMode];
+	[mprView2.vrView setMode: clippingRangeMode];
+	[mprView3.vrView setMode: clippingRangeMode];
 	
 	if( clippingRangeMode == 1)	// MIP
 	{
@@ -423,6 +434,8 @@ static float deg2rad = 3.14159265358979/180.0;
 	}
 	else
 	{
+		// VR mode
+		
 		[mprView1.vrView restoreFullDepthCapture];
 		[mprView2.vrView restoreFullDepthCapture];
 		[mprView3.vrView restoreFullDepthCapture];
@@ -431,17 +444,20 @@ static float deg2rad = 3.14159265358979/180.0;
 		[mprView2 setWLWW:128 :256];
 		[mprView3 setWLWW:128 :256];
 	}
-	
+
 	[mprView1 restoreCamera];
-	[mprView1.vrView setMode: clippingRangeMode];
+	if( clippingRangeMode == 1) [mprView1 setWLWW: pWL :pWW];
+	else [mprView1.vrView setWLWW: pWL :pWW];
 	[mprView1 updateView];
 	
 	[mprView2 restoreCamera];
-	[mprView2.vrView setMode: clippingRangeMode];
+	if( clippingRangeMode == 1) [mprView2 setWLWW: pWL :pWW];
+	else [mprView2.vrView setWLWW: pWL :pWW];
 	[mprView2 updateView];
 
 	[mprView3 restoreCamera];
-	[mprView3.vrView setMode: clippingRangeMode];
+	if( clippingRangeMode == 1) [mprView3 setWLWW: pWL :pWW];
+	else [mprView3.vrView setWLWW: pWL :pWW];
 	[mprView3 updateView];
 }
 

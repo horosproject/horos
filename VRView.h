@@ -343,6 +343,7 @@ typedef char* vtkMyCallbackVR;
 	BOOL			bestRenderingWasGenerated;
 	float superSampling;
 	BOOL dontResetImage, keep3DRotateCentered;
+	int fullDepthMode;
 }
 
 @property BOOL clipRangeActivated, keep3DRotateCentered, dontResetImage;

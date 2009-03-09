@@ -344,7 +344,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	{
 		[self colorForView: windowController.mouseViewID];
 		Point3D *pt = windowController.mousePosition;
-		float sc[ 2], dc[ 3] = { pt.x, pt.y, pt.z};
+		float sc[ 3], dc[ 3] = { pt.x, pt.y, pt.z};
 		
 		[pix convertDICOMCoords: dc toSliceCoords: sc pixelCenter: YES];
 		
