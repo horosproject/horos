@@ -22,11 +22,15 @@ static float deg2rad = 3.14159265358979/180.0;
 
 @synthesize pix, camera, angleMPR, vrView;
 
-+ (BOOL)is2DTool:(short)tool;
+- (BOOL)is2DTool:(short)tool;
 {
 	switch( tool)
 	{
 		case tWL:
+			if( vrView.renderingMode == 1) return YES; // MIP
+			else return NO; // VR
+		break;
+		
 		case tMesure:
 		case tROI:
 		case tOval:
@@ -100,24 +104,26 @@ static float deg2rad = 3.14159265358979/180.0;
 {
 	long h, w;
 	float previousWW, previousWL;
+	BOOL isRGB;
 	
 	[self getWLWW: &previousWL :&previousWW];
 	
 	[vrView render];
 	
-	float *imagePtr = [vrView imageInFullDepthWidth: &w height: &h];
+	float *imagePtr = [vrView imageInFullDepthWidth: &w height: &h isRGB: &isRGB];
 	
 	[self saveCamera];
 	
 	if( imagePtr)
 	{
-		if( [pix pwidth] == w && [pix pheight] == h)
+		if( [pix pwidth] == w && [pix pheight] == h && isRGB == [pix isRGB])
 		{
 			memcpy( [pix fImage], imagePtr, w*h*sizeof( float));
 			free( imagePtr);
 		}
 		else
 		{
+			[pix setRGB: isRGB];
 			[pix setfImage: imagePtr];
 			[pix setPwidth: w];
 			[pix setPheight: h];
@@ -426,7 +432,7 @@ static float deg2rad = 3.14159265358979/180.0;
 		
 		[self restoreCamera];
 		
-		if([MPRDCMView is2DTool:tool])
+		if([self is2DTool:tool])
 		{
 			[super mouseDown: theEvent];
 			[windowController propagateWLWW: self];
@@ -464,7 +470,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	{
 		long tool = [self getTool: theEvent];
 		
-		if([MPRDCMView is2DTool:tool])
+		if([self is2DTool:tool])
 		{
 			[super mouseUp: theEvent];
 			[windowController propagateWLWW: self];
@@ -505,7 +511,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	{
 		long tool = [self getTool: theEvent];
 		
-		if([MPRDCMView is2DTool:tool])
+		if([self is2DTool:tool])
 		{
 			[super mouseDragged: theEvent];
 			[windowController propagateWLWW: self];

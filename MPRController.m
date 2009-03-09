@@ -375,12 +375,15 @@ static float deg2rad = 3.14159265358979/180.0;
 {
 	clippingRangeMode = f;
 	
+	[mprView1 restoreCamera];
 	[mprView1.vrView setMode: clippingRangeMode];
 	[mprView1 updateView];
 	
+	[mprView2 restoreCamera];
 	[mprView2.vrView setMode: clippingRangeMode];
 	[mprView2 updateView];
 
+	[mprView3 restoreCamera];
 	[mprView3.vrView setMode: clippingRangeMode];
 	[mprView3 updateView];
 }

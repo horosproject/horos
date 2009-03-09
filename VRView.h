@@ -348,6 +348,7 @@ typedef char* vtkMyCallbackVR;
 @property BOOL clipRangeActivated, keep3DRotateCentered, dontResetImage;
 @property int projectionMode;
 @property double clippingRangeThickness;
+@property long renderingMode;
 
 + (BOOL) getCroppingBox:(double*) a :(vtkVolume *) volume :(vtkBoxWidget*) croppingBox;
 + (void) setCroppingBox:(double*) a :(vtkVolume *) volume;
@@ -356,7 +357,7 @@ typedef char* vtkMyCallbackVR;
 - (void) showCropCube:(id) sender;
 - (void) restoreFullDepthCapture;
 - (void) prepareFullDepthCapture;
-- (float*) imageInFullDepthWidth: (long*) w height:(long*) h;
+- (float*) imageInFullDepthWidth: (long*) w height:(long*) h isRGB:(BOOL*) isRGB;
 - (NSDictionary*) exportDCMCurrentImage;
 - (NSDictionary*) exportDCMCurrentImageIn16bit: (BOOL) fullDepth;
 - (void) renderImageWithBestQuality: (BOOL) best waitDialog: (BOOL) wait;

@@ -289,7 +289,7 @@ public:
 
 @implementation VRView
 
-@synthesize clipRangeActivated, projectionMode, clippingRangeThickness, keep3DRotateCentered, dontResetImage;
+@synthesize clipRangeActivated, projectionMode, clippingRangeThickness, keep3DRotateCentered, dontResetImage, renderingMode;
 
 - (void) checkInVolume
 {
@@ -6041,7 +6041,7 @@ public:
 
 - (void) prepareFullDepthCapture
 {
-	if( volumeMapper)
+	if( volumeMapper && renderingMode == 1)
 	{
 		volumeMapper->SetIntermixIntersectingGeometry( 0);
 		
@@ -6067,22 +6067,24 @@ public:
 
 - (void) restoreFullDepthCapture
 {
-	volumeMapper->SetIntermixIntersectingGeometry( 1);
-	
-	volumeProperty->SetScalarOpacity( opacityTransferFunction);
-	volumeMapper->PerVolumeInitialization( aRenderer, volume);
-	
-	[self setNeedsDisplay: YES];
+	if( volumeMapper && renderingMode == 1)
+	{
+		volumeMapper->SetIntermixIntersectingGeometry( 1);
+		
+		volumeProperty->SetScalarOpacity( opacityTransferFunction);
+		volumeMapper->PerVolumeInitialization( aRenderer, volume);
+		
+		[self setNeedsDisplay: YES];
+	}
 }
 
-- (float*) imageInFullDepthWidth: (long*) w height:(long*) h
+- (float*) imageInFullDepthWidth: (long*) w height:(long*) h isRGB:(BOOL*) rgb
 {
 	if( volumeMapper)
 	{
 		vtkFixedPointRayCastImage *rayCastImage = volumeMapper->GetRayCastImage();
 		
 		unsigned short *im = rayCastImage->GetImage();
-		unsigned short *destPtr, *destFixedPtr;
 		
 		int fullSize[2];
 		rayCastImage->GetImageMemorySize( fullSize);
@@ -6096,52 +6098,93 @@ public:
 		*w /= 2;
 		*w *= 2;
 		
-		destPtr = destFixedPtr = (unsigned short*) malloc( (*w+1) * (*h+1) * sizeof( unsigned short));
-		if( destFixedPtr)
+		if( renderingMode == 1)		// MIP
 		{
-			unsigned short *iptr = im + 3 + 4*(*h-1)*fullSize[0];
+			unsigned short *destPtr, *destFixedPtr;
 			
-			int j = *h, rowBytes = 4*fullSize[0];
-			while( j-- > 0)
+			destPtr = destFixedPtr = (unsigned short*) malloc( (*w+1) * (*h+1) * sizeof( unsigned short));
+			if( destFixedPtr)
 			{
-				unsigned short *iptrTemp = iptr;
-				int i = *w;
-				while( i-- > 0)
+				unsigned short *iptr = im + 3 + 4*(*h-1)*fullSize[0];
+				vImage_Buffer src, dst;
+				
+				int j = *h, rowBytes = 4*fullSize[0];
+				while( j-- > 0)
 				{
-					*destPtr++ = *iptrTemp;
-					iptrTemp += 4;
+					unsigned short *iptrTemp = iptr;
+					int i = *w;
+					while( i-- > 0)
+					{
+						*destPtr++ = *iptrTemp;
+						iptrTemp += 4;
+					}
+					
+					iptr -= rowBytes;
 				}
 				
-				iptr -= rowBytes;
-			}
-			
-			float mul = 1./valueFactor;
-			float add = -OFFSET16;
-			
-			if( valueFactor != 1 && [firstObject SUVConverted] == NO)
-				mul = mul;
-			else
-				mul = 1;
-			
-			vImage_Buffer src, dst;
-			
-			src.data = destFixedPtr;
-			src.height = *h;
-			src.width = *w;
-			src.rowBytes = *w * 2;
-			
-			dst.data = malloc( (*w+1) * (*h+1) * sizeof( float));
-			if( dst.data)
-			{
-				dst.height = *h;
-				dst.width = *w;
-				dst.rowBytes = *w * 4;
+				float mul = 1./valueFactor;
+				float add = -OFFSET16;
 				
-				vImageConvert_16UToF( &src, &dst, add, mul, 0);
-			}
-			free( destFixedPtr);
+				if( valueFactor != 1 && [firstObject SUVConverted] == NO)
+					mul = mul;
+				else
+					mul = 1;
+				
+				src.data = destFixedPtr;
+				src.height = *h;
+				src.width = *w;
+				src.rowBytes = *w * 2;
+				
+				dst.data = malloc( (*w+1) * (*h+1) * sizeof( float));
+				if( dst.data)
+				{
+					dst.height = *h;
+					dst.width = *w;
+					dst.rowBytes = *w * 4;
+					
+					vImageConvert_16UToF( &src, &dst, add, mul, 0);
+				}
+				
+				*rgb = NO;
+				
+				free( destFixedPtr);
 			
-			return (float*) dst.data;
+				return (float*) dst.data;
+			}
+		}
+		else
+		{
+			unsigned char *destPtr, *destFixedPtr;
+			
+			destPtr = destFixedPtr = (unsigned char*) malloc( (*w+1) * (*h+1) * 4 * sizeof( unsigned char));
+			if( destFixedPtr)
+			{
+				unsigned short *iptr = im + 3 + 4*(*h-1)*fullSize[0];
+				vImage_Buffer src, dst;
+				
+				int j = *h, rowBytes = 4*fullSize[0];
+				while( j-- > 0)
+				{
+					unsigned short *iptrTemp = iptr;
+					int i = *w;
+					while( i-- > 0)
+					{
+						*destPtr = 255;
+						destPtr++;
+						iptrTemp++;
+						
+						*destPtr++ = *iptrTemp++ / 256;
+						*destPtr++ = *iptrTemp++ / 256;
+						*destPtr++ = *iptrTemp++ / 256;
+					}
+					
+					iptr -= rowBytes;
+				}
+				
+				*rgb = YES;
+				
+				return (float*) destFixedPtr;
+			}
 		}
 	}
 	
@@ -6171,8 +6214,12 @@ public:
 	if( fullDepthCapture)
 	{
 		vImage_Buffer			sf, d8;
+		BOOL rgb;
 		
-		sf.data = [self imageInFullDepthWidth: width height:height];
+		sf.data = [self imageInFullDepthWidth: width height:height isRGB: &rgb];
+		
+		if( rgb)
+			NSLog( @"ERROR isRGB is TRUE");
 		
 		*spp = 1;
 		*bpp = 16;
