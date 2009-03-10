@@ -759,6 +759,14 @@ public:
 			if( textureMapper)
 				textureMapper->SetBlendModeToMaximumIntensity();
 		break;
+			
+		case 3:
+			if( volumeMapper)
+				volumeMapper->SetBlendModeToComposite();
+			
+			if( textureMapper)
+				textureMapper->SetBlendModeToComposite();
+		break;
 	}
 	
 	[self setBlendingFactor:blendingFactor];
@@ -6121,7 +6129,7 @@ public:
 		float start = valueFactor*(OFFSET16 + [controller minimumValue]);
 		float end = valueFactor*(OFFSET16 + [controller maximumValue]);
 		
-		tempOpacity->AddPoint(start, 0);
+		tempOpacity->AddPoint(start, 1);
 		tempOpacity->AddPoint(end, 1);
 		
 		volumeProperty->SetScalarOpacity( tempOpacity);
@@ -6161,7 +6169,9 @@ public:
 			volumeProperty->SetScalarOpacityUnitDistance( clippingRangeThickness * factor);
 		else
 			volumeProperty->SetScalarOpacityUnitDistance( 1);
-			
+		
+		NSLog( @"%2.2f", volumeProperty->GetScalarOpacityUnitDistance());
+		
 		unsigned short *im = rayCastImage->GetImage();
 		
 		int fullSize[2];
