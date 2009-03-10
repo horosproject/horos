@@ -823,23 +823,32 @@ static NSString*	ClippingRangeViewToolbarItemIdentifier = @"ClippingRange";
 	{
 		[[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
 	}
-	NSString	*str = [path stringByAppendingPathComponent: [NSString stringWithFormat:@"VRMIP-%d-%@", [view mode], [[fileList objectAtIndex:0] valueForKey:@"uniqueFilename"]]];
 	
-	NSMutableDictionary *dict = [view get3DStateDictionary];
-	[dict setObject:curCLUTMenu forKey:@"CLUTName"];
-	[dict setObject:[NSNumber numberWithBool:[view advancedCLUT]] forKey:@"isAdvancedCLUT"];
-	if(![view advancedCLUT])[dict setObject:curOpacityMenu forKey:@"OpacityName"];
+	NSString *str;
 	
-	if([curCLUTMenu isEqualToString:NSLocalizedString(@"16-bit CLUT", nil)])
+	if( [style isEqualToString:@"noNib"])
+		str = nil;
+	else
+		str = [path stringByAppendingPathComponent: [NSString stringWithFormat:@"VRMIP-%d-%@", [view mode], [[fileList objectAtIndex:0] valueForKey:@"uniqueFilename"]]];
+	
+	if( str)
 	{
-		NSArray *curves = [clutOpacityView convertCurvesForPlist];
-		NSArray *colors = [clutOpacityView convertPointColorsForPlist];
-		[dict setObject:curves forKey:@"16bitClutCurves"];
-		[dict setObject:colors forKey:@"16bitClutColors"];
+		NSMutableDictionary *dict = [view get3DStateDictionary];
+		[dict setObject:curCLUTMenu forKey:@"CLUTName"];
+		[dict setObject:[NSNumber numberWithBool:[view advancedCLUT]] forKey:@"isAdvancedCLUT"];
+		if(![view advancedCLUT])[dict setObject:curOpacityMenu forKey:@"OpacityName"];
+		
+		if([curCLUTMenu isEqualToString:NSLocalizedString(@"16-bit CLUT", nil)])
+		{
+			NSArray *curves = [clutOpacityView convertCurvesForPlist];
+			NSArray *colors = [clutOpacityView convertPointColorsForPlist];
+			[dict setObject:curves forKey:@"16bitClutCurves"];
+			[dict setObject:colors forKey:@"16bitClutColors"];
+		}
+		
+		if( [viewer2D postprocessed] == NO)
+			[dict writeToFile:str atomically:YES];
 	}
-	
-	if( [viewer2D postprocessed] == NO)
-		[dict writeToFile:str atomically:YES];
 }
 
 -(void) load3DState
@@ -853,7 +862,12 @@ static NSString*	ClippingRangeViewToolbarItemIdentifier = @"ClippingRange";
 		[[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
 	}
 	
-	NSString	*str = [path stringByAppendingPathComponent: [NSString stringWithFormat:@"VRMIP-%d-%@", [view mode], [[fileList objectAtIndex:0] valueForKey:@"uniqueFilename"]]];
+	NSString *str;
+	
+	if( [style isEqualToString:@"noNib"])
+		str = nil;
+	else
+		str = [path stringByAppendingPathComponent: [NSString stringWithFormat:@"VRMIP-%d-%@", [view mode], [[fileList objectAtIndex:0] valueForKey:@"uniqueFilename"]]];
 	
 	NSDictionary *dict = [NSDictionary dictionaryWithContentsOfFile: str];
 	
@@ -1071,7 +1085,7 @@ static NSString*	ClippingRangeViewToolbarItemIdentifier = @"ClippingRange";
 			free( undodata[ i]);
 		}
 	}
-
+	
 	[self save3DState];
 	
     NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
@@ -2237,6 +2251,11 @@ static NSString*	ClippingRangeViewToolbarItemIdentifier = @"ClippingRange";
 			[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object: new2DPointROI userInfo: nil];
 		}
 	}
+}
+
+- (ViewerController*) viewer
+{
+	return viewer2D;
 }
 
 - (void) remove2DPoint: (float) x : (float) y : (float) z

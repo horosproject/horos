@@ -12,16 +12,6 @@
      PURPOSE.
 =========================================================================*/
 
-
-/*
-
-MODIFICATION HISTORY
-
-	20060110	DDP	Reducing the variable duplication of userDefault objects (work in progress).
-
-  
-*/
-
 #import "VRFlyThruAdapter.h"
 #import "VRController.h"
 #import "VRView.h"

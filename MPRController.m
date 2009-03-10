@@ -106,15 +106,11 @@ static float deg2rad = 3.14159265358979/180.0;
 	[self setClippingRangeThickness: 1];
 	
 	[[self window] makeFirstResponder: mprView1];
-	[mprView1.vrView saView: self];
-	[mprView1.vrView goToCenter];
+	[mprView1.vrView resetImage: self];
+	[mprView1 updateView];
 	
 	mprView2.camera.viewUp = [Point3D pointWithX:0 y:-1 z:0];
 	[mprView1 updateView];
-	
-	[[self window] makeFirstResponder: mprView2];
-	[mprView2 restoreCamera];
-	[mprView2 updateView];
 	
 	[super showWindow: sender];
 }

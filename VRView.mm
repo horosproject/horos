@@ -315,17 +315,13 @@ public:
 	
 	volume->GetBounds( bounds);
 	
-	float cos[ 9];
-	
-	[self getCosMatrix: cos];
-	
 	double center[ 3] = { bounds[ 0] + (bounds[ 1] - bounds[ 0])/2., bounds[ 2] + (bounds[ 3] - bounds[ 2])/2., bounds[ 4] + (bounds[ 5] - bounds[ 4])/2.};
 	
 	aCamera->SetPosition( center);
 	
-	center[ 0] = center[ 0] + cos[ 6];
-	center[ 1] = center[ 1] + cos[ 7];
-	center[ 2] = center[ 2] + cos[ 8];
+	center[ 0] = center[ 0] ;
+	center[ 1] = center[ 1] -1.;	// Sag
+	center[ 2] = center[ 2] ;
 	
 	aCamera->SetFocalPoint( center);
 	
@@ -337,27 +333,38 @@ public:
 {
 	if( clipRangeActivated)
 	{
-		double position[ 3];
+		double position[ 3], newPosition[ 3], center[ 3];
 		double distance;
 		
 		distance = aCamera->GetDistance();
 		aCamera->GetPosition( position);
+		aCamera->GetPosition( newPosition);
 		
 		double bounds[ 6];
 	
 		volume->GetBounds( bounds);
 		
-		if( position[ 0] <= bounds[ 0]) position[ 0] = bounds[ 0];
-		if( position[ 0] >= bounds[ 1]) position[ 0] = bounds[ 1];
+		if( newPosition[ 0] <= bounds[ 0]) newPosition[ 0] = bounds[ 0];
+		if( newPosition[ 0] >= bounds[ 1]) newPosition[ 0] = bounds[ 1];
 		
-		if( position[ 1] <= bounds[ 2]) position[ 1] = bounds[ 2];
-		if( position[ 1] >= bounds[ 3]) position[ 1] = bounds[ 3];
+		if( newPosition[ 1] <= bounds[ 2]) newPosition[ 1] = bounds[ 2];
+		if( newPosition[ 1] >= bounds[ 3]) newPosition[ 1] = bounds[ 3];
 		
-		if( position[ 2] <= bounds[ 4]) position[ 2] = bounds[ 4];
-		if( position[ 2] >= bounds[ 5]) position[ 2] = bounds[ 5];
+		if( newPosition[ 2] <= bounds[ 4]) newPosition[ 2] = bounds[ 4];
+		if( newPosition[ 2] >= bounds[ 5]) newPosition[ 2] = bounds[ 5];
 		
-		aCamera->SetPosition( position);
-		aCamera->SetDistance( distance);
+		aCamera->SetPosition( newPosition);
+		
+		aCamera->GetFocalPoint( center);
+		
+		center[ 0] += newPosition[ 0] - position[ 0];
+		center[ 1] += newPosition[ 1] - position[ 1];
+		center[ 2] += newPosition[ 2] - position[ 2];
+		
+		aCamera->SetFocalPoint( center);
+		
+		aCamera->OrthogonalizeViewUp();
+		aCamera->ComputeViewPlaneNormal();
 	}
 }
 
@@ -1968,7 +1975,7 @@ public:
 	aCamera->SetViewUp (0, 1, 0);
 	aCamera->SetFocalPoint (0, 0, 0);
 	aCamera->SetPosition (0, 0, 1);
-	[self checkInVolume];
+	
 	aCamera->SetRoll(180);
 	aCamera->Dolly(1.5);
 		
@@ -1976,19 +1983,7 @@ public:
 	[self saView:self];
 	
 	if( clipRangeActivated)
-	{
-		double position[ 3];
-		
-		double *p = volume->GetCenter();
-		double *x = volume->GetXRange();
-		
-		position[ 0] = x[ 0];
-		position[ 1] = p[ 1];
-		position[ 2] = p[ 2];
-		
-		aCamera->SetPosition( position);
-		[self checkInVolume];
-	}
+		[self goToCenter];
 	
     [self setNeedsDisplay:YES];
 }
@@ -5000,15 +4995,6 @@ public:
 
 	croppingBox->SetHandleSize( 0.005);
 	[self setNeedsDisplay:YES];
-}
-
--(void) center:(id) sender
-{
-//	float distance = aCamera->GetDistance();
-//	
-//	aCamera->SetPosition( volume->GetCenter());	// vtkVolume
-//	
-//	aCamera->SetDistance( distance);
 }
 
 -(void) saView:(id) sender
