@@ -109,16 +109,13 @@ static float deg2rad = 3.14159265358979/180.0;
 	[mprView1.vrView resetImage: self];
 	[mprView1 updateView];
 	
-	mprView2.angleMPR = -90;
+	mprView2.camera.viewUp = [Point3D pointWithX:0 y:-1 z:0];
 	
 	[[self window] makeFirstResponder: mprView3];
 	[mprView3 restoreCamera];
 	[mprView3 updateView];
 	
-	
 	[super showWindow: sender];
-	
-	
 }
 
 - (void) dealloc
