@@ -6129,7 +6129,7 @@ public:
 		float start = valueFactor*(OFFSET16 + [controller minimumValue]);
 		float end = valueFactor*(OFFSET16 + [controller maximumValue]);
 		
-		tempOpacity->AddPoint(start, 1);
+		tempOpacity->AddPoint(start, 0);
 		tempOpacity->AddPoint(end, 1);
 		
 		volumeProperty->SetScalarOpacity( tempOpacity);
@@ -6165,13 +6165,6 @@ public:
 	{
 		vtkFixedPointRayCastImage *rayCastImage = volumeMapper->GetRayCastImage();
 		
-		if( renderingMode == 3)
-			volumeProperty->SetScalarOpacityUnitDistance( clippingRangeThickness * factor);
-		else
-			volumeProperty->SetScalarOpacityUnitDistance( 1);
-		
-		NSLog( @"%2.2f", volumeProperty->GetScalarOpacityUnitDistance());
-		
 		unsigned short *im = rayCastImage->GetImage();
 		
 		int fullSize[2];
@@ -6193,15 +6186,15 @@ public:
 			destPtr = destFixedPtr = (unsigned short*) malloc( (*w+1) * (*h+1) * sizeof( unsigned short));
 			if( destFixedPtr)
 			{
-				unsigned short *iptr = im + 3 + 4*(*h-1)*fullSize[0];
+				unsigned short *iptr;
+				
+				iptr = im + 3 + 4*(*h-1)*fullSize[0];
 				vImage_Buffer src, dst;
 				
 				int j = *h, rowBytes = 4*fullSize[0];
 				while( j-- > 0)
 				{
 					unsigned short *iptrTemp = iptr;
-					if( renderingMode == 3)
-						iptrTemp += 3;
 					int i = *w;
 					while( i-- > 0)
 					{
