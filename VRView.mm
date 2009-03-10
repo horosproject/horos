@@ -1972,18 +1972,16 @@ public:
 
 - (IBAction) resetImage:(id) sender
 {
-	aCamera->SetViewUp (0, 1, 0);
-	aCamera->SetFocalPoint (0, 0, 0);
-	aCamera->SetPosition (0, 0, 1);
-	
-	aCamera->SetRoll(180);
-	aCamera->Dolly(1.5);
-		
 	aRenderer->ResetCamera();
 	[self saView:self];
 	
 	if( clipRangeActivated)
 		[self goToCenter];
+	
+	[self saView:self];
+	
+	[self mouseDown: [[NSApplication sharedApplication] currentEvent]];
+	[self mouseUp: [[NSApplication sharedApplication] currentEvent]];
 	
     [self setNeedsDisplay:YES];
 }
