@@ -3240,6 +3240,7 @@ public:
 				{
 					volumeMapper->SetAutoAdjustSampleDistances( 1);
 					volumeMapper->SetMinimumImageSampleDistance( LOD);
+					volumeMapper->SetImageSampleDistance( LOD);
 				}
 				
 				[self getInteractor]->InvokeEvent(vtkCommand::LeftButtonReleaseEvent, NULL);
@@ -3540,7 +3541,7 @@ public:
 			_startMax = wl + ww/2;
 			
 			_mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView:nil];
-			if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD*lowResLODFactor);
+			volumeMapper->SetMinimumImageSampleDistance( LOD*lowResLODFactor);
 		}
 		else if( tool == tWLBlended)
 		{
@@ -3560,6 +3561,7 @@ public:
 			if( volumeMapper)
 			{
 				volumeMapper->SetAutoAdjustSampleDistances( 0);
+				volumeMapper->SetMinimumImageSampleDistance( LOD*lowResLODFactor);
 				volumeMapper->SetImageSampleDistance( LOD*lowResLODFactor);
 			}
 			
@@ -3603,6 +3605,7 @@ public:
 				if( volumeMapper)
 				{
 					volumeMapper->SetAutoAdjustSampleDistances( 0);
+					volumeMapper->SetMinimumImageSampleDistance( LOD*lowResLODFactor);
 					volumeMapper->SetImageSampleDistance( LOD*lowResLODFactor);
 				}
 				
@@ -3626,6 +3629,7 @@ public:
 			{
 				volumeMapper->SetAutoAdjustSampleDistances( 0);
 				volumeMapper->SetImageSampleDistance( LOD*lowResLODFactor);
+				volumeMapper->SetMinimumImageSampleDistance( LOD*lowResLODFactor);
 			}
 			
 			mouseLoc = [self convertPoint: [theEvent locationInWindow] fromView:nil];
@@ -3638,6 +3642,7 @@ public:
 			{
 				volumeMapper->SetAutoAdjustSampleDistances( 0);
 				volumeMapper->SetImageSampleDistance( LOD*lowResLODFactor);
+				volumeMapper->SetMinimumImageSampleDistance( LOD*lowResLODFactor);
 			}
 			
 			if( projectionMode != 2)
@@ -6658,7 +6663,7 @@ public:
 	cam.windowCenterX = pWC[ 0];
 	cam.windowCenterY = pWC[ 1];
 	
-	cam.LOD = volumeMapper->GetImageSampleDistance();
+	cam.LOD = volumeMapper->GetMinimumImageSampleDistance();
 	
 	[cam setPosition: pt];
 	[cam setFocalPoint: [[[Point3D alloc] initWithValues:focal[0] :focal[1] :focal[2]] autorelease]];
