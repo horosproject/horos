@@ -26,7 +26,8 @@
 	IBOutlet NSView *containerFor3DView;
 	
 	IBOutlet MPRDCMView *mprView1, *mprView2, *mprView3;
-
+	
+	ViewerController *viewer2D;
 	VRController *hiddenVRController;
 	VRView *vrView, *hiddenVRView;
 	

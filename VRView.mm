@@ -6651,9 +6651,10 @@ public:
 	aCamera->GetViewUp(vUp);
 	double clippingRange[2];
 	aCamera->GetClippingRange(clippingRange);
-	double viewAngle, eyeAngle, parallelScale;
+	double viewAngle, eyeAngle, parallelScale, rollAngle;
 	viewAngle = aCamera->GetViewAngle();
 	eyeAngle = aCamera->GetEyeAngle();
+	rollAngle = aCamera->GetRoll();
 	parallelScale = aCamera->GetParallelScale();
 	
 	// creation of the Camera
@@ -6671,11 +6672,12 @@ public:
 	[cam setClippingRangeFrom: clippingRange[0] To: clippingRange[1]];
 	[cam setViewAngle: viewAngle];
 	[cam setEyeAngle: eyeAngle];
+	[cam setRollAngle: rollAngle];
 	[cam setParallelScale: parallelScale];
-
+	
 	// window level
 	[cam setWLWW: wl : ww];
-
+	
 	// cropping box
 	double a[ 6];
 	

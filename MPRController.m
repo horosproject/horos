@@ -54,6 +54,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	pixList[0] = pix;
 	filesList[0] = files;
 	volumeData[0] = volume;
+	viewer2D = viewer;
 	
 	[[self window] setDelegate:self];
 	[[self window] setWindowController: self];
@@ -71,6 +72,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	[mprView3 setFlippedData: [[viewer imageView] flippedData]];
 	
 	hiddenVRController = [[VRController alloc] initWithPix:pix :files :volume :fusedViewer :viewer style:@"noNib" mode:@"MIP"];
+	[hiddenVRController retain];
 	
 	// To avoid the "invalid drawable" message
 	[[hiddenVRController window] setLevel: 0];
@@ -93,7 +95,13 @@ static float deg2rad = 3.14159265358979/180.0;
 	
 	[mprView3 setVRView: hiddenVRView viewID: 3];
 	[mprView3 setWLWW: [originalPix wl] :[originalPix ww]];
-		
+	
+	[[NSNotificationCenter defaultCenter]
+		addObserver: self
+           selector: @selector(CloseViewerNotification:)
+               name: @"CloseViewerNotification"
+             object: nil];
+	
 	return self;
 }
 
@@ -126,12 +134,22 @@ static float deg2rad = 3.14159265358979/180.0;
 {
 	[mousePosition release];
 	
+	
 	[super dealloc];
 }
 
 - (BOOL) is2DViewer
 {
 	return NO;
+}
+
+- (void) CloseViewerNotification: (NSNotification*) note
+{
+	if([note object] == viewer2D)
+	{
+		[self offFullScreen];
+		[[self window] close];
+	}
 }
 
 - (NSArray*) pixList
@@ -191,10 +209,13 @@ static float deg2rad = 3.14159265358979/180.0;
 	float a[2][3];
 	float b[2][3];
 	
-	if( sender != mprView1) mprView1.camera.parallelScale = sender.camera.parallelScale;
-	if( sender != mprView2) mprView2.camera.parallelScale = sender.camera.parallelScale;
-	if( sender != mprView3) mprView3.camera.parallelScale = sender.camera.parallelScale;
-	
+	if( sender)
+	{
+		if( sender != mprView1) mprView1.camera.parallelScale = sender.camera.parallelScale;
+		if( sender != mprView2) mprView2.camera.parallelScale = sender.camera.parallelScale;
+		if( sender != mprView3) mprView3.camera.parallelScale = sender.camera.parallelScale;
+	}
+		
 	[self computeCrossReferenceLinesBetween: mprView1 and: mprView2 result: a];
 	[self computeCrossReferenceLinesBetween: mprView1 and: mprView3 result: b];
 	[mprView1 setCrossReferenceLines: a and: b];
@@ -478,11 +499,6 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (void)windowWillClose:(NSNotification *)notification
 {
-	if( [notification object] == [hiddenVRController window])
-	{
-		hiddenVRController = nil;
-	}
-	
 	if( [notification object] == [self window])
 	{
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"Window3DClose" object: self userInfo: 0];
@@ -495,6 +511,7 @@ static float deg2rad = 3.14159265358979/180.0;
 		}
 		
 		[hiddenVRController close];
+		[hiddenVRController release];
 		
 		[[self window] setDelegate:nil];
 		[[self window] setWindowController:nil];

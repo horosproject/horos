@@ -26,7 +26,7 @@
 
 @interface Camera : NSObject {
 	Point3D *position, *viewUp, *focalPoint, *minCroppingPlanes, *maxCroppingPlanes;
-	float clippingRangeNear, clippingRangeFar, viewAngle, eyeAngle, parallelScale;
+	float clippingRangeNear, clippingRangeFar, viewAngle, eyeAngle, parallelScale, rollAngle;
 	NSImage *previewImage;
 	float wl, ww, fusionPercentage, windowCenterX, windowCenterY;
 	BOOL is4D;
@@ -45,7 +45,7 @@
 @property (readwrite, copy) Point3D *maxCroppingPlanes;
 @property (readwrite, copy) NSImage *previewImage;
 @property BOOL is4D, forceUpdate;
-@property float viewAngle;
+@property float viewAngle, rollAngle;
 @property float eyeAngle;
 @property float parallelScale;
 @property float clippingRangeNear;

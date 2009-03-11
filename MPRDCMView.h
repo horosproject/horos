@@ -47,6 +47,7 @@
 - (void) setDCMPixList:(NSMutableArray*)pix filesList:(NSArray*)files volumeData:(NSData*)volume roiList:(NSMutableArray*)rois firstImage:(short)firstImage type:(char)type reset:(BOOL)reset;
 - (void) setVRView: (VRView*) v viewID:(int) i;
 - (void) updateView;
+- (void) updateView:(BOOL) computeCrossReferenceLines;
 - (void) setCrossReferenceLines: (float[2][3]) a and: (float[2][3]) b;
 - (void) saveCamera;
 - (void) restoreCamera;

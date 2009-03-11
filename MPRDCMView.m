@@ -169,18 +169,22 @@ static float deg2rad = 3.14159265358979/180.0;
 	[super dealloc];
 }
 
-- (void) updateView
+-(void) updateView
+{
+	[self updateView: YES];
+}
+
+- (void) updateView:(BOOL) computeCrossReferenceLines
 {
 	long h, w;
 	float previousWW, previousWL;
 	BOOL isRGB;
 	
 	[self getWLWW: &previousWL :&previousWW];
-	
+		
 	if( [self hasCameraChanged])
 	{
 		[vrView render];
-	
 		
 		float *imagePtr = [vrView imageInFullDepthWidth: &w height: &h isRGB: &isRGB];
 		
@@ -223,7 +227,12 @@ static float deg2rad = 3.14159265358979/180.0;
 	if( dontReenterCrossReferenceLines == NO)
 	{
 		dontReenterCrossReferenceLines = YES;
-		[windowController computeCrossReferenceLines: self];
+		
+		if( computeCrossReferenceLines)
+			[windowController computeCrossReferenceLines: self];
+		else
+			[windowController computeCrossReferenceLines: nil];
+		
 		dontReenterCrossReferenceLines = NO;
 	}
 	
@@ -602,7 +611,11 @@ static float deg2rad = 3.14159265358979/180.0;
 		else
 		{
 			[vrView mouseDown: theEvent];
-			[self updateView];
+			
+			if( [vrView _tool] == tRotate)
+				[self updateView: NO];
+			else
+				[self updateView];
 		}
 	}
 }
@@ -641,7 +654,11 @@ static float deg2rad = 3.14159265358979/180.0;
 		else
 		{
 			[vrView mouseUp: theEvent];
-			[self updateView];
+			
+			if( [vrView _tool] == tRotate)
+				[self updateView: NO];
+			else
+				[self updateView];
 		}
 	}
 	
@@ -694,9 +711,10 @@ static float deg2rad = 3.14159265358979/180.0;
 			{
 				[vrView getCosMatrix: after];
 				angleMPR -= [MPRController angleBetweenVector: after andPlane: before];
+				
+				[self updateView: NO];
 			}
-			
-			[self updateView];
+			else [self updateView];
 		}
 	}
 	

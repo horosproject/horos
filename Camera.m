@@ -20,7 +20,7 @@
 @implementation Camera
 
 @synthesize index, position, focalPoint, viewUp, previewImage, is4D, viewAngle, eyeAngle, forceUpdate,
-			parallelScale, clippingRangeNear, clippingRangeFar, ww, wl, fusionPercentage,
+			parallelScale, clippingRangeNear, clippingRangeFar, ww, wl, fusionPercentage, rollAngle, 
 			movieIndexIn4D, minCroppingPlanes, maxCroppingPlanes, windowCenterX, windowCenterY, LOD;
 
 
