@@ -34,6 +34,8 @@
 	BOOL moveCenter;
 	
 	float rotateLinesStartAngle;
+	
+	BOOL dontReenterCrossReferenceLines;
 }
 
 @property (readonly) DCMPix *pix;

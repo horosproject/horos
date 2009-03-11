@@ -19,9 +19,9 @@
 
 @implementation Camera
 
-@synthesize index, position, focalPoint, viewUp, previewImage, is4D, viewAngle, eyeAngle,
+@synthesize index, position, focalPoint, viewUp, previewImage, is4D, viewAngle, eyeAngle, forceUpdate,
 			parallelScale, clippingRangeNear, clippingRangeFar, ww, wl, fusionPercentage,
-			movieIndexIn4D, minCroppingPlanes, maxCroppingPlanes, windowCenterX, windowCenterY;
+			movieIndexIn4D, minCroppingPlanes, maxCroppingPlanes, windowCenterX, windowCenterY, LOD;
 
 
 -(id) init

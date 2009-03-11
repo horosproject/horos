@@ -31,6 +31,7 @@
 	VRView *vrView, *hiddenVRView;
 	
 	NSMutableArray *filesList[200], *pixList[200];
+	DCMPix *originalPix;
 	NSData *volumeData[200];
 	short curMovieIndex, maxMovieIndex;
 	BOOL avoidReentry;
@@ -50,6 +51,7 @@
 @property float clippingRangeThickness;
 @property int clippingRangeMode, mouseViewID;
 @property (retain) Point3D *mousePosition;
+@property (readonly) DCMPix *originalPix;
 
 + (double) angleBetweenVector:(float*) a andPlane:(float*) orientation;
 

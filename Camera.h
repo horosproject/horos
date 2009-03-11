@@ -32,7 +32,10 @@
 	BOOL is4D;
 	long movieIndexIn4D;
 	int index;
+	float LOD;
+	BOOL forceUpdate;
 }
+
 
 @property int index;
 @property (readwrite, copy) Point3D *position;
@@ -41,14 +44,13 @@
 @property (readwrite, copy) Point3D *minCroppingPlanes;
 @property (readwrite, copy) Point3D *maxCroppingPlanes;
 @property (readwrite, copy) NSImage *previewImage;
-@property BOOL is4D;
+@property BOOL is4D, forceUpdate;
 @property float viewAngle;
 @property float eyeAngle;
 @property float parallelScale;
 @property float clippingRangeNear;
 @property float clippingRangeFar;
-@property float ww;
-@property float wl;
+@property float ww, LOD, wl;
 @property float fusionPercentage;
 @property long movieIndexIn4D;
 @property float windowCenterX, windowCenterY;

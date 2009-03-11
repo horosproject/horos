@@ -19,7 +19,7 @@ static float deg2rad = 3.14159265358979/180.0;
 
 @implementation MPRController
 
-@synthesize clippingRangeThickness, clippingRangeMode, mousePosition, mouseViewID;
+@synthesize clippingRangeThickness, clippingRangeMode, mousePosition, mouseViewID, originalPix;
 
 + (double) angleBetweenVector:(float*) a andPlane:(float*) orientation
 {
@@ -31,11 +31,11 @@ static float deg2rad = 3.14159265358979/180.0;
 	return ((atan2( sc[1], sc[0])) / deg2rad);
 }
 
-- (DCMPix*) emptyPix: (DCMPix*) originalPix width: (long) w height: (long) h
+- (DCMPix*) emptyPix: (DCMPix*) oP width: (long) w height: (long) h
 {
 	long size = sizeof( float) * w * h;
 	float *imagePtr = malloc( size);
-	DCMPix *emptyPix = [[[DCMPix alloc] initwithdata: imagePtr :32 :w :h :[originalPix pixelSpacingX] :[originalPix pixelSpacingY] :[originalPix originX] :[originalPix originY] :[originalPix originZ]] autorelease];
+	DCMPix *emptyPix = [[[DCMPix alloc] initwithdata: imagePtr :32 :w :h :[oP pixelSpacingX] :[oP pixelSpacingY] :[oP originX] :[oP originY] :[oP originZ]] autorelease];
 	free( imagePtr);
 	
 	return emptyPix;
@@ -45,7 +45,7 @@ static float deg2rad = 3.14159265358979/180.0;
 {
 	self = [super initWithWindowNibName:@"MPR"];
 	
-	DCMPix *originalPix = [pix lastObject];
+	originalPix = [pix lastObject];
 	
 	pixList[0] = pix;
 	filesList[0] = files;
@@ -78,7 +78,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	hiddenVRView = [hiddenVRController view];
 	[hiddenVRView setClipRangeActivated: YES];
 	[hiddenVRView resetImage: self];
-	[hiddenVRView setLOD: 2.0];
+	[hiddenVRView setLOD: 1.0];
 	hiddenVRView.keep3DRotateCentered = YES;
 	
 	[mprView1 setVRView: hiddenVRView viewID: 1];

@@ -117,6 +117,44 @@ static float deg2rad = 3.14159265358979/180.0;
 	}
 }
 
+- (BOOL) hasCameraChanged
+{
+	Camera *currentCamera = [vrView cameraWithThumbnail: NO];
+	
+	BOOL changed = NO;
+	
+	
+	if( camera.forceUpdate)
+	{
+		camera.forceUpdate = NO;
+		return YES;
+	}
+	
+	if( currentCamera.position.x != camera.position.x) return YES;
+	if( currentCamera.position.y != camera.position.y) return YES;
+	if( currentCamera.position.z != camera.position.z) return YES;
+
+	if( currentCamera.focalPoint.x != camera.focalPoint.x) return YES;
+	if( currentCamera.focalPoint.y != camera.focalPoint.y) return YES;
+	if( currentCamera.focalPoint.z != camera.focalPoint.z) return YES;
+
+	if( currentCamera.viewUp.x != camera.viewUp.x) return YES;
+	if( currentCamera.viewUp.y != camera.viewUp.y) return YES;
+	if( currentCamera.viewUp.z != camera.viewUp.z) return YES;
+
+	if( currentCamera.viewAngle != camera.viewAngle) return YES;
+	if( currentCamera.eyeAngle != camera.eyeAngle) return YES;
+	if( currentCamera.parallelScale != camera.parallelScale) return YES;
+
+	if( currentCamera.clippingRangeNear != camera.clippingRangeNear) return YES;
+	if( currentCamera.clippingRangeFar != camera.clippingRangeFar) return YES;
+	
+	if( currentCamera.LOD < camera.LOD) return YES;
+	
+	
+	return NO;
+}
+
 - (void) restoreCamera
 {
 	[self checkForFrame];
@@ -139,45 +177,54 @@ static float deg2rad = 3.14159265358979/180.0;
 	
 	[self getWLWW: &previousWL :&previousWW];
 	
-	[vrView render];
-	
-	float *imagePtr = [vrView imageInFullDepthWidth: &w height: &h isRGB: &isRGB];
-	
-	[self saveCamera];
-	
-	if( imagePtr)
+	if( [self hasCameraChanged])
 	{
-		if( [pix pwidth] == w && [pix pheight] == h && isRGB == [pix isRGB])
+		[vrView render];
+	
+		
+		float *imagePtr = [vrView imageInFullDepthWidth: &w height: &h isRGB: &isRGB];
+		
+		[self saveCamera];
+		
+		if( imagePtr)
 		{
-			memcpy( [pix fImage], imagePtr, w*h*sizeof( float));
-			free( imagePtr);
-		}
-		else
-		{
-			[pix setRGB: isRGB];
-			[pix setfImage: imagePtr];
-			[pix setPwidth: w];
-			[pix setPheight: h];
+			if( [pix pwidth] == w && [pix pheight] == h && isRGB == [pix isRGB])
+			{
+				memcpy( [pix fImage], imagePtr, w*h*sizeof( float));
+				free( imagePtr);
+			}
+			else
+			{
+				[pix setRGB: isRGB];
+				[pix setfImage: imagePtr];
+				[pix setPwidth: w];
+				[pix setPheight: h];
+				
+				[self setIndex: 0];
+			}
+			float porigin[ 3];
+			[vrView getOrigin: porigin windowCentered: YES sliceMiddle: YES];
+			[pix setOrigin: porigin];
 			
-			[self setIndex: 0];
+			float resolution = [vrView getResolution] * [vrView imageSampleDistance];
+			[pix setPixelSpacingX: resolution];
+			[pix setPixelSpacingY: resolution];
+			
+			float orientation[ 9];
+			[vrView getOrientation: orientation];
+			[pix setOrientation: orientation];
+			[pix setSliceThickness: [vrView getClippingRangeThicknessInMm]];
+			
+			[self setWLWW: previousWL :previousWW];
+			[self setScaleValue: [vrView imageSampleDistance]];
 		}
-		float porigin[ 3];
-		[vrView getOrigin: porigin windowCentered: YES sliceMiddle: YES];
-		[pix setOrigin: porigin];
-		
-		float resolution = [vrView getResolution] * [vrView imageSampleDistance];
-		[pix setPixelSpacingX: resolution];
-		[pix setPixelSpacingY: resolution];
-		
-		float orientation[ 9];
-		[vrView getOrientation: orientation];
-		[pix setOrientation: orientation];
-		[pix setSliceThickness: [vrView getClippingRangeThicknessInMm]];
-		
-		[self setWLWW: previousWL :previousWW];
-		[self setScaleValue: [vrView imageSampleDistance]];
-		
+	}
+	
+	if( dontReenterCrossReferenceLines == NO)
+	{
+		dontReenterCrossReferenceLines = YES;
 		[windowController computeCrossReferenceLines: self];
+		dontReenterCrossReferenceLines = NO;
 	}
 	
 	[self setNeedsDisplay: YES];
@@ -571,6 +618,7 @@ static float deg2rad = 3.14159265358979/180.0;
 		{
 			camera.windowCenterX = 0;
 			camera.windowCenterY = 0;
+			camera.forceUpdate = YES;
 		}
 		
 		rotateLines = NO;

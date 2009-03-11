@@ -355,6 +355,11 @@ extern  ToolbarPanelController  *toolbarPanel[ 10];
 #pragma mark-
 #pragma mark Misc
 
+- (ViewerController*) registeredViewer
+{
+	return nil;
+}
+
 - (IBAction)querySelectedStudy: (id)sender
 {
 	[[BrowserController currentBrowser] querySelectedStudy: self];

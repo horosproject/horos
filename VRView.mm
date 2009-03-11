@@ -3274,6 +3274,7 @@ public:
 		if( volumeMapper)
 		{
 			volumeMapper->SetAutoAdjustSampleDistances( 1);
+			volumeMapper->SetImageSampleDistance( LOD);
 			volumeMapper->SetMinimumImageSampleDistance( LOD);
 		}
 		
@@ -5096,6 +5097,7 @@ public:
 		
 		if( [[controller style] isEqualToString: @"noNib"])
 		{
+			if( LOD < 1.0) LOD = 1.0;
 		}
 		else
 		{
@@ -5141,8 +5143,6 @@ public:
 			NSLog(@"Blending slice interval = slice thickness!");
 			blendingSliceThickness = [blendingFirstObject sliceThickness];
 		}
-//		NSLog(@"slice: %0.2f", blendingSliceThickness);
-
 		// PLAN 
 		[blendingFirstObject orientation:blendingcosines];
 				
@@ -6657,6 +6657,8 @@ public:
 	
 	cam.windowCenterX = pWC[ 0];
 	cam.windowCenterY = pWC[ 1];
+	
+	cam.LOD = volumeMapper->GetImageSampleDistance();
 	
 	[cam setPosition: pt];
 	[cam setFocalPoint: [[[Point3D alloc] initWithValues:focal[0] :focal[1] :focal[2]] autorelease]];
