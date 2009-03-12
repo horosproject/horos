@@ -5818,6 +5818,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 {
 	if( [notification object] == [self window])
 	{
+		[[self window] setAcceptsMouseMovedEvents: NO];
+		
 		[self prepareToRelease];
 	}
 }
