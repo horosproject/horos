@@ -13,13 +13,16 @@
 =========================================================================*/
 
 #import "MPRController.h"
+#import "BrowserController.h"
+#define PRESETS_DIRECTORY @"/3DPRESETS/"
+#define CLUTDATABASE @"/CLUTs/"
 
 extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2, float *u, float *iP);
 static float deg2rad = 3.14159265358979/180.0; 
 
 @implementation MPRController
 
-@synthesize clippingRangeThickness, clippingRangeMode, mousePosition, mouseViewID, originalPix;
+@synthesize clippingRangeThickness, clippingRangeMode, mousePosition, mouseViewID, originalPix, wlwwMenuItems;
 
 + (double) angleBetweenVector:(float*) a andPlane:(float*) orientation
 {
@@ -96,6 +99,14 @@ static float deg2rad = 3.14159265358979/180.0;
 	[mprView3 setVRView: hiddenVRView viewID: 3];
 	[mprView3 setWLWW: [originalPix wl] :[originalPix ww]];
 	
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(UpdateWLWWMenu:) name:@"UpdateWLWWMenu" object:nil];
+	curWLWWMenu = @"";
+	[self UpdateWLWWMenu:nil];
+	
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(UpdateCLUTMenu:) name:@"UpdateCLUTMenu" object: nil];
+	curCLUTMenu = [NSLocalizedString(@"No CLUT", nil) retain];
+	[self UpdateCLUTMenu:nil];
+	
 	[[NSNotificationCenter defaultCenter]
 		addObserver: self
            selector: @selector(CloseViewerNotification:)
@@ -133,6 +144,7 @@ static float deg2rad = 3.14159265358979/180.0;
 - (void) dealloc
 {
 	[mousePosition release];
+	[wlwwMenuItems release];
 	
 	
 	[super dealloc];
@@ -422,6 +434,297 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (void)bringToFrontROI:(ROI*) roi;
 {}
+
+#pragma mark Window Level / Window width
+
+- (void)createWLWWMenuItems;
+{
+    // Presets VIEWER Menu
+	NSArray *keys = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"WLWW3"] allKeys];
+	NSArray *sortedKeys = [keys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
+	
+	NSMutableArray *tmp = [NSMutableArray array];
+	[tmp addObject:[[[NSMenuItem alloc] initWithTitle:curWLWWMenu action:nil keyEquivalent:@""] autorelease]];
+	[tmp addObject:[[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Other", nil) action:@selector(ApplyWLWW:) keyEquivalent:@""] autorelease]];
+	[tmp addObject:[[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Default WL & WW", nil) action:@selector(ApplyWLWW:) keyEquivalent:@""] autorelease]];
+	[tmp addObject:[[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Full dynamic", nil) action:@selector(ApplyWLWW:) keyEquivalent:@""] autorelease]];
+	[tmp addObject:[NSMenuItem separatorItem]];
+    for(int i = 0; i < [sortedKeys count]; i++)
+		[tmp addObject:[[[NSMenuItem alloc] initWithTitle:[NSString stringWithFormat:@"%d - %@", i+1, [sortedKeys objectAtIndex:i]] action:@selector(ApplyWLWW:) keyEquivalent:@""] autorelease]];
+
+    [tmp addObject:[NSMenuItem separatorItem]];
+	[tmp addObject:[[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Add Current WL/WW", nil) action:@selector(AddCurrentWLWW:) keyEquivalent:@""] autorelease]];
+	[tmp addObject:[[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Set WL/WW Manually", nil) action:@selector(SetWLWW:) keyEquivalent:@""] autorelease]];	
+	
+	self.wlwwMenuItems = tmp;
+}
+
+
+- (void)UpdateWLWWMenu:(NSNotification*)note;
+{
+    NSUInteger i;	
+    i = [[wlwwPopup menu] numberOfItems];
+    while(i-- > 0) [[wlwwPopup menu] removeItemAtIndex:0];
+	
+	[self createWLWWMenuItems];
+	
+    for( i = 0; i < [self.wlwwMenuItems count]; i++)
+    {
+        [[wlwwPopup menu] addItem:[self.wlwwMenuItems objectAtIndex:i]];
+    }
+}
+
+- (void)ApplyWLWW:(id)sender;
+{
+	NSString *menuString = [sender title];
+	
+	if( [menuString isEqualToString:NSLocalizedString(@"Other", nil)])
+	{
+	}
+	else if( [menuString isEqualToString:NSLocalizedString(@"Default WL & WW", nil)])
+	{
+	}
+	else if( [menuString isEqualToString:NSLocalizedString(@"Full dynamic", nil)])
+	{
+	}
+	else
+	{
+		menuString = [menuString substringFromIndex: 4];
+	}
+	
+	[self applyWLWWForString: menuString];
+	
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: nil];
+}
+
+- (void)applyWLWWForString:(NSString *)menuString;
+{
+	if( [menuString isEqualToString:NSLocalizedString(@"Other", nil)])
+	{
+		//[imageView setWLWW:0 :0];
+	}
+	else if( [menuString isEqualToString:NSLocalizedString(@"Default WL & WW", nil)])
+	{
+		[mprView1 setWLWW:[[pixList[0] objectAtIndex:0] savedWL] :[[pixList[0] objectAtIndex:0] savedWW]];
+		[mprView2 setWLWW:[[pixList[0] objectAtIndex:0] savedWL] :[[pixList[0] objectAtIndex:0] savedWW]];
+		[mprView3 setWLWW:[[pixList[0] objectAtIndex:0] savedWL] :[[pixList[0] objectAtIndex:0] savedWW]];
+	}
+	else if( [menuString isEqualToString:NSLocalizedString(@"Full dynamic", nil)])
+	{
+		[mprView1 setWLWW:0 :0];
+		[mprView2 setWLWW:0 :0];
+		[mprView3 setWLWW:0 :0];
+	}
+	else
+	{
+		if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask)
+		{
+			NSBeginAlertSheet( NSLocalizedString(@"Delete a WL/WW preset",nil), NSLocalizedString(@"Delete",nil), NSLocalizedString(@"Cancel",nil), nil, [self window], self, @selector(deleteWLWW:returnCode:contextInfo:), NULL, [menuString retain], [NSString stringWithFormat:@"Are you sure you want to delete preset : '%@'?", menuString]);
+		}
+		else
+		{
+			NSArray    *value;
+			
+			value = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"WLWW3"] objectForKey:menuString];
+			
+			[mprView1 setWLWW:[[value objectAtIndex:0] floatValue] :[[value objectAtIndex:1] floatValue]];
+			[mprView2 setWLWW:[[value objectAtIndex:0] floatValue] :[[value objectAtIndex:1] floatValue]];
+			[mprView3 setWLWW:[[value objectAtIndex:0] floatValue] :[[value objectAtIndex:1] floatValue]];
+		}
+	}
+	
+	[[[wlwwPopup menu] itemAtIndex:0] setTitle:menuString];
+	
+	if( curWLWWMenu != menuString)
+	{
+		[curWLWWMenu release];
+		curWLWWMenu = [menuString retain];
+	}	
+}
+
+#pragma mark CLUTs
+
+- (void)UpdateCLUTMenu:(NSNotification*)note
+{
+	[super UpdateCLUTMenu:note];
+	
+	// path 1 : /OsiriX Data/CLUTs/
+	NSMutableString *path = [NSMutableString stringWithString: [[BrowserController currentBrowser] documentsDirectory]];
+	[path appendString: CLUTDATABASE];
+	// path 2 : /resources_bundle_path/CLUTs/
+	NSMutableString *bundlePath = [NSMutableString stringWithString:[[NSBundle mainBundle] resourcePath]];
+	[bundlePath appendString: CLUTDATABASE];
+	
+	NSMutableArray *paths = [NSMutableArray arrayWithObjects:path, bundlePath, nil];
+	
+	NSMutableArray *clutArray = [NSMutableArray array];
+	BOOL isDir;
+	
+	for (NSUInteger j=0; j<[paths count]; j++)
+	{
+		if([[NSFileManager defaultManager] fileExistsAtPath:[paths objectAtIndex:j] isDirectory:&isDir] && isDir)
+		{
+			NSArray *content = [[NSFileManager defaultManager] directoryContentsAtPath:[paths objectAtIndex:j]];
+			for (NSUInteger i=0; i<[content count]; i++)
+			{
+				if( [[content objectAtIndex:i] length] > 0)
+				{
+					if( [[content objectAtIndex:i] characterAtIndex: 0] != '.')
+					{
+						NSDictionary* clut = [CLUTOpacityView presetFromFileWithName:[[content objectAtIndex:i] stringByDeletingPathExtension]];
+						if(clut)
+						{
+							[clutArray addObject:[[content objectAtIndex:i] stringByDeletingPathExtension]];
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	[clutArray sortUsingSelector:@selector(caseInsensitiveCompare:)];
+	
+	NSMenuItem *item;
+	item = [[clutPopup menu] insertItemWithTitle:@"8-bit CLUTs" action:@selector(noAction:) keyEquivalent:@"" atIndex:3];
+	
+	if( [clutArray count])
+	{
+		[[clutPopup menu] insertItem:[NSMenuItem separatorItem] atIndex:[[clutPopup menu] numberOfItems]-2];
+		
+		item = [[clutPopup menu] insertItemWithTitle:@"16-bit CLUTs" action:@selector(noAction:) keyEquivalent:@"" atIndex:[[clutPopup menu] numberOfItems]-2];
+		
+		for (NSUInteger i=0; i<[clutArray count]; i++)
+		{
+			item = [[clutPopup menu] insertItemWithTitle:[clutArray objectAtIndex:i] action:@selector(loadAdvancedCLUTOpacity:) keyEquivalent:@"" atIndex:[[clutPopup menu] numberOfItems]-2];
+			if([vrView isRGB])
+				[item setEnabled:NO];
+		}
+	}
+	
+    item = [[clutPopup menu] addItemWithTitle:NSLocalizedString(@"16-bit CLUT Editor", nil) action:@selector(showCLUTOpacityPanel:) keyEquivalent:@""];
+	if([[pixList[ 0] objectAtIndex:0] isRGB])
+		[item setEnabled:NO];
+		
+	//[mprView1 updateView];
+	//[mprView2 updateView];
+	//[mprView3 updateView];
+}
+
+-(void) ApplyCLUTString:(NSString*) str
+{
+	NSString	*previousColorName = [NSString stringWithString: curCLUTMenu];
+	
+	if( str == nil) return;
+	
+	[OpacityPopup setEnabled:YES];
+//	[clutOpacityView cleanup];
+//	if([clutOpacityDrawer state]==NSDrawerOpenState)
+//	{
+//		[clutOpacityDrawer close];
+//	}
+	
+	[self ApplyOpacityString:curOpacityMenu];
+	
+	if( [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"CLUT"] objectForKey: str] == nil)
+		str = @"No CLUT";
+	
+	if( curCLUTMenu != str)
+	{
+		[curCLUTMenu release];
+		curCLUTMenu = [str retain];
+	}
+	
+	if( [str isEqualToString:NSLocalizedString(@"No CLUT", nil)] == YES)
+	{
+		[vrView setCLUT: nil :nil :nil];
+		
+		if( [previousColorName isEqualToString: NSLocalizedString( @"B/W Inverse", nil)] || [previousColorName isEqualToString:( @"B/W Inverse")])
+			[vrView changeColorWith: [NSColor colorWithDeviceRed:0.0 green:0.0 blue:0.0 alpha:1.0]];
+		
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: nil];
+		
+		[[[clutPopup menu] itemAtIndex:0] setTitle:str];
+	}
+	else
+	{
+		NSDictionary		*aCLUT;
+		NSArray				*array;
+		long				i;
+		unsigned char		red[256], green[256], blue[256];
+		
+		aCLUT = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"CLUT"] objectForKey: str];
+		if( aCLUT)
+		{
+			array = [aCLUT objectForKey:@"Red"];
+			for( i = 0; i < 256; i++)
+			{
+				red[i] = [[array objectAtIndex: i] longValue];
+			}
+			
+			array = [aCLUT objectForKey:@"Green"];
+			for( i = 0; i < 256; i++)
+			{
+				green[i] = [[array objectAtIndex: i] longValue];
+			}
+			
+			array = [aCLUT objectForKey:@"Blue"];
+			for( i = 0; i < 256; i++)
+			{
+				blue[i] = [[array objectAtIndex: i] longValue];
+			}
+			
+			[vrView setCLUT:red :green: blue];
+			
+			if( [curCLUTMenu isEqualToString: NSLocalizedString( @"B/W Inverse", nil)] || [curCLUTMenu isEqualToString:( @"B/W Inverse")])
+				[vrView changeColorWith: [NSColor colorWithDeviceRed:1.0 green:1.0 blue:1.0 alpha:1.0]];
+			else 
+			{
+				if( [previousColorName isEqualToString: NSLocalizedString( @"B/W Inverse", nil)] || [previousColorName isEqualToString:( @"B/W Inverse")])
+					[vrView changeColorWith: [NSColor colorWithDeviceRed:0.0 green:0.0 blue:0.0 alpha:1.0]];
+			}
+			[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: nil];
+			
+			[[[clutPopup menu] itemAtIndex:0] setTitle: curCLUTMenu];
+		}
+		
+	}
+}
+
+-(void) ApplyOpacityString:(NSString*) str
+{
+	NSDictionary *aOpacity;
+	NSArray *array;
+	
+	if( str == nil) return;
+	
+	if( curOpacityMenu != str)
+	{
+		[curOpacityMenu release];
+		curOpacityMenu = [str retain];
+	}
+	
+	if( [str isEqualToString:@"Linear Table"])
+	{
+		[vrView setOpacity:[NSArray array]];
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: nil];
+		
+		[[[OpacityPopup menu] itemAtIndex:0] setTitle:str];
+	}
+	else
+	{
+		aOpacity = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"OPACITY"] objectForKey: str];
+		if( aOpacity)
+		{
+			array = [aOpacity objectForKey:@"Points"];
+			
+			[vrView setOpacity:array];
+			[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: nil];
+			
+			[[[OpacityPopup menu] itemAtIndex:0] setTitle: curOpacityMenu];
+		}
+	}
+}
+
 
 #pragma mark GUI ObjectController - Cocoa Bindings
 

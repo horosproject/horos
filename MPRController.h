@@ -30,7 +30,7 @@
 	ViewerController *viewer2D;
 	VRController *hiddenVRController;
 	VRView *vrView, *hiddenVRView;
-	
+		
 	NSMutableArray *filesList[200], *pixList[200];
 	DCMPix *originalPix;
 	NSData *volumeData[200];
@@ -47,11 +47,14 @@
 	// Clipping Range
 	float clippingRangeThickness;
 	int clippingRangeMode;
+	
+	NSArray *wlwwMenuItems;
 }
 
 @property float clippingRangeThickness;
 @property int clippingRangeMode, mouseViewID;
 @property (retain) Point3D *mousePosition;
+@property (retain) NSArray *wlwwMenuItems;
 @property (readonly) DCMPix *originalPix;
 
 + (double) angleBetweenVector:(float*) a andPlane:(float*) orientation;
@@ -64,5 +67,9 @@
 - (void) propagateWLWW:(MPRDCMView*) sender;
 - (void)bringToFrontROI:(ROI*) roi;
 
+- (void)createWLWWMenuItems;
+- (void)UpdateWLWWMenu:(NSNotification*)note;
+- (void)ApplyWLWW:(id)sender;
+- (void)applyWLWWForString:(NSString *)menuString;
 
 @end
