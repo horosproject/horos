@@ -20,7 +20,7 @@
 static float deg2rad = 3.14159265358979/180.0; 
 
 #define VIEW_1_RED 1.0f
-#define VIEW_1_GREEN 1.0f
+#define VIEW_1_GREEN 0.1f
 #define VIEW_1_BLUE 0.0f
 #define VIEW_1_ALPHA 1.0f
 
@@ -30,7 +30,7 @@ static float deg2rad = 3.14159265358979/180.0;
 #define VIEW_2_ALPHA 1.0f
 
 #define VIEW_3_RED 0.0f
-#define VIEW_3_GREEN 0.9f
+#define VIEW_3_GREEN 0.5f
 #define VIEW_3_BLUE 1.0f
 #define VIEW_3_ALPHA 1.0f
 
