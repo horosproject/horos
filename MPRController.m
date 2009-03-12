@@ -635,6 +635,17 @@ static float deg2rad = 3.14159265358979/180.0;
 		curCLUTMenu = [str retain];
 	}
 	
+	if(clippingRangeMode==0) //VR
+	{
+		[mprView1 setCLUT:nil :nil :nil];
+		[mprView2 setCLUT:nil :nil :nil];
+		[mprView3 setCLUT:nil :nil :nil];
+	}
+	else
+	{
+		[vrView setCLUT: nil :nil :nil];
+	}
+	
 	if([str isEqualToString:NSLocalizedString(@"No CLUT", nil)])
 	{
 		if(clippingRangeMode==0)
@@ -673,10 +684,10 @@ static float deg2rad = 3.14159265358979/180.0;
 	}
 	else
 	{
-		NSDictionary		*aCLUT;
-		NSArray				*array;
-		long				i;
-		unsigned char		red[256], green[256], blue[256];
+		NSDictionary *aCLUT;
+		NSArray *array;
+		long i;
+		unsigned char red[256], green[256], blue[256];
 		
 		aCLUT = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"CLUT"] objectForKey: str];
 		if( aCLUT)
@@ -698,6 +709,7 @@ static float deg2rad = 3.14159265358979/180.0;
 			{
 				blue[i] = [[array objectAtIndex: i] longValue];
 			}
+			
 			if(clippingRangeMode==0)
 			{
 				[vrView setCLUT:red :green: blue];
@@ -712,66 +724,39 @@ static float deg2rad = 3.14159265358979/180.0;
 			}
 			else
 			{
-				NSDictionary *aCLUT;
-				NSArray *array;
-				long i;
-				unsigned char red[256], green[256], blue[256];
+				int darkness = 256 * 3;
+				int darknessIndex = 0;
 				
-				aCLUT = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"CLUT"] objectForKey:str];
-				if( aCLUT)
+				for( i = 0; i < 256; i++)
 				{
-					array = [aCLUT objectForKey:@"Red"];
-					for( i = 0; i < 256; i++)
+					if( red[i] + green[i] + blue[i] < darkness)
 					{
-						red[i] = [[array objectAtIndex: i] longValue];
+						darknessIndex = i;
+						darkness = red[i] + green[i] + blue[i];
 					}
-					
-					array = [aCLUT objectForKey:@"Green"];
-					for( i = 0; i < 256; i++)
+				}
+				
+				int x;
+				for ( x = 0; x < maxMovieIndex; x++)
+				{
+					for ( i = 0; i < [pixList[ x] count]; i ++)
 					{
-						green[i] = [[array objectAtIndex: i] longValue];
+						[[pixList[ x] objectAtIndex:i] setBlackIndex: darknessIndex];
 					}
-					
-					array = [aCLUT objectForKey:@"Blue"];
-					for( i = 0; i < 256; i++)
-					{
-						blue[i] = [[array objectAtIndex: i] longValue];
-					}
-											
-					int darkness = 256 * 3;
-					int darknessIndex = 0;
-					
-					for( i = 0; i < 256; i++)
-					{
-						if( red[i] + green[i] + blue[i] < darkness)
-						{
-							darknessIndex = i;
-							darkness = red[i] + green[i] + blue[i];
-						}
-					}
-					
-					int x;
-					for ( x = 0; x < maxMovieIndex; x++)
-					{
-						for ( i = 0; i < [pixList[ x] count]; i ++)
-						{
-							[[pixList[ x] objectAtIndex:i] setBlackIndex: darknessIndex];
-						}
-					}
-					
-					[mprView1 setCLUT:red :green: blue];
-					[mprView2 setCLUT:red :green: blue];
-					[mprView3 setCLUT:red :green: blue];
-					
-					[mprView1 setIndex:[mprView1 curImage]];
-					[mprView2 setIndex:[mprView2 curImage]];
-					[mprView3 setIndex:[mprView3 curImage]];
-					
-					if( str != curCLUTMenu)
-					{
-						[curCLUTMenu release];
-						curCLUTMenu = [str retain];
-					}
+				}
+				
+				[mprView1 setCLUT:red :green: blue];
+				[mprView2 setCLUT:red :green: blue];
+				[mprView3 setCLUT:red :green: blue];
+				
+				[mprView1 setIndex:[mprView1 curImage]];
+				[mprView2 setIndex:[mprView2 curImage]];
+				[mprView3 setIndex:[mprView3 curImage]];
+				
+				if( str != curCLUTMenu)
+				{
+					[curCLUTMenu release];
+					curCLUTMenu = [str retain];
 				}
 			}
 			
@@ -875,6 +860,8 @@ static float deg2rad = 3.14159265358979/180.0;
 		[mprView3 setWLWW:128 :256];
 	}
 
+	[self ApplyCLUTString:curCLUTMenu];
+	
 	[mprView1 restoreCamera];
 	if( clippingRangeMode == 1) [mprView1 setWLWW: pWL :pWW];
 	else [mprView1.vrView setWLWW: pWL :pWW];
