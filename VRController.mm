@@ -1149,14 +1149,14 @@ static NSString*	ClippingRangeViewToolbarItemIdentifier = @"ClippingRange";
 	if( [notification object] == [self window])
 	{
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"Window3DClose" object: self userInfo: 0];
-			
+		
 		if( movieTimer)
 		{
 			[movieTimer invalidate];
 			[movieTimer release];
 			movieTimer = nil;
 		}
-
+		
 		[presetsPanel close];	
 		[presetsInfoPanel close];
 		

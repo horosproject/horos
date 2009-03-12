@@ -59,7 +59,6 @@ static float deg2rad = 3.14159265358979/180.0;
 	volumeData[0] = volume;
 	viewer2D = viewer;
 	
-	[[self window] setDelegate:self];
 	[[self window] setWindowController: self];
 	
 	DCMPix *emptyPix = [self emptyPix: originalPix width: 100 height: 100];
@@ -69,7 +68,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	emptyPix = [self emptyPix: originalPix width: 100 height: 100];
 	[mprView2 setDCMPixList:  [NSMutableArray arrayWithObject: emptyPix] filesList: [NSArray arrayWithObject: [files lastObject]] volumeData: [NSData dataWithBytes: [emptyPix fImage] length: [emptyPix pheight] * [emptyPix pwidth] * sizeof( float)] roiList:nil firstImage:0 type:'i' reset:YES];
 	[mprView2 setFlippedData: [[viewer imageView] flippedData]];
-
+	
 	emptyPix = [self emptyPix: originalPix width: 100 height: 100];
 	[mprView3 setDCMPixList:  [NSMutableArray arrayWithObject: emptyPix] filesList: [NSArray arrayWithObject: [files lastObject]] volumeData: [NSData dataWithBytes: [emptyPix fImage] length: [emptyPix pheight] * [emptyPix pwidth] * sizeof( float)] roiList:nil firstImage:0 type:'i' reset:YES];
 	[mprView3 setFlippedData: [[viewer imageView] flippedData]];
@@ -81,7 +80,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	[[hiddenVRController window] setLevel: 0];
 	[[hiddenVRController window] orderBack: self];
 	[[hiddenVRController window] orderOut: self];
-
+	
 	[hiddenVRController load3DState];
 	
 	hiddenVRView = [hiddenVRController view];
@@ -101,6 +100,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(UpdateWLWWMenu:) name:@"UpdateWLWWMenu" object:nil];
 	curWLWWMenu = @"";
+	[curWLWWMenu retain];
 	[self UpdateWLWWMenu:nil];
 	
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(UpdateCLUTMenu:) name:@"UpdateCLUTMenu" object: nil];
@@ -147,8 +147,9 @@ static float deg2rad = 3.14159265358979/180.0;
 	[mousePosition release];
 	[wlwwMenuItems release];
 	
-	
 	[super dealloc];
+	
+	NSLog( @"release MPRController");
 }
 
 - (BOOL) is2DViewer
@@ -884,6 +885,8 @@ static float deg2rad = 3.14159265358979/180.0;
 {
 	if( [notification object] == [self window])
 	{
+		[[NSNotificationCenter defaultCenter] removeObserver: self];
+		
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"Window3DClose" object: self userInfo: 0];
 		
 		if( movieTimer)
@@ -896,10 +899,10 @@ static float deg2rad = 3.14159265358979/180.0;
 		[hiddenVRController close];
 		[hiddenVRController release];
 		
-		[[self window] setDelegate:nil];
 		[[self window] setWindowController:nil];
+		[[self window] setDelegate:nil];
+		
 		[self release];
 	}
 }
-
 @end
