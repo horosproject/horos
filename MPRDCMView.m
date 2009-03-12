@@ -480,6 +480,9 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (int) mouseOnLines: (NSPoint) mouseLocation
 {
+	if( [[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] == annotNone)
+		return 0;
+
 	// Intersection of the lines
 	NSPoint r = [self centerLines];
 	

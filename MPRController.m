@@ -54,6 +54,12 @@ static float deg2rad = 3.14159265358979/180.0;
 	
 	originalPix = [pix lastObject];
 	
+	if( [originalPix isRGB])
+	{
+		NSRunCriticalAlertPanel( NSLocalizedString(@"Slice interval",nil), NSLocalizedString( @"RGB images are not supported.",nil), NSLocalizedString(@"OK",nil), nil, nil);
+		return nil;
+	}
+	
 	pixList[0] = pix;
 	filesList[0] = files;
 	volumeData[0] = volume;
@@ -864,16 +870,19 @@ static float deg2rad = 3.14159265358979/180.0;
 	[self ApplyCLUTString:curCLUTMenu];
 	
 	[mprView1 restoreCamera];
+	mprView1.camera.forceUpdate = YES;
 	if( clippingRangeMode == 1  || clippingRangeMode == 3) [mprView1 setWLWW: pWL :pWW];
 	else [mprView1.vrView setWLWW: pWL :pWW];
 	[mprView1 updateViewMPR];
 	
 	[mprView2 restoreCamera];
+	mprView2.camera.forceUpdate = YES;
 	if( clippingRangeMode == 1  || clippingRangeMode == 3) [mprView2 setWLWW: pWL :pWW];
 	else [mprView2.vrView setWLWW: pWL :pWW];
 	[mprView2 updateViewMPR];
 
 	[mprView3 restoreCamera];
+	mprView3.camera.forceUpdate = YES;
 	if( clippingRangeMode == 1  || clippingRangeMode == 3) [mprView3 setWLWW: pWL :pWW];
 	else [mprView3.vrView setWLWW: pWL :pWW];
 	[mprView3 updateViewMPR];
