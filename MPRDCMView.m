@@ -742,7 +742,8 @@ static float deg2rad = 3.14159265358979/180.0;
 		int mouseOnLines = [self mouseOnLines: [self convertPoint:[theEvent locationInWindow] fromView:nil]];
 		if( mouseOnLines==2)
 		{
-			[[NSCursor openHandCursor] set];
+			if( [theEvent type] == NSLeftMouseDragged) [[NSCursor closedHandCursor] set];
+			else [[NSCursor openHandCursor] set];
 		}
 		else if( mouseOnLines==1)
 		{

@@ -87,7 +87,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	hiddenVRView = [hiddenVRController view];
 	[hiddenVRView setClipRangeActivated: YES];
 	[hiddenVRView resetImage: self];
-	[hiddenVRView setLOD: 1.0];
+	[hiddenVRView setLOD: 1.5];
 	hiddenVRView.keep3DRotateCentered = YES;
 	
 	[mprView1 setVRView: hiddenVRView viewID: 1];
