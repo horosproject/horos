@@ -4735,6 +4735,8 @@ public:
 
 -(void) setCLUT:( unsigned char*) r : (unsigned char*) g : (unsigned char*) b
 {
+	if( fullDepthMode) return;
+	
 	advancedCLUT = NO;
 	if(appliedCurves)
 	{

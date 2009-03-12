@@ -899,8 +899,7 @@ static float deg2rad = 3.14159265358979/180.0;
 		[hiddenVRController close];
 		[hiddenVRController release];
 		
-		[[self window] setWindowController:nil];
-		[[self window] setDelegate:nil];
+		[ob setContent: nil];	// To allow the dealloc of MPRController ! otherwise memory leak
 		
 		[self release];
 	}

@@ -22,6 +22,8 @@
 
 @interface MPRController : Window3DController
 {
+	IBOutlet NSObjectController *ob;
+	
 	IBOutlet NSSplitView *topSplitView, *bottomSplitView;
 	IBOutlet NSView *containerFor3DView;
 	
