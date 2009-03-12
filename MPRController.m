@@ -149,7 +149,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	
 	[super dealloc];
 	
-	NSLog( @"release MPRController");
+	NSLog( @"dealloc MPRController");
 }
 
 - (BOOL) is2DViewer

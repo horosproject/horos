@@ -183,7 +183,7 @@
 	[[NSNotificationCenter defaultCenter] removeObserver: self];
 	NSLog( @"ROIVolumeManager windowWillClose");
 	[tableView setDataSource: nil];
-	[controllerAlias setContent: nil];
+	[controllerAlias setContent: nil];	// To allow the dealloc of MPRController ! otherwise memory leak
 	[self release];
 }
 
