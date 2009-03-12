@@ -597,7 +597,7 @@ static float deg2rad = 3.14159265358979/180.0;
 		for (NSUInteger i=0; i<[clutArray count]; i++)
 		{
 			item = [[clutPopup menu] insertItemWithTitle:[clutArray objectAtIndex:i] action:@selector(loadAdvancedCLUTOpacity:) keyEquivalent:@"" atIndex:[[clutPopup menu] numberOfItems]-2];
-			if([vrView isRGB])
+			if([mprView1.vrView isRGB])
 				[item setEnabled:NO];
 		}
 	}
@@ -643,17 +643,17 @@ static float deg2rad = 3.14159265358979/180.0;
 	}
 	else
 	{
-		[vrView setCLUT: nil :nil :nil];
+		[mprView1.vrView setCLUT: nil :nil :nil];
 	}
 	
 	if([str isEqualToString:NSLocalizedString(@"No CLUT", nil)])
 	{
 		if(clippingRangeMode==0)
 		{
-			[vrView setCLUT: nil :nil :nil];
+			[mprView1.vrView setCLUT: nil :nil :nil];
 			
 			if( [previousColorName isEqualToString: NSLocalizedString( @"B/W Inverse", nil)] || [previousColorName isEqualToString:( @"B/W Inverse")])
-				[vrView changeColorWith: [NSColor colorWithDeviceRed:0.0 green:0.0 blue:0.0 alpha:1.0]];
+				[mprView1.vrView changeColorWith: [NSColor colorWithDeviceRed:0.0 green:0.0 blue:0.0 alpha:1.0]];
 		}
 		else
 		{
@@ -712,14 +712,14 @@ static float deg2rad = 3.14159265358979/180.0;
 			
 			if(clippingRangeMode==0)
 			{
-				[vrView setCLUT:red :green: blue];
+				[mprView1.vrView setCLUT:red :green: blue];
 				
 				if( [curCLUTMenu isEqualToString: NSLocalizedString( @"B/W Inverse", nil)] || [curCLUTMenu isEqualToString:( @"B/W Inverse")])
-					[vrView changeColorWith: [NSColor colorWithDeviceRed:1.0 green:1.0 blue:1.0 alpha:1.0]];
+					[mprView1.vrView changeColorWith: [NSColor colorWithDeviceRed:1.0 green:1.0 blue:1.0 alpha:1.0]];
 				else 
 				{
 					if( [previousColorName isEqualToString: NSLocalizedString( @"B/W Inverse", nil)] || [previousColorName isEqualToString:( @"B/W Inverse")])
-						[vrView changeColorWith: [NSColor colorWithDeviceRed:0.0 green:0.0 blue:0.0 alpha:1.0]];
+						[mprView1.vrView changeColorWith: [NSColor colorWithDeviceRed:0.0 green:0.0 blue:0.0 alpha:1.0]];
 				}
 			}
 			else
@@ -783,7 +783,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	
 	if( [str isEqualToString:@"Linear Table"])
 	{
-		[vrView setOpacity:[NSArray array]];
+		[mprView1.vrView setOpacity:[NSArray array]];
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: nil];
 		
 		[[[OpacityPopup menu] itemAtIndex:0] setTitle:str];
@@ -795,7 +795,7 @@ static float deg2rad = 3.14159265358979/180.0;
 		{
 			array = [aOpacity objectForKey:@"Points"];
 			
-			[vrView setOpacity:array];
+			[mprView1.vrView setOpacity:array];
 			[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: nil];
 			
 			[[[OpacityPopup menu] itemAtIndex:0] setTitle: curOpacityMenu];
