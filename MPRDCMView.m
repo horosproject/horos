@@ -673,8 +673,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	{
 		[[NSCursor rotateAxisCursor] set];
 		
-		if( [pix sliceThickness] > 2)
-			[vrView setLODLow: YES];
+		[vrView setLODLow: YES];
 		
 		NSPoint mouseLocation = [self ConvertFromNSView2GL: [self convertPoint: [theEvent locationInWindow] fromView: nil]];
 		mouseLocation.x *= curDCM.pixelSpacingX;	mouseLocation.y *= curDCM.pixelSpacingY;
