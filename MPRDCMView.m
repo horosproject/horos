@@ -169,12 +169,12 @@ static float deg2rad = 3.14159265358979/180.0;
 	[super dealloc];
 }
 
--(void) updateView
+-(void) updateViewMPR
 {
-	[self updateView: YES];
+	[self updateViewMPR: YES];
 }
 
-- (void) updateView:(BOOL) computeCrossReferenceLines
+- (void) updateViewMPR:(BOOL) computeCrossReferenceLines
 {
 	long h, w;
 	float previousWW, previousWL;
@@ -531,7 +531,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	
 	[vrView scrollWheel: theEvent];
 	
-	[self updateView];
+	[self updateViewMPR];
 	
 	[self updateMousePosition: theEvent];
 }
@@ -548,7 +548,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	
 	[vrView rightMouseDown: theEvent];
 	
-	[self updateView];
+	[self updateViewMPR];
 }
 
 - (void)rightMouseDragged:(NSEvent *)theEvent
@@ -557,7 +557,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	
 	[vrView rightMouseDragged: theEvent];
 	
-	[self updateView];
+	[self updateViewMPR];
 	
 	[self updateMousePosition: theEvent];
 }
@@ -568,7 +568,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	
 	[vrView rightMouseUp: theEvent];
 	
-	[self updateView];
+	[self updateViewMPR];
 	
 	[self updateMousePosition: theEvent];
 }
@@ -613,9 +613,9 @@ static float deg2rad = 3.14159265358979/180.0;
 			[vrView mouseDown: theEvent];
 			
 			if( [vrView _tool] == tRotate)
-				[self updateView: NO];
+				[self updateViewMPR: NO];
 			else
-				[self updateView];
+				[self updateViewMPR];
 		}
 	}
 }
@@ -638,7 +638,7 @@ static float deg2rad = 3.14159265358979/180.0;
 		moveCenter = NO;
 
 		[self restoreCamera];
-		[self updateView];
+		[self updateViewMPR];
 		
 		[cursor set];
 	}
@@ -656,9 +656,9 @@ static float deg2rad = 3.14159265358979/180.0;
 			[vrView mouseUp: theEvent];
 			
 			if( [vrView _tool] == tRotate)
-				[self updateView: NO];
+				[self updateViewMPR: NO];
 			else
-				[self updateView];
+				[self updateViewMPR];
 		}
 	}
 	
@@ -681,13 +681,13 @@ static float deg2rad = 3.14159265358979/180.0;
 		
 		angleMPR -= rotateLinesStartAngle;
 		
-		[self updateView];
+		[self updateViewMPR];
 	}
 	else if( moveCenter)
 	{
 		[vrView setLODLow: YES];
 		[vrView setWindowCenter: [self convertPoint: [theEvent locationInWindow] fromView: nil]];
-		[self updateView];
+		[self updateViewMPR];
 	}
 	else
 	{
@@ -711,9 +711,9 @@ static float deg2rad = 3.14159265358979/180.0;
 				[vrView getCosMatrix: after];
 				angleMPR -= [MPRController angleBetweenVector: after andPlane: before];
 				
-				[self updateView: NO];
+				[self updateViewMPR: NO];
 			}
-			else [self updateView];
+			else [self updateViewMPR];
 		}
 	}
 	

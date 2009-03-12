@@ -114,8 +114,13 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (void) updateViewsAccordingToFrame:(id) sender	// see setFrame in MPRDCMView.m
 {
+	[mprView1 camera].forceUpdate = YES;
+	[mprView2 camera].forceUpdate = YES;
+	[mprView3 camera].forceUpdate = YES;
+	
+	[[self window] makeFirstResponder: mprView3];
 	[mprView3 restoreCamera];
-	[mprView3 updateView];
+	[mprView3 updateViewMPR];
 }
 
 - (void) showWindow:(id) sender
@@ -126,13 +131,13 @@ static float deg2rad = 3.14159265358979/180.0;
 	
 	[[self window] makeFirstResponder: mprView1];
 	[mprView1.vrView resetImage: self];
-	[mprView1 updateView];
+	[mprView1 updateViewMPR];
 	
 	mprView2.camera.viewUp = [Point3D pointWithX:0 y:-1 z:0];
 	
 	[[self window] makeFirstResponder: mprView3];
 	[mprView3 restoreCamera];
-	[mprView3 updateView];
+	[mprView3 updateViewMPR];
 	
 	[super showWindow: sender];
 }
@@ -344,7 +349,7 @@ static float deg2rad = 3.14159265358979/180.0;
 				[mprView1.vrView setWLWW: l : w];
 			}
 			
-			[mprView1 updateView];
+			[mprView1 updateViewMPR];
 		}
 		
 		if( sender != mprView2)
@@ -357,7 +362,7 @@ static float deg2rad = 3.14159265358979/180.0;
 				[mprView2.vrView setWLWW: l : w];
 			}
 			
-			[mprView2 updateView];
+			[mprView2 updateViewMPR];
 		}
 		
 		if( sender != mprView3)
@@ -370,7 +375,7 @@ static float deg2rad = 3.14159265358979/180.0;
 				[mprView3.vrView setWLWW: l : w];
 			}
 			
-			[mprView3 updateView];
+			[mprView3 updateViewMPR];
 		}
 		
 		if( sender == mprView1)
@@ -601,9 +606,9 @@ static float deg2rad = 3.14159265358979/180.0;
 	if([[pixList[ 0] objectAtIndex:0] isRGB])
 		[item setEnabled:NO];
 		
-	//[mprView1 updateView];
-	//[mprView2 updateView];
-	//[mprView3 updateView];
+	//[mprView1 updateViewMPR];
+	//[mprView2 updateViewMPR];
+	//[mprView3 updateViewMPR];
 }
 
 -(void) ApplyCLUTString:(NSString*) str
@@ -823,17 +828,17 @@ static float deg2rad = 3.14159265358979/180.0;
 	[mprView1 restoreCamera];
 	mprView1.vrView.dontResetImage = YES;
 	[mprView1.vrView setClippingRangeThickness: f];
-	[mprView1 updateView];
+	[mprView1 updateViewMPR];
 	
 	[mprView2 restoreCamera];
 	mprView2.vrView.dontResetImage = YES;
 	[mprView2.vrView setClippingRangeThickness: f];
-	[mprView2 updateView];
+	[mprView2 updateViewMPR];
 	
 	[mprView3 restoreCamera];
 	mprView3.vrView.dontResetImage = YES;
 	[mprView3.vrView setClippingRangeThickness: f];
-	[mprView3 updateView];
+	[mprView3 updateViewMPR];
 }
 
 - (void) setClippingRangeMode:(int) f
@@ -873,17 +878,17 @@ static float deg2rad = 3.14159265358979/180.0;
 	[mprView1 restoreCamera];
 	if( clippingRangeMode == 1) [mprView1 setWLWW: pWL :pWW];
 	else [mprView1.vrView setWLWW: pWL :pWW];
-	[mprView1 updateView];
+	[mprView1 updateViewMPR];
 	
 	[mprView2 restoreCamera];
 	if( clippingRangeMode == 1) [mprView2 setWLWW: pWL :pWW];
 	else [mprView2.vrView setWLWW: pWL :pWW];
-	[mprView2 updateView];
+	[mprView2 updateViewMPR];
 
 	[mprView3 restoreCamera];
 	if( clippingRangeMode == 1) [mprView3 setWLWW: pWL :pWW];
 	else [mprView3.vrView setWLWW: pWL :pWW];
-	[mprView3 updateView];
+	[mprView3 updateViewMPR];
 }
 
 #pragma mark NSWindow Notifications action
