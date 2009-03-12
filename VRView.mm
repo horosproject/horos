@@ -772,10 +772,10 @@ public:
 			
 		case 3:
 			if( volumeMapper)
-				volumeMapper->SetBlendModeToComposite();
+				volumeMapper->SetBlendModeToMinimumIntensity();
 			
 			if( textureMapper)
-				textureMapper->SetBlendModeToComposite();
+				textureMapper->SetBlendModeToMinimumIntensity();
 		break;
 	}
 	
@@ -1267,7 +1267,7 @@ public:
 	{
 		BOOL fullDepthCapture = NO;
 		
-		if( [dcmExportDepth selectedTag] == 1 && [dcmExportDepth isEnabled] && renderingMode == 1)
+		if( [dcmExportDepth selectedTag] == 1 && [dcmExportDepth isEnabled] && (renderingMode == 1 || renderingMode == 3))
 			fullDepthCapture = YES;
 		
 		[self setViewSizeToMatrix3DExport];
@@ -1473,7 +1473,7 @@ public:
 	if( [[[self window] windowController] movieFrames] > 1) [[dcmExportMode cellWithTag:2] setEnabled: YES];
 	else [[dcmExportMode cellWithTag:2] setEnabled: NO];
 	
-	if( renderingMode == 1)
+	if( renderingMode == 1 || renderingMode == 3)
 		[dcmExportDepth setEnabled: YES];
 	else
 	{

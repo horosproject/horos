@@ -831,7 +831,7 @@ static float deg2rad = 3.14159265358979/180.0;
 {
 	float pWL, pWW;
 	
-	if( clippingRangeMode == 1) // MIP
+	if( clippingRangeMode == 1 || clippingRangeMode == 3) // MIP
 		[mprView1 getWLWW: &pWL :&pWW];
 	else
 		[mprView1.vrView getWLWW: &pWL :&pWW];
@@ -864,17 +864,17 @@ static float deg2rad = 3.14159265358979/180.0;
 	[self ApplyCLUTString:curCLUTMenu];
 	
 	[mprView1 restoreCamera];
-	if( clippingRangeMode == 1) [mprView1 setWLWW: pWL :pWW];
+	if( clippingRangeMode == 1  || clippingRangeMode == 3) [mprView1 setWLWW: pWL :pWW];
 	else [mprView1.vrView setWLWW: pWL :pWW];
 	[mprView1 updateViewMPR];
 	
 	[mprView2 restoreCamera];
-	if( clippingRangeMode == 1) [mprView2 setWLWW: pWL :pWW];
+	if( clippingRangeMode == 1  || clippingRangeMode == 3) [mprView2 setWLWW: pWL :pWW];
 	else [mprView2.vrView setWLWW: pWL :pWW];
 	[mprView2 updateViewMPR];
 
 	[mprView3 restoreCamera];
-	if( clippingRangeMode == 1) [mprView3 setWLWW: pWL :pWW];
+	if( clippingRangeMode == 1  || clippingRangeMode == 3) [mprView3 setWLWW: pWL :pWW];
 	else [mprView3.vrView setWLWW: pWL :pWW];
 	[mprView3 updateViewMPR];
 }
