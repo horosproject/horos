@@ -52,6 +52,8 @@ static float deg2rad = 3.14159265358979/180.0;
 {
 	self = [super initWithWindowNibName:@"MPR"];
 	
+	//[shadingsPresetsController setWindowController: self];
+	
 	originalPix = [pix lastObject];
 	
 	if( [originalPix isRGB])
@@ -115,6 +117,10 @@ static float deg2rad = 3.14159265358979/180.0;
 	
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(CloseViewerNotification:) name:@"CloseViewerNotification" object:nil];
 	
+	[shadingCheck setAction:@selector(switchShading:)];
+	[shadingCheck setTarget:hiddenVRView];
+
+	
 	return self;
 }
 
@@ -146,6 +152,13 @@ static float deg2rad = 3.14159265358979/180.0;
 	[mprView3 updateViewMPR];
 	
 	[super showWindow: sender];
+}
+
+-(void) awakeFromNib
+{
+	[shadingsPresetsController setWindowController: self];
+	[shadingCheck setAction:@selector(switchShading:)];
+	[shadingCheck setTarget:hiddenVRView];
 }
 
 - (void) dealloc
@@ -942,4 +955,55 @@ static float deg2rad = 3.14159265358979/180.0;
 		[self release];
 	}
 }
+
+#pragma mark Shadings
+
+- (IBAction)applyShading:(id)sender;
+{
+	NSDictionary *dict = [[shadingsPresetsController selectedObjects] lastObject];
+	
+	float ambient, diffuse, specular, specularpower;
+	
+	ambient = [[dict valueForKey:@"ambient"] floatValue];
+	diffuse = [[dict valueForKey:@"diffuse"] floatValue];
+	specular = [[dict valueForKey:@"specular"] floatValue];
+	specularpower = [[dict valueForKey:@"specularPower"] floatValue];
+	
+	float sambient, sdiffuse, sspecular, sspecularpower;	
+	[hiddenVRView getShadingValues: &sambient :&sdiffuse :&sspecular :&sspecularpower];
+	
+	if( sambient != ambient || sdiffuse != diffuse || sspecular != specular || sspecularpower != specularpower)
+	{
+		[hiddenVRView setShadingValues: ambient :diffuse :specular :specularpower];
+		[shadingValues setStringValue: [NSString stringWithFormat:@"Ambient: %2.2f\nDiffuse: %2.2f\nSpecular :%2.2f, %2.2f", ambient, diffuse, specular, specularpower]];
+		
+		[hiddenVRView setNeedsDisplay: YES];
+	}
+}
+
+- (void)findShadingPreset:(id)sender;
+{
+	float ambient, diffuse, specular, specularpower;
+	
+	[hiddenVRView getShadingValues: &ambient :&diffuse :&specular :&specularpower];
+	
+	NSArray *shadings = [shadingsPresetsController arrangedObjects];
+	int i;
+	for( i = 0; i < [shadings count]; i++)
+	{
+		NSDictionary *dict = [shadings objectAtIndex: i];
+		if( ambient == [[dict valueForKey:@"ambient"] floatValue] && diffuse == [[dict valueForKey:@"diffuse"] floatValue] && specular == [[dict valueForKey:@"specular"] floatValue] && specularpower == [[dict valueForKey:@"specularPower"] floatValue])
+		{
+			[shadingsPresetsController setSelectedObjects: [NSArray arrayWithObject: dict]];
+			break;
+		}
+	}
+}
+
+- (IBAction)editShadingValues:(id)sender;
+{
+	[shadingPanel makeKeyAndOrderFront: self];
+	[self findShadingPreset: self];
+}
+
 @end

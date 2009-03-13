@@ -53,6 +53,12 @@
 	NSArray *wlwwMenuItems;
 	
 	float LOD;
+	
+	IBOutlet NSPanel *shadingPanel;
+	IBOutlet ShadingArrayController *shadingsPresetsController;
+	BOOL shadingEditable;
+	IBOutlet NSButton *shadingCheck;
+	IBOutlet NSTextField *shadingValues;
 }
 
 @property float clippingRangeThickness;
@@ -76,5 +82,9 @@
 - (void)UpdateWLWWMenu:(NSNotification*)note;
 - (void)ApplyWLWW:(id)sender;
 - (void)applyWLWWForString:(NSString *)menuString;
+
+- (IBAction)applyShading:(id) sender;
+- (void)findShadingPreset:(id) sender;
+- (IBAction)editShadingValues:(id) sender;
 
 @end
