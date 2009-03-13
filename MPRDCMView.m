@@ -151,6 +151,9 @@ static float deg2rad = 3.14159265358979/180.0;
 	
 	if( currentCamera.LOD < camera.LOD) return YES;
 	
+	if( currentCamera.wl != camera.wl) return YES;
+	if( currentCamera.ww != camera.ww) return YES;
+
 	
 	return NO;
 }

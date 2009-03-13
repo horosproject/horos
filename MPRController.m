@@ -644,13 +644,23 @@ static float deg2rad = 3.14159265358979/180.0;
 	
 	if(clippingRangeMode==0) //VR
 	{
-		[mprView1 setCLUT:nil :nil :nil];
-		[mprView2 setCLUT:nil :nil :nil];
-		[mprView3 setCLUT:nil :nil :nil];
+		int i, x;
+		for ( x = 0; x < maxMovieIndex; x++)
+		{
+			for ( i = 0; i < [pixList[ x] count]; i ++) [[pixList[ x] objectAtIndex:i] setBlackIndex: 0];
+		}
+		
+		[mprView1 setCLUT: nil :nil :nil];
+		[mprView2 setCLUT: nil :nil :nil];
+		[mprView3 setCLUT: nil :nil :nil];
+		
+		[mprView1 setIndex:[mprView1 curImage]];
+		[mprView2 setIndex:[mprView2 curImage]];
+		[mprView3 setIndex:[mprView3 curImage]];				
 	}
 	else
 	{
-		[mprView1.vrView setCLUT: nil :nil :nil];
+		//[mprView1.vrView setCLUT: nil :nil :nil];
 	}
 	
 	if([str isEqualToString:NSLocalizedString(@"No CLUT", nil)])
@@ -658,9 +668,6 @@ static float deg2rad = 3.14159265358979/180.0;
 		if(clippingRangeMode==0)
 		{
 			[mprView1.vrView setCLUT: nil :nil :nil];
-			
-			if( [previousColorName isEqualToString: NSLocalizedString( @"B/W Inverse", nil)] || [previousColorName isEqualToString:( @"B/W Inverse")])
-				[mprView1.vrView changeColorWith: [NSColor colorWithDeviceRed:0.0 green:0.0 blue:0.0 alpha:1.0]];
 		}
 		else
 		{
@@ -720,14 +727,18 @@ static float deg2rad = 3.14159265358979/180.0;
 			if(clippingRangeMode==0)
 			{
 				[mprView1.vrView setCLUT:red :green: blue];
+
+				[mprView1 restoreCamera];
+				mprView1.camera.forceUpdate = YES;
+				[mprView1 updateViewMPR];
 				
-				if( [curCLUTMenu isEqualToString: NSLocalizedString( @"B/W Inverse", nil)] || [curCLUTMenu isEqualToString:( @"B/W Inverse")])
-					[mprView1.vrView changeColorWith: [NSColor colorWithDeviceRed:1.0 green:1.0 blue:1.0 alpha:1.0]];
-				else 
-				{
-					if( [previousColorName isEqualToString: NSLocalizedString( @"B/W Inverse", nil)] || [previousColorName isEqualToString:( @"B/W Inverse")])
-						[mprView1.vrView changeColorWith: [NSColor colorWithDeviceRed:0.0 green:0.0 blue:0.0 alpha:1.0]];
-				}
+				[mprView2 restoreCamera];
+				mprView2.camera.forceUpdate = YES;
+				[mprView2 updateViewMPR];
+				
+				[mprView3 restoreCamera];
+				mprView3.camera.forceUpdate = YES;
+				[mprView3 updateViewMPR];
 			}
 			else
 			{
@@ -847,9 +858,9 @@ static float deg2rad = 3.14159265358979/180.0;
 	[mprView1.vrView setMode: clippingRangeMode];
 	[mprView2.vrView setMode: clippingRangeMode];
 	[mprView3.vrView setMode: clippingRangeMode];
-	
+
 	if( clippingRangeMode == 1 || clippingRangeMode == 3)	// MIP - Mean
-	{
+	{		
 		[mprView1.vrView prepareFullDepthCapture];
 		[mprView2.vrView prepareFullDepthCapture];
 		[mprView3.vrView prepareFullDepthCapture];
@@ -866,9 +877,8 @@ static float deg2rad = 3.14159265358979/180.0;
 		[mprView2 setWLWW:128 :256];
 		[mprView3 setWLWW:128 :256];
 	}
-
 	[self ApplyCLUTString:curCLUTMenu];
-	
+		
 	[mprView1 restoreCamera];
 	mprView1.camera.forceUpdate = YES;
 	if( clippingRangeMode == 1  || clippingRangeMode == 3) [mprView1 setWLWW: pWL :pWW];
