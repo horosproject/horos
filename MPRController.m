@@ -22,7 +22,7 @@ static float deg2rad = 3.14159265358979/180.0;
 
 @implementation MPRController
 
-@synthesize clippingRangeThickness, clippingRangeMode, mousePosition, mouseViewID, originalPix, wlwwMenuItems;
+@synthesize clippingRangeThickness, clippingRangeMode, mousePosition, mouseViewID, originalPix, wlwwMenuItems, LOD;
 
 + (double) angleBetweenVector:(float*) a andPlane:(float*) orientation
 {
@@ -92,7 +92,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	hiddenVRView = [hiddenVRController view];
 	[hiddenVRView setClipRangeActivated: YES];
 	[hiddenVRView resetImage: self];
-	[hiddenVRView setLOD: 1.5];
+	[self setLOD: 1.5];
 	hiddenVRView.keep3DRotateCentered = YES;
 	
 	[mprView1 setVRView: hiddenVRView viewID: 1];
@@ -442,6 +442,25 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (void)bringToFrontROI:(ROI*) roi;
 {}
+#pragma mark 
+
+- (void)setLOD:(float)lod;
+{
+	LOD = lod;
+	[hiddenVRView setLOD: lod];
+	
+	[mprView1 restoreCamera];
+	mprView1.camera.forceUpdate = YES;
+	[mprView1 updateViewMPR];
+	
+	[mprView2 restoreCamera];
+	mprView2.camera.forceUpdate = YES;
+	[mprView2 updateViewMPR];
+	
+	[mprView3 restoreCamera];
+	mprView3.camera.forceUpdate = YES;
+	[mprView3 updateViewMPR];	
+}
 
 #pragma mark Window Level / Window width
 

@@ -51,6 +51,8 @@
 	int clippingRangeMode;
 	
 	NSArray *wlwwMenuItems;
+	
+	float LOD;
 }
 
 @property float clippingRangeThickness;
@@ -58,6 +60,7 @@
 @property (retain) Point3D *mousePosition;
 @property (retain) NSArray *wlwwMenuItems;
 @property (readonly) DCMPix *originalPix;
+@property float LOD;
 
 + (double) angleBetweenVector:(float*) a andPlane:(float*) orientation;
 
