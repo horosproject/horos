@@ -46,6 +46,12 @@
 	Point3D *mousePosition;
 	int mouseViewID;
 	
+	// Export Dcm
+	int dcmFrom, dcmTo;
+	float dcmInterval;
+	int dcmMode;
+	int dcmSeriesMode;
+	
 	// Clipping Range
 	float clippingRangeThickness;
 	int clippingRangeMode;
