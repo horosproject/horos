@@ -51,6 +51,8 @@
 	float dcmInterval;
 	int dcmMode;
 	int dcmSeriesMode;
+	int dcmSize, dcmRotation, dcmNumberOfFrames, dcmQuality;
+	NSString *dcmSeriesName;
 	
 	// Clipping Range
 	float clippingRangeThickness;
