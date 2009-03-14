@@ -289,7 +289,7 @@ public:
 
 @implementation VRView
 
-@synthesize clipRangeActivated, projectionMode, clippingRangeThickness, keep3DRotateCentered, dontResetImage, renderingMode, currentOpacityArray;
+@synthesize clipRangeActivated, projectionMode, clippingRangeThickness, keep3DRotateCentered, dontResetImage, renderingMode, currentOpacityArray, exportDCM;
 
 - (BOOL) checkPointInVolume: (double*) position
 {
@@ -1164,7 +1164,10 @@ public:
 
 - (NSDictionary*) exportDCMCurrentImage
 {
-	return [self exportDCMCurrentImageIn16bit : NO];
+	if( renderingMode == 1 || renderingMode == 3)
+		return [self exportDCMCurrentImageIn16bit : YES];
+	else
+		return [self exportDCMCurrentImageIn16bit : NO];
 }
 
 - (NSDictionary*) exportDCMCurrentImageIn16bit: (BOOL) fullDepth

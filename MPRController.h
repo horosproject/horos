@@ -47,11 +47,12 @@
 	int mouseViewID;
 	
 	// Export Dcm
+	IBOutlet NSWindow *dcmWindow;
 	int dcmFrom, dcmTo;
 	float dcmInterval;
 	int dcmMode;
 	int dcmSeriesMode;
-	int dcmSize, dcmRotation, dcmNumberOfFrames, dcmQuality;
+	int dcmSize, dcmRotation, dcmRotationDirection, dcmNumberOfFrames, dcmQuality;
 	NSString *dcmSeriesName;
 	
 	// Clipping Range
@@ -69,10 +70,11 @@
 	IBOutlet NSTextField *shadingValues;
 }
 
-@property float clippingRangeThickness;
-@property int clippingRangeMode, mouseViewID;
+@property float clippingRangeThickness, dcmInterval;
+@property int clippingRangeMode, mouseViewID, dcmFrom, dcmTo, dcmMode, dcmSeriesMode, dcmSize, dcmRotation, dcmRotationDirection, dcmNumberOfFrames, dcmQuality;
 @property (retain) Point3D *mousePosition;
 @property (retain) NSArray *wlwwMenuItems;
+@property (retain) NSString *dcmSeriesName;
 @property (readonly) DCMPix *originalPix;
 @property float LOD;
 

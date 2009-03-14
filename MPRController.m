@@ -14,6 +14,10 @@
 
 #import "MPRController.h"
 #import "BrowserController.h"
+#import "Wait.h"
+#import "DICOMExport.h"
+#import "DicomImage.h"
+
 #define PRESETS_DIRECTORY @"/3DPRESETS/"
 #define CLUTDATABASE @"/CLUTs/"
 
@@ -22,7 +26,7 @@ static float deg2rad = 3.14159265358979/180.0;
 
 @implementation MPRController
 
-@synthesize clippingRangeThickness, clippingRangeMode, mousePosition, mouseViewID, originalPix, wlwwMenuItems, LOD;
+@synthesize clippingRangeThickness, clippingRangeMode, mousePosition, mouseViewID, originalPix, wlwwMenuItems, LOD, dcmFrom, dcmTo, dcmMode, dcmRotationDirection, dcmSeriesMode, dcmSize, dcmRotation, dcmNumberOfFrames, dcmQuality, dcmInterval, dcmSeriesName;
 
 + (double) angleBetweenVector:(float*) a andPlane:(float*) orientation
 {
@@ -928,6 +932,173 @@ static float deg2rad = 3.14159265358979/180.0;
 	if( clippingRangeMode == 1  || clippingRangeMode == 3) [mprView3 setWLWW: pWL :pWW];
 	else [mprView3.vrView setWLWW: pWL :pWW];
 	[mprView3 updateViewMPR];
+}
+
+#pragma mark Export	
+
+#define DATABASEPATH @"/DATABASE.noindex/"
+-(IBAction) endDCMExportSettings:(id) sender
+{
+	[dcmWindow orderOut:sender];
+	[NSApp endSheet:dcmWindow returnCode:[sender tag]];
+	
+	MPRDCMView *curView = nil;
+	if( [[self window] firstResponder] == mprView1) curView = mprView1;
+	if( [[self window] firstResponder] == mprView2) curView = mprView2;
+	if( [[self window] firstResponder] == mprView3) curView = mprView3;
+	if( curView == nil) curView = mprView3;
+	
+	if( [sender tag])
+	{
+		NSMutableArray *producedFiles = [NSMutableArray array];
+		
+		[curView restoreCamera];
+		[curView.vrView setViewSizeToMatrix3DExport];
+		
+		// CURRENT image only
+		if( dcmMode == 0)
+		{
+			[producedFiles addObject: [curView.vrView exportDCMCurrentImage]];
+		}
+		// 4th dimension
+		else if( dcmMode == 2)
+		{
+			Wait *progress = [[Wait alloc] initWithString:NSLocalizedString(@"Creating a DICOM series", nil)];
+			[progress showWindow: self];
+			[[progress progress] setMaxValue: maxMovieIndex];
+			
+			curView.vrView.exportDCM = [[[DICOMExport alloc] init] autorelease];
+			[curView.vrView.exportDCM setSeriesNumber:8730 + [[NSCalendarDate date] minuteOfHour]  + [[NSCalendarDate date] secondOfMinute]];
+			
+			for( int i = 0; i < maxMovieIndex; i++)
+			{
+				[[[self window] windowController] setMovieFrame: i];
+				
+				[producedFiles addObject: [curView.vrView exportDCMCurrentImage]];
+				
+				[progress incrementBy: 1];
+				if( [progress aborted])
+					break;
+				
+				[curView.vrView resetAutorotate: self];
+			}
+			
+			[progress close];
+			[progress release];
+			
+			[NSThread sleepForTimeInterval: 1];
+			[[BrowserController currentBrowser] checkIncomingNow: self];
+		}
+		else if( dcmMode == 2) // A 3D sequence or batch sequence
+		{
+			Wait *progress = [[Wait alloc] initWithString: @"Creating a DICOM series"];
+			[progress showWindow:self];
+			[progress setCancel:YES];
+			
+			if( dcmSeriesMode == 0)
+			{
+				if( maxMovieIndex > 1)
+				{
+					self.dcmNumberOfFrames /= maxMovieIndex;
+					self.dcmNumberOfFrames *= maxMovieIndex;
+				}
+				
+				[[progress progress] setMaxValue: self.dcmNumberOfFrames];
+				
+				curView.vrView.exportDCM = [[[DICOMExport alloc] init] autorelease];
+				[curView.vrView.exportDCM setSeriesNumber:8930 + [[NSCalendarDate date] minuteOfHour]  + [[NSCalendarDate date] secondOfMinute]];
+				
+				for( int i = 0; i < self.dcmNumberOfFrames; i++)
+				{
+					if( maxMovieIndex > 1)
+					{	
+						short movieIndex = i;
+				
+						while( movieIndex >= maxMovieIndex) movieIndex -= maxMovieIndex;
+						if( movieIndex < 0) movieIndex = 0;
+				
+						[self setMovieFrame: movieIndex];
+					}
+					
+					[producedFiles addObject: [curView.vrView exportDCMCurrentImage]];
+					
+					[progress incrementBy: 1];
+					
+					if( [progress aborted])
+						break;
+					
+					switch( dcmRotationDirection)
+					{
+						case 0:
+							[curView.vrView Azimuth: (float) dcmRotation / (float) self.dcmNumberOfFrames];
+						break;
+						
+						case 1:
+							[curView.vrView Vertical: (float) dcmRotation / (float) self.dcmNumberOfFrames];
+						break;
+					}
+				}
+			}
+			else // A batch sequence
+			{
+//				[[progress progress] setMaxValue: value];
+			}
+			
+			[curView.vrView endRenderImageWithBestQuality];
+			
+			[progress close];
+			[progress release];
+		}
+		
+		[NSThread sleepForTimeInterval: 1];
+		[[BrowserController currentBrowser] checkIncomingNow: self];
+		
+		if( ([[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportSendToDICOMNode"] || [[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportMarkThemAsKeyImages"]) && [producedFiles count])
+		{
+			NSMutableArray *imagesForThisStudy = [NSMutableArray array];
+			
+			[[[BrowserController currentBrowser] managedObjectContext] lock];
+			
+			for( NSManagedObject *s in [[[viewer2D currentStudy] valueForKey: @"series"] allObjects])
+				[imagesForThisStudy addObjectsFromArray: [[s valueForKey: @"images"] allObjects]];
+			
+			[[[BrowserController currentBrowser] managedObjectContext] unlock];
+			
+			NSArray *sopArray = [producedFiles valueForKey: @"SOPInstanceUID"];
+			
+			NSMutableArray *objects = [NSMutableArray array];
+			for( NSString *sop in sopArray)
+			{
+				for( DicomImage *im in imagesForThisStudy)
+				{
+					if( [[im sopInstanceUID] isEqualToString: sop])
+						[objects addObject: im];
+				}
+			}
+			
+			if( [objects count] != [producedFiles count])
+				NSLog( @"WARNING !! [objects count] != [producedFiles count]");
+			
+			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportSendToDICOMNode"])
+				[[BrowserController currentBrowser] selectServer: objects];
+			
+			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportMarkThemAsKeyImages"])
+			{
+				for( DicomImage *im in objects)
+					[im setValue: [NSNumber numberWithBool: YES] forKey: @"isKeyImage"];
+			}
+		}
+		
+		[curView.vrView restoreViewSizeAfterMatrix3DExport];
+		
+		[NSThread sleepForTimeInterval: 1];
+		[[BrowserController currentBrowser] checkIncomingNow: self];
+	}
+}
+
+- (void) exportDICOMFile:(id) sender
+{
+	[NSApp beginSheet: dcmWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:(void*) nil];
 }
 
 #pragma mark NSWindow Notifications action
