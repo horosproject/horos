@@ -72,6 +72,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	viewer2D = viewer;
 	
 	[[self window] setWindowController: self];
+	[[[self window] toolbar] setDelegate: self];
 	
 	DCMPix *emptyPix = [self emptyPix: originalPix width: 100 height: 100];
 	[mprView1 setDCMPixList:  [NSMutableArray arrayWithObject: emptyPix] filesList: [NSArray arrayWithObject: [files lastObject]] volumeData: [NSData dataWithBytes: [emptyPix fImage] length: [emptyPix pheight] * [emptyPix pwidth] * sizeof( float)] roiList:nil firstImage:0 type:'i' reset:YES];
@@ -124,6 +125,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	[shadingCheck setAction:@selector(switchShading:)];
 	[shadingCheck setTarget:hiddenVRView];
 
+	
 	
 	return self;
 }
@@ -859,6 +861,11 @@ static float deg2rad = 3.14159265358979/180.0;
 
 
 #pragma mark GUI ObjectController - Cocoa Bindings
+
+- (void)toolbarWillAddItem:(NSNotification *)notification
+{
+	NSLog( @"%@", notification);
+}
 
 - (void) setClippingRangeThickness:(float) f
 {
