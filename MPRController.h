@@ -22,10 +22,13 @@
 
 @interface MPRController : Window3DController
 {
+	// To avoid the Cocoa bindings memory leak bug...
 	IBOutlet NSObjectController *ob;
 	
-	IBOutlet NSSplitView *topSplitView, *bottomSplitView;
-	IBOutlet NSView *containerFor3DView;
+	// To be able to use Cocoa bindings with toolbar...
+	IBOutlet NSView *tbLOD, *tbThickSlab, *tbWLWW, *tbTools, *tbShading;
+	
+	NSToolbar *toolbar;
 	
 	IBOutlet MPRDCMView *mprView1, *mprView2, *mprView3;
 	

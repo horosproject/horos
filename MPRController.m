@@ -56,6 +56,9 @@ static float deg2rad = 3.14159265358979/180.0;
 {
 	self = [super initWithWindowNibName:@"MPR"];
 	
+	[[self window] setWindowController: self];
+	[[[self window] toolbar] setDelegate: self];
+
 	//[shadingsPresetsController setWindowController: self];
 	
 	originalPix = [pix lastObject];
@@ -70,10 +73,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	filesList[0] = files;
 	volumeData[0] = volume;
 	viewer2D = viewer;
-	
-	[[self window] setWindowController: self];
-	[[[self window] toolbar] setDelegate: self];
-	
+		
 	DCMPix *emptyPix = [self emptyPix: originalPix width: 100 height: 100];
 	[mprView1 setDCMPixList:  [NSMutableArray arrayWithObject: emptyPix] filesList: [NSArray arrayWithObject: [files lastObject]] volumeData: [NSData dataWithBytes: [emptyPix fImage] length: [emptyPix pheight] * [emptyPix pwidth] * sizeof( float)] roiList:nil firstImage:0 type:'i' reset:YES];
 	[mprView1 setFlippedData: [[viewer imageView] flippedData]];
@@ -124,8 +124,6 @@ static float deg2rad = 3.14159265358979/180.0;
 	
 	[shadingCheck setAction:@selector(switchShading:)];
 	[shadingCheck setTarget:hiddenVRView];
-
-	
 	
 	return self;
 }
@@ -171,6 +169,7 @@ static float deg2rad = 3.14159265358979/180.0;
 {
 	[mousePosition release];
 	[wlwwMenuItems release];
+	[toolbar release];
 	
 	[super dealloc];
 	
@@ -862,11 +861,6 @@ static float deg2rad = 3.14159265358979/180.0;
 
 #pragma mark GUI ObjectController - Cocoa Bindings
 
-- (void)toolbarWillAddItem:(NSNotification *)notification
-{
-	NSLog( @"%@", notification);
-}
-
 - (void) setClippingRangeThickness:(float) f
 {
 	clippingRangeThickness = f;
@@ -1184,4 +1178,96 @@ static float deg2rad = 3.14159265358979/180.0;
 	[self findShadingPreset: self];
 }
 
+#pragma mark Toolbar
+
+- (void) setupToolbar
+{
+	toolbar = [[NSToolbar alloc] initWithIdentifier: @"3DMPR Toolbar Identifier"];
+    
+    [toolbar setAllowsUserCustomization: YES];
+    [toolbar setAutosavesConfiguration: YES];
+    
+    [toolbar setDelegate: self];
+    
+    [[self window] setToolbar: toolbar];
+	[[self window] setShowsToolbarButton: NO];
+	[[[self window] toolbar] setVisible: YES];
+}
+
+- (void) windowDidLoad
+{
+	[self setupToolbar];
+}
+
+- (IBAction)customizeViewerToolBar:(id)sender
+{
+    [toolbar runCustomizationPalette:sender];
+}
+
+- (NSToolbarItem *) toolbar: (NSToolbar *)toolbar itemForItemIdentifier: (NSString *) itemIdent willBeInsertedIntoToolbar:(BOOL) willBeInserted
+{
+    NSToolbarItem *toolbarItem = [[NSToolbarItem alloc] initWithItemIdentifier: itemIdent];
+    
+	if ([itemIdent isEqualToString: @"tbLOD"])
+	{
+		[toolbarItem setLabel: NSLocalizedString(@"LOD",nil)];
+		[toolbarItem setPaletteLabel:NSLocalizedString( @"LOD",nil)];
+		
+		[toolbarItem setView: tbLOD];
+		[toolbarItem setMinSize: NSMakeSize(NSWidth([tbLOD frame]), NSHeight([tbLOD frame]))];
+    }
+	else if ([itemIdent isEqualToString: @"tbThickSlab"])
+	{
+		[toolbarItem setLabel: NSLocalizedString(@"Thick Slab",nil)];
+		[toolbarItem setPaletteLabel:NSLocalizedString( @"Thick Slab",nil)];
+		
+		[toolbarItem setView: tbThickSlab];
+		[toolbarItem setMinSize: NSMakeSize(NSWidth([tbThickSlab frame]), NSHeight([tbThickSlab frame]))];
+    }
+	else if ([itemIdent isEqualToString: @"tbWLWW"])
+	{
+		[toolbarItem setLabel: NSLocalizedString(@"WL & WW",nil)];
+		[toolbarItem setPaletteLabel:NSLocalizedString( @"WL & WW",nil)];
+		
+		[toolbarItem setView: tbWLWW];
+		[toolbarItem setMinSize: NSMakeSize(NSWidth([tbWLWW frame]), NSHeight([tbWLWW frame]))];
+    }
+	else if ([itemIdent isEqualToString: @"tbTools"])
+	{
+		[toolbarItem setLabel: NSLocalizedString(@"Tools",nil)];
+		[toolbarItem setPaletteLabel:NSLocalizedString( @"Tools",nil)];
+		
+		[toolbarItem setView: tbTools];
+		[toolbarItem setMinSize: NSMakeSize(NSWidth([tbTools frame]), NSHeight([tbTools frame]))];
+    }
+	else if ([itemIdent isEqualToString: @"tbShading"])
+	{
+		[toolbarItem setLabel: NSLocalizedString(@"Shadings",nil)];
+		[toolbarItem setPaletteLabel:NSLocalizedString( @"Shadings",nil)];
+		
+		[toolbarItem setView: tbShading];
+		[toolbarItem setMinSize: NSMakeSize(NSWidth([tbShading frame]), NSHeight([tbShading frame]))];
+    }
+	else
+	{
+		[toolbarItem release];
+		toolbarItem = nil;
+	}
+	
+	return [toolbarItem autorelease];
+}
+
+- (NSArray *) toolbarDefaultItemIdentifiers: (NSToolbar *) toolbar
+{
+		return [NSArray arrayWithObjects: @"tbTools", @"tbWLWW", @"tbLOD", @"tbThickSlab", @"tbShading", nil];
+}
+
+- (NSArray *) toolbarAllowedItemIdentifiers: (NSToolbar *) toolbar
+{
+		return [NSArray arrayWithObjects: NSToolbarCustomizeToolbarItemIdentifier,
+											NSToolbarFlexibleSpaceItemIdentifier,
+											NSToolbarSpaceItemIdentifier,
+											NSToolbarSeparatorItemIdentifier,
+											@"tbTools", @"tbWLWW", @"tbLOD", @"tbThickSlab", @"tbShading", nil];
+}
 @end

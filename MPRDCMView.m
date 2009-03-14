@@ -496,9 +496,9 @@ static float deg2rad = 3.14159265358979/180.0;
 		mouseLocation.x *= curDCM.pixelSpacingX;
 		mouseLocation.y *= curDCM.pixelSpacingY;
 		
-		float f = scaleValue * curDCM.pixelSpacingX;
+		float f = scaleValue * curDCM.pixelSpacingX / [windowController LOD];
 		
-		if( mouseLocation.x > r.x - BS* f && mouseLocation.x < r.x + BS* f && mouseLocation.y > r.y - BS* f && mouseLocation.y < r.y + BS* f)
+		if( mouseLocation.x > r.x - BS * f && mouseLocation.x < r.x + BS* f && mouseLocation.y > r.y - BS* f && mouseLocation.y < r.y + BS* f)
 		{
 			return 2;
 		}
