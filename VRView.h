@@ -199,9 +199,10 @@ typedef char* vtkMyCallbackVR;
 	IBOutlet NSSlider			*dcmframesSlider;
 	IBOutlet NSMatrix			*dcmExportMode, *dcmquality, *dcmrotation, *dcmorientation;
 	IBOutlet NSBox				*dcmBox;
-	IBOutlet NSTextField		*dcmSeriesName;
 	IBOutlet NSMatrix			*dcmExportDepth;
-
+	IBOutlet NSTextField		*dcmSeriesName;
+	NSString					*dcmSeriesString;
+	
 	IBOutlet NSWindow       *export3DVRWindow;
 	IBOutlet NSMatrix		*VRFrames;
 	IBOutlet NSMatrix		*VRquality;
@@ -352,6 +353,7 @@ typedef char* vtkMyCallbackVR;
 @property long renderingMode;
 @property (readonly) NSArray* currentOpacityArray;
 @property (retain) DICOMExport *exportDCM;
+@property (retain) NSString *dcmSeriesString;
 
 + (BOOL) getCroppingBox:(double*) a :(vtkVolume *) volume :(vtkBoxWidget*) croppingBox;
 + (void) setCroppingBox:(double*) a :(vtkVolume *) volume;

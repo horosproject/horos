@@ -38,7 +38,7 @@ static float deg2rad = 3.14159265358979/180.0;
 
 @implementation MPRDCMView
 
-@synthesize pix, camera, angleMPR, vrView;
+@synthesize pix, camera, angleMPR, vrView, viewExport, toIntervalExport, fromIntervalExport;
 
 - (BOOL)is2DTool:(short)tool;
 {
@@ -295,6 +295,18 @@ static float deg2rad = 3.14159265358979/180.0;
 					glLineWidth(2.0);
 					[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: 0];
 				}
+				
+				if( fromIntervalExport > 0)
+				{
+					if( viewExport == 0)
+						[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: -fromIntervalExport];
+				}
+					
+				if( toIntervalExport > 0)
+				{
+					if( viewExport == 0)
+						[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: toIntervalExport];
+				}
 			}
 			glColor4f (VIEW_3_RED, VIEW_3_GREEN, VIEW_3_BLUE, VIEW_3_ALPHA);
 			if( crossLinesB[ 0][ 0] != HUGE_VALF)
@@ -312,6 +324,18 @@ static float deg2rad = 3.14159265358979/180.0;
 				{
 					glLineWidth(2.0);
 					[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: 0];
+				}
+				
+				if( fromIntervalExport > 0)
+				{
+					if( viewExport == 1)
+						[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: -fromIntervalExport];
+				}
+					
+				if( toIntervalExport > 0)
+				{
+					if( viewExport == 1)
+						[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: toIntervalExport];
 				}
 			}
 		break;
@@ -334,6 +358,18 @@ static float deg2rad = 3.14159265358979/180.0;
 					glLineWidth(2.0);
 					[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: 0];
 				}
+				
+				if( fromIntervalExport > 0)
+				{
+					if( viewExport == 0)
+						[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: -fromIntervalExport];
+				}
+					
+				if( toIntervalExport > 0)
+				{
+					if( viewExport == 0)
+						[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: toIntervalExport];
+				}
 			}
 			
 			glColor4f (VIEW_3_RED, VIEW_3_GREEN, VIEW_3_BLUE, VIEW_3_ALPHA);
@@ -352,6 +388,18 @@ static float deg2rad = 3.14159265358979/180.0;
 				{
 					glLineWidth(2.0);
 					[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: 0];
+				}
+				
+				if( fromIntervalExport > 0)
+				{
+					if( viewExport == 1)
+						[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: -fromIntervalExport];
+				}
+					
+				if( toIntervalExport > 0)
+				{
+					if( viewExport == 1)
+						[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: toIntervalExport];
 				}
 			}
 		break;
@@ -374,6 +422,18 @@ static float deg2rad = 3.14159265358979/180.0;
 					glLineWidth(2.0);
 					[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: 0];
 				}
+				
+				if( fromIntervalExport > 0)
+				{
+					if( viewExport == 0)
+						[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: -fromIntervalExport];
+				}
+					
+				if( toIntervalExport > 0)
+				{
+					if( viewExport == 0)
+						[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: toIntervalExport];
+				}
 			}
 			
 			glColor4f (VIEW_2_RED, VIEW_2_GREEN, VIEW_2_BLUE, VIEW_2_ALPHA);
@@ -392,6 +452,18 @@ static float deg2rad = 3.14159265358979/180.0;
 				{
 					glLineWidth(2.0);
 					[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: 0];
+				}
+				
+				if( fromIntervalExport > 0)
+				{
+					if( viewExport == 1)
+						[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: -fromIntervalExport];
+				}
+					
+				if( toIntervalExport > 0)
+				{
+					if( viewExport == 1)
+						[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: toIntervalExport];
 				}
 			}
 		break;
@@ -428,6 +500,19 @@ static float deg2rad = 3.14159265358979/180.0;
 		sc[1] -= curDCM.pheight * 0.5f;
 		glVertex2f( scaleValue*sc[ 0], scaleValue*sc[ 1]);
 		glEnd();
+	}
+	
+	if( [[self window] firstResponder] == self)
+	{
+		glColor4f (1.0f, 0.0f, 0.0f, 0.8f);
+		glLineWidth(8.0);
+		glBegin(GL_LINE_LOOP);
+			glVertex2f(  -widthhalf, -heighthalf);
+			glVertex2f(  -widthhalf, heighthalf);
+			glVertex2f(  widthhalf, heighthalf);
+			glVertex2f(  widthhalf, -heighthalf);
+		glEnd();
+		glLineWidth(1.0);
 	}
 	
 	glDisable(GL_LINE_SMOOTH);

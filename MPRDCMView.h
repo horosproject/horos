@@ -30,6 +30,9 @@
 	float crossLinesA[2][3];
 	float crossLinesB[2][3];
 	
+	int viewExport;
+	float fromIntervalExport, toIntervalExport;
+	
 	BOOL rotateLines;
 	BOOL moveCenter;
 	
@@ -40,7 +43,8 @@
 
 @property (readonly) DCMPix *pix;
 @property (readonly) Camera *camera;
-@property float angleMPR;
+@property float angleMPR, fromIntervalExport, toIntervalExport;
+@property int viewExport;
 @property (readonly) VRView *vrView;
 
 - (BOOL)is2DTool:(short)tool;

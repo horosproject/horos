@@ -26,7 +26,7 @@ static float deg2rad = 3.14159265358979/180.0;
 
 @implementation MPRController
 
-@synthesize clippingRangeThickness, clippingRangeMode, mousePosition, mouseViewID, originalPix, wlwwMenuItems, LOD, dcmFrom, dcmTo, dcmMode, dcmRotationDirection, dcmSeriesMode, dcmSize, dcmRotation, dcmNumberOfFrames, dcmQuality, dcmInterval, dcmSeriesName;
+@synthesize clippingRangeThickness, clippingRangeMode, mousePosition, mouseViewID, originalPix, wlwwMenuItems, LOD, dcmFrom, dcmTo, dcmMode, dcmRotationDirection, dcmSeriesMode, dcmRotation, dcmNumberOfFrames, dcmQuality, dcmInterval, dcmSeriesName;
 
 + (double) angleBetweenVector:(float*) a andPlane:(float*) orientation
 {
@@ -942,24 +942,24 @@ static float deg2rad = 3.14159265358979/180.0;
 {
 	[dcmWindow orderOut:sender];
 	[NSApp endSheet:dcmWindow returnCode:[sender tag]];
-	
-	MPRDCMView *curView = nil;
-	if( [[self window] firstResponder] == mprView1) curView = mprView1;
-	if( [[self window] firstResponder] == mprView2) curView = mprView2;
-	if( [[self window] firstResponder] == mprView3) curView = mprView3;
-	if( curView == nil) curView = mprView3;
-	
+		
 	if( [sender tag])
 	{
 		NSMutableArray *producedFiles = [NSMutableArray array];
 		
-		[curView restoreCamera];
-		[curView.vrView setViewSizeToMatrix3DExport];
+		[curExportView restoreCamera];
+		[curExportView.vrView setLOD: 1.0];
+		[curExportView.vrView setViewSizeToMatrix3DExport];
 		
+		if( curExportView.vrView.exportDCM == nil)
+			curExportView.vrView.exportDCM = [[[DICOMExport alloc] init] autorelease];
+
+		curExportView.vrView.dcmSeriesString = dcmSeriesName;
+
 		// CURRENT image only
 		if( dcmMode == 0)
 		{
-			[producedFiles addObject: [curView.vrView exportDCMCurrentImage]];
+			[producedFiles addObject: [curExportView.vrView exportDCMCurrentImage]];
 		}
 		// 4th dimension
 		else if( dcmMode == 2)
@@ -968,20 +968,20 @@ static float deg2rad = 3.14159265358979/180.0;
 			[progress showWindow: self];
 			[[progress progress] setMaxValue: maxMovieIndex];
 			
-			curView.vrView.exportDCM = [[[DICOMExport alloc] init] autorelease];
-			[curView.vrView.exportDCM setSeriesNumber:8730 + [[NSCalendarDate date] minuteOfHour]  + [[NSCalendarDate date] secondOfMinute]];
+			curExportView.vrView.exportDCM = [[[DICOMExport alloc] init] autorelease];
+			[curExportView.vrView.exportDCM setSeriesNumber:8730 + [[NSCalendarDate date] minuteOfHour]  + [[NSCalendarDate date] secondOfMinute]];
 			
 			for( int i = 0; i < maxMovieIndex; i++)
 			{
 				[[[self window] windowController] setMovieFrame: i];
 				
-				[producedFiles addObject: [curView.vrView exportDCMCurrentImage]];
+				[producedFiles addObject: [curExportView.vrView exportDCMCurrentImage]];
 				
 				[progress incrementBy: 1];
 				if( [progress aborted])
 					break;
 				
-				[curView.vrView resetAutorotate: self];
+				[curExportView.vrView resetAutorotate: self];
 			}
 			
 			[progress close];
@@ -1006,8 +1006,8 @@ static float deg2rad = 3.14159265358979/180.0;
 				
 				[[progress progress] setMaxValue: self.dcmNumberOfFrames];
 				
-				curView.vrView.exportDCM = [[[DICOMExport alloc] init] autorelease];
-				[curView.vrView.exportDCM setSeriesNumber:8930 + [[NSCalendarDate date] minuteOfHour]  + [[NSCalendarDate date] secondOfMinute]];
+				curExportView.vrView.exportDCM = [[[DICOMExport alloc] init] autorelease];
+				[curExportView.vrView.exportDCM setSeriesNumber:8930 + [[NSCalendarDate date] minuteOfHour]  + [[NSCalendarDate date] secondOfMinute]];
 				
 				for( int i = 0; i < self.dcmNumberOfFrames; i++)
 				{
@@ -1021,7 +1021,7 @@ static float deg2rad = 3.14159265358979/180.0;
 						[self setMovieFrame: movieIndex];
 					}
 					
-					[producedFiles addObject: [curView.vrView exportDCMCurrentImage]];
+					[producedFiles addObject: [curExportView.vrView exportDCMCurrentImage]];
 					
 					[progress incrementBy: 1];
 					
@@ -1031,11 +1031,11 @@ static float deg2rad = 3.14159265358979/180.0;
 					switch( dcmRotationDirection)
 					{
 						case 0:
-							[curView.vrView Azimuth: (float) dcmRotation / (float) self.dcmNumberOfFrames];
+							[curExportView.vrView Azimuth: (float) dcmRotation / (float) self.dcmNumberOfFrames];
 						break;
 						
 						case 1:
-							[curView.vrView Vertical: (float) dcmRotation / (float) self.dcmNumberOfFrames];
+							[curExportView.vrView Vertical: (float) dcmRotation / (float) self.dcmNumberOfFrames];
 						break;
 					}
 				}
@@ -1045,7 +1045,7 @@ static float deg2rad = 3.14159265358979/180.0;
 //				[[progress progress] setMaxValue: value];
 			}
 			
-			[curView.vrView endRenderImageWithBestQuality];
+			[curExportView.vrView endRenderImageWithBestQuality];
 			
 			[progress close];
 			[progress release];
@@ -1090,16 +1090,99 @@ static float deg2rad = 3.14159265358979/180.0;
 			}
 		}
 		
-		[curView.vrView restoreViewSizeAfterMatrix3DExport];
+		[curExportView.vrView restoreViewSizeAfterMatrix3DExport];
+		
+		[curExportView.vrView setLOD: LOD];
 		
 		[NSThread sleepForTimeInterval: 1];
 		[[BrowserController currentBrowser] checkIncomingNow: self];
 	}
+	
+	mprView1.fromIntervalExport = 0;
+	mprView1.toIntervalExport = 0;
+	mprView2.fromIntervalExport = 0;
+	mprView2.toIntervalExport = 0;
+	mprView3.fromIntervalExport = 0;
+	mprView3.toIntervalExport = 0;
 }
 
 - (void) exportDICOMFile:(id) sender
 {
+	curExportView = nil;
+	
+	if( [[self window] firstResponder] == mprView1)
+		curExportView = mprView1;
+	if( [[self window] firstResponder] == mprView2)
+		curExportView = mprView2;
+	if( [[self window] firstResponder] == mprView3)
+		curExportView = mprView3;
+	
+	if( curExportView == nil) curExportView = mprView3;
+	
 	[NSApp beginSheet: dcmWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:(void*) nil];
+}
+
+- (void) displayFromToSlices
+{
+	if( curExportView == mprView3)
+	{
+		mprView1.toIntervalExport = dcmTo * dcmInterval;
+		mprView1.fromIntervalExport = dcmFrom * dcmInterval;
+		mprView1.viewExport = 1;
+		
+		mprView2.toIntervalExport = dcmTo * dcmInterval;
+		mprView2.fromIntervalExport = dcmFrom * dcmInterval;
+		mprView2.viewExport = 1;
+		
+		[mprView1 setNeedsDisplay: YES];
+		[mprView2 setNeedsDisplay: YES];
+	}
+	
+	if( curExportView == mprView2)
+	{
+		mprView1.toIntervalExport = dcmTo * dcmInterval;
+		mprView1.fromIntervalExport = dcmFrom * dcmInterval;
+		mprView1.viewExport = 0;
+		
+		mprView3.toIntervalExport = dcmTo * dcmInterval;
+		mprView3.fromIntervalExport = dcmFrom * dcmInterval;
+		mprView3.viewExport = 1;
+		
+		[mprView1 setNeedsDisplay: YES];
+		[mprView3 setNeedsDisplay: YES];
+	}
+	
+	if( curExportView == mprView1)
+	{
+		mprView2.toIntervalExport = dcmTo * dcmInterval;
+		mprView2.fromIntervalExport = dcmFrom * dcmInterval;
+		mprView2.viewExport = 0;
+		
+		mprView3.toIntervalExport = dcmTo * dcmInterval;
+		mprView3.fromIntervalExport = dcmFrom * dcmInterval;
+		mprView3.viewExport = 0;
+		
+		[mprView2 setNeedsDisplay: YES];
+		[mprView3 setNeedsDisplay: YES];
+	}
+}
+
+- (void) setDcmInterval:(float) f
+{
+	dcmInterval = f;
+	[self displayFromToSlices];
+}
+
+- (void) setDcmTo:(int) f
+{
+	dcmTo = f;
+	[self displayFromToSlices];
+}
+
+- (void) setDcmFrom:(int) f
+{
+	dcmFrom = f;
+	[self displayFromToSlices];
 }
 
 #pragma mark NSWindow Notifications action

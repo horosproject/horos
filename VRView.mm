@@ -289,7 +289,7 @@ public:
 
 @implementation VRView
 
-@synthesize clipRangeActivated, projectionMode, clippingRangeThickness, keep3DRotateCentered, dontResetImage, renderingMode, currentOpacityArray, exportDCM;
+@synthesize clipRangeActivated, projectionMode, clippingRangeThickness, keep3DRotateCentered, dontResetImage, renderingMode, currentOpacityArray, exportDCM, dcmSeriesString;
 
 - (BOOL) checkPointInVolume: (double*) position
 {
@@ -1200,7 +1200,7 @@ public:
 		else [exportDCM setModalityAsSource: YES];
 		
 		[exportDCM setSourceFile: [firstObject sourceFile]];
-		[exportDCM setSeriesDescription: [dcmSeriesName stringValue]];
+		[exportDCM setSeriesDescription: dcmSeriesString];
 		
 		[exportDCM setPixelData: dataPtr samplePerPixel:spp bitsPerPixel:bpp width: width height: height];
 		
@@ -1265,6 +1265,8 @@ public:
 	NSMutableArray *producedFiles = [NSMutableArray array];
 	
 	aRenderer->SetDraw( 1);
+	
+	self.dcmSeriesString = [dcmSeriesName string];
 	
 	if( [sender tag])
 	{
@@ -2168,6 +2170,7 @@ public:
 	
 	[[IMService notificationCenter] removeObserver: self];
 	
+	[dcmSeriesString release];
 	[deleteRegion lock];
 	[deleteRegion unlock];
 	[deleteRegion release];
@@ -4962,7 +4965,14 @@ public:
 	{
 		if( wait == NO) noWaitDialog = YES;
 		
-		[self display];
+		if( dontRenderVolumeRenderingOsiriX)
+		{
+			[self render];
+		}
+		else
+		{
+			[self display];
+		}
 		
 		if( wait == NO) noWaitDialog = NO;
 	}
