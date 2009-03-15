@@ -8,7 +8,7 @@
 		<string key="IBDocument.HIToolboxVersion">353.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="426"/>
+			<integer value="414"/>
 			<integer value="659"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
@@ -104,6 +104,8 @@
 					<string>dcmRotation</string>
 					<string>dcmBatchNumberOfFrames</string>
 					<string>dcmSameIntervalAndThickness</string>
+					<string>clippingRangeThicknessInMm</string>
+					<string>dcMode</string>
 				</object>
 				<bool key="NSEditable">YES</bool>
 				<object class="_NSManagedProxy" key="_NSManagedProxy"/>
@@ -111,7 +113,7 @@
 			<object class="NSWindowTemplate" id="547747083">
 				<int key="NSWindowStyleMask">1</int>
 				<int key="NSWindowBacking">2</int>
-				<string key="NSWindowRect">{{42, 333}, {590, 507}}</string>
+				<string key="NSWindowRect">{{42, 380}, {590, 460}}</string>
 				<int key="NSWTFlags">1618477056</int>
 				<string key="NSWindowTitle">Window</string>
 				<string key="NSWindowClass">NSWindow</string>
@@ -127,7 +129,7 @@
 						<object class="NSButton" id="512183339">
 							<reference key="NSNextResponder" ref="679427258"/>
 							<int key="NSvFlags">257</int>
-							<string key="NSFrame">{{479, 18}, {97, 32}}</string>
+							<string key="NSFrame">{{479, 12}, {97, 32}}</string>
 							<reference key="NSSuperview" ref="679427258"/>
 							<int key="NSTag">1</int>
 							<bool key="NSEnabled">YES</bool>
@@ -154,7 +156,7 @@
 						<object class="NSButton" id="218133927">
 							<reference key="NSNextResponder" ref="679427258"/>
 							<int key="NSvFlags">257</int>
-							<string key="NSFrame">{{382, 18}, {97, 32}}</string>
+							<string key="NSFrame">{{382, 12}, {97, 32}}</string>
 							<reference key="NSSuperview" ref="679427258"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="674309083">
@@ -175,7 +177,7 @@
 						<object class="NSMatrix" id="607187015">
 							<reference key="NSNextResponder" ref="679427258"/>
 							<int key="NSvFlags">256</int>
-							<string key="NSFrame">{{98, 356}, {461, 58}}</string>
+							<string key="NSFrame">{{98, 359}, {461, 58}}</string>
 							<reference key="NSSuperview" ref="679427258"/>
 							<bool key="NSEnabled">YES</bool>
 							<int key="NSNumRows">3</int>
@@ -187,6 +189,7 @@
 									<int key="NSCellFlags2">0</int>
 									<string key="NSContents">Current image only</string>
 									<reference key="NSSupport" ref="761768664"/>
+									<int key="NSTag">1</int>
 									<reference key="NSControlView" ref="607187015"/>
 									<int key="NSButtonFlags">1211912703</int>
 									<int key="NSButtonFlags2">0</int>
@@ -218,7 +221,6 @@
 									<int key="NSCellFlags2">0</int>
 									<string key="NSContents">A series, with following settings:</string>
 									<reference key="NSSupport" ref="761768664"/>
-									<int key="NSTag">1</int>
 									<reference key="NSControlView" ref="607187015"/>
 									<int key="NSButtonFlags">1211912703</int>
 									<int key="NSButtonFlags2">0</int>
@@ -259,30 +261,6 @@
 								<bytes key="NSWhite">MQA</bytes>
 							</object>
 							<reference key="NSFont" ref="761768664"/>
-						</object>
-						<object class="NSTextField" id="614925694">
-							<reference key="NSNextResponder" ref="679427258"/>
-							<int key="NSvFlags">256</int>
-							<string key="NSFrame">{{8, 484}, {321, 17}}</string>
-							<reference key="NSSuperview" ref="679427258"/>
-							<bool key="NSEnabled">YES</bool>
-							<object class="NSTextFieldCell" key="NSCell" id="809184453">
-								<int key="NSCellFlags">67239424</int>
-								<int key="NSCellFlags2">272629760</int>
-								<string key="NSContents">Export to DICOM files:</string>
-								<reference key="NSSupport" ref="761768664"/>
-								<reference key="NSControlView" ref="614925694"/>
-								<reference key="NSBackgroundColor" ref="263506557"/>
-								<object class="NSColor" key="NSTextColor" id="358096559">
-									<int key="NSColorSpace">6</int>
-									<string key="NSCatalogName">System</string>
-									<string key="NSColorName">controlTextColor</string>
-									<object class="NSColor" key="NSColor" id="769245849">
-										<int key="NSColorSpace">3</int>
-										<bytes key="NSWhite">MAA</bytes>
-									</object>
-								</object>
-							</object>
 						</object>
 						<object class="NSBox" id="930645413">
 							<reference key="NSNextResponder" ref="679427258"/>
@@ -544,7 +522,15 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 												<reference key="NSSupport" ref="761768664"/>
 												<reference key="NSControlView" ref="181213952"/>
 												<reference key="NSBackgroundColor" ref="263506557"/>
-												<reference key="NSTextColor" ref="358096559"/>
+												<object class="NSColor" key="NSTextColor" id="358096559">
+													<int key="NSColorSpace">6</int>
+													<string key="NSCatalogName">System</string>
+													<string key="NSColorName">controlTextColor</string>
+													<object class="NSColor" key="NSColor" id="769245849">
+														<int key="NSColorSpace">3</int>
+														<bytes key="NSWhite">MAA</bytes>
+													</object>
+												</object>
 											</object>
 										</object>
 										<object class="NSTextField" id="876517755">
@@ -955,7 +941,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 									<reference key="NSSuperview" ref="930645413"/>
 								</object>
 							</object>
-							<string key="NSFrame">{{36, 62}, {537, 285}}</string>
+							<string key="NSFrame">{{36, 65}, {537, 285}}</string>
 							<reference key="NSSuperview" ref="679427258"/>
 							<string key="NSOffsets">{0, 0}</string>
 							<object class="NSTextFieldCell" key="NSTitleCell">
@@ -987,7 +973,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<object class="NSTextField" id="100629660">
 							<reference key="NSNextResponder" ref="679427258"/>
 							<int key="NSvFlags">256</int>
-							<string key="NSFrame">{{98, 454}, {228, 22}}</string>
+							<string key="NSFrame">{{98, 425}, {228, 22}}</string>
 							<reference key="NSSuperview" ref="679427258"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="567104138">
@@ -1009,7 +995,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<object class="NSTextField" id="652495571">
 							<reference key="NSNextResponder" ref="679427258"/>
 							<int key="NSvFlags">256</int>
-							<string key="NSFrame">{{-21, 457}, {114, 17}}</string>
+							<string key="NSFrame">{{-21, 428}, {114, 17}}</string>
 							<reference key="NSSuperview" ref="679427258"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="661124999">
@@ -1025,7 +1011,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<object class="NSTextField" id="715552356">
 							<reference key="NSNextResponder" ref="679427258"/>
 							<int key="NSvFlags">256</int>
-							<string key="NSFrame">{{-21, 397}, {114, 17}}</string>
+							<string key="NSFrame">{{-21, 400}, {114, 17}}</string>
 							<reference key="NSSuperview" ref="679427258"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="697806874">
@@ -1041,7 +1027,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<object class="NSTextField" id="626147439">
 							<reference key="NSNextResponder" ref="679427258"/>
 							<int key="NSvFlags">256</int>
-							<string key="NSFrame">{{-21, 426}, {114, 17}}</string>
+							<string key="NSFrame">{{275, 428}, {114, 17}}</string>
 							<reference key="NSSuperview" ref="679427258"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="320401837">
@@ -1057,7 +1043,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<object class="NSPopUpButton" id="707719283">
 							<reference key="NSNextResponder" ref="679427258"/>
 							<int key="NSvFlags">256</int>
-							<string key="NSFrame">{{95, 420}, {130, 26}}</string>
+							<string key="NSFrame">{{391, 422}, {130, 26}}</string>
 							<reference key="NSSuperview" ref="679427258"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSPopUpButtonCell" key="NSCell" id="938139748">
@@ -1135,7 +1121,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<object class="NSButton" id="922322297">
 							<reference key="NSNextResponder" ref="679427258"/>
 							<int key="NSvFlags">256</int>
-							<string key="NSFrame">{{9, 18}, {316, 18}}</string>
+							<string key="NSFrame">{{12, 14}, {316, 18}}</string>
 							<reference key="NSSuperview" ref="679427258"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="795024380">
@@ -1157,7 +1143,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<object class="NSButton" id="29792427">
 							<reference key="NSNextResponder" ref="679427258"/>
 							<int key="NSvFlags">256</int>
-							<string key="NSFrame">{{9, 42}, {316, 18}}</string>
+							<string key="NSFrame">{{12, 38}, {316, 18}}</string>
 							<reference key="NSSuperview" ref="679427258"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="1072610478">
@@ -1177,7 +1163,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							</object>
 						</object>
 					</object>
-					<string key="NSFrameSize">{590, 507}</string>
+					<string key="NSFrameSize">{590, 460}</string>
 					<reference key="NSSuperview"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1440, 878}}</string>
@@ -1910,6 +1896,7 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 					<string>specular</string>
 					<string>name</string>
 					<string>shadingEditable</string>
+					<string>dcmSeriesMode</string>
 				</object>
 				<bool key="NSEditable">YES</bool>
 				<bool key="NSAutomaticallyPreparesContent">YES</bool>
@@ -3809,22 +3796,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<int key="connectionID">746</int>
 				</object>
 				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: selection.clippingRangeThickness</string>
-						<reference key="source" ref="244926888"/>
-						<reference key="destination" ref="643764789"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="244926888"/>
-							<reference key="NSDestination" ref="643764789"/>
-							<string key="NSLabel">value: selection.clippingRangeThickness</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">selection.clippingRangeThickness</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">747</int>
-				</object>
-				<object class="IBConnectionRecord">
 					<object class="IBActionConnection" key="connection">
 						<string key="label">setTool:</string>
 						<reference key="source" ref="1001"/>
@@ -3909,7 +3880,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<string key="label">enabled: selection.dcmSameIntervalAndThickness</string>
 						<reference key="source" ref="680106481"/>
 						<reference key="destination" ref="643764789"/>
-						<object class="NSNibBindingConnector" key="connector">
+						<object class="NSNibBindingConnector" key="connector" id="935158939">
 							<reference key="NSSource" ref="680106481"/>
 							<reference key="NSDestination" ref="643764789"/>
 							<string key="NSLabel">enabled: selection.dcmSameIntervalAndThickness</string>
@@ -3923,6 +3894,466 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						</object>
 					</object>
 					<int key="connectionID">760</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: selection.clippingRangeThicknessInMm</string>
+						<reference key="source" ref="244926888"/>
+						<reference key="destination" ref="643764789"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="244926888"/>
+							<reference key="NSDestination" ref="643764789"/>
+							<string key="NSLabel">value: selection.clippingRangeThicknessInMm</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">selection.clippingRangeThicknessInMm</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">761</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">dcmSeriesView</string>
+						<reference key="source" ref="1001"/>
+						<reference key="destination" ref="930645413"/>
+					</object>
+					<int key="connectionID">762</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: selection.dcmSeriesMode</string>
+						<reference key="source" ref="905058809"/>
+						<reference key="destination" ref="643764789"/>
+						<object class="NSNibBindingConnector" key="connector" id="1021">
+							<reference key="NSSource" ref="905058809"/>
+							<reference key="NSDestination" ref="643764789"/>
+							<string key="NSLabel">enabled: selection.dcmSeriesMode</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">selection.dcmSeriesMode</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">763</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: selection.dcmSeriesMode</string>
+						<reference key="source" ref="23500789"/>
+						<reference key="destination" ref="643764789"/>
+						<object class="NSNibBindingConnector" key="connector" id="1028">
+							<reference key="NSSource" ref="23500789"/>
+							<reference key="NSDestination" ref="643764789"/>
+							<string key="NSLabel">enabled: selection.dcmSeriesMode</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">selection.dcmSeriesMode</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">764</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: selection.dcmSeriesMode</string>
+						<reference key="source" ref="492684644"/>
+						<reference key="destination" ref="643764789"/>
+						<object class="NSNibBindingConnector" key="connector" id="1042">
+							<reference key="NSSource" ref="492684644"/>
+							<reference key="NSDestination" ref="643764789"/>
+							<string key="NSLabel">enabled: selection.dcmSeriesMode</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">selection.dcmSeriesMode</string>
+							<object class="NSDictionary" key="NSOptions">
+								<string key="NS.key.0">NSValueTransformerName</string>
+								<string key="NS.object.0">NSNegateBoolean</string>
+							</object>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">767</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: selection.dcmSeriesMode</string>
+						<reference key="source" ref="635168880"/>
+						<reference key="destination" ref="643764789"/>
+						<object class="NSNibBindingConnector" key="connector" id="1052">
+							<reference key="NSSource" ref="635168880"/>
+							<reference key="NSDestination" ref="643764789"/>
+							<string key="NSLabel">enabled: selection.dcmSeriesMode</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">selection.dcmSeriesMode</string>
+							<object class="NSDictionary" key="NSOptions">
+								<string key="NS.key.0">NSValueTransformerName</string>
+								<string key="NS.object.0">NSNegateBoolean</string>
+							</object>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">769</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: selection.dcmSeriesMode</string>
+						<reference key="source" ref="480847450"/>
+						<reference key="destination" ref="643764789"/>
+						<object class="NSNibBindingConnector" key="connector" id="1062">
+							<reference key="NSSource" ref="480847450"/>
+							<reference key="NSDestination" ref="643764789"/>
+							<string key="NSLabel">enabled: selection.dcmSeriesMode</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">selection.dcmSeriesMode</string>
+							<object class="NSDictionary" key="NSOptions">
+								<string key="NS.key.0">NSValueTransformerName</string>
+								<string key="NS.object.0">NSNegateBoolean</string>
+							</object>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">772</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled2: selection.dcmSeriesMode</string>
+						<reference key="source" ref="680106481"/>
+						<reference key="destination" ref="643764789"/>
+						<object class="NSNibBindingConnector" key="connector" id="1072">
+							<reference key="NSSource" ref="680106481"/>
+							<reference key="NSDestination" ref="643764789"/>
+							<string key="NSLabel">enabled2: selection.dcmSeriesMode</string>
+							<string key="NSBinding">enabled2</string>
+							<string key="NSKeyPath">selection.dcmSeriesMode</string>
+							<object class="NSDictionary" key="NSOptions">
+								<bool key="EncodedWithXMLCoder">YES</bool>
+								<object class="NSMutableArray" key="dict.sortedKeys">
+									<bool key="EncodedWithXMLCoder">YES</bool>
+									<string>NSMultipleValuesPlaceholder</string>
+									<string>NSNoSelectionPlaceholder</string>
+									<string>NSNotApplicablePlaceholder</string>
+									<string>NSNullPlaceholder</string>
+									<string>NSValueTransformerName</string>
+								</object>
+								<object class="NSMutableArray" key="dict.values">
+									<bool key="EncodedWithXMLCoder">YES</bool>
+									<integer value="-1" id="7"/>
+									<reference ref="7"/>
+									<reference ref="7"/>
+									<reference ref="7"/>
+									<string>NSNegateBoolean</string>
+								</object>
+							</object>
+							<reference key="NSPreviousConnector" ref="935158939"/>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">773</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: selection.dcmSeriesMode</string>
+						<reference key="source" ref="218724017"/>
+						<reference key="destination" ref="643764789"/>
+						<object class="NSNibBindingConnector" key="connector" id="250055344">
+							<reference key="NSSource" ref="218724017"/>
+							<reference key="NSDestination" ref="643764789"/>
+							<string key="NSLabel">enabled: selection.dcmSeriesMode</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">selection.dcmSeriesMode</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">774</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: selection.dcmMode</string>
+						<reference key="source" ref="1042405935"/>
+						<reference key="destination" ref="643764789"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="1042405935"/>
+							<reference key="NSDestination" ref="643764789"/>
+							<string key="NSLabel">enabled: selection.dcmMode</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">selection.dcmMode</string>
+							<object class="NSDictionary" key="NSOptions">
+								<string key="NS.key.0">NSValueTransformerName</string>
+								<string key="NS.object.0">NSNegateBoolean</string>
+							</object>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">777</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: selection.dcmMode</string>
+						<reference key="source" ref="375455955"/>
+						<reference key="destination" ref="643764789"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="375455955"/>
+							<reference key="NSDestination" ref="643764789"/>
+							<string key="NSLabel">enabled: selection.dcmMode</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">selection.dcmMode</string>
+							<object class="NSDictionary" key="NSOptions">
+								<string key="NS.key.0">NSValueTransformerName</string>
+								<string key="NS.object.0">NSNegateBoolean</string>
+							</object>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">779</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled2: selection.dcmMode</string>
+						<reference key="source" ref="905058809"/>
+						<reference key="destination" ref="643764789"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="905058809"/>
+							<reference key="NSDestination" ref="643764789"/>
+							<string key="NSLabel">enabled2: selection.dcmMode</string>
+							<string key="NSBinding">enabled2</string>
+							<string key="NSKeyPath">selection.dcmMode</string>
+							<object class="NSDictionary" key="NSOptions">
+								<bool key="EncodedWithXMLCoder">YES</bool>
+								<object class="NSMutableArray" key="dict.sortedKeys">
+									<bool key="EncodedWithXMLCoder">YES</bool>
+									<string>NSMultipleValuesPlaceholder</string>
+									<string>NSNoSelectionPlaceholder</string>
+									<string>NSNotApplicablePlaceholder</string>
+									<string>NSNullPlaceholder</string>
+									<string>NSValueTransformerName</string>
+								</object>
+								<object class="NSMutableArray" key="dict.values">
+									<bool key="EncodedWithXMLCoder">YES</bool>
+									<reference ref="7"/>
+									<reference ref="7"/>
+									<reference ref="7"/>
+									<reference ref="7"/>
+									<string>NSNegateBoolean</string>
+								</object>
+							</object>
+							<reference key="NSPreviousConnector" ref="1021"/>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">781</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled2: selection.dcmMode</string>
+						<reference key="source" ref="23500789"/>
+						<reference key="destination" ref="643764789"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="23500789"/>
+							<reference key="NSDestination" ref="643764789"/>
+							<string key="NSLabel">enabled2: selection.dcmMode</string>
+							<string key="NSBinding">enabled2</string>
+							<string key="NSKeyPath">selection.dcmMode</string>
+							<object class="NSDictionary" key="NSOptions">
+								<bool key="EncodedWithXMLCoder">YES</bool>
+								<object class="NSMutableArray" key="dict.sortedKeys">
+									<bool key="EncodedWithXMLCoder">YES</bool>
+									<string>NSMultipleValuesPlaceholder</string>
+									<string>NSNoSelectionPlaceholder</string>
+									<string>NSNotApplicablePlaceholder</string>
+									<string>NSNullPlaceholder</string>
+									<string>NSValueTransformerName</string>
+								</object>
+								<object class="NSMutableArray" key="dict.values">
+									<bool key="EncodedWithXMLCoder">YES</bool>
+									<reference ref="7"/>
+									<reference ref="7"/>
+									<reference ref="7"/>
+									<reference ref="7"/>
+									<string>NSNegateBoolean</string>
+								</object>
+							</object>
+							<reference key="NSPreviousConnector" ref="1028"/>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">783</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled2: selection.dcmMode</string>
+						<reference key="source" ref="218724017"/>
+						<reference key="destination" ref="643764789"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="218724017"/>
+							<reference key="NSDestination" ref="643764789"/>
+							<string key="NSLabel">enabled2: selection.dcmMode</string>
+							<string key="NSBinding">enabled2</string>
+							<string key="NSKeyPath">selection.dcmMode</string>
+							<object class="NSDictionary" key="NSOptions">
+								<bool key="EncodedWithXMLCoder">YES</bool>
+								<object class="NSMutableArray" key="dict.sortedKeys">
+									<bool key="EncodedWithXMLCoder">YES</bool>
+									<string>NSMultipleValuesPlaceholder</string>
+									<string>NSNoSelectionPlaceholder</string>
+									<string>NSNotApplicablePlaceholder</string>
+									<string>NSNullPlaceholder</string>
+									<string>NSValueTransformerName</string>
+								</object>
+								<object class="NSMutableArray" key="dict.values">
+									<bool key="EncodedWithXMLCoder">YES</bool>
+									<reference ref="7"/>
+									<reference ref="7"/>
+									<reference ref="7"/>
+									<reference ref="7"/>
+									<string>NSNegateBoolean</string>
+								</object>
+							</object>
+							<reference key="NSPreviousConnector" ref="250055344"/>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">785</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled2: selection.dcmMode</string>
+						<reference key="source" ref="492684644"/>
+						<reference key="destination" ref="643764789"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="492684644"/>
+							<reference key="NSDestination" ref="643764789"/>
+							<string key="NSLabel">enabled2: selection.dcmMode</string>
+							<string key="NSBinding">enabled2</string>
+							<string key="NSKeyPath">selection.dcmMode</string>
+							<object class="NSDictionary" key="NSOptions">
+								<bool key="EncodedWithXMLCoder">YES</bool>
+								<object class="NSMutableArray" key="dict.sortedKeys">
+									<bool key="EncodedWithXMLCoder">YES</bool>
+									<string>NSMultipleValuesPlaceholder</string>
+									<string>NSNoSelectionPlaceholder</string>
+									<string>NSNotApplicablePlaceholder</string>
+									<string>NSNullPlaceholder</string>
+									<string>NSValueTransformerName</string>
+								</object>
+								<object class="NSMutableArray" key="dict.values">
+									<bool key="EncodedWithXMLCoder">YES</bool>
+									<reference ref="7"/>
+									<reference ref="7"/>
+									<reference ref="7"/>
+									<reference ref="7"/>
+									<string>NSNegateBoolean</string>
+								</object>
+							</object>
+							<reference key="NSPreviousConnector" ref="1042"/>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">787</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled2: selection.dcmMode</string>
+						<reference key="source" ref="635168880"/>
+						<reference key="destination" ref="643764789"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="635168880"/>
+							<reference key="NSDestination" ref="643764789"/>
+							<string key="NSLabel">enabled2: selection.dcmMode</string>
+							<string key="NSBinding">enabled2</string>
+							<string key="NSKeyPath">selection.dcmMode</string>
+							<object class="NSDictionary" key="NSOptions">
+								<bool key="EncodedWithXMLCoder">YES</bool>
+								<object class="NSMutableArray" key="dict.sortedKeys">
+									<bool key="EncodedWithXMLCoder">YES</bool>
+									<string>NSMultipleValuesPlaceholder</string>
+									<string>NSNoSelectionPlaceholder</string>
+									<string>NSNotApplicablePlaceholder</string>
+									<string>NSNullPlaceholder</string>
+									<string>NSValueTransformerName</string>
+								</object>
+								<object class="NSMutableArray" key="dict.values">
+									<bool key="EncodedWithXMLCoder">YES</bool>
+									<reference ref="7"/>
+									<reference ref="7"/>
+									<reference ref="7"/>
+									<reference ref="7"/>
+									<string>NSNegateBoolean</string>
+								</object>
+							</object>
+							<reference key="NSPreviousConnector" ref="1052"/>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">789</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled3: selection.dcmMode</string>
+						<reference key="source" ref="680106481"/>
+						<reference key="destination" ref="643764789"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="680106481"/>
+							<reference key="NSDestination" ref="643764789"/>
+							<string key="NSLabel">enabled3: selection.dcmMode</string>
+							<string key="NSBinding">enabled3</string>
+							<string key="NSKeyPath">selection.dcmMode</string>
+							<object class="NSDictionary" key="NSOptions">
+								<bool key="EncodedWithXMLCoder">YES</bool>
+								<object class="NSMutableArray" key="dict.sortedKeys">
+									<bool key="EncodedWithXMLCoder">YES</bool>
+									<string>NSMultipleValuesPlaceholder</string>
+									<string>NSNoSelectionPlaceholder</string>
+									<string>NSNotApplicablePlaceholder</string>
+									<string>NSNullPlaceholder</string>
+									<string>NSValueTransformerName</string>
+								</object>
+								<object class="NSMutableArray" key="dict.values">
+									<bool key="EncodedWithXMLCoder">YES</bool>
+									<reference ref="7"/>
+									<reference ref="7"/>
+									<reference ref="7"/>
+									<reference ref="7"/>
+									<string>NSNegateBoolean</string>
+								</object>
+							</object>
+							<reference key="NSPreviousConnector" ref="1072"/>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">791</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled2: selection.dcmMode</string>
+						<reference key="source" ref="480847450"/>
+						<reference key="destination" ref="643764789"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="480847450"/>
+							<reference key="NSDestination" ref="643764789"/>
+							<string key="NSLabel">enabled2: selection.dcmMode</string>
+							<string key="NSBinding">enabled2</string>
+							<string key="NSKeyPath">selection.dcmMode</string>
+							<object class="NSDictionary" key="NSOptions">
+								<bool key="EncodedWithXMLCoder">YES</bool>
+								<object class="NSMutableArray" key="dict.sortedKeys">
+									<bool key="EncodedWithXMLCoder">YES</bool>
+									<string>NSMultipleValuesPlaceholder</string>
+									<string>NSNoSelectionPlaceholder</string>
+									<string>NSNotApplicablePlaceholder</string>
+									<string>NSNullPlaceholder</string>
+									<string>NSValueTransformerName</string>
+								</object>
+								<object class="NSMutableArray" key="dict.values">
+									<bool key="EncodedWithXMLCoder">YES</bool>
+									<reference ref="7"/>
+									<reference ref="7"/>
+									<reference ref="7"/>
+									<reference ref="7"/>
+									<string>NSNegateBoolean</string>
+								</object>
+							</object>
+							<reference key="NSPreviousConnector" ref="1062"/>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">793</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -4028,18 +4459,17 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<reference key="object" ref="679427258"/>
 						<object class="NSMutableArray" key="children">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<reference ref="707719283"/>
-							<reference ref="626147439"/>
-							<reference ref="715552356"/>
-							<reference ref="652495571"/>
-							<reference ref="100629660"/>
-							<reference ref="614925694"/>
 							<reference ref="607187015"/>
 							<reference ref="930645413"/>
-							<reference ref="512183339"/>
-							<reference ref="218133927"/>
+							<reference ref="100629660"/>
+							<reference ref="652495571"/>
+							<reference ref="715552356"/>
+							<reference ref="626147439"/>
+							<reference ref="707719283"/>
 							<reference ref="922322297"/>
 							<reference ref="29792427"/>
+							<reference ref="512183339"/>
+							<reference ref="218133927"/>
 						</object>
 						<reference key="parent" ref="547747083"/>
 					</object>
@@ -4153,15 +4583,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<reference key="parent" ref="679427258"/>
 					</object>
 					<object class="IBObjectRecord">
-						<int key="objectID">427</int>
-						<reference key="object" ref="614925694"/>
-						<object class="NSMutableArray" key="children">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<reference ref="809184453"/>
-						</object>
-						<reference key="parent" ref="679427258"/>
-					</object>
-					<object class="IBObjectRecord">
 						<int key="objectID">428</int>
 						<reference key="object" ref="607187015"/>
 						<object class="NSMutableArray" key="children">
@@ -4192,11 +4613,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<int key="objectID">432</int>
 						<reference key="object" ref="403673521"/>
 						<reference key="parent" ref="607187015"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">433</int>
-						<reference key="object" ref="809184453"/>
-						<reference key="parent" ref="614925694"/>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">435</int>
@@ -5670,8 +6086,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string>425.ImportedFromIB2</string>
 					<string>426.IBPluginDependency</string>
 					<string>426.ImportedFromIB2</string>
-					<string>427.IBPluginDependency</string>
-					<string>427.ImportedFromIB2</string>
 					<string>428.IBPluginDependency</string>
 					<string>428.ImportedFromIB2</string>
 					<string>429.IBPluginDependency</string>
@@ -5681,7 +6095,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string>431.ImportedFromIB2</string>
 					<string>432.IBPluginDependency</string>
 					<string>432.ImportedFromIB2</string>
-					<string>433.IBPluginDependency</string>
 					<string>435.IBPluginDependency</string>
 					<string>435.ImportedFromIB2</string>
 					<string>436.IBPluginDependency</string>
@@ -6047,8 +6460,8 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{1185, 770}, {590, 507}}</string>
-					<string>{{1185, 770}, {590, 507}}</string>
+					<string>{{1185, 817}, {590, 460}}</string>
+					<string>{{1185, 817}, {590, 460}}</string>
 					<reference ref="9"/>
 					<reference ref="8"/>
 					<reference ref="8"/>
@@ -6079,15 +6492,12 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="9"/>
-					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
-					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -6497,7 +6907,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">760</int>
+			<int key="maxID">793</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -6603,6 +7013,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSMutableArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>dcmSeriesView</string>
 							<string>dcmWindow</string>
 							<string>mprView1</string>
 							<string>mprView2</string>
@@ -6620,6 +7031,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>NSView</string>
 							<string>NSWindow</string>
 							<string>MPRDCMView</string>
 							<string>MPRDCMView</string>

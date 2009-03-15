@@ -5894,43 +5894,43 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	sft[ 0][ 0] = HUGE_VALF; sft[ 0][ 1] = HUGE_VALF; sft[ 0][ 2] = HUGE_VALF;
 	sft[ 1][ 0] = HUGE_VALF; sft[ 1][ 1] = HUGE_VALF; sft[ 1][ 2] = HUGE_VALF;
 	
-	[oPix convertPixX: 0 pixY: 0 toDICOMCoords: c1 pixelCenter: NO];
-	[oPix convertPixX: [oPix pwidth] pixY: 0 toDICOMCoords: c2 pixelCenter: NO];
+	[oPix convertPixX: 0 pixY: 0 toDICOMCoords: c1 pixelCenter: YES];
+	[oPix convertPixX: [oPix pwidth] pixY: 0 toDICOMCoords: c2 pixelCenter: YES];
 	
 	int x = 0;
 	if( x < 2 && intersect3D_SegmentPlane( c1, c2, vectorB+6, originB, r))
 	{
-		[curDCM convertDICOMCoords: r toSliceCoords: sc pixelCenter: NO];
+		[curDCM convertDICOMCoords: r toSliceCoords: sc pixelCenter: YES];
 		sft[ x][ 0] = sc[ 0]; sft[ x][ 1] = sc[ 1]; sft[ x][ 2] = sc[ 2];
 		x++;
 	}
 			
-	[oPix convertPixX: [oPix pwidth] pixY: 0 toDICOMCoords: c1 pixelCenter: NO];
-	[oPix convertPixX: [oPix pwidth] pixY: [oPix pheight] toDICOMCoords: c2 pixelCenter: NO];
+	[oPix convertPixX: [oPix pwidth] pixY: 0 toDICOMCoords: c1 pixelCenter: YES];
+	[oPix convertPixX: [oPix pwidth] pixY: [oPix pheight] toDICOMCoords: c2 pixelCenter: YES];
 	
 	if(  x < 2 && intersect3D_SegmentPlane( c1, c2, vectorB+6, originB, r))
 	{
-		[curDCM convertDICOMCoords: r toSliceCoords: sc pixelCenter: NO];
+		[curDCM convertDICOMCoords: r toSliceCoords: sc pixelCenter: YES];
 		sft[ x][ 0] = sc[ 0]; sft[ x][ 1] = sc[ 1]; sft[ x][ 2] = sc[ 2];
 		x++;
 	}
 	
-	[oPix convertPixX: [oPix pwidth] pixY: [oPix pheight] toDICOMCoords: c1 pixelCenter: NO];
-	[oPix convertPixX: 0 pixY: [oPix pheight] toDICOMCoords: c2 pixelCenter: NO];
+	[oPix convertPixX: [oPix pwidth] pixY: [oPix pheight] toDICOMCoords: c1 pixelCenter: YES];
+	[oPix convertPixX: 0 pixY: [oPix pheight] toDICOMCoords: c2 pixelCenter: YES];
 	
 	if(  x < 2 && intersect3D_SegmentPlane( c1, c2, vectorB+6, originB, r))
 	{
-		[curDCM convertDICOMCoords: r toSliceCoords: sc pixelCenter: NO];
+		[curDCM convertDICOMCoords: r toSliceCoords: sc pixelCenter: YES];
 		sft[ x][ 0] = sc[ 0]; sft[ x][ 1] = sc[ 1]; sft[ x][ 2] = sc[ 2];
 		x++;
 	}
 	
-	[oPix convertPixX: 0 pixY: [oPix pheight] toDICOMCoords: c1 pixelCenter: NO];
-	[oPix convertPixX: 0 pixY: 0 toDICOMCoords: c2 pixelCenter: NO];
+	[oPix convertPixX: 0 pixY: [oPix pheight] toDICOMCoords: c1 pixelCenter: YES];
+	[oPix convertPixX: 0 pixY: 0 toDICOMCoords: c2 pixelCenter: YES];
 	
 	if(  x < 2 && intersect3D_SegmentPlane( c1, c2, vectorB+6, originB, r))
 	{
-		[curDCM convertDICOMCoords: r toSliceCoords: sc pixelCenter: NO];
+		[curDCM convertDICOMCoords: r toSliceCoords: sc pixelCenter: YES];
 		sft[ x][ 0] = sc[ 0]; sft[ x][ 1] = sc[ 1]; sft[ x][ 2] = sc[ 2];
 		x++;
 	}

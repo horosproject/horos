@@ -20,6 +20,7 @@
 
 #define PRESETS_DIRECTORY @"/3DPRESETS/"
 #define CLUTDATABASE @"/CLUTs/"
+#define DATABASEPATH @"/DATABASE.noindex/"
 
 extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2, float *u, float *iP);
 static float deg2rad = 3.14159265358979/180.0; 
@@ -878,6 +879,11 @@ static float deg2rad = 3.14159265358979/180.0;
 
 #pragma mark GUI ObjectController - Cocoa Bindings
 
+- (float) getClippingRangeThicknessInMm
+{
+	return [mprView1.vrView getClippingRangeThicknessInMm];
+}
+
 - (void) setClippingRangeThickness:(float) f
 {
 	clippingRangeThickness = f;
@@ -896,6 +902,9 @@ static float deg2rad = 3.14159265358979/180.0;
 	mprView3.vrView.dontResetImage = YES;
 	[mprView3.vrView setClippingRangeThickness: f];
 	[mprView3 updateViewMPR];
+	
+	[self willChangeValueForKey:@"clippingRangeThicknessInMm"];
+	[self didChangeValueForKey:@"clippingRangeThicknessInMm"];
 }
 
 - (void) setClippingRangeMode:(int) f
@@ -954,7 +963,6 @@ static float deg2rad = 3.14159265358979/180.0;
 
 #pragma mark Export	
 
-#define DATABASEPATH @"/DATABASE.noindex/"
 -(IBAction) endDCMExportSettings:(id) sender
 {
 	[dcmWindow orderOut:sender];
@@ -974,7 +982,7 @@ static float deg2rad = 3.14159265358979/180.0;
 		curExportView.vrView.dcmSeriesString = dcmSeriesName;
 
 		// CURRENT image only
-		if( dcmMode == 0)
+		if( dcmMode == 1)
 		{
 			[producedFiles addObject: [curExportView.vrView exportDCMCurrentImage]];
 		}
@@ -1007,13 +1015,13 @@ static float deg2rad = 3.14159265358979/180.0;
 			[NSThread sleepForTimeInterval: 1];
 			[[BrowserController currentBrowser] checkIncomingNow: self];
 		}
-		else if( dcmMode == 2) // A 3D sequence or batch sequence
+		else if( dcmMode == 0) // A 3D sequence or batch sequence
 		{
 			Wait *progress = [[Wait alloc] initWithString: @"Creating a DICOM series"];
 			[progress showWindow:self];
 			[progress setCancel:YES];
 			
-			if( dcmSeriesMode == 0)
+			if( dcmSeriesMode == 1)
 			{
 				if( maxMovieIndex > 1)
 				{
@@ -1059,7 +1067,31 @@ static float deg2rad = 3.14159265358979/180.0;
 			}
 			else // A batch sequence
 			{
-//				[[progress progress] setMaxValue: value];
+				[[progress progress] setMaxValue: dcmBatchNumberOfFrames];
+				
+				float cos[ 9];
+				float interval = dcmInterval * [curExportView.vrView factor];
+				
+				[curExportView.pix orientation: cos];
+				
+				// Go to first position
+				curExportView.camera.position = [Point3D pointWithX: curExportView.camera.position.x + interval*cos[ 6]*-dcmTo y:curExportView.camera.position.y + interval*cos[ 7]*-dcmTo z:curExportView.camera.position.z + interval*cos[ 8]*-dcmTo];
+				curExportView.camera.focalPoint = [Point3D pointWithX: curExportView.camera.position.x + cos[ 6] y:curExportView.camera.position.y + cos[ 7] z:curExportView.camera.position.z + cos[ 8]];
+				[curExportView restoreCamera];
+				
+				for( int i = 0; i < dcmBatchNumberOfFrames; i++)
+				{
+					[producedFiles addObject: [curExportView.vrView exportDCMCurrentImage]];
+					
+					curExportView.camera.position = [Point3D pointWithX: curExportView.camera.position.x + interval*cos[ 6] y:curExportView.camera.position.y + interval*cos[ 7] z:curExportView.camera.position.z + interval*cos[ 8]];
+					curExportView.camera.focalPoint = [Point3D pointWithX: curExportView.camera.position.x + cos[ 6] y:curExportView.camera.position.y + cos[ 7] z:curExportView.camera.position.z + cos[ 8]];
+					[curExportView restoreCamera];
+					
+					[progress incrementBy: 1];
+					
+					if( [progress aborted])
+						break;
+				}
 			}
 			
 			[curExportView.vrView endRenderImageWithBestQuality];
@@ -1113,6 +1145,8 @@ static float deg2rad = 3.14159265358979/180.0;
 		
 		[NSThread sleepForTimeInterval: 1];
 		[[BrowserController currentBrowser] checkIncomingNow: self];
+		
+		[[NSUserDefaults standardUserDefaults] setInteger: dcmMode forKey: @"lastMPRdcmExportMode"];
 	}
 	
 	mprView1.fromIntervalExport = 0;
@@ -1140,6 +1174,8 @@ static float deg2rad = 3.14159265358979/180.0;
 	
 	self.displayCrossLines = YES;
 	self.dcmSameIntervalAndThickness = YES;
+	
+	self.dcmMode = [[NSUserDefaults standardUserDefaults] integerForKey: @"lastMPRdcmExportMode"];
 }
 
 - (void) displayFromToSlices
@@ -1212,7 +1248,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	dcmSameIntervalAndThickness = f;
 	
 	if( dcmSameIntervalAndThickness)
-		self.dcmInterval = curExportView.vrView.clippingRangeThickness;
+		self.dcmInterval = [curExportView.vrView getClippingRangeThicknessInMm];
 }
 
 #pragma mark NSWindow Notifications action

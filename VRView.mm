@@ -370,7 +370,7 @@ public:
 
 - (double) getClippingRangeThickness
 {
-	return clippingRangeThickness / [[NSUserDefaults standardUserDefaults] floatForKey: @"superSampling"];
+	return clippingRangeThickness / superSampling;
 }
 
 - (void) setClippingRangeThickness: (double) c

@@ -53,6 +53,7 @@
 	
 	// Export Dcm
 	IBOutlet NSWindow *dcmWindow;
+	IBOutlet NSView *dcmSeriesView;
 	int dcmFrom, dcmTo;
 	float dcmInterval;
 	int dcmMode;
