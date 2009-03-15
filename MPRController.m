@@ -26,7 +26,7 @@ static float deg2rad = 3.14159265358979/180.0;
 
 @implementation MPRController
 
-@synthesize clippingRangeThickness, clippingRangeMode, mousePosition, mouseViewID, originalPix, wlwwMenuItems, LOD, dcmFrom, dcmTo, dcmMode, dcmRotationDirection, dcmSeriesMode, dcmRotation, dcmNumberOfFrames, dcmQuality, dcmInterval, dcmSeriesName, dcmBatchNumberOfFrames;
+@synthesize displayCrossLines, dcmSameIntervalAndThickness, clippingRangeThickness, clippingRangeMode, mousePosition, mouseViewID, originalPix, wlwwMenuItems, LOD, dcmFrom, dcmTo, dcmMode, dcmRotationDirection, dcmSeriesMode, dcmRotation, dcmNumberOfFrames, dcmQuality, dcmInterval, dcmSeriesName, dcmBatchNumberOfFrames;
 
 + (double) angleBetweenVector:(float*) a andPlane:(float*) orientation
 {
@@ -73,6 +73,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	filesList[0] = files;
 	volumeData[0] = volume;
 	viewer2D = viewer;
+	self.displayCrossLines = YES;
 		
 	DCMPix *emptyPix = [self emptyPix: originalPix width: 100 height: 100];
 	[mprView1 setDCMPixList:  [NSMutableArray arrayWithObject: emptyPix] filesList: [NSArray arrayWithObject: [files lastObject]] volumeData: [NSData dataWithBytes: [emptyPix fImage] length: [emptyPix pheight] * [emptyPix pwidth] * sizeof( float)] roiList:nil firstImage:0 type:'i' reset:YES];
@@ -460,6 +461,22 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (void)bringToFrontROI:(ROI*) roi;
 {}
+
+- (void)keyDown:(NSEvent *)theEvent
+{
+    unichar c = [[theEvent characters] characterAtIndex:0];
+    
+	if( c ==  ' ')
+	{
+		self.displayCrossLines = !self.displayCrossLines;
+		
+		[mprView1 setNeedsDisplay: YES];
+		[mprView2 setNeedsDisplay: YES];
+		[mprView3 setNeedsDisplay: YES];
+	}
+	else [super keyDown: theEvent];
+}
+
 #pragma mark 
 
 - (void)setLOD:(float)lod;
@@ -1120,18 +1137,21 @@ static float deg2rad = 3.14159265358979/180.0;
 	if( curExportView == nil) curExportView = mprView3;
 	
 	[NSApp beginSheet: dcmWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:(void*) nil];
+	
+	self.displayCrossLines = YES;
+	self.dcmSameIntervalAndThickness = YES;
 }
 
 - (void) displayFromToSlices
 {
 	if( curExportView == mprView3)
 	{
-		mprView1.toIntervalExport = dcmTo * dcmInterval;
-		mprView1.fromIntervalExport = dcmFrom * dcmInterval;
+		mprView1.toIntervalExport = dcmTo;
+		mprView1.fromIntervalExport = dcmFrom;
 		mprView1.viewExport = 1;
 		
-		mprView2.toIntervalExport = dcmTo * dcmInterval;
-		mprView2.fromIntervalExport = dcmFrom * dcmInterval;
+		mprView2.toIntervalExport = dcmTo;
+		mprView2.fromIntervalExport = dcmFrom;
 		mprView2.viewExport = 1;
 		
 		[mprView1 setNeedsDisplay: YES];
@@ -1140,12 +1160,12 @@ static float deg2rad = 3.14159265358979/180.0;
 	
 	if( curExportView == mprView2)
 	{
-		mprView1.toIntervalExport = dcmTo * dcmInterval;
-		mprView1.fromIntervalExport = dcmFrom * dcmInterval;
+		mprView1.toIntervalExport = dcmTo;
+		mprView1.fromIntervalExport = dcmFrom;
 		mprView1.viewExport = 0;
 		
-		mprView3.toIntervalExport = dcmTo * dcmInterval;
-		mprView3.fromIntervalExport = dcmFrom * dcmInterval;
+		mprView3.toIntervalExport = dcmTo;
+		mprView3.fromIntervalExport = dcmFrom;
 		mprView3.viewExport = 1;
 		
 		[mprView1 setNeedsDisplay: YES];
@@ -1154,12 +1174,12 @@ static float deg2rad = 3.14159265358979/180.0;
 	
 	if( curExportView == mprView1)
 	{
-		mprView2.toIntervalExport = dcmTo * dcmInterval;
-		mprView2.fromIntervalExport = dcmFrom * dcmInterval;
+		mprView2.toIntervalExport = dcmTo;
+		mprView2.fromIntervalExport = dcmFrom;
 		mprView2.viewExport = 0;
 		
-		mprView3.toIntervalExport = dcmTo * dcmInterval;
-		mprView3.fromIntervalExport = dcmFrom * dcmInterval;
+		mprView3.toIntervalExport = dcmTo;
+		mprView3.fromIntervalExport = dcmFrom;
 		mprView3.viewExport = 0;
 		
 		[mprView2 setNeedsDisplay: YES];
@@ -1185,6 +1205,14 @@ static float deg2rad = 3.14159265358979/180.0;
 {
 	dcmFrom = f;
 	[self displayFromToSlices];
+}
+
+- (void) setDcmSameIntervalAndThickness: (BOOL) f
+{
+	dcmSameIntervalAndThickness = f;
+	
+	if( dcmSameIntervalAndThickness)
+		self.dcmInterval = curExportView.vrView.clippingRangeThickness;
 }
 
 #pragma mark NSWindow Notifications action

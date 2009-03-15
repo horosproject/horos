@@ -49,6 +49,8 @@
 	Point3D *mousePosition;
 	int mouseViewID;
 	
+	BOOL displayCrossLines;
+	
 	// Export Dcm
 	IBOutlet NSWindow *dcmWindow;
 	int dcmFrom, dcmTo;
@@ -56,6 +58,7 @@
 	int dcmMode;
 	int dcmSeriesMode;
 	int dcmRotation, dcmRotationDirection, dcmNumberOfFrames, dcmQuality, dcmBatchNumberOfFrames;
+	BOOL dcmSameIntervalAndThickness;
 	NSString *dcmSeriesName;
 	MPRDCMView *curExportView;
 	
@@ -81,6 +84,7 @@
 @property (retain) NSString *dcmSeriesName;
 @property (readonly) DCMPix *originalPix;
 @property float LOD;
+@property BOOL dcmSameIntervalAndThickness, displayCrossLines;
 
 + (double) angleBetweenVector:(float*) a andPlane:(float*) orientation;
 

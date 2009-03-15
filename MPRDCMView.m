@@ -74,6 +74,8 @@ static float deg2rad = 3.14159265358979/180.0;
 {
 	[super setDCM:pixList :files :rois :firstImage :type :reset];
 	
+	rotation = 0;
+	
 	pix = [pixList lastObject];
 	
 	currentTool = t3DRotate;
@@ -272,201 +274,234 @@ static float deg2rad = 3.14159265358979/180.0;
 	glEnable(GL_LINE_SMOOTH);
 	glEnable(GL_POLYGON_SMOOTH);
 	
-	// All pix have the same thickness
-	float thickness = [pix sliceThickness];
-	
-	switch( viewID)
+	if( windowController.displayCrossLines)
 	{
-		case 1:
-			glColor4f (VIEW_2_RED, VIEW_2_GREEN, VIEW_2_BLUE, VIEW_2_ALPHA);
-			if( crossLinesA[ 0][ 0] != HUGE_VALF)
-			{
-				if( thickness > 2)
-				{
-					glLineWidth(2.0);
-					[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: 0];
-					
-					glLineWidth(1.0);
-					[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: -thickness/2.];
-					[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: thickness/2.];
-				}
-				else
-				{
-					glLineWidth(2.0);
-					[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: 0];
-				}
-				
-				if( fromIntervalExport > 0)
-				{
-					if( viewExport == 0)
-						[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: -fromIntervalExport];
-				}
-					
-				if( toIntervalExport > 0)
-				{
-					if( viewExport == 0)
-						[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: toIntervalExport];
-				}
-			}
-			glColor4f (VIEW_3_RED, VIEW_3_GREEN, VIEW_3_BLUE, VIEW_3_ALPHA);
-			if( crossLinesB[ 0][ 0] != HUGE_VALF)
-			{
-				if( thickness > 2)
-				{
-					glLineWidth(2.0);
-					[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: 0];
-				
-					glLineWidth(1.0);
-					[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: -thickness/2.];
-					[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: thickness/2.];
-				}
-				else
-				{
-					glLineWidth(2.0);
-					[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: 0];
-				}
-				
-				if( fromIntervalExport > 0)
-				{
-					if( viewExport == 1)
-						[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: -fromIntervalExport];
-				}
-					
-				if( toIntervalExport > 0)
-				{
-					if( viewExport == 1)
-						[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: toIntervalExport];
-				}
-			}
-		break;
+		// All pix have the same thickness
+		float thickness = [pix sliceThickness];
 		
-		case 2:
-			glColor4f (VIEW_1_RED, VIEW_1_GREEN, VIEW_1_BLUE, VIEW_1_ALPHA);
-			if( crossLinesA[ 0][ 0] != HUGE_VALF)
-			{
-				if( thickness > 2)
+		switch( viewID)
+		{
+			case 1:
+				glColor4f (VIEW_2_RED, VIEW_2_GREEN, VIEW_2_BLUE, VIEW_2_ALPHA);
+				if( crossLinesA[ 0][ 0] != HUGE_VALF)
 				{
-					glLineWidth(2.0);
-					[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: 0];
+					if( thickness > 2)
+					{
+						glLineWidth(2.0);
+						[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: 0];
+						
+						glLineWidth(1.0);
+						[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: -thickness/2.];
+						[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: thickness/2.];
+					}
+					else
+					{
+						glLineWidth(2.0);
+						[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: 0];
+					}
 					
-					glLineWidth(1.0);
-					[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: -thickness/2.];
-					[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: thickness/2.];
-				}
-				else
-				{
-					glLineWidth(2.0);
-					[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: 0];
-				}
-				
-				if( fromIntervalExport > 0)
-				{
 					if( viewExport == 0)
-						[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: -fromIntervalExport];
-				}
+					{
+						glLineWidth(1.0);
+						
+						if( fromIntervalExport > 0)
+						{
+							for( int i = 0; i < fromIntervalExport; i++)
+								[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: -i * [windowController dcmInterval]];
+						}
 					
-				if( toIntervalExport > 0)
-				{
-					if( viewExport == 0)
-						[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: toIntervalExport];
+						if( toIntervalExport > 0)
+						{
+							for( int i = 0; i < toIntervalExport; i++)
+								[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: i * [windowController dcmInterval]];
+						}
+					}
 				}
-			}
+				glColor4f (VIEW_3_RED, VIEW_3_GREEN, VIEW_3_BLUE, VIEW_3_ALPHA);
+				if( crossLinesB[ 0][ 0] != HUGE_VALF)
+				{
+					if( thickness > 2)
+					{
+						glLineWidth(2.0);
+						[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: 0];
+					
+						glLineWidth(1.0);
+						[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: -thickness/2.];
+						[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: thickness/2.];
+					}
+					else
+					{
+						glLineWidth(2.0);
+						[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: 0];
+					}
+					
+					if( viewExport == 1)
+					{
+						glLineWidth(1.0);
+						
+						if( fromIntervalExport > 0)
+						{
+							for( int i = 0; i < fromIntervalExport; i++)
+								[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: -i * [windowController dcmInterval]];
+						}
+					
+						if( toIntervalExport > 0)
+						{
+							for( int i = 0; i < toIntervalExport; i++)
+								[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: i * [windowController dcmInterval]];
+						}
+					}
+				}
+			break;
 			
-			glColor4f (VIEW_3_RED, VIEW_3_GREEN, VIEW_3_BLUE, VIEW_3_ALPHA);
-			if( crossLinesB[ 0][ 0] != HUGE_VALF)
-			{
-				if( thickness > 2)
+			case 2:
+				glColor4f (VIEW_1_RED, VIEW_1_GREEN, VIEW_1_BLUE, VIEW_1_ALPHA);
+				if( crossLinesA[ 0][ 0] != HUGE_VALF)
 				{
-					glLineWidth(2.0);
-					[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: 0];
+					if( thickness > 2)
+					{
+						glLineWidth(2.0);
+						[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: 0];
+						
+						glLineWidth(1.0);
+						[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: -thickness/2.];
+						[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: thickness/2.];
+					}
+					else
+					{
+						glLineWidth(2.0);
+						[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: 0];
+					}
 					
-					glLineWidth(1.0);
-					[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: -thickness/2.];
-					[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: thickness/2.];
-				}
-				else
-				{
-					glLineWidth(2.0);
-					[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: 0];
+					if( viewExport == 0)
+					{
+						glLineWidth(1.0);
+						
+						if( fromIntervalExport > 0)
+						{
+							for( int i = 0; i < fromIntervalExport; i++)
+								[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: -i * [windowController dcmInterval]];
+						}
+					
+						if( toIntervalExport > 0)
+						{
+							for( int i = 0; i < toIntervalExport; i++)
+								[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: i * [windowController dcmInterval]];
+						}
+					}
 				}
 				
-				if( fromIntervalExport > 0)
+				glColor4f (VIEW_3_RED, VIEW_3_GREEN, VIEW_3_BLUE, VIEW_3_ALPHA);
+				if( crossLinesB[ 0][ 0] != HUGE_VALF)
 				{
+					if( thickness > 2)
+					{
+						glLineWidth(2.0);
+						[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: 0];
+						
+						glLineWidth(1.0);
+						[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: -thickness/2.];
+						[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: thickness/2.];
+					}
+					else
+					{
+						glLineWidth(2.0);
+						[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: 0];
+					}
+					
 					if( viewExport == 1)
-						[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: -fromIntervalExport];
-				}
+					{
+						glLineWidth(1.0);
+						
+						if( fromIntervalExport > 0)
+						{
+							for( int i = 0; i < fromIntervalExport; i++)
+								[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: -i * [windowController dcmInterval]];
+						}
 					
-				if( toIntervalExport > 0)
-				{
-					if( viewExport == 1)
-						[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: toIntervalExport];
+						if( toIntervalExport > 0)
+						{
+							for( int i = 0; i < toIntervalExport; i++)
+								[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: i * [windowController dcmInterval]];
+						}
+					}
 				}
-			}
-		break;
-		
-		case 3:
-			glColor4f (VIEW_1_RED, VIEW_1_GREEN, VIEW_1_BLUE, VIEW_1_ALPHA);
-			if( crossLinesA[ 0][ 0] != HUGE_VALF)
-			{
-				if( thickness > 2)
-				{
-					glLineWidth(2.0);
-					[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: 0];
-					
-					glLineWidth(1.0);
-					[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: -thickness/2.];
-					[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: thickness/2.];
-				}
-				else
-				{
-					glLineWidth(2.0);
-					[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: 0];
-				}
-				
-				if( fromIntervalExport > 0)
-				{
-					if( viewExport == 0)
-						[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: -fromIntervalExport];
-				}
-					
-				if( toIntervalExport > 0)
-				{
-					if( viewExport == 0)
-						[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: toIntervalExport];
-				}
-			}
+			break;
 			
-			glColor4f (VIEW_2_RED, VIEW_2_GREEN, VIEW_2_BLUE, VIEW_2_ALPHA);
-			if( crossLinesB[ 0][ 0] != HUGE_VALF)
-			{
-				if( thickness > 2)
+			case 3:
+				glColor4f (VIEW_1_RED, VIEW_1_GREEN, VIEW_1_BLUE, VIEW_1_ALPHA);
+				if( crossLinesA[ 0][ 0] != HUGE_VALF)
 				{
-					glLineWidth(2.0);
-					[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: 0];
+					if( thickness > 2)
+					{
+						glLineWidth(2.0);
+						[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: 0];
+						
+						glLineWidth(1.0);
+						[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: -thickness/2.];
+						[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: thickness/2.];
+					}
+					else
+					{
+						glLineWidth(2.0);
+						[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: 0];
+					}
 					
-					glLineWidth(1.0);
-					[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: -thickness/2.];
-					[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: thickness/2.];
-				}
-				else
-				{
-					glLineWidth(2.0);
-					[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: 0];
+					if( viewExport == 0)
+					{
+						glLineWidth(1.0);
+						
+						if( fromIntervalExport > 0)
+						{
+							for( int i = 0; i < fromIntervalExport; i++)
+								[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: -i * [windowController dcmInterval]];
+						}
+					
+						if( toIntervalExport > 0)
+						{
+							for( int i = 0; i < toIntervalExport; i++)
+								[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: i * [windowController dcmInterval]];
+						}
+					}
 				}
 				
-				if( fromIntervalExport > 0)
+				glColor4f (VIEW_2_RED, VIEW_2_GREEN, VIEW_2_BLUE, VIEW_2_ALPHA);
+				if( crossLinesB[ 0][ 0] != HUGE_VALF)
 				{
-					if( viewExport == 1)
-						[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: -fromIntervalExport];
-				}
+					if( thickness > 2)
+					{
+						glLineWidth(2.0);
+						[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: 0];
+						
+						glLineWidth(1.0);
+						[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: -thickness/2.];
+						[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: thickness/2.];
+					}
+					else
+					{
+						glLineWidth(2.0);
+						[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: 0];
+					}
 					
-				if( toIntervalExport > 0)
-				{
 					if( viewExport == 1)
-						[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: toIntervalExport];
+					{
+						glLineWidth(1.0);
+						
+						if( fromIntervalExport > 0)
+						{
+							for( int i = 0; i < fromIntervalExport; i++)
+								[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: -i * [windowController dcmInterval]];
+						}
+					
+						if( toIntervalExport > 0)
+						{
+							for( int i = 0; i < toIntervalExport; i++)
+								[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: i * [windowController dcmInterval]];
+						}
+					}
 				}
-			}
-		break;
+			break;
+		}
 	}
 	
 	[self colorForView: viewID];
@@ -483,25 +518,29 @@ static float deg2rad = 3.14159265358979/180.0;
 	glEnd();
 	glLineWidth(1.0);
 	
-	// Mouse Position
-	if( viewID != windowController.mouseViewID)
+	if( windowController.displayCrossLines)
 	{
-		[self colorForView: windowController.mouseViewID];
-		Point3D *pt = windowController.mousePosition;
-		float sc[ 3], dc[ 3] = { pt.x, pt.y, pt.z};
-		
-		[pix convertDICOMCoords: dc toSliceCoords: sc pixelCenter: YES];
-		
-		glPointSize( 10);
-		glBegin( GL_POINTS);
-		sc[0] = sc[ 0] / curDCM.pixelSpacingX;
-		sc[1] = sc[ 1] / curDCM.pixelSpacingY;
-		sc[0] -= curDCM.pwidth * 0.5f;
-		sc[1] -= curDCM.pheight * 0.5f;
-		glVertex2f( scaleValue*sc[ 0], scaleValue*sc[ 1]);
-		glEnd();
+		// Mouse Position
+		if( viewID != windowController.mouseViewID)
+		{
+			[self colorForView: windowController.mouseViewID];
+			Point3D *pt = windowController.mousePosition;
+			float sc[ 3], dc[ 3] = { pt.x, pt.y, pt.z};
+			
+			[pix convertDICOMCoords: dc toSliceCoords: sc pixelCenter: YES];
+			
+			glPointSize( 10);
+			glBegin( GL_POINTS);
+			sc[0] = sc[ 0] / curDCM.pixelSpacingX;
+			sc[1] = sc[ 1] / curDCM.pixelSpacingY;
+			sc[0] -= curDCM.pwidth * 0.5f;
+			sc[1] -= curDCM.pheight * 0.5f;
+			glVertex2f( scaleValue*sc[ 0], scaleValue*sc[ 1]);
+			glEnd();
+		}
 	}
 	
+	// Red Square
 	if( [[self window] firstResponder] == self)
 	{
 		glColor4f (1.0f, 0.0f, 0.0f, 0.8f);
@@ -570,7 +609,10 @@ static float deg2rad = 3.14159265358979/180.0;
 {
 	if( [[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] == annotNone)
 		return 0;
-
+	
+	if( windowController.displayCrossLines == NO)
+		return 0;
+	
 	// Intersection of the lines
 	NSPoint r = [self centerLines];
 	

@@ -8,7 +8,8 @@
 		<string key="IBDocument.HIToolboxVersion">353.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="414"/>
+			<integer value="426"/>
+			<integer value="659"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -102,6 +103,7 @@
 					<string>dcmQuality</string>
 					<string>dcmRotation</string>
 					<string>dcmBatchNumberOfFrames</string>
+					<string>dcmSameIntervalAndThickness</string>
 				</object>
 				<bool key="NSEditable">YES</bool>
 				<object class="_NSManagedProxy" key="_NSManagedProxy"/>
@@ -495,11 +497,11 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 												</object>
 												<reference key="NSSupport" ref="30528805"/>
 												<reference key="NSControlView" ref="492684644"/>
-												<double key="NSMaxValue">5.000000e+02</double>
+												<double key="NSMaxValue">2.560000e+02</double>
 												<double key="NSMinValue">0.000000e+00</double>
-												<double key="NSValue">4.000000e+01</double>
+												<double key="NSValue">1.000000e+01</double>
 												<double key="NSAltIncValue">0.000000e+00</double>
-												<int key="NSNumberOfTickMarks">60</int>
+												<int key="NSNumberOfTickMarks">32</int>
 												<int key="NSTickMarkPosition">0</int>
 												<bool key="NSAllowsTickMarkValuesOnly">NO</bool>
 												<bool key="NSVertical">NO</bool>
@@ -520,7 +522,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 												<reference key="NSSupport" ref="30528805"/>
 												<reference key="NSControlView" ref="680106481"/>
 												<double key="NSMaxValue">1.000000e+02</double>
-												<double key="NSMinValue">1.000000e+00</double>
+												<double key="NSMinValue">5.000000e-01</double>
 												<double key="NSValue">4.000000e+01</double>
 												<double key="NSAltIncValue">0.000000e+00</double>
 												<int key="NSNumberOfTickMarks">60</int>
@@ -607,11 +609,11 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 												</object>
 												<reference key="NSSupport" ref="30528805"/>
 												<reference key="NSControlView" ref="635168880"/>
-												<double key="NSMaxValue">5.000000e+02</double>
+												<double key="NSMaxValue">2.560000e+02</double>
 												<double key="NSMinValue">0.000000e+00</double>
 												<double key="NSValue">4.000000e+01</double>
 												<double key="NSAltIncValue">0.000000e+00</double>
-												<int key="NSNumberOfTickMarks">60</int>
+												<int key="NSNumberOfTickMarks">32</int>
 												<int key="NSTickMarkPosition">0</int>
 												<bool key="NSAllowsTickMarkValuesOnly">NO</bool>
 												<bool key="NSVertical">NO</bool>
@@ -2008,7 +2010,7 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 				<bool key="NSTransparent">NO</bool>
 			</object>
 			<object class="NSBox" id="322188120">
-				<nil key="NSNextResponder"/>
+				<reference key="NSNextResponder"/>
 				<int key="NSvFlags">14</int>
 				<object class="NSMutableArray" key="NSSubviews">
 					<bool key="EncodedWithXMLCoder">YES</bool>
@@ -2174,6 +2176,7 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 					</object>
 				</object>
 				<string key="NSFrameSize">{177, 40}</string>
+				<reference key="NSSuperview"/>
 				<string key="NSOffsets">{0, 0}</string>
 				<object class="NSTextFieldCell" key="NSTitleCell">
 					<int key="NSCellFlags">67239424</int>
@@ -3702,26 +3705,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<int key="connectionID">638</int>
 				</object>
 				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: selection.dcmInterval</string>
-						<reference key="source" ref="480847450"/>
-						<reference key="destination" ref="643764789"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="480847450"/>
-							<reference key="NSDestination" ref="643764789"/>
-							<string key="NSLabel">value: selection.dcmInterval</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">selection.dcmInterval</string>
-							<object class="NSDictionary" key="NSOptions">
-								<string key="NS.key.0">NSValueTransformerName</string>
-								<string key="NS.object.0">NSNegateBoolean</string>
-							</object>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">640</int>
-				</object>
-				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
 						<string key="label">dcmWindow</string>
 						<reference key="source" ref="1001"/>
@@ -3904,6 +3887,42 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						</object>
 					</object>
 					<int key="connectionID">757</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: selection.dcmSameIntervalAndThickness</string>
+						<reference key="source" ref="480847450"/>
+						<reference key="destination" ref="643764789"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="480847450"/>
+							<reference key="NSDestination" ref="643764789"/>
+							<string key="NSLabel">value: selection.dcmSameIntervalAndThickness</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">selection.dcmSameIntervalAndThickness</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">758</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: selection.dcmSameIntervalAndThickness</string>
+						<reference key="source" ref="680106481"/>
+						<reference key="destination" ref="643764789"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="680106481"/>
+							<reference key="NSDestination" ref="643764789"/>
+							<string key="NSLabel">enabled: selection.dcmSameIntervalAndThickness</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">selection.dcmSameIntervalAndThickness</string>
+							<object class="NSDictionary" key="NSOptions">
+								<string key="NS.key.0">NSValueTransformerName</string>
+								<string key="NS.object.0">NSNegateBoolean</string>
+							</object>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">760</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -6014,10 +6033,10 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{150, 758}, {730, 443}}</string>
+					<string>{{37, 758}, {730, 443}}</string>
 					<reference ref="8"/>
 					<reference ref="8"/>
-					<string>{{150, 758}, {730, 443}}</string>
+					<string>{{37, 758}, {730, 443}}</string>
 					<reference ref="8"/>
 					<string>{196, 240}</string>
 					<string>{{357, 418}, {480, 270}}</string>
@@ -6478,7 +6497,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">757</int>
+			<int key="maxID">760</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">

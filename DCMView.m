@@ -2349,9 +2349,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			
 			[self setNeedsDisplay: YES];
 		}
-        else if( c == 13 || c == 3 || c == ' ')	// Return - Enter - Space
+        else if( (c == 13 || c == 3 || c == ' ') && [self is2DViewer] == YES)	// Return - Enter - Space
 		{
-			if( [self is2DViewer] == YES) [[self windowController] PlayStop:[[self windowController] findPlayStopButton]];
+			[[self windowController] PlayStop:[[self windowController] findPlayStopButton]];
 		}
 		else if( c == 27)			// Escape
 		{
@@ -10802,14 +10802,15 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	if( [[blendingView curDCM] SUVConverted]) return blendingPixelMouseValue;
 	
 	if( [[[blendingView curDCM] units] isEqualToString:@"CNTS"]) return blendingPixelMouseValue * [[blendingView curDCM] philipsFactor];
-	return blendingPixelMouseValue * [[blendingView curDCM] patientsWeight] * 1000. / [[blendingView curDCM] radionuclideTotalDoseCorrected];
+	return blendingPixelMouseValue * [[blendingView curDCM] patientsWeight] * 1000. / ([[blendingView curDCM] radionuclideTotalDoseCorrected] * [curDCM decayFactor]);
 }
 
-- (float)getSUV {
+- (float)getSUV
+{
 	if( curDCM.SUVConverted) return pixelMouseValue;
 	
 	if( [curDCM.units isEqualToString:@"CNTS"]) return pixelMouseValue * curDCM.philipsFactor;
-	else return pixelMouseValue * curDCM.patientsWeight * 1000.0f / curDCM.radionuclideTotalDoseCorrected;
+	else return pixelMouseValue * curDCM.patientsWeight * 1000.0f / (curDCM.radionuclideTotalDoseCorrected * [curDCM decayFactor]);
 }
 
 + (void)setPluginOverridesMouse: (BOOL)override {

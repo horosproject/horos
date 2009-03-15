@@ -12630,7 +12630,7 @@ int i,j,l;
 		updatewlww = YES;
 		
 		if( [[[imageView curDCM] units] isEqualToString:@"CNTS"]) updatefactor = [[imageView curDCM] philipsFactor];
-		else updatefactor = [[imageView curDCM] patientsWeight] * 1000. / [[imageView curDCM] radionuclideTotalDoseCorrected];
+		else updatefactor = [[imageView curDCM] patientsWeight] * 1000. / ([[imageView curDCM] radionuclideTotalDoseCorrected] * [[imageView curDCM] decayFactor]);
 	}
 		
 	for( y = 0; y < maxMovieIndex; y++)
@@ -12668,8 +12668,8 @@ int i,j,l;
 			[[pixList[y] objectAtIndex: x] setMaxValueOfSeries: 0];
 			[[pixList[y] objectAtIndex: x] setMinValueOfSeries: 0];
 			
-			[[pixList[y] objectAtIndex: x] setSavedWL: [[pixList[y] objectAtIndex: x] savedWL]* updatefactor];
-			[[pixList[y] objectAtIndex: x] setSavedWW: [[pixList[y] objectAtIndex: x] savedWW]* updatefactor];
+			[[pixList[y] objectAtIndex: x] setSavedWL: [[pixList[y] objectAtIndex: x] savedWL] * updatefactor];
+			[[pixList[y] objectAtIndex: x] setSavedWW: [[pixList[y] objectAtIndex: x] savedWW] * updatefactor];
 		}
 	}
 	
