@@ -253,19 +253,7 @@ static float deg2rad = 3.14159265358979/180.0;
 		if( sender != mprView2) mprView2.camera.parallelScale = sender.camera.parallelScale;
 		if( sender != mprView3) mprView3.camera.parallelScale = sender.camera.parallelScale;
 	}
-		
-	[self computeCrossReferenceLinesBetween: mprView1 and: mprView2 result: a];
-	[self computeCrossReferenceLinesBetween: mprView1 and: mprView3 result: b];
-	[mprView1 setCrossReferenceLines: a and: b];
-	
-	[self computeCrossReferenceLinesBetween: mprView2 and: mprView1 result: a];
-	[self computeCrossReferenceLinesBetween: mprView2 and: mprView3 result: b];
-	[mprView2 setCrossReferenceLines: a and: b];
-	
-	[self computeCrossReferenceLinesBetween: mprView3 and: mprView1 result: a];
-	[self computeCrossReferenceLinesBetween: mprView3 and: mprView2 result: b];
-	[mprView3 setCrossReferenceLines: a and: b];
-	
+
 	// Center other views on the sender view
 	if( sender && [sender isKeyView] == YES && avoidReentry == NO)
 	{
@@ -440,7 +428,19 @@ static float deg2rad = 3.14159265358979/180.0;
 			mprView2.angleMPR = [MPRController angleBetweenVector: o+6 andPlane:orientation]-90.;
 		}
 	}
-		
+	
+	[self computeCrossReferenceLinesBetween: mprView1 and: mprView2 result: a];
+	[self computeCrossReferenceLinesBetween: mprView1 and: mprView3 result: b];
+	[mprView1 setCrossReferenceLines: a and: b];
+	
+	[self computeCrossReferenceLinesBetween: mprView2 and: mprView1 result: a];
+	[self computeCrossReferenceLinesBetween: mprView2 and: mprView3 result: b];
+	[mprView2 setCrossReferenceLines: a and: b];
+	
+	[self computeCrossReferenceLinesBetween: mprView3 and: mprView1 result: a];
+	[self computeCrossReferenceLinesBetween: mprView3 and: mprView2 result: b];
+	[mprView3 setCrossReferenceLines: a and: b];
+	
 	[mprView1 setNeedsDisplay: YES];
 	[mprView2 setNeedsDisplay: YES];
 	[mprView3 setNeedsDisplay: YES];
@@ -1216,6 +1216,39 @@ static float deg2rad = 3.14159265358979/180.0;
 		[toolbarItem setView: tbLOD];
 		[toolbarItem setMinSize: NSMakeSize(NSWidth([tbLOD frame]), NSHeight([tbLOD frame]))];
     }
+	else if ([itemIdent isEqualToString: @"Reset.tiff"])
+	{
+		[toolbarItem setLabel: NSLocalizedString(@"Reset",nil)];
+		[toolbarItem setPaletteLabel:NSLocalizedString(@"Reset",nil)];
+		[toolbarItem setImage: [NSImage imageNamed: @"Reset.tiff"]];
+		[toolbarItem setTarget: self];
+		[toolbarItem setAction: @selector( showWindow:)];
+    }
+	else if ([itemIdent isEqualToString: @"Export.icns"])
+	{
+		[toolbarItem setLabel: NSLocalizedString(@"DICOM",nil)];
+		[toolbarItem setPaletteLabel:NSLocalizedString(@"DICOM",nil)];
+		[toolbarItem setToolTip:NSLocalizedString(@"Export this image in a DICOM file",nil)];
+		[toolbarItem setImage: [NSImage imageNamed: @"Export.icns"]];
+		[toolbarItem setTarget: self];
+		[toolbarItem setAction: @selector( exportDICOMFile:)];
+    }
+	else if ([itemIdent isEqualToString: @"iPhoto.icns"])
+	{
+		[toolbarItem setLabel: NSLocalizedString(@"iPhoto",nil)];
+		[toolbarItem setPaletteLabel:NSLocalizedString(@"iPhoto",nil)];
+		[toolbarItem setImage: [NSImage imageNamed: @"iPhoto.icns"]];
+		[toolbarItem setTarget: self];
+		[toolbarItem setAction: @selector( export2iPhoto:)];
+    }
+	else if ([itemIdent isEqualToString: @"QTExport.icns"])
+	{
+		[toolbarItem setLabel: NSLocalizedString(@"Movie Export",nil)];
+		[toolbarItem setPaletteLabel:NSLocalizedString(@"Movie Export",nil)];
+		[toolbarItem setImage: [NSImage imageNamed: @"QTExport.icns"]];
+		[toolbarItem setTarget: self];
+		[toolbarItem setAction: @selector( exportQuicktime:)];
+    }
 	else if ([itemIdent isEqualToString: @"tbThickSlab"])
 	{
 		[toolbarItem setLabel: NSLocalizedString(@"Thick Slab",nil)];
@@ -1259,7 +1292,7 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (NSArray *) toolbarDefaultItemIdentifiers: (NSToolbar *) toolbar
 {
-		return [NSArray arrayWithObjects: @"tbTools", @"tbWLWW", @"tbLOD", @"tbThickSlab", @"tbShading", nil];
+		return [NSArray arrayWithObjects: @"tbTools", @"tbWLWW", @"tbLOD", @"tbThickSlab", @"tbShading", @"Reset.tiff", @"Export.icns", @"iPhoto.icns", @"QTExport.icns", nil];
 }
 
 - (NSArray *) toolbarAllowedItemIdentifiers: (NSToolbar *) toolbar
@@ -1268,6 +1301,6 @@ static float deg2rad = 3.14159265358979/180.0;
 											NSToolbarFlexibleSpaceItemIdentifier,
 											NSToolbarSpaceItemIdentifier,
 											NSToolbarSeparatorItemIdentifier,
-											@"tbTools", @"tbWLWW", @"tbLOD", @"tbThickSlab", @"tbShading", nil];
+											@"tbTools", @"tbWLWW", @"tbLOD", @"tbThickSlab", @"tbShading", @"Reset.tiff", @"Export.icns", @"iPhoto.icns", @"QTExport.icns", nil];
 }
 @end

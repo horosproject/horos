@@ -100,4 +100,6 @@
 - (void)findShadingPreset:(id) sender;
 - (IBAction)editShadingValues:(id) sender;
 
+-(IBAction) endDCMExportSettings:(id) sender;
+
 @end

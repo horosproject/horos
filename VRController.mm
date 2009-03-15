@@ -1747,7 +1747,7 @@ static NSString*	ClippingRangeViewToolbarItemIdentifier = @"ClippingRange";
 	else if ([itemIdent isEqualToString: ExportToolbarItemIdentifier]) {
         
 	[toolbarItem setLabel:NSLocalizedString( @"DICOM File",nil)];
-	[toolbarItem setPaletteLabel:NSLocalizedString(@"Save as DICOM",nil)];
+	[toolbarItem setPaletteLabel:NSLocalizedString(@"DICOM",nil)];
         [toolbarItem setToolTip:NSLocalizedString(@"Export this image in a DICOM file",nil)];
 	[toolbarItem setImage: [NSImage imageNamed: ExportToolbarItemIdentifier]];
 	[toolbarItem setTarget: view];

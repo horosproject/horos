@@ -166,7 +166,7 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (void) dealloc
 {
-	[vrView restoreFullDepthCapture];
+//	[vrView restoreFullDepthCapture];
 	[camera release];
 	
 	[super dealloc];
