@@ -1266,7 +1266,7 @@ public:
 	
 	aRenderer->SetDraw( 1);
 	
-	self.dcmSeriesString = [dcmSeriesName string];
+	self.dcmSeriesString = [dcmSeriesName stringValue];
 	
 	if( [sender tag])
 	{
