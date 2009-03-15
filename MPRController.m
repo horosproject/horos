@@ -1085,6 +1085,7 @@ static float deg2rad = 3.14159265358979/180.0;
 					
 					curExportView.camera.position = [Point3D pointWithX: curExportView.camera.position.x + interval*cos[ 6] y:curExportView.camera.position.y + interval*cos[ 7] z:curExportView.camera.position.z + interval*cos[ 8]];
 					curExportView.camera.focalPoint = [Point3D pointWithX: curExportView.camera.position.x + cos[ 6] y:curExportView.camera.position.y + cos[ 7] z:curExportView.camera.position.z + cos[ 8]];
+					
 					[curExportView restoreCamera];
 					
 					[progress incrementBy: 1];
@@ -1170,7 +1171,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	
 	if( curExportView == nil) curExportView = mprView3;
 	
-	[NSApp beginSheet: dcmWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:(void*) nil];
+	[NSApp beginSheet: dcmWindow modalForWindow: nil modalDelegate:self didEndSelector:nil contextInfo:(void*) nil];
 	
 	self.displayCrossLines = YES;
 	self.dcmSameIntervalAndThickness = YES;

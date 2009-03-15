@@ -8,8 +8,8 @@
 		<string key="IBDocument.HIToolboxVersion">353.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="414"/>
 			<integer value="659"/>
+			<integer value="414"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -113,9 +113,9 @@
 			<object class="NSWindowTemplate" id="547747083">
 				<int key="NSWindowStyleMask">1</int>
 				<int key="NSWindowBacking">2</int>
-				<string key="NSWindowRect">{{42, 380}, {590, 460}}</string>
+				<string key="NSWindowRect">{{67, 852}, {590, 460}}</string>
 				<int key="NSWTFlags">1618477056</int>
-				<string key="NSWindowTitle">Window</string>
+				<string key="NSWindowTitle">DICOM Export</string>
 				<string key="NSWindowClass">NSWindow</string>
 				<object class="NSMutableString" key="NSViewClass">
 					<characters key="NS.bytes">View</characters>
@@ -1166,7 +1166,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string key="NSFrameSize">{590, 460}</string>
 					<reference key="NSSuperview"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {1440, 878}}</string>
+				<string key="NSScreenRect">{{0, 0}, {2560, 1578}}</string>
 				<string key="NSMaxSize">{3.40282e+38, 3.40282e+38}</string>
 			</object>
 			<object class="NSWindowTemplate" id="775011777">
@@ -6460,8 +6460,8 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{1185, 817}, {590, 460}}</string>
-					<string>{{1185, 817}, {590, 460}}</string>
+					<string>{{67, 852}, {590, 460}}</string>
+					<string>{{67, 852}, {590, 460}}</string>
 					<reference ref="9"/>
 					<reference ref="8"/>
 					<reference ref="8"/>
