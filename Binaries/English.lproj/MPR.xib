@@ -101,6 +101,7 @@
 					<string>dcmNumberOfFrames</string>
 					<string>dcmQuality</string>
 					<string>dcmRotation</string>
+					<string>dcmBatchNumberOfFrames</string>
 				</object>
 				<bool key="NSEditable">YES</bool>
 				<object class="_NSManagedProxy" key="_NSManagedProxy"/>
@@ -507,7 +508,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 										<object class="NSSlider" id="680106481">
 											<reference key="NSNextResponder" ref="55224711"/>
 											<int key="NSvFlags">258</int>
-											<string key="NSFrame">{{307, 38}, {170, 17}}</string>
+											<string key="NSFrame">{{307, 37}, {170, 17}}</string>
 											<reference key="NSSuperview" ref="55224711"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSSliderCell" key="NSCell" id="660115403">
@@ -635,12 +636,12 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 										<object class="NSTextField" id="297794025">
 											<reference key="NSNextResponder" ref="55224711"/>
 											<int key="NSvFlags">257</int>
-											<string key="NSFrame">{{479, 38}, {53, 17}}</string>
+											<string key="NSFrame">{{486, 38}, {46, 17}}</string>
 											<reference key="NSSuperview" ref="55224711"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSTextFieldCell" key="NSCell" id="69336004">
 												<int key="NSCellFlags">67239424</int>
-												<int key="NSCellFlags2">138412032</int>
+												<int key="NSCellFlags2">4194304</int>
 												<string key="NSContents">40</string>
 												<reference key="NSSupport" ref="761768664"/>
 												<reference key="NSControlView" ref="297794025"/>
@@ -907,7 +908,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 										<object class="NSButton" id="480847450">
 											<reference key="NSNextResponder" ref="55224711"/>
 											<int key="NSvFlags">268</int>
-											<string key="NSFrame">{{160, 37}, {160, 18}}</string>
+											<string key="NSFrame">{{160, 37}, {141, 18}}</string>
 											<reference key="NSSuperview" ref="55224711"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSButtonCell" key="NSCell" id="887929652">
@@ -3888,6 +3889,22 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					</object>
 					<int key="connectionID">756</int>
 				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: selection.dcmBatchNumberOfFrames</string>
+						<reference key="source" ref="599121280"/>
+						<reference key="destination" ref="643764789"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="599121280"/>
+							<reference key="NSDestination" ref="643764789"/>
+							<string key="NSLabel">value: selection.dcmBatchNumberOfFrames</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">selection.dcmBatchNumberOfFrames</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">757</int>
+				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
 				<object class="NSArray" key="orderedObjects">
@@ -4094,8 +4111,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<object class="NSMutableArray" key="children">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<reference ref="492684644"/>
-							<reference ref="680106481"/>
-							<reference ref="297794025"/>
 							<reference ref="635168880"/>
 							<reference ref="203138336"/>
 							<reference ref="126563000"/>
@@ -4109,10 +4124,12 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<reference ref="1042405935"/>
 							<reference ref="480847450"/>
 							<reference ref="248823050"/>
-							<reference ref="599121280"/>
 							<reference ref="218724017"/>
 							<reference ref="631671077"/>
 							<reference ref="432856353"/>
+							<reference ref="599121280"/>
+							<reference ref="680106481"/>
+							<reference ref="297794025"/>
 						</object>
 						<reference key="parent" ref="679427258"/>
 					</object>
@@ -6461,7 +6478,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">756</int>
+			<int key="maxID">757</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">

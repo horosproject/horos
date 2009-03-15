@@ -55,7 +55,7 @@
 	float dcmInterval;
 	int dcmMode;
 	int dcmSeriesMode;
-	int dcmRotation, dcmRotationDirection, dcmNumberOfFrames, dcmQuality;
+	int dcmRotation, dcmRotationDirection, dcmNumberOfFrames, dcmQuality, dcmBatchNumberOfFrames;
 	NSString *dcmSeriesName;
 	MPRDCMView *curExportView;
 	
@@ -75,7 +75,7 @@
 }
 
 @property float clippingRangeThickness, dcmInterval;
-@property int clippingRangeMode, mouseViewID, dcmFrom, dcmTo, dcmMode, dcmSeriesMode, dcmRotation, dcmRotationDirection, dcmNumberOfFrames, dcmQuality;
+@property int clippingRangeMode, mouseViewID, dcmFrom, dcmTo, dcmMode, dcmSeriesMode, dcmRotation, dcmRotationDirection, dcmNumberOfFrames, dcmQuality, dcmBatchNumberOfFrames;
 @property (retain) Point3D *mousePosition;
 @property (retain) NSArray *wlwwMenuItems;
 @property (retain) NSString *dcmSeriesName;

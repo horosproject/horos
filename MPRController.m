@@ -26,7 +26,7 @@ static float deg2rad = 3.14159265358979/180.0;
 
 @implementation MPRController
 
-@synthesize clippingRangeThickness, clippingRangeMode, mousePosition, mouseViewID, originalPix, wlwwMenuItems, LOD, dcmFrom, dcmTo, dcmMode, dcmRotationDirection, dcmSeriesMode, dcmRotation, dcmNumberOfFrames, dcmQuality, dcmInterval, dcmSeriesName;
+@synthesize clippingRangeThickness, clippingRangeMode, mousePosition, mouseViewID, originalPix, wlwwMenuItems, LOD, dcmFrom, dcmTo, dcmMode, dcmRotationDirection, dcmSeriesMode, dcmRotation, dcmNumberOfFrames, dcmQuality, dcmInterval, dcmSeriesName, dcmBatchNumberOfFrames;
 
 + (double) angleBetweenVector:(float*) a andPlane:(float*) orientation
 {
@@ -1165,6 +1165,8 @@ static float deg2rad = 3.14159265358979/180.0;
 		[mprView2 setNeedsDisplay: YES];
 		[mprView3 setNeedsDisplay: YES];
 	}
+	
+	self.dcmBatchNumberOfFrames = dcmTo + dcmFrom;
 }
 
 - (void) setDcmInterval:(float) f
