@@ -102,7 +102,6 @@
 - (void)ApplyWLWW:(id)sender;
 - (void)applyWLWWForString:(NSString *)menuString;
 
-- (IBAction)applyShading:(id) sender;
 - (void)findShadingPreset:(id) sender;
 - (IBAction)editShadingValues:(id) sender;
 
