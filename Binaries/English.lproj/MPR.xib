@@ -3074,7 +3074,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<object class="NSButton" id="942069817">
 								<reference key="NSNextResponder" ref="815409450"/>
 								<int key="NSvFlags">256</int>
-								<string key="NSFrame">{{-1, 20}, {78, 18}}</string>
+								<string key="NSFrame">{{-1, 19}, {78, 18}}</string>
 								<reference key="NSSuperview" ref="815409450"/>
 								<bool key="NSEnabled">YES</bool>
 								<object class="NSButtonCell" key="NSCell" id="915233731">
@@ -7097,7 +7097,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<object class="NSMutableArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>ApplyWLWW:</string>
-							<string>applyShading:</string>
 							<string>computeCrossReferenceLines:</string>
 							<string>editShadingValues:</string>
 							<string>endDCMExportSettings:</string>
@@ -7107,7 +7106,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>id</string>
 							<string>id</string>
 							<string>MPRDCMView</string>
 							<string>id</string>
