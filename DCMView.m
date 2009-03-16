@@ -3238,7 +3238,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					xPos = (int)mouseXPos,
 					yPos = (int)mouseYPos;
 				
-				if( curDCM.isRGB ) {
+				if( curDCM.isRGB )
+				{
 					pixelMouseValueR = ((unsigned char*) curDCM.fImage)[ 4 * (xPos + yPos * curDCM.pwidth) +1];
 					pixelMouseValueG = ((unsigned char*) curDCM.fImage)[ 4 * (xPos + yPos * curDCM.pwidth) +2];
 					pixelMouseValueB = ((unsigned char*) curDCM.fImage)[ 4 * (xPos + yPos * curDCM.pwidth) +3];
