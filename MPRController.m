@@ -1077,7 +1077,7 @@ static float deg2rad = 3.14159265358979/180.0;
 				// Go to first position
 				curExportView.camera.position = [Point3D pointWithX: curExportView.camera.position.x + interval*cos[ 6]*-dcmTo y:curExportView.camera.position.y + interval*cos[ 7]*-dcmTo z:curExportView.camera.position.z + interval*cos[ 8]*-dcmTo];
 				curExportView.camera.focalPoint = [Point3D pointWithX: curExportView.camera.position.x + cos[ 6] y:curExportView.camera.position.y + cos[ 7] z:curExportView.camera.position.z + cos[ 8]];
-				[curExportView restoreCamera];
+				[curExportView restoreCameraAndCheckForFrame: NO];
 				
 				for( int i = 0; i < dcmBatchNumberOfFrames; i++)
 				{
@@ -1086,7 +1086,7 @@ static float deg2rad = 3.14159265358979/180.0;
 					curExportView.camera.position = [Point3D pointWithX: curExportView.camera.position.x + interval*cos[ 6] y:curExportView.camera.position.y + interval*cos[ 7] z:curExportView.camera.position.z + interval*cos[ 8]];
 					curExportView.camera.focalPoint = [Point3D pointWithX: curExportView.camera.position.x + cos[ 6] y:curExportView.camera.position.y + cos[ 7] z:curExportView.camera.position.z + cos[ 8]];
 					
-					[curExportView restoreCamera];
+					[curExportView restoreCameraAndCheckForFrame: NO];
 					
 					[progress incrementBy: 1];
 					
@@ -1232,8 +1232,8 @@ static float deg2rad = 3.14159265358979/180.0;
 	
 	if( previousDcmInterval)
 	{
-		self.dcmTo =  ceil(( (float) dcmTo * previousDcmInterval) /  dcmInterval);
-		self.dcmFrom = ceil(( (float) dcmFrom * previousDcmInterval) / dcmInterval);
+		self.dcmTo =  round(( (float) dcmTo * previousDcmInterval) /  dcmInterval);
+		self.dcmFrom = round(( (float) dcmFrom * previousDcmInterval) / dcmInterval);
 	}
 	
 	previousDcmInterval = f;

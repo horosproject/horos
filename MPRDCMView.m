@@ -162,7 +162,13 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (void) restoreCamera
 {
-	[self checkForFrame];
+	return [self restoreCameraAndCheckForFrame: YES];
+}
+
+- (void) restoreCameraAndCheckForFrame: (BOOL) v
+{
+	if( v)
+		[self checkForFrame];
 	[vrView setCamera: camera];
 }
 
