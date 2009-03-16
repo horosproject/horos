@@ -4792,21 +4792,17 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 // could be cleaned up by subclassing DCMView
 - (void)mouseDraggedImageScroll:(NSEvent *)event
 {
-	short   now, prev, previmage;
+	short   previmage;
 	BOOL	movie4Dmove = NO;
 	NSPoint current = [self currentPointInView:event];
 	if( scrollMode == 0)
 	{
 		if( fabs( start.x - current.x) < fabs( start.y - current.y))
 		{
-			prev = start.y/2;
-			now = current.y/2;
 			if( fabs( start.y - current.y) > 3) scrollMode = 1;
 		}
 		else if( fabs( start.x - current.x) >= fabs( start.y - current.y))
 		{
-			prev = start.x/2;
-			now = current.x/2;
 			if( fabs( start.x - current.x) > 3) scrollMode = 2;
 		}
 	}

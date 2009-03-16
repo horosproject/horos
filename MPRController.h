@@ -105,7 +105,7 @@
 - (void)UpdateWLWWMenu:(NSNotification*)note;
 - (void)ApplyWLWW:(id)sender;
 - (void)applyWLWWForString:(NSString *)menuString;
-
+- (void) updateViewsAccordingToFrame:(id) sender;
 - (void)findShadingPreset:(id) sender;
 - (IBAction)editShadingValues:(id) sender;
 

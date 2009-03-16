@@ -143,6 +143,8 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (void) updateViewsAccordingToFrame:(id) sender	// see setFrame in MPRDCMView.m
 {
+	id view = [[self window] firstResponder];
+	
 	[mprView1 camera].forceUpdate = YES;
 	[mprView2 camera].forceUpdate = YES;
 	[mprView3 camera].forceUpdate = YES;
@@ -150,6 +152,13 @@ static float deg2rad = 3.14159265358979/180.0;
 	[[self window] makeFirstResponder: mprView3];
 	[mprView3 restoreCamera];
 	[mprView3 updateViewMPR];
+	
+	if( view)
+		[[self window] makeFirstResponder: view];
+	
+	[mprView1 setNeedsDisplay: YES];
+	[mprView2 setNeedsDisplay: YES];
+	[mprView3 setNeedsDisplay: YES];
 }
 
 - (void) showWindow:(id) sender

@@ -49,6 +49,7 @@ static float deg2rad = 3.14159265358979/180.0;
 			else return NO; // VR
 		break;
 		
+		case tNext:
 		case tMesure:
 		case tROI:
 		case tOval:
@@ -677,11 +678,17 @@ static float deg2rad = 3.14159265358979/180.0;
 	
 	[self restoreCamera];
 	
+	[vrView setLODLow: YES]; 
+	
 	[vrView scrollWheel: theEvent];
 	
 	[self updateViewMPR];
-	
 	[self updateMousePosition: theEvent];
+	
+	[vrView setLODLow: NO]; 
+	
+	[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector( updateViewsAccordingToFrame:) object: nil];
+	[windowController performSelector: @selector( updateViewsAccordingToFrame:) withObject: nil afterDelay: 0.3];
 }
 
 - (void)rightMouseDown:(NSEvent *)theEvent
@@ -798,6 +805,9 @@ static float deg2rad = 3.14159265358979/180.0;
 		{
 			[super mouseUp: theEvent];
 			[windowController propagateWLWW: self];
+			
+			if( tool == tNext)
+				[windowController updateViewsAccordingToFrame: self];
 		}
 		else
 		{
@@ -811,6 +821,37 @@ static float deg2rad = 3.14159265358979/180.0;
 	}
 	
 	[self updateMousePosition: theEvent];
+}
+
+- (void) mouseDraggedImageScroll:(NSEvent *) event
+{
+	NSPoint current = [self currentPointInView: event];
+	
+	if( scrollMode == 0)
+	{
+		if( fabs( start.x - current.x) < fabs( start.y - current.y))
+		{
+			if( fabs( start.y - current.y) > 3) scrollMode = 1;
+		}
+		else if( fabs( start.x - current.x) >= fabs( start.y - current.y))
+		{
+			if( fabs( start.x - current.x) > 3) scrollMode = 2;
+		}
+	}
+	
+	float delta;
+	
+	if( scrollMode == 1)
+		delta = ((previous.y - current.y) * 512. )/ ([self frame].size.width/2);
+	else
+		delta = ((current.x - previous.x) * 512. )/ ([self frame].size.width/2);
+	
+	[self restoreCamera];
+	[vrView setLODLow: YES];
+	[vrView scrollInStack: delta];
+	[self updateViewMPR];
+	[self updateMousePosition: event];
+	[vrView setLODLow: NO];
 }
 
 - (void) mouseDragged:(NSEvent *)theEvent
@@ -851,7 +892,7 @@ static float deg2rad = 3.14159265358979/180.0;
 			float before[ 9], after[ 9];
 			if( [vrView _tool] == tRotate)
 				[self.pix orientation: before];
-			
+				
 			[vrView mouseDragged: theEvent];
 			
 			if( [vrView _tool] == tRotate)

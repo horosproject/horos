@@ -455,6 +455,7 @@ typedef char* vtkMyCallbackVR;
 - (void) getOrigin: (float *) origin windowCentered:(BOOL) wc sliceMiddle:(BOOL) sliceMiddle;
 - (BOOL) isViewportResizable;
 - (void) setViewportResizable: (BOOL) boo;
+- (void) scrollInStack: (float) delta;
 
 // 3D Points
 - (BOOL) get3DPixelUnder2DPositionX:(float) x Y:(float) y pixel: (long*) pix position:(float*) position value:(float*) val;

@@ -2600,7 +2600,7 @@ public:
 	oText[ 3]->SetInput( string);
 }
 
-- (void)scrollWheel:(NSEvent *)theEvent
+- (void) scrollInStack: (float) delta
 {
 	_hasChanged = YES;
 	vtkCocoaRenderWindowInteractor *interactor = [self getInteractor];
@@ -2611,7 +2611,7 @@ public:
 	
 	if( projectionMode != 2 && clipRangeActivated == NO)
 	{
-		[self Azimuth: [theEvent deltaY] * 2];
+		[self Azimuth: delta * 2];
 		[self mouseMoved: [[NSApplication sharedApplication] currentEvent]];
 		[self setNeedsDisplay: YES];
 	}
@@ -2626,13 +2626,13 @@ public:
 		aCamera->GetPosition( position);
 		aCamera->GetFocalPoint( focal);
 		
-		position[ 0] = position[ 0] + cos[ 6] * [theEvent deltaY] * factor;
-		position[ 1] = position[ 1] + cos[ 7] * [theEvent deltaY] * factor;
-		position[ 2] = position[ 2] + cos[ 8] * [theEvent deltaY] * factor;
+		position[ 0] = position[ 0] + cos[ 6] * delta * factor;
+		position[ 1] = position[ 1] + cos[ 7] * delta * factor;
+		position[ 2] = position[ 2] + cos[ 8] * delta * factor;
 
-		focal[ 0] = focal[ 0] + cos[ 6] * [theEvent deltaY] * factor;
-		focal[ 1] = focal[ 1] + cos[ 7] * [theEvent deltaY] * factor;
-		focal[ 2] = focal[ 2] + cos[ 8] * [theEvent deltaY] * factor;
+		focal[ 0] = focal[ 0] + cos[ 6] * delta * factor;
+		focal[ 1] = focal[ 1] + cos[ 7] * delta * factor;
+		focal[ 2] = focal[ 2] + cos[ 8] * delta * factor;
 		
 		if( clipRangeActivated)
 		{
@@ -2660,6 +2660,11 @@ public:
 		[self setNeedsDisplay:YES];
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: nil];
 	}
+}
+
+- (void) scrollWheel:(NSEvent *)theEvent
+{
+	return [self scrollInStack: [theEvent deltaY]];
 }
 
 - (void)otherMouseDown:(NSEvent *)theEvent
