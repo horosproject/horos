@@ -1206,6 +1206,7 @@ public:
 		
 		[exportDCM setOffset: offset];
 		[exportDCM setSigned: isSigned];
+		[exportDCM setDefaultWWWL: ww :wl];
 		
 		[self getOrientation: o];
 		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"exportOrientationIn3DExport"])
@@ -4804,8 +4805,6 @@ public:
 
 - (void) setWLWW:(float) iwl :(float) iww
 {
-	if( fullDepthMode) return;
-	
 	if( iwl == 0 && iww == 0)
 	{
 		iwl = [[pixList objectAtIndex:0] fullwl];
@@ -4821,6 +4820,8 @@ public:
 	
 	wl = iwl;
 	ww = iww;
+	
+	if( fullDepthMode) return;
 	
 	if(advancedCLUT)
 	{
@@ -6772,9 +6773,11 @@ public:
 	viewAngle = [cam viewAngle];
 	eyeAngle = [cam eyeAngle];
 	parallelScale = [cam parallelScale];
-
+	
 	// window level
-	if(!advancedCLUT)[self setWLWW:[cam wl] :[cam ww]];
+	if(!advancedCLUT)
+		[self setWLWW:[cam wl] :[cam ww]];
+	
 	// cropping box
 	double a[ 6];
 	a[0] = [[cam minCroppingPlanes] x];
@@ -6788,8 +6791,7 @@ public:
 	
 	double origin[3];
 	volume->GetPosition(origin);	//GetOrigin
-
-		
+	
 	vtkTransform *Transform = vtkTransform::New();
 	Transform->SetMatrix(volume->GetUserMatrix());
 	Transform->Push();

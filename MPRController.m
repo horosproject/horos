@@ -247,6 +247,10 @@ static float deg2rad = 3.14159265358979/180.0;
 	[mprView1 setWLWW: [sender curWL] :[sender curWW]];
 	[mprView2 setWLWW: [sender curWL] :[sender curWW]];
 	[mprView3 setWLWW: [sender curWL] :[sender curWW]];
+
+	mprView1.camera.wl = [sender curWL];	mprView1.camera.ww = [sender curWW];
+	mprView2.camera.wl = [sender curWL];	mprView2.camera.ww = [sender curWW];
+	mprView3.camera.wl = [sender curWL];	mprView3.camera.ww = [sender curWW];
 }
 
 - (void) computeCrossReferenceLines:(MPRDCMView*) sender

@@ -100,9 +100,6 @@
 	self.clippingRangeFar = far;
 }
 
-
-
-
 -(void) setWLWW: (float) newWl : (float) newWw
 {
 	self.wl = newWl;
