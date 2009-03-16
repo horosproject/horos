@@ -7069,11 +7069,18 @@ static NSArray*	statesArray = nil;
 			}
 		}
 	}
-	
+		
 	[context unlock];
 	[context release];
 	
 	[viewersList release];
+	
+	if( delayedTileWindows)
+	{
+		delayedTileWindows = NO;
+		[NSObject cancelPreviousPerformRequestsWithTarget:appController selector:@selector(tileWindows:) object:nil];
+		[appController tileWindows: self];
+	}
 }
 
 - (ViewerController*) loadSeries:(NSManagedObject *) series :(ViewerController*) viewer :(BOOL) firstViewer keyImagesOnly:(BOOL) keyImages
