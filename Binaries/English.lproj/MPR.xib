@@ -11,6 +11,7 @@
 			<integer value="731"/>
 			<integer value="659"/>
 			<integer value="672"/>
+			<integer value="2"/>
 			<integer value="526"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
@@ -47,7 +48,7 @@
 				<nil key="NSViewClass"/>
 				<string key="NSWindowContentMaxSize">{3.40282e+38, 3.40282e+38}</string>
 				<object class="NSView" key="NSWindowView" id="1006">
-					<nil key="NSNextResponder"/>
+					<reference key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<object class="NSMutableArray" key="NSSubviews">
 						<bool key="EncodedWithXMLCoder">YES</bool>
@@ -64,35 +65,36 @@
 										<object class="NSCustomView" id="494401297">
 											<reference key="NSNextResponder" ref="843978156"/>
 											<int key="NSvFlags">274</int>
-											<string key="NSFrameSize">{337, 205}</string>
+											<string key="NSFrameSize">{337, 209}</string>
 											<reference key="NSSuperview" ref="843978156"/>
 											<string key="NSClassName">MPRDCMView</string>
 										</object>
 										<object class="NSCustomView" id="390045821">
 											<reference key="NSNextResponder" ref="843978156"/>
 											<int key="NSvFlags">256</int>
-											<string key="NSFrame">{{0, 214}, {337, 209}}</string>
+											<string key="NSFrame">{{0, 218}, {337, 225}}</string>
 											<reference key="NSSuperview" ref="843978156"/>
 											<string key="NSClassName">MPRDCMView</string>
 										</object>
 									</object>
-									<string key="NSFrameSize">{337, 423}</string>
+									<string key="NSFrameSize">{337, 443}</string>
 									<reference key="NSSuperview" ref="345868235"/>
 								</object>
 								<object class="NSCustomView" id="429309286">
 									<reference key="NSNextResponder" ref="345868235"/>
 									<int key="NSvFlags">274</int>
-									<string key="NSFrame">{{346, 0}, {385, 423}}</string>
+									<string key="NSFrame">{{346, 0}, {385, 443}}</string>
 									<reference key="NSSuperview" ref="345868235"/>
 									<string key="NSClassName">MPRDCMView</string>
 								</object>
 							</object>
-							<string key="NSFrame">{{0, 20}, {731, 423}}</string>
+							<string key="NSFrameSize">{731, 443}</string>
 							<reference key="NSSuperview" ref="1006"/>
 							<bool key="NSIsVertical">YES</bool>
 						</object>
 					</object>
 					<string key="NSFrameSize">{730, 443}</string>
+					<reference key="NSSuperview"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1680, 1028}}</string>
 				<string key="NSMaxSize">{3.40282e+38, 3.40282e+38}</string>
@@ -3123,13 +3125,13 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 			<object class="NSUserDefaultsController" id="46445117">
 				<bool key="NSSharedInstance">YES</bool>
 			</object>
-			<object class="NSCustomView" id="247989083">
+			<object class="NSCustomView" id="660971638">
 				<reference key="NSNextResponder"/>
 				<int key="NSvFlags">268</int>
 				<object class="NSMutableArray" key="NSSubviews">
 					<bool key="EncodedWithXMLCoder">YES</bool>
-					<object class="NSColorWell" id="532220503">
-						<reference key="NSNextResponder" ref="247989083"/>
+					<object class="NSColorWell" id="643228715">
+						<reference key="NSNextResponder" ref="660971638"/>
 						<int key="NSvFlags">268</int>
 						<object class="NSMutableSet" key="NSDragTypes">
 							<bool key="EncodedWithXMLCoder">YES</bool>
@@ -3139,7 +3141,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							</object>
 						</object>
 						<string key="NSFrame">{{0, 20}, {20, 20}}</string>
-						<reference key="NSSuperview" ref="247989083"/>
+						<reference key="NSSuperview" ref="660971638"/>
 						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<bool key="NSIsBordered">YES</bool>
@@ -3148,8 +3150,8 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<bytes key="NSRGB">MC4wNTgxMzA0OTkgMC4wNTU1NDE4OTkgMQA</bytes>
 						</object>
 					</object>
-					<object class="NSColorWell" id="256542260">
-						<reference key="NSNextResponder" ref="247989083"/>
+					<object class="NSColorWell" id="759085576">
+						<reference key="NSNextResponder" ref="660971638"/>
 						<int key="NSvFlags">268</int>
 						<object class="NSMutableSet" key="NSDragTypes">
 							<bool key="EncodedWithXMLCoder">YES</bool>
@@ -3159,7 +3161,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							</object>
 						</object>
 						<string key="NSFrameSize">{20, 20}</string>
-						<reference key="NSSuperview" ref="247989083"/>
+						<reference key="NSSuperview" ref="660971638"/>
 						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<bool key="NSIsBordered">YES</bool>
@@ -3168,8 +3170,8 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<bytes key="NSRGB">MC4wNTgxMzA0OTkgMC4wNTU1NDE4OTkgMQA</bytes>
 						</object>
 					</object>
-					<object class="NSColorWell" id="930087116">
-						<reference key="NSNextResponder" ref="247989083"/>
+					<object class="NSColorWell" id="344748144">
+						<reference key="NSNextResponder" ref="660971638"/>
 						<int key="NSvFlags">268</int>
 						<object class="NSMutableSet" key="NSDragTypes">
 							<bool key="EncodedWithXMLCoder">YES</bool>
@@ -3179,7 +3181,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							</object>
 						</object>
 						<string key="NSFrame">{{20, 0}, {20, 40}}</string>
-						<reference key="NSSuperview" ref="247989083"/>
+						<reference key="NSSuperview" ref="660971638"/>
 						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<bool key="NSIsBordered">YES</bool>
@@ -4539,17 +4541,17 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<object class="IBOutletConnection" key="connection">
 						<string key="label">tbAxisColors</string>
 						<reference key="source" ref="1001"/>
-						<reference key="destination" ref="247989083"/>
+						<reference key="destination" ref="660971638"/>
 					</object>
 					<int key="connectionID">820</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
 						<string key="label">value: selection.colorAxis1</string>
-						<reference key="source" ref="532220503"/>
+						<reference key="source" ref="643228715"/>
 						<reference key="destination" ref="643764789"/>
 						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="532220503"/>
+							<reference key="NSSource" ref="643228715"/>
 							<reference key="NSDestination" ref="643764789"/>
 							<string key="NSLabel">value: selection.colorAxis1</string>
 							<string key="NSBinding">value</string>
@@ -4562,10 +4564,10 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
 						<string key="label">value: selection.colorAxis2</string>
-						<reference key="source" ref="256542260"/>
+						<reference key="source" ref="759085576"/>
 						<reference key="destination" ref="643764789"/>
 						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="256542260"/>
+							<reference key="NSSource" ref="759085576"/>
 							<reference key="NSDestination" ref="643764789"/>
 							<string key="NSLabel">value: selection.colorAxis2</string>
 							<string key="NSBinding">value</string>
@@ -4578,10 +4580,10 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
 						<string key="label">value: selection.colorAxis3</string>
-						<reference key="source" ref="930087116"/>
+						<reference key="source" ref="344748144"/>
 						<reference key="destination" ref="643764789"/>
 						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="930087116"/>
+							<reference key="NSSource" ref="344748144"/>
 							<reference key="NSDestination" ref="643764789"/>
 							<string key="NSLabel">value: selection.colorAxis3</string>
 							<string key="NSBinding">value</string>
@@ -6272,30 +6274,30 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">816</int>
-						<reference key="object" ref="247989083"/>
+						<reference key="object" ref="660971638"/>
 						<object class="NSMutableArray" key="children">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<reference ref="532220503"/>
-							<reference ref="256542260"/>
-							<reference ref="930087116"/>
+							<reference ref="643228715"/>
+							<reference ref="759085576"/>
+							<reference ref="344748144"/>
 						</object>
 						<reference key="parent" ref="1002"/>
 						<string key="objectName">tb Axis Colors</string>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">817</int>
-						<reference key="object" ref="532220503"/>
-						<reference key="parent" ref="247989083"/>
+						<reference key="object" ref="643228715"/>
+						<reference key="parent" ref="660971638"/>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">818</int>
-						<reference key="object" ref="256542260"/>
-						<reference key="parent" ref="247989083"/>
+						<reference key="object" ref="759085576"/>
+						<reference key="parent" ref="660971638"/>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">819</int>
-						<reference key="object" ref="930087116"/>
-						<reference key="parent" ref="247989083"/>
+						<reference key="object" ref="344748144"/>
+						<reference key="parent" ref="660971638"/>
 					</object>
 				</object>
 			</object>
@@ -6715,10 +6717,10 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{37, 758}, {730, 443}}</string>
+					<string>{{37, 563}, {730, 443}}</string>
 					<reference ref="8"/>
 					<reference ref="8"/>
-					<string>{{37, 758}, {730, 443}}</string>
+					<string>{{37, 563}, {730, 443}}</string>
 					<reference ref="8"/>
 					<string>{196, 240}</string>
 					<string>{{357, 418}, {480, 270}}</string>
