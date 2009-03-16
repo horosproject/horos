@@ -100,6 +100,7 @@ extern void compressJPEG (int inQuality, char* filename, unsigned char* inImageB
 extern BOOL hasMacOSXTiger();
 extern BOOL hasMacOSXLeopard();
 
+extern int delayedTileWindows;
 extern AppController *appController;
 extern NSThread *mainThread;
 extern BOOL NEEDTOREBUILD, COMPLETEREBUILD;
@@ -8226,7 +8227,9 @@ static BOOL withReset = NO;
 			[[v window] setFrame: r display: NO];
 		}
 		
-		[NSObject cancelPreviousPerformRequestsWithTarget:appController selector:@selector(tileWindows:) object:nil];
+		if( delayedTileWindows)
+			[NSObject cancelPreviousPerformRequestsWithTarget:appController selector:@selector(tileWindows:) object:nil];
+		delayedTileWindows = YES;
 		[appController performSelector: @selector(tileWindows:) withObject:nil afterDelay: 0.1];
 	}
 }

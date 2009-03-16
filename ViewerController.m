@@ -93,6 +93,8 @@
 
 //@class VRPROController;
 
+int delayedTileWindows = NO;
+
 extern  ToolbarPanelController  *toolbarPanel[ 10];
 extern  AppController			*appController;
 extern  BOOL					USETOOLBARPANEL;
@@ -5646,7 +5648,9 @@ static ViewerController *draggedController = nil;
 
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
 	{
-		[NSObject cancelPreviousPerformRequestsWithTarget:appController selector:@selector(tileWindows:) object:nil];
+		if( delayedTileWindows)
+			[NSObject cancelPreviousPerformRequestsWithTarget:appController selector:@selector(tileWindows:) object:nil];
+		delayedTileWindows = YES;
 		[appController performSelector: @selector(tileWindows:) withObject:nil afterDelay: 0.1];
 	}
 	
@@ -5660,6 +5664,12 @@ static ViewerController *draggedController = nil;
 
 -(void) changeImageData:(NSMutableArray*)f :(NSMutableArray*)d :(NSData*) v :(BOOL) newViewerWindow
 {
+	if( delayedTileWindows)
+	{
+		[NSObject cancelPreviousPerformRequestsWithTarget:appController selector:@selector(tileWindows:) object:nil];
+		[appController tileWindows: self];
+	}
+
 	BOOL		sameSeries = NO;
 	long		i, imageIndex;
 	long		previousColumns = [imageView columns], previousRows = [imageView rows];

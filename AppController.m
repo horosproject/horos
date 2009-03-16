@@ -55,7 +55,7 @@ static NSDictionary *previousWLWWKeys = nil, *previousCLUTKeys = nil, *previousC
 static BOOL checkForPreferencesUpdate = YES;
 static PluginManager *pluginManager = nil;
 static unsigned char *LUT12toRGB = nil;
-static BOOL canDisplay12Bit = NO;
+static BOOL canDisplay12Bit = NO, tileWindowsReentry = NO;
 static NSInvocation *fill12BitBufferInvocation = nil;
 
 NSThread				*mainThread;
@@ -69,6 +69,8 @@ NSString				*dicomListenerIP = nil;
 NSRecursiveLock			*PapyrusLock = nil, *STORESCP = nil;			// Papyrus is NOT thread-safe
 NSMutableArray			*accumulateAnimationsArray = nil;
 BOOL					accumulateAnimations = NO;
+
+extern int delayedTileWindows;
 
 enum	{kSuccess = 0,
         kCouldNotFindRequestedProcess = -1, 
@@ -699,7 +701,7 @@ static NSDate *lastWarningDate = nil;
 
 + (void) resizeWindowWithAnimation:(NSWindow*) window newSize: (NSRect) newWindowFrame
 {
-	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"NSWindowsSetFrameAnimate"])	//
+	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"NSWindowsSetFrameAnimate"])
 	{
 		NSDictionary *windowResize = [NSDictionary dictionaryWithObjectsAndKeys:
 									 window, NSViewAnimationTargetKey,
@@ -3123,6 +3125,8 @@ static BOOL initialized = NO;
 //	fixedTilingColumns = 2;
 //	fixedTilingRows = 2;
 	
+	delayedTileWindows = NO;
+	
 	numberOfMonitors = [screens count];
 	
 	[AppController checkForPreferencesUpdate: NO];
@@ -3140,6 +3144,17 @@ static BOOL initialized = NO;
 			if( [[viewersList lastObject] FullScreenON] ) return;
 		}
 	}
+	
+	if( tileWindowsReentry)
+	{
+		NSLog( @"****** TILE WINDOWS REENTRY");
+		return;
+	}
+	
+	tileWindowsReentry = YES;
+	
+	for( id obj in winList)
+		[obj retain];
 	
 	//order windows from left-top to right-bottom, per screen if necessary
 	NSMutableArray	*cWindows = [NSMutableArray arrayWithArray: viewersList];
@@ -3551,6 +3566,11 @@ static BOOL initialized = NO;
 		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"syncPreviewList"])
 			[[viewersList objectAtIndex: keyWindow] syncThumbnails];
 	}
+	
+	for( id obj in winList)
+		[obj release];
+		
+	tileWindowsReentry = NO;
 }
 
 

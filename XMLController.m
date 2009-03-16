@@ -37,6 +37,8 @@ static NSString*	VerifyToolbarItemIdentifier				= @"Validator";
 
 static BOOL showWarning = YES;
 
+extern int delayedTileWindows;
+
 @implementation XMLController
 
 @synthesize imObj;
@@ -586,7 +588,9 @@ static BOOL showWarning = YES;
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
 	{
-		[NSObject cancelPreviousPerformRequestsWithTarget: [AppController sharedAppController] selector:@selector(tileWindows:) object:nil];
+		if( delayedTileWindows)
+			[NSObject cancelPreviousPerformRequestsWithTarget: [AppController sharedAppController] selector:@selector(tileWindows:) object:nil];
+		delayedTileWindows = YES;
 		[[AppController sharedAppController] performSelector: @selector(tileWindows:) withObject:nil afterDelay: 0.1];
 	}
 }
