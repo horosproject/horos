@@ -528,7 +528,16 @@ static float deg2rad = 3.14159265358979/180.0;
 		[mprView2 setNeedsDisplay: YES];
 		[mprView3 setNeedsDisplay: YES];
 	}
+	else if(c == 27) // 27 : escape
+	{
+		if(FullScreenOn) [self fullScreenMenu:self];
+	}
 	else [super keyDown: theEvent];
+}
+
+- (id) view
+{
+	return mprView1;
 }
 
 #pragma mark LOD

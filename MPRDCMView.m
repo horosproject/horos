@@ -596,6 +596,17 @@ static float deg2rad = 3.14159265358979/180.0;
 	crossLinesB[ 1][ 2] = b[ 1][ 2];
 }
 
+- (void)keyDown:(NSEvent *)theEvent
+{
+    unichar c = [[theEvent characters] characterAtIndex:0];
+    
+	if( c ==  ' ' || c == 27) // 27 : escape
+	{
+		[windowController keyDown:theEvent];
+	}
+	else [super keyDown: theEvent];
+}
+
 #pragma mark-
 #pragma mark Mouse Events	
 
