@@ -615,8 +615,8 @@ public:
 	[controller print: sender];
 }
 
-- (void)getOrientationText:(char *) o : (float *) vector :(BOOL) inv {
-	
+- (void)getOrientationText:(char *) o : (float *) vector :(BOOL) inv
+{	
 	NSString *orientationX;
 	NSString *orientationY;
 	NSString *orientationZ;
@@ -6854,6 +6854,8 @@ public:
 	aCamera->SetParallelScale(parallelScale);
 	
 //	aCamera->OrthogonalizeViewUp();
+	
+	aRenderer->UpdateLightsGeometryToFollowCamera();
 	
 	if( clipRangeActivated)
 	{
