@@ -127,6 +127,10 @@ static float deg2rad = 3.14159265358979/180.0;
 	[shadingCheck setAction:@selector(switchShading:)];
 	[shadingCheck setTarget:hiddenVRView];
 	
+	self.dcmBatchNumberOfFrames = 50;
+	self.dcmRotationDirection = 0;
+	self.dcmRotation = 360;
+	
 	return self;
 }
 
