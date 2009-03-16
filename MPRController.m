@@ -21,6 +21,7 @@
 #define PRESETS_DIRECTORY @"/3DPRESETS/"
 #define CLUTDATABASE @"/CLUTs/"
 #define DATABASEPATH @"/DATABASE.noindex/"
+#define UNDOQUEUESIZE 40
 
 extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2, float *u, float *iP);
 static float deg2rad = 3.14159265358979/180.0; 
@@ -132,7 +133,6 @@ static float deg2rad = 3.14159265358979/180.0;
 	self.dcmRotationDirection = 0;
 	self.dcmRotation = 360;
 	self.dcmSeriesName = @"MPR";
-
 	float r1, g1, b1, a1, r2, g2, b2, a2, r3, g3, b3, a3;
 	r1 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_1_RED"];
 	g1 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_1_GREEN"];
@@ -160,6 +160,11 @@ static float deg2rad = 3.14159265358979/180.0;
 	self.colorAxis2 = [NSColor colorWithDeviceRed:r2 green:g2 blue:b2 alpha:a2];
 	self.colorAxis3 = [NSColor colorWithDeviceRed:r3 green:g3 blue:b3 alpha:a3];
 	
+	undoQueue = [[NSMutableArray alloc] initWithCapacity: 0];
+	redoQueue = [[NSMutableArray alloc] initWithCapacity: 0];
+	
+	[self setToolIndex: tWL];
+	
 	return self;
 }
 
@@ -185,6 +190,10 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (void) showWindow:(id) sender
 {
+	mprView1.angleMPR = 0;
+	mprView2.angleMPR = 0;
+	mprView3.angleMPR = 0;
+	
 	// Default Init
 	[self setClippingRangeMode: 1]; // MIP
 	[self setClippingRangeThickness: 2];
@@ -219,6 +228,9 @@ static float deg2rad = 3.14159265358979/180.0;
 	[colorAxis2 release];
 	[colorAxis3 release];
 	
+	[undoQueue release];
+	[redoQueue release];
+	
 	[super dealloc];
 	
 	NSLog( @"dealloc MPRController");
@@ -243,9 +255,18 @@ static float deg2rad = 3.14159265358979/180.0;
 	return pixList[ curMovieIndex];
 }
 
+- (void) setToolIndex: (int) toolIndex
+{
+	[mprView1 setCurrentTool:toolIndex];
+	[mprView2 setCurrentTool:toolIndex];
+	[mprView3 setCurrentTool:toolIndex];
+	[mprView1.vrView setCurrentTool:toolIndex];
+	[mprView2.vrView setCurrentTool:toolIndex];
+	[mprView3.vrView setCurrentTool:toolIndex];
+}
+
 - (IBAction)setTool:(id)sender;
 {
-	NSLog(@"setTool");
 	int toolIndex;
 	
 	if([sender isKindOfClass:[NSMatrix class]])
@@ -253,14 +274,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	else if([sender respondsToSelector:@selector(tag)])
 		toolIndex = [sender tag];
 	
-	NSLog(@"toolIndex : %d", toolIndex);
-		
-	[mprView1 setCurrentTool:toolIndex];
-	[mprView2 setCurrentTool:toolIndex];
-	[mprView3 setCurrentTool:toolIndex];
-	[mprView1.vrView setCurrentTool:toolIndex];
-	[mprView2.vrView setCurrentTool:toolIndex];
-	[mprView3.vrView setCurrentTool:toolIndex];
+	[self setToolIndex: toolIndex];
 }
 
 - (void) computeCrossReferenceLinesBetween: (MPRDCMView*) mp1 and:(MPRDCMView*) mp2 result: (float[2][3]) s
@@ -539,8 +553,152 @@ static float deg2rad = 3.14159265358979/180.0;
 {
 	return mprView1;
 }
+#pragma mark Undo
 
-#pragma mark LOD
+- (id) prepareObjectForUndo:(NSString*) string
+{
+//	if( [string isEqualToString: @"roi"])
+//	{
+//		NSMutableArray	*rois = [NSMutableArray array];
+//		
+//		for( int i = 0; i < maxMovieIndex; i++)
+//		{
+//			NSMutableArray *array = [NSMutableArray array];
+//			for( NSArray *ar in roiList[ i])
+//			{
+//				NSMutableArray	*a = [NSMutableArray array];
+//				
+//				for( ROI *r in ar)
+//					[a addObject: [[r copy] autorelease]];
+//				
+//				[array addObject: a];
+//			}
+//			[rois addObject: array];
+//		}
+//		
+//		return [NSDictionary dictionaryWithObjectsAndKeys: string, @"type", rois, @"rois", nil];
+//	}
+	
+	if( [string isEqualToString: @"mprCamera"])
+	{
+		NSMutableArray	*cameras = [NSMutableArray array];
+		
+		[cameras addObject: [[mprView1.camera copy] autorelease]];
+		[cameras addObject: [[mprView2.camera copy] autorelease]];
+		[cameras addObject: [[mprView3.camera copy] autorelease]];
+		
+		NSMutableArray	*angleMPRs = [NSMutableArray array];
+		
+		[angleMPRs addObject: [NSNumber numberWithFloat: mprView1.angleMPR]];
+		[angleMPRs addObject: [NSNumber numberWithFloat: mprView2.angleMPR]];
+		[angleMPRs addObject: [NSNumber numberWithFloat: mprView3.angleMPR]];
+		
+		return [NSDictionary dictionaryWithObjectsAndKeys: string, @"type", cameras, @"cameras", angleMPRs, @"angleMPRs", nil];
+	}
+	
+	return nil;
+}
+
+- (void) executeUndo:(NSMutableArray*) u
+{
+	if( [u count])
+	{
+		if( [[[u lastObject] objectForKey: @"type"] isEqualToString:@"mprCamera"])
+		{
+			NSArray	*cameras = [[u lastObject] objectForKey: @"cameras"];
+			
+			mprView1.camera = [cameras objectAtIndex: 0];
+			mprView2.camera = [cameras objectAtIndex: 1];
+			mprView3.camera = [cameras objectAtIndex: 2];
+			
+			NSArray	*angleMPRs = [[u lastObject] objectForKey: @"angleMPRs"];
+			
+			mprView1.angleMPR = [[angleMPRs objectAtIndex: 0] floatValue];
+			mprView2.angleMPR = [[angleMPRs objectAtIndex: 1] floatValue];
+			mprView3.angleMPR = [[angleMPRs objectAtIndex: 2] floatValue];
+			
+			[self updateViewsAccordingToFrame: self];
+		}
+		
+//		if( [[[u lastObject] objectForKey: @"type"] isEqualToString:@"roi"])
+//		{
+//			NSMutableArray	*rois = [[u lastObject] objectForKey: @"rois"];
+//			
+//			int i, x, z;
+//			
+//			for( i = 0; i < maxMovieIndex; i++)
+//			{
+//				for( x = 0; x < [roiList[ i] count] ; x++)
+//				{
+//					for( z = 0; z < [[roiList[ i] objectAtIndex: x] count]; z++)
+//						[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:[[roiList[ i] objectAtIndex: x] objectAtIndex: z] userInfo: nil];
+//						
+//					[[roiList[ i] objectAtIndex: x] removeAllObjects];
+//				}
+//			}
+//			
+//			for( i = 0; i < maxMovieIndex; i++)
+//			{
+//				NSArray *r = [rois objectAtIndex: i];
+//				
+//				for( x = 0; x < [roiList[ i] count] ; x++)
+//				{
+//					[[roiList[ i] objectAtIndex: x] addObjectsFromArray: [r objectAtIndex: x]];
+//					
+//					for( ROI *r in [roiList[ i] objectAtIndex: x])
+//					{
+//						[imageView roiSet: r];
+//						[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object: r userInfo: nil];
+//					}
+//				}
+//			}
+//			
+//			[imageView setIndex: [imageView curImage]];
+//			
+//			NSLog( @"roi undo");
+//		}
+		
+		[u removeLastObject];
+	}
+}
+
+- (IBAction) redo:(id) sender
+{
+	if( [redoQueue count])
+	{
+		[undoQueue addObject: [self prepareObjectForUndo: [[redoQueue lastObject] objectForKey:@"type"]]];
+		
+		[self executeUndo: redoQueue];
+	}
+	else NSBeep();
+}
+
+- (IBAction) undo:(id) sender
+{
+	if( [undoQueue count])
+	{
+		[redoQueue addObject: [self prepareObjectForUndo: [[undoQueue lastObject] objectForKey:@"type"]]];
+		
+		[self executeUndo: undoQueue];
+	}
+	else NSBeep();
+}
+
+- (void) removeLastItemFromUndoQueue
+{
+	if( [undoQueue count])
+		[undoQueue removeLastObject];
+}
+
+- (void) addToUndoQueue:(NSString*) string
+{
+	[undoQueue addObject: [self prepareObjectForUndo: string]];
+	
+	if( [undoQueue count] > UNDOQUEUESIZE)
+	{
+		[undoQueue removeObjectAtIndex: 0];
+	}
+}
 
 - (void)setLOD:(float)lod;
 {
@@ -560,6 +718,8 @@ static float deg2rad = 3.14159265358979/180.0;
 	[mprView3 updateViewMPR];	
 }
 
+
+#pragma mark 
 #pragma mark Window Level / Window width
 
 - (void)createWLWWMenuItems;

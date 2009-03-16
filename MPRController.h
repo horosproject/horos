@@ -32,6 +32,8 @@
 	
 	IBOutlet MPRDCMView *mprView1, *mprView2, *mprView3;
 	
+	NSMutableArray *undoQueue, *redoQueue;
+	
 	ViewerController *viewer2D;
 	VRController *hiddenVRController;
 	VRView *vrView, *hiddenVRView;
@@ -98,9 +100,10 @@
 
 - (void) computeCrossReferenceLines:(MPRDCMView*) sender;
 - (IBAction)setTool:(id)sender;
+- (void) setToolIndex: (int) toolIndex;
 - (void) propagateWLWW:(MPRDCMView*) sender;
 - (void)bringToFrontROI:(ROI*) roi;
-
+- (id) prepareObjectForUndo:(NSString*) string;
 - (void)createWLWWMenuItems;
 - (void)UpdateWLWWMenu:(NSNotification*)note;
 - (void)ApplyWLWW:(id)sender;

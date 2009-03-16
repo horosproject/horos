@@ -42,7 +42,7 @@
 }
 
 @property (readonly) DCMPix *pix;
-@property (readonly) Camera *camera;
+@property (retain) Camera *camera;
 @property float angleMPR, fromIntervalExport, toIntervalExport;
 @property int viewExport;
 @property (readonly) VRView *vrView;

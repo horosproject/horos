@@ -570,8 +570,6 @@ static float deg2rad = 3.14159265358979/180.0;
 		}
 	}
 	
-	
-	
 	glDisable(GL_LINE_SMOOTH);
 	glDisable(GL_POLYGON_SMOOTH);
 	glDisable(GL_POINT_SMOOTH);
@@ -745,6 +743,8 @@ static float deg2rad = 3.14159265358979/180.0;
 {
 	if( [[self window] firstResponder] != self)
 		[[self window] makeFirstResponder: self];
+	
+	[windowController addToUndoQueue:@"mprCamera"];
 	
 	rotateLines = NO;
 	moveCenter = NO;
