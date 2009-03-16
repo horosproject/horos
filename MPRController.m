@@ -130,6 +130,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	self.dcmNumberOfFrames = 50;
 	self.dcmRotationDirection = 0;
 	self.dcmRotation = 360;
+	self.dcmSeriesName = @"MPR";
 	
 	return self;
 }
