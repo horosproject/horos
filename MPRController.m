@@ -200,12 +200,18 @@ static float deg2rad = 3.14159265358979/180.0;
 	
 	[[self window] makeFirstResponder: mprView1];
 	[mprView1.vrView resetImage: self];
+
+	mprView1.angleMPR = 0;
+	mprView2.angleMPR = 0;
+	mprView3.angleMPR = 0;
+
 	[mprView1 updateViewMPR];
 	
 	mprView2.camera.viewUp = [Point3D pointWithX:0 y:-1 z:0];
 	
 	[[self window] makeFirstResponder: mprView3];
 	[mprView3 restoreCamera];
+	mprView3.camera.viewUp = [Point3D pointWithX:0 y:1 z:0];
 	[mprView3 updateViewMPR];
 	
 	[super showWindow: sender];
@@ -666,7 +672,10 @@ static float deg2rad = 3.14159265358979/180.0;
 {
 	if( [redoQueue count])
 	{
-		[undoQueue addObject: [self prepareObjectForUndo: [[redoQueue lastObject] objectForKey:@"type"]]];
+		id obj = [self prepareObjectForUndo: [[redoQueue lastObject] objectForKey:@"type"]];
+		
+		if( obj)
+			[undoQueue addObject: obj];
 		
 		[self executeUndo: redoQueue];
 	}
@@ -677,7 +686,10 @@ static float deg2rad = 3.14159265358979/180.0;
 {
 	if( [undoQueue count])
 	{
-		[redoQueue addObject: [self prepareObjectForUndo: [[undoQueue lastObject] objectForKey:@"type"]]];
+		id obj = [self prepareObjectForUndo: [[undoQueue lastObject] objectForKey:@"type"]];
+		
+		if( obj)
+			[redoQueue addObject: obj];
 		
 		[self executeUndo: undoQueue];
 	}
@@ -692,7 +704,10 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (void) addToUndoQueue:(NSString*) string
 {
-	[undoQueue addObject: [self prepareObjectForUndo: string]];
+	id obj = [self prepareObjectForUndo: string];
+	
+	if( obj)
+		[undoQueue addObject: obj];
 	
 	if( [undoQueue count] > UNDOQUEUESIZE)
 	{

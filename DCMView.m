@@ -2775,7 +2775,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	}
 	else if( ( [event modifierFlags] & NSShiftKeyMask) && !([event modifierFlags] & NSAlternateKeyMask)  && !([event modifierFlags] & NSCommandKeyMask)  && !([event modifierFlags] & NSControlKeyMask) && mouseDragging == NO)
 	{
-		[self computeMagnifyLens: NSMakePoint( mouseXPos, mouseYPos)];
+		if( [event type] != NSLeftMouseDragged && [event type] != NSLeftMouseDown)
+			[self computeMagnifyLens: NSMakePoint( mouseXPos, mouseYPos)];
 	}
 	
 	if( roiHit == NO)
@@ -3461,6 +3462,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     if( dcmPixList)
 	{
 		[drawLock lock];
+		
+		[self deleteLens];
 		
 		[self erase2DPointMarker];
 		if( blendingView) [blendingView erase2DPointMarker];
@@ -4450,6 +4453,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 #pragma mark Mouse dragging methods	
 - (void)mouseDragged:(NSEvent *)event
 {
+	[self deleteLens];
+	
 	mouseDragging = YES;
 	
 	// if window is not visible do nothing
