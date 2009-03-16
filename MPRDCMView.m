@@ -528,7 +528,13 @@ static float deg2rad = 3.14159265358979/180.0;
 	// Red Square
 	if( [[self window] firstResponder] == self)
 	{
-		glColor4f (1.0f, 0.0f, 0.0f, 0.8f);
+		if(viewID==1)
+			glColor4f ([windowController.colorAxis1 redComponent], [windowController.colorAxis1 greenComponent], [windowController.colorAxis1 blueComponent], [windowController.colorAxis1 alphaComponent]);
+		else if(viewID==2)
+			glColor4f ([windowController.colorAxis2 redComponent], [windowController.colorAxis2 greenComponent], [windowController.colorAxis2 blueComponent], [windowController.colorAxis2 alphaComponent]);
+		else if(viewID==3)
+			glColor4f ([windowController.colorAxis3 redComponent], [windowController.colorAxis3 greenComponent], [windowController.colorAxis3 blueComponent], [windowController.colorAxis3 alphaComponent]);
+
 		glLineWidth(8.0);
 		glBegin(GL_LINE_LOOP);
 			glVertex2f(  -widthhalf, -heighthalf);
