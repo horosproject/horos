@@ -5664,8 +5664,11 @@ static ViewerController *draggedController = nil;
 
 -(void) changeImageData:(NSMutableArray*)f :(NSMutableArray*)d :(NSData*) v :(BOOL) newViewerWindow
 {
+	if( windowWillClose ) return;
+	
 	if( delayedTileWindows)
 	{
+		delayedTileWindows = NO;
 		[NSObject cancelPreviousPerformRequestsWithTarget:appController selector:@selector(tileWindows:) object:nil];
 		[appController tileWindows: self];
 	}
@@ -17913,11 +17916,15 @@ int i,j,l;
 
 -(IBAction) loadPatient:(id) sender
 {
+	if( windowWillClose ) return;
+	
 	[[BrowserController currentBrowser] loadNextPatient:[fileList[0] objectAtIndex:0] :[sender tag] :self :YES keyImagesOnly: displayOnlyKeyImages];
 }
 
 -(void) loadSeries:(NSNumber*) t
 {
+	if( windowWillClose ) return;
+	
 	int dir = [t intValue];
 	
 	BOOL b = [[NSUserDefaults standardUserDefaults] boolForKey:@"nextSeriesToAllViewers"];
@@ -17963,16 +17970,22 @@ int i,j,l;
 
 -(void) loadSeriesUp
 {
+	if( windowWillClose ) return;
+	
 	[self loadSeries: [NSNumber numberWithInt: 1]];
 }
 
 -(void) loadSeriesDown
 {
+	if( windowWillClose ) return;
+	
 	[self loadSeries: [NSNumber numberWithInt: -1]];
 }
 
 -(IBAction) loadSerie:(id) sender
 {
+	if( windowWillClose ) return;
+	
 	// tag=-1 backwards, tag=1 forwards, tag=3 ???
 	if( [sender tag] == 3)
 	{
