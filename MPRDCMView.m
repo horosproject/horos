@@ -684,6 +684,8 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (void)scrollWheel:(NSEvent *)theEvent
 {
+	[windowController addToUndoQueue:@"mprCamera"];
+	
 	if( [[self window] firstResponder] != self)
 		[[self window] makeFirstResponder: self];
 	
@@ -704,6 +706,8 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (void)rightMouseDown:(NSEvent *)theEvent
 {
+	[windowController addToUndoQueue:@"mprCamera"];
+	
 	if( [[self window] firstResponder] != self)
 		[[self window] makeFirstResponder: self];
 	
