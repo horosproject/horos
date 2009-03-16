@@ -133,10 +133,32 @@ static float deg2rad = 3.14159265358979/180.0;
 	self.dcmRotation = 360;
 	self.dcmSeriesName = @"MPR";
 
+	float r1, g1, b1, a1, r2, g2, b2, a2, r3, g3, b3, a3;
+	r1 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_1_RED"];
+	g1 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_1_GREEN"];
+	b1 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_1_BLUE"];
+	a1 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_1_ALPHA"];
 	
-	self.colorAxis1 = [NSColor colorWithDeviceRed:1.0 green:0.1 blue:0.0 alpha:1.0];
-	self.colorAxis2 = [NSColor colorWithDeviceRed:0.6 green:0.0 blue:1.0 alpha:1.0];
-	self.colorAxis3 = [NSColor colorWithDeviceRed:0.0 green:0.5 blue:1.0 alpha:1.0];
+	r2 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_2_RED"];
+	g2 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_2_GREEN"];
+	b2 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_2_BLUE"];
+	a2 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_2_ALPHA"];
+	
+	r3 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_3_RED"];
+	g3 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_3_GREEN"];
+	b3 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_3_BLUE"];
+	a3 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_3_ALPHA"];
+	
+	if(r1==0.0 && g1==0.0 && b1==0.0 && a1==0.0 && r2==0.0 && g2==0.0 && b2==0.0 && a2==0.0 && r3==0.0 && g3==0.0 && b3==0.0 && a3==0.0)
+	{
+		r1 = 1.0; g1 = 0.67; b1 = 0.0; a1 = 1.0;
+		r2 = 0.6; g2 = 0.0; b2 = 1.0; a2 = 1.0;
+		r3 = 0.0; g3 = 0.5; b3 = 1.0; a3 = 1.0;
+	}
+	
+	self.colorAxis1 = [NSColor colorWithDeviceRed:r1 green:g1 blue:b1 alpha:a1];
+	self.colorAxis2 = [NSColor colorWithDeviceRed:r2 green:g2 blue:b2 alpha:a2];
+	self.colorAxis3 = [NSColor colorWithDeviceRed:r3 green:g3 blue:b3 alpha:a3];
 	
 	return self;
 }
@@ -1577,6 +1599,11 @@ static float deg2rad = 3.14159265358979/180.0;
 	[mprView1 setNeedsDisplay:YES];
 	[mprView2 setNeedsDisplay:YES];
 	[mprView3 setNeedsDisplay:YES];
+	
+	[[NSUserDefaults standardUserDefaults] setFloat:[colorAxis1 redComponent] forKey:@"MPR_AXIS_1_RED"];
+	[[NSUserDefaults standardUserDefaults] setFloat:[colorAxis1 greenComponent] forKey:@"MPR_AXIS_1_GREEN"];
+	[[NSUserDefaults standardUserDefaults] setFloat:[colorAxis1 blueComponent] forKey:@"MPR_AXIS_1_BLUE"];
+	[[NSUserDefaults standardUserDefaults] setFloat:[colorAxis1 alphaComponent] forKey:@"MPR_AXIS_1_ALPHA"];
 }
 
 - (void)setColorAxis2:(NSColor*)color;
@@ -1586,6 +1613,11 @@ static float deg2rad = 3.14159265358979/180.0;
 	[mprView1 setNeedsDisplay:YES];
 	[mprView2 setNeedsDisplay:YES];
 	[mprView3 setNeedsDisplay:YES];
+	
+	[[NSUserDefaults standardUserDefaults] setFloat:[colorAxis2 redComponent] forKey:@"MPR_AXIS_2_RED"];
+	[[NSUserDefaults standardUserDefaults] setFloat:[colorAxis2 greenComponent] forKey:@"MPR_AXIS_2_GREEN"];
+	[[NSUserDefaults standardUserDefaults] setFloat:[colorAxis2 blueComponent] forKey:@"MPR_AXIS_2_BLUE"];
+	[[NSUserDefaults standardUserDefaults] setFloat:[colorAxis2 alphaComponent] forKey:@"MPR_AXIS_2_ALPHA"];
 }
 
 - (void)setColorAxis3:(NSColor*)color;
@@ -1595,6 +1627,11 @@ static float deg2rad = 3.14159265358979/180.0;
 	[mprView1 setNeedsDisplay:YES];
 	[mprView2 setNeedsDisplay:YES];
 	[mprView3 setNeedsDisplay:YES];
+	
+	[[NSUserDefaults standardUserDefaults] setFloat:[colorAxis3 redComponent] forKey:@"MPR_AXIS_3_RED"];
+	[[NSUserDefaults standardUserDefaults] setFloat:[colorAxis3 greenComponent] forKey:@"MPR_AXIS_3_GREEN"];
+	[[NSUserDefaults standardUserDefaults] setFloat:[colorAxis3 blueComponent] forKey:@"MPR_AXIS_3_BLUE"];
+	[[NSUserDefaults standardUserDefaults] setFloat:[colorAxis3 alphaComponent] forKey:@"MPR_AXIS_3_ALPHA"];
 }
 
 @end
