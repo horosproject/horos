@@ -460,13 +460,13 @@ static float deg2rad = 3.14159265358979/180.0;
 						if( fromIntervalExport > 0)
 						{
 							for( int i = 0; i < fromIntervalExport; i++)
-								[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: -i * [windowController dcmInterval]];
+								[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: i * [windowController dcmInterval]];
 						}
 					
 						if( toIntervalExport > 0)
 						{
 							for( int i = 0; i < toIntervalExport; i++)
-								[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: i * [windowController dcmInterval]];
+								[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: -i * [windowController dcmInterval]];
 						}
 					}
 				}
@@ -496,13 +496,13 @@ static float deg2rad = 3.14159265358979/180.0;
 						if( fromIntervalExport > 0)
 						{
 							for( int i = 0; i < fromIntervalExport; i++)
-								[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: -i * [windowController dcmInterval]];
+								[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: i * [windowController dcmInterval]];
 						}
 					
 						if( toIntervalExport > 0)
 						{
 							for( int i = 0; i < toIntervalExport; i++)
-								[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: i * [windowController dcmInterval]];
+								[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: -i * [windowController dcmInterval]];
 						}
 					}
 				}
