@@ -19,20 +19,20 @@
 
 static float deg2rad = 3.14159265358979/180.0; 
 
-#define VIEW_1_RED 1.0f
-#define VIEW_1_GREEN 0.1f
-#define VIEW_1_BLUE 0.0f
-#define VIEW_1_ALPHA 1.0f
-
-#define VIEW_2_RED 0.6f
-#define VIEW_2_GREEN 0.0f
-#define VIEW_2_BLUE 1.0f
-#define VIEW_2_ALPHA 1.0f
-
-#define VIEW_3_RED 0.0f
-#define VIEW_3_GREEN 0.5f
-#define VIEW_3_BLUE 1.0f
-#define VIEW_3_ALPHA 1.0f
+//#define VIEW_1_RED 1.0f
+//#define VIEW_1_GREEN 0.1f
+//#define VIEW_1_BLUE 0.0f
+//#define VIEW_1_ALPHA 1.0f
+//
+//#define VIEW_2_RED 0.6f
+//#define VIEW_2_GREEN 0.0f
+//#define VIEW_2_BLUE 1.0f
+//#define VIEW_2_ALPHA 1.0f
+//
+//#define VIEW_3_RED 0.0f
+//#define VIEW_3_GREEN 0.5f
+//#define VIEW_3_BLUE 1.0f
+//#define VIEW_3_ALPHA 1.0f
 
 #define VIEW_COLOR_LABEL_SIZE 25
 
@@ -257,15 +257,18 @@ static float deg2rad = 3.14159265358979/180.0;
 	switch( v)
 	{
 		case 1:
-			glColor4f (VIEW_1_RED, VIEW_1_GREEN, VIEW_1_BLUE, VIEW_1_ALPHA);
+			//glColor4f (VIEW_1_RED, VIEW_1_GREEN, VIEW_1_BLUE, VIEW_1_ALPHA);
+			glColor4f ([windowController.colorAxis1 redComponent], [windowController.colorAxis1 greenComponent], [windowController.colorAxis1 blueComponent], [windowController.colorAxis1 alphaComponent]);
 		break;
 		
 		case 2:
-			glColor4f (VIEW_2_RED, VIEW_2_GREEN, VIEW_2_BLUE, VIEW_2_ALPHA);
+			//glColor4f (VIEW_2_RED, VIEW_2_GREEN, VIEW_2_BLUE, VIEW_2_ALPHA);
+			glColor4f ([windowController.colorAxis2 redComponent], [windowController.colorAxis2 greenComponent], [windowController.colorAxis2 blueComponent], [windowController.colorAxis2 alphaComponent]);
 		break;
 		
 		case 3:
-			glColor4f (VIEW_3_RED, VIEW_3_GREEN, VIEW_3_BLUE, VIEW_3_ALPHA);
+			//glColor4f (VIEW_3_RED, VIEW_3_GREEN, VIEW_3_BLUE, VIEW_3_ALPHA);
+			glColor4f ([windowController.colorAxis3 redComponent], [windowController.colorAxis3 greenComponent], [windowController.colorAxis3 blueComponent], [windowController.colorAxis3 alphaComponent]);
 		break;
 	}
 }
@@ -288,7 +291,8 @@ static float deg2rad = 3.14159265358979/180.0;
 		switch( viewID)
 		{
 			case 1:
-				glColor4f (VIEW_2_RED, VIEW_2_GREEN, VIEW_2_BLUE, VIEW_2_ALPHA);
+				//glColor4f (VIEW_2_RED, VIEW_2_GREEN, VIEW_2_BLUE, VIEW_2_ALPHA);
+				glColor4f ([windowController.colorAxis2 redComponent], [windowController.colorAxis2 greenComponent], [windowController.colorAxis2 blueComponent], [windowController.colorAxis2 alphaComponent]);
 				if( crossLinesA[ 0][ 0] != HUGE_VALF)
 				{
 					if( thickness > 2)
@@ -323,7 +327,8 @@ static float deg2rad = 3.14159265358979/180.0;
 						}
 					}
 				}
-				glColor4f (VIEW_3_RED, VIEW_3_GREEN, VIEW_3_BLUE, VIEW_3_ALPHA);
+				//glColor4f (VIEW_3_RED, VIEW_3_GREEN, VIEW_3_BLUE, VIEW_3_ALPHA);
+				glColor4f ([windowController.colorAxis3 redComponent], [windowController.colorAxis3 greenComponent], [windowController.colorAxis3 blueComponent], [windowController.colorAxis3 alphaComponent]);
 				if( crossLinesB[ 0][ 0] != HUGE_VALF)
 				{
 					if( thickness > 2)
@@ -361,7 +366,8 @@ static float deg2rad = 3.14159265358979/180.0;
 			break;
 			
 			case 2:
-				glColor4f (VIEW_1_RED, VIEW_1_GREEN, VIEW_1_BLUE, VIEW_1_ALPHA);
+				//glColor4f (VIEW_1_RED, VIEW_1_GREEN, VIEW_1_BLUE, VIEW_1_ALPHA);
+				glColor4f ([windowController.colorAxis1 redComponent], [windowController.colorAxis1 greenComponent], [windowController.colorAxis1 blueComponent], [windowController.colorAxis1 alphaComponent]);
 				if( crossLinesA[ 0][ 0] != HUGE_VALF)
 				{
 					if( thickness > 2)
@@ -397,7 +403,8 @@ static float deg2rad = 3.14159265358979/180.0;
 					}
 				}
 				
-				glColor4f (VIEW_3_RED, VIEW_3_GREEN, VIEW_3_BLUE, VIEW_3_ALPHA);
+				//glColor4f (VIEW_3_RED, VIEW_3_GREEN, VIEW_3_BLUE, VIEW_3_ALPHA);
+				glColor4f ([windowController.colorAxis3 redComponent], [windowController.colorAxis3 greenComponent], [windowController.colorAxis3 blueComponent], [windowController.colorAxis3 alphaComponent]);
 				if( crossLinesB[ 0][ 0] != HUGE_VALF)
 				{
 					if( thickness > 2)
@@ -435,7 +442,8 @@ static float deg2rad = 3.14159265358979/180.0;
 			break;
 			
 			case 3:
-				glColor4f (VIEW_1_RED, VIEW_1_GREEN, VIEW_1_BLUE, VIEW_1_ALPHA);
+				//glColor4f (VIEW_1_RED, VIEW_1_GREEN, VIEW_1_BLUE, VIEW_1_ALPHA);
+				glColor4f ([windowController.colorAxis1 redComponent], [windowController.colorAxis1 greenComponent], [windowController.colorAxis1 blueComponent], [windowController.colorAxis1 alphaComponent]);
 				if( crossLinesA[ 0][ 0] != HUGE_VALF)
 				{
 					if( thickness > 2)
@@ -471,7 +479,8 @@ static float deg2rad = 3.14159265358979/180.0;
 					}
 				}
 				
-				glColor4f (VIEW_2_RED, VIEW_2_GREEN, VIEW_2_BLUE, VIEW_2_ALPHA);
+				//glColor4f (VIEW_2_RED, VIEW_2_GREEN, VIEW_2_BLUE, VIEW_2_ALPHA);
+				glColor4f ([windowController.colorAxis2 redComponent], [windowController.colorAxis2 greenComponent], [windowController.colorAxis2 blueComponent], [windowController.colorAxis2 alphaComponent]);
 				if( crossLinesB[ 0][ 0] != HUGE_VALF)
 				{
 					if( thickness > 2)

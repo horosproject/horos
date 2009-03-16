@@ -28,6 +28,7 @@ static float deg2rad = 3.14159265358979/180.0;
 @implementation MPRController
 
 @synthesize displayCrossLines, dcmSameIntervalAndThickness, clippingRangeThickness, clippingRangeMode, mousePosition, mouseViewID, originalPix, wlwwMenuItems, LOD, dcmFrom, dcmTo, dcmMode, dcmRotationDirection, dcmSeriesMode, dcmRotation, dcmNumberOfFrames, dcmQuality, dcmInterval, dcmSeriesName, dcmBatchNumberOfFrames;
+@synthesize colorAxis1, colorAxis2, colorAxis3;
 
 + (double) angleBetweenVector:(float*) a andPlane:(float*) orientation
 {
@@ -131,6 +132,11 @@ static float deg2rad = 3.14159265358979/180.0;
 	self.dcmRotationDirection = 0;
 	self.dcmRotation = 360;
 	self.dcmSeriesName = @"MPR";
+
+	
+	self.colorAxis1 = [NSColor colorWithDeviceRed:1.0 green:0.1 blue:0.0 alpha:1.0];
+	self.colorAxis2 = [NSColor colorWithDeviceRed:0.6 green:0.0 blue:1.0 alpha:1.0];
+	self.colorAxis3 = [NSColor colorWithDeviceRed:0.0 green:0.5 blue:1.0 alpha:1.0];
 	
 	return self;
 }
@@ -178,6 +184,10 @@ static float deg2rad = 3.14159265358979/180.0;
 	[wlwwMenuItems release];
 	[toolbar release];
 	
+	[colorAxis1 release];
+	[colorAxis2 release];
+	[colorAxis3 release];
+	
 	[super dealloc];
 	
 	NSLog( @"dealloc MPRController");
@@ -217,6 +227,9 @@ static float deg2rad = 3.14159265358979/180.0;
 	[mprView1 setCurrentTool:toolIndex];
 	[mprView2 setCurrentTool:toolIndex];
 	[mprView3 setCurrentTool:toolIndex];
+	[mprView1.vrView setCurrentTool:toolIndex];
+	[mprView2.vrView setCurrentTool:toolIndex];
+	[mprView3.vrView setCurrentTool:toolIndex];
 }
 
 - (void) computeCrossReferenceLinesBetween: (MPRDCMView*) mp1 and:(MPRDCMView*) mp2 result: (float[2][3]) s
@@ -1518,6 +1531,13 @@ static float deg2rad = 3.14159265358979/180.0;
 		[toolbarItem setView: tbShading];
 		[toolbarItem setMinSize: NSMakeSize(NSWidth([tbShading frame]), NSHeight([tbShading frame]))];
     }
+	else if ([itemIdent isEqualToString:@"AxisColors"])
+	{
+		[toolbarItem setLabel: NSLocalizedString(@"Axis Colors",nil)];
+		[toolbarItem setPaletteLabel:NSLocalizedString( @"Axis Colors",nil)];
+		[toolbarItem setView: tbAxisColors];
+		[toolbarItem setMinSize: NSMakeSize(NSWidth([tbAxisColors frame]), NSHeight([tbAxisColors frame]))];
+    }
 	else
 	{
 		[toolbarItem release];
@@ -1538,6 +1558,34 @@ static float deg2rad = 3.14159265358979/180.0;
 											NSToolbarFlexibleSpaceItemIdentifier,
 											NSToolbarSpaceItemIdentifier,
 											NSToolbarSeparatorItemIdentifier,
-											@"tbTools", @"tbWLWW", @"tbLOD", @"tbThickSlab", @"tbShading", @"Reset.tiff", @"Export.icns", @"iPhoto.icns", @"QTExport.icns", nil];
+											@"tbTools", @"tbWLWW", @"tbLOD", @"tbThickSlab", @"tbShading", @"Reset.tiff", @"Export.icns", @"iPhoto.icns", @"QTExport.icns", @"AxisColors", nil];
 }
+
+- (void)setColorAxis1:(NSColor*)color;
+{
+	[colorAxis1 release];
+	colorAxis1 = [color retain];
+	[mprView1 setNeedsDisplay:YES];
+	[mprView2 setNeedsDisplay:YES];
+	[mprView3 setNeedsDisplay:YES];
+}
+
+- (void)setColorAxis2:(NSColor*)color;
+{
+	[colorAxis2 release];
+	colorAxis2 = [color retain];
+	[mprView1 setNeedsDisplay:YES];
+	[mprView2 setNeedsDisplay:YES];
+	[mprView3 setNeedsDisplay:YES];
+}
+
+- (void)setColorAxis3:(NSColor*)color;
+{
+	[colorAxis3 release];
+	colorAxis3 = [color retain];
+	[mprView1 setNeedsDisplay:YES];
+	[mprView2 setNeedsDisplay:YES];
+	[mprView3 setNeedsDisplay:YES];
+}
+
 @end

@@ -76,6 +76,9 @@
 	BOOL shadingEditable;
 	IBOutlet NSButton *shadingCheck;
 	IBOutlet NSTextField *shadingValues;
+	
+	IBOutlet NSView *tbAxisColors;
+	NSColor *colorAxis1, *colorAxis2, *colorAxis3;
 }
 
 @property float clippingRangeThickness, dcmInterval;
@@ -86,6 +89,7 @@
 @property (readonly) DCMPix *originalPix;
 @property float LOD;
 @property BOOL dcmSameIntervalAndThickness, displayCrossLines;
+@property (retain) NSColor *colorAxis1, *colorAxis2, *colorAxis3;
 
 + (double) angleBetweenVector:(float*) a andPlane:(float*) orientation;
 
