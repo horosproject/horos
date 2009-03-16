@@ -125,7 +125,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(CloseViewerNotification:) name:@"CloseViewerNotification" object:nil];
 	
 	[shadingCheck setAction:@selector(switchShading:)];
-	[shadingCheck setTarget:hiddenVRView];
+	[shadingCheck setTarget:self];
 	
 	self.dcmNumberOfFrames = 50;
 	self.dcmRotationDirection = 0;
@@ -169,7 +169,7 @@ static float deg2rad = 3.14159265358979/180.0;
 {
 	[shadingsPresetsController setWindowController: self];
 	[shadingCheck setAction:@selector(switchShading:)];
-	[shadingCheck setTarget:hiddenVRView];
+	[shadingCheck setTarget:self];
 }
 
 - (void) dealloc
@@ -1335,6 +1335,24 @@ static float deg2rad = 3.14159265358979/180.0;
 
 #pragma mark Shadings
 
+- (IBAction)switchShading:(id)sender;
+{
+	[hiddenVRView switchShading:sender];
+	
+	[mprView1 restoreCamera];
+	mprView1.camera.forceUpdate = YES;
+	[mprView1 updateViewMPR];
+	
+	[mprView2 restoreCamera];
+	mprView2.camera.forceUpdate = YES;
+	[mprView2 updateViewMPR];
+	
+	[mprView3 restoreCamera];
+	mprView3.camera.forceUpdate = YES;
+	[mprView3 updateViewMPR];
+	
+}
+
 - (IBAction)applyShading:(id)sender;
 {
 	NSDictionary *dict = [[shadingsPresetsController selectedObjects] lastObject];
@@ -1353,8 +1371,18 @@ static float deg2rad = 3.14159265358979/180.0;
 	{
 		[hiddenVRView setShadingValues: ambient :diffuse :specular :specularpower];
 		[shadingValues setStringValue: [NSString stringWithFormat:@"Ambient: %2.2f\nDiffuse: %2.2f\nSpecular :%2.2f, %2.2f", ambient, diffuse, specular, specularpower]];
+
+		[mprView1 restoreCamera];
+		mprView1.camera.forceUpdate = YES;
+		[mprView1 updateViewMPR];
 		
-		[hiddenVRView setNeedsDisplay: YES];
+		[mprView2 restoreCamera];
+		mprView2.camera.forceUpdate = YES;
+		[mprView2 updateViewMPR];
+		
+		[mprView3 restoreCamera];
+		mprView3.camera.forceUpdate = YES;
+		[mprView3 updateViewMPR];		
 	}
 }
 
