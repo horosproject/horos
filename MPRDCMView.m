@@ -520,10 +520,25 @@ static float deg2rad = 3.14159265358979/180.0;
 		}
 	}
 	
-	[self colorForView: viewID];
+	
 	
 	float heighthalf = self.frame.size.height/2;
 	float widthhalf = self.frame.size.width/2;
+	
+	// Red Square
+	if( [[self window] firstResponder] == self)
+	{
+		glColor4f (1.0f, 0.0f, 0.0f, 0.8f);
+		glLineWidth(8.0);
+		glBegin(GL_LINE_LOOP);
+			glVertex2f(  -widthhalf, -heighthalf);
+			glVertex2f(  -widthhalf, heighthalf);
+			glVertex2f(  widthhalf, heighthalf);
+			glVertex2f(  widthhalf, -heighthalf);
+		glEnd();
+	}
+	
+	[self colorForView: viewID];
 	
 	glLineWidth(2.0);
 	glBegin(GL_POLYGON);
@@ -556,19 +571,7 @@ static float deg2rad = 3.14159265358979/180.0;
 		}
 	}
 	
-	// Red Square
-	if( [[self window] firstResponder] == self)
-	{
-		glColor4f (1.0f, 0.0f, 0.0f, 0.8f);
-		glLineWidth(8.0);
-		glBegin(GL_LINE_LOOP);
-			glVertex2f(  -widthhalf, -heighthalf);
-			glVertex2f(  -widthhalf, heighthalf);
-			glVertex2f(  widthhalf, heighthalf);
-			glVertex2f(  widthhalf, -heighthalf);
-		glEnd();
-		glLineWidth(1.0);
-	}
+	
 	
 	glDisable(GL_LINE_SMOOTH);
 	glDisable(GL_POLYGON_SMOOTH);
