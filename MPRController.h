@@ -55,7 +55,7 @@
 	IBOutlet NSWindow *dcmWindow;
 	IBOutlet NSView *dcmSeriesView;
 	int dcmFrom, dcmTo;
-	float dcmInterval;
+	float dcmInterval, previousDcmInterval;
 	int dcmMode;
 	int dcmSeriesMode;
 	int dcmRotation, dcmRotationDirection, dcmNumberOfFrames, dcmQuality, dcmBatchNumberOfFrames;

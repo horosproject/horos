@@ -1229,6 +1229,15 @@ static float deg2rad = 3.14159265358979/180.0;
 - (void) setDcmInterval:(float) f
 {
 	dcmInterval = f;
+	
+	if( previousDcmInterval)
+	{
+		self.dcmTo =  ceil(( (float) dcmTo * previousDcmInterval) /  dcmInterval);
+		self.dcmFrom = ceil(( (float) dcmFrom * previousDcmInterval) / dcmInterval);
+	}
+	
+	previousDcmInterval = f;
+	
 	[self displayFromToSlices];
 }
 
