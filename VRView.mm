@@ -289,7 +289,7 @@ public:
 
 @implementation VRView
 
-@synthesize clipRangeActivated, projectionMode, clippingRangeThickness, keep3DRotateCentered, dontResetImage, renderingMode, currentOpacityArray, exportDCM, dcmSeriesString;
+@synthesize clipRangeActivated, projectionMode, clippingRangeThickness, keep3DRotateCentered, dontResetImage, renderingMode, currentOpacityArray, exportDCM, dcmSeriesString, bestRenderingMode;
 
 - (BOOL) checkPointInVolume: (double*) position
 {
@@ -1422,9 +1422,6 @@ public:
 		}
 		
 		[self restoreViewSizeAfterMatrix3DExport];
-		
-		[NSThread sleepForTimeInterval: 1];
-		[[BrowserController currentBrowser] checkIncomingNow: self];
 	}
 }
 

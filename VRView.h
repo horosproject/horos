@@ -347,7 +347,7 @@ typedef char* vtkMyCallbackVR;
 	int fullDepthMode;
 }
 
-@property BOOL clipRangeActivated, keep3DRotateCentered, dontResetImage;
+@property BOOL clipRangeActivated, keep3DRotateCentered, dontResetImage, bestRenderingMode;
 @property int projectionMode;
 @property double clippingRangeThickness;
 @property long renderingMode;

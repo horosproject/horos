@@ -12716,7 +12716,6 @@ static NSArray*	openSubSeriesArray = nil;
 	if( [pathFilesComponent count] > 2 && [[[pathFilesComponent objectAtIndex: 1] uppercaseString] isEqualToString:@"VOLUMES"])
 	{
 		NSArray	*removeableMedia = [[NSWorkspace sharedWorkspace] mountedRemovableMedia];
-		NSLog( @"****");
 		
 		for( NSString *mediaPath in removeableMedia )
 		{

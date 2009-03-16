@@ -977,7 +977,11 @@ static float deg2rad = 3.14159265358979/180.0;
 		NSMutableArray *producedFiles = [NSMutableArray array];
 		
 		[curExportView restoreCamera];
-		[curExportView.vrView setLOD: 1.0];
+		curExportView.vrView.bestRenderingMode = NO;	// We will manually adapt the rendering level with setLOD
+		
+		if( dcmQuality == 1)
+			[curExportView.vrView setLOD: 1.0];
+			
 		[curExportView.vrView setViewSizeToMatrix3DExport];
 		
 		if( curExportView.vrView.exportDCM == nil)
@@ -1151,6 +1155,42 @@ static float deg2rad = 3.14159265358979/180.0;
 		[NSThread sleepForTimeInterval: 1];
 		[[BrowserController currentBrowser] checkIncomingNow: self];
 		
+		if( ([[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportSendToDICOMNode"] || [[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportMarkThemAsKeyImages"]) && [producedFiles count])
+		{
+			NSMutableArray *imagesForThisStudy = [NSMutableArray array];
+			
+			[[[BrowserController currentBrowser] managedObjectContext] lock];
+			
+			for( NSManagedObject *s in [[[viewer2D currentStudy] valueForKey: @"series"] allObjects])
+				[imagesForThisStudy addObjectsFromArray: [[s valueForKey: @"images"] allObjects]];
+			
+			[[[BrowserController currentBrowser] managedObjectContext] unlock];
+			
+			NSArray *sopArray = [producedFiles valueForKey: @"SOPInstanceUID"];
+			
+			NSMutableArray *objects = [NSMutableArray array];
+			for( NSString *sop in sopArray)
+			{
+				for( DicomImage *im in imagesForThisStudy)
+				{
+					if( [[im sopInstanceUID] isEqualToString: sop])
+						[objects addObject: im];
+				}
+			}
+			
+			if( [objects count] != [producedFiles count])
+				NSLog( @"WARNING !! [objects count] != [producedFiles count]");
+			
+			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportSendToDICOMNode"])
+				[[BrowserController currentBrowser] selectServer: objects];
+			
+			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportMarkThemAsKeyImages"])
+			{
+				for( DicomImage *im in objects)
+					[im setValue: [NSNumber numberWithBool: YES] forKey: @"isKeyImage"];
+			}
+		}
+		
 		[[NSUserDefaults standardUserDefaults] setInteger: dcmMode forKey: @"lastMPRdcmExportMode"];
 	}
 	
@@ -1179,6 +1219,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	
 	self.displayCrossLines = YES;
 	self.dcmSameIntervalAndThickness = YES;
+	self.dcmQuality = 1;
 	
 	self.dcmMode = [[NSUserDefaults standardUserDefaults] integerForKey: @"lastMPRdcmExportMode"];
 }
