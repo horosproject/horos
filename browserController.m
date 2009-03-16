@@ -6928,7 +6928,7 @@ static NSArray*	statesArray = nil;
 		// If multiple viewer are opened, apply it to the entire list
 		for( NSWindow *win in winList )
 		{
-			if( [[win windowController] isKindOfClass:[ViewerController class]])
+			if( [[win windowController] isKindOfClass:[ViewerController class]] && [[win windowController] windowWillClose] == NO)
 			{
 				[viewersList addObject: [win windowController]];
 			}
@@ -6961,7 +6961,8 @@ static NSArray*	statesArray = nil;
 					found = YES;
 				}
 			}
-			else return;
+			else
+				return;
 			
 		}while( found == NO);
 		
@@ -6996,7 +6997,7 @@ static NSArray*	statesArray = nil;
 		{
 			for( NSWindow *win in winList )
 			{
-				if( [[win windowController] isKindOfClass:[ViewerController class]])
+				if( [[win windowController] isKindOfClass:[ViewerController class]] && [[win windowController] windowWillClose] == NO)
 					[viewersList addObject: [win windowController]];
 			}
 			viewer = [viewersList objectAtIndex: 0];
@@ -7059,35 +7060,8 @@ static NSArray*	statesArray = nil;
 					}
 					else
 					{
-						// Close the view
-						
-						[vc close];
-						
-//						// CREATE AN EMPTY SERIES !!!!
-//						
-//						NSMutableArray  *viewerPix = [[NSMutableArray alloc] initWithCapacity:0];
-//						NSMutableArray  *filesAr = [[NSMutableArray alloc] initWithCapacity:0];
-//						float			*fVolumePtr = nil;
-//						NSData			*volumeData = nil;
-//						NSString		*path = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Empty.tif"];
-//						
-//						NSDictionary	*curFile = [NSDictionary dictionaryWithObjectsAndKeys:path, @"completePath", @"xxx", @"uniqueFilename", @"OT", @"modality", nil];
-//						[filesAr addObject: curFile];
-//						
-//						fVolumePtr = malloc(100 * 100 * sizeof(float));
-//						
-//						DCMPix *dcmPix = [[DCMPix alloc] myinit:path :0 :1 :fVolumePtr :0 :0];
-//						[viewerPix addObject: dcmPix];
-//						[dcmPix release];
-//						
-//						volumeData = [[NSData alloc] initWithBytesNoCopy:fVolumePtr length:100 * 100 * sizeof(float) freeWhenDone:YES]; 
-//						
-//						[vc changeImageData:viewerPix :filesAr :volumeData :YES];
-//						[vc startLoadImageThread];
-//						
-//						[volumeData release];
-//						[viewerPix release];
-//						[filesAr release];
+						// Close the viewer
+						[[vc window] performClose: self];
 					}
 					
 					index++;

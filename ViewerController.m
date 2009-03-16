@@ -2355,6 +2355,22 @@ static volatile int numberOfThreadsForRelisce = 0;
 	
 	[self release];
 	
+	numberOf2DViewer--;
+	if( numberOf2DViewer == 0)
+	{
+		USETOOLBARPANEL = NO;
+		for( int i = 0; i < [[NSScreen screens] count]; i++)
+			[[toolbarPanel[ i] window] orderOut:self];
+	}
+	
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
+	{
+		if( delayedTileWindows)
+			[NSObject cancelPreviousPerformRequestsWithTarget:appController selector:@selector(tileWindows:) object:nil];
+		delayedTileWindows = YES;
+		[appController performSelector: @selector(tileWindows:) withObject:nil afterDelay: 0.1];
+	}
+	
 	[[NSCursor arrowCursor] set];
 }
 
@@ -5611,14 +5627,6 @@ static ViewerController *draggedController = nil;
         [[BrowserController currentBrowser] showDatabase:self];
     }
 	
-	numberOf2DViewer--;
-	if( numberOf2DViewer == 0)
-	{
-		USETOOLBARPANEL = NO;
-		for( int i = 0; i < [[NSScreen screens] count]; i++)
-			[[toolbarPanel[ i] window] orderOut:self];
-	}
-	
 	[ROINamesArray release];
 	
 	[curvedController release];
@@ -5645,14 +5653,6 @@ static ViewerController *draggedController = nil;
 	
 	for( ViewerController *v in [ViewerController getDisplayed2DViewers])
 		[v buildMatrixPreview: NO];
-
-	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
-	{
-		if( delayedTileWindows)
-			[NSObject cancelPreviousPerformRequestsWithTarget:appController selector:@selector(tileWindows:) object:nil];
-		delayedTileWindows = YES;
-		[appController performSelector: @selector(tileWindows:) withObject:nil afterDelay: 0.1];
-	}
 	
 	NSLog(@"ViewController dealloc");
 }
@@ -17918,6 +17918,13 @@ int i,j,l;
 {
 	if( windowWillClose ) return;
 	
+	if( delayedTileWindows)
+	{
+		delayedTileWindows = NO;
+		[NSObject cancelPreviousPerformRequestsWithTarget:appController selector:@selector(tileWindows:) object:nil];
+		[appController tileWindows: self];
+	}
+	
 	[[BrowserController currentBrowser] loadNextPatient:[fileList[0] objectAtIndex:0] :[sender tag] :self :YES keyImagesOnly: displayOnlyKeyImages];
 }
 
@@ -17985,7 +17992,13 @@ int i,j,l;
 -(IBAction) loadSerie:(id) sender
 {
 	if( windowWillClose ) return;
-	
+
+	if( delayedTileWindows)
+	{
+		delayedTileWindows = NO;
+		[NSObject cancelPreviousPerformRequestsWithTarget:appController selector:@selector(tileWindows:) object:nil];
+		[appController tileWindows: self];
+	}
 	// tag=-1 backwards, tag=1 forwards, tag=3 ???
 	if( [sender tag] == 3)
 	{

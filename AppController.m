@@ -55,7 +55,7 @@ static NSDictionary *previousWLWWKeys = nil, *previousCLUTKeys = nil, *previousC
 static BOOL checkForPreferencesUpdate = YES;
 static PluginManager *pluginManager = nil;
 static unsigned char *LUT12toRGB = nil;
-static BOOL canDisplay12Bit = NO, tileWindowsReentry = NO;
+static BOOL canDisplay12Bit = NO;
 static NSInvocation *fill12BitBufferInvocation = nil;
 
 NSThread				*mainThread;
@@ -3134,24 +3134,21 @@ static BOOL initialized = NO;
 	[AppController checkForPreferencesUpdate: YES];
 	
 	//get 2D viewer windows
-	for( i = 0; i < [winList count]; i++)
+	for( NSWindow *win in winList)
 	{
-		if(	[[[winList objectAtIndex:i] windowController] isKindOfClass:[ViewerController class]] || [[[winList objectAtIndex:i] windowController] isKindOfClass:[XMLController class]])
+		if(	[[win windowController] isKindOfClass:[ViewerController class]] || [[win windowController] isKindOfClass:[XMLController class]])
 		{
-			if( [[[winList objectAtIndex:i] windowController] windowWillClose] == NO && [[winList objectAtIndex:i] isMiniaturized] == NO)
-				[viewersList addObject: [[winList objectAtIndex:i] windowController]];
+			if( [[win windowController] windowWillClose] == NO && [win isMiniaturized] == NO)
+				[viewersList addObject: [win windowController]];
+			else if( [[win windowController] windowWillClose])
+			{
+				NSLog( @"*** [[win windowController] windowWillClose] ***");
+				[win close];
+			}
 				
-			if( [[viewersList lastObject] FullScreenON] ) return;
+			if( [[viewersList lastObject] FullScreenON]) return;
 		}
 	}
-	
-	if( tileWindowsReentry)
-	{
-		NSLog( @"****** TILE WINDOWS REENTRY");
-		return;
-	}
-	
-	tileWindowsReentry = YES;
 	
 	for( id obj in winList)
 		[obj retain];
@@ -3569,8 +3566,6 @@ static BOOL initialized = NO;
 	
 	for( id obj in winList)
 		[obj release];
-		
-	tileWindowsReentry = NO;
 }
 
 
