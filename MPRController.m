@@ -531,7 +531,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	else [super keyDown: theEvent];
 }
 
-#pragma mark 
+#pragma mark LOD
 
 - (void)setLOD:(float)lod;
 {
@@ -1591,6 +1591,8 @@ static float deg2rad = 3.14159265358979/180.0;
 											NSToolbarSeparatorItemIdentifier,
 											@"tbTools", @"tbWLWW", @"tbLOD", @"tbThickSlab", @"tbShading", @"Reset.tiff", @"Export.icns", @"iPhoto.icns", @"QTExport.icns", @"AxisColors", nil];
 }
+
+#pragma mark Axis Colors
 
 - (void)setColorAxis1:(NSColor*)color;
 {
