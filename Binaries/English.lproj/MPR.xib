@@ -8,11 +8,10 @@
 		<string key="IBDocument.HIToolboxVersion">353.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="731"/>
-			<integer value="659"/>
 			<integer value="672"/>
-			<integer value="713"/>
+			<integer value="659"/>
 			<integer value="526"/>
+			<integer value="731"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -48,7 +47,7 @@
 				<nil key="NSViewClass"/>
 				<string key="NSWindowContentMaxSize">{3.40282e+38, 3.40282e+38}</string>
 				<object class="NSView" key="NSWindowView" id="1006">
-					<reference key="NSNextResponder"/>
+					<nil key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<object class="NSMutableArray" key="NSSubviews">
 						<bool key="EncodedWithXMLCoder">YES</bool>
@@ -67,7 +66,6 @@
 											<int key="NSvFlags">274</int>
 											<string key="NSFrameSize">{337, 209}</string>
 											<reference key="NSSuperview" ref="843978156"/>
-											<reference key="NSWindow"/>
 											<string key="NSClassName">MPRDCMView</string>
 										</object>
 										<object class="NSCustomView" id="390045821">
@@ -75,32 +73,26 @@
 											<int key="NSvFlags">256</int>
 											<string key="NSFrame">{{0, 218}, {337, 225}}</string>
 											<reference key="NSSuperview" ref="843978156"/>
-											<reference key="NSWindow"/>
 											<string key="NSClassName">MPRDCMView</string>
 										</object>
 									</object>
 									<string key="NSFrameSize">{337, 443}</string>
 									<reference key="NSSuperview" ref="345868235"/>
-									<reference key="NSWindow"/>
 								</object>
 								<object class="NSCustomView" id="429309286">
 									<reference key="NSNextResponder" ref="345868235"/>
 									<int key="NSvFlags">274</int>
 									<string key="NSFrame">{{346, 0}, {385, 443}}</string>
 									<reference key="NSSuperview" ref="345868235"/>
-									<reference key="NSWindow"/>
 									<string key="NSClassName">MPRDCMView</string>
 								</object>
 							</object>
 							<string key="NSFrameSize">{731, 443}</string>
 							<reference key="NSSuperview" ref="1006"/>
-							<reference key="NSWindow"/>
 							<bool key="NSIsVertical">YES</bool>
 						</object>
 					</object>
 					<string key="NSFrameSize">{730, 443}</string>
-					<reference key="NSSuperview"/>
-					<reference key="NSWindow"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1680, 1028}}</string>
 				<string key="NSMaxSize">{3.40282e+38, 3.40282e+38}</string>
@@ -2512,7 +2504,7 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 				<bool key="NSTransparent">NO</bool>
 			</object>
 			<object class="NSBox" id="506625275">
-				<reference key="NSNextResponder"/>
+				<nil key="NSNextResponder"/>
 				<int key="NSvFlags">12</int>
 				<object class="NSMutableArray" key="NSSubviews">
 					<bool key="EncodedWithXMLCoder">YES</bool>
@@ -2896,7 +2888,7 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 											</object>
 										</object>
 									</object>
-									<int key="NSSelectedIndex">16</int>
+									<int key="NSSelectedIndex">14</int>
 									<bool key="NSPullDown">YES</bool>
 									<int key="NSPreferredEdge">3</int>
 									<bool key="NSUsesItemFromMenu">YES</bool>
@@ -3013,7 +3005,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					</object>
 				</object>
 				<string key="NSFrameSize">{231, 51}</string>
-				<reference key="NSSuperview"/>
 				<string key="NSOffsets">{0, 0}</string>
 				<object class="NSTextFieldCell" key="NSTitleCell">
 					<int key="NSCellFlags">67239424</int>
@@ -3133,7 +3124,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<bool key="NSSharedInstance">YES</bool>
 			</object>
 			<object class="NSCustomView" id="507665343">
-				<reference key="NSNextResponder"/>
+				<nil key="NSNextResponder"/>
 				<int key="NSvFlags">268</int>
 				<object class="NSMutableArray" key="NSSubviews">
 					<bool key="EncodedWithXMLCoder">YES</bool>
@@ -3149,7 +3140,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						</object>
 						<string key="NSFrame">{{0, 20}, {20, 20}}</string>
 						<reference key="NSSuperview" ref="507665343"/>
-						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<bool key="NSIsBordered">YES</bool>
 						<object class="NSColor" key="NSColor">
@@ -3169,7 +3159,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						</object>
 						<string key="NSFrameSize">{20, 20}</string>
 						<reference key="NSSuperview" ref="507665343"/>
-						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<bool key="NSIsBordered">YES</bool>
 						<object class="NSColor" key="NSColor">
@@ -3189,7 +3178,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						</object>
 						<string key="NSFrame">{{20, 0}, {20, 40}}</string>
 						<reference key="NSSuperview" ref="507665343"/>
-						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<bool key="NSIsBordered">YES</bool>
 						<object class="NSColor" key="NSColor">
@@ -3199,8 +3187,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					</object>
 				</object>
 				<string key="NSFrameSize">{40, 40}</string>
-				<reference key="NSSuperview"/>
-				<reference key="NSWindow"/>
 				<string key="NSClassName">NSView</string>
 			</object>
 		</object>
@@ -4719,6 +4705,14 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<reference key="destination" ref="786877578"/>
 					</object>
 					<int key="connectionID">841</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">OpacityPopup</string>
+						<reference key="source" ref="1001"/>
+						<reference key="destination" ref="232633984"/>
+					</object>
+					<int key="connectionID">842</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -7311,7 +7305,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">841</int>
+			<int key="maxID">842</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -7399,6 +7393,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<string>findShadingPreset:</string>
 							<string>propagateWLWW:</string>
 							<string>setTool:</string>
+							<string>toogleAxisVisibility:</string>
 							<string>updateViewsAccordingToFrame:</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
@@ -7409,6 +7404,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<string>id</string>
 							<string>id</string>
 							<string>MPRDCMView</string>
+							<string>id</string>
 							<string>id</string>
 							<string>id</string>
 						</object>

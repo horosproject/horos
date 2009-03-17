@@ -127,6 +127,12 @@ static float deg2rad = 3.14159265358979/180.0;
 	curCLUTMenu = [NSLocalizedString(@"No CLUT", nil) retain];
 	[self UpdateCLUTMenu:nil];
 	
+	curOpacityMenu = [NSLocalizedString(@"Linear Table", nil) retain];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(UpdateOpacityMenu:) name:@"UpdateOpacityMenu" object:nil];
+	
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: nil];
+	
+	
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(CloseViewerNotification:) name:@"CloseViewerNotification" object:nil];
 	
 	[shadingCheck setAction:@selector(switchShading:)];
@@ -722,6 +728,8 @@ static float deg2rad = 3.14159265358979/180.0;
 	}
 }
 
+#pragma mark LOD
+
 - (void)setLOD:(float)lod;
 {
 	LOD = lod;
@@ -740,8 +748,6 @@ static float deg2rad = 3.14159265358979/180.0;
 	[mprView3 updateViewMPR];	
 }
 
-
-#pragma mark 
 #pragma mark Window Level / Window width
 
 - (void)createWLWWMenuItems;
@@ -1085,7 +1091,65 @@ static float deg2rad = 3.14159265358979/180.0;
 	}
 }
 
--(void) ApplyOpacityString:(NSString*) str
+#pragma mark Opacity
+
+-(void) UpdateOpacityMenu: (NSNotification*) note
+{
+    //*** Build the menu
+    NSUInteger  i;
+    NSArray     *keys;
+    NSArray     *sortedKeys;
+	
+    // Presets VIEWER Menu
+	
+	keys = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"OPACITY"] allKeys];
+    sortedKeys = [keys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
+	
+    i = [[OpacityPopup menu] numberOfItems];
+    while(i-- > 0) [[OpacityPopup menu] removeItemAtIndex:0];
+	
+    [[OpacityPopup menu] addItemWithTitle:NSLocalizedString(@"Linear Table", nil) action:@selector (ApplyOpacity:) keyEquivalent:@""];
+	[[OpacityPopup menu] addItemWithTitle:NSLocalizedString(@"Linear Table", nil) action:@selector (ApplyOpacity:) keyEquivalent:@""];
+    for( i = 0; i < [sortedKeys count]; i++)
+    {
+        [[OpacityPopup menu] addItemWithTitle:[sortedKeys objectAtIndex:i] action:@selector (ApplyOpacity:) keyEquivalent:@""];
+    }
+    [[OpacityPopup menu] addItem: [NSMenuItem separatorItem]];
+    [[OpacityPopup menu] addItemWithTitle:NSLocalizedString(@"Add an Opacity Table", nil) action:@selector (AddOpacity:) keyEquivalent:@""];
+	
+	[[[OpacityPopup menu] itemAtIndex:0] setTitle:curOpacityMenu];
+}
+
+- (void) OpacityChanged: (NSNotification*) note
+{
+	[hiddenVRView setOpacity: [[note object] getPoints]];
+	
+	[mprView1 restoreCamera];
+	mprView1.camera.forceUpdate = YES;
+	[mprView1 updateViewMPR];
+	
+	[mprView2 restoreCamera];
+	mprView2.camera.forceUpdate = YES;
+	[mprView2 updateViewMPR];
+	
+	[mprView3 restoreCamera];
+	mprView3.camera.forceUpdate = YES;
+	[mprView3 updateViewMPR];	
+}
+
+- (void)ApplyOpacityString:(NSString*)str
+{
+	if(clippingRangeMode>=0)
+	{
+		[self Apply3DOpacityString:str];
+	}
+	else
+	{
+		[self Apply2DOpacityString:str];
+	}
+}
+
+- (void)Apply3DOpacityString:(NSString*)str;
 {
 	NSDictionary *aOpacity;
 	NSArray *array;
@@ -1118,8 +1182,95 @@ static float deg2rad = 3.14159265358979/180.0;
 			[[[OpacityPopup menu] itemAtIndex:0] setTitle: curOpacityMenu];
 		}
 	}
+	
+	[mprView1 restoreCamera];
+	mprView1.camera.forceUpdate = YES;
+	[mprView1 updateViewMPR];
+	
+	[mprView2 restoreCamera];
+	mprView2.camera.forceUpdate = YES;
+	[mprView2 updateViewMPR];
+	
+	[mprView3 restoreCamera];
+	mprView3.camera.forceUpdate = YES;
+	[mprView3 updateViewMPR];	
 }
 
+- (void)Apply2DOpacityString:(NSString*)str;
+{
+	NSDictionary *aOpacity;
+	NSArray *array;
+	
+	if( [str isEqualToString:NSLocalizedString(@"Linear Table", nil)])
+	{
+		//[thickSlab setOpacity:[NSArray array]];
+		
+		if( curOpacityMenu != str)
+		{
+			[curOpacityMenu release];
+			curOpacityMenu = [str retain];
+		}
+		
+		//lastMenuNotification = nil;
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: nil];
+		
+		[[[OpacityPopup menu] itemAtIndex:0] setTitle:str];
+		
+		for( int x = 0; x < maxMovieIndex; x++)
+		{
+			for( int i = 0; i < [pixList[ x] count]; i++)
+				[[pixList[ x] objectAtIndex: i] setTransferFunction: nil];
+		}
+		
+//		[self updateImage:self];
+		[mprView1 setIndex:[mprView1 curImage]];
+		[mprView2 setIndex:[mprView2 curImage]];
+		[mprView3 setIndex:[mprView3 curImage]];
+		
+	}
+	else
+	{
+		aOpacity = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"OPACITY"] objectForKey: str];
+		if (aOpacity)
+		{
+			array = [aOpacity objectForKey:@"Points"];
+			
+			//[thickSlab setOpacity:array];
+			if( curOpacityMenu != str)
+			{
+				[curOpacityMenu release];
+				curOpacityMenu = [str retain];
+			}
+			
+			//lastMenuNotification = nil;
+			[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: nil];
+			
+			[[[OpacityPopup menu] itemAtIndex:0] setTitle:str];
+			
+			
+			NSData	*table = [OpacityTransferView tableWith4096Entries: [aOpacity objectForKey:@"Points"]];
+			
+			for( int x = 0; x < maxMovieIndex; x++)
+			{
+				for( int i = 0; i < [pixList[ x] count]; i++)
+					[[pixList[ x] objectAtIndex: i] setTransferFunction: table];
+			}
+		}
+//		[self updateImage:self];
+		[mprView1 setIndex:[mprView1 curImage]];
+		[mprView2 setIndex:[mprView2 curImage]];
+		[mprView3 setIndex:[mprView3 curImage]];
+		
+	}
+	
+//	NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:[imageView curImage]]  forKey:@"curImage"];
+//	[[NSNotificationCenter defaultCenter] postNotificationName: @"DCMUpdateCurrentImage" object: imageView userInfo: userInfo];
+//	
+//	NSArray *viewers = [ViewerController getDisplayed2DViewers];
+//	
+//	for( ViewerController *v in viewers)
+//		[v updateImage: self];
+}
 
 #pragma mark GUI ObjectController - Cocoa Bindings
 

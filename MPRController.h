@@ -118,5 +118,7 @@
 - (void)updateToolbarItems;
 - (void)toogleAxisVisibility:(id) sender;
 
+- (void)Apply3DOpacityString:(NSString*)str;
+- (void)Apply2DOpacityString:(NSString*)str;
 
 @end
