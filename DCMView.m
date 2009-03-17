@@ -2055,6 +2055,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	[showDescriptionInLargeText release];
 	
+	[blendingView release];
+	
 	[self deleteLens];
 	
     [super dealloc];

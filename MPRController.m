@@ -238,6 +238,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	[mousePosition release];
 	[wlwwMenuItems release];
 	[toolbar release];
+	[dcmSeriesName release];
 	
 	[colorAxis1 release];
 	[colorAxis2 release];

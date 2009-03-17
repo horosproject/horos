@@ -53,6 +53,7 @@
 	[stepCameras release];
 	[pathCameras release];
 	[stepsPositionInPath release];
+	
 	[super dealloc];
 }
 

@@ -131,6 +131,7 @@
 	[FTAdapter release];
 	[flyThru release];
 	[controller3D release];
+	[dcmSeriesName release];
 	
 	[super dealloc];
 }
