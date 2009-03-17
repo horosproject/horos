@@ -51,7 +51,7 @@
 	Point3D *mousePosition;
 	int mouseViewID;
 	
-	BOOL displayCrossLines;
+	BOOL displayCrossLines, displayMousePosition;
 	
 	// Export Dcm
 	IBOutlet NSWindow *dcmWindow;
@@ -90,7 +90,7 @@
 @property (retain) NSString *dcmSeriesName;
 @property (readonly) DCMPix *originalPix;
 @property float LOD;
-@property BOOL dcmSameIntervalAndThickness, displayCrossLines;
+@property BOOL dcmSameIntervalAndThickness, displayCrossLines, displayMousePosition;
 @property (retain) NSColor *colorAxis1, *colorAxis2, *colorAxis3;
 @property (readonly) MPRDCMView *mprView1, *mprView2, *mprView3;
 

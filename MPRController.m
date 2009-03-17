@@ -28,7 +28,7 @@ static float deg2rad = 3.14159265358979/180.0;
 
 @implementation MPRController
 
-@synthesize displayCrossLines, dcmSameIntervalAndThickness, clippingRangeThickness, clippingRangeMode, mousePosition, mouseViewID, originalPix, wlwwMenuItems, LOD, dcmFrom, dcmTo, dcmMode, dcmRotationDirection, dcmSeriesMode, dcmRotation, dcmNumberOfFrames, dcmQuality, dcmInterval, dcmSeriesName, dcmBatchNumberOfFrames;
+@synthesize displayCrossLines, dcmSameIntervalAndThickness, clippingRangeThickness, clippingRangeMode, mousePosition, mouseViewID, originalPix, wlwwMenuItems, LOD, dcmFrom, dcmTo, dcmMode, dcmRotationDirection, dcmSeriesMode, dcmRotation, dcmNumberOfFrames, dcmQuality, dcmInterval, dcmSeriesName, dcmBatchNumberOfFrames, displayMousePosition;
 @synthesize colorAxis1, colorAxis2, colorAxis3;
 @synthesize mprView1, mprView2, mprView3;
 
@@ -78,7 +78,9 @@ static float deg2rad = 3.14159265358979/180.0;
 	volumeData[0] = volume;
 	viewer2D = viewer;
 	self.displayCrossLines = YES;
-		
+	self.displayMousePosition = YES;
+	[self updateToolbarItems];
+	
 	DCMPix *emptyPix = [self emptyPix: originalPix width: 100 height: 100];
 	[mprView1 setDCMPixList:  [NSMutableArray arrayWithObject: emptyPix] filesList: [NSArray arrayWithObject: [files lastObject]] volumeData: [NSData dataWithBytes: [emptyPix fImage] length: [emptyPix pheight] * [emptyPix pwidth] * sizeof( float)] roiList:nil firstImage:0 type:'i' reset:YES];
 	[mprView1 setFlippedData: [[viewer imageView] flippedData]];
@@ -1769,6 +1771,24 @@ static float deg2rad = 3.14159265358979/180.0;
 		[toolbarItem setTarget:self];
 		[toolbarItem setAction:@selector(toogleAxisVisibility:)];
     }
+	else if ([itemIdent isEqualToString:@"MousePositionShowHide"])
+	{
+		[toolbarItem setPaletteLabel:NSLocalizedString(@"Show/Hide Axis",nil)];
+		
+		if(self.displayMousePosition)
+		{
+			[toolbarItem setLabel:NSLocalizedString(@"Hide Mouse Position",nil)];
+			[toolbarItem setImage:[NSImage imageNamed:@"MPRMousePositionHide"]];
+		}
+		else
+		{
+			[toolbarItem setLabel:NSLocalizedString(@"Show Mouse Position",nil)];
+			[toolbarItem setImage:[NSImage imageNamed:@"MPRMousePositionShow"]];
+		}
+		
+		[toolbarItem setTarget:self];
+		[toolbarItem setAction:@selector(toogleMousePositionVisibility:)];
+    }
 	else
 	{
 		[toolbarItem release];
@@ -1789,7 +1809,7 @@ static float deg2rad = 3.14159265358979/180.0;
 											NSToolbarFlexibleSpaceItemIdentifier,
 											NSToolbarSpaceItemIdentifier,
 											NSToolbarSeparatorItemIdentifier,
-											@"tbTools", @"tbWLWW", @"tbLOD", @"tbThickSlab", @"tbShading", @"Reset.tiff", @"Export.icns", @"iPhoto.icns", @"QTExport.icns", @"AxisColors", @"AxisShowHide", nil];
+											@"tbTools", @"tbWLWW", @"tbLOD", @"tbThickSlab", @"tbShading", @"Reset.tiff", @"Export.icns", @"iPhoto.icns", @"QTExport.icns", @"AxisColors", @"AxisShowHide", @"MousePositionShowHide", nil];
 }
 
 - (void)updateToolbarItems;
@@ -1810,14 +1830,42 @@ static float deg2rad = 3.14159265358979/180.0;
 				[item setImage:[NSImage imageNamed:@"MPRAxisShow"]];
 			}			
 		}
+		else if([[item itemIdentifier] isEqualToString:@"MousePositionShowHide"])
+		{
+			if(self.displayMousePosition)
+			{
+				[item setLabel:NSLocalizedString(@"Hide Mouse Position",nil)];
+				[item setImage:[NSImage imageNamed:@"MPRMousePositionHide"]];
+			}
+			else
+			{
+				[item setLabel:NSLocalizedString(@"Show Mouse Position",nil)];
+				[item setImage:[NSImage imageNamed:@"MPRMousePositionShow"]];
+			}			
+		}
+		
 	}
 }
 
-#pragma mark Axis Show / Hide
+#pragma mark Axis / Mouse Position : Show / Hide
 
 - (void)toogleAxisVisibility:(id) sender;
 {
 	self.displayCrossLines = !self.displayCrossLines;
+	
+	[mprView1 setNeedsDisplay: YES];
+	[mprView2 setNeedsDisplay: YES];
+	[mprView3 setNeedsDisplay: YES];
+	
+	[self updateToolbarItems];
+}
+
+- (void)toogleMousePositionVisibility:(id) sender;
+{
+	self.displayMousePosition = !self.displayMousePosition;
+	
+	if(self.displayMousePosition && !self.displayCrossLines)
+		self.displayCrossLines = YES;
 	
 	[mprView1 setNeedsDisplay: YES];
 	[mprView2 setNeedsDisplay: YES];

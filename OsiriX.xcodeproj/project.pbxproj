@@ -349,6 +349,8 @@
 		A93CFFB30A516A5100078038 /* LLSubtraction.m in Sources */ = {isa = PBXBuildFile; fileRef = A93CFFA50A516A5100078038 /* LLSubtraction.m */; };
 		A93F03CD0F6FBCB900C45CCD /* MPRAxisHide.png in Resources */ = {isa = PBXBuildFile; fileRef = A93F03CB0F6FBCB900C45CCD /* MPRAxisHide.png */; };
 		A93F03CE0F6FBCB900C45CCD /* MPRAxisShow.png in Resources */ = {isa = PBXBuildFile; fileRef = A93F03CC0F6FBCB900C45CCD /* MPRAxisShow.png */; };
+		A93F03F80F6FD1BC00C45CCD /* MPRMousePositionHide.png in Resources */ = {isa = PBXBuildFile; fileRef = A93F03F70F6FD1BC00C45CCD /* MPRMousePositionHide.png */; };
+		A93F03FA0F6FD1C000C45CCD /* MPRMousePositionShow.png in Resources */ = {isa = PBXBuildFile; fileRef = A93F03F90F6FD1C000C45CCD /* MPRMousePositionShow.png */; };
 		A94469E30BA7FFE7008643E5 /* BLAuthentication.h in Headers */ = {isa = PBXBuildFile; fileRef = A94469DF0BA7FFE7008643E5 /* BLAuthentication.h */; };
 		A94469E40BA7FFE7008643E5 /* BLAuthentication.m in Sources */ = {isa = PBXBuildFile; fileRef = A94469E00BA7FFE7008643E5 /* BLAuthentication.m */; };
 		A94D784C09A0D58E0039F5A2 /* EndoscopyVRView.h in Headers */ = {isa = PBXBuildFile; fileRef = A94D784A09A0D58E0039F5A2 /* EndoscopyVRView.h */; };
@@ -5560,6 +5562,8 @@
 		A93CFFA50A516A5100078038 /* LLSubtraction.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = LLSubtraction.m; sourceTree = "<group>"; };
 		A93F03CB0F6FBCB900C45CCD /* MPRAxisHide.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = MPRAxisHide.png; sourceTree = "<group>"; };
 		A93F03CC0F6FBCB900C45CCD /* MPRAxisShow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = MPRAxisShow.png; sourceTree = "<group>"; };
+		A93F03F70F6FD1BC00C45CCD /* MPRMousePositionHide.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = MPRMousePositionHide.png; sourceTree = "<group>"; };
+		A93F03F90F6FD1C000C45CCD /* MPRMousePositionShow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = MPRMousePositionShow.png; sourceTree = "<group>"; };
 		A94469DF0BA7FFE7008643E5 /* BLAuthentication.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = BLAuthentication.h; sourceTree = "<group>"; };
 		A94469E00BA7FFE7008643E5 /* BLAuthentication.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = BLAuthentication.m; sourceTree = "<group>"; };
 		A94D784A09A0D58E0039F5A2 /* EndoscopyVRView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EndoscopyVRView.h; sourceTree = "<group>"; };
@@ -10626,6 +10630,8 @@
 				ABBB6492063587B200D9531F /* MPR3D.tif */,
 				A93F03CB0F6FBCB900C45CCD /* MPRAxisHide.png */,
 				A93F03CC0F6FBCB900C45CCD /* MPRAxisShow.png */,
+				A93F03F70F6FD1BC00C45CCD /* MPRMousePositionHide.png */,
+				A93F03F90F6FD1C000C45CCD /* MPRMousePositionShow.png */,
 				A98875BA0D5B694100E0118E /* Navigator.tif */,
 				7E2BE3F40715DBFB0017898A /* Network.tiff */,
 				ABBB6493063587B200D9531F /* Next.tif */,
@@ -17702,6 +17708,8 @@
 				A9D18CE60F65120000476DBD /* RotateAxisCursor.png in Resources */,
 				A93F03CD0F6FBCB900C45CCD /* MPRAxisHide.png in Resources */,
 				A93F03CE0F6FBCB900C45CCD /* MPRAxisShow.png in Resources */,
+				A93F03F80F6FD1BC00C45CCD /* MPRMousePositionHide.png in Resources */,
+				A93F03FA0F6FD1C000C45CCD /* MPRMousePositionShow.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
