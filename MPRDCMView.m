@@ -38,7 +38,7 @@ static float deg2rad = 3.14159265358979/180.0;
 
 @implementation MPRDCMView
 
-@synthesize pix, camera, angleMPR, vrView, viewExport, toIntervalExport, fromIntervalExport, rotateLines;
+@synthesize pix, camera, angleMPR, vrView, viewExport, toIntervalExport, fromIntervalExport, rotateLines, moveCenter;
 
 - (BOOL)is2DTool:(short)tool;
 {
@@ -548,7 +548,8 @@ static float deg2rad = 3.14159265358979/180.0;
 	glEnd();
 	glLineWidth(1.0);
 	
-	if( windowController.displayCrossLines && !windowController.mprView1.rotateLines && !windowController.mprView2.rotateLines && !windowController.mprView3.rotateLines)
+	if( windowController.displayCrossLines && !windowController.mprView1.rotateLines && !windowController.mprView2.rotateLines && !windowController.mprView3.rotateLines
+											&& !windowController.mprView1.moveCenter && !windowController.mprView2.moveCenter && !windowController.mprView3.moveCenter)
 	{
 #define joris_idea_for_mouse_position
 		// Mouse Position

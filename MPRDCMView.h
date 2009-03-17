@@ -46,7 +46,7 @@
 @property float angleMPR, fromIntervalExport, toIntervalExport;
 @property int viewExport;
 @property (readonly) VRView *vrView;
-@property (readonly) BOOL rotateLines;
+@property (readonly) BOOL rotateLines, moveCenter;
 
 - (BOOL)is2DTool:(short)tool;
 - (void) setDCMPixList:(NSMutableArray*)pix filesList:(NSArray*)files volumeData:(NSData*)volume roiList:(NSMutableArray*)rois firstImage:(short)firstImage type:(char)type reset:(BOOL)reset;
