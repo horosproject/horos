@@ -115,4 +115,8 @@
 
 -(IBAction) endDCMExportSettings:(id) sender;
 
+- (void)updateToolbarItems;
+- (void)toogleAxisVisibility:(id) sender;
+
+
 @end

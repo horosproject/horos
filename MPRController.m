@@ -543,11 +543,7 @@ static float deg2rad = 3.14159265358979/180.0;
     
 	if( c ==  ' ')
 	{
-		self.displayCrossLines = !self.displayCrossLines;
-		
-		[mprView1 setNeedsDisplay: YES];
-		[mprView2 setNeedsDisplay: YES];
-		[mprView3 setNeedsDisplay: YES];
+		[self toogleAxisVisibility:self];
 	}
 	else if(c == 27) // 27 : escape
 	{
@@ -560,6 +556,7 @@ static float deg2rad = 3.14159265358979/180.0;
 {
 	return mprView1;
 }
+
 #pragma mark Undo
 
 - (id) prepareObjectForUndo:(NSString*) string
@@ -1754,6 +1751,24 @@ static float deg2rad = 3.14159265358979/180.0;
 		[toolbarItem setView: tbAxisColors];
 		[toolbarItem setMinSize: NSMakeSize(NSWidth([tbAxisColors frame]), NSHeight([tbAxisColors frame]))];
     }
+	else if ([itemIdent isEqualToString:@"AxisShowHide"])
+	{
+		[toolbarItem setPaletteLabel:NSLocalizedString(@"Show/Hide Axis",nil)];
+		
+		if(self.displayCrossLines)
+		{
+			[toolbarItem setLabel:NSLocalizedString(@"Hide Axis",nil)];
+			[toolbarItem setImage:[NSImage imageNamed:@"MPRAxisHide"]];
+		}
+		else
+		{
+			[toolbarItem setLabel:NSLocalizedString(@"Show Axis",nil)];
+			[toolbarItem setImage:[NSImage imageNamed:@"MPRAxisShow"]];
+		}
+		
+		[toolbarItem setTarget:self];
+		[toolbarItem setAction:@selector(toogleAxisVisibility:)];
+    }
 	else
 	{
 		[toolbarItem release];
@@ -1774,7 +1789,41 @@ static float deg2rad = 3.14159265358979/180.0;
 											NSToolbarFlexibleSpaceItemIdentifier,
 											NSToolbarSpaceItemIdentifier,
 											NSToolbarSeparatorItemIdentifier,
-											@"tbTools", @"tbWLWW", @"tbLOD", @"tbThickSlab", @"tbShading", @"Reset.tiff", @"Export.icns", @"iPhoto.icns", @"QTExport.icns", @"AxisColors", nil];
+											@"tbTools", @"tbWLWW", @"tbLOD", @"tbThickSlab", @"tbShading", @"Reset.tiff", @"Export.icns", @"iPhoto.icns", @"QTExport.icns", @"AxisColors", @"AxisShowHide", nil];
+}
+
+- (void)updateToolbarItems;
+{
+	NSArray *toolbarItems = [toolbar items];
+	for(NSToolbarItem *item in toolbarItems)
+	{
+		if([[item itemIdentifier] isEqualToString:@"AxisShowHide"])
+		{
+			if(self.displayCrossLines)
+			{
+				[item setLabel:NSLocalizedString(@"Hide Axis",nil)];
+				[item setImage:[NSImage imageNamed:@"MPRAxisHide"]];
+			}
+			else
+			{
+				[item setLabel:NSLocalizedString(@"Show Axis",nil)];
+				[item setImage:[NSImage imageNamed:@"MPRAxisShow"]];
+			}			
+		}
+	}
+}
+
+#pragma mark Axis Show / Hide
+
+- (void)toogleAxisVisibility:(id) sender;
+{
+	self.displayCrossLines = !self.displayCrossLines;
+	
+	[mprView1 setNeedsDisplay: YES];
+	[mprView2 setNeedsDisplay: YES];
+	[mprView3 setNeedsDisplay: YES];
+	
+	[self updateToolbarItems];
 }
 
 #pragma mark Axis Colors
