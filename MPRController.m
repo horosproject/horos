@@ -30,6 +30,7 @@ static float deg2rad = 3.14159265358979/180.0;
 
 @synthesize displayCrossLines, dcmSameIntervalAndThickness, clippingRangeThickness, clippingRangeMode, mousePosition, mouseViewID, originalPix, wlwwMenuItems, LOD, dcmFrom, dcmTo, dcmMode, dcmRotationDirection, dcmSeriesMode, dcmRotation, dcmNumberOfFrames, dcmQuality, dcmInterval, dcmSeriesName, dcmBatchNumberOfFrames;
 @synthesize colorAxis1, colorAxis2, colorAxis3;
+@synthesize mprView1, mprView2, mprView3;
 
 + (double) angleBetweenVector:(float*) a andPlane:(float*) orientation
 {

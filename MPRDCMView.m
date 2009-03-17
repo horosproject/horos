@@ -38,7 +38,7 @@ static float deg2rad = 3.14159265358979/180.0;
 
 @implementation MPRDCMView
 
-@synthesize pix, camera, angleMPR, vrView, viewExport, toIntervalExport, fromIntervalExport;
+@synthesize pix, camera, angleMPR, vrView, viewExport, toIntervalExport, fromIntervalExport, rotateLines;
 
 - (BOOL)is2DTool:(short)tool;
 {
@@ -548,12 +548,84 @@ static float deg2rad = 3.14159265358979/180.0;
 	glEnd();
 	glLineWidth(1.0);
 	
-	if( windowController.displayCrossLines)
+	if( windowController.displayCrossLines && !windowController.mprView1.rotateLines && !windowController.mprView2.rotateLines && !windowController.mprView3.rotateLines)
 	{
+#define joris_idea_for_mouse_position
 		// Mouse Position
+		#ifdef joris_idea_for_mouse_position
+		if( viewID == windowController.mouseViewID)
+		{
+			DCMPix *pixA, *pixB;
+			int viewIDA, viewIDB;
+			
+			switch (viewID)
+			{	
+				case 1:
+					pixA = [windowController.mprView2 pix];
+					pixB = [windowController.mprView3 pix];
+					viewIDA = 2;
+					viewIDB = 3;
+					break;
+				case 2:
+					pixA = [windowController.mprView1 pix];
+					pixB = [windowController.mprView3 pix];
+					viewIDA = 1;
+					viewIDB = 3;					
+					break;
+				case 3:
+					pixA = [windowController.mprView1 pix];
+					pixB = [windowController.mprView2 pix];
+					viewIDA = 1;
+					viewIDB = 2;
+					break;		
+			}
+			
+			[self colorForView:viewIDA];
+			Point3D *pt = windowController.mousePosition;
+			float sc[ 3], dc[ 3] = { pt.x, pt.y, pt.z}, location[ 3];
+			[pixA convertDICOMCoords: dc toSliceCoords: sc pixelCenter: YES];
+			sc[0] = sc[ 0] / pixA.pixelSpacingX;
+			sc[1] = sc[ 1] / pixA.pixelSpacingY;
+			[pixA convertPixX:sc[0] pixY:sc[1] toDICOMCoords:location pixelCenter:YES];
+			[pix convertDICOMCoords:location toSliceCoords:sc pixelCenter:YES];
+			
+			glPointSize( 10);
+			glBegin( GL_POINTS);
+			sc[0] = sc[ 0] / curDCM.pixelSpacingX;
+			sc[1] = sc[ 1] / curDCM.pixelSpacingY;
+			sc[0] -= curDCM.pwidth * 0.5f;
+			sc[1] -= curDCM.pheight * 0.5f;
+			glVertex2f( scaleValue*sc[ 0], scaleValue*sc[ 1]);
+			glEnd();
+
+			
+			[self colorForView:viewIDB];
+			pt = windowController.mousePosition;
+			dc[0] = pt.x; dc[1] = pt.y; dc[2] = pt.z;
+			[pixB convertDICOMCoords: dc toSliceCoords: sc pixelCenter: YES];
+			sc[0] = sc[ 0] / pixB.pixelSpacingX;
+			sc[1] = sc[ 1] / pixB.pixelSpacingY;
+			[pixB convertPixX:sc[0] pixY:sc[1] toDICOMCoords:location pixelCenter:YES];
+			[pix convertDICOMCoords:location toSliceCoords:sc pixelCenter:YES];
+			
+			glPointSize( 10);
+			glBegin( GL_POINTS);
+			sc[0] = sc[ 0] / curDCM.pixelSpacingX;
+			sc[1] = sc[ 1] / curDCM.pixelSpacingY;
+			sc[0] -= curDCM.pwidth * 0.5f;
+			sc[1] -= curDCM.pheight * 0.5f;
+			glVertex2f( scaleValue*sc[ 0], scaleValue*sc[ 1]);
+			glEnd();
+
+		}
+		#endif
 		if( viewID != windowController.mouseViewID)
 		{
+			#ifdef joris_idea_for_mouse_position
+			[self colorForView: viewID];
+			#else
 			[self colorForView: windowController.mouseViewID];
+			#endif
 			Point3D *pt = windowController.mousePosition;
 			float sc[ 3], dc[ 3] = { pt.x, pt.y, pt.z};
 			

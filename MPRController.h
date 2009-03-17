@@ -92,6 +92,7 @@
 @property float LOD;
 @property BOOL dcmSameIntervalAndThickness, displayCrossLines;
 @property (retain) NSColor *colorAxis1, *colorAxis2, *colorAxis3;
+@property (readonly) MPRDCMView *mprView1, *mprView2, *mprView3;
 
 + (double) angleBetweenVector:(float*) a andPlane:(float*) orientation;
 
