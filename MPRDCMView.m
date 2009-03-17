@@ -982,7 +982,7 @@ static float deg2rad = 3.14159265358979/180.0;
 			float before[ 9], after[ 9];
 			if( [vrView _tool] == tRotate)
 				[self.pix orientation: before];
-				
+			
 			[vrView mouseDragged: theEvent];
 			
 			if( [vrView _tool] == tRotate)

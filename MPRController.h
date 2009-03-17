@@ -36,7 +36,7 @@
 	
 	ViewerController *viewer2D;
 	VRController *hiddenVRController;
-	VRView *vrView, *hiddenVRView;
+	VRView *hiddenVRView;
 		
 	NSMutableArray *filesList[200], *pixList[200];
 	DCMPix *originalPix;
