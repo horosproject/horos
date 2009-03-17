@@ -2017,6 +2017,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (void) setWindowTitle:(id) sender
 {
+	if( windowWillClose) return;
+	
 	NSString	*loading = [NSString stringWithString:@"         "];
 	
 	if( ThreadLoadImage == YES || loadingPercentage == 0)
