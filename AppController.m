@@ -3142,8 +3142,8 @@ static BOOL initialized = NO;
 				[viewersList addObject: [win windowController]];
 			else if( [[win windowController] windowWillClose])
 			{
-				NSLog( @"*** [[win windowController] windowWillClose] ***");
-				[win close];
+//				NSLog( @"*** [[win windowController] windowWillClose] ***");
+//				[win performClose: self];
 			}
 				
 			if( [[viewersList lastObject] FullScreenON]) return;
