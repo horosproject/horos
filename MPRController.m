@@ -1773,7 +1773,7 @@ static float deg2rad = 3.14159265358979/180.0;
     }
 	else if ([itemIdent isEqualToString:@"MousePositionShowHide"])
 	{
-		[toolbarItem setPaletteLabel:NSLocalizedString(@"Show/Hide Axis",nil)];
+		[toolbarItem setPaletteLabel:NSLocalizedString(@"Show/Hide Mouse Position",nil)];
 		
 		if(self.displayMousePosition)
 		{
