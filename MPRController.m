@@ -1217,9 +1217,9 @@ static float deg2rad = 3.14159265358979/180.0;
 		
 		[[[OpacityPopup menu] itemAtIndex:0] setTitle:str];
 		
-		[[mprView1 pix] setTransferFunction: table];
-		[[mprView2 pix] setTransferFunction: table];
-		[[mprView3 pix] setTransferFunction: table];
+		[[mprView1 pix] setTransferFunction:nil];
+		[[mprView2 pix] setTransferFunction:nil];
+		[[mprView3 pix] setTransferFunction:nil];
 		
 		[mprView1 setIndex:[mprView1 curImage]];
 		[mprView2 setIndex:[mprView2 curImage]];
