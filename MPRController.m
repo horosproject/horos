@@ -1709,6 +1709,8 @@ static float deg2rad = 3.14159265358979/180.0;
 {
 	if( [notification object] == [self window])
 	{
+		[NSObject cancelPreviousPerformRequestsWithTarget: self selector:@selector( updateViewsAccordingToFrame:) object: nil];
+		
 		[[NSNotificationCenter defaultCenter] removeObserver: self];
 		
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"Window3DClose" object: self userInfo: 0];
