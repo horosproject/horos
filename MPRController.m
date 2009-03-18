@@ -1140,13 +1140,13 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (void)ApplyOpacityString:(NSString*)str
 {
-	if(clippingRangeMode>=0)
+	if( clippingRangeMode == 1 || clippingRangeMode == 3)
 	{
-		[self Apply3DOpacityString:str];
+		[self Apply2DOpacityString:str];
 	}
 	else
 	{
-		[self Apply2DOpacityString:str];
+		[self Apply3DOpacityString:str];
 	}
 }
 
@@ -1251,11 +1251,9 @@ static float deg2rad = 3.14159265358979/180.0;
 			
 			NSData	*table = [OpacityTransferView tableWith4096Entries: [aOpacity objectForKey:@"Points"]];
 			
-			for( int x = 0; x < maxMovieIndex; x++)
-			{
-				for( int i = 0; i < [pixList[ x] count]; i++)
-					[[pixList[ x] objectAtIndex: i] setTransferFunction: table];
-			}
+			[[mprView1 pix] setTransferFunction: table];
+			[[mprView2 pix] setTransferFunction: table];
+			[[mprView3 pix] setTransferFunction: table];
 		}
 //		[self updateImage:self];
 		[mprView1 setIndex:[mprView1 curImage]];
@@ -1323,6 +1321,11 @@ static float deg2rad = 3.14159265358979/180.0;
 		[mprView1.vrView prepareFullDepthCapture];
 		[mprView2.vrView prepareFullDepthCapture];
 		[mprView3.vrView prepareFullDepthCapture];
+		
+		// switch linear opacity table
+		[curOpacityMenu release];
+		curOpacityMenu = [NSLocalizedString(@"Linear Table", nil) retain];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(UpdateOpacityMenu:) name:@"UpdateOpacityMenu" object:nil];
 	}
 	else
 	{
@@ -1335,9 +1338,15 @@ static float deg2rad = 3.14159265358979/180.0;
 		[mprView1 setWLWW:128 :256];
 		[mprView2 setWLWW:128 :256];
 		[mprView3 setWLWW:128 :256];
+		
+		// switch log inverse table
+		[curOpacityMenu release];
+		curOpacityMenu = [NSLocalizedString(@"Logarithmic Inverse Table", nil) retain];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(UpdateOpacityMenu:) name:@"UpdateOpacityMenu" object:nil];
 	}
 	[self ApplyCLUTString:curCLUTMenu];
-		
+	[self ApplyOpacityString:curOpacityMenu];
+	
 	[mprView1 restoreCamera];
 	mprView1.camera.forceUpdate = YES;
 	if( clippingRangeMode == 1  || clippingRangeMode == 3) [mprView1 setWLWW: pWL :pWW];
