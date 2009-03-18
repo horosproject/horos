@@ -1998,12 +1998,12 @@ static float deg2rad = 3.14159265358979/180.0;
 		{
 			if(self.displayMousePosition)
 			{
-				[item setLabel:NSLocalizedString(@"Press this button to hide Mouse Position",nil)];
+				[item setLabel:NSLocalizedString(@"Press this button to hide the position of the Mouse",nil)];
 				[item setImage:[NSImage imageNamed:@"MPRMousePositionHide"]];
 			}
 			else
 			{
-				[item setLabel:NSLocalizedString(@"Press this button to show Mouse Position",nil)];
+				[item setLabel:NSLocalizedString(@"Press this button to show the position of the Mouse",nil)];
 				[item setImage:[NSImage imageNamed:@"MPRMousePositionShow"]];
 			}			
 		}
