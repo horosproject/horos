@@ -1217,13 +1217,10 @@ static float deg2rad = 3.14159265358979/180.0;
 		
 		[[[OpacityPopup menu] itemAtIndex:0] setTitle:str];
 		
-		for( int x = 0; x < maxMovieIndex; x++)
-		{
-			for( int i = 0; i < [pixList[ x] count]; i++)
-				[[pixList[ x] objectAtIndex: i] setTransferFunction: nil];
-		}
+		[[mprView1 pix] setTransferFunction: table];
+		[[mprView2 pix] setTransferFunction: table];
+		[[mprView3 pix] setTransferFunction: table];
 		
-//		[self updateImage:self];
 		[mprView1 setIndex:[mprView1 curImage]];
 		[mprView2 setIndex:[mprView2 curImage]];
 		[mprView3 setIndex:[mprView3 curImage]];
@@ -1248,14 +1245,13 @@ static float deg2rad = 3.14159265358979/180.0;
 			
 			[[[OpacityPopup menu] itemAtIndex:0] setTitle:str];
 			
-			
 			NSData	*table = [OpacityTransferView tableWith4096Entries: [aOpacity objectForKey:@"Points"]];
 			
 			[[mprView1 pix] setTransferFunction: table];
 			[[mprView2 pix] setTransferFunction: table];
 			[[mprView3 pix] setTransferFunction: table];
 		}
-//		[self updateImage:self];
+		
 		[mprView1 setIndex:[mprView1 curImage]];
 		[mprView2 setIndex:[mprView2 curImage]];
 		[mprView3 setIndex:[mprView3 curImage]];
