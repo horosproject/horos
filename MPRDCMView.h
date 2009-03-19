@@ -49,7 +49,7 @@
 @property (readonly) BOOL rotateLines, moveCenter;
 
 - (BOOL)is2DTool:(short)tool;
-- (void) setDCMPixList:(NSMutableArray*)pix filesList:(NSArray*)files volumeData:(NSData*)volume roiList:(NSMutableArray*)rois firstImage:(short)firstImage type:(char)type reset:(BOOL)reset;
+- (void) setDCMPixList:(NSMutableArray*)pix filesList:(NSArray*)files roiList:(NSMutableArray*)rois firstImage:(short)firstImage type:(char)type reset:(BOOL)reset;
 - (void) setVRView: (VRView*) v viewID:(int) i;
 - (void) updateViewMPR;
 - (void) updateViewMPR:(BOOL) computeCrossReferenceLines;

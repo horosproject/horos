@@ -71,7 +71,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	return NO;
 }
 
-- (void) setDCMPixList:(NSMutableArray*)pixList filesList:(NSArray*)files volumeData:(NSData*)volume roiList:(NSMutableArray*)rois firstImage:(short)firstImage type:(char)type reset:(BOOL)reset;
+- (void) setDCMPixList:(NSMutableArray*)pixList filesList:(NSArray*)files roiList:(NSMutableArray*)rois firstImage:(short)firstImage type:(char)type reset:(BOOL)reset;
 {
 	[super setDCM:pixList :files :rois :firstImage :type :reset];
 	
@@ -105,6 +105,7 @@ static float deg2rad = 3.14159265358979/180.0;
 		[windowController performSelector: @selector( updateViewsAccordingToFrame:) withObject: nil afterDelay: 0.1];
 	}
 	
+	[blendingView setFrame: frameRect];
 	[super setFrame: frameRect];
 }
 
@@ -233,6 +234,47 @@ static float deg2rad = 3.14159265358979/180.0;
 			
 			[self setWLWW: previousWL :previousWW];
 			[self setScaleValue: [vrView imageSampleDistance]];
+		}
+		
+		if( blendingView)
+		{
+			[blendingView getWLWW: &previousWL :&previousWW];
+			
+			[vrView renderBlendedVolume];
+			
+			float *blendedImagePtr = [vrView imageInFullDepthWidth: &w height: &h isRGB: &isRGB blendingView: YES];
+			
+			DCMPix *bPix = [blendingView curDCM];
+			
+			if( [bPix pwidth] == w && [bPix pheight] == h && isRGB == [bPix isRGB])
+			{
+				memcpy( [bPix fImage], blendedImagePtr, w*h*sizeof( float));
+				free( blendedImagePtr);
+			}
+			else
+			{
+				[bPix setRGB: isRGB];
+				[bPix setfImage: blendedImagePtr];
+				[bPix setPwidth: w];
+				[bPix setPheight: h];
+				
+				[blendingView setIndex: 0];
+			}
+			float porigin[ 3];
+			[vrView getOrigin: porigin windowCentered: YES sliceMiddle: YES blendedView: YES];
+			[bPix setOrigin: porigin];
+			
+			float resolution = [vrView getResolution] * [vrView blendingImageSampleDistance];
+			[bPix setPixelSpacingX: resolution];
+			[bPix setPixelSpacingY: resolution];
+			
+			float orientation[ 9];
+			[vrView getOrientation: orientation];
+			[bPix setOrientation: orientation];
+			[bPix setSliceThickness: [vrView getClippingRangeThicknessInMm]];
+			
+			[blendingView setWLWW: previousWL :previousWW];
+			[blendingView setScaleValue: [vrView blendingImageSampleDistance]];
 		}
 	}
 	

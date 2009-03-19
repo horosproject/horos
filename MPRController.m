@@ -83,16 +83,40 @@ static float deg2rad = 3.14159265358979/180.0;
 	[self updateToolbarItems];
 	
 	DCMPix *emptyPix = [self emptyPix: originalPix width: 100 height: 100];
-	[mprView1 setDCMPixList:  [NSMutableArray arrayWithObject: emptyPix] filesList: [NSArray arrayWithObject: [files lastObject]] volumeData: [NSData dataWithBytes: [emptyPix fImage] length: [emptyPix pheight] * [emptyPix pwidth] * sizeof( float)] roiList:nil firstImage:0 type:'i' reset:YES];
+	[mprView1 setDCMPixList: [NSMutableArray arrayWithObject: emptyPix] filesList: [NSArray arrayWithObject: [files lastObject]] roiList:nil firstImage:0 type:'i' reset:YES];
 	[mprView1 setFlippedData: [[viewer imageView] flippedData]];
 	
 	emptyPix = [self emptyPix: originalPix width: 100 height: 100];
-	[mprView2 setDCMPixList:  [NSMutableArray arrayWithObject: emptyPix] filesList: [NSArray arrayWithObject: [files lastObject]] volumeData: [NSData dataWithBytes: [emptyPix fImage] length: [emptyPix pheight] * [emptyPix pwidth] * sizeof( float)] roiList:nil firstImage:0 type:'i' reset:YES];
+	[mprView2 setDCMPixList: [NSMutableArray arrayWithObject: emptyPix] filesList: [NSArray arrayWithObject: [files lastObject]] roiList:nil firstImage:0 type:'i' reset:YES];
 	[mprView2 setFlippedData: [[viewer imageView] flippedData]];
 	
 	emptyPix = [self emptyPix: originalPix width: 100 height: 100];
-	[mprView3 setDCMPixList:  [NSMutableArray arrayWithObject: emptyPix] filesList: [NSArray arrayWithObject: [files lastObject]] volumeData: [NSData dataWithBytes: [emptyPix fImage] length: [emptyPix pheight] * [emptyPix pwidth] * sizeof( float)] roiList:nil firstImage:0 type:'i' reset:YES];
+	[mprView3 setDCMPixList: [NSMutableArray arrayWithObject: emptyPix] filesList: [NSArray arrayWithObject: [files lastObject]] roiList:nil firstImage:0 type:'i' reset:YES];
 	[mprView3 setFlippedData: [[viewer imageView] flippedData]];
+	
+	if( fusedViewer)
+	{
+		blendedMprView1 = [[DCMView alloc] initWithFrame: [mprView1 frame]];
+		blendedMprView2 = [[DCMView alloc] initWithFrame: [mprView2 frame]];
+		blendedMprView3 = [[DCMView alloc] initWithFrame: [mprView3 frame]];
+		
+		emptyPix = [self emptyPix: originalPix width: 100 height: 100];
+		[blendedMprView1 setDCM:  [NSMutableArray arrayWithObject: emptyPix] : [NSArray arrayWithObject: [files lastObject]] :nil :0 :'i' :YES];
+		
+		emptyPix = [self emptyPix: originalPix width: 100 height: 100];
+		[blendedMprView2 setDCM:  [NSMutableArray arrayWithObject: emptyPix] : [NSArray arrayWithObject: [files lastObject]] :nil :0 :'i' :YES];
+		
+		emptyPix = [self emptyPix: originalPix width: 100 height: 100];
+		[blendedMprView3 setDCM:  [NSMutableArray arrayWithObject: emptyPix] : [NSArray arrayWithObject: [files lastObject]] :nil :0 :'i' :YES];
+		
+		[mprView1 setBlending: blendedMprView1];
+		[mprView2 setBlending: blendedMprView2];
+		[mprView3 setBlending: blendedMprView3];
+		
+		[mprView1 setBlendingFactor: 0.5];
+		[mprView2 setBlendingFactor: 0.5];
+		[mprView3 setBlendingFactor: 0.5];
+	}
 	
 	hiddenVRController = [[VRController alloc] initWithPix:pix :files :volume :fusedViewer :viewer style:@"noNib" mode:@"MIP"];
 	[hiddenVRController retain];
@@ -249,6 +273,10 @@ static float deg2rad = 3.14159265358979/180.0;
 	[redoQueue release];
 	
 	[movieTimer release];
+	
+	[blendedMprView1 release];
+	[blendedMprView2 release];
+	[blendedMprView3 release];
 	
 	[super dealloc];
 	
@@ -2073,6 +2101,10 @@ static float deg2rad = 3.14159265358979/180.0;
 		[mprView1.vrView restoreFullDepthCapture];
 	
 	[self updateViewsAccordingToFrame: self];
+	
+	[mprView1 mouseMoved: [[NSApplication sharedApplication] currentEvent]];
+	[mprView2 mouseMoved: [[NSApplication sharedApplication] currentEvent]];
+	[mprView3 mouseMoved: [[NSApplication sharedApplication] currentEvent]];
 }
 
 - (void) performMovieAnimation:(id) sender
@@ -2093,6 +2125,14 @@ static float deg2rad = 3.14159265358979/180.0;
     }
 }
 
+- (NSString*) playStopButtonString
+{
+	if( movieTimer)
+		return @"Stop";
+	else
+		return @"Play";
+}
+
 - (void) moviePlayStop:(id) sender
 {
     if( movieTimer)
@@ -2109,6 +2149,9 @@ static float deg2rad = 3.14159265358979/180.0;
     
         lastMovieTime = [NSDate timeIntervalSinceReferenceDate];
     }
+	
+	[self willChangeValueForKey: @"playStopButtonString"];
+	[self didChangeValueForKey: @"playStopButtonString"];
 }
 
 #pragma mark Axis Colors

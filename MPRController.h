@@ -31,6 +31,7 @@
 	NSToolbar *toolbar;
 	
 	IBOutlet MPRDCMView *mprView1, *mprView2, *mprView3;
+	DCMView *blendedMprView1, *blendedMprView2, *blendedMprView3;
 	
 	NSMutableArray *undoQueue, *redoQueue;
 	
