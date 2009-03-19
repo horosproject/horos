@@ -26,16 +26,20 @@
 	IBOutlet NSObjectController *ob;
 	
 	// To be able to use Cocoa bindings with toolbar...
-	IBOutlet NSView *tbLOD, *tbThickSlab, *tbWLWW, *tbTools, *tbShading, *tbMovie;
+	IBOutlet NSView *tbLOD, *tbThickSlab, *tbWLWW, *tbTools, *tbShading, *tbMovie, *tbBlending;
 	
 	NSToolbar *toolbar;
 	
 	IBOutlet MPRDCMView *mprView1, *mprView2, *mprView3;
+	
+	// Blending
 	DCMView *blendedMprView1, *blendedMprView2, *blendedMprView3;
+	float blendingPercentage;
+	int blendingMode;
 	
 	NSMutableArray *undoQueue, *redoQueue;
 	
-	ViewerController *viewer2D;
+	ViewerController *viewer2D, *fusedViewer2D;
 	VRController *hiddenVRController;
 	VRView *hiddenVRView;
 		
@@ -83,9 +87,9 @@
 	NSColor *colorAxis1, *colorAxis2, *colorAxis3;
 }
 
-@property float clippingRangeThickness, dcmInterval;
+@property float clippingRangeThickness, dcmInterval, blendingPercentage;
 @property int clippingRangeMode, mouseViewID, dcmFrom, dcmTo, dcmMode, dcmSeriesMode, dcmRotation, dcmRotationDirection, dcmNumberOfFrames, dcmQuality, dcmBatchNumberOfFrames;
-@property int curMovieIndex, maxMovieIndex;
+@property int curMovieIndex, maxMovieIndex, blendingMode;
 @property (retain) Point3D *mousePosition;
 @property (retain) NSArray *wlwwMenuItems;
 @property (retain) NSString *dcmSeriesName;

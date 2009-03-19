@@ -30,8 +30,8 @@ static float deg2rad = 3.14159265358979/180.0;
 
 @synthesize displayCrossLines, dcmSameIntervalAndThickness, clippingRangeThickness, clippingRangeMode, mousePosition, mouseViewID, originalPix, wlwwMenuItems, LOD, dcmFrom;
 @synthesize dcmTo, dcmMode, dcmRotationDirection, dcmSeriesMode, dcmRotation, dcmNumberOfFrames, dcmQuality, dcmInterval, dcmSeriesName, dcmBatchNumberOfFrames;
-@synthesize colorAxis1, colorAxis2, colorAxis3, displayMousePosition, movieRate;
-@synthesize mprView1, mprView2, mprView3, curMovieIndex, maxMovieIndex;
+@synthesize colorAxis1, colorAxis2, colorAxis3, displayMousePosition, movieRate, blendingPercentage;
+@synthesize mprView1, mprView2, mprView3, curMovieIndex, maxMovieIndex, blendingMode;
 
 + (double) angleBetweenVector:(float*) a andPlane:(float*) orientation
 {
@@ -78,6 +78,8 @@ static float deg2rad = 3.14159265358979/180.0;
 	filesList[0] = files;
 	volumeData[0] = volume;
 	viewer2D = viewer;
+	fusedViewer2D = fusedViewer;
+	
 	self.displayCrossLines = YES;
 	self.displayMousePosition = YES;
 	[self updateToolbarItems];
@@ -100,13 +102,13 @@ static float deg2rad = 3.14159265358979/180.0;
 		blendedMprView2 = [[DCMView alloc] initWithFrame: [mprView2 frame]];
 		blendedMprView3 = [[DCMView alloc] initWithFrame: [mprView3 frame]];
 		
-		emptyPix = [self emptyPix: originalPix width: 100 height: 100];
+		emptyPix = [[[[fusedViewer imageView] curDCM] copy] autorelease];
 		[blendedMprView1 setDCM:  [NSMutableArray arrayWithObject: emptyPix] : [NSArray arrayWithObject: [files lastObject]] :nil :0 :'i' :YES];
 		
-		emptyPix = [self emptyPix: originalPix width: 100 height: 100];
+		emptyPix = [[[[fusedViewer imageView] curDCM] copy] autorelease];
 		[blendedMprView2 setDCM:  [NSMutableArray arrayWithObject: emptyPix] : [NSArray arrayWithObject: [files lastObject]] :nil :0 :'i' :YES];
 		
-		emptyPix = [self emptyPix: originalPix width: 100 height: 100];
+		emptyPix = [[[[fusedViewer imageView] curDCM] copy] autorelease];
 		[blendedMprView3 setDCM:  [NSMutableArray arrayWithObject: emptyPix] : [NSArray arrayWithObject: [files lastObject]] :nil :0 :'i' :YES];
 		
 		[mprView1 setBlending: blendedMprView1];
@@ -116,6 +118,13 @@ static float deg2rad = 3.14159265358979/180.0;
 		[mprView1 setBlendingFactor: 0.5];
 		[mprView2 setBlendingFactor: 0.5];
 		[mprView3 setBlendingFactor: 0.5];
+		
+		[mprView1 setWLWW: [[fusedViewer imageView] curDCM].wl :[[fusedViewer imageView] curDCM].ww];
+		[mprView2 setWLWW: [[fusedViewer imageView] curDCM].wl :[[fusedViewer imageView] curDCM].ww];
+		[mprView3 setWLWW: [[fusedViewer imageView] curDCM].wl :[[fusedViewer imageView] curDCM].ww];
+		
+		self.blendingPercentage = 50;
+		self.blendingMode = 0;
 	}
 	
 	hiddenVRController = [[VRController alloc] initWithPix:pix :files :volume :fusedViewer :viewer style:@"noNib" mode:@"MIP"];
@@ -154,11 +163,10 @@ static float deg2rad = 3.14159265358979/180.0;
 	
 	curOpacityMenu = [NSLocalizedString(@"Linear Table", nil) retain];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(UpdateOpacityMenu:) name:@"UpdateOpacityMenu" object:nil];
-	
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: nil];
 	
-	
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(CloseViewerNotification:) name:@"CloseViewerNotification" object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(changeWLWW:) name: @"changeWLWW" object: nil];
 	
 	[shadingCheck setAction:@selector(switchShading:)];
 	[shadingCheck setTarget:self];
@@ -290,7 +298,7 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (void) CloseViewerNotification: (NSNotification*) note
 {
-	if([note object] == viewer2D)
+	if( [note object] == viewer2D || [note object] == fusedViewer2D)
 	{
 		[self offFullScreen];
 		[[self window] close];
@@ -1911,6 +1919,14 @@ static float deg2rad = 3.14159265358979/180.0;
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector( exportQuicktime:)];
     }
+	else if ([itemIdent isEqualToString: @"tbBlending"])
+	{
+		[toolbarItem setLabel: NSLocalizedString(@"Fusion",nil)];
+		[toolbarItem setPaletteLabel:NSLocalizedString( @"Fusion",nil)];
+		
+		[toolbarItem setView: tbBlending];
+		[toolbarItem setMinSize: NSMakeSize(NSWidth([tbBlending frame]), NSHeight([tbBlending frame]))];
+    }
 	else if ([itemIdent isEqualToString: @"tbThickSlab"])
 	{
 		[toolbarItem setLabel: NSLocalizedString(@"Thick Slab",nil)];
@@ -1995,7 +2011,7 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (NSArray *) toolbarDefaultItemIdentifiers: (NSToolbar *) toolbar
 {
-		return [NSArray arrayWithObjects: @"tbTools", @"tbWLWW", @"tbLOD", @"tbThickSlab", @"tbShading", @"Reset.tiff", @"Export.icns", @"iPhoto.icns", @"QTExport.icns", @"tbMovie", nil];
+		return [NSArray arrayWithObjects: @"tbTools", @"tbWLWW", @"tbLOD", @"tbThickSlab", @"tbBlending", @"tbShading", @"Reset.tiff", @"Export.icns", @"iPhoto.icns", @"QTExport.icns", @"tbMovie", nil];
 }
 
 - (NSArray *) toolbarAllowedItemIdentifiers: (NSToolbar *) toolbar
@@ -2004,7 +2020,7 @@ static float deg2rad = 3.14159265358979/180.0;
 											NSToolbarFlexibleSpaceItemIdentifier,
 											NSToolbarSpaceItemIdentifier,
 											NSToolbarSeparatorItemIdentifier,
-											@"tbTools", @"tbWLWW", @"tbLOD", @"tbThickSlab", @"tbShading", @"Reset.tiff", @"Export.icns", @"iPhoto.icns", @"QTExport.icns", @"tbTools", @"AxisColors", @"AxisShowHide", @"MousePositionShowHide", nil];
+											@"tbTools", @"tbWLWW", @"tbLOD", @"tbThickSlab", @"tbBlending", @"tbShading", @"Reset.tiff", @"Export.icns", @"iPhoto.icns", @"QTExport.icns", @"tbTools", @"AxisColors", @"AxisShowHide", @"MousePositionShowHide", nil];
 }
 
 - (void)updateToolbarItems;
@@ -2055,6 +2071,54 @@ static float deg2rad = 3.14159265358979/180.0;
 	[mprView3 setNeedsDisplay: YES];
 	
 	[self updateToolbarItems];
+}
+
+#pragma mark Blending
+
+- (void) changeWLWW: (NSNotification*) note
+{
+	DCMPix	*otherPix = [note object];
+	
+	if( [[fusedViewer2D pixList] containsObject: otherPix])
+	{
+		float iwl, iww;
+		
+		iww = [otherPix ww];
+		iwl = [otherPix wl];
+		
+		if( iww != [[blendedMprView1 curDCM] ww] || iwl != [[blendedMprView1 curDCM] wl])
+		{
+			[blendedMprView1 setWLWW: iwl :iww];
+			[blendedMprView2 setWLWW: iwl :iww];
+			[blendedMprView3 setWLWW: iwl :iww];
+			
+			[mprView1 setNeedsDisplay: YES];
+			[mprView2 setNeedsDisplay: YES];
+			[mprView3 setNeedsDisplay: YES];
+		}
+	}
+}
+
+- (void) setBlendingMode: (int) m
+{
+	blendingMode = m;
+	
+	[mprView1 setBlendingMode: m];
+	[mprView2 setBlendingMode: m];
+	[mprView3 setBlendingMode: m];
+}
+
+- (void) setBlendingPercentage: (float) f
+{
+	blendingPercentage = f;
+	
+	f -= 50.;
+	f /= 50.;
+	f *= 256.;
+	
+	[mprView1 setBlendingFactor: f];
+	[mprView2 setBlendingFactor: f];
+	[mprView3 setBlendingFactor: f];
 }
 
 #pragma mark 4D Data

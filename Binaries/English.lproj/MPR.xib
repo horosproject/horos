@@ -8,7 +8,7 @@
 		<string key="IBDocument.HIToolboxVersion">353.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="843"/>
+			<integer value="856"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -114,6 +114,8 @@
 					<string>curMovieIndex</string>
 					<string>movieDataAvailable</string>
 					<string>playStopButtonString</string>
+					<string>blendingPercentage</string>
+					<string>blendingMode</string>
 				</object>
 				<bool key="NSEditable">YES</bool>
 				<object class="_NSManagedProxy" key="_NSManagedProxy"/>
@@ -3179,7 +3181,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<string key="NSClassName">NSView</string>
 			</object>
 			<object class="NSCustomView" id="609716167">
-				<reference key="NSNextResponder"/>
+				<nil key="NSNextResponder"/>
 				<int key="NSvFlags">256</int>
 				<object class="NSMutableArray" key="NSSubviews">
 					<bool key="EncodedWithXMLCoder">YES</bool>
@@ -3348,28 +3350,73 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					</object>
 				</object>
 				<string key="NSFrameSize">{173, 35}</string>
-				<reference key="NSSuperview"/>
 				<object class="NSMutableString" key="NSClassName">
 					<characters key="NS.bytes">NSView</characters>
 				</object>
 				<string key="NSExtension">NSResponder</string>
 			</object>
 			<object class="NSCustomView" id="750281852">
-				<nil key="NSNextResponder"/>
+				<reference key="NSNextResponder"/>
 				<int key="NSvFlags">256</int>
 				<object class="NSMutableArray" key="NSSubviews">
 					<bool key="EncodedWithXMLCoder">YES</bool>
 					<object class="NSTextField" id="205791068">
 						<reference key="NSNextResponder" ref="750281852"/>
 						<int key="NSvFlags">256</int>
-						<string key="NSFrame">{{87, 2}, {34, 13}}</string>
+						<string key="NSFrame">{{87, 16}, {41, 17}}</string>
 						<reference key="NSSuperview" ref="750281852"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSTextFieldCell" key="NSCell" id="385348926">
 							<int key="NSCellFlags">67239424</int>
-							<int key="NSCellFlags2">138412032</int>
+							<int key="NSCellFlags2">-2009071616</int>
 							<string key="NSContents">-</string>
 							<reference key="NSSupport" ref="670336972"/>
+							<object class="NSNumberFormatter" key="NSFormatter" id="295998814">
+								<object class="NSMutableDictionary" key="NS.attributes">
+									<bool key="EncodedWithXMLCoder">YES</bool>
+									<object class="NSMutableArray" key="dict.sortedKeys">
+										<bool key="EncodedWithXMLCoder">YES</bool>
+										<string>allowsFloats</string>
+										<string>formatterBehavior</string>
+										<string>negativeFormat</string>
+										<string>positiveFormat</string>
+									</object>
+									<object class="NSMutableArray" key="dict.values">
+										<bool key="EncodedWithXMLCoder">YES</bool>
+										<reference ref="9"/>
+										<integer value="1040"/>
+										<string># %%</string>
+										<string># %%</string>
+									</object>
+								</object>
+								<string key="NS.positiveformat"># %%</string>
+								<string key="NS.negativeformat"># %%</string>
+								<nil key="NS.positiveattrs"/>
+								<nil key="NS.negativeattrs"/>
+								<object class="NSAttributedString" key="NS.zero">
+									<nil key="NSString"/>
+								</object>
+								<object class="NSAttributedString" key="NS.nil">
+									<nil key="NSString"/>
+								</object>
+								<object class="NSAttributedString" key="NS.nan">
+									<string key="NSString">NaN</string>
+									<reference key="NSAttributes" ref="359425308"/>
+								</object>
+								<reference key="NS.min" ref="347740866"/>
+								<reference key="NS.max" ref="347740866"/>
+								<object class="NSDecimalNumberHandler" key="NS.rounding">
+									<int key="NS.roundingmode">3</int>
+									<bool key="NS.raise.overflow">YES</bool>
+									<bool key="NS.raise.underflow">YES</bool>
+									<bool key="NS.raise.dividebyzero">YES</bool>
+								</object>
+								<string key="NS.decimal">.</string>
+								<string type="base64-UTF8" key="NS.thousand">Jw</string>
+								<bool key="NS.hasthousands">NO</bool>
+								<bool key="NS.localized">YES</bool>
+								<bool key="NS.allowsfloats">YES</bool>
+							</object>
 							<reference key="NSControlView" ref="205791068"/>
 							<reference key="NSBackgroundColor" ref="263506557"/>
 							<reference key="NSTextColor" ref="358096559"/>
@@ -3378,7 +3425,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<object class="NSSlider" id="256154917">
 						<reference key="NSNextResponder" ref="750281852"/>
 						<int key="NSvFlags">256</int>
-						<string key="NSFrameSize">{86, 15}</string>
+						<string key="NSFrame">{{0, 18}, {86, 15}}</string>
 						<reference key="NSSuperview" ref="750281852"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSliderCell" key="NSCell" id="38363777">
@@ -3389,20 +3436,20 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							</object>
 							<reference key="NSSupport" ref="30528805"/>
 							<reference key="NSControlView" ref="256154917"/>
-							<double key="NSMaxValue">2.560000e+02</double>
-							<double key="NSMinValue">-2.560000e+02</double>
+							<double key="NSMaxValue">1.000000e+02</double>
+							<double key="NSMinValue">0.000000e+00</double>
 							<double key="NSValue">1.421085e-14</double>
 							<double key="NSAltIncValue">0.000000e+00</double>
 							<int key="NSNumberOfTickMarks">0</int>
 							<int key="NSTickMarkPosition">0</int>
-							<bool key="NSAllowsTickMarkValuesOnly">YES</bool>
+							<bool key="NSAllowsTickMarkValuesOnly">NO</bool>
 							<bool key="NSVertical">NO</bool>
 						</object>
 					</object>
 					<object class="NSTextField" id="233217166">
 						<reference key="NSNextResponder" ref="750281852"/>
 						<int key="NSvFlags">256</int>
-						<string key="NSFrame">{{-4, 18}, {46, 13}}</string>
+						<string key="NSFrame">{{-4, 36}, {46, 13}}</string>
 						<reference key="NSSuperview" ref="750281852"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSTextFieldCell" key="NSCell" id="452611179">
@@ -3418,7 +3465,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<object class="NSPopUpButton" id="913115335">
 						<reference key="NSNextResponder" ref="750281852"/>
 						<int key="NSvFlags">256</int>
-						<string key="NSFrame">{{42, 17}, {80, 15}}</string>
+						<string key="NSFrame">{{42, 35}, {80, 15}}</string>
 						<reference key="NSSuperview" ref="750281852"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSPopUpButtonCell" key="NSCell" id="187332073">
@@ -3526,7 +3573,8 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						</object>
 					</object>
 				</object>
-				<string key="NSFrameSize">{125, 35}</string>
+				<string key="NSFrameSize">{152, 53}</string>
+				<reference key="NSSuperview"/>
 				<object class="NSMutableString" key="NSClassName">
 					<characters key="NS.bytes">NSView</characters>
 				</object>
@@ -5209,6 +5257,78 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						</object>
 					</object>
 					<int key="connectionID">886</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: selection.blendingPercentage</string>
+						<reference key="source" ref="256154917"/>
+						<reference key="destination" ref="643764789"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="256154917"/>
+							<reference key="NSDestination" ref="643764789"/>
+							<string key="NSLabel">value: selection.blendingPercentage</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">selection.blendingPercentage</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">887</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: selection.blendingPercentage</string>
+						<reference key="source" ref="385348926"/>
+						<reference key="destination" ref="643764789"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="385348926"/>
+							<reference key="NSDestination" ref="643764789"/>
+							<string key="NSLabel">value: selection.blendingPercentage</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">selection.blendingPercentage</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">888</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: selection.blendingPercentage</string>
+						<reference key="source" ref="205791068"/>
+						<reference key="destination" ref="643764789"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="205791068"/>
+							<reference key="NSDestination" ref="643764789"/>
+							<string key="NSLabel">value: selection.blendingPercentage</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">selection.blendingPercentage</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">890</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">selectedTag: selection.blendingMode</string>
+						<reference key="source" ref="913115335"/>
+						<reference key="destination" ref="643764789"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="913115335"/>
+							<reference key="NSDestination" ref="643764789"/>
+							<string key="NSLabel">selectedTag: selection.blendingMode</string>
+							<string key="NSBinding">selectedTag</string>
+							<string key="NSKeyPath">selection.blendingMode</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">892</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">tbBlending</string>
+						<reference key="source" ref="1001"/>
+						<reference key="destination" ref="750281852"/>
+					</object>
+					<int key="connectionID">893</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -7030,7 +7150,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<reference ref="205791068"/>
 						</object>
 						<reference key="parent" ref="1002"/>
-						<string key="objectName">Blending</string>
+						<string key="objectName">tbBlending</string>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">857</int>
@@ -7071,6 +7191,10 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<object class="IBObjectRecord">
 						<int key="objectID">861</int>
 						<reference key="object" ref="385348926"/>
+						<object class="NSMutableArray" key="children">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<reference ref="295998814"/>
+						</object>
 						<reference key="parent" ref="205791068"/>
 					</object>
 					<object class="IBObjectRecord">
@@ -7140,6 +7264,11 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<int key="objectID">885</int>
 						<reference key="object" ref="619099459"/>
 						<reference key="parent" ref="448039992"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">891</int>
+						<reference key="object" ref="295998814"/>
+						<reference key="parent" ref="385348926"/>
 					</object>
 				</object>
 			</object>
@@ -7583,6 +7712,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string>862.IBPluginDependency</string>
 					<string>863.IBPluginDependency</string>
 					<string>864.IBPluginDependency</string>
+					<string>865.IBEditorWindowLastContentRect</string>
 					<string>865.IBPluginDependency</string>
 					<string>865.ImportedFromIB2</string>
 					<string>866.IBPluginDependency</string>
@@ -7598,6 +7728,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string>871.IBPluginDependency</string>
 					<string>871.ImportedFromIB2</string>
 					<string>885.IBPluginDependency</string>
+					<string>891.IBPluginDependency</string>
 				</object>
 				<object class="NSMutableArray" key="dict.values">
 					<bool key="EncodedWithXMLCoder">YES</bool>
@@ -8064,7 +8195,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
-					<string>{{21, 1487}, {125, 35}}</string>
+					<string>{{803, 1072}, {152, 53}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -8079,6 +8210,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<string>{{834, 1029}, {128, 93}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -8093,6 +8225,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 				</object>
 			</object>
@@ -8116,7 +8249,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">886</int>
+			<int key="maxID">893</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -8238,6 +8371,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<string>shadingValues</string>
 							<string>shadingsPresetsController</string>
 							<string>tbAxisColors</string>
+							<string>tbBlending</string>
 							<string>tbLOD</string>
 							<string>tbMovie</string>
 							<string>tbShading</string>
@@ -8258,6 +8392,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<string>NSPanel</string>
 							<string>NSTextField</string>
 							<string>ShadingArrayController</string>
+							<string>NSView</string>
 							<string>NSView</string>
 							<string>NSView</string>
 							<string>NSView</string>

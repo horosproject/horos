@@ -4685,8 +4685,7 @@ public:
 -(void) setBlendingWLWW:(float) iwl :(float) iww
 {
 	if( blendingController == nil) return;
-
-    
+	
 	blendingWl = iwl;
 	blendingWw = iww;
 	
@@ -6283,8 +6282,8 @@ public:
 		
 		vtkPiecewiseFunction *tempOpacity = vtkPiecewiseFunction::New();
 		
-		float start = blendingValueFactor*(OFFSET16 + [controller blendingMinimumValue]);
-		float end = blendingValueFactor*(OFFSET16 + [controller blendingMaximumValue]);
+		float start = blendingValueFactor*(blendingOFFSET16 + [controller blendingMinimumValue]);
+		float end = blendingValueFactor*(blendingOFFSET16 + [controller blendingMaximumValue]);
 		
 		tempOpacity->AddPoint(start, 0);
 		tempOpacity->AddPoint(end, 1);
