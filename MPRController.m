@@ -28,9 +28,10 @@ static float deg2rad = 3.14159265358979/180.0;
 
 @implementation MPRController
 
-@synthesize displayCrossLines, dcmSameIntervalAndThickness, clippingRangeThickness, clippingRangeMode, mousePosition, mouseViewID, originalPix, wlwwMenuItems, LOD, dcmFrom, dcmTo, dcmMode, dcmRotationDirection, dcmSeriesMode, dcmRotation, dcmNumberOfFrames, dcmQuality, dcmInterval, dcmSeriesName, dcmBatchNumberOfFrames, displayMousePosition;
-@synthesize colorAxis1, colorAxis2, colorAxis3;
-@synthesize mprView1, mprView2, mprView3;
+@synthesize displayCrossLines, dcmSameIntervalAndThickness, clippingRangeThickness, clippingRangeMode, mousePosition, mouseViewID, originalPix, wlwwMenuItems, LOD, dcmFrom;
+@synthesize dcmTo, dcmMode, dcmRotationDirection, dcmSeriesMode, dcmRotation, dcmNumberOfFrames, dcmQuality, dcmInterval, dcmSeriesName, dcmBatchNumberOfFrames;
+@synthesize colorAxis1, colorAxis2, colorAxis3, displayMousePosition, movieRate;
+@synthesize mprView1, mprView2, mprView3, curMovieIndex, maxMovieIndex;
 
 + (double) angleBetweenVector:(float*) a andPlane:(float*) orientation
 {
@@ -246,6 +247,8 @@ static float deg2rad = 3.14159265358979/180.0;
 	
 	[undoQueue release];
 	[redoQueue release];
+	
+	[movieTimer release];
 	
 	[super dealloc];
 	
@@ -1904,6 +1907,14 @@ static float deg2rad = 3.14159265358979/180.0;
 		[toolbarItem setView: tbTools];
 		[toolbarItem setMinSize: NSMakeSize(NSWidth([tbTools frame]), NSHeight([tbTools frame]))];
     }
+	else if ([itemIdent isEqualToString: @"tbMovie"])
+	{
+		[toolbarItem setLabel: NSLocalizedString(@"4D Player",nil)];
+		[toolbarItem setPaletteLabel:NSLocalizedString( @"4D Player",nil)];
+		
+		[toolbarItem setView: tbMovie];
+		[toolbarItem setMinSize: NSMakeSize(NSWidth([tbMovie frame]), NSHeight([tbMovie frame]))];
+    }
 	else if ([itemIdent isEqualToString: @"tbShading"])
 	{
 		[toolbarItem setLabel: NSLocalizedString(@"Shadings",nil)];
@@ -1923,16 +1934,11 @@ static float deg2rad = 3.14159265358979/180.0;
 	{
 		[toolbarItem setPaletteLabel:NSLocalizedString(@"Show/Hide Axis",nil)];
 		
+		[toolbarItem setLabel:NSLocalizedString(@"Axis",nil)];
 		if(self.displayCrossLines)
-		{
-			[toolbarItem setLabel:NSLocalizedString(@"Hide Axis",nil)];
 			[toolbarItem setImage:[NSImage imageNamed:@"MPRAxisHide"]];
-		}
 		else
-		{
-			[toolbarItem setLabel:NSLocalizedString(@"Show Axis",nil)];
 			[toolbarItem setImage:[NSImage imageNamed:@"MPRAxisShow"]];
-		}
 		
 		[toolbarItem setTarget:self];
 		[toolbarItem setAction:@selector(toogleAxisVisibility:)];
@@ -1941,16 +1947,11 @@ static float deg2rad = 3.14159265358979/180.0;
 	{
 		[toolbarItem setPaletteLabel:NSLocalizedString(@"Show/Hide Mouse Position",nil)];
 		
+		[toolbarItem setLabel:NSLocalizedString(@"Mouse Position",nil)];
 		if(self.displayMousePosition)
-		{
-			[toolbarItem setLabel:NSLocalizedString(@"Hide Mouse Position",nil)];
 			[toolbarItem setImage:[NSImage imageNamed:@"MPRMousePositionHide"]];
-		}
 		else
-		{
-			[toolbarItem setLabel:NSLocalizedString(@"Show Mouse Position",nil)];
 			[toolbarItem setImage:[NSImage imageNamed:@"MPRMousePositionShow"]];
-		}
 		
 		[toolbarItem setTarget:self];
 		[toolbarItem setAction:@selector(toogleMousePositionVisibility:)];
@@ -1966,7 +1967,7 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (NSArray *) toolbarDefaultItemIdentifiers: (NSToolbar *) toolbar
 {
-		return [NSArray arrayWithObjects: @"tbTools", @"tbWLWW", @"tbLOD", @"tbThickSlab", @"tbShading", @"Reset.tiff", @"Export.icns", @"iPhoto.icns", @"QTExport.icns", nil];
+		return [NSArray arrayWithObjects: @"tbTools", @"tbWLWW", @"tbLOD", @"tbThickSlab", @"tbShading", @"Reset.tiff", @"Export.icns", @"iPhoto.icns", @"QTExport.icns", @"tbMovie", nil];
 }
 
 - (NSArray *) toolbarAllowedItemIdentifiers: (NSToolbar *) toolbar
@@ -1975,7 +1976,7 @@ static float deg2rad = 3.14159265358979/180.0;
 											NSToolbarFlexibleSpaceItemIdentifier,
 											NSToolbarSpaceItemIdentifier,
 											NSToolbarSeparatorItemIdentifier,
-											@"tbTools", @"tbWLWW", @"tbLOD", @"tbThickSlab", @"tbShading", @"Reset.tiff", @"Export.icns", @"iPhoto.icns", @"QTExport.icns", @"AxisColors", @"AxisShowHide", @"MousePositionShowHide", nil];
+											@"tbTools", @"tbWLWW", @"tbLOD", @"tbThickSlab", @"tbShading", @"Reset.tiff", @"Export.icns", @"iPhoto.icns", @"QTExport.icns", @"tbTools", @"AxisColors", @"AxisShowHide", @"MousePositionShowHide", nil];
 }
 
 - (void)updateToolbarItems;
@@ -1986,28 +1987,16 @@ static float deg2rad = 3.14159265358979/180.0;
 		if([[item itemIdentifier] isEqualToString:@"AxisShowHide"])
 		{
 			if(self.displayCrossLines)
-			{
-				[item setLabel:NSLocalizedString(@"Hide Axis",nil)];
 				[item setImage:[NSImage imageNamed:@"MPRAxisHide"]];
-			}
 			else
-			{
-				[item setLabel:NSLocalizedString(@"Show Axis",nil)];
 				[item setImage:[NSImage imageNamed:@"MPRAxisShow"]];
-			}			
 		}
 		else if([[item itemIdentifier] isEqualToString:@"MousePositionShowHide"])
 		{
 			if(self.displayMousePosition)
-			{
-				[item setLabel:NSLocalizedString(@"Press this button to hide the position of the Mouse",nil)];
 				[item setImage:[NSImage imageNamed:@"MPRMousePositionHide"]];
-			}
 			else
-			{
-				[item setLabel:NSLocalizedString(@"Press this button to show the position of the Mouse",nil)];
 				[item setImage:[NSImage imageNamed:@"MPRMousePositionShow"]];
-			}			
 		}
 		
 	}
@@ -2038,6 +2027,88 @@ static float deg2rad = 3.14159265358979/180.0;
 	[mprView3 setNeedsDisplay: YES];
 	
 	[self updateToolbarItems];
+}
+
+#pragma mark 4D Data
+
+- (BOOL) getMovieDataAvailable
+{
+	if( self.maxMovieIndex > 1) return YES;
+	else return NO;
+}
+
+-(void) addMoviePixList:(NSMutableArray*) pix :(NSData*) vData
+{
+	pixList[ maxMovieIndex] = pix;
+	volumeData[ maxMovieIndex] = vData;
+	
+	self.movieRate = 20;
+	self.maxMovieIndex++;
+	[moviePosSlider setNumberOfTickMarks: maxMovieIndex];
+	
+	[hiddenVRController addMoviePixList: pix :vData];	
+
+	if( clippingRangeMode == 1 || clippingRangeMode == 3)
+		[mprView1.vrView prepareFullDepthCapture];
+	else
+		[mprView1.vrView restoreFullDepthCapture];
+	
+	[self willChangeValueForKey: @"movieDataAvailable"];
+	[self didChangeValueForKey: @"movieDataAvailable"];
+}
+
+- (void) setCurMovieIndex: (int) m
+{
+	curMovieIndex = m;
+	
+	mprView1.camera.movieIndexIn4D = m;
+	mprView2.camera.movieIndexIn4D = m;
+	mprView3.camera.movieIndexIn4D = m;
+	
+	[hiddenVRController setMovieFrame: m];
+	
+	if( clippingRangeMode == 1 || clippingRangeMode == 3)
+		[mprView1.vrView prepareFullDepthCapture];
+	else
+		[mprView1.vrView restoreFullDepthCapture];
+	
+	[self updateViewsAccordingToFrame: self];
+}
+
+- (void) performMovieAnimation:(id) sender
+{
+    NSTimeInterval  thisTime = [NSDate timeIntervalSinceReferenceDate];
+    short           val;
+    
+    if( thisTime - lastMovieTime > 1.0 / self.movieRate)
+    {
+        val = self.curMovieIndex;
+        val ++;
+        
+		if( val < 0) val = 0;
+		if( val >= self.maxMovieIndex) val = 0;
+		
+		self.curMovieIndex = val;
+        lastMovieTime = thisTime;
+    }
+}
+
+- (void) moviePlayStop:(id) sender
+{
+    if( movieTimer)
+    {
+        [movieTimer invalidate];
+        [movieTimer release];
+        movieTimer = nil;
+    }
+    else
+    {
+        movieTimer = [[NSTimer scheduledTimerWithTimeInterval:0 target:self selector:@selector( performMovieAnimation:) userInfo:nil repeats:YES] retain];
+        [[NSRunLoop currentRunLoop] addTimer:movieTimer forMode:NSModalPanelRunLoopMode];
+        [[NSRunLoop currentRunLoop] addTimer:movieTimer forMode:NSEventTrackingRunLoopMode];
+    
+        lastMovieTime = [NSDate timeIntervalSinceReferenceDate];
+    }
 }
 
 #pragma mark Axis Colors

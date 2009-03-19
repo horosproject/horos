@@ -200,7 +200,7 @@
 
 - (void) setMovieFrame: (long) l
 {
-
+	
 }
 
 - (void) dealloc

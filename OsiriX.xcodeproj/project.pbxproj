@@ -67,7 +67,6 @@
 		183C864E08563F3A000E6A68 /* FlyThruAdapter.h in Headers */ = {isa = PBXBuildFile; fileRef = 183C863A08563F3A000E6A68 /* FlyThruAdapter.h */; };
 		183C864F08563F3A000E6A68 /* FlyThruAdapter.m in Sources */ = {isa = PBXBuildFile; fileRef = 183C863B08563F3A000E6A68 /* FlyThruAdapter.m */; };
 		183C865008563F3A000E6A68 /* FlyThruController.h in Headers */ = {isa = PBXBuildFile; fileRef = 183C863C08563F3A000E6A68 /* FlyThruController.h */; };
-		183C865108563F3A000E6A68 /* FlyThruController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 183C863D08563F3A000E6A68 /* FlyThruController.mm */; };
 		183C865208563F3A000E6A68 /* Interpolation3D.h in Headers */ = {isa = PBXBuildFile; fileRef = 183C863E08563F3A000E6A68 /* Interpolation3D.h */; };
 		183C865308563F3A000E6A68 /* Interpolation3D.m in Sources */ = {isa = PBXBuildFile; fileRef = 183C863F08563F3A000E6A68 /* Interpolation3D.m */; };
 		183C865408563F3A000E6A68 /* Piecewise3D.h in Headers */ = {isa = PBXBuildFile; fileRef = 183C864008563F3A000E6A68 /* Piecewise3D.h */; };
@@ -563,6 +562,7 @@
 		AB3F4A1F0672674000E61A6C /* Window3DController.h in Headers */ = {isa = PBXBuildFile; fileRef = AB3F4A1D0672674000E61A6C /* Window3DController.h */; };
 		AB3F4A200672674000E61A6C /* Window3DController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB3F4A1E0672674000E61A6C /* Window3DController.m */; };
 		AB46648D09A331DF005A2766 /* Report.icns in Resources */ = {isa = PBXBuildFile; fileRef = AB46648C09A331DF005A2766 /* Report.icns */; };
+		AB4CD7690F72619900699111 /* FlyThruController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 183C863D08563F3A000E6A68 /* FlyThruController.mm */; };
 		AB52E5FC0A19D93500726305 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB52E5C70A19D93500726305 /* Security.framework */; };
 		AB64A2DA0C4E0F61000E0981 /* HornRegistration.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB64A2D60C4E0F61000E0981 /* HornRegistration.mm */; };
 		AB64A2DB0C4E0F61000E0981 /* HornRegistration.h in Headers */ = {isa = PBXBuildFile; fileRef = AB64A2D70C4E0F61000E0981 /* HornRegistration.h */; };
@@ -18162,7 +18162,6 @@
 				183C864B08563F3A000E6A68 /* Camera.m in Sources */,
 				183C864D08563F3A000E6A68 /* FlyThru.m in Sources */,
 				183C864F08563F3A000E6A68 /* FlyThruAdapter.m in Sources */,
-				183C865108563F3A000E6A68 /* FlyThruController.mm in Sources */,
 				183C865308563F3A000E6A68 /* Interpolation3D.m in Sources */,
 				183C865508563F3A000E6A68 /* Piecewise3D.mm in Sources */,
 				183C865708563F3A000E6A68 /* Point3D.m in Sources */,
@@ -18844,6 +18843,7 @@
 				CE291D8F0F5A99B700F95B43 /* OsiriXFixedPointVolumeRayCastMapper.cxx in Sources */,
 				A9333D260F56E6800097DAB7 /* MPRDCMView.m in Sources */,
 				A9333D320F56E70B0097DAB7 /* MPRController.m in Sources */,
+				AB4CD7690F72619900699111 /* FlyThruController.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -26,7 +26,7 @@
 	IBOutlet NSObjectController *ob;
 	
 	// To be able to use Cocoa bindings with toolbar...
-	IBOutlet NSView *tbLOD, *tbThickSlab, *tbWLWW, *tbTools, *tbShading;
+	IBOutlet NSView *tbLOD, *tbThickSlab, *tbWLWW, *tbTools, *tbShading, *tbMovie;
 	
 	NSToolbar *toolbar;
 	
@@ -41,12 +41,14 @@
 	NSMutableArray *filesList[200], *pixList[200];
 	DCMPix *originalPix;
 	NSData *volumeData[200];
-	short curMovieIndex, maxMovieIndex;
 	BOOL avoidReentry;
 	
 	// 4D Data support
 	NSTimeInterval lastMovieTime;
     NSTimer	*movieTimer;
+	int curMovieIndex, maxMovieIndex;
+	float movieRate;
+	IBOutlet NSSlider *moviePosSlider;
 	
 	Point3D *mousePosition;
 	int mouseViewID;
@@ -56,11 +58,8 @@
 	// Export Dcm
 	IBOutlet NSWindow *dcmWindow;
 	IBOutlet NSView *dcmSeriesView;
-	int dcmFrom, dcmTo;
+	int dcmFrom, dcmTo, dcmMode, dcmSeriesMode, dcmRotation, dcmRotationDirection, dcmNumberOfFrames, dcmQuality, dcmBatchNumberOfFrames;
 	float dcmInterval, previousDcmInterval;
-	int dcmMode;
-	int dcmSeriesMode;
-	int dcmRotation, dcmRotationDirection, dcmNumberOfFrames, dcmQuality, dcmBatchNumberOfFrames;
 	BOOL dcmSameIntervalAndThickness;
 	NSString *dcmSeriesName;
 	MPRDCMView *curExportView;
@@ -85,11 +84,12 @@
 
 @property float clippingRangeThickness, dcmInterval;
 @property int clippingRangeMode, mouseViewID, dcmFrom, dcmTo, dcmMode, dcmSeriesMode, dcmRotation, dcmRotationDirection, dcmNumberOfFrames, dcmQuality, dcmBatchNumberOfFrames;
+@property int curMovieIndex, maxMovieIndex;
 @property (retain) Point3D *mousePosition;
 @property (retain) NSArray *wlwwMenuItems;
 @property (retain) NSString *dcmSeriesName;
 @property (readonly) DCMPix *originalPix;
-@property float LOD;
+@property float LOD, movieRate;
 @property BOOL dcmSameIntervalAndThickness, displayCrossLines, displayMousePosition;
 @property (retain) NSColor *colorAxis1, *colorAxis2, *colorAxis3;
 @property (readonly) MPRDCMView *mprView1, *mprView2, *mprView3;
@@ -112,9 +112,9 @@
 - (void) updateViewsAccordingToFrame:(id) sender;
 - (void)findShadingPreset:(id) sender;
 - (IBAction)editShadingValues:(id) sender;
-
--(IBAction) endDCMExportSettings:(id) sender;
-
+- (void) moviePlayStop:(id) sender;
+- (IBAction) endDCMExportSettings:(id) sender;
+- (void) addMoviePixList:(NSMutableArray*) pix :(NSData*) vData;
 - (void)updateToolbarItems;
 - (void)toogleAxisVisibility:(id) sender;
 

@@ -17869,6 +17869,10 @@ int i,j,l;
 		return viewer;
 	
 	viewer = [[MPRController alloc] initWithDCMPixList:pixList[0] filesList:fileList[0] volumeData:volumeData[0] viewerController:self fusedViewerController:blendingController];
+	for( int i = 1; i < maxMovieIndex; i++)
+	{
+		[viewer addMoviePixList:pixList[ i] :volumeData[ i]];
+	}
 	
 	return viewer;
 }

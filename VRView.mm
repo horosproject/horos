@@ -5428,6 +5428,8 @@ public:
 
 -(void) movieChangeSource:(float*) volumeData showWait :(BOOL) showWait
 {
+	if( data == volumeData) return;
+	
 	WaitRendering	*www;
 	
 	if( showWait)
@@ -6711,7 +6713,7 @@ public:
 	[cam setFusionPercentage:blendingFactor];
 	
 	// 4D
-	[cam setMovieIndexIn4D:[controller curMovieIndex]];
+	[cam setMovieIndexIn4D: [controller curMovieIndex]];
 	
 	// thumbnail
 	if( produceThumbnail)
@@ -6830,8 +6832,10 @@ public:
 
 	// 4D
 	if([controller is4D])
-		[controller setMovieFrame:[cam movieIndexIn4D]];
-
+	{
+		if( [cam movieIndexIn4D] != [controller curMovieIndex])
+			[controller setMovieFrame: [cam movieIndexIn4D]];
+	}
 //	double r = [self getResolution];
 //	double thickness = [self getClippingRangeThicknessInMm];
 //	
