@@ -1339,17 +1339,28 @@ static float deg2rad = 3.14159265358979/180.0;
 - (void) setClippingRangeMode:(int) f
 {
 	float pWL, pWW;
+	float bpWL, bpWW;
 	
-	if( clippingRangeMode == 1 || clippingRangeMode == 3) // MIP
+	if( clippingRangeMode == 1 || clippingRangeMode == 3)		// MIP
+	{
 		[mprView1 getWLWW: &pWL :&pWW];
+		[blendedMprView1 getWLWW: &bpWL :&bpWW];
+	}
 	else
+	{
 		[mprView1.vrView getWLWW: &pWL :&pWW];
+		[mprView1.vrView getBlendingWLWW: &bpWL :&bpWW];
+	}
 	
 	clippingRangeMode = f;
 	
 	[mprView1.vrView setMode: clippingRangeMode];
 	[mprView2.vrView setMode: clippingRangeMode];
 	[mprView3.vrView setMode: clippingRangeMode];
+
+	[mprView1.vrView setBlendingMode: clippingRangeMode];
+	[mprView2.vrView setBlendingMode: clippingRangeMode];
+	[mprView3.vrView setBlendingMode: clippingRangeMode];
 
 	if( clippingRangeMode == 1 || clippingRangeMode == 3)	// MIP - Mean
 	{		
@@ -1374,6 +1385,10 @@ static float deg2rad = 3.14159265358979/180.0;
 		[mprView2 setWLWW:128 :256];
 		[mprView3 setWLWW:128 :256];
 		
+		[blendedMprView1 setWLWW:128 :256];
+		[blendedMprView2 setWLWW:128 :256];
+		[blendedMprView3 setWLWW:128 :256];
+		
 		// switch log inverse table
 		[curOpacityMenu release];
 		curOpacityMenu = [NSLocalizedString(@"Logarithmic Inverse Table", nil) retain];
@@ -1384,20 +1399,44 @@ static float deg2rad = 3.14159265358979/180.0;
 	
 	[mprView1 restoreCamera];
 	mprView1.camera.forceUpdate = YES;
-	if( clippingRangeMode == 1  || clippingRangeMode == 3) [mprView1 setWLWW: pWL :pWW];
-	else [mprView1.vrView setWLWW: pWL :pWW];
+	if( clippingRangeMode == 1  || clippingRangeMode == 3)
+	{
+		[mprView1 setWLWW: pWL :pWW];
+		[blendedMprView1 setWLWW: bpWL :bpWW];
+	}
+	else
+	{
+		[mprView1.vrView setWLWW: pWL :pWW];
+		[mprView1.vrView setBlendingWLWW: bpWL :bpWW];
+	}
 	[mprView1 updateViewMPR];
 	
 	[mprView2 restoreCamera];
 	mprView2.camera.forceUpdate = YES;
-	if( clippingRangeMode == 1  || clippingRangeMode == 3) [mprView2 setWLWW: pWL :pWW];
-	else [mprView2.vrView setWLWW: pWL :pWW];
+	if( clippingRangeMode == 1  || clippingRangeMode == 3)
+	{
+		[mprView2 setWLWW: pWL :pWW];
+		[blendedMprView2 setWLWW: bpWL :bpWW];
+	}
+	else
+	{
+		[mprView2.vrView setWLWW: pWL :pWW];
+		[mprView2.vrView setBlendingWLWW: bpWL :bpWW];
+	}
 	[mprView2 updateViewMPR];
-
+	
 	[mprView3 restoreCamera];
 	mprView3.camera.forceUpdate = YES;
-	if( clippingRangeMode == 1  || clippingRangeMode == 3) [mprView3 setWLWW: pWL :pWW];
-	else [mprView3.vrView setWLWW: pWL :pWW];
+	if( clippingRangeMode == 1  || clippingRangeMode == 3)
+	{
+		[mprView3 setWLWW: pWL :pWW];
+		[blendedMprView3 setWLWW: bpWL :bpWW];
+	}
+	else
+	{
+		[mprView3.vrView setWLWW: pWL :pWW];
+		[mprView3.vrView setBlendingWLWW: bpWL :bpWW];
+	}
 	[mprView3 updateViewMPR];
 }
 
@@ -2088,13 +2127,38 @@ static float deg2rad = 3.14159265358979/180.0;
 		
 		if( iww != [[blendedMprView1 curDCM] ww] || iwl != [[blendedMprView1 curDCM] wl])
 		{
-			[blendedMprView1 setWLWW: iwl :iww];
-			[blendedMprView2 setWLWW: iwl :iww];
-			[blendedMprView3 setWLWW: iwl :iww];
+			if( clippingRangeMode == 0)
+			{
+				[blendedMprView1 setWLWW:128 :256];
+				[blendedMprView2 setWLWW:128 :256];
+				[blendedMprView3 setWLWW:128 :256];
+				
+				[mprView1.vrView setBlendingWLWW: iwl :iww];
+				[mprView2.vrView setBlendingWLWW: iwl :iww];
+				[mprView3.vrView setBlendingWLWW: iwl :iww];
+				
+				[mprView1 restoreCamera];
+				mprView1.camera.forceUpdate = YES;
+				[mprView1 updateViewMPR];
+				
+				[mprView2 restoreCamera];
+				mprView2.camera.forceUpdate = YES;
+				[mprView2 updateViewMPR];
+				
+				[mprView3 restoreCamera];
+				mprView3.camera.forceUpdate = YES;
+				[mprView3 updateViewMPR];
+			}
+			else
+			{
+				[blendedMprView1 setWLWW: iwl :iww];
+				[blendedMprView2 setWLWW: iwl :iww];
+				[blendedMprView3 setWLWW: iwl :iww];
+			}
 			
-			[mprView1 setNeedsDisplay: YES];
-			[mprView2 setNeedsDisplay: YES];
-			[mprView3 setNeedsDisplay: YES];
+			[mprView1 updateImage];
+			[mprView2 updateImage];
+			[mprView3 updateImage];
 		}
 	}
 }
@@ -2156,6 +2220,8 @@ static float deg2rad = 3.14159265358979/180.0;
 	mprView1.camera.movieIndexIn4D = m;
 	mprView2.camera.movieIndexIn4D = m;
 	mprView3.camera.movieIndexIn4D = m;
+	
+	[fusedViewer2D setMovieIndex: curMovieIndex];
 	
 	[hiddenVRController setMovieFrame: m];
 	

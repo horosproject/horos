@@ -734,6 +734,10 @@ public:
 		case 1:
 			if( blendingVolumeMapper) blendingVolumeMapper->SetBlendModeToMaximumIntensity();
 			break;
+		
+		case 3:
+			if( blendingVolumeMapper) blendingVolumeMapper->SetBlendModeToMinimumIntensity();
+		break;
 	}
 }
 
@@ -746,6 +750,7 @@ public:
 {
 	long modeID = [sender tag];
 	[self setMode: modeID];
+	[self setBlendingMode: modeID];
 }
 
 - (void) setMode: (long) modeID
@@ -780,12 +785,6 @@ public:
 	}
 	
 	[self setBlendingFactor:blendingFactor];
-	
-	if( volumeMapper)
-	{
-//		volumeMapper->SetLockSampleDistanceToInputSpacing( 1);
-//		NSLog(@"SetLockSampleDistanceToInputSpacing");
-	}
 	
 	[self setNeedsDisplay:YES];
 }
@@ -948,6 +947,8 @@ public:
 			blendingVolume->SetMapper( blendingTextureMapper);
 		break;
 	}
+	
+	[self setBlendingMode: renderingMode];
 	
 	if( validBox)
 	{
@@ -1864,7 +1865,7 @@ public:
 		valueFactor = 1.0;
 		OFFSET16 = -[controller minimumValue];
 		blendingValueFactor = 1.0;
-		blendingOFFSET16 = -[controller minimumValue];
+		blendingOFFSET16 = -[controller blendingMinimumValue];
 		
 		renderingMode = 0;	// VR, MIP = 1
 		blendingController = nil;
@@ -4682,30 +4683,18 @@ public:
     *iww = ww;
 }
 
+-(void) getBlendingWLWW:(float*) iwl :(float*) iww
+{
+	*iwl = blendingWl;
+	*iww = blendingWw;
+}
+
 -(void) setBlendingWLWW:(float) iwl :(float) iww
 {
 	if( blendingController == nil) return;
 	
 	blendingWl = iwl;
 	blendingWw = iww;
-	
-//	vImageConvert_PlanarFtoPlanar8( &blendingSrcf, &blendingDst8, blendingWl + blendingWw/2, blendingWl - blendingWw/2, 0);
-//	if( blendingNeedToFlip)
-//	{
-//		[self flipData: (char*) blendingDst8.data :[blendingPixList count] :[blendingFirstObject pheight] * [blendingFirstObject pwidth]];
-//	}
-//	if( blendingFlip)
-//	{
-//		blendingFlip->Delete();
-//		
-//		blendingFlip = vtkImageFlip::New();
-//		blendingFlip->SetInput( reader->GetOutput());
-//		blendingFlip->SetFlipAboutOrigin( TRUE);
-//		blendingFlip->SetFilteredAxis(2);
-//		
-//		if( blendingVolumeMapper) blendingVolumeMapper->SetInput((vtkDataSet *) blendingFlip->GetOutput());
-//		if( blendingTextureMapper) blendingTextureMapper->SetInput((vtkDataSet *) blendingFlip->GetOutput());
-//	}
 	
 	blendingOpacityTransferFunction->BuildFunctionFromTable( blendingValueFactor*(blendingOFFSET16 + blendingWl-blendingWw/2), blendingValueFactor*(blendingOFFSET16 + blendingWl+blendingWw/2), 255, (double*) &alpha);
 	blendingColorTransferFunction->BuildFunctionFromTable( blendingValueFactor*(blendingOFFSET16 + blendingWl-blendingWw/2), blendingValueFactor*(blendingOFFSET16 + blendingWl+blendingWw/2), 255, (double*) &blendingtable);
@@ -5366,6 +5355,7 @@ public:
 				else
 				{
 					blendingValueFactor = 1;
+					blendingOFFSET16 = -[controller blendingMinimumValue];
 					vImageConvert_FTo16U( &blendingSrcf, &blendingDst8, -blendingOFFSET16, 1./blendingValueFactor, 0);
 				}
 			}
@@ -5581,7 +5571,36 @@ public:
 	textureMapper = nil;
 	
 	[self setEngine: [[NSUserDefaults standardUserDefaults] integerForKey: @"MAPPERMODEVR"] showWait: NO];
-
+	
+	if( blendingController)
+	{
+		if( blendingData != [blendingController volumePtr])
+		{
+			blendingData = [blendingController volumePtr];
+			
+			if( isRGB)
+			{
+				blendingReader->SetImportVoidPointer( blendingData);
+				blendingReader->GetOutput()->Modified();
+			}
+			else
+			{
+				blendingSrcf.data = blendingData;
+				vImageConvert_FTo16U( &blendingSrcf, &blendingDst8, -blendingOFFSET16, 1./blendingValueFactor, 0);
+				
+				blendingReader->SetImportVoidPointer( blendingData8);
+				blendingReader->GetOutput()->Modified();
+			}
+				
+			if( blendingVolumeMapper) blendingVolumeMapper->Delete();
+			blendingVolumeMapper = nil;
+			if( blendingTextureMapper) blendingTextureMapper->Delete();
+			blendingTextureMapper = nil;
+			
+			[self setBlendingEngine: [[NSUserDefaults standardUserDefaults] integerForKey: @"MAPPERMODEVR"]];
+		}
+	}
+	
 	if( showWait)
 	{
 		[www end];
@@ -6386,13 +6405,29 @@ public:
 					iptr -= rowBytes;
 				}
 				
-				float mul = 1./valueFactor;
-				float add = -OFFSET16;
+				float mul;
+				float add;
 				
-				if( valueFactor != 1 && [firstObj SUVConverted] == NO)
-					mul = mul;
+				if( blendingView)
+				{
+					mul = 1./blendingValueFactor;
+					add = -blendingOFFSET16;
+					
+					if( blendingValueFactor != 1 && [firstObj SUVConverted] == NO)
+						mul = mul;
+					else
+						mul = 1;
+				}
 				else
-					mul = 1;
+				{
+					mul = 1./valueFactor;
+					add = -OFFSET16;
+					
+					if( valueFactor != 1 && [firstObj SUVConverted] == NO)
+						mul = mul;
+					else
+						mul = 1;
+				}
 				
 				src.data = destFixedPtr;
 				src.height = *h;

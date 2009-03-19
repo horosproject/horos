@@ -2032,8 +2032,8 @@ static NSString*	ClippingRangeViewToolbarItemIdentifier = @"ClippingRange";
 											ClippingRangeViewToolbarItemIdentifier,
 											nil];
 		
-		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"showGPUEngineRendering"])
-			[a addObject: EngineToolbarItemIdentifier];
+//		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"showGPUEngineRendering"])
+//			[a addObject: EngineToolbarItemIdentifier];
 			
 		return a;
 	}

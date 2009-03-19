@@ -105,7 +105,11 @@ static float deg2rad = 3.14159265358979/180.0;
 		[windowController performSelector: @selector( updateViewsAccordingToFrame:) withObject: nil afterDelay: 0.1];
 	}
 	
-	[blendingView setFrame: frameRect];
+	if( blendingView)
+	{
+		[blendingView setFrame: frameRect];
+	}
+	
 	[super setFrame: frameRect];
 }
 

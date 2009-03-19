@@ -412,6 +412,7 @@ typedef char* vtkMyCallbackVR;
 - (void) processFlyTo;
 -(void) setWLWW:(float) wl :(float) ww;
 -(void) getWLWW:(float*) wl :(float*) ww;
+-(void) getBlendingWLWW:(float*) iwl :(float*) iww;
 -(void) setBlendingPixSource:(ViewerController*) bC;
 -(IBAction) endQuicktimeSettings:(id) sender;
 -(IBAction) endDCMExportSettings:(id) sender;
