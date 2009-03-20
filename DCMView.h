@@ -78,7 +78,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 @class DCMView;
 @class ROI;
 @class OrthogonalMPRController;
-
+@class DICOMExport;
 @class LoupeController;
 
 /** \brief Image/Frame View for ViewerController */
@@ -373,6 +373,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 - (NSImage*) nsimage;
 - (NSImage*) nsimage:(BOOL) originalSize;
 - (NSImage*) nsimage:(BOOL) originalSize allViewers:(BOOL) allViewers;
+- (NSDictionary*) exportDCMCurrentImage: (DICOMExport*) exportDCM;
 - (void) setIndex:(short) index;
 - (void) setIndexWithReset:(short) index :(BOOL)sizeToFit;
 - (void) setDCM:(NSMutableArray*) c :(NSArray*)d :(NSMutableArray*)e :(short) firstImage :(char) type :(BOOL) reset;

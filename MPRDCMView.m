@@ -322,6 +322,9 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (void) subDrawRect: (NSRect) r
 {
+	if( [stringID isEqualToString: @"export"])
+		return;
+	
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
@@ -597,7 +600,6 @@ static float deg2rad = 3.14159265358979/180.0;
 	if( windowController.displayCrossLines && windowController.displayMousePosition && !windowController.mprView1.rotateLines && !windowController.mprView2.rotateLines && !windowController.mprView3.rotateLines
 																					&& !windowController.mprView1.moveCenter && !windowController.mprView2.moveCenter && !windowController.mprView3.moveCenter)
 	{
-#define joris_idea_for_mouse_position
 		// Mouse Position
 		#ifdef joris_idea_for_mouse_position
 		if( viewID == windowController.mouseViewID)

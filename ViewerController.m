@@ -14907,12 +14907,11 @@ int i,j,l;
 	long annotCopy,clutBarsCopy;
 	NSString *sopuid = nil;
 	BOOL modalityAsSource = NO;
-	
-	long	width, height, spp, bpp, i, x;
-	float	cwl, cww;
-	float	o[ 9];
-	BOOL	isSigned;
-	int     offset;
+	long width, height, spp, bpp, i, x;
+	float cwl, cww;
+	float o[ 9];
+	BOOL isSigned;
+	int offset;
 	
 	if( screenCapture || allViewers)
 	{

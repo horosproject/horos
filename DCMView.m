@@ -21,8 +21,7 @@
 #import "NSFont_OpenGL.h"
 #import "DCMCursor.h"
 #import "GLString.h"
-#include <Accelerate/Accelerate.h>
-
+#import "DICOMExport.h"
 #import "SeriesView.h"
 #import "ViewerController.h"
 #import "ThickSlabController.h"
@@ -9241,6 +9240,47 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	}
 	
 	return buf;
+}
+
+- (NSDictionary*) exportDCMCurrentImage: (DICOMExport*) exportDCM
+{
+	NSString *sopuid = nil;
+	NSString *f = nil;
+	float o[ 9], imOrigin[ 3], imSpacing[ 2];
+	long width, height, spp, bpp;
+	
+	long annotCopy = [[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"];
+	long clutBarsCopy = [[NSUserDefaults standardUserDefaults] integerForKey: @"CLUTBARS"];
+	[DCMView setCLUTBARS: barHide ANNOTATIONS: annotGraphics];
+	
+	unsigned char *data = [self getRawPixelsViewWidth: &width height: &height spp: &spp bpp: &bpp screenCapture: YES force8bits: YES removeGraphical: YES squarePixels: YES allowSmartCropping: NO origin: imOrigin spacing: imSpacing offset: nil isSigned: nil];
+	
+	if( data)
+	{
+		[exportDCM setSourceFile: [[self imageObj] valueForKey:@"completePath"]];
+		
+		float thickness, location;
+		
+		[self getThickSlabThickness:&thickness location:&location];
+		[exportDCM setSliceThickness: thickness];
+		[exportDCM setSlicePosition: location];
+		[self orientationCorrectedToView: o];
+		[exportDCM setOrientation: o];
+		[exportDCM setPosition: imOrigin];
+		[exportDCM setPixelSpacing: imSpacing[ 0] :imSpacing[ 1]];
+		[exportDCM setPixelData: data samplePerPixel:spp bitsPerPixel:bpp width: width height: height];
+		[exportDCM setModalityAsSource: NO];
+		
+		f = [exportDCM writeDCMFile: nil];
+		if( f == nil) NSRunCriticalAlertPanel( NSLocalizedString(@"Error", nil),  NSLocalizedString(@"Error during the creation of the DICOM File!", nil), NSLocalizedString(@"OK", nil), nil, nil);
+		else sopuid = [exportDCM SOPInstanceUID];
+		
+		free( data);
+	}
+	
+	[DCMView setCLUTBARS: clutBarsCopy ANNOTATIONS: annotCopy];
+	
+	return [NSDictionary dictionaryWithObjectsAndKeys: f, @"file", sopuid, @"SOPInstanceUID", nil];
 }
 
 -(NSImage*) nsimage

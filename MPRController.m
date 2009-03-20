@@ -31,7 +31,7 @@ static float deg2rad = 3.14159265358979/180.0;
 @synthesize displayCrossLines, dcmSameIntervalAndThickness, clippingRangeThickness, clippingRangeMode, mousePosition, mouseViewID, originalPix, wlwwMenuItems, LOD, dcmFrom;
 @synthesize dcmTo, dcmMode, dcmRotationDirection, dcmSeriesMode, dcmRotation, dcmNumberOfFrames, dcmQuality, dcmInterval, dcmSeriesName, dcmBatchNumberOfFrames;
 @synthesize colorAxis1, colorAxis2, colorAxis3, displayMousePosition, movieRate, blendingPercentage;
-@synthesize mprView1, mprView2, mprView3, curMovieIndex, maxMovieIndex, blendingMode;
+@synthesize mprView1, mprView2, mprView3, curMovieIndex, maxMovieIndex, blendingMode, dcmFormat;
 
 + (double) angleBetweenVector:(float*) a andPlane:(float*) orientation
 {
@@ -1463,11 +1463,17 @@ static float deg2rad = 3.14159265358979/180.0;
 			curExportView.vrView.exportDCM = [[[DICOMExport alloc] init] autorelease];
 
 		curExportView.vrView.dcmSeriesString = dcmSeriesName;
-
+		
+		[curExportView.vrView.exportDCM setSeriesDescription: dcmSeriesName];
+		[curExportView.vrView.exportDCM setSeriesNumber: 9983];
+		
 		// CURRENT image only
 		if( dcmMode == 1)
 		{
-			[producedFiles addObject: [curExportView.vrView exportDCMCurrentImage]];
+			if( self.dcmFormat) 
+				[producedFiles addObject: [curExportView.vrView exportDCMCurrentImage]];
+			else
+				[producedFiles addObject: [curExportView exportDCMCurrentImage: curExportView.vrView.exportDCM]];
 		}
 		// 4th dimension
 		else if( dcmMode == 2)
@@ -1477,13 +1483,17 @@ static float deg2rad = 3.14159265358979/180.0;
 			[[progress progress] setMaxValue: maxMovieIndex];
 			
 			curExportView.vrView.exportDCM = [[[DICOMExport alloc] init] autorelease];
+			[curExportView.vrView.exportDCM setSeriesDescription: dcmSeriesName];
 			[curExportView.vrView.exportDCM setSeriesNumber:8730 + [[NSCalendarDate date] minuteOfHour]  + [[NSCalendarDate date] secondOfMinute]];
 			
 			for( int i = 0; i < maxMovieIndex; i++)
 			{
 				[[[self window] windowController] setMovieFrame: i];
 				
-				[producedFiles addObject: [curExportView.vrView exportDCMCurrentImage]];
+				if( self.dcmFormat) 
+					[producedFiles addObject: [curExportView.vrView exportDCMCurrentImage]];
+				else
+					[producedFiles addObject: [curExportView exportDCMCurrentImage: curExportView.vrView.exportDCM]];
 				
 				[progress incrementBy: 1];
 				if( [progress aborted])
@@ -1504,6 +1514,10 @@ static float deg2rad = 3.14159265358979/180.0;
 			[progress showWindow:self];
 			[progress setCancel:YES];
 			
+			curExportView.vrView.exportDCM = [[[DICOMExport alloc] init] autorelease];
+			[curExportView.vrView.exportDCM setSeriesDescription: dcmSeriesName];
+			[curExportView.vrView.exportDCM setSeriesNumber:8930 + [[NSCalendarDate date] minuteOfHour]  + [[NSCalendarDate date] secondOfMinute]];
+			
 			if( dcmSeriesMode == 1)
 			{
 				if( maxMovieIndex > 1)
@@ -1513,9 +1527,6 @@ static float deg2rad = 3.14159265358979/180.0;
 				}
 				
 				[[progress progress] setMaxValue: self.dcmNumberOfFrames];
-				
-				curExportView.vrView.exportDCM = [[[DICOMExport alloc] init] autorelease];
-				[curExportView.vrView.exportDCM setSeriesNumber:8930 + [[NSCalendarDate date] minuteOfHour]  + [[NSCalendarDate date] secondOfMinute]];
 				
 				for( int i = 0; i < self.dcmNumberOfFrames; i++)
 				{
@@ -1529,7 +1540,10 @@ static float deg2rad = 3.14159265358979/180.0;
 						[self setMovieFrame: movieIndex];
 					}
 					
-					[producedFiles addObject: [curExportView.vrView exportDCMCurrentImage]];
+					if( self.dcmFormat)
+						[producedFiles addObject: [curExportView.vrView exportDCMCurrentImage]];
+					else
+						[producedFiles addObject: [curExportView exportDCMCurrentImage: curExportView.vrView.exportDCM]];
 					
 					[progress incrementBy: 1];
 					
@@ -1564,7 +1578,10 @@ static float deg2rad = 3.14159265358979/180.0;
 				
 				for( int i = 0; i < dcmBatchNumberOfFrames; i++)
 				{
-					[producedFiles addObject: [curExportView.vrView exportDCMCurrentImage]];
+					if( self.dcmFormat)
+						[producedFiles addObject: [curExportView.vrView exportDCMCurrentImage]];
+					else
+						[producedFiles addObject: [curExportView exportDCMCurrentImage: curExportView.vrView.exportDCM]];
 					
 					curExportView.camera.position = [Point3D pointWithX: curExportView.camera.position.x + interval*cos[ 6] y:curExportView.camera.position.y + interval*cos[ 7] z:curExportView.camera.position.z + interval*cos[ 8]];
 					curExportView.camera.focalPoint = [Point3D pointWithX: curExportView.camera.position.x + cos[ 6] y:curExportView.camera.position.y + cos[ 7] z:curExportView.camera.position.z + cos[ 8]];
@@ -1695,6 +1712,11 @@ static float deg2rad = 3.14159265358979/180.0;
 	self.displayCrossLines = YES;
 	self.dcmSameIntervalAndThickness = YES;
 	self.dcmQuality = 1;
+	
+	if( clippingRangeMode == 0) // VR
+		self.dcmFormat = 0; //SC in 8-bit
+	else
+		self.dcmFormat = 1; // full depth
 	
 	self.dcmMode = [[NSUserDefaults standardUserDefaults] integerForKey: @"lastMPRdcmExportMode"];
 }

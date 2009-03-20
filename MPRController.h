@@ -63,7 +63,7 @@
 	// Export Dcm
 	IBOutlet NSWindow *dcmWindow;
 	IBOutlet NSView *dcmSeriesView;
-	int dcmFrom, dcmTo, dcmMode, dcmSeriesMode, dcmRotation, dcmRotationDirection, dcmNumberOfFrames, dcmQuality, dcmBatchNumberOfFrames;
+	int dcmFrom, dcmTo, dcmMode, dcmSeriesMode, dcmRotation, dcmRotationDirection, dcmNumberOfFrames, dcmQuality, dcmBatchNumberOfFrames, dcmFormat;
 	float dcmInterval, previousDcmInterval;
 	BOOL dcmSameIntervalAndThickness;
 	NSString *dcmSeriesName;
@@ -89,7 +89,7 @@
 
 @property float clippingRangeThickness, dcmInterval, blendingPercentage;
 @property int clippingRangeMode, mouseViewID, dcmFrom, dcmTo, dcmMode, dcmSeriesMode, dcmRotation, dcmRotationDirection, dcmNumberOfFrames, dcmQuality, dcmBatchNumberOfFrames;
-@property int curMovieIndex, maxMovieIndex, blendingMode;
+@property int dcmFormat, curMovieIndex, maxMovieIndex, blendingMode;
 @property (retain) Point3D *mousePosition;
 @property (retain) NSArray *wlwwMenuItems;
 @property (retain) NSString *dcmSeriesName;
