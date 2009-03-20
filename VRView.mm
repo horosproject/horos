@@ -2365,7 +2365,10 @@ public:
 
 - (float) blendingImageSampleDistance
 {
-	return blendingVolumeMapper->GetRayCastImage()->GetImageSampleDistance();
+	if( blendingVolumeMapper) 
+		return blendingVolumeMapper->GetRayCastImage()->GetImageSampleDistance();
+	else
+		return 0;
 }
 
 - (float) imageSampleDistance
@@ -3623,7 +3626,9 @@ public:
 			_mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView:nil];
 			
 			volumeMapper->SetMinimumImageSampleDistance( LOD*lowResLODFactor);
-			blendingVolumeMapper->SetMinimumImageSampleDistance( LOD*lowResLODFactor);
+			
+			if( blendingVolumeMapper) 
+				blendingVolumeMapper->SetMinimumImageSampleDistance( LOD*lowResLODFactor);
 		}
 		else if( tool == tWLBlended)
 		{
@@ -3635,7 +3640,9 @@ public:
 			_mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView:nil];
 		
 			volumeMapper->SetMinimumImageSampleDistance( LOD*lowResLODFactor);
-			blendingVolumeMapper->SetMinimumImageSampleDistance( LOD*lowResLODFactor);
+			
+			if( blendingVolumeMapper) 
+				blendingVolumeMapper->SetMinimumImageSampleDistance( LOD*lowResLODFactor);
 		}
 		else if( tool == tRotate)
 		{

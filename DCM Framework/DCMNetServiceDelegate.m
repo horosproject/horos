@@ -284,7 +284,8 @@ static NSLock *currentHostLock = nil;
 		}
 	}
 	
-	if( QR)	{
+	if( QR)
+	{
 		for( int i = 0 ; i < [serversArray count] ; i++ )
 		{
 			if( [[serversArray objectAtIndex: i] valueForKey:@"QR"] != nil && [[[serversArray objectAtIndex: i] valueForKey:@"QR"] boolValue] == NO)
@@ -300,7 +301,7 @@ static NSLock *currentHostLock = nil;
 
 + (NSArray *) DICOMServersListSendOnly: (BOOL) send QROnly:(BOOL) QR
 {
-	return [DCMNetServiceDelegate DICOMServersListSendOnly:NO QROnly:NO cached:NO];
+	return [DCMNetServiceDelegate DICOMServersListSendOnly:send QROnly:QR cached:NO];
 }
 
 + (NSArray *) DICOMServersList
