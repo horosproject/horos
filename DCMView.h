@@ -79,6 +79,8 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 @class ROI;
 @class OrthogonalMPRController;
 
+@class LoupeController;
+
 /** \brief Image/Frame View for ViewerController */
 
 @interface DCMView: NSOpenGLView
@@ -273,6 +275,8 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 	int avoidRecursiveSync;
 	BOOL avoidChangeWLWWRecursive;
 	BOOL TextureComputed32bitPipeline;
+	
+	LoupeController *loupeController;
 }
 
 @property(readonly) NSRect drawingFrameRect;
@@ -498,5 +502,8 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 
 - (void)setIsLUT12Bit:(BOOL)boo;
 - (BOOL)isLUT12Bit;
+
+- (void)displayLoupe;
+- (void)hideLoupe;
 
 @end

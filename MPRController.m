@@ -253,7 +253,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	
 	[[self window] makeFirstResponder: mprView3];
 	[mprView3 restoreCamera];
-	mprView3.camera.viewUp = [Point3D pointWithX:0 y:1 z:0];
+	mprView3.camera.viewUp = [Point3D pointWithX:0 y:0 z:-1];
 	[mprView3 updateViewMPR];
 	
 	[super showWindow: sender];

@@ -38,6 +38,8 @@
 #import "OrthogonalMPRPETCTView.h"
 #import "IChatTheatreDelegate.h"
 
+#import "LoupeController.h"
+
 #include <QuickTime/ImageCompression.h> // for image loading and decompression
 #include <QuickTime/QuickTimeComponents.h> // for file type support
 
@@ -57,6 +59,7 @@
 #define QUALITY kvImageNoFlags
 
 #define BS 10.
+#define new_loupe
 
 //#define TEXTRECTMODE GL_TEXTURE_2D
 //GL_TEXTURE_2D
@@ -2733,7 +2736,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 - (void) flagsChanged:(NSEvent *)event
 {
 	[self deleteLens];
-	
+	if(loupeController) [loupeController close];
+
 	if( [self is2DViewer] == YES)
 	{
 		BOOL update = NO;
@@ -2778,7 +2782,12 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	else if( ( [event modifierFlags] & NSShiftKeyMask) && !([event modifierFlags] & NSAlternateKeyMask)  && !([event modifierFlags] & NSCommandKeyMask)  && !([event modifierFlags] & NSControlKeyMask) && mouseDragging == NO)
 	{
 		if( [event type] != NSLeftMouseDragged && [event type] != NSLeftMouseDown)
+		{
 			[self computeMagnifyLens: NSMakePoint( mouseXPos, mouseYPos)];
+#ifdef new_loupe
+			[self displayLoupe];
+#endif
+		}
 	}
 	
 	if( roiHit == NO)
@@ -3153,7 +3162,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					y = rad;
 					while( y-- > 0)
 					{
+#ifndef new_loupe
 						if( (xsqr + y*y) < radsqr)
+#endif
 						{
 							lensTexture[ (rad+x)*4 + (rad+y)*LENSSIZE*4] = 0xff;
 							lensTexture[ (rad-x)*4 + (rad+y)*LENSSIZE*4] = 0xff;
@@ -3219,6 +3230,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 //		[self checkCursor];
 		
 		BOOL	needUpdate = NO;
+
+		BOOL mouseOnImage = NO;
 		
 		eventLocation = [self convertPoint:eventLocation fromView:nil];
 		NSPoint imageLocation = [self ConvertFromNSView2GL:eventLocation];
@@ -3227,13 +3240,20 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		{
 			if( imageLocation.y >= 0 && imageLocation.y < curDCM.pheight)
 			{
+				mouseOnImage = YES;
+				
 				mouseXPos = imageLocation.x;
 				mouseYPos = imageLocation.y;
 				
 				if( ([theEvent modifierFlags] & (NSShiftKeyMask|NSCommandKeyMask|NSControlKeyMask|NSAlternateKeyMask)) == NSShiftKeyMask && mouseDragging == NO)
 				{
 					if( [self roiTool: currentTool] == NO)
+					{
 						[self computeMagnifyLens: imageLocation];
+#ifdef new_loupe
+						[self displayLoupe];
+#endif
+					}
 				}
 				
 				int
@@ -3248,6 +3268,13 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				}
 				else pixelMouseValue = [curDCM getPixelValueX: xPos Y:yPos];
 			}
+		}
+		
+		if(!mouseOnImage)
+		{
+#ifdef new_loupe
+			[self hideLoupe];
+#endif
 		}
 		
 		if(	cpixelMouseValueR != pixelMouseValueR)	needUpdate = YES;
@@ -8414,6 +8441,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		glClear (GL_COLOR_BUFFER_BIT);
 	}
 	
+#ifndef new_loupe
 	if( lensTexture)
 	{
 		GLuint textID;
@@ -8525,6 +8553,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 		glDisable(GL_BLEND);
 	}
+#endif
 	
 	// Swap buffer to screen
 	[ctx  flushBuffer];
@@ -10732,7 +10761,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 - (void)mouseExited:(NSEvent *)theEvent
 {
 	[self deleteLens];
-
+#ifdef new_loupe
+	[self hideLoupe];
+#endif
 	mouseXPos = 0;
 	mouseYPos = 0;
 
@@ -11604,6 +11635,35 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		is12Bit = is12Bit && pix.isLUT12Bit;
 	}
 	return is12Bit;
+}
+
+#pragma mark -
+#pragma mark Loupe
+
+- (void)displayLoupe;
+{
+	if(!loupeController)
+		loupeController = [[LoupeController alloc] init];
+
+	if(!lensTexture)
+	{
+		[self hideLoupe];
+		return;
+	}
+	
+	if(![[loupeController window] isVisible])
+		[loupeController showWindow:nil];
+	
+	//[loupeController setTexture:lensTexture withSize:NSMakeSize(LENSSIZE, LENSSIZE) bytesPerRow:LENSSIZE viewSize:NSMakeSize(LENSSIZE*4*scaleValue/LENSRATIO, LENSSIZE*4*scaleValue/LENSRATIO)];
+	[loupeController setTexture:lensTexture withSize:NSMakeSize(LENSSIZE, LENSSIZE) bytesPerRow:LENSSIZE rotation:self.rotation];
+	[loupeController centerWindowOnMouse];
+	[loupeController drawLoupeBorder:NO];
+}
+
+- (void)hideLoupe;
+{
+	if([[loupeController window] isVisible])
+		[[loupeController window] orderOut:self];
 }
 
 @end

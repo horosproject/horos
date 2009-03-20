@@ -411,8 +411,17 @@
 		A9B412D5089180A200913770 /* bonjour.tiff in Resources */ = {isa = PBXBuildFile; fileRef = A9B412D4089180A200913770 /* bonjour.tiff */; };
 		A9BDE5920C9823DC000A161F /* IChatTheatreDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = A9BDE5900C9823DC000A161F /* IChatTheatreDelegate.h */; };
 		A9BDE5930C9823DC000A161F /* IChatTheatreDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A9BDE5910C9823DC000A161F /* IChatTheatreDelegate.m */; };
+		A9C4D9190F7297E700B5B9A1 /* LoupeWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = A9C4D9130F7297E600B5B9A1 /* LoupeWindow.h */; };
+		A9C4D91A0F7297E700B5B9A1 /* LoupeWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = A9C4D9140F7297E600B5B9A1 /* LoupeWindow.m */; };
+		A9C4D91B0F7297E700B5B9A1 /* LoupeController.h in Headers */ = {isa = PBXBuildFile; fileRef = A9C4D9150F7297E600B5B9A1 /* LoupeController.h */; };
+		A9C4D91C0F7297E700B5B9A1 /* LoupeController.m in Sources */ = {isa = PBXBuildFile; fileRef = A9C4D9160F7297E600B5B9A1 /* LoupeController.m */; };
+		A9C4D91D0F7297E700B5B9A1 /* LoupeView.h in Headers */ = {isa = PBXBuildFile; fileRef = A9C4D9170F7297E700B5B9A1 /* LoupeView.h */; };
+		A9C4D91E0F7297E700B5B9A1 /* LoupeView.m in Sources */ = {isa = PBXBuildFile; fileRef = A9C4D9180F7297E700B5B9A1 /* LoupeView.m */; };
+		A9C4D9470F72987900B5B9A1 /* Loupe.xib in Resources */ = {isa = PBXBuildFile; fileRef = A9C4D9450F72987900B5B9A1 /* Loupe.xib */; };
 		A9C63A9C09BD7C5D00E312AE /* cerveau_icon.jpg in Resources */ = {isa = PBXBuildFile; fileRef = A9C63A9B09BD7C5D00E312AE /* cerveau_icon.jpg */; };
 		A9D18CE60F65120000476DBD /* RotateAxisCursor.png in Resources */ = {isa = PBXBuildFile; fileRef = A9D18CE50F65120000476DBD /* RotateAxisCursor.png */; };
+		A9D4D0490F738BEA00483A3A /* loupe.png in Resources */ = {isa = PBXBuildFile; fileRef = A9D4D0480F738BEA00483A3A /* loupe.png */; };
+		A9D4D06D0F73922500483A3A /* loupeMask.png in Resources */ = {isa = PBXBuildFile; fileRef = A9D4D06C0F73922500483A3A /* loupeMask.png */; };
 		A9D780B009A4D2A6004302DC /* ITKBrushROIFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = A9D780AA09A4D2A6004302DC /* ITKBrushROIFilter.h */; };
 		A9D780B109A4D2A6004302DC /* ITKBrushROIFilter.mm in Sources */ = {isa = PBXBuildFile; fileRef = A9D780AB09A4D2A6004302DC /* ITKBrushROIFilter.mm */; settings = {COMPILER_FLAGS = "-I ./ITK180 -I ./ITK180/Code -I ./ITK180/Code/Algorithms -I ./ITK180/Code/BasicFilters -I ./ITK180/Code/Common -I ./ITK180/Code/Numerics -I ./ITK180/Code/IO -I ./ITK180/Code/Numerics/FEM -I ./ITK180/Code/Numerics/Statistics -I ./ITK180/Code/SpatialObject -I ./ITK180/Code/Utilities/MetaIO -I ./ITK180/Code/Utilities/expat -I ./ITK180/Code/Utilities/NrrdIO -I ./ITK180/Code/Utilities/DICOMParser -I ./ITK180/Utilities -I ./ITK180/Utilities/vxl/vcl -I ./ITK180/Utilities/vxl/core"; }; };
 		A9DE9538085E0E910019992B /* FlyThruEnd.tiff in Resources */ = {isa = PBXBuildFile; fileRef = A9DE9535085E0E910019992B /* FlyThruEnd.tiff */; };
@@ -5623,8 +5632,17 @@
 		A9B412D4089180A200913770 /* bonjour.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = bonjour.tiff; sourceTree = "<group>"; };
 		A9BDE5900C9823DC000A161F /* IChatTheatreDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IChatTheatreDelegate.h; sourceTree = "<group>"; };
 		A9BDE5910C9823DC000A161F /* IChatTheatreDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IChatTheatreDelegate.m; sourceTree = "<group>"; };
+		A9C4D9130F7297E600B5B9A1 /* LoupeWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoupeWindow.h; sourceTree = "<group>"; };
+		A9C4D9140F7297E600B5B9A1 /* LoupeWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoupeWindow.m; sourceTree = "<group>"; };
+		A9C4D9150F7297E600B5B9A1 /* LoupeController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoupeController.h; sourceTree = "<group>"; };
+		A9C4D9160F7297E600B5B9A1 /* LoupeController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoupeController.m; sourceTree = "<group>"; };
+		A9C4D9170F7297E700B5B9A1 /* LoupeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoupeView.h; sourceTree = "<group>"; };
+		A9C4D9180F7297E700B5B9A1 /* LoupeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoupeView.m; sourceTree = "<group>"; };
+		A9C4D9460F72987900B5B9A1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/Loupe.xib; sourceTree = "<group>"; };
 		A9C63A9B09BD7C5D00E312AE /* cerveau_icon.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = cerveau_icon.jpg; sourceTree = "<group>"; };
 		A9D18CE50F65120000476DBD /* RotateAxisCursor.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = RotateAxisCursor.png; sourceTree = "<group>"; };
+		A9D4D0480F738BEA00483A3A /* loupe.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = loupe.png; sourceTree = "<group>"; };
+		A9D4D06C0F73922500483A3A /* loupeMask.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = loupeMask.png; sourceTree = "<group>"; };
 		A9D780AA09A4D2A6004302DC /* ITKBrushROIFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ITKBrushROIFilter.h; sourceTree = "<group>"; };
 		A9D780AB09A4D2A6004302DC /* ITKBrushROIFilter.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ITKBrushROIFilter.mm; sourceTree = "<group>"; };
 		A9DE9535085E0E910019992B /* FlyThruEnd.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = FlyThruEnd.tiff; sourceTree = "<group>"; };
@@ -9434,6 +9452,7 @@
 				A9F2E558092227A400055899 /* DarkWindow.m */,
 				A9F2E5E509224ED600055899 /* DarkPanel.h */,
 				A9F2E5E609224ED600055899 /* DarkPanel.m */,
+				A9C4D9480F72988200B5B9A1 /* Loupe */,
 			);
 			name = Classes;
 			sourceTree = SOURCE_ROOT;
@@ -9595,6 +9614,7 @@
 				CE3F990C0C84724B00CB38F1 /* LLMPR.xib */,
 				CE3F992A0C84724B00CB38F1 /* LLScoutView.xib */,
 				CE3F98EA0C84724B00CB38F1 /* LogWindow.xib */,
+				A9C4D9450F72987900B5B9A1 /* Loupe.xib */,
 				CE3F99380C84724B00CB38F1 /* MainMenu.xib */,
 				A9333D380F56E9670097DAB7 /* MPR.xib */,
 				CE3F98F80C84724B00CB38F1 /* MPR2D.xib */,
@@ -10114,6 +10134,19 @@
 			name = Bonjour;
 			sourceTree = "<group>";
 		};
+		A9C4D9480F72988200B5B9A1 /* Loupe */ = {
+			isa = PBXGroup;
+			children = (
+				A9C4D9130F7297E600B5B9A1 /* LoupeWindow.h */,
+				A9C4D9140F7297E600B5B9A1 /* LoupeWindow.m */,
+				A9C4D9150F7297E600B5B9A1 /* LoupeController.h */,
+				A9C4D9160F7297E600B5B9A1 /* LoupeController.m */,
+				A9C4D9170F7297E700B5B9A1 /* LoupeView.h */,
+				A9C4D9180F7297E700B5B9A1 /* LoupeView.m */,
+			);
+			name = Loupe;
+			sourceTree = "<group>";
+		};
 		A9F6E4B108FEAEFC0060285A /* OrthogonalReslice */ = {
 			isa = PBXGroup;
 			children = (
@@ -10617,6 +10650,8 @@
 				AB9E05460B30107A00661F7E /* key.png */,
 				ABBB648C063587B200D9531F /* Length.tiff */,
 				ABBB648D063587B200D9531F /* Logo.tif */,
+				A9D4D0480F738BEA00483A3A /* loupe.png */,
+				A9D4D06C0F73922500483A3A /* loupeMask.png */,
 				AB9139B806839830006F3936 /* lsm.icns */,
 				CE279EEE06AEFB87008315C8 /* Mail.icns */,
 				CEDEF7D40D020E9100CADB15 /* MailSmall.tiff */,
@@ -16837,6 +16872,9 @@
 				CE291D8E0F5A99B700F95B43 /* OsiriXFixedPointVolumeRayCastMapper.h in Headers */,
 				A9333D250F56E6800097DAB7 /* MPRDCMView.h in Headers */,
 				A9333D310F56E70B0097DAB7 /* MPRController.h in Headers */,
+				A9C4D9190F7297E700B5B9A1 /* LoupeWindow.h in Headers */,
+				A9C4D91B0F7297E700B5B9A1 /* LoupeController.h in Headers */,
+				A9C4D91D0F7297E700B5B9A1 /* LoupeView.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -17710,6 +17748,9 @@
 				A93F03CE0F6FBCB900C45CCD /* MPRAxisShow.png in Resources */,
 				A93F03F80F6FD1BC00C45CCD /* MPRMousePositionHide.png in Resources */,
 				A93F03FA0F6FD1C000C45CCD /* MPRMousePositionShow.png in Resources */,
+				A9C4D9470F72987900B5B9A1 /* Loupe.xib in Resources */,
+				A9D4D0490F738BEA00483A3A /* loupe.png in Resources */,
+				A9D4D06D0F73922500483A3A /* loupeMask.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -18844,6 +18885,9 @@
 				A9333D260F56E6800097DAB7 /* MPRDCMView.m in Sources */,
 				A9333D320F56E70B0097DAB7 /* MPRController.m in Sources */,
 				AB4CD7690F72619900699111 /* FlyThruController.mm in Sources */,
+				A9C4D91A0F7297E700B5B9A1 /* LoupeWindow.m in Sources */,
+				A9C4D91C0F7297E700B5B9A1 /* LoupeController.m in Sources */,
+				A9C4D91E0F7297E700B5B9A1 /* LoupeView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -19646,6 +19690,14 @@
 				A987B3E00D5A069200BF89C0 /* English */,
 			);
 			name = Navigator.xib;
+			sourceTree = "<group>";
+		};
+		A9C4D9450F72987900B5B9A1 /* Loupe.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A9C4D9460F72987900B5B9A1 /* English */,
+			);
+			name = Loupe.xib;
 			sourceTree = "<group>";
 		};
 		ABE0D6920CDB1A4400F0494B /* iChatHelper.xib */ = {
