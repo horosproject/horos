@@ -117,23 +117,6 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 	size[2] = noOfImages;
 	
 	resample->SetSize(size);
-
-//	int u, v;
-//	// Display translation
-//	printf ("\nTranslation:\n");
-//	for (u = 0; u < 3; u++)
-//		printf ("\t%3.2f", theParameters [9+u]);
-//	printf ("\n\n");
-//
-//	// Display rotation
-//	printf ("Rotation:\n");
-//	for (u = 0; u < 3; u++)
-//	{
-//		for (v = 0; v < 3; v++)
-//			printf ("\t%3.2f", theParameters [u*3+v]);
-//		printf ("\n");
-//	}
-//	printf ("\n\n");
 	
 	WaitRendering *splash = nil;
 	
@@ -147,12 +130,8 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 	
 	[splash close];
 	[splash release];
-
-	long	mem = 0;
-	for( i = 0; i < noOfImages; i++)
-	{
-		mem += [firstObject pheight] * [firstObject pwidth] * 4;
-	}
+	
+	long mem = noOfImages * [firstObject pheight] * [firstObject pwidth] * sizeof(float);
 	
 	float *fVolumePtr = (float*) malloc( mem);
 	if( fVolumePtr && resultBuff) 
