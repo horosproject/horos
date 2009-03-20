@@ -74,8 +74,6 @@ extern "C"
 	extern int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale);
 }
 
-//vtkVolumeMapper
-
 #define D2R 0.01745329251994329576923690768    // degrees to radians
 #define R2D 57.2957795130823208767981548141    // radians to degrees
 
@@ -142,73 +140,6 @@ int intersect3D_SegmentPlane( float *P0, float *P1, float *Pnormal, float *Ppoin
     return 1;
 }
 
-/*
- class vtkPlaneCallback : public vtkCommand
- {
-public:
-  static vtkPlaneCallback *New() 
-    { return new vtkPlaneCallback; }
-  void Delete()
-    { delete this; }
-  virtual void Execute(vtkObject *caller, unsigned long, void*)
-    {
-		vtkPlaneWidget *widget = reinterpret_cast<vtkPlaneWidget*>(caller);
-		
-		vtkPlane *pd1 = vtkPlane::New();
-		widget->GetPlane( pd1);
-		pd1->Push( -30);
-		
-		vtkVolume *volume = widget->GetProp3D();
-		vtkVolumeRayCastMapper *mapper = volume->GetMapper();		//vtkVolumeRayCastMapper
-		
-		mapper->RemoveAllClippingPlanes();
-		
-		mapper->AddClippingPlane( pd1);
-		pd1->Delete();
-		
-		pd1 = vtkPlane::New();
-		widget->GetPlane( pd1);
-		pd1->Push( 30);
-		
-		double x[3];
-		pd1->GetNormal(x);
-		
-		x[0] = -x[0];   x[1] = -x[1];   x[2] = -x[2];
-		pd1->SetNormal(x);
-		
-		mapper->AddClippingPlane( pd1);
-		pd1->Delete();
-		
-		widget->SetHandleSize( 0.005);
-	}
-};*/
-
-//static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
-//{
-//	VRView* mipv = (VRView*) ptr;
-//	
-//	//vtkRenderWindow
-//	//[self renderWindow] SetAbortRender( true);
-//	if( c == vtkCommand::StartEvent)
-//	{
-//		[mipv newStartRenderingTime];
-//	}
-//	
-//	if( c == vtkCommand::EndEvent)
-//	{
-//		[mipv stopRendering];
-//		[mipv deleteStartRenderingTime];
-//	}
-//	
-//	if( c == vtkCommand::AbortCheckEvent)
-//	{
-//		if( [[NSDate date] timeIntervalSinceDate:[mipv startRenderingTime]] > 2.0)
-//		{
-//			[mipv startRendering];
-//			[mipv runRendering];
-//		}
-//	}
-//}
 
 class vtkMyCallbackVR : public vtkCommand
 {
@@ -243,48 +174,6 @@ public:
 		
 		widget->SetHandleSize( 0.005);
     }
-	
-//	
-//	
-//  virtual void Execute(vtkObject *caller, unsigned long, void*)
-//    {
-//    //  vtkTransform *t = vtkTransform::New();
-//		vtkBoxWidget *widget = reinterpret_cast<vtkBoxWidget*>(caller);
-//	//	widget->GetTransform(t);
-//	//	widget->GetProp3D()->SetUserTransform(t);
-//		
-//		vtkPolyData *pd = vtkPolyData::New();
-//		widget->GetPolyData( pd);
-//		
-//		vtkVolume *volume = (vtkVolume*) widget->GetProp3D();
-//		vtkAbstractVolumeMapper *mapper = volume->GetMapper();
-//		
-//		vtkPlanes   *planes = vtkPlanes::New();
-//		widget->GetPlanes( planes);
-//		
-//		long i;
-//		mapper->RemoveAllClippingPlanes();
-//		for( i = 0; i < planes->GetNumberOfPlanes(); i++)
-//		{
-//			mapper->AddClippingPlane( planes->GetPlane( i));
-//		}
-//		
-//		if( blendingVolume)
-//		{
-//			vtkAbstractVolumeMapper *blendingMapper = blendingVolume->GetMapper();
-//			blendingMapper->RemoveAllClippingPlanes();
-//			for( i = 0; i < planes->GetNumberOfPlanes(); i++)
-//			{
-//				blendingMapper->AddClippingPlane( planes->GetPlane( i));
-//			}
-//		}
-//		
-//		planes->Delete();
-//		
-//		widget->SetHandleSize( 0.005);
-//		
-////		mapper->SetCroppingRegionFlagsToInvertedFence();
-//    }
 };
 
 @implementation VRView
@@ -641,85 +530,26 @@ public:
 	float absZ = fabs( vector[ 2]);
 	
 	// get first 3 AXIS
-	for ( int i=0; i < 3; ++i) {
+	for ( int i=0; i < 3; ++i)
+	{
 		if (absX>.2 && absX>=absY && absX>=absZ)
 		{
 			[optr appendString: orientationX]; absX=0;
 		}
-		else if (absY>.2 && absY>=absX && absY>=absZ)	{
+		else if (absY>.2 && absY>=absX && absY>=absZ)
+		{
 			[optr appendString: orientationY]; absY=0;
-		} else if (absZ>.2 && absZ>=absX && absZ>=absY) {
+		}
+		else if (absZ>.2 && absZ>=absX && absZ>=absY)
+		{
 			[optr appendString: orientationZ]; absZ=0;
-		} else break;
+		}
+		else break;
 	}
 	
 	strcpy( o, [optr UTF8String]);
 	strcat( o, " ");
 }
-
-//- (void) getOrientationText:(char *) string : (float *) vector :(BOOL) inv
-//{
-//	char orientationX;
-//	char orientationY;
-//	char orientationZ;
-//
-//	char *optr = string;
-//	*optr = 0;
-//	
-//	if( inv)
-//	{
-//		orientationX = -vector[ 0] < 0 ? 'R' : 'L';
-//		orientationY = -vector[ 1] < 0 ? 'A' : 'P';
-//		orientationZ = -vector[ 2] < 0 ? 'I' : 'S';
-//	}
-//	else
-//	{
-//		orientationX = vector[ 0] < 0 ? 'R' : 'L';
-//		orientationY = vector[ 1] < 0 ? 'A' : 'P';
-//		orientationZ = vector[ 2] < 0 ? 'I' : 'S';
-//	}
-//	
-//	float absX = fabs( vector[ 0]);
-//	float absY = fabs( vector[ 1]);
-//	float absZ = fabs( vector[ 2]);
-//	
-//	int i; 
-//	for (i=0; i<1; ++i)
-//	{
-//		if (absX>.0001 && absX>absY && absX>absZ)
-//		{
-//			*optr++=orientationX; absX=0;
-//		}
-//		else if (absY>.0001 && absY>absX && absY>absZ)
-//		{
-//			*optr++=orientationY; absY=0;
-//		} else if (absZ>.0001 && absZ>absX && absZ>absY)
-//		{
-//			*optr++=orientationZ; absZ=0;
-//		} else break; *optr='\0';
-//	}
-//}
-
-//- (void) flipData:(char*) ptr :(long) no :(long) size
-//{
-//	long i;
-//	char*	tempData;
-//	
-//	NSLog(@"flip data");
-//	
-//	size *= 4;
-//	
-//	tempData = (char*) malloc( size);
-//	
-//	for( i = 0; i < no/2; i++)
-//	{
-//		BlockMoveData( ptr + size*i, tempData, size);
-//		BlockMoveData( ptr + size*(no-1-i), ptr + size*i, size);
-//		BlockMoveData( tempData, ptr + size*(no-1-i), size);
-//	}
-//	
-//	free( tempData);
-//}
 
 - (void) setBlendingMode: (long) modeID
 {
@@ -799,8 +629,6 @@ public:
 	double a[ 6];
 	
 	[[NSUserDefaults standardUserDefaults] setInteger: engineID forKey:@"MAPPERMODEVR"];
-	
-//	NSLog(@"Engine: %d", engineID);
 	
 	WaitRendering	*www = nil;
 	
@@ -894,8 +722,6 @@ public:
 	
 	[[NSUserDefaults standardUserDefaults] setInteger: engineID forKey:@"MAPPERMODEVR"];
 	
-	NSLog(@"Blending Engine: %d", engineID);
-	
 	WaitRendering	*www = [[WaitRendering alloc] init:@"Preparing 3D data..."];
 	[www start];
 	
@@ -972,10 +798,7 @@ public:
 
 -(NSImage*) image4DForFrame:(NSNumber*) cur maxFrame:(NSNumber*) max
 {
-//	if( [cur intValue] != -1) [[[self window] windowController] setMovieFrame: [cur intValue]];
 	if( [cur intValue] != -1) [controller setMovieFrame: [cur intValue]];
-	
-//	NSLog(@"frame: %d", [cur intValue]);
 	
 	bestRenderingMode = YES;
 	
@@ -1456,7 +1279,6 @@ public:
 		
 		QuicktimeExport *mov = [[QuicktimeExport alloc] initWithSelector: self : @selector(imageForFrame: maxFrame:) :numberOfFrames];
 		
-//		[mov generateMovie: YES  :NO :[[[controller fileList] objectAtIndex:0] valueForKeyPath:@"series.study.name"]];
 		[mov createMovieQTKit:YES :NO :[[[controller fileList] objectAtIndex:0] valueForKeyPath:@"series.study.name"]];
 		
 		[mov release];
@@ -1719,49 +1541,6 @@ public:
 {
 	return YES;
 }
-
-//- (NSDate*) startRenderingTime
-//{
-//	return startRenderingTime;
-//}
-//
-//- (void) newStartRenderingTime
-//{
-//	startRenderingTime = [[NSDate date] retain];
-//}
-//
-//- (void) deleteStartRenderingTime
-//{
-//	[startRenderingTime release];
-//	startRenderingTime = nil;
-//}
-//
-//-(void) startRendering
-//{
-//	if( noWaitDialog == NO)
-//	{
-//		[splash start];
-//	}
-//}
-//
-//-(void) runRendering
-//{
-//	if( noWaitDialog == NO)
-//	{
-//		if( [splash run] == NO)
-//		{
-//			[self renderWindow]->SetAbortRender( true);
-//		}
-//	}
-//}
-//
-//-(void) stopRendering
-//{
-//	if( noWaitDialog == NO)
-//	{
-//		[splash end];
-//	}
-//}
 
 - (void) CloseViewerNotification: (NSNotification*) note
 {
@@ -2773,8 +2552,6 @@ public:
 
 -(void) squareView:(id) sender
 {
-//	NSLog(@"%d", [[NSUserDefaults standardUserDefaults] integerForKey:@"VRDefaultViewSize"]);
-	
 	if( [[NSUserDefaults standardUserDefaults] integerForKey:@"VRDefaultViewSize"] == 1) return;
 	
 	NSRect  selfFrame = [[[self window] contentView] frame];
@@ -3410,13 +3187,6 @@ public:
 	double xx = -(loc.x - [self frame].size.width/2.);
 	double yy = -(loc.y - [self frame].size.height/2.);
 	
-//	double r = [self getResolution];
-//	double thickness = [self getClippingRangeThicknessInMm];
-//	
-//	xx += (thickness/2.)/r;
-//	yy += (thickness/2.)/r;
-	
-	
 	double pWC[ 2];
 	aCamera->GetWindowCenter( pWC);
 	pWC[ 0] *= ([self frame].size.width/2.);
@@ -3832,10 +3602,6 @@ public:
 					NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:	[NSNumber numberWithInt: pix[0]], @"x", [NSNumber numberWithInt: pix[1]], @"y", [NSNumber numberWithInt: pix[2]], @"z",
 																						nil];
 					[[NSNotificationCenter defaultCenter] postNotificationName: @"Display3DPoint" object:pixList  userInfo: dict];
-					
-//					NSLog(@"mouseLocationOnScreen : %f, %f", [point3DInfoPanel frame].origin.x, [point3DInfoPanel frame].origin.y);
-//					NSLog(@"point3DInfoPanel position : %f, %f", mouseLocationOnScreen.x, mouseLocationOnScreen.y);
-//					NSLog(@"dble click on a Point in VR view");
 				}
 			}
 		}
@@ -4078,12 +3844,8 @@ public:
 			pp[ 2] /= factor;
 		}
 		
-	//	NSLog(@"point: %f %f %f", pp[ 0], pp[ 1], pp[ 2]);
-		
 		if( aCamera->GetParallelProjection())
 		{
-//			NSLog(@"Cam Proj: %f %f %f",cameraProj[ 0], cameraProj[ 1], cameraProj[ 2]);
-			
 			aCamera->GetPosition( xyz);
 			
 			xyz[ 0] = pp[0] + cameraProj[ 0];
@@ -4117,9 +3879,6 @@ public:
 			point2[2] = xyz[ 2] + (pp[2] - xyz[ 2])*5000.;		
 		}
 		
-//		NSLog( @"Start Pt : x=%f, y=%f, z=%f"	, point1[ 0], point1[ 1], point1[ 2]);
-//		NSLog( @"End Pt : x=%f, y=%f, z=%f"		, point2[ 0], point2[ 1], point2[ 2]);
-					
 		// Intersection between this line and planes in Z direction
 		for( x = 0; x < stackMax; x++)
 		{
@@ -4145,10 +3904,6 @@ public:
 				vPos[ 1] /= factor;
 				vPos[ 2] /= factor;
 			}
-			
-//			vPos[ 0] = [fObject originX];
-//			vPos[ 1] = [fObject originY];
-//			vPos[ 2] = [fObject originZ];
 			
 			switch( stackOrientation)
 			{
@@ -4207,12 +3962,7 @@ public:
 				
 				tempPoint3D[0] /= [fObject pixelSpacingX];
 				tempPoint3D[1] /= [fObject pixelSpacingY];
-			//	tempPoint3D[2] /= fabs( [fObject sliceInterval]);
 				tempPoint3D[2] /= ( [fObject sliceInterval]);
-				
-			//	tempPoint3D[0] /= factor;
-			//	tempPoint3D[1] /= factor;
-			//	tempPoint3D[2] /= factor;
 				
 				ptInt[ 0] = (long) (tempPoint3D[0] + 0.5);
 				ptInt[ 1] = (long) (tempPoint3D[1] + 0.5);
@@ -4220,17 +3970,7 @@ public:
 				
 				
 				if( needToFlip) 
-				{
 					ptInt[ 2] = [pxList count] - ptInt[ 2] -1;
-				}
-				
-//						if( ptInt[0] >= 0 && ptInt[0] < [fObject pwidth] && ptInt[1] >= 0 && ptInt[1] < [fObject pheight] &&  ptInt[ 2] >= 0 && ptInt[ 2] < [pxList count])
-//						{						
-//							// Test delete...
-//							
-//							float *src = [[pxList objectAtIndex: ptInt[ 2]] fImage];
-//							*(src + (long) ptInt[1] * [fObject pwidth] + (long) ptInt[0]) = 10000;
-//						}
 				
 				switch( stackOrientation)
 				{
@@ -4255,7 +3995,6 @@ public:
 							[[[ROIList objectAtIndex: roiID] points] addObject: [MyPoint point: NSMakePoint(ptInt[0], ptInt[1])]];
 					break;
 				}
-//				NSLog(@"Slide ID: %d", roiID);
 			}
 		}
 	}
@@ -4377,11 +4116,6 @@ public:
 
 - (void) processFlyTo
 {
-//		NSPoint mousePoint = [self convertPoint: [[self window] mouseLocationOutsideOfEventStream] fromView: nil];
-//		long	pix[ 3];
-//		float	value;
-//		[self get3DPixelUnder2DPositionX:mousePoint.x Y:mousePoint.y pixel:pix position:flyToDestination value:&value];
-	
 	[self flyTo: flyToDestination[0]*factor :flyToDestination[1]*factor :flyToDestination[2]*factor];
 	
 	if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD*lowResLODFactor);
@@ -4612,7 +4346,6 @@ public:
 
 - (void) setCurrentTool:(short) i
 {
-	NSLog(@"setCurrentTool: %d", i);
 	long previousTool = currentTool;
 	
     currentTool = i;
@@ -4941,26 +4674,6 @@ public:
 	else if(!advancedCLUT)
 		colorTransferFunction->BuildFunctionFromTable( valueFactor*(OFFSET16 + wl-ww/2), valueFactor*(OFFSET16 + wl+ww/2), 255, (double*) &table);
 	
-//	vImageConvert_PlanarFtoPlanar8( &srcf, &dst8, wl + ww/2, wl - ww/2, 0);
-//	if( needToFlip)
-//	{
-//		[self flipData: (char*) dst8.data :[pixList count] :[firstObject pheight] * [firstObject pwidth]];
-//	}
-	
-//	if( flip)
-//	{
-//		flip->Delete();
-//		
-//		flip = vtkImageFlip::New();
-//		flip->SetInput( reader->GetOutput());
-//		flip->SetFlipAboutOrigin( TRUE);
-//		flip->SetFilteredAxis(2);
-//		
-//		outlineData->SetInput((vtkDataSet *) flip->GetOutput());
-//		if( volumeMapper) volumeMapper->SetInput((vtkDataSet *) flip->GetOutput());
-//		if( textureMapper) textureMapper->SetInput((vtkDataSet *) flip->GetOutput());
-//	}
-	
 	if( [[[controller viewer2D] modality] isEqualToString:@"PT"] || ([[NSUserDefaults standardUserDefaults] boolForKey:@"mouseWindowingNM"] == YES && [[[controller viewer2D] modality] isEqualToString:@"NM"] == YES))
 	{
 		if( ww < 50) sprintf(WLWWString, "From: %0.4f   To: %0.4f ", wl-ww/2, wl+ww/2);
@@ -5288,33 +5001,6 @@ public:
 		}
 		// PLAN 
 		[blendingFirstObject orientation:blendingcosines];
-				
-//		if( blendingcosines[6] + blendingcosines[7] + blendingcosines[8] < 0 && cosines[6] + cosines[7] + cosines[8] > 0)
-//		{
-//			NSLog(@"Oposite Vector!");
-//			blendingSliceThickness = -blendingSliceThickness;
-//		}
-//		
-//		if( blendingcosines[6] + blendingcosines[7] + blendingcosines[8] > 0 && cosines[6] + cosines[7] + cosines[8] < 0)
-//		{
-//			NSLog(@"Oposite Vector!");
-//			blendingSliceThickness = -blendingSliceThickness;
-//		}
-		
-		// Convert float to char
-		
-//		blendingSrcf.height = [blendingFirstObject pheight] * [blendingPixList count];
-//		blendingSrcf.width = [blendingFirstObject pwidth];
-//		blendingSrcf.rowBytes = [blendingFirstObject pwidth] * sizeof(float);
-//		
-//		blendingDst8.height = [blendingFirstObject pheight] * [blendingPixList count];
-//		blendingDst8.width = [blendingFirstObject pwidth];
-//		blendingDst8.rowBytes = [blendingFirstObject pwidth] * sizeof(char);
-//		
-//		blendingData8 = (char*) malloc( blendingDst8.height * blendingDst8.width * sizeof(char));
-//		
-//		blendingDst8.data = blendingData8;
-//		blendingSrcf.data = blendingData;
 		
 		isBlendingRGB = NO;
 		if( [blendingFirstObject isRGB])
@@ -5371,9 +5057,6 @@ public:
 		blendingWl = [blendingFirstObject wl];
 		blendingWw = [blendingFirstObject ww];
 		
-//		vImageConvert_PlanarFtoPlanar8( &blendingSrcf, &blendingDst8, blendingWl + blendingWw/2, blendingWl - blendingWw/2, 0);
-
-		
 		blendingReader = vtkImageImport::New();
 		blendingReader->SetWholeExtent(0, [blendingFirstObject pwidth]-1, 0, [blendingFirstObject pheight]-1, 0, [blendingPixList count]-1);
 		blendingReader->SetDataExtentToWholeExtent();
@@ -5386,9 +5069,6 @@ public:
 		}
 		else 
 		{
-//			blendingReader->SetNumberOfScalarComponents( 1);
-//			blendingReader->SetDataScalarTypeToFloat();
-//			blendingReader->SetImportVoidPointer( blendingData );					//AVOID VTK BUG
 			blendingReader->SetNumberOfScalarComponents( 1);
 			blendingReader->SetDataScalarTypeToUnsignedShort();
 			blendingReader->SetImportVoidPointer( blendingData8 );					//AVOID VTK BUG
@@ -5427,7 +5107,7 @@ public:
 		}
 		else
 		{
-			blendingVolumeProperty->SetColor( blendingColorTransferFunction);	//	if( isRGB == NO) 
+			blendingVolumeProperty->SetColor( blendingColorTransferFunction);
 			blendingVolumeProperty->SetScalarOpacity( blendingOpacityTransferFunction);
 		}
 		
@@ -5435,16 +5115,7 @@ public:
 
 		blendingVolumeProperty->SetInterpolationTypeToLinear();
 		
-	//	vtkVolumeRayCastCompositeFunction  *compositeFunction = vtkVolumeRayCastCompositeFunction::New();
 		blendingCompositeFunction = vtkVolumeRayCastCompositeFunction::New();
-		
-//		blendingVolumeMapper = vtkVolumeRayCastMapper::New();		//vtkVolumeRayCastMapper
-//		blendingVolumeMapper->SetVolumeRayCastFunction( blendingCompositeFunction);
-//		blendingVolumeMapper->SetInput( blendingReader->GetOutput());
-//	//	blendingVolumeMapper->SetSampleDistance( 12.0);
-		
-//		LOD = 2.0;
-//		blendingVolumeMapper->SetMinimumImageSampleDistance( LOD);
 		
 		blendingVolume = vtkVolume::New();
 		blendingVolume->SetProperty( blendingVolumeProperty);
@@ -5457,37 +5128,13 @@ public:
 		matrice->Element[0][2] = blendingcosines[6];			matrice->Element[1][2] = blendingcosines[7];			matrice->Element[2][2] = blendingcosines[8];			matrice->Element[3][2] = 0;
 		matrice->Element[0][3] = 0;								matrice->Element[1][3] = 0;								matrice->Element[2][3] = 0;								matrice->Element[3][3] = 1;
 		
-//		blendingVolume->SetOrigin( [blendingFirstObject originX], [blendingFirstObject originY], [blendingFirstObject originZ]);
-		
-//		blendingFirstObject = [blendingPixList objectAtIndex:[blendingPixList count]-1];
-
 		blendingVolume->SetPosition(	factor*[blendingFirstObject originX] * (matrice->Element[0][0]) + factor*[blendingFirstObject originY] * (matrice->Element[1][0]) + factor*[blendingFirstObject originZ]*(matrice->Element[2][0]),
 										factor*[blendingFirstObject originX] * (matrice->Element[0][1]) + factor*[blendingFirstObject originY] * (matrice->Element[1][1]) + factor*[blendingFirstObject originZ]*(matrice->Element[2][1]),
 										factor*[blendingFirstObject originX] * (matrice->Element[0][2]) + factor*[blendingFirstObject originY] * (matrice->Element[1][2]) + factor*[blendingFirstObject originZ]*(matrice->Element[2][2]));
-//		blendingVolume->SetPosition(	[blendingFirstObject originX],
-//										[blendingFirstObject originY],
-//										[blendingFirstObject originZ]);
 		blendingVolume->SetUserMatrix( matrice);
 		matrice->Delete();
 		
-//		if( blendingFlip) outlineData->SetInput((vtkDataSet *) blendingFlip->GetOutput());
-//		else outlineData->SetInput((vtkDataSet *) blendingReader->GetOutput());
-		
-//		blendingVolume->RotateWXYZ(-90, 1, 0, 0);
-//		blendingVolume->RotateWXYZ(0, 0, 1, 0);
-//		blendingVolume->RotateWXYZ(90, 0, 0, 1);
-		
-//		blendingVolume->RotateWXYZ(R2D*asin( blendingnormal[0] - normalv[0]), 1, 0, 0);
-//		blendingVolume->RotateWXYZ(R2D*asin( blendingnormal[1] - normalv[1]), 0, 1, 0);
-//		blendingVolume->RotateWXYZ(R2D*asin( blendingnormal[2] - normalv[2]), 0, 0, 1);
-		
-//		blendingVolume->SetOrientation(90, 0, -90);
-//		blendingVolume->SetOrientation( R2D*acos( normal[0]), R2D*acos( normal[ 1]), R2D*acos (normal[ 2]));
-//		NSLog(@"%0.1f / %0.1f / %0.1f", ( normalv[0]), ( normalv[ 1]),  (normalv[ 2]));
-//		NSLog(@"%0.1f / %0.1f / %0.1f", ( blendingnormal[0]), ( blendingnormal[ 1]),  (blendingnormal[ 2]));
-		
 		cropcallback->setBlendingVolume( blendingVolume);
-//		cropcallback->Execute(croppingBox, 0, nil);
 		
 	    aRenderer->AddVolume( blendingVolume);
 	}
@@ -5714,16 +5361,8 @@ public:
 	data = volumeData;
 	
 	aRenderer = [self renderer];
-//	cbStart = vtkCallbackCommand::New();
-//	cbStart->SetCallback( startRendering);
-//	cbStart->SetClientData( self);
-	
-//	[self renderWindow]->AddObserver(vtkCommand::StartEvent, cbStart);
-//	[self renderWindow]->AddObserver(vtkCommand::EndEvent, cbStart);
-//	[self renderWindow]->AddObserver(vtkCommand::AbortCheckEvent, cbStart);
-
 	firstObject = [pixList objectAtIndex:0];
-	float sliceThickness = [firstObject sliceInterval];  //[[pixList objectAtIndex:1] sliceLocation] - [firstObject sliceLocation];
+	float sliceThickness = [firstObject sliceInterval];
 	
 	if( sliceThickness == 0)
 	{
@@ -5738,71 +5377,7 @@ public:
 	
 	isRGB = NO;
 	if( [firstObject isRGB])
-	{
 		isRGB = YES;
-		
-//		long	i, size, val;
-//		unsigned char	*srcPtr = (unsigned char*) data;
-//		float   *dstPtr;
-//		
-//		size = [firstObject pheight] * [pix count];
-//		size *= [firstObject pwidth];
-//		size *= sizeof( float);
-//		
-//		dataFRGB = (float*) malloc( size);
-//		
-//		size /= 4;
-//		
-//		dstPtr = dataFRGB;
-//		for( i = 0 ; i < size; i++)
-//		{
-//			srcPtr++;
-//			val = *srcPtr++;
-//			val += *srcPtr++;
-//			val += *srcPtr++;
-//			*dstPtr++ = val/3;
-//		}
-		
-//		long	i, size, val;
-//		unsigned char	*srcPtr = (unsigned char*) data;
-//		unsigned char   *dstPtr;
-//		
-//		size = [firstObject pheight] * [pix count];
-//		size *= [firstObject pwidth];
-//		
-//		dataFRGB = (unsigned char*) malloc( size*3);
-//		
-//		dstPtr = dataFRGB;
-//		i = size;
-//		while( i-->0)
-//		{
-//			srcPtr++;
-//			*dstPtr++ = *srcPtr++;
-//			*dstPtr++ = *srcPtr++;
-//			*dstPtr++ = *srcPtr++;
-//		}
-	}
-	
-//	else
-//	{
-//		// Convert float to char
-//		
-//		srcf.height = [firstObject pheight] * [pix count];
-//		srcf.width = [firstObject pwidth];
-//		srcf.rowBytes = [firstObject pwidth] * sizeof(float);
-//		
-//		dst8.height = [firstObject pheight] * [pix count];
-//		dst8.width = [firstObject pwidth];
-//		dst8.rowBytes = [firstObject pwidth] * sizeof(char);
-//		
-//		data8 = (char*) malloc( dst8.height * dst8.width * sizeof(char));
-//		
-//		dst8.data = data8;
-//		srcf.data = data;
-//		
-//	//	vImageConvert_FTo16S( &srcf, &dst8, 0, 1, 0);
-//		vImageConvert_PlanarFtoPlanar8( &srcf, &dst8, wl + ww/2, wl - ww/2, 0);
-//	}
 	else
 	{
 		// Convert float to short !!!
@@ -5861,13 +5436,7 @@ public:
 		
 		[firstObject orientation:cosines];
 		
-	//	float invThick;
-		
-	//	if( cosines[6] + cosines[7] + cosines[8] < 0) invThick = -1;
-	//	else invThick = 1;
-		
 		factor = 1.0;
-	//	if( [firstObject pixelSpacingX] < 0.5 || [firstObject pixelSpacingY] < 0.5 || fabs( sliceThickness) < 0.3) factor = 10;
 		
 		needToFlip = NO;
 		if( sliceThickness < 0 )
@@ -5877,72 +5446,17 @@ public:
 			needToFlip = YES;
 			NSLog(@"Flip !!");
 		}
-		//
-	//	if( needToFlip)
-	//	{
-	//		[self flipData: (char*) volumeData :[pixList count] :[firstObject pheight] * [firstObject pwidth]];
-	//		
-	//		for(  i = 0 ; i < [pixList count]; i++)
-	//		{
-	//			[[pixList objectAtIndex: i] setfImage: volumeData + ([pixList count]-1-i)*[firstObject pheight] * [firstObject pwidth]];
-	//			[[pixList objectAtIndex: i] setSliceInterval: sliceThickness];
-	//		}
-	//		
-	//		id tempObj;
-	//		
-	//		for( i = 0; i < [pixList count]/2 ; i++)
-	//		{
-	//			tempObj = [[pixList objectAtIndex: i] retain];
-	//			
-	//			[pixList replaceObjectAtIndex: i withObject:[pixList objectAtIndex: [pixList count]-i-1]];
-	//			[pixList replaceObjectAtIndex: [pixList count]-i-1 withObject: tempObj];
-	//			
-	//			[tempObj release];
-	//		}
-	//		
-	//		firstObject = [pixList objectAtIndex: 0];
-	//	}
-	//	
-	//	if( [firstObject flipData])
-	//	{
-	//		NSLog(@"firstObject = [pixList lastObject]");
-	//		firstObject = [pixList lastObject];
-	//	}
 		
 		factor = superSampling / [firstObject pixelSpacingX];
-		NSLog(@"Thickness: %2.2f Factor: %2.2f", sliceThickness, factor);
+		
 		if( [firstObject pixelSpacingX] == 0 || [firstObject pixelSpacingY] == 0) reader->SetDataSpacing( 1, 1, sliceThickness);
 		else reader->SetDataSpacing( factor*[firstObject pixelSpacingX], factor*[firstObject pixelSpacingY], factor * sliceThickness);
-		
-			
-	//	reader->SetDataOrigin(  [firstObject originX],
-	//							[firstObject originY],
-	//							[firstObject originZ]);
-
-
-	//	vtkPlane *aplane = vtkPlane::New();
-	//	aplane->SetNormal( normalv[0], normalv[1], normalv[2]);
-	//	aplane->SetOrigin( [firstObject originX], [firstObject originY], [firstObject originZ]);
-		
-		
-	//	vtkPlaneWidget  *aplaneWidget = vtkPlaneWidget::New();
-	//	aplaneWidget->SetOrigin( [firstObject originX], [firstObject originY], [firstObject originZ]);
-	//	aplaneWidget->SetNormal( normal[0], normal[1], normal[2] );
-	//	aplaneWidget->SetResolution(10);
-	//	aplaneWidget->PlaceWidget();
-	//    aplaneWidget->SetInteractor( [self renderWindowInteractor]);
 		
 		opacityTransferFunction = vtkPiecewiseFunction::New();
 		opacityTransferFunction->AddPoint(0, 0);
 		opacityTransferFunction->AddPoint(255, 1);
-	//	opacityTransferFunction->ClampingOff();
-		
-	//	vtkPiecewiseFunction	*colorTransferFunction = vtkPiecewiseFunction::New();
-	//	colorTransferFunction->AddPoint(0, 0);
-	//	colorTransferFunction->AddPoint(255, 1);
 		
 		colorTransferFunction = vtkColorTransferFunction::New();
-	//	colorTransferFunction->ClampingOff();
 		
 		red = vtkColorTransferFunction::New();
 		red->AddRGBPoint(   0, 0, 0, 0 );
@@ -5970,15 +5484,6 @@ public:
 			volumeProperty->SetScalarOpacity( 3, opacityTransferFunction);
 			
 			volumeProperty->SetComponentWeight( 0, 0);
-
-	//		volumeProperty->SetColor( 0,red);
-	//		volumeProperty->SetColor( 1,green);
-	//		volumeProperty->SetColor( 2,blue);
-	//		
-	//		volumeProperty->SetScalarOpacity( 0, opacityTransferFunction);
-	//		volumeProperty->SetScalarOpacity( 1, opacityTransferFunction);
-	//		volumeProperty->SetScalarOpacity( 2, opacityTransferFunction);
-			
 		}
 		else
 		{
@@ -5990,15 +5495,11 @@ public:
 		[self setCLUT:nil :nil :nil];
 		
 		[self setShadingValues:0.15 :0.9 :0.3 :15];
-
-	//	volumeProperty->ShadeOn();
-
+		
 		if( [[NSApp currentEvent] modifierFlags] & NSAlternateKeyMask) volumeProperty->SetInterpolationTypeToNearest();
 		else volumeProperty->SetInterpolationTypeToLinear();//SetInterpolationTypeToNearest();	//SetInterpolationTypeToLinear
 			
 		compositeFunction = vtkVolumeRayCastCompositeFunction::New();
-	//	compositeFunction->SetCompositeMethodToClassifyFirst();
-	//	compositeFunction = vtkVolumeRayCastMIPFunction::New();
 		
 		LOD = 2.0;
 		#if __ppc__
@@ -6008,22 +5509,15 @@ public:
 		volume = vtkVolume::New();
 		volume->SetProperty( volumeProperty);
 		
-	//	[self setEngine: [[NSUserDefaults standardUserDefaults] integerForKey: @"MAPPERMODEVR"]];
-		
 		vtkMatrix4x4	*matrice = vtkMatrix4x4::New();
 		matrice->Element[0][0] = cosines[0];		matrice->Element[1][0] = cosines[1];		matrice->Element[2][0] = cosines[2];		matrice->Element[3][0] = 0;
 		matrice->Element[0][1] = cosines[3];		matrice->Element[1][1] = cosines[4];		matrice->Element[2][1] = cosines[5];		matrice->Element[3][1] = 0;
 		matrice->Element[0][2] = cosines[6];		matrice->Element[1][2] = cosines[7];		matrice->Element[2][2] = cosines[8];		matrice->Element[3][2] = 0;
 		matrice->Element[0][3] = 0;					matrice->Element[1][3] = 0;					matrice->Element[2][3] = 0;					matrice->Element[3][3] = 1;
-
-	//	volume->SetOrigin( [firstObject originX], [firstObject originY], [firstObject originZ]);
-	
+		
 		volume->SetPosition(	factor*[firstObject originX] * matrice->Element[0][0] + factor*[firstObject originY] * matrice->Element[1][0] + factor*[firstObject originZ]*matrice->Element[2][0],
 								factor*[firstObject originX] * matrice->Element[0][1] + factor*[firstObject originY] * matrice->Element[1][1] + factor*[firstObject originZ]*matrice->Element[2][1],
 								factor*[firstObject originX] * matrice->Element[0][2] + factor*[firstObject originY] * matrice->Element[1][2] + factor*[firstObject originZ]*matrice->Element[2][2]);
-	//	volume->SetPosition(	[firstObject originX],// * matrice->Element[0][0] + [firstObject originY] * matrice->Element[1][0] + [firstObject originZ]*matrice->Element[2][0],
-	//							[firstObject originY],// * matrice->Element[0][1] + [firstObject originY] * matrice->Element[1][1] + [firstObject originZ]*matrice->Element[2][1],
-	//							[firstObject originZ]);// * matrice->Element[0][2] + [firstObject originY] * matrice->Element[1][2] + [firstObject originZ]*matrice->Element[2][2]);
 		volume->SetUserMatrix( matrice);
 		matrice->Delete();
 		
@@ -6044,8 +5538,6 @@ public:
 									factor*[firstObject originX] * matrice->Element[0][1] + factor*[firstObject originY] * matrice->Element[1][1] + factor*[firstObject originZ]*matrice->Element[2][1],
 									factor*[firstObject originX] * matrice->Element[0][2] + factor*[firstObject originY] * matrice->Element[1][2] + factor*[firstObject originZ]*matrice->Element[2][2]);
 		outlineRect->PickableOff();
-
-	//	[self initAnnotatedCubeActor];
 		
 		croppingBox = vtkBoxWidget::New();
 		
@@ -6072,7 +5564,6 @@ public:
 		int *wsize = [self renderWindow]->GetSize();
 		textWLWW->GetPositionCoordinate()->SetValue( 2., wsize[ 1]-15);
 		textWLWW->GetTextProperty()->SetShadow(true);
-//		textWLWW->GetTextProperty()->SetBold(true);
 		textWLWW->GetTextProperty()->SetShadowOffset(1, 1);
 		
 		aRenderer->AddActor2D(textWLWW);
@@ -6096,7 +5587,6 @@ public:
 			oText[ i]->SetInput( "X ");
 			oText[ i]->SetScaledText( false);
 			oText[ i]->GetPositionCoordinate()->SetCoordinateSystemToNormalizedViewport();
-//			oText[ i]->GetTextProperty()->SetFontSize( 16);
 			oText[ i]->GetTextProperty()->SetBold( true);
 			oText[ i]->GetTextProperty()->SetShadow(true);
 			oText[ i]->GetTextProperty()->SetShadowOffset(1, 1);
@@ -6118,22 +5608,12 @@ public:
 		aCamera->SetRoll(180);
 		aCamera->SetParallelProjection( true);
 		
-	//	aCamera->ComputeViewPlaneNormal();
-	//	aCamera->OrthogonalizeViewUp();
-		
 		aCamera->Dolly(1.5);
-
-	//	_cocoaRenderWindow->SetLineSmoothing( true);
-	//	_cocoaRenderWindow->SetPolygonSmoothing(true);
+		
 		aRenderer->AddVolume( volume);
-	//	aRenderer->AddActor(outlineRect);
 
 		aRenderer->SetActiveCamera(aCamera);
 		aRenderer->ResetCamera();
-		
-	//	[self renderWindow]->StereoRenderOn();
-	//	[self renderWindow]->SetStereoTypeToRedBlue();
-		
 		
 		// 3D Cut ROI
 		vtkPoints *pts = vtkPoints::New();
@@ -6184,7 +5664,6 @@ public:
 		Line2DText->GetPositionCoordinate()->SetValue( 2., 2.);
 		Line2DText->GetTextProperty()->SetColor( 1.0, 1.0, 0.0);
 		Line2DText->GetTextProperty()->SetBold( true);
-//		Line2DText->GetTextProperty()->SetFontSize( 14);
 		Line2DText->GetTextProperty()->SetShadow(true);
 		Line2DText->GetTextProperty()->SetShadowOffset(1, 1);
 		
@@ -6251,7 +5730,6 @@ public:
 	NSImage *compositingImage = [[NSImage alloc] initWithSize: imageRect.size];
 	
 	[compositingImage lockFocus];
-//	[[NSGraphicsContext currentContext] setImageInterpolation: NSImageInterpolationDefault];
 	[currentImage drawInRect: imageRect fromRect: sourceRect operation: NSCompositeCopy fraction: 1.0];
 	[compositingImage unlockFocus];
 	
@@ -6600,7 +6078,6 @@ public:
 		*bpp = 8;
 		
 		[self getVTKRenderWindow]->MakeCurrent();
-	//	[[NSOpenGLContext currentContext] flushBuffer];
 		
 		buf = (unsigned char*) malloc( *width * *height * 4 * *bpp/8);
 		if( buf)
@@ -6665,7 +6142,6 @@ public:
 			
 			[TIFFRep release];
 		}
-	//	[[NSOpenGLContext currentContext] flushBuffer];
 		[NSOpenGLContext clearCurrentContext];
 	}
 	
@@ -6739,7 +6215,6 @@ public:
 		croppingBox->On();
 		
 		[self setCurrentTool: t3DRotate];
-//		[[[[self window] windowController] toolsMatrix] selectCellWithTag: t3DRotate];
 		[[controller toolsMatrix] selectCellWithTag: t3DRotate];
 	}
 }
@@ -7047,35 +6522,18 @@ public:
 		if( [cam movieIndexIn4D] != [controller curMovieIndex])
 			[controller setMovieFrame: [cam movieIndexIn4D]];
 	}
-//	double r = [self getResolution];
-//	double thickness = [self getClippingRangeThicknessInMm];
-//	
-//	pWC[ 0] *= ([self frame].size.width/2.);
-//	pWC[ 1] *= ([self frame].size.height/2.);
-//	
-//	pWC[0] -= (thickness/2.)/r;
-//	pWC[1] -= (thickness/2.)/r;
-//	
-//	pWC[ 0] /= ([self frame].size.width/2.);
-//	pWC[ 1] /= ([self frame].size.height/2.);
-	
 	//vtkCamera
 	aCamera->SetWindowCenter( pWC[0], pWC[1]);
 	
 	aCamera->SetPosition( pos);
 	aCamera->SetFocalPoint( focal);
 	
-	
-	//aCamera->SetDistance(distance);
 	// Compute view plane from position and focalPoint
 	aCamera->ComputeViewPlaneNormal();
 	aCamera->SetViewUp(vUp);
-	//aCamera->SetClippingRange(clippingRange);
 	aCamera->SetViewAngle(viewAngle);
 	aCamera->SetEyeAngle(eyeAngle);
 	aCamera->SetParallelScale(parallelScale);
-	
-//	aCamera->OrthogonalizeViewUp();
 	
 	aRenderer->UpdateLightsGeometryToFollowCamera();
 	
@@ -7548,24 +7006,6 @@ public:
 	return pointFound;
 }
 
-//- (void) vtkThrow3DPointOnSurface: (double) x : (double) y			<- Doesn't always work.......
-//{
-//	vtkWorldPointPicker *picker = vtkWorldPointPicker::New();
-//	picker->Pick(x, y, 0.0, aRenderer);
-//	double wXYZ[3];
-//	picker->GetPickPosition(wXYZ);
-//	
-////	double origin[3];
-////	volume->GetPosition(origin);	//GetOrigin
-////	wXYZ[0] -= origin[0];
-////	wXYZ[1] -= origin[1];
-////	wXYZ[2] -= origin[2];
-////	NSLog(@"picked x: %f, y: %f, z: %f", wXYZ[0], wXYZ[1], wXYZ[2]);
-//	[self add3DPoint: (float)wXYZ[0]/factor : (float)wXYZ[1]/factor : (float)wXYZ[2]/factor];
-//	[controller add2DPoint: (float)wXYZ[0] : (float)wXYZ[1] : (float)wXYZ[2]];
-//  picker->Delete();
-//}
-
 - (void) throw3DPointOnSurface: (double) x : (double) y
 {
 	long	pix[ 3];
@@ -7584,7 +7024,6 @@ public:
 {
 	display3DPoints = on;
 	
-	//NSEnumerator *enumerator = [point3DActorArray objectEnumerator];
 	//id object;
 	vtkActor *actor;
 		
@@ -7930,7 +7369,8 @@ public:
 
 #pragma mark-  Drag and Drop
 
-- (void) startDrag:(NSTimer*)theTimer{
+- (void) startDrag:(NSTimer*)theTimer
+{
 	NS_DURING
 	_dragInProgress = YES;
 	
@@ -7970,7 +7410,8 @@ public:
 	[pboard declareTypes:pbTypes  owner:self];
 
 		
-	if ([event modifierFlags] & NSAlternateKeyMask) {
+	if ([event modifierFlags] & NSAlternateKeyMask)
+	{
 		NSRect imageLocation;
 		local_point = [self convertPoint:event_location fromView:nil];
 		imageLocation.origin =  local_point;
@@ -7987,7 +7428,8 @@ public:
             slideBack:YES
             event:event];
 	} 
-	else {		
+	else
+	{		
 		[pboard setData: [[NSBitmapImageRep imageRepWithData: [image TIFFRepresentation]] representationUsingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]] forType:NSTIFFPboardType];
 		
 		[ self dragImage:thumbnail
@@ -8018,31 +7460,32 @@ public:
 	return array;
 }
 
-- (void)deleteMouseDownTimer{
+- (void)deleteMouseDownTimer
+{
 	[_mouseDownTimer invalidate];
 	[_mouseDownTimer release];
 	_mouseDownTimer = nil;
 	_dragInProgress = NO;
 }
 
-- (void)deleteRightMouseDownTimer{
+- (void)deleteRightMouseDownTimer
+{
 	[_rightMouseDownTimer invalidate];
 	[_rightMouseDownTimer release];
 	_rightMouseDownTimer = nil;
 }
 
-- (void) showMenu:(NSTimer*)theTimer{
+- (void) showMenu:(NSTimer*)theTimer
+{
 	_contextualMenuActive = YES;
 	NSEvent *event = (NSEvent *)[theTimer userInfo];
 	[self performSelectorOnMainThread:@selector(showMenuOnMainThread:) withObject:event waitUntilDone:YES];
 }
 
-- (void)showMenuOnMainThread:(NSEvent *)event{
-	NSLog(@"showMenu");
+- (void)showMenuOnMainThread:(NSEvent *)event
+{
 	[NSMenu popUpContextMenu:[self defaultMenu] withEvent:event forView:self];
 }
-
-
 
 //part of Dragging Source Protocol
 - (NSDragOperation)draggingSourceOperationMaskForLocal:(BOOL)isLocal{
@@ -8071,7 +7514,8 @@ public:
 			id windowController = [[self window] windowController];
 			NSLog( @"hot key: %d", key);
 			
-			switch (key){
+			switch (key)
+			{
 				case DefaultWWWLHotKeyAction: // default WW/WL
 								wwwlMenuString = NSLocalizedString(@"Default WL & WW", nil);	// default WW/WL
 								[windowController applyWLWWForString:wwwlMenuString];
@@ -8160,51 +7604,7 @@ public:
 			{
 				colorTransferFunction->AddRGBPoint(OFFSET16 + [[aCurve objectAtIndex:j] pointValue].x, [[someColors objectAtIndex:j] redComponent], [[someColors objectAtIndex:j] greenComponent], [[someColors objectAtIndex:j] blueComponent]);
 				opacityTransferFunction->AddPoint(OFFSET16 + [[aCurve objectAtIndex:j] pointValue].x, [[aCurve objectAtIndex:j] pointValue].y * [[aCurve objectAtIndex:j] pointValue].y);
-			}
-			
-//			float x0, x1, x00, x11, alpha0, alpha1, alpha00, alpha11, r0, g0, b0, r1, g1, b1;
-//			
-//			opacityTransferFunction->AddSegment([controller minimumValue], 0.0, [[aCurve objectAtIndex:0] pointValue].x, 0.0);
-//			opacityTransferFunction->AddSegment([[aCurve lastObject] pointValue].x, 0.0, [controller maximumValue], 0.0);
-//					
-//			for(j=1; j<[aCurve count]; j++)
-//			{
-//				x0 = OFFSET16 + [[aCurve objectAtIndex:j-1] pointValue].x;
-//				x1 = OFFSET16 + [[aCurve objectAtIndex:j] pointValue].x;
-//				x00 = [[aCurve objectAtIndex:j-1] pointValue].x;
-//				x11 = [[aCurve objectAtIndex:j] pointValue].x;
-//				alpha0 = [[aCurve objectAtIndex:j-1] pointValue].y * [[aCurve objectAtIndex:j-1] pointValue].y;
-//				alpha1 = [[aCurve objectAtIndex:j] pointValue].y * [[aCurve objectAtIndex:j] pointValue].y;
-//				alpha00 = [[aCurve objectAtIndex:j-1] pointValue].y;
-//				alpha11 = [[aCurve objectAtIndex:j] pointValue].y;
-//				
-//				r0 = [[someColors objectAtIndex:j-1] redComponent];
-//				g0 = [[someColors objectAtIndex:j-1] greenComponent];
-//				b0 = [[someColors objectAtIndex:j-1] blueComponent];
-//				
-//				r1 = [[someColors objectAtIndex:j] redComponent];
-//				g1 = [[someColors objectAtIndex:j] greenComponent];
-//				b1 = [[someColors objectAtIndex:j] blueComponent];
-//				
-//				if(alpha0 >= opacityTransferFunction->GetValue(x0) && alpha1 >= opacityTransferFunction->GetValue(x1))
-//				{
-//					colorTransferFunction->AddRGBSegment(x0, r0, g0, b0, x1, r1, g1, b1);
-//					opacityTransferFunction->AddSegment(x0, alpha0, x1, alpha1);
-//				}
-//				else if(alpha0 <= opacityTransferFunction->GetValue(x0) && alpha1 >= opacityTransferFunction->GetValue(x1))
-//				{
-//					[aCurve replaceObjectAtIndex:j-1 withObject:[NSValue valueWithPoint:NSMakePoint((x00+x11)*0.5, (alpha00+alpha11)*0.5)]];
-//					[someColors replaceObjectAtIndex:j-1 withObject:[[someColors objectAtIndex:j-1] blendedColorWithFraction:0.5 ofColor:[someColors objectAtIndex:j]]];
-//					j--;
-//				}
-//				else if(alpha0 > opacityTransferFunction->GetValue(x0) && alpha1 < opacityTransferFunction->GetValue(x1))
-//				{
-//					[aCurve insertObject:[NSValue valueWithPoint:NSMakePoint((x00+x11)*0.5, (alpha00+alpha11)*0.5)] atIndex:j];
-//					[someColors insertObject:[[someColors objectAtIndex:j-1] blendedColorWithFraction:0.5 ofColor:[someColors objectAtIndex:j]] atIndex:j];
-//					j--;
-//				}
-//				// else means that the 2 points are under an oder curve -> they are invisible -> don't add them
-//			}
+			}			
 		}
 		
 		[appliedCurves release];
@@ -8264,7 +7664,6 @@ public:
 {
 	if(volumeMapper) volumeMapper->Delete();
 	volumeMapper = aVolumeMapper;
-//	volumeMapper->Register( volumeMapper);
 	volume->SetMapper(volumeMapper);
 }
 
@@ -8367,7 +7766,6 @@ public:
 
 - (void)drawImage:(NSImage *)image inBounds:(NSRect)rect
 {
-//	NSLog(@"drawImage");
     // We synchronise to make sure we're not drawing in two threads
     // simultaneously.
    
@@ -8746,11 +8144,7 @@ void VRSpaceNavigatorMessageHandler(io_connect_t connection, natural_t messageTy
 				
 				memcpy( &lastState, state, (long)sizeof(ConnexionDeviceState));
 			}
-			break;
-
-//		default:
-//			// other messageTypes can happen and should be ignored
-//			break;
+		break;
 	}
 	if(record) [vV recordFlyThru];
 }
