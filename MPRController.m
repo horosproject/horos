@@ -216,6 +216,8 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (void) updateViewsAccordingToFrame:(id) sender	// see setFrame in MPRDCMView.m
 {
+	[hiddenVRView setLODLow: NO];
+	
 	id view = [[self window] firstResponder];
 	
 	[mprView1 camera].forceUpdate = YES;
@@ -232,6 +234,8 @@ static float deg2rad = 3.14159265358979/180.0;
 	[mprView1 setNeedsDisplay: YES];
 	[mprView2 setNeedsDisplay: YES];
 	[mprView3 setNeedsDisplay: YES];
+	
+	[hiddenVRView setLODLow: YES];
 }
 
 - (void) showWindow:(id) sender

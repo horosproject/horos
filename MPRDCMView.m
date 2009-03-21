@@ -203,8 +203,6 @@ static float deg2rad = 3.14159265358979/180.0;
 	{
 		[vrView render];
 		
-		NSLog( @"render");
-		
 		float *imagePtr = [vrView imageInFullDepthWidth: &w height: &h isRGB: &isRGB];
 		
 		[self saveCamera];
@@ -821,8 +819,6 @@ static float deg2rad = 3.14159265358979/180.0;
 	[self updateViewMPR];
 	[self updateMousePosition: theEvent];
 	
-	[vrView setLODLow: NO]; 
-	
 	[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector( updateViewsAccordingToFrame:) object: nil];
 	[windowController performSelector: @selector( updateViewsAccordingToFrame:) withObject: nil afterDelay: 0.3];
 }
@@ -853,10 +849,15 @@ static float deg2rad = 3.14159265358979/180.0;
 	[self updateViewMPR];
 	
 	[self updateMousePosition: theEvent];
+	
+	[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector( updateViewsAccordingToFrame:) object: nil];
+	[windowController performSelector: @selector( updateViewsAccordingToFrame:) withObject: nil afterDelay: 0.3];
 }
 
 - (void)rightMouseUp:(NSEvent *)theEvent
 {
+	[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector( updateViewsAccordingToFrame:) object: nil];
+	
 	[self restoreCamera];
 	
 	[vrView rightMouseUp: theEvent];
@@ -917,6 +918,8 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (void) mouseUp:(NSEvent *)theEvent
 {
+	[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector( updateViewsAccordingToFrame:) object: nil];
+	
 	[self restoreCamera];
 	
 	if( rotateLines || moveCenter)
@@ -1045,6 +1048,9 @@ static float deg2rad = 3.14159265358979/180.0;
 			else [self updateViewMPR];
 		}
 	}
+	
+	[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector( updateViewsAccordingToFrame:) object: nil];
+	[windowController performSelector: @selector( updateViewsAccordingToFrame:) withObject: nil afterDelay: 0.3];
 	
 	[self updateMousePosition: theEvent];
 }

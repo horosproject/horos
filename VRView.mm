@@ -2076,8 +2076,6 @@ public:
 	{
 		[self deleteRightMouseDownTimer];
 	}
-//	if (!([theEvent modifierFlags] & NSControlKeyMask)) 	
-//		_rightMouseDownTimer = [[NSTimer scheduledTimerWithTimeInterval:0.3 target:self  selector:@selector(showMenu:) userInfo:theEvent  repeats:NO] retain];
 	
 	[self mouseDown:theEvent];
 	[drawLock unlock];
@@ -3060,16 +3058,10 @@ public:
 				else
 				{
 					if( volumeMapper)
-					{
-						volumeMapper->SetAutoAdjustSampleDistances( 1);
 						volumeMapper->SetMinimumImageSampleDistance( LOD);
-					}
 					
 					if( blendingVolumeMapper)
-					{
-						blendingVolumeMapper->SetAutoAdjustSampleDistances( 1);
 						blendingVolumeMapper->SetMinimumImageSampleDistance( LOD);
-					}
 					
 					[self getInteractor]->InvokeEvent(vtkCommand::LeftButtonReleaseEvent, NULL);
 					[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: nil];
@@ -3084,18 +3076,10 @@ public:
 			case tRotate:
 			case tTranslate:
 				if( volumeMapper)
-				{
-					volumeMapper->SetAutoAdjustSampleDistances( 1);
 					volumeMapper->SetMinimumImageSampleDistance( LOD);
-					volumeMapper->SetImageSampleDistance( LOD);
-				}
 				
 				if( blendingVolumeMapper)
-				{
-					blendingVolumeMapper->SetAutoAdjustSampleDistances( 1);
 					blendingVolumeMapper->SetMinimumImageSampleDistance( LOD);
-					blendingVolumeMapper->SetImageSampleDistance( LOD);
-				}
 				
 				[self getInteractor]->InvokeEvent(vtkCommand::LeftButtonReleaseEvent, NULL);
 				[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: nil];
@@ -3127,18 +3111,10 @@ public:
 	if (_tool == tZoom)
 	{
 		if( volumeMapper)
-		{
-			volumeMapper->SetAutoAdjustSampleDistances( 1);
-			volumeMapper->SetImageSampleDistance( LOD);
 			volumeMapper->SetMinimumImageSampleDistance( LOD);
-		}
 		
 		if( blendingVolumeMapper)
-		{
-			blendingVolumeMapper->SetAutoAdjustSampleDistances( 1);
-			blendingVolumeMapper->SetImageSampleDistance( LOD);
 			blendingVolumeMapper->SetMinimumImageSampleDistance( LOD);
-		}
 		
 		if( projectionMode != 2)
 		{
@@ -3421,18 +3397,10 @@ public:
 			int controlDown = 1;
 			
 			if( volumeMapper)
-			{
-				volumeMapper->SetAutoAdjustSampleDistances( 0);
 				volumeMapper->SetMinimumImageSampleDistance( LOD*lowResLODFactor);
-				volumeMapper->SetImageSampleDistance( LOD*lowResLODFactor);
-			}
 			
 			if( blendingVolumeMapper)
-			{
-				blendingVolumeMapper->SetAutoAdjustSampleDistances( 0);
 				blendingVolumeMapper->SetMinimumImageSampleDistance( LOD*lowResLODFactor);
-				blendingVolumeMapper->SetImageSampleDistance( LOD*lowResLODFactor);
-			}
 			
 			mouseLoc = _mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView:nil];
 			[self getInteractor]->SetEventInformation((int) mouseLoc.x, (int) mouseLoc.y, controlDown, shiftDown);
@@ -3473,18 +3441,10 @@ public:
 				int controlDown = 0;//([theEvent modifierFlags] & NSControlKeyMask);
 
 				if( volumeMapper)
-				{
-					volumeMapper->SetAutoAdjustSampleDistances( 0);
 					volumeMapper->SetMinimumImageSampleDistance( LOD*lowResLODFactor);
-					volumeMapper->SetImageSampleDistance( LOD*lowResLODFactor);
-				}
 				
 				if( blendingVolumeMapper)
-				{
-					blendingVolumeMapper->SetAutoAdjustSampleDistances( 0);
 					blendingVolumeMapper->SetMinimumImageSampleDistance( LOD*lowResLODFactor);
-					blendingVolumeMapper->SetImageSampleDistance( LOD*lowResLODFactor);
-				}
 				
 				mouseLoc = [self convertPoint: [theEvent locationInWindow] fromView:nil];
 				
@@ -3503,18 +3463,10 @@ public:
 			int controlDown = 0;
 			
 			if( volumeMapper)
-			{
-				volumeMapper->SetAutoAdjustSampleDistances( 0);
-				volumeMapper->SetImageSampleDistance( LOD*lowResLODFactor);
 				volumeMapper->SetMinimumImageSampleDistance( LOD*lowResLODFactor);
-			}
 			
 			if( blendingVolumeMapper)
-			{
-				blendingVolumeMapper->SetAutoAdjustSampleDistances( 0);
-				blendingVolumeMapper->SetImageSampleDistance( LOD*lowResLODFactor);
 				blendingVolumeMapper->SetMinimumImageSampleDistance( LOD*lowResLODFactor);
-			}
 			
 			mouseLoc = [self convertPoint: [theEvent locationInWindow] fromView:nil];
 			[self getInteractor]->SetEventInformation((int)mouseLoc.x, (int)mouseLoc.y, controlDown, shiftDown);
@@ -3523,18 +3475,10 @@ public:
 		else if( tool == tZoom)
 		{
 			if( volumeMapper)
-			{
-				volumeMapper->SetAutoAdjustSampleDistances( 0);
-				volumeMapper->SetImageSampleDistance( LOD*lowResLODFactor);
 				volumeMapper->SetMinimumImageSampleDistance( LOD*lowResLODFactor);
-			}
 			
 			if( blendingVolumeMapper)
-			{
-				blendingVolumeMapper->SetAutoAdjustSampleDistances( 0);
-				blendingVolumeMapper->SetImageSampleDistance( LOD*lowResLODFactor);
 				blendingVolumeMapper->SetMinimumImageSampleDistance( LOD*lowResLODFactor);
-			}
 			
 			if( projectionMode != 2)
 			{
@@ -4946,6 +4890,7 @@ public:
 		
 		if( volumeMapper)
 		{
+			volumeMapper->SetAutoAdjustSampleDistances( 1);
 			volumeMapper->SetMinimumImageSampleDistance( LOD);
 			volumeMapper->SetSampleDistance( [[NSUserDefaults standardUserDefaults] floatForKey: @"BESTRENDERING"]);
 			volumeMapper->SetMaximumImageSampleDistance( LOD*lowResLODFactor);
@@ -4953,6 +4898,7 @@ public:
 		
 		if( blendingVolumeMapper)
 		{
+			blendingVolumeMapper->SetAutoAdjustSampleDistances( 1);
 			blendingVolumeMapper->SetMinimumImageSampleDistance( LOD);
 			blendingVolumeMapper->SetSampleDistance( [[NSUserDefaults standardUserDefaults] floatForKey: @"BESTRENDERING"]);
 			blendingVolumeMapper->SetMaximumImageSampleDistance( LOD*lowResLODFactor);
@@ -4966,8 +4912,10 @@ public:
 {
 	if( volumeMapper)
 	{
-		if( l) volumeMapper->SetMinimumImageSampleDistance( LOD*lowResLODFactor);
-		else volumeMapper->SetMinimumImageSampleDistance( LOD);
+		if( l)
+			volumeMapper->SetMinimumImageSampleDistance( LOD*lowResLODFactor);
+		else
+			volumeMapper->SetMinimumImageSampleDistance( LOD);
 	}
 	
 	if( blendingVolumeMapper)
@@ -7934,16 +7882,10 @@ public:
 {	
 	VRView *vV = (VRView*) snVRView;
 	if( volumeMapper)
-	{
-		volumeMapper->SetAutoAdjustSampleDistances( 1);
 		volumeMapper->SetMinimumImageSampleDistance( LOD);
-	}
 	
 	if( blendingVolumeMapper)
-	{
-		blendingVolumeMapper->SetAutoAdjustSampleDistances( 1);
 		blendingVolumeMapper->SetMinimumImageSampleDistance( LOD);
-	}
 	
 	[vV getInteractor]->InvokeEvent(vtkCommand::LeftButtonReleaseEvent,NULL);
 
