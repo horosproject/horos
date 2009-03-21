@@ -61,14 +61,17 @@
 	
 	BOOL displayCrossLines, displayMousePosition;
 	
-	// Export Dcm
+	// Export Dcm & Quicktime
 	IBOutlet NSWindow *dcmWindow;
+	IBOutlet NSWindow *quicktimeWindow;
 	IBOutlet NSView *dcmSeriesView;
 	int dcmFrom, dcmTo, dcmMode, dcmSeriesMode, dcmRotation, dcmRotationDirection, dcmNumberOfFrames, dcmQuality, dcmBatchNumberOfFrames, dcmFormat;
 	float dcmInterval, previousDcmInterval;
 	BOOL dcmSameIntervalAndThickness;
 	NSString *dcmSeriesName;
 	MPRDCMView *curExportView;
+	BOOL quicktimeExportMode;
+	NSMutableArray *qtFileArray;
 	
 	// Clipping Range
 	float clippingRangeThickness;

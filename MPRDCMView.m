@@ -203,6 +203,8 @@ static float deg2rad = 3.14159265358979/180.0;
 	{
 		[vrView render];
 		
+		NSLog( @"render");
+		
 		float *imagePtr = [vrView imageInFullDepthWidth: &w height: &h isRGB: &isRGB];
 		
 		[self saveCamera];

@@ -17,6 +17,7 @@
 #import "Wait.h"
 #import "DICOMExport.h"
 #import "DicomImage.h"
+#import "iPhoto.h"
 
 #define PRESETS_DIRECTORY @"/3DPRESETS/"
 #define CLUTDATABASE @"/CLUTs/"
@@ -1460,10 +1461,36 @@ static float deg2rad = 3.14159265358979/180.0;
 
 #pragma mark Export	
 
+- (MPRDCMView*) selectedView
+{
+	MPRDCMView *v = nil;
+	
+	if( [[self window] firstResponder] == mprView1)
+		v = mprView1;
+	if( [[self window] firstResponder] == mprView2)
+		v = mprView2;
+	if( [[self window] firstResponder] == mprView3)
+		v = mprView3;
+	
+	if( v == nil) v = mprView3;
+	
+	return v;
+}
+
 -(IBAction) endDCMExportSettings:(id) sender
 {
-	[dcmWindow orderOut:sender];
-	[NSApp endSheet:dcmWindow returnCode:[sender tag]];
+	if( quicktimeExportMode)
+	{
+		[quicktimeWindow orderOut: sender];
+		[NSApp endSheet: quicktimeWindow returnCode: [sender tag]];
+		
+		qtFileArray = [[NSMutableArray alloc] initWithCapacity: 0];
+	}
+	else
+	{
+		[dcmWindow orderOut: sender];
+		[NSApp endSheet: dcmWindow returnCode: [sender tag]];
+	}
 	
 	Camera *c1, *c2, *c3;
 	int savedIndex = self.curMovieIndex;
@@ -1485,6 +1512,11 @@ static float deg2rad = 3.14159265358979/180.0;
 		
 		[curExportView restoreCamera];
 		curExportView.vrView.bestRenderingMode = NO;	// We will manually adapt the rendering level with setLOD
+		
+		if( quicktimeExportMode)
+		{
+			self.dcmFormat = 0; //RGB Capture
+		}
 		
 		if( self.dcmQuality == 1)
 			[curExportView.vrView setLOD: 1.0];
@@ -1533,15 +1565,23 @@ static float deg2rad = 3.14159265358979/180.0;
 				
 				[curExportView restoreCamera];
 				
-				if( self.dcmFormat) 
-					[curExportView.vrView setViewSizeToMatrix3DExport];
-			
-				if( self.dcmFormat) 
-					[producedFiles addObject: [curExportView.vrView exportDCMCurrentImage]];
-				else
+				if( quicktimeExportMode)
 				{
 					[curExportView updateViewMPR: NO];
-					[producedFiles addObject: [curExportView exportDCMCurrentImage: curExportView.vrView.exportDCM size: resizeImage]];
+					[qtFileArray addObject: [curExportView exportNSImageCurrentImageWithSize: resizeImage]];
+				}
+				else
+				{
+					if( self.dcmFormat)
+					{
+						[curExportView.vrView setViewSizeToMatrix3DExport];
+						[producedFiles addObject: [curExportView.vrView exportDCMCurrentImage]];
+					}
+					else
+					{
+						[curExportView updateViewMPR: NO];
+						[producedFiles addObject: [curExportView exportDCMCurrentImage: curExportView.vrView.exportDCM size: resizeImage]];
+					}
 				}
 				
 				[progress incrementBy: 1];
@@ -1574,22 +1614,20 @@ static float deg2rad = 3.14159265358979/180.0;
 				
 				for( int i = 0; i < self.dcmNumberOfFrames; i++)
 				{
-					if( maxMovieIndex > 0)
-					{	
-						short movieIndex = i;
-				
-						while( movieIndex > maxMovieIndex) movieIndex -= maxMovieIndex;
-						if( movieIndex < 0) movieIndex = 0;
-				
-						[self setCurMovieIndex: movieIndex];
-					}
-					
-					if( self.dcmFormat)
-						[producedFiles addObject: [curExportView.vrView exportDCMCurrentImage]];
-					else
+					if( quicktimeExportMode)
 					{
 						[curExportView updateViewMPR: NO];
-						[producedFiles addObject: [curExportView exportDCMCurrentImage: curExportView.vrView.exportDCM size: resizeImage]];
+						[qtFileArray addObject: [curExportView exportNSImageCurrentImageWithSize: resizeImage]];
+					}
+					else
+					{
+						if( self.dcmFormat)
+							[producedFiles addObject: [curExportView.vrView exportDCMCurrentImage]];
+						else
+						{
+							[curExportView updateViewMPR: NO];
+							[producedFiles addObject: [curExportView exportDCMCurrentImage: curExportView.vrView.exportDCM size: resizeImage]];
+						}
 					}
 					
 					[progress incrementBy: 1];
@@ -1628,12 +1666,20 @@ static float deg2rad = 3.14159265358979/180.0;
 				
 				for( int i = 0; i < self.dcmBatchNumberOfFrames; i++)
 				{
-					if( self.dcmFormat)
-						[producedFiles addObject: [curExportView.vrView exportDCMCurrentImage]];
-					else
+					if( quicktimeExportMode)
 					{
 						[curExportView updateViewMPR: NO];
-						[producedFiles addObject: [curExportView exportDCMCurrentImage: curExportView.vrView.exportDCM size: resizeImage]];
+						[qtFileArray addObject: [curExportView exportNSImageCurrentImageWithSize: resizeImage]];
+					}
+					else
+					{
+						if( self.dcmFormat)
+							[producedFiles addObject: [curExportView.vrView exportDCMCurrentImage]];
+						else
+						{
+							[curExportView updateViewMPR: NO];
+							[producedFiles addObject: [curExportView exportDCMCurrentImage: curExportView.vrView.exportDCM size: resizeImage]];
+						}
 					}
 					
 					curExportView.camera.position = [Point3D pointWithX: curExportView.camera.position.x + interval*cos[ 6] y:curExportView.camera.position.y + interval*cos[ 7] z:curExportView.camera.position.z + interval*cos[ 8]];
@@ -1653,44 +1699,53 @@ static float deg2rad = 3.14159265358979/180.0;
 			[progress close];
 			[progress release];
 		}
-				
-		if( ([[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportSendToDICOMNode"] || [[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportMarkThemAsKeyImages"]) && [producedFiles count])
+		
+		if( quicktimeExportMode == NO)
 		{
-			[NSThread sleepForTimeInterval: 0.5];
-			[[BrowserController currentBrowser] checkIncomingNow: self];
-			
-			NSMutableArray *imagesForThisStudy = [NSMutableArray array];
-			
-			[[[BrowserController currentBrowser] managedObjectContext] lock];
-			
-			for( NSManagedObject *s in [[[viewer2D currentStudy] valueForKey: @"series"] allObjects])
-				[imagesForThisStudy addObjectsFromArray: [[s valueForKey: @"images"] allObjects]];
-			
-			[[[BrowserController currentBrowser] managedObjectContext] unlock];
-			
-			NSArray *sopArray = [producedFiles valueForKey: @"SOPInstanceUID"];
-			
-			NSMutableArray *objects = [NSMutableArray array];
-			for( NSString *sop in sopArray)
+			if( ([[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportSendToDICOMNode"] || [[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportMarkThemAsKeyImages"]) && [producedFiles count])
 			{
-				for( DicomImage *im in imagesForThisStudy)
+				[NSThread sleepForTimeInterval: 0.5];
+				[[BrowserController currentBrowser] checkIncomingNow: self];
+				
+				NSMutableArray *imagesForThisStudy = [NSMutableArray array];
+				
+				[[[BrowserController currentBrowser] managedObjectContext] lock];
+				
+				for( NSManagedObject *s in [[[viewer2D currentStudy] valueForKey: @"series"] allObjects])
+					[imagesForThisStudy addObjectsFromArray: [[s valueForKey: @"images"] allObjects]];
+				
+				[[[BrowserController currentBrowser] managedObjectContext] unlock];
+				
+				NSArray *sopArray = [producedFiles valueForKey: @"SOPInstanceUID"];
+				
+				NSMutableArray *objects = [NSMutableArray array];
+				for( NSString *sop in sopArray)
 				{
-					if( [[im sopInstanceUID] isEqualToString: sop])
-						[objects addObject: im];
+					for( DicomImage *im in imagesForThisStudy)
+					{
+						if( [[im sopInstanceUID] isEqualToString: sop])
+							[objects addObject: im];
+					}
+				}
+				
+				if( [objects count] != [producedFiles count])
+					NSLog( @"WARNING !! [objects count] != [producedFiles count]");
+				
+				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportSendToDICOMNode"])
+					[[BrowserController currentBrowser] selectServer: objects];
+				
+				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportMarkThemAsKeyImages"])
+				{
+					for( DicomImage *im in objects)
+						[im setValue: [NSNumber numberWithBool: YES] forKey: @"isKeyImage"];
 				}
 			}
-			
-			if( [objects count] != [producedFiles count])
-				NSLog( @"WARNING !! [objects count] != [producedFiles count]");
-			
-			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportSendToDICOMNode"])
-				[[BrowserController currentBrowser] selectServer: objects];
-			
-			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportMarkThemAsKeyImages"])
-			{
-				for( DicomImage *im in objects)
-					[im setValue: [NSNumber numberWithBool: YES] forKey: @"isKeyImage"];
-			}
+		}
+		else
+		{
+			QuicktimeExport *mov = [[QuicktimeExport alloc] initWithSelector: self : @selector(imageForFrame: maxFrame:) :[qtFileArray count]];
+			[mov createMovieQTKit: YES  :NO :[[filesList[0] objectAtIndex:0] valueForKeyPath:@"series.study.name"]];			
+			[mov release];
 		}
 		
 		if( self.dcmFormat) 
@@ -1709,22 +1764,25 @@ static float deg2rad = 3.14159265358979/180.0;
 		
 		[self updateViewsAccordingToFrame: self];
 	}
+	
+	[qtFileArray release];
+	qtFileArray = nil;
+	quicktimeExportMode = NO;
+}
+
+-(NSImage*) imageForFrame:(NSNumber*) cur maxFrame:(NSNumber*) max
+{
+	return [qtFileArray objectAtIndex: [cur intValue]];
 }
 
 - (void) exportDICOMFile:(id) sender
 {
-	curExportView = nil;
+	curExportView = [self selectedView];
 	
-	if( [[self window] firstResponder] == mprView1)
-		curExportView = mprView1;
-	if( [[self window] firstResponder] == mprView2)
-		curExportView = mprView2;
-	if( [[self window] firstResponder] == mprView3)
-		curExportView = mprView3;
-	
-	if( curExportView == nil) curExportView = mprView3;
-	
-	[NSApp beginSheet: dcmWindow modalForWindow: nil modalDelegate:self didEndSelector:nil contextInfo:(void*) nil];
+	if( quicktimeExportMode)
+		[NSApp beginSheet: quicktimeWindow modalForWindow: nil modalDelegate:self didEndSelector:nil contextInfo:(void*) nil];
+	else
+		[NSApp beginSheet: dcmWindow modalForWindow: nil modalDelegate:self didEndSelector:nil contextInfo:(void*) nil];
 	
 	self.displayCrossLines = YES;
 	self.dcmSameIntervalAndThickness = YES;
@@ -1737,7 +1795,13 @@ static float deg2rad = 3.14159265358979/180.0;
 	
 	self.dcmMode = [[NSUserDefaults standardUserDefaults] integerForKey: @"lastMPRdcmExportMode"];
 	if( [self getMovieDataAvailable] == NO && self.dcmMode == 2)
-		self.dcmMode = 1;
+		self.dcmMode = 0;
+}
+
+- (void) exportQuicktime:(id) sender
+{
+	quicktimeExportMode = YES;
+	[self exportDICOMFile: sender];
 }
 
 - (void) displayFromToSlices
@@ -1820,6 +1884,75 @@ static float deg2rad = 3.14159265358979/180.0;
 	
 	if( dcmSameIntervalAndThickness)
 		self.dcmInterval = [curExportView.vrView getClippingRangeThicknessInMm];
+}
+
+-(void) sendMail:(id) sender
+{
+	NSImage *im = [[self selectedView] nsimage:NO];
+	
+	[self sendMailImage: im];
+}
+
+- (void) exportJPEG:(id) sender
+{
+    NSSavePanel     *panel = [NSSavePanel savePanel];
+
+	[panel setCanSelectHiddenExtension:YES];
+	[panel setRequiredFileType:@"jpg"];
+	
+	if( [panel runModalForDirectory:nil file:@"3D VR Image"] == NSFileHandlingPanelOKButton)
+	{
+		NSImage *im = [[self selectedView] nsimage:NO];
+		
+		NSArray *representations;
+		NSData *bitmapData;
+		
+		representations = [im representations];
+		
+		bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
+		
+		[bitmapData writeToFile:[panel filename] atomically:YES];
+		
+		NSWorkspace *ws = [NSWorkspace sharedWorkspace];
+		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"]) [ws openFile:[panel filename]];
+	}
+}
+
+-(void) export2iPhoto:(id) sender
+{
+	iPhoto		*ifoto;
+	NSImage		*im = [[self selectedView] nsimage:NO];
+	
+	NSArray		*representations;
+	NSData		*bitmapData;
+	
+	representations = [im representations];
+	
+	bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
+	
+	[bitmapData writeToFile:[[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP/OsiriX.jpg"] atomically:YES];
+	
+	ifoto = [[iPhoto alloc] init];
+	[ifoto importIniPhoto: [NSArray arrayWithObject:[[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP/OsiriX.jpg"]]];
+	[ifoto release];
+}
+
+- (void) exportTIFF:(id) sender
+{
+    NSSavePanel     *panel = [NSSavePanel savePanel];
+
+	[panel setCanSelectHiddenExtension:YES];
+	[panel setRequiredFileType:@"tif"];
+	
+	if( [panel runModalForDirectory:nil file:@"3D MPR Image"] == NSFileHandlingPanelOKButton)
+	{
+		NSImage *im = [[self selectedView] nsimage:NO];
+		
+		[[im TIFFRepresentation] writeToFile:[panel filename] atomically:NO];
+		
+		NSWorkspace *ws = [NSWorkspace sharedWorkspace];
+		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"]) [ws openFile:[panel filename]];
+	}
 }
 
 #pragma mark NSWindow Notifications action

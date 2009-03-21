@@ -8837,6 +8837,113 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	return buf;
 }
 
+- (NSImage*) exportNSImageCurrentImageWithSize:(int) size
+{
+	NSString *sopuid = nil;
+	NSString *f = nil;
+	float o[ 9], imOrigin[ 3], imSpacing[ 2];
+	long width, height, spp, bpp;
+	
+	unsigned char *data = [self getRawPixelsViewWidth: &width height: &height spp: &spp bpp: &bpp screenCapture: YES force8bits: YES removeGraphical: YES squarePixels: YES allowSmartCropping: NO origin: imOrigin spacing: imSpacing offset: nil isSigned: nil];
+	
+	if( data)
+	{
+		if( size)
+		{
+			if( spp != 3)
+				NSLog( @"********* spp != 3 I'll NOT resize");
+			else
+			{
+				unsigned char *cropData;
+				int cropHeight, cropWidth;
+				float rescale = 0;
+				NSPoint croppedOrigin;
+				
+				if( width > height)
+				{
+					rescale = (float) size / (float) height;
+					cropHeight = height;
+					cropWidth = height;
+				}
+				else
+				{
+					rescale = (float) size / (float) width;
+					cropHeight = width;
+					cropWidth = width;
+				}
+				
+				croppedOrigin = NSMakePoint( ((width-cropWidth)/2.), ((height - cropHeight)/2.));
+				
+				cropData = data + spp*((width-cropWidth)/2) + spp*((height - cropHeight)/2)*width;
+				
+				// resize the data
+				
+				vImage_Buffer src, dest;
+				
+				src.data = cropData;
+				src.rowBytes = width * spp;
+				src.height = cropHeight;
+				src.width = cropWidth;
+				
+				dest.data = malloc( size*size*spp);
+				dest.rowBytes = size*spp;
+				dest.width = dest.height = size;
+				
+				if( dest.data)
+				{
+					vImage_Buffer	argbsrcVimage, argbdstVimage;
+				
+					argbsrcVimage = src;
+					argbsrcVimage.rowBytes =  src.width * 4;
+					argbsrcVimage.data = malloc( argbsrcVimage.rowBytes * argbsrcVimage.height);
+					
+					argbdstVimage = dest;
+					argbdstVimage.rowBytes =  dest.width * 4;
+					argbdstVimage.data = malloc( argbdstVimage.rowBytes * argbdstVimage.height);
+				
+					vImageConvert_RGB888toARGB8888( &src, nil, 0, &argbsrcVimage, 0, 0);
+					vImageScale_ARGB8888( &argbsrcVimage, &argbdstVimage, nil, kvImageHighQualityResampling);
+					vImageConvert_ARGB8888toRGB888( &argbdstVimage, &dest, 0);
+					
+					free( argbsrcVimage.data);
+					free( argbdstVimage.data);
+					
+					free( data);
+					
+					data = dest.data;
+					width = size;
+					height = size;
+					
+					NSBitmapImageRep *rep;
+		
+					rep = [[[NSBitmapImageRep alloc]
+							 initWithBitmapDataPlanes:nil
+										   pixelsWide:width
+										   pixelsHigh:height
+										bitsPerSample:bpp
+									  samplesPerPixel:spp
+											 hasAlpha:NO
+											 isPlanar:NO
+									   colorSpaceName:NSCalibratedRGBColorSpace
+										  bytesPerRow:width*bpp*spp/8
+										 bitsPerPixel:bpp*spp] autorelease];
+					
+					memcpy( [rep bitmapData], data, height*width*bpp*spp/8);
+					
+					NSImage *image = [[[NSImage alloc] init] autorelease];
+					[image addRepresentation:rep];
+					
+					free( data);
+					
+					return image;
+				}
+			}
+		}
+	}
+	
+	return nil;
+}
+
 - (NSDictionary*) exportDCMCurrentImage: (DICOMExport*) exportDCM size:(int) size
 {
 	NSString *sopuid = nil;
