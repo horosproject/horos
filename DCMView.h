@@ -151,8 +151,6 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
     float           scaleValue, startScaleValue;
     float           rotation, rotationStart;
     NSPoint			origin, originOffset;
-	NSPoint			cross, crossPrev;
-	float			angle, slab, switchAngle;
 	short			crossMove;
     
     NSMatrix        *matrix;
@@ -286,15 +284,11 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 @property(readonly) NSArray *dcmFilesList;
 @property long syncSeriesIndex;
 @property float syncRelativeDiff;
-@property NSPoint cross;
-@property NSPoint crossPrev;
-@property float slab;
 @property long blendingMode;
 @property(retain,setter=setBlending:) DCMView *blendingView;
 @property(readonly) float blendingFactor;
 @property BOOL xFlipped, yFlipped;
 @property(retain) NSString *stringID;
-@property(readonly) float angle;
 @property short currentTool;
 @property(setter=setRightTool:) short currentToolRight;
 @property(readonly) short curImage;
@@ -349,13 +343,8 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 
 // checks to see if tool is for ROIs.  maybe better name - (BOOL)isToolforROIs:(long)tool
 - (BOOL) roiTool:(long) tool;
-- (void) sliderAction2DMPR:(id) sender;
 - (void) prepareToRelease;
 - (void) orientationCorrectedToView:(float*) correctedOrientation;
-- (void) setCrossCoordinatesPer:(float) val;
-- (void) setCrossCoordinates:(float) x :(float) y :(BOOL) update;
-- (void) setCross:(long) x :(long)y :(BOOL) update;
-- (void) setMPRAngle: (float) vectorMPR;
 - (NSPoint) ConvertFromNSView2GL:(NSPoint) a;
 - (NSPoint) ConvertFromView2GL:(NSPoint) a;
 - (NSPoint) ConvertFromUpLeftView2GL:(NSPoint) a;
@@ -364,7 +353,6 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 - (NSPoint) ConvertFromGL2Screen:(NSPoint) a;
 - (NSPoint) ConvertFromGL2GL:(NSPoint) a toView:(DCMView*) otherView;
 - (NSRect) smartCrop;
-- (void) cross3D:(float*) x :(float*) y :(float*) z;
 - (void) setWLWW:(float) wl :(float) ww;
 - (void)discretelySetWLWW:(float)wl :(float)ww;
 - (void) getWLWW:(float*) wl :(float*) ww;
@@ -373,7 +361,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 - (NSImage*) nsimage;
 - (NSImage*) nsimage:(BOOL) originalSize;
 - (NSImage*) nsimage:(BOOL) originalSize allViewers:(BOOL) allViewers;
-- (NSDictionary*) exportDCMCurrentImage: (DICOMExport*) exportDCM;
+- (NSDictionary*) exportDCMCurrentImage: (DICOMExport*) exportDCM size:(int) size;
 - (void) setIndex:(short) index;
 - (void) setIndexWithReset:(short) index :(BOOL)sizeToFit;
 - (void) setDCM:(NSMutableArray*) c :(NSArray*)d :(NSMutableArray*)e :(short) firstImage :(char) type :(BOOL) reset;
@@ -397,7 +385,6 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 - (void) colorTables:(unsigned char **) a :(unsigned char **) r :(unsigned char **)g :(unsigned char **) b;
 - (void) blendingColorTables:(unsigned char **) a :(unsigned char **) r :(unsigned char **)g :(unsigned char **) b;
 - (void )changeFont:(id)sender;
-- (void) getCrossCoordinates:(float*) x: (float*) y;
 - (IBAction) sliderRGBFactor:(id) sender;
 - (IBAction) alwaysSyncMenu:(id) sender;
 - (void) getCLUT:( unsigned char**) r : (unsigned char**) g : (unsigned char**) b;
@@ -444,7 +431,6 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 - (NSPoint) convertFromView2iChat: (NSPoint) a;
 - (NSPoint) convertFromNSView2iChat: (NSPoint) a;
 - (void) annotMenu:(id) sender;
-- (float) MPRAngle;
 - (ROI*) clickInROI: (NSPoint) tempPt;
 - (void) switchShowDescriptionInLarge;
 - (void) deleteLens;
@@ -455,24 +441,15 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 - (void) drawCrossLines:(float[2][3]) sft ctx: (CGLContextObj) cgl_ctx withShift: (double) shift;
 - (void) drawCrossLines:(float[2][3]) sft ctx: (CGLContextObj) cgl_ctx perpendicular:(BOOL) perpendicular;
 - (void) drawCrossLines:(float[2][3]) sft ctx: (CGLContextObj) cgl_ctx perpendicular:(BOOL) perpendicular withShift:(double) shift;
-
-// methods to access global variables (for plugins)
-+ (BOOL) display2DMPRLines;
 + (unsigned char*) PETredTable;
 + (unsigned char*) PETgreenTable;
 + (unsigned char*) PETblueTable;
-
-//Timer method to start drag
 - (void) startDrag:(NSTimer*)theTimer;
 - (void)deleteMouseDownTimer;
 - (id)dicomImage;
 - (void) roiLoadFromFilesArray: (NSArray*) filenames;
-
-//windowController
 - (id)windowController;
 - (BOOL)is2DViewer;
-
-//Hot key action
 -(BOOL)actionForHotKey:(NSString *)hotKey;
 +(NSDictionary*) hotKeyDictionary;
 +(NSDictionary*) hotKeyModifiersDictionary;

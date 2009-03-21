@@ -1467,13 +1467,21 @@ static float deg2rad = 3.14159265358979/180.0;
 		[curExportView.vrView.exportDCM setSeriesDescription: dcmSeriesName];
 		[curExportView.vrView.exportDCM setSeriesNumber: 9983];
 		
+		int resizeImage = 0;
+		
+		switch( [[NSUserDefaults standardUserDefaults] integerForKey:@"EXPORTMATRIXFOR3D"])
+		{
+			case 1: resizeImage = 512; break;
+			case 2: resizeImage = 768; break;
+		}
+		
 		// CURRENT image only
 		if( dcmMode == 1)
 		{
 			if( self.dcmFormat) 
 				[producedFiles addObject: [curExportView.vrView exportDCMCurrentImage]];
 			else
-				[producedFiles addObject: [curExportView exportDCMCurrentImage: curExportView.vrView.exportDCM]];
+				[producedFiles addObject: [curExportView exportDCMCurrentImage: curExportView.vrView.exportDCM size: resizeImage]];
 		}
 		// 4th dimension
 		else if( dcmMode == 2)
@@ -1493,7 +1501,7 @@ static float deg2rad = 3.14159265358979/180.0;
 				if( self.dcmFormat) 
 					[producedFiles addObject: [curExportView.vrView exportDCMCurrentImage]];
 				else
-					[producedFiles addObject: [curExportView exportDCMCurrentImage: curExportView.vrView.exportDCM]];
+					[producedFiles addObject: [curExportView exportDCMCurrentImage: curExportView.vrView.exportDCM size: resizeImage]];
 				
 				[progress incrementBy: 1];
 				if( [progress aborted])
@@ -1543,7 +1551,7 @@ static float deg2rad = 3.14159265358979/180.0;
 					if( self.dcmFormat)
 						[producedFiles addObject: [curExportView.vrView exportDCMCurrentImage]];
 					else
-						[producedFiles addObject: [curExportView exportDCMCurrentImage: curExportView.vrView.exportDCM]];
+						[producedFiles addObject: [curExportView exportDCMCurrentImage: curExportView.vrView.exportDCM size: resizeImage]];
 					
 					[progress incrementBy: 1];
 					
@@ -1581,7 +1589,7 @@ static float deg2rad = 3.14159265358979/180.0;
 					if( self.dcmFormat)
 						[producedFiles addObject: [curExportView.vrView exportDCMCurrentImage]];
 					else
-						[producedFiles addObject: [curExportView exportDCMCurrentImage: curExportView.vrView.exportDCM]];
+						[producedFiles addObject: [curExportView exportDCMCurrentImage: curExportView.vrView.exportDCM size: resizeImage]];
 					
 					curExportView.camera.position = [Point3D pointWithX: curExportView.camera.position.x + interval*cos[ 6] y:curExportView.camera.position.y + interval*cos[ 7] z:curExportView.camera.position.z + interval*cos[ 8]];
 					curExportView.camera.focalPoint = [Point3D pointWithX: curExportView.camera.position.x + cos[ 6] y:curExportView.camera.position.y + cos[ 7] z:curExportView.camera.position.z + cos[ 8]];

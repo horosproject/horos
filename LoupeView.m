@@ -56,7 +56,7 @@
 //	if(!textureBuffer)
 //		textureBuffer = malloc(bytesPerRow * textureSize.height);
 //	memcpy(textureBuffer, texture, bytesPerRow * textureSize.height);
-	textureBuffer = texture;
+	textureBuffer = (GLubyte *)texture;
 	
 	glGenTextures(1, &textureID);
 	glBindTexture(GL_TEXTURE_RECTANGLE_EXT, textureID);

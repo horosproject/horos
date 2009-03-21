@@ -1821,17 +1821,17 @@ static volatile int numberOfThreadsForRelisce = 0;
 	}
 }
 
-- (void)setOrientationToolFrom2DMPR:(id)sender
-{
-	WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Processing...", nil)];
-	[wait showWindow:self];
-	[orientationMatrix selectCellWithTag:[[sender selectedCell] tag]];
-	[self setOrientationTool:orientationMatrix];
-	[self checkEverythingLoaded];
-	[self performSelector:@selector(MPR2DViewer:) withObject:self afterDelay:0.05];
-	[wait close];
-	[wait release];
-}
+//- (void)setOrientationToolFrom2DMPR:(id)sender
+//{
+//	WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Processing...", nil)];
+//	[wait showWindow:self];
+//	[orientationMatrix selectCellWithTag:[[sender selectedCell] tag]];
+//	[self setOrientationTool:orientationMatrix];
+//	[self checkEverythingLoaded];
+//	[self performSelector:@selector(MPR2DViewer:) withObject:self afterDelay:0.05];
+//	[wait close];
+//	[wait release];
+//}
 
 - (void) contextualDictionaryPath:(NSString *)newContextualDictionaryPath
 {
@@ -7871,7 +7871,7 @@ static ViewerController *draggedController = nil;
 	{
 		switch( [contextInfo tag])
 		{
-			case 1: [self MPR2DViewer:contextInfo];		break;  //2DMPR
+//			case 1: [self MPR2DViewer:contextInfo];		break;  //2DMPR
 			case 10: [self mprViewer:contextInfo];		break;  //3DMPR
 			case 3: [self VRViewer:contextInfo];		break;  //MIP
 			case 4: [self VRViewer:contextInfo];		break;  //VR
@@ -13345,22 +13345,22 @@ int i,j,l;
 //	}
 //	[viewersList release];
 	
-	// *** 2D MPR Viewers ***
-	viewersList = [NSMutableArray array];
-	
-	for( NSWindow *win in winList)
-	{
-		if( [[[win windowController] windowNibName] isEqualToString:@"MPR2D"])
-		{
-			if( self != [win windowController]) [viewersList addObject: [win windowController]];
-		}
-	}
-	
-	for( MPR2DController *vC in viewersList)
-	{
-		if( [vC blendingController])
-			[vC updateBlendingImage];
-	}
+//	// *** 2D MPR Viewers ***
+//	viewersList = [NSMutableArray array];
+//	
+//	for( NSWindow *win in winList)
+//	{
+//		if( [[[win windowController] windowNibName] isEqualToString:@"MPR2D"])
+//		{
+//			if( self != [win windowController]) [viewersList addObject: [win windowController]];
+//		}
+//	}
+//	
+//	for( MPR2DController *vC in viewersList)
+//	{
+//		if( [vC blendingController])
+//			[vC updateBlendingImage];
+//	}
 	
 	// *** VR Viewers ***
 	viewersList = [NSMutableArray array];
@@ -17516,80 +17516,6 @@ int i,j,l;
 	}
 }
 
-- (MPR2DController *)openMPR2DViewer
-{
-	[self checkEverythingLoaded];
-	[self clear8bitRepresentations];
-	
-	MPR2DController *		viewer = [[MPR2DController alloc] initWithPix:pixList[0] :fileList[0] :volumeData[0] :blendingController :self];			
-	
-	int i;
-	for( i = 1; i < maxMovieIndex; i++)
-	{
-		[viewer addMoviePixList:pixList[ i] :volumeData[ i]];
-	}
-	
-	return viewer;
-}
-
--(IBAction) MPR2DViewer:(id) sender
-{
-	
-	WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Processing...", nil)];
-	[wait showWindow:self];
-	
-	[self checkEverythingLoaded];
-	[self clear8bitRepresentations];
-	[self squareDataSet: self];		// MPR2D works better if pixel are squares !
-
-	[wait close];
-	[wait release];
-
-	if( [self computeInterval] == 0 ||
-		[[pixList[0] objectAtIndex:0] pixelSpacingX] == 0 ||
-		[[pixList[0] objectAtIndex:0] pixelSpacingY] == 0 ||
-		([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask))
-	{
-		[self SetThicknessInterval:sender];
-	}
-	else
-	{
-		[self displayAWarningIfNonTrueVolumicData];
-		[self displayWarningIfGantryTitled];
-		
-		[self MovieStop: self];
-		
-		MPR2DController *viewer = [appController FindViewer :@"MPR2D" :pixList[0]];
-		
-		if( viewer)
-		{
-			[[viewer window] makeKeyAndOrderFront:self];
-		}
-		else
-		{
-			viewer = [self openMPR2DViewer];
-			
-			NSString *c;
-			
-			if( backCurCLUTMenu) c = backCurCLUTMenu;
-			else c = curCLUTMenu;
-			
-			[viewer ApplyCLUTString: c];
-//			[viewer ApplyOpacityString: curOpacityMenu];
-			
-			float   iwl, iww;
-			[imageView getWLWW:&iwl :&iww];
-			[viewer setWLWW:iwl :iww];
-			[viewer load3DState];
-			[self place3DViewerWindow: viewer];
-			[viewer showWindow:self];
-			[[viewer window] setTitle: [NSString stringWithFormat:@"%@: %@", [[viewer window] title], [[self window] title]]];
-		}
-		
-		[viewer updateOrientationMatrix];
-	}
-}
-
 - (OrthogonalMPRViewer *)openOrthogonalMPRViewer
 {
 	OrthogonalMPRViewer *viewer;
@@ -18696,7 +18622,7 @@ sourceRef);
 
 - (float)rotation
 {
-	return [imageView angle];
+	return [imageView rotation];
 }
 
 - (void)setRotation:(float)rotation

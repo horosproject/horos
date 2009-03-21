@@ -13,7 +13,6 @@
 =========================================================================*/
 
 #import "DCMAbstractSyntaxUID.h"
-#import "MPRPreviewView.h"
 #import <DCMView.h>
 #import "StringTexture.h"
 #import "DCMPix.h"
@@ -71,7 +70,6 @@ extern		ToolbarPanelController		*toolbarPanel[10];
 extern		AppController				*appController;
 			short						syncro = syncroLOC;
 static		float						deg2rad = 3.14159265358979/180.0; 
-			BOOL						display2DMPRLines = YES;
 extern		NSMutableDictionary			*plugins;
 static		unsigned char				*PETredTable = nil, *PETgreenTable = nil, *PETblueTable = nil;
 static		BOOL						NOINTERPOLATION = NO, FULL32BITPIPELINE = NO, SOFTWAREINTERPOLATION = NO, IndependentCRWLWW, pluginOverridesMouse = NO;  // Allows plugins to override mouse click actions.
@@ -473,12 +471,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 @synthesize dcmRoiList;
 @synthesize syncSeriesIndex;
 @synthesize syncRelativeDiff;
-@synthesize cross, crossPrev;
-@synthesize slab;
 @synthesize blendingMode, blendingView, blendingFactor;
 @synthesize xFlipped, yFlipped;
 @synthesize stringID;
-@synthesize angle;
 @synthesize currentTool, currentToolRight;
 @synthesize curImage;
 @synthesize theMatrix = matrix;
@@ -1119,19 +1114,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 - (void) blendingPropagate
 {
-//	if([stringID isEqualToString:@"OrthogonalMPRVIEW"] && blendingView)
-//	{
-//		[[self controller] blendingPropagate: self];
-//	}
-//	else 
 	if( blendingView )
 	{
-		if( [stringID isEqualToString:@"Original"] )
-		{
-			float fValue = self.scaleValue / self.pixelSpacing;
-			blendingView.scaleValue = fValue * blendingView.pixelSpacing;
-		}
-		else blendingView.scaleValue = scaleValue;
+		blendingView.scaleValue = scaleValue;
 		
 		blendingView.rotation = rotation;
 		[blendingView setOrigin: origin];
@@ -1878,7 +1863,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		[self loadTextures];
 		[self setNeedsDisplay:YES];
 		
-		if( [stringID isEqualToString:@"FinalView"] == YES || [stringID isEqualToString:@"OrthogonalMPRVIEW"]) [self blendingPropagate];
+		if( [stringID isEqualToString:@"OrthogonalMPRVIEW"]) [self blendingPropagate];
 
 		[yearOld release];
 		
@@ -2289,11 +2274,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 	if( [self windowController]  == [BrowserController currentBrowser]) { [super keyDown:event]; return;}
 	
-//	if([stringID isEqualToString:@"Perpendicular"] == YES || [stringID isEqualToString:@"Original"] == YES )
-//	{
-//		display2DMPRLines =!display2DMPRLines;
-//	}
-		
     if( dcmPixList)
     {
         short   inc, previmage = curImage;
@@ -2569,11 +2549,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			if( [self is2DViewer] == YES)
 				[[self windowController] adjustSlider];
 			
-			if( stringID)
-			{
-				if( [stringID isEqualToString:@"Perpendicular"]  || [stringID isEqualToString:@"Original"]  || [stringID isEqualToString:@"FinalView"] || [stringID isEqualToString:@"FinalViewBlending"])
-					[[self windowController] adjustSlider];
-			}
             // SYNCRO
 			[self sendSyncMessage:inc];
 			
@@ -2583,8 +2558,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		if( [self is2DViewer] == YES)
 			[[self windowController] propagateSettings];
 		
-		if( [stringID isEqualToString:@"FinalView"] == YES || [stringID isEqualToString:@"OrthogonalMPRVIEW"]) [self blendingPropagate];
-//		if( [stringID isEqualToString:@"Original"] == YES) [self blendingPropagate];
+		if( [stringID isEqualToString:@"OrthogonalMPRVIEW"]) [self blendingPropagate];
     }
 }
 
@@ -2843,24 +2817,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 		if( crossMove >= 0) tool = tCross;
 		
-		if( tool == tCross && ![self.stringID isEqualToString:@"OrthogonalMPRVIEW"])
-		{
-			[nc postNotificationName: @"crossMove" object: stringID userInfo: [NSDictionary dictionaryWithObject:@"mouseUp" forKey:@"action"]];
-		}
-		
-//		if ([[self stringID] isEqualToString:@"OrthogonalMPRVIEW"])
-//		{
-//			[[self controller] propa];
-//			NSPoint     eventLocation = [event locationInWindow];
-//			NSRect size = [self frame];
-//			eventLocation = [self convertPoint:eventLocation fromView: self];
-//			eventLocation = [self convertPoint:eventLocation fromView: nil];
-//			eventLocation = [self ConvertFromNSView2GL:eventLocation];
-//
-//			[self setCrossPosition:(float)eventLocation.x : (float)eventLocation.y];
-//			[self setNeedsDisplay:YES];
-//		}
-		
 		if( tool == tWL || tool == tWLBlended)
 		{
 			if( [self is2DViewer] == YES)
@@ -2869,14 +2825,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				[self reapplyWindowLevel];
 				[self loadTextures];
 				[self setNeedsDisplay:YES];
-			}
-			
-			if( stringID)
-			{
-				if( [stringID isEqualToString:@"Perpendicular"]  || [stringID isEqualToString:@"Original"] || [stringID isEqualToString:@"FinalView"] || [stringID isEqualToString:@"FinalViewBlending"])
-				{
-					[[[self windowController] MPR2Dview] adjustWLWW: curWL :curWW :@"set"];
-				}
 			}
 		}
 		
@@ -3332,51 +3280,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 		if( needUpdate) [self setNeedsDisplay: YES];
 		
-		if( stringID)
-		{
-			if( [stringID isEqualToString:@"Perpendicular"] || [stringID isEqualToString:@"Original"]  || [stringID isEqualToString:@"FinalView"] || [stringID isEqualToString:@"FinalViewBlending"])
-			{
-				NSView* view = [[[theEvent window] contentView] hitTest:[theEvent locationInWindow]];
-				
-				if( view == self)
-				{
-					if( cross.x != -9999 && cross.y != -9999)
-					{
-						NSPoint tempPt = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-						tempPt = [self ConvertFromNSView2GL:tempPt];
-						
-						if( tempPt.x > cross.x - BS/scaleValue && tempPt.x < cross.x + BS/scaleValue && tempPt.y > cross.y - BS/scaleValue && tempPt.y < cross.y + BS/scaleValue)	//&& [stringID isEqualToString:@"Original"] 
-						{
-							if( [theEvent type] == NSLeftMouseDragged || [theEvent type] == NSLeftMouseDown) [[NSCursor closedHandCursor] set];
-							else [[NSCursor openHandCursor] set];
-						}
-						else
-						{
-							// TESTE SUR LA LIGNE !!!
-							float		distance;
-							NSPoint		cross1 = cross, cross2 = cross;
-							
-							cross1.x -=  1000*mprVector[ 0];
-							cross1.y -=  1000*mprVector[ 1];
-
-							cross2.x +=  1000*mprVector[ 0];
-							cross2.y +=  1000*mprVector[ 1];
-							
-							[DCMView DistancePointLine:tempPt :cross1 :cross2 :&distance];
-							
-							if( distance * scaleValue < 10)
-							{
-								if( [theEvent type] == NSLeftMouseDragged || [theEvent type] == NSLeftMouseDown) [[NSCursor closedHandCursor] set];
-								else [[NSCursor openHandCursor] set];
-							}
-							else [cursor set];
-						}
-					}
-				}
-				else [view mouseMoved:theEvent];
-			}
-		}
-		
 		// Are we near a ROI point?
 		if( [self roiTool: currentTool])
 		{
@@ -3594,39 +3497,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			}
 		}
 		
-		if( cross.x != -9999 && cross.y != -9999)
-		{
-			NSPoint tempPt = [self convertPoint:eventLocation fromView: nil];
-			tempPt = [self ConvertFromNSView2GL:tempPt];
-			if( tempPt.x > cross.x - BS/scaleValue && tempPt.x < cross.x + BS/scaleValue && tempPt.y > cross.y - BS/scaleValue && tempPt.y < cross.y + BS/scaleValue)	//&& [stringID isEqualToString:@"Original"] 
-			{
-				crossMove = 1;
-			}
-			else
-			{
-				// TESTE SUR LA LIGNE !!!
-				float		distance;
-				NSPoint		cross1 = cross, cross2 = cross;
-				
-				cross1.x -=  1000*mprVector[ 0];
-				cross1.y -=  1000*mprVector[ 1];
-
-				cross2.x +=  1000*mprVector[ 0];
-				cross2.y +=  1000*mprVector[ 1];
-				
-				[DCMView DistancePointLine:tempPt :cross1 :cross2 :&distance];
-				
-			//	NSLog( @"Dist:%0.0f / %0.0f_%0.0f", distance, tempPt.x, tempPt.y);
-				
-				if( distance * scaleValue < 10 )
-				{
-					crossMove = 0;
-					switchAngle = -1;
-				}
-				else crossMove = -1;
-			}
-		}
-		else crossMove = -1;
+		crossMove = -1;
 		
 		if( tool == tRotate)
 		{
@@ -4181,10 +4052,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		{
 			[super scrollWheel: theEvent];
 		}
-		else if( [stringID isEqualToString:@"FinalView"] || [stringID isEqualToString:@"Perpendicular"] )
-		{
-			[super scrollWheel: theEvent];
-		}
 		else
 		{
 			if( fabs( [theEvent deltaY]) * 2.0f >  fabs( deltaX) )
@@ -4284,8 +4151,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				if( [self is2DViewer] == YES)
 					[[self windowController] propagateSettings];
 				
-				if( [stringID isEqualToString:@"FinalView"] == YES || [stringID isEqualToString:@"OrthogonalMPRVIEW"]) [self blendingPropagate];
-		//		if( [stringID isEqualToString:@"Original"] == YES) [self blendingPropagate];
+				if( [stringID isEqualToString:@"OrthogonalMPRVIEW"]) [self blendingPropagate];
 				
 				[self setNeedsDisplay:YES];
 			}
@@ -4348,12 +4214,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			
 			if( [self is2DViewer] == YES)
 				[[self windowController] adjustSlider];    //mouseDown:theEvent];
-				
-			if( stringID)
-			{
-				if( [stringID isEqualToString: @"Perpendicular"] || [stringID isEqualToString:@"Original"]  || [stringID isEqualToString:@"FinalView"] || [stringID isEqualToString:@"FinalViewBlending"])
-					[[self windowController] adjustSlider];
-			}
 			
 			// SYNCRO
 			[self sendSyncMessage:inc];
@@ -4361,7 +4221,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			if( [self is2DViewer] == YES)
 				[[self windowController] propagateSettings];
 			
-			if( [stringID isEqualToString:@"FinalView"] == YES || [stringID isEqualToString:@"OrthogonalMPRVIEW"]) [self blendingPropagate];
+			if( [stringID isEqualToString:@"OrthogonalMPRVIEW"]) [self blendingPropagate];
 			
 			[self setNeedsDisplay:YES];
 		}
@@ -4573,8 +4433,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		if( [self is2DViewer] == YES)
 			[[self windowController] propagateSettings];
 		
-		if( [stringID isEqualToString:@"FinalView"] == YES || [stringID isEqualToString:@"OrthogonalMPRVIEW"]) [self blendingPropagate];
-//		if( [stringID isEqualToString:@"Original"] == YES) [self blendingPropagate];
+		if( [stringID isEqualToString:@"OrthogonalMPRVIEW"]) [self blendingPropagate];
 
 		[drawLock unlock];
     }
@@ -4716,55 +4575,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 - (void)mouseDraggedCrosshair:(NSEvent *)event
 {
-	//Moved OrthogonalMPRView specific code to that class
-	NSPoint   eventLocation = [event locationInWindow];
-	//if( ![[self stringID] isEqualToString:@"OrthogonalMPRVIEW"])
-	//{
-		crossPrev = cross;
-		
-		if( crossMove)
-		{
-			NSPoint tempPt = [self convertPoint:eventLocation fromView: nil];
-			cross = [self ConvertFromNSView2GL:tempPt];
-		}
-		else
-		{
-			float newAngle;
-			
-			NSPoint tempPt = [self convertPoint:eventLocation fromView: nil];
-			tempPt = [self ConvertFromNSView2GL:tempPt];
-			
-			tempPt.x -= cross.x;
-			tempPt.y -= cross.y;
-			
-			if( tempPt.y < 0) newAngle = 180 + atan( (float) tempPt.x / (float) tempPt.y) / deg2rad;
-			else newAngle = atan( (float) tempPt.x / (float) tempPt.y) / deg2rad;
-			newAngle += 90;
-			newAngle = 360 - newAngle;
-			
-			if( switchAngle == -1)
-			{
-				if( fabs( newAngle - angle) > 90 && fabs( newAngle - angle) < 270)
-				{
-					switchAngle = 1;
-				}
-				else switchAngle = 0;
-			}
-			
-			if( switchAngle == 1)
-			{
-				newAngle -= 180;
-				if( newAngle < 0) newAngle += 360;
-			}
-			
-			[self setMPRAngle: newAngle];
-		}
-		
-		[self mouseMoved: event];	// Update some variables...
-		
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"crossMove" object:stringID userInfo: [NSDictionary dictionaryWithObject:@"dragged" forKey:@"action"]];
-	//}
-
 }
 
 
@@ -5020,14 +4830,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		}
 		
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: [DCMView findWLWWPreset: curWL :curWW :curDCM] userInfo: nil];
-		// Probably can move this to the end of MPRPreview after calling the super 
-		if( stringID)
-		{
-			if( [stringID isEqualToString:@"Perpendicular"] || [stringID isEqualToString:@"FinalView"] || [stringID isEqualToString:@"Original"] || [stringID isEqualToString:@"FinalViewBlending"])
-			{
-				[[[self windowController] MPR2Dview] adjustWLWW: curWL :curWW :@"dragged"];
-			}
-		}
 		
 		[self setWLWW:curWL :curWW];
 	}
@@ -5689,7 +5491,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	mprVector[ 1] = 0;
 	crossMove = -1;
 	previousViewSize.height = previousViewSize.width = 0;
-	slab = 0;
 	cursor = [[NSCursor contrastCursor] retain];
 	syncRelativeDiff = 0;
 	volumicSeries = YES;
@@ -5827,8 +5628,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"changeGLFontNotification" object: self];
 	
     currentTool =  [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULTLEFTTOOL"];
-    
-	cross.x = cross.y = -9999;
 	
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowWillClose:) name: NSWindowWillCloseNotification object: nil];
 	
@@ -6039,18 +5838,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	{
 		int prevImage = curImage;
 		
-	//	if( stringID)
-	//	{
-	//		if( [stringID isEqualToString:@"Original"]) stringOK = YES;
-	//	}
-	//	
-	//	if( [[note object] stringID])
-	//	{
-	//		if( [[[note object] stringID] isEqualToString:@"Original"]) stringOK = YES;
-	//	}
-	//	
-	//	if( stringID == nil && [[note object] stringID] == nil) stringOK = YES;
-		
 		if( [self is2DViewer] == YES)
 		{
 			if( [[self windowController] windowWillClose])
@@ -6060,7 +5847,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		if( avoidRecursiveSync > 2) return;
 		avoidRecursiveSync++;
 		
-		if( [note object] != self && isKeyView == YES && matrix == 0 && stringID == nil && [[note object] stringID] == nil && curImage > -1 )   //|| [[[note object] stringID] isEqualToString:@"Original"] == YES))   // Dont change the browser preview....
+		if( [note object] != self && isKeyView == YES && matrix == 0 && stringID == nil && [[note object] stringID] == nil && curImage > -1 )    // Dont change the browser preview....
 		{
 			NSDictionary *instructions = [note userInfo];
 			
@@ -6491,69 +6278,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	}
 }
 
--(void) setCrossCoordinatesPer:(float) val
-{
-	cross.x -= val*cos(angle);
-	cross.y -= val*sin(angle);
-	
-	[self setNeedsDisplay: YES];
-}
-
--(void) getCrossCoordinates:(float*) x: (float*) y
-{
-	*x = cross.x;
-	*y = -cross.y;
-}
-
--(void) setCrossCoordinates:(float) x :(float) y :(BOOL) update
-{
-	cross.x =  x;
-	cross.y = -y;
-	
-	[self setNeedsDisplay: YES];
-	
-	if( update)
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"crossMove" object: stringID userInfo: [NSDictionary dictionaryWithObject:@"set" forKey:@"action"]];
-}
-
--(void) setCross:(long) x :(long) y :(BOOL) update
-{
-	NSRect      size = [self frame];
-    
-	cross.x = x + size.size.width/2;
-	cross.y = y + size.size.height/2;
-	
-	cross = [self ConvertFromNSView2GL:cross];
-	
-	[self setNeedsDisplay:true];
-	
-	if( update)
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"crossMove" object: stringID userInfo: [NSDictionary dictionaryWithObject:@"set" forKey:@"action"]];
-}
-
-- (float) MPRAngle
-{
-	return angle;
-}
-
--(void) setMPRAngle: (float) vectorMPR
-{
-	angle = vectorMPR;
-	mprVector[ 0] = cos(vectorMPR*deg2rad);
-	mprVector[ 1] = sin(vectorMPR*deg2rad);
-				
-	[self setNeedsDisplay:true];
-}
-
--(void) cross3D:(float*) x :(float*) y :(float*) z 
-{
-	NSPoint cPt = cross;
-
-	if( x) *x = cPt.x * [[dcmPixList objectAtIndex:0] pixelSpacingX];
-	if( y) *y = cPt.y * [[dcmPixList objectAtIndex:0] pixelSpacingY];
-	if( z) *z = curImage;
-}
-
 - (NSPoint) convertFromNSView2iChat: (NSPoint) a
 {
 	//inverse Y scaling system
@@ -6816,12 +6540,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	}
 	
 	strcpy( orientation, [optr UTF8String]);
-}
-
--(void) setSlab:(float)s
-{
-	slab = s;
-	[self setNeedsDisplay:true];
 }
 
 // Copyright 2001, softSurfer (www.softsurfer.com)
@@ -7281,7 +6999,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						{
 							useStringTexture = NO;
 							
-							if( stringID == nil || [stringID isEqualToString:@"OrthogonalMPRVIEW"] || [stringID isEqualToString:@"FinalView"])
+							if( stringID == nil || [stringID isEqualToString:@"OrthogonalMPRVIEW"])
 							{
 								if( mouseXPos != 0 || mouseYPos != 0)
 								{
@@ -7667,125 +7385,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				NSLog( @"blendingTextureName == nil");
 			
 			glDisable( GL_BLEND);
-		}
-		
-		//** SLICE CUT FOR 2D MPR
-		if( cross.x != -9999 && cross.y != -9999 && display2DMPRLines == YES)
-		{
-			glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-			glEnable(GL_BLEND);
-			glEnable(GL_POINT_SMOOTH);
-			glEnable(GL_LINE_SMOOTH);
-			glEnable(GL_POLYGON_SMOOTH);
-			
-			if(( mprVector[ 0] != 0 || mprVector[ 1] != 0))
-			{
-				float tvec[ 2];
-					
-				tvec[ 0] = cos((angle+90)*deg2rad);
-				tvec[ 1] = sin((angle+90)*deg2rad);
-
-				glColor3f (0.0f, 0.0f, 1.0f);
-				
-				// Thick Slab
-				if( slab > 1)
-				{
-					float crossx, crossy;
-					float slabx, slaby;
-
-					glLineWidth(1.0);
-					glBegin(GL_LINES);
-					
-					crossx = cross.x-curDCM.pwidth/2.;
-					crossy = cross.y-curDCM.pheight/2.;
-					
-					slabx = (slab/2.)/ curDCM.pixelSpacingX * tvec[ 0];
-					slaby = (slab/2.)/ curDCM.pixelSpacingY * tvec[ 1];
-					
-					glVertex2f( scaleValue * (crossx - 1000*mprVector[ 0] - slabx), scaleValue*(crossy - 1000*mprVector[ 1] - slaby));
-					glVertex2f( scaleValue * (crossx + 1000*mprVector[ 0] - slabx), scaleValue*(crossy + 1000*mprVector[ 1] - slaby));
-
-					glVertex2f( scaleValue*(crossx - 1000*mprVector[ 0]), scaleValue*(crossy - 1000*mprVector[ 1]));
-					glVertex2f( scaleValue*(crossx + 1000*mprVector[ 0]), scaleValue*(crossy + 1000*mprVector[ 1]));
-
-					glVertex2f( scaleValue*(crossx - 1000*mprVector[ 0] + slabx), scaleValue*(crossy - 1000*mprVector[ 1] + slaby));
-					glVertex2f( scaleValue*(crossx + 1000*mprVector[ 0] + slabx), scaleValue*(crossy + 1000*mprVector[ 1] + slaby));
-				}
-				else
-				{
-					glLineWidth(2.0);
-					glBegin(GL_LINES);
-
-					float crossx = cross.x-curDCM.pwidth/2.;
-					float crossy = cross.y-curDCM.pheight/2.;
-					
-					glVertex2f( scaleValue*(crossx - 1000*mprVector[ 0]), scaleValue*(crossy - 1000*mprVector[ 1]));
-					glVertex2f( scaleValue*(crossx + 1000*mprVector[ 0]), scaleValue*(crossy + 1000*mprVector[ 1]));
-				}
-				glEnd();
-				
-				if( [stringID isEqualToString:@"Original"])
-				{
-					glColor3f (1.0f, 0.0f, 0.0f);
-					glLineWidth(1.0);
-					glBegin(GL_LINES);
-						glVertex2f( scaleValue*(cross.x-curDCM.pwidth/2. - 1000*tvec[ 0]), scaleValue*(cross.y-curDCM.pheight/2. - 1000*tvec[ 1]));
-						glVertex2f( scaleValue*(cross.x-curDCM.pwidth/2. + 1000*tvec[ 0]), scaleValue*(cross.y-curDCM.pheight/2. + 1000*tvec[ 1]));
-					glEnd();
-				}
-			}
-
-			NSPoint crossB = cross;
-
-			crossB.x -= curDCM.pwidth/2.;
-			crossB.y -= curDCM.pheight/2.;
-			
-			crossB.x *=scaleValue;
-			crossB.y *=scaleValue;
-			
-			glColor3f (1.0f, 0.0f, 0.0f);
-			
-	//		if( [stringID isEqualToString:@"Perpendicular"])
-	//		{
-	//			glLineWidth(2.0);
-	//			glBegin(GL_LINES);
-	//				glVertex2f( crossB.x-BS, crossB.y);
-	//				glVertex2f(  crossB.x+BS, crossB.y);
-	//				
-	//				glVertex2f( crossB.x, crossB.y-BS);
-	//				glVertex2f(  crossB.x, crossB.y+BS);
-	//			glEnd();
-	//		}
-	//		else
-			{
-				glLineWidth(2.0);
-//					glBegin(GL_LINE_LOOP);
-//						glVertex2f( crossB.x-BS, crossB.y-BS);
-//						glVertex2f( crossB.x+BS, crossB.y-BS);
-//						glVertex2f( crossB.x+BS, crossB.y+BS);
-//						glVertex2f( crossB.x-BS, crossB.y+BS);
-//						glVertex2f( crossB.x-BS, crossB.y-BS);
-//					glEnd();
-				
-				glBegin(GL_LINE_LOOP);
-				
-				#define CIRCLERESOLUTION 20
-				for( long i = 0; i < CIRCLERESOLUTION ; i++ )
-				{
-				  float alpha = i * 2 * M_PI /CIRCLERESOLUTION;
-				  glVertex2f( crossB.x + BS*cos(alpha), crossB.y + BS*sin(alpha)/curDCM.pixelRatio);
-				}
-
-				glEnd();
-			}
-			glLineWidth(1.0);
-			
-			glColor3f (0.0f, 0.0f, 0.0f);
-			
-			glDisable(GL_LINE_SMOOTH);
-			glDisable(GL_POLYGON_SMOOTH);
-			glDisable(GL_POINT_SMOOTH);
-			glDisable(GL_BLEND);
 		}
 		
 		if( [self is2DViewer])
@@ -8614,8 +8213,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						[[self windowController] propagateSettings];
 				}
 				
-				if( [stringID isEqualToString:@"FinalView"] == YES || [stringID isEqualToString:@"OrthogonalMPRVIEW"]) [self blendingPropagate];
-				if( [stringID isEqualToString:@"Original"] == YES) [self blendingPropagate];
+				if( [stringID isEqualToString:@"OrthogonalMPRVIEW"]) [self blendingPropagate];
 				
 				previousViewSize = rect.size;
 			}
@@ -8674,9 +8272,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						[[self windowController] propagateSettings];
 				}
 				
-				if( [stringID isEqualToString:@"FinalView"] == YES || [stringID isEqualToString:@"OrthogonalMPRVIEW"]) [self blendingPropagate];
-				
-				if( [stringID isEqualToString:@"Original"] == YES) [self blendingPropagate];
+				if( [stringID isEqualToString:@"OrthogonalMPRVIEW"]) [self blendingPropagate];
 			}
 			else previousViewSize = rect.size;
 		}
@@ -8802,8 +8398,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	if( isSigned) *isSigned = NO;
 	if( offset) *offset = 0;
 	
-	if( [self class] == [MPRPreviewView class] ||
-		[self class] == [OrthogonalMPRPETCTView class] ||
+	if( [self class] == [OrthogonalMPRPETCTView class] ||
 		[self class] == [OrthogonalMPRView class]) allowSmartCropping = NO;	// <- MPR 2D, Ortho MPR
 	
 	if( screenCapture)	// Pixels displayed in current window
@@ -9242,7 +8837,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	return buf;
 }
 
-- (NSDictionary*) exportDCMCurrentImage: (DICOMExport*) exportDCM
+- (NSDictionary*) exportDCMCurrentImage: (DICOMExport*) exportDCM size:(int) size
 {
 	NSString *sopuid = nil;
 	NSString *f = nil;
@@ -9253,10 +8848,93 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	long clutBarsCopy = [[NSUserDefaults standardUserDefaults] integerForKey: @"CLUTBARS"];
 	[DCMView setCLUTBARS: barHide ANNOTATIONS: annotGraphics];
 	
-	unsigned char *data = [self getRawPixelsViewWidth: &width height: &height spp: &spp bpp: &bpp screenCapture: YES force8bits: YES removeGraphical: YES squarePixels: YES allowSmartCropping: YES origin: imOrigin spacing: imSpacing offset: nil isSigned: nil];
+	unsigned char *data = [self getRawPixelsViewWidth: &width height: &height spp: &spp bpp: &bpp screenCapture: YES force8bits: YES removeGraphical: YES squarePixels: YES allowSmartCropping: NO origin: imOrigin spacing: imSpacing offset: nil isSigned: nil];
 	
 	if( data)
 	{
+		if( size)
+		{
+			if( spp != 3)
+				NSLog( @"********* spp != 3 I'll NOT resize");
+			else
+			{
+				unsigned char *cropData;
+				int cropHeight, cropWidth;
+				float rescale = 0;
+				NSPoint croppedOrigin;
+				
+				if( width > height)
+				{
+					rescale = (float) size / (float) height;
+					cropHeight = height;
+					cropWidth = height;
+				}
+				else
+				{
+					rescale = (float) size / (float) width;
+					cropHeight = width;
+					cropWidth = width;
+				}
+				
+				croppedOrigin = NSMakePoint( ((width-cropWidth)/2.), ((height - cropHeight)/2.));
+				
+				cropData = data + spp*((width-cropWidth)/2) + spp*((height - cropHeight)/2)*width;
+				
+				// resize the data
+				
+				vImage_Buffer src, dest;
+				
+				src.data = cropData;
+				src.rowBytes = width * spp;
+				src.height = cropHeight;
+				src.width = cropWidth;
+				
+				dest.data = malloc( size*size*spp);
+				dest.rowBytes = size*spp;
+				dest.width = dest.height = size;
+				
+				if( dest.data)
+				{
+					vImage_Buffer	argbsrcVimage, argbdstVimage;
+				
+					argbsrcVimage = src;
+					argbsrcVimage.rowBytes =  src.width * 4;
+					argbsrcVimage.data = malloc( argbsrcVimage.rowBytes * argbsrcVimage.height);
+					
+					argbdstVimage = dest;
+					argbdstVimage.rowBytes =  dest.width * 4;
+					argbdstVimage.data = malloc( argbdstVimage.rowBytes * argbdstVimage.height);
+				
+					vImageConvert_RGB888toARGB8888( &src, nil, 0, &argbsrcVimage, 0, 0);
+					vImageScale_ARGB8888( &argbsrcVimage, &argbdstVimage, nil, kvImageHighQualityResampling);
+					vImageConvert_ARGB8888toRGB888( &argbdstVimage, &dest, 0);
+					
+					free( argbsrcVimage.data);
+					free( argbdstVimage.data);
+					
+					free( data);
+					
+					data = dest.data;
+					width = size;
+					height = size;
+					
+					// correct the spacing & origin
+					
+					if( imOrigin)
+					{
+						NSPoint tempPt = [self ConvertFromUpLeftView2GL: croppedOrigin];
+						[curDCM convertPixX: tempPt.x pixY: tempPt.y toDICOMCoords: imOrigin pixelCenter: YES];
+					}
+					
+					if( imSpacing)
+					{
+						imSpacing[ 0] /= rescale;
+						imSpacing[ 1] /= rescale;
+					}
+				}
+			}
+		}
+		
 		[exportDCM setSourceFile: [[self imageObj] valueForKey:@"completePath"]];
 		
 		float thickness, location;
@@ -10373,26 +10051,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	return texture;
 }
 
-- (void) sliderAction2DMPR:(id) sender
-{
-    BOOL	lowRes = NO;
-
-	if( [[[NSApplication sharedApplication] currentEvent] type] == NSLeftMouseDragged) lowRes = YES;
-	
-	if( flippedData) curImage = [dcmPixList count] -1 -[sender intValue];
-	else  curImage = [sender intValue];
-	
-	if( curImage < 0) curImage = 0;
-	if( curImage >= [dcmPixList count]) curImage = [dcmPixList count]-1;
-	
-	[self setIndex:curImage];
-	
-//	[self sendSyncMessage:curImage - x];
-	
-	if( lowRes) [[NSNotificationCenter defaultCenter] postNotificationName: @"crossMove" object:stringID userInfo:  [NSDictionary dictionaryWithObject:@"dragged" forKey:@"action"]];
-	else [[NSNotificationCenter defaultCenter] postNotificationName: @"crossMove" object:stringID userInfo:  [NSDictionary dictionaryWithObject:@"slider" forKey:@"action"]];
-}
-
 - (IBAction) sliderRGBFactor:(id) sender
 {
 	switch( [sender tag])
@@ -10424,8 +10082,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		[[self windowController] propagateSettings];
 		[[self windowController] adjustKeyImage];
 	}
-			
-	if( [stringID isEqualToString:@"FinalView"] == YES) [self blendingPropagate];
 }
 
 - (void) increaseFontSize:(id) sender
@@ -10904,8 +10560,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			[[self windowController] propagateSettings];
 	}
 	
-	if( [stringID isEqualToString:@"FinalView"] == YES || [stringID isEqualToString:@"OrthogonalMPRVIEW"]) [self blendingPropagate];
-	if( [stringID isEqualToString:@"Original"] == YES) [self blendingPropagate];
+	if( [stringID isEqualToString:@"OrthogonalMPRVIEW"]) [self blendingPropagate];
 }
 
 - (IBAction)scaleToFit:(id)sender
@@ -10920,8 +10575,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			[[self windowController] propagateSettings];
 	}
 	
-	if( [stringID isEqualToString:@"FinalView"] == YES || [stringID isEqualToString:@"OrthogonalMPRVIEW"]) [self blendingPropagate];
-	if( [stringID isEqualToString:@"Original"] == YES) [self blendingPropagate];
+	if( [stringID isEqualToString:@"OrthogonalMPRVIEW"]) [self blendingPropagate];
 }
 
 //Database links
@@ -11208,12 +10862,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 - (void)subDrawRect: (NSRect)aRect {  // Subclassable, default does nothing.
 	return;
 }
-
-+ (BOOL) display2DMPRLines
-{
-	return display2DMPRLines;
-}
-
 
 #pragma mark-  PET  Tables
 + (unsigned char*) PETredTable

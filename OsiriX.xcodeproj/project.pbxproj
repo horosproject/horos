@@ -564,10 +564,6 @@
 		AB3674C00BE0CEB1003634E6 /* HUDSliderTrackRight.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB36745F0BE0CEB1003634E6 /* HUDSliderTrackRight.tiff */; };
 		AB381AFF0ABE9F5100239326 /* OSIAutoroutingPreferencePane.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = AB381AE90ABE9F5100239326 /* OSIAutoroutingPreferencePane.prefPane */; };
 		AB3886AC0B2449CD00831F74 /* SagSmallOpposite.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB7598280AEE62CE005EE3A9 /* SagSmallOpposite.tif */; };
-		AB39177605EA75F600E29DD2 /* MPR2DController.h in Headers */ = {isa = PBXBuildFile; fileRef = AB39177205EA75F600E29DD2 /* MPR2DController.h */; };
-		AB39177705EA75F600E29DD2 /* MPR2DController.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB39177305EA75F600E29DD2 /* MPR2DController.mm */; };
-		AB39177805EA75F600E29DD2 /* MPR2DView.h in Headers */ = {isa = PBXBuildFile; fileRef = AB39177405EA75F600E29DD2 /* MPR2DView.h */; };
-		AB39177905EA75F600E29DD2 /* MPR2DView.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB39177505EA75F600E29DD2 /* MPR2DView.mm */; };
 		AB3F4A1F0672674000E61A6C /* Window3DController.h in Headers */ = {isa = PBXBuildFile; fileRef = AB3F4A1D0672674000E61A6C /* Window3DController.h */; };
 		AB3F4A200672674000E61A6C /* Window3DController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB3F4A1E0672674000E61A6C /* Window3DController.m */; };
 		AB46648D09A331DF005A2766 /* Report.icns in Resources */ = {isa = PBXBuildFile; fileRef = AB46648C09A331DF005A2766 /* Report.icns */; };
@@ -1556,10 +1552,6 @@
 		BF3F21C709CB8772002736A5 /* ditranst.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3BD509B6828100545F5E /* ditranst.h */; };
 		BF3F21C809CB8773002736A5 /* diutils.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3BD609B6828100545F5E /* diutils.cc */; };
 		BF3F21C909CB8773002736A5 /* diutils.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3BD709B6828100545F5E /* diutils.h */; };
-		BF3FA0C70BC6F3A300C254A4 /* MPRPerpendicularView.h in Headers */ = {isa = PBXBuildFile; fileRef = BF3FA0C10BC6F3A300C254A4 /* MPRPerpendicularView.h */; };
-		BF3FA0C80BC6F3A300C254A4 /* MPRPerpendicularView.m in Sources */ = {isa = PBXBuildFile; fileRef = BF3FA0C20BC6F3A300C254A4 /* MPRPerpendicularView.m */; };
-		BF3FA0D50BC6F40F00C254A4 /* MPRFinalView.h in Headers */ = {isa = PBXBuildFile; fileRef = BF3FA0CF0BC6F40F00C254A4 /* MPRFinalView.h */; };
-		BF3FA0D60BC6F40F00C254A4 /* MPRFinalView.m in Sources */ = {isa = PBXBuildFile; fileRef = BF3FA0D00BC6F40F00C254A4 /* MPRFinalView.m */; };
 		BF4108EA0B126C7800AAC648 /* DarkBox.h in Headers */ = {isa = PBXBuildFile; fileRef = BF4108E60B126C7800AAC648 /* DarkBox.h */; };
 		BF4108EB0B126C7800AAC648 /* DarkBox.m in Sources */ = {isa = PBXBuildFile; fileRef = BF4108E70B126C7800AAC648 /* DarkBox.m */; };
 		BF432BCD09E313EF00AC322E /* DCMTKQueryNode.h in Headers */ = {isa = PBXBuildFile; fileRef = BF432BC709E313EE00AC322E /* DCMTKQueryNode.h */; };
@@ -1850,8 +1842,6 @@
 		BF8E5AC109CA0D8200DE02FF /* DCMTKQueryRetrieveSCP.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF8E5ABD09CA0D8200DE02FF /* DCMTKQueryRetrieveSCP.mm */; };
 		BF90552209EB4985009C30D1 /* MoveManager.h in Headers */ = {isa = PBXBuildFile; fileRef = BF90551C09EB4985009C30D1 /* MoveManager.h */; };
 		BF90552309EB4985009C30D1 /* MoveManager.m in Sources */ = {isa = PBXBuildFile; fileRef = BF90551D09EB4985009C30D1 /* MoveManager.m */; };
-		BF919C4A0B447753002D91E7 /* MPRPreviewView.h in Headers */ = {isa = PBXBuildFile; fileRef = BF919C420B447752002D91E7 /* MPRPreviewView.h */; };
-		BF919C4B0B447753002D91E7 /* MPRPreviewView.m in Sources */ = {isa = PBXBuildFile; fileRef = BF919C430B447752002D91E7 /* MPRPreviewView.m */; };
 		BF9893BB09D351FF00D550EC /* DCMTKDataHandlerCategory.h in Headers */ = {isa = PBXBuildFile; fileRef = BF9893B509D351FF00D550EC /* DCMTKDataHandlerCategory.h */; };
 		BF9893BC09D351FF00D550EC /* DCMTKDataHandlerCategory.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF9893B609D351FF00D550EC /* DCMTKDataHandlerCategory.mm */; };
 		BF9999000A1E695800F50753 /* DCMTKPrintSCU.h in Headers */ = {isa = PBXBuildFile; fileRef = BF9998FE0A1E695800F50753 /* DCMTKPrintSCU.h */; };
@@ -4169,9 +4159,7 @@
 		CE3F99490C84724B00CB38F1 /* CenterlineSegmentation.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98EE0C84724B00CB38F1 /* CenterlineSegmentation.xib */; };
 		CE3F994A0C84724B00CB38F1 /* ToolbarPanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98F00C84724B00CB38F1 /* ToolbarPanel.xib */; };
 		CE3F994B0C84724B00CB38F1 /* KeyObjectReport.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98F20C84724B00CB38F1 /* KeyObjectReport.xib */; };
-		CE3F994C0C84724B00CB38F1 /* MSRGPanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98F40C84724B00CB38F1 /* MSRGPanel.xib */; };
 		CE3F994D0C84724B00CB38F1 /* PreferencePanesViewer.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98F60C84724B00CB38F1 /* PreferencePanesViewer.xib */; };
-		CE3F994E0C84724B00CB38F1 /* MPR2D.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98F80C84724B00CB38F1 /* MPR2D.xib */; };
 		CE3F99500C84724B00CB38F1 /* Splash.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98FC0C84724B00CB38F1 /* Splash.xib */; };
 		CE3F99510C84724B00CB38F1 /* ROI.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98FE0C84724B00CB38F1 /* ROI.xib */; };
 		CE3F99520C84724B00CB38F1 /* CalciumScoring.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99000C84724B00CB38F1 /* CalciumScoring.xib */; };
@@ -5757,10 +5745,6 @@
 		AB381AE90ABE9F5100239326 /* OSIAutoroutingPreferencePane.prefPane */ = {isa = PBXFileReference; lastKnownFileType = folder; name = OSIAutoroutingPreferencePane.prefPane; path = "Preference Panes/OSIAutoroutingPreferencePane/build/Development/OSIAutoroutingPreferencePane.prefPane"; sourceTree = "<group>"; };
 		AB381B020ABE9F9A00239326 /* OSIAutoroutingPreferencePane.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = OSIAutoroutingPreferencePane.xcodeproj; path = "Preference Panes/OSIAutoroutingPreferencePane/OSIAutoroutingPreferencePane.xcodeproj"; sourceTree = "<group>"; };
 		AB38FC99057A9B050041FEBB /* AGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AGL.framework; path = /System/Library/Frameworks/AGL.framework; sourceTree = "<absolute>"; };
-		AB39177205EA75F600E29DD2 /* MPR2DController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = MPR2DController.h; sourceTree = "<group>"; };
-		AB39177305EA75F600E29DD2 /* MPR2DController.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = MPR2DController.mm; sourceTree = "<group>"; };
-		AB39177405EA75F600E29DD2 /* MPR2DView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = MPR2DView.h; sourceTree = "<group>"; };
-		AB39177505EA75F600E29DD2 /* MPR2DView.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = MPR2DView.mm; sourceTree = "<group>"; };
 		AB3C6A8E057ADCA60001052D /* NSFont_OpenGL.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = NSFont_OpenGL.h; path = NSFont_OpenGL/NSFont_OpenGL.h; sourceTree = "<group>"; };
 		AB3C6A8F057ADCA60001052D /* NSFont_OpenGL.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = NSFont_OpenGL.m; path = NSFont_OpenGL/NSFont_OpenGL.m; sourceTree = "<group>"; };
 		AB3F4A1D0672674000E61A6C /* Window3DController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = Window3DController.h; sourceTree = "<group>"; };
@@ -6067,10 +6051,6 @@
 		BF398B8A065B124700AD1F25 /* InArrow.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = InArrow.tif; sourceTree = "<group>"; };
 		BF3BB37E067808D5004F6E91 /* DCMTransferSyntax.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMTransferSyntax.h; sourceTree = "<group>"; };
 		BF3BB37F067808D5004F6E91 /* DCMTransferSyntax.m */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = DCMTransferSyntax.m; sourceTree = "<group>"; };
-		BF3FA0C10BC6F3A300C254A4 /* MPRPerpendicularView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MPRPerpendicularView.h; sourceTree = "<group>"; };
-		BF3FA0C20BC6F3A300C254A4 /* MPRPerpendicularView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MPRPerpendicularView.m; sourceTree = "<group>"; };
-		BF3FA0CF0BC6F40F00C254A4 /* MPRFinalView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MPRFinalView.h; sourceTree = "<group>"; };
-		BF3FA0D00BC6F40F00C254A4 /* MPRFinalView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MPRFinalView.m; sourceTree = "<group>"; };
 		BF4108E60B126C7800AAC648 /* DarkBox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DarkBox.h; sourceTree = "<group>"; };
 		BF4108E70B126C7800AAC648 /* DarkBox.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DarkBox.m; sourceTree = "<group>"; };
 		BF432BC709E313EE00AC322E /* DCMTKQueryNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMTKQueryNode.h; sourceTree = "<group>"; };
@@ -6140,8 +6120,6 @@
 		BF8E5ABD09CA0D8200DE02FF /* DCMTKQueryRetrieveSCP.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DCMTKQueryRetrieveSCP.mm; sourceTree = "<group>"; };
 		BF90551C09EB4985009C30D1 /* MoveManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MoveManager.h; sourceTree = "<group>"; };
 		BF90551D09EB4985009C30D1 /* MoveManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MoveManager.m; sourceTree = "<group>"; };
-		BF919C420B447752002D91E7 /* MPRPreviewView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MPRPreviewView.h; sourceTree = "<group>"; };
-		BF919C430B447752002D91E7 /* MPRPreviewView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MPRPreviewView.m; sourceTree = "<group>"; };
 		BF9201E80883667800A3D77B /* OsiriXSCPDataHandler.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = OsiriXSCPDataHandler.h; sourceTree = "<group>"; };
 		BF9201E90883667800A3D77B /* OsiriXSCPDataHandler.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = OsiriXSCPDataHandler.m; sourceTree = "<group>"; };
 		BF9893B509D351FF00D550EC /* DCMTKDataHandlerCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMTKDataHandlerCategory.h; sourceTree = "<group>"; };
@@ -8974,9 +8952,7 @@
 		CE3F98EF0C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/CenterlineSegmentation.xib; sourceTree = "<group>"; };
 		CE3F98F10C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/ToolbarPanel.xib; sourceTree = "<group>"; };
 		CE3F98F30C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/KeyObjectReport.xib; sourceTree = "<group>"; };
-		CE3F98F50C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/MSRGPanel.xib; sourceTree = "<group>"; };
 		CE3F98F70C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/PreferencePanesViewer.xib; sourceTree = "<group>"; };
-		CE3F98F90C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/MPR2D.xib; sourceTree = "<group>"; };
 		CE3F98FD0C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/Splash.xib; sourceTree = "<group>"; };
 		CE3F98FF0C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/ROI.xib; sourceTree = "<group>"; };
 		CE3F99010C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/CalciumScoring.xib; sourceTree = "<group>"; };
@@ -9433,7 +9409,6 @@
 				AB8B8BDC05603E3A00CA4134 /* XML */,
 				CE3E19E80875710E007FFD6F /* ITK */,
 				CE3E695707AFB6A800541E20 /* Curved MPR */,
-				AB39177E05EA760100E29DD2 /* MPR 2D */,
 				AB2C25060677863100A08910 /* Plugins */,
 				AB154F8A0627414000BD57AF /* SR 3D */,
 				CE0E094306A108E000F2C01C /* ThickSlabVR */,
@@ -9617,8 +9592,6 @@
 				A9C4D9450F72987900B5B9A1 /* Loupe.xib */,
 				CE3F99380C84724B00CB38F1 /* MainMenu.xib */,
 				A9333D380F56E9670097DAB7 /* MPR.xib */,
-				CE3F98F80C84724B00CB38F1 /* MPR2D.xib */,
-				CE3F98F40C84724B00CB38F1 /* MSRGPanel.xib */,
 				A987B3DF0D5A069200BF89C0 /* Navigator.xib */,
 				CE3F99060C84724B00CB38F1 /* OrthogonalMPR.xib */,
 				CE3F99260C84724B00CB38F1 /* PaletteBrush.xib */,
@@ -10284,23 +10257,6 @@
 				AB381B070ABE9F9A00239326 /* OSIAutoroutingPreferencePane.prefPane */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		AB39177E05EA760100E29DD2 /* MPR 2D */ = {
-			isa = PBXGroup;
-			children = (
-				AB39177205EA75F600E29DD2 /* MPR2DController.h */,
-				AB39177305EA75F600E29DD2 /* MPR2DController.mm */,
-				AB39177405EA75F600E29DD2 /* MPR2DView.h */,
-				AB39177505EA75F600E29DD2 /* MPR2DView.mm */,
-				BF919C420B447752002D91E7 /* MPRPreviewView.h */,
-				BF919C430B447752002D91E7 /* MPRPreviewView.m */,
-				BF3FA0C10BC6F3A300C254A4 /* MPRPerpendicularView.h */,
-				BF3FA0C20BC6F3A300C254A4 /* MPRPerpendicularView.m */,
-				BF3FA0CF0BC6F40F00C254A4 /* MPRFinalView.h */,
-				BF3FA0D00BC6F40F00C254A4 /* MPRFinalView.m */,
-			);
-			name = "MPR 2D";
 			sourceTree = "<group>";
 		};
 		AB6AC6650624AC5C00AFC7AF /* VR/MIP 3D */ = {
@@ -14532,8 +14488,6 @@
 				AB28B90405B79D3B00A9906C /* DCMView.h in Headers */,
 				AB0CA46105BE159500F52729 /* ColorTransferView.h in Headers */,
 				ABB218B905CF1E9300D8B619 /* WaitRendering.h in Headers */,
-				AB39177605EA75F600E29DD2 /* MPR2DController.h in Headers */,
-				AB39177805EA75F600E29DD2 /* MPR2DView.h in Headers */,
 				AB7D0BB50615F94D00890872 /* ROI.h in Headers */,
 				AB1CB35C0618A37E00CD966B /* MyPoint.h in Headers */,
 				ABD1A8700619E68B00C5B670 /* ROIWindow.h in Headers */,
@@ -15225,14 +15179,11 @@
 				CEEA84AC0B345F9800BBE4B1 /* SimplePing.h in Headers */,
 				CEBED2F30B4050FD00A6731E /* DOClient.h in Headers */,
 				CEBED2F40B4050FD00A6731E /* DOServer.h in Headers */,
-				BF919C4A0B447753002D91E7 /* MPRPreviewView.h in Headers */,
 				B78490FB0B4BE86400BA93EF /* MenuDictionary.h in Headers */,
 				A9F8A4180B5F6460002CC763 /* CLUTOpacityView.h in Headers */,
 				CE28086B0B6B76730093E9D3 /* CalciumScoringWindowController.h in Headers */,
 				A90202BE0B980CD60001A00B /* PluginManagerController.h in Headers */,
 				A94469E30BA7FFE7008643E5 /* BLAuthentication.h in Headers */,
-				BF3FA0C70BC6F3A300C254A4 /* MPRPerpendicularView.h in Headers */,
-				BF3FA0D50BC6F40F00C254A4 /* MPRFinalView.h in Headers */,
 				BFF97D710BDE8BE6008333CF /* ShadingArrayController.h in Headers */,
 				BFBBF2120BE28E320064E449 /* EndoscopySegmentationController.h in Headers */,
 				CE96D0E30BEE6F9800C4E397 /* XMLControllerDCMTKCategory.h in Headers */,
@@ -17676,9 +17627,7 @@
 				CE3F99490C84724B00CB38F1 /* CenterlineSegmentation.xib in Resources */,
 				CE3F994A0C84724B00CB38F1 /* ToolbarPanel.xib in Resources */,
 				CE3F994B0C84724B00CB38F1 /* KeyObjectReport.xib in Resources */,
-				CE3F994C0C84724B00CB38F1 /* MSRGPanel.xib in Resources */,
 				CE3F994D0C84724B00CB38F1 /* PreferencePanesViewer.xib in Resources */,
-				CE3F994E0C84724B00CB38F1 /* MPR2D.xib in Resources */,
 				CE3F99500C84724B00CB38F1 /* Splash.xib in Resources */,
 				CE3F99510C84724B00CB38F1 /* ROI.xib in Resources */,
 				CE3F99520C84724B00CB38F1 /* CalciumScoring.xib in Resources */,
@@ -18143,8 +18092,6 @@
 				AB28B90505B79D3F00A9906C /* main.m in Sources */,
 				AB0CA46205BE159500F52729 /* ColorTransferView.m in Sources */,
 				ABB218BA05CF1E9300D8B619 /* WaitRendering.m in Sources */,
-				AB39177705EA75F600E29DD2 /* MPR2DController.mm in Sources */,
-				AB39177905EA75F600E29DD2 /* MPR2DView.mm in Sources */,
 				AB7D0BB60615F94D00890872 /* ROI.m in Sources */,
 				AB1CB35D0618A37E00CD966B /* MyPoint.m in Sources */,
 				ABD1A8710619E68B00C5B670 /* ROIWindow.m in Sources */,
@@ -18822,14 +18769,11 @@
 				CEEA84AD0B345F9800BBE4B1 /* SimplePing.c in Sources */,
 				CEBED2F50B4050FD00A6731E /* DOClient.m in Sources */,
 				CEBED2F60B4050FD00A6731E /* DOServer.m in Sources */,
-				BF919C4B0B447753002D91E7 /* MPRPreviewView.m in Sources */,
 				B78490FC0B4BE86400BA93EF /* MenuDictionary.m in Sources */,
 				A9F8A4190B5F6460002CC763 /* CLUTOpacityView.mm in Sources */,
 				CE28086C0B6B76730093E9D3 /* CalciumScoringWindowController.m in Sources */,
 				A90202BF0B980CD60001A00B /* PluginManagerController.m in Sources */,
 				A94469E40BA7FFE7008643E5 /* BLAuthentication.m in Sources */,
-				BF3FA0C80BC6F3A300C254A4 /* MPRPerpendicularView.m in Sources */,
-				BF3FA0D60BC6F40F00C254A4 /* MPRFinalView.m in Sources */,
 				BFF97D720BDE8BE6008333CF /* ShadingArrayController.m in Sources */,
 				BFBBF2130BE28E320064E449 /* EndoscopySegmentationController.m in Sources */,
 				CE96D0E40BEE6F9800C4E397 /* XMLControllerDCMTKCategory.mm in Sources */,
@@ -19788,28 +19732,12 @@
 			name = KeyObjectReport.xib;
 			sourceTree = "<group>";
 		};
-		CE3F98F40C84724B00CB38F1 /* MSRGPanel.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				CE3F98F50C84724B00CB38F1 /* English */,
-			);
-			name = MSRGPanel.xib;
-			sourceTree = "<group>";
-		};
 		CE3F98F60C84724B00CB38F1 /* PreferencePanesViewer.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
 				CE3F98F70C84724B00CB38F1 /* English */,
 			);
 			name = PreferencePanesViewer.xib;
-			sourceTree = "<group>";
-		};
-		CE3F98F80C84724B00CB38F1 /* MPR2D.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				CE3F98F90C84724B00CB38F1 /* English */,
-			);
-			name = MPR2D.xib;
 			sourceTree = "<group>";
 		};
 		CE3F98FC0C84724B00CB38F1 /* Splash.xib */ = {

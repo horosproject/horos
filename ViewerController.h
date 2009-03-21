@@ -28,7 +28,6 @@
 @class DICOMExport;
 @class KeyObjectPopupController;
 @class VRController;
-@class MPR2DController;
 @class OrthogonalMPRViewer;
 @class OrthogonalMPRPETCTViewer;
 @class SRController;
@@ -666,7 +665,6 @@ enum
 //- (IBAction) MPRViewer:(id) sender;
 - (IBAction) VRVPROViewer:(id) sender;
 - (IBAction) VRViewer:(id) sender;
-- (IBAction) MPR2DViewer:(id) sender;
 - (IBAction) blendWindows:(id) sender;
 
 /** Action to open the OrthogonalMPRViewer */
@@ -778,7 +776,6 @@ enum
 - (void)setToolbarReportIconForItem:(NSToolbarItem *)item;
 - (void)updateReportToolbarIcon:(NSNotification *)note;
 - (IBAction) setOrientationTool:(id) sender;
-- (void)setOrientationToolFrom2DMPR:(id)sender;
 - (void) setWindowTitle:(id) sender;
 - (IBAction) printSlider:(id) sender;
 - (void) setConv:(short*) matrix :(short) size :(short) norm;
@@ -950,9 +947,6 @@ enum
 
 /** Returns the OrthogonalMPRPETCTViewer for this ViewerController; creating one if necessary */
 - (OrthogonalMPRPETCTViewer *)openOrthogonalMPRPETCTViewer;
-
-/** Returns the MPR2DController for this ViewerController; creating one if necessary */
-- (MPR2DController *)openMPR2DViewer;
 
 /** Returns the EndoscopyViewer for this ViewerController; creating one if necessary */
 - (EndoscopyViewer *)openEndoscopyViewer;

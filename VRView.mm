@@ -991,10 +991,7 @@ public:
 
 - (NSDictionary*) exportDCMCurrentImage
 {
-	if( renderingMode == 1 || renderingMode == 3)
-		return [self exportDCMCurrentImageIn16bit : YES];
-	else
-		return [self exportDCMCurrentImageIn16bit : NO];
+	return [self exportDCMCurrentImageIn16bit : YES];
 }
 
 - (NSDictionary*) exportDCMCurrentImageIn16bit: (BOOL) fullDepth
@@ -5989,11 +5986,7 @@ public:
 	BOOL fullDepthCapture = NO;
 	
 	if( force8bits == NO)
-	{
 		fullDepthCapture = YES;
-		if( renderingMode == 0)
-			NSLog( @"****** warning, you should not be here. 16-bit capture requires MIP mode");
-	}
 	
 	if( fullDepthCapture)
 	{
