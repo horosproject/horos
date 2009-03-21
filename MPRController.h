@@ -123,7 +123,7 @@
 - (void) addMoviePixList:(NSMutableArray*) pix :(NSData*) vData;
 - (void)updateToolbarItems;
 - (void)toogleAxisVisibility:(id) sender;
-
+- (BOOL) getMovieDataAvailable;
 - (void)Apply3DOpacityString:(NSString*)str;
 - (void)Apply2DOpacityString:(NSString*)str;
 

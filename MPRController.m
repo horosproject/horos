@@ -83,6 +83,8 @@ static float deg2rad = 3.14159265358979/180.0;
 	
 	self.displayCrossLines = YES;
 	self.displayMousePosition = YES;
+	self.maxMovieIndex = 0;
+	
 	[self updateToolbarItems];
 	
 	DCMPix *emptyPix = [self emptyPix: originalPix width: 100 height: 100];
@@ -621,7 +623,7 @@ static float deg2rad = 3.14159265358979/180.0;
 //	{
 //		NSMutableArray	*rois = [NSMutableArray array];
 //		
-//		for( int i = 0; i < maxMovieIndex; i++)
+//		for( int i = 0; i < maxMovieIndex+1; i++)
 //		{
 //			NSMutableArray *array = [NSMutableArray array];
 //			for( NSArray *ar in roiList[ i])
@@ -686,7 +688,7 @@ static float deg2rad = 3.14159265358979/180.0;
 //			
 //			int i, x, z;
 //			
-//			for( i = 0; i < maxMovieIndex; i++)
+//			for( i = 0; i < maxMovieIndex+1; i++)
 //			{
 //				for( x = 0; x < [roiList[ i] count] ; x++)
 //				{
@@ -697,7 +699,7 @@ static float deg2rad = 3.14159265358979/180.0;
 //				}
 //			}
 //			
-//			for( i = 0; i < maxMovieIndex; i++)
+//			for( i = 0; i < maxMovieIndex+1; i++)
 //			{
 //				NSArray *r = [rois objectAtIndex: i];
 //				
@@ -771,7 +773,26 @@ static float deg2rad = 3.14159265358979/180.0;
 
 #pragma mark LOD
 
-- (void)setLOD:(float)lod;
+- (void) bestRendering:(id) sender
+{
+	[hiddenVRView setLOD: 1.0];
+	
+	[mprView1 restoreCamera];
+	mprView1.camera.forceUpdate = YES;
+	[mprView1 updateViewMPR];
+	
+	[mprView2 restoreCamera];
+	mprView2.camera.forceUpdate = YES;
+	[mprView2 updateViewMPR];
+	
+	[mprView3 restoreCamera];
+	mprView3.camera.forceUpdate = YES;
+	[mprView3 updateViewMPR];
+	
+	[hiddenVRView setLOD: LOD];
+}
+
+- (void) setLOD: (float)lod;
 {
 	LOD = lod;
 	[hiddenVRView setLOD: lod];
@@ -786,7 +807,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	
 	[mprView3 restoreCamera];
 	mprView3.camera.forceUpdate = YES;
-	[mprView3 updateViewMPR];	
+	[mprView3 updateViewMPR];
 }
 
 #pragma mark Window Level / Window width
@@ -987,7 +1008,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	if(clippingRangeMode==0) //VR
 	{
 		int i, x;
-		for ( x = 0; x < maxMovieIndex; x++)
+		for ( x = 0; x < maxMovieIndex+1; x++)
 		{
 			for ( i = 0; i < [pixList[ x] count]; i ++) [[pixList[ x] objectAtIndex:i] setBlackIndex: 0];
 		}
@@ -1014,7 +1035,7 @@ static float deg2rad = 3.14159265358979/180.0;
 		else
 		{
 			int i, x;
-			for ( x = 0; x < maxMovieIndex; x++)
+			for ( x = 0; x < maxMovieIndex+1; x++)
 			{
 				for ( i = 0; i < [pixList[ x] count]; i ++) [[pixList[ x] objectAtIndex:i] setBlackIndex: 0];
 			}
@@ -1097,7 +1118,7 @@ static float deg2rad = 3.14159265358979/180.0;
 				}
 				
 				int x;
-				for ( x = 0; x < maxMovieIndex; x++)
+				for ( x = 0; x < maxMovieIndex+1; x++)
 				{
 					for ( i = 0; i < [pixList[ x] count]; i ++)
 					{
@@ -1445,6 +1466,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	[NSApp endSheet:dcmWindow returnCode:[sender tag]];
 	
 	Camera *c1, *c2, *c3;
+	int savedIndex = self.curMovieIndex;
 	
 	c1 = [[[mprView1 camera] copy] autorelease];
 	c2 = [[[mprView2 camera] copy] autorelease];
@@ -1499,16 +1521,21 @@ static float deg2rad = 3.14159265358979/180.0;
 		{
 			Wait *progress = [[Wait alloc] initWithString:NSLocalizedString(@"Creating a DICOM series", nil)];
 			[progress showWindow: self];
-			[[progress progress] setMaxValue: maxMovieIndex];
+			[[progress progress] setMaxValue: maxMovieIndex+1];
 			
 			curExportView.vrView.exportDCM = [[[DICOMExport alloc] init] autorelease];
 			[curExportView.vrView.exportDCM setSeriesDescription: self.dcmSeriesName];
 			[curExportView.vrView.exportDCM setSeriesNumber:8730 + [[NSCalendarDate date] minuteOfHour]  + [[NSCalendarDate date] secondOfMinute]];
 			
-			for( int i = 0; i < maxMovieIndex; i++)
+			for( int i = 0; i < maxMovieIndex+1; i++)
 			{
-				[self setCurMovieIndex: i];
+				self.curMovieIndex = i;
 				
+				[curExportView restoreCamera];
+				
+				if( self.dcmFormat) 
+					[curExportView.vrView setViewSizeToMatrix3DExport];
+			
 				if( self.dcmFormat) 
 					[producedFiles addObject: [curExportView.vrView exportDCMCurrentImage]];
 				else
@@ -1520,8 +1547,6 @@ static float deg2rad = 3.14159265358979/180.0;
 				[progress incrementBy: 1];
 				if( [progress aborted])
 					break;
-				
-				[curExportView.vrView resetAutorotate: self];
 			}
 			
 			[progress close];
@@ -1539,21 +1564,21 @@ static float deg2rad = 3.14159265358979/180.0;
 			
 			if( dcmSeriesMode == 1)
 			{
-				if( maxMovieIndex > 1)
+				if( maxMovieIndex > 0)
 				{
-					self.dcmNumberOfFrames /= maxMovieIndex;
-					self.dcmNumberOfFrames *= maxMovieIndex;
+					self.dcmNumberOfFrames /= maxMovieIndex+1;
+					self.dcmNumberOfFrames *= maxMovieIndex+1;
 				}
 				
 				[[progress progress] setMaxValue: self.dcmNumberOfFrames];
 				
 				for( int i = 0; i < self.dcmNumberOfFrames; i++)
 				{
-					if( maxMovieIndex > 1)
+					if( maxMovieIndex > 0)
 					{	
 						short movieIndex = i;
 				
-						while( movieIndex >= maxMovieIndex) movieIndex -= maxMovieIndex;
+						while( movieIndex > maxMovieIndex) movieIndex -= maxMovieIndex;
 						if( movieIndex < 0) movieIndex = 0;
 				
 						[self setCurMovieIndex: movieIndex];
@@ -1675,6 +1700,9 @@ static float deg2rad = 3.14159265358979/180.0;
 		
 		[[NSUserDefaults standardUserDefaults] setInteger: dcmMode forKey: @"lastMPRdcmExportMode"];
 		
+		if( dcmMode == 2)
+			self.curMovieIndex = savedIndex;
+		
 		mprView1.camera = c1;
 		mprView2.camera = c2;
 		mprView3.camera = c3;
@@ -1708,6 +1736,8 @@ static float deg2rad = 3.14159265358979/180.0;
 		self.dcmFormat = 1; // full depth
 	
 	self.dcmMode = [[NSUserDefaults standardUserDefaults] integerForKey: @"lastMPRdcmExportMode"];
+	if( [self getMovieDataAvailable] == NO && self.dcmMode == 2)
+		self.dcmMode = 1;
 }
 
 - (void) displayFromToSlices
@@ -1953,13 +1983,13 @@ static float deg2rad = 3.14159265358979/180.0;
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector( exportDICOMFile:)];
     }
-	else if ([itemIdent isEqualToString: @"iPhoto.icns"])
+	else if ([itemIdent isEqualToString: @"Capture.icns"])
 	{
-		[toolbarItem setLabel: NSLocalizedString(@"iPhoto",nil)];
-		[toolbarItem setPaletteLabel:NSLocalizedString(@"iPhoto",nil)];
-		[toolbarItem setImage: [NSImage imageNamed: @"iPhoto.icns"]];
+		[toolbarItem setLabel: NSLocalizedString(@"Best",nil)];
+		[toolbarItem setPaletteLabel:NSLocalizedString(@"Best",nil)];
+		[toolbarItem setImage: [NSImage imageNamed: @"Capture.icns"]];
 		[toolbarItem setTarget: self];
-		[toolbarItem setAction: @selector( export2iPhoto:)];
+		[toolbarItem setAction: @selector( bestRendering:)];
     }
 	else if ([itemIdent isEqualToString: @"QTExport.icns"])
 	{
@@ -2026,7 +2056,7 @@ static float deg2rad = 3.14159265358979/180.0;
     }
 	else if ([itemIdent isEqualToString:@"AxisShowHide"])
 	{
-		[toolbarItem setPaletteLabel:NSLocalizedString(@"Show/Hide Axis",nil)];
+		[toolbarItem setPaletteLabel:NSLocalizedString(@"Axis",nil)];
 		
 		[toolbarItem setLabel:NSLocalizedString(@"Axis",nil)];
 		if(self.displayCrossLines)
@@ -2039,7 +2069,7 @@ static float deg2rad = 3.14159265358979/180.0;
     }
 	else if ([itemIdent isEqualToString:@"MousePositionShowHide"])
 	{
-		[toolbarItem setPaletteLabel:NSLocalizedString(@"Show/Hide Mouse Position",nil)];
+		[toolbarItem setPaletteLabel:NSLocalizedString(@"Mouse Position",nil)];
 		
 		[toolbarItem setLabel:NSLocalizedString(@"Mouse Position",nil)];
 		if(self.displayMousePosition)
@@ -2061,7 +2091,7 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (NSArray *) toolbarDefaultItemIdentifiers: (NSToolbar *) toolbar
 {
-		return [NSArray arrayWithObjects: @"tbTools", @"tbWLWW", @"tbLOD", @"tbThickSlab", @"tbBlending", @"tbShading", @"Reset.tiff", @"Export.icns", @"iPhoto.icns", @"QTExport.icns", @"tbMovie", nil];
+		return [NSArray arrayWithObjects: @"tbTools", @"tbWLWW", @"tbLOD", @"tbThickSlab", @"tbBlending", @"tbShading", @"Reset.tiff", @"Export.icns", @"Capture.icns", @"QTExport.icns", @"tbMovie", nil];
 }
 
 - (NSArray *) toolbarAllowedItemIdentifiers: (NSToolbar *) toolbar
@@ -2070,7 +2100,7 @@ static float deg2rad = 3.14159265358979/180.0;
 											NSToolbarFlexibleSpaceItemIdentifier,
 											NSToolbarSpaceItemIdentifier,
 											NSToolbarSeparatorItemIdentifier,
-											@"tbTools", @"tbWLWW", @"tbLOD", @"tbThickSlab", @"tbBlending", @"tbShading", @"Reset.tiff", @"Export.icns", @"iPhoto.icns", @"QTExport.icns", @"tbTools", @"AxisColors", @"AxisShowHide", @"MousePositionShowHide", nil];
+											@"tbTools", @"tbWLWW", @"tbLOD", @"tbThickSlab", @"tbBlending", @"tbShading", @"Reset.tiff", @"Export.icns", @"Capture.icns", @"QTExport.icns", @"tbTools", @"AxisColors", @"AxisShowHide", @"MousePositionShowHide", nil];
 }
 
 - (void)updateToolbarItems;
@@ -2200,7 +2230,7 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (BOOL) getMovieDataAvailable
 {
-	if( self.maxMovieIndex > 1) return YES;
+	if( self.maxMovieIndex > 0) return YES;
 	else return NO;
 }
 
@@ -2211,7 +2241,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	
 	self.movieRate = 20;
 	self.maxMovieIndex++;
-	[moviePosSlider setNumberOfTickMarks: maxMovieIndex];
+	[moviePosSlider setNumberOfTickMarks: maxMovieIndex+1];
 	
 	[hiddenVRController addMoviePixList: pix :vData];	
 
@@ -2259,7 +2289,7 @@ static float deg2rad = 3.14159265358979/180.0;
         val ++;
         
 		if( val < 0) val = 0;
-		if( val >= self.maxMovieIndex) val = 0;
+		if( val > self.maxMovieIndex) val = 0;
 		
 		self.curMovieIndex = val;
         lastMovieTime = thisTime;

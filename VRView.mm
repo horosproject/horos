@@ -716,13 +716,20 @@ public:
 
 - (void) setBlendingEngine: (long) engineID
 {
+	[self setBlendingEngine: engineID showWait: YES];
+}
+
+- (void) setBlendingEngine: (long) engineID showWait:(BOOL) showWait
+{
 	if( blendingController == nil) return;
 	
 	double a[ 6];
 	
 	[[NSUserDefaults standardUserDefaults] setInteger: engineID forKey:@"MAPPERMODEVR"];
 	
-	WaitRendering	*www = [[WaitRendering alloc] init:@"Preparing 3D data..."];
+	WaitRendering	*www = nil;
+	
+	if( showWait) [[WaitRendering alloc] init:@"Preparing 3D data..."];
 	[www start];
 	
 	BOOL validBox = [VRView getCroppingBox: a :volume :croppingBox];
@@ -5245,7 +5252,7 @@ public:
 			if( blendingTextureMapper) blendingTextureMapper->Delete();
 			blendingTextureMapper = nil;
 			
-			[self setBlendingEngine: [[NSUserDefaults standardUserDefaults] integerForKey: @"MAPPERMODEVR"]];
+			[self setBlendingEngine: [[NSUserDefaults standardUserDefaults] integerForKey: @"MAPPERMODEVR"] showWait: NO];
 		}
 	}
 	

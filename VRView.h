@@ -380,6 +380,7 @@ typedef char* vtkMyCallbackVR;
 -(void) set3DStateDictionary:(NSDictionary*) dict;
 -(NSMutableDictionary*) get3DStateDictionary;
 - (void) setBlendingEngine: (long) engineID;
+- (void) setBlendingEngine: (long) engineID showWait:(BOOL) showWait;
 - (void) getShadingValues:(float*) ambient :(float*) diffuse :(float*) specular :(float*) specularpower;
 - (void) setShadingValues:(float) ambient :(float) diffuse :(float) specular :(float) specularpower;
 -(void) movieChangeSource:(float*) volumeData;
