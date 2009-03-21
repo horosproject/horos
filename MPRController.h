@@ -36,6 +36,7 @@
 	DCMView *blendedMprView1, *blendedMprView2, *blendedMprView3;
 	float blendingPercentage;
 	int blendingMode;
+	BOOL blendingModeAvailable;
 	
 	NSMutableArray *undoQueue, *redoQueue;
 	
@@ -95,7 +96,7 @@
 @property (retain) NSString *dcmSeriesName;
 @property (readonly) DCMPix *originalPix;
 @property float LOD, movieRate;
-@property BOOL dcmSameIntervalAndThickness, displayCrossLines, displayMousePosition;
+@property BOOL dcmSameIntervalAndThickness, displayCrossLines, displayMousePosition, blendingModeAvailable;
 @property (retain) NSColor *colorAxis1, *colorAxis2, *colorAxis3;
 @property (readonly) MPRDCMView *mprView1, *mprView2, *mprView3;
 

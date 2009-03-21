@@ -2344,7 +2344,7 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 			[splash release];
 		}
 		
-		[NSThread sleepForTimeInterval: 1];
+		[NSThread sleepForTimeInterval: 0.5];
 		[[BrowserController currentBrowser] checkIncomingNow: self];
 		
 		if( ([[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportSendToDICOMNode"] || [[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportMarkThemAsKeyImages"]) && [producedFiles count])

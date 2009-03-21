@@ -15269,7 +15269,7 @@ int i,j,l;
 		for( i = 0; i < [viewers count]; i++)
 			[[[viewers objectAtIndex: i] imageView] setNeedsDisplay: YES];
 		
-		[NSThread sleepForTimeInterval: 1];
+		[NSThread sleepForTimeInterval: 0.5];
 		[[BrowserController currentBrowser] checkIncomingNow: self];
 		
 		if( ([[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportSendToDICOMNode"] || [[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportMarkThemAsKeyImages"]) && [producedFiles count])

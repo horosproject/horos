@@ -1139,9 +1139,6 @@ public:
 			
 			[progress close];
 			[progress release];
-			
-			[NSThread sleepForTimeInterval: 1];
-			[[BrowserController currentBrowser] checkIncomingNow: self];
 		}
 		else // A 3D sequence
 		{
@@ -1207,7 +1204,7 @@ public:
 		if( fullDepthCapture)
 			[self restoreFullDepthCapture];
 		
-		[NSThread sleepForTimeInterval: 1];
+		[NSThread sleepForTimeInterval: 0.5];
 		[[BrowserController currentBrowser] checkIncomingNow: self];
 		
 		if( ([[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportSendToDICOMNode"] || [[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportMarkThemAsKeyImages"]) && [producedFiles count])

@@ -1409,7 +1409,6 @@ static NSString*	VRPanelToolbarItemIdentifier			= @"MIP.tif";
 			[exportDCM setSeriesNumber:5600 + [[NSCalendarDate date] minuteOfHour]  + [[NSCalendarDate date] secondOfMinute]];	//Try to create a unique series number... Do you have a better idea??
 			[exportDCM setSeriesDescription: [dcmSeriesName stringValue]];
 			
-			//for( i = 0 ; i < max; i += [dcmInterval intValue])
 			for( i = from; i < to; i+=interval)
 			{
 				NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
@@ -1435,7 +1434,7 @@ static NSString*	VRPanelToolbarItemIdentifier			= @"MIP.tif";
 			[splash release];
 		}
 		
-		[NSThread sleepForTimeInterval: 1];
+		[NSThread sleepForTimeInterval: 0.5];
 		[[BrowserController currentBrowser] checkIncomingNow: self];
 		
 		if( ([[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportSendToDICOMNode"] || [[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportMarkThemAsKeyImages"]) && [producedFiles count])

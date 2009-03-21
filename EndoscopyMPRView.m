@@ -491,7 +491,7 @@
 		[(EndoscopyViewer*)[[self window] windowController] exportDICOMFile:sender];
 	}
 	
-	[NSThread sleepForTimeInterval: 1];
+	[NSThread sleepForTimeInterval: 0.5];
 	[[BrowserController currentBrowser] checkIncomingNow: self];
 }
 

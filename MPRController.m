@@ -31,7 +31,7 @@ static float deg2rad = 3.14159265358979/180.0;
 @synthesize displayCrossLines, dcmSameIntervalAndThickness, clippingRangeThickness, clippingRangeMode, mousePosition, mouseViewID, originalPix, wlwwMenuItems, LOD, dcmFrom;
 @synthesize dcmTo, dcmMode, dcmRotationDirection, dcmSeriesMode, dcmRotation, dcmNumberOfFrames, dcmQuality, dcmInterval, dcmSeriesName, dcmBatchNumberOfFrames;
 @synthesize colorAxis1, colorAxis2, colorAxis3, displayMousePosition, movieRate, blendingPercentage;
-@synthesize mprView1, mprView2, mprView3, curMovieIndex, maxMovieIndex, blendingMode, dcmFormat;
+@synthesize mprView1, mprView2, mprView3, curMovieIndex, maxMovieIndex, blendingMode, dcmFormat, blendingModeAvailable;
 
 + (double) angleBetweenVector:(float*) a andPlane:(float*) orientation
 {
@@ -63,8 +63,6 @@ static float deg2rad = 3.14159265358979/180.0;
 	
 	[[self window] setWindowController: self];
 	[[[self window] toolbar] setDelegate: self];
-
-	//[shadingsPresetsController setWindowController: self];
 	
 	originalPix = [pix lastObject];
 	
@@ -79,6 +77,9 @@ static float deg2rad = 3.14159265358979/180.0;
 	volumeData[0] = volume;
 	viewer2D = viewer;
 	fusedViewer2D = fusedViewer;
+	
+	if( fusedViewer2D)
+		self.blendingModeAvailable = YES;
 	
 	self.displayCrossLines = YES;
 	self.displayMousePosition = YES;
@@ -957,10 +958,6 @@ static float deg2rad = 3.14159265358979/180.0;
     item = [[clutPopup menu] addItemWithTitle:NSLocalizedString(@"16-bit CLUT Editor", nil) action:@selector(showCLUTOpacityPanel:) keyEquivalent:@""];
 	if([[pixList[ 0] objectAtIndex:0] isRGB])
 		[item setEnabled:NO];
-		
-	//[mprView1 updateViewMPR];
-	//[mprView2 updateViewMPR];
-	//[mprView3 updateViewMPR];
 }
 
 -(void) ApplyCLUTString:(NSString*) str
@@ -1446,7 +1443,20 @@ static float deg2rad = 3.14159265358979/180.0;
 {
 	[dcmWindow orderOut:sender];
 	[NSApp endSheet:dcmWindow returnCode:[sender tag]];
-		
+	
+	Camera *c1, *c2, *c3;
+	
+	c1 = [[[mprView1 camera] copy] autorelease];
+	c2 = [[[mprView2 camera] copy] autorelease];
+	c3 = [[[mprView3 camera] copy] autorelease];
+	
+	mprView1.fromIntervalExport = 0;
+	mprView1.toIntervalExport = 0;
+	mprView2.fromIntervalExport = 0;
+	mprView2.toIntervalExport = 0;
+	mprView3.fromIntervalExport = 0;
+	mprView3.toIntervalExport = 0;
+	
 	if( [sender tag])
 	{
 		NSMutableArray *producedFiles = [NSMutableArray array];
@@ -1454,17 +1464,18 @@ static float deg2rad = 3.14159265358979/180.0;
 		[curExportView restoreCamera];
 		curExportView.vrView.bestRenderingMode = NO;	// We will manually adapt the rendering level with setLOD
 		
-		if( dcmQuality == 1)
+		if( self.dcmQuality == 1)
 			[curExportView.vrView setLOD: 1.0];
-			
-		[curExportView.vrView setViewSizeToMatrix3DExport];
+		
+		if( self.dcmFormat) 
+			[curExportView.vrView setViewSizeToMatrix3DExport];
 		
 		if( curExportView.vrView.exportDCM == nil)
 			curExportView.vrView.exportDCM = [[[DICOMExport alloc] init] autorelease];
 
-		curExportView.vrView.dcmSeriesString = dcmSeriesName;
+		curExportView.vrView.dcmSeriesString = self.dcmSeriesName;
 		
-		[curExportView.vrView.exportDCM setSeriesDescription: dcmSeriesName];
+		[curExportView.vrView.exportDCM setSeriesDescription: self.dcmSeriesName];
 		[curExportView.vrView.exportDCM setSeriesNumber: 9983];
 		
 		int resizeImage = 0;
@@ -1491,17 +1502,20 @@ static float deg2rad = 3.14159265358979/180.0;
 			[[progress progress] setMaxValue: maxMovieIndex];
 			
 			curExportView.vrView.exportDCM = [[[DICOMExport alloc] init] autorelease];
-			[curExportView.vrView.exportDCM setSeriesDescription: dcmSeriesName];
+			[curExportView.vrView.exportDCM setSeriesDescription: self.dcmSeriesName];
 			[curExportView.vrView.exportDCM setSeriesNumber:8730 + [[NSCalendarDate date] minuteOfHour]  + [[NSCalendarDate date] secondOfMinute]];
 			
 			for( int i = 0; i < maxMovieIndex; i++)
 			{
-				[[[self window] windowController] setMovieFrame: i];
+				[self setCurMovieIndex: i];
 				
 				if( self.dcmFormat) 
 					[producedFiles addObject: [curExportView.vrView exportDCMCurrentImage]];
 				else
+				{
+					[curExportView updateViewMPR: NO];
 					[producedFiles addObject: [curExportView exportDCMCurrentImage: curExportView.vrView.exportDCM size: resizeImage]];
+				}
 				
 				[progress incrementBy: 1];
 				if( [progress aborted])
@@ -1512,9 +1526,6 @@ static float deg2rad = 3.14159265358979/180.0;
 			
 			[progress close];
 			[progress release];
-			
-			[NSThread sleepForTimeInterval: 1];
-			[[BrowserController currentBrowser] checkIncomingNow: self];
 		}
 		else if( dcmMode == 0) // A 3D sequence or batch sequence
 		{
@@ -1523,7 +1534,7 @@ static float deg2rad = 3.14159265358979/180.0;
 			[progress setCancel:YES];
 			
 			curExportView.vrView.exportDCM = [[[DICOMExport alloc] init] autorelease];
-			[curExportView.vrView.exportDCM setSeriesDescription: dcmSeriesName];
+			[curExportView.vrView.exportDCM setSeriesDescription: self.dcmSeriesName];
 			[curExportView.vrView.exportDCM setSeriesNumber:8930 + [[NSCalendarDate date] minuteOfHour]  + [[NSCalendarDate date] secondOfMinute]];
 			
 			if( dcmSeriesMode == 1)
@@ -1545,13 +1556,16 @@ static float deg2rad = 3.14159265358979/180.0;
 						while( movieIndex >= maxMovieIndex) movieIndex -= maxMovieIndex;
 						if( movieIndex < 0) movieIndex = 0;
 				
-						[self setMovieFrame: movieIndex];
+						[self setCurMovieIndex: movieIndex];
 					}
 					
 					if( self.dcmFormat)
 						[producedFiles addObject: [curExportView.vrView exportDCMCurrentImage]];
 					else
+					{
+						[curExportView updateViewMPR: NO];
 						[producedFiles addObject: [curExportView exportDCMCurrentImage: curExportView.vrView.exportDCM size: resizeImage]];
+					}
 					
 					[progress incrementBy: 1];
 					
@@ -1584,12 +1598,18 @@ static float deg2rad = 3.14159265358979/180.0;
 				curExportView.camera.focalPoint = [Point3D pointWithX: curExportView.camera.position.x + cos[ 6] y:curExportView.camera.position.y + cos[ 7] z:curExportView.camera.position.z + cos[ 8]];
 				[curExportView restoreCameraAndCheckForFrame: NO];
 				
-				for( int i = 0; i < dcmBatchNumberOfFrames; i++)
+				if( self.dcmBatchNumberOfFrames < 1)
+					self.dcmBatchNumberOfFrames = 1;
+				
+				for( int i = 0; i < self.dcmBatchNumberOfFrames; i++)
 				{
 					if( self.dcmFormat)
 						[producedFiles addObject: [curExportView.vrView exportDCMCurrentImage]];
 					else
+					{
+						[curExportView updateViewMPR: NO];
 						[producedFiles addObject: [curExportView exportDCMCurrentImage: curExportView.vrView.exportDCM size: resizeImage]];
+					}
 					
 					curExportView.camera.position = [Point3D pointWithX: curExportView.camera.position.x + interval*cos[ 6] y:curExportView.camera.position.y + interval*cos[ 7] z:curExportView.camera.position.z + interval*cos[ 8]];
 					curExportView.camera.focalPoint = [Point3D pointWithX: curExportView.camera.position.x + cos[ 6] y:curExportView.camera.position.y + cos[ 7] z:curExportView.camera.position.z + cos[ 8]];
@@ -1608,12 +1628,12 @@ static float deg2rad = 3.14159265358979/180.0;
 			[progress close];
 			[progress release];
 		}
-		
-		[NSThread sleepForTimeInterval: 1];
-		[[BrowserController currentBrowser] checkIncomingNow: self];
-		
+				
 		if( ([[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportSendToDICOMNode"] || [[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportMarkThemAsKeyImages"]) && [producedFiles count])
 		{
+			[NSThread sleepForTimeInterval: 0.5];
+			[[BrowserController currentBrowser] checkIncomingNow: self];
+			
 			NSMutableArray *imagesForThisStudy = [NSMutableArray array];
 			
 			[[[BrowserController currentBrowser] managedObjectContext] lock];
@@ -1648,58 +1668,19 @@ static float deg2rad = 3.14159265358979/180.0;
 			}
 		}
 		
-		[curExportView.vrView restoreViewSizeAfterMatrix3DExport];
+		if( self.dcmFormat) 
+			[curExportView.vrView restoreViewSizeAfterMatrix3DExport];
 		
 		[curExportView.vrView setLOD: LOD];
 		
-		[NSThread sleepForTimeInterval: 1];
-		[[BrowserController currentBrowser] checkIncomingNow: self];
-		
-		if( ([[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportSendToDICOMNode"] || [[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportMarkThemAsKeyImages"]) && [producedFiles count])
-		{
-			NSMutableArray *imagesForThisStudy = [NSMutableArray array];
-			
-			[[[BrowserController currentBrowser] managedObjectContext] lock];
-			
-			for( NSManagedObject *s in [[[viewer2D currentStudy] valueForKey: @"series"] allObjects])
-				[imagesForThisStudy addObjectsFromArray: [[s valueForKey: @"images"] allObjects]];
-			
-			[[[BrowserController currentBrowser] managedObjectContext] unlock];
-			
-			NSArray *sopArray = [producedFiles valueForKey: @"SOPInstanceUID"];
-			
-			NSMutableArray *objects = [NSMutableArray array];
-			for( NSString *sop in sopArray)
-			{
-				for( DicomImage *im in imagesForThisStudy)
-				{
-					if( [[im sopInstanceUID] isEqualToString: sop])
-						[objects addObject: im];
-				}
-			}
-			
-			if( [objects count] != [producedFiles count])
-				NSLog( @"WARNING !! [objects count] != [producedFiles count]");
-			
-			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportSendToDICOMNode"])
-				[[BrowserController currentBrowser] selectServer: objects];
-			
-			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportMarkThemAsKeyImages"])
-			{
-				for( DicomImage *im in objects)
-					[im setValue: [NSNumber numberWithBool: YES] forKey: @"isKeyImage"];
-			}
-		}
-		
 		[[NSUserDefaults standardUserDefaults] setInteger: dcmMode forKey: @"lastMPRdcmExportMode"];
+		
+		mprView1.camera = c1;
+		mprView2.camera = c2;
+		mprView3.camera = c3;
+		
+		[self updateViewsAccordingToFrame: self];
 	}
-	
-	mprView1.fromIntervalExport = 0;
-	mprView1.toIntervalExport = 0;
-	mprView2.fromIntervalExport = 0;
-	mprView2.toIntervalExport = 0;
-	mprView3.fromIntervalExport = 0;
-	mprView3.toIntervalExport = 0;
 }
 
 - (void) exportDICOMFile:(id) sender
