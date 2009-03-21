@@ -144,7 +144,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	hiddenVRView = [hiddenVRController view];
 	[hiddenVRView setClipRangeActivated: YES];
 	[hiddenVRView resetImage: self];
-	[self setLOD: 1.5];
+	[self setLOD: 10];
 	hiddenVRView.keep3DRotateCentered = YES;
 	
 	[mprView1 setVRView: hiddenVRView viewID: 1];
@@ -214,10 +214,17 @@ static float deg2rad = 3.14159265358979/180.0;
 	return self;
 }
 
-- (void) updateViewsAccordingToFrame:(id) sender	// see setFrame in MPRDCMView.m
+- (void) delayedFullLODRendering:(id) sender
 {
 	[hiddenVRView setLODLow: NO];
 	
+	[self updateViewsAccordingToFrame: sender];
+	
+	[hiddenVRView setLODLow: YES];
+}
+
+- (void) updateViewsAccordingToFrame:(id) sender	// see setFrame in MPRDCMView.m
+{
 	id view = [[self window] firstResponder];
 	
 	[mprView1 camera].forceUpdate = YES;
@@ -234,8 +241,6 @@ static float deg2rad = 3.14159265358979/180.0;
 	[mprView1 setNeedsDisplay: YES];
 	[mprView2 setNeedsDisplay: YES];
 	[mprView3 setNeedsDisplay: YES];
-	
-	[hiddenVRView setLODLow: YES];
 }
 
 - (void) showWindow:(id) sender
@@ -265,6 +270,8 @@ static float deg2rad = 3.14159265358979/180.0;
 	[mprView3 updateViewMPR];
 	
 	[super showWindow: sender];
+	
+	[self setLOD: 1.5];
 }
 
 -(void) awakeFromNib
@@ -1966,6 +1973,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	if( [notification object] == [self window])
 	{
 		[NSObject cancelPreviousPerformRequestsWithTarget: self selector:@selector( updateViewsAccordingToFrame:) object: nil];
+		[NSObject cancelPreviousPerformRequestsWithTarget: self selector:@selector( delayedFullLODRendering:) object: nil];
 		
 		[[NSNotificationCenter defaultCenter] removeObserver: self];
 		

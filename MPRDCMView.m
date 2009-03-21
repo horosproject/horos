@@ -819,8 +819,8 @@ static float deg2rad = 3.14159265358979/180.0;
 	[self updateViewMPR];
 	[self updateMousePosition: theEvent];
 	
-	[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector( updateViewsAccordingToFrame:) object: nil];
-	[windowController performSelector: @selector( updateViewsAccordingToFrame:) withObject: nil afterDelay: 0.3];
+	[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector( delayedFullLODRendering:) object: nil];
+	[windowController performSelector: @selector( delayedFullLODRendering:) withObject: nil afterDelay: 0.3];
 }
 
 - (void)rightMouseDown:(NSEvent *)theEvent
@@ -850,13 +850,13 @@ static float deg2rad = 3.14159265358979/180.0;
 	
 	[self updateMousePosition: theEvent];
 	
-	[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector( updateViewsAccordingToFrame:) object: nil];
-	[windowController performSelector: @selector( updateViewsAccordingToFrame:) withObject: nil afterDelay: 0.3];
+	[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector( delayedFullLODRendering:) object: nil];
+	[windowController performSelector: @selector( delayedFullLODRendering:) withObject: nil afterDelay: 0.3];
 }
 
 - (void)rightMouseUp:(NSEvent *)theEvent
 {
-	[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector( updateViewsAccordingToFrame:) object: nil];
+	[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector( delayedFullLODRendering:) object: nil];
 	
 	[self restoreCamera];
 	
@@ -918,7 +918,7 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (void) mouseUp:(NSEvent *)theEvent
 {
-	[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector( updateViewsAccordingToFrame:) object: nil];
+	[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector( delayedFullLODRendering:) object: nil];
 	
 	[self restoreCamera];
 	
@@ -1049,8 +1049,8 @@ static float deg2rad = 3.14159265358979/180.0;
 		}
 	}
 	
-	[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector( updateViewsAccordingToFrame:) object: nil];
-	[windowController performSelector: @selector( updateViewsAccordingToFrame:) withObject: nil afterDelay: 0.3];
+	[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector( delayedFullLODRendering:) object: nil];
+	[windowController performSelector: @selector( delayedFullLODRendering:) withObject: nil afterDelay: 0.3];
 	
 	[self updateMousePosition: theEvent];
 }
