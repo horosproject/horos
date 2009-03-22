@@ -31,7 +31,7 @@ static float deg2rad = 3.14159265358979/180.0;
 
 @synthesize displayCrossLines, dcmSameIntervalAndThickness, clippingRangeThickness, clippingRangeMode, mousePosition, mouseViewID, originalPix, wlwwMenuItems, LOD, dcmFrom;
 @synthesize dcmmN, dcmTo, dcmMode, dcmRotationDirection, dcmSeriesMode, dcmRotation, dcmNumberOfFrames, dcmQuality, dcmInterval, dcmSeriesName, dcmBatchNumberOfFrames;
-@synthesize colorAxis1, colorAxis2, colorAxis3, displayMousePosition, movieRate, blendingPercentage;
+@synthesize colorAxis1, colorAxis2, colorAxis3, displayMousePosition, movieRate, blendingPercentage, horizontalSplit, verticalSplit;
 @synthesize mprView1, mprView2, mprView3, curMovieIndex, maxMovieIndex, blendingMode, dcmFormat, blendingModeAvailable;
 
 + (double) angleBetweenVector:(float*) a andPlane:(float*) orientation
@@ -60,156 +60,165 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (id)initWithDCMPixList:(NSMutableArray*)pix filesList:(NSMutableArray*)files volumeData:(NSData*)volume viewerController:(ViewerController*)viewer fusedViewerController:(ViewerController*)fusedViewer;
 {
-	self = [super initWithWindowNibName:@"MPR"];
-	
-	[[self window] setWindowController: self];
-	[[[self window] toolbar] setDelegate: self];
-	
-	originalPix = [pix lastObject];
-	
-	if( [originalPix isRGB])
+	@try
 	{
-		NSRunCriticalAlertPanel( NSLocalizedString(@"Slice interval",nil), NSLocalizedString( @"RGB images are not supported.",nil), NSLocalizedString(@"OK",nil), nil, nil);
+		self = [super initWithWindowNibName:@"MPR"];
+		
+		[[self window] setWindowController: self];
+		[[[self window] toolbar] setDelegate: self];
+		
+		originalPix = [pix lastObject];
+		
+		if( [originalPix isRGB])
+		{
+			NSRunCriticalAlertPanel( NSLocalizedString(@"Slice interval",nil), NSLocalizedString( @"RGB images are not supported.",nil), NSLocalizedString(@"OK",nil), nil, nil);
+			return nil;
+		}
+		
+		pixList[0] = pix;
+		filesList[0] = files;
+		volumeData[0] = volume;
+		viewer2D = viewer;
+		fusedViewer2D = fusedViewer;
+		
+		if( fusedViewer2D)
+			self.blendingModeAvailable = YES;
+		
+		self.displayCrossLines = YES;
+		self.displayMousePosition = YES;
+		self.maxMovieIndex = 0;
+		
+		[self updateToolbarItems];
+		
+		DCMPix *emptyPix = [self emptyPix: originalPix width: 100 height: 100];
+		[mprView1 setDCMPixList: [NSMutableArray arrayWithObject: emptyPix] filesList: [NSArray arrayWithObject: [files lastObject]] roiList:nil firstImage:0 type:'i' reset:YES];
+		[mprView1 setFlippedData: [[viewer imageView] flippedData]];
+		
+		emptyPix = [self emptyPix: originalPix width: 100 height: 100];
+		[mprView2 setDCMPixList: [NSMutableArray arrayWithObject: emptyPix] filesList: [NSArray arrayWithObject: [files lastObject]] roiList:nil firstImage:0 type:'i' reset:YES];
+		[mprView2 setFlippedData: [[viewer imageView] flippedData]];
+		
+		emptyPix = [self emptyPix: originalPix width: 100 height: 100];
+		[mprView3 setDCMPixList: [NSMutableArray arrayWithObject: emptyPix] filesList: [NSArray arrayWithObject: [files lastObject]] roiList:nil firstImage:0 type:'i' reset:YES];
+		[mprView3 setFlippedData: [[viewer imageView] flippedData]];
+		
+		if( fusedViewer)
+		{
+			blendedMprView1 = [[DCMView alloc] initWithFrame: [mprView1 frame]];
+			blendedMprView2 = [[DCMView alloc] initWithFrame: [mprView2 frame]];
+			blendedMprView3 = [[DCMView alloc] initWithFrame: [mprView3 frame]];
+			
+			emptyPix = [[[[fusedViewer imageView] curDCM] copy] autorelease];
+			[blendedMprView1 setDCM:  [NSMutableArray arrayWithObject: emptyPix] : [NSArray arrayWithObject: [files lastObject]] :nil :0 :'i' :YES];
+			
+			emptyPix = [[[[fusedViewer imageView] curDCM] copy] autorelease];
+			[blendedMprView2 setDCM:  [NSMutableArray arrayWithObject: emptyPix] : [NSArray arrayWithObject: [files lastObject]] :nil :0 :'i' :YES];
+			
+			emptyPix = [[[[fusedViewer imageView] curDCM] copy] autorelease];
+			[blendedMprView3 setDCM:  [NSMutableArray arrayWithObject: emptyPix] : [NSArray arrayWithObject: [files lastObject]] :nil :0 :'i' :YES];
+			
+			[mprView1 setBlending: blendedMprView1];
+			[mprView2 setBlending: blendedMprView2];
+			[mprView3 setBlending: blendedMprView3];
+			
+			[mprView1 setBlendingFactor: 0.5];
+			[mprView2 setBlendingFactor: 0.5];
+			[mprView3 setBlendingFactor: 0.5];
+			
+			[mprView1 setWLWW: [[fusedViewer imageView] curDCM].wl :[[fusedViewer imageView] curDCM].ww];
+			[mprView2 setWLWW: [[fusedViewer imageView] curDCM].wl :[[fusedViewer imageView] curDCM].ww];
+			[mprView3 setWLWW: [[fusedViewer imageView] curDCM].wl :[[fusedViewer imageView] curDCM].ww];
+			
+			self.blendingPercentage = 50;
+			self.blendingMode = 0;
+		}
+		
+		hiddenVRController = [[VRController alloc] initWithPix:pix :files :volume :fusedViewer :viewer style:@"noNib" mode:@"MIP"];
+		[hiddenVRController retain];
+		
+		// To avoid the "invalid drawable" message
+		[[hiddenVRController window] setLevel: 0];
+		[[hiddenVRController window] orderBack: self];
+		[[hiddenVRController window] orderOut: self];
+		
+		[hiddenVRController load3DState];
+		
+		hiddenVRView = [hiddenVRController view];
+		[hiddenVRView setClipRangeActivated: YES];
+		[hiddenVRView resetImage: self];
+		[self setLOD: 10];
+		hiddenVRView.keep3DRotateCentered = YES;
+		
+		[mprView1 setVRView: hiddenVRView viewID: 1];
+		[mprView1 setWLWW: [originalPix wl] :[originalPix ww]];
+		
+		[mprView2 setVRView: hiddenVRView viewID: 2];
+		[mprView2 setWLWW: [originalPix wl] :[originalPix ww]];
+		
+		[mprView3 setVRView: hiddenVRView viewID: 3];
+		[mprView3 setWLWW: [originalPix wl] :[originalPix ww]];
+		
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(UpdateWLWWMenu:) name:@"UpdateWLWWMenu" object:nil];
+		curWLWWMenu = @"";
+		[curWLWWMenu retain];
+		[self UpdateWLWWMenu:nil];
+		
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(UpdateCLUTMenu:) name:@"UpdateCLUTMenu" object: nil];
+		curCLUTMenu = [NSLocalizedString(@"No CLUT", nil) retain];
+		[self UpdateCLUTMenu:nil];
+		
+		curOpacityMenu = [NSLocalizedString(@"Linear Table", nil) retain];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(UpdateOpacityMenu:) name:@"UpdateOpacityMenu" object:nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: nil];
+		
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(CloseViewerNotification:) name:@"CloseViewerNotification" object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(changeWLWW:) name: @"changeWLWW" object: nil];
+		
+		[shadingCheck setAction:@selector(switchShading:)];
+		[shadingCheck setTarget:self];
+		
+		self.dcmNumberOfFrames = 50;
+		self.dcmRotationDirection = 0;
+		self.dcmRotation = 360;
+		self.dcmSeriesName = @"MPR";
+		float r1, g1, b1, a1, r2, g2, b2, a2, r3, g3, b3, a3;
+		r1 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_1_RED"];
+		g1 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_1_GREEN"];
+		b1 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_1_BLUE"];
+		a1 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_1_ALPHA"];
+		
+		r2 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_2_RED"];
+		g2 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_2_GREEN"];
+		b2 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_2_BLUE"];
+		a2 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_2_ALPHA"];
+		
+		r3 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_3_RED"];
+		g3 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_3_GREEN"];
+		b3 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_3_BLUE"];
+		a3 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_3_ALPHA"];
+		
+		if(r1==0.0 && g1==0.0 && b1==0.0 && a1==0.0 && r2==0.0 && g2==0.0 && b2==0.0 && a2==0.0 && r3==0.0 && g3==0.0 && b3==0.0 && a3==0.0)
+		{
+			r1 = 1.0; g1 = 0.67; b1 = 0.0; a1 = 1.0;
+			r2 = 0.6; g2 = 0.0; b2 = 1.0; a2 = 1.0;
+			r3 = 0.0; g3 = 0.5; b3 = 1.0; a3 = 1.0;
+		}
+		
+		self.colorAxis1 = [NSColor colorWithDeviceRed:r1 green:g1 blue:b1 alpha:a1];
+		self.colorAxis2 = [NSColor colorWithDeviceRed:r2 green:g2 blue:b2 alpha:a2];
+		self.colorAxis3 = [NSColor colorWithDeviceRed:r3 green:g3 blue:b3 alpha:a3];
+		
+		undoQueue = [[NSMutableArray alloc] initWithCapacity: 0];
+		redoQueue = [[NSMutableArray alloc] initWithCapacity: 0];
+		
+		[self setToolIndex: tWL];
+	}
+	
+	@catch (NSException *e)
+	{
+		NSLog( @"MPR Init failed: %@", e);
 		return nil;
 	}
-	
-	pixList[0] = pix;
-	filesList[0] = files;
-	volumeData[0] = volume;
-	viewer2D = viewer;
-	fusedViewer2D = fusedViewer;
-	
-	if( fusedViewer2D)
-		self.blendingModeAvailable = YES;
-	
-	self.displayCrossLines = YES;
-	self.displayMousePosition = YES;
-	self.maxMovieIndex = 0;
-	
-	[self updateToolbarItems];
-	
-	DCMPix *emptyPix = [self emptyPix: originalPix width: 100 height: 100];
-	[mprView1 setDCMPixList: [NSMutableArray arrayWithObject: emptyPix] filesList: [NSArray arrayWithObject: [files lastObject]] roiList:nil firstImage:0 type:'i' reset:YES];
-	[mprView1 setFlippedData: [[viewer imageView] flippedData]];
-	
-	emptyPix = [self emptyPix: originalPix width: 100 height: 100];
-	[mprView2 setDCMPixList: [NSMutableArray arrayWithObject: emptyPix] filesList: [NSArray arrayWithObject: [files lastObject]] roiList:nil firstImage:0 type:'i' reset:YES];
-	[mprView2 setFlippedData: [[viewer imageView] flippedData]];
-	
-	emptyPix = [self emptyPix: originalPix width: 100 height: 100];
-	[mprView3 setDCMPixList: [NSMutableArray arrayWithObject: emptyPix] filesList: [NSArray arrayWithObject: [files lastObject]] roiList:nil firstImage:0 type:'i' reset:YES];
-	[mprView3 setFlippedData: [[viewer imageView] flippedData]];
-	
-	if( fusedViewer)
-	{
-		blendedMprView1 = [[DCMView alloc] initWithFrame: [mprView1 frame]];
-		blendedMprView2 = [[DCMView alloc] initWithFrame: [mprView2 frame]];
-		blendedMprView3 = [[DCMView alloc] initWithFrame: [mprView3 frame]];
-		
-		emptyPix = [[[[fusedViewer imageView] curDCM] copy] autorelease];
-		[blendedMprView1 setDCM:  [NSMutableArray arrayWithObject: emptyPix] : [NSArray arrayWithObject: [files lastObject]] :nil :0 :'i' :YES];
-		
-		emptyPix = [[[[fusedViewer imageView] curDCM] copy] autorelease];
-		[blendedMprView2 setDCM:  [NSMutableArray arrayWithObject: emptyPix] : [NSArray arrayWithObject: [files lastObject]] :nil :0 :'i' :YES];
-		
-		emptyPix = [[[[fusedViewer imageView] curDCM] copy] autorelease];
-		[blendedMprView3 setDCM:  [NSMutableArray arrayWithObject: emptyPix] : [NSArray arrayWithObject: [files lastObject]] :nil :0 :'i' :YES];
-		
-		[mprView1 setBlending: blendedMprView1];
-		[mprView2 setBlending: blendedMprView2];
-		[mprView3 setBlending: blendedMprView3];
-		
-		[mprView1 setBlendingFactor: 0.5];
-		[mprView2 setBlendingFactor: 0.5];
-		[mprView3 setBlendingFactor: 0.5];
-		
-		[mprView1 setWLWW: [[fusedViewer imageView] curDCM].wl :[[fusedViewer imageView] curDCM].ww];
-		[mprView2 setWLWW: [[fusedViewer imageView] curDCM].wl :[[fusedViewer imageView] curDCM].ww];
-		[mprView3 setWLWW: [[fusedViewer imageView] curDCM].wl :[[fusedViewer imageView] curDCM].ww];
-		
-		self.blendingPercentage = 50;
-		self.blendingMode = 0;
-	}
-	
-	hiddenVRController = [[VRController alloc] initWithPix:pix :files :volume :fusedViewer :viewer style:@"noNib" mode:@"MIP"];
-	[hiddenVRController retain];
-	
-	// To avoid the "invalid drawable" message
-	[[hiddenVRController window] setLevel: 0];
-	[[hiddenVRController window] orderBack: self];
-	[[hiddenVRController window] orderOut: self];
-	
-	[hiddenVRController load3DState];
-	
-	hiddenVRView = [hiddenVRController view];
-	[hiddenVRView setClipRangeActivated: YES];
-	[hiddenVRView resetImage: self];
-	[self setLOD: 10];
-	hiddenVRView.keep3DRotateCentered = YES;
-	
-	[mprView1 setVRView: hiddenVRView viewID: 1];
-	[mprView1 setWLWW: [originalPix wl] :[originalPix ww]];
-	
-	[mprView2 setVRView: hiddenVRView viewID: 2];
-	[mprView2 setWLWW: [originalPix wl] :[originalPix ww]];
-	
-	[mprView3 setVRView: hiddenVRView viewID: 3];
-	[mprView3 setWLWW: [originalPix wl] :[originalPix ww]];
-	
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(UpdateWLWWMenu:) name:@"UpdateWLWWMenu" object:nil];
-	curWLWWMenu = @"";
-	[curWLWWMenu retain];
-	[self UpdateWLWWMenu:nil];
-	
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(UpdateCLUTMenu:) name:@"UpdateCLUTMenu" object: nil];
-	curCLUTMenu = [NSLocalizedString(@"No CLUT", nil) retain];
-	[self UpdateCLUTMenu:nil];
-	
-	curOpacityMenu = [NSLocalizedString(@"Linear Table", nil) retain];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(UpdateOpacityMenu:) name:@"UpdateOpacityMenu" object:nil];
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: nil];
-	
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(CloseViewerNotification:) name:@"CloseViewerNotification" object:nil];
-	[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(changeWLWW:) name: @"changeWLWW" object: nil];
-	
-	[shadingCheck setAction:@selector(switchShading:)];
-	[shadingCheck setTarget:self];
-	
-	self.dcmNumberOfFrames = 50;
-	self.dcmRotationDirection = 0;
-	self.dcmRotation = 360;
-	self.dcmSeriesName = @"MPR";
-	float r1, g1, b1, a1, r2, g2, b2, a2, r3, g3, b3, a3;
-	r1 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_1_RED"];
-	g1 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_1_GREEN"];
-	b1 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_1_BLUE"];
-	a1 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_1_ALPHA"];
-	
-	r2 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_2_RED"];
-	g2 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_2_GREEN"];
-	b2 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_2_BLUE"];
-	a2 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_2_ALPHA"];
-	
-	r3 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_3_RED"];
-	g3 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_3_GREEN"];
-	b3 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_3_BLUE"];
-	a3 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_3_ALPHA"];
-	
-	if(r1==0.0 && g1==0.0 && b1==0.0 && a1==0.0 && r2==0.0 && g2==0.0 && b2==0.0 && a2==0.0 && r3==0.0 && g3==0.0 && b3==0.0 && a3==0.0)
-	{
-		r1 = 1.0; g1 = 0.67; b1 = 0.0; a1 = 1.0;
-		r2 = 0.6; g2 = 0.0; b2 = 1.0; a2 = 1.0;
-		r3 = 0.0; g3 = 0.5; b3 = 1.0; a3 = 1.0;
-	}
-	
-	self.colorAxis1 = [NSColor colorWithDeviceRed:r1 green:g1 blue:b1 alpha:a1];
-	self.colorAxis2 = [NSColor colorWithDeviceRed:r2 green:g2 blue:b2 alpha:a2];
-	self.colorAxis3 = [NSColor colorWithDeviceRed:r3 green:g3 blue:b3 alpha:a3];
-	
-	undoQueue = [[NSMutableArray alloc] initWithCapacity: 0];
-	redoQueue = [[NSMutableArray alloc] initWithCapacity: 0];
-	
-	[self setToolIndex: tWL];
 	
 	return self;
 }
@@ -1557,7 +1566,7 @@ static float deg2rad = 3.14159265358979/180.0;
 		// 4th dimension
 		else if( dcmMode == 2)
 		{
-			Wait *progress = [[Wait alloc] initWithString:NSLocalizedString(@"Creating a DICOM series", nil)];
+			Wait *progress = [[Wait alloc] initWithString:NSLocalizedString(@"Creating series", nil)];
 			[progress showWindow: self];
 			[[progress progress] setMaxValue: maxMovieIndex+1];
 			
@@ -1600,7 +1609,7 @@ static float deg2rad = 3.14159265358979/180.0;
 		}
 		else if( dcmMode == 0) // A 3D sequence or batch sequence
 		{
-			Wait *progress = [[Wait alloc] initWithString: @"Creating a DICOM series"];
+			Wait *progress = [[Wait alloc] initWithString: @"Creating series"];
 			[progress showWindow:self];
 			[progress setCancel:YES];
 			
@@ -1783,6 +1792,11 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (void) exportDICOMFile:(id) sender
 {
+	if( [quicktimeWindow isVisible])
+		return;
+	if( [dcmWindow isVisible])
+		return;
+	
 	curExportView = [self selectedView];
 	
 	if( quicktimeExportMode)
@@ -1806,6 +1820,11 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (void) exportQuicktime:(id) sender
 {
+	if( [quicktimeWindow isVisible])
+		return;
+	if( [dcmWindow isVisible])
+		return;
+		
 	quicktimeExportMode = YES;
 	[self exportDICOMFile: sender];
 }

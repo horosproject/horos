@@ -8923,32 +8923,32 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					data = dest.data;
 					width = size;
 					height = size;
-					
-					NSBitmapImageRep *rep;
-		
-					rep = [[[NSBitmapImageRep alloc]
-							 initWithBitmapDataPlanes:nil
-										   pixelsWide:width
-										   pixelsHigh:height
-										bitsPerSample:bpp
-									  samplesPerPixel:spp
-											 hasAlpha:NO
-											 isPlanar:NO
-									   colorSpaceName:NSCalibratedRGBColorSpace
-										  bytesPerRow:width*bpp*spp/8
-										 bitsPerPixel:bpp*spp] autorelease];
-					
-					memcpy( [rep bitmapData], data, height*width*bpp*spp/8);
-					
-					NSImage *image = [[[NSImage alloc] init] autorelease];
-					[image addRepresentation:rep];
-					
-					free( data);
-					
-					return image;
 				}
 			}
 		}
+		
+		NSBitmapImageRep *rep;
+
+		rep = [[[NSBitmapImageRep alloc]
+				 initWithBitmapDataPlanes:nil
+							   pixelsWide:width
+							   pixelsHigh:height
+							bitsPerSample:bpp
+						  samplesPerPixel:spp
+								 hasAlpha:NO
+								 isPlanar:NO
+						   colorSpaceName:NSCalibratedRGBColorSpace
+							  bytesPerRow:width*bpp*spp/8
+							 bitsPerPixel:bpp*spp] autorelease];
+		
+		memcpy( [rep bitmapData], data, height*width*bpp*spp/8);
+		
+		NSImage *image = [[[NSImage alloc] init] autorelease];
+		[image addRepresentation:rep];
+		
+		free( data);
+		
+		return image;
 	}
 	
 	return [NSImage imageNamed: @"Empty.tif"];

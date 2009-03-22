@@ -17817,7 +17817,7 @@ int i,j,l;
 }
 
 
-- (IBAction)mprViewer:(id)sender
+- (IBAction) mprViewer:(id) sender
 {
 	[self checkEverythingLoaded];
 	[self clear8bitRepresentations];
@@ -17831,6 +17831,12 @@ int i,j,l;
 	}
 	else
 	{
+		if( [self isDataVolumicIn4D: YES] == NO || [[imageView curDCM] isRGB] == YES)
+		{
+			NSRunAlertPanel(NSLocalizedString(@"MPR", nil), NSLocalizedString(@"MPR requires volumic data and BW images.", nil), nil, nil, nil);
+			return;
+		}
+		
 		[self displayAWarningIfNonTrueVolumicData];
 		[self displayWarningIfGantryTitled];
 		

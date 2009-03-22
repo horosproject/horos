@@ -31,6 +31,7 @@
 	NSToolbar *toolbar;
 	
 	IBOutlet MPRDCMView *mprView1, *mprView2, *mprView3;
+	IBOutlet NSSplitView *horizontalSplit, *verticalSplit;
 	
 	// Blending
 	DCMView *blendedMprView1, *blendedMprView2, *blendedMprView3;
@@ -104,6 +105,7 @@
 @property BOOL dcmSameIntervalAndThickness, displayCrossLines, displayMousePosition, blendingModeAvailable;
 @property (retain) NSColor *colorAxis1, *colorAxis2, *colorAxis3;
 @property (readonly) MPRDCMView *mprView1, *mprView2, *mprView3;
+@property (readonly) NSSplitView *horizontalSplit, *verticalSplit;
 
 + (double) angleBetweenVector:(float*) a andPlane:(float*) orientation;
 

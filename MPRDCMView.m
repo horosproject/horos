@@ -36,6 +36,9 @@ static float deg2rad = 3.14159265358979/180.0;
 
 #define VIEW_COLOR_LABEL_SIZE 25
 
+static int splitPosition[ 2];
+static BOOL frameZoomed = NO;
+
 @implementation MPRDCMView
 
 @synthesize pix, camera, angleMPR, vrView, viewExport, toIntervalExport, fromIntervalExport, rotateLines, moveCenter;
@@ -80,6 +83,8 @@ static float deg2rad = 3.14159265358979/180.0;
 	pix = [pixList lastObject];
 	
 	currentTool = t3DRotate;
+	
+	frameZoomed = NO;
 	
 	windowController = [self windowController];
 }
@@ -380,9 +385,9 @@ static float deg2rad = 3.14159265358979/180.0;
 					{
 						for( int i = 1; i < windowController.dcmNumberOfFrames; i++)
 						{
-							glRotatef( (i * windowController.dcmRotation) / windowController.dcmNumberOfFrames, 0, 0, 1);
+							glRotatef( (float) (i * windowController.dcmRotation) / (float) windowController.dcmNumberOfFrames, 0, 0, 1);
 							[self drawCrossLines: crossLinesA ctx: cgl_ctx perpendicular: NO withShift: 0 half: YES];
-							glRotatef( -(i * windowController.dcmRotation) / windowController.dcmNumberOfFrames, 0, 0, 1);
+							glRotatef( -(float) (i * windowController.dcmRotation) / (float) windowController.dcmNumberOfFrames, 0, 0, 1);
 						}
 					}
 				}
@@ -425,9 +430,9 @@ static float deg2rad = 3.14159265358979/180.0;
 					{
 						for( int i = 1; i < windowController.dcmNumberOfFrames; i++)
 						{
-							glRotatef( (i * windowController.dcmRotation) / windowController.dcmNumberOfFrames, 0, 0, 1);
+							glRotatef( (float) (i * windowController.dcmRotation) / (float) windowController.dcmNumberOfFrames, 0, 0, 1);
 							[self drawCrossLines: crossLinesB ctx: cgl_ctx perpendicular: NO withShift: 0 half: YES];
-							glRotatef( -(i * windowController.dcmRotation) / windowController.dcmNumberOfFrames, 0, 0, 1);
+							glRotatef( -(float) (i * windowController.dcmRotation) / (float) windowController.dcmNumberOfFrames, 0, 0, 1);
 						}
 					}
 				}
@@ -473,9 +478,9 @@ static float deg2rad = 3.14159265358979/180.0;
 					{
 						for( int i = 1; i < windowController.dcmNumberOfFrames; i++)
 						{
-							glRotatef( (i * windowController.dcmRotation) / windowController.dcmNumberOfFrames, 0, 0, 1);
+							glRotatef( (float) (i * windowController.dcmRotation) / (float) windowController.dcmNumberOfFrames, 0, 0, 1);
 							[self drawCrossLines: crossLinesA ctx: cgl_ctx perpendicular: NO withShift: 0 half: YES];
-							glRotatef( -(i * windowController.dcmRotation) / windowController.dcmNumberOfFrames, 0, 0, 1);
+							glRotatef( -(float) (i * windowController.dcmRotation) / (float) windowController.dcmNumberOfFrames, 0, 0, 1);
 						}
 					}
 				}
@@ -519,9 +524,9 @@ static float deg2rad = 3.14159265358979/180.0;
 					{
 						for( int i = 1; i < windowController.dcmNumberOfFrames; i++)
 						{
-							glRotatef( (i * windowController.dcmRotation) / windowController.dcmNumberOfFrames, 0, 0, 1);
+							glRotatef( (float) (i * windowController.dcmRotation) / (float) windowController.dcmNumberOfFrames, 0, 0, 1);
 							[self drawCrossLines: crossLinesB ctx: cgl_ctx perpendicular: NO withShift: 0 half: YES];
-							glRotatef( -(i * windowController.dcmRotation) / windowController.dcmNumberOfFrames, 0, 0, 1);
+							glRotatef( -(float) (i * windowController.dcmRotation) / (float) windowController.dcmNumberOfFrames, 0, 0, 1);
 						}
 					}
 				}
@@ -567,9 +572,9 @@ static float deg2rad = 3.14159265358979/180.0;
 					{
 						for( int i = 1; i < windowController.dcmNumberOfFrames; i++)
 						{
-							glRotatef( (i * windowController.dcmRotation) / windowController.dcmNumberOfFrames, 0, 0, 1);
+							glRotatef( (float) (i * windowController.dcmRotation) / (float) windowController.dcmNumberOfFrames, 0, 0, 1);
 							[self drawCrossLines: crossLinesA ctx: cgl_ctx perpendicular: NO withShift: 0 half: YES];
-							glRotatef( -(i * windowController.dcmRotation) / windowController.dcmNumberOfFrames, 0, 0, 1);
+							glRotatef( -(float) (i * windowController.dcmRotation) / (float) windowController.dcmNumberOfFrames, 0, 0, 1);
 						}
 					}
 				}
@@ -613,9 +618,9 @@ static float deg2rad = 3.14159265358979/180.0;
 					{
 						for( int i = 1; i < windowController.dcmNumberOfFrames; i++)
 						{
-							glRotatef( (i * windowController.dcmRotation) / windowController.dcmNumberOfFrames, 0, 0, 1);
+							glRotatef( (float) (i * windowController.dcmRotation) / (float) windowController.dcmNumberOfFrames, 0, 0, 1);
 							[self drawCrossLines: crossLinesB ctx: cgl_ctx perpendicular: NO withShift: 0 half: YES];
-							glRotatef( -(i * windowController.dcmRotation) / windowController.dcmNumberOfFrames, 0, 0, 1);
+							glRotatef( -(float) (i * windowController.dcmRotation) / (float) windowController.dcmNumberOfFrames, 0, 0, 1);
 						}
 					}
 				}
@@ -924,46 +929,82 @@ static float deg2rad = 3.14159265358979/180.0;
 	if( [[self window] firstResponder] != self)
 		[[self window] makeFirstResponder: self];
 	
-	[windowController addToUndoQueue:@"mprCamera"];
-	
-	rotateLines = NO;
-	moveCenter = NO;
-	
-	int mouseOnLines = [self mouseOnLines: [self convertPoint:[theEvent locationInWindow] fromView:nil]];
-	if( mouseOnLines == 2)
+	if( [theEvent clickCount] == 2)
 	{
-		moveCenter = YES;
-		[[NSCursor closedHandCursor] set];
-	}
-	else if( mouseOnLines == 1)
-	{
-		rotateLines = YES;
-		
-		NSPoint mouseLocation = [self ConvertFromNSView2GL: [self convertPoint: [theEvent locationInWindow] fromView: nil]];
-		mouseLocation.x *= curDCM.pixelSpacingX;	mouseLocation.y *= curDCM.pixelSpacingY;
-		rotateLinesStartAngle = [self angleBetween: mouseLocation center: [self centerLines]] - angleMPR;
-		
-		[[NSCursor rotateAxisCursor] set];
-	}
-	else
-	{
-		long tool = [self getTool: theEvent];
-		
-		[self restoreCamera];
-		
-		if([self is2DTool:tool])
+		if( frameZoomed == NO)
 		{
-			[super mouseDown: theEvent];
-			[windowController propagateWLWW: self];
+			splitPosition[ 0] = [[windowController mprView1] frame].origin.y + [[windowController mprView1] frame].size.height;
+			splitPosition[ 1] = [[windowController mprView1] frame].origin.x + [[windowController mprView1] frame].size.width;
+			
+			frameZoomed = YES;
+			switch( viewID)
+			{
+				case 1:
+					[windowController.horizontalSplit setPosition: [windowController.horizontalSplit maxPossiblePositionOfDividerAtIndex: 0] ofDividerAtIndex: 0];
+					[windowController.verticalSplit setPosition: [windowController.verticalSplit maxPossiblePositionOfDividerAtIndex: 0] ofDividerAtIndex: 0];
+				break;
+				
+				case 2:
+					[windowController.horizontalSplit setPosition: [windowController.horizontalSplit minPossiblePositionOfDividerAtIndex: 0] ofDividerAtIndex: 0];
+					[windowController.verticalSplit setPosition: [windowController.verticalSplit maxPossiblePositionOfDividerAtIndex: 0] ofDividerAtIndex: 0];
+				break;
+				
+				case 3:
+					[windowController.horizontalSplit setPosition: [windowController.horizontalSplit minPossiblePositionOfDividerAtIndex: 0] ofDividerAtIndex: 0];
+					[windowController.verticalSplit setPosition: [windowController.verticalSplit minPossiblePositionOfDividerAtIndex: 0] ofDividerAtIndex: 0];
+				break;
+			}
 		}
 		else
 		{
-			[vrView mouseDown: theEvent];
+			frameZoomed = NO;
+			[windowController.horizontalSplit setPosition: splitPosition[ 0] ofDividerAtIndex: 0];
+			[windowController.verticalSplit setPosition: splitPosition[ 1] ofDividerAtIndex: 0];
+		}
+	}
+	else
+	{	
+		[windowController addToUndoQueue:@"mprCamera"];
+		
+		rotateLines = NO;
+		moveCenter = NO;
+		
+		int mouseOnLines = [self mouseOnLines: [self convertPoint:[theEvent locationInWindow] fromView:nil]];
+		if( mouseOnLines == 2)
+		{
+			moveCenter = YES;
+			[[NSCursor closedHandCursor] set];
+		}
+		else if( mouseOnLines == 1)
+		{
+			rotateLines = YES;
 			
-			if( [vrView _tool] == tRotate)
-				[self updateViewMPR: NO];
+			NSPoint mouseLocation = [self ConvertFromNSView2GL: [self convertPoint: [theEvent locationInWindow] fromView: nil]];
+			mouseLocation.x *= curDCM.pixelSpacingX;	mouseLocation.y *= curDCM.pixelSpacingY;
+			rotateLinesStartAngle = [self angleBetween: mouseLocation center: [self centerLines]] - angleMPR;
+			
+			[[NSCursor rotateAxisCursor] set];
+		}
+		else
+		{
+			long tool = [self getTool: theEvent];
+			
+			[self restoreCamera];
+			
+			if([self is2DTool:tool])
+			{
+				[super mouseDown: theEvent];
+				[windowController propagateWLWW: self];
+			}
 			else
-				[self updateViewMPR];
+			{
+				[vrView mouseDown: theEvent];
+				
+				if( [vrView _tool] == tRotate)
+					[self updateViewMPR: NO];
+				else
+					[self updateViewMPR];
+			}
 		}
 	}
 }

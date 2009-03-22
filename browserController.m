@@ -5101,9 +5101,21 @@ static NSArray*	statesArray = nil;
 {
 	[previousItem release];
 	previousItem = nil;	// This will force the matrix update
+	
+	BOOL firstResponderMatrix = NO;
+	
+	if( [[self window] firstResponder] == oMatrix)
+	{
+		[[self window] makeFirstResponder: databaseOutline];
+		firstResponderMatrix = YES;
+	}
+	
 	[[NSNotificationCenter defaultCenter] postNotificationName: NSOutlineViewSelectionDidChangeNotification  object:databaseOutline userInfo: nil];
 	
 	[imageView display];
+	
+	if( firstResponderMatrix)
+		[[self window] makeFirstResponder: oMatrix];
 }
 
 - (void) mergeSeriesExecute:(NSArray*) seriesArray
@@ -5671,7 +5683,7 @@ static NSArray*	statesArray = nil;
 	
 	if( result == NSAlertDefaultReturn)	// REMOVE AND DELETE IT FROM THE DATABASE
 	{
-		NSMutableArray			*objectsToDelete = [NSMutableArray arrayWithCapacity: 0];
+		NSMutableArray *objectsToDelete = [NSMutableArray arrayWithCapacity: 0];
 		
 		if( matrixThumbnails)
 		{
@@ -5683,7 +5695,7 @@ static NSArray*	statesArray = nil;
 			[self filesForDatabaseOutlineSelection: objectsToDelete onlyImages: NO];
 		}
 		
-		NSIndexSet		*selectedRows = [databaseOutline selectedRowIndexes];
+		NSIndexSet *selectedRows = [databaseOutline selectedRowIndexes];
 		
 		if( [databaseOutline selectedRow] >= 0)
 		{
