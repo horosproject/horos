@@ -7219,6 +7219,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 - (void) drawCrossLines:(float[2][3]) sft ctx: (CGLContextObj) cgl_ctx perpendicular:(BOOL) perpendicular withShift:(double) shift
 {
+	return [self drawCrossLines: sft ctx:  cgl_ctx perpendicular: perpendicular withShift: shift half: NO];
+}
+
+- (void) drawCrossLines:(float[2][3]) sft ctx: (CGLContextObj) cgl_ctx perpendicular:(BOOL) perpendicular withShift:(double) shift half:(BOOL) half
+{
 	float a[ 2] = {0, 0};	// perpendicular vector
 	float c[2][3];
 	
@@ -7242,7 +7247,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	glBegin(GL_LINES);
 		glVertex2f( scaleValue*(c[ 0][ 0]/curDCM.pixelSpacingX-curDCM.pwidth/2.), scaleValue*(c[ 0][ 1]/curDCM.pixelSpacingY - curDCM.pheight /2.));
-		glVertex2f( scaleValue*(c[ 1][ 0]/curDCM.pixelSpacingX-curDCM.pwidth/2.), scaleValue*(c[ 1][ 1]/curDCM.pixelSpacingY - curDCM.pheight /2.));
+		
+		if( half)
+			glVertex2f( 0, 0);
+		else
+			glVertex2f( scaleValue*(c[ 1][ 0]/curDCM.pixelSpacingX-curDCM.pwidth/2.), scaleValue*(c[ 1][ 1]/curDCM.pixelSpacingY - curDCM.pheight /2.));
 	glEnd();
 	
 	if( perpendicular)
@@ -8477,7 +8486,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 							t_rgb+=3;
 						}
 					#else
-						glReadPixels( smartCroppedRect.origin.x, [self frame].size.height-smartCroppedRect.origin.y-smartCroppedRect.size.height, smartCroppedRect.size.width, smartCroppedRect.size.height, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, buf);		//GL_ABGR_EXT
+ 						glReadPixels( smartCroppedRect.origin.x, [self frame].size.height-smartCroppedRect.origin.y-smartCroppedRect.size.height, smartCroppedRect.size.width, smartCroppedRect.size.height, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, buf);		//GL_ABGR_EXT
 						
 						register int ii = *width * *height;
 						register unsigned char	*t_argb = buf;
@@ -8843,13 +8852,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	NSString *f = nil;
 	float o[ 9], imOrigin[ 3], imSpacing[ 2];
 	long width, height, spp, bpp;
-	
-	if( size)
-	{
-		NSRect r = [self frame];
-		r.size.width = r.size.width = size;
-		[self setFrame: r];
-	}
+	NSRect savedFrame = [self frame];
 	
 	unsigned char *data = [self getRawPixelsViewWidth: &width height: &height spp: &spp bpp: &bpp screenCapture: YES force8bits: YES removeGraphical: YES squarePixels: YES allowSmartCropping: NO origin: imOrigin spacing: imSpacing offset: nil isSigned: nil];
 	

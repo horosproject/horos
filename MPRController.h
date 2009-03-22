@@ -73,6 +73,8 @@
 	BOOL quicktimeExportMode;
 	NSMutableArray *qtFileArray;
 	
+	int dcmmN;
+	
 	// Clipping Range
 	float clippingRangeThickness;
 	int clippingRangeMode;
@@ -92,7 +94,7 @@
 }
 
 @property float clippingRangeThickness, dcmInterval, blendingPercentage;
-@property int clippingRangeMode, mouseViewID, dcmFrom, dcmTo, dcmMode, dcmSeriesMode, dcmRotation, dcmRotationDirection, dcmNumberOfFrames, dcmQuality, dcmBatchNumberOfFrames;
+@property int dcmmN, clippingRangeMode, mouseViewID, dcmFrom, dcmTo, dcmMode, dcmSeriesMode, dcmRotation, dcmRotationDirection, dcmNumberOfFrames, dcmQuality, dcmBatchNumberOfFrames;
 @property int dcmFormat, curMovieIndex, maxMovieIndex, blendingMode;
 @property (retain) Point3D *mousePosition;
 @property (retain) NSArray *wlwwMenuItems;

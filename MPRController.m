@@ -30,7 +30,7 @@ static float deg2rad = 3.14159265358979/180.0;
 @implementation MPRController
 
 @synthesize displayCrossLines, dcmSameIntervalAndThickness, clippingRangeThickness, clippingRangeMode, mousePosition, mouseViewID, originalPix, wlwwMenuItems, LOD, dcmFrom;
-@synthesize dcmTo, dcmMode, dcmRotationDirection, dcmSeriesMode, dcmRotation, dcmNumberOfFrames, dcmQuality, dcmInterval, dcmSeriesName, dcmBatchNumberOfFrames;
+@synthesize dcmmN, dcmTo, dcmMode, dcmRotationDirection, dcmSeriesMode, dcmRotation, dcmNumberOfFrames, dcmQuality, dcmInterval, dcmSeriesName, dcmBatchNumberOfFrames;
 @synthesize colorAxis1, colorAxis2, colorAxis3, displayMousePosition, movieRate, blendingPercentage;
 @synthesize mprView1, mprView2, mprView3, curMovieIndex, maxMovieIndex, blendingMode, dcmFormat, blendingModeAvailable;
 
@@ -1510,12 +1510,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	c2 = [[[mprView2 camera] copy] autorelease];
 	c3 = [[[mprView3 camera] copy] autorelease];
 	
-	mprView1.fromIntervalExport = 0;
-	mprView1.toIntervalExport = 0;
-	mprView2.fromIntervalExport = 0;
-	mprView2.toIntervalExport = 0;
-	mprView3.fromIntervalExport = 0;
-	mprView3.toIntervalExport = 0;
+	mprView1.viewExport = mprView2.viewExport = mprView3.viewExport = -1;
 	
 	if( [sender tag])
 	{
@@ -1817,49 +1812,90 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (void) displayFromToSlices
 {
+	mprView1.viewExport = mprView2.viewExport = mprView3.viewExport = -1;
+	
 	if( curExportView == mprView3)
 	{
-		mprView1.toIntervalExport = dcmTo;
-		mprView1.fromIntervalExport = dcmFrom;
-		mprView1.viewExport = 1;
-		
-		mprView2.toIntervalExport = dcmTo;
-		mprView2.fromIntervalExport = dcmFrom;
-		mprView2.viewExport = 1;
-		
-		[mprView1 setNeedsDisplay: YES];
-		[mprView2 setNeedsDisplay: YES];
+		if( dcmSeriesMode == 0) // Batch
+		{
+			mprView1.toIntervalExport = dcmTo;
+			mprView1.fromIntervalExport = dcmFrom;
+			mprView1.viewExport = 1;
+			
+			mprView2.toIntervalExport = dcmTo;
+			mprView2.fromIntervalExport = dcmFrom;
+			mprView2.viewExport = 1;
+		}
+		else // Rotation
+		{
+			if( dcmRotationDirection == 1)
+				mprView1.viewExport = 1;
+			else
+				mprView2.viewExport = 1;
+		}
 	}
 	
 	if( curExportView == mprView2)
 	{
-		mprView1.toIntervalExport = dcmTo;
-		mprView1.fromIntervalExport = dcmFrom;
-		mprView1.viewExport = 0;
-		
-		mprView3.toIntervalExport = dcmTo;
-		mprView3.fromIntervalExport = dcmFrom;
-		mprView3.viewExport = 1;
-		
-		[mprView1 setNeedsDisplay: YES];
-		[mprView3 setNeedsDisplay: YES];
+		if( dcmSeriesMode == 0) // Batch
+		{
+			mprView1.toIntervalExport = dcmTo;
+			mprView1.fromIntervalExport = dcmFrom;
+			mprView1.viewExport = 0;
+			
+			mprView3.toIntervalExport = dcmTo;
+			mprView3.fromIntervalExport = dcmFrom;
+			mprView3.viewExport = 1;
+		}
+		else // Rotation
+		{
+			if( dcmRotationDirection == 1)
+				mprView1.viewExport = 0;
+			else
+				mprView3.viewExport = 1;
+		}
 	}
 	
 	if( curExportView == mprView1)
 	{
-		mprView2.toIntervalExport = dcmTo;
-		mprView2.fromIntervalExport = dcmFrom;
-		mprView2.viewExport = 0;
-		
-		mprView3.toIntervalExport = dcmTo;
-		mprView3.fromIntervalExport = dcmFrom;
-		mprView3.viewExport = 0;
-		
-		[mprView2 setNeedsDisplay: YES];
-		[mprView3 setNeedsDisplay: YES];
+		if( dcmSeriesMode == 0) // Batch
+		{
+			mprView2.toIntervalExport = dcmTo;
+			mprView2.fromIntervalExport = dcmFrom;
+			mprView2.viewExport = 0;
+			
+			mprView3.toIntervalExport = dcmTo;
+			mprView3.fromIntervalExport = dcmFrom;
+			mprView3.viewExport = 0;
+		}
+		else // Rotation
+		{
+			if( dcmRotationDirection == 1)
+				mprView3.viewExport = 0;
+			else
+				mprView2.viewExport = 0;
+		}
 	}
 	
+	[mprView1 setNeedsDisplay: YES];
+	[mprView2 setNeedsDisplay: YES];
+	[mprView3 setNeedsDisplay: YES];
+	
 	self.dcmBatchNumberOfFrames = dcmTo + dcmFrom;
+}
+
+- (void) setDcmSeriesMode: (int) f
+{
+	dcmSeriesMode = f;
+	
+	[self displayFromToSlices];
+}
+
+- (void) setDcmMode: (int) f
+{
+	dcmMode = f;
+	
+	[self displayFromToSlices];
 }
 
 - (void) setDcmInterval:(float) f
@@ -1874,6 +1910,24 @@ static float deg2rad = 3.14159265358979/180.0;
 	
 	previousDcmInterval = f;
 	
+	[self displayFromToSlices];
+}
+
+- (void) setDcmRotation:(int) v
+{
+	dcmRotation = v;
+	[self displayFromToSlices];
+}
+
+- (void) setDcmRotationDirection:(int) v
+{
+	dcmRotationDirection = v;
+	[self displayFromToSlices];
+}
+
+- (void) setDcmNumberOfFrames:(int) v
+{
+	dcmNumberOfFrames = v;
 	[self displayFromToSlices];
 }
 

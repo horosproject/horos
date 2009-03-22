@@ -341,7 +341,6 @@ static float deg2rad = 3.14159265358979/180.0;
 		switch( viewID)
 		{
 			case 1:
-				//glColor4f (VIEW_2_RED, VIEW_2_GREEN, VIEW_2_BLUE, VIEW_2_ALPHA);
 				glColor4f ([windowController.colorAxis2 redComponent], [windowController.colorAxis2 greenComponent], [windowController.colorAxis2 blueComponent], [windowController.colorAxis2 alphaComponent]);
 				if( crossLinesA[ 0][ 0] != HUGE_VALF)
 				{
@@ -360,7 +359,7 @@ static float deg2rad = 3.14159265358979/180.0;
 						[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: 0];
 					}
 					
-					if( viewExport == 0)
+					if( viewExport == 0 && windowController.dcmMode == 0 && windowController.dcmSeriesMode == 0)
 					{
 						glLineWidth(1.0);
 						
@@ -376,8 +375,17 @@ static float deg2rad = 3.14159265358979/180.0;
 								[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: i * [windowController dcmInterval]];
 						}
 					}
+					
+					if( viewExport == 0 && windowController.dcmMode == 0 && windowController.dcmSeriesMode == 1) // Rotation
+					{
+						for( int i = 1; i < windowController.dcmNumberOfFrames; i++)
+						{
+							glRotatef( (i * windowController.dcmRotation) / windowController.dcmNumberOfFrames, 0, 0, 1);
+							[self drawCrossLines: crossLinesA ctx: cgl_ctx perpendicular: NO withShift: 0 half: YES];
+							glRotatef( -(i * windowController.dcmRotation) / windowController.dcmNumberOfFrames, 0, 0, 1);
+						}
+					}
 				}
-				//glColor4f (VIEW_3_RED, VIEW_3_GREEN, VIEW_3_BLUE, VIEW_3_ALPHA);
 				glColor4f ([windowController.colorAxis3 redComponent], [windowController.colorAxis3 greenComponent], [windowController.colorAxis3 blueComponent], [windowController.colorAxis3 alphaComponent]);
 				if( crossLinesB[ 0][ 0] != HUGE_VALF)
 				{
@@ -396,7 +404,7 @@ static float deg2rad = 3.14159265358979/180.0;
 						[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: 0];
 					}
 					
-					if( viewExport == 1)
+					if( viewExport == 1 && windowController.dcmMode == 0 && windowController.dcmSeriesMode == 0)
 					{
 						glLineWidth(1.0);
 						
@@ -410,13 +418,22 @@ static float deg2rad = 3.14159265358979/180.0;
 						{
 							for( int i = 0; i < toIntervalExport; i++)
 								[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: i * [windowController dcmInterval]];
+						}
+					}
+					
+					if( viewExport == 1 && windowController.dcmMode == 0 && windowController.dcmSeriesMode == 1) // Rotation
+					{
+						for( int i = 1; i < windowController.dcmNumberOfFrames; i++)
+						{
+							glRotatef( (i * windowController.dcmRotation) / windowController.dcmNumberOfFrames, 0, 0, 1);
+							[self drawCrossLines: crossLinesB ctx: cgl_ctx perpendicular: NO withShift: 0 half: YES];
+							glRotatef( -(i * windowController.dcmRotation) / windowController.dcmNumberOfFrames, 0, 0, 1);
 						}
 					}
 				}
 			break;
 			
 			case 2:
-				//glColor4f (VIEW_1_RED, VIEW_1_GREEN, VIEW_1_BLUE, VIEW_1_ALPHA);
 				glColor4f ([windowController.colorAxis1 redComponent], [windowController.colorAxis1 greenComponent], [windowController.colorAxis1 blueComponent], [windowController.colorAxis1 alphaComponent]);
 				if( crossLinesA[ 0][ 0] != HUGE_VALF)
 				{
@@ -435,7 +452,7 @@ static float deg2rad = 3.14159265358979/180.0;
 						[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: 0];
 					}
 					
-					if( viewExport == 0)
+					if( viewExport == 0 && windowController.dcmMode == 0 && windowController.dcmSeriesMode == 0)
 					{
 						glLineWidth(1.0);
 						
@@ -451,9 +468,18 @@ static float deg2rad = 3.14159265358979/180.0;
 								[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: i * [windowController dcmInterval]];
 						}
 					}
+					
+					if( viewExport == 0 && windowController.dcmMode == 0 && windowController.dcmSeriesMode == 1) // Rotation
+					{
+						for( int i = 1; i < windowController.dcmNumberOfFrames; i++)
+						{
+							glRotatef( (i * windowController.dcmRotation) / windowController.dcmNumberOfFrames, 0, 0, 1);
+							[self drawCrossLines: crossLinesA ctx: cgl_ctx perpendicular: NO withShift: 0 half: YES];
+							glRotatef( -(i * windowController.dcmRotation) / windowController.dcmNumberOfFrames, 0, 0, 1);
+						}
+					}
 				}
 				
-				//glColor4f (VIEW_3_RED, VIEW_3_GREEN, VIEW_3_BLUE, VIEW_3_ALPHA);
 				glColor4f ([windowController.colorAxis3 redComponent], [windowController.colorAxis3 greenComponent], [windowController.colorAxis3 blueComponent], [windowController.colorAxis3 alphaComponent]);
 				if( crossLinesB[ 0][ 0] != HUGE_VALF)
 				{
@@ -472,7 +498,7 @@ static float deg2rad = 3.14159265358979/180.0;
 						[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: 0];
 					}
 					
-					if( viewExport == 1)
+					if( viewExport == 1 && windowController.dcmMode == 0 && windowController.dcmSeriesMode == 0)
 					{
 						glLineWidth(1.0);
 						
@@ -488,11 +514,20 @@ static float deg2rad = 3.14159265358979/180.0;
 								[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: i * [windowController dcmInterval]];
 						}
 					}
+					
+					if( viewExport == 1 && windowController.dcmMode == 0 && windowController.dcmSeriesMode == 1) // Rotation
+					{
+						for( int i = 1; i < windowController.dcmNumberOfFrames; i++)
+						{
+							glRotatef( (i * windowController.dcmRotation) / windowController.dcmNumberOfFrames, 0, 0, 1);
+							[self drawCrossLines: crossLinesB ctx: cgl_ctx perpendicular: NO withShift: 0 half: YES];
+							glRotatef( -(i * windowController.dcmRotation) / windowController.dcmNumberOfFrames, 0, 0, 1);
+						}
+					}
 				}
 			break;
 			
 			case 3:
-				//glColor4f (VIEW_1_RED, VIEW_1_GREEN, VIEW_1_BLUE, VIEW_1_ALPHA);
 				glColor4f ([windowController.colorAxis1 redComponent], [windowController.colorAxis1 greenComponent], [windowController.colorAxis1 blueComponent], [windowController.colorAxis1 alphaComponent]);
 				if( crossLinesA[ 0][ 0] != HUGE_VALF)
 				{
@@ -511,7 +546,7 @@ static float deg2rad = 3.14159265358979/180.0;
 						[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: 0];
 					}
 					
-					if( viewExport == 0)
+					if( viewExport == 0 && windowController.dcmMode == 0 && windowController.dcmSeriesMode == 0)
 					{
 						glLineWidth(1.0);
 						
@@ -527,9 +562,18 @@ static float deg2rad = 3.14159265358979/180.0;
 								[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: -i * [windowController dcmInterval]];
 						}
 					}
+					
+					if( viewExport == 0 && windowController.dcmMode == 0 && windowController.dcmSeriesMode == 1) // Rotation
+					{
+						for( int i = 1; i < windowController.dcmNumberOfFrames; i++)
+						{
+							glRotatef( (i * windowController.dcmRotation) / windowController.dcmNumberOfFrames, 0, 0, 1);
+							[self drawCrossLines: crossLinesA ctx: cgl_ctx perpendicular: NO withShift: 0 half: YES];
+							glRotatef( -(i * windowController.dcmRotation) / windowController.dcmNumberOfFrames, 0, 0, 1);
+						}
+					}
 				}
 				
-				//glColor4f (VIEW_2_RED, VIEW_2_GREEN, VIEW_2_BLUE, VIEW_2_ALPHA);
 				glColor4f ([windowController.colorAxis2 redComponent], [windowController.colorAxis2 greenComponent], [windowController.colorAxis2 blueComponent], [windowController.colorAxis2 alphaComponent]);
 				if( crossLinesB[ 0][ 0] != HUGE_VALF)
 				{
@@ -548,7 +592,7 @@ static float deg2rad = 3.14159265358979/180.0;
 						[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: 0];
 					}
 					
-					if( viewExport == 1)
+					if( viewExport == 1 && windowController.dcmMode == 0 && windowController.dcmSeriesMode == 0)
 					{
 						glLineWidth(1.0);
 						
@@ -564,12 +608,20 @@ static float deg2rad = 3.14159265358979/180.0;
 								[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: -i * [windowController dcmInterval]];
 						}
 					}
+					
+					if( viewExport == 1 && windowController.dcmMode == 0 && windowController.dcmSeriesMode == 1) // Rotation
+					{
+						for( int i = 1; i < windowController.dcmNumberOfFrames; i++)
+						{
+							glRotatef( (i * windowController.dcmRotation) / windowController.dcmNumberOfFrames, 0, 0, 1);
+							[self drawCrossLines: crossLinesB ctx: cgl_ctx perpendicular: NO withShift: 0 half: YES];
+							glRotatef( -(i * windowController.dcmRotation) / windowController.dcmNumberOfFrames, 0, 0, 1);
+						}
+					}
 				}
 			break;
 		}
 	}
-	
-	
 	
 	float heighthalf = self.frame.size.height/2;
 	float widthhalf = self.frame.size.width/2;

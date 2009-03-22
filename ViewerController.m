@@ -15219,6 +15219,8 @@ int i,j,l;
 			[exportDCM setSeriesNumber:5300 + [[NSCalendarDate date] minuteOfHour] + [[NSCalendarDate date] secondOfMinute]];	//Try to create a unique series number... Do you have a better idea??
 			[exportDCM setSeriesDescription: [dcmSeriesName stringValue]];
 			
+			NSLog( @"export start");
+			
 			for (i = from ; i < to; i += interval)
 			{
 				NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
@@ -15254,6 +15256,8 @@ int i,j,l;
 				
 				[pool release];
 			}
+			
+			NSLog( @"export end");
 			
 			// Go back to initial frame
 			[imageView setIndex: curImage];
