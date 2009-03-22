@@ -146,7 +146,7 @@ static float deg2rad = 3.14159265358979/180.0;
 		hiddenVRView = [hiddenVRController view];
 		[hiddenVRView setClipRangeActivated: YES];
 		[hiddenVRView resetImage: self];
-		[self setLOD: 10];
+		[self setLOD: 20];
 		hiddenVRView.keep3DRotateCentered = YES;
 		
 		[mprView1 setVRView: hiddenVRView viewID: 1];
@@ -254,9 +254,7 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (void) showWindow:(id) sender
 {
-	mprView1.angleMPR = 0;
-	mprView2.angleMPR = 0;
-	mprView3.angleMPR = 0;
+	[self setLOD: 20];
 	
 	// Default Init
 	[self setClippingRangeMode: 1]; // MIP
@@ -274,8 +272,10 @@ static float deg2rad = 3.14159265358979/180.0;
 	mprView2.camera.viewUp = [Point3D pointWithX:0 y:-1 z:0];
 	
 	[[self window] makeFirstResponder: mprView3];
+	mprView3.camera.viewUp = [Point3D pointWithX:0 y:0 z:1];
+	mprView3.camera.rollAngle = 0;
+	mprView3.angleMPR = 0;
 	[mprView3 restoreCamera];
-	mprView3.camera.viewUp = [Point3D pointWithX:0 y:0 z:-1];
 	[mprView3 updateViewMPR];
 	
 	[super showWindow: sender];
