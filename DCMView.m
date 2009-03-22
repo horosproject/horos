@@ -3164,8 +3164,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	pixelMouseValueR = 0;
 	pixelMouseValueG = 0;
 	pixelMouseValueB = 0;
-	mouseXPos = 0;							// DDP (041214): if outside view bounds show zeros
-	mouseYPos = 0;							// otherwise update mouseXPos, mouseYPos, pixelMouseValue
+	mouseXPos = 0;
+	mouseYPos = 0;
 	pixelMouseValue = 0;
 	
 	if( [[self window] isVisible] && [[self window] isKeyWindow])
@@ -3215,13 +3215,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				}
 				else pixelMouseValue = [curDCM getPixelValueX: xPos Y:yPos];
 			}
-		}
-		
-		if(!mouseOnImage)
-		{
-#ifdef new_loupe
-			[self hideLoupe];
-#endif
 		}
 		
 		if(	cpixelMouseValueR != pixelMouseValueR)	needUpdate = YES;
@@ -3295,6 +3288,15 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				if( [theEvent modifierFlags]) [self flagsChanged: theEvent];
 			}
 		}
+		
+		
+		if(!mouseOnImage)
+		{
+#ifdef new_loupe
+			[self hideLoupe];
+#endif
+		}
+		
 		
 		[drawLock unlock];
 	}

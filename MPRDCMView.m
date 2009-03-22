@@ -113,6 +113,7 @@ static BOOL frameZoomed = NO;
 	if( blendingView)
 	{
 		[blendingView setFrame: frameRect];
+		blendingView.drawingFrameRect = frameRect; // very important to have correct position values with PET-CT
 	}
 	
 	[super setFrame: frameRect];

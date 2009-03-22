@@ -159,20 +159,20 @@ static float deg2rad = 3.14159265358979/180.0;
 		[mprView3 setWLWW: [originalPix wl] :[originalPix ww]];
 		
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(UpdateWLWWMenu:) name:@"UpdateWLWWMenu" object:nil];
-		curWLWWMenu = @"";
-		[curWLWWMenu retain];
-		[self UpdateWLWWMenu:nil];
+		curWLWWMenu = [[viewer2D curWLWWMenu] retain];
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: nil];
 		
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(UpdateCLUTMenu:) name:@"UpdateCLUTMenu" object: nil];
-		curCLUTMenu = [NSLocalizedString(@"No CLUT", nil) retain];
-		[self UpdateCLUTMenu:nil];
+		curCLUTMenu = [[viewer2D curCLUTMenu] retain];
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: nil];
 		
-		curOpacityMenu = [NSLocalizedString(@"Linear Table", nil) retain];
+		startingOpacityMenu = [[viewer2D curOpacityMenu] retain];
+		curOpacityMenu = [startingOpacityMenu retain];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(UpdateOpacityMenu:) name:@"UpdateOpacityMenu" object:nil];
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: nil];
 		
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(CloseViewerNotification:) name:@"CloseViewerNotification" object:nil];
-		[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(changeWLWW:) name: @"changeWLWW" object: nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector: @selector(changeWLWW:) name: @"changeWLWW" object: nil];
 		
 		[shadingCheck setAction:@selector(switchShading:)];
 		[shadingCheck setTarget:self];
@@ -309,6 +309,8 @@ static float deg2rad = 3.14159265358979/180.0;
 	[blendedMprView1 release];
 	[blendedMprView2 release];
 	[blendedMprView3 release];
+	
+	[startingOpacityMenu release];
 	
 	[super dealloc];
 	
@@ -848,9 +850,9 @@ static float deg2rad = 3.14159265358979/180.0;
     for(int i = 0; i < [sortedKeys count]; i++)
 		[tmp addObject:[[[NSMenuItem alloc] initWithTitle:[NSString stringWithFormat:@"%d - %@", i+1, [sortedKeys objectAtIndex:i]] action:@selector(ApplyWLWW:) keyEquivalent:@""] autorelease]];
 
-    [tmp addObject:[NSMenuItem separatorItem]];
-	[tmp addObject:[[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Add Current WL/WW", nil) action:@selector(AddCurrentWLWW:) keyEquivalent:@""] autorelease]];
-	[tmp addObject:[[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Set WL/WW Manually", nil) action:@selector(SetWLWW:) keyEquivalent:@""] autorelease]];	
+//    [tmp addObject:[NSMenuItem separatorItem]];
+//	[tmp addObject:[[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Add Current WL/WW", nil) action:@selector(AddCurrentWLWW:) keyEquivalent:@""] autorelease]];
+//	[tmp addObject:[[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Set WL/WW Manually", nil) action:@selector(SetWLWW:) keyEquivalent:@""] autorelease]];	
 	
 	self.wlwwMenuItems = tmp;
 }
@@ -868,6 +870,13 @@ static float deg2rad = 3.14159265358979/180.0;
     {
         [[wlwwPopup menu] addItem:[self.wlwwMenuItems objectAtIndex:i]];
     }
+	
+	if( [note object])
+	{
+		[curWLWWMenu release];
+		curWLWWMenu = [[note object] retain];
+		[wlwwPopup setTitle: curWLWWMenu];
+	}
 }
 
 - (void)ApplyWLWW:(id)sender;
@@ -942,64 +951,86 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (void)UpdateCLUTMenu:(NSNotification*)note
 {
-	[super UpdateCLUTMenu:note];
+    //*** Build the menu
+    int i;
+    NSArray *keys;
+    NSArray *sortedKeys;
+
+    // Presets VIEWER Menu
 	
-	// path 1 : /OsiriX Data/CLUTs/
-	NSMutableString *path = [NSMutableString stringWithString: [[BrowserController currentBrowser] documentsDirectory]];
-	[path appendString: CLUTDATABASE];
-	// path 2 : /resources_bundle_path/CLUTs/
-	NSMutableString *bundlePath = [NSMutableString stringWithString:[[NSBundle mainBundle] resourcePath]];
-	[bundlePath appendString: CLUTDATABASE];
+	keys = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"CLUT"] allKeys];
+    sortedKeys = [keys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
 	
-	NSMutableArray *paths = [NSMutableArray arrayWithObjects:path, bundlePath, nil];
+    i = [[clutPopup menu] numberOfItems];
+    while(i-- > 0) [[clutPopup menu] removeItemAtIndex:0];
 	
-	NSMutableArray *clutArray = [NSMutableArray array];
-	BOOL isDir;
+	[[clutPopup menu] addItemWithTitle:NSLocalizedString(@"No CLUT", nil) action:nil keyEquivalent:@""];
+    [[clutPopup menu] addItemWithTitle:NSLocalizedString(@"No CLUT", nil) action:@selector (ApplyCLUT:) keyEquivalent:@""];
+	[[clutPopup menu] addItem: [NSMenuItem separatorItem]];
 	
-	for (NSUInteger j=0; j<[paths count]; j++)
-	{
-		if([[NSFileManager defaultManager] fileExistsAtPath:[paths objectAtIndex:j] isDirectory:&isDir] && isDir)
-		{
-			NSArray *content = [[NSFileManager defaultManager] directoryContentsAtPath:[paths objectAtIndex:j]];
-			for (NSUInteger i=0; i<[content count]; i++)
-			{
-				if( [[content objectAtIndex:i] length] > 0)
-				{
-					if( [[content objectAtIndex:i] characterAtIndex: 0] != '.')
-					{
-						NSDictionary* clut = [CLUTOpacityView presetFromFileWithName:[[content objectAtIndex:i] stringByDeletingPathExtension]];
-						if(clut)
-						{
-							[clutArray addObject:[[content objectAtIndex:i] stringByDeletingPathExtension]];
-						}
-					}
-				}
-			}
-		}
-	}
+    for( i = 0; i < [sortedKeys count]; i++)
+    {
+        [[clutPopup menu] addItemWithTitle:[sortedKeys objectAtIndex:i] action:@selector (ApplyCLUT:) keyEquivalent:@""];
+    }
 	
-	[clutArray sortUsingSelector:@selector(caseInsensitiveCompare:)];
+	[[[clutPopup menu] itemAtIndex:0] setTitle:curCLUTMenu];
 	
-	NSMenuItem *item;
-	item = [[clutPopup menu] insertItemWithTitle:@"8-bit CLUTs" action:@selector(noAction:) keyEquivalent:@"" atIndex:3];
-	
-	if( [clutArray count])
-	{
-		[[clutPopup menu] insertItem:[NSMenuItem separatorItem] atIndex:[[clutPopup menu] numberOfItems]-2];
-		
-		item = [[clutPopup menu] insertItemWithTitle:@"16-bit CLUTs" action:@selector(noAction:) keyEquivalent:@"" atIndex:[[clutPopup menu] numberOfItems]-2];
-		
-		for (NSUInteger i=0; i<[clutArray count]; i++)
-		{
-			item = [[clutPopup menu] insertItemWithTitle:[clutArray objectAtIndex:i] action:@selector(loadAdvancedCLUTOpacity:) keyEquivalent:@"" atIndex:[[clutPopup menu] numberOfItems]-2];
-			if([mprView1.vrView isRGB])
-				[item setEnabled:NO];
-		}
-	}
-	
-    item = [[clutPopup menu] addItemWithTitle:NSLocalizedString(@"16-bit CLUT Editor", nil) action:@selector(showCLUTOpacityPanel:) keyEquivalent:@""];
-	if([[pixList[ 0] objectAtIndex:0] isRGB])
-		[item setEnabled:NO];
+//	// path 1 : /OsiriX Data/CLUTs/
+//	NSMutableString *path = [NSMutableString stringWithString: [[BrowserController currentBrowser] documentsDirectory]];
+//	[path appendString: CLUTDATABASE];
+//	// path 2 : /resources_bundle_path/CLUTs/
+//	NSMutableString *bundlePath = [NSMutableString stringWithString:[[NSBundle mainBundle] resourcePath]];
+//	[bundlePath appendString: CLUTDATABASE];
+//	
+//	NSMutableArray *paths = [NSMutableArray arrayWithObjects:path, bundlePath, nil];
+//	
+//	NSMutableArray *clutArray = [NSMutableArray array];
+//	BOOL isDir;
+//	
+//	for (NSUInteger j=0; j<[paths count]; j++)
+//	{
+//		if([[NSFileManager defaultManager] fileExistsAtPath:[paths objectAtIndex:j] isDirectory:&isDir] && isDir)
+//		{
+//			NSArray *content = [[NSFileManager defaultManager] directoryContentsAtPath:[paths objectAtIndex:j]];
+//			for (NSUInteger i=0; i<[content count]; i++)
+//			{
+//				if( [[content objectAtIndex:i] length] > 0)
+//				{
+//					if( [[content objectAtIndex:i] characterAtIndex: 0] != '.')
+//					{
+//						NSDictionary* clut = [CLUTOpacityView presetFromFileWithName:[[content objectAtIndex:i] stringByDeletingPathExtension]];
+//						if(clut)
+//						{
+//							[clutArray addObject:[[content objectAtIndex:i] stringByDeletingPathExtension]];
+//						}
+//					}
+//				}
+//			}
+//		}
+//	}
+//	
+//	[clutArray sortUsingSelector:@selector(caseInsensitiveCompare:)];
+//	
+//	NSMenuItem *item;
+//	item = [[clutPopup menu] insertItemWithTitle:@"8-bit CLUTs" action:@selector(noAction:) keyEquivalent:@"" atIndex:3];
+//	
+//	if( [clutArray count])
+//	{
+//		[[clutPopup menu] insertItem:[NSMenuItem separatorItem] atIndex:[[clutPopup menu] numberOfItems]-2];
+//		
+//		item = [[clutPopup menu] insertItemWithTitle:@"16-bit CLUTs" action:@selector(noAction:) keyEquivalent:@"" atIndex:[[clutPopup menu] numberOfItems]-2];
+//		
+//		for (NSUInteger i=0; i<[clutArray count]; i++)
+//		{
+//			item = [[clutPopup menu] insertItemWithTitle:[clutArray objectAtIndex:i] action:@selector(loadAdvancedCLUTOpacity:) keyEquivalent:@"" atIndex:[[clutPopup menu] numberOfItems]-2];
+//			if([mprView1.vrView isRGB])
+//				[item setEnabled:NO];
+//		}
+//	}
+//	
+//    item = [[clutPopup menu] addItemWithTitle:NSLocalizedString(@"16-bit CLUT Editor", nil) action:@selector(showCLUTOpacityPanel:) keyEquivalent:@""];
+//	if([[pixList[ 0] objectAtIndex:0] isRGB])
+//		[item setEnabled:NO];
 }
 
 -(void) ApplyCLUTString:(NSString*) str
@@ -1007,13 +1038,8 @@ static float deg2rad = 3.14159265358979/180.0;
 	NSString	*previousColorName = [NSString stringWithString: curCLUTMenu];
 	
 	if( str == nil) return;
-	
+		
 	[OpacityPopup setEnabled:YES];
-//	[clutOpacityView cleanup];
-//	if([clutOpacityDrawer state]==NSDrawerOpenState)
-//	{
-//		[clutOpacityDrawer close];
-//	}
 	
 	[self ApplyOpacityString:curOpacityMenu];
 	
@@ -1026,25 +1052,15 @@ static float deg2rad = 3.14159265358979/180.0;
 		curCLUTMenu = [str retain];
 	}
 	
-	if(clippingRangeMode==0) //VR
+	if( clippingRangeMode == 0) //VR
 	{
-		int i, x;
-		for ( x = 0; x < maxMovieIndex+1; x++)
-		{
-			for ( i = 0; i < [pixList[ x] count]; i ++) [[pixList[ x] objectAtIndex:i] setBlackIndex: 0];
-		}
-		
 		[mprView1 setCLUT: nil :nil :nil];
 		[mprView2 setCLUT: nil :nil :nil];
 		[mprView3 setCLUT: nil :nil :nil];
 		
 		[mprView1 setIndex:[mprView1 curImage]];
 		[mprView2 setIndex:[mprView2 curImage]];
-		[mprView3 setIndex:[mprView3 curImage]];				
-	}
-	else
-	{
-		//[mprView1.vrView setCLUT: nil :nil :nil];
+		[mprView3 setIndex:[mprView3 curImage]];
 	}
 	
 	if([str isEqualToString:NSLocalizedString(@"No CLUT", nil)])
@@ -1055,12 +1071,6 @@ static float deg2rad = 3.14159265358979/180.0;
 		}
 		else
 		{
-			int i, x;
-			for ( x = 0; x < maxMovieIndex+1; x++)
-			{
-				for ( i = 0; i < [pixList[ x] count]; i ++) [[pixList[ x] objectAtIndex:i] setBlackIndex: 0];
-			}
-			
 			[mprView1 setCLUT: nil :nil :nil];
 			[mprView2 setCLUT: nil :nil :nil];
 			[mprView3 setCLUT: nil :nil :nil];
@@ -1126,27 +1136,6 @@ static float deg2rad = 3.14159265358979/180.0;
 			}
 			else
 			{
-				int darkness = 256 * 3;
-				int darknessIndex = 0;
-				
-				for( i = 0; i < 256; i++)
-				{
-					if( red[i] + green[i] + blue[i] < darkness)
-					{
-						darknessIndex = i;
-						darkness = red[i] + green[i] + blue[i];
-					}
-				}
-				
-				int x;
-				for ( x = 0; x < maxMovieIndex+1; x++)
-				{
-					for ( i = 0; i < [pixList[ x] count]; i ++)
-					{
-						[[pixList[ x] objectAtIndex:i] setBlackIndex: darknessIndex];
-					}
-				}
-				
 				[mprView1 setCLUT:red :green: blue];
 				[mprView2 setCLUT:red :green: blue];
 				[mprView3 setCLUT:red :green: blue];
@@ -1166,7 +1155,6 @@ static float deg2rad = 3.14159265358979/180.0;
 			
 			[[[clutPopup menu] itemAtIndex:0] setTitle: curCLUTMenu];
 		}
-		
 	}
 }
 
@@ -1193,8 +1181,8 @@ static float deg2rad = 3.14159265358979/180.0;
     {
         [[OpacityPopup menu] addItemWithTitle:[sortedKeys objectAtIndex:i] action:@selector (ApplyOpacity:) keyEquivalent:@""];
     }
-    [[OpacityPopup menu] addItem: [NSMenuItem separatorItem]];
-    [[OpacityPopup menu] addItemWithTitle:NSLocalizedString(@"Add an Opacity Table", nil) action:@selector (AddOpacity:) keyEquivalent:@""];
+//    [[OpacityPopup menu] addItem: [NSMenuItem separatorItem]];
+//    [[OpacityPopup menu] addItemWithTitle:NSLocalizedString(@"Add an Opacity Table", nil) action:@selector (AddOpacity:) keyEquivalent:@""];
 	
 	[[[OpacityPopup menu] itemAtIndex:0] setTitle:curOpacityMenu];
 }
@@ -1335,14 +1323,6 @@ static float deg2rad = 3.14159265358979/180.0;
 		[mprView3 setIndex:[mprView3 curImage]];
 		
 	}
-	
-//	NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:[imageView curImage]]  forKey:@"curImage"];
-//	[[NSNotificationCenter defaultCenter] postNotificationName: @"DCMUpdateCurrentImage" object: imageView userInfo: userInfo];
-//	
-//	NSArray *viewers = [ViewerController getDisplayed2DViewers];
-//	
-//	for( ViewerController *v in viewers)
-//		[v updateImage: self];
 }
 
 #pragma mark GUI ObjectController - Cocoa Bindings
@@ -1409,7 +1389,7 @@ static float deg2rad = 3.14159265358979/180.0;
 		
 		// switch linear opacity table
 		[curOpacityMenu release];
-		curOpacityMenu = [NSLocalizedString(@"Linear Table", nil) retain];
+		curOpacityMenu = [startingOpacityMenu retain];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(UpdateOpacityMenu:) name:@"UpdateOpacityMenu" object:nil];
 	}
 	else

@@ -5847,7 +5847,7 @@ public:
 					mul = 1./blendingValueFactor;
 					add = -blendingOFFSET16;
 					
-					if( blendingValueFactor != 1 && [firstObj SUVConverted] == NO)
+					if( blendingValueFactor != 1)
 						mul = mul;
 					else
 						mul = 1;
@@ -5857,7 +5857,7 @@ public:
 					mul = 1./valueFactor;
 					add = -OFFSET16;
 					
-					if( valueFactor != 1 && [firstObj SUVConverted] == NO)
+					if( valueFactor != 1)
 						mul = mul;
 					else
 						mul = 1;

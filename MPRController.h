@@ -38,6 +38,7 @@
 	float blendingPercentage;
 	int blendingMode;
 	BOOL blendingModeAvailable;
+	NSString *startingOpacityMenu;
 	
 	NSMutableArray *undoQueue, *redoQueue;
 	

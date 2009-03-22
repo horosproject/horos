@@ -277,7 +277,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 	LoupeController *loupeController;
 }
 
-@property(readonly) NSRect drawingFrameRect;
+@property NSRect drawingFrameRect;
 @property(readonly) NSMutableArray *rectArray, *curRoiList;
 @property BOOL COPYSETTINGSINSERIES, flippedData, dontEnterReshape, showDescriptionInLarge;
 @property(readonly) NSMutableArray *dcmPixList,  *dcmRoiList;
