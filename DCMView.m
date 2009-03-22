@@ -8844,6 +8844,13 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	float o[ 9], imOrigin[ 3], imSpacing[ 2];
 	long width, height, spp, bpp;
 	
+	if( size)
+	{
+		NSRect r = [self frame];
+		r.size.width = r.size.width = size;
+		[self setFrame: r];
+	}
+	
 	unsigned char *data = [self getRawPixelsViewWidth: &width height: &height spp: &spp bpp: &bpp screenCapture: YES force8bits: YES removeGraphical: YES squarePixels: YES allowSmartCropping: NO origin: imOrigin spacing: imSpacing offset: nil isSigned: nil];
 	
 	if( data)
@@ -8941,7 +8948,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		}
 	}
 	
-	return nil;
+	return [NSImage imageNamed: @"Empty.tif"];
 }
 
 - (NSDictionary*) exportDCMCurrentImage: (DICOMExport*) exportDCM size:(int) size
