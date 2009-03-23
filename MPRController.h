@@ -72,7 +72,7 @@
 	IBOutlet NSView *dcmSeriesView;
 	int dcmFrom, dcmTo, dcmMode, dcmSeriesMode, dcmRotation, dcmRotationDirection, dcmNumberOfFrames, dcmQuality, dcmBatchNumberOfFrames, dcmFormat;
 	float dcmInterval, previousDcmInterval;
-	BOOL dcmSameIntervalAndThickness;
+	BOOL dcmSameIntervalAndThickness, dcmBatchReverse;
 	NSString *dcmSeriesName;
 	MPRDCMView *curExportView;
 	BOOL quicktimeExportMode;
@@ -106,7 +106,7 @@
 @property (retain) NSString *dcmSeriesName;
 @property (readonly) DCMPix *originalPix;
 @property float LOD, movieRate;
-@property BOOL dcmSameIntervalAndThickness, displayCrossLines, displayMousePosition, blendingModeAvailable;
+@property BOOL dcmSameIntervalAndThickness, displayCrossLines, displayMousePosition, blendingModeAvailable, dcmBatchReverse;
 @property (retain) NSColor *colorAxis1, *colorAxis2, *colorAxis3;
 @property (readonly) MPRDCMView *mprView1, *mprView2, *mprView3;
 @property (readonly) NSSplitView *horizontalSplit, *verticalSplit;

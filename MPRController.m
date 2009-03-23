@@ -33,7 +33,7 @@ static float deg2rad = 3.14159265358979/180.0;
 @synthesize displayCrossLines, dcmSameIntervalAndThickness, clippingRangeThickness, clippingRangeMode, mousePosition, mouseViewID, originalPix, wlwwMenuItems, LOD, dcmFrom;
 @synthesize dcmmN, dcmTo, dcmMode, dcmRotationDirection, dcmSeriesMode, dcmRotation, dcmNumberOfFrames, dcmQuality, dcmInterval, dcmSeriesName, dcmBatchNumberOfFrames;
 @synthesize colorAxis1, colorAxis2, colorAxis3, displayMousePosition, movieRate, blendingPercentage, horizontalSplit, verticalSplit;
-@synthesize mprView1, mprView2, mprView3, curMovieIndex, maxMovieIndex, blendingMode, dcmFormat, blendingModeAvailable;
+@synthesize mprView1, mprView2, mprView3, curMovieIndex, maxMovieIndex, blendingMode, dcmFormat, blendingModeAvailable, dcmBatchReverse;
 
 + (double) angleBetweenVector:(float*) a andPlane:(float*) orientation
 {
@@ -1530,6 +1530,29 @@ static float deg2rad = 3.14159265358979/180.0;
 
 #pragma mark Export	
 
+- (void) setDcmBatchReverse: (BOOL) v
+{
+	dcmBatchReverse = v;
+	
+	[self willChangeValueForKey: @"dcmFromString"];
+	[self didChangeValueForKey: @"dcmFromString"];
+	
+	[self willChangeValueForKey: @"dcmToString"];
+	[self didChangeValueForKey: @"dcmToString"];
+}
+
+- (NSString*) getDcmFromString
+{
+	if( dcmBatchReverse) return NSLocalizedString(@"To:", nil);
+	else return NSLocalizedString(@"From:", nil);
+}
+
+- (NSString*) getDcmToString
+{
+	if( dcmBatchReverse) return NSLocalizedString(@"From:", nil);
+	else return NSLocalizedString(@"To:", nil);
+}
+
 - (MPRDCMView*) selectedView
 {
 	MPRDCMView *v = nil;
@@ -1720,9 +1743,19 @@ static float deg2rad = 3.14159265358979/180.0;
 				
 				[curExportView.pix orientation: cos];
 				
-				// Go to first position
-				curExportView.camera.position = [Point3D pointWithX: curExportView.camera.position.x + interval*cos[ 6]*-dcmTo y:curExportView.camera.position.y + interval*cos[ 7]*-dcmTo z:curExportView.camera.position.z + interval*cos[ 8]*-dcmTo];
+				if( dcmBatchReverse)
+				{
+					// Go to first position
+					curExportView.camera.position = [Point3D pointWithX: curExportView.camera.position.x + interval*cos[ 6]*-dcmTo y:curExportView.camera.position.y + interval*cos[ 7]*-dcmTo z:curExportView.camera.position.z + interval*cos[ 8]*-dcmTo];
+				}
+				else
+				{
+					// Go to first position
+					curExportView.camera.position = [Point3D pointWithX: curExportView.camera.position.x + interval*cos[ 6]*dcmFrom y:curExportView.camera.position.y + interval*cos[ 7]*dcmFrom z:curExportView.camera.position.z + interval*cos[ 8]*dcmFrom];
+				}
+				
 				curExportView.camera.focalPoint = [Point3D pointWithX: curExportView.camera.position.x + cos[ 6] y:curExportView.camera.position.y + cos[ 7] z:curExportView.camera.position.z + cos[ 8]];
+				
 				[curExportView restoreCameraAndCheckForFrame: NO];
 				
 				if( self.dcmBatchNumberOfFrames < 1)
@@ -1746,7 +1779,10 @@ static float deg2rad = 3.14159265358979/180.0;
 						}
 					}
 					
-					curExportView.camera.position = [Point3D pointWithX: curExportView.camera.position.x + interval*cos[ 6] y:curExportView.camera.position.y + interval*cos[ 7] z:curExportView.camera.position.z + interval*cos[ 8]];
+					if( dcmBatchReverse)
+						curExportView.camera.position = [Point3D pointWithX: curExportView.camera.position.x + interval*cos[ 6] y:curExportView.camera.position.y + interval*cos[ 7] z:curExportView.camera.position.z + interval*cos[ 8]];
+					else
+						curExportView.camera.position = [Point3D pointWithX: curExportView.camera.position.x - interval*cos[ 6] y:curExportView.camera.position.y - interval*cos[ 7] z:curExportView.camera.position.z - interval*cos[ 8]];
 					curExportView.camera.focalPoint = [Point3D pointWithX: curExportView.camera.position.x + cos[ 6] y:curExportView.camera.position.y + cos[ 7] z:curExportView.camera.position.z + cos[ 8]];
 					
 					[curExportView restoreCameraAndCheckForFrame: NO];
