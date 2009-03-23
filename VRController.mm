@@ -2789,27 +2789,19 @@ static NSString*	ClippingRangeViewToolbarItemIdentifier = @"ClippingRange";
 
 - (void)showCLUTOpacityPanel:(id)sender;
 {
-//	if([clutOpacityDrawer isVisible]) return;
-	//[clutOpacityView niceDisplay];
 	[[clutOpacityView window] setBackgroundColor:[NSColor blackColor]];
 	[clutOpacityDrawer setTrailingOffset:[clutOpacityDrawer leadingOffset]];
 	if([clutOpacityDrawer state]==NSDrawerClosedState)
 		[clutOpacityDrawer openOnEdge:NSMinYEdge];
 	else
 		[clutOpacityDrawer close];
-//	[clutOpacityView cleanup];
 	[clutOpacityView setVolumePointer:[[pixList[0] objectAtIndex: 0] fImage] width:[[pixList[0] objectAtIndex: 0] pwidth] height:[[pixList[0] objectAtIndex: 0] pheight] numberOfSlices:[pixList[0] count]];
 	[self computeMinMax];
 	[clutOpacityView setHUmin:minimumValue HUmax:maximumValue];
 	[clutOpacityView computeHistogram];
-//	[clutOpacityPanel setAlphaValue:0.0];
-//	[clutOpacityPanel orderFront:self];
-	//[clutOpacityView niceDisplay];
 	[clutOpacityView addCurveIfNeeded];
 	[clutOpacityView updateView];
 	[clutOpacityView setCLUTtoVRView:NO];
-//	[clutOpacityView newCurve:self];
-	//if(![view advancedCLUT])[[[clutPopup menu] itemAtIndex:0] setTitle:NSLocalizedString(@"16-bit CLUT", nil)];
 	if(![view advancedCLUT])[self setCurCLUTMenu:NSLocalizedString(@"16-bit CLUT", nil)];
 	[OpacityPopup setEnabled:NO];
 }

@@ -1013,7 +1013,7 @@ NSRect rect = drawingRect;
 //		return;
 //	}
 
-	if([self clickInAddCurveButtonAtPosition:mousePositionInView] || [self clickInRemoveSelectedCurveButtonAtPosition:mousePositionInView] || [self clickInSaveButtonAtPosition:mousePositionInView])
+	if([self clickInAddCurveButtonAtPosition:mousePositionInView] || [self clickInRemoveSelectedCurveButtonAtPosition:mousePositionInView] || [self clickInSaveButtonAtPosition:mousePositionInView] || [self clickInCloseButtonAtPosition:mousePositionInView])
 	{
 		[self setNeedsDisplay:YES];
 		return;
@@ -1072,6 +1072,12 @@ NSRect rect = drawingRect;
 		[self chooseNameAndSave:nil];
 	}
 	
+	if(isCloseButtonHighlighted)
+	{
+		isCloseButtonHighlighted = NO;
+		[[[vrView controller] clutOpacityDrawer] close];
+	}
+	
 	if([theEvent clickCount] == 2 || nothingChanged)
 	{
 		[undoManager undoNestedGroup];
@@ -1121,6 +1127,13 @@ NSRect rect = drawingRect;
 	if([self clickInSaveButtonAtPosition:mouseDraggingStartPoint])
 	{
 		[self clickInSaveButtonAtPosition:mousePositionInView];
+		[self setNeedsDisplay:YES];
+		return;
+	}
+	
+	if([self clickInCloseButtonAtPosition:mouseDraggingStartPoint])
+	{
+		[self clickInCloseButtonAtPosition:mousePositionInView];
 		[self setNeedsDisplay:YES];
 		return;
 	}
@@ -1323,6 +1336,10 @@ NSRect rect = drawingRect;
 		else if([self clickInSaveButtonAtPosition:mousePositionInView])
 		{
 			mouseLabel = NSLocalizedString(@"Save", @"");
+		}
+		else if([self clickInCloseButtonAtPosition:mousePositionInView])
+		{
+			mouseLabel = NSLocalizedString(@"Close", @"");
 		}
 		else mouseLabel = @"";
 		
@@ -1546,7 +1563,7 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 {
 	NSBezierPath *path = [NSBezierPath bezierPathWithOvalInRect:rect];
 	[path setLineWidth:1.5];
-	if(isAddCurveButtonHighlighted)
+	if(isCloseButtonHighlighted)
 		[[NSColor darkGrayColor] set];
 	else
 		[backgroundColor set];
@@ -1557,14 +1574,13 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 	NSBezierPath *line = [NSBezierPath bezierPath];
 	[line setLineWidth:2.0];
 	NSPoint p1, p2;
-	float lineLength = 7;
-	p1 = NSMakePoint(rect.origin.x+4, rect.origin.y);
-	p2 = NSMakePoint(p1.x+lineLength, p1.y+rect.size.height);
+	p1 = NSMakePoint(rect.origin.x+4, rect.origin.y+4);
+	p2 = NSMakePoint(rect.origin.x + rect.size.width-4, rect.origin.y + rect.size.height-4);
 	[line moveToPoint:p1];
 	[line lineToPoint:p2];
 	
-	p1 = NSMakePoint(rect.origin.x+4, rect.origin.y+rect.size.height);
-	p2 = NSMakePoint(p1.x+lineLength, rect.origin.y);
+	p1 = NSMakePoint(rect.origin.x+4, rect.origin.y+ rect.size.height-4);
+	p2 = NSMakePoint(rect.origin.x + rect.size.width-4, rect.origin.y+4);
 	[line moveToPoint:p1];
 	[line lineToPoint:p2];
 	
@@ -1676,6 +1692,20 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 	else
 	{
 		isRemoveSelectedCurveButtonHighlighted = NO;
+		return NO;
+	}
+}
+
+- (BOOL)clickInCloseButtonAtPosition:(NSPoint)position
+{
+	if(NSPointInRect(position, closeButtonRect))
+	{
+		isCloseButtonHighlighted = YES;
+		return YES;
+	}
+	else
+	{
+		isCloseButtonHighlighted = NO;
 		return NO;
 	}
 }

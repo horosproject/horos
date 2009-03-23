@@ -54,7 +54,7 @@
 	
 	NSRect drawingRect, sideBarRect;
 	NSRect addCurveButtonRect, removeSelectedCurveButtonRect, saveButtonRect, closeButtonRect;
-	BOOL isAddCurveButtonHighlighted, isRemoveSelectedCurveButtonHighlighted, isSaveButtonHighlighted;
+	BOOL isAddCurveButtonHighlighted, isRemoveSelectedCurveButtonHighlighted, isSaveButtonHighlighted, isCloseButtonHighlighted;
 	
 	NSPoint mouseDraggingStartPoint;
 	BOOL updateView, setCLUTtoVRView;

@@ -9706,6 +9706,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	if( curDCM.pheight >= maxTextureSize) 
 		intFULL32BITPIPELINE = NO;
+		
+	if( curDCM.subtractedfImage) 
+		intFULL32BITPIPELINE = NO;
 	
 	if( curDCM.pwidth >= maxTextureSize) 
 		intFULL32BITPIPELINE = NO;
@@ -9724,9 +9727,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		[curDCM changeWLWW :127 : 256];
 	}
 	
-//	if( mainThread != [NSThread currentThread])
-//		NSLog(@"Warning! OpenGL activity NOT in the main thread???");
-		
     if( texture)
 	{
 		glDeleteTextures( *tX * *tY, texture);

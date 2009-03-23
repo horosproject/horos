@@ -1130,7 +1130,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 
 @implementation DCMPix
 
-@synthesize countstackMean, stackDirection, full32bitPipeline, needToCompute8bitRepresentation;
+@synthesize countstackMean, stackDirection, full32bitPipeline, needToCompute8bitRepresentation, subtractedfImage;
 @synthesize frameNo;
 @synthesize minValueOfSeries, maxValueOfSeries;
 @synthesize isRGB, pwidth = width, pheight = height;
@@ -10946,7 +10946,6 @@ END_CREATE_ROIS:
 	float *result;
 	
 	thickSlabVRActivated = NO;
-//	[self setRowBytes: width*4];
 	
 	// = STACK IMAGES thickslab
 	if( stackMode > 0 && stack >= 1 && [pixArray count] > 1)
@@ -10954,6 +10953,9 @@ END_CREATE_ROIS:
 		result = [self computeThickSlab];
 	}
 	else result = fImage;
+
+	if( convolution)
+		result = [self applyConvolutionOnImage: result RGB: NO];
 	
 	return result;
 }
@@ -11007,18 +11009,6 @@ END_CREATE_ROIS:
 		{
 			vImage_Buffer	srcf, dst8;
 			
-//			float *s = [self computefImage];
-//			float v = 0;
-//			for( int y = 0; y < height; y++)
-//			{
-//				for( int x = 0 ; x < width; x++)
-//				{
-//					*s = v;
-//					s++;
-//				}
-//				v++;
-//			}
-			
 			srcf.data = [self computefImage];
 			
 			if( srcf.data == nil) return;
@@ -11036,7 +11026,7 @@ END_CREATE_ROIS:
 				srcf.width = width;
 				srcf.rowBytes = width*sizeof(float);
 				
-				if( subtractedfImage )
+				if( subtractedfImage)
 				{
 					if( wl < 2) wl = 2;
 					if( ww < 2) ww = 2;
@@ -11053,14 +11043,10 @@ END_CREATE_ROIS:
 					
 					srcf.data = [self subtractImages: srcf.data :subtractedfImage];
 					
-					if( convolution) srcf.data = [self applyConvolutionOnImage: srcf.data RGB: NO];
-					
 					vImageGamma_PlanarFtoPlanar8 (&srcf, &dst8, subGammaFunction, 0);
 				}
 				else
 				{
-					if( convolution) srcf.data = [self applyConvolutionOnImage: srcf.data RGB: NO];
-					
 					if( transferFunctionPtr == nil)	// LINEAR
 					{
 						vImageConvert_PlanarFtoPlanar8( &srcf, &dst8, max, min, 0);
@@ -11144,7 +11130,8 @@ END_CREATE_ROIS:
 			}
 			else src.data = fImage;
 			
-			if( convolution) src.data = [self applyConvolutionOnImage: src.data RGB: YES];
+			if( convolution)
+				src.data = [self applyConvolutionOnImage: src.data RGB: YES];
 			
 			// APPLY WINDOW LEVEL TO RGB IMAGE
 			

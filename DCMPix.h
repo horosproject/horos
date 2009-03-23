@@ -207,7 +207,7 @@ Note setter is different to not break existing usage. :-( */
 
 /** WW & WL */
 @property(readonly) float ww, wl, fullww, fullwl;
-@property float savedWW, savedWL;
+@property float savedWW, savedWL, *subtractedfImage;
 
 @property(readonly) float slope, offset;
 
@@ -455,7 +455,6 @@ Note setter is different to not break existing usage. :-( */
 - (NSPoint) subMinMax:(float*)input :(float*)subfImage;
 - (void) setSubtractedfImage:(float*)mask :(NSPoint)smm;
 - (float*) subtractImages:(float*)input :(float*)subfImage;
-
 - (BOOL) isLoaded;
 - (void) fImageTime:(float)newTime;
 - (float) fImageTime;
