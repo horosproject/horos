@@ -2227,7 +2227,7 @@ static NSString*	ClippingRangeViewToolbarItemIdentifier = @"ClippingRange";
 		if (sliceNumber>=0 && sliceNumber<[[viewer2D pixList] count])
 		{
 			// Create the new 2D Point ROI
-			ROI *new2DPointROI = [[ROI alloc] initWithType: t2DPoint :[firstDCMPix pixelSpacingX] :[firstDCMPix pixelSpacingY] :NSMakePoint( [firstDCMPix originX], [firstDCMPix originY])];
+			ROI *new2DPointROI = [[ROI alloc] initWithType: t2DPoint :[firstDCMPix pixelSpacingX] :[firstDCMPix pixelSpacingY] :[DCMPix originCorrectedAccordingToOrientation: firstDCMPix]];
 			NSRect irect;
 			irect.origin.x = x;
 			irect.origin.y = y;

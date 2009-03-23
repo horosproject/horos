@@ -1279,7 +1279,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				if( [pointsStringArray count] == 2) type = tMesure;
 				if( [pointsStringArray count] == 1)  type = t2DPoint;
 				
-				ROI *roi = [[ROI alloc] initWithType: type :[dcm pixelSpacingX] :[dcm pixelSpacingY] :NSMakePoint( [dcm originX], [dcm originY])];
+				ROI *roi = [[ROI alloc] initWithType: type :[dcm pixelSpacingX] :[dcm pixelSpacingY] :[DCMPix originCorrectedAccordingToOrientation: dcm]];
 				roi.name = [roiDict objectForKey: @"Name"];
 				roi.comments = [roiDict objectForKey: @"Comments"];
 				
@@ -1314,7 +1314,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			if( [pointsStringArray count] == 2) type = tMesure;
 			if( [pointsStringArray count] == 1)  type = t2DPoint;
 			
-			ROI *roi = [[ROI alloc] initWithType: type :curDCM.pixelSpacingX :curDCM.pixelSpacingY :NSMakePoint( curDCM.originX, curDCM.originY)];
+			ROI *roi = [[ROI alloc] initWithType: type :curDCM.pixelSpacingX :curDCM.pixelSpacingY :[DCMPix originCorrectedAccordingToOrientation: curDCM]];
 			roi.name = [xml objectForKey: @"Name"];
 			roi.comments = [xml objectForKey: @"Comments"];
 			
@@ -3740,7 +3740,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					long roiVal = [[curRoiList objectAtIndex: selected] clickInROI: tempPt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue :YES];
 					if( roiVal == ROI_sleep) roiVal = [[curRoiList objectAtIndex: selected] clickInROI: tempPt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue :NO];
 					
-					[[self windowController] setMode:roiVal toROIGroupWithID:[[curRoiList objectAtIndex:selected] groupID]]; // change the mode to the whole group before the selected ROI!
+					if( [self is2DViewer])
+						[[self windowController] setMode:roiVal toROIGroupWithID:[[curRoiList objectAtIndex:selected] groupID]]; // change the mode to the whole group before the selected ROI!
 					[[curRoiList objectAtIndex: selected] setROIMode: roiVal];
 										
 					NSArray *winList = [[NSApplication sharedApplication] windows];
@@ -3793,7 +3794,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						
 						drawingROI = NO;
 						
-						curROI = aNewROI = [[ROI alloc] initWithType: tool : curDCM.pixelSpacingX :curDCM.pixelSpacingY :NSMakePoint( curDCM.originX, curDCM.originY)];
+						curROI = aNewROI = [[ROI alloc] initWithType: tool : curDCM.pixelSpacingX :curDCM.pixelSpacingY : [DCMPix originCorrectedAccordingToOrientation: curDCM]];	//NSMakePoint( curDCM.originX, curDCM.originY)];
 											
 						if ( [ROI defaultName] != nil )
 						{

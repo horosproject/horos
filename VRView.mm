@@ -3762,7 +3762,7 @@ public:
 	}
 	
 	for( i = 0 ; i < stackMax ; i++)
-		[ROIList addObject: [[[ROI alloc] initWithType: tCPolygon :[fObject pixelSpacingX]*factor :[fObject pixelSpacingY]*factor :NSMakePoint( [fObject originX], [fObject originY])] autorelease]];
+		[ROIList addObject: [[[ROI alloc] initWithType: tCPolygon :[fObject pixelSpacingX]*factor :[fObject pixelSpacingY]*factor :[DCMPix originCorrectedAccordingToOrientation: fObject]] autorelease]];
 		
 	for( tt = 0; tt < roiPts->GetNumberOfPoints(); tt++)
 	{

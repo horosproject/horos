@@ -30,6 +30,9 @@
 	
 	NSToolbar *toolbar;
 	
+	IBOutlet NSMatrix *toolsMatrix;
+	IBOutlet NSPopUpButton *popupRoi;
+	
 	IBOutlet MPRDCMView *mprView1, *mprView2, *mprView3;
 	IBOutlet NSSplitView *horizontalSplit, *verticalSplit;
 	
@@ -112,7 +115,7 @@
 
 - (id)initWithDCMPixList:(NSMutableArray*)pix filesList:(NSMutableArray*)files volumeData:(NSData*)volume viewerController:(ViewerController*)viewer fusedViewerController:(ViewerController*)fusedViewer;
 - (DCMPix*) emptyPix: (DCMPix*) originalPix width: (long) w height: (long) h;
-
+- (MPRDCMView*) selectedView;
 - (void) computeCrossReferenceLines:(MPRDCMView*) sender;
 - (IBAction)setTool:(id)sender;
 - (void) setToolIndex: (int) toolIndex;
@@ -134,5 +137,6 @@
 - (BOOL) getMovieDataAvailable;
 - (void)Apply3DOpacityString:(NSString*)str;
 - (void)Apply2DOpacityString:(NSString*)str;
-
+- (NSImage*) imageForROI: (int) i;
+- (void) setROIToolTag:(int) roitype;
 @end

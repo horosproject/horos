@@ -3874,7 +3874,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					{
 						DCMPix	*blendedPix = [[curView blendingView] curDCM];
 						
-						ROI *blendedROI = [[[ROI alloc] initWithType: type :[blendedPix pixelSpacingX] :[blendedPix pixelSpacingY] :NSMakePoint( [blendedPix originX], [blendedPix originY])] autorelease];
+						ROI *blendedROI = [[[ROI alloc] initWithType: type :[blendedPix pixelSpacingX] :[blendedPix pixelSpacingY] :[DCMPix originCorrectedAccordingToOrientation: blendedPix]] autorelease];
 						
 						NSRect blendedRect = [self rect];
 						blendedRect.origin = [curView ConvertFromGL2GL: blendedRect.origin toView:[curView blendingView]];
@@ -4396,7 +4396,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 						{
 							DCMPix	*blendedPix = [[curView blendingView] curDCM];
 							
-							ROI *blendedROI = [[[ROI alloc] initWithType: type :[blendedPix pixelSpacingX] :[blendedPix pixelSpacingY] :NSMakePoint( [blendedPix originX], [blendedPix originY])] autorelease];
+							ROI *blendedROI = [[[ROI alloc] initWithType: type :[blendedPix pixelSpacingX] :[blendedPix pixelSpacingY] :[DCMPix originCorrectedAccordingToOrientation: blendedPix]] autorelease];
 							
 							NSRect blendedRect = [self rect];
 							NSPoint downRight = NSMakePoint( blendedRect.origin.x + blendedRect.size.width, blendedRect.origin.y + blendedRect.size.height);
@@ -4507,7 +4507,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					{
 						DCMPix	*blendedPix = [[curView blendingView] curDCM];
 						
-						ROI *blendedROI = [[[ROI alloc] initWithType: tCPolygon :[blendedPix pixelSpacingX] :[blendedPix pixelSpacingY] :NSMakePoint( [blendedPix originX], [blendedPix originY])] autorelease];
+						ROI *blendedROI = [[[ROI alloc] initWithType: tCPolygon :[blendedPix pixelSpacingX] :[blendedPix pixelSpacingY] :[DCMPix originCorrectedAccordingToOrientation: blendedPix]] autorelease];
 						
 						NSMutableArray *pts = [[[NSMutableArray alloc] initWithArray: [self points] copyItems:YES] autorelease];
 						
@@ -4957,7 +4957,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 						{
 							DCMPix	*blendedPix = [[curView blendingView] curDCM];
 							
-							ROI *blendedROI = [[[ROI alloc] initWithType: tCPolygon :[blendedPix pixelSpacingX] :[blendedPix pixelSpacingY] :NSMakePoint( [blendedPix originX], [blendedPix originY])] autorelease];
+							ROI *blendedROI = [[[ROI alloc] initWithType: tCPolygon :[blendedPix pixelSpacingX] :[blendedPix pixelSpacingY] :[DCMPix originCorrectedAccordingToOrientation: blendedPix]] autorelease];
 							
 							NSMutableArray *pts = [[[NSMutableArray alloc] initWithArray: [self points] copyItems:YES] autorelease];
 							
@@ -5022,7 +5022,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 						{
 							DCMPix	*blendedPix = [[curView blendingView] curDCM];
 							
-							ROI *blendedROI = [[[ROI alloc] initWithType: tCPolygon :[blendedPix pixelSpacingX] :[blendedPix pixelSpacingY] :NSMakePoint( [blendedPix originX], [blendedPix originY])] autorelease];
+							ROI *blendedROI = [[[ROI alloc] initWithType: tCPolygon :[blendedPix pixelSpacingX] :[blendedPix pixelSpacingY] :[DCMPix originCorrectedAccordingToOrientation: blendedPix]] autorelease];
 							
 							NSMutableArray *pts = [[[NSMutableArray alloc] initWithArray: [self points] copyItems:YES] autorelease];
 							

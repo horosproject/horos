@@ -16,6 +16,7 @@
 #import "VRController.h"
 #import "VRView.h"
 #import "DCMCursor.h"
+#import "ROI.h"
 
 static float deg2rad = 3.14159265358979/180.0; 
 
@@ -131,13 +132,29 @@ static BOOL frameZoomed = NO;
 	}
 }
 
-- (BOOL) hasCameraChanged
+- (BOOL) hasCameraMoved: (Camera*) currentCamera
 {
-	Camera *currentCamera = [vrView cameraWithThumbnail: NO];
+	if( currentCamera.position.x != camera.position.x) return YES;
+	if( currentCamera.position.y != camera.position.y) return YES;
+	if( currentCamera.position.z != camera.position.z) return YES;
+
+	if( currentCamera.focalPoint.x != camera.focalPoint.x) return YES;
+	if( currentCamera.focalPoint.y != camera.focalPoint.y) return YES;
+	if( currentCamera.focalPoint.z != camera.focalPoint.z) return YES;
+
+	if( currentCamera.viewUp.x != camera.viewUp.x) return YES;
+	if( currentCamera.viewUp.y != camera.viewUp.y) return YES;
+	if( currentCamera.viewUp.z != camera.viewUp.z) return YES;
+
+	if( currentCamera.viewAngle != camera.viewAngle) return YES;
+	if( currentCamera.eyeAngle != camera.eyeAngle) return YES;
 	
-	BOOL changed = NO;
-	
-	
+	return NO;
+
+}
+
+- (BOOL) hasCameraChanged: (Camera*) currentCamera
+{
 	if( camera.forceUpdate)
 	{
 		camera.forceUpdate = NO;
@@ -167,7 +184,6 @@ static BOOL frameZoomed = NO;
 	
 	if( currentCamera.wl != camera.wl) return YES;
 	if( currentCamera.ww != camera.ww) return YES;
-
 	
 	return NO;
 }
@@ -204,9 +220,13 @@ static BOOL frameZoomed = NO;
 	BOOL isRGB;
 	
 	[self getWLWW: &previousWL :&previousWW];
-		
-	if( [self hasCameraChanged])
+	
+	Camera *currentCamera = [vrView cameraWithThumbnail: NO];
+	
+	if( [self hasCameraChanged: currentCamera])
 	{
+		BOOL cameraMoved = [self hasCameraMoved: currentCamera];
+		
 		[vrView render];
 		
 		float *imagePtr = [vrView imageInFullDepthWidth: &w height: &h isRGB: &isRGB];
@@ -227,7 +247,16 @@ static BOOL frameZoomed = NO;
 				[pix setPwidth: w];
 				[pix setPheight: h];
 				
+				NSMutableArray *savedROIs = nil;
+				if( cameraMoved == NO)
+					savedROIs = [[curRoiList copy] autorelease];
+				
 				[self setIndex: 0];
+				
+				if( cameraMoved == NO)
+				{
+					[curRoiList addObjectsFromArray: savedROIs];
+				}
 			}
 			float porigin[ 3];
 			[vrView getOrigin: porigin windowCentered: YES sliceMiddle: YES];
@@ -244,6 +273,11 @@ static BOOL frameZoomed = NO;
 			
 			[self setWLWW: previousWL :previousWW];
 			[self setScaleValue: [vrView imageSampleDistance]];
+			
+			for( ROI* r in curRoiList)
+			{
+				[r setOriginAndSpacing: resolution : resolution :[DCMPix originCorrectedAccordingToOrientation: pix] :NO];
+			}
 		}
 		
 		if( blendingView)
@@ -872,8 +906,8 @@ static BOOL frameZoomed = NO;
 	[self updateViewMPR];
 	[self updateMousePosition: theEvent];
 	
-	[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector( delayedFullLODRendering:) object: nil];
-	[windowController performSelector: @selector( delayedFullLODRendering:) withObject: nil afterDelay: 0.3];
+	[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector( delayedFullLODRendering:) object: self];	
+	[windowController performSelector: @selector( delayedFullLODRendering:) withObject: self afterDelay: 0.3];
 }
 
 - (void)rightMouseDown:(NSEvent *)theEvent
@@ -1115,12 +1149,18 @@ static BOOL frameZoomed = NO;
 		angleMPR -= rotateLinesStartAngle;
 		
 		[self updateViewMPR];
+		
+		[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector( delayedFullLODRendering:) object: nil];
+		[windowController performSelector: @selector( delayedFullLODRendering:) withObject: nil afterDelay: 0.3];
 	}
 	else if( moveCenter)
 	{
 		[vrView setLODLow: YES];
 		[vrView setWindowCenter: [self convertPoint: [theEvent locationInWindow] fromView: nil]];
 		[self updateViewMPR];
+		
+		[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector( delayedFullLODRendering:) object: nil];
+		[windowController performSelector: @selector( delayedFullLODRendering:) withObject: nil afterDelay: 0.3];
 	}
 	else
 	{
@@ -1147,11 +1187,11 @@ static BOOL frameZoomed = NO;
 				[self updateViewMPR: NO];
 			}
 			else [self updateViewMPR];
+			
+			[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector( delayedFullLODRendering:) object: nil];
+			[windowController performSelector: @selector( delayedFullLODRendering:) withObject: nil afterDelay: 0.3];
 		}
 	}
-	
-	[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector( delayedFullLODRendering:) object: nil];
-	[windowController performSelector: @selector( delayedFullLODRendering:) withObject: nil afterDelay: 0.3];
 	
 	[self updateMousePosition: theEvent];
 }

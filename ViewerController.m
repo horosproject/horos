@@ -5126,9 +5126,7 @@ static ViewerController *draggedController = nil;
 		case tPlain:
 		case tRepulsor:
 		case tROISelector:
-		//JJCP
 		case tDynAngle:
-		//JJCP
 		case tAxis:
 			[self setROIToolTag: tag];
 		break;
@@ -5180,7 +5178,6 @@ static ViewerController *draggedController = nil;
 	}
 }
 
-//revised lp 4/22/04 to work with contextual menus.
 -(void) setDefaultTool:(id) sender
 {
 	[imageView gClickCountSetReset];
@@ -9933,7 +9930,7 @@ short				matrix[25];
 	DCMPix *curPix = [imageView curDCM];
 	ROI		*theNewROI;
 	
-	theNewROI = [[[ROI alloc] initWithType: type :[curPix pixelSpacingX] :[curPix pixelSpacingY] :NSMakePoint( [curPix originX], [curPix originY])] autorelease];
+	theNewROI = [[[ROI alloc] initWithType: type :[curPix pixelSpacingX] :[curPix pixelSpacingY] :[DCMPix originCorrectedAccordingToOrientation: curPix]] autorelease];
 	
 	[imageView roiSet: theNewROI];
 	
@@ -10001,8 +9998,8 @@ short				matrix[25];
 		case tPlain:		filename = @"Brush";			break;
 		case tRepulsor:		filename = @"Repulsor";			break;
 		case tROISelector:	filename = @"ROISelector";		break;
-		case tAxis:			filename = @"Axis";				break; //JJCP
-		case tDynAngle:		filename = @"DynamicAngle";		break; //JJCP
+		case tAxis:			filename = @"Axis";				break;
+		case tDynAngle:		filename = @"DynamicAngle";		break;
 	}
 	
 	return [NSImage imageNamed: filename];
@@ -10381,7 +10378,7 @@ int i,j,l;
 {
 	DCMPix *curPix = [[self pixList] objectAtIndex:[imageView curImage]];
 
-	ROI *theNewROI = [[[ROI alloc] initWithType:tLayerROI :[curPix pixelSpacingX] :[curPix pixelSpacingY] :NSMakePoint([curPix originX], [curPix originY])] autorelease];
+	ROI *theNewROI = [[[ROI alloc] initWithType:tLayerROI :[curPix pixelSpacingX] :[curPix pixelSpacingY] :[DCMPix originCorrectedAccordingToOrientation: curPix]] autorelease];
 	[theNewROI setLayerPixelSpacingX:layerPixelSpacingX];
 	[theNewROI setLayerPixelSpacingY:layerPixelSpacingY];
 	[theNewROI setLayerReferenceFilePath:path];
@@ -12113,14 +12110,13 @@ int i,j,l;
 
 - (void)selectROI:(ROI*)roi deselectingOther:(BOOL)deselectOther;
 {
-	if(deselectOther)
+	if( deselectOther)
 	{
-		int i;
-		for(i=0; i<[[roiList[curMovieIndex] objectAtIndex:[imageView curImage]] count]; i++)
+		for(int i=0; i<[[roiList[curMovieIndex] objectAtIndex:[imageView curImage]] count]; i++)
 			[[[roiList[curMovieIndex] objectAtIndex:[imageView curImage]] objectAtIndex:i] setROIMode:ROI_sleep];
 	}
 	
-	if(roi)
+	if( roi)
 	{
 		// select the ROI
 		[roi setROIMode:ROI_selected];
@@ -12130,16 +12126,11 @@ int i,j,l;
 		// bring it to front
 		[self bringToFrontROI:roi];
 	}
-//	[roi retain];
-//	[[roiList[curMovieIndex] objectAtIndex:[imageView curImage]] removeObject:roi];
-//	[[roiList[curMovieIndex] objectAtIndex:[imageView curImage]] insertObject:roi atIndex:0];
-//	[roi release];
 }
 
 - (void)deselectAllROIs;
 {
-	int i;
-	for(i=0; i<[[roiList[curMovieIndex] objectAtIndex:[imageView curImage]] count]; i++)
+	for(int i=0; i<[[roiList[curMovieIndex] objectAtIndex:[imageView curImage]] count]; i++)
 		[[[roiList[curMovieIndex] objectAtIndex:[imageView curImage]] objectAtIndex:i] setROIMode:ROI_sleep];
 }
 
@@ -16748,7 +16739,6 @@ int i,j,l;
 	{
 		if( [[popupRoi itemAtIndex: i] image] == nil)
 		{
-			
 			[[popupRoi itemAtIndex: i] setImage: [self imageForROI: [[popupRoi itemAtIndex: i] tag]]];
 		}
 	}

@@ -1310,6 +1310,19 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	return offset;
 }
 
++ (NSPoint) originCorrectedAccordingToOrientation: (DCMPix*) pix1
+{
+	double destOrigin[ 2];
+	double vectorP1[ 9];
+	
+	[pix1 orientationDouble: vectorP1];
+	
+	destOrigin[ 0] = [pix1  originX] * vectorP1[ 0] + [pix1  originY] * vectorP1[ 1] + [pix1  originZ] * vectorP1[ 2];
+	destOrigin[ 1] = [pix1  originX] * vectorP1[ 3] + [pix1  originY] * vectorP1[ 4] + [pix1  originZ] * vectorP1[ 5];
+	
+	return NSMakePoint( destOrigin[ 0], destOrigin[ 1]);
+}
+
 + (NSImage*) resizeIfNecessary:(NSImage*) currentImage dcmPix: (DCMPix*) dcmPix
 {
 	NSRect sourceRect = NSMakeRect(0.0, 0.0, [currentImage size].width, [currentImage size].height);

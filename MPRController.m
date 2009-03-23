@@ -17,6 +17,7 @@
 #import "Wait.h"
 #import "DICOMExport.h"
 #import "DicomImage.h"
+#import "ROI.h"
 #import "iPhoto.h"
 
 #define PRESETS_DIRECTORY @"/3DPRESETS/"
@@ -90,16 +91,19 @@ static float deg2rad = 3.14159265358979/180.0;
 		
 		[self updateToolbarItems];
 		
+		for( int i = 0; i < [popupRoi numberOfItems]; i++)
+			[[popupRoi itemAtIndex: i] setImage: [self imageForROI: [[popupRoi itemAtIndex: i] tag]]];
+		
 		DCMPix *emptyPix = [self emptyPix: originalPix width: 100 height: 100];
-		[mprView1 setDCMPixList: [NSMutableArray arrayWithObject: emptyPix] filesList: [NSArray arrayWithObject: [files lastObject]] roiList:nil firstImage:0 type:'i' reset:YES];
+		[mprView1 setDCMPixList: [NSMutableArray arrayWithObject: emptyPix] filesList: [NSArray arrayWithObject: [files lastObject]] roiList: nil firstImage:0 type:'i' reset:YES];
 		[mprView1 setFlippedData: [[viewer imageView] flippedData]];
 		
 		emptyPix = [self emptyPix: originalPix width: 100 height: 100];
-		[mprView2 setDCMPixList: [NSMutableArray arrayWithObject: emptyPix] filesList: [NSArray arrayWithObject: [files lastObject]] roiList:nil firstImage:0 type:'i' reset:YES];
+		[mprView2 setDCMPixList: [NSMutableArray arrayWithObject: emptyPix] filesList: [NSArray arrayWithObject: [files lastObject]] roiList: nil firstImage:0 type:'i' reset:YES];
 		[mprView2 setFlippedData: [[viewer imageView] flippedData]];
 		
 		emptyPix = [self emptyPix: originalPix width: 100 height: 100];
-		[mprView3 setDCMPixList: [NSMutableArray arrayWithObject: emptyPix] filesList: [NSArray arrayWithObject: [files lastObject]] roiList:nil firstImage:0 type:'i' reset:YES];
+		[mprView3 setDCMPixList: [NSMutableArray arrayWithObject: emptyPix] filesList: [NSArray arrayWithObject: [files lastObject]] roiList: nil firstImage:0 type:'i' reset:YES];
 		[mprView3 setFlippedData: [[viewer imageView] flippedData]];
 		
 		if( fusedViewer)
@@ -346,7 +350,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	[mprView3.vrView setCurrentTool:toolIndex];
 }
 
-- (IBAction)setTool:(id)sender;
+- (IBAction) setTool:(id)sender;
 {
 	int toolIndex;
 	
@@ -354,7 +358,10 @@ static float deg2rad = 3.14159265358979/180.0;
 		toolIndex = [[sender selectedCell] tag];
 	else if([sender respondsToSelector:@selector(tag)])
 		toolIndex = [sender tag];
+	
 	[self setToolIndex: toolIndex];
+	
+	[self setROIToolTag: toolIndex];
 }
 
 - (void) computeCrossReferenceLinesBetween: (MPRDCMView*) mp1 and:(MPRDCMView*) mp2 result: (float[2][3]) s
@@ -607,9 +614,6 @@ static float deg2rad = 3.14159265358979/180.0;
 	[mprView3 setNeedsDisplay: YES];
 }
 
-- (void)bringToFrontROI:(ROI*) roi;
-{}
-
 - (void)keyDown:(NSEvent *)theEvent
 {
     unichar c = [[theEvent characters] characterAtIndex:0];
@@ -628,6 +632,79 @@ static float deg2rad = 3.14159265358979/180.0;
 - (id) view
 {
 	return mprView1;
+}
+
+#pragma mark ROI
+
+- (void)bringToFrontROI:(ROI*) roi;
+{
+
+}
+
+- (NSImage*) imageForROI: (int) i
+{
+	NSString	*filename = nil;
+	switch( i)
+	{
+		case tWL:			filename = @"WLWW";				break;
+		case tZoom:			filename = @"Zoom";				break;
+		case tTranslate:	filename = @"Move";				break;
+		case tRotate:		filename = @"Rotate";			break;
+		case tNext:			filename = @"Stack";			break;
+		case tMesure:		filename = @"Length";			break;
+		case tAngle:		filename = @"Angle";			break;
+		case tROI:			filename = @"Rectangle";		break;
+		case tOval:			filename = @"Oval";				break;
+		case tText:			filename = @"Text";				break;
+		case tArrow:		filename = @"Arrow";			break;
+		case tOPolygon:		filename = @"Opened Polygon";	break;
+		case tCPolygon:		filename = @"Closed Polygon";	break;
+		case tPencil:		filename = @"Pencil";			break;
+		case t2DPoint:		filename = @"Point";			break;
+		case tPlain:		filename = @"Brush";			break;
+		case tRepulsor:		filename = @"Repulsor";			break;
+		case tROISelector:	filename = @"ROISelector";		break;
+		case tAxis:			filename = @"Axis";				break;
+		case tDynAngle:		filename = @"DynamicAngle";		break;
+	}
+	
+	if( filename == nil)
+		return nil;
+	
+	return [NSImage imageNamed: filename];
+}
+
+-(void) setROIToolTag:(int) roitype
+{
+	NSImage *im = [self imageForROI: roitype];
+	
+	if( im)
+	{
+		NSButtonCell *cell = [toolsMatrix cellAtRow:0 column:6];
+		[cell setTag: roitype];
+		[cell setImage: im];
+		
+		[toolsMatrix selectCellAtRow:0 column:6];
+	}
+}
+
+- (IBAction) roiDeleteAll:(id) sender
+{
+	[self addToUndoQueue: @"roi"];
+	
+	MPRDCMView *s = [self selectedView];
+	
+	[s stopROIEditingForce: YES];
+	
+	for( int y = 0; y < maxMovieIndex; y++)
+	{
+		for( ROI *r in [s curRoiList])
+			[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object: r userInfo: nil];
+		
+		[[s curRoiList] removeAllObjects];
+	}
+	
+	[s setIndex: [s curImage]];
 }
 
 #pragma mark Undo

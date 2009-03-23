@@ -469,6 +469,7 @@ Note setter is different to not break existing usage. :-( */
 - (void) positionerSecondaryAngle:(NSNumber*)newPositionerSecondaryAngle;
 - (NSNumber*) positionerSecondaryAngle;
 + (NSPoint) originDeltaBetween:(DCMPix*) pix1 And:(DCMPix*) pix2;
++ (NSPoint) originCorrectedAccordingToOrientation: (DCMPix*) pix1;
 - (void) setBlackIndex:(int) i;
 + (NSImage*) resizeIfNecessary:(NSImage*) currentImage dcmPix: (DCMPix*) dcmPix;
 - (void) DCMPixShutterRect:(long)x:(long)y:(long)w:(long)h;
