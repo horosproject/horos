@@ -354,21 +354,6 @@ static float deg2rad = 3.14159265358979/180.0;
 		toolIndex = [[sender selectedCell] tag];
 	else if([sender respondsToSelector:@selector(tag)])
 		toolIndex = [sender tag];
-	
-	hiddenVRView.keep3DRotateCentered = YES;
-	if( toolIndex == tCamera3D)
-	{
-		if( displayCrossLines == NO)
-		{
-			hiddenVRView.keep3DRotateCentered = NO;
-		}
-		else
-		{
-			if( [[NSApp currentEvent] modifierFlags] & NSAlternateKeyMask)
-				hiddenVRView.keep3DRotateCentered = NO;
-		}
-	}
-	
 	[self setToolIndex: toolIndex];
 }
 

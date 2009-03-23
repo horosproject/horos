@@ -990,6 +990,18 @@ static BOOL frameZoomed = NO;
 		{
 			long tool = [self getTool: theEvent];
 			
+			vrView.keep3DRotateCentered = YES;
+			if( tool == tCamera3D)
+			{
+				if( windowController.displayCrossLines == NO)
+					vrView.keep3DRotateCentered = NO;
+				else
+				{
+					if( [theEvent modifierFlags] & NSAlternateKeyMask)
+						vrView.keep3DRotateCentered = NO;
+				}
+			}
+			
 			[self restoreCamera];
 			
 			if([self is2DTool:tool])
