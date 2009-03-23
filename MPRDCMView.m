@@ -659,7 +659,6 @@ static BOOL frameZoomed = NO;
 																					&& !windowController.mprView1.moveCenter && !windowController.mprView2.moveCenter && !windowController.mprView3.moveCenter)
 	{
 		// Mouse Position
-		#ifdef joris_idea_for_mouse_position
 		if( viewID == windowController.mouseViewID)
 		{
 			DCMPix *pixA, *pixB;
@@ -725,14 +724,10 @@ static BOOL frameZoomed = NO;
 			glEnd();
 
 		}
-		#endif
 		if( viewID != windowController.mouseViewID)
 		{
-			#ifdef joris_idea_for_mouse_position
 			[self colorForView: viewID];
-			#else
-			[self colorForView: windowController.mouseViewID];
-			#endif
+//			[self colorForView: windowController.mouseViewID];
 			Point3D *pt = windowController.mousePosition;
 			float sc[ 3], dc[ 3] = { pt.x, pt.y, pt.z};
 			
