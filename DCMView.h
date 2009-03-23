@@ -274,6 +274,12 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 	BOOL avoidChangeWLWWRecursive;
 	BOOL TextureComputed32bitPipeline;
 	
+	NSImage *loupeImage, *loupeMaskImage;
+	GLuint loupeTextureID, loupeTextureWidth, loupeTextureHeight;
+	GLubyte *loupeTextureBuffer;
+	GLuint loupeMaskTextureID, loupeMaskTextureWidth, loupeMaskTextureHeight;
+	GLubyte *loupeMaskTextureBuffer;
+	
 	LoupeController *loupeController;
 }
 
@@ -425,6 +431,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 - (void) setStartWLWW;
 - (void) stopROIEditing;
 - (void) computeMagnifyLens:(NSPoint) p;
+- (void)makeTextureFromImage:(NSImage*)image forTexture:(GLuint*)texName buffer:(GLubyte*)buffer textureUnit:(GLuint)textureUnit;
 - (void) stopROIEditingForce:(BOOL) force;
 - (void)subDrawRect: (NSRect)aRect;  // Subclassable, default does nothing.
 - (void) updateImage;
@@ -483,7 +490,8 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 - (void)setIsLUT12Bit:(BOOL)boo;
 - (BOOL)isLUT12Bit;
 
-- (void)displayLoupe;
+//- (void)displayLoupe;
+- (void)displayLoupeWithCenter:(NSPoint)center;
 - (void)hideLoupe;
 
 @end

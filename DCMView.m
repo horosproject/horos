@@ -57,7 +57,7 @@
 #define QUALITY kvImageNoFlags
 
 #define BS 10.
-#define new_loupe
+//#define new_loupe
 
 //#define TEXTRECTMODE GL_TEXTURE_2D
 //GL_TEXTURE_2D
@@ -2046,6 +2046,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	[self deleteLens];
 	
+	[LoupeController release];
+	
+	[loupeImage release];
+	[loupeMaskImage release];
+	
     [super dealloc];
 }
 
@@ -2758,7 +2763,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		{
 			[self computeMagnifyLens: NSMakePoint( mouseXPos, mouseYPos)];
 #ifdef new_loupe
-			[self displayLoupe];
+			[self displayLoupeWithCenter:NSMakePoint([[self window] frame].origin.x+[event locationInWindow].x, [[self window] frame].origin.y+[event locationInWindow].y)];
 #endif
 		}
 	}
@@ -3109,9 +3114,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					y = rad;
 					while( y-- > 0)
 					{
-#ifndef new_loupe
-						if( (xsqr + y*y) < radsqr)
-#endif
+//						if( (xsqr + y*y) < radsqr)
 						{
 							lensTexture[ (rad+x)*4 + (rad+y)*LENSSIZE*4] = 0xff;
 							lensTexture[ (rad-x)*4 + (rad+y)*LENSSIZE*4] = 0xff;
@@ -3131,6 +3134,26 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	}
 	
 	[self setNeedsDisplay: YES];
+}
+
+- (void)makeTextureFromImage:(NSImage*)image forTexture:(GLuint*)texName buffer:(GLubyte*)buffer textureUnit:(GLuint)textureUnit;
+{	
+	NSSize imageSize = [image size];
+	
+	NSBitmapImageRep *bitmap = [[NSBitmapImageRep alloc] initWithData:[image TIFFRepresentation]];
+	
+	buffer = malloc([bitmap bytesPerRow] * imageSize.height);
+	memcpy(buffer, [bitmap bitmapData], [bitmap bytesPerRow] * imageSize.height);
+	
+	[bitmap release];
+	
+	CGLContextObj cgl_ctx = [[self openGLContext] CGLContextObj];
+	glGenTextures(1, texName);
+	glActiveTexture(textureUnit);
+	glBindTexture(GL_TEXTURE_RECTANGLE_EXT, *texName);
+	glPixelStorei(GL_UNPACK_ROW_LENGTH, [bitmap bytesPerRow]/[bitmap samplesPerPixel]);
+	glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, 1);
+	glTexImage2D(GL_TEXTURE_RECTANGLE_EXT, 0, ([bitmap samplesPerPixel]==4)?GL_RGBA:GL_RGB, imageSize.width, imageSize.height, 0, ([bitmap samplesPerPixel]==4)?GL_RGBA:GL_RGB, GL_UNSIGNED_BYTE, buffer);
 }
 
 -(void) mouseMoved: (NSEvent*) theEvent
@@ -3198,7 +3221,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					{
 						[self computeMagnifyLens: imageLocation];
 #ifdef new_loupe
-						[self displayLoupe];
+						[self displayLoupeWithCenter:NSMakePoint([[self window] frame].origin.x+[theEvent locationInWindow].x, [[self window] frame].origin.y+[theEvent locationInWindow].y)];
 #endif
 					}
 				}
@@ -8054,33 +8077,30 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 #ifndef new_loupe
 	if( lensTexture)
 	{
-		GLuint textID;
+		/* creating Loupe textures (mask and border) */
 		
-		glMatrixMode (GL_MODELVIEW);
-		glLoadIdentity ();
+		NSBundle *bundle = [NSBundle bundleForClass:[DCMView class]];
+		if(!loupeImage)
+		{
+			loupeImage = [[NSImage alloc] initWithContentsOfFile:[bundle pathForImageResource:@"loupe.png"]];
+			loupeTextureWidth = [loupeImage size].width;
+			loupeTextureHeight = [loupeImage size].height;
+		}
+		if(!loupeMaskImage)
+		{
+			loupeMaskImage = [[NSImage alloc] initWithContentsOfFile:[bundle pathForImageResource:@"loupeMask.png"]];
+			loupeMaskTextureWidth = [loupeMaskImage size].width;
+			loupeMaskTextureHeight = [loupeMaskImage size].height;
+		}
 		
-		glScalef (2.0f /(xFlipped ? -(drawingFrameRect.size.width) : drawingFrameRect.size.width), -2.0f / (yFlipped ? -(drawingFrameRect.size.height) : drawingFrameRect.size.height), 1.0f); // scale to port per pixel scale
-		glRotatef (rotation, 0.0f, 0.0f, 1.0f); // rotate matrix for image rotation
+		if(loupeTextureID==0)
+			[self makeTextureFromImage:loupeImage forTexture:&loupeTextureID buffer:loupeTextureBuffer textureUnit:GL_TEXTURE3];
 		
-		glEnable(TEXTRECTMODE);
-		glPixelStorei (GL_UNPACK_ROW_LENGTH, LENSSIZE); 
-		glPixelStorei (GL_UNPACK_CLIENT_STORAGE_APPLE, 1);
-		glGenTextures ( 1, &textID);
-		glBindTexture (TEXTRECTMODE, textID);
-		glTexParameteri (TEXTRECTMODE, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri (TEXTRECTMODE, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		
-		glEnable(GL_BLEND);
-		glBlendEquation(GL_FUNC_ADD);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		
-		glColor4f( 1, 1, 1, 1);
-		#if __BIG_ENDIAN__
-		glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, LENSSIZE, LENSSIZE, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, lensTexture);
-		#else
-		glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, LENSSIZE, LENSSIZE, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8, lensTexture);
-		#endif
-		
+		if(loupeMaskTextureID==0)
+			[self makeTextureFromImage:loupeMaskImage forTexture:&loupeMaskTextureID buffer:loupeMaskTextureBuffer textureUnit:GL_TEXTURE0];
+				
+		/* mouse position */
+
 		NSPoint eventLocation = [[self window] convertScreenToBase: [NSEvent mouseLocation]];
 		eventLocation = [self convertPoint:eventLocation fromView:nil];
 		
@@ -8107,59 +8127,153 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		eventLocation.x -= LENSSIZE*2*scaleValue/LENSRATIO;
 		eventLocation.y -= LENSSIZE*2*scaleValue/LENSRATIO;
 		
+		glMatrixMode (GL_MODELVIEW);
+		glLoadIdentity ();
+		
+		glScalef (2.0f /(xFlipped ? -(drawingFrameRect.size.width) : drawingFrameRect.size.width), -2.0f / (yFlipped ? -(drawingFrameRect.size.height) : drawingFrameRect.size.height), 1.0f); // scale to port per pixel scale
+		glRotatef (rotation, 0.0f, 0.0f, 1.0f); // rotate matrix for image rotation
+		
+		/* binding lensTexture */
+		
+		GLuint textID;
+		
+		glEnable(TEXTRECTMODE);
+		glPixelStorei(GL_UNPACK_ROW_LENGTH, LENSSIZE); 
+		glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, 1);
+		glGenTextures(1, &textID);
+		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(TEXTRECTMODE, textID);
-		glBegin (GL_QUAD_STRIP);
-		glTexCoord2f (0, 0); // draw upper left in world coordinates
-		glVertex3d (eventLocation.x, eventLocation.y, 0.0);
-		
-		glTexCoord2f (LENSSIZE, 0); // draw lower left in world coordinates
-		glVertex3d (eventLocation.x+LENSSIZE*4*scaleValue/LENSRATIO, eventLocation.y, 0.0);
-		
-		glTexCoord2f (0, LENSSIZE); // draw upper right in world coordinates
-		glVertex3d (eventLocation.x, eventLocation.y+LENSSIZE*4*scaleValue/LENSRATIO, 0.0);
-		
-		glTexCoord2f (LENSSIZE, LENSSIZE); // draw lower right in world coordinates
-		glVertex3d (eventLocation.x+LENSSIZE*4*scaleValue/LENSRATIO, eventLocation.y+LENSSIZE*4*scaleValue/LENSRATIO, 0.0);
-		glEnd();
-		
-		glDeleteTextures( 1, &textID);
-		glDisable (TEXTRECTMODE);
-		
-		glColor4f ( 0.7, 0.7, 0, 1);
-		glLineWidth( 10);
-		
-		int resol = LENSSIZE*4*scaleValue;
-		
-		eventLocation.x += (0.5+LENSSIZE)*2*scaleValue/LENSRATIO;
-		eventLocation.y += (0.5+LENSSIZE)*2*scaleValue/LENSRATIO;
-		
-		glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
-		glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
-		glEnable(GL_POINT_SMOOTH);
-		glEnable(GL_LINE_SMOOTH);
-		glEnable(GL_POLYGON_SMOOTH);
-		
-		float f = ((LENSSIZE-1)*scaleValue*2/LENSRATIO);
-		
-		glBegin(GL_LINE_LOOP);
-		for( int i = 0; i < resol ; i++ )
-		{
-			angle = i * 2 * M_PI /resol;
-			glVertex2f( eventLocation.x + f *cos(angle), eventLocation.y + f *sin(angle));
-		}
-		glEnd();
-		glPointSize( 10);
-		glBegin( GL_POINTS);
-		for( int i = 0; i < resol ; i++ )
-		{
-			angle = i * 2 * M_PI /resol;
+		glTexParameteri(TEXTRECTMODE, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(TEXTRECTMODE, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 			
-			glVertex2f( eventLocation.x + f *cos(angle), eventLocation.y + f *sin(angle));
-		}
+		glColor4f( 1, 1, 1, 1);
+		#if __BIG_ENDIAN__
+		glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, LENSSIZE, LENSSIZE, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, lensTexture);
+		#else
+		glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, LENSSIZE, LENSSIZE, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8, lensTexture);
+		#endif
+		
+ 		glEnable(GL_BLEND);
+		glBlendEquation(GL_FUNC_ADD);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		
+		/* multitexturing starts */
+		
+		glActiveTexture(GL_TEXTURE0);
+		glEnable(loupeMaskTextureID);
+		glBindTexture(TEXTRECTMODE, loupeMaskTextureID);
+		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
+		glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_REPLACE);
+		glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_TEXTURE0);
+		glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_ALPHA);
+		
+		glActiveTexture(GL_TEXTURE1);
+		glEnable(textID);
+		glBindTexture(TEXTRECTMODE, textID);
+		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
+		glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_REPLACE);
+		glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_TEXTURE1);
+		glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR);
+		glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_REPLACE);
+		glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_PREVIOUS);
+		glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_ALPHA);
+		
+		glActiveTexture(GL_TEXTURE0);
+		glEnable(TEXTRECTMODE);
+		glActiveTexture(GL_TEXTURE1);
+		glEnable(TEXTRECTMODE);
+		
+		glBegin (GL_QUAD_STRIP);
+			glMultiTexCoord2f (GL_TEXTURE1, 0, 0); // lensTexture : upper left in texture coordinates
+			glMultiTexCoord2f (GL_TEXTURE0, 0, 0); // mask texture : upper left in texture coordinates
+			glVertex3d (eventLocation.x, eventLocation.y, 0.0);
+		
+			glMultiTexCoord2f (GL_TEXTURE1, LENSSIZE, 0); // lensTexture : lower left in texture coordinates
+			glMultiTexCoord2f (GL_TEXTURE0, loupeMaskTextureWidth, 0); // mask texture : lower left in texture coordinates
+			glVertex3d (eventLocation.x+LENSSIZE*4*scaleValue/LENSRATIO, eventLocation.y, 0.0);
+
+			glMultiTexCoord2f (GL_TEXTURE1, 0, LENSSIZE); // lensTexture : upper right in texture coordinates
+			glMultiTexCoord2f (GL_TEXTURE0, 0, loupeMaskTextureHeight); // mask texture : upper right in texture coordinates
+			glVertex3d (eventLocation.x, eventLocation.y+LENSSIZE*4*scaleValue/LENSRATIO, 0.0);
+			
+			glMultiTexCoord2f (GL_TEXTURE1, LENSSIZE, LENSSIZE); // lensTexture : lower right in texture coordinates
+			glMultiTexCoord2f (GL_TEXTURE0, loupeMaskTextureWidth, loupeMaskTextureHeight); // mask texture : lower right in texture coordinates
+			glVertex3d (eventLocation.x+LENSSIZE*4*scaleValue/LENSRATIO, eventLocation.y+LENSSIZE*4*scaleValue/LENSRATIO, 0.0);
 		glEnd();
-		glDisable(GL_LINE_SMOOTH);
-		glDisable(GL_POLYGON_SMOOTH);
-		glDisable(GL_POINT_SMOOTH);
+		
+		glActiveTexture(GL_TEXTURE1); // deactivate multitexturing
+		glDisable(TEXTRECTMODE);
+		glDeleteTextures( 1, &textID);
+
+		/* multitexturing ends */
+		
+		// back to single texturing mode:
+		glActiveTexture(GL_TEXTURE0); // activate single texture unit
+		glDisable(TEXTRECTMODE);
+	
+		/* drawing loupe border */
+		BOOL drawLoupeBorder = YES;
+		if(loupeTextureID && drawLoupeBorder)
+		{
+			glEnable(GL_TEXTURE_RECTANGLE_EXT);
+			
+			glBindTexture(GL_TEXTURE_RECTANGLE_EXT, loupeTextureID);
+			
+			glColor4f(1.0, 1.0, 1.0, 1.0);
+			
+			glBegin(GL_QUAD_STRIP);			
+				glTexCoord2f(0, 0);
+				glVertex3d (eventLocation.x, eventLocation.y, 0.0);
+				glTexCoord2f(loupeTextureWidth, 0);
+				glVertex3d (eventLocation.x+LENSSIZE*4*scaleValue/LENSRATIO, eventLocation.y, 0.0);
+				glTexCoord2f(0, loupeTextureHeight);
+				glVertex3d (eventLocation.x, eventLocation.y+LENSSIZE*4*scaleValue/LENSRATIO, 0.0);
+				glTexCoord2f(loupeTextureWidth, loupeTextureHeight);
+				glVertex3d (eventLocation.x+LENSSIZE*4*scaleValue/LENSRATIO, eventLocation.y+LENSSIZE*4*scaleValue/LENSRATIO, 0.0);
+			glEnd();
+			
+			glDisable(GL_TEXTURE_RECTANGLE_EXT);
+		}
+
+	
+		
+//		glColor4f ( 0, 0, 0 , 0.8);
+//		glLineWidth( 3);
+//		
+//		int resol = LENSSIZE*4*scaleValue;
+//		
+//		eventLocation.x += (0.5+LENSSIZE)*2*scaleValue/LENSRATIO;
+//		eventLocation.y += (0.5+LENSSIZE)*2*scaleValue/LENSRATIO;
+//		
+//		glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
+//		glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+//		glEnable(GL_POINT_SMOOTH);
+//		glEnable(GL_LINE_SMOOTH);
+//		glEnable(GL_POLYGON_SMOOTH);
+//		
+//		float f = ((LENSSIZE-1)*scaleValue*2/LENSRATIO);
+//
+//		glBegin(GL_LINE_LOOP);
+//		for( int i = 0; i < resol ; i++ )
+//		{
+//			float angle = i * 2 * M_PI /resol;
+//			glVertex2f( eventLocation.x + f *cos(angle), eventLocation.y + f *sin(angle));
+//		}
+//		glEnd();
+//		glPointSize( 3);
+//		glBegin( GL_POINTS);
+//		for( int i = 0; i < resol ; i++ )
+//		{
+//			float angle = i * 2 * M_PI /resol;
+//			
+//			glVertex2f( eventLocation.x + f *cos(angle), eventLocation.y + f *sin(angle));
+//		}
+//		glEnd();
+//		glDisable(GL_LINE_SMOOTH);
+//		glDisable(GL_POLYGON_SMOOTH);
+//		glDisable(GL_POINT_SMOOTH);
+		
+		
 		
 		glDisable(GL_BLEND);
 	}
@@ -11448,7 +11562,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 #pragma mark -
 #pragma mark Loupe
 
-- (void)displayLoupe;
+- (void)displayLoupeWithCenter:(NSPoint)center;
 {
 	if(!loupeController)
 		loupeController = [[LoupeController alloc] init];
@@ -11461,11 +11575,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	if(![[loupeController window] isVisible])
 		[loupeController showWindow:nil];
-	
-	//[loupeController setTexture:lensTexture withSize:NSMakeSize(LENSSIZE, LENSSIZE) bytesPerRow:LENSSIZE viewSize:NSMakeSize(LENSSIZE*4*scaleValue/LENSRATIO, LENSSIZE*4*scaleValue/LENSRATIO)];
+		
 	[loupeController setTexture:lensTexture withSize:NSMakeSize(LENSSIZE, LENSSIZE) bytesPerRow:LENSSIZE rotation:self.rotation];
-	[loupeController centerWindowOnMouse];
-	[loupeController drawLoupeBorder:NO];
+	[loupeController setWindowCenter:center];
+	[loupeController drawLoupeBorder:YES];
 }
 
 - (void)hideLoupe;

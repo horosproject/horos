@@ -36,9 +36,9 @@
 			</object>
 			<object class="NSWindowTemplate" id="1005">
 				<int key="NSWindowStyleMask">15</int>
-				<int key="NSWindowBacking">2</int>
+				<int key="NSWindowBacking">1</int>
 				<string key="NSWindowRect">{{196, 99}, {409, 411}}</string>
-				<int key="NSWTFlags">536870912</int>
+				<int key="NSWTFlags">536875008</int>
 				<string key="NSWindowTitle">Window</string>
 				<string key="NSWindowClass">LoupeWindow</string>
 				<nil key="NSViewClass"/>

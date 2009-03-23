@@ -28,7 +28,7 @@
 	NSRect frame = [[self window] frame];
 	
 	[loupeView setTexture:texture withSize:textureSize bytesPerRow:bytesPerRow rotation:rotation];
-	[loupeView setNeedsDisplay:YES];
+//	[loupeView setNeedsDisplay:YES];
 }
 
 //- (void)setTexture:(char*)texture withSize:(NSSize)textureSize bytesPerRow:(int)bytesPerRow viewSize:(NSSize)viewSize;
@@ -66,8 +66,9 @@
 	origin.x = center.x-frame.size.width*0.5;
 	origin.y = center.y-frame.size.height*0.5;
 	
-	[[self window] setFrameOrigin:origin];
-	[[[self window] contentView] setNeedsDisplay:YES];	
+	//[[self window] setFrameOrigin:origin];
+	[[self window] setFrame:NSMakeRect(origin.x, origin.y, frame.size.width, frame.size.height) display:NO];
+	//[[[self window] contentView] setNeedsDisplay:YES];	
 }
 
 - (void)drawLoupeBorder:(BOOL)drawLoupeBorder;
