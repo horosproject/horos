@@ -27,7 +27,7 @@
 @interface ROIVolumeController : Window3DController
 {
     IBOutlet ROIVolumeView			*view;
-	IBOutlet NSTextField			*volumeField;
+	IBOutlet NSTextField			*volumeField, *seriesName;
 	
 	IBOutlet NSButton				*showSurfaces, *showPoints, *showWireframe, *textured, *color;
 	IBOutlet NSColorWell			*colorWell;
@@ -37,9 +37,11 @@
 	ROI								*roi;
 }
 
+@property (readonly) NSTextField *volumeField, *seriesName;
+
 - (id) initWithPoints:(NSMutableArray*) pts :(float) volume :(ViewerController*) iviewer roi:(ROI*) iroi;
 - (IBAction) changeParameters:(id) sender;
-- (void) setDataString:(NSString*) s;
+- (void) setDataString:(NSString*) s volume:(NSString*) v;
 - (ViewerController*) viewer;
 - (ROI*) roi;
 - (IBAction) reload:(id)sender;

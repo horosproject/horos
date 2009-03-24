@@ -28,8 +28,6 @@
 
 @implementation ROIVolumeView
 
-
-
 -(void) coView:(id) sender
 {
 	aCamera = aRenderer->GetActiveCamera();
@@ -214,7 +212,7 @@
     [pb setData: [im TIFFRepresentation] forType:NSTIFFPboardType];
 }
 
-- (void) exportDICOMFile:(id) sender
+- (IBAction) exportDICOMFile:(id) sender
 {
 	long	width, height, spp, bpp;
 	
@@ -230,8 +228,8 @@
 		NSArray	*pixList = [[co viewer] pixList];
 		
 		[exportDCM setSourceFile: [[pixList objectAtIndex: 0] srcFile]];
-		[exportDCM setSeriesDescription:[[co roi] name]];
-		[exportDCM setSeriesNumber:5500];
+		[exportDCM setSeriesDescription: [co.seriesName stringValue]];
+		[exportDCM setSeriesNumber: 8856];
 		[exportDCM setPixelData: dataPtr samplePerPixel:spp bitsPerPixel:bpp width: width height: height];
 		
 		NSString *f = [exportDCM writeDCMFile: nil];
@@ -276,8 +274,8 @@
 		if( [objects count] != [producedFiles count])
 			NSLog( @"WARNING !! [objects count] != [producedFiles count]");
 		
-		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportSendToDICOMNode"])
-			[[BrowserController currentBrowser] selectServer: objects];
+//		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportSendToDICOMNode"])
+//			[[BrowserController currentBrowser] selectServer: objects];
 		
 		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportMarkThemAsKeyImages"])
 		{

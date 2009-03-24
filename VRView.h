@@ -22,7 +22,6 @@
 
 #define id Id
 #include "vtkCommand.h"
-#include "vtkProperty.h"
 #include "vtkActor.h"
 #include "vtkPolyData.h"
 #include "vtkRenderer.h"

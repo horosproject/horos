@@ -5682,7 +5682,7 @@ END_CREATE_ROIS:
 			NSLog( @"philipsFactor exception");
 			NSLog( [e description]);
 		}
-		NSLog( @"philipsFactor = %f", philipsFactor);
+		//NSLog( @"philipsFactor = %f", philipsFactor);
 	}
 	
 	// End SUV		
@@ -7643,7 +7643,7 @@ END_CREATE_ROIS:
 					if( val->a)
 					{
 						philipsFactor = atof( val->a);
-						NSLog( @"philipsFactor = %f", philipsFactor);
+						//NSLog( @"philipsFactor = %f", philipsFactor);
 					}
 				}
 			}

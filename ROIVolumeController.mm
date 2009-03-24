@@ -18,6 +18,8 @@
 
 @implementation ROIVolumeController
 
+@synthesize volumeField, seriesName;
+
 - (ViewerController*) viewer
 {
 	return viewer;
@@ -44,9 +46,10 @@
 	}
 }
 
-- (void) setDataString:(NSString*) s
+- (void) setDataString:(NSString*) s volume:(NSString*) v
 {
 	[volumeField setStringValue: s];
+	[seriesName setStringValue: v];
 }
 
 -(id) initWithPoints:(NSMutableArray*) pts :(float) volume :(ViewerController*) iviewer roi:(ROI*) iroi

@@ -54,7 +54,7 @@
 #include "vtkImageMapToColors.h"
 #include "vtkImageActor.h"
 #include "vtkLight.h"
-
+#include "vtkTextProperty.h"
 #include "vtkPlane.h"
 #include "vtkPlanes.h"
 #include "vtkPlaneSource.h"
@@ -138,7 +138,7 @@ class vtkMyCallback;
 - (short) setPixSource:(NSMutableArray*)pts;
 - (void) setROIActorVolume:(NSValue*)roiActorPointer;
 - (void) setOpacity: (float) opacity showPoints: (BOOL) sp showSurface: (BOOL) sS showWireframe:(BOOL) w texture:(BOOL) tex useColor:(BOOL) usecol color:(NSColor*) col;
-
+- (IBAction) exportDICOMFile:(id) sender;
 - (short) renderVolume;
 - (NSSet *)connectedPointsForPoint:(vtkIdType)pt fromPolyData:(vtkPolyData *)data;
 

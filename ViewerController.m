@@ -10946,15 +10946,19 @@ int i,j,l;
 		if( [selectedRoi name] && [[selectedRoi name] isEqualToString:@""] == NO)
 			[s appendString: [NSString stringWithFormat:NSLocalizedString(@"%@\r", nil), [selectedRoi name]]];
 		
+		NSString *volumeString;
+		
 		if( volume < 0.01)
-			[s appendString: [NSString stringWithFormat:NSLocalizedString(@"Volume : %2.4f mm3", nil), volume*1000.]];
+			volumeString = [NSString stringWithFormat:NSLocalizedString(@"Volume : %2.4f mm3", nil), volume*1000.];
 		else
-			[s appendString: [NSString stringWithFormat:NSLocalizedString(@"Volume : %2.4f cm3", nil), volume]];
+			volumeString = [NSString stringWithFormat:NSLocalizedString(@"Volume : %2.4f cm3", nil), volume];
+		
+		[s appendString: volumeString];
 		
 		[s appendString: [NSString stringWithFormat:NSLocalizedString(@"\rMean : %2.4f SDev: %2.4f Total : %2.4f", nil), [[data valueForKey:@"mean"] floatValue], [[data valueForKey:@"dev"] floatValue], [[data valueForKey:@"total"] floatValue]]];
 		[s appendString: [NSString stringWithFormat:NSLocalizedString(@"\rMin : %2.4f Max : %2.4f ", nil), [[data valueForKey:@"min"] floatValue], [[data valueForKey:@"max"] floatValue]]];
 		
-		[viewer setDataString: s];
+		[viewer setDataString: s volume: volumeString];
 		
 		[[viewer window] center];
 		
