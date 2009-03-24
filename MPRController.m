@@ -284,7 +284,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	
 	[super showWindow: sender];
 	
-	[self setLOD: 1.5];
+	[self setLOD: [[NSUserDefaults standardUserDefaults] floatForKey:@"defaultMPRLOD"]];
 }
 
 -(void) awakeFromNib
@@ -900,6 +900,8 @@ static float deg2rad = 3.14159265358979/180.0;
 	[mprView3 restoreCamera];
 	mprView3.camera.forceUpdate = YES;
 	[mprView3 updateViewMPR];
+	
+	[[NSUserDefaults standardUserDefaults] setFloat: LOD forKey: @"defaultMPRLOD"];
 }
 
 #pragma mark Window Level / Window width
