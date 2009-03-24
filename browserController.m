@@ -13364,13 +13364,11 @@ static volatile int numberOfThreadsForJPEG = 0;
 	if( isCurrentDatabaseBonjour) return;
 	if( DatabaseIsEdited) return;
 	if( managedObjectContext == nil) return;
-	if( [NSDate timeIntervalSinceReferenceDate] - lastCheckIncoming < 0.5) return;
+	if( [NSDate timeIntervalSinceReferenceDate] - lastCheckIncoming < 0.4) return;
 	
-	if( [checkIncomingLock tryLock])
-	{
-		[self checkIncomingThread: self];
-		[checkIncomingLock unlock];
-	}
+	[checkIncomingLock lock];
+	[self checkIncomingThread: self];
+	[checkIncomingLock unlock];
 }
 
 - (void)checkIncoming: (id)sender
