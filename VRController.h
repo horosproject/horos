@@ -46,7 +46,7 @@
 	
 	NSString				*style;
 	
-    IBOutlet NSView         *toolsView, *WLWWView, *LODView, *ClippingRangeView, *BlendingView, *movieView, *shadingView, *engineView, *perspectiveView, *modeView, *scissorStateView;
+    IBOutlet NSView         *toolsView, *WLWWView, *CLUTEditorsView, *LODView, *ClippingRangeView, *BlendingView, *movieView, *shadingView, *engineView, *perspectiveView, *modeView, *scissorStateView;
 	
 	IBOutlet NSView			*OrientationsView;
 	
@@ -228,7 +228,7 @@
 - (void)setCurCLUTMenu:(NSString*)clut;
 
 - (NSDrawer*)clutOpacityDrawer;
-- (void)showCLUTOpacityPanel:(id)sender;
+- (IBAction)showCLUTOpacityPanel:(id)sender;
 - (void)loadAdvancedCLUTOpacity:(id)sender;
 - (void)delete16BitCLUT:(NSWindow*)sheet returnCode:(int)returnCode contextInfo:(void*)contextInfo;
 - (IBAction) editGrowingRegion:(id) sender;

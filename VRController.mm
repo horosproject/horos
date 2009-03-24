@@ -65,51 +65,11 @@ static NSString*	ConvolutionViewToolbarItemIdentifier = @"ConvolutionView";
 static NSString*	BackgroundColorViewToolbarItemIdentifier = @"BackgroundColorView";
 static NSString*	PresetsPanelToolbarItemIdentifier = @"3DPresetsPanel.tiff";
 static NSString*	ClippingRangeViewToolbarItemIdentifier = @"ClippingRange";
+static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 
 #include <3DConnexionClient/ConnexionClientAPI.h>
 
 @implementation VRController
-
-
-//- (float) ambient
-//{
-//	return [view ambient];
-//}
-//
-//- (float) diffuse
-//{
-//	return [view diffuse];
-//}
-//
-//- (float) specular
-//{
-//	return [view specular];
-//}
-//
-//- (float) specularPower
-//{
-//	return [view specularPower];
-//}
-//
-//- (void) setAmbient:(float) v
-//{
-//	 [view setAmbient: v];
-//}
-//
-//- (void) setDiffuse:(float) v
-//{
-//	 [view setDiffuse: v];
-//}
-//
-//- (void) setSpecular:(float) v
-//{
-//	 [view setSpecular: v];
-//}
-//
-//- (void) setSpecularPower:(float) v
-//{
-//	 [view setSpecularPower: v];
-//}
 
 - (IBAction) roiDeleteAll:(id) sender
 {
@@ -1938,6 +1898,15 @@ static NSString*	ClippingRangeViewToolbarItemIdentifier = @"ClippingRange";
 		[toolbarItem setView: ClippingRangeView];
 		[toolbarItem setMinSize: NSMakeSize(NSWidth([ClippingRangeView frame]), NSHeight([ClippingRangeView frame]))];
 	}
+	else if( [itemIdent isEqualToString: CLUTEditorsViewToolbarItemIdentifier])
+	{
+		[toolbarItem setLabel: NSLocalizedString(@"CLUT Editor",nil)];
+		[toolbarItem setPaletteLabel:NSLocalizedString( @"CLUT Editor",nil)];
+        [toolbarItem setToolTip: NSLocalizedString(@"CLUT Editor",nil)];
+		
+		[toolbarItem setView: CLUTEditorsView];
+		[toolbarItem setMinSize: NSMakeSize(NSWidth([CLUTEditorsView frame]), NSHeight([CLUTEditorsView frame]))];
+	}
 	else
 	{
 		[toolbarItem release];
@@ -2004,6 +1973,7 @@ static NSString*	ClippingRangeViewToolbarItemIdentifier = @"ClippingRange";
 											NSToolbarSpaceItemIdentifier,
 											NSToolbarSeparatorItemIdentifier,
 											WLWWToolbarItemIdentifier,
+											CLUTEditorsViewToolbarItemIdentifier,
 											PresetsPanelToolbarItemIdentifier,
 											LODToolbarItemIdentifier,
 											CaptureToolbarItemIdentifier,
@@ -2043,6 +2013,7 @@ static NSString*	ClippingRangeViewToolbarItemIdentifier = @"ClippingRange";
 											NSToolbarSpaceItemIdentifier,
 											NSToolbarSeparatorItemIdentifier,
 											WLWWToolbarItemIdentifier,
+											CLUTEditorsViewToolbarItemIdentifier,
 											LODToolbarItemIdentifier,
 											CaptureToolbarItemIdentifier,
 											CroppingToolbarItemIdentifier,
