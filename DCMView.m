@@ -677,6 +677,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 + (NSSize) sizeOfString:(NSString *)string forFont:(NSFont *)font
 {
+	if( string == nil) string = @""; 
+
 	NSDictionary *attr = [NSDictionary dictionaryWithObject:font forKey:NSFontAttributeName];
 	NSAttributedString *attrString = [[[NSAttributedString alloc] initWithString:string attributes:attr] autorelease];
 	return [attrString size];
@@ -2679,6 +2681,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	NSMutableDictionary *stanStringAttrib = [NSMutableDictionary dictionary];
 	[stanStringAttrib setObject: [NSFont fontWithName:@"Helvetica-Bold" size:30] forKey:NSFontAttributeName];
+	
+	if( description == nil) description = @""; 
 	
 	NSAttributedString *text = [[[NSAttributedString alloc] initWithString: description attributes: stanStringAttrib] autorelease];
 	

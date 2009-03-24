@@ -2229,6 +2229,9 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 
 	NSMutableDictionary *attrsDictionary = [NSMutableDictionary dictionaryWithCapacity:3];
 	[attrsDictionary setObject:textLabelColor forKey:NSForegroundColorAttributeName];
+	
+	if( text == nil) text = @"";
+	
 	NSAttributedString *label = [[[NSAttributedString alloc] initWithString:text attributes:attrsDictionary] autorelease];
 //	NSRect labelBounds = [label boundingRectWithSize:[self bounds].size options:NSStringDrawingUsesDeviceMetrics];
 	NSRect labelBounds = [label boundingRectWithSize:drawingRect.size options:NSStringDrawingUsesDeviceMetrics];

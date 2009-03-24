@@ -223,11 +223,12 @@ static BOOL frameZoomed = NO;
 	
 	Camera *currentCamera = [vrView cameraWithThumbnail: NO];
 	
-	if( [self hasCameraChanged: currentCamera])
+	if( [self hasCameraChanged: currentCamera] == YES)
 	{
 		BOOL cameraMoved = [self hasCameraMoved: currentCamera];
 		
-		[vrView render];
+		if( [self frame].size.width > 0 && [self frame].size.height > 0)
+			[vrView render];
 		
 		float *imagePtr = [vrView imageInFullDepthWidth: &w height: &h isRGB: &isRGB];
 		
@@ -991,6 +992,10 @@ static BOOL frameZoomed = NO;
 			[windowController.horizontalSplit setPosition: splitPosition[ 0] ofDividerAtIndex: 0];
 			[windowController.verticalSplit setPosition: splitPosition[ 1] ofDividerAtIndex: 0];
 		}
+		
+		[self restoreCamera];
+		[vrView setLODLow: NO];
+		[self updateViewMPR];
 	}
 	else
 	{	

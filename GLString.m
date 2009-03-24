@@ -153,17 +153,20 @@
 
 - (id) initWithString:(NSString *)aString withAttributes:(NSDictionary *)attribs withTextColor:(NSColor *)text withBoxColor:(NSColor *)box withBorderColor:(NSColor *)border
 {
+	if( aString == nil) aString = @"";
 	return [self initWithAttributedString:[[[NSAttributedString alloc] initWithString:aString attributes:attribs] autorelease] withTextColor:text withBoxColor:box withBorderColor:border];
 }
 
 // basic methods that pick up defaults
 - (id) initWithAttributedString:(NSAttributedString *)attributedString;
 {
+	if( attributedString == nil) attributedString = @"";
 	return [self initWithAttributedString:attributedString withTextColor:[NSColor colorWithDeviceRed:1.0f green:1.0f blue:1.0f alpha:1.0f] withBoxColor:[NSColor colorWithDeviceRed:1.0f green:1.0f blue:1.0f alpha:0.0f] withBorderColor:[NSColor colorWithDeviceRed:1.0f green:1.0f blue:1.0f alpha:0.0f]];
 }
 
 - (id) initWithString:(NSString *)aString withAttributes:(NSDictionary *)attribs
 {
+	if( aString == nil) aString = @"";
 	return [self initWithAttributedString:[[[NSAttributedString alloc] initWithString:aString attributes:attribs] autorelease] withTextColor:[NSColor colorWithDeviceRed:1.0f green:1.0f blue:1.0f alpha:1.0f] withBoxColor:[NSColor colorWithDeviceRed:1.0f green:1.0f blue:1.0f alpha:0.0f] withBorderColor:[NSColor colorWithDeviceRed:1.0f green:1.0f blue:1.0f alpha:0.0f]];
 }
 
@@ -366,6 +369,7 @@
 
 - (void) setString:(NSString *)aString withAttributes:(NSDictionary *)attribs; // set string after initial creation
 {
+	if( aString == nil) aString = @"";
 	[self setString:[[[NSAttributedString alloc] initWithString:aString attributes:attribs] autorelease]];
 }
 
