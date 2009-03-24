@@ -142,6 +142,7 @@
 - (BOOL)clickInAddCurveButtonAtPosition:(NSPoint)position;
 - (BOOL)clickInRemoveSelectedCurveButtonAtPosition:(NSPoint)position;
 - (BOOL)clickInSaveButtonAtPosition:(NSPoint)position;
+- (BOOL)clickInCloseButtonAtPosition:(NSPoint)position;
 - (void)simplifyHistogram;
 
 #pragma mark -

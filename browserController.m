@@ -13131,7 +13131,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 				{
 					NSString *srcPath = [INpath stringByAppendingPathComponent:pathname];
 					NSString *originalPath = srcPath;
-					//NSLog(@"Incoming path: %@", srcPath);
+					
 					if ([[[srcPath lastPathComponent] uppercaseString] isEqualToString:@".DS_STORE"])
 						continue;
 					
