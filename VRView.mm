@@ -1793,17 +1793,23 @@ public:
 		
 		[self setEngine: [[NSUserDefaults standardUserDefaults] integerForKey: @"MAPPERMODEVR"]];
 		
+		float savedSupersampling = [[dict objectForKey:@"superSampling"] floatValue];
+		float ratio = 1;
+		
+		if( savedSupersampling)
+			ratio = superSampling / savedSupersampling;
+			
 		if( [[dict objectForKey:@"SUVConverted"] boolValue] == [firstObject SUVConverted])
 			[self setWLWW: [[dict objectForKey:@"WL"] floatValue] :[[dict objectForKey:@"WW"] floatValue]];
 		
 		tempArray = [dict objectForKey:@"CameraPosition"];
-		aCamera->SetPosition( [[tempArray objectAtIndex:0] floatValue], [[tempArray objectAtIndex:1] floatValue], [[tempArray objectAtIndex:2] floatValue]);
+		aCamera->SetPosition( [[tempArray objectAtIndex:0] floatValue]*ratio, [[tempArray objectAtIndex:1] floatValue]*ratio, [[tempArray objectAtIndex:2] floatValue]*ratio);
 
 		tempArray = [dict objectForKey:@"CameraViewUp"];
-		aCamera->SetViewUp( [[tempArray objectAtIndex:0] floatValue], [[tempArray objectAtIndex:1] floatValue], [[tempArray objectAtIndex:2] floatValue]);
+		aCamera->SetViewUp( [[tempArray objectAtIndex:0] floatValue]*ratio, [[tempArray objectAtIndex:1] floatValue]*ratio, [[tempArray objectAtIndex:2] floatValue]*ratio);
 
 		tempArray = [dict objectForKey:@"CameraFocalPoint"];
-		aCamera->SetFocalPoint( [[tempArray objectAtIndex:0] floatValue], [[tempArray objectAtIndex:1] floatValue], [[tempArray objectAtIndex:2] floatValue]);
+		aCamera->SetFocalPoint( [[tempArray objectAtIndex:0] floatValue]*ratio, [[tempArray objectAtIndex:1] floatValue]*ratio, [[tempArray objectAtIndex:2] floatValue]*ratio);
 		
 		tempArray = [dict objectForKey:@"CameraClipping"];
 		aCamera->SetClippingRange( [[tempArray objectAtIndex:0] floatValue], [[tempArray objectAtIndex:1] floatValue]);
@@ -1862,6 +1868,8 @@ public:
 	
 	[dict setObject:[NSNumber numberWithBool:self.clipRangeActivated] forKey:@"clipRangeActivated"];
 	[dict setObject:[NSNumber numberWithFloat: [self getClippingRangeThickness]] forKey:@"clippingRangeThickness"];
+		
+	[dict setObject:[NSNumber numberWithFloat: superSampling] forKey:@"superSampling"];
 	
 	return dict;
 }
