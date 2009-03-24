@@ -1730,11 +1730,11 @@ public:
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowWillClose:) name: NSWindowWillCloseNotification object: nil];
 		advancedCLUT = NO;
 		
-		if( MPProcessors() > 4)
-			lowResLODFactor = 2.0;
+		if( MPProcessors() >= 4)
+			lowResLODFactor = 1.5;
 		else
-			lowResLODFactor = 3.0;
-			
+			lowResLODFactor = 2.5;
+		
 		[[IMService notificationCenter] addObserver:self selector:@selector(_iChatStateChanged:) name:IMAVManagerStateChangedNotification object:nil];
 	}
     
