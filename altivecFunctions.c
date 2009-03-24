@@ -62,6 +62,16 @@ void vsubtract(vector float *a, vector float *b, vector float *r, long size)
 	}
 }
 
+void vsubtractAbs(vector float *a, vector float *b, vector float *r, long size)
+{
+	long i = size / 4;
+	
+	while(i-- > 0)
+	{
+		*r++ = vec_abs(vec_sub( *a++, *b++));
+	}
+}
+
 void vmax8(vector unsigned char *a, vector unsigned char *b, vector unsigned char *r, long size)
 {
 	long i = size / 4;
@@ -157,6 +167,16 @@ void vsubtractNoAltivec( float *a,  float *b,  float *r, long size)
 	while(i-- > 0)
 	{
 		*r++ = *a++ - *b++;
+	}
+}
+
+void vsubtractNoAltivecAbs( float *a,  float *b,  float *r, long size)
+{
+	long i = size;
+	
+	while(i-- > 0)
+	{
+		*r++ = fabsf(*a++ - *b++);
 	}
 }
 

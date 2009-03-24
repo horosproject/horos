@@ -24,6 +24,7 @@ extern "C"
 	extern void InverseShorts( register vector unsigned short *unaligned_input, register long size);
 	extern void vmultiply(vector float *a, vector float *b, vector float *r, long size);
 	extern void vsubtract(vector float *a, vector float *b, vector float *r, long size);
+	extern void vsubtractAbs(vector float *a, vector float *b, vector float *r, long size);
 	extern void vmax8(vector unsigned char *a, vector unsigned char *b, vector unsigned char *r, long size);
 	extern void vmax(vector float *a, vector float *b, vector float *r, long size);
 	extern void vmin(vector float *a, vector float *b, vector float *r, long size);
@@ -39,7 +40,7 @@ extern "C"
 	extern void vminNoAltivec( float *a,  float *b,  float *r, long size);
 	extern void vmaxNoAltivec(float *a, float *b, float *r, long size);
 	extern void vsubtractNoAltivec( float *a,  float *b,  float *r, long size);
-
+	extern void vsubtractNoAltivecAbs( float *a,  float *b,  float *r, long size);
 	
 	extern short Altivec;
 

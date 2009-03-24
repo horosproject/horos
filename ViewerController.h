@@ -332,6 +332,20 @@ enum
 @property(readonly) short currentOrientationTool;
 @property(readonly) volatile float loadingPercentage;
 
+@property(readonly) NSTimer	*timer;
+@property(readonly) NSButton *keyImageCheck;
+
+/** Accessors for plugins using blending window */
+@property(readonly) NSWindow *blendingTypeWindow;
+@property(readonly) NSButton *blendingTypeMultiply;
+@property(readonly) NSButton *blendingTypeSubtract;
+@property(readonly) NSSegmentedControl *blendingTypeRGB;
+@property(readonly) NSPopUpButton *blendingPlugins;
+@property(readonly) NSButton *blendingResample;
+
+/** Return the 'dragged' window, the destination window is contained in the 'viewerController' object of the 'PluginFilter' object */
+@property(retain) ViewerController *blendedWindow;
+
 /** Array of all 2D Viewers */
 + (NSMutableArray*) getDisplayed2DViewers;
 + (void) closeAllWindows;
@@ -634,6 +648,7 @@ enum
 - (void) blendingMode:(id) sender;
 - (ViewerController*) blendingController;
 - (void)blendWithViewer:(ViewerController *)bc blendingType:(int)blendingType;
+- (void)blendingSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
 - (void) computeContextualMenu;
 
 /** Modality of the study */

@@ -5352,7 +5352,12 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 -(void) subtract:(DCMView*) bV
 {
-	[curDCM imageArithmeticSubtraction: [bV curDCM]];
+	[self subtract: bV absolute: NO];
+}
+
+- (void) subtract:(DCMView*) bV absolute:(BOOL) abs
+{
+	[curDCM imageArithmeticSubtraction: [bV curDCM] absolute: abs];
 	
 	[self reapplyWindowLevel];
 	[self loadTextures];

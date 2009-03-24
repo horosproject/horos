@@ -107,6 +107,7 @@ extern "C"
 }
 
 @property BOOL checkAllWindowsAreVisibleIsOff;
+@property (readonly) NSMenu *filtersMenu;
 
 #pragma mark-
 #pragma mark initialization of the main event loop singleton

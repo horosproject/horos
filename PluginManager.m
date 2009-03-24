@@ -404,11 +404,10 @@ static NSMutableArray			*fusionPlugins = nil;
 						else if ( [filterClass instancesRespondToSelector:@selector(filterImage:)] )
 						{
 							NSArray		*menuTitles = [[plugin infoDictionary] objectForKey:@"MenuTitles"];
+							PluginFilter	*filter = [filterClass filter];
 							
 							if( menuTitles)
 							{
-								PluginFilter*	filter = [filterClass filter];
-								
 								for( NSString *menuTitle in menuTitles)
 								{
 									[plugins setObject:filter forKey:menuTitle];
@@ -420,8 +419,6 @@ static NSMutableArray			*fusionPlugins = nil;
 							
 							if( toolbarNames)
 							{
-								PluginFilter*	filter = [filterClass filter];
-								
 								for( NSString *toolbarName in toolbarNames)
 								{
 									[plugins setObject:filter forKey:toolbarName];

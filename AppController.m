@@ -624,7 +624,7 @@ static NSDate *lastWarningDate = nil;
 
 @implementation AppController
 
-@synthesize checkAllWindowsAreVisibleIsOff;
+@synthesize checkAllWindowsAreVisibleIsOff, filtersMenu;
 
 - (void) waitForLockFile:(id) sender
 {

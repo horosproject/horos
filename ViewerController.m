@@ -178,6 +178,9 @@ NSInteger sortROIByName(id roi1, id roi2, void *context)
 @implementation ViewerController
 
 @synthesize currentOrientationTool, loadingPercentage;
+@synthesize timer, keyImageCheck;
+@synthesize blendingTypeWindow, blendingTypeMultiply, blendingTypeSubtract, blendingTypeRGB, blendingPlugins, blendingResample;
+@synthesize blendedWindow;
 
 #define UNDOQUEUESIZE 40
 
@@ -7532,15 +7535,20 @@ static ViewerController *draggedController = nil;
 			
 			for( i = 0; i < 9; i++)
 			{
-				if( vectors[ i] != vectorsB[ i]) equalVector = NO;
+				const double epsilon = fabs(vectors[ i] - vectorsB[ i]);
+				if (epsilon > 1e-6)
+				{
+					equalVector = NO;
+					break;
+				}
 			}
 			
-			BOOL		equalZero = YES;
+			BOOL equalZero = YES;
 			
 			for( i = 0; i < 9; i++)
 			{
-				if( vectors[ i] != 0) equalZero = NO;
-				if( vectorsB[ i] != 0) equalZero = NO;
+				if( vectors[ i] != 0) { equalZero = NO; break;}
+				if( vectorsB[ i] != 0) { equalZero = NO; break;}
 			}
 			
 			if( equalVector == YES && equalZero == NO)
@@ -9472,7 +9480,8 @@ short				matrix[25];
 				[imageView sendSyncMessage: 0];
 				[[seriesView imageViews] makeObjectsPerformSelector:@selector(display)];
 				
-				[imageView subtract: [bc imageView]];
+//				[imageView subtract: [bc imageView]];
+				[imageView subtract: [bc imageView] absolute: (([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSAlternateKeyMask) != 0)];
 			}
 		break;
 		

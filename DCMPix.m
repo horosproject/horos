@@ -10411,15 +10411,25 @@ END_CREATE_ROIS:
 
 -(void) imageArithmeticSubtraction:(DCMPix*) sub
 {
+	[self imageArithmeticSubtraction: sub absolute: NO];
+}
+
+-(void) imageArithmeticSubtraction:(DCMPix*) sub absolute:(BOOL) abs
+{
 	//	float   *temp = [sub fImage];
 	//	vDSP_vsub (temp,1,fImage,1,fImage,1,height * width * sizeof(float));
 	float   *temp;	
-	temp = [self arithmeticSubtractImages: fImage :[sub fImage]];	
+	temp = [self arithmeticSubtractImages: fImage :[sub fImage] absolute: abs];
 	memcpy( fImage, temp, height * width * sizeof(float));	
 	free( temp);
 }
 
 -(float*) arithmeticSubtractImages :(float*) input :(float*) subfImage
+{
+	return [self arithmeticSubtractImages: input : subfImage absolute: NO];
+}
+
+-(float*) arithmeticSubtractImages :(float*) input :(float*) subfImage absolute:(BOOL) abs
 {
 	long	i = height * width;
 	float   *result = malloc( height * width * sizeof(float));
@@ -10427,10 +10437,21 @@ END_CREATE_ROIS:
 	if( subPixOffset.x == 0 && subPixOffset.y == 0)
 	{
 #if __ppc__ || __ppc64__
-		if( Altivec ) vsubtract( (vector float *)input, (vector float *)subfImage, (vector float *)result, i);
+		if( Altivec )
+		{
+			if (abs)
+				vsubtractAbs( (vector float *)input, (vector float *)subfImage, (vector float *)result, i);
+			else
+				vsubtract( (vector float *)input, (vector float *)subfImage, (vector float *)result, i);
+		}
 		else
 #endif
-			vsubtractNoAltivec(input, subfImage, result, i);
+		{
+			if (abs)
+				vsubtractNoAltivecAbs(input, subfImage, result, i);
+			else
+				vsubtractNoAltivec(input, subfImage, result, i);
+		}
 	}
 	else
 	{
@@ -10446,15 +10467,32 @@ END_CREATE_ROIS:
 			{ startwidth = offsetX;   subwidth = width;}
 		else { startwidth = 0; subwidth = width + offsetX;}
 		
-		for( long y = startheight; y < subheight; y++ )
+		if( abs)
 		{
-			tempResult = result + y*width;
-			tempIn = input + y*width;
-			tempOut = subfImage + (y-offsetY)*width - offsetX;
-			long x = subwidth - startwidth;
-			while ( x-- > 0 )
+			for( long y = startheight; y < subheight; y++ )
+ 			{
+				tempResult = result + y*width;
+				tempIn = input + y*width;
+				tempOut = subfImage + (y-offsetY)*width - offsetX;
+				long x = subwidth - startwidth;
+				while ( x-- > 0 )
+				{
+					*tempResult++ = fabsf(*tempIn++ - *tempOut++);
+				}
+			}
+		}
+		else
+		{
+			for( long y = startheight; y < subheight; y++ )
 			{
-				*tempResult++ = *tempIn++ - *tempOut++;
+				tempResult = result + y*width;
+				tempIn = input + y*width;
+				tempOut = subfImage + (y-offsetY)*width - offsetX;
+				long x = subwidth - startwidth;
+				while ( x-- > 0 )
+				{
+					*tempResult++ = *tempIn++ - *tempOut++;
+				}
 			}
 		}
 	}

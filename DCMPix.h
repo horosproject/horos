@@ -447,8 +447,9 @@ Note setter is different to not break existing usage. :-( */
 - (void) imageArithmeticMultiplication:(DCMPix*) sub;
 - (float*) multiplyImages :(float*) input :(float*) subfImage;
 - (void) imageArithmeticSubtraction:(DCMPix*) sub;
+- (void) imageArithmeticSubtraction:(DCMPix*) sub absolute:(BOOL) abs;
 - (float*) arithmeticSubtractImages :(float*) input :(float*) subfImage;
-
+-(float*) arithmeticSubtractImages :(float*) input :(float*) subfImage absolute:(BOOL) abs;
 //DSA
 - (void) setSubSlidersPercent: (float) p gamma: (float) g zero: (float) z;
 - (void) setSubSlidersPercent: (float) p;
