@@ -162,6 +162,8 @@ static float deg2rad = 3.14159265358979/180.0;
 		[mprView3 setVRView: hiddenVRView viewID: 3];
 		[mprView3 setWLWW: [originalPix wl] :[originalPix ww]];
 		
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(defaultToolModified:) name:@"defaultToolModified" object:nil];
+		
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(UpdateWLWWMenu:) name:@"UpdateWLWWMenu" object:nil];
 		curWLWWMenu = [[viewer2D curWLWWMenu] retain];
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: nil];
@@ -360,7 +362,6 @@ static float deg2rad = 3.14159265358979/180.0;
 		toolIndex = [sender tag];
 	
 	[self setToolIndex: toolIndex];
-	
 	[self setROIToolTag: toolIndex];
 }
 
@@ -634,6 +635,32 @@ static float deg2rad = 3.14159265358979/180.0;
 	return mprView1;
 }
 
+-(void) defaultToolModified: (NSNotification*) note
+{
+	id sender = [note object];
+	int tag;
+	
+	if( sender)
+	{
+		if ([sender isKindOfClass:[NSMatrix class]])
+		{
+			NSButtonCell *theCell = [sender selectedCell];
+			tag = [theCell tag];
+		}
+		else
+			tag = [sender tag];
+	}
+	else
+		tag = [[[note userInfo] valueForKey:@"toolIndex"] intValue];
+	
+	if( tag >= 0)
+	{
+		[toolsMatrix selectCellWithTag: tag];
+		[self setToolIndex: tag];
+		[self setROIToolTag: tag];
+	}
+}
+
 #pragma mark ROI
 
 - (void)bringToFrontROI:(ROI*) roi;
@@ -646,11 +673,6 @@ static float deg2rad = 3.14159265358979/180.0;
 	NSString	*filename = nil;
 	switch( i)
 	{
-		case tWL:			filename = @"WLWW";				break;
-		case tZoom:			filename = @"Zoom";				break;
-		case tTranslate:	filename = @"Move";				break;
-		case tRotate:		filename = @"Rotate";			break;
-		case tNext:			filename = @"Stack";			break;
 		case tMesure:		filename = @"Length";			break;
 		case tAngle:		filename = @"Angle";			break;
 		case tROI:			filename = @"Rectangle";		break;
@@ -2396,7 +2418,7 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (NSArray *) toolbarDefaultItemIdentifiers: (NSToolbar *) toolbar
 {
-		return [NSArray arrayWithObjects: @"tbTools", @"tbWLWW", @"tbLOD", @"tbThickSlab", @"tbBlending", @"tbShading", @"Reset.tiff", @"Export.icns", @"Capture.icns", @"QTExport.icns", @"tbMovie", nil];
+		return [NSArray arrayWithObjects: @"tbTools", @"tbWLWW", @"tbLOD", @"tbThickSlab", @"tbBlending", @"tbShading", @"Reset.tiff", @"Export.icns", @"Capture.icns", @"QTExport.icns", @"tbMovie", @"AxisShowHide", @"MousePositionShowHide", nil];
 }
 
 - (NSArray *) toolbarAllowedItemIdentifiers: (NSToolbar *) toolbar

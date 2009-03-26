@@ -11304,12 +11304,12 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				case Preset9WWWLHotKeyAction:
 					if([wwwlValues count] > key-Preset1WWWLHotKeyAction)
 					{
-								wwwl = [wlwwDict objectForKey: [wwwlValues objectAtIndex: key-Preset1WWWLHotKeyAction]];
-								[self setWLWW:[[wwwl objectAtIndex:0] floatValue] :[[wwwl objectAtIndex:1] floatValue]];
-								
-								if( [self is2DViewer] == YES) [[self windowController] setCurWLWWMenu: [wwwlValues objectAtIndex: key-Preset1WWWLHotKeyAction]];
-								
-								[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: [wwwlValues objectAtIndex: key-Preset1WWWLHotKeyAction] userInfo: nil];
+						wwwl = [wlwwDict objectForKey: [wwwlValues objectAtIndex: key-Preset1WWWLHotKeyAction]];
+						[self setWLWW:[[wwwl objectAtIndex:0] floatValue] :[[wwwl objectAtIndex:1] floatValue]];
+						
+						if( [self is2DViewer] == YES) [[self windowController] setCurWLWWMenu: [wwwlValues objectAtIndex: key-Preset1WWWLHotKeyAction]];
+						
+						[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: [wwwlValues objectAtIndex: key-Preset1WWWLHotKeyAction] userInfo: nil];
 					}	
 					break;
 				
