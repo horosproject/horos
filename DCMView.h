@@ -79,7 +79,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 @class ROI;
 @class OrthogonalMPRController;
 @class DICOMExport;
-@class LoupeController;
+//@class LoupeController;
 
 /** \brief Image/Frame View for ViewerController */
 
@@ -280,7 +280,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 	GLuint loupeMaskTextureID, loupeMaskTextureWidth, loupeMaskTextureHeight;
 	GLubyte *loupeMaskTextureBuffer;
 	
-	LoupeController *loupeController;
+//	LoupeController *loupeController;
 }
 
 @property NSRect drawingFrameRect;
@@ -492,7 +492,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 - (BOOL)isLUT12Bit;
 
 //- (void)displayLoupe;
-- (void)displayLoupeWithCenter:(NSPoint)center;
-- (void)hideLoupe;
+//- (void)displayLoupeWithCenter:(NSPoint)center;
+//- (void)hideLoupe;
 
 @end

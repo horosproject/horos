@@ -36,7 +36,7 @@
 #import "OrthogonalMPRPETCTView.h"
 #import "IChatTheatreDelegate.h"
 
-#import "LoupeController.h"
+//#import "LoupeController.h"
 
 #include <QuickTime/ImageCompression.h> // for image loading and decompression
 #include <QuickTime/QuickTimeComponents.h> // for file type support
@@ -1998,6 +1998,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	if( labelFontListGL) glDeleteLists(labelFontListGL, 150);
 	if( iChatFontListGL) glDeleteLists(iChatFontListGL, 150);
 	
+	if( loupeTextureID) glDeleteTextures( 1, &loupeTextureID);
+	if( loupeMaskTextureID) glDeleteTextures( 1, &loupeMaskTextureID);
+	
 	if( pTextureName)
 	{
 		glDeleteTextures (textureX * textureY, pTextureName);
@@ -2012,7 +2015,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	}
 	if( colorBuf) free( colorBuf);
 	if( blendingColorBuf) free( blendingColorBuf);
-	
 	
 	[fontColor release];
 	[fontGL release];
@@ -2052,7 +2054,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	[self deleteLens];
 	
-	[LoupeController release];
+//	[LoupeController release];
 	
 	[loupeImage release];
 	[loupeMaskImage release];
@@ -2722,7 +2724,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 - (void) flagsChanged:(NSEvent *)event
 {
 	[self deleteLens];
-	if(loupeController) [loupeController close];
+//	if(loupeController) [loupeController close];
 
 	if( [self is2DViewer] == YES)
 	{
@@ -11574,30 +11576,30 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 #pragma mark -
 #pragma mark Loupe
-
-- (void)displayLoupeWithCenter:(NSPoint)center;
-{
-	if(!loupeController)
-		loupeController = [[LoupeController alloc] init];
-
-	if(!lensTexture)
-	{
-		[self hideLoupe];
-		return;
-	}
-	
-	if(![[loupeController window] isVisible])
-		[loupeController showWindow:nil];
-		
-	[loupeController setTexture:lensTexture withSize:NSMakeSize(LENSSIZE, LENSSIZE) bytesPerRow:LENSSIZE rotation:self.rotation];
-	[loupeController setWindowCenter:center];
-	[loupeController drawLoupeBorder:YES];
-}
-
-- (void)hideLoupe;
-{
-	if([[loupeController window] isVisible])
-		[[loupeController window] orderOut:self];
-}
+//
+//- (void)displayLoupeWithCenter:(NSPoint)center;
+//{
+//	if(!loupeController)
+//		loupeController = [[LoupeController alloc] init];
+//
+//	if(!lensTexture)
+//	{
+//		[self hideLoupe];
+//		return;
+//	}
+//	
+//	if(![[loupeController window] isVisible])
+//		[loupeController showWindow:nil];
+//		
+//	[loupeController setTexture:lensTexture withSize:NSMakeSize(LENSSIZE, LENSSIZE) bytesPerRow:LENSSIZE rotation:self.rotation];
+//	[loupeController setWindowCenter:center];
+//	[loupeController drawLoupeBorder:YES];
+//}
+//
+//- (void)hideLoupe;
+//{
+//	if([[loupeController window] isVisible])
+//		[[loupeController window] orderOut:self];
+//}
 
 @end

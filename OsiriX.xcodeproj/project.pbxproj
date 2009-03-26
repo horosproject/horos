@@ -411,12 +411,6 @@
 		A9B412D5089180A200913770 /* bonjour.tiff in Resources */ = {isa = PBXBuildFile; fileRef = A9B412D4089180A200913770 /* bonjour.tiff */; };
 		A9BDE5920C9823DC000A161F /* IChatTheatreDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = A9BDE5900C9823DC000A161F /* IChatTheatreDelegate.h */; };
 		A9BDE5930C9823DC000A161F /* IChatTheatreDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A9BDE5910C9823DC000A161F /* IChatTheatreDelegate.m */; };
-		A9C4D9190F7297E700B5B9A1 /* LoupeWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = A9C4D9130F7297E600B5B9A1 /* LoupeWindow.h */; };
-		A9C4D91A0F7297E700B5B9A1 /* LoupeWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = A9C4D9140F7297E600B5B9A1 /* LoupeWindow.m */; };
-		A9C4D91B0F7297E700B5B9A1 /* LoupeController.h in Headers */ = {isa = PBXBuildFile; fileRef = A9C4D9150F7297E600B5B9A1 /* LoupeController.h */; };
-		A9C4D91C0F7297E700B5B9A1 /* LoupeController.m in Sources */ = {isa = PBXBuildFile; fileRef = A9C4D9160F7297E600B5B9A1 /* LoupeController.m */; };
-		A9C4D91D0F7297E700B5B9A1 /* LoupeView.h in Headers */ = {isa = PBXBuildFile; fileRef = A9C4D9170F7297E700B5B9A1 /* LoupeView.h */; };
-		A9C4D91E0F7297E700B5B9A1 /* LoupeView.m in Sources */ = {isa = PBXBuildFile; fileRef = A9C4D9180F7297E700B5B9A1 /* LoupeView.m */; };
 		A9C4D9470F72987900B5B9A1 /* Loupe.xib in Resources */ = {isa = PBXBuildFile; fileRef = A9C4D9450F72987900B5B9A1 /* Loupe.xib */; };
 		A9C63A9C09BD7C5D00E312AE /* cerveau_icon.jpg in Resources */ = {isa = PBXBuildFile; fileRef = A9C63A9B09BD7C5D00E312AE /* cerveau_icon.jpg */; };
 		A9D18CE60F65120000476DBD /* RotateAxisCursor.png in Resources */ = {isa = PBXBuildFile; fileRef = A9D18CE50F65120000476DBD /* RotateAxisCursor.png */; };
@@ -16823,9 +16817,6 @@
 				CE291D8E0F5A99B700F95B43 /* OsiriXFixedPointVolumeRayCastMapper.h in Headers */,
 				A9333D250F56E6800097DAB7 /* MPRDCMView.h in Headers */,
 				A9333D310F56E70B0097DAB7 /* MPRController.h in Headers */,
-				A9C4D9190F7297E700B5B9A1 /* LoupeWindow.h in Headers */,
-				A9C4D91B0F7297E700B5B9A1 /* LoupeController.h in Headers */,
-				A9C4D91D0F7297E700B5B9A1 /* LoupeView.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -18829,9 +18820,6 @@
 				A9333D260F56E6800097DAB7 /* MPRDCMView.m in Sources */,
 				A9333D320F56E70B0097DAB7 /* MPRController.m in Sources */,
 				AB4CD7690F72619900699111 /* FlyThruController.mm in Sources */,
-				A9C4D91A0F7297E700B5B9A1 /* LoupeWindow.m in Sources */,
-				A9C4D91C0F7297E700B5B9A1 /* LoupeController.m in Sources */,
-				A9C4D91E0F7297E700B5B9A1 /* LoupeView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
