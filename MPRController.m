@@ -2418,7 +2418,7 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (NSArray *) toolbarDefaultItemIdentifiers: (NSToolbar *) toolbar
 {
-		return [NSArray arrayWithObjects: @"tbTools", @"tbWLWW", @"tbLOD", @"tbThickSlab", @"tbBlending", @"tbShading", @"Reset.tiff", @"Export.icns", @"Capture.icns", @"QTExport.icns", @"tbMovie", @"AxisShowHide", @"MousePositionShowHide", nil];
+		return [NSArray arrayWithObjects: @"tbTools", @"tbWLWW", @"tbLOD", @"tbThickSlab", @"tbBlending", @"tbShading", NSToolbarFlexibleSpaceItemIdentifier, @"Reset.tiff", @"Export.icns", @"Capture.icns", @"QTExport.icns", @"tbMovie", @"AxisShowHide", @"MousePositionShowHide", nil];
 }
 
 - (NSArray *) toolbarAllowedItemIdentifiers: (NSToolbar *) toolbar
