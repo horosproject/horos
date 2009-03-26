@@ -982,54 +982,6 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 
 - (id) initWithObjects:(NSMutableArray*) pix :(NSArray*) files :(NSData*) vData :(ROI*) roi :(ViewerController*) roiV :(long) t forView:(short)view
 {
-//	long i;
-//	
-//	self = [super init];
-//	
-//	firstTime = YES;
-//	perPendicular = NO;
-//	
-//	thickSlab = t;
-//
-//	roiViewer = roiV;
-//
-//	fileList = [NSMutableArray array];
-//	pixList = [NSMutableArray array];
-//	volumeData = nil;
-//
-//	float factor = 0.5;
-//	while ( ![ViewerController resampleDataFromPixArray:pix fileArray:files inPixArray:pixList fileArray:fileList data:&volumeData withXFactor:factor yFactor:factor zFactor:factor] && factor<=0.8)
-//		factor += 0.1;
-//	
-//	if(factor > 0.8)
-//	{
-//		fileList = [NSMutableArray arrayWithArray:files];
-//		pixList = pix;
-//		volumeData = vData;
-//	}
-//	else
-//	{
-//		[[pixList objectAtIndex:0] setSliceInterval: [[pix objectAtIndex: 0] sliceInterval] * factor];
-//		NSLog(@"factor : %f", factor);
-//	}
-//	[fileList retain];	
-//	[pixList retain];
-//	[volumeData retain];
-//
-//	selectedROI = [NSUnarchiver unarchiveObjectWithData: [NSArchiver archivedDataWithRootObject: roi]];
-//	
-//	[selectedROI setOriginAndSpacing:[[pixList objectAtIndex:0] pixelSpacingX] : [[pixList objectAtIndex:0] pixelSpacingY] :NSMakePoint([[pixList objectAtIndex:0] originX], [[pixList objectAtIndex:0] originY])];
-//	
-//	[selectedROI retain];
-//	
-//	newPixList = [[NSMutableArray arrayWithCapacity: 0] retain];
-//	newDcmList = [[NSMutableArray arrayWithCapacity: 0] retain];
-//	newPixListPer = [[NSMutableArray arrayWithCapacity: 0] retain];
-//	newDcmListPer = [[NSMutableArray arrayWithCapacity: 0] retain];
-//
-//	// Compute
-//	[self computeForView:view];
-
 	if(view==0)
 		return [self initWithObjects:pix :files :vData :roi :roiV :t forAxial:YES forCoronal:NO forSagittal:NO];
 	else if(view==1)

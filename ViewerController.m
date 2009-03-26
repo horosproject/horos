@@ -6671,7 +6671,7 @@ static ViewerController *draggedController = nil;
 				[[roiList[ j] objectAtIndex: x] addObjectsFromArray: [NSUnarchiver unarchiveObjectWithData: r]];
 				
 				for( ROI *r in [roiList[ j] objectAtIndex: x])
-					[r setOriginAndSpacing :[imageView curDCM].pixelSpacingX : [imageView curDCM].pixelSpacingY :NSMakePoint( [imageView curDCM].originX, [imageView curDCM].originY)];
+					[r setOriginAndSpacing :[imageView curDCM].pixelSpacingX : [imageView curDCM].pixelSpacingY :[DCMPix originCorrectedAccordingToOrientation: [imageView curDCM]]];	//NSMakePoint( [imageView curDCM].originX, [imageView curDCM].originY)];
 			}
 		}
 		[imageView roiSet];
@@ -9641,7 +9641,7 @@ short				matrix[25];
 						
 						curROI = [[curROI copy] autorelease];
 						
-						[curROI setOriginAndSpacing:[[imageView curDCM] pixelSpacingX] :[[imageView curDCM] pixelSpacingY] :NSMakePoint( [[imageView curDCM] originX], [[imageView curDCM] originY])];
+						[curROI setOriginAndSpacing:[[imageView curDCM] pixelSpacingX] :[[imageView curDCM] pixelSpacingY] :[DCMPix originCorrectedAccordingToOrientation: [imageView curDCM]]];	//NSMakePoint( [[imageView curDCM] originX], [[imageView curDCM] originY])];
 						[imageView roiSet: curROI];
 						
 						[[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] addObject: curROI];
@@ -10612,7 +10612,7 @@ int i,j,l;
 					
 					for( ROI *r in roisImages)
 					{
-						[r setOriginAndSpacing: curDCM.pixelSpacingX :curDCM.pixelSpacingY :NSMakePoint( curDCM.originX, curDCM.originY)];
+						[r setOriginAndSpacing: curDCM.pixelSpacingX :curDCM.pixelSpacingY :[DCMPix originCorrectedAccordingToOrientation: curDCM]];	//NSMakePoint( curDCM.originX, curDCM.originY)];
 						
 						[[roiList[ y] objectAtIndex: x] addObject: r];
 						[imageView roiSet: r];

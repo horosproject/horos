@@ -810,7 +810,12 @@ static BOOL frameZoomed = NO;
 	{
 		[windowController keyDown:theEvent];
 	}
-	else [super keyDown: theEvent];
+	else
+	{
+		[super keyDown: theEvent];
+		
+		[windowController propagateWLWW: self];
+	}
 }
 
 #pragma mark-

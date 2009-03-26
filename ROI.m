@@ -1061,7 +1061,27 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 	
 	long modeSaved = mode;
 	mode = ROI_selected;
+	
 	[self roiMove:offset :sendNotification];
+	
+	if( pix)
+	{
+		BOOL inImage = NO;
+		NSRect imRect = NSMakeRect( 0, 0, pix.pwidth, pix.pheight);
+		NSArray *pts = [self points];
+		for( MyPoint* pt in pts)
+		{
+			if( NSPointInRect( NSMakePoint( pt.x, pt.y), imRect))
+			{
+				inImage = YES;
+				break;
+			}
+		}
+		
+		if( inImage == NO)
+			[self roiMove: NSMakePoint( -offset.x, -offset.y) :sendNotification];
+	}
+	
 	mode = modeSaved;
 
 	rect.origin.x *= (pixelSpacingX/ipixelSpacingx);
@@ -2422,9 +2442,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 			case tROI:
 				rect = NSOffsetRect( rect, offset.x, offset.y);
 			break;
-			//JJCP
 			case tDynAngle:
-			//JJCP
 			case tAxis:
 			case tCPolygon:
 			case tOPolygon:
@@ -2433,7 +2451,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 			case tAngle:
 			case tPencil:
 			case tLayerROI:
-				for( long i = 0; i < [points count]; i++) [[points objectAtIndex: i] move: offset.x : offset.y];
+				for( int i = 0; i < [points count]; i++) [[points objectAtIndex: i] move: offset.x : offset.y];
 			break;
 		}
 		

@@ -1137,7 +1137,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 		for( id loopItem1 in roiArray)
 		{
-			[loopItem1 setOriginAndSpacing:curDCM.pixelSpacingX :curDCM.pixelSpacingY :NSMakePoint( curDCM.originX, curDCM.originY)];
+			[loopItem1 setOriginAndSpacing:curDCM.pixelSpacingX :curDCM.pixelSpacingY :[DCMPix originCorrectedAccordingToOrientation: curDCM]];
 			[loopItem1 setROIMode: ROI_selected];
 			[loopItem1 setRoiFont: labelFontListGL :labelFontListGLSize :self];
 			
@@ -1375,7 +1375,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		for( ROI *r in roiArray)
 		{
 			r.isAliased = NO;
-			[r setOriginAndSpacing :curDCM.pixelSpacingX : curDCM.pixelSpacingY :NSMakePoint( curDCM.originX, curDCM.originY)];
+			
+			//Correct the origin only if the orientation is the same
+			r.pix = curDCM;
+			[r setOriginAndSpacing :curDCM.pixelSpacingX : curDCM.pixelSpacingY :[DCMPix originCorrectedAccordingToOrientation: curDCM]];
+			
 			[r setROIMode: ROI_selected];
 			[r setRoiFont: labelFontListGL :labelFontListGLSize :self];
 		}
