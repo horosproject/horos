@@ -1848,6 +1848,16 @@ static NSDate *lastWarningDate = nil;
 	return self;
 }
 
++ (void) setUSETOOLBARPANEL: (BOOL) b
+{
+	USETOOLBARPANEL = b;
+}
+
++ (BOOL) USETOOLBARPANEL
+{
+	return USETOOLBARPANEL;
+}
+
 + (AppController*) sharedAppController {
 	return appController;
 }

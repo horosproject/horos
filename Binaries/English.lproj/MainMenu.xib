@@ -8,7 +8,7 @@
 		<string key="IBDocument.HIToolboxVersion">353.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="13065"/>
+			<integer value="13760"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -2383,6 +2383,105 @@
 							<string key="NSTitle">3D Viewer</string>
 							<object class="NSMutableArray" key="NSMenuItems">
 								<bool key="EncodedWithXMLCoder">YES</bool>
+								<object class="NSMenuItem" id="413071275">
+									<reference key="NSMenu" ref="504415738"/>
+									<string key="NSTitle">3D MPR</string>
+									<string key="NSKeyEquiv"/>
+									<int key="NSKeyEquivModMask">1048576</int>
+									<int key="NSMnemonicLoc">2147483647</int>
+									<reference key="NSOnImage" ref="125626618"/>
+									<reference key="NSMixedImage" ref="973943092"/>
+									<string key="NSAction">_popUpItemAction:</string>
+									<int key="NSTag">10</int>
+								</object>
+								<object class="NSMenuItem" id="226124192">
+									<reference key="NSMenu" ref="504415738"/>
+									<string key="NSTitle">2D Curved-MPR</string>
+									<string key="NSKeyEquiv"/>
+									<int key="NSKeyEquivModMask">1048576</int>
+									<int key="NSMnemonicLoc">2147483647</int>
+									<reference key="NSOnImage" ref="125626618"/>
+									<reference key="NSMixedImage" ref="973943092"/>
+									<string key="NSAction">_popUpItemAction:</string>
+									<int key="NSTag">1</int>
+								</object>
+								<object class="NSMenuItem" id="338446324">
+									<reference key="NSMenu" ref="504415738"/>
+									<string key="NSTitle">2D Orthogonal MPR</string>
+									<string key="NSKeyEquiv"/>
+									<int key="NSKeyEquivModMask">1048576</int>
+									<int key="NSMnemonicLoc">2147483647</int>
+									<reference key="NSOnImage" ref="125626618"/>
+									<reference key="NSMixedImage" ref="973943092"/>
+									<string key="NSAction">_popUpItemAction:</string>
+									<int key="NSTag">8</int>
+								</object>
+								<object class="NSMenuItem" id="727866573">
+									<reference key="NSMenu" ref="504415738"/>
+									<bool key="NSIsDisabled">YES</bool>
+									<bool key="NSIsSeparator">YES</bool>
+									<string key="NSTitle"/>
+									<string key="NSKeyEquiv"/>
+									<int key="NSKeyEquivModMask">1048576</int>
+									<int key="NSMnemonicLoc">2147483647</int>
+									<reference key="NSOnImage" ref="125626618"/>
+									<reference key="NSMixedImage" ref="973943092"/>
+								</object>
+								<object class="NSMenuItem" id="787292518">
+									<reference key="NSMenu" ref="504415738"/>
+									<string key="NSTitle">3D MIP</string>
+									<string key="NSKeyEquiv"/>
+									<int key="NSKeyEquivModMask">1048576</int>
+									<int key="NSMnemonicLoc">2147483647</int>
+									<reference key="NSOnImage" ref="125626618"/>
+									<reference key="NSMixedImage" ref="973943092"/>
+									<string key="NSAction">_popUpItemAction:</string>
+									<int key="NSTag">3</int>
+								</object>
+								<object class="NSMenuItem" id="555042815">
+									<reference key="NSMenu" ref="504415738"/>
+									<string key="NSTitle">3D Volume Rendering</string>
+									<string key="NSKeyEquiv"/>
+									<int key="NSKeyEquivModMask">1048576</int>
+									<int key="NSMnemonicLoc">2147483647</int>
+									<reference key="NSOnImage" ref="125626618"/>
+									<reference key="NSMixedImage" ref="973943092"/>
+									<string key="NSAction">_popUpItemAction:</string>
+									<int key="NSTag">4</int>
+								</object>
+								<object class="NSMenuItem" id="614351548">
+									<reference key="NSMenu" ref="504415738"/>
+									<string key="NSTitle">3D Surface Rendering</string>
+									<string key="NSKeyEquiv"/>
+									<int key="NSKeyEquivModMask">1048576</int>
+									<int key="NSMnemonicLoc">2147483647</int>
+									<reference key="NSOnImage" ref="125626618"/>
+									<reference key="NSMixedImage" ref="973943092"/>
+									<string key="NSAction">_popUpItemAction:</string>
+									<int key="NSTag">5</int>
+								</object>
+								<object class="NSMenuItem" id="985456439">
+									<reference key="NSMenu" ref="504415738"/>
+									<string key="NSTitle">3D Endoscopy</string>
+									<string key="NSKeyEquiv"/>
+									<int key="NSKeyEquivModMask">1048576</int>
+									<int key="NSMnemonicLoc">2147483647</int>
+									<reference key="NSOnImage" ref="125626618"/>
+									<reference key="NSMixedImage" ref="973943092"/>
+									<string key="NSAction">_popUpItemAction:</string>
+									<int key="NSTag">9</int>
+								</object>
+								<object class="NSMenuItem" id="993172300">
+									<reference key="NSMenu" ref="504415738"/>
+									<bool key="NSIsDisabled">YES</bool>
+									<bool key="NSIsSeparator">YES</bool>
+									<string key="NSTitle"/>
+									<string key="NSKeyEquiv"/>
+									<int key="NSKeyEquivModMask">1048576</int>
+									<int key="NSMnemonicLoc">2147483647</int>
+									<reference key="NSOnImage" ref="125626618"/>
+									<reference key="NSMixedImage" ref="973943092"/>
+								</object>
 								<object class="NSMenuItem" id="696115746">
 									<reference key="NSMenu" ref="504415738"/>
 									<string key="NSTitle">Reset to initial view</string>
@@ -12663,6 +12762,62 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					</object>
 					<int key="connectionID">13748</int>
 				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">mprViewer:</string>
+						<reference key="source" ref="298258082"/>
+						<reference key="destination" ref="413071275"/>
+					</object>
+					<int key="connectionID">13762</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">CurvedMPR:</string>
+						<reference key="source" ref="298258082"/>
+						<reference key="destination" ref="226124192"/>
+					</object>
+					<int key="connectionID">13763</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">orthogonalMPRViewer:</string>
+						<reference key="source" ref="298258082"/>
+						<reference key="destination" ref="338446324"/>
+					</object>
+					<int key="connectionID">13764</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">VRViewer:</string>
+						<reference key="source" ref="298258082"/>
+						<reference key="destination" ref="787292518"/>
+					</object>
+					<int key="connectionID">13765</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">VRViewer:</string>
+						<reference key="source" ref="298258082"/>
+						<reference key="destination" ref="555042815"/>
+					</object>
+					<int key="connectionID">13766</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">SRViewer:</string>
+						<reference key="source" ref="298258082"/>
+						<reference key="destination" ref="614351548"/>
+					</object>
+					<int key="connectionID">13767</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">endoscopyViewer:</string>
+						<reference key="source" ref="298258082"/>
+						<reference key="destination" ref="985456439"/>
+					</object>
+					<int key="connectionID">13768</int>
+				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
 				<object class="NSArray" key="orderedObjects">
@@ -13311,7 +13466,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 							<reference ref="1016061527"/>
 							<reference ref="147085079"/>
 							<reference ref="810901584"/>
-							<reference ref="696115746"/>
 							<reference ref="950163889"/>
 							<reference ref="837623460"/>
 							<reference ref="247608338"/>
@@ -13324,6 +13478,16 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 							<reference ref="57868251"/>
 							<reference ref="739225274"/>
 							<reference ref="632001332"/>
+							<reference ref="413071275"/>
+							<reference ref="226124192"/>
+							<reference ref="338446324"/>
+							<reference ref="727866573"/>
+							<reference ref="787292518"/>
+							<reference ref="555042815"/>
+							<reference ref="614351548"/>
+							<reference ref="985456439"/>
+							<reference ref="696115746"/>
+							<reference ref="993172300"/>
 						</object>
 						<reference key="parent" ref="741607156"/>
 					</object>
@@ -18134,6 +18298,51 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						<reference key="object" ref="192059576"/>
 						<reference key="parent" ref="544883683"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">13753</int>
+						<reference key="object" ref="413071275"/>
+						<reference key="parent" ref="504415738"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">13754</int>
+						<reference key="object" ref="226124192"/>
+						<reference key="parent" ref="504415738"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">13755</int>
+						<reference key="object" ref="338446324"/>
+						<reference key="parent" ref="504415738"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">13756</int>
+						<reference key="object" ref="727866573"/>
+						<reference key="parent" ref="504415738"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">13757</int>
+						<reference key="object" ref="787292518"/>
+						<reference key="parent" ref="504415738"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">13758</int>
+						<reference key="object" ref="555042815"/>
+						<reference key="parent" ref="504415738"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">13759</int>
+						<reference key="object" ref="614351548"/>
+						<reference key="parent" ref="504415738"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">13760</int>
+						<reference key="object" ref="985456439"/>
+						<reference key="parent" ref="504415738"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">13761</int>
+						<reference key="object" ref="993172300"/>
+						<reference key="parent" ref="504415738"/>
+					</object>
 				</object>
 			</object>
 			<object class="NSMutableDictionary" key="flattenedProperties">
@@ -19317,6 +19526,24 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<string>13752.IBPluginDependency</string>
 					<string>13752.ImportedFromIB2</string>
 					<string>13752.editorWindowContentRectSynchronizationRect</string>
+					<string>13753.IBPluginDependency</string>
+					<string>13753.ImportedFromIB2</string>
+					<string>13754.IBPluginDependency</string>
+					<string>13754.ImportedFromIB2</string>
+					<string>13755.IBPluginDependency</string>
+					<string>13755.ImportedFromIB2</string>
+					<string>13756.IBPluginDependency</string>
+					<string>13756.ImportedFromIB2</string>
+					<string>13757.IBPluginDependency</string>
+					<string>13757.ImportedFromIB2</string>
+					<string>13758.IBPluginDependency</string>
+					<string>13758.ImportedFromIB2</string>
+					<string>13759.IBPluginDependency</string>
+					<string>13759.ImportedFromIB2</string>
+					<string>13760.IBPluginDependency</string>
+					<string>13760.ImportedFromIB2</string>
+					<string>13761.IBPluginDependency</string>
+					<string>13761.ImportedFromIB2</string>
 					<string>1400.IBEditorWindowLastContentRect</string>
 					<string>1400.IBPluginDependency</string>
 					<string>1400.ImportedFromIB2</string>
@@ -20205,7 +20432,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
-					<string>{{500, 1415}, {323, 303}}</string>
+					<string>{{674, 344}, {323, 463}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
 					<string>{{936, 574}, {323, 303}}</string>
@@ -20369,7 +20596,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
-					<string>{{805, 612}, {428, 853}}</string>
+					<string>{{635, -17}, {428, 853}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
 					<string>{{390, 35}, {428, 753}}</string>
@@ -20739,6 +20966,24 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
 					<string>{{993, 216}, {64, 6}}</string>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<reference ref="9"/>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<reference ref="9"/>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<reference ref="9"/>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<reference ref="9"/>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<reference ref="9"/>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<reference ref="9"/>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<reference ref="9"/>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<reference ref="9"/>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<reference ref="9"/>
 					<string>{{981, 692}, {423, 773}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
@@ -20927,7 +21172,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<string>{{698, 1575}, {212, 143}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
-					<string>{{578, 1465}, {596, 20}}</string>
+					<string>{{359, 807}, {596, 20}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
 					<string>{{163, 788}, {596, 20}}</string>
@@ -21003,7 +21248,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">13752</int>
+			<int key="maxID">13768</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -21578,13 +21823,11 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 							<string>flipHorizontal:</string>
 							<string>flipVertical:</string>
 							<string>roiLoadFromXMLFiles:</string>
-							<string>sliderAction2DMPR:</string>
 							<string>sliderAction:</string>
 							<string>sliderRGBFactor:</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>id</string>
 							<string>id</string>
 							<string>id</string>
 							<string>id</string>
@@ -22006,150 +22249,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBUserSource</string>
 						<string key="minorKey"/>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">MPR2DController</string>
-					<string key="superclassName">Window3DController</string>
-					<object class="NSMutableDictionary" key="actions">
-						<bool key="EncodedWithXMLCoder">YES</bool>
-						<object class="NSMutableArray" key="dict.sortedKeys">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>MoviePlayStop:</string>
-							<string>blendingSlider:</string>
-							<string>endQuicktime:</string>
-							<string>export2iPhoto:</string>
-							<string>moviePosSliderAction:</string>
-							<string>movieRateSliderAction:</string>
-							<string>setDefaultTool:</string>
-							<string>setOrientationTool:</string>
-							<string>updateImage:</string>
-						</object>
-						<object class="NSMutableArray" key="dict.values">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-						</object>
-					</object>
-					<object class="NSMutableDictionary" key="outlets">
-						<bool key="EncodedWithXMLCoder">YES</bool>
-						<object class="NSMutableArray" key="dict.sortedKeys">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>BlendingView</string>
-							<string>ThickSlabView</string>
-							<string>WLWWView</string>
-							<string>axesView</string>
-							<string>blendingPercentage</string>
-							<string>blendingSlider</string>
-							<string>iPhotoView</string>
-							<string>moviePlayStop</string>
-							<string>moviePosSlider</string>
-							<string>movieRateSlider</string>
-							<string>movieTextSlide</string>
-							<string>movieView</string>
-							<string>orientationMatrix</string>
-							<string>orientationView</string>
-							<string>originalView</string>
-							<string>quicktimeFrames</string>
-							<string>quicktimeMode</string>
-							<string>quicktimeRotation</string>
-							<string>quicktimeRotationView</string>
-							<string>quicktimeWindow</string>
-							<string>slider</string>
-							<string>toolMatrix</string>
-							<string>toolsView</string>
-							<string>view</string>
-						</object>
-						<object class="NSMutableArray" key="dict.values">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>NSView</string>
-							<string>NSView</string>
-							<string>NSView</string>
-							<string>NSView</string>
-							<string>NSTextField</string>
-							<string>NSSlider</string>
-							<string>NSView</string>
-							<string>NSButton</string>
-							<string>NSSlider</string>
-							<string>NSSlider</string>
-							<string>NSTextField</string>
-							<string>NSView</string>
-							<string>NSMatrix</string>
-							<string>NSView</string>
-							<string>PreviewView</string>
-							<string>NSTextField</string>
-							<string>NSMatrix</string>
-							<string>NSMatrix</string>
-							<string>NSMatrix</string>
-							<string>NSWindow</string>
-							<string>NSSlider</string>
-							<string>NSMatrix</string>
-							<string>NSView</string>
-							<string>MPR2DView</string>
-						</object>
-					</object>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">MPR2DController.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">MPR2DView</string>
-					<string key="superclassName">NSOpenGLView</string>
-					<object class="NSMutableDictionary" key="actions">
-						<bool key="EncodedWithXMLCoder">YES</bool>
-						<object class="NSMutableArray" key="dict.sortedKeys">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>axView:</string>
-							<string>setThickSlab:</string>
-							<string>setThickSlabActivated:</string>
-							<string>setThickSlabGap:</string>
-							<string>setThickSlabMode:</string>
-						</object>
-						<object class="NSMutableArray" key="dict.values">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-						</object>
-					</object>
-					<object class="NSMutableDictionary" key="outlets">
-						<bool key="EncodedWithXMLCoder">YES</bool>
-						<object class="NSMutableArray" key="dict.sortedKeys">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>OpacityPopup</string>
-							<string>activatedThickSlab</string>
-							<string>finalView</string>
-							<string>finalViewBlending</string>
-							<string>perpendicularView</string>
-							<string>sliderThickSlab</string>
-							<string>textThickSlab</string>
-							<string>thickSlabPopUp</string>
-						</object>
-						<object class="NSMutableArray" key="dict.values">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>NSPopUpButton</string>
-							<string>NSButton</string>
-							<string>PreviewView</string>
-							<string>PreviewView</string>
-							<string>PreviewView</string>
-							<string>NSSlider</string>
-							<string>NSTextField</string>
-							<string>NSPopUpButton</string>
-						</object>
-					</object>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">MPR2DView.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
@@ -22726,6 +22825,18 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
+					<string key="className">ROIVolumeView</string>
+					<string key="superclassName">VTKView</string>
+					<object class="NSMutableDictionary" key="actions">
+						<string key="NS.key.0">exportDICOMFile:</string>
+						<string key="NS.object.0">id</string>
+					</object>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">ROIVolumeView.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
 					<string key="className">SRController</string>
 					<string key="superclassName">Window3DController</string>
 					<object class="NSMutableDictionary" key="actions">
@@ -23079,6 +23190,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>BackgroundColorView</string>
 							<string>BlendingView</string>
+							<string>CLUTEditorsView</string>
 							<string>ClippingRangeView</string>
 							<string>LODSlider</string>
 							<string>LODView</string>
@@ -23161,6 +23273,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>NSView</string>
 							<string>NSView</string>
 							<string>NSView</string>
 							<string>NSView</string>
@@ -23431,7 +23544,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 							<string>ConvertToBWMenu:</string>
 							<string>ConvertToRGBMenu:</string>
 							<string>CurvedMPR:</string>
-							<string>MPR2DViewer:</string>
 							<string>MoviePlayStop:</string>
 							<string>MovieStop:</string>
 							<string>PagePadCreate:</string>
@@ -23501,6 +23613,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 							<string>morphoSelectedBrushROIWithRadius:</string>
 							<string>moviePosSliderAction:</string>
 							<string>movieRateSliderAction:</string>
+							<string>mprViewer:</string>
 							<string>navigator:</string>
 							<string>orthogonalMPRViewer:</string>
 							<string>popFusionAction:</string>
@@ -23536,7 +23649,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 							<string>setImageTiling:</string>
 							<string>setKeyImage:</string>
 							<string>setOrientationTool:</string>
-							<string>setOrientationToolFrom2DMPR:</string>
 							<string>setPagesToPrint:</string>
 							<string>setROITool:</string>
 							<string>setStatus:</string>
@@ -23658,7 +23770,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 							<string>NSString</string>
 							<string>NSString</string>
 							<string>NSString</string>
-							<string>id</string>
 							<string>id</string>
 							<string>id</string>
 							<string>id</string>

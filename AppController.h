@@ -177,6 +177,8 @@ extern "C"
 - (BOOL) echoTest;
 - (void) runPreferencesUpdateCheck:(NSTimer*) timer;
 + (void) checkForPreferencesUpdate: (BOOL) b;
++ (BOOL) USETOOLBARPANEL;
++ (void) setUSETOOLBARPANEL: (BOOL) b;
 
 #pragma mark-
 #pragma mark growl

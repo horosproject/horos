@@ -3678,7 +3678,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		TIFFGetField(tif, TIFFTAG_DATATYPE, &dataType);
 		TIFFGetField(tif, TIFFTAG_PLANARCONFIG, &planarConfig);
 		
-		NSLog( @"Bits Per Sample: %d, Samples Per Pixel: %d PlanarConfig: %d", bpp, tifspp, planarConfig);
+//		NSLog( @"Bits Per Sample: %d, Samples Per Pixel: %d PlanarConfig: %d", bpp, tifspp, planarConfig);
 		
 		height = h;
 		height /= 2;
@@ -3923,9 +3923,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 			else				// 32 bits
 			{
 				for( i = 0; i < height;i++)
-				{
 					memmove( oImage + i*width*2, oImage + i*realwidth*2, width*4);
-				}
 			}
 		}
 		

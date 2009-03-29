@@ -33,24 +33,13 @@
 #import "OrthogonalMPRPETCTView.h"
 #import "ROIWindow.h"
 #import "ToolbarPanel.h"
-#import "OrthogonalMPRPETCTView.h"
 #import "IChatTheatreDelegate.h"
-
 //#import "LoupeController.h"
-
-#include <QuickTime/ImageCompression.h> // for image loading and decompression
-#include <QuickTime/QuickTimeComponents.h> // for file type support
-
 #include <OpenGL/CGLMacro.h>
 #include <OpenGL/CGLCurrent.h>
 #include <OpenGL/CGLContext.h>
-
 #import <CoreVideo/CoreVideo.h>
-
 #import "DefaultsOsiriX.h"
-//#include <OpenGL/gl.h> // for OpenGL API
-//#include <OpenGL/glext.h> // for OpenGL extension support 
-
 #include "NSFont_OpenGL/NSFont_OpenGL.h"
 
 // kvImageHighQualityResampling
@@ -59,18 +48,8 @@
 #define BS 10.
 //#define new_loupe
 
-//#define TEXTRECTMODE GL_TEXTURE_2D
-//GL_TEXTURE_2D
-//#define RECTANGLE false
-//GL_TEXTURE_RECTANGLE_EXT - GL_TEXTURE_2D
-
-extern		NSThread					*mainThread;
-extern		BOOL						USETOOLBARPANEL;
-extern		ToolbarPanelController		*toolbarPanel[10];
-extern		AppController				*appController;
 			short						syncro = syncroLOC;
 static		float						deg2rad = 3.14159265358979/180.0; 
-extern		NSMutableDictionary			*plugins;
 static		unsigned char				*PETredTable = nil, *PETgreenTable = nil, *PETblueTable = nil;
 static		BOOL						NOINTERPOLATION = NO, FULL32BITPIPELINE = NO, SOFTWAREINTERPOLATION = NO, IndependentCRWLWW, pluginOverridesMouse = NO;  // Allows plugins to override mouse click actions.
 static		int							CLUTBARS, ANNOTATIONS = -999, SOFTWAREINTERPOLATION_MAX, DISPLAYCROSSREFERENCELINES = YES;
@@ -639,7 +618,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			[v refresh];
 			if( reload) [v reloadAnnotations];
 			
-			NSArray	*relatedViewers = [appController FindRelatedViewers: [v pixList]];
+			NSArray	*relatedViewers = [[AppController sharedAppController] FindRelatedViewers: [v pixList]];
 			for( NSWindowController *r in relatedViewers)
 				[[r window] display];
 				
@@ -2445,19 +2424,19 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			switch( a)
 			{
 				case annotNone:
-					[appController growlTitle: NSLocalizedString( @"Annotations", nil) description: NSLocalizedString(@"Turn Off Annotations", nil) name:@"result"];
+					[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Annotations", nil) description: NSLocalizedString(@"Turn Off Annotations", nil) name:@"result"];
 				break;
 				
 				case annotGraphics:
-					[appController growlTitle: NSLocalizedString( @"Annotations", nil) description: NSLocalizedString(@"Switch to Graphic Only", nil) name:@"result"];
+					[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Annotations", nil) description: NSLocalizedString(@"Switch to Graphic Only", nil) name:@"result"];
 				break;
 				
 				case annotBase:
-					[appController growlTitle: NSLocalizedString( @"Annotations", nil) description: NSLocalizedString(@"Switch to Full without names", nil) name:@"result"];
+					[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Annotations", nil) description: NSLocalizedString(@"Switch to Full without names", nil) name:@"result"];
 				break;
 				
 				case annotFull:
-					[appController growlTitle: NSLocalizedString( @"Annotations", nil) description: NSLocalizedString(@"Switch to Full", nil) name:@"result"];
+					[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Annotations", nil) description: NSLocalizedString(@"Switch to Full", nil) name:@"result"];
 				break;
 			}
 			
@@ -6481,11 +6460,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 - (void) drawRectIn:(NSRect) size :(GLuint *) texture :(NSPoint) offset :(long) tX :(long) tY :(long) tW :(long) tH
 {
 	if( texture == nil) return;
-	
-	if( mainThread != [NSThread currentThread])
-	{
-//		NSLog(@"Warning! OpenGL activity NOT in the main thread???");
-	}
 	
 	long effectiveTextureMod = 0; // texture size modification (inset) to account for borders
 	long x, y, k = 0, offsetY, offsetX = 0, currTextureWidth, currTextureHeight;
@@ -11051,7 +11025,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		{
 			NSRect	screenFrame = [loopItem visibleFrame];
 			
-			if( USETOOLBARPANEL || [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL2"] == YES)
+			if( [AppController USETOOLBARPANEL] || [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL2"] == YES)
 			{
 				screenFrame.size.height -= [ToolbarPanelController fixedHeight];
 			}

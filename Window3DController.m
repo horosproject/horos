@@ -24,6 +24,31 @@
 
 @implementation Window3DController
 
+- (void) mprViewer:(id) sender
+{
+	[[self viewer] mprViewer: sender];
+}
+
+- (void) endoscopyViewer:(id) sender
+{
+	[[self viewer] endoscopyViewer: sender];
+}
+
+- (void) VRViewer:(id) sender
+{
+	[[self viewer] VRViewer: sender];
+}
+
+- (void) SRViewer:(id) sender
+{
+	[[self viewer] SRViewer: sender];
+}
+
+- (void) orthogonalMPRViewer:(id) sender
+{
+	[[self viewer] orthogonalMPRViewer: sender];
+}
+
 - (ViewerController*) viewer
 {
 	return nil;

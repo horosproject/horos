@@ -2150,6 +2150,11 @@ static float deg2rad = 3.14159265358979/180.0;
 
 #pragma mark NSWindow Notifications action
 
+- (ViewerController*) viewer
+{
+	return viewer2D;
+}
+
 - (void)windowWillClose:(NSNotification *)notification
 {
 	if( [notification object] == [self window])

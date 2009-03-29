@@ -15,7 +15,6 @@
 #import "DefaultsOsiriX.h"
 #import "NSAppleScript+HandlerCalls.h"
 #import "AYDicomPrintWindowController.h"
-#import "ViewerControllerWindow.h"
 #import "MyOutlineView.h"
 #import "PluginFilter.h"
 #import "DCMPix.h"
@@ -87,17 +86,12 @@
 #import "ThreeDPositionController.h"
 #import "ThumbnailCell.h"
 #import "DicomSeries.h"
-#import "DefaultsOsiriX.h"
 #import "dicomFile.h"
 #import "MPRController.h"
-
-//@class VRPROController;
 
 int delayedTileWindows = NO;
 
 extern  ToolbarPanelController  *toolbarPanel[ 10];
-extern  AppController			*appController;
-extern  BOOL					USETOOLBARPANEL;
 
 static	BOOL					SYNCSERIES = NO, ViewBoundsDidChangeProtect = NO, recursiveCloseWindowsProtected = NO;
 
@@ -2140,7 +2134,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		[[win window] setFrame: frame display: NO];
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
-		[appController tileWindows: self];
+		[[AppController sharedAppController] tileWindows: self];
 	else
 		[[AppController sharedAppController] checkAllWindowsAreVisible: self makeKey: YES];
 	
@@ -2159,7 +2153,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (void) tileWindows
 {
-	[appController tileWindows: self];
+	[[AppController sharedAppController] tileWindows: self];
 }
 
 - (NSRect)windowWillUseStandardFrame:(NSWindow *)sender defaultFrame:(NSRect)defaultFrame
@@ -2169,7 +2163,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	
 	if( NSIsEmptyRect( standardRect)) standardRect = currentFrame;
 	
-	if( USETOOLBARPANEL )
+	if( [AppController USETOOLBARPANEL] )
 		screenRect.size.height -= [ToolbarPanelController fixedHeight];	
 
 	if (currentFrame.size.height >= screenRect.size.height - 20 && currentFrame.size.width >= screenRect.size.width - 20)
@@ -2264,8 +2258,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 		
 	if( [[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSShiftKeyMask)
 	{
-		[NSObject cancelPreviousPerformRequestsWithTarget: appController selector:@selector( closeAllViewers:) object:nil];
-		[appController performSelector: @selector( closeAllViewers:) withObject:nil afterDelay: 0.1];
+		[NSObject cancelPreviousPerformRequestsWithTarget: [AppController sharedAppController] selector:@selector( closeAllViewers:) object:nil];
+		[[AppController sharedAppController] performSelector: @selector( closeAllViewers:) withObject:nil afterDelay: 0.1];
 		
 		return NO;
 	}
@@ -2363,7 +2357,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	numberOf2DViewer--;
 	if( numberOf2DViewer == 0)
 	{
-		USETOOLBARPANEL = NO;
+		[AppController setUSETOOLBARPANEL: NO];
 		for( int i = 0; i < [[NSScreen screens] count]; i++)
 			[[toolbarPanel[ i] window] orderOut:self];
 	}
@@ -2371,9 +2365,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
 	{
 		if( delayedTileWindows)
-			[NSObject cancelPreviousPerformRequestsWithTarget:appController selector:@selector(tileWindows:) object:nil];
+			[NSObject cancelPreviousPerformRequestsWithTarget:[AppController sharedAppController] selector:@selector(tileWindows:) object:nil];
 		delayedTileWindows = YES;
-		[appController performSelector: @selector(tileWindows:) withObject:nil afterDelay: 0.1];
+		[[AppController sharedAppController] performSelector: @selector(tileWindows:) withObject:nil afterDelay: 0.1];
 	}
 	
 	[[NSCursor arrowCursor] set];
@@ -2559,7 +2553,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 {
 	int i;
 	
-	if( USETOOLBARPANEL)
+	if( [AppController USETOOLBARPANEL])
 	{
 		for( i = 0; i < [[NSScreen screens] count]; i++)
 		{
@@ -2607,7 +2601,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (void) redrawToolbar
 {
-	if( USETOOLBARPANEL)
+	if( [AppController USETOOLBARPANEL])
 	{
 		for( int i = 0; i < [[NSScreen screens] count]; i++)
 		{
@@ -4543,7 +4537,7 @@ static ViewerController *draggedController = nil;
 	[toolbarItem setPaletteLabel: NSLocalizedString(@"Tile", nil)];
 	[toolbarItem setToolTip: NSLocalizedString(@"Tile Windows", nil)];
 	[toolbarItem setImage: [NSImage imageNamed: TileWindowsToolbarItemIdentifier]];
-	[toolbarItem setTarget: appController];
+	[toolbarItem setTarget: [AppController sharedAppController]];
 	[toolbarItem setAction: @selector(tileWindows:)];
     } 
 	else if ([itemIdent isEqualToString: iChatBroadCastToolbarItemIdentifier]) {
@@ -5016,7 +5010,7 @@ static ViewerController *draggedController = nil;
 	NSToolbarItem *item = [[notif userInfo] objectForKey: @"item"];
 	if( [retainedToolbarItems containsObject: item] == NO) [retainedToolbarItems addObject: item];
 	
-	if( USETOOLBARPANEL || [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL2"] == YES)
+	if( [AppController USETOOLBARPANEL] || [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL2"] == YES)
 	{		
 		for( int i = 0; i < [[NSScreen screens] count]; i++)
 			[toolbarPanel[ i] fixSize];
@@ -5025,7 +5019,7 @@ static ViewerController *draggedController = nil;
 
 - (void) toolbarDidRemoveItem: (NSNotification *) notif
 {
-	if( USETOOLBARPANEL || [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL2"] == YES)
+	if( [AppController USETOOLBARPANEL] || [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL2"] == YES)
 	{
 		for( int i = 0; i < [[NSScreen screens] count]; i++)
 			[toolbarPanel[ i] fixSize];
@@ -5408,7 +5402,7 @@ static ViewerController *draggedController = nil;
 	// We are the delegate
 	[toolbar setDelegate: self];
 	
-	if( USETOOLBARPANEL == NO && [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL2"] == NO)
+	if( [AppController USETOOLBARPANEL] == NO && [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL2"] == NO)
 		[[self window] setToolbar: toolbar];
 	
 	[[self window] setShowsToolbarButton:NO];
@@ -5624,7 +5618,7 @@ static ViewerController *draggedController = nil;
 	[exportDCM release];
 	[blendedWindow release];
 	
-	if( USETOOLBARPANEL)
+	if( [AppController USETOOLBARPANEL])
 	{
 		for( int i = 0 ; i < [[NSScreen screens] count]; i++)
 			[toolbarPanel[ i] toolbarWillClose : toolbar];
@@ -5660,7 +5654,7 @@ static ViewerController *draggedController = nil;
 	[toolbar release];
     [super dealloc];
 	
-//	[appController tileWindows: nil];	<- We cannot do this, because:
+//	[[AppController sharedAppController] tileWindows: nil];	<- We cannot do this, because:
 //	This is very important, or if we have a queue of closing windows, it will crash....
 	
 	for( ViewerController *v in [ViewerController getDisplayed2DViewers])
@@ -5681,8 +5675,8 @@ static ViewerController *draggedController = nil;
 	if( delayedTileWindows)
 	{
 		delayedTileWindows = NO;
-		[NSObject cancelPreviousPerformRequestsWithTarget:appController selector:@selector(tileWindows:) object:nil];
-		[appController tileWindows: self];
+		[NSObject cancelPreviousPerformRequestsWithTarget:[AppController sharedAppController] selector:@selector(tileWindows:) object:nil];
+		[[AppController sharedAppController] tileWindows: self];
 	}
 
 	BOOL		sameSeries = NO;
@@ -5727,7 +5721,7 @@ static ViewerController *draggedController = nil;
 	long minWindows = 1;
 	if( [self FullScreenON]) minWindows++;
 	
-	if( newViewerWindow == NO && [[appController FindRelatedViewers:pixList[0]] count] > minWindows)
+	if( newViewerWindow == NO && [[[AppController sharedAppController] FindRelatedViewers:pixList[0]] count] > minWindows)
 	{
 		NSLog( @"changeImageData not possible with other post-processing windows opened");
 		return;
@@ -6131,7 +6125,7 @@ static ViewerController *draggedController = nil;
 		break;
 	}
 	
-	if( USETOOLBARPANEL || [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL2"] == YES)
+	if( [AppController USETOOLBARPANEL] || [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL2"] == YES)
 	{
 		screenRect.size.height -= [ToolbarPanelController fixedHeight];
 	}
@@ -13083,9 +13077,9 @@ int i,j,l;
 	{
 		//NSLog( @"SyncButtonBehaviorIsBetweenStudies = %d", SyncButtonBehaviorIsBetweenStudies);
 		
-		[appController willChangeValueForKey:@"SYNCSERIES"];
+		[[AppController sharedAppController] willChangeValueForKey:@"SYNCSERIES"];
 		SYNCSERIES = NO;
-		[appController didChangeValueForKey:@"SYNCSERIES"];
+		[[AppController sharedAppController] didChangeValueForKey:@"SYNCSERIES"];
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"notificationSyncSeries" object:nil userInfo: nil];
 	}
 }
@@ -16649,9 +16643,9 @@ int i,j,l;
 	numberOf2DViewer++;
 	if( numberOf2DViewer > 1 || [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL2"] == YES)
 	{
-		if( USETOOLBARPANEL == NO)
+		if( [AppController USETOOLBARPANEL] == NO)
 		{
-			USETOOLBARPANEL = YES;
+			[AppController setUSETOOLBARPANEL: YES];
 			
 			NSArray				*winList = [NSApp windows];
 			
@@ -16832,7 +16826,7 @@ int i,j,l;
 		
 		[self MovieStop: self];
 				
-		VRController *viewer = [appController FindViewer :@"VRPanel" :pixList[0]];
+		VRController *viewer = [[AppController sharedAppController] FindViewer :@"VRPanel" :pixList[0]];
 		
 		if( viewer)
 		{
@@ -16904,7 +16898,7 @@ int i,j,l;
 //	}
 //	else
 //	{
-//		MPRController *viewer = [appController FindViewer :@"MPR" :pixList[0]];
+//		MPRController *viewer = [[AppController sharedAppController] FindViewer :@"MPR" :pixList[0]];
 //		
 //		if( viewer)
 //		{
@@ -16990,7 +16984,7 @@ int i,j,l;
 //		{
 //			if( [VRPROController  hardwareCheck])
 //			{
-//				VRPROController *viewer = [appController FindViewer :@"VRVPRO" :pixList[0]];
+//				VRPROController *viewer = [[AppController sharedAppController] FindViewer :@"VRVPRO" :pixList[0]];
 //				
 //				if( viewer)
 //				{
@@ -17069,7 +17063,7 @@ int i,j,l;
 //	{
 //		if( [VRPROController  hardwareCheck])
 //		{
-//			VRPROController *viewer = [appController FindViewer :@"VRVPRO" :pixList[0]];
+//			VRPROController *viewer = [[AppController sharedAppController] FindViewer :@"VRVPRO" :pixList[0]];
 //
 //			if( viewer)
 //			{
@@ -17122,7 +17116,7 @@ int i,j,l;
 	[self clear8bitRepresentations];	
 	[self MovieStop: self];
 	
-	VRController *viewer = [appController FindViewer :@"VR" :pixList[0]];
+	VRController *viewer = [[AppController sharedAppController] FindViewer :@"VR" :pixList[0]];
 	
 	if( viewer)
 	{
@@ -17214,7 +17208,7 @@ int i,j,l;
 		
 		[self MovieStop: self];
 		
-		VRController *viewer = [appController FindViewer :@"VR" :pixList[0]];
+		VRController *viewer = [[AppController sharedAppController] FindViewer :@"VR" :pixList[0]];
 		
 		if( viewer)
 		{
@@ -17302,7 +17296,7 @@ int i,j,l;
 	SRController *viewer;
 	[self checkEverythingLoaded];
 	[self clear8bitRepresentations];
-	if (viewer = [appController FindViewer :@"SR" :pixList[0]])
+	if (viewer = [[AppController sharedAppController] FindViewer :@"SR" :pixList[0]])
 		return viewer;
 	viewer = [[SRController alloc] initWithPix:pixList[curMovieIndex] :fileList[0] :volumeData[curMovieIndex] :blendingController :self];
 	return viewer;
@@ -17327,7 +17321,7 @@ int i,j,l;
 		
 		[self MovieStop: self];
 		
-		SRController *viewer = [appController FindViewer :@"SR" :pixList[0]];
+		SRController *viewer = [[AppController sharedAppController] FindViewer :@"SR" :pixList[0]];
 		
 		if( viewer)
 		{
@@ -17531,11 +17525,11 @@ int i,j,l;
 	
 	if( blendingController)
 	{
-		viewer = [appController FindViewer :@"PETCT" :pixList[0]];
+		viewer = [[AppController sharedAppController] FindViewer :@"PETCT" :pixList[0]];
 	}
 	else
 	{
-		viewer = [appController FindViewer :@"OrthogonalMPR" :pixList[0]];
+		viewer = [[AppController sharedAppController] FindViewer :@"OrthogonalMPR" :pixList[0]];
 	}
 	if (viewer)
 		return viewer;
@@ -17570,7 +17564,7 @@ int i,j,l;
 	OrthogonalMPRPETCTViewer  *viewer;
 	[self checkEverythingLoaded];
 	[self clear8bitRepresentations];
-	if (viewer = [appController FindViewer :@"PETCT" :pixList[0]])
+	if (viewer = [[AppController sharedAppController] FindViewer :@"PETCT" :pixList[0]])
 		return viewer;
 		
 	if (blendingController)
@@ -17638,11 +17632,11 @@ int i,j,l;
 		
 		if( blendingController)
 		{
-			viewer = [appController FindViewer :@"PETCT" :pixList[0]];
+			viewer = [[AppController sharedAppController] FindViewer :@"PETCT" :pixList[0]];
 		}
 		else
 		{
-			viewer = [appController FindViewer :@"OrthogonalMPR" :pixList[0]];
+			viewer = [[AppController sharedAppController] FindViewer :@"OrthogonalMPR" :pixList[0]];
 		}
 		
 		if( viewer)
@@ -17711,7 +17705,7 @@ int i,j,l;
 	[self clear8bitRepresentations];
 	EndoscopyViewer *viewer;
 		
-	viewer = [appController FindViewer :@"Endoscopy" :pixList[0]];
+	viewer = [[AppController sharedAppController] FindViewer :@"Endoscopy" :pixList[0]];
 	if (viewer)
 		return viewer;
 	
@@ -17742,7 +17736,7 @@ int i,j,l;
 		
 		EndoscopyViewer *viewer;
 		
-		viewer = [appController FindViewer :@"Endoscopy" :pixList[0]];
+		viewer = [[AppController sharedAppController] FindViewer :@"Endoscopy" :pixList[0]];
 		
 		if( viewer)
 		{
@@ -17774,7 +17768,7 @@ int i,j,l;
 //	}
 //	else
 //	{
-//		MIPController *viewer = [appController FindViewer :@"MIP" :pixList[0]];
+//		MIPController *viewer = [[AppController sharedAppController] FindViewer :@"MIP" :pixList[0]];
 //		
 //		if( viewer)
 //		{
@@ -17806,7 +17800,7 @@ int i,j,l;
 	[self clear8bitRepresentations];
 	
 	MPRController *viewer;
-	viewer = [appController FindViewer:@"MPR" :pixList[0]];
+	viewer = [[AppController sharedAppController] FindViewer:@"MPR" :pixList[0]];
 	if (viewer)
 		return viewer;
 	
@@ -17847,7 +17841,7 @@ int i,j,l;
 		
 		MPRController *viewer;
 		
-		viewer = [appController FindViewer :@"MPR" :pixList[0]];
+		viewer = [[AppController sharedAppController] FindViewer :@"MPR" :pixList[0]];
 		
 		if( viewer)
 		{
@@ -17875,8 +17869,8 @@ int i,j,l;
 	if( delayedTileWindows)
 	{
 		delayedTileWindows = NO;
-		[NSObject cancelPreviousPerformRequestsWithTarget:appController selector:@selector(tileWindows:) object:nil];
-		[appController tileWindows: self];
+		[NSObject cancelPreviousPerformRequestsWithTarget:[AppController sharedAppController] selector:@selector(tileWindows:) object:nil];
+		[[AppController sharedAppController] tileWindows: self];
 	}
 	
 	[[BrowserController currentBrowser] loadNextPatient:[fileList[0] objectAtIndex:0] :[sender tag] :self :YES keyImagesOnly: displayOnlyKeyImages];
@@ -17950,8 +17944,8 @@ int i,j,l;
 	if( delayedTileWindows)
 	{
 		delayedTileWindows = NO;
-		[NSObject cancelPreviousPerformRequestsWithTarget:appController selector:@selector(tileWindows:) object:nil];
-		[appController tileWindows: self];
+		[NSObject cancelPreviousPerformRequestsWithTarget:[AppController sharedAppController] selector:@selector(tileWindows:) object:nil];
+		[[AppController sharedAppController] tileWindows: self];
 	}
 	// tag=-1 backwards, tag=1 forwards, tag=3 ???
 	if( [sender tag] == 3)
@@ -18662,6 +18656,7 @@ sourceRef);
 {
 	[imageView setYFlipped:(BOOL) v];
 }
+
 - (void)setXFlipped:(BOOL) v
 {
 	[imageView setXFlipped:(BOOL) v];
