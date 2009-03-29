@@ -406,9 +406,12 @@ static float deg2rad = 3.14159265358979/180.0;
 	
 	if( sender)
 	{
-		if( sender != mprView1) mprView1.camera.parallelScale = sender.camera.parallelScale;
-		if( sender != mprView2) mprView2.camera.parallelScale = sender.camera.parallelScale;
-		if( sender != mprView3) mprView3.camera.parallelScale = sender.camera.parallelScale;
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"syncZoomLevelMPR"])
+		{
+			if( sender != mprView1) mprView1.camera.parallelScale = sender.camera.parallelScale;
+			if( sender != mprView2) mprView2.camera.parallelScale = sender.camera.parallelScale;
+			if( sender != mprView3) mprView3.camera.parallelScale = sender.camera.parallelScale;
+		}
 	}
 
 	// Center other views on the sender view
@@ -2412,6 +2415,14 @@ static float deg2rad = 3.14159265358979/180.0;
 		[toolbarItem setTarget:self];
 		[toolbarItem setAction:@selector(toogleMousePositionVisibility:)];
     }
+	else if ([itemIdent isEqualToString: @"syncZoomLevel"])
+	{
+		[toolbarItem setLabel: NSLocalizedString(@"Sync Zoom",nil)];
+		[toolbarItem setPaletteLabel:NSLocalizedString( @"Sync Zoom",nil)];
+		
+		[toolbarItem setView: tbSyncZoomLevel];
+		[toolbarItem setMinSize: NSMakeSize(NSWidth([tbSyncZoomLevel frame]), NSHeight([tbSyncZoomLevel frame]))];
+    }
 	else
 	{
 		[toolbarItem release];
@@ -2423,7 +2434,7 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (NSArray *) toolbarDefaultItemIdentifiers: (NSToolbar *) toolbar
 {
-		return [NSArray arrayWithObjects: @"tbTools", @"tbWLWW", @"tbLOD", @"tbThickSlab", @"tbBlending", @"tbShading", NSToolbarFlexibleSpaceItemIdentifier, @"Reset.tiff", @"Export.icns", @"Capture.icns", @"QTExport.icns", @"tbMovie", @"AxisShowHide", @"MousePositionShowHide", nil];
+		return [NSArray arrayWithObjects: @"tbTools", @"tbWLWW", @"tbLOD", @"tbThickSlab", @"tbBlending", @"tbShading", NSToolbarFlexibleSpaceItemIdentifier, @"Reset.tiff", @"Export.icns", @"Capture.icns", @"QTExport.icns", @"tbMovie", @"AxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", nil];
 }
 
 - (NSArray *) toolbarAllowedItemIdentifiers: (NSToolbar *) toolbar
@@ -2432,7 +2443,7 @@ static float deg2rad = 3.14159265358979/180.0;
 											NSToolbarFlexibleSpaceItemIdentifier,
 											NSToolbarSpaceItemIdentifier,
 											NSToolbarSeparatorItemIdentifier,
-											@"tbTools", @"tbWLWW", @"tbLOD", @"tbThickSlab", @"tbBlending", @"tbShading", @"Reset.tiff", @"Export.icns", @"Capture.icns", @"QTExport.icns", @"tbTools", @"AxisColors", @"AxisShowHide", @"MousePositionShowHide", nil];
+											@"tbTools", @"tbWLWW", @"tbLOD", @"tbThickSlab", @"tbBlending", @"tbShading", @"Reset.tiff", @"Export.icns", @"Capture.icns", @"QTExport.icns", @"tbTools", @"AxisColors", @"AxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", nil];
 }
 
 - (void)updateToolbarItems;
