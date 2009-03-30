@@ -875,7 +875,7 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject:@"1" forKey:@"showErrorsIfQueryFailed"];
 	[defaultValues setObject:@"1" forKey:@"loopScrollWheel"];
 	[defaultValues setObject:@"0" forKey:@"displayCobbAngle"];
-	[defaultValues setObject:@"1" forKey:@"onlyDisplayImagesOfSamePatient"];
+	[defaultValues setObject:@"0" forKey:@"onlyDisplayImagesOfSamePatient"];
 	
 	// ** ROI Default
 	[defaultValues setObject:[NSNumber numberWithFloat: 2] forKey:@"ROIThickness"];
