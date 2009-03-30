@@ -913,7 +913,7 @@ static BOOL frameZoomed = NO;
 	[self updateMousePosition: theEvent];
 	
 	[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector( delayedFullLODRendering:) object: self];	
-	[windowController performSelector: @selector( delayedFullLODRendering:) withObject: self afterDelay: 0.3];
+	[windowController performSelector: @selector( delayedFullLODRendering:) withObject: self afterDelay: 0.6];
 }
 
 - (void)rightMouseDown:(NSEvent *)theEvent
@@ -944,7 +944,7 @@ static BOOL frameZoomed = NO;
 	[self updateMousePosition: theEvent];
 	
 	[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector( delayedFullLODRendering:) object: nil];
-	[windowController performSelector: @selector( delayedFullLODRendering:) withObject: nil afterDelay: 0.3];
+	[windowController performSelector: @selector( delayedFullLODRendering:) withObject: nil afterDelay: 0.6];
 }
 
 - (void)rightMouseUp:(NSEvent *)theEvent
@@ -1161,7 +1161,7 @@ static BOOL frameZoomed = NO;
 		[self updateViewMPR];
 		
 		[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector( delayedFullLODRendering:) object: nil];
-		[windowController performSelector: @selector( delayedFullLODRendering:) withObject: nil afterDelay: 0.3];
+		[windowController performSelector: @selector( delayedFullLODRendering:) withObject: nil afterDelay: 0.6];
 	}
 	else if( moveCenter)
 	{
@@ -1170,7 +1170,7 @@ static BOOL frameZoomed = NO;
 		[self updateViewMPR];
 		
 		[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector( delayedFullLODRendering:) object: nil];
-		[windowController performSelector: @selector( delayedFullLODRendering:) withObject: nil afterDelay: 0.3];
+		[windowController performSelector: @selector( delayedFullLODRendering:) withObject: nil afterDelay: 0.6];
 	}
 	else
 	{
@@ -1199,7 +1199,7 @@ static BOOL frameZoomed = NO;
 			else [self updateViewMPR];
 			
 			[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector( delayedFullLODRendering:) object: nil];
-			[windowController performSelector: @selector( delayedFullLODRendering:) withObject: nil afterDelay: 0.3];
+			[windowController performSelector: @selector( delayedFullLODRendering:) withObject: nil afterDelay: 0.6];
 		}
 	}
 	

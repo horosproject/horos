@@ -349,6 +349,7 @@ typedef char* vtkMyCallbackVR;
 @property BOOL clipRangeActivated, keep3DRotateCentered, dontResetImage, bestRenderingMode;
 @property int projectionMode;
 @property double clippingRangeThickness;
+@property float lowResLODFactor;
 @property long renderingMode;
 @property (readonly) NSArray* currentOpacityArray;
 @property (retain) DICOMExport *exportDCM;

@@ -179,6 +179,7 @@ public:
 @implementation VRView
 
 @synthesize clipRangeActivated, projectionMode, clippingRangeThickness, keep3DRotateCentered, dontResetImage, renderingMode, currentOpacityArray, exportDCM, dcmSeriesString, bestRenderingMode;
+@synthesize lowResLODFactor;
 
 - (BOOL) checkPointInVolume: (double*) position
 {

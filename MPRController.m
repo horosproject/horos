@@ -231,11 +231,14 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (void) delayedFullLODRendering:(id) sender
 {
-	[hiddenVRView setLODLow: NO];
+	if( hiddenVRView.lowResLODFactor > 1)
+	{
+		[hiddenVRView setLODLow: NO];
 	
-	[self updateViewsAccordingToFrame: sender];
+		[self updateViewsAccordingToFrame: sender];
 	
-	[hiddenVRView setLODLow: YES];
+		[hiddenVRView setLODLow: YES];
+	}
 }
 
 - (void) updateViewsAccordingToFrame:(id) sender	// see setFrame in MPRDCMView.m
@@ -264,7 +267,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	
 	// Default Init
 	[self setClippingRangeMode: 1]; // MIP
-	[self setClippingRangeThickness: 2];
+	[self setClippingRangeThickness: 1];
 	
 	[[self window] makeFirstResponder: mprView1];
 	[mprView1.vrView resetImage: self];
@@ -1431,6 +1434,16 @@ static float deg2rad = 3.14159265358979/180.0;
 - (void) setClippingRangeThickness:(float) f
 {
 	clippingRangeThickness = f;
+	
+	if( clippingRangeThickness <= 1)
+		hiddenVRView.lowResLODFactor = 1.0;
+	else
+	{
+		if( MPProcessors() >= 4)
+			hiddenVRView.lowResLODFactor = 1.5;
+		else
+			hiddenVRView.lowResLODFactor = 2.5;
+	}
 	
 	[mprView1 restoreCamera];
 	mprView1.vrView.dontResetImage = YES;
