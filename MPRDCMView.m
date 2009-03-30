@@ -245,6 +245,7 @@ static BOOL frameZoomed = NO;
 			{
 				[pix setRGB: isRGB];
 				[pix setfImage: imagePtr];
+				[pix freefImageWhenDone: YES];
 				[pix setPwidth: w];
 				[pix setPheight: h];
 				

@@ -7510,6 +7510,9 @@ static ViewerController *draggedController = nil;
 		long				i, x;
 		BOOL				flipNow = [flipNowNumber boolValue];
 		
+		if( flipNow)
+			flipNow = [self isEverythingLoaded];
+		
 		if( [pixList[ z] count] > 1)
 		{
 			if( flipNow)
