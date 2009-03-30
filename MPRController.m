@@ -86,7 +86,7 @@ static float deg2rad = 3.14159265358979/180.0;
 			self.blendingModeAvailable = YES;
 		
 		self.displayCrossLines = YES;
-		self.displayMousePosition = YES;
+		self.displayMousePosition = [[NSUserDefaults standardUserDefaults] boolForKey: @"MPRDisplayMousePosition"];
 		self.maxMovieIndex = 0;
 		
 		[self updateToolbarItems];
@@ -2162,6 +2162,8 @@ static float deg2rad = 3.14159265358979/180.0;
 {
 	if( [notification object] == [self window])
 	{
+		[[NSUserDefaults standardUserDefaults] setBool: self.displayMousePosition forKey: @"MPRDisplayMousePosition"];
+	
 		[NSObject cancelPreviousPerformRequestsWithTarget: self selector:@selector( updateViewsAccordingToFrame:) object: nil];
 		[NSObject cancelPreviousPerformRequestsWithTarget: self selector:@selector( delayedFullLODRendering:) object: nil];
 		
@@ -2394,7 +2396,7 @@ static float deg2rad = 3.14159265358979/180.0;
 		[toolbarItem setPaletteLabel:NSLocalizedString(@"Axis",nil)];
 		
 		[toolbarItem setLabel:NSLocalizedString(@"Axis",nil)];
-		if(self.displayCrossLines)
+		if( !self.displayCrossLines)
 			[toolbarItem setImage:[NSImage imageNamed:@"MPRAxisHide"]];
 		else
 			[toolbarItem setImage:[NSImage imageNamed:@"MPRAxisShow"]];
@@ -2407,7 +2409,7 @@ static float deg2rad = 3.14159265358979/180.0;
 		[toolbarItem setPaletteLabel:NSLocalizedString(@"Mouse Position",nil)];
 		
 		[toolbarItem setLabel:NSLocalizedString(@"Mouse Position",nil)];
-		if(self.displayMousePosition)
+		if( !self.displayMousePosition)
 			[toolbarItem setImage:[NSImage imageNamed:@"MPRMousePositionHide"]];
 		else
 			[toolbarItem setImage:[NSImage imageNamed:@"MPRMousePositionShow"]];
@@ -2453,14 +2455,14 @@ static float deg2rad = 3.14159265358979/180.0;
 	{
 		if([[item itemIdentifier] isEqualToString:@"AxisShowHide"])
 		{
-			if(self.displayCrossLines)
+			if( !self.displayCrossLines)
 				[item setImage:[NSImage imageNamed:@"MPRAxisHide"]];
 			else
 				[item setImage:[NSImage imageNamed:@"MPRAxisShow"]];
 		}
 		else if([[item itemIdentifier] isEqualToString:@"MousePositionShowHide"])
 		{
-			if(self.displayMousePosition)
+			if( !self.displayMousePosition)
 				[item setImage:[NSImage imageNamed:@"MPRMousePositionHide"]];
 			else
 				[item setImage:[NSImage imageNamed:@"MPRMousePositionShow"]];

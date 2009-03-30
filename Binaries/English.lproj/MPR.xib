@@ -3,13 +3,14 @@
 	<data>
 		<int key="IBDocument.SystemTarget">1050</int>
 		<string key="IBDocument.SystemVersion">9G55</string>
-		<string key="IBDocument.InterfaceBuilderVersion">670</string>
+		<string key="IBDocument.InterfaceBuilderVersion">672</string>
 		<string key="IBDocument.AppKitVersion">949.43</string>
 		<string key="IBDocument.HIToolboxVersion">353.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="414"/>
 			<integer value="926"/>
+			<integer value="856"/>
+			<integer value="414"/>
 			<integer value="1105"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
@@ -3556,7 +3557,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<string key="NSExtension">NSResponder</string>
 			</object>
 			<object class="NSCustomView" id="750281852">
-				<nil key="NSNextResponder"/>
+				<reference key="NSNextResponder"/>
 				<int key="NSvFlags">256</int>
 				<object class="NSMutableArray" key="NSSubviews">
 					<bool key="EncodedWithXMLCoder">YES</bool>
@@ -3579,18 +3580,24 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 										<string>allowsFloats</string>
 										<string>formatterBehavior</string>
 										<string>negativeFormat</string>
+										<string>negativeSuffix</string>
+										<string>numberStyle</string>
 										<string>positiveFormat</string>
+										<string>positiveSuffix</string>
 									</object>
 									<object class="NSMutableArray" key="dict.values">
 										<bool key="EncodedWithXMLCoder">YES</bool>
 										<reference ref="9"/>
 										<reference ref="687648334"/>
-										<string># %%</string>
-										<string># %%</string>
+										<string>#</string>
+										<string> %</string>
+										<reference ref="9"/>
+										<string># </string>
+										<string> %</string>
 									</object>
 								</object>
-								<string key="NS.positiveformat"># %%</string>
-								<string key="NS.negativeformat"># %%</string>
+								<string key="NS.positiveformat"># </string>
+								<string key="NS.negativeformat">#</string>
 								<nil key="NS.positiveattrs"/>
 								<nil key="NS.negativeattrs"/>
 								<object class="NSAttributedString" key="NS.zero">
@@ -3774,6 +3781,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					</object>
 				</object>
 				<string key="NSFrameSize">{152, 53}</string>
+				<reference key="NSSuperview"/>
 				<object class="NSMutableString" key="NSClassName">
 					<characters key="NS.bytes">NSView</characters>
 				</object>
