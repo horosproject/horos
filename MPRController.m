@@ -231,6 +231,8 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (void) delayedFullLODRendering:(id) sender
 {
+	if( windowWillClose) return;
+	
 	if( hiddenVRView.lowResLODFactor > 1)
 	{
 		[hiddenVRView setLODLow: NO];
@@ -243,6 +245,8 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (void) updateViewsAccordingToFrame:(id) sender	// see setFrame in MPRDCMView.m
 {
+	if( windowWillClose) return;
+	
 	id view = [[self window] firstResponder];
 	
 	[mprView1 camera].forceUpdate = YES;
@@ -2175,6 +2179,8 @@ static float deg2rad = 3.14159265358979/180.0;
 {
 	if( [notification object] == [self window])
 	{
+		windowWillClose = YES;
+		
 		[[NSUserDefaults standardUserDefaults] setBool: self.displayMousePosition forKey: @"MPRDisplayMousePosition"];
 	
 		[NSObject cancelPreviousPerformRequestsWithTarget: self selector:@selector( updateViewsAccordingToFrame:) object: nil];

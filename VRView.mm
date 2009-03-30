@@ -636,79 +636,86 @@ public:
 	if( showWait) www = [[WaitRendering alloc] init:@"Preparing 3D data..."];
 	[www start];
 	
-	BOOL validBox = [VRView getCroppingBox: a :volume :croppingBox];
-	
-	switch( engineID)
+	@try
 	{
-		case 0:		// RAY CAST
-			if( volumeMapper == nil)
-			{
-				volumeMapper = OsiriXFixedPointVolumeRayCastMapper::New();
-				volumeMapper->SetInput((vtkDataSet *) reader->GetOutput());
-			}
-			volumeMapper->SetMinimumImageSampleDistance( LOD);
-			
-			volume->SetMapper( volumeMapper);
-		break;
+		BOOL validBox = [VRView getCroppingBox: a :volume :croppingBox];
 		
-		case 1:		// TEXTURE
-			if( textureMapper == nil)
-			{
-				textureMapper = vtkVolumeTextureMapper3D::New();
-				textureMapper->SetInput((vtkDataSet *) reader->GetOutput());
+		switch( engineID)
+		{
+			case 0:		// RAY CAST
+				if( volumeMapper == nil)
+				{
+					volumeMapper = OsiriXFixedPointVolumeRayCastMapper::New();
+					volumeMapper->SetInput((vtkDataSet *) reader->GetOutput());
+				}
+				volumeMapper->SetMinimumImageSampleDistance( LOD);
 				
-//				if( volumeProperty->GetShade())
-//					textureMapper->SetMaximumNoOfSlices( [[NSUserDefaults standardUserDefaults] integerForKey: @"MAX3DTEXTURESHADING"]);
-//				else
-//					textureMapper->SetMaximumNoOfSlices( [[NSUserDefaults standardUserDefaults] integerForKey: @"MAX3DTEXTURE"]);
-			}
-			volume->SetMapper( textureMapper);
-		break;
-		
-		case 2:		// BOTH
-			if( volumeMapper == nil)
-			{
-				volumeMapper = OsiriXFixedPointVolumeRayCastMapper::New();
-				volumeMapper->SetInput((vtkDataSet *) reader->GetOutput());
-			}
-			volumeMapper->SetMinimumImageSampleDistance( LOD);
+				volume->SetMapper( volumeMapper);
+			break;
 			
-			if( textureMapper == nil)
-			{
-				textureMapper = vtkVolumeTextureMapper3D::New();
-				textureMapper->SetInput((vtkDataSet *) reader->GetOutput());
+			case 1:		// TEXTURE
+				if( textureMapper == nil)
+				{
+					textureMapper = vtkVolumeTextureMapper3D::New();
+					textureMapper->SetInput((vtkDataSet *) reader->GetOutput());
+					
+	//				if( volumeProperty->GetShade())
+	//					textureMapper->SetMaximumNoOfSlices( [[NSUserDefaults standardUserDefaults] integerForKey: @"MAX3DTEXTURESHADING"]);
+	//				else
+	//					textureMapper->SetMaximumNoOfSlices( [[NSUserDefaults standardUserDefaults] integerForKey: @"MAX3DTEXTURE"]);
+				}
+				volume->SetMapper( textureMapper);
+			break;
+			
+			case 2:		// BOTH
+				if( volumeMapper == nil)
+				{
+					volumeMapper = OsiriXFixedPointVolumeRayCastMapper::New();
+					volumeMapper->SetInput((vtkDataSet *) reader->GetOutput());
+				}
+				volumeMapper->SetMinimumImageSampleDistance( LOD);
 				
-//				if( volumeProperty->GetShade()) textureMapper->SetMaximumNoOfSlices( [[NSUserDefaults standardUserDefaults] integerForKey: @"MAX3DTEXTURESHADING"]);
-//				else textureMapper->SetMaximumNoOfSlices( [[NSUserDefaults standardUserDefaults] integerForKey: @"MAX3DTEXTURE"]);
-			}
-			volume->SetMapper( textureMapper);
-		break;
-	}
-	
-	[self setMode: renderingMode];	// VR or MIP ?
-	
-	if( validBox)
-	{
-		[VRView setCroppingBox: a :volume];
+				if( textureMapper == nil)
+				{
+					textureMapper = vtkVolumeTextureMapper3D::New();
+					textureMapper->SetInput((vtkDataSet *) reader->GetOutput());
+					
+	//				if( volumeProperty->GetShade()) textureMapper->SetMaximumNoOfSlices( [[NSUserDefaults standardUserDefaults] integerForKey: @"MAX3DTEXTURESHADING"]);
+	//				else textureMapper->SetMaximumNoOfSlices( [[NSUserDefaults standardUserDefaults] integerForKey: @"MAX3DTEXTURE"]);
+				}
+				volume->SetMapper( textureMapper);
+			break;
+		}
 		
-		[VRView getCroppingBox: a :blendingVolume :croppingBox];
-		[VRView setCroppingBox: a :blendingVolume];
-	}
-	else
-	{
-		[self resetImage: self];
+		[self setMode: renderingMode];	// VR or MIP ?
 		
-		croppingBox->PlaceWidget();
+		if( validBox)
+		{
+			[VRView setCroppingBox: a :volume];
+			
+			[VRView getCroppingBox: a :blendingVolume :croppingBox];
+			[VRView setCroppingBox: a :blendingVolume];
+		}
+		else
+		{
+			[self resetImage: self];
+			
+			croppingBox->PlaceWidget();
+		}
+		
+		if( volumeMapper)
+		{	
+			volumeMapper->SetMinimumImageSampleDistance( LOD);
+			volumeMapper->SetSampleDistance( [[NSUserDefaults standardUserDefaults] floatForKey: @"BESTRENDERING"]);
+			volumeMapper->SetMaximumImageSampleDistance( LOD*lowResLODFactor);
+		}
+		
+		[self display];
 	}
-	
-	if( volumeMapper)
-	{	
-		volumeMapper->SetMinimumImageSampleDistance( LOD);
-		volumeMapper->SetSampleDistance( [[NSUserDefaults standardUserDefaults] floatForKey: @"BESTRENDERING"]);
-		volumeMapper->SetMaximumImageSampleDistance( LOD*lowResLODFactor);
+	@catch (NSException * e)
+	{
+		NSLog( @"setEngine exception: %@", e);
 	}
-	
-	[self display];
 	
 	[www end];
 	[www close];
@@ -1771,8 +1778,8 @@ public:
 	
 	[self saView:self];
 	
-	[self mouseDown: [[NSApplication sharedApplication] currentEvent]];
-	[self mouseUp: [[NSApplication sharedApplication] currentEvent]];
+//	[self mouseDown: [[NSApplication sharedApplication] currentEvent]];
+//	[self mouseUp: [[NSApplication sharedApplication] currentEvent]];
 	
     [self setNeedsDisplay:YES];
 }
@@ -5161,56 +5168,63 @@ public:
 		[www start];
 	}
 	
-	data = volumeData;
-	
-	if( isRGB)
-	{
-		reader->SetImportVoidPointer( data);
-		reader->GetOutput()->Modified();
-	}
-	else
-	{
-		srcf.data = data;
-		vImageConvert_FTo16U( &srcf, &dst8, -OFFSET16, 1./valueFactor, 0);
+	@try
+	{	
+		data = volumeData;
 		
-		reader->SetImportVoidPointer( data8);
-		reader->GetOutput()->Modified();
-	}
-		
-	if( volumeMapper) volumeMapper->Delete();
-	volumeMapper = nil;
-	if( textureMapper) textureMapper->Delete();
-	textureMapper = nil;
-	
-	[self setEngine: [[NSUserDefaults standardUserDefaults] integerForKey: @"MAPPERMODEVR"] showWait: NO];
-	
-	if( blendingController)
-	{
-		if( blendingData != [blendingController volumePtr])
+		if( isRGB)
 		{
-			blendingData = [blendingController volumePtr];
-			
-			if( isRGB)
-			{
-				blendingReader->SetImportVoidPointer( blendingData);
-				blendingReader->GetOutput()->Modified();
-			}
-			else
-			{
-				blendingSrcf.data = blendingData;
-				vImageConvert_FTo16U( &blendingSrcf, &blendingDst8, -blendingOFFSET16, 1./blendingValueFactor, 0);
-				
-				blendingReader->SetImportVoidPointer( blendingData8);
-				blendingReader->GetOutput()->Modified();
-			}
-				
-			if( blendingVolumeMapper) blendingVolumeMapper->Delete();
-			blendingVolumeMapper = nil;
-			if( blendingTextureMapper) blendingTextureMapper->Delete();
-			blendingTextureMapper = nil;
-			
-			[self setBlendingEngine: [[NSUserDefaults standardUserDefaults] integerForKey: @"MAPPERMODEVR"] showWait: NO];
+			reader->SetImportVoidPointer( data);
+			reader->GetOutput()->Modified();
 		}
+		else
+		{
+			srcf.data = data;
+			vImageConvert_FTo16U( &srcf, &dst8, -OFFSET16, 1./valueFactor, 0);
+			
+			reader->SetImportVoidPointer( data8);
+			reader->GetOutput()->Modified();
+		}
+			
+		if( volumeMapper) volumeMapper->Delete();
+		volumeMapper = nil;
+		if( textureMapper) textureMapper->Delete();
+		textureMapper = nil;
+		
+		[self setEngine: [[NSUserDefaults standardUserDefaults] integerForKey: @"MAPPERMODEVR"] showWait: NO];
+		
+		if( blendingController)
+		{
+			if( blendingData != [blendingController volumePtr])
+			{
+				blendingData = [blendingController volumePtr];
+				
+				if( isRGB)
+				{
+					blendingReader->SetImportVoidPointer( blendingData);
+					blendingReader->GetOutput()->Modified();
+				}
+				else
+				{
+					blendingSrcf.data = blendingData;
+					vImageConvert_FTo16U( &blendingSrcf, &blendingDst8, -blendingOFFSET16, 1./blendingValueFactor, 0);
+					
+					blendingReader->SetImportVoidPointer( blendingData8);
+					blendingReader->GetOutput()->Modified();
+				}
+					
+				if( blendingVolumeMapper) blendingVolumeMapper->Delete();
+				blendingVolumeMapper = nil;
+				if( blendingTextureMapper) blendingTextureMapper->Delete();
+				blendingTextureMapper = nil;
+				
+				[self setBlendingEngine: [[NSUserDefaults standardUserDefaults] integerForKey: @"MAPPERMODEVR"] showWait: NO];
+			}
+		}
+	}
+	@catch (NSException *e)
+	{
+		NSLog( @"movieChangeSource exception: %@", e);
 	}
 	
 	if( showWait)
@@ -5635,7 +5649,7 @@ public:
 		
 		[self setNeedsDisplay:YES];
 		
-		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"dontShow3DCubeOrientation"] == NO)
+//		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"dontShow3DCubeOrientation"] == NO)
 			[self initAnnotatedCubeActor];
 	}
 	

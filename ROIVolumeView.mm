@@ -779,7 +779,7 @@
 	
 	// *********************** Orientation Cube
 	
-	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"dontShow3DCubeOrientation"] == NO)
+//	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"dontShow3DCubeOrientation"] == NO)
 	{
 		vtkAnnotatedCubeActor* cube = vtkAnnotatedCubeActor::New();
 		cube->SetXPlusFaceText ( [NSLocalizedString( @"L", @"L: Left") UTF8String] );		

@@ -1925,6 +1925,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 		return [NSArray arrayWithObjects:       ToolsToolbarItemIdentifier,
 												ModeToolbarItemIdentifier,
 												WLWWToolbarItemIdentifier,
+												CLUTEditorsViewToolbarItemIdentifier,
 												PresetsPanelToolbarItemIdentifier,
 												LODToolbarItemIdentifier,
 												CaptureToolbarItemIdentifier,
