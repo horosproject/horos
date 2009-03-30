@@ -6416,7 +6416,6 @@ static ViewerController *draggedController = nil;
 			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"ConvertPETtoSUVautomatically"])
 			{
 				[self performSelectorOnMainThread:@selector( convertPETtoSUV) withObject:nil waitUntilDone: NO];
-				
 				[imageView performSelectorOnMainThread:@selector( setStartWLWW) withObject:nil waitUntilDone: NO];
 			}
 		}
@@ -12692,6 +12691,12 @@ int i,j,l;
 		}
 	}
 	
+		
+	for( y = 0; y < maxMovieIndex; y++)
+	{
+		for( DCMPix *p in pixList[ y]) p.displaySUVValue = YES;
+	}
+	
 	if(  updatewlww)
 	{
 		float cwl, cww;
@@ -12701,11 +12706,7 @@ int i,j,l;
 	}
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"updateVolumeData" object: pixList[ curMovieIndex] userInfo: nil];
-	
-	for( y = 0; y < maxMovieIndex; y++)
-	{
-		for( x = 0; x < [pixList[y] count]; x++) [[pixList[y] objectAtIndex: x] setDisplaySUVValue: YES];
-	}
+
 }
 
 -(IBAction) endDisplaySUV:(id) sender
