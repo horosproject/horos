@@ -213,8 +213,10 @@ static int pnm_getint16(jas_stream_t *in, int *val)
 	jasData[0] = 0;
 	jasData[1] = 0;
 	jasData[2] = 0;	
-	for (cmptno = 0; cmptno < spp; ++cmptno) {
-		if (!(jasData[cmptno] = jas_matrix_create(1, width))) {
+	for (cmptno = 0; cmptno < spp; ++cmptno)
+	{
+		if (!(jasData[cmptno] = jas_matrix_create(1, width)))
+		{
 			return nil;
 		}
 	}

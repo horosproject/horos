@@ -684,9 +684,7 @@ PapyShort ExtractJPEG2000 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong i
 		
 		
 		for (i=0; i < numcmpts; i++)
-		{
 			pixels[ i] = jas_matrix_create(1, (unsigned int) width);
-		}
 		
 		if( gArrPhotoInterpret [inFileNb] == MONOCHROME1 || gArrPhotoInterpret [inFileNb] == MONOCHROME2) numcmpts = 1;
 		
@@ -787,6 +785,11 @@ PapyShort ExtractJPEG2000 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong i
 //			}
 //		}
 		//void *imageData = jasMatrix->data_;
+		
+		
+		for (i=0; i < numcmpts; i++)
+			jas_matrix_destroy( pixels[ i]);
+		
 		jas_image_destroy(jasImage);
 		jas_image_clearfmts();
 

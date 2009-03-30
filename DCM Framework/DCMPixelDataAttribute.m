@@ -1065,11 +1065,8 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 	}
 	else
 	{
-
 		for (i=0; i < numcmpts; i++)
-		{
 			pixels[ i] = jas_matrix_create(1, (unsigned int) width);
-		}
 		
 		if( numcmpts == 1)
 		{
@@ -1127,6 +1124,9 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 		}
 		
 	}
+	
+	for (i=0; i < numcmpts; i++)
+		jas_matrix_destroy( pixels[ i]);
 	
 	jas_image_destroy(jasImage);
 	jas_image_clearfmts();
