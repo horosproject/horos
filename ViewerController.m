@@ -3116,6 +3116,10 @@ static volatile int numberOfThreadsForRelisce = 0;
     }
 }
 
+- (void) renderButton:(id) sender
+{
+	NSLog( @"render Button");
+}
 
 -(void) UpdateOpacityMenu: (NSNotification*) note
 {
@@ -8873,8 +8877,23 @@ short				matrix[25];
 
 - (void) OpacityChanged: (NSNotification*) note
 {
-	[thickSlab setOpacity: [[note object] getPoints]];
+	NSArray *array = [[note object] getPoints];
 	
+	[thickSlab setOpacity: array];
+
+	NSData *table = nil;
+			
+	if( [array count] == 0)
+		table = nil;
+	else
+		table = [OpacityTransferView tableWith4096Entries: array];
+	
+	for( int x = 0; x < maxMovieIndex; x++)
+	{
+		for( DCMPix * pix in pixList[ x])
+			[pix setTransferFunction: table];
+	}
+			
 	[self updateImage:self];
 }
 
@@ -8924,9 +8943,13 @@ short				matrix[25];
 			[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: nil];
 			
 			[[[OpacityPopup menu] itemAtIndex:0] setTitle:str];
-		
-		
-			NSData	*table = [OpacityTransferView tableWith4096Entries: [aOpacity objectForKey:@"Points"]];
+			
+			NSData *table = nil;
+			
+			if( [array count] == 0)
+				table = nil;
+			else
+				table = [OpacityTransferView tableWith4096Entries: [aOpacity objectForKey:@"Points"]];
 			
 			for( int x = 0; x < maxMovieIndex; x++)
 			{

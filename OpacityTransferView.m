@@ -137,8 +137,8 @@
 + (NSData*) tableWith4096Entries: (NSArray*) pointsArray
 {
 	int		x, cur, last = 0;
-	float	entries256[ 4096];
-	NSPoint prevPoint;
+	float	entries256[ 4097];
+	NSPoint prevPoint = NSMakePoint( 1000, 0.0);
 	
 	for( id loopItem1 in pointsArray)
 	{
@@ -159,9 +159,11 @@
 		last = cur;
 	}
 	
-	for( x = 0; x < 4096-last; x++)
+	cur = 4096;
+	NSPoint curPoint = NSMakePoint( 1256, 1.0);
+	for( x = 0; x < cur-last; x++)
 	{
-		entries256[ last + x] = 1.0;
+		entries256[ last + x] = (prevPoint.y + ((curPoint.y - prevPoint.y) * x / (cur-last)));
 	}
 	
 	return [NSData dataWithBytes: entries256 length: 4096 * sizeof(float)];
@@ -240,8 +242,6 @@
 	}
 	
 	[courbe moveToPoint: NSMakePoint(0, 0)];
-	
-	NSLog(@"Points : %d", [points count]);
 	
 	for( i = 0; i < [points count]; i++)
 	{
