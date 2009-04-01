@@ -674,6 +674,9 @@ static NSArray*	statesArray = nil;
 						{
 							if( [[study valueForKey: @"modality"] isEqualToString: @"SR"] || [[study valueForKey: @"modality"] isEqualToString: @"OT"])
 								[study setValue: [curDict objectForKey: @"modality"] forKey:@"modality"];
+								
+							if( [study valueForKey: @"studyName"] == nil || [[study valueForKey: @"studyName"] isEqualToString: @"unnamed"] || [[study valueForKey: @"studyName"] isEqualToString: @""])
+								[study setValue: [curDict objectForKey: @"studyDescription"] forKey:@"studyName"];
 						}
 						curStudyID = [curDict objectForKey: @"studyID"];
 						curPatientUID = [curDict objectForKey: @"patientUID"];
