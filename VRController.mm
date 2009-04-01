@@ -1923,7 +1923,6 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
     
 	if( [style isEqualToString:@"standard"])
 		return [NSArray arrayWithObjects:       ToolsToolbarItemIdentifier,
-												ModeToolbarItemIdentifier,
 												WLWWToolbarItemIdentifier,
 												CLUTEditorsViewToolbarItemIdentifier,
 												PresetsPanelToolbarItemIdentifier,
@@ -1934,8 +1933,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 												ShadingToolbarItemIdentifier,
 												PerspectiveToolbarItemIdentifier,
 												ConvolutionViewToolbarItemIdentifier,
-												BlendingToolbarItemIdentifier,
-												MovieToolbarItemIdentifier,
+												ClippingRangeViewToolbarItemIdentifier,
 												NSToolbarFlexibleSpaceItemIdentifier,
 												QTExportToolbarItemIdentifier,
 												QTExportVRToolbarItemIdentifier,
