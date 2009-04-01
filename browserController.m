@@ -4997,7 +4997,7 @@ static NSArray*	statesArray = nil;
 - (void)outlineViewSelectionDidChange: (NSNotification *)aNotification
 {
 	if( loadingIsOver == NO) return;
-
+	
 	NSIndexSet			*index = [databaseOutline selectedRowIndexes];
 	NSManagedObject		*item = [databaseOutline itemAtRow:[index firstIndex]];
 	
@@ -5018,6 +5018,8 @@ static NSArray*	statesArray = nil;
 		{
 			if( nowFiles == previousNoOfFiles) refreshMatrix = NO;
 		}
+		else 
+			DatabaseIsEdited = NO;
 		
 		previousNoOfFiles = nowFiles;
 		
@@ -13362,7 +13364,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 - (void)checkIncomingNow: (id)sender
 {
 	if( isCurrentDatabaseBonjour) return;
-	if( DatabaseIsEdited) return;
+	if( DatabaseIsEdited == YES && [[self window] isKeyWindow] == YES) return;
 	if( managedObjectContext == nil) return;
 	if( [NSDate timeIntervalSinceReferenceDate] - lastCheckIncoming < 0.5) return;
 	
@@ -13374,7 +13376,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 - (void)checkIncoming: (id)sender
 {
 	if( isCurrentDatabaseBonjour) return;
-	if( DatabaseIsEdited) return;
+	if( DatabaseIsEdited == YES && [[self window] isKeyWindow] == YES) return;
 	if( managedObjectContext == nil) return;
 	if( [NSDate timeIntervalSinceReferenceDate] - lastCheckIncoming < 1) return;
 	
@@ -15686,6 +15688,11 @@ static volatile int numberOfThreadsForJPEG = 0;
 // ============================================================
 // NSToolbar Related Methods
 // ============================================================
+
+- (void)windowDidResignKey:(NSNotification *)notification
+{
+	DatabaseIsEdited = NO;
+}
 
 - (void)windowDidBecomeKey:(NSNotification *)notification
 {
