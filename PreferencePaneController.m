@@ -77,6 +77,9 @@ extern OSStatus SetupAuthorization(void)
             CFSTR("You are always authorized.")
         );
     }
+	
+	AuthorizationFree( gAuthorization, kAuthorizationFlagDefaults);
+	
     return err;
 }
 
@@ -109,6 +112,7 @@ extern OSStatus SetupAuthorization(void)
 {
 	if(pane)
 	{
+		
 		NSPreferencePaneUnselectReply shouldUnselect = [pane shouldUnselect];
 		if(shouldUnselect==NSUnselectCancel) return NO;
 	}
