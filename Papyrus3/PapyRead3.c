@@ -40,7 +40,7 @@
 extern PapyShort ExtractJPEGlossy8 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelStart, PapyULong *inOffsetTableP, int inImageNb, int inDepth, int mode);
 extern PapyShort ExtractJPEGlossy12 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelStart, PapyULong *inOffsetTableP, int inImageNb, int inDepth, int mode);
 extern PapyShort ExtractJPEGlossy16 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelStart, PapyULong *inOffsetTableP, int inImageNb, int inDepth, int mode);
-		  
+extern void PapyrusLockFunction( int lock);
 extern short Altivec;
 extern short UseOpenJpeg;
 
@@ -661,11 +661,13 @@ PapyShort ExtractJPEG2000 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong i
 		
 		if ((fmtid = jas_image_getfmt(jasStream)) < 0)
 		{
+			PapyrusLockFunction( 1);
 			RETURN( -32);
 		}
 			// Decode the image. 
 		if (!(jasImage = jas_image_decode(jasStream, fmtid, 0)))
 		{
+			PapyrusLockFunction( 1);
 			RETURN( -35);
 		}
 		
@@ -704,7 +706,7 @@ PapyShort ExtractJPEG2000 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong i
 					
 					int_fast32_t	*ptr = &(pixels[0])->rows_[0][0];
 					x = width;
-					while( x-- > 0) *px++ = *ptr++;			//jas_matrix_getv(pixels[0],x);
+					while( x-- > 0) *px++ = *ptr++;
 				}
 			}
 			else
@@ -718,7 +720,7 @@ PapyShort ExtractJPEG2000 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong i
 					//ICI char * aulieu de 32
 					int_fast32_t	*ptr = &(pixels[0])->rows_[0][0];
 					x = width;
-					while( x-- > 0) *px++ =	*ptr++;		//jas_matrix_getv(pixels[0],x);
+					while( x-- > 0) *px++ =	*ptr++;
 				}
 			}
 		}
@@ -740,7 +742,7 @@ PapyShort ExtractJPEG2000 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong i
 				{
 					*px++ =	*ptr1++;
 					*px++ =	*ptr2++;
-					*px++ =	*ptr3++;		//jas_matrix_getv(pixels[0],x);
+					*px++ =	*ptr3++;
 				}
 			}
 		}
