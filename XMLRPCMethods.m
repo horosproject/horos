@@ -124,8 +124,6 @@
 		
 		NSString *encoding = [doc characterEncoding];
 		
-//		NSLog( [doc description]);
-		
         NSArray *array = [doc nodesForXPath:@"//methodName" error:&error];
 		
 		if( [array count] == 1)

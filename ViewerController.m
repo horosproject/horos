@@ -7648,8 +7648,6 @@ static ViewerController *draggedController = nil;
 				yd /= interval3d;
 				zd /= interval3d;
 				
-//				NSLog( @"Interval: %f %f", interval, interval3d);
-				
 				if( interval == 0 && [[pixList[ z] objectAtIndex: 0] originX] == 0 && [[pixList[ z] objectAtIndex: 0] originY] == 0 && [[pixList[ z] objectAtIndex: 0] originZ] == 0)
 				{
 					interval = [[pixList[ z] objectAtIndex:0] spacingBetweenSlices];
@@ -7676,9 +7674,6 @@ static ViewerController *draggedController = nil;
 					}
 				}
 				
-//				NSLog( @"Orientation Vector: %d", orientationVector);
-//				NSLog( @"Interval: %2.2f", interval);
-				
 				// FLIP DATA !!!!!! FOR 3D TEXTURE MAPPING !!!!!
 				if( interval < 0 && flipNow == YES)
 				{
@@ -7694,8 +7689,6 @@ static ViewerController *draggedController = nil;
 					
 					if( sameSize)
 					{
-//						NSLog(@"Flip Data Now");
-						
 						if( interval3d)
 							interval = fabs( interval3d);	//interval3d;	//-interval;
 						else
