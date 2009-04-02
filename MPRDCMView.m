@@ -910,7 +910,7 @@ static BOOL frameZoomed = NO;
 	
 	[vrView scrollWheel: theEvent];
 	
-	[self updateViewMPR];
+	[self updateViewMPR: NO];
 	[self updateMousePosition: theEvent];
 	
 	[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector( delayedFullLODRendering:) object: self];	
@@ -940,7 +940,7 @@ static BOOL frameZoomed = NO;
 	
 	[vrView rightMouseDragged: theEvent];
 	
-	[self updateViewMPR];
+	[self updateViewMPR: NO];
 	
 	[self updateMousePosition: theEvent];
 	
@@ -1197,6 +1197,7 @@ static BOOL frameZoomed = NO;
 				
 				[self updateViewMPR: NO];
 			}
+			else if( [vrView _tool] == tZoom) [self updateViewMPR: NO];
 			else [self updateViewMPR];
 			
 			[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector( delayedFullLODRendering:) object: nil];

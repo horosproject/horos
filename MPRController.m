@@ -233,7 +233,7 @@ static float deg2rad = 3.14159265358979/180.0;
 {
 	if( windowWillClose) return;
 	
-	if( hiddenVRView.lowResLODFactor > 1)
+	if( hiddenVRView.lowResLODFactor > 1 || sender != nil)
 	{
 		[hiddenVRView setLODLow: NO];
 	
