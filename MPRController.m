@@ -205,14 +205,16 @@ static float deg2rad = 3.14159265358979/180.0;
 		
 		if(r1==0.0 && g1==0.0 && b1==0.0 && a1==0.0 && r2==0.0 && g2==0.0 && b2==0.0 && a2==0.0 && r3==0.0 && g3==0.0 && b3==0.0 && a3==0.0)
 		{
-			r1 = 1.0; g1 = 0.67; b1 = 0.0; a1 = 1.0;
-			r2 = 0.6; g2 = 0.0; b2 = 1.0; a2 = 1.0;
-			r3 = 0.0; g3 = 0.5; b3 = 1.0; a3 = 1.0;
+			r1 = 1.0; g1 = 0.67; b1 = 0.0; a1 = 0.8;
+			r2 = 0.6; g2 = 0.0; b2 = 1.0; a2 = 0.8;
+			r3 = 0.0; g3 = 0.5; b3 = 1.0; a3 = 0.8;
 		}
 		
 		self.colorAxis1 = [NSColor colorWithDeviceRed:r1 green:g1 blue:b1 alpha:a1];
 		self.colorAxis2 = [NSColor colorWithDeviceRed:r2 green:g2 blue:b2 alpha:a2];
 		self.colorAxis3 = [NSColor colorWithDeviceRed:r3 green:g3 blue:b3 alpha:a3];
+		
+		[[NSColorPanel sharedColorPanel] setShowsAlpha: YES];
 		
 		undoQueue = [[NSMutableArray alloc] initWithCapacity: 0];
 		redoQueue = [[NSMutableArray alloc] initWithCapacity: 0];
@@ -253,9 +255,18 @@ static float deg2rad = 3.14159265358979/180.0;
 	[mprView2 camera].forceUpdate = YES;
 	[mprView3 camera].forceUpdate = YES;
 	
-	[[self window] makeFirstResponder: mprView3];
-	[mprView3 restoreCamera];
-	[mprView3 updateViewMPR];
+	if( sender)
+	{
+		[[self window] makeFirstResponder: sender];
+		[sender restoreCamera];
+		[sender updateViewMPR];
+	}
+	else
+	{
+		[[self window] makeFirstResponder: mprView3];
+		[mprView3 restoreCamera];
+		[mprView3 updateViewMPR];
+	}
 	
 	if( view)
 		[[self window] makeFirstResponder: view];
