@@ -641,12 +641,17 @@ PapyShort ExtractJPEG2000 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong i
 	
 	if( UseOpenJpeg == 1)
 	{
+		PapyrusLockFunction( 0);
 		read_JPEG2000_file( ioImage8P, (char*) theCompressedP, theLength);
+		PapyrusLockFunction( 1);
+		
 		free( theCompressedP);
 		return 0;
 	}
 	else
-	{	
+	{
+		PapyrusLockFunction( 0);
+		
 		jas_image_t *jasImage;
 		jas_matrix_t *pixels[4];
 		char *fmtname;
@@ -681,7 +686,6 @@ PapyShort ExtractJPEG2000 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong i
 			bitDepth = 4;
 		
 		unsigned char *newPixelData = ioImage8P;	//malloc( width * height * bitDepth * numcmpts);
-		
 		
 		for (i=0; i < numcmpts; i++)
 			pixels[ i] = jas_matrix_create(1, (unsigned int) width);
@@ -741,58 +745,14 @@ PapyShort ExtractJPEG2000 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong i
 			}
 		}
 		
-		// short data
-//		if( numcmpts == 1)
-//		{
-//			if (depth > 8) {
-//				signed short *bitmapData = newPixelData;
-//				for ( i = 0; i < height; i++) {
-//					for ( j = 0; j < width; j++) {
-//						*bitmapData++ =	(signed short)(jas_image_readcmptsample(jasImage, 0, j ,i ));
-//					}
-//				}
-//			}
-//			// char data
-//			else { 
-//				unsigned char *bitmapData = newPixelData;
-//				for ( i = 0; i < height; i++) {
-//					for ( j = 0; j < width; j++) {
-//						*bitmapData++ =	(unsigned char)(jas_image_readcmptsample(jasImage, 0, j ,i ));
-//					}
-//				}
-//			}
-//		}
-//		else
-//		{
-//			if (depth > 8) {
-//				signed short *bitmapData = newPixelData;
-//				for ( i = 0; i < height; i++) {
-//					for ( j = 0; j < width; j++) {
-//						for ( k= 0; k < numcmpts; k++)
-//						*bitmapData++ =	(signed short)(jas_image_readcmptsample(jasImage, k, j ,i ));
-//					}
-//				}
-//			}
-//			// char data
-//			else { 
-//				unsigned char *bitmapData = newPixelData;
-//				for ( i = 0; i < height; i++) {
-//					for ( j = 0; j < width; j++) {
-//						for ( k= 0; k < numcmpts; k++)
-//						*bitmapData++ =	(unsigned char)(jas_image_readcmptsample(jasImage, k, j ,i ));
-//					}
-//				}
-//			}
-//		}
-		//void *imageData = jasMatrix->data_;
-		
-		
 		for (i=0; i < numcmpts; i++)
 			jas_matrix_destroy( pixels[ i]);
 		
 		jas_image_destroy(jasImage);
 		jas_image_clearfmts();
-
+		
+		PapyrusLockFunction( 1);
+		
 		free( theCompressedP);
 	}
 	

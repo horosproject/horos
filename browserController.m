@@ -6979,7 +6979,10 @@ static NSArray*	statesArray = nil;
 				}
 			}
 			else
+			{
+				NSBeep();
 				return;
+			}
 			
 		}while( found == NO);
 		
@@ -7052,9 +7055,7 @@ static NSArray*	statesArray = nil;
 		NSArray	*seriesArray = [NSArray array];
 		
 		for(NSManagedObject	*curStudy in studiesArray )
-		{				
 			seriesArray = [seriesArray arrayByAddingObjectsFromArray: [self childrenArray: curStudy]];
-		}
 		
 		NSInteger index = [seriesArray indexOfObject: currentSeries];
 		
@@ -7066,23 +7067,35 @@ static NSArray*	statesArray = nil;
 			}
 			
 			index += direction*[viewersList count];
-			if( index < 0) index = 0;
-			if( index < [seriesArray count ] )
+			if( index < 0 && index + [viewersList count] == 0)
+				NSBeep();
+			else 
 			{
-				for( ViewerController *vc in viewersList )
+				if( index < 0) index = 0;
+				if( index < [seriesArray count])
 				{
-					if( index >= 0 && index < [seriesArray count] )
+					if( index + [viewersList count] > [seriesArray count])
 					{
-						[self openViewerFromImages :[NSArray arrayWithObject: [self childrenArray: [seriesArray objectAtIndex: index]]] movie: NO viewer:vc keyImagesOnly: keyImages];
-					}
-					else
-					{
-						// Close the viewer
-						[[vc window] performClose: self];
+						index = [seriesArray count] - [viewersList count];
+						if( index < 0) index = 0;
 					}
 					
-					index++;
+					for( ViewerController *vc in viewersList )
+					{
+						if( index >= 0 && index < [seriesArray count] )
+						{
+							[self openViewerFromImages :[NSArray arrayWithObject: [self childrenArray: [seriesArray objectAtIndex: index]]] movie: NO viewer:vc keyImagesOnly: keyImages];
+						}
+						else
+						{
+							// Close the viewer
+							[[vc window] performClose: self];
+						}
+						
+						index++;
+					}
 				}
+				else NSBeep();
 			}
 		}
 	}
