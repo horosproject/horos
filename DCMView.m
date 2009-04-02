@@ -7240,6 +7240,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 - (void) drawCrossLines:(float[2][3]) sft ctx: (CGLContextObj) cgl_ctx perpendicular:(BOOL) perpendicular withShift:(double) shift half:(BOOL) half
 {
 	float a[ 2] = {0, 0};	// perpendicular vector
+	float slope;
 	float c[2][3];
 	
 	for( int i = 0; i < 2; i++)
