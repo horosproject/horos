@@ -6358,14 +6358,7 @@ static NSArray*	statesArray = nil;
 		
 		if( [item valueForKey:@"windowsState"] && [[NSUserDefaults standardUserDefaults] boolForKey:@"automaticWorkspaceLoad"])
 		{
-			NSData	*d = [item valueForKey:@"windowsState"];
-			
-			NSString	*tmp = [NSString stringWithFormat:@"/tmp/windowsState"];
-			[[NSFileManager defaultManager] removeFileAtPath: tmp handler:nil];
-			[d writeToFile: tmp atomically:YES];
-			
-			NSArray	*viewers = [NSArray arrayWithContentsOfFile: tmp];
-			[[NSFileManager defaultManager] removeFileAtPath: tmp handler:nil];
+			NSArray *viewers = [NSPropertyListSerialization propertyListFromData: [item valueForKey:@"windowsState"] mutabilityOption: NSPropertyListImmutable format: nil errorDescription: nil];
 			
 			NSMutableArray *seriesToOpen =  [NSMutableArray array];
 			NSMutableArray *viewersToLoad = [NSMutableArray array];
@@ -8029,8 +8022,7 @@ static BOOL withReset = NO;
 				
 				[object setValue:nil forKey:@"windowsState"];
 			}
-			
-			if( [[object valueForKey:@"type"] isEqualToString: @"Series"])
+			else if( [[object valueForKey:@"type"] isEqualToString: @"Series"])
 			{
 				[object setValue:nil forKey:@"rotationAngle"];
 				[object setValue:nil forKey:@"scale"];
