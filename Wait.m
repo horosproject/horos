@@ -24,6 +24,7 @@
 	[[self window] makeKeyAndOrderFront: sender];
 	[[self window] display];
 	[[self window] flushWindow];
+	[[self window] setDelegate: self];
 	
 	displayedTime = [NSDate timeIntervalSinceReferenceDate];
 }
@@ -36,11 +37,20 @@
 	[super close];
 }
 
+- (void)windowWillClose:(NSNotification *)notification
+{
+	if( session != nil)
+	{
+		[NSApp endModalSession:session];
+	}
+	session = nil;
+}
+
 - (void) dealloc
 {
 	[startTime release];
 	
-	if( session != nil) [NSApp endModalSession:session];
+	
 	
 	[super dealloc];
 }
@@ -93,7 +103,8 @@
 	{
 		startTime = [[NSDate date] retain];
 		
-		if( openSession) session = [NSApp beginModalSessionForWindow:[self window]];
+		if( openSession)
+			session = [NSApp beginModalSessionForWindow:[self window]];
 	}
 	
 	[progress incrementBy:delta];
@@ -104,7 +115,8 @@
 		
 		[progress displayIfNeeded];
 	
-		if( openSession) [NSApp runModalSession:session];
+		if( openSession)
+			[NSApp runModalSession:session];
 	}
 }
 

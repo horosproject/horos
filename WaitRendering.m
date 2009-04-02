@@ -75,6 +75,7 @@
 	{
 		[NSApp abortModal];
 		[NSApp endModalSession:session];
+		session = nil;
 	}
 	
 	if( aborted == NO && cancel == YES)
