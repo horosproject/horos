@@ -179,6 +179,7 @@ static NSMutableArray			*fusionPlugins = nil;
 				
 				if( [pluginType isEqualToString:@"fusionFilter"])
 				{
+					[fusionPlugins addObject:[item title]];
 					[item setTag:-1];		// Useful for fusionFilter
 					[item setAction:@selector(endBlendingType:)];
 				}
@@ -193,10 +194,14 @@ static NSMutableArray			*fusionPlugins = nil;
 					[item setAction:@selector(executeFilter:)];
 				}
 				
-				if( [pluginType isEqualToString:@"imageFilter"])		[filtersMenu insertItem:item atIndex:[filtersMenu numberOfItems]];
-				else if( [pluginType isEqualToString:@"roiTool"])		[roisMenu insertItem:item atIndex:[roisMenu numberOfItems]];
-				else if( [pluginType isEqualToString:@"fusionFilter"])	[fusionPluginsMenu insertItem:item atIndex:[fusionPluginsMenu numberOfItems]];
-				else if( [pluginType isEqualToString:@"Database"])		[dbMenu insertItem:item atIndex:[dbMenu numberOfItems]];
+				if( [pluginType isEqualToString:@"imageFilter"])
+					[filtersMenu insertItem:item atIndex:[filtersMenu numberOfItems]];
+				else if( [pluginType isEqualToString:@"roiTool"])
+					[roisMenu insertItem:item atIndex:[roisMenu numberOfItems]];
+				else if( [pluginType isEqualToString:@"fusionFilter"])
+					[fusionPluginsMenu insertItem:item atIndex:[fusionPluginsMenu numberOfItems]];
+				else if( [pluginType isEqualToString:@"Database"])
+					[dbMenu insertItem:item atIndex:[dbMenu numberOfItems]];
 				else [othersMenu insertItem:item atIndex:[othersMenu numberOfItems]];
 			}
 		}

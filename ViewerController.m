@@ -3803,6 +3803,17 @@ static ViewerController *draggedController = nil;
 
 - (void) completeDragOperation:(ViewerController*) vc
 {
+	// First reset all controls
+	NSView* blendingTypeContent = [blendingTypeWindow contentView];
+	for (NSView* view in [blendingTypeContent subviews])
+	{
+		if ([view isKindOfClass:[NSControl class]])
+		{
+			NSControl* control = (NSControl*) view;
+			[control setEnabled:YES];
+		}
+	}
+	
 	int iz, xz;
 	
 	if( [[[vc imageView] curDCM] pwidth] != [[imageView curDCM] pwidth] ||
@@ -3812,22 +3823,12 @@ static ViewerController *draggedController = nil;
 			[blendingTypeSubtract setEnabled: NO];
 			[blendingTypeRGB setEnabled: NO];
 		}
-	else
-	{
-		[blendingTypeMultiply setEnabled: YES];
-		[blendingTypeSubtract setEnabled: YES];
-		[blendingTypeRGB setEnabled: YES];
-	}
 	
 	if( [[[vc pixList] objectAtIndex: 0] isRGB])
 		[blendingTypeRGB setEnabled: NO];
-	else
-		[blendingTypeRGB setEnabled: YES];
 	
 	if( [[self studyInstanceUID] isEqualToString: [vc studyInstanceUID]] == NO)
 		[blendingResample setEnabled: NO];
-	else
-		[blendingResample setEnabled: YES];
 	
 	// Prepare fusion plug-ins menu
 	for( iz = 0; iz < [[PluginManager fusionPluginsMenu] numberOfItems]; iz++)
