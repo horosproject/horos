@@ -1778,8 +1778,8 @@ public:
 	
 	[self saView:self];
 	
-//	[self mouseDown: [[NSApplication sharedApplication] currentEvent]];
-//	[self mouseUp: [[NSApplication sharedApplication] currentEvent]];
+	if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD);
+	if( blendingVolumeMapper) blendingVolumeMapper->SetMinimumImageSampleDistance( LOD);
 	
     [self setNeedsDisplay:YES];
 }
