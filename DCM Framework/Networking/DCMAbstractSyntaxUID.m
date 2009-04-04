@@ -422,6 +422,8 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 			OphthalmicPhotography8BitImageStorage,
 			OphthalmicPhotography16BitImageStorage,
 			FujiPrivateCR,
+			MRSpectroscopyStorage,
+			RawDataStorage,
 			nil];
 	}
 
