@@ -1090,7 +1090,7 @@ static NSDate *lastWarningDate = nil;
 			[mainOpacityMenu addItemWithTitle:[sortedKeys objectAtIndex:i] action:@selector (ApplyOpacity:) keyEquivalent:@""];
 		}
 		[mainOpacityMenu addItem: [NSMenuItem separatorItem]];
-		[mainOpacityMenu addItemWithTitle:NSLocalizedString(@"Add an Opacity Table", nil) action:@selector (AddCurrentWLWW:) keyEquivalent:@""];
+		[mainOpacityMenu addItemWithTitle:NSLocalizedString(@"Add an Opacity Table", nil) action:@selector (AddOpacity:) keyEquivalent:@""];
 	}
 	
 	[[mainOpacityMenu itemWithTitle:[note object]] setState:NSOnState];
