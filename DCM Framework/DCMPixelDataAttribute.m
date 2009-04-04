@@ -364,7 +364,7 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
       opj_cio_close(cio);
 
   /* free the memory containing the code-stream */
-
+  
    // Copy buffer
    for (int compno = 0; compno < image->numcomps; compno++)
    {
@@ -408,7 +408,6 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
       }
       //free(image.comps[compno].data);
    }
-
 
   /* free remaining structures */
   if(dinfo) {
@@ -1066,67 +1065,57 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 	else
 	{
 		for (i=0; i < numcmpts; i++)
-			pixels[ i] = jas_matrix_create(1, (unsigned int) width);
+			pixels[ i] = jas_matrix_create( height, width);
 		
 		if( numcmpts == 1)
 		{
 			if (depth > 8)
 			{
-				for (y=0; y < (long) height; y++)
-				{
-					jas_image_readcmpt(jasImage, 0, 0, y, width, 1, pixels[0]);
-					
-					unsigned short *px = (unsigned short*) (newPixelData + y * width*2);
-					
-					int_fast32_t	*ptr = &(pixels[0])->rows_[0][0];
-					x = width;
-					while( x-- > 0) *px++ = *ptr++;			//jas_matrix_getv(pixels[0],x);
-				}
+				jas_image_readcmpt(jasImage, 0, 0, 0, width, height, pixels[0]);
+				
+				unsigned short *px = (unsigned short*) newPixelData;
+				
+				int_fast32_t	*ptr = &(pixels[0])->rows_[0][0];
+				x = width*height;
+				while( x-- > 0) *px++ = *ptr++;			//jas_matrix_getv(pixels[0],x);
 			}
 			else
 			{
-				for (y=0; y < (long) height; y++)
-				{
-					jas_image_readcmpt(jasImage, 0, 0, y, width, 1, pixels[0]);
-					
-					char *px = (char *) (newPixelData + y * width);
-					
-					//ICI char * aulieu de 32
-					int_fast32_t	*ptr = &(pixels[0])->rows_[0][0];
-					x = width;
-					while( x-- > 0) *px++ =	*ptr++;		//jas_matrix_getv(pixels[0],x);
-				}
+				jas_image_readcmpt(jasImage, 0, 0, 0, width, height, pixels[0]);
+				
+				char *px = (char *) newPixelData;
+				
+				//ICI char * aulieu de 32
+				int_fast32_t	*ptr = &(pixels[0])->rows_[0][0];
+				x = width*height;
+				while( x-- > 0) *px++ =	*ptr++;		//jas_matrix_getv(pixels[0],x);
 			}
 		}
 		else
 		{
 			[_dcmObject setAttributeValues:[NSMutableArray arrayWithObject:@"RGB"] forName:@"PhotometricInterpretation"];	//YUV_RCT support....
 			
-			for (y=0; y < (long) height; y++)
+			for( i = 0 ; i < numcmpts; i++)
+				jas_image_readcmpt(jasImage, i, 0, 0, width, height, pixels[ i]);
+			
+			char *px = (char*) newPixelData;
+			
+			int_fast32_t	*ptr1 = &(pixels[0])->rows_[0][0];
+			int_fast32_t	*ptr2 = &(pixels[1])->rows_[0][0];
+			int_fast32_t	*ptr3 = &(pixels[2])->rows_[0][0];
+			
+			x = width*height;
+			while( x-- > 0)
 			{
-				for( i = 0 ; i < numcmpts; i++)
-					jas_image_readcmpt(jasImage, i, 0, y, width, 1, pixels[ i]);
-				
-				char *px = (char*) (newPixelData + y * width * 3);
-				
-				int_fast32_t	*ptr1 = &(pixels[0])->rows_[0][0];
-				int_fast32_t	*ptr2 = &(pixels[1])->rows_[0][0];
-				int_fast32_t	*ptr3 = &(pixels[2])->rows_[0][0];
-				
-				x = width;
-				while( x-- > 0)
-				{
-					*px++ =	*ptr1++;
-					*px++ =	*ptr2++;
-					*px++ =	*ptr3++;		//jas_matrix_getv(pixels[0],x);
-				}
+				*px++ =	*ptr1++;
+				*px++ =	*ptr2++;
+				*px++ =	*ptr3++;		//jas_matrix_getv(pixels[0],x);
 			}
 		}
 		
+		for (i=0; i < numcmpts; i++)
+			jas_matrix_destroy( pixels[ i]);
 	}
-	
-	for (i=0; i < numcmpts; i++)
-		jas_matrix_destroy( pixels[ i]);
 	
 	jas_image_destroy(jasImage);
 	jas_image_clearfmts();
