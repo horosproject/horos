@@ -814,7 +814,7 @@ static float deg2rad = 3.14159265358979/180.0;
 			mprView2.angleMPR = [[angleMPRs objectAtIndex: 1] floatValue];
 			mprView3.angleMPR = [[angleMPRs objectAtIndex: 2] floatValue];
 			
-			[self updateViewsAccordingToFrame: self];
+			[self updateViewsAccordingToFrame: nil];
 		}
 		
 //		if( [[[u lastObject] objectForKey: @"type"] isEqualToString:@"roi"])
@@ -1917,7 +1917,7 @@ static float deg2rad = 3.14159265358979/180.0;
 		mprView2.camera = c2;
 		mprView3.camera = c3;
 		
-		[self updateViewsAccordingToFrame: self];
+		[self updateViewsAccordingToFrame: nil];
 	}
 	
 	[qtFileArray release];
@@ -2646,7 +2646,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	else
 		[mprView1.vrView restoreFullDepthCapture];
 	
-	[self updateViewsAccordingToFrame: self];
+	[self updateViewsAccordingToFrame: nil];
 	
 	[mprView1 mouseMoved: [[NSApplication sharedApplication] currentEvent]];
 	[mprView2 mouseMoved: [[NSApplication sharedApplication] currentEvent]];
