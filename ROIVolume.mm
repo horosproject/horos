@@ -27,7 +27,6 @@
 	self = [super init];
 	if (self != nil)
 	{
-		NSLog(@"INit ROI Volume");
 		roiList = [[NSMutableArray alloc] initWithCapacity:0];
 		roiVolumeActor = nil;
 		name = @"";

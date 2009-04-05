@@ -3288,7 +3288,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 
 - (NSRect) findAnEmptySpaceForMyRect:(NSRect) dRect :(BOOL*) moved
 {
-	NSMutableArray		*rectArray = [curView rectArray];
+	NSMutableArray *rectArray = [curView rectArray];
 	
 	if( rectArray == nil)
 	{
@@ -3305,8 +3305,8 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	
 	//Does it intersect with the frame view?
 	NSRect displayingRect = [curView drawingFrameRect];
-	displayingRect.origin.x -= displayingRect.size.width/2;
-	displayingRect.origin.y -= displayingRect.size.height/2;
+	displayingRect.origin.x = -displayingRect.size.width/2;
+	displayingRect.origin.y = -displayingRect.size.height/2;
 	if( NSIntersectsRect( dRect, displayingRect))
 	{
 		if( NSEqualRects( NSUnionRect( dRect, displayingRect), displayingRect) == NO)
@@ -3536,7 +3536,6 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	drawRect.size.height = line * fontHeight + 4;
 	drawRect.size.width = maxWidth + 8;
 	
-	//JJCP
 	if( type == tDynAngle || type == tAxis || type == tCPolygon || type == tOPolygon || type == tPencil)
 	{
 		float ymin = [[points objectAtIndex:0] y];

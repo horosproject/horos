@@ -3321,8 +3321,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 {
 	int tool;
 	
-	if( [event type] == NSRightMouseDown || [event type] == NSRightMouseDragged || [event type] == NSRightMouseUp) tool = currentToolRight;
-	else if( [event type] == NSOtherMouseDown || [event type] == NSOtherMouseDragged || [event type] == NSOtherMouseUp) tool = tTranslate;
+	if( [event type] == NSRightMouseDown || [event type] == NSRightMouseDragged) tool = currentToolRight;
+	else if( [event type] == NSOtherMouseDown || [event type] == NSOtherMouseDragged) tool = tTranslate;
 	else tool = currentTool;
 	
 	if (([event modifierFlags] & NSCommandKeyMask))  tool = tTranslate;
@@ -10733,6 +10733,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		c = [NSCursor crosshairCursor];
 	else if (tool == tROISelector)
 		c = [NSCursor crosshairCursor];
+	else if (tool == tCamera3D)
+		c = [NSCursor rotate3DCameraCursor];
 	else	
 		c = [NSCursor arrowCursor];
 		

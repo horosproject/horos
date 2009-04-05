@@ -134,20 +134,20 @@ static BOOL frameZoomed = NO;
 
 - (BOOL) hasCameraMoved: (Camera*) currentCamera
 {
-	if( currentCamera.position.x != camera.position.x) return YES;
-	if( currentCamera.position.y != camera.position.y) return YES;
-	if( currentCamera.position.z != camera.position.z) return YES;
+	if( fabs( currentCamera.position.x - camera.position.x) > 0.1) return YES;
+	if( fabs( currentCamera.position.y - camera.position.y) > 0.1) return YES;
+	if( fabs( currentCamera.position.z - camera.position.z) > 0.1) return YES;
 
-	if( currentCamera.focalPoint.x != camera.focalPoint.x) return YES;
-	if( currentCamera.focalPoint.y != camera.focalPoint.y) return YES;
-	if( currentCamera.focalPoint.z != camera.focalPoint.z) return YES;
+	if( fabs( currentCamera.focalPoint.x - camera.focalPoint.x) > 0.1) return YES;
+	if( fabs( currentCamera.focalPoint.y - camera.focalPoint.y) > 0.1) return YES;
+	if( fabs( currentCamera.focalPoint.z - camera.focalPoint.z) > 0.1) return YES;
 
-	if( currentCamera.viewUp.x != camera.viewUp.x) return YES;
-	if( currentCamera.viewUp.y != camera.viewUp.y) return YES;
-	if( currentCamera.viewUp.z != camera.viewUp.z) return YES;
+	if( fabs( currentCamera.viewUp.x - camera.viewUp.x) > 0.1) return YES;
+	if( fabs( currentCamera.viewUp.y - camera.viewUp.y) > 0.1) return YES;
+	if( fabs( currentCamera.viewUp.z - camera.viewUp.z) > 0.1) return YES;
 
-	if( currentCamera.viewAngle != camera.viewAngle) return YES;
-	if( currentCamera.eyeAngle != camera.eyeAngle) return YES;
+	if( fabs( currentCamera.viewAngle - camera.viewAngle) > 3) return YES;
+	if( fabs( currentCamera.eyeAngle - camera.eyeAngle) > 3) return YES;
 	
 	return NO;
 
@@ -236,6 +236,9 @@ static BOOL frameZoomed = NO;
 		
 		if( imagePtr)
 		{
+			if( cameraMoved)
+				[curRoiList removeAllObjects];
+			
 			if( [pix pwidth] == w && [pix pheight] == h && isRGB == [pix isRGB])
 			{
 				memcpy( [pix fImage], imagePtr, w*h*sizeof( float));
@@ -256,9 +259,7 @@ static BOOL frameZoomed = NO;
 				[self setIndex: 0];
 				
 				if( cameraMoved == NO)
-				{
 					[curRoiList addObjectsFromArray: savedROIs];
-				}
 			}
 			float porigin[ 3];
 			[vrView getOrigin: porigin windowCentered: YES sliceMiddle: YES];
@@ -919,6 +920,8 @@ static BOOL frameZoomed = NO;
 
 - (void)rightMouseDown:(NSEvent *)theEvent
 {
+	[self flagsChanged: theEvent];
+
 	[windowController addToUndoQueue:@"mprCamera"];
 	
 	if( [[self window] firstResponder] != self)
@@ -936,6 +939,8 @@ static BOOL frameZoomed = NO;
 
 - (void)rightMouseDragged:(NSEvent *)theEvent
 {
+	[self flagsChanged: theEvent];
+	
 	[self restoreCamera];
 	
 	[vrView rightMouseDragged: theEvent];
@@ -950,6 +955,8 @@ static BOOL frameZoomed = NO;
 
 - (void)rightMouseUp:(NSEvent *)theEvent
 {
+	[self flagsChanged: theEvent];
+	
 	[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector( delayedFullLODRendering:) object: nil];
 	
 	[self restoreCamera];
@@ -965,6 +972,8 @@ static BOOL frameZoomed = NO;
 {
 	if( [[self window] firstResponder] != self)
 		[[self window] makeFirstResponder: self];
+	
+	[self checkCursor];
 	
 	if( [theEvent clickCount] == 2)
 	{
@@ -1064,6 +1073,8 @@ static BOOL frameZoomed = NO;
 
 - (void) mouseUp:(NSEvent *)theEvent
 {
+	[self checkCursor];
+	
 	[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector( delayedFullLODRendering:) object: nil];
 	
 	[self restoreCamera];
@@ -1114,6 +1125,8 @@ static BOOL frameZoomed = NO;
 
 - (void) mouseDraggedImageScroll:(NSEvent *) event
 {
+	[self checkCursor];
+	
 	NSPoint current = [self currentPointInView: event];
 	
 	if( scrollMode == 0)
@@ -1211,7 +1224,7 @@ static BOOL frameZoomed = NO;
 - (void) updateMousePosition: (NSEvent*) theEvent
 {
 	float location[ 3];
-
+	
 	[pix convertPixX: mouseXPos pixY: mouseYPos toDICOMCoords: location pixelCenter: YES];
 
 	Point3D *pt = [Point3D pointWithX: location[ 0] y: location[ 1] z: location[ 2]];

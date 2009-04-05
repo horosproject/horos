@@ -406,7 +406,6 @@
 			
 			if( elemLength%2 != 0)
 			{
-				NSLog( @"Warning ODD element: DICOM doesn't like them... I will correct it. height--");
 				height--;
 				elemLength = height * width * spp * bpp / 8;
 				
