@@ -1042,7 +1042,7 @@ static BOOL frameZoomed = NO;
 			vrView.keep3DRotateCentered = YES;
 			if( tool == tCamera3D)
 			{
-				if( windowController.displayCrossLines == NO)
+				if( windowController.displayCrossLines == NO || frameZoomed == YES)
 					vrView.keep3DRotateCentered = NO;
 				else
 				{
