@@ -1450,7 +1450,7 @@ Papy3GetPixelData (PapyShort inFileNb, int inImageNb, SElement *inGrOrModP, int 
       /* go to the begining of the specified image */
       if (Papy3FSeek (gPapyFile [inFileNb], (int) SEEK_SET, (PapyLong) *(gRefPixelOffset [inFileNb] + inImageNb - 1)) != 0)
         return NULL;
-
+	
       /* position to the right element knowing if it is a group or a module */
       if (theIsModule)
         theElemP = inGrOrModP + papPixelData;
@@ -1639,43 +1639,46 @@ Papy3GetPixelData (PapyShort inFileNb, int inImageNb, SElement *inGrOrModP, int 
       /* offset table size */
       /* extract the element length according to the little-endian syntax */
       theULong = Extract4Bytes (inFileNb, theTmpBufP, &thePos);
-    
-      if (theULong > 0)
-      {
-        /* the offset table size does give the number of frames */
-        theFrameCount = (int) (theULong / 4L);
+	  
+	  // We dont want to read this offset table... it can be corrupted. Create it by ourself !
       
-        /* allocate room to store the offset table */
-		if( gCachedFramesMap[ inFileNb] == 0)
-	    {
-			theOffsetTableP = (PapyULong *) emalloc3 ((PapyULong) (theFrameCount * sizeof (PapyULong)));
-			if( theOffsetTableP == 0L)
-				printf("Papy3GetPixelData - malloc failed\r");
-			
-			for (theLoop = 0; theLoop < theFrameCount; theLoop++)
-			{
-			  /* read 4 chars from the file */
-			  i           = 4L;
-			  thePos      = 0L;
-			  theTmpBufP  = (unsigned char *) &theTmpBuf [0];
-			  if ((theErr = (PapyShort) Papy3FRead (theFp, &i, 1L, theTmpBufP)) < 0)
-			  {
-				theErr = Papy3FClose (&theFp);
-				efree3 ((void **) &theOffsetTableP);
-				return NULL;
-			  } /* if */
-			  theOffsetTableP [theLoop] = Extract4Bytes (inFileNb, theTmpBufP, &thePos);
-			} /* for */
-			
-			gCachedFramesMap[ inFileNb] = theOffsetTableP;
-       }
-	   else
-	   {
-		theOffsetTableP = gCachedFramesMap[ inFileNb];
-		Papy3FSeek (theFp, SEEK_CUR, theULong);
-	   }
-      } /* if */
-      else
+//	  if (theULong > 0)
+//      {
+//        /* the offset table size does give the number of frames */
+//        theFrameCount = (int) (theULong / 4L);
+//      
+//        /* allocate room to store the offset table */
+//		if( gCachedFramesMap[ inFileNb] == 0)
+//	    {
+//			theOffsetTableP = (PapyULong *) emalloc3 ((PapyULong) (theFrameCount * sizeof (PapyULong)));
+//			if( theOffsetTableP == 0L)
+//				printf("Papy3GetPixelData - malloc failed\r");
+//			
+//			for (theLoop = 0; theLoop < theFrameCount; theLoop++)
+//			{
+//			  /* read 4 chars from the file */
+//			  i           = 4L;
+//			  thePos      = 0L;
+//			  theTmpBufP  = (unsigned char *) &theTmpBuf [0];
+//			  if ((theErr = (PapyShort) Papy3FRead (theFp, &i, 1L, theTmpBufP)) < 0)
+//			  {
+//				theErr = Papy3FClose (&theFp);
+//				efree3 ((void **) &theOffsetTableP);
+//				return NULL;
+//			  } /* if */
+//			  theOffsetTableP [theLoop] = Extract4Bytes (inFileNb, theTmpBufP, &thePos);
+//			  printf( "\r%d\r", theOffsetTableP [theLoop]);
+//			} /* for */
+//			
+//			gCachedFramesMap[ inFileNb] = theOffsetTableP;
+//       }
+//	   else
+//	   {
+//		theOffsetTableP = gCachedFramesMap[ inFileNb];
+//		Papy3FSeek (theFp, SEEK_CUR, theULong);
+//	   }
+//      } /* if */
+//      else
       {
         ok = FALSE;
         theFrameCount = 0;
@@ -1684,7 +1687,8 @@ Papy3GetPixelData (PapyShort inFileNb, int inImageNb, SElement *inGrOrModP, int 
 	    {
 			/* initialize a file reference point */
 			Papy3FTell (theFp, (PapyLong *) &theRefPoint);
-		  
+			Papy3FSeek (theFp, SEEK_SET, theRefPoint + theULong);
+			
 			/* allocate memory for the offset table */
 			#define MAX_NUMBER_OF_FRAMES 100000L
 			theOffsetTableP = (PapyULong *) emalloc3 ((PapyULong) (100000L * sizeof (PapyULong)));
@@ -1693,7 +1697,7 @@ Papy3GetPixelData (PapyShort inFileNb, int inImageNb, SElement *inGrOrModP, int 
 			{
 			  /* read fragment information : 0xFFFE, 0xE000, length */
 			  Papy3FTell (theFp, (PapyLong *) &thePixelStart);
-			
+			  
 			  /* read 8 chars from the file */
 			  i 	      = 8L;
 			  thePos      = 0L;

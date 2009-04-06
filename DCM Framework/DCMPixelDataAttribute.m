@@ -534,24 +534,30 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 }
 	
 
-- (void)deencapsulateData:(DCMDataContainer *)dicomData{
-
-	while ([dicomData dataRemaining]) {		
+- (void)deencapsulateData:(DCMDataContainer *)dicomData
+{
+	while ([dicomData dataRemaining])
+	{		
 		int group = [dicomData nextUnsignedShort];
 		int element = [dicomData nextUnsignedShort];
-		//[dicomData nextStringWithLength:2];
+		
 		int  vl = [dicomData nextUnsignedLong];
 		DCMAttributeTag *attrTag = [[[DCMAttributeTag alloc]  initWithGroup:group element:element] autorelease];
+		
 		if (DEBUG)
 			NSLog(@"Attr tag: %@", attrTag.description );
-		if ([ attrTag.stringValue isEqualToString:[(NSDictionary *)[DCMTagForNameDictionary sharedTagForNameDictionary] objectForKey:@"Item"]]) {
+			
+		if ([ attrTag.stringValue isEqualToString:[(NSDictionary *)[DCMTagForNameDictionary sharedTagForNameDictionary] objectForKey:@"Item"]])
+		{
 			[_values addObject:[dicomData nextDataWithLength:vl]];
+			
 			if (DEBUG)
 				NSLog(@"add Frame %d with length: %d", [_values count],  vl);
 		}
 		else if ([[attrTag stringValue]  isEqualToString:[(NSDictionary *)[DCMTagForNameDictionary sharedTagForNameDictionary] objectForKey:@"SequenceDelimitationItem"]])  
 				break;
-		else {
+		else
+		{
 			[dicomData nextDataWithLength:vl];	
 		}
 	}
@@ -2852,7 +2858,8 @@ NS_ENDHANDLER
 				NSData *offsetData = [_values objectAtIndex:0];
 				unsigned long *offsets = (unsigned long *)[offsetData bytes];
 				int numberOfOffsets = [offsetData length]/4;
-				for ( i = 0; i < numberOfOffsets; i++) {
+				for ( i = 0; i < numberOfOffsets; i++)
+				{
 					if ( transferSyntax.isLittleEndian ) 
 						offset = NSSwapLittleLongToHost(offsets[i]);
 					else

@@ -879,6 +879,7 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject:@"1" forKey:@"ROIArrowThickness"];
 	[defaultValues setObject:@"1" forKey:@"showErrorsIfQueryFailed"];
 	[defaultValues setObject:@"1" forKey:@"loopScrollWheel"];
+	[defaultValues setObject:@"1" forKey:@"UseJPEGColorSpace"];
 	[defaultValues setObject:@"0" forKey:@"displayCobbAngle"];
 	[defaultValues setObject:@"0" forKey:@"onlyDisplayImagesOfSamePatient"];
 	
