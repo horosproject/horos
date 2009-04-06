@@ -5770,7 +5770,6 @@ END_CREATE_ROIS:
 		
 		if( oImage == nil ) //there was no data for this frame -> create empty image
 		{
-			NSLog(@"This is really bad..... Please send this file to rossetantoine@bluewin.ch");
 			//NSLog(@"image size: %d", ( height * width * 2));
 			oImage = malloc( height * width * 2);
 			//gArrPhotoInterpret [fileNb] = MONOCHROME2;
@@ -5823,7 +5822,6 @@ END_CREATE_ROIS:
 			}
 			else
 			{ // RGB_888
-				NSLog(@"Convert to ARGB 8 bit");
 				unsigned char   *bufPtr;
 				bufPtr = (unsigned char*) oImage;
 				
