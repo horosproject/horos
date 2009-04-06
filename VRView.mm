@@ -1781,6 +1781,9 @@ public:
 	if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD);
 	if( blendingVolumeMapper) blendingVolumeMapper->SetMinimumImageSampleDistance( LOD);
 	
+	[self setCurrentTool: t3DRotate];
+	[[controller toolsMatrix] selectCellWithTag: t3DRotate];
+	
     [self setNeedsDisplay:YES];
 }
 
