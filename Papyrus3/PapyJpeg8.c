@@ -62,9 +62,6 @@ ExtractJPEGlossy8 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelSt
   PapyUChar			*theBuffer8P;
 	struct jpeg_error_mgr			theJErr;
    
-  
-//  fprintf(stdout, "ExtractJPEGlossy8\r");
-  
   /* position the file pointer to the begining of the image */
   Papy3FSeek (gPapyFile [inFileNb], SEEK_SET, (PapyLong) (inPixelStart + inOffsetTableP [inImageNb - 1]));
   

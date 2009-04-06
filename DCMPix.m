@@ -7716,11 +7716,10 @@ END_CREATE_ROIS:
 						if( oImage == nil)
 						{
 							NSLog(@"This is really bad..... Please send this file to rossetantoine@bluewin.ch");
-							oImage = malloc( height * width * 2);
-//							gArrPhotoInterpret [fileNb] = MONOCHROME2;
+							oImage = malloc( height * width * 4);
 							
 							long yo = 0;
-							for( i = 0 ; i < height * width; i++)
+							for( i = 0 ; i < height * width * 2; i++)
 							{
 								oImage[ i] = yo++;
 								if( yo>= width) yo = 0;
