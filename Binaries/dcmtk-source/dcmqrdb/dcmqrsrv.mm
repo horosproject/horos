@@ -1290,7 +1290,7 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 			NSString *str = getErrorMessage();
 			
 			if( str)
-				NSRunAlertPanel( NSLocalizedString( @"DICOM Network Error", nil), str, NSLocalizedString( @"OK", nil), nil, nil);
+				[[AppController sharedAppController] performSelectorOnMainThread: @selector( displayListenerError:) withObject: str waitUntilDone: NO];
         }
 #ifdef HAVE_FORK
         else
