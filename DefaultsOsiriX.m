@@ -296,12 +296,8 @@ static NSHost *currentHost = nil;
 		[self addConvolutionFilter:3 :vals :@"Edge west" :convValues];
 	}
 	{
-		short				vals[9] = {1, 2, 1, 0, 0, 0, -1, -2, -1};
-		[self addConvolutionFilter:3 :vals :@"Edge diagonal" :convValues];
-	}
-	{
 		short				vals[9] = {0, 1, 0, -1, 0, 1, 0, -1, 0};
-		[self addConvolutionFilter:3 :vals :@"Edge north" :convValues];
+		[self addConvolutionFilter:3 :vals :@"Edge diagonal" :convValues];
 	}
 	{
 		short				vals[9] = {-1, -1, -1, -1, 8, -1, -1, -1, -1};
