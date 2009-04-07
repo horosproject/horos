@@ -439,6 +439,18 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     return [d2 compare: d1];
 }
 
+@implementation DCMExportPlugin
+- (void) finalize:(DCMObject*) dcmDst withSourceObject:(DCMObject*) dcmObject
+{
+	
+}
+
+- (NSString*) seriesName
+{
+	return nil;
+}
+@end
+
 @implementation DCMView
 
 @synthesize showDescriptionInLarge, curRoiList;
@@ -460,6 +472,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 @synthesize scaleValue, rotation;
 @synthesize origin, originOffset;
 @synthesize curDCM;
+@synthesize dcmExportPlugin;
 @synthesize mouseXPos, mouseYPos;
 @synthesize contextualMenuInWindowPosX, contextualMenuInWindowPosY;
 @synthesize fontListGL, fontGL;
@@ -1965,7 +1978,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	[dcmPixList release];
 	dcmPixList = nil;
-
+	
+	[dcmExportPlugin release];
+	dcmExportPlugin = nil;
+	
 	[stringID release];
 	stringID = nil;
 	
@@ -9173,7 +9189,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		[exportDCM setPixelData: data samplePerPixel:spp bitsPerPixel:bpp width: width height: height];
 		[exportDCM setModalityAsSource: NO];
 		
-		f = [exportDCM writeDCMFile: nil];
+		f = [exportDCM writeDCMFile: nil withExportDCM: dcmExportPlugin];
 		if( f == nil) NSRunCriticalAlertPanel( NSLocalizedString(@"Error", nil),  NSLocalizedString(@"Error during the creation of the DICOM File!", nil), NSLocalizedString(@"OK", nil), nil, nil);
 		else sopuid = [exportDCM SOPInstanceUID];
 		

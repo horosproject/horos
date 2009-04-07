@@ -80,6 +80,12 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 @class OrthogonalMPRController;
 @class DICOMExport;
 //@class LoupeController;
+@class DCMObject;
+
+@interface DCMExportPlugin: NSObject
+- (void) finalize:(DCMObject*) dcmDst withSourceObject:(DCMObject*) dcmObject;
+- (NSString*) seriesName;
+@end
 
 /** \brief Image/Frame View for ViewerController */
 
@@ -124,6 +130,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
     NSArray			*dcmFilesList;
 	NSMutableArray  *dcmRoiList, *curRoiList;
     DCMPix			*curDCM;
+	DCMExportPlugin	*dcmExportPlugin;
 	
     char            listType;
     
@@ -304,6 +311,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 @property NSPoint origin, originOffset;
 @property(readonly) double pixelSpacing, pixelSpacingX, pixelSpacingY;
 @property(readonly) DCMPix *curDCM;
+@property(retain) DCMExportPlugin *dcmExportPlugin;
 @property(readonly) float mouseXPos, mouseYPos;
 @property(readonly) float contextualMenuInWindowPosX, contextualMenuInWindowPosY;
 @property(readonly) GLuint fontListGL;

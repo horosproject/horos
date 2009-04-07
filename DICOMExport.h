@@ -17,7 +17,7 @@
 #import <Cocoa/Cocoa.h>
 
 @class DCMObject;
-
+@class DCMExportPlugin;
 
 /** \brief Export image as DICOM  */
 @interface DICOMExport : NSObject
@@ -68,6 +68,7 @@
 
 // Write the image data
 - (NSString*) writeDCMFile: (NSString*) dstPath;
+- (NSString*) writeDCMFile: (NSString*) dstPath withExportDCM:(DCMExportPlugin*) dcmExport;
 - (void) setModalityAsSource: (BOOL) v;
 - (NSString*) seriesDescription;
 - (void) setSeriesDescription: (NSString*) desc;

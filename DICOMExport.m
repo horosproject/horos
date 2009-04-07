@@ -16,6 +16,7 @@
 #import <OsiriX/DCM.h>
 #import "BrowserController.h"
 #import "dicomFile.h"
+#import "DCMView.h"
 #import "DCMPix.h"
 #import "altivecFunctions.h"
 
@@ -229,6 +230,11 @@
 }
 
 - (NSString*) writeDCMFile: (NSString*) dstPath
+{
+	return [self writeDCMFile: dstPath withExportDCM: nil];
+}
+
+- (NSString*) writeDCMFile: (NSString*) dstPath withExportDCM:(DCMExportPlugin*) dcmExport
 {
 	if( dstPath == nil)
 	{
@@ -563,7 +569,10 @@
 											decodeData:NO] autorelease];
 			[attr addFrame:imageNSData];
 			[dcmDst setAttribute:attr];
-
+			
+			if (dcmExport)
+				[dcmExport finalize: dcmDst withSourceObject: dcmObject];
+			
 			[dcmDst writeToFile:dstPath withTransferSyntax:[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax] quality:DCMLosslessQuality atomically:YES];
 			
 			if( squaredata)

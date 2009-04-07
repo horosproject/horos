@@ -15163,7 +15163,7 @@ int i,j,l;
 		[exportDCM setOffset: offset];
 		[exportDCM setModalityAsSource: modalityAsSource];
 		
-		f = [exportDCM writeDCMFile: nil];
+		f = [exportDCM writeDCMFile: nil withExportDCM: [imageView dcmExportPlugin]];
 		if( f == nil) NSRunCriticalAlertPanel( NSLocalizedString(@"Error", nil),  NSLocalizedString(@"Error during the creation of the DICOM File!", nil), NSLocalizedString(@"OK", nil), nil, nil);
 		else sopuid = [exportDCM SOPInstanceUID];
 		
@@ -15487,6 +15487,10 @@ int i,j,l;
 	[dcmToText setIntValue: [dcmTo intValue]];
 	[dcmFromText setIntValue: [dcmFrom intValue]];
 	[dcmIntervalText setIntValue: [dcmInterval intValue]];
+
+	DCMExportPlugin *exportPlugin = [imageView dcmExportPlugin];
+	if (exportPlugin && [exportPlugin seriesName])
+		[dcmSeriesName setStringValue:[exportPlugin seriesName]];
 	
 	[self setCurrentdcmExport: dcmSelection];
 	[self exportDICOMSetNumber: self];
