@@ -615,7 +615,9 @@ public:
 		break;
 	}
 	
-	[self setBlendingFactor:blendingFactor];
+	[self setBlendingFactor: blendingFactor];
+	
+	[self setWLWW: wl : ww];
 	
 	[self setNeedsDisplay:YES];
 }
@@ -4494,7 +4496,11 @@ public:
 	long		i;
 	NSPoint		pt;
 	float		start, end;
+	float		opacityAdapter = 1;
 	
+	if( renderingMode == 0) // VR
+		opacityAdapter = superSampling;
+		
 	if( isRGB)
 	{
 		start = wl - ww/2;
@@ -4519,7 +4525,6 @@ public:
 		pt = NSPointFromString( [array objectAtIndex: 0]);
 		pt.x -=1000;
 		if(pt.x != 0) opacityTransferFunction->AddPoint(0 +start, 0);
-//		else NSLog(@"start point");
 	}
 	else opacityTransferFunction->AddPoint(0 +start, 0);
 	
@@ -4527,14 +4532,14 @@ public:
 	{
 		pt = NSPointFromString( [array objectAtIndex: i]);
 		pt.x -= 1000;
-		opacityTransferFunction->AddPoint(start + (pt.x / 256.0) * (end - start), pt.y);
+		opacityTransferFunction->AddPoint(start + (pt.x / 256.0) * (end - start), pt.y / opacityAdapter);
 	}
 	
-	if( [array count] == 0 || pt.x != 256) opacityTransferFunction->AddPoint(end, 1);
+	if( [array count] == 0 || pt.x != 256)
+		opacityTransferFunction->AddPoint(end, 1. / opacityAdapter);
 	else
 	{
-		opacityTransferFunction->AddPoint(end, pt.y);
-		//NSLog(@"end point");
+		opacityTransferFunction->AddPoint(end, pt.y / opacityAdapter);
 	}
 	[self setNeedsDisplay:YES];
 }
@@ -5429,7 +5434,13 @@ public:
 		
 		opacityTransferFunction = vtkPiecewiseFunction::New();
 		opacityTransferFunction->AddPoint(0, 0);
-		opacityTransferFunction->AddPoint(255, 1);
+		
+		float opacityAdapter = 1;
+		
+		if( renderingMode == 0) // VR
+			opacityAdapter = superSampling;
+		
+		opacityTransferFunction->AddPoint(255., 1. / opacityAdapter);
 		
 		colorTransferFunction = vtkColorTransferFunction::New();
 		
@@ -7574,7 +7585,15 @@ public:
 			for(j=0; j<[aCurve count]; j++)
 			{
 				colorTransferFunction->AddRGBPoint(OFFSET16 + [[aCurve objectAtIndex:j] pointValue].x, [[someColors objectAtIndex:j] redComponent], [[someColors objectAtIndex:j] greenComponent], [[someColors objectAtIndex:j] blueComponent]);
-				opacityTransferFunction->AddPoint(OFFSET16 + [[aCurve objectAtIndex:j] pointValue].x, [[aCurve objectAtIndex:j] pointValue].y * [[aCurve objectAtIndex:j] pointValue].y);
+				
+				float		opacityAdapter = 1;
+				
+				if( renderingMode == 0) // VR
+					opacityAdapter = superSampling;
+				
+				float o = [[aCurve objectAtIndex:j] pointValue].y * [[aCurve objectAtIndex:j] pointValue].y / opacityAdapter;
+				
+				opacityTransferFunction->AddPoint(OFFSET16 + [[aCurve objectAtIndex:j] pointValue].x, o);
 			}			
 		}
 		
