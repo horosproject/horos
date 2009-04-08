@@ -5166,8 +5166,6 @@ public:
 
 -(void) movieChangeSource:(float*) volumeData showWait :(BOOL) showWait
 {
-	if( data == volumeData) return;
-	
 	WaitRendering	*www;
 	
 	if( showWait)
