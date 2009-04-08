@@ -64,7 +64,7 @@
 	Point3D *mousePosition;
 	int mouseViewID;
 	
-	BOOL displayCrossLines, displayMousePosition;
+	BOOL displayMousePosition;
 	
 	// Export Dcm & Quicktime
 	IBOutlet NSWindow *dcmWindow;
@@ -108,7 +108,7 @@
 @property (retain) NSString *dcmSeriesName;
 @property (readonly) DCMPix *originalPix;
 @property float LOD, movieRate;
-@property BOOL dcmSameIntervalAndThickness, displayCrossLines, displayMousePosition, blendingModeAvailable, dcmBatchReverse;
+@property BOOL dcmSameIntervalAndThickness, displayMousePosition, blendingModeAvailable, dcmBatchReverse;
 @property (retain) NSColor *colorAxis1, *colorAxis2, *colorAxis3;
 @property (readonly) MPRDCMView *mprView1, *mprView2, *mprView3;
 @property (readonly) NSSplitView *horizontalSplit, *verticalSplit;

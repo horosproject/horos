@@ -35,6 +35,7 @@
 	
 	BOOL rotateLines;
 	BOOL moveCenter;
+	BOOL displayCrossLines;
 	
 	float rotateLinesStartAngle;
 	
@@ -45,6 +46,7 @@
 @property (retain) Camera *camera;
 @property float angleMPR, fromIntervalExport, toIntervalExport;
 @property int viewExport;
+@property BOOL displayCrossLines;
 @property (readonly) VRView *vrView;
 @property (readonly) BOOL rotateLines, moveCenter;
 

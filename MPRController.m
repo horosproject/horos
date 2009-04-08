@@ -30,7 +30,7 @@ static float deg2rad = 3.14159265358979/180.0;
 
 @implementation MPRController
 
-@synthesize displayCrossLines, dcmSameIntervalAndThickness, clippingRangeThickness, clippingRangeMode, mousePosition, mouseViewID, originalPix, wlwwMenuItems, LOD, dcmFrom;
+@synthesize dcmSameIntervalAndThickness, clippingRangeThickness, clippingRangeMode, mousePosition, mouseViewID, originalPix, wlwwMenuItems, LOD, dcmFrom;
 @synthesize dcmmN, dcmTo, dcmMode, dcmRotationDirection, dcmSeriesMode, dcmRotation, dcmNumberOfFrames, dcmQuality, dcmInterval, dcmSeriesName, dcmBatchNumberOfFrames;
 @synthesize colorAxis1, colorAxis2, colorAxis3, displayMousePosition, movieRate, blendingPercentage, horizontalSplit, verticalSplit;
 @synthesize mprView1, mprView2, mprView3, curMovieIndex, maxMovieIndex, blendingMode, dcmFormat, blendingModeAvailable, dcmBatchReverse;
@@ -85,7 +85,6 @@ static float deg2rad = 3.14159265358979/180.0;
 		if( fusedViewer2D)
 			self.blendingModeAvailable = YES;
 		
-		self.displayCrossLines = YES;
 		self.displayMousePosition = [[NSUserDefaults standardUserDefaults] boolForKey: @"MPRDisplayMousePosition"];
 		self.maxMovieIndex = 0;
 		
@@ -1944,7 +1943,10 @@ static float deg2rad = 3.14159265358979/180.0;
 	else
 		[NSApp beginSheet: dcmWindow modalForWindow: nil modalDelegate:self didEndSelector:nil contextInfo:(void*) nil];
 	
-	self.displayCrossLines = YES;
+	if( [self selectedView] != mprView1) mprView1.displayCrossLines = YES;
+	if( [self selectedView] != mprView2) mprView2.displayCrossLines = YES;
+	if( [self selectedView] != mprView3) mprView3.displayCrossLines = YES;
+	
 	self.dcmSameIntervalAndThickness = YES;
 	self.dcmQuality = 1;
 	
@@ -2426,7 +2428,7 @@ static float deg2rad = 3.14159265358979/180.0;
 		[toolbarItem setPaletteLabel:NSLocalizedString(@"Axis",nil)];
 		
 		[toolbarItem setLabel:NSLocalizedString(@"Axis",nil)];
-		if( !self.displayCrossLines)
+		if( ![self selectedView].displayCrossLines)
 			[toolbarItem setImage:[NSImage imageNamed:@"MPRAxisHide"]];
 		else
 			[toolbarItem setImage:[NSImage imageNamed:@"MPRAxisShow"]];
@@ -2485,7 +2487,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	{
 		if([[item itemIdentifier] isEqualToString:@"AxisShowHide"])
 		{
-			if( !self.displayCrossLines)
+			if( ![self selectedView].displayCrossLines)
 				[item setImage:[NSImage imageNamed:@"MPRAxisHide"]];
 			else
 				[item setImage:[NSImage imageNamed:@"MPRAxisShow"]];
@@ -2505,7 +2507,7 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (void)toogleAxisVisibility:(id) sender;
 {
-	self.displayCrossLines = !self.displayCrossLines;
+	[self selectedView].displayCrossLines = ![self selectedView].displayCrossLines;
 	
 	[mprView1 setNeedsDisplay: YES];
 	[mprView2 setNeedsDisplay: YES];
@@ -2518,8 +2520,8 @@ static float deg2rad = 3.14159265358979/180.0;
 {
 	self.displayMousePosition = !self.displayMousePosition;
 	
-	if(self.displayMousePosition && !self.displayCrossLines)
-		self.displayCrossLines = YES;
+	if( self.displayMousePosition && ![self selectedView].displayCrossLines)
+		[self selectedView].displayCrossLines = YES;
 	
 	[mprView1 setNeedsDisplay: YES];
 	[mprView2 setNeedsDisplay: YES];

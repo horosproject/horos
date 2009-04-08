@@ -42,7 +42,22 @@ static BOOL frameZoomed = NO;
 
 @implementation MPRDCMView
 
-@synthesize pix, camera, angleMPR, vrView, viewExport, toIntervalExport, fromIntervalExport, rotateLines, moveCenter;
+@synthesize pix, camera, angleMPR, vrView, viewExport, toIntervalExport, fromIntervalExport, rotateLines, moveCenter, displayCrossLines;
+
+- (BOOL)becomeFirstResponder
+{
+	BOOL v = [super becomeFirstResponder];
+	
+	[windowController updateToolbarItems];
+
+	return v;
+}
+
+- (void) setDisplayCrossLines: (BOOL) b
+{
+	displayCrossLines = b;
+	[windowController updateToolbarItems];
+}
 
 - (BOOL)is2DTool:(short)tool;
 {
@@ -86,8 +101,11 @@ static BOOL frameZoomed = NO;
 	currentTool = t3DRotate;
 	
 	frameZoomed = NO;
+	displayCrossLines = YES;
 	
 	windowController = [self windowController];
+	
+	[windowController updateToolbarItems];
 }
 
 - (void) setVRView: (VRView*) v viewID:(int) i
@@ -376,7 +394,7 @@ static BOOL frameZoomed = NO;
 	glEnable(GL_LINE_SMOOTH);
 	glEnable(GL_POLYGON_SMOOTH);
 	
-	if( windowController.displayCrossLines)
+	if( displayCrossLines)
 	{
 		// All pix have the same thickness
 		float thickness = [pix sliceThickness];
@@ -692,7 +710,7 @@ static BOOL frameZoomed = NO;
 	glEnd();
 	glLineWidth(1.0);
 	
-	if( windowController.displayCrossLines && windowController.displayMousePosition && !windowController.mprView1.rotateLines && !windowController.mprView2.rotateLines && !windowController.mprView3.rotateLines
+	if( displayCrossLines && windowController.displayMousePosition && !windowController.mprView1.rotateLines && !windowController.mprView2.rotateLines && !windowController.mprView3.rotateLines
 																					&& !windowController.mprView1.moveCenter && !windowController.mprView2.moveCenter && !windowController.mprView3.moveCenter)
 	{
 		// Mouse Position
@@ -853,7 +871,7 @@ static BOOL frameZoomed = NO;
 	if( [[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] == annotNone)
 		return 0;
 	
-	if( windowController.displayCrossLines == NO)
+	if( displayCrossLines == NO)
 		return 0;
 	
 	// Intersection of the lines
@@ -1042,7 +1060,7 @@ static BOOL frameZoomed = NO;
 			vrView.keep3DRotateCentered = YES;
 			if( tool == tCamera3D)
 			{
-				if( windowController.displayCrossLines == NO || frameZoomed == YES)
+				if( displayCrossLines == NO || frameZoomed == YES)
 					vrView.keep3DRotateCentered = NO;
 				else
 				{
