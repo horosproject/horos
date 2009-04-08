@@ -7243,6 +7243,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	return [self drawCrossLines: sft ctx:  cgl_ctx perpendicular: NO withShift: shift];
 }
 
+- (void) drawCrossLines:(float[2][3]) sft ctx: (CGLContextObj) cgl_ctx withShift: (double) shift showPoint: (BOOL) showPoint
+{
+	return [self drawCrossLines: sft ctx:  cgl_ctx perpendicular: NO withShift: shift half: NO showPoint: showPoint];
+}
+
 - (void) drawCrossLines:(float[2][3]) sft ctx: (CGLContextObj) cgl_ctx perpendicular: (BOOL) perpendicular
 {
 	return [self drawCrossLines: sft ctx:  cgl_ctx perpendicular: perpendicular withShift: 0];
@@ -7254,6 +7259,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 }
 
 - (void) drawCrossLines:(float[2][3]) sft ctx: (CGLContextObj) cgl_ctx perpendicular:(BOOL) perpendicular withShift:(double) shift half:(BOOL) half
+{
+	return [self drawCrossLines: sft ctx:  cgl_ctx perpendicular: perpendicular withShift: shift half: half showPoint: NO];
+}
+
+- (void) drawCrossLines:(float[2][3]) sft ctx: (CGLContextObj) cgl_ctx perpendicular:(BOOL) perpendicular withShift:(double) shift half:(BOOL) half showPoint:(BOOL) showPoint
 {
 	float a[ 2] = {0, 0};	// perpendicular vector
 	float slope;
@@ -7277,14 +7287,27 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		c[ 1][ 0] += a[0]*shift;	c[ 1][ 1] -= a[1]*shift;
 	}
 	
-	glBegin(GL_LINES);
+	if( showPoint)
+	{
+		glEnable(GL_POINT_SMOOTH);
+		glPointSize( 8);
+		glBegin( GL_POINTS);
 		glVertex2f( scaleValue*(c[ 0][ 0]/curDCM.pixelSpacingX-curDCM.pwidth/2.), scaleValue*(c[ 0][ 1]/curDCM.pixelSpacingY - curDCM.pheight /2.));
-		
-		if( half)
-			glVertex2f( 0, 0);
-		else
-			glVertex2f( scaleValue*(c[ 1][ 0]/curDCM.pixelSpacingX-curDCM.pwidth/2.), scaleValue*(c[ 1][ 1]/curDCM.pixelSpacingY - curDCM.pheight /2.));
-	glEnd();
+		glEnd();
+		glDisable(GL_POINT_SMOOTH);
+	}
+	else
+	{
+		glBegin(GL_LINES);
+			glVertex2f( scaleValue*(c[ 0][ 0]/curDCM.pixelSpacingX-curDCM.pwidth/2.), scaleValue*(c[ 0][ 1]/curDCM.pixelSpacingY - curDCM.pheight /2.));
+			
+			if( half)
+				glVertex2f( 0, 0);
+			else
+				glVertex2f( scaleValue*(c[ 1][ 0]/curDCM.pixelSpacingX-curDCM.pwidth/2.), scaleValue*(c[ 1][ 1]/curDCM.pixelSpacingY - curDCM.pheight /2.));
+		glEnd();
+	}
+	
 	
 	if( perpendicular)
 	{

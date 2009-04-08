@@ -426,15 +426,21 @@ static BOOL frameZoomed = NO;
 						
 						if( fromIntervalExport > 0)
 						{
-							for( int i = 0; i < fromIntervalExport; i++)
+							for( int i = 1; i <= fromIntervalExport; i++)
 								[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: -i * [windowController dcmInterval]];
 						}
-					
+						
+						if( !windowController.dcmBatchReverse)
+							[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: -fromIntervalExport * [windowController dcmInterval] showPoint: YES];
+						
 						if( toIntervalExport > 0)
 						{
-							for( int i = 0; i < toIntervalExport; i++)
+							for( int i = 1; i <= toIntervalExport; i++)
 								[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: i * [windowController dcmInterval]];
 						}
+						
+						if( windowController.dcmBatchReverse)
+							[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: toIntervalExport * [windowController dcmInterval] showPoint: YES];
 					}
 					
 					if( viewExport == 0 && windowController.dcmMode == 0 && windowController.dcmSeriesMode == 1) // Rotation
@@ -471,15 +477,21 @@ static BOOL frameZoomed = NO;
 						
 						if( fromIntervalExport > 0)
 						{
-							for( int i = 0; i < fromIntervalExport; i++)
+							for( int i = 1; i <= fromIntervalExport; i++)
 								[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: -i * [windowController dcmInterval]];
 						}
-					
+						
+						if( !windowController.dcmBatchReverse)
+							[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: -fromIntervalExport * [windowController dcmInterval] showPoint: YES];
+						
 						if( toIntervalExport > 0)
 						{
-							for( int i = 0; i < toIntervalExport; i++)
+							for( int i = 1; i <= toIntervalExport; i++)
 								[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: i * [windowController dcmInterval]];
 						}
+						
+						if( windowController.dcmBatchReverse)
+							[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: toIntervalExport * [windowController dcmInterval] showPoint: YES];
 					}
 					
 					if( viewExport == 1 && windowController.dcmMode == 0 && windowController.dcmSeriesMode == 1) // Rotation
@@ -519,15 +531,21 @@ static BOOL frameZoomed = NO;
 						
 						if( fromIntervalExport > 0)
 						{
-							for( int i = 0; i < fromIntervalExport; i++)
+							for( int i = 1; i <= fromIntervalExport; i++)
 								[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: -i * [windowController dcmInterval]];
 						}
-					
+						
+						if( !windowController.dcmBatchReverse)
+							[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: -fromIntervalExport * [windowController dcmInterval] showPoint: YES];
+						
 						if( toIntervalExport > 0)
 						{
-							for( int i = 0; i < toIntervalExport; i++)
+							for( int i = 1; i <= toIntervalExport; i++)
 								[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: i * [windowController dcmInterval]];
 						}
+						
+						if( windowController.dcmBatchReverse)
+							[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: toIntervalExport * [windowController dcmInterval] showPoint: YES];
 					}
 					
 					if( viewExport == 0 && windowController.dcmMode == 0 && windowController.dcmSeriesMode == 1) // Rotation
@@ -565,15 +583,21 @@ static BOOL frameZoomed = NO;
 						
 						if( fromIntervalExport > 0)
 						{
-							for( int i = 0; i < fromIntervalExport; i++)
+							for( int i = 1; i <= fromIntervalExport; i++)
 								[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: -i * [windowController dcmInterval]];
 						}
-					
+						
+						if( !windowController.dcmBatchReverse)
+							[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: -fromIntervalExport * [windowController dcmInterval] showPoint: YES];
+						
 						if( toIntervalExport > 0)
 						{
-							for( int i = 0; i < toIntervalExport; i++)
+							for( int i = 1; i <= toIntervalExport; i++)
 								[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: i * [windowController dcmInterval]];
 						}
+						
+						if( windowController.dcmBatchReverse)
+							[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: toIntervalExport * [windowController dcmInterval] showPoint: YES];
 					}
 					
 					if( viewExport == 1 && windowController.dcmMode == 0 && windowController.dcmSeriesMode == 1) // Rotation
@@ -613,15 +637,21 @@ static BOOL frameZoomed = NO;
 						
 						if( fromIntervalExport > 0)
 						{
-							for( int i = 0; i < fromIntervalExport; i++)
+							for( int i = 1; i <= fromIntervalExport; i++)
 								[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: i * [windowController dcmInterval]];
 						}
+						
+						if( !windowController.dcmBatchReverse)
+							[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: fromIntervalExport * [windowController dcmInterval] showPoint: YES];
 					
 						if( toIntervalExport > 0)
 						{
-							for( int i = 0; i < toIntervalExport; i++)
+							for( int i = 1; i <= toIntervalExport; i++)
 								[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: -i * [windowController dcmInterval]];
 						}
+						
+						if( windowController.dcmBatchReverse)
+							[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: -toIntervalExport * [windowController dcmInterval] showPoint: YES];
 					}
 					
 					if( viewExport == 0 && windowController.dcmMode == 0 && windowController.dcmSeriesMode == 1) // Rotation
@@ -659,15 +689,21 @@ static BOOL frameZoomed = NO;
 						
 						if( fromIntervalExport > 0)
 						{
-							for( int i = 0; i < fromIntervalExport; i++)
+							for( int i = 1; i <= fromIntervalExport; i++)
 								[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: i * [windowController dcmInterval]];
 						}
+						
+						if( !windowController.dcmBatchReverse)
+							[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: fromIntervalExport * [windowController dcmInterval] showPoint: YES];
 					
 						if( toIntervalExport > 0)
 						{
-							for( int i = 0; i < toIntervalExport; i++)
+							for( int i = 1; i <= toIntervalExport; i++)
 								[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: -i * [windowController dcmInterval]];
 						}
+						
+						if( windowController.dcmBatchReverse)
+							[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: -toIntervalExport * [windowController dcmInterval] showPoint: YES];
 					}
 					
 					if( viewExport == 1 && windowController.dcmMode == 0 && windowController.dcmSeriesMode == 1) // Rotation

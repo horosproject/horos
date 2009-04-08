@@ -1593,6 +1593,10 @@ static float deg2rad = 3.14159265358979/180.0;
 	
 	[self willChangeValueForKey: @"dcmToString"];
 	[self didChangeValueForKey: @"dcmToString"];
+	
+	[mprView1 setNeedsDisplay: YES];
+	[mprView2 setNeedsDisplay: YES];
+	[mprView3 setNeedsDisplay: YES];
 }
 
 - (NSString*) getDcmFromString
@@ -2042,7 +2046,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	[mprView2 setNeedsDisplay: YES];
 	[mprView3 setNeedsDisplay: YES];
 	
-	self.dcmBatchNumberOfFrames = dcmTo + dcmFrom;
+	self.dcmBatchNumberOfFrames = 1 + dcmTo + dcmFrom;
 }
 
 - (void) setDcmSeriesMode: (int) f
