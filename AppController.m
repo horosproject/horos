@@ -841,14 +841,14 @@ static NSDate *lastWarningDate = nil;
 
 - (void) runPreferencesUpdateCheck:(NSTimer*) timer
 {
-	BOOL				restartListener = NO;
-	BOOL				refreshDatabase = NO;
-	BOOL				refreshColumns = NO;
-	BOOL				recomputePETBlending = NO;
-	BOOL				refreshViewer = NO;
-	BOOL				revertViewer = NO;
+	BOOL restartListener = NO;
+	BOOL refreshDatabase = NO;
+	BOOL refreshColumns = NO;
+	BOOL recomputePETBlending = NO;
+	BOOL refreshViewer = NO;
+	BOOL revertViewer = NO;
 	
-	NSUserDefaults		*defaults = [NSUserDefaults standardUserDefaults];
+	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 	
 	if( mainThread != [NSThread currentThread]) return;
 	
@@ -948,7 +948,7 @@ static NSDate *lastWarningDate = nil;
 		refreshViewer = YES;
 	if ([[previousDefaults valueForKey: @"SOFTWAREINTERPOLATION"]intValue] != [defaults integerForKey: @"SOFTWAREINTERPOLATION"])
 		refreshViewer = YES;
-	
+		
 	[previousDefaults release];
 	previousDefaults = [dictionaryRepresentation retain];
 	
@@ -1008,13 +1008,7 @@ static NSDate *lastWarningDate = nil;
 	}
 	
 	UseOpenJpeg = [[NSUserDefaults standardUserDefaults] boolForKey:@"UseOpenJpegForJPEG2000"];
-//	#if __LP64__
-//	if( UseOpenJpeg)
-//	{
-//		UseOpenJpeg = NO;	// Crash in 64 bit
-//		[[NSUserDefaults standardUserDefaults] setBool: NO forKey :@"UseOpenJpegForJPEG2000"];
-//	}
-//	#endif
+	
 	[DCMPixelDataAttribute setUseOpenJpeg: UseOpenJpeg];
 	
 	[[BrowserController currentBrowser] setNetworkLogs];
@@ -2159,13 +2153,7 @@ static BOOL initialized = NO;
 				[AppController checkForPagesTemplate];
 				
 				UseOpenJpeg = [[NSUserDefaults standardUserDefaults] boolForKey:@"UseOpenJpegForJPEG2000"];
-//				#if __LP64__
-//				if( UseOpenJpeg)
-//				{
-//					UseOpenJpeg = NO;	// Crash in 64 bit
-//					[[NSUserDefaults standardUserDefaults] setBool: NO forKey :@"UseOpenJpegForJPEG2000"];
-//				}
-//				#endif
+				
 				[DCMPixelDataAttribute setUseOpenJpeg: UseOpenJpeg];
 				
 				// CHECK FOR THE HTML TEMPLATES DIRECTORY

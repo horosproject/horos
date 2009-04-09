@@ -355,6 +355,11 @@ extern  ToolbarPanelController  *toolbarPanel[ 10];
 #pragma mark-
 #pragma mark Misc
 
+- (void) updateAutoAdjustPrinting: (id) sender
+{
+
+}
+
 - (ViewerController*) registeredViewer
 {
 	return nil;

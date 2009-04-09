@@ -7289,12 +7289,13 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	if( showPoint)
 	{
-		glEnable(GL_POINT_SMOOTH);
-		glPointSize( 8);
 		glBegin( GL_POINTS);
-		glVertex2f( scaleValue*(c[ 0][ 0]/curDCM.pixelSpacingX-curDCM.pwidth/2.), scaleValue*(c[ 0][ 1]/curDCM.pixelSpacingY - curDCM.pheight /2.));
+		
+		float mx = (c[ 0][ 0] + c[ 1][ 0]) / 2.;
+		float my = (c[ 0][ 1] + c[ 1][ 1]) / 2.;
+		
+		glVertex2f( scaleValue*(mx/curDCM.pixelSpacingX-curDCM.pwidth/2.), scaleValue*( my/curDCM.pixelSpacingY - curDCM.pheight /2.));
 		glEnd();
-		glDisable(GL_POINT_SMOOTH);
 	}
 	else
 	{

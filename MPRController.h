@@ -121,6 +121,7 @@
 - (void) computeCrossReferenceLines:(MPRDCMView*) sender;
 - (IBAction)setTool:(id)sender;
 - (void) setToolIndex: (int) toolIndex;
+- (float) getClippingRangeThicknessInMm;
 - (void) propagateWLWW:(MPRDCMView*) sender;
 - (void)bringToFrontROI:(ROI*) roi;
 - (id) prepareObjectForUndo:(NSString*) string;

@@ -393,6 +393,7 @@ static BOOL frameZoomed = NO;
 	glEnable(GL_POINT_SMOOTH);
 	glEnable(GL_LINE_SMOOTH);
 	glEnable(GL_POLYGON_SMOOTH);
+	glPointSize( 12);
 	
 	if( displayCrossLines)
 	{

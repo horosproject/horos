@@ -282,6 +282,8 @@ static float deg2rad = 3.14159265358979/180.0;
 	// Default Init
 	[self setClippingRangeMode: 1]; // MIP
 	[self setClippingRangeThickness: 1];
+	if( [self getClippingRangeThicknessInMm] < fabs( [originalPix sliceInterval]) / 2.)
+		[self setClippingRangeThickness: 2];
 	
 	[[self window] makeFirstResponder: mprView1];
 	[mprView1.vrView resetImage: self];
