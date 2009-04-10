@@ -3833,12 +3833,15 @@ static ViewerController *draggedController = nil;
 	// Prepare fusion plug-ins menu
 	for( iz = 0; iz < [[PluginManager fusionPluginsMenu] numberOfItems]; iz++)
 	{
+		[[[PluginManager fusionPluginsMenu] itemAtIndex:iz] setTag: -iz];
+		
 		if( [[[PluginManager fusionPluginsMenu] itemAtIndex:iz] hasSubmenu])
 		{
 			NSMenu  *subMenu = [[[PluginManager fusionPluginsMenu] itemAtIndex:iz] submenu];
 			
 			for( xz = 0; xz < [subMenu numberOfItems]; xz++)
 			{
+				[[subMenu itemAtIndex:xz] setTag: -iz];
 				[[subMenu itemAtIndex:xz] setTarget:self];
 				[[subMenu itemAtIndex:xz] setAction:@selector(endBlendingType:)];
 			}

@@ -108,7 +108,6 @@ static NSMutableArray			*fusionPlugins = nil;
 						if( [pluginType isEqualToString:@"fusionFilter"])
 						{
 							[fusionPlugins addObject:[item title]];
-							[item setTag:-((NSInteger) [fusionPlugins count])];		// Useful for fusionFilter
 							[item setAction:@selector(endBlendingType:)];
 						}
 						else if( [pluginType isEqualToString:@"Database"] || [pluginType isEqualToString:@"Report"])
@@ -180,7 +179,6 @@ static NSMutableArray			*fusionPlugins = nil;
 				if( [pluginType isEqualToString:@"fusionFilter"])
 				{
 					[fusionPlugins addObject:[item title]];
-					[item setTag:-1];		// Useful for fusionFilter
 					[item setAction:@selector(endBlendingType:)];
 				}
 				else if( [pluginType isEqualToString:@"Database"] || [pluginType isEqualToString:@"Report"])
@@ -199,7 +197,9 @@ static NSMutableArray			*fusionPlugins = nil;
 				else if( [pluginType isEqualToString:@"roiTool"])
 					[roisMenu insertItem:item atIndex:[roisMenu numberOfItems]];
 				else if( [pluginType isEqualToString:@"fusionFilter"])
+				{
 					[fusionPluginsMenu insertItem:item atIndex:[fusionPluginsMenu numberOfItems]];
+				}
 				else if( [pluginType isEqualToString:@"Database"])
 					[dbMenu insertItem:item atIndex:[dbMenu numberOfItems]];
 				else [othersMenu insertItem:item atIndex:[othersMenu numberOfItems]];
@@ -237,13 +237,14 @@ static NSMutableArray			*fusionPlugins = nil;
 		[othersMenu insertItem:item atIndex:0];
 	}
 	
-	if( [fusionPluginsMenu numberOfItems] < 1)
+	if( [fusionPluginsMenu numberOfItems] <= 1)
 	{
 		NSMenuItem *item = [[[NSMenuItem alloc] init] autorelease];
 		[item setTitle:NSLocalizedString(@"No plugins available for this menu", nil)];
 		[item setTarget:self];
 		[item setAction:@selector(noPlugins:)];
 		
+		[fusionPluginsMenu removeItemAtIndex: 0];
 		[fusionPluginsMenu insertItem:item atIndex:0];
 	}
 	
