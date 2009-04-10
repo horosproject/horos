@@ -3944,7 +3944,7 @@ static ViewerController *draggedController = nil;
 										}
 										else if( draggedController == self)
 										{
-											NSLog(@"Myself => Cancel fusion if previous one!");
+//											NSLog(@"Myself => Cancel fusion if previous one!");
 											[self ActivateBlending: nil];
 										}
 									}
@@ -10613,7 +10613,7 @@ int i,j,l;
 - (void) roiLoadFromSeries: (NSString*) filename
 {
 	// Unselect all ROIs
-	[self roiSelectDeselectAll: self];
+	[self roiSelectDeselectAll: nil];
 	
 	NSArray *roisMovies = [NSUnarchiver unarchiveObjectWithFile: filename];
 	

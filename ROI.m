@@ -1565,9 +1565,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		case tAngle:
 			result = [[points objectAtIndex:1] point];
 		break;
-		//JJCP
 		case tDynAngle:
-		//JJCP
 		case tAxis:
 		case tCPolygon:
 		case tOPolygon:
