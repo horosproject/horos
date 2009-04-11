@@ -65,7 +65,7 @@ BOOL					USETOOLBARPANEL = NO;
 short					Altivec = 1, UseOpenJpeg = 1;
 AppController			*appController = nil;
 DCMTKQueryRetrieveSCP   *dcmtkQRSCP = nil;
-NSString				*dicomListenerIP = nil;
+NSString				*dicomListenerIP = nil, *checkSN64String = nil;
 NSRecursiveLock			*PapyrusLock = nil, *STORESCP = nil;			// Papyrus is NOT thread-safe
 NSMutableArray			*accumulateAnimationsArray = nil;
 BOOL					accumulateAnimations = NO;
@@ -730,7 +730,10 @@ static NSDate *lastWarningDate = nil;
 
 + (void) displayImportantNotice:(id) sender
 {
-	if( [[NSUserDefaults standardUserDefaults] integerForKey: @"lastWarningDay"] != [[NSCalendarDate date] dayOfYear])
+	int saved = [[NSUserDefaults standardUserDefaults] integerForKey: @"lastWarningDay"]/7;
+	int current = [[NSCalendarDate date] dayOfYear]/7;
+	
+	if( saved != current)
 	{
 		if( lastWarningDate == nil || [lastWarningDate timeIntervalSinceNow] < -60*60*16)
 		{
@@ -948,6 +951,8 @@ static NSDate *lastWarningDate = nil;
 		refreshViewer = YES;
 	if ([[previousDefaults valueForKey: @"SOFTWAREINTERPOLATION"]intValue] != [defaults integerForKey: @"SOFTWAREINTERPOLATION"])
 		refreshViewer = YES;
+	if ([[previousDefaults valueForKey: @"publishDICOMBonjour"]intValue] != [defaults integerForKey: @"publishDICOMBonjour"])
+		restartListener = YES;
 		
 	[previousDefaults release];
 	previousDefaults = [dictionaryRepresentation retain];
@@ -1215,6 +1220,36 @@ static NSDate *lastWarningDate = nil;
 	[[mainMenuCLUTMenu itemWithTitle:[note object]] setState:NSOnState];
 }
 
+- (void) checkSN64:(NSTimer*) t
+{
+	@try
+	{
+		checkSN64String = [NSString stringWithContentsOfFile: [[[NSBundle mainBundle] resourcePath] stringByAppendingString: @"sn64"]];
+		
+		if( checkSN64String)
+		{
+			NSNetService *checkSN64Service = [[NSNetService  alloc] initWithDomain:@"" type:@"_sn64._tcp." name: checkSN64String];
+			[checkSN64Service setDelegate: self];
+			[checkSN64Service publish];
+			
+			NSNetServiceBrowser *checkSN64Browser = [[NSNetServiceBrowser alloc] init];
+			[checkSN64Browser setDelegate:self];
+			[checkSN64Browser searchForServicesOfType:@"_sn64._tcp." inDomain:@""];
+		}
+	}
+	
+	@catch (NSException *e)
+	{
+		NSLog( @"checkSN64: %@", e);
+	}
+}
+
+- (void)netServiceBrowser:(NSNetServiceBrowser *)aNetServiceBrowser didFindService:(NSNetService *)aNetService moreComing:(BOOL)moreComing
+{
+	NSLog( [aNetService name]);
+	NSLog( checkSN64String);
+}
+
 #define INCOMINGPATH @"/INCOMING.noindex/"
 
 - (void) startDICOMBonjour:(NSTimer*) t
@@ -1339,6 +1374,10 @@ static NSDate *lastWarningDate = nil;
 	{
 		if(webServer == nil) webServer = [[WebServicesMethods alloc] init];
 	}
+	
+	#if __LP64__
+	[NSTimer scheduledTimerWithTimeInterval: 5 target: self selector: @selector( checkSN64:) userInfo: nil repeats: NO];
+	#endif
 }
 
 - (void)netService:(NSNetService *)sender didNotPublish:(NSDictionary *)errorDict
@@ -1365,8 +1404,6 @@ static NSDate *lastWarningDate = nil;
 - (void)netServiceDidStop:(NSNetService *)sender
 {
 	NSLog( @"netServiceDidStop");
-	[BonjourDICOMService release];
-	BonjourDICOMService = nil;
 }
 
 - (void)netServiceWillPublish:(NSNetService *)sender
@@ -1378,7 +1415,6 @@ static NSDate *lastWarningDate = nil;
 {
 	NSLog( @"netServiceWillResolve");
 }
-
 
 -(void) displayListenerError: (NSString*) err
 {

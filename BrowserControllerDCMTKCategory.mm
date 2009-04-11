@@ -165,16 +165,15 @@
 
 - (BOOL)compressDICOMWithJPEG:(NSString *)path
 {
-//	testLocal(path, @"compress", nil);
-//	return YES;
-//	
 	NSTask *theTask = [[NSTask alloc] init];
 	
-	[theTask setArguments: [NSArray arrayWithObjects:path, @"compress", nil]];
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"useJPEG2000forCompression"])
+		[theTask setArguments: [NSArray arrayWithObjects:path, @"compressJPEG2000", nil]];	// <- many problems with MR, ..., ...
+	else
+		[theTask setArguments: [NSArray arrayWithObjects:path, @"compress", nil]];
+		
 	[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Decompress"]];
 	[theTask launch];
-//	if( [NSThread currentThread] == [AppController mainThread]) [theTask waitUntilExit];	//<- The problem with this: it calls the current running loop.... problems with current Lock !
-//	else
 	while( [theTask isRunning]) [NSThread sleepForTimeInterval: 0.01];
 	[theTask release];
 
@@ -189,8 +188,7 @@
 	[theTask setArguments: [NSArray arrayWithObjects:path, @"decompress", dest,  nil]];
 	[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Decompress"]];
 	[theTask launch];
-//	if( [NSThread currentThread] == [AppController mainThread]) [theTask waitUntilExit];	//<- The problem with this: it calls the current running loop.... problems with current Lock !
-//	else
+	
 	while( [theTask isRunning]) [NSThread sleepForTimeInterval: 0.01];
 	[theTask release];
 

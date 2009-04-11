@@ -24,7 +24,145 @@
 #import "BonjourBrowser.h"
 #endif
 
+#define WBUFSIZE 512
+
+NSString* soundex4( NSString *inString)
+{
+	char *p, *p1;
+	char *outstr;
+	int i;
+	char workbuf[WBUFSIZE + 1];
+	char priorletter;
+	int N;
+	
+	if( inString == nil) return nil;
+	
+      /* Make a working copy  */
+	
+      strncpy(workbuf, [[inString uppercaseString] UTF8String], WBUFSIZE);
+      workbuf[WBUFSIZE] = 0;
+	  
+      /* Convert all vowels to 'A'  */
+
+      for (p = workbuf; *p; ++p)
+      {
+            if (strchr("AEIOUY", *p))
+                  *p = 'A';
+      }
+
+      /* Prefix transformations: done only once on the front of a name */
+
+      if ( 0 == strncmp(workbuf, "MAC", 3))     /* MAC to MCC    */
+            workbuf[1] = 'C';
+      else if ( 0 == strncmp(workbuf, "KN", 2)) /* KN to NN      */
+            workbuf[0] = 'N';
+      else if ('K' == workbuf[0])                     /* K to C        */
+            workbuf[0] = 'C';
+      else if ( 0 == strncmp(workbuf, "PF", 2)) /* PF to FF      */
+            workbuf[0] = 'F';
+      else if ( 0 == strncmp(workbuf, "SCH", 3))/* SCH to SSS    */
+            workbuf[1] = workbuf[2] = 'S';
+
+      /*
+      ** Infix transformations: done after the first letter,
+      ** left to right
+      */
+
+      while ((p = strstr(workbuf, "DG")) > workbuf)   /* DG to GG      */
+            p[0] = 'G';
+      while ((p = strstr(workbuf, "CAAN")) > workbuf) /* CAAN to TAAN  */
+            p[0] = 'T';
+      while ((p = strchr(workbuf, 'D')) > workbuf)    /* D to T        */
+            p[0] = 'T';
+      while ((p = strstr(workbuf, "NST")) > workbuf)  /* NST to NSS    */
+            p[2] = 'S';
+      while ((p = strstr(workbuf, "AV")) > workbuf)   /* AV to AF      */
+            p[1] = 'F';
+      while ((p = strchr(workbuf, 'Q')) > workbuf)    /* Q to G        */
+            p[0] = 'G';
+      while ((p = strchr(workbuf, 'Z')) > workbuf)    /* Z to S        */
+            p[0] = 'S';
+      while ((p = strchr(workbuf, 'M')) > workbuf)    /* M to N        */
+            p[0] = 'N';
+      while ((p = strstr(workbuf, "KN")) > workbuf)   /* KN to NN      */
+            p[0] = 'N';
+      while ((p = strchr(workbuf, 'K')) > workbuf)    /* K to C        */
+            p[0] = 'C';
+      while ((p = strstr(workbuf, "AH")) > workbuf)   /* AH to AA      */
+            p[1] = 'A';
+      while ((p = strstr(workbuf, "HA")) > workbuf)   /* HA to AA      */
+            p[0] = 'A';
+      while ((p = strstr(workbuf, "AW")) > workbuf)   /* AW to AA      */
+            p[1] = 'A';
+      while ((p = strstr(workbuf, "PH")) > workbuf)   /* PH to FF      */
+            p[0] = p[1] = 'F';
+      while ((p = strstr(workbuf, "SCH")) > workbuf)  /* SCH to SSS    */
+            p[0] = p[1] = 'S';
+
+      /*
+      ** Suffix transformations: done on the end of the word,
+      ** right to left
+      */
+
+      /* (1) remove terminal 'A's and 'S's      */
+
+      for (i = strlen(workbuf) - 1;
+            (i > 0) && ('A' == workbuf[i] || 'S' == workbuf[i]);
+            --i)
+      {
+            workbuf[i] = 0;
+      }
+
+      /* (2) terminal NT to TT      */
+
+      for (i = strlen(workbuf) - 1;
+            (i > 1) && ('N' == workbuf[i - 1] || 'T' == workbuf[i]);
+            --i)
+      {
+            workbuf[i - 1] = 'T';
+      }
+
+      /* Now strip out all the vowels except the first     */
+
+      p = p1 = workbuf;
+      while ( 0 != (*p1++ = *p++))
+      {
+            while ('A' == *p)
+                  ++p;
+      }
+
+      /* Remove all duplicate letters     */
+
+      p = p1 = workbuf;
+      priorletter = 0;
+      do {
+            while (*p == priorletter)
+                  ++p;
+            priorletter = *p;
+      } while (0 != (*p1++ = *p++));
+
+      /* Finish up */
+	
+	  return [NSString stringWithUTF8String: workbuf];
+}
+
 @implementation DicomStudy
+
++ (NSString*) soundex: (NSString*) s
+{
+	NSArray *a = [s componentsSeparatedByString:@" "];
+	NSMutableString *r = [NSMutableString string];
+	
+	for( NSString *w in a)
+		[r appendFormat:@" %@", soundex4( w)];
+	
+	return r;
+}
+
+- (NSString*) soundex
+{
+	return [DicomStudy soundex: [self primitiveValueForKey: @"name"]];
+}
 
 - (void) dealloc
 {
@@ -398,7 +536,7 @@
 {
 	[[self managedObjectContext] lock];
 	
-	NSArray *array = [self primitiveValueForKey: @"series"] ;
+	NSArray *array = [self primitiveValueForKey: @"series"];
 	NSMutableArray *newArray = [NSMutableArray array];
 	
 	for (id series in array)

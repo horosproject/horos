@@ -24,6 +24,7 @@
 	NSNumber	*dicomTime;
 }
 
++ (NSString*) soundex: (NSString*) s;
 - (NSNumber *) noFiles;
 - (NSSet *) paths;
 - (NSSet *) keyImages;

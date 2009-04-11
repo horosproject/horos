@@ -84,6 +84,23 @@ int main(int argc, const char *argv[])
 		
 		if(argv[ 3]) dest = [NSString stringWithCString:argv[ 3]];
 		
+		if( [what isEqualToString:@"compressJPEG2000"])
+		{
+			if( dest && [dest isEqualToString:path] == NO)
+			{
+			}
+			else
+				dest = path;
+			
+			DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile: path decodingPixelData:YES];
+			[dcmObject writeToFile: [dest stringByAppendingString: @" temp"] withTransferSyntax:[DCMTransferSyntax JPEG2000LossyTransferSyntax] quality:1 AET:@"OsiriX" atomically:YES];
+			[dcmObject release];
+			
+			if( dest == path)
+				[[NSFileManager defaultManager] removeFileAtPath: path handler: nil];
+			[[NSFileManager defaultManager] movePath: [dest stringByAppendingString: @" temp"]  toPath: dest handler: nil];
+		}
+		
 		if( [what isEqualToString:@"compress"])
 		{
 			OFCondition cond;

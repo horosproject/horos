@@ -4429,8 +4429,21 @@ static NSArray*	statesArray = nil;
 	
 	@try
 	{
-		if( albumArrayContent) outlineViewArray = [albumArrayContent filteredArrayUsingPredicate: predicate];
-		else outlineViewArray = [context executeFetchRequest:request error:&error];
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"useSoundexForName"] && (searchType == 7 || searchType == 0))
+		{
+			if( albumArrayContent) outlineViewArray = [albumArrayContent filteredArrayUsingPredicate: predicate];
+			else
+			{
+				[request setPredicate: [NSPredicate predicateWithValue: YES]];
+				outlineViewArray = [context executeFetchRequest: request error:&error];
+				outlineViewArray = [outlineViewArray filteredArrayUsingPredicate: predicate];
+			}
+		}
+		else
+		{
+			if( albumArrayContent) outlineViewArray = [albumArrayContent filteredArrayUsingPredicate: predicate];
+			else outlineViewArray = [context executeFetchRequest:request error:&error];
+		}
 		
 		if( [albumNoOfStudiesCache count] > albumTable.selectedRow && filtered == NO)
 		{
@@ -16759,6 +16772,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	[_searchString release];
 	_searchString = [searchString retain];
+	
 	[self setFilterPredicate:[self createFilterPredicate] description:[self createFilterDescription]];
 	[self outlineViewRefresh];
 	[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];	
@@ -16841,7 +16855,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 - (NSPredicate *)createFilterPredicate
 {
 	NSPredicate *predicate = nil;
-	NSString	*s;
+	NSString *s = nil;
 	
 	if ([_searchString length] > 0)
 	{
@@ -16850,42 +16864,46 @@ static volatile int numberOfThreadsForJPEG = 0;
 			case 7:			// All Fields
 				s = [NSString stringWithFormat:@"%@", _searchString];
 				
-				predicate = [NSPredicate predicateWithFormat: @"(name CONTAINS[cd] %@) OR (patientID CONTAINS[cd] %@) OR (id CONTAINS[cd] %@) OR (comment CONTAINS[cd] %@) OR (studyName CONTAINS[cd] %@) OR (modality CONTAINS[cd] %@) OR (accessionNumber CONTAINS[cd] %@)", s, s, s, s, s, s, s];
-				break;
-				
+				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"useSoundexForName"]) 
+					predicate = [NSPredicate predicateWithFormat: @"(soundex CONTAINS[cd] %@) OR (patientID CONTAINS[cd] %@) OR (id CONTAINS[cd] %@) OR (comment CONTAINS[cd] %@) OR (studyName CONTAINS[cd] %@) OR (modality CONTAINS[cd] %@) OR (accessionNumber CONTAINS[cd] %@)", [DicomStudy soundex: s], s, s, s, s, s, s];
+				else
+					predicate = [NSPredicate predicateWithFormat: @"(name CONTAINS[cd] %@) OR (patientID CONTAINS[cd] %@) OR (id CONTAINS[cd] %@) OR (comment CONTAINS[cd] %@) OR (studyName CONTAINS[cd] %@) OR (modality CONTAINS[cd] %@) OR (accessionNumber CONTAINS[cd] %@)", s, s, s, s, s, s, s];
+			break;
+			
 			case 0:			// Patient Name
-				predicate = [NSPredicate predicateWithFormat: @"name CONTAINS[cd] %@", _searchString];
-				break;
-				
+				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"useSoundexForName"])
+					predicate = [NSPredicate predicateWithFormat: @"soundex CONTAINS[cd] %@", [DicomStudy soundex: _searchString]];
+				else
+					predicate = [NSPredicate predicateWithFormat: @"name CONTAINS[cd] %@", _searchString];
+			break;
+			
 			case 1:			// Patient ID
 				predicate = [NSPredicate predicateWithFormat: @"patientID CONTAINS[cd] %@", _searchString];
-				break;
-				
+			break;
+			
 			case 2:			// Study/Series ID
 				predicate = [NSPredicate predicateWithFormat: @"id CONTAINS[cd] %@", _searchString];
-				break;
-				
+			break;
+			
 			case 3:			// Comments
 				predicate = [NSPredicate predicateWithFormat: @"comment CONTAINS[cd] %@", _searchString];
-				break;
-				
+			break;
+			
 			case 4:			// Study Description
 				predicate = [NSPredicate predicateWithFormat: @"studyName CONTAINS[cd] %@", _searchString];
-				break;
-				
+			break;
+			
 			case 5:			// Modality
-				predicate = [NSPredicate predicateWithFormat:  @"modality CONTAINS[cd] %@", _searchString];
-				break;
-				
+				predicate = [NSPredicate predicateWithFormat: @"modality CONTAINS[cd] %@", _searchString];
+			break;
+			
 			case 6:			// Accession Number 
-				predicate = [NSPredicate predicateWithFormat:  @"accessionNumber CONTAINS[cd] %@", _searchString];
-				break;
-				
-			case 100:			// Advanced
-				
-				break;
+				predicate = [NSPredicate predicateWithFormat: @"accessionNumber CONTAINS[cd] %@", _searchString];
+			break;
+			
+			case 100:		// Advanced
+			break;
 		}
-		
 	}
 	return predicate;
 }
