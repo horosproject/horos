@@ -1224,7 +1224,7 @@ static NSDate *lastWarningDate = nil;
 - (void) checkSN64:(NSTimer*) t
 {
 	@try
-	{		
+	{
 		if( checkSN64String && checkSN64Service)
 		{
 			[checkSN64Service setDelegate: self];
