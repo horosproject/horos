@@ -1248,12 +1248,13 @@ static NSDate *lastWarningDate = nil;
 
 - (void)netServiceBrowser:(NSNetServiceBrowser *)aNetServiceBrowser didFindService:(NSNetService *)aNetService moreComing:(BOOL)moreComing
 {
-	if( checkSN64Service != aNetService)
+	if( checkSN64Service != aNetService && [[aNetService type] isEqualToString: @"_snosirix._tcp."])
 	{
-		if( [[checkSN64Service name] isEqualToString: [aNetService name]] == NO && [checkSN64String isEqualToString: [[NSNetService dictionaryFromTXTRecordData: [aNetService TXTRecordData]] objectForKey:@"sn"]] == YES)
+		if( [[checkSN64Service name] isEqualToString: [aNetService name]] == NO)
 		{
-			NSRunCriticalAlertPanel( NSLocalizedString( @"64-bit Extension License", nil), NSLocalizedString( @"There is already another running OsiriX application using this 64-bit extension serial number. Buy a site license to run an unlimited number of OsiriX applications at the same time.", nil), NSLocalizedString( @"OK", nil), nil, nil);
-			exit(0);
+			[aNetService retain];
+			[aNetService setDelegate: self];
+			[aNetService resolveWithTimeout: 5];
 		}
 	}
 }
@@ -1388,40 +1389,17 @@ static NSDate *lastWarningDate = nil;
 //	#endif
 }
 
-- (void)netService:(NSNetService *)sender didNotPublish:(NSDictionary *)errorDict
+- (void)netServiceDidResolveAddress:(NSNetService *) aNetService
 {
-	NSLog(@"didNotPublish");
-}
-
-- (void)netService:(NSNetService *)sender didNotResolve:(NSDictionary *)errorDict
-{
-	NSLog(@"didNotResolve");
-}
-
-- (void)netServiceDidPublish:(NSNetService *)sender
-{
-	NSLog(@"netServiceDidPublish:");
-	NSLog( [sender description]);
-}
-
-- (void)netServiceDidResolveAddress:(NSNetService *)sender
-{
-	NSLog(@"netServiceDidResolveAddress");
-}
-
-- (void)netServiceDidStop:(NSNetService *)sender
-{
-	NSLog( @"netServiceDidStop");
-}
-
-- (void)netServiceWillPublish:(NSNetService *)sender
-{
-	NSLog( @"netServiceWillPublish");
-}
-
-- (void)netServiceWillResolve:(NSNetService *)sender
-{
-	NSLog( @"netServiceWillResolve");
+	if( [[aNetService type] isEqualToString: @"_snosirix._tcp."])
+	{
+		NSDictionary *d = [NSNetService dictionaryFromTXTRecordData: [aNetService TXTRecordData]];
+		if( [checkSN64String isEqualToString: [[[NSString alloc] initWithData: [d valueForKey: @"sn"] encoding: NSUTF8StringEncoding] autorelease]] == YES)
+		{
+			NSRunCriticalAlertPanel( NSLocalizedString( @"64-bit Extension License", nil), NSLocalizedString( @"There is already another running OsiriX application using this 64-bit extension serial number. Buy a site license to run an unlimited number of OsiriX applications at the same time.", nil), NSLocalizedString( @"OK", nil), nil, nil);
+			exit(0);
+		}
+	}
 }
 
 -(void) displayListenerError: (NSString*) err
