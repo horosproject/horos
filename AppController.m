@@ -66,6 +66,7 @@ short					Altivec = 1, UseOpenJpeg = 1;
 AppController			*appController = nil;
 DCMTKQueryRetrieveSCP   *dcmtkQRSCP = nil;
 NSString				*dicomListenerIP = nil, *checkSN64String = nil;
+NSNetService			*checkSN64Service = nil;
 NSRecursiveLock			*PapyrusLock = nil, *STORESCP = nil;			// Papyrus is NOT thread-safe
 NSMutableArray			*accumulateAnimationsArray = nil;
 BOOL					accumulateAnimations = NO;
@@ -1224,12 +1225,13 @@ static NSDate *lastWarningDate = nil;
 {
 	@try
 	{
-		checkSN64String = [NSString stringWithContentsOfFile: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"sn64"]];
+		checkSN64String = [[NSString stringWithContentsOfFile: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"sn64"]] retain];
 		
 		if( checkSN64String)
 		{
-			NSNetService *checkSN64Service = [[NSNetService alloc] initWithDomain:@"" type:@"_snosirix._tcp." name: checkSN64String port: 4096];
+			checkSN64Service = [[NSNetService alloc] initWithDomain:@"" type:@"_snosirix._tcp." name: [self privateIP] port: 4096];
 			[checkSN64Service setDelegate: self];
+			[checkSN64Service setTXTRecordData: [NSNetService dataFromTXTRecordDictionary: [NSDictionary dictionaryWithObject: checkSN64String forKey: @"sn"]]];
 			[checkSN64Service publishWithOptions: NSNetServiceNoAutoRename];
 			
 			NSNetServiceBrowser *checkSN64Browser = [[NSNetServiceBrowser alloc] init];
@@ -1246,13 +1248,13 @@ static NSDate *lastWarningDate = nil;
 
 - (void)netServiceBrowser:(NSNetServiceBrowser *)aNetServiceBrowser didFindService:(NSNetService *)aNetService moreComing:(BOOL)moreComing
 {
-	NSLog( [aNetService name]);
-	NSLog( checkSN64String);
-	
-	if( [checkSN64String isEqualToString: [aNetService name]])
+	if( checkSN64Service != aNetService)
 	{
-		NSRunCriticalAlertPanel( NSLocalizedString( @"64-bit Extension License", nil), NSLocalizedString( @"There is already another running OsiriX application using this 64-bit extension serial number. Buy a site license to run an unlimited number of OsiriX applications at the same time.", nil), NSLocalizedString( @"OK", nil), nil, nil);
-		exit(0);
+		if( [[checkSN64Service name] isEqualToString: [aNetService name]] == NO && [checkSN64String isEqualToString: [[NSNetService dictionaryFromTXTRecordData: [aNetService TXTRecordData]] objectForKey:@"sn"]] == YES)
+		{
+			NSRunCriticalAlertPanel( NSLocalizedString( @"64-bit Extension License", nil), NSLocalizedString( @"There is already another running OsiriX application using this 64-bit extension serial number. Buy a site license to run an unlimited number of OsiriX applications at the same time.", nil), NSLocalizedString( @"OK", nil), nil, nil);
+			exit(0);
+		}
 	}
 }
 
