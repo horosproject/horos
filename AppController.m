@@ -1227,16 +1227,11 @@ static NSDate *lastWarningDate = nil;
 	{
 		checkSN64String = [[NSString stringWithContentsOfFile: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"sn64"]] retain];
 		
-		if( checkSN64String)
+		if( checkSN64String && checkSN64Service)
 		{
-			checkSN64Service = [[NSNetService alloc] initWithDomain:@"" type:@"_snosirix._tcp." name: [self privateIP] port: 4096];
 			[checkSN64Service setDelegate: self];
 			[checkSN64Service setTXTRecordData: [NSNetService dataFromTXTRecordDictionary: [NSDictionary dictionaryWithObject: checkSN64String forKey: @"sn"]]];
 			[checkSN64Service publishWithOptions: NSNetServiceNoAutoRename];
-			
-			NSNetServiceBrowser *checkSN64Browser = [[NSNetServiceBrowser alloc] init];
-			[checkSN64Browser setDelegate:self];
-			[checkSN64Browser searchForServicesOfType:@"_snosirix._tcp." inDomain:@""];
 		}
 	}
 	
@@ -1384,9 +1379,15 @@ static NSDate *lastWarningDate = nil;
 		if(webServer == nil) webServer = [[WebServicesMethods alloc] init];
 	}
 	
-//	#if __LP64__
+	#if __LP64__
+	checkSN64Service = [[NSNetService alloc] initWithDomain:@"" type:@"_snosirix._tcp." name: [self privateIP] port: 4096];
+	
+	NSNetServiceBrowser *checkSN64Browser = [[NSNetServiceBrowser alloc] init];
+	[checkSN64Browser setDelegate:self];
+	[checkSN64Browser searchForServicesOfType:@"_snosirix._tcp." inDomain:@""];
+	
 	[NSTimer scheduledTimerWithTimeInterval: 5 target: self selector: @selector( checkSN64:) userInfo: nil repeats: NO];
-//	#endif
+	#endif
 }
 
 - (void)netServiceDidResolveAddress:(NSNetService *) aNetService
@@ -1396,6 +1397,9 @@ static NSDate *lastWarningDate = nil;
 		NSDictionary *d = [NSNetService dictionaryFromTXTRecordData: [aNetService TXTRecordData]];
 		if( [checkSN64String isEqualToString: [[[NSString alloc] initWithData: [d valueForKey: @"sn"] encoding: NSUTF8StringEncoding] autorelease]] == YES)
 		{
+			[checkSN64Service release];
+			checkSN64Service = nil;
+			
 			NSRunCriticalAlertPanel( NSLocalizedString( @"64-bit Extension License", nil), NSLocalizedString( @"There is already another running OsiriX application using this 64-bit extension serial number. Buy a site license to run an unlimited number of OsiriX applications at the same time.", nil), NSLocalizedString( @"OK", nil), nil, nil);
 			exit(0);
 		}
