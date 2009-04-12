@@ -1224,17 +1224,17 @@ static NSDate *lastWarningDate = nil;
 {
 	@try
 	{
-		checkSN64String = [NSString stringWithContentsOfFile: [[[NSBundle mainBundle] resourcePath] stringByAppendingString: @"sn64"]];
+		checkSN64String = [NSString stringWithContentsOfFile: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"sn64"]];
 		
 		if( checkSN64String)
 		{
-			NSNetService *checkSN64Service = [[NSNetService  alloc] initWithDomain:@"" type:@"_sn64._tcp." name: checkSN64String];
+			NSNetService *checkSN64Service = [[NSNetService alloc] initWithDomain:@"" type:@"_snosirix._tcp." name: checkSN64String port: 4096];
 			[checkSN64Service setDelegate: self];
-			[checkSN64Service publish];
+			[checkSN64Service publishWithOptions: NSNetServiceNoAutoRename];
 			
 			NSNetServiceBrowser *checkSN64Browser = [[NSNetServiceBrowser alloc] init];
 			[checkSN64Browser setDelegate:self];
-			[checkSN64Browser searchForServicesOfType:@"_sn64._tcp." inDomain:@""];
+			[checkSN64Browser searchForServicesOfType:@"_snosirix._tcp." inDomain:@""];
 		}
 	}
 	
@@ -1262,7 +1262,7 @@ static NSDate *lastWarningDate = nil;
 {
 	NSLog( @"startDICOMBonjour");
 
-	BonjourDICOMService = [[NSNetService  alloc] initWithDomain:@"" type:@"_dicom._tcp." name: [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] port:[[[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"] intValue]];
+	BonjourDICOMService = [[NSNetService alloc] initWithDomain:@"" type:@"_dicom._tcp." name: [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] port:[[[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"] intValue]];
 	
 	NSString *description = [[BrowserController currentBrowser] serviceName];
 	NSMutableDictionary *dict = [NSMutableDictionary dictionary];
@@ -1381,9 +1381,9 @@ static NSDate *lastWarningDate = nil;
 		if(webServer == nil) webServer = [[WebServicesMethods alloc] init];
 	}
 	
-	#if __LP64__
+//	#if __LP64__
 	[NSTimer scheduledTimerWithTimeInterval: 5 target: self selector: @selector( checkSN64:) userInfo: nil repeats: NO];
-	#endif
+//	#endif
 }
 
 - (void)netService:(NSNetService *)sender didNotPublish:(NSDictionary *)errorDict
