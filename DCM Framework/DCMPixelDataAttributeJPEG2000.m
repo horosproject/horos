@@ -127,179 +127,184 @@ static int pnm_getint16(jas_stream_t *in, int *val)
 */
 @implementation DCMPixelDataAttribute (DCMPixelDataAttributeJPEG2000)
 
-- (NSMutableData *)encodeJPEG2000:(NSMutableData *)data quality:(int)quality{
-	NSMutableData *jpeg2000Data = nil;
-	NSLog(@"Encode JPEG 2000");
-	jas_image_t *image;
-	jas_image_cmptparm_t cmptparms[3];
-	jas_image_cmptparm_t *cmptparm;
-	int i;
-	int width = _columns;
-	int height = _rows;
-	int spp = _samplesPerPixel;
-	//int prec = _pixelDepth;
-	int prec = [[_dcmObject attributeValueWithName:@"BitsStored"] intValue];
-	BOOL sgnd = [[_dcmObject attributeValueWithName:@"PixelRepresentation"] intValue];
-	if ([[_dcmObject attributeValueWithName:@"RescaleIntercept"] intValue] < 0)
-		sgnd = YES;
-		
-	if (sgnd &&  prec > 8) {
-		//Encode
-		[self encodeRescale:data WithPixelDepth:prec];
-		sgnd = NO;
-	}
-	else
-	
-		[_dcmObject removePlanarAndRescaleAttributes];
-	
-	
-	unsigned char *buffer = (unsigned char*)[data bytes];
-	int theLength = [data length];
-	jas_init();
-	jas_stream_t *jasStream = jas_stream_memopen((char *)buffer, theLength);
-	
-	
-	for (i = 0, cmptparm = cmptparms; i < spp; ++i, ++cmptparm) {
-		cmptparm->tlx = 0;
-		cmptparm->tly = 0;
-		cmptparm->hstep = 1;
-		cmptparm->vstep = 1;
-		cmptparm->width = width;
-		cmptparm->height = height;
-		cmptparm->prec = prec;
-		cmptparm->sgnd = sgnd;
-	}
-	
-	if (!(image = jas_image_create(spp, cmptparms, JAS_CLRSPC_UNKNOWN))) {
-		return nil;
-	}
-	
-	DCMAttributeTag *tag = [DCMAttributeTag tagWithName:@"PhotometricInterpretation"];
-	DCMAttribute *attr = [[_dcmObject attributes] objectForKey:[tag stringValue]];
-	NSString *photometricInterpretation = [attr value];
-	//int jasColorSpace = JAS_CLRSPC_UNKNOWN;
-	if ([photometricInterpretation isEqualToString:@"MONOCHROME1"] || [photometricInterpretation isEqualToString:@"MONOCHROME1"]) {
-		jas_image_setclrspc(image, JAS_CLRSPC_SGRAY);
-		jas_image_setcmpttype(image, 0,
-		  JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_GRAY_Y));
-	}
-	else if ([photometricInterpretation isEqualToString:@"RGB"] || [photometricInterpretation isEqualToString:@"ARGB"]) {
-		jas_image_setclrspc(image, JAS_CLRSPC_SRGB);
-		jas_image_setcmpttype(image, 0,
-		  JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_RGB_R));
-		jas_image_setcmpttype(image, 1,
-		  JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_RGB_G));
-		jas_image_setcmpttype(image, 2,
-		  JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_RGB_B));
-	}
-	else if ([photometricInterpretation isEqualToString:@"YBR_FULL_422"] || [photometricInterpretation isEqualToString:@"YBR_PARTIAL_422"] || [photometricInterpretation isEqualToString:@"YBR_FULL"]) {
-		jas_image_setclrspc(image, JAS_CLRSPC_FAM_YCBCR);
-		jas_image_setcmpttype(image, 0,
-		  JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_YCBCR_Y));
-		jas_image_setcmpttype(image, 1,
-		  JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_YCBCR_CB));
-		jas_image_setcmpttype(image, 2,
-		  JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_YCBCR_CR));
-		
-	}
-		/*
-	if ([photometricInterpretation isEqualToString:@"CMYK"])
-		jasColorSpace = JCS_CMYK;
-		*/
-	int cmptno;	
-	int x,y;
-	jas_matrix_t *jasData[3];
-	int_fast64_t v;
-	jasData[0] = 0;
-	jasData[1] = 0;
-	jasData[2] = 0;	
-	for (cmptno = 0; cmptno < spp; ++cmptno)
-	{
-		if (!(jasData[cmptno] = jas_matrix_create(1, width)))
-		{
-			return nil;
-		}
-	}
-	
-	for (y = 0; y < height; ++y) {
-		for (x = 0; x < width; ++x) {
-			for (cmptno = 0; cmptno < spp; ++cmptno) {
-				if (sgnd) {
-					/* The sample data is signed. */
-					int_fast32_t sv;
-					if (pnm_getsint(jasStream, prec, &sv)) {
-						/*
-						if (!pnm_allowtrunc) {
-							goto done;
-						}
-						*/
-						sv = 0;
-					}
-					v = sv;
-				} else {
-					/* The sample data is unsigned. */
-					uint_fast32_t uv;
-					if (pnm_getuint(jasStream, prec, &uv)) {
-						/*
-						if (!pnm_allowtrunc) {
-							goto done;
-						}
-						*/
-						uv = 0;
-					}
-					v = uv;
-				}
-				jas_matrix_set(jasData[cmptno], 0, x, v);
-			}
-		}	
-		for (cmptno = 0; cmptno < spp; ++cmptno) {
-			if (jas_image_writecmpt(image, cmptno, 0, y, width, 1,
-			  jasData[cmptno])) {
-				//goto done;
-			}
-		}
-	}
-	
-	for (cmptno = 0; cmptno < spp; ++cmptno) {
-		if (jasData[cmptno]) {
-			jas_matrix_destroy(jasData[cmptno]);
-		}
-	}
-	
-	//write to JPEG2000
-	char *optstr = "rate=0.05 mode=int";
-	if (quality == DCMLosslessQuality) {
-		optstr = nil;
-	}
-	else if (quality == DCMHighQuality) {
-		optstr = "rate=0.1 mode=int";
-	}
-	else if (quality == DCMMediumQuality)
-		optstr = "rate=0.05 mode=int";
-		
-	else if (quality ==  DCMLowQuality) {
-		optstr = "rate=0.02 mode=int";
-	}
-	
-	unsigned char *outBuffer = malloc(theLength);
-	jas_stream_t *outS =  jas_stream_memopen((char *)outBuffer, theLength);
-	jpc_encode(image, outS , optstr);
-	NSLog (@"position  post encode: %d", jas_stream_tell(outS));
-	jas_stream_flush(outS );
-
-	long compressedLength = jas_stream_tell(outS);
-	NSLog (@"position post flush: %d", jas_stream_tell(outS));
-
-	jpeg2000Data = [NSMutableData dataWithBytes:outBuffer length:compressedLength];
-
-
-	(void) jas_stream_close(outS);
-	free(outBuffer);
-	jas_image_destroy(image);
-	jas_image_clearfmts();
-	
-
-	return jpeg2000Data;
-}
+//- (NSMutableData *)encodeJPEG2000:(NSMutableData *)data quality:(int)quality
+//{
+//	NSMutableData *jpeg2000Data = nil;	
+//	jas_image_t *image;
+//	jas_image_cmptparm_t cmptparms[3];
+//	jas_image_cmptparm_t *cmptparm;
+//	int i;
+//	int width = _columns;
+//	int height = _rows;
+//	int spp = _samplesPerPixel;
+////	int prec = _pixelDepth;
+//	int prec = [[_dcmObject attributeValueWithName:@"BitsStored"] intValue];
+//	BOOL sgnd = [[_dcmObject attributeValueWithName:@"PixelRepresentation"] intValue];
+//	if ([[_dcmObject attributeValueWithName:@"RescaleIntercept"] intValue] < 0)
+//		sgnd = YES;
+//		
+//	if (sgnd &&  prec > 8)
+//	{
+//		//Encode
+//		[self encodeRescale:data WithPixelDepth:prec];
+//		sgnd = NO;
+//	}
+//	else
+//		[_dcmObject removePlanarAndRescaleAttributes];
+//	
+//	unsigned char *buffer = (unsigned char*)[data bytes];
+//	int theLength = [data length];
+//	jas_init();
+//	jas_stream_t *jasStream = jas_stream_memopen((char *)buffer, theLength);
+//	
+//	
+//	for (i = 0, cmptparm = cmptparms; i < spp; ++i, ++cmptparm)
+//	{
+//		cmptparm->tlx = 0;
+//		cmptparm->tly = 0;
+//		cmptparm->hstep = 1;
+//		cmptparm->vstep = 1;
+//		cmptparm->width = width;
+//		cmptparm->height = height;
+//		cmptparm->prec = prec;
+//		cmptparm->sgnd = sgnd;
+//	}
+//	
+//	if (!(image = jas_image_create(spp, cmptparms, JAS_CLRSPC_UNKNOWN))) {
+//		return nil;
+//	}
+//	
+//	DCMAttributeTag *tag = [DCMAttributeTag tagWithName:@"PhotometricInterpretation"];
+//	DCMAttribute *attr = [[_dcmObject attributes] objectForKey:[tag stringValue]];
+//	NSString *photometricInterpretation = [attr value];
+//	//int jasColorSpace = JAS_CLRSPC_UNKNOWN;
+//	if ([photometricInterpretation isEqualToString:@"MONOCHROME1"] || [photometricInterpretation isEqualToString:@"MONOCHROME2"]) {
+//		jas_image_setclrspc(image, JAS_CLRSPC_SGRAY);
+//		jas_image_setcmpttype(image, 0,
+//		  JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_GRAY_Y));
+//	}
+//	else if ([photometricInterpretation isEqualToString:@"RGB"] || [photometricInterpretation isEqualToString:@"ARGB"]) {
+//		jas_image_setclrspc(image, JAS_CLRSPC_SRGB);
+//		jas_image_setcmpttype(image, 0,
+//		  JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_RGB_R));
+//		jas_image_setcmpttype(image, 1,
+//		  JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_RGB_G));
+//		jas_image_setcmpttype(image, 2,
+//		  JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_RGB_B));
+//	}
+//	else if ([photometricInterpretation isEqualToString:@"YBR_FULL_422"] || [photometricInterpretation isEqualToString:@"YBR_PARTIAL_422"] || [photometricInterpretation isEqualToString:@"YBR_FULL"]) {
+//		jas_image_setclrspc(image, JAS_CLRSPC_FAM_YCBCR);
+//		jas_image_setcmpttype(image, 0,
+//		  JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_YCBCR_Y));
+//		jas_image_setcmpttype(image, 1,
+//		  JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_YCBCR_CB));
+//		jas_image_setcmpttype(image, 2,
+//		  JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_YCBCR_CR));
+//		
+//	}
+//		/*
+//	if ([photometricInterpretation isEqualToString:@"CMYK"])
+//		jasColorSpace = JCS_CMYK;
+//		*/
+//	int cmptno;	
+//	int x,y;
+//	jas_matrix_t *jasData[3];
+//	int_fast64_t v;
+//	jasData[0] = 0;
+//	jasData[1] = 0;
+//	jasData[2] = 0;	
+//	for (cmptno = 0; cmptno < spp; ++cmptno)
+//	{
+//		if (!(jasData[cmptno] = jas_matrix_create(1, width)))
+//		{
+//			return nil;
+//		}
+//	}
+//	
+//	for (y = 0; y < height; ++y) {
+//		for (x = 0; x < width; ++x) {
+//			for (cmptno = 0; cmptno < spp; ++cmptno) {
+//				if (sgnd) {
+//					/* The sample data is signed. */
+//					int_fast32_t sv;
+//					if (pnm_getsint(jasStream, prec, &sv)) {
+//						/*
+//						if (!pnm_allowtrunc) {
+//							goto done;
+//						}
+//						*/
+//						sv = 0;
+//					}
+//					v = sv;
+//				} else {
+//					/* The sample data is unsigned. */
+//					uint_fast32_t uv;
+//					if (pnm_getuint(jasStream, prec, &uv)) {
+//						/*
+//						if (!pnm_allowtrunc) {
+//							goto done;
+//						}
+//						*/
+//						uv = 0;
+//					}
+//					v = uv;
+//				}
+//				jas_matrix_set(jasData[cmptno], 0, x, v);
+//			}
+//		}	
+//		for (cmptno = 0; cmptno < spp; ++cmptno)
+//		{
+//			if (jas_image_writecmpt(image, cmptno, 0, y, width, 1, jasData[cmptno]))
+//			{
+//				NSLog( @"Err");
+//			}
+//		}
+//	}
+//	
+//	//write to JPEG2000
+//	char *optstr = "rate=0.05 mode=int";
+//	if (quality == DCMLosslessQuality) {
+//		optstr = nil;
+//	}
+//	else if (quality == DCMHighQuality) {
+//		optstr = "rate=0.1 mode=int";
+//	}
+//	else if (quality == DCMMediumQuality)
+//		optstr = "rate=0.05 mode=int";
+//		
+//	else if (quality ==  DCMLowQuality) {
+//		optstr = "rate=0.02 mode=int";
+//	}
+//	
+//	unsigned char *outBuffer = malloc(theLength);
+//	jas_stream_t *outS =  jas_stream_memopen((char *)outBuffer, theLength);
+//	jpc_encode(image, outS , optstr);
+//	jas_stream_flush(outS );
+//
+//	long compressedLength = jas_stream_tell(outS);
+//
+//	
+////	NSString *tmpFile = @"/tmp/dcm.jpc";
+////	jas_stream_t  *out = jas_stream_fopen("/tmp/dcm.jpc", "w+b");
+////	jpc_encode(image, out, optstr);
+////	long compressedLength = jas_stream_length(out);
+//
+//	jpeg2000Data = [NSMutableData dataWithBytes:outBuffer length:compressedLength];
+//
+//
+//	for (cmptno = 0; cmptno < spp; ++cmptno) {
+//		if (jasData[cmptno]) {
+//			jas_matrix_destroy(jasData[cmptno]);
+//		}
+//	}
+//	
+//	(void) jas_stream_close(outS);
+//	free(outBuffer);
+//	jas_image_destroy(image);
+//	jas_image_clearfmts();
+//	
+//
+//	return jpeg2000Data;
+//}
 
 @end

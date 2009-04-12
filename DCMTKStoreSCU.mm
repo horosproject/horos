@@ -85,6 +85,7 @@ END_EXTERN_C
 #include "browserController.h"
 #import "DICOMToNSString.h"
 #import <OsiriX/DCMObject.h>
+#import <OsiriX/DCM.h>
 #import <OsiriX/DCMTransferSyntax.h>
 #import "SendController.h"
 
@@ -553,7 +554,7 @@ static OFBool compressFile(DcmFileFormat fileformat, const char *fname, char *ou
 		
 		unlink( outfname);
 		
-		[dcmObject writeToFile:outpath withTransferSyntax:[DCMTransferSyntax JPEG2000LossyTransferSyntax] quality:1 AET:@"OsiriX" atomically:YES];
+		[dcmObject writeToFile:outpath withTransferSyntax:[DCMTransferSyntax JPEG2000LossyTransferSyntax] quality: DCMHighQuality AET:@"OsiriX" atomically:YES];
 		[dcmObject release];
 	}
 	else if  (opt_networkTransferSyntax == EXS_JPEG2000LosslessOnly)
@@ -567,7 +568,7 @@ static OFBool compressFile(DcmFileFormat fileformat, const char *fname, char *ou
 		
 		unlink( outfname);
 		
-		[dcmObject writeToFile:outpath withTransferSyntax:[DCMTransferSyntax JPEG2000LosslessTransferSyntax] quality:1 AET:@"OsiriX" atomically:YES];
+		[dcmObject writeToFile:outpath withTransferSyntax:[DCMTransferSyntax JPEG2000LosslessTransferSyntax] quality: DCMLosslessQuality AET:@"OsiriX" atomically:YES];
 		[dcmObject release];
 	}
 	else

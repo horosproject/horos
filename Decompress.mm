@@ -86,14 +86,19 @@ int main(int argc, const char *argv[])
 		
 		if( [what isEqualToString:@"compressJPEG2000"])
 		{
+			NSMutableDictionary	*dict = [DefaultsOsiriX getDefaults];
+			[dict addEntriesFromDictionary: [[NSUserDefaults standardUserDefaults] persistentDomainForName:@"com.rossetantoine.osirix"]];
+			
 			if( dest && [dest isEqualToString:path] == NO)
 			{
 			}
 			else
 				dest = path;
 			
+			int quality = [[dict objectForKey:@"JPEG2000quality"] intValue];
+			
 			DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile: path decodingPixelData:YES];
-			[dcmObject writeToFile: [dest stringByAppendingString: @" temp"] withTransferSyntax:[DCMTransferSyntax JPEG2000LossyTransferSyntax] quality:1 AET:@"OsiriX" atomically:YES];
+			[dcmObject writeToFile: [dest stringByAppendingString: @" temp"] withTransferSyntax:[DCMTransferSyntax JPEG2000LosslessTransferSyntax] quality: quality AET:@"OsiriX" atomically:YES];
 			[dcmObject release];
 			
 			if( dest == path)

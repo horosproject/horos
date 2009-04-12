@@ -12,9 +12,6 @@
      PURPOSE.
 =========================================================================*/
 
-
-
-
 #import "SmartWindowController.h"
 #import "SearchSubview.h"
 #import "QueryFilter.h"

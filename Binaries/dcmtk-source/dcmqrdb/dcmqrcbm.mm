@@ -36,6 +36,7 @@
 #import "SendController.h"
 #import "browserController.h"
 #import "DCMObject.h"
+#import "DCM.h"
 #import "DCMTransferSyntax.h"
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
@@ -96,7 +97,7 @@ static OFCondition decompressFileFormat(DcmFileFormat fileformat, const char *fn
 		NSString *path = [NSString stringWithCString:fname encoding:[NSString defaultCStringEncoding]];
 		DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile:path decodingPixelData:YES];
 		[[NSFileManager defaultManager] removeFileAtPath:path handler:0L];
-		[dcmObject writeToFile:path withTransferSyntax:[DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax] quality:1 AET:@"OsiriX" atomically:YES];
+		[dcmObject writeToFile:path withTransferSyntax:[DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax] quality:DCMLosslessQuality AET:@"OsiriX" atomically:YES];
 		[dcmObject release];
 	}
 	else
@@ -139,7 +140,7 @@ static OFBool compressFileFormat(DcmFileFormat fileformat, const char *fname, ch
 		
 		unlink( outfname);
 		
-		[dcmObject writeToFile:outpath withTransferSyntax:[DCMTransferSyntax JPEG2000LossyTransferSyntax] quality:1 AET:@"OsiriX" atomically:YES];
+		[dcmObject writeToFile:outpath withTransferSyntax:[DCMTransferSyntax JPEG2000LossyTransferSyntax] quality: DCMHighQuality AET:@"OsiriX" atomically:YES];
 		[dcmObject release];
 		
 		printf("\n**** compressFileFormat EXS_JPEG2000\n");
@@ -152,7 +153,7 @@ static OFBool compressFileFormat(DcmFileFormat fileformat, const char *fname, ch
 		
 		unlink( outfname);
 		
-		[dcmObject writeToFile:path withTransferSyntax:[DCMTransferSyntax JPEG2000LosslessTransferSyntax] quality:1 AET:@"OsiriX" atomically:YES];
+		[dcmObject writeToFile:path withTransferSyntax:[DCMTransferSyntax JPEG2000LosslessTransferSyntax] quality: DCMLosslessQuality AET:@"OsiriX" atomically:YES];
 		[dcmObject release];
 		
 		printf("\n**** compressFileFormat EXS_JPEG2000LosslessOnly\n");

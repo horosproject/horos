@@ -14,6 +14,7 @@
 
 #import "BrowserControllerDCMTKCategory.h"
 #import <OsiriX/DCMObject.h>
+#import <OsiriX/DCM.h>
 #import <OsiriX/DCMTransferSyntax.h>
 #import "AppController.h"
 
@@ -161,14 +162,26 @@
 //	return 0;
 //}
 
+//static NSLock *t;
+
 @implementation BrowserController (BrowserControllerDCMTKCategory)
 
 - (BOOL)compressDICOMWithJPEG:(NSString *)path
 {
+//	if( t == nil) t = [[NSLock alloc] init];
+//	[t lock];
+//	int quality = [[NSUserDefaults standardUserDefaults] integerForKey: @"JPEG2000quality"];
+//	DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile: path decodingPixelData:YES];
+//	[dcmObject writeToFile: [path stringByAppendingString: @" temp.dcm"] withTransferSyntax:[DCMTransferSyntax JPEG2000LosslessTransferSyntax] quality:quality AET:@"OsiriX" atomically:YES];
+//	[dcmObject release];
+//	[t unlock];
+	
 	NSTask *theTask = [[NSTask alloc] init];
 	
+//	[[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"useJPEG2000forCompression"];
+	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"useJPEG2000forCompression"])
-		[theTask setArguments: [NSArray arrayWithObjects:path, @"compressJPEG2000", nil]];	// <- many problems with MR, ..., ...
+		[theTask setArguments: [NSArray arrayWithObjects:path, @"compressJPEG2000", nil]];
 	else
 		[theTask setArguments: [NSArray arrayWithObjects:path, @"compress", nil]];
 		
@@ -178,7 +191,6 @@
 	[theTask release];
 
 	return YES;
-
 }
 
 - (BOOL)decompressDICOM:(NSString *)path to:(NSString*) dest deleteOriginal:(BOOL) deleteOriginal

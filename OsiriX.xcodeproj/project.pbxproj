@@ -262,7 +262,6 @@
 		7EE0DC3E067A5138003E745F /* DCMSequenceAttribute.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EE0DC3C067A5138003E745F /* DCMSequenceAttribute.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7EE0DC3F067A5138003E745F /* DCMSequenceAttribute.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EE0DC3D067A5138003E745F /* DCMSequenceAttribute.m */; };
 		7EE38C7E06F0FF1100036C7F /* DCMPixelDataAttributeJPEG2000.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EE38C7C06F0FF1100036C7F /* DCMPixelDataAttributeJPEG2000.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7EE38C7F06F0FF1100036C7F /* DCMPixelDataAttributeJPEG2000.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EE38C7D06F0FF1100036C7F /* DCMPixelDataAttributeJPEG2000.m */; };
 		7EE416FB08B2615A00D4C9CC /* QueryLogController.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EE416C708B2612600D4C9CC /* QueryLogController.h */; };
 		7EE416FC08B2615B00D4C9CC /* QueryLogController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EE416C808B2612600D4C9CC /* QueryLogController.m */; };
 		7EE713BC097450B000510E88 /* dcmmkdir in Resources */ = {isa = PBXBuildFile; fileRef = 7EE713BA097450B000510E88 /* dcmmkdir */; };
@@ -4241,6 +4240,7 @@
 		CE6D47740A76B22D0034A4B4 /* DicomDirFiles.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5E005646BE500BED927 /* DicomDirFiles.c */; };
 		CE6D47750A76B22E0034A4B4 /* DicomDirDataSetWrite.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5DF05646BE500BED927 /* DicomDirDataSetWrite.c */; };
 		CE6D47760A76B22F0034A4B4 /* DicomDirDatasetRead.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5DE05646BE500BED927 /* DicomDirDatasetRead.c */; };
+		CE6DEB640F91BF9B0009FEF3 /* libjasper2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CEB7179706CE7CBD00084CA5 /* libjasper2.a */; };
 		CE6E2CB606CAE45A00BC7907 /* PlotView.h in Headers */ = {isa = PBXBuildFile; fileRef = CE6E2CAE06CAE45A00BC7907 /* PlotView.h */; };
 		CE6E2CB706CAE45A00BC7907 /* PlotWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = CE6E2CAF06CAE45A00BC7907 /* PlotWindow.h */; };
 		CE6E2CB806CAE45A00BC7907 /* PlotWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CE6E2CB006CAE45A00BC7907 /* PlotWindow.m */; };
@@ -4321,7 +4321,6 @@
 		CE9CED9C0C75BE0A00752D4B /* jpegdatasrc.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E2269C406BEF624003B09E5 /* jpegdatasrc.h */; };
 		CE9CED9D0C75BE0A00752D4B /* jpegdatasrc.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E2269C506BEF624003B09E5 /* jpegdatasrc.m */; };
 		CE9CED9E0C75BE0A00752D4B /* DCMPixelDataAttributeJPEG2000.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EE38C7C06F0FF1100036C7F /* DCMPixelDataAttributeJPEG2000.h */; };
-		CE9CED9F0C75BE0A00752D4B /* DCMPixelDataAttributeJPEG2000.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EE38C7D06F0FF1100036C7F /* DCMPixelDataAttributeJPEG2000.m */; };
 		CE9CEDA00C75BE0A00752D4B /* DCMPixelDataAttribute.h in Headers */ = {isa = PBXBuildFile; fileRef = 7ECBB8210683A68D00FF3FF4 /* DCMPixelDataAttribute.h */; };
 		CE9CEDA10C75BE0A00752D4B /* DCMPixelDataAttribute.m in Sources */ = {isa = PBXBuildFile; fileRef = 7ECBB8220683A68D00FF3FF4 /* DCMPixelDataAttribute.m */; };
 		CE9CEDA20C75BE0A00752D4B /* DCMPixelDataAttributeJPEG8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB3F606BF3BD900C7EF1E /* DCMPixelDataAttributeJPEG8.h */; };
@@ -9360,6 +9359,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				ABDEB3930D1827440079C938 /* libopenjpeg.a in Frameworks */,
+				CE6DEB640F91BF9B0009FEF3 /* libjasper2.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -17764,7 +17764,6 @@
 				BFAEB3FB06BF3BD900C7EF1E /* DCMPixelDataAttributeJPEG8.m in Sources */,
 				BFAEB40B06BF3BEE00C7EF1E /* DCMPixelDataAttributeJPEG12.m in Sources */,
 				BFAEB41B06BF3BFA00C7EF1E /* DCMPixelDataAttributeJPEG16.m in Sources */,
-				7EE38C7F06F0FF1100036C7F /* DCMPixelDataAttributeJPEG2000.m in Sources */,
 				7E17DAAE075A775600A2E803 /* DCMAbortPDU.m in Sources */,
 				7E17DAB0075A775800A2E803 /* DCMAcceptPDU.m in Sources */,
 				7E17DAB2075A775A00A2E803 /* DCMRejectPDU.m in Sources */,
@@ -19192,7 +19191,6 @@
 				CE9CED980C75BDF900752D4B /* DCMDirectory.m in Sources */,
 				CE9CED9A0C75BE0A00752D4B /* DCMNetServiceDelegate.m in Sources */,
 				CE9CED9D0C75BE0A00752D4B /* jpegdatasrc.m in Sources */,
-				CE9CED9F0C75BE0A00752D4B /* DCMPixelDataAttributeJPEG2000.m in Sources */,
 				CE9CEDA10C75BE0A00752D4B /* DCMPixelDataAttribute.m in Sources */,
 				CE9CEDA30C75BE0A00752D4B /* DCMPixelDataAttributeJPEG8.m in Sources */,
 				CE9CEDA50C75BE0A00752D4B /* DCMPixelDataAttributeJPEG12.m in Sources */,
@@ -21128,6 +21126,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/Binaries/openjpeg\"",
+					"\"$(SRCROOT)/Binaries/Jasper\"",
 				);
 				PREBINDING = YES;
 				PRODUCT_NAME = "DCM StaticLibrary";
@@ -21142,6 +21141,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/Binaries/openjpeg\"",
+					"\"$(SRCROOT)/Binaries/Jasper\"",
 				);
 				PREBINDING = YES;
 				PRODUCT_NAME = "DCM StaticLibrary";
@@ -21156,6 +21156,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/Binaries/openjpeg\"",
+					"\"$(SRCROOT)/Binaries/Jasper\"",
 				);
 				PREBINDING = YES;
 				PRODUCT_NAME = "DCM StaticLibrary";
@@ -21170,6 +21171,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/Binaries/openjpeg\"",
+					"\"$(SRCROOT)/Binaries/Jasper\"",
 				);
 				PREBINDING = YES;
 				PRODUCT_NAME = "DCM StaticLibrary";

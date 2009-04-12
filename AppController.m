@@ -1248,6 +1248,12 @@ static NSDate *lastWarningDate = nil;
 {
 	NSLog( [aNetService name]);
 	NSLog( checkSN64String);
+	
+	if( [checkSN64String isEqualToString: [aNetService name]])
+	{
+		NSRunCriticalAlertPanel( NSLocalizedString( @"64-bit Extension License", nil), NSLocalizedString( @"There is already another running OsiriX application using this 64-bit extension serial number. Buy a site license to run an unlimited number of OsiriX applications at the same time.", nil), NSLocalizedString( @"OK", nil), nil, nil);
+		exit(0);
+	}
 }
 
 #define INCOMINGPATH @"/INCOMING.noindex/"

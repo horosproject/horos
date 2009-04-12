@@ -853,13 +853,14 @@
 }
 
 
-- (void)mouseDraggedWindowLevel: (NSEvent *)event {
+- (void)mouseDraggedWindowLevel: (NSEvent *)event
+{
 	NSPoint current = [self currentPointInView:event];
-
+	
 	if( blendingView == nil)
 	{
 		float WWAdapter = startWW / 100.0;
-
+		
 		if( WWAdapter < 0.001) WWAdapter = 0.001;
 		
 		if( [self is2DViewer] == YES)
