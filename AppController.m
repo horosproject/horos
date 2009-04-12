@@ -1224,9 +1224,7 @@ static NSDate *lastWarningDate = nil;
 - (void) checkSN64:(NSTimer*) t
 {
 	@try
-	{
-		checkSN64String = [[NSString stringWithContentsOfFile: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"sn64"]] retain];
-		
+	{		
 		if( checkSN64String && checkSN64Service)
 		{
 			[checkSN64Service setDelegate: self];
@@ -1381,6 +1379,7 @@ static NSDate *lastWarningDate = nil;
 	
 	#if __LP64__
 	checkSN64Service = [[NSNetService alloc] initWithDomain:@"" type:@"_snosirix._tcp." name: [self privateIP] port: 4096];
+	checkSN64String = [[NSString stringWithContentsOfFile: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"sn64"]] retain];
 	
 	NSNetServiceBrowser *checkSN64Browser = [[NSNetServiceBrowser alloc] init];
 	[checkSN64Browser setDelegate:self];
