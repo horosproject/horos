@@ -179,7 +179,7 @@
 	NSTask *theTask = [[NSTask alloc] init];
 	
 //	[[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"useJPEG2000forCompression"];
-//	[[NSUserDefaults standardUserDefaults] setInteger: DCMHighQuality  forKey: @"JPEG2000quality"];
+//	[[NSUserDefaults standardUserDefaults] setInteger: DCMLosslessQuality  forKey: @"JPEG2000quality"];
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"useJPEG2000forCompression"])
 		[theTask setArguments: [NSArray arrayWithObjects:path, @"compressJPEG2000", nil]];
