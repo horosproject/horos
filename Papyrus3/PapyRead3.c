@@ -718,7 +718,6 @@ PapyShort ExtractJPEG2000 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong i
 				
 				char *px = (char*) newPixelData;
 				
-				//ICI char * aulieu de 32
 				int_fast32_t	*ptr = &(pixels[0])->rows_[0][0];
 				x = width * height;
 				while( x-- > 0) *px++ =	*ptr++;
