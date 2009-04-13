@@ -46,6 +46,7 @@ extern short UseOpenJpeg;
 
 
 static char **globalElementPtrs = 0L;
+static int JasperInitialized = 0;
 
 /********************************************************************************/
 /*										*/
@@ -650,13 +651,18 @@ PapyShort ExtractJPEG2000 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong i
 	}
 	else
 	{
-		PapyrusLockFunction( 0);
-		
 		jas_image_t *jasImage;
 		jas_matrix_t *pixels[4];
 		char *fmtname;
 		
-		jas_init();
+		if( JasperInitialized == 0)
+		{
+			JasperInitialized = 1;
+			jas_init();
+		}
+		
+		PapyrusLockFunction( 0);
+		
 		jas_stream_t *jasStream = jas_stream_memopen((char *)theCompressedP, theLength);
 		
 		if ((fmtid = jas_image_getfmt(jasStream)) < 0)
@@ -678,7 +684,7 @@ PapyShort ExtractJPEG2000 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong i
 		int height = jas_image_cmptheight(jasImage, 0);
 		int depth = jas_image_cmptprec(jasImage, 0);
 		fmtname = jas_image_fmttostr(fmtid);
-		//NSLog(@"%s %d %d %d %d %ld\n", fmtname, numcmpts, width, height, depth, (long) jas_image_rawsize(jasImage));
+		
 		int bitDepth = 0;
 		if (depth == 8)
 			bitDepth = 1;
@@ -687,7 +693,7 @@ PapyShort ExtractJPEG2000 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong i
 		else if (depth > 16)
 			bitDepth = 4;
 		
-		unsigned char *newPixelData = ioImage8P;	//malloc( width * height * bitDepth * numcmpts);
+		unsigned char *newPixelData = ioImage8P;
 		
 		if( gArrPhotoInterpret [inFileNb] == MONOCHROME1 || gArrPhotoInterpret [inFileNb] == MONOCHROME2) numcmpts = 1;
 		
@@ -742,7 +748,6 @@ PapyShort ExtractJPEG2000 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong i
 			jas_matrix_destroy( pixels[ i]);
 		
 		jas_image_destroy(jasImage);
-		jas_image_clearfmts();
 		
 		PapyrusLockFunction( 1);
 		

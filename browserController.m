@@ -12247,6 +12247,14 @@ static NSArray*	openSubSeriesArray = nil;
 	{
 		return [mainWindow.windowController isKindOfClass:[ViewerController class]];
 	}
+	else if( [menuItem action] == @selector( unifyStudies:))
+	{
+		if( isCurrentDatabaseBonjour) return NO;
+		
+		if( [[databaseOutline selectedRowIndexes] count] <= 1) return NO;
+		
+		return YES;
+	}
 	else if( [menuItem action] == @selector( viewerDICOMROIsImages:))
 	{
 		if( isCurrentDatabaseBonjour == NO)
@@ -12287,7 +12295,6 @@ static NSArray*	openSubSeriesArray = nil;
 	{
 		if( isCurrentDatabaseBonjour) return NO;
 		
-			
 		BOOL matrixThumbnails;
 		
 		if( menuItem.menu == contextual) matrixThumbnails = YES;

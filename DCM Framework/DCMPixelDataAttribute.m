@@ -27,6 +27,7 @@
 #import "jasper.h"
 
 static int UseOpenJpeg = 0;
+static int JasperInitialized = 0;
 
 #if __ppc__
 
@@ -720,8 +721,14 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 	}
 	
 	//jpeg2000
-	if ([[DCMTransferSyntax JPEG2000LosslessTransferSyntax] isEqualToTransferSyntax:ts] || [[DCMTransferSyntax JPEG2000LossyTransferSyntax] isEqualToTransferSyntax:ts] ) {
-		
+	if ([[DCMTransferSyntax JPEG2000LosslessTransferSyntax] isEqualToTransferSyntax:ts] || [[DCMTransferSyntax JPEG2000LossyTransferSyntax] isEqualToTransferSyntax:ts] )
+	{
+		if( JasperInitialized == NO)
+		{
+			JasperInitialized = YES;
+			jas_init();
+		}
+			
 		NSMutableArray *array = [NSMutableArray array];
 		for ( NSMutableData *data in _values ) {
 			NSMutableData *newData = [self encodeJPEG2000:data quality:quality];
@@ -1005,18 +1012,11 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 	return [self convertJPEG8LosslessToHost:jpegData];
 }
 
-- (NSData *)convertJPEG2000ToHost:(NSData *)jpegData{
-	//unsigned short		theGroup, theElement;
+- (NSData *)convertJPEG2000ToHost:(NSData *)jpegData
+{
 	int					 fmtid;
-	//unsigned char		theTmpBuf [256];
-	//unsigned char		*theTmpBufP;
-	//unsigned char		*tmpBufPtr2;
 	unsigned long		i,  theLength,  x, y, decompressedLength;
-	//short				theErr;
-	//unsigned short		*theImage16P, theUShort1;
 	unsigned char		*theCompressedP;
-	//unsigned char		theHigh, theLow;
-	//long				ok = FALSE;
 	NSMutableData				*pixelData;
 	
 	jas_image_t *jasImage;
@@ -1026,7 +1026,6 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 	theCompressedP = (unsigned char*)[jpegData bytes];
 	theLength = [jpegData length];
 	
-	jas_init();
 	jas_stream_t *jasStream = jas_stream_memopen((char *)theCompressedP, theLength);
 		
 	if ((fmtid = jas_image_getfmt(jasStream)) < 0)
@@ -1124,7 +1123,7 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 	}
 	
 	jas_image_destroy(jasImage);
-	jas_image_clearfmts();
+//	jas_image_clearfmts();
 	
 	pixelData = [NSMutableData dataWithBytes:newPixelData length:decompressedLength ];
 	free( newPixelData);
@@ -1270,7 +1269,7 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 		sgnd = _isSigned;
 	
 	//init jasper
-	jas_init();
+//	jas_init();
 	// set up stream
 	
 	//set up component parameters
@@ -1413,7 +1412,7 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 	}
 	
 	jas_image_destroy(image);
-	jas_image_clearfmts();
+//	jas_image_clearfmts();
 	
 	char zero = 0;
 	if ([jpeg2000Data length] % 2) 
@@ -3121,6 +3120,12 @@ NS_ENDHANDLER
 		if( transferSyntax.isEncapsulated == YES)
 		{
 			short depth = 0;
+			
+			if( JasperInitialized == NO)
+			{
+				JasperInitialized = YES;
+				jas_init();
+			}
 			
 			[singleThread unlock];
 			
