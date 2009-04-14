@@ -678,7 +678,7 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject:@"1" forKey:@"AUTOCLEANINGSPACE"];
 	[defaultValues setObject:@"1" forKey:@"AUTOCLEANINGSPACEPRODUCED"];
 	[defaultValues setObject:@"1" forKey:@"AUTOCLEANINGSPACEOPENED"];
-	[defaultValues setObject:@"5000" forKey:@"AUTOCLEANINGSPACESIZE"];
+	[defaultValues setObject:@"10000" forKey:@"AUTOCLEANINGSPACESIZE"];
 	[defaultValues setObject:@"0" forKey:@"PETMinimumValue"];
 	[defaultValues setObject:@"1" forKey:@"PETWindowingMode"];
 	[defaultValues setObject:@"1" forKey:@"PETOpacityTable"];

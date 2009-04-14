@@ -948,8 +948,15 @@ static NSArray*	statesArray = nil;
 			
 			if( produceAddedFiles)
 			{
-				NSDictionary *userInfo = [NSDictionary dictionaryWithObject:addedImagesArray forKey:@"OsiriXAddToDBArray"];
-				[[NSNotificationCenter defaultCenter] postNotificationName:@"OsirixAddToDBNotification" object: nil userInfo:userInfo];
+				@try
+				{
+					NSDictionary *userInfo = [NSDictionary dictionaryWithObject:addedImagesArray forKey:@"OsiriXAddToDBArray"];
+					[[NSNotificationCenter defaultCenter] postNotificationName:@"OsirixAddToDBNotification" object: nil userInfo:userInfo];
+				}
+				@catch( NSException *ne)
+				{
+					NSLog(@"OsirixAddToDBNotification: %@", [ne description]);
+				}
 				
 				if( [addedImagesArray count] && onlyDICOMROI == NO)
 				{
