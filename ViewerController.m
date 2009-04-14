@@ -15201,6 +15201,7 @@ int i,j,l;
 {
 	int i, curImage;
 	
+	[dcmExportWindow makeFirstResponder: nil];	// To force nstextfield validation.
     [dcmExportWindow orderOut:sender];
     
     [NSApp endSheet:dcmExportWindow returnCode:[sender tag]];

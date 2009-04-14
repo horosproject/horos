@@ -1826,6 +1826,12 @@ static float deg2rad = 3.14159265358979/180.0;
 						}
 					}
 					
+					if( self.dcmQuality == 1)
+						[curExportView.vrView setLOD: 1.0];
+					
+					if( self.dcmFormat) 
+						[curExportView.vrView setViewSizeToMatrix3DExport];
+					
 					if( quicktimeExportMode)
 					{
 						[curExportView updateViewMPR: NO];

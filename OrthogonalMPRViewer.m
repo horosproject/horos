@@ -1336,6 +1336,7 @@ static NSString*	VRPanelToolbarItemIdentifier			= @"MIP.tif";
 {
 	long i, curImage;
 	
+	[dcmExportWindow makeFirstResponder: nil];	// To force nstextfield validation.
     [dcmExportWindow orderOut:sender];
     
     [NSApp endSheet:dcmExportWindow returnCode:[sender tag]];

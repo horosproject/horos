@@ -2177,7 +2177,7 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 -(IBAction) endExportDICOMFileSettings:(id) sender
 {
 	long i;
-	
+	[dcmExportWindow makeFirstResponder: nil];	// To force nstextfield validation.
     [dcmExportWindow orderOut:sender];
     
     [NSApp endSheet:dcmExportWindow returnCode:[sender tag]];

@@ -510,6 +510,7 @@ typedef struct _xyzArray
 #define DATABASEPATH @"/DATABASE.noindex/"
 -(IBAction) endDCMExportSettings:(id) sender
 {
+	[exportDCMWindow makeFirstResponder: nil];	// To force nstextfield validation.
 	[exportDCMWindow orderOut:sender];
 	
 	[NSApp endSheet:exportDCMWindow returnCode:[sender tag]];

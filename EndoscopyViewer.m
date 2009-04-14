@@ -1016,6 +1016,7 @@ static NSString*	CenterlineToolbarItemIdentifier			= @"Centerline";
 
 -(IBAction) endDCMExportSettings:(id) sender
 {
+	[exportDCMWindow makeFirstResponder: nil];	// To force nstextfield validation.
 	[exportDCMWindow orderOut:sender];
 	[NSApp endSheet:exportDCMWindow returnCode:[sender tag]];
 	
