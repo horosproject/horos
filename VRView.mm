@@ -336,7 +336,8 @@ public:
 + (BOOL) getCroppingBox:(double*) a :(vtkVolume *) volume :(vtkBoxWidget*) croppingBox
 {
 	if( volume == nil) return NO;
-
+	if( croppingBox == nil) return NO;
+	
 	vtkVolumeMapper *mapper = (vtkVolumeMapper*) volume->GetMapper();
 	if( mapper)
 	{
@@ -494,8 +495,14 @@ public:
 
 - (void) setCroppingBox:(double*) a
 {
-	if( a)
+	if( a && croppingBox)
 		[VRView setCroppingBox: a :volume];
+}
+
+- (void) setBlendingCroppingBox:(double*) a
+{
+	if( a && croppingBox)
+		[VRView setCroppingBox: a :blendingVolume];
 }
 
 - (void) print:(id) sender
@@ -693,16 +700,18 @@ public:
 		
 		if( validBox)
 		{
-			[VRView setCroppingBox: a :volume];
+			[self setCroppingBox: a];
 			
 			[VRView getCroppingBox: a :blendingVolume :croppingBox];
-			[VRView setCroppingBox: a :blendingVolume];
+			[self setBlendingCroppingBox: a];
 		}
 		else
 		{
-			[self resetImage: self];
-			
-			croppingBox->PlaceWidget();
+			if( [[controller style] isEqualToString: @"noNib"] == NO)
+			{
+				[self resetImage: self];
+				croppingBox->PlaceWidget();
+			}
 		}
 		
 		if( volumeMapper)
@@ -795,16 +804,18 @@ public:
 	
 	if( validBox)
 	{
-		[VRView setCroppingBox: a :volume];
+		[self setCroppingBox: a];
 		
 		[VRView getCroppingBox: a :blendingVolume :croppingBox];
-		[VRView setCroppingBox: a :blendingVolume];
+		
+		[self setBlendingCroppingBox: a];
 	}
 	else
 	{
 		[self resetImage: self];
 		
-		croppingBox->PlaceWidget();
+		if( croppingBox)
+			croppingBox->PlaceWidget();
 	}
 	[self display];
 	
@@ -1177,7 +1188,10 @@ public:
 			exportDCM = [[DICOMExport alloc] init];
 			[exportDCM setSeriesNumber:5500 + [[NSCalendarDate date] minuteOfHour]  + [[NSCalendarDate date] secondOfMinute]];
 			
-			if( croppingBox->GetEnabled()) croppingBox->Off();
+			if( croppingBox)
+			{
+				if( croppingBox->GetEnabled()) croppingBox->Off();
+			}
 			aRenderer->RemoveActor(outlineRect);
 			aRenderer->RemoveActor(textX);
 			
@@ -2026,14 +2040,16 @@ public:
 	mapOutline->Delete();
 	outlineRect->Delete();
 	
-	if( cropcallback)
+	if( croppingBox)
 	{
 		croppingBox->InvokeEvent(vtkCommand::EndEvent,NULL);
 		croppingBox->RemoveObserver(cropcallback);
-		cropcallback->Delete();
+		croppingBox->Delete();
 	}
 	
-	croppingBox->Delete();
+	if( cropcallback)
+		cropcallback->Delete();
+	
 	textWLWW->Delete();
 	textX->Delete();
 	for( i = 0; i < 4; i++) oText[ i]->Delete();
@@ -2978,7 +2994,8 @@ public:
 		}
 	}
 	
-	croppingBox->SetHandleSize( 0.005);
+	if( croppingBox)
+		croppingBox->SetHandleSize( 0.005);
 	
 	[drawLock unlock];
 	
@@ -3023,7 +3040,8 @@ public:
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: nil];
 	}
 	
-	croppingBox->SetHandleSize( 0.005);
+	if( croppingBox)
+		croppingBox->SetHandleSize( 0.005);
 	
 	[drawLock unlock];
 }
@@ -3707,7 +3725,8 @@ public:
 		}
 		else [super mouseDown:theEvent];
 		
-		croppingBox->SetHandleSize( 0.005);
+		if( croppingBox)
+			croppingBox->SetHandleSize( 0.005);
 	}
 	
 	bestRenderingWasGenerated = NO;
@@ -4253,7 +4272,8 @@ public:
 	ROIUPDATE = NO;
 	//[[NSNotificationCenter defaultCenter] postNotificationName: @"updateVolumeData" object: pixList userInfo: 0];	<- This is slow
 	
-	cropcallback->Execute(croppingBox, 0, nil);
+	if( cropcallback)
+		cropcallback->Execute(croppingBox, 0, nil);
 	
 	[scheduler release];
 	
@@ -4318,7 +4338,8 @@ public:
 	
 	if( currentTool != t3DRotate)
 	{
-		if( croppingBox->GetEnabled()) croppingBox->Off();
+		if( croppingBox)
+			if( croppingBox->GetEnabled()) croppingBox->Off();
 	}
 	
 	if( currentTool == tMesure || previousTool == tMesure)
@@ -4694,7 +4715,9 @@ public:
 		
 	// REMOVE CROPPING BOX
 	
-	if( croppingBox->GetEnabled()) croppingBox->Off();
+	if( croppingBox)
+		if( croppingBox->GetEnabled()) croppingBox->Off();
+	
 	aRenderer->RemoveActor(outlineRect);
 	aRenderer->RemoveActor(textX);
 	
@@ -4712,10 +4735,10 @@ public:
 				volume->SetMapper( volumeMapper);
 				if( validBox)
 				{
-					[VRView setCroppingBox: a :volume];
+					[self setCroppingBox: a];
 					
 					[VRView getCroppingBox: a :blendingVolume :croppingBox];
-					[VRView setCroppingBox: a :blendingVolume];
+					[self setBlendingCroppingBox: a];
 				}
 			}
 		}
@@ -4800,7 +4823,8 @@ public:
 	else
 		aRenderer->ResetCameraClippingRange();
 
-	croppingBox->SetHandleSize( 0.005);
+	if( croppingBox)
+		croppingBox->SetHandleSize( 0.005);
 	[self setNeedsDisplay:YES];
 }
 
@@ -4832,7 +4856,8 @@ public:
 	else
 		aRenderer->ResetCameraClippingRange();
 	
-	croppingBox->SetHandleSize( 0.005);
+	if( croppingBox)
+		croppingBox->SetHandleSize( 0.005);
 	[self setNeedsDisplay:YES];
 }
 
@@ -4863,7 +4888,8 @@ public:
 	else
 		aRenderer->ResetCameraClippingRange();
 	
-	croppingBox->SetHandleSize( 0.005);
+	if( croppingBox)
+		croppingBox->SetHandleSize( 0.005);
 	[self setNeedsDisplay:YES];
 }
 
@@ -4893,7 +4919,8 @@ public:
 	else
 		aRenderer->ResetCameraClippingRange();
 
-	croppingBox->SetHandleSize( 0.005);
+	if( croppingBox)
+		croppingBox->SetHandleSize( 0.005);
 	[self setNeedsDisplay:YES];
 }
 
@@ -5107,7 +5134,8 @@ public:
 		blendingVolume->SetUserMatrix( matrice);
 		matrice->Delete();
 		
-		cropcallback->setBlendingVolume( blendingVolume);
+		if( cropcallback)
+			cropcallback->setBlendingVolume( blendingVolume);
 		
 	    aRenderer->AddVolume( blendingVolume);
 	}
@@ -5523,22 +5551,27 @@ public:
 									factor*[firstObject originX] * matrice->Element[0][2] + factor*[firstObject originY] * matrice->Element[1][2] + factor*[firstObject originZ]*matrice->Element[2][2]);
 		outlineRect->PickableOff();
 		
-		croppingBox = vtkBoxWidget::New();
-		
-		croppingBox->GetHandleProperty()->SetColor(0, 1, 0);
-		croppingBox->SetProp3D( volume);
-		croppingBox->SetPlaceFactor( 1.0);
-		croppingBox->SetHandleSize( 0.005);
-		croppingBox->PlaceWidget();
-		croppingBox->SetInteractor( [self getInteractor]);
-		croppingBox->SetRotationEnabled( false);
-		croppingBox->SetInsideOut( true);
-		croppingBox->OutlineCursorWiresOff();
-		
-		cropcallback = vtkMyCallbackVR::New();
-		cropcallback->setBlendingVolume( nil);
-		croppingBox->AddObserver(vtkCommand::InteractionEvent, cropcallback);
+		cropcallback = nil;
+		croppingBox = nil;
+		if( [[controller style] isEqualToString: @"noNib"] == NO)
+		{
+			croppingBox = vtkBoxWidget::New();
 			
+			croppingBox->GetHandleProperty()->SetColor(0, 1, 0);
+			croppingBox->SetProp3D( volume);
+			croppingBox->SetPlaceFactor( 1.0);
+			croppingBox->SetHandleSize( 0.005);
+			croppingBox->PlaceWidget();
+			croppingBox->SetInteractor( [self getInteractor]);
+			croppingBox->SetRotationEnabled( false);
+			croppingBox->SetInsideOut( true);
+			croppingBox->OutlineCursorWiresOff();
+			
+			cropcallback = vtkMyCallbackVR::New();
+			cropcallback->setBlendingVolume( nil);
+			croppingBox->AddObserver(vtkCommand::InteractionEvent, cropcallback);
+		}
+		
 		textWLWW = vtkTextActor::New();
 		if( ww < 50) sprintf(WLWWString, "WL: %0.4f WW: %0.4f ", wl, ww);
 		else sprintf(WLWWString, "WL: %0.f WW: %0.f ", wl, ww);
@@ -6189,13 +6222,16 @@ public:
 
 -(void) showCropCube:(id) sender
 {
-	if( croppingBox->GetEnabled()) croppingBox->Off();
-	else
+	if( croppingBox)
 	{
-		croppingBox->On();
-		
-		[self setCurrentTool: t3DRotate];
-		[[controller toolsMatrix] selectCellWithTag: t3DRotate];
+		if( croppingBox->GetEnabled()) croppingBox->Off();
+		else
+		{
+			croppingBox->On();
+			
+			[self setCurrentTool: t3DRotate];
+			[[controller toolsMatrix] selectCellWithTag: t3DRotate];
+		}
 	}
 }
 
@@ -6254,7 +6290,8 @@ public:
 					memcpy( data, [volumeData bytes], volumeSize);
 					[[NSNotificationCenter defaultCenter] postNotificationName: @"updateVolumeData" object: pixList userInfo: 0];
 					
-					cropcallback->Execute(croppingBox, 0, nil);
+					if( croppingBox)
+						cropcallback->Execute(croppingBox, 0, nil);
 				}
 				else NSRunAlertPanel(NSLocalizedString(@"3D Scissor State", nil), NSLocalizedString(@"No saved data are available.", nil), NSLocalizedString(@"OK", nil), nil, nil);
 				
@@ -6460,7 +6497,7 @@ public:
 	a[3] = [[cam maxCroppingPlanes] y];
 	a[5] = [[cam maxCroppingPlanes] z];
 	
-	[VRView setCroppingBox: a :volume];
+	[self setCroppingBox: a];
 	
 	double origin[3];
 	volume->GetPosition(origin);	//GetOrigin
@@ -6488,10 +6525,11 @@ public:
 	
 	Transform->Delete();
 	
-	croppingBox->PlaceWidget(min[0], max[0], min[1], max[1], min[2], max[2]);
-
+	if( croppingBox)
+		croppingBox->PlaceWidget(min[0], max[0], min[1], max[1], min[2], max[2]);
+	
 	[VRView getCroppingBox: a :blendingVolume :croppingBox];
-	[VRView setCroppingBox: a :blendingVolume];
+	[self setBlendingCroppingBox: a];
 
 	// fusion percentage
 	[self setBlendingFactor:[cam fusionPercentage]];

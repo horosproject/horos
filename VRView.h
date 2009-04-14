@@ -357,6 +357,7 @@ typedef char* vtkMyCallbackVR;
 
 + (BOOL) getCroppingBox:(double*) a :(vtkVolume *) volume :(vtkBoxWidget*) croppingBox;
 + (void) setCroppingBox:(double*) a :(vtkVolume *) volume;
+- (void) setBlendingCroppingBox:(double*) a;
 - (void) setCroppingBox:(double*) a;
 - (BOOL) croppingBox:(double*) a;
 - (void) showCropCube:(id) sender;
