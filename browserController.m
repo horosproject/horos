@@ -13406,7 +13406,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	if( isCurrentDatabaseBonjour) return;
 	if( DatabaseIsEdited == YES && [[self window] isKeyWindow] == YES) return;
 	if( managedObjectContext == nil) return;
-	if( [NSDate timeIntervalSinceReferenceDate] - lastCheckIncoming < 1) return;
+	if( [NSDate timeIntervalSinceReferenceDate] - lastCheckIncoming < 0.5) return;
 	
 	if( [checkIncomingLock tryLock] )
 	{

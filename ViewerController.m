@@ -15172,6 +15172,7 @@ int i,j,l;
 		
 		free( data);
 	}
+	else NSLog( @"No Data");
 	
 	if( screenCapture || allViewers)
 	{

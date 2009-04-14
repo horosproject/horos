@@ -2156,6 +2156,7 @@ static const char *GetPrivateIP()
 	[dateFomat setDateFormat: [[NSUserDefaults standardUserDefaults] stringForKey: @"DBDateOfBirthFormat2"]];
 	
 	[[[outlineView tableColumnWithIdentifier: @"birthdate"] dataCell] setFormatter: dateFomat];
+	[[[outlineView tableColumnWithIdentifier: @"date"] dataCell] setFormatter: dateFomat];
 	
 	[sourcesTable setDoubleAction: @selector( selectUniqueSource:)];
 	
