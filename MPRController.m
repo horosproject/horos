@@ -1631,6 +1631,8 @@ static float deg2rad = 3.14159265358979/180.0;
 
 -(IBAction) endDCMExportSettings:(id) sender
 {
+	[dcmWindow makeFirstResponder: nil];	// To force nstextfield validation.
+	
 	if( quicktimeExportMode)
 	{
 		[quicktimeWindow orderOut: sender];
@@ -1761,6 +1763,69 @@ static float deg2rad = 3.14159265358979/180.0;
 				
 				for( int i = 0; i < self.dcmNumberOfFrames; i++)
 				{
+					if( curExportView == mprView3)
+					{
+						switch( dcmRotationDirection)
+						{
+							case 0:
+								mprView2.angleMPR += (float) dcmRotation / (float) self.dcmNumberOfFrames;
+								
+								[[self window] makeFirstResponder: mprView2];
+								[mprView2 restoreCamera];
+								[mprView2 updateViewMPR];
+								break;
+							case 1:
+								mprView1.angleMPR += (float) dcmRotation / (float) self.dcmNumberOfFrames;
+								
+								[[self window] makeFirstResponder: mprView1];
+								[mprView1 restoreCamera];
+								[mprView1 updateViewMPR];
+								break;
+						}
+					}
+					
+					if( curExportView == mprView2)
+					{
+						switch( dcmRotationDirection)
+						{
+							case 0:
+								mprView3.angleMPR += (float) dcmRotation / (float) self.dcmNumberOfFrames;
+								
+								[[self window] makeFirstResponder: mprView3];
+								[mprView3 restoreCamera];
+								[mprView3 updateViewMPR];
+								break;
+							case 1:
+								mprView1.angleMPR += (float) dcmRotation / (float) self.dcmNumberOfFrames;
+								
+								[[self window] makeFirstResponder: mprView1];
+								[mprView1 restoreCamera];
+								[mprView1 updateViewMPR];
+								break;
+						}
+					}
+					
+					if( curExportView == mprView1)
+					{
+						switch( dcmRotationDirection)
+						{
+							case 0:
+								mprView2.angleMPR += (float) dcmRotation / (float) self.dcmNumberOfFrames;
+								
+								[[self window] makeFirstResponder: mprView2];
+								[mprView2 restoreCamera];
+								[mprView2 updateViewMPR];
+								break;
+							case 1:
+								mprView3.angleMPR += (float) dcmRotation / (float) self.dcmNumberOfFrames;
+								
+								[[self window] makeFirstResponder: mprView3];
+								[mprView3 restoreCamera];
+								[mprView3 updateViewMPR];
+								break;
+						}
+					}
+					
 					if( quicktimeExportMode)
 					{
 						[curExportView updateViewMPR: NO];
@@ -1781,17 +1846,6 @@ static float deg2rad = 3.14159265358979/180.0;
 					
 					if( [progress aborted])
 						break;
-					
-					switch( dcmRotationDirection)
-					{
-						case 0:
-							[curExportView.vrView Azimuth: (float) dcmRotation / (float) self.dcmNumberOfFrames];
-						break;
-						
-						case 1:
-							[curExportView.vrView Vertical: (float) dcmRotation / (float) self.dcmNumberOfFrames];
-						break;
-					}
 				}
 			}
 			else // A batch sequence
