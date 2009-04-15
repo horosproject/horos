@@ -183,7 +183,7 @@
 	[splash showWindow:self];
 	[[splash progress] setMaxValue:[filesToAnonymize count]];
 	
-	if (DEBUG)
+	if (DCMDEBUG)
 		NSLog(@"file Count: %d", [filesToAnonymize count]);
 		
 	NSString *file, *currentStudy = 0L;
@@ -399,7 +399,7 @@
 	
 	while (cell = [enumerator nextObject])
 	{
-		if (DEBUG)
+		if (DCMDEBUG)
 			NSLog(@"Matrix cell: %@", [cell title]);
 			if ([cell state] == NSOnState)
 			{
@@ -496,7 +496,7 @@
 						attrTag = nil;				
 						break;
 				}
-			if (DEBUG)
+			if (DCMDEBUG)
 				NSLog(@"Anonymize tag:%@", [attrTag description]);
 				
 			if (attrTag)

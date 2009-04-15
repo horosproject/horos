@@ -23,7 +23,7 @@
 + (id)dicomDate:(NSString *)string{
 	if ([string rangeOfString:@"-"].location == NSNotFound){
 		//format for DA is YYMMDD = @"%Y%m%d"
-		if (DEBUG)
+		if (DCMDEBUG)
 			NSLog (@"date string: %@ intValue: %d", string,[string intValue] );
 		NSString *format = @"%Y%m%d";
 		if (string && [string intValue]) {
@@ -52,7 +52,7 @@
 	if ([string rangeOfString:@"-"].location == NSNotFound){
 		//format for TM is HHMMSS.ffffff = @"%H%M%S.%U";"
 		// %U is our code for microseconds
-			if (DEBUG)
+			if (DCMDEBUG)
 			NSLog (@"time string: %@", string);
 		if (string  && [string intValue]) {
 			NSArray *timeComponents = [string componentsSeparatedByString:@"."];
@@ -87,7 +87,7 @@
 	if ([string rangeOfString:@"-"].location == NSNotFound){
 		//format for DT is HHMMSS.ffffff = @"@"%H%M%S.%U";"
 		// %U is our code for microseconds
-			if (DEBUG)
+			if (DCMDEBUG)
 			NSLog (@"date time string: %@", string);
 		if (string && [string intValue]) {
 			NSArray *timeComponents = [string componentsSeparatedByString:@"."];

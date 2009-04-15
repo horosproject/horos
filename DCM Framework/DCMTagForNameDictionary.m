@@ -30,7 +30,7 @@ static DCMTagForNameDictionary *sharedTagForNameDictionary;
 	if( path == nil) NSLog(@"Cannot find nameDictionary");
 		sharedTagForNameDictionary = [[NSDictionary dictionaryWithContentsOfFile:path] retain];
 		
-	if (DEBUG)
+	if (DCMDEBUG)
 		NSLog(@"shared name dictionary; %@", [sharedTagForNameDictionary description]);
 	}
 	return sharedTagForNameDictionary;

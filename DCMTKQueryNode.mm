@@ -1048,9 +1048,9 @@ NS_ENDHANDLER
 
 
 
-#ifdef DEBUG
-    dcmDataDict.clear();  /* useful for debugging with dmalloc */
-#endif
+//#ifdef DEBUG
+//    dcmDataDict.clear();  /* useful for debugging with dmalloc */
+//#endif
  
 	//NS_HANDLER
 	//NS_ENDHANDLER

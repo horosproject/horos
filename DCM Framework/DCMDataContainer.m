@@ -468,7 +468,7 @@
 }
 
 - (NSMutableArray *)nextTimesWithLength:(int)length{
-	if (DEBUG)
+	if (DCMDEBUG)
 		NSLog(@"Next time with length: %d", length);
 	NSException *exception = [self testForLength:length];
 
@@ -766,7 +766,7 @@
 }
 
 - (void)setTransferSyntaxForDataset:(DCMTransferSyntax *)ts{
-	if (DEBUG)
+	if (DCMDEBUG)
 		NSLog(@"setTransferSyntaxForDataset:%@", [ts description]);
 	[transferSyntaxForDataset release];
 	transferSyntaxForDataset = [ts retain];
@@ -799,7 +799,7 @@
 	
 	if ([dicm isEqualToString:@"DICM"])
 	{ //DICOM.10 file
-		if (DEBUG)
+		if (DCMDEBUG)
 			NSLog(@"Dicom part 10 file");
 		
 		/*
@@ -810,7 +810,7 @@
 		element = [self nextUnsignedShort];
 		vr = [self nextStringWithLength:2];
 		
-		if (DEBUG)
+		if (DCMDEBUG)
 			NSLog(@"group: %0004d element: %0004d vr: %@" , group, element, vr);
 
 		if ([DCMValueRepresentation isValidVR:vr]) {
@@ -911,7 +911,7 @@
 		NSArray *objects = [NSArray arrayWithObjects:[NSNumber numberWithInt:position], [NSNumber numberWithInt:elementLength], [NSNumber numberWithInt:[dicomData length]], nil];
 	
 		NSDictionary *userInfo =  [NSDictionary dictionaryWithObjects:objects forKeys:keys];
-		if (DEBUG)
+		if (DCMDEBUG)
 			NSLog(@"error Info: %@", [userInfo description]);
 		return [NSException exceptionWithName:@"DCMInvalidLengthException" reason:@"Length of element exceeds length remaining in data." userInfo:userInfo];
 	}

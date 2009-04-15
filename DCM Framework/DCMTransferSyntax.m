@@ -246,7 +246,7 @@ static NSString *DCM_BigEndianOsiriX = @"1.2.840.10008.1.2.2.1";
 
 
 - (void)dealloc{
-//	if (DEBUG)
+//	if (DCMDEBUG)
 //		NSLog(@"Release DCMTransferSyntax %@", [super description]);
 	[transferSyntaxDict release];
 	[transferSyntax release];

@@ -41,7 +41,7 @@
 
 
 
-#define DEBUG NO
+#define DCMDEBUG NO
 #define DCMFramework_compile YES
 
 

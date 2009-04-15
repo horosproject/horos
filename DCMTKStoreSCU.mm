@@ -877,8 +877,6 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 {
 	if (self = [super init])
 	{
-		//NSLog(@"init hostname: %@", hostname);
-		//NSLog(@"calling AET: %@", myAET);
 		_callingAET = [myAET retain];
 		_calledAET = [theirAET retain];
 		_port = port;
@@ -937,7 +935,6 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 	[_calledAET release];
 	[_hostname release];
 	[_extraParameters release];
-	//[_transferSyntax release];
 	[_filesToSend release];
 	[_patientName release];
 	[_studyDescription release];
@@ -1190,24 +1187,12 @@ NS_DURING
 	 //populate temp folder Just symbolic links for the moment for testing
 	  for (int i=0; i < paramCount; i++)
       {
-//		NSString *file = [_filesToSend objectAtIndex:i];
-//		NSString *lastPath = [file lastPathComponent];
-//		NSString *newPath = [tempFolder stringByAppendingPathComponent:lastPath];
-//		[fileManager createSymbolicLinkAtPath:newPath pathContent:file];
-//		[paths addObject:newPath];
-
 		[paths addObject:[_filesToSend objectAtIndex:i]];
 	  }
 	  
 	   for (int i=0; i < paramCount; i++)
       {
         ignoreName = OFFalse;
-		//NSStringEncoding encoding = [NSString defaultCStringEncoding];
-		
-		//currentFilename = (const char *)[(NSString *)[_filesToSend objectAtIndex:i]  cStringUsingEncoding:[NSString defaultCStringEncoding]];
-		
-		//currentFilename = (const char *)[(NSString *)[paths objectAtIndex:i]  cStringUsingEncoding:[NSString defaultCStringEncoding]];
-		
 		currentFilename = [[paths objectAtIndex:i] UTF8String];
 		
         if (access(currentFilename, R_OK) < 0)
@@ -1566,9 +1551,9 @@ NS_ENDHANDLER
   //  DcmRLEEncoderRegistration::cleanup();
 #endif
 
-#ifdef DEBUG
-    dcmDataDict.clear();  /* useful for debugging with dmalloc */
-#endif
+//#ifdef DEBUG
+//    dcmDataDict.clear();  /* useful for debugging with dmalloc */
+//#endif
 
 	{
 		NSMutableDictionary  *userInfo = [NSMutableDictionary dictionary];

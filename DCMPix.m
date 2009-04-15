@@ -8448,7 +8448,7 @@ END_CREATE_ROIS:
 		
 		if( [self isDICOMFile: srcFile])
 		{
-			if (DEBUG)
+			if (DCMDEBUG)
 				NSLog(@"checkLoad isDICOM: %@", srcFile);
 			
 			// PLEASE, KEEP BOTH FUNCTIONS FOR TESTING PURPOSE. THANKS

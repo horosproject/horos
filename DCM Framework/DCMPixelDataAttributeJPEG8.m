@@ -408,7 +408,7 @@ jpeg8_NSData_dest (j_compress_ptr cinfo, NSMutableData *aData)
 
 - (NSMutableData *)convertJPEG8LosslessToHost:(NSData *)jpegData{
 //[jpegData writeToFile:[NSString stringWithFormat: @"%@/CT.jpg", NSHomeDirectory()] atomically:YES];
-	if (DEBUG) NSLog(@"convertjpeg8LosslessToHost");
+	if (DCMDEBUG) NSLog(@"convertjpeg8LosslessToHost");
 	struct jpeg_error_mgr			theJErr;		 /* the JPEG error manager var */
 	struct jpeg_decompress_struct	theCInfo;
 	unsigned long				 theLimit;

@@ -502,9 +502,9 @@ static const char* transferSyntaxes[] = {
 
 
 
-#ifdef DEBUG
-    dcmDataDict.clear();  /* useful for debugging with dmalloc */
-#endif
+//#ifdef DEBUG
+//    dcmDataDict.clear();  /* useful for debugging with dmalloc */
+//#endif
  
 	[pool release];
 	return connection_Status;

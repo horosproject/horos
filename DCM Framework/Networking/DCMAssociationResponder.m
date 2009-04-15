@@ -51,7 +51,7 @@ static BOOL AETitleMustBeIdentical = NO;
 	if (self = [super init]) {
 		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 		NSException *exception = nil;
-		if (DEBUG)
+		if (DCMDEBUG)
 			NSLog(@"New Association");
 		NS_DURING
 			dataHandler = [[params objectForKey:@"receivedDataHandler"] retain]; 

@@ -71,7 +71,7 @@
 		if (dicomData) {
 			NSArray *array = [self valuesForVR:_vr length:_valueLength data:dicomData];
 			_values = [[NSMutableArray alloc]  initWithArray:array];
-			if (DEBUG){
+			if (DCMDEBUG){
 				NSLog([self description]);
 			}
 		}
@@ -298,7 +298,7 @@
 	//write length
 		if ([ts isExplicit]) {	
 			//write VR is explicit
-			if (DEBUG)
+			if (DCMDEBUG)
 				NSLog(@"Write VR: %@", _vr);
 			[dcmData addString:_vr];
 			if ([DCMValueRepresentation isShortValueLengthVR:_vr]) {
@@ -326,7 +326,7 @@
 	int vm = self.valueMultiplicity;
 	NSString *string;
 	[self writeBaseToData:container transferSyntax:ts];
-	if (DEBUG)
+	if (DCMDEBUG)
 		NSLog(@"Write Attr: %@", [self description]);
 	if ([DCMValueRepresentation isAffectedBySpecificCharacterSet:_vr]) {
 		string =  [_values componentsJoinedByString:@"\\"];
@@ -478,7 +478,7 @@
 		values = (NSMutableArray *)[string componentsSeparatedByString:@"\\"];
 	}
 	else  {
-		if (DEBUG && vr == DT)
+		if (DCMDEBUG && vr == DT)
 			NSLog(@"valuesForVR: length %d", length);
 		switch (vr) {
 		// unsigned Short

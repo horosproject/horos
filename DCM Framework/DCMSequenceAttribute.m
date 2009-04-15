@@ -82,7 +82,7 @@
 }
 
 - (void)addItem:(id)item offset:(long)offset{
-	if(DEBUG)
+	if(DCMDEBUG)
 		NSLog(@"Add sequence Item %@ at Offset:%d", [item description], offset);
 	NSArray *objects =  [NSArray arrayWithObjects:item, [NSNumber numberWithInt:offset], nil];
 	NSArray *keys =		[NSArray arrayWithObjects:@"item", @"offset", nil];
@@ -102,7 +102,7 @@
 - (void)writeBaseToData:(DCMDataContainer *)dcmData transferSyntax:(DCMTransferSyntax *)ts{
 	[dcmData addUnsignedShort:[self group]];
 	[dcmData addUnsignedShort:[self element]];
-	if (DEBUG)
+	if (DCMDEBUG)
 		NSLog(@"Write Sequence Base Length:%d", 0xffffffffl);
 	if ([ts isExplicit]) {
 		[dcmData addString:_vr];

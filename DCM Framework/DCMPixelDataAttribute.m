@@ -477,7 +477,7 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 		forImplicitUseOW = YES;
 		theVR = @"OW";
 	}	
-	if (DEBUG)
+	if (DCMDEBUG)
 		NSLog(@"init Pixel Data");
 	// may may an ImageIconSequence in an encapsualted file. The icon is not encapsulated so don't de-encapsulate
 	
@@ -502,7 +502,7 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 		else
 			_values = [[NSMutableArray array] retain];
 		
-		if (DEBUG) 
+		if (DCMDEBUG) 
 			NSLog( self.description );
 
 	}
@@ -545,14 +545,14 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 		int  vl = [dicomData nextUnsignedLong];
 		DCMAttributeTag *attrTag = [[[DCMAttributeTag alloc]  initWithGroup:group element:element] autorelease];
 		
-		if (DEBUG)
+		if (DCMDEBUG)
 			NSLog(@"Attr tag: %@", attrTag.description );
 			
 		if ([ attrTag.stringValue isEqualToString:[(NSDictionary *)[DCMTagForNameDictionary sharedTagForNameDictionary] objectForKey:@"Item"]])
 		{
 			[_values addObject:[dicomData nextDataWithLength:vl]];
 			
-			if (DEBUG)
+			if (DCMDEBUG)
 				NSLog(@"add Frame %d with length: %d", [_values count],  vl);
 		}
 		else if ([[attrTag stringValue]  isEqualToString:[(NSDictionary *)[DCMTagForNameDictionary sharedTagForNameDictionary] objectForKey:@"SequenceDelimitationItem"]])  
@@ -578,13 +578,13 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 	//base class cannot convert encapsulted syntaxes yet.
 	NSException *exception;
 	//NS_DURING
-	if (DEBUG)
+	if (DCMDEBUG)
 		NSLog(@"Write Pixel Data %@", transferSyntax.description );
 
 	if ( ts.isEncapsulated ) {		
 		[dcmData addUnsignedShort:[self group]];
 		[dcmData addUnsignedShort:[self element]];
-		if (DEBUG)
+		if (DCMDEBUG)
 			NSLog(@"Write Sequence Base Length:%d", 0xffffffffl);
 		if ( ts.isExplicit ) {
 			[dcmData addString:_vr];
@@ -609,13 +609,13 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 - (BOOL)writeToDataContainer:(DCMDataContainer *)container withTransferSyntax:(DCMTransferSyntax *)ts {
 	// valueLength should be 0xffffffff from constructor
 	BOOL status = NO;
-	if (DEBUG) 
+	if (DCMDEBUG) 
 		NSLog(@"Write PixelData with TS:%@  vr: %@ encapsulated: %d", ts.description, _vr, ts.isEncapsulated );
 	//NS_DURING
 	if ( ts.isEncapsulated && [transferSyntax isEqualToTransferSyntax:ts]) {
 		[self writeBaseToData:container transferSyntax:ts];
 		for ( id object in _values ) {
-			if (DEBUG)
+			if (DCMDEBUG)
 				NSLog(@"Write Item with length:%d", [(NSData *)object length]);
 			[container addUnsignedShort:(0xfffe)];		// Item
 			[container addUnsignedShort:(0xe000)];
@@ -630,7 +630,7 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 			*/
 			
 		}
-		if (DEBUG)
+		if (DCMDEBUG)
 			NSLog(@"Write end sequence");
 		[container addUnsignedShort:(0xfffe)];	// Sequence Delimiter
 		[container addUnsignedShort:(0xe0dd)];
@@ -656,7 +656,7 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 - (BOOL)convertToTransferSyntax:(DCMTransferSyntax *)ts quality:(int)quality{
 	BOOL status = NO;
 	NS_DURING
-	if (DEBUG)
+	if (DCMDEBUG)
 		NSLog(@"Convert Syntax %@ to %@", transferSyntax.description, ts.description );
 		//already there do nothing
 	if ([transferSyntax isEqualToTransferSyntax:ts])  {
@@ -744,7 +744,7 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 		//[_dcmObject removePlanarAndRescaleAttributes];
 		[self createOffsetTable];
 		self.transferSyntax = ts;
-		if (DEBUG)
+		if (DCMDEBUG)
 			NSLog(@"Converted to Syntax %@", transferSyntax.description );
 		status = YES;
 		goto finishedConversion;
@@ -806,7 +806,7 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 	NS_HANDLER
 		status = NO;
 	NS_ENDHANDLER
-	if (DEBUG)
+	if (DCMDEBUG)
 		NSLog(@"Converted to Syntax %@ status:%d", transferSyntax.description, status);
 	return status;
 }
@@ -1475,7 +1475,7 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 	for (i= 0; i<halfLength; i++) {
 		pixelData[i] =  (pixelData[i]  - offset); 
 		
-		if (DEBUG && !( i % 2500))
+		if (DCMDEBUG && !( i % 2500))
 			NSLog(@"rescaled %d", pixelData[i]);
 		
 	}
@@ -1752,7 +1752,7 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 		[_dcmObject  setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithFloat:rescaleSlope]] forName:@"RescaleSlope"];
 	}
 		
-	if (DEBUG) {
+	if (DCMDEBUG) {
 		NSLog(@"rescales Intercept: %d slope: %f", rescaleIntercept, rescaleSlope);
 		NSLog(@"max: %d min %d", _max, _min);
 	}
@@ -1771,7 +1771,7 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 	/*
 		offset should be item tag 4 bytes length 4 bytes last item length
 	*/
-	if (DEBUG)
+	if (DCMDEBUG)
 		NSLog(@"create Offset table");
 	NSMutableData *offsetTable = [NSMutableData data];
 	unsigned long offset = 0;
@@ -2009,7 +2009,7 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 		}
 	}
 	*/
-	if (DEBUG)
+	if (DCMDEBUG)
 		NSLog(@"min %d max %d", _min, _max);
 }
 
@@ -2951,11 +2951,11 @@ NS_ENDHANDLER
 	
 	if (!_framesCreated){
 		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-		if (DEBUG)
+		if (DCMDEBUG)
 			NSLog(@"Decode Data");
 		// if encapsulated we need to use offset table to create frames
 		if ( transferSyntax.isEncapsulated ) {
-			if (DEBUG)
+			if (DCMDEBUG)
 				NSLog(@"Data is encapsulated");
 			NSMutableArray *offsetTable = [NSMutableArray array];
 			/*offset table will be first fragment
@@ -2998,10 +2998,10 @@ NS_ENDHANDLER
 			[_values removeAllObjects];
 			int i;
 			NSMutableData *subData;
-			if (DEBUG)
+			if (DCMDEBUG)
 				NSLog(@"number of Frames: %d", _numberOfFrames);
 			for (i = 0; i < _numberOfFrames; i++) {	
-				if (DEBUG)
+				if (DCMDEBUG)
 					NSLog(@"Frame %d", i);
 				//one to one match between frames and items
 				
@@ -3111,7 +3111,7 @@ NS_ENDHANDLER
 				[_framesDecoded addObject: [NSNumber numberWithBool: NO]];
 		}
 		
-		if (DEBUG)
+		if (DCMDEBUG)
 			NSLog(@"to decoders:%@", transferSyntax.description );
 		
 		// data to decoders
