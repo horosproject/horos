@@ -1033,7 +1033,8 @@ static BOOL frameZoomed = NO;
 	
 	@try
 	{
-		clickCount = [theEvent clickCount];
+		if( [theEvent type] == NSLeftMouseDown || [theEvent type] == NSRightMouseDown)
+			clickCount = [theEvent clickCount];
 	}
 	@catch (NSException * e)
 	{

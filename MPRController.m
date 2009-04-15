@@ -1637,6 +1637,9 @@ static float deg2rad = 3.14159265358979/180.0;
 {
 	[dcmWindow makeFirstResponder: nil];	// To force nstextfield validation.
 	
+	if( movieTimer)
+		[self moviePlayStop: self];
+	
 	if( quicktimeExportMode)
 	{
 		[quicktimeWindow orderOut: sender];
@@ -1658,6 +1661,8 @@ static float deg2rad = 3.14159265358979/180.0;
 	c3 = [[[mprView3 camera] copy] autorelease];
 	
 	mprView1.viewExport = mprView2.viewExport = mprView3.viewExport = -1;
+	
+	int savedCurMovieIndex = curMovieIndex;
 	
 	if( [sender tag])
 	{
@@ -1987,6 +1992,16 @@ static float deg2rad = 3.14159265358979/180.0;
 		mprView3.camera = c3;
 		
 		[self updateViewsAccordingToFrame: nil];
+		
+		if( dcmMode == 2)
+		{
+			if( clippingRangeMode == 1 || clippingRangeMode == 3)
+			{
+				int c = clippingRangeMode;
+				[self setClippingRangeMode: 0];
+				[self setClippingRangeMode: c];
+			}
+		}
 	}
 	
 	[qtFileArray release];
