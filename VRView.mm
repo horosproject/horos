@@ -3249,7 +3249,18 @@ public:
 	
 	mouseLocPre = _mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView: nil];
 	
-	if( [theEvent clickCount] > 1 && (tool != t3Dpoint))
+	int clickCount = 1;
+	
+	@try
+	{
+		clickCount = [theEvent clickCount];
+	}
+	@catch (NSException * e)
+	{
+		clickCount = 1;
+	}
+	
+	if( clickCount > 1 && (tool != t3Dpoint))
 	{
 		long	pix[ 3];
 		float	pos[ 3], value;
@@ -3564,7 +3575,7 @@ public:
 				[point3DRadiusSlider setFloatValue: [[point3DRadiusArray objectAtIndex:[self selected3DPointIndex]] floatValue]];
 				[point3DColorWell setColor: [point3DColorsArray objectAtIndex:[self selected3DPointIndex]]];
 				
-				if ([theEvent clickCount]==2)
+				if (clickCount == 2)
 				{
 					NSPoint mouseLocationOnScreen = [[self window] convertBaseToScreen:[theEvent locationInWindow]];
 					[point3DInfoPanel setAlphaValue:0.8];

@@ -1029,7 +1029,18 @@ static BOOL frameZoomed = NO;
 	
 	[self checkCursor];
 	
-	if( [theEvent clickCount] == 2)
+	int clickCount = 1;
+	
+	@try
+	{
+		clickCount = [theEvent clickCount];
+	}
+	@catch (NSException * e)
+	{
+		clickCount = 1;
+	}
+	
+	if( clickCount == 2)
 	{
 		if( frameZoomed == NO)
 		{

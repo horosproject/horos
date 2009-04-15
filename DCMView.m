@@ -1683,6 +1683,16 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	NSEvent *event = [[NSApplication sharedApplication] currentEvent];
 	
+	int clickCount = 1;
+	@try
+	{
+		clickCount = [event clickCount];
+	}
+	@catch (NSException * e)
+	{
+		clickCount = 1;
+	}
+	
 	switch( currentTool)
 	{
 		case tPlain:
@@ -1695,14 +1705,14 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		case tZoom:
 			if( [event type] != NSKeyDown)
 			{
-				if( [event clickCount] == 2)
+				if( clickCount == 2)
 				{
 					[self setOriginX: 0 Y: 0];
 					self.rotation = 0.0f;
 					[self scaleToFit];
 				}
 				
-				if( [event clickCount] == 3)
+				if( clickCount == 3)
 				{
 					[self setOriginX: 0 Y: 0];
 					self.rotation = 0.0f;
@@ -1714,7 +1724,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		case tRotate:
 			if( [event type] != NSKeyDown)
 			{
-				if( [event clickCount] == 2 && gClickCountSet == NO && isKeyView == YES && [[self window] isKeyWindow] == YES)
+				if( clickCount == 2 && gClickCountSet == NO && isKeyView == YES && [[self window] isKeyWindow] == YES)
 				{
 					gClickCountSet = YES;
 					
@@ -3469,16 +3479,26 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
         roiRect.origin = [self convertPoint:eventLocation fromView: nil];
         roiRect.origin.y = size.size.height - roiRect.origin.y;
 		
-        if( [event clickCount] > 1 && [self window] == [[BrowserController currentBrowser] window])
+		int clickCount = 1;
+		@try
+		{
+			clickCount = [event clickCount];
+		}
+		@catch (NSException * e)
+		{
+			clickCount = 1;
+		}
+		
+        if( clickCount > 1 && [self window] == [[BrowserController currentBrowser] window])
         {
             [[BrowserController currentBrowser] matrixDoublePressed:nil];
         }
-		else if( [event clickCount] > 1 && ([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSCommandKeyMask))
+		else if( clickCount > 1 && ([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSCommandKeyMask))
 		{
 			if( [self is2DViewer] == YES)
 				[[self windowController] setKeyImage: self];
 		}
-		else if( [event clickCount] > 1 && stringID == nil)
+		else if( clickCount > 1 && stringID == nil)
 		{
 			if( [self is2DViewer] == YES)
 				[[self windowController] showCurrentThumbnail: self];
@@ -3784,12 +3804,12 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 								found = YES;
 								
 								[[[winList objectAtIndex:i] windowController] setROI: [curRoiList objectAtIndex: selected] :[self windowController]];
-								if( [event clickCount] > 1)
+								if( clickCount > 1)
 									[[winList objectAtIndex:i] makeKeyAndOrderFront: self];
 							}
 						}
 						
-						if( [event clickCount] > 1)
+						if( clickCount > 1)
 						{
 							if( found == NO)
 							{
@@ -4303,7 +4323,16 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	}
 	else 
 	{
-		if ([event clickCount] == 1)
+		int clickCount = 1;
+		
+		@try {
+			clickCount = [event clickCount];
+		}
+		@catch (NSException * e) {
+			clickCount = 1;
+		}
+	
+		if (clickCount == 1)
 		{
 			if( [self is2DViewer] && [self menu] == nil)
 				[[self windowController] computeContextualMenu];

@@ -306,6 +306,8 @@ static float deg2rad = 3.14159265358979/180.0;
 	[super showWindow: sender];
 	
 	[self setLOD: [[NSUserDefaults standardUserDefaults] floatForKey:@"defaultMPRLOD"]];
+	
+	[self setTool: toolsMatrix];
 }
 
 -(void) awakeFromNib
@@ -2552,7 +2554,7 @@ static float deg2rad = 3.14159265358979/180.0;
 											NSToolbarFlexibleSpaceItemIdentifier,
 											NSToolbarSpaceItemIdentifier,
 											NSToolbarSeparatorItemIdentifier,
-											@"tbTools", @"tbWLWW", @"tbLOD", @"tbThickSlab", @"tbBlending", @"tbShading", @"Reset.tiff", @"Export.icns", @"Capture.icns", @"QTExport.icns", @"tbTools", @"AxisColors", @"AxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", nil];
+											@"tbTools", @"tbWLWW", @"tbLOD", @"tbThickSlab", @"tbBlending", @"tbShading", @"tbMovie", @"Reset.tiff", @"Export.icns", @"Capture.icns", @"QTExport.icns", @"tbTools", @"AxisColors", @"AxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", nil];
 }
 
 - (void)updateToolbarItems;
@@ -2728,6 +2730,8 @@ static float deg2rad = 3.14159265358979/180.0;
 	[mprView1 mouseMoved: [[NSApplication sharedApplication] currentEvent]];
 	[mprView2 mouseMoved: [[NSApplication sharedApplication] currentEvent]];
 	[mprView3 mouseMoved: [[NSApplication sharedApplication] currentEvent]];
+	
+	[self setTool: toolsMatrix];
 }
 
 - (void) performMovieAnimation:(id) sender
@@ -2745,6 +2749,8 @@ static float deg2rad = 3.14159265358979/180.0;
 		
 		self.curMovieIndex = val;
         lastMovieTime = thisTime;
+		
+		[self setTool: toolsMatrix];
     }
 }
 

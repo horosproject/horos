@@ -18024,6 +18024,9 @@ int i,j,l;
 		[self setWindowTitle: self];
 		
 		checkEverythingLoaded = NO;
+	
+		if( blendingController)
+			[blendingController checkEverythingLoaded];
 	}
 	
 	[self computeInterval];
