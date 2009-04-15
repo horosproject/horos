@@ -8448,9 +8448,6 @@ END_CREATE_ROIS:
 		
 		if( [self isDICOMFile: srcFile])
 		{
-			if (DCMDEBUG)
-				NSLog(@"checkLoad isDICOM: %@", srcFile);
-			
 			// PLEASE, KEEP BOTH FUNCTIONS FOR TESTING PURPOSE. THANKS
 			NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 			
