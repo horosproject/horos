@@ -282,7 +282,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	// Default Init
 	[self setClippingRangeMode: 1]; // MIP
 	[self setClippingRangeThickness: 1];
-	if( [self getClippingRangeThicknessInMm] < fabs( [originalPix sliceInterval]) / 2.)
+	if( [self getClippingRangeThicknessInMm] < fabs( [originalPix sliceInterval]))
 		[self setClippingRangeThickness: 2];
 	
 	[[self window] makeFirstResponder: mprView1];
@@ -1537,6 +1537,8 @@ static float deg2rad = 3.14159265358979/180.0;
 		[curOpacityMenu release];
 		curOpacityMenu = [NSLocalizedString(@"Logarithmic Inverse Table", nil) retain];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(UpdateOpacityMenu:) name:@"UpdateOpacityMenu" object:nil];
+		
+		[self setTool: toolsMatrix];
 	}
 	[self ApplyCLUTString:curCLUTMenu];
 	[self ApplyOpacityString:curOpacityMenu];
