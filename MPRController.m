@@ -1984,24 +1984,11 @@ static float deg2rad = 3.14159265358979/180.0;
 		
 		[[NSUserDefaults standardUserDefaults] setInteger: dcmMode forKey: @"lastMPRdcmExportMode"];
 		
-		if( dcmMode == 2)
-			self.curMovieIndex = savedIndex;
-		
 		mprView1.camera = c1;
 		mprView2.camera = c2;
 		mprView3.camera = c3;
 		
 		[self updateViewsAccordingToFrame: nil];
-		
-		if( dcmMode == 2)
-		{
-			if( clippingRangeMode == 1 || clippingRangeMode == 3)
-			{
-				int c = clippingRangeMode;
-				[self setClippingRangeMode: 0];
-				[self setClippingRangeMode: c];
-			}
-		}
 	}
 	
 	[qtFileArray release];

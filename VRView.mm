@@ -4433,6 +4433,8 @@ public:
 {
 	if( blendingController == nil) return;
 	
+	if( fullDepthMode) return;
+	
 	blendingWl = iwl;
 	blendingWw = iww;
 	
@@ -4447,6 +4449,7 @@ public:
 	long	i, blendMode;
 	float   val, ii;
 	
+	if( fullDepthMode) return;
 	
 	if( blendingController)
 	{
@@ -4495,6 +4498,8 @@ public:
 -(void) setBlendingCLUT:( unsigned char*) r : (unsigned char*) g : (unsigned char*) b
 {
 	long	i;
+	
+	if( fullDepthMode) return;
 	
 	if( blendingController)
 	{
