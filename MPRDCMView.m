@@ -392,7 +392,6 @@ static BOOL frameZoomed = NO;
 	glEnable(GL_BLEND);
 	glEnable(GL_POINT_SMOOTH);
 	glEnable(GL_LINE_SMOOTH);
-	glEnable(GL_POLYGON_SMOOTH);
 	glPointSize( 12);
 	
 	if( displayCrossLines)
@@ -1078,6 +1077,9 @@ static BOOL frameZoomed = NO;
 		if( mouseOnLines == 2)
 		{
 			moveCenter = YES;
+			
+			[self mouseDragged: theEvent];
+			
 			[[NSCursor closedHandCursor] set];
 		}
 		else if( mouseOnLines == 1)
@@ -1087,6 +1089,8 @@ static BOOL frameZoomed = NO;
 			NSPoint mouseLocation = [self ConvertFromNSView2GL: [self convertPoint: [theEvent locationInWindow] fromView: nil]];
 			mouseLocation.x *= curDCM.pixelSpacingX;	mouseLocation.y *= curDCM.pixelSpacingY;
 			rotateLinesStartAngle = [self angleBetween: mouseLocation center: [self centerLines]] - angleMPR;
+			
+			[self mouseDragged: theEvent];
 			
 			[[NSCursor rotateAxisCursor] set];
 		}

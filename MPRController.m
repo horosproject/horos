@@ -2013,7 +2013,14 @@ static float deg2rad = 3.14159265358979/180.0;
 	if( [self selectedView] != mprView2) mprView2.displayCrossLines = YES;
 	if( [self selectedView] != mprView3) mprView3.displayCrossLines = YES;
 	
-	self.dcmSameIntervalAndThickness = YES;
+	if( clippingRangeThickness <= 3)
+	{
+		self.dcmInterval = [self getClippingRangeThicknessInMm] * 5.;
+		self.dcmSameIntervalAndThickness = NO;
+	}
+	else
+		self.dcmSameIntervalAndThickness = YES;
+	
 	self.dcmQuality = 1;
 	
 	if( clippingRangeMode == 0) // VR

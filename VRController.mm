@@ -1828,9 +1828,9 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
     }
 	 else if([itemIdent isEqualToString: ModeToolbarItemIdentifier]) {
 		 // Set up the standard properties 
-		 [toolbarItem setLabel:NSLocalizedString( @"Rendering Mode",nil)];
-		 [toolbarItem setPaletteLabel:NSLocalizedString( @"Rendering Mode",nil)];
-		 [toolbarItem setToolTip: NSLocalizedString(@"Rendering Mode",nil)];
+		 [toolbarItem setLabel:NSLocalizedString( @"Mode",nil)];
+		 [toolbarItem setPaletteLabel:NSLocalizedString( @"Mode",nil)];
+		 [toolbarItem setToolTip: NSLocalizedString(@"Mode",nil)];
 		 
 		 // Use a custom view, a text field, for the search item 
 		 [toolbarItem setView: modeView];
