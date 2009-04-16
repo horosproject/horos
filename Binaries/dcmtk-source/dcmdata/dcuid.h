@@ -316,6 +316,7 @@ unsigned int dcmGuessModalityBytes(const char *sopClassUID);
 #define UID_PETCurveStorage                                        "1.2.840.10008.5.1.4.1.1.129"
 #define UID_CTImageStorage                                         "1.2.840.10008.5.1.4.1.1.2"
 #define UID_EnhancedCTImageStorage                                 "1.2.840.10008.5.1.4.1.1.2.1"
+#define UID_EnhancedPETImageStorage                                "1.2.840.10008.5.1.4.1.1.130"
 #define UID_NuclearMedicineImageStorage                            "1.2.840.10008.5.1.4.1.1.20"
 #define UID_RETIRED_UltrasoundMultiframeImageStorage               "1.2.840.10008.5.1.4.1.1.3"
 #define UID_UltrasoundMultiframeImageStorage                       "1.2.840.10008.5.1.4.1.1.3.1"

@@ -39,6 +39,7 @@ htt://www.pixelmed.com
 + (NSString *)digitalIntraoralXRayImageStorageForProcessing;
 + (NSString *)CTImageStorage;
 + (NSString *)enhancedCTImageStorage;
++ (NSString *)enhancedPETImageStorage;
 + (NSString *)ultrasoundMultiframeImageStorageRetired;
 + (NSString *)ultrasoundMultiframeImageStorage;
 + (NSString *)MRImageStorage;

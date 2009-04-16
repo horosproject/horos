@@ -1378,7 +1378,7 @@ static NSDate *lastWarningDate = nil;
 	}
 	
 	#if __LP64__
-	checkSN64Service = [[NSNetService alloc] initWithDomain:@"" type:@"_snosirix._tcp." name: [self privateIP] port: 4096];
+	checkSN64Service = [[NSNetService alloc] initWithDomain:@"" type:@"_snosirix._tcp." name: [self privateIP] port: 8486];
 	checkSN64String = [[NSString stringWithContentsOfFile: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"sn64"]] retain];
 	
 	NSNetServiceBrowser *checkSN64Browser = [[NSNetServiceBrowser alloc] init];

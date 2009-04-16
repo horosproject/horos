@@ -42,6 +42,8 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 	/***/
 	static NSString *EnhancedCTImageStorage = @"1.2.840.10008.5.1.4.1.1.2.1";
 	/***/
+	static NSString *EnhancedPETImageStorage = @"1.2.840.10008.5.1.4.1.1.130";
+	/***/
 	static NSString *UltrasoundMultiframeImageStorageRetired = @"1.2.840.10008.5.1.4.1.1.3";
 	/***/
 	static NSString *UltrasoundMultiframeImageStorage = @"1.2.840.10008.5.1.4.1.1.3.1";
@@ -254,6 +256,10 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 	return EnhancedCTImageStorage;
 }
 
++ (NSString *)enhancedPETImageStorage{
+	return EnhancedPETImageStorage;
+}
+
 + (NSString *)ultrasoundMultiframeImageStorageRetired{
 	return UltrasoundMultiframeImageStorageRetired;
 }
@@ -393,6 +399,7 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 		    DigitalIntraoralXRayImageStorageForProcessing ,
 		    CTImageStorage ,
 		    EnhancedCTImageStorage ,
+			EnhancedPETImageStorage,
 		    UltrasoundMultiframeImageStorageRetired ,
 		    UltrasoundMultiframeImageStorage ,
 		    MRImageStorage ,
