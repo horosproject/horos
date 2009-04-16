@@ -1501,18 +1501,11 @@ static float deg2rad = 3.14159265358979/180.0;
 	clippingRangeMode = f;
 	
 	[mprView1.vrView setMode: clippingRangeMode];
-	[mprView2.vrView setMode: clippingRangeMode];
-	[mprView3.vrView setMode: clippingRangeMode];
-
 	[mprView1.vrView setBlendingMode: clippingRangeMode];
-	[mprView2.vrView setBlendingMode: clippingRangeMode];
-	[mprView3.vrView setBlendingMode: clippingRangeMode];
 
 	if( clippingRangeMode == 1 || clippingRangeMode == 3)	// MIP - Mean
 	{		
 		[mprView1.vrView prepareFullDepthCapture];
-		[mprView2.vrView prepareFullDepthCapture];
-		[mprView3.vrView prepareFullDepthCapture];
 		
 		// switch linear opacity table
 		[curOpacityMenu release];
@@ -1522,10 +1515,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	else
 	{
 		// VR mode
-		
 		[mprView1.vrView restoreFullDepthCapture];
-		[mprView2.vrView restoreFullDepthCapture];
-		[mprView3.vrView restoreFullDepthCapture];
 		
 		[mprView1 setWLWW:128 :256];
 		[mprView2 setWLWW:128 :256];
@@ -2631,8 +2621,6 @@ static float deg2rad = 3.14159265358979/180.0;
 				[blendedMprView3 setWLWW:128 :256];
 				
 				[mprView1.vrView setBlendingWLWW: iwl :iww];
-				[mprView2.vrView setBlendingWLWW: iwl :iww];
-				[mprView3.vrView setBlendingWLWW: iwl :iww];
 				
 				[mprView1 restoreCamera];
 				mprView1.camera.forceUpdate = YES;
@@ -2649,8 +2637,6 @@ static float deg2rad = 3.14159265358979/180.0;
 			else
 			{
 				[blendedMprView1 setWLWW: iwl :iww];
-				[blendedMprView2 setWLWW: iwl :iww];
-				[blendedMprView3 setWLWW: iwl :iww];
 			}
 			
 			[mprView1 updateImage];
@@ -2729,11 +2715,11 @@ static float deg2rad = 3.14159265358979/180.0;
 	
 	[self updateViewsAccordingToFrame: nil];
 	
+	[self setTool: toolsMatrix];
+	
 	[mprView1 mouseMoved: [[NSApplication sharedApplication] currentEvent]];
 	[mprView2 mouseMoved: [[NSApplication sharedApplication] currentEvent]];
 	[mprView3 mouseMoved: [[NSApplication sharedApplication] currentEvent]];
-	
-	[self setTool: toolsMatrix];
 }
 
 - (void) performMovieAnimation:(id) sender
@@ -2751,17 +2737,15 @@ static float deg2rad = 3.14159265358979/180.0;
 		
 		self.curMovieIndex = val;
         lastMovieTime = thisTime;
-		
-		[self setTool: toolsMatrix];
     }
 }
 
 - (NSString*) playStopButtonString
 {
 	if( movieTimer)
-		return @"Stop";
+		return NSLocalizedString(@"Stop", nil);
 	else
-		return @"Play";
+		return NSLocalizedString(@"Play", nil);
 }
 
 - (void) moviePlayStop:(id) sender

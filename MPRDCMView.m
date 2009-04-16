@@ -246,7 +246,12 @@ static BOOL frameZoomed = NO;
 		BOOL cameraMoved = [self hasCameraMoved: currentCamera];
 		
 		if( [self frame].size.width > 0 && [self frame].size.height > 0)
+		{
+			if( windowController.maxMovieIndex > 1 && (windowController.clippingRangeMode == 1 || windowController.clippingRangeMode == 3))	//To avoid the wrong pixel value bug...
+				[vrView prepareFullDepthCapture];
+			
 			[vrView render];
+		}
 		
 		float *imagePtr = [vrView imageInFullDepthWidth: &w height: &h isRGB: &isRGB];
 		

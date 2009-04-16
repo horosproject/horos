@@ -5847,8 +5847,6 @@ public:
 		volumeMapper->PerVolumeInitialization( aRenderer, volume);
 		
 		fullDepthMode = 0;
-		
-		[self setNeedsDisplay: YES];
 	}
 	
 	if( blendingVolumeMapper)
@@ -5858,6 +5856,8 @@ public:
 		blendingVolumeProperty->SetScalarOpacity( blendingOpacityTransferFunction);
 		blendingVolumeMapper->PerVolumeInitialization( aRenderer, blendingVolume);
 	}
+	
+	[self setNeedsDisplay: YES];
 }
 
 - (float*) imageInFullDepthWidth: (long*) w height:(long*) h isRGB:(BOOL*) rgb
@@ -5869,7 +5869,7 @@ public:
 {
 	OsiriXFixedPointVolumeRayCastMapper *mapper = nil;
 	DCMPix *firstObj = nil;
-
+	
 	if( blendingView)
 	{
 		firstObj = blendingFirstObject;
