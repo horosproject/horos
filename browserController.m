@@ -651,6 +651,7 @@ static NSArray*	statesArray = nil;
 							[study setValue:[curDict objectForKey: @"studyID"] forKey:@"studyInstanceUID"];
 							[study setValue:[curDict objectForKey: @"studyDescription"] forKey:@"studyName"];
 							[study setValue:[curDict objectForKey: @"studyDate"] forKey:@"date"];
+							
 							[study setValue:[curDict objectForKey: @"accessionNumber"] forKey:@"accessionNumber"];
 							
 							[study setValue:[curDict objectForKey: @"modality"] forKey:@"modality"];
@@ -677,6 +678,16 @@ static NSArray*	statesArray = nil;
 								
 							if( [study valueForKey: @"studyName"] == nil || [[study valueForKey: @"studyName"] isEqualToString: @"unnamed"] || [[study valueForKey: @"studyName"] isEqualToString: @""])
 								[study setValue: [curDict objectForKey: @"studyDescription"] forKey:@"studyName"];
+								
+							
+							NSCalendarDate *newDate = [curDict objectForKey: @"studyDate"];
+							NSCalendarDate *previousDate = [study valueForKey: @"date"];
+							
+							if( newDate)
+							{
+								if( previousDate == nil || [previousDate compare: newDate] == NSOrderedDescending)
+									[study setValue:[curDict objectForKey: @"studyDate"] forKey:@"date"];
+							}
 						}
 						curStudyID = [curDict objectForKey: @"studyID"];
 						curPatientUID = [curDict objectForKey: @"patientUID"];
