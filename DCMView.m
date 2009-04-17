@@ -1060,8 +1060,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	long no;
 	
 	drawingROI = NO;
-	for( long i = 0; i < [curRoiList count]; i++) {
-		if( curROI != [curRoiList objectAtIndex:i] ) {
+	for( long i = 0; i < [curRoiList count]; i++)
+	{
+		if( curROI != [curRoiList objectAtIndex:i] )
+		{
 			if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selectedModify || [[curRoiList objectAtIndex:i] ROImode] == ROI_drawing)
 			{
 				ROI	*roi = [curRoiList objectAtIndex:i];
@@ -1085,11 +1087,14 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			if( no <= 1 || force == YES)
 			{
 				curROI.ROImode = ROI_selected;
+				[curROI release];
 				curROI = nil;
 			}
 		}
-		else {
+		else
+		{
 			curROI.ROImode = ROI_selected;
+			[curROI release];
 			curROI = nil;
 		}
 	}
@@ -1818,7 +1823,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	if( dcmPixList && index >= 0)
 	{
 		[[self window] setAcceptsMouseMovedEvents: YES];
-
+		
+		[curROI release];
 		curROI = nil;
 		
 		curImage = index; 
@@ -1889,6 +1895,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		curImage = -1;
 		[curRoiList release];
 		curRoiList = nil;
+		
+		[curROI release];
 		curROI = nil;
 		[self loadTextures];
 	}
@@ -2204,7 +2212,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			if( curROI == [curRoiList objectAtIndex:i ]) keepIt = YES;
 		}
 		
-		if( keepIt == NO) curROI = nil;
+		if( keepIt == NO)
+		{
+			[curROI release];
+			curROI = nil;
+		}
 		
 		BOOL done = NO;
 		
@@ -2251,6 +2263,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		curImage = -1;
 		[curRoiList release];
 		curRoiList = nil;
+		
+		[curROI release];
 		curROI = nil;
 		[self loadTextures];
 	}
@@ -3779,6 +3793,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			{
 				if( selected >= 0 && drawingROI == NO)
 				{
+					[curROI release];
 					curROI = nil;
 					
 					// Bring the selected ROI to the first position in array
@@ -3827,7 +3842,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					{
 						drawingROI = [curROI mouseRoiDown:tempPt :scaleValue];
 						
-						if( drawingROI == NO) curROI = nil;
+						if( drawingROI == NO)
+						{
+							[curROI release];
+							curROI = nil;
+						}
 						
 						if( [curROI ROImode] == ROI_selected)
 							[[NSNotificationCenter defaultCenter] postNotificationName: @"roiSelected" object: curROI userInfo: nil];
@@ -3844,8 +3863,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						
 						drawingROI = NO;
 						
-						curROI = aNewROI = [[ROI alloc] initWithType: tool : curDCM.pixelSpacingX :curDCM.pixelSpacingY : [DCMPix originCorrectedAccordingToOrientation: curDCM]];	//NSMakePoint( curDCM.originX, curDCM.originY)];
-											
+						[curROI release];
+						curROI = aNewROI = [[[ROI alloc] initWithType: tool : curDCM.pixelSpacingX :curDCM.pixelSpacingY : [DCMPix originCorrectedAccordingToOrientation: curDCM]] autorelease];	//NSMakePoint( curDCM.originX, curDCM.originY)];
+						[curROI retain];
+						
 						if ( [ROI defaultName] != nil )
 						{
 							[aNewROI setName: [ROI defaultName]];
@@ -3951,8 +3972,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						
 						drawingROI = [aNewROI mouseRoiDown: tempPt :scaleValue];
 						
-						if( drawingROI == NO) curROI = nil;
-						
+						if( drawingROI == NO)
+						{
+							[curROI release];
+							curROI = nil;
+						}
 						if( [aNewROI ROImode] == ROI_selected)
 							[[NSNotificationCenter defaultCenter] postNotificationName: @"roiSelected" object: aNewROI userInfo: nil];
 						
@@ -3961,8 +3985,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 																								nil];
 						
 						[[NSNotificationCenter defaultCenter] postNotificationName: @"addROI" object:self userInfo:userInfo];
-						
-						[aNewROI release];
 					}
 				}
 			}
