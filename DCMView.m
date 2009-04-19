@@ -6658,7 +6658,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 //    Output: *B = base point on PL of perpendicular from P
 //    Return: the distance from P to the plane PL
 
-- (float) pbase_Plane: (float*) point :(float*) planeOrigin :(float*) planeVector :(float*) pointProjection
++ (float) pbase_Plane: (float*) point :(float*) planeOrigin :(float*) planeVector :(float*) pointProjection
 {
     float	sb, sn, sd;
 	float	sub[ 3];
@@ -6697,7 +6697,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		orig[ 1] = [[dcmPixList objectAtIndex: i] originY];
 		orig[ 2] = [[dcmPixList objectAtIndex: i] originZ];
 		
-		tempDistance = [self pbase_Plane: pt :orig :&(vectors[ 6]) :locationTemp];
+		tempDistance = [DCMView pbase_Plane: pt :orig :&(vectors[ 6]) :locationTemp];
 		
 		if( tempDistance < distance)
 		{

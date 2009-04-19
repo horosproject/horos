@@ -758,6 +758,7 @@ enum
 
 - (NSArray*) roisWithComment: (NSString*) comment;
 - (NSArray*) roiNames;
+- (void) deleteROI: (ROI*) roi;
 - (void) deleteSeriesROIwithName: (NSString*) name;
 - (void) renameSeriesROIwithName: (NSString*) name newName:(NSString*) newName;
 - (void)setStandardRect:(NSRect)rect;

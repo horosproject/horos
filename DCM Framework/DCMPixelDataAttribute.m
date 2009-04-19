@@ -3074,10 +3074,6 @@ NS_ENDHANDLER
 					[self addFrame:data];
 					[subPool release];
 				}
-				//NSLog(@"end create Frames: %f", -[timestamp timeIntervalSinceNow]);
-				//[rawData release];
-				//NSLog(@"release rawData Frames: %f", -[timeStamp timeIntervalSinceNow]);
-
 			}
 		}
 			

@@ -40,6 +40,8 @@
 	float rotateLinesStartAngle;
 	
 	BOOL dontReenterCrossReferenceLines;
+	
+	BOOL dontCheckRoiChange;
 }
 
 @property (readonly) DCMPix *pix;
@@ -60,5 +62,6 @@
 - (void) restoreCamera;
 - (void) restoreCameraAndCheckForFrame: (BOOL) v;
 - (void) updateMousePosition: (NSEvent*) theEvent;
+- (void) detect2DPointInThisSlice;
 
 @end

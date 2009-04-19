@@ -10561,6 +10561,25 @@ int i,j,l;
 	[self createLayerROIFromSelectedROI];
 }
 
+- (void) deleteROI: (ROI*) roi
+{
+	[imageView stopROIEditingForce: YES];
+	
+	for( int x = 0; x < [pixList[curMovieIndex] count]; x++)
+	{
+		for( int i = 0; i < [[roiList[curMovieIndex] objectAtIndex: x] count]; i++)
+		{
+			ROI	*curROI = [[roiList[curMovieIndex] objectAtIndex: x] objectAtIndex: i];
+			if( curROI == roi)
+			{
+				[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:curROI userInfo: nil];
+				[[roiList[curMovieIndex] objectAtIndex: x] removeObject:curROI];
+				i--;
+			}
+		}
+	}
+}
+
 - (void) deleteSeriesROIwithName: (NSString*) name
 {
 	long	x, i;
@@ -10571,7 +10590,6 @@ int i,j,l;
 	
 	for( x = 0; x < [pixList[curMovieIndex] count]; x++)
 	{
-		
 		for( i = 0; i < [[roiList[curMovieIndex] objectAtIndex: x] count]; i++)
 		{
 			ROI	*curROI = [[roiList[curMovieIndex] objectAtIndex: x] objectAtIndex: i];

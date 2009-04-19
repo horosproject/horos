@@ -95,18 +95,8 @@ static BOOL frameZoomed = NO;
 	[super setDCM:pixList :files :rois :firstImage :type :reset];
 
 	[[NSNotificationCenter defaultCenter]	addObserver: self
-											selector: @selector(addROI:)
-											name: @"addROI"
-											object: nil];
-	
-	[[NSNotificationCenter defaultCenter]	addObserver: self
 											selector: @selector(removeROI:)
 											name: @"removeROI"
-											object: nil];
-											
-	[[NSNotificationCenter defaultCenter]	addObserver: self
-											selector: @selector(roiRemovedFromArray:)
-											name: @"roiRemovedFromArray"
 											object: nil];
 
 
@@ -320,6 +310,9 @@ static BOOL frameZoomed = NO;
 			{
 				[r setOriginAndSpacing: resolution : resolution :[DCMPix originCorrectedAccordingToOrientation: pix] :NO];
 			}
+			
+			if( cameraMoved)
+				[self detect2DPointInThisSlice];
 		}
 		
 		if( blendingView)
@@ -898,6 +891,76 @@ static BOOL frameZoomed = NO;
 #pragma mark-
 #pragma mark 3D ROI Point	
 
+- (void) detect2DPointInThisSlice
+{
+	ViewerController *viewer2D = [windowController viewer];
+	
+	if (viewer2D)
+	{
+		// First delete all 2D Points in our pix
+		
+		for( int i = [curRoiList count] -1 ; i >= 0; i--)
+		{
+			ROI *r = [curRoiList objectAtIndex: i];
+			if( [r type] == t2DPoint)
+				[curRoiList removeObjectAtIndex: i];
+		}
+		
+		NSArray *roiList = [viewer2D roiList: [windowController curMovieIndex]];
+		NSArray *pixList = [viewer2D pixList: [windowController curMovieIndex]];
+		
+		for( int i = 0; i < [roiList count]; i++)
+		{
+			NSArray *pts = [roiList objectAtIndex: i];
+			DCMPix *p = [pixList objectAtIndex: i];
+			
+			for( ROI *r in pts)
+			{
+				if( [r type] == t2DPoint)
+				{
+					float location[ 3];
+					
+					[p convertPixX: r.rect.origin.x pixY: r.rect.origin.y toDICOMCoords: location pixelCenter: YES];
+					
+					// Is this point in our plane?
+					
+					int		ii = -1;
+					float	vectors[ 9], orig[ 3], locationTemp[ 3];
+					float	distance = 999999;
+					
+					orig[ 0] = [pix originX];
+					orig[ 1] = [pix originY];
+					orig[ 2] = [pix originZ];
+					
+					[pix orientation: vectors];
+					
+					distance = [DCMView pbase_Plane: location :orig :&(vectors[ 6]) :locationTemp];
+					
+					if( distance < pix.sliceThickness)
+					{
+						float sc[ 3];
+						
+						[pix convertDICOMCoords: location toSliceCoords: sc pixelCenter: YES];
+						
+						sc[ 0] = sc[ 0] / pix.pixelSpacingX;
+						sc[ 1] = sc[ 1] / pix.pixelSpacingY;
+						
+						ROI *new2DPointROI = [[ROI alloc] initWithType: t2DPoint :pix.pixelSpacingX :pix.pixelSpacingY :[DCMPix originCorrectedAccordingToOrientation: pix]];
+						
+						[new2DPointROI setROIRect: NSMakeRect( sc[ 0], sc[ 1], 0, 0)];
+						
+						[new2DPointROI setParentROI: r];
+						[self roiSet: new2DPointROI];
+						[curRoiList addObject: new2DPointROI];
+					}
+				}
+			}
+		}
+		
+		[self setNeedsDisplay: YES];
+	}
+}
+
 - (void) add2DPoint: (float*) r
 {
 	ViewerController *viewer2D = [windowController viewer];
@@ -918,7 +981,6 @@ static BOOL frameZoomed = NO;
 		
 		if (sc[ 2] >= 0 && sc[ 2] < [[viewer2D pixList] count])
 		{
-		
 			// Create the new 2D Point ROI
 			ROI *new2DPointROI = [[ROI alloc] initWithType: t2DPoint :p.pixelSpacingX :p.pixelSpacingY :[DCMPix originCorrectedAccordingToOrientation: p]];
 			
@@ -933,185 +995,35 @@ static BOOL frameZoomed = NO;
 	}
 }
 
-- (void) addROI:(NSNotification*)note
-{
-	DCMView *sender = [note object];
-	ROI *addedROI = [[note userInfo] objectForKey:@"ROI"];
-	
-	if( [addedROI type] != t2DPoint) return;
-	
-	if (![self isEqualTo: sender])
-	{
-//		if (([[windowController mprView1] isEqualTo:sender] || [[windowController mprView2] isEqualTo:sender]) && [[windowController mprView3] isEqualTo:self])
-//		{
-//			if([addedROI type]==t2DPoint)
-//			{
-//				ROI *new2DPointROI = [[[ROI alloc] initWithType: t2DPoint :[[[windowController viewer2D] imageView] pixelSpacingX] :[[[windowController viewer2D] imageView] pixelSpacingY] :NSMakePoint( [[[windowController viewer2D] imageView] origin].x, [[[windowController viewer2D] imageView] origin].y)] autorelease];
-//
-//				NSRect irect;
-//				if([[controller xReslicedView] isEqualTo:sender])
-//				{
-//					irect.origin.x = [[[addedROI points] objectAtIndex:0] x];
-//					irect.origin.y = [[controller originalView] crossPositionY];
-//				}
-//				else
-//				{
-//					irect.origin.x = [[controller originalView] crossPositionX];
-//					irect.origin.y = [[[addedROI points] objectAtIndex:0] x];
-//				}			
-//				irect.size.width = irect.size.height = 0;
-//				[new2DPointROI setROIRect:irect];
-//		
-//				[[controller originalView] roiSet:new2DPointROI];
-//				
-//				for(id loopItem in curRoiList)
-//				{
-//					[loopItem setROIMode:ROI_sleep];
-//				}
-//				
-//				// copy the state
-//				[new2DPointROI setROIMode:ROI_selected];
-//				
-//				// name		
-//				NSString *finalName, *roiName = [NSString stringWithString:@"Point "];
-//				int counter = 1;
-//				BOOL existsAlready = YES;
-//				while (existsAlready)
-//				{
-//					existsAlready = NO;
-//					finalName = [roiName stringByAppendingFormat:@"%d", counter++];
-//					for( int i = 0; i < [[[controller originalView] dcmRoiList] count]; i++)
-//					{
-//						for( int x = 0; x < [[[[controller originalView] dcmRoiList] objectAtIndex: i] count]; x++)
-//						{
-//							if([[[[[[controller originalView] dcmRoiList] objectAtIndex:i] objectAtIndex:x] name] isEqualToString:finalName])
-//								existsAlready = YES;
-//						}
-//					}
-//				}
-//				[addedROI setName:finalName];
-//				[new2DPointROI setName:finalName];
-//					
-//				// add the 2D Point ROI to the ROI list
-//				long slice = ([controller sign]>0)? [[[controller originalView] dcmPixList] count]-1 -[[[addedROI points] objectAtIndex:0] y] : [[[addedROI points] objectAtIndex:0] y];
-//				
-//				if( slice < 0) slice = 0;
-//				if( slice >= [[[controller originalView] dcmRoiList] count]) slice = [[[controller originalView] dcmRoiList] count]-1;
-//				
-//				[[[[controller originalView] dcmRoiList] objectAtIndex: slice] addObject: new2DPointROI];
-//			}
-//			[controller loadROIonReslicedViews: [[controller originalView] crossPositionX] : [[controller originalView] crossPositionY]];
-//		}
-	}
-}
-
 -(void) roiChange:(NSNotification*)note
 {
-//	ROI *roi = [note object];
-//	
-//	[super roiChange:note];
-//	
-//	if( [roi type] != t2DPoint) return;
-//	
-//	if( [[[note userInfo] valueForKey:@"action"] isEqualToString:@"mouseUp"] && [[self window] firstResponder] == self)
-//	{
-//		if([roi parentROI])
-//		{
-//			int		reslicedview = 0;
-//			
-//			// the ROI has a parent. Thus it is on a resliced view. Which one?
-//			NSLog(@"roi is 2D Point and has parent");
-//			NSRect irect;
-//			if([[[controller xReslicedView] curRoiList] containsObject:roi])
-//			{
-//				reslicedview = 1;
-//				
-//				NSLog(@"this Point belongs to xReslicedView");
-//				irect.origin.x = [[[roi points] objectAtIndex:0] x];
-//				irect.origin.y = [[controller originalView] crossPositionY];
-//			}
-//			else if([[[controller yReslicedView] curRoiList] containsObject:roi])
-//			{
-//				reslicedview = 2;
-//				
-//				NSLog(@"this Point belongs to yReslicedView");
-//				irect.origin.x = [[controller originalView] crossPositionX];
-//				irect.origin.y = [[[roi points] objectAtIndex:0] x];
-//			}
-//			else
-//			{
-//				NSLog(@"nobody contains this Point");
-//				return;
-//			}
-//
-//			ROI *new2DPointROI = [[[ROI alloc] initWithType: t2DPoint :[[controller originalView] pixelSpacingX] :[[controller originalView] pixelSpacingY] :NSMakePoint( [[controller originalView] origin].x, [[controller originalView] origin].y)] autorelease];
-//
-//			// remove the parent ROI on original view. (will be replaced by the new one)
-//			int i;
-//			for(i=0; i<[[[controller originalView] dcmRoiList] count]; i++)
-//			{
-//				if([[[[controller originalView] dcmRoiList] objectAtIndex:i] containsObject:[roi parentROI]])
-//				{
-//					NSLog(@"Point removed in originalView");
-//					[[[[controller originalView] dcmRoiList] objectAtIndex:i] removeObject:[roi parentROI]];
-//				}
-//			}
-//			
-//			// create the new ROI
-//			irect.size.width = irect.size.height = 0;
-//			[new2DPointROI setROIRect:irect];
-//			[[controller originalView] roiSet:new2DPointROI];
-//			
-//			// copy the name
-//			[new2DPointROI setName:[roi name]];
-//			
-//			// add the 2D Point ROI to the ROI list
-//			long slice = ([controller sign]>0)? [[[controller originalView] dcmPixList] count]-1 -[[[roi points] objectAtIndex:0] y] : [[[roi points] objectAtIndex:0] y];
-//			
-//			if( slice < 0) slice = 0;
-//			if( slice >= [[[controller originalView] dcmRoiList] count]) slice = [[[controller originalView] dcmRoiList] count]-1;
-//			
-//			NSLog(@"slice : %d", slice);
-//			
-//			[[[[controller originalView] dcmRoiList] objectAtIndex: slice] addObject: new2DPointROI];
-//			[[controller originalView] setNeedsDisplay:YES];
-//			
-//			// This is my new father
-//			[roi setParentROI: new2DPointROI];
-//			
-//			switch( reslicedview)
-//			{
-//				case 2:	[controller loadROIonXReslicedView: [[controller originalView] crossPositionY]];	break;
-//				case 1:	[controller loadROIonYReslicedView: [[controller originalView] crossPositionX]];	break;
-//			}
-//		}
-//		else
-//		{
-//			[controller loadROIonXReslicedView: [[controller originalView] crossPositionY]];
-//			[controller loadROIonYReslicedView: [[controller originalView] crossPositionX]];
-//		}
-//	}
+	if( dontCheckRoiChange == NO)
+	{
+		ROI *r = [note object];
+		
+		if( [r curView] != nil && [r curView] == [[windowController viewer] imageView])
+			[self detect2DPointInThisSlice];
+	}
+	
+	[super roiChange: note];
 }
 
 - (void) removeROI: (NSNotification*) note
 {
-//	if( [[self window] firstResponder] == self)
-//	{
-//		ROI *roi = [note object];
-//		
-//		if( [roi parentROI])
-//		{
-//			int i;
-//			for(i=0; i<[[[controller originalView] dcmRoiList] count]; i++)
-//			{
-//				if([[[[controller originalView] dcmRoiList] objectAtIndex:i] containsObject:[roi parentROI]])
-//				{
-//					NSLog(@"parent of removed ROI is on original view");
-//					[[[[controller originalView] dcmRoiList] objectAtIndex:i] removeObject:[roi parentROI]];
-//				}
-//			}
-//		}
-//	}
+	ROI *r = [note object];
+	
+	if( [r type] == t2DPoint && r.parentROI)
+	{
+		[[windowController viewer] deleteROI: r.parentROI];
+		r.parentROI = nil;
+		
+	}
+	
+	if( dontCheckRoiChange == NO)
+	{
+		if( [r curView] != nil && [r curView] == [[windowController viewer] imageView])
+			[self detect2DPointInThisSlice];
+	}
 }
 
 #pragma mark-
@@ -1267,6 +1179,8 @@ static BOOL frameZoomed = NO;
 	if( [[self window] firstResponder] != self)
 		[[self window] makeFirstResponder: self];
 	
+	dontCheckRoiChange = YES;
+	
 	[self checkCursor];
 	
 	int clickCount = 1;
@@ -1366,16 +1280,23 @@ static BOOL frameZoomed = NO;
 			
 			if([self is2DTool: tool])
 			{
-				if( tool == t2DPoint)
-				{
-					float location[ 3];
-					[pix convertPixX: mouseXPos pixY: mouseYPos toDICOMCoords: location pixelCenter: YES];
-					
-					[self add2DPoint: location];
-				}
-				else
-					[super mouseDown: theEvent];
+				[super mouseDown: theEvent];
 				[windowController propagateWLWW: self];
+				
+				for( ROI *r in curRoiList)
+				{
+					int mode;
+					
+					if( [r type] == t2DPoint && r.parentROI)
+					{
+						mode = [r ROImode];
+						if( mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing)
+						{
+							[[windowController viewer] deleteROI: r.parentROI];
+							r.parentROI = nil;
+						}
+					}
+				}
 			}
 			else
 			{
@@ -1424,9 +1345,23 @@ static BOOL frameZoomed = NO;
 		{
 			[super mouseUp: theEvent];
 			[windowController propagateWLWW: self];
-			
+		
 			if( tool == tNext)
 				[windowController updateViewsAccordingToFrame: self];
+			
+			for( ROI *r in curRoiList)
+			{
+				int mode;
+				
+				if( [r type] == t2DPoint && r.parentROI == nil)
+				{
+					float location[ 3];
+					[pix convertPixX: r.rect.origin.x pixY: r.rect.origin.y toDICOMCoords: location pixelCenter: YES];
+					[self add2DPoint: location];
+				}
+			}
+			
+			[self detect2DPointInThisSlice];
 		}
 		else
 		{
@@ -1440,6 +1375,8 @@ static BOOL frameZoomed = NO;
 	}
 	
 	[self updateMousePosition: theEvent];
+	
+	dontCheckRoiChange = NO;
 }
 
 - (void) mouseDraggedImageScroll:(NSEvent *) event

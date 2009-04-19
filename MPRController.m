@@ -742,15 +742,18 @@ static float deg2rad = 3.14159265358979/180.0;
 	
 	[s stopROIEditingForce: YES];
 	
-	for( int y = 0; y < maxMovieIndex; y++)
-	{
-		for( ROI *r in [s curRoiList])
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object: r userInfo: nil];
-		
-		[[s curRoiList] removeAllObjects];
-	}
+	NSArray *roiListCopy = [[[s curRoiList] copy] autorelease];
+	
+	for( ROI *r in roiListCopy)
+		[viewer2D deleteROI: r.parentROI];
+	
+	[[s curRoiList] removeAllObjects];
 	
 	[s setIndex: [s curImage]];
+	
+	[mprView1 detect2DPointInThisSlice];
+	[mprView2 detect2DPointInThisSlice];
+	[mprView3 detect2DPointInThisSlice];
 }
 
 #pragma mark Undo
