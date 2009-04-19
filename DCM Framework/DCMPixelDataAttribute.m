@@ -2846,7 +2846,8 @@ NS_ENDHANDLER
 	NSMutableData *subData = nil;
 	if (!_framesCreated){	
 		//NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-		if ( transferSyntax.isEncapsulated )	{
+		if ( transferSyntax.isEncapsulated )
+		{
 			//NSLog(@"encapsulated");
 			NSMutableArray *offsetTable = [NSMutableArray array];
 			/*offset table will be first fragment
@@ -2881,16 +2882,17 @@ NS_ENDHANDLER
 			//most likely way to have data with one frame per data object.
 			NSMutableArray *values = [NSMutableArray arrayWithArray:_values];
 			//remove offset table
-			[values removeObjectAtIndex:0];				
-			if ([values count] == _numberOfFrames) {
+			[values removeObjectAtIndex:0];
+			if ([values count] == _numberOfFrames)
+			{
 				subData = [values objectAtIndex:index];
-			//need to figure out where the data starts and ends
+				//need to figure out where the data starts and ends
 			}
-			else{
-			
+			else
+			{
 				int currentOffset = [[offsetTable objectAtIndex:index] longValue];
 				int currentLength = 0;
-				if (index < _numberOfFrames - 1)
+				if (index < _numberOfFrames - 1 && index < [offsetTable count] - 1)
 					currentLength =  [[offsetTable objectAtIndex:index + 1] longValue] - currentOffset;
 				else{
 					//last offset - currentLength =  total length of items 
@@ -3087,14 +3089,24 @@ NS_ENDHANDLER
 - (NSData *)decodeFrameAtIndex:(int)index
 {
 	[singleThread lock];
-
+	
 	BOOL colorspaceIsConverted = NO;
 	NSMutableData *subData = nil;
 	
-	if( _framesCreated)
-		subData = [_values objectAtIndex:index];
-	else
-		subData = [self createFrameAtIndex:index];
+	@try
+	{
+		if( _framesCreated)
+			subData = [_values objectAtIndex:index];
+		else
+			subData = [self createFrameAtIndex:index];
+	}
+	@catch (NSException *e)
+	{
+		NSLog( @"exception decodeFrameAtIndex: %@", e);
+		[singleThread unlock];
+		
+		return nil;
+	}
 	
 	if ([_values count] > 0 && index < _numberOfFrames)
 	{
@@ -3195,7 +3207,7 @@ NS_ENDHANDLER
 			}
 			else
 			{
-				NSLog(@"Unknown compressed transfer syntax: %@", transferSyntax.description);
+				NSLog(@"Unknown compressed transfer syntax: %@ %@", transferSyntax.description, transferSyntax.transferSyntax);
 			}
 			
 			[singleThread lock];

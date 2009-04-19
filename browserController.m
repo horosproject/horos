@@ -6288,18 +6288,18 @@ static NSArray*	statesArray = nil;
 
 - (BOOL)isUsingExternalViewer: (NSManagedObject*)item
 {
+	BOOL r = NO;
+	
 	if ([[item valueForKey:@"type"] isEqualToString:@"Series"] )
 	{
+		[managedObjectContext lock];
+		
+		DicomImage *im = [[item valueForKey: @"images"] anyObject];
+		
 		// ZIP files with XML descriptor
-		if([[item valueForKey:@"noFiles"] intValue] == 1 )
+		if([[item valueForKey:@"noFiles"] intValue] == 1)
 		{
-			BOOL r = NO;
-			
-			[managedObjectContext lock];
-			
-			NSSet *imagesSet = [item valueForKeyPath: @"images.fileType"];
-			NSArray *imagesArray = [imagesSet allObjects];
-			if([[imagesArray objectAtIndex:0] isEqualToString:@"XMLDESCRIPTOR"] )
+			if([[im valueForKey:@"fileType"] isEqualToString:@"XMLDESCRIPTOR"] )
 			{
 				NSLog(@"******** XMLDESCRIPTOR ********");
 				
@@ -6307,10 +6307,9 @@ static NSArray*	statesArray = nil;
 				[savePanel setCanSelectHiddenExtension:YES];
 				[savePanel setRequiredFileType:@"zip"];
 				
-				imagesSet = [item valueForKeyPath: @"images.path"];
-				imagesArray = [imagesSet allObjects];
-				NSString *filePath = [imagesArray objectAtIndex:0];
+				NSString *filePath = [im valueForKey: @"completePath"];
 				NSString *fileName = [filePath lastPathComponent];
+				
 				if([savePanel runModalForDirectory:nil file:fileName] == NSFileHandlingPanelOKButton)
 				{
 					// write the file to the specified location on the disk
@@ -6324,37 +6323,36 @@ static NSArray*	statesArray = nil;
 					[xmlFilePath appendString: [filePath substringToIndex:[filePath length]-[[filePath pathExtension] length]]];
 					[xmlFilePath appendString: @"xml"];
 					NSLog(@"xmlFilePath : %@", xmlFilePath);
+					
 					NSMutableString *newXmlFilePath = [NSMutableString stringWithCapacity:[newFilePath length]];
 					[newXmlFilePath appendString: [newFilePath substringToIndex:[newFilePath length]-[[newFilePath pathExtension] length]]];
 					[newXmlFilePath appendString: @"xml"];
 					NSLog(@"newXmlFilePath : %@", newXmlFilePath);
+					
 					if ([fileManager fileExistsAtPath:xmlFilePath])
 						[fileManager copyPath:xmlFilePath toPath:newXmlFilePath handler:nil];
 				}
 				
 				r = YES;
 			}
-			else if ([[imagesArray objectAtIndex:0] isEqualToString:@"DICOMMPEG2"])
+		}
+		
+		if ([[im valueForKey:@"fileType"] isEqualToString:@"DICOMMPEG2"])
+		{
+			NSString *filePath = [im valueForKey: @"completePath"];
+			
+			if( [[NSWorkspace sharedWorkspace] openFile: filePath withApplication:@"VLC"] == NO)
 			{
-				imagesSet = [item valueForKeyPath: @"images.completePath"];
-				imagesArray = [imagesSet allObjects];
-				NSString *filePath = [imagesArray objectAtIndex:0];
-				
-				if( [[NSWorkspace sharedWorkspace] openFile: filePath withApplication:@"VLC"] == NO)
-				{
-					NSRunAlertPanel( NSLocalizedString( @"MPEG-2 File", nil), NSLocalizedString( @"MPEG-2 DICOM files require the VLC application. Available for free here: http://www.videolan.org/vlc/", nil), nil, nil, nil);
-				}
-				
-				r = YES;
+				NSRunAlertPanel( NSLocalizedString( @"MPEG-2 File", nil), NSLocalizedString( @"MPEG-2 DICOM files require the VLC application. Available for free here: http://www.videolan.org/vlc/", nil), nil, nil, nil);
 			}
 			
-			[managedObjectContext unlock];
-			
-			return r;
-		}	
+			r = YES;
+		}
+		
+		[managedObjectContext unlock];
 	}
 	
-	return NO;
+	return r;
 }
 
 - (void) databaseOpenStudy: (NSManagedObject*) item
@@ -7660,15 +7658,7 @@ static BOOL withReset = NO;
 				else if ([fileType isEqualToString: @"DICOMMPEG2"])
 				{
 					long count = [[curFile valueForKey:@"noFiles"] intValue];
-					
-					if( count == 1)
-					{
-						long frames = [[[[curFile valueForKey:@"images"] anyObject] valueForKey:@"numberOfFrames"] intValue];
-						
-						if( frames > 1) [cell setTitle:[NSString stringWithFormat: NSLocalizedString(@"MPEG-2 Series\r%@\r%d Frames", nil), name, frames]];
-						else [cell setTitle:[NSString stringWithFormat: NSLocalizedString(@"MPEG-2 Series\r%@\r%d Image", nil), name, count]];
-					}
-					
+					[cell setTitle:[NSString stringWithFormat: NSLocalizedString(@"MPEG-2 Series\r%@\r%d Images", nil), name, count]];
 					img = [[NSImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForImageResource:@"mpeg2"]];
 				}
 				else if( [[curFile valueForKey:@"type"] isEqualToString: @"Series"])
