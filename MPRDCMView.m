@@ -266,7 +266,14 @@ static BOOL frameZoomed = NO;
 		if( imagePtr)
 		{
 			if( cameraMoved)
-				[curRoiList removeAllObjects];
+			{
+				for( int i = [curRoiList count] -1 ; i >= 0; i--)
+				{
+					ROI *r = [curRoiList objectAtIndex: i];
+					if( [r type] != t2DPoint)
+						[curRoiList removeObjectAtIndex: i];
+				}
+			}
 			
 			if( [pix pwidth] == w && [pix pheight] == h && isRGB == [pix isRGB])
 			{
@@ -281,14 +288,11 @@ static BOOL frameZoomed = NO;
 				[pix setPwidth: w];
 				[pix setPheight: h];
 				
-				NSMutableArray *savedROIs = nil;
-				if( cameraMoved == NO)
-					savedROIs = [[curRoiList copy] autorelease];
+				NSMutableArray *savedROIs = [[curRoiList copy] autorelease];
 				
 				[self setIndex: 0];
 				
-				if( cameraMoved == NO)
-					[curRoiList addObjectsFromArray: savedROIs];
+				[curRoiList addObjectsFromArray: savedROIs];
 			}
 			float porigin[ 3];
 			[vrView getOrigin: porigin windowCentered: YES sliceMiddle: YES];
@@ -311,8 +315,7 @@ static BOOL frameZoomed = NO;
 				[r setOriginAndSpacing: resolution : resolution :[DCMPix originCorrectedAccordingToOrientation: pix] :NO];
 			}
 			
-			if( cameraMoved)
-				[self detect2DPointInThisSlice];
+			[self detect2DPointInThisSlice];
 		}
 		
 		if( blendingView)
@@ -899,11 +902,17 @@ static BOOL frameZoomed = NO;
 	{
 		// First delete all 2D Points in our pix
 		
+		NSMutableDictionary *ROIsStateSaved = [NSMutableDictionary dictionary];
+		
 		for( int i = [curRoiList count] -1 ; i >= 0; i--)
 		{
 			ROI *r = [curRoiList objectAtIndex: i];
 			if( [r type] == t2DPoint)
+			{
+				if( r.parentROI)
+					[ROIsStateSaved setObject: [NSNumber numberWithInt: [r ROImode]] forKey: [NSValue valueWithPointer: r.parentROI]];
 				[curRoiList removeObjectAtIndex: i];
+			}
 		}
 		
 		NSArray *roiList = [viewer2D roiList: [windowController curMovieIndex]];
@@ -952,6 +961,10 @@ static BOOL frameZoomed = NO;
 						[new2DPointROI setParentROI: r];
 						[self roiSet: new2DPointROI];
 						[curRoiList addObject: new2DPointROI];
+						
+						int mode = [[ROIsStateSaved objectForKey: [NSValue valueWithPointer: r]] intValue];
+						if( mode)
+							[new2DPointROI setROIMode: mode];
 					}
 				}
 			}
