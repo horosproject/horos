@@ -12115,8 +12115,8 @@ static NSArray*	openSubSeriesArray = nil;
 
 - (void)waitForRunningProcesses
 {
-	[BrowserController tryLock: managedObjectContext during: 120];
 	[BrowserController tryLock: checkIncomingLock during: 120];
+	[BrowserController tryLock: managedObjectContext during: 120];
 	[BrowserController tryLock: checkBonjourUpToDateThreadLock during: 120];
 	
 	while( [SendController sendControllerObjects] > 0 )
@@ -12141,6 +12141,8 @@ static NSArray*	openSubSeriesArray = nil;
 
 - (void) browserPrepareForClose
 {
+	[IncomingTimer invalidate];
+	
 	NSLog( @"browserPrepareForClose");
 	
 	copyThread = NO;
