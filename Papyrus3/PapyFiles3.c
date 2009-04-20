@@ -320,7 +320,7 @@ Papy3FileOpen (char *inNameP, PAPY_FILE inVRefNum, int inToOpen, void* inFSSpec)
                           /* extract some information from group 28 */
                           /* first : keep the position in the file */
                           theErr = Papy3FTell (gPapyFile [theFileNb], &theFilePos);
-  
+							
                           /* then go to the data set */
                           if (gIsPapyFile [theFileNb] == DICOM10)
                             theErr = Papy3FSeek (gPapyFile [theFileNb], SEEK_SET, 132L);

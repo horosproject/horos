@@ -3,11 +3,12 @@
 	<data>
 		<int key="IBDocument.SystemTarget">1050</int>
 		<string key="IBDocument.SystemVersion">9G55</string>
-		<string key="IBDocument.InterfaceBuilderVersion">670</string>
+		<string key="IBDocument.InterfaceBuilderVersion">672</string>
 		<string key="IBDocument.AppKitVersion">949.43</string>
 		<string key="IBDocument.HIToolboxVersion">353.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
+			<integer value="13468"/>
 			<integer value="1281"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
@@ -3576,7 +3577,7 @@
 				<string key="NSWindowContentMaxSize">{9000, 9000}</string>
 				<string key="NSWindowContentMinSize">{600, 600}</string>
 				<object class="NSView" key="NSWindowView" id="1039447468">
-					<nil key="NSNextResponder"/>
+					<reference key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<object class="NSMutableArray" key="NSSubviews">
 						<bool key="EncodedWithXMLCoder">YES</bool>
@@ -4181,7 +4182,7 @@
 															<string key="NSIdentifier">referringPhysician</string>
 															<double key="NSWidth">1.200000e+02</double>
 															<double key="NSMinWidth">4.000000e+01</double>
-															<double key="NSMaxWidth">2.000000e+02</double>
+															<double key="NSMaxWidth">4.000000e+02</double>
 															<object class="NSTableHeaderCell" key="NSHeaderCell">
 																<int key="NSCellFlags">67239424</int>
 																<int key="NSCellFlags2">0</int>
@@ -4211,7 +4212,7 @@
 															<string key="NSIdentifier">performingPhysician</string>
 															<double key="NSWidth">1.200000e+02</double>
 															<double key="NSMinWidth">4.000000e+01</double>
-															<double key="NSMaxWidth">2.000000e+02</double>
+															<double key="NSMaxWidth">4.000000e+02</double>
 															<object class="NSTableHeaderCell" key="NSHeaderCell">
 																<int key="NSCellFlags">67239424</int>
 																<int key="NSCellFlags2">0</int>
@@ -4241,7 +4242,7 @@
 															<string key="NSIdentifier">institutionName</string>
 															<double key="NSWidth">1.200000e+02</double>
 															<double key="NSMinWidth">4.000000e+01</double>
-															<double key="NSMaxWidth">3.000000e+02</double>
+															<double key="NSMaxWidth">4.000000e+02</double>
 															<object class="NSTableHeaderCell" key="NSHeaderCell">
 																<int key="NSCellFlags">67239424</int>
 																<int key="NSCellFlags2">0</int>
@@ -4404,6 +4405,7 @@
 												<reference ref="658526862"/>
 											</object>
 											<string key="NSFrame">{{1, 0}, {1102, 17}}</string>
+											<string key="NSBounds">{{4, 0}, {1102, 17}}</string>
 											<reference key="NSSuperview" ref="832526649"/>
 											<reference key="NSNextKeyView" ref="658526862"/>
 											<reference key="NSDocView" ref="658526862"/>
@@ -4710,8 +4712,7 @@
 																<int key="NSPeriodicDelay">200</int>
 																<int key="NSPeriodicInterval">25</int>
 															</object>
-															<int key="NSSelectedRow">-1</int>
-															<int key="NSSelectedCol">-1</int>
+															<reference key="NSSelectedCell" ref="595784327"/>
 															<reference key="NSBackgroundColor" ref="999148946"/>
 															<reference key="NSCellBackgroundColor" ref="762861948"/>
 														</object>
@@ -5061,6 +5062,7 @@
 						</object>
 					</object>
 					<string key="NSFrameSize">{1132, 808}</string>
+					<reference key="NSSuperview"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1440, 878}}</string>
 				<string key="NSMinSize">{600, 622}</string>
@@ -22364,9 +22366,11 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 							<string>applyShading:</string>
 							<string>redo:</string>
 							<string>undo:</string>
+							<string>updateAutoAdjustPrinting:</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
 							<string>id</string>
 							<string>id</string>
 							<string>id</string>
