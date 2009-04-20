@@ -6765,7 +6765,8 @@ static NSArray*	statesArray = nil;
 	NSArray					*array = nil;
 	NSManagedObjectContext	*context = self.managedObjectContext;
 	
-	[self checkIncomingNow: self];
+	[self checkIncoming: self];
+	// We cannot call checkIncomingNow, because we currently have the lock for context, and IF a separate checkIncoming thread has started, he is currently waiting for the context lock, and we will wait for the checkIncomingLock...
 	
 	@try
 	{
@@ -13405,8 +13406,20 @@ static volatile int numberOfThreadsForJPEG = 0;
 	if( [NSDate timeIntervalSinceReferenceDate] - lastCheckIncoming < 0.5) return;
 	
 	[checkIncomingLock lock];
-	[self checkIncomingThread: self];
-	[checkIncomingLock unlock];
+	if( [managedObjectContext tryLock])
+	{
+		[self checkIncomingThread: self];
+		[managedObjectContext unlock];
+		[checkIncomingLock unlock];
+	}
+	else
+	{
+		[checkIncomingLock unlock];
+		
+		[self checkIncoming: self];
+		[NSThread sleepForTimeInterval: 1];
+		NSLog( @"*** We will not checkIncomingNow, because we can find ourself in a locked in loop....");
+	}
 }
 
 - (void)checkIncoming: (id)sender

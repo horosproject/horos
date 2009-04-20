@@ -33,6 +33,8 @@
 //
 // About XML-RPC: http://www.xmlrpc.com/
 
+static NSTimeInterval lastConnection = 0;
+
 @implementation XMLRPCMethods
 
 - (id) init
@@ -141,7 +143,7 @@
 			
 			NSMutableDictionary	*httpServerMessage = [NSMutableDictionary dictionaryWithObjectsAndKeys: selName, @"MethodName", doc, @"NSXMLDocument", [NSNumber numberWithBool: NO], @"Processed", ipAddressString, @"peerAddress", nil];
 			
-			NSLog( @"http XML-RPC MethodName: %@", selName);
+//			NSLog( @"http XML-RPC MethodName: %@", selName);
 			
 			#pragma mark KillOsiriX			
 			if ( [selName isEqual:@"KillOsiriX"])

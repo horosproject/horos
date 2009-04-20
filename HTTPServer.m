@@ -85,8 +85,6 @@
     [ostream open];
     isValid = YES;
 	
-	NSLog( @"httpconnection allocated");
-	
     return self;
 }
 
