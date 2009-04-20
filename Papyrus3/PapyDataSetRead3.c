@@ -60,12 +60,12 @@ ExtractGroup28Information (PapyShort inFileNb)
   } /* if */
   
   /* number of ROWS */
-  if( theGroup28P [papRowsGr].value == 0L) return -1; 
-  gx0028Rows [inFileNb] = theGroup28P [papRowsGr].value->us;
+  if( theGroup28P [papRowsGr].value == 0L)  gx0028Rows [inFileNb] = 0; 
+  else gx0028Rows [inFileNb] = theGroup28P [papRowsGr].value->us;
   
   /* number of COLUMNS */
-   if( theGroup28P [papColumnsGr].value == 0L) return -1; 
-  gx0028Columns [inFileNb] = theGroup28P [papColumnsGr].value->us;
+   if( theGroup28P [papColumnsGr].value == 0L) gx0028Columns [inFileNb] = 0; 
+  else gx0028Columns [inFileNb] = theGroup28P [papColumnsGr].value->us;
   
   /* the image format */
   if (theGroup28P [papImageFormatGr].nb_val > 0L)

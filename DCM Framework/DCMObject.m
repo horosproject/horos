@@ -1479,8 +1479,9 @@ PixelRepresentation
 	
 	NSException *exception = nil;
 	BOOL status = YES;
-	NS_DURING
 	
+	@try
+	{
 	//routine for Files
 	if (stripGroupLength)
 		[self removeGroupLengths];
@@ -1543,11 +1544,13 @@ PixelRepresentation
 		}
 	}
 	
-	NS_HANDLER
-		if (exception)
-			NSLog(@"Exception:%@	reason:%@", [exception name], [exception reason]);
+	}
+	
+	@catch( NSException *e)
+	{
+			NSLog(@"Exception:%@ reason:%@", [e name], [e reason]);
 		status =  NO;
-	NS_ENDHANDLER
+	}
 	
 	return status;	
 }

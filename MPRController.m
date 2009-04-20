@@ -2723,6 +2723,8 @@ static float deg2rad = 3.14159265358979/180.0;
 	[mprView1 mouseMoved: [[NSApplication sharedApplication] currentEvent]];
 	[mprView2 mouseMoved: [[NSApplication sharedApplication] currentEvent]];
 	[mprView3 mouseMoved: [[NSApplication sharedApplication] currentEvent]];
+	
+	[viewer2D setMovieIndex: m];
 }
 
 - (void) performMovieAnimation:(id) sender
