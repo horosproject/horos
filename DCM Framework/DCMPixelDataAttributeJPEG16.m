@@ -25,23 +25,24 @@
 //static NSException *dcmException;
 
 LOCAL(int)
-readFromData16(NSData *data, JOCTET *buffer, int currentPosition, int length){
-	//NSLog(@"readFromData: %d", length);
+readFromData16(NSData *data, JOCTET *buffer, int currentPosition, int length)
+{
 	int lengthToRead = 0;
 	NSRange range;
 	
-	if ([data length] > length + currentPosition) {
+	if ([data length] > length + currentPosition)
+	{
 		range = NSMakeRange(currentPosition, length);
 		lengthToRead = length;
 	}
 	else{
-		lengthToRead = [data length] - currentPosition - 1;
+		lengthToRead = [data length] - currentPosition;
 		range = NSMakeRange(currentPosition, lengthToRead);
 	}
 	
 	if (lengthToRead  > 0)
 		[data getBytes:buffer range:range];
-	//NSLog(@"LengthToRead %d", lengthToRead);
+	
 	return lengthToRead;
 }
 

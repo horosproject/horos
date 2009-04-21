@@ -94,7 +94,7 @@ ExtractJPEGlossy8 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelSt
   /* specify the data source */
 //  jpeg_stdio_src (&theCInfo, gPapyFile [inFileNb]);
 	
-	unsigned char *jpegPointer = (unsigned char*) malloc( theLength);
+	unsigned char *jpegPointer = (unsigned char*) malloc( theLength + 1024L);
   if( jpegPointer && theLength)
 	{
 	  if ((theErr = (PapyShort) Papy3FRead (gPapyFile [inFileNb], &theLength, 1L, jpegPointer)) < 0)

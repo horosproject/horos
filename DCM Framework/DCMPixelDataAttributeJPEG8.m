@@ -38,7 +38,7 @@ readFromData8(NSData *data, JOCTET *buffer, int currentPosition, int length){
 		lengthToRead = length;
 	}
 	else{
-		lengthToRead = [data length] - currentPosition - 1;
+		lengthToRead = [data length] - currentPosition;
 		range = NSMakeRange(currentPosition, lengthToRead);
 	}
 	
