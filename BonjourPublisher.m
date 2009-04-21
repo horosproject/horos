@@ -312,7 +312,7 @@ static char *GetPrivateIP()
 				// we send the database SQL file
 				NSString *databasePath = [interfaceOsiriX localDatabasePath];
 				
-				representationToSend = [NSMutableData dataWithContentsOfMappedFile: databasePath];
+				representationToSend = [NSMutableData dataWithContentsOfFile: databasePath];
 				
 				struct sockaddr serverAddress;
 				socklen_t namelen = sizeof(serverAddress);
