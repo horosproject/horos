@@ -11635,7 +11635,7 @@ static NSArray*	openSubSeriesArray = nil;
 		loadPreviewIndex = 0;
 		matrixDisplayIcons = [[NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(matrixDisplayIcons:) userInfo:self repeats:YES] retain];
 		
-		[[NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(newFilesGUIUpdate:) userInfo:self repeats:YES] retain];
+		[[NSTimer scheduledTimerWithTimeInterval: 1.0 target:self selector:@selector(newFilesGUIUpdate:) userInfo:self repeats:YES] retain];
 		
 		/* notifications from workspace */
 		[[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(volumeMount:) name:NSWorkspaceDidMountNotification object:nil];
@@ -13139,6 +13139,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 		NSAutoreleasePool   *pool = [[NSAutoreleasePool alloc] init];
 		
 		[checkIncomingLock lock];
+		
+		lastCheckIncoming  = [NSDate timeIntervalSinceReferenceDate];
 		
 		@try
 		{
