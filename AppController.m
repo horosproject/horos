@@ -1793,13 +1793,17 @@ static NSDate *lastWarningDate = nil;
 
 - (void) applicationWillTerminate: (NSNotification*) aNotification
 {
+	[webServer release];
+	webServer = nil;
+	
+	[XMLRPCServer release];
+	XMLRPCServer = nil;
+	
 	[self closeAllViewers: self];
 	
 	[[BrowserController currentBrowser] browserPrepareForClose];
 
 	[ROI saveDefaultSettings];
-	
-	[webServer release];
 	
 	[BonjourDICOMService stop];
 	[BonjourDICOMService release];
