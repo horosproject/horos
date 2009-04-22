@@ -607,7 +607,7 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 }
 
 - (BOOL)writeToDataContainer:(DCMDataContainer *)container withTransferSyntax:(DCMTransferSyntax *)ts {
-	// valueLength should be 0xffffffff from constructor
+	// valueLength should be 0xffffffffl from constructor
 	BOOL status = NO;
 	if (DCMDEBUG) 
 		NSLog(@"Write PixelData with TS:%@  vr: %@ encapsulated: %d", ts.description, _vr, ts.isEncapsulated );

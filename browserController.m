@@ -11663,7 +11663,7 @@ static NSArray*	openSubSeriesArray = nil;
 		
 		displayEmptyDatabase = NO;
 		
-		
+		[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"useJPEG2000forCompression"];
 	}
 	return self;
 }
