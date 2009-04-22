@@ -5901,8 +5901,8 @@ public:
 		*w = size[0];
 		*h = size[1];
 		
-		*w /= 2;
-		*w *= 2;
+//		*w /= 2;
+//		*w *= 2;
 		
 		if( renderingMode == 1 || renderingMode == 3)		// MIP
 		{
