@@ -500,9 +500,11 @@ PixelRepresentation
 	
 	@try
 	{
-	while ((undefinedLength || *byteOffset < endByteOffset)) {
+		while ((undefinedLength || *byteOffset < endByteOffset))
+		{
 		NSAutoreleasePool *subPool = [[NSAutoreleasePool alloc] init];
-		if (DCMDEBUG) {
+		if (DCMDEBUG)
+		{
 			NSLog(@"byteOffset:%d, endByteOffset:%d", *byteOffset, endByteOffset);
 		}
 		
@@ -613,11 +615,11 @@ PixelRepresentation
 			DCMAttribute *attr = nil;
 			//sequence attribute
 			
-			if ([DCMValueRepresentation isSequenceVR:vr] || ([DCMValueRepresentation  isUnknownVR:vr] && vl == 0xffffffffl)) {
-				//NSLog(@"DCMObject sequence: %f", -[timestamp  timeIntervalSinceNow]);
-					attr = (DCMAttribute *) [[[DCMSequenceAttribute alloc] initWithAttributeTag:(DCMAttributeTag *)tag] autorelease];
-					*byteOffset = [self readNewSequenceAttribute:attr dicomData:dicomData byteOffset:byteOffset lengthToRead:vl specificCharacterSet:specificCharacterSet];
-
+			if ([DCMValueRepresentation isSequenceVR:vr] || ([DCMValueRepresentation  isUnknownVR:vr] && vl == 0xffffffffl))
+			{
+				
+				attr = (DCMAttribute *) [[[DCMSequenceAttribute alloc] initWithAttributeTag:(DCMAttributeTag *)tag] autorelease];
+				*byteOffset = [self readNewSequenceAttribute:attr dicomData:dicomData byteOffset:byteOffset lengthToRead:vl specificCharacterSet:specificCharacterSet];
 			} 
 			
 			// "7FE0,0010" == PixelData
