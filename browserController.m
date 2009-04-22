@@ -2906,8 +2906,6 @@ static NSArray*	statesArray = nil;
 				NSLog( @"saveDatabase ERROR: %@", [error localizedDescription]);
 				retError = -1L;
 			}
-			[context unlock];
-			[context release];
 			
 			if( path == nil) path = currentDatabasePath;
 			
@@ -2915,6 +2913,9 @@ static NSArray*	statesArray = nil;
 			
 			[[NSUserDefaults standardUserDefaults] setObject:DATABASEVERSION forKey: @"DATABASEVERSION"];
 			[[NSUserDefaults standardUserDefaults] setInteger: DATABASEINDEX forKey: @"DATABASEINDEX"];
+			
+			[context unlock];
+			[context release];
 			
 			if( [NSThread currentThread] == mainThread)
 				[self outlineViewRefresh];

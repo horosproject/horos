@@ -4942,6 +4942,11 @@ public:
 	[self setNeedsDisplay:YES];
 }
 
+- (float) LOD
+{
+	return LOD;
+}
+
 -(void) setLOD:(float) f
 {
 	if( f != LOD)

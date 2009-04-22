@@ -32,6 +32,7 @@
 	
 	int viewExport;
 	float fromIntervalExport, toIntervalExport;
+	float LOD, previousResolution;
 	
 	BOOL rotateLines;
 	BOOL moveCenter;
@@ -46,7 +47,7 @@
 
 @property (readonly) DCMPix *pix;
 @property (retain) Camera *camera;
-@property float angleMPR, fromIntervalExport, toIntervalExport;
+@property float angleMPR, fromIntervalExport, toIntervalExport, LOD;
 @property int viewExport;
 @property BOOL displayCrossLines;
 @property (readonly) VRView *vrView;

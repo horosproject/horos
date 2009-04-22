@@ -398,6 +398,7 @@ typedef char* vtkMyCallbackVR;
 //-(void) runRendering;
 //-(void) startRendering;
 //-(void) stopRendering;
+- (float) LOD;
 -(void) setLOD:(float)f;
 -(void) setCurrentTool:(short) i;
 - (int) currentTool;

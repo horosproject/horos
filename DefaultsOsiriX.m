@@ -718,7 +718,7 @@ static NSHost *currentHost = nil;
 	else
 		[defaultValues setObject:@"1.4" forKey:@"superSampling"];
 		
-	[defaultValues setObject:@"1.5" forKey:@"defaultMPRLOD"];
+	[defaultValues setObject:@"1.0" forKey:@"defaultMPRLOD"];
 	
 //	[defaultValues setObject:@"1" forKey: @"useCGet"];
 	

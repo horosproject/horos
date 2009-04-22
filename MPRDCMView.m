@@ -42,7 +42,7 @@ static BOOL frameZoomed = NO;
 
 @implementation MPRDCMView
 
-@synthesize pix, camera, angleMPR, vrView, viewExport, toIntervalExport, fromIntervalExport, rotateLines, moveCenter, displayCrossLines;
+@synthesize pix, camera, angleMPR, vrView, viewExport, toIntervalExport, fromIntervalExport, rotateLines, moveCenter, displayCrossLines, LOD;
 
 - (BOOL)becomeFirstResponder
 {
@@ -250,6 +250,43 @@ static BOOL frameZoomed = NO;
 	if( [self hasCameraChanged: currentCamera] == YES)
 	{
 		BOOL cameraMoved = [self hasCameraMoved: currentCamera];
+		
+		// AutoLOD
+		if( 1)
+		{
+			float minimumResolution = [[windowController originalPix] pixelSpacingX];
+			
+			if( minimumResolution > [[windowController originalPix] pixelSpacingY])
+				minimumResolution = [[windowController originalPix] pixelSpacingY];
+			
+			if( minimumResolution > [[windowController originalPix] sliceInterval])
+				minimumResolution = [[windowController originalPix] sliceInterval];
+			
+			minimumResolution *= 0.9;
+			
+			float currentResolution = [pix pixelSpacingX];
+			
+			if( minimumResolution > currentResolution && currentResolution != 0)
+				LOD *= ( minimumResolution / currentResolution);
+			
+			if( previousResolution == 0)
+				previousResolution = [vrView getResolution];
+			
+			if( previousResolution < [vrView getResolution])
+				LOD *= (previousResolution / [vrView getResolution]);
+			
+			if( LOD < windowController.LOD)
+				LOD = windowController.LOD;
+			
+			previousResolution = [vrView getResolution];
+			
+			if( LOD > 4) LOD = 4;
+			
+			if( windowController.lowLOD)
+				[vrView setLOD: LOD * vrView.lowResLODFactor];
+			else
+				[vrView setLOD: LOD];
+		}
 		
 		if( [self frame].size.width > 0 && [self frame].size.height > 0)
 		{
@@ -1085,7 +1122,7 @@ static BOOL frameZoomed = NO;
 		mouseLocation.x *= curDCM.pixelSpacingX;
 		mouseLocation.y *= curDCM.pixelSpacingY;
 		
-		float f = scaleValue * curDCM.pixelSpacingX / [windowController LOD];
+		float f = scaleValue * curDCM.pixelSpacingX / LOD;
 		
 		if( mouseLocation.x > r.x - BS * f && mouseLocation.x < r.x + BS* f && mouseLocation.y > r.y - BS* f && mouseLocation.y < r.y + BS* f)
 		{
@@ -1126,7 +1163,7 @@ static BOOL frameZoomed = NO;
 	
 	[self restoreCamera];
 	
-	[vrView setLODLow: YES]; 
+	windowController.lowLOD = YES;
 	
 	[vrView scrollWheel: theEvent];
 	
@@ -1134,7 +1171,7 @@ static BOOL frameZoomed = NO;
 	[self updateMousePosition: theEvent];
 	
 	[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector( delayedFullLODRendering:) object: self];	
-	[windowController performSelector: @selector( delayedFullLODRendering:) withObject: self afterDelay: 0.6];
+	[windowController performSelector: @selector( delayedFullLODRendering:) withObject: self afterDelay: 0.2];
 }
 
 - (void)rightMouseDown:(NSEvent *)theEvent
@@ -1169,11 +1206,12 @@ static BOOL frameZoomed = NO;
 	[self updateMousePosition: theEvent];
 	
 	[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector( delayedFullLODRendering:) object: nil];
-	[windowController performSelector: @selector( delayedFullLODRendering:) withObject: nil afterDelay: 0.6];
+	[windowController performSelector: @selector( delayedFullLODRendering:) withObject: nil afterDelay: 0.4];
 }
 
 - (void)rightMouseUp:(NSEvent *)theEvent
 {
+	windowController.lowLOD = NO;
 	[self flagsChanged: theEvent];
 	
 	[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector( delayedFullLODRendering:) object: nil];
@@ -1242,7 +1280,7 @@ static BOOL frameZoomed = NO;
 		}
 		
 		[self restoreCamera];
-		[vrView setLODLow: NO];
+		windowController.lowLOD = NO;
 		[self updateViewMPR];
 	}
 	else
@@ -1330,11 +1368,12 @@ static BOOL frameZoomed = NO;
 	
 	[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector( delayedFullLODRendering:) object: nil];
 	
+	windowController.lowLOD = NO;
+	
 	[self restoreCamera];
 	
 	if( rotateLines || moveCenter)
 	{
-		[vrView setLODLow: NO];
 		if( moveCenter)
 		{
 			camera.windowCenterX = 0;
@@ -1418,11 +1457,11 @@ static BOOL frameZoomed = NO;
 		delta = ((current.x - previous.x) * 512. )/ ([self frame].size.width/2);
 	
 	[self restoreCamera];
-	[vrView setLODLow: YES];
+	windowController.lowLOD = YES;
 	[vrView scrollInStack: delta];
 	[self updateViewMPR];
 	[self updateMousePosition: event];
-	[vrView setLODLow: NO];
+	windowController.lowLOD = NO;
 }
 
 - (void) mouseDragged:(NSEvent *)theEvent
@@ -1433,7 +1472,7 @@ static BOOL frameZoomed = NO;
 	{
 		[[NSCursor rotateAxisCursor] set];
 		
-		[vrView setLODLow: YES];
+		windowController.lowLOD = YES;
 		
 		NSPoint mouseLocation = [self ConvertFromNSView2GL: [self convertPoint: [theEvent locationInWindow] fromView: nil]];
 		mouseLocation.x *= curDCM.pixelSpacingX;	mouseLocation.y *= curDCM.pixelSpacingY;
@@ -1444,16 +1483,16 @@ static BOOL frameZoomed = NO;
 		[self updateViewMPR];
 		
 		[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector( delayedFullLODRendering:) object: nil];
-		[windowController performSelector: @selector( delayedFullLODRendering:) withObject: nil afterDelay: 0.6];
+		[windowController performSelector: @selector( delayedFullLODRendering:) withObject: nil afterDelay: 0.4];
 	}
 	else if( moveCenter)
 	{
-		[vrView setLODLow: YES];
+		windowController.lowLOD = YES;
 		[vrView setWindowCenter: [self convertPoint: [theEvent locationInWindow] fromView: nil]];
 		[self updateViewMPR];
 		
 		[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector( delayedFullLODRendering:) object: nil];
-		[windowController performSelector: @selector( delayedFullLODRendering:) withObject: nil afterDelay: 0.6];
+		[windowController performSelector: @selector( delayedFullLODRendering:) withObject: nil afterDelay: 0.4];
 	}
 	else
 	{
@@ -1483,7 +1522,7 @@ static BOOL frameZoomed = NO;
 			else [self updateViewMPR];
 			
 			[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector( delayedFullLODRendering:) object: nil];
-			[windowController performSelector: @selector( delayedFullLODRendering:) withObject: nil afterDelay: 0.6];
+			[windowController performSelector: @selector( delayedFullLODRendering:) withObject: nil afterDelay: 0.4];
 		}
 	}
 	

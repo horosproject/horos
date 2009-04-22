@@ -87,6 +87,7 @@
 	NSArray *wlwwMenuItems;
 	
 	float LOD;
+	BOOL lowLOD;
 	
 	IBOutlet NSPanel *shadingPanel;
 	IBOutlet ShadingArrayController *shadingsPresetsController;
@@ -108,7 +109,7 @@
 @property (retain) NSString *dcmSeriesName;
 @property (readonly) DCMPix *originalPix;
 @property float LOD, movieRate;
-@property BOOL dcmSameIntervalAndThickness, displayMousePosition, blendingModeAvailable, dcmBatchReverse;
+@property BOOL lowLOD, dcmSameIntervalAndThickness, displayMousePosition, blendingModeAvailable, dcmBatchReverse;
 @property (retain) NSColor *colorAxis1, *colorAxis2, *colorAxis3;
 @property (readonly) MPRDCMView *mprView1, *mprView2, *mprView3;
 @property (readonly) NSSplitView *horizontalSplit, *verticalSplit;

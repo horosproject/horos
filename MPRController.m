@@ -32,7 +32,7 @@ static float deg2rad = 3.14159265358979/180.0;
 
 @synthesize dcmSameIntervalAndThickness, clippingRangeThickness, clippingRangeMode, mousePosition, mouseViewID, originalPix, wlwwMenuItems, LOD, dcmFrom;
 @synthesize dcmmN, dcmTo, dcmMode, dcmRotationDirection, dcmSeriesMode, dcmRotation, dcmNumberOfFrames, dcmQuality, dcmInterval, dcmSeriesName, dcmBatchNumberOfFrames;
-@synthesize colorAxis1, colorAxis2, colorAxis3, displayMousePosition, movieRate, blendingPercentage, horizontalSplit, verticalSplit;
+@synthesize colorAxis1, colorAxis2, colorAxis3, displayMousePosition, movieRate, blendingPercentage, horizontalSplit, verticalSplit, lowLOD;
 @synthesize mprView1, mprView2, mprView3, curMovieIndex, maxMovieIndex, blendingMode, dcmFormat, blendingModeAvailable, dcmBatchReverse;
 
 + (double) angleBetweenVector:(float*) a andPlane:(float*) orientation
@@ -236,11 +236,11 @@ static float deg2rad = 3.14159265358979/180.0;
 	
 	if( hiddenVRView.lowResLODFactor > 1 || sender != nil)
 	{
-		[hiddenVRView setLODLow: NO];
+		lowLOD = NO;
 	
 		[self updateViewsAccordingToFrame: sender];
 	
-		[hiddenVRView setLODLow: YES];
+		lowLOD = YES;
 	}
 }
 
@@ -262,9 +262,10 @@ static float deg2rad = 3.14159265358979/180.0;
 	}
 	else
 	{
-		[[self window] makeFirstResponder: mprView3];
-		[mprView3 restoreCamera];
-		[mprView3 updateViewMPR];
+		MPRDCMView *selectedView = [self selectedView];
+		[[self window] makeFirstResponder: selectedView];
+		[selectedView restoreCamera];
+		[selectedView updateViewMPR];
 	}
 	
 	if( view)
@@ -429,9 +430,11 @@ static float deg2rad = 3.14159265358979/180.0;
 	{
 		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"syncZoomLevelMPR"])
 		{
-			if( sender != mprView1) mprView1.camera.parallelScale = sender.camera.parallelScale;
-			if( sender != mprView2) mprView2.camera.parallelScale = sender.camera.parallelScale;
-			if( sender != mprView3) mprView3.camera.parallelScale = sender.camera.parallelScale;
+			MPRDCMView *selectedView = [self selectedView];
+			
+			if( selectedView != mprView1) mprView1.camera.parallelScale = selectedView.camera.parallelScale;
+			if( selectedView != mprView2) mprView2.camera.parallelScale = selectedView.camera.parallelScale;
+			if( selectedView != mprView3) mprView3.camera.parallelScale = selectedView.camera.parallelScale;
 		}
 	}
 
@@ -937,6 +940,10 @@ static float deg2rad = 3.14159265358979/180.0;
 {
 	LOD = lod;
 	[hiddenVRView setLOD: lod];
+	
+	mprView1.LOD = LOD;
+	mprView2.LOD = LOD;
+	mprView3.LOD = LOD;
 	
 	[mprView1 restoreCamera];
 	mprView1.camera.forceUpdate = YES;
