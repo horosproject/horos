@@ -1463,7 +1463,7 @@ static float deg2rad = 3.14159265358979/180.0;
 {
 	clippingRangeThickness = f;
 	
-	if( clippingRangeThickness <= 1)
+	if( clippingRangeThickness <= 3)
 		hiddenVRView.lowResLODFactor = 1.0;
 	else
 	{
