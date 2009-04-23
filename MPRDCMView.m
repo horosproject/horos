@@ -254,13 +254,15 @@ static BOOL frameZoomed = NO;
 		// AutoLOD
 		if( 1)
 		{
-			float minimumResolution = [[windowController originalPix] pixelSpacingX];
+			DCMPix *o = [windowController originalPix];
 			
-			if( minimumResolution > [[windowController originalPix] pixelSpacingY])
-				minimumResolution = [[windowController originalPix] pixelSpacingY];
+			float minimumResolution = [o pixelSpacingX];
 			
-			if( minimumResolution > [[windowController originalPix] sliceInterval])
-				minimumResolution = [[windowController originalPix] sliceInterval];
+			if( minimumResolution > [o pixelSpacingY])
+				minimumResolution = [o pixelSpacingY];
+			
+			if( minimumResolution > [o sliceInterval])
+				minimumResolution = [o sliceInterval];
 			
 			minimumResolution *= 0.9;
 			

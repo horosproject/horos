@@ -176,6 +176,10 @@
 		frameSize.width += marginSize.width * 2.0f; // add padding
 		frameSize.height += marginSize.height * 2.0f;
 	}
+	
+	GLuint texName = 0;
+	
+	bitmap = nil;
 	image = [[NSImage alloc] initWithSize:frameSize];
 	if( [image size].width > 0 && [image size].height > 0)
 	{
@@ -194,26 +198,25 @@
 		[textColor set];
 		[string drawAtPoint:NSMakePoint (marginSize.width, marginSize.height)];
 		
+		bitmap = [[NSBitmapImageRep alloc] initWithFocusedViewRect:NSMakeRect (0.0f, 0.0f, frameSize.width, frameSize.height)];
+		
 		[image unlockFocus];
+	
+		texSize.width = [bitmap size].width;
+		texSize.height = [bitmap size].height;
+		
+		glGenTextures (1, &texName);
+		glBindTexture (GL_TEXTURE_RECTANGLE_EXT, texName);
+		glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+		glPixelStorei (GL_UNPACK_CLIENT_STORAGE_APPLE, 0);
+		glTexImage2D (GL_TEXTURE_RECTANGLE_EXT, 0, GL_RGBA, texSize.width, texSize.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, [bitmap bitmapData]);
+		
+		[ctxArray addObject: currentContext];
+		[textArray addObject: [NSNumber numberWithInt: texName]];
+			
+		[bitmap release];
 	}
 	
-	bitmap = [[NSBitmapImageRep alloc] initWithFocusedViewRect:NSMakeRect (0.0f, 0.0f, frameSize.width, frameSize.height)];
-	
-	texSize.width = [bitmap size].width;
-	texSize.height = [bitmap size].height;
-	
-	GLuint texName = 0;
-	
-	glGenTextures (1, &texName);
-	glBindTexture (GL_TEXTURE_RECTANGLE_EXT, texName);
-	glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
-	glPixelStorei (GL_UNPACK_CLIENT_STORAGE_APPLE, 0);
-	glTexImage2D (GL_TEXTURE_RECTANGLE_EXT, 0, GL_RGBA, texSize.width, texSize.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, [bitmap bitmapData]);
-	
-	[ctxArray addObject: currentContext];
-	[textArray addObject: [NSNumber numberWithInt: texName]];
-		
-	[bitmap release];
 	[image release];
 	
 	return texName;
