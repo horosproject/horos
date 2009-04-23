@@ -312,8 +312,25 @@ static char *GetPrivateIP()
 				// we send the database SQL file
 				NSString *databasePath = [interfaceOsiriX localDatabasePath];
 				
-				representationToSend = [NSMutableData dataWithContentsOfMappedFile: databasePath];	//dataWithContentsOfFile: databasePath];
+				BOOL mapped = YES;
 				
+				NSDictionary *fattrs = [[NSFileManager defaultManager] fileAttributesAtPath: databasePath traverseLink: YES];
+				long long fileSize = [[fattrs objectForKey:NSFileSize] longLongValue];
+				
+				fileSize /= 1024;	// Kb
+				fileSize /= 1024;	// Mb
+				
+				#if __LP64__
+				#else
+				if( fileSize > 500)
+					mapped = NO;
+				#endif
+				
+				if( mapped)
+					representationToSend = [NSMutableData dataWithContentsOfMappedFile: databasePath];
+				else
+					representationToSend = [NSMutableData dataWithContentsOfFile: databasePath];
+					
 				struct sockaddr serverAddress;
 				socklen_t namelen = sizeof(serverAddress);
 				
