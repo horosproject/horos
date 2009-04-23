@@ -29,56 +29,61 @@
 	NSRect pieRect = NSMakeRect(0,0,14.0,14.0);
 	NSImage* pieImage = [[self alloc] initWithSize:pieRect.size];
 	[pieImage setScalesWhenResized:YES];
-	[pieImage lockFocus];
 	
-	[[NSGraphicsContext currentContext] saveGraphicsState];
-	NSRect targetRect = NSInsetRect(pieRect, 2.0, 2.0);
-
-	NSBezierPath* circle = [NSBezierPath bezierPathWithOvalInRect:targetRect];
-	
-	if(percentage==0)
-	{	
-		// Fill the circle
-		[insideColor set];
-		[circle fill];
-
-		// Stroke the circle
-		[circle setLineWidth:1.0];	
-		[borderColor set];
-		[circle stroke];
-	}
-	else if(percentage==1)
+	if( [pieImage size].width > 0 && [pieImage size].height)
 	{
-		// Fill the circle
-		[fullColor set];
-		[circle fill];
-
-		// Stroke the circle
-		[circle setLineWidth:1.0];	
-		[fullColor set];
-		[circle stroke];
-	}
-	else
-	{
-		// Fill the circle
-		[borderColor set];
-		[circle fill];
-
-		// Stroke the circle
-		[circle setLineWidth:1.0];	
-		[borderColor set];
-		[circle stroke];
+		[pieImage lockFocus];
 		
-		float startingAngle = (1.0-percentage*4.0)*90.0;
-		NSBezierPath* pie = [NSBezierPath bezierPathForPieInRect:targetRect withWedgeRemovedFromStartingAngle:startingAngle toEndingAngle:90.0];
+		[[NSGraphicsContext currentContext] saveGraphicsState];
+		NSRect targetRect = NSInsetRect(pieRect, 2.0, 2.0);
 
-		// Fill the pie
-		[insideColor set];
-		[pie fill];
-		[[NSGraphicsContext currentContext] restoreGraphicsState];
+		NSBezierPath* circle = [NSBezierPath bezierPathWithOvalInRect:targetRect];
+		
+		if(percentage==0)
+		{	
+			// Fill the circle
+			[insideColor set];
+			[circle fill];
+
+			// Stroke the circle
+			[circle setLineWidth:1.0];	
+			[borderColor set];
+			[circle stroke];
+		}
+		else if(percentage==1)
+		{
+			// Fill the circle
+			[fullColor set];
+			[circle fill];
+
+			// Stroke the circle
+			[circle setLineWidth:1.0];	
+			[fullColor set];
+			[circle stroke];
+		}
+		else
+		{
+			// Fill the circle
+			[borderColor set];
+			[circle fill];
+
+			// Stroke the circle
+			[circle setLineWidth:1.0];	
+			[borderColor set];
+			[circle stroke];
+			
+			float startingAngle = (1.0-percentage*4.0)*90.0;
+			NSBezierPath* pie = [NSBezierPath bezierPathForPieInRect:targetRect withWedgeRemovedFromStartingAngle:startingAngle toEndingAngle:90.0];
+
+			// Fill the pie
+			[insideColor set];
+			[pie fill];
+			[[NSGraphicsContext currentContext] restoreGraphicsState];
+		}
+		
+		[pieImage unlockFocus];
 	}
 	
-	[pieImage unlockFocus];
 	return [pieImage autorelease];
 }
 

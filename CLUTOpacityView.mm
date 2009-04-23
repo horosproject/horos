@@ -2243,13 +2243,16 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 	NSPoint labelPosition = NSMakePoint(arrowWidth-6, .0);
 	
 	// draw
-	[cursorImage lockFocus];
-	[[[NSCursor arrowCursor] image] drawAtPoint: NSMakePoint( 0, 0) fromRect: NSZeroRect operation: NSCompositeCopy fraction: 1.0];
-	[[[NSColor blackColor] colorWithAlphaComponent:0.5] set];
-	//NSRectFill(NSMakeRect(labelPosition.x-2, labelPosition.y+1, labelBounds.size.width+4, labelBounds.size.height+4));
-	NSRectFill(NSMakeRect(labelPosition.x-2, labelPosition.y+1, labelBounds.size.width+4, 13)); // nicer if the height stays the same when moving the mouse
-	[label drawAtPoint:labelPosition];
-	[cursorImage unlockFocus];
+	if( [cursorImage size].width > 0 && [cursorImage size].height)
+	{
+		[cursorImage lockFocus];
+		[[[NSCursor arrowCursor] image] drawAtPoint: NSMakePoint( 0, 0) fromRect: NSZeroRect operation: NSCompositeCopy fraction: 1.0];
+		[[[NSColor blackColor] colorWithAlphaComponent:0.5] set];
+		//NSRectFill(NSMakeRect(labelPosition.x-2, labelPosition.y+1, labelBounds.size.width+4, labelBounds.size.height+4));
+		NSRectFill(NSMakeRect(labelPosition.x-2, labelPosition.y+1, labelBounds.size.width+4, 13)); // nicer if the height stays the same when moving the mouse
+		[label drawAtPoint:labelPosition];
+		[cursorImage unlockFocus];
+	}
 	
 	NSCursor *cursor = [[NSCursor alloc] initWithImage:cursorImage hotSpot:hotSpot];
 	[cursor set];

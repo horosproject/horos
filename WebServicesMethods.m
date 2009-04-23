@@ -81,20 +81,22 @@ extern NSThread					*mainThread;
     
     newImage = [[NSImage alloc] initWithSize:targetSize];
     
-    [newImage lockFocus];
-    
-      NSRect thumbnailRect;
-      thumbnailRect.origin = thumbnailPoint;
-      thumbnailRect.size.width = scaledWidth;
-      thumbnailRect.size.height = scaledHeight;
-      
-      [sourceImage drawInRect: thumbnailRect
-                     fromRect: NSZeroRect
-                    operation: NSCompositeSourceOver
-                     fraction: 1.0];
-    
-    [newImage unlockFocus];
-  
+	if( [newImage size].width > 0 && [newImage size].height)
+	{
+		[newImage lockFocus];
+		
+		  NSRect thumbnailRect;
+		  thumbnailRect.origin = thumbnailPoint;
+		  thumbnailRect.size.width = scaledWidth;
+		  thumbnailRect.size.height = scaledHeight;
+		  
+		  [sourceImage drawInRect: thumbnailRect
+						 fromRect: NSZeroRect
+						operation: NSCompositeSourceOver
+						 fraction: 1.0];
+		
+		[newImage unlockFocus];
+	}
   }
   
   return [newImage autorelease];

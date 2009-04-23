@@ -88,24 +88,27 @@ static NSString *albumDragType = @"Osirix Album drag";
 		
 		NSImage *thumbnail = [[[NSImage alloc] initWithSize: NSMakeSize( width, 70+6)] autorelease];
 		
-		[thumbnail lockFocus];
-		
-		[[NSColor grayColor] set];
-		NSRectFill(NSMakeRect(0,0,width, 70+6));
-		
-		width = 0;
-		width += MARGIN;
-		for( i = 0; i < [cells count]; i++)
+		if( [thumbnail size].width > 0 && [thumbnail size].height)
 		{
-			NSRectFill( NSMakeRect( width, 0, [firstCell size].width, [firstCell size].height));
+			[thumbnail lockFocus];
 			
-			NSImage	*im = [[cells objectAtIndex: i] image];
-			[im drawAtPoint: NSMakePoint(width, 3) fromRect:NSMakeRect(0,0,[im size].width, [im size].height) operation: NSCompositeCopy fraction: 0.8];
-		
-			width += [im size].width;
-		    width += MARGIN;
+			[[NSColor grayColor] set];
+			NSRectFill(NSMakeRect(0,0,width, 70+6));
+			
+			width = 0;
+			width += MARGIN;
+			for( i = 0; i < [cells count]; i++)
+			{
+				NSRectFill( NSMakeRect( width, 0, [firstCell size].width, [firstCell size].height));
+				
+				NSImage	*im = [[cells objectAtIndex: i] image];
+				[im drawAtPoint: NSMakePoint(width, 3) fromRect:NSMakeRect(0,0,[im size].width, [im size].height) operation: NSCompositeCopy fraction: 0.8];
+			
+				width += [im size].width;
+				width += MARGIN;
+			}
+			[thumbnail unlockFocus];
 		}
-		[thumbnail unlockFocus];
 		
 		NSPasteboard *pboard = [NSPasteboard pasteboardWithName: NSDragPboard]; 
 		
@@ -187,14 +190,16 @@ static NSString *albumDragType = @"Osirix Album drag";
 		
 		NSImage *selectedButtonCellImage = [selectedButtonCell image];
 		int	thumbnailWidth = [selectedButtonCellImage size].width + 6;		
-		NSImage *thumbnail = [[[NSImage alloc] initWithSize: NSMakeSize( thumbnailWidth, 70+6)] autorelease];		
-		[thumbnail lockFocus];		
-		[[NSColor grayColor] set];
-		NSRectFill(NSMakeRect(0,0,thumbnailWidth, 70+6));		
-		NSRectFill( NSMakeRect( 3, 0, [selectedButtonCellImage size].width, [selectedButtonCellImage size].height));			
-		[selectedButtonCellImage drawAtPoint: NSMakePoint(3, 3) fromRect:NSMakeRect(0,0,[selectedButtonCellImage size].width, [selectedButtonCellImage size].height) operation: NSCompositeCopy fraction: 0.8];
-		[thumbnail unlockFocus];
-		
+		NSImage *thumbnail = [[[NSImage alloc] initWithSize: NSMakeSize( thumbnailWidth, 70+6)] autorelease];
+		if( [thumbnail size].width > 0 && [thumbnail size].height)
+		{
+			[thumbnail lockFocus];		
+			[[NSColor grayColor] set];
+			NSRectFill(NSMakeRect(0,0,thumbnailWidth, 70+6));		
+			NSRectFill( NSMakeRect( 3, 0, [selectedButtonCellImage size].width, [selectedButtonCellImage size].height));			
+			[selectedButtonCellImage drawAtPoint: NSMakePoint(3, 3) fromRect:NSMakeRect(0,0,[selectedButtonCellImage size].width, [selectedButtonCellImage size].height) operation: NSCompositeCopy fraction: 0.8];
+			[thumbnail unlockFocus];
+		}
 		DCMPix *previewPix = [[BrowserController currentBrowser] previewPix:[selectedButtonCell tag]];
 		
 		NSString *jpgPath = [NSString stringWithFormat:@"/tmp/%@.%d.jpg",[[selectedObject valueForKeyPath:@"completePath"] lastPathComponent], [[previewPix imageObj] valueForKey:@"frameID"] ];

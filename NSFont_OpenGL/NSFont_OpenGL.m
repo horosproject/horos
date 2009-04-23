@@ -189,13 +189,17 @@ static  unsigned char			*charPtrArray[ MAXCOUNT], *charPtrArrayPreview[ MAXCOUNT
 		theImage = [[NSImage alloc ] initWithSize:NSMakeSize( 0, 0 ) ];
 		curSizeArray[ currentUnichar] = charRect.size.width;
 		[ theImage setSize:charRect.size ];
-		[ theImage lockFocus ];
-		[ blackColor set ];
-		[ NSBezierPath fillRect:charRect ];
-		[ [ NSGraphicsContext currentContext ] setShouldAntialias:NO ];
-		[ currentChar drawInRect:charRect withAttributes:attribDict ];
-		[ theImage unlockFocus ];
-
+		
+		if( [theImage size].width > 0 && [theImage size].height)
+		{
+			[ theImage lockFocus ];
+			[ blackColor set ];
+			[ NSBezierPath fillRect:charRect ];
+			[ [ NSGraphicsContext currentContext ] setShouldAntialias:NO ];
+			[ currentChar drawInRect:charRect withAttributes:attribDict ];
+			[ theImage unlockFocus ];
+		}
+		
 		bitmap = [NSBitmapImageRep imageRepWithData:[ theImage TIFFRepresentationUsingCompression:NSTIFFCompressionNone factor:0]];
 
 		[curArray addObject: bitmap];

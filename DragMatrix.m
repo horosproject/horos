@@ -283,11 +283,15 @@ NSString *pasteBoardTypeCover = @"KeyImages";
 
     // we want to make the image a little bit transparent so the user can see where
     // they're dragging to
-    dragImage = [[[NSImage alloc] initWithSize: [scaledImage size]] autorelease]; 
-    [dragImage lockFocus]; 
-    [scaledImage dissolveToPoint: NSMakePoint(0,0) fraction: .5]; 
-    [dragImage unlockFocus]; 
-
+    dragImage = [[[NSImage alloc] initWithSize: [scaledImage size]] autorelease];
+	
+	if( [dragImage size].width > 0 && [dragImage size].height)
+	{
+		[dragImage lockFocus]; 
+		[scaledImage dissolveToPoint: NSMakePoint(0,0) fraction: .5]; 
+		[dragImage unlockFocus]; 
+	}
+	
     [self dragImage: dragImage 
                  at: dragPoint 
              offset: NSMakeSize(0,0) 

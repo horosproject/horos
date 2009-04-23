@@ -51,65 +51,69 @@
 - (void)drawPageBorderWithSize:(NSSize)borderSize
 {
 	[super drawPageBorderWithSize:borderSize];
-	[self lockFocus];
 	
-	NSManagedObject	*file = [[viewer fileList] objectAtIndex: 0];
-	NSString *string2draw = @"";
-	headerHeight = 13; //leaves in all cases a white line at the end of the header
-	
-	
-	NSRange	range;
-	[self knowsPageRange: &range];	
-	if( [settings valueForKey:@"comments"]) 
+	if( [self size].width > 0 && [self size].height)
 	{
-		headerHeight += 13;
-		string2draw = [string2draw stringByAppendingFormat:@"%@   (%d/%d)\r", [settings valueForKey:@"comments"], [[NSPrintOperation currentOperation] currentPage], range.length];
-	}
-	
-			
-	if( [settings valueForKey:@"patientInfo"])
-	{
-		headerHeight += 13;
-		string2draw = [string2draw stringByAppendingFormat:@"Patient: "];
-		if([file valueForKeyPath:@"series.study.name"]) string2draw = [string2draw stringByAppendingFormat:@"%@", [file valueForKeyPath:@"series.study.name"]];
-		if([file valueForKeyPath:@"series.study.patientID"]) string2draw = [string2draw stringByAppendingFormat:@"  [%@]", [file valueForKeyPath:@"series.study.patientID"]];
-		if( [file valueForKeyPath:@"series.study.dateOfBirth"]) string2draw = [string2draw stringByAppendingFormat:@"  %@", [BrowserController DateOfBirthFormat: [file valueForKeyPath:@"series.study.dateOfBirth"]]];
-		string2draw = [string2draw stringByAppendingFormat:@"\r"];
-	}	
-	
-	
-	if( [settings valueForKey:@"studyInfo"])
-	{
-		headerHeight += 13;
-		string2draw = [string2draw stringByAppendingFormat:@"Study: "];
-
-		NSCalendarDate  *date = [NSCalendarDate dateWithTimeIntervalSinceReferenceDate: [[file valueForKey:@"date"] timeIntervalSinceReferenceDate]];
-		if( date && [date yearOfCommonEra] != 3000)
-		{
-			NSString *tempString = [BrowserController DateOfBirthFormat: date];
-			string2draw = [string2draw stringByAppendingFormat:@"%@", tempString];
+		[self lockFocus];
 		
-			DCMPix *curDCM = [[viewer pixList] objectAtIndex: 0];
-			
-			if( [curDCM acquisitionTime]) date = [NSCalendarDate dateWithTimeIntervalSinceReferenceDate: [[curDCM acquisitionTime] timeIntervalSinceReferenceDate]];
+		NSManagedObject	*file = [[viewer fileList] objectAtIndex: 0];
+		NSString *string2draw = @"";
+		headerHeight = 13; //leaves in all cases a white line at the end of the header
+		
+		
+		NSRange	range;
+		[self knowsPageRange: &range];	
+		if( [settings valueForKey:@"comments"]) 
+		{
+			headerHeight += 13;
+			string2draw = [string2draw stringByAppendingFormat:@"%@   (%d/%d)\r", [settings valueForKey:@"comments"], [[NSPrintOperation currentOperation] currentPage], range.length];
+		}
+		
+				
+		if( [settings valueForKey:@"patientInfo"])
+		{
+			headerHeight += 13;
+			string2draw = [string2draw stringByAppendingFormat:@"Patient: "];
+			if([file valueForKeyPath:@"series.study.name"]) string2draw = [string2draw stringByAppendingFormat:@"%@", [file valueForKeyPath:@"series.study.name"]];
+			if([file valueForKeyPath:@"series.study.patientID"]) string2draw = [string2draw stringByAppendingFormat:@"  [%@]", [file valueForKeyPath:@"series.study.patientID"]];
+			if( [file valueForKeyPath:@"series.study.dateOfBirth"]) string2draw = [string2draw stringByAppendingFormat:@"  %@", [BrowserController DateOfBirthFormat: [file valueForKeyPath:@"series.study.dateOfBirth"]]];
+			string2draw = [string2draw stringByAppendingFormat:@"\r"];
+		}	
+		
+		
+		if( [settings valueForKey:@"studyInfo"])
+		{
+			headerHeight += 13;
+			string2draw = [string2draw stringByAppendingFormat:@"Study: "];
+
+			NSCalendarDate  *date = [NSCalendarDate dateWithTimeIntervalSinceReferenceDate: [[file valueForKey:@"date"] timeIntervalSinceReferenceDate]];
 			if( date && [date yearOfCommonEra] != 3000)
 			{
-				tempString = [BrowserController TimeFormat: date];
-				string2draw = [string2draw stringByAppendingFormat:@" - %@    ", tempString];
+				NSString *tempString = [BrowserController DateOfBirthFormat: date];
+				string2draw = [string2draw stringByAppendingFormat:@"%@", tempString];
+			
+				DCMPix *curDCM = [[viewer pixList] objectAtIndex: 0];
+				
+				if( [curDCM acquisitionTime]) date = [NSCalendarDate dateWithTimeIntervalSinceReferenceDate: [[curDCM acquisitionTime] timeIntervalSinceReferenceDate]];
+				if( date && [date yearOfCommonEra] != 3000)
+				{
+					tempString = [BrowserController TimeFormat: date];
+					string2draw = [string2draw stringByAppendingFormat:@" - %@    ", tempString];
+				}
 			}
-		}
 
-		if([file valueForKeyPath:@"series.study.studyName"] && !([[file valueForKeyPath:@"series.study.studyName"] isEqualToString:@"unnamed"])) string2draw = [string2draw stringByAppendingFormat:@"%@  ", [file valueForKeyPath:@"series.study.studyName"]];
-		if([file valueForKeyPath:@"series.name"] && !([[file valueForKeyPath:@"series.name"] isEqualToString:@"unnamed"])) string2draw = [string2draw stringByAppendingFormat:@"%@  ", [file valueForKeyPath:@"series.name"]];
-		string2draw = [string2draw stringByAppendingFormat:@"\r"];
+			if([file valueForKeyPath:@"series.study.studyName"] && !([[file valueForKeyPath:@"series.study.studyName"] isEqualToString:@"unnamed"])) string2draw = [string2draw stringByAppendingFormat:@"%@  ", [file valueForKeyPath:@"series.study.studyName"]];
+			if([file valueForKeyPath:@"series.name"] && !([[file valueForKeyPath:@"series.name"] isEqualToString:@"unnamed"])) string2draw = [string2draw stringByAppendingFormat:@"%@  ", [file valueForKeyPath:@"series.name"]];
+			string2draw = [string2draw stringByAppendingFormat:@"\r"];
+		}
+		
+		NSMutableDictionary *attribs = [NSMutableDictionary dictionary];  
+		[attribs setObject:[NSFont systemFontOfSize:10] forKey:NSFontAttributeName];
+		//
+		NSPoint where2draw = NSMakePoint(20, borderSize.height - (headerHeight+15));
+		[string2draw drawAtPoint: where2draw withAttributes:attribs]; //only invoke this method when an NSView object has focus
+		[self unlockFocus];
 	}
-	
-	NSMutableDictionary *attribs = [NSMutableDictionary dictionary];  
-	[attribs setObject:[NSFont systemFontOfSize:10] forKey:NSFontAttributeName];
-	//
-	NSPoint where2draw = NSMakePoint(20, borderSize.height - (headerHeight+15));
-	[string2draw drawAtPoint: where2draw withAttributes:attribs]; //only invoke this method when an NSView object has focus
-	[self unlockFocus];	
 }
 
 //---------------------------------------------------------------------------

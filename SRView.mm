@@ -3352,10 +3352,12 @@ typedef struct _xyzArray
 	float ratio = originalSize.width / originalSize.height;
 	
 	NSImage *thumbnail = [[[NSImage alloc] initWithSize: NSMakeSize(100, 100/ratio)] autorelease];
-
-	[thumbnail lockFocus];
-	[image drawInRect: NSMakeRect(0, 0, 100, 100/ratio) fromRect: NSMakeRect(0, 0, originalSize.width, originalSize.height) operation: NSCompositeSourceOver fraction: 1.0];
-	[thumbnail unlockFocus];
+	if( [thumbnail size].width > 0 && [thumbnail size].height)
+	{
+		[thumbnail lockFocus];
+		[image drawInRect: NSMakeRect(0, 0, 100, 100/ratio) fromRect: NSMakeRect(0, 0, originalSize.width, originalSize.height) operation: NSCompositeSourceOver fraction: 1.0];
+		[thumbnail unlockFocus];
+	}
 	
 	if ([event modifierFlags] & NSAlternateKeyMask)
 		[ pbTypes addObject: NSFilesPromisePboardType];

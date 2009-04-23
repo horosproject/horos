@@ -180,28 +180,33 @@
 		frameSize.height += marginSize.height * 2.0f;
 	}
 	image = [[NSImage alloc] initWithSize:frameSize];
-	
-	[image lockFocus];
-	[[NSGraphicsContext currentContext] setShouldAntialias:antialias];
-	
-	if ([boxColor alphaComponent]) { // this should be == 0.0f but need to make sure
-		[boxColor set]; 
-		NSBezierPath *path = [NSBezierPath bezierPathWithRoundedRect:NSInsetRect(NSMakeRect (0.0f, 0.0f, frameSize.width-1, frameSize.height-1) , 0.5, 0.5) cornerRadius:cRadius];
-		[path fill];
-	}
+	if( [image size].width > 0 && [image size].height)
+	{
+		[image lockFocus];
+		[[NSGraphicsContext currentContext] setShouldAntialias:antialias];
+		
+		if ([boxColor alphaComponent]) { // this should be == 0.0f but need to make sure
+			[boxColor set]; 
+			NSBezierPath *path = [NSBezierPath bezierPathWithRoundedRect:NSInsetRect(NSMakeRect (0.0f, 0.0f, frameSize.width-1, frameSize.height-1) , 0.5, 0.5) cornerRadius:cRadius];
+			[path fill];
+		}
 
-	if ([borderColor alphaComponent]) {
-		[borderColor set]; 
-		NSBezierPath *path = [NSBezierPath bezierPathWithRoundedRect:NSInsetRect(NSMakeRect (0.0f, 0.0f, frameSize.width-1, frameSize.height-1), 0.5, 0.5) cornerRadius:cRadius];
-		[path setLineWidth:1.0f];
-		[path stroke];
+		if ([borderColor alphaComponent]) {
+			[borderColor set]; 
+			NSBezierPath *path = [NSBezierPath bezierPathWithRoundedRect:NSInsetRect(NSMakeRect (0.0f, 0.0f, frameSize.width-1, frameSize.height-1), 0.5, 0.5) cornerRadius:cRadius];
+			[path setLineWidth:1.0f];
+			[path stroke];
+		}
+		
+		[textColor set]; 
+		[string drawAtPoint:NSMakePoint (marginSize.width, marginSize.height)]; // draw at offset position
+		
+		[image unlockFocus];
 	}
 	
-	[textColor set]; 
-	[string drawAtPoint:NSMakePoint (marginSize.width, marginSize.height)]; // draw at offset position
 	[bitmap release];
 	bitmap = [[NSBitmapImageRep alloc] initWithFocusedViewRect:NSMakeRect (0.0f, 0.0f, frameSize.width, frameSize.height)];
-	[image unlockFocus];
+		
 	texSize.width = [bitmap pixelsWide];
 	texSize.height = [bitmap pixelsHigh];
 	
