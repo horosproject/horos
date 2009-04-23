@@ -1958,6 +1958,7 @@ public:
 		try
 		{
 			[self computeOrientationText];
+			
 			[super drawRect:aRect];
 		}
 		
@@ -2189,7 +2190,10 @@ public:
 
 - (float) imageSampleDistance
 {
-	return volumeMapper->GetRayCastImage()->GetImageSampleDistance();
+	if( volumeMapper)
+		return volumeMapper->GetRayCastImage()->GetImageSampleDistance();
+	else
+		return 0;
 }
 
 - (void) getOrigin: (float *) origin
