@@ -190,7 +190,7 @@ static  unsigned char			*charPtrArray[ MAXCOUNT], *charPtrArrayPreview[ MAXCOUNT
 		curSizeArray[ currentUnichar] = charRect.size.width;
 		[ theImage setSize:charRect.size ];
 		
-		if( [theImage size].width > 0 && [theImage size].height)
+		if( [theImage size].width > 0 && [theImage size].height > 0)
 		{
 			[ theImage lockFocus ];
 			[ blackColor set ];

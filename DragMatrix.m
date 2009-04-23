@@ -285,7 +285,7 @@ NSString *pasteBoardTypeCover = @"KeyImages";
     // they're dragging to
     dragImage = [[[NSImage alloc] initWithSize: [scaledImage size]] autorelease];
 	
-	if( [dragImage size].width > 0 && [dragImage size].height)
+	if( [dragImage size].width > 0 && [dragImage size].height > 0)
 	{
 		[dragImage lockFocus]; 
 		[scaledImage dissolveToPoint: NSMakePoint(0,0) fraction: .5]; 

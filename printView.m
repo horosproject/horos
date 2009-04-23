@@ -52,7 +52,7 @@
 {
 	[super drawPageBorderWithSize:borderSize];
 	
-	if( [self size].width > 0 && [self size].height)
+	if( [self frame].size.width > 0 && [self frame].size.height > 0)
 	{
 		[self lockFocus];
 		

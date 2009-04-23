@@ -2243,7 +2243,7 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 	NSPoint labelPosition = NSMakePoint(arrowWidth-6, .0);
 	
 	// draw
-	if( [cursorImage size].width > 0 && [cursorImage size].height)
+	if( [cursorImage size].width > 0 && [cursorImage size].height > 0)
 	{
 		[cursorImage lockFocus];
 		[[[NSCursor arrowCursor] image] drawAtPoint: NSMakePoint( 0, 0) fromRect: NSZeroRect operation: NSCompositeCopy fraction: 1.0];

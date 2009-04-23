@@ -180,7 +180,7 @@
 		frameSize.height += marginSize.height * 2.0f;
 	}
 	image = [[NSImage alloc] initWithSize:frameSize];
-	if( [image size].width > 0 && [image size].height)
+	if( [image size].width > 0 && [image size].height > 0)
 	{
 		[image lockFocus];
 		[[NSGraphicsContext currentContext] setShouldAntialias:antialias];

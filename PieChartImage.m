@@ -30,7 +30,7 @@
 	NSImage* pieImage = [[self alloc] initWithSize:pieRect.size];
 	[pieImage setScalesWhenResized:YES];
 	
-	if( [pieImage size].width > 0 && [pieImage size].height)
+	if( [pieImage size].width > 0 && [pieImage size].height > 0)
 	{
 		[pieImage lockFocus];
 		

@@ -1360,10 +1360,13 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 			
 			NSImage *compositingImage = [[NSImage alloc] initWithSize: imageRect.size];
 			
-			[compositingImage lockFocus];
+			if( [compositingImage size].width > 0 && [compositingImage size].height > 0)
+			{
+				[compositingImage lockFocus];
 			//		[[NSGraphicsContext currentContext] setImageInterpolation: NSImageInterpolationDefault];
-			[currentImage drawInRect: imageRect fromRect: sourceRect operation: NSCompositeCopy fraction: 1.0];
-			[compositingImage unlockFocus];
+				[currentImage drawInRect: imageRect fromRect: sourceRect operation: NSCompositeCopy fraction: 1.0];
+				[compositingImage unlockFocus];
+			}
 			
 			NSLog( @"New Size: %f %f", [compositingImage size].width, [compositingImage size].height);
 			

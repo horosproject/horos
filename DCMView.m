@@ -11236,7 +11236,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	float ratio = originalSize.width / originalSize.height;
 	
 	NSImage *thumbnail = [[[NSImage alloc] initWithSize: NSMakeSize(100, 100/ratio)] autorelease];
-	if( [thumbnail size].width > 0 && [thumbnail size].height)
+	if( [thumbnail size].width > 0 && [thumbnail size].height > 0)
 	{
 		[thumbnail lockFocus];
 		[image drawInRect: NSMakeRect(0, 0, 100, 100/ratio) fromRect: NSMakeRect(0, 0, originalSize.width, originalSize.height) operation: NSCompositeSourceOver fraction: 1.0];

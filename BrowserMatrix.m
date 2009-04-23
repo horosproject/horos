@@ -88,7 +88,7 @@ static NSString *albumDragType = @"Osirix Album drag";
 		
 		NSImage *thumbnail = [[[NSImage alloc] initWithSize: NSMakeSize( width, 70+6)] autorelease];
 		
-		if( [thumbnail size].width > 0 && [thumbnail size].height)
+		if( [thumbnail size].width > 0 && [thumbnail size].height > 0)
 		{
 			[thumbnail lockFocus];
 			
@@ -191,7 +191,7 @@ static NSString *albumDragType = @"Osirix Album drag";
 		NSImage *selectedButtonCellImage = [selectedButtonCell image];
 		int	thumbnailWidth = [selectedButtonCellImage size].width + 6;		
 		NSImage *thumbnail = [[[NSImage alloc] initWithSize: NSMakeSize( thumbnailWidth, 70+6)] autorelease];
-		if( [thumbnail size].width > 0 && [thumbnail size].height)
+		if( [thumbnail size].width > 0 && [thumbnail size].height > 0)
 		{
 			[thumbnail lockFocus];		
 			[[NSColor grayColor] set];

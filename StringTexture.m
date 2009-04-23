@@ -177,7 +177,7 @@
 		frameSize.height += marginSize.height * 2.0f;
 	}
 	image = [[NSImage alloc] initWithSize:frameSize];
-	if( [frameSize size].width > 0 && [frameSize size].height)
+	if( [image size].width > 0 && [image size].height > 0)
 	{
 		[image lockFocus];
 		

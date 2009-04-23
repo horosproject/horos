@@ -81,7 +81,7 @@ extern NSThread					*mainThread;
     
     newImage = [[NSImage alloc] initWithSize:targetSize];
     
-	if( [newImage size].width > 0 && [newImage size].height)
+	if( [newImage size].width > 0 && [newImage size].height > 0)
 	{
 		[newImage lockFocus];
 		

@@ -4797,7 +4797,6 @@
 		CED556070DF48BBB0054351B /* libITKNrrdIO.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CED555E90DF48BBA0054351B /* libITKNrrdIO.a */; };
 		CED556080DF48BBB0054351B /* libITKIO.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CED555EA0DF48BBA0054351B /* libITKIO.a */; };
 		CED556090DF48BBB0054351B /* libitktestlib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CED555EB0DF48BBA0054351B /* libitktestlib.a */; };
-		CED5560A0DF48BBB0054351B /* libitksys.afinal in Frameworks */ = {isa = PBXBuildFile; fileRef = CED555EC0DF48BBA0054351B /* libitksys.afinal */; };
 		CED5560B0DF48BBB0054351B /* libitksys.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CED555ED0DF48BBA0054351B /* libitksys.a */; };
 		CED5560C0DF48BBB0054351B /* libitkjpeg8.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CED555EE0DF48BBA0054351B /* libitkjpeg8.a */; };
 		CED5560D0DF48BBB0054351B /* libITKEXPAT.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CED555EF0DF48BBA0054351B /* libITKEXPAT.a */; };
@@ -9144,7 +9143,6 @@
 		CED555E90DF48BBA0054351B /* libITKNrrdIO.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libITKNrrdIO.a; path = ITK180/bin/libITKNrrdIO.a; sourceTree = "<group>"; };
 		CED555EA0DF48BBA0054351B /* libITKIO.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libITKIO.a; path = ITK180/bin/libITKIO.a; sourceTree = "<group>"; };
 		CED555EB0DF48BBA0054351B /* libitktestlib.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libitktestlib.a; path = ITK180/bin/libitktestlib.a; sourceTree = "<group>"; };
-		CED555EC0DF48BBA0054351B /* libitksys.afinal */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libitksys.afinal; path = ITK180/bin/libitksys.afinal; sourceTree = "<group>"; };
 		CED555ED0DF48BBA0054351B /* libitksys.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libitksys.a; path = ITK180/bin/libitksys.a; sourceTree = "<group>"; };
 		CED555EE0DF48BBA0054351B /* libitkjpeg8.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libitkjpeg8.a; path = ITK180/bin/libitkjpeg8.a; sourceTree = "<group>"; };
 		CED555EF0DF48BBA0054351B /* libITKEXPAT.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libITKEXPAT.a; path = ITK180/bin/libITKEXPAT.a; sourceTree = "<group>"; };
@@ -9314,7 +9312,6 @@
 				CED556070DF48BBB0054351B /* libITKNrrdIO.a in Frameworks */,
 				CED556080DF48BBB0054351B /* libITKIO.a in Frameworks */,
 				CED556090DF48BBB0054351B /* libitktestlib.a in Frameworks */,
-				CED5560A0DF48BBB0054351B /* libitksys.afinal in Frameworks */,
 				CED5560B0DF48BBB0054351B /* libitksys.a in Frameworks */,
 				CED5560C0DF48BBB0054351B /* libitkjpeg8.a in Frameworks */,
 				CED5560D0DF48BBB0054351B /* libITKEXPAT.a in Frameworks */,
@@ -12412,7 +12409,6 @@
 				CED555E90DF48BBA0054351B /* libITKNrrdIO.a */,
 				CED555EA0DF48BBA0054351B /* libITKIO.a */,
 				CED555EB0DF48BBA0054351B /* libitktestlib.a */,
-				CED555EC0DF48BBA0054351B /* libitksys.afinal */,
 				CED555ED0DF48BBA0054351B /* libitksys.a */,
 				CED555EE0DF48BBA0054351B /* libitkjpeg8.a */,
 				CED555EF0DF48BBA0054351B /* libITKEXPAT.a */,
