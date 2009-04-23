@@ -874,6 +874,8 @@ static char *GetPrivateIP()
 			}
 			else
 			{
+//				[self performSelectorOnMainThread: @selector(showErrorMessage:) withObject: NSLocalizedString( @"Failed to connect to the distant computer. Is OsiriX running on it? OsiriX database sharing activated? Firewall on port 8780?", nil) waitUntilDone: NO];
+				
 				NSLog( @"Failed to connect to the distant computer: is there a firewall on port 8780?? is OsiriX running on this distant computer?? aborted??");
 //				[[NSNotificationCenter defaultCenter] removeObserver:self name:NSFileHandleReadCompletionNotification object: currentConnection];
 //				[[NSNotificationCenter defaultCenter] removeObserver:self name:NSFileHandleReadToEndOfFileCompletionNotification object: currentConnection];
@@ -890,6 +892,15 @@ static char *GetPrivateIP()
 	else NSLog( @"socket creation failed");
 	
 	return succeed;
+}
+
+
+- (void)showErrorMessage: (NSString*) s
+{	
+	NSAlert* alert = [NSAlert new];
+	[alert setMessageText: NSLocalizedString(@"Network Error",nil)];
+	[alert setInformativeText: s];
+	[alert runModal];
 }
 
 - (void) buildFixedIPList
@@ -1396,10 +1407,7 @@ static char *GetPrivateIP()
 	[[[BrowserController currentBrowser] managedObjectContext] unlock];
 	
 	if( dicomListener == nil)
-	{
-		NSLog( @"empty");
 		dicomListener = [[NSDictionary dictionary] retain];
-	}
 	
 	return dicomListener;
 }
@@ -1795,7 +1803,6 @@ static char *GetPrivateIP()
 
 - (BOOL) sendDICOMFile:(int) index paths:(NSArray*) ip
 {
-	
 	for( id loopItem in ip)
 	{
 		if( [[NSFileManager defaultManager] fileExistsAtPath: loopItem] == NO) return NO;
@@ -1806,11 +1813,11 @@ static char *GetPrivateIP()
 	[paths release];
 	paths = [ip retain];
 	
-	[self connectToServer: index message:@"SENDD"];
+	BOOL success = [self connectToServer: index message:@"SENDD"];
 	
 	[[[BrowserController currentBrowser] managedObjectContext] unlock];
 	
-	return YES;
+	return success;
 }
 
 - (void) getDICOMROIFiles:(int) index roisPaths:(NSArray*) roisPaths

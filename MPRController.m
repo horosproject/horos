@@ -63,6 +63,9 @@ static float deg2rad = 3.14159265358979/180.0;
 {
 	@try
 	{
+		if( [[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] == annotNone)
+			[[NSUserDefaults standardUserDefaults] setInteger: annotGraphics forKey: @"ANNOTATIONS"];
+		
 		self = [super initWithWindowNibName:@"MPR"];
 		
 		[[self window] setWindowController: self];

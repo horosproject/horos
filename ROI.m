@@ -3015,6 +3015,15 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 	return action;
 }
 
+- (void) setROIMode: (long) m
+{
+	if( mode != m)
+	{
+		mode = m;
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: nil];
+	}
+}
+
 - (void) setName:(NSString*) a
 {
 	if( a == nil) a = @"";
