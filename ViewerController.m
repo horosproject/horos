@@ -13206,7 +13206,6 @@ int i,j,l;
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"COPYSETTINGS"] == YES)
 	{
-//			if( [[vC curCLUTMenu] isEqualToString:NSLocalizedString(@"No CLUT", nil)] == YES && [[self curCLUTMenu] isEqualToString:NSLocalizedString(@"No CLUT", nil)] == YES )
 		if( [[vC curCLUTMenu] isEqualToString:[self curCLUTMenu]] == YES)
 		{
 			BOOL	 propagate = YES;
@@ -13218,6 +13217,7 @@ int i,j,l;
 			if( [vC subtractionActivated] != [self subtractionActivated]) propagate = NO;
 			
 			if( [[vC modality] isEqualToString: @"CR"]) propagate = NO;
+			if( [[self modality] isEqualToString: @"CR"]) propagate = NO;
 			
 			if( [[vC modality] isEqualToString: @"NM"]) propagate = NO;
 			
@@ -13264,6 +13264,12 @@ int i,j,l;
 				curvedController == nil)
 			{
 			//	if( [[vC modality] isEqualToString:[self modality]])	For PET CT, we have to sync this even if the modalities are not equal!
+				
+				if( [[vC modality] isEqualToString: @"CR"] && [[self modality] isEqualToString: @"CR"] && [[NSUserDefaults standardUserDefaults] boolForKey:@"IndependentCRWLWW"])
+				{
+				
+				}
+				else
 				{
 					if( [imageView pixelSpacing] != 0 && [[vC imageView] pixelSpacing] != 0)
 					{
@@ -13289,6 +13295,11 @@ int i,j,l;
 			//if( [self isEverythingLoaded])
 			{
 			//	if( [[vC modality] isEqualToString:[self modality]])	For PET CT, we have to sync this even if the modalities are not equal!
+				
+				if( [[vC modality] isEqualToString: @"CR"] && [[self modality] isEqualToString: @"CR"] && [[NSUserDefaults standardUserDefaults] boolForKey:@"IndependentCRWLWW"])
+				{
+				}
+				else
 				{
 					if( [[[[self fileList] objectAtIndex:0] valueForKeyPath:@"series.study.studyInstanceUID"] isEqualToString: [[[vC fileList] objectAtIndex:0] valueForKeyPath:@"series.study.studyInstanceUID"]] || registeredViewers == YES)
 					{
