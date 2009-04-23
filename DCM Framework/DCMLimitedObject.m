@@ -66,7 +66,7 @@
 			
 		*byteOffset = [self readDataSet:dicomData toGroup:(unsigned short)lastGroup byteOffset:byteOffset];
 		
-		if (*byteOffset == 0xffffffffl)
+		if (*byteOffset == 0xFFFFFFFF)
 			self = nil;
 		
 		if (DCMDEBUG)
@@ -84,7 +84,7 @@
 	BOOL readingMetaHeader = NO;
 	int endMetaHeaderPosition = 0;					
 
-	long endByteOffset =  0xffffffffl;
+	long endByteOffset =  0xFFFFFFFF;
 	BOOL isExplicit = [[dicomData transferSyntaxInUse] isExplicit];
 	BOOL forImplicitUseOW = NO;
 	
@@ -200,7 +200,7 @@
 			DCMAttribute *attr = nil;
 			//sequence attribute
 			
-			if ([DCMValueRepresentation isSequenceVR:vr] || ([DCMValueRepresentation  isUnknownVR:vr] && vl == 0xffffffffl)) {
+			if ([DCMValueRepresentation isSequenceVR:vr] || ([DCMValueRepresentation  isUnknownVR:vr] && vl == 0xFFFFFFFF)) {
 				//NSLog(@"DCMObject sequence: %f", -[timestamp  timeIntervalSinceNow]);
 					attr = (DCMAttribute *) [[[DCMSequenceAttribute alloc] initWithAttributeTag:(DCMAttributeTag *)tag] autorelease];
 					*byteOffset = [self readNewSequenceAttribute:attr dicomData:dicomData byteOffset:byteOffset lengthToRead:vl specificCharacterSet:specificCharacterSet];
@@ -218,7 +218,7 @@
 			decodeData:NO] autorelease];
 				*byteOffset = endByteOffset;
 			}
-			else if (vl != 0xffffffffl && vl != 0) {
+			else if (vl != 0xFFFFFFFF && vl != 0) {
 				//[self newAttr];
 				attr = [[[DCMAttribute alloc] initWithAttributeTag:tag 
 						vr:vr 
@@ -232,7 +232,7 @@
 					NSLog(@"byteOffset %d attr %@", *byteOffset, [attr description]);
 			}
 			/*
-			else if (vl == 0xffffffffl && [[tag stringValue] isEqualToString:[sharedTagForNameDictionary objectForKey:@"PixelData"]] && [[dicomData transferSyntaxInUse] isEncapsulated]) {
+			else if (vl == 0xFFFFFFFF && [[tag stringValue] isEqualToString:[sharedTagForNameDictionary objectForKey:@"PixelData"]] && [[dicomData transferSyntaxInUse] isEncapsulated]) {
 			}
 			*/
 			if (DCMDEBUG)
@@ -304,7 +304,7 @@
 	NS_HANDLER
 		NSLog(@"Error reading data for dicom object");
 		//exception = [NSException exceptionWithName:@"DCMReadingError" reason:@"Cannot read Dicom Object" userInfo:nil];
-		*byteOffset = 0xffffffffl;
+		*byteOffset = 0xFFFFFFFF;
 	NS_ENDHANDLER
 	//NSLog(@"DCMObject  End readDataSet: %f", -[timestamp  timeIntervalSinceNow]);
 	[pool release];

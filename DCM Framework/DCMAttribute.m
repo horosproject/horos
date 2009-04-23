@@ -262,8 +262,12 @@
 			break;
 
 		}
+		
 	if (length < 0)
+	{
+		NSLog( @"length");
 		length = 0;
+	}
 	return length;
 }
 

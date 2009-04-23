@@ -481,7 +481,7 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 		NSLog(@"init Pixel Data");
 	// may may an ImageIconSequence in an encapsualted file. The icon is not encapsulated so don't de-encapsulate
 	
-	if ( dicomData.isEncapsulated && vl == 0xffffffffl ) {
+	if ( dicomData.isEncapsulated && vl == 0xFFFFFFFF ) {
 		self = [super initWithAttributeTag:tag  vr:theVR];
 		[self deencapsulateData:dicomData];
 		
@@ -585,14 +585,14 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 		[dcmData addUnsignedShort:[self group]];
 		[dcmData addUnsignedShort:[self element]];
 		if (DCMDEBUG)
-			NSLog(@"Write Sequence Base Length:%d", 0xffffffffl);
+			NSLog(@"Write Sequence Base Length:%d", 0xFFFFFFFF);
 		if ( ts.isExplicit ) {
 			[dcmData addString:_vr];
 			[dcmData  addUnsignedShort:0];		// reserved bytes
-			[dcmData  addUnsignedLong:(0xffffffffl)];
+			[dcmData  addUnsignedLong:(0xFFFFFFFF)];
 		}
 		else {			
-			[dcmData  addUnsignedLong:(0xffffffffl)];
+			[dcmData  addUnsignedLong:(0xFFFFFFFF)];
 		}
 	}
 	//can do unencapsualated Syntaxes
@@ -607,7 +607,7 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 }
 
 - (BOOL)writeToDataContainer:(DCMDataContainer *)container withTransferSyntax:(DCMTransferSyntax *)ts {
-	// valueLength should be 0xffffffffl from constructor
+	// valueLength should be 0xFFFFFFFF from constructor
 	BOOL status = NO;
 	if (DCMDEBUG) 
 		NSLog(@"Write PixelData with TS:%@  vr: %@ encapsulated: %d", ts.description, _vr, ts.isEncapsulated );

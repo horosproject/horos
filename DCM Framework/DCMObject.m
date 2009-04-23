@@ -441,7 +441,7 @@ PixelRepresentation
 			
 		*byteOffset = [self readDataSet:dicomData lengthToRead:lengthToRead byteOffset:byteOffset];
 		
-		if (*byteOffset == 0xffffffffl)
+		if (*byteOffset == 0xFFFFFFFF)
 			self = nil;
 		
 		if (DCMDEBUG)
@@ -491,8 +491,8 @@ PixelRepresentation
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	BOOL readingMetaHeader = NO;
 	int endMetaHeaderPosition = 0;					
-	BOOL undefinedLength = lengthToRead == 0xffffffffl;	
-	long endByteOffset= (undefinedLength) ? 0xffffffffl : *byteOffset + lengthToRead - 1;
+	BOOL undefinedLength = lengthToRead == 0xFFFFFFFF;	
+	long endByteOffset= (undefinedLength) ? 0xFFFFFFFF : *byteOffset + lengthToRead - 1;
 	BOOL isExplicit = [[dicomData transferSyntaxInUse] isExplicit];
 	BOOL forImplicitUseOW = NO;
 	
@@ -502,213 +502,213 @@ PixelRepresentation
 	{
 		while ((undefinedLength || *byteOffset < endByteOffset))
 		{
-		NSAutoreleasePool *subPool = [[NSAutoreleasePool alloc] init];
-		if (DCMDEBUG)
-		{
-			NSLog(@"byteOffset:%d, endByteOffset:%d", *byteOffset, endByteOffset);
-		}
-		
-		int group = [self getGroup:dicomData];
-		int element = [self getElement:dicomData];
-		if (group > 0x0002) {
-			//NSLog(@"start reading dataset");
-			[dicomData startReadingDataSet];
-		}
-		
-		else if (transferSyntax != nil && group == 0x0002 && element == 0x0010) {
-			//workaround for extra Transfer Syntax element in some Conquest files
-			[dicomData startReadingDataSet];
-		}
-		
-		isExplicit = [[dicomData transferSyntaxInUse] isExplicit];
-		//NSLog(@"DCMObject readTag: %f", -[timestamp  timeIntervalSinceNow]);
-		DCMAttributeTag *tag = [[[DCMAttributeTag alloc]  initWithGroup:group element:element] autorelease];
-		*byteOffset+=4;
-		
-		const char *tagUTF8 = [tag.stringValue UTF8String];
-		
-		if (DCMDEBUG)
-			NSLog(@"Tag: %@  group: 0x%4000x  word 0x%4000x", tag.description, group, element);
-			// "FFFE,E00D" == Item Delimitation Item
-		if (strcmp(tagUTF8, "FFFE,E00D") == 0) {
-			// Read and discard value length
-			[dicomData nextUnsignedLong];
-			*byteOffset+=4;
+			NSAutoreleasePool *subPool = [[NSAutoreleasePool alloc] init];
 			if (DCMDEBUG)
-				NSLog(@"ItemDelimitationItem");
-			break;
-			//return *byteOffset;	// stop now, since we must have been called to read an item's dataset
-		}
-		
-		// "FFFE,E000" == Item 
-		else if (strcmp(tagUTF8, "FFFE,E000") == 0) {
-			// this is bad ... there shouldn't be Items here since they should
-			// only be found during readNewSequenceAttribute()
-			// however, try to work around Philips bug ...
-			long vl = [dicomData nextUnsignedLong];		// always implicit VR form for items and delimiters
-			*byteOffset+=4;
-			NSLog(@"Ignoring bad Item at %d  %@ VL=<0x%x", *byteOffset, tag.stringValue, vl);
-			// let's just ignore it for now
-			//continue;
-		}
-		// get tag Values
-		else {
-		// get vr
-
-			NSString *vr = nil;
-			long vl = 0;
-			if (isExplicit) 
 			{
-				vr = [dicomData nextStringWithLength:2];
-				if (DCMDEBUG)
-					NSLog(@"Explicit VR %@", vr);
-				*byteOffset+=2;
-				if (!vr)
-					vr = [tag vr];
+				NSLog(@"byteOffset:%d, endByteOffset:%d", *byteOffset, endByteOffset);
 			}
 			
-			//implicit
-			else
-			{
-				vr = tag.vr;
-				if (!vr)
-					vr = @"UN";
-				if ([vr isEqualToString:@"US/SS/OW"])
-					vr = @"OW";
-				// set VR for Pixel Description depenedent tags. Can be either  US or SS depending on Pixel Description
-				if ([vr isEqualToString:@"US/SS"]) {
-				if ( pixelRepresentationIsSigned)
-						vr = @"SS";
-					else 
-						vr = @"US";
-				}
-				if (DCMDEBUG)
-					NSLog(@"Implicit VR %@", vr);	
-
-
-			}
-			//if (DCMDEBUG)
-			//	NSLog(@"byteoffset after vr %d, VR:%@",*byteOffset,  vr, vl);
-		//  ****** get length *********
-			if (isExplicit) {
-				if ([DCMValueRepresentation isShortValueLengthVR:vr]) {
-					vl = [dicomData nextUnsignedShort];
-					*byteOffset+=2;
-				}
-				else {
-					[dicomData nextUnsignedShort];	// reserved bytes
-					vl = [dicomData nextUnsignedLong];
-					*byteOffset+=6;
-				}
-			}
-			else {
-				vl = [dicomData nextUnsignedLong];
-				*byteOffset += 4;
-			}
-			if (DCMDEBUG)
-				NSLog(@"Tag: %@, length: %d", [tag description], vl);
-			//if (DCMDEBUG)
-			//	NSLog(@"byteoffset after length %d, VR:%@  length:%d",*byteOffset,  vr, vl);
-				
-		
-			// generate Attributes
-			DCMAttribute *attr = nil;
-			//sequence attribute
-			
-			if ([DCMValueRepresentation isSequenceVR:vr] || ([DCMValueRepresentation  isUnknownVR:vr] && vl == 0xffffffffl))
-			{
-				
-				attr = (DCMAttribute *) [[[DCMSequenceAttribute alloc] initWithAttributeTag:(DCMAttributeTag *)tag] autorelease];
-				*byteOffset = [self readNewSequenceAttribute:attr dicomData:dicomData byteOffset:byteOffset lengthToRead:vl specificCharacterSet:specificCharacterSet];
-			} 
-			
-			// "7FE0,0010" == PixelData
-			else if (strcmp(tagUTF8, "7FE0,0010") == 0) {			
-				attr = (DCMPixelDataAttribute *) [[[DCMPixelDataAttribute alloc]	initWithAttributeTag:(DCMAttributeTag *)tag 
-				vr:(NSString *)vr 
-				length:(long) vl 
-				data:(DCMDataContainer *)dicomData 
-				specificCharacterSet:(DCMCharacterSet *)specificCharacterSet
-				transferSyntax:[dicomData transferSyntaxForDataset]
-				dcmObject:self
-				decodeData:_decodePixelData] autorelease];
-					*byteOffset = endByteOffset;
-			}
-			else if (vl != 0xffffffffl && vl != 0) {
-				if ([self isNeededAttribute:(char *)tagUTF8])
-					attr = [[[DCMAttribute alloc] initWithAttributeTag:tag 
-						vr:vr 
-						length: vl 
-						data:dicomData 
-						specificCharacterSet:specificCharacterSet
-						isExplicit:[dicomData isExplicitTS]
-						forImplicitUseOW:forImplicitUseOW] autorelease];
-				else
-				{
-					attr = nil;
-					[dicomData skipLength:vl];
-				}
-				*byteOffset += vl;
-				if (DCMDEBUG)
-					NSLog(@"byteOffset %d attr %@", *byteOffset, [attr description]);
-			}
-
-			if (DCMDEBUG)
-				NSLog(@"Attr: %@", [attr description]);
-			//add attr to attributes
-			if (attr)
-				CFDictionarySetValue((CFMutableDictionaryRef)attributes, [tag stringValue], attr);
-				
-			// 0002,0000 = MetaElementGroupLength
-			if (strcmp(tagUTF8, "0002,0000") == 0) {
-				readingMetaHeader = YES;
-				if (DCMDEBUG)
-					NSLog(@"metaheader length : %d", [[attr value] intValue]);
-				endMetaHeaderPosition = [[attr value] intValue] + *byteOffset;
-				[dicomData startReadingMetaHeader];
-			}
-			//0002,0010 == TransferSyntaxUID
-			else if (strcmp(tagUTF8, "0002,0010") == 0  
-				&& transferSyntax == nil)  //some conquest files have the transfer Syntax twice. Need to ignore to second one
-				 {
-					
-				DCMTransferSyntax *ts = [[[DCMTransferSyntax alloc] initWithTS:[attr value]] autorelease];
-				[transferSyntax release];
-				transferSyntax = [ts retain];
-				[dicomData setTransferSyntaxForDataset:ts];
-			}
-			
-			//0008,0005 == SpecificCharacterSet
-			else if (strcmp(tagUTF8, "0008,0005") == 0) {
-				[specificCharacterSet release];
-				
-				specificCharacterSet = [[DCMCharacterSet alloc] initWithCode: [[attr values] componentsJoinedByString:@"//"]];
-			}
-
-				
-			/*
-			if (readingMetaHeader && (*byteOffset >= endMetaHeaderPosition)) {
-				if (DCMDEBUG)
-					NSLog(@"End reading Metaheader. Metaheader position: %d, byteOffset: %d", endMetaHeaderPosition, *byteOffset);
-				readingMetaHeader = NO;
+			int group = [self getGroup:dicomData];
+			int element = [self getElement:dicomData];
+			if (group > 0x0002) {
+				//NSLog(@"start reading dataset");
 				[dicomData startReadingDataSet];
 			}
-			*/	
-				
+			
+			else if (transferSyntax != nil && group == 0x0002 && element == 0x0010) {
+				//workaround for extra Transfer Syntax element in some Conquest files
+				[dicomData startReadingDataSet];
+			}
+			
+			isExplicit = [[dicomData transferSyntaxInUse] isExplicit];
+			//NSLog(@"DCMObject readTag: %f", -[timestamp  timeIntervalSinceNow]);
+			DCMAttributeTag *tag = [[[DCMAttributeTag alloc]  initWithGroup:group element:element] autorelease];
+			*byteOffset+=4;
+			
+			const char *tagUTF8 = [tag.stringValue UTF8String];
+			
+			if (DCMDEBUG)
+				NSLog(@"Tag: %@  group: 0x%4000x  word 0x%4000x", tag.description, group, element);
+				// "FFFE,E00D" == Item Delimitation Item
+			if (strcmp(tagUTF8, "FFFE,E00D") == 0) {
+				// Read and discard value length
+				[dicomData nextUnsignedLong];
+				*byteOffset+=4;
+				if (DCMDEBUG)
+					NSLog(@"ItemDelimitationItem");
+				break;
+				//return *byteOffset;	// stop now, since we must have been called to read an item's dataset
+			}
+			
+			// "FFFE,E000" == Item 
+			else if (strcmp(tagUTF8, "FFFE,E000") == 0) {
+				// this is bad ... there shouldn't be Items here since they should
+				// only be found during readNewSequenceAttribute()
+				// however, try to work around Philips bug ...
+				long vl = [dicomData nextUnsignedLong];		// always implicit VR form for items and delimiters
+				*byteOffset+=4;
+				NSLog(@"Ignoring bad Item at %d  %@ VL=<0x%x", *byteOffset, tag.stringValue, vl);
+				// let's just ignore it for now
+				//continue;
+			}
+			// get tag Values
+			else {
+			// get vr
 
-		}
-		[subPool release];
+				NSString *vr = nil;
+				long vl = 0;
+				if (isExplicit) 
+				{
+					vr = [dicomData nextStringWithLength:2];
+					if (DCMDEBUG)
+						NSLog(@"Explicit VR %@", vr);
+					*byteOffset+=2;
+					if (!vr)
+						vr = [tag vr];
+				}
 				
-	}
-	[transferSyntax release];
-	transferSyntax = [[dicomData transferSyntaxForDataset] retain];
+				//implicit
+				else
+				{
+					vr = tag.vr;
+					if (!vr)
+						vr = @"UN";
+					if ([vr isEqualToString:@"US/SS/OW"])
+						vr = @"OW";
+					// set VR for Pixel Description depenedent tags. Can be either  US or SS depending on Pixel Description
+					if ([vr isEqualToString:@"US/SS"]) {
+					if ( pixelRepresentationIsSigned)
+							vr = @"SS";
+						else 
+							vr = @"US";
+					}
+					if (DCMDEBUG)
+						NSLog(@"Implicit VR %@", vr);	
+
+
+				}
+				//if (DCMDEBUG)
+				//	NSLog(@"byteoffset after vr %d, VR:%@",*byteOffset,  vr, vl);
+			//  ****** get length *********
+				if (isExplicit) {
+					if ([DCMValueRepresentation isShortValueLengthVR:vr]) {
+						vl = [dicomData nextUnsignedShort];
+						*byteOffset+=2;
+					}
+					else {
+						[dicomData nextUnsignedShort];	// reserved bytes
+						vl = [dicomData nextUnsignedLong];
+						*byteOffset+=6;
+					}
+				}
+				else {
+					vl = [dicomData nextUnsignedLong];
+					*byteOffset += 4;
+				}
+				if (DCMDEBUG)
+					NSLog(@"Tag: %@, length: %d", [tag description], vl);
+				//if (DCMDEBUG)
+				//	NSLog(@"byteoffset after length %d, VR:%@  length:%d",*byteOffset,  vr, vl);
+					
+			
+				// generate Attributes
+				DCMAttribute *attr = nil;
+				//sequence attribute
+				
+				if ([DCMValueRepresentation isSequenceVR:vr] || ([DCMValueRepresentation  isUnknownVR:vr] && vl == 0xFFFFFFFF))
+				{
+					
+					attr = (DCMAttribute *) [[[DCMSequenceAttribute alloc] initWithAttributeTag:(DCMAttributeTag *)tag] autorelease];
+					*byteOffset = [self readNewSequenceAttribute:attr dicomData:dicomData byteOffset:byteOffset lengthToRead:vl specificCharacterSet:specificCharacterSet];
+				} 
+				
+				// "7FE0,0010" == PixelData
+				else if (strcmp(tagUTF8, "7FE0,0010") == 0) {
+					attr = (DCMPixelDataAttribute *) [[[DCMPixelDataAttribute alloc]	initWithAttributeTag:(DCMAttributeTag *)tag 
+					vr:(NSString *)vr 
+					length:(long) vl 
+					data:(DCMDataContainer *)dicomData 
+					specificCharacterSet:(DCMCharacterSet *)specificCharacterSet
+					transferSyntax:[dicomData transferSyntaxForDataset]
+					dcmObject:self
+					decodeData:_decodePixelData] autorelease];
+						*byteOffset = endByteOffset;
+				}
+				else if (vl != 0xFFFFFFFF && vl != 0) {
+					if ([self isNeededAttribute:(char *)tagUTF8])
+						attr = [[[DCMAttribute alloc] initWithAttributeTag:tag 
+							vr:vr 
+							length: vl 
+							data:dicomData 
+							specificCharacterSet:specificCharacterSet
+							isExplicit:[dicomData isExplicitTS]
+							forImplicitUseOW:forImplicitUseOW] autorelease];
+					else
+					{
+						attr = nil;
+						[dicomData skipLength:vl];
+					}
+					*byteOffset += vl;
+					if (DCMDEBUG)
+						NSLog(@"byteOffset %d attr %@", *byteOffset, [attr description]);
+				}
+
+				if (DCMDEBUG)
+					NSLog(@"Attr: %@", [attr description]);
+				//add attr to attributes
+				if (attr)
+					CFDictionarySetValue((CFMutableDictionaryRef)attributes, [tag stringValue], attr);
+					
+				// 0002,0000 = MetaElementGroupLength
+				if (strcmp(tagUTF8, "0002,0000") == 0) {
+					readingMetaHeader = YES;
+					if (DCMDEBUG)
+						NSLog(@"metaheader length : %d", [[attr value] intValue]);
+					endMetaHeaderPosition = [[attr value] intValue] + *byteOffset;
+					[dicomData startReadingMetaHeader];
+				}
+				//0002,0010 == TransferSyntaxUID
+				else if (strcmp(tagUTF8, "0002,0010") == 0  
+					&& transferSyntax == nil)  //some conquest files have the transfer Syntax twice. Need to ignore to second one
+					 {
+						
+					DCMTransferSyntax *ts = [[[DCMTransferSyntax alloc] initWithTS:[attr value]] autorelease];
+					[transferSyntax release];
+					transferSyntax = [ts retain];
+					[dicomData setTransferSyntaxForDataset:ts];
+				}
+				
+				//0008,0005 == SpecificCharacterSet
+				else if (strcmp(tagUTF8, "0008,0005") == 0) {
+					[specificCharacterSet release];
+					
+					specificCharacterSet = [[DCMCharacterSet alloc] initWithCode: [[attr values] componentsJoinedByString:@"//"]];
+				}
+
+					
+				/*
+				if (readingMetaHeader && (*byteOffset >= endMetaHeaderPosition)) {
+					if (DCMDEBUG)
+						NSLog(@"End reading Metaheader. Metaheader position: %d, byteOffset: %d", endMetaHeaderPosition, *byteOffset);
+					readingMetaHeader = NO;
+					[dicomData startReadingDataSet];
+				}
+				*/	
+					
+
+			}
+			[subPool release];
+					
+		}
+		[transferSyntax release];
+		transferSyntax = [[dicomData transferSyntaxForDataset] retain];
 	}
 	
 	@catch (NSException *ne)
 	{
 		NSLog(@"Error reading data for dicom object");
 		NSLog( [ne description]);
-		*byteOffset = 0xffffffffl;
+		*byteOffset = 0xFFFFFFFF;
 	}
 	//NSLog(@"DCMObject  End readDataSet: %f", -[timestamp  timeIntervalSinceNow]);
 	[pool release];
@@ -719,8 +719,8 @@ PixelRepresentation
 
 - (long) readNewSequenceAttribute:(DCMAttribute *)attr dicomData:(DCMDataContainer *)dicomData byteOffset:(long *)byteOffset lengthToRead:(long)lengthToRead specificCharacterSet:(DCMCharacterSet *)aSpecificCharacterSet{
 
-	BOOL undefinedLength = lengthToRead == 0xffffffffl;
-	long endByteOffset = (undefinedLength) ? 0xffffffffl : *byteOffset+lengthToRead-1;
+	BOOL undefinedLength = lengthToRead == 0xFFFFFFFF;
+	long endByteOffset = (undefinedLength) ? 0xFFFFFFFF : *byteOffset+lengthToRead-1;
 	NSException *myException;
 	NS_DURING
 		if (DCMDEBUG)
