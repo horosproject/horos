@@ -109,7 +109,7 @@ static id aedesc_to_id(AEDesc *desc)
 		[file appendFormat: @"%c", NSTabCharacter];
 	}
 	
-	NSString	*path = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP/Report.txt"];
+	NSString	*path = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP.noindex/Report.txt"];
 	
 	[[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
 	

@@ -640,7 +640,7 @@ storeSCU(T_ASC_Association * assoc, const char *fname)
     DcmDataset *statusDetail = NULL;
 	char outfname[ 4096];
 	
-	sprintf( outfname, "%s/%s/%ld.dcm", [[BrowserController currentBrowser] cfixedDocumentsDirectory], "TEMP", seed++);
+	sprintf( outfname, "%s/%s/%ld.dcm", [[BrowserController currentBrowser] cfixedDocumentsDirectory], "TEMP.noindex", seed++);
 
     unsuccessfulStoreEncountered = OFTrue; // assumption
 	

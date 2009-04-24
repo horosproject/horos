@@ -733,7 +733,7 @@ void DcmQueryRetrieveMoveContext::moveNextImage(DcmQueryRetrieveDatabaseStatus *
 		DcmXfer preferredXfer( xferSyntax);
 		OFBool status = YES;
 		
-		sprintf( outfname, "%s/%s/QR-CMOVE-%d-%d.dcm", [[BrowserController currentBrowser] cfixedDocumentsDirectory], "TEMP", seed++, getpid());
+		sprintf( outfname, "%s/%s/QR-CMOVE-%d-%d.dcm", [[BrowserController currentBrowser] cfixedDocumentsDirectory], "TEMP.noindex", seed++, getpid());
 		unlink( outfname);
 		
 		if (filexfer.isNotEncapsulated() && preferredXfer.isNotEncapsulated())

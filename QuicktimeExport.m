@@ -452,10 +452,10 @@
 	{
 		result = NSFileHandlingPanelOKButton;
 		
-		[[NSFileManager defaultManager] removeFileAtPath: [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP/IPHOTO/"] handler: nil];
-		[[NSFileManager defaultManager] createDirectoryAtPath: [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP/IPHOTO/"] attributes: nil];
+		[[NSFileManager defaultManager] removeFileAtPath: [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP.noindex/IPHOTO/"] handler: nil];
+		[[NSFileManager defaultManager] createDirectoryAtPath: [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP.noindex/IPHOTO/"] attributes: nil];
 		
-		fileName = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP/OsiriXMovie.mov"];
+		fileName = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP.noindex/OsiriXMovie.mov"];
 	}
 	else
 	{
@@ -525,7 +525,7 @@
 				}
 				else
 				{
-					NSString *curFile = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP/IPHOTO/OsiriX-%4d.jpg", curSample];
+					NSString *curFile = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP.noindex/IPHOTO/OsiriX-%4d.jpg", curSample];
 					
 					NSData *bitmapData = [NSBitmapImageRep representationOfImageRepsInArray: [im representations] usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
 					[bitmapData writeToFile:curFile atomically:YES];

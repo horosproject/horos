@@ -80,7 +80,7 @@ LogManager *currentLogManager;
 }
 
 - (NSString *)logFolder{
-	NSString *path =  [[[BrowserController currentBrowser] fixedDocumentsDirectory] stringByAppendingPathComponent:@"TEMP"];
+	NSString *path =  [[[BrowserController currentBrowser] fixedDocumentsDirectory] stringByAppendingPathComponent:@"TEMP.noindex"];
 	NSFileManager *manager = [NSFileManager defaultManager];
 	BOOL isDir;
 	if (!([manager fileExistsAtPath:path isDirectory:&isDir] && isDir))

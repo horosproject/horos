@@ -408,7 +408,7 @@ NSString* filenameWithDate( NSString *inputfile)
 
 NSString* convertDICOM( NSString *inputfile)
 {
-	NSString		*outputfile = [documentsDirectory() stringByAppendingFormat:@"/TEMP/%@", filenameWithDate( inputfile)];
+	NSString		*outputfile = [documentsDirectory() stringByAppendingFormat:@"/TEMP.noindex/%@", filenameWithDate( inputfile)];
 	
 	if ([[NSFileManager defaultManager] fileExistsAtPath:outputfile]) return outputfile;
 	
@@ -421,7 +421,7 @@ NSString* convertDICOM( NSString *inputfile)
 
 //NSString* convertDICOM( NSString *inputfile)
 //{
-//	NSString		*tempString, *outputfile = [documentsDirectory() stringByAppendingFormat:@"/TEMP/%@", filenameWithDate( inputfile)];
+//	NSString		*tempString, *outputfile = [documentsDirectory() stringByAppendingFormat:@"/TEMP.noindex/%@", filenameWithDate( inputfile)];
 //    NSMutableArray  *theArguments = [NSMutableArray array];
 //	long			i = 0;
 //	
@@ -1823,16 +1823,16 @@ static NSDate *lastWarningDate = nil;
 	
 	[AppController cleanOsiriXSubProcesses];
 	
-	// DELETE THE TEMP DIRECTORY...
-	NSString *tempDirectory = [documentsDirectory() stringByAppendingPathComponent:@"/TEMP/"];
+	// DELETE THE TEMP.noindex DIRECTORY...
+	NSString *tempDirectory = [documentsDirectory() stringByAppendingPathComponent:@"/TEMP.noindex/"];
 	if ([[NSFileManager defaultManager] fileExistsAtPath:tempDirectory]) [[NSFileManager defaultManager] removeFileAtPath:tempDirectory handler: nil];
 	
 	// DELETE THE DUMP DIRECTORY...
 	NSString *dumpDirectory = [documentsDirectory() stringByAppendingPathComponent:@"/DUMP/"];
 	if ([[NSFileManager defaultManager] fileExistsAtPath:dumpDirectory]) [[NSFileManager defaultManager] removeFileAtPath:dumpDirectory handler: nil];
 	
-	// DELETE THE DECOMPRESSION DIRECTORY...
-	NSString *decompressionDirectory = [documentsDirectory() stringByAppendingPathComponent:@"/DECOMPRESSION/"];
+	// DELETE THE DECOMPRESSION.noindex DIRECTORY...
+	NSString *decompressionDirectory = [documentsDirectory() stringByAppendingPathComponent:@"/DECOMPRESSION.noindex/"];
 	if ([[NSFileManager defaultManager] fileExistsAtPath:decompressionDirectory]) [[NSFileManager defaultManager] removeFileAtPath:decompressionDirectory handler: nil];
 
 	[NSSplitView saveSplitView];
@@ -2158,8 +2158,8 @@ static BOOL initialized = NO;
 				if ([[NSFileManager defaultManager] fileExistsAtPath:roisDirectory isDirectory: &isDir] == YES && isDir == NO) [[NSFileManager defaultManager] removeFileAtPath: roisDirectory handler: nil];
 				if ([[NSFileManager defaultManager] fileExistsAtPath:roisDirectory] == NO) [[NSFileManager defaultManager] createDirectoryAtPath:roisDirectory attributes:nil];
 				
-				// DELETE & CREATE THE TEMP DIRECTORY...
-				NSString *tempDirectory = [documentsDirectory() stringByAppendingPathComponent:@"/TEMP/"];
+				// DELETE & CREATE THE TEMP.noindex DIRECTORY...
+				NSString *tempDirectory = [documentsDirectory() stringByAppendingPathComponent:@"/TEMP.noindex/"];
 				if ([[NSFileManager defaultManager] fileExistsAtPath:tempDirectory]) [[NSFileManager defaultManager] removeFileAtPath:tempDirectory handler: nil];
 				if ([[NSFileManager defaultManager] fileExistsAtPath:tempDirectory] == NO) [[NSFileManager defaultManager] createDirectoryAtPath:tempDirectory attributes:nil];
 				

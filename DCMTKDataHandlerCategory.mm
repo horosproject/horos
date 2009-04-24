@@ -898,7 +898,7 @@ char currentDestinationMoveAET[ 60] = "";
 			FILE * pFile;
 			char dir[ 1024], newdir[1024];
 			unsigned int random = (unsigned int)time(NULL);
-			sprintf( dir, "%s/%s%d", [[BrowserController currentBrowser] cfixedDocumentsDirectory], "TEMP/move_log_", random);
+			sprintf( dir, "%s/%s%d", [[BrowserController currentBrowser] cfixedDocumentsDirectory], "TEMP.noindex/move_log_", random);
 			pFile = fopen (dir,"w+");
 			if( pFile)
 			{
@@ -929,7 +929,7 @@ char currentDestinationMoveAET[ 60] = "";
 			FILE * pFile;
 			char dir[ 1024], newdir[1024];
 			unsigned int random = (unsigned int)time(NULL);
-			sprintf( dir, "%s/%s%d", [[BrowserController currentBrowser] cfixedDocumentsDirectory], "TEMP/move_log_", random);
+			sprintf( dir, "%s/%s%d", [[BrowserController currentBrowser] cfixedDocumentsDirectory], "TEMP.noindex/move_log_", random);
 			pFile = fopen (dir,"w+");
 			if( pFile)
 			{
@@ -1183,7 +1183,7 @@ char currentDestinationMoveAET[ 60] = "";
 		FILE * pFile;
 		char dir[ 1024], newdir[1024];
 		unsigned int random = (unsigned int)time(NULL);
-		sprintf( dir, "%s/%s%d", [[BrowserController currentBrowser] cfixedDocumentsDirectory], "TEMP/move_log_", random);
+		sprintf( dir, "%s/%s%d", [[BrowserController currentBrowser] cfixedDocumentsDirectory], "TEMP.noindex/move_log_", random);
 		pFile = fopen (dir,"w+");
 		if( pFile)
 		{

@@ -6110,6 +6110,8 @@ static ViewerController *draggedController = nil;
 	
 	[self willChangeValueForKey: @"KeyImageCounter"];
 	[self didChangeValueForKey: @"KeyImageCounter"];
+	
+	[self propagateSettings];
 }
 
 - (void) showWindowTransition
@@ -15606,11 +15608,11 @@ int i,j,l;
 //
 //	bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
 //
-//	[bitmapData writeToFile:[[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP/OsiriX.jpg"] atomically:YES];
+//	[bitmapData writeToFile:[[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP.noindex/OsiriX.jpg"] atomically:YES];
 //				
 //	email = [[Mailer alloc] init];
 //	
-//	[email sendMail:@"--" to:@"--" subject:@"" isMIME:YES name:@"--" sendNow:NO image: [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP/OsiriX.jpg"]];
+//	[email sendMail:@"--" to:@"--" subject:@"" isMIME:YES name:@"--" sendNow:NO image: [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP.noindex/OsiriX.jpg"]];
 //	
 //	[email release];
 }
@@ -15882,8 +15884,8 @@ int i,j,l;
 		
 		if( pathOK == YES)
 		{
-			[[NSFileManager defaultManager] removeFileAtPath: [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP/EXPORT/"] handler:nil];
-			[[NSFileManager defaultManager] createDirectoryAtPath: [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP/EXPORT/"] attributes:nil];
+			[[NSFileManager defaultManager] removeFileAtPath: [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP.noindex/EXPORT/"] handler:nil];
+			[[NSFileManager defaultManager] createDirectoryAtPath: [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP.noindex/EXPORT/"] attributes:nil];
 		
 			int fileIndex;
 			
@@ -15934,7 +15936,7 @@ int i,j,l;
 					{
 						bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
 
-						NSString *jpegFile = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP/EXPORT/%4.4d.jpg", fileIndex++];
+						NSString *jpegFile = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP.noindex/EXPORT/%4.4d.jpg", fileIndex++];
 						
 						[bitmapData writeToFile: jpegFile atomically:YES];
 						
@@ -15971,7 +15973,7 @@ int i,j,l;
 				}
 			}
 			
-			NSString *root = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP/EXPORT/"];
+			NSString *root = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP.noindex/EXPORT/"];
 			
 			if( [[imageFormat selectedCell] tag] == 2) // iPhoto
 			{
@@ -16011,7 +16013,7 @@ int i,j,l;
 				NSAppleEventDescriptor *listComments = [NSAppleEventDescriptor listDescriptor];
 				
 				int f = 0;
-				NSString *root = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP/EXPORT/"];
+				NSString *root = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP.noindex/EXPORT/"];
 				NSArray *files = [[NSFileManager defaultManager] contentsOfDirectoryAtPath: root error: nil];
 				for( int x = 0; x < [files count] ; x++)
 				{
@@ -16082,7 +16084,7 @@ int i,j,l;
 //				{
 //					bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
 //					
-//					NSString *jpegFile = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP/OsiriX.jpg"];
+//					NSString *jpegFile = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP.noindex/OsiriX.jpg"];
 //					
 //					[bitmapData writeToFile: jpegFile atomically:YES];
 //					

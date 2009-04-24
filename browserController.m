@@ -73,7 +73,7 @@
 
 #define DATABASEVERSION @"2.4"
 #define DATABASEPATH @"/DATABASE.noindex/"
-#define DECOMPRESSIONPATH @"/DECOMPRESSION/"
+#define DECOMPRESSIONPATH @"/DECOMPRESSION.noindex/"
 #define INCOMINGPATH @"/INCOMING.noindex/"
 #define ERRPATH @"/NOT READABLE/"
 #define DATABASEFPATH @"/DATABASE.noindex"
@@ -302,7 +302,7 @@ static NSArray*	statesArray = nil;
 
 	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
 	NSFileManager		*fm = [NSFileManager defaultManager];
-	NSString			*tempDirectory = [[self documentsDirectory] stringByAppendingPathComponent:@"/TEMP/"];
+	NSString			*tempDirectory = [[self documentsDirectory] stringByAppendingPathComponent:@"/TEMP.noindex/"];
 	NSString			*arrayFile = [tempDirectory stringByAppendingPathComponent:@"array.plist"];
 	NSString			*databaseFile = [tempDirectory stringByAppendingPathComponent:@"database.plist"];
 	NSString			*modelFile = [tempDirectory stringByAppendingPathComponent:@"model.plist"];
@@ -15557,7 +15557,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 					{
 						Reports	*report = [[Reports alloc] init];
 						
-						[report createNewReport: studySelected destination: [NSString stringWithFormat: @"%@/TEMP/", [self documentsDirectory]] type:reportsMode];
+						[report createNewReport: studySelected destination: [NSString stringWithFormat: @"%@/TEMP.noindex/", [self documentsDirectory]] type:reportsMode];
 						
 						[bonjourBrowser sendFile:[studySelected valueForKey:@"reportURL"] index: [bonjourServicesList selectedRow]-1];
 						

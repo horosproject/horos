@@ -418,6 +418,16 @@ static OFCondition DB_FreeElementList (DB_ElementList *lst)
     return (cond);
 }
 
+
+void str_toupper(char *s)
+{
+    while(*s)
+    {
+        *s=toupper(*s);
+        s++;
+    }
+}
+
 /*************
 Log Entry
 *************/
@@ -488,7 +498,8 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::updateLogEntry(DcmDataset *dat
 		
 		strcpy( handle->logMessage, "In Progress");
 		unsigned int random = (unsigned int)time(NULL);
-		sprintf( handle->logUID, "%d%s%s", random, patientName, seriesUID);
+		sprintf( handle->logUID, "%d%s%s", random, handle->logPatientName, seriesUID);
+		str_toupper( handle->logUID);
 	}
 	
 	handle->logNumberReceived = ++(handle->imageCount);
@@ -496,7 +507,7 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::updateLogEntry(DcmDataset *dat
 	
 	FILE * pFile;
 	char dir[ 1024], newdir[1024];
-	sprintf( dir, "%s/%s%s", [[BrowserController currentBrowser] cfixedIncomingDirectory], "TEMP/store_log_", handle->logUID);
+	sprintf( dir, "%s/%s%s", [[BrowserController currentBrowser] cfixedIncomingDirectory], "TEMP.noindex/store_log_", handle->logUID);
 	pFile = fopen (dir,"w+");
 	if( pFile)
 	{
@@ -1257,7 +1268,7 @@ DcmQueryRetrieveOsiriXDatabaseHandle::~DcmQueryRetrieveOsiriXDatabaseHandle()
 			
 			FILE * pFile;
 			char dir[ 1024], newdir[1024];
-			sprintf( dir, "%s/%s%s", [[BrowserController currentBrowser] cfixedIncomingDirectory], "TEMP/store_log_", handle->logUID);
+			sprintf( dir, "%s/%s%s", [[BrowserController currentBrowser] cfixedIncomingDirectory], "TEMP.noindex/store_log_", handle->logUID);
 			pFile = fopen (dir,"w+");
 			if( pFile)
 			{
@@ -1301,7 +1312,7 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::makeNewStoreFileName(
     newImageFileName[0] = 0; // return empty string in case of error
 	
 	char dir[ 4096];
-	sprintf( dir, "%s/%s", [[BrowserController currentBrowser] cfixedIncomingDirectory], "TEMP");
+	sprintf( dir, "%s/%s", [[BrowserController currentBrowser] cfixedIncomingDirectory], "TEMP.noindex");
 	if (! fnamecreator.makeFilename(seedvalue, dir, prefix, ".dcm", filename))
 	{
 		return DcmQROsiriXDatabaseError;
