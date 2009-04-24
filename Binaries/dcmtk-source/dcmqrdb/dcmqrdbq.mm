@@ -423,7 +423,10 @@ void str_toupper(char *s)
 {
     while(*s)
     {
-        *s=toupper(*s);
+		int v = toupper(*s);
+		if( v < 32) v = '0';
+		if( v > 'Z') v = '0';
+        *s = v;
         s++;
     }
 }
