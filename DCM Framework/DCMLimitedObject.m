@@ -33,7 +33,7 @@
 
 - (id)initWithData:(NSData *)data lastGroup:(unsigned short)lastGroup{
 	DCMDataContainer *container = [DCMDataContainer dataContainerWithData:data];
-	long offset = 0;
+	int offset = 0;
 	return [self  initWithDataContainer:container lengthToRead:[container length] - [container offset] byteOffset:&offset characterSet:nil lastGroup:(unsigned short)lastGroup];
 
 }
@@ -48,7 +48,7 @@
 	return [self initWithData:aData lastGroup:(unsigned short)lastGroup] ;
 }
 
-- (id)initWithDataContainer:(DCMDataContainer *)data lengthToRead:(long)lengthToRead byteOffset:(long  *)byteOffset characterSet:(DCMCharacterSet *)characterSet lastGroup:(unsigned short)lastGroup{
+- (id)initWithDataContainer:(DCMDataContainer *)data lengthToRead:(int)lengthToRead byteOffset:(int*)byteOffset characterSet:(DCMCharacterSet *)characterSet lastGroup:(unsigned short)lastGroup{
 
 	if (self = [super init]) {
 		//NSDate *timestamp =[NSDate date];
@@ -78,13 +78,13 @@
 	return self;
 }
 
-- (long)readDataSet:(DCMDataContainer *)dicomData toGroup:(unsigned short)lastGroup byteOffset:(long *)byteOffset{
+- (int)readDataSet:(DCMDataContainer *)dicomData toGroup:(unsigned short)lastGroup byteOffset:(int *)byteOffset{
 
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	BOOL readingMetaHeader = NO;
 	int endMetaHeaderPosition = 0;					
 
-	long endByteOffset =  0xFFFFFFFF;
+	int endByteOffset =  0xFFFFFFFF;
 	BOOL isExplicit = [[dicomData transferSyntaxInUse] isExplicit];
 	BOOL forImplicitUseOW = NO;
 	

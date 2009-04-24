@@ -398,7 +398,7 @@ PixelRepresentation
 		
 - (id)initWithData:(NSData *)data decodingPixelData:(BOOL)decodePixelData{
 	DCMDataContainer *container = [DCMDataContainer dataContainerWithData:data];
-	long offset = 0;
+	int offset = 0;
 	if (DCMDEBUG)
 			NSLog(@"start byteOffset: %d", offset);
 	if (DCMDEBUG)
@@ -409,7 +409,7 @@ PixelRepresentation
 
 - (id)initWithData:(NSData *)data transferSyntax:(DCMTransferSyntax *)syntax{
 	DCMDataContainer *container = [DCMDataContainer dataContainerWithData:data transferSyntax:syntax];
-	long offset = 0;
+	int offset = 0;
 	return [self initWithDataContainer:container lengthToRead:[container length] byteOffset:&offset characterSet:nil decodingPixelData:NO];
 }
 
@@ -424,7 +424,7 @@ PixelRepresentation
 	return [self initWithData:aData decodingPixelData:decodePixelData] ;
 }
 
-- (id)initWithDataContainer:(DCMDataContainer *)data lengthToRead:(long)lengthToRead byteOffset:(long  *)byteOffset characterSet:(DCMCharacterSet *)characterSet decodingPixelData:(BOOL)decodePixelData{
+- (id)initWithDataContainer:(DCMDataContainer *)data lengthToRead:(int)lengthToRead byteOffset:(int*)byteOffset characterSet:(DCMCharacterSet *)characterSet decodingPixelData:(BOOL)decodePixelData{
 	if (self = [super init])
 	{
 		_decodePixelData = decodePixelData;
@@ -486,13 +486,13 @@ PixelRepresentation
 }
 
 
-- (long)readDataSet:(DCMDataContainer *)dicomData lengthToRead:(long)lengthToRead byteOffset:(long *)byteOffset{
+- (int)readDataSet:(DCMDataContainer *)dicomData lengthToRead:(int)lengthToRead byteOffset:(int *)byteOffset{
 
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	BOOL readingMetaHeader = NO;
 	int endMetaHeaderPosition = 0;					
 	BOOL undefinedLength = lengthToRead == 0xFFFFFFFF;	
-	long endByteOffset= (undefinedLength) ? 0xFFFFFFFF : *byteOffset + lengthToRead - 1;
+	int endByteOffset= (undefinedLength) ? 0xFFFFFFFF : *byteOffset + lengthToRead - 1;
 	BOOL isExplicit = [[dicomData transferSyntaxInUse] isExplicit];
 	BOOL forImplicitUseOW = NO;
 	
@@ -623,7 +623,8 @@ PixelRepresentation
 				} 
 				
 				// "7FE0,0010" == PixelData
-				else if (strcmp(tagUTF8, "7FE0,0010") == 0) {
+				else if (strcmp(tagUTF8, "7FE0,0010") == 0)
+				{
 					attr = (DCMPixelDataAttribute *) [[[DCMPixelDataAttribute alloc]	initWithAttributeTag:(DCMAttributeTag *)tag 
 					vr:(NSString *)vr 
 					length:(long) vl 
@@ -632,7 +633,8 @@ PixelRepresentation
 					transferSyntax:[dicomData transferSyntaxForDataset]
 					dcmObject:self
 					decodeData:_decodePixelData] autorelease];
-						*byteOffset = endByteOffset;
+					
+					*byteOffset = endByteOffset;
 				}
 				else if (vl != 0xFFFFFFFF && vl != 0) {
 					if ([self isNeededAttribute:(char *)tagUTF8])
@@ -717,17 +719,17 @@ PixelRepresentation
 	return *byteOffset;
 }
 
-- (long) readNewSequenceAttribute:(DCMAttribute *)attr dicomData:(DCMDataContainer *)dicomData byteOffset:(long *)byteOffset lengthToRead:(long)lengthToRead specificCharacterSet:(DCMCharacterSet *)aSpecificCharacterSet{
+- (int) readNewSequenceAttribute:(DCMAttribute *)attr dicomData:(DCMDataContainer *)dicomData byteOffset:(int *)byteOffset lengthToRead:(int)lengthToRead specificCharacterSet:(DCMCharacterSet *)aSpecificCharacterSet{
 
 	BOOL undefinedLength = lengthToRead == 0xFFFFFFFF;
-	long endByteOffset = (undefinedLength) ? 0xFFFFFFFF : *byteOffset+lengthToRead-1;
+	int endByteOffset = (undefinedLength) ? 0xFFFFFFFF : *byteOffset+lengthToRead-1;
 	NSException *myException;
 	NS_DURING
 		if (DCMDEBUG)
 			NSLog(@"Read newSequence:%@  lengthtoRead:%d byteOffset:%d, characterSet: %@", [attr description], lengthToRead, *byteOffset, [aSpecificCharacterSet characterSet] );
 		while (undefinedLength || *byteOffset < endByteOffset) {
 			NSAutoreleasePool *subPool = [[NSAutoreleasePool alloc] init];
-			long itemStartOffset=*byteOffset;
+			int itemStartOffset=*byteOffset;
 			int group = [self getGroup:dicomData];
 			int element = [self getElement:dicomData];
 			DCMAttributeTag *tag = [[[DCMAttributeTag alloc]  initWithGroup:group element:element] autorelease];
@@ -771,7 +773,7 @@ PixelRepresentation
 
 - (DCMAttribute *) newAttributeForAttributeTag:(DCMAttributeTag *)tag 
 			vr:(NSString *)vr 
-			length:(long) vl 
+			length:(int) vl 
 			data:(DCMDataContainer *)dicomData 
 			specificCharacterSet:(DCMCharacterSet *)specificCharacterSet
 			isExplicit:(BOOL) explicit
