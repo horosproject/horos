@@ -9521,19 +9521,18 @@ static BOOL needToRezoom;
 		
 		if( draggedItems)
 		{
+			NSMutableSet	*studies = [album mutableSetValueForKey: @"studies"];
+			
 			for( NSManagedObject *object in draggedItems)
 			{
 				if( [[object valueForKey:@"type"] isEqualToString:@"Study"])
-				{
-					NSMutableSet	*studies = [album mutableSetValueForKey: @"studies"];
 					[studies addObject: object];
-				}
 				
 				if( [[object valueForKey:@"type"] isEqualToString:@"Series"])
-				{
-					NSMutableSet	*studies = [album mutableSetValueForKey: @"studies"];
 					[studies addObject: [object valueForKey:@"study"]];
-				}
+				
+				if( [[object valueForKey:@"type"] isEqualToString:@"Image"])
+					[studies addObject: [object valueForKeyPath:@"series.study"]];
 			}
 			
 			[self saveDatabase: currentDatabasePath];
@@ -9555,6 +9554,9 @@ static BOOL needToRezoom;
 					
 					if( [[object valueForKey:@"type"] isEqualToString:@"Series"])
 						[studiesToAdd addObject: [object valueForKey:@"study"]];
+						
+					if( [[object valueForKey:@"type"] isEqualToString:@"Image"] )
+						[studiesToAdd addObject: [object valueForKeyPath:@"series.study"]];
 				}
 				
 				[bonjourBrowser addStudies: studiesToAdd toAlbum: album bonjourIndex:[bonjourServicesList selectedRow]-1];
@@ -9582,9 +9584,10 @@ static BOOL needToRezoom;
 				}
 				
 				if( [[object valueForKey:@"type"] isEqualToString:@"Series"] )
-				{
 					[imagesArray addObjectsFromArray: [[object valueForKey:@"images"] allObjects]];
-				}
+				
+				if( [[object valueForKey:@"type"] isEqualToString:@"Image"] )
+					[imagesArray addObject: object];
 			}
 			
 			{
