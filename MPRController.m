@@ -922,21 +922,15 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (void) bestRendering:(id) sender
 {
-	[hiddenVRView setLOD: 1.0];
+	float savedLOD = LOD;
 	
-	[mprView1 restoreCamera];
-	mprView1.camera.forceUpdate = YES;
-	[mprView1 updateViewMPR];
+	[self setLOD: 1.0];
 	
-	[mprView2 restoreCamera];
-	mprView2.camera.forceUpdate = YES;
-	[mprView2 updateViewMPR];
-	
-	[mprView3 restoreCamera];
-	mprView3.camera.forceUpdate = YES;
-	[mprView3 updateViewMPR];
-	
+	LOD = savedLOD;
 	[hiddenVRView setLOD: LOD];
+	mprView1.LOD = LOD;
+	mprView2.LOD = LOD;
+	mprView3.LOD = LOD;
 }
 
 - (void) setLOD: (float)lod;
@@ -1669,6 +1663,8 @@ static float deg2rad = 3.14159265358979/180.0;
 	
 	if( [sender tag])
 	{
+		float savedLOD = LOD;
+		
 		NSMutableArray *producedFiles = [NSMutableArray array];
 		
 		[curExportView restoreCamera];
@@ -1680,7 +1676,7 @@ static float deg2rad = 3.14159265358979/180.0;
 		}
 		
 		if( self.dcmQuality == 1)
-			[curExportView.vrView setLOD: 1.0];
+			[self setLOD: 1.0];
 		
 		if( self.dcmFormat) 
 			[curExportView.vrView setViewSizeToMatrix3DExport];
@@ -1839,7 +1835,7 @@ static float deg2rad = 3.14159265358979/180.0;
 					}
 					
 					if( self.dcmQuality == 1)
-						[curExportView.vrView setLOD: 1.0];
+						[self setLOD: 1.0];
 					
 					if( self.dcmFormat) 
 						[curExportView.vrView setViewSizeToMatrix3DExport];
@@ -1983,7 +1979,7 @@ static float deg2rad = 3.14159265358979/180.0;
 		if( self.dcmFormat) 
 			[curExportView.vrView restoreViewSizeAfterMatrix3DExport];
 		
-		[curExportView.vrView setLOD: LOD];
+		[self setLOD: savedLOD];
 		
 		[[NSUserDefaults standardUserDefaults] setInteger: dcmMode forKey: @"lastMPRdcmExportMode"];
 		

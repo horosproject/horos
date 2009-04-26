@@ -731,10 +731,9 @@ static NSDate *lastWarningDate = nil;
 
 + (void) displayImportantNotice:(id) sender
 {
-	int saved = [[NSUserDefaults standardUserDefaults] integerForKey: @"lastWarningDay"]/7;
-	int current = [[NSCalendarDate date] dayOfYear]/7;
+	int saved = [[NSUserDefaults standardUserDefaults] integerForKey: @"lastWarningDay"];
 	
-	if( saved != current)
+	if( saved == 0)
 	{
 		if( lastWarningDate == nil || [lastWarningDate timeIntervalSinceNow] < -60*60*16)
 		{
