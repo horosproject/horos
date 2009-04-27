@@ -185,21 +185,23 @@ static BOOL frameZoomed = NO;
 		return YES;
 	}
 	
-	if( currentCamera.position.x != camera.position.x) return YES;
-	if( currentCamera.position.y != camera.position.y) return YES;
-	if( currentCamera.position.z != camera.position.z) return YES;
+	#define PRECISION 0.0001
+	
+	if( fabs( currentCamera.position.x - camera.position.x) > PRECISION) return YES;
+	if( fabs( currentCamera.position.y - camera.position.y) > PRECISION) return YES;
+	if( fabs( currentCamera.position.z - camera.position.z) > PRECISION) return YES;
 
-	if( currentCamera.focalPoint.x != camera.focalPoint.x) return YES;
-	if( currentCamera.focalPoint.y != camera.focalPoint.y) return YES;
-	if( currentCamera.focalPoint.z != camera.focalPoint.z) return YES;
+	if( fabs( currentCamera.focalPoint.x - camera.focalPoint.x) > PRECISION) return YES;
+	if( fabs( currentCamera.focalPoint.y - camera.focalPoint.y) > PRECISION) return YES;
+	if( fabs( currentCamera.focalPoint.z - camera.focalPoint.z) > PRECISION) return YES;
 
-	if( currentCamera.viewUp.x != camera.viewUp.x) return YES;
-	if( currentCamera.viewUp.y != camera.viewUp.y) return YES;
-	if( currentCamera.viewUp.z != camera.viewUp.z) return YES;
+	if( fabs( currentCamera.viewUp.x - camera.viewUp.x) > PRECISION) return YES;
+	if( fabs( currentCamera.viewUp.y - camera.viewUp.y) > PRECISION) return YES;
+	if( fabs( currentCamera.viewUp.z - camera.viewUp.z) > PRECISION) return YES;
 
-	if( currentCamera.viewAngle != camera.viewAngle) return YES;
-	if( currentCamera.eyeAngle != camera.eyeAngle) return YES;
-	if( currentCamera.parallelScale != camera.parallelScale) return YES;
+	if( fabs( currentCamera.viewAngle - camera.viewAngle) > PRECISION) return YES;
+	if( fabs( currentCamera.eyeAngle - camera.eyeAngle) > PRECISION) return YES;
+	if( fabs( currentCamera.parallelScale - camera.parallelScale) > PRECISION) return YES;
 
 	if( currentCamera.clippingRangeNear != camera.clippingRangeNear) return YES;
 	if( currentCamera.clippingRangeFar != camera.clippingRangeFar) return YES;
@@ -252,7 +254,7 @@ static BOOL frameZoomed = NO;
 		BOOL cameraMoved = [self hasCameraMoved: currentCamera];
 		
 		// AutoLOD
-		if( 1)
+		if( windowController.dontUseAutoLOD == NO)
 		{
 			DCMPix *o = [windowController originalPix];
 			
@@ -289,6 +291,8 @@ static BOOL frameZoomed = NO;
 			else
 				[vrView setLOD: LOD];
 		}
+		else
+			[vrView setLOD: LOD];
 		
 		if( [self frame].size.width > 0 && [self frame].size.height > 0)
 		{

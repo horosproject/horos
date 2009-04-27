@@ -52,7 +52,7 @@
 	NSMutableArray *filesList[200], *pixList[200];
 	DCMPix *originalPix;
 	NSData *volumeData[200];
-	BOOL avoidReentry;
+	BOOL avoidReentry, dontUseAutoLOD;
 	
 	// 4D Data support
 	NSTimeInterval lastMovieTime;
@@ -109,7 +109,7 @@
 @property (retain) NSString *dcmSeriesName;
 @property (readonly) DCMPix *originalPix;
 @property float LOD, movieRate;
-@property BOOL lowLOD, dcmSameIntervalAndThickness, displayMousePosition, blendingModeAvailable, dcmBatchReverse;
+@property BOOL lowLOD, dcmSameIntervalAndThickness, displayMousePosition, blendingModeAvailable, dcmBatchReverse, dontUseAutoLOD;
 @property (retain) NSColor *colorAxis1, *colorAxis2, *colorAxis3;
 @property (readonly) MPRDCMView *mprView1, *mprView2, *mprView3;
 @property (readonly) NSSplitView *horizontalSplit, *verticalSplit;

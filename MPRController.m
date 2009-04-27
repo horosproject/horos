@@ -32,7 +32,7 @@ static float deg2rad = 3.14159265358979/180.0;
 
 @synthesize dcmSameIntervalAndThickness, clippingRangeThickness, clippingRangeMode, mousePosition, mouseViewID, originalPix, wlwwMenuItems, LOD, dcmFrom;
 @synthesize dcmmN, dcmTo, dcmMode, dcmRotationDirection, dcmSeriesMode, dcmRotation, dcmNumberOfFrames, dcmQuality, dcmInterval, dcmSeriesName, dcmBatchNumberOfFrames;
-@synthesize colorAxis1, colorAxis2, colorAxis3, displayMousePosition, movieRate, blendingPercentage, horizontalSplit, verticalSplit, lowLOD;
+@synthesize colorAxis1, colorAxis2, colorAxis3, displayMousePosition, movieRate, blendingPercentage, horizontalSplit, verticalSplit, lowLOD, dontUseAutoLOD;
 @synthesize mprView1, mprView2, mprView3, curMovieIndex, maxMovieIndex, blendingMode, dcmFormat, blendingModeAvailable, dcmBatchReverse;
 
 + (double) angleBetweenVector:(float*) a andPlane:(float*) orientation
@@ -1685,7 +1685,14 @@ static float deg2rad = 3.14159265358979/180.0;
 		}
 		
 		if( self.dcmQuality == 1)
+		{
+			mprView1.LOD = LOD;
+			mprView2.LOD = LOD;
+			mprView3.LOD = LOD;
+			dontUseAutoLOD = YES;
+		
 			[self setLOD: 1.0];
+		}
 		
 		if( self.dcmFormat) 
 			[curExportView.vrView setViewSizeToMatrix3DExport];
@@ -1936,6 +1943,8 @@ static float deg2rad = 3.14159265358979/180.0;
 			[progress close];
 			[progress release];
 		}
+		
+		dontUseAutoLOD = NO;
 		
 		if( quicktimeExportMode == NO)
 		{
