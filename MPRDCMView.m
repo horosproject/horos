@@ -296,7 +296,7 @@ static BOOL frameZoomed = NO;
 				[vrView prepareFullDepthCapture];
 			
 			if( moveCenter)
-				[vrView setLOD: 20];	// We dont need to really compute the image - we just want image origin for the other views.
+				[vrView setLOD: 100];	// We dont need to really compute the image - we just want image origin for the other views.
 //			else NSLog( @"viewID: %d %f", viewID, LOD);
 			
 			[vrView render];
@@ -1407,6 +1407,13 @@ static BOOL frameZoomed = NO;
 			camera.forceUpdate = YES;
 		}
 		
+		if( vrView.lowResLODFactor > 1)
+		{
+			windowController.mprView1.camera.forceUpdate = YES;
+			windowController.mprView2.camera.forceUpdate = YES;
+			windowController.mprView3.camera.forceUpdate = YES;
+		}
+		
 		rotateLines = NO;
 		moveCenter = NO;
 
@@ -1444,6 +1451,13 @@ static BOOL frameZoomed = NO;
 		else
 		{
 			[vrView mouseUp: theEvent];
+			
+			if( vrView.lowResLODFactor > 1)
+			{
+				windowController.mprView1.camera.forceUpdate = YES;
+				windowController.mprView2.camera.forceUpdate = YES;
+				windowController.mprView3.camera.forceUpdate = YES;
+			}
 			
 			if( [vrView _tool] == tRotate)
 				[self updateViewMPR: NO];
@@ -1532,6 +1546,9 @@ static BOOL frameZoomed = NO;
 		else
 		{
 			float before[ 9], after[ 9];
+			
+			windowController.lowLOD = YES;
+			
 			if( [vrView _tool] == tRotate)
 				[self.pix orientation: before];
 			

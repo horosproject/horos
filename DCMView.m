@@ -9035,14 +9035,14 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				argbdstVimage.data = malloc( argbdstVimage.rowBytes * argbdstVimage.height);
 				
 				vImageConvert_RGB888toARGB8888( &srcVimage, nil, 0, &argbsrcVimage, 0, 0);
-				vImageScale_ARGB8888( &argbsrcVimage, &argbdstVimage, nil, QUALITY);
+				vImageScale_ARGB8888( &argbsrcVimage, &argbdstVimage, nil, kvImageHighQualityResampling);
 				vImageConvert_ARGB8888toRGB888( &argbdstVimage, &dstVimage, 0);
 				
 				free( argbsrcVimage.data);
 				free( argbdstVimage.data);
 			}
 			else
-				vImageScale_Planar8( &srcVimage, &dstVimage, nil, QUALITY);
+				vImageScale_Planar8( &srcVimage, &dstVimage, nil, kvImageHighQualityResampling);
 				
 			free( buf);
 			

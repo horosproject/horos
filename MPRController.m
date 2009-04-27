@@ -84,6 +84,7 @@ static float deg2rad = 3.14159265358979/180.0;
 		volumeData[0] = volume;
 		viewer2D = viewer;
 		fusedViewer2D = fusedViewer;
+		clippingRangeMode = 1;
 		
 		if( fusedViewer2D)
 			self.blendingModeAvailable = YES;
@@ -295,7 +296,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	
 	[[self window] makeFirstResponder: mprView1];
 	[mprView1.vrView resetImage: self];
-
+	
 	mprView1.angleMPR = 0;
 	mprView2.angleMPR = 0;
 	mprView3.angleMPR = 0;
@@ -308,6 +309,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	mprView3.camera.viewUp = [Point3D pointWithX:0 y:0 z:1];
 	mprView3.camera.rollAngle = 0;
 	mprView3.angleMPR = 0;
+	mprView3.camera.parallelScale /= 2.;
 	[mprView3 restoreCamera];
 	[mprView3 updateViewMPR];
 	
