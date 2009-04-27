@@ -34,8 +34,8 @@
     unsigned _numberOfDetachedThreads;          // The current number of worker threads detached.
 }
 
--(id)initForSchedulableObject:(id <Schedulable>)schedObj andNumberOfThreads:(unsigned)numThreads;
--(id)initForSchedulableObject:(id <Schedulable>)schedObj;
+-(id)initForSchedulableObject:(NSObject <Schedulable>*)schedObj andNumberOfThreads:(unsigned)numThreads;
+-(id)initForSchedulableObject:(NSObject <Schedulable>*)schedObj;
 -(void)dealloc;
 
 -(void)performScheduleForWorkUnits:(NSSet *)workUnits;

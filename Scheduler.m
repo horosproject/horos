@@ -19,13 +19,13 @@
 @interface Scheduler (PrivateMethods)
 -(NSSet *)_getNextUnitsToPerform;
 -(void)_setNumberOfThreads:(unsigned)numThreads;
--(void)_setSchedulableObject:(id <Schedulable>)schedObj;
+-(void)_setSchedulableObject:(NSObject <Schedulable> *)schedObj;
 -(void)_setWorkUnitsRemaining:(NSMutableSet *)unitsRemaining;
 @end
 
 @implementation Scheduler
 
--(id)initForSchedulableObject:(id <Schedulable>)schedObj andNumberOfThreads:(unsigned)numThreads {
+-(id)initForSchedulableObject:(NSObject <Schedulable> *)schedObj andNumberOfThreads:(unsigned)numThreads {
     if ( self = [super init] ) {
         [self _setSchedulableObject:schedObj];
         [self _setNumberOfThreads:numThreads];
@@ -34,7 +34,7 @@
     return self;
 }
 
--(id)initForSchedulableObject:(id <Schedulable>) schedObj {
+-(id)initForSchedulableObject:(NSObject <Schedulable> *) schedObj {
     return [self initForSchedulableObject:schedObj andNumberOfThreads: MPProcessors ()];
 }
 

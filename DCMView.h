@@ -408,7 +408,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 - (void) sync:(NSNotification*)note;
 - (id)initWithFrame:(NSRect)frame imageRows:(int)rows  imageColumns:(int)columns;
 - (float)getSUV;
-- (IBAction) roiLoadFromXMLFiles: (id) sender;
+- (IBAction) roiLoadFromXMLFiles: (NSArray*) filenames;
 - (BOOL)checkHasChanged;
 - (void) drawRectIn:(NSRect) size :(GLuint *) texture :(NSPoint) offset :(long) tX :(long) tY :(long) tW :(long) tH;
 - (void) DrawNSStringGL: (NSString*) cstrOut :(GLuint) fontL :(long) x :(long) y;
