@@ -204,7 +204,7 @@ static BOOL frameZoomed = NO;
 	if( currentCamera.clippingRangeNear != camera.clippingRangeNear) return YES;
 	if( currentCamera.clippingRangeFar != camera.clippingRangeFar) return YES;
 	
-	if( currentCamera.LOD < camera.LOD) return YES;
+//	if( currentCamera.LOD < camera.LOD) return YES;
 	
 	if( currentCamera.wl != camera.wl) return YES;
 	if( currentCamera.ww != camera.ww) return YES;
@@ -247,6 +247,10 @@ static BOOL frameZoomed = NO;
 	
 	Camera *currentCamera = [vrView cameraWithThumbnail: NO];
 	
+	if( viewID == 3)
+		NSLog( @"viewID 3");
+		
+		
 	if( [self hasCameraChanged: currentCamera] == YES)
 	{
 		BOOL cameraMoved = [self hasCameraMoved: currentCamera];
