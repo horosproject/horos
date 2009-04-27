@@ -157,13 +157,15 @@ static float deg2rad = 3.14159265358979/180.0;
 		hiddenVRView.keep3DRotateCentered = YES;
 		
 		[mprView1 setVRView: hiddenVRView viewID: 1];
-		[mprView1 setWLWW: [originalPix wl] :[originalPix ww]];
+		[mprView1 setWLWW: [[viewer imageView] curWL] :[[viewer imageView] curWW]];
 		
 		[mprView2 setVRView: hiddenVRView viewID: 2];
-		[mprView2 setWLWW: [originalPix wl] :[originalPix ww]];
+		[mprView2 setWLWW: [[viewer imageView] curWL] :[[viewer imageView] curWW]];
 		
 		[mprView3 setVRView: hiddenVRView viewID: 3];
-		[mprView3 setWLWW: [originalPix wl] :[originalPix ww]];
+		[mprView3 setWLWW: [[viewer imageView] curWL] :[[viewer imageView] curWW]];
+		
+		[hiddenVRView setWLWW: [[viewer imageView] curWL] :[[viewer imageView] curWW]];
 		
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(defaultToolModified:) name:@"defaultToolModified" object:nil];
 		
