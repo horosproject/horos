@@ -247,10 +247,6 @@ static BOOL frameZoomed = NO;
 	
 	Camera *currentCamera = [vrView cameraWithThumbnail: NO];
 	
-	if( viewID == 3)
-		NSLog( @"viewID 3");
-		
-		
 	if( [self hasCameraChanged: currentCamera] == YES)
 	{
 		BOOL cameraMoved = [self hasCameraMoved: currentCamera];
@@ -299,10 +295,24 @@ static BOOL frameZoomed = NO;
 			if( windowController.maxMovieIndex > 1 && (windowController.clippingRangeMode == 1 || windowController.clippingRangeMode == 3))	//To avoid the wrong pixel value bug...
 				[vrView prepareFullDepthCapture];
 			
+			if( moveCenter)
+				[vrView setLOD: 20];	// We dont need to really compute the image - we just want image origin for the other views.
+//			else NSLog( @"viewID: %d %f", viewID, LOD);
+			
 			[vrView render];
 		}
 		
-		float *imagePtr = [vrView imageInFullDepthWidth: &w height: &h isRGB: &isRGB];
+		float *imagePtr = nil;
+		
+		if( moveCenter)
+		{
+			imagePtr = [pix fImage];
+			w = [pix pwidth];
+			h = [pix pheight];
+			isRGB = [pix isRGB];
+		}
+		else
+			imagePtr = [vrView imageInFullDepthWidth: &w height: &h isRGB: &isRGB];
 		
 		[self saveCamera];
 		
@@ -320,8 +330,11 @@ static BOOL frameZoomed = NO;
 			
 			if( [pix pwidth] == w && [pix pheight] == h && isRGB == [pix isRGB])
 			{
-				memcpy( [pix fImage], imagePtr, w*h*sizeof( float));
-				free( imagePtr);
+				if( imagePtr != [pix fImage])
+				{
+					memcpy( [pix fImage], imagePtr, w*h*sizeof( float));
+					free( imagePtr);
+				}
 			}
 			else
 			{
@@ -341,9 +354,13 @@ static BOOL frameZoomed = NO;
 			[vrView getOrigin: porigin windowCentered: YES sliceMiddle: YES];
 			[pix setOrigin: porigin];
 			
-			float resolution = [vrView getResolution] * [vrView imageSampleDistance];
-			[pix setPixelSpacingX: resolution];
-			[pix setPixelSpacingY: resolution];
+			float resolution = 0;
+			if( !moveCenter)
+			{
+				resolution = [vrView getResolution] * [vrView imageSampleDistance];
+				[pix setPixelSpacingX: resolution];
+				[pix setPixelSpacingY: resolution];
+			}
 			
 			float orientation[ 9];
 			[vrView getOrientation: orientation];
@@ -351,14 +368,17 @@ static BOOL frameZoomed = NO;
 			[pix setSliceThickness: [vrView getClippingRangeThicknessInMm]];
 			
 			[self setWLWW: previousWL :previousWW];
-			[self setScaleValue: [vrView imageSampleDistance]];
 			
-			for( ROI* r in curRoiList)
+			if( !moveCenter)
 			{
-				[r setOriginAndSpacing: resolution : resolution :[DCMPix originCorrectedAccordingToOrientation: pix] :NO];
+				[self setScaleValue: [vrView imageSampleDistance]];
+				
+				for( ROI* r in curRoiList)
+				{
+					[r setOriginAndSpacing: resolution : resolution :[DCMPix originCorrectedAccordingToOrientation: pix] :NO];
+				}
+				[self detect2DPointInThisSlice];
 			}
-			
-			[self detect2DPointInThisSlice];
 		}
 		
 		if( blendingView)
