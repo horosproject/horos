@@ -289,48 +289,49 @@ static char *GetPrivateIP()
 			// Waiting for incomming message (6 first bytes)
 			while ( [data length] < 6 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
 			
-			if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"DBSIZ" length: 6]])
-			{
-				[interfaceOsiriX saveDatabase: nil];
-				NSString *databasePath = [interfaceOsiriX localDatabasePath];
-				
-				NSDictionary *fattrs = [[NSFileManager defaultManager] fileAttributesAtPath: databasePath traverseLink: YES];
-				
-				int size, fileSize = [[fattrs objectForKey:NSFileSize] longLongValue];
-				
-				representationToSend = [NSMutableData data];
-				
-				NSLog( @"DB fileSize = %d", fileSize);
-				
-				size = NSSwapHostIntToBig( fileSize);
-				[representationToSend appendBytes: &size length: 4];
-			}
-			else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"DATAB" length: 6]])
+			if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"DATAB" length: 6]])
 			{
 				[interfaceOsiriX saveDatabase: nil];
 				
 				// we send the database SQL file
 				NSString *databasePath = [interfaceOsiriX localDatabasePath];
 				
-				BOOL mapped = YES;
-				
-				NSDictionary *fattrs = [[NSFileManager defaultManager] fileAttributesAtPath: databasePath traverseLink: YES];
-				long long fileSize = [[fattrs objectForKey:NSFileSize] longLongValue];
-				
-				fileSize /= 1024;	// Kb
-				fileSize /= 1024;	// Mb
-				
 				#if __LP64__
+					representationToSend = [NSMutableData dataWithContentsOfMappedFile: databasePath];
+					[incomingConnection writeData:representationToSend];
 				#else
-				if( fileSize > 500)
-					mapped = NO;
+					NSDictionary *fattrs = [[NSFileManager defaultManager] fileAttributesAtPath: databasePath traverseLink: YES];
+					long long fileSize = [[fattrs objectForKey:NSFileSize] longLongValue];
+				
+					fileSize /= 1024;	// Kb
+					fileSize /= 1024;	// Mb
+					
+					#define DATA_READ_SIZE 200L
+					
+					if( fileSize > DATA_READ_SIZE)
+					{
+						NSFileHandle *dbFileHandle = [NSFileHandle fileHandleForReadingAtPath: databasePath];
+						NSLog( @"split DB file reading");
+						int length = 0;
+						do
+						{
+							NSAutoreleasePool *arp = [[NSAutoreleasePool alloc] init];
+							
+							NSData *chunk = [dbFileHandle readDataOfLength: DATA_READ_SIZE * 1024L*1024L];
+							[incomingConnection writeData: chunk];
+							length = [chunk length];
+							
+							[arp release];
+						}
+						while( length > 0);
+					}
+					else
+					{
+						representationToSend = [NSMutableData dataWithContentsOfMappedFile: databasePath];
+						[incomingConnection writeData:representationToSend];
+					}
 				#endif
 				
-				if( mapped)
-					representationToSend = [NSMutableData dataWithContentsOfMappedFile: databasePath];
-				else
-					representationToSend = [NSMutableData dataWithContentsOfFile: databasePath];
-					
 				struct sockaddr serverAddress;
 				socklen_t namelen = sizeof(serverAddress);
 				
@@ -341,667 +342,686 @@ static char *GetPrivateIP()
 					NSLog( @"Bonjour Connection Received from: %s", client_ip_address);
 				}
 			}
-			else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"GETDI" length: 6]])
+			else
 			{
-				NSString *address = [NSString stringWithCString:GetPrivateIP()];
-				
-				NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys: address, @"Address", [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"], @"AETitle", [[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"], @"Port", @"0", @"Transfer Syntax", nil];
-				
-				representationToSend = [NSMutableData dataWithData: [NSArchiver archivedDataWithRootObject: dictionary]];
-			}
-			else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"VERSI" length: 6]])
-			{
-				//NSLog( @"[data bytes] = VERSI");
-				
-//				// we send the modification date of the SQL file
-//				NSString *databasePath = [interfaceOsiriX localDatabasePath];
-//				
-//				NSDictionary *fattrs = [[NSFileManager defaultManager] fileAttributesAtPath:databasePath traverseLink:YES];
-//				NSDate *moddate = [fattrs objectForKey:NSFileModificationDate];
-//				NSTimeInterval val = 0;
-//				if( moddate)
-//				{
-//					val = [moddate timeIntervalSinceReferenceDate];
-//				}
-				
-				NSTimeInterval val = [interfaceOsiriX databaseLastModification];
-				
-				NSSwappedDouble swappedValue = NSSwapHostDoubleToBig( val);
-				
-				if( sizeof( swappedValue.v) != 8) NSLog(@"********** warning sizeof( swappedValue) != 8");
-				
-				representationToSend = [NSMutableData dataWithBytes: &swappedValue.v length:sizeof(NSTimeInterval)];
-			}
-			else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"DBVER" length: 6]])
-			{
-				NSString	*versString = [[NSUserDefaults standardUserDefaults] stringForKey: @"DATABASEVERSION"];
-				
-				representationToSend = [NSMutableData dataWithData: [versString dataUsingEncoding: NSASCIIStringEncoding]];
-			}
-			else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"ISPWD" length: 6]])
-			{
-				// is this database protected by a password
-				NSString *pswd = [interfaceOsiriX bonjourPassword];
-				
-				int val = 0;
-				
-				if( pswd) val = NSSwapHostIntToBig(1);
-				else val = 0;
-				
-				representationToSend = [NSMutableData dataWithBytes: &val length:sizeof(int)];
-			}
-			else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"PASWD" length: 6]])
-			{
-				int pos = 6, stringSize;
-				
-				// We read 4 bytes that contain the string size
-				while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-				[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &stringSize];	stringSize = NSSwapBigIntToHost( stringSize);
-				pos += 4;
-				
-				// We read the string
-				while ( [data length] < pos + stringSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-				NSString *incomingPswd = [NSString stringWithUTF8String: [[data subdataWithRange: NSMakeRange(pos,stringSize)] bytes]];
-				pos += stringSize;
-				
-				int val = 0;
-				
-				if( [incomingPswd isEqualToString: [interfaceOsiriX bonjourPassword]] || [interfaceOsiriX bonjourPassword] == nil)
+				if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"DBSIZ" length: 6]])
 				{
-					val = NSSwapHostIntToBig(1);
-				}
-				
-				representationToSend = [NSMutableData dataWithBytes: &val length:sizeof(int)];
-			}
-			else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"SENDD" length: 6]])
-			{
-				int pos = 6, i;
-				
-				// We read 4 bytes that contain the no of file
-				while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-				int fileNo;
-				[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &fileNo];
-				fileNo = NSSwapBigIntToHost( fileNo);
-				pos += 4;
-				
-				for( i = 0 ; i < fileNo; i++)
-				{			
-					// We read 4 bytes that contain the file size
-					while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
+					[interfaceOsiriX saveDatabase: nil];
+					NSString *databasePath = [interfaceOsiriX localDatabasePath];
 					
-					int fileSize;
-					[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &fileSize];
-					fileSize = NSSwapBigIntToHost( fileSize);
+					NSDictionary *fattrs = [[NSFileManager defaultManager] fileAttributesAtPath: databasePath traverseLink: YES];
+					
+					int size, fileSize = [[fattrs objectForKey:NSFileSize] longLongValue];
+					
+					representationToSend = [NSMutableData data];
+					
+					NSLog( @"DB fileSize = %d", fileSize);
+					
+					size = NSSwapHostIntToBig( fileSize);
+					[representationToSend appendBytes: &size length: 4];
+				}
+				else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"GETDI" length: 6]])
+				{
+					NSString *address = [NSString stringWithCString:GetPrivateIP()];
+					
+					NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys: address, @"Address", [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"], @"AETitle", [[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"], @"Port", @"0", @"Transfer Syntax", nil];
+					
+					representationToSend = [NSMutableData dataWithData: [NSArchiver archivedDataWithRootObject: dictionary]];
+				}
+				else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"VERSI" length: 6]])
+				{
+					//NSLog( @"[data bytes] = VERSI");
+					
+	//				// we send the modification date of the SQL file
+	//				NSString *databasePath = [interfaceOsiriX localDatabasePath];
+	//				
+	//				NSDictionary *fattrs = [[NSFileManager defaultManager] fileAttributesAtPath:databasePath traverseLink:YES];
+	//				NSDate *moddate = [fattrs objectForKey:NSFileModificationDate];
+	//				NSTimeInterval val = 0;
+	//				if( moddate)
+	//				{
+	//					val = [moddate timeIntervalSinceReferenceDate];
+	//				}
+					
+					NSTimeInterval val = [interfaceOsiriX databaseLastModification];
+					
+					NSSwappedDouble swappedValue = NSSwapHostDoubleToBig( val);
+					
+					if( sizeof( swappedValue.v) != 8) NSLog(@"********** warning sizeof( swappedValue) != 8");
+					
+					representationToSend = [NSMutableData dataWithBytes: &swappedValue.v length:sizeof(NSTimeInterval)];
+				}
+				else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"DBVER" length: 6]])
+				{
+					NSString	*versString = [[NSUserDefaults standardUserDefaults] stringForKey: @"DATABASEVERSION"];
+					
+					representationToSend = [NSMutableData dataWithData: [versString dataUsingEncoding: NSASCIIStringEncoding]];
+				}
+				else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"ISPWD" length: 6]])
+				{
+					// is this database protected by a password
+					NSString *pswd = [interfaceOsiriX bonjourPassword];
+					
+					int val = 0;
+					
+					if( pswd) val = NSSwapHostIntToBig(1);
+					else val = 0;
+					
+					representationToSend = [NSMutableData dataWithBytes: &val length:sizeof(int)];
+				}
+				else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"PASWD" length: 6]])
+				{
+					int pos = 6, stringSize;
+					
+					// We read 4 bytes that contain the string size
+					while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
+					[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &stringSize];	stringSize = NSSwapBigIntToHost( stringSize);
 					pos += 4;
 					
-					while ( [data length] < pos + fileSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-					
-					NSString	*incomingFolder = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:@"/INCOMING.noindex"];
-					NSString	*dstPath;
-					
-					int index = [NSDate timeIntervalSinceReferenceDate];
-					
-					do
-					{
-						dstPath = [incomingFolder stringByAppendingPathComponent: [NSString stringWithFormat:@"%d", index]];
-						index++;
-					}
-					while( [[NSFileManager defaultManager] fileExistsAtPath:dstPath] == YES);
-					
-					[[data subdataWithRange: NSMakeRange(pos,fileSize)] writeToFile:dstPath atomically: YES];
-					
-					pos += fileSize;
-				}
-				
-				representationToSend = nil;
-			}
-			else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"ADDAL" length: 6]])
-			{
-				int pos = 6, stringSize;
-				
-				// We read 4 bytes that contain the string size
-				while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-				[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &stringSize];	stringSize = NSSwapBigIntToHost( stringSize);
-				pos += 4;
-				
-				// We read the string
-				while ( [data length] < pos + stringSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-				NSString *object = [NSString stringWithUTF8String: [[data subdataWithRange: NSMakeRange(pos,stringSize)] bytes]];
-				pos += stringSize;
-				
-				if( [object writeToFile:@"/tmp/ADDAL" atomically: YES])
-				{
-					NSDictionary *d = [NSDictionary dictionaryWithContentsOfFile: @"/tmp/ADDAL"];
-					
-					NSArray *studies = [d objectForKey:@"albumStudies"];
-					NSString *albumUID = [d objectForKey:@"albumUID"];
-					
-					NSManagedObjectContext *context = [interfaceOsiriX defaultManagerObjectContext];
-					[context retain];
-					[context lock];
-					
-					@try
-					{
-						NSManagedObject *albumObject = [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: albumUID]]];
-						NSMutableSet	*studiesOfTheAlbum = [albumObject mutableSetValueForKey: @"studies"];
-						
-						for( NSString *uri in studies)
-						{
-							[studiesOfTheAlbum addObject: [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: uri]]]];
-						}
-						
-						refreshDB = YES;
-						saveDB = YES;
-					}
-					
-					@catch (NSException * e)
-					{
-						NSLog(@"Exception in BonjourPublisher ADDAL: %@");
-					}
-					
-					NSError *error = nil;
-					[context save: &error];
-					[context unlock];
-					[context release];
-				}
-				
-				representationToSend = nil;
-			}
-			else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"REMAL" length: 6]])
-			{
-				int pos = 6, stringSize;
-				
-				// We read 4 bytes that contain the string size
-				while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-				[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &stringSize];	stringSize = NSSwapBigIntToHost( stringSize);
-				pos += 4;
-				
-				// We read the string
-				while ( [data length] < pos + stringSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-				NSString *object = [NSString stringWithUTF8String: [[data subdataWithRange: NSMakeRange(pos,stringSize)] bytes]];
-				pos += stringSize;
-				
-				if( [object writeToFile:@"/tmp/REMAL" atomically: YES])
-				{
-					NSDictionary *d = [NSDictionary dictionaryWithContentsOfFile: @"/tmp/REMAL"];
-					
-					NSArray *studies = [d objectForKey:@"albumStudies"];
-					NSString *albumUID = [d objectForKey:@"albumUID"];
-					
-					NSManagedObjectContext *context = [interfaceOsiriX defaultManagerObjectContext];
-					[context retain];
-					[context lock];
-					
-					@try
-					{
-						NSManagedObject *albumObject = [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: albumUID]]];
-						NSMutableSet	*studiesOfTheAlbum = [albumObject mutableSetValueForKey: @"studies"];
-						
-						for( NSString *uri in studies)
-						{
-							[studiesOfTheAlbum removeObject: [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: uri]]]];
-						}
-						
-						refreshDB = YES;
-						saveDB = YES;
-					}
-					
-					@catch (NSException * e)
-					{
-						NSLog(@"Exception in BonjourPublisher REMAL: %@");
-					}
-					
-					NSError *error = nil;
-					[context save: &error];
-					[context unlock];
-					[context release];
-				}
-				
-				representationToSend = nil;
-			}
-			else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"SETVA" length: 6]])
-			{
-				int pos = 6, stringSize;
-				
-				// We read 4 bytes that contain the string size
-				while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-				[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &stringSize];	stringSize = NSSwapBigIntToHost( stringSize);
-				pos += 4;
-				
-				// We read the string
-				while ( [data length] < pos + stringSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-				NSString *object = [NSString stringWithUTF8String: [[data subdataWithRange: NSMakeRange(pos,stringSize)] bytes]];
-				pos += stringSize;
-				
-				// We read 4 bytes that contain the string size
-				while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-				[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &stringSize];	stringSize = NSSwapBigIntToHost( stringSize);
-				pos += 4;
-				
-				// We read the string
-				NSString *value;
-				if( stringSize == 0)
-				{
-					value = nil;
-				}
-				else
-				{
+					// We read the string
 					while ( [data length] < pos + stringSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-					value = [NSString stringWithUTF8String: [[data subdataWithRange: NSMakeRange(pos,stringSize)] bytes]];
+					NSString *incomingPswd = [NSString stringWithUTF8String: [[data subdataWithRange: NSMakeRange(pos,stringSize)] bytes]];
 					pos += stringSize;
-				}
-				
-				// We read 4 bytes that contain the string size
-				while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-				[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &stringSize];	stringSize = NSSwapBigIntToHost( stringSize);
-				pos += 4;
-				
-				// We read the string
-				while ( [data length] < pos + stringSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-				NSString *key = [NSString stringWithUTF8String: [[data subdataWithRange: NSMakeRange(pos,stringSize)] bytes]];
-				pos += stringSize;
-				
-				NSManagedObjectContext *context = [interfaceOsiriX defaultManagerObjectContext];
-				[context retain];
-				[context lock];
-				
-				@try
-				{					
-					NSManagedObject	*item = [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: object]]];
 					
-					//NSLog(@"URL:%@", object);
-					if( item)
+					int val = 0;
+					
+					if( [incomingPswd isEqualToString: [interfaceOsiriX bonjourPassword]] || [interfaceOsiriX bonjourPassword] == nil)
 					{
-						if( [[item valueForKeyPath: key] isKindOfClass: [NSNumber class]]) [item setValue: [NSNumber numberWithInt: [value intValue]] forKeyPath: key];
-						else
+						val = NSSwapHostIntToBig(1);
+					}
+					
+					representationToSend = [NSMutableData dataWithBytes: &val length:sizeof(int)];
+				}
+				else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"SENDD" length: 6]])
+				{
+					int pos = 6, i;
+					
+					// We read 4 bytes that contain the no of file
+					while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
+					int fileNo;
+					[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &fileNo];
+					fileNo = NSSwapBigIntToHost( fileNo);
+					pos += 4;
+					
+					for( i = 0 ; i < fileNo; i++)
+					{			
+						// We read 4 bytes that contain the file size
+						while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
+						
+						int fileSize;
+						[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &fileSize];
+						fileSize = NSSwapBigIntToHost( fileSize);
+						pos += 4;
+						
+						while ( [data length] < pos + fileSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
+						
+						NSString	*incomingFolder = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:@"/INCOMING.noindex"];
+						NSString	*dstPath;
+						
+						int index = [NSDate timeIntervalSinceReferenceDate];
+						
+						do
 						{
-							if( [key isEqualToString: @"reportURL"] == YES)
+							dstPath = [incomingFolder stringByAppendingPathComponent: [NSString stringWithFormat:@"%d", index]];
+							index++;
+						}
+						while( [[NSFileManager defaultManager] fileExistsAtPath:dstPath] == YES);
+						
+						[[data subdataWithRange: NSMakeRange(pos,fileSize)] writeToFile:dstPath atomically: YES];
+						
+						pos += fileSize;
+					}
+					
+					representationToSend = nil;
+				}
+				else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"ADDAL" length: 6]])
+				{
+					int pos = 6, stringSize;
+					
+					// We read 4 bytes that contain the string size
+					while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
+					[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &stringSize];	stringSize = NSSwapBigIntToHost( stringSize);
+					pos += 4;
+					
+					// We read the string
+					while ( [data length] < pos + stringSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
+					NSString *object = [NSString stringWithUTF8String: [[data subdataWithRange: NSMakeRange(pos,stringSize)] bytes]];
+					pos += stringSize;
+					
+					if( [object writeToFile:@"/tmp/ADDAL" atomically: YES])
+					{
+						NSDictionary *d = [NSDictionary dictionaryWithContentsOfFile: @"/tmp/ADDAL"];
+						
+						NSArray *studies = [d objectForKey:@"albumStudies"];
+						NSString *albumUID = [d objectForKey:@"albumUID"];
+						
+						NSManagedObjectContext *context = [interfaceOsiriX defaultManagerObjectContext];
+						[context retain];
+						[context lock];
+						
+						@try
+						{
+							NSManagedObject *albumObject = [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: albumUID]]];
+							NSMutableSet	*studiesOfTheAlbum = [albumObject mutableSetValueForKey: @"studies"];
+							
+							for( NSString *uri in studies)
 							{
-								if( value == nil)
-								{
-									[[NSFileManager defaultManager] removeFileAtPath:[item valueForKeyPath: key] handler:nil];
-								}
-								else if( [[key pathComponents] count] == 1)
-								{
-									value = [[[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent: @"/REPORTS/"] stringByAppendingPathComponent: [value lastPathComponent]];
-								}
+								[studiesOfTheAlbum addObject: [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: uri]]]];
 							}
 							
-							[item setValue: value forKeyPath: key];
+							refreshDB = YES;
+							saveDB = YES;
 						}
-					}
-				}
-				
-				@catch (NSException *e)
-				{
-					NSLog(@"***** BonjourPublisher Exception: %@", e);
-				}
-				
-				NSError *error = nil;
-				[context save: &error];
-				[context unlock];
-				[context release];
-				
-				refreshDB = YES;
-				saveDB = YES;
-			}
-			else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"MFILE" length: 6]])
-			{
-				int pos = 6, stringSize;
-				
-				// We read 4 bytes that contain the string size
-				while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-				[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &stringSize];	stringSize = NSSwapBigIntToHost( stringSize);
-				pos += 4;
-				
-				// We read the string
-				while ( [data length] < pos + stringSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-				NSString *path = [[[NSString alloc] initWithData: [data subdataWithRange: NSMakeRange(pos,stringSize)] encoding: NSUnicodeStringEncoding] autorelease];
-				pos += stringSize;
-				
-				if( [path length])
-				{
-					if( [path characterAtIndex: 0] != '/')
-						path = [[interfaceOsiriX fixedDocumentsDirectory] stringByAppendingPathComponent: path];
-				}
-				
-				NSDictionary *fattrs = [[NSFileManager defaultManager] fileAttributesAtPath:path traverseLink:YES];
-				
-				NSData	*content = [[[fattrs objectForKey:NSFileModificationDate] description] dataUsingEncoding: NSUnicodeStringEncoding];
-				
-				representationToSend = [NSMutableData dataWithData: content];
-			}
-			else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"RFILE" length: 6]])
-			{
-				NSLog(@"subConnectionReceived : RFILE");
-				int pos = 6, stringSize;
-				
-				// We read 4 bytes that contain the string size
-				while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-				[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &stringSize];	stringSize = NSSwapBigIntToHost( stringSize);
-				pos += 4;
-				
-				// We read the string
-				while ( [data length] < pos + stringSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-				NSString *path = [[[NSString alloc] initWithData: [data subdataWithRange: NSMakeRange(pos,stringSize)] encoding: NSUnicodeStringEncoding] autorelease];
-				pos += stringSize;
-				
-				if( [path length])
-				{
-					if( [path characterAtIndex: 0] != '/')
-						path = [[interfaceOsiriX fixedDocumentsDirectory] stringByAppendingPathComponent: path];
-				}
-				
-				BOOL isDirectory = NO;
-				NSString *zipFileName;
-				[[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDirectory];
-				if(isDirectory)
-				{
-					zipFileName = [NSString stringWithFormat:@"%@.zip", [path lastPathComponent]];
-					// zip the directory into a single archive file
-					NSTask *zipTask   = [[NSTask alloc] init];
-					[zipTask setLaunchPath:@"/usr/bin/zip"];
-					[zipTask setCurrentDirectoryPath:[[path stringByDeletingLastPathComponent] stringByAppendingString:@"/"]];
-					[zipTask setArguments:[NSArray arrayWithObjects:@"-r" , zipFileName, [path lastPathComponent], nil]];
-					[zipTask launch];
-					while( [zipTask isRunning]) [NSThread sleepForTimeInterval: 0.01];
-					int result = [zipTask terminationStatus];
-					[zipTask release];
-
-					if(result==0)
-					{
-						[[NSFileManager defaultManager] removeFileAtPath: path handler: nil];
 						
-						path = [[path stringByDeletingLastPathComponent] stringByAppendingFormat:@"/%@", zipFileName];
-						NSLog(@"path : %@", path);
-					}
-				}
-
-				NSData	*content = [[NSFileManager defaultManager] contentsAtPath: path];
-				
-				// Send the file
-				
-				representationToSend = [NSMutableData data];
-				
-				stringSize = NSSwapHostIntToBig( [content length]);
-				[representationToSend appendBytes:&stringSize length: 4];
-				[representationToSend appendData: content];
-				
-				NSDictionary *fattrs = [[NSFileManager defaultManager] fileAttributesAtPath:path traverseLink:YES];
-				content = [[[fattrs objectForKey:NSFileModificationDate] description] dataUsingEncoding: NSUnicodeStringEncoding];
-				stringSize = NSSwapHostIntToBig( [content length]);
-				[representationToSend appendBytes:&stringSize length: 4];
-				[representationToSend appendData: content];
-				
-				if(isDirectory)
-					[[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
-			}
-			else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"WFILE" length: 6]])
-			{
-				NSLog(@"subConnectionReceived : WFILE");
-				int pos = 6, stringSize, dataSize;
-				
-				// We read 4 bytes that contain the string size
-				while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-				[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &stringSize];	stringSize = NSSwapBigIntToHost( stringSize);
-				pos += 4;
-				
-				// We read the string
-				while ( [data length] < pos + stringSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-				NSString *path = [[NSString alloc] initWithData: [data subdataWithRange: NSMakeRange(pos,stringSize)] encoding: NSUnicodeStringEncoding];
-				pos += stringSize;
-				
-				// We read the data size
-				while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-				[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &dataSize];	dataSize = NSSwapBigIntToHost( dataSize);
-				pos += 4;
-				
-				// We read the data
-				while ( [data length] < pos + dataSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-				
-				NSString	*localpath = [[[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent: @"/REPORTS/"] stringByAppendingPathComponent: [path lastPathComponent]];
-				
-				[[NSFileManager defaultManager] removeFileAtPath: localpath handler:nil];
-				[[data subdataWithRange: NSMakeRange(pos,dataSize)] writeToFile: localpath atomically:YES];
-				pos += dataSize;
-				
-				BOOL isPages = [[localpath pathExtension] isEqualToString:@"zip"];
-				if(isPages)
-				{
-					
-					NSString *reportFileName = [localpath stringByDeletingPathExtension];
-					
-					[[NSFileManager defaultManager] removeFileAtPath: reportFileName handler: nil];
-					
-					NSLog(@"subConnectionReceived  reportFileName : %@", reportFileName);
-					// unzip the file
-					NSTask *unzipTask   = [[NSTask alloc] init];
-					[unzipTask setLaunchPath:@"/usr/bin/unzip"];
-					[unzipTask setCurrentDirectoryPath:[[localpath stringByDeletingLastPathComponent] stringByAppendingString:@"/"]];
-					[unzipTask setArguments:[NSArray arrayWithObjects:@"-o", localpath, nil]]; // -o to override existing report w/ same name
-					[unzipTask launch];
-					while( [unzipTask isRunning]) [NSThread sleepForTimeInterval: 0.01];
-					int result = [unzipTask terminationStatus];
-					[unzipTask release];
-					
-					NSLog(@"unzip result : %d", result);
-					if(result==0)
-					{
-						// remove the zip file!
-						//filePathToLoad = reportFileName;
-					}
-				}
-				
-				refreshDB = YES;
-
-				if(isPages)
-					[[NSFileManager defaultManager] removeFileAtPath:localpath handler:nil];
-
-				[path release];
-			}
-			else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"DCMSE" length: 6]])
-			{
-				NSMutableArray	*localPaths = [NSMutableArray arrayWithCapacity:0];
-				
-				int pos = 6, noOfFiles = 0, stringSize, i;
-				
-				// We read 4 bytes that contain the string size
-				while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-				[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &stringSize];	stringSize = NSSwapBigIntToHost( stringSize);
-				pos += 4;
-				// We read the string
-				while ( [data length] < pos + stringSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-				NSString *AETitle = [NSString stringWithUTF8String: [[data subdataWithRange: NSMakeRange(pos,stringSize)] bytes]];
-				pos += stringSize;
-				
-				// We read 4 bytes that contain the string size
-				while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-				[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &stringSize];	stringSize = NSSwapBigIntToHost( stringSize);
-				pos += 4;
-				// We read the string
-				while ( [data length] < pos + stringSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-				NSString *Address = [NSString stringWithUTF8String: [[data subdataWithRange: NSMakeRange(pos,stringSize)] bytes]];
-				pos += stringSize;
-				
-				// We read 4 bytes that contain the string size
-				while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-				[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &stringSize];	stringSize = NSSwapBigIntToHost( stringSize);
-				pos += 4;
-				// We read the string
-				while ( [data length] < pos + stringSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-				NSString *Port = [NSString stringWithUTF8String: [[data subdataWithRange: NSMakeRange(pos,stringSize)] bytes]];
-				pos += stringSize;
-				
-				// We read 4 bytes that contain the string size
-				while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-				[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &stringSize];	stringSize = NSSwapBigIntToHost( stringSize);
-				pos += 4;
-				// We read the string
-				while ( [data length] < pos + stringSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-				NSString *TransferSyntax = [NSString stringWithUTF8String: [[data subdataWithRange: NSMakeRange(pos,stringSize)] bytes]];
-				pos += stringSize;
-				
-				while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-				
-				[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &noOfFiles];	noOfFiles = NSSwapBigIntToHost( noOfFiles);
-				pos += 4;
-				
-				representationToSend = [NSMutableData dataWithCapacity: 0];
-				
-				for( i = 0; i < noOfFiles; i++)
-				{
-					// We read 4 bytes that contain the string size
-					while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-					[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &stringSize];	stringSize = NSSwapBigIntToHost( stringSize);
-					pos += 4;
-					
-					// We read the string
-					while ( [data length] < pos + stringSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-					NSString *path = [NSString stringWithUTF8String: [[data subdataWithRange: NSMakeRange(pos,stringSize)] bytes]];
-					pos += stringSize;
-					
-					if( [path UTF8String] [ 0] != '/')
-					{
-						
-						int val = [[path stringByDeletingPathExtension] intValue];
-						
-						NSString *dbLocation = [interfaceOsiriX localDatabasePath];
-						
-						val /= 10000;
-						val++;
-						val *= 10000;
-						
-						path = [[dbLocation stringByDeletingLastPathComponent] stringByAppendingFormat:@"/DATABASE.noindex/%d/%@", val, path];
-					}
-					
-					[localPaths addObject: path];
-				}
-				
-				NSDictionary	*todo = [NSDictionary dictionaryWithObjectsAndKeys: Address, @"Address", TransferSyntax, @"Transfer Syntax", Port, @"Port", AETitle, @"AETitle", localPaths, @"Files", nil];
-				
-				[NSThread detachNewThreadSelector:@selector( sendDICOMFilesToOsiriXNode:) toTarget:self withObject: todo];
-			}
-			else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"DICOM" length: 6]])
-			{
-				NSMutableArray	*localPaths = [NSMutableArray arrayWithCapacity:0];
-				NSMutableArray	*dstPaths = [NSMutableArray arrayWithCapacity:0];
-				
-				// We read now the path for the DICOM file(s)
-				int pos = 6, size, noOfFiles = 0, stringSize, i;
-				
-				while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-				
-				[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &noOfFiles];	noOfFiles = NSSwapBigIntToHost( noOfFiles);
-				pos += 4;
-				
-				representationToSend = [NSMutableData dataWithCapacity: 512*512*2*(noOfFiles+1)];
-				
-				for( i = 0; i < noOfFiles; i++)
-				{
-					// We read 4 bytes that contain the string size
-					while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-					[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &stringSize];	stringSize = NSSwapBigIntToHost( stringSize);
-					pos += 4;
-					
-					// We read the string
-					while ( [data length] < pos + stringSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-					NSString *path = [NSString stringWithUTF8String: [[data subdataWithRange: NSMakeRange(pos,stringSize)] bytes]];
-					pos += stringSize;
-					
-					if( [path UTF8String] [ 0] != '/')
-					{
-						if( [[[path pathComponents] objectAtIndex: 0] isEqualToString:@"ROIs"])
+						@catch (NSException * e)
 						{
-							//It's a ROI !
-							NSString	*local = [[interfaceOsiriX localDatabasePath] stringByDeletingLastPathComponent];
-							
-							path = [[local stringByAppendingPathComponent:@"/ROIs/"] stringByAppendingPathComponent: [path lastPathComponent]];
+							NSLog(@"Exception in BonjourPublisher ADDAL: %@");
 						}
-						else
+						
+						NSError *error = nil;
+						[context save: &error];
+						[context unlock];
+						[context release];
+					}
+					
+					representationToSend = nil;
+				}
+				else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"REMAL" length: 6]])
+				{
+					int pos = 6, stringSize;
+					
+					// We read 4 bytes that contain the string size
+					while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
+					[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &stringSize];	stringSize = NSSwapBigIntToHost( stringSize);
+					pos += 4;
+					
+					// We read the string
+					while ( [data length] < pos + stringSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
+					NSString *object = [NSString stringWithUTF8String: [[data subdataWithRange: NSMakeRange(pos,stringSize)] bytes]];
+					pos += stringSize;
+					
+					if( [object writeToFile:@"/tmp/REMAL" atomically: YES])
+					{
+						NSDictionary *d = [NSDictionary dictionaryWithContentsOfFile: @"/tmp/REMAL"];
+						
+						NSArray *studies = [d objectForKey:@"albumStudies"];
+						NSString *albumUID = [d objectForKey:@"albumUID"];
+						
+						NSManagedObjectContext *context = [interfaceOsiriX defaultManagerObjectContext];
+						[context retain];
+						[context lock];
+						
+						@try
+						{
+							NSManagedObject *albumObject = [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: albumUID]]];
+							NSMutableSet	*studiesOfTheAlbum = [albumObject mutableSetValueForKey: @"studies"];
+							
+							for( NSString *uri in studies)
+							{
+								[studiesOfTheAlbum removeObject: [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: uri]]]];
+							}
+							
+							refreshDB = YES;
+							saveDB = YES;
+						}
+						
+						@catch (NSException * e)
+						{
+							NSLog(@"Exception in BonjourPublisher REMAL: %@");
+						}
+						
+						NSError *error = nil;
+						[context save: &error];
+						[context unlock];
+						[context release];
+					}
+					
+					representationToSend = nil;
+				}
+				else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"SETVA" length: 6]])
+				{
+					int pos = 6, stringSize;
+					
+					// We read 4 bytes that contain the string size
+					while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
+					[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &stringSize];	stringSize = NSSwapBigIntToHost( stringSize);
+					pos += 4;
+					
+					// We read the string
+					while ( [data length] < pos + stringSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
+					NSString *object = [NSString stringWithUTF8String: [[data subdataWithRange: NSMakeRange(pos,stringSize)] bytes]];
+					pos += stringSize;
+					
+					// We read 4 bytes that contain the string size
+					while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
+					[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &stringSize];	stringSize = NSSwapBigIntToHost( stringSize);
+					pos += 4;
+					
+					// We read the string
+					NSString *value;
+					if( stringSize == 0)
+					{
+						value = nil;
+					}
+					else
+					{
+						while ( [data length] < pos + stringSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
+						value = [NSString stringWithUTF8String: [[data subdataWithRange: NSMakeRange(pos,stringSize)] bytes]];
+						pos += stringSize;
+					}
+					
+					// We read 4 bytes that contain the string size
+					while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
+					[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &stringSize];	stringSize = NSSwapBigIntToHost( stringSize);
+					pos += 4;
+					
+					// We read the string
+					while ( [data length] < pos + stringSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
+					NSString *key = [NSString stringWithUTF8String: [[data subdataWithRange: NSMakeRange(pos,stringSize)] bytes]];
+					pos += stringSize;
+					
+					NSManagedObjectContext *context = [interfaceOsiriX defaultManagerObjectContext];
+					[context retain];
+					[context lock];
+					
+					@try
+					{					
+						NSManagedObject	*item = [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: object]]];
+						
+						//NSLog(@"URL:%@", object);
+						if( item)
+						{
+							if( [[item valueForKeyPath: key] isKindOfClass: [NSNumber class]]) [item setValue: [NSNumber numberWithInt: [value intValue]] forKeyPath: key];
+							else
+							{
+								if( [key isEqualToString: @"reportURL"] == YES)
+								{
+									if( value == nil)
+									{
+										[[NSFileManager defaultManager] removeFileAtPath:[item valueForKeyPath: key] handler:nil];
+									}
+									else if( [[key pathComponents] count] == 1)
+									{
+										value = [[[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent: @"/REPORTS/"] stringByAppendingPathComponent: [value lastPathComponent]];
+									}
+								}
+								
+								[item setValue: value forKeyPath: key];
+							}
+						}
+					}
+					
+					@catch (NSException *e)
+					{
+						NSLog(@"***** BonjourPublisher Exception: %@", e);
+					}
+					
+					NSError *error = nil;
+					[context save: &error];
+					[context unlock];
+					[context release];
+					
+					refreshDB = YES;
+					saveDB = YES;
+				}
+				else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"MFILE" length: 6]])
+				{
+					int pos = 6, stringSize;
+					
+					// We read 4 bytes that contain the string size
+					while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
+					[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &stringSize];	stringSize = NSSwapBigIntToHost( stringSize);
+					pos += 4;
+					
+					// We read the string
+					while ( [data length] < pos + stringSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
+					NSString *path = [[[NSString alloc] initWithData: [data subdataWithRange: NSMakeRange(pos,stringSize)] encoding: NSUnicodeStringEncoding] autorelease];
+					pos += stringSize;
+					
+					if( [path length])
+					{
+						if( [path characterAtIndex: 0] != '/')
+							path = [[interfaceOsiriX fixedDocumentsDirectory] stringByAppendingPathComponent: path];
+					}
+					
+					NSDictionary *fattrs = [[NSFileManager defaultManager] fileAttributesAtPath:path traverseLink:YES];
+					
+					NSData	*content = [[[fattrs objectForKey:NSFileModificationDate] description] dataUsingEncoding: NSUnicodeStringEncoding];
+					
+					representationToSend = [NSMutableData dataWithData: content];
+				}
+				else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"RFILE" length: 6]])
+				{
+					NSLog(@"subConnectionReceived : RFILE");
+					int pos = 6, stringSize;
+					
+					// We read 4 bytes that contain the string size
+					while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
+					[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &stringSize];	stringSize = NSSwapBigIntToHost( stringSize);
+					pos += 4;
+					
+					// We read the string
+					while ( [data length] < pos + stringSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
+					NSString *path = [[[NSString alloc] initWithData: [data subdataWithRange: NSMakeRange(pos,stringSize)] encoding: NSUnicodeStringEncoding] autorelease];
+					pos += stringSize;
+					
+					if( [path length])
+					{
+						if( [path characterAtIndex: 0] != '/')
+							path = [[interfaceOsiriX fixedDocumentsDirectory] stringByAppendingPathComponent: path];
+					}
+					
+					BOOL isDirectory = NO;
+					NSString *zipFileName;
+					[[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDirectory];
+					if(isDirectory)
+					{
+						zipFileName = [NSString stringWithFormat:@"%@.zip", [path lastPathComponent]];
+						// zip the directory into a single archive file
+						NSTask *zipTask   = [[NSTask alloc] init];
+						[zipTask setLaunchPath:@"/usr/bin/zip"];
+						[zipTask setCurrentDirectoryPath:[[path stringByDeletingLastPathComponent] stringByAppendingString:@"/"]];
+						[zipTask setArguments:[NSArray arrayWithObjects:@"-r" , zipFileName, [path lastPathComponent], nil]];
+						[zipTask launch];
+						while( [zipTask isRunning]) [NSThread sleepForTimeInterval: 0.01];
+						int result = [zipTask terminationStatus];
+						[zipTask release];
+
+						if(result==0)
+						{
+							[[NSFileManager defaultManager] removeFileAtPath: path handler: nil];
+							
+							path = [[path stringByDeletingLastPathComponent] stringByAppendingFormat:@"/%@", zipFileName];
+							NSLog(@"path : %@", path);
+						}
+					}
+
+					NSData	*content = [[NSFileManager defaultManager] contentsAtPath: path];
+					
+					// Send the file
+					
+					representationToSend = [NSMutableData data];
+					
+					stringSize = NSSwapHostIntToBig( [content length]);
+					[representationToSend appendBytes:&stringSize length: 4];
+					[representationToSend appendData: content];
+					
+					NSDictionary *fattrs = [[NSFileManager defaultManager] fileAttributesAtPath:path traverseLink:YES];
+					content = [[[fattrs objectForKey:NSFileModificationDate] description] dataUsingEncoding: NSUnicodeStringEncoding];
+					stringSize = NSSwapHostIntToBig( [content length]);
+					[representationToSend appendBytes:&stringSize length: 4];
+					[representationToSend appendData: content];
+					
+					if(isDirectory)
+						[[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
+				}
+				else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"WFILE" length: 6]])
+				{
+					NSLog(@"subConnectionReceived : WFILE");
+					int pos = 6, stringSize, dataSize;
+					
+					// We read 4 bytes that contain the string size
+					while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
+					[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &stringSize];	stringSize = NSSwapBigIntToHost( stringSize);
+					pos += 4;
+					
+					// We read the string
+					while ( [data length] < pos + stringSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
+					NSString *path = [[NSString alloc] initWithData: [data subdataWithRange: NSMakeRange(pos,stringSize)] encoding: NSUnicodeStringEncoding];
+					pos += stringSize;
+					
+					// We read the data size
+					while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
+					[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &dataSize];	dataSize = NSSwapBigIntToHost( dataSize);
+					pos += 4;
+					
+					// We read the data
+					while ( [data length] < pos + dataSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
+					
+					NSString	*localpath = [[[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent: @"/REPORTS/"] stringByAppendingPathComponent: [path lastPathComponent]];
+					
+					[[NSFileManager defaultManager] removeFileAtPath: localpath handler:nil];
+					[[data subdataWithRange: NSMakeRange(pos,dataSize)] writeToFile: localpath atomically:YES];
+					pos += dataSize;
+					
+					BOOL isPages = [[localpath pathExtension] isEqualToString:@"zip"];
+					if(isPages)
+					{
+						
+						NSString *reportFileName = [localpath stringByDeletingPathExtension];
+						
+						[[NSFileManager defaultManager] removeFileAtPath: reportFileName handler: nil];
+						
+						NSLog(@"subConnectionReceived  reportFileName : %@", reportFileName);
+						// unzip the file
+						NSTask *unzipTask   = [[NSTask alloc] init];
+						[unzipTask setLaunchPath:@"/usr/bin/unzip"];
+						[unzipTask setCurrentDirectoryPath:[[localpath stringByDeletingLastPathComponent] stringByAppendingString:@"/"]];
+						[unzipTask setArguments:[NSArray arrayWithObjects:@"-o", localpath, nil]]; // -o to override existing report w/ same name
+						[unzipTask launch];
+						while( [unzipTask isRunning]) [NSThread sleepForTimeInterval: 0.01];
+						int result = [unzipTask terminationStatus];
+						[unzipTask release];
+						
+						NSLog(@"unzip result : %d", result);
+						if(result==0)
+						{
+							// remove the zip file!
+							//filePathToLoad = reportFileName;
+						}
+					}
+					
+					refreshDB = YES;
+
+					if(isPages)
+						[[NSFileManager defaultManager] removeFileAtPath:localpath handler:nil];
+
+					[path release];
+				}
+				else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"DCMSE" length: 6]])
+				{
+					NSMutableArray	*localPaths = [NSMutableArray arrayWithCapacity:0];
+					
+					int pos = 6, noOfFiles = 0, stringSize, i;
+					
+					// We read 4 bytes that contain the string size
+					while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
+					[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &stringSize];	stringSize = NSSwapBigIntToHost( stringSize);
+					pos += 4;
+					// We read the string
+					while ( [data length] < pos + stringSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
+					NSString *AETitle = [NSString stringWithUTF8String: [[data subdataWithRange: NSMakeRange(pos,stringSize)] bytes]];
+					pos += stringSize;
+					
+					// We read 4 bytes that contain the string size
+					while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
+					[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &stringSize];	stringSize = NSSwapBigIntToHost( stringSize);
+					pos += 4;
+					// We read the string
+					while ( [data length] < pos + stringSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
+					NSString *Address = [NSString stringWithUTF8String: [[data subdataWithRange: NSMakeRange(pos,stringSize)] bytes]];
+					pos += stringSize;
+					
+					// We read 4 bytes that contain the string size
+					while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
+					[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &stringSize];	stringSize = NSSwapBigIntToHost( stringSize);
+					pos += 4;
+					// We read the string
+					while ( [data length] < pos + stringSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
+					NSString *Port = [NSString stringWithUTF8String: [[data subdataWithRange: NSMakeRange(pos,stringSize)] bytes]];
+					pos += stringSize;
+					
+					// We read 4 bytes that contain the string size
+					while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
+					[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &stringSize];	stringSize = NSSwapBigIntToHost( stringSize);
+					pos += 4;
+					// We read the string
+					while ( [data length] < pos + stringSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
+					NSString *TransferSyntax = [NSString stringWithUTF8String: [[data subdataWithRange: NSMakeRange(pos,stringSize)] bytes]];
+					pos += stringSize;
+					
+					while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
+					
+					[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &noOfFiles];	noOfFiles = NSSwapBigIntToHost( noOfFiles);
+					pos += 4;
+					
+					representationToSend = [NSMutableData dataWithCapacity: 0];
+					
+					for( i = 0; i < noOfFiles; i++)
+					{
+						// We read 4 bytes that contain the string size
+						while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
+						[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &stringSize];	stringSize = NSSwapBigIntToHost( stringSize);
+						pos += 4;
+						
+						// We read the string
+						while ( [data length] < pos + stringSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
+						NSString *path = [NSString stringWithUTF8String: [[data subdataWithRange: NSMakeRange(pos,stringSize)] bytes]];
+						pos += stringSize;
+						
+						if( [path UTF8String] [ 0] != '/')
 						{
 							
 							int val = [[path stringByDeletingPathExtension] intValue];
+							
+							NSString *dbLocation = [interfaceOsiriX localDatabasePath];
 							
 							val /= 10000;
 							val++;
 							val *= 10000;
 							
-							NSString	*local = [[interfaceOsiriX localDatabasePath] stringByDeletingLastPathComponent];
-							
-							path = [[[local stringByAppendingPathComponent:@"/DATABASE.noindex/"] stringByAppendingPathComponent: [NSString stringWithFormat:@"%d", val]] stringByAppendingPathComponent: path];
+							path = [[dbLocation stringByDeletingLastPathComponent] stringByAppendingFormat:@"/DATABASE.noindex/%d/%@", val, path];
 						}
+						
+						[localPaths addObject: path];
 					}
 					
-					[localPaths addObject: path];
+					NSDictionary	*todo = [NSDictionary dictionaryWithObjectsAndKeys: Address, @"Address", TransferSyntax, @"Transfer Syntax", Port, @"Port", AETitle, @"AETitle", localPaths, @"Files", nil];
 					
-	//				if([[path pathExtension] isEqualToString:@"zip"])
-	//				{
-	//					// it is a ZIP
-	//					NSLog(@"BONJOUR ZIP");
-	//					NSString *xmlPath = [[path stringByDeletingPathExtension] stringByAppendingPathExtension:@"xml"];
-	//					NSLog(@"xmlPath : %@", xmlPath);
-	//					if([[NSFileManager defaultManager] fileExistsAtPath:xmlPath])
-	//					{
-	//						// it has an XML descriptor with it
-	//						NSLog(@"BONJOUR XML");
-	//						[localPaths addObject:xmlPath];
-	//					}
-	//				}
+					[NSThread detachNewThreadSelector:@selector( sendDICOMFilesToOsiriXNode:) toTarget:self withObject: todo];
 				}
-				
-				for( i = 0; i < noOfFiles; i++)
+				else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"DICOM" length: 6]])
 				{
-					// We read 4 bytes that contain the string size
+					NSMutableArray	*localPaths = [NSMutableArray arrayWithCapacity:0];
+					NSMutableArray	*dstPaths = [NSMutableArray arrayWithCapacity:0];
+					
+					// We read now the path for the DICOM file(s)
+					int pos = 6, size, noOfFiles = 0, stringSize, i;
+					
 					while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-					[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &stringSize];	stringSize = NSSwapBigIntToHost( stringSize);
+					
+					[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &noOfFiles];	noOfFiles = NSSwapBigIntToHost( noOfFiles);
 					pos += 4;
 					
-					// We read the string
-					while ( [data length] < pos + stringSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-					NSString *path = [NSString stringWithUTF8String: [[data subdataWithRange: NSMakeRange(pos,stringSize)] bytes]];
-					pos += stringSize;
+					representationToSend = [NSMutableData dataWithCapacity: 512*512*2*(noOfFiles+1)];
 					
-					[dstPaths addObject: path];
+					for( i = 0; i < noOfFiles; i++)
+					{
+						// We read 4 bytes that contain the string size
+						while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
+						[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &stringSize];	stringSize = NSSwapBigIntToHost( stringSize);
+						pos += 4;
+						
+						// We read the string
+						while ( [data length] < pos + stringSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
+						NSString *path = [NSString stringWithUTF8String: [[data subdataWithRange: NSMakeRange(pos,stringSize)] bytes]];
+						pos += stringSize;
+						
+						if( [path UTF8String] [ 0] != '/')
+						{
+							if( [[[path pathComponents] objectAtIndex: 0] isEqualToString:@"ROIs"])
+							{
+								//It's a ROI !
+								NSString	*local = [[interfaceOsiriX localDatabasePath] stringByDeletingLastPathComponent];
+								
+								path = [[local stringByAppendingPathComponent:@"/ROIs/"] stringByAppendingPathComponent: [path lastPathComponent]];
+							}
+							else
+							{
+								
+								int val = [[path stringByDeletingPathExtension] intValue];
+								
+								val /= 10000;
+								val++;
+								val *= 10000;
+								
+								NSString	*local = [[interfaceOsiriX localDatabasePath] stringByDeletingLastPathComponent];
+								
+								path = [[[local stringByAppendingPathComponent:@"/DATABASE.noindex/"] stringByAppendingPathComponent: [NSString stringWithFormat:@"%d", val]] stringByAppendingPathComponent: path];
+							}
+						}
+						
+						[localPaths addObject: path];
+						
+		//				if([[path pathExtension] isEqualToString:@"zip"])
+		//				{
+		//					// it is a ZIP
+		//					NSLog(@"BONJOUR ZIP");
+		//					NSString *xmlPath = [[path stringByDeletingPathExtension] stringByAppendingPathExtension:@"xml"];
+		//					NSLog(@"xmlPath : %@", xmlPath);
+		//					if([[NSFileManager defaultManager] fileExistsAtPath:xmlPath])
+		//					{
+		//						// it has an XML descriptor with it
+		//						NSLog(@"BONJOUR XML");
+		//						[localPaths addObject:xmlPath];
+		//					}
+		//				}
+					}
 					
-	//				if([[path pathExtension] isEqualToString:@"zip"])
-	//				{
-	//					// it is a ZIP
-	//					NSLog(@"BONJOUR ZIP");
-	//					NSString *xmlPath = [[path stringByDeletingPathExtension] stringByAppendingPathExtension:@"xml"];
-	//					NSLog(@"xmlPath : %@", xmlPath);
-	//					if([[NSFileManager defaultManager] fileExistsAtPath:xmlPath])
-	//					{
-	//						// it has an XML descriptor with it
-	//						NSLog(@"BONJOUR XML");
-	//						[dstPaths addObject:xmlPath];
-	//					}
-	//				}
+					for( i = 0; i < noOfFiles; i++)
+					{
+						// We read 4 bytes that contain the string size
+						while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
+						[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &stringSize];	stringSize = NSSwapBigIntToHost( stringSize);
+						pos += 4;
+						
+						// We read the string
+						while ( [data length] < pos + stringSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
+						NSString *path = [NSString stringWithUTF8String: [[data subdataWithRange: NSMakeRange(pos,stringSize)] bytes]];
+						pos += stringSize;
+						
+						[dstPaths addObject: path];
+						
+		//				if([[path pathExtension] isEqualToString:@"zip"])
+		//				{
+		//					// it is a ZIP
+		//					NSLog(@"BONJOUR ZIP");
+		//					NSString *xmlPath = [[path stringByDeletingPathExtension] stringByAppendingPathExtension:@"xml"];
+		//					NSLog(@"xmlPath : %@", xmlPath);
+		//					if([[NSFileManager defaultManager] fileExistsAtPath:xmlPath])
+		//					{
+		//						// it has an XML descriptor with it
+		//						NSLog(@"BONJOUR XML");
+		//						[dstPaths addObject:xmlPath];
+		//					}
+		//				}
+					}
+					
+					int temp = NSSwapHostIntToBig( noOfFiles);
+					[representationToSend appendBytes: &temp length: 4];	
+					for( i = 0; i < noOfFiles; i++)
+					{
+						NSString	*path = [localPaths objectAtIndex: i];
+						
+						if ([[NSFileManager defaultManager] fileExistsAtPath: path] == NO) NSLog( @"Bonjour Publisher - File doesn't exist at path: %@", path);
+						
+	//					NSData	*content = [[NSFileManager defaultManager] contentsAtPath: path];
+						NSData	*content = [NSData dataWithContentsOfMappedFile: path];
+						
+						size = NSSwapHostIntToBig( [content length]);
+						[representationToSend appendBytes: &size length: 4];
+						[representationToSend appendData: content];
+						
+						const char* string = [[dstPaths objectAtIndex: i] UTF8String];
+						int stringSize = NSSwapHostIntToBig( strlen( string)+1);	// +1 to include the last 0 !
+						
+						[representationToSend appendBytes:&stringSize length: 4];
+						[representationToSend appendBytes:string length: strlen( string)+1];
+					}
 				}
 				
-				int temp = NSSwapHostIntToBig( noOfFiles);
-				[representationToSend appendBytes: &temp length: 4];	
-				for( i = 0; i < noOfFiles; i++)
-				{
-					NSString	*path = [localPaths objectAtIndex: i];
-					
-					if ([[NSFileManager defaultManager] fileExistsAtPath: path] == NO) NSLog( @"Bonjour Publisher - File doesn't exist at path: %@", path);
-					
-//					NSData	*content = [[NSFileManager defaultManager] contentsAtPath: path];
-					NSData	*content = [NSData dataWithContentsOfMappedFile: path];
-					
-					size = NSSwapHostIntToBig( [content length]);
-					[representationToSend appendBytes: &size length: 4];
-					[representationToSend appendData: content];
-					
-					const char* string = [[dstPaths objectAtIndex: i] UTF8String];
-					int stringSize = NSSwapHostIntToBig( strlen( string)+1);	// +1 to include the last 0 !
-					
-					[representationToSend appendBytes:&stringSize length: 4];
-					[representationToSend appendBytes:string length: strlen( string)+1];
-				}
+				[incomingConnection writeData:representationToSend];
 			}
-			
-			[incomingConnection writeData:representationToSend];
 		}
 	}
 	@catch( NSException *ne)
