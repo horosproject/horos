@@ -283,6 +283,10 @@ static float deg2rad = 3.14159265358979/180.0;
 {
 	[hiddenVRView setLOD: 20];
 	
+	BOOL c = [[NSUserDefaults standardUserDefaults] boolForKey: @"syncZoomLevelMPR"];
+	
+	[[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"syncZoomLevelMPR"];
+	
 	// Default Init
 	[self setClippingRangeMode: 1]; // MIP
 	[self setClippingRangeThickness: 1];
@@ -312,6 +316,9 @@ static float deg2rad = 3.14159265358979/180.0;
 	[self setLOD: [[NSUserDefaults standardUserDefaults] floatForKey:@"defaultMPRLOD"]];
 	
 	[self setTool: toolsMatrix];
+	
+	if( c == NO)
+		[[NSUserDefaults standardUserDefaults] setBool: c forKey: @"syncZoomLevelMPR"];
 }
 
 -(void) awakeFromNib
