@@ -84,7 +84,7 @@ enum
 	NSString		*name;
 	NSString		*comments;
 	
-	float			pixelSpacingX, pixelSpacingY;
+	double			pixelSpacingX, pixelSpacingY;
 	NSPoint			imageOrigin;
 	
 	// **** **** **** **** **** **** **** **** **** **** TRACKING
@@ -159,7 +159,7 @@ enum
 @property(setter=setColor:) RGBColor rgbcolor;
 @property float thickness;
 @property(retain) ROI *parentROI;
-@property double sliceThickness;
+@property double sliceThickness, pixelSpacingX, pixelSpacingY;
 
 - (void) setColor:(RGBColor) a globally: (BOOL) g;
 - (void) setThickness:(float) a globally: (BOOL) g;

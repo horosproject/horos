@@ -32,7 +32,7 @@
 	
 	int viewExport;
 	float fromIntervalExport, toIntervalExport;
-	float LOD, previousResolution;
+	float LOD, previousResolution, previousOrientation[ 9];
 	
 	BOOL rotateLines;
 	BOOL moveCenter;

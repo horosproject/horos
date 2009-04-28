@@ -20,20 +20,7 @@
 
 static float deg2rad = 3.14159265358979/180.0; 
 
-//#define VIEW_1_RED 1.0f
-//#define VIEW_1_GREEN 0.1f
-//#define VIEW_1_BLUE 0.0f
-//#define VIEW_1_ALPHA 1.0f
-//
-//#define VIEW_2_RED 0.6f
-//#define VIEW_2_GREEN 0.0f
-//#define VIEW_2_BLUE 1.0f
-//#define VIEW_2_ALPHA 1.0f
-//
-//#define VIEW_3_RED 0.0f
-//#define VIEW_3_GREEN 0.5f
-//#define VIEW_3_BLUE 1.0f
-//#define VIEW_3_ALPHA 1.0f
+extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2, float *u, float *iP);
 
 #define VIEW_COLOR_LABEL_SIZE 25
 
@@ -155,27 +142,27 @@ static BOOL frameZoomed = NO;
 		[vrView setFrame: frame];
 	}
 }
-
-- (BOOL) hasCameraMoved: (Camera*) currentCamera
-{
-	if( fabs( currentCamera.position.x - camera.position.x) > 0.1) return YES;
-	if( fabs( currentCamera.position.y - camera.position.y) > 0.1) return YES;
-	if( fabs( currentCamera.position.z - camera.position.z) > 0.1) return YES;
-
-	if( fabs( currentCamera.focalPoint.x - camera.focalPoint.x) > 0.1) return YES;
-	if( fabs( currentCamera.focalPoint.y - camera.focalPoint.y) > 0.1) return YES;
-	if( fabs( currentCamera.focalPoint.z - camera.focalPoint.z) > 0.1) return YES;
-
-	if( fabs( currentCamera.viewUp.x - camera.viewUp.x) > 0.1) return YES;
-	if( fabs( currentCamera.viewUp.y - camera.viewUp.y) > 0.1) return YES;
-	if( fabs( currentCamera.viewUp.z - camera.viewUp.z) > 0.1) return YES;
-
-	if( fabs( currentCamera.viewAngle - camera.viewAngle) > 3) return YES;
-	if( fabs( currentCamera.eyeAngle - camera.eyeAngle) > 3) return YES;
-	
-	return NO;
-
-}
+//
+//- (BOOL) hasCameraMoved: (Camera*) currentCamera
+//{
+//	if( fabs( currentCamera.position.x - camera.position.x) > 0.1) return YES;
+//	if( fabs( currentCamera.position.y - camera.position.y) > 0.1) return YES;
+//	if( fabs( currentCamera.position.z - camera.position.z) > 0.1) return YES;
+//
+//	if( fabs( currentCamera.focalPoint.x - camera.focalPoint.x) > 0.1) return YES;
+//	if( fabs( currentCamera.focalPoint.y - camera.focalPoint.y) > 0.1) return YES;
+//	if( fabs( currentCamera.focalPoint.z - camera.focalPoint.z) > 0.1) return YES;
+//
+//	if( fabs( currentCamera.viewUp.x - camera.viewUp.x) > 0.1) return YES;
+//	if( fabs( currentCamera.viewUp.y - camera.viewUp.y) > 0.1) return YES;
+//	if( fabs( currentCamera.viewUp.z - camera.viewUp.z) > 0.1) return YES;
+//
+//	if( fabs( currentCamera.viewAngle - camera.viewAngle) > 3) return YES;
+//	if( fabs( currentCamera.eyeAngle - camera.eyeAngle) > 3) return YES;
+//	
+//	return NO;
+//
+//}
 
 - (BOOL) hasCameraChanged: (Camera*) currentCamera
 {
@@ -251,8 +238,6 @@ static BOOL frameZoomed = NO;
 	
 	if( [self hasCameraChanged: currentCamera] == YES)
 	{
-		BOOL cameraMoved = [self hasCameraMoved: currentCamera];
-		
 		// AutoLOD
 		if( windowController.dontUseAutoLOD == NO)
 		{
@@ -322,7 +307,19 @@ static BOOL frameZoomed = NO;
 		
 		if( imagePtr)
 		{
-			if( cameraMoved)
+			float orientation[ 9];
+			
+			[vrView getOrientation: orientation];
+			
+			float slicePoint[ 3], sV[ 3];
+			float fakeOrigin[ 3] = {0, 0, 0};
+			BOOL cameraMoved;
+			if( intersect3D_2Planes( orientation+6, fakeOrigin, previousOrientation+6, fakeOrigin, sV, slicePoint) == noErr)
+				cameraMoved = YES;
+			else
+				cameraMoved = NO;
+			
+			if( cameraMoved == YES)
 			{
 				for( int i = [curRoiList count] -1 ; i >= 0; i--)
 				{
@@ -366,8 +363,6 @@ static BOOL frameZoomed = NO;
 				[pix setPixelSpacingY: resolution];
 			}
 			
-			float orientation[ 9];
-			[vrView getOrientation: orientation];
 			[pix setOrientation: orientation];
 			[pix setSliceThickness: [vrView getClippingRangeThicknessInMm]];
 			
@@ -377,10 +372,29 @@ static BOOL frameZoomed = NO;
 			{
 				[self setScaleValue: [vrView imageSampleDistance]];
 				
+				float rotationPlane = 0;
+				if( cameraMoved == NO)
+				{
+					if( previousOrientation[ 0] != 0 || previousOrientation[ 1] != 0 || previousOrientation[ 2] != 0)
+						rotationPlane = -[MPRController angleBetweenVector: orientation andPlane: previousOrientation];
+					if( fabs( rotationPlane) < 0.01) rotationPlane = 0;
+				}
+				
+				NSPoint rotationCenter = NSMakePoint( [pix pwidth]/2., [pix pheight]/2.);
 				for( ROI* r in curRoiList)
 				{
-					[r setOriginAndSpacing: resolution : resolution :[DCMPix originCorrectedAccordingToOrientation: pix] :NO];
+					if( rotationPlane)
+					{
+						[r rotate: rotationPlane :rotationCenter];
+						r.imageOrigin = [DCMPix originCorrectedAccordingToOrientation: pix];
+						r.pixelSpacingX = [pix pixelSpacingX];
+						r.pixelSpacingY = [pix pixelSpacingY];
+					}
+					else
+						[r setOriginAndSpacing: resolution : resolution :[DCMPix originCorrectedAccordingToOrientation: pix] :NO];
 				}
+				[pix orientation: previousOrientation];
+				
 				[self detect2DPointInThisSlice];
 			}
 		}
@@ -391,14 +405,26 @@ static BOOL frameZoomed = NO;
 			
 			[vrView renderBlendedVolume];
 			
-			float *blendedImagePtr = [vrView imageInFullDepthWidth: &w height: &h isRGB: &isRGB blendingView: YES];
-			
+			float *blendedImagePtr = nil;
 			DCMPix *bPix = [blendingView curDCM];
+			
+			if( moveCenter)
+			{
+				blendedImagePtr = [bPix fImage];
+				w = [bPix pwidth];
+				h = [bPix pheight];
+				isRGB = [bPix isRGB];
+			}
+			else
+				blendedImagePtr = [vrView imageInFullDepthWidth: &w height: &h isRGB: &isRGB blendingView: YES];
 			
 			if( [bPix pwidth] == w && [bPix pheight] == h && isRGB == [bPix isRGB])
 			{
-				memcpy( [bPix fImage], blendedImagePtr, w*h*sizeof( float));
-				free( blendedImagePtr);
+				if( blendedImagePtr != [bPix fImage])
+				{
+					memcpy( [bPix fImage], blendedImagePtr, w*h*sizeof( float));
+					free( blendedImagePtr);
+				}
 			}
 			else
 			{
@@ -413,9 +439,12 @@ static BOOL frameZoomed = NO;
 			[vrView getOrigin: porigin windowCentered: YES sliceMiddle: YES blendedView: YES];
 			[bPix setOrigin: porigin];
 			
-			float resolution = [vrView getResolution] * [vrView blendingImageSampleDistance];
-			[bPix setPixelSpacingX: resolution];
-			[bPix setPixelSpacingY: resolution];
+			if( !moveCenter)
+			{
+				float resolution = [vrView getResolution] * [vrView blendingImageSampleDistance];
+				[bPix setPixelSpacingX: resolution];
+				[bPix setPixelSpacingY: resolution];
+			}
 			
 			float orientation[ 9];
 			[vrView getOrientation: orientation];
@@ -423,7 +452,9 @@ static BOOL frameZoomed = NO;
 			[bPix setSliceThickness: [vrView getClippingRangeThicknessInMm]];
 			
 			[blendingView setWLWW: previousWL :previousWW];
-			[blendingView setScaleValue: [vrView blendingImageSampleDistance]];
+			
+			if( !moveCenter)
+				[blendingView setScaleValue: [vrView blendingImageSampleDistance]];
 		}
 	}
 	

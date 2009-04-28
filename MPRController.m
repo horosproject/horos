@@ -109,19 +109,19 @@ static float deg2rad = 3.14159265358979/180.0;
 		[mprView3 setDCMPixList: [NSMutableArray arrayWithObject: emptyPix] filesList: [NSArray arrayWithObject: [files lastObject]] roiList: nil firstImage:0 type:'i' reset:YES];
 		[mprView3 setFlippedData: [[viewer imageView] flippedData]];
 		
-		if( fusedViewer)
+		if( fusedViewer2D)
 		{
 			blendedMprView1 = [[DCMView alloc] initWithFrame: [mprView1 frame]];
 			blendedMprView2 = [[DCMView alloc] initWithFrame: [mprView2 frame]];
 			blendedMprView3 = [[DCMView alloc] initWithFrame: [mprView3 frame]];
 			
-			emptyPix = [[[[fusedViewer imageView] curDCM] copy] autorelease];
+			emptyPix = [[[[fusedViewer2D imageView] curDCM] copy] autorelease];
 			[blendedMprView1 setDCM:  [NSMutableArray arrayWithObject: emptyPix] : [NSArray arrayWithObject: [files lastObject]] :nil :0 :'i' :YES];
 			
-			emptyPix = [[[[fusedViewer imageView] curDCM] copy] autorelease];
+			emptyPix = [[[[fusedViewer2D imageView] curDCM] copy] autorelease];
 			[blendedMprView2 setDCM:  [NSMutableArray arrayWithObject: emptyPix] : [NSArray arrayWithObject: [files lastObject]] :nil :0 :'i' :YES];
 			
-			emptyPix = [[[[fusedViewer imageView] curDCM] copy] autorelease];
+			emptyPix = [[[[fusedViewer2D imageView] curDCM] copy] autorelease];
 			[blendedMprView3 setDCM:  [NSMutableArray arrayWithObject: emptyPix] : [NSArray arrayWithObject: [files lastObject]] :nil :0 :'i' :YES];
 			
 			[mprView1 setBlending: blendedMprView1];
@@ -132,15 +132,15 @@ static float deg2rad = 3.14159265358979/180.0;
 			[mprView2 setBlendingFactor: 0.5];
 			[mprView3 setBlendingFactor: 0.5];
 			
-			[mprView1 setWLWW: [[fusedViewer imageView] curDCM].wl :[[fusedViewer imageView] curDCM].ww];
-			[mprView2 setWLWW: [[fusedViewer imageView] curDCM].wl :[[fusedViewer imageView] curDCM].ww];
-			[mprView3 setWLWW: [[fusedViewer imageView] curDCM].wl :[[fusedViewer imageView] curDCM].ww];
+			[blendedMprView1 setWLWW: [[fusedViewer2D imageView] curDCM].wl :[[fusedViewer2D imageView] curDCM].ww];
+			[blendedMprView2 setWLWW: [[fusedViewer2D imageView] curDCM].wl :[[fusedViewer2D imageView] curDCM].ww];
+			[blendedMprView3 setWLWW: [[fusedViewer2D imageView] curDCM].wl :[[fusedViewer2D imageView] curDCM].ww];
 			
 			self.blendingPercentage = 50;
 			self.blendingMode = 0;
 		}
 		
-		hiddenVRController = [[VRController alloc] initWithPix:pix :files :volume :fusedViewer :viewer style:@"noNib" mode:@"MIP"];
+		hiddenVRController = [[VRController alloc] initWithPix:pix :files :volume :fusedViewer2D :viewer style:@"noNib" mode:@"MIP"];
 		[hiddenVRController retain];
 		
 		// To avoid the "invalid drawable" message
@@ -2638,10 +2638,10 @@ static float deg2rad = 3.14159265358979/180.0;
 	{
 		float iwl, iww;
 		
-		iww = [otherPix ww];
-		iwl = [otherPix wl];
+		iww = [[fusedViewer2D imageView] curWW];
+		iwl = [[fusedViewer2D imageView] curWL];
 		
-		if( iww != [[blendedMprView1 curDCM] ww] || iwl != [[blendedMprView1 curDCM] wl])
+		if( iww != [blendedMprView1 curWW] || iwl != [blendedMprView1 curWL])
 		{
 			if( clippingRangeMode == 0)
 			{
@@ -2666,6 +2666,8 @@ static float deg2rad = 3.14159265358979/180.0;
 			else
 			{
 				[blendedMprView1 setWLWW: iwl :iww];
+				[blendedMprView2 setWLWW: iwl :iww];
+				[blendedMprView3 setWLWW: iwl :iww];
 			}
 			
 			[mprView1 updateImage];

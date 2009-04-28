@@ -186,7 +186,7 @@ static int hotKeyToolCrossTable[] =
 	MoveHotKeyAction,			//tTranslate		1
 	ZoomHotKeyAction,			//tZoom				2
 	RotateHotKeyAction,			//tRotate			3
-	-1,							//tNext				4
+	ScrollHotKeyAction,			//tNext				4
 	LengthHotKeyAction,			//tMesure			5
 	RectangleHotKeyAction,		//tROI				6
 	Rotate3DHotKeyAction,		//t3DRotate			7

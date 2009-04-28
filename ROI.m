@@ -271,7 +271,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 
 @implementation ROI
 
-@synthesize textureWidth, textureHeight, textureBuffer, locked, selectable, isAliased, originalIndexForAlias, imageOrigin;
+@synthesize textureWidth, textureHeight, textureBuffer, locked, selectable, isAliased, originalIndexForAlias, imageOrigin, pixelSpacingX, pixelSpacingY;
 @synthesize textureDownRightCornerX,textureDownRightCornerY, textureUpLeftCornerX, textureUpLeftCornerY;
 @synthesize opacity;
 @synthesize name, comments, type, ROImode = mode, thickness;
@@ -2251,7 +2251,6 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 	if( locked) return;
 
     float theta;
-    float dtheta;
     long intUpper;
     float new_x;
     float new_y;
@@ -2261,8 +2260,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
     intUpper = [pts count];
 	if( intUpper > 0)
 	{
-		dtheta = deg2rad;
-		theta = dtheta * angle; 
+		theta = deg2rad * angle; 
 				
 		if( type == tROI || type == tOval)
 		{
