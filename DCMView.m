@@ -5874,7 +5874,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	}
 	else
 	{
-		if( order[ 0] == 2 && order[ 1] == 1)
+		if( order[ 0] == 1 && order[ 1] == 2)
 		{
 			sc[ 0] = sft[ 0][ 0];	sc[ 1] = sft[ 0][ 1];	sc[ 2] = sft[ 0][ 2];
 			sft[ 0][ 0] = sft[ 1][ 0]; sft[ 0][ 1] = sft[ 1][ 1]; sft[ 0][ 2] = sft[ 1][ 2];
