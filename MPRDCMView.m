@@ -496,6 +496,63 @@ static BOOL frameZoomed = NO;
 	}
 }
 
+- (void) drawLine: (float[2][3]) sft thickness: (float) thickness
+{
+	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+	
+	if( thickness > 2)
+	{
+		glLineWidth(2.0);
+		[self drawCrossLines: sft ctx: cgl_ctx withShift: 0];
+		
+		glLineWidth(1.0);
+		[self drawCrossLines: sft ctx: cgl_ctx withShift: -thickness/2.];
+		[self drawCrossLines: sft ctx: cgl_ctx withShift: thickness/2.];
+	}
+	else
+	{
+		glLineWidth(2.0);
+		[self drawCrossLines: sft ctx: cgl_ctx withShift: 0];
+	}
+}
+
+- (void) drawExportLines: (float[2][3]) sft
+{
+	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+	
+	glLineWidth(1.0);
+						
+	if( fromIntervalExport > 0)
+	{
+		for( int i = 1; i <= fromIntervalExport; i++)
+			[self drawCrossLines: sft ctx: cgl_ctx withShift: -i * [windowController dcmInterval]];
+	}
+	
+	if( !windowController.dcmBatchReverse)
+		[self drawCrossLines: sft ctx: cgl_ctx withShift: -fromIntervalExport * [windowController dcmInterval] showPoint: YES];
+	
+	if( toIntervalExport > 0)
+	{
+		for( int i = 1; i <= toIntervalExport; i++)
+			[self drawCrossLines: sft ctx: cgl_ctx withShift: i * [windowController dcmInterval]];
+	}
+	
+	if( windowController.dcmBatchReverse)
+		[self drawCrossLines: sft ctx: cgl_ctx withShift: toIntervalExport * [windowController dcmInterval] showPoint: YES];
+}
+
+- (void) drawRotationLines: (float[2][3]) sft
+{
+	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+	
+	for( int i = 1; i < windowController.dcmNumberOfFrames; i++)
+	{
+		glRotatef( (float) (i * windowController.dcmRotation) / (float) windowController.dcmNumberOfFrames, 0, 0, 1);
+		[self drawCrossLines: sft ctx: cgl_ctx perpendicular: NO withShift: 0 half: YES];
+		glRotatef( -(float) (i * windowController.dcmRotation) / (float) windowController.dcmNumberOfFrames, 0, 0, 1);
+	}
+}
+
 - (void) subDrawRect: (NSRect) r
 {
 	if( [stringID isEqualToString: @"export"])
@@ -520,104 +577,24 @@ static BOOL frameZoomed = NO;
 				glColor4f ([windowController.colorAxis2 redComponent], [windowController.colorAxis2 greenComponent], [windowController.colorAxis2 blueComponent], [windowController.colorAxis2 alphaComponent]);
 				if( crossLinesA[ 0][ 0] != HUGE_VALF)
 				{
-					if( thickness > 2)
-					{
-						glLineWidth(2.0);
-						[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: 0];
-						
-						glLineWidth(1.0);
-						[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: -thickness/2.];
-						[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: thickness/2.];
-					}
-					else
-					{
-						glLineWidth(2.0);
-						[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: 0];
-					}
+					[self drawLine: crossLinesA thickness: thickness];
 					
 					if( viewExport == 0 && windowController.dcmMode == 0 && windowController.dcmSeriesMode == 0)
-					{
-						glLineWidth(1.0);
-						
-						if( fromIntervalExport > 0)
-						{
-							for( int i = 1; i <= fromIntervalExport; i++)
-								[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: -i * [windowController dcmInterval]];
-						}
-						
-						if( !windowController.dcmBatchReverse)
-							[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: -fromIntervalExport * [windowController dcmInterval] showPoint: YES];
-						
-						if( toIntervalExport > 0)
-						{
-							for( int i = 1; i <= toIntervalExport; i++)
-								[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: i * [windowController dcmInterval]];
-						}
-						
-						if( windowController.dcmBatchReverse)
-							[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: toIntervalExport * [windowController dcmInterval] showPoint: YES];
-					}
+						[self drawExportLines: crossLinesA];
 					
 					if( viewExport == 0 && windowController.dcmMode == 0 && windowController.dcmSeriesMode == 1) // Rotation
-					{
-						for( int i = 1; i < windowController.dcmNumberOfFrames; i++)
-						{
-							glRotatef( (float) (i * windowController.dcmRotation) / (float) windowController.dcmNumberOfFrames, 0, 0, 1);
-							[self drawCrossLines: crossLinesA ctx: cgl_ctx perpendicular: NO withShift: 0 half: YES];
-							glRotatef( -(float) (i * windowController.dcmRotation) / (float) windowController.dcmNumberOfFrames, 0, 0, 1);
-						}
-					}
+						[self drawRotationLines: crossLinesA];
 				}
 				glColor4f ([windowController.colorAxis3 redComponent], [windowController.colorAxis3 greenComponent], [windowController.colorAxis3 blueComponent], [windowController.colorAxis3 alphaComponent]);
 				if( crossLinesB[ 0][ 0] != HUGE_VALF)
 				{
-					if( thickness > 2)
-					{
-						glLineWidth(2.0);
-						[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: 0];
-					
-						glLineWidth(1.0);
-						[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: -thickness/2.];
-						[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: thickness/2.];
-					}
-					else
-					{
-						glLineWidth(2.0);
-						[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: 0];
-					}
+					[self drawLine: crossLinesB thickness: thickness];
 					
 					if( viewExport == 1 && windowController.dcmMode == 0 && windowController.dcmSeriesMode == 0)
-					{
-						glLineWidth(1.0);
-						
-						if( fromIntervalExport > 0)
-						{
-							for( int i = 1; i <= fromIntervalExport; i++)
-								[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: -i * [windowController dcmInterval]];
-						}
-						
-						if( !windowController.dcmBatchReverse)
-							[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: -fromIntervalExport * [windowController dcmInterval] showPoint: YES];
-						
-						if( toIntervalExport > 0)
-						{
-							for( int i = 1; i <= toIntervalExport; i++)
-								[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: i * [windowController dcmInterval]];
-						}
-						
-						if( windowController.dcmBatchReverse)
-							[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: toIntervalExport * [windowController dcmInterval] showPoint: YES];
-					}
+						[self drawExportLines: crossLinesB];
 					
 					if( viewExport == 1 && windowController.dcmMode == 0 && windowController.dcmSeriesMode == 1) // Rotation
-					{
-						for( int i = 1; i < windowController.dcmNumberOfFrames; i++)
-						{
-							glRotatef( (float) (i * windowController.dcmRotation) / (float) windowController.dcmNumberOfFrames, 0, 0, 1);
-							[self drawCrossLines: crossLinesB ctx: cgl_ctx perpendicular: NO withShift: 0 half: YES];
-							glRotatef( -(float) (i * windowController.dcmRotation) / (float) windowController.dcmNumberOfFrames, 0, 0, 1);
-						}
-					}
+						[self drawRotationLines: crossLinesB];
 				}
 			break;
 			
@@ -625,105 +602,25 @@ static BOOL frameZoomed = NO;
 				glColor4f ([windowController.colorAxis1 redComponent], [windowController.colorAxis1 greenComponent], [windowController.colorAxis1 blueComponent], [windowController.colorAxis1 alphaComponent]);
 				if( crossLinesA[ 0][ 0] != HUGE_VALF)
 				{
-					if( thickness > 2)
-					{
-						glLineWidth(2.0);
-						[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: 0];
-						
-						glLineWidth(1.0);
-						[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: -thickness/2.];
-						[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: thickness/2.];
-					}
-					else
-					{
-						glLineWidth(2.0);
-						[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: 0];
-					}
+					[self drawLine: crossLinesA thickness: thickness];
 					
 					if( viewExport == 0 && windowController.dcmMode == 0 && windowController.dcmSeriesMode == 0)
-					{
-						glLineWidth(1.0);
-						
-						if( fromIntervalExport > 0)
-						{
-							for( int i = 1; i <= fromIntervalExport; i++)
-								[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: -i * [windowController dcmInterval]];
-						}
-						
-						if( !windowController.dcmBatchReverse)
-							[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: -fromIntervalExport * [windowController dcmInterval] showPoint: YES];
-						
-						if( toIntervalExport > 0)
-						{
-							for( int i = 1; i <= toIntervalExport; i++)
-								[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: i * [windowController dcmInterval]];
-						}
-						
-						if( windowController.dcmBatchReverse)
-							[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: toIntervalExport * [windowController dcmInterval] showPoint: YES];
-					}
+						[self drawExportLines: crossLinesA];
 					
 					if( viewExport == 0 && windowController.dcmMode == 0 && windowController.dcmSeriesMode == 1) // Rotation
-					{
-						for( int i = 1; i < windowController.dcmNumberOfFrames; i++)
-						{
-							glRotatef( (float) (i * windowController.dcmRotation) / (float) windowController.dcmNumberOfFrames, 0, 0, 1);
-							[self drawCrossLines: crossLinesA ctx: cgl_ctx perpendicular: NO withShift: 0 half: YES];
-							glRotatef( -(float) (i * windowController.dcmRotation) / (float) windowController.dcmNumberOfFrames, 0, 0, 1);
-						}
-					}
+						[self drawRotationLines: crossLinesA];
 				}
 				
 				glColor4f ([windowController.colorAxis3 redComponent], [windowController.colorAxis3 greenComponent], [windowController.colorAxis3 blueComponent], [windowController.colorAxis3 alphaComponent]);
 				if( crossLinesB[ 0][ 0] != HUGE_VALF)
 				{
-					if( thickness > 2)
-					{
-						glLineWidth(2.0);
-						[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: 0];
-						
-						glLineWidth(1.0);
-						[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: -thickness/2.];
-						[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: thickness/2.];
-					}
-					else
-					{
-						glLineWidth(2.0);
-						[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: 0];
-					}
+					[self drawLine: crossLinesB thickness: thickness];
 					
 					if( viewExport == 1 && windowController.dcmMode == 0 && windowController.dcmSeriesMode == 0)
-					{
-						glLineWidth(1.0);
-						
-						if( fromIntervalExport > 0)
-						{
-							for( int i = 1; i <= fromIntervalExport; i++)
-								[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: -i * [windowController dcmInterval]];
-						}
-						
-						if( !windowController.dcmBatchReverse)
-							[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: -fromIntervalExport * [windowController dcmInterval] showPoint: YES];
-						
-						if( toIntervalExport > 0)
-						{
-							for( int i = 1; i <= toIntervalExport; i++)
-								[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: i * [windowController dcmInterval]];
-						}
-						
-						if( windowController.dcmBatchReverse)
-							[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: toIntervalExport * [windowController dcmInterval] showPoint: YES];
-					}
+						[self drawExportLines: crossLinesB];
 					
 					if( viewExport == 1 && windowController.dcmMode == 0 && windowController.dcmSeriesMode == 1) // Rotation
-					{
-						for( int i = 1; i < windowController.dcmNumberOfFrames; i++)
-						{
-							glRotatef( (float) (i * windowController.dcmRotation) / (float) windowController.dcmNumberOfFrames, 0, 0, 1);
-							[self drawCrossLines: crossLinesB ctx: cgl_ctx perpendicular: NO withShift: 0 half: YES];
-							glRotatef( -(float) (i * windowController.dcmRotation) / (float) windowController.dcmNumberOfFrames, 0, 0, 1);
-						}
-					}
+						[self drawRotationLines: crossLinesB];
 				}
 			break;
 			
@@ -731,105 +628,25 @@ static BOOL frameZoomed = NO;
 				glColor4f ([windowController.colorAxis1 redComponent], [windowController.colorAxis1 greenComponent], [windowController.colorAxis1 blueComponent], [windowController.colorAxis1 alphaComponent]);
 				if( crossLinesA[ 0][ 0] != HUGE_VALF)
 				{
-					if( thickness > 2)
-					{
-						glLineWidth(2.0);
-						[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: 0];
-						
-						glLineWidth(1.0);
-						[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: -thickness/2.];
-						[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: thickness/2.];
-					}
-					else
-					{
-						glLineWidth(2.0);
-						[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: 0];
-					}
+					[self drawLine: crossLinesA thickness: thickness];
 					
 					if( viewExport == 0 && windowController.dcmMode == 0 && windowController.dcmSeriesMode == 0)
-					{
-						glLineWidth(1.0);
-						
-						if( fromIntervalExport > 0)
-						{
-							for( int i = 1; i <= fromIntervalExport; i++)
-								[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: -i * [windowController dcmInterval]];
-						}
-						
-						if( !windowController.dcmBatchReverse)
-							[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: -fromIntervalExport * [windowController dcmInterval] showPoint: YES];
-					
-						if( toIntervalExport > 0)
-						{
-							for( int i = 1; i <= toIntervalExport; i++)
-								[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: i * [windowController dcmInterval]];
-						}
-						
-						if( windowController.dcmBatchReverse)
-							[self drawCrossLines: crossLinesA ctx: cgl_ctx withShift: toIntervalExport * [windowController dcmInterval] showPoint: YES];
-					}
+						[self drawExportLines: crossLinesA];
 					
 					if( viewExport == 0 && windowController.dcmMode == 0 && windowController.dcmSeriesMode == 1) // Rotation
-					{
-						for( int i = 1; i < windowController.dcmNumberOfFrames; i++)
-						{
-							glRotatef( (float) (i * windowController.dcmRotation) / (float) windowController.dcmNumberOfFrames, 0, 0, 1);
-							[self drawCrossLines: crossLinesA ctx: cgl_ctx perpendicular: NO withShift: 0 half: YES];
-							glRotatef( -(float) (i * windowController.dcmRotation) / (float) windowController.dcmNumberOfFrames, 0, 0, 1);
-						}
-					}
+						[self drawRotationLines: crossLinesA];
 				}
 				
 				glColor4f ([windowController.colorAxis2 redComponent], [windowController.colorAxis2 greenComponent], [windowController.colorAxis2 blueComponent], [windowController.colorAxis2 alphaComponent]);
 				if( crossLinesB[ 0][ 0] != HUGE_VALF)
 				{
-					if( thickness > 2)
-					{
-						glLineWidth(2.0);
-						[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: 0];
-						
-						glLineWidth(1.0);
-						[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: -thickness/2.];
-						[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: thickness/2.];
-					}
-					else
-					{
-						glLineWidth(2.0);
-						[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: 0];
-					}
+					[self drawLine: crossLinesB thickness: thickness];
 					
 					if( viewExport == 1 && windowController.dcmMode == 0 && windowController.dcmSeriesMode == 0)
-					{
-						glLineWidth(1.0);
-						
-						if( fromIntervalExport > 0)
-						{
-							for( int i = 1; i <= fromIntervalExport; i++)
-								[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: -i * [windowController dcmInterval]];
-						}
-						
-						if( !windowController.dcmBatchReverse)
-							[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: -fromIntervalExport * [windowController dcmInterval] showPoint: YES];
-					
-						if( toIntervalExport > 0)
-						{
-							for( int i = 1; i <= toIntervalExport; i++)
-								[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: i * [windowController dcmInterval]];
-						}
-						
-						if( windowController.dcmBatchReverse)
-							[self drawCrossLines: crossLinesB ctx: cgl_ctx withShift: toIntervalExport * [windowController dcmInterval] showPoint: YES];
-					}
+						[self drawExportLines: crossLinesB];
 					
 					if( viewExport == 1 && windowController.dcmMode == 0 && windowController.dcmSeriesMode == 1) // Rotation
-					{
-						for( int i = 1; i < windowController.dcmNumberOfFrames; i++)
-						{
-							glRotatef( (float) (i * windowController.dcmRotation) / (float) windowController.dcmNumberOfFrames, 0, 0, 1);
-							[self drawCrossLines: crossLinesB ctx: cgl_ctx perpendicular: NO withShift: 0 half: YES];
-							glRotatef( -(float) (i * windowController.dcmRotation) / (float) windowController.dcmNumberOfFrames, 0, 0, 1);
-						}
-					}
+						[self drawRotationLines: crossLinesB];
 				}
 			break;
 		}
