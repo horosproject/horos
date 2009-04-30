@@ -239,7 +239,6 @@ static BOOL frameZoomed = NO;
 	if( [self hasCameraChanged: currentCamera] == YES)
 	{
 		// AutoLOD
-		if( windowController.dontUseAutoLOD == NO)
 		{
 			DCMPix *o = [windowController originalPix];
 			
@@ -251,24 +250,48 @@ static BOOL frameZoomed = NO;
 			if( minimumResolution > [o sliceInterval])
 				minimumResolution = [o sliceInterval];
 			
-			minimumResolution *= 0.9;
+			if( vrView.renderingMode == 1 || vrView.renderingMode == 3) // MIP, Mean
+			{
+				if( windowController.dontUseAutoLOD == NO)
+					minimumResolution *= 0.5;
+				else
+					minimumResolution *= 0.4;
+			}
+			else
+			{
+				if( windowController.dontUseAutoLOD == NO)
+					minimumResolution *= 0.8;
+				else
+					minimumResolution *= 0.7;
+			}
 			
-			float currentResolution = [pix pixelSpacingX];
-			
-			if( minimumResolution > currentResolution && currentResolution != 0)
-				LOD *= ( minimumResolution / currentResolution);
+			if( minimumResolution > previousPixelSpacing && previousPixelSpacing != 0)
+				LOD *= ( minimumResolution / previousPixelSpacing);
 			
 			if( previousResolution == 0)
 				previousResolution = [vrView getResolution];
 			
-			if( previousResolution < [vrView getResolution])
-				LOD *= (previousResolution / [vrView getResolution]);
+			float currentResolution = [vrView getResolution];
+			
+			if( previousResolution < currentResolution)
+				LOD *= (previousResolution / currentResolution);
 			
 			if( LOD < windowController.LOD)
 				LOD = windowController.LOD;
 			
 			previousResolution = [vrView getResolution];
+			previousPixelSpacing = [pix pixelSpacingX];
+			if( windowController.lowLOD)
+				previousPixelSpacing *= vrView.lowResLODFactor;
 			
+			if( viewID == 3)
+			{
+				if( windowController.lowLOD)
+					NSLog( @"LOW: %f", previousResolution);
+				else
+					NSLog( @"HIGH: %f", previousResolution);
+			}
+				
 			if( LOD > 4) LOD = 4;
 			
 			if( windowController.lowLOD)
@@ -276,8 +299,6 @@ static BOOL frameZoomed = NO;
 			else
 				[vrView setLOD: LOD];
 		}
-		else
-			[vrView setLOD: LOD];
 		
 		if( [self frame].size.width > 0 && [self frame].size.height > 0)
 		{
@@ -1060,6 +1081,8 @@ static BOOL frameZoomed = NO;
 	if( [[self window] firstResponder] != self)
 		[[self window] makeFirstResponder: self];
 	
+	[self magicTrick];
+	
 	rotateLines = NO;
 	moveCenter = NO;
 	
@@ -1076,6 +1099,8 @@ static BOOL frameZoomed = NO;
 	
 	[self restoreCamera];
 	
+	windowController.lowLOD = YES;
+	
 	[vrView rightMouseDragged: theEvent];
 	
 	[self updateViewMPR: NO];
@@ -1088,15 +1113,23 @@ static BOOL frameZoomed = NO;
 
 - (void)rightMouseUp:(NSEvent *)theEvent
 {
-	windowController.lowLOD = NO;
 	[self flagsChanged: theEvent];
 	
 	[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector( delayedFullLODRendering:) object: nil];
 	
+	windowController.lowLOD = NO;
+	
 	[self restoreCamera];
 	
 	[vrView rightMouseUp: theEvent];
-	
+
+	if( vrView.lowResLODFactor > 1)
+	{
+		windowController.mprView1.camera.forceUpdate = YES;
+		windowController.mprView2.camera.forceUpdate = YES;
+		windowController.mprView3.camera.forceUpdate = YES;
+	}
+			
 	[self updateViewMPR];
 	
 	[self updateMousePosition: theEvent];

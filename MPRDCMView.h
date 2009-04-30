@@ -32,7 +32,7 @@
 	
 	int viewExport;
 	float fromIntervalExport, toIntervalExport;
-	float LOD, previousResolution, previousOrientation[ 9];
+	float LOD, previousResolution, previousPixelSpacing, previousOrientation[ 9];
 	
 	BOOL rotateLines;
 	BOOL moveCenter;
@@ -64,5 +64,6 @@
 - (void) restoreCameraAndCheckForFrame: (BOOL) v;
 - (void) updateMousePosition: (NSEvent*) theEvent;
 - (void) detect2DPointInThisSlice;
+- (void) magicTrick;
 
 @end
