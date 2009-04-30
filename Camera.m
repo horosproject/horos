@@ -47,8 +47,10 @@
 
 	is4D = NO;
 	movieIndexIn4D = 0;
-		
-	previewImage = [[NSImage alloc]  initWithContentsOfFile:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Empty.tif"]];
+	
+	//previewImage = [[NSImage alloc]  initWithContentsOfFile:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Empty.tif"]];
+	previewImage = nil;
+	
 	return self;
 }
 

@@ -255,12 +255,12 @@ static BOOL frameZoomed = NO;
 				if( windowController.dontUseAutoLOD == NO)
 					minimumResolution *= 0.5;
 				else
-					minimumResolution *= 0.4;
+					minimumResolution *= 0.3;
 			}
 			else
 			{
 				if( windowController.dontUseAutoLOD == NO)
-					minimumResolution *= 0.8;
+					minimumResolution *= 0.9;
 				else
 					minimumResolution *= 0.7;
 			}

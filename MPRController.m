@@ -131,6 +131,13 @@ static float deg2rad = 3.14159265358979/180.0;
 			emptyPix = [[[[fusedViewer2D imageView] curDCM] copy] autorelease];
 			[blendedMprView3 setDCM:  [NSMutableArray arrayWithObject: emptyPix] : [NSArray arrayWithObject: [files lastObject]] :nil :0 :'i' :YES];
 			
+			unsigned char *aR, *aG, *aB;
+			[[fusedViewer2D imageView] getCLUT: &aR :&aG :&aB];
+			
+			[blendedMprView1 setCLUT: aR :aG :aB];
+			[blendedMprView2 setCLUT: aR :aG :aB];
+			[blendedMprView3 setCLUT: aR :aG :aB];
+			
 			[mprView1 setBlending: blendedMprView1];
 			[mprView2 setBlending: blendedMprView2];
 			[mprView3 setBlending: blendedMprView3];

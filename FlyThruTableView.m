@@ -23,8 +23,7 @@
  - (void)awakeFromNib
 {
 	NSLog(@"awake from nib");
-    [self  registerForDraggedTypes:
-                        [NSArray arrayWithObject:FlyThruTableViewDataType]];
+    [self  registerForDraggedTypes:  [NSArray arrayWithObject:FlyThruTableViewDataType]];
 	[self setVerticalMotionCanBeginDrag:YES];
  
 }
