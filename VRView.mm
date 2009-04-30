@@ -4169,7 +4169,7 @@ public:
 	else if( c == 't')
 	{
 		NSDate	*now = [NSDate date];
-	
+		
 		NSLog( @"360 degree rotation - 100 images - START");
 		int i;
 		
@@ -7974,10 +7974,8 @@ public:
 						MotionVector[1] + ViewPoint[1],
 						MotionVector[2] + ViewPoint[2]);
 
-	if (rwi->GetLightFollowCamera()) 
-	{
+	if (rwi->GetLightFollowCamera())
 		aRenderer->UpdateLightsGeometryToFollowCamera();
-	}
 }
 
 - (void)recordFlyThru;

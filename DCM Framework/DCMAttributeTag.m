@@ -68,6 +68,8 @@
 	if (self = [super init])
 	{
 		NSScanner *scanner = [NSScanner scannerWithString:tagString];
+		if( tagString == nil)
+			NSLog( @"");
 		unsigned int uGroup, uElement;
 		[scanner scanHexInt:&uGroup];
 		[scanner scanString:@"," intoString:nil];
@@ -92,8 +94,11 @@
 	return self;
 	
 }
-- (id) initWithName:(NSString *)name{
+- (id) initWithName:(NSString *)name
+{
 	NSString *tagString = [(NSDictionary *)[DCMTagForNameDictionary sharedTagForNameDictionary] objectForKey:name];
+	if( tagString == nil)
+		return nil;
 	return [self initWithTagString:tagString];
 }
 

@@ -15093,7 +15093,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[sender release];
 }
 
-- (IBAction)importRawData:(id)sender{
+- (IBAction)importRawData:(id)sender
+{
 	[[rdPatientForm cellWithTag:0] setStringValue:@"Raw Data"]; //Patient Name
 	[[rdPatientForm cellWithTag:1] setStringValue:@"RD0001"];	//Patient ID
 	[[rdPatientForm cellWithTag:2] setStringValue:@"Raw Data Secondary Capture"]; //Study Descripition
@@ -15181,7 +15182,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 					numberBytes = 2;
 			}
 			int subDataLength = spp  * numberBytes * [rows intValue] * [columns intValue];	
-			if ([data length] >= subDataLength * [slices intValue]  + [offset intValue])	{					
+			
+			if ([data length] >= subDataLength * [slices intValue]  + [offset intValue])
+			{					
 				int i;
 				int s = [slices intValue];
 				//tmpObject for StudyUID andd SeriesUID				
@@ -15203,7 +15206,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 					[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:patientID] forName:@"PatientID"];
 					[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:studyDescription] forName:@"StudyDescription"];
 					[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[NSString stringWithFormat:@"%d", i]] forName:@"InstanceNumber"];
-					[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[NSString stringWithFormat:@"%d", 1]] forName:@"id"];
 					[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[NSString stringWithFormat:@"%d", studyID]] forName:@"StudyID"];
 					
 					[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:studyDate] forName:@"StudyDate"];

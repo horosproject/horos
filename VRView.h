@@ -49,7 +49,6 @@
 #include "vtkPlanes.h"
 #include "vtkPlaneSource.h"
 #include "vtkBoxWidget.h"
-#include "vtkPlaneWidget.h"
 #include "vtkPiecewiseFunction.h"
 #include "vtkPiecewiseFunction.h"
 #include "vtkColorTransferFunction.h"
@@ -124,7 +123,6 @@ typedef char* vtkPolyDataMapper2D;
 typedef char* vtkColorTransferFunction;
 typedef char* vtkActor2D;
 typedef char* vtkMyCallback;
-typedef char* vtkPlaneWidget;
 typedef char* vtkBoxWidget;
 typedef char* vtkVolumeRayCastCompositeFunction;
 
@@ -247,7 +245,6 @@ typedef char* vtkMyCallbackVR;
     vtkOutlineFilter		*outlineData;
 	
 	vtkMyCallbackVR				*cropcallback;
-	vtkPlaneWidget				*planeWidget;
 	vtkOrientationMarkerWidget	*orientationWidget;
 	vtkBoxWidget				*croppingBox;
 	double						initialCroppingBoxBounds[6];

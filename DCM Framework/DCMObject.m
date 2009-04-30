@@ -986,23 +986,36 @@ PixelRepresentation
 	[attributes setObject:attr  forKey:[(DCMAttributeTag *)[attr attrTag] stringValue]];
 }
 
-- (void)addAttributeValue:(id)value   forName:(NSString *)name{	
+- (void)addAttributeValue:(id)value forName:(NSString *)name
+{
 	DCMAttributeTag *tag = [DCMAttributeTag tagWithName:name];
-	DCMAttribute *attr = [DCMAttribute attributeWithAttributeTag:(DCMAttributeTag *)tag];
-	if ([attributes objectForKey:[tag stringValue]])
-		[[attributes objectForKey:[tag stringValue]] addValue:value];
-	else {
-		[attr addValue:value];
-		[attributes setObject:attr forKey: tag.stringValue];
+	
+	if( tag)
+	{
+		DCMAttribute *attr = [DCMAttribute attributeWithAttributeTag:(DCMAttributeTag *)tag];
+		if ([attributes objectForKey:[tag stringValue]])
+			[[attributes objectForKey:[tag stringValue]] addValue:value];
+		else
+		{
+			[attr addValue:value];
+			[attributes setObject:attr forKey: tag.stringValue];
+		}
 	}
+	else
+		NSLog( @"*** tagname not found in dictionary: %@", name);
 }
 
-- (void)setAttributeValues:(NSMutableArray *)values forName:(NSString *)name{
-	//NSLog(@"setAttr: %@", name);
+- (void)setAttributeValues:(NSMutableArray *)values forName:(NSString *)name
+{
 	DCMAttributeTag *tag = [DCMAttributeTag tagWithName:name];
-	DCMAttribute *attr = [DCMAttribute attributeWithAttributeTag:(DCMAttributeTag *)tag];
-	attr.values = values;
-	[attributes setObject:attr forKey: tag.stringValue];
+	if( tag)
+	{
+		DCMAttribute *attr = [DCMAttribute attributeWithAttributeTag:(DCMAttributeTag *)tag];
+		attr.values = values;
+		[attributes setObject:attr forKey: tag.stringValue];
+	}
+	else
+		NSLog( @"*** tagname not found in dictionary: %@", name);
 }
 
 //write Data

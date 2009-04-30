@@ -286,7 +286,6 @@ static BOOL frameZoomed = NO;
 			
 			if( moveCenter)
 				[vrView setLOD: 100];	// We dont need to really compute the image - we just want image origin for the other views.
-//			else NSLog( @"viewID: %d %f", viewID, LOD);
 			
 			[vrView render];
 		}
@@ -1103,6 +1102,15 @@ static BOOL frameZoomed = NO;
 	[self updateMousePosition: theEvent];
 }
 
+- (void) magicTrick	// Dont ask me to explain this function... it's just magic : rendering time is increased by 2 after this call...
+{
+	[self restoreCamera];
+	camera.forceUpdate = YES;
+	moveCenter = YES;
+	[self updateViewMPR: NO];
+	moveCenter = NO;
+}
+
 - (void) mouseDown:(NSEvent *)theEvent
 {
 	if( [[self window] firstResponder] != self)
@@ -1123,6 +1131,8 @@ static BOOL frameZoomed = NO;
 	{
 		clickCount = 1;
 	}
+	
+	[self magicTrick];
 	
 	if( clickCount == 2)
 	{
