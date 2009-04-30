@@ -250,19 +250,19 @@ static BOOL frameZoomed = NO;
 			if( minimumResolution > [o sliceInterval])
 				minimumResolution = [o sliceInterval];
 			
-			if( vrView.renderingMode == 1 || vrView.renderingMode == 3) // MIP, Mean
-			{
-				if( windowController.dontUseAutoLOD == NO)
-					minimumResolution *= 0.5;
-				else
-					minimumResolution *= 0.3;
-			}
-			else
+			if( windowController.clippingRangeThickness <= 3)
 			{
 				if( windowController.dontUseAutoLOD == NO)
 					minimumResolution *= 0.9;
 				else
 					minimumResolution *= 0.7;
+			}
+			else
+			{
+				if( windowController.dontUseAutoLOD == NO)
+					minimumResolution *= 0.5;
+				else
+					minimumResolution *= 0.3;
 			}
 			
 			if( minimumResolution > previousPixelSpacing && previousPixelSpacing != 0)
