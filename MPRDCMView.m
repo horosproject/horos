@@ -284,14 +284,6 @@ static BOOL frameZoomed = NO;
 			if( windowController.lowLOD)
 				previousPixelSpacing *= vrView.lowResLODFactor;
 			
-			if( viewID == 3)
-			{
-				if( windowController.lowLOD)
-					NSLog( @"LOW: %f", previousResolution);
-				else
-					NSLog( @"HIGH: %f", previousResolution);
-			}
-				
 			if( LOD > 4) LOD = 4;
 			
 			if( windowController.lowLOD)
