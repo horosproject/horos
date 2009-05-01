@@ -92,6 +92,8 @@ static float deg2rad = 3.14159265358979/180.0;
 		viewer2D = viewer;
 		fusedViewer2D = fusedViewer;
 		clippingRangeMode = 1;
+		LOD = [[NSUserDefaults standardUserDefaults] integerForKey: @"defaultMPRLOD"];
+		if( LOD < 1) LOD = 1;
 		
 		if( fusedViewer2D)
 			self.blendingModeAvailable = YES;
@@ -960,6 +962,8 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (void) setLOD: (float)lod;
 {
+	if( lod < 1) lod = 1;
+	
 	LOD = lod;
 	[hiddenVRView setLOD: lod];
 	
@@ -1494,6 +1498,10 @@ static float deg2rad = 3.14159265358979/180.0;
 		else
 			hiddenVRView.lowResLODFactor = 2.5;
 	}
+	
+	mprView1.LOD = LOD;
+	mprView2.LOD = LOD;
+	mprView3.LOD = LOD;
 	
 	[mprView1 restoreCamera];
 	mprView1.vrView.dontResetImage = YES;

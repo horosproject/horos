@@ -281,8 +281,6 @@ static BOOL frameZoomed = NO;
 			
 			previousResolution = [vrView getResolution];
 			previousPixelSpacing = [pix pixelSpacingX];
-			if( windowController.lowLOD)
-				previousPixelSpacing *= vrView.lowResLODFactor;
 			
 			if( LOD > 4) LOD = 4;
 			
@@ -1002,6 +1000,12 @@ static BOOL frameZoomed = NO;
 	if( displayCrossLines == NO)
 		return 0;
 	
+	if( LOD == 0)
+		return 0;
+	
+	if( curDCM.pixelSpacingX == 0)
+		return 0;
+	
 	// Intersection of the lines
 	NSPoint r = [self centerLines];
 	
@@ -1110,6 +1114,10 @@ static BOOL frameZoomed = NO;
 	[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector( delayedFullLODRendering:) object: nil];
 	
 	windowController.lowLOD = NO;
+	
+	windowController.mprView1.LOD *= 0.9;
+	windowController.mprView2.LOD *= 0.9;
+	windowController.mprView3.LOD *= 0.9;
 	
 	[self restoreCamera];
 	
@@ -1282,6 +1290,10 @@ static BOOL frameZoomed = NO;
 	[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector( delayedFullLODRendering:) object: nil];
 	
 	windowController.lowLOD = NO;
+	
+	windowController.mprView1.LOD *= 0.9;
+	windowController.mprView2.LOD *= 0.9;
+	windowController.mprView3.LOD *= 0.9;
 	
 	[self restoreCamera];
 	
