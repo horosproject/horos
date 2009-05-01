@@ -260,9 +260,9 @@ static BOOL frameZoomed = NO;
 			else
 			{
 				if( windowController.dontUseAutoLOD == NO)
-					minimumResolution *= 0.6;
+					minimumResolution *= 0.7;
 				else
-					minimumResolution *= 0.4;
+					minimumResolution *= 0.5;
 			}
 			
 			if( minimumResolution > previousPixelSpacing && previousPixelSpacing != 0)
