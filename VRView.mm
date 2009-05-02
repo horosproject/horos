@@ -1644,10 +1644,8 @@ public:
 
 - (void) flagsChanged:(NSEvent *) event
 {
-	long tool = [self getTool: event];
-	[self setCursorForView: tool];
+	[self setCursorForView: [self getTool: event]];
 	if( cursorSet) [cursor set];
-	
 	[super flagsChanged: event];
 }
 
@@ -2558,6 +2556,15 @@ public:
 	
 	NSPoint mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView: nil];
 	
+	if( isViewportResizable)
+	{
+		if( mouseLocStart.x < 20 && mouseLocStart.y < 20 && isViewportResizable)
+			[self setCursorForView: tTranslate];
+		else [self setCursorForView: [self getTool: theEvent]];
+		
+		if( cursorSet) [cursor set];
+	}
+	
 	NSMutableString *s = [NSMutableString stringWithFormat: NSLocalizedString( @"View Size: %d x %d", nil), (int) [self frame].size.width, (int) [self frame].size.height];
 	
 	if( [self get3DPixelUnder2DPositionX:mouseLocStart.x Y:mouseLocStart.y pixel:pix position:pos value:&value])
@@ -3303,7 +3310,7 @@ public:
 		return;
 	}
 
-	if( _mouseLocStart.x < 10 && _mouseLocStart.y < 10 && isViewportResizable)
+	if( _mouseLocStart.x < 20 && _mouseLocStart.y < 20 && isViewportResizable)
 	{
 		_resizeFrame = YES;
 	}
