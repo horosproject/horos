@@ -1869,13 +1869,13 @@ static float deg2rad = 3.14159265358979/180.0;
 						}
 					}
 					
-					mprView1.LOD = 40;
-					mprView2.LOD = 40;
-					mprView3.LOD = 40;
+					if( curExportView != mprView1) mprView1.LOD = 40;
+					if( curExportView != mprView2) mprView2.LOD = 40;
+					if( curExportView != mprView3) mprView3.LOD = 40;
 					
 					if( self.dcmQuality == 1)
 						curExportView.LOD = 1;
-					
+						
 					if( self.dcmFormat) 
 						[curExportView.vrView setViewSizeToMatrix3DExport];
 					
