@@ -32,7 +32,7 @@ static float deg2rad = 3.14159265358979/180.0;
 
 @synthesize dcmSameIntervalAndThickness, clippingRangeThickness, clippingRangeMode, mousePosition, mouseViewID, originalPix, wlwwMenuItems, LOD, dcmFrom;
 @synthesize dcmmN, dcmTo, dcmMode, dcmRotationDirection, dcmSeriesMode, dcmRotation, dcmNumberOfFrames, dcmQuality, dcmInterval, dcmSeriesName, dcmBatchNumberOfFrames;
-@synthesize colorAxis1, colorAxis2, colorAxis3, displayMousePosition, movieRate, blendingPercentage, horizontalSplit, verticalSplit, lowLOD, dontUseAutoLOD;
+@synthesize colorAxis1, colorAxis2, colorAxis3, displayMousePosition, movieRate, blendingPercentage, horizontalSplit, verticalSplit, lowLOD;
 @synthesize mprView1, mprView2, mprView3, curMovieIndex, maxMovieIndex, blendingMode, dcmFormat, blendingModeAvailable, dcmBatchReverse;
 
 + (double) angleBetweenVector:(float*) a andPlane:(float*) orientation
@@ -1708,15 +1708,10 @@ static float deg2rad = 3.14159265358979/180.0;
 			self.dcmFormat = 0; //RGB Capture
 		}
 		
-		if( self.dcmQuality == 1)
-		{
-			mprView1.LOD = LOD;
-			mprView2.LOD = LOD;
-			mprView3.LOD = LOD;
-			dontUseAutoLOD = YES;
+		curExportView.dontUseAutoLOD = YES;
 		
-			[self setLOD: 1.0];
-		}
+		if( self.dcmQuality == 1)
+			curExportView.LOD = 1;
 		
 		if( self.dcmFormat) 
 			[curExportView.vrView setViewSizeToMatrix3DExport];
@@ -1874,8 +1869,12 @@ static float deg2rad = 3.14159265358979/180.0;
 						}
 					}
 					
+					mprView1.LOD = 40;
+					mprView2.LOD = 40;
+					mprView3.LOD = 40;
+					
 					if( self.dcmQuality == 1)
-						[self setLOD: 1.0];
+						curExportView.LOD = 1;
 					
 					if( self.dcmFormat) 
 						[curExportView.vrView setViewSizeToMatrix3DExport];
@@ -1968,7 +1967,13 @@ static float deg2rad = 3.14159265358979/180.0;
 			[progress release];
 		}
 		
-		dontUseAutoLOD = NO;
+		mprView1.dontUseAutoLOD = NO;
+		mprView2.dontUseAutoLOD = NO;
+		mprView3.dontUseAutoLOD = NO;
+		
+		mprView1.LOD = LOD;
+		mprView2.LOD = LOD;
+		mprView3.LOD = LOD;
 		
 		if( quicktimeExportMode == NO)
 		{

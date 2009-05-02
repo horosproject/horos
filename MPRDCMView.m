@@ -29,7 +29,7 @@ static BOOL frameZoomed = NO;
 
 @implementation MPRDCMView
 
-@synthesize pix, camera, angleMPR, vrView, viewExport, toIntervalExport, fromIntervalExport, rotateLines, moveCenter, displayCrossLines, LOD;
+@synthesize dontUseAutoLOD, pix, camera, angleMPR, vrView, viewExport, toIntervalExport, fromIntervalExport, rotateLines, moveCenter, displayCrossLines, LOD;
 
 - (BOOL)becomeFirstResponder
 {
@@ -239,6 +239,7 @@ static BOOL frameZoomed = NO;
 	if( [self hasCameraChanged: currentCamera] == YES)
 	{
 		// AutoLOD
+		if( dontUseAutoLOD == NO)
 		{
 			DCMPix *o = [windowController originalPix];
 			
@@ -251,19 +252,9 @@ static BOOL frameZoomed = NO;
 				minimumResolution = [o sliceInterval];
 			
 			if( windowController.clippingRangeThickness <= 3)
-			{
-				if( windowController.dontUseAutoLOD == NO)
-					minimumResolution *= 0.9;
-				else
-					minimumResolution *= 0.7;
-			}
+				minimumResolution *= 0.9;
 			else
-			{
-				if( windowController.dontUseAutoLOD == NO)
-					minimumResolution *= 0.7;
-				else
-					minimumResolution *= 0.5;
-			}
+				minimumResolution *= 0.7;
 			
 			if( minimumResolution > previousPixelSpacing && previousPixelSpacing != 0)
 				LOD *= ( minimumResolution / previousPixelSpacing);
@@ -289,7 +280,9 @@ static BOOL frameZoomed = NO;
 			else
 				[vrView setLOD: LOD];
 		}
-		
+		else
+			[vrView setLOD: LOD];
+				
 		if( [self frame].size.width > 0 && [self frame].size.height > 0)
 		{
 			if( windowController.maxMovieIndex > 1 && (windowController.clippingRangeMode == 1 || windowController.clippingRangeMode == 3))	//To avoid the wrong pixel value bug...

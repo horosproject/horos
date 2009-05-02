@@ -26,6 +26,7 @@
 	Camera *camera;
 	MPRController *windowController;
 	float angleMPR;
+	BOOL dontUseAutoLOD;
 	
 	float crossLinesA[2][3];
 	float crossLinesB[2][3];
@@ -49,7 +50,7 @@
 @property (retain) Camera *camera;
 @property float angleMPR, fromIntervalExport, toIntervalExport, LOD;
 @property int viewExport;
-@property BOOL displayCrossLines;
+@property BOOL displayCrossLines, dontUseAutoLOD;
 @property (readonly) VRView *vrView;
 @property (readonly) BOOL rotateLines, moveCenter;
 
