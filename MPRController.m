@@ -300,7 +300,12 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (void) showWindow:(id) sender
 {
-	[hiddenVRView setLOD: 20];
+	mprView1.dontUseAutoLOD = YES;
+	mprView2.dontUseAutoLOD = YES;
+	mprView3.dontUseAutoLOD = YES;
+	mprView1.LOD = 100;
+	mprView2.LOD = 100;
+	mprView3.LOD = 100;
 	
 	BOOL c = [[NSUserDefaults standardUserDefaults] boolForKey: @"syncZoomLevelMPR"];
 	
@@ -308,9 +313,9 @@ static float deg2rad = 3.14159265358979/180.0;
 	
 	// Default Init
 	[self setClippingRangeMode: 1]; // MIP
-	[self setClippingRangeThickness: 1];
+	self.clippingRangeThickness = 1;
 	if( [self getClippingRangeThicknessInMm] < fabs( [originalPix sliceInterval]))
-		[self setClippingRangeThickness: 2];
+		self.clippingRangeThickness = 2;
 	
 	[[self window] makeFirstResponder: mprView1];
 	[mprView1.vrView resetImage: self];
@@ -333,12 +338,16 @@ static float deg2rad = 3.14159265358979/180.0;
 	
 	[super showWindow: sender];
 	
-	[self setLOD: [[NSUserDefaults standardUserDefaults] floatForKey:@"defaultMPRLOD"]];
-	
 	[self setTool: toolsMatrix];
 	
 	if( c == NO)
 		[[NSUserDefaults standardUserDefaults] setBool: c forKey: @"syncZoomLevelMPR"];
+
+	mprView1.dontUseAutoLOD = NO;
+	mprView2.dontUseAutoLOD = NO;
+	mprView3.dontUseAutoLOD = NO;
+	
+	[self setLOD: [[NSUserDefaults standardUserDefaults] floatForKey:@"defaultMPRLOD"]];
 }
 
 -(void) awakeFromNib
@@ -1498,10 +1507,6 @@ static float deg2rad = 3.14159265358979/180.0;
 		else
 			hiddenVRView.lowResLODFactor = 2.5;
 	}
-	
-	mprView1.LOD = LOD;
-	mprView2.LOD = LOD;
-	mprView3.LOD = LOD;
 	
 	[mprView1 restoreCamera];
 	mprView1.vrView.dontResetImage = YES;
