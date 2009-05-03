@@ -1718,8 +1718,11 @@ static float deg2rad = 3.14159265358979/180.0;
 		if( self.dcmQuality == 1)
 			curExportView.LOD = 1;
 		
-		if( self.dcmFormat) 
+		if( self.dcmFormat)
+		{
+			[hiddenVRView setLOD: curExportView.LOD];
 			[curExportView.vrView setViewSizeToMatrix3DExport];
+		}
 		
 		if( curExportView.vrView.exportDCM == nil)
 			curExportView.vrView.exportDCM = [[[DICOMExport alloc] init] autorelease];
@@ -1789,7 +1792,7 @@ static float deg2rad = 3.14159265358979/180.0;
 			[progress close];
 			[progress release];
 		}
-		else if( dcmMode == 0) // A 3D sequence or batch sequence
+		else if( dcmMode == 0) // A 3D rotation or batch sequence
 		{
 			Wait *progress = [[Wait alloc] initWithString: @"Creating series"];
 			[progress showWindow:self];
@@ -1799,7 +1802,7 @@ static float deg2rad = 3.14159265358979/180.0;
 			[curExportView.vrView.exportDCM setSeriesDescription: self.dcmSeriesName];
 			[curExportView.vrView.exportDCM setSeriesNumber:8930 + [[NSCalendarDate date] minuteOfHour]  + [[NSCalendarDate date] secondOfMinute]];
 			
-			if( dcmSeriesMode == 1)
+			if( dcmSeriesMode == 1) // 3D rotation
 			{
 				if( maxMovieIndex > 0)
 				{

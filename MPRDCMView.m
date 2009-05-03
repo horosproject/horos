@@ -302,6 +302,8 @@ static BOOL frameZoomed = NO;
 			w = [pix pwidth];
 			h = [pix pheight];
 			isRGB = [pix isRGB];
+			
+			[vrView setLOD: LOD];
 		}
 		else
 			imagePtr = [vrView imageInFullDepthWidth: &w height: &h isRGB: &isRGB];
