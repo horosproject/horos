@@ -1180,7 +1180,7 @@ public:
 				numberOfFrames *= [[[self window] windowController] movieFrames];
 			}
 			
-			Wait *progress = [[Wait alloc] initWithString:@"Creating a DICOM series"];
+			Wait *progress = [[Wait alloc] initWithString: NSLocalizedString(@"Creating a DICOM series", nil)];
 			[progress showWindow:self];
 			[[progress progress] setMaxValue: numberOfFrames];
 			[progress setCancel:YES];

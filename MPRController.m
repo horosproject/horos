@@ -1794,7 +1794,7 @@ static float deg2rad = 3.14159265358979/180.0;
 		}
 		else if( dcmMode == 0) // A 3D rotation or batch sequence
 		{
-			Wait *progress = [[Wait alloc] initWithString: @"Creating series"];
+			Wait *progress = [[Wait alloc] initWithString: NSLocalizedString( @"Creating series", nil)];
 			[progress showWindow:self];
 			[progress setCancel:YES];
 			
