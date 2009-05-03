@@ -303,9 +303,9 @@ static float deg2rad = 3.14159265358979/180.0;
 	mprView1.dontUseAutoLOD = YES;
 	mprView2.dontUseAutoLOD = YES;
 	mprView3.dontUseAutoLOD = YES;
-	mprView1.LOD = 100;
-	mprView2.LOD = 100;
-	mprView3.LOD = 100;
+	mprView1.LOD = 40;
+	mprView2.LOD = 40;
+	mprView3.LOD = 40;
 	
 	BOOL c = [[NSUserDefaults standardUserDefaults] boolForKey: @"syncZoomLevelMPR"];
 	

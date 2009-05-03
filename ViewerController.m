@@ -11042,6 +11042,10 @@ int i,j,l;
 	
 	selectedRoi = [self selectedROI];
 	
+	[maxValueText setFloatValue: [[pixList[0] objectAtIndex: 0] maxValueOfSeries]];
+	[minValueText setFloatValue: [[pixList[0] objectAtIndex: 0] minValueOfSeries]]; 
+	[newValueText setFloatValue: [[pixList[0] objectAtIndex: 0] minValueOfSeries]];
+	
 	if( selectedRoi == nil)
 	{
 		[InOutROI setEnabled:NO];
