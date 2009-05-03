@@ -570,7 +570,7 @@ typedef struct _xyzArray
 			float			o[ 9];
 			DICOMExport		*dcmSequence = [[DICOMExport alloc] init];
 			
-			Wait *progress = [[Wait alloc] initWithString:@"Creating a DICOM series"];
+			Wait *progress = [[Wait alloc] initWithString: NSLocalizedString( @"Creating a DICOM series", nil)];
 			[progress showWindow:self];
 			[[progress progress] setMaxValue: numberOfFrames];
 			

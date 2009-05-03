@@ -179,7 +179,7 @@
 
 - (void) anonymizeProcess:(NSString*) path
 {
-	Wait *splash = [[Wait alloc] initWithString:@"Anonymize..."];
+	Wait *splash = [[Wait alloc] initWithString: NSLocalizedString(@"Anonymize...", nil)];
 	[splash showWindow:self];
 	[[splash progress] setMaxValue:[filesToAnonymize count]];
 	

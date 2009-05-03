@@ -498,7 +498,7 @@
 			curTime = QTMakeTime(timeValue, timeScale);
 		}
 		
-		Wait    *wait = [[Wait alloc] initWithString: @"Movie Export"];
+		Wait    *wait = [[Wait alloc] initWithString: NSLocalizedString( @"Movie Export", nil) ];
 		[wait showWindow:self];
 		
 		// For each sample...
