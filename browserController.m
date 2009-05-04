@@ -605,7 +605,13 @@ static NSArray*	statesArray = nil;
 				   && [DCMAbstractSyntaxUID isStructuredReport: [curDict objectForKey: @"SOPClassUID"]] == NO
 				   && [DCMAbstractSyntaxUID isKeyObjectDocument: [curDict objectForKey: @"SOPClassUID"]] == NO)
 				{
-					NSLog(@"unsupported DICOM SOP CLASS");
+					NSLog(@"unsupported DICOM SOP CLASS -> Reject the file");
+					curDict = nil;
+				}
+				
+				if( [curDict objectForKey:@"SOPClassUID"] == nil && [[curDict objectForKey: @"fileType"] hasPrefix:@"DICOM"] == YES)
+				{
+					NSLog(@"no DICOM SOP CLASS -> Reject the file");
 					curDict = nil;
 				}
 				
@@ -921,7 +927,6 @@ static NSArray*	statesArray = nil;
 					if( [newFile length] >= [INpath length] && [newFile compare:INpath options:NSLiteralSearch range:NSMakeRange(0, [INpath length])] == NSOrderedSame)
 					{
 						NSLog(@"**** Unreadable file: %@", newFile);
-						NSLog(@"**** This file in the DATABASE folder: move it to the unreadable folder");
 						
 						if ( DELETEFILELISTENER)
 						{
