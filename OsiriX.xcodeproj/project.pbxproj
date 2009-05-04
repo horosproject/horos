@@ -2536,7 +2536,6 @@
 		CE1E7F5D07E2DD0D00A85908 /* DatabaseWindow.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE1E7F5A07E2DD0D00A85908 /* DatabaseWindow.icns */; };
 		CE1F6C4C07D715EB00165CBE /* Reset.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE1F6C4907D715EB00165CBE /* Reset.tiff */; };
 		CE2028FB094EFFC300C00310 /* Endoscopy.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE2028F8094EFFC300C00310 /* Endoscopy.tif */; };
-		CE23CC040EEDB21C006C64F8 /* libvtkpng.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2449170DA42A7600B8D506 /* libvtkpng.a */; };
 		CE24491C0DA42A7600B8D506 /* libvtkGenericFiltering.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2449010DA42A7600B8D506 /* libvtkGenericFiltering.a */; };
 		CE24491D0DA42A7600B8D506 /* libvtkCommon.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2449020DA42A7600B8D506 /* libvtkCommon.a */; };
 		CE24491F0DA42A7600B8D506 /* libvtkVolumeRendering.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2449040DA42A7600B8D506 /* libvtkVolumeRendering.a */; };
@@ -4742,7 +4741,6 @@
 		CEBA30200EEDB5F200D920B4 /* libvtksys.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2448FE0DA42A7600B8D506 /* libvtksys.a */; };
 		CEBA30220EEDB62300D920B4 /* libvtktiff.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE24490E0DA42A7600B8D506 /* libvtktiff.a */; };
 		CEBA30240EEDB71D00D920B4 /* libvtkWidgets.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2448FF0DA42A7600B8D506 /* libvtkWidgets.a */; };
-		CEBA30260EEDB75300D920B4 /* libvtkzlib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2449180DA42A7600B8D506 /* libvtkzlib.a */; };
 		CEBBE1820C82F33900247888 /* libtiff.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE7BBFD30C82DCA5000AD12F /* libtiff.dylib */; };
 		CEBD8AC70875B233000E42D6 /* OSICDPreferencePane.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = CEBD8A5E0875B233000E42D6 /* OSICDPreferencePane.prefPane */; };
 		CEBD8AC90875B233000E42D6 /* OSIGeneralPreferencePane.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = CEBD8A7C0875B233000E42D6 /* OSIGeneralPreferencePane.prefPane */; };
@@ -4787,7 +4785,6 @@
 		CED555FD0DF48BBB0054351B /* libitkopenjpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CED555DF0DF48BBA0054351B /* libitkopenjpeg.a */; };
 		CED555FE0DF48BBB0054351B /* libITKSpatialObject.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CED555E00DF48BBA0054351B /* libITKSpatialObject.a */; };
 		CED555FF0DF48BBB0054351B /* libITKAlgorithms.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CED555E10DF48BBA0054351B /* libITKAlgorithms.a */; };
-		CED556000DF48BBB0054351B /* libitkgdcm.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CED555E20DF48BBA0054351B /* libitkgdcm.a */; };
 		CED556010DF48BBB0054351B /* libITKBasicFilters.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CED555E30DF48BBA0054351B /* libITKBasicFilters.a */; };
 		CED556020DF48BBB0054351B /* libITKznz.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CED555E40DF48BBA0054351B /* libITKznz.a */; };
 		CED556030DF48BBB0054351B /* libitkvnl_algo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CED555E50DF48BBA0054351B /* libitkvnl_algo.a */; };
@@ -4800,12 +4797,10 @@
 		CED5560B0DF48BBB0054351B /* libitksys.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CED555ED0DF48BBA0054351B /* libitksys.a */; };
 		CED5560C0DF48BBB0054351B /* libitkjpeg8.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CED555EE0DF48BBA0054351B /* libitkjpeg8.a */; };
 		CED5560D0DF48BBB0054351B /* libITKEXPAT.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CED555EF0DF48BBA0054351B /* libITKEXPAT.a */; };
-		CED5560E0DF48BBB0054351B /* libitkzlib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CED555F00DF48BBA0054351B /* libitkzlib.a */; };
 		CED5560F0DF48BBB0054351B /* libitkvnl_inst.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CED555F10DF48BBA0054351B /* libitkvnl_inst.a */; };
 		CED556100DF48BBC0054351B /* libITKMetaIO.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CED555F20DF48BBA0054351B /* libITKMetaIO.a */; };
 		CED556110DF48BBC0054351B /* libitkjpeg16.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CED555F30DF48BBA0054351B /* libitkjpeg16.a */; };
 		CED556120DF48BBC0054351B /* libITKCommon.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CED555F40DF48BBA0054351B /* libITKCommon.a */; };
-		CED556130DF48BBC0054351B /* libitkpng.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CED555F50DF48BBA0054351B /* libitkpng.a */; };
 		CED556140DF48BBC0054351B /* libITKniftiio.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CED555F60DF48BBA0054351B /* libITKniftiio.a */; };
 		CED80C8B0BF187930058A469 /* AutofillDisabled.tif in Resources */ = {isa = PBXBuildFile; fileRef = CED80C790BF187930058A469 /* AutofillDisabled.tif */; };
 		CED80C8C0BF187930058A469 /* Autofill.tif in Resources */ = {isa = PBXBuildFile; fileRef = CED80C7A0BF187930058A469 /* Autofill.tif */; };
@@ -7311,8 +7306,6 @@
 		CE2449120DA42A7600B8D506 /* libvtkImaging.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkImaging.a; path = Binaries/VTKLibs/libvtkImaging.a; sourceTree = "<group>"; };
 		CE2449150DA42A7600B8D506 /* libvtkRendering.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkRendering.a; path = Binaries/VTKLibs/libvtkRendering.a; sourceTree = "<group>"; };
 		CE2449160DA42A7600B8D506 /* libvtkjpeg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkjpeg.a; path = Binaries/VTKLibs/libvtkjpeg.a; sourceTree = "<group>"; };
-		CE2449170DA42A7600B8D506 /* libvtkpng.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkpng.a; path = Binaries/VTKLibs/libvtkpng.a; sourceTree = "<group>"; };
-		CE2449180DA42A7600B8D506 /* libvtkzlib.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkzlib.a; path = Binaries/VTKLibs/libvtkzlib.a; sourceTree = "<group>"; };
 		CE26441F06DCF096007F5B71 /* ITKSegmentation3DController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = ITKSegmentation3DController.m; sourceTree = "<group>"; };
 		CE279EEE06AEFB87008315C8 /* Mail.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Mail.icns; sourceTree = "<group>"; };
 		CE27BA0E0C113BBA00BDC9B3 /* 3DPresetsPanel.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = 3DPresetsPanel.tiff; sourceTree = "<group>"; };
@@ -9133,7 +9126,6 @@
 		CED555DF0DF48BBA0054351B /* libitkopenjpeg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libitkopenjpeg.a; path = ITK180/bin/libitkopenjpeg.a; sourceTree = "<group>"; };
 		CED555E00DF48BBA0054351B /* libITKSpatialObject.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libITKSpatialObject.a; path = ITK180/bin/libITKSpatialObject.a; sourceTree = "<group>"; };
 		CED555E10DF48BBA0054351B /* libITKAlgorithms.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libITKAlgorithms.a; path = ITK180/bin/libITKAlgorithms.a; sourceTree = "<group>"; };
-		CED555E20DF48BBA0054351B /* libitkgdcm.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libitkgdcm.a; path = ITK180/bin/libitkgdcm.a; sourceTree = "<group>"; };
 		CED555E30DF48BBA0054351B /* libITKBasicFilters.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libITKBasicFilters.a; path = ITK180/bin/libITKBasicFilters.a; sourceTree = "<group>"; };
 		CED555E40DF48BBA0054351B /* libITKznz.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libITKznz.a; path = ITK180/bin/libITKznz.a; sourceTree = "<group>"; };
 		CED555E50DF48BBA0054351B /* libitkvnl_algo.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libitkvnl_algo.a; path = ITK180/bin/libitkvnl_algo.a; sourceTree = "<group>"; };
@@ -9146,12 +9138,10 @@
 		CED555ED0DF48BBA0054351B /* libitksys.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libitksys.a; path = ITK180/bin/libitksys.a; sourceTree = "<group>"; };
 		CED555EE0DF48BBA0054351B /* libitkjpeg8.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libitkjpeg8.a; path = ITK180/bin/libitkjpeg8.a; sourceTree = "<group>"; };
 		CED555EF0DF48BBA0054351B /* libITKEXPAT.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libITKEXPAT.a; path = ITK180/bin/libITKEXPAT.a; sourceTree = "<group>"; };
-		CED555F00DF48BBA0054351B /* libitkzlib.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libitkzlib.a; path = ITK180/bin/libitkzlib.a; sourceTree = "<group>"; };
 		CED555F10DF48BBA0054351B /* libitkvnl_inst.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libitkvnl_inst.a; path = ITK180/bin/libitkvnl_inst.a; sourceTree = "<group>"; };
 		CED555F20DF48BBA0054351B /* libITKMetaIO.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libITKMetaIO.a; path = ITK180/bin/libITKMetaIO.a; sourceTree = "<group>"; };
 		CED555F30DF48BBA0054351B /* libitkjpeg16.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libitkjpeg16.a; path = ITK180/bin/libitkjpeg16.a; sourceTree = "<group>"; };
 		CED555F40DF48BBA0054351B /* libITKCommon.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libITKCommon.a; path = ITK180/bin/libITKCommon.a; sourceTree = "<group>"; };
-		CED555F50DF48BBA0054351B /* libitkpng.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libitkpng.a; path = ITK180/bin/libitkpng.a; sourceTree = "<group>"; };
 		CED555F60DF48BBA0054351B /* libITKniftiio.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libITKniftiio.a; path = ITK180/bin/libITKniftiio.a; sourceTree = "<group>"; };
 		CED80C790BF187930058A469 /* AutofillDisabled.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = AutofillDisabled.tif; sourceTree = "<group>"; };
 		CED80C7A0BF187930058A469 /* Autofill.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Autofill.tif; sourceTree = "<group>"; };
@@ -9302,7 +9292,6 @@
 				CED555FD0DF48BBB0054351B /* libitkopenjpeg.a in Frameworks */,
 				CED555FE0DF48BBB0054351B /* libITKSpatialObject.a in Frameworks */,
 				CED555FF0DF48BBB0054351B /* libITKAlgorithms.a in Frameworks */,
-				CED556000DF48BBB0054351B /* libitkgdcm.a in Frameworks */,
 				CED556010DF48BBB0054351B /* libITKBasicFilters.a in Frameworks */,
 				CED556020DF48BBB0054351B /* libITKznz.a in Frameworks */,
 				CED556030DF48BBB0054351B /* libitkvnl_algo.a in Frameworks */,
@@ -9315,14 +9304,11 @@
 				CED5560B0DF48BBB0054351B /* libitksys.a in Frameworks */,
 				CED5560C0DF48BBB0054351B /* libitkjpeg8.a in Frameworks */,
 				CED5560D0DF48BBB0054351B /* libITKEXPAT.a in Frameworks */,
-				CED5560E0DF48BBB0054351B /* libitkzlib.a in Frameworks */,
 				CED5560F0DF48BBB0054351B /* libitkvnl_inst.a in Frameworks */,
 				CED556100DF48BBC0054351B /* libITKMetaIO.a in Frameworks */,
 				CED556110DF48BBC0054351B /* libitkjpeg16.a in Frameworks */,
 				CED556120DF48BBC0054351B /* libITKCommon.a in Frameworks */,
-				CED556130DF48BBC0054351B /* libitkpng.a in Frameworks */,
 				CED556140DF48BBC0054351B /* libITKniftiio.a in Frameworks */,
-				CE23CC040EEDB21C006C64F8 /* libvtkpng.a in Frameworks */,
 				CEBA30130EEDB3FF00D920B4 /* libvtkexpat.a in Frameworks */,
 				CEBA30160EEDB4EB00D920B4 /* libvtkFiltering.a in Frameworks */,
 				CEBA30180EEDB52100D920B4 /* libvtkfreetype.a in Frameworks */,
@@ -9331,7 +9317,6 @@
 				CEBA30200EEDB5F200D920B4 /* libvtksys.a in Frameworks */,
 				CEBA30220EEDB62300D920B4 /* libvtktiff.a in Frameworks */,
 				CEBA30240EEDB71D00D920B4 /* libvtkWidgets.a in Frameworks */,
-				CEBA30260EEDB75300D920B4 /* libvtkzlib.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -12376,13 +12361,11 @@
 				CE2449120DA42A7600B8D506 /* libvtkImaging.a */,
 				CE2449110DA42A7600B8D506 /* libvtkIO.a */,
 				CE2449160DA42A7600B8D506 /* libvtkjpeg.a */,
-				CE2449170DA42A7600B8D506 /* libvtkpng.a */,
 				CE2449150DA42A7600B8D506 /* libvtkRendering.a */,
 				CE2448FE0DA42A7600B8D506 /* libvtksys.a */,
 				CE24490E0DA42A7600B8D506 /* libvtktiff.a */,
 				CE2449040DA42A7600B8D506 /* libvtkVolumeRendering.a */,
 				CE2448FF0DA42A7600B8D506 /* libvtkWidgets.a */,
-				CE2449180DA42A7600B8D506 /* libvtkzlib.a */,
 			);
 			name = VTKLibs;
 			sourceTree = "<group>";
@@ -12399,7 +12382,6 @@
 				CED555DF0DF48BBA0054351B /* libitkopenjpeg.a */,
 				CED555E00DF48BBA0054351B /* libITKSpatialObject.a */,
 				CED555E10DF48BBA0054351B /* libITKAlgorithms.a */,
-				CED555E20DF48BBA0054351B /* libitkgdcm.a */,
 				CED555E30DF48BBA0054351B /* libITKBasicFilters.a */,
 				CED555E40DF48BBA0054351B /* libITKznz.a */,
 				CED555E50DF48BBA0054351B /* libitkvnl_algo.a */,
@@ -12412,12 +12394,10 @@
 				CED555ED0DF48BBA0054351B /* libitksys.a */,
 				CED555EE0DF48BBA0054351B /* libitkjpeg8.a */,
 				CED555EF0DF48BBA0054351B /* libITKEXPAT.a */,
-				CED555F00DF48BBA0054351B /* libitkzlib.a */,
 				CED555F10DF48BBA0054351B /* libitkvnl_inst.a */,
 				CED555F20DF48BBA0054351B /* libITKMetaIO.a */,
 				CED555F30DF48BBA0054351B /* libitkjpeg16.a */,
 				CED555F40DF48BBA0054351B /* libITKCommon.a */,
-				CED555F50DF48BBA0054351B /* libitkpng.a */,
 				CED555F60DF48BBA0054351B /* libITKniftiio.a */,
 			);
 			name = ITKLibs;
@@ -20290,8 +20270,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = x86_64;
-				COPY_PHASE_STRIP = NO;
-				DEAD_CODE_STRIPPING = YES;
+				COPY_PHASE_STRIP = YES;
+				DEAD_CODE_STRIPPING = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					.,
 					Binaries,
@@ -20352,6 +20332,8 @@
 				);
 				PREBINDING = YES;
 				PRODUCT_NAME = OsiriX;
+				STRIP_INSTALLED_PRODUCT = YES;
+				STRIP_STYLE = debugging;
 			};
 			name = "Development 64-bits";
 		};
@@ -20573,7 +20555,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				COPY_PHASE_STRIP = NO;
+				COPY_PHASE_STRIP = YES;
+				DEAD_CODE_STRIPPING = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					.,
 					Binaries,
@@ -20635,7 +20618,10 @@
 					3DconnexionClient,
 				);
 				PREBINDING = NO;
+				PRESERVE_DEAD_CODE_INITS_AND_TERMS = NO;
 				PRODUCT_NAME = OsiriX;
+				STRIP_INSTALLED_PRODUCT = YES;
+				STRIP_STYLE = debugging;
 			};
 			name = "Deployment Universal 32-bit";
 		};
@@ -20877,7 +20863,7 @@
 					ppc,
 				);
 				COPY_PHASE_STRIP = YES;
-				DEAD_CODE_STRIPPING = YES;
+				DEAD_CODE_STRIPPING = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					.,
 					Binaries,
@@ -20894,7 +20880,7 @@
 				GCC_ENABLE_SUPPLEMENTAL_SSE3_INSTRUCTIONS = YES;
 				GCC_FAST_MATH = YES;
 				GCC_MODEL_PPC64 = NO;
-				GCC_OPTIMIZATION_LEVEL = s;
+				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = OsiriX_Prefix.pch;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
@@ -20914,6 +20900,7 @@
 				IBC_FLATTEN_NIBS = NO;
 				INFOPLIST_FILE = "Deployment-Info.plist";
 				INSTALL_PATH = "$(USER_APPS_DIR)";
+				KEEP_PRIVATE_EXTERNS = YES;
 				LIBRARY_SEARCH_PATHS = (
 					Binaries/LibTiff,
 					Binaries/VTKLibs,
@@ -20935,9 +20922,14 @@
 					AppKit,
 					"-weak_framework",
 					3DconnexionClient,
+					"-undefined",
+					dynamic_lookup,
 				);
 				PREBINDING = YES;
+				PRESERVE_DEAD_CODE_INITS_AND_TERMS = NO;
 				PRODUCT_NAME = OsiriX;
+				STRIP_INSTALLED_PRODUCT = YES;
+				STRIP_STYLE = debugging;
 			};
 			name = "Deployment Universal 64-bit";
 		};
