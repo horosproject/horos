@@ -185,13 +185,15 @@
 		[image lockFocus];
 		[[NSGraphicsContext currentContext] setShouldAntialias:antialias];
 		
-		if ([boxColor alphaComponent]) { // this should be == 0.0f but need to make sure
+		if ([boxColor alphaComponent]) // this should be == 0.0f but need to make sure
+		{ 
 			[boxColor set]; 
 			NSBezierPath *path = [NSBezierPath bezierPathWithRoundedRect:NSInsetRect(NSMakeRect (0.0f, 0.0f, frameSize.width-1, frameSize.height-1) , 0.5, 0.5) cornerRadius:cRadius];
 			[path fill];
 		}
 
-		if ([borderColor alphaComponent]) {
+		if ([borderColor alphaComponent])
+		{
 			[borderColor set]; 
 			NSBezierPath *path = [NSBezierPath bezierPathWithRoundedRect:NSInsetRect(NSMakeRect (0.0f, 0.0f, frameSize.width-1, frameSize.height-1), 0.5, 0.5) cornerRadius:cRadius];
 			[path setLineWidth:1.0f];
@@ -201,34 +203,36 @@
 		[textColor set]; 
 		[string drawAtPoint:NSMakePoint (marginSize.width, marginSize.height)]; // draw at offset position
 		
+		[bitmap release];
+		bitmap = [[NSBitmapImageRep alloc] initWithFocusedViewRect:NSMakeRect (0.0f, 0.0f, frameSize.width, frameSize.height)];
+		
 		[image unlockFocus];
-	}
-	
-	[bitmap release];
-	bitmap = [[NSBitmapImageRep alloc] initWithFocusedViewRect:NSMakeRect (0.0f, 0.0f, frameSize.width, frameSize.height)];
 		
-	texSize.width = [bitmap pixelsWide];
-	texSize.height = [bitmap pixelsHigh];
-	
-	if (cgl_ctx = CGLGetCurrentContext ()) { // if we successfully retrieve a current context (required)
-		glPushAttrib(GL_TEXTURE_BIT);
-		if (0 != texName) glDeleteTextures( 1, &texName);
-		glGenTextures (1, &texName);
+		texSize.width = [bitmap pixelsWide];
+		texSize.height = [bitmap pixelsHigh];
 		
-		glTexParameterf (GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_PRIORITY, 1.0f);
-		glPixelStorei (GL_UNPACK_CLIENT_STORAGE_APPLE, 0);
-		glTextureRangeAPPLE(GL_TEXTURE_RECTANGLE_EXT, texSize.width * texSize.height * 4, [bitmap bitmapData]);
-		glPixelStorei (GL_UNPACK_ROW_LENGTH, texSize.width);
-		
-		glBindTexture (GL_TEXTURE_RECTANGLE_EXT, texName);
-		
-			glTexParameteri(GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-			glTexParameteri(GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-			glTexImage2D(GL_TEXTURE_RECTANGLE_EXT, 0, GL_RGBA, texSize.width, texSize.height, 0, [bitmap hasAlpha] ? GL_RGBA : GL_RGB, GL_UNSIGNED_BYTE, [bitmap bitmapData]);
+		if (cgl_ctx = CGLGetCurrentContext ()) // if we successfully retrieve a current context (required)
+		{ 
+			glPushAttrib(GL_TEXTURE_BIT);
+			if (0 != texName) glDeleteTextures( 1, &texName);
+			glGenTextures (1, &texName);
+			
+			glTexParameterf (GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_PRIORITY, 1.0f);
+			glPixelStorei (GL_UNPACK_CLIENT_STORAGE_APPLE, 0);
+			glTextureRangeAPPLE(GL_TEXTURE_RECTANGLE_EXT, texSize.width * texSize.height * 4, [bitmap bitmapData]);
+			glPixelStorei (GL_UNPACK_ROW_LENGTH, texSize.width);
+			
+			glBindTexture (GL_TEXTURE_RECTANGLE_EXT, texName);
+			
+				glTexParameteri(GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+				glTexParameteri(GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+				glTexImage2D(GL_TEXTURE_RECTANGLE_EXT, 0, GL_RGBA, texSize.width, texSize.height, 0, [bitmap hasAlpha] ? GL_RGBA : GL_RGB, GL_UNSIGNED_BYTE, [bitmap bitmapData]);
 
-		glPopAttrib();
-	} else
-		NSLog (@"StringTexture -genTexture: Failure to get current OpenGL context\n");
+			glPopAttrib();
+		}
+		else
+			NSLog (@"StringTexture -genTexture: Failure to get current OpenGL context\n");
+	}
 	
 	[image release];
 	
@@ -386,7 +390,8 @@
 {
 	if (requiresUpdate)
 		[self genTexture];
-	if (texName) {
+	if (texName)
+	{
 		glPushAttrib(GL_ENABLE_BIT | GL_TEXTURE_BIT | GL_COLOR_BUFFER_BIT); // GL_COLOR_BUFFER_BIT for glBlendFunc, GL_ENABLE_BIT for glEnable / glDisable
 		
 		glDisable (GL_DEPTH_TEST); // ensure text is not remove by depth buffer test.
