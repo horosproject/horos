@@ -458,6 +458,9 @@
 		AB0128650635991400A74AA1 /* QuicktimeExport.m in Sources */ = {isa = PBXBuildFile; fileRef = AB0128630635991400A74AA1 /* QuicktimeExport.m */; };
 		AB0CA46105BE159500F52729 /* ColorTransferView.h in Headers */ = {isa = PBXBuildFile; fileRef = AB0CA45F05BE159500F52729 /* ColorTransferView.h */; };
 		AB0CA46205BE159500F52729 /* ColorTransferView.m in Sources */ = {isa = PBXBuildFile; fileRef = AB0CA46005BE159500F52729 /* ColorTransferView.m */; };
+		AB0E6B130FAF4BF600A5C046 /* libvtkpng.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AB0E6B110FAF4BF600A5C046 /* libvtkpng.a */; };
+		AB0E6B140FAF4BF600A5C046 /* libvtkzlib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AB0E6B120FAF4BF600A5C046 /* libvtkzlib.a */; };
+		AB0E6B170FAF4C2100A5C046 /* libitkzlib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AB0E6B160FAF4C2000A5C046 /* libitkzlib.a */; };
 		AB0F20AD06460F7F0075465D /* Burner.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB0F20AB06460F7F0075465D /* Burner.tif */; };
 		AB10FA680B96C95500D74684 /* OsirixDownload.icns in Resources */ = {isa = PBXBuildFile; fileRef = AB10FA670B96C95500D74684 /* OsirixDownload.icns */; };
 		AB154F820627413600BD57AF /* SRView.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB154F7E0627413600BD57AF /* SRView.mm */; };
@@ -5686,6 +5689,9 @@
 		AB0BD75705646FD800BED927 /* PapyEallocUnix3.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = PapyEallocUnix3.c; path = Papyrus3/PapyEallocUnix3.c; sourceTree = "<group>"; };
 		AB0CA45F05BE159500F52729 /* ColorTransferView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColorTransferView.h; sourceTree = "<group>"; };
 		AB0CA46005BE159500F52729 /* ColorTransferView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColorTransferView.m; sourceTree = "<group>"; };
+		AB0E6B110FAF4BF600A5C046 /* libvtkpng.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkpng.a; path = Binaries/VTKLibs/libvtkpng.a; sourceTree = "<group>"; };
+		AB0E6B120FAF4BF600A5C046 /* libvtkzlib.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkzlib.a; path = Binaries/VTKLibs/libvtkzlib.a; sourceTree = "<group>"; };
+		AB0E6B160FAF4C2000A5C046 /* libitkzlib.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libitkzlib.a; path = ITK180/bin/libitkzlib.a; sourceTree = "<group>"; };
 		AB0EA93B056EDC7E004BBDD3 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
 		AB0F20AB06460F7F0075465D /* Burner.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Burner.tif; sourceTree = "<group>"; };
 		AB10FA670B96C95500D74684 /* OsirixDownload.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = OsirixDownload.icns; sourceTree = "<group>"; };
@@ -9317,6 +9323,9 @@
 				CEBA30200EEDB5F200D920B4 /* libvtksys.a in Frameworks */,
 				CEBA30220EEDB62300D920B4 /* libvtktiff.a in Frameworks */,
 				CEBA30240EEDB71D00D920B4 /* libvtkWidgets.a in Frameworks */,
+				AB0E6B130FAF4BF600A5C046 /* libvtkpng.a in Frameworks */,
+				AB0E6B140FAF4BF600A5C046 /* libvtkzlib.a in Frameworks */,
+				AB0E6B170FAF4C2100A5C046 /* libitkzlib.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -12350,6 +12359,8 @@
 		CE11138108EDD5CE005B15E1 /* VTKLibs */ = {
 			isa = PBXGroup;
 			children = (
+				AB0E6B110FAF4BF600A5C046 /* libvtkpng.a */,
+				AB0E6B120FAF4BF600A5C046 /* libvtkzlib.a */,
 				CE2449020DA42A7600B8D506 /* libvtkCommon.a */,
 				CE24490D0DA42A7600B8D506 /* libvtkexpat.a */,
 				CE2449000DA42A7600B8D506 /* libvtkFiltering.a */,
@@ -12399,6 +12410,7 @@
 				CED555F30DF48BBA0054351B /* libitkjpeg16.a */,
 				CED555F40DF48BBA0054351B /* libITKCommon.a */,
 				CED555F60DF48BBA0054351B /* libITKniftiio.a */,
+				AB0E6B160FAF4C2000A5C046 /* libitkzlib.a */,
 			);
 			name = ITKLibs;
 			sourceTree = "<group>";
