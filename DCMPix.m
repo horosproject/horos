@@ -6026,10 +6026,13 @@ END_CREATE_ROIS:
 		
 	}//end of if ([dcmObject attributeValueWithName:@"PixelData"])
 
-	if( fabs(pixelSpacingX) / fabs(pixelSpacingY) > 10000 || fabs(pixelSpacingX) / fabs(pixelSpacingY) < 0.0001)
+	if( pixelSpacingY != 0)
 	{
-		pixelSpacingX = 1;
-		pixelSpacingY = 1;
+		if( fabs(pixelSpacingX) / fabs(pixelSpacingY) > 10000 || fabs(pixelSpacingX) / fabs(pixelSpacingY) < 0.0001)
+		{
+			pixelSpacingX = 1;
+			pixelSpacingY = 1;
+		}
 	}
 	
 	if( pixelSpacingX < 0) pixelSpacingX = -pixelSpacingX;
@@ -8198,10 +8201,13 @@ END_CREATE_ROIS:
 			[self loadCustomImageAnnotationsPapyLink: fileNb DCMLink:nil];
 			#endif
 			
-			if( fabs(pixelSpacingX) / fabs(pixelSpacingY) > 10000 || fabs(pixelSpacingX) / fabs(pixelSpacingY) < 0.0001)
+			if( pixelSpacingY != 0)
 			{
-				pixelSpacingX = 1;
-				pixelSpacingY = 1;
+				if( fabs(pixelSpacingX) / fabs(pixelSpacingY) > 10000 || fabs(pixelSpacingX) / fabs(pixelSpacingY) < 0.0001)
+				{
+					pixelSpacingX = 1;
+					pixelSpacingY = 1;
+				}
 			}
 			
 			if( pixelSpacingX < 0) pixelSpacingX = -pixelSpacingX;
