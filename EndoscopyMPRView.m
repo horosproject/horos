@@ -193,8 +193,7 @@
 	
 	if( (mouseLocStart.x > crossPositionX+focalShiftX*normalizationFactor/scaleFactor-near/scaleFactor && mouseLocStart.x < crossPositionX+focalShiftX*normalizationFactor/scaleFactor+near/scaleFactor) &&
 		(mouseLocStart.y > crossPositionY+focalShiftY*normalizationFactor/scaleFactor-near/scaleFactor && mouseLocStart.y < crossPositionY+focalShiftY*normalizationFactor/scaleFactor+near/scaleFactor) )		//
-	{	
-		NSLog(@"****mouseLocStart : %f, %f", mouseLocStart.x, mouseLocStart.y);
+	{
 		BOOL keepOn = YES;
 		while (keepOn)
 		{

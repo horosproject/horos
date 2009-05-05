@@ -1206,7 +1206,8 @@ public:
 				if( croppingBox->GetEnabled()) croppingBox->Off();
 			}
 			aRenderer->RemoveActor(outlineRect);
-			aRenderer->RemoveActor(textX);
+			if( textX)
+				aRenderer->RemoveActor(textX);
 			
 			for( i = 0; i < numberOfFrames; i++)
 			{
@@ -2063,7 +2064,8 @@ public:
 		cropcallback->Delete();
 	
 	textWLWW->Delete();
-	textX->Delete();
+	if( textX)
+		textX->Delete();
 	for( i = 0; i < 4; i++) oText[ i]->Delete();
 	colorTransferFunction->Delete();
 	reader->Delete();
@@ -4733,7 +4735,8 @@ public:
 		if( blendingVolumeMapper) blendingVolumeMapper->SetSampleDistance( [[NSUserDefaults standardUserDefaults] floatForKey: @"BESTRENDERING"]);
 	}
 	
-	aRenderer->AddActor(textX);
+	if( textX)
+		aRenderer->AddActor(textX);
 	
 	[splash setCancel:NO];
 	
@@ -4760,7 +4763,8 @@ public:
 		if( croppingBox->GetEnabled()) croppingBox->Off();
 	
 	aRenderer->RemoveActor(outlineRect);
-	aRenderer->RemoveActor(textX);
+	if( textX)
+		aRenderer->RemoveActor(textX);
 	
 	// RAY CASTING SETTINGS
 	if( best)
@@ -5631,18 +5635,18 @@ public:
 		
 		aRenderer->AddActor2D(textWLWW);
 		
-		textX = vtkTextActor::New();
 		if (isViewportResizable)
+		{
+			textX = vtkTextActor::New();
 			textX->SetInput( "X ");
-		else
-			textX->SetInput( " ");
-		textX->SetScaledText( false);
-		textX->GetPositionCoordinate()->SetCoordinateSystemToViewport();
-		textX->GetPositionCoordinate()->SetValue( 2., 2.);
-		textX->GetTextProperty()->SetShadow(true);
-		textX->GetTextProperty()->SetShadowOffset(1, 1);
+			textX->SetScaledText( false);
+			textX->GetPositionCoordinate()->SetCoordinateSystemToViewport();
+			textX->GetPositionCoordinate()->SetValue( 2., 2.);
+			textX->GetTextProperty()->SetShadow(true);
+			textX->GetTextProperty()->SetShadowOffset(1, 1);
 		
-		aRenderer->AddActor2D(textX);
+			aRenderer->AddActor2D(textX);
+		}
 		
 		for( i = 0; i < 4; i++)
 		{
@@ -6635,13 +6639,15 @@ public:
 		{
 			textWLWW->GetTextProperty()->SetColor(1,1,1);
 			for( int i = 0 ; i < 4 ; i++) oText[ i]->GetTextProperty()->SetColor(1,1,1);
-			textX->GetTextProperty()->SetColor(1,1,1);
+			if( textX)
+				textX->GetTextProperty()->SetColor(1,1,1);
 		}
 		else
 		{
 			textWLWW->GetTextProperty()->SetColor(0,0,0);
 			for( int i = 0 ; i < 4 ; i++) oText[ i]->GetTextProperty()->SetColor(0,0,0);
-			textX->GetTextProperty()->SetColor(0,0,0);
+			if( textX)
+				textX->GetTextProperty()->SetColor(0,0,0);
 		}
 		[backgroundColor setColor: [NSColor colorWithDeviceRed:[color redComponent] green:[color greenComponent] blue:[ color blueComponent] alpha:1.0]];
 		
