@@ -423,7 +423,7 @@ public:
 	}
 }
 
-- (void) adaptLine2DToResize:(NSRect) newFrame before: (NSRect) beforeFrame
+- (void) adaptLine2DToResize:(NSRect) newFrame before: (NSRect) beforeFrame rescale:(BOOL) rescale
 {
 	if( Line2DData)
 	{
@@ -444,9 +444,16 @@ public:
 			
 			pts = Line2DData->GetPoints();
 			
-			pts->InsertPoint( pts->GetNumberOfPoints(), pt1[0] + (newFrame.size.width - beforeFrame.size.width)/2, pt1[ 1] + (newFrame.size.height - beforeFrame.size.height)/2 , 0);
-			pts->InsertPoint( pts->GetNumberOfPoints(), pt2[0] + (newFrame.size.width - beforeFrame.size.width)/2, pt2[ 1] + (newFrame.size.height - beforeFrame.size.height)/2, 0);
-			
+			if( rescale == NO)
+			{
+				pts->InsertPoint( pts->GetNumberOfPoints(), pt1[0] + (newFrame.size.width - beforeFrame.size.width)/2, pt1[ 1] + (newFrame.size.height - beforeFrame.size.height)/2 , 0);
+				pts->InsertPoint( pts->GetNumberOfPoints(), pt2[0] + (newFrame.size.width - beforeFrame.size.width)/2, pt2[ 1] + (newFrame.size.height - beforeFrame.size.height)/2, 0);
+			}
+			else
+			{
+				pts->InsertPoint( pts->GetNumberOfPoints(), pt1[0] * (newFrame.size.width/beforeFrame.size.width), pt1[ 1] * (newFrame.size.height / beforeFrame.size.height) , 0);
+				pts->InsertPoint( pts->GetNumberOfPoints(), pt2[0] * (newFrame.size.width/beforeFrame.size.width), pt2[ 1] * (newFrame.size.height / beforeFrame.size.height), 0);
+			}
 			rect = vtkCellArray::New();
 			rect->InsertNextCell( pts->GetNumberOfPoints()+1);
 			for( int i = 0; i < pts->GetNumberOfPoints(); i++) rect->InsertCellPoint( i);
@@ -478,12 +485,17 @@ public:
 	}
 }
 
-- (void) setFrame: (NSRect) r
+- (void) setFrame: (NSRect) r rescaleLine: (BOOL) rescale
 {
 	if( [[controller style] isEqualToString:@"noNib"] == NO)
-		[self adaptLine2DToResize: r before: [self frame]];
+		[self adaptLine2DToResize: r before: [self frame] rescale: rescale];
 	
 	[super setFrame: r];
+}
+
+- (void) setFrame: (NSRect) r
+{
+	[self setFrame: r rescaleLine: NO];
 }
 
 - (BOOL) croppingBox:(double*) a
@@ -993,7 +1005,7 @@ public:
 
 -(void) restoreViewSizeAfterMatrix3DExport
 {
-	[self setFrame: savedViewSizeFrame];
+	[self setFrame: savedViewSizeFrame rescaleLine: YES];
 }
 
 -(void) setViewSizeToMatrix3DExport
@@ -1012,8 +1024,8 @@ public:
 		case 0:
 		break;
 		
-		case 1:		[self setFrame: [self centerRect: NSMakeRect(0,0,512,512) inRect: windowFrame]];		[self display];		break;
-		case 2:		[self setFrame: [self centerRect: NSMakeRect(0,0,768,768) inRect: windowFrame]];		[self display];		break;
+		case 1:		[self setFrame: [self centerRect: NSMakeRect(0,0,512,512) inRect: windowFrame] rescaleLine: YES];		[self display];		break;
+		case 2:		[self setFrame: [self centerRect: NSMakeRect(0,0,768,768) inRect: windowFrame] rescaleLine: YES];		[self display];		break;
 	}
 }
 
