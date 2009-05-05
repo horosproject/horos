@@ -1825,6 +1825,8 @@ static NSDate *lastWarningDate = nil;
 	// DELETE THE TEMP.noindex DIRECTORY...
 	NSString *tempDirectory = [documentsDirectory() stringByAppendingPathComponent:@"/TEMP.noindex/"];
 	if ([[NSFileManager defaultManager] fileExistsAtPath:tempDirectory]) [[NSFileManager defaultManager] removeFileAtPath:tempDirectory handler: nil];
+	tempDirectory = [documentsDirectory() stringByAppendingPathComponent:@"/TEMP/"];
+	if ([[NSFileManager defaultManager] fileExistsAtPath:tempDirectory]) [[NSFileManager defaultManager] removeFileAtPath:tempDirectory handler: nil];
 	
 	// DELETE THE DUMP DIRECTORY...
 	NSString *dumpDirectory = [documentsDirectory() stringByAppendingPathComponent:@"/DUMP/"];
@@ -1832,6 +1834,8 @@ static NSDate *lastWarningDate = nil;
 	
 	// DELETE THE DECOMPRESSION.noindex DIRECTORY...
 	NSString *decompressionDirectory = [documentsDirectory() stringByAppendingPathComponent:@"/DECOMPRESSION.noindex/"];
+	if ([[NSFileManager defaultManager] fileExistsAtPath:decompressionDirectory]) [[NSFileManager defaultManager] removeFileAtPath:decompressionDirectory handler: nil];
+	decompressionDirectory = [documentsDirectory() stringByAppendingPathComponent:@"/DECOMPRESSION/"];
 	if ([[NSFileManager defaultManager] fileExistsAtPath:decompressionDirectory]) [[NSFileManager defaultManager] removeFileAtPath:decompressionDirectory handler: nil];
 
 	[NSSplitView saveSplitView];

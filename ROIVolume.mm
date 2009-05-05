@@ -104,7 +104,7 @@
 
 - (void) prepareVTKActor
 {
-	WaitRendering *splash = [[WaitRendering alloc] init:@"Preparing 3D Object..."];
+	WaitRendering *splash = [[WaitRendering alloc] init: NSLocalizedString( @"Preparing 3D Object...", nil)];
 	[splash showWindow:self]; 
 
 	roiVolumeActor = vtkActor::New();

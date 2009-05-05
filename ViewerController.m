@@ -9642,7 +9642,7 @@ short				matrix[25];
 		
 		case 10:	// Copy ROIs
 		{
-			WaitRendering *splash = [[WaitRendering alloc] init:@"Copy ROIs between series..."];
+			WaitRendering *splash = [[WaitRendering alloc] init: NSLocalizedString( @"Copy ROIs between series...", nil)];
 			[splash showWindow:self];
 			
 			int i, x, curIndex = [[bc imageView] curImage];
@@ -11229,7 +11229,7 @@ int i,j,l;
 	
 	[self checkEverythingLoaded];
 	
-	WaitRendering *splash = [[WaitRendering alloc] init:@"Filtering..."];
+	WaitRendering *splash = [[WaitRendering alloc] init: NSLocalizedString( @"Filtering...", nil)];
 	[splash showWindow:self];
 	
 	NSLog(@"startSetPixel");

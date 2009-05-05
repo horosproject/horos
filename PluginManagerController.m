@@ -240,7 +240,7 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
 		return CachedPluginsList;
 	}
 
-	WaitRendering *splash = [[[WaitRendering alloc] init:@"Check Plugins..."] autorelease];
+	WaitRendering *splash = [[[WaitRendering alloc] init: NSLocalizedString( @"Check Plugins...", nil)] autorelease];
 	[splash showWindow:self];
 
 	int i;
@@ -283,7 +283,7 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
 
 - (void)setURL:(NSString*)url;
 {
-	WaitRendering *splash = [[[WaitRendering alloc] init:@"Loading..."] autorelease];
+	WaitRendering *splash = [[[WaitRendering alloc] init: NSLocalizedString( @"Loading...", nil)] autorelease];
 	[splash showWindow:self];
 	
 	[[webView mainFrame] loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:url]]];

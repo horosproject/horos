@@ -441,7 +441,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 //	// ** RESAMPLE START
 //	
 
-//	WaitRendering *www = [[WaitRendering alloc] init:@"Resampling 3D data..."];
+//	WaitRendering *www = [[WaitRendering alloc] init: NSLocalizedString( @"Resampling 3D data...", nil)];
 //	[www start];
 //	
 //	NSMutableArray		*newPix = [NSMutableArray array], *newFiles = [NSMutableArray array];
@@ -798,7 +798,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 		[dict setObject:[NSNumber numberWithBool:[view advancedCLUT]] forKey:@"isAdvancedCLUT"];
 		if(![view advancedCLUT])[dict setObject:curOpacityMenu forKey:@"OpacityName"];
 		
-		if([curCLUTMenu isEqualToString:NSLocalizedString(@"16-bit CLUT", nil)])
+		if([curCLUTMenu isEqualToString:NSLocalizedString(@"16-bit CLUT", nil)] || [curCLUTMenu isEqualToString: @"16-bit CLUT"])
 		{
 			NSArray *curves = [clutOpacityView convertCurvesForPlist];
 			NSArray *colors = [clutOpacityView convertPointColorsForPlist];
@@ -852,7 +852,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 			{
 				[[[clutPopup menu] itemAtIndex:0] setTitle:[dict objectForKey:@"CLUTName"]];
 				[self setCurCLUTMenu:[dict objectForKey:@"CLUTName"]];
-				if([[dict objectForKey:@"CLUTName"] isEqualToString:NSLocalizedString(@"16-bit CLUT", nil)])
+				if([[dict objectForKey:@"CLUTName"] isEqualToString:NSLocalizedString(@"16-bit CLUT", nil)]  || [[dict objectForKey:@"CLUTName"] isEqualToString: @"16-bit CLUT"])
 				{
 					NSMutableArray *curves = [CLUTOpacityView convertCurvesFromPlist:[dict objectForKey:@"16bitClutCurves"]];
 					NSMutableArray *colors = [CLUTOpacityView convertPointColorsFromPlist:[dict objectForKey:@"16bitClutColors"]];
@@ -2839,13 +2839,13 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	[clutArray sortUsingSelector:@selector(caseInsensitiveCompare:)];
 	
 	NSMenuItem *item;
-	item = [[clutPopup menu] insertItemWithTitle:@"8-bit CLUTs" action:@selector(noAction:) keyEquivalent:@"" atIndex:3];
+	item = [[clutPopup menu] insertItemWithTitle: NSLocalizedString(@"8-bit CLUTs", nil) action:@selector(noAction:) keyEquivalent:@"" atIndex:3];
 	
 	if( [clutArray count])
 	{
 		[[clutPopup menu] insertItem:[NSMenuItem separatorItem] atIndex:[[clutPopup menu] numberOfItems]-2];
 		
-		item = [[clutPopup menu] insertItemWithTitle:@"16-bit CLUTs" action:@selector(noAction:) keyEquivalent:@"" atIndex:[[clutPopup menu] numberOfItems]-2];
+		item = [[clutPopup menu] insertItemWithTitle: NSLocalizedString(@"16-bit CLUTs", nil) action:@selector(noAction:) keyEquivalent:@"" atIndex:[[clutPopup menu] numberOfItems]-2];
 
 		for (NSUInteger i=0; i<[clutArray count]; i++)
 		{
@@ -2946,7 +2946,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	[presetDictionary setObject:shadingPresetName forKey:@"shading"];
 	[presetDictionary setObject:[NSNumber numberWithBool:isAdvancedCLUT] forKey:@"advancedCLUT"];
 	[presetDictionary setObject:clut forKey:@"CLUT"];
-	if([clut isEqualToString:NSLocalizedString(@"16-bit CLUT", nil)])
+	if([clut isEqualToString:NSLocalizedString(@"16-bit CLUT", nil)]  || [clut isEqualToString: @"16-bit CLUT"])
 	{
 		NSArray *curves = [clutOpacityView convertCurvesForPlist];
 		NSArray *colors = [clutOpacityView convertPointColorsForPlist];
@@ -3288,7 +3288,7 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 		}
 		else
 		{
-			if([clut isEqualToString:NSLocalizedString(@"16-bit CLUT", nil)])
+			if([clut isEqualToString:NSLocalizedString(@"16-bit CLUT", nil)]  || [clut isEqualToString: @"16-bit CLUT"])
 			{
 				NSMutableArray *curves = [CLUTOpacityView convertCurvesFromPlist:[preset objectForKey:@"16bitClutCurves"]];
 				NSMutableArray *colors = [CLUTOpacityView convertPointColorsFromPlist:[preset objectForKey:@"16bitClutColors"]];
@@ -3515,7 +3515,7 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 				curves = [CLUTOpacityView convertCurvesFromPlist:[clut objectForKey:@"curves"]];
 				pointColors = [CLUTOpacityView convertPointColorsFromPlist:[clut objectForKey:@"colors"]];
 			}
-			else if([aClutName isEqualToString:NSLocalizedString(@"16-bit CLUT", nil)])
+			else if([aClutName isEqualToString:NSLocalizedString(@"16-bit CLUT", nil)]  || [aClutName isEqualToString: @"16-bit CLUT"])
 			{
 				curves = [CLUTOpacityView convertCurvesFromPlist:[preset objectForKey:@"16bitClutCurves"]];
 				pointColors = [CLUTOpacityView convertPointColorsFromPlist:[preset objectForKey:@"16bitClutColors"]];

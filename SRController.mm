@@ -388,7 +388,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 }
 
 - (void)renderSurfaces{
-	WaitRendering *www = [[WaitRendering alloc] init:@"Preparing 3D Iso Surface..."];
+	WaitRendering *www = [[WaitRendering alloc] init: NSLocalizedString( @"Preparing 3D Iso Surface...", nil)];
 	[www start];
 
 	// FIRST SURFACE

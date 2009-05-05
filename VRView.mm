@@ -642,7 +642,7 @@ public:
 	
 	WaitRendering	*www = nil;
 	
-	if( showWait) www = [[WaitRendering alloc] init:@"Preparing 3D data..."];
+	if( showWait) www = [[WaitRendering alloc] init: NSLocalizedString( @"Preparing 3D data...", nil)];
 	[www start];
 	
 	@try
@@ -748,7 +748,7 @@ public:
 	
 	WaitRendering	*www = nil;
 	
-	if( showWait) [[WaitRendering alloc] init:@"Preparing 3D data..."];
+	if( showWait) [[WaitRendering alloc] init: NSLocalizedString( @"Preparing 3D data...", nil)];
 	[www start];
 	
 	BOOL validBox = [VRView getCroppingBox: a :volume :croppingBox];
@@ -1486,7 +1486,7 @@ public:
 	{
 		volumeProperty->ShadeOn();
 		
-		WaitRendering	*www = [[WaitRendering alloc] init:@"Preparing 3D data..."];
+		WaitRendering	*www = [[WaitRendering alloc] init: NSLocalizedString( @"Preparing 3D data...", nil)];
 		[www start];
 		
 		if( textureMapper)
@@ -1505,7 +1505,7 @@ public:
 	{
 		volumeProperty->ShadeOff();
 		
-		WaitRendering	*www = [[WaitRendering alloc] init:@"Preparing 3D data..."];
+		WaitRendering	*www = [[WaitRendering alloc] init: NSLocalizedString( @"Preparing 3D data...", nil)];
 		[www start];
 		
 		if( textureMapper)
@@ -5232,7 +5232,7 @@ public:
 	
 	if( showWait)
 	{
-		www = [[WaitRendering alloc] init:@"Preparing 3D data..."];
+		www = [[WaitRendering alloc] init: NSLocalizedString( @"Preparing 3D data...", nil)];
 		[www start];
 	}
 	

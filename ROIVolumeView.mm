@@ -335,7 +335,7 @@
 
 - (short) renderVolume
 {
-	WaitRendering *splash = [[WaitRendering alloc] init:@"Rendering 3D Object..."];
+	WaitRendering *splash = [[WaitRendering alloc] init: NSLocalizedString( @"Rendering 3D Object...", nil)];
 	[splash showWindow:self]; 
 
 	short   error = 0;

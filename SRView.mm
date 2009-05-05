@@ -346,7 +346,7 @@ typedef struct _xyzArray
 			}
 		}
 		
-		WaitRendering *splashExport = [[WaitRendering alloc] init:@"Exporting..."];
+		WaitRendering *splashExport = [[WaitRendering alloc] init: NSLocalizedString( @"Exporting...", nil)];
 		[splashExport showWindow:self];
 		
 		switch( [sender tag])
@@ -802,7 +802,7 @@ typedef struct _xyzArray
 		
 		[self addTrackingArea: cursorTracking];
 		
-		splash = [[WaitRendering alloc] init:@"Rendering..."];
+		splash = [[WaitRendering alloc] init: NSLocalizedString( @"Rendering...", nil)];
 //		[[splash window] makeKeyAndOrderFront:self];
 		
 		cursor = nil;
