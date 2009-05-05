@@ -3265,120 +3265,127 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 		WaitRendering *www = [[WaitRendering alloc] init:NSLocalizedString(@"Applying 3D Preset...", nil)];
 		[www start];
 		
-		if( [selectedPresetPreview index] < 0) NSLog( @" ******** if( [selectedPresetPreview index] < 0)");
-		 
-		NSDictionary *preset = [[self find3DSettingsForGroupName:[presetsGroupPopUpButton titleOfSelectedItem]] objectAtIndex:[selectedPresetPreview index]];
-
-		// CLUT
-		NSString *clut = [preset objectForKey:@"CLUT"];
-
-		BOOL advancedCLUT = [[preset objectForKey:@"advancedCLUT"] boolValue];
-		if(!advancedCLUT)
+		@try
 		{
-			[self ApplyCLUTString:clut];
-			
-			// opacity
-			[self ApplyOpacityString:[preset objectForKey:@"opacity"]];
-			
-			// window level/width
-			float iwl = [[preset objectForKey:@"wl"] floatValue];
-			float iww = [[preset objectForKey:@"ww"] floatValue];
-			[self setWLWW:iwl :iww];
+			if( [selectedPresetPreview index] < 0) NSLog( @" ******** if( [selectedPresetPreview index] < 0)");
+			 
+			NSDictionary *preset = [[self find3DSettingsForGroupName:[presetsGroupPopUpButton titleOfSelectedItem]] objectAtIndex:[selectedPresetPreview index]];
 
-		}
-		else
-		{
-			if([clut isEqualToString:NSLocalizedString(@"16-bit CLUT", nil)]  || [clut isEqualToString: @"16-bit CLUT"])
+			// CLUT
+			NSString *clut = [preset objectForKey:@"CLUT"];
+
+			BOOL advancedCLUT = [[preset objectForKey:@"advancedCLUT"] boolValue];
+			if(!advancedCLUT)
 			{
-				NSMutableArray *curves = [CLUTOpacityView convertCurvesFromPlist:[preset objectForKey:@"16bitClutCurves"]];
-				NSMutableArray *colors = [CLUTOpacityView convertPointColorsFromPlist:[preset objectForKey:@"16bitClutColors"]];
+				[self ApplyCLUTString:clut];
 				
-				NSMutableDictionary *clutDict = [NSMutableDictionary dictionaryWithCapacity:2];
-				[clutDict setObject:curves forKey:@"curves"];
-				[clutDict setObject:colors forKey:@"colors"];
+				// opacity
+				[self ApplyOpacityString:[preset objectForKey:@"opacity"]];
+				
+				// window level/width
+				float iwl = [[preset objectForKey:@"wl"] floatValue];
+				float iww = [[preset objectForKey:@"ww"] floatValue];
+				[self setWLWW:iwl :iww];
 
-				[clutOpacityView setCurves:curves];
-				[clutOpacityView setPointColors:colors];
-				
-				[view setAdvancedCLUT:clutDict lowResolution:NO];
 			}
 			else
 			{
-				[clutOpacityView loadFromFileWithName:clut];
-				[clutOpacityView setCLUTtoVRView:NO];
-				[clutOpacityView updateView];
-				if(curCLUTMenu) [curCLUTMenu release];
-				curCLUTMenu = [clut retain];
-				[[[clutPopup menu] itemAtIndex:0] setTitle:clut];
-				[OpacityPopup setEnabled:NO];
-			}
-			
-			if([clutOpacityDrawer state] == NSDrawerClosedState)
-			{
-				[self showCLUTOpacityPanel: self];
-			}
-			
-			[clutOpacityView selectCurveAtIndex:0];
-			[clutOpacityView updateView];
-		}
-		
-		// shadings
-		if([[preset objectForKey:@"useShading"] boolValue])
-		{
-			NSString *shadingName = [preset objectForKey:@"shading"];
-			NSArray	*shadings = [shadingsPresetsController arrangedObjects];
-			int i;
-			for( i = 0; i < [shadings count]; i++)
-			{
-				NSDictionary *dict = [shadings objectAtIndex:i];
-				if([[dict valueForKey:@"name"] isEqualToString:shadingName])
+				if([clut isEqualToString:NSLocalizedString(@"16-bit CLUT", nil)]  || [clut isEqualToString: @"16-bit CLUT"])
 				{
-					[shadingsPresetsController setSelectedObjects:[NSArray arrayWithObject:dict]];
-					break;
-				}
-			}
-			[self applyShading:self];
-			if([shadingCheck state]==NSOffState)
-			{
-				[shadingCheck setState:NSOnState];
-				[view switchShading:shadingCheck];
-			}
-		}
-		else
-		{
-			if([shadingCheck state]==NSOnState)
-			{
-				[shadingCheck setState:NSOffState];
-				[view switchShading:shadingCheck];
-			}
-		}
-			
-		// projection
-		int projection = [[preset objectForKey:@"projection"] intValue];
-		view.projectionMode = projection;
+					NSMutableArray *curves = [CLUTOpacityView convertCurvesFromPlist:[preset objectForKey:@"16bitClutCurves"]];
+					NSMutableArray *colors = [CLUTOpacityView convertPointColorsFromPlist:[preset objectForKey:@"16bitClutColors"]];
 					
-		// background color
-		float red = [[preset objectForKey:@"backgroundColorRedComponent"] floatValue];
-		float green = [[preset objectForKey:@"backgroundColorGreenComponent"] floatValue];
-		float blue = [[preset objectForKey:@"backgroundColorBlueComponent"] floatValue];
-		[view changeColorWith:[NSColor colorWithDeviceRed:red green:green blue:blue alpha:1.0]];
-				
-		// convolution filter
-		if([appliedConvolutionFilters count]==0)
-		{
-			NSArray *convolutionFilters = [preset objectForKey:@"convolutionFilters"];
-			if([convolutionFilters count]>0)
-			{
-				int i;
-				for(i=0; i<[convolutionFilters count]; i++)
-				{
-//					[self prepareUndo];
-					[viewer2D ApplyConvString:[convolutionFilters objectAtIndex:i]];
-					[viewer2D applyConvolutionOnSource:self];
-					[appliedConvolutionFilters addObject:[convolutionFilters objectAtIndex:i]];
+					NSMutableDictionary *clutDict = [NSMutableDictionary dictionaryWithCapacity:2];
+					[clutDict setObject:curves forKey:@"curves"];
+					[clutDict setObject:colors forKey:@"colors"];
+
+					[clutOpacityView setCurves:curves];
+					[clutOpacityView setPointColors:colors];
+					
+					[view setAdvancedCLUT:clutDict lowResolution:NO];
 				}
-				[self displayPresetsForSelectedGroup];
+				else
+				{
+					[clutOpacityView loadFromFileWithName:clut];
+					[clutOpacityView setCLUTtoVRView:NO];
+					[clutOpacityView updateView];
+					if(curCLUTMenu) [curCLUTMenu release];
+					curCLUTMenu = [clut retain];
+					[[[clutPopup menu] itemAtIndex:0] setTitle:clut];
+					[OpacityPopup setEnabled:NO];
+				}
+				
+				if([clutOpacityDrawer state] == NSDrawerClosedState)
+				{
+					[self showCLUTOpacityPanel: self];
+				}
+				
+				[clutOpacityView selectCurveAtIndex:0];
+				[clutOpacityView updateView];
 			}
+			
+			// shadings
+			if([[preset objectForKey:@"useShading"] boolValue])
+			{
+				NSString *shadingName = [preset objectForKey:@"shading"];
+				NSArray	*shadings = [shadingsPresetsController arrangedObjects];
+				int i;
+				for( i = 0; i < [shadings count]; i++)
+				{
+					NSDictionary *dict = [shadings objectAtIndex:i];
+					if([[dict valueForKey:@"name"] isEqualToString:shadingName])
+					{
+						[shadingsPresetsController setSelectedObjects:[NSArray arrayWithObject:dict]];
+						break;
+					}
+				}
+				[self applyShading:self];
+				if([shadingCheck state]==NSOffState)
+				{
+					[shadingCheck setState:NSOnState];
+					[view switchShading:shadingCheck];
+				}
+			}
+			else
+			{
+				if([shadingCheck state]==NSOnState)
+				{
+					[shadingCheck setState:NSOffState];
+					[view switchShading:shadingCheck];
+				}
+			}
+				
+			// projection
+			int projection = [[preset objectForKey:@"projection"] intValue];
+			view.projectionMode = projection;
+						
+			// background color
+			float red = [[preset objectForKey:@"backgroundColorRedComponent"] floatValue];
+			float green = [[preset objectForKey:@"backgroundColorGreenComponent"] floatValue];
+			float blue = [[preset objectForKey:@"backgroundColorBlueComponent"] floatValue];
+			[view changeColorWith:[NSColor colorWithDeviceRed:red green:green blue:blue alpha:1.0]];
+					
+			// convolution filter
+			if([appliedConvolutionFilters count]==0)
+			{
+				NSArray *convolutionFilters = [preset objectForKey:@"convolutionFilters"];
+				if([convolutionFilters count]>0)
+				{
+					int i;
+					for(i=0; i<[convolutionFilters count]; i++)
+					{
+	//					[self prepareUndo];
+						[viewer2D ApplyConvString:[convolutionFilters objectAtIndex:i]];
+						[viewer2D applyConvolutionOnSource:self];
+						[appliedConvolutionFilters addObject:[convolutionFilters objectAtIndex:i]];
+					}
+					[self displayPresetsForSelectedGroup];
+				}
+			}
+		}
+		@catch (NSException *e)
+		{
+			NSLog( @"Applying 3d preset exception: %@", e);
 		}
 		[www end];
 		[www close];
