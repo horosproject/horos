@@ -19,6 +19,7 @@
 #import "Mailer.h"
 #import "DICOMExport.h"
 #import "BrowserController.h"
+#import "DCMCursor.h"
 
 @implementation EndoscopyMPRView
 
@@ -38,7 +39,7 @@
 		focalShiftY = 0;
 		viewUpX = 0;
 		viewUpY = 0;
-		near = 3.0;
+		near = 6.0;
 		maxFocalLength = 50.0;
 	}
 	return self;
@@ -119,23 +120,16 @@
 	glDisable(GL_BLEND);
 }
 
-- (void) mouseDown:(NSEvent *)theEvent
+- (BOOL) mouseOnFocal:(NSEvent *)theEvent
 {
 	NSPoint		focalPointLocation, mouseLocStart, mouseLoc;
 	
-		
 	mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView: self];
-	//mouseLocStart = [self convertPoint:mouseLocStart fromView: self];
 	mouseLocStart = [[[theEvent window] contentView] convertPoint:mouseLocStart toView:self];
 	mouseLocStart = [self ConvertFromNSView2GL:mouseLocStart];
 	
 	focalPointLocation.x = crossPositionX + focalShiftX;
 	focalPointLocation.y = crossPositionY + focalShiftY;
-	
-//	NSLog(@"mouseLocStart : %f, %f", mouseLocStart.x, mouseLocStart.y);
-//	NSLog(@"crossPosition : %d, %d", crossPositionX, crossPositionY);
-//	NSLog(@"focalShift : %d, %d", focalShiftX, focalShiftY);
-//	NSLog(@"focalPointLocation : %f, %f", focalPointLocation.x, focalPointLocation.y);
 	
 	// normalization of focal vector
 	float vectNorm = sqrt(pow(focalShiftX,2)+pow(focalShiftY/[self pixelSpacingX]*[self pixelSpacingY],2));
@@ -147,10 +141,56 @@
 	float normalizationFactor = maxSize/vectNorm;
 	float scaleFactor = scaleValue;
 	
-//	if( (mouseLocStart.x > focalPointLocation.x-near && mouseLocStart.x < focalPointLocation.x+near) &&
-//		(mouseLocStart.y > focalPointLocation.y-near && mouseLocStart.y < focalPointLocation.y+near) )
-//	if( (mouseLocStart.x > focalPointX-near && mouseLocStart.x < focalPointX+near) &&
-//		(mouseLocStart.y > focalPointY-near && mouseLocStart.y < focalPointY+near) )
+	if( (mouseLocStart.x > crossPositionX+focalShiftX*normalizationFactor/scaleFactor-near/scaleFactor && mouseLocStart.x < crossPositionX+focalShiftX*normalizationFactor/scaleFactor+near/scaleFactor) &&
+		(mouseLocStart.y > crossPositionY+focalShiftY*normalizationFactor/scaleFactor-near/scaleFactor && mouseLocStart.y < crossPositionY+focalShiftY*normalizationFactor/scaleFactor+near/scaleFactor) )		//
+	{
+		return YES;
+	}
+	
+	return NO;
+}
+
+
+-(void) mouseMoved: (NSEvent*) theEvent
+{
+	NSView* view = [[[theEvent window] contentView] hitTest:[theEvent locationInWindow]];
+	
+	if( view == self)
+	{
+		[super mouseMoved: theEvent];
+
+		if( [self mouseOnFocal: theEvent])
+		{
+			[cursor release];
+			cursor = [[NSCursor rotateAxisCursor] retain];
+			[cursor set];
+		}
+		else [self flagsChanged: theEvent];
+	}
+	else [view mouseMoved:theEvent];
+}
+
+- (void) mouseDown:(NSEvent *)theEvent
+{
+	NSPoint		focalPointLocation, mouseLocStart, mouseLoc;
+	
+	mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView: self];
+	mouseLocStart = [[[theEvent window] contentView] convertPoint:mouseLocStart toView:self];
+	mouseLocStart = [self ConvertFromNSView2GL:mouseLocStart];
+	
+	focalPointLocation.x = crossPositionX + focalShiftX;
+	focalPointLocation.y = crossPositionY + focalShiftY;
+	
+	// normalization of focal vector
+	float vectNorm = sqrt(pow(focalShiftX,2)+pow(focalShiftY/[self pixelSpacingX]*[self pixelSpacingY],2));
+	float maxSize = maxFocalLength;
+	vectNorm = (vectNorm==0)? 1.0: vectNorm;
+	maxSize = (vectNorm==0)? 0.0: maxSize;
+	maxSize = (vectNorm>maxSize)? maxSize : vectNorm;
+	
+	float normalizationFactor = maxSize/vectNorm;
+	float scaleFactor = scaleValue;
+	
 	if( (mouseLocStart.x > crossPositionX+focalShiftX*normalizationFactor/scaleFactor-near/scaleFactor && mouseLocStart.x < crossPositionX+focalShiftX*normalizationFactor/scaleFactor+near/scaleFactor) &&
 		(mouseLocStart.y > crossPositionY+focalShiftY*normalizationFactor/scaleFactor-near/scaleFactor && mouseLocStart.y < crossPositionY+focalShiftY*normalizationFactor/scaleFactor+near/scaleFactor) )		//
 	{	
@@ -160,7 +200,6 @@
 		{
 			theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask | NSPeriodicMask];
 			
-			//mouseLoc = [theEvent locationInWindow];	//[self convertPoint: [theEvent locationInWindow] fromView:nil];
 			mouseLoc = [self convertPoint: [theEvent locationInWindow] fromView: self];
 			mouseLoc = [[[theEvent window] contentView] convertPoint:mouseLoc toView:self];
 			mouseLoc = [self ConvertFromNSView2GL:mouseLoc];
