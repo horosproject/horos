@@ -231,6 +231,7 @@ static BOOL frameZoomed = NO;
 	long h, w;
 	float previousWW, previousWL;
 	BOOL isRGB;
+	BOOL previousOriginInPlane = NO;
 	
 	[self getWLWW: &previousWL :&previousWW];
 	
@@ -308,18 +309,25 @@ static BOOL frameZoomed = NO;
 		else
 			imagePtr = [vrView imageInFullDepthWidth: &w height: &h isRGB: &isRGB];
 		
+		////
+		float orientation[ 9];
+		[vrView getOrientation: orientation];
+		
+		float location[ 3] = {camera.position.x, camera.position.y, camera.position.z}, orig[ 3] = {currentCamera.position.x, currentCamera.position.y, currentCamera.position.z}, locationTemp[ 3];
+		float distance = [DCMView pbase_Plane: location :orig :&(orientation[ 6]) :locationTemp];
+		if( distance < pix.sliceThickness / 2.)
+			previousOriginInPlane = YES;
+		else
+			previousOriginInPlane = NO;
+		
 		[self saveCamera];
 		
 		if( imagePtr)
 		{
-			float orientation[ 9];
-			
-			[vrView getOrientation: orientation];
-			
-			float slicePoint[ 3], sV[ 3];
+			float slicePoint[ 3], sV[ 3], wx = [pix pwidth]/2., hx = [pix pheight]/2.;
 			float fakeOrigin[ 3] = {0, 0, 0};
 			BOOL cameraMoved;
-			if( intersect3D_2Planes( orientation+6, fakeOrigin, previousOrientation+6, fakeOrigin, sV, slicePoint) == noErr)
+			if( previousOriginInPlane == NO || intersect3D_2Planes( orientation+6, fakeOrigin, previousOrientation+6, fakeOrigin, sV, slicePoint) == noErr)
 				cameraMoved = YES;
 			else
 				cameraMoved = NO;
@@ -382,14 +390,18 @@ static BOOL frameZoomed = NO;
 				{
 					if( previousOrientation[ 0] != 0 || previousOrientation[ 1] != 0 || previousOrientation[ 2] != 0)
 						rotationPlane = -[MPRController angleBetweenVector: orientation andPlane: previousOrientation];
-					if( fabs( rotationPlane) < 0.01) rotationPlane = 0;
+					if( fabs( rotationPlane) < 0.01)
+						rotationPlane = 0;
 				}
 				
 				NSPoint rotationCenter = NSMakePoint( [pix pwidth]/2., [pix pheight]/2.);
+				
 				for( ROI* r in curRoiList)
 				{
 					if( rotationPlane)
 					{
+						[r setOriginAndSpacing: resolution : resolution : r.imageOrigin :NO];
+						
 						[r rotate: rotationPlane :rotationCenter];
 						r.imageOrigin = [DCMPix originCorrectedAccordingToOrientation: pix];
 						r.pixelSpacingX = [pix pixelSpacingX];
@@ -398,6 +410,7 @@ static BOOL frameZoomed = NO;
 					else
 						[r setOriginAndSpacing: resolution : resolution :[DCMPix originCorrectedAccordingToOrientation: pix] :NO];
 				}
+				
 				[pix orientation: previousOrientation];
 				
 				[self detect2DPointInThisSlice];
