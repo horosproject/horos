@@ -1149,6 +1149,12 @@ public:
 		// CURRENT image only
 		if( [[dcmExportMode selectedCell] tag] == 0)
 		{
+			if( exportDCM == nil)
+			{
+				exportDCM = [[DICOMExport alloc] init];
+				[exportDCM setSeriesNumber:5220 + [[NSCalendarDate date] minuteOfHour]  + [[NSCalendarDate date] secondOfMinute]];
+			}
+			
 			[producedFiles addObject: [self exportDCMCurrentImageIn16bit: fullDepthCapture]];
 		}
 		// 4th dimension
@@ -1180,6 +1186,9 @@ public:
 			
 			[progress close];
 			[progress release];
+			
+			[exportDCM release];
+			exportDCM = nil;
 		}
 		else // A 3D sequence
 		{
@@ -1244,6 +1253,9 @@ public:
 			
 			[progress close];
 			[progress release];
+			
+			[exportDCM release];
+			exportDCM = nil;
 		}
 		
 		if( fullDepthCapture)

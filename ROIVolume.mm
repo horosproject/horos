@@ -232,103 +232,100 @@
 				delaunayTriangulator = vtkDelaunay3D::New();
 				delaunayTriangulator->SetInput(pointsDataSet);
 				
-				delaunayTriangulator->SetTolerance( 0.001);
-				delaunayTriangulator->SetAlpha( 20);
+				delaunayTriangulator->SetTolerance( 0.001 * [[NSUserDefaults standardUserDefaults] floatForKey: @"superSampling"]);
+				delaunayTriangulator->SetAlpha( 20 * [[NSUserDefaults standardUserDefaults] floatForKey: @"superSampling"]);
 				delaunayTriangulator->BoundingTriangulationOff();
 				
 				output = (vtkDataSet*) delaunayTriangulator -> GetOutput();
 			}
-			
 			else
-			
 			{		
-			vtkPowerCrustSurfaceReconstruction *power = vtkPowerCrustSurfaceReconstruction::New();
-			power->SetInput(pointsDataSet);
-			
-			polyDataNormals = vtkPolyDataNormals::New();
-			polyDataNormals->ConsistencyOn();
-			polyDataNormals->AutoOrientNormalsOn();
-			if (NO) 
-			{
-				vtkPolyData *medialSurface;
-				power->Update();
-				medialSurface = power->GetMedialSurface();
-				//polyDataNormals->SetInput(medialSurface);
-				isoDeci = vtkDecimatePro::New();
-				isoDeci->SetInput(medialSurface);
-				isoDeci->SetTargetReduction(0.9);
-				isoDeci->SetPreserveTopology( TRUE);
-				polyDataNormals->SetInput(isoDeci->GetOutput());
-			
-
-				NSLog(@"Build Links");
-				isoDeci->Update();
-				vtkPolyData *data = isoDeci->GetOutput();
-				//vtkPolyData *data = power->GetOutput();
-				data->BuildLinks();
-
-				vtkPoints *medialPoints = data->GetPoints();
-				int nPoints = data->GetNumberOfPoints();
-				vtkIdType i;
-				int j, k, neighbors;			
-				double x , y, z;
-				// get all cells around a point
-			
-				data->BuildCells();
-				for (int a = 0; a < 50 ;  a++){
-					for (i = 0; i < nPoints; i++) {	
-						vtkIdType ncells;
-						vtkIdList *cellIds = vtkIdList::New();;
-						
-						// count self
-						neighbors = 1;
-						double *position = medialPoints->GetPoint(i);
-						// Get position
-						x = position[0];
-						y = position[1];
-						z = position[2];
-						// All cells for Point and number of cells
-						data->GetPointCells	(i, cellIds);	
-						ncells = cellIds->GetNumberOfIds();
-		
-						for (j = 0;  j < ncells; j++) {
-							vtkIdType numPoints;
-							vtkIdType *cellPoints ;
-							vtkIdType cellId = cellIds->GetId(j);
-							//get all points for the cell
-							data->GetCellPoints(cellId, numPoints, cellPoints);				
-
-							 for (k = 0; k < numPoints; k++) {						
-								position = medialPoints->GetPoint(cellPoints[k]);
-
-								x += position[0];
-								y += position[1];
-								z += position[2];
-								neighbors++;
-							 }
-						}
-
-						// get average
-						x /= neighbors;
-						y /= neighbors;
-						z /= neighbors;
-						medialPoints->SetPoint(i, x ,y ,z);
-						
-						cellIds->Delete();
-					}
-				}
+				vtkPowerCrustSurfaceReconstruction *power = vtkPowerCrustSurfaceReconstruction::New();
+				power->SetInput(pointsDataSet);
 				
-				polyDataNormals->SetInput(data);
-			}
+				polyDataNormals = vtkPolyDataNormals::New();
+				polyDataNormals->ConsistencyOn();
+				polyDataNormals->AutoOrientNormalsOn();
+				if (NO) 
+				{
+					vtkPolyData *medialSurface;
+					power->Update();
+					medialSurface = power->GetMedialSurface();
+					//polyDataNormals->SetInput(medialSurface);
+					isoDeci = vtkDecimatePro::New();
+					isoDeci->SetInput(medialSurface);
+					isoDeci->SetTargetReduction(0.9);
+					isoDeci->SetPreserveTopology( TRUE);
+					polyDataNormals->SetInput(isoDeci->GetOutput());
+				
 
-			else 
-			{
-				polyDataNormals->SetInput(power->GetOutput());
-			}
-			power->Delete();		
-			output = (vtkDataSet*) polyDataNormals -> GetOutput();
-		}
+					NSLog(@"Build Links");
+					isoDeci->Update();
+					vtkPolyData *data = isoDeci->GetOutput();
+					//vtkPolyData *data = power->GetOutput();
+					data->BuildLinks();
 
+					vtkPoints *medialPoints = data->GetPoints();
+					int nPoints = data->GetNumberOfPoints();
+					vtkIdType i;
+					int j, k, neighbors;			
+					double x , y, z;
+					// get all cells around a point
+				
+					data->BuildCells();
+					for (int a = 0; a < 50 ;  a++){
+						for (i = 0; i < nPoints; i++) {	
+							vtkIdType ncells;
+							vtkIdList *cellIds = vtkIdList::New();;
+							
+							// count self
+							neighbors = 1;
+							double *position = medialPoints->GetPoint(i);
+							// Get position
+							x = position[0];
+							y = position[1];
+							z = position[2];
+							// All cells for Point and number of cells
+							data->GetPointCells	(i, cellIds);	
+							ncells = cellIds->GetNumberOfIds();
+			
+							for (j = 0;  j < ncells; j++) {
+								vtkIdType numPoints;
+								vtkIdType *cellPoints ;
+								vtkIdType cellId = cellIds->GetId(j);
+								//get all points for the cell
+								data->GetCellPoints(cellId, numPoints, cellPoints);				
+
+								 for (k = 0; k < numPoints; k++) {						
+									position = medialPoints->GetPoint(cellPoints[k]);
+
+									x += position[0];
+									y += position[1];
+									z += position[2];
+									neighbors++;
+								 }
+							}
+
+							// get average
+							x /= neighbors;
+							y /= neighbors;
+							z /= neighbors;
+							medialPoints->SetPoint(i, x ,y ,z);
+							
+							cellIds->Delete();
+						}
+					}
+					
+					polyDataNormals->SetInput(data);
+				}
+
+				else 
+				{
+					polyDataNormals->SetInput(power->GetOutput());
+				}
+				power->Delete();		
+				output = (vtkDataSet*) polyDataNormals -> GetOutput();
+			}
 			
 			vtkTextureMapToSphere *tmapper = vtkTextureMapToSphere::New();
 				tmapper -> SetInput( output);

@@ -2588,11 +2588,11 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 - (void) computeROIVolumes
 {
 	NSArray *roiNames = [viewer2D roiNames];
-
+	
 	for(int m=0; m<maxMovieIndex; m++)
 	{	
 		[roiVolumes[m] removeAllObjects];
-
+		
 		for(NSUInteger i=0; i<[roiNames count]; i++)
 		{
 			NSArray *roisWithCurrentName = [viewer2D roisWithName:[roiNames objectAtIndex:i] forMovieIndex:m];
