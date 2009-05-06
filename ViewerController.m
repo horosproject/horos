@@ -5736,6 +5736,7 @@ static ViewerController *draggedController = nil;
 	
 	if( newViewerWindow == NO && [[[AppController sharedAppController] FindRelatedViewers:pixList[0]] count] > minWindows)
 	{
+		NSBeep();
 		NSLog( @"changeImageData not possible with other post-processing windows opened");
 		return;
 	}
@@ -8227,6 +8228,8 @@ static float oldsetww, oldsetwl;
 				
 				if( [pix isRGB] == NO)
 				{
+					float m = *[pix fImage];
+					
 					for ( i = 0; i < [pix pheight]; i ++)
 					{
 						vImage_Buffer dstf, srcf;
@@ -8248,9 +8251,20 @@ static float oldsetww, oldsetwl;
 							else
 								for( i = 0; i < 25; i++) fkernel[ i] = (float) [pix kernel][ i]; 
 							
+							
+							
 							err = vImageConvolve_PlanarF( &dstf, &srcf, 0, 0, 0, fkernel, [pix kernelsize], [pix kernelsize], 0, kvImageEdgeExtend);
 							if( err) NSLog(@"Error applyConvolutionOnImage = %d", err);
 						}
+					}
+					
+					// check the first line to avoid nan value....
+					for( DCMPix *p in pixList[ x])
+					{
+						float *ptr = (float*) [p fImage];
+						int x = [p pwidth];
+						while( x-- > 0)
+							*ptr++ = m;
 					}
 				}
 			}

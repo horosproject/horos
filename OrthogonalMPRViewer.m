@@ -1406,31 +1406,37 @@ static NSString*	VRPanelToolbarItemIdentifier			= @"MIP.tif";
 			[splash showWindow:self];
 			[[splash progress] setMaxValue:(int)((to-from)/interval)];
 			
-			if( exportDCM == nil) exportDCM = [[DICOMExport alloc] init];
-			[exportDCM setSeriesNumber:5600 + [[NSCalendarDate date] minuteOfHour]  + [[NSCalendarDate date] secondOfMinute]];	//Try to create a unique series number... Do you have a better idea??
-			[exportDCM setSeriesDescription: [dcmSeriesName stringValue]];
-			
-			for( i = from; i < to; i+=interval)
+			@try
 			{
-				NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
+				if( exportDCM == nil) exportDCM = [[DICOMExport alloc] init];
+				[exportDCM setSeriesNumber:5600 + [[NSCalendarDate date] minuteOfHour]  + [[NSCalendarDate date] secondOfMinute]];	//Try to create a unique series number... Do you have a better idea??
+				[exportDCM setSeriesDescription: [dcmSeriesName stringValue]];
 				
-				[view setCrossPosition:x+i*deltaX+0.5 :y+i*deltaY+0.5];
-				[splitView display];
-				[view display];
+				for( i = from; i < to; i+=interval)
+				{
+					NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
+					
+					[view setCrossPosition:x+i*deltaX+0.5 :y+i*deltaY+0.5];
+					[splitView display];
+					[view display];
+					
+					[producedFiles addObject: [self exportDICOMFileInt:[[dcmFormat selectedCell] tag]]];
+					
+					[splash incrementBy: 1];
+					
+					[pool release];
+				}
 				
-				[producedFiles addObject: [self exportDICOMFileInt:[[dcmFormat selectedCell] tag]]];
+				[view setCrossPosition:oldX+0.5 :oldY+0.5];
 				
-				[splash incrementBy: 1];
+				[[self keyView] setIndex: curImage];
 				
-				[pool release];
+				[[self keyView] display];
 			}
-			
-			[view setCrossPosition:oldX+0.5 :oldY+0.5];
-			
-			[[self keyView] setIndex: curImage];
-			
-			[[self keyView] display];
-			
+			@catch( NSException *e)
+			{
+				NSLog( @"***** Exception Creating a DICOM series: %@", e);
+			}
 			[splash close];
 			[splash release];
 		}

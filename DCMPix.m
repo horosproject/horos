@@ -10741,7 +10741,7 @@ END_CREATE_ROIS:
 		}
 		else
 		{
-			float  fkernel[25];
+			float  fkernel[25], m;
 			int i;
 			
 			if( normalization != 0)
@@ -10749,7 +10749,15 @@ END_CREATE_ROIS:
 			else
 				for( i = 0; i < 25; i++) fkernel[ i] = (float) kernel[ i]; 
 			
+			m = *src;
 			err = vImageConvolve_PlanarF( &dstf, &srcf, 0, 0, 0, fkernel, kernelsize, kernelsize, 0, kvImageEdgeExtend);
+			
+			// check the first line to avoid nan value....
+			
+			float *ptr = result;
+			int x = width;
+			while( x-- > 0)
+				*ptr++ = m;
 		}
 		
 		if( err) NSLog(@"Error applyConvolutionOnImage = %d", err);

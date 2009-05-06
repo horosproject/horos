@@ -2128,7 +2128,7 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 	[[NSUserDefaults standardUserDefaults] setInteger: barHide forKey: @"CLUTBARS"];
 	[DCMView setDefaults];
 	
-	unsigned char *data = [curView getRawPixelsWidth:&width height:&height spp:&spp bpp:&bpp screenCapture:screenCapture force8bits:NO removeGraphical:YES squarePixels:NO allTiles:NO allowSmartCropping:YES origin: imOrigin spacing: imSpacing offset: &offset isSigned: &isSigned];
+	unsigned char *data = [curView getRawPixelsWidth:&width height:&height spp:&spp bpp:&bpp screenCapture:screenCapture force8bits:YES removeGraphical:YES squarePixels:NO allTiles:NO allowSmartCropping:YES origin: imOrigin spacing: imSpacing offset: &offset isSigned: &isSigned];
 	
 	if( data)
 	{
@@ -2294,53 +2294,59 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 			Wait *splash = [[Wait alloc] initWithString:NSLocalizedString(@"Creating a DICOM series", nil)];
 			[splash showWindow:self];
 			[[splash progress] setMaxValue:(int)((to-from)/interval)];
-
-			if( exportDCM == nil) exportDCM = [[DICOMExport alloc] init];
-			[exportDCM setSeriesNumber:5300 + [[NSCalendarDate date] minuteOfHour]  + [[NSCalendarDate date] secondOfMinute]];	//Try to create a unique series number... Do you have a better idea??
-			[exportDCM setSeriesDescription: [dcmSeriesName stringValue]];
 			
-			if([dcmExport3Modalities state]==NSOffState)
+			@try
+			{			
+				if( exportDCM == nil) exportDCM = [[DICOMExport alloc] init];
+				[exportDCM setSeriesNumber:5300 + [[NSCalendarDate date] minuteOfHour]  + [[NSCalendarDate date] secondOfMinute]];	//Try to create a unique series number... Do you have a better idea??
+				[exportDCM setSeriesDescription: [dcmSeriesName stringValue]];
+				
+				if([dcmExport3Modalities state]==NSOffState)
+				{
+					for( i = from; i < to; i+=interval)
+					{
+						[view setCrossPosition:x+i*deltaX+0.5 :y+i*deltaY+0.5];
+						[modalitySplitView display];
+						
+						NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+						[producedFiles addObject: [self exportDICOMFileInt: YES]];
+						[pool release];
+						
+						[splash incrementBy: 1];
+					}
+				}
+				else
+				{	
+					long nCT, nPETCT, nPET;
+					nCT = 15300 + [[NSCalendarDate date] minuteOfHour] + [[NSCalendarDate date] secondOfMinute];
+					nPETCT = 25300 + [[NSCalendarDate date] minuteOfHour] + [[NSCalendarDate date] secondOfMinute];
+					nPET = 35300 + [[NSCalendarDate date] minuteOfHour] + [[NSCalendarDate date] secondOfMinute];
+
+					for( i = from; i < to; i+=interval)
+					{
+						[view setCrossPosition:x+i*deltaX+0.5 :y+i*deltaY+0.5];
+						[modalitySplitView display];
+						
+						NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+						[exportDCM setSeriesNumber:nCT];
+						[producedFiles addObject: [self exportDICOMFileInt: YES view:viewCT]];
+						[exportDCM setSeriesNumber:nPETCT];
+						[producedFiles addObject: [self exportDICOMFileInt: YES view:viewPETCT]];
+						[exportDCM setSeriesNumber:nPET];
+						[producedFiles addObject: [self exportDICOMFileInt: YES view:viewPET]];
+						[pool release];
+						
+						[splash incrementBy: 1];
+					}
+				}
+				
+				[view setCrossPosition:oldX+0.5 :oldY+0.5];
+				[view setNeedsDisplay:YES];
+			}
+			@catch( NSException *e)
 			{
-				for( i = from; i < to; i+=interval)
-				{
-					[view setCrossPosition:x+i*deltaX+0.5 :y+i*deltaY+0.5];
-					[modalitySplitView display];
-					
-					NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-					[producedFiles addObject: [self exportDICOMFileInt: YES]];
-					[pool release];
-					
-					[splash incrementBy: 1];
-				}
+				NSLog( @"***** Exception Creating a PET-CT DICOM series: %@", e);
 			}
-			else
-			{	
-				long nCT, nPETCT, nPET;
-				nCT = 15300 + [[NSCalendarDate date] minuteOfHour] + [[NSCalendarDate date] secondOfMinute];
-				nPETCT = 25300 + [[NSCalendarDate date] minuteOfHour] + [[NSCalendarDate date] secondOfMinute];
-				nPET = 35300 + [[NSCalendarDate date] minuteOfHour] + [[NSCalendarDate date] secondOfMinute];
-
-				for( i = from; i < to; i+=interval)
-				{
-					[view setCrossPosition:x+i*deltaX+0.5 :y+i*deltaY+0.5];
-					[modalitySplitView display];
-					
-					NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-					[exportDCM setSeriesNumber:nCT];
-					[producedFiles addObject: [self exportDICOMFileInt: YES view:viewCT]];
-					[exportDCM setSeriesNumber:nPETCT];
-					[producedFiles addObject: [self exportDICOMFileInt: YES view:viewPETCT]];
-					[exportDCM setSeriesNumber:nPET];
-					[producedFiles addObject: [self exportDICOMFileInt: YES view:viewPET]];
-					[pool release];
-					
-					[splash incrementBy: 1];
-				}
-			}
-			
-			[view setCrossPosition:oldX+0.5 :oldY+0.5];
-			[view setNeedsDisplay:YES];
-			
 			[splash close];
 			[splash release];
 		}
