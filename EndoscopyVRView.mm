@@ -17,6 +17,16 @@
 
 @implementation EndoscopyVRView
 
+-(void) mouseMoved: (NSEvent*) theEvent
+{
+	NSView* view = [[[theEvent window] contentView] hitTest:[theEvent locationInWindow]];
+	
+	if( view == self)
+		[super mouseMoved: theEvent];
+	else
+		[view mouseMoved:theEvent];
+}
+
 -(id)initWithFrame:(NSRect)frame;
 {
     if ( self = [super initWithFrame:frame] )

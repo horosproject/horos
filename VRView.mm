@@ -6748,7 +6748,7 @@ public:
 	
 	//Sphere
 	vtkSphereSource *sphereSource = vtkSphereSource::New();
-	sphereSource->SetRadius(radius);
+	sphereSource->SetRadius(radius*superSampling);
 	sphereSource->SetCenter(x, y, z);
 	//Mapper
 	vtkPolyDataMapper *mapper = vtkPolyDataMapper::New();
@@ -7019,7 +7019,7 @@ public:
 				{
 					// Volume Rendering Mode
 				
-					opacitySum += opacityTransferFunction->GetValue( (currentPointValue + OFFSET16) * valueFactor);
+					opacitySum += opacityTransferFunction->GetValue( (currentPointValue + OFFSET16) * valueFactor) * superSampling;
 					
 					if( minValue)
 					{
@@ -7279,7 +7279,7 @@ public:
 	vtkActor *actor = (vtkActor*)[[point3DActorArray objectAtIndex:index] pointerValue];
 	//Sphere
 	vtkSphereSource *sphereSource = vtkSphereSource::New();
-	sphereSource->SetRadius(radius);
+	sphereSource->SetRadius(radius*superSampling);
 	float center[3];
 	[[point3DPositionsArray objectAtIndex:index] getValue:center];
 	sphereSource->SetCenter(center[0],center[1],center[2]);
