@@ -288,14 +288,14 @@
 							// All cells for Point and number of cells
 							data->GetPointCells	(i, cellIds);	
 							ncells = cellIds->GetNumberOfIds();
-			
+							
 							for (j = 0;  j < ncells; j++) {
 								vtkIdType numPoints;
 								vtkIdType *cellPoints ;
 								vtkIdType cellId = cellIds->GetId(j);
 								//get all points for the cell
 								data->GetCellPoints(cellId, numPoints, cellPoints);				
-
+								
 								 for (k = 0; k < numPoints; k++) {						
 									position = medialPoints->GetPoint(cellPoints[k]);
 
@@ -305,7 +305,7 @@
 									neighbors++;
 								 }
 							}
-
+							
 							// get average
 							x /= neighbors;
 							y /= neighbors;
