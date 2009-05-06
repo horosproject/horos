@@ -92,7 +92,7 @@ static float deg2rad = 3.14159265358979/180.0;
 		viewer2D = viewer;
 		fusedViewer2D = fusedViewer;
 		clippingRangeMode = 1;
-		LOD = [[NSUserDefaults standardUserDefaults] integerForKey: @"defaultMPRLOD"];
+		LOD = 1;
 		if( LOD < 1) LOD = 1;
 		
 		if( fusedViewer2D)
@@ -347,7 +347,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	mprView2.dontUseAutoLOD = NO;
 	mprView3.dontUseAutoLOD = NO;
 	
-	[self setLOD: [[NSUserDefaults standardUserDefaults] floatForKey:@"defaultMPRLOD"]];
+	[self setLOD: 1];
 }
 
 -(void) awakeFromNib
@@ -991,8 +991,6 @@ static float deg2rad = 3.14159265358979/180.0;
 	[mprView3 restoreCamera];
 	mprView3.camera.forceUpdate = YES;
 	[mprView3 updateViewMPR];
-	
-	[[NSUserDefaults standardUserDefaults] setFloat: LOD forKey: @"defaultMPRLOD"];
 }
 
 #pragma mark Window Level / Window width
