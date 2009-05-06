@@ -324,21 +324,26 @@ static BOOL frameZoomed = NO;
 		
 		if( imagePtr)
 		{
-			float slicePoint[ 3], sV[ 3], wx = [pix pwidth]/2., hx = [pix pheight]/2.;
-			float fakeOrigin[ 3] = {0, 0, 0};
-			BOOL cameraMoved;
-			if( previousOriginInPlane == NO || intersect3D_2Planes( orientation+6, fakeOrigin, previousOrientation+6, fakeOrigin, sV, slicePoint) == noErr)
-				cameraMoved = YES;
-			else
-				cameraMoved = NO;
+			BOOL cameraMoved = YES;
 			
-			if( cameraMoved == YES)
+			if( [curRoiList count] > 0)
 			{
-				for( int i = [curRoiList count] -1 ; i >= 0; i--)
+				float slicePoint[ 3], sV[ 3], wx = [pix pwidth]/2., hx = [pix pheight]/2.;
+				float fakeOrigin[ 3] = {0, 0, 0};
+				
+				if( previousOriginInPlane == NO || intersect3D_2Planes( orientation+6, fakeOrigin, previousOrientation+6, fakeOrigin, sV, slicePoint) == noErr)
+					cameraMoved = YES;
+				else
+					cameraMoved = NO;
+				
+				if( cameraMoved == YES)
 				{
-					ROI *r = [curRoiList objectAtIndex: i];
-					if( [r type] != t2DPoint)
-						[curRoiList removeObjectAtIndex: i];
+					for( int i = [curRoiList count] -1 ; i >= 0; i--)
+					{
+						ROI *r = [curRoiList objectAtIndex: i];
+						if( [r type] != t2DPoint)
+							[curRoiList removeObjectAtIndex: i];
+					}
 				}
 			}
 			
@@ -386,7 +391,7 @@ static BOOL frameZoomed = NO;
 				[self setScaleValue: [vrView imageSampleDistance]];
 				
 				float rotationPlane = 0;
-				if( cameraMoved == NO)
+				if( cameraMoved == NO && [curRoiList count] > 0)
 				{
 					if( previousOrientation[ 0] != 0 || previousOrientation[ 1] != 0 || previousOrientation[ 2] != 0)
 						rotationPlane = -[MPRController angleBetweenVector: orientation andPlane: previousOrientation];
