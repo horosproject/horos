@@ -6111,6 +6111,8 @@ static ViewerController *draggedController = nil;
 	[self willChangeValueForKey: @"KeyImageCounter"];
 	[self didChangeValueForKey: @"KeyImageCounter"];
 	
+	[imageView computeColor];
+	
 	[self propagateSettings];
 }
 

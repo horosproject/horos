@@ -286,7 +286,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 	GLubyte *loupeTextureBuffer;
 	GLuint loupeMaskTextureID, loupeMaskTextureWidth, loupeMaskTextureHeight;
 	GLubyte *loupeMaskTextureBuffer;
-	
+	float studyColorR, studyColorG, studyColorB;
 //	LoupeController *loupeController;
 }
 
@@ -296,7 +296,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 @property(readonly) NSMutableArray *dcmPixList,  *dcmRoiList;
 @property(readonly) NSArray *dcmFilesList;
 @property long syncSeriesIndex;
-@property float syncRelativeDiff;
+@property float syncRelativeDiff, studyColorR, studyColorG, studyColorB;
 @property long blendingMode;
 @property(retain,setter=setBlending:) DCMView *blendingView;
 @property(readonly) float blendingFactor;
@@ -498,7 +498,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 - (void)mouseDraggedROISelector:(NSEvent *)event;
 
 - (void)deleteROIGroupID:(NSTimeInterval)groupID;
-
+- (void) computeColor;
 - (void)setIsLUT12Bit:(BOOL)boo;
 - (BOOL)isLUT12Bit;
 

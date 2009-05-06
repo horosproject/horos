@@ -456,7 +456,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 @synthesize showDescriptionInLarge, curRoiList;
 @synthesize drawingFrameRect, dontEnterReshape;
-@synthesize rectArray;
+@synthesize rectArray, studyColorR, studyColorG, studyColorB;
 @synthesize flippedData;
 @synthesize dcmPixList;
 @synthesize dcmFilesList;
@@ -713,6 +713,62 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 //		}
 //	}
 //}
+
+- (void) computeColor
+{
+	id curSeries = [self seriesObj];
+	id curStudy = [curSeries valueForKey:@"study"];
+	
+	NSArray *viewers = [[ViewerController getDisplayed2DViewers] sortedArrayUsingFunction: studyCompare context: nil];
+	
+	NSMutableArray *studiesArray = [NSMutableArray array];
+	NSMutableArray *seriesArray = [NSMutableArray array];
+	NSMutableDictionary *colorsStudy = [NSMutableDictionary dictionary];
+	NSArray *colors = [NSArray arrayWithObjects:	[NSColor colorWithDeviceRed:0.4f green:0.4f blue:0.0f alpha:0.7f],
+					   [NSColor colorWithDeviceRed:0.4f green:0.0f blue:0.4f alpha:0.7f],
+					   [NSColor colorWithDeviceRed:0.0f green:0.4f blue:0.4f alpha:0.7f],
+					   [NSColor colorWithDeviceRed:0.4f green:0.0f blue:0.0f alpha:0.7f],
+					   [NSColor colorWithDeviceRed:0.0f green:0.4f blue:0.0f alpha:0.7f],
+					   [NSColor colorWithDeviceRed:0.0f green:0.0f blue:0.4f alpha:0.7f],
+					   nil];
+	
+	for( ViewerController *v in viewers)
+	{
+		[studiesArray addObject: [v currentStudy]];
+		[seriesArray addObject: [v currentSeries]];
+	}
+	
+	// Give a different color for each study/patient
+	int color = 0, noColor = 0;
+	for( id study in studiesArray)
+	{
+		if( [colorsStudy objectForKey: [study valueForKey:@"studyInstanceUID"]] == nil)
+		{
+			[colorsStudy setObject: [colors objectAtIndex: color++] forKey: [study valueForKey:@"studyInstanceUID"]];
+			noColor++;
+		}	
+		if( color >= [colors count]) color = 0;
+	}
+	
+	if( noColor > 1)
+	{
+		for( ViewerController *v in viewers)
+		{
+			NSColor *boxColor = [colorsStudy objectForKey: [v studyInstanceUID]];
+	
+			[v imageView].studyColorR = [boxColor redComponent];
+			[v imageView].studyColorG = [boxColor greenComponent];
+			[v imageView].studyColorB = [boxColor blueComponent];
+		}
+	}
+	else
+	{
+		for( ViewerController *v in viewers)
+		{
+			[v imageView].studyColorR = [v imageView].studyColorG = [v imageView].studyColorB = 0;
+		}
+	}
+}
 
 - (void) reapplyWindowLevel
 {
@@ -5743,6 +5799,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		[[self window] setAcceptsMouseMovedEvents: NO];
 		
 		[self prepareToRelease];
+		
+		[self computeColor];
 	}
 }
 
@@ -6862,6 +6920,23 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			}
 		}
 		
+		int colorBoxSize = 0;
+		
+		if( studyColorR != 0 || studyColorG != 0 || studyColorB != 0)
+			colorBoxSize = 30;
+		
+		if( colorBoxSize && stringID == nil && [self is2DViewer] == YES)
+		{
+			glColor4f( studyColorR, studyColorG, studyColorB, 1.0);
+			glBegin( GL_POLYGON);		
+			glVertex2f( size.size.width-2 -colorBoxSize+1, size.size.height-2 -colorBoxSize+1);
+			glVertex2f( size.size.width-2 -colorBoxSize+1, size.size.height-2 -1);
+			glVertex2f( size.size.width-2 -1, size.size.height-2 -1);
+			glVertex2f( size.size.width-2 -1, size.size.height-2 -colorBoxSize +1);
+			glEnd();
+		}
+		else colorBoxSize = 0;
+		
 		NSDictionary *annotationsDictionary = curDCM.annotationsDictionary;
 		
 		NSMutableDictionary *xRasterInit = [NSMutableDictionary dictionary];
@@ -6870,7 +6945,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		[xRasterInit setObject:[NSNumber numberWithInt:6] forKey:@"LowerLeft"];
 		[xRasterInit setObject:[NSNumber numberWithInt:size.size.width-2] forKey:@"TopRight"];
 		[xRasterInit setObject:[NSNumber numberWithInt:size.size.width-2] forKey:@"MiddleRight"];
-		[xRasterInit setObject:[NSNumber numberWithInt:size.size.width-2] forKey:@"LowerRight"];
+		[xRasterInit setObject:[NSNumber numberWithInt:size.size.width-2 - colorBoxSize] forKey:@"LowerRight"];
 		[xRasterInit setObject:[NSNumber numberWithInt:size.size.width/2] forKey:@"TopMiddle"];
 		[xRasterInit setObject:[NSNumber numberWithInt:size.size.width/2] forKey:@"LowerMiddle"];
 
@@ -7277,8 +7352,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		} // for k
 		
 		yRaster = size.size.height-2;
-		xRaster = size.size.width-2;
-		[self DrawNSStringGL:@"Made In OsiriX" :fontList :xRaster :yRaster rightAlignment:YES useStringTexture:YES];
+		xRaster = size.size.width-2 -colorBoxSize;
+		[self DrawNSStringGL: @"Made In OsiriX" :fontList :xRaster :yRaster rightAlignment:YES useStringTexture:YES];
 	}
 }
 
@@ -8020,7 +8095,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 					glVertex2f(-drawingFrameRect.size.width/2 + xOffset , scaleValue  * (-0.02/curDCM.pixelSpacingY*curDCM.pixelRatio)); 
 					glVertex2f(-drawingFrameRect.size.width/2 + xOffset , scaleValue  * (0.02/curDCM.pixelSpacingY*curDCM.pixelRatio));
-
+					
 					for ( short i = -20; i<=20; i++ )
 					{
 						short length = ( i % 10 == 0 )? 10 : 5;
@@ -10547,6 +10622,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		[[self windowController] adjustSlider];
 		[[self windowController] propagateSettings];
 	}
+	
+	[self computeColor];
 	
 	[self setNeedsDisplay:YES];
 }
