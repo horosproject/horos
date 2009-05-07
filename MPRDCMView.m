@@ -1152,9 +1152,11 @@ static BOOL frameZoomed = NO;
 {
 	[self restoreCamera];
 	camera.forceUpdate = YES;
+	dontUseAutoLOD = YES;
 	moveCenter = YES;
 	[self updateViewMPR: NO];
 	moveCenter = NO;
+	dontUseAutoLOD = NO;
 }
 
 - (void) mouseDown:(NSEvent *)theEvent
