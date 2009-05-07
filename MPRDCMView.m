@@ -240,7 +240,7 @@ static BOOL frameZoomed = NO;
 	if( [self hasCameraChanged: currentCamera] == YES)
 	{
 		// AutoLOD
-		if( dontUseAutoLOD == NO)
+		if( dontUseAutoLOD == NO && lastRenderingWasMoveCenter == NO)
 		{
 			DCMPix *o = [windowController originalPix];
 			
@@ -271,9 +271,6 @@ static BOOL frameZoomed = NO;
 			if( LOD < windowController.LOD)
 				LOD = windowController.LOD;
 			
-			previousResolution = [vrView getResolution];
-			previousPixelSpacing = [pix pixelSpacingX];
-			
 			if( LOD > 4) LOD = 4;
 			
 			if( windowController.lowLOD)
@@ -290,7 +287,11 @@ static BOOL frameZoomed = NO;
 				[vrView prepareFullDepthCapture];
 			
 			if( moveCenter)
+			{
+				lastRenderingWasMoveCenter = YES;
 				[vrView setLOD: 100];	// We dont need to really compute the image - we just want image origin for the other views.
+			}
+			else lastRenderingWasMoveCenter = NO;
 			
 			[vrView render];
 		}
@@ -419,6 +420,9 @@ static BOOL frameZoomed = NO;
 				[pix orientation: previousOrientation];
 				
 				[self detect2DPointInThisSlice];
+				
+				previousResolution = [vrView getResolution];
+				previousPixelSpacing = [pix pixelSpacingX];
 			}
 		}
 		

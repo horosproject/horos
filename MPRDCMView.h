@@ -38,6 +38,7 @@
 	BOOL rotateLines;
 	BOOL moveCenter;
 	BOOL displayCrossLines;
+	BOOL lastRenderingWasMoveCenter;
 	
 	float rotateLinesStartAngle;
 	
