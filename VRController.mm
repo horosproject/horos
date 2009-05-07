@@ -3522,11 +3522,7 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 				curves = [CLUTOpacityView convertCurvesFromPlist:[clut objectForKey:@"curves"]];
 				pointColors = [CLUTOpacityView convertPointColorsFromPlist:[clut objectForKey:@"colors"]];
 			}
-<<<<<<< .mine
 			else if([aClutName isEqualToString:NSLocalizedString(@"16-bit CLUT", nil)] || [aClutName isEqualToString: @"16-bit CLUT"])
-=======
-			else if([aClutName isEqualToString:NSLocalizedString(@"16-bit CLUT", nil)]  || [aClutName isEqualToString: @"16-bit CLUT"])
->>>>>>> .r5491
 			{
 				curves = [CLUTOpacityView convertCurvesFromPlist:[preset objectForKey:@"16bitClutCurves"]];
 				pointColors = [CLUTOpacityView convertPointColorsFromPlist:[preset objectForKey:@"16bitClutColors"]];
