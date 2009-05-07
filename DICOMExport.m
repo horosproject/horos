@@ -122,7 +122,7 @@
 
 - (long) setPixelData:		(unsigned char*) idata
 		samplePerPixel:		(long) ispp
-		bitsPerPixel:		(long) ibpp
+		bitsPerPixel:		(long) ibpp // TODO: it's actually bits per sample
 		width:				(long) iwidth
 		height:				(long) iheight
 {
