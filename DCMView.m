@@ -1748,7 +1748,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	int clickCount = 1;
 	@try
 	{
-		clickCount = [event clickCount];
+		if( [event type] ==	NSLeftMouseDown || [event type] ==	NSRightMouseDown || [event type] ==	NSLeftMouseUp || [event type] == NSRightMouseUp)
+			clickCount = [event clickCount];
 	}
 	@catch (NSException * e)
 	{
