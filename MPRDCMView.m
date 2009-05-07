@@ -1178,8 +1178,6 @@ static BOOL frameZoomed = NO;
 		clickCount = 1;
 	}
 	
-	[self magicTrick];
-	
 	if( clickCount == 2)
 	{
 		if( frameZoomed == NO)
@@ -1285,6 +1283,8 @@ static BOOL frameZoomed = NO;
 			}
 			else
 			{
+				[self magicTrick];
+				
 				[vrView mouseDown: theEvent];
 				
 				if( [vrView _tool] == tRotate)
