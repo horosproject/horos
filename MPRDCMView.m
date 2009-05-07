@@ -1222,7 +1222,9 @@ static BOOL frameZoomed = NO;
 		[self updateViewMPR];
 	}
 	else
-	{	
+	{
+		[self magicTrick];
+		
 		[windowController addToUndoQueue:@"mprCamera"];
 		
 		rotateLines = NO;
@@ -1289,8 +1291,6 @@ static BOOL frameZoomed = NO;
 			}
 			else
 			{
-				[self magicTrick];
-				
 				[vrView mouseDown: theEvent];
 				
 				if( [vrView _tool] == tRotate)
