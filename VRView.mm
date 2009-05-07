@@ -3290,7 +3290,7 @@ public:
 	
 	@try
 	{
-		if( [theEvent type] == NSLeftMouseDown || [theEvent type] == NSRightMouseDown)
+		if( [theEvent type] ==	NSLeftMouseDown || [theEvent type] ==	NSRightMouseDown || [theEvent type] ==	NSLeftMouseUp || [theEvent type] == NSRightMouseUp)
 			clickCount = [theEvent clickCount];
 	}
 	@catch (NSException * e)

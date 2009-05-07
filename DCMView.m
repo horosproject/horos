@@ -2714,8 +2714,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	for( ViewerController *v in viewers)
 	{
-		[studiesArray addObject: [v currentStudy]];
-		[seriesArray addObject: [v currentSeries]];
+		if( [v currentStudy] && [v currentSeries])
+		{
+			[studiesArray addObject: [v currentStudy]];
+			[seriesArray addObject: [v currentSeries]];
+		}
 	}
 	
 	// Give a different color for each study/patient
@@ -3554,7 +3557,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		int clickCount = 1;
 		@try
 		{
-			if( [event type] == NSLeftMouseDown || [event type] == NSRightMouseDown)
+			if( [event type] ==	NSLeftMouseDown || [event type] ==	NSRightMouseDown || [event type] ==	NSLeftMouseUp || [event type] == NSRightMouseUp)
 				clickCount = [event clickCount];
 		}
 		@catch (NSException * e)
@@ -4408,7 +4411,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 		@try
 		{
-			if( [event type] == NSLeftMouseDown || [event type] == NSRightMouseDown  || [event type] == NSRightMouseUp)
+			if( [event type] ==	NSLeftMouseDown || [event type] ==	NSRightMouseDown || [event type] ==	NSLeftMouseUp || [event type] == NSRightMouseUp)
 				clickCount = [event clickCount];
 		}
 		@catch (NSException * e)
