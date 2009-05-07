@@ -2946,7 +2946,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	[presetDictionary setObject:shadingPresetName forKey:@"shading"];
 	[presetDictionary setObject:[NSNumber numberWithBool:isAdvancedCLUT] forKey:@"advancedCLUT"];
 	[presetDictionary setObject:clut forKey:@"CLUT"];
-	if([clut isEqualToString:NSLocalizedString(@"16-bit CLUT", nil)]  || [clut isEqualToString: @"16-bit CLUT"])
+	if([clut isEqualToString:NSLocalizedString(@"16-bit CLUT", nil)] || [clut isEqualToString: @"16-bit CLUT"])
 	{
 		NSArray *curves = [clutOpacityView convertCurvesForPlist];
 		NSArray *colors = [clutOpacityView convertPointColorsForPlist];
@@ -3290,7 +3290,7 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 			}
 			else
 			{
-				if([clut isEqualToString:NSLocalizedString(@"16-bit CLUT", nil)]  || [clut isEqualToString: @"16-bit CLUT"])
+				if([clut isEqualToString:NSLocalizedString(@"16-bit CLUT", nil)] || [clut isEqualToString: @"16-bit CLUT"])
 				{
 					NSMutableArray *curves = [CLUTOpacityView convertCurvesFromPlist:[preset objectForKey:@"16bitClutCurves"]];
 					NSMutableArray *colors = [CLUTOpacityView convertPointColorsFromPlist:[preset objectForKey:@"16bitClutColors"]];
@@ -3522,7 +3522,11 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 				curves = [CLUTOpacityView convertCurvesFromPlist:[clut objectForKey:@"curves"]];
 				pointColors = [CLUTOpacityView convertPointColorsFromPlist:[clut objectForKey:@"colors"]];
 			}
+<<<<<<< .mine
+			else if([aClutName isEqualToString:NSLocalizedString(@"16-bit CLUT", nil)] || [aClutName isEqualToString: @"16-bit CLUT"])
+=======
 			else if([aClutName isEqualToString:NSLocalizedString(@"16-bit CLUT", nil)]  || [aClutName isEqualToString: @"16-bit CLUT"])
+>>>>>>> .r5491
 			{
 				curves = [CLUTOpacityView convertCurvesFromPlist:[preset objectForKey:@"16bitClutCurves"]];
 				pointColors = [CLUTOpacityView convertPointColorsFromPlist:[preset objectForKey:@"16bitClutColors"]];
