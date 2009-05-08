@@ -235,22 +235,29 @@ static int hotKeyToolCrossTable[] =
 + (NSMutableArray*) getDisplayed2DViewers
 {
 	NSMutableArray *viewersList = [NSMutableArray arrayWithCapacity: numberOf2DViewer];
-	NSMutableArray *viewersCtrl = [NSMutableArray arrayWithCapacity: numberOf2DViewer];
 	
-	NSArray *winList = [NSApp orderedWindows];
-	for( NSWindow *w in winList)
 	{
-		if( [w windowController])
-			[viewersCtrl addObject: [w windowController]];
-	}
-	
-	for( NSWindowController *ctrl in viewersCtrl)
-	{
-		if( [ctrl isKindOfClass:[ViewerController class]])
+		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+		NSMutableArray *viewersCtrl = [[NSMutableArray alloc] initWithCapacity: numberOf2DViewer];
+		
+		NSArray *winList = [NSApp orderedWindows];
+		for( NSWindow *w in winList)
 		{
-			if( [(ViewerController*) ctrl windowWillClose] == NO)
-				[viewersList addObject: ctrl];
+			if( [w windowController])
+				[viewersCtrl addObject: [w windowController]];
 		}
+		
+		for( NSWindowController *ctrl in viewersCtrl)
+		{
+			if( [ctrl isKindOfClass:[ViewerController class]])
+			{
+				if( [(ViewerController*) ctrl windowWillClose] == NO)
+					[viewersList addObject: ctrl];
+			}
+		}
+		
+		[viewersCtrl release];
+		[pool release];
 	}
 	
 	return viewersList;
