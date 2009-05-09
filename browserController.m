@@ -6263,6 +6263,12 @@ static NSArray*	statesArray = nil;
 	[managedObjectContext retain];
 	[managedObjectContext lock];
 	
+	if( [[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSAlternateKeyMask)
+	{
+		for( id item in [self databaseSelection])
+			[databaseOutline collapseItem: item]; 
+	}
+	
 	NSManagedObject	*object = [[notification userInfo] objectForKey:@"NSObject"];
 	
 	[object setValue:[NSNumber numberWithBool: NO] forKey:@"expanded"];
@@ -6284,8 +6290,15 @@ static NSArray*	statesArray = nil;
 	[managedObjectContext retain];
 	[managedObjectContext lock];
 	
-	NSManagedObject	*object = [[notification userInfo] objectForKey:@"NSObject"];
+	if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSAlternateKeyMask)
+	{
+		for( id item in [self databaseSelection])
+		{
+			[databaseOutline expandItem: item]; 
+		}
+	}
 	
+	NSManagedObject	*object = [[notification userInfo] objectForKey:@"NSObject"];
 	[object setValue:[NSNumber numberWithBool: YES] forKey:@"expanded"];
 	
 	[managedObjectContext unlock];
