@@ -6293,9 +6293,7 @@ static NSArray*	statesArray = nil;
 	if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSAlternateKeyMask)
 	{
 		for( id item in [self databaseSelection])
-		{
-			[databaseOutline expandItem: item]; 
-		}
+			[databaseOutline expandItem: item];
 	}
 	
 	NSManagedObject	*object = [[notification userInfo] objectForKey:@"NSObject"];
