@@ -585,6 +585,7 @@ public:
 			if( blendingVolumeMapper) blendingVolumeMapper->SetBlendModeToMaximumIntensity();
 			break;
 		
+		case 2:
 		case 3:
 			if( blendingVolumeMapper) blendingVolumeMapper->SetBlendModeToMinimumIntensity();
 		break;
@@ -624,7 +625,8 @@ public:
 			if( textureMapper)
 				textureMapper->SetBlendModeToMaximumIntensity();
 		break;
-			
+		
+		case 2:
 		case 3:
 			if( volumeMapper)
 				volumeMapper->SetBlendModeToMinimumIntensity();
@@ -1138,7 +1140,7 @@ public:
 	{
 		BOOL fullDepthCapture = NO;
 		
-		if( [dcmExportDepth selectedTag] == 1 && [dcmExportDepth isEnabled] && (renderingMode == 1 || renderingMode == 3))
+		if( [dcmExportDepth selectedTag] == 1 && [dcmExportDepth isEnabled] && (renderingMode == 1 || renderingMode == 3 || renderingMode == 2))
 			fullDepthCapture = YES;
 		
 		[self setViewSizeToMatrix3DExport];
@@ -1353,7 +1355,7 @@ public:
 	if( [[[self window] windowController] movieFrames] > 1) [[dcmExportMode cellWithTag:2] setEnabled: YES];
 	else [[dcmExportMode cellWithTag:2] setEnabled: NO];
 	
-	if( renderingMode == 1 || renderingMode == 3)
+	if( renderingMode == 1 || renderingMode == 3 || renderingMode == 2)
 		[dcmExportDepth setEnabled: YES];
 	else
 	{
@@ -5942,7 +5944,7 @@ public:
 		*w = size[0];
 		*h = size[1];
 		
-		if( renderingMode == 1 || renderingMode == 3)		// MIP
+		if( renderingMode == 1 || renderingMode == 3 || renderingMode == 2)		// MIP
 		{
 			unsigned short *destPtr, *destFixedPtr;
 			

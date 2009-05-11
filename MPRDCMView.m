@@ -51,7 +51,7 @@ static BOOL frameZoomed = NO;
 	switch( tool)
 	{
 		case tWL:
-			if( vrView.renderingMode == 1 || vrView.renderingMode == 3) return YES; // MIP
+			if( vrView.renderingMode == 1 || vrView.renderingMode == 3 || vrView.renderingMode == 2) return YES; // MIP
 			else return NO; // VR
 		break;
 		
@@ -283,7 +283,7 @@ static BOOL frameZoomed = NO;
 				
 		if( [self frame].size.width > 0 && [self frame].size.height > 0)
 		{
-			if( windowController.maxMovieIndex > 1 && (windowController.clippingRangeMode == 1 || windowController.clippingRangeMode == 3))	//To avoid the wrong pixel value bug...
+			if( windowController.maxMovieIndex > 1 && (windowController.clippingRangeMode == 1 || windowController.clippingRangeMode == 3 || windowController.clippingRangeMode == 2))	//To avoid the wrong pixel value bug...
 				[vrView prepareFullDepthCapture];
 			
 			if( moveCenter)

@@ -25,6 +25,7 @@
 #define DATABASEPATH @"/DATABASE.noindex/"
 #define UNDOQUEUESIZE 40
 
+extern void setvtkMeanIPMode( int m);
 extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2, float *u, float *iP);
 static float deg2rad = 3.14159265358979/180.0; 
 
@@ -1366,7 +1367,7 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (void)ApplyOpacityString:(NSString*)str
 {
-	if( clippingRangeMode == 1 || clippingRangeMode == 3)
+	if( clippingRangeMode == 1 || clippingRangeMode == 3  || clippingRangeMode == 2)
 	{
 		[self Apply2DOpacityString:str];
 	}
@@ -1530,7 +1531,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	float pWL, pWW;
 	float bpWL, bpWW;
 	
-	if( clippingRangeMode == 1 || clippingRangeMode == 3)		// MIP
+	if( clippingRangeMode == 1 || clippingRangeMode == 3 || clippingRangeMode == 2)		// MIP
 	{
 		[mprView1 getWLWW: &pWL :&pWW];
 		[blendedMprView1 getWLWW: &bpWL :&bpWW];
@@ -1546,8 +1547,13 @@ static float deg2rad = 3.14159265358979/180.0;
 	[mprView1.vrView setMode: clippingRangeMode];
 	[mprView1.vrView setBlendingMode: clippingRangeMode];
 
-	if( clippingRangeMode == 1 || clippingRangeMode == 3)	// MIP - Mean
-	{		
+	if( clippingRangeMode == 1 || clippingRangeMode == 3 || clippingRangeMode == 2)	// MIP - Mean - minIP
+	{
+		if( clippingRangeMode == 3) //mean
+			setvtkMeanIPMode( 1);
+		else
+			setvtkMeanIPMode( 0);
+		
 		[mprView1.vrView prepareFullDepthCapture];
 		
 		// switch linear opacity table
@@ -1580,7 +1586,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	
 	[mprView1 restoreCamera];
 	mprView1.camera.forceUpdate = YES;
-	if( clippingRangeMode == 1  || clippingRangeMode == 3)
+	if( clippingRangeMode == 1  || clippingRangeMode == 3 || clippingRangeMode == 2)
 	{
 		[mprView1 setWLWW: pWL :pWW];
 		[blendedMprView1 setWLWW: bpWL :bpWW];
@@ -1594,7 +1600,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	
 	[mprView2 restoreCamera];
 	mprView2.camera.forceUpdate = YES;
-	if( clippingRangeMode == 1  || clippingRangeMode == 3)
+	if( clippingRangeMode == 1  || clippingRangeMode == 3 || clippingRangeMode == 2)
 	{
 		[mprView2 setWLWW: pWL :pWW];
 		[blendedMprView2 setWLWW: bpWL :bpWW];
@@ -1608,7 +1614,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	
 	[mprView3 restoreCamera];
 	mprView3.camera.forceUpdate = YES;
-	if( clippingRangeMode == 1  || clippingRangeMode == 3)
+	if( clippingRangeMode == 1  || clippingRangeMode == 3 || clippingRangeMode == 2)
 	{
 		[mprView3 setWLWW: pWL :pWW];
 		[blendedMprView3 setWLWW: bpWL :bpWW];
@@ -2751,7 +2757,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	
 	[hiddenVRController addMoviePixList: pix :vData];	
 
-	if( clippingRangeMode == 1 || clippingRangeMode == 3)
+	if( clippingRangeMode == 1 || clippingRangeMode == 3 || clippingRangeMode == 2)
 		[mprView1.vrView prepareFullDepthCapture];
 	else
 		[mprView1.vrView restoreFullDepthCapture];
@@ -2772,7 +2778,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	
 	[hiddenVRController setMovieFrame: m];
 	
-	if( clippingRangeMode == 1 || clippingRangeMode == 3)
+	if( clippingRangeMode == 1 || clippingRangeMode == 3 || clippingRangeMode == 2)
 		[mprView1.vrView prepareFullDepthCapture];
 	else
 		[mprView1.vrView restoreFullDepthCapture];

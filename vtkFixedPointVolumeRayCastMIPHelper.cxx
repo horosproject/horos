@@ -26,6 +26,16 @@
 
 #include <math.h>
 
+static int vtkMeanIPMode = 0;
+
+extern "C"
+{
+void setvtkMeanIPMode( int m)
+{
+	vtkMeanIPMode = m;
+}
+}
+
 vtkCxxRevisionMacro(vtkFixedPointVolumeRayCastMIPHelper, "$Revision: 1.11 $");
 vtkStandardNewMacro(vtkFixedPointVolumeRayCastMIPHelper);
 
@@ -302,6 +312,7 @@ void vtkFixedPointMIPHelperGenerateImageOneSimpleTrilin(
   VTKKWRCHelper_InitializeMIPOneTrilin();
   VTKKWRCHelper_SpaceLeapSetup();
 
+  int meanIP = vtkMeanIPMode;
   int flip = mapper->GetFlipMIPComparison();
   int maxValueDefined = 0;
   unsigned short maxIdx=0;
@@ -354,7 +365,7 @@ void vtkFixedPointMIPHelperGenerateImageOneSimpleTrilin(
         
       }
 	
-	if( flip)
+	if( meanIP)
 	{
 	  VTKKWRCHelper_ComputeWeights(pos);
       VTKKWRCHelper_InterpolateScalar(val);
@@ -362,12 +373,15 @@ void vtkFixedPointMIPHelperGenerateImageOneSimpleTrilin(
 	  hits++;
 	  total += val;
 	}
-	else if ( !maxValueDefined ||  (!flip && maxScalar > static_cast<unsigned int>(maxValue) ))
+	else if ( !maxValueDefined ||  ((mapper->GetFlipMIPComparison() && maxScalar < static_cast<unsigned int>(maxValue) ) ||
+          (!mapper->GetFlipMIPComparison() && maxScalar > static_cast<unsigned int>(maxValue) )) )
       {
       VTKKWRCHelper_ComputeWeights(pos);
       VTKKWRCHelper_InterpolateScalar(val);
       
-      if ( !maxValueDefined || (!flip && val > maxValue ))
+      if ( !maxValueDefined || 
+           ((mapper->GetFlipMIPComparison() && val < maxValue ) ||
+            (!mapper->GetFlipMIPComparison() && val > maxValue )) )
         {
         maxValue = val;
         maxIdx = static_cast<unsigned short>(maxValue);        
@@ -376,7 +390,7 @@ void vtkFixedPointMIPHelperGenerateImageOneSimpleTrilin(
       }
     }
   
-   if( flip)
+   if( meanIP)
 	{
 		maxValue = total / hits;
         maxIdx = static_cast<unsigned short>(maxValue);        
