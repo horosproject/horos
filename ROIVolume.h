@@ -121,6 +121,7 @@
 
 - (BOOL) isVolume;
 - (NSValue*) roiVolumeActor;
+- (BOOL) isRoiVolumeActorComputed;
 
 - (float) volume;
 

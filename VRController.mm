@@ -2633,7 +2633,8 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 - (void) hideROIVolume: (ROIVolume*) v
 {
 	vtkRenderer *viewRenderer = [view renderer];
-	viewRenderer->RemoveActor((vtkActor*)[[v roiVolumeActor] pointerValue]);
+	if( [v isRoiVolumeActorComputed])
+		viewRenderer->RemoveActor((vtkActor*)[[v roiVolumeActor] pointerValue]);
 }
 
 - (void) displayROIVolumes
@@ -2648,10 +2649,6 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 
 	for(NSUInteger i=0; i<[roiVolumes[curMovieIndex] count]; i++)
 	{
-//		BOOL visible = NO;
-//		for(int n=0; n<maxMovieIndex; n++)
-//			if([roiVolumes[n] objectAtIndex:i])
-//				visible = visible || [[roiVolumes[n] objectAtIndex:i] visible];
 		if([[roiVolumes[curMovieIndex] objectAtIndex:i] visible])
 		{
 			[self displayROIVolume:[roiVolumes[curMovieIndex] objectAtIndex:i]];

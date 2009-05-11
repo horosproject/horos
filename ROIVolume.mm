@@ -390,6 +390,14 @@
 	return ([roiList count]>0);
 }
 
+- (BOOL) isRoiVolumeActorComputed
+{
+	if(roiVolumeActor)
+		return YES;
+	else
+		return NO;
+}
+
 - (NSValue*) roiVolumeActor
 {
 	if(roiVolumeActor == nil)

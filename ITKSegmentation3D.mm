@@ -393,14 +393,14 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 	vtkPolyData *output = filter2->GetOutput();
 	output->Update();
 	
-	NSLog( @"Extracted region: %d", filter2->GetNumberOfExtractedRegions());
+//	NSLog( @"Extracted region: %d", filter2->GetNumberOfExtractedRegions());
 //	NSLog( @"Lines: %d Polys: %d, Points: %d", output->GetNumberOfLines(), output->GetNumberOfPolys(), output->GetNumberOfPoints());
 	
 	if( output->GetNumberOfLines() > 3)
 	{
 		long	ii;
 		
-		NSLog( @"points: %d", output->GetNumberOfLines());
+		//NSLog( @"points: %d", output->GetNumberOfLines());
 		
 		for( ii = 0; ii < output->GetNumberOfLines(); ii+=2)
 		{
@@ -912,9 +912,8 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 	//			}
 				
 				output->Update();
-				NSLog( @"Extracted region: %d", filter->GetNumberOfExtractedRegions());
-				
-				NSLog( @"Lines: %d Polys: %d, Points: %d", output->GetNumberOfLines(), output->GetNumberOfPolys(), output->GetNumberOfPoints());
+//				NSLog( @"Extracted region: %d", filter->GetNumberOfExtractedRegions());				
+//				NSLog( @"Lines: %d Polys: %d, Points: %d", output->GetNumberOfLines(), output->GetNumberOfPolys(), output->GetNumberOfPoints());
 				
 				if( output->GetNumberOfLines() > 3)
 				{
