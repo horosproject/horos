@@ -1213,6 +1213,10 @@ static float deg2rad = 3.14159265358979/180.0;
 		curCLUTMenu = [str retain];
 	}
 	
+	mprView1.camera.forceUpdate = YES;
+	mprView2.camera.forceUpdate = YES;
+	mprView3.camera.forceUpdate = YES;
+	
 	if( clippingRangeMode == 0) //VR
 	{
 		[mprView1 setCLUT: nil :nil :nil];
@@ -1229,6 +1233,18 @@ static float deg2rad = 3.14159265358979/180.0;
 		if(clippingRangeMode==0)
 		{
 			[mprView1.vrView setCLUT: nil :nil :nil];
+			
+			[mprView1 restoreCamera];
+			mprView1.camera.forceUpdate = YES;
+			[mprView1 updateViewMPR];
+				
+			[mprView2 restoreCamera];
+			mprView2.camera.forceUpdate = YES;
+			[mprView2 updateViewMPR];
+				
+			[mprView3 restoreCamera];
+			mprView3.camera.forceUpdate = YES;
+			[mprView3 updateViewMPR];
 		}
 		else
 		{
