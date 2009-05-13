@@ -6409,6 +6409,8 @@ static NSArray*	statesArray = nil;
 			NSMutableArray *seriesToOpen =  [NSMutableArray array];
 			NSMutableArray *viewersToLoad = [NSMutableArray array];
 			
+			for( ViewerController *v in [ViewerController getDisplayed2DViewers])
+				[v checkEverythingLoaded];
 			[ViewerController closeAllWindows];
 			
 			for( NSDictionary *dict in viewers)
@@ -6419,47 +6421,54 @@ static NSArray*	statesArray = nil;
 				NSArray		*series4D = [seriesUID componentsSeparatedByString:@"\\**\\"];
 				// Find the corresponding study & 4D series
 				
-				NSError					*error = nil;
-				NSManagedObjectContext	*context = self.managedObjectContext;
-				
-				[context retain];
-				[context lock];
-
-				NSMutableArray *seriesForThisViewer =  nil;
-
-				for( NSString *curSeriesUID in series4D)
+				@try
 				{
-					NSFetchRequest			*request = [[[NSFetchRequest alloc] init] autorelease];
-					[request setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"Series"]];
-					[request setPredicate: [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", studyUID, curSeriesUID]];
+					NSError					*error = nil;
+					NSManagedObjectContext	*context = self.managedObjectContext;
 					
-					NSArray	*seriesArray = [context executeFetchRequest:request error:&error];
+					[context retain];
+					[context lock];
 					
-					if( [seriesArray count] != 1)
+					NSMutableArray *seriesForThisViewer =  nil;
+					
+					for( NSString *curSeriesUID in series4D)
 					{
-						NSLog( @"****** number of series corresponding to these UID (%@) is not unique?: %d", curSeriesUID, [seriesArray count]);
-					}
-					else
-					{
-						if( [[[seriesArray objectAtIndex: 0] valueForKeyPath:@"study.patientUID"] isEqualToString: [item valueForKey: @"patientUID"]])
+						NSFetchRequest			*request = [[[NSFetchRequest alloc] init] autorelease];
+						[request setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"Series"]];
+						[request setPredicate: [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", studyUID, curSeriesUID]];
+						
+						NSArray	*seriesArray = [context executeFetchRequest:request error:&error];
+						
+						if( [seriesArray count] != 1)
 						{
-							if( seriesForThisViewer == nil)
-							{
-								seriesForThisViewer = [NSMutableArray array];
-								
-								[seriesToOpen addObject: seriesForThisViewer];
-								[viewersToLoad addObject: dict];
-							}
-							
-							[seriesForThisViewer addObject: [seriesArray objectAtIndex: 0]];
+							NSLog( @"****** number of series corresponding to these UID (%@) is not unique?: %d", curSeriesUID, [seriesArray count]);
 						}
 						else
-							NSLog(@"%@ versus %@", [[seriesArray objectAtIndex: 0] valueForKeyPath:@"study.patientUID"], [item valueForKey: @"patientUID"]);
+						{
+							if( [[[seriesArray objectAtIndex: 0] valueForKeyPath:@"study.patientUID"] isEqualToString: [item valueForKey: @"patientUID"]])
+							{
+								if( seriesForThisViewer == nil)
+								{
+									seriesForThisViewer = [NSMutableArray array];
+									
+									[seriesToOpen addObject: seriesForThisViewer];
+									[viewersToLoad addObject: dict];
+								}
+								
+								[seriesForThisViewer addObject: [seriesArray objectAtIndex: 0]];
+							}
+							else
+								NSLog(@"%@ versus %@", [[seriesArray objectAtIndex: 0] valueForKeyPath:@"study.patientUID"], [item valueForKey: @"patientUID"]);
+						}
 					}
+					
+					[context unlock];
+					[context release];
 				}
-				
-				[context unlock];
-				[context release];
+				@catch (NSException *e)
+				{
+					NSLog( @"**** databaseOpenStudy exception: %@", e);
+				}
 			}
 			
 			if( [seriesToOpen count] > 0 && [viewersToLoad count] == [seriesToOpen count])
@@ -6548,21 +6557,42 @@ static NSArray*	statesArray = nil;
 			
 			NSDictionary *currentHangingProtocol = [[WindowLayoutManager sharedWindowLayoutManager] currentHangingProtocol];
 			
-			if ([[currentHangingProtocol objectForKey:@"Rows"] intValue] * [[currentHangingProtocol objectForKey:@"Columns"] intValue] >= [[item valueForKey:@"imageSeries"] count])
+			NSMutableArray *children = [NSMutableArray arrayWithArray: [self childrenArray: item]];
+			
+			//Remove the series that are already displayed
+			int alreadyDisplayed = 0;
+			for( DicomSeries *s in [ViewerController getDisplayedSeries])
 			{
-				[self viewerDICOMInt :NO  dcmFile:[self childrenArray: item] viewer:nil];
+				for( int e = 0; e < [children count]; e++)
+				{
+					if( [[s valueForKey: @"seriesInstanceUID"] isEqualToString: [[children objectAtIndex: e] valueForKey: @"seriesInstanceUID"]])
+						alreadyDisplayed++;
+				}
+			}
+			
+			if( alreadyDisplayed == 0)
+			{
+				if ([[currentHangingProtocol objectForKey:@"Rows"] intValue] * [[currentHangingProtocol objectForKey:@"Columns"] intValue] >= [[item valueForKey:@"imageSeries"] count])
+				{
+					[self viewerDICOMInt :NO  dcmFile:[self childrenArray: item] viewer:nil];
+				}
+				else
+				{
+					unsigned count = [[currentHangingProtocol objectForKey:@"Rows"] intValue] * [[currentHangingProtocol objectForKey:@"Columns"] intValue];
+					if( count < 1) count = 1;
+					
+					NSMutableArray *children =  [NSMutableArray array];
+					
+					for ( int i = 0; i < count; i++ )
+						[children addObject:[[self childrenArray: item] objectAtIndex:i]];
+					
+					[self viewerDICOMInt :NO  dcmFile:children viewer:nil];
+				}
 			}
 			else
 			{
-				unsigned count = [[currentHangingProtocol objectForKey:@"Rows"] intValue] * [[currentHangingProtocol objectForKey:@"Columns"] intValue];
-				if( count < 1) count = 1;
-				
-				NSMutableArray *children =  [NSMutableArray array];
-				
-				for ( int i = 0; i < count; i++ )
-					[children addObject:[[self childrenArray: item] objectAtIndex:i]];
-				
-				[self viewerDICOMInt :NO  dcmFile:children viewer:nil];
+				for( ViewerController *v in [ViewerController getDisplayed2DViewers])
+					[[v window] makeKeyAndOrderFront: self];
 			}
 		}
 	}
