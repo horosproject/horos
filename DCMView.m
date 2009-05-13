@@ -716,60 +716,68 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 - (void) computeColor
 {
-	id curSeries = [self seriesObj];
-	id curStudy = [curSeries valueForKey:@"study"];
-	
-	NSArray *viewers = [[ViewerController getDisplayed2DViewers] sortedArrayUsingFunction: studyCompare context: nil];
-	
-	NSMutableArray *studiesArray = [NSMutableArray array];
-	NSMutableArray *seriesArray = [NSMutableArray array];
-	NSMutableDictionary *colorsStudy = [NSMutableDictionary dictionary];
-	NSArray *colors = [NSArray arrayWithObjects:	[NSColor colorWithDeviceRed:0.4f green:0.4f blue:0.0f alpha:0.7f],
-					   [NSColor colorWithDeviceRed:0.4f green:0.0f blue:0.4f alpha:0.7f],
-					   [NSColor colorWithDeviceRed:0.0f green:0.4f blue:0.4f alpha:0.7f],
-					   [NSColor colorWithDeviceRed:0.4f green:0.0f blue:0.0f alpha:0.7f],
-					   [NSColor colorWithDeviceRed:0.0f green:0.4f blue:0.0f alpha:0.7f],
-					   [NSColor colorWithDeviceRed:0.0f green:0.0f blue:0.4f alpha:0.7f],
-					   nil];
-	
-	for( ViewerController *v in viewers)
+	@try
 	{
-		if( [v currentStudy] && [v currentSeries])
-		{
-			[studiesArray addObject: [v currentStudy]];
-			[seriesArray addObject: [v currentSeries]];
-		}
-	}
-	
-	// Give a different color for each study/patient
-	int color = 0, noColor = 0;
-	for( id study in studiesArray)
-	{
-		if( [colorsStudy objectForKey: [study valueForKey:@"studyInstanceUID"]] == nil)
-		{
-			[colorsStudy setObject: [colors objectAtIndex: color++] forKey: [study valueForKey:@"studyInstanceUID"]];
-			noColor++;
-		}	
-		if( color >= [colors count]) color = 0;
-	}
-	
-	if( noColor > 1)
-	{
+		id curSeries = [self seriesObj];
+		id curStudy = [curSeries valueForKey:@"study"];
+		
+		NSArray *viewers = [[ViewerController getDisplayed2DViewers] sortedArrayUsingFunction: studyCompare context: nil];
+		
+		NSMutableArray *studiesArray = [NSMutableArray array];
+		NSMutableArray *seriesArray = [NSMutableArray array];
+		NSMutableDictionary *colorsStudy = [NSMutableDictionary dictionary];
+		NSArray *colors = [NSArray arrayWithObjects:	[NSColor colorWithDeviceRed:0.4f green:0.4f blue:0.0f alpha:0.7f],
+						   [NSColor colorWithDeviceRed:0.4f green:0.0f blue:0.4f alpha:0.7f],
+						   [NSColor colorWithDeviceRed:0.0f green:0.4f blue:0.4f alpha:0.7f],
+						   [NSColor colorWithDeviceRed:0.4f green:0.0f blue:0.0f alpha:0.7f],
+						   [NSColor colorWithDeviceRed:0.0f green:0.4f blue:0.0f alpha:0.7f],
+						   [NSColor colorWithDeviceRed:0.0f green:0.0f blue:0.4f alpha:0.7f],
+						   nil];
+		
 		for( ViewerController *v in viewers)
 		{
-			NSColor *boxColor = [colorsStudy objectForKey: [v studyInstanceUID]];
-	
-			[v imageView].studyColorR = [boxColor redComponent];
-			[v imageView].studyColorG = [boxColor greenComponent];
-			[v imageView].studyColorB = [boxColor blueComponent];
+			if( [v currentStudy] && [v currentSeries])
+			{
+				[studiesArray addObject: [v currentStudy]];
+				[seriesArray addObject: [v currentSeries]];
+			}
+		}
+		
+		// Give a different color for each study/patient
+		int color = 0, noColor = 0;
+		for( id study in studiesArray)
+		{
+			if( [colorsStudy objectForKey: [study valueForKey:@"studyInstanceUID"]] == nil)
+			{
+				[colorsStudy setObject: [colors objectAtIndex: color++] forKey: [study valueForKey:@"studyInstanceUID"]];
+				noColor++;
+			}	
+			if( color >= [colors count]) color = 0;
+		}
+		
+		if( noColor > 1)
+		{
+			for( ViewerController *v in viewers)
+			{
+				NSColor *boxColor = [colorsStudy objectForKey: [v studyInstanceUID]];
+		
+				[v imageView].studyColorR = [boxColor redComponent];
+				[v imageView].studyColorG = [boxColor greenComponent];
+				[v imageView].studyColorB = [boxColor blueComponent];
+			}
+		}
+		else
+		{
+			for( ViewerController *v in viewers)
+			{
+				[v imageView].studyColorR = [v imageView].studyColorG = [v imageView].studyColorB = 0;
+			}
 		}
 	}
-	else
+	
+	@catch (NSException *e)
 	{
-		for( ViewerController *v in viewers)
-		{
-			[v imageView].studyColorR = [v imageView].studyColorG = [v imageView].studyColorB = 0;
-		}
+		NSLog( @"**** computeColor exception: %@", e);
 	}
 }
 
