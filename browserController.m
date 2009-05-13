@@ -5041,6 +5041,12 @@ static NSArray*	statesArray = nil;
 	NSIndexSet			*index = [databaseOutline selectedRowIndexes];
 	NSManagedObject		*item = [databaseOutline itemAtRow:[index firstIndex]];
 	
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"displaySamePatientWithColorBackground"])
+	{
+		if( previousItem)
+			[databaseOutline setNeedsDisplay: YES];
+	}
+	
 	if( item)
 	{
 		/**********
@@ -6124,6 +6130,24 @@ static NSArray*	statesArray = nil;
 		{
 			BOOL	icon = NO;
 			
+			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"displaySamePatientWithColorBackground"])
+			{
+				if( [[[previousItem entity] name] isEqual:@"Study"])
+				{
+					if( item != previousItem && [[item valueForKey: @"patientUID"] length] > 1 && [[item valueForKey: @"patientUID"] isEqualToString: [previousItem valueForKey: @"patientUID"]])
+					{
+						[cell setDrawsBackground: YES];
+						[cell setBackgroundColor: [NSColor secondarySelectedControlColor]];
+					}
+					else
+						[cell setDrawsBackground: NO];
+				}
+				else
+					[cell setDrawsBackground: NO];
+			}
+			else
+				[cell setDrawsBackground: NO];
+			
 			if( [[item valueForKey:@"date"] timeIntervalSinceNow] > -24*60*60)	// 24 hours
 			{
 				NSCalendarDate	*now = [NSCalendarDate calendarDate];
@@ -6142,6 +6166,8 @@ static NSArray*	statesArray = nil;
 			{
 				if( [[item valueForKey:@"dateAdded"] timeIntervalSinceNow] > -60) [(ImageAndTextCell*) cell setImage:[NSImage imageNamed:@"Receiving.tif"]];
 			}
+			
+			NSManagedObject *studySelected = [[[item entity] name] isEqual:@"Study"] ? item : [item valueForKey:@"study"];
 		}
 		
 		if( [[tableColumn identifier] isEqualToString:@"reportURL"])

@@ -712,6 +712,7 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject:@"1" forKey:@"EmptyNameForNewROIs"];
 	[defaultValues setObject:@"1" forKey:@"nextSeriesToAllViewers"];
 	[defaultValues setObject:@"1" forKey:@"dontDeleteStudiesWithComments"];
+	[defaultValues setObject:@"1" forKey:@"displaySamePatientWithColorBackground"];
 	
 	if( MPProcessors() >= 4)
 		[defaultValues setObject:@"2.0" forKey:@"superSampling"];
