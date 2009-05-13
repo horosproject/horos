@@ -734,8 +734,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	for( ViewerController *v in viewers)
 	{
-		[studiesArray addObject: [v currentStudy]];
-		[seriesArray addObject: [v currentSeries]];
+		if( [v currentStudy] && [v currentSeries])
+		{
+			[studiesArray addObject: [v currentStudy]];
+			[seriesArray addObject: [v currentSeries]];
+		}
 	}
 	
 	// Give a different color for each study/patient
