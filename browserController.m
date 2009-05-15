@@ -6435,8 +6435,6 @@ static NSArray*	statesArray = nil;
 			NSMutableArray *seriesToOpen =  [NSMutableArray array];
 			NSMutableArray *viewersToLoad = [NSMutableArray array];
 			
-			for( ViewerController *v in [ViewerController getDisplayed2DViewers])
-				[v checkEverythingLoaded];
 			[ViewerController closeAllWindows];
 			
 			for( NSDictionary *dict in viewers)

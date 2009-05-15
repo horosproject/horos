@@ -2898,8 +2898,6 @@ static volatile int numberOfThreadsForRelisce = 0;
 	if( recursiveCloseWindowsProtected) return;
 	recursiveCloseWindowsProtected = YES;
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName:@"CloseAllViewersNotification" object: nil userInfo: nil];
-	
 	NSArray *v = [ViewerController getDisplayed2DViewers];
 	
 	if( [v count])
@@ -2921,6 +2919,12 @@ static volatile int numberOfThreadsForRelisce = 0;
 				[[viewer window] close];	//performClose: self
 			}
 		}
+	}
+	
+	if( delayedTileWindows)
+	{
+		delayedTileWindows = NO;
+		[NSObject cancelPreviousPerformRequestsWithTarget:[AppController sharedAppController] selector:@selector(tileWindows:) object:nil];
 	}
 	
 	recursiveCloseWindowsProtected = NO;
@@ -16912,6 +16916,12 @@ int i,j,l;
 	[self checkEverythingLoaded];
 	[self clear8bitRepresentations];
 	
+	if( [self isDataVolumicIn4D: YES] == NO)
+	{
+		NSRunAlertPanel(NSLocalizedString(@"Volume Rendering", nil), NSLocalizedString(@"Volume Rendering requires volumic data.", nil), nil, nil, nil);
+		return;
+	}
+	
 	if( [self computeInterval] == 0 ||
 		[[pixList[0] objectAtIndex:0] pixelSpacingX] == 0 ||
 		[[pixList[0] objectAtIndex:0] pixelSpacingY] == 0 ||
@@ -16982,48 +16992,6 @@ int i,j,l;
 	}
 }
 
-//-(IBAction) MPRViewer:(id) sender
-//{
-//	long i;
-//	
-//	[self checkEverythingLoaded];
-//	[self clear8bitRepresentations];
-//
-//	if( [self computeInterval] == 0 ||
-//		[[pixList[0] objectAtIndex:0] pixelSpacingX] == 0 ||
-//		[[pixList[0] objectAtIndex:0] pixelSpacingY] == 0 ||
-//		([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask))
-//	{
-//		[self SetThicknessInterval:sender];
-//	}
-//	else
-//	{
-//		MPRController *viewer = [[AppController sharedAppController] FindViewer :@"MPR" :pixList[0]];
-//		
-//		if( viewer)
-//		{
-//			[[viewer window] makeKeyAndOrderFront:self];
-//		}
-//		else
-//		{
-//			viewer = [[MPRController alloc] initWithPix:pixList[0] :fileList[0] :volumeData[0] :blendingController];
-//			
-//			for( i = 1; i < maxMovieIndex; i++)
-//			{
-//				[viewer addMoviePixList:pixList[ i] :volumeData[ i]];
-//			}
-//			
-//			[viewer ApplyCLUTString:curCLUTMenu];
-//			float   iwl, iww;
-//			[imageView getWLWW:&iwl :&iww];
-//			[viewer setWLWW:iwl :iww];
-//			[viewer showWindow:self];
-//			[[viewer window] makeKeyAndOrderFront:self];
-//			[viewer setWLWW:iwl :iww];
-//			[[viewer window] setTitle: [NSString stringWithFormat:@"%@: %@", [[viewer window] title], [[self window] title]]];
-//		}
-//	}
-//}
 
 -(IBAction) segmentationTest:(id) sender
 {
@@ -17063,153 +17031,17 @@ int i,j,l;
 
 -(IBAction) VRVPROViewer:(id) sender
 {
-//	
-//	[self checkEverythingLoaded];
-//	[self clear8bitRepresentations];
-//	
-//	if( [self computeInterval] == 0 ||
-//		[[pixList[0] objectAtIndex:0] pixelSpacingX] == 0 ||
-//		[[pixList[0] objectAtIndex:0] pixelSpacingY] == 0 ||
-//		([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask))
-//	{
-//		[self SetThicknessInterval:sender];
-//	}
-//	else
-//	{
-//		[self displayAWarningIfNonTrueVolumicData];
-//		
-//		[self MovieStop: self];
-//		
-//		if( [VRPROController available])
-//		{
-//			if( [VRPROController  hardwareCheck])
-//			{
-//				VRPROController *viewer = [[AppController sharedAppController] FindViewer :@"VRVPRO" :pixList[0]];
-//				
-//				if( viewer)
-//				{
-//					[[viewer window] makeKeyAndOrderFront:self];
-//				}
-//				else
-//				{
-//					NSString	*mode;
-//					
-//					if( [sender tag] == 3) mode = @"MIP";
-//					else mode = @"VR";
-//					viewer = [self openVRVPROViewerForMode:mode];
-//					/*
-//					viewer = [[VRPROController alloc] initWithPix:pixList[0] :fileList[0] :volumeData[ 0] :blendingController :self mode: mode];
-//					for( i = 1; i < maxMovieIndex; i++)
-//					{
-//						[viewer addMoviePixList:pixList[ i] :volumeData[ i]];
-//					}
-//					
-//					if( [[self modality] isEqualToString:@"PT"] == YES && [[pixList[0] objectAtIndex: 0] isRGB] == NO)
-//					{
-//						if( [[imageView curDCM] SUVConverted] == YES)
-//						{
-//							[viewer setWLWW: 2 : 6];
-//						}
-//						else
-//						{
-//							[viewer setWLWW:[[pixList[0] objectAtIndex: 0] maxValueOfSeries]/2 : [[pixList[0] objectAtIndex: 0] maxValueOfSeries]];
-//						}
-//						
-//						if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut Mode"] isEqualToString: @"B/W Inverse"])
-//							[viewer ApplyCLUTString: @"B/W Inverse"];
-//						else
-//							[viewer ApplyCLUTString: [[NSUserDefaults standardUserDefaults] stringForKey:@"PET Default CLUT"]];
-//					}
-//					else
-//					{
-//						float   iwl, iww;
-//						[imageView getWLWW:&iwl :&iww];
-//						[viewer setWLWW:iwl :iww];
-//					}
-//					*/
-//					
-//					NSString *c;
-//					
-//					if( backCurCLUTMenu) c = backCurCLUTMenu;
-//					else c = curCLUTMenu;
-//					
-//					[viewer ApplyCLUTString: c];
-//					float   iwl, iww;
-//					[imageView getWLWW:&iwl :&iww];
-//					[viewer setWLWW:iwl :iww];
-//					[viewer load3DState];
-//					[self place3DViewerWindow: viewer];
-////					[[viewer window] performZoom:self];
-//					[viewer showWindow:self];
-//					[[viewer window] makeKeyAndOrderFront:self];
-//					[[viewer window] display];
-//					[[viewer window] setTitle: [NSString stringWithFormat:@"%@: %@", [[viewer window] title], [[self window] title]]];
-//				}
-//			}
-//		}
-//		else NSRunCriticalAlertPanel( NSLocalizedString(@"Error", nil),  NSLocalizedString(@"VolumePRO hardware not detected.", nil), NSLocalizedString(@"OK", nil), nil, nil);
-//	}
+
 }
 
 - (VRPROController *)openVRVPROViewerForMode:(NSString *)mode
 {
-//	long i;
-//	
-//	[self checkEverythingLoaded];
-//	[self clear8bitRepresentations];	
-//	[self MovieStop: self];
-//	
-//	if( [VRPROController available])
-//	{
-//		if( [VRPROController  hardwareCheck])
-//		{
-//			VRPROController *viewer = [[AppController sharedAppController] FindViewer :@"VRVPRO" :pixList[0]];
-//
-//			if( viewer)
-//			{
-//				return viewer;
-//			}
-//			else
-//			{		
-//				viewer = [[VRPROController alloc] initWithPix:pixList[0] :fileList[0] :volumeData[ 0] :blendingController :self mode: mode];
-//				for( i = 1; i < maxMovieIndex; i++)
-//				{
-//					[viewer addMoviePixList:pixList[ i] :volumeData[ i]];
-//				}
-//				
-//				if( [[self modality] isEqualToString:@"PT"] == YES && [[pixList[0] objectAtIndex: 0] isRGB] == NO)
-//				{
-//					if( [[imageView curDCM] SUVConverted] == YES)
-//					{
-//						[viewer setWLWW: 2 : 6];
-//					}
-//					else
-//					{
-//						[viewer setWLWW:[[pixList[0] objectAtIndex: 0] maxValueOfSeries]/2 : [[pixList[0] objectAtIndex: 0] maxValueOfSeries]];
-//					}
-//					
-//					if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut Mode"] isEqualToString: @"B/W Inverse"])
-//						[viewer ApplyCLUTString: @"B/W Inverse"];
-//					else
-//						[viewer ApplyCLUTString: [[NSUserDefaults standardUserDefaults] stringForKey:@"PET Default CLUT"]];
-//						
-//					[viewer ApplyOpacityString: @"Logarithmic Table"];
-//				}
-//				else
-//				{
-//					float   iwl, iww;
-//					[imageView getWLWW:&iwl :&iww];
-//					[viewer setWLWW:iwl :iww];
-//				}
-//			}
-//			return viewer;
-//		}
-//	}
 	return nil;
 }
 
 
-- (VRController *)openVRViewerForMode:(NSString *)mode{
+- (VRController *)openVRViewerForMode:(NSString *)mode
+{
 	long i;
 	
 	[self checkEverythingLoaded];
@@ -17283,9 +17115,14 @@ int i,j,l;
 
 -(IBAction) VRViewer:(id) sender
 {
-	
 	[self checkEverythingLoaded];
 	[self clear8bitRepresentations];
+	
+	if( [self isDataVolumicIn4D: YES] == NO)
+	{
+		NSRunAlertPanel(NSLocalizedString(@"Volume Rendering", nil), NSLocalizedString(@"Volume Rendering requires volumic data.", nil), nil, nil, nil);
+		return;
+	}
 	
 	if( [self computeInterval] == 0 ||
 		[[pixList[0] objectAtIndex:0] pixelSpacingX] == 0 ||
@@ -17320,54 +17157,6 @@ int i,j,l;
 		}
 		else
 		{
-		/*
-			NSString	*mode;
-			
-			if( [sender tag] == 3) mode = @"MIP";
-			else mode = @"VR";
-			
-			viewer = [[VRController alloc] initWithPix:pixList[0] :fileList[0] :volumeData[ 0] :blendingController :self style:@"standard" mode: mode];
-			for( i = 1; i < maxMovieIndex; i++)
-			{
-				[viewer addMoviePixList:pixList[ i] :volumeData[ i]];
-			}
-			
-			if( [[self modality] isEqualToString:@"PT"] == YES && [[pixList[0] objectAtIndex: 0] isRGB] == NO)
-			{
-				if( [[imageView curDCM] SUVConverted] == YES)
-				{
-					[viewer setWLWW: 2 : 6];
-				}
-				else
-				{
-					[viewer setWLWW:[[pixList[0] objectAtIndex: 0] maxValueOfSeries]/2 : [[pixList[0] objectAtIndex: 0] maxValueOfSeries]];
-				}
-				
-				if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut Mode"] isEqualToString: @"B/W Inverse"])
-					[viewer ApplyCLUTString: @"B/W Inverse"];
-				else
-					[viewer ApplyCLUTString: [[NSUserDefaults standardUserDefaults] stringForKey:@"PET Default CLUT"]];
-					
-				[viewer ApplyOpacityString: @"Logarithmic Table"];
-			}
-			else
-			{
-				float   iwl, iww;
-				[imageView getWLWW:&iwl :&iww];
-				[viewer setWLWW:iwl :iww];
-			}
-			
-			[viewer ApplyCLUTString:curCLUTMenu];
-			float   iwl, iww;
-			[imageView getWLWW:&iwl :&iww];
-			[viewer setWLWW:iwl :iww];
-			[viewer load3DState];
-			if( [sender tag] == 3) [viewer setModeIndex: 1];
-			[viewer showWindow:self];
-			[[viewer window] makeKeyAndOrderFront:self];
-			[[viewer window] display];
-			[[viewer window] setTitle: [NSString stringWithFormat:@"%@: %@", [[viewer window] title], [[self window] title]]];
-		*/
 			NSString	*mode;
 			if( [sender tag] == 3) mode = @"MIP";
 			else mode = @"VR";
@@ -17392,7 +17181,8 @@ int i,j,l;
 	}
 }
 
-- (SRController *)openSRViewer{
+- (SRController *)openSRViewer
+{
 	SRController *viewer;
 	[self checkEverythingLoaded];
 	[self clear8bitRepresentations];
@@ -17406,6 +17196,12 @@ int i,j,l;
 {
 	[self checkEverythingLoaded];
 	[self clear8bitRepresentations];
+	
+	if( [self isDataVolumicIn4D: YES] == NO)
+	{
+		NSRunAlertPanel(NSLocalizedString(@"Surface Rendering", nil), NSLocalizedString(@"Surface Rendering requires volumic data.", nil), nil, nil, nil);
+		return;
+	}
 	
 	if( [self computeInterval] == 0 ||
 		[[pixList[0] objectAtIndex:0] pixelSpacingX] == 0 ||
@@ -17453,9 +17249,6 @@ int i,j,l;
 		curvedController = [cmpr retain];
 	}
 }
-
-
-//static long curvedMPRthickslab, curvedMPRinterval, curvedMPRsize ;
 
 -(IBAction) setCurvedMPRslider:(id) sender
 {
@@ -17528,6 +17321,13 @@ int i,j,l;
 {
 	[self checkEverythingLoaded];
 	[self clear8bitRepresentations];
+	
+	if( [self isDataVolumicIn4D: YES] == NO)
+	{
+		NSRunAlertPanel(NSLocalizedString(@"MPR", nil), NSLocalizedString(@"MPR requires volumic data.", nil), nil, nil, nil);
+		return;
+	}
+	
 	[self squareDataSet: self];			// CurvedMPR works better if pixel are squares !
 	
 	if( [self computeInterval] == 0 ||
@@ -17664,6 +17464,7 @@ int i,j,l;
 	OrthogonalMPRPETCTViewer  *viewer;
 	[self checkEverythingLoaded];
 	[self clear8bitRepresentations];
+	
 	if (viewer = [[AppController sharedAppController] FindViewer :@"PETCT" :pixList[0]])
 		return viewer;
 		
@@ -17723,6 +17524,12 @@ int i,j,l;
 	}
 	else
 	{
+		if( [self isDataVolumicIn4D: YES] == NO)
+		{
+			NSRunAlertPanel(NSLocalizedString(@"MPR", nil), NSLocalizedString(@"MPR requires volumic data.", nil), nil, nil, nil);
+			return;
+		}
+		
 		[self displayAWarningIfNonTrueVolumicData];
 		[self displayWarningIfGantryTitled];
 		
@@ -17747,34 +17554,6 @@ int i,j,l;
 		{
 			if( blendingController)
 			{
-			/*
-				OrthogonalMPRPETCTViewer *pcviewer = [[OrthogonalMPRPETCTViewer alloc] initWithPixList:pixList[0] :fileList[0] :volumeData[0] :self : blendingController];
-				
-				[[pcviewer CTController] ApplyCLUTString:curCLUTMenu];
-				[[pcviewer PETController] ApplyCLUTString:[blendingController curCLUTMenu]];
-				[[pcviewer PETCTController] ApplyCLUTString:curCLUTMenu];
-				// the PETCT will display the PET CLUT in CLUTpoppuMenu
-				[(OrthogonalMPRPETCTView*)[[pcviewer PETCTController] originalView] setCurCLUTMenu: [blendingController curCLUTMenu]];
-				[(OrthogonalMPRPETCTView*)[[pcviewer PETCTController] xReslicedView] setCurCLUTMenu: [blendingController curCLUTMenu]];
-				[(OrthogonalMPRPETCTView*)[[pcviewer PETCTController] yReslicedView] setCurCLUTMenu: [blendingController curCLUTMenu]];
-				
-				[pcviewer showWindow:self];
-				
-				float   iwl, iww;
-				[imageView getWLWW:&iwl :&iww];
-				[[pcviewer CTController] setWLWW:iwl :iww];
-				[[blendingController imageView] getWLWW:&iwl :&iww];
-				[[pcviewer PETController] setWLWW:iwl :iww];
-				//[[pcviewer window] setTitle: [NSString stringWithFormat:@"%@: %@", [[pcviewer window] title], [[self window] title]]];
-
-				NSDate *studyDate = [[fileList[curMovieIndex] objectAtIndex:0] valueForKeyPath:@"series.study.date"];
-				[[pcviewer window] setTitle: [NSString stringWithFormat:@"%@ - %@", [[fileList[curMovieIndex] objectAtIndex:0] valueForKeyPath:@"series.study.name"], [studyDate descriptionWithCalendarFormat:[[NSUserDefaults standardUserDefaults] stringForKey: NSShortDateFormatString] timeZone:nil locale:[[NSUserDefaults standardUserDefaults] dictionaryRepresentation]]]];
-			*/	
-//  The following methods are NOT defined in their receivers!				
-//				[[pcviewer CTController] setCurWLWWMenu:curWLWWMenu];
-//				[[pcviewer PETCTController] setCurWLWWMenu:curWLWWMenu];
-//				[[pcviewer PETController] setCurWLWWMenu:[blendingController curWLWWMenu]];
-				NSLog(@"have blending controller");
 				OrthogonalMPRPETCTViewer *pcviewer = [self openOrthogonalMPRPETCTViewer];
 				NSDate *studyDate = [[fileList[curMovieIndex] objectAtIndex:0] valueForKeyPath:@"series.study.date"];
 				
@@ -17790,8 +17569,6 @@ int i,j,l;
 				float   iwl, iww;
 				[imageView getWLWW:&iwl :&iww];
 				[viewer setWLWW:iwl :iww];
-				
-				
 				
 				[[viewer window] setTitle: [NSString stringWithFormat:@"%@: %@ - %@", [[viewer window] title], [BrowserController DateTimeFormat: [[fileList[0] objectAtIndex:0]  valueForKeyPath:@"series.study.date"]], [[self window] title]]];
 			}
@@ -17816,7 +17593,6 @@ int i,j,l;
 
 -(IBAction) endoscopyViewer:(id) sender
 {
-	
 	[self checkEverythingLoaded];
 	[self clear8bitRepresentations];
 	
@@ -17829,6 +17605,12 @@ int i,j,l;
 	}
 	else
 	{
+		if( [self isDataVolumicIn4D: YES] == NO)
+		{
+			NSRunAlertPanel(NSLocalizedString(@"Endoscopy", nil), NSLocalizedString(@"Endoscopy requires volumic data.", nil), nil, nil, nil);
+			return;
+		}
+		
 		[self displayAWarningIfNonTrueVolumicData];
 		[self displayWarningIfGantryTitled];
 		
