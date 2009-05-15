@@ -66,10 +66,20 @@ NSString* asciiString (NSString* name);
 		
 		[wait close];
 		[wait release];
+		
+		[sizeField setStringValue: NSLocalizedString( @"DMG writing is finished !", nil)];
 	}
 	
 	NSFileManager *manager = [NSFileManager defaultManager];
 	[manager removeFileAtPath:[self folderToBurn] handler:nil];
+	
+	[nameField setEnabled: YES];
+	[compressionMode setEnabled: YES];
+	[anonymizedCheckButton setEnabled: YES];
+	[misc1 setEnabled: YES];
+	[misc2 setEnabled: YES];
+	[misc3 setEnabled: YES];
+	[misc4 setEnabled: YES];
 }
 
 - (void) copyDefaultsSettings
@@ -314,14 +324,6 @@ NSString* asciiString (NSString* name);
 	
 	burning = NO;
 	runBurnAnimation = NO;
-	
-	[nameField setEnabled: YES];
-	[compressionMode setEnabled: YES];
-	[anonymizedCheckButton setEnabled: YES];
-	[misc1 setEnabled: YES];
-	[misc2 setEnabled: YES];
-	[misc3 setEnabled: YES];
-	[misc4 setEnabled: YES];
 
 	[pool release];
 }
@@ -533,15 +535,6 @@ NSString* asciiString (NSString* name);
 	runBurnAnimation = NO;
 }
 
-/* OK, nothing fancy here. we just want to illustrate that it's possible for a delegate of the 
-	progress panel to alter how the burn is handled once it completes. You may want to put up
-	your own dialog, sent a notification if you're in the background, or just ignore it no matter what.
-	
-	We'll just NSLog the fact it finished (for good or bad) and return YES to indicate
-	that we didn't handle it ourselves and that the progress panel should continue on its
-	merry way. */
-	
-	
 - (BOOL) burnProgressPanel:(DRBurnProgressPanel*)theBurnPanel burnDidFinish:(DRBurn*)burn
 {
 	NSDictionary*	burnStatus = [burn status];
@@ -555,14 +548,14 @@ NSString* asciiString (NSString* name);
 		NSRunCriticalAlertPanel( NSLocalizedString( @"Burning failed", nil), errorString, NSLocalizedString( @"OK", nil), nil, nil);
 	}
 	else
-		NSLog(@"Burn finished fine");
+		[sizeField setStringValue: NSLocalizedString( @"Burning is finished !", nil)];
 	
-	burning=NO;
+	burning = NO;
+	
 	[[self window] performClose:nil];
-	//[[NSApplication sharedApplication] terminate: self];
+	
 	return YES;
 }
-
 
 - (void)windowWillClose:(NSNotification *)notification
 {
