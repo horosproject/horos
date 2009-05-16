@@ -1511,6 +1511,8 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (void) setClippingRangeThickness:(float) f
 {
+	float previousThickness = clippingRangeThickness;
+	
 	clippingRangeThickness = f;
 	
 	if( clippingRangeThickness <= 3)
@@ -1523,6 +1525,18 @@ static float deg2rad = 3.14159265358979/180.0;
 			hiddenVRView.lowResLODFactor = 2.5;
 	}
 	
+	// Correct slice position according to slice center (VR: position is the beginning of the slice)
+	MPRDCMView *v = [self selectedView];
+	Point3D *position = v.camera.position;
+	float cos[ 9];
+	[v.pix orientation: cos];
+	
+	float halfthicknessChange = ((previousThickness - clippingRangeThickness) /2.) * [[NSUserDefaults standardUserDefaults] floatForKey: @"superSampling"];
+	
+	v.camera.position = [Point3D pointWithX: position.x + halfthicknessChange*cos[ 6] y:position.y + halfthicknessChange*cos[ 7] z:position.z + halfthicknessChange*cos[ 8]];
+	v.camera.focalPoint = [Point3D pointWithX: v.camera.position.x + cos[ 6] y: v.camera.position.y + cos[ 7] z:v.camera.position.z + cos[ 8]];
+	
+	// Update all views
 	[mprView1 restoreCamera];
 	mprView1.vrView.dontResetImage = YES;
 	[mprView1.vrView setClippingRangeThickness: f];
