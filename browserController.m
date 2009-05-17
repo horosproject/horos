@@ -6134,7 +6134,9 @@ static NSArray*	statesArray = nil;
 			{
 				if( [[[previousItem entity] name] isEqual:@"Study"])
 				{
-					if( item != previousItem && [[item valueForKey: @"patientUID"] length] > 1 && [[item valueForKey: @"patientUID"] isEqualToString: [previousItem valueForKey: @"patientUID"]])
+					NSString *uid = [item valueForKey: @"patientUID"];
+					
+					if( item != previousItem && [uid length] > 1 && [uid isEqualToString: [previousItem valueForKey: @"patientUID"]])
 					{
 						[cell setDrawsBackground: YES];
 						[cell setBackgroundColor: [NSColor secondarySelectedControlColor]];
