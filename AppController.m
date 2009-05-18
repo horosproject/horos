@@ -2365,7 +2365,7 @@ static BOOL initialized = NO;
 		
 	}
 	
-	[[ILCrashReporter defaultReporter] launchReporterForCompany:@"OsiriX Dev Group" reportAddr:@"crash@osirix-viewer.com"];
+	[[ILCrashReporter defaultReporter] launchReporterForCompany:@"OsiriX Developers" reportAddr:@"crash@osirix-viewer.com"];
 	
 	[PluginManager setMenus: filtersMenu :roisMenu :othersMenu :dbMenu];
     

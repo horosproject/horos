@@ -5492,6 +5492,8 @@ static ViewerController *draggedController = nil;
 
 - (id) initWithPix:(NSMutableArray*)f withFiles:(NSMutableArray*)d withVolume:(NSData*) v
 {
+//	*(long*)0 = 0xDEADBEEF; // ILCrashReporter test -- DO NOT ACTIVATE THIS LINE 
+	
 	[self setMagnetic: YES];
 	
 	if( [d count] == 0) d = nil;
