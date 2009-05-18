@@ -43,7 +43,7 @@
 #import "QueryController.h"
 #import "NSSplitViewSave.h"
 #import "altivecFunctions.h"
-
+#import <ILCrashReporter/ILCrashReporter.h>
 #import "PluginManagerController.h"
 
 #define BUILTIN_DCMTK YES
@@ -2364,6 +2364,8 @@ static BOOL initialized = NO;
 	{
 		
 	}
+	
+	[[ILCrashReporter defaultReporter] launchReporterForCompany:@"OsiriX Dev Group" reportAddr:@"crash@osirix-viewer.com"];
 	
 	[PluginManager setMenus: filtersMenu :roisMenu :othersMenu :dbMenu];
     

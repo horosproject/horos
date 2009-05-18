@@ -1361,6 +1361,8 @@
 		ABE471160A76412700327466 /* jutils.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3CFB09B6828500545F5E /* jutils.c */; };
 		ABE471170A76412700327466 /* jversion8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3CFC09B6828500545F5E /* jversion8.h */; };
 		ABE59B850F494CA1004EBF28 /* DefaultsOsiriX.m in Sources */ = {isa = PBXBuildFile; fileRef = AB6FF5960A47D08000C501F0 /* DefaultsOsiriX.m */; };
+		ABE881450FC1444D009F5C80 /* ILCrashReporter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABE881440FC1444D009F5C80 /* ILCrashReporter.framework */; };
+		ABE881520FC1445A009F5C80 /* ILCrashReporter.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = ABE881440FC1444D009F5C80 /* ILCrashReporter.framework */; };
 		ABEF7E7809A21070006CEC3E /* Reports.h in Headers */ = {isa = PBXBuildFile; fileRef = ABEF7E7609A21070006CEC3E /* Reports.h */; };
 		ABEF7E7909A21070006CEC3E /* Reports.m in Sources */ = {isa = PBXBuildFile; fileRef = ABEF7E7709A21070006CEC3E /* Reports.m */; };
 		ABEF846A09A23EF5006CEC3E /* ReportTemplate.doc in Resources */ = {isa = PBXBuildFile; fileRef = ABEF846909A23EF5006CEC3E /* ReportTemplate.doc */; };
@@ -5162,6 +5164,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				ABE881520FC1445A009F5C80 /* ILCrashReporter.framework in CopyFiles */,
 				CE438F4D0CB621EC006AAFD9 /* Growl.framework in CopyFiles */,
 				CE438F420CB621DF006AAFD9 /* DotMacKit.framework in CopyFiles */,
 				CEBBE1820C82F33900247888 /* libtiff.dylib in CopyFiles */,
@@ -5974,6 +5977,7 @@
 		ABE3336A063D624400C8E087 /* QueryFilter.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = QueryFilter.m; sourceTree = "<group>"; };
 		ABE33386063D627800C8E087 /* AdvancedQuerySubview.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = AdvancedQuerySubview.h; sourceTree = "<group>"; };
 		ABE33387063D627800C8E087 /* AdvancedQuerySubview.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = AdvancedQuerySubview.m; sourceTree = "<group>"; };
+		ABE881440FC1444D009F5C80 /* ILCrashReporter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ILCrashReporter.framework; path = Binaries/ILCrashReporter.framework; sourceTree = "<group>"; };
 		ABEF7E7609A21070006CEC3E /* Reports.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = Reports.h; sourceTree = "<group>"; };
 		ABEF7E7709A21070006CEC3E /* Reports.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = Reports.m; sourceTree = "<group>"; };
 		ABEF846909A23EF5006CEC3E /* ReportTemplate.doc */ = {isa = PBXFileReference; lastKnownFileType = file; name = ReportTemplate.doc; path = Binaries/ReportTemplate.doc; sourceTree = "<group>"; };
@@ -9326,6 +9330,7 @@
 				AB0E6B130FAF4BF600A5C046 /* libvtkpng.a in Frameworks */,
 				AB0E6B140FAF4BF600A5C046 /* libvtkzlib.a in Frameworks */,
 				AB0E6B170FAF4C2100A5C046 /* libitkzlib.a in Frameworks */,
+				ABE881450FC1444D009F5C80 /* ILCrashReporter.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -9416,6 +9421,7 @@
 		1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				ABE881440FC1444D009F5C80 /* ILCrashReporter.framework */,
 				ABDF6E2D0BE0904D00793094 /* Growl.framework */,
 				BF5F14C20B14E12700B309B9 /* CoreVideo.framework */,
 				BF47CBF20A2E3BC500700AA9 /* WebKit.framework */,
@@ -17699,7 +17705,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd \"$SRCROOT/Binaries\"\nunzip -uo DCMTK.zip\nunzip -uo LibTiff.zip\nunzip -uo VTKLibs.zip\nunzip -uo DB_Previous_Models.zip\nunzip -uo DicomImporter.mdimporter.zip\nunzip -uo PAGES.zip\nunzip -uo OsiriXReport.template.zip\nunzip -uo ILCrashReporter.framework.zip\nunzip -uo Growl.framework.zip\nunzip -uo 3DconnexionClient.framework.zip\nunzip -uo openjpeg.zip\nunzip -uo dciodvfy.zip\n\ncd \"$SRCROOT/AYDicomPrint\"\nunzip -uo libdcmprintscu.dylib.zip\nunzip -uo libxerces-c.27.dylib.zip\nunzip -uo xercesc.zip\n\ncd \"$SRCROOT/Binaries/Jasper\"\nunzip -uo libjasper.a.zip\n\ncd $SRCROOT\nunzip -uo DotMacKit.framework.zip\nunzip -uo VTKHeaders.zip\nunzip -uo ITK180.zip\n\ncd $SRCROOT\ncd VolumePRO\nunzip -uo vli3.framework.zip\n\nexit 0\n";
+			shellScript = "cd \"$SRCROOT/Binaries\"\nunzip -uo DCMTK.zip\nunzip -uo LibTiff.zip\nunzip -uo VTKLibs.zip\nunzip -uo DB_Previous_Models.zip\nunzip -uo DicomImporter.mdimporter.zip\nunzip -uo PAGES.zip\nunzip -uo OsiriXReport.template.zip\nunzip -uo ILCrashReporter.framework.zip\nunzip -uo Growl.framework.zip\nunzip -uo 3DconnexionClient.framework.zip\nunzip -uo openjpeg.zip\nunzip -uo dciodvfy.zip\nunzip -uo ILCrashReporter.framework.zip\n\ncd \"$SRCROOT/AYDicomPrint\"\nunzip -uo libdcmprintscu.dylib.zip\nunzip -uo libxerces-c.27.dylib.zip\nunzip -uo xercesc.zip\n\ncd \"$SRCROOT/Binaries/Jasper\"\nunzip -uo libjasper.a.zip\n\ncd $SRCROOT\nunzip -uo DotMacKit.framework.zip\nunzip -uo VTKHeaders.zip\nunzip -uo ITK180.zip\n\ncd $SRCROOT\ncd VolumePRO\nunzip -uo vli3.framework.zip\n\nexit 0\n";
 		};
 		BF7486A40CC6AA5C00198387 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;

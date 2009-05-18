@@ -160,7 +160,7 @@ enum
 @property float thickness;
 @property(retain) ROI *parentROI;
 @property double sliceThickness, pixelSpacingX, pixelSpacingY;
-@property(readonly) min, max, mean;
+@property float min, max, mean;
 
 - (void) setColor:(RGBColor) a globally: (BOOL) g;
 - (void) setThickness:(float) a globally: (BOOL) g;
