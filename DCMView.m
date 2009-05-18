@@ -1871,6 +1871,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 - (void) scaleToFit
 {
+	if( scaleToFitNoReentry) return;
+	scaleToFitNoReentry = YES;
+	
 	self.scaleValue = [self scaleToFitForDCMPix: curDCM];
 	
 	if( curDCM.DCMPixShutterOnOff)
@@ -1882,6 +1885,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		origin.x = origin.y = 0;
 	
 	[self setNeedsDisplay:YES];
+	
+	scaleToFitNoReentry = NO;
 }
 
 - (void) setIndexWithReset:(short) index :(BOOL) sizeToFit

@@ -230,6 +230,8 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 	
 	BOOL			_hasChanged, needToLoadTexture, dontEnterReshape, showDescriptionInLarge;
 	
+	BOOL			scaleToFitNoReentry;
+	
 	GLString		*showDescriptionInLargeText;
 	
 	//Context for rendering to iChat
