@@ -40,7 +40,7 @@ static NSDate *CachedPluginsListDate = nil;
 	pluginsListURLs = [[NSArray arrayWithObjects:PLUGIN_LIST_URL, PLUGIN_LIST_ALT_URL, nil] retain];
 
 	NSRect windowFrame = [[self window] frame];
-	[[self window] setFrame:NSMakeRect(windowFrame.origin.x,windowFrame.origin.y,500,700) display:YES];
+	[[self window] setFrame:NSMakeRect(windowFrame.origin.x,windowFrame.origin.y,800,900) display:YES];
 	 
 	[webView setPolicyDelegate:self];
 	
