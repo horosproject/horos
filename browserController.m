@@ -6130,7 +6130,7 @@ static NSArray*	statesArray = nil;
 		{
 			BOOL	icon = NO;
 			
-			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"displaySamePatientWithColorBackground"])
+			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"displaySamePatientWithColorBackground"] && [[self window] firstResponder] == outlineView)
 			{
 				if( [[[previousItem entity] name] isEqual:@"Study"])
 				{
@@ -6139,7 +6139,7 @@ static NSArray*	statesArray = nil;
 					if( item != previousItem && [uid length] > 1 && [uid isEqualToString: [previousItem valueForKey: @"patientUID"]])
 					{
 						[cell setDrawsBackground: YES];
-						[cell setBackgroundColor: [NSColor secondarySelectedControlColor]];
+						[cell setBackgroundColor: [NSColor lightGrayColor]];	//secondarySelectedControlColor]];
 					}
 					else
 						[cell setDrawsBackground: NO];

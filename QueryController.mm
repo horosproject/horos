@@ -306,6 +306,9 @@ static const char *GetPrivateIP()
 		[presets setValue: [NSNumber numberWithDouble: [[toDate dateValue] timeIntervalSinceReferenceDate]] forKey: @"toDate"];
 		[presets setValue: [NSNumber numberWithDouble: [[searchBirth dateValue] timeIntervalSinceReferenceDate]] forKey: @"searchBirth"];
 		
+		[presets setValue: [NSNumber numberWithBool: [[NSUserDefaults standardUserDefaults] boolForKey: @"autoRetrieving"]] forKey: @"autoRetrieving"];
+		[presets setValue: [NSNumber numberWithInt: [[NSUserDefaults standardUserDefaults] integerForKey: @"autoRefreshQueryResults"]] forKey: @"autoRefreshQueryResults"];
+		
 		NSMutableDictionary *m = [NSMutableDictionary dictionaryWithDictionary: savedPresets];
 		[m setValue: presets forKey: psName];
 		
@@ -332,6 +335,9 @@ static const char *GetPrivateIP()
 	[dateFilterMatrix selectCellWithTag: 0];
 	[modalityFilterMatrix deselectAllCells];
 	[PatientModeMatrix selectTabViewItemAtIndex: 0];
+	[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"autoRetrieving"];
+	
+	[searchFieldName selectText: self];
 }
 
 - (void) applyPreset:(id) sender
@@ -410,6 +416,12 @@ static const char *GetPrivateIP()
 				}
 			}
 			
+			if( [presets valueForKey: @"autoRetrieving"])
+				[[NSUserDefaults standardUserDefaults] setBool: [[presets valueForKey:@"autoRetrieving"] boolValue] forKey: @"autoRetrieving"];
+			
+			if( [presets valueForKey: @"autoRefreshQueryResults"])
+			   [[NSUserDefaults standardUserDefaults] setInteger: [[presets valueForKey:@"autoRefreshQueryResults"] intValue] forKey: @"autoRefreshQueryResults"];
+				
 			if( [presets valueForKey: @"searchFieldName"])
 				[searchFieldName setStringValue: [presets valueForKey: @"searchFieldName"]];
 			
@@ -718,7 +730,7 @@ static const char *GetPrivateIP()
 		[context unlock];
 		[context release];
 		
-		NSLog( @"computeStudyArrayInstanceUID");
+//		NSLog( @"computeStudyArrayInstanceUID");
 		
 		lastComputeStudyArrayInstanceUID = [NSDate timeIntervalSinceReferenceDate];
 	}

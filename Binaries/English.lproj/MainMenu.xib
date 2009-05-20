@@ -2,14 +2,14 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="7.02">
 	<data>
 		<int key="IBDocument.SystemTarget">1050</int>
-		<string key="IBDocument.SystemVersion">9G55</string>
+		<string key="IBDocument.SystemVersion">9J61</string>
 		<string key="IBDocument.InterfaceBuilderVersion">672</string>
-		<string key="IBDocument.AppKitVersion">949.43</string>
+		<string key="IBDocument.AppKitVersion">949.46</string>
 		<string key="IBDocument.HIToolboxVersion">353.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
+			<integer value="12980"/>
 			<integer value="13468"/>
-			<integer value="11465"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -304,7 +304,8 @@
 											<object class="NSMenuItem" id="908804253">
 												<reference key="NSMenu" ref="150963371"/>
 												<string key="NSTitle">Export to DICOM Network Node</string>
-												<string key="NSKeyEquiv"/>
+												<string key="NSKeyEquiv">S</string>
+												<int key="NSKeyEquivModMask">1048576</int>
 												<int key="NSMnemonicLoc">2147483647</int>
 												<reference key="NSOnImage" ref="125626618"/>
 												<reference key="NSMixedImage" ref="973943092"/>
@@ -19939,7 +19940,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
-					<string>{{768, 1021}, {306, 203}}</string>
+					<string>{{667, 517}, {306, 203}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
 					<string>{{1036, 637}, {306, 203}}</string>
@@ -23695,8 +23696,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 							<string>shutterOnOff:</string>
 							<string>sliderFusionAction:</string>
 							<string>speedSliderAction:</string>
-							<string>startMSRG:</string>
-							<string>startMSRGWithAutomaticBounding:</string>
 							<string>subCtrlNewMask:</string>
 							<string>subCtrlOffset:</string>
 							<string>subCtrlOnOff:</string>
@@ -23807,8 +23806,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 							<string>NSString</string>
 							<string>NSString</string>
 							<string>NSString</string>
-							<string>id</string>
-							<string>id</string>
 							<string>id</string>
 							<string>id</string>
 							<string>id</string>
