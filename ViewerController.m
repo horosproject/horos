@@ -47,7 +47,8 @@
 #import "Mailer.h"
 #import "ITKSegmentation3DController.h"
 #import "ITKSegmentation3D.h"
-#import "MSRGWindowController.h"
+//#import "MSRGWindowController.h"
+//#import "MSRGSegmentation.h"
 #import "iPhoto.h"
 #import "CurvedMPR.h"
 #import "SeriesView.h"
@@ -59,7 +60,7 @@
 #import "EndoscopyViewer.h"
 #import "PaletteController.h"
 #import "ROIManagerController.h"
-#import "MSRGSegmentation.h"
+
 #import "ITKBrushROIFilter.h"
 #import "DCMAbstractSyntaxUID.h"
 #import "printView.h"
@@ -13760,61 +13761,61 @@ int i,j,l;
 }
 
 #pragma mark segmentation
-
--(IBAction) startMSRGWithAutomaticBounding:(id) sender
-{
-	NSLog(@"startMSRGWithAutomaticBounding !");
-}
--(IBAction) startMSRG:(id) sender
-{
-	NSLog(@"Start MSRG ....");
-	// I - Récupération des AUTRES ViewerController, nombre de critères
-	NSMutableArray		*viewersList = [ViewerController getDisplayed2DViewers];;
-	
-	[viewersList removeObject: self];
-	
-	for( ViewerController *vC in viewersList)
-	{
-	}
-	/*
-	 DCMPix	*curPix = [[self pixList] objectAtIndex: [imageView curImage]];
-	 long height=[curPix pheight];
-	 long width=[curPix pwidth];
-	 long depth=[[self pixList] count];
-	 int* aBuffer=(int*)malloc(width*height*depth*sizeof(int));
-	 if (aBuffer)
-	 {
-		 // clear texture
-		 for(l=0;l<width*height*depth;l++)
-			 aBuffer[l]=0;
-		 // region 1
-		 
-		 for(k=0;k<depth;k++)
-			 for(j=50;j<70;j++)
-				 for(i=60;i<70;i++)
-					 aBuffer[i+j*width+k*width*height]=1;
-		 // region 2
-		 
-		 for(k=0;k<5;k++)
-			 for(j=0;j<10;j++)
-				 for(i=0;i<10;i++)
-					 aBuffer[i+j*width+k*width*height]=2;
-		 
-		 [self addRoiFromFullStackBuffer:aBuffer];
-		 free(aBuffer);
-	 }
-	 */
-	 MSRGWindowController *msrgController = [[MSRGWindowController alloc] initWithMarkerViewer:self andViewersList:viewersList];
-	 if( msrgController)
-		{
-			[msrgController showWindow:self];
-			[[msrgController window] makeKeyAndOrderFront:self];
-		}
-/*
-	MSRGSegmentation *msrgSeg=[[MSRGSegmentation alloc] initWithViewerList:viewersList currentViewer:self];
-	[msrgSeg startMSRGSegmentation];
-	*/
-}
+//
+//-(IBAction) startMSRGWithAutomaticBounding:(id) sender
+//{
+//	NSLog(@"startMSRGWithAutomaticBounding !");
+//}
+//-(IBAction) startMSRG:(id) sender
+//{
+//	NSLog(@"Start MSRG ....");
+//	// I - Récupération des AUTRES ViewerController, nombre de critères
+//	NSMutableArray		*viewersList = [ViewerController getDisplayed2DViewers];;
+//	
+//	[viewersList removeObject: self];
+//	
+//	for( ViewerController *vC in viewersList)
+//	{
+//	}
+//	/*
+//	 DCMPix	*curPix = [[self pixList] objectAtIndex: [imageView curImage]];
+//	 long height=[curPix pheight];
+//	 long width=[curPix pwidth];
+//	 long depth=[[self pixList] count];
+//	 int* aBuffer=(int*)malloc(width*height*depth*sizeof(int));
+//	 if (aBuffer)
+//	 {
+//		 // clear texture
+//		 for(l=0;l<width*height*depth;l++)
+//			 aBuffer[l]=0;
+//		 // region 1
+//		 
+//		 for(k=0;k<depth;k++)
+//			 for(j=50;j<70;j++)
+//				 for(i=60;i<70;i++)
+//					 aBuffer[i+j*width+k*width*height]=1;
+//		 // region 2
+//		 
+//		 for(k=0;k<5;k++)
+//			 for(j=0;j<10;j++)
+//				 for(i=0;i<10;i++)
+//					 aBuffer[i+j*width+k*width*height]=2;
+//		 
+//		 [self addRoiFromFullStackBuffer:aBuffer];
+//		 free(aBuffer);
+//	 }
+//	 */
+//	 MSRGWindowController *msrgController = [[MSRGWindowController alloc] initWithMarkerViewer:self andViewersList:viewersList];
+//	 if( msrgController)
+//		{
+//			[msrgController showWindow:self];
+//			[[msrgController window] makeKeyAndOrderFront:self];
+//		}
+///*
+//	MSRGSegmentation *msrgSeg=[[MSRGSegmentation alloc] initWithViewerList:viewersList currentViewer:self];
+//	[msrgSeg startMSRGSegmentation];
+//	*/
+//}
 
 
 #pragma mark-

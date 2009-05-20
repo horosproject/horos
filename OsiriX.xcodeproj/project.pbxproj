@@ -80,10 +80,6 @@
 		183C865C08563F3A000E6A68 /* VRFlyThruAdapter.h in Headers */ = {isa = PBXBuildFile; fileRef = 183C864808563F3A000E6A68 /* VRFlyThruAdapter.h */; };
 		183C865D08563F3A000E6A68 /* VRFlyThruAdapter.m in Sources */ = {isa = PBXBuildFile; fileRef = 183C864908563F3A000E6A68 /* VRFlyThruAdapter.m */; };
 		32E422150C97301600E193CA /* altivecFunctions.h in Headers */ = {isa = PBXBuildFile; fileRef = 32E422140C97301600E193CA /* altivecFunctions.h */; };
-		3A2D125A09BC9AF000CCBC80 /* MSRGMultiCriteriaHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A2D125609BC9AEF00CCBC80 /* MSRGMultiCriteriaHelper.h */; };
-		3A2D125B09BC9AF000CCBC80 /* MSRGMultiCriteriaHelper.txx in Resources */ = {isa = PBXBuildFile; fileRef = 3A2D125709BC9AF000CCBC80 /* MSRGMultiCriteriaHelper.txx */; };
-		3A2D125C09BC9AF000CCBC80 /* MSRGWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A2D125809BC9AF000CCBC80 /* MSRGWindowController.h */; };
-		3A2D125D09BC9AF000CCBC80 /* MSRGWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A2D125909BC9AF000CCBC80 /* MSRGWindowController.m */; };
 		7E0B3A4A0675273500908593 /* DCM Framework_Prefix.pch in Resources */ = {isa = PBXBuildFile; fileRef = 7E0B3A12067526A600908593 /* DCM Framework_Prefix.pch */; };
 		7E0B3A4D0675273500908593 /* DCM.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E0B3A13067526A600908593 /* DCM.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7E0B3A530675273600908593 /* DCMAttribute.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E0B3A14067526A600908593 /* DCMAttribute.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -295,6 +291,8 @@
 		84A220E90F25E41800C6C3EB /* Keys.tif in Resources */ = {isa = PBXBuildFile; fileRef = 84A220E70F25E41800C6C3EB /* Keys.tif */; };
 		84A679060EEECF2F00AE5C98 /* jpeg_memsrc.c in Sources */ = {isa = PBXBuildFile; fileRef = 84A679050EEECF2F00AE5C98 /* jpeg_memsrc.c */; };
 		84A6790E0EEED04000AE5C98 /* jpeg_memsrc.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A6790D0EEED04000AE5C98 /* jpeg_memsrc.h */; };
+		84F4533E0FC3DF3800D29666 /* ILCrashReporter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABE881440FC1444D009F5C80 /* ILCrashReporter.framework */; };
+		84F453570FC3DF5400D29666 /* ILCrashReporter.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = ABE881440FC1444D009F5C80 /* ILCrashReporter.framework */; };
 		A90202BE0B980CD60001A00B /* PluginManagerController.h in Headers */ = {isa = PBXBuildFile; fileRef = A90202BA0B980CD60001A00B /* PluginManagerController.h */; };
 		A90202BF0B980CD60001A00B /* PluginManagerController.m in Sources */ = {isa = PBXBuildFile; fileRef = A90202BB0B980CD60001A00B /* PluginManagerController.m */; };
 		A9044D390BBAA29200F36689 /* ROISelector.tiff in Resources */ = {isa = PBXBuildFile; fileRef = A9044D370BBAA29200F36689 /* ROISelector.tiff */; };
@@ -1362,7 +1360,6 @@
 		ABE471170A76412700327466 /* jversion8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3CFC09B6828500545F5E /* jversion8.h */; };
 		ABE59B850F494CA1004EBF28 /* DefaultsOsiriX.m in Sources */ = {isa = PBXBuildFile; fileRef = AB6FF5960A47D08000C501F0 /* DefaultsOsiriX.m */; };
 		ABE881450FC1444D009F5C80 /* ILCrashReporter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABE881440FC1444D009F5C80 /* ILCrashReporter.framework */; };
-		ABE881520FC1445A009F5C80 /* ILCrashReporter.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = ABE881440FC1444D009F5C80 /* ILCrashReporter.framework */; };
 		ABEF7E7809A21070006CEC3E /* Reports.h in Headers */ = {isa = PBXBuildFile; fileRef = ABEF7E7609A21070006CEC3E /* Reports.h */; };
 		ABEF7E7909A21070006CEC3E /* Reports.m in Sources */ = {isa = PBXBuildFile; fileRef = ABEF7E7709A21070006CEC3E /* Reports.m */; };
 		ABEF846A09A23EF5006CEC3E /* ReportTemplate.doc in Resources */ = {isa = PBXBuildFile; fileRef = ABEF846909A23EF5006CEC3E /* ReportTemplate.doc */; };
@@ -4281,16 +4278,6 @@
 		CE96D0F90BEE71E800C4E397 /* mdfconen.h in Headers */ = {isa = PBXBuildFile; fileRef = CE96D0F30BEE71E800C4E397 /* mdfconen.h */; };
 		CE96D11C0BEE732A00C4E397 /* mdfdsman.h in Headers */ = {isa = PBXBuildFile; fileRef = CE96D1160BEE732900C4E397 /* mdfdsman.h */; };
 		CE96D11D0BEE732A00C4E397 /* mdfdsman.cc in Sources */ = {isa = PBXBuildFile; fileRef = CE96D1170BEE732900C4E397 /* mdfdsman.cc */; };
-		CE9762C208FABD1100E6F8B0 /* itkMSRGFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = CE9762BA08FABD1100E6F8B0 /* itkMSRGFilter.h */; };
-		CE9762C308FABD1100E6F8B0 /* itkMSRGFilter.txx in Resources */ = {isa = PBXBuildFile; fileRef = CE9762BB08FABD1100E6F8B0 /* itkMSRGFilter.txx */; };
-		CE9762C408FABD1100E6F8B0 /* MorphoHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = CE9762BC08FABD1100E6F8B0 /* MorphoHelper.h */; };
-		CE9762C508FABD1100E6F8B0 /* MorphoHelper.txx in Resources */ = {isa = PBXBuildFile; fileRef = CE9762BD08FABD1100E6F8B0 /* MorphoHelper.txx */; };
-		CE9762C608FABD1100E6F8B0 /* MSRGImageHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = CE9762BE08FABD1100E6F8B0 /* MSRGImageHelper.h */; };
-		CE9762C708FABD1100E6F8B0 /* MSRGImageHelper.txx in Resources */ = {isa = PBXBuildFile; fileRef = CE9762BF08FABD1100E6F8B0 /* MSRGImageHelper.txx */; };
-		CE9762C808FABD1100E6F8B0 /* SeedMSRG.h in Headers */ = {isa = PBXBuildFile; fileRef = CE9762C008FABD1100E6F8B0 /* SeedMSRG.h */; };
-		CE9762C908FABD1100E6F8B0 /* SeedMSRG.txx in Resources */ = {isa = PBXBuildFile; fileRef = CE9762C108FABD1100E6F8B0 /* SeedMSRG.txx */; };
-		CE9762E408FABD3800E6F8B0 /* MSRGSegmentation.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE9762E208FABD3800E6F8B0 /* MSRGSegmentation.mm */; settings = {COMPILER_FLAGS = "-I ./ITK180 -I ./ITK180/Code -I ./ITK180/Code/Algorithms -I ./ITK180/Code/BasicFilters -I ./ITK180/Code/Common -I ./ITK180/Code/Numerics -I ./ITK180/Code/IO -I ./ITK180/Code/Numerics/FEM -I ./ITK180/Code/Numerics/Statistics -I ./ITK180/Code/SpatialObject -I ./ITK180/Code/Utilities/MetaIO -I ./ITK180/Code/Utilities/expat -I ./ITK180/Code/Utilities/NrrdIO -I ./ITK180/Code/Utilities/DICOMParser -I ./ITK180/Utilities -I ./ITK180/Utilities/vxl/vcl -I ./ITK180/Utilities/vxl/core"; }; };
-		CE9762E508FABD3800E6F8B0 /* MSRGSegmentation.h in Headers */ = {isa = PBXBuildFile; fileRef = CE9762E308FABD3800E6F8B0 /* MSRGSegmentation.h */; settings = {COMPILER_FLAGS = "-I ./ITK180 -I ./ITK180/Code -I ./ITK180/Code/Algorithms -I ./ITK180/Code/BasicFilters -I ./ITK180/Code/Common -I ./ITK180/Code/Numerics -I ./ITK180/Code/IO -I ./ITK180/Code/Numerics/FEM -I ./ITK180/Code/Numerics/Statistics -I ./ITK180/Code/SpatialObject -I ./ITK180/Code/Utilities/MetaIO -I ./ITK180/Code/Utilities/expat -I ./ITK180/Code/Utilities/NrrdIO -I ./ITK180/Code/Utilities/DICOMParser -I ./ITK180/Utilities -I ./ITK180/Utilities/vxl/vcl -I ./ITK180/Utilities/vxl/core"; }; };
 		CE97630008FABDA600E6F8B0 /* ROIManagerController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9762FC08FABDA600E6F8B0 /* ROIManagerController.m */; };
 		CE97630108FABDA600E6F8B0 /* ROIManagerController.h in Headers */ = {isa = PBXBuildFile; fileRef = CE9762FD08FABDA600E6F8B0 /* ROIManagerController.h */; };
 		CE97630208FABDA600E6F8B0 /* PaletteController.h in Headers */ = {isa = PBXBuildFile; fileRef = CE9762FE08FABDA600E6F8B0 /* PaletteController.h */; };
@@ -5164,11 +5151,11 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				ABE881520FC1445A009F5C80 /* ILCrashReporter.framework in CopyFiles */,
 				CE438F4D0CB621EC006AAFD9 /* Growl.framework in CopyFiles */,
 				CE438F420CB621DF006AAFD9 /* DotMacKit.framework in CopyFiles */,
 				CEBBE1820C82F33900247888 /* libtiff.dylib in CopyFiles */,
 				CE9A04440C7DBC060007809F /* libxerces-c.27.dylib in CopyFiles */,
+				84F453570FC3DF5400D29666 /* ILCrashReporter.framework in CopyFiles */,
 				CE9A04450C7DBC060007809F /* libdcmprintscu.dylib in CopyFiles */,
 				CE416BCE07969EEB009A8D42 /* OsiriX.framework in CopyFiles */,
 			);
@@ -5202,10 +5189,6 @@
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		32E422140C97301600E193CA /* altivecFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = altivecFunctions.h; sourceTree = "<group>"; };
-		3A2D125609BC9AEF00CCBC80 /* MSRGMultiCriteriaHelper.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = MSRGMultiCriteriaHelper.h; sourceTree = "<group>"; };
-		3A2D125709BC9AF000CCBC80 /* MSRGMultiCriteriaHelper.txx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = MSRGMultiCriteriaHelper.txx; sourceTree = "<group>"; };
-		3A2D125809BC9AF000CCBC80 /* MSRGWindowController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = MSRGWindowController.h; sourceTree = "<group>"; };
-		3A2D125909BC9AF000CCBC80 /* MSRGWindowController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = MSRGWindowController.m; sourceTree = "<group>"; };
 		4A16D0970965E15300F82EC4 /* Unit Testing (Cocoa)-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Unit Testing (Cocoa)-Info.plist"; path = "UnitTesting/Unit Testing (Cocoa)-Info.plist"; sourceTree = "<group>"; };
 		4A16D0A20965E21800F82EC4 /* UnitTestingBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UnitTestingBase.h; path = UnitTesting/UnitTestingBase.h; sourceTree = "<group>"; };
 		4A16D0A30965E21800F82EC4 /* UnitTestingBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UnitTestingBase.m; path = UnitTesting/UnitTestingBase.m; sourceTree = "<group>"; };
@@ -9062,16 +9045,6 @@
 		CE96D0F30BEE71E800C4E397 /* mdfconen.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = mdfconen.h; path = "Binaries/dcmtk-source/sample apps/dcmdump/mdfconen.h"; sourceTree = "<group>"; };
 		CE96D1160BEE732900C4E397 /* mdfdsman.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = mdfdsman.h; path = "Binaries/dcmtk-source/sample apps/dcmdump/mdfdsman.h"; sourceTree = "<group>"; };
 		CE96D1170BEE732900C4E397 /* mdfdsman.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = mdfdsman.cc; path = "Binaries/dcmtk-source/sample apps/dcmdump/mdfdsman.cc"; sourceTree = "<group>"; };
-		CE9762BA08FABD1100E6F8B0 /* itkMSRGFilter.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = itkMSRGFilter.h; sourceTree = "<group>"; };
-		CE9762BB08FABD1100E6F8B0 /* itkMSRGFilter.txx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = itkMSRGFilter.txx; sourceTree = "<group>"; };
-		CE9762BC08FABD1100E6F8B0 /* MorphoHelper.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = MorphoHelper.h; sourceTree = "<group>"; };
-		CE9762BD08FABD1100E6F8B0 /* MorphoHelper.txx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = MorphoHelper.txx; sourceTree = "<group>"; };
-		CE9762BE08FABD1100E6F8B0 /* MSRGImageHelper.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = MSRGImageHelper.h; sourceTree = "<group>"; };
-		CE9762BF08FABD1100E6F8B0 /* MSRGImageHelper.txx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = MSRGImageHelper.txx; sourceTree = "<group>"; };
-		CE9762C008FABD1100E6F8B0 /* SeedMSRG.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SeedMSRG.h; sourceTree = "<group>"; };
-		CE9762C108FABD1100E6F8B0 /* SeedMSRG.txx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = SeedMSRG.txx; sourceTree = "<group>"; };
-		CE9762E208FABD3800E6F8B0 /* MSRGSegmentation.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; name = MSRGSegmentation.mm; path = ../MSRGSegmentation.mm; sourceTree = "<group>"; };
-		CE9762E308FABD3800E6F8B0 /* MSRGSegmentation.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = MSRGSegmentation.h; path = ../MSRGSegmentation.h; sourceTree = "<group>"; };
 		CE9762FC08FABDA600E6F8B0 /* ROIManagerController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = ROIManagerController.m; sourceTree = "<group>"; };
 		CE9762FD08FABDA600E6F8B0 /* ROIManagerController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ROIManagerController.h; sourceTree = "<group>"; };
 		CE9762FE08FABDA600E6F8B0 /* PaletteController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = PaletteController.h; sourceTree = "<group>"; };
@@ -9331,6 +9304,7 @@
 				AB0E6B140FAF4BF600A5C046 /* libvtkzlib.a in Frameworks */,
 				AB0E6B170FAF4C2100A5C046 /* libitkzlib.a in Frameworks */,
 				ABE881450FC1444D009F5C80 /* ILCrashReporter.framework in Frameworks */,
+				84F4533E0FC3DF3800D29666 /* ILCrashReporter.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -14045,7 +14019,6 @@
 				CE4A922B06DBF255006DAAF7 /* ITKSegmentation3D.mm */,
 				CE26441F06DCF096007F5B71 /* ITKSegmentation3DController.m */,
 				CEDC793A0CBB7EF600411DDB /* ITKSegmentation3DController.h */,
-				CE9762B908FABD1100E6F8B0 /* MSRG */,
 				A9D780AA09A4D2A6004302DC /* ITKBrushROIFilter.h */,
 				A9D780AB09A4D2A6004302DC /* ITKBrushROIFilter.mm */,
 				A9E5AC8D09BF301F00F408B7 /* ITKTransform.h */,
@@ -14157,27 +14130,6 @@
 				A979EF7A0D19023E00F4F8F2 /* WebServicesMethods.m */,
 			);
 			name = "XML-XPC HTTP Server";
-			sourceTree = "<group>";
-		};
-		CE9762B908FABD1100E6F8B0 /* MSRG */ = {
-			isa = PBXGroup;
-			children = (
-				3A2D125609BC9AEF00CCBC80 /* MSRGMultiCriteriaHelper.h */,
-				3A2D125709BC9AF000CCBC80 /* MSRGMultiCriteriaHelper.txx */,
-				3A2D125809BC9AF000CCBC80 /* MSRGWindowController.h */,
-				3A2D125909BC9AF000CCBC80 /* MSRGWindowController.m */,
-				CE9762E208FABD3800E6F8B0 /* MSRGSegmentation.mm */,
-				CE9762E308FABD3800E6F8B0 /* MSRGSegmentation.h */,
-				CE9762BA08FABD1100E6F8B0 /* itkMSRGFilter.h */,
-				CE9762BB08FABD1100E6F8B0 /* itkMSRGFilter.txx */,
-				CE9762BC08FABD1100E6F8B0 /* MorphoHelper.h */,
-				CE9762BD08FABD1100E6F8B0 /* MorphoHelper.txx */,
-				CE9762BE08FABD1100E6F8B0 /* MSRGImageHelper.h */,
-				CE9762BF08FABD1100E6F8B0 /* MSRGImageHelper.txx */,
-				CE9762C008FABD1100E6F8B0 /* SeedMSRG.h */,
-				CE9762C108FABD1100E6F8B0 /* SeedMSRG.txx */,
-			);
-			path = MSRG;
 			sourceTree = "<group>";
 		};
 		CE9DD29A086B35740058DD2A /* CoreData */ = {
@@ -14618,11 +14570,6 @@
 				BFAFEE9408F2220B002AD789 /* PluginFileFormatDecoder.h in Headers */,
 				CEE73FC908F44724002A395F /* FVTiff.h in Headers */,
 				CEE73FD408F44749002A395F /* stringNumericCompare.h in Headers */,
-				CE9762C208FABD1100E6F8B0 /* itkMSRGFilter.h in Headers */,
-				CE9762C408FABD1100E6F8B0 /* MorphoHelper.h in Headers */,
-				CE9762C608FABD1100E6F8B0 /* MSRGImageHelper.h in Headers */,
-				CE9762C808FABD1100E6F8B0 /* SeedMSRG.h in Headers */,
-				CE9762E508FABD3800E6F8B0 /* MSRGSegmentation.h in Headers */,
 				CE97630108FABDA600E6F8B0 /* ROIManagerController.h in Headers */,
 				CE97630208FABDA600E6F8B0 /* PaletteController.h in Headers */,
 				A9F6E4B808FEAF280060285A /* OrthogonalReslice.h in Headers */,
@@ -14986,8 +14933,6 @@
 				BFC9C2A909B697DB003717B1 /* DCMTKVerifySCU.h in Headers */,
 				BF7A835F09B8B8E70051F091 /* DICOMToNSString.h in Headers */,
 				BF7A838009B8D1C20051F091 /* DCMTKStoreSCU.h in Headers */,
-				3A2D125A09BC9AF000CCBC80 /* MSRGMultiCriteriaHelper.h in Headers */,
-				3A2D125C09BC9AF000CCBC80 /* MSRGWindowController.h in Headers */,
 				A9E5AC9309BF301F00F408B7 /* ITKTransform.h in Headers */,
 				BF8E5AC009CA0D8200DE02FF /* DCMTKQueryRetrieveSCP.h in Headers */,
 				BF3F214809CB86E5002736A5 /* diargimg.h in Headers */,
@@ -17445,10 +17390,6 @@
 				CE74DEB008CCE0C1005D12A7 /* SagOpposite.tif in Resources */,
 				CEFC048208D4B1AA00058461 /* Point.tiff in Resources */,
 				CE6B2E2008DAFC6500872E84 /* FixedIP.tif in Resources */,
-				CE9762C308FABD1100E6F8B0 /* itkMSRGFilter.txx in Resources */,
-				CE9762C508FABD1100E6F8B0 /* MorphoHelper.txx in Resources */,
-				CE9762C708FABD1100E6F8B0 /* MSRGImageHelper.txx in Resources */,
-				CE9762C908FABD1100E6F8B0 /* SeedMSRG.txx in Resources */,
 				A9F6E54208FEB58E0060285A /* verticalSplitView.tif in Resources */,
 				A9F6E54708FEB59B0060285A /* horizontalSplitView.tif in Resources */,
 				A9F6E54C08FEB5A70060285A /* turnSplitView.tif in Resources */,
@@ -17485,7 +17426,6 @@
 				BF1833D109AD833D0046C295 /* FlipHorizontal.tif in Resources */,
 				BF1833D209AD833D0046C295 /* FlipVertical.tif in Resources */,
 				A9E7042709B89E1C00971B6E /* BonesRemovalCursor.tif in Resources */,
-				3A2D125B09BC9AF000CCBC80 /* MSRGMultiCriteriaHelper.txx in Resources */,
 				A9C63A9C09BD7C5D00E312AE /* cerveau_icon.jpg in Resources */,
 				CE5D33B509E1C26400CC6884 /* add-large.tif in Resources */,
 				CE5D33B609E1C26400CC6884 /* minus-large.tif in Resources */,
@@ -18148,7 +18088,6 @@
 				BFAFEE9508F2220B002AD789 /* PluginFileFormatDecoder.m in Sources */,
 				CEE73FCA08F44724002A395F /* FVTiff.m in Sources */,
 				CEE73FD308F44749002A395F /* stringNumericCompare.m in Sources */,
-				CE9762E408FABD3800E6F8B0 /* MSRGSegmentation.mm in Sources */,
 				CE97630008FABDA600E6F8B0 /* ROIManagerController.m in Sources */,
 				CE97630308FABDA600E6F8B0 /* PaletteController.m in Sources */,
 				A9F6E4BD08FEAF450060285A /* OrthogonalReslice.m in Sources */,
@@ -18444,7 +18383,6 @@
 				BFC9C2AA09B697DB003717B1 /* DCMTKVerifySCU.mm in Sources */,
 				BF7A836009B8B8E70051F091 /* DICOMToNSString.m in Sources */,
 				BF7A838109B8D1C20051F091 /* DCMTKStoreSCU.mm in Sources */,
-				3A2D125D09BC9AF000CCBC80 /* MSRGWindowController.m in Sources */,
 				A9E5AC9409BF301F00F408B7 /* ITKTransform.mm in Sources */,
 				BF8E5AC109CA0D8200DE02FF /* DCMTKQueryRetrieveSCP.mm in Sources */,
 				BF4CEBD609CB736D0073E928 /* dcmqrcnf.mm in Sources */,

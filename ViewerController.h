@@ -515,8 +515,8 @@ enum
 
 + (int) getToolEquivalentToHotKey:(int) h;
 + (int) getHotKeyEquivalentToTool:(int) h;
-- (IBAction) startMSRG:(id) sender;
-- (IBAction) startMSRGWithAutomaticBounding:(id) sender;
+//- (IBAction) startMSRG:(id) sender;
+//- (IBAction) startMSRGWithAutomaticBounding:(id) sender;
 //arg: this function will automatically scan the buffer to create a textured ROI (tPlain) for all slices
 // param forValue: this param defines the region to extract in the stack buffer
 - (void)addRoiFromFullStackBuffer:(unsigned char*)buff forSpecificValue:(unsigned char)value withColor:(RGBColor)aColor;
