@@ -1,6 +1,7 @@
 #import <Foundation/Foundation.h>
 #import <OsiriX/DCMObject.h>
 #import <OsiriX/DCMTransferSyntax.h>
+#import <OsiriX/DCMPixelDataAttribute.h>
 #import "DefaultsOsiriX.h"
 
 #undef verify
@@ -88,6 +89,9 @@ int main(int argc, const char *argv[])
 		{
 			NSMutableDictionary	*dict = [DefaultsOsiriX getDefaults];
 			[dict addEntriesFromDictionary: [[NSUserDefaults standardUserDefaults] persistentDomainForName:@"com.rossetantoine.osirix"]];
+			
+			dcmtkSetJPEGColorSpace( [[dict objectForKey:@"UseJPEGColorSpace"] intValue]);
+			[DCMPixelDataAttribute setUseOpenJpeg: [[dict objectForKey:@"UseOpenJpegForJPEG2000"] intValue]];
 			
 			if( dest && [dest isEqualToString:path] == NO)
 			{
@@ -203,10 +207,11 @@ int main(int argc, const char *argv[])
 			
 			if (filexfer.getXfer() == EXS_JPEG2000LosslessOnly || filexfer.getXfer() == EXS_JPEG2000)
 			{
+				[DCMPixelDataAttribute setUseOpenJpeg: [[dict objectForKey:@"UseOpenJpegForJPEG2000"] intValue]];
 				DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile:path decodingPixelData:YES];
 				
 				[dcmObject writeToFile:[path stringByAppendingString:@" temp"] withTransferSyntax:[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax] quality:1 AET:@"OsiriX" atomically:YES];
-								
+				
 				[dcmObject release];
 				
 				if( dest == path) [[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
