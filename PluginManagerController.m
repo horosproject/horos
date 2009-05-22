@@ -47,6 +47,7 @@ static NSDate *CachedPluginsListDate = nil;
 	[statusTextField setHidden:YES];
 	[statusProgressIndicator setHidden:YES];
 	downloadedFilePath = @"";
+	[downloadedFilePath retain];
 	
 	// deactivate the back/forward options in the webView's contextual menu
 	[[webView backForwardList] setCapacity:0];
@@ -368,8 +369,7 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
 - (IBAction)download:(id)sender;
 {
 	NSURLDownload *download = [[NSURLDownload alloc] initWithRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:downloadURL]] delegate:self];
-	//downloadedFilePath = [NSString stringWithFormat:@"%@/Desktop/%@", NSHomeDirectory(), [[downloadURL lastPathComponent] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-	downloadedFilePath = [NSString stringWithFormat:@"/tmp/%@", [[downloadURL lastPathComponent] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+	downloadedFilePath = [[NSString stringWithFormat:@"/tmp/%@", [[downloadURL lastPathComponent] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] retain];
 	[download setDestination:downloadedFilePath allowOverwrite:YES];
 }
 

@@ -30,6 +30,7 @@
 		roiList = [[NSMutableArray alloc] initWithCapacity:0];
 		roiVolumeActor = nil;
 		name = @"";
+		[name retain];
 		volume = 0.0;
 		red = 0.0;
 		green = 1.0;
@@ -65,7 +66,9 @@
 	
 	if( textureImage)
 		textureImage->Delete();
-
+	
+	[name release];
+	
 	[super dealloc];
 }
 
@@ -96,7 +99,8 @@
 	if([roiList count])
 	{
 		ROI *curROI = [roiList objectAtIndex:0];
-		name = [curROI name];
+		[name release];
+		name = [[curROI name] retain];
 		[properties setValue:name forKey:@"name"];
 		[properties setValue:[NSNumber numberWithFloat:volume] forKey:@"volume"];
 	}
