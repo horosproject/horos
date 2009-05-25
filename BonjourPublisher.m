@@ -276,7 +276,7 @@ static char *GetPrivateIP()
 
 	[incomingConnection retain];
 	
-	[[[BrowserController currentBrowser] managedObjectContext] lock];
+	[[interfaceOsiriX managedObjectContext] lock];
 	
 	@try
 	{
@@ -455,7 +455,7 @@ static char *GetPrivateIP()
 						
 						while ( [data length] < pos + fileSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
 						
-						NSString	*incomingFolder = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:@"/INCOMING.noindex"];
+						NSString	*incomingFolder = [[interfaceOsiriX documentsDirectory] stringByAppendingPathComponent:@"/INCOMING.noindex"];
 						NSString	*dstPath;
 						
 						int index = [NSDate timeIntervalSinceReferenceDate];
@@ -496,7 +496,6 @@ static char *GetPrivateIP()
 						NSString *albumUID = [d objectForKey:@"albumUID"];
 						
 						NSManagedObjectContext *context = [interfaceOsiriX defaultManagerObjectContext];
-						[context retain];
 						[context lock];
 						
 						@try
@@ -521,7 +520,6 @@ static char *GetPrivateIP()
 						NSError *error = nil;
 						[context save: &error];
 						[context unlock];
-						[context release];
 					}
 					
 					representationToSend = nil;
@@ -548,7 +546,6 @@ static char *GetPrivateIP()
 						NSString *albumUID = [d objectForKey:@"albumUID"];
 						
 						NSManagedObjectContext *context = [interfaceOsiriX defaultManagerObjectContext];
-						[context retain];
 						[context lock];
 						
 						@try
@@ -573,7 +570,6 @@ static char *GetPrivateIP()
 						NSError *error = nil;
 						[context save: &error];
 						[context unlock];
-						[context release];
 					}
 					
 					representationToSend = nil;
@@ -621,7 +617,6 @@ static char *GetPrivateIP()
 					pos += stringSize;
 					
 					NSManagedObjectContext *context = [interfaceOsiriX defaultManagerObjectContext];
-					[context retain];
 					[context lock];
 					
 					@try
@@ -642,7 +637,7 @@ static char *GetPrivateIP()
 									}
 									else if( [[key pathComponents] count] == 1)
 									{
-										value = [[[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent: @"/REPORTS/"] stringByAppendingPathComponent: [value lastPathComponent]];
+										value = [[[interfaceOsiriX documentsDirectory] stringByAppendingPathComponent: @"/REPORTS/"] stringByAppendingPathComponent: [value lastPathComponent]];
 									}
 								}
 								
@@ -659,7 +654,6 @@ static char *GetPrivateIP()
 					NSError *error = nil;
 					[context save: &error];
 					[context unlock];
-					[context release];
 					
 					refreshDB = YES;
 					saveDB = YES;
@@ -778,7 +772,7 @@ static char *GetPrivateIP()
 					// We read the data
 					while ( [data length] < pos + dataSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
 					
-					NSString	*localpath = [[[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent: @"/REPORTS/"] stringByAppendingPathComponent: [path lastPathComponent]];
+					NSString	*localpath = [[[interfaceOsiriX documentsDirectory] stringByAppendingPathComponent: @"/REPORTS/"] stringByAppendingPathComponent: [path lastPathComponent]];
 					
 					[[NSFileManager defaultManager] removeFileAtPath: localpath handler:nil];
 					[[data subdataWithRange: NSMakeRange(pos,dataSize)] writeToFile: localpath atomically:YES];
@@ -1029,7 +1023,7 @@ static char *GetPrivateIP()
 		NSLog( @"Exception in ConnectionReceived - Communication Interrupted : %@", ne);
 	}
 	
-	[[[BrowserController currentBrowser] managedObjectContext] unlock];
+	[[interfaceOsiriX managedObjectContext] unlock];
 	
 	[incomingConnection closeFile];
 	[incomingConnection release];

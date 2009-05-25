@@ -783,7 +783,18 @@ static NSTimeInterval lastConnection = 0;
 					
 					if( sourceServer)
 					{
-						ret = [NSNumber numberWithInt :[QueryController queryAndRetrieveAccessionNumber: [paramDict valueForKey:@"accessionNumber"] server: sourceServer]];
+						[[[BrowserController currentBrowser] managedObjectContext] unlock];	// CMove requires this unlock !
+						
+						@try
+						{
+							ret = [NSNumber numberWithInt :[QueryController queryAndRetrieveAccessionNumber: [paramDict valueForKey:@"accessionNumber"] server: sourceServer]];
+						}
+						@catch (NSException * e)
+						{
+							NSLog( @"***** queryAndRetrieveAccessionNumber exception: %@", e);
+						}
+						
+						[[[BrowserController currentBrowser] managedObjectContext] lock];
 					}
 					else ret = [NSNumber numberWithInt: -1];
 					
@@ -796,7 +807,6 @@ static NSTimeInterval lastConnection = 0;
 					[httpServerMessage setValue: [NSNumber numberWithBool: YES] forKey: @"Processed"];		// To tell to other XML-RPC that we processed this order
 				}
 			}
-			
 			
 			#pragma mark DisplayStudyListByPatientName
 			
