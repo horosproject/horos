@@ -880,9 +880,9 @@ static char *GetPrivateIP()
 							
 							NSString *dbLocation = [interfaceOsiriX localDatabasePath];
 							
-							val /= 10000;
+							val /= [BrowserController DefaultFolderSizeForDB];
 							val++;
-							val *= 10000;
+							val *= [BrowserController DefaultFolderSizeForDB];
 							
 							path = [[dbLocation stringByDeletingLastPathComponent] stringByAppendingFormat:@"/DATABASE.noindex/%d/%@", val, path];
 						}
@@ -935,9 +935,9 @@ static char *GetPrivateIP()
 								
 								int val = [[path stringByDeletingPathExtension] intValue];
 								
-								val /= 10000;
+								val /= [BrowserController DefaultFolderSizeForDB];
 								val++;
-								val *= 10000;
+								val *= [BrowserController DefaultFolderSizeForDB];
 								
 								NSString	*local = [[interfaceOsiriX localDatabasePath] stringByDeletingLastPathComponent];
 								

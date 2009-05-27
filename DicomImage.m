@@ -612,9 +612,9 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 		long		val = [[path stringByDeletingPathExtension] intValue];
 		NSString	*dbLocation = [directory stringByAppendingPathComponent: @"DATABASE.noindex"];
 		
-		val /= 10000;
+		val /= [BrowserController DefaultFolderSizeForDB];
 		val++;
-		val *= 10000;
+		val *= [BrowserController DefaultFolderSizeForDB];
 		
 		return [[dbLocation stringByAppendingPathComponent: [NSString stringWithFormat: @"%d", val]] stringByAppendingPathComponent: path];
 	}

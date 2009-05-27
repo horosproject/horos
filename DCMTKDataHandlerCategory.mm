@@ -989,7 +989,6 @@ char currentDestinationMoveAET[ 60] = "";
 	
 	NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
 	
-	[context retain];
 	[context lock];
 	
 	NSArray *array = nil;
@@ -1084,7 +1083,6 @@ char currentDestinationMoveAET[ 60] = "";
 	}
 
 	[context unlock];
-	[context release];
 	
 	// TO AVOID DEADLOCK
 	

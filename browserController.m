@@ -95,6 +95,7 @@ static BOOL loadingIsOver = NO;
 static NSMenu *contextual = nil;
 static NSMenu *contextualRT = nil;  // Alternate menus for RT objects (which often don't have images)
 static int DicomDirScanDepth;
+static int DefaultFolderSizeForDB = 0;
 
 extern void compressJPEG (int inQuality, char* filename, unsigned char* inImageBuffP, int inImageHeight, int inImageWidth, int monochrome);
 extern BOOL hasMacOSXTiger();
@@ -222,6 +223,13 @@ static NSArray*	statesArray = nil;
 {
 	gLastActivity = [NSDate timeIntervalSinceReferenceDate];
 }
++ (int) DefaultFolderSizeForDB
+{
+	if( DefaultFolderSizeForDB == 0)
+		DefaultFolderSizeForDB = [[NSUserDefaults standardUserDefaults] integerForKey: @"DefaultFolderSizeForDB"];
+	
+	return DefaultFolderSizeForDB;
+}
 
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 
@@ -244,7 +252,7 @@ static NSArray*	statesArray = nil;
 	
 	do
 	{
-		subFolderInt = 10000L * ((DATABASEINDEX / 10000L) +1);
+		subFolderInt = [BrowserController DefaultFolderSizeForDB] * ((DATABASEINDEX / [BrowserController DefaultFolderSizeForDB]) +1);
 		subFolder = [OUTpath stringByAppendingPathComponent: [NSString stringWithFormat:@"%d", subFolderInt]];
 		
 		if (![[NSFileManager defaultManager] fileExistsAtPath:subFolder])
@@ -5625,7 +5633,7 @@ static NSArray*	statesArray = nil;
 {
 	NSInteger				result;
 	NSManagedObjectContext	*context = self.managedObjectContext;
-	BOOL					matrixThumbnails = YES;
+	BOOL					matrixThumbnails = NO;
 	int						animState = [animationCheck state];
 	
 	[self checkResponder];
@@ -13246,7 +13254,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 				
 				NSDirectoryEnumerator *enumer = [[NSFileManager defaultManager] enumeratorAtPath:INpath];
 				
-				while (pathname = [enumer nextObject])
+				int maxNumberOfFiles = [[NSUserDefaults standardUserDefaults] integerForKey: @"maxNumberOfFilesForCheckIncoming"];
+				
+				while( (pathname = [enumer nextObject]) && [filesArray count] < maxNumberOfFiles)
 				{
 					NSString *srcPath = [INpath stringByAppendingPathComponent:pathname];
 					NSString *originalPath = srcPath;
@@ -15349,7 +15359,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 					[attr addFrame:subdata];
 					[dcmObject setAttribute:attr];
 					
-					NSString	*tempFilename = [[self documentsDirectory] stringByAppendingFormat:@"/INCOMING.noindex/%d.dcm", i];
+					NSString	*tempFilename = [[self documentsDirectory] stringByAppendingPathComponent: [NSString stringWithFormat:@"%@%d.dcm", INCOMINGPATH, i]];
 					[dcmObject writeToFile:tempFilename withTransferSyntax:[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax] quality:DCMLosslessQuality atomically:YES];
 				} 
 			}

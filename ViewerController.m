@@ -3501,7 +3501,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 - (void) buildMatrixPreview: (BOOL) showSelected
 {
 	if( [[self window] isVisible] == NO) return;	//we will do it in checkBuiltMatrixPreview : faster opening !
-
+	
 	NSManagedObjectModel	*model = [[BrowserController currentBrowser] managedObjectModel];
 	NSManagedObjectContext	*context = [[BrowserController currentBrowser] managedObjectContext];
 	NSPredicate				*predicate;
@@ -3524,8 +3524,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 		[previewMatrix renewRows: 0 columns: 0];
 		[previewMatrix sizeToCells];
 		return;
-	}
-	
+	}	
+
 	// FIND ALL STUDIES of this patient
 	
 	NSString	*searchString = [study valueForKey:@"patientID"];
@@ -3543,216 +3543,225 @@ static volatile int numberOfThreadsForRelisce = 0;
 	
 	[context retain];
 	[context lock];
-	error = nil;
-	NSArray *studiesArray = [context executeFetchRequest:dbRequest error:&error];
 	
-	if ([studiesArray count])
+	@try
 	{
-		NSArray *displayedSeries = [ViewerController getDisplayedSeries];
+		error = nil;
+		NSArray *studiesArray = [context executeFetchRequest:dbRequest error:&error];
 		
-		NSSortDescriptor * sort = [[NSSortDescriptor alloc] initWithKey:@"date" ascending:NO];
-		NSArray * sortDescriptors = [NSArray arrayWithObject: sort];
-		[sort release];
-		
-		studiesArray = [studiesArray sortedArrayUsingDescriptors: sortDescriptors];
-		
-		NSMutableArray	*seriesArray = [NSMutableArray array];
-		
-		i = 0;
-		for( x = 0; x < [studiesArray count]; x++)
+		if ([studiesArray count])
 		{
-			[seriesArray addObject: [[BrowserController currentBrowser] childrenArray: [studiesArray objectAtIndex: x]]];
+			NSArray *displayedSeries = [ViewerController getDisplayedSeries];
 			
-			if( [[studiesArray objectAtIndex: x] isHidden] == NO)
-				i += [[seriesArray objectAtIndex: x] count];
-		}
-		
-		if( [previewMatrix numberOfRows] != i+[studiesArray count])
-		{
-			[previewMatrix renewRows: i+[studiesArray count] columns: 1];
-			[previewMatrix sizeToCells];
-		}
-		
-		for( x = 0; x < [studiesArray count]; x++)
-		{
-			DicomStudy			*curStudy = [studiesArray objectAtIndex: x];
-			NSArray				*series = [seriesArray objectAtIndex: x];
-			NSArray				*images = [[BrowserController currentBrowser] imagesArray: curStudy preferredObject: oAny];
+			NSSortDescriptor * sort = [[NSSortDescriptor alloc] initWithKey:@"date" ascending:NO];
+			NSArray * sortDescriptors = [NSArray arrayWithObject: sort];
+			[sort release];
 			
-			if( [series count] != [images count])
+			studiesArray = [studiesArray sortedArrayUsingDescriptors: sortDescriptors];
+			
+			NSMutableArray	*seriesArray = [NSMutableArray array];
+			
+			i = 0;
+			for( x = 0; x < [studiesArray count]; x++)
 			{
-				NSLog(@"[series count] != [images count] : You should not be here......");
+				[seriesArray addObject: [[BrowserController currentBrowser] childrenArray: [studiesArray objectAtIndex: x]]];
+				
+				if( [[studiesArray objectAtIndex: x] isHidden] == NO)
+					i += [[seriesArray objectAtIndex: x] count];
 			}
 			
-			NSButtonCell *cell = [previewMatrix cellAtRow: index column:0];
-			
-			[cell setTransparent: NO];
-			[cell setBezelStyle: NSShadowlessSquareBezelStyle];
-			[cell setFont:[NSFont boldSystemFontOfSize:8.5]];
-			[cell setButtonType:NSMomentaryPushInButton];
-			[cell setEnabled:YES];
-			[cell setImage: nil];
-			[cell setRepresentedObject: curStudy];
-			[cell setAction: @selector(matrixPreviewSwitchHidden:)];
-			[cell setTarget: self];
-			[cell setBordered: YES];
-			
-			NSString	*name = [curStudy valueForKey:@"studyName"];
-			if( [name length] > 15) name = [name substringToIndex: 15];
-			
-			NSString	*stateText;
-			if( [[curStudy valueForKey:@"stateText"] intValue]) stateText = [[BrowserController statesArray] objectAtIndex: [[curStudy valueForKey:@"stateText"] intValue]];
-			else stateText = @"";
-			NSString	*comment = [curStudy valueForKey:@"comment"];
-			
-			if( comment == nil) comment = @"";
-			
-			NSString	*modality = [curStudy valueForKey:@"modality"];
-			
-			if( modality == nil) modality = @"OT:";
-			
-			NSString *action;
-			if( [curStudy isHidden]) action = NSLocalizedString( @"Show Series", nil);
-			else action = NSLocalizedString( @"Hide Series", nil);
-			
-			NSString *patName = @"";
-			
-			if( [curStudy valueForKey:@"name"] && [curStudy valueForKey:@"dateOfBirth"])
-				patName = [NSString stringWithFormat: @"%@ %@", [curStudy valueForKey:@"name"], [BrowserController DateOfBirthFormat: [curStudy valueForKey:@"dateOfBirth"]]];
-			
-			if ([[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] != annotFull) patName = @"";
-			
-			if( [stateText length] == 0 && [comment length] == 0)
-				[cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%@\r%@ : %d %@\r\r%@", patName, name, [BrowserController DateTimeWithSecondsFormat: [curStudy valueForKey:@"date"]], modality, [series count], NSLocalizedString( @"series", nil), action]];
-			else 
-				[cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%@\r%@ : %d %@\r%@\r%@\r%@", patName, name, [BrowserController DateTimeWithSecondsFormat: [curStudy valueForKey:@"date"]], modality, [series count], NSLocalizedString( @"series", nil), stateText, comment, action]];
-			
-			[cell setBackgroundColor: [NSColor whiteColor]];
-			
-			index++;
-			
-			if( [curStudy isHidden] == NO)
+			if( [previewMatrix numberOfRows] != i+[studiesArray count])
 			{
-				for( i = 0; i < [series count]; i++)
+				[previewMatrix renewRows: i+[studiesArray count] columns: 1];
+				[previewMatrix sizeToCells];
+			}
+			
+			for( x = 0; x < [studiesArray count]; x++)
+			{
+				DicomStudy			*curStudy = [studiesArray objectAtIndex: x];
+				NSArray				*series = [seriesArray objectAtIndex: x];
+				NSArray				*images = [[BrowserController currentBrowser] imagesArray: curStudy preferredObject: oAny];
+				
+				if( [series count] != [images count])
 				{
-					NSManagedObject	*curSeries = [series objectAtIndex:i];
-					
-					int keyImagesNumber = 0;
-	//				NSArray	*keyImagesArray = [[[curSeries valueForKey:@"images"] allObjects] valueForKey:@"isKeyImage"];		<- This is too slow......
-	//				for( z = 0; z < [keyImagesArray count]; z++)
-	//				{
-	//					if( [[keyImagesArray objectAtIndex: z] boolValue]) keyImagesNumber++;
-	//				}
-					
-					NSButtonCell *cell = [previewMatrix cellAtRow: index column:0];
-					
-					[cell setTransparent: NO];
-					[cell setBezelStyle: NSShadowlessSquareBezelStyle];
-					[cell setRepresentedObject: curSeries];
-					if( keyImagesNumber) [cell setFont:[NSFont boldSystemFontOfSize:8.5]];
-					else [cell setFont:[NSFont systemFontOfSize:8.5]];
-					[cell setImagePosition: NSImageBelow];
-					[cell setAction: @selector(matrixPreviewPressed:)];
-					[cell setTarget: self];
-					[cell setButtonType:NSMomentaryPushInButton];
-					[cell setEnabled:YES];
-					
-					NSString	*name = [curSeries valueForKey:@"name"];
-					if( [name length] > 15) name = [name substringToIndex: 15];
-					
-					NSString	*type = nil;
-					int count = [[curSeries valueForKey:@"noFiles"] intValue];
-					if( count == 1)
+					NSLog(@"[series count] != [images count] : You should not be here......");
+				}
+				
+				NSButtonCell *cell = [previewMatrix cellAtRow: index column:0];
+				
+				[cell setTransparent: NO];
+				[cell setBezelStyle: NSShadowlessSquareBezelStyle];
+				[cell setFont:[NSFont boldSystemFontOfSize:8.5]];
+				[cell setButtonType:NSMomentaryPushInButton];
+				[cell setEnabled:YES];
+				[cell setImage: nil];
+				[cell setRepresentedObject: curStudy];
+				[cell setAction: @selector(matrixPreviewSwitchHidden:)];
+				[cell setTarget: self];
+				[cell setBordered: YES];
+				
+				NSString	*name = [curStudy valueForKey:@"studyName"];
+				if( [name length] > 15) name = [name substringToIndex: 15];
+				
+				NSString	*stateText;
+				if( [[curStudy valueForKey:@"stateText"] intValue]) stateText = [[BrowserController statesArray] objectAtIndex: [[curStudy valueForKey:@"stateText"] intValue]];
+				else stateText = @"";
+				NSString	*comment = [curStudy valueForKey:@"comment"];
+				
+				if( comment == nil) comment = @"";
+				
+				NSString	*modality = [curStudy valueForKey:@"modality"];
+				
+				if( modality == nil) modality = @"OT:";
+				
+				NSString *action;
+				if( [curStudy isHidden]) action = NSLocalizedString( @"Show Series", nil);
+				else action = NSLocalizedString( @"Hide Series", nil);
+				
+				NSString *patName = @"";
+				
+				if( [curStudy valueForKey:@"name"] && [curStudy valueForKey:@"dateOfBirth"])
+					patName = [NSString stringWithFormat: @"%@ %@", [curStudy valueForKey:@"name"], [BrowserController DateOfBirthFormat: [curStudy valueForKey:@"dateOfBirth"]]];
+				
+				if ([[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] != annotFull) patName = @"";
+				
+				if( [stateText length] == 0 && [comment length] == 0)
+					[cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%@\r%@ : %d %@\r\r%@", patName, name, [BrowserController DateTimeWithSecondsFormat: [curStudy valueForKey:@"date"]], modality, [series count], NSLocalizedString( @"series", nil), action]];
+				else 
+					[cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%@\r%@ : %d %@\r%@\r%@\r%@", patName, name, [BrowserController DateTimeWithSecondsFormat: [curStudy valueForKey:@"date"]], modality, [series count], NSLocalizedString( @"series", nil), stateText, comment, action]];
+				
+				[cell setBackgroundColor: [NSColor whiteColor]];
+				
+				index++;
+				
+				if( [curStudy isHidden] == NO)
+				{
+					for( i = 0; i < [series count]; i++)
 					{
-						[[[BrowserController currentBrowser] managedObjectContext] lock];
+						NSManagedObject	*curSeries = [series objectAtIndex:i];
 						
-						type = NSLocalizedString( @"Image", nil);
-						int frames = [[[[curSeries valueForKey:@"images"] anyObject] valueForKey:@"numberOfFrames"] intValue];
-						if( frames > 1)
+						int keyImagesNumber = 0;
+		//				NSArray	*keyImagesArray = [[[curSeries valueForKey:@"images"] allObjects] valueForKey:@"isKeyImage"];		<- This is too slow......
+		//				for( z = 0; z < [keyImagesArray count]; z++)
+		//				{
+		//					if( [[keyImagesArray objectAtIndex: z] boolValue]) keyImagesNumber++;
+		//				}
+						
+						NSButtonCell *cell = [previewMatrix cellAtRow: index column:0];
+						
+						[cell setTransparent: NO];
+						[cell setBezelStyle: NSShadowlessSquareBezelStyle];
+						[cell setRepresentedObject: curSeries];
+						if( keyImagesNumber) [cell setFont:[NSFont boldSystemFontOfSize:8.5]];
+						else [cell setFont:[NSFont systemFontOfSize:8.5]];
+						[cell setImagePosition: NSImageBelow];
+						[cell setAction: @selector(matrixPreviewPressed:)];
+						[cell setTarget: self];
+						[cell setButtonType:NSMomentaryPushInButton];
+						[cell setEnabled:YES];
+						
+						NSString	*name = [curSeries valueForKey:@"name"];
+						if( [name length] > 15) name = [name substringToIndex: 15];
+						
+						NSString	*type = nil;
+						int count = [[curSeries valueForKey:@"noFiles"] intValue];
+						if( count == 1)
 						{
-							count = frames;
-							type = NSLocalizedString( @"Frames", @"Frames: for example, 50 Frames in a series");
-						}
-						
-						[[[BrowserController currentBrowser] managedObjectContext] unlock];
-					}
-					else type = NSLocalizedString( @"Images", nil);
-					
-					if( keyImagesNumber) [cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%d/%d %@", name, [BrowserController DateTimeWithSecondsFormat: [curSeries valueForKey:@"date"]], keyImagesNumber, count, type]];
-					else [cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%d %@", name, [BrowserController DateTimeWithSecondsFormat: [curSeries valueForKey:@"date"]], count, type]];
-					
-					[previewMatrix setToolTip:[NSString stringWithFormat: NSLocalizedString(@"Series ID:%@\rClick + Apple Key:\rOpen in new window", nil), [curSeries valueForKey:@"id"]] forCell:cell];
-					
-					if( [curImage valueForKey:@"series"] == curSeries)
-					{
-						[cell setBackgroundColor: [NSColor colorWithCalibratedRed:252/255. green:177/255. blue:141/255. alpha:1.0]];
-						
-						[cell setBordered: NO];
-					}
-					else if( [[self blendingController] currentSeries] == curSeries)
-					{
-						[cell setBackgroundColor: [NSColor colorWithCalibratedRed: (195.)/(255.) green: (249.)/(255.) blue: (145.)/(255.) alpha:1.0]];
-						[cell setBordered: NO];
-					}
-					else if( [displayedSeries containsObject: curSeries])
-					{
-						[cell setBackgroundColor: [NSColor colorWithCalibratedRed:249./255. green:240./255. blue:140./255. alpha:1.0]];
-						[cell setBordered: NO];
-					}
-					else [cell setBordered: YES];
-					
-					if( visible)
-					{
-						NSImage	*img = nil;
-						
-						img = [[[NSImage alloc] initWithData: [curSeries valueForKey:@"thumbnail"]] autorelease];
-						
-						if( img == nil)
-						{
-							DCMPix*     dcmPix = [[DCMPix alloc] myinit: [[images objectAtIndex: i] valueForKey:@"completePath"] :0 :0 :nil :0 :[[[images objectAtIndex: i] valueForKeyPath:@"series.id"] intValue] isBonjour:[[BrowserController currentBrowser] isCurrentDatabaseBonjour] imageObj:[images objectAtIndex: i]];
+							[[[BrowserController currentBrowser] managedObjectContext] lock];
 							
-							if( dcmPix)
+							type = NSLocalizedString( @"Image", nil);
+							int frames = [[[[curSeries valueForKey:@"images"] anyObject] valueForKey:@"numberOfFrames"] intValue];
+							if( frames > 1)
 							{
-								NSImage *img = [dcmPix generateThumbnailImageWithWW:0 WL:0];
+								count = frames;
+								type = NSLocalizedString( @"Frames", @"Frames: for example, 50 Frames in a series");
+							}
+							
+							[[[BrowserController currentBrowser] managedObjectContext] unlock];
+						}
+						else type = NSLocalizedString( @"Images", nil);
+						
+						if( keyImagesNumber) [cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%d/%d %@", name, [BrowserController DateTimeWithSecondsFormat: [curSeries valueForKey:@"date"]], keyImagesNumber, count, type]];
+						else [cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%d %@", name, [BrowserController DateTimeWithSecondsFormat: [curSeries valueForKey:@"date"]], count, type]];
+						
+						[previewMatrix setToolTip:[NSString stringWithFormat: NSLocalizedString(@"Series ID:%@\rClick + Apple Key:\rOpen in new window", nil), [curSeries valueForKey:@"id"]] forCell:cell];
+						
+						if( [curImage valueForKey:@"series"] == curSeries)
+						{
+							[cell setBackgroundColor: [NSColor colorWithCalibratedRed:252/255. green:177/255. blue:141/255. alpha:1.0]];
+							
+							[cell setBordered: NO];
+						}
+						else if( [[self blendingController] currentSeries] == curSeries)
+						{
+							[cell setBackgroundColor: [NSColor colorWithCalibratedRed: (195.)/(255.) green: (249.)/(255.) blue: (145.)/(255.) alpha:1.0]];
+							[cell setBordered: NO];
+						}
+						else if( [displayedSeries containsObject: curSeries])
+						{
+							[cell setBackgroundColor: [NSColor colorWithCalibratedRed:249./255. green:240./255. blue:140./255. alpha:1.0]];
+							[cell setBordered: NO];
+						}
+						else [cell setBordered: YES];
+						
+						if( visible)
+						{
+							NSImage	*img = nil;
+							
+							img = [[[NSImage alloc] initWithData: [curSeries valueForKey:@"thumbnail"]] autorelease];
+							
+							if( img == nil)
+							{
+								DCMPix*     dcmPix = [[DCMPix alloc] myinit: [[images objectAtIndex: i] valueForKey:@"completePath"] :0 :0 :nil :0 :[[[images objectAtIndex: i] valueForKeyPath:@"series.id"] intValue] isBonjour:[[BrowserController currentBrowser] isCurrentDatabaseBonjour] imageObj:[images objectAtIndex: i]];
 								
-								if( img)
+								if( dcmPix)
 								{
-									[cell setImage: img];
+									NSImage *img = [dcmPix generateThumbnailImageWithWW:0 WL:0];
 									
-									if( [[NSUserDefaults standardUserDefaults] boolForKey:@"StoreThumbnailsInDB"])
-										[curSeries setValue: [BrowserController produceJPEGThumbnail: img] forKey:@"thumbnail"];
+									if( img)
+									{
+										[cell setImage: img];
+										
+										if( [[NSUserDefaults standardUserDefaults] boolForKey:@"StoreThumbnailsInDB"])
+											[curSeries setValue: [BrowserController produceJPEGThumbnail: img] forKey:@"thumbnail"];
+									}
+									else [cell setImage: [NSImage imageNamed: @"FileNotFound.tif"]];
+									
+									[dcmPix release];
 								}
 								else [cell setImage: [NSImage imageNamed: @"FileNotFound.tif"]];
 								
-								[dcmPix release];
 							}
-							else [cell setImage: [NSImage imageNamed: @"FileNotFound.tif"]];
-							
+							else [cell setImage: img];
 						}
-						else [cell setImage: img];
+						
+						index++;
 					}
-					
-					index++;
 				}
 			}
 		}
-	}
-	
-	
-	if( showSelected)
-	{
-		NSInteger index = [[[previewMatrix cells] valueForKey:@"representedObject"] indexOfObject: [[fileList[ curMovieIndex] objectAtIndex:0] valueForKey:@"series"]];
 		
-		if( index != NSNotFound)
-			[previewMatrix scrollCellToVisibleAtRow: index column:0];
-	}
-	else
-	{
-		[[previewMatrixScrollView contentView] scrollToPoint: origin];
-		[previewMatrixScrollView reflectScrolledClipView: [previewMatrixScrollView contentView]];
+		
+		if( showSelected)
+		{
+			NSInteger index = [[[previewMatrix cells] valueForKey:@"representedObject"] indexOfObject: [[fileList[ curMovieIndex] objectAtIndex:0] valueForKey:@"series"]];
+			
+			if( index != NSNotFound)
+				[previewMatrix scrollCellToVisibleAtRow: index column:0];
+		}
+		else
+		{
+			[[previewMatrixScrollView contentView] scrollToPoint: origin];
+			[previewMatrixScrollView reflectScrolledClipView: [previewMatrixScrollView contentView]];
+		}
+		
+		[previewMatrix setNeedsDisplay:YES];
 	}
 	
-	[previewMatrix setNeedsDisplay:YES];
+	@catch ( NSException *e)
+	{
+		NSLog( @"***** buildMatrixPreview exception: %@", e);
+	}
 	
 	[context unlock];
 	[context release];
@@ -5872,6 +5881,9 @@ static ViewerController *draggedController = nil;
 		NSLog(@"Exception change image data: %@", e);
 	}
 	
+	if( imageIndex >= [pixList[0] count])
+		imageIndex = 0;
+	
 	DCMPix *curDCM = [pixList[0] objectAtIndex: imageIndex];
 	
 	loadingPercentage = 0;
@@ -5941,21 +5953,25 @@ static ViewerController *draggedController = nil;
 		[self ApplyOpacityString: NSLocalizedString( @"Linear Table", nil)];
 	}
 	
-	NSNumber	*status = [[fileList[ curMovieIndex] objectAtIndex:[imageView curImage]] valueForKeyPath:@"series.study.stateText"];
+	int curImage = [imageView curImage];
+	if( curImage >= [fileList[ curMovieIndex] count])
+		curImage = 0;
+	
+	NSNumber	*status = [[fileList[ curMovieIndex] objectAtIndex: curImage] valueForKeyPath:@"series.study.stateText"];
 	
 	if( status == nil) [StatusPopup selectItemWithTitle: NSLocalizedString(@"empty", nil)];
 	else [StatusPopup selectItemWithTag: [status intValue]];
 	
-	NSString	*com = [[fileList[ curMovieIndex] objectAtIndex:[imageView curImage]] valueForKeyPath:@"series.comment"];
+	NSString	*com = [[fileList[ curMovieIndex] objectAtIndex: curImage] valueForKeyPath:@"series.comment"];
 	
 	if( com == nil || [com isEqualToString:@""])
-		com = [[fileList[ curMovieIndex] objectAtIndex:[imageView curImage]] valueForKeyPath:@"series.study.comment"];
+		com = [[fileList[ curMovieIndex] objectAtIndex: curImage] valueForKeyPath:@"series.study.comment"];
 	
 	if( com == nil || [com isEqualToString:@""]) [CommentsField setTitle: NSLocalizedString(@"Add a comment", nil)];
 	else [CommentsField setTitle: com];
 	
 	if( [[[[fileList[ curMovieIndex] objectAtIndex: 0] valueForKey:@"completePath"] lastPathComponent] isEqualToString:@"Empty.tif"] == NO)
-		[[BrowserController currentBrowser] findAndSelectFile: nil image :[fileList[ curMovieIndex] objectAtIndex:[imageView curImage]] shouldExpand :NO];
+		[[BrowserController currentBrowser] findAndSelectFile: nil image :[fileList[ curMovieIndex] objectAtIndex: curImage] shouldExpand :NO];
 		
 	////////
 	

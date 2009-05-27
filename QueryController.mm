@@ -550,7 +550,7 @@ static const char *GetPrivateIP()
 		if( [indices containsIndex: i])
 		{
 			NSArray *studyArray = [self localStudy: [outlineView itemAtRow: i]];
-
+			
 			if( [studyArray count] > 0)
 			{
 				NSManagedObject	*series =  [[[BrowserController currentBrowser] childrenArray: [studyArray objectAtIndex: 0]] objectAtIndex:0];

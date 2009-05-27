@@ -212,7 +212,11 @@ void DcmQueryRetrieveSCP::waitUnlockFileWithPID(int pid)
 		inc++;
 	}
 	while( fileExist == YES && inc < 1800 && rc >= 0);	// 1800 = 30 min
-	if( inc > 1800) NSLog( @"******* waitUnlockFile for 1 hour");
+	if( inc > 1800)
+	{
+		kill( pid, 15);
+		NSLog( @"******* waitUnlockFile for 30 min");
+	}
 	if( rc < 0) NSLog( @"******* waitUnlockFile : child process died...");
 }
 
@@ -1296,15 +1300,12 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
         else
         {
 			NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
-			
 			[[[BrowserController currentBrowser] checkIncomingLock] lock];
 			[context lock]; //Try to avoid deadlock
 			
 			[DCMNetServiceDelegate DICOMServersList];
 			
 			lockFile();
-			
-//			[[AppController sharedAppController] performSelectorOnMainThread: @selector( waitForLockFile:) withObject: 0 waitUntilDone: NO];
 			
             /* spawn a sub-process to handle the association */
             pid = (int)(fork());

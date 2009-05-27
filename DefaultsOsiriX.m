@@ -714,6 +714,8 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject:@"1" forKey:@"dontDeleteStudiesWithComments"];
 	[defaultValues setObject:@"1" forKey:@"displaySamePatientWithColorBackground"];
 	[defaultValues setObject:@"Exported Series" forKey:@"default2DViewerSeriesName"];
+	[defaultValues setObject:@"10000" forKey:@"DefaultFolderSizeForDB"];
+	[defaultValues setObject:@"10000" forKey:@"maxNumberOfFilesForCheckIncoming"];
 	
 	if( MPProcessors() >= 4)
 		[defaultValues setObject:@"2.0" forKey:@"superSampling"];

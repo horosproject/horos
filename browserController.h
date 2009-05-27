@@ -288,6 +288,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 + (NSArray*) statesArray;
 + (void) updateActivity;
 + (NSData*) produceJPEGThumbnail:(NSImage*) image;
++ (int) DefaultFolderSizeForDB;
 - (IBAction) createDatabaseFolder:(id) sender;
 - (void) openDatabasePath: (NSString*) path;
 - (BOOL) shouldTerminate: (id) sender;
