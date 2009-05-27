@@ -613,7 +613,7 @@ static const char *GetPrivateIP()
 	{
 		if( [[self window] isKeyWindow] == YES || lastListRefresh < [NSDate timeIntervalSinceReferenceDate])
 		{
-			lastListRefresh = [NSDate timeIntervalSinceReferenceDate] + 60;
+			lastListRefresh = [NSDate timeIntervalSinceReferenceDate] + 30;
 			[studyArrayInstanceUID release];
 			studyArrayInstanceUID = nil;
 			[outlineView reloadData];
