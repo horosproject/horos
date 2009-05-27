@@ -68,7 +68,7 @@
 	QueryArrayController					*queryManager;
 	
 	NSArray									*studyArrayInstanceUID, *studyArrayCache;
-	NSTimeInterval							lastComputeStudyArrayInstanceUID;
+	NSTimeInterval							lastComputeStudyArrayInstanceUID, lastListRefresh;
 }
 
 + (QueryController*) currentQueryController;

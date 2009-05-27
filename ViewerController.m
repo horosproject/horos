@@ -6367,10 +6367,11 @@ static ViewerController *draggedController = nil;
 		if( pixList[ x] && fileList[ x])
 		{
 			int mpprocessors = MPProcessors();
-			int numberOfThreadsForCompute = mpprocessors;
+//			mpprocessors--;
+			if( mpprocessors < 1)
+				mpprocessors = 1;
 			
-//			if( numberOfThreadsForCompute > 8)
-//				numberOfThreadsForCompute = 8;
+			int numberOfThreadsForCompute = mpprocessors;
 			
 			if( compressed == NO)
 				numberOfThreadsForCompute = 1;

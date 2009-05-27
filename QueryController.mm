@@ -564,7 +564,7 @@ static const char *GetPrivateIP()
 	
 	if( extendingSelection)
 	{
-		[[BrowserController currentBrowser] delItem: self];
+		[[BrowserController currentBrowser] delItem: nil];
 	}
 }
 
@@ -609,11 +609,15 @@ static const char *GetPrivateIP()
 
 - (void) refresh: (id) sender
 {	
-	if( DatabaseIsEdited == NO)
+	if( DatabaseIsEdited == NO && [[self window] isVisible] == YES)
 	{
-		[studyArrayInstanceUID release];
-		studyArrayInstanceUID = nil;
-		[outlineView reloadData];
+		if( [[self window] isKeyWindow] == YES || lastListRefresh < [NSDate timeIntervalSinceReferenceDate])
+		{
+			lastListRefresh = [NSDate timeIntervalSinceReferenceDate] + 60;
+			[studyArrayInstanceUID release];
+			studyArrayInstanceUID = nil;
+			[outlineView reloadData];
+		}
 	}
 }
 
@@ -729,8 +733,6 @@ static const char *GetPrivateIP()
 		
 		[context unlock];
 		[context release];
-		
-//		NSLog( @"computeStudyArrayInstanceUID");
 		
 		lastComputeStudyArrayInstanceUID = [NSDate timeIntervalSinceReferenceDate];
 	}
@@ -2190,6 +2192,8 @@ static const char *GetPrivateIP()
 	[partiallyInDatabase setImage:[NSImage pieChartImageWithPercentage:0.33]];
 	
 	[self autoQueryTimer: self];
+	
+	[[self window] setDelegate: self];
 }
 
 //******
@@ -2372,6 +2376,11 @@ static const char *GetPrivateIP()
 	[super dealloc];
 	
 	currentQueryController = nil;
+}
+
+- (void)windowDidBecomeKey:(NSNotification *)notification
+{
+	[self refresh: self];
 }
 
 - (void)windowDidLoad

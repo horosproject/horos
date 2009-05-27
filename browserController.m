@@ -5633,16 +5633,23 @@ static NSArray*	statesArray = nil;
 {
 	NSInteger				result;
 	NSManagedObjectContext	*context = self.managedObjectContext;
-	BOOL					matrixThumbnails = NO;
+	BOOL					matrixThumbnails = YES;
 	int						animState = [animationCheck state];
 	
 	[self checkResponder];
-		
-	if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix)
-		matrixThumbnails = YES;
 	
-	if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [databaseOutline menu]) || [[self window] firstResponder] == databaseOutline)
+	if( sender == nil)
+	{
 		matrixThumbnails = NO;
+	}
+	else
+	{
+		if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix)
+			matrixThumbnails = YES;
+	
+		if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [databaseOutline menu]) || [[self window] firstResponder] == databaseOutline)
+			matrixThumbnails = NO;
+	}
 	
 	NSString *level = nil;
 	
@@ -12980,6 +12987,10 @@ static volatile int numberOfThreadsForJPEG = 0;
 - (BOOL) waitForAProcessor
 {
 	int processors =  MPProcessors();
+	
+//	processors--;
+	if( processors < 1)
+		processors = 1;
 	
 	[processorsLock lockWhenCondition: 1];
 	BOOL result = numberOfThreadsForJPEG >= processors;
