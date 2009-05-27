@@ -154,6 +154,7 @@ static NSString*	XMLToolbarItemIdentifier			= @"XML.icns";
 static NSString*	OpenKeyImagesAndROIsToolbarItemIdentifier	= @"ROIsAndKeys.tif";
 static NSString*	OpenKeyImagesToolbarItemIdentifier	= @"Keys.tif";
 static NSString*	OpenROIsToolbarItemIdentifier	= @"ROIs.tif";
+static NSString*	ViewersToolbarItemIdentifier	= @"windows.tif";
 
 static NSTimeInterval	gLastActivity = 0;
 static BOOL DICOMDIRCDMODE = NO;
@@ -7220,8 +7221,9 @@ static NSArray*	statesArray = nil;
 	{
 		delayedTileWindows = NO;
 		[NSObject cancelPreviousPerformRequestsWithTarget:appController selector:@selector(tileWindows:) object:nil];
-		[appController tileWindows: self];
 	}
+	
+	[appController tileWindows: self];
 }
 
 - (ViewerController*) loadSeries:(NSManagedObject *) series :(ViewerController*) viewer :(BOOL) firstViewer keyImagesOnly:(BOOL) keyImages
@@ -15945,9 +15947,17 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(exportDICOMFile:)];
     } 
+	else if ([itemIdent isEqualToString: ViewersToolbarItemIdentifier])
+	{
+		[toolbarItem setLabel: NSLocalizedString(@"Viewers",nil)];
+		[toolbarItem setPaletteLabel: NSLocalizedString(@"Viewers",nil)];
+		[toolbarItem setToolTip: NSLocalizedString(@"Bring Viewers windows to the front", nil)];
+		[toolbarItem setImage: [NSImage imageNamed: ViewersToolbarItemIdentifier]];
+		[toolbarItem setTarget: self];
+		[toolbarItem setAction: @selector(tileWindows:)];
+    } 
 	else if ([itemIdent isEqualToString: AnonymizerToolbarItemIdentifier])
 	{
-        
 		[toolbarItem setLabel: NSLocalizedString(@"Anonymize",nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Anonymize",nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"Anonymize selected study/series to a DICOM folder",@"Anonymize selected study/series to a DICOM folder")];
@@ -16144,6 +16154,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 - (NSArray *)toolbarDefaultItemIdentifiers: (NSToolbar *)toolbar
 {
     return [NSArray arrayWithObjects:
+			ViewersToolbarItemIdentifier,
 			ImportToolbarItemIdentifier,
 			ExportToolbarItemIdentifier,
 			CDRomToolbarItemIdentifier,
@@ -16171,6 +16182,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	NSArray	*array;
 	
 	array = [NSArray arrayWithObjects:
+			 ViewersToolbarItemIdentifier,
 			 SearchToolbarItemIdentifier,
 			 TimeIntervalToolbarItemIdentifier,
 			 NSToolbarCustomizeToolbarItemIdentifier,
@@ -16513,6 +16525,17 @@ static volatile int numberOfThreadsForJPEG = 0;
 	return keyImagesArray;
 }
 
+- (void) tileWindows: (id) sender
+{
+	if( delayedTileWindows)
+	{
+		delayedTileWindows = NO;
+		[NSObject cancelPreviousPerformRequestsWithTarget:appController selector:@selector(tileWindows:) object:nil];
+	}
+	
+	[appController tileWindows: self];
+}
+
 - (BOOL)validateToolbarItem: (NSToolbarItem *)toolbarItem
 {
 	if( isCurrentDatabaseBonjour )
@@ -16528,6 +16551,12 @@ static volatile int numberOfThreadsForJPEG = 0;
 	if ([[toolbarItem itemIdentifier] isEqualToString: OpenKeyImagesAndROIsToolbarItemIdentifier])
 	{
 		return ROIsAndKeyImagesButtonAvailable;
+	}
+	
+	if ([[toolbarItem itemIdentifier] isEqualToString: ViewersToolbarItemIdentifier])
+	{
+		if( [ViewerController numberOf2DViewer] >= 1) return YES;
+		else return NO;
 	}
 	
     return YES;
