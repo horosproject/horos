@@ -20,7 +20,26 @@
 
 static float deg2rad = 3.14159265358979/180.0; 
 
-extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2, float *u, float *iP);
+#define CROSS(dest,v1,v2) \
+          dest[0]=v1[1]*v2[2]-v1[2]*v2[1]; \
+          dest[1]=v1[2]*v2[0]-v1[0]*v2[2]; \
+          dest[2]=v1[0]*v2[1]-v1[1]*v2[0];
+		  
+BOOL arePlanesParallel( float *Pn1, float *Pn2)
+{
+	float u[ 3];
+	
+	CROSS(u, Pn1, Pn2);
+	
+	float    ax = (u[0] >= 0 ? u[0] : -u[0]);
+    float    ay = (u[1] >= 0 ? u[1] : -u[1]);
+    float    az = (u[2] >= 0 ? u[2] : -u[2]);
+	
+    if ((ax+ay+az) < 0.001)
+		return YES;
+	
+    return NO;
+}
 
 #define VIEW_COLOR_LABEL_SIZE 25
 
@@ -314,7 +333,7 @@ static BOOL frameZoomed = NO;
 		float orientation[ 9];
 		[vrView getOrientation: orientation];
 		
-		float location[ 3] = {camera.position.x, camera.position.y, camera.position.z}, orig[ 3] = {currentCamera.position.x, currentCamera.position.y, currentCamera.position.z}, locationTemp[ 3];
+		float location[ 3] = {previousOrigin[ 0], previousOrigin[ 1], previousOrigin[ 2]}, orig[ 3] = {currentCamera.position.x, currentCamera.position.y, currentCamera.position.z}, locationTemp[ 3];
 		float distance = [DCMView pbase_Plane: location :orig :&(orientation[ 6]) :locationTemp];
 		if( distance < pix.sliceThickness / 2.)
 			previousOriginInPlane = YES;
@@ -329,10 +348,9 @@ static BOOL frameZoomed = NO;
 			
 			if( [curRoiList count] > 0)
 			{
-				float slicePoint[ 3], sV[ 3], wx = [pix pwidth]/2., hx = [pix pheight]/2.;
-				float fakeOrigin[ 3] = {0, 0, 0};
+				float wx = [pix pwidth]/2., hx = [pix pheight]/2.;
 				
-				if( previousOriginInPlane == NO || intersect3D_2Planes( orientation+6, fakeOrigin, previousOrientation+6, fakeOrigin, sV, slicePoint) == noErr)
+				if( previousOriginInPlane == NO || arePlanesParallel( orientation+6, previousOrientation+6) == NO)
 					cameraMoved = YES;
 				else
 					cameraMoved = NO;
@@ -418,6 +436,9 @@ static BOOL frameZoomed = NO;
 				}
 				
 				[pix orientation: previousOrientation];
+				previousOrigin[ 0] = currentCamera.position.x;
+				previousOrigin[ 1] = currentCamera.position.y;
+				previousOrigin[ 2] = currentCamera.position.z;
 				
 				[self detect2DPointInThisSlice];
 				

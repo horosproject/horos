@@ -177,7 +177,8 @@ short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2, float
 
         //if (dot(Pn1.n, v) == 0)         // Pn2.V0 lies in Pn1
         //    return -2;                   // Pn1 and Pn2 coincide
-        //else 
+        //else
+		
 		return -1;                   // Pn1 and Pn2 are disjoint
     }
 	
