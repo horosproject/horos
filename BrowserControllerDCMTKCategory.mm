@@ -42,29 +42,88 @@
 
 - (BOOL)compressDICOMWithJPEG:(NSString *)path
 {
-//	if( t == nil) t = [[NSLock alloc] init];
-//	[t lock];
-//	int quality = [[NSUserDefaults standardUserDefaults] integerForKey: @"JPEG2000quality"];
-//	DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile: path decodingPixelData:YES];
-//	[dcmObject writeToFile: [path stringByAppendingString: @" temp.dcm"] withTransferSyntax:[DCMTransferSyntax JPEG2000LosslessTransferSyntax] quality:quality AET:@"OsiriX" atomically:YES];
-//	[dcmObject release];
-//	[t unlock];
-	
-	NSTask *theTask = [[NSTask alloc] init];
-	
-//	[[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"useJPEG2000forCompression"];
-//	[[NSUserDefaults standardUserDefaults] setInteger: DCMLosslessQuality  forKey: @"JPEG2000quality"];
-	
-	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"useJPEG2000forCompression"])
-		[theTask setArguments: [NSArray arrayWithObjects:path, @"compressJPEG2000", nil]];
-	else
-		[theTask setArguments: [NSArray arrayWithObjects:path, @"compress", nil]];
-		
-	[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Decompress"]];
-	[theTask launch];
-	while( [theTask isRunning]) [NSThread sleepForTimeInterval: 0.01];
-	[theTask release];
+//	NSTask *theTask = [[NSTask alloc] init];
+//	
+//	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"useJPEG2000forCompression"])
+//		[theTask setArguments: [NSArray arrayWithObjects:path, @"compressJPEG2000", nil]];
+//	else
+//		[theTask setArguments: [NSArray arrayWithObjects:path, @"compress", nil]];
+//		
+//	[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Decompress"]];
+//	[theTask launch];
+//	while( [theTask isRunning]) [NSThread sleepForTimeInterval: 0.01];
+//	[theTask release];
 
+	NSString *dest = nil;
+	
+	OFCondition cond;
+	OFBool status = YES;
+	const char *fname = (const char *)[path UTF8String];
+	const char *destination = nil;
+	
+	if( dest && [dest isEqualToString:path] == NO) destination = (const char *)[dest UTF8String];
+	else
+	{
+		dest = path;
+		destination = fname;
+	}
+	
+	DcmFileFormat fileformat;
+	cond = fileformat.loadFile(fname);
+	// if we can't read it stop
+	if (!cond.good()) return NO;
+	E_TransferSyntax tSyntax = EXS_JPEGProcess14SV1TransferSyntax;
+	DcmDataset *dataset = fileformat.getDataset();
+	DcmItem *metaInfo = fileformat.getMetaInfo();
+	DcmXfer original_xfer(dataset->getOriginalXfer());
+	if (original_xfer.isEncapsulated())
+	{
+		
+	}
+	else
+	{
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"useJPEG2000forCompression"])
+		{
+			int quality = [[NSUserDefaults standardUserDefaults] integerForKey:@"JPEG2000quality"];
+			
+			DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile: path decodingPixelData:YES];
+			[dcmObject writeToFile: [dest stringByAppendingString: @" temp"] withTransferSyntax:[DCMTransferSyntax JPEG2000LosslessTransferSyntax] quality: quality AET:@"OsiriX" atomically:YES];
+			[dcmObject release];
+			
+			if( dest == path)
+				[[NSFileManager defaultManager] removeFileAtPath: path handler: nil];
+			[[NSFileManager defaultManager] movePath: [dest stringByAppendingString: @" temp"]  toPath: dest handler: nil];
+		}
+		else
+		{
+			DJ_RPLossless losslessParams(6,0); 
+			DcmRepresentationParameter *params = &losslessParams;
+			
+			// this causes the lossless JPEG version of the dataset to be created
+			DcmXfer oxferSyn(tSyntax);
+			dataset->chooseRepresentation(tSyntax, params);
+			// check if everything went well
+			if (dataset->canWriteXfer(tSyntax))
+			{
+				// force the meta-header UIDs to be re-generated when storing the file 
+				// since the UIDs in the data set may have changed 
+				
+				//only need to do this for lossy
+				delete metaInfo->remove(DCM_MediaStorageSOPClassUID);
+				delete metaInfo->remove(DCM_MediaStorageSOPInstanceUID);
+				
+				// store in lossless JPEG format
+				fileformat.loadAllDataIntoMemory();
+				if( dest == path) [[NSFileManager defaultManager] removeFileAtPath:[NSString stringWithCString:fname] handler:nil];
+				
+				cond = fileformat.saveFile(destination, tSyntax);
+				status =  (cond.good()) ? YES : NO;
+			}
+			else
+				status = NO;
+		}
+	}
+		
 	return YES;
 }
 
@@ -78,8 +137,6 @@
 //	
 //	while( [theTask isRunning]) [NSThread sleepForTimeInterval: 0.01];
 //	[theTask release];
-
-	
 	
 	OFCondition cond;
 	OFBool status = YES;
@@ -129,9 +186,6 @@
 		}
 		else status = NO;
 	}
-	
-	
-	
 	
 	if( dest && [dest isEqualToString:path] == NO)
 	{
