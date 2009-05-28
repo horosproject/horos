@@ -235,14 +235,14 @@ int main(int argc, const char *argv[])
 //			if( status == NO) NSLog(@"decompress error");
 //		}
 //		
-//	    // deregister JPEG codecs
-//		DJDecoderRegistration::cleanup();
-//		DJEncoderRegistration::cleanup();
-//
-//		// deregister RLE codecs
-//		DcmRLEDecoderRegistration::cleanup();
-//		DcmRLEEncoderRegistration::cleanup();
-//	}
+	    // deregister JPEG codecs
+		DJDecoderRegistration::cleanup();
+		DJEncoderRegistration::cleanup();
+
+		// deregister RLE codecs
+		DcmRLEDecoderRegistration::cleanup();
+		DcmRLEEncoderRegistration::cleanup();
+	}
 	
 	[pool release];
 	
