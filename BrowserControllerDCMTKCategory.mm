@@ -88,10 +88,11 @@ extern NSRecursiveLock *PapyrusLock;
 			int quality = [[NSUserDefaults standardUserDefaults] integerForKey:@"JPEG2000quality"];
 			
 			DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile: path decodingPixelData:YES];
+			
+			[PapyrusLock lock];
 			[dcmObject writeToFile: [dest stringByAppendingString: @" temp"] withTransferSyntax:[DCMTransferSyntax JPEG2000LosslessTransferSyntax] quality: quality AET:@"OsiriX" atomically:YES];
 			[dcmObject release];
 			
-			[PapyrusLock lock];
 			if( dest == path)
 				[[NSFileManager defaultManager] removeFileAtPath: path handler: nil];
 			[[NSFileManager defaultManager] movePath: [dest stringByAppendingString: @" temp"]  toPath: dest handler: nil];
@@ -166,11 +167,10 @@ extern NSRecursiveLock *PapyrusLock;
 	{
 		DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile:path decodingPixelData:YES];
 		
+		[PapyrusLock lock];
 		[dcmObject writeToFile:[path stringByAppendingString:@" temp"] withTransferSyntax:[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax] quality:1 AET:@"OsiriX" atomically:YES];
-		
 		[dcmObject release];
 		
-		[PapyrusLock lock];
 		if( dest == path) [[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
 		[[NSFileManager defaultManager] movePath:[path stringByAppendingString:@" temp"] toPath:dest handler: nil];
 		[PapyrusLock unlock];

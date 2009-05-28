@@ -11831,6 +11831,8 @@ static NSArray*	openSubSeriesArray = nil;
 
 -(void) awakeFromNib
 {
+//	*(long*)0 = 0xDEADBEEF;	// Test for ILCrashReporter
+	
 	WaitRendering *wait = nil;
 	
 	if( sizeof( long) == 8 )
