@@ -27,11 +27,7 @@ extern void dcmtkSetJPEGColorSpace( int);
 
 // WHY THIS EXTERNAL APPLICATION FOR COMPRESS OR DECOMPRESSION?
 
-// Because the jpeg libs (8,12,16 bits and jpg2000 libs) are not multi-threading safe.
-// If you run multiple instance of this libraries in the same process, they will crash.
-// By creating an external application, we are sure that all global variables are independant
-// and we can freely use the algorithms on all processors at the same time for better
-// performances on multy processors system !
+// Because if a file is corrupted, it will not crash the OsiriX application, but only this small task
 
 int main(int argc, const char *argv[])
 {
@@ -179,74 +175,74 @@ int main(int argc, const char *argv[])
 				status = NO;
 		}
 		
-		if( [what isEqualToString:@"decompress"])
-		{
-			NSMutableDictionary	*dict = [DefaultsOsiriX getDefaults];
-			[dict addEntriesFromDictionary: [[NSUserDefaults standardUserDefaults] persistentDomainForName:@"com.rossetantoine.osirix"]];
-			
-			dcmtkSetJPEGColorSpace( [[dict objectForKey:@"UseJPEGColorSpace"] intValue]);
-			
-			OFCondition cond;
-			OFBool status = YES;
-			const char *fname = (const char *)[path UTF8String];
-			
-			const char *destination = nil;
-			
-			if( dest) destination = (const char *)[dest UTF8String];
-			else
-			{
-				dest = path;
-				destination = fname;
-			}
-			
-			DcmFileFormat fileformat;
-			cond = fileformat.loadFile(fname);
-			DcmXfer filexfer(fileformat.getDataset()->getOriginalXfer());
-			
-			//hopefully dcmtk willsupport jpeg2000 compression and decompression in the future
-			
-			if (filexfer.getXfer() == EXS_JPEG2000LosslessOnly || filexfer.getXfer() == EXS_JPEG2000)
-			{
-				[DCMPixelDataAttribute setUseOpenJpeg: [[dict objectForKey:@"UseOpenJpegForJPEG2000"] intValue]];
-				DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile:path decodingPixelData:YES];
-				
-				[dcmObject writeToFile:[path stringByAppendingString:@" temp"] withTransferSyntax:[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax] quality:1 AET:@"OsiriX" atomically:YES];
-				
-				[dcmObject release];
-				
-				if( dest == path) [[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
-				
-				[[NSFileManager defaultManager] movePath:[path stringByAppendingString:@" temp"] toPath:dest handler: nil];
-			}
-			else if (filexfer.getXfer() != EXS_LittleEndianExplicit)
-			{
-				DcmDataset *dataset = fileformat.getDataset();
-				
-				// decompress data set if compressed
-				dataset->chooseRepresentation(EXS_LittleEndianExplicit, NULL);
-				
-				// check if everything went well
-				if (dataset->canWriteXfer(EXS_LittleEndianExplicit))
-				{
-					fileformat.loadAllDataIntoMemory();
-					if( dest == path) [[NSFileManager defaultManager] removeFileAtPath:[NSString stringWithCString:fname] handler:nil];
-					cond = fileformat.saveFile(destination, EXS_LittleEndianExplicit);
-					status =  (cond.good()) ? YES : NO;
-				}
-				else status = NO;
-			}
-			
-			if( status == NO) NSLog(@"decompress error");
-		}
-		
-	    // deregister JPEG codecs
-		DJDecoderRegistration::cleanup();
-		DJEncoderRegistration::cleanup();
-
-		// deregister RLE codecs
-		DcmRLEDecoderRegistration::cleanup();
-		DcmRLEEncoderRegistration::cleanup();
-	}
+//		if( [what isEqualToString:@"decompress"])
+//		{
+//			NSMutableDictionary	*dict = [DefaultsOsiriX getDefaults];
+//			[dict addEntriesFromDictionary: [[NSUserDefaults standardUserDefaults] persistentDomainForName:@"com.rossetantoine.osirix"]];
+//			
+//			dcmtkSetJPEGColorSpace( [[dict objectForKey:@"UseJPEGColorSpace"] intValue]);
+//			
+//			OFCondition cond;
+//			OFBool status = YES;
+//			const char *fname = (const char *)[path UTF8String];
+//			
+//			const char *destination = nil;
+//			
+//			if( dest) destination = (const char *)[dest UTF8String];
+//			else
+//			{
+//				dest = path;
+//				destination = fname;
+//			}
+//			
+//			DcmFileFormat fileformat;
+//			cond = fileformat.loadFile(fname);
+//			DcmXfer filexfer(fileformat.getDataset()->getOriginalXfer());
+//			
+//			//hopefully dcmtk willsupport jpeg2000 compression and decompression in the future
+//			
+//			if (filexfer.getXfer() == EXS_JPEG2000LosslessOnly || filexfer.getXfer() == EXS_JPEG2000)
+//			{
+//				[DCMPixelDataAttribute setUseOpenJpeg: [[dict objectForKey:@"UseOpenJpegForJPEG2000"] intValue]];
+//				DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile:path decodingPixelData:YES];
+//				
+//				[dcmObject writeToFile:[path stringByAppendingString:@" temp"] withTransferSyntax:[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax] quality:1 AET:@"OsiriX" atomically:YES];
+//				
+//				[dcmObject release];
+//				
+//				if( dest == path) [[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
+//				
+//				[[NSFileManager defaultManager] movePath:[path stringByAppendingString:@" temp"] toPath:dest handler: nil];
+//			}
+//			else if (filexfer.getXfer() != EXS_LittleEndianExplicit)
+//			{
+//				DcmDataset *dataset = fileformat.getDataset();
+//				
+//				// decompress data set if compressed
+//				dataset->chooseRepresentation(EXS_LittleEndianExplicit, NULL);
+//				
+//				// check if everything went well
+//				if (dataset->canWriteXfer(EXS_LittleEndianExplicit))
+//				{
+//					fileformat.loadAllDataIntoMemory();
+//					if( dest == path) [[NSFileManager defaultManager] removeFileAtPath:[NSString stringWithCString:fname] handler:nil];
+//					cond = fileformat.saveFile(destination, EXS_LittleEndianExplicit);
+//					status =  (cond.good()) ? YES : NO;
+//				}
+//				else status = NO;
+//			}
+//			
+//			if( status == NO) NSLog(@"decompress error");
+//		}
+//		
+//	    // deregister JPEG codecs
+//		DJDecoderRegistration::cleanup();
+//		DJEncoderRegistration::cleanup();
+//
+//		// deregister RLE codecs
+//		DcmRLEDecoderRegistration::cleanup();
+//		DcmRLEEncoderRegistration::cleanup();
+//	}
 	
 	[pool release];
 	
