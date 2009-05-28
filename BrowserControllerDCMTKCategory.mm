@@ -144,6 +144,8 @@ extern NSRecursiveLock *PapyrusLock;
 //	while( [theTask isRunning]) [NSThread sleepForTimeInterval: 0.01];
 //	[theTask release];
 	
+	
+	
 	OFCondition cond;
 	OFBool status = YES;
 	const char *fname = (const char *)[path UTF8String];
@@ -165,15 +167,18 @@ extern NSRecursiveLock *PapyrusLock;
 	
 	if (filexfer.getXfer() == EXS_JPEG2000LosslessOnly || filexfer.getXfer() == EXS_JPEG2000)
 	{
+		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+		
 		DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile:path decodingPixelData:YES];
 		
 		[PapyrusLock lock];
 		[dcmObject writeToFile:[path stringByAppendingString:@" temp"] withTransferSyntax:[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax] quality:1 AET:@"OsiriX" atomically:YES];
 		[dcmObject release];
-		
+	
+		[pool release];
+	
 		if( dest == path) [[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
 		[[NSFileManager defaultManager] movePath:[path stringByAppendingString:@" temp"] toPath:dest handler: nil];
-		[PapyrusLock unlock];
 	}
 	else if (filexfer.getXfer() != EXS_LittleEndianExplicit)
 	{
@@ -191,17 +196,23 @@ extern NSRecursiveLock *PapyrusLock;
 			if( dest == path) [[NSFileManager defaultManager] removeFileAtPath:[NSString stringWithCString:fname] handler:nil];
 			cond = fileformat.saveFile(destination, EXS_LittleEndianExplicit);
 			status =  (cond.good()) ? YES : NO;
-			[PapyrusLock unlock];
 		}
-		else status = NO;
+		else
+		{
+			[PapyrusLock lock];
+			status = NO;
+		}
 	}
 	
-	if( dest && [dest isEqualToString:path] == NO)
+	if( status == YES)
 	{
-		[PapyrusLock lock];
-		if( deleteOriginal) [[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
-		[PapyrusLock unlock];
+		if( dest && [dest isEqualToString:path] == NO)
+		{
+			if( deleteOriginal) [[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
+		}
 	}
+	
+	[PapyrusLock unlock];
 	
 	return YES;
 }
