@@ -144,11 +144,7 @@ char currentDestinationMoveAET[ 60] = "";
 				char *mis;
 				if (dcelem->getString(mis).good() && mis != NULL)
 				{
-					NSArray *predicateArray = [NSArray array];
-					for( NSString *s in [[NSString stringWithCString:mis DICOMEncoding:nil] componentsSeparatedByString:@"\\"])
-						predicateArray = [predicateArray arrayByAddingObject: [NSPredicate predicateWithFormat:@"ANY series.modality == %@", s]];
-					
-					predicate = [NSCompoundPredicate orPredicateWithSubpredicates:predicateArray];
+					predicate = [NSPredicate predicateWithFormat:@"(ANY series.modality IN %@)", [[NSString stringWithCString:mis DICOMEncoding:nil] componentsSeparatedByString:@"\\"]];
 				}
 			}
 			else if (key ==  DCM_Modality)
@@ -156,11 +152,7 @@ char currentDestinationMoveAET[ 60] = "";
 				char *mis;
 				if (dcelem->getString(mis).good() && mis != NULL)
 				{
-					NSArray *predicateArray = [NSArray array];
-					for( NSString *s in [[NSString stringWithCString:mis DICOMEncoding:nil] componentsSeparatedByString:@"\\"])
-						predicateArray = [predicateArray arrayByAddingObject: [NSPredicate predicateWithFormat:@"ANY series.modality == %@", s]];
-					
-					predicate = [NSCompoundPredicate orPredicateWithSubpredicates:predicateArray];
+					predicate = [NSPredicate predicateWithFormat:@"(ANY series.modality IN %@)", [[NSString stringWithCString:mis DICOMEncoding:nil] componentsSeparatedByString:@"\\"]];
 				}
 			}
 			else if (key == DCM_PatientsBirthDate)
@@ -795,9 +787,6 @@ char currentDestinationMoveAET[ 60] = "";
 	dataset->findAndGetString (DCM_QueryRetrieveLevel, sType, OFFalse);
 	OFCondition cond;
 	
-//	sType = "IMAGE";
-//	predicate = [NSComparisonPredicate predicateWithLeftExpression: [NSExpression expressionForKeyPath: @"compressedSopInstanceUID"] rightExpression: [NSExpression expressionForConstantValue: [DicomImage sopInstanceUIDEncodeString: @"1.2.826.0.1.3680043.2.1143.8797283371159.20060125163148762.58"]] customSelector: @selector( isEqualToSopInstanceUID:)];
-	
 	if (strcmp(sType, "STUDY") == 0) 
 		entity = [[model entitiesByName] objectForKey:@"Study"];
 	else if (strcmp(sType, "SERIES") == 0) 
@@ -820,7 +809,6 @@ char currentDestinationMoveAET[ 60] = "";
 		
 		NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
 		
-		[context retain];
 		[context lock];
 		
 		[findArray release];
@@ -842,7 +830,6 @@ char currentDestinationMoveAET[ 60] = "";
 		}
 		
 		[context unlock];
-		[context release];
 		
 		if (error)
 		{

@@ -248,8 +248,6 @@ OFCondition DcmQueryRetrieveSCP::dispatch(T_ASC_Association *assoc, OFBool corre
     T_ASC_PresentationContextID presID;
     OFBool firstLoop = OFTrue;
 	
-//	printf("dispatch\n");
-
     // this while loop is executed exactly once unless the "keepDBHandleDuringAssociation_"
     // flag is not set, in which case the inner loop is executed only once and this loop
     // repeats for each incoming DIMSE command. In this case, the DB handle is created
@@ -258,9 +256,7 @@ OFCondition DcmQueryRetrieveSCP::dispatch(T_ASC_Association *assoc, OFBool corre
     {
         /* Create a database handle for this association */
 		
-        DcmQueryRetrieveDatabaseHandle *dbHandle = factory_.createDBHandle(
-              assoc->params->DULparams.callingAPTitle,
-          assoc->params->DULparams.calledAPTitle, cond);
+        DcmQueryRetrieveDatabaseHandle *dbHandle = factory_.createDBHandle( assoc->params->DULparams.callingAPTitle, assoc->params->DULparams.calledAPTitle, cond);
 		
         if (cond.bad())
         {
@@ -300,16 +296,13 @@ OFCondition DcmQueryRetrieveSCP::dispatch(T_ASC_Association *assoc, OFBool corre
 					unlockFile();
                     cond = storeSCP(assoc, &msg.msg.CStoreRQ, presID, *dbHandle, correctUIDPadding);
                     break;
-				
                 case DIMSE_C_FIND_RQ:
                     cond = findSCP(assoc, &msg.msg.CFindRQ, presID, *dbHandle);
                     break;
-									
                 case DIMSE_C_MOVE_RQ:
 					//* unlockFile(); is done in DCMTKDataHandlerCategory.mm
                     cond = moveSCP(assoc, &msg.msg.CMoveRQ, presID, *dbHandle);
                     break;
-				
                 case DIMSE_C_GET_RQ:
                     cond = getSCP(assoc, &msg.msg.CGetRQ, presID, *dbHandle);
                     break;
@@ -353,14 +346,13 @@ OFCondition DcmQueryRetrieveSCP::handleAssociation(T_ASC_Association * assoc, OF
     DIC_NODENAME        peerHostName;
     DIC_AE              peerAETitle;
     DIC_AE              myAETitle;
-	//printf("handle association\n");
+	
     ASC_getPresentationAddresses(assoc->params, peerHostName, NULL);
     ASC_getAPTitles(assoc->params, peerAETitle, myAETitle, NULL);
-//	printf("peerAET: %s\n  myAET: %s\n  peerhostname: %s%\n", peerAETitle, myAETitle, peerHostName);
-
+	
  /* now do the real work */
     cond = dispatch(assoc, correctUIDPadding);
-//	printf("dispatched\n");
+	
  /* clean up on association termination */
     if (cond == DUL_PEERREQUESTEDRELEASE) {
         if (options_.verbose_)
@@ -1259,32 +1251,6 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
             if (options_.debug_)
                 ASC_dumpParameters(assoc->params, COUT);
         }
-		
-//		for (int i=0; i<ASC_countPresentationContexts(assoc->params); i++)
-//		{
-//			T_ASC_PresentationContext pc;
-//			
-//			ASC_getPresentationContext(assoc->params, i, &pc);
-//			
-//			if( strcmp( pc.abstractSyntax, UID_FINDPatientRootQueryRetrieveInformationModel) == 0 ||
-//				strcmp( pc.abstractSyntax, UID_FINDStudyRootQueryRetrieveInformationModel) == 0 ||
-//				strcmp( pc.abstractSyntax, UID_FINDPatientStudyOnlyQueryRetrieveInformationModel) == 0 ||
-//				strcmp( pc.abstractSyntax, UID_FINDModalityWorklistInformationModel) == 0 ||
-//				strcmp( pc.abstractSyntax, UID_FINDGeneralPurposeWorklistInformationModel) == 0)
-//				{
-//					singleProcess = true;	// switch to singleprocess for find - fork() deadlock problem
-//				}
-//				
-//			if( strcmp( pc.abstractSyntax, UID_MOVEPatientRootQueryRetrieveInformationModel) == 0 ||
-//				strcmp( pc.abstractSyntax, UID_GETPatientRootQueryRetrieveInformationModel) == 0 ||
-//				strcmp( pc.abstractSyntax, UID_MOVEStudyRootQueryRetrieveInformationModel) == 0 ||
-//				strcmp( pc.abstractSyntax, UID_GETStudyRootQueryRetrieveInformationModel) == 0 ||
-//				strcmp( pc.abstractSyntax, UID_MOVEPatientStudyOnlyQueryRetrieveInformationModel ) == 0 ||
-//				strcmp( pc.abstractSyntax, UID_GETPatientStudyOnlyQueryRetrieveInformationModel) == 0)
-//				{
-//					moveProcess = true;		// fork() deadlock problem
-//				}
-//		}
 		
 		if (singleProcess)
         {
