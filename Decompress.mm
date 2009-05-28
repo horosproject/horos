@@ -95,18 +95,6 @@ int main(int argc, const char *argv[])
 				destination = fname;
 			}
 			
-			DcmFileFormat fileformat;
-			cond = fileformat.loadFile(fname);
-			// if we can't read it stop
-			if (!cond.good())
-				return NO;
-			E_TransferSyntax tSyntax = EXS_JPEGProcess14SV1TransferSyntax;
-			DcmDataset *dataset = fileformat.getDataset();
-			DcmItem *metaInfo = fileformat.getMetaInfo();
-			DcmXfer original_xfer(dataset->getOriginalXfer());
-			if (original_xfer.isEncapsulated())
-				return YES;
-			
 			NSMutableDictionary	*dict = [DefaultsOsiriX getDefaults];
 			[dict addEntriesFromDictionary: [[NSUserDefaults standardUserDefaults] persistentDomainForName:@"com.rossetantoine.osirix"]];
 			
@@ -147,8 +135,10 @@ int main(int argc, const char *argv[])
 			DcmItem *metaInfo = fileformat.getMetaInfo();
 			DcmXfer original_xfer(dataset->getOriginalXfer());
 			if (original_xfer.isEncapsulated())
+			{
+				NSLog( @"file already compressed: %@", [path lastPathComponent]);
 				return 1;
-			
+			}
 			DJ_RPLossless losslessParams(6,0); 
 			//DJ_RPLossy lossyParams(0.8);
 			//DcmRLERepresentationParameter rleParams;

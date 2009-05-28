@@ -43,6 +43,20 @@ extern NSRecursiveLock *PapyrusLock;
 
 - (BOOL)compressDICOMWithJPEG:(NSString *)path
 {
+	DcmFileFormat fileformat;
+	OFCondition cond = fileformat.loadFile( [path UTF8String]);
+	// if we can't read it stop
+	if (!cond.good())
+		return NO;
+	DcmDataset *dataset = fileformat.getDataset();
+	DcmItem *metaInfo = fileformat.getMetaInfo();
+	DcmXfer original_xfer(dataset->getOriginalXfer());
+	if (original_xfer.isEncapsulated())
+	{
+		NSLog( @"file already compressed: %@", [path lastPathComponent]);
+		return YES;
+	}
+			
 	NSTask *theTask = [[NSTask alloc] init];
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"useJPEG2000forCompression"])
@@ -55,81 +69,6 @@ extern NSRecursiveLock *PapyrusLock;
 	while( [theTask isRunning]) [NSThread sleepForTimeInterval: 0.01];
 	[theTask release];
 
-//	NSString *dest = nil;
-//	
-//	OFCondition cond;
-//	OFBool status = YES;
-//	const char *fname = (const char *)[path UTF8String];
-//	const char *destination = nil;
-//	
-//	if( dest && [dest isEqualToString:path] == NO) destination = (const char *)[dest UTF8String];
-//	else
-//	{
-//		dest = path;
-//		destination = fname;
-//	}
-//	
-//	DcmFileFormat fileformat;
-//	cond = fileformat.loadFile(fname);
-//	// if we can't read it stop
-//	if (!cond.good()) return NO;
-//	E_TransferSyntax tSyntax = EXS_JPEGProcess14SV1TransferSyntax;
-//	DcmDataset *dataset = fileformat.getDataset();
-//	DcmItem *metaInfo = fileformat.getMetaInfo();
-//	DcmXfer original_xfer(dataset->getOriginalXfer());
-//	if (original_xfer.isEncapsulated())
-//	{
-//		
-//	}
-//	else
-//	{
-//		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"useJPEG2000forCompression"])
-//		{
-//			int quality = [[NSUserDefaults standardUserDefaults] integerForKey:@"JPEG2000quality"];
-//			
-//			DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile: path decodingPixelData:YES];
-//			
-//			[PapyrusLock lock];
-//			[dcmObject writeToFile: [dest stringByAppendingString: @" temp"] withTransferSyntax:[DCMTransferSyntax JPEG2000LosslessTransferSyntax] quality: quality AET:@"OsiriX" atomically:YES];
-//			[dcmObject release];
-//			
-//			if( dest == path)
-//				[[NSFileManager defaultManager] removeFileAtPath: path handler: nil];
-//			[[NSFileManager defaultManager] movePath: [dest stringByAppendingString: @" temp"]  toPath: dest handler: nil];
-//			[PapyrusLock unlock];
-//		}
-//		else
-//		{
-//			DJ_RPLossless losslessParams(6,0); 
-//			DcmRepresentationParameter *params = &losslessParams;
-//			
-//			// this causes the lossless JPEG version of the dataset to be created
-//			DcmXfer oxferSyn(tSyntax);
-//			dataset->chooseRepresentation(tSyntax, params);
-//			// check if everything went well
-//			if (dataset->canWriteXfer(tSyntax))
-//			{
-//				// force the meta-header UIDs to be re-generated when storing the file 
-//				// since the UIDs in the data set may have changed 
-//				
-//				//only need to do this for lossy
-//				delete metaInfo->remove(DCM_MediaStorageSOPClassUID);
-//				delete metaInfo->remove(DCM_MediaStorageSOPInstanceUID);
-//				
-//				// store in lossless JPEG format
-//				fileformat.loadAllDataIntoMemory();
-//				
-//				[PapyrusLock lock];
-//				if( dest == path) [[NSFileManager defaultManager] removeFileAtPath:[NSString stringWithCString:fname] handler:nil];
-//				cond = fileformat.saveFile(destination, tSyntax);
-//				status =  (cond.good()) ? YES : NO;
-//				[PapyrusLock unlock];
-//			}
-//			else
-//				status = NO;
-//		}
-//	}
-		
 	return YES;
 }
 
@@ -144,73 +83,6 @@ extern NSRecursiveLock *PapyrusLock;
 	while( [theTask isRunning]) [NSThread sleepForTimeInterval: 0.01];
 	[theTask release];
 	
-//	OFCondition cond;
-//	OFBool status = YES;
-//	const char *fname = (const char *)[path UTF8String];
-//	
-//	const char *destination = nil;
-//	
-//	if( dest) destination = (const char *)[dest UTF8String];
-//	else
-//	{
-//		dest = path;
-//		destination = fname;
-//	}
-//	
-//	DcmFileFormat fileformat;
-//	cond = fileformat.loadFile(fname);
-//	DcmXfer filexfer(fileformat.getDataset()->getOriginalXfer());
-//	
-//	//hopefully dcmtk willsupport jpeg2000 compression and decompression in the future
-//	
-//	if (filexfer.getXfer() == EXS_JPEG2000LosslessOnly || filexfer.getXfer() == EXS_JPEG2000)
-//	{
-//		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-//		
-//		DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile:path decodingPixelData:YES];
-//		
-//		[PapyrusLock lock];
-//		[dcmObject writeToFile:[path stringByAppendingString:@" temp"] withTransferSyntax:[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax] quality:1 AET:@"OsiriX" atomically:YES];
-//		[dcmObject release];
-//	
-//		[pool release];
-//	
-//		if( dest == path) [[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
-//		[[NSFileManager defaultManager] movePath:[path stringByAppendingString:@" temp"] toPath:dest handler: nil];
-//	}
-//	else if (filexfer.getXfer() != EXS_LittleEndianExplicit)
-//	{
-//		DcmDataset *dataset = fileformat.getDataset();
-//		
-//		// decompress data set if compressed
-//		dataset->chooseRepresentation(EXS_LittleEndianExplicit, NULL);
-//		
-//		// check if everything went well
-//		if (dataset->canWriteXfer(EXS_LittleEndianExplicit))
-//		{
-//			fileformat.loadAllDataIntoMemory();
-//			
-//			[PapyrusLock lock];
-//			if( dest == path) [[NSFileManager defaultManager] removeFileAtPath:[NSString stringWithCString:fname] handler:nil];
-//			cond = fileformat.saveFile(destination, EXS_LittleEndianExplicit);
-//			status =  (cond.good()) ? YES : NO;
-//		}
-//		else
-//		{
-//			[PapyrusLock lock];
-//			status = NO;
-//		}
-//	}
-//	
-//	if( status == YES)
-//	{
-//		if( dest && [dest isEqualToString:path] == NO)
-//		{
-//			if( deleteOriginal) [[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
-//		}
-//	}
-//	
-//	[PapyrusLock unlock];
 	
 	return YES;
 }
