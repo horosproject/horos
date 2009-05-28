@@ -2365,8 +2365,14 @@ static BOOL initialized = NO;
 		
 	}
 	
-	[[ILCrashReporter defaultReporter] launchReporterForCompany:@"OsiriX Developers" reportAddr:@"crash@osirix-viewer.com"];
-	
+	@try
+	{
+		[[ILCrashReporter defaultReporter] launchReporterForCompany:@"OsiriX Developers" reportAddr:@"crash@osirix-viewer.com"];
+	}
+	@catch (NSException *e)
+	{
+		NSLog( @"**** Exception ILCrashReporter: %@", e);
+	}
 	[PluginManager setMenus: filtersMenu :roisMenu :othersMenu :dbMenu];
     
 	theTask = nil;

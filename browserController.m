@@ -6011,6 +6011,14 @@ static NSArray*	statesArray = nil;
 		if ([[item valueForKey:@"type"] isEqualToString:@"Study"] == NO) return nil;
 	}
 	
+	if( [[tableColumn identifier] isEqualToString:@"modality"])
+	{
+		if ([[item valueForKey:@"type"] isEqualToString:@"Study"])
+			return [item valueForKey:@"modalities"];
+		else
+			return [item valueForKey:@"modality"];
+	}
+	
 	if( [[tableColumn identifier] isEqualToString:@"name"])
 	{
 		if ([[item valueForKey:@"type"] isEqualToString:@"Study"])
@@ -17025,9 +17033,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 				s = [NSString stringWithFormat:@"%@", _searchString];
 				
 				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"useSoundexForName"]) 
-					predicate = [NSPredicate predicateWithFormat: @"(soundex CONTAINS[cd] %@) OR (patientID CONTAINS[cd] %@) OR (id CONTAINS[cd] %@) OR (comment CONTAINS[cd] %@) OR (studyName CONTAINS[cd] %@) OR (modality CONTAINS[cd] %@) OR (accessionNumber CONTAINS[cd] %@)", [DicomStudy soundex: s], s, s, s, s, s, s];
+					predicate = [NSPredicate predicateWithFormat: @"(soundex CONTAINS[cd] %@) OR (patientID CONTAINS[cd] %@) OR (id CONTAINS[cd] %@) OR (comment CONTAINS[cd] %@) OR (studyName CONTAINS[cd] %@) OR (ANY series.modality CONTAINS[cd] %@) OR (accessionNumber CONTAINS[cd] %@)", [DicomStudy soundex: s], s, s, s, s, s, s];
 				else
-					predicate = [NSPredicate predicateWithFormat: @"(name CONTAINS[cd] %@) OR (patientID CONTAINS[cd] %@) OR (id CONTAINS[cd] %@) OR (comment CONTAINS[cd] %@) OR (studyName CONTAINS[cd] %@) OR (modality CONTAINS[cd] %@) OR (accessionNumber CONTAINS[cd] %@)", s, s, s, s, s, s, s];
+					predicate = [NSPredicate predicateWithFormat: @"(name CONTAINS[cd] %@) OR (patientID CONTAINS[cd] %@) OR (id CONTAINS[cd] %@) OR (comment CONTAINS[cd] %@) OR (studyName CONTAINS[cd] %@) OR (ANY series.modality CONTAINS[cd] %@) OR (accessionNumber CONTAINS[cd] %@)", s, s, s, s, s, s, s];
 			break;
 			
 			case 0:			// Patient Name
@@ -17054,7 +17062,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			break;
 			
 			case 5:			// Modality
-				predicate = [NSPredicate predicateWithFormat: @"modality CONTAINS[cd] %@", _searchString];
+				predicate = [NSPredicate predicateWithFormat: @"ANY series.modality CONTAINS[cd] %@", _searchString];
 			break;
 			
 			case 6:			// Accession Number 

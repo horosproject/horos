@@ -16,6 +16,7 @@
 #import "DicomSeries.h"
 #import <OsiriX/DCMAbstractSyntaxUID.h>
 #import <OsiriX/DCM.h>
+#import "MutableArrayCategory.h"
 
 #ifdef OSIRIX_VIEWER
 #import "DCMPix.h"
@@ -162,6 +163,41 @@ NSString* soundex4( NSString *inString)
 - (NSString*) soundex
 {
 	return [DicomStudy soundex: [self primitiveValueForKey: @"name"]];
+}
+
+- (NSString*) modalities
+{
+	[[self managedObjectContext] lock];
+		
+	NSArray *seriesModalities = [[[self valueForKey:@"series"] allObjects] valueForKey:@"modality"];
+	
+	NSMutableArray *r = [NSMutableArray array];
+	
+	BOOL SC = NO, SR = NO;
+	
+	for( NSString *mod in seriesModalities)
+	{
+		if( [mod isEqualToString:@"SR"])
+			SR = YES;
+		else if( [mod isEqualToString:@"SC"])
+			SC = YES;
+		else if( [mod isEqualToString:@"KO"] == NO && [r containsString: mod] == NO)
+			[r addObject: mod];
+	}
+	
+	NSString *m = nil;
+	
+	if( [r count] == 0)
+	{
+		if( SC) [r addObject: @"SC"];
+		else if( SR) [r addObject: @"SR"];
+	}
+	
+	m = [r componentsJoinedByString:@"\\"];
+		
+	[[self managedObjectContext] unlock];
+	
+	return m;
 }
 
 - (void) dealloc

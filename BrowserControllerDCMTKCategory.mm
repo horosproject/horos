@@ -37,6 +37,7 @@
 #include "dcdict.h"
 #include "dcdeftag.h"
 
+extern NSRecursiveLock *PapyrusLock;
 
 @implementation BrowserController (BrowserControllerDCMTKCategory)
 
@@ -90,9 +91,11 @@
 			[dcmObject writeToFile: [dest stringByAppendingString: @" temp"] withTransferSyntax:[DCMTransferSyntax JPEG2000LosslessTransferSyntax] quality: quality AET:@"OsiriX" atomically:YES];
 			[dcmObject release];
 			
+			[PapyrusLock lock];
 			if( dest == path)
 				[[NSFileManager defaultManager] removeFileAtPath: path handler: nil];
 			[[NSFileManager defaultManager] movePath: [dest stringByAppendingString: @" temp"]  toPath: dest handler: nil];
+			[PapyrusLock unlock];
 		}
 		else
 		{
@@ -114,10 +117,12 @@
 				
 				// store in lossless JPEG format
 				fileformat.loadAllDataIntoMemory();
-				if( dest == path) [[NSFileManager defaultManager] removeFileAtPath:[NSString stringWithCString:fname] handler:nil];
 				
+				[PapyrusLock lock];
+				if( dest == path) [[NSFileManager defaultManager] removeFileAtPath:[NSString stringWithCString:fname] handler:nil];
 				cond = fileformat.saveFile(destination, tSyntax);
 				status =  (cond.good()) ? YES : NO;
+				[PapyrusLock unlock];
 			}
 			else
 				status = NO;
@@ -165,9 +170,10 @@
 		
 		[dcmObject release];
 		
+		[PapyrusLock lock];
 		if( dest == path) [[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
-		
 		[[NSFileManager defaultManager] movePath:[path stringByAppendingString:@" temp"] toPath:dest handler: nil];
+		[PapyrusLock unlock];
 	}
 	else if (filexfer.getXfer() != EXS_LittleEndianExplicit)
 	{
@@ -180,16 +186,21 @@
 		if (dataset->canWriteXfer(EXS_LittleEndianExplicit))
 		{
 			fileformat.loadAllDataIntoMemory();
+			
+			[PapyrusLock lock];
 			if( dest == path) [[NSFileManager defaultManager] removeFileAtPath:[NSString stringWithCString:fname] handler:nil];
 			cond = fileformat.saveFile(destination, EXS_LittleEndianExplicit);
 			status =  (cond.good()) ? YES : NO;
+			[PapyrusLock unlock];
 		}
 		else status = NO;
 	}
 	
 	if( dest && [dest isEqualToString:path] == NO)
 	{
+		[PapyrusLock lock];
 		if( deleteOriginal) [[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
+		[PapyrusLock unlock];
 	}
 	
 	return YES;

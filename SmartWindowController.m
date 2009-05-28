@@ -161,7 +161,7 @@
 				break;
 			}
 			
-			predicateString = [NSString stringWithFormat:@"modality CONTAINS[cd] '%@'", value];
+			predicateString = [NSString stringWithFormat:@"ANY series.modality CONTAINS[cd] '%@'", value];
 		}
 		// Study status	
 		else if ([key isEqualToString:NSLocalizedString(@"Study Status", nil)])
