@@ -262,7 +262,20 @@ static NSLock *currentHostLock = nil;
 						[s setObject: icon forKey: @"icon"];
 					}
 					
-					[serversArray addObject: s];
+					// Dont add duplicate addresses
+					BOOL alreadyHere = NO;
+					for( int v = 0; v < [serversArray count]; v++)
+					{
+						NSDictionary *d = [serversArray objectAtIndex: v];
+						
+						if( [[d valueForKey: @"Address"] isEqualToString: [s valueForKey: @"Address"]] && [[d valueForKey: @"Port"] isEqualToString: [s valueForKey: @"Port"]])
+						{
+							alreadyHere = YES;
+						}
+					}
+					
+					if( alreadyHere == NO)
+						[serversArray addObject: s];
 				}
 			}
 		}
