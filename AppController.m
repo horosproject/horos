@@ -1406,7 +1406,18 @@ static NSDate *lastWarningDate = nil;
 
 -(void) displayListenerError: (NSString*) err
 {
-	NSRunCriticalAlertPanel( NSLocalizedString( @"DICOM Listener Error", nil), err, NSLocalizedString( @"OK", nil), nil, nil);
+	NSString *alertSuppress = @"hideListenerError";
+	if ([[NSUserDefaults standardUserDefaults] boolForKey: alertSuppress] == NO)
+	{
+		NSAlert* alert = [NSAlert new];
+		[alert setMessageText: NSLocalizedString( @"DICOM Listener Error", nil)];
+		[alert setInformativeText: err];
+		[alert setShowsSuppressionButton:YES ];
+		[alert addButtonWithTitle: NSLocalizedString(@"OK", nil)];
+		
+		if ([[alert suppressionButton] state] == NSOnState)
+			[[NSUserDefaults standardUserDefaults] setBool:YES forKey:alertSuppress];
+	}
 }
 
 -(void) startSTORESCP:(id) sender
