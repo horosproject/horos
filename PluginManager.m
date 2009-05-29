@@ -148,7 +148,7 @@ static NSMutableDictionary		*pluginsNames = nil;
 				{
 					if( [fusionPluginsMenu indexOfItemWithTitle: pluginName] == -1)
 					{
-						subMenuItem = [fusionPluginsMenu insertItemWithTitle:pluginName action:nil keyEquivalent:@"" atIndex:[roisMenu numberOfItems]];
+						subMenuItem = [fusionPluginsMenu insertItemWithTitle:pluginName action:nil keyEquivalent:@"" atIndex:[fusionPluginsMenu numberOfItems]];
 						[fusionPluginsMenu setSubmenu:subMenu forItem:subMenuItem];
 					}
 				}
