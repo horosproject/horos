@@ -268,7 +268,7 @@ static NSLock *currentHostLock = nil;
 					{
 						NSDictionary *d = [serversArray objectAtIndex: v];
 						
-						if( [[d valueForKey: @"Address"] isEqualToString: [s valueForKey: @"Address"]] && [[d valueForKey: @"Port"] isEqualToString: [s valueForKey: @"Port"]])
+						if( [[d valueForKey: @"Address"] isEqualToString: [s valueForKey: @"Address"]] && [[d valueForKey: @"Port"] intValue] == [[s valueForKey: @"Port"] intValue])
 						{
 							alreadyHere = YES;
 						}
