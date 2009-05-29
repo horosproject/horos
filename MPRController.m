@@ -2647,7 +2647,7 @@ static float deg2rad = 3.14159265358979/180.0;
 											NSToolbarFlexibleSpaceItemIdentifier,
 											NSToolbarSpaceItemIdentifier,
 											NSToolbarSeparatorItemIdentifier,
-											@"tbTools", @"tbWLWW", @"tbLOD", @"tbThickSlab", @"tbBlending", @"tbShading", @"tbMovie", @"Reset.tiff", @"Export.icns", @"Capture.icns", @"QTExport.icns", @"tbTools", @"AxisColors", @"AxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", nil];
+											@"tbTools", @"tbWLWW", @"tbLOD", @"tbThickSlab", @"tbBlending", @"tbShading", @"tbMovie", @"Reset.tiff", @"Export.icns", @"Capture.icns", @"QTExport.icns", @"AxisColors", @"AxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", nil];
 }
 
 - (void)updateToolbarItems;
