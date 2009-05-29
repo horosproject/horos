@@ -838,6 +838,12 @@ static BOOL frameZoomed = NO;
 	crossLinesB[ 1][ 2] = b[ 1][ 2];
 }
 
+-(void) setCurrentTool:(short) i
+{
+	if( i != tRepulsor && i != tText)
+		[super setCurrentTool: i];
+}
+
 - (void)keyDown:(NSEvent *)theEvent
 {
     unichar c = [[theEvent characters] characterAtIndex:0];

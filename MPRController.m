@@ -765,15 +765,18 @@ static float deg2rad = 3.14159265358979/180.0;
 
 -(void) setROIToolTag:(int) roitype
 {
-	NSImage *im = [self imageForROI: roitype];
-	
-	if( im)
+	if( roitype != tRepulsor && roitype != tText)
 	{
-		NSButtonCell *cell = [toolsMatrix cellAtRow:0 column:6];
-		[cell setTag: roitype];
-		[cell setImage: im];
+		NSImage *im = [self imageForROI: roitype];
 		
-		[toolsMatrix selectCellAtRow:0 column:6];
+		if( im)
+		{
+			NSButtonCell *cell = [toolsMatrix cellAtRow:0 column:6];
+			[cell setTag: roitype];
+			[cell setImage: im];
+			
+			[toolsMatrix selectCellAtRow:0 column:6];
+		}
 	}
 }
 
