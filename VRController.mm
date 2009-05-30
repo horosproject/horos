@@ -71,6 +71,16 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 
 @implementation VRController
 
+- (void) endShadingEditing:(id) sender
+{
+
+}
+
+- (void) resetShading:(id) sender
+{
+
+}
+
 - (IBAction) roiDeleteAll:(id) sender
 {
 	[viewer2D roiDeleteAll: sender];
@@ -181,7 +191,6 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 - (void) windowDidLoad
 {
     [self setupToolbar];
-//	[self createContextualMenu];
 }
 
 -(ViewerController*) blendingController
@@ -2364,218 +2373,6 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 - (NSMutableArray*) sliceNumber2DPointsArray
 {
 	return sliceNumber2DPointsArray;
-}
-
-// contextual menu
-- (void)createContextualMenu{
-	NSMenu *contextual =  [[NSMenu alloc] initWithTitle:NSLocalizedString(@"Tools", nil)];
-	NSMenu *submenu =  [[NSMenu alloc] initWithTitle:NSLocalizedString(@"Mode", nil)];
-	NSMenuItem *item, *subItem;
-	int i = 0;
-	
-	//Reset Item
-	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Reset", nil) action: @selector(resetImage:)  keyEquivalent:@""];
-	[item setTag:i++];
-	[item setTarget:view];
-	[contextual addItem:item];
-	[item release];
-	
-	//Revert
-	
-	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Revert", nil) action: @selector(resetShading:)  keyEquivalent:@""];
-	[item setTag:i++];
-	[item setTarget:self];
-	[contextual addItem:item];
-	[item release];
-	
-	
-	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Render Mode", nil) action: nil keyEquivalent:@""];
-	[contextual addItem:item];
-	//add submenu
-	[item setSubmenu:submenu];
-		//Volume Render		
-		subItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Volume Render", nil) action: @selector(setMode:) keyEquivalent:@""];
-		[subItem setTag:0];
-		[subItem setTarget:self];
-		[submenu addItem:subItem];
-		[subItem release];
-		//MIP
-		subItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"MIP", nil) action: @selector(setMode:) keyEquivalent:@""];
-		[subItem setTag:1];
-		[subItem setTarget:self];
-		[submenu addItem:subItem];
-		[subItem release];
-	[submenu release];
-	[item release];
-	
-	//Best
-	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Best", nil) action: @selector(bestRendering:)  keyEquivalent:@""];
-	[item setTag:i++];
-	[item setTarget:view];
-	//[item setImage: [NSImage imageNamed: CaptureToolbarItemIdentifier]];
-	[contextual addItem:item];
-	[item release];
-	
-	//crop
-	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Crop", nil) action: @selector(showCropCube:)  keyEquivalent:@""];
-	//[item setImage: [NSImage imageNamed: CroppingToolbarItemIdentifier]];
-	[item setTarget:view];
-	[item setTag:i++];
-	[contextual addItem:item];
-	[item release];
-
-	
-	[contextual addItem:[NSMenuItem separatorItem]];
-	
-	NSMenu *mainMenu = [NSApp mainMenu];
-    NSMenu *viewerMenu = [[mainMenu itemWithTitle:NSLocalizedString(@"2D Viewer", nil)] submenu];
-    NSMenu *presetsMenu = [[viewerMenu itemWithTitle:NSLocalizedString(@"Window Width & Level", nil)] submenu];
-	NSMenu *menu = [presetsMenu copy];
-	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Window Width & Level", nil) action: nil keyEquivalent:@""];
-	[item setSubmenu:menu];
-	[contextual addItem:item];
-	[item release];
-	[menu release];
-	
-	[contextual addItem:[NSMenuItem separatorItem]];
-	//tools
-	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Tools", nil) action: nil  keyEquivalent:@""];
-	[contextual addItem:item];
-	NSMenu *toolsSubmenu =  [[NSMenu alloc] initWithTitle:NSLocalizedString(@"Tools", nil)];
-	[item setSubmenu:toolsSubmenu];
-	
-	
-	NSArray *titles = [NSArray arrayWithObjects:NSLocalizedString(@"Contrast", nil), 
-					NSLocalizedString(@"Move", nil), 
-					NSLocalizedString(@"Magnify", nil), 
-					NSLocalizedString(@"Rotate", nil), 
-					NSLocalizedString(@"Control Model", nil), 
-					NSLocalizedString(@"Control Camera", nil),
-					NSLocalizedString(@"ROI", nil), nil];
-						
-	NSArray *images = [NSArray arrayWithObjects: NSLocalizedString(@"WLWW", nil), 
-					NSLocalizedString(@"Move", nil),
-					NSLocalizedString(@"Zoom", nil), 
-					NSLocalizedString(@"Rotate", nil), 
-					NSLocalizedString(@"3DRotate", nil),
-					NSLocalizedString(@"3DRotateCamera", nil),					
-					NSLocalizedString(@"Length", nil),
-					NSLocalizedString(@"3DCut", nil),
-					  nil];
-					  
-	NSArray *tags = [NSArray arrayWithObjects:[NSNumber numberWithInt:0], 
-					[NSNumber numberWithInt:1], 
-					[NSNumber numberWithInt:2], 
-					[NSNumber numberWithInt:3],
-					[NSNumber numberWithInt:7], 
-					[NSNumber numberWithInt:18], 
-					[NSNumber numberWithInt:5], 
-					[NSNumber numberWithInt:17],
-					nil];
-	
-	
-	NSEnumerator *titleEnumerator = [titles objectEnumerator];
-	NSEnumerator *imageEnumerator = [images objectEnumerator];
-	NSEnumerator *tagEnumerator = [tags objectEnumerator];
-	NSString *title;
-	while (title = [titleEnumerator nextObject]) {
-		subItem = [[NSMenuItem alloc] initWithTitle:title action: @selector(setDefaultTool:) keyEquivalent:@""];
-		[subItem setTag:[[tagEnumerator nextObject] intValue]];
-		[subItem setImage:[NSImage imageNamed:[imageEnumerator nextObject]]];
-		[subItem setTarget:self];
-		[toolsSubmenu addItem:subItem];
-		[subItem release];
-	}
-	[toolsSubmenu release];
-	[item release];
-	
-	
-	//View	
-	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"View", nil) action: nil  keyEquivalent:@""];
-	[contextual addItem:item];
-	NSMenu *viewSubmenu =  [[NSMenu alloc] initWithTitle:NSLocalizedString(@"View", nil)];
-	[item setSubmenu:viewSubmenu];
-	
-		subItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Axial", nil) action: @selector(axView:) keyEquivalent:@""];
-		[subItem setTag:[[tagEnumerator nextObject] intValue]];
-		//[subItem setImage:[NSImage imageNamed: AxToolbarItemIdentifier]];
-		[subItem setTarget:view];
-		[viewSubmenu addItem:subItem];
-		[subItem release];
-		
-		subItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Sagittal Right", nil) action: @selector(saView:) keyEquivalent:@""];
-		[subItem setTag:[[tagEnumerator nextObject] intValue]];
-		//[subItem setImage:[NSImage imageNamed: SaToolbarItemIdentifier]];
-		[subItem setTarget:view];
-		[viewSubmenu addItem:subItem];
-		[subItem release];
-		
-		subItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Sagittal Left", nil) action: @selector(saViewOpposite:) keyEquivalent:@""];
-		[subItem setTag:[[tagEnumerator nextObject] intValue]];
-		//[subItem setImage:[NSImage imageNamed: SaOppositeToolbarItemIdentifier]];
-		[subItem setTarget:view];
-		[viewSubmenu addItem:subItem];
-		[subItem release];
-		
-		subItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Coronal", nil) action: @selector(coView:) keyEquivalent:@""];
-		[subItem setTag:[[tagEnumerator nextObject] intValue]];
-		//[subItem setImage:[NSImage imageNamed: CoToolbarItemIdentifier]];
-		[subItem setTarget:view];
-		[viewSubmenu addItem:subItem];
-		[subItem release];
-		
-	[viewSubmenu release];
-	[item release];
-	
-	
-	//Export
-	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Export", nil) action: nil  keyEquivalent:@""];
-	[contextual addItem:item];
-	NSMenu *exportSubmenu =  [[NSMenu alloc] initWithTitle:NSLocalizedString(@"Export", nil)];
-	[item setSubmenu:exportSubmenu];
-		subItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"QuickTime", nil)  action:@selector(exportQuicktime:) keyEquivalent:@""];
-		[subItem setTarget:view];
-		[exportSubmenu addItem:subItem];
-		[subItem release];
-		
-		subItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"QuickTime VR", nil)  action:@selector(exportQuicktime3DVR:) keyEquivalent:@""];
-		[subItem setTarget:view];
-		[exportSubmenu addItem:subItem];
-		[subItem release];
-		
-		subItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"DICOM", nil)  action:@selector(exportDICOMFile:) keyEquivalent:@""];
-		[subItem setTarget:view];
-		[exportSubmenu addItem:subItem];
-		[subItem release];
-		
-		subItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Email", nil)  action:@selector(sendMail:) keyEquivalent:@""];
-		[subItem setTarget:self];
-		[exportSubmenu addItem:subItem];
-		[subItem release];
-		
-		subItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"iPhoto", nil)  action:@selector(export2iPhoto:) keyEquivalent:@""];
-		[subItem setTarget:self];
-		[exportSubmenu addItem:subItem];
-		[subItem release];
-		
-		subItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"JPEG", nil)  action:@selector(exportJPEG:) keyEquivalent:@""];
-		[subItem setTarget:self];
-		[exportSubmenu addItem:subItem];
-		[subItem release];
-		
-		subItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"TIFF", nil)  action:@selector(exportTIFF:) keyEquivalent:@""];
-		[subItem setTarget:self];
-		[exportSubmenu addItem:subItem];
-		[subItem release];
-		
-		
-	
-	[exportSubmenu release];
-	[item release];
-	
-//	[view setMenu:contextual];	ANR:9/11/08 doesn't work correctly : update problems, loops problems
-	[contextual release];
-												
 }
 
 - (float) factor
