@@ -465,22 +465,7 @@ OFCondition DcmQueryRetrieveGetContext::performGetSubOp(DIC_UI sopClass, DIC_UI 
 		DcmQueryRetrieveOptions::errmsg("Get SCP: storeSCU: [file: %s] No presentation context for: (%s) %s", fname, dcmSOPClassUIDToModality(sopClass), sopClass);
 		return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
     }
-	else
-	{
-        /* make sure that we can send images in this presentation context */
-        T_ASC_PresentationContext pc;
-        ASC_findAcceptedPresentationContext(origAssoc->params, presId, &pc);
-        /* the acceptedRole is the association requestor role */
-        if ((pc.acceptedRole != ASC_SC_ROLE_SCP) && (pc.acceptedRole != ASC_SC_ROLE_SCUSCP))		//ANRGET
-		{
-            /* the role is not appropriate */
-            nFailed++;
-			addFailedUIDInstance(sopInstance);
-			DcmQueryRetrieveOptions::errmsg("Get SCP: storeSCU: [file: %s] No presentation context with requestor SCP role for: (%s) %s", fname, dcmSOPClassUIDToModality(sopClass), sopClass);
-	    return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
-        }
-    }
-
+	
     req.MessageID = msgId;
     strcpy(req.AffectedSOPClassUID, sopClass);
     strcpy(req.AffectedSOPInstanceUID, sopInstance);
@@ -493,11 +478,9 @@ OFCondition DcmQueryRetrieveGetContext::performGetSubOp(DIC_UI sopClass, DIC_UI 
 	    msgId, dcmSOPClassUIDToModality(sopClass));
     }
 
-    T_DIMSE_DetectedCancelParameters cancelParameters;
-
     cond = DIMSE_storeUser(origAssoc, presId, &req,
         fname, NULL, getSubOpProgressCallback, this, options_.blockMode_, options_.dimse_timeout_, 
-	&rsp, &stDetail, &cancelParameters);
+	&rsp, &stDetail);
 
 #ifdef LOCK_IMAGE_FILES
     /* unlock image file */
@@ -505,16 +488,8 @@ OFCondition DcmQueryRetrieveGetContext::performGetSubOp(DIC_UI sopClass, DIC_UI 
     close(lockfd);
 #endif
 
-    if (cond.good()) {
-        if (cancelParameters.cancelEncountered) {
-            if (origPresId == cancelParameters.presId && 
-                origMsgId == cancelParameters.req.MessageIDBeingRespondedTo) {
-                getCancelled = OFTrue;
-            } else {
-        	DcmQueryRetrieveOptions::errmsg("Get SCP: Unexpected C-Cancel-RQ encountered: pid=%d, mid=%d", 
-                    (int)cancelParameters.presId, (int)cancelParameters.req.MessageIDBeingRespondedTo);
-            }
-        }
+    if (cond.good())
+	{
         if (options_.verbose_) {
 	    printf("Get SCP: Received Store SCU RSP [Status=%s]\n",
 	        DU_cstoreStatusString(rsp.DimseStatus));
@@ -582,53 +557,53 @@ void DcmQueryRetrieveGetContext::getNextImage(DcmQueryRetrieveDatabaseStatus * d
 	sprintf( outfname, "%s/%s/QR-CGET-%d-%d.dcm", [[BrowserController currentBrowser] cfixedDocumentsDirectory], "TEMP.noindex", seed++, getpid());
 	unlink( outfname);
 	
-//	presId = ASC_findAcceptedPresentationContextID(origAssoc, subImgSOPClass);
-//	cond = getTransferSyntax(origAssoc, presId, &xferSyntax);
-//
-//	if (cond.good())
-//	{
-//		DcmFileFormat fileformat;
-//		cond = fileformat.loadFile( subImgFileName);
-//	
-//		/* figure out which of the accepted presentation contexts should be used */
-//		E_TransferSyntax originalXFer = fileformat.getDataset()->getOriginalXfer();
-//		DcmXfer filexfer( originalXFer);
-//		
-//		//on the fly conversion:
-//		
-//		DcmXfer preferredXfer( xferSyntax);
-//		OFBool status = YES;
-//		
-//		sprintf( outfname, "%s/%s/QR-CGET-%d-%d.dcm", [[BrowserController currentBrowser] cfixedDocumentsDirectory], "TEMP.noindex", seed++, getpid());
-//		unlink( outfname);
-//		
-//		if (filexfer.isNotEncapsulated() && preferredXfer.isNotEncapsulated())
-//		{
-//			// do nothing
-//		}
-//		else if (filexfer.isNotEncapsulated() && preferredXfer.isEncapsulated())
-//		{
-//			status = compressFileFormat(fileformat, subImgFileName, outfname, xferSyntax);
-//			
-//			if( status)
-//				strcpy( subImgFileName, outfname);
-//		}
-//		else if (filexfer.isEncapsulated() && preferredXfer.isEncapsulated())
-//		{
-//			if( xferSyntax != originalXFer)
-//			{
-//				cond = decompressFileFormat(fileformat, subImgFileName);
-//				status = compressFileFormat(fileformat, subImgFileName, outfname, xferSyntax);
-//				
-//				if( status)
-//					strcpy( subImgFileName, outfname);
-//			}
-//		}
-//		else if (filexfer.isEncapsulated() && preferredXfer.isNotEncapsulated())
-//		{
-//			cond = decompressFileFormat(fileformat, subImgFileName);
-//		}
-//	}
+	presId = ASC_findAcceptedPresentationContextID(origAssoc, subImgSOPClass);
+	cond = getTransferSyntax(origAssoc, presId, &xferSyntax);
+
+	if (cond.good())
+	{
+		DcmFileFormat fileformat;
+		cond = fileformat.loadFile( subImgFileName);
+	
+		/* figure out which of the accepted presentation contexts should be used */
+		E_TransferSyntax originalXFer = fileformat.getDataset()->getOriginalXfer();
+		DcmXfer filexfer( originalXFer);
+		
+		//on the fly conversion:
+		
+		DcmXfer preferredXfer( xferSyntax);
+		OFBool status = YES;
+		
+		sprintf( outfname, "%s/%s/QR-CGET-%d-%d.dcm", [[BrowserController currentBrowser] cfixedDocumentsDirectory], "TEMP.noindex", seed++, getpid());
+		unlink( outfname);
+		
+		if (filexfer.isNotEncapsulated() && preferredXfer.isNotEncapsulated())
+		{
+			// do nothing
+		}
+		else if (filexfer.isNotEncapsulated() && preferredXfer.isEncapsulated())
+		{
+			status = compressFileFormat(fileformat, subImgFileName, outfname, xferSyntax);
+			
+			if( status)
+				strcpy( subImgFileName, outfname);
+		}
+		else if (filexfer.isEncapsulated() && preferredXfer.isEncapsulated())
+		{
+			if( xferSyntax != originalXFer)
+			{
+				cond = decompressFileFormat(fileformat, subImgFileName);
+				status = compressFileFormat(fileformat, subImgFileName, outfname, xferSyntax);
+				
+				if( status)
+					strcpy( subImgFileName, outfname);
+			}
+		}
+		else if (filexfer.isEncapsulated() && preferredXfer.isNotEncapsulated())
+		{
+			cond = decompressFileFormat(fileformat, subImgFileName);
+		}
+	}
 	
     if (dbStatus->status() == STATUS_Pending)
 	{
