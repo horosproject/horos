@@ -149,4 +149,8 @@
 	return _callingAET;
 }
 
+- (NSDictionary*) extraParameters
+{
+	return _extraParameters;
+}
 @end

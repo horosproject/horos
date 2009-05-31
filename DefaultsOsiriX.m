@@ -722,8 +722,6 @@ static NSHost *currentHost = nil;
 	else
 		[defaultValues setObject:@"1.4" forKey:@"superSampling"];
 	
-	[defaultValues setObject:@"0" forKey: @"useCGetforQRRetrieve"];
-	
 	// ** DELETEFILELISTENER
 	[defaultValues setObject:@"1" forKey:@"DELETEFILELISTENER"];
 //		

@@ -569,7 +569,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 
 - (void) move:(NSDictionary*) dict
 {
-	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"useCGetforQRRetrieve"])
+	if( [[dict valueForKey: @"CGET"] boolValue])
 	{
 		DcmDataset *dataset = [self moveDataset];
 		if ([self setupNetworkWithSyntax:UID_GETStudyRootQueryRetrieveInformationModel  dataset:dataset destination: [dict objectForKey:@"moveDestination"]])

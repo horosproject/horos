@@ -70,8 +70,9 @@ static const char *GetPrivateIP()
 		NSString *theirAET = [aServer objectForKey:@"AETitle"];
 		NSString *hostname = [aServer objectForKey:@"Address"];
 		NSString *port = [aServer objectForKey:@"Port"];
+		BOOL cget = [[aServer objectForKey:@"CGET"] boolValue];
 		
-		qm = [[[QueryArrayController alloc] initWithCallingAET:myAET calledAET:theirAET  hostName:hostname port:port netService:nil] autorelease];
+		qm = [[[QueryArrayController alloc] initWithCallingAET:myAET calledAET:theirAET  hostName:hostname port:port cget:cget netService:nil] autorelease];
 		
 		NSString *filterValue = [an stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 		
@@ -107,8 +108,9 @@ static const char *GetPrivateIP()
 		NSString *theirAET = [aServer objectForKey:@"AETitle"];
 		NSString *hostname = [aServer objectForKey:@"Address"];
 		NSString *port = [aServer objectForKey:@"Port"];
-
-		qm = [[QueryArrayController alloc] initWithCallingAET:myAET calledAET:theirAET  hostName:hostname port:port netService:nil];
+		BOOL cget = [[aServer objectForKey:@"CGET"] boolValue];
+		
+		qm = [[QueryArrayController alloc] initWithCallingAET:myAET calledAET:theirAET  hostName:hostname port:port cget:cget netService:nil];
 		
 		NSString *filterValue = [an stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 		
@@ -1084,7 +1086,7 @@ static const char *GetPrivateIP()
 	NSNetService		*netService = nil;
 	id					aServer;
 	int					selectedServer;
-	BOOL				atLeastOneSource = NO, noChecked = YES, error = NO;
+	BOOL				atLeastOneSource = NO, noChecked = YES, error = NO, cget = NO;
 	NSArray				*copiedSources = [NSArray arrayWithArray: sourcesArray];
 	
 	noChecked = YES;
@@ -1116,11 +1118,12 @@ static const char *GetPrivateIP()
 				theirAET = [aServer objectForKey:@"AETitle"];
 				hostname = [aServer objectForKey:@"Address"];
 				port = [aServer objectForKey:@"Port"];
+				cget = [[aServer objectForKey:@"CGET"] boolValue];
 				
 				int numberPacketsReceived = 0;
 				if( [[NSUserDefaults standardUserDefaults] boolForKey:@"Ping"] == NO || (SimplePing( [hostname UTF8String], 1, [[NSUserDefaults standardUserDefaults] integerForKey:@"DICOMTimeout"], 1,  &numberPacketsReceived) == 0 && numberPacketsReceived > 0))
 				{
-					QueryArrayController *qm = [[QueryArrayController alloc] initWithCallingAET:myAET calledAET:theirAET  hostName:hostname port:port netService:netService];
+					QueryArrayController *qm = [[QueryArrayController alloc] initWithCallingAET:myAET calledAET:theirAET  hostName:hostname port:port cget:cget netService:netService];
 					
 					[qm addFilter:filterValue forDescription: PatientID];
 					
@@ -1145,7 +1148,7 @@ static const char *GetPrivateIP()
 	NSNetService		*netService = nil;
 	id					aServer;
 	int					selectedServer;
-	BOOL				atLeastOneSource = NO, noChecked = YES, error = NO;
+	BOOL				atLeastOneSource = NO, noChecked = YES, error = NO, cget = NO;
 	
 	[autoQueryLock lock];
 	
@@ -1183,6 +1186,7 @@ static const char *GetPrivateIP()
 			theirAET = [aServer objectForKey:@"AETitle"];
 			hostname = [aServer objectForKey:@"Address"];
 			port = [aServer objectForKey:@"Port"];
+			cget = [[aServer objectForKey:@"CGET"] boolValue];
 			
 			int numberPacketsReceived = 0;
 			if( [[NSUserDefaults standardUserDefaults] boolForKey:@"Ping"] == NO || (SimplePing( [hostname UTF8String], 1, [[NSUserDefaults standardUserDefaults] integerForKey:@"DICOMTimeout"], 1,  &numberPacketsReceived) == 0 && numberPacketsReceived > 0))
@@ -1197,7 +1201,7 @@ static const char *GetPrivateIP()
 					[queryManager release];
 					queryManager = nil;
 					
-					queryManager = [[QueryArrayController alloc] initWithCallingAET:myAET calledAET:theirAET  hostName:hostname port:port netService:netService];
+					queryManager = [[QueryArrayController alloc] initWithCallingAET:myAET calledAET:theirAET  hostName:hostname port:port cget:cget netService:netService];
 					// add filters as needed
 					
 					if( [[[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"] isEqualToString:@"ISO_IR 100"] == NO)
@@ -1827,6 +1831,8 @@ static const char *GetPrivateIP()
 	{
 		DCMTKQueryNode	*object = [array objectAtIndex: i];
 		
+		if( [[object extraParameters] valueForKey: @"CGET"])
+			[dictionary setObject: [[object extraParameters] valueForKey: @"CGET"] forKey:@"CGET"];
 		[dictionary setObject:[object valueForKey:@"calledAET"] forKey:@"calledAET"];
 		[dictionary setObject:[object valueForKey:@"hostname"] forKey:@"hostname"];
 		[dictionary setObject:[object valueForKey:@"port"] forKey:@"port"];

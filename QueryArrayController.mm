@@ -27,6 +27,11 @@
 
 - (id)initWithCallingAET:(NSString *)myAET calledAET:(NSString *)theirAET  hostName:(NSString *)host  port:(NSString *)tcpPort netService:(NSNetService *)netService;
 {
+	return [self initWithCallingAET:myAET calledAET:theirAET  hostName:host  port:tcpPort cget: NO netService:netService];
+}
+
+- (id)initWithCallingAET:(NSString *)myAET calledAET:(NSString *)theirAET  hostName:(NSString *)host  port:(NSString *)tcpPort cget: (BOOL) cget netService:(NSNetService *)netService;
+{
 	if (self = [super init]){		
 		rootNode = nil;
 		filters = [[NSMutableDictionary dictionary] retain];
@@ -35,14 +40,11 @@
 		hostname = [host retain];
 		port = [tcpPort retain];
 		queries = nil;
+		cgetSupport = cget;
 		_netService = [netService retain];
-		//NSLog(@"init Query Manager");
-		
 	}
 	return self;
 }
-	
-
 
 - (id)rootNode{
 	return rootNode;
@@ -100,13 +102,6 @@
 	
 	NS_DURING
 	
-	NSMutableDictionary *params = [NSMutableDictionary dictionary];
-	[params setObject:[NSNumber numberWithInt:1] forKey:@"debugLevel"];
-	[params setObject:callingAET forKey:@"callingAET"];
-	[params setObject:calledAET forKey:@"calledAET"];
-	[params setObject:[DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax] forKey:@"transferSyntax"];		//
-	[params setObject:[DCMAbstractSyntaxUID studyRootQueryRetrieveInformationModelFind] forKey:@"affectedSOPClassUID"];
-	
 	BOOL sameAddress = NO;
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"STORESCP"])
@@ -142,7 +137,7 @@
 										port:[port intValue]
 										transferSyntax: 0		//EXS_LittleEndianExplicit / EXS_JPEGProcess14SV1TransferSyntax
 										compression: nil
-										extraParameters:nil] retain];
+										extraParameters: [NSDictionary dictionaryWithObject: [NSNumber numberWithBool: cgetSupport] forKey: @"CGET"]] retain];
 		NSMutableArray *filterArray = [NSMutableArray array];
 		NSEnumerator *enumerator = [filters keyEnumerator];
 		NSString *key;
