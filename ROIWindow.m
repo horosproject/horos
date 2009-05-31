@@ -410,8 +410,11 @@
 			[xml setObject:temp forKey:@"ROIPoints"];
 			
 			// Data composing the ROI
-			[xml setObject:[curROI dataString] forKey:@"DataSummary"];
-			[xml setObject:[curROI dataValues] forKey:@"DataValues"];
+			if( [curROI dataString])
+				[xml setObject:[curROI dataString] forKey:@"DataSummary"];
+			
+			if( [curROI dataValues])
+				[xml setObject:[curROI dataValues] forKey:@"DataValues"];
 		}
 		
 		[xml writeToFile:[panel filename] atomically: TRUE];

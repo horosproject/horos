@@ -1388,6 +1388,14 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			
 			NSMutableArray *pointsArray = [NSMutableArray arrayWithCapacity: 0];
 			
+			if( type == t2DPoint)
+			{
+				NSRect irect;
+				irect.origin.x = NSPointFromString( [pointsStringArray objectAtIndex: 0] ).x;
+				irect.origin.y = NSPointFromString( [pointsStringArray objectAtIndex: 0] ).y;
+				[roi setROIRect:irect];
+			}
+			
 			if( [pointsStringArray count] > 0 ) {
 				for ( int j = 0; j < [pointsStringArray count]; j++ ) {
 					MyPoint *pt = [MyPoint point: NSPointFromString( [pointsStringArray objectAtIndex: j] )];
