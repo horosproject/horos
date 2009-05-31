@@ -204,7 +204,7 @@ static NSLock *currentHostLock = nil;
 		
 		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"searchDICOMBonjour"])
 		{
-			NSArray					*dicomServices		= [[DCMNetServiceDelegate sharedNetServiceDelegate] dicomServices];
+			NSArray *dicomServices = [[DCMNetServiceDelegate sharedNetServiceDelegate] dicomServices];
 			
 			for( int i = 0 ; i < [dicomServices count] ; i++)
 			{
@@ -247,10 +247,20 @@ static NSLock *currentHostLock = nil;
 							transferSyntax = SendRLE;
 					}
 					
+					BOOL cgetSupported = NO;
+					
+					if( [dict valueForKey: @"CGET"])
+					{
+						NSString *cg = [[[NSString alloc] initWithData: [dict valueForKey: @"CGET"] encoding:NSUTF8StringEncoding] autorelease];
+						
+						cgetSupported = [cg boolValue];
+					}
+					
 					NSMutableDictionary *s = [NSMutableDictionary dictionaryWithObjectsAndKeys:	hostname, @"Address",
 																									[aServer name], @"AETitle",
 																									[NSString stringWithFormat:@"%d", port], @"Port",
 																									[NSNumber numberWithBool:YES] , @"QR",
+																									[NSNumber numberWithBool:cgetSupported] , @"CGET",
 																									[NSNumber numberWithBool:YES] , @"Send",
 																									description, @"Description",
 																									[NSNumber numberWithInt: transferSyntax], @"Transfer Syntax",

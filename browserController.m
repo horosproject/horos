@@ -10016,20 +10016,22 @@ static BOOL needToRezoom;
 				
 				if( [dcmNode valueForKey:@"Port"] && OnlyDICOM )
 				{
-					WaitRendering		*wait = [[WaitRendering alloc] init: NSLocalizedString(@"Transfer started...", nil)];
-					[wait showWindow:self];
-					
-					NSMutableDictionary	*todo = [NSMutableDictionary dictionaryWithDictionary: dcmNode];
-					
-					[todo setObject: packArray forKey:@"Files"];
-					
-					[NSThread detachNewThreadSelector:@selector( sendDICOMFilesToOsiriXNode:) toTarget:self withObject: todo];
-					
-					unsigned long finalTicks;
-					Delay( 60, &finalTicks);
-					
-					[wait close];
-					[wait release];
+					[SendController sendFiles: packArray toNode: dcmNode];
+				
+//					WaitRendering		*wait = [[WaitRendering alloc] init: NSLocalizedString(@"Transfer started...", nil)];
+//					[wait showWindow:self];
+//					
+//					NSMutableDictionary	*todo = [NSMutableDictionary dictionaryWithDictionary: dcmNode];
+//					
+//					[todo setObject: packArray forKey:@"Files"];
+//					
+//					[NSThread detachNewThreadSelector:@selector( sendDICOMFilesToOsiriXNode:) toTarget:self withObject: todo];
+//					
+//					unsigned long finalTicks;
+//					Delay( 60, &finalTicks);
+//					
+//					[wait close];
+//					[wait release];
 				}
 				else
 				{

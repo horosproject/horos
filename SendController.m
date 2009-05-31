@@ -46,6 +46,15 @@ static volatile int sendControllerObjects = 0;
 	return sendControllerObjects;
 }
 
++ (void)sendFiles:(NSArray *)files toNode: (NSDictionary*) node
+{
+	SendController *sendController = [[SendController alloc] initWithFiles:files];
+	
+	[sendController sendToNode: node];
+	
+	[NSThread detachNewThreadSelector: @selector(releaseSelfWhenDone:) toTarget:sendController withObject: nil];
+}
+
 + (void)sendFiles:(NSArray *)files
 {
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"DICOMSENDALLOWED"] == NO)
@@ -136,8 +145,8 @@ static volatile int sendControllerObjects = 0;
 - (void)dealloc
 {
 	NSLog(@"SendController Released");
+	[_destinationServer release];
 	[_files release];
-	[_server release];
 	[_transferSyntaxString release];
 	[_numberFiles release];
 	[_lock lock];
@@ -166,6 +175,9 @@ static volatile int sendControllerObjects = 0;
 
 - (id)server
 {
+	if( _destinationServer)
+		return _destinationServer;
+	
 	return [self serverAtIndex:_serverIndex];
 }
 
@@ -179,12 +191,6 @@ static volatile int sendControllerObjects = 0;
 	if(	index > -1 && index < [serversArray count]) return [serversArray objectAtIndex:index];
 	
 	return nil;
-}
-
-- (void) setServer:(id)server
-{
-	[_server release];
-	_server = [server retain];
 }
 
 - (IBAction)selectServer: (id)sender
@@ -275,7 +281,7 @@ static volatile int sendControllerObjects = 0;
 			
 			if( files2Send)
 			{
-				_waitSendWindow = [[Wait alloc] initWithString: NSLocalizedString(@"Sending files...",@"Sending files") :NO];
+				_waitSendWindow = [[Wait alloc] initWithString: NSLocalizedString(@"Sending files...", nil) :NO];
 				[_waitSendWindow  setTarget:self];
 				[_waitSendWindow showWindow:self];
 				[[_waitSendWindow progress] setMaxValue:[files2Send count]];
@@ -292,6 +298,19 @@ static volatile int sendControllerObjects = 0;
 		[_lock unlock];	// Will release the object
 		sendControllerObjects--;
 	}
+}
+
+- (void) sendToNode: (NSDictionary*) node
+{
+	_destinationServer = [node retain];
+	
+	_waitSendWindow = [[Wait alloc] initWithString: NSLocalizedString(@"Sending files...", nil) :NO];
+	[_waitSendWindow  setTarget:self];
+	[_waitSendWindow showWindow:self];
+	[[_waitSendWindow progress] setMaxValue:[_files count]];
+	
+	[_waitSendWindow setCancel:YES];
+	[NSThread detachNewThreadSelector: @selector(sendDICOMFilesOffis:) toTarget:self withObject: _files];
 }
 
 #pragma mark Sending functions	

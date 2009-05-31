@@ -41,8 +41,8 @@ enum SendServerType { osirixServer, offisServer };
 @class DCMTKStoreSCU;
 
 /** \brief Window Controller for DICOM Send */
-@interface SendController : NSWindowController {
-	id					_server;
+@interface SendController : NSWindowController
+{
 	NSArray				*_files;
 	NSString			*_transferSyntaxString;
 	NSString			*_numberFiles;
@@ -54,6 +54,7 @@ enum SendServerType { osirixServer, offisServer };
 	BOOL				_abort;
 	NSRecursiveLock		*_lock;
 	DCMTKStoreSCU		*storeSCU;
+	NSDictionary		*_destinationServer;
 	
 	IBOutlet NSPopUpButton	*newServerList;
 	IBOutlet NSMatrix		*keyImageMatrix;
@@ -61,6 +62,7 @@ enum SendServerType { osirixServer, offisServer };
 	IBOutlet NSPopUpButton	*syntaxListOffis;
 }
 + (void)sendFiles:(NSArray *)files;
++ (void)sendFiles:(NSArray *)files toNode: (NSDictionary*) node;
 + (int) sendControllerObjects;
 - (id)initWithFiles:(NSArray *)files;
 - (id)serverAtIndex:(int)index;

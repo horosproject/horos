@@ -1265,6 +1265,8 @@ static NSDate *lastWarningDate = nil;
 	if( description && [description length] > 0)
 		[dict setValue: description forKey: @"serverDescription"];
 	
+	[dict setValue: [NSNumber numberWithBool: YES] forKey: @"CGET"];
+	
 	switch( [[NSUserDefaults standardUserDefaults] integerForKey: @"preferredSyntaxForIncoming"])
 	{
 		case 0:
