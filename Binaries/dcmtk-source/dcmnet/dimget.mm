@@ -39,6 +39,8 @@
 #include "dimse.h"              /* always include the module header */
 #include "cond.h"
 
+#include "dcmqrdbq.h"
+
 /*
 **
 */
@@ -85,8 +87,7 @@ selectReadable(T_ASC_Association *assoc,
 }
 
 
-extern OFCondition mainStoreSCP(T_ASC_Association * assoc, T_DIMSE_C_StoreRQ * request,
-             T_ASC_PresentationContextID presId);
+extern OFCondition mainStoreSCP(T_ASC_Association * assoc, T_DIMSE_C_StoreRQ * request, T_ASC_PresentationContextID presId, DcmQueryRetrieveDatabaseHandle *dbHandle);
 
 OFCondition
 DIMSE_getUser(
@@ -130,16 +131,9 @@ DIMSE_getUser(
     }
 
     /* receive responses */
-
-
-    /*
-     * DANGER:
-     * This code to receive responses is completely untried.
-     * It was simply taken from the MOVE version and has not
-     * yet been adapted for GET.
-     * GET is completely different here.
-     */
-
+	DcmQueryRetrieveOsiriXDatabaseHandleFactory factory;
+	DcmQueryRetrieveDatabaseHandle *dbHandle = factory.createDBHandle( assoc->params->DULparams.callingAPTitle, assoc->params->DULparams.calledAPTitle, cond);
+	
     while (cond == EC_Normal && status == STATUS_Pending) {
 
         /* if user wants, multiplex between net/subAssoc 
@@ -226,7 +220,7 @@ DIMSE_getUser(
 			break;
 			
 			case DIMSE_C_STORE_RQ:
-				 cond = mainStoreSCP(assoc, &rsp.msg.CStoreRQ, presID);
+				 cond = mainStoreSCP(assoc, &rsp.msg.CStoreRQ, presID, dbHandle);
 			break;
 			
 			default:
@@ -247,7 +241,9 @@ DIMSE_getUser(
             subOpCallback(subOpCallbackData, net, &subAssoc);
         }
     }
-
+	
+	delete dbHandle;
+	
     return cond;
 }
 
