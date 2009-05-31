@@ -104,6 +104,13 @@ public:
    */
   void cleanChildren(OFBool verbose = OFFalse);
 
+OFCondition storeSCP(
+    T_ASC_Association * assoc,
+    T_DIMSE_C_StoreRQ * req,
+    T_ASC_PresentationContextID presId,
+    DcmQueryRetrieveDatabaseHandle& dbHandle,
+    OFBool correctUIDPadding);
+
 private:
 
   void lockFile(void);
@@ -149,13 +156,6 @@ private:
     T_DIMSE_C_MoveRQ * request,
     T_ASC_PresentationContextID presID,
     DcmQueryRetrieveDatabaseHandle& dbHandle);
-
-  OFCondition storeSCP(
-    T_ASC_Association * assoc,
-    T_DIMSE_C_StoreRQ * req,
-    T_ASC_PresentationContextID presId,
-    DcmQueryRetrieveDatabaseHandle& dbHandle,
-    OFBool correctUIDPadding);
 
   OFCondition dispatch(
     T_ASC_Association *assoc,

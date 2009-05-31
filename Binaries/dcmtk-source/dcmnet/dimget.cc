@@ -84,6 +84,10 @@ selectReadable(T_ASC_Association *assoc,
     return 0;
 }
 
+
+extern OFCondition mainStoreSCP(T_ASC_Association * assoc, T_DIMSE_C_StoreRQ * request,
+             T_ASC_PresentationContextID presId);
+
 OFCondition
 DIMSE_getUser(
         /* in */
@@ -169,22 +173,33 @@ DIMSE_getUser(
         if (cond != EC_Normal) {
             return cond;
         }
-        if (rsp.CommandField != DIMSE_C_GET_RSP)
-        {
-          char buf1[256];
-          sprintf(buf1, "DIMSE: Unexpected Response Command Field: 0x%x", (unsigned)rsp.CommandField);
-          return makeDcmnetCondition(DIMSEC_UNEXPECTEDRESPONSE, OF_error, buf1);
-        }
-    
-        *response = rsp.msg.CGetRSP;
-        
-        if (response->MessageIDBeingRespondedTo != msgId)
-        {
-          char buf2[256];
-          sprintf(buf2, "DIMSE: Unexpected Response MsgId: %d (expected: %d)", response->MessageIDBeingRespondedTo, msgId);
-          return makeDcmnetCondition(DIMSEC_UNEXPECTEDRESPONSE, OF_error, buf2);
-        }
-
+		
+		switch (rsp.CommandField)
+		{
+			case DIMSE_C_GET_RSP:
+				*response = rsp.msg.CGetRSP;
+			
+				if (response->MessageIDBeingRespondedTo != msgId)
+				{
+				  char buf2[256];
+				  sprintf(buf2, "DIMSE: Unexpected Response MsgId: %d (expected: %d)", response->MessageIDBeingRespondedTo, msgId);
+				  return makeDcmnetCondition(DIMSEC_UNEXPECTEDRESPONSE, OF_error, buf2);
+				}
+			break;
+			
+			case DIMSE_C_STORE_RQ:
+				 cond = mainStoreSCP(assoc, &rsp.msg.CStoreRQ, presID);
+			break;
+			
+			default:
+			{
+				char buf1[256];
+				sprintf(buf1, "DIMSE: Unexpected Response Command Field: 0x%x", (unsigned)rsp.CommandField);
+				return makeDcmnetCondition(DIMSEC_UNEXPECTEDRESPONSE, OF_error, buf1);
+			}
+			
+		}
+		
         status = response->DimseStatus;
         responseCount++;
 

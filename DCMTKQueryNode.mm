@@ -569,7 +569,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 
 - (void) move:(NSDictionary*) dict
 {
-	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"useCGet"])
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"useCGetforQRRetrieve"])
 	{
 		DcmDataset *dataset = [self moveDataset];
 		if ([self setupNetworkWithSyntax:UID_GETStudyRootQueryRetrieveInformationModel  dataset:dataset destination: [dict objectForKey:@"moveDestination"]])
@@ -647,9 +647,32 @@ subOpCallback(void * /*subOpCallbackData*/ ,
         break;
     }
 	
-    return ASC_addPresentationContext(
+	OFCondition cond = EC_Normal;
+
+    int i;
+    int pid = 1;
+	
+	ASC_addPresentationContext(
         params, 1, abstractSyntax,
         transferSyntaxes, numTransferSyntaxes);
+	
+	// For C-GET we also need the storage presentation contexts : the is only one association
+	if( strcmp(abstractSyntax, UID_GETPatientRootQueryRetrieveInformationModel) == 0 ||
+		strcmp(abstractSyntax, UID_GETStudyRootQueryRetrieveInformationModel) == 0 ||
+		strcmp(abstractSyntax, UID_GETPatientStudyOnlyQueryRetrieveInformationModel) == 0)
+	if( abstractSyntax)
+	{
+		pid += 2;
+		
+		for (i=0; i<numberOfDcmLongSCUStorageSOPClassUIDs && cond.good(); i++) {
+		cond = ASC_addPresentationContext(
+			params, pid, dcmLongSCUStorageSOPClassUIDs[i],
+			transferSyntaxes, numTransferSyntaxes);
+		pid += 2;	/* only odd presentation context id's */
+		}
+	}
+	
+    return cond;
 }
 
 - (void)setShowErrorMessage:(BOOL) m

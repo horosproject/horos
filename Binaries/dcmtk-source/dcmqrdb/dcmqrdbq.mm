@@ -1237,7 +1237,8 @@ DcmQueryRetrieveOsiriXDatabaseHandle::DcmQueryRetrieveOsiriXDatabaseHandle(
   //          maxStudiesPerStorageArea, maxBytesPerStudy);
 #endif
 
-    if (handle) {
+    if (handle)
+	{
 		strcpy((char *)(handle -> callingAET), callingAET);
 		handle -> findRequestList = NULL;
 		handle -> findResponseList = NULL;
@@ -1403,8 +1404,7 @@ DcmQueryRetrieveDatabaseHandle *DcmQueryRetrieveOsiriXDatabaseHandleFactory::cre
     const char *calledAETitle,
     OFCondition& result) const
 {
-  return new DcmQueryRetrieveOsiriXDatabaseHandle(
-    callingAETitle, result);
+  return new DcmQueryRetrieveOsiriXDatabaseHandle( callingAETitle, result);
 }
 
 
