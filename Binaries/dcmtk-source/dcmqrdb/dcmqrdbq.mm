@@ -501,7 +501,8 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::updateLogEntry(DcmDataset *dat
 		
 		strcpy( handle->logMessage, "In Progress");
 		unsigned int random = (unsigned int)time(NULL);
-		sprintf( handle->logUID, "%d%s%s", random, handle->logPatientName, seriesUID);
+		unsigned int random2 = rand();
+		sprintf( handle->logUID, "%d%d%s%s", random, random2, handle->logPatientName, seriesUID);
 		str_toupper( handle->logUID);
 	}
 	

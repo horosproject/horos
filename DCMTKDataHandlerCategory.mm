@@ -901,7 +901,8 @@ char currentDestinationMoveAET[ 60] = "";
 				strcpy( logFiles->logEncoding, "UTF-8");
 				
 				unsigned int random = (unsigned int)time(NULL);
-				sprintf( logFiles->logUID, "%d%s", random, logFiles->logPatientName);
+				unsigned int random2 = rand();
+				sprintf( logFiles->logUID, "%d%d%s", random, random2, logFiles->logPatientName);
 
 				fprintf (pFile, "%s\r%s\r%s\r%ld\r%s\r%s\r%d\r%ld\r%s\r%s\r\%d\r", logFiles->logPatientName, logFiles->logStudyDescription, logFiles->logCallingAET, logFiles->logStartTime, logFiles->logMessage, logFiles->logUID, logFiles->logNumberReceived, logFiles->logEndTime, logFiles->logType, logFiles->logEncoding, logFiles->logNumberTotal);
 				
@@ -932,7 +933,8 @@ char currentDestinationMoveAET[ 60] = "";
 				strcpy( logFiles->logEncoding, "UTF-8");
 				
 				unsigned int random = (unsigned int)time(NULL);
-				sprintf( logFiles->logUID, "%d%s", random, logFiles->logPatientName);
+				unsigned int random2 = rand();
+				sprintf( logFiles->logUID, "%d%d%s", random, random2, logFiles->logPatientName);
 				
 				fprintf (pFile, "%s\r%s\r%s\r%ld\r%s\r%s\r%d\r%ld\r%s\r%s\r\%d\r", logFiles->logPatientName, logFiles->logStudyDescription, logFiles->logCallingAET, logFiles->logStartTime, logFiles->logMessage, logFiles->logUID, logFiles->logNumberReceived, logFiles->logEndTime, logFiles->logType, logFiles->logEncoding, logFiles->logNumberTotal);
 				
