@@ -629,9 +629,19 @@ static const char *GetPrivateIP()
 	[self autoQueryTimerFunction: QueryTimer]; 
 }
 
-- (id)outlineView:(NSOutlineView *)outlineView child:(NSInteger)index ofItem:(id)item{
-
-	return (item == nil) ? [resultArray objectAtIndex:index] : [[(DCMTKQueryNode *)item children] objectAtIndex:index];
+- (id)outlineView:(NSOutlineView *)outlineView child:(NSInteger)index ofItem:(id)item
+{
+	if( item == nil)
+	{
+		if( [resultArray count] > index)
+			return [resultArray objectAtIndex:index];
+		else
+			return nil;
+	}
+	else
+	{
+		return [[(DCMTKQueryNode *)item children] objectAtIndex:index];
+	}
 }
 
 - (BOOL)outlineView:(NSOutlineView *)outlineView shouldEditTableColumn:(NSTableColumn *)tableColumn item:(id)item

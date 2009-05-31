@@ -134,9 +134,6 @@ void errmsg(const char* msg, ...)
 		_port = port;
 		_aeTitle = [aeTitle retain];
 		_params = [params retain];
-//		This seems to generate some problems when it happens in the middle of a store-scp... I removed it for now.
-//		//Create a timer to cleanup scp children every 8 hours
-//		[NSTimer scheduledTimerWithTimeInterval:3600*8 target:self  selector:@selector(cleanup:) userInfo:nil repeats:YES];
 	}
 	return self;
 }
