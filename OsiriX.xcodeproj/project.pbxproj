@@ -2155,7 +2155,7 @@
 		BFBF40CB09B6828D00545F5E /* dimdump.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D1D09B6828600545F5E /* dimdump.cc */; };
 		BFBF40CC09B6828D00545F5E /* dimecho.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D1E09B6828600545F5E /* dimecho.cc */; };
 		BFBF40CD09B6828D00545F5E /* dimfind.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D1F09B6828600545F5E /* dimfind.cc */; };
-		BFBF40CE09B6828D00545F5E /* dimget.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D2009B6828600545F5E /* dimget.cc */; };
+		BFBF40CE09B6828D00545F5E /* dimget.mm in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D2009B6828600545F5E /* dimget.mm */; };
 		BFBF40CF09B6828D00545F5E /* dimmove.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D2109B6828600545F5E /* dimmove.cc */; };
 		BFBF40D009B6828D00545F5E /* dimse.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D2209B6828600545F5E /* dimse.cc */; };
 		BFBF40D109B6828D00545F5E /* dimse.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D2309B6828600545F5E /* dimse.h */; };
@@ -6900,7 +6900,7 @@
 		BFBF3D1D09B6828600545F5E /* dimdump.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = dimdump.cc; sourceTree = "<group>"; };
 		BFBF3D1E09B6828600545F5E /* dimecho.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = dimecho.cc; sourceTree = "<group>"; };
 		BFBF3D1F09B6828600545F5E /* dimfind.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = dimfind.cc; sourceTree = "<group>"; };
-		BFBF3D2009B6828600545F5E /* dimget.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = dimget.cc; sourceTree = "<group>"; };
+		BFBF3D2009B6828600545F5E /* dimget.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = dimget.mm; sourceTree = "<group>"; };
 		BFBF3D2109B6828600545F5E /* dimmove.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = dimmove.cc; sourceTree = "<group>"; };
 		BFBF3D2209B6828600545F5E /* dimse.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = dimse.cc; sourceTree = "<group>"; };
 		BFBF3D2309B6828600545F5E /* dimse.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dimse.h; sourceTree = "<group>"; };
@@ -11921,7 +11921,7 @@
 				BFBF3D1D09B6828600545F5E /* dimdump.cc */,
 				BFBF3D1E09B6828600545F5E /* dimecho.cc */,
 				BFBF3D1F09B6828600545F5E /* dimfind.cc */,
-				BFBF3D2009B6828600545F5E /* dimget.cc */,
+				BFBF3D2009B6828600545F5E /* dimget.mm */,
 				BFBF3D2109B6828600545F5E /* dimmove.cc */,
 				BFBF3D2209B6828600545F5E /* dimse.cc */,
 				BFBF3D2309B6828600545F5E /* dimse.h */,
@@ -18230,7 +18230,7 @@
 				BFBF40CB09B6828D00545F5E /* dimdump.cc in Sources */,
 				BFBF40CC09B6828D00545F5E /* dimecho.cc in Sources */,
 				BFBF40CD09B6828D00545F5E /* dimfind.cc in Sources */,
-				BFBF40CE09B6828D00545F5E /* dimget.cc in Sources */,
+				BFBF40CE09B6828D00545F5E /* dimget.mm in Sources */,
 				BFBF40CF09B6828D00545F5E /* dimmove.cc in Sources */,
 				BFBF40D009B6828D00545F5E /* dimse.cc in Sources */,
 				BFBF40D209B6828D00545F5E /* dimstore.cc in Sources */,

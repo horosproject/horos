@@ -876,24 +876,37 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	*/
 	cond = [self addPresentationContext:params abstractSyntax:abstractSyntax];
     //cond = addPresentationContext(params, UID_FINDStudyRootQueryRetrieveInformationModel);
-    if (cond.bad()) {
+    if (cond.bad())
+	{
         DimseCondition::dump(cond);
         [queryException raise];
     }
 
     /* dump presentation contexts if required */
-    if (_verbose) {
-        printf("Request Parameters:\n");
-        ASC_dumpParameters(params, COUT);
-    }
+    if (_verbose)
+	{
+		if( strcmp(abstractSyntax, UID_GETPatientRootQueryRetrieveInformationModel) == 0 ||
+		strcmp(abstractSyntax, UID_GETStudyRootQueryRetrieveInformationModel) == 0 ||
+		strcmp(abstractSyntax, UID_GETPatientStudyOnlyQueryRetrieveInformationModel) == 0)
+		{
+		
+		}
+		else
+		{
+			printf("Request Parameters:\n");
+			ASC_dumpParameters(params, COUT);
+		}
+	}
 	
 		/* create association, i.e. try to establish a network connection to another */
 	/* DICOM application. This call creates an instance of T_ASC_Association*. */
 	if (_verbose)
 		printf("Requesting Association\n");
 	cond = ASC_requestAssociation(net, params, &assoc);
-	if (cond.bad()) {
-		if (cond == DUL_ASSOCIATIONREJECTED) {
+	if (cond.bad())
+	{
+		if (cond == DUL_ASSOCIATIONREJECTED)
+		{
 			T_ASC_RejectParameters rej;
 			ASC_getRejectParameters(params, &rej);
 			errmsg("Association Rejected:");
@@ -912,11 +925,20 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	}
 	
 	  /* dump the presentation contexts which have been accepted/refused */
-if (_verbose)
+	  	if (_verbose)
 	{
-        printf("Association Parameters Negotiated:\n");
-        ASC_dumpParameters(params, COUT);
-    }
+		if( strcmp(abstractSyntax, UID_GETPatientRootQueryRetrieveInformationModel) == 0 ||
+		strcmp(abstractSyntax, UID_GETStudyRootQueryRetrieveInformationModel) == 0 ||
+		strcmp(abstractSyntax, UID_GETPatientStudyOnlyQueryRetrieveInformationModel) == 0)
+		{
+		
+		}
+		else
+		{
+			printf("Association Parameters Negotiated:\n");
+			ASC_dumpParameters(params, COUT);
+		}
+	}
 	
 		/* count the presentation contexts which have been accepted by the SCP */
 	/* If there are none, finish the execution */

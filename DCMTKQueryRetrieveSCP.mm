@@ -95,18 +95,9 @@ OFCmdUnsignedInt opt_port = 0;
 DcmQueryRetrieveSCP *scp;
 
 
-OFCondition mainStoreSCP(T_ASC_Association * assoc, T_DIMSE_C_StoreRQ * request, T_ASC_PresentationContextID presId)
+OFCondition mainStoreSCP(T_ASC_Association * assoc, T_DIMSE_C_StoreRQ * request, T_ASC_PresentationContextID presId, DcmQueryRetrieveDatabaseHandle *dbHandle)
 {
-	DcmQueryRetrieveOsiriXDatabaseHandleFactory factory;
-	OFCondition cond = EC_Normal;
-
-	DcmQueryRetrieveDatabaseHandle *dbHandle = factory.createDBHandle( assoc->params->DULparams.callingAPTitle, assoc->params->DULparams.calledAPTitle, cond);
-
-	cond = scp->storeSCP( assoc, request, presId, *dbHandle, FALSE);
-	
-	delete dbHandle;
-	
-	return cond;
+	return scp->storeSCP( assoc, request, presId, *dbHandle, FALSE);
 }
 
 void errmsg(const char* msg, ...)
