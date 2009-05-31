@@ -185,6 +185,44 @@ DIMSE_getUser(
 				  sprintf(buf2, "DIMSE: Unexpected Response MsgId: %d (expected: %d)", response->MessageIDBeingRespondedTo, msgId);
 				  return makeDcmnetCondition(DIMSEC_UNEXPECTEDRESPONSE, OF_error, buf2);
 				}
+				
+				status = response->DimseStatus;
+				responseCount++;
+
+				switch (status)
+				{
+				case STATUS_Pending:
+					if (*statusDetail != NULL)
+					{
+						DIMSE_warning(assoc, 
+							"getUser: Pending with statusDetail, ignoring detail");
+						delete *statusDetail;
+						*statusDetail = NULL;
+					}
+					if (response->DataSetType != DIMSE_DATASET_NULL)
+					{
+						DIMSE_warning(assoc, 
+							"getUser: Status Pending, but DataSetType!=NULL");
+						DIMSE_warning(assoc, 
+							"  Assuming NO response identifiers are present");
+					}
+
+					/* execute callback */
+					if (callback) {
+						callback(callbackData, request, responseCount, response);
+					}
+					break;
+				default:
+					if (response->DataSetType != DIMSE_DATASET_NULL)
+					{
+						cond = DIMSE_receiveDataSetInMemory(assoc, blockMode, timeout, &presID, rspIds, NULL, NULL);
+						if (cond != EC_Normal)
+						{
+							return cond;
+						}
+					}
+					break;
+				}
 			break;
 			
 			case DIMSE_C_STORE_RQ:
@@ -199,40 +237,6 @@ DIMSE_getUser(
 			}
 			
 		}
-		
-        status = response->DimseStatus;
-        responseCount++;
-
-        switch (status) {
-        case STATUS_Pending:
-            if (*statusDetail != NULL) {
-                DIMSE_warning(assoc, 
-                    "getUser: Pending with statusDetail, ignoring detail");
-                delete *statusDetail;
-                *statusDetail = NULL;
-            }
-            if (response->DataSetType != DIMSE_DATASET_NULL) {
-                DIMSE_warning(assoc, 
-                    "getUser: Status Pending, but DataSetType!=NULL");
-                DIMSE_warning(assoc, 
-                    "  Assuming NO response identifiers are present");
-            }
-
-            /* execute callback */
-            if (callback) {
-                callback(callbackData, request, responseCount, response);
-            }
-            break;
-        default:
-            if (response->DataSetType != DIMSE_DATASET_NULL) {
-                cond = DIMSE_receiveDataSetInMemory(assoc, blockMode, timeout,
-                    &presID, rspIds, NULL, NULL);
-                if (cond != EC_Normal) {
-                    return cond;
-                }
-            }
-            break;
-        }
     }
 
     /* do remaining sub-association work, we may receive a non-pending

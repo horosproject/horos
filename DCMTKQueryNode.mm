@@ -43,7 +43,7 @@
 #include "tlslayer.h"
 #endif
 
-#define OFFIS_CONSOLE_APPLICATION "findscu"
+#define OFFIS_CONSOLE_APPLICATION "DCMTKQueryNode"
 
 /* default application titles */
 #define APPLICATIONTITLE        "FINDSCU"

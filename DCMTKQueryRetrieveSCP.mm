@@ -94,6 +94,7 @@ OFBool      opt_checkMoveIdentifier = OFFalse;
 OFCmdUnsignedInt opt_port = 0;
 DcmQueryRetrieveSCP *scp;
 
+
 OFCondition mainStoreSCP(T_ASC_Association * assoc, T_DIMSE_C_StoreRQ * request, T_ASC_PresentationContextID presId)
 {
 	DcmQueryRetrieveOsiriXDatabaseHandleFactory factory;
