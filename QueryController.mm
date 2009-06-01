@@ -1848,7 +1848,8 @@ static const char *GetPrivateIP()
 		[dictionary setObject:[object valueForKey:@"port"] forKey:@"port"];
 		[dictionary setObject:[object valueForKey:@"transferSyntax"] forKey:@"transferSyntax"];
 
-		NSDictionary	*dstDict = nil;
+		NSDictionary *dstDict = nil;
+		BOOL allowCGET = YES;
 		
 		if( [sendToPopup indexOfSelectedItem] != 0)
 		{
@@ -1857,6 +1858,8 @@ static const char *GetPrivateIP()
 			dstDict = [[DCMNetServiceDelegate DICOMServersList] objectAtIndex: index];
 			
 			[dictionary setObject: [dstDict valueForKey:@"AETitle"]  forKey: @"moveDestination"];
+			
+			allowCGET = NO;
 		}
 		
 		if( [[dstDict valueForKey:@"Port"] intValue]  == [[dictionary valueForKey:@"port"] intValue] &&
@@ -1869,7 +1872,7 @@ static const char *GetPrivateIP()
 			int numberPacketsReceived = 0;
 			if( [[NSUserDefaults standardUserDefaults] boolForKey:@"Ping"] == NO || (SimplePing( [[dictionary valueForKey:@"hostname"] UTF8String], 1, [[NSUserDefaults standardUserDefaults] integerForKey:@"DICOMTimeout"], 1,  &numberPacketsReceived) == 0 && numberPacketsReceived > 0))
 			{
-				[object move:dictionary];
+				[object move:dictionary allowCGET: allowCGET];
 				
 				@synchronized( previousAutoRetrieve)
 				{

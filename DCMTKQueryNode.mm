@@ -569,7 +569,12 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 
 - (void) move:(NSDictionary*) dict
 {
-	if( [[dict valueForKey: @"CGET"] boolValue])
+	return [self move: dict allowCGET: YES];
+}
+
+- (void) move:(NSDictionary*) dict allowCGET: (BOOL) allowCGET
+{
+	if( [[dict valueForKey: @"CGET"] boolValue] == YES && allowCGET == YES)
 	{
 		DcmDataset *dataset = [self moveDataset];
 		if ([self setupNetworkWithSyntax:UID_GETStudyRootQueryRetrieveInformationModel  dataset:dataset destination: [dict objectForKey:@"moveDestination"]])
