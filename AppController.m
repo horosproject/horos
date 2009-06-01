@@ -895,24 +895,27 @@ static NSDate *lastWarningDate = nil;
 			refreshDatabase = YES;
 	}
 	else NSLog( @"*** isKindOfClass NSString");
-	if ([[previousDefaults valueForKey: @"DICOMTimeout"]intValue] != [defaults integerForKey: @"DICOMTimeout"])
+	if ([[previousDefaults valueForKey: @"DICOMTimeout"] intValue] != [defaults integerForKey: @"DICOMTimeout"])
 		restartListener = YES;
 	if ([[previousDefaults valueForKey: @"UseHostNameForAETitle"] intValue] != [defaults integerForKey: @"UseHostNameForAETitle"])
 		restartListener = YES;
-	if ([[previousDefaults valueForKey: @"preferredSyntaxForIncoming"]intValue] != [defaults integerForKey: @"preferredSyntaxForIncoming"])
+	if ([[previousDefaults valueForKey: @"preferredSyntaxForIncoming"] intValue] != [defaults integerForKey: @"preferredSyntaxForIncoming"])
 		restartListener = YES;
-	if ([[previousDefaults valueForKey: @"httpXMLRPCServer"]intValue] != [defaults integerForKey: @"httpXMLRPCServer"])
+	if ([[previousDefaults valueForKey: @"httpXMLRPCServer"] intValue] != [defaults integerForKey: @"httpXMLRPCServer"])
 		restartListener = YES;
-	if ([[previousDefaults valueForKey: @"httpXMLRPCServerPort"]intValue] != [defaults integerForKey: @"httpXMLRPCServerPort"])
+	if ([[previousDefaults valueForKey: @"httpXMLRPCServerPort"] intValue] != [defaults integerForKey: @"httpXMLRPCServerPort"])
 		restartListener = YES;
-	if ([[previousDefaults valueForKey: @"httpWebServer"]intValue] != [defaults integerForKey: @"httpWebServer"])
+	if ([[previousDefaults valueForKey: @"httpWebServer"] intValue] != [defaults integerForKey: @"httpWebServer"])
 		restartListener = YES;
-	if ([[previousDefaults valueForKey: @"httpWebServerPort"]intValue] != [defaults integerForKey: @"httpWebServerPort"])
+	if ([[previousDefaults valueForKey: @"httpWebServerPort"] intValue] != [defaults integerForKey: @"httpWebServerPort"])
 		restartListener = YES;
-	if ([[previousDefaults valueForKey: @"LISTENERCHECKINTERVAL"]intValue] != [defaults integerForKey: @"LISTENERCHECKINTERVAL"])
+	if ([[previousDefaults valueForKey: @"LISTENERCHECKINTERVAL"] intValue] != [defaults integerForKey: @"LISTENERCHECKINTERVAL"])
 		restartListener = YES;
-	if ([[previousDefaults valueForKey: @"SINGLEPROCESS"]intValue] != [defaults integerForKey: @"SINGLEPROCESS"])
+	if ([[previousDefaults valueForKey: @"SINGLEPROCESS"] intValue] != [defaults integerForKey: @"SINGLEPROCESS"])
 		restartListener = YES;
+	if ([[previousDefaults valueForKey: @"activateCGETSCP"] intValue] != [defaults integerForKey: @"activateCGETSCP"])
+		restartListener = YES;
+	
 	if( [[previousDefaults valueForKey: @"AETITLE"] isKindOfClass:[NSString class]])
 	{
 		if ([[previousDefaults valueForKey: @"AETITLE"] isEqualToString: [defaults stringForKey: @"AETITLE"]] == NO)
@@ -933,7 +936,7 @@ static NSDate *lastWarningDate = nil;
 			restartListener = YES;
 	}
 	else NSLog( @"*** isKindOfClass NSString");
-	if ([[previousDefaults valueForKey: @"addNewIncomingFilesToDefaultDBOnly"]intValue] !=	[defaults integerForKey: @"addNewIncomingFilesToDefaultDBOnly"])
+	if ([[previousDefaults valueForKey: @"addNewIncomingFilesToDefaultDBOnly"] intValue] !=	[defaults integerForKey: @"addNewIncomingFilesToDefaultDBOnly"])
 		restartListener = YES;
 	if ([[previousDefaults valueForKey: @"STORESCP"] intValue] != [defaults integerForKey: @"STORESCP"])
 		restartListener = YES;
@@ -943,15 +946,15 @@ static NSDate *lastWarningDate = nil;
 		refreshDatabase = YES;
 	if ([[previousDefaults valueForKey: @"COLUMNSDATABASE"] isEqualToDictionary:[defaults objectForKey: @"COLUMNSDATABASE"]] == NO)
 		refreshColumns = YES;	
-	if ([[previousDefaults valueForKey: @"SERIESORDER"]intValue] != [defaults integerForKey: @"SERIESORDER"])
+	if ([[previousDefaults valueForKey: @"SERIESORDER"] intValue] != [defaults integerForKey: @"SERIESORDER"])
 		refreshDatabase = YES;
-	if ([[previousDefaults valueForKey: @"KeepStudiesOfSamePatientTogether"]intValue] != [defaults integerForKey: @"KeepStudiesOfSamePatientTogether"])
+	if ([[previousDefaults valueForKey: @"KeepStudiesOfSamePatientTogether"] intValue] != [defaults integerForKey: @"KeepStudiesOfSamePatientTogether"])
 		refreshDatabase = YES;
-	if ([[previousDefaults valueForKey: @"NOINTERPOLATION"]intValue] != [defaults integerForKey: @"NOINTERPOLATION"])
+	if ([[previousDefaults valueForKey: @"NOINTERPOLATION"] intValue] != [defaults integerForKey: @"NOINTERPOLATION"])
 		refreshViewer = YES;
-	if ([[previousDefaults valueForKey: @"SOFTWAREINTERPOLATION"]intValue] != [defaults integerForKey: @"SOFTWAREINTERPOLATION"])
+	if ([[previousDefaults valueForKey: @"SOFTWAREINTERPOLATION"] intValue] != [defaults integerForKey: @"SOFTWAREINTERPOLATION"])
 		refreshViewer = YES;
-	if ([[previousDefaults valueForKey: @"publishDICOMBonjour"]intValue] != [defaults integerForKey: @"publishDICOMBonjour"])
+	if ([[previousDefaults valueForKey: @"publishDICOMBonjour"] intValue] != [defaults integerForKey: @"publishDICOMBonjour"])
 		restartListener = YES;
 		
 	[previousDefaults release];
