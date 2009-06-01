@@ -19,6 +19,8 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <netdb.h>
+#include <unistd.h>
 
 static DCMNetServiceDelegate *_netServiceDelegate = nil;
 static NSHost *currentHost = nil;
@@ -278,9 +280,12 @@ static NSLock *currentHostLock = nil;
 					{
 						NSDictionary *d = [serversArray objectAtIndex: v];
 						
-						if( [[d valueForKey: @"Address"] isEqualToString: [s valueForKey: @"Address"]] && [[d valueForKey: @"Port"] intValue] == [[s valueForKey: @"Port"] intValue])
+						if( [[d valueForKey: @"Port"] intValue] == [[s valueForKey: @"Port"] intValue])
 						{
-							alreadyHere = YES;
+							if( [[d valueForKey: @"Address"] isEqualToString: [s valueForKey: @"Address"]])
+								alreadyHere = YES;
+							else if( [[DCMNetServiceDelegate getIPAddress: [d valueForKey: @"Address"]] isEqualToString: [DCMNetServiceDelegate getIPAddress: [s valueForKey: @"Address"]]])
+								alreadyHere = YES;
 						}
 					}
 					
@@ -330,6 +335,35 @@ static NSLock *currentHostLock = nil;
 + (NSArray *) DICOMServersList
 {
 	return [DCMNetServiceDelegate DICOMServersListSendOnly:NO QROnly:NO];
+}
+
++ (NSString*) getIPAddress: (NSString*) address
+{
+	struct sockaddr_in service;
+	const char	*host_name = [address UTF8String];
+	
+	bzero((char *) &service, sizeof(service));
+	service.sin_family = AF_INET;
+	
+	if( host_name)
+	{
+		if (isalpha(host_name[0]))
+		{
+			struct hostent *hp;
+			
+			hp = gethostbyname( host_name);
+			if( hp) bcopy(hp->h_addr, (char *) &service.sin_addr, hp->h_length);
+			else service.sin_addr.s_addr = inet_addr( host_name);
+		}
+		else service.sin_addr.s_addr = inet_addr( host_name);
+		
+		char buffer[256];
+		
+		if (inet_ntop(AF_INET, &service.sin_addr, buffer, sizeof(buffer)))
+			return [NSString stringWithCString:buffer];
+	}
+	
+	return nil;
 }
 
 + (NSString*) gethostnameAndPort: (int*) port forService:(NSNetService*) sender
