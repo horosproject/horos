@@ -559,6 +559,7 @@ static const char *GetPrivateIP()
 				[[BrowserController currentBrowser] findAndSelectFile:nil image:[[series valueForKey:@"images"] anyObject] shouldExpand:NO extendingSelection: extendingSelection];
 				extendingSelection = YES;
 			}
+			else NSBeep();
 		} 
 	}
 	
@@ -770,7 +771,6 @@ static const char *GetPrivateIP()
 			return nil;
 		}
 	}
-	else NSLog( @"Warning! Not a study class !");
 	
 	return nil;
 }

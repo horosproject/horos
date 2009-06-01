@@ -48,11 +48,17 @@ static volatile int sendControllerObjects = 0;
 
 + (void)sendFiles:(NSArray *)files toNode: (NSDictionary*) node
 {
+	BOOL s = [[NSUserDefaults standardUserDefaults] boolForKey: @"sendROIs"];
+
+	[[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"sendROIs"];
+	
 	SendController *sendController = [[SendController alloc] initWithFiles:files];
 	
 	[sendController sendToNode: node];
 	
 	[NSThread detachNewThreadSelector: @selector(releaseSelfWhenDone:) toTarget:sendController withObject: nil];
+	
+	[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"sendROIs"];
 }
 
 + (void)sendFiles:(NSArray *)files
@@ -287,6 +293,8 @@ static volatile int sendControllerObjects = 0;
 				[[_waitSendWindow progress] setMaxValue:[files2Send count]];
 				
 				[_waitSendWindow setCancel:YES];
+				
+				sendROIs = [[NSUserDefaults standardUserDefaults] boolForKey:@"sendROIs"];
 				[NSThread detachNewThreadSelector: @selector(sendDICOMFilesOffis:) toTarget:self withObject: objectsToSend];
 			}
 			else [_lock unlock];	// Will release the object
@@ -310,6 +318,7 @@ static volatile int sendControllerObjects = 0;
 	[[_waitSendWindow progress] setMaxValue:[_files count]];
 	
 	[_waitSendWindow setCancel:YES];
+	sendROIs = [[NSUserDefaults standardUserDefaults] boolForKey:@"sendROIs"];
 	[NSThread detachNewThreadSelector: @selector(sendDICOMFilesOffis:) toTarget:self withObject: _files];
 }
 
@@ -328,7 +337,7 @@ static volatile int sendControllerObjects = 0;
 	
 	NSArray	*files = [samePatientArray valueForKey: @"completePathResolved"];
 	
-	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"sendROIs"])
+	if( sendROIs)
 	{
 		NSLog( @"add ROIs for DICOM sending");
 		NSMutableArray	*roiFiles = [NSMutableArray array];

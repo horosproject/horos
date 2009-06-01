@@ -52,6 +52,7 @@ enum SendServerType { osirixServer, offisServer };
 	Wait				*_waitSendWindow;
 	BOOL				_readyForRelease;
 	BOOL				_abort;
+	BOOL				sendROIs;
 	NSRecursiveLock		*_lock;
 	DCMTKStoreSCU		*storeSCU;
 	NSDictionary		*_destinationServer;
@@ -79,5 +80,6 @@ enum SendServerType { osirixServer, offisServer };
 - (void)abort;
 - (void)closeSendPanel:(id)sender;
 - (IBAction)selectServer: (id)sender;
+- (void) sendToNode: (NSDictionary*) node;
 - (void) updateDestinationPopup;
 @end

@@ -9984,23 +9984,6 @@ static BOOL needToRezoom;
 			{
 				BOOL	OnlyDICOM = YES;
 				
-				NSMutableArray		*packArray = [NSMutableArray arrayWithCapacity: [imagesArray count]];
-				
-				for( NSManagedObject *img in imagesArray )
-				{
-					NSString	*sendPath = [self getLocalDCMPath: img :1];
-					
-					[packArray addObject: sendPath];
-					
-					if( [[img valueForKey: @"fileType"] hasPrefix:@"DICOM"] == NO) OnlyDICOM = NO;
-				}
-				
-				// Add the ROIs
-				for( DicomImage *img in imagesArray )
-				{
-					[packArray addObjectsFromArray: [img SRPaths]];
-				}
-				
 				NSDictionary *dcmNode = [[bonjourBrowser services] objectAtIndex: row-1];
 				
 				if( OnlyDICOM == NO ) NSLog( @"Not Only DICOM !");
@@ -10016,22 +9999,7 @@ static BOOL needToRezoom;
 				
 				if( [dcmNode valueForKey:@"Port"] && OnlyDICOM )
 				{
-					[SendController sendFiles: packArray toNode: dcmNode];
-				
-//					WaitRendering		*wait = [[WaitRendering alloc] init: NSLocalizedString(@"Transfer started...", nil)];
-//					[wait showWindow:self];
-//					
-//					NSMutableDictionary	*todo = [NSMutableDictionary dictionaryWithDictionary: dcmNode];
-//					
-//					[todo setObject: packArray forKey:@"Files"];
-//					
-//					[NSThread detachNewThreadSelector:@selector( sendDICOMFilesToOsiriXNode:) toTarget:self withObject: todo];
-//					
-//					unsigned long finalTicks;
-//					Delay( 60, &finalTicks);
-//					
-//					[wait close];
-//					[wait release];
+					[SendController sendFiles: imagesArray toNode: dcmNode];
 				}
 				else
 				{

@@ -369,7 +369,7 @@ static NSLock *currentHostLock = nil;
 
 - (void)netServiceDidResolveAddress:(NSNetService *)sender
 {
-	NSLog( @"DCMNetServiceDelegate netServiceDidResolveAddress: %@", [sender description]);
+	NSLog( @"DICOM Bonjour node detected: %@", sender);
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"DCMNetServicesDidChange" object:nil];
 }
 @end
