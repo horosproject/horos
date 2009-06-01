@@ -789,7 +789,6 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject: @"1" forKey: @"SAVEROIS"];
 	[defaultValues setObject: @"0" forKey: @"NOLOCALIZER"];
 	[defaultValues setObject: @"0" forKey: @"TRANSITIONEFFECT"];
-	[defaultValues setObject: @"0" forKey: @"checkDICOMListenerWithEcho"];
 	[defaultValues setObject:@"0" forKey:@"NOINTERPOLATION"];
 	[defaultValues setObject: @"0" forKey: @"WINDOWSIZEVIEWER"];
 	[defaultValues setObject: @"0" forKey: @"UseOpenJpegForJPEG2000"];
@@ -878,6 +877,7 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject:@"1" forKey:@"UseJPEGColorSpace"];
 	[defaultValues setObject:@"0" forKey:@"displayCobbAngle"];
 	[defaultValues setObject:@"0" forKey:@"onlyDisplayImagesOfSamePatient"];
+	[defaultValues setObject:@"1" forKey:@"activateCGETSCP"];
 	
 	// ** ROI Default
 	[defaultValues setObject:[NSNumber numberWithFloat: 2] forKey:@"ROIThickness"];

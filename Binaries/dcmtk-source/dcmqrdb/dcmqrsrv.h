@@ -177,6 +177,7 @@ private:
 
   /// flag for database interface: debug mode
   OFBool dbDebug_;
+  OFBool activateCGETSCP_;
 
   /// factory object used to create database handles
   const DcmQueryRetrieveDatabaseHandleFactory& factory_;

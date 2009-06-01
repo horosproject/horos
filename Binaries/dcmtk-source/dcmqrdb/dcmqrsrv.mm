@@ -130,7 +130,7 @@ DcmQueryRetrieveSCP::DcmQueryRetrieveSCP(
 , factory_(factory)
 , options_(options)
 {
-
+	activateCGETSCP_ = [[NSUserDefaults standardUserDefaults] boolForKey: @"activateCGETSCP"];
 }
 
 DcmQueryRetrieveSCP::~DcmQueryRetrieveSCP()
@@ -304,8 +304,14 @@ OFCondition DcmQueryRetrieveSCP::dispatch(T_ASC_Association *assoc, OFBool corre
                     cond = moveSCP(assoc, &msg.msg.CMoveRQ, presID, *dbHandle);
                     break;
                 case DIMSE_C_GET_RQ:
-                    cond = getSCP(assoc, &msg.msg.CGetRQ, presID, *dbHandle);
-                    break;
+					if( activateCGETSCP_)
+						cond = getSCP(assoc, &msg.msg.CGetRQ, presID, *dbHandle);
+                    else
+					{
+						 cond = DIMSE_BADCOMMANDTYPE;
+						DcmQueryRetrieveOptions::errmsg("Cannot handle command: 0x%x\n", (unsigned)msg.CommandField);
+					}
+					break;
                 case DIMSE_C_CANCEL_RQ:
                     //* This is a late cancel request, just ignore it 
                     if (options_.verbose_) {
@@ -316,8 +322,7 @@ OFCondition DcmQueryRetrieveSCP::dispatch(T_ASC_Association *assoc, OFBool corre
                 default:
                     /* we cannot handle this kind of message */
                     cond = DIMSE_BADCOMMANDTYPE;
-                    DcmQueryRetrieveOptions::errmsg("Cannot handle command: 0x%x\n",
-                            (unsigned)msg.CommandField);
+                    DcmQueryRetrieveOptions::errmsg("Cannot handle command: 0x%x\n", (unsigned)msg.CommandField);
                     /* the condition will be returned, the caller will abort the association. */
                 }
             }
