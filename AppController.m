@@ -1265,7 +1265,7 @@ static NSDate *lastWarningDate = nil;
 	if( description && [description length] > 0)
 		[dict setValue: description forKey: @"serverDescription"];
 	
-	[dict setValue: [NSNumber numberWithBool: YES] forKey: @"CGET"];
+	[dict setValue: @"YES" forKey: @"CGET"]; // TXTRECORD doesnt support NSNumber
 	
 	switch( [[NSUserDefaults standardUserDefaults] integerForKey: @"preferredSyntaxForIncoming"])
 	{
