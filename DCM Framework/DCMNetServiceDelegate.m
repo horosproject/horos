@@ -358,9 +358,14 @@ static NSLock *currentHostLock = nil;
 		else service.sin_addr.s_addr = inet_addr( host_name);
 		
 		char buffer[256];
+		NSString *result = nil;
 		
 		if (inet_ntop(AF_INET, &service.sin_addr, buffer, sizeof(buffer)))
-			return [NSString stringWithCString:buffer];
+			result = [NSString stringWithCString:buffer];
+		
+		NSLog( @"%@  %@", address, result);
+		
+		return result;
 	}
 	
 	return nil;

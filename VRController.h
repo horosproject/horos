@@ -185,7 +185,6 @@
 - (void) applyScissor : (NSArray*) object;
 + (NSString*) getUniqueFilenameScissorStateFor:(NSManagedObject*) obj;
 - (NSArray*) fileList;
-- (void)createContextualMenu;
 - (float) factor;
 - (void) remove3DPoint: (NSNotification*) note;
 - (void) add2DPoint: (float) x : (float) y : (float) z :(float*) mm;
