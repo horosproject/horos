@@ -23,7 +23,7 @@
 
 static NSString* 	PETCTToolbarIdentifier					= @"MPROrtho Viewer Toolbar Identifier";
 static NSString*	AdjustSplitViewToolbarItemIdentifier	= @"sameSizeSplitView";
-static NSString*	TurnSplitViewToolbarItemIdentifier		= @"turnSplitView";
+//static NSString*	TurnSplitViewToolbarItemIdentifier		= @"turnSplitView";
 static NSString*	iPhotoToolbarItemIdentifier				= @"iPhoto";
 static NSString*	ToolsToolbarItemIdentifier				= @"Tools";
 static NSString*	ThickSlabToolbarItemIdentifier			= @"ThickSlab";
@@ -563,16 +563,16 @@ static NSString*	VRPanelToolbarItemIdentifier			= @"MIP.tif";
 	[self updateToolbarItems];
 }
 
-- (void) turnSplitView
-{
-	[controller saveScaleValue];
-	[splitView setVertical:![splitView isVertical]];
-	[[self window] update];
-	[self updateToolbarItems];
-	[splitView adjustSubviews];
-	[splitView setNeedsDisplay:YES];
-	[controller restoreScaleValue];
-}
+//- (void) turnSplitView
+//{
+//	[controller saveScaleValue];
+//	[splitView setVertical:![splitView isVertical]];
+//	[[self window] update];
+//	[self updateToolbarItems];
+//	[splitView adjustSubviews];
+//	[splitView setNeedsDisplay:YES];
+//	[controller restoreScaleValue];
+//}
 
 - (void) updateToolbarItems
 {
@@ -580,24 +580,25 @@ static NSString*	VRPanelToolbarItemIdentifier			= @"MIP.tif";
 	NSArray *toolbarItems = [toolbar items];
 	for(item in toolbarItems)
 	{
-		if ([[item itemIdentifier] isEqualToString:TurnSplitViewToolbarItemIdentifier])
-		{
-			if ([splitView isVertical])
-			{
-				[item setLabel:NSLocalizedString(@"Horizontal", nil)];
-				[item setPaletteLabel: NSLocalizedString(@"Horizontal",nil)];
-				[item setToolTip: NSLocalizedString(@"Change View from Vertical to Horizontal",nil)];
-				[item setImage:[NSImage imageNamed:@"horizontalSplitView"]];
-			}
-			else
-			{
-				[item setLabel:NSLocalizedString(@"Vertical", nil)];
-				[item setPaletteLabel: NSLocalizedString(@"Vertical",nil)];
-				[item setToolTip: NSLocalizedString(@"Change View from Horizontal to Vertical",nil)];
-				[item setImage:[NSImage imageNamed:@"verticalSplitView"]];
-			}
-		}
-		else if ([[item itemIdentifier] isEqualToString:AdjustSplitViewToolbarItemIdentifier])
+//		if ([[item itemIdentifier] isEqualToString:TurnSplitViewToolbarItemIdentifier])
+//		{
+//			if ([splitView isVertical])
+//			{
+//				[item setLabel:NSLocalizedString(@"Horizontal", nil)];
+//				[item setPaletteLabel: NSLocalizedString(@"Horizontal",nil)];
+//				[item setToolTip: NSLocalizedString(@"Change View from Vertical to Horizontal",nil)];
+//				[item setImage:[NSImage imageNamed:@"horizontalSplitView"]];
+//			}
+//			else
+//			{
+//				[item setLabel:NSLocalizedString(@"Vertical", nil)];
+//				[item setPaletteLabel: NSLocalizedString(@"Vertical",nil)];
+//				[item setToolTip: NSLocalizedString(@"Change View from Horizontal to Vertical",nil)];
+//				[item setImage:[NSImage imageNamed:@"verticalSplitView"]];
+//			}
+//		}
+//		else
+		if ([[item itemIdentifier] isEqualToString:AdjustSplitViewToolbarItemIdentifier])
 		{
 			if ([splitView isVertical])
 			{
@@ -952,24 +953,25 @@ static NSString*	VRPanelToolbarItemIdentifier			= @"MIP.tif";
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(adjustSplitView)];
     }
-	else if ([itemIdent isEqual: TurnSplitViewToolbarItemIdentifier]) {
-		if ([splitView isVertical])
-		{
-			[toolbarItem setLabel:NSLocalizedString(@"Horizontal", nil)];
-			[toolbarItem setPaletteLabel: NSLocalizedString(@"Horizontal",nil)];
-			[toolbarItem setToolTip: NSLocalizedString(@"Change View from Vertical to Horizontal",nil)];
-			[toolbarItem setImage:[NSImage imageNamed:@"horizontalSplitView"]];
-		}
-		else
-		{
-			[toolbarItem setLabel:NSLocalizedString(@"Vertical", nil)];
-			[toolbarItem setPaletteLabel: NSLocalizedString(@"Vertical",nil)];
-			[toolbarItem setToolTip: NSLocalizedString(@"Change View from Horizontal to Vertical",nil)];
-			[toolbarItem setImage:[NSImage imageNamed:@"verticalSplitView"]];
-		}
-		[toolbarItem setTarget: self];
-		[toolbarItem setAction: @selector(turnSplitView)];
-    }
+//	else if ([itemIdent isEqual: TurnSplitViewToolbarItemIdentifier])
+//	{
+//		if ([splitView isVertical])
+//		{
+//			[toolbarItem setLabel:NSLocalizedString(@"Horizontal", nil)];
+//			[toolbarItem setPaletteLabel: NSLocalizedString(@"Horizontal",nil)];
+//			[toolbarItem setToolTip: NSLocalizedString(@"Change View from Vertical to Horizontal",nil)];
+//			[toolbarItem setImage:[NSImage imageNamed:@"horizontalSplitView"]];
+//		}
+//		else
+//		{
+//			[toolbarItem setLabel:NSLocalizedString(@"Vertical", nil)];
+//			[toolbarItem setPaletteLabel: NSLocalizedString(@"Vertical",nil)];
+//			[toolbarItem setToolTip: NSLocalizedString(@"Change View from Horizontal to Vertical",nil)];
+//			[toolbarItem setImage:[NSImage imageNamed:@"verticalSplitView"]];
+//		}
+//		[toolbarItem setTarget: self];
+//		[toolbarItem setAction: @selector(turnSplitView)];
+//    }
 	else if ([itemIdent isEqualToString: ResetToolbarItemIdentifier]) {
 		[toolbarItem setLabel: NSLocalizedString(@"Reset", nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Reset", nil)];
@@ -1063,7 +1065,7 @@ static NSString*	VRPanelToolbarItemIdentifier			= @"MIP.tif";
 										iPhotoToolbarItemIdentifier,
 										MailToolbarItemIdentifier,
 										AdjustSplitViewToolbarItemIdentifier,
-										TurnSplitViewToolbarItemIdentifier,
+//										TurnSplitViewToolbarItemIdentifier,
 										ResetToolbarItemIdentifier,
 										FlipVolumeToolbarItemIdentifier,
 										VRPanelToolbarItemIdentifier,
@@ -1078,24 +1080,25 @@ static NSString*	VRPanelToolbarItemIdentifier			= @"MIP.tif";
     // added is found by referencing the @"item" key in the userInfo 
     NSToolbarItem *item = [[notif userInfo] objectForKey: @"item"];
 	
-	if ([[item itemIdentifier] isEqualToString:TurnSplitViewToolbarItemIdentifier])
-	{
-		if ([splitView isVertical])
-		{
-			[item setLabel:NSLocalizedString(@"Horizontal", nil)];
-			[item setPaletteLabel: NSLocalizedString(@"Horizontal",nil)];
-			[item setToolTip: NSLocalizedString(@"Change View from Vertical to Horizontal",nil)];
-			[item setImage:[NSImage imageNamed:@"horizontalSplitView"]];
-		}
-		else
-		{
-			[item setLabel:NSLocalizedString(@"Vertical", nil)];
-			[item setPaletteLabel: NSLocalizedString(@"Vertical",nil)];
-			[item setToolTip: NSLocalizedString(@"Change View from Horizontal to Vertical",nil)];
-			[item setImage:[NSImage imageNamed:@"verticalSplitView"]];
-		}
-	}
-	else if ([[item itemIdentifier] isEqualToString:AdjustSplitViewToolbarItemIdentifier])
+//	if ([[item itemIdentifier] isEqualToString:TurnSplitViewToolbarItemIdentifier])
+//	{
+//		if ([splitView isVertical])
+//		{
+//			[item setLabel:NSLocalizedString(@"Horizontal", nil)];
+//			[item setPaletteLabel: NSLocalizedString(@"Horizontal",nil)];
+//			[item setToolTip: NSLocalizedString(@"Change View from Vertical to Horizontal",nil)];
+//			[item setImage:[NSImage imageNamed:@"horizontalSplitView"]];
+//		}
+//		else
+//		{
+//			[item setLabel:NSLocalizedString(@"Vertical", nil)];
+//			[item setPaletteLabel: NSLocalizedString(@"Vertical",nil)];
+//			[item setToolTip: NSLocalizedString(@"Change View from Horizontal to Vertical",nil)];
+//			[item setImage:[NSImage imageNamed:@"verticalSplitView"]];
+//		}
+//	}
+//	else
+		if ([[item itemIdentifier] isEqualToString:AdjustSplitViewToolbarItemIdentifier])
 	{
 		if ([splitView isVertical])
 		{

@@ -23,7 +23,7 @@
 static NSString* 	PETCTToolbarIdentifier						= @"PETCT Viewer Toolbar Identifier";
 static NSString*	SameHeightSplitViewToolbarItemIdentifier	= @"sameHeightSplitView";
 static NSString*	SameWidthSplitViewToolbarItemIdentifier		= @"sameWidthSplitView";
-static NSString*	TurnSplitViewToolbarItemIdentifier			= @"turnSplitView";
+//static NSString*	TurnSplitViewToolbarItemIdentifier			= @"turnSplitView";
 static NSString*	ToolsToolbarItemIdentifier					= @"Tools";
 static NSString*	ThickSlabToolbarItemIdentifier				= @"ThickSlab";
 static NSString*	BlendingToolbarItemIdentifier				= @"2DBlending";
@@ -187,10 +187,10 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 	
 	[modalitySplitView setDelegate:self];
 	
-	if ([[NSUserDefaults standardUserDefaults] boolForKey:@"orthogonalMPRPETCTVerticalNSSplitView"])
-	{
-		[self turnModalitySplitView];
-	}
+//	if ([[NSUserDefaults standardUserDefaults] boolForKey:@"orthogonalMPRPETCTVerticalNSSplitView"])
+//	{
+//		[self turnModalitySplitView];
+//	}
 	
 	pixList = [pix retain];
 	filesList = files;
@@ -857,7 +857,7 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 {
 	[[NSNotificationCenter defaultCenter] removeObserver: self];
 	
-	[[NSUserDefaults standardUserDefaults] setBool:[modalitySplitView isVertical] forKey: @"orthogonalMPRPETCTVerticalNSSplitView"];
+//	[[NSUserDefaults standardUserDefaults] setBool:[modalitySplitView isVertical] forKey: @"orthogonalMPRPETCTVerticalNSSplitView"];
 	
 	if( movieTimer)
 	{
@@ -1082,25 +1082,25 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(adjustHeightSplitView)];
     }
-	else if ([itemIdent isEqual: TurnSplitViewToolbarItemIdentifier])
-	{
-		if (![modalitySplitView isVertical])
-		{
-			[toolbarItem setLabel:NSLocalizedString(@"Horizontal", nil)];
-			[toolbarItem setPaletteLabel: NSLocalizedString(@"Horizontal",nil)];
-			[toolbarItem setToolTip: NSLocalizedString(@"Modality in row",nil)];
-			[toolbarItem setImage:[NSImage imageNamed:@"horizontalSplitView"]];
-		}
-		else
-		{
-			[toolbarItem setLabel:NSLocalizedString(@"Vertical", nil)];
-			[toolbarItem setPaletteLabel: NSLocalizedString(@"Vertical",nil)];
-			[toolbarItem setToolTip: NSLocalizedString(@"Modality in column",nil)];
-			[toolbarItem setImage:[NSImage imageNamed:@"verticalSplitView"]];
-		}
-		[toolbarItem setTarget: self];
-		[toolbarItem setAction: @selector(turnModalitySplitView)];
-    }
+//	else if ([itemIdent isEqual: TurnSplitViewToolbarItemIdentifier])
+//	{
+//		if (![modalitySplitView isVertical])
+//		{
+//			[toolbarItem setLabel:NSLocalizedString(@"Horizontal", nil)];
+//			[toolbarItem setPaletteLabel: NSLocalizedString(@"Horizontal",nil)];
+//			[toolbarItem setToolTip: NSLocalizedString(@"Modality in row",nil)];
+//			[toolbarItem setImage:[NSImage imageNamed:@"horizontalSplitView"]];
+//		}
+//		else
+//		{
+//			[toolbarItem setLabel:NSLocalizedString(@"Vertical", nil)];
+//			[toolbarItem setPaletteLabel: NSLocalizedString(@"Vertical",nil)];
+//			[toolbarItem setToolTip: NSLocalizedString(@"Modality in column",nil)];
+//			[toolbarItem setImage:[NSImage imageNamed:@"verticalSplitView"]];
+//		}
+//		[toolbarItem setTarget: self];
+//		[toolbarItem setAction: @selector(turnModalitySplitView)];
+//    }
 	else if ([itemIdent isEqualToString: ResetToolbarItemIdentifier])
 	{
 		[toolbarItem setLabel: NSLocalizedString(@"Reset", nil)];
@@ -1186,7 +1186,7 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 										MailToolbarItemIdentifier,
 										SameHeightSplitViewToolbarItemIdentifier,
 										SameWidthSplitViewToolbarItemIdentifier,
-										TurnSplitViewToolbarItemIdentifier,
+//										TurnSplitViewToolbarItemIdentifier,
 										ResetToolbarItemIdentifier,
 										ExportToolbarItemIdentifier,
 										WLWWToolbarItemIdentifier,
@@ -1203,23 +1203,23 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
     // added is found by referencing the @"item" key in the userInfo 
     NSToolbarItem *item = [[notif userInfo] objectForKey: @"item"];
 	
-	if ([[item itemIdentifier] isEqualToString:TurnSplitViewToolbarItemIdentifier])
-	{
-		if (![modalitySplitView isVertical])
-		{
-			[item setLabel:NSLocalizedString(@"Horizontal",nil)];
-			[item setPaletteLabel: NSLocalizedString(@"Horizontal",nil)];
-			[item setToolTip: NSLocalizedString(@"Modality in row",nil)];
-			[item setImage:[NSImage imageNamed:@"horizontalSplitView"]];
-		}
-		else
-		{
-			[item setLabel:NSLocalizedString(@"Vertical",nil)];
-			[item setPaletteLabel: NSLocalizedString(@"Vertical",nil)];
-			[item setToolTip: NSLocalizedString(@"Modality in column",nil)];
-			[item setImage:[NSImage imageNamed:@"verticalSplitView"]];
-		}
-	}
+//	if ([[item itemIdentifier] isEqualToString:TurnSplitViewToolbarItemIdentifier])
+//	{
+//		if (![modalitySplitView isVertical])
+//		{
+//			[item setLabel:NSLocalizedString(@"Horizontal",nil)];
+//			[item setPaletteLabel: NSLocalizedString(@"Horizontal",nil)];
+//			[item setToolTip: NSLocalizedString(@"Modality in row",nil)];
+//			[item setImage:[NSImage imageNamed:@"horizontalSplitView"]];
+//		}
+//		else
+//		{
+//			[item setLabel:NSLocalizedString(@"Vertical",nil)];
+//			[item setPaletteLabel: NSLocalizedString(@"Vertical",nil)];
+//			[item setToolTip: NSLocalizedString(@"Modality in column",nil)];
+//			[item setImage:[NSImage imageNamed:@"verticalSplitView"]];
+//		}
+//	}
 }  
 
 - (void) toolbarDidRemoveItem: (NSNotification *) notif {
@@ -1350,45 +1350,45 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 	}
 }
 
-- (void) turnModalitySplitView
-{
-	[modalitySplitView setVertical:![modalitySplitView isVertical]];
-	[originalSplitView setVertical:![modalitySplitView isVertical]];
-	[xReslicedSplitView setVertical:![modalitySplitView isVertical]];
-	[yReslicedSplitView setVertical:![modalitySplitView isVertical]];
-	
-	[[self window] update];
-	[modalitySplitView setNeedsDisplay:YES];
-	[originalSplitView setNeedsDisplay:YES];
-	[xReslicedSplitView setNeedsDisplay:YES];
-	[yReslicedSplitView setNeedsDisplay:YES];
-	[self updateToolbarItems];
-}
+//- (void) turnModalitySplitView
+//{
+//	[modalitySplitView setVertical:![modalitySplitView isVertical]];
+//	[originalSplitView setVertical:![modalitySplitView isVertical]];
+//	[xReslicedSplitView setVertical:![modalitySplitView isVertical]];
+//	[yReslicedSplitView setVertical:![modalitySplitView isVertical]];
+//	
+//	[[self window] update];
+//	[modalitySplitView setNeedsDisplay:YES];
+//	[originalSplitView setNeedsDisplay:YES];
+//	[xReslicedSplitView setNeedsDisplay:YES];
+//	[yReslicedSplitView setNeedsDisplay:YES];
+//	[self updateToolbarItems];
+//}
 
 - (void) updateToolbarItems
 {
-	NSToolbarItem *item;
-	NSArray *toolbarItems = [toolbar items];
-	for(item in toolbarItems)
-	{
-		if ([[item itemIdentifier] isEqualToString:TurnSplitViewToolbarItemIdentifier])
-		{
-			if (![modalitySplitView isVertical])
-			{
-				[item setLabel:NSLocalizedString(@"Horizontal",nil)];
-				[item setPaletteLabel: NSLocalizedString(@"Horizontal",nil)];
-				[item setToolTip: NSLocalizedString(@"Modality in row",nil)];
-				[item setImage:[NSImage imageNamed:@"horizontalSplitView"]];
-			}
-			else
-			{
-				[item setLabel:NSLocalizedString(@"Vertical",nil)];
-				[item setPaletteLabel: NSLocalizedString(@"Vertical",nil)];
-				[item setToolTip: NSLocalizedString(@"Modality in column",nil)];
-				[item setImage:[NSImage imageNamed:@"verticalSplitView"]];
-			}
-		}
-	}
+//	NSToolbarItem *item;
+//	NSArray *toolbarItems = [toolbar items];
+//	for(item in toolbarItems)
+//	{
+//		if ([[item itemIdentifier] isEqualToString:TurnSplitViewToolbarItemIdentifier])
+//		{
+//			if (![modalitySplitView isVertical])
+//			{
+//				[item setLabel:NSLocalizedString(@"Horizontal",nil)];
+//				[item setPaletteLabel: NSLocalizedString(@"Horizontal",nil)];
+//				[item setToolTip: NSLocalizedString(@"Modality in row",nil)];
+//				[item setImage:[NSImage imageNamed:@"horizontalSplitView"]];
+//			}
+//			else
+//			{
+//				[item setLabel:NSLocalizedString(@"Vertical",nil)];
+//				[item setPaletteLabel: NSLocalizedString(@"Vertical",nil)];
+//				[item setToolTip: NSLocalizedString(@"Modality in column",nil)];
+//				[item setImage:[NSImage imageNamed:@"verticalSplitView"]];
+//			}
+//		}
+//	}
 }
 
 - (void) expandAllSplitViews

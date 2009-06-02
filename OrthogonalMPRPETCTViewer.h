@@ -118,7 +118,7 @@
 
 // NSSplitView Control
 - (void) adjustHeightSplitView;
-- (void) turnModalitySplitView;
+//- (void) turnModalitySplitView;
 - (void) updateToolbarItems;
 
 - (void) fullWindowView:(int)index:(id)sender;

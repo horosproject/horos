@@ -90,7 +90,7 @@
 
 // NSSplitView Control
 - (void) adjustSplitView;
-- (void) turnSplitView;
+//- (void) turnSplitView;
 - (void) updateToolbarItems;
 
 // Tools Selection
