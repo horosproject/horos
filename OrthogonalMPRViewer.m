@@ -1060,7 +1060,6 @@ static NSString*	VRPanelToolbarItemIdentifier			= @"MIP.tif";
 										MovieToolbarItemIdentifier,
 										ToolsToolbarItemIdentifier,
 										ExportToolbarItemIdentifier,
-									//	QTExportToolbarItemIdentifier,
 										iPhotoToolbarItemIdentifier,
 										MailToolbarItemIdentifier,
 										AdjustSplitViewToolbarItemIdentifier,
@@ -1068,7 +1067,6 @@ static NSString*	VRPanelToolbarItemIdentifier			= @"MIP.tif";
 										ResetToolbarItemIdentifier,
 										FlipVolumeToolbarItemIdentifier,
 										VRPanelToolbarItemIdentifier,
-										MovieToolbarItemIdentifier,
 										nil];
 }
 
