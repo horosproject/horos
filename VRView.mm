@@ -1038,6 +1038,8 @@ public:
 
 - (NSDictionary*) exportDCMCurrentImageIn16bit: (BOOL) fullDepth
 {
+	[self resetAutorotate: self];
+	
 	long width, height, spp, bpp;
 	float o[ 9];
 	NSString *sopuid = nil;
