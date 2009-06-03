@@ -249,6 +249,12 @@ static NSArray*	statesArray = nil;
 	NSString		*subFolder;
 	long			subFolderInt;
 	
+	if([extension length] > 4)
+	{
+		NSLog( @" **** WARNING : strange extension : %@ - It will be replaced by dcm.", extension);
+		extension = [NSString stringWithString:@"dcm"]; 
+	}
+	
 	[AppController createNoIndexDirectoryIfNecessary: OUTpath];
 	
 	do
@@ -1946,7 +1952,7 @@ static NSArray*	statesArray = nil;
 
 - (void) addDICOMDIR:(NSString*) dicomdir :(NSMutableArray*) files
 {
-	DicomDirParser				*parsed		= [[DicomDirParser alloc] init: dicomdir];
+	DicomDirParser *parsed = [[DicomDirParser alloc] init: dicomdir];
 	
 	[parsed parseArray: files];
 	
@@ -2974,6 +2980,9 @@ static NSArray*	statesArray = nil;
 		NSString	*dstPath;
 		NSString	*extension = [srcPath pathExtension];
 		
+		if( [extension length] > 4)
+			extension = [NSString stringWithString:@"dcm"];
+		
 		@try
 		{
 			if( copyThread == YES && [[srcPath stringByDeletingLastPathComponent] isEqualToString:INpath] == NO)
@@ -3116,6 +3125,9 @@ static NSArray*	statesArray = nil;
 				if([extension isEqualToString:@""])
 					extension = [NSString stringWithString:@"dcm"]; 
 				
+				if([extension length] > 4)
+					extension = [NSString stringWithString:@"dcm"]; 
+				
 				NSString *dstPath = [self getNewFileDatabasePath:extension];
 				
 				if( [[NSFileManager defaultManager] copyPath:srcPath toPath:dstPath handler:nil])
@@ -3248,8 +3260,11 @@ static NSArray*	statesArray = nil;
 					{
 						[curFile release];
 						
-						if([extension isEqualToString:@""])
+						if( [extension isEqualToString:@""])
 							extension = [NSString stringWithString:@"dcm"]; 
+						
+						if( [extension length] > 4)
+							extension = [NSString stringWithString:@"dcm"];
 						
 						NSString *dstPath = [self getNewFileDatabasePath:extension];
 						
@@ -12746,6 +12761,9 @@ static NSArray*	openSubSeriesArray = nil;
 							for( NSString *s in [itemPath pathComponents])
 							{
 								NSString *e = [s pathExtension];
+								
+								if( [e length] > 4)
+									e = [NSString stringWithString:@"dcm"];
 								
 								if( [e isEqualToString:@""] || [[e lowercaseString] isEqualToString:@"dcm"] || [[e lowercaseString] isEqualToString:@"img"] || [[e lowercaseString] isEqualToString:@"im"]  || [[e lowercaseString] isEqualToString:@"dicom"])
 								{

@@ -46,12 +46,16 @@
 		if ([fileManager fileExistsAtPath:filePath isDirectory: &isDirectory] && !isDirectory)
 		{
 			// only files with DCM or no extension		
-			if ([[uppercaseFilePath pathExtension] isEqualToString: @".DCM"] || [[uppercaseFilePath pathExtension] isEqualToString: @""])
+			if ([[uppercaseFilePath pathExtension] isEqualToString: @".DCM"] || [[uppercaseFilePath pathExtension] isEqualToString: @""] || [[uppercaseFilePath pathExtension] length] > 4)
 			{
-				int			j							= 0;
-				BOOL		found						= FALSE;
+				int j = 0;
+				BOOL found = FALSE;
 				
-				cutFilePath = [uppercaseFilePath stringByDeletingPathExtension];
+				if( [[uppercaseFilePath pathExtension] length] <= 4)
+					cutFilePath = [uppercaseFilePath stringByDeletingPathExtension];
+				else
+					cutFilePath = uppercaseFilePath;
+					
 				for (j = 0; j < [dicomdirFileList count] && !found; j++)
 				{
 					if ([cutFilePath isEqualToString: [dicomdirFileList objectAtIndex: j]])
@@ -102,7 +106,11 @@
 			if( i-start-1 > 0)
 			{
 				file = [dirpath stringByAppendingString:[NSString stringWithCString: &(buffer[start+1]) length:i-start-1]];
-				[result addObject: [[file uppercaseString] stringByDeletingPathExtension]];
+				
+				if( [[file pathExtension] length] <= 4)
+					[result addObject: [[file uppercaseString] stringByDeletingPathExtension]];
+				else
+					[result addObject: [file uppercaseString]];
 			}
 		}
 		
@@ -134,6 +142,7 @@
     [aTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/dcmdump"]];
     [theArguments addObject:srcFile];
 	
+	[theArguments addObject:@"+L"];
 	[theArguments addObject:@"+P"];
 	[theArguments addObject:@"0004,1500"];
 	
