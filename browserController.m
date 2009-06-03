@@ -1708,21 +1708,24 @@ static NSArray*	statesArray = nil;
 						
 						for( NSManagedObject *objectToSend in objectsToSend )
 						{
-							if( [previousPatientUID isEqualToString: [objectToSend valueForKeyPath:@"series.study.patientID"]])
+							if( [[NSFileManager defaultManager] fileExistsAtPath: [objectToSend valueForKey: @"completePath"]]) // Dont try to send files that are not available
 							{
-								[samePatientArray addObject: objectToSend];
-							}
-							else
-							{
-								// Send the collected files from the same patient
-								
-								if( [samePatientArray count]) [self executeSend: samePatientArray server: server dictionary: copy];
-								
-								// Reset
-								[samePatientArray removeAllObjects];
-								[samePatientArray addObject: objectToSend];
-								
-								previousPatientUID = [objectToSend valueForKeyPath:@"series.study.patientID"];
+								if( [previousPatientUID isEqualToString: [objectToSend valueForKeyPath:@"series.study.patientID"]])
+								{
+									[samePatientArray addObject: objectToSend];
+								}
+								else
+								{
+									// Send the collected files from the same patient
+									
+									if( [samePatientArray count]) [self executeSend: samePatientArray server: server dictionary: copy];
+									
+									// Reset
+									[samePatientArray removeAllObjects];
+									[samePatientArray addObject: objectToSend];
+									
+									previousPatientUID = [objectToSend valueForKeyPath:@"series.study.patientID"];
+								}
 							}
 						}
 						
