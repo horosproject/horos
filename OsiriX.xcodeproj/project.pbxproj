@@ -2176,98 +2176,6 @@
 		BFBF40E009B6828D00545F5E /* extneg.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D3209B6828600545F5E /* extneg.h */; };
 		BFBF40E109B6828D00545F5E /* lst.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D3309B6828600545F5E /* lst.cc */; };
 		BFBF40E209B6828D00545F5E /* lst.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D3409B6828600545F5E /* lst.h */; };
-		BFBF40E309B6828D00545F5E /* dcmpstat.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D3609B6828600545F5E /* dcmpstat.cc */; };
-		BFBF40E409B6828D00545F5E /* dcmpstat.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D3709B6828600545F5E /* dcmpstat.h */; };
-		BFBF40E509B6828D00545F5E /* dvcache.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D3809B6828600545F5E /* dvcache.h */; };
-		BFBF40E609B6828D00545F5E /* dviface.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D3909B6828600545F5E /* dviface.cc */; };
-		BFBF40E709B6828D00545F5E /* dviface.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D3A09B6828600545F5E /* dviface.h */; };
-		BFBF40E809B6828D00545F5E /* dvpsab.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D3B09B6828600545F5E /* dvpsab.cc */; };
-		BFBF40E909B6828D00545F5E /* dvpsab.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D3C09B6828600545F5E /* dvpsab.h */; };
-		BFBF40EA09B6828D00545F5E /* dvpsabl.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D3D09B6828600545F5E /* dvpsabl.cc */; };
-		BFBF40EB09B6828D00545F5E /* dvpsabl.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D3E09B6828600545F5E /* dvpsabl.h */; };
-		BFBF40EC09B6828D00545F5E /* dvpsal.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D3F09B6828600545F5E /* dvpsal.cc */; };
-		BFBF40ED09B6828D00545F5E /* dvpsal.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D4009B6828600545F5E /* dvpsal.h */; };
-		BFBF40EE09B6828D00545F5E /* dvpsall.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D4109B6828600545F5E /* dvpsall.cc */; };
-		BFBF40EF09B6828D00545F5E /* dvpsall.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D4209B6828600545F5E /* dvpsall.h */; };
-		BFBF40F009B6828D00545F5E /* dvpscf.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D4309B6828600545F5E /* dvpscf.cc */; };
-		BFBF40F109B6828D00545F5E /* dvpscf.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D4409B6828600545F5E /* dvpscf.h */; };
-		BFBF40F209B6828D00545F5E /* dvpscu.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D4509B6828600545F5E /* dvpscu.cc */; };
-		BFBF40F309B6828D00545F5E /* dvpscu.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D4609B6828600545F5E /* dvpscu.h */; };
-		BFBF40F409B6828D00545F5E /* dvpscul.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D4709B6828600545F5E /* dvpscul.cc */; };
-		BFBF40F509B6828D00545F5E /* dvpscul.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D4809B6828600545F5E /* dvpscul.h */; };
-		BFBF40F609B6828D00545F5E /* dvpsda.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D4909B6828600545F5E /* dvpsda.cc */; };
-		BFBF40F709B6828D00545F5E /* dvpsda.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D4A09B6828600545F5E /* dvpsda.h */; };
-		BFBF40F809B6828D00545F5E /* dvpsdal.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D4B09B6828600545F5E /* dvpsdal.cc */; };
-		BFBF40F909B6828D00545F5E /* dvpsdal.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D4C09B6828600545F5E /* dvpsdal.h */; };
-		BFBF40FA09B6828D00545F5E /* dvpsdef.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D4D09B6828600545F5E /* dvpsdef.h */; };
-		BFBF40FB09B6828D00545F5E /* dvpsfs.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D4E09B6828600545F5E /* dvpsfs.cc */; };
-		BFBF40FC09B6828D00545F5E /* dvpsfs.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D4F09B6828600545F5E /* dvpsfs.h */; };
-		BFBF40FD09B6828D00545F5E /* dvpsga.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D5009B6828600545F5E /* dvpsga.cc */; };
-		BFBF40FE09B6828D00545F5E /* dvpsga.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D5109B6828600545F5E /* dvpsga.h */; };
-		BFBF40FF09B6828D00545F5E /* dvpsgal.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D5209B6828600545F5E /* dvpsgal.cc */; };
-		BFBF410009B6828D00545F5E /* dvpsgal.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D5309B6828600545F5E /* dvpsgal.h */; };
-		BFBF410109B6828D00545F5E /* dvpsgl.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D5409B6828600545F5E /* dvpsgl.cc */; };
-		BFBF410209B6828D00545F5E /* dvpsgl.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D5509B6828700545F5E /* dvpsgl.h */; };
-		BFBF410309B6828D00545F5E /* dvpsgll.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D5609B6828700545F5E /* dvpsgll.cc */; };
-		BFBF410409B6828D00545F5E /* dvpsgll.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D5709B6828700545F5E /* dvpsgll.h */; };
-		BFBF410509B6828D00545F5E /* dvpsgr.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D5809B6828700545F5E /* dvpsgr.cc */; };
-		BFBF410609B6828D00545F5E /* dvpsgr.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D5909B6828700545F5E /* dvpsgr.h */; };
-		BFBF410709B6828D00545F5E /* dvpsgrl.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D5A09B6828700545F5E /* dvpsgrl.cc */; };
-		BFBF410809B6828D00545F5E /* dvpsgrl.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D5B09B6828700545F5E /* dvpsgrl.h */; };
-		BFBF410909B6828D00545F5E /* dvpshlp.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D5C09B6828700545F5E /* dvpshlp.cc */; };
-		BFBF410A09B6828D00545F5E /* dvpshlp.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D5D09B6828700545F5E /* dvpshlp.h */; };
-		BFBF410B09B6828D00545F5E /* dvpsib.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D5E09B6828700545F5E /* dvpsib.cc */; };
-		BFBF410C09B6828D00545F5E /* dvpsib.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D5F09B6828700545F5E /* dvpsib.h */; };
-		BFBF410D09B6828D00545F5E /* dvpsibl.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D6009B6828700545F5E /* dvpsibl.cc */; };
-		BFBF410E09B6828D00545F5E /* dvpsibl.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D6109B6828700545F5E /* dvpsibl.h */; };
-		BFBF410F09B6828D00545F5E /* dvpsmsg.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D6209B6828700545F5E /* dvpsmsg.cc */; };
-		BFBF411009B6828D00545F5E /* dvpsmsg.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D6309B6828700545F5E /* dvpsmsg.h */; };
-		BFBF411109B6828D00545F5E /* dvpsov.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D6409B6828700545F5E /* dvpsov.cc */; };
-		BFBF411209B6828D00545F5E /* dvpsov.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D6509B6828700545F5E /* dvpsov.h */; };
-		BFBF411309B6828D00545F5E /* dvpsovl.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D6609B6828700545F5E /* dvpsovl.cc */; };
-		BFBF411409B6828D00545F5E /* dvpsovl.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D6709B6828700545F5E /* dvpsovl.h */; };
-		BFBF411509B6828D00545F5E /* dvpspl.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D6809B6828700545F5E /* dvpspl.cc */; };
-		BFBF411609B6828D00545F5E /* dvpspl.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D6909B6828700545F5E /* dvpspl.h */; };
-		BFBF411709B6828D00545F5E /* dvpspl2.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D6A09B6828700545F5E /* dvpspl2.cc */; };
-		BFBF411809B6828D00545F5E /* dvpspll.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D6B09B6828700545F5E /* dvpspll.cc */; };
-		BFBF411909B6828D00545F5E /* dvpspll.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D6C09B6828700545F5E /* dvpspll.h */; };
-		BFBF411A09B6828D00545F5E /* dvpspr.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D6D09B6828700545F5E /* dvpspr.cc */; };
-		BFBF411B09B6828D00545F5E /* dvpspr.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D6E09B6828700545F5E /* dvpspr.h */; };
-		BFBF411C09B6828D00545F5E /* dvpsprt.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D6F09B6828700545F5E /* dvpsprt.cc */; };
-		BFBF411D09B6828D00545F5E /* dvpsprt.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D7009B6828700545F5E /* dvpsprt.h */; };
-		BFBF411E09B6828D00545F5E /* dvpsri.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D7109B6828700545F5E /* dvpsri.cc */; };
-		BFBF411F09B6828D00545F5E /* dvpsri.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D7209B6828700545F5E /* dvpsri.h */; };
-		BFBF412009B6828D00545F5E /* dvpsril.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D7309B6828700545F5E /* dvpsril.cc */; };
-		BFBF412109B6828D00545F5E /* dvpsril.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D7409B6828700545F5E /* dvpsril.h */; };
-		BFBF412209B6828D00545F5E /* dvpsrs.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D7509B6828700545F5E /* dvpsrs.cc */; };
-		BFBF412309B6828D00545F5E /* dvpsrs.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D7609B6828700545F5E /* dvpsrs.h */; };
-		BFBF412409B6828D00545F5E /* dvpsrsl.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D7709B6828700545F5E /* dvpsrsl.cc */; };
-		BFBF412509B6828D00545F5E /* dvpsrsl.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D7809B6828700545F5E /* dvpsrsl.h */; };
-		BFBF412609B6828D00545F5E /* dvpssp.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D7909B6828700545F5E /* dvpssp.cc */; };
-		BFBF412709B6828D00545F5E /* dvpssp.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D7A09B6828700545F5E /* dvpssp.h */; };
-		BFBF412809B6828D00545F5E /* dvpsspl.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D7B09B6828700545F5E /* dvpsspl.cc */; };
-		BFBF412909B6828D00545F5E /* dvpsspl.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D7C09B6828700545F5E /* dvpsspl.h */; };
-		BFBF412A09B6828D00545F5E /* dvpssv.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D7D09B6828700545F5E /* dvpssv.cc */; };
-		BFBF412B09B6828D00545F5E /* dvpssv.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D7E09B6828700545F5E /* dvpssv.h */; };
-		BFBF412C09B6828D00545F5E /* dvpssvl.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D7F09B6828700545F5E /* dvpssvl.cc */; };
-		BFBF412D09B6828D00545F5E /* dvpssvl.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D8009B6828700545F5E /* dvpssvl.h */; };
-		BFBF412E09B6828D00545F5E /* dvpstat.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D8109B6828700545F5E /* dvpstat.cc */; };
-		BFBF412F09B6828D00545F5E /* dvpstat.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D8209B6828700545F5E /* dvpstat.h */; };
-		BFBF413009B6828D00545F5E /* dvpstx.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D8309B6828700545F5E /* dvpstx.cc */; };
-		BFBF413109B6828D00545F5E /* dvpstx.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D8409B6828700545F5E /* dvpstx.h */; };
-		BFBF413209B6828D00545F5E /* dvpstxl.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D8509B6828700545F5E /* dvpstxl.cc */; };
-		BFBF413309B6828D00545F5E /* dvpstxl.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D8609B6828700545F5E /* dvpstxl.h */; };
-		BFBF413409B6828D00545F5E /* dvpstyp.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D8709B6828700545F5E /* dvpstyp.h */; };
-		BFBF413509B6828D00545F5E /* dvpsvl.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D8809B6828700545F5E /* dvpsvl.cc */; };
-		BFBF413609B6828D00545F5E /* dvpsvl.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D8909B6828700545F5E /* dvpsvl.h */; };
-		BFBF413709B6828D00545F5E /* dvpsvll.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D8A09B6828700545F5E /* dvpsvll.cc */; };
-		BFBF413809B6828D00545F5E /* dvpsvll.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D8B09B6828700545F5E /* dvpsvll.h */; };
-		BFBF413909B6828D00545F5E /* dvpsvw.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D8C09B6828700545F5E /* dvpsvw.cc */; };
-		BFBF413A09B6828D00545F5E /* dvpsvw.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D8D09B6828700545F5E /* dvpsvw.h */; };
-		BFBF413B09B6828D00545F5E /* dvpsvwl.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D8E09B6828700545F5E /* dvpsvwl.cc */; };
-		BFBF413C09B6828D00545F5E /* dvpsvwl.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D8F09B6828700545F5E /* dvpsvwl.h */; };
-		BFBF413D09B6828D00545F5E /* dvsighdl.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D9009B6828700545F5E /* dvsighdl.cc */; };
-		BFBF413E09B6828D00545F5E /* dvsighdl.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D9109B6828700545F5E /* dvsighdl.h */; };
 		BFBF413F09B6828D00545F5E /* dcmqrcbf.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D9309B6828700545F5E /* dcmqrcbf.cc */; };
 		BFBF414009B6828D00545F5E /* dcmqrcbf.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D9409B6828700545F5E /* dcmqrcbf.h */; };
 		BFBF414109B6828D00545F5E /* dcmqrcbg.mm in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D9509B6828700545F5E /* dcmqrcbg.mm */; };
@@ -2424,15 +2332,6 @@
 		BFBF41DE09B6828D00545F5E /* tlslayer.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3E3509B6828A00545F5E /* tlslayer.h */; };
 		BFBF41DF09B6828D00545F5E /* tlstrans.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3E3609B6828A00545F5E /* tlstrans.cc */; };
 		BFBF41E009B6828D00545F5E /* tlstrans.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3E3709B6828A00545F5E /* tlstrans.h */; };
-		BFBF41E109B6828D00545F5E /* wlds.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3E3909B6828A00545F5E /* wlds.cc */; };
-		BFBF41E209B6828D00545F5E /* wlds.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3E3A09B6828A00545F5E /* wlds.h */; };
-		BFBF41E309B6828D00545F5E /* wldsfs.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3E3B09B6828A00545F5E /* wldsfs.cc */; };
-		BFBF41E409B6828D00545F5E /* wldsfs.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3E3C09B6828A00545F5E /* wldsfs.h */; };
-		BFBF41E509B6828D00545F5E /* wlfsim.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3E3D09B6828A00545F5E /* wlfsim.cc */; };
-		BFBF41E609B6828D00545F5E /* wlfsim.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3E3E09B6828A00545F5E /* wlfsim.h */; };
-		BFBF41E709B6828D00545F5E /* wlmactmg.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3E3F09B6828A00545F5E /* wlmactmg.cc */; };
-		BFBF41E809B6828D00545F5E /* wlmactmg.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3E4009B6828A00545F5E /* wlmactmg.h */; };
-		BFBF41E909B6828D00545F5E /* wltypdef.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3E4109B6828A00545F5E /* wltypdef.h */; };
 		BFBF41EA09B6828D00545F5E /* ofalgo.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3E4309B6828A00545F5E /* ofalgo.h */; };
 		BFBF41EB09B6828D00545F5E /* ofbmanip.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3E4409B6828A00545F5E /* ofbmanip.h */; };
 		BFBF41EC09B6828D00545F5E /* ofcast.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3E4509B6828A00545F5E /* ofcast.h */; };
@@ -6921,98 +6820,6 @@
 		BFBF3D3209B6828600545F5E /* extneg.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = extneg.h; sourceTree = "<group>"; };
 		BFBF3D3309B6828600545F5E /* lst.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = lst.cc; sourceTree = "<group>"; };
 		BFBF3D3409B6828600545F5E /* lst.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = lst.h; sourceTree = "<group>"; };
-		BFBF3D3609B6828600545F5E /* dcmpstat.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = dcmpstat.cc; sourceTree = "<group>"; };
-		BFBF3D3709B6828600545F5E /* dcmpstat.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dcmpstat.h; sourceTree = "<group>"; };
-		BFBF3D3809B6828600545F5E /* dvcache.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dvcache.h; sourceTree = "<group>"; };
-		BFBF3D3909B6828600545F5E /* dviface.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = dviface.cc; sourceTree = "<group>"; };
-		BFBF3D3A09B6828600545F5E /* dviface.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dviface.h; sourceTree = "<group>"; };
-		BFBF3D3B09B6828600545F5E /* dvpsab.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = dvpsab.cc; sourceTree = "<group>"; };
-		BFBF3D3C09B6828600545F5E /* dvpsab.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dvpsab.h; sourceTree = "<group>"; };
-		BFBF3D3D09B6828600545F5E /* dvpsabl.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = dvpsabl.cc; sourceTree = "<group>"; };
-		BFBF3D3E09B6828600545F5E /* dvpsabl.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dvpsabl.h; sourceTree = "<group>"; };
-		BFBF3D3F09B6828600545F5E /* dvpsal.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = dvpsal.cc; sourceTree = "<group>"; };
-		BFBF3D4009B6828600545F5E /* dvpsal.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dvpsal.h; sourceTree = "<group>"; };
-		BFBF3D4109B6828600545F5E /* dvpsall.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = dvpsall.cc; sourceTree = "<group>"; };
-		BFBF3D4209B6828600545F5E /* dvpsall.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dvpsall.h; sourceTree = "<group>"; };
-		BFBF3D4309B6828600545F5E /* dvpscf.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = dvpscf.cc; sourceTree = "<group>"; };
-		BFBF3D4409B6828600545F5E /* dvpscf.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dvpscf.h; sourceTree = "<group>"; };
-		BFBF3D4509B6828600545F5E /* dvpscu.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = dvpscu.cc; sourceTree = "<group>"; };
-		BFBF3D4609B6828600545F5E /* dvpscu.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dvpscu.h; sourceTree = "<group>"; };
-		BFBF3D4709B6828600545F5E /* dvpscul.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = dvpscul.cc; sourceTree = "<group>"; };
-		BFBF3D4809B6828600545F5E /* dvpscul.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dvpscul.h; sourceTree = "<group>"; };
-		BFBF3D4909B6828600545F5E /* dvpsda.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = dvpsda.cc; sourceTree = "<group>"; };
-		BFBF3D4A09B6828600545F5E /* dvpsda.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dvpsda.h; sourceTree = "<group>"; };
-		BFBF3D4B09B6828600545F5E /* dvpsdal.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = dvpsdal.cc; sourceTree = "<group>"; };
-		BFBF3D4C09B6828600545F5E /* dvpsdal.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dvpsdal.h; sourceTree = "<group>"; };
-		BFBF3D4D09B6828600545F5E /* dvpsdef.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dvpsdef.h; sourceTree = "<group>"; };
-		BFBF3D4E09B6828600545F5E /* dvpsfs.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = dvpsfs.cc; sourceTree = "<group>"; };
-		BFBF3D4F09B6828600545F5E /* dvpsfs.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dvpsfs.h; sourceTree = "<group>"; };
-		BFBF3D5009B6828600545F5E /* dvpsga.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = dvpsga.cc; sourceTree = "<group>"; };
-		BFBF3D5109B6828600545F5E /* dvpsga.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dvpsga.h; sourceTree = "<group>"; };
-		BFBF3D5209B6828600545F5E /* dvpsgal.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = dvpsgal.cc; sourceTree = "<group>"; };
-		BFBF3D5309B6828600545F5E /* dvpsgal.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dvpsgal.h; sourceTree = "<group>"; };
-		BFBF3D5409B6828600545F5E /* dvpsgl.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = dvpsgl.cc; sourceTree = "<group>"; };
-		BFBF3D5509B6828700545F5E /* dvpsgl.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dvpsgl.h; sourceTree = "<group>"; };
-		BFBF3D5609B6828700545F5E /* dvpsgll.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = dvpsgll.cc; sourceTree = "<group>"; };
-		BFBF3D5709B6828700545F5E /* dvpsgll.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dvpsgll.h; sourceTree = "<group>"; };
-		BFBF3D5809B6828700545F5E /* dvpsgr.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = dvpsgr.cc; sourceTree = "<group>"; };
-		BFBF3D5909B6828700545F5E /* dvpsgr.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dvpsgr.h; sourceTree = "<group>"; };
-		BFBF3D5A09B6828700545F5E /* dvpsgrl.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = dvpsgrl.cc; sourceTree = "<group>"; };
-		BFBF3D5B09B6828700545F5E /* dvpsgrl.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dvpsgrl.h; sourceTree = "<group>"; };
-		BFBF3D5C09B6828700545F5E /* dvpshlp.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = dvpshlp.cc; sourceTree = "<group>"; };
-		BFBF3D5D09B6828700545F5E /* dvpshlp.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dvpshlp.h; sourceTree = "<group>"; };
-		BFBF3D5E09B6828700545F5E /* dvpsib.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = dvpsib.cc; sourceTree = "<group>"; };
-		BFBF3D5F09B6828700545F5E /* dvpsib.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dvpsib.h; sourceTree = "<group>"; };
-		BFBF3D6009B6828700545F5E /* dvpsibl.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = dvpsibl.cc; sourceTree = "<group>"; };
-		BFBF3D6109B6828700545F5E /* dvpsibl.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dvpsibl.h; sourceTree = "<group>"; };
-		BFBF3D6209B6828700545F5E /* dvpsmsg.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = dvpsmsg.cc; sourceTree = "<group>"; };
-		BFBF3D6309B6828700545F5E /* dvpsmsg.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dvpsmsg.h; sourceTree = "<group>"; };
-		BFBF3D6409B6828700545F5E /* dvpsov.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = dvpsov.cc; sourceTree = "<group>"; };
-		BFBF3D6509B6828700545F5E /* dvpsov.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dvpsov.h; sourceTree = "<group>"; };
-		BFBF3D6609B6828700545F5E /* dvpsovl.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = dvpsovl.cc; sourceTree = "<group>"; };
-		BFBF3D6709B6828700545F5E /* dvpsovl.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dvpsovl.h; sourceTree = "<group>"; };
-		BFBF3D6809B6828700545F5E /* dvpspl.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = dvpspl.cc; sourceTree = "<group>"; };
-		BFBF3D6909B6828700545F5E /* dvpspl.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dvpspl.h; sourceTree = "<group>"; };
-		BFBF3D6A09B6828700545F5E /* dvpspl2.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = dvpspl2.cc; sourceTree = "<group>"; };
-		BFBF3D6B09B6828700545F5E /* dvpspll.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = dvpspll.cc; sourceTree = "<group>"; };
-		BFBF3D6C09B6828700545F5E /* dvpspll.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dvpspll.h; sourceTree = "<group>"; };
-		BFBF3D6D09B6828700545F5E /* dvpspr.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = dvpspr.cc; sourceTree = "<group>"; };
-		BFBF3D6E09B6828700545F5E /* dvpspr.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dvpspr.h; sourceTree = "<group>"; };
-		BFBF3D6F09B6828700545F5E /* dvpsprt.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = dvpsprt.cc; sourceTree = "<group>"; };
-		BFBF3D7009B6828700545F5E /* dvpsprt.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dvpsprt.h; sourceTree = "<group>"; };
-		BFBF3D7109B6828700545F5E /* dvpsri.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = dvpsri.cc; sourceTree = "<group>"; };
-		BFBF3D7209B6828700545F5E /* dvpsri.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dvpsri.h; sourceTree = "<group>"; };
-		BFBF3D7309B6828700545F5E /* dvpsril.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = dvpsril.cc; sourceTree = "<group>"; };
-		BFBF3D7409B6828700545F5E /* dvpsril.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dvpsril.h; sourceTree = "<group>"; };
-		BFBF3D7509B6828700545F5E /* dvpsrs.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = dvpsrs.cc; sourceTree = "<group>"; };
-		BFBF3D7609B6828700545F5E /* dvpsrs.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dvpsrs.h; sourceTree = "<group>"; };
-		BFBF3D7709B6828700545F5E /* dvpsrsl.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = dvpsrsl.cc; sourceTree = "<group>"; };
-		BFBF3D7809B6828700545F5E /* dvpsrsl.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dvpsrsl.h; sourceTree = "<group>"; };
-		BFBF3D7909B6828700545F5E /* dvpssp.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = dvpssp.cc; sourceTree = "<group>"; };
-		BFBF3D7A09B6828700545F5E /* dvpssp.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dvpssp.h; sourceTree = "<group>"; };
-		BFBF3D7B09B6828700545F5E /* dvpsspl.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = dvpsspl.cc; sourceTree = "<group>"; };
-		BFBF3D7C09B6828700545F5E /* dvpsspl.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dvpsspl.h; sourceTree = "<group>"; };
-		BFBF3D7D09B6828700545F5E /* dvpssv.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = dvpssv.cc; sourceTree = "<group>"; };
-		BFBF3D7E09B6828700545F5E /* dvpssv.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dvpssv.h; sourceTree = "<group>"; };
-		BFBF3D7F09B6828700545F5E /* dvpssvl.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = dvpssvl.cc; sourceTree = "<group>"; };
-		BFBF3D8009B6828700545F5E /* dvpssvl.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dvpssvl.h; sourceTree = "<group>"; };
-		BFBF3D8109B6828700545F5E /* dvpstat.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = dvpstat.cc; sourceTree = "<group>"; };
-		BFBF3D8209B6828700545F5E /* dvpstat.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dvpstat.h; sourceTree = "<group>"; };
-		BFBF3D8309B6828700545F5E /* dvpstx.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = dvpstx.cc; sourceTree = "<group>"; };
-		BFBF3D8409B6828700545F5E /* dvpstx.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dvpstx.h; sourceTree = "<group>"; };
-		BFBF3D8509B6828700545F5E /* dvpstxl.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = dvpstxl.cc; sourceTree = "<group>"; };
-		BFBF3D8609B6828700545F5E /* dvpstxl.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dvpstxl.h; sourceTree = "<group>"; };
-		BFBF3D8709B6828700545F5E /* dvpstyp.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dvpstyp.h; sourceTree = "<group>"; };
-		BFBF3D8809B6828700545F5E /* dvpsvl.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = dvpsvl.cc; sourceTree = "<group>"; };
-		BFBF3D8909B6828700545F5E /* dvpsvl.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dvpsvl.h; sourceTree = "<group>"; };
-		BFBF3D8A09B6828700545F5E /* dvpsvll.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = dvpsvll.cc; sourceTree = "<group>"; };
-		BFBF3D8B09B6828700545F5E /* dvpsvll.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dvpsvll.h; sourceTree = "<group>"; };
-		BFBF3D8C09B6828700545F5E /* dvpsvw.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = dvpsvw.cc; sourceTree = "<group>"; };
-		BFBF3D8D09B6828700545F5E /* dvpsvw.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dvpsvw.h; sourceTree = "<group>"; };
-		BFBF3D8E09B6828700545F5E /* dvpsvwl.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = dvpsvwl.cc; sourceTree = "<group>"; };
-		BFBF3D8F09B6828700545F5E /* dvpsvwl.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dvpsvwl.h; sourceTree = "<group>"; };
-		BFBF3D9009B6828700545F5E /* dvsighdl.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = dvsighdl.cc; sourceTree = "<group>"; };
-		BFBF3D9109B6828700545F5E /* dvsighdl.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dvsighdl.h; sourceTree = "<group>"; };
 		BFBF3D9309B6828700545F5E /* dcmqrcbf.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = dcmqrcbf.cc; sourceTree = "<group>"; };
 		BFBF3D9409B6828700545F5E /* dcmqrcbf.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dcmqrcbf.h; sourceTree = "<group>"; };
 		BFBF3D9509B6828700545F5E /* dcmqrcbg.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = dcmqrcbg.mm; sourceTree = "<group>"; };
@@ -7172,15 +6979,6 @@
 		BFBF3E3509B6828A00545F5E /* tlslayer.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = tlslayer.h; sourceTree = "<group>"; };
 		BFBF3E3609B6828A00545F5E /* tlstrans.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = tlstrans.cc; sourceTree = "<group>"; };
 		BFBF3E3709B6828A00545F5E /* tlstrans.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = tlstrans.h; sourceTree = "<group>"; };
-		BFBF3E3909B6828A00545F5E /* wlds.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = wlds.cc; sourceTree = "<group>"; };
-		BFBF3E3A09B6828A00545F5E /* wlds.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = wlds.h; sourceTree = "<group>"; };
-		BFBF3E3B09B6828A00545F5E /* wldsfs.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = wldsfs.cc; sourceTree = "<group>"; };
-		BFBF3E3C09B6828A00545F5E /* wldsfs.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = wldsfs.h; sourceTree = "<group>"; };
-		BFBF3E3D09B6828A00545F5E /* wlfsim.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = wlfsim.cc; sourceTree = "<group>"; };
-		BFBF3E3E09B6828A00545F5E /* wlfsim.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = wlfsim.h; sourceTree = "<group>"; };
-		BFBF3E3F09B6828A00545F5E /* wlmactmg.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = wlmactmg.cc; sourceTree = "<group>"; };
-		BFBF3E4009B6828A00545F5E /* wlmactmg.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = wlmactmg.h; sourceTree = "<group>"; };
-		BFBF3E4109B6828A00545F5E /* wltypdef.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = wltypdef.h; sourceTree = "<group>"; };
 		BFBF3E4309B6828A00545F5E /* ofalgo.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ofalgo.h; sourceTree = "<group>"; };
 		BFBF3E4409B6828A00545F5E /* ofbmanip.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ofbmanip.h; sourceTree = "<group>"; };
 		BFBF3E4509B6828A00545F5E /* ofcast.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ofcast.h; sourceTree = "<group>"; };
@@ -11235,12 +11033,10 @@
 				BFBF3B9309B6828000545F5E /* dcmimgle */,
 				BFBF3BD809B6828100545F5E /* dcmjpeg */,
 				BFBF3CFD09B6828500545F5E /* dcmnet */,
-				BFBF3D3509B6828600545F5E /* dcmpstat */,
 				BFBF3D9209B6828700545F5E /* dcmqrdb */,
 				BFBF3DAB09B6828800545F5E /* dcmsign */,
 				BFBF3DCF09B6828800545F5E /* dcmsr */,
 				BFBF3E3309B6828A00545F5E /* dcmtls */,
-				BFBF3E3809B6828A00545F5E /* dcmwlm */,
 				BFBF3E4209B6828A00545F5E /* ofstd */,
 			);
 			name = dcmtk;
@@ -11947,106 +11743,6 @@
 			path = "Binaries/dcmtk-source/dcmnet";
 			sourceTree = "<group>";
 		};
-		BFBF3D3509B6828600545F5E /* dcmpstat */ = {
-			isa = PBXGroup;
-			children = (
-				BFBF3D3609B6828600545F5E /* dcmpstat.cc */,
-				BFBF3D3709B6828600545F5E /* dcmpstat.h */,
-				BFBF3D3809B6828600545F5E /* dvcache.h */,
-				BFBF3D3909B6828600545F5E /* dviface.cc */,
-				BFBF3D3A09B6828600545F5E /* dviface.h */,
-				BFBF3D3B09B6828600545F5E /* dvpsab.cc */,
-				BFBF3D3C09B6828600545F5E /* dvpsab.h */,
-				BFBF3D3D09B6828600545F5E /* dvpsabl.cc */,
-				BFBF3D3E09B6828600545F5E /* dvpsabl.h */,
-				BFBF3D3F09B6828600545F5E /* dvpsal.cc */,
-				BFBF3D4009B6828600545F5E /* dvpsal.h */,
-				BFBF3D4109B6828600545F5E /* dvpsall.cc */,
-				BFBF3D4209B6828600545F5E /* dvpsall.h */,
-				BFBF3D4309B6828600545F5E /* dvpscf.cc */,
-				BFBF3D4409B6828600545F5E /* dvpscf.h */,
-				BFBF3D4509B6828600545F5E /* dvpscu.cc */,
-				BFBF3D4609B6828600545F5E /* dvpscu.h */,
-				BFBF3D4709B6828600545F5E /* dvpscul.cc */,
-				BFBF3D4809B6828600545F5E /* dvpscul.h */,
-				BFBF3D4909B6828600545F5E /* dvpsda.cc */,
-				BFBF3D4A09B6828600545F5E /* dvpsda.h */,
-				BFBF3D4B09B6828600545F5E /* dvpsdal.cc */,
-				BFBF3D4C09B6828600545F5E /* dvpsdal.h */,
-				BFBF3D4D09B6828600545F5E /* dvpsdef.h */,
-				BFBF3D4E09B6828600545F5E /* dvpsfs.cc */,
-				BFBF3D4F09B6828600545F5E /* dvpsfs.h */,
-				BFBF3D5009B6828600545F5E /* dvpsga.cc */,
-				BFBF3D5109B6828600545F5E /* dvpsga.h */,
-				BFBF3D5209B6828600545F5E /* dvpsgal.cc */,
-				BFBF3D5309B6828600545F5E /* dvpsgal.h */,
-				BFBF3D5409B6828600545F5E /* dvpsgl.cc */,
-				BFBF3D5509B6828700545F5E /* dvpsgl.h */,
-				BFBF3D5609B6828700545F5E /* dvpsgll.cc */,
-				BFBF3D5709B6828700545F5E /* dvpsgll.h */,
-				BFBF3D5809B6828700545F5E /* dvpsgr.cc */,
-				BFBF3D5909B6828700545F5E /* dvpsgr.h */,
-				BFBF3D5A09B6828700545F5E /* dvpsgrl.cc */,
-				BFBF3D5B09B6828700545F5E /* dvpsgrl.h */,
-				BFBF3D5C09B6828700545F5E /* dvpshlp.cc */,
-				BFBF3D5D09B6828700545F5E /* dvpshlp.h */,
-				BFBF3D5E09B6828700545F5E /* dvpsib.cc */,
-				BFBF3D5F09B6828700545F5E /* dvpsib.h */,
-				BFBF3D6009B6828700545F5E /* dvpsibl.cc */,
-				BFBF3D6109B6828700545F5E /* dvpsibl.h */,
-				BFBF3D6209B6828700545F5E /* dvpsmsg.cc */,
-				BFBF3D6309B6828700545F5E /* dvpsmsg.h */,
-				BFBF3D6409B6828700545F5E /* dvpsov.cc */,
-				BFBF3D6509B6828700545F5E /* dvpsov.h */,
-				BFBF3D6609B6828700545F5E /* dvpsovl.cc */,
-				BFBF3D6709B6828700545F5E /* dvpsovl.h */,
-				BFBF3D6809B6828700545F5E /* dvpspl.cc */,
-				BFBF3D6909B6828700545F5E /* dvpspl.h */,
-				BFBF3D6A09B6828700545F5E /* dvpspl2.cc */,
-				BFBF3D6B09B6828700545F5E /* dvpspll.cc */,
-				BFBF3D6C09B6828700545F5E /* dvpspll.h */,
-				BFBF3D6D09B6828700545F5E /* dvpspr.cc */,
-				BFBF3D6E09B6828700545F5E /* dvpspr.h */,
-				BFBF3D6F09B6828700545F5E /* dvpsprt.cc */,
-				BFBF3D7009B6828700545F5E /* dvpsprt.h */,
-				BFBF3D7109B6828700545F5E /* dvpsri.cc */,
-				BFBF3D7209B6828700545F5E /* dvpsri.h */,
-				BFBF3D7309B6828700545F5E /* dvpsril.cc */,
-				BFBF3D7409B6828700545F5E /* dvpsril.h */,
-				BFBF3D7509B6828700545F5E /* dvpsrs.cc */,
-				BFBF3D7609B6828700545F5E /* dvpsrs.h */,
-				BFBF3D7709B6828700545F5E /* dvpsrsl.cc */,
-				BFBF3D7809B6828700545F5E /* dvpsrsl.h */,
-				BFBF3D7909B6828700545F5E /* dvpssp.cc */,
-				BFBF3D7A09B6828700545F5E /* dvpssp.h */,
-				BFBF3D7B09B6828700545F5E /* dvpsspl.cc */,
-				BFBF3D7C09B6828700545F5E /* dvpsspl.h */,
-				BFBF3D7D09B6828700545F5E /* dvpssv.cc */,
-				BFBF3D7E09B6828700545F5E /* dvpssv.h */,
-				BFBF3D7F09B6828700545F5E /* dvpssvl.cc */,
-				BFBF3D8009B6828700545F5E /* dvpssvl.h */,
-				BFBF3D8109B6828700545F5E /* dvpstat.cc */,
-				BFBF3D8209B6828700545F5E /* dvpstat.h */,
-				BFBF3D8309B6828700545F5E /* dvpstx.cc */,
-				BFBF3D8409B6828700545F5E /* dvpstx.h */,
-				BFBF3D8509B6828700545F5E /* dvpstxl.cc */,
-				BFBF3D8609B6828700545F5E /* dvpstxl.h */,
-				BFBF3D8709B6828700545F5E /* dvpstyp.h */,
-				BFBF3D8809B6828700545F5E /* dvpsvl.cc */,
-				BFBF3D8909B6828700545F5E /* dvpsvl.h */,
-				BFBF3D8A09B6828700545F5E /* dvpsvll.cc */,
-				BFBF3D8B09B6828700545F5E /* dvpsvll.h */,
-				BFBF3D8C09B6828700545F5E /* dvpsvw.cc */,
-				BFBF3D8D09B6828700545F5E /* dvpsvw.h */,
-				BFBF3D8E09B6828700545F5E /* dvpsvwl.cc */,
-				BFBF3D8F09B6828700545F5E /* dvpsvwl.h */,
-				BFBF3D9009B6828700545F5E /* dvsighdl.cc */,
-				BFBF3D9109B6828700545F5E /* dvsighdl.h */,
-			);
-			name = dcmpstat;
-			path = "Binaries/dcmtk-source/dcmpstat";
-			sourceTree = "<group>";
-		};
 		BFBF3D9209B6828700545F5E /* dcmqrdb */ = {
 			isa = PBXGroup;
 			children = (
@@ -12241,23 +11937,6 @@
 			);
 			name = dcmtls;
 			path = "Binaries/dcmtk-source/dcmtls";
-			sourceTree = "<group>";
-		};
-		BFBF3E3809B6828A00545F5E /* dcmwlm */ = {
-			isa = PBXGroup;
-			children = (
-				BFBF3E3909B6828A00545F5E /* wlds.cc */,
-				BFBF3E3A09B6828A00545F5E /* wlds.h */,
-				BFBF3E3B09B6828A00545F5E /* wldsfs.cc */,
-				BFBF3E3C09B6828A00545F5E /* wldsfs.h */,
-				BFBF3E3D09B6828A00545F5E /* wlfsim.cc */,
-				BFBF3E3E09B6828A00545F5E /* wlfsim.h */,
-				BFBF3E3F09B6828A00545F5E /* wlmactmg.cc */,
-				BFBF3E4009B6828A00545F5E /* wlmactmg.h */,
-				BFBF3E4109B6828A00545F5E /* wltypdef.h */,
-			);
-			name = dcmwlm;
-			path = "Binaries/dcmtk-source/dcmwlm";
 			sourceTree = "<group>";
 		};
 		BFBF3E4209B6828A00545F5E /* ofstd */ = {
@@ -14767,53 +14446,6 @@
 				BFBF40DE09B6828D00545F5E /* dulstruc.h in Headers */,
 				BFBF40E009B6828D00545F5E /* extneg.h in Headers */,
 				BFBF40E209B6828D00545F5E /* lst.h in Headers */,
-				BFBF40E409B6828D00545F5E /* dcmpstat.h in Headers */,
-				BFBF40E509B6828D00545F5E /* dvcache.h in Headers */,
-				BFBF40E709B6828D00545F5E /* dviface.h in Headers */,
-				BFBF40E909B6828D00545F5E /* dvpsab.h in Headers */,
-				BFBF40EB09B6828D00545F5E /* dvpsabl.h in Headers */,
-				BFBF40ED09B6828D00545F5E /* dvpsal.h in Headers */,
-				BFBF40EF09B6828D00545F5E /* dvpsall.h in Headers */,
-				BFBF40F109B6828D00545F5E /* dvpscf.h in Headers */,
-				BFBF40F309B6828D00545F5E /* dvpscu.h in Headers */,
-				BFBF40F509B6828D00545F5E /* dvpscul.h in Headers */,
-				BFBF40F709B6828D00545F5E /* dvpsda.h in Headers */,
-				BFBF40F909B6828D00545F5E /* dvpsdal.h in Headers */,
-				BFBF40FA09B6828D00545F5E /* dvpsdef.h in Headers */,
-				BFBF40FC09B6828D00545F5E /* dvpsfs.h in Headers */,
-				BFBF40FE09B6828D00545F5E /* dvpsga.h in Headers */,
-				BFBF410009B6828D00545F5E /* dvpsgal.h in Headers */,
-				BFBF410209B6828D00545F5E /* dvpsgl.h in Headers */,
-				BFBF410409B6828D00545F5E /* dvpsgll.h in Headers */,
-				BFBF410609B6828D00545F5E /* dvpsgr.h in Headers */,
-				BFBF410809B6828D00545F5E /* dvpsgrl.h in Headers */,
-				BFBF410A09B6828D00545F5E /* dvpshlp.h in Headers */,
-				BFBF410C09B6828D00545F5E /* dvpsib.h in Headers */,
-				BFBF410E09B6828D00545F5E /* dvpsibl.h in Headers */,
-				BFBF411009B6828D00545F5E /* dvpsmsg.h in Headers */,
-				BFBF411209B6828D00545F5E /* dvpsov.h in Headers */,
-				BFBF411409B6828D00545F5E /* dvpsovl.h in Headers */,
-				BFBF411609B6828D00545F5E /* dvpspl.h in Headers */,
-				BFBF411909B6828D00545F5E /* dvpspll.h in Headers */,
-				BFBF411B09B6828D00545F5E /* dvpspr.h in Headers */,
-				BFBF411D09B6828D00545F5E /* dvpsprt.h in Headers */,
-				BFBF411F09B6828D00545F5E /* dvpsri.h in Headers */,
-				BFBF412109B6828D00545F5E /* dvpsril.h in Headers */,
-				BFBF412309B6828D00545F5E /* dvpsrs.h in Headers */,
-				BFBF412509B6828D00545F5E /* dvpsrsl.h in Headers */,
-				BFBF412709B6828D00545F5E /* dvpssp.h in Headers */,
-				BFBF412909B6828D00545F5E /* dvpsspl.h in Headers */,
-				BFBF412B09B6828D00545F5E /* dvpssv.h in Headers */,
-				BFBF412D09B6828D00545F5E /* dvpssvl.h in Headers */,
-				BFBF412F09B6828D00545F5E /* dvpstat.h in Headers */,
-				BFBF413109B6828D00545F5E /* dvpstx.h in Headers */,
-				BFBF413309B6828D00545F5E /* dvpstxl.h in Headers */,
-				BFBF413409B6828D00545F5E /* dvpstyp.h in Headers */,
-				BFBF413609B6828D00545F5E /* dvpsvl.h in Headers */,
-				BFBF413809B6828D00545F5E /* dvpsvll.h in Headers */,
-				BFBF413A09B6828D00545F5E /* dvpsvw.h in Headers */,
-				BFBF413C09B6828D00545F5E /* dvpsvwl.h in Headers */,
-				BFBF413E09B6828D00545F5E /* dvsighdl.h in Headers */,
 				BFBF414009B6828D00545F5E /* dcmqrcbf.h in Headers */,
 				BFBF414209B6828D00545F5E /* dcmqrcbg.h in Headers */,
 				BFBF414409B6828D00545F5E /* dcmqrcbm.h in Headers */,
@@ -14897,11 +14529,6 @@
 				BFBF41DC09B6828D00545F5E /* dsrxrdcc.h in Headers */,
 				BFBF41DE09B6828D00545F5E /* tlslayer.h in Headers */,
 				BFBF41E009B6828D00545F5E /* tlstrans.h in Headers */,
-				BFBF41E209B6828D00545F5E /* wlds.h in Headers */,
-				BFBF41E409B6828D00545F5E /* wldsfs.h in Headers */,
-				BFBF41E609B6828D00545F5E /* wlfsim.h in Headers */,
-				BFBF41E809B6828D00545F5E /* wlmactmg.h in Headers */,
-				BFBF41E909B6828D00545F5E /* wltypdef.h in Headers */,
 				BFBF41EA09B6828D00545F5E /* ofalgo.h in Headers */,
 				BFBF41EB09B6828D00545F5E /* ofbmanip.h in Headers */,
 				BFBF41EC09B6828D00545F5E /* ofcast.h in Headers */,
@@ -18243,51 +17870,6 @@
 				BFBF40DC09B6828D00545F5E /* dulpres.cc in Sources */,
 				BFBF40DF09B6828D00545F5E /* extneg.cc in Sources */,
 				BFBF40E109B6828D00545F5E /* lst.cc in Sources */,
-				BFBF40E309B6828D00545F5E /* dcmpstat.cc in Sources */,
-				BFBF40E609B6828D00545F5E /* dviface.cc in Sources */,
-				BFBF40E809B6828D00545F5E /* dvpsab.cc in Sources */,
-				BFBF40EA09B6828D00545F5E /* dvpsabl.cc in Sources */,
-				BFBF40EC09B6828D00545F5E /* dvpsal.cc in Sources */,
-				BFBF40EE09B6828D00545F5E /* dvpsall.cc in Sources */,
-				BFBF40F009B6828D00545F5E /* dvpscf.cc in Sources */,
-				BFBF40F209B6828D00545F5E /* dvpscu.cc in Sources */,
-				BFBF40F409B6828D00545F5E /* dvpscul.cc in Sources */,
-				BFBF40F609B6828D00545F5E /* dvpsda.cc in Sources */,
-				BFBF40F809B6828D00545F5E /* dvpsdal.cc in Sources */,
-				BFBF40FB09B6828D00545F5E /* dvpsfs.cc in Sources */,
-				BFBF40FD09B6828D00545F5E /* dvpsga.cc in Sources */,
-				BFBF40FF09B6828D00545F5E /* dvpsgal.cc in Sources */,
-				BFBF410109B6828D00545F5E /* dvpsgl.cc in Sources */,
-				BFBF410309B6828D00545F5E /* dvpsgll.cc in Sources */,
-				BFBF410509B6828D00545F5E /* dvpsgr.cc in Sources */,
-				BFBF410709B6828D00545F5E /* dvpsgrl.cc in Sources */,
-				BFBF410909B6828D00545F5E /* dvpshlp.cc in Sources */,
-				BFBF410B09B6828D00545F5E /* dvpsib.cc in Sources */,
-				BFBF410D09B6828D00545F5E /* dvpsibl.cc in Sources */,
-				BFBF410F09B6828D00545F5E /* dvpsmsg.cc in Sources */,
-				BFBF411109B6828D00545F5E /* dvpsov.cc in Sources */,
-				BFBF411309B6828D00545F5E /* dvpsovl.cc in Sources */,
-				BFBF411509B6828D00545F5E /* dvpspl.cc in Sources */,
-				BFBF411709B6828D00545F5E /* dvpspl2.cc in Sources */,
-				BFBF411809B6828D00545F5E /* dvpspll.cc in Sources */,
-				BFBF411A09B6828D00545F5E /* dvpspr.cc in Sources */,
-				BFBF411C09B6828D00545F5E /* dvpsprt.cc in Sources */,
-				BFBF411E09B6828D00545F5E /* dvpsri.cc in Sources */,
-				BFBF412009B6828D00545F5E /* dvpsril.cc in Sources */,
-				BFBF412209B6828D00545F5E /* dvpsrs.cc in Sources */,
-				BFBF412409B6828D00545F5E /* dvpsrsl.cc in Sources */,
-				BFBF412609B6828D00545F5E /* dvpssp.cc in Sources */,
-				BFBF412809B6828D00545F5E /* dvpsspl.cc in Sources */,
-				BFBF412A09B6828D00545F5E /* dvpssv.cc in Sources */,
-				BFBF412C09B6828D00545F5E /* dvpssvl.cc in Sources */,
-				BFBF412E09B6828D00545F5E /* dvpstat.cc in Sources */,
-				BFBF413009B6828D00545F5E /* dvpstx.cc in Sources */,
-				BFBF413209B6828D00545F5E /* dvpstxl.cc in Sources */,
-				BFBF413509B6828D00545F5E /* dvpsvl.cc in Sources */,
-				BFBF413709B6828D00545F5E /* dvpsvll.cc in Sources */,
-				BFBF413909B6828D00545F5E /* dvpsvw.cc in Sources */,
-				BFBF413B09B6828D00545F5E /* dvpsvwl.cc in Sources */,
-				BFBF413D09B6828D00545F5E /* dvsighdl.cc in Sources */,
 				BFBF413F09B6828D00545F5E /* dcmqrcbf.cc in Sources */,
 				BFBF414109B6828D00545F5E /* dcmqrcbg.mm in Sources */,
 				BFBF414509B6828D00545F5E /* dcmqrcbs.cc in Sources */,
@@ -18361,10 +17943,6 @@
 				BFBF41DB09B6828D00545F5E /* dsrxrdcc.cc in Sources */,
 				BFBF41DD09B6828D00545F5E /* tlslayer.cc in Sources */,
 				BFBF41DF09B6828D00545F5E /* tlstrans.cc in Sources */,
-				BFBF41E109B6828D00545F5E /* wlds.cc in Sources */,
-				BFBF41E309B6828D00545F5E /* wldsfs.cc in Sources */,
-				BFBF41E509B6828D00545F5E /* wlfsim.cc in Sources */,
-				BFBF41E709B6828D00545F5E /* wlmactmg.cc in Sources */,
 				BFBF41ED09B6828D00545F5E /* ofcmdln.cc in Sources */,
 				BFBF41EF09B6828D00545F5E /* ofconapp.cc in Sources */,
 				BFBF41F109B6828D00545F5E /* ofcond.cc in Sources */,
