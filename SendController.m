@@ -31,7 +31,6 @@
 #import "Wait.h"
 #import <OsiriX/DCMNetServiceDelegate.h>
 #import <OsiriX/DCM.h>
-#import <OsiriX/DCMNetworking.h>
 #import "PluginFilter.h"
 #import "PluginManager.h"
 #import "DCMTKStoreSCU.h"

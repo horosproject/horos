@@ -29,7 +29,6 @@
 #import "PluginManager.h"
 #import "DicomFile.h"
 #import "HTTPServer.h"
-#import <OsiriX/DCMNetworking.h>
 #import <OsiriX/DCM.h>
 #import "PluginManager.h"
 #import "DCMTKQueryRetrieveSCP.h"

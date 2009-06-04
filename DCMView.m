@@ -12,7 +12,7 @@
      PURPOSE.
 =========================================================================*/
 
-#import "DCMAbstractSyntaxUID.h"
+#import "OsiriX/DCMAbstractSyntaxUID.h"
 #import <DCMView.h>
 #import "StringTexture.h"
 #import "DCMPix.h"

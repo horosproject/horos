@@ -23,7 +23,6 @@ Manages the Window for creating Calcium Scoring ROIs
 #import "ROI.h"
 #import "browserController.h"
 #import <OsiriX/DCM.h>
-#import <OsiriX/DCMNetworking.h>
 #import "CalciumScoringWindowController.h"
 
 enum ctTypes {ElectronCTType, MultiSliceCTType};

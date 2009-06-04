@@ -26,13 +26,6 @@
 #import "OsiriX/DCMPixelDataAttribute.h"
 #import "OsiriX/DCMCalendarDate.h"
 
-#import "DCMDirectory.h"
-#import "DCMRecord.h"
-#import "DCMRootRecord.h"
-#import "DCMPatientRecord.h"
-#import "DCMStudyRecord.h"
-#import "DCMSeriesRecord.h"
-#import "DCMImageRecord.h"
 #import "DCMLimitedObject.h"
 
 #import "DCMNetServiceDelegate.h"

@@ -47,10 +47,8 @@
 #import "DCMPixelDataAttribute.h"
 #import "DCMCalendarDate.h"
 #import <OsiriX/DCM.h>
-#import <OsiriX/DCMNetworking.h>
-#import <OsiriX/DCMDirectory.h>
 #import <OsiriX/DCMObject.h>
-#import <OsiriX/DCMDirectory.h>
+#import <OsiriX/DCMAbstractSyntaxUID.h>
 #import <OsiriX/DCMNetServiceDelegate.h>
 #import "LogWindowController.h"
 #import "stringAdditions.h"

@@ -4,7 +4,7 @@
 #include "dctk.h"
 #include "dimse.h"
 #include "ofstring.h"
-#include "dvpsdef.h"
+//#include "dvpsdef.h"
 
 
 

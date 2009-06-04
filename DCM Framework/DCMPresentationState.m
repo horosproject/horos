@@ -13,7 +13,7 @@
 =========================================================================*/
 
 #import "DCMPresentationState.h"
-#import "DCMNetworking.h"
+#import "DCMAbstractSyntaxUID.h"
 #import "DCM.h"
 
 

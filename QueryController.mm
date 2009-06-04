@@ -19,11 +19,9 @@
 #import "AppController.h"
 #import "DICOMLogger.h"
 #import "ImageAndTextCell.h"
-#import <OsiriX/DCMNetworking.h>
 #import <OsiriX/DCMCalendarDate.h>
 #import <OsiriX/DCMNetServiceDelegate.h>
 #import "QueryArrayController.h"
-//#import "NetworkMoveDataHandler.h"
 #import "AdvancedQuerySubview.h"
 #include "DCMTKVerifySCU.h"
 #import "DCMTKRootQueryNode.h"
