@@ -4005,10 +4005,10 @@
 		CE74DEB008CCE0C1005D12A7 /* SagOpposite.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE74DEAF08CCE0C1005D12A7 /* SagOpposite.tif */; };
 		CE77B0740CB9718C00BE873C /* WaitRendering.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F991A0C84724B00CB38F1 /* WaitRendering.xib */; };
 		CE77B0B10CB9719C00BE873C /* WaitRendering.m in Sources */ = {isa = PBXBuildFile; fileRef = ABB218B805CF1E9300D8B619 /* WaitRendering.m */; };
-		CE7816BC0FD83B4E007C060B /* DCMAbstractSyntaxUID.h in Headers */ = {isa = PBXBuildFile; fileRef = BF1925690762958D009C6832 /* DCMAbstractSyntaxUID.h */; };
-		CE7816BD0FD83B4E007C060B /* DCMAbstractSyntaxUID.m in Sources */ = {isa = PBXBuildFile; fileRef = BF19256A0762958D009C6832 /* DCMAbstractSyntaxUID.m */; };
-		CE7817870FD843A0007C060B /* DCMAbstractSyntaxUID.m in Sources */ = {isa = PBXBuildFile; fileRef = BF19256A0762958D009C6832 /* DCMAbstractSyntaxUID.m */; };
-		CE7817880FD843A0007C060B /* DCMAbstractSyntaxUID.h in Headers */ = {isa = PBXBuildFile; fileRef = BF1925690762958D009C6832 /* DCMAbstractSyntaxUID.h */; };
+		CE79D9880FD84C350043DD73 /* DCMAbstractSyntaxUID.h in Headers */ = {isa = PBXBuildFile; fileRef = CE79D9860FD84C350043DD73 /* DCMAbstractSyntaxUID.h */; };
+		CE79D9890FD84C350043DD73 /* DCMAbstractSyntaxUID.m in Sources */ = {isa = PBXBuildFile; fileRef = CE79D9870FD84C350043DD73 /* DCMAbstractSyntaxUID.m */; };
+		CE79D98A0FD84C350043DD73 /* DCMAbstractSyntaxUID.h in Headers */ = {isa = PBXBuildFile; fileRef = CE79D9860FD84C350043DD73 /* DCMAbstractSyntaxUID.h */; };
+		CE79D98B0FD84C350043DD73 /* DCMAbstractSyntaxUID.m in Sources */ = {isa = PBXBuildFile; fileRef = CE79D9870FD84C350043DD73 /* DCMAbstractSyntaxUID.m */; };
 		CE7BBFD50C82DCA5000AD12F /* libtiff.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CE7BBFD30C82DCA5000AD12F /* libtiff.dylib */; };
 		CE7BBFD60C82DCA5000AD12F /* libtiff.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE7BBFD40C82DCA5000AD12F /* libtiff.a */; };
 		CE7BBFDB0C82DCA5000AD12F /* libtiff.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CE7BBFD30C82DCA5000AD12F /* libtiff.dylib */; };
@@ -5508,8 +5508,6 @@
 		BF1833D009AD833D0046C295 /* FlipVertical.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = FlipVertical.tif; sourceTree = "<group>"; };
 		BF18A85709E0BF00005DEFB6 /* AppControllerDCMTKCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppControllerDCMTKCategory.h; sourceTree = "<group>"; };
 		BF18A85809E0BF00005DEFB6 /* AppControllerDCMTKCategory.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AppControllerDCMTKCategory.mm; sourceTree = "<group>"; };
-		BF1925690762958D009C6832 /* DCMAbstractSyntaxUID.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCMAbstractSyntaxUID.h; path = Networking/DCMAbstractSyntaxUID.h; sourceTree = "<group>"; };
-		BF19256A0762958D009C6832 /* DCMAbstractSyntaxUID.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCMAbstractSyntaxUID.m; path = Networking/DCMAbstractSyntaxUID.m; sourceTree = "<group>"; };
 		BF24254F0A51D39500D3D76B /* DicomFileDCMTKCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DicomFileDCMTKCategory.h; sourceTree = "<group>"; };
 		BF2425500A51D39500D3D76B /* DicomFileDCMTKCategory.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DicomFileDCMTKCategory.mm; sourceTree = "<group>"; };
 		BF26843B0A5CBB1C004EB838 /* DicomImageDCMTKCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DicomImageDCMTKCategory.h; sourceTree = "<group>"; };
@@ -8388,6 +8386,8 @@
 		CE74456806DBA4CB0034D05E /* ITK.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = ITK.mm; sourceTree = "<group>"; };
 		CE74824006C9701200FFA74C /* trash.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = trash.icns; sourceTree = "<group>"; };
 		CE74DEAF08CCE0C1005D12A7 /* SagOpposite.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SagOpposite.tif; sourceTree = "<group>"; };
+		CE79D9860FD84C350043DD73 /* DCMAbstractSyntaxUID.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMAbstractSyntaxUID.h; sourceTree = "<group>"; };
+		CE79D9870FD84C350043DD73 /* DCMAbstractSyntaxUID.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMAbstractSyntaxUID.m; sourceTree = "<group>"; };
 		CE7A0F1A0AED55E700540017 /* ShellMainClass.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = ShellMainClass.mm; sourceTree = "<group>"; };
 		CE7BBFD30C82DCA5000AD12F /* libtiff.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libtiff.dylib; sourceTree = "<group>"; };
 		CE7BBFD40C82DCA5000AD12F /* libtiff.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libtiff.a; sourceTree = "<group>"; };
@@ -9061,9 +9061,9 @@
 			children = (
 				7EBB31070887269B00BF6B39 /* DCMNetServiceDelegate.h */,
 				7EBB31080887269B00BF6B39 /* DCMNetServiceDelegate.m */,
+				CE79D9860FD84C350043DD73 /* DCMAbstractSyntaxUID.h */,
+				CE79D9870FD84C350043DD73 /* DCMAbstractSyntaxUID.m */,
 				7E0B3A13067526A600908593 /* DCM.h */,
-				BF1925690762958D009C6832 /* DCMAbstractSyntaxUID.h */,
-				BF19256A0762958D009C6832 /* DCMAbstractSyntaxUID.m */,
 				7E2269C406BEF624003B09E5 /* jpegdatasrc.h */,
 				7E2269C506BEF624003B09E5 /* jpegdatasrc.m */,
 				BFAEB10406BF2C4E00C7EF1E /* libijg8 */,
@@ -13389,7 +13389,7 @@
 				BF7DEBA009D1FC5C00A332B8 /* jconfig16.h in Headers */,
 				BF7DEBAA09D1FC6700A332B8 /* jchuff16.h in Headers */,
 				ABDEB3920D1827440079C938 /* openjpeg.h in Headers */,
-				CE7817880FD843A0007C060B /* DCMAbstractSyntaxUID.h in Headers */,
+				CE79D9880FD84C350043DD73 /* DCMAbstractSyntaxUID.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -15763,7 +15763,7 @@
 				CE9CEEA90C75BE3200752D4B /* jpeglib8.h in Headers */,
 				CE9CEEAD0C75BE3200752D4B /* jversion8.h in Headers */,
 				ABDEB3940D1827440079C938 /* openjpeg.h in Headers */,
-				CE7816BC0FD83B4E007C060B /* DCMAbstractSyntaxUID.h in Headers */,
+				CE79D98A0FD84C350043DD73 /* DCMAbstractSyntaxUID.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -16764,7 +16764,7 @@
 				BF7DEBB109D1FC6C00A332B8 /* jcapistd.c in Sources */,
 				BF7DEBB209D1FC6D00A332B8 /* jcapimin.c in Sources */,
 				BF7DEBB309D1FC6E00A332B8 /* jaricom.c in Sources */,
-				CE7817870FD843A0007C060B /* DCMAbstractSyntaxUID.m in Sources */,
+				CE79D9890FD84C350043DD73 /* DCMAbstractSyntaxUID.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -18073,7 +18073,7 @@
 				CE9CEEAA0C75BE3200752D4B /* jquant1.c in Sources */,
 				CE9CEEAB0C75BE3200752D4B /* jquant2.c in Sources */,
 				CE9CEEAC0C75BE3200752D4B /* jutils.c in Sources */,
-				CE7816BD0FD83B4E007C060B /* DCMAbstractSyntaxUID.m in Sources */,
+				CE79D98B0FD84C350043DD73 /* DCMAbstractSyntaxUID.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
