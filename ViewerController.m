@@ -62,7 +62,7 @@
 #import "ROIManagerController.h"
 
 #import "ITKBrushROIFilter.h"
-#import "DCMAbstractSyntaxUID.h"
+#import "OsiriX/DCMAbstractSyntaxUID.h"
 #import "printView.h"
 #import "ITKTransform.h"
 #import "LLScoutViewer.h"
