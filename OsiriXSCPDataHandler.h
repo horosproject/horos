@@ -12,8 +12,6 @@
      PURPOSE.
 =========================================================================*/
 
-
-
 typedef struct
 {
 	char logPatientName[ 1024];
@@ -29,10 +27,12 @@ typedef struct
 	char logEncoding[ 1024];
 } logStruct;
 
-
 #import <Cocoa/Cocoa.h>
 #import <OsiriX/DCM.h>
-#import <OsiriX/DCMNetworking.h>
+
+#undef verify
+#include "dcdatset.h"
+#include "ofcond.h"
 
 //NSString * const OsiriXFileReceivedNotification;
 
@@ -42,11 +42,12 @@ typedef struct
 * Interface between server and database 
 */
 
-@interface OsiriXSCPDataHandler : DCMCStoreReceivedPDUHandler
+@interface OsiriXSCPDataHandler : NSObject
 {
 	NSArray *findArray;
 	NSString *specificCharacterSet;
 	NSEnumerator *findEnumerator;
+	NSString *callingAET;
 	
 	int numberMoving;
 	
@@ -57,15 +58,24 @@ typedef struct
 	logStruct *logFiles;
 }
 
-+ (id)requestDataHandlerWithDestinationFolder:(NSString *)destination  debugLevel:(int)debug;
+@property (retain) NSString *callingAET;
 
-- (NSPredicate *)predicateForObject:(DCMObject *)dcmObject;
-- (DCMObject *)studyObjectForFetchedObject:(id)fetchedObject;
-- (DCMObject *)seriesObjectForFetchedObject:(id)fetchedObject;
-- (DCMObject *)imageObjectForFetchedObject:(id)fetchedObject;
++ (id)requestDataHandlerWithDestinationFolder:(NSString *)destination  debugLevel:(int)debug;
 
 -(NSTimeInterval)endOfDay:(NSCalendarDate *)day;
 -(NSTimeInterval)startOfDay:(NSCalendarDate *)day;
 
+- (NSPredicate *)predicateForDataset:( DcmDataset *)dataset;
+- (void)studyDatasetForFetchedObject:(id)fetchedObject dataset:(DcmDataset *)dataset;
+- (void)seriesDatasetForFetchedObject:(id)fetchedObject dataset:(DcmDataset *)dataset;
+- (void)imageDatasetForFetchedObject:(id)fetchedObject dataset:(DcmDataset *)dataset;
 
+- (OFCondition)prepareFindForDataSet:( DcmDataset *)dataset;
+- (OFCondition)prepareMoveForDataSet:( DcmDataset *)dataset;
+
+- (BOOL)findMatchFound;
+- (int)moveMatchFound;
+
+- (OFCondition)nextFindObject:(DcmDataset *)dataset  isComplete:(BOOL *)isComplete;
+- (OFCondition)nextMoveObject:(char *)imageFileName;
 @end

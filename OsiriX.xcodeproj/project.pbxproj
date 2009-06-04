@@ -101,30 +101,6 @@
 		7E172F590933CAE00057BCE8 /* DCMObjectDBImport.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E172F550933CAE00057BCE8 /* DCMObjectDBImport.m */; };
 		7E172F660933D5FF0057BCE8 /* DCMObjectPixelDataImport.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E172F620933D5FF0057BCE8 /* DCMObjectPixelDataImport.h */; };
 		7E172F670933D5FF0057BCE8 /* DCMObjectPixelDataImport.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E172F630933D5FF0057BCE8 /* DCMObjectPixelDataImport.m */; };
-		7E17DAAD075A775500A2E803 /* DCMAbortPDU.h in Headers */ = {isa = PBXBuildFile; fileRef = BF6DB808075A516500EBC60E /* DCMAbortPDU.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7E17DAAE075A775600A2E803 /* DCMAbortPDU.m in Sources */ = {isa = PBXBuildFile; fileRef = BF6DB809075A516500EBC60E /* DCMAbortPDU.m */; };
-		7E17DAAF075A775700A2E803 /* DCMAcceptPDU.h in Headers */ = {isa = PBXBuildFile; fileRef = BF6DB826075A52AB00EBC60E /* DCMAcceptPDU.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7E17DAB0075A775800A2E803 /* DCMAcceptPDU.m in Sources */ = {isa = PBXBuildFile; fileRef = BF6DB827075A52AB00EBC60E /* DCMAcceptPDU.m */; };
-		7E17DAB1075A775900A2E803 /* DCMRejectPDU.h in Headers */ = {isa = PBXBuildFile; fileRef = BF6DB82E075A52C300EBC60E /* DCMRejectPDU.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7E17DAB2075A775A00A2E803 /* DCMRejectPDU.m in Sources */ = {isa = PBXBuildFile; fileRef = BF6DB82F075A52C300EBC60E /* DCMRejectPDU.m */; };
-		7E17DAB3075A775B00A2E803 /* DCMReleasePDU.h in Headers */ = {isa = PBXBuildFile; fileRef = BF6DB81E075A528900EBC60E /* DCMReleasePDU.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7E17DAB4075A775C00A2E803 /* DCMReleasePDU.m in Sources */ = {isa = PBXBuildFile; fileRef = BF6DB81F075A528900EBC60E /* DCMReleasePDU.m */; };
-		7E17DAE0075A7B4600A2E803 /* DCM_PDU.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E17DADE075A7B4600A2E803 /* DCM_PDU.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7E17DAE1075A7B4600A2E803 /* DCM_PDU.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E17DADF075A7B4600A2E803 /* DCM_PDU.m */; };
-		7E17DB16075A7FBD00A2E803 /* DCMAcceptRequestPDU.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E17DB14075A7FBD00A2E803 /* DCMAcceptRequestPDU.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7E17DB17075A7FBD00A2E803 /* DCMAcceptRequestPDU.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E17DB15075A7FBD00A2E803 /* DCMAcceptRequestPDU.m */; };
-		7E1CE1170777441E00190023 /* DCMCEchoResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E1CE1150777441E00190023 /* DCMCEchoResponse.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7E1CE1180777441E00190023 /* DCMCEchoResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E1CE1160777441E00190023 /* DCMCEchoResponse.m */; };
-		7E1CE164077752BB00190023 /* DCMCStoreRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E1CE162077752BB00190023 /* DCMCStoreRequest.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7E1CE165077752BB00190023 /* DCMCStoreRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E1CE163077752BB00190023 /* DCMCStoreRequest.m */; };
-		7E1CE1820777536800190023 /* DCMCStoreResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E1CE1800777536800190023 /* DCMCStoreResponse.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7E1CE1830777536800190023 /* DCMCStoreResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E1CE1810777536800190023 /* DCMCStoreResponse.m */; };
-		7E1CE2A2077780D200190023 /* DCMCStoreResponseHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E1CE2A0077780D200190023 /* DCMCStoreResponseHandler.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7E1CE2A3077780D200190023 /* DCMCStoreResponseHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E1CE2A1077780D200190023 /* DCMCStoreResponseHandler.m */; };
-		7E1CE2BC0777828C00190023 /* DCMStoreSCU.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E1CE2BA0777828C00190023 /* DCMStoreSCU.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7E1CE2BD0777828C00190023 /* DCMStoreSCU.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E1CE2BB0777828C00190023 /* DCMStoreSCU.m */; };
-		7E21D347078747A500315810 /* DCMCFindResponseDataHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E21D345078747A500315810 /* DCMCFindResponseDataHandler.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7E21D348078747A500315810 /* DCMCFindResponseDataHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E21D346078747A500315810 /* DCMCFindResponseDataHandler.m */; };
 		7E226ABE06BEF625003B09E5 /* jpegdatasrc.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E2269C406BEF624003B09E5 /* jpegdatasrc.h */; };
 		7E226ABF06BEF625003B09E5 /* jpegdatasrc.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E2269C506BEF624003B09E5 /* jpegdatasrc.m */; };
 		7E2BE37D0715D2820017898A /* PreferencePaneController.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E2BE37B0715D2820017898A /* PreferencePaneController.h */; };
@@ -136,42 +112,8 @@
 		7E2BE3F50715DBFB0017898A /* Network.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 7E2BE3F40715DBFB0017898A /* Network.tiff */; };
 		7E2BE3FE0715DC0D0017898A /* StartupDisk.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 7E2BE3FD0715DC0D0017898A /* StartupDisk.tiff */; };
 		7E2BE4190715E5040017898A /* CD.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 7E2BE4180715E5040017898A /* CD.tiff */; };
-		7E331F4B07CD416F00AA50DF /* DCMRecord.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E331F4907CD416F00AA50DF /* DCMRecord.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7E331F4C07CD416F00AA50DF /* DCMRecord.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E331F4A07CD416F00AA50DF /* DCMRecord.m */; };
 		7E3E38660715FFDC0049E72E /* PreferencePanes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E3E38650715FFDC0049E72E /* PreferencePanes.framework */; };
-		7E3EDAAD076CE4BB002A7DAC /* DCMPDataPDU.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E3EDAAB076CE4BB002A7DAC /* DCMPDataPDU.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7E3EDAAE076CE4BB002A7DAC /* DCMPDataPDU.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E3EDAAC076CE4BB002A7DAC /* DCMPDataPDU.m */; };
-		7E3EDBAD076E4225002A7DAC /* DCMCEchoRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E3EDBAB076E4225002A7DAC /* DCMCEchoRequest.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7E3EDBAE076E4225002A7DAC /* DCMCEchoRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E3EDBAC076E4225002A7DAC /* DCMCEchoRequest.m */; };
-		7E3EDC0D076E5745002A7DAC /* DCMReceivedDataHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E3EDC0B076E5745002A7DAC /* DCMReceivedDataHandler.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7E3EDC0E076E5745002A7DAC /* DCMReceivedDataHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E3EDC0C076E5745002A7DAC /* DCMReceivedDataHandler.m */; };
-		7E3EDC36076E5C20002A7DAC /* DCMCommandMessage.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E3EDC34076E5C20002A7DAC /* DCMCommandMessage.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7E3EDC37076E5C20002A7DAC /* DCMCommandMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E3EDC35076E5C20002A7DAC /* DCMCommandMessage.m */; };
-		7E40C1010785C7C400806344 /* DCMCFindRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E40C0FF0785C7C400806344 /* DCMCFindRequest.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7E40C1020785C7C400806344 /* DCMCFindRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E40C1000785C7C400806344 /* DCMCFindRequest.m */; };
-		7E40C1440785CE2C00806344 /* DCMCMoveRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E40C1420785CE2C00806344 /* DCMCMoveRequest.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7E40C1450785CE2C00806344 /* DCMCMoveRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E40C1430785CE2C00806344 /* DCMCMoveRequest.m */; };
 		7E47658007428C80000C9A74 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB5E1A300595697700C48BEB /* Accelerate.framework */; };
-		7E49E5F8075FC852006AA2A3 /* DCMAssociationItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E49E5F6075FC852006AA2A3 /* DCMAssociationItem.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7E49E5F9075FC852006AA2A3 /* DCMAssociationItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E49E5F7075FC852006AA2A3 /* DCMAssociationItem.m */; };
-		7E49E60A075FCBCC006AA2A3 /* DCMApplicationContextItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E49E608075FCBCC006AA2A3 /* DCMApplicationContextItem.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7E49E60B075FCBCC006AA2A3 /* DCMApplicationContextItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E49E609075FCBCC006AA2A3 /* DCMApplicationContextItem.m */; };
-		7E49E620075FCD99006AA2A3 /* DCMUserInformationItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E49E61E075FCD99006AA2A3 /* DCMUserInformationItem.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7E49E621075FCD99006AA2A3 /* DCMUserInformationItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E49E61F075FCD99006AA2A3 /* DCMUserInformationItem.m */; };
-		7E49E636075FD02D006AA2A3 /* DCMUserInformationSubItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E49E634075FD02D006AA2A3 /* DCMUserInformationSubItem.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7E49E637075FD02D006AA2A3 /* DCMUserInformationSubItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E49E635075FD02D006AA2A3 /* DCMUserInformationSubItem.m */; };
-		7E49E656075FD264006AA2A3 /* DCMMaximumLengthReceivedUserInformationSubItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E49E654075FD264006AA2A3 /* DCMMaximumLengthReceivedUserInformationSubItem.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7E49E657075FD264006AA2A3 /* DCMMaximumLengthReceivedUserInformationSubItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E49E655075FD264006AA2A3 /* DCMMaximumLengthReceivedUserInformationSubItem.m */; };
-		7E49E669075FD3A2006AA2A3 /* DCMImplementationClassUIDUserInformationSubItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E49E667075FD3A2006AA2A3 /* DCMImplementationClassUIDUserInformationSubItem.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7E49E66A075FD3A2006AA2A3 /* DCMImplementationClassUIDUserInformationSubItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E49E668075FD3A2006AA2A3 /* DCMImplementationClassUIDUserInformationSubItem.m */; };
-		7E49E697075FD7DC006AA2A3 /* DCMImplementationVersionNameUserInformationSubItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E49E695075FD7DC006AA2A3 /* DCMImplementationVersionNameUserInformationSubItem.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7E49E698075FD7DC006AA2A3 /* DCMImplementationVersionNameUserInformationSubItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E49E696075FD7DC006AA2A3 /* DCMImplementationVersionNameUserInformationSubItem.m */; };
-		7E49E6AC075FDA06006AA2A3 /* DCMSOPClassExtendedNegotiationUserInformationSubItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E49E6AA075FDA06006AA2A3 /* DCMSOPClassExtendedNegotiationUserInformationSubItem.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7E49E6AD075FDA06006AA2A3 /* DCMSOPClassExtendedNegotiationUserInformationSubItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E49E6AB075FDA06006AA2A3 /* DCMSOPClassExtendedNegotiationUserInformationSubItem.m */; };
-		7E49E6B9075FDDF8006AA2A3 /* DCMPresentationContextItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E49E6B7075FDDF7006AA2A3 /* DCMPresentationContextItem.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7E49E6BA075FDDF8006AA2A3 /* DCMPresentationContextItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E49E6B8075FDDF8006AA2A3 /* DCMPresentationContextItem.m */; };
-		7E4E71680770E3A200856B65 /* DCMEchoResponseHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E4E71660770E3A200856B65 /* DCMEchoResponseHandler.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7E4E71690770E3A200856B65 /* DCMEchoResponseHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E4E71670770E3A200856B65 /* DCMEchoResponseHandler.m */; };
 		7E54303D07A05E7100500ABB /* DiscRecording.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E54303B07A05E7100500ABB /* DiscRecording.framework */; };
 		7E54303E07A05E7100500ABB /* DiscRecordingUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E54303C07A05E7100500ABB /* DiscRecordingUI.framework */; };
 		7E54307707A05ED100500ABB /* BurnerWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E0339E607415C4F0025DDB4 /* BurnerWindowController.h */; };
@@ -197,48 +139,17 @@
 		7E55AE1606C80E460059D6EB /* StudyView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E55AE1406C80E460059D6EB /* StudyView.m */; };
 		7E569399065007D6001A9762 /* SmartWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E569397065007D6001A9762 /* SmartWindowController.h */; };
 		7E56939A065007D6001A9762 /* SmartWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E569398065007D6001A9762 /* SmartWindowController.m */; };
-		7E5DC07C078AF4FB009D04DF /* DCMQueryNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E5DC07A078AF4FB009D04DF /* DCMQueryNode.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7E5DC07D078AF4FB009D04DF /* DCMQueryNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E5DC07B078AF4FB009D04DF /* DCMQueryNode.m */; };
-		7E5DC084078AF523009D04DF /* DCMRootQueryNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E5DC082078AF523009D04DF /* DCMRootQueryNode.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7E5DC085078AF523009D04DF /* DCMRootQueryNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E5DC083078AF523009D04DF /* DCMRootQueryNode.m */; };
-		7E5DC08A078AF535009D04DF /* DCMStudyQueryNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E5DC088078AF535009D04DF /* DCMStudyQueryNode.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7E5DC08B078AF535009D04DF /* DCMStudyQueryNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E5DC089078AF535009D04DF /* DCMStudyQueryNode.m */; };
-		7E5DC090078AF544009D04DF /* DCMSeriesQueryNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E5DC08E078AF544009D04DF /* DCMSeriesQueryNode.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7E5DC091078AF544009D04DF /* DCMSeriesQueryNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E5DC08F078AF544009D04DF /* DCMSeriesQueryNode.m */; };
-		7E5DC096078AF555009D04DF /* DCMImageQueryNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E5DC094078AF555009D04DF /* DCMImageQueryNode.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7E5DC097078AF555009D04DF /* DCMImageQueryNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E5DC095078AF555009D04DF /* DCMImageQueryNode.m */; };
-		7E64AC4008CB80F900CEB599 /* DCMPrintAssociation.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E64AC3E08CB80F900CEB599 /* DCMPrintAssociation.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7E64AC4108CB80F900CEB599 /* DCMPrintAssociation.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E64AC3F08CB80F900CEB599 /* DCMPrintAssociation.m */; };
-		7E64AC4608CB81A800CEB599 /* DCMPrintResponseHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E64AC4408CB81A700CEB599 /* DCMPrintResponseHandler.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7E64AC4708CB81A800CEB599 /* DCMPrintResponseHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E64AC4508CB81A800CEB599 /* DCMPrintResponseHandler.m */; };
 		7E7676CA079306D500462780 /* OsiriX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E0B3A3F067526CD00908593 /* OsiriX.framework */; };
-		7E76BEE1085757E30073649A /* DCMSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E76BEDD085757E20073649A /* DCMSocket.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7E82C63F08D9FF35000BAFF9 /* DCMLimitedObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E82C63D08D9FF35000BAFF9 /* DCMLimitedObject.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7E82C64008D9FF35000BAFF9 /* DCMLimitedObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E82C63E08D9FF35000BAFF9 /* DCMLimitedObject.m */; };
 		7E8340DB08E9F7C500E41C5E /* DCMPresentationState.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E8340D908E9F7C500E41C5E /* DCMPresentationState.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7E8340DC08E9F7C500E41C5E /* DCMPresentationState.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E8340DA08E9F7C500E41C5E /* DCMPresentationState.m */; };
 		7E879E9F067F9BE100CB2F8A /* SearchSubview.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E879E9D067F9BE100CB2F8A /* SearchSubview.h */; };
 		7E879EA0067F9BE100CB2F8A /* SearchSubview.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E879E9E067F9BE100CB2F8A /* SearchSubview.m */; };
-		7E93EAF407CA486E0075BD36 /* DCMDirectory.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E93EAF207CA486E0075BD36 /* DCMDirectory.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7E93EAF507CA486E0075BD36 /* DCMDirectory.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E93EAF307CA486E0075BD36 /* DCMDirectory.m */; };
-		7E93EB0007CA48AA0075BD36 /* DCMPatientRecord.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E93EAFE07CA48AA0075BD36 /* DCMPatientRecord.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7E93EB0107CA48AA0075BD36 /* DCMPatientRecord.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E93EAFF07CA48AA0075BD36 /* DCMPatientRecord.m */; };
-		7E93EB0607CA48BD0075BD36 /* DCMStudyRecord.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E93EB0407CA48BD0075BD36 /* DCMStudyRecord.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7E93EB0707CA48BD0075BD36 /* DCMStudyRecord.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E93EB0507CA48BD0075BD36 /* DCMStudyRecord.m */; };
-		7E93EB0C07CA48CE0075BD36 /* DCMSeriesRecord.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E93EB0A07CA48CE0075BD36 /* DCMSeriesRecord.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7E93EB0D07CA48CE0075BD36 /* DCMSeriesRecord.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E93EB0B07CA48CE0075BD36 /* DCMSeriesRecord.m */; };
-		7E93EB1207CA48E00075BD36 /* DCMImageRecord.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E93EB1007CA48E00075BD36 /* DCMImageRecord.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7E93EB1307CA48E00075BD36 /* DCMImageRecord.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E93EB1107CA48E00075BD36 /* DCMImageRecord.m */; };
-		7E93EB1807CA48F90075BD36 /* DCMReportRecord.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E93EB1607CA48F90075BD36 /* DCMReportRecord.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7E93EB1907CA48F90075BD36 /* DCMReportRecord.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E93EB1707CA48F90075BD36 /* DCMReportRecord.m */; };
-		7E96AD9207CE753C005D435B /* DCMRootRecord.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E96AD9007CE753C005D435B /* DCMRootRecord.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7E96AD9307CE753C005D435B /* DCMRootRecord.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E96AD9107CE753C005D435B /* DCMRootRecord.m */; };
 		7E9C6D26066D2BCD00D33966 /* greenLight.tif in Resources */ = {isa = PBXBuildFile; fileRef = 7E9C6D24066D2BCD00D33966 /* greenLight.tif */; };
 		7E9C6D2E066D2BE800D33966 /* redLight.tif in Resources */ = {isa = PBXBuildFile; fileRef = 7E9C6D2C066D2BE800D33966 /* redLight.tif */; };
 		7EB4AAE7079494CB007AD271 /* QueryArrayController.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EB4AAE5079494CB007AD271 /* QueryArrayController.h */; };
 		7EB4AAE8079494CB007AD271 /* QueryArrayController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7EB4AAE6079494CB007AD271 /* QueryArrayController.mm */; };
-		7EB72CB1076127D80025F400 /* DCMRequestPDU.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EB72CAF076127D80025F400 /* DCMRequestPDU.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7EB72CB2076127D80025F400 /* DCMRequestPDU.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EB72CB0076127D80025F400 /* DCMRequestPDU.m */; };
 		7EBB31090887269B00BF6B39 /* DCMNetServiceDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EBB31070887269B00BF6B39 /* DCMNetServiceDelegate.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7EBB310A0887269B00BF6B39 /* DCMNetServiceDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EBB31080887269B00BF6B39 /* DCMNetServiceDelegate.m */; };
 		7EBE4B2608917A7200FC1C36 /* LogTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = BF17E990088768CA00ECF621 /* LogTableView.m */; };
@@ -249,10 +160,6 @@
 		7ECBB8240683A68D00FF3FF4 /* DCMPixelDataAttribute.m in Sources */ = {isa = PBXBuildFile; fileRef = 7ECBB8220683A68D00FF3FF4 /* DCMPixelDataAttribute.m */; };
 		7ED5C26A0699E08E00875C39 /* AnonymizerWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = 7ED5C2660699E08E00875C39 /* AnonymizerWindowController.h */; };
 		7ED5C26B0699E08E00875C39 /* AnonymizerWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7ED5C2670699E08E00875C39 /* AnonymizerWindowController.m */; };
-		7EDA38C1077B250100A734D5 /* DCMStoreSCP.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EDA38BF077B250100A734D5 /* DCMStoreSCP.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7EDA38C2077B250100A734D5 /* DCMStoreSCP.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EDA38C0077B250100A734D5 /* DCMStoreSCP.m */; };
-		7EDA38C9077B25F400A734D5 /* DCMCStoreReceivedPDUHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EDA38C7077B25F400A734D5 /* DCMCStoreReceivedPDUHandler.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7EDA38CA077B25F400A734D5 /* DCMCStoreReceivedPDUHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EDA38C8077B25F400A734D5 /* DCMCStoreReceivedPDUHandler.m */; };
 		7EE0DC02067A48A3003E745F /* DCMCharacterSet.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EE0DC00067A48A3003E745F /* DCMCharacterSet.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7EE0DC03067A48A3003E745F /* DCMCharacterSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EE0DC01067A48A3003E745F /* DCMCharacterSet.m */; };
 		7EE0DC3E067A5138003E745F /* DCMSequenceAttribute.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EE0DC3C067A5138003E745F /* DCMSequenceAttribute.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -261,28 +168,6 @@
 		7EE416FB08B2615A00D4C9CC /* QueryLogController.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EE416C708B2612600D4C9CC /* QueryLogController.h */; };
 		7EE416FC08B2615B00D4C9CC /* QueryLogController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EE416C808B2612600D4C9CC /* QueryLogController.m */; };
 		7EE713BC097450B000510E88 /* dcmmkdir in Resources */ = {isa = PBXBuildFile; fileRef = 7EE713BA097450B000510E88 /* dcmmkdir */; };
-		7EF9703608C8E238002B5087 /* DCMPrintSCU.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EF9703408C8E238002B5087 /* DCMPrintSCU.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7EF9703708C8E238002B5087 /* DCMPrintSCU.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF9703508C8E238002B5087 /* DCMPrintSCU.m */; };
-		7EF9703C08C8F9AB002B5087 /* DCMNGetRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EF9703A08C8F9AB002B5087 /* DCMNGetRequest.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7EF9703D08C8F9AB002B5087 /* DCMNGetRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF9703B08C8F9AB002B5087 /* DCMNGetRequest.m */; };
-		7EF9704208C8F9C6002B5087 /* DCMNGetResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EF9704008C8F9C6002B5087 /* DCMNGetResponse.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7EF9704308C8F9C6002B5087 /* DCMNGetResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF9704108C8F9C6002B5087 /* DCMNGetResponse.m */; };
-		7EF9705908C8FA13002B5087 /* DCMNSetRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EF9705708C8FA13002B5087 /* DCMNSetRequest.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7EF9705A08C8FA13002B5087 /* DCMNSetRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF9705808C8FA13002B5087 /* DCMNSetRequest.m */; };
-		7EF9706108C8FA2D002B5087 /* DCMNSetResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EF9705F08C8FA2D002B5087 /* DCMNSetResponse.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7EF9706208C8FA2D002B5087 /* DCMNSetResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF9706008C8FA2D002B5087 /* DCMNSetResponse.m */; };
-		7EF9706708C8FA56002B5087 /* DCMNActionRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EF9706508C8FA56002B5087 /* DCMNActionRequest.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7EF9706808C8FA56002B5087 /* DCMNActionRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF9706608C8FA56002B5087 /* DCMNActionRequest.m */; };
-		7EF9706F08C8FA86002B5087 /* DCMNActionResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EF9706D08C8FA86002B5087 /* DCMNActionResponse.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7EF9707008C8FA86002B5087 /* DCMNActionResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF9706E08C8FA86002B5087 /* DCMNActionResponse.m */; };
-		7EF9707908C8FB1C002B5087 /* DCMNCreateRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EF9707708C8FB1C002B5087 /* DCMNCreateRequest.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7EF9707A08C8FB1C002B5087 /* DCMNCreateRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF9707808C8FB1C002B5087 /* DCMNCreateRequest.m */; };
-		7EF9708108C8FB42002B5087 /* DCMNCreateResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EF9707F08C8FB42002B5087 /* DCMNCreateResponse.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7EF9708208C8FB42002B5087 /* DCMNCreateResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF9708008C8FB42002B5087 /* DCMNCreateResponse.m */; };
-		7EF9708708C8FB74002B5087 /* DCMNDeleteRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EF9708508C8FB74002B5087 /* DCMNDeleteRequest.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7EF9708808C8FB74002B5087 /* DCMNDeleteRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF9708608C8FB74002B5087 /* DCMNDeleteRequest.m */; };
-		7EF9708D08C8FB86002B5087 /* DCMNDeleteResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EF9708B08C8FB86002B5087 /* DCMNDeleteResponse.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7EF9708E08C8FB86002B5087 /* DCMNDeleteResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF9708C08C8FB86002B5087 /* DCMNDeleteResponse.m */; };
 		8440039A0E8CF99500A00EBD /* dciodvfy in Resources */ = {isa = PBXBuildFile; fileRef = 844003990E8CF99500A00EBD /* dciodvfy */; };
 		8459A7270F5D63EF00146B28 /* VREmpty.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8459A7250F5D63EF00146B28 /* VREmpty.xib */; };
 		847C46230F9F5F3900F3548C /* OsiriX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E0B3A3F067526CD00908593 /* OsiriX.framework */; };
@@ -1380,16 +1265,10 @@
 		B7CDAD030AB30E7700068D70 /* pdf.tif in Resources */ = {isa = PBXBuildFile; fileRef = B7CDAD010AB30E7600068D70 /* pdf.tif */; };
 		BF00C95C06F3F43900715191 /* DCMCursor.h in Headers */ = {isa = PBXBuildFile; fileRef = BF00C95806F3F43900715191 /* DCMCursor.h */; };
 		BF00C95D06F3F43A00715191 /* DCMCursor.m in Sources */ = {isa = PBXBuildFile; fileRef = BF00C95906F3F43900715191 /* DCMCursor.m */; };
-		BF01AA23078CF6C80037222F /* DCMCMoveResponseDataHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = BF01AA21078CF6C80037222F /* DCMCMoveResponseDataHandler.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		BF01AA24078CF6C80037222F /* DCMCMoveResponseDataHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = BF01AA22078CF6C80037222F /* DCMCMoveResponseDataHandler.m */; };
 		BF038E880A3FB49700663EBB /* KeyObjectController.h in Headers */ = {isa = PBXBuildFile; fileRef = BF038E7C0A3FB49700663EBB /* KeyObjectController.h */; };
 		BF038E890A3FB49700663EBB /* KeyObjectController.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF038E7D0A3FB49700663EBB /* KeyObjectController.mm */; };
 		BF038E8A0A3FB49700663EBB /* KeyObjectReport.h in Headers */ = {isa = PBXBuildFile; fileRef = BF038E7E0A3FB49700663EBB /* KeyObjectReport.h */; };
 		BF038E8B0A3FB49700663EBB /* KeyObjectReport.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF038E7F0A3FB49700663EBB /* KeyObjectReport.mm */; };
-		BF03E55D07BEFFC500100045 /* DCMCFindResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = BF03E55B07BEFFC500100045 /* DCMCFindResponse.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		BF03E55E07BEFFC500100045 /* DCMCFindResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = BF03E55C07BEFFC500100045 /* DCMCFindResponse.m */; };
-		BF03E56C07BEFFFF00100045 /* DCMCMoveResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = BF03E56A07BEFFFF00100045 /* DCMCMoveResponse.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		BF03E56D07BEFFFF00100045 /* DCMCMoveResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = BF03E56B07BEFFFF00100045 /* DCMCMoveResponse.m */; };
 		BF06806E0A9E602E000F3152 /* viewHTMLSelected.tiff in Resources */ = {isa = PBXBuildFile; fileRef = BF06806C0A9E602E000F3152 /* viewHTMLSelected.tiff */; };
 		BF06806F0A9E602E000F3152 /* viewXMLSelected.tiff in Resources */ = {isa = PBXBuildFile; fileRef = BF06806D0A9E602E000F3152 /* viewXMLSelected.tiff */; };
 		BF09B13F0B2E681D00AA97E2 /* OSIWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = BF09B13D0B2E681D00AA97E2 /* OSIWindowController.h */; };
@@ -1398,19 +1277,14 @@
 		BF0AAEB40A9AB2560001C8EB /* DragMatrixWithDelete.m in Sources */ = {isa = PBXBuildFile; fileRef = BF0AAEAE0A9AB2560001C8EB /* DragMatrixWithDelete.m */; };
 		BF1745D408E0C7E200822756 /* LogWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = BF1745D208E0C7E200822756 /* LogWindowController.h */; };
 		BF1745D508E0C7E200822756 /* LogWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = BF1745D308E0C7E200822756 /* LogWindowController.m */; };
-		BF17E97F0887662400ECF621 /* NetworkMoveDataHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = BF17E97D0887662400ECF621 /* NetworkMoveDataHandler.h */; };
-		BF17E9800887662400ECF621 /* NetworkMoveDataHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = BF17E97E0887662400ECF621 /* NetworkMoveDataHandler.m */; };
 		BF1833D109AD833D0046C295 /* FlipHorizontal.tif in Resources */ = {isa = PBXBuildFile; fileRef = BF1833CF09AD833D0046C295 /* FlipHorizontal.tif */; };
 		BF1833D209AD833D0046C295 /* FlipVertical.tif in Resources */ = {isa = PBXBuildFile; fileRef = BF1833D009AD833D0046C295 /* FlipVertical.tif */; };
 		BF18A85B09E0BF00005DEFB6 /* AppControllerDCMTKCategory.h in Headers */ = {isa = PBXBuildFile; fileRef = BF18A85709E0BF00005DEFB6 /* AppControllerDCMTKCategory.h */; };
 		BF18A85C09E0BF00005DEFB6 /* AppControllerDCMTKCategory.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF18A85809E0BF00005DEFB6 /* AppControllerDCMTKCategory.mm */; };
-		BF19256B0762958D009C6832 /* DCMAbstractSyntaxUID.h in Headers */ = {isa = PBXBuildFile; fileRef = BF1925690762958D009C6832 /* DCMAbstractSyntaxUID.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		BF19256C0762958D009C6832 /* DCMAbstractSyntaxUID.m in Sources */ = {isa = PBXBuildFile; fileRef = BF19256A0762958D009C6832 /* DCMAbstractSyntaxUID.m */; };
 		BF2425510A51D39500D3D76B /* DicomFileDCMTKCategory.h in Headers */ = {isa = PBXBuildFile; fileRef = BF24254F0A51D39500D3D76B /* DicomFileDCMTKCategory.h */; };
 		BF2425520A51D39500D3D76B /* DicomFileDCMTKCategory.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF2425500A51D39500D3D76B /* DicomFileDCMTKCategory.mm */; };
 		BF26843D0A5CBB1C004EB838 /* DicomImageDCMTKCategory.h in Headers */ = {isa = PBXBuildFile; fileRef = BF26843B0A5CBB1C004EB838 /* DicomImageDCMTKCategory.h */; };
 		BF26843E0A5CBB1C004EB838 /* DicomImageDCMTKCategory.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF26843C0A5CBB1C004EB838 /* DicomImageDCMTKCategory.mm */; settings = {COMPILER_FLAGS = "-I ./ITK180 -I ./ITK180/Code -I ./ITK180/Code/Algorithms -I ./ITK180/Code/BasicFilters -I ./ITK180/Code/Common -I ./ITK180/Code/Numerics -I ./ITK180/Code/IO -I ./ITK180/Code/Numerics/FEM -I ./ITK180/Code/Numerics/Statistics -I ./ITK180/Code/SpatialObject -I ./ITK180/Code/Utilities/MetaIO -I ./ITK180/Code/Utilities/expat -I ./ITK180/Code/Utilities/NrrdIO -I ./ITK180/Code/Utilities/DICOMParser -I ./ITK180/Utilities -I ./ITK180/Utilities/vxl/vcl -I ./ITK180/Utilities/vxl/core"; }; };
-		BF28B92B0783A7F000C71DA8 /* DCMNetworking.h in Headers */ = {isa = PBXBuildFile; fileRef = BF28B92A0783A7F000C71DA8 /* DCMNetworking.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BF2EEC860B1F8741007E9088 /* OSIHotKeys.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = BF2EEC750B1F8741007E9088 /* OSIHotKeys.prefPane */; };
 		BF30B3A90C079D570003390C /* vtkPowerCrustSurfaceReconstruction.cxx in Sources */ = {isa = PBXBuildFile; fileRef = BF30B3A70C079D570003390C /* vtkPowerCrustSurfaceReconstruction.cxx */; };
 		BF30B3AD0C079D6B0003390C /* vtkPowerCrustSurfaceReconstruction.h in Headers */ = {isa = PBXBuildFile; fileRef = BF30B3AB0C079D6B0003390C /* vtkPowerCrustSurfaceReconstruction.h */; };
@@ -1567,8 +1441,6 @@
 		BF47CC240A2E3BC500700AA9 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF47CBF20A2E3BC500700AA9 /* WebKit.framework */; };
 		BF47CC370A2E4AD900700AA9 /* StructuredReport.h in Headers */ = {isa = PBXBuildFile; fileRef = BF47CC310A2E4AD800700AA9 /* StructuredReport.h */; };
 		BF47CC380A2E4AD900700AA9 /* StructuredReport.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF47CC320A2E4AD900700AA9 /* StructuredReport.mm */; };
-		BF4885A70766BD4D00F30E57 /* DCMPresentationDataValue.h in Headers */ = {isa = PBXBuildFile; fileRef = BF4885A50766BD4D00F30E57 /* DCMPresentationDataValue.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		BF4885A80766BD4D00F30E57 /* DCMPresentationDataValue.m in Sources */ = {isa = PBXBuildFile; fileRef = BF4885A60766BD4D00F30E57 /* DCMPresentationDataValue.m */; };
 		BF4CEBD609CB736D0073E928 /* dcmqrcnf.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF4CEBD509CB736D0073E928 /* dcmqrcnf.mm */; };
 		BF55377E0A9A294A00D83CE3 /* PathForImage.h in Headers */ = {isa = PBXBuildFile; fileRef = BF55377C0A9A294A00D83CE3 /* PathForImage.h */; };
 		BF55377F0A9A294A00D83CE3 /* PathForImage.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF55377D0A9A294A00D83CE3 /* PathForImage.mm */; };
@@ -1839,12 +1711,8 @@
 		BF8E5AC109CA0D8200DE02FF /* DCMTKQueryRetrieveSCP.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF8E5ABD09CA0D8200DE02FF /* DCMTKQueryRetrieveSCP.mm */; };
 		BF90552209EB4985009C30D1 /* MoveManager.h in Headers */ = {isa = PBXBuildFile; fileRef = BF90551C09EB4985009C30D1 /* MoveManager.h */; };
 		BF90552309EB4985009C30D1 /* MoveManager.m in Sources */ = {isa = PBXBuildFile; fileRef = BF90551D09EB4985009C30D1 /* MoveManager.m */; };
-		BF9893BB09D351FF00D550EC /* DCMTKDataHandlerCategory.h in Headers */ = {isa = PBXBuildFile; fileRef = BF9893B509D351FF00D550EC /* DCMTKDataHandlerCategory.h */; };
-		BF9893BC09D351FF00D550EC /* DCMTKDataHandlerCategory.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF9893B609D351FF00D550EC /* DCMTKDataHandlerCategory.mm */; };
 		BF9999000A1E695800F50753 /* DCMTKPrintSCU.h in Headers */ = {isa = PBXBuildFile; fileRef = BF9998FE0A1E695800F50753 /* DCMTKPrintSCU.h */; };
 		BF9999010A1E695800F50753 /* DCMTKPrintSCU.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF9998FF0A1E695800F50753 /* DCMTKPrintSCU.mm */; };
-		BF9D3B260770AA6A002F0847 /* DCMCompositeResponseHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = BF9D3B240770AA6A002F0847 /* DCMCompositeResponseHandler.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		BF9D3B270770AA6A002F0847 /* DCMCompositeResponseHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = BF9D3B250770AA6A002F0847 /* DCMCompositeResponseHandler.m */; };
 		BFA7D2180A51D1460013F76E /* BrowserControllerDCMTKCategory.h in Headers */ = {isa = PBXBuildFile; fileRef = BFA7D2160A51D1460013F76E /* BrowserControllerDCMTKCategory.h */; };
 		BFA7D2190A51D1460013F76E /* BrowserControllerDCMTKCategory.mm in Sources */ = {isa = PBXBuildFile; fileRef = BFA7D2170A51D1460013F76E /* BrowserControllerDCMTKCategory.mm */; };
 		BFAA08310A901AD0002DB3DD /* DragMatrix.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAA082B0A901AD0002DB3DD /* DragMatrix.h */; };
@@ -1862,8 +1730,6 @@
 		BFAFEE9408F2220B002AD789 /* PluginFileFormatDecoder.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAFEE9208F2220B002AD789 /* PluginFileFormatDecoder.h */; };
 		BFAFEE9508F2220B002AD789 /* PluginFileFormatDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = BFAFEE9308F2220B002AD789 /* PluginFileFormatDecoder.m */; };
 		BFB8F7F7087B805F007ABE20 /* libjasper2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CEB7179706CE7CBD00084CA5 /* libjasper2.a */; };
-		BFBA8288075AADDA004D2D6C /* DCMPresentationContext.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBA8272075AA9B4004D2D6C /* DCMPresentationContext.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		BFBA8289075AADDB004D2D6C /* DCMPresentationContext.m in Sources */ = {isa = PBXBuildFile; fileRef = BFBA8273075AA9B4004D2D6C /* DCMPresentationContext.m */; };
 		BFBBF2120BE28E320064E449 /* EndoscopySegmentationController.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBBF20E0BE28E320064E449 /* EndoscopySegmentationController.h */; };
 		BFBBF2130BE28E320064E449 /* EndoscopySegmentationController.m in Sources */ = {isa = PBXBuildFile; fileRef = BFBBF20F0BE28E320064E449 /* EndoscopySegmentationController.m */; };
 		BFBCD8A709E4C2E40078ABB6 /* DCMTKServiceClassUser.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBCD8A509E4C2E40078ABB6 /* DCMTKServiceClassUser.h */; };
@@ -2377,12 +2243,6 @@
 		BFBF421209B6828D00545F5E /* oftimer.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3E6B09B6828B00545F5E /* oftimer.h */; };
 		BFBF421309B6828D00545F5E /* oftypes.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3E6C09B6828B00545F5E /* oftypes.h */; };
 		BFBF421409B6828D00545F5E /* ofuoset.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3E6D09B6828B00545F5E /* ofuoset.h */; };
-		BFC8C705076E785A00D17A68 /* DCMAssociationResponder.h in Headers */ = {isa = PBXBuildFile; fileRef = BFC8C703076E785A00D17A68 /* DCMAssociationResponder.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		BFC8C706076E785A00D17A68 /* DCMAssociationResponder.m in Sources */ = {isa = PBXBuildFile; fileRef = BFC8C704076E785A00D17A68 /* DCMAssociationResponder.m */; };
-		BFC8C76E076E815A00D17A68 /* DCMVerificationSOPClassSCU.h in Headers */ = {isa = PBXBuildFile; fileRef = BFC8C76C076E815A00D17A68 /* DCMVerificationSOPClassSCU.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		BFC8C76F076E815A00D17A68 /* DCMVerificationSOPClassSCU.m in Sources */ = {isa = PBXBuildFile; fileRef = BFC8C76D076E815A00D17A68 /* DCMVerificationSOPClassSCU.m */; };
-		BFC8C77E076E818F00D17A68 /* DCMSOPClass.h in Headers */ = {isa = PBXBuildFile; fileRef = BFC8C77C076E818F00D17A68 /* DCMSOPClass.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		BFC8C77F076E818F00D17A68 /* DCMSOPClass.m in Sources */ = {isa = PBXBuildFile; fileRef = BFC8C77D076E818F00D17A68 /* DCMSOPClass.m */; };
 		BFC9C2A909B697DB003717B1 /* DCMTKVerifySCU.h in Headers */ = {isa = PBXBuildFile; fileRef = BFC9C2A709B697DB003717B1 /* DCMTKVerifySCU.h */; };
 		BFC9C2AA09B697DB003717B1 /* DCMTKVerifySCU.mm in Sources */ = {isa = PBXBuildFile; fileRef = BFC9C2A809B697DB003717B1 /* DCMTKVerifySCU.mm */; };
 		BFD4BFFC06F2A96900EC9A90 /* ContrastCursor.tif in Resources */ = {isa = PBXBuildFile; fileRef = BFD4BFF006F2A96900EC9A90 /* ContrastCursor.tif */; };
@@ -2397,10 +2257,6 @@
 		BFE0652B06755B7200AC4B67 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 		BFE2CDA609D1FE6400AE615D /* dcmqrdbq.h in Headers */ = {isa = PBXBuildFile; fileRef = BFF9D57809CDCA5600B3B940 /* dcmqrdbq.h */; };
 		BFE2CDA809D1FFAE00AE615D /* dcmqrdbq.mm in Sources */ = {isa = PBXBuildFile; fileRef = BFF9D57909CDCA5600B3B940 /* dcmqrdbq.mm */; };
-		BFE4689A0761623400409444 /* DCMAssociation.h in Headers */ = {isa = PBXBuildFile; fileRef = BFE468980761623400409444 /* DCMAssociation.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		BFE4689B0761623400409444 /* DCMAssociation.m in Sources */ = {isa = PBXBuildFile; fileRef = BFE468990761623400409444 /* DCMAssociation.m */; };
-		BFE4AAF5077A757700D2D44A /* DCMStoreSCPListener.h in Headers */ = {isa = PBXBuildFile; fileRef = BFE4AAF3077A757700D2D44A /* DCMStoreSCPListener.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		BFE4AAF6077A757700D2D44A /* DCMStoreSCPListener.m in Sources */ = {isa = PBXBuildFile; fileRef = BFE4AAF4077A757700D2D44A /* DCMStoreSCPListener.m */; };
 		BFEA82E00940F1D500B90699 /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BFEA82DF0940F1D500B90699 /* Quartz.framework */; };
 		BFEB763D0677FDA700F242F3 /* DCMTagDictionary.h in Headers */ = {isa = PBXBuildFile; fileRef = BFEB76370677FDA700F242F3 /* DCMTagDictionary.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BFEB763E0677FDA700F242F3 /* DCMTagDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = BFEB76380677FDA700F242F3 /* DCMTagDictionary.m */; };
@@ -2410,10 +2266,6 @@
 		BFEB76420677FDA700F242F3 /* tagDictionary.plist in Resources */ = {isa = PBXBuildFile; fileRef = BFEB763C0677FDA700F242F3 /* tagDictionary.plist */; };
 		BFEB767F0678071400F242F3 /* DCMUIDs.h in Headers */ = {isa = PBXBuildFile; fileRef = BFEB767E0678071400F242F3 /* DCMUIDs.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BFED84AB0A717E2500119174 /* smallKeyPlus.tif in Resources */ = {isa = PBXBuildFile; fileRef = BFED84AA0A717E2500119174 /* smallKeyPlus.tif */; };
-		BFF27D4C0787AEC400D8766D /* DCMMoveSCU.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E40C1700785D70A00806344 /* DCMMoveSCU.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		BFF27D4D0787AEC700D8766D /* DCMMoveSCU.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E40C1710785D70A00806344 /* DCMMoveSCU.m */; };
-		BFF27D4E0787AEC900D8766D /* DCMFindSCU.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E40C16A0785D6F800806344 /* DCMFindSCU.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		BFF27D4F0787AECC00D8766D /* DCMFindSCU.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E40C16B0785D6F800806344 /* DCMFindSCU.m */; };
 		BFF5D24009F93B3F0077E16B /* LogManager.h in Headers */ = {isa = PBXBuildFile; fileRef = BFF5D23E09F93B3F0077E16B /* LogManager.h */; };
 		BFF5D24109F93B3F0077E16B /* LogManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = BFF5D23F09F93B3F0077E16B /* LogManager.mm */; };
 		BFF97D710BDE8BE6008333CF /* ShadingArrayController.h in Headers */ = {isa = PBXBuildFile; fileRef = BFF97D6B0BDE8BE6008333CF /* ShadingArrayController.h */; };
@@ -4153,6 +4005,10 @@
 		CE74DEB008CCE0C1005D12A7 /* SagOpposite.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE74DEAF08CCE0C1005D12A7 /* SagOpposite.tif */; };
 		CE77B0740CB9718C00BE873C /* WaitRendering.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F991A0C84724B00CB38F1 /* WaitRendering.xib */; };
 		CE77B0B10CB9719C00BE873C /* WaitRendering.m in Sources */ = {isa = PBXBuildFile; fileRef = ABB218B805CF1E9300D8B619 /* WaitRendering.m */; };
+		CE7816BC0FD83B4E007C060B /* DCMAbstractSyntaxUID.h in Headers */ = {isa = PBXBuildFile; fileRef = BF1925690762958D009C6832 /* DCMAbstractSyntaxUID.h */; };
+		CE7816BD0FD83B4E007C060B /* DCMAbstractSyntaxUID.m in Sources */ = {isa = PBXBuildFile; fileRef = BF19256A0762958D009C6832 /* DCMAbstractSyntaxUID.m */; };
+		CE7817870FD843A0007C060B /* DCMAbstractSyntaxUID.m in Sources */ = {isa = PBXBuildFile; fileRef = BF19256A0762958D009C6832 /* DCMAbstractSyntaxUID.m */; };
+		CE7817880FD843A0007C060B /* DCMAbstractSyntaxUID.h in Headers */ = {isa = PBXBuildFile; fileRef = BF1925690762958D009C6832 /* DCMAbstractSyntaxUID.h */; };
 		CE7BBFD50C82DCA5000AD12F /* libtiff.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CE7BBFD30C82DCA5000AD12F /* libtiff.dylib */; };
 		CE7BBFD60C82DCA5000AD12F /* libtiff.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE7BBFD40C82DCA5000AD12F /* libtiff.a */; };
 		CE7BBFDB0C82DCA5000AD12F /* libtiff.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CE7BBFD30C82DCA5000AD12F /* libtiff.dylib */; };
@@ -4191,22 +4047,6 @@
 		CE9B51610CA8F41E00C6C982 /* DotMacKit.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = CEFE60580979B1DB00891EA9 /* DotMacKit.framework */; };
 		CE9B51790CA8F49500C6C982 /* Wait.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F993A0C84724B00CB38F1 /* Wait.xib */; };
 		CE9C734A0B34946B0062FCCC /* echoscu in Resources */ = {isa = PBXBuildFile; fileRef = CE9C73490B34946B0062FCCC /* echoscu */; };
-		CE9CED890C75BDF900752D4B /* DCMRootRecord.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E96AD9007CE753C005D435B /* DCMRootRecord.h */; };
-		CE9CED8A0C75BDF900752D4B /* DCMRootRecord.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E96AD9107CE753C005D435B /* DCMRootRecord.m */; };
-		CE9CED8B0C75BDF900752D4B /* DCMRecord.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E331F4907CD416F00AA50DF /* DCMRecord.h */; };
-		CE9CED8C0C75BDF900752D4B /* DCMRecord.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E331F4A07CD416F00AA50DF /* DCMRecord.m */; };
-		CE9CED8D0C75BDF900752D4B /* DCMReportRecord.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E93EB1607CA48F90075BD36 /* DCMReportRecord.h */; };
-		CE9CED8E0C75BDF900752D4B /* DCMReportRecord.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E93EB1707CA48F90075BD36 /* DCMReportRecord.m */; };
-		CE9CED8F0C75BDF900752D4B /* DCMImageRecord.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E93EB1007CA48E00075BD36 /* DCMImageRecord.h */; };
-		CE9CED900C75BDF900752D4B /* DCMImageRecord.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E93EB1107CA48E00075BD36 /* DCMImageRecord.m */; };
-		CE9CED910C75BDF900752D4B /* DCMSeriesRecord.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E93EB0A07CA48CE0075BD36 /* DCMSeriesRecord.h */; };
-		CE9CED920C75BDF900752D4B /* DCMSeriesRecord.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E93EB0B07CA48CE0075BD36 /* DCMSeriesRecord.m */; };
-		CE9CED930C75BDF900752D4B /* DCMStudyRecord.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E93EB0407CA48BD0075BD36 /* DCMStudyRecord.h */; };
-		CE9CED940C75BDF900752D4B /* DCMStudyRecord.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E93EB0507CA48BD0075BD36 /* DCMStudyRecord.m */; };
-		CE9CED950C75BDF900752D4B /* DCMPatientRecord.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E93EAFE07CA48AA0075BD36 /* DCMPatientRecord.h */; };
-		CE9CED960C75BDF900752D4B /* DCMPatientRecord.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E93EAFF07CA48AA0075BD36 /* DCMPatientRecord.m */; };
-		CE9CED970C75BDF900752D4B /* DCMDirectory.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E93EAF207CA486E0075BD36 /* DCMDirectory.h */; };
-		CE9CED980C75BDF900752D4B /* DCMDirectory.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E93EAF307CA486E0075BD36 /* DCMDirectory.m */; };
 		CE9CED990C75BE0A00752D4B /* DCMNetServiceDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EBB31070887269B00BF6B39 /* DCMNetServiceDelegate.h */; };
 		CE9CED9A0C75BE0A00752D4B /* DCMNetServiceDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EBB31080887269B00BF6B39 /* DCMNetServiceDelegate.m */; };
 		CE9CED9B0C75BE0A00752D4B /* DCM.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E0B3A13067526A600908593 /* DCM.h */; };
@@ -4483,135 +4323,6 @@
 		CE9CEEAB0C75BE3200752D4B /* jquant2.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB15006BF2C4F00C7EF1E /* jquant2.c */; };
 		CE9CEEAC0C75BE3200752D4B /* jutils.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB15106BF2C4F00C7EF1E /* jutils.c */; };
 		CE9CEEAD0C75BE3200752D4B /* jversion8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB15206BF2C4F00C7EF1E /* jversion8.h */; };
-		CE9CEEAE0C75BE3A00752D4B /* DCMNetworking.h in Headers */ = {isa = PBXBuildFile; fileRef = BF28B92A0783A7F000C71DA8 /* DCMNetworking.h */; };
-		CE9CEEAF0C75BE3A00752D4B /* DCMImageQueryNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E5DC094078AF555009D04DF /* DCMImageQueryNode.h */; };
-		CE9CEEB00C75BE3A00752D4B /* DCMImageQueryNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E5DC095078AF555009D04DF /* DCMImageQueryNode.m */; };
-		CE9CEEB10C75BE3A00752D4B /* DCMSeriesQueryNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E5DC08E078AF544009D04DF /* DCMSeriesQueryNode.h */; };
-		CE9CEEB20C75BE3A00752D4B /* DCMSeriesQueryNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E5DC08F078AF544009D04DF /* DCMSeriesQueryNode.m */; };
-		CE9CEEB30C75BE3A00752D4B /* DCMStudyQueryNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E5DC088078AF535009D04DF /* DCMStudyQueryNode.h */; };
-		CE9CEEB40C75BE3A00752D4B /* DCMStudyQueryNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E5DC089078AF535009D04DF /* DCMStudyQueryNode.m */; };
-		CE9CEEB50C75BE3A00752D4B /* DCMRootQueryNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E5DC082078AF523009D04DF /* DCMRootQueryNode.h */; };
-		CE9CEEB60C75BE3A00752D4B /* DCMRootQueryNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E5DC083078AF523009D04DF /* DCMRootQueryNode.m */; };
-		CE9CEEB70C75BE3A00752D4B /* DCMQueryNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E5DC07A078AF4FB009D04DF /* DCMQueryNode.h */; };
-		CE9CEEB80C75BE3A00752D4B /* DCMQueryNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E5DC07B078AF4FB009D04DF /* DCMQueryNode.m */; };
-		CE9CEEB90C75BE3A00752D4B /* DCMMoveSCU.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E40C1700785D70A00806344 /* DCMMoveSCU.h */; };
-		CE9CEEBA0C75BE3A00752D4B /* DCMMoveSCU.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E40C1710785D70A00806344 /* DCMMoveSCU.m */; };
-		CE9CEEBB0C75BE3A00752D4B /* DCMFindSCU.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E40C16A0785D6F800806344 /* DCMFindSCU.h */; };
-		CE9CEEBC0C75BE3A00752D4B /* DCMFindSCU.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E40C16B0785D6F800806344 /* DCMFindSCU.m */; };
-		CE9CEEBD0C75BE3A00752D4B /* DCMStoreSCP.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EDA38BF077B250100A734D5 /* DCMStoreSCP.h */; };
-		CE9CEEBE0C75BE3A00752D4B /* DCMStoreSCP.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EDA38C0077B250100A734D5 /* DCMStoreSCP.m */; };
-		CE9CEEBF0C75BE3A00752D4B /* DCMStoreSCPListener.h in Headers */ = {isa = PBXBuildFile; fileRef = BFE4AAF3077A757700D2D44A /* DCMStoreSCPListener.h */; };
-		CE9CEEC00C75BE3A00752D4B /* DCMStoreSCPListener.m in Sources */ = {isa = PBXBuildFile; fileRef = BFE4AAF4077A757700D2D44A /* DCMStoreSCPListener.m */; };
-		CE9CEEC10C75BE3A00752D4B /* DCMStoreSCU.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E1CE2BA0777828C00190023 /* DCMStoreSCU.h */; };
-		CE9CEEC20C75BE3A00752D4B /* DCMStoreSCU.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E1CE2BB0777828C00190023 /* DCMStoreSCU.m */; };
-		CE9CEEC30C75BE3A00752D4B /* DCMSOPClass.h in Headers */ = {isa = PBXBuildFile; fileRef = BFC8C77C076E818F00D17A68 /* DCMSOPClass.h */; };
-		CE9CEEC40C75BE3A00752D4B /* DCMSOPClass.m in Sources */ = {isa = PBXBuildFile; fileRef = BFC8C77D076E818F00D17A68 /* DCMSOPClass.m */; };
-		CE9CEEC50C75BE3A00752D4B /* DCMVerificationSOPClassSCU.h in Headers */ = {isa = PBXBuildFile; fileRef = BFC8C76C076E815A00D17A68 /* DCMVerificationSOPClassSCU.h */; };
-		CE9CEEC60C75BE3A00752D4B /* DCMVerificationSOPClassSCU.m in Sources */ = {isa = PBXBuildFile; fileRef = BFC8C76D076E815A00D17A68 /* DCMVerificationSOPClassSCU.m */; };
-		CE9CEEC70C75BE3A00752D4B /* DCMPrintSCU.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EF9703408C8E238002B5087 /* DCMPrintSCU.h */; };
-		CE9CEEC80C75BE3A00752D4B /* DCMPrintSCU.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF9703508C8E238002B5087 /* DCMPrintSCU.m */; };
-		CE9CEEC90C75BE3A00752D4B /* DCMReceivedDataHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E3EDC0B076E5745002A7DAC /* DCMReceivedDataHandler.h */; };
-		CE9CEECA0C75BE3A00752D4B /* DCMReceivedDataHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E3EDC0C076E5745002A7DAC /* DCMReceivedDataHandler.m */; };
-		CE9CEECB0C75BE3A00752D4B /* DCMCompositeResponseHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = BF9D3B240770AA6A002F0847 /* DCMCompositeResponseHandler.h */; };
-		CE9CEECC0C75BE3A00752D4B /* DCMCompositeResponseHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = BF9D3B250770AA6A002F0847 /* DCMCompositeResponseHandler.m */; };
-		CE9CEECD0C75BE3A00752D4B /* DCMCMoveResponseDataHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = BF01AA21078CF6C80037222F /* DCMCMoveResponseDataHandler.h */; };
-		CE9CEECE0C75BE3A00752D4B /* DCMCMoveResponseDataHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = BF01AA22078CF6C80037222F /* DCMCMoveResponseDataHandler.m */; };
-		CE9CEECF0C75BE3A00752D4B /* DCMCFindResponseDataHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E21D345078747A500315810 /* DCMCFindResponseDataHandler.h */; };
-		CE9CEED00C75BE3A00752D4B /* DCMCFindResponseDataHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E21D346078747A500315810 /* DCMCFindResponseDataHandler.m */; };
-		CE9CEED10C75BE3A00752D4B /* DCMCStoreReceivedPDUHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EDA38C7077B25F400A734D5 /* DCMCStoreReceivedPDUHandler.h */; };
-		CE9CEED20C75BE3A00752D4B /* DCMCStoreReceivedPDUHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EDA38C8077B25F400A734D5 /* DCMCStoreReceivedPDUHandler.m */; };
-		CE9CEED30C75BE3A00752D4B /* DCMCStoreResponseHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E1CE2A0077780D200190023 /* DCMCStoreResponseHandler.h */; };
-		CE9CEED40C75BE3A00752D4B /* DCMCStoreResponseHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E1CE2A1077780D200190023 /* DCMCStoreResponseHandler.m */; };
-		CE9CEED50C75BE3A00752D4B /* DCMEchoResponseHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E4E71660770E3A200856B65 /* DCMEchoResponseHandler.h */; };
-		CE9CEED60C75BE3A00752D4B /* DCMEchoResponseHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E4E71670770E3A200856B65 /* DCMEchoResponseHandler.m */; };
-		CE9CEED70C75BE3A00752D4B /* DCMPrintResponseHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E64AC4408CB81A700CEB599 /* DCMPrintResponseHandler.h */; };
-		CE9CEED80C75BE3A00752D4B /* DCMPrintResponseHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E64AC4508CB81A800CEB599 /* DCMPrintResponseHandler.m */; };
-		CE9CEED90C75BE3A00752D4B /* DCMCommandMessage.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E3EDC34076E5C20002A7DAC /* DCMCommandMessage.h */; };
-		CE9CEEDA0C75BE3A00752D4B /* DCMCommandMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E3EDC35076E5C20002A7DAC /* DCMCommandMessage.m */; };
-		CE9CEEDB0C75BE3A00752D4B /* DCMCMoveResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = BF03E56A07BEFFFF00100045 /* DCMCMoveResponse.h */; };
-		CE9CEEDC0C75BE3A00752D4B /* DCMCMoveResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = BF03E56B07BEFFFF00100045 /* DCMCMoveResponse.m */; };
-		CE9CEEDD0C75BE3A00752D4B /* DCMCFindResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = BF03E55B07BEFFC500100045 /* DCMCFindResponse.h */; };
-		CE9CEEDE0C75BE3A00752D4B /* DCMCFindResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = BF03E55C07BEFFC500100045 /* DCMCFindResponse.m */; };
-		CE9CEEDF0C75BE3A00752D4B /* DCMCMoveRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E40C1420785CE2C00806344 /* DCMCMoveRequest.h */; };
-		CE9CEEE00C75BE3A00752D4B /* DCMCMoveRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E40C1430785CE2C00806344 /* DCMCMoveRequest.m */; };
-		CE9CEEE10C75BE3A00752D4B /* DCMCFindRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E40C0FF0785C7C400806344 /* DCMCFindRequest.h */; };
-		CE9CEEE20C75BE3A00752D4B /* DCMCFindRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E40C1000785C7C400806344 /* DCMCFindRequest.m */; };
-		CE9CEEE30C75BE3A00752D4B /* DCMCStoreResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E1CE1800777536800190023 /* DCMCStoreResponse.h */; };
-		CE9CEEE40C75BE3A00752D4B /* DCMCStoreResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E1CE1810777536800190023 /* DCMCStoreResponse.m */; };
-		CE9CEEE50C75BE3A00752D4B /* DCMCStoreRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E1CE162077752BB00190023 /* DCMCStoreRequest.h */; };
-		CE9CEEE60C75BE3A00752D4B /* DCMCStoreRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E1CE163077752BB00190023 /* DCMCStoreRequest.m */; };
-		CE9CEEE70C75BE3A00752D4B /* DCMCEchoResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E1CE1150777441E00190023 /* DCMCEchoResponse.h */; };
-		CE9CEEE80C75BE3A00752D4B /* DCMCEchoResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E1CE1160777441E00190023 /* DCMCEchoResponse.m */; };
-		CE9CEEE90C75BE3A00752D4B /* DCMCEchoRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E3EDBAB076E4225002A7DAC /* DCMCEchoRequest.h */; };
-		CE9CEEEA0C75BE3A00752D4B /* DCMCEchoRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E3EDBAC076E4225002A7DAC /* DCMCEchoRequest.m */; };
-		CE9CEEEB0C75BE3A00752D4B /* DCMNGetRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EF9703A08C8F9AB002B5087 /* DCMNGetRequest.h */; };
-		CE9CEEEC0C75BE3A00752D4B /* DCMNGetRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF9703B08C8F9AB002B5087 /* DCMNGetRequest.m */; };
-		CE9CEEED0C75BE3A00752D4B /* DCMNGetResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EF9704008C8F9C6002B5087 /* DCMNGetResponse.h */; };
-		CE9CEEEE0C75BE3A00752D4B /* DCMNGetResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF9704108C8F9C6002B5087 /* DCMNGetResponse.m */; };
-		CE9CEEEF0C75BE3A00752D4B /* DCMNSetRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EF9705708C8FA13002B5087 /* DCMNSetRequest.h */; };
-		CE9CEEF00C75BE3A00752D4B /* DCMNSetRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF9705808C8FA13002B5087 /* DCMNSetRequest.m */; };
-		CE9CEEF10C75BE3A00752D4B /* DCMNSetResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EF9705F08C8FA2D002B5087 /* DCMNSetResponse.h */; };
-		CE9CEEF20C75BE3A00752D4B /* DCMNSetResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF9706008C8FA2D002B5087 /* DCMNSetResponse.m */; };
-		CE9CEEF30C75BE3A00752D4B /* DCMNActionRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EF9706508C8FA56002B5087 /* DCMNActionRequest.h */; };
-		CE9CEEF40C75BE3A00752D4B /* DCMNActionRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF9706608C8FA56002B5087 /* DCMNActionRequest.m */; };
-		CE9CEEF50C75BE3A00752D4B /* DCMNActionResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EF9706D08C8FA86002B5087 /* DCMNActionResponse.h */; };
-		CE9CEEF60C75BE3A00752D4B /* DCMNActionResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF9706E08C8FA86002B5087 /* DCMNActionResponse.m */; };
-		CE9CEEF70C75BE3A00752D4B /* DCMNCreateRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EF9707708C8FB1C002B5087 /* DCMNCreateRequest.h */; };
-		CE9CEEF80C75BE3A00752D4B /* DCMNCreateRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF9707808C8FB1C002B5087 /* DCMNCreateRequest.m */; };
-		CE9CEEF90C75BE3A00752D4B /* DCMNCreateResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EF9707F08C8FB42002B5087 /* DCMNCreateResponse.h */; };
-		CE9CEEFA0C75BE3A00752D4B /* DCMNCreateResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF9708008C8FB42002B5087 /* DCMNCreateResponse.m */; };
-		CE9CEEFB0C75BE3A00752D4B /* DCMNDeleteRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EF9708508C8FB74002B5087 /* DCMNDeleteRequest.h */; };
-		CE9CEEFC0C75BE3A00752D4B /* DCMNDeleteRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF9708608C8FB74002B5087 /* DCMNDeleteRequest.m */; };
-		CE9CEEFD0C75BE3A00752D4B /* DCMNDeleteResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EF9708B08C8FB86002B5087 /* DCMNDeleteResponse.h */; };
-		CE9CEEFE0C75BE3A00752D4B /* DCMNDeleteResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF9708C08C8FB86002B5087 /* DCMNDeleteResponse.m */; };
-		CE9CEEFF0C75BE3A00752D4B /* DCMPresentationDataValue.h in Headers */ = {isa = PBXBuildFile; fileRef = BF4885A50766BD4D00F30E57 /* DCMPresentationDataValue.h */; };
-		CE9CEF000C75BE3A00752D4B /* DCMPresentationDataValue.m in Sources */ = {isa = PBXBuildFile; fileRef = BF4885A60766BD4D00F30E57 /* DCMPresentationDataValue.m */; };
-		CE9CEF010C75BE3A00752D4B /* DCMAbstractSyntaxUID.h in Headers */ = {isa = PBXBuildFile; fileRef = BF1925690762958D009C6832 /* DCMAbstractSyntaxUID.h */; };
-		CE9CEF020C75BE3A00752D4B /* DCMAbstractSyntaxUID.m in Sources */ = {isa = PBXBuildFile; fileRef = BF19256A0762958D009C6832 /* DCMAbstractSyntaxUID.m */; };
-		CE9CEF030C75BE3A00752D4B /* DCMAssociationResponder.h in Headers */ = {isa = PBXBuildFile; fileRef = BFC8C703076E785A00D17A68 /* DCMAssociationResponder.h */; };
-		CE9CEF040C75BE3A00752D4B /* DCMAssociationResponder.m in Sources */ = {isa = PBXBuildFile; fileRef = BFC8C704076E785A00D17A68 /* DCMAssociationResponder.m */; };
-		CE9CEF050C75BE3A00752D4B /* DCMAssociation.h in Headers */ = {isa = PBXBuildFile; fileRef = BFE468980761623400409444 /* DCMAssociation.h */; };
-		CE9CEF060C75BE3A00752D4B /* DCMAssociation.m in Sources */ = {isa = PBXBuildFile; fileRef = BFE468990761623400409444 /* DCMAssociation.m */; };
-		CE9CEF070C75BE3A00752D4B /* DCMPrintAssociation.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E64AC3E08CB80F900CEB599 /* DCMPrintAssociation.h */; };
-		CE9CEF080C75BE3A00752D4B /* DCMPrintAssociation.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E64AC3F08CB80F900CEB599 /* DCMPrintAssociation.m */; };
-		CE9CEF090C75BE3A00752D4B /* DCMAssociationItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E49E5F6075FC852006AA2A3 /* DCMAssociationItem.h */; };
-		CE9CEF0A0C75BE3A00752D4B /* DCMAssociationItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E49E5F7075FC852006AA2A3 /* DCMAssociationItem.m */; };
-		CE9CEF0B0C75BE3A00752D4B /* DCMPresentationContextItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E49E6B7075FDDF7006AA2A3 /* DCMPresentationContextItem.h */; };
-		CE9CEF0C0C75BE3A00752D4B /* DCMPresentationContextItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E49E6B8075FDDF8006AA2A3 /* DCMPresentationContextItem.m */; };
-		CE9CEF0D0C75BE3A00752D4B /* DCMSOPClassExtendedNegotiationUserInformationSubItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E49E6AA075FDA06006AA2A3 /* DCMSOPClassExtendedNegotiationUserInformationSubItem.h */; };
-		CE9CEF0E0C75BE3A00752D4B /* DCMSOPClassExtendedNegotiationUserInformationSubItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E49E6AB075FDA06006AA2A3 /* DCMSOPClassExtendedNegotiationUserInformationSubItem.m */; };
-		CE9CEF0F0C75BE3A00752D4B /* DCMImplementationVersionNameUserInformationSubItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E49E695075FD7DC006AA2A3 /* DCMImplementationVersionNameUserInformationSubItem.h */; };
-		CE9CEF100C75BE3A00752D4B /* DCMImplementationVersionNameUserInformationSubItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E49E696075FD7DC006AA2A3 /* DCMImplementationVersionNameUserInformationSubItem.m */; };
-		CE9CEF110C75BE3A00752D4B /* DCMImplementationClassUIDUserInformationSubItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E49E667075FD3A2006AA2A3 /* DCMImplementationClassUIDUserInformationSubItem.h */; };
-		CE9CEF120C75BE3A00752D4B /* DCMImplementationClassUIDUserInformationSubItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E49E668075FD3A2006AA2A3 /* DCMImplementationClassUIDUserInformationSubItem.m */; };
-		CE9CEF130C75BE3A00752D4B /* DCMMaximumLengthReceivedUserInformationSubItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E49E654075FD264006AA2A3 /* DCMMaximumLengthReceivedUserInformationSubItem.h */; };
-		CE9CEF140C75BE3A00752D4B /* DCMMaximumLengthReceivedUserInformationSubItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E49E655075FD264006AA2A3 /* DCMMaximumLengthReceivedUserInformationSubItem.m */; };
-		CE9CEF150C75BE3A00752D4B /* DCMUserInformationSubItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E49E634075FD02D006AA2A3 /* DCMUserInformationSubItem.h */; };
-		CE9CEF160C75BE3A00752D4B /* DCMUserInformationSubItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E49E635075FD02D006AA2A3 /* DCMUserInformationSubItem.m */; };
-		CE9CEF170C75BE3A00752D4B /* DCMUserInformationItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E49E61E075FCD99006AA2A3 /* DCMUserInformationItem.h */; };
-		CE9CEF180C75BE3A00752D4B /* DCMUserInformationItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E49E61F075FCD99006AA2A3 /* DCMUserInformationItem.m */; };
-		CE9CEF190C75BE3A00752D4B /* DCMApplicationContextItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E49E608075FCBCC006AA2A3 /* DCMApplicationContextItem.h */; };
-		CE9CEF1A0C75BE3A00752D4B /* DCMApplicationContextItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E49E609075FCBCC006AA2A3 /* DCMApplicationContextItem.m */; };
-		CE9CEF1B0C75BE3A00752D4B /* DCMPresentationContext.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBA8272075AA9B4004D2D6C /* DCMPresentationContext.h */; };
-		CE9CEF1C0C75BE3A00752D4B /* DCMPresentationContext.m in Sources */ = {isa = PBXBuildFile; fileRef = BFBA8273075AA9B4004D2D6C /* DCMPresentationContext.m */; };
-		CE9CEF1D0C75BE3A00752D4B /* DCM_PDU.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E17DADE075A7B4600A2E803 /* DCM_PDU.h */; };
-		CE9CEF1E0C75BE3A00752D4B /* DCM_PDU.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E17DADF075A7B4600A2E803 /* DCM_PDU.m */; };
-		CE9CEF1F0C75BE3A00752D4B /* DCMPDataPDU.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E3EDAAB076CE4BB002A7DAC /* DCMPDataPDU.h */; };
-		CE9CEF200C75BE3A00752D4B /* DCMPDataPDU.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E3EDAAC076CE4BB002A7DAC /* DCMPDataPDU.m */; };
-		CE9CEF210C75BE3A00752D4B /* DCMRejectPDU.h in Headers */ = {isa = PBXBuildFile; fileRef = BF6DB82E075A52C300EBC60E /* DCMRejectPDU.h */; };
-		CE9CEF220C75BE3A00752D4B /* DCMRejectPDU.m in Sources */ = {isa = PBXBuildFile; fileRef = BF6DB82F075A52C300EBC60E /* DCMRejectPDU.m */; };
-		CE9CEF230C75BE3A00752D4B /* DCMAcceptRequestPDU.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E17DB14075A7FBD00A2E803 /* DCMAcceptRequestPDU.h */; };
-		CE9CEF240C75BE3A00752D4B /* DCMAcceptRequestPDU.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E17DB15075A7FBD00A2E803 /* DCMAcceptRequestPDU.m */; };
-		CE9CEF250C75BE3A00752D4B /* DCMRequestPDU.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EB72CAF076127D80025F400 /* DCMRequestPDU.h */; };
-		CE9CEF260C75BE3A00752D4B /* DCMRequestPDU.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EB72CB0076127D80025F400 /* DCMRequestPDU.m */; };
-		CE9CEF270C75BE3A00752D4B /* DCMAcceptPDU.h in Headers */ = {isa = PBXBuildFile; fileRef = BF6DB826075A52AB00EBC60E /* DCMAcceptPDU.h */; };
-		CE9CEF280C75BE3A00752D4B /* DCMAcceptPDU.m in Sources */ = {isa = PBXBuildFile; fileRef = BF6DB827075A52AB00EBC60E /* DCMAcceptPDU.m */; };
-		CE9CEF290C75BE3A00752D4B /* DCMReleasePDU.h in Headers */ = {isa = PBXBuildFile; fileRef = BF6DB81E075A528900EBC60E /* DCMReleasePDU.h */; };
-		CE9CEF2A0C75BE3A00752D4B /* DCMReleasePDU.m in Sources */ = {isa = PBXBuildFile; fileRef = BF6DB81F075A528900EBC60E /* DCMReleasePDU.m */; };
-		CE9CEF2B0C75BE3A00752D4B /* DCMAbortPDU.h in Headers */ = {isa = PBXBuildFile; fileRef = BF6DB808075A516500EBC60E /* DCMAbortPDU.h */; };
-		CE9CEF2C0C75BE3A00752D4B /* DCMAbortPDU.m in Sources */ = {isa = PBXBuildFile; fileRef = BF6DB809075A516500EBC60E /* DCMAbortPDU.m */; };
-		CE9CEF2D0C75BE3A00752D4B /* DCMSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E76BEDD085757E20073649A /* DCMSocket.h */; };
-		CE9CEF2E0C75BE3A00752D4B /* DCMSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E76BEDE085757E20073649A /* DCMSocket.m */; };
 		CE9DD284086B35050058DD2A /* DicomStudy.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9DD280086B35050058DD2A /* DicomStudy.m */; };
 		CE9DD285086B35050058DD2A /* DicomStudy.h in Headers */ = {isa = PBXBuildFile; fileRef = CE9DD281086B35050058DD2A /* DicomStudy.h */; };
 		CE9DD286086B35050058DD2A /* DicomSeries.h in Headers */ = {isa = PBXBuildFile; fileRef = CE9DD282086B35050058DD2A /* DicomSeries.h */; };
@@ -4620,7 +4331,7 @@
 		CEA20538073A810100F0DAB7 /* iPhoto.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA20534073A810100F0DAB7 /* iPhoto.m */; };
 		CEA337BC06AD9BF6006D2357 /* iDiskGet.icns in Resources */ = {isa = PBXBuildFile; fileRef = CEA337BA06AD9BF6006D2357 /* iDiskGet.icns */; };
 		CEA337BD06AD9BF6006D2357 /* iDiskSend.icns in Resources */ = {isa = PBXBuildFile; fileRef = CEA337BB06AD9BF6006D2357 /* iDiskSend.icns */; };
-		CEAA6F420E50C084008802D2 /* OsiriXSCPDataHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = BF9201E90883667800A3D77B /* OsiriXSCPDataHandler.m */; };
+		CEAA6F420E50C084008802D2 /* OsiriXSCPDataHandler.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF9201E90883667800A3D77B /* OsiriXSCPDataHandler.mm */; };
 		CEAA6F430E50C085008802D2 /* OsiriXSCPDataHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = BF9201E80883667800A3D77B /* OsiriXSCPDataHandler.h */; };
 		CEAE02E00DE7E33B00E9BD01 /* DICOMDestination.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEAE02DF0DE7E33B00E9BD01 /* DICOMDestination.tif */; };
 		CEAF4ECF089D6E9400DE46AF /* OsiriXTables.pdf in Resources */ = {isa = PBXBuildFile; fileRef = CEAF4ECC089D6E9400DE46AF /* OsiriXTables.pdf */; };
@@ -4745,7 +4456,6 @@
 		CEDCFB3C0B4C4A4B00510ABD /* SyncSmall.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEDCFB380B4C4A4B00510ABD /* SyncSmall.tiff */; };
 		CEDCFB460B4C4E3900510ABD /* SyncSmallLocked.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEDCFB3E0B4C4E3900510ABD /* SyncSmallLocked.tif */; };
 		CEDCFB470B4C4E3900510ABD /* SyncSmall.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEDCFB3F0B4C4E3900510ABD /* SyncSmall.tif */; };
-		CEDDF44B085B926C001E0FF1 /* DCMSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E76BEDE085757E20073649A /* DCMSocket.m */; };
 		CEDE5B6207F206B5003034B6 /* ROIDefaultsWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CEDE5B5C07F206B5003034B6 /* ROIDefaultsWindow.m */; };
 		CEDE5B6307F206B5003034B6 /* ROIDefaultsWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = CEDE5B5D07F206B5003034B6 /* ROIDefaultsWindow.h */; };
 		CEDEF7D60D020E9100CADB15 /* TIFFSmall.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEDEF7D30D020E9100CADB15 /* TIFFSmall.tiff */; };
@@ -5117,22 +4827,6 @@
 		7E172F550933CAE00057BCE8 /* DCMObjectDBImport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMObjectDBImport.m; sourceTree = "<group>"; };
 		7E172F620933D5FF0057BCE8 /* DCMObjectPixelDataImport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMObjectPixelDataImport.h; sourceTree = "<group>"; };
 		7E172F630933D5FF0057BCE8 /* DCMObjectPixelDataImport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMObjectPixelDataImport.m; sourceTree = "<group>"; };
-		7E17DADE075A7B4600A2E803 /* DCM_PDU.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCM_PDU.h; path = Networking/DCM_PDU.h; sourceTree = "<group>"; };
-		7E17DADF075A7B4600A2E803 /* DCM_PDU.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCM_PDU.m; path = Networking/DCM_PDU.m; sourceTree = "<group>"; };
-		7E17DB14075A7FBD00A2E803 /* DCMAcceptRequestPDU.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCMAcceptRequestPDU.h; path = Networking/DCMAcceptRequestPDU.h; sourceTree = "<group>"; };
-		7E17DB15075A7FBD00A2E803 /* DCMAcceptRequestPDU.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCMAcceptRequestPDU.m; path = Networking/DCMAcceptRequestPDU.m; sourceTree = "<group>"; };
-		7E1CE1150777441E00190023 /* DCMCEchoResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCMCEchoResponse.h; path = Networking/DCMCEchoResponse.h; sourceTree = "<group>"; };
-		7E1CE1160777441E00190023 /* DCMCEchoResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCMCEchoResponse.m; path = Networking/DCMCEchoResponse.m; sourceTree = "<group>"; };
-		7E1CE162077752BB00190023 /* DCMCStoreRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCMCStoreRequest.h; path = Networking/DCMCStoreRequest.h; sourceTree = "<group>"; };
-		7E1CE163077752BB00190023 /* DCMCStoreRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCMCStoreRequest.m; path = Networking/DCMCStoreRequest.m; sourceTree = "<group>"; };
-		7E1CE1800777536800190023 /* DCMCStoreResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCMCStoreResponse.h; path = Networking/DCMCStoreResponse.h; sourceTree = "<group>"; };
-		7E1CE1810777536800190023 /* DCMCStoreResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCMCStoreResponse.m; path = Networking/DCMCStoreResponse.m; sourceTree = "<group>"; };
-		7E1CE2A0077780D200190023 /* DCMCStoreResponseHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCMCStoreResponseHandler.h; path = Networking/DCMCStoreResponseHandler.h; sourceTree = "<group>"; };
-		7E1CE2A1077780D200190023 /* DCMCStoreResponseHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCMCStoreResponseHandler.m; path = Networking/DCMCStoreResponseHandler.m; sourceTree = "<group>"; };
-		7E1CE2BA0777828C00190023 /* DCMStoreSCU.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCMStoreSCU.h; path = Networking/DCMStoreSCU.h; sourceTree = "<group>"; };
-		7E1CE2BB0777828C00190023 /* DCMStoreSCU.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCMStoreSCU.m; path = Networking/DCMStoreSCU.m; sourceTree = "<group>"; };
-		7E21D345078747A500315810 /* DCMCFindResponseDataHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCMCFindResponseDataHandler.h; path = Networking/DCMCFindResponseDataHandler.h; sourceTree = "<group>"; };
-		7E21D346078747A500315810 /* DCMCFindResponseDataHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCMCFindResponseDataHandler.m; path = Networking/DCMCFindResponseDataHandler.m; sourceTree = "<group>"; };
 		7E2269C406BEF624003B09E5 /* jpegdatasrc.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = jpegdatasrc.h; sourceTree = "<group>"; };
 		7E2269C506BEF624003B09E5 /* jpegdatasrc.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = jpegdatasrc.m; sourceTree = "<group>"; };
 		7E2269C706BEF624003B09E5 /* ijg12.dsp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = ijg12.dsp; sourceTree = "<group>"; };
@@ -5225,47 +4919,9 @@
 		7E2BE3F40715DBFB0017898A /* Network.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Network.tiff; sourceTree = "<group>"; };
 		7E2BE3FD0715DC0D0017898A /* StartupDisk.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = StartupDisk.tiff; sourceTree = "<group>"; };
 		7E2BE4180715E5040017898A /* CD.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = CD.tiff; sourceTree = "<group>"; };
-		7E331F4907CD416F00AA50DF /* DCMRecord.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DCMRecord.h; sourceTree = "<group>"; };
-		7E331F4A07CD416F00AA50DF /* DCMRecord.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = DCMRecord.m; sourceTree = "<group>"; };
 		7E350843097C512200B7F40D /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = /System/Library/Frameworks/CoreFoundation.framework; sourceTree = "<absolute>"; };
 		7E350845097C514C00B7F40D /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = /System/Library/Frameworks/CoreServices.framework; sourceTree = "<absolute>"; };
 		7E3E38650715FFDC0049E72E /* PreferencePanes.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PreferencePanes.framework; path = /System/Library/Frameworks/PreferencePanes.framework; sourceTree = "<absolute>"; };
-		7E3EDAAB076CE4BB002A7DAC /* DCMPDataPDU.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMPDataPDU.h; sourceTree = "<group>"; };
-		7E3EDAAC076CE4BB002A7DAC /* DCMPDataPDU.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMPDataPDU.m; sourceTree = "<group>"; };
-		7E3EDBAB076E4225002A7DAC /* DCMCEchoRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCMCEchoRequest.h; path = Networking/DCMCEchoRequest.h; sourceTree = "<group>"; };
-		7E3EDBAC076E4225002A7DAC /* DCMCEchoRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCMCEchoRequest.m; path = Networking/DCMCEchoRequest.m; sourceTree = "<group>"; };
-		7E3EDC0B076E5745002A7DAC /* DCMReceivedDataHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCMReceivedDataHandler.h; path = Networking/DCMReceivedDataHandler.h; sourceTree = "<group>"; };
-		7E3EDC0C076E5745002A7DAC /* DCMReceivedDataHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCMReceivedDataHandler.m; path = Networking/DCMReceivedDataHandler.m; sourceTree = "<group>"; };
-		7E3EDC34076E5C20002A7DAC /* DCMCommandMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCMCommandMessage.h; path = Networking/DCMCommandMessage.h; sourceTree = "<group>"; };
-		7E3EDC35076E5C20002A7DAC /* DCMCommandMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCMCommandMessage.m; path = Networking/DCMCommandMessage.m; sourceTree = "<group>"; };
-		7E40C0FF0785C7C400806344 /* DCMCFindRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCMCFindRequest.h; path = Networking/DCMCFindRequest.h; sourceTree = "<group>"; };
-		7E40C1000785C7C400806344 /* DCMCFindRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCMCFindRequest.m; path = Networking/DCMCFindRequest.m; sourceTree = "<group>"; };
-		7E40C1420785CE2C00806344 /* DCMCMoveRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCMCMoveRequest.h; path = Networking/DCMCMoveRequest.h; sourceTree = "<group>"; };
-		7E40C1430785CE2C00806344 /* DCMCMoveRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCMCMoveRequest.m; path = Networking/DCMCMoveRequest.m; sourceTree = "<group>"; };
-		7E40C16A0785D6F800806344 /* DCMFindSCU.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCMFindSCU.h; path = Networking/DCMFindSCU.h; sourceTree = "<group>"; };
-		7E40C16B0785D6F800806344 /* DCMFindSCU.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCMFindSCU.m; path = Networking/DCMFindSCU.m; sourceTree = "<group>"; };
-		7E40C1700785D70A00806344 /* DCMMoveSCU.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCMMoveSCU.h; path = Networking/DCMMoveSCU.h; sourceTree = "<group>"; };
-		7E40C1710785D70A00806344 /* DCMMoveSCU.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCMMoveSCU.m; path = Networking/DCMMoveSCU.m; sourceTree = "<group>"; };
-		7E49E5F6075FC852006AA2A3 /* DCMAssociationItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMAssociationItem.h; sourceTree = "<group>"; };
-		7E49E5F7075FC852006AA2A3 /* DCMAssociationItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMAssociationItem.m; sourceTree = "<group>"; };
-		7E49E608075FCBCC006AA2A3 /* DCMApplicationContextItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMApplicationContextItem.h; sourceTree = "<group>"; };
-		7E49E609075FCBCC006AA2A3 /* DCMApplicationContextItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMApplicationContextItem.m; sourceTree = "<group>"; };
-		7E49E61E075FCD99006AA2A3 /* DCMUserInformationItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCMUserInformationItem.h; path = "DCM Framework/DCMUserInformationItem.h"; sourceTree = SOURCE_ROOT; };
-		7E49E61F075FCD99006AA2A3 /* DCMUserInformationItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCMUserInformationItem.m; path = "DCM Framework/DCMUserInformationItem.m"; sourceTree = SOURCE_ROOT; };
-		7E49E634075FD02D006AA2A3 /* DCMUserInformationSubItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCMUserInformationSubItem.h; path = "DCM Framework/DCMUserInformationSubItem.h"; sourceTree = SOURCE_ROOT; };
-		7E49E635075FD02D006AA2A3 /* DCMUserInformationSubItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCMUserInformationSubItem.m; path = "DCM Framework/DCMUserInformationSubItem.m"; sourceTree = SOURCE_ROOT; };
-		7E49E654075FD264006AA2A3 /* DCMMaximumLengthReceivedUserInformationSubItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCMMaximumLengthReceivedUserInformationSubItem.h; path = "DCM Framework/DCMMaximumLengthReceivedUserInformationSubItem.h"; sourceTree = SOURCE_ROOT; };
-		7E49E655075FD264006AA2A3 /* DCMMaximumLengthReceivedUserInformationSubItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCMMaximumLengthReceivedUserInformationSubItem.m; path = "DCM Framework/DCMMaximumLengthReceivedUserInformationSubItem.m"; sourceTree = SOURCE_ROOT; };
-		7E49E667075FD3A2006AA2A3 /* DCMImplementationClassUIDUserInformationSubItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMImplementationClassUIDUserInformationSubItem.h; sourceTree = "<group>"; };
-		7E49E668075FD3A2006AA2A3 /* DCMImplementationClassUIDUserInformationSubItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMImplementationClassUIDUserInformationSubItem.m; sourceTree = "<group>"; };
-		7E49E695075FD7DC006AA2A3 /* DCMImplementationVersionNameUserInformationSubItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMImplementationVersionNameUserInformationSubItem.h; sourceTree = "<group>"; };
-		7E49E696075FD7DC006AA2A3 /* DCMImplementationVersionNameUserInformationSubItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMImplementationVersionNameUserInformationSubItem.m; sourceTree = "<group>"; };
-		7E49E6AA075FDA06006AA2A3 /* DCMSOPClassExtendedNegotiationUserInformationSubItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMSOPClassExtendedNegotiationUserInformationSubItem.h; sourceTree = "<group>"; };
-		7E49E6AB075FDA06006AA2A3 /* DCMSOPClassExtendedNegotiationUserInformationSubItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMSOPClassExtendedNegotiationUserInformationSubItem.m; sourceTree = "<group>"; };
-		7E49E6B7075FDDF7006AA2A3 /* DCMPresentationContextItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMPresentationContextItem.h; sourceTree = "<group>"; };
-		7E49E6B8075FDDF8006AA2A3 /* DCMPresentationContextItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMPresentationContextItem.m; sourceTree = "<group>"; };
-		7E4E71660770E3A200856B65 /* DCMEchoResponseHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCMEchoResponseHandler.h; path = Networking/DCMEchoResponseHandler.h; sourceTree = "<group>"; };
-		7E4E71670770E3A200856B65 /* DCMEchoResponseHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCMEchoResponseHandler.m; path = Networking/DCMEchoResponseHandler.m; sourceTree = "<group>"; };
 		7E54303B07A05E7100500ABB /* DiscRecording.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DiscRecording.framework; path = /System/Library/Frameworks/DiscRecording.framework; sourceTree = "<absolute>"; };
 		7E54303C07A05E7100500ABB /* DiscRecordingUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DiscRecordingUI.framework; path = /System/Library/Frameworks/DiscRecordingUI.framework; sourceTree = "<absolute>"; };
 		7E54308207A05F7500500ABB /* burn_iris00.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = burn_iris00.tif; sourceTree = "<group>"; };
@@ -5289,48 +4945,16 @@
 		7E55AE1406C80E460059D6EB /* StudyView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StudyView.m; sourceTree = "<group>"; };
 		7E569397065007D6001A9762 /* SmartWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmartWindowController.h; sourceTree = "<group>"; };
 		7E569398065007D6001A9762 /* SmartWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SmartWindowController.m; sourceTree = "<group>"; };
-		7E5DC07A078AF4FB009D04DF /* DCMQueryNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCMQueryNode.h; path = Networking/DCMQueryNode.h; sourceTree = "<group>"; };
-		7E5DC07B078AF4FB009D04DF /* DCMQueryNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCMQueryNode.m; path = Networking/DCMQueryNode.m; sourceTree = "<group>"; };
-		7E5DC082078AF523009D04DF /* DCMRootQueryNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCMRootQueryNode.h; path = Networking/DCMRootQueryNode.h; sourceTree = "<group>"; };
-		7E5DC083078AF523009D04DF /* DCMRootQueryNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCMRootQueryNode.m; path = Networking/DCMRootQueryNode.m; sourceTree = "<group>"; };
-		7E5DC088078AF535009D04DF /* DCMStudyQueryNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCMStudyQueryNode.h; path = Networking/DCMStudyQueryNode.h; sourceTree = "<group>"; };
-		7E5DC089078AF535009D04DF /* DCMStudyQueryNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCMStudyQueryNode.m; path = Networking/DCMStudyQueryNode.m; sourceTree = "<group>"; };
-		7E5DC08E078AF544009D04DF /* DCMSeriesQueryNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCMSeriesQueryNode.h; path = Networking/DCMSeriesQueryNode.h; sourceTree = "<group>"; };
-		7E5DC08F078AF544009D04DF /* DCMSeriesQueryNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCMSeriesQueryNode.m; path = Networking/DCMSeriesQueryNode.m; sourceTree = "<group>"; };
-		7E5DC094078AF555009D04DF /* DCMImageQueryNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCMImageQueryNode.h; path = Networking/DCMImageQueryNode.h; sourceTree = "<group>"; };
-		7E5DC095078AF555009D04DF /* DCMImageQueryNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCMImageQueryNode.m; path = Networking/DCMImageQueryNode.m; sourceTree = "<group>"; };
-		7E64AC3E08CB80F900CEB599 /* DCMPrintAssociation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMPrintAssociation.h; sourceTree = "<group>"; };
-		7E64AC3F08CB80F900CEB599 /* DCMPrintAssociation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMPrintAssociation.m; sourceTree = "<group>"; };
-		7E64AC4408CB81A700CEB599 /* DCMPrintResponseHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMPrintResponseHandler.h; sourceTree = "<group>"; };
-		7E64AC4508CB81A800CEB599 /* DCMPrintResponseHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMPrintResponseHandler.m; sourceTree = "<group>"; };
-		7E76BEDD085757E20073649A /* DCMSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCMSocket.h; path = Networking/DCMSocket.h; sourceTree = "<group>"; };
-		7E76BEDE085757E20073649A /* DCMSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCMSocket.m; path = Networking/DCMSocket.m; sourceTree = "<group>"; };
 		7E82C63D08D9FF35000BAFF9 /* DCMLimitedObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMLimitedObject.h; sourceTree = "<group>"; };
 		7E82C63E08D9FF35000BAFF9 /* DCMLimitedObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMLimitedObject.m; sourceTree = "<group>"; };
 		7E8340D908E9F7C500E41C5E /* DCMPresentationState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMPresentationState.h; sourceTree = "<group>"; };
 		7E8340DA08E9F7C500E41C5E /* DCMPresentationState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMPresentationState.m; sourceTree = "<group>"; };
 		7E879E9D067F9BE100CB2F8A /* SearchSubview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchSubview.h; sourceTree = "<group>"; };
 		7E879E9E067F9BE100CB2F8A /* SearchSubview.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchSubview.m; sourceTree = "<group>"; };
-		7E93EAF207CA486E0075BD36 /* DCMDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMDirectory.h; sourceTree = "<group>"; };
-		7E93EAF307CA486E0075BD36 /* DCMDirectory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMDirectory.m; sourceTree = "<group>"; };
-		7E93EAFE07CA48AA0075BD36 /* DCMPatientRecord.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMPatientRecord.h; sourceTree = "<group>"; };
-		7E93EAFF07CA48AA0075BD36 /* DCMPatientRecord.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMPatientRecord.m; sourceTree = "<group>"; };
-		7E93EB0407CA48BD0075BD36 /* DCMStudyRecord.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMStudyRecord.h; sourceTree = "<group>"; };
-		7E93EB0507CA48BD0075BD36 /* DCMStudyRecord.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMStudyRecord.m; sourceTree = "<group>"; };
-		7E93EB0A07CA48CE0075BD36 /* DCMSeriesRecord.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMSeriesRecord.h; sourceTree = "<group>"; };
-		7E93EB0B07CA48CE0075BD36 /* DCMSeriesRecord.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMSeriesRecord.m; sourceTree = "<group>"; };
-		7E93EB1007CA48E00075BD36 /* DCMImageRecord.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMImageRecord.h; sourceTree = "<group>"; };
-		7E93EB1107CA48E00075BD36 /* DCMImageRecord.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMImageRecord.m; sourceTree = "<group>"; };
-		7E93EB1607CA48F90075BD36 /* DCMReportRecord.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMReportRecord.h; sourceTree = "<group>"; };
-		7E93EB1707CA48F90075BD36 /* DCMReportRecord.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMReportRecord.m; sourceTree = "<group>"; };
-		7E96AD9007CE753C005D435B /* DCMRootRecord.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DCMRootRecord.h; sourceTree = "<group>"; };
-		7E96AD9107CE753C005D435B /* DCMRootRecord.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = DCMRootRecord.m; sourceTree = "<group>"; };
 		7E9C6D24066D2BCD00D33966 /* greenLight.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = greenLight.tif; sourceTree = "<group>"; };
 		7E9C6D2C066D2BE800D33966 /* redLight.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = redLight.tif; sourceTree = "<group>"; };
 		7EB4AAE5079494CB007AD271 /* QueryArrayController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QueryArrayController.h; sourceTree = "<group>"; };
 		7EB4AAE6079494CB007AD271 /* QueryArrayController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = QueryArrayController.mm; sourceTree = "<group>"; };
-		7EB72CAF076127D80025F400 /* DCMRequestPDU.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCMRequestPDU.h; path = Networking/DCMRequestPDU.h; sourceTree = "<group>"; };
-		7EB72CB0076127D80025F400 /* DCMRequestPDU.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCMRequestPDU.m; path = Networking/DCMRequestPDU.m; sourceTree = "<group>"; };
 		7EBB31070887269B00BF6B39 /* DCMNetServiceDelegate.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DCMNetServiceDelegate.h; sourceTree = "<group>"; };
 		7EBB31080887269B00BF6B39 /* DCMNetServiceDelegate.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = DCMNetServiceDelegate.m; sourceTree = "<group>"; };
 		7ECB4B3F072EF9F800C2CFC4 /* DCMCalendarScript.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMCalendarScript.h; sourceTree = "<group>"; };
@@ -5339,10 +4963,6 @@
 		7ECBB8220683A68D00FF3FF4 /* DCMPixelDataAttribute.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = DCMPixelDataAttribute.m; sourceTree = "<group>"; };
 		7ED5C2660699E08E00875C39 /* AnonymizerWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnonymizerWindowController.h; sourceTree = "<group>"; };
 		7ED5C2670699E08E00875C39 /* AnonymizerWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AnonymizerWindowController.m; sourceTree = "<group>"; };
-		7EDA38BF077B250100A734D5 /* DCMStoreSCP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCMStoreSCP.h; path = Networking/DCMStoreSCP.h; sourceTree = "<group>"; };
-		7EDA38C0077B250100A734D5 /* DCMStoreSCP.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCMStoreSCP.m; path = Networking/DCMStoreSCP.m; sourceTree = "<group>"; };
-		7EDA38C7077B25F400A734D5 /* DCMCStoreReceivedPDUHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCMCStoreReceivedPDUHandler.h; path = Networking/DCMCStoreReceivedPDUHandler.h; sourceTree = "<group>"; };
-		7EDA38C8077B25F400A734D5 /* DCMCStoreReceivedPDUHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCMCStoreReceivedPDUHandler.m; path = Networking/DCMCStoreReceivedPDUHandler.m; sourceTree = "<group>"; };
 		7EE0DC00067A48A3003E745F /* DCMCharacterSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMCharacterSet.h; sourceTree = "<group>"; };
 		7EE0DC01067A48A3003E745F /* DCMCharacterSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMCharacterSet.m; sourceTree = "<group>"; };
 		7EE0DC3C067A5138003E745F /* DCMSequenceAttribute.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMSequenceAttribute.h; sourceTree = "<group>"; };
@@ -5352,28 +4972,6 @@
 		7EE416C708B2612600D4C9CC /* QueryLogController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QueryLogController.h; sourceTree = "<group>"; };
 		7EE416C808B2612600D4C9CC /* QueryLogController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QueryLogController.m; sourceTree = "<group>"; };
 		7EE713BA097450B000510E88 /* dcmmkdir */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = dcmmkdir; sourceTree = "<group>"; };
-		7EF9703408C8E238002B5087 /* DCMPrintSCU.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMPrintSCU.h; sourceTree = "<group>"; };
-		7EF9703508C8E238002B5087 /* DCMPrintSCU.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMPrintSCU.m; sourceTree = "<group>"; };
-		7EF9703A08C8F9AB002B5087 /* DCMNGetRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMNGetRequest.h; sourceTree = "<group>"; };
-		7EF9703B08C8F9AB002B5087 /* DCMNGetRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMNGetRequest.m; sourceTree = "<group>"; };
-		7EF9704008C8F9C6002B5087 /* DCMNGetResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMNGetResponse.h; sourceTree = "<group>"; };
-		7EF9704108C8F9C6002B5087 /* DCMNGetResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMNGetResponse.m; sourceTree = "<group>"; };
-		7EF9705708C8FA13002B5087 /* DCMNSetRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMNSetRequest.h; sourceTree = "<group>"; };
-		7EF9705808C8FA13002B5087 /* DCMNSetRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMNSetRequest.m; sourceTree = "<group>"; };
-		7EF9705F08C8FA2D002B5087 /* DCMNSetResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMNSetResponse.h; sourceTree = "<group>"; };
-		7EF9706008C8FA2D002B5087 /* DCMNSetResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMNSetResponse.m; sourceTree = "<group>"; };
-		7EF9706508C8FA56002B5087 /* DCMNActionRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMNActionRequest.h; sourceTree = "<group>"; };
-		7EF9706608C8FA56002B5087 /* DCMNActionRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMNActionRequest.m; sourceTree = "<group>"; };
-		7EF9706D08C8FA86002B5087 /* DCMNActionResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMNActionResponse.h; sourceTree = "<group>"; };
-		7EF9706E08C8FA86002B5087 /* DCMNActionResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMNActionResponse.m; sourceTree = "<group>"; };
-		7EF9707708C8FB1C002B5087 /* DCMNCreateRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMNCreateRequest.h; sourceTree = "<group>"; };
-		7EF9707808C8FB1C002B5087 /* DCMNCreateRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMNCreateRequest.m; sourceTree = "<group>"; };
-		7EF9707F08C8FB42002B5087 /* DCMNCreateResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMNCreateResponse.h; sourceTree = "<group>"; };
-		7EF9708008C8FB42002B5087 /* DCMNCreateResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMNCreateResponse.m; sourceTree = "<group>"; };
-		7EF9708508C8FB74002B5087 /* DCMNDeleteRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMNDeleteRequest.h; sourceTree = "<group>"; };
-		7EF9708608C8FB74002B5087 /* DCMNDeleteRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMNDeleteRequest.m; sourceTree = "<group>"; };
-		7EF9708B08C8FB86002B5087 /* DCMNDeleteResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMNDeleteResponse.h; sourceTree = "<group>"; };
-		7EF9708C08C8FB86002B5087 /* DCMNDeleteResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMNDeleteResponse.m; sourceTree = "<group>"; };
 		844003990E8CF99500A00EBD /* dciodvfy */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = dciodvfy; path = Binaries/dciodvfy; sourceTree = "<group>"; };
 		8459A7260F5D63EF00146B28 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/VREmpty.xib; sourceTree = "<group>"; };
 		8483ABA50E1BE33900C21B31 /* crossCursor.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = crossCursor.tif; path = Cursors/crossCursor.tif; sourceTree = "<group>"; };
@@ -5886,16 +5484,10 @@
 		B7CDAD010AB30E7600068D70 /* pdf.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = pdf.tif; sourceTree = "<group>"; };
 		BF00C95806F3F43900715191 /* DCMCursor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMCursor.h; sourceTree = "<group>"; };
 		BF00C95906F3F43900715191 /* DCMCursor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMCursor.m; sourceTree = "<group>"; };
-		BF01AA21078CF6C80037222F /* DCMCMoveResponseDataHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCMCMoveResponseDataHandler.h; path = Networking/DCMCMoveResponseDataHandler.h; sourceTree = "<group>"; };
-		BF01AA22078CF6C80037222F /* DCMCMoveResponseDataHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCMCMoveResponseDataHandler.m; path = Networking/DCMCMoveResponseDataHandler.m; sourceTree = "<group>"; };
 		BF038E7C0A3FB49700663EBB /* KeyObjectController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = KeyObjectController.h; sourceTree = "<group>"; };
 		BF038E7D0A3FB49700663EBB /* KeyObjectController.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = KeyObjectController.mm; sourceTree = "<group>"; };
 		BF038E7E0A3FB49700663EBB /* KeyObjectReport.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = KeyObjectReport.h; sourceTree = "<group>"; };
 		BF038E7F0A3FB49700663EBB /* KeyObjectReport.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = KeyObjectReport.mm; sourceTree = "<group>"; };
-		BF03E55B07BEFFC500100045 /* DCMCFindResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMCFindResponse.h; sourceTree = "<group>"; };
-		BF03E55C07BEFFC500100045 /* DCMCFindResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMCFindResponse.m; sourceTree = "<group>"; };
-		BF03E56A07BEFFFF00100045 /* DCMCMoveResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMCMoveResponse.h; sourceTree = "<group>"; };
-		BF03E56B07BEFFFF00100045 /* DCMCMoveResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMCMoveResponse.m; sourceTree = "<group>"; };
 		BF06806C0A9E602E000F3152 /* viewHTMLSelected.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = viewHTMLSelected.tiff; sourceTree = "<group>"; };
 		BF06806D0A9E602E000F3152 /* viewXMLSelected.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = viewXMLSelected.tiff; sourceTree = "<group>"; };
 		BF09B13D0B2E681D00AA97E2 /* OSIWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSIWindowController.h; sourceTree = "<group>"; };
@@ -5922,7 +5514,6 @@
 		BF2425500A51D39500D3D76B /* DicomFileDCMTKCategory.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DicomFileDCMTKCategory.mm; sourceTree = "<group>"; };
 		BF26843B0A5CBB1C004EB838 /* DicomImageDCMTKCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DicomImageDCMTKCategory.h; sourceTree = "<group>"; };
 		BF26843C0A5CBB1C004EB838 /* DicomImageDCMTKCategory.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DicomImageDCMTKCategory.mm; sourceTree = "<group>"; };
-		BF28B92A0783A7F000C71DA8 /* DCMNetworking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMNetworking.h; sourceTree = "<group>"; };
 		BF2EEC300B1F82F4007E9088 /* OSIHotKeysPreferencePane.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = OSIHotKeysPreferencePane.xcodeproj; path = "Preference Panes/OSIHotKeysPreferencePane/OSIHotKeysPreferencePane.xcodeproj"; sourceTree = "<group>"; };
 		BF2EEC750B1F8741007E9088 /* OSIHotKeys.prefPane */ = {isa = PBXFileReference; lastKnownFileType = folder; name = OSIHotKeys.prefPane; path = "Preference Panes/OSIHotKeysPreferencePane/build/Release/OSIHotKeys.prefPane"; sourceTree = SOURCE_ROOT; };
 		BF30B3A70C079D570003390C /* vtkPowerCrustSurfaceReconstruction.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = vtkPowerCrustSurfaceReconstruction.cxx; sourceTree = "<group>"; };
@@ -5950,8 +5541,6 @@
 		BF47CBF20A2E3BC500700AA9 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = /Developer/SDKs/MacOSX10.4u.sdk/System/Library/Frameworks/WebKit.framework; sourceTree = "<absolute>"; };
 		BF47CC310A2E4AD800700AA9 /* StructuredReport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StructuredReport.h; sourceTree = "<group>"; };
 		BF47CC320A2E4AD900700AA9 /* StructuredReport.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = StructuredReport.mm; sourceTree = "<group>"; };
-		BF4885A50766BD4D00F30E57 /* DCMPresentationDataValue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCMPresentationDataValue.h; path = Networking/DCMPresentationDataValue.h; sourceTree = "<group>"; };
-		BF4885A60766BD4D00F30E57 /* DCMPresentationDataValue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCMPresentationDataValue.m; path = Networking/DCMPresentationDataValue.m; sourceTree = "<group>"; };
 		BF4CEBD509CB736D0073E928 /* dcmqrcnf.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = dcmqrcnf.mm; sourceTree = "<group>"; };
 		BF55377C0A9A294A00D83CE3 /* PathForImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PathForImage.h; sourceTree = "<group>"; };
 		BF55377D0A9A294A00D83CE3 /* PathForImage.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PathForImage.mm; sourceTree = "<group>"; };
@@ -5965,14 +5554,6 @@
 		BF6290750A2B7E8600BB0B62 /* SRArrayController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SRArrayController.h; sourceTree = "<group>"; };
 		BF6290760A2B7E8600BB0B62 /* SRArrayController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SRArrayController.m; sourceTree = "<group>"; };
 		BF62909A0A2B80A800BB0B62 /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = /Developer/SDKs/MacOSX10.4u.sdk/System/Library/Frameworks/AddressBook.framework; sourceTree = "<absolute>"; };
-		BF6DB808075A516500EBC60E /* DCMAbortPDU.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCMAbortPDU.h; path = Networking/DCMAbortPDU.h; sourceTree = "<group>"; };
-		BF6DB809075A516500EBC60E /* DCMAbortPDU.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCMAbortPDU.m; path = Networking/DCMAbortPDU.m; sourceTree = "<group>"; };
-		BF6DB81E075A528900EBC60E /* DCMReleasePDU.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCMReleasePDU.h; path = Networking/DCMReleasePDU.h; sourceTree = "<group>"; };
-		BF6DB81F075A528900EBC60E /* DCMReleasePDU.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCMReleasePDU.m; path = Networking/DCMReleasePDU.m; sourceTree = "<group>"; };
-		BF6DB826075A52AB00EBC60E /* DCMAcceptPDU.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCMAcceptPDU.h; path = Networking/DCMAcceptPDU.h; sourceTree = "<group>"; };
-		BF6DB827075A52AB00EBC60E /* DCMAcceptPDU.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCMAcceptPDU.m; path = Networking/DCMAcceptPDU.m; sourceTree = "<group>"; };
-		BF6DB82E075A52C300EBC60E /* DCMRejectPDU.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCMRejectPDU.h; path = Networking/DCMRejectPDU.h; sourceTree = "<group>"; };
-		BF6DB82F075A52C300EBC60E /* DCMRejectPDU.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCMRejectPDU.m; path = Networking/DCMRejectPDU.m; sourceTree = "<group>"; };
 		BF6F18DA0CAD6ACF006DE602 /* FlyThruStepsArrayController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlyThruStepsArrayController.h; sourceTree = "<group>"; };
 		BF6F18DB0CAD6ACF006DE602 /* FlyThruStepsArrayController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FlyThruStepsArrayController.m; sourceTree = "<group>"; };
 		BF746FB50CC6811A00198387 /* Documentation */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Documentation; path = ../Documentation; sourceTree = SOURCE_ROOT; };
@@ -6002,13 +5583,9 @@
 		BF90551C09EB4985009C30D1 /* MoveManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MoveManager.h; sourceTree = "<group>"; };
 		BF90551D09EB4985009C30D1 /* MoveManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MoveManager.m; sourceTree = "<group>"; };
 		BF9201E80883667800A3D77B /* OsiriXSCPDataHandler.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = OsiriXSCPDataHandler.h; sourceTree = "<group>"; };
-		BF9201E90883667800A3D77B /* OsiriXSCPDataHandler.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = OsiriXSCPDataHandler.m; sourceTree = "<group>"; };
-		BF9893B509D351FF00D550EC /* DCMTKDataHandlerCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMTKDataHandlerCategory.h; sourceTree = "<group>"; };
-		BF9893B609D351FF00D550EC /* DCMTKDataHandlerCategory.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DCMTKDataHandlerCategory.mm; sourceTree = "<group>"; };
+		BF9201E90883667800A3D77B /* OsiriXSCPDataHandler.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = OsiriXSCPDataHandler.mm; sourceTree = "<group>"; };
 		BF9998FE0A1E695800F50753 /* DCMTKPrintSCU.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMTKPrintSCU.h; sourceTree = "<group>"; };
 		BF9998FF0A1E695800F50753 /* DCMTKPrintSCU.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DCMTKPrintSCU.mm; sourceTree = "<group>"; };
-		BF9D3B240770AA6A002F0847 /* DCMCompositeResponseHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCMCompositeResponseHandler.h; path = Networking/DCMCompositeResponseHandler.h; sourceTree = "<group>"; };
-		BF9D3B250770AA6A002F0847 /* DCMCompositeResponseHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCMCompositeResponseHandler.m; path = Networking/DCMCompositeResponseHandler.m; sourceTree = "<group>"; };
 		BFA7D2160A51D1460013F76E /* BrowserControllerDCMTKCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BrowserControllerDCMTKCategory.h; sourceTree = "<group>"; };
 		BFA7D2170A51D1460013F76E /* BrowserControllerDCMTKCategory.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BrowserControllerDCMTKCategory.mm; sourceTree = "<group>"; };
 		BFAA082B0A901AD0002DB3DD /* DragMatrix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DragMatrix.h; sourceTree = "<group>"; };
@@ -6185,8 +5762,6 @@
 		BFAEB41706BF3BFA00C7EF1E /* DCMPixelDataAttributeJPEG16.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMPixelDataAttributeJPEG16.m; sourceTree = "<group>"; };
 		BFAFEE9208F2220B002AD789 /* PluginFileFormatDecoder.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = PluginFileFormatDecoder.h; sourceTree = "<group>"; };
 		BFAFEE9308F2220B002AD789 /* PluginFileFormatDecoder.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = PluginFileFormatDecoder.m; sourceTree = "<group>"; };
-		BFBA8272075AA9B4004D2D6C /* DCMPresentationContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCMPresentationContext.h; path = "DCM Framework/Networking/DCMPresentationContext.h"; sourceTree = SOURCE_ROOT; };
-		BFBA8273075AA9B4004D2D6C /* DCMPresentationContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCMPresentationContext.m; path = "DCM Framework/Networking/DCMPresentationContext.m"; sourceTree = SOURCE_ROOT; };
 		BFBBF20E0BE28E320064E449 /* EndoscopySegmentationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EndoscopySegmentationController.h; sourceTree = "<group>"; };
 		BFBBF20F0BE28E320064E449 /* EndoscopySegmentationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EndoscopySegmentationController.m; sourceTree = "<group>"; };
 		BFBCD8A509E4C2E40078ABB6 /* DCMTKServiceClassUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMTKServiceClassUser.h; sourceTree = "<group>"; };
@@ -7026,12 +6601,6 @@
 		BFBF3E6B09B6828B00545F5E /* oftimer.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = oftimer.h; sourceTree = "<group>"; };
 		BFBF3E6C09B6828B00545F5E /* oftypes.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = oftypes.h; sourceTree = "<group>"; };
 		BFBF3E6D09B6828B00545F5E /* ofuoset.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ofuoset.h; sourceTree = "<group>"; };
-		BFC8C703076E785A00D17A68 /* DCMAssociationResponder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCMAssociationResponder.h; path = Networking/DCMAssociationResponder.h; sourceTree = "<group>"; };
-		BFC8C704076E785A00D17A68 /* DCMAssociationResponder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCMAssociationResponder.m; path = Networking/DCMAssociationResponder.m; sourceTree = "<group>"; };
-		BFC8C76C076E815A00D17A68 /* DCMVerificationSOPClassSCU.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCMVerificationSOPClassSCU.h; path = Networking/DCMVerificationSOPClassSCU.h; sourceTree = "<group>"; };
-		BFC8C76D076E815A00D17A68 /* DCMVerificationSOPClassSCU.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCMVerificationSOPClassSCU.m; path = Networking/DCMVerificationSOPClassSCU.m; sourceTree = "<group>"; };
-		BFC8C77C076E818F00D17A68 /* DCMSOPClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCMSOPClass.h; path = Networking/DCMSOPClass.h; sourceTree = "<group>"; };
-		BFC8C77D076E818F00D17A68 /* DCMSOPClass.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCMSOPClass.m; path = Networking/DCMSOPClass.m; sourceTree = "<group>"; };
 		BFC9C2A709B697DB003717B1 /* DCMTKVerifySCU.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DCMTKVerifySCU.h; sourceTree = "<group>"; };
 		BFC9C2A809B697DB003717B1 /* DCMTKVerifySCU.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = DCMTKVerifySCU.mm; sourceTree = "<group>"; };
 		BFD0861809E3738D00B24030 /* storescp.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; name = storescp.mm; path = "Binaries/dcmtk-source/sample apps/dcmnet/storescp.mm"; sourceTree = "<group>"; };
@@ -7044,10 +6613,6 @@
 		BFDDE5BF091717F80033317B /* DCMEncapsulatedPDF.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMEncapsulatedPDF.h; sourceTree = "<group>"; };
 		BFDDE5C0091717F80033317B /* DCMEncapsulatedPDF.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMEncapsulatedPDF.m; sourceTree = "<group>"; };
 		BFDF1D5409E06985008A4EC4 /* dcmqrcbm.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = dcmqrcbm.mm; sourceTree = "<group>"; };
-		BFE468980761623400409444 /* DCMAssociation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCMAssociation.h; path = Networking/DCMAssociation.h; sourceTree = "<group>"; };
-		BFE468990761623400409444 /* DCMAssociation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCMAssociation.m; path = Networking/DCMAssociation.m; sourceTree = "<group>"; };
-		BFE4AAF3077A757700D2D44A /* DCMStoreSCPListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCMStoreSCPListener.h; path = Networking/DCMStoreSCPListener.h; sourceTree = "<group>"; };
-		BFE4AAF4077A757700D2D44A /* DCMStoreSCPListener.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCMStoreSCPListener.m; path = Networking/DCMStoreSCPListener.m; sourceTree = "<group>"; };
 		BFEA82DF0940F1D500B90699 /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = /System/Library/Frameworks/Quartz.framework; sourceTree = "<absolute>"; };
 		BFEB76370677FDA700F242F3 /* DCMTagDictionary.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DCMTagDictionary.h; sourceTree = "<group>"; };
 		BFEB76380677FDA700F242F3 /* DCMTagDictionary.m */ = {isa = PBXFileReference; fileEncoding = 30; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = DCMTagDictionary.m; sourceTree = "<group>"; };
@@ -9496,9 +9061,9 @@
 			children = (
 				7EBB31070887269B00BF6B39 /* DCMNetServiceDelegate.h */,
 				7EBB31080887269B00BF6B39 /* DCMNetServiceDelegate.m */,
-				7E93EB1C07CA49060075BD36 /* DICOMDIR */,
 				7E0B3A13067526A600908593 /* DCM.h */,
-				BF6DB805075A512100EBC60E /* Networking */,
+				BF1925690762958D009C6832 /* DCMAbstractSyntaxUID.h */,
+				BF19256A0762958D009C6832 /* DCMAbstractSyntaxUID.m */,
 				7E2269C406BEF624003B09E5 /* jpegdatasrc.h */,
 				7E2269C506BEF624003B09E5 /* jpegdatasrc.m */,
 				BFAEB10406BF2C4E00C7EF1E /* libijg8 */,
@@ -9553,97 +9118,6 @@
 				BFEB763C0677FDA700F242F3 /* tagDictionary.plist */,
 			);
 			path = "DCM Framework";
-			sourceTree = "<group>";
-		};
-		7E1CE15A0777527A00190023 /* Command Messages */ = {
-			isa = PBXGroup;
-			children = (
-				7E3EDC34076E5C20002A7DAC /* DCMCommandMessage.h */,
-				7E3EDC35076E5C20002A7DAC /* DCMCommandMessage.m */,
-				BF03E56A07BEFFFF00100045 /* DCMCMoveResponse.h */,
-				BF03E56B07BEFFFF00100045 /* DCMCMoveResponse.m */,
-				BF03E55B07BEFFC500100045 /* DCMCFindResponse.h */,
-				BF03E55C07BEFFC500100045 /* DCMCFindResponse.m */,
-				7E40C1420785CE2C00806344 /* DCMCMoveRequest.h */,
-				7E40C1430785CE2C00806344 /* DCMCMoveRequest.m */,
-				7E40C0FF0785C7C400806344 /* DCMCFindRequest.h */,
-				7E40C1000785C7C400806344 /* DCMCFindRequest.m */,
-				7E1CE1800777536800190023 /* DCMCStoreResponse.h */,
-				7E1CE1810777536800190023 /* DCMCStoreResponse.m */,
-				7E1CE162077752BB00190023 /* DCMCStoreRequest.h */,
-				7E1CE163077752BB00190023 /* DCMCStoreRequest.m */,
-				7E1CE1150777441E00190023 /* DCMCEchoResponse.h */,
-				7E1CE1160777441E00190023 /* DCMCEchoResponse.m */,
-				7E3EDBAB076E4225002A7DAC /* DCMCEchoRequest.h */,
-				7E3EDBAC076E4225002A7DAC /* DCMCEchoRequest.m */,
-				7EF9703A08C8F9AB002B5087 /* DCMNGetRequest.h */,
-				7EF9703B08C8F9AB002B5087 /* DCMNGetRequest.m */,
-				7EF9704008C8F9C6002B5087 /* DCMNGetResponse.h */,
-				7EF9704108C8F9C6002B5087 /* DCMNGetResponse.m */,
-				7EF9705708C8FA13002B5087 /* DCMNSetRequest.h */,
-				7EF9705808C8FA13002B5087 /* DCMNSetRequest.m */,
-				7EF9705F08C8FA2D002B5087 /* DCMNSetResponse.h */,
-				7EF9706008C8FA2D002B5087 /* DCMNSetResponse.m */,
-				7EF9706508C8FA56002B5087 /* DCMNActionRequest.h */,
-				7EF9706608C8FA56002B5087 /* DCMNActionRequest.m */,
-				7EF9706D08C8FA86002B5087 /* DCMNActionResponse.h */,
-				7EF9706E08C8FA86002B5087 /* DCMNActionResponse.m */,
-				7EF9707708C8FB1C002B5087 /* DCMNCreateRequest.h */,
-				7EF9707808C8FB1C002B5087 /* DCMNCreateRequest.m */,
-				7EF9707F08C8FB42002B5087 /* DCMNCreateResponse.h */,
-				7EF9708008C8FB42002B5087 /* DCMNCreateResponse.m */,
-				7EF9708508C8FB74002B5087 /* DCMNDeleteRequest.h */,
-				7EF9708608C8FB74002B5087 /* DCMNDeleteRequest.m */,
-				7EF9708B08C8FB86002B5087 /* DCMNDeleteResponse.h */,
-				7EF9708C08C8FB86002B5087 /* DCMNDeleteResponse.m */,
-			);
-			name = "Command Messages";
-			sourceTree = "<group>";
-		};
-		7E1CE29D0777809900190023 /* Data Handlers */ = {
-			isa = PBXGroup;
-			children = (
-				7E3EDC0B076E5745002A7DAC /* DCMReceivedDataHandler.h */,
-				7E3EDC0C076E5745002A7DAC /* DCMReceivedDataHandler.m */,
-				BF9D3B240770AA6A002F0847 /* DCMCompositeResponseHandler.h */,
-				BF9D3B250770AA6A002F0847 /* DCMCompositeResponseHandler.m */,
-				BF01AA21078CF6C80037222F /* DCMCMoveResponseDataHandler.h */,
-				BF01AA22078CF6C80037222F /* DCMCMoveResponseDataHandler.m */,
-				7E21D345078747A500315810 /* DCMCFindResponseDataHandler.h */,
-				7E21D346078747A500315810 /* DCMCFindResponseDataHandler.m */,
-				7EDA38C7077B25F400A734D5 /* DCMCStoreReceivedPDUHandler.h */,
-				7EDA38C8077B25F400A734D5 /* DCMCStoreReceivedPDUHandler.m */,
-				7E1CE2A0077780D200190023 /* DCMCStoreResponseHandler.h */,
-				7E1CE2A1077780D200190023 /* DCMCStoreResponseHandler.m */,
-				7E4E71660770E3A200856B65 /* DCMEchoResponseHandler.h */,
-				7E4E71670770E3A200856B65 /* DCMEchoResponseHandler.m */,
-				7E64AC4408CB81A700CEB599 /* DCMPrintResponseHandler.h */,
-				7E64AC4508CB81A800CEB599 /* DCMPrintResponseHandler.m */,
-			);
-			name = "Data Handlers";
-			sourceTree = "<group>";
-		};
-		7E1CE2B70777824400190023 /* SOP Classes */ = {
-			isa = PBXGroup;
-			children = (
-				7E40C1700785D70A00806344 /* DCMMoveSCU.h */,
-				7E40C1710785D70A00806344 /* DCMMoveSCU.m */,
-				7E40C16A0785D6F800806344 /* DCMFindSCU.h */,
-				7E40C16B0785D6F800806344 /* DCMFindSCU.m */,
-				7EDA38BF077B250100A734D5 /* DCMStoreSCP.h */,
-				7EDA38C0077B250100A734D5 /* DCMStoreSCP.m */,
-				BFE4AAF3077A757700D2D44A /* DCMStoreSCPListener.h */,
-				BFE4AAF4077A757700D2D44A /* DCMStoreSCPListener.m */,
-				7E1CE2BA0777828C00190023 /* DCMStoreSCU.h */,
-				7E1CE2BB0777828C00190023 /* DCMStoreSCU.m */,
-				BFC8C77C076E818F00D17A68 /* DCMSOPClass.h */,
-				BFC8C77D076E818F00D17A68 /* DCMSOPClass.m */,
-				BFC8C76C076E815A00D17A68 /* DCMVerificationSOPClassSCU.h */,
-				BFC8C76D076E815A00D17A68 /* DCMVerificationSOPClassSCU.m */,
-				7EF9703408C8E238002B5087 /* DCMPrintSCU.h */,
-				7EF9703508C8E238002B5087 /* DCMPrintSCU.m */,
-			);
-			name = "SOP Classes";
 			sourceTree = "<group>";
 		};
 		7E2269C606BEF624003B09E5 /* libijg12 */ = {
@@ -9753,46 +9227,6 @@
 				7E54308F07A05F7500500ABB /* burn_iris13.tif */,
 			);
 			path = burn_iris;
-			sourceTree = "<group>";
-		};
-		7E5DC077078AF4D6009D04DF /* Query */ = {
-			isa = PBXGroup;
-			children = (
-				7E5DC094078AF555009D04DF /* DCMImageQueryNode.h */,
-				7E5DC095078AF555009D04DF /* DCMImageQueryNode.m */,
-				7E5DC08E078AF544009D04DF /* DCMSeriesQueryNode.h */,
-				7E5DC08F078AF544009D04DF /* DCMSeriesQueryNode.m */,
-				7E5DC088078AF535009D04DF /* DCMStudyQueryNode.h */,
-				7E5DC089078AF535009D04DF /* DCMStudyQueryNode.m */,
-				7E5DC082078AF523009D04DF /* DCMRootQueryNode.h */,
-				7E5DC083078AF523009D04DF /* DCMRootQueryNode.m */,
-				7E5DC07A078AF4FB009D04DF /* DCMQueryNode.h */,
-				7E5DC07B078AF4FB009D04DF /* DCMQueryNode.m */,
-			);
-			name = Query;
-			sourceTree = "<group>";
-		};
-		7E93EB1C07CA49060075BD36 /* DICOMDIR */ = {
-			isa = PBXGroup;
-			children = (
-				7E96AD9007CE753C005D435B /* DCMRootRecord.h */,
-				7E96AD9107CE753C005D435B /* DCMRootRecord.m */,
-				7E331F4907CD416F00AA50DF /* DCMRecord.h */,
-				7E331F4A07CD416F00AA50DF /* DCMRecord.m */,
-				7E93EB1607CA48F90075BD36 /* DCMReportRecord.h */,
-				7E93EB1707CA48F90075BD36 /* DCMReportRecord.m */,
-				7E93EB1007CA48E00075BD36 /* DCMImageRecord.h */,
-				7E93EB1107CA48E00075BD36 /* DCMImageRecord.m */,
-				7E93EB0A07CA48CE0075BD36 /* DCMSeriesRecord.h */,
-				7E93EB0B07CA48CE0075BD36 /* DCMSeriesRecord.m */,
-				7E93EB0407CA48BD0075BD36 /* DCMStudyRecord.h */,
-				7E93EB0507CA48BD0075BD36 /* DCMStudyRecord.m */,
-				7E93EAFE07CA48AA0075BD36 /* DCMPatientRecord.h */,
-				7E93EAFF07CA48AA0075BD36 /* DCMPatientRecord.m */,
-				7E93EAF207CA486E0075BD36 /* DCMDirectory.h */,
-				7E93EAF307CA486E0075BD36 /* DCMDirectory.m */,
-			);
-			name = DICOMDIR;
 			sourceTree = "<group>";
 		};
 		7ECB4B3C072EF9DF00C2CFC4 /* Routing */ = {
@@ -10740,66 +10174,6 @@
 			name = Reports;
 			sourceTree = "<group>";
 		};
-		BF6DB805075A512100EBC60E /* Networking */ = {
-			isa = PBXGroup;
-			children = (
-				BF28B92A0783A7F000C71DA8 /* DCMNetworking.h */,
-				7E5DC077078AF4D6009D04DF /* Query */,
-				7E1CE2B70777824400190023 /* SOP Classes */,
-				7E1CE29D0777809900190023 /* Data Handlers */,
-				7E1CE15A0777527A00190023 /* Command Messages */,
-				BF4885A50766BD4D00F30E57 /* DCMPresentationDataValue.h */,
-				BF4885A60766BD4D00F30E57 /* DCMPresentationDataValue.m */,
-				BF1925690762958D009C6832 /* DCMAbstractSyntaxUID.h */,
-				BF19256A0762958D009C6832 /* DCMAbstractSyntaxUID.m */,
-				BFC8C703076E785A00D17A68 /* DCMAssociationResponder.h */,
-				BFC8C704076E785A00D17A68 /* DCMAssociationResponder.m */,
-				BFE468980761623400409444 /* DCMAssociation.h */,
-				BFE468990761623400409444 /* DCMAssociation.m */,
-				7E64AC3E08CB80F900CEB599 /* DCMPrintAssociation.h */,
-				7E64AC3F08CB80F900CEB599 /* DCMPrintAssociation.m */,
-				7E49E5F6075FC852006AA2A3 /* DCMAssociationItem.h */,
-				7E49E5F7075FC852006AA2A3 /* DCMAssociationItem.m */,
-				7E49E6B7075FDDF7006AA2A3 /* DCMPresentationContextItem.h */,
-				7E49E6B8075FDDF8006AA2A3 /* DCMPresentationContextItem.m */,
-				7E49E6AA075FDA06006AA2A3 /* DCMSOPClassExtendedNegotiationUserInformationSubItem.h */,
-				7E49E6AB075FDA06006AA2A3 /* DCMSOPClassExtendedNegotiationUserInformationSubItem.m */,
-				7E49E695075FD7DC006AA2A3 /* DCMImplementationVersionNameUserInformationSubItem.h */,
-				7E49E696075FD7DC006AA2A3 /* DCMImplementationVersionNameUserInformationSubItem.m */,
-				7E49E667075FD3A2006AA2A3 /* DCMImplementationClassUIDUserInformationSubItem.h */,
-				7E49E668075FD3A2006AA2A3 /* DCMImplementationClassUIDUserInformationSubItem.m */,
-				7E49E654075FD264006AA2A3 /* DCMMaximumLengthReceivedUserInformationSubItem.h */,
-				7E49E655075FD264006AA2A3 /* DCMMaximumLengthReceivedUserInformationSubItem.m */,
-				7E49E634075FD02D006AA2A3 /* DCMUserInformationSubItem.h */,
-				7E49E635075FD02D006AA2A3 /* DCMUserInformationSubItem.m */,
-				7E49E61E075FCD99006AA2A3 /* DCMUserInformationItem.h */,
-				7E49E61F075FCD99006AA2A3 /* DCMUserInformationItem.m */,
-				7E49E608075FCBCC006AA2A3 /* DCMApplicationContextItem.h */,
-				7E49E609075FCBCC006AA2A3 /* DCMApplicationContextItem.m */,
-				BFBA8272075AA9B4004D2D6C /* DCMPresentationContext.h */,
-				BFBA8273075AA9B4004D2D6C /* DCMPresentationContext.m */,
-				7E17DADE075A7B4600A2E803 /* DCM_PDU.h */,
-				7E17DADF075A7B4600A2E803 /* DCM_PDU.m */,
-				7E3EDAAB076CE4BB002A7DAC /* DCMPDataPDU.h */,
-				7E3EDAAC076CE4BB002A7DAC /* DCMPDataPDU.m */,
-				BF6DB82E075A52C300EBC60E /* DCMRejectPDU.h */,
-				BF6DB82F075A52C300EBC60E /* DCMRejectPDU.m */,
-				7E17DB14075A7FBD00A2E803 /* DCMAcceptRequestPDU.h */,
-				7E17DB15075A7FBD00A2E803 /* DCMAcceptRequestPDU.m */,
-				7EB72CAF076127D80025F400 /* DCMRequestPDU.h */,
-				7EB72CB0076127D80025F400 /* DCMRequestPDU.m */,
-				BF6DB826075A52AB00EBC60E /* DCMAcceptPDU.h */,
-				BF6DB827075A52AB00EBC60E /* DCMAcceptPDU.m */,
-				BF6DB81E075A528900EBC60E /* DCMReleasePDU.h */,
-				BF6DB81F075A528900EBC60E /* DCMReleasePDU.m */,
-				BF6DB808075A516500EBC60E /* DCMAbortPDU.h */,
-				BF6DB809075A516500EBC60E /* DCMAbortPDU.m */,
-				7E76BEDD085757E20073649A /* DCMSocket.h */,
-				7E76BEDE085757E20073649A /* DCMSocket.m */,
-			);
-			name = Networking;
-			sourceTree = "<group>";
-		};
 		BF9201E70883664600A3D77B /* Network */ = {
 			isa = PBXGroup;
 			children = (
@@ -10811,9 +10185,7 @@
 				BF17E97D0887662400ECF621 /* NetworkMoveDataHandler.h */,
 				BF17E97E0887662400ECF621 /* NetworkMoveDataHandler.m */,
 				BF9201E80883667800A3D77B /* OsiriXSCPDataHandler.h */,
-				BF9201E90883667800A3D77B /* OsiriXSCPDataHandler.m */,
-				BF9893B509D351FF00D550EC /* DCMTKDataHandlerCategory.h */,
-				BF9893B609D351FF00D550EC /* DCMTKDataHandlerCategory.mm */,
+				BF9201E90883667800A3D77B /* OsiriXSCPDataHandler.mm */,
 				BF1745D208E0C7E200822756 /* LogWindowController.h */,
 				BF1745D308E0C7E200822756 /* LogWindowController.m */,
 				BFBCD8A509E4C2E40078ABB6 /* DCMTKServiceClassUser.h */,
@@ -13973,80 +13345,7 @@
 				BFAEB40A06BF3BEE00C7EF1E /* DCMPixelDataAttributeJPEG12.h in Headers */,
 				BFAEB41A06BF3BFA00C7EF1E /* DCMPixelDataAttributeJPEG16.h in Headers */,
 				7EE38C7E06F0FF1100036C7F /* DCMPixelDataAttributeJPEG2000.h in Headers */,
-				7E17DAAD075A775500A2E803 /* DCMAbortPDU.h in Headers */,
-				7E17DAAF075A775700A2E803 /* DCMAcceptPDU.h in Headers */,
-				7E17DAB1075A775900A2E803 /* DCMRejectPDU.h in Headers */,
-				7E17DAB3075A775B00A2E803 /* DCMReleasePDU.h in Headers */,
-				7E17DAE0075A7B4600A2E803 /* DCM_PDU.h in Headers */,
-				7E17DB16075A7FBD00A2E803 /* DCMAcceptRequestPDU.h in Headers */,
-				BFBA8288075AADDA004D2D6C /* DCMPresentationContext.h in Headers */,
-				7E49E5F8075FC852006AA2A3 /* DCMAssociationItem.h in Headers */,
-				7E49E60A075FCBCC006AA2A3 /* DCMApplicationContextItem.h in Headers */,
-				7E49E620075FCD99006AA2A3 /* DCMUserInformationItem.h in Headers */,
-				7E49E636075FD02D006AA2A3 /* DCMUserInformationSubItem.h in Headers */,
-				7E49E656075FD264006AA2A3 /* DCMMaximumLengthReceivedUserInformationSubItem.h in Headers */,
-				7E49E669075FD3A2006AA2A3 /* DCMImplementationClassUIDUserInformationSubItem.h in Headers */,
-				7E49E697075FD7DC006AA2A3 /* DCMImplementationVersionNameUserInformationSubItem.h in Headers */,
-				7E49E6AC075FDA06006AA2A3 /* DCMSOPClassExtendedNegotiationUserInformationSubItem.h in Headers */,
-				7E49E6B9075FDDF8006AA2A3 /* DCMPresentationContextItem.h in Headers */,
-				7EB72CB1076127D80025F400 /* DCMRequestPDU.h in Headers */,
-				BFE4689A0761623400409444 /* DCMAssociation.h in Headers */,
-				BF19256B0762958D009C6832 /* DCMAbstractSyntaxUID.h in Headers */,
-				BF4885A70766BD4D00F30E57 /* DCMPresentationDataValue.h in Headers */,
-				7E3EDAAD076CE4BB002A7DAC /* DCMPDataPDU.h in Headers */,
-				7E3EDBAD076E4225002A7DAC /* DCMCEchoRequest.h in Headers */,
-				7E3EDC0D076E5745002A7DAC /* DCMReceivedDataHandler.h in Headers */,
-				7E3EDC36076E5C20002A7DAC /* DCMCommandMessage.h in Headers */,
-				BFC8C705076E785A00D17A68 /* DCMAssociationResponder.h in Headers */,
-				BFC8C76E076E815A00D17A68 /* DCMVerificationSOPClassSCU.h in Headers */,
-				BFC8C77E076E818F00D17A68 /* DCMSOPClass.h in Headers */,
-				BF9D3B260770AA6A002F0847 /* DCMCompositeResponseHandler.h in Headers */,
-				7E4E71680770E3A200856B65 /* DCMEchoResponseHandler.h in Headers */,
-				7E1CE1170777441E00190023 /* DCMCEchoResponse.h in Headers */,
-				7E1CE164077752BB00190023 /* DCMCStoreRequest.h in Headers */,
-				7E1CE1820777536800190023 /* DCMCStoreResponse.h in Headers */,
-				7E1CE2A2077780D200190023 /* DCMCStoreResponseHandler.h in Headers */,
-				7E1CE2BC0777828C00190023 /* DCMStoreSCU.h in Headers */,
-				BFE4AAF5077A757700D2D44A /* DCMStoreSCPListener.h in Headers */,
-				7EDA38C1077B250100A734D5 /* DCMStoreSCP.h in Headers */,
-				7EDA38C9077B25F400A734D5 /* DCMCStoreReceivedPDUHandler.h in Headers */,
-				BF28B92B0783A7F000C71DA8 /* DCMNetworking.h in Headers */,
-				7E40C1010785C7C400806344 /* DCMCFindRequest.h in Headers */,
-				7E40C1440785CE2C00806344 /* DCMCMoveRequest.h in Headers */,
-				7E21D347078747A500315810 /* DCMCFindResponseDataHandler.h in Headers */,
-				BFF27D4C0787AEC400D8766D /* DCMMoveSCU.h in Headers */,
-				BFF27D4E0787AEC900D8766D /* DCMFindSCU.h in Headers */,
-				7E5DC07C078AF4FB009D04DF /* DCMQueryNode.h in Headers */,
-				7E5DC084078AF523009D04DF /* DCMRootQueryNode.h in Headers */,
-				7E5DC08A078AF535009D04DF /* DCMStudyQueryNode.h in Headers */,
-				7E5DC090078AF544009D04DF /* DCMSeriesQueryNode.h in Headers */,
-				7E5DC096078AF555009D04DF /* DCMImageQueryNode.h in Headers */,
-				BF01AA23078CF6C80037222F /* DCMCMoveResponseDataHandler.h in Headers */,
-				BF03E55D07BEFFC500100045 /* DCMCFindResponse.h in Headers */,
-				BF03E56C07BEFFFF00100045 /* DCMCMoveResponse.h in Headers */,
-				7E93EAF407CA486E0075BD36 /* DCMDirectory.h in Headers */,
-				7E93EB0007CA48AA0075BD36 /* DCMPatientRecord.h in Headers */,
-				7E93EB0607CA48BD0075BD36 /* DCMStudyRecord.h in Headers */,
-				7E93EB0C07CA48CE0075BD36 /* DCMSeriesRecord.h in Headers */,
-				7E93EB1207CA48E00075BD36 /* DCMImageRecord.h in Headers */,
-				7E93EB1807CA48F90075BD36 /* DCMReportRecord.h in Headers */,
-				7E331F4B07CD416F00AA50DF /* DCMRecord.h in Headers */,
-				7E96AD9207CE753C005D435B /* DCMRootRecord.h in Headers */,
-				7E76BEE1085757E30073649A /* DCMSocket.h in Headers */,
 				7EBB31090887269B00BF6B39 /* DCMNetServiceDelegate.h in Headers */,
-				7EF9703608C8E238002B5087 /* DCMPrintSCU.h in Headers */,
-				7EF9703C08C8F9AB002B5087 /* DCMNGetRequest.h in Headers */,
-				7EF9704208C8F9C6002B5087 /* DCMNGetResponse.h in Headers */,
-				7EF9705908C8FA13002B5087 /* DCMNSetRequest.h in Headers */,
-				7EF9706108C8FA2D002B5087 /* DCMNSetResponse.h in Headers */,
-				7EF9706708C8FA56002B5087 /* DCMNActionRequest.h in Headers */,
-				7EF9706F08C8FA86002B5087 /* DCMNActionResponse.h in Headers */,
-				7EF9707908C8FB1C002B5087 /* DCMNCreateRequest.h in Headers */,
-				7EF9708108C8FB42002B5087 /* DCMNCreateResponse.h in Headers */,
-				7EF9708708C8FB74002B5087 /* DCMNDeleteRequest.h in Headers */,
-				7EF9708D08C8FB86002B5087 /* DCMNDeleteResponse.h in Headers */,
-				7E64AC4008CB80F900CEB599 /* DCMPrintAssociation.h in Headers */,
-				7E64AC4608CB81A800CEB599 /* DCMPrintResponseHandler.h in Headers */,
 				7E82C63F08D9FF35000BAFF9 /* DCMLimitedObject.h in Headers */,
 				7E8340DB08E9F7C500E41C5E /* DCMPresentationState.h in Headers */,
 				BFDDE5C1091717F80033317B /* DCMEncapsulatedPDF.h in Headers */,
@@ -14090,6 +13389,7 @@
 				BF7DEBA009D1FC5C00A332B8 /* jconfig16.h in Headers */,
 				BF7DEBAA09D1FC6700A332B8 /* jchuff16.h in Headers */,
 				ABDEB3920D1827440079C938 /* openjpeg.h in Headers */,
+				CE7817880FD843A0007C060B /* DCMAbstractSyntaxUID.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -14254,7 +13554,6 @@
 				CE9DD286086B35050058DD2A /* DicomSeries.h in Headers */,
 				A99B7ECC0885A620004328C0 /* BonjourPublisher.h in Headers */,
 				A99B7ECE0885A621004328C0 /* BonjourBrowser.h in Headers */,
-				BF17E97F0887662400ECF621 /* NetworkMoveDataHandler.h in Headers */,
 				7EBE4B2708917A7500FC1C36 /* LogTableView.h in Headers */,
 				7E1123E008A7CBA20037819D /* LogArrayController.h in Headers */,
 				CE88575E08AF938800B72DA7 /* ROIVolumeView.h in Headers */,
@@ -14661,7 +13960,6 @@
 				BF3F21C709CB8772002736A5 /* ditranst.h in Headers */,
 				BF3F21C909CB8773002736A5 /* diutils.h in Headers */,
 				BFE2CDA609D1FE6400AE615D /* dcmqrdbq.h in Headers */,
-				BF9893BB09D351FF00D550EC /* DCMTKDataHandlerCategory.h in Headers */,
 				BF18A85B09E0BF00005DEFB6 /* AppControllerDCMTKCategory.h in Headers */,
 				BF432BCD09E313EF00AC322E /* DCMTKQueryNode.h in Headers */,
 				BF432BDB09E31B9B00AC322E /* DCMTKStudyQueryNode.h in Headers */,
@@ -16400,14 +15698,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CE9CED890C75BDF900752D4B /* DCMRootRecord.h in Headers */,
-				CE9CED8B0C75BDF900752D4B /* DCMRecord.h in Headers */,
-				CE9CED8D0C75BDF900752D4B /* DCMReportRecord.h in Headers */,
-				CE9CED8F0C75BDF900752D4B /* DCMImageRecord.h in Headers */,
-				CE9CED910C75BDF900752D4B /* DCMSeriesRecord.h in Headers */,
-				CE9CED930C75BDF900752D4B /* DCMStudyRecord.h in Headers */,
-				CE9CED950C75BDF900752D4B /* DCMPatientRecord.h in Headers */,
-				CE9CED970C75BDF900752D4B /* DCMDirectory.h in Headers */,
 				CE9CED990C75BE0A00752D4B /* DCMNetServiceDelegate.h in Headers */,
 				CE9CED9B0C75BE0A00752D4B /* DCM.h in Headers */,
 				CE9CED9C0C75BE0A00752D4B /* jpegdatasrc.h in Headers */,
@@ -16472,72 +15762,8 @@
 				CE9CEEA80C75BE3200752D4B /* jpegint8.h in Headers */,
 				CE9CEEA90C75BE3200752D4B /* jpeglib8.h in Headers */,
 				CE9CEEAD0C75BE3200752D4B /* jversion8.h in Headers */,
-				CE9CEEAE0C75BE3A00752D4B /* DCMNetworking.h in Headers */,
-				CE9CEEAF0C75BE3A00752D4B /* DCMImageQueryNode.h in Headers */,
-				CE9CEEB10C75BE3A00752D4B /* DCMSeriesQueryNode.h in Headers */,
-				CE9CEEB30C75BE3A00752D4B /* DCMStudyQueryNode.h in Headers */,
-				CE9CEEB50C75BE3A00752D4B /* DCMRootQueryNode.h in Headers */,
-				CE9CEEB70C75BE3A00752D4B /* DCMQueryNode.h in Headers */,
-				CE9CEEB90C75BE3A00752D4B /* DCMMoveSCU.h in Headers */,
-				CE9CEEBB0C75BE3A00752D4B /* DCMFindSCU.h in Headers */,
-				CE9CEEBD0C75BE3A00752D4B /* DCMStoreSCP.h in Headers */,
-				CE9CEEBF0C75BE3A00752D4B /* DCMStoreSCPListener.h in Headers */,
-				CE9CEEC10C75BE3A00752D4B /* DCMStoreSCU.h in Headers */,
-				CE9CEEC30C75BE3A00752D4B /* DCMSOPClass.h in Headers */,
-				CE9CEEC50C75BE3A00752D4B /* DCMVerificationSOPClassSCU.h in Headers */,
-				CE9CEEC70C75BE3A00752D4B /* DCMPrintSCU.h in Headers */,
-				CE9CEEC90C75BE3A00752D4B /* DCMReceivedDataHandler.h in Headers */,
-				CE9CEECB0C75BE3A00752D4B /* DCMCompositeResponseHandler.h in Headers */,
-				CE9CEECD0C75BE3A00752D4B /* DCMCMoveResponseDataHandler.h in Headers */,
-				CE9CEECF0C75BE3A00752D4B /* DCMCFindResponseDataHandler.h in Headers */,
-				CE9CEED10C75BE3A00752D4B /* DCMCStoreReceivedPDUHandler.h in Headers */,
-				CE9CEED30C75BE3A00752D4B /* DCMCStoreResponseHandler.h in Headers */,
-				CE9CEED50C75BE3A00752D4B /* DCMEchoResponseHandler.h in Headers */,
-				CE9CEED70C75BE3A00752D4B /* DCMPrintResponseHandler.h in Headers */,
-				CE9CEED90C75BE3A00752D4B /* DCMCommandMessage.h in Headers */,
-				CE9CEEDB0C75BE3A00752D4B /* DCMCMoveResponse.h in Headers */,
-				CE9CEEDD0C75BE3A00752D4B /* DCMCFindResponse.h in Headers */,
-				CE9CEEDF0C75BE3A00752D4B /* DCMCMoveRequest.h in Headers */,
-				CE9CEEE10C75BE3A00752D4B /* DCMCFindRequest.h in Headers */,
-				CE9CEEE30C75BE3A00752D4B /* DCMCStoreResponse.h in Headers */,
-				CE9CEEE50C75BE3A00752D4B /* DCMCStoreRequest.h in Headers */,
-				CE9CEEE70C75BE3A00752D4B /* DCMCEchoResponse.h in Headers */,
-				CE9CEEE90C75BE3A00752D4B /* DCMCEchoRequest.h in Headers */,
-				CE9CEEEB0C75BE3A00752D4B /* DCMNGetRequest.h in Headers */,
-				CE9CEEED0C75BE3A00752D4B /* DCMNGetResponse.h in Headers */,
-				CE9CEEEF0C75BE3A00752D4B /* DCMNSetRequest.h in Headers */,
-				CE9CEEF10C75BE3A00752D4B /* DCMNSetResponse.h in Headers */,
-				CE9CEEF30C75BE3A00752D4B /* DCMNActionRequest.h in Headers */,
-				CE9CEEF50C75BE3A00752D4B /* DCMNActionResponse.h in Headers */,
-				CE9CEEF70C75BE3A00752D4B /* DCMNCreateRequest.h in Headers */,
-				CE9CEEF90C75BE3A00752D4B /* DCMNCreateResponse.h in Headers */,
-				CE9CEEFB0C75BE3A00752D4B /* DCMNDeleteRequest.h in Headers */,
-				CE9CEEFD0C75BE3A00752D4B /* DCMNDeleteResponse.h in Headers */,
-				CE9CEEFF0C75BE3A00752D4B /* DCMPresentationDataValue.h in Headers */,
-				CE9CEF010C75BE3A00752D4B /* DCMAbstractSyntaxUID.h in Headers */,
-				CE9CEF030C75BE3A00752D4B /* DCMAssociationResponder.h in Headers */,
-				CE9CEF050C75BE3A00752D4B /* DCMAssociation.h in Headers */,
-				CE9CEF070C75BE3A00752D4B /* DCMPrintAssociation.h in Headers */,
-				CE9CEF090C75BE3A00752D4B /* DCMAssociationItem.h in Headers */,
-				CE9CEF0B0C75BE3A00752D4B /* DCMPresentationContextItem.h in Headers */,
-				CE9CEF0D0C75BE3A00752D4B /* DCMSOPClassExtendedNegotiationUserInformationSubItem.h in Headers */,
-				CE9CEF0F0C75BE3A00752D4B /* DCMImplementationVersionNameUserInformationSubItem.h in Headers */,
-				CE9CEF110C75BE3A00752D4B /* DCMImplementationClassUIDUserInformationSubItem.h in Headers */,
-				CE9CEF130C75BE3A00752D4B /* DCMMaximumLengthReceivedUserInformationSubItem.h in Headers */,
-				CE9CEF150C75BE3A00752D4B /* DCMUserInformationSubItem.h in Headers */,
-				CE9CEF170C75BE3A00752D4B /* DCMUserInformationItem.h in Headers */,
-				CE9CEF190C75BE3A00752D4B /* DCMApplicationContextItem.h in Headers */,
-				CE9CEF1B0C75BE3A00752D4B /* DCMPresentationContext.h in Headers */,
-				CE9CEF1D0C75BE3A00752D4B /* DCM_PDU.h in Headers */,
-				CE9CEF1F0C75BE3A00752D4B /* DCMPDataPDU.h in Headers */,
-				CE9CEF210C75BE3A00752D4B /* DCMRejectPDU.h in Headers */,
-				CE9CEF230C75BE3A00752D4B /* DCMAcceptRequestPDU.h in Headers */,
-				CE9CEF250C75BE3A00752D4B /* DCMRequestPDU.h in Headers */,
-				CE9CEF270C75BE3A00752D4B /* DCMAcceptPDU.h in Headers */,
-				CE9CEF290C75BE3A00752D4B /* DCMReleasePDU.h in Headers */,
-				CE9CEF2B0C75BE3A00752D4B /* DCMAbortPDU.h in Headers */,
-				CE9CEF2D0C75BE3A00752D4B /* DCMSocket.h in Headers */,
 				ABDEB3940D1827440079C938 /* openjpeg.h in Headers */,
+				CE7816BC0FD83B4E007C060B /* DCMAbstractSyntaxUID.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -17342,79 +16568,7 @@
 				BFAEB3FB06BF3BD900C7EF1E /* DCMPixelDataAttributeJPEG8.m in Sources */,
 				BFAEB40B06BF3BEE00C7EF1E /* DCMPixelDataAttributeJPEG12.m in Sources */,
 				BFAEB41B06BF3BFA00C7EF1E /* DCMPixelDataAttributeJPEG16.m in Sources */,
-				7E17DAAE075A775600A2E803 /* DCMAbortPDU.m in Sources */,
-				7E17DAB0075A775800A2E803 /* DCMAcceptPDU.m in Sources */,
-				7E17DAB2075A775A00A2E803 /* DCMRejectPDU.m in Sources */,
-				7E17DAB4075A775C00A2E803 /* DCMReleasePDU.m in Sources */,
-				7E17DAE1075A7B4600A2E803 /* DCM_PDU.m in Sources */,
-				7E17DB17075A7FBD00A2E803 /* DCMAcceptRequestPDU.m in Sources */,
-				BFBA8289075AADDB004D2D6C /* DCMPresentationContext.m in Sources */,
-				7E49E5F9075FC852006AA2A3 /* DCMAssociationItem.m in Sources */,
-				7E49E60B075FCBCC006AA2A3 /* DCMApplicationContextItem.m in Sources */,
-				7E49E621075FCD99006AA2A3 /* DCMUserInformationItem.m in Sources */,
-				7E49E637075FD02D006AA2A3 /* DCMUserInformationSubItem.m in Sources */,
-				7E49E657075FD264006AA2A3 /* DCMMaximumLengthReceivedUserInformationSubItem.m in Sources */,
-				7E49E66A075FD3A2006AA2A3 /* DCMImplementationClassUIDUserInformationSubItem.m in Sources */,
-				7E49E698075FD7DC006AA2A3 /* DCMImplementationVersionNameUserInformationSubItem.m in Sources */,
-				7E49E6AD075FDA06006AA2A3 /* DCMSOPClassExtendedNegotiationUserInformationSubItem.m in Sources */,
-				7E49E6BA075FDDF8006AA2A3 /* DCMPresentationContextItem.m in Sources */,
-				7EB72CB2076127D80025F400 /* DCMRequestPDU.m in Sources */,
-				BFE4689B0761623400409444 /* DCMAssociation.m in Sources */,
-				BF19256C0762958D009C6832 /* DCMAbstractSyntaxUID.m in Sources */,
-				BF4885A80766BD4D00F30E57 /* DCMPresentationDataValue.m in Sources */,
-				7E3EDAAE076CE4BB002A7DAC /* DCMPDataPDU.m in Sources */,
-				7E3EDBAE076E4225002A7DAC /* DCMCEchoRequest.m in Sources */,
-				7E3EDC0E076E5745002A7DAC /* DCMReceivedDataHandler.m in Sources */,
-				7E3EDC37076E5C20002A7DAC /* DCMCommandMessage.m in Sources */,
-				BFC8C706076E785A00D17A68 /* DCMAssociationResponder.m in Sources */,
-				BFC8C76F076E815A00D17A68 /* DCMVerificationSOPClassSCU.m in Sources */,
-				BFC8C77F076E818F00D17A68 /* DCMSOPClass.m in Sources */,
-				BF9D3B270770AA6A002F0847 /* DCMCompositeResponseHandler.m in Sources */,
-				7E4E71690770E3A200856B65 /* DCMEchoResponseHandler.m in Sources */,
-				7E1CE1180777441E00190023 /* DCMCEchoResponse.m in Sources */,
-				7E1CE165077752BB00190023 /* DCMCStoreRequest.m in Sources */,
-				7E1CE1830777536800190023 /* DCMCStoreResponse.m in Sources */,
-				7E1CE2A3077780D200190023 /* DCMCStoreResponseHandler.m in Sources */,
-				7E1CE2BD0777828C00190023 /* DCMStoreSCU.m in Sources */,
-				BFE4AAF6077A757700D2D44A /* DCMStoreSCPListener.m in Sources */,
-				7EDA38C2077B250100A734D5 /* DCMStoreSCP.m in Sources */,
-				7EDA38CA077B25F400A734D5 /* DCMCStoreReceivedPDUHandler.m in Sources */,
-				7E40C1020785C7C400806344 /* DCMCFindRequest.m in Sources */,
-				7E40C1450785CE2C00806344 /* DCMCMoveRequest.m in Sources */,
-				7E21D348078747A500315810 /* DCMCFindResponseDataHandler.m in Sources */,
-				BFF27D4D0787AEC700D8766D /* DCMMoveSCU.m in Sources */,
-				BFF27D4F0787AECC00D8766D /* DCMFindSCU.m in Sources */,
-				7E5DC07D078AF4FB009D04DF /* DCMQueryNode.m in Sources */,
-				7E5DC085078AF523009D04DF /* DCMRootQueryNode.m in Sources */,
-				7E5DC08B078AF535009D04DF /* DCMStudyQueryNode.m in Sources */,
-				7E5DC091078AF544009D04DF /* DCMSeriesQueryNode.m in Sources */,
-				7E5DC097078AF555009D04DF /* DCMImageQueryNode.m in Sources */,
-				BF01AA24078CF6C80037222F /* DCMCMoveResponseDataHandler.m in Sources */,
-				BF03E55E07BEFFC500100045 /* DCMCFindResponse.m in Sources */,
-				BF03E56D07BEFFFF00100045 /* DCMCMoveResponse.m in Sources */,
-				7E93EAF507CA486E0075BD36 /* DCMDirectory.m in Sources */,
-				7E93EB0107CA48AA0075BD36 /* DCMPatientRecord.m in Sources */,
-				7E93EB0707CA48BD0075BD36 /* DCMStudyRecord.m in Sources */,
-				7E93EB0D07CA48CE0075BD36 /* DCMSeriesRecord.m in Sources */,
-				7E93EB1307CA48E00075BD36 /* DCMImageRecord.m in Sources */,
-				7E93EB1907CA48F90075BD36 /* DCMReportRecord.m in Sources */,
-				7E331F4C07CD416F00AA50DF /* DCMRecord.m in Sources */,
-				7E96AD9307CE753C005D435B /* DCMRootRecord.m in Sources */,
-				CEDDF44B085B926C001E0FF1 /* DCMSocket.m in Sources */,
 				7EBB310A0887269B00BF6B39 /* DCMNetServiceDelegate.m in Sources */,
-				7EF9703708C8E238002B5087 /* DCMPrintSCU.m in Sources */,
-				7EF9703D08C8F9AB002B5087 /* DCMNGetRequest.m in Sources */,
-				7EF9704308C8F9C6002B5087 /* DCMNGetResponse.m in Sources */,
-				7EF9705A08C8FA13002B5087 /* DCMNSetRequest.m in Sources */,
-				7EF9706208C8FA2D002B5087 /* DCMNSetResponse.m in Sources */,
-				7EF9706808C8FA56002B5087 /* DCMNActionRequest.m in Sources */,
-				7EF9707008C8FA86002B5087 /* DCMNActionResponse.m in Sources */,
-				7EF9707A08C8FB1C002B5087 /* DCMNCreateRequest.m in Sources */,
-				7EF9708208C8FB42002B5087 /* DCMNCreateResponse.m in Sources */,
-				7EF9708808C8FB74002B5087 /* DCMNDeleteRequest.m in Sources */,
-				7EF9708E08C8FB86002B5087 /* DCMNDeleteResponse.m in Sources */,
-				7E64AC4108CB80F900CEB599 /* DCMPrintAssociation.m in Sources */,
-				7E64AC4708CB81A800CEB599 /* DCMPrintResponseHandler.m in Sources */,
 				7E82C64008D9FF35000BAFF9 /* DCMLimitedObject.m in Sources */,
 				7E8340DC08E9F7C500E41C5E /* DCMPresentationState.m in Sources */,
 				BFDDE5C2091717F80033317B /* DCMEncapsulatedPDF.m in Sources */,
@@ -17610,6 +16764,7 @@
 				BF7DEBB109D1FC6C00A332B8 /* jcapistd.c in Sources */,
 				BF7DEBB209D1FC6D00A332B8 /* jcapimin.c in Sources */,
 				BF7DEBB309D1FC6E00A332B8 /* jaricom.c in Sources */,
+				CE7817870FD843A0007C060B /* DCMAbstractSyntaxUID.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -17722,7 +16877,6 @@
 				CE9DD287086B35050058DD2A /* DicomSeries.m in Sources */,
 				A99B7ECB0885A61F004328C0 /* BonjourPublisher.m in Sources */,
 				A99B7ECD0885A621004328C0 /* BonjourBrowser.m in Sources */,
-				BF17E9800887662400ECF621 /* NetworkMoveDataHandler.m in Sources */,
 				7EBE4B2608917A7200FC1C36 /* LogTableView.m in Sources */,
 				7E1123DF08A7CB9F0037819D /* LogArrayController.m in Sources */,
 				CE88576008AF938800B72DA7 /* ROIVolumeController.mm in Sources */,
@@ -18029,7 +17183,6 @@
 				BF3F21C809CB8773002736A5 /* diutils.cc in Sources */,
 				BF36E2F009CDC6BF003991D3 /* dcmqrdbi.cc in Sources */,
 				BFE2CDA809D1FFAE00AE615D /* dcmqrdbq.mm in Sources */,
-				BF9893BC09D351FF00D550EC /* DCMTKDataHandlerCategory.mm in Sources */,
 				BFDF1D5709E06985008A4EC4 /* dcmqrcbm.mm in Sources */,
 				BF18A85C09E0BF00005DEFB6 /* AppControllerDCMTKCategory.mm in Sources */,
 				BF432BCE09E313EF00AC322E /* DCMTKQueryNode.mm in Sources */,
@@ -18332,7 +17485,7 @@
 				CE3DDDB00D8AC94C00AE9588 /* QueryOutlineView.m in Sources */,
 				CE087B0C0DE9BD6E000E5593 /* GLString.m in Sources */,
 				CE569B750E29612100F4A234 /* ThumbnailCell.m in Sources */,
-				CEAA6F420E50C084008802D2 /* OsiriXSCPDataHandler.m in Sources */,
+				CEAA6F420E50C084008802D2 /* OsiriXSCPDataHandler.mm in Sources */,
 				84A679060EEECF2F00AE5C98 /* jpeg_memsrc.c in Sources */,
 				CE291D8F0F5A99B700F95B43 /* OsiriXFixedPointVolumeRayCastMapper.cxx in Sources */,
 				A9333D260F56E6800097DAB7 /* MPRDCMView.m in Sources */,
@@ -18708,14 +17861,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CE9CED8A0C75BDF900752D4B /* DCMRootRecord.m in Sources */,
-				CE9CED8C0C75BDF900752D4B /* DCMRecord.m in Sources */,
-				CE9CED8E0C75BDF900752D4B /* DCMReportRecord.m in Sources */,
-				CE9CED900C75BDF900752D4B /* DCMImageRecord.m in Sources */,
-				CE9CED920C75BDF900752D4B /* DCMSeriesRecord.m in Sources */,
-				CE9CED940C75BDF900752D4B /* DCMStudyRecord.m in Sources */,
-				CE9CED960C75BDF900752D4B /* DCMPatientRecord.m in Sources */,
-				CE9CED980C75BDF900752D4B /* DCMDirectory.m in Sources */,
 				CE9CED9A0C75BE0A00752D4B /* DCMNetServiceDelegate.m in Sources */,
 				CE9CED9D0C75BE0A00752D4B /* jpegdatasrc.m in Sources */,
 				CE9CEDA10C75BE0A00752D4B /* DCMPixelDataAttribute.m in Sources */,
@@ -18928,70 +18073,7 @@
 				CE9CEEAA0C75BE3200752D4B /* jquant1.c in Sources */,
 				CE9CEEAB0C75BE3200752D4B /* jquant2.c in Sources */,
 				CE9CEEAC0C75BE3200752D4B /* jutils.c in Sources */,
-				CE9CEEB00C75BE3A00752D4B /* DCMImageQueryNode.m in Sources */,
-				CE9CEEB20C75BE3A00752D4B /* DCMSeriesQueryNode.m in Sources */,
-				CE9CEEB40C75BE3A00752D4B /* DCMStudyQueryNode.m in Sources */,
-				CE9CEEB60C75BE3A00752D4B /* DCMRootQueryNode.m in Sources */,
-				CE9CEEB80C75BE3A00752D4B /* DCMQueryNode.m in Sources */,
-				CE9CEEBA0C75BE3A00752D4B /* DCMMoveSCU.m in Sources */,
-				CE9CEEBC0C75BE3A00752D4B /* DCMFindSCU.m in Sources */,
-				CE9CEEBE0C75BE3A00752D4B /* DCMStoreSCP.m in Sources */,
-				CE9CEEC00C75BE3A00752D4B /* DCMStoreSCPListener.m in Sources */,
-				CE9CEEC20C75BE3A00752D4B /* DCMStoreSCU.m in Sources */,
-				CE9CEEC40C75BE3A00752D4B /* DCMSOPClass.m in Sources */,
-				CE9CEEC60C75BE3A00752D4B /* DCMVerificationSOPClassSCU.m in Sources */,
-				CE9CEEC80C75BE3A00752D4B /* DCMPrintSCU.m in Sources */,
-				CE9CEECA0C75BE3A00752D4B /* DCMReceivedDataHandler.m in Sources */,
-				CE9CEECC0C75BE3A00752D4B /* DCMCompositeResponseHandler.m in Sources */,
-				CE9CEECE0C75BE3A00752D4B /* DCMCMoveResponseDataHandler.m in Sources */,
-				CE9CEED00C75BE3A00752D4B /* DCMCFindResponseDataHandler.m in Sources */,
-				CE9CEED20C75BE3A00752D4B /* DCMCStoreReceivedPDUHandler.m in Sources */,
-				CE9CEED40C75BE3A00752D4B /* DCMCStoreResponseHandler.m in Sources */,
-				CE9CEED60C75BE3A00752D4B /* DCMEchoResponseHandler.m in Sources */,
-				CE9CEED80C75BE3A00752D4B /* DCMPrintResponseHandler.m in Sources */,
-				CE9CEEDA0C75BE3A00752D4B /* DCMCommandMessage.m in Sources */,
-				CE9CEEDC0C75BE3A00752D4B /* DCMCMoveResponse.m in Sources */,
-				CE9CEEDE0C75BE3A00752D4B /* DCMCFindResponse.m in Sources */,
-				CE9CEEE00C75BE3A00752D4B /* DCMCMoveRequest.m in Sources */,
-				CE9CEEE20C75BE3A00752D4B /* DCMCFindRequest.m in Sources */,
-				CE9CEEE40C75BE3A00752D4B /* DCMCStoreResponse.m in Sources */,
-				CE9CEEE60C75BE3A00752D4B /* DCMCStoreRequest.m in Sources */,
-				CE9CEEE80C75BE3A00752D4B /* DCMCEchoResponse.m in Sources */,
-				CE9CEEEA0C75BE3A00752D4B /* DCMCEchoRequest.m in Sources */,
-				CE9CEEEC0C75BE3A00752D4B /* DCMNGetRequest.m in Sources */,
-				CE9CEEEE0C75BE3A00752D4B /* DCMNGetResponse.m in Sources */,
-				CE9CEEF00C75BE3A00752D4B /* DCMNSetRequest.m in Sources */,
-				CE9CEEF20C75BE3A00752D4B /* DCMNSetResponse.m in Sources */,
-				CE9CEEF40C75BE3A00752D4B /* DCMNActionRequest.m in Sources */,
-				CE9CEEF60C75BE3A00752D4B /* DCMNActionResponse.m in Sources */,
-				CE9CEEF80C75BE3A00752D4B /* DCMNCreateRequest.m in Sources */,
-				CE9CEEFA0C75BE3A00752D4B /* DCMNCreateResponse.m in Sources */,
-				CE9CEEFC0C75BE3A00752D4B /* DCMNDeleteRequest.m in Sources */,
-				CE9CEEFE0C75BE3A00752D4B /* DCMNDeleteResponse.m in Sources */,
-				CE9CEF000C75BE3A00752D4B /* DCMPresentationDataValue.m in Sources */,
-				CE9CEF020C75BE3A00752D4B /* DCMAbstractSyntaxUID.m in Sources */,
-				CE9CEF040C75BE3A00752D4B /* DCMAssociationResponder.m in Sources */,
-				CE9CEF060C75BE3A00752D4B /* DCMAssociation.m in Sources */,
-				CE9CEF080C75BE3A00752D4B /* DCMPrintAssociation.m in Sources */,
-				CE9CEF0A0C75BE3A00752D4B /* DCMAssociationItem.m in Sources */,
-				CE9CEF0C0C75BE3A00752D4B /* DCMPresentationContextItem.m in Sources */,
-				CE9CEF0E0C75BE3A00752D4B /* DCMSOPClassExtendedNegotiationUserInformationSubItem.m in Sources */,
-				CE9CEF100C75BE3A00752D4B /* DCMImplementationVersionNameUserInformationSubItem.m in Sources */,
-				CE9CEF120C75BE3A00752D4B /* DCMImplementationClassUIDUserInformationSubItem.m in Sources */,
-				CE9CEF140C75BE3A00752D4B /* DCMMaximumLengthReceivedUserInformationSubItem.m in Sources */,
-				CE9CEF160C75BE3A00752D4B /* DCMUserInformationSubItem.m in Sources */,
-				CE9CEF180C75BE3A00752D4B /* DCMUserInformationItem.m in Sources */,
-				CE9CEF1A0C75BE3A00752D4B /* DCMApplicationContextItem.m in Sources */,
-				CE9CEF1C0C75BE3A00752D4B /* DCMPresentationContext.m in Sources */,
-				CE9CEF1E0C75BE3A00752D4B /* DCM_PDU.m in Sources */,
-				CE9CEF200C75BE3A00752D4B /* DCMPDataPDU.m in Sources */,
-				CE9CEF220C75BE3A00752D4B /* DCMRejectPDU.m in Sources */,
-				CE9CEF240C75BE3A00752D4B /* DCMAcceptRequestPDU.m in Sources */,
-				CE9CEF260C75BE3A00752D4B /* DCMRequestPDU.m in Sources */,
-				CE9CEF280C75BE3A00752D4B /* DCMAcceptPDU.m in Sources */,
-				CE9CEF2A0C75BE3A00752D4B /* DCMReleasePDU.m in Sources */,
-				CE9CEF2C0C75BE3A00752D4B /* DCMAbortPDU.m in Sources */,
-				CE9CEF2E0C75BE3A00752D4B /* DCMSocket.m in Sources */,
+				CE7816BD0FD83B4E007C060B /* DCMAbstractSyntaxUID.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -706,6 +706,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
     OFCmdUnsignedInt opt_port = 104;
     const char *opt_peerTitle = PEERAPPLICATIONTITLE;
     const char *opt_ourTitle = APPLICATIONTITLE;
+	BOOL succeed = YES;
 	
 	if (_callingAET)
 		opt_ourTitle = [_callingAET UTF8String];
@@ -738,333 +739,325 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	_networkTransferSyntax = EXS_LittleEndianExplicit;	//EXS_LittleEndianExplicit;	//EXS_LittleEndianExplicit;
 	
 	
-	NS_DURING
-	
-#ifdef WITH_OPENSSL
-
-	//disable TLS
-	_secureConnection = OFFalse;
-	
-	//enable TLS
-	//        _secureConnection = OFTrue;
-	//_doAuthenticate = OFTrue;
-	//app.checkValue(cmd.getValue(opt_privateKeyFile));
-	//app.checkValue(cmd.getValue(opt_certificateFile));
-	
-	//anonymous-tls
-	// _secureConnection = OFTrue;
-	
-	//Password
-	//opt_passwd
-	
-	//pem-keys 
-	//_keyFileFormat = SSL_FILETYPE_PEM;
-	
-	/*
-	 if (cmd.findOption("--dhparam"))
-      {
-        app.checkValue(cmd.getValue(_dhparam));
-      }
-
-      if (cmd.findOption("--seed"))
-      {
-        app.checkValue(cmd.getValue(_readSeedFile));
-      }
-
-      cmd.beginOptionBlock();
-      if (cmd.findOption("--write-seed"))
-      {
-        if (_readSeedFile == NULL) app.printError("--write-seed only with --seed");
-        _writeSeedFile = _readSeedFile;
-      }
-      if (cmd.findOption("--write-seed-file"))
-      {
-        if (_readSeedFile == NULL) app.printError("--write-seed-file only with --seed");
-        app.checkValue(cmd.getValue(_writeSeedFile));
-      }
-      cmd.endOptionBlock();
-
-      cmd.beginOptionBlock();
-      if (cmd.findOption("--require-peer-cert")) _certVerification = DCV_requireCertificate;
-      if (cmd.findOption("--verify-peer-cert"))  _certVerification = DCV_checkCertificate;
-      if (cmd.findOption("--ignore-peer-cert"))  _certVerification = DCV_ignoreCertificate;
-      cmd.endOptionBlock();
-
-      const char *current = NULL;
-      const char *currentOpenSSL;
-      if (cmd.findOption("--cipher", 0, OFCommandLine::FOM_First))
-      {
-        opt_ciphersuites.clear();
-        do
-        {
-          app.checkValue(cmd.getValue(current));
-          if (NULL == (currentOpenSSL = DcmTLSTransportLayer::findOpenSSLCipherSuiteName(current)))
-          {
-            CERR << "ciphersuite '" << current << "' is unknown. Known ciphersuites are:" << endl;
-            unsigned long numSuites = DcmTLSTransportLayer::getNumberOfCipherSuites();
-            for (unsigned long cs=0; cs < numSuites; cs++)
-            {
-              CERR << "    " << DcmTLSTransportLayer::getTLSCipherSuiteName(cs) << endl;
-            }
-            return 1;
-          } else {
-            if (opt_ciphersuites.length() > 0) opt_ciphersuites += ":";
-            opt_ciphersuites += currentOpenSSL;
-          }
-        } while (cmd.findOption("--cipher", 0, OFCommandLine::FOM_Next));
-      }
-	*/
-#endif
-
-    /* make sure data dictionary is loaded */
-    if (!dcmDataDict.isDictionaryLoaded()) {
-        fprintf(stderr, "Warning: no data dictionary loaded, check environment variable: %s\n",
-                DCM_DICT_ENVIRONMENT_VARIABLE);
-    }
-	
-	/* initialize network, i.e. create an instance of T_ASC_Network*. */
-    cond = ASC_initializeNetwork(NET_REQUESTOR, 0, _acse_timeout, &net);
-    if (cond.bad()) {
-        DimseCondition::dump(cond);
-		queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"ASC_initializeNetwork - %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
-		[queryException raise];
-        //return;
-    }
-	
-#ifdef WITH_OPENSSL
-
-    if (_secureConnection)
-    {
-	}
-
-#endif
-
-/* initialize asscociation parameters, i.e. create an instance of T_ASC_Parameters*. */
-    cond = ASC_createAssociationParameters(&params, _maxReceivePDULength);
-	DimseCondition::dump(cond);
-    if (cond.bad()) {
-        DimseCondition::dump(cond);
-		queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"ASC_createAssociationParameters - %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
-		[queryException raise];
-		//return;
-    }
-	
-	/* sets this application's title and the called application's title in the params */
-	/* structure. The default values to be set here are "STORESCU" and "ANY-SCP". */
-	ASC_setAPTitles(params, opt_ourTitle, opt_peerTitle, NULL);
-
-	/* Set the transport layer type (type of network connection) in the params */
-	/* strucutre. The default is an insecure connection; where OpenSSL is  */
-	/* available the user is able to request an encrypted,secure connection. */
-	cond = ASC_setTransportLayerType(params, _secureConnection);
-	if (cond.bad()) {
-		DimseCondition::dump(cond);
-		queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"ASC_setTransportLayerType - %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
-		[queryException raise];
-		//return;
-	}
-	
-	/* Figure out the presentation addresses and copy the */
-	/* corresponding values into the association parameters.*/
-	gethostname(localHost, sizeof(localHost) - 1);
-	sprintf(peerHost, "%s:%d", opt_peer, (int)opt_port);
-	//NSLog(@"peer host: %s", peerHost);
-	ASC_setPresentationAddresses(params, localHost, peerHost);	//localHost
-	
-	/* Set the presentation contexts which will be negotiated */
-    /* when the network connection will be established */
-	/*
-	abstract syntax should be 
-	UID_MOVEStudyRootQueryRetrieveInformationModel
-					or 
-	UID_FINDStudyRootQueryRetrieveInformationModel
-	*/
-	cond = [self addPresentationContext:params abstractSyntax:abstractSyntax];
-    //cond = addPresentationContext(params, UID_FINDStudyRootQueryRetrieveInformationModel);
-    if (cond.bad())
+	@try
 	{
-        DimseCondition::dump(cond);
-		queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"addPresentationContext - %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
-        [queryException raise];
-    }
+		#ifdef WITH_OPENSSL
 
-    /* dump presentation contexts if required */
-    if (_verbose)
-	{
-		if( strcmp(abstractSyntax, UID_GETPatientRootQueryRetrieveInformationModel) == 0 ||
-		strcmp(abstractSyntax, UID_GETStudyRootQueryRetrieveInformationModel) == 0 ||
-		strcmp(abstractSyntax, UID_GETPatientStudyOnlyQueryRetrieveInformationModel) == 0)
-		{
+		//disable TLS
+		_secureConnection = OFFalse;
 		
-		}
-		else
-		{
-			printf("Request Parameters:\n");
-			ASC_dumpParameters(params, COUT);
-		}
-	}
-	
-		/* create association, i.e. try to establish a network connection to another */
-	/* DICOM application. This call creates an instance of T_ASC_Association*. */
-	if (_verbose)
-		printf("Requesting Association\n");
-	cond = ASC_requestAssociation(net, params, &assoc);
-	if (cond.bad())
-	{
-		if (cond == DUL_ASSOCIATIONREJECTED)
-		{
-			T_ASC_RejectParameters rej;
-			ASC_getRejectParameters(params, &rej);
-			errmsg("Association Rejected:");
-			ASC_printRejectParameters(stderr, &rej);
-			queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"Association Rejected : %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
-			[queryException raise];
-
-		} else {
-			errmsg("Association Request Failed:");
-			DimseCondition::dump(cond);
-			queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"Association Request Failed : %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
-			[queryException raise];
-		}
-	}
-	
-	  /* dump the presentation contexts which have been accepted/refused */
-	  	if (_verbose)
-	{
-		if( strcmp(abstractSyntax, UID_GETPatientRootQueryRetrieveInformationModel) == 0 ||
-		strcmp(abstractSyntax, UID_GETStudyRootQueryRetrieveInformationModel) == 0 ||
-		strcmp(abstractSyntax, UID_GETPatientStudyOnlyQueryRetrieveInformationModel) == 0)
-		{
+		//enable TLS
+		//        _secureConnection = OFTrue;
+		//_doAuthenticate = OFTrue;
+		//app.checkValue(cmd.getValue(opt_privateKeyFile));
+		//app.checkValue(cmd.getValue(opt_certificateFile));
 		
-		}
-		else
-		{
-			printf("Association Parameters Negotiated:\n");
-			ASC_dumpParameters(params, COUT);
-		}
-	}
-	
-		/* count the presentation contexts which have been accepted by the SCP */
-	/* If there are none, finish the execution */
-	if (ASC_countAcceptedPresentationContexts(params) == 0) {
-		errmsg("No Acceptable Presentation Contexts");
-		queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:@"No acceptable presentation contexts" userInfo:nil];
-		[queryException raise];
-		//return;
-	}
-	
-	//specific for Move vs find
-	if (strcmp(abstractSyntax, UID_FINDStudyRootQueryRetrieveInformationModel) == 0) {
-		if (cond == EC_Normal) // compare with EC_Normal since DUL_PEERREQUESTEDRELEASE is also good()
+		//anonymous-tls
+		// _secureConnection = OFTrue;
+		
+		//Password
+		//opt_passwd
+		
+		//pem-keys 
+		//_keyFileFormat = SSL_FILETYPE_PEM;
+		
+		/*
+		 if (cmd.findOption("--dhparam"))
 		  {
-			cond = [self cfind:assoc dataset:dataset];
+			app.checkValue(cmd.getValue(_dhparam));
 		  }
-	}
-	else if (strcmp(abstractSyntax, UID_MOVEStudyRootQueryRetrieveInformationModel) == 0)
-	{
-		if( destination) cond = [self cmove:assoc network:net dataset:dataset destination: (char*) [destination UTF8String]];
-		else cond = [self cmove:assoc network:net dataset:dataset];
-	}
-	else if (strcmp(abstractSyntax, UID_GETStudyRootQueryRetrieveInformationModel) == 0)
-	{
-		cond = [self cget:assoc network:net dataset:dataset];
-	}
-	else
-	{
-		NSLog(@"Q/R SCU bad Abstract Sytnax: %s", abstractSyntax);
-		//shouldn't get here
-	}
-	
-	/* tear down association, i.e. terminate network connection to SCP */
-    if (cond == EC_Normal)
-    {
-        if (_abortAssociation) {
-            if (_verbose)
-                printf("Aborting Association\n");
-            cond = ASC_abortAssociation(assoc);
-            if (cond.bad()) {
-                errmsg("Association Abort Failed:");
-                DimseCondition::dump(cond);
-                queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"Association Abort Failed %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
-				[queryException raise];
-				//return;
-            }
-        } else {
-            /* release association */
-            if (_verbose)
-                printf("Releasing Association\n");
-            cond = ASC_releaseAssociation(assoc);
-            if (cond.bad())
-            {
-                errmsg("Association Release Failed:");
-                DimseCondition::dump(cond);
-                queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"Association Release Failed %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
-				[queryException raise];
-				//return;
-            }
-        }
-    }
-    else if (cond == DUL_PEERREQUESTEDRELEASE)
-    {
-        errmsg("Protocol Error: peer requested release (Aborting)");
-        if (_verbose)
-            printf("Aborting Association\n");
-		
-		 queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"Protocol Error: peer requested release (Aborting) %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
-        cond = ASC_abortAssociation(assoc);
-        if (cond.bad()) {
-            errmsg("Association Abort Failed:");
-            DimseCondition::dump(cond);
-        }
-		[queryException raise];
-    }
-    else if (cond == DUL_PEERABORTEDASSOCIATION)
-    {
-        if (_verbose) printf("Peer Aborted Association\n");
-    }
-    else
-    {
-        errmsg("SCU Failed:");
-        DimseCondition::dump(cond);
-        if (_verbose)
-            printf("Aborting Association\n");
-        
-		queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"SCU Failed %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
-		cond = ASC_abortAssociation(assoc);
-        if (cond.bad()) {
-            errmsg("Association Abort Failed:");
-            DimseCondition::dump(cond);
-        }
-		
-		[queryException raise];
-    }
-	
 
-NS_HANDLER
+		  if (cmd.findOption("--seed"))
+		  {
+			app.checkValue(cmd.getValue(_readSeedFile));
+		  }
+
+		  cmd.beginOptionBlock();
+		  if (cmd.findOption("--write-seed"))
+		  {
+			if (_readSeedFile == NULL) app.printError("--write-seed only with --seed");
+			_writeSeedFile = _readSeedFile;
+		  }
+		  if (cmd.findOption("--write-seed-file"))
+		  {
+			if (_readSeedFile == NULL) app.printError("--write-seed-file only with --seed");
+			app.checkValue(cmd.getValue(_writeSeedFile));
+		  }
+		  cmd.endOptionBlock();
+
+		  cmd.beginOptionBlock();
+		  if (cmd.findOption("--require-peer-cert")) _certVerification = DCV_requireCertificate;
+		  if (cmd.findOption("--verify-peer-cert"))  _certVerification = DCV_checkCertificate;
+		  if (cmd.findOption("--ignore-peer-cert"))  _certVerification = DCV_ignoreCertificate;
+		  cmd.endOptionBlock();
+
+		  const char *current = NULL;
+		  const char *currentOpenSSL;
+		  if (cmd.findOption("--cipher", 0, OFCommandLine::FOM_First))
+		  {
+			opt_ciphersuites.clear();
+			do
+			{
+			  app.checkValue(cmd.getValue(current));
+			  if (NULL == (currentOpenSSL = DcmTLSTransportLayer::findOpenSSLCipherSuiteName(current)))
+			  {
+				CERR << "ciphersuite '" << current << "' is unknown. Known ciphersuites are:" << endl;
+				unsigned long numSuites = DcmTLSTransportLayer::getNumberOfCipherSuites();
+				for (unsigned long cs=0; cs < numSuites; cs++)
+				{
+				  CERR << "    " << DcmTLSTransportLayer::getTLSCipherSuiteName(cs) << endl;
+				}
+				return 1;
+			  } else {
+				if (opt_ciphersuites.length() > 0) opt_ciphersuites += ":";
+				opt_ciphersuites += currentOpenSSL;
+			  }
+			} while (cmd.findOption("--cipher", 0, OFCommandLine::FOM_Next));
+		  }
+		*/
+	#endif
+
+		/* make sure data dictionary is loaded */
+		if (!dcmDataDict.isDictionaryLoaded()) {
+			fprintf(stderr, "Warning: no data dictionary loaded, check environment variable: %s\n",
+					DCM_DICT_ENVIRONMENT_VARIABLE);
+		}
+		
+		/* initialize network, i.e. create an instance of T_ASC_Network*. */
+		cond = ASC_initializeNetwork(NET_REQUESTOR, 0, _acse_timeout, &net);
+		if (cond.bad()) {
+			DimseCondition::dump(cond);
+			queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"ASC_initializeNetwork - %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
+			[queryException raise];
+		}
+		
+	#ifdef WITH_OPENSSL
+
+		if (_secureConnection)
+		{
+		}
+
+	#endif
+
+	/* initialize asscociation parameters, i.e. create an instance of T_ASC_Parameters*. */
+		cond = ASC_createAssociationParameters(&params, _maxReceivePDULength);
+		DimseCondition::dump(cond);
+		if (cond.bad()) {
+			DimseCondition::dump(cond);
+			queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"ASC_createAssociationParameters - %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
+			[queryException raise];
+		}
+		
+		/* sets this application's title and the called application's title in the params */
+		/* structure. The default values to be set here are "STORESCU" and "ANY-SCP". */
+		ASC_setAPTitles(params, opt_ourTitle, opt_peerTitle, NULL);
+
+		/* Set the transport layer type (type of network connection) in the params */
+		/* strucutre. The default is an insecure connection; where OpenSSL is  */
+		/* available the user is able to request an encrypted,secure connection. */
+		cond = ASC_setTransportLayerType(params, _secureConnection);
+		if (cond.bad()) {
+			DimseCondition::dump(cond);
+			queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"ASC_setTransportLayerType - %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
+			[queryException raise];
+		}
+		
+		/* Figure out the presentation addresses and copy the */
+		/* corresponding values into the association parameters.*/
+		gethostname(localHost, sizeof(localHost) - 1);
+		sprintf(peerHost, "%s:%d", opt_peer, (int)opt_port);
+		//NSLog(@"peer host: %s", peerHost);
+		ASC_setPresentationAddresses(params, localHost, peerHost);	//localHost
+		
+		/* Set the presentation contexts which will be negotiated */
+		/* when the network connection will be established */
+		/*
+		abstract syntax should be 
+		UID_MOVEStudyRootQueryRetrieveInformationModel
+						or 
+		UID_FINDStudyRootQueryRetrieveInformationModel
+		*/
+		cond = [self addPresentationContext:params abstractSyntax:abstractSyntax];
+		//cond = addPresentationContext(params, UID_FINDStudyRootQueryRetrieveInformationModel);
+		if (cond.bad())
+		{
+			DimseCondition::dump(cond);
+			queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"addPresentationContext - %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
+			[queryException raise];
+		}
+
+		/* dump presentation contexts if required */
+		if (_verbose)
+		{
+			if( strcmp(abstractSyntax, UID_GETPatientRootQueryRetrieveInformationModel) == 0 ||
+			strcmp(abstractSyntax, UID_GETStudyRootQueryRetrieveInformationModel) == 0 ||
+			strcmp(abstractSyntax, UID_GETPatientStudyOnlyQueryRetrieveInformationModel) == 0)
+			{
+			
+			}
+			else
+			{
+				printf("Request Parameters:\n");
+				ASC_dumpParameters(params, COUT);
+			}
+		}
+		
+			/* create association, i.e. try to establish a network connection to another */
+		/* DICOM application. This call creates an instance of T_ASC_Association*. */
+		if (_verbose)
+			printf("Requesting Association\n");
+		cond = ASC_requestAssociation(net, params, &assoc);
+		if (cond.bad())
+		{
+			if (cond == DUL_ASSOCIATIONREJECTED)
+			{
+				T_ASC_RejectParameters rej;
+				ASC_getRejectParameters(params, &rej);
+				errmsg("Association Rejected:");
+				ASC_printRejectParameters(stderr, &rej);
+				queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"Association Rejected : %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
+				[queryException raise];
+
+			} else {
+				errmsg("Association Request Failed:");
+				DimseCondition::dump(cond);
+				queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"Association Request Failed : %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
+				[queryException raise];
+			}
+		}
+		
+		  /* dump the presentation contexts which have been accepted/refused */
+			if (_verbose)
+		{
+			if( strcmp(abstractSyntax, UID_GETPatientRootQueryRetrieveInformationModel) == 0 ||
+			strcmp(abstractSyntax, UID_GETStudyRootQueryRetrieveInformationModel) == 0 ||
+			strcmp(abstractSyntax, UID_GETPatientStudyOnlyQueryRetrieveInformationModel) == 0)
+			{
+			
+			}
+			else
+			{
+				printf("Association Parameters Negotiated:\n");
+				ASC_dumpParameters(params, COUT);
+			}
+		}
+		
+			/* count the presentation contexts which have been accepted by the SCP */
+		/* If there are none, finish the execution */
+		if (ASC_countAcceptedPresentationContexts(params) == 0) {
+			errmsg("No Acceptable Presentation Contexts");
+			queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:@"No acceptable presentation contexts" userInfo:nil];
+			[queryException raise];
+		}
+		
+		//specific for Move vs find
+		if (strcmp(abstractSyntax, UID_FINDStudyRootQueryRetrieveInformationModel) == 0) {
+			if (cond == EC_Normal) // compare with EC_Normal since DUL_PEERREQUESTEDRELEASE is also good()
+			  {
+				cond = [self cfind:assoc dataset:dataset];
+			  }
+		}
+		else if (strcmp(abstractSyntax, UID_MOVEStudyRootQueryRetrieveInformationModel) == 0)
+		{
+			if( destination) cond = [self cmove:assoc network:net dataset:dataset destination: (char*) [destination UTF8String]];
+			else cond = [self cmove:assoc network:net dataset:dataset];
+		}
+		else if (strcmp(abstractSyntax, UID_GETStudyRootQueryRetrieveInformationModel) == 0)
+		{
+			cond = [self cget:assoc network:net dataset:dataset];
+		}
+		else
+		{
+			NSLog(@"Q/R SCU bad Abstract Sytnax: %s", abstractSyntax);
+			//shouldn't get here
+		}
+		
+		/* tear down association, i.e. terminate network connection to SCP */
+		if (cond == EC_Normal)
+		{
+			if (_abortAssociation) {
+				if (_verbose)
+					printf("Aborting Association\n");
+				cond = ASC_abortAssociation(assoc);
+				if (cond.bad()) {
+					errmsg("Association Abort Failed:");
+					DimseCondition::dump(cond);
+					queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"Association Abort Failed %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
+					[queryException raise];
+					//return;
+				}
+			} else {
+				/* release association */
+				if (_verbose)
+					printf("Releasing Association\n");
+				cond = ASC_releaseAssociation(assoc);
+				if (cond.bad())
+				{
+					errmsg("Association Release Failed:");
+					DimseCondition::dump(cond);
+					queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"Association Release Failed %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
+					[queryException raise];
+					//return;
+				}
+			}
+		}
+		else if (cond == DUL_PEERREQUESTEDRELEASE)
+		{
+			errmsg("Protocol Error: peer requested release (Aborting)");
+			if (_verbose)
+				printf("Aborting Association\n");
+			
+			 queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"Protocol Error: peer requested release (Aborting) %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
+			cond = ASC_abortAssociation(assoc);
+			if (cond.bad()) {
+				errmsg("Association Abort Failed:");
+				DimseCondition::dump(cond);
+			}
+			[queryException raise];
+		}
+		else if (cond == DUL_PEERABORTEDASSOCIATION)
+		{
+			if (_verbose) printf("Peer Aborted Association\n");
+		}
+		else
+		{
+			errmsg("SCU Failed:");
+			DimseCondition::dump(cond);
+			if (_verbose)
+				printf("Aborting Association\n");
+			
+			queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"SCU Failed %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
+			cond = ASC_abortAssociation(assoc);
+			if (cond.bad()) {
+				errmsg("Association Abort Failed:");
+				DimseCondition::dump(cond);
+			}
+			
+			[queryException raise];
+		}
+	}
+	
+	@catch (NSException *e)
 	{
-		NSString	*response = [NSString stringWithFormat: @"%@  /  %@:%d\r\r%@\r%@", _calledAET, _hostname, _port, [queryException name], [queryException description]];
+		NSString	*response = [NSString stringWithFormat: @"%@  /  %@:%d\r\r%@\r%@", _calledAET, _hostname, _port, [e name], [e description]];
 		
 		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"showErrorsIfQueryFailed"])
 			[self performSelectorOnMainThread:@selector(errorMessage:) withObject:[NSArray arrayWithObjects: NSLocalizedString(@"Query Failed (1)", nil), response, NSLocalizedString(@"Continue", nil), nil] waitUntilDone:NO];
 		else
 			[[AppController sharedAppController] growlTitle: NSLocalizedString(@"Query Failed (1)", nil) description: response name: @"newfiles"];
-			
-		NSLog(@"Exception: %@", [queryException description]);
+		
+		NSLog(@"Exception: %@", [e description]);
+		
+		succeed = NO;
 	}
-NS_ENDHANDLER
 	
-
-
-// CLEANUP
-
+	// CLEANUP
+	
     /* destroy the association, i.e. free memory of T_ASC_Association* structure. This */
     /* call is the counterpart of ASC_requestAssociation(...) which was called above. */
     cond = ASC_destroyAssociation(&assoc);
     if (cond.bad()) {
-        DimseCondition::dump(cond);  
-		//queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:@"Destroy Association" userInfo:nil];
-		//[queryException raise]; 
-		//return;     
+        DimseCondition::dump(cond); 
     }
 	
     /* drop the network, i.e. free memory of T_ASC_Network* structure. This call */
@@ -1072,9 +1065,6 @@ NS_ENDHANDLER
     cond = ASC_dropNetwork(&net);
     if (cond.bad()) {
         DimseCondition::dump(cond);
-		//queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:@"Drop Network" userInfo:nil];
-		//[queryException raise];
-		//return;
     }
 	
 
@@ -1096,16 +1086,9 @@ NS_ENDHANDLER
 */
 #endif
 
-
-
-//#ifdef DEBUG
-//    dcmDataDict.clear();  /* useful for debugging with dmalloc */
-//#endif
- 
-	//NS_HANDLER
-	//NS_ENDHANDLER
 	[pool release];
-	return YES;
+	
+	return succeed;
 }
 
 - (OFCondition)findSCU:(T_ASC_Association *)assoc dataset:( DcmDataset *)dataset 

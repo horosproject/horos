@@ -350,7 +350,9 @@ void DcmQueryRetrieveMoveContext::callbackHandler(
 		
 		if( request->MoveDestination)
 			strcpy( currentDestinationMoveAET, request->MoveDestination);
-		
+		else
+			strcpy( currentDestinationMoveAET, "");
+			
         dbcond = dbHandle.startMoveRequest(
 	    request->AffectedSOPClassUID, requestIdentifiers, &dbStatus);
         if (dbcond.bad()) {

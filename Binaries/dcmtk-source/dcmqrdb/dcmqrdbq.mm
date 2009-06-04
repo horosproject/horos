@@ -1172,7 +1172,7 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::startMoveRequest(
 	if( handle -> dataHandler == 0L)
 		handle -> dataHandler = [[OsiriXSCPDataHandler requestDataHandlerWithDestinationFolder:0L debugLevel:0] retain];
 	
-	[handle -> dataHandler setValue: [NSString stringWithUTF8String: handle -> callingAET] forKey: @"callingAET"];
+	handle -> dataHandler.callingAET = [NSString stringWithUTF8String: handle -> callingAET];
 	
 	cond = [handle->dataHandler prepareMoveForDataSet:moveRequestIdentifiers];
 	handle->NumberRemainOperations = [handle->dataHandler moveMatchFound];

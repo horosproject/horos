@@ -23,7 +23,7 @@
 #import <OsiriX/DCMCalendarDate.h>
 #import <OsiriX/DCMNetServiceDelegate.h>
 #import "QueryArrayController.h"
-#import "NetworkMoveDataHandler.h"
+//#import "NetworkMoveDataHandler.h"
 #import "AdvancedQuerySubview.h"
 #include "DCMTKVerifySCU.h"
 #import "DCMTKRootQueryNode.h"
@@ -123,8 +123,8 @@ static const char *GetPrivateIP()
 			NSArray *array = [qm queries];
 			
 			NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithDictionary: [qm parameters]];
-			NetworkMoveDataHandler *moveDataHandler = [NetworkMoveDataHandler moveDataHandler];
-			[dictionary setObject:moveDataHandler  forKey:@"receivedDataHandler"];
+//			NetworkMoveDataHandler *moveDataHandler = [NetworkMoveDataHandler moveDataHandler];
+//			[dictionary setObject:moveDataHandler  forKey:@"receivedDataHandler"];
 			
 			for( DCMTKQueryNode	*object in array)
 			{
@@ -1830,12 +1830,12 @@ static const char *GetPrivateIP()
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	[array retain];
 	
-	NetworkMoveDataHandler *moveDataHandler = [NetworkMoveDataHandler moveDataHandler];
+//	NetworkMoveDataHandler *moveDataHandler = [NetworkMoveDataHandler moveDataHandler];
 	NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithDictionary: [queryManager parameters]];
 	
 	NSLog( @"Retrieve START");
 	
-	[dictionary setObject:moveDataHandler  forKey:@"receivedDataHandler"];
+//	[dictionary setObject:moveDataHandler  forKey:@"receivedDataHandler"];
 	
 	for( NSUInteger i = 0; i < [array count] ; i++)
 	{
