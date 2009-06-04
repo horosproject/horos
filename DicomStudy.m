@@ -181,7 +181,12 @@ NSString* soundex4( NSString *inString)
 			SR = YES;
 		else if( [mod isEqualToString:@"SC"])
 			SC = YES;
-		else if( [mod isEqualToString:@"KO"] == NO && [r containsString: mod] == NO)
+		else if( [mod isEqualToString:@"RTSTRUCT"] == YES && [r containsString: mod] == NO)
+			[r addObject: @"RT"];
+		else if( [mod isEqualToString:@"KO"])
+		{
+		}
+		else if([r containsString: mod] == NO)
 			[r addObject: mod];
 	}
 	

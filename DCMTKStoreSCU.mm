@@ -1262,7 +1262,7 @@ NS_DURING
     if (cond.bad())
 	{
         DimseCondition::dump(cond);
-		localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:@"Could create association parameters" userInfo:nil] retain];
+		localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:[NSString stringWithFormat: @"ASC_initializeNetwork %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] retain];
 		[localException raise];
         //return;
     }
@@ -1282,7 +1282,7 @@ NS_DURING
     if (cond.bad())
 	{
         DimseCondition::dump(cond);
-		localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:@"Could create association parameters" userInfo:nil] retain];
+		localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:[NSString stringWithFormat: @"ASC_createAssociationParameters %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] retain];
 		[localException raise];
 		//return;
     }
@@ -1297,7 +1297,7 @@ NS_DURING
 	cond = ASC_setTransportLayerType(params, opt_secureConnection);
 	if (cond.bad()) {
 		DimseCondition::dump(cond);
-		localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:@"Could not set transport layer" userInfo:nil] retain];
+		localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:[NSString stringWithFormat: @"ASC_setTransportLayerType %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] retain];
 		[localException raise];
 		//return;
 	}
@@ -1315,7 +1315,7 @@ NS_DURING
 	cond = addStoragePresentationContexts(params, sopClassUIDList);
 	if (cond.bad()) {
 		DimseCondition::dump(cond);
-		localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:@"Could not get presentation contexts" userInfo:nil] retain];
+		localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:[NSString stringWithFormat: @"addStoragePresentationContexts %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] retain];
 		[localException raise];
 		//return;
 	}
@@ -1339,16 +1339,14 @@ NS_DURING
 			ASC_getRejectParameters(params, &rej);
 			errmsg("Association Rejected:");
 			ASC_printRejectParameters(stderr, &rej);
-			localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:@"Association Rejected" userInfo:nil] retain];
+			localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:[NSString stringWithFormat: @"Association Rejected %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] retain];
 			[localException raise];
-			//return;
 
 		} else {
 			errmsg("Association Request Failed:");
 			DimseCondition::dump(cond);
-			localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:@"Association request failed" userInfo:nil] retain];
+			localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:[NSString stringWithFormat: @"Association Request Failed %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] retain];
 			[localException raise];
-			//return;
 		}
 	}
 	
@@ -1428,7 +1426,7 @@ NS_DURING
 			{
                 errmsg("Association Abort Failed:");
                 DimseCondition::dump(cond);
-                localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:@"Abort Failed" userInfo:nil] retain];
+                localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:[NSString stringWithFormat: @"Association Abort Failed %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] retain];
 				[localException raise];
             }
         } else
@@ -1441,7 +1439,7 @@ NS_DURING
             {
                 errmsg("Association Release Failed:");
                 DimseCondition::dump(cond);
-                localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:@"Release Failed" userInfo:nil] retain];
+                localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:[NSString stringWithFormat: @"Association Release Failed %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] retain];
 				[localException raise];
             }
         }
@@ -1451,14 +1449,14 @@ NS_DURING
         errmsg("Protocol Error: peer requested release (Aborting)");
         if (opt_verbose)
             printf("Aborting Association\n");
+		localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:[NSString stringWithFormat: @"Protocol Error: peer requested release (Aborting) %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] retain];
         cond = ASC_abortAssociation(assoc);
         if (cond.bad())
 		{
             errmsg("Association Abort Failed:");
             DimseCondition::dump(cond);
-            localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:@"Abort Failed" userInfo:nil] retain];
-			[localException raise];
         }
+		[localException raise];
     }
     else if (cond == DUL_PEERABORTEDASSOCIATION)
     {
@@ -1470,14 +1468,16 @@ NS_DURING
         DimseCondition::dump(cond);
         if (opt_verbose)
             printf("Aborting Association\n");
+		
+		localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:[NSString stringWithFormat: @"SCU Failed %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] retain];
         cond = ASC_abortAssociation(assoc);
         if (cond.bad())
 		{
             errmsg("Association Abort Failed:");
             DimseCondition::dump(cond);
-			localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:@"Abort Failed" userInfo:nil] retain];
-			[localException raise];
+			
         }
+		[localException raise];
     }
 	
 
@@ -1493,7 +1493,7 @@ NS_ENDHANDLER
     if (cond.bad())
 	{
         DimseCondition::dump(cond);
-		localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:@"Destroy Association" userInfo:nil] retain];
+		localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:[NSString stringWithFormat: @"ASC_destroyAssociation %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] retain];
     }
 	
     /* drop the network, i.e. free memory of T_ASC_Network* structure. This call */
@@ -1502,7 +1502,7 @@ NS_ENDHANDLER
     if (cond.bad())
 	{
         DimseCondition::dump(cond);
-		localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:@"Drop Network" userInfo:nil] retain];
+		localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:[NSString stringWithFormat: @"ASC_dropNetwork %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] retain];
     }
 	
 #ifdef HAVE_WINSOCK_H

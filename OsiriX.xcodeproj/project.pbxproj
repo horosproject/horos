@@ -456,6 +456,8 @@
 		AB0128650635991400A74AA1 /* QuicktimeExport.m in Sources */ = {isa = PBXBuildFile; fileRef = AB0128630635991400A74AA1 /* QuicktimeExport.m */; };
 		AB0CA46105BE159500F52729 /* ColorTransferView.h in Headers */ = {isa = PBXBuildFile; fileRef = AB0CA45F05BE159500F52729 /* ColorTransferView.h */; };
 		AB0CA46205BE159500F52729 /* ColorTransferView.m in Sources */ = {isa = PBXBuildFile; fileRef = AB0CA46005BE159500F52729 /* ColorTransferView.m */; };
+		AB0DF7440FD79FDE00A7C57E /* dvpssp.h in Headers */ = {isa = PBXBuildFile; fileRef = AB0DF7430FD79FDE00A7C57E /* dvpssp.h */; };
+		AB0DF7460FD79FEA00A7C57E /* dviface.h in Headers */ = {isa = PBXBuildFile; fileRef = AB0DF7450FD79FEA00A7C57E /* dviface.h */; };
 		AB0E6B130FAF4BF600A5C046 /* libvtkpng.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AB0E6B110FAF4BF600A5C046 /* libvtkpng.a */; };
 		AB0E6B140FAF4BF600A5C046 /* libvtkzlib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AB0E6B120FAF4BF600A5C046 /* libvtkzlib.a */; };
 		AB0E6B170FAF4C2100A5C046 /* libitkzlib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AB0E6B160FAF4C2000A5C046 /* libitkzlib.a */; };
@@ -5574,6 +5576,8 @@
 		AB0BD75705646FD800BED927 /* PapyEallocUnix3.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = PapyEallocUnix3.c; path = Papyrus3/PapyEallocUnix3.c; sourceTree = "<group>"; };
 		AB0CA45F05BE159500F52729 /* ColorTransferView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColorTransferView.h; sourceTree = "<group>"; };
 		AB0CA46005BE159500F52729 /* ColorTransferView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColorTransferView.m; sourceTree = "<group>"; };
+		AB0DF7430FD79FDE00A7C57E /* dvpssp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = dvpssp.h; path = "Binaries/dcmtk-source/dcmpstat/dvpssp.h"; sourceTree = SOURCE_ROOT; };
+		AB0DF7450FD79FEA00A7C57E /* dviface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = dviface.h; path = "Binaries/dcmtk-source/dcmpstat/dviface.h"; sourceTree = SOURCE_ROOT; };
 		AB0E6B110FAF4BF600A5C046 /* libvtkpng.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkpng.a; path = Binaries/VTKLibs/libvtkpng.a; sourceTree = "<group>"; };
 		AB0E6B120FAF4BF600A5C046 /* libvtkzlib.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkzlib.a; path = Binaries/VTKLibs/libvtkzlib.a; sourceTree = "<group>"; };
 		AB0E6B160FAF4C2000A5C046 /* libitkzlib.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libitkzlib.a; path = ITK180/bin/libitkzlib.a; sourceTree = "<group>"; };
@@ -9927,6 +9931,16 @@
 			name = DicomDir;
 			sourceTree = "<group>";
 		};
+		AB0DF7370FD79F9200A7C57E /* dcmpstat */ = {
+			isa = PBXGroup;
+			children = (
+				AB0DF7430FD79FDE00A7C57E /* dvpssp.h */,
+				AB0DF7450FD79FEA00A7C57E /* dviface.h */,
+			);
+			name = dcmpstat;
+			path = "Binaries/dcmtk-source/ofstd";
+			sourceTree = "<group>";
+		};
 		AB11ED140D1826FA00EF109B /* openJpeg */ = {
 			isa = PBXGroup;
 			children = (
@@ -11037,6 +11051,7 @@
 				BFBF3DAB09B6828800545F5E /* dcmsign */,
 				BFBF3DCF09B6828800545F5E /* dcmsr */,
 				BFBF3E3309B6828A00545F5E /* dcmtls */,
+				AB0DF7370FD79F9200A7C57E /* dcmpstat */,
 				BFBF3E4209B6828A00545F5E /* ofstd */,
 			);
 			name = dcmtk;
@@ -16376,6 +16391,8 @@
 				CE291D8E0F5A99B700F95B43 /* OsiriXFixedPointVolumeRayCastMapper.h in Headers */,
 				A9333D250F56E6800097DAB7 /* MPRDCMView.h in Headers */,
 				A9333D310F56E70B0097DAB7 /* MPRController.h in Headers */,
+				AB0DF7440FD79FDE00A7C57E /* dvpssp.h in Headers */,
+				AB0DF7460FD79FEA00A7C57E /* dviface.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

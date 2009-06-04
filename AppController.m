@@ -1426,6 +1426,8 @@ static NSDate *lastWarningDate = nil;
 		if ([[alert suppressionButton] state] == NSOnState)
 			[[NSUserDefaults standardUserDefaults] setBool:YES forKey:alertSuppress];
 	}
+	else
+		NSLog( @"*** listener error (not displayed - hideListenerError): %@", err);
 }
 
 -(void) startSTORESCP:(id) sender

@@ -273,7 +273,7 @@ static const char* transferSyntaxes[] = {
     cond = ASC_initializeNetwork(NET_REQUESTOR, 0, _acse_timeout, &net);
     if (cond.bad()) {
         DimseCondition::dump(cond);
-		verifyException = [NSException exceptionWithName:@"DICOM Network Failure (verifyscu)" reason:@"Could create association parameters" userInfo:nil];
+		verifyException = [NSException exceptionWithName:@"DICOM Network Failure (verifyscu)" reason:[NSString stringWithFormat: @"ASC_initializeNetwork %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
 		[verifyException raise];
         //return;
     }
@@ -292,7 +292,7 @@ static const char* transferSyntaxes[] = {
 	DimseCondition::dump(cond);
     if (cond.bad()) {
         DimseCondition::dump(cond);
-		verifyException = [NSException exceptionWithName:@"DICOM Network Failure (verifyscu)" reason:@"Could create association parameters" userInfo:nil];
+		verifyException = [NSException exceptionWithName:@"DICOM Network Failure (verifyscu)" reason:[NSString stringWithFormat: @"ASC_createAssociationParameters %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
 		[verifyException raise];
 		//return;
     }
@@ -307,7 +307,7 @@ static const char* transferSyntaxes[] = {
 	cond = ASC_setTransportLayerType(params, _secureConnection);
 	if (cond.bad()) {
 		DimseCondition::dump(cond);
-		verifyException = [NSException exceptionWithName:@"DICOM Network Failure (findscu)" reason:@"Could not set transport layer" userInfo:nil];
+		verifyException = [NSException exceptionWithName:@"DICOM Network Failure (findscu)" reason:[NSString stringWithFormat: @"ASC_setTransportLayerType %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
 		[verifyException raise];
 		//return;
 	}
@@ -331,7 +331,7 @@ static const char* transferSyntaxes[] = {
     
     if (cond.bad()) {
         DimseCondition::dump(cond);
-		verifyException = [NSException exceptionWithName:@"DICOM Network Failure (findscu)" reason:@"Could not create presentation context" userInfo:nil];
+		verifyException = [NSException exceptionWithName:@"DICOM Network Failure (findscu)" reason:[NSString stringWithFormat: @"addPresentationContext %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
         [verifyException raise];
     }
 
@@ -355,13 +355,13 @@ static const char* transferSyntaxes[] = {
 				ASC_getRejectParameters(params, &rej);
 				errmsg("Association Rejected:");
 				ASC_printRejectParameters(stderr, &rej);
-				verifyException = [NSException exceptionWithName:@"DICOM Network Failure (verifyscu)" reason:@"Association Rejected" userInfo:nil];
+				verifyException = [NSException exceptionWithName:@"DICOM Network Failure (verifyscu)" reason:[NSString stringWithFormat: @"Association Rejected %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
 				[verifyException raise];
 			} else {
 				errmsg("Association Request Failed:");
 				DimseCondition::dump(cond);
-				verifyException = [NSException exceptionWithName:@"DICOM Network Failure (verifyscu)" reason:@"Association Failed" userInfo:nil];
-			[verifyException raise];
+				verifyException = [NSException exceptionWithName:@"DICOM Network Failure (verifyscu)" reason:[NSString stringWithFormat: @"Association Request Failed %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
+				[verifyException raise];
 			}
 		}
 	}
@@ -404,9 +404,8 @@ static const char* transferSyntaxes[] = {
             if (cond.bad()) {
                 errmsg("Association Abort Failed:");
                 DimseCondition::dump(cond);
-                verifyException = [NSException exceptionWithName:@"DICOM Network Failure (verifyscu)" reason:@"Abort Failed" userInfo:nil];
+                verifyException = [NSException exceptionWithName:@"DICOM Network Failure (verifyscu)" reason:[NSString stringWithFormat: @"Association Abort Failed %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
 				[verifyException raise];
-				//return;
             }
         } else {
             /* release association */
@@ -417,9 +416,8 @@ static const char* transferSyntaxes[] = {
             {
                 errmsg("Association Release Failed:");
                 DimseCondition::dump(cond);
-                verifyException = [NSException exceptionWithName:@"DICOM Network Failure (verifyscu)" reason:@"Release Failed" userInfo:nil];
+                verifyException = [NSException exceptionWithName:@"DICOM Network Failure (verifyscu)" reason:[NSString stringWithFormat: @"Association Release Failed %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
 				[verifyException raise];
-				//return;
             }
         }
     }
@@ -428,14 +426,13 @@ static const char* transferSyntaxes[] = {
         errmsg("Protocol Error: peer requested release (Aborting)");
         if (_verbose)
             printf("Aborting Association\n");
+		verifyException = [NSException exceptionWithName:@"DICOM Network Failure (verifyscu)" reason:[NSString stringWithFormat: @"Protocol Error: peer requested release (Aborting) %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
         cond = ASC_abortAssociation(assoc);
         if (cond.bad()) {
             errmsg("Association Abort Failed:");
             DimseCondition::dump(cond);
-            verifyException = [NSException exceptionWithName:@"DICOM Network Failure (verifyscu)" reason:@"Abort Failed" userInfo:nil];
-			[verifyException raise];
-			//return;
         }
+		[verifyException raise];
     }
     else if (cond == DUL_PEERABORTEDASSOCIATION)
     {
@@ -447,14 +444,13 @@ static const char* transferSyntaxes[] = {
         DimseCondition::dump(cond);
         if (_verbose)
             printf("Aborting Association\n");
+		verifyException = [NSException exceptionWithName:@"DICOM Network Failure (verifyscu)" reason:[NSString stringWithFormat: @"SCU Failed %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
         cond = ASC_abortAssociation(assoc);
         if (cond.bad()) {
             errmsg("Association Abort Failed:");
             DimseCondition::dump(cond);
-			verifyException = [NSException exceptionWithName:@"DICOM Network Failure (verifyscu)" reason:@"Abort Failed" userInfo:nil];
-			[verifyException raise];
-			//return;
         }
+		[verifyException raise];
     }
 	
 	NS_HANDLER

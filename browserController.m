@@ -249,7 +249,7 @@ static NSArray*	statesArray = nil;
 	NSString		*subFolder;
 	long			subFolderInt;
 	
-	if([extension length] > 4)
+	if( [extension length] > 4 || [extension length] < 3)
 	{
 		NSLog( @" **** WARNING : strange extension : %@ - It will be replaced by dcm.", extension);
 		extension = [NSString stringWithString:@"dcm"]; 
@@ -2983,7 +2983,7 @@ static NSArray*	statesArray = nil;
 		NSString	*dstPath;
 		NSString	*extension = [srcPath pathExtension];
 		
-		if( [extension length] > 4)
+		if( [extension length] > 4 || [extension length] < 3)
 			extension = [NSString stringWithString:@"dcm"];
 		
 		@try
@@ -3128,9 +3128,6 @@ static NSArray*	statesArray = nil;
 				if([extension isEqualToString:@""])
 					extension = [NSString stringWithString:@"dcm"]; 
 				
-				if([extension length] > 4)
-					extension = [NSString stringWithString:@"dcm"]; 
-				
 				NSString *dstPath = [self getNewFileDatabasePath:extension];
 				
 				if( [[NSFileManager defaultManager] copyPath:srcPath toPath:dstPath handler:nil])
@@ -3266,7 +3263,7 @@ static NSArray*	statesArray = nil;
 						if( [extension isEqualToString:@""])
 							extension = [NSString stringWithString:@"dcm"]; 
 						
-						if( [extension length] > 4)
+						if( [extension length] > 4 || [extension length] < 3)
 							extension = [NSString stringWithString:@"dcm"];
 						
 						NSString *dstPath = [self getNewFileDatabasePath:extension];
@@ -12765,7 +12762,7 @@ static NSArray*	openSubSeriesArray = nil;
 							{
 								NSString *e = [s pathExtension];
 								
-								if( [e length] > 4)
+								if( [e length] > 4 || [e length] < 3)
 									e = [NSString stringWithString:@"dcm"];
 								
 								if( [e isEqualToString:@""] || [[e lowercaseString] isEqualToString:@"dcm"] || [[e lowercaseString] isEqualToString:@"img"] || [[e lowercaseString] isEqualToString:@"im"]  || [[e lowercaseString] isEqualToString:@"dicom"])

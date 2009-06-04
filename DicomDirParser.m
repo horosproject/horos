@@ -12,7 +12,32 @@
      PURPOSE.
 =========================================================================*/
 
+@interface NSString(NumberStuff)
+- (BOOL)holdsIntegerValue;
+@end
+
+@implementation NSString(NumberStuff)
+- (BOOL)holdsIntegerValue
+{
+    if ([self length] == 0)
+        return NO;
+    
+    NSString *compare = [self stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+    NSCharacterSet *validCharacters = [NSCharacterSet decimalDigitCharacterSet];
+    for (NSUInteger i = 0; i < [compare length]; i++) 
+    {
+        unichar oneChar = [compare characterAtIndex:i];
+        if (![validCharacters characterIsMember:oneChar])
+            return NO;
+    }
+    return YES;
+}
+@end
+
 #import "DicomDirParser.h"
+
+
+//————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 @implementation DicomDirParser
 
@@ -45,23 +70,24 @@
 		isDirectory = FALSE;
 		if ([fileManager fileExistsAtPath:filePath isDirectory: &isDirectory] && !isDirectory)
 		{
-			// only files with DCM or no extension		
-			if ([[uppercaseFilePath pathExtension] isEqualToString: @".DCM"] || [[uppercaseFilePath pathExtension] isEqualToString: @""] || [[uppercaseFilePath pathExtension] length] > 4)
+			NSString *ext = [uppercaseFilePath pathExtension];
+			
+			// only files with DCM or no extension
+			if ([ext isEqualToString: @".DCM"] || [ext isEqualToString: @""] || [ext length] > 4 || [ext length] < 3 || [ext holdsIntegerValue] == YES)
 			{
 				int j = 0;
-				BOOL found = FALSE;
 				
-				if( [[uppercaseFilePath pathExtension] length] <= 4)
+				if( [ext length] <= 4 && [ext length] >= 3 && [ext holdsIntegerValue] == NO)
 					cutFilePath = [uppercaseFilePath stringByDeletingPathExtension];
 				else
 					cutFilePath = uppercaseFilePath;
-					
-				for (j = 0; j < [dicomdirFileList count] && !found; j++)
+				
+				for( NSString *s in dicomdirFileList)
 				{
-					if ([cutFilePath isEqualToString: [dicomdirFileList objectAtIndex: j]])
+					if ([cutFilePath isEqualToString: s])
 					{
 						[files addObject: filePath];
-						found = TRUE;
+						break;
 					}
 				}
 			}
@@ -107,7 +133,9 @@
 			{
 				file = [dirpath stringByAppendingString:[NSString stringWithCString: &(buffer[start+1]) length:i-start-1]];
 				
-				if( [[file pathExtension] length] <= 4)
+				NSString *ext = [file pathExtension];
+				
+				if( [ext length] <= 4 && [ext length] >= 3 && [ext holdsIntegerValue] == NO)
 					[result addObject: [[file uppercaseString] stringByDeletingPathExtension]];
 				else
 					[result addObject: [file uppercaseString]];

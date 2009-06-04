@@ -826,7 +826,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
     cond = ASC_initializeNetwork(NET_REQUESTOR, 0, _acse_timeout, &net);
     if (cond.bad()) {
         DimseCondition::dump(cond);
-		queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:@"Could create association parameters" userInfo:nil];
+		queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"ASC_initializeNetwork - %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
 		[queryException raise];
         //return;
     }
@@ -844,7 +844,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	DimseCondition::dump(cond);
     if (cond.bad()) {
         DimseCondition::dump(cond);
-		queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:@"Could create association parameters" userInfo:nil];
+		queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"ASC_createAssociationParameters - %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
 		[queryException raise];
 		//return;
     }
@@ -859,7 +859,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	cond = ASC_setTransportLayerType(params, _secureConnection);
 	if (cond.bad()) {
 		DimseCondition::dump(cond);
-		queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:@"Could not set transport layer" userInfo:nil];
+		queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"ASC_setTransportLayerType - %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
 		[queryException raise];
 		//return;
 	}
@@ -884,6 +884,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
     if (cond.bad())
 	{
         DimseCondition::dump(cond);
+		queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"addPresentationContext - %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
         [queryException raise];
     }
 
@@ -916,16 +917,14 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 			ASC_getRejectParameters(params, &rej);
 			errmsg("Association Rejected:");
 			ASC_printRejectParameters(stderr, &rej);
-			queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:@"Association Rejected" userInfo:nil];
+			queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"Association Rejected : %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
 			[queryException raise];
-			//return;
 
 		} else {
 			errmsg("Association Request Failed:");
 			DimseCondition::dump(cond);
-			queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:@"Association request failed" userInfo:nil];
+			queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"Association Request Failed : %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
 			[queryException raise];
-			//return;
 		}
 	}
 	
@@ -986,7 +985,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
             if (cond.bad()) {
                 errmsg("Association Abort Failed:");
                 DimseCondition::dump(cond);
-                queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:@"Abort Failed" userInfo:nil];
+                queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"Association Abort Failed %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
 				[queryException raise];
 				//return;
             }
@@ -999,7 +998,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
             {
                 errmsg("Association Release Failed:");
                 DimseCondition::dump(cond);
-                queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:@"Release Failed" userInfo:nil];
+                queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"Association Release Failed %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
 				[queryException raise];
 				//return;
             }
@@ -1010,14 +1009,14 @@ subOpCallback(void * /*subOpCallbackData*/ ,
         errmsg("Protocol Error: peer requested release (Aborting)");
         if (_verbose)
             printf("Aborting Association\n");
+		
+		 queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"Protocol Error: peer requested release (Aborting) %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
         cond = ASC_abortAssociation(assoc);
         if (cond.bad()) {
             errmsg("Association Abort Failed:");
             DimseCondition::dump(cond);
-            queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:@"Abort Failed" userInfo:nil];
-			[queryException raise];
-			//return;
         }
+		[queryException raise];
     }
     else if (cond == DUL_PEERABORTEDASSOCIATION)
     {
@@ -1029,14 +1028,15 @@ subOpCallback(void * /*subOpCallbackData*/ ,
         DimseCondition::dump(cond);
         if (_verbose)
             printf("Aborting Association\n");
-        cond = ASC_abortAssociation(assoc);
+        
+		queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"SCU Failed %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
+		cond = ASC_abortAssociation(assoc);
         if (cond.bad()) {
             errmsg("Association Abort Failed:");
             DimseCondition::dump(cond);
-			queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:@"Abort Failed" userInfo:nil];
-			[queryException raise];
-			//return;
         }
+		
+		[queryException raise];
     }
 	
 
