@@ -10481,7 +10481,7 @@ int i,j,l;
 
 - (ROI*)createLayerROIFromROI:(ROI*)roi;
 {
-	return [self createLayerROIFromROI:roi splinePrecision:2];
+	return [self createLayerROIFromROI:roi splineScale:2];
 }
 
 - (ROI*)createLayerROIFromROI:(ROI*)roi splineScale:(float)splineScale;
