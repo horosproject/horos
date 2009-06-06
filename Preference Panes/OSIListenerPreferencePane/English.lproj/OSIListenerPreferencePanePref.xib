@@ -860,7 +860,7 @@
 											<object class="NSButtonCell" key="NSCell" id="982749368">
 												<int key="NSCellFlags">67239424</int>
 												<int key="NSCellFlags2">0</int>
-												<string key="NSContents">If DICOM images are JPEG compressed, first decompress them when adding to the database</string>
+												<string key="NSContents">Decompress compressed images</string>
 												<reference key="NSSupport" ref="349069678"/>
 												<reference key="NSControlView" ref="752654164"/>
 												<int key="NSButtonFlags">1211912703</int>
@@ -882,7 +882,7 @@
 											<object class="NSButtonCell" key="NSCell" id="1023996263">
 												<int key="NSCellFlags">67239424</int>
 												<int key="NSCellFlags2">0</int>
-												<string key="NSContents">Try to compress images with lossless JPEG before storing them in the database</string>
+												<string key="NSContents">Compress non-compressed images with JPEG (See General Preferences for JPEG algorithm)</string>
 												<reference key="NSSupport" ref="349069678"/>
 												<reference key="NSControlView" ref="309191272"/>
 												<int key="NSButtonFlags">1211912703</int>
@@ -1955,7 +1955,6 @@
 							<reference ref="1045303967"/>
 							<reference ref="303582263"/>
 							<reference ref="752654164"/>
-							<reference ref="309191272"/>
 							<reference ref="261454765"/>
 							<reference ref="669978063"/>
 							<reference ref="255321613"/>
@@ -1976,6 +1975,7 @@
 							<reference ref="235191331"/>
 							<reference ref="895148956"/>
 							<reference ref="153902694"/>
+							<reference ref="309191272"/>
 						</object>
 						<reference key="parent" ref="738391672"/>
 					</object>

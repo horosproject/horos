@@ -13010,6 +13010,34 @@ static volatile int numberOfThreadsForJPEG = 0;
 	return result;
 }
 
++ (int) compressionForModality: (NSString*) mod quality:(int*) quality
+{
+	NSArray *array = [[NSUserDefaults standardUserDefaults] arrayForKey: @"CompressionSettings"];
+	for( NSDictionary *dict in array)
+	{
+		if( [[dict valueForKey: @"modality"] isEqualToString: mod])
+		{
+			int compression = compression_none;
+			if( [[dict valueForKey: @"compression"] intValue] == compression_sameAsDefault)
+				dict = [array objectAtIndex: 0];
+			
+			compression = [[dict valueForKey: @"compression"] intValue];
+			
+			if( quality)
+			{
+				if( compression == compression_JPEG2000)
+					*quality = [[dict valueForKey: @"quality"] intValue];
+				else
+					*quality = 0;
+			}
+			
+			return compression;
+		}
+	}
+	
+	return compression_none;
+}
+
 - (void)decompressDICOMJPEGinINCOMING: (NSString*)compressedPath
 {
 	NSAutoreleasePool   *pool = [[NSAutoreleasePool alloc] init];

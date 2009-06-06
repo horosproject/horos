@@ -283,6 +283,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 
 @property(readonly) PluginManagerController *pluginManagerController;
 
++ (int) compressionForModality: (NSString*) mod quality:(int*) quality;
 + (BrowserController*) currentBrowser;
 + (void) replaceNotAdmitted:(NSMutableString*) name;
 + (NSArray*) statesArray;

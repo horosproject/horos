@@ -56,19 +56,31 @@ extern NSRecursiveLock *PapyrusLock;
 		NSLog( @"file already compressed: %@", [path lastPathComponent]);
 		return YES;
 	}
-			
-	NSTask *theTask = [[NSTask alloc] init];
 	
-	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"useJPEG2000forCompression"])
-		[theTask setArguments: [NSArray arrayWithObjects:path, @"compressJPEG2000", nil]];
+	const char *string = NULL;
+	NSString *modality;
+	if (dataset->findAndGetString(DCM_Modality, string, OFFalse).good() && string != NULL)
+		modality = [[NSString alloc] initWithCString:string encoding: NSASCIIStringEncoding];
 	else
-		[theTask setArguments: [NSArray arrayWithObjects:path, @"compress", nil]];
+		modality = @"OT";
+	
+	int quality;
+	
+	if( [BrowserController compressionForModality: modality quality: &quality] != compression_none)
+	{
+		NSTask *theTask = [[NSTask alloc] init];
 		
-	[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Decompress"]];
-	[theTask launch];
-	while( [theTask isRunning]) [NSThread sleepForTimeInterval: 0.01];
-	[theTask release];
-
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"useJPEG2000forCompression"])
+			[theTask setArguments: [NSArray arrayWithObjects:path, @"compressJPEG2000", [NSString stringWithFormat: @"%d", quality], nil]];
+		else
+			[theTask setArguments: [NSArray arrayWithObjects:path, @"compress", nil]];
+		
+		[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Decompress"]];
+		[theTask launch];
+		while( [theTask isRunning]) [NSThread sleepForTimeInterval: 0.01];
+		[theTask release];
+	}
+	
 	return YES;
 }
 

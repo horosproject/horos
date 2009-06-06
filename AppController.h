@@ -42,6 +42,14 @@
 
 enum
 {
+	compression_sameAsDefault = 0,
+	compression_none = 1,
+	compression_JPEG = 2,
+	compression_JPEG2000 = 3
+};
+
+enum
+{
 	always = 0,
 	cdOnly = 1,
 	notMainDrive = 2,

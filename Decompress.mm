@@ -3,6 +3,7 @@
 #import <OsiriX/DCMTransferSyntax.h>
 #import <OsiriX/DCMPixelDataAttribute.h>
 #import "DefaultsOsiriX.h"
+#import "AppController.h"
 
 #undef verify
 #include "osconfig.h" /* make sure OS specific configuration is included first */
@@ -77,9 +78,10 @@ int main(int argc, const char *argv[])
 	
 		NSString	*path = [NSString stringWithCString:argv[ 1]];
 		NSString	*what = [NSString stringWithCString:argv[ 2]];
-		NSString	*dest = nil;
+		NSString	*dest = nil, *dest2 = nil;
 		
 		if(argv[ 3]) dest = [NSString stringWithCString:argv[ 3]];
+		if(argv[ 4]) dest2 = [NSString stringWithCString:argv[ 4]];
 		
 		if( [what isEqualToString:@"compressJPEG2000"])
 		{
@@ -87,11 +89,12 @@ int main(int argc, const char *argv[])
 			OFBool status = YES;
 			const char *fname = (const char *)[path UTF8String];
 			const char *destination = nil;
+			int quality = [dest intValue];
 			
-			if( dest && [dest isEqualToString:path] == NO) destination = (const char *)[dest UTF8String];
+			if( dest2 && [dest2 isEqualToString:path] == NO) destination = (const char *)[dest2 UTF8String];
 			else
 			{
-				dest = path;
+				dest2 = path;
 				destination = fname;
 			}
 			
@@ -100,7 +103,7 @@ int main(int argc, const char *argv[])
 			
 			dcmtkSetJPEGColorSpace( [[dict objectForKey:@"UseJPEGColorSpace"] intValue]);
 			[DCMPixelDataAttribute setUseOpenJpeg: [[dict objectForKey:@"UseOpenJpegForJPEG2000"] intValue]];
-			int quality = [[dict objectForKey:@"JPEG2000quality"] intValue];
+			
 			NSLog( @"JP2K:%d",quality);
 			
 			DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile: path decodingPixelData:YES];
@@ -109,7 +112,7 @@ int main(int argc, const char *argv[])
 			
 			@try
 			{
-				succeed = [dcmObject writeToFile: [dest stringByAppendingString: @" temp"] withTransferSyntax:[DCMTransferSyntax JPEG2000LosslessTransferSyntax] quality: quality AET:@"OsiriX" atomically:YES];
+				succeed = [dcmObject writeToFile: [dest2 stringByAppendingString: @" temp"] withTransferSyntax:[DCMTransferSyntax JPEG2000LosslessTransferSyntax] quality: quality AET:@"OsiriX" atomically:YES];
 			}
 			@catch (NSException *e)
 			{
@@ -119,9 +122,9 @@ int main(int argc, const char *argv[])
 			
 			if( succeed)
 			{
-				if( dest == path)
+				if( dest2 == path)
 					[[NSFileManager defaultManager] removeFileAtPath: path handler: nil];
-				[[NSFileManager defaultManager] movePath: [dest stringByAppendingString: @" temp"]  toPath: dest handler: nil];
+				[[NSFileManager defaultManager] movePath: [dest2 stringByAppendingString: @" temp"]  toPath: dest handler: nil];
 			}
 		}
 		
