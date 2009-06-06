@@ -16,7 +16,25 @@
 #import "OSIGeneralPreferencePanePref.h"
 #import "PreferencePaneController.h"
 
+@interface IsQualityEnabled: NSValueTransformer {}
+@end
+@implementation IsQualityEnabled
++ (Class)transformedValueClass { return [NSNumber class]; }
++ (BOOL)allowsReverseTransformation { return NO; }
+- (id)transformedValue:(id)item {
+   if( [item intValue] == 3)
+		return [NSNumber numberWithBool: YES];
+	else
+		return [NSNumber numberWithBool: NO];
+}
+@end
+
 @implementation OSIGeneralPreferencePanePref
+
++ (void)initialize
+{
+	IsQualityEnabled *a = [[[IsQualityEnabled alloc] init] autorelease];	[NSValueTransformer setValueTransformer:a forName:@"IsQualityEnabled"];
+}
 
 - (void)checkView:(NSView *)aView :(BOOL) OnOff
 {
@@ -75,9 +93,7 @@
 	
 	[_authView setDelegate:self];
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTHENTICATION"])
-	{
 		[_authView setString:"com.rossetantoine.osirix.preferences.general"];
-	}
 	else
 	{
 		[_authView setString:"com.rossetantoine.osirix.preferences.allowalways"];
@@ -88,38 +104,30 @@
 	
 	//setup GUI
 	[securityOnOff setState:[defaults boolForKey:@"AUTHENTICATION"]];
+}
+
+- (IBAction) endEditCompressionSettings:(id) sender
+{
+	[compressionSettingsWindow orderOut:sender];
+	[NSApp endSheet: compressionSettingsWindow returnCode:[sender tag]];
 	
-	[readerMatrix selectCellWithTag: [defaults boolForKey: @"USEPAPYRUSDCMPIX2"]];
-	[parserMatrix selectCellWithTag: [defaults integerForKey: @"TOOLKITPARSER2"]];
-}
-
-- (IBAction) setReader: (id) sender
-{
-	[[NSUserDefaults standardUserDefaults] setBool:[[sender selectedCell] tag] forKey: @"USEPAPYRUSDCMPIX2"];
-}
-
-- (IBAction) setParser: (id) sender
-{
-	[[NSUserDefaults standardUserDefaults] setInteger:[[sender selectedCell] tag] forKey: @"TOOLKITPARSER2"];
-}
-
--(IBAction)setUseDCMTK:(id)sender{
-	[[NSUserDefaults standardUserDefaults] setBool:[sender state] forKey:@"DCMTKJPEG"];
-}
--(IBAction)setUseTransistion:(id)sender{
-	[[NSUserDefaults standardUserDefaults] setBool:[sender state] forKey:@"TRANSITIONEFFECT"];
-}
--(IBAction)setTransitionType:(id)sender{
-	[[NSUserDefaults standardUserDefaults] setInteger:[[sender selectedItem] tag] forKey:@"TRANSITIONTYPE"];
+	if( [sender tag] == 1)
+	{
+	}
+	else
+	{
+		[[NSUserDefaults standardUserDefaults] setObject: compressionSettingsCopy forKey: @"CompressionSettings"];
+	}
+	
+	[compressionSettingsCopy autorelease];
 }
 
 - (IBAction) editCompressionSettings:(id) sender
 {
 	if( [_authView authorizationState] == SFAuthorizationViewUnlockedState)
 	{
-		NSArray	*serversArray = [[NSUserDefaults standardUserDefaults] arrayForKey: @"CompressionSettings"];
-		
-		[NSApp beginSheet: newRoute modalForWindow: [[self mainView] window] modalDelegate:self didEndSelector:nil contextInfo:nil];
+		compressionSettingsCopy = [[[NSUserDefaults standardUserDefaults] arrayForKey: @"CompressionSettings"] copy];
+		[NSApp beginSheet: compressionSettingsWindow modalForWindow: [[self mainView] window] modalDelegate:self didEndSelector:nil contextInfo:nil];
 	}
 }
 

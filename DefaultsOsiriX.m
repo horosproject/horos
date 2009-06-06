@@ -780,7 +780,6 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject: @"2" forKey: @"TOOLKITPARSER2"];	// 0:DCM Framework 1:Papyrus 2:DCMTK
 	[defaultValues setObject: @"1" forKey: @"PREFERPAPYRUSFORCD"];
 	[defaultValues setObject: @"0" forKey: @"SINGLEPROCESS"];
-	[defaultValues setObject: @"0" forKey: @"DCMTKJPEG"];
 	[defaultValues setObject: @"0" forKey: @"AUTHENTICATION"];
 	[defaultValues setObject: @"1" forKey: @"CheckOsiriXUpdates2"];
 	[defaultValues setObject:@"1" forKey:@"MOUNT"];
@@ -977,7 +976,25 @@ static NSHost *currentHost = nil;
 //		[hotkeysModifiers setObject:[NSNumber numberWithInt:0] forKey:stringValue];
 	}
 	[defaultValues setObject:hotkeys forKey:@"HOTKEYS"];
-//	[defaultValues setObject:hotkeys forKey:@"HOTKEYSMODIFIERS"];
+	
+	NSArray *compressionSettings = [NSArray arrayWithObjects: 
+							[NSDictionary dictionaryWithObjectsAndKeys: @"default", @"modality", @"3", @"compression", @"0", @"quality", nil], 
+							[NSDictionary dictionaryWithObjectsAndKeys: @"CR", @"modality", @"0", @"compression", @"0", @"quality", nil],
+							[NSDictionary dictionaryWithObjectsAndKeys: @"CT", @"modality", @"0", @"compression", @"0", @"quality", nil],
+							[NSDictionary dictionaryWithObjectsAndKeys: @"DX", @"modality", @"0", @"compression", @"0", @"quality", nil],
+							[NSDictionary dictionaryWithObjectsAndKeys: @"ES", @"modality", @"0", @"compression", @"0", @"quality", nil],
+							[NSDictionary dictionaryWithObjectsAndKeys: @"MG", @"modality", @"0", @"compression", @"0", @"quality", nil],
+							[NSDictionary dictionaryWithObjectsAndKeys: @"MR", @"modality", @"0", @"compression", @"0", @"quality", nil],
+							[NSDictionary dictionaryWithObjectsAndKeys: @"NM", @"modality", @"1", @"compression", @"0", @"quality", nil],
+							[NSDictionary dictionaryWithObjectsAndKeys: @"OT", @"modality", @"1", @"compression", @"0", @"quality", nil],
+							[NSDictionary dictionaryWithObjectsAndKeys: @"PT", @"modality", @"1", @"compression", @"0", @"quality", nil],
+							[NSDictionary dictionaryWithObjectsAndKeys: @"RF", @"modality", @"0", @"compression", @"0", @"quality", nil],
+							[NSDictionary dictionaryWithObjectsAndKeys: @"SC", @"modality", @"0", @"compression", @"0", @"quality", nil],
+							[NSDictionary dictionaryWithObjectsAndKeys: @"US", @"modality", @"0", @"compression", @"0", @"quality", nil],
+							[NSDictionary dictionaryWithObjectsAndKeys: @"XA", @"modality", @"0", @"compression", @"0", @"quality", nil],
+							nil]; 
+	
+	[defaultValues setObject: compressionSettings forKey:@"CompressionSettings"];
 	
 	// Comparison Body Regions
 	NSArray *headRegions = [NSArray arrayWithObjects: 

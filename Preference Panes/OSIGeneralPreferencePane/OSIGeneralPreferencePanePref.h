@@ -19,18 +19,15 @@
 @interface OSIGeneralPreferencePanePref : NSPreferencePane 
 {
 	IBOutlet NSButton *securityOnOff;
-	IBOutlet NSMatrix *readerMatrix, *parserMatrix;
 	IBOutlet SFAuthorizationView *_authView;
 	IBOutlet NSArrayController *compressionSettingsArrayController;
 	IBOutlet NSWindow *compressionSettingsWindow;
+	
+	NSArray *compressionSettingsCopy;
 }
 
 -(void) mainViewDidLoad;
--(IBAction)setUseDCMTK:(id)sender;
--(IBAction)setReader: (id) sender;
--(IBAction)setParser: (id) sender;
--(IBAction)setUseTransistion:(id)sender;
--(IBAction)setTransitionType:(id)sender;
 - (IBAction) setAuthentication: (id) sender;
-- (IBAction) editCompressionSettings:(id) sender
+- (IBAction) editCompressionSettings:(id) sender;
+- (IBAction) endEditCompressionSettings:(id) sender;
 @end

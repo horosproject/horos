@@ -1013,6 +1013,26 @@ static NSDate *lastWarningDate = nil;
 		[[NSNotificationCenter defaultCenter] postNotificationName:@"OsiriXServerArray has changed" object:nil];
 	}
 	
+	@try
+	{
+		if( [[[[defaults arrayForKey: @"CompressionSettings"] objectAtIndex: 0] valueForKey: @"compression"] intValue] == 0)
+		{
+			NSMutableDictionary *d = [[[[defaults arrayForKey: @"CompressionSettings"] objectAtIndex: 0] mutableCopy] autorelease];
+			
+			[d setObject: @"1" forKey: @"compression"];
+			
+			NSMutableArray *a = [[[[NSUserDefaults standardUserDefaults] arrayForKey: @"CompressionSettings"] mutableCopy] autorelease];
+			
+			[a replaceObjectAtIndex: 0 withObject: d];
+			
+			[[NSUserDefaults standardUserDefaults] setObject: a forKey: @"CompressionSettings"];
+		}
+	}
+	@catch (NSException *e) 
+	{
+		NSLog( @"%@", e);
+	}
+	
 	UseOpenJpeg = [[NSUserDefaults standardUserDefaults] boolForKey:@"UseOpenJpegForJPEG2000"];
 	
 	[DCMPixelDataAttribute setUseOpenJpeg: UseOpenJpeg];
