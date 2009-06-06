@@ -587,7 +587,7 @@ int WaitAndPrintICMPs(int socketConnectionToHost, int TimeoutInSeconds, int Retu
                     //To be our packet the id on the packet has to match our PID.  
                     //This is because in the echo
                     //the id wouldn't change and we sent pid as the id.
-                    if (icmpPacket->icmpHeader.icmp_id == getpid())
+                    //if (icmpPacket->icmpHeader.icmp_id == getpid())
                     {
                         //If we got this far then this is a reply to our ping request!
                         *GotResponse = 1;

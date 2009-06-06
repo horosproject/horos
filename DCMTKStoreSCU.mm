@@ -554,7 +554,14 @@ static OFBool compressFile(DcmFileFormat fileformat, const char *fname, char *ou
 		
 		unlink( outfname);
 		
-		[dcmObject writeToFile:outpath withTransferSyntax:[DCMTransferSyntax JPEG2000LossyTransferSyntax] quality: DCMHighQuality AET:@"OsiriX" atomically:YES];
+		@try
+		{
+			[dcmObject writeToFile:outpath withTransferSyntax:[DCMTransferSyntax JPEG2000LossyTransferSyntax] quality: DCMHighQuality AET:@"OsiriX" atomically:YES];
+		}
+		@catch( NSException *e)
+		{
+			NSLog( @"**** exception SendController dcmObject writeToFile: %@", e);
+		}
 		[dcmObject release];
 	}
 	else if  (opt_networkTransferSyntax == EXS_JPEG2000LosslessOnly)
@@ -568,7 +575,14 @@ static OFBool compressFile(DcmFileFormat fileformat, const char *fname, char *ou
 		
 		unlink( outfname);
 		
-		[dcmObject writeToFile:outpath withTransferSyntax:[DCMTransferSyntax JPEG2000LosslessTransferSyntax] quality: DCMLosslessQuality AET:@"OsiriX" atomically:YES];
+		@try
+		{
+			[dcmObject writeToFile:outpath withTransferSyntax:[DCMTransferSyntax JPEG2000LosslessTransferSyntax] quality: DCMLosslessQuality AET:@"OsiriX" atomically:YES];
+		}
+		@catch( NSException *e)
+		{
+			NSLog( @"**** exception SendController dcmObject writeToFile: %@", e);
+		}
 		[dcmObject release];
 	}
 	else
@@ -693,7 +707,7 @@ storeSCU(T_ASC_Association * assoc, const char *fname)
 	//printf("on the fly conversion\n");
 	//we have a valid presentation ID,.Chaeck and see if file is consistent with it
 	DcmXfer preferredXfer(opt_networkTransferSyntax);
-	OFBool status = YES;
+	OFBool status = NO;
 	presId = ASC_findAcceptedPresentationContextID(assoc, sopClass, preferredXfer.getXferID());
 	T_ASC_PresentationContext pc;
 	ASC_findAcceptedPresentationContext(assoc->params, presId, &pc);
@@ -712,15 +726,75 @@ storeSCU(T_ASC_Association * assoc, const char *fname)
 		}
 		else if (filexfer.getXfer() != opt_networkTransferSyntax)
 		{
-			status = compressFile(dcmff, fname, outfname);
+			// The file is already compressed, we will not re-compress the file.....
+			E_TransferSyntax fileTS = filexfer.getXfer();
+			
+			if(		(opt_networkTransferSyntax == EXS_JPEGProcess1TransferSyntax ||
+					opt_networkTransferSyntax == EXS_JPEGProcess2_4TransferSyntax ||
+					opt_networkTransferSyntax == EXS_JPEGProcess3_5TransferSyntax ||
+					opt_networkTransferSyntax == EXS_JPEGProcess6_8TransferSyntax ||
+					opt_networkTransferSyntax == EXS_JPEGProcess7_9TransferSyntax ||
+					opt_networkTransferSyntax == EXS_JPEGProcess10_12TransferSyntax ||
+					opt_networkTransferSyntax == EXS_JPEGProcess11_13TransferSyntax ||
+					opt_networkTransferSyntax == EXS_JPEGProcess14TransferSyntax ||
+					opt_networkTransferSyntax == EXS_JPEGProcess15TransferSyntax ||
+					opt_networkTransferSyntax == EXS_JPEGProcess16_18TransferSyntax ||
+					opt_networkTransferSyntax == EXS_JPEGProcess17_19TransferSyntax ||
+					opt_networkTransferSyntax == EXS_JPEGProcess20_22TransferSyntax ||
+					opt_networkTransferSyntax == EXS_JPEGProcess21_23TransferSyntax ||
+					opt_networkTransferSyntax == EXS_JPEGProcess24_26TransferSyntax ||
+					opt_networkTransferSyntax == EXS_JPEGProcess25_27TransferSyntax ||
+					opt_networkTransferSyntax == EXS_JPEGProcess28TransferSyntax ||
+					opt_networkTransferSyntax == EXS_JPEGProcess29TransferSyntax ||
+					opt_networkTransferSyntax == EXS_JPEGProcess14SV1TransferSyntax)
+						&&
+					(fileTS == EXS_JPEGProcess1TransferSyntax ||
+					fileTS == EXS_JPEGProcess2_4TransferSyntax ||
+					fileTS == EXS_JPEGProcess3_5TransferSyntax ||
+					fileTS == EXS_JPEGProcess6_8TransferSyntax ||
+					fileTS == EXS_JPEGProcess7_9TransferSyntax ||
+					fileTS == EXS_JPEGProcess10_12TransferSyntax ||
+					fileTS == EXS_JPEGProcess11_13TransferSyntax ||
+					fileTS == EXS_JPEGProcess14TransferSyntax ||
+					fileTS == EXS_JPEGProcess15TransferSyntax ||
+					fileTS == EXS_JPEGProcess16_18TransferSyntax ||
+					fileTS == EXS_JPEGProcess17_19TransferSyntax ||
+					fileTS == EXS_JPEGProcess20_22TransferSyntax ||
+					fileTS == EXS_JPEGProcess21_23TransferSyntax ||
+					fileTS == EXS_JPEGProcess24_26TransferSyntax ||
+					fileTS == EXS_JPEGProcess25_27TransferSyntax ||
+					fileTS == EXS_JPEGProcess28TransferSyntax ||
+					fileTS == EXS_JPEGProcess29TransferSyntax ||
+					fileTS == EXS_JPEGProcess14SV1TransferSyntax))
+					{
+						status = NO;
+					}
+			else if( (opt_networkTransferSyntax == EXS_JPEG2000LosslessOnly ||
+					opt_networkTransferSyntax == EXS_JPEG2000 ||
+					opt_networkTransferSyntax == EXS_JPEG2000MulticomponentLosslessOnly ||
+					opt_networkTransferSyntax == EXS_JPEG2000Multicomponent)
+						&&
+					(fileTS == EXS_JPEG2000LosslessOnly ||
+					fileTS == EXS_JPEG2000 ||
+					fileTS == EXS_JPEG2000MulticomponentLosslessOnly ||
+					fileTS == EXS_JPEG2000Multicomponent))
+					{
+						status = NO;
+					}
+			else if( fileTS == EXS_Unknown || fileTS == EXS_MPEG2MainProfileAtMainLevel)
+			{
+				status = NO;
+			}
+			else
+			{
+				printf("Warning! I'm recompressing files that are already compressed, you should optimize your ts parameters to avoid this: presentation for syntax:%s -> %s\n", dcmFindNameOfUID(filexfer.getXferID()), dcmFindNameOfUID(preferredXfer.getXferID()));
+				status = compressFile(dcmff, fname, outfname);
+			}
 		}
 	 }
 	 else
 		status = NO;
 		
-	// printf("presentation for syntax:%s %d\n", dcmFindNameOfUID(preferredXfer.getXferID()), presId);
-	 //reload file after syntax change
-	 
 	if (status)
 	{
 		cond = 	dcmff.loadFile( outfname);
