@@ -126,7 +126,7 @@ extern OSStatus SetupAuthorization(void)
 	[[pane mainView] removeFromSuperview];
 	[pane didUnselect];
 	[[NSNotificationCenter defaultCenter] removeObserver: self];
-	//[pane release];
+	[[NSUserDefaults standardUserDefaults] synchronize];
 	[self release];
 }
 

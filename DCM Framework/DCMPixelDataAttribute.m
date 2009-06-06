@@ -1268,10 +1268,6 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 	if (_isSigned)
 		sgnd = _isSigned;
 	
-	//init jasper
-//	jas_init();
-	// set up stream
-	
 	//set up component parameters
 	for (i = 0, cmptparm = cmptparms; i < spp; ++i, ++cmptparm)
 	{

@@ -11745,8 +11745,6 @@ static NSArray*	openSubSeriesArray = nil;
 //		[[NSTimer scheduledTimerWithTimeInterval: 5 target:self selector:@selector(autoTest:) userInfo:self repeats:NO] retain];
 		
 		displayEmptyDatabase = NO;
-		
-		[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"useJPEG2000forCompression"];
 	}
 	return self;
 }

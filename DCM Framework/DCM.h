@@ -41,7 +41,7 @@
 
 #import <Accelerate/Accelerate.h>
 
-enum DCM_CompressionQuality {DCMLosslessQuality, DCMHighQuality, DCMMediumQuality, DCMLowQuality};
+enum DCM_CompressionQuality {DCMLosslessQuality = 0, DCMHighQuality, DCMMediumQuality, DCMLowQuality};
 
 
 

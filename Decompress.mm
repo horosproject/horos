@@ -101,14 +101,28 @@ int main(int argc, const char *argv[])
 			dcmtkSetJPEGColorSpace( [[dict objectForKey:@"UseJPEGColorSpace"] intValue]);
 			[DCMPixelDataAttribute setUseOpenJpeg: [[dict objectForKey:@"UseOpenJpegForJPEG2000"] intValue]];
 			int quality = [[dict objectForKey:@"JPEG2000quality"] intValue];
+			NSLog( @"JP2K:%d",quality);
 			
 			DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile: path decodingPixelData:YES];
-			[dcmObject writeToFile: [dest stringByAppendingString: @" temp"] withTransferSyntax:[DCMTransferSyntax JPEG2000LosslessTransferSyntax] quality: quality AET:@"OsiriX" atomically:YES];
+			
+			BOOL succeed = NO;
+			
+			@try
+			{
+				succeed = [dcmObject writeToFile: [dest stringByAppendingString: @" temp"] withTransferSyntax:[DCMTransferSyntax JPEG2000LosslessTransferSyntax] quality: quality AET:@"OsiriX" atomically:YES];
+			}
+			@catch (NSException *e)
+			{
+				NSLog( @"dcmObject writeToFile failed: %@", e);
+			}
 			[dcmObject release];
 			
-			if( dest == path)
-				[[NSFileManager defaultManager] removeFileAtPath: path handler: nil];
-			[[NSFileManager defaultManager] movePath: [dest stringByAppendingString: @" temp"]  toPath: dest handler: nil];
+			if( succeed)
+			{
+				if( dest == path)
+					[[NSFileManager defaultManager] removeFileAtPath: path handler: nil];
+				[[NSFileManager defaultManager] movePath: [dest stringByAppendingString: @" temp"]  toPath: dest handler: nil];
+			}
 		}
 		
 		if( [what isEqualToString:@"compress"])

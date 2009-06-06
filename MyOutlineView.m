@@ -358,6 +358,12 @@
     else return NSDragOperationCopy;
 }
 
+- (void)rightMouseDown:(NSEvent *)theEvent
+{
+	[[self window] makeFirstResponder: self];
+	[super rightMouseDown: theEvent];
+}
+
 /*- init
 {
 	self = [super init];

@@ -19,15 +19,22 @@ static DCMTagForNameDictionary *sharedTagForNameDictionary;
 
 @implementation DCMTagForNameDictionary
 
-+(id)sharedTagForNameDictionary{
-	if (!sharedTagForNameDictionary) {
-	 NSBundle *bundle;
-	if (DCMFramework_compile)
-		bundle  = [NSBundle bundleForClass:NSClassFromString(@"DCMTagForNameDictionary")];
-	else
-		bundle = [NSBundle mainBundle];
-	NSString *path = [bundle pathForResource:@"nameDictionary" ofType:@"plist"];
-	if( path == nil) NSLog(@"Cannot find nameDictionary");
++(id)sharedTagForNameDictionary
+{
+	if (!sharedTagForNameDictionary)
+	{
+		NSBundle *bundle;
+		if (DCMFramework_compile)
+			bundle  = [NSBundle bundleForClass:NSClassFromString(@"DCMTagForNameDictionary")];
+		else
+			bundle = [NSBundle mainBundle];
+			
+		NSString *path = [bundle pathForResource:@"nameDictionary" ofType:@"plist"];
+		if( path == nil)
+		{
+			
+		}
+		
 		sharedTagForNameDictionary = [[NSDictionary dictionaryWithContentsOfFile:path] retain];
 	}
 	return sharedTagForNameDictionary;

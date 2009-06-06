@@ -15,7 +15,6 @@
 
 #include <CoreFoundation/CoreFoundation.h>
 #include <ApplicationServices/ApplicationServices.h>
-#import "DOClient.h"
 #import "ToolbarPanel.h"
 #import "AppController.h"
 #import "PreferencePaneController.h"

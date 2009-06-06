@@ -20,7 +20,6 @@
 #import <OsiriX/DCM.h>
 #import <OsiriX/DCMAbstractSyntaxUID.h>
 #import "BrowserController.h"
-#import "DOClient.h"
 #import "PluginManager.h"
 #import "ROI.h"
 #import "ROISRConverter.h"

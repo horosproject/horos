@@ -162,7 +162,6 @@
 		7EE0DC03067A48A3003E745F /* DCMCharacterSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EE0DC01067A48A3003E745F /* DCMCharacterSet.m */; };
 		7EE0DC3E067A5138003E745F /* DCMSequenceAttribute.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EE0DC3C067A5138003E745F /* DCMSequenceAttribute.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7EE0DC3F067A5138003E745F /* DCMSequenceAttribute.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EE0DC3D067A5138003E745F /* DCMSequenceAttribute.m */; };
-		7EE38C7E06F0FF1100036C7F /* DCMPixelDataAttributeJPEG2000.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EE38C7C06F0FF1100036C7F /* DCMPixelDataAttributeJPEG2000.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7EE416FB08B2615A00D4C9CC /* QueryLogController.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EE416C708B2612600D4C9CC /* QueryLogController.h */; };
 		7EE416FC08B2615B00D4C9CC /* QueryLogController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EE416C808B2612600D4C9CC /* QueryLogController.m */; };
 		7EE713BC097450B000510E88 /* dcmmkdir in Resources */ = {isa = PBXBuildFile; fileRef = 7EE713BA097450B000510E88 /* dcmmkdir */; };
@@ -2282,6 +2281,8 @@
 		CE16066E0769EFE60036CAD3 /* VR Muscles-Bones.plist in Resources */ = {isa = PBXBuildFile; fileRef = CE1606620769EFE60036CAD3 /* VR Muscles-Bones.plist */; };
 		CE16A6A50A755124001C27C4 /* PapyJpeg8.c in Sources */ = {isa = PBXBuildFile; fileRef = CE16A6A20A755124001C27C4 /* PapyJpeg8.c */; };
 		CE16A6FB0A7552E0001C27C4 /* PapyJpeg16.c in Sources */ = {isa = PBXBuildFile; fileRef = CE16A6F90A7552E0001C27C4 /* PapyJpeg16.c */; };
+		CE1C4EF20FDA6F4600185561 /* nameDictionary.plist in Resources */ = {isa = PBXBuildFile; fileRef = BFEB763B0677FDA700F242F3 /* nameDictionary.plist */; };
+		CE1C4EF30FDA6F5300185561 /* tagDictionary.plist in Resources */ = {isa = PBXBuildFile; fileRef = BFEB763C0677FDA700F242F3 /* tagDictionary.plist */; };
 		CE1D97D00883B661005A3A22 /* FlyThru.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE1D97CE0883B65E005A3A22 /* FlyThru.tif */; };
 		CE1E7F5D07E2DD0D00A85908 /* DatabaseWindow.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE1E7F5A07E2DD0D00A85908 /* DatabaseWindow.icns */; };
 		CE1F6C4C07D715EB00165CBE /* Reset.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE1F6C4907D715EB00165CBE /* Reset.tiff */; };
@@ -4049,7 +4050,6 @@
 		CE9CED9B0C75BE0A00752D4B /* DCM.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E0B3A13067526A600908593 /* DCM.h */; };
 		CE9CED9C0C75BE0A00752D4B /* jpegdatasrc.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E2269C406BEF624003B09E5 /* jpegdatasrc.h */; };
 		CE9CED9D0C75BE0A00752D4B /* jpegdatasrc.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E2269C506BEF624003B09E5 /* jpegdatasrc.m */; };
-		CE9CED9E0C75BE0A00752D4B /* DCMPixelDataAttributeJPEG2000.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EE38C7C06F0FF1100036C7F /* DCMPixelDataAttributeJPEG2000.h */; };
 		CE9CEDA00C75BE0A00752D4B /* DCMPixelDataAttribute.h in Headers */ = {isa = PBXBuildFile; fileRef = 7ECBB8210683A68D00FF3FF4 /* DCMPixelDataAttribute.h */; };
 		CE9CEDA10C75BE0A00752D4B /* DCMPixelDataAttribute.m in Sources */ = {isa = PBXBuildFile; fileRef = 7ECBB8220683A68D00FF3FF4 /* DCMPixelDataAttribute.m */; };
 		CE9CEDA20C75BE0A00752D4B /* DCMPixelDataAttributeJPEG8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB3F606BF3BD900C7EF1E /* DCMPixelDataAttributeJPEG8.h */; };
@@ -4957,8 +4957,6 @@
 		7EE0DC01067A48A3003E745F /* DCMCharacterSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMCharacterSet.m; sourceTree = "<group>"; };
 		7EE0DC3C067A5138003E745F /* DCMSequenceAttribute.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMSequenceAttribute.h; sourceTree = "<group>"; };
 		7EE0DC3D067A5138003E745F /* DCMSequenceAttribute.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMSequenceAttribute.m; sourceTree = "<group>"; };
-		7EE38C7C06F0FF1100036C7F /* DCMPixelDataAttributeJPEG2000.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCMPixelDataAttributeJPEG2000.h; path = "DCM Framework/DCMPixelDataAttributeJPEG2000.h"; sourceTree = SOURCE_ROOT; };
-		7EE38C7D06F0FF1100036C7F /* DCMPixelDataAttributeJPEG2000.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCMPixelDataAttributeJPEG2000.m; path = "DCM Framework/DCMPixelDataAttributeJPEG2000.m"; sourceTree = SOURCE_ROOT; };
 		7EE416C708B2612600D4C9CC /* QueryLogController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QueryLogController.h; sourceTree = "<group>"; };
 		7EE416C808B2612600D4C9CC /* QueryLogController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QueryLogController.m; sourceTree = "<group>"; };
 		7EE713BA097450B000510E88 /* dcmmkdir */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = dcmmkdir; sourceTree = "<group>"; };
@@ -9057,8 +9055,6 @@
 				BFAEB10406BF2C4E00C7EF1E /* libijg8 */,
 				BFAEB15506BF2C4F00C7EF1E /* libijg16 */,
 				7E2269C606BEF624003B09E5 /* libijg12 */,
-				7EE38C7C06F0FF1100036C7F /* DCMPixelDataAttributeJPEG2000.h */,
-				7EE38C7D06F0FF1100036C7F /* DCMPixelDataAttributeJPEG2000.m */,
 				7ECBB8210683A68D00FF3FF4 /* DCMPixelDataAttribute.h */,
 				7ECBB8220683A68D00FF3FF4 /* DCMPixelDataAttribute.m */,
 				BFAEB3F606BF3BD900C7EF1E /* DCMPixelDataAttributeJPEG8.h */,
@@ -13318,7 +13314,6 @@
 				BFAEB3FA06BF3BD900C7EF1E /* DCMPixelDataAttributeJPEG8.h in Headers */,
 				BFAEB40A06BF3BEE00C7EF1E /* DCMPixelDataAttributeJPEG12.h in Headers */,
 				BFAEB41A06BF3BFA00C7EF1E /* DCMPixelDataAttributeJPEG16.h in Headers */,
-				7EE38C7E06F0FF1100036C7F /* DCMPixelDataAttributeJPEG2000.h in Headers */,
 				7EBB31090887269B00BF6B39 /* DCMNetServiceDelegate.h in Headers */,
 				7E82C63F08D9FF35000BAFF9 /* DCMLimitedObject.h in Headers */,
 				7E8340DB08E9F7C500E41C5E /* DCMPresentationState.h in Headers */,
@@ -15672,7 +15667,6 @@
 				CE9CED990C75BE0A00752D4B /* DCMNetServiceDelegate.h in Headers */,
 				CE9CED9B0C75BE0A00752D4B /* DCM.h in Headers */,
 				CE9CED9C0C75BE0A00752D4B /* jpegdatasrc.h in Headers */,
-				CE9CED9E0C75BE0A00752D4B /* DCMPixelDataAttributeJPEG2000.h in Headers */,
 				CE9CEDA00C75BE0A00752D4B /* DCMPixelDataAttribute.h in Headers */,
 				CE9CEDA20C75BE0A00752D4B /* DCMPixelDataAttributeJPEG8.h in Headers */,
 				CE9CEDA40C75BE0A00752D4B /* DCMPixelDataAttributeJPEG12.h in Headers */,
@@ -16459,6 +16453,8 @@
 				A9C4D9470F72987900B5B9A1 /* Loupe.xib in Resources */,
 				A9D4D0490F738BEA00483A3A /* loupe.png in Resources */,
 				A9D4D06D0F73922500483A3A /* loupeMask.png in Resources */,
+				CE1C4EF20FDA6F4600185561 /* nameDictionary.plist in Resources */,
+				CE1C4EF30FDA6F5300185561 /* tagDictionary.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
