@@ -84,16 +84,16 @@ NSString* asciiString (NSString* name);
 
 - (void) copyDefaultsSettings
 {
-	burnSuppFolder = [[NSUserDefaults standardUserDefaults] boolForKey: @"Burn Supplementary Folder"];
-	burnOsiriX = [[NSUserDefaults standardUserDefaults] boolForKey: @"Burn Osirix Application"];
-	burnHtml = [[NSUserDefaults standardUserDefaults] boolForKey: @"Burn html"];
+	burnSuppFolder = [[NSUserDefaults standardUserDefaults] boolForKey: @"BurnSupplementaryFolder"];
+	burnOsiriX = [[NSUserDefaults standardUserDefaults] boolForKey: @"BurnOsirixApplication"];
+	burnHtml = [[NSUserDefaults standardUserDefaults] boolForKey: @"BurnHtml"];
 }
 
 - (void) restoreDefaultsSettings
 {
-	[[NSUserDefaults standardUserDefaults] setBool: burnSuppFolder forKey:@"Burn Supplementary Folder"];
-	[[NSUserDefaults standardUserDefaults] setBool: burnOsiriX forKey:@"Burn Osirix Application"];
-	[[NSUserDefaults standardUserDefaults] setBool: burnHtml forKey:@"Burn html"];
+	[[NSUserDefaults standardUserDefaults] setBool: burnSuppFolder forKey:@"BurnSupplementaryFolder"];
+	[[NSUserDefaults standardUserDefaults] setBool: burnOsiriX forKey:@"BurnOsirixApplication"];
+	[[NSUserDefaults standardUserDefaults] setBool: burnHtml forKey:@"BurnHtml"];
 }
 
 -(id) initWithFiles:(NSArray *)theFiles
@@ -806,7 +806,7 @@ NSString* asciiString (NSString* name);
 		
 		// Both these supplementary burn data are optional and controlled from a preference panel [DDP]
 		
-		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"Burn Osirix Application"])
+		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"BurnOsirixApplication"])
 		{
 			NSString *OsiriXPath = [[NSBundle mainBundle] bundlePath];
 			[manager copyPath:OsiriXPath toPath: [NSString stringWithFormat:@"%@/Osirix.app", burnFolder] handler:nil];
@@ -854,16 +854,16 @@ NSString* asciiString (NSString* name);
 			// **********
 		}
 		
-		if ( [[NSUserDefaults standardUserDefaults] boolForKey: @"Burn html"] == YES && [[NSUserDefaults standardUserDefaults] boolForKey:@"anonymizedBeforeBurning"] == NO)
+		if ( [[NSUserDefaults standardUserDefaults] boolForKey: @"BurnHtml"] == YES && [[NSUserDefaults standardUserDefaults] boolForKey:@"anonymizedBeforeBurning"] == NO)
 		{
 			[self performSelectorOnMainThread:@selector(produceHtml:) withObject:burnFolder waitUntilDone:YES];
 		}
 			
 		// Look for and if present copy a second folder for eg windows viewer or html files.
 
-		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"Burn Supplementary Folder"])
+		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"BurnSupplementaryFolder"])
 		{
-			NSString *supplementaryBurnPath=[[NSUserDefaults standardUserDefaults] stringForKey: @"Supplementary Burn Path"];
+			NSString *supplementaryBurnPath=[[NSUserDefaults standardUserDefaults] stringForKey: @"SupplementaryBurnPath"];
 			if (supplementaryBurnPath)
 			{
 				supplementaryBurnPath=[supplementaryBurnPath stringByExpandingTildeInPath];
@@ -923,7 +923,7 @@ NSString* asciiString (NSString* name);
 		size += [fattrs fileSize]/1024;
 	}
 	
-	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"Burn Osirix Application"])
+	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"BurnOsirixApplication"])
 	{
 		size += [[self getSizeOfDirectory: [[NSBundle mainBundle] bundlePath]] longLongValue];
 		
@@ -932,9 +932,9 @@ NSString* asciiString (NSString* name);
 		#endif
 	}
 	
-	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"Burn Supplementary Folder"])
+	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"BurnSupplementaryFolder"])
 	{
-		size += [[self getSizeOfDirectory: [[NSUserDefaults standardUserDefaults] stringForKey: @"Supplementary Burn Path"]] longLongValue];
+		size += [[self getSizeOfDirectory: [[NSUserDefaults standardUserDefaults] stringForKey: @"SupplementaryBurnPath"]] longLongValue];
 	}
 	
 	[sizeField setStringValue:[NSString stringWithFormat:@"%@ %d  %@ %3.2fMB", NSLocalizedString(@"No of files:", nil), [files count], NSLocalizedString(@"Files size (without compression):", nil), size/1024.0]];

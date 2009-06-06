@@ -39,10 +39,6 @@
 - (void) enableControls: (BOOL) val
 {
 	[self checkView: [self mainView] :val];
-
-//	[characterSetPopup setEnabled: val];
-//	[addServerDICOM setEnabled: val];
-//	[addServerSharing setEnabled: val];
 }
 
 - (void)authorizationViewDidAuthorize:(SFAuthorizationView *)view
@@ -64,8 +60,6 @@
 
 - (void) mainViewDidLoad
 {
-	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-	
 	[_authView setDelegate:self];
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTHENTICATION"])
 	{
@@ -79,48 +73,13 @@
 		[_authView setEnabled: NO];
 	}
 	[_authView updateStatus:self];
-
-	
-	//setup GUI
-	[mountOnOffButton setState:[defaults boolForKey:@"MOUNT"]];
-	[unmountOnOffButton setState: [defaults boolForKey:@"UNMOUNT"]];
-	[dicomdirModeMatrix selectCellWithTag: [defaults boolForKey:@"USEDICOMDIR"]];
-	[stillMovieModeMatrix selectCellWithTag: [defaults integerForKey:@"STILLMOVIEMODE"]];
-
-	[burnOsirixCheck setIntValue: [[NSUserDefaults standardUserDefaults] boolForKey: @"Burn Osirix Application"]];
-	[burnHtmlCheck setIntValue: [[NSUserDefaults standardUserDefaults] boolForKey: @"Burn html"]];
-	[supplementaryFolderCheck setState: [[NSUserDefaults standardUserDefaults] boolForKey: @"Burn Supplementary Folder"]];
-	[supplementaryFolderPath setStringValue: [[NSUserDefaults standardUserDefaults] stringForKey: @"Supplementary Burn Path"]];
 }
 
-
-
-- (IBAction)setMountOnOff:(id)sender{
-	[[NSUserDefaults standardUserDefaults] setBool:[sender state] forKey:@"MOUNT"];
-}
-- (IBAction)setUnmountOnOff:(id)sender{
-	[[NSUserDefaults standardUserDefaults] setBool:[sender state] forKey:@"UNMOUNT"];
-}
-- (IBAction)setDicomdirMode:(id)sender{
-	[[NSUserDefaults standardUserDefaults] setBool:[[sender selectedCell] tag] forKey:@"USEDICOMDIR"];
-}
-- (IBAction)setStillMovieMode:(id)sender{
-	[[NSUserDefaults standardUserDefaults] setBool:[[sender selectedCell] tag] forKey:@"STILLMOVIEMODE"];
-}
-- (IBAction)setBurnHtml:(id)sender{
-	[[NSUserDefaults standardUserDefaults] setBool: [sender state] forKey:@"Burn html"];
-}
-- (IBAction)setBurnOsirixApplication:(id)sender{
-	[[NSUserDefaults standardUserDefaults] setBool: [sender state] forKey:@"Burn Osirix Application"];
-}
-- (IBAction)setBurnSupplementaryFolder:(id)sender{
-	[[NSUserDefaults standardUserDefaults] setBool: [sender state] forKey:@"Burn Supplementary Folder"];
-}
-- (IBAction)chooseSupplementaryBurnPath: (id)sender{
+- (IBAction)chooseSupplementaryBurnPath: (id)sender
+{
 	NSOpenPanel				*openPanel;
 	NSString				*filename;
 	BOOL					result;
-	
 	
 	openPanel=[NSOpenPanel openPanel];
 	[openPanel setCanChooseDirectories: YES];
@@ -128,9 +87,8 @@
 	result=[openPanel runModalForDirectory: Nil file: Nil types: Nil];
 	if (result)
 	{
-		filename=[[[openPanel filenames] objectAtIndex: 0] stringByAbbreviatingWithTildeInPath];
-		[[NSUserDefaults standardUserDefaults] setObject: filename forKey:@"Supplementary Burn Path"];
-		[supplementaryFolderPath setStringValue: filename];
+		filename = [[[openPanel filenames] objectAtIndex: 0] stringByAbbreviatingWithTildeInPath];
+		[[NSUserDefaults standardUserDefaults] setObject: filename forKey:@"SupplementaryBurnPath"];
 	}
 }
 
