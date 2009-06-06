@@ -4971,7 +4971,7 @@
 		7EE416C808B2612600D4C9CC /* QueryLogController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QueryLogController.m; sourceTree = "<group>"; };
 		7EE713BA097450B000510E88 /* dcmmkdir */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = dcmmkdir; sourceTree = "<group>"; };
 		844003990E8CF99500A00EBD /* dciodvfy */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = dciodvfy; path = Binaries/dciodvfy; sourceTree = "<group>"; };
-		844719AF0FD8EF50003BFDF8 /* OsiriX.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = OsiriX.framework; path = "build/Deployment Universal 64-bit/OsiriX.framework"; sourceTree = "<group>"; };
+		844719AF0FD8EF50003BFDF8 /* OsiriX.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = OsiriX.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8459A7260F5D63EF00146B28 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/VREmpty.xib; sourceTree = "<group>"; };
 		8483ABA50E1BE33900C21B31 /* crossCursor.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = crossCursor.tif; path = Cursors/crossCursor.tif; sourceTree = "<group>"; };
 		84A220E60F25E41800C6C3EB /* ROIs.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ROIs.tif; sourceTree = "<group>"; };
