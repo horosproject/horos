@@ -5,7 +5,7 @@
   All rights reserved.
   Distributed under GNU - GPL
   
-  See http://homepage.mac.com/rossetantoine/osirix/copyright.html for details.
+  See http://www.osirix-viewer.com/copyright.html for details.
 
      This software is distributed WITHOUT ANY WARRANTY; without even
      the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
@@ -18,11 +18,11 @@
 
 @interface OSIGeneralPreferencePanePref : NSPreferencePane 
 {
-	IBOutlet NSButton		*securityOnOff;
-	
-	IBOutlet NSMatrix		*readerMatrix, *parserMatrix;
-	
-	IBOutlet SFAuthorizationView			*_authView;
+	IBOutlet NSButton *securityOnOff;
+	IBOutlet NSMatrix *readerMatrix, *parserMatrix;
+	IBOutlet SFAuthorizationView *_authView;
+	IBOutlet NSArrayController *compressionSettingsArrayController;
+	IBOutlet NSWindow *compressionSettingsWindow;
 }
 
 -(void) mainViewDidLoad;
@@ -32,4 +32,5 @@
 -(IBAction)setUseTransistion:(id)sender;
 -(IBAction)setTransitionType:(id)sender;
 - (IBAction) setAuthentication: (id) sender;
+- (IBAction) editCompressionSettings:(id) sender
 @end

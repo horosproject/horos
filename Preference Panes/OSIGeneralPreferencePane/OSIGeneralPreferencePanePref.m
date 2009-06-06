@@ -5,7 +5,7 @@
   All rights reserved.
   Distributed under GNU - GPL
   
-  See http://homepage.mac.com/rossetantoine/osirix/copyright.html for details.
+  See http://www.osirix-viewer.com/copyright.html for details.
 
      This software is distributed WITHOUT ANY WARRANTY; without even
      the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
@@ -112,4 +112,15 @@
 -(IBAction)setTransitionType:(id)sender{
 	[[NSUserDefaults standardUserDefaults] setInteger:[[sender selectedItem] tag] forKey:@"TRANSITIONTYPE"];
 }
+
+- (IBAction) editCompressionSettings:(id) sender
+{
+	if( [_authView authorizationState] == SFAuthorizationViewUnlockedState)
+	{
+		NSArray	*serversArray = [[NSUserDefaults standardUserDefaults] arrayForKey: @"CompressionSettings"];
+		
+		[NSApp beginSheet: newRoute modalForWindow: [[self mainView] window] modalDelegate:self didEndSelector:nil contextInfo:nil];
+	}
+}
+
 @end
