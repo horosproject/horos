@@ -17,7 +17,6 @@
 #import "QueryFilter.h"
 #import "AdvancedQuerySubview.h"
 #import "AppController.h"
-#import "DICOMLogger.h"
 #import "ImageAndTextCell.h"
 #import <OsiriX/DCMCalendarDate.h>
 #import <OsiriX/DCMNetServiceDelegate.h>

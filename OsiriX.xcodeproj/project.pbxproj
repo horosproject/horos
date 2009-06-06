@@ -93,7 +93,6 @@
 		7E0B3A820675274100908593 /* DCMValueRepresentation.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E0B3A1C067526A600908593 /* DCMValueRepresentation.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7E0B3A880675274200908593 /* DCMValueRepresentation.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E0B3A1D067526A600908593 /* DCMValueRepresentation.m */; };
 		7E0B3A8E0675274300908593 /* dicomDictionary.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7E0B3A1E067526A600908593 /* dicomDictionary.plist */; };
-		7E0B3A9A0675274400908593 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 7E0B3A20067526A600908593 /* main.c */; };
 		7E0B3AA00675274500908593 /* version.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7E0B3A21067526A600908593 /* version.plist */; };
 		7E1123DF08A7CB9F0037819D /* LogArrayController.m in Sources */ = {isa = PBXBuildFile; fileRef = BF17E98E088768CA00ECF621 /* LogArrayController.m */; };
 		7E1123E008A7CBA20037819D /* LogArrayController.h in Headers */ = {isa = PBXBuildFile; fileRef = BF17E98D088768CA00ECF621 /* LogArrayController.h */; };
@@ -965,8 +964,6 @@
 		ABD578EE0623179E00616F39 /* HistogramWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = ABD578EA0623179E00616F39 /* HistogramWindow.h */; };
 		ABD5790A06231FEF00616F39 /* HistoView.h in Headers */ = {isa = PBXBuildFile; fileRef = ABD5790806231FEF00616F39 /* HistoView.h */; };
 		ABD5790B06231FEF00616F39 /* HistoView.m in Sources */ = {isa = PBXBuildFile; fileRef = ABD5790906231FEF00616F39 /* HistoView.m */; };
-		ABD64CCC064D93E100EE3393 /* DICOMLogger.h in Headers */ = {isa = PBXBuildFile; fileRef = ABD64CC4064D93E000EE3393 /* DICOMLogger.h */; };
-		ABD64CCE064D93E100EE3393 /* DICOMLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = ABD64CC6064D93E000EE3393 /* DICOMLogger.m */; };
 		ABD7BC30063EFD8D00E24B0E /* BlackBody.plist in Resources */ = {isa = PBXBuildFile; fileRef = ABD7BC2E063EFD8D00E24B0E /* BlackBody.plist */; };
 		ABD7BC5A063F00A900E24B0E /* Flow.plist in Resources */ = {isa = PBXBuildFile; fileRef = ABD7BC4C063F00A900E24B0E /* Flow.plist */; };
 		ABD7BC5B063F00A900E24B0E /* NIH.plist in Resources */ = {isa = PBXBuildFile; fileRef = ABD7BC4D063F00A900E24B0E /* NIH.plist */; };
@@ -3986,11 +3983,6 @@
 		CE6C77EE09739B3100F951C2 /* Rotate3DCameraCursor.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE6C77EC09739B3100F951C2 /* Rotate3DCameraCursor.tif */; };
 		CE6CD06D0CFB0462001DF429 /* OsiriXToolbar.h in Headers */ = {isa = PBXBuildFile; fileRef = CE6CD06B0CFB0462001DF429 /* OsiriXToolbar.h */; };
 		CE6CD06E0CFB0462001DF429 /* OsiriXToolbar.m in Sources */ = {isa = PBXBuildFile; fileRef = CE6CD06C0CFB0462001DF429 /* OsiriXToolbar.m */; };
-		CE6D47720A76B22C0034A4B4 /* DicomDirInitRecords.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5E205646BE500BED927 /* DicomDirInitRecords.c */; };
-		CE6D47730A76B22D0034A4B4 /* DicomDirInit.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5E105646BE500BED927 /* DicomDirInit.c */; };
-		CE6D47740A76B22D0034A4B4 /* DicomDirFiles.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5E005646BE500BED927 /* DicomDirFiles.c */; };
-		CE6D47750A76B22E0034A4B4 /* DicomDirDataSetWrite.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5DF05646BE500BED927 /* DicomDirDataSetWrite.c */; };
-		CE6D47760A76B22F0034A4B4 /* DicomDirDatasetRead.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5DE05646BE500BED927 /* DicomDirDatasetRead.c */; };
 		CE6DEB640F91BF9B0009FEF3 /* libjasper2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CEB7179706CE7CBD00084CA5 /* libjasper2.a */; };
 		CE6E2CB606CAE45A00BC7907 /* PlotView.h in Headers */ = {isa = PBXBuildFile; fileRef = CE6E2CAE06CAE45A00BC7907 /* PlotView.h */; };
 		CE6E2CB706CAE45A00BC7907 /* PlotWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = CE6E2CAF06CAE45A00BC7907 /* PlotWindow.h */; };
@@ -4000,6 +3992,11 @@
 		CE74456A06DBA4CB0034D05E /* ITK.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE74456806DBA4CB0034D05E /* ITK.mm */; settings = {COMPILER_FLAGS = "-I ./ITK180 -I ./ITK180/Code -I ./ITK180/Code/Algorithms -I ./ITK180/Code/BasicFilters -I ./ITK180/Code/Common -I ./ITK180/Code/Numerics -I ./ITK180/Code/IO -I ./ITK180/Code/Numerics/FEM -I ./ITK180/Code/Numerics/Statistics -I ./ITK180/Code/SpatialObject -I ./ITK180/Code/Utilities/MetaIO -I ./ITK180/Code/Utilities/expat -I ./ITK180/Code/Utilities/NrrdIO -I ./ITK180/Code/Utilities/DICOMParser -I ./ITK180/Utilities -I ./ITK180/Utilities/vxl/vcl -I ./ITK180/Utilities/vxl/core"; }; };
 		CE74824206C9701200FFA74C /* trash.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE74824006C9701200FFA74C /* trash.icns */; };
 		CE74DEB008CCE0C1005D12A7 /* SagOpposite.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE74DEAF08CCE0C1005D12A7 /* SagOpposite.tif */; };
+		CE778E350FDA636A00CC4C7D /* DicomDirDataSetWrite.c in Sources */ = {isa = PBXBuildFile; fileRef = CE778E300FDA636A00CC4C7D /* DicomDirDataSetWrite.c */; };
+		CE778E360FDA636A00CC4C7D /* DicomDirInitRecords.c in Sources */ = {isa = PBXBuildFile; fileRef = CE778E310FDA636A00CC4C7D /* DicomDirInitRecords.c */; };
+		CE778E370FDA636A00CC4C7D /* DicomDirInit.c in Sources */ = {isa = PBXBuildFile; fileRef = CE778E320FDA636A00CC4C7D /* DicomDirInit.c */; };
+		CE778E380FDA636A00CC4C7D /* DicomDirFiles.c in Sources */ = {isa = PBXBuildFile; fileRef = CE778E330FDA636A00CC4C7D /* DicomDirFiles.c */; };
+		CE778E390FDA636A00CC4C7D /* DicomDirDatasetRead.c in Sources */ = {isa = PBXBuildFile; fileRef = CE778E340FDA636A00CC4C7D /* DicomDirDatasetRead.c */; };
 		CE77B0740CB9718C00BE873C /* WaitRendering.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F991A0C84724B00CB38F1 /* WaitRendering.xib */; };
 		CE77B0B10CB9719C00BE873C /* WaitRendering.m in Sources */ = {isa = PBXBuildFile; fileRef = ABB218B805CF1E9300D8B619 /* WaitRendering.m */; };
 		CE79D9890FD84C350043DD73 /* DCMAbstractSyntaxUID.m in Sources */ = {isa = PBXBuildFile; fileRef = CE79D9870FD84C350043DD73 /* DCMAbstractSyntaxUID.m */; };
@@ -4354,10 +4351,6 @@
 		CEBD8ACD0875B233000E42D6 /* OSIViewerPreferencePane.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = CEBD8AB80875B233000E42D6 /* OSIViewerPreferencePane.prefPane */; };
 		CEBD8E5F0B675A75008FD772 /* Propagate.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEBD8E5B0B675A75008FD772 /* Propagate.tiff */; };
 		CEBD8EF80B6761CC008FD772 /* PropagateOn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEBD8EF40B6761CC008FD772 /* PropagateOn.tiff */; };
-		CEBED2F30B4050FD00A6731E /* DOClient.h in Headers */ = {isa = PBXBuildFile; fileRef = CEBED2EF0B4050FC00A6731E /* DOClient.h */; };
-		CEBED2F40B4050FD00A6731E /* DOServer.h in Headers */ = {isa = PBXBuildFile; fileRef = CEBED2F00B4050FC00A6731E /* DOServer.h */; };
-		CEBED2F50B4050FD00A6731E /* DOClient.m in Sources */ = {isa = PBXBuildFile; fileRef = CEBED2F10B4050FD00A6731E /* DOClient.m */; };
-		CEBED2F60B4050FD00A6731E /* DOServer.m in Sources */ = {isa = PBXBuildFile; fileRef = CEBED2F20B4050FD00A6731E /* DOServer.m */; };
 		CEC172040874839C0021C3FC /* burn_anim00.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEC171F80874839C0021C3FC /* burn_anim00.tif */; };
 		CEC172050874839C0021C3FC /* burn_anim01.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEC171F90874839C0021C3FC /* burn_anim01.tif */; };
 		CEC172060874839C0021C3FC /* burn_anim02.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEC171FA0874839C0021C3FC /* burn_anim02.tif */; };
@@ -4818,7 +4811,6 @@
 		7E0B3A1D067526A600908593 /* DCMValueRepresentation.m */ = {isa = PBXFileReference; fileEncoding = 30; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = DCMValueRepresentation.m; sourceTree = "<group>"; };
 		7E0B3A1E067526A600908593 /* dicomDictionary.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.xml; path = dicomDictionary.plist; sourceTree = "<group>"; };
 		7E0B3A1F067526A600908593 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		7E0B3A20067526A600908593 /* main.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 		7E0B3A21067526A600908593 /* version.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.xml; path = version.plist; sourceTree = "<group>"; };
 		7E0B3A40067526CD00908593 /* DCM-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "DCM-Info.plist"; path = "DCM Framework/DCM-Info.plist"; sourceTree = SOURCE_ROOT; };
 		7E172F540933CAE00057BCE8 /* DCMObjectDBImport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMObjectDBImport.h; sourceTree = "<group>"; };
@@ -5164,11 +5156,6 @@
 		AB0BD5C205646BBF00BED927 /* PapyWrite3.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = PapyWrite3.c; path = Papyrus3/PapyWrite3.c; sourceTree = "<group>"; };
 		AB0BD5C305646BBF00BED927 /* PapyWild3.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = PapyWild3.c; path = Papyrus3/PapyWild3.c; sourceTree = "<group>"; };
 		AB0BD5C405646BBF00BED927 /* PapyWildexit3.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = PapyWildexit3.c; path = Papyrus3/PapyWildexit3.c; sourceTree = "<group>"; };
-		AB0BD5DE05646BE500BED927 /* DicomDirDatasetRead.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = DicomDirDatasetRead.c; path = Papyrus3/DicomDir/DicomDirDatasetRead.c; sourceTree = "<group>"; };
-		AB0BD5DF05646BE500BED927 /* DicomDirDataSetWrite.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = DicomDirDataSetWrite.c; path = Papyrus3/DicomDir/DicomDirDataSetWrite.c; sourceTree = "<group>"; };
-		AB0BD5E005646BE500BED927 /* DicomDirFiles.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = DicomDirFiles.c; path = Papyrus3/DicomDir/DicomDirFiles.c; sourceTree = "<group>"; };
-		AB0BD5E105646BE500BED927 /* DicomDirInit.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = DicomDirInit.c; path = Papyrus3/DicomDir/DicomDirInit.c; sourceTree = "<group>"; };
-		AB0BD5E205646BE500BED927 /* DicomDirInitRecords.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = DicomDirInitRecords.c; path = Papyrus3/DicomDir/DicomDirInitRecords.c; sourceTree = "<group>"; };
 		AB0BD73505646ED100BED927 /* PapyFileSystemUnix3.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = PapyFileSystemUnix3.c; path = Papyrus3/PapyFileSystemUnix3.c; sourceTree = "<group>"; };
 		AB0BD75705646FD800BED927 /* PapyEallocUnix3.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = PapyEallocUnix3.c; path = Papyrus3/PapyEallocUnix3.c; sourceTree = "<group>"; };
 		AB0CA45F05BE159500F52729 /* ColorTransferView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColorTransferView.h; sourceTree = "<group>"; };
@@ -5414,8 +5401,6 @@
 		ABD578EA0623179E00616F39 /* HistogramWindow.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = HistogramWindow.h; sourceTree = "<group>"; };
 		ABD5790806231FEF00616F39 /* HistoView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HistoView.h; sourceTree = "<group>"; };
 		ABD5790906231FEF00616F39 /* HistoView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HistoView.m; sourceTree = "<group>"; };
-		ABD64CC4064D93E000EE3393 /* DICOMLogger.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DICOMLogger.h; sourceTree = "<group>"; };
-		ABD64CC6064D93E000EE3393 /* DICOMLogger.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = DICOMLogger.m; sourceTree = "<group>"; };
 		ABD64CE7064D93F500EE3393 /* PMDICOMStoreSCU.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = PMDICOMStoreSCU.h; sourceTree = "<group>"; };
 		ABD7BC2E063EFD8D00E24B0E /* BlackBody.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.xml; path = BlackBody.plist; sourceTree = "<group>"; };
 		ABD7BC4C063F00A900E24B0E /* Flow.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.xml; path = Flow.plist; sourceTree = "<group>"; };
@@ -8385,6 +8370,11 @@
 		CE74456806DBA4CB0034D05E /* ITK.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = ITK.mm; sourceTree = "<group>"; };
 		CE74824006C9701200FFA74C /* trash.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = trash.icns; sourceTree = "<group>"; };
 		CE74DEAF08CCE0C1005D12A7 /* SagOpposite.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SagOpposite.tif; sourceTree = "<group>"; };
+		CE778E300FDA636A00CC4C7D /* DicomDirDataSetWrite.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = DicomDirDataSetWrite.c; sourceTree = "<group>"; };
+		CE778E310FDA636A00CC4C7D /* DicomDirInitRecords.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = DicomDirInitRecords.c; sourceTree = "<group>"; };
+		CE778E320FDA636A00CC4C7D /* DicomDirInit.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = DicomDirInit.c; sourceTree = "<group>"; };
+		CE778E330FDA636A00CC4C7D /* DicomDirFiles.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = DicomDirFiles.c; sourceTree = "<group>"; };
+		CE778E340FDA636A00CC4C7D /* DicomDirDatasetRead.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = DicomDirDatasetRead.c; sourceTree = "<group>"; };
 		CE79D9860FD84C350043DD73 /* DCMAbstractSyntaxUID.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMAbstractSyntaxUID.h; sourceTree = "<group>"; };
 		CE79D9870FD84C350043DD73 /* DCMAbstractSyntaxUID.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMAbstractSyntaxUID.m; sourceTree = "<group>"; };
 		CE7A0F1A0AED55E700540017 /* ShellMainClass.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = ShellMainClass.mm; sourceTree = "<group>"; };
@@ -8441,10 +8431,6 @@
 		CEBD8AB80875B233000E42D6 /* OSIViewerPreferencePane.prefPane */ = {isa = PBXFileReference; lastKnownFileType = folder; name = OSIViewerPreferencePane.prefPane; path = "Preference Panes/OSIViewerPreferencePane/build/Development/OSIViewerPreferencePane.prefPane"; sourceTree = "<group>"; };
 		CEBD8E5B0B675A75008FD772 /* Propagate.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Propagate.tiff; sourceTree = "<group>"; };
 		CEBD8EF40B6761CC008FD772 /* PropagateOn.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = PropagateOn.tiff; sourceTree = "<group>"; };
-		CEBED2EF0B4050FC00A6731E /* DOClient.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DOClient.h; sourceTree = "<group>"; };
-		CEBED2F00B4050FC00A6731E /* DOServer.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DOServer.h; sourceTree = "<group>"; };
-		CEBED2F10B4050FD00A6731E /* DOClient.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = DOClient.m; sourceTree = "<group>"; };
-		CEBED2F20B4050FD00A6731E /* DOServer.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = DOServer.m; sourceTree = "<group>"; };
 		CEC171F80874839C0021C3FC /* burn_anim00.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = burn_anim00.tif; sourceTree = "<group>"; };
 		CEC171F90874839C0021C3FC /* burn_anim01.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = burn_anim01.tif; sourceTree = "<group>"; };
 		CEC171FA0874839C0021C3FC /* burn_anim02.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = burn_anim02.tif; sourceTree = "<group>"; };
@@ -9113,7 +9099,6 @@
 				BFDDE5C0091717F80033317B /* DCMEncapsulatedPDF.m */,
 				7E0B3A1E067526A600908593 /* dicomDictionary.plist */,
 				7E0B3A1F067526A600908593 /* Info.plist */,
-				7E0B3A20067526A600908593 /* main.c */,
 				7E0B3A21067526A600908593 /* version.plist */,
 				7E0B3A40067526CD00908593 /* DCM-Info.plist */,
 				BFEB763B0677FDA700F242F3 /* nameDictionary.plist */,
@@ -9355,18 +9340,6 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		AB0BD5DC05646BDC00BED927 /* DicomDir */ = {
-			isa = PBXGroup;
-			children = (
-				AB0BD5DE05646BE500BED927 /* DicomDirDatasetRead.c */,
-				AB0BD5DF05646BE500BED927 /* DicomDirDataSetWrite.c */,
-				AB0BD5E005646BE500BED927 /* DicomDirFiles.c */,
-				AB0BD5E105646BE500BED927 /* DicomDirInit.c */,
-				AB0BD5E205646BE500BED927 /* DicomDirInitRecords.c */,
-			);
-			name = DicomDir;
-			sourceTree = "<group>";
-		};
 		AB0DF7370FD79F9200A7C57E /* dcmpstat */ = {
 			isa = PBXGroup;
 			children = (
@@ -9582,11 +9555,8 @@
 				AB6FF5960A47D08000C501F0 /* DefaultsOsiriX.m */,
 				CECEF72C081BB265002ECC99 /* DICOMExport.h */,
 				CECEF72D081BB265002ECC99 /* DICOMExport.m */,
-				ABD64CC4064D93E000EE3393 /* DICOMLogger.h */,
-				ABD64CC6064D93E000EE3393 /* DICOMLogger.m */,
 				BF7A835D09B8B8E70051F091 /* DICOMToNSString.h */,
 				BF7A835E09B8B8E70051F091 /* DICOMToNSString.m */,
-				CEBED3000B40510500A6731E /* Distributed Objects */,
 				CE087B0B0DE9BD6E000E5593 /* GLString.h */,
 				CE087B0A0DE9BD6E000E5593 /* GLString.m */,
 				AB36742F0BE0CEB0003634E6 /* iLifeControls */,
@@ -10082,7 +10052,7 @@
 			isa = PBXGroup;
 			children = (
 				CEDB14A70768392E00375F65 /* Headers */,
-				AB0BD5DC05646BDC00BED927 /* DicomDir */,
+				CE778E120FDA631A00CC4C7D /* DicomDir */,
 				84A679050EEECF2F00AE5C98 /* jpeg_memsrc.c */,
 				84A6790D0EEED04000AE5C98 /* jpeg_memsrc.h */,
 				AB0BD73505646ED100BED927 /* PapyFileSystemUnix3.c */,
@@ -13162,6 +13132,19 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		CE778E120FDA631A00CC4C7D /* DicomDir */ = {
+			isa = PBXGroup;
+			children = (
+				CE778E300FDA636A00CC4C7D /* DicomDirDataSetWrite.c */,
+				CE778E310FDA636A00CC4C7D /* DicomDirInitRecords.c */,
+				CE778E320FDA636A00CC4C7D /* DicomDirInit.c */,
+				CE778E330FDA636A00CC4C7D /* DicomDirFiles.c */,
+				CE778E340FDA636A00CC4C7D /* DicomDirDatasetRead.c */,
+			);
+			name = DicomDir;
+			path = Papyrus3/DicomDir;
+			sourceTree = "<group>";
+		};
 		CE7A0D670AED557500540017 /* 32-bit Shell */ = {
 			isa = PBXGroup;
 			children = (
@@ -13241,17 +13224,6 @@
 				CEBD8AB80875B233000E42D6 /* OSIViewerPreferencePane.prefPane */,
 			);
 			name = Pane;
-			sourceTree = "<group>";
-		};
-		CEBED3000B40510500A6731E /* Distributed Objects */ = {
-			isa = PBXGroup;
-			children = (
-				CEBED2EF0B4050FC00A6731E /* DOClient.h */,
-				CEBED2F00B4050FC00A6731E /* DOServer.h */,
-				CEBED2F10B4050FD00A6731E /* DOClient.m */,
-				CEBED2F20B4050FD00A6731E /* DOServer.m */,
-			);
-			name = "Distributed Objects";
 			sourceTree = "<group>";
 		};
 		CEC171F70874839C0021C3FC /* BurnAnimation */ = {
@@ -13449,7 +13421,6 @@
 				AB695A1F063D8261002BDF78 /* Analyze.h in Headers */,
 				ABBDAEBE06407D080016210A /* VRMakeObject.h in Headers */,
 				AB73E13A06497EDA00545980 /* PreviewView.h in Headers */,
-				ABD64CCC064D93E100EE3393 /* DICOMLogger.h in Headers */,
 				7E569399065007D6001A9762 /* SmartWindowController.h in Headers */,
 				BF5C0187065320A800BAFCF7 /* ImageAndTextCell.h in Headers */,
 				ABCB2D530655B19A006C5630 /* SearchWindowController.h in Headers */,
@@ -14046,8 +14017,6 @@
 				ABC3E5530B330A58006704E3 /* DNDArrayController.h in Headers */,
 				ABC3E55B0B330A69006704E3 /* sourcesTableView.h in Headers */,
 				CEEA84AC0B345F9800BBE4B1 /* SimplePing.h in Headers */,
-				CEBED2F30B4050FD00A6731E /* DOClient.h in Headers */,
-				CEBED2F40B4050FD00A6731E /* DOServer.h in Headers */,
 				B78490FB0B4BE86400BA93EF /* MenuDictionary.h in Headers */,
 				A9F8A4180B5F6460002CC763 /* CLUTOpacityView.h in Headers */,
 				CE28086B0B6B76730093E9D3 /* CalciumScoringWindowController.h in Headers */,
@@ -16558,7 +16527,6 @@
 				7E0B3A700675273F00908593 /* DCMDataContainer.m in Sources */,
 				7E0B3A7C0675274000908593 /* DCMObject.m in Sources */,
 				7E0B3A880675274200908593 /* DCMValueRepresentation.m in Sources */,
-				7E0B3A9A0675274400908593 /* main.c in Sources */,
 				BFEB763E0677FDA700F242F3 /* DCMTagDictionary.m in Sources */,
 				BFEB76400677FDA700F242F3 /* DCMTagForNameDictionary.m in Sources */,
 				BF3BB381067808D5004F6E91 /* DCMTransferSyntax.m in Sources */,
@@ -16828,7 +16796,6 @@
 				ABE3338E063D629400C8E087 /* AdvancedQuerySubview.m in Sources */,
 				ABBDAEBB06407CF90016210A /* VRMakeObject.m in Sources */,
 				AB73E13B06497EDA00545980 /* PreviewView.m in Sources */,
-				ABD64CCE064D93E100EE3393 /* DICOMLogger.m in Sources */,
 				7E56939A065007D6001A9762 /* SmartWindowController.m in Sources */,
 				BF5C0188065320A800BAFCF7 /* ImageAndTextCell.m in Sources */,
 				ABCB2D520655B19A006C5630 /* SearchWindowController.m in Sources */,
@@ -17412,11 +17379,6 @@
 				ABE471140A76412700327466 /* jquant1.c in Sources */,
 				ABE471150A76412700327466 /* jquant2.c in Sources */,
 				ABE471160A76412700327466 /* jutils.c in Sources */,
-				CE6D47720A76B22C0034A4B4 /* DicomDirInitRecords.c in Sources */,
-				CE6D47730A76B22D0034A4B4 /* DicomDirInit.c in Sources */,
-				CE6D47740A76B22D0034A4B4 /* DicomDirFiles.c in Sources */,
-				CE6D47750A76B22E0034A4B4 /* DicomDirDataSetWrite.c in Sources */,
-				CE6D47760A76B22F0034A4B4 /* DicomDirDatasetRead.c in Sources */,
 				BFAA08320A901AD0002DB3DD /* DragMatrix.m in Sources */,
 				BFAA08460A901BDB002DB3DD /* AllKeyImagesArrayController.m in Sources */,
 				BFAA0D0A0A916CB6002DB3DD /* SelectedKeyImagesArrayController.m in Sources */,
@@ -17432,8 +17394,6 @@
 				ABC3E5520B330A58006704E3 /* DNDArrayController.m in Sources */,
 				ABC3E55A0B330A69006704E3 /* sourcesTableView.m in Sources */,
 				CEEA84AD0B345F9800BBE4B1 /* SimplePing.c in Sources */,
-				CEBED2F50B4050FD00A6731E /* DOClient.m in Sources */,
-				CEBED2F60B4050FD00A6731E /* DOServer.m in Sources */,
 				B78490FC0B4BE86400BA93EF /* MenuDictionary.m in Sources */,
 				A9F8A4190B5F6460002CC763 /* CLUTOpacityView.mm in Sources */,
 				CE28086C0B6B76730093E9D3 /* CalciumScoringWindowController.m in Sources */,
@@ -17493,6 +17453,11 @@
 				A9333D260F56E6800097DAB7 /* MPRDCMView.m in Sources */,
 				A9333D320F56E70B0097DAB7 /* MPRController.m in Sources */,
 				AB4CD7690F72619900699111 /* FlyThruController.mm in Sources */,
+				CE778E350FDA636A00CC4C7D /* DicomDirDataSetWrite.c in Sources */,
+				CE778E360FDA636A00CC4C7D /* DicomDirInitRecords.c in Sources */,
+				CE778E370FDA636A00CC4C7D /* DicomDirInit.c in Sources */,
+				CE778E380FDA636A00CC4C7D /* DicomDirFiles.c in Sources */,
+				CE778E390FDA636A00CC4C7D /* DicomDirDatasetRead.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
