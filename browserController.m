@@ -13142,7 +13142,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (IBAction)decompressSelectedFiles: (id)sender
 {
-
 	if( bonjourDownloading == NO && isCurrentDatabaseBonjour == NO )
 	{
 		NSMutableArray *dicomFiles2Export = [NSMutableArray array];
@@ -13290,6 +13289,11 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[pool release];
 	
 	[decompressThreadRunning unlock];
+	
+	if( mainThread != [NSThread currentThread])
+		[DCMPix performSelectorOnMainThread: @selector( purgeCachedDictionaries) withObject: nil waitUntilDone: NO];
+	else
+		[DCMPix purgeCachedDictionaries];
 }
 
 - (void)checkIncomingThread: (id)sender
