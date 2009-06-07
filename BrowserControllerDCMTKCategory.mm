@@ -41,6 +41,18 @@ extern NSRecursiveLock *PapyrusLock;
 
 @implementation BrowserController (BrowserControllerDCMTKCategory)
 
++ (NSString*) compressionString: (NSString*) string
+{
+	if( [string isEqualToString: @"1.2.840.10008.1.2"])
+		return NSLocalizedString( @"Uncompressed", nil);
+	if( [string isEqualToString: @"1.2.840.10008.1.2.1"])
+		return NSLocalizedString( @"Uncompressed", nil);
+	if( [string isEqualToString: @"1.2.840.10008.1.2.2"])
+		return NSLocalizedString( @"Uncompressed BigEndian", nil);
+	
+	return [NSString stringWithFormat:@"%s", dcmFindNameOfUID( [string UTF8String])];
+}
+
 - (BOOL)compressDICOMWithJPEG:(NSString *)path
 {
 	DcmFileFormat fileformat;

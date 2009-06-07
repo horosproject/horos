@@ -12383,10 +12383,18 @@ static NSArray*	openSubSeriesArray = nil;
 	}
 	else if( [menuItem action] == @selector( compressSelectedFiles:))
 	{
+		if( [decompressThreadRunning tryLock] == NO)
+			return NO;
+		else
+			[decompressThreadRunning unlock];
 		if( isCurrentDatabaseBonjour) return NO;
 	}
 	else if( [menuItem action] == @selector( decompressSelectedFiles:))
 	{
+		if( [decompressThreadRunning tryLock] == NO)
+			return NO;
+		else
+			[decompressThreadRunning unlock];
 		if( isCurrentDatabaseBonjour) return NO;
 	}
 	else if( [menuItem action] == @selector( copyToDBFolder:))

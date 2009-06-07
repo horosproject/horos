@@ -20,6 +20,7 @@
 #import <OsiriX/DCM.h>
 #import <OsiriX/DCMAbstractSyntaxUID.h>
 #import "BrowserController.h"
+#import "BrowserControllerDCMTKCategory.h"
 #import "PluginManager.h"
 #import "ROI.h"
 #import "ROISRConverter.h"
@@ -11907,6 +11908,11 @@ END_CREATE_ROIS:
 							if( anonymizedAnnotations)
 							{
 								if( [[field objectForKey:@"group"] intValue] == 0x0010 && [[field objectForKey:@"element"] intValue] == 0x0010) value = @" ";
+							}
+							
+							if( [[field objectForKey:@"group"] intValue] == 0x0002 && [[field objectForKey:@"element"] intValue] == 0x0010)
+							{
+								value = [BrowserController compressionString: value];
 							}
 							
 							if(value==nil || [value length] == 0) value = @"-";

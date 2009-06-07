@@ -50,6 +50,29 @@
 			<dict>
 				<key>content</key>
 				<array>
+					<string>DICOM_TransferSyntaxUID</string>
+				</array>
+				<key>fullContent</key>
+				<array>
+					<dict>
+						<key>element</key>
+						<integer>16</integer>
+						<key>group</key>
+						<integer>2</integer>
+						<key>name</key>
+						<string>TransferSyntaxUID</string>
+						<key>tokenTitle</key>
+						<string>DICOM_TransferSyntaxUID</string>
+						<key>type</key>
+						<string>DICOM</string>
+					</dict>
+				</array>
+				<key>title</key>
+				<string>Compression</string>
+			</dict>
+			<dict>
+				<key>content</key>
+				<array>
 					<string>Special_Thickness / Location / Position</string>
 				</array>
 				<key>fullContent</key>
@@ -87,6 +110,42 @@
 		</array>
 		<key>LowerRight</key>
 		<array>
+			<dict>
+				<key>content</key>
+				<array>
+					<string>DICOM_TableSpeed</string>
+					<string>DICOM_TableFeedPerRotation</string>
+				</array>
+				<key>fullContent</key>
+				<array>
+					<dict>
+						<key>element</key>
+						<integer>37641</integer>
+						<key>group</key>
+						<integer>24</integer>
+						<key>name</key>
+						<string>TableSpeed</string>
+						<key>tokenTitle</key>
+						<string>DICOM_TableSpeed</string>
+						<key>type</key>
+						<string>DICOM</string>
+					</dict>
+					<dict>
+						<key>element</key>
+						<integer>37648</integer>
+						<key>group</key>
+						<integer>24</integer>
+						<key>name</key>
+						<string>TableFeedPerRotation</string>
+						<key>tokenTitle</key>
+						<string>DICOM_TableFeedPerRotation</string>
+						<key>type</key>
+						<string>DICOM</string>
+					</dict>
+				</array>
+				<key>title</key>
+				<string>Annotation 1</string>
+			</dict>
 			<dict>
 				<key>content</key>
 				<array>
@@ -227,6 +286,8 @@
 				<string>Orientation</string>
 			</dict>
 		</array>
+		<key>sameAsDefault</key>
+		<string>0</string>
 		<key>TopLeft</key>
 		<array>
 			<dict>
@@ -335,8 +396,6 @@
 				<string>Orientation</string>
 			</dict>
 		</array>
-		<key>sameAsDefault</key>
-		<string>0</string>
 		<key>TopRight</key>
 		<array>
 			<dict>
@@ -344,6 +403,11 @@
 				<array>
 					<string>DB_study.name</string>
 					<string>DB_study.patientID</string>
+					<string>(</string>
+					<string>Special_Patient&apos;s Actual Age</string>
+					<string>,</string>
+					<string>Special_Patient&apos;s Age At Acquisition</string>
+					<string>)</string>
 				</array>
 				<key>fullContent</key>
 				<array>
@@ -363,19 +427,12 @@
 						<key>type</key>
 						<string>DB</string>
 					</dict>
-				</array>
-				<key>title</key>
-				<string>Patient ID</string>
-			</dict>
-			<dict>
-				<key>content</key>
-				<array>
-					<string>Special_Patient&apos;s Actual Age</string>
-					<string>,</string>
-					<string>Special_Patient&apos;s Age At Acquisition</string>
-				</array>
-				<key>fullContent</key>
-				<array>
+					<dict>
+						<key>field</key>
+						<string>(</string>
+						<key>type</key>
+						<string>Manual</string>
+					</dict>
 					<dict>
 						<key>field</key>
 						<string>Patient&apos;s Actual Age</string>
@@ -394,20 +451,42 @@
 						<key>type</key>
 						<string>Special</string>
 					</dict>
+					<dict>
+						<key>field</key>
+						<string>)</string>
+						<key>type</key>
+						<string>Manual</string>
+					</dict>
 				</array>
 				<key>title</key>
-				<string>Age</string>
+				<string>Patient ID</string>
 			</dict>
 			<dict>
 				<key>content</key>
 				<array>
 					<string>DB_series.seriesDescription</string>
+					<string>--</string>
+					<string>DB_series.name</string>
 				</array>
 				<key>fullContent</key>
 				<array>
 					<dict>
 						<key>field</key>
 						<string>seriesDescription</string>
+						<key>level</key>
+						<string>series</string>
+						<key>type</key>
+						<string>DB</string>
+					</dict>
+					<dict>
+						<key>field</key>
+						<string>--</string>
+						<key>type</key>
+						<string>Manual</string>
+					</dict>
+					<dict>
+						<key>field</key>
+						<string>name</string>
 						<key>level</key>
 						<string>series</string>
 						<key>type</key>

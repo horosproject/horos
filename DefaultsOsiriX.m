@@ -978,7 +978,7 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject:hotkeys forKey:@"HOTKEYS"];
 	
 	NSArray *compressionSettings = [NSArray arrayWithObjects: 
-							[NSDictionary dictionaryWithObjectsAndKeys: @"default", @"modality", @"3", @"compression", @"0", @"quality", nil], 
+							[NSDictionary dictionaryWithObjectsAndKeys: NSLocalizedString( @"default", nil), @"modality", @"3", @"compression", @"0", @"quality", nil], 
 							[NSDictionary dictionaryWithObjectsAndKeys: @"CR", @"modality", @"0", @"compression", @"0", @"quality", nil],
 							[NSDictionary dictionaryWithObjectsAndKeys: @"CT", @"modality", @"0", @"compression", @"0", @"quality", nil],
 							[NSDictionary dictionaryWithObjectsAndKeys: @"DX", @"modality", @"0", @"compression", @"0", @"quality", nil],
