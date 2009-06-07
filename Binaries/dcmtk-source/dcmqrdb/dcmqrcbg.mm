@@ -121,7 +121,7 @@ static OFCondition decompressFileFormat(DcmFileFormat fileformat, const char *fn
 			status = NO;
 	}
 	
-	printf("\n*** Decompress for C-Move\n");
+	printf("\n*** Decompress for C-Get\n");
 	
 	return cond;
 }

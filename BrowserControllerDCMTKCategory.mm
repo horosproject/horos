@@ -64,9 +64,9 @@ extern NSRecursiveLock *PapyrusLock;
 	else
 		modality = @"OT";
 	
-	int quality;
+	int quality, compression = [BrowserController compressionForModality: modality quality: &quality];
 	
-	if( [BrowserController compressionForModality: modality quality: &quality] != compression_none)
+	if( compression != compression_none)
 	{
 //			NSString *dest2 = path;
 //			
@@ -98,7 +98,7 @@ extern NSRecursiveLock *PapyrusLock;
 		
 		NSTask *theTask = [[NSTask alloc] init];
 		
-		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"useJPEG2000forCompression"])
+		if( compression == compression_JPEG2000)
 			[theTask setArguments: [NSArray arrayWithObjects:path, @"compressJPEG2000", [NSString stringWithFormat: @"%d", quality], nil]];
 		else
 			[theTask setArguments: [NSArray arrayWithObjects:path, @"compress", nil]];
