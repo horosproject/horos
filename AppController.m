@@ -1015,9 +1015,11 @@ static NSDate *lastWarningDate = nil;
 	
 	@try
 	{
-		if( [[[[defaults arrayForKey: @"CompressionSettings"] objectAtIndex: 0] valueForKey: @"compression"] intValue] == 0)
+		NSDictionary *defaultSettings = [[defaults arrayForKey: @"CompressionSettings"] objectAtIndex: 0];
+		
+		if( [[defaultSettings valueForKey: @"compression"] intValue] == 0)
 		{
-			NSMutableDictionary *d = [[[[defaults arrayForKey: @"CompressionSettings"] objectAtIndex: 0] mutableCopy] autorelease];
+			NSMutableDictionary *d = [[defaultSettings mutableCopy] autorelease];
 			
 			[d setObject: @"1" forKey: @"compression"];
 			

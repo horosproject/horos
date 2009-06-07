@@ -15,23 +15,14 @@
 
 #import <Cocoa/Cocoa.h>
 
-@class MPR2DController;
-@class NSCFDate;
-@class BurnerWindowController;
-@class ViewerController;
-@class BonjourPublisher;
-@class BonjourBrowser;
-@class AnonymizerWindowController;
-@class QueryController;
-@class LogWindowController;
-@class PreviewView;
-@class MyOutlineView;
-@class DCMView;
-@class DCMPix;
-@class StructuredReportController;
-@class BrowserMatrix;
-@class PluginManagerController;
-@class WaitRendering;
+@class MPR2DController,NSCFDate;
+@class BurnerWindowController,ViewerController;
+@class BonjourPublisher,BonjourBrowser;
+@class AnonymizerWindowController,QueryController;
+@class LogWindowController,PreviewView;
+@class MyOutlineView,DCMView,DCMPix;
+@class StructuredReportController,BrowserMatrix;
+@class PluginManagerController,WaitRendering, Wait;
 
 enum RootTypes{PatientRootType, StudyRootType, RandomRootType};
 enum simpleSearchType {PatientNameSearch, PatientIDSearch};
@@ -238,6 +229,8 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	NSTimeInterval					lastCheckIncoming;
 	
 	WaitRendering					*waitOpeningWindow;
+	Wait							*waitCompressionWindow;
+	BOOL							waitCompressionAbort;
 	
 	BOOL							checkForMountedFiles;
 }

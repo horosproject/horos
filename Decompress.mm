@@ -87,15 +87,15 @@ int main(int argc, const char *argv[])
 		{
 			OFCondition cond;
 			OFBool status = YES;
-			const char *fname = (const char *)[path UTF8String];
-			const char *destination = nil;
 			int quality = [dest intValue];
 			
-			if( dest2 && [dest2 isEqualToString:path] == NO) destination = (const char *)[dest2 UTF8String];
+			if( dest2 && [dest2 isEqualToString:path] == NO)
+			{
+			
+			}
 			else
 			{
 				dest2 = path;
-				destination = fname;
 			}
 			
 			NSMutableDictionary	*dict = [DefaultsOsiriX getDefaults];
@@ -103,8 +103,6 @@ int main(int argc, const char *argv[])
 			
 			dcmtkSetJPEGColorSpace( [[dict objectForKey:@"UseJPEGColorSpace"] intValue]);
 			[DCMPixelDataAttribute setUseOpenJpeg: [[dict objectForKey:@"UseOpenJpegForJPEG2000"] intValue]];
-			
-			NSLog( @"JP2K:%d",quality);
 			
 			DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile: path decodingPixelData:YES];
 			
@@ -124,7 +122,12 @@ int main(int argc, const char *argv[])
 			{
 				if( dest2 == path)
 					[[NSFileManager defaultManager] removeFileAtPath: path handler: nil];
-				[[NSFileManager defaultManager] movePath: [dest2 stringByAppendingString: @" temp"]  toPath: dest handler: nil];
+				[[NSFileManager defaultManager] movePath: [dest2 stringByAppendingString: @" temp"] toPath: dest2 handler: nil];
+			}
+			else
+			{
+				NSLog( @"failed to compress file: %@", path);
+				[[NSFileManager defaultManager] removeFileAtPath: [dest2 stringByAppendingString: @" temp"] handler: nil];
 			}
 		}
 		

@@ -11825,6 +11825,9 @@ static NSArray*	openSubSeriesArray = nil;
 		wait = [[WaitRendering alloc] init: NSLocalizedString(@"Starting 32-bit version", nil)];
 	}
 	
+	waitCompressionWindow  = [[Wait alloc] initWithString: NSLocalizedString( @"File Conversion", nil) :NO];
+	[waitCompressionWindow setCancel:YES];
+		
 	if( autoroutingQueueArray == nil) autoroutingQueueArray = [[NSMutableArray array] retain];
 	if( autoroutingQueue == nil) autoroutingQueue = [[NSLock alloc] init];
 	if( autoroutingInProgress == nil) autoroutingInProgress = [[NSLock alloc] init];
@@ -13120,6 +13123,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[decompressArray addObjectsFromArray: result];
 		[decompressArrayLock unlock];
 		
+		[waitCompressionWindow showWindow:self];
+		[[waitCompressionWindow progress] setMaxValue: [decompressArray count]];
+		
 		[NSThread detachNewThreadSelector: @selector( decompressThread:) toTarget:self withObject: [NSNumber numberWithChar: 'C']];
 		[decompressThreadRunning unlock];
 	}
@@ -13156,10 +13162,30 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[decompressArray addObjectsFromArray: result];
 		[decompressArrayLock unlock];
 		
+		[waitCompressionWindow showWindow:self];
+		[[waitCompressionWindow progress] setMaxValue: [decompressArray count]];
+		
 		[NSThread detachNewThreadSelector: @selector( decompressThread:) toTarget:self withObject: [NSNumber numberWithChar: 'D']];
 		[decompressThreadRunning unlock];
 	}
 	else NSRunInformationalAlertPanel(NSLocalizedString(@"Non-Local Database", nil), NSLocalizedString(@"Cannot decompress images in a distant database.", nil), NSLocalizedString(@"OK",nil), nil, nil);
+}
+
+- (void) decompressWaitIncrementation
+{
+	if( [[waitCompressionWindow window] isVisible])
+	{
+		[waitCompressionWindow incrementBy:1];
+		
+		waitCompressionAbort = [waitCompressionWindow aborted];
+		
+		if( [[waitCompressionWindow progress] doubleValue] >= [[waitCompressionWindow progress] maxValue] || waitCompressionAbort == YES)
+		{
+			[[waitCompressionWindow progress] setDoubleValue: 0];
+			[waitCompressionWindow close];
+		}
+	}
+	else waitCompressionAbort = NO;
 }
 
 - (void) decompressThread: (NSNumber*) typeOfWork
@@ -13219,6 +13245,14 @@ static volatile int numberOfThreadsForJPEG = 0;
 				[NSThread detachNewThreadSelector: @selector( decompressDICOMJPEGinINCOMING:) toTarget:self withObject: obj];
 				break;
 		}
+		
+		if( mainThread != [NSThread currentThread])
+			[self performSelectorOnMainThread: @selector(decompressWaitIncrementation) withObject: nil waitUntilDone: NO];
+		else
+			[self decompressWaitIncrementation];
+			
+		if( waitCompressionAbort)
+			break;
 	}
 	
 	finished = NO;
@@ -14407,9 +14441,16 @@ static volatile int numberOfThreadsForJPEG = 0;
 		
 		[pool release];
 	}
+
+	//close progress window	
+	[splash close];
+	[splash release];
 	
 	if( [files2Compress count] > 0 )
 	{
+		[waitCompressionWindow showWindow:self];
+		[[waitCompressionWindow progress] setMaxValue: [files2Compress count]];
+	
 		switch( [compressionMatrix selectedTag] )
 		{
 			case 1:
@@ -14420,6 +14461,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 				[self decompressArrayOfFiles: files2Compress work: [NSNumber numberWithChar: 'D']];
 				break;
 		}
+		
+		[waitCompressionWindow close];
 	}
 	
 	// add DICOMDIR
@@ -14451,7 +14494,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 				NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 				
 				NSLog(@" ADD dicomdir");
-				NSTask              *theTask;
+				NSTask *theTask;
 				NSMutableArray *theArguments = [NSMutableArray arrayWithObjects:@"+r", @"-Pfl", @"-W", @"-Nxc",@"+I",@"+id", tempPath,  nil];
 				
 				theTask = [[NSTask alloc] init];
@@ -14468,11 +14511,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			}
 		}
 	}
-	
-	//close progress window	
-	[splash close];
-	[splash release];
-	
+		
 	return result;
 }
 

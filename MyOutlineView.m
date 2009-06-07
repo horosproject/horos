@@ -360,6 +360,7 @@
 
 - (void)rightMouseDown:(NSEvent *)theEvent
 {
+	[[self window] makeKeyAndOrderFront: self];
 	[[self window] makeFirstResponder: self];
 	[super rightMouseDown: theEvent];
 }

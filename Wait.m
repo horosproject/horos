@@ -27,6 +27,7 @@
 	[[self window] setDelegate: self];
 	
 	displayedTime = [NSDate timeIntervalSinceReferenceDate];
+	aborted = NO;
 }
 
 - (void) close

@@ -68,6 +68,34 @@ extern NSRecursiveLock *PapyrusLock;
 	
 	if( [BrowserController compressionForModality: modality quality: &quality] != compression_none)
 	{
+//			NSString *dest2 = path;
+//			
+//			DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile: path decodingPixelData:YES];
+//			
+//			BOOL succeed = NO;
+//			
+//			@try
+//			{
+//				succeed = [dcmObject writeToFile: [dest2 stringByAppendingString: @" temp"] withTransferSyntax:[DCMTransferSyntax JPEG2000LosslessTransferSyntax] quality: quality AET:@"OsiriX" atomically:YES];
+//			}
+//			@catch (NSException *e)
+//			{
+//				NSLog( @"dcmObject writeToFile failed: %@", e);
+//			}
+//			[dcmObject release];
+//			
+//			if( succeed)
+//			{
+//				if( dest2 == path)
+//					[[NSFileManager defaultManager] removeFileAtPath: path handler: nil];
+//				[[NSFileManager defaultManager] movePath: [dest2 stringByAppendingString: @" temp"] toPath: dest2 handler: nil];
+//			}
+//			else
+//			{
+//				NSLog( @"failed to compress file: %@", path);
+//				[[NSFileManager defaultManager] removeFileAtPath: [dest2 stringByAppendingString: @" temp"] handler: nil];
+//			}
+		
 		NSTask *theTask = [[NSTask alloc] init];
 		
 		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"useJPEG2000forCompression"])
