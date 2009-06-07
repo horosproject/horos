@@ -605,51 +605,168 @@ subOpCallback(void * /*subOpCallbackData*/ ,
     ** syntax they support (this is not part of the standard) so
     ** organise the proposed transfer syntaxes to take advantage
     ** of such behaviour.
-    **
-    ** The presentation contexts proposed here are only used for
-    ** C-FIND and C-MOVE, so there is no need to support compressed
-    ** transmission.
     */
 
-    const char* transferSyntaxes[] = { NULL, NULL, NULL };
+	const char* transferSyntaxes[] = { NULL, NULL, NULL, NULL,NULL, NULL, NULL, NULL, NULL, NULL, NULL };
     int numTransferSyntaxes = 0;
 
-    switch (_networkTransferSyntax) {
-    case EXS_LittleEndianImplicit:
+    switch (_networkTransferSyntax) 
+	{
+	case EXS_LittleEndianImplicit:
         /* we only support Little Endian Implicit */
-        transferSyntaxes[0]  = UID_LittleEndianImplicitTransferSyntax;
+        transferSyntaxes[0] = UID_LittleEndianImplicitTransferSyntax;
         numTransferSyntaxes = 1;
         break;
-    case EXS_LittleEndianExplicit:
+		
+	  default:
+      case EXS_LittleEndianExplicit:
         /* we prefer Little Endian Explicit */
-        transferSyntaxes[0] = UID_LittleEndianExplicitTransferSyntax;
-        transferSyntaxes[1] = UID_BigEndianExplicitTransferSyntax;
-        transferSyntaxes[2] = UID_LittleEndianImplicitTransferSyntax;
-        numTransferSyntaxes = 3;
+        transferSyntaxes[0] = UID_LittleEndianExplicitTransferSyntax;	//;
+        transferSyntaxes[1] = UID_LittleEndianImplicitTransferSyntax;
+        transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
+		transferSyntaxes[3] = UID_JPEGProcess14SV1TransferSyntax;				//jpeg lossless
+		transferSyntaxes[4] = UID_JPEGProcess1TransferSyntax;					//jpeg 8
+		transferSyntaxes[5] = UID_JPEGProcess2_4TransferSyntax;					//jpeg 12
+		transferSyntaxes[6] = UID_JPEG2000LosslessOnlyTransferSyntax;			//jpeg 2000 lossless
+		transferSyntaxes[7] = UID_JPEG2000TransferSyntax;						//jpeg 2000
+		transferSyntaxes[8] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;	//bzip
+		transferSyntaxes[9] = UID_RLELosslessTransferSyntax;					//RLE
+		transferSyntaxes[10] = UID_MPEG2MainProfileAtMainLevelTransferSyntax;
+		
+        numTransferSyntaxes = 11;
         break;
-    case EXS_BigEndianExplicit:
+		
+      case EXS_BigEndianExplicit:
         /* we prefer Big Endian Explicit */
         transferSyntaxes[0] = UID_BigEndianExplicitTransferSyntax;
         transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
         transferSyntaxes[2] = UID_LittleEndianImplicitTransferSyntax;
-        numTransferSyntaxes = 3;
+		transferSyntaxes[3] = UID_JPEGProcess14SV1TransferSyntax;				//jpeg lossless
+		transferSyntaxes[4] = UID_JPEGProcess1TransferSyntax;					//jpeg 8
+		transferSyntaxes[5] = UID_JPEGProcess2_4TransferSyntax;					//jpeg 12
+		transferSyntaxes[6] = UID_JPEG2000LosslessOnlyTransferSyntax;			//jpeg 2000 lossless
+		transferSyntaxes[7] = UID_JPEG2000TransferSyntax;						//jpeg 2000
+		transferSyntaxes[8] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;	//bzip
+		transferSyntaxes[9] = UID_RLELosslessTransferSyntax;					//RLE
+        numTransferSyntaxes = 10;
         break;
-    default:
-        /* We prefer explicit transfer syntaxes.
-         * If we are running on a Little Endian machine we prefer
-         * LittleEndianExplicitTransferSyntax to BigEndianTransferSyntax.
-         */
-        if (gLocalByteOrder == EBO_LittleEndian)  /* defined in dcxfer.h */
-        {
-            transferSyntaxes[0] = UID_LittleEndianExplicitTransferSyntax;
-            transferSyntaxes[1] = UID_BigEndianExplicitTransferSyntax;
-        } else {
-            transferSyntaxes[0] = UID_BigEndianExplicitTransferSyntax;
-            transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
-        }
+		
+#ifndef DISABLE_COMPRESSION_EXTENSION
+      case EXS_JPEGProcess14SV1TransferSyntax:
+        /* we prefer JPEGLossless:Hierarchical-1stOrderPrediction (default lossless) */
+        transferSyntaxes[0] = UID_JPEGProcess14SV1TransferSyntax;
+		transferSyntaxes[1] = UID_JPEGProcess1TransferSyntax;					//jpeg 8
+		transferSyntaxes[2] = UID_JPEGProcess2_4TransferSyntax;					//jpeg 12
+		transferSyntaxes[3] = UID_JPEG2000LosslessOnlyTransferSyntax;			//jpeg 2000 lossless
+		transferSyntaxes[4] = UID_JPEG2000TransferSyntax;						//jpeg 2000
+        transferSyntaxes[5] = UID_LittleEndianExplicitTransferSyntax;
+        transferSyntaxes[6] = UID_LittleEndianImplicitTransferSyntax;
+        transferSyntaxes[7] = UID_BigEndianExplicitTransferSyntax;
+		transferSyntaxes[8] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;	//bzip
+		transferSyntaxes[9] = UID_RLELosslessTransferSyntax;					//RLE
+        transferSyntaxes[10] = UID_MPEG2MainProfileAtMainLevelTransferSyntax;
+		
+        numTransferSyntaxes = 11;
+        break;
+      case EXS_JPEGProcess1TransferSyntax:
+        /* we prefer JPEGBaseline (default lossy for 8 bit images) */
+        transferSyntaxes[0] = UID_JPEGProcess1TransferSyntax;
+		transferSyntaxes[1] = UID_JPEGProcess2_4TransferSyntax;					//jpeg 12
+		transferSyntaxes[2] = UID_JPEGProcess14SV1TransferSyntax;
+		transferSyntaxes[3] = UID_JPEG2000LosslessOnlyTransferSyntax;			//jpeg 2000 lossless
+		transferSyntaxes[4] = UID_JPEG2000TransferSyntax;						//jpeg 2000
+        transferSyntaxes[5] = UID_LittleEndianExplicitTransferSyntax;
+        transferSyntaxes[6] = UID_LittleEndianImplicitTransferSyntax;
+        transferSyntaxes[7] = UID_BigEndianExplicitTransferSyntax;
+		transferSyntaxes[8] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;	//bzip
+		transferSyntaxes[9] = UID_RLELosslessTransferSyntax;					//RLE
+        transferSyntaxes[10] = UID_MPEG2MainProfileAtMainLevelTransferSyntax;
+		
+        numTransferSyntaxes = 11;
+        break;
+      case EXS_JPEGProcess2_4TransferSyntax:
+        /* we prefer JPEGExtended (default lossy for 12 bit images) */
+        transferSyntaxes[0] = UID_JPEGProcess2_4TransferSyntax;
+		transferSyntaxes[1] = UID_JPEGProcess14SV1TransferSyntax;
+		transferSyntaxes[2] = UID_JPEGProcess1TransferSyntax;
+		transferSyntaxes[3] = UID_JPEG2000LosslessOnlyTransferSyntax;			//jpeg 2000 lossless
+		transferSyntaxes[4] = UID_JPEG2000TransferSyntax;						//jpeg 2000
+        transferSyntaxes[5] = UID_LittleEndianExplicitTransferSyntax;
+        transferSyntaxes[6] = UID_LittleEndianImplicitTransferSyntax;
+        transferSyntaxes[7] = UID_BigEndianExplicitTransferSyntax;
+		transferSyntaxes[8] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;	//bzip
+		transferSyntaxes[9] = UID_RLELosslessTransferSyntax;					//RLE
+        transferSyntaxes[10] = UID_MPEG2MainProfileAtMainLevelTransferSyntax;
+		
+        numTransferSyntaxes = 11;
+        break;
+      case EXS_JPEG2000LosslessOnly:
+        /* we prefer JPEG 2000 lossless */
+        transferSyntaxes[0] = UID_JPEG2000LosslessOnlyTransferSyntax;
+        transferSyntaxes[1] = UID_JPEG2000TransferSyntax ;
+		transferSyntaxes[5] = UID_JPEGProcess14SV1TransferSyntax;
+		transferSyntaxes[6] = UID_JPEGProcess2_4TransferSyntax;		
+		transferSyntaxes[7] = UID_JPEGProcess1TransferSyntax;
+        transferSyntaxes[2] = UID_LittleEndianExplicitTransferSyntax;
+        transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+		transferSyntaxes[4] = UID_BigEndianExplicitTransferSyntax;				
+		transferSyntaxes[8] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;	//bzip
+		transferSyntaxes[9] = UID_RLELosslessTransferSyntax;					//RLE
+         transferSyntaxes[10] = UID_MPEG2MainProfileAtMainLevelTransferSyntax;
+		
+        numTransferSyntaxes = 11;
+        break;
+      case EXS_JPEG2000:
+        /* we prefer JPEG 2000 lossy or lossless */
+        transferSyntaxes[0] = UID_JPEG2000TransferSyntax ;
+        transferSyntaxes[1] = UID_JPEG2000LosslessOnlyTransferSyntax ;
+		transferSyntaxes[2] = UID_JPEGProcess14SV1TransferSyntax;
+		transferSyntaxes[3] = UID_JPEGProcess2_4TransferSyntax;		
+		transferSyntaxes[4] = UID_JPEGProcess1TransferSyntax;
+        transferSyntaxes[5] = UID_LittleEndianExplicitTransferSyntax;
+        transferSyntaxes[6] = UID_LittleEndianImplicitTransferSyntax;
+		transferSyntaxes[7] = UID_BigEndianExplicitTransferSyntax;				
+		transferSyntaxes[8] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;	//bzip
+		transferSyntaxes[9] = UID_RLELosslessTransferSyntax;					//RLE
+		transferSyntaxes[10] = UID_MPEG2MainProfileAtMainLevelTransferSyntax;
+		
+        numTransferSyntaxes = 11;
+        break;
+#ifdef WITH_ZLIB
+      case EXS_DeflatedLittleEndianExplicit:
+        /* we prefer deflated transmission */
+        transferSyntaxes[0] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;
+        transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
         transferSyntaxes[2] = UID_LittleEndianImplicitTransferSyntax;
-        numTransferSyntaxes = 3;
+        transferSyntaxes[3] = UID_BigEndianExplicitTransferSyntax;
+		transferSyntaxes[4] = UID_JPEG2000LosslessOnlyTransferSyntax;
+		transferSyntaxes[5] = UID_JPEG2000TransferSyntax;
+		transferSyntaxes[6] = UID_JPEGProcess14SV1TransferSyntax;
+		transferSyntaxes[7] = UID_JPEGProcess2_4TransferSyntax;		
+		transferSyntaxes[8] = UID_JPEGProcess1TransferSyntax;
+		transferSyntaxes[9] = UID_RLELosslessTransferSyntax;					//RLE
+        transferSyntaxes[10] = UID_MPEG2MainProfileAtMainLevelTransferSyntax;
+		
+        numTransferSyntaxes = 11;
         break;
+#endif
+      case EXS_RLELossless:
+        /* we prefer RLE Lossless */
+        transferSyntaxes[0] = UID_RLELosslessTransferSyntax;
+        transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+        transferSyntaxes[2] = UID_LittleEndianImplicitTransferSyntax;
+        transferSyntaxes[3] = UID_BigEndianExplicitTransferSyntax;
+		transferSyntaxes[4] = UID_JPEG2000LosslessOnlyTransferSyntax;
+		transferSyntaxes[5] = UID_JPEG2000TransferSyntax;
+		transferSyntaxes[6] = UID_JPEGProcess14SV1TransferSyntax;
+		transferSyntaxes[7] = UID_JPEGProcess2_4TransferSyntax;		
+		transferSyntaxes[8] = UID_JPEGProcess1TransferSyntax;
+		transferSyntaxes[9] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;
+        transferSyntaxes[10] = UID_MPEG2MainProfileAtMainLevelTransferSyntax;
+		
+        numTransferSyntaxes = 11;
+        break;
+#endif
     }
 	
 	OFCondition cond = EC_Normal;
@@ -735,9 +852,14 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 //	DIMSE_debug(OFTrue);
 //	SetDebugLevel(3);
 	
-	//Use Little Endian TS
-	_networkTransferSyntax = EXS_LittleEndianExplicit;	//EXS_LittleEndianExplicit;	//EXS_LittleEndianExplicit;
-	
+	if( strcmp(abstractSyntax, UID_GETPatientRootQueryRetrieveInformationModel) == 0 ||
+		strcmp(abstractSyntax, UID_GETStudyRootQueryRetrieveInformationModel) == 0 ||
+		strcmp(abstractSyntax, UID_GETPatientStudyOnlyQueryRetrieveInformationModel) == 0)
+	{
+		_networkTransferSyntax = (E_TransferSyntax) [[NSUserDefaults standardUserDefaults] integerForKey: @"preferredSyntaxForIncoming"];
+	}
+	else
+		_networkTransferSyntax = EXS_LittleEndianExplicit;
 	
 	@try
 	{
@@ -874,11 +996,11 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		/*
 		abstract syntax should be 
 		UID_MOVEStudyRootQueryRetrieveInformationModel
-						or 
 		UID_FINDStudyRootQueryRetrieveInformationModel
+		UID_GETStudyRootQueryRetrieveInformationModel
 		*/
 		cond = [self addPresentationContext:params abstractSyntax:abstractSyntax];
-		//cond = addPresentationContext(params, UID_FINDStudyRootQueryRetrieveInformationModel);
+		
 		if (cond.bad())
 		{
 			DimseCondition::dump(cond);

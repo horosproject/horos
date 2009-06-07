@@ -751,8 +751,63 @@ void DcmQueryRetrieveMoveContext::moveNextImage(DcmQueryRetrieveDatabaseStatus *
 		}
 		else if (filexfer.isEncapsulated() && preferredXfer.isEncapsulated())
 		{
-			if( xferSyntax != originalXFer)
+			// The file is already compressed, we will not re-compress the file.....
+			
+			if(		(xferSyntax == EXS_JPEGProcess1TransferSyntax ||
+					xferSyntax == EXS_JPEGProcess2_4TransferSyntax ||
+					xferSyntax == EXS_JPEGProcess3_5TransferSyntax ||
+					xferSyntax == EXS_JPEGProcess6_8TransferSyntax ||
+					xferSyntax == EXS_JPEGProcess7_9TransferSyntax ||
+					xferSyntax == EXS_JPEGProcess10_12TransferSyntax ||
+					xferSyntax == EXS_JPEGProcess11_13TransferSyntax ||
+					xferSyntax == EXS_JPEGProcess14TransferSyntax ||
+					xferSyntax == EXS_JPEGProcess15TransferSyntax ||
+					xferSyntax == EXS_JPEGProcess16_18TransferSyntax ||
+					xferSyntax == EXS_JPEGProcess17_19TransferSyntax ||
+					xferSyntax == EXS_JPEGProcess20_22TransferSyntax ||
+					xferSyntax == EXS_JPEGProcess21_23TransferSyntax ||
+					xferSyntax == EXS_JPEGProcess24_26TransferSyntax ||
+					xferSyntax == EXS_JPEGProcess25_27TransferSyntax ||
+					xferSyntax == EXS_JPEGProcess28TransferSyntax ||
+					xferSyntax == EXS_JPEGProcess29TransferSyntax ||
+					xferSyntax == EXS_JPEGProcess14SV1TransferSyntax)
+					&&
+					(originalXFer == EXS_JPEGProcess1TransferSyntax ||
+					originalXFer == EXS_JPEGProcess2_4TransferSyntax ||
+					originalXFer == EXS_JPEGProcess3_5TransferSyntax ||
+					originalXFer == EXS_JPEGProcess6_8TransferSyntax ||
+					originalXFer == EXS_JPEGProcess7_9TransferSyntax ||
+					originalXFer == EXS_JPEGProcess10_12TransferSyntax ||
+					originalXFer == EXS_JPEGProcess11_13TransferSyntax ||
+					originalXFer == EXS_JPEGProcess14TransferSyntax ||
+					originalXFer == EXS_JPEGProcess15TransferSyntax ||
+					originalXFer == EXS_JPEGProcess16_18TransferSyntax ||
+					originalXFer == EXS_JPEGProcess17_19TransferSyntax ||
+					originalXFer == EXS_JPEGProcess20_22TransferSyntax ||
+					originalXFer == EXS_JPEGProcess21_23TransferSyntax ||
+					originalXFer == EXS_JPEGProcess24_26TransferSyntax ||
+					originalXFer == EXS_JPEGProcess25_27TransferSyntax ||
+					originalXFer == EXS_JPEGProcess28TransferSyntax ||
+					originalXFer == EXS_JPEGProcess29TransferSyntax ||
+					originalXFer == EXS_JPEGProcess14SV1TransferSyntax))
+					{
+						// it's quite similar...
+					}
+			else if( (xferSyntax == EXS_JPEG2000LosslessOnly ||
+					xferSyntax == EXS_JPEG2000 ||
+					xferSyntax == EXS_JPEG2000MulticomponentLosslessOnly ||
+					xferSyntax == EXS_JPEG2000Multicomponent)
+						&&
+					(originalXFer == EXS_JPEG2000LosslessOnly ||
+					originalXFer == EXS_JPEG2000 ||
+					originalXFer == EXS_JPEG2000MulticomponentLosslessOnly ||
+					originalXFer == EXS_JPEG2000Multicomponent))
+					{
+						// it's quite similar...
+					}
+			else
 			{
+				printf("Warning! I'm recompressing files that are already compressed, you should optimize your ts parameters to avoid this: presentation for syntax:%s -> %s\n", dcmFindNameOfUID( filexfer.getXferID()), dcmFindNameOfUID( preferredXfer.getXferID()));
 				cond = decompressFileFormat(fileformat, subImgFileName);
 				status = compressFileFormat(fileformat, subImgFileName, outfname, xferSyntax);
 				
