@@ -285,7 +285,16 @@ static NSLock *currentHostLock = nil;
 							if( [[d valueForKey: @"Address"] isEqualToString: [s valueForKey: @"Address"]])
 								alreadyHere = YES;
 							else if( [[DCMNetServiceDelegate getIPAddress: [d valueForKey: @"Address"]] isEqualToString: [DCMNetServiceDelegate getIPAddress: [s valueForKey: @"Address"]]])
-								alreadyHere = YES;
+							{
+								// If one of these addresses is numeric -> keep the dns name
+								if( [[NSCharacterSet decimalDigitCharacterSet] characterIsMember: [[d valueForKey: @"Address"] characterAtIndex: 0]])
+								{
+									[serversArray objectAtIndex: v];
+									v--;
+								}
+								else
+									alreadyHere = YES;
+							}
 						}
 					}
 					
