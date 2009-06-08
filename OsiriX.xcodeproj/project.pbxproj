@@ -8394,7 +8394,7 @@
 		CE897DD30C21D951005C669E /* texture.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = texture.tif; path = Binaries/Icons/texture.tif; sourceTree = "<group>"; };
 		CE898D8A0CBA1B470029E907 /* Osirix32bitShell.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = Osirix32bitShell.icns; path = Binaries/Icons/Osirix32bitShell.icns; sourceTree = "<group>"; };
 		CE8CAB0A0B4715DD0068DBAE /* DICOMPrint */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = DICOMPrint; sourceTree = BUILT_PRODUCTS_DIR; };
-		CE8D057D0FD8505000165DDE /* OsiriX.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OsiriX.framework; path = build/Development/OsiriX.framework; sourceTree = "<group>"; };
+		CE8D057D0FD8505000165DDE /* OsiriX.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = OsiriX.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE90D8C3095F5B48004FC7E2 /* FlipData.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = FlipData.tiff; sourceTree = "<group>"; };
 		CE96D0DB0BEE6F9800C4E397 /* XMLControllerDCMTKCategory.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = XMLControllerDCMTKCategory.h; sourceTree = "<group>"; };
 		CE96D0DC0BEE6F9800C4E397 /* XMLControllerDCMTKCategory.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = XMLControllerDCMTKCategory.mm; sourceTree = "<group>"; };
