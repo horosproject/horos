@@ -676,14 +676,9 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 		goto finishedConversion;
 		//return YES;
 	}
-
-		
-		
-		
-		// we need to decode pixel data
-	if (![[DCMTransferSyntax OsiriXTransferSyntax] isEqualToTransferSyntax:transferSyntax]) {
-		[self decodeData];
-	}
+	
+	// we need to decode pixel data
+	[self decodeData];
 	
 	// may need to change PixelRepresentation to 1 if it was compressed and has a intercept
 	if ([[_dcmObject attributeValueWithName:@"RescaleIntercept" ] intValue] < 0) {
@@ -1430,7 +1425,8 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 			[self replaceFrameAtIndex:i withFrame:[self decodeFrameAtIndex:i]];
 		}
 	}
-	self.transferSyntax = [DCMTransferSyntax OsiriXTransferSyntax];
+	self.transferSyntax = [DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax];
+	
 	_isDecoded = YES;
 	NSString *colorspace = [_dcmObject attributeValueWithName:@"PhotometricInterpretation"];
 	if ([colorspace hasPrefix:@"YBR"] || [colorspace hasPrefix:@"PALETTE"])

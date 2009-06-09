@@ -2869,6 +2869,8 @@ static NSArray*	statesArray = nil;
 	[AppController createNoIndexDirectoryIfNecessary: [[self documentsDirectory] stringByAppendingPathComponent: DATABASEPATH]];
 	[AppController createNoIndexDirectoryIfNecessary: [[self documentsDirectory] stringByAppendingPathComponent: INCOMINGPATH]];
 	
+	[BrowserController computeDATABASEINDEXforDatabase: [[self documentsDirectory] stringByAppendingPathComponent: DATABASEPATH]];
+	
 	[self setDBWindowTitle];
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"OsiriXServerArray has changed" object:nil];
@@ -2933,7 +2935,6 @@ static NSArray*	statesArray = nil;
 			[[NSString stringWithString:DATABASEVERSION] writeToFile: [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"DB_VERSION"] atomically:YES];
 			
 			[[NSUserDefaults standardUserDefaults] setObject:DATABASEVERSION forKey: @"DATABASEVERSION"];
-			[[NSUserDefaults standardUserDefaults] setInteger: DATABASEINDEX forKey: @"DATABASEINDEX"];
 			
 			[context unlock];
 			[context release];
@@ -11518,6 +11519,8 @@ static NSArray*	openSubSeriesArray = nil;
 
 }
 
+
+
 + (unsigned int)_currentModifierFlags
 {
     unsigned int flags = 0;
@@ -11563,6 +11566,29 @@ static NSArray*	openSubSeriesArray = nil;
 //		[[[ViewerController getDisplayed2DViewers] lastObject] VRViewer: nil];
 //	}
 //}
+
++ (void) computeDATABASEINDEXforDatabase:(NSString*) path
+{
+	@try
+	{
+		long v = 0;
+		
+		if( [[NSFileManager defaultManager] destinationOfSymbolicLinkAtPath: path error: nil])
+			path = [[NSFileManager defaultManager] destinationOfSymbolicLinkAtPath: path error: nil];
+		
+		for( NSString *f in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:path error: nil])
+		{
+			long c = [f integerValue];
+			if( c > v) v = c;
+		}
+		
+		DATABASEINDEX = v;
+		NSLog( @"DATABASEINDEX: %d", DATABASEINDEX);
+	}
+	@catch (NSException * e) {
+		NSLog( @"**** computeDATABASEINDEXforDatabase: %@", e);
+	}
+}
 
 - (id)initWithWindow: (NSWindow *)window
 {
@@ -11644,7 +11670,7 @@ static NSArray*	openSubSeriesArray = nil;
 		processorsLock = [[NSConditionLock alloc] initWithCondition: 1];
 		decompressArray = [[NSMutableArray alloc] initWithCapacity: 0];
 		
-		DATABASEINDEX	= [[NSUserDefaults standardUserDefaults] integerForKey: @"DATABASEINDEX"];
+		DATABASEINDEX = 0;
 		
 		DatabaseIsEdited = NO;
 		

@@ -86,7 +86,7 @@ END_EXTERN_C
 
 extern char currentDestinationMoveAET[ 60];
 
-static OFCondition decompressFileFormat(DcmFileFormat fileformat, const char *fname)
+OFCondition decompressFileFormat(DcmFileFormat fileformat, const char *fname)
 {
 	OFBool status = YES;
 	OFCondition cond;
@@ -120,12 +120,12 @@ static OFCondition decompressFileFormat(DcmFileFormat fileformat, const char *fn
 			status = NO;
 	}
 	
-	printf("\n*** Decompress for C-Move\n");
+	printf("\n*** Decompress for C-Move/C-Get\n");
 	
 	return cond;
 }
 
-static OFBool compressFileFormat(DcmFileFormat fileformat, const char *fname, char *outfname, E_TransferSyntax newXfer)
+OFBool compressFileFormat(DcmFileFormat fileformat, const char *fname, char *outfname, E_TransferSyntax newXfer)
 {
 	OFCondition cond;
 	OFBool status = YES;
@@ -148,12 +148,13 @@ static OFBool compressFileFormat(DcmFileFormat fileformat, const char *fname, ch
 	else if  (newXfer == EXS_JPEG2000LosslessOnly)
 	{
 		NSString *path = [NSString stringWithCString:fname encoding:[NSString defaultCStringEncoding]];
+		NSString *outpath = [NSString stringWithCString:outfname encoding:[NSString defaultCStringEncoding]];
 		
 		DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile:path decodingPixelData:YES];
 		
 		unlink( outfname);
 		
-		[dcmObject writeToFile:path withTransferSyntax:[DCMTransferSyntax JPEG2000LosslessTransferSyntax] quality: DCMLosslessQuality AET:@"OsiriX" atomically:YES];
+		[dcmObject writeToFile:outpath withTransferSyntax:[DCMTransferSyntax JPEG2000LosslessTransferSyntax] quality: DCMLosslessQuality AET:@"OsiriX" atomically:YES];
 		[dcmObject release];
 		
 		printf("\n**** compressFileFormat EXS_JPEG2000LosslessOnly\n");

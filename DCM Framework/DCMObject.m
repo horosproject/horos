@@ -615,13 +615,11 @@ PixelRepresentation
 				DCMAttribute *attr = nil;
 				//sequence attribute
 				
-				if ([DCMValueRepresentation isSequenceVR:vr] || ([DCMValueRepresentation  isUnknownVR:vr] && vl == 0xFFFFFFFF))
+				if( [DCMValueRepresentation isSequenceVR:vr] || ([DCMValueRepresentation  isUnknownVR:vr] && vl == 0xFFFFFFFF))
 				{
-					
 					attr = (DCMAttribute *) [[[DCMSequenceAttribute alloc] initWithAttributeTag:(DCMAttributeTag *)tag] autorelease];
 					*byteOffset = [self readNewSequenceAttribute:attr dicomData:dicomData byteOffset:byteOffset lengthToRead:vl specificCharacterSet:specificCharacterSet];
 				} 
-				
 				// "7FE0,0010" == PixelData
 				else if (strcmp(tagUTF8, "7FE0,0010") == 0)
 				{
@@ -746,10 +744,8 @@ PixelRepresentation
 			}
 			else if ([tag.stringValue isEqualToString:[sharedTagForNameDictionary objectForKey:@"Item"]]) {
 				if (DCMDEBUG)
-				NSLog(@"New Item");
+					NSLog(@"New Item");
 				DCMObject *object = [[[[self class] alloc] initWithDataContainer:dicomData lengthToRead:vl byteOffset:byteOffset characterSet:specificCharacterSet decodingPixelData:NO] autorelease];
-				//DCMObject *object = [[[DCMObject alloc] initWithDataContainer:dicomData lengthToRead:vl byteOffset:byteOffset characterSet:specificCharacterSet decodingPixelData:NO] autorelease];
-
 				[(DCMSequenceAttribute *)attr  addItem:object offset:itemStartOffset];
 				if (DCMDEBUG)
 					NSLog(@"end New Item");
@@ -1551,9 +1547,18 @@ PixelRepresentation
 					}
 				}
 			}
-			else {		
+			else
+			{
 				[container setUseMetaheaderTS:NO];
-				if (![attr writeToDataContainer:container withTransferSyntax:ts]) {
+				
+				DCMTransferSyntax *tts = ts;
+				
+				if( [attr isKindOfClass:[DCMSequenceAttribute class]] && [attr.attrTag isPrivate] == YES)	//We will NOT write unknown & private sequence group... To avoid JPEG2000 compression bug
+				{
+					
+				}
+				else if (![attr writeToDataContainer:container withTransferSyntax: tts])
+				{
 					exception = [NSException exceptionWithName:@"DCMWriteDataError" reason:[NSString stringWithFormat:@"Cannot write %@ to data with syntax:%@", [attr description], [ts transferSyntax]] userInfo:nil];
 					[exception raise];
 				}			

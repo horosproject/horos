@@ -80,45 +80,45 @@ extern NSRecursiveLock *PapyrusLock;
 	
 	if( compression != compression_none)
 	{
-//			NSString *dest2 = path;
-//			
-//			DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile: path decodingPixelData:YES];
-//			
-//			BOOL succeed = NO;
-//			
-//			@try
-//			{
-//				succeed = [dcmObject writeToFile: [dest2 stringByAppendingString: @" temp"] withTransferSyntax:[DCMTransferSyntax JPEG2000LosslessTransferSyntax] quality: quality AET:@"OsiriX" atomically:YES];
-//			}
-//			@catch (NSException *e)
-//			{
-//				NSLog( @"dcmObject writeToFile failed: %@", e);
-//			}
-//			[dcmObject release];
-//			
-//			if( succeed)
-//			{
-//				if( dest2 == path)
-//					[[NSFileManager defaultManager] removeFileAtPath: path handler: nil];
-//				[[NSFileManager defaultManager] movePath: [dest2 stringByAppendingString: @" temp"] toPath: dest2 handler: nil];
-//			}
-//			else
-//			{
-//				NSLog( @"failed to compress file: %@", path);
-//				[[NSFileManager defaultManager] removeFileAtPath: [dest2 stringByAppendingString: @" temp"] handler: nil];
-//			}
+			NSString *dest2 = path;
+			
+			DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile: path decodingPixelData:YES];
+			
+			BOOL succeed = NO;
+			
+			@try
+			{
+				succeed = [dcmObject writeToFile: [dest2 stringByAppendingString: @" temp"] withTransferSyntax:[DCMTransferSyntax JPEG2000LosslessTransferSyntax] quality: quality AET:@"OsiriX" atomically:YES];
+			}
+			@catch (NSException *e)
+			{
+				NSLog( @"dcmObject writeToFile failed: %@", e);
+			}
+			[dcmObject release];
+			
+			if( succeed)
+			{
+				if( dest2 == path)
+					[[NSFileManager defaultManager] removeFileAtPath: path handler: nil];
+				[[NSFileManager defaultManager] movePath: [dest2 stringByAppendingString: @" temp"] toPath: dest2 handler: nil];
+			}
+			else
+			{
+				NSLog( @"failed to compress file: %@", path);
+				[[NSFileManager defaultManager] removeFileAtPath: [dest2 stringByAppendingString: @" temp"] handler: nil];
+			}
 		
-		NSTask *theTask = [[NSTask alloc] init];
-		
-		if( compression == compression_JPEG2000)
-			[theTask setArguments: [NSArray arrayWithObjects:path, @"compressJPEG2000", [NSString stringWithFormat: @"%d", quality], nil]];
-		else
-			[theTask setArguments: [NSArray arrayWithObjects:path, @"compress", nil]];
-		
-		[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Decompress"]];
-		[theTask launch];
-		while( [theTask isRunning]) [NSThread sleepForTimeInterval: 0.01];
-		[theTask release];
+//		NSTask *theTask = [[NSTask alloc] init];
+//		
+//		if( compression == compression_JPEG2000)
+//			[theTask setArguments: [NSArray arrayWithObjects:path, @"compressJPEG2000", [NSString stringWithFormat: @"%d", quality], nil]];
+//		else
+//			[theTask setArguments: [NSArray arrayWithObjects:path, @"compress", nil]];
+//		
+//		[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Decompress"]];
+//		[theTask launch];
+//		while( [theTask isRunning]) [NSThread sleepForTimeInterval: 0.01];
+//		[theTask release];
 	}
 	
 	return YES;

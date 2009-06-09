@@ -45,7 +45,6 @@ NSMutableDictionary *transferSyntaxDict;
 +(id)JPEGLSLosslessTransferSyntax;
 +(id)JPEGLSLossyTransferSyntax;
 +(id)RLETransferSyntax;
-+(id)OsiriXTransferSyntax;
 
 - (id)initWithTS:(NSString *)ts;
 - (id)initWithTS:(NSString *)ts isEncapsulated:(BOOL)encapsulated  isLittleEndian:(BOOL)endian  isExplicit:(BOOL)explicitValue name:(NSString *)aName;
