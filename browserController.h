@@ -502,12 +502,12 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (void) decompressArrayOfFiles: (NSArray*) array work:(NSNumber*) work;
 - (void) decompressThread: (NSNumber*) typeOfWork;
 
--(void) compressDICOMJPEG:(NSString*) compressedPath;
--(void) decompressDICOMJPEG:(NSString*) compressedPath;
+- (void) compressDICOMJPEG:(NSArray*) array;
+- (void) decompressDICOMJPEG: (NSArray*) array;
 
 - (void) refreshMatrix:(id) sender;
 - (void)updateReportToolbarIcon:(NSNotification *)note;
-
+- (void) decompressWaitIncrementation;
 - (void) initAnimationSlider;
 
 + (NSString*) DateTimeWithSecondsFormat:(NSDate*) t;

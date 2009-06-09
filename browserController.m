@@ -13075,13 +13075,13 @@ static volatile int numberOfThreadsForJPEG = 0;
 	return compression_none;
 }
 
-- (void)decompressDICOMJPEGinINCOMING: (NSString*)compressedPath
+- (void)decompressDICOMJPEGinINCOMING: (NSArray*) array
 {
 	NSAutoreleasePool   *pool = [[NSAutoreleasePool alloc] init];
 	
 	NSString			*INpath = [[self documentsDirectory] stringByAppendingPathComponent:INCOMINGPATH];
 	
-	[self decompressDICOM:compressedPath to: [INpath stringByAppendingPathComponent:[compressedPath lastPathComponent]]];
+	[self decompressDICOMList: array to: INpath];
 	
 	[processorsLock lock];
 	if( numberOfThreadsForJPEG >= 0) numberOfThreadsForJPEG--;
@@ -13090,11 +13090,27 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[pool release];
 }
 
-- (void)decompressDICOMJPEG: (NSString*)compressedPath
+- (void)decompressDICOMJPEG: (NSArray*) array
 {
 	NSAutoreleasePool   *pool = [[NSAutoreleasePool alloc] init];
 	
-	[self decompressDICOM:compressedPath to: nil];
+	BOOL windowVisible = [[waitCompressionWindow window] isVisible];
+	
+	for( NSString *compressedPath in array)
+	{
+		[self decompressDICOM:compressedPath to: nil];
+		
+		if( windowVisible)
+		{
+			if( mainThread != [NSThread currentThread])
+				[self performSelectorOnMainThread: @selector(decompressWaitIncrementation) withObject: nil waitUntilDone: NO];
+			else
+				[self decompressWaitIncrementation];
+		}
+		
+		if( waitCompressionAbort)
+			break;
+	}
 	
 	[processorsLock lock];
 	if( numberOfThreadsForJPEG >= 0) numberOfThreadsForJPEG--;
@@ -13103,11 +13119,27 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[pool release];
 }
 
-- (void)compressDICOMJPEG: (NSString*)compressedPath
+- (void)compressDICOMJPEG: (NSArray*) array
 {
 	NSAutoreleasePool		*pool = [[NSAutoreleasePool alloc] init];
 	
-	[self compressDICOMWithJPEG:compressedPath];
+	BOOL windowVisible = [[waitCompressionWindow window] isVisible];
+	
+	for( NSString *compressedPath in array)
+	{
+		[self compressDICOMWithJPEG:compressedPath];
+		
+		if( windowVisible)
+		{
+			if( mainThread != [NSThread currentThread])
+				[self performSelectorOnMainThread: @selector(decompressWaitIncrementation) withObject: nil waitUntilDone: NO];
+			else
+				[self decompressWaitIncrementation];
+		}
+		
+		if( waitCompressionAbort)
+			break;
+	}
 	
 	[processorsLock lock];
 	if( numberOfThreadsForJPEG >= 0) numberOfThreadsForJPEG--;
@@ -13122,9 +13154,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[decompressArrayLock lock];
 	[decompressArray addObjectsFromArray: array];
 	[decompressArrayLock unlock];
-	[decompressThreadRunning unlock];
 	
 	[self decompressThread: work];
+	[decompressThreadRunning unlock];
 }
 
 - (IBAction) compressSelectedFiles: (id)sender
@@ -13260,33 +13292,36 @@ static volatile int numberOfThreadsForJPEG = 0;
 			break;
 	}
 	
-	for( id obj in array )
+	NSRange range = NSMakeRange( 0, 1 + ([array count] / MPProcessors()));
+	
+	for( int i = 0 ; i < MPProcessors(); i++)
 	{
 		[self waitForAProcessor];
 		
 		switch( tow)
 		{
 			case 'C':
-				[NSThread detachNewThreadSelector: @selector( compressDICOMJPEG:) toTarget:self withObject: obj];
+				[NSThread detachNewThreadSelector: @selector( compressDICOMJPEG: ) toTarget:self withObject: [array subarrayWithRange: range]];
 				break;
 				
 			case 'D':
-				[NSThread detachNewThreadSelector: @selector( decompressDICOMJPEG:) toTarget:self withObject: obj];
+				[NSThread detachNewThreadSelector: @selector( decompressDICOMJPEG: ) toTarget:self withObject: [array subarrayWithRange: range]];
 				break;
 				
 			case 'I':
-				[NSThread detachNewThreadSelector: @selector( decompressDICOMJPEGinINCOMING:) toTarget:self withObject: obj];
+				[NSThread detachNewThreadSelector: @selector( decompressDICOMJPEGinINCOMING: ) toTarget:self withObject: [array subarrayWithRange: range]];
 				break;
 		}
 		
-		if( mainThread != [NSThread currentThread])
-			[self performSelectorOnMainThread: @selector(decompressWaitIncrementation) withObject: nil waitUntilDone: NO];
-		else
-			[self decompressWaitIncrementation];
-			
-		if( waitCompressionAbort)
+		range.location = range.location + range.length;
+		if( range.location + range.length > [array count]) range.length = [array count] - range.location;
+		
+		if( range.length == 0)
 			break;
 	}
+	
+	if( range.length)
+		NSLog( @"****** range.length != 0");
 	
 	finished = NO;
 	do
@@ -13532,9 +13567,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 							[decompressArrayLock lock];
 							[decompressArray addObjectsFromArray: filesArray];
 							[decompressArrayLock unlock];
-							[decompressThreadRunning unlock];
 							
 							[self decompressThread: [NSNumber numberWithChar: 'C']];
+							[decompressThreadRunning unlock];
 						}
 					}
 				}
@@ -13552,7 +13587,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 					[decompressArray addObjectsFromArray: compressedPathArray];
 					[decompressArrayLock unlock];
 					
+					[decompressThreadRunning lock];
 					[NSThread detachNewThreadSelector: @selector( decompressThread:) toTarget:self withObject: [NSNumber numberWithChar: 'I']];
+					[decompressThreadRunning unlock];
 				}
 				[compressedPathArray release];
 			}
