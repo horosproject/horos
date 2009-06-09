@@ -13281,7 +13281,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	}
 	
 	int chunk = [array count] / MPProcessors();
-	if( chunk < 3) chunk = 3;
+	if( chunk < 5) chunk = 5;
 	
 	if( [[waitCompressionWindow window] isVisible])
 	{
