@@ -13092,24 +13092,18 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (void)decompressDICOMJPEG: (NSArray*) array
 {
-	NSAutoreleasePool   *pool = [[NSAutoreleasePool alloc] init];
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
 	BOOL windowVisible = [[waitCompressionWindow window] isVisible];
 	
-	for( NSString *compressedPath in array)
+	[self decompressDICOMList: array to: nil];
+	
+	if( windowVisible)
 	{
-		[self decompressDICOM:compressedPath to: nil];
-		
-		if( windowVisible)
-		{
-			if( mainThread != [NSThread currentThread])
-				[self performSelectorOnMainThread: @selector(decompressWaitIncrementation) withObject: nil waitUntilDone: NO];
-			else
-				[self decompressWaitIncrementation];
-		}
-		
-		if( waitCompressionAbort)
-			break;
+		if( mainThread != [NSThread currentThread])
+			[self performSelectorOnMainThread: @selector(decompressWaitIncrementation:) withObject: [NSNumber numberWithInt: [array count]] waitUntilDone: NO];
+		else
+			[self decompressWaitIncrementation: [NSNumber numberWithInt: [array count]]];
 	}
 	
 	[processorsLock lock];
@@ -13125,20 +13119,14 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	BOOL windowVisible = [[waitCompressionWindow window] isVisible];
 	
-	for( NSString *compressedPath in array)
+	[self compressDICOMWithJPEG: array];
+	
+	if( windowVisible)
 	{
-		[self compressDICOMWithJPEG:compressedPath];
-		
-		if( windowVisible)
-		{
-			if( mainThread != [NSThread currentThread])
-				[self performSelectorOnMainThread: @selector(decompressWaitIncrementation) withObject: nil waitUntilDone: NO];
-			else
-				[self decompressWaitIncrementation];
-		}
-		
-		if( waitCompressionAbort)
-			break;
+		if( mainThread != [NSThread currentThread])
+			[self performSelectorOnMainThread: @selector(decompressWaitIncrementation:) withObject: [NSNumber numberWithInt: [array count]] waitUntilDone: NO];
+		else
+			[self decompressWaitIncrementation: [NSNumber numberWithInt: [array count]]];
 	}
 	
 	[processorsLock lock];
@@ -13236,11 +13224,11 @@ static volatile int numberOfThreadsForJPEG = 0;
 	else NSRunInformationalAlertPanel(NSLocalizedString(@"Non-Local Database", nil), NSLocalizedString(@"Cannot decompress images in a distant database.", nil), NSLocalizedString(@"OK",nil), nil, nil);
 }
 
-- (void) decompressWaitIncrementation
+- (void) decompressWaitIncrementation: (NSNumber*) n
 {
 	if( [[waitCompressionWindow window] isVisible])
 	{
-		[waitCompressionWindow incrementBy:1];
+		[waitCompressionWindow incrementBy: [n intValue]];
 		
 		waitCompressionAbort = [waitCompressionWindow aborted];
 		
@@ -13292,9 +13280,21 @@ static volatile int numberOfThreadsForJPEG = 0;
 			break;
 	}
 	
-	NSRange range = NSMakeRange( 0, 1 + ([array count] / MPProcessors()));
+	int chunk = [array count] / MPProcessors();
+	if( chunk < 3) chunk = 3;
 	
-	for( int i = 0 ; i < MPProcessors(); i++)
+	if( [[waitCompressionWindow window] isVisible])
+	{
+		if( chunk > MPProcessors()) chunk = MPProcessors();
+	}
+	
+	NSRange range = NSMakeRange( 0, chunk);
+	
+	if( range.location + range.length > [array count])
+		range.length = [array count] - range.location;
+	
+	waitCompressionAbort = NO;
+	do
 	{
 		[self waitForAProcessor];
 		
@@ -13313,15 +13313,14 @@ static volatile int numberOfThreadsForJPEG = 0;
 				break;
 		}
 		
-		range.location = range.location + range.length;
-		if( range.location + range.length > [array count]) range.length = [array count] - range.location;
-		
-		if( range.length == 0)
-			break;
+		range.location += range.length;
+		if( range.location + range.length > [array count])
+			range.length = [array count] - range.location;
 	}
+	while( range.length > 0 && waitCompressionAbort == NO);
 	
-	if( range.length)
-		NSLog( @"****** range.length != 0");
+	if( range.length > 0 && waitCompressionAbort == NO)
+		NSLog( @"****** range.length != 0 : (%d, %d)", range.location, range.length);
 	
 	finished = NO;
 	do

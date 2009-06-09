@@ -53,33 +53,8 @@ extern NSRecursiveLock *PapyrusLock;
 	return [NSString stringWithFormat:@"%s", dcmFindNameOfUID( [string UTF8String])];
 }
 
-- (BOOL)compressDICOMWithJPEG:(NSString *)path
+- (BOOL)compressDICOMWithJPEG:(NSArray *) paths
 {
-	DcmFileFormat fileformat;
-	OFCondition cond = fileformat.loadFile( [path UTF8String]);
-	// if we can't read it stop
-	if (!cond.good())
-		return NO;
-	DcmDataset *dataset = fileformat.getDataset();
-	DcmItem *metaInfo = fileformat.getMetaInfo();
-	DcmXfer original_xfer(dataset->getOriginalXfer());
-	if (original_xfer.isEncapsulated())
-	{
-		NSLog( @"file already compressed: %@", [path lastPathComponent]);
-		return YES;
-	}
-	
-	const char *string = NULL;
-	NSString *modality;
-	if (dataset->findAndGetString(DCM_Modality, string, OFFalse).good() && string != NULL)
-		modality = [[NSString alloc] initWithCString:string encoding: NSASCIIStringEncoding];
-	else
-		modality = @"OT";
-	
-	int quality, compression = [BrowserController compressionForModality: modality quality: &quality];
-	
-	if( compression != compression_none)
-	{
 //			NSString *dest2 = path;
 //			
 //			DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile: path decodingPixelData:YES];
@@ -107,19 +82,13 @@ extern NSRecursiveLock *PapyrusLock;
 //				NSLog( @"failed to compress file: %@", path);
 //				[[NSFileManager defaultManager] removeFileAtPath: [dest2 stringByAppendingString: @" temp"] handler: nil];
 //			}
-		
-		NSTask *theTask = [[NSTask alloc] init];
-		
-		if( compression == compression_JPEG2000)
-			[theTask setArguments: [NSArray arrayWithObjects:path, @"compressJPEG2000", [NSString stringWithFormat: @"%d", quality], nil]];
-		else
-			[theTask setArguments: [NSArray arrayWithObjects:path, @"compress", nil]];
-		
-		[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Decompress"]];
-		[theTask launch];
-		while( [theTask isRunning]) [NSThread sleepForTimeInterval: 0.001];
-		[theTask release];
-	}
+	
+	NSTask *theTask = [[NSTask alloc] init];
+	[theTask setArguments: [[NSArray arrayWithObjects: @"sameAsDestination", @"compress", nil] arrayByAddingObjectsFromArray: paths]];
+	[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Decompress"]];
+	[theTask launch];
+	while( [theTask isRunning]) [NSThread sleepForTimeInterval: 0.001];
+	[theTask release];
 	
 	return YES;
 }
@@ -128,7 +97,10 @@ extern NSRecursiveLock *PapyrusLock;
 {
 	NSTask *theTask = [[NSTask alloc] init];
 	
-	NSArray *parameters = [[NSArray arrayWithObjects:dest, @"decompressList", nil] arrayByAddingObjectsFromArray: files];
+	if( dest == nil)
+		dest = @"sameAsDestination";
+	
+	NSArray *parameters = [[NSArray arrayWithObjects: dest, @"decompressList", nil] arrayByAddingObjectsFromArray: files];
 	
 	[theTask setArguments: parameters];
 	[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Decompress"]];
@@ -139,23 +111,23 @@ extern NSRecursiveLock *PapyrusLock;
 	
 	return YES;
 }
-
-- (BOOL)decompressDICOM:(NSString *)path to:(NSString*) dest deleteOriginal:(BOOL) deleteOriginal
-{
-	NSTask *theTask = [[NSTask alloc] init];
-	
-	[theTask setArguments: [NSArray arrayWithObjects:path, @"decompress", dest,  nil]];
-	[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Decompress"]];
-	[theTask launch];
-	
-	while( [theTask isRunning]) [NSThread sleepForTimeInterval: 0.001];
-	[theTask release];
-	
-	return YES;
-}
-
-- (BOOL)decompressDICOM:(NSString *)path to:(NSString*) dest
-{
-	return [self decompressDICOM: path to: dest deleteOriginal:YES];
-}
+//
+//- (BOOL)decompressDICOM:(NSString *)path to:(NSString*) dest deleteOriginal:(BOOL) deleteOriginal
+//{
+//	NSTask *theTask = [[NSTask alloc] init];
+//	
+//	[theTask setArguments: [NSArray arrayWithObjects:path, @"decompress", dest,  nil]];
+//	[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Decompress"]];
+//	[theTask launch];
+//	
+//	while( [theTask isRunning]) [NSThread sleepForTimeInterval: 0.001];
+//	[theTask release];
+//	
+//	return YES;
+//}
+//
+//- (BOOL)decompressDICOM:(NSString *)path to:(NSString*) dest
+//{
+//	return [self decompressDICOM: path to: dest deleteOriginal:YES];
+//}
 @end

@@ -507,7 +507,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 
 - (void) refreshMatrix:(id) sender;
 - (void)updateReportToolbarIcon:(NSNotification *)note;
-- (void) decompressWaitIncrementation;
+- (void) decompressWaitIncrementation: (NSNumber*) n;
 - (void) initAnimationSlider;
 
 + (NSString*) DateTimeWithSecondsFormat:(NSDate*) t;
