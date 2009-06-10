@@ -13228,7 +13228,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (void) decompressWaitIncrementation: (NSNumber*) n
 {
-	if( [[waitCompressionWindow window] isVisible])
+	if( [[waitCompressionWindow window] isVisible] == YES && waitCompressionAbort == NO)
 	{
 		[waitCompressionWindow incrementBy: [n intValue]];
 		
@@ -13240,7 +13240,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 			[waitCompressionWindow close];
 		}
 	}
-	else waitCompressionAbort = NO;
 }
 
 - (void) decompressThread: (NSNumber*) typeOfWork
@@ -13300,6 +13299,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	do
 	{
 		[self waitForAProcessor];
+		
+		NSLog( @"range: %d", range.length);
 		
 		switch( tow)
 		{
