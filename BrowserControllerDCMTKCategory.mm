@@ -87,7 +87,7 @@ extern NSRecursiveLock *PapyrusLock;
 	[theTask setArguments: [[NSArray arrayWithObjects: @"sameAsDestination", @"compress", nil] arrayByAddingObjectsFromArray: paths]];
 	[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Decompress"]];
 	[theTask launch];
-	while( [theTask isRunning]) [NSThread sleepForTimeInterval: 0.001];
+	while( [theTask isRunning]) [NSThread sleepForTimeInterval: 0.01];
 	[theTask release];
 	
 	return YES;
@@ -106,28 +106,9 @@ extern NSRecursiveLock *PapyrusLock;
 	[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Decompress"]];
 	[theTask launch];
 	
-	while( [theTask isRunning]) [NSThread sleepForTimeInterval: 0.001];
+	while( [theTask isRunning]) [NSThread sleepForTimeInterval: 0.01];
 	[theTask release];
 	
 	return YES;
 }
-//
-//- (BOOL)decompressDICOM:(NSString *)path to:(NSString*) dest deleteOriginal:(BOOL) deleteOriginal
-//{
-//	NSTask *theTask = [[NSTask alloc] init];
-//	
-//	[theTask setArguments: [NSArray arrayWithObjects:path, @"decompress", dest,  nil]];
-//	[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Decompress"]];
-//	[theTask launch];
-//	
-//	while( [theTask isRunning]) [NSThread sleepForTimeInterval: 0.001];
-//	[theTask release];
-//	
-//	return YES;
-//}
-//
-//- (BOOL)decompressDICOM:(NSString *)path to:(NSString*) dest
-//{
-//	return [self decompressDICOM: path to: dest deleteOriginal:YES];
-//}
 @end

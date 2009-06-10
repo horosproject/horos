@@ -575,7 +575,7 @@
 											<object class="NSButtonCell" key="NSCell" id="493310212">
 												<int key="NSCellFlags">67239424</int>
 												<int key="NSCellFlags2">0</int>
-												<string key="NSContents">Accept only one association at a time (single process mode)</string>
+												<string key="NSContents">Accept only one association at a time (single process mode, poor performance)</string>
 												<reference key="NSSupport" ref="349069678"/>
 												<reference key="NSControlView" ref="126926899"/>
 												<int key="NSButtonFlags">1211912703</int>

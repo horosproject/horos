@@ -4703,6 +4703,8 @@ static NSArray*	statesArray = nil;
 		[self refreshAlbums];
 		[databaseOutline reloadData];
 	}
+	
+	[[QueryController currentQueryController] refresh: self];
 }
 
 - (NSArray*)childrenArray: (NSManagedObject*)item onlyImages: (BOOL)onlyImages
