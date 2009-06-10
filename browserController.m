@@ -13300,8 +13300,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 	{
 		[self waitForAProcessor];
 		
-		NSLog( @"range: %d", range.length);
-		
 		switch( tow)
 		{
 			case 'C':
