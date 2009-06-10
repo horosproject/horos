@@ -13396,6 +13396,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 				NSDirectoryEnumerator *enumer = [[NSFileManager defaultManager] enumeratorAtPath:INpath];
 				
 				int maxNumberOfFiles = [[NSUserDefaults standardUserDefaults] integerForKey: @"maxNumberOfFilesForCheckIncoming"];
+				if( maxNumberOfFiles < 100) maxNumberOfFiles = 100;
 				
 				while( (pathname = [enumer nextObject]) && [filesArray count] < maxNumberOfFiles)
 				{
