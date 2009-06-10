@@ -11665,8 +11665,8 @@ static NSArray*	openSubSeriesArray = nil;
 		
 		checkBonjourUpToDateThreadLock = [[NSLock alloc] init];
 		checkIncomingLock = [[NSRecursiveLock alloc] init];
-		decompressArrayLock = [[NSLock alloc] init];
-		decompressThreadRunning = [[NSLock alloc] init];
+		decompressArrayLock = [[NSRecursiveLock alloc] init];
+		decompressThreadRunning = [[NSRecursiveLock alloc] init];
 		processorsLock = [[NSConditionLock alloc] initWithCondition: 1];
 		decompressArray = [[NSMutableArray alloc] initWithCapacity: 0];
 		
@@ -13243,9 +13243,10 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (void) decompressThread: (NSNumber*) typeOfWork
 {	
+	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
+	
 	[decompressThreadRunning lock];
 	
-	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
 	char				tow = [typeOfWork charValue];
 	BOOL				finished;
 	
@@ -13348,19 +13349,23 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	[pool release];
 	
-	[decompressThreadRunning unlock];
-	
 	if( mainThread != [NSThread currentThread])
 		[DCMPix performSelectorOnMainThread: @selector( purgeCachedDictionaries) withObject: nil waitUntilDone: NO];
 	else
 		[DCMPix purgeCachedDictionaries];
+	
+	[decompressThreadRunning unlock];
 }
 
 - (void)checkIncomingThread: (id)sender
 {
 	@try
 	{
-		NSAutoreleasePool   *pool = [[NSAutoreleasePool alloc] init];
+		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+		BOOL DELETEFILELISTENER = [[NSUserDefaults standardUserDefaults] boolForKey: @"DELETEFILELISTENER"];
+		BOOL ListenerCompressionSettings = [[NSUserDefaults standardUserDefaults] integerForKey: @"ListenerCompressionSettings"];
+		NSMutableArray  *filesArray = [NSMutableArray array];
+		NSMutableArray	*compressedPathArray = [NSMutableArray array];
 		
 		[checkIncomingLock lock];
 		
@@ -13368,13 +13373,10 @@ static volatile int numberOfThreadsForJPEG = 0;
 		
 		@try
 		{
-			NSString        *INpath = [[self documentsDirectory] stringByAppendingPathComponent:INCOMINGPATH];
-			NSString		*ERRpath = [[self documentsDirectory] stringByAppendingPathComponent:ERRPATH];
-			NSString        *OUTpath = [[self documentsDirectory] stringByAppendingPathComponent:DATABASEPATH];
-			NSString        *DECOMPRESSIONpath = [[self documentsDirectory] stringByAppendingPathComponent:DECOMPRESSIONPATH];
-			BOOL			DELETEFILELISTENER = [[NSUserDefaults standardUserDefaults] boolForKey: @"DELETEFILELISTENER"];
-			BOOL			DECOMPRESSDICOMLISTENER = [[NSUserDefaults standardUserDefaults] boolForKey: @"DECOMPRESSDICOMLISTENER"];
-			BOOL			COMPRESSDICOMLISTENER = [[NSUserDefaults standardUserDefaults] boolForKey: @"COMPRESSDICOMLISTENER"];
+			NSString *INpath = [[self documentsDirectory] stringByAppendingPathComponent:INCOMINGPATH];
+			NSString *ERRpath = [[self documentsDirectory] stringByAppendingPathComponent:ERRPATH];
+			NSString *OUTpath = [[self documentsDirectory] stringByAppendingPathComponent:DATABASEPATH];
+			NSString *DECOMPRESSIONpath = [[self documentsDirectory] stringByAppendingPathComponent:DECOMPRESSIONPATH];
 			
 			//NSLog(@"Scan folder START");
 			
@@ -13389,8 +13391,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 				[AppController createNoIndexDirectoryIfNecessary: OUTpath];
 				
 				NSString        *pathname;
-				NSMutableArray  *filesArray = [[NSMutableArray alloc] initWithCapacity:0];
-				NSMutableArray	*compressedPathArray = [[NSMutableArray alloc] initWithCapacity:0];
 				
 				NSDirectoryEnumerator *enumer = [[NSFileManager defaultManager] enumeratorAtPath:INpath];
 				
@@ -13447,7 +13447,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 								
 								if (isDicomFile)
 								{
-									if( isJPEGCompressed && DECOMPRESSDICOMLISTENER)
+									if( (isJPEGCompressed == YES && ListenerCompressionSettings == 1) || (isJPEGCompressed == NO && ListenerCompressionSettings == 2))
 									{
 										NSString	*compressedPath = [DECOMPRESSIONpath stringByAppendingPathComponent:[srcPath lastPathComponent]];
 										
@@ -13557,40 +13557,12 @@ static volatile int numberOfThreadsForJPEG = 0;
 							[[NSFileManager defaultManager] movePath: file toPath: dstPath handler: nil];
 						}
 					}
-					
-					if( COMPRESSDICOMLISTENER )
-					{
-						if( [filesArray count] > 0 )
-						{
-							[decompressThreadRunning lock];
-							[decompressArrayLock lock];
-							[decompressArray addObjectsFromArray: filesArray];
-							[decompressArrayLock unlock];
-							
-							[self decompressThread: [NSNumber numberWithChar: 'C']];
-							[decompressThreadRunning unlock];
-						}
-					}
 				}
 				else
 				{
 					if( [compressedPathArray count] == 0) newFilesInIncoming = NO;
 					else newFilesInIncoming = YES;
 				}
-				
-				[filesArray release];
-				
-				if( [compressedPathArray count] > 0 )
-				{
-					[decompressArrayLock lock];
-					[decompressArray addObjectsFromArray: compressedPathArray];
-					[decompressArrayLock unlock];
-					
-					[decompressThreadRunning lock];
-					[NSThread detachNewThreadSelector: @selector( decompressThread:) toTarget:self withObject: [NSNumber numberWithChar: 'I']];
-					[decompressThreadRunning unlock];
-				}
-				[compressedPathArray release];
 			}
 			else newFilesInIncoming = NO;
 		}
@@ -13600,6 +13572,20 @@ static volatile int numberOfThreadsForJPEG = 0;
 		}
 		
 		[checkIncomingLock unlock];
+		
+		if( [compressedPathArray count] > 0 )
+		{
+			[decompressThreadRunning lock];
+			[decompressArrayLock lock];
+			[decompressArray addObjectsFromArray: compressedPathArray];
+			[decompressArrayLock unlock];
+			
+			if( ListenerCompressionSettings == 1) // Decompress
+				[self decompressThread: [NSNumber numberWithChar: 'I']];
+			else if( ListenerCompressionSettings == 2) // Compress
+				[self decompressThread: [NSNumber numberWithChar: 'C']];
+			[decompressThreadRunning unlock];
+		}
 		
 		lastCheckIncoming  = [NSDate timeIntervalSinceReferenceDate];
 		

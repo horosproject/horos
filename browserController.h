@@ -198,7 +198,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	NSMutableDictionary				*autoroutingPreviousStudies;
 	
 	NSConditionLock					*processorsLock;
-	NSLock							*decompressArrayLock, *decompressThreadRunning;
+	NSRecursiveLock					*decompressArrayLock, *decompressThreadRunning;
 	NSMutableArray					*decompressArray;
 	
 	NSMutableString					*pressedKeys;

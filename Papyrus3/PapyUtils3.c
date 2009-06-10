@@ -136,6 +136,11 @@ Papy3GotoNumber (PapyShort inFileNb, PapyShort inNb, enum EDataSet_Image inDSorI
 {
   PapyULong		theOffset;
 
+	if( gRefImagePointer [inFileNb] == 0L)
+		RETURN (papPositioning);
+	
+	if( gRefImagePointer [inFileNb] + inNb - 1 == 0L)
+		RETURN (papPositioning);
   
   if (inDSorIM == DataSetID)
     theOffset = *(gRefImagePointer [inFileNb] + inNb - 1);
