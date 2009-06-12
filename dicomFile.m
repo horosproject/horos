@@ -484,7 +484,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			}
 			
 			
-			date = [NSDate dateWithNaturalLanguageString:datetime_string];
+			date = [[NSDate dateWithNaturalLanguageString:datetime_string] retain];
 			if (date == nil)
 				date = [[[[NSFileManager defaultManager] fileAttributesAtPath:filePath traverseLink:NO ] fileCreationDate] retain];
 			
