@@ -2186,7 +2186,7 @@ static BOOL initialized = NO;
 				NSString *path = [documentsDirectory() stringByAppendingPathComponent:@"/Loading"];
 				if ([[NSFileManager defaultManager] fileExistsAtPath:path])
 				{
-					int result = NSRunInformationalAlertPanel(NSLocalizedString(@"OsiriX crashed during last startup", nil), NSLocalizedString(@"Previous crash is maybe related to a corrupt database or corrupted images.\r\rShould I run OsiriX in Protected Mode (recommended) (no images displayed)? To allow you to delete the crashing/corrupted images/studies.\r\rOr Should I rebuild the local database? All albums, comments and status will be lost.", nil), NSLocalizedString(@"Continue normaly",nil), NSLocalizedString(@"Protected Mode",nil), NSLocalizedString(@"Rebuild Database",nil));
+					int result = NSRunInformationalAlertPanel(NSLocalizedString(@"OsiriX crashed during last startup", nil), NSLocalizedString(@"Previous crash is maybe related to a corrupt database or corrupted images.\r\rShould I run OsiriX in Protected Mode (recommended) (no images displayed)? To allow you to delete the crashing/corrupted images/studies.\r\rOr Should I rebuild the local database? All albums, comments and status will be lost.", nil), NSLocalizedString(@"Continue normally",nil), NSLocalizedString(@"Protected Mode",nil), NSLocalizedString(@"Rebuild Database",nil));
 					
 					if( result == NSAlertOtherReturn)
 					{
