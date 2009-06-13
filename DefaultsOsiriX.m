@@ -714,6 +714,7 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject:@"Exported Series" forKey:@"default2DViewerSeriesName"];
 	[defaultValues setObject:@"10000" forKey:@"DefaultFolderSizeForDB"];
 	[defaultValues setObject:@"10000" forKey:@"maxNumberOfFilesForCheckIncoming"];
+	[defaultValues setObject:@"1" forKey:@"useSoundexForName"];
 	
 	if( MPProcessors() >= 4)
 		[defaultValues setObject:@"2.0" forKey:@"superSampling"];

@@ -46,40 +46,9 @@ extern int delayedTileWindows;
 
 // To be 'compatible' with TileWindows in AppController
 /////////////////////////////////////////////////
-- (void) autoHideMatrix
-{
-}
-
-- (void) syncThumbnails
-{
-}
-
-- (void) refreshToolbar
-{
-}
-
-- (id) imageView
-{
-	return nil;
-}
-
-- (void) propagateSettings
-{
-}
-
 - (void)setWindowFrame:(NSRect)rect showWindow:(BOOL) showWindow animate: (BOOL) animate
 {
 	[AppController resizeWindowWithAnimation: [self window] newSize: rect];
-}
-
-- (BOOL) FullScreenON
-{
-	return NO;
-}
-
-- (BOOL) windowWillClose
-{
-	return NO;
 }
 
 - (NSArray*) fileList
@@ -585,21 +554,12 @@ extern int delayedTileWindows;
 	[toolbar release];
 	
     [super dealloc];
-	
-	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
-	{
-		if( delayedTileWindows)
-			[NSObject cancelPreviousPerformRequestsWithTarget: [AppController sharedAppController] selector:@selector(tileWindows:) object:nil];
-		delayedTileWindows = YES;
-		[[AppController sharedAppController] performSelector: @selector(tileWindows:) withObject:nil afterDelay: 0.1];
-	}
 }
 
 - (void)windowWillClose:(NSNotification *)notification
 {
 	[self release];
 }
-
 
 - (IBAction) setSearchString:(id) sender
 {

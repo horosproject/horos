@@ -39,6 +39,7 @@ enum OsiriXBlendingTypes {BlendingPlugin = -1, BlendingFusion = 1, BlendingSubtr
 
 + (void) setDontEnterMagneticFunctions:(BOOL) a;
 - (void) setMagnetic:(BOOL) a;
+- (BOOL) magnetic;
 
 - (NSMutableArray*) pixList;
 - (void) addToUndoQueue:(NSString*) what;

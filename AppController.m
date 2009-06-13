@@ -43,6 +43,7 @@
 #import "altivecFunctions.h"
 #import <ILCrashReporter/ILCrashReporter.h>
 #import "PluginManagerController.h"
+#import "OSIWindowController.h"
 
 #define BUILTIN_DCMTK YES
 
@@ -3219,17 +3220,20 @@ static BOOL initialized = NO;
 	//get 2D viewer windows
 	for( NSWindow *win in winList)
 	{
-		if(	[[win windowController] isKindOfClass:[ViewerController class]] || [[win windowController] isKindOfClass:[XMLController class]])
+		if( [[win windowController] isKindOfClass:[OSIWindowController class]] == YES)
 		{
-			if( [[win windowController] windowWillClose] == NO && [win isMiniaturized] == NO)
-				[viewersList addObject: [win windowController]];
-			else if( [[win windowController] windowWillClose])
+			if( [[win windowController] magnetic])
 			{
-//				NSLog( @"*** [[win windowController] windowWillClose] ***");
-//				[win performClose: self];
+				if( [[win windowController] windowWillClose] == NO && [win isMiniaturized] == NO)
+					[viewersList addObject: [win windowController]];
+				else if( [[win windowController] windowWillClose])
+				{
+	//				NSLog( @"*** [[win windowController] windowWillClose] ***");
+	//				[win performClose: self];
+				}
+					
+				if( [[viewersList lastObject] FullScreenON]) return;
 			}
-				
-			if( [[viewersList lastObject] FullScreenON]) return;
 		}
 	}
 	

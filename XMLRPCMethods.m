@@ -93,6 +93,36 @@ static NSTimeInterval lastConnection = 0;
 	[[[BrowserController currentBrowser] managedObjectContext] unlock];
 }
 
+- (NSDictionary*) getParameters: (NSXMLDocument *) doc encoding: (NSString *) encoding
+{
+	NSError *error = nil;
+	
+	NSArray *keys = [doc nodesForXPath:@"methodCall/params//member/name" error:&error];
+	NSArray *values = [doc nodesForXPath:@"methodCall/params//member/value" error:&error];
+	if( [keys count] != [values count])
+		return nil;
+	
+	int i;
+	NSMutableDictionary *paramDict = [NSMutableDictionary dictionary];
+	for( i = 0; i < [keys count]; i++)
+	{
+		id value;
+		
+		if( [encoding isEqualToString:@"UTF-8"] == NO && [[[values objectAtIndex: i] objectValue] isKindOfClass:[NSString class]])
+			value = [(NSString*)CFXMLCreateStringByUnescapingEntities(NULL, (CFStringRef)[[values objectAtIndex: i] objectValue], NULL) autorelease];
+		else
+			value = [[values objectAtIndex: i] objectValue];
+		
+		NSString *key = [[keys objectAtIndex: i] objectValue];
+		
+		key = [key stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]];
+		
+		[paramDict setValue: value forKey: key];
+	}
+	
+	return paramDict;
+}
+
 - (void)HTTPConnectionProtected:(HTTPConnection *)conn didReceiveRequest:(HTTPServerRequest *)mess
 {
     CFHTTPMessageRef request = [mess request];
@@ -131,6 +161,9 @@ static NSTimeInterval lastConnection = 0;
 		if( [array count] == 1)
 		{
 			NSString *selName = [[array objectAtIndex:0] objectValue];
+			
+			selName = [selName stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]];
+			
 			char buffer[256];
 			NSString *ipAddressString = @"";
 			
@@ -168,30 +201,14 @@ static NSTimeInterval lastConnection = 0;
 			{
 				if( [[httpServerMessage valueForKey: @"Processed"] boolValue] == NO)							// Is this order already processed ?
 				{
-					NSArray *keys = [doc nodesForXPath:@"methodCall/params//member/name" error:&error];
-					NSArray *values = [doc nodesForXPath:@"methodCall/params//member/value" error:&error];
-					if (2 != [keys count] || 2 != [values count])
+					NSDictionary *paramDict = [self getParameters: doc encoding: encoding];
+					if (2 != [paramDict count])
 					{
 						CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 400, NULL, (CFStringRef) vers); // Bad Request
 						[mess setResponse:response];
 						CFRelease(response);
 						return;
 					}
-					
-					int i;
-					NSMutableDictionary *paramDict = [NSMutableDictionary dictionary];
-					for( i = 0; i < [keys count]; i++)
-					{
-						id value;
-						
-						if( [encoding isEqualToString:@"UTF-8"] == NO && [[[values objectAtIndex: i] objectValue] isKindOfClass:[NSString class]])
-							value = [(NSString*)CFXMLCreateStringByUnescapingEntities(NULL, (CFStringRef)[[values objectAtIndex: i] objectValue], NULL) autorelease];
-						else
-							value = [[values objectAtIndex: i] objectValue];
-						
-						[paramDict setValue: value  forKey: [[keys objectAtIndex: i] objectValue]];
-					}
-					
 					// *****
 					
 					NSString *listOfElements = nil;
@@ -244,30 +261,14 @@ static NSTimeInterval lastConnection = 0;
 			{
 				if( [[httpServerMessage valueForKey: @"Processed"] boolValue] == NO)							// Is this order already processed ?
 				{
-					NSArray *keys = [doc nodesForXPath:@"methodCall/params//member/name" error:&error];
-					NSArray *values = [doc nodesForXPath:@"methodCall/params//member/value" error:&error];
-					if (3 != [keys count] || 3 != [values count])
+					NSDictionary *paramDict = [self getParameters: doc encoding: encoding];
+					if (3 != [paramDict count])
 					{
 						CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 400, NULL, (CFStringRef) vers); // Bad Request
 						[mess setResponse:response];
 						CFRelease(response);
 						return;
 					}
-					
-					int i;
-					NSMutableDictionary *paramDict = [NSMutableDictionary dictionary];
-					for( i = 0; i < [keys count]; i++)
-					{
-						id value;
-						
-						if( [encoding isEqualToString:@"UTF-8"] == NO && [[[values objectAtIndex: i] objectValue] isKindOfClass:[NSString class]])
-							value = [(NSString*)CFXMLCreateStringByUnescapingEntities(NULL, (CFStringRef)[[values objectAtIndex: i] objectValue], NULL) autorelease];
-						else
-							value = [[values objectAtIndex: i] objectValue];
-						
-						[paramDict setValue: value  forKey: [[keys objectAtIndex: i] objectValue]];
-					}
-					
 					// *****
 					
 					NSString *listOfElements = nil;
@@ -341,30 +342,14 @@ static NSTimeInterval lastConnection = 0;
 			{
 				if( [[httpServerMessage valueForKey: @"Processed"] boolValue] == NO)							// Is this order already processed ?
 				{
-					NSArray *keys = [doc nodesForXPath:@"methodCall/params//member/name" error:&error];
-					NSArray *values = [doc nodesForXPath:@"methodCall/params//member/value" error:&error];
-					if (1 != [keys count] || 1 != [values count])
+					NSDictionary *paramDict = [self getParameters: doc encoding: encoding];
+					if (1 != [paramDict count])
 					{
 						CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 400, NULL, (CFStringRef) vers); // Bad Request
 						[mess setResponse:response];
 						CFRelease(response);
 						return;
 					}
-					
-					int i;
-					NSMutableDictionary *paramDict = [NSMutableDictionary dictionary];
-					for( i = 0; i < [keys count]; i++)
-					{
-						id value;
-						
-						if( [encoding isEqualToString:@"UTF-8"] == NO &&  [[[values objectAtIndex: i] objectValue] isKindOfClass:[NSString class]])
-							value = [(NSString*)CFXMLCreateStringByUnescapingEntities(NULL, (CFStringRef)[[values objectAtIndex: i] objectValue], NULL) autorelease];
-						else
-							value = [[values objectAtIndex: i] objectValue];
-						
-						[paramDict setValue: value  forKey: [[keys objectAtIndex: i] objectValue]];
-					}
-					
 					// *****
 					
 					NSNumber *ret = [NSNumber numberWithInt: 0];
@@ -400,30 +385,14 @@ static NSTimeInterval lastConnection = 0;
 			{
 				if( [[httpServerMessage valueForKey: @"Processed"] boolValue] == NO)							// Is this order already processed ?
 				{
-					NSArray *keys = [doc nodesForXPath:@"methodCall/params//member/name" error:&error];
-					NSArray *values = [doc nodesForXPath:@"methodCall/params//member/value" error:&error];
-					if (1 != [keys count] || 1 != [values count])
+					NSDictionary *paramDict = [self getParameters: doc encoding: encoding];
+					if (1 != [paramDict count])
 					{
 						CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 400, NULL, (CFStringRef) vers); // Bad Request
 						[mess setResponse:response];
 						CFRelease(response);
 						return;
 					}
-					
-					int i;
-					NSMutableDictionary *paramDict = [NSMutableDictionary dictionary];
-					for( i = 0; i < [keys count]; i++)
-					{
-						id value;
-						
-						if( [encoding isEqualToString:@"UTF-8"] == NO &&  [[[values objectAtIndex: i] objectValue] isKindOfClass:[NSString class]])
-							value = [(NSString*)CFXMLCreateStringByUnescapingEntities(NULL, (CFStringRef)[[values objectAtIndex: i] objectValue], NULL) autorelease];
-						else
-							value = [[values objectAtIndex: i] objectValue];
-						
-						[paramDict setValue: value  forKey: [[keys objectAtIndex: i] objectValue]];
-					}
-					
 					// *****
 					
 					NSTableView	*albumTable = [[BrowserController currentBrowser] albumTable];
@@ -741,30 +710,14 @@ static NSTimeInterval lastConnection = 0;
 			{
 				if( [[httpServerMessage valueForKey: @"Processed"] boolValue] == NO)							// Is this order already processed ?
 				{
-					NSArray *keys = [doc nodesForXPath:@"methodCall/params//member/name" error:&error];
-					NSArray *values = [doc nodesForXPath:@"methodCall/params//member/value" error:&error];
-					if (2 != [keys count] || 2 != [values count])
+					NSDictionary *paramDict = [self getParameters: doc encoding: encoding];
+					if (2 != [paramDict count])
 					{
 						CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 400, NULL, (CFStringRef) vers); // Bad Request
 						[mess setResponse:response];
 						CFRelease(response);
 						return;
 					}
-					
-					int i;
-					NSMutableDictionary *paramDict = [NSMutableDictionary dictionary];
-					for( i = 0; i < [keys count]; i++)
-					{
-						id value;
-						
-						if( [encoding isEqualToString:@"UTF-8"] == NO && [[[values objectAtIndex: i] objectValue] isKindOfClass:[NSString class]])
-							value = [(NSString*)CFXMLCreateStringByUnescapingEntities(NULL, (CFStringRef)[[values objectAtIndex: i] objectValue], NULL) autorelease];
-						else
-							value = [[values objectAtIndex: i] objectValue];
-						
-						[paramDict setValue: value  forKey: [[keys objectAtIndex: i] objectValue]];
-					}
-					
 					// *****
 					
 					NSArray *sources = [DCMNetServiceDelegate DICOMServersList];
@@ -824,30 +777,14 @@ static NSTimeInterval lastConnection = 0;
 			{
 				if( [[httpServerMessage valueForKey: @"Processed"] boolValue] == NO)							// Is this order already processed ?
 				{
-					NSArray *keys = [doc nodesForXPath:@"methodCall/params//member/name" error:&error];
-					NSArray *values = [doc nodesForXPath:@"methodCall/params//member/value" error:&error];
-					if (1 != [keys count] || 1 != [values count])
+					NSDictionary *paramDict = [self getParameters: doc encoding: encoding];
+					if (1 != [paramDict count])
 					{
 						CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 400, NULL, (CFStringRef) vers); // Bad Request
 						[mess setResponse:response];
 						CFRelease(response);
 						return;
 					}
-					
-					int i;
-					NSMutableDictionary *paramDict = [NSMutableDictionary dictionary];
-					for( i = 0; i < [keys count]; i++)
-					{
-						id value;
-						
-						if( [encoding isEqualToString:@"UTF-8"] == NO &&  [[[values objectAtIndex: i] objectValue] isKindOfClass:[NSString class]])
-							value = [(NSString*)CFXMLCreateStringByUnescapingEntities(NULL, (CFStringRef)[[values objectAtIndex: i] objectValue], NULL) autorelease];
-						else
-							value = [[values objectAtIndex: i] objectValue];
-						
-						[paramDict setValue: value  forKey: [[keys objectAtIndex: i] objectValue]];
-					}
-					
 					// *****
 					
 					NSNumber *ret = [NSNumber numberWithInt: 0];
@@ -881,30 +818,14 @@ static NSTimeInterval lastConnection = 0;
 			{
 				if( [[httpServerMessage valueForKey: @"Processed"] boolValue] == NO)							// Is this order already processed ?
 				{
-					NSArray *keys = [doc nodesForXPath:@"methodCall/params//member/name" error:&error];
-					NSArray *values = [doc nodesForXPath:@"methodCall/params//member/value" error:&error];
-					if (1 != [keys count] || 1 != [values count])
+					NSDictionary *paramDict = [self getParameters: doc encoding: encoding];
+					if (1 != [paramDict count])
 					{
 						CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 400, NULL, (CFStringRef) vers); // Bad Request
 						[mess setResponse:response];
 						CFRelease(response);
 						return;
 					}
-					
-					int i;
-					NSMutableDictionary *paramDict = [NSMutableDictionary dictionary];
-					for( i = 0; i < [keys count]; i++)
-					{
-						id value;
-						
-						if( [encoding isEqualToString:@"UTF-8"] == NO &&  [[[values objectAtIndex: i] objectValue] isKindOfClass:[NSString class]])
-							value = [(NSString*)CFXMLCreateStringByUnescapingEntities(NULL, (CFStringRef)[[values objectAtIndex: i] objectValue], NULL) autorelease];
-						else
-							value = [[values objectAtIndex: i] objectValue];
-						
-						[paramDict setValue: value  forKey: [[keys objectAtIndex: i] objectValue]];
-					}
-					
 					// *****
 					
 					NSNumber *ret = [NSNumber numberWithInt: 0];

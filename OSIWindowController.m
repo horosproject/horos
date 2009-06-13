@@ -23,11 +23,12 @@
 static	BOOL dontEnterMagneticFunctions = NO;
 extern  BOOL USETOOLBARPANEL;
 extern  ToolbarPanelController  *toolbarPanel[ 10];
+extern int delayedTileWindows;
 
 @implementation OSIWindowController
 
 #pragma mark-
-#pragma mark Magnetic Windows
+#pragma mark Magnetic Windows & Tiling
 
 - (void) setMagnetic:(BOOL) a
 {
@@ -197,6 +198,42 @@ extern  ToolbarPanelController  *toolbarPanel[ 10];
 	}
 }
 
+- (void) autoHideMatrix
+{
+}
+
+- (void) syncThumbnails
+{
+}
+
+- (void) refreshToolbar
+{
+}
+
+- (id) imageView
+{
+	return nil;
+}
+
+- (void) propagateSettings
+{
+}
+
+- (NSArray*) fileList
+{
+	return nil;
+}
+
+- (void)setWindowFrame:(NSRect)rect showWindow:(BOOL) showWindow animate: (BOOL) animate
+{
+	[[self window] setFrame: rect display: NO];
+}
+
+- (BOOL) windowWillClose
+{
+	return NO;
+}
+
 - (void)windowWillMove:(NSNotification *)notification
 {
 	if( magneticWindowActivated)
@@ -352,6 +389,19 @@ extern  ToolbarPanelController  *toolbarPanel[ 10];
 	}
 }
 
+- (void) dealloc
+{
+	[super dealloc];
+	
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"] == YES && magneticWindowActivated == YES)
+	{
+		if( delayedTileWindows)
+			[NSObject cancelPreviousPerformRequestsWithTarget: [AppController sharedAppController] selector:@selector(tileWindows:) object:nil];
+		delayedTileWindows = YES;
+		[[AppController sharedAppController] performSelector: @selector(tileWindows:) withObject:nil afterDelay: 0.1];
+	}
+}
+
 #pragma mark-
 #pragma mark Misc
 
@@ -378,14 +428,9 @@ extern  ToolbarPanelController  *toolbarPanel[ 10];
 	return self;
 }
 
- - (BOOL) FullScreenON
- {
-	return NO;
- }
-
-- (void)dealloc
+- (BOOL) FullScreenON
 {
-	[super dealloc];
+	return NO;
 }
 
 - (void) removeLastItemFromUndoQueue

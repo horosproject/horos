@@ -1361,6 +1361,8 @@ extern NSThread					*mainThread;
 	[returnHTML replaceOccurrencesOfString:@"%PatientName%" withString:[WebServicesMethods nonNilString:[study valueForKey:@"name"]] options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
 	[returnHTML replaceOccurrencesOfString:@"%StudyComment%" withString:[WebServicesMethods nonNilString:[study valueForKey:@"comment"]] options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
 	NSString *stateText = [[BrowserController statesArray] objectAtIndex: [[study valueForKey:@"stateText"] intValue]];
+	if( [[study valueForKey:@"stateText"] intValue] == 0)
+		stateText = nil;
 	[returnHTML replaceOccurrencesOfString:@"%StudyState%" withString:[WebServicesMethods nonNilString:stateText] options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
 
 	NSDateFormatter *dobDateFormat = [[[NSDateFormatter alloc] init] autorelease];
@@ -1389,6 +1391,13 @@ extern NSThread					*mainThread;
 		[tempHTML replaceOccurrencesOfString:@"%SeriesName%" withString:[WebServicesMethods nonNilString:[series valueForKey:@"name"]] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 		[tempHTML replaceOccurrencesOfString:@"%thumbnail%" withString:[NSString stringWithFormat:@"thumbnail?id=%@&studyID=%@", [WebServicesMethods nonNilString:[series valueForKey:@"seriesInstanceUID"]], [WebServicesMethods nonNilString:[study valueForKey:@"studyInstanceUID"]]] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 		[tempHTML replaceOccurrencesOfString:@"%SeriesID%" withString:[WebServicesMethods nonNilString:[series valueForKey:@"seriesInstanceUID"]] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+		[tempHTML replaceOccurrencesOfString:@"%SeriesComment%" withString:[WebServicesMethods nonNilString:[series valueForKey:@"comment"]] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+		
+		NSString *stateText = [[BrowserController statesArray] objectAtIndex: [[series valueForKey:@"stateText"] intValue]];
+		if( [[series valueForKey:@"stateText"] intValue] == 0)
+			stateText = nil;
+		[tempHTML replaceOccurrencesOfString:@"%SeriesState%" withString:[WebServicesMethods nonNilString:stateText] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+
 		
 		int nbFiles = [[series valueForKey:@"noFiles"] intValue];
 		if( nbFiles <= 1)
