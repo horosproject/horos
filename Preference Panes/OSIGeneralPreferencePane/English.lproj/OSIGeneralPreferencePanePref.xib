@@ -8,7 +8,7 @@
 		<string key="IBDocument.HIToolboxVersion">353.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="304"/>
+			<integer value="210"/>
 			<integer value="133"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
@@ -1425,7 +1425,7 @@ Y2VzIHNldHRpbmdzLg</string>
 							<object class="NSTextFieldCell" key="NSCell" id="439669151">
 								<int key="NSCellFlags">68288064</int>
 								<int key="NSCellFlags2">71304192</int>
-								<string key="NSContents">If smaller matrix value is smaller than:</string>
+								<string key="NSContents">If smallest matrix value is smaller than:</string>
 								<reference key="NSSupport" ref="257743695"/>
 								<reference key="NSControlView" ref="317536439"/>
 								<reference key="NSBackgroundColor" ref="270201559"/>
@@ -2921,9 +2921,9 @@ Y2VzIHNldHRpbmdzLg</string>
 					</object>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
-					<string>{{638, 897}, {724, 599}}</string>
+					<string>{{638, 257}, {724, 599}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{638, 897}, {724, 599}}</string>
+					<string>{{638, 257}, {724, 599}}</string>
 					<reference ref="9"/>
 					<string>{{398, 479}, {724, 534}}</string>
 					<reference ref="8"/>
@@ -2998,9 +2998,9 @@ Y2VzIHNldHRpbmdzLg</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
-					<string>{{545, 412}, {790, 428}}</string>
+					<string>{{256, 412}, {790, 428}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{545, 412}, {790, 428}}</string>
+					<string>{{256, 412}, {790, 428}}</string>
 					<reference ref="8"/>
 					<reference ref="8"/>
 					<reference ref="8"/>
