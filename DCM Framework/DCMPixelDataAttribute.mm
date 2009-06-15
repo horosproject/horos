@@ -308,6 +308,7 @@ void warning_callback(const char *msg, void *a) {
 sample debug callback expecting no client object
 */
 void info_callback(const char *msg, void *a) {
+//	NSLog( @"%s", msg);
 }
 
 static inline int int_ceildivpow2(int a, int b) {

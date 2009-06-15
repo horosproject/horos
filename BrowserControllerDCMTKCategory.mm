@@ -55,33 +55,35 @@ extern NSRecursiveLock *PapyrusLock;
 
 - (BOOL)compressDICOMWithJPEG:(NSArray *) paths
 {
-//			NSString *dest2 = [paths lastObject];
-//			
-//			DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile: [paths lastObject] decodingPixelData:YES];
-//			
-//			BOOL succeed = NO;
-//			
-//			@try
-//			{
-//				succeed = [dcmObject writeToFile: [dest2 stringByAppendingString: @" temp"] withTransferSyntax:[DCMTransferSyntax JPEG2000LosslessTransferSyntax] quality: 1 AET:@"OsiriX" atomically:YES];
-//			}
-//			@catch (NSException *e)
-//			{
-//				NSLog( @"dcmObject writeToFile failed: %@", e);
-//			}
-//			[dcmObject release];
-//			
-//			if( succeed)
-//			{
-//				if( dest2 == [paths lastObject])
-//					[[NSFileManager defaultManager] removeFileAtPath: [paths lastObject] handler: nil];
-//				[[NSFileManager defaultManager] movePath: [dest2 stringByAppendingString: @" temp"] toPath: dest2 handler: nil];
-//			}
-//			else
-//			{
-//				NSLog( @"failed to compress file: %@", [paths lastObject]);
-//				[[NSFileManager defaultManager] removeFileAtPath: [dest2 stringByAppendingString: @" temp"] handler: nil];
-//			}
+//	NSLog( @"** START");
+//	NSString *dest2 = [paths lastObject];
+//	
+//	DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile: [paths lastObject] decodingPixelData:YES];
+//	
+//	BOOL succeed = NO;
+//	
+//	@try
+//	{
+//		succeed = [dcmObject writeToFile: [dest2 stringByAppendingString: @" temp"] withTransferSyntax:[DCMTransferSyntax JPEG2000LosslessTransferSyntax] quality: 0 AET:@"OsiriX" atomically:YES];
+//	}
+//	@catch (NSException *e)
+//	{
+//		NSLog( @"dcmObject writeToFile failed: %@", e);
+//	}
+//	[dcmObject release];
+//	
+//	if( succeed)
+//	{
+//		if( dest2 == [paths lastObject])
+//			[[NSFileManager defaultManager] removeFileAtPath: [paths lastObject] handler: nil];
+//		[[NSFileManager defaultManager] movePath: [dest2 stringByAppendingString: @" temp"] toPath: dest2 handler: nil];
+//	}
+//	else
+//	{
+//		NSLog( @"failed to compress file: %@", [paths lastObject]);
+//		[[NSFileManager defaultManager] removeFileAtPath: [dest2 stringByAppendingString: @" temp"] handler: nil];
+//	}
+//	NSLog( @"** END");
 	
 	NSTask *theTask = [[NSTask alloc] init];
 	[theTask setArguments: [[NSArray arrayWithObjects: @"sameAsDestination", @"compress", nil] arrayByAddingObjectsFromArray: paths]];

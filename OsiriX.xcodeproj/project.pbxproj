@@ -986,13 +986,9 @@
 		ABDE6E2206398E3400F0C5DD /* tiffiop.h in Headers */ = {isa = PBXBuildFile; fileRef = ABDE6E1406398E3400F0C5DD /* tiffiop.h */; };
 		ABDE6E2306398E3400F0C5DD /* tiffvers.h in Headers */ = {isa = PBXBuildFile; fileRef = ABDE6E1506398E3400F0C5DD /* tiffvers.h */; };
 		ABDE6E2406398E3400F0C5DD /* uvcode.h in Headers */ = {isa = PBXBuildFile; fileRef = ABDE6E1606398E3400F0C5DD /* uvcode.h */; };
-		ABDEB38D0D1827440079C938 /* libopenjpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ABDEB38B0D1827440079C938 /* libopenjpeg.a */; };
 		ABDEB38E0D1827440079C938 /* openjpeg.h in Headers */ = {isa = PBXBuildFile; fileRef = ABDEB38C0D1827440079C938 /* openjpeg.h */; };
-		ABDEB3910D1827440079C938 /* libopenjpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ABDEB38B0D1827440079C938 /* libopenjpeg.a */; };
 		ABDEB3920D1827440079C938 /* openjpeg.h in Headers */ = {isa = PBXBuildFile; fileRef = ABDEB38C0D1827440079C938 /* openjpeg.h */; };
-		ABDEB3930D1827440079C938 /* libopenjpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ABDEB38B0D1827440079C938 /* libopenjpeg.a */; };
 		ABDEB3940D1827440079C938 /* openjpeg.h in Headers */ = {isa = PBXBuildFile; fileRef = ABDEB38C0D1827440079C938 /* openjpeg.h */; };
-		ABDEB3950D1827440079C938 /* libopenjpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ABDEB38B0D1827440079C938 /* libopenjpeg.a */; };
 		ABDEBD6C063D693F005B99B4 /* add.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABDEBD51063D6938005B99B4 /* add.tif */; };
 		ABDEBD6D063D693F005B99B4 /* minus.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABDEBD52063D6938005B99B4 /* minus.tif */; };
 		ABDF5A1D0A1B641F002A353A /* small_sharedSmartAlbum.tiff in Resources */ = {isa = PBXBuildFile; fileRef = A9B411C10890496400913770 /* small_sharedSmartAlbum.tiff */; };
@@ -4367,6 +4363,10 @@
 		CEC3B293086C87D900DFD83E /* 3DRotateCamera.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEC3B292086C87D900DFD83E /* 3DRotateCamera.tiff */; };
 		CEC4B5C10C7DF2D600AF5A76 /* 3DPRESETS in Resources */ = {isa = PBXBuildFile; fileRef = CEC4B5A20C7DF2D600AF5A76 /* 3DPRESETS */; };
 		CEC57C350875C9A300389622 /* OSIDatabasePreferencePane.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = CEC57C260875C9A300389622 /* OSIDatabasePreferencePane.prefPane */; };
+		CECBF93A0FE6B1C200425ED4 /* libopenjpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ABDEB38B0D1827440079C938 /* libopenjpeg.a */; };
+		CECBF93B0FE6B1C300425ED4 /* libopenjpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ABDEB38B0D1827440079C938 /* libopenjpeg.a */; };
+		CECBF93C0FE6B1C300425ED4 /* libopenjpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ABDEB38B0D1827440079C938 /* libopenjpeg.a */; };
+		CECBF93D0FE6B1C400425ED4 /* libopenjpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ABDEB38B0D1827440079C938 /* libopenjpeg.a */; };
 		CECDBE6A0C95467B006B11A5 /* AnnotationsDefault.plist in Resources */ = {isa = PBXBuildFile; fileRef = CECDBE690C95467B006B11A5 /* AnnotationsDefault.plist */; };
 		CECEF72E081BB265002ECC99 /* DICOMExport.h in Headers */ = {isa = PBXBuildFile; fileRef = CECEF72C081BB265002ECC99 /* DICOMExport.h */; };
 		CECEF72F081BB265002ECC99 /* DICOMExport.m in Sources */ = {isa = PBXBuildFile; fileRef = CECEF72D081BB265002ECC99 /* DICOMExport.m */; };
@@ -4380,7 +4380,6 @@
 		CED555FA0DF48BBB0054351B /* libITKStatistics.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CED555DC0DF48BBA0054351B /* libITKStatistics.a */; };
 		CED555FB0DF48BBB0054351B /* libitktiff.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CED555DD0DF48BBA0054351B /* libitktiff.a */; };
 		CED555FC0DF48BBB0054351B /* libITKNumerics.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CED555DE0DF48BBA0054351B /* libITKNumerics.a */; };
-		CED555FD0DF48BBB0054351B /* libitkopenjpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CED555DF0DF48BBA0054351B /* libitkopenjpeg.a */; };
 		CED555FE0DF48BBB0054351B /* libITKSpatialObject.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CED555E00DF48BBA0054351B /* libITKSpatialObject.a */; };
 		CED555FF0DF48BBB0054351B /* libITKAlgorithms.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CED555E10DF48BBA0054351B /* libITKAlgorithms.a */; };
 		CED556010DF48BBB0054351B /* libITKBasicFilters.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CED555E30DF48BBA0054351B /* libITKBasicFilters.a */; };
@@ -8459,7 +8458,6 @@
 		CED555DC0DF48BBA0054351B /* libITKStatistics.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libITKStatistics.a; path = ITK180/bin/libITKStatistics.a; sourceTree = "<group>"; };
 		CED555DD0DF48BBA0054351B /* libitktiff.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libitktiff.a; path = ITK180/bin/libitktiff.a; sourceTree = "<group>"; };
 		CED555DE0DF48BBA0054351B /* libITKNumerics.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libITKNumerics.a; path = ITK180/bin/libITKNumerics.a; sourceTree = "<group>"; };
-		CED555DF0DF48BBA0054351B /* libitkopenjpeg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libitkopenjpeg.a; path = ITK180/bin/libitkopenjpeg.a; sourceTree = "<group>"; };
 		CED555E00DF48BBA0054351B /* libITKSpatialObject.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libITKSpatialObject.a; path = ITK180/bin/libITKSpatialObject.a; sourceTree = "<group>"; };
 		CED555E10DF48BBA0054351B /* libITKAlgorithms.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libITKAlgorithms.a; path = ITK180/bin/libITKAlgorithms.a; sourceTree = "<group>"; };
 		CED555E30DF48BBA0054351B /* libITKBasicFilters.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libITKBasicFilters.a; path = ITK180/bin/libITKBasicFilters.a; sourceTree = "<group>"; };
@@ -8568,7 +8566,7 @@
 				7E47658007428C80000C9A74 /* Accelerate.framework in Frameworks */,
 				BFB8F7F7087B805F007ABE20 /* libjasper2.a in Frameworks */,
 				BFEA82E00940F1D500B90699 /* Quartz.framework in Frameworks */,
-				ABDEB3910D1827440079C938 /* libopenjpeg.a in Frameworks */,
+				CECBF93C0FE6B1C300425ED4 /* libopenjpeg.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8599,7 +8597,6 @@
 				CE2C82E30C708B310093C162 /* InstantMessage.framework in Frameworks */,
 				CE2C82EC0C708B380093C162 /* CoreVideo.framework in Frameworks */,
 				A97E19EF0CDF55E50065EE29 /* 3DconnexionClient.framework in Frameworks */,
-				ABDEB38D0D1827440079C938 /* libopenjpeg.a in Frameworks */,
 				CE6693C70AF551210073D923 /* libxerces-c.27.dylib in Frameworks */,
 				CEB7179906CE7CBD00084CA5 /* libjasper2.a in Frameworks */,
 				BFBF3AA109B681F500545F5E /* libcrypto.dylib in Frameworks */,
@@ -8624,7 +8621,6 @@
 				CED555FA0DF48BBB0054351B /* libITKStatistics.a in Frameworks */,
 				CED555FB0DF48BBB0054351B /* libitktiff.a in Frameworks */,
 				CED555FC0DF48BBB0054351B /* libITKNumerics.a in Frameworks */,
-				CED555FD0DF48BBB0054351B /* libitkopenjpeg.a in Frameworks */,
 				CED555FE0DF48BBB0054351B /* libITKSpatialObject.a in Frameworks */,
 				CED555FF0DF48BBB0054351B /* libITKAlgorithms.a in Frameworks */,
 				CED556010DF48BBB0054351B /* libITKBasicFilters.a in Frameworks */,
@@ -8658,6 +8654,7 @@
 				ABE881450FC1444D009F5C80 /* ILCrashReporter.framework in Frameworks */,
 				84F4533E0FC3DF3800D29666 /* ILCrashReporter.framework in Frameworks */,
 				CE8D057E0FD8505000165DDE /* OsiriX.framework in Frameworks */,
+				CECBF93D0FE6B1C400425ED4 /* libopenjpeg.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8672,9 +8669,9 @@
 				AB724FF20ADE6ECB00A212A0 /* libz.dylib in Frameworks */,
 				CE7BBFDB0C82DCA5000AD12F /* libtiff.dylib in Frameworks */,
 				CE7BBFDC0C82DCA5000AD12F /* libtiff.a in Frameworks */,
-				ABDEB3950D1827440079C938 /* libopenjpeg.a in Frameworks */,
 				CE8D062A0FD8731B00165DDE /* libDCM StaticLibrary.a in Frameworks */,
 				CE8D062C0FD8733C00165DDE /* Accelerate.framework in Frameworks */,
+				CECBF93A0FE6B1C200425ED4 /* libopenjpeg.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8682,8 +8679,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				ABDEB3930D1827440079C938 /* libopenjpeg.a in Frameworks */,
 				CE6DEB640F91BF9B0009FEF3 /* libjasper2.a in Frameworks */,
+				CECBF93B0FE6B1C300425ED4 /* libopenjpeg.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -11406,7 +11403,6 @@
 				CED555DC0DF48BBA0054351B /* libITKStatistics.a */,
 				CED555DD0DF48BBA0054351B /* libitktiff.a */,
 				CED555DE0DF48BBA0054351B /* libITKNumerics.a */,
-				CED555DF0DF48BBA0054351B /* libitkopenjpeg.a */,
 				CED555E00DF48BBA0054351B /* libITKSpatialObject.a */,
 				CED555E10DF48BBA0054351B /* libITKAlgorithms.a */,
 				CED555E30DF48BBA0054351B /* libITKBasicFilters.a */,

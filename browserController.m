@@ -13099,7 +13099,13 @@ static volatile int numberOfThreadsForJPEG = 0;
 		}
 	}
 	
-	return compression_none;
+	if( [array count] == 0)
+		return compression_none;
+	
+	if( quality)
+		*quality = [[[array objectAtIndex: 0] valueForKey: @"quality"] intValue];
+	
+	return [[[array objectAtIndex: 0] valueForKey: @"compression"] intValue];
 }
 
 - (void)decompressDICOMJPEGinINCOMING: (NSArray*) array

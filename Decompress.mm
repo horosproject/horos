@@ -61,7 +61,13 @@ int compressionForModality( NSArray *array, NSArray *arrayLow, int limit, NSStri
 		}
 	}
 	
-	return compression_none;
+	if( [s count] == 0)
+		return compression_none;
+	
+	if( quality)
+		*quality = [[[s objectAtIndex: 0] valueForKey: @"quality"] intValue];
+	
+	return [[[s objectAtIndex: 0] valueForKey: @"compression"] intValue];
 }
 
 int main(int argc, const char *argv[])
