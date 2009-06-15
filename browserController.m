@@ -95,6 +95,7 @@ static NSMenu *contextualRT = nil;  // Alternate menus for RT objects (which oft
 static int DicomDirScanDepth;
 static int DefaultFolderSizeForDB = 0;
 
+extern NSData* compressJPEG2000(int inQuality, unsigned char* inImageBuffP, int inImageHeight, int inImageWidth, int samplesPerPixel);
 extern void compressJPEG (int inQuality, char* filename, unsigned char* inImageBuffP, int inImageHeight, int inImageWidth, int monochrome);
 extern BOOL hasMacOSXTiger();
 extern BOOL hasMacOSXLeopard();
@@ -7935,15 +7936,12 @@ static BOOL withReset = NO;
 + (NSData*)produceJPEGThumbnail: (NSImage*)image
 {
 	NSData *imageData = [image  TIFFRepresentation];
-	
 	NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData:imageData];
 	
 	//	NSLog( @"bits per pixel: %d", [imageRep bitsPerPixel]);
 	
-	NSString	*uniqueFileName = [NSString stringWithFormat:@"/tmp/osirix_thumbnail_%lf.jpg", [NSDate timeIntervalSinceReferenceDate]];
-	
+	NSString *uniqueFileName = [NSString stringWithFormat:@"/tmp/osirix_thumbnail_%lf.jpg", [NSDate timeIntervalSinceReferenceDate]];
 	NSData	*result = nil;
-	
 	
 	if( [imageRep bitsPerPixel] == 8)
 	{
@@ -7951,20 +7949,21 @@ static BOOL withReset = NO;
 		compressJPEG ( 30, (char*) [uniqueFileName UTF8String], [imageRep bitmapData], [imageRep pixelsHigh], [imageRep pixelsWide], 1);
 		result = [NSData dataWithContentsOfFile:uniqueFileName];
 		[[NSFileManager defaultManager] removeFileAtPath:uniqueFileName  handler:nil];
-		[PapyrusLock unlock];
-	}
-	else if( [imageRep bitsPerPixel] == 8)
-	{
-		[PapyrusLock lock];
-		compressJPEG ( 30, (char*) [uniqueFileName UTF8String], [imageRep bitmapData], [imageRep pixelsHigh], [imageRep pixelsWide], 0);
-		result = [NSData dataWithContentsOfFile: uniqueFileName];
-		[[NSFileManager defaultManager] removeFileAtPath:uniqueFileName  handler:nil];
+		NSLog( @"%d", [result length]);
+		
+//		result = compressJPEG2000 ( 50, [imageRep bitmapData], [imageRep pixelsHigh], [imageRep pixelsWide], [imageRep samplesPerPixel]);
+//		NSLog( @"%d", [result length]);
+		
+		NSDictionary *imageProps = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.1] forKey:NSImageCompressionFactor];
+		result = [imageRep representationUsingType:NSJPEG2000FileType properties:imageProps];
+		
+		NSLog( @"%d", [result length]);
+		
 		[PapyrusLock unlock];
 	}
 	else
 	{
 		NSDictionary *imageProps = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.3] forKey:NSImageCompressionFactor];
-		
 		result = [imageRep representationUsingType:NSJPEGFileType properties:imageProps];
 		//NSJPEGFileType	NSJPEG2000FileType <- MAJOR memory leak with NSJPEG2000FileType when reading !!! Kakadu library...
 	}

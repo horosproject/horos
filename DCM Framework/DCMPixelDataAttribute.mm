@@ -315,7 +315,7 @@ static inline int int_ceildivpow2(int a, int b) {
 	return (a + (1 << b) - 1) >> b;
 }
 
-bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
+void* dcm_read_JPEG2000_file (char *inputdata, size_t inputlength, size_t *outputLength)
 {
   opj_dparameters_t parameters;  /* decompression parameters */
   opj_event_mgr_t event_mgr;    /* event manager */
@@ -361,13 +361,16 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
       if(!image) {
         opj_destroy_decompress(dinfo);
         opj_cio_close(cio);
-        return 1;
+        return nil;
       }
       
       /* close the byte stream */
       opj_cio_close(cio);
 
   /* free the memory containing the code-stream */
+  
+  *outputLength = image->numcomps * image->comps[ 0].w * image->comps[ 0].h * image->comps[ 0].prec / 8;
+  void* raw = malloc( *outputLength);
   
    // Copy buffer
    for (int compno = 0; compno < image->numcomps; compno++)
@@ -421,7 +424,7 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
   /* free image data structure */
   opj_image_destroy(image);
 
-  return true;
+  return raw;
 }
 
 template<typename T>
@@ -560,7 +563,79 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
   return image;
 }
 /////////
+extern "C" NSData* compressJPEG2000(int inQuality, unsigned char* inImageBuffP, int inImageHeight, int inImageWidth, int samplesPerPixel);
 
+NSData* compressJPEG2000(int inQuality, unsigned char* inImageBuffP, int inImageHeight, int inImageWidth, int samplesPerPixel)
+{
+	opj_cparameters_t parameters;
+	opj_event_mgr_t event_mgr;
+	opj_image_t *image = NULL;
+	
+	memset(&event_mgr, 0, sizeof(opj_event_mgr_t));
+	event_mgr.error_handler = error_callback;
+	event_mgr.warning_handler = warning_callback;
+	event_mgr.info_handler = info_callback;
+	
+	memset(&parameters, 0, sizeof(parameters));
+	opj_set_default_encoder_parameters(&parameters);
+	
+	parameters.tcp_rates[0] = inQuality;
+	parameters.tcp_numlayers = 1;
+	parameters.cp_disto_alloc = 1;
+	
+	int image_width = inImageWidth;
+	int image_height = inImageHeight;
+	int sample_pixel = samplesPerPixel;
+	int bitsallocated = 8;
+	int bitsstored = 8;
+	BOOL sign = NO;
+	int numberofPlanes = 1;
+	
+	int length = inImageHeight * inImageWidth * sample_pixel;
+	image = rawtoimage( (char*) inImageBuffP, &parameters,  static_cast<int>( length),  image_width, image_height, sample_pixel, bitsallocated, bitsstored, sign, inQuality, numberofPlanes);
+	
+	parameters.cod_format = 0; /* J2K format output */
+	int codestream_length;
+	opj_cio_t *cio = NULL;
+	
+	opj_cinfo_t* cinfo = opj_create_compress(CODEC_J2K);
+
+	/* catch events using our callbacks and give a local context */
+	opj_set_event_mgr((opj_common_ptr)cinfo, &event_mgr, stderr);
+
+	/* setup the encoder parameters using the current image and using user parameters */
+	opj_setup_encoder(cinfo, &parameters, image);
+
+	/* open a byte stream for writing */
+	/* allocate memory for all tiles */
+	cio = opj_cio_open((opj_common_ptr)cinfo, NULL, 0);
+
+	/* encode the image */
+	BOOL bSuccess = opj_encode(cinfo, cio, image, NULL);
+	if (!bSuccess) {
+	  opj_cio_close(cio);
+	  fprintf(stderr, "failed to encode image\n");
+	  return false;
+	}
+	codestream_length = cio_tell(cio);
+	
+	NSMutableData *jpeg2000Data = [NSMutableData dataWithBytes: cio->buffer length: codestream_length];
+	
+	 /* close and free the byte stream */
+	opj_cio_close(cio);
+	
+	/* free remaining compression structures */
+	opj_destroy_compress(cinfo);
+	
+	opj_image_destroy(image);
+	
+	return jpeg2000Data;
+}
+
+//NSimage* decompressJPEG2000( unsigned char* inImageBuffP, long theLength)
+//{
+////	dcm_read_JPEG2000_file( newPixelData, (char*) theCompressedP, theLength);
+//}
 
 @implementation DCMPixelDataAttribute
 
@@ -1148,119 +1223,126 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 
 - (NSData *)convertJPEG2000ToHost:(NSData *)jpegData
 {
-	int					 fmtid;
-	unsigned long		i,  theLength,  x, y, decompressedLength;
-	unsigned char		*theCompressedP;
-	NSMutableData				*pixelData;
-	
-	jas_image_t *jasImage;
-	jas_matrix_t *pixels[4];
-	char *fmtname;
-	
-	theCompressedP = (unsigned char*)[jpegData bytes];
-	theLength = [jpegData length];
-	
-	jas_stream_t *jasStream = jas_stream_memopen((char *)theCompressedP, theLength);
-		
-	if ((fmtid = jas_image_getfmt(jasStream)) < 0)
-	{
-		//RETURN( -32);
-		NSLog(@"JPEG2000 stream failure");
-		return nil;
-	}
-		// Decode the image. 
-	if (!(jasImage = jas_image_decode(jasStream, fmtid, 0)))
-	{
-		//RETURN( -35);
-		NSLog(@"JPEG2000 decode failed");
-		return nil;
-	}
-	
-	// Close the image file. 
-	jas_stream_close(jasStream);
-	int numcmpts = jas_image_numcmpts(jasImage);
-	int width = jas_image_cmptwidth(jasImage, 0);
-	int height = jas_image_cmptheight(jasImage, 0);
-	int depth = jas_image_cmptprec(jasImage, 0);
-	//int j;
-	//int k = 0;
-	fmtname = jas_image_fmttostr(fmtid);
-	
-	int bitDepth = 0;
-	if (depth == 8)
-		bitDepth = 1;
-	else if (depth <= 16)
-		bitDepth = 2;
-	else if (depth > 16)
-		bitDepth = 4;
-	
-	decompressedLength =  width * height * bitDepth * numcmpts;
-	unsigned char *newPixelData = (unsigned char*) malloc(decompressedLength);
+	NSMutableData *pixelData;
 	
 	if( UseOpenJpeg)
 	{
-		dcm_read_JPEG2000_file( newPixelData, (char*) theCompressedP, theLength);
+		unsigned char *newPixelData;
+		
+		size_t decompressedLength = 0;
+		newPixelData =(unsigned char*) dcm_read_JPEG2000_file( (char*) [jpegData bytes], [jpegData length], &decompressedLength);
+		
+		pixelData = [NSMutableData dataWithBytesNoCopy:newPixelData length:decompressedLength freeWhenDone: YES];
 	}
 	else
 	{
-		for (i=0; i < numcmpts; i++)
-			pixels[ i] = jas_matrix_create( height, width);
+		int fmtid;
+		unsigned long i,  theLength,  x, y, decompressedLength;
+		unsigned char *theCompressedP;
 		
-		if( numcmpts == 1)
+		
+		jas_image_t *jasImage;
+		jas_matrix_t *pixels[4];
+		char *fmtname;
+		
+		theCompressedP = (unsigned char*)[jpegData bytes];
+		theLength = [jpegData length];
+		
+		jas_stream_t *jasStream = jas_stream_memopen((char *)theCompressedP, theLength);
+			
+		if ((fmtid = jas_image_getfmt(jasStream)) < 0)
 		{
-			if (depth > 8)
+			//RETURN( -32);
+			NSLog(@"JPEG2000 stream failure");
+			return nil;
+		}
+			// Decode the image. 
+		if (!(jasImage = jas_image_decode(jasStream, fmtid, 0)))
+		{
+			//RETURN( -35);
+			NSLog(@"JPEG2000 decode failed");
+			return nil;
+		}
+		
+		// Close the image file. 
+		jas_stream_close(jasStream);
+		int numcmpts = jas_image_numcmpts(jasImage);
+		int width = jas_image_cmptwidth(jasImage, 0);
+		int height = jas_image_cmptheight(jasImage, 0);
+		int depth = jas_image_cmptprec(jasImage, 0);
+		//int j;
+		//int k = 0;
+		fmtname = jas_image_fmttostr(fmtid);
+		
+		int bitDepth = 0;
+		if (depth == 8)
+			bitDepth = 1;
+		else if (depth <= 16)
+			bitDepth = 2;
+		else if (depth > 16)
+			bitDepth = 4;
+		
+		decompressedLength =  width * height * bitDepth * numcmpts;
+		unsigned char *newPixelData = (unsigned char*) malloc(decompressedLength);
+		
+			for (i=0; i < numcmpts; i++)
+				pixels[ i] = jas_matrix_create( height, width);
+			
+			if( numcmpts == 1)
 			{
-				jas_image_readcmpt(jasImage, 0, 0, 0, width, height, pixels[0]);
-				
-				unsigned short *px = (unsigned short*) newPixelData;
-				
-				int_fast32_t	*ptr = &(pixels[0])->rows_[0][0];
-				x = width*height;
-				while( x-- > 0) *px++ = *ptr++;			//jas_matrix_getv(pixels[0],x);
+				if (depth > 8)
+				{
+					jas_image_readcmpt(jasImage, 0, 0, 0, width, height, pixels[0]);
+					
+					unsigned short *px = (unsigned short*) newPixelData;
+					
+					int_fast32_t	*ptr = &(pixels[0])->rows_[0][0];
+					x = width*height;
+					while( x-- > 0) *px++ = *ptr++;			//jas_matrix_getv(pixels[0],x);
+				}
+				else
+				{
+					jas_image_readcmpt(jasImage, 0, 0, 0, width, height, pixels[0]);
+					
+					char *px = (char *) newPixelData;
+					
+					//ICI char * aulieu de 32
+					int_fast32_t	*ptr = &(pixels[0])->rows_[0][0];
+					x = width*height;
+					while( x-- > 0) *px++ =	*ptr++;		//jas_matrix_getv(pixels[0],x);
+				}
 			}
 			else
 			{
-				jas_image_readcmpt(jasImage, 0, 0, 0, width, height, pixels[0]);
+				[_dcmObject setAttributeValues:[NSMutableArray arrayWithObject:@"RGB"] forName:@"PhotometricInterpretation"];	//YUV_RCT support....
 				
-				char *px = (char *) newPixelData;
+				for( i = 0 ; i < numcmpts; i++)
+					jas_image_readcmpt(jasImage, i, 0, 0, width, height, pixels[ i]);
 				
-				//ICI char * aulieu de 32
-				int_fast32_t	*ptr = &(pixels[0])->rows_[0][0];
+				char *px = (char*) newPixelData;
+				
+				int_fast32_t	*ptr1 = &(pixels[0])->rows_[0][0];
+				int_fast32_t	*ptr2 = &(pixels[1])->rows_[0][0];
+				int_fast32_t	*ptr3 = &(pixels[2])->rows_[0][0];
+				
 				x = width*height;
-				while( x-- > 0) *px++ =	*ptr++;		//jas_matrix_getv(pixels[0],x);
+				while( x-- > 0)
+				{
+					*px++ =	*ptr1++;
+					*px++ =	*ptr2++;
+					*px++ =	*ptr3++;		//jas_matrix_getv(pixels[0],x);
+				}
 			}
-		}
-		else
-		{
-			[_dcmObject setAttributeValues:[NSMutableArray arrayWithObject:@"RGB"] forName:@"PhotometricInterpretation"];	//YUV_RCT support....
 			
-			for( i = 0 ; i < numcmpts; i++)
-				jas_image_readcmpt(jasImage, i, 0, 0, width, height, pixels[ i]);
-			
-			char *px = (char*) newPixelData;
-			
-			int_fast32_t	*ptr1 = &(pixels[0])->rows_[0][0];
-			int_fast32_t	*ptr2 = &(pixels[1])->rows_[0][0];
-			int_fast32_t	*ptr3 = &(pixels[2])->rows_[0][0];
-			
-			x = width*height;
-			while( x-- > 0)
-			{
-				*px++ =	*ptr1++;
-				*px++ =	*ptr2++;
-				*px++ =	*ptr3++;		//jas_matrix_getv(pixels[0],x);
-			}
-		}
+			for (i=0; i < numcmpts; i++)
+				jas_matrix_destroy( pixels[ i]);
 		
-		for (i=0; i < numcmpts; i++)
-			jas_matrix_destroy( pixels[ i]);
+		
+			jas_image_destroy(jasImage);
+		//	jas_image_clearfmts();
+			
+			pixelData = [NSMutableData dataWithBytesNoCopy:newPixelData length:decompressedLength freeWhenDone: YES];
 	}
-	
-	jas_image_destroy(jasImage);
-//	jas_image_clearfmts();
-	
-	pixelData = [NSMutableData dataWithBytes:newPixelData length:decompressedLength ];
-	free( newPixelData);
 	
 	return pixelData;
 }
