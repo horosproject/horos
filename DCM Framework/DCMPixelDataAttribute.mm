@@ -315,7 +315,7 @@ static inline int int_ceildivpow2(int a, int b) {
 	return (a + (1 << b) - 1) >> b;
 }
 
-void* dcm_read_JPEG2000_file (char *inputdata, size_t inputlength, size_t *outputLength)
+void* dcm_read_JPEG2000_file (char *inputdata, size_t inputlength, size_t *outputLength, int *width, int *height, int *samplePerPixel)
 {
   opj_dparameters_t parameters;  /* decompression parameters */
   opj_event_mgr_t event_mgr;    /* event manager */
@@ -368,7 +368,12 @@ void* dcm_read_JPEG2000_file (char *inputdata, size_t inputlength, size_t *outpu
       opj_cio_close(cio);
 
   /* free the memory containing the code-stream */
-  
+  if( width)
+	*width = image->comps[ 0].w;
+  if( height)
+	*height = image->comps[ 0].h;
+  if( samplePerPixel)
+	*samplePerPixel = image->numcomps;
   *outputLength = image->numcomps * image->comps[ 0].w * image->comps[ 0].h * image->comps[ 0].prec / 8;
   void* raw = malloc( *outputLength);
   
@@ -563,78 +568,114 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
   return image;
 }
 /////////
-extern "C" NSData* compressJPEG2000(int inQuality, unsigned char* inImageBuffP, int inImageHeight, int inImageWidth, int samplesPerPixel);
-
-NSData* compressJPEG2000(int inQuality, unsigned char* inImageBuffP, int inImageHeight, int inImageWidth, int samplesPerPixel)
-{
-	opj_cparameters_t parameters;
-	opj_event_mgr_t event_mgr;
-	opj_image_t *image = NULL;
-	
-	memset(&event_mgr, 0, sizeof(opj_event_mgr_t));
-	event_mgr.error_handler = error_callback;
-	event_mgr.warning_handler = warning_callback;
-	event_mgr.info_handler = info_callback;
-	
-	memset(&parameters, 0, sizeof(parameters));
-	opj_set_default_encoder_parameters(&parameters);
-	
-	parameters.tcp_rates[0] = inQuality;
-	parameters.tcp_numlayers = 1;
-	parameters.cp_disto_alloc = 1;
-	
-	int image_width = inImageWidth;
-	int image_height = inImageHeight;
-	int sample_pixel = samplesPerPixel;
-	int bitsallocated = 8;
-	int bitsstored = 8;
-	BOOL sign = NO;
-	int numberofPlanes = 1;
-	
-	int length = inImageHeight * inImageWidth * sample_pixel;
-	image = rawtoimage( (char*) inImageBuffP, &parameters,  static_cast<int>( length),  image_width, image_height, sample_pixel, bitsallocated, bitsstored, sign, inQuality, numberofPlanes);
-	
-	parameters.cod_format = 0; /* J2K format output */
-	int codestream_length;
-	opj_cio_t *cio = NULL;
-	
-	opj_cinfo_t* cinfo = opj_create_compress(CODEC_J2K);
-
-	/* catch events using our callbacks and give a local context */
-	opj_set_event_mgr((opj_common_ptr)cinfo, &event_mgr, stderr);
-
-	/* setup the encoder parameters using the current image and using user parameters */
-	opj_setup_encoder(cinfo, &parameters, image);
-
-	/* open a byte stream for writing */
-	/* allocate memory for all tiles */
-	cio = opj_cio_open((opj_common_ptr)cinfo, NULL, 0);
-
-	/* encode the image */
-	BOOL bSuccess = opj_encode(cinfo, cio, image, NULL);
-	if (!bSuccess) {
-	  opj_cio_close(cio);
-	  fprintf(stderr, "failed to encode image\n");
-	  return false;
-	}
-	codestream_length = cio_tell(cio);
-	
-	NSMutableData *jpeg2000Data = [NSMutableData dataWithBytes: cio->buffer length: codestream_length];
-	
-	 /* close and free the byte stream */
-	opj_cio_close(cio);
-	
-	/* free remaining compression structures */
-	opj_destroy_compress(cinfo);
-	
-	opj_image_destroy(image);
-	
-	return jpeg2000Data;
-}
-
-//NSimage* decompressJPEG2000( unsigned char* inImageBuffP, long theLength)
+//extern "C" NSData* compressJPEG2000(int inQuality, unsigned char* inImageBuffP, int inImageHeight, int inImageWidth, int samplesPerPixel);
+//extern "C" NSImage* decompressJPEG2000( unsigned char* inImageBuffP, long theLength);
+//
+//NSData* compressJPEG2000(int inQuality, unsigned char* inImageBuffP, int inImageHeight, int inImageWidth, int samplesPerPixel)
 //{
-////	dcm_read_JPEG2000_file( newPixelData, (char*) theCompressedP, theLength);
+//	opj_cparameters_t parameters;
+//	opj_event_mgr_t event_mgr;
+//	opj_image_t *image = NULL;
+//	
+//	memset(&event_mgr, 0, sizeof(opj_event_mgr_t));
+//	event_mgr.error_handler = error_callback;
+//	event_mgr.warning_handler = warning_callback;
+//	event_mgr.info_handler = info_callback;
+//	
+//	memset(&parameters, 0, sizeof(parameters));
+//	opj_set_default_encoder_parameters(&parameters);
+//	
+//	parameters.tcp_rates[0] = inQuality;
+//	parameters.tcp_numlayers = 1;
+//	parameters.cp_disto_alloc = 1;
+//	
+//	int image_width = inImageWidth;
+//	int image_height = inImageHeight;
+//	int sample_pixel = samplesPerPixel;
+//	int bitsallocated = 8;
+//	int bitsstored = 8;
+//	BOOL sign = NO;
+//	int numberofPlanes = 1;
+//	
+//	int length = inImageHeight * inImageWidth * sample_pixel;
+//	image = rawtoimage( (char*) inImageBuffP, &parameters,  static_cast<int>( length),  image_width, image_height, sample_pixel, bitsallocated, bitsstored, sign, inQuality, numberofPlanes);
+//	
+//	parameters.cod_format = 0; /* J2K format output */
+//	int codestream_length;
+//	opj_cio_t *cio = NULL;
+//	
+//	opj_cinfo_t* cinfo = opj_create_compress(CODEC_J2K);
+//
+//	/* catch events using our callbacks and give a local context */
+//	opj_set_event_mgr((opj_common_ptr)cinfo, &event_mgr, stderr);
+//
+//	/* setup the encoder parameters using the current image and using user parameters */
+//	opj_setup_encoder(cinfo, &parameters, image);
+//
+//	/* open a byte stream for writing */
+//	/* allocate memory for all tiles */
+//	cio = opj_cio_open((opj_common_ptr)cinfo, NULL, 0);
+//
+//	/* encode the image */
+//	BOOL bSuccess = opj_encode(cinfo, cio, image, NULL);
+//	if (!bSuccess) {
+//	  opj_cio_close(cio);
+//	  fprintf(stderr, "failed to encode image\n");
+//	  return false;
+//	}
+//	codestream_length = cio_tell(cio);
+//	
+//	NSMutableData *jpeg2000Data = [NSMutableData dataWithBytes: cio->buffer length: codestream_length];
+//	
+//	 /* close and free the byte stream */
+//	opj_cio_close(cio);
+//	
+//	/* free remaining compression structures */
+//	opj_destroy_compress(cinfo);
+//	
+//	opj_image_destroy(image);
+//	
+//	return jpeg2000Data;
+//}
+//
+//NSImage* decompressJPEG2000( unsigned char* inImageBuffP, long theCompressedLength)
+//{
+//	size_t theLength;
+//	int width, height, samplePerPixel;
+//	
+//	if( inImageBuffP == nil)
+//		return nil;
+//	
+//	void *data = dcm_read_JPEG2000_file( (char*) inImageBuffP, theCompressedLength, &theLength, &width, &height, &samplePerPixel);
+//	
+//	if( data == nil)
+//		return nil;
+//	
+//	NSString *cs;
+//	if( samplePerPixel == 3)
+//		cs = NSCalibratedRGBColorSpace;
+//	else
+//		cs = NSCalibratedWhiteColorSpace;
+//	
+//	NSBitmapImageRep *rep = [[[NSBitmapImageRep alloc] 
+//					 initWithBitmapDataPlanes: nil
+//					 pixelsWide: width
+//					 pixelsHigh: height
+//					 bitsPerSample: 8
+//					 samplesPerPixel: samplePerPixel
+//					 hasAlpha: NO
+//					 isPlanar: NO
+//					 colorSpaceName: cs
+//					 bytesPerRow: width * samplePerPixel
+//					 bitsPerPixel: samplePerPixel * 8
+//					 ] autorelease];
+//	
+//	memcpy( [rep bitmapData], data, height*width*samplePerPixel);
+//	
+//	NSImage *img = [[[NSImage alloc] initWithSize:NSMakeSize( width, height)] autorelease];
+//	[img addRepresentation: rep];
+//	
+//	return img;
 //}
 
 @implementation DCMPixelDataAttribute
@@ -1230,7 +1271,7 @@ NSData* compressJPEG2000(int inQuality, unsigned char* inImageBuffP, int inImage
 		unsigned char *newPixelData;
 		
 		size_t decompressedLength = 0;
-		newPixelData =(unsigned char*) dcm_read_JPEG2000_file( (char*) [jpegData bytes], [jpegData length], &decompressedLength);
+		newPixelData =(unsigned char*) dcm_read_JPEG2000_file( (char*) [jpegData bytes], [jpegData length], &decompressedLength, nil, nil, nil);
 		
 		pixelData = [NSMutableData dataWithBytesNoCopy:newPixelData length:decompressedLength freeWhenDone: YES];
 	}

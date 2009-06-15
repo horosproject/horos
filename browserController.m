@@ -95,7 +95,9 @@ static NSMenu *contextualRT = nil;  // Alternate menus for RT objects (which oft
 static int DicomDirScanDepth;
 static int DefaultFolderSizeForDB = 0;
 
-extern NSData* compressJPEG2000(int inQuality, unsigned char* inImageBuffP, int inImageHeight, int inImageWidth, int samplesPerPixel);
+//extern NSData* compressJPEG2000(int inQuality, unsigned char* inImageBuffP, int inImageHeight, int inImageWidth, int samplesPerPixel);
+//extern NSImage* decompressJPEG2000( unsigned char* inImageBuffP, long theLength);
+
 extern void compressJPEG (int inQuality, char* filename, unsigned char* inImageBuffP, int inImageHeight, int inImageWidth, int monochrome);
 extern BOOL hasMacOSXTiger();
 extern BOOL hasMacOSXLeopard();
@@ -5132,6 +5134,7 @@ static NSArray*	statesArray = nil;
 				for( NSManagedObject *obj in files )
 				{
 					NSImage *thumbnail = [[[NSImage alloc] initWithData: [obj valueForKeyPath:@"series.thumbnail"]] autorelease];
+//					NSImage *thumbnail = decompressJPEG2000( [[obj valueForKeyPath:@"series.thumbnail"] bytes], [[obj valueForKeyPath:@"series.thumbnail"] length]);
 					if( thumbnail == nil) thumbnail = notFoundImage;
 					
 					[previewPixThumbnails addObject: thumbnail];
@@ -7443,8 +7446,7 @@ static BOOL withReset = NO;
 				noOfImages = [[image valueForKey:@"numberOfFrames"] intValue];
 				animate = YES;
 				
-				DCMPix*dcmPix = nil;
-				dcmPix = [[DCMPix alloc] myinit: [image valueForKey:@"completePath"] :[animationSlider intValue] :noOfImages :nil :[animationSlider intValue] :[[image valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:image];
+				DCMPix *dcmPix = [[DCMPix alloc] myinit: [image valueForKey:@"completePath"] :[animationSlider intValue] :noOfImages :nil :[animationSlider intValue] :[[image valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:image];
 				
 				if( dcmPix )
 				{
@@ -7949,15 +7951,9 @@ static BOOL withReset = NO;
 		compressJPEG ( 30, (char*) [uniqueFileName UTF8String], [imageRep bitmapData], [imageRep pixelsHigh], [imageRep pixelsWide], 1);
 		result = [NSData dataWithContentsOfFile:uniqueFileName];
 		[[NSFileManager defaultManager] removeFileAtPath:uniqueFileName  handler:nil];
-		NSLog( @"%d", [result length]);
 		
-//		result = compressJPEG2000 ( 50, [imageRep bitmapData], [imageRep pixelsHigh], [imageRep pixelsWide], [imageRep samplesPerPixel]);
+//		result = compressJPEG2000( 8, [imageRep bitmapData], [imageRep pixelsHigh], [imageRep pixelsWide], [imageRep samplesPerPixel]);
 //		NSLog( @"%d", [result length]);
-		
-		NSDictionary *imageProps = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.1] forKey:NSImageCompressionFactor];
-		result = [imageRep representationUsingType:NSJPEG2000FileType properties:imageProps];
-		
-		NSLog( @"%d", [result length]);
 		
 		[PapyrusLock unlock];
 	}
