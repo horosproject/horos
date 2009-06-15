@@ -296,11 +296,13 @@ unsigned char scanJpegDataForBitDepth(
 sample error callback expecting a FILE* client object
 */
 void error_callback(const char *msg, void *a) {
+	NSLog( @"%s", msg);
 }
 /**
 sample warning callback expecting a FILE* client object
 */
 void warning_callback(const char *msg, void *a) {
+	NSLog( @"%s", msg);
 }
 /**
 sample debug callback expecting no client object
@@ -419,6 +421,142 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
   opj_image_destroy(image);
 
   return true;
+}
+
+template<typename T>
+void rawtoimage_fill(T *inputbuffer, int w, int h, int numcomps, opj_image_t *image, int pc)
+{
+  T *p = inputbuffer;
+  if( pc )
+    {
+    for(int compno = 0; compno < numcomps; compno++)
+      {
+      for (int i = 0; i < w * h; i++)
+        {
+        /* compno : 0 = GREY, (0, 1, 2) = (R, G, B) */
+        image->comps[compno].data[i] = *p;
+        ++p;
+        }
+      }
+    }
+  else
+    {
+    for (int i = 0; i < w * h; i++)
+      {
+      for(int compno = 0; compno < numcomps; compno++)
+        {
+        /* compno : 0 = GREY, (0, 1, 2) = (R, G, B) */
+        image->comps[compno].data[i] = *p;
+        ++p;
+        }
+      }
+    }
+}
+
+
+opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
+  int fragment_size, int image_width, int image_height, int sample_pixel,
+  int bitsallocated, int bitsstored, int sign, int quality, int pc)
+{
+  (void)quality;
+  int w, h;
+  int numcomps;
+  OPJ_COLOR_SPACE color_space;
+  opj_image_cmptparm_t cmptparm[3]; /* maximum of 3 components */
+  opj_image_t * image = NULL;
+
+  assert( sample_pixel == 1 || sample_pixel == 3 );
+  if( sample_pixel == 1 )
+    {
+    numcomps = 1;
+    color_space = CLRSPC_GRAY;
+    }
+  else // sample_pixel == 3
+    {
+    numcomps = 3;
+    color_space = CLRSPC_SRGB;
+    /* Does OpenJPEg support: CLRSPC_SYCC ?? */
+    }
+  if( bitsallocated % 8 != 0 )
+    {
+    return 0;
+    }
+  assert( bitsallocated % 8 == 0 );
+  // eg. fragment_size == 63532 and 181 * 117 * 3 * 8 == 63531 ...
+  assert( ((fragment_size + 1)/2 ) * 2 == ((image_height * image_width * numcomps * (bitsallocated/8) + 1)/ 2 )* 2 );
+  int subsampling_dx = parameters->subsampling_dx;
+  int subsampling_dy = parameters->subsampling_dy;
+
+  // FIXME
+  w = image_width;
+  h = image_height;
+
+  /* initialize image components */
+  memset(&cmptparm[0], 0, 3 * sizeof(opj_image_cmptparm_t));
+  //assert( bitsallocated == 8 );
+  for(int i = 0; i < numcomps; i++) {
+    cmptparm[i].prec = bitsstored;
+    cmptparm[i].bpp = bitsallocated;
+    cmptparm[i].sgnd = sign;
+    cmptparm[i].dx = subsampling_dx;
+    cmptparm[i].dy = subsampling_dy;
+    cmptparm[i].w = w;
+    cmptparm[i].h = h;
+  }
+
+  /* create the image */
+  image = opj_image_create(numcomps, &cmptparm[0], color_space);
+  if(!image) {
+    return NULL;
+  }
+  /* set image offset and reference grid */
+  image->x0 = parameters->image_offset_x0;
+  image->y0 = parameters->image_offset_y0;
+  image->x1 = parameters->image_offset_x0 + (w - 1) * subsampling_dx + 1;
+  image->y1 = parameters->image_offset_y0 + (h - 1) * subsampling_dy + 1;
+
+  /* set image data */
+
+  //assert( fragment_size == numcomps*w*h*(bitsallocated/8) );
+  if (bitsallocated <= 8)
+    {
+    if( sign )
+      {
+      rawtoimage_fill<int8_t>((int8_t*)inputbuffer,w,h,numcomps,image,pc);
+      }
+    else
+      {
+      rawtoimage_fill<uint8_t>((uint8_t*)inputbuffer,w,h,numcomps,image,pc);
+      }
+    }
+  else if (bitsallocated <= 16)
+    {
+    if( sign )
+      {
+      rawtoimage_fill<int16_t>((int16_t*)inputbuffer,w,h,numcomps,image,pc);
+      }
+    else
+      {
+      rawtoimage_fill<uint16_t>((uint16_t*)inputbuffer,w,h,numcomps,image,pc);
+      }
+    }
+  else if (bitsallocated <= 32)
+    {
+    if( sign )
+      {
+      rawtoimage_fill<int32_t>((int32_t*)inputbuffer,w,h,numcomps,image,pc);
+      }
+    else
+      {
+      rawtoimage_fill<uint32_t>((uint32_t*)inputbuffer,w,h,numcomps,image,pc);
+      }
+    }
+  else
+    {
+    return NULL;
+    }
+
+  return image;
 }
 /////////
 
@@ -820,14 +958,14 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 				
 				#if __ppc__
 				if ( DCMHasAltiVec()) { 
-					 SwapShorts(ptr, [data length]/2); 
+					 SwapShorts( (vector unsigned short *) ptr, [data length]/2); 
 				}
 				else
 				#endif
 				{	
 					
 					int i = 0;
-					unsigned short *shortsToSwap = ptr;
+					unsigned short *shortsToSwap = (unsigned short *) ptr;
 					//signed short *signedShort = ptr;
 					int length = [data length]/2;
 					for (i = 0; i < length; i++) {
@@ -839,13 +977,13 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 				
 				#if __ppc__
 				if ( DCMHasAltiVec()) { 
-					 SwapLongs(ptr, [data length]/4);			 
+					 SwapLongs( (vector unsigned int *) ptr, [data length]/4);			 
 				}
 				else
 				#endif
 				{		
 					int i = 0;
-					unsigned long *longsToSwap = ptr;
+					unsigned long *longsToSwap = (unsigned long *) ptr;
 					//signed short *signedShort = ptr;
 					int length = [data length]/4;
 					for (i = 0; i < length; i++) {
@@ -866,7 +1004,7 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 	if (NSHostByteOrder() == NS_LittleEndian){
 		if (_pixelDepth <= 16 && _pixelDepth > 8) {		
 			int i = 0;
-			unsigned short *shortsToSwap = [data mutableBytes];
+			unsigned short *shortsToSwap = (unsigned short *) [data mutableBytes];
 			//signed short *signedShort = [data mutableBytes];
 			int length = [data length]/2;
 			for (i = 0; i < length; i++) {
@@ -875,7 +1013,7 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 		}
 		else if (_pixelDepth > 16) {
 			int i = 0;
-			unsigned long *longsToSwap = [data mutableBytes];
+			unsigned long *longsToSwap = (unsigned long *) [data mutableBytes];
 			//signed short *signedShort = [data mutableBytes];
 			int length = [data length]/4;
 			for (i = 0; i < length; i++) {
@@ -892,7 +1030,7 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 	if (NSHostByteOrder() == NS_LittleEndian){
 		for ( NSMutableData *data in _values ) {
 			if (_pixelDepth <= 16) {	
-				unsigned short *shortsToSwap = [data mutableBytes];
+				unsigned short *shortsToSwap = (unsigned short *) [data mutableBytes];
 				//signed short *signedShort = [data mutableBytes];
 				unsigned int length = [data length]/2;
 				for ( unsigned i = 0; i < length; i++) {
@@ -900,7 +1038,7 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 				}
 			}
 			else {	
-				unsigned long *longsToSwap = [data mutableBytes];
+				unsigned long *longsToSwap = (unsigned long *) [data mutableBytes];
 				//signed short *signedShort = [data mutableBytes];
 				unsigned int length = [data length]/4;
 				for ( unsigned int i = 0; i < length; i++) {
@@ -918,12 +1056,12 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 			if (_pixelDepth <= 16) {
 				#if __ppc__
 				if ( DCMHasAltiVec()) { 
-					 SwapShorts([data mutableBytes], [data length]/2);			 
+					 SwapShorts( (vector unsigned short *)[data mutableBytes], [data length]/2);			 
 				}
 				else
 				#endif
 				{		
-					unsigned short *shortsToSwap = [data mutableBytes];
+					unsigned short *shortsToSwap = (unsigned short *) [data mutableBytes];
 					//signed short *signedShort = [data mutableBytes];
 					unsigned int length = [data length]/2;
 					for ( unsigned int i = 0; i < length; i++ ) {
@@ -934,12 +1072,12 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 			else {
 				#if __ppc__
 				if ( DCMHasAltiVec()) { 
-					 SwapLongs([data mutableBytes], [data length]/4);			 
+					 SwapLongs( (vector unsigned int *) [data mutableBytes], [data length]/4);			 
 				}
 				else
 				#endif
 				{		
-					unsigned long *longsToSwap = [data mutableBytes];
+					unsigned long *longsToSwap = (unsigned long *) [data mutableBytes];
 					//signed short *signedShort = [data mutableBytes];
 					unsigned int length = [data length]/4;
 					for ( unsigned int i = 0; i < length; i++) {
@@ -961,11 +1099,11 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 			if (_pixelDepth <= 16) {
 				#if __ppc__
 				if ( DCMHasAltiVec()) 
-					 SwapShorts([data mutableBytes], [data length]/2);
+					 SwapShorts( (vector unsigned short *) [data mutableBytes], [data length]/2);
 				else
 				#endif
 				{
-					unsigned short *shortsToSwap = [data mutableBytes];
+					unsigned short *shortsToSwap = (unsigned short *) [data mutableBytes];
 					unsigned int length = [data length]/2;
 					while (length--) {
 						*shortsToSwap = NSSwapShort(*shortsToSwap);
@@ -976,12 +1114,12 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 			else {
 				#if __ppc__
 				if ( DCMHasAltiVec()) { 
-					 SwapLongs([data mutableBytes], [data length]/4);			 
+					 SwapLongs( (vector unsigned int *) [data mutableBytes], [data length]/4);			 
 				}
 				else
 				#endif
 				{		
-					unsigned long *longsToSwap = [data mutableBytes];
+					unsigned long *longsToSwap = (unsigned long *) [data mutableBytes];
 					//signed short *signedShort = [data mutableBytes];
 					unsigned int length = [data length]/4;
 					for ( unsigned int i = 0; i < length; i++ ) {
@@ -1056,7 +1194,7 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 		bitDepth = 4;
 	
 	decompressedLength =  width * height * bitDepth * numcmpts;
-	unsigned char *newPixelData = malloc(decompressedLength);
+	unsigned char *newPixelData = (unsigned char*) malloc(decompressedLength);
 	
 	if( UseOpenJpeg)
 	{
@@ -1158,9 +1296,10 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 	//NSLog(@"segment count: %d", segmentCount);
 	switch (segmentCount){
 		case 1:
+		{
 			j = 0;
 			data = [NSMutableData dataWithLength:decompressedLength];
-			unsigned char *newData = [data mutableBytes];
+			unsigned char *newData = (unsigned char*) [data mutableBytes];
 			position = offsetTable[1];
 			NSLog(@"position: %d", position);
 			while ( j < decompressedLength) {
@@ -1181,12 +1320,13 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 					position++;
 			}
 			[decompressedData appendData:data];
-			break;
+		}
+		break;
 		case 2:
 			data = [NSMutableData dataWithLength:decompressedLength * 2];
 			for (i = 0; i< segmentCount; i++) {
 				j = i;			
-				unsigned char *newData = [data mutableBytes];
+				unsigned char *newData = (unsigned char*) [data mutableBytes];
 				position = offsetTable[i+1];
 				while ( j < decompressedLength) {
 					if ((buffer[position] >= 0)) {
@@ -1212,7 +1352,7 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 			for (i = 0; i< segmentCount; i++) {
 				j = 0;
 				data = [NSMutableData dataWithLength:decompressedLength];
-				unsigned char *newData = [data mutableBytes];
+				unsigned char *newData = (unsigned char*) [data mutableBytes];
 				position = offsetTable[i+1];
 				while ( j < decompressedLength) {
 					if ((buffer[position] >= 0)) {
@@ -1246,170 +1386,272 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 
 - (NSMutableData *)encodeJPEG2000:(NSMutableData *)data quality:(int)quality
 {
-	NSMutableData *jpeg2000Data;
+	if( UseOpenJpeg == YES || quality != DCMLosslessQuality)	//Jasper doesn't understand the rate=0.05 parameter.... strange! Switch to openjpeg if a rate is selected
+	{
+		opj_cparameters_t parameters;
+		opj_event_mgr_t event_mgr;
+		opj_image_t *image = NULL;
+		
+		memset(&event_mgr, 0, sizeof(opj_event_mgr_t));
+		event_mgr.error_handler = error_callback;
+		event_mgr.warning_handler = warning_callback;
+		event_mgr.info_handler = info_callback;
 
-	jas_image_t *image;
-	jas_image_cmptparm_t cmptparms[3];
-	jas_image_cmptparm_t *cmptparm;
-	int i;
-	int width = _columns;
-	int height = _rows;
-	int spp = _samplesPerPixel;
-	int prec = [[_dcmObject attributeValueWithName:@"BitsAllocated"] intValue];
-	DCMAttributeTag *signedTag = [DCMAttributeTag tagWithName:@"PixelRepresentation"];
-	DCMAttribute *signedAttr = [[_dcmObject attributes] objectForKey:[signedTag stringValue]];
-	BOOL sgnd = [[signedAttr value] boolValue];
-	
-	if (_isSigned)
-		sgnd = _isSigned;
-	
-	//set up component parameters
-	for (i = 0, cmptparm = cmptparms; i < spp; ++i, ++cmptparm)
-	{
-		cmptparm->tlx = 0;
-		cmptparm->tly = 0;
-		cmptparm->hstep = 1;
-		cmptparm->vstep = 1;
-		cmptparm->width = width;
-		cmptparm->height = height;
-		cmptparm->prec = prec;
-		cmptparm->sgnd = sgnd;
-	}
-	
-	//create jasper image
-	if (!(image = jas_image_create(spp, cmptparms, JAS_CLRSPC_UNKNOWN)))
-	{
-		return nil;
-	}
-	
-	//set colorspace
-	DCMAttributeTag *tag = [DCMAttributeTag tagWithName:@"PhotometricInterpretation"];
-	DCMAttribute *attr = [[_dcmObject attributes] objectForKey:[tag stringValue]];
-	NSString *photometricInterpretation = [attr value];
-	//int jasColorSpace = JAS_CLRSPC_UNKNOWN;
-	if ([photometricInterpretation isEqualToString:@"MONOCHROME1"] || [photometricInterpretation isEqualToString:@"MONOCHROME2"])
-	{
-		jas_image_setclrspc(image, JAS_CLRSPC_SGRAY);
-		jas_image_setcmpttype(image, 0,JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_GRAY_Y));
-	}
-	else if ([photometricInterpretation isEqualToString:@"RGB"] || [photometricInterpretation isEqualToString:@"ARGB"])
-	{
-		jas_image_setclrspc(image, JAS_CLRSPC_SRGB);
-		jas_image_setcmpttype(image, 0,
-		  JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_RGB_R));
-		jas_image_setcmpttype(image, 1,
-		  JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_RGB_G));
-		jas_image_setcmpttype(image, 2,
-		  JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_RGB_B));
-	}
-	else if ([photometricInterpretation isEqualToString:@"YBR_FULL_422"] || [photometricInterpretation isEqualToString:@"YBR_PARTIAL_422"] || [photometricInterpretation isEqualToString:@"YBR_FULL"]) {
-		jas_image_setclrspc(image, JAS_CLRSPC_FAM_YCBCR);
-		jas_image_setcmpttype(image, 0,
-		  JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_YCBCR_Y));
-		jas_image_setcmpttype(image, 1,
-		  JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_YCBCR_CB));
-		jas_image_setcmpttype(image, 2,
-		  JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_YCBCR_CR));
+		memset(&parameters, 0, sizeof(parameters));
+		opj_set_default_encoder_parameters(&parameters);
 		
-	}
-		/*
-	if ([photometricInterpretation isEqualToString:@"CMYK"])
-		jasColorSpace = JCS_CMYK;
-		*/
+		switch( quality)
+		{
+			case DCMLosslessQuality:
+				parameters.tcp_rates[0] = 0;
+				parameters.tcp_numlayers = 1;
+				parameters.cp_disto_alloc = 1;
+			break;
+			
+			case DCMHighQuality:
+				parameters.tcp_rates[0] = 4;
+				parameters.tcp_numlayers = 1;
+				parameters.cp_disto_alloc = 1;
+			break;
+			
+			case DCMMediumQuality:
+				parameters.tcp_rates[0] = 8;
+				parameters.tcp_numlayers = 1;
+				parameters.cp_disto_alloc = 1;
+			break;
+			
+			case DCMLowQuality:
+				parameters.tcp_rates[0] = 16;
+				parameters.tcp_numlayers = 1;
+				parameters.cp_disto_alloc = 1;
+			break;
+			
+			default:
+				NSLog( @"****** warning unknown compression rate -> lossless : %d", quality);
+				parameters.tcp_rates[0] = 0;
+				parameters.tcp_numlayers = 1;
+				parameters.cp_disto_alloc = 1;
+			break;
+		}
 		
-	//component data
-	int cmptno;	
-	int x,y;
-	jas_matrix_t *jasData[3];
-	//int_fast64_t v;
-	long long v;
-	jasData[0] = 0;
-	jasData[1] = 0;
-	jasData[2] = 0;	
-	for (cmptno = 0; cmptno < spp; ++cmptno)
+		int image_width = _columns;
+		int image_height = _rows;
+		int sample_pixel = _samplesPerPixel;
+		int bitsallocated = [[_dcmObject attributeValueWithName:@"BitsAllocated"] intValue];
+		int bitsstored = [[_dcmObject attributeValueWithName:@"BitsStored"] intValue];
+		DCMAttributeTag *signedTag = [DCMAttributeTag tagWithName:@"PixelRepresentation"];
+		DCMAttribute *signedAttr = [[_dcmObject attributes] objectForKey:[signedTag stringValue]];
+		BOOL sign = [[signedAttr value] boolValue];
+		DCMAttributeTag *tag = [DCMAttributeTag tagWithName:@"PlanarConfiguration"];
+		DCMAttribute *attr = [_dcmObject attributeForTag:(DCMAttributeTag *)tag];
+		int numberofPlanes = [[attr value] intValue];
+	
+		image = rawtoimage( (char*) [data bytes], &parameters,  static_cast<int>( [data length]),  image_width, image_height, sample_pixel, bitsallocated, bitsstored, sign, quality, numberofPlanes);
+		
+		parameters.cod_format = 0; /* J2K format output */
+		int codestream_length;
+		opj_cio_t *cio = NULL;
+		
+		opj_cinfo_t* cinfo = opj_create_compress(CODEC_J2K);
+
+		/* catch events using our callbacks and give a local context */
+		opj_set_event_mgr((opj_common_ptr)cinfo, &event_mgr, stderr);
+
+		/* setup the encoder parameters using the current image and using user parameters */
+		opj_setup_encoder(cinfo, &parameters, image);
+
+		/* open a byte stream for writing */
+		/* allocate memory for all tiles */
+		cio = opj_cio_open((opj_common_ptr)cinfo, NULL, 0);
+
+		/* encode the image */
+		BOOL bSuccess = opj_encode(cinfo, cio, image, NULL);
+		if (!bSuccess) {
+		  opj_cio_close(cio);
+		  fprintf(stderr, "failed to encode image\n");
+		  return false;
+		}
+		codestream_length = cio_tell(cio);
+		
+		NSMutableData *jpeg2000Data = [NSMutableData dataWithBytes: cio->buffer length: codestream_length];
+		
+		 /* close and free the byte stream */
+		opj_cio_close(cio);
+		
+		/* free remaining compression structures */
+		opj_destroy_compress(cinfo);
+		
+		opj_image_destroy(image);
+		
+		char zero = 0;
+		if ([jpeg2000Data length] % 2) 
+			[jpeg2000Data appendBytes:&zero length:1];
+		
+		return jpeg2000Data;
+	}
+	else
 	{
-		if (!(jasData[cmptno] = jas_matrix_create( 1, width)))
+		NSMutableData *jpeg2000Data;
+
+		jas_image_t *image;
+		jas_image_cmptparm_t cmptparms[3];
+		jas_image_cmptparm_t *cmptparm;
+		int i;
+		int width = _columns;
+		int height = _rows;
+		int spp = _samplesPerPixel;
+		int prec = [[_dcmObject attributeValueWithName:@"BitsAllocated"] intValue];
+		DCMAttributeTag *signedTag = [DCMAttributeTag tagWithName:@"PixelRepresentation"];
+		DCMAttribute *signedAttr = [[_dcmObject attributes] objectForKey:[signedTag stringValue]];
+		BOOL sgnd = [[signedAttr value] boolValue];
+		
+		if (_isSigned)
+			sgnd = _isSigned;
+		
+		//set up component parameters
+		for (i = 0, cmptparm = cmptparms; i < spp; ++i, ++cmptparm)
+		{
+			cmptparm->tlx = 0;
+			cmptparm->tly = 0;
+			cmptparm->hstep = 1;
+			cmptparm->vstep = 1;
+			cmptparm->width = width;
+			cmptparm->height = height;
+			cmptparm->prec = prec;
+			cmptparm->sgnd = sgnd;
+		}
+		
+		//create jasper image
+		if (!(image = jas_image_create(spp, cmptparms, JAS_CLRSPC_UNKNOWN)))
 		{
 			return nil;
 		}
-	}
-	
-	void *dataPointer = (void*) [data bytes];
-	
-	for (y = 0; y < height; ++y)
-	{
-		for (x = 0; x < width; ++x)
+		
+		//set colorspace
+		DCMAttributeTag *tag = [DCMAttributeTag tagWithName:@"PhotometricInterpretation"];
+		DCMAttribute *attr = [[_dcmObject attributes] objectForKey:[tag stringValue]];
+		NSString *photometricInterpretation = [attr value];
+		//int jasColorSpace = JAS_CLRSPC_UNKNOWN;
+		if ([photometricInterpretation isEqualToString:@"MONOCHROME1"] || [photometricInterpretation isEqualToString:@"MONOCHROME2"])
 		{
+			jas_image_setclrspc(image, JAS_CLRSPC_SGRAY);
+			jas_image_setcmpttype(image, 0,JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_GRAY_Y));
+		}
+		else if ([photometricInterpretation isEqualToString:@"RGB"] || [photometricInterpretation isEqualToString:@"ARGB"])
+		{
+			jas_image_setclrspc(image, JAS_CLRSPC_SRGB);
+			jas_image_setcmpttype(image, 0,
+			  JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_RGB_R));
+			jas_image_setcmpttype(image, 1,
+			  JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_RGB_G));
+			jas_image_setcmpttype(image, 2,
+			  JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_RGB_B));
+		}
+		else if ([photometricInterpretation isEqualToString:@"YBR_FULL_422"] || [photometricInterpretation isEqualToString:@"YBR_PARTIAL_422"] || [photometricInterpretation isEqualToString:@"YBR_FULL"]) {
+			jas_image_setclrspc(image, JAS_CLRSPC_FAM_YCBCR);
+			jas_image_setcmpttype(image, 0,
+			  JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_YCBCR_Y));
+			jas_image_setcmpttype(image, 1,
+			  JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_YCBCR_CB));
+			jas_image_setcmpttype(image, 2,
+			  JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_YCBCR_CR));
+			
+		}
+			/*
+		if ([photometricInterpretation isEqualToString:@"CMYK"])
+			jasColorSpace = JCS_CMYK;
+			*/
+			
+		//component data
+		int cmptno;	
+		int x,y;
+		jas_matrix_t *jasData[3];
+		//int_fast64_t v;
+		long long v;
+		jasData[0] = 0;
+		jasData[1] = 0;
+		jasData[2] = 0;	
+		for (cmptno = 0; cmptno < spp; ++cmptno)
+		{
+			if (!(jasData[cmptno] = jas_matrix_create( 1, width)))
+			{
+				return nil;
+			}
+		}
+		
+		unsigned char *dataPointer = (unsigned char*) [data bytes];
+		
+		for (y = 0; y < height; ++y)
+		{
+			for (x = 0; x < width; ++x)
+			{
+				for (cmptno = 0; cmptno < spp; ++cmptno)
+				{
+					if (_pixelDepth <= 8)
+					{
+						unsigned char s;
+						s = *(unsigned char*) dataPointer;
+						dataPointer++;
+						v = s;
+					}
+					else if (sgnd)
+					{
+						signed short s;
+						s = *(signed short*) dataPointer;
+						dataPointer+=2;
+						v = s;
+
+					}
+					else
+					{
+						unsigned short s;
+						s = *(unsigned short*) dataPointer;
+						dataPointer+=2;
+						v = s;
+					}
+					jas_matrix_setv(jasData[cmptno], x, v);
+				} //cmpt
+			}	// x
+			
 			for (cmptno = 0; cmptno < spp; ++cmptno)
 			{
-				if (_pixelDepth <= 8)
+				if (jas_image_writecmpt(image, cmptno, 0, y, width, 1, jasData[cmptno]))
 				{
-					unsigned char s;
-					s = *(unsigned char*) dataPointer;
-					dataPointer++;
-					v = s;
+					NSLog( @"err");
 				}
-				else if (sgnd)
-				{
-					signed short s;
-					s = *(signed short*) dataPointer;
-					dataPointer+=2;
-					v = s;
-
-				}
-				else
-				{
-					unsigned short s;
-					s = *(unsigned short*) dataPointer;
-					dataPointer+=2;
-					v = s;
-				}
-				jas_matrix_setv(jasData[cmptno], x, v);
-			} //cmpt
-		}	// x
+			} // for
+		}  // y
+		//done  reading data	
+		
+		char *optstr = nil;
+		
+		long theLength = [data length];
+		unsigned char *outBuffer = (unsigned char *) malloc( theLength);
+		jas_stream_t *outS = jas_stream_memopen((char *)outBuffer, theLength);
+		jpc_encode(image, outS , optstr);
+		jas_stream_flush( outS);
+		long compressedLength = jas_stream_tell(outS);
+		jas_stream_close( outS);
+		
+		jpeg2000Data = [NSMutableData dataWithBytesNoCopy: outBuffer length: compressedLength freeWhenDone: YES];
 		
 		for (cmptno = 0; cmptno < spp; ++cmptno)
 		{
-			if (jas_image_writecmpt(image, cmptno, 0, y, width, 1, jasData[cmptno]))
-			{
-				NSLog( @"err");
-			}
-		} // for
-	}  // y
-	//done  reading data	
-	
-	char *optstr = "rate=0.05";
-	if (quality == DCMLosslessQuality)
-		optstr = nil;
-	else if (quality == DCMHighQuality)
-		optstr = "rate=0.1";
-	else if (quality ==  DCMLowQuality)
-		optstr = "rate=0.03";
-	
-	long theLength = [data length];
-	unsigned char *outBuffer = malloc( theLength);
-	jas_stream_t *outS =  jas_stream_memopen((char *)outBuffer, theLength);
-	jpc_encode(image, outS , optstr);
-	jas_stream_flush( outS);
-	
-	long compressedLength = jas_stream_tell(outS);
-	
-	jpeg2000Data = [NSMutableData dataWithBytesNoCopy: outBuffer length: compressedLength freeWhenDone: YES];
-	
-	for (cmptno = 0; cmptno < spp; ++cmptno)
-	{
-		if (jasData[cmptno])
-			jas_matrix_destroy(jasData[cmptno]);
+			if (jasData[cmptno])
+				jas_matrix_destroy(jasData[cmptno]);
+		}
+		
+		jas_image_destroy(image);
+	//	jas_image_clearfmts();
+		
+		char zero = 0;
+		if ([jpeg2000Data length] % 2) 
+			[jpeg2000Data appendBytes:&zero length:1];
+		
+		return jpeg2000Data;
 	}
 	
-	jas_image_destroy(image);
-//	jas_image_clearfmts();
-	
-	char zero = 0;
-	if ([jpeg2000Data length] % 2) 
-		[jpeg2000Data appendBytes:&zero length:1];
-	
-	return jpeg2000Data;
+	return nil;
 }
 
 - (void)decodeData
@@ -1927,7 +2169,7 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 	else
 		length = [data length] / 4;
 		
-	float *fBuffer = malloc(length * 4);
+	float *fBuffer = (float*) malloc(length * 4);
 	if (_pixelDepth <= 8) {
 		unsigned char *buffer = (unsigned char *)[data bytes];
 		while (i < length) {
@@ -2023,9 +2265,9 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 	if ([[_dcmObject attributeValueWithName:@"PhotometricInterpretation"] rangeOfString:@"PALETTE"].location != NSNotFound)
 	{
 		BOOL found = NO, found16 = NO;
-		clutRed = calloc( 65536, 1);
-		clutGreen = calloc( 65536, 1);
-		clutBlue = calloc( 65536, 1);
+		clutRed = (unsigned char*) calloc( 65536, 1);
+		clutGreen = (unsigned char*) calloc( 65536, 1);
+		clutBlue = (unsigned char*) calloc( 65536, 1);
 		
 		// initialisation
 		clutEntryR = clutEntryG = clutEntryB = 0;
@@ -2059,9 +2301,9 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 			{
 				long			length, xx, xxindex, jj;
 				
-				shortRed = malloc( 65535L * sizeof( unsigned short));
-				shortGreen = malloc( 65535L * sizeof( unsigned short));
-				shortBlue = malloc( 65535L * sizeof( unsigned short));
+				shortRed = (unsigned short*) malloc( 65535L * sizeof( unsigned short));
+				shortGreen = (unsigned short*) malloc( 65535L * sizeof( unsigned short));
+				shortBlue = (unsigned short*) malloc( 65535L * sizeof( unsigned short));
 				
 				// extract the RED palette clut data
 				val = (unsigned short *)[segmentedRedData bytes];
@@ -2367,7 +2609,7 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 			totSize = (long) ((long) height * (long) realwidth * 3L);
 			//tmpImage = malloc( totSize);
 			rgbData = [NSMutableData dataWithLength:totSize];
-			tmpImage = [rgbData mutableBytes];
+			tmpImage = (unsigned char*) [rgbData mutableBytes];
 			
 			//if( _pixelDepth != 8) NSLog(@"Palette with a non-8 bit image??? : %d ", _pixelDepth);
 			//NSLog(@"height; %d  width %d totSize: %d, length: %d", height, realwidth, totSize, [data length]);
@@ -2484,7 +2726,7 @@ NS_ENDHANDLER
   // allocate room for the RGB image
   int length = ( _rows *  _columns * 3);
   rgbData = [NSMutableData dataWithLength:length];
-  theRGB = [rgbData mutableBytes];
+  theRGB = (unsigned char*) [rgbData mutableBytes];
   if (theRGB == nil) return nil;
   pRGB = theRGB;
   size = (long) _rows * (long) _columns;
@@ -3327,7 +3569,7 @@ NS_ENDHANDLER
 		);
 		//NSLog(@"max %f min: %f intercept: %f, slope: %f", max, min, rescaleIntercept, rescaleSlope);
 		free(dstf.data);	
-		bmd = dst8.data;
+		bmd = (unsigned char*) dst8.data;
 		spp =1;
 		colorSpaceName = NSCalibratedWhiteColorSpace;
 		
