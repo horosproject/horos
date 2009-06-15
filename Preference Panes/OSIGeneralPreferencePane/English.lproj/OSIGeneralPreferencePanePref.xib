@@ -9,7 +9,7 @@
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
 			<integer value="304"/>
-			<integer value="6"/>
+			<integer value="133"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -606,7 +606,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 											<object class="NSButtonCell" key="NSCell" id="640412247">
 												<int key="NSCellFlags">67239424</int>
 												<int key="NSCellFlags2">0</int>
-												<string key="NSContents">For JPEG2000, use OpenJPEG Lib, instead of Jasper Lib (slower, but better results)</string>
+												<string key="NSContents">For JPEG2000, use OpenJPEG Lib, instead of Jasper Lib</string>
 												<reference key="NSSupport" ref="257743695"/>
 												<reference key="NSControlView" ref="890264985"/>
 												<int key="NSButtonFlags">1211912703</int>
