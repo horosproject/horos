@@ -155,7 +155,7 @@
 		7ECB4B41072EF9F800C2CFC4 /* DCMCalendarScript.h in Headers */ = {isa = PBXBuildFile; fileRef = 7ECB4B3F072EF9F800C2CFC4 /* DCMCalendarScript.h */; };
 		7ECB4B42072EF9F800C2CFC4 /* DCMCalendarScript.m in Sources */ = {isa = PBXBuildFile; fileRef = 7ECB4B40072EF9F800C2CFC4 /* DCMCalendarScript.m */; };
 		7ECBB8230683A68D00FF3FF4 /* DCMPixelDataAttribute.h in Headers */ = {isa = PBXBuildFile; fileRef = 7ECBB8210683A68D00FF3FF4 /* DCMPixelDataAttribute.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7ECBB8240683A68D00FF3FF4 /* DCMPixelDataAttribute.m in Sources */ = {isa = PBXBuildFile; fileRef = 7ECBB8220683A68D00FF3FF4 /* DCMPixelDataAttribute.m */; };
+		7ECBB8240683A68D00FF3FF4 /* DCMPixelDataAttribute.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7ECBB8220683A68D00FF3FF4 /* DCMPixelDataAttribute.mm */; };
 		7ED5C26A0699E08E00875C39 /* AnonymizerWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = 7ED5C2660699E08E00875C39 /* AnonymizerWindowController.h */; };
 		7ED5C26B0699E08E00875C39 /* AnonymizerWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7ED5C2670699E08E00875C39 /* AnonymizerWindowController.m */; };
 		7EE0DC02067A48A3003E745F /* DCMCharacterSet.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EE0DC00067A48A3003E745F /* DCMCharacterSet.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -4052,7 +4052,7 @@
 		CE9CED9C0C75BE0A00752D4B /* jpegdatasrc.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E2269C406BEF624003B09E5 /* jpegdatasrc.h */; };
 		CE9CED9D0C75BE0A00752D4B /* jpegdatasrc.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E2269C506BEF624003B09E5 /* jpegdatasrc.m */; };
 		CE9CEDA00C75BE0A00752D4B /* DCMPixelDataAttribute.h in Headers */ = {isa = PBXBuildFile; fileRef = 7ECBB8210683A68D00FF3FF4 /* DCMPixelDataAttribute.h */; };
-		CE9CEDA10C75BE0A00752D4B /* DCMPixelDataAttribute.m in Sources */ = {isa = PBXBuildFile; fileRef = 7ECBB8220683A68D00FF3FF4 /* DCMPixelDataAttribute.m */; };
+		CE9CEDA10C75BE0A00752D4B /* DCMPixelDataAttribute.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7ECBB8220683A68D00FF3FF4 /* DCMPixelDataAttribute.mm */; };
 		CE9CEDA20C75BE0A00752D4B /* DCMPixelDataAttributeJPEG8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB3F606BF3BD900C7EF1E /* DCMPixelDataAttributeJPEG8.h */; };
 		CE9CEDA30C75BE0A00752D4B /* DCMPixelDataAttributeJPEG8.m in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB3F706BF3BD900C7EF1E /* DCMPixelDataAttributeJPEG8.m */; };
 		CE9CEDA40C75BE0A00752D4B /* DCMPixelDataAttributeJPEG12.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB40606BF3BEE00C7EF1E /* DCMPixelDataAttributeJPEG12.h */; };
@@ -4952,7 +4952,7 @@
 		7ECB4B3F072EF9F800C2CFC4 /* DCMCalendarScript.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMCalendarScript.h; sourceTree = "<group>"; };
 		7ECB4B40072EF9F800C2CFC4 /* DCMCalendarScript.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMCalendarScript.m; sourceTree = "<group>"; };
 		7ECBB8210683A68D00FF3FF4 /* DCMPixelDataAttribute.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DCMPixelDataAttribute.h; sourceTree = "<group>"; };
-		7ECBB8220683A68D00FF3FF4 /* DCMPixelDataAttribute.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = DCMPixelDataAttribute.m; sourceTree = "<group>"; };
+		7ECBB8220683A68D00FF3FF4 /* DCMPixelDataAttribute.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = DCMPixelDataAttribute.mm; sourceTree = "<group>"; };
 		7ED5C2660699E08E00875C39 /* AnonymizerWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnonymizerWindowController.h; sourceTree = "<group>"; };
 		7ED5C2670699E08E00875C39 /* AnonymizerWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AnonymizerWindowController.m; sourceTree = "<group>"; };
 		7EE0DC00067A48A3003E745F /* DCMCharacterSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMCharacterSet.h; sourceTree = "<group>"; };
@@ -9058,7 +9058,7 @@
 				BFAEB15506BF2C4F00C7EF1E /* libijg16 */,
 				7E2269C606BEF624003B09E5 /* libijg12 */,
 				7ECBB8210683A68D00FF3FF4 /* DCMPixelDataAttribute.h */,
-				7ECBB8220683A68D00FF3FF4 /* DCMPixelDataAttribute.m */,
+				7ECBB8220683A68D00FF3FF4 /* DCMPixelDataAttribute.mm */,
 				BFAEB3F606BF3BD900C7EF1E /* DCMPixelDataAttributeJPEG8.h */,
 				BFAEB3F706BF3BD900C7EF1E /* DCMPixelDataAttributeJPEG8.m */,
 				BFAEB40606BF3BEE00C7EF1E /* DCMPixelDataAttributeJPEG12.h */,
@@ -16530,7 +16530,7 @@
 				BF3BB381067808D5004F6E91 /* DCMTransferSyntax.m in Sources */,
 				7EE0DC03067A48A3003E745F /* DCMCharacterSet.m in Sources */,
 				7EE0DC3F067A5138003E745F /* DCMSequenceAttribute.m in Sources */,
-				7ECBB8240683A68D00FF3FF4 /* DCMPixelDataAttribute.m in Sources */,
+				7ECBB8240683A68D00FF3FF4 /* DCMPixelDataAttribute.mm in Sources */,
 				BF61E58F06A5BB9E001C0B29 /* DCMCalendarDate.m in Sources */,
 				7E226ABF06BEF625003B09E5 /* jpegdatasrc.m in Sources */,
 				BFAEB3FB06BF3BD900C7EF1E /* DCMPixelDataAttributeJPEG8.m in Sources */,
@@ -17828,7 +17828,7 @@
 			files = (
 				CE9CED9A0C75BE0A00752D4B /* DCMNetServiceDelegate.m in Sources */,
 				CE9CED9D0C75BE0A00752D4B /* jpegdatasrc.m in Sources */,
-				CE9CEDA10C75BE0A00752D4B /* DCMPixelDataAttribute.m in Sources */,
+				CE9CEDA10C75BE0A00752D4B /* DCMPixelDataAttribute.mm in Sources */,
 				CE9CEDA30C75BE0A00752D4B /* DCMPixelDataAttributeJPEG8.m in Sources */,
 				CE9CEDA50C75BE0A00752D4B /* DCMPixelDataAttributeJPEG12.m in Sources */,
 				CE9CEDA70C75BE0A00752D4B /* DCMPixelDataAttributeJPEG16.m in Sources */,

@@ -546,7 +546,7 @@ static OFBool compressFile(DcmFileFormat fileformat, const char *fname, char *ou
 	
 	if (opt_networkTransferSyntax == EXS_JPEG2000)
 	{
-		NSLog(@"SEND - Compress JPEG 2000 Lossy: %s", fname);
+		NSLog(@"SEND - Compress JPEG 2000 Lossy (%d) : %s", opt_Quality, fname);
 		NSString *path = [NSString stringWithCString:fname encoding:[NSString defaultCStringEncoding]];
 		NSString *outpath = [NSString stringWithCString:outfname encoding:[NSString defaultCStringEncoding]];
 		
@@ -556,7 +556,14 @@ static OFBool compressFile(DcmFileFormat fileformat, const char *fname, char *ou
 		
 		@try
 		{
-			[dcmObject writeToFile:outpath withTransferSyntax:[DCMTransferSyntax JPEG2000LossyTransferSyntax] quality: DCMHighQuality AET:@"OsiriX" atomically:YES];
+			DCMTransferSyntax *tsx;
+								
+			if( opt_Quality == DCMLosslessQuality)
+				tsx = [DCMTransferSyntax JPEG2000LosslessTransferSyntax];
+			else
+				tsx = [DCMTransferSyntax JPEG2000LossyTransferSyntax];
+									
+			[dcmObject writeToFile:outpath withTransferSyntax: tsx quality: opt_Quality AET:@"OsiriX" atomically:YES];
 		}
 		@catch( NSException *e)
 		{

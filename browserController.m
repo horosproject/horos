@@ -13066,7 +13066,17 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 + (int) compressionForModality: (NSString*) mod quality:(int*) quality
 {
-	NSArray *array = [[NSUserDefaults standardUserDefaults] arrayForKey: @"CompressionSettings"];
+	return [BrowserController compressionForModality: mod quality: quality resolution: 0];
+}
+
++ (int) compressionForModality: (NSString*) mod quality:(int*) quality resolution: (int) resolution
+{
+	NSArray *array;
+	if( resolution < [[NSUserDefaults standardUserDefaults] integerForKey: @"CompressionResolutionLimit"])
+		array = [[NSUserDefaults standardUserDefaults] arrayForKey: @"CompressionSettingsLowRes"];
+	else
+		array = [[NSUserDefaults standardUserDefaults] arrayForKey: @"CompressionSettings"];
+	
 	for( NSDictionary *dict in array)
 	{
 		if( [[dict valueForKey: @"modality"] isEqualToString: mod])
@@ -13302,7 +13312,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	if( [[waitCompressionWindow window] isVisible])
 	{
-		if( chunk > MPProcessors()*3) chunk = MPProcessors()*3;
+		if( chunk > 10) chunk = 10;
 	}
 	
 	NSRange range = NSMakeRange( 0, chunk);

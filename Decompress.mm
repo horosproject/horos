@@ -1,5 +1,6 @@
 #import <Foundation/Foundation.h>
 #import <OsiriX/DCMObject.h>
+#import <OsiriX/DCM.h>
 #import <OsiriX/DCMTransferSyntax.h>
 #import <OsiriX/DCMPixelDataAttribute.h>
 #import "DefaultsOsiriX.h"
@@ -30,15 +31,21 @@ extern void dcmtkSetJPEGColorSpace( int);
 
 // Because if a file is corrupted, it will not crash the OsiriX application, but only this small task.
 
-int compressionForModality( NSArray *array, NSString* mod, int* quality)
+int compressionForModality( NSArray *array, NSArray *arrayLow, int limit, NSString* mod, int* quality, int resolution)
 {
-	for( NSDictionary *dict in array)
+	NSArray *s;
+	if( resolution < limit)
+		s = arrayLow;
+	else
+		s = array;
+	
+	for( NSDictionary *dict in s)
 	{
 		if( [[dict valueForKey: @"modality"] isEqualToString: mod])
 		{
 			int compression = compression_none;
 			if( [[dict valueForKey: @"compression"] intValue] == compression_sameAsDefault)
-				dict = [array objectAtIndex: 0];
+				dict = [s objectAtIndex: 0];
 			
 			compression = [[dict valueForKey: @"compression"] intValue];
 			
@@ -117,6 +124,9 @@ int main(int argc, const char *argv[])
 			[DCMPixelDataAttribute setUseOpenJpeg: [[dict objectForKey:@"UseOpenJpegForJPEG2000"] intValue]];
 			
 			NSArray *compressionSettings = [dict valueForKey: @"CompressionSettings"];
+			NSArray *compressionSettingsLowRes = [dict valueForKey: @"CompressionSettingsLowRes"];
+			
+			int limit = [[dict objectForKey: @"CompressionResolutionLimit"] intValue];
 			
 			int i;
 			for( i = 3; i < argc; i++)
@@ -139,11 +149,25 @@ int main(int argc, const char *argv[])
 						const char *string = NULL;
 						NSString *modality;
 						if (dataset->findAndGetString(DCM_Modality, string, OFFalse).good() && string != NULL)
-							modality = [[NSString alloc] initWithCString:string encoding: NSASCIIStringEncoding];
+							modality = [NSString stringWithCString:string encoding: NSASCIIStringEncoding];
 						else
 							modality = @"OT";
 						
-						int quality, compression = compressionForModality( compressionSettings, modality, &quality);
+						int resolution = 0;
+						unsigned short rows = 0;
+						if (dataset->findAndGetUint16( DCM_Rows, rows, OFFalse).good())
+						{
+							if( resolution == 0 || resolution > rows)
+								resolution = rows;
+						}
+						unsigned short columns = 0;
+						if (dataset->findAndGetUint16( DCM_Columns, columns, OFFalse).good())
+						{
+							if( resolution == 0 || resolution > columns)
+								resolution = columns;
+						}
+						
+						int quality, compression = compressionForModality( compressionSettings, compressionSettingsLowRes, limit, modality, &quality, resolution);
 						
 						if( compression == compression_JPEG2000)
 						{
@@ -153,7 +177,14 @@ int main(int argc, const char *argv[])
 							
 							@try
 							{
-								succeed = [dcmObject writeToFile: [curFile stringByAppendingString: @" temp"] withTransferSyntax:[DCMTransferSyntax JPEG2000LosslessTransferSyntax] quality: quality AET:@"OsiriX" atomically:YES];
+								DCMTransferSyntax *tsx;
+								
+								if( quality == DCMLosslessQuality)
+									tsx = [DCMTransferSyntax JPEG2000LosslessTransferSyntax];
+								else
+									tsx = [DCMTransferSyntax JPEG2000LossyTransferSyntax];
+								
+								succeed = [dcmObject writeToFile: [curFile stringByAppendingString: @" temp"] withTransferSyntax: tsx quality: quality AET:@"OsiriX" atomically:YES];
 							}
 							@catch (NSException *e)
 							{
@@ -256,6 +287,12 @@ int main(int argc, const char *argv[])
 						NSLog( @"dcmObject writeToFile failed: %@", e);
 					}
 					[dcmObject release];
+					
+					if( status == NO)
+					{
+						NSLog(@"decompress error");
+						[[NSFileManager defaultManager] removeFileAtPath: curFileDest handler:nil];
+					}
 				}
 				else if (filexfer.getXfer() != EXS_LittleEndianExplicit)
 				{
@@ -272,6 +309,12 @@ int main(int argc, const char *argv[])
 						status =  (cond.good()) ? YES : NO;
 					}
 					else status = NO;
+					
+					if( status == NO)
+					{
+						NSLog(@"decompress error");
+						[[NSFileManager defaultManager] removeFileAtPath: curFileDest handler:nil];
+					}
 				}
 				
 				if( destDirec == nil)
@@ -281,12 +324,7 @@ int main(int argc, const char *argv[])
 						[[NSFileManager defaultManager] removeFileAtPath: curFile handler:nil];
 						[[NSFileManager defaultManager] movePath: curFileDest toPath: curFile handler: nil];
 					}
-					else
-						[[NSFileManager defaultManager] removeFileAtPath: curFileDest handler:nil];
 				}
-				
-				if( status == NO)
-					NSLog(@"decompress error");
 			}
 		}
 		

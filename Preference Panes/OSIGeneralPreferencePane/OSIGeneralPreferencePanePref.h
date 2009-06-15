@@ -20,10 +20,9 @@
 {
 	IBOutlet NSButton *securityOnOff;
 	IBOutlet SFAuthorizationView *_authView;
-	IBOutlet NSArrayController *compressionSettingsArrayController;
 	IBOutlet NSWindow *compressionSettingsWindow;
 	
-	NSArray *compressionSettingsCopy;
+	NSArray *compressionSettingsCopy, *compressionSettingsLowResCopy;
 }
 
 -(void) mainViewDidLoad;

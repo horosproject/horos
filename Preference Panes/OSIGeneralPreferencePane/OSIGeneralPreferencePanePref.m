@@ -117,9 +117,11 @@
 	else
 	{
 		[[NSUserDefaults standardUserDefaults] setObject: compressionSettingsCopy forKey: @"CompressionSettings"];
+		[[NSUserDefaults standardUserDefaults] setObject: compressionSettingsLowResCopy forKey: @"CompressionSettingsLowRes"];
 	}
 	
 	[compressionSettingsCopy autorelease];
+	[compressionSettingsLowResCopy autorelease];
 }
 
 - (IBAction) editCompressionSettings:(id) sender
@@ -127,6 +129,8 @@
 	if( [_authView authorizationState] == SFAuthorizationViewUnlockedState)
 	{
 		compressionSettingsCopy = [[[NSUserDefaults standardUserDefaults] arrayForKey: @"CompressionSettings"] copy];
+		compressionSettingsLowResCopy = [[[NSUserDefaults standardUserDefaults] arrayForKey: @"CompressionSettingsLowRes"] copy];
+		
 		[NSApp beginSheet: compressionSettingsWindow modalForWindow: [[self mainView] window] modalDelegate:self didEndSelector:nil contextInfo:nil];
 	}
 }

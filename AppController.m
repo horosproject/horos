@@ -1016,23 +1016,46 @@ static NSDate *lastWarningDate = nil;
 	
 	@try
 	{
-		NSDictionary *defaultSettings = [[defaults arrayForKey: @"CompressionSettings"] objectAtIndex: 0];
-		
-		if( [[defaultSettings valueForKey: @"compression"] intValue] == 0 || [[defaultSettings valueForKey: @"modality"] isEqualToString: NSLocalizedString( @"default", nil)] == NO)
 		{
-			NSMutableDictionary *d = [[defaultSettings mutableCopy] autorelease];
+			NSDictionary *defaultSettings = [[defaults arrayForKey: @"CompressionSettings"] objectAtIndex: 0];
 			
-			if( [[defaultSettings valueForKey: @"compression"] intValue] == 0)
-				[d setObject: @"1" forKey: @"compression"];
+			if( [[defaultSettings valueForKey: @"compression"] intValue] == 0 || [[defaultSettings valueForKey: @"modality"] isEqualToString: NSLocalizedString( @"default", nil)] == NO)
+			{
+				NSMutableDictionary *d = [[defaultSettings mutableCopy] autorelease];
+				
+				if( [[defaultSettings valueForKey: @"compression"] intValue] == 0)
+					[d setObject: @"1" forKey: @"compression"];
+				
+				if( [[defaultSettings valueForKey: @"modality"] isEqualToString: NSLocalizedString( @"default", nil)] == NO)
+					[d setObject: NSLocalizedString( @"default", nil) forKey: @"modality"];
+				
+				NSMutableArray *a = [[[[NSUserDefaults standardUserDefaults] arrayForKey: @"CompressionSettings"] mutableCopy] autorelease];
+				
+				[a replaceObjectAtIndex: 0 withObject: d];
+				
+				[[NSUserDefaults standardUserDefaults] setObject: a forKey: @"CompressionSettings"];
+			}
+		}
+		
+		{
+			NSDictionary *defaultSettings = [[defaults arrayForKey: @"CompressionSettingsLowRes"] objectAtIndex: 0];
 			
-			if( [[defaultSettings valueForKey: @"modality"] isEqualToString: NSLocalizedString( @"default", nil)] == NO)
-				[d setObject: NSLocalizedString( @"default", nil) forKey: @"modality"];
-			
-			NSMutableArray *a = [[[[NSUserDefaults standardUserDefaults] arrayForKey: @"CompressionSettings"] mutableCopy] autorelease];
-			
-			[a replaceObjectAtIndex: 0 withObject: d];
-			
-			[[NSUserDefaults standardUserDefaults] setObject: a forKey: @"CompressionSettings"];
+			if( [[defaultSettings valueForKey: @"compression"] intValue] == 0 || [[defaultSettings valueForKey: @"modality"] isEqualToString: NSLocalizedString( @"default", nil)] == NO)
+			{
+				NSMutableDictionary *d = [[defaultSettings mutableCopy] autorelease];
+				
+				if( [[defaultSettings valueForKey: @"compression"] intValue] == 0)
+					[d setObject: @"1" forKey: @"compression"];
+				
+				if( [[defaultSettings valueForKey: @"modality"] isEqualToString: NSLocalizedString( @"default", nil)] == NO)
+					[d setObject: NSLocalizedString( @"default", nil) forKey: @"modality"];
+				
+				NSMutableArray *a = [[[[NSUserDefaults standardUserDefaults] arrayForKey: @"CompressionSettingsLowRes"] mutableCopy] autorelease];
+				
+				[a replaceObjectAtIndex: 0 withObject: d];
+				
+				[[NSUserDefaults standardUserDefaults] setObject: a forKey: @"CompressionSettingsLowRes"];
+			}
 		}
 	}
 	@catch (NSException *e) 
