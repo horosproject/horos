@@ -917,6 +917,7 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject:@"0" forKey:@"useSeriesDescription"];
 	[defaultValues setObject:@"1" forKey:@"combineProjectionSeries"];
 	[defaultValues setObject:@"0" forKey:@"combineProjectionSeriesMode"];
+	[defaultValues setObject:@"0" forKey:@"ListenerCompressionSettings"];
 	
 	//debugging level. Can be changed at the command line
 	[defaultValues setObject:[NSNumber numberWithInt:0] forKey:@"NetworkDebugLevel"];
