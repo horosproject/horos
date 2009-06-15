@@ -374,7 +374,16 @@ void* dcm_read_JPEG2000_file (char *inputdata, size_t inputlength, size_t *outpu
 	*height = image->comps[ 0].h;
   if( samplePerPixel)
 	*samplePerPixel = image->numcomps;
-  *outputLength = image->numcomps * image->comps[ 0].w * image->comps[ 0].h * image->comps[ 0].prec / 8;
+
+  int bbp;
+  if (image->comps[ 0].prec <= 8)
+	bbp = 8;
+  else if (image->comps[ 0].prec <= 16)
+	bbp = 16;
+  else
+	bbp = 32;
+	
+  *outputLength = image->numcomps * image->comps[ 0].w * image->comps[ 0].h * bbp / 8;
   void* raw = malloc( *outputLength);
   
    // Copy buffer
