@@ -265,7 +265,7 @@ static NSLock *currentHostLock = nil;
 																									[NSNumber numberWithBool:cgetSupported] , @"CGET",
 																									[NSNumber numberWithBool:YES] , @"Send",
 																									description, @"Description",
-																									[NSNumber numberWithInt: transferSyntax], @"Transfer Syntax",
+																									[NSNumber numberWithInt: transferSyntax], @"TransferSyntax",
 																									nil];
 					
 					if( [dict valueForKey: @"icon"])

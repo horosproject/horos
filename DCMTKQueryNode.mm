@@ -695,11 +695,12 @@ subOpCallback(void * /*subOpCallbackData*/ ,
       case EXS_JPEG2000:
         /* we prefer JPEG 2000 lossy or lossless */
         transferSyntaxes[0] = UID_JPEG2000TransferSyntax;
-		transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
-		transferSyntaxes[2] = UID_LittleEndianImplicitTransferSyntax;
-		transferSyntaxes[3] = UID_BigEndianExplicitTransferSyntax;
+		transferSyntaxes[1] = UID_JPEG2000LosslessOnlyTransferSyntax;
+		transferSyntaxes[2] = UID_LittleEndianExplicitTransferSyntax;
+		transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+		transferSyntaxes[4] = UID_BigEndianExplicitTransferSyntax;
 		
-        numTransferSyntaxes = 4;
+        numTransferSyntaxes = 5;
         break;
 #ifdef WITH_ZLIB
       case EXS_DeflatedLittleEndianExplicit:

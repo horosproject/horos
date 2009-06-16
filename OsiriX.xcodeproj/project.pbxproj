@@ -6588,7 +6588,6 @@
 		BFBF3E6D09B6828B00545F5E /* ofuoset.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ofuoset.h; sourceTree = "<group>"; };
 		BFC9C2A709B697DB003717B1 /* DCMTKVerifySCU.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DCMTKVerifySCU.h; sourceTree = "<group>"; };
 		BFC9C2A809B697DB003717B1 /* DCMTKVerifySCU.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = DCMTKVerifySCU.mm; sourceTree = "<group>"; };
-		BFD0861809E3738D00B24030 /* storescp.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; name = storescp.mm; path = "Binaries/dcmtk-source/sample apps/dcmnet/storescp.mm"; sourceTree = "<group>"; };
 		BFD4BFF006F2A96900EC9A90 /* ContrastCursor.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ContrastCursor.tif; sourceTree = "<group>"; };
 		BFD4BFF106F2A96900EC9A90 /* RotateCursor.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = RotateCursor.tif; sourceTree = "<group>"; };
 		BFD4BFF206F2A96900EC9A90 /* StackCursor.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = StackCursor.tif; sourceTree = "<group>"; };
@@ -10385,7 +10384,6 @@
 		BFBF3AAF09B6820C00545F5E /* dcmtk */ = {
 			isa = PBXGroup;
 			children = (
-				BFD0861809E3738D00B24030 /* storescp.mm */,
 				BFBF3AB709B6827D00545F5E /* config */,
 				BFBF3ABA09B6827D00545F5E /* dcmdata */,
 				BFBF3B5509B6827F00545F5E /* dcmimage */,

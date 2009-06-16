@@ -207,7 +207,7 @@ static volatile int sendControllerObjects = 0;
 	
 	if ([[self server] isKindOfClass:[NSDictionary class]])
 	{
-		int preferredTS = [[[self server] objectForKey:@"Transfer Syntax"] intValue];
+		int preferredTS = [[[self server] objectForKey:@"TransferSyntax"] intValue];
 				
 		if (preferredTS ==  SendExplicitLittleEndian || 
 			preferredTS == SendImplicitLittleEndian || 

@@ -183,7 +183,7 @@ static NSString *DCM_MPEG2Main = @"1.2.840.10008.1.2.4.100";
 			[syntax setObject:[NSNumber numberWithBool:encapsulated] forKey:@"isEncapsulated"];
 			[syntax setObject:[NSNumber numberWithBool:littleEndian] forKey:@"isLittleEndian"];
 			[syntax setObject:[NSNumber numberWithBool:explicitValue] forKey:@"isExplicit"];
-			[syntax setObject:key forKey:@"Transfer Syntax"];
+			[syntax setObject:key forKey:@"TransferSyntax"];
 			[syntax setObject:aName forKey:@"Name"];
 			[transferSyntaxes setObject:syntax forKey:key];
 		}

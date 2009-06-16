@@ -243,7 +243,7 @@ static char *GetPrivateIP()
 																hostname: [todo objectForKey:@"Address"] 
 																port: [[todo objectForKey:@"Port"] intValue] 
 																filesToSend: [todo valueForKey: @"Files"]
-																transferSyntax: [[todo objectForKey:@"Transfer Syntax"] intValue] 
+																transferSyntax: [[todo objectForKey:@"TransferSyntax"] intValue] 
 																compression: 1.0
 																extraParameters: nil];
 							
@@ -364,7 +364,7 @@ static char *GetPrivateIP()
 				{
 					NSString *address = [NSString stringWithCString:GetPrivateIP()];
 					
-					NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys: address, @"Address", [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"], @"AETitle", [[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"], @"Port", @"0", @"Transfer Syntax", nil];
+					NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys: address, @"Address", [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"], @"AETitle", [[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"], @"Port", @"0", @"TransferSyntax", nil];
 					
 					representationToSend = [NSMutableData dataWithData: [NSArchiver archivedDataWithRootObject: dictionary]];
 				}
@@ -890,7 +890,7 @@ static char *GetPrivateIP()
 						[localPaths addObject: path];
 					}
 					
-					NSDictionary	*todo = [NSDictionary dictionaryWithObjectsAndKeys: Address, @"Address", TransferSyntax, @"Transfer Syntax", Port, @"Port", AETitle, @"AETitle", localPaths, @"Files", nil];
+					NSDictionary	*todo = [NSDictionary dictionaryWithObjectsAndKeys: Address, @"Address", TransferSyntax, @"TransferSyntax", Port, @"Port", AETitle, @"AETitle", localPaths, @"Files", nil];
 					
 					[NSThread detachNewThreadSelector:@selector( sendDICOMFilesToOsiriXNode:) toTarget:self withObject: todo];
 				}

@@ -1628,7 +1628,7 @@ static NSArray*	statesArray = nil;
 																   hostname: [server objectForKey:@"Address"] 
 																	   port: [[server objectForKey:@"Port"] intValue] 
 																filesToSend: [samePatientArray valueForKey: @"completePath"]
-															 transferSyntax: [[server objectForKey:@"Transfer Syntax"] intValue] 
+															 transferSyntax: [[server objectForKey:@"TransferSyntax"] intValue] 
 																compression: 1.0
 															extraParameters: nil];
 		
@@ -9519,7 +9519,7 @@ static BOOL needToRezoom;
 															   hostname: [todo objectForKey:@"Address"] 
 																   port: [[todo objectForKey:@"Port"] intValue] 
 															filesToSend: [todo valueForKey: @"Files"]
-														 transferSyntax: [[todo objectForKey:@"Transfer Syntax"] intValue] 
+														 transferSyntax: [[todo objectForKey:@"TransferSyntax"] intValue] 
 															compression: 1.0
 														extraParameters: nil];
 	

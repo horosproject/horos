@@ -3,12 +3,12 @@
 	<data>
 		<int key="IBDocument.SystemTarget">1050</int>
 		<string key="IBDocument.SystemVersion">9J61</string>
-		<string key="IBDocument.InterfaceBuilderVersion">672</string>
+		<string key="IBDocument.InterfaceBuilderVersion">670</string>
 		<string key="IBDocument.AppKitVersion">949.46</string>
 		<string key="IBDocument.HIToolboxVersion">353.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="347"/>
+			<integer value="104"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -1809,7 +1809,7 @@ A</string>
 					<string>AETitle</string>
 					<string>Port</string>
 					<string>QR</string>
-					<string>Transfer Syntax</string>
+					<string>TransferSyntax</string>
 					<string>Send</string>
 					<string>preferencesModificationsEnabled</string>
 					<string>CGET</string>
@@ -2317,22 +2317,6 @@ A</string>
 						</object>
 					</object>
 					<int key="connectionID">306</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">selectedIndex: arrangedObjects.Transfer Syntax</string>
-						<reference key="source" ref="801244195"/>
-						<reference key="destination" ref="815364985"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="801244195"/>
-							<reference key="NSDestination" ref="815364985"/>
-							<string key="NSLabel">selectedIndex: arrangedObjects.Transfer Syntax</string>
-							<string key="NSBinding">selectedIndex</string>
-							<string key="NSKeyPath">arrangedObjects.Transfer Syntax</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">314</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
@@ -3133,6 +3117,22 @@ A</string>
 						</object>
 					</object>
 					<int key="connectionID">455</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">selectedTag: arrangedObjects.TransferSyntax</string>
+						<reference key="source" ref="801244195"/>
+						<reference key="destination" ref="815364985"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="801244195"/>
+							<reference key="NSDestination" ref="815364985"/>
+							<string key="NSLabel">selectedTag: arrangedObjects.TransferSyntax</string>
+							<string key="NSBinding">selectedTag</string>
+							<string key="NSKeyPath">arrangedObjects.TransferSyntax</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">461</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -4509,7 +4509,7 @@ A</string>
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">458</int>
+			<int key="maxID">461</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">

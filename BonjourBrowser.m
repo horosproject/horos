@@ -756,7 +756,7 @@ static char *GetPrivateIP()
 					[toTransfer appendBytes:&stringSize length: 4];
 					[toTransfer appendBytes:string length: strlen( string)+1];
 					
-					string = [[dicomDestination valueForKey:@"Transfer Syntax"] UTF8String];
+					string = [[dicomDestination valueForKey:@"TransferSyntax"] UTF8String];
 					stringSize  = NSSwapHostIntToBig( strlen( string)+1);	// +1 to include the last 0 !
 					[toTransfer appendBytes:&stringSize length: 4];
 					[toTransfer appendBytes:string length: strlen( string)+1];
@@ -1789,7 +1789,7 @@ static char *GetPrivateIP()
 	{
 		NSString *address = [NSString stringWithCString:GetPrivateIP()];
 		
-		dicomDestination = [NSDictionary dictionaryWithObjectsAndKeys: address, @"Address", [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"], @"AETitle", [[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"], @"Port", @"0", @"Transfer Syntax", nil];
+		dicomDestination = [NSDictionary dictionaryWithObjectsAndKeys: address, @"Address", [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"], @"AETitle", [[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"], @"Port", @"0", @"TransferSyntax", nil];
 		
 		[dicomDestination retain];
 	}

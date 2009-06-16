@@ -865,7 +865,7 @@ OFBool DcmQueryRetrieveMoveContext::mapMoveDestination(
 			hostname = [server objectForKey:@"Address"];
 			port = [server objectForKey:@"Port"];
 			//set preferred Syntax
-			NSNumber *tsIndex = [server objectForKey:@"Transfer Syntax"];
+			NSNumber *tsIndex = [server objectForKey:@"TransferSyntax"];
 			if (tsIndex) {
 				switch ([tsIndex intValue] ) {
 					case SendExplicitLittleEndian: preferredTS = EXS_LittleEndianExplicit;
@@ -1039,10 +1039,11 @@ OFCondition DcmQueryRetrieveMoveContext::addAllStoragePresentationContexts(T_ASC
 	transferSyntaxes[4] = UID_JPEGProcess1TransferSyntax;
 	transferSyntaxes[5] = UID_JPEGProcess2_4TransferSyntax;
 	transferSyntaxes[6] = UID_JPEG2000TransferSyntax;
-	transferSyntaxes[7] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;
-	transferSyntaxes[8] = UID_RLELosslessTransferSyntax;
+	transferSyntaxes[7] = UID_JPEG2000LosslessOnlyTransferSyntax;
+	transferSyntaxes[8] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;
+	transferSyntaxes[9] = UID_RLELosslessTransferSyntax;
 	
-	numTransferSyntaxes = 9;
+	numTransferSyntaxes = 10;
 
 //#ifdef DISABLE_COMPRESSION_EXTENSION
 //    /* gLocalByteOrder is defined in dcxfer.h */

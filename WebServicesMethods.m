@@ -693,7 +693,7 @@ extern NSThread					*mainThread;
 				[selectedDICOMNode setObject:dicomDestinationAddress forKey:@"Address"];
 				[selectedDICOMNode setObject:dicomDestinationPort forKey:@"Port"];
 				[selectedDICOMNode setObject:dicomDestinationAETitle forKey:@"AETitle"];
-				[selectedDICOMNode setObject:dicomDestinationSyntax forKey:@"Transfer Syntax"];
+				[selectedDICOMNode setObject:dicomDestinationSyntax forKey:@"TransferSyntax"];
 				[selectedDICOMNode retain];
 
 				[selectedImages release];
@@ -1460,7 +1460,7 @@ extern NSThread					*mainThread;
 		NSString *dicomNodeAddress = [WebServicesMethods nonNilString:[node objectForKey:@"Address"]];
 		NSString *dicomNodePort = [NSString stringWithFormat:@"%d", [[node objectForKey:@"Port"] intValue]];
 		NSString *dicomNodeAETitle = [WebServicesMethods nonNilString:[node objectForKey:@"AETitle"]];
-		NSString *dicomNodeSyntax = [NSString stringWithFormat:@"%d", [[node objectForKey:@"Transfer Syntax"] intValue]];
+		NSString *dicomNodeSyntax = [NSString stringWithFormat:@"%d", [[node objectForKey:@"TransferSyntax"] intValue]];
 		NSString *dicomNodeDescription = [WebServicesMethods nonNilString:[node objectForKey:@"Description"]];
 		
 		NSMutableString *tempHTML = [NSMutableString stringWithString:dicomNodesListItemString];
@@ -1550,7 +1550,7 @@ extern NSThread					*mainThread;
 
 - (void)dicomSend:(id)sender;
 {	
-	NSDictionary *todo = [NSDictionary dictionaryWithObjectsAndKeys: [selectedDICOMNode objectForKey:@"Address"], @"Address", [selectedDICOMNode objectForKey:@"Transfer Syntax"], @"Transfer Syntax", [selectedDICOMNode objectForKey:@"Port"], @"Port", [selectedDICOMNode objectForKey:@"AETitle"], @"AETitle", [selectedImages valueForKey: @"completePath"], @"Files", nil];
+	NSDictionary *todo = [NSDictionary dictionaryWithObjectsAndKeys: [selectedDICOMNode objectForKey:@"Address"], @"Address", [selectedDICOMNode objectForKey:@"TransferSyntax"], @"TransferSyntax", [selectedDICOMNode objectForKey:@"Port"], @"Port", [selectedDICOMNode objectForKey:@"AETitle"], @"AETitle", [selectedImages valueForKey: @"completePath"], @"Files", nil];
 	[NSThread detachNewThreadSelector:@selector(dicomSendToDo:) toTarget:self withObject:todo];
 }
 
@@ -1567,7 +1567,7 @@ extern NSThread					*mainThread;
 																hostname: [todo objectForKey:@"Address"] 
 																port: [[todo objectForKey:@"Port"] intValue] 
 																filesToSend: [todo valueForKey: @"Files"]
-																transferSyntax: [[todo objectForKey:@"Transfer Syntax"] intValue] 
+																transferSyntax: [[todo objectForKey:@"TransferSyntax"] intValue] 
 																compression: 1.0
 																extraParameters: nil];
 	

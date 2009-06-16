@@ -575,7 +575,7 @@ static NSHost *currentHost = nil;
 	[aServer setObject:@"127.0.0.1" forKey: @"Address"];
 	[aServer setObject:@"OsiriX" forKey: @"AETitle"];
 	[aServer setObject:@"4444" forKey: @"Port"];
-	[aServer setObject:[NSNumber numberWithInt:0] forKey:@"Transfer Syntax"];
+	[aServer setObject:[NSNumber numberWithInt:0] forKey:@"TransferSyntax"];
 	[aServer setObject:NSLocalizedString(@"This is an example", nil) forKey:@"Description"];
 	
 	[serversValues addObject:aServer];
