@@ -731,7 +731,7 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
     DIC_AE calledAETitle;
     ASC_getAPTitles(assoc->params, NULL, calledAETitle, NULL);
 	//change to have 10 possible Syntaxes. We want to accept any incoming Syntax
-    const char* transferSyntaxes[] = { NULL, NULL, NULL, NULL,NULL, NULL, NULL, NULL, NULL, NULL, NULL };
+    const char* transferSyntaxes[] = { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL };
     int numTransferSyntaxes = 0;
 
     switch (options_.networkTransferSyntax_)

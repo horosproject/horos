@@ -213,7 +213,7 @@ static volatile int sendControllerObjects = 0;
 			preferredTS == SendImplicitLittleEndian || 
 			preferredTS == SendRLE ||
 			preferredTS == SendJPEGLossless)
-				[self  setOffisTS:preferredTS];
+				[self setOffisTS:preferredTS];
 	
 	}	
 	
