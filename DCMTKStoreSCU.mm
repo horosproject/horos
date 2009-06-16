@@ -511,7 +511,7 @@ static OFBool decompressFile(DcmFileFormat fileformat, const char *fname, char *
 	{
 		NSString *path = [NSString stringWithCString:fname encoding:[NSString defaultCStringEncoding]];
 		NSString *outpath = [NSString stringWithCString:outfname encoding:[NSString defaultCStringEncoding]];
-		DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile:path decodingPixelData:YES];
+		DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile:path decodingPixelData: NO];
 		
 		unlink( outfname);
 		[dcmObject writeToFile: outpath withTransferSyntax:[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax] quality:1 AET:@"OsiriX" atomically:YES];
@@ -550,7 +550,7 @@ static OFBool compressFile(DcmFileFormat fileformat, const char *fname, char *ou
 		NSString *path = [NSString stringWithCString:fname encoding:[NSString defaultCStringEncoding]];
 		NSString *outpath = [NSString stringWithCString:outfname encoding:[NSString defaultCStringEncoding]];
 		
-		DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile:path decodingPixelData:YES];
+		DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile:path decodingPixelData: NO];
 		
 		unlink( outfname);
 		
@@ -573,7 +573,7 @@ static OFBool compressFile(DcmFileFormat fileformat, const char *fname, char *ou
 		NSString *path = [NSString stringWithCString:fname encoding:[NSString defaultCStringEncoding]];
 		NSString *outpath = [NSString stringWithCString:outfname encoding:[NSString defaultCStringEncoding]];
 		
-		DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile:path decodingPixelData:YES];
+		DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile:path decodingPixelData: NO];
 		
 		unlink( outfname);
 		

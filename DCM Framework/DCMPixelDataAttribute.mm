@@ -784,7 +784,6 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 
 	if (decodeData)
 		[self decodeData];
-
 	
 	return self;
 }
@@ -940,14 +939,17 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 	}
 	if ([[DCMTransferSyntax JPEG2000LosslessTransferSyntax] isEqualToTransferSyntax:transferSyntax] && [[DCMTransferSyntax JPEG2000LossyTransferSyntax] isEqualToTransferSyntax:ts]) {
 		status = YES;
+		self.transferSyntax = ts;
 		goto finishedConversion;
 	}
 	if ([[DCMTransferSyntax JPEG2000LossyTransferSyntax] isEqualToTransferSyntax:transferSyntax] && [[DCMTransferSyntax JPEG2000LosslessTransferSyntax] isEqualToTransferSyntax:ts]) {
 		status = YES;
+		self.transferSyntax = ts;
 		goto finishedConversion;
 	}
 	// we need to decode pixel data
-	[self decodeData];
+	if( _isDecoded == NO)
+		[self decodeData];
 	
 	// may need to change PixelRepresentation to 1 if it was compressed and has a intercept
 	if ([[_dcmObject attributeValueWithName:@"RescaleIntercept" ] intValue] < 0) {

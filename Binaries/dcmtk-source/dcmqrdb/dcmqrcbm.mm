@@ -95,7 +95,7 @@ OFCondition decompressFileFormat(DcmFileFormat fileformat, const char *fname)
 	if (filexfer.getXfer() == EXS_JPEG2000LosslessOnly || filexfer.getXfer() == EXS_JPEG2000)
 	{
 		NSString *path = [NSString stringWithCString:fname encoding:[NSString defaultCStringEncoding]];
-		DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile:path decodingPixelData:YES];
+		DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile:path decodingPixelData: NO];
 		[[NSFileManager defaultManager] removeFileAtPath:path handler:0L];
 		[dcmObject writeToFile:path withTransferSyntax:[DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax] quality:DCMLosslessQuality AET:@"OsiriX" atomically:YES];
 		[dcmObject release];
@@ -136,7 +136,7 @@ OFBool compressFileFormat(DcmFileFormat fileformat, const char *fname, char *out
 		NSString *path = [NSString stringWithCString:fname encoding:[NSString defaultCStringEncoding]];
 		NSString *outpath = [NSString stringWithCString:outfname encoding:[NSString defaultCStringEncoding]];
 		
-		DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile:path decodingPixelData:YES];
+		DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile:path decodingPixelData: NO];
 		
 		unlink( outfname);
 		
@@ -150,7 +150,7 @@ OFBool compressFileFormat(DcmFileFormat fileformat, const char *fname, char *out
 		NSString *path = [NSString stringWithCString:fname encoding:[NSString defaultCStringEncoding]];
 		NSString *outpath = [NSString stringWithCString:outfname encoding:[NSString defaultCStringEncoding]];
 		
-		DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile:path decodingPixelData:YES];
+		DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile:path decodingPixelData: NO];
 		
 		unlink( outfname);
 		
