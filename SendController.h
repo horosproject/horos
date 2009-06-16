@@ -18,20 +18,19 @@
 
 enum TransferSyntaxCodes
 {
-	SendExplicitLittleEndian		= 0, 
-	SendJPEG2000Lossless,
-	SendJPEG2000Lossy10, 
-	SendJPEG2000Lossy20,
-	SendJPEG2000Lossy50,
-	SendJPEGLossless, 
-	SendJPEGLossy9,
-	SendJPEGLossy8,
-	SendJPEGLossy7,
-	SendImplicitLittleEndian,
-	SendRLE,
-	SendExplicitBigEndian,
-	SendBZip,
-
+	SendExplicitLittleEndian = 0, 
+	SendJPEG2000Lossless = 1, 
+	SendJPEG2000Lossy10 = 2,  
+	SendJPEG2000Lossy20 = 3, 
+	SendJPEG2000Lossy50 = 4, 
+	SendJPEGLossless = 5,  
+	SendJPEGLossy9 = 6, 
+	SendJPEGLossy8 = 7, 
+	SendJPEGLossy7 = 8, 
+	SendImplicitLittleEndian = 9, 
+	SendRLE = 10, 
+	SendExplicitBigEndian = 11, 
+	SendBZip = 12
 };
 
 

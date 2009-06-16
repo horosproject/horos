@@ -345,43 +345,53 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	return success;
 }
 
-+ (BOOL) isDICOMFile:(NSString *) file compressed:(BOOL*) compressed
++ (BOOL) isDICOMFile:(NSString *) file compressed:(BOOL*) compressed image:(BOOL*) image
 {
-	//return [DicomFile isDICOMFileDCMTK:file]; 
-	// return [DCMObject isDICOM:[NSData dataWithContentsOfFile:file]]; <- This is EXTREMELY slow with large files like XA, CR: You have to read the ENTIRE file to test it.
-		
-	BOOL            readable = YES;
-	PapyShort       fileNb;
-
+	if( compressed)
+		*compressed = NO;
+	if( image)
+		*image = NO;
+	
+	BOOL  readable = YES, isImage;
+	PapyShort fileNb;
+	
 	[PapyrusLock lock];
 	fileNb = Papy3FileOpen ( (char*) [file UTF8String], (PAPY_FILE) 0, TRUE, 0);
 	if (fileNb < 0)
-	{
 		readable = NO;
-	}
 	else
 	{
+		if( gSOPClassUID [fileNb])
+			isImage = [DCMAbstractSyntaxUID isImageStorage: [NSString stringWithCString: gSOPClassUID [fileNb]]];
+		else
+			isImage = NO;
+		
+		if( image)
+			*image = isImage;
+		
 		if( compressed)
 		{
-			if( gArrCompression [fileNb] == JPEG_LOSSLESS || gArrCompression [fileNb] == JPEG_LOSSY  || gArrCompression [fileNb] == JPEG2000) *compressed = YES;
-			else *compressed = NO;
+			if( isImage)
+			{
+				if( gArrCompression [fileNb] == JPEG_LOSSLESS || gArrCompression [fileNb] == JPEG_LOSSY  || gArrCompression [fileNb] == JPEG2000) *compressed = YES;
+			}
 		}
 		Papy3FileClose (fileNb, TRUE);
 	}
 	
 	[PapyrusLock unlock];
 	
-	if (!readable)
-	{
-		if( compressed) *compressed = NO;
-		return [DCMObject isDICOM:[NSData dataWithContentsOfMappedFile:file]];
-	}
     return readable;
+}
+
++ (BOOL) isDICOMFile:(NSString *) file compressed:(BOOL*) compressed
+{
+	return [DicomFile isDICOMFile: file compressed: compressed image: nil];
 }
 
 + (BOOL) isDICOMFile:(NSString *) file
 {
-	return [DicomFile isDICOMFile:file compressed:nil];
+	return [DicomFile isDICOMFile: file compressed: nil];
 }
 
 + (BOOL) isXMLDescriptedFile:(NSString *) file

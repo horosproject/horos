@@ -98,7 +98,8 @@ static int DefaultFolderSizeForDB = 0;
 //extern NSData* compressJPEG2000(int inQuality, unsigned char* inImageBuffP, int inImageHeight, int inImageWidth, int samplesPerPixel);
 //extern NSImage* decompressJPEG2000( unsigned char* inImageBuffP, long theLength);
 
-extern void compressJPEG (int inQuality, char* filename, unsigned char* inImageBuffP, int inImageHeight, int inImageWidth, int monochrome);
+//extern void compressJPEG (int inQuality, char* filename, unsigned char* inImageBuffP, int inImageHeight, int inImageWidth, int monochrome);
+extern unsigned char* compressJPEG (int inQuality, unsigned char* inImageBuffP, int inImageHeight, int inImageWidth, int monochrome, int *destSize);
 extern BOOL hasMacOSXTiger();
 extern BOOL hasMacOSXLeopard();
 
@@ -7939,22 +7940,16 @@ static BOOL withReset = NO;
 {
 	NSData *imageData = [image  TIFFRepresentation];
 	NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData:imageData];
-	
-	//	NSLog( @"bits per pixel: %d", [imageRep bitsPerPixel]);
-	
-	NSString *uniqueFileName = [NSString stringWithFormat:@"/tmp/osirix_thumbnail_%lf.jpg", [NSDate timeIntervalSinceReferenceDate]];
 	NSData	*result = nil;
 	
 	if( [imageRep bitsPerPixel] == 8)
 	{
 		[PapyrusLock lock];
-		compressJPEG ( 30, (char*) [uniqueFileName UTF8String], [imageRep bitmapData], [imageRep pixelsHigh], [imageRep pixelsWide], 1);
-		result = [NSData dataWithContentsOfFile:uniqueFileName];
-		[[NSFileManager defaultManager] removeFileAtPath:uniqueFileName  handler:nil];
+		int size;
+		unsigned char *p = compressJPEG( 30, [imageRep bitmapData], [imageRep pixelsHigh], [imageRep pixelsWide], 1, &size);
 		
-//		result = compressJPEG2000( 8, [imageRep bitmapData], [imageRep pixelsHigh], [imageRep pixelsWide], [imageRep samplesPerPixel]);
-//		NSLog( @"%d", [result length]);
-		
+		if( p)
+			result = [NSData dataWithBytesNoCopy: p length: size freeWhenDone: YES];
 		[PapyrusLock unlock];
 	}
 	else
@@ -7963,9 +7958,6 @@ static BOOL withReset = NO;
 		result = [imageRep representationUsingType:NSJPEGFileType properties:imageProps];
 		//NSJPEGFileType	NSJPEG2000FileType <- MAJOR memory leak with NSJPEG2000FileType when reading !!! Kakadu library...
 	}
-	
-	//	NSLog( @"thumbnail size: %d", [result length]);
-	
 	return result;
 }
 
@@ -13141,6 +13133,21 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[pool release];
 }
 
+- (void)compressDICOMJPEGinINCOMING: (NSArray*) array
+{
+	NSAutoreleasePool   *pool = [[NSAutoreleasePool alloc] init];
+	
+	NSString			*INpath = [[self documentsDirectory] stringByAppendingPathComponent:INCOMINGPATH];
+	
+	[self compressDICOMWithJPEG: array to: INpath];
+	
+	[processorsLock lock];
+	if( numberOfThreadsForJPEG >= 0) numberOfThreadsForJPEG--;
+	[processorsLock unlockWithCondition: 1];
+	
+	[pool release];
+}
+
 - (void)compressDICOMJPEG: (NSArray*) array
 {
 	NSAutoreleasePool		*pool = [[NSAutoreleasePool alloc] init];
@@ -13331,6 +13338,10 @@ static volatile int numberOfThreadsForJPEG = 0;
 			case 'C':
 				[NSThread detachNewThreadSelector: @selector( compressDICOMJPEG: ) toTarget:self withObject: [array subarrayWithRange: range]];
 				break;
+			
+			case 'X':
+				[NSThread detachNewThreadSelector: @selector( compressDICOMJPEGinINCOMING: ) toTarget:self withObject: [array subarrayWithRange: range]];
+				break;
 				
 			case 'D':
 				[NSThread detachNewThreadSelector: @selector( decompressDICOMJPEG: ) toTarget:self withObject: [array subarrayWithRange: range]];
@@ -13457,11 +13468,10 @@ static volatile int numberOfThreadsForJPEG = 0;
 						}
 						else if( fattrs != nil && [[fattrs objectForKey:NSFileBusy] boolValue] == NO && [[fattrs objectForKey:NSFileSize] longLongValue] > 0)
 						{
-							BOOL		isDicomFile;
-							BOOL		isJPEGCompressed;
-							NSString	*dstPath = [OUTpath stringByAppendingPathComponent:[srcPath lastPathComponent]];
+							BOOL isDicomFile, isJPEGCompressed, isImage;
+							NSString *dstPath = [OUTpath stringByAppendingPathComponent:[srcPath lastPathComponent]];
 							
-							isDicomFile = [DicomFile isDICOMFile:srcPath compressed:&isJPEGCompressed];
+							isDicomFile = [DicomFile isDICOMFile:srcPath compressed: &isJPEGCompressed image: &isImage];
 							
 							if( isDicomFile == YES ||
 							   (([DicomFile isFVTiffFile:srcPath] ||
@@ -13470,10 +13480,10 @@ static volatile int numberOfThreadsForJPEG = 0;
 								 [DicomFile isXMLDescriptedFile:srcPath]||
 								 [DicomFile isXMLDescriptorFile:srcPath]) 
 								&& [[NSFileManager defaultManager] fileExistsAtPath:dstPath] == NO))
-								{
+							{
 								newFilesInIncoming = YES;
 								
-								if (isDicomFile)
+								if (isDicomFile && isImage)
 								{
 									if( (isJPEGCompressed == YES && ListenerCompressionSettings == 1) || (isJPEGCompressed == NO && ListenerCompressionSettings == 2))
 									{
@@ -13608,10 +13618,10 @@ static volatile int numberOfThreadsForJPEG = 0;
 			[decompressArray addObjectsFromArray: compressedPathArray];
 			[decompressArrayLock unlock];
 			
-			if( ListenerCompressionSettings == 1) // Decompress
+			if( ListenerCompressionSettings == 1)		// Decompress
 				[self decompressThread: [NSNumber numberWithChar: 'I']];
-			else if( ListenerCompressionSettings == 2) // Compress
-				[self decompressThread: [NSNumber numberWithChar: 'C']];
+			else if( ListenerCompressionSettings == 2)	// Compress
+				[self decompressThread: [NSNumber numberWithChar: 'X']];
 			[decompressThreadRunning unlock];
 		}
 		

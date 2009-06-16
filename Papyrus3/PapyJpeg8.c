@@ -24,6 +24,7 @@
 #include "jpeglib8.h"
 #include "jerror8.h"
 #include "jpeg_memsrc.h"
+#include "jpeg_memdest.h"
 
 #ifdef MAYO_WAVE
 #include "Mayo.h"	/* interface for wavelet decompressor */
@@ -236,7 +237,7 @@ ExtractJPEGlossy8 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelSt
 
 } /* endof ExtractJPEGlossy */
 
-void compressJPEG (int inQuality, char* filename, unsigned char* inImageBuffP, int inImageHeight, int inImageWidth, int monochrome)
+unsigned char* compressJPEG (int inQuality, unsigned char* inImageBuffP, int inImageHeight, int inImageWidth, int monochrome, int *destSize)
 {
 	struct jpeg_compress_struct	theCInfo;
 	struct jpeg_error_mgr 	theJerr;
@@ -244,19 +245,12 @@ void compressJPEG (int inQuality, char* filename, unsigned char* inImageBuffP, i
 	JSAMPROW			theRowPointer [1];
 	int					theRowStride;
 	unsigned int		j;
-	FILE				*outfile;
 
 	/* Step 1: allocate and initialize JPEG compression object */
 
 	theCInfo.err = jpeg_std_error (&theJerr);
 	jpeg_create_compress (&theCInfo); 
-
-	/* Step 2: specify data destination (eg, a file) */
-	if ((outfile = fopen( filename, "wb")) == NULL)
-	{
-		printf("error");
-	}
-	jpeg_stdio_dest ((j_compress_ptr) &theCInfo, outfile); 
+	
 
 	/* Step 3: set parameters for compression */
 	theCInfo.image_width  = inImageWidth;
@@ -272,6 +266,14 @@ void compressJPEG (int inQuality, char* filename, unsigned char* inImageBuffP, i
 		theCInfo.input_components = 3;
 		theCInfo.in_color_space = JCS_RGB;
 	}
+	
+	int sizeBuff = theCInfo.image_height * theCInfo.image_width * theCInfo.input_components;
+	unsigned char *destBuffer = malloc( theCInfo.image_height * theCInfo.image_width * theCInfo.input_components);
+	
+	if( destBuffer == 0L)
+		return 0L;
+	
+	jpeg_memory_dest( &theCInfo, destBuffer, sizeBuff);
 
 	jpeg_set_defaults ((j_compress_ptr) &theCInfo);
 	jpeg_set_quality (&theCInfo, inQuality, TRUE); /* limit to baseline-JPEG values */
@@ -291,16 +293,16 @@ void compressJPEG (int inQuality, char* filename, unsigned char* inImageBuffP, i
 	} /* while */
 
 	/* Step 6: Finish compression */
-
 	jpeg_finish_compress (&theCInfo);
 
+	mem_dest_ptr dest = (mem_dest_ptr) theCInfo.dest;
+	*destSize = dest->datacount;
+		
 	/* We can use jpeg_abort to release memory and reset global_state */
 	jpeg_abort( (j_common_ptr) &theCInfo);
-	
-	fclose(outfile);
 	
 	/* Step 7: release JPEG compression object */
 	jpeg_destroy_compress (&theCInfo);
 
-	return;
+	return destBuffer;
 }

@@ -928,9 +928,8 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 		goto finishedConversion;
 		//return YES;
 	}
-
-		
-		//syntax is unencapsulated little Endian Explicit or Implicit for both. do nothing
+	
+	//syntax is unencapsulated little Endian Explicit or Implicit for both. do nothing
 	if ([[DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax] isEqualToTransferSyntax:ts] && [[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax] isEqualToTransferSyntax:transferSyntax]) {
 		status =  YES;
 		goto finishedConversion;
@@ -938,9 +937,15 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 	if ([[DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax] isEqualToTransferSyntax:transferSyntax] && [[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax] isEqualToTransferSyntax:ts]) {
 		status = YES;
 		goto finishedConversion;
-		//return YES;
 	}
-	
+	if ([[DCMTransferSyntax JPEG2000LosslessTransferSyntax] isEqualToTransferSyntax:transferSyntax] && [[DCMTransferSyntax JPEG2000LossyTransferSyntax] isEqualToTransferSyntax:ts]) {
+		status = YES;
+		goto finishedConversion;
+	}
+	if ([[DCMTransferSyntax JPEG2000LossyTransferSyntax] isEqualToTransferSyntax:transferSyntax] && [[DCMTransferSyntax JPEG2000LosslessTransferSyntax] isEqualToTransferSyntax:ts]) {
+		status = YES;
+		goto finishedConversion;
+	}
 	// we need to decode pixel data
 	[self decodeData];
 	
@@ -949,7 +954,6 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 		//NSLog(@"Set Pixel Representation to 1");
 		[_dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithBool:YES]] forName:@"PixelRepresentation"];
 	}
-		
 		
 	//unencapsulated syntaxes
 	if ([[DCMTransferSyntax ExplicitVRBigEndianTransferSyntax] isEqualToTransferSyntax:ts]) {

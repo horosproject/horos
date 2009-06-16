@@ -55,6 +55,11 @@ extern NSRecursiveLock *PapyrusLock;
 
 - (BOOL)compressDICOMWithJPEG:(NSArray *) paths
 {
+	return [self compressDICOMWithJPEG: paths to: nil];
+}
+
+- (BOOL)compressDICOMWithJPEG:(NSArray *) paths to:(NSString*) dest
+{
 //	NSLog( @"** START");
 //	NSString *dest2 = [paths lastObject];
 //	
@@ -64,7 +69,7 @@ extern NSRecursiveLock *PapyrusLock;
 //	
 //	@try
 //	{
-//		succeed = [dcmObject writeToFile: [dest2 stringByAppendingString: @" temp"] withTransferSyntax:[DCMTransferSyntax JPEG2000LosslessTransferSyntax] quality: 0 AET:@"OsiriX" atomically:YES];
+//		succeed = [dcmObject writeToFile: [dest2 stringByAppendingString: @" temp"] withTransferSyntax:[DCMTransferSyntax JPEG2000LossyTransferSyntax] quality: 0 AET:@"OsiriX" atomically:YES];
 //	}
 //	@catch (NSException *e)
 //	{
@@ -85,8 +90,11 @@ extern NSRecursiveLock *PapyrusLock;
 //	}
 //	NSLog( @"** END");
 	
+	if( dest == nil)
+		dest = @"sameAsDestination";
+	
 	NSTask *theTask = [[NSTask alloc] init];
-	[theTask setArguments: [[NSArray arrayWithObjects: @"sameAsDestination", @"compress", nil] arrayByAddingObjectsFromArray: paths]];
+	[theTask setArguments: [[NSArray arrayWithObjects: dest, @"compress", nil] arrayByAddingObjectsFromArray: paths]];
 	[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Decompress"]];
 	[theTask launch];
 	while( [theTask isRunning]) [NSThread sleepForTimeInterval: 0.01];

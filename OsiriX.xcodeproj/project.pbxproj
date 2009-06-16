@@ -168,6 +168,8 @@
 		8440039A0E8CF99500A00EBD /* dciodvfy in Resources */ = {isa = PBXBuildFile; fileRef = 844003990E8CF99500A00EBD /* dciodvfy */; };
 		8459A7270F5D63EF00146B28 /* VREmpty.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8459A7250F5D63EF00146B28 /* VREmpty.xib */; };
 		8483ABA60E1BE33900C21B31 /* crossCursor.tif in Resources */ = {isa = PBXBuildFile; fileRef = 8483ABA50E1BE33900C21B31 /* crossCursor.tif */; };
+		848631C30FE77E1F00B96E99 /* jpeg_memdest.h in Headers */ = {isa = PBXBuildFile; fileRef = 848631C10FE77E1F00B96E99 /* jpeg_memdest.h */; };
+		848631C40FE77E1F00B96E99 /* jpeg_memdest.c in Sources */ = {isa = PBXBuildFile; fileRef = 848631C20FE77E1F00B96E99 /* jpeg_memdest.c */; };
 		84A220E80F25E41800C6C3EB /* ROIs.tif in Resources */ = {isa = PBXBuildFile; fileRef = 84A220E60F25E41800C6C3EB /* ROIs.tif */; };
 		84A220E90F25E41800C6C3EB /* Keys.tif in Resources */ = {isa = PBXBuildFile; fileRef = 84A220E70F25E41800C6C3EB /* Keys.tif */; };
 		84A679060EEECF2F00AE5C98 /* jpeg_memsrc.c in Sources */ = {isa = PBXBuildFile; fileRef = 84A679050EEECF2F00AE5C98 /* jpeg_memsrc.c */; };
@@ -4965,6 +4967,8 @@
 		844719AF0FD8EF50003BFDF8 /* OsiriX.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = OsiriX.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8459A7260F5D63EF00146B28 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/VREmpty.xib; sourceTree = "<group>"; };
 		8483ABA50E1BE33900C21B31 /* crossCursor.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = crossCursor.tif; path = Cursors/crossCursor.tif; sourceTree = "<group>"; };
+		848631C10FE77E1F00B96E99 /* jpeg_memdest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = jpeg_memdest.h; path = Papyrus3/jpeg_memdest.h; sourceTree = "<group>"; };
+		848631C20FE77E1F00B96E99 /* jpeg_memdest.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = jpeg_memdest.c; path = Papyrus3/jpeg_memdest.c; sourceTree = "<group>"; };
 		84A220E60F25E41800C6C3EB /* ROIs.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ROIs.tif; sourceTree = "<group>"; };
 		84A220E70F25E41800C6C3EB /* Keys.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Keys.tif; sourceTree = "<group>"; };
 		84A679050EEECF2F00AE5C98 /* jpeg_memsrc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = jpeg_memsrc.c; path = Papyrus3/jpeg_memsrc.c; sourceTree = "<group>"; };
@@ -10048,6 +10052,8 @@
 			children = (
 				CEDB14A70768392E00375F65 /* Headers */,
 				CE778E120FDA631A00CC4C7D /* DicomDir */,
+				848631C10FE77E1F00B96E99 /* jpeg_memdest.h */,
+				848631C20FE77E1F00B96E99 /* jpeg_memdest.c */,
 				84A679050EEECF2F00AE5C98 /* jpeg_memsrc.c */,
 				84A6790D0EEED04000AE5C98 /* jpeg_memsrc.h */,
 				AB0BD73505646ED100BED927 /* PapyFileSystemUnix3.c */,
@@ -15655,6 +15661,7 @@
 				A9333D310F56E70B0097DAB7 /* MPRController.h in Headers */,
 				AB0DF7440FD79FDE00A7C57E /* dvpssp.h in Headers */,
 				AB0DF7460FD79FEA00A7C57E /* dviface.h in Headers */,
+				848631C30FE77E1F00B96E99 /* jpeg_memdest.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -17452,6 +17459,7 @@
 				CE778E370FDA636A00CC4C7D /* DicomDirInit.c in Sources */,
 				CE778E380FDA636A00CC4C7D /* DicomDirFiles.c in Sources */,
 				CE778E390FDA636A00CC4C7D /* DicomDirDatasetRead.c in Sources */,
+				848631C40FE77E1F00B96E99 /* jpeg_memdest.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

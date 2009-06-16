@@ -134,11 +134,23 @@ int main(int argc, const char *argv[])
 			
 			int limit = [[dict objectForKey: @"CompressionResolutionLimit"] intValue];
 			
+			NSString *destDirec;
+			if( [path isEqualToString: @"sameAsDestination"])
+				destDirec = nil;
+			else
+				destDirec = path;
+			
 			int i;
 			for( i = 3; i < argc; i++)
 			{
 				NSString *curFile = [NSString stringWithCString:argv[ i]];
 				OFBool status = YES;
+				NSString *curFileDest;
+				
+				if( destDirec)
+					curFileDest = [destDirec stringByAppendingPathComponent: [curFile lastPathComponent]];
+				else
+					curFileDest = [curFile stringByAppendingString: @" temp"];
 				
 				DcmFileFormat fileformat;
 				OFCondition cond = fileformat.loadFile( [curFile UTF8String]);
@@ -149,7 +161,15 @@ int main(int argc, const char *argv[])
 					DcmItem *metaInfo = fileformat.getMetaInfo();
 					DcmXfer original_xfer(dataset->getOriginalXfer());
 					if (original_xfer.isEncapsulated())
+					{
+						if( destDirec)
+						{
+							[[NSFileManager defaultManager] removeFileAtPath: curFileDest handler: nil];
+							[[NSFileManager defaultManager] movePath: curFile toPath: curFileDest handler: nil];
+							[[NSFileManager defaultManager] removeFileAtPath: curFile handler: nil];
+						}
 						NSLog( @"file already compressed: %@", [curFile lastPathComponent]);
+					}
 					else
 					{
 						const char *string = NULL;
@@ -183,14 +203,8 @@ int main(int argc, const char *argv[])
 							
 							@try
 							{
-								DCMTransferSyntax *tsx;
-								
-								if( quality == DCMLosslessQuality)
-									tsx = [DCMTransferSyntax JPEG2000LosslessTransferSyntax];
-								else
-									tsx = [DCMTransferSyntax JPEG2000LossyTransferSyntax];
-								
-								succeed = [dcmObject writeToFile: [curFile stringByAppendingString: @" temp"] withTransferSyntax: tsx quality: quality AET:@"OsiriX" atomically:YES];
+								DCMTransferSyntax *tsx = [DCMTransferSyntax JPEG2000LossyTransferSyntax];
+								succeed = [dcmObject writeToFile: curFileDest withTransferSyntax: tsx quality: quality AET:@"OsiriX" atomically:YES];
 							}
 							@catch (NSException *e)
 							{
@@ -201,12 +215,14 @@ int main(int argc, const char *argv[])
 							if( succeed)
 							{
 								[[NSFileManager defaultManager] removeFileAtPath: curFile handler: nil];
-								[[NSFileManager defaultManager] movePath: [curFile stringByAppendingString: @" temp"] toPath: curFile handler: nil];
+								
+								if( destDirec == nil)
+									[[NSFileManager defaultManager] movePath: curFileDest toPath: curFile handler: nil];
 							}
 							else
 							{
 								NSLog( @"failed to compress file: %@", curFile);
-								[[NSFileManager defaultManager] removeFileAtPath: [curFile stringByAppendingString: @" temp"] handler: nil];
+								[[NSFileManager defaultManager] removeFileAtPath: curFileDest handler: nil];
 							}
 						}
 						else if( compression == compression_JPEG)
@@ -233,10 +249,12 @@ int main(int argc, const char *argv[])
 								// store in lossless JPEG format
 								fileformat.loadAllDataIntoMemory();
 								
-								[[NSFileManager defaultManager] removeFileAtPath: curFile handler:nil];
-								
-								cond = fileformat.saveFile( [curFile UTF8String], tSyntax);
+								[[NSFileManager defaultManager] removeFileAtPath: curFileDest handler:nil];
+								cond = fileformat.saveFile( [curFileDest UTF8String], tSyntax);
 								status =  (cond.good()) ? YES : NO;
+								
+								if( destDirec == nil)
+									[[NSFileManager defaultManager] movePath: curFileDest toPath: curFile handler: nil];
 							}
 						}
 					}
@@ -321,6 +339,12 @@ int main(int argc, const char *argv[])
 						NSLog(@"decompress error");
 						[[NSFileManager defaultManager] removeFileAtPath: curFileDest handler:nil];
 					}
+				}
+				else if( destDirec)
+				{
+					[[NSFileManager defaultManager] removeFileAtPath: curFileDest handler: nil];
+					[[NSFileManager defaultManager] movePath: curFile toPath: curFileDest handler: nil];
+					[[NSFileManager defaultManager] removeFileAtPath: curFile handler: nil];
 				}
 				
 				if( destDirec == nil)

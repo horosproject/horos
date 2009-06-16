@@ -65,7 +65,7 @@ WHERE3 SElement		*gArrGroup41		[kMax_file_open];
 
 /* the syntax used in each open file */
 WHERE3 enum ETransf_Syntax gArrTransfSyntax 	[kMax_file_open];
-
+WHERE3 char		*gSOPClassUID	[kMax_file_open];
 /* the compression used for the images of each file */
 WHERE3 enum EPap_Compression gArrCompression	[kMax_file_open];
 

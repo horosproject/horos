@@ -48,6 +48,7 @@
 + (BOOL) isNIfTIFile:(NSString *) file; /**< Test for Nifti file format */
 + (BOOL) isDICOMFile:(NSString *) file; /**< Test for DICOM file format */
 + (BOOL) isDICOMFile:(NSString *) file compressed:(BOOL*) compressed; /**< Test for DICOM file format, returns YES for compressed BOOL if Transfer syntax is compressed. */
++ (BOOL) isDICOMFile:(NSString *) file compressed:(BOOL*) compressed image:(BOOL*) image;
 + (BOOL) isXMLDescriptedFile:(NSString *) file; /**< Test for XML descripted  file format */
 + (BOOL) isXMLDescriptorFile:(NSString *) file; /**< Test for XML descriptor file format. Fake DICOM for other files with XML descriptor*/
 + (void) setFilesAreFromCDMedia: (BOOL) f; /**< Set flag for filesAreFromCDMedia */

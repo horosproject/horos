@@ -8,7 +8,7 @@
 		<string key="IBDocument.HIToolboxVersion">353.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="449"/>
+			<integer value="347"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -616,9 +616,9 @@
 																		<string key="NSKeyEquivalent"/>
 																		<int key="NSPeriodicDelay">400</int>
 																		<int key="NSPeriodicInterval">75</int>
-																		<object class="NSMenuItem" key="NSMenuItem" id="1016130195">
+																		<object class="NSMenuItem" key="NSMenuItem" id="580922063">
 																			<reference key="NSMenu" ref="117698950"/>
-																			<string key="NSTitle">JPEG Lossy - Low Quality</string>
+																			<string key="NSTitle">Explicit Little Endian</string>
 																			<string key="NSKeyEquiv"/>
 																			<int key="NSKeyEquivModMask">1048576</int>
 																			<int key="NSMnemonicLoc">2147483647</int>
@@ -633,27 +633,17 @@
 																			<string key="NSTitle"/>
 																			<object class="NSMutableArray" key="NSMenuItems">
 																				<bool key="EncodedWithXMLCoder">YES</bool>
-																				<object class="NSMenuItem" id="580922063">
-																					<reference key="NSMenu" ref="117698950"/>
-																					<string key="NSTitle">Explicit Little Endian</string>
-																					<string key="NSKeyEquiv"/>
-																					<int key="NSKeyEquivModMask">1048576</int>
-																					<int key="NSMnemonicLoc">2147483647</int>
-																					<reference key="NSOnImage" ref="380501155"/>
-																					<reference key="NSMixedImage" ref="161796402"/>
-																					<string key="NSAction">_popUpItemAction:</string>
-																					<reference key="NSTarget" ref="300701341"/>
-																				</object>
+																				<reference ref="580922063"/>
 																				<object class="NSMenuItem" id="860274817">
 																					<reference key="NSMenu" ref="117698950"/>
-																					<string key="NSTitle">Implicit Little Endian Only</string>
+																					<string key="NSTitle">Implicit Little Endian</string>
 																					<string key="NSKeyEquiv"/>
 																					<int key="NSKeyEquivModMask">1048576</int>
 																					<int key="NSMnemonicLoc">2147483647</int>
-																					<int key="NSState">1</int>
 																					<reference key="NSOnImage" ref="380501155"/>
 																					<reference key="NSMixedImage" ref="161796402"/>
 																					<string key="NSAction">_popUpItemAction:</string>
+																					<int key="NSTag">9</int>
 																					<reference key="NSTarget" ref="300701341"/>
 																				</object>
 																				<object class="NSMenuItem" id="522700699">
@@ -678,6 +668,7 @@
 																					<reference key="NSOnImage" ref="380501155"/>
 																					<reference key="NSMixedImage" ref="161796402"/>
 																					<string key="NSAction">_popUpItemAction:</string>
+																					<int key="NSTag">1</int>
 																					<reference key="NSTarget" ref="300701341"/>
 																				</object>
 																				<object class="NSMenuItem" id="748536656">
@@ -689,6 +680,7 @@
 																					<reference key="NSOnImage" ref="380501155"/>
 																					<reference key="NSMixedImage" ref="161796402"/>
 																					<string key="NSAction">_popUpItemAction:</string>
+																					<int key="NSTag">2</int>
 																					<reference key="NSTarget" ref="300701341"/>
 																				</object>
 																				<object class="NSMenuItem" id="583597790">
@@ -700,6 +692,7 @@
 																					<reference key="NSOnImage" ref="380501155"/>
 																					<reference key="NSMixedImage" ref="161796402"/>
 																					<string key="NSAction">_popUpItemAction:</string>
+																					<int key="NSTag">3</int>
 																					<reference key="NSTarget" ref="300701341"/>
 																				</object>
 																				<object class="NSMenuItem" id="870385798">
@@ -711,6 +704,7 @@
 																					<reference key="NSOnImage" ref="380501155"/>
 																					<reference key="NSMixedImage" ref="161796402"/>
 																					<string key="NSAction">_popUpItemAction:</string>
+																					<int key="NSTag">4</int>
 																					<reference key="NSTarget" ref="300701341"/>
 																				</object>
 																				<object class="NSMenuItem" id="643352560">
@@ -735,6 +729,7 @@
 																					<reference key="NSOnImage" ref="380501155"/>
 																					<reference key="NSMixedImage" ref="161796402"/>
 																					<string key="NSAction">_popUpItemAction:</string>
+																					<int key="NSTag">5</int>
 																					<reference key="NSTarget" ref="300701341"/>
 																				</object>
 																				<object class="NSMenuItem" id="837659781">
@@ -746,6 +741,7 @@
 																					<reference key="NSOnImage" ref="380501155"/>
 																					<reference key="NSMixedImage" ref="161796402"/>
 																					<string key="NSAction">_popUpItemAction:</string>
+																					<int key="NSTag">6</int>
 																					<reference key="NSTarget" ref="300701341"/>
 																				</object>
 																				<object class="NSMenuItem" id="400140940">
@@ -757,9 +753,21 @@
 																					<reference key="NSOnImage" ref="380501155"/>
 																					<reference key="NSMixedImage" ref="161796402"/>
 																					<string key="NSAction">_popUpItemAction:</string>
+																					<int key="NSTag">7</int>
 																					<reference key="NSTarget" ref="300701341"/>
 																				</object>
-																				<reference ref="1016130195"/>
+																				<object class="NSMenuItem" id="1016130195">
+																					<reference key="NSMenu" ref="117698950"/>
+																					<string key="NSTitle">JPEG Lossy - Low Quality</string>
+																					<string key="NSKeyEquiv"/>
+																					<int key="NSKeyEquivModMask">1048576</int>
+																					<int key="NSMnemonicLoc">2147483647</int>
+																					<reference key="NSOnImage" ref="380501155"/>
+																					<reference key="NSMixedImage" ref="161796402"/>
+																					<string key="NSAction">_popUpItemAction:</string>
+																					<int key="NSTag">8</int>
+																					<reference key="NSTarget" ref="300701341"/>
+																				</object>
 																				<object class="NSMenuItem" id="700117969">
 																					<reference key="NSMenu" ref="117698950"/>
 																					<bool key="NSIsDisabled">YES</bool>
@@ -781,11 +789,11 @@
 																					<reference key="NSOnImage" ref="380501155"/>
 																					<reference key="NSMixedImage" ref="161796402"/>
 																					<string key="NSAction">_popUpItemAction:</string>
+																					<int key="NSTag">10</int>
 																					<reference key="NSTarget" ref="300701341"/>
 																				</object>
 																			</object>
 																		</object>
-																		<int key="NSSelectedIndex">11</int>
 																		<int key="NSPreferredEdge">3</int>
 																		<bool key="NSUsesItemFromMenu">YES</bool>
 																		<bool key="NSAltersState">YES</bool>
@@ -4283,9 +4291,9 @@ A</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
-					<string>{{1110, 108}, {729, 763}}</string>
+					<string>{{16, 108}, {729, 763}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{1110, 108}, {729, 763}}</string>
+					<string>{{16, 108}, {729, 763}}</string>
 					<reference ref="9"/>
 					<string>{{744, 378}, {729, 738}}</string>
 					<integer value="0"/>
@@ -4407,7 +4415,7 @@ A</string>
 					<reference ref="9"/>
 					<reference ref="9"/>
 					<reference ref="9"/>
-					<string>{{1133, 602}, {644, 220}}</string>
+					<string>{{39, 602}, {644, 220}}</string>
 					<reference ref="9"/>
 					<reference ref="9"/>
 					<reference ref="9"/>

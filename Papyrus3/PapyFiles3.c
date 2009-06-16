@@ -195,9 +195,18 @@ Papy3FileOpen (char *inNameP, PAPY_FILE inVRefNum, int inToOpen, void* inFSSpec)
 					}
 					
                     /* goto group number 8 and if found read it */
-                    if ((theErr = Papy3GotoGroupNb (theFileNb, 0x0008)) < 0)
+                    if ((theErr = Papy3GotoGroupNb (theFileNb, 0x0008)) >= 0)
                     {
-						iResult = papNotPapyrusFile;
+						if ((theErr = Papy3GroupRead (theFileNb, &theGroupP)) >= 0)
+						{
+							theValP = Papy3GetElement (theGroupP, papSOPClassUIDGr, &theNbVal, &theElemType);
+							if (theValP != NULL)
+							{
+								gSOPClassUID[ theFileNb] = malloc( strlen( theValP->a)+1);
+								strcpy( gSOPClassUID[ theFileNb], theValP->a);
+							}
+							 theErr = Papy3GroupFree (&theGroupP, TRUE);
+						}
                     }
                     
 					if( iResult == papNoError)
@@ -328,7 +337,21 @@ Papy3FileOpen (char *inNameP, PAPY_FILE inVRefNum, int inToOpen, void* inFSSpec)
                             theErr = Papy3FSeek (gPapyFile [theFileNb], SEEK_SET, 0L);
                           else if (gIsPapyFile [theFileNb] == PAPYRUS3)
                             theErr = Papy3FSeek (gPapyFile [theFileNb], SEEK_SET, *gRefImagePointer [theFileNb]);
-      
+						  
+							if ((theErr = Papy3GotoGroupNb (theFileNb, 0x0008)) >= 0)
+							{
+								if ((theErr = Papy3GroupRead (theFileNb, &theGroupP)) >= 0)
+								{
+									theValP = Papy3GetElement (theGroupP, papSOPClassUIDGr, &theNbVal, &theElemType);
+									if (theValP != NULL)
+									{
+										gSOPClassUID[ theFileNb] = malloc( strlen( theValP->a)+1);
+										strcpy( gSOPClassUID[ theFileNb], theValP->a);
+									}
+									theErr = Papy3GroupFree (&theGroupP, TRUE);
+								}
+							}
+							
                           /* extract the informations from group28 from the file */
 						  
                           if ((theErr = ExtractGroup28Information (theFileNb)) < 0)
@@ -701,6 +724,9 @@ Papy3FileClose (PapyShort inFileNb, int inToClose)
   if (gPapFilename [inFileNb] != NULL)
     efree3 ((void **) &(gPapFilename [inFileNb]));
 
+  if (gSOPClassUID [inFileNb] != NULL)
+		efree3 ((void **) &(gSOPClassUID [inFileNb]));
+	
   /* frees the allocated memory for the file */
   if (gShadowOwner [inFileNb] != NULL) 
     efree3 ((void **) &(gShadowOwner [inFileNb]));
