@@ -13341,11 +13341,11 @@ static volatile int numberOfThreadsForJPEG = 0;
 	}
 	
 	int chunk = [array count] / MPProcessors();
-	if( chunk < 16) chunk = 16;
+	if( chunk < 15) chunk = 15;
 	
 	if( [[waitCompressionWindow window] isVisible])
 	{
-		if( chunk > 10) chunk = 10;
+		if( chunk > 20) chunk = 20;
 	}
 	
 	NSRange range = NSMakeRange( 0, chunk);
