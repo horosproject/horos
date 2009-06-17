@@ -1610,11 +1610,11 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 		DCMAttributeTag *signedTag = [DCMAttributeTag tagWithName:@"PixelRepresentation"];
 		DCMAttribute *signedAttr = [[_dcmObject attributes] objectForKey:[signedTag stringValue]];
 		BOOL sign = [[signedAttr value] boolValue];
-		DCMAttributeTag *tag = [DCMAttributeTag tagWithName:@"PlanarConfiguration"];
-		DCMAttribute *attr = [_dcmObject attributeForTag:(DCMAttributeTag *)tag];
-		int numberofPlanes = [[attr value] intValue];
+//		DCMAttributeTag *tag = [DCMAttributeTag tagWithName:@"PlanarConfiguration"];
+//		DCMAttribute *attr = [_dcmObject attributeForTag:(DCMAttributeTag *)tag];
+//		int pc = [[attr value] intValue];
 	
-		image = rawtoimage( (char*) [data bytes], &parameters,  static_cast<int>( [data length]),  image_width, image_height, sample_pixel, bitsallocated, bitsstored, sign, quality, numberofPlanes);
+		image = rawtoimage( (char*) [data bytes], &parameters,  static_cast<int>( [data length]),  image_width, image_height, sample_pixel, bitsallocated, bitsstored, sign, quality, 0);
 		
 		parameters.cod_format = 0; /* J2K format output */
 		int codestream_length;

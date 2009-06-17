@@ -233,6 +233,10 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	BOOL							waitCompressionAbort;
 	
 	BOOL							checkForMountedFiles;
+	
+	NSMutableArray					*cachedFilesForDatabaseOutlineSelectionSelectedFiles;
+	NSMutableArray					*cachedFilesForDatabaseOutlineSelectionCorrespondingObjects;
+	NSIndexSet						*cachedFilesForDatabaseOutlineSelectionIndex;
 }
 
 @property(readonly) NSDateFormatter *DateTimeFormat;

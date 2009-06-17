@@ -4934,6 +4934,16 @@ static NSArray*	statesArray = nil;
 	NSEnumerator		*rowEnumerator = [databaseOutline selectedRowEnumerator];
 	NSNumber			*row;
 	
+	if( cachedFilesForDatabaseOutlineSelectionIndex && [[databaseOutline selectedRowIndexes] isEqualToIndexSet: cachedFilesForDatabaseOutlineSelectionIndex]) 
+	{
+		[selectedFiles addObjectsFromArray: cachedFilesForDatabaseOutlineSelectionSelectedFiles];
+		
+		if( correspondingManagedObjects)
+			[correspondingManagedObjects addObjectsFromArray: cachedFilesForDatabaseOutlineSelectionCorrespondingObjects];
+		
+		return selectedFiles;
+	}
+	
 	NSManagedObjectContext	*context = self.managedObjectContext;
 	
 	if( correspondingManagedObjects == nil) correspondingManagedObjects = [NSMutableArray array];
@@ -5021,6 +5031,13 @@ static NSArray*	statesArray = nil;
 	[context release];
 	[context unlock];
 	
+	[cachedFilesForDatabaseOutlineSelectionSelectedFiles release];
+	[cachedFilesForDatabaseOutlineSelectionCorrespondingObjects release];
+	[cachedFilesForDatabaseOutlineSelectionIndex release];
+	
+	cachedFilesForDatabaseOutlineSelectionIndex = [[NSIndexSet alloc] initWithIndexSet: [databaseOutline selectedRowIndexes]];
+	cachedFilesForDatabaseOutlineSelectionSelectedFiles = [[NSMutableArray alloc] initWithArray:selectedFiles];
+	cachedFilesForDatabaseOutlineSelectionCorrespondingObjects = [[NSMutableArray alloc] initWithArray:correspondingManagedObjects];
 	
 	return selectedFiles;
 	
@@ -5066,6 +5083,10 @@ static NSArray*	statesArray = nil;
 - (void)outlineViewSelectionDidChange: (NSNotification *)aNotification
 {
 	if( loadingIsOver == NO) return;
+	
+	[cachedFilesForDatabaseOutlineSelectionSelectedFiles release]; cachedFilesForDatabaseOutlineSelectionSelectedFiles = nil;
+	[cachedFilesForDatabaseOutlineSelectionCorrespondingObjects release]; cachedFilesForDatabaseOutlineSelectionCorrespondingObjects = nil;
+	[cachedFilesForDatabaseOutlineSelectionIndex release]; cachedFilesForDatabaseOutlineSelectionIndex = nil;
 	
 	NSIndexSet			*index = [databaseOutline selectedRowIndexes];
 	NSManagedObject		*item = [databaseOutline itemAtRow:[index firstIndex]];
@@ -12372,7 +12393,7 @@ static NSArray*	openSubSeriesArray = nil;
 	{
 		if( isCurrentDatabaseBonjour == NO)
 		{
-			if( [[databaseOutline selectedRowIndexes] count] < 20 && [[self ROIImages: menuItem] count] == 0) return NO;
+			if( [[databaseOutline selectedRowIndexes] count] < 10 && [[self ROIImages: menuItem] count] == 0) return NO;
 		}
 		else return YES;
 	}
@@ -12380,7 +12401,7 @@ static NSArray*	openSubSeriesArray = nil;
 	{
 		if( isCurrentDatabaseBonjour == NO)
 		{
-			if( [[databaseOutline selectedRowIndexes] count] < 20 && [[self ROIsAndKeyImages: menuItem] count] == 0) return NO;
+			if( [[databaseOutline selectedRowIndexes] count] < 10 && [[self ROIsAndKeyImages: menuItem] count] == 0) return NO;
 		}
 		else return YES;
 	}
@@ -12388,7 +12409,7 @@ static NSArray*	openSubSeriesArray = nil;
 	{
 		if( isCurrentDatabaseBonjour == NO)
 		{
-			if( [[databaseOutline selectedRowIndexes] count] < 20 && [[self KeyImages: menuItem] count] == 0) return NO;
+			if( [[databaseOutline selectedRowIndexes] count] < 10 && [[self KeyImages: menuItem] count] == 0) return NO;
 		}
 		else return YES;
 	}
@@ -12416,27 +12437,31 @@ static NSArray*	openSubSeriesArray = nil;
 	{
 		if( isCurrentDatabaseBonjour) return NO;
 		
-		BOOL matrixThumbnails;
-		
-		if( menuItem.menu == contextual) matrixThumbnails = YES;
-		else matrixThumbnails = NO;
-		
-		NSMutableArray *files, *objects = [NSMutableArray array];
-		
-		if( matrixThumbnails)
-			files = [self filesForDatabaseMatrixSelection: objects onlyImages: NO];
-		else
-			files = [self filesForDatabaseOutlineSelection: objects onlyImages: NO];
-		
-		[files removeDuplicatedStringsInSyncWithThisArray: objects];
-		
-		for( NSManagedObject *im in objects)
+		if( [[databaseOutline selectedRowIndexes] count] < 10)
 		{
-			if( [[im valueForKey: @"inDatabaseFolder"] boolValue] == NO)
-				return YES;
+			BOOL matrixThumbnails;
+			
+			if( menuItem.menu == contextual) matrixThumbnails = YES;
+			else matrixThumbnails = NO;
+			
+			NSMutableArray *files, *objects = [NSMutableArray array];
+			
+			if( matrixThumbnails)
+				files = [self filesForDatabaseMatrixSelection: objects onlyImages: NO];
+			else
+				files = [self filesForDatabaseOutlineSelection: objects onlyImages: NO];
+			
+			[files removeDuplicatedStringsInSyncWithThisArray: objects];
+			
+			for( NSManagedObject *im in objects)
+			{
+				if( [[im valueForKey: @"inDatabaseFolder"] boolValue] == NO)
+					return YES;
+			}
+			
+			return NO;
 		}
-		
-		return NO;
+		else return YES;
 	}
 	else if( [menuItem action] == @selector( delItem:))
 	{
@@ -16461,11 +16486,11 @@ static volatile int numberOfThreadsForJPEG = 0;
 	{
 		for( DicomImage *image in selectedItems)
 		{
-			NSString	*str = [image SRPathForFrame: 0];
+			NSString *str = [image SRPathForFrame: 0];
 			
 			if( [[BrowserController currentBrowser] isCurrentDatabaseBonjour])
 			{
-				NSString	*imagePath = [BonjourBrowser uniqueLocalPath: image];
+				NSString *imagePath = [BonjourBrowser uniqueLocalPath: image];
 				str = [[imagePath stringByDeletingLastPathComponent] stringByAppendingPathComponent: [str lastPathComponent]];
 			}
 			
