@@ -471,12 +471,25 @@ void DcmQueryRetrieveGetContext::getNextImage(DcmQueryRetrieveDatabaseStatus * d
 			// The file is already compressed, we will re-compress the file.....
 			if( strcmp( filexfer.getXferID(), preferredXfer.getXferID()) != 0)
 			{
-				printf("Warning! I'm recompressing files that are already compressed, you should optimize your ts parameters to avoid this: presentation for syntax:%s -> %s\n", dcmFindNameOfUID( filexfer.getXferID()), dcmFindNameOfUID( preferredXfer.getXferID()));
-				cond = decompressFileFormat(fileformat, subImgFileName);
-				status = compressFileFormat(fileformat, subImgFileName, outfname, xferSyntax);
-				
-				if( status)
-					strcpy( subImgFileName, outfname);
+				if( (filexfer.getXfer() == EXS_JPEG2000LosslessOnly && preferredXfer.getXfer() == EXS_JPEG2000) ||
+				   (filexfer.getXfer() == EXS_JPEG2000 && preferredXfer.getXfer() == EXS_JPEG2000LosslessOnly))
+				{
+					// Switching from JPEG2000 <-> JPEG2000Lossless : we only change the transfer syntax....
+					printf( "JPEG2000 <-> JPEG2000Lossless switch\n");
+					status = compressFileFormat(fileformat, subImgFileName, outfname, xferSyntax);
+					
+					if( status)
+						strcpy( subImgFileName, outfname);
+				}
+				else
+				{
+					printf("Warning! I'm recompressing files that are already compressed, you should optimize your ts parameters to avoid this: presentation for syntax:%s -> %s\n", dcmFindNameOfUID( filexfer.getXferID()), dcmFindNameOfUID( preferredXfer.getXferID()));
+					cond = decompressFileFormat(fileformat, subImgFileName);
+					status = compressFileFormat(fileformat, subImgFileName, outfname, xferSyntax);
+					
+					if( status)
+						strcpy( subImgFileName, outfname);
+				}
 			}
 		}
 		else if (filexfer.isEncapsulated() && preferredXfer.isNotEncapsulated())

@@ -10373,11 +10373,12 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	*tY = GetTextureNumFromTextureDim (*tH, maxTextureSize, false, f_ext_texture_rectangle);
 	
 	if( *tX * *tY == 0)
-		NSLog(@"****** *tX * *tY");
+		NSLog(@"****** *tX * *tY == 0");
 	
 	texture = (GLuint *) malloc (sizeof (GLuint) * *tX * *tY);
 	
-	if( *tX * *tY > 1) NSLog(@"NoOfTextures: %d", *tX * *tY);
+//	if( *tX * *tY > 1) NSLog(@"NoOfTextures: %d", *tX * *tY);
+	
 	glTextureRangeAPPLE(TEXTRECTMODE, *tW * *tH * 4, baseAddr);
 	glGenTextures (*tX * *tY, texture);
 	{
