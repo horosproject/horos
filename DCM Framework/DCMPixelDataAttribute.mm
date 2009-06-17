@@ -393,8 +393,7 @@ void* dcm_read_JPEG2000_file (char *inputdata, size_t inputlength, size_t *outpu
 
       int w = image->comps[compno].w;
       int wr = int_ceildivpow2(image->comps[compno].w, image->comps[compno].factor);
-    	int numcomps = image->numcomps;
-	   
+	  int numcomps = image->numcomps;
       int hr = int_ceildivpow2(image->comps[compno].h, image->comps[compno].factor);
 	   
 	   if( wr == w && numcomps == 1)
