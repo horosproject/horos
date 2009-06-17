@@ -9,7 +9,7 @@
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
 			<integer value="210"/>
-			<integer value="133"/>
+			<integer value="6"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -559,7 +559,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 											<object class="NSButtonCell" key="NSCell" id="931418210">
 												<int key="NSCellFlags">67239424</int>
 												<int key="NSCellFlags2">0</int>
-												<string key="NSContents">For Color JPEG DICOMs, use JPEG photometric value, instead of DICOM photometric value.</string>
+												<string key="NSContents">For Color JPEG DICOMs, use JPEG photometric value, instead of DICOM photometric value</string>
 												<reference key="NSSupport" ref="257743695"/>
 												<reference key="NSControlView" ref="461468652"/>
 												<int key="NSButtonFlags">1211912703</int>
@@ -600,13 +600,14 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 										<object class="NSButton" id="890264985">
 											<reference key="NSNextResponder" ref="266760575"/>
 											<int key="NSvFlags">256</int>
-											<string key="NSFrame">{{26, 66}, {738, 18}}</string>
+											<string key="NSFrame">{{26, 66}, {657, 18}}</string>
 											<reference key="NSSuperview" ref="266760575"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSButtonCell" key="NSCell" id="640412247">
 												<int key="NSCellFlags">67239424</int>
 												<int key="NSCellFlags2">0</int>
-												<string key="NSContents">For JPEG2000, use OpenJPEG Lib, instead of Jasper Lib</string>
+												<string type="base64-UTF8" key="NSContents">Rm9yIEpQRUcyMDAwLCB1c2UgT3BlbkpQRUcgTGliIChmYXN0ZXIgJiBiZXR0ZXIgcXVhbGl0eSksIGlu
+c3RlYWQgb2YgSmFzcGVyIExpYg</string>
 												<reference key="NSSupport" ref="257743695"/>
 												<reference key="NSControlView" ref="890264985"/>
 												<int key="NSButtonFlags">1211912703</int>
@@ -2998,9 +2999,9 @@ Y2VzIHNldHRpbmdzLg</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
-					<string>{{256, 412}, {790, 428}}</string>
+					<string>{{557, 412}, {790, 428}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{256, 412}, {790, 428}}</string>
+					<string>{{557, 412}, {790, 428}}</string>
 					<reference ref="8"/>
 					<reference ref="8"/>
 					<reference ref="8"/>

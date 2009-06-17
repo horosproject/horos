@@ -507,40 +507,67 @@ bool read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 
       int w = image->comps[compno].w;
       int wr = int_ceildivpow2(image->comps[compno].w, image->comps[compno].factor);
-
-      //int h = image.comps[compno].h;
+	   int numcomps = image->numcomps;
+	   
       int hr = int_ceildivpow2(image->comps[compno].h, image->comps[compno].factor);
-
-      if (comp->prec <= 8)
-      {
-         uint8_t *data8 = (uint8_t*)raw + compno;
-         for (int i = 0; i < wr * hr; i++)
-         {
-            int v = image->comps[compno].data[i / wr * w + i % wr];
-            *data8 = (uint8_t)v;
-            data8 += image->numcomps;
-         }
-      }
-      else if (comp->prec <= 16)
-      {
-         uint16_t *data16 = (uint16_t*)raw + compno;
-         for (int i = 0; i < wr * hr; i++)
-         {
-            int v = image->comps[compno].data[i / wr * w + i % wr];
-            *data16 = (uint16_t)v;
-            data16 += image->numcomps;
-         }
-      }
-      else
-      {
-         uint32_t *data32 = (uint32_t*)raw + compno;
-         for (int i = 0; i < wr * hr; i++)
-         {
-            int v = image->comps[compno].data[i / wr * w + i % wr];
-            *data32 = (uint32_t)v;
-            data32 += image->numcomps;
-         }
-      }
+	   
+	   if( wr == w && numcomps == 1)
+	   {
+		   if (comp->prec <= 8)
+		   {
+			   uint8_t *data8 = (uint8_t*)raw + compno;
+			   int *data = image->comps[compno].data;
+			   int i = wr * hr;
+			   while( i -- > 0)
+				   *data8++ = (uint8_t) *data++;
+		   }
+		   else if (comp->prec <= 16)
+		   {
+			   uint16_t *data16 = (uint16_t*)raw + compno;
+			   int *data = image->comps[compno].data;
+			   int i = wr * hr;
+				while( i -- > 0)
+					*data16++ = (uint16_t) *data++;
+		   }
+		   else
+		   {
+			   uint32_t *data32 = (uint32_t*)raw + compno;
+			   int *data = image->comps[compno].data;
+			   int i = wr * hr;
+			   while( i -- > 0)
+				   *data32++ = (uint32_t) *data++;
+		   }
+	   }
+	   else
+	   {
+			if (comp->prec <= 8)
+			{
+			 uint8_t *data8 = (uint8_t*)raw + compno;
+			 for (int i = 0; i < wr * hr; i++)
+			 {
+				*data8 = (uint8_t) (image->comps[compno].data[i / wr * w + i % wr]);
+				data8 += numcomps;
+			 }
+			}
+			else if (comp->prec <= 16)
+			{
+			 uint16_t *data16 = (uint16_t*)raw + compno;
+			 for (int i = 0; i < wr * hr; i++)
+			 {
+				*data16 = (uint16_t) (image->comps[compno].data[i / wr * w + i % wr]);
+				data16 += numcomps;
+			 }
+			}
+			else
+			{
+			 uint32_t *data32 = (uint32_t*)raw + compno;
+			 for (int i = 0; i < wr * hr; i++)
+			 {
+				*data32 = (uint32_t) (image->comps[compno].data[i / wr * w + i % wr]);
+				data32 += numcomps;
+			 }
+			}
+	   }
       //free(image.comps[compno].data);
    }
 
