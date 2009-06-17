@@ -1357,6 +1357,14 @@ static const char *GetPrivateIP()
 							}
 						}
 					}
+					
+					if( cget)
+					{
+						[sendToPopup selectItemAtIndex: 0];
+						[sendToPopup setEnabled: NO];
+					}
+					else
+						[sendToPopup setEnabled: YES];
 				}
 //				else
 //				{
