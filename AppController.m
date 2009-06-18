@@ -2419,6 +2419,9 @@ static BOOL initialized = NO;
 	if( [[NSUserDefaults standardUserDefaults] integerForKey: @"TOOLKITPARSER2"] == 0 || [[NSUserDefaults standardUserDefaults] boolForKey:@"USEPAPYRUSDCMPIX2"] == NO)
 		[self growlTitle: NSLocalizedString( @"Warning!", nil) description: NSLocalizedString( @"DCM Framework is selected as the DICOM reader/parser. The performances of this toolkit are slower.", nil)  name:@"newfiles"];
 		
+	if( [NSUserDefaults standardUserDefaults] boolForKey: @"UseOpenJpegForJPEG2000"] == NO)
+		[self growlTitle: NSLocalizedString( @"Warning!", nil) description: NSLocalizedString( @"Jasper library is selected for JPEG2000. The performance and quality of this toolkit are lower.", nil)  name:@"newfiles"];
+		
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"checkForUpdatesPlugins"])
 		[NSThread detachNewThreadSelector:@selector(checkForUpdates:) toTarget:pluginManager withObject:pluginManager];
 	
