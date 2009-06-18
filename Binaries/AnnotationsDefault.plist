@@ -113,42 +113,6 @@
 			<dict>
 				<key>content</key>
 				<array>
-					<string>DICOM_TableSpeed</string>
-					<string>DICOM_TableFeedPerRotation</string>
-				</array>
-				<key>fullContent</key>
-				<array>
-					<dict>
-						<key>element</key>
-						<integer>37641</integer>
-						<key>group</key>
-						<integer>24</integer>
-						<key>name</key>
-						<string>TableSpeed</string>
-						<key>tokenTitle</key>
-						<string>DICOM_TableSpeed</string>
-						<key>type</key>
-						<string>DICOM</string>
-					</dict>
-					<dict>
-						<key>element</key>
-						<integer>37648</integer>
-						<key>group</key>
-						<integer>24</integer>
-						<key>name</key>
-						<string>TableFeedPerRotation</string>
-						<key>tokenTitle</key>
-						<string>DICOM_TableFeedPerRotation</string>
-						<key>type</key>
-						<string>DICOM</string>
-					</dict>
-				</array>
-				<key>title</key>
-				<string>Annotation 1</string>
-			</dict>
-			<dict>
-				<key>content</key>
-				<array>
 					<string>TE:</string>
 					<string>DICOM_EchoTime</string>
 					<string>TR:</string>

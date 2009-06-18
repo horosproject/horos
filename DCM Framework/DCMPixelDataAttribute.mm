@@ -1310,16 +1310,23 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 {
 	NSMutableData *pixelData;
 	
+	BOOL succeed = NO;
+	
 	if( UseOpenJpeg)
 	{
 		unsigned char *newPixelData;
 		
 		size_t decompressedLength = 0;
-		newPixelData =(unsigned char*) dcm_read_JPEG2000_file( (char*) [jpegData bytes], [jpegData length], &decompressedLength, nil, nil, nil);
+		newPixelData = (unsigned char*) dcm_read_JPEG2000_file( (char*) [jpegData bytes], [jpegData length], &decompressedLength, nil, nil, nil);
 		
-		pixelData = [NSMutableData dataWithBytesNoCopy:newPixelData length:decompressedLength freeWhenDone: YES];
+		if( newPixelData)
+		{
+			pixelData = [NSMutableData dataWithBytesNoCopy:newPixelData length:decompressedLength freeWhenDone: YES];
+			succeed = YES;
+		}
 	}
-	else
+	
+	if( succeed == NO)
 	{
 		int fmtid;
 		unsigned long i,  theLength,  x, y, decompressedLength;

@@ -448,19 +448,19 @@ static inline int int_ceildivpow2(int a, int b) {
 
 bool read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 {
-  opj_dparameters_t parameters;  /* decompression parameters */
-  opj_event_mgr_t event_mgr;    /* event manager */
-  opj_image_t *image;
-  opj_dinfo_t* dinfo;  /* handle to a decompressor */
-  opj_cio_t *cio;
-  unsigned char *src = (unsigned char*)inputdata; 
-  int file_length = inputlength;
+	opj_dparameters_t parameters;  /* decompression parameters */
+	opj_event_mgr_t event_mgr;    /* event manager */
+	opj_image_t *image;
+	opj_dinfo_t* dinfo;  /* handle to a decompressor */
+	opj_cio_t *cio;
+	unsigned char *src = (unsigned char*)inputdata; 
+	int file_length = inputlength;
 
-  /* configure the event callbacks (not required) */
-  memset(&event_mgr, 0, sizeof(opj_event_mgr_t));
-  event_mgr.error_handler = error_callback;
-  event_mgr.warning_handler = warning_callback;
-  event_mgr.info_handler = info_callback;
+	/* configure the event callbacks (not required) */
+	memset(&event_mgr, 0, sizeof(opj_event_mgr_t));
+	event_mgr.error_handler = error_callback;
+	event_mgr.warning_handler = warning_callback;
+	event_mgr.info_handler = info_callback;
 
   /* set decoding parameters to default values */
   opj_set_default_decoder_parameters(&parameters);
@@ -489,10 +489,11 @@ bool read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 
       /* decode the stream and fill the image structure */
       image = opj_decode(dinfo, cio);
-      if(!image) {
+      if(!image)
+	  {
         opj_destroy_decompress(dinfo);
         opj_cio_close(cio);
-        return 1;
+        return false;
       }
       
       /* close the byte stream */
@@ -667,16 +668,16 @@ PapyShort ExtractJPEG2000 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong i
 		
 	} /* while */
 	
+	int succeed = 0;
+	
 	if( UseOpenJpeg == 1)
 	{
 		PapyrusLockFunction( 0);
-		read_JPEG2000_file( ioImage8P, (char*) theCompressedP, theLength);
+		succeed = read_JPEG2000_file( ioImage8P, (char*) theCompressedP, theLength);
 		PapyrusLockFunction( 1);
-		
-		free( theCompressedP);
-		return 0;
 	}
-	else
+	
+	if( succeed == 0)
 	{
 		jas_image_t *jasImage;
 		jas_matrix_t *pixels[4];
@@ -777,10 +778,11 @@ PapyShort ExtractJPEG2000 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong i
 		
 		PapyrusLockFunction( 1);
 		
-		free( theCompressedP);
+		
 	}
 	
-  return (0);
+	free( theCompressedP);
+	return (0);
 }
 
 
@@ -2945,6 +2947,7 @@ Papy3GroupRead (PapyShort inFileNb, SElement **ioGroupP)
   /* get the position in the file for any eventual unknown seq length */
   theErr = Papy3FTell (gPapyFile [inFileNb], &theInitFilePos);
   
+
   theBufPos = 0L;
   /* read the buffer from the file */
   if (ReadGroup3 (inFileNb, &thePapyGrNb, &theBuffP, &theBytesToRead, &theGrLength) < 0)
@@ -2952,14 +2955,14 @@ Papy3GroupRead (PapyShort inFileNb, SElement **ioGroupP)
     efree3 ((void **) &theBuffP);
     RETURN (papReadGroup)
   } /* if */
-  
+
   /* makes sure we keep the right syntax and set the default syntax instead */
   if (thePapyGrNb == 0x0002)
   {
     thePrevSyntax = gArrTransfSyntax [inFileNb];
     gArrTransfSyntax [inFileNb] = LITTLE_ENDIAN_EXPL;
   } /* if */
-    
+
   theEnumGrNb = Papy3ToEnumGroup (thePapyGrNb);     /* gr_nb papyrus -> enum */
   if (theEnumGrNb < 0)				 /* unknown group number */
   {

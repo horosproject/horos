@@ -927,7 +927,7 @@ ReadGroup3 (PapyShort inFileNb, PapyUShort *outGroupNbP, unsigned char **outBuff
   PapyUShort	theElemNb, theTemplGr2, theElemCreator, theElemNb2;
   int		theErr;
   PAPY_FILE	theFp;
-
+   enum ETransf_Syntax	thePrevSyntax; 
     
   theFp = gPapyFile [inFileNb];
     
@@ -949,6 +949,14 @@ ReadGroup3 (PapyShort inFileNb, PapyUShort *outGroupNbP, unsigned char **outBuff
   i = 0L;	/* position in the read buffer */
   *outGroupNbP	= Extract2Bytes (inFileNb, *outBuffP, &i);	/* group number */
   theElemNb   	= Extract2Bytes (inFileNb, *outBuffP, &i);	/* element number */
+  
+  
+  if (*outGroupNbP == 0x0002 || *outGroupNbP == 0x0200)
+  {
+    thePrevSyntax = gArrTransfSyntax [inFileNb];
+    gArrTransfSyntax [inFileNb] = LITTLE_ENDIAN_EXPL;
+  } /* if */
+  
   
   /* check the transfert syntax */
   if (gArrTransfSyntax [inFileNb] == LITTLE_ENDIAN_EXPL || gArrTransfSyntax [inFileNb] == BIG_ENDIAN_EXPL || *outGroupNbP == 0x0002)
@@ -1129,9 +1137,11 @@ ReadGroup3 (PapyShort inFileNb, PapyUShort *outGroupNbP, unsigned char **outBuff
       *outBytesReadP += theGrLength;
         
       /* re-allocate room for the part of the group we will read */
-      *outBuffP = (unsigned char *) erealloc3 (*outBuffP, (PapyULong) (theFirstElemLength + theGrLength),
-		  			       (PapyULong) theFirstElemLength); /* OLB */
-        
+      *outBuffP = (unsigned char *) erealloc3 (*outBuffP, (PapyULong) (theFirstElemLength + theGrLength), (PapyULong) theFirstElemLength); /* OLB */
+	  
+	  if( *outBuffP == 0L)
+		RETURN (papReadFile);
+	  
       /* reads the group from the file */
       if ((theErr = (PapyShort) Papy3FRead (theFp, &theGrLength, 1L, ((*outBuffP) + theFirstElemLength))) < 0)
       {
@@ -1143,6 +1153,11 @@ ReadGroup3 (PapyShort inFileNb, PapyUShort *outGroupNbP, unsigned char **outBuff
   } /* switch ...group number */
       
     
+  if (*outGroupNbP == 0x0002 || *outGroupNbP == 0x0200)
+  {
+    gArrTransfSyntax [inFileNb] = thePrevSyntax;
+  } /* if */
+	
   RETURN (papNoError);
     
 } /* endof ReadGroup3 */
@@ -1392,6 +1407,7 @@ Papy3GotoGroupNb (PapyShort inFileNb, PapyShort inGroupNb)
 	 theCurrGroupNb != 0x7FE0)
   {
 	int thePrevSyntax = gArrTransfSyntax [inFileNb];
+	
 	if( theCurrGroupNb == 0x0002)
 		gArrTransfSyntax [inFileNb] = LITTLE_ENDIAN_EXPL;
     
