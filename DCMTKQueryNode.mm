@@ -628,11 +628,12 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		transferSyntaxes[4] = UID_JPEGProcess1TransferSyntax;					//jpeg 8
 		transferSyntaxes[5] = UID_JPEGProcess2_4TransferSyntax;					//jpeg 12
 		transferSyntaxes[6] = UID_JPEG2000TransferSyntax;						//jpeg 2000
-		transferSyntaxes[7] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;	//bzip
-		transferSyntaxes[8] = UID_RLELosslessTransferSyntax;					//RLE
-		transferSyntaxes[9] = UID_MPEG2MainProfileAtMainLevelTransferSyntax;
+		transferSyntaxes[7] = UID_JPEG2000LosslessOnlyTransferSyntax;						//jpeg 2000
+		transferSyntaxes[8] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;	//bzip
+		transferSyntaxes[9] = UID_RLELosslessTransferSyntax;					//RLE
+		transferSyntaxes[10] = UID_MPEG2MainProfileAtMainLevelTransferSyntax;
 		
-        numTransferSyntaxes = 10;
+        numTransferSyntaxes = 11;
         break;
 		
       case EXS_BigEndianExplicit:
