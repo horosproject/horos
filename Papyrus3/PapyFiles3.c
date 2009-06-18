@@ -951,8 +951,9 @@ ReadGroup3 (PapyShort inFileNb, PapyUShort *outGroupNbP, unsigned char **outBuff
   theElemNb   	= Extract2Bytes (inFileNb, *outBuffP, &i);	/* element number */
   
   
-  if (*outGroupNbP == 0x0002 || *outGroupNbP == 0x0200)
+  if (*outGroupNbP == 0x0002 || (*outGroupNbP == 0x0200 && gArrTransfSyntax [inFileNb] == BIG_ENDIAN_EXPL))
   {
+	*outGroupNbP = 0x0002;
     thePrevSyntax = gArrTransfSyntax [inFileNb];
     gArrTransfSyntax [inFileNb] = LITTLE_ENDIAN_EXPL;
   } /* if */
@@ -1153,7 +1154,7 @@ ReadGroup3 (PapyShort inFileNb, PapyUShort *outGroupNbP, unsigned char **outBuff
   } /* switch ...group number */
       
     
-  if (*outGroupNbP == 0x0002 || *outGroupNbP == 0x0200)
+  if (*outGroupNbP == 0x0002)
   {
     gArrTransfSyntax [inFileNb] = thePrevSyntax;
   } /* if */
