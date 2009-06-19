@@ -105,7 +105,6 @@ static volatile int sendControllerObjects = 0;
 			_serverIndex = 0;
 		
 		_keyImageIndex = [[NSUserDefaults standardUserDefaults] integerForKey:@"lastSendWhat"];
-		_offisTS = [[NSUserDefaults standardUserDefaults] integerForKey:@"syntaxListOffis"];
 		
 		_readyForRelease = NO;
 		_lock = [[NSRecursiveLock alloc] init];
@@ -138,9 +137,6 @@ static volatile int sendControllerObjects = 0;
 			
 //		[DICOMSendTool selectCellWithTag: _serverToolIndex];
 		[keyImageMatrix selectCellWithTag: _keyImageIndex];
-		
-//		[syntaxListOsiriX selectItemWithTag: _osirixTS];
-		[syntaxListOffis selectItemWithTag: _offisTS];
 		
 		[self selectServer: newServerList];
 	}
@@ -213,7 +209,7 @@ static volatile int sendControllerObjects = 0;
 			preferredTS == SendImplicitLittleEndian || 
 			preferredTS == SendRLE ||
 			preferredTS == SendJPEGLossless)
-				[self setOffisTS:preferredTS];
+				 [[NSUserDefaults standardUserDefaults] setInteger: preferredTS forKey:@"syntaxListOffis"];
 	
 	}	
 	
@@ -227,15 +223,6 @@ static volatile int sendControllerObjects = 0;
 -(void)setKeyImageIndex:(int)index{
 	_keyImageIndex = index;
 	[[NSUserDefaults standardUserDefaults] setInteger:index forKey:@"lastSendWhat"];
-}
-
-- (int) offisTS{
-	return _offisTS;
-}
-
-- (void) setOffisTS:(int)index{
-	_offisTS = index;
-	[[NSUserDefaults standardUserDefaults] setInteger:index forKey:@"syntaxListOffis"];
 }
 
 #pragma mark sheet functions
@@ -360,7 +347,7 @@ static volatile int sendControllerObjects = 0;
 			hostname:hostname 
 			port:[destPort intValue] 
 			filesToSend:files
-			transferSyntax:_offisTS
+			transferSyntax: [[NSUserDefaults standardUserDefaults] integerForKey:@"syntaxListOffis"]
 			compression: 1.0
 			extraParameters:nil];
 	
