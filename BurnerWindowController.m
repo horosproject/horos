@@ -368,14 +368,7 @@ NSString* asciiString (NSString* name);
 {
 	BOOL continueToBurn = YES;
 	
-	int sizeInMb = [[self getSizeOfDirectory: [self folderToBurn]] intValue] / 1024;
-	
-	if( sizeInMb >= 610)
-	{
-		int result = NSRunInformationalAlertPanel(NSLocalizedString(@"Burning", nil), [NSString stringWithFormat: NSLocalizedString(@"The data to burn is larger than a CD size (610 MB), you need a DVD to burn this amount of data (%d MB).", nil), sizeInMb], NSLocalizedString(@"Burn",nil), NSLocalizedString(@"Cancel",nil), nil);
-		
-		if( result != NSAlertDefaultReturn) continueToBurn = NO;
-	}
+	sizeInMb = [[self getSizeOfDirectory: [self folderToBurn]] intValue] / 1024;
 	
 	if( continueToBurn)
 	{
@@ -481,32 +474,22 @@ NSString* asciiString (NSString* name);
 	media status. If this method returns %NO, the default button will be disabled.
 "*/
 
-- (BOOL) setupPanel:(DRSetupPanel*)aPanel mediaIsSuitable:(NSDictionary*)status promptString:(NSString**)prompt
+- (BOOL) setupPanel:(DRSetupPanel*)aPanel deviceContainsSuitableMedia:(DRDevice*)device promptString:(NSString**)prompt; 
 {
-
-//	NSDictionary *burnerCapbilites = [status DRDeviceWriteCapabilitiesKey];
-//	NSString*		mediaType;
-//	// check to see what sort of media there is present in the drive. If it's not a 
-//	// CDR or CDRW we reject it. This prevents us from burning to a DVD.
-//	mediaType = [[status objectForKey:DRDeviceMediaInfoKey] objectForKey:DRDeviceMediaTypeKey];
-//	if ([mediaType isEqualToString:DRDeviceMediaTypeCDR] == NO && [mediaType isEqualToString:DRDeviceMediaTypeCDRW] == NO)
-//	{
-//		if ([mediaType isEqualToString:DRDeviceMediaTypeDVDRW] == YES || [mediaType isEqualToString:DRDeviceMediaTypeDVD] == YES) {
-//			if ([[burnerCapbilites DRDeviceCanTestWriteDVDKey] boolValue]) {
-//				NSLog(@"Can burn DVD");
-//				return YES;
-//		}
-//		else {
-//			*prompt = [NSString stringWithCString:"That's not a writable CD!"];
-//			return NO;
-//		}
-//	}
-//	
-//	// OK everyone agrees that this disc is OK to be burned in this drive.
-//	// We could also return our own OK, prompt string here, but we'll let the default 
-//	// all ready string do it's job
-//	// *prompt = [NSString stringWithCString:"Let's roll!"];
-
+	NSDictionary *status = [device status];
+	
+	int freeSpace = [[[status objectForKey: DRDeviceMediaInfoKey] objectForKey: DRDeviceMediaBlocksFreeKey] longLongValue] * 2UL / 1024UL;
+	
+	if( freeSpace > 0 && sizeInMb >= freeSpace)
+	{
+		*prompt = [NSString stringWithFormat: NSLocalizedString(@"The data to burn is larger than a media size (%d MB), you need a DVD to burn this amount of data (%d MB).", nil), freeSpace, sizeInMb];
+		return NO;
+	}
+	else if( freeSpace > 0)
+	{
+		*prompt = [NSString stringWithFormat: NSLocalizedString(@"Data to burn: %d MB (Media size: %d MB), representing %2.2f %%.", nil), sizeInMb, freeSpace, (float) sizeInMb * 100. / (float) freeSpace];
+	}
+	
 	return YES;
 
 }

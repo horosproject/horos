@@ -41,6 +41,7 @@
 	NSArray *filesToBurn;
 	BOOL _multiplePatients;
 	BOOL writeDMG;
+	int sizeInMb;
 	
 	BOOL burnSuppFolder, burnOsiriX, burnHtml;
 }
