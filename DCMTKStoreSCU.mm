@@ -728,19 +728,17 @@ storeSCU(T_ASC_Association * assoc, const char *fname)
 		}
 		else if (filexfer.getXfer() != opt_networkTransferSyntax)
 		{
+			// The file is already compressed, we will re-compress the file.....
+			E_TransferSyntax fileTS = filexfer.getXfer();
+			
 			if( (filexfer.getXfer() == EXS_JPEG2000LosslessOnly && preferredXfer.getXfer() == EXS_JPEG2000) ||
 				(filexfer.getXfer() == EXS_JPEG2000 && preferredXfer.getXfer() == EXS_JPEG2000LosslessOnly))
 				{
-					status = NO;
 				}
-				else
-				{
-					// The file is already compressed, we will re-compress the file.....
-					E_TransferSyntax fileTS = filexfer.getXfer();
-					
-					printf("Warning! I'm recompressing files that are already compressed, you should optimize your ts parameters to avoid this: presentation for syntax:%s -> %s\n", dcmFindNameOfUID(filexfer.getXferID()), dcmFindNameOfUID(preferredXfer.getXferID()));
-					status = compressFile(dcmff, fname, outfname);
-				}
+			else
+				printf("Warning! I'm recompressing files that are already compressed, you should optimize your ts parameters to avoid this: presentation for syntax:%s -> %s\n", dcmFindNameOfUID(filexfer.getXferID()), dcmFindNameOfUID(preferredXfer.getXferID()));
+			
+			status = compressFile(dcmff, fname, outfname);
 		}
 	 }
 	 else
@@ -1025,23 +1023,12 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 	DIMSE_debug(OFFalse);
 	SetDebugLevel(0);
 	
-	/****************************
-	
-	On the Fly decompression is not functional in dcmtk at this time.
-	Need to check TS and compress or decompress as needed.
-	If appropriate we can use a symbolic link. 
-	Otherwise we we need to copy file.
-	  
-	*********************************/
-	
-	//NSLog(@"get TS: %@", _transferSyntax);
-
 	switch (_transferSyntax) {
 		case SendExplicitLittleEndian:
 			opt_networkTransferSyntax = EXS_LittleEndianExplicit;
 			break;
 		case SendJPEG2000Lossless:
-			opt_networkTransferSyntax = EXS_JPEG2000;
+			opt_networkTransferSyntax = EXS_JPEG2000LosslessOnly;
 			opt_Quality = 0;
 			break;
 		case SendJPEG2000Lossy10: 
