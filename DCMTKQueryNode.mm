@@ -624,11 +624,11 @@ subOpCallback(void * /*subOpCallbackData*/ ,
         transferSyntaxes[0] = UID_LittleEndianExplicitTransferSyntax;	//;
         transferSyntaxes[1] = UID_LittleEndianImplicitTransferSyntax;
         transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
-		transferSyntaxes[3] = UID_JPEGProcess14SV1TransferSyntax;				//jpeg lossless
-		transferSyntaxes[4] = UID_JPEGProcess1TransferSyntax;					//jpeg 8
-		transferSyntaxes[5] = UID_JPEGProcess2_4TransferSyntax;					//jpeg 12
-		transferSyntaxes[6] = UID_JPEG2000LosslessOnlyTransferSyntax ;						//jpeg 2000
-		transferSyntaxes[7] = UID_JPEG2000TransferSyntax;						//jpeg 2000
+		transferSyntaxes[3] = UID_JPEG2000LosslessOnlyTransferSyntax ;			//jpeg 2000
+		transferSyntaxes[4] = UID_JPEG2000TransferSyntax;						//jpeg 2000
+		transferSyntaxes[5] = UID_JPEGProcess14SV1TransferSyntax;				//jpeg lossless
+		transferSyntaxes[6] = UID_JPEGProcess1TransferSyntax;					//jpeg 8
+		transferSyntaxes[7] = UID_JPEGProcess2_4TransferSyntax;					//jpeg 12
 		transferSyntaxes[8] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;	//bzip
 		transferSyntaxes[9] = UID_RLELosslessTransferSyntax;					//RLE
 		transferSyntaxes[10] = UID_MPEG2MainProfileAtMainLevelTransferSyntax;
@@ -641,10 +641,10 @@ subOpCallback(void * /*subOpCallbackData*/ ,
         transferSyntaxes[0] = UID_BigEndianExplicitTransferSyntax;
         transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
         transferSyntaxes[2] = UID_LittleEndianImplicitTransferSyntax;
-		transferSyntaxes[3] = UID_JPEGProcess14SV1TransferSyntax;				//jpeg lossless
-		transferSyntaxes[4] = UID_JPEGProcess1TransferSyntax;					//jpeg 8
-		transferSyntaxes[5] = UID_JPEGProcess2_4TransferSyntax;					//jpeg 12
-		transferSyntaxes[6] = UID_JPEG2000TransferSyntax;						//jpeg 2000
+		transferSyntaxes[3] = UID_JPEG2000TransferSyntax;						//jpeg 2000
+		transferSyntaxes[4] = UID_JPEGProcess14SV1TransferSyntax;				//jpeg lossless
+		transferSyntaxes[5] = UID_JPEGProcess1TransferSyntax;					//jpeg 8
+		transferSyntaxes[6] = UID_JPEGProcess2_4TransferSyntax;					//jpeg 12
 		transferSyntaxes[7] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;	//bzip
 		transferSyntaxes[8] = UID_RLELosslessTransferSyntax;					//RLE
         numTransferSyntaxes = 9;
@@ -695,8 +695,8 @@ subOpCallback(void * /*subOpCallbackData*/ ,
         break;
       case EXS_JPEG2000:
         /* we prefer JPEG 2000 lossy or lossless */
-        transferSyntaxes[0] = UID_JPEG2000LosslessOnlyTransferSyntax ;
-		transferSyntaxes[1] = UID_JPEG2000TransferSyntax;
+        transferSyntaxes[0] = UID_JPEG2000TransferSyntax;
+		transferSyntaxes[1] = UID_JPEG2000LosslessOnlyTransferSyntax;
 		transferSyntaxes[2] = UID_LittleEndianExplicitTransferSyntax;
 		transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
 		transferSyntaxes[4] = UID_BigEndianExplicitTransferSyntax;
