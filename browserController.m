@@ -4013,8 +4013,7 @@ static NSArray*	statesArray = nil;
 								[unlockedStudies removeObjectAtIndex: i];
 								i--;
 							}
-							
-							if( dontDeleteStudiesWithComments)
+							else if( dontDeleteStudiesWithComments)
 							{
 								NSString *str = [[unlockedStudies objectAtIndex: i] valueForKey:@"comment"];
 								
@@ -4028,11 +4027,13 @@ static NSArray*	statesArray = nil;
 						
 						if( [unlockedStudies count] > 2)
 						{
-							for( long i = 0; i < [unlockedStudies count]; i++ )	{
+							for( long i = 0; i < [unlockedStudies count]; i++ )
+							{
 								NSString	*patientID = [[unlockedStudies objectAtIndex: i] valueForKey:@"patientID"];
 								long		to;
 								
-								if( [[[unlockedStudies objectAtIndex: i] valueForKey:@"date"] timeIntervalSinceNow] < producedInterval)	{
+								if( [[[unlockedStudies objectAtIndex: i] valueForKey:@"date"] timeIntervalSinceNow] < producedInterval)
+								{
 									if( [[[unlockedStudies objectAtIndex: i] valueForKey:@"dateAdded"] timeIntervalSinceNow] < -60*60*24)	// 24 hours
 									{
 										oldestStudy = [unlockedStudies objectAtIndex: i];
@@ -4052,7 +4053,8 @@ static NSArray*	statesArray = nil;
 								while( i < [unlockedStudies count]-1 && [patientID isEqualToString:[[unlockedStudies objectAtIndex: i+1] valueForKey:@"patientID"]] == YES)
 								{
 									i++;
-									if( [[[unlockedStudies objectAtIndex: i] valueForKey:@"date"] timeIntervalSinceNow] < producedInterval)	{
+									if( [[[unlockedStudies objectAtIndex: i] valueForKey:@"date"] timeIntervalSinceNow] < producedInterval)
+									{
 										if( [[[unlockedStudies objectAtIndex: i] valueForKey:@"dateAdded"] timeIntervalSinceNow] < -60*60*24)	// 24 hours
 										{
 											oldestStudy = [unlockedStudies objectAtIndex: i];
@@ -4063,7 +4065,8 @@ static NSArray*	statesArray = nil;
 									openedDate = [[unlockedStudies objectAtIndex: i] valueForKey:@"dateOpened"];
 									if( openedDate == nil) openedDate = [[unlockedStudies objectAtIndex: i] valueForKey:@"dateAdded"];
 									
-									if( [openedDate timeIntervalSinceNow] < openedInterval)	{
+									if( [openedDate timeIntervalSinceNow] < openedInterval)
+									{
 										oldestOpenedStudy = [unlockedStudies objectAtIndex: i];
 										openedInterval = [openedDate timeIntervalSinceNow];
 									}
