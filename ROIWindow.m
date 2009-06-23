@@ -20,6 +20,7 @@
 #import "PlotWindow.h"
 #import "DCMView.h"
 #import "DCMPix.h"
+#import "Notifications.h"
 
 @implementation ROIWindow
 
@@ -136,7 +137,7 @@
 			[loopItem setPixelSpacingY: newResolution];
 		}
 		
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"recomputeROI" object:curController userInfo: nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRecomputeROINotification object:curController userInfo: nil];
 	}
 	
     [NSApp endSheet:recalibrateWindow];
@@ -160,7 +161,7 @@
 	[curROI setComments: [NSString stringWithString: [comments string]]];	// stringWithString is very important - see NSText string !
 	[curROI setName: [name stringValue]];
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:curROI userInfo: nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object:curROI userInfo: nil];
 
 	curController = c;
 	curROI = iroi;
@@ -209,9 +210,9 @@
 	self = [super initWithWindowNibName:@"ROI"];
 	
 	[[self window] setFrameAutosaveName:@"ROIInfoWindow"];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(roiChange:) name:@"roiChange" object:nil];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector: @selector(removeROI:) name: @"removeROI" object: nil];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector: @selector(CloseViewerNotification:) name: @"CloseViewerNotification" object: nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(roiChange:) name:OsirixROIChangeNotification object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector: @selector(removeROI:) name: OsirixRemoveROINotification object: nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector: @selector(CloseViewerNotification:) name: OsirixCloseViewerNotification object: nil];
 	
 	getName = [[NSTimer scheduledTimerWithTimeInterval: 0.1 target:self selector:@selector( getName:) userInfo:0 repeats: YES] retain];
 	
@@ -234,7 +235,7 @@
 	[curROI setName: [name stringValue]];
 	curROI = nil;
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:curROI userInfo: nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object:curROI userInfo: nil];
 	
 	[self release];
 }
@@ -255,7 +256,7 @@
 				[roi setThickness: [iROI thickness]];
 				[roi setOpacity: [iROI opacity]];
 				if ( newName ) [roi setName: newName];
-				[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:roi userInfo: nil];
+				[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object:roi userInfo: nil];
 			}
 		}
 	}
@@ -290,13 +291,13 @@
 	if ( [self allWithSameName] ) [self setAllMatchingROIsToSameParamsAs: curROI withNewName: [sender stringValue]];
 	
 	[curROI setName: [sender stringValue]];
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:curROI userInfo: nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object:curROI userInfo: nil];
 }
 
 - (IBAction) setThickness:(NSSlider*) sender
 {
 	[curROI setThickness: [sender floatValue]];
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:curROI userInfo: nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object:curROI userInfo: nil];
 	
 	if ( [self allWithSameName] ) [self setAllMatchingROIsToSameParamsAs: curROI withNewName: [curROI name]];
 }
@@ -304,7 +305,7 @@
 - (IBAction) setOpacity:(NSSlider*) sender
 {
 	[curROI setOpacity: [sender floatValue]];
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:curROI userInfo: nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object:curROI userInfo: nil];
 	
 	if ( [self allWithSameName] ) [self setAllMatchingROIsToSameParamsAs: curROI withNewName: [curROI name]];
 }
@@ -324,7 +325,7 @@
 	c.blue = b * 65535.;
 	
 	[curROI setColor:c];
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:curROI userInfo: nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object:curROI userInfo: nil];
 	
 	if ( [self allWithSameName] ) [self setAllMatchingROIsToSameParamsAs: curROI withNewName: [curROI name]];
 

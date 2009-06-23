@@ -25,7 +25,6 @@
 
 #include "dctk.h"
 
-NSString * const OsiriXFileReceivedNotification = @"OsiriXFileReceivedNotification";
 char currentDestinationMoveAET[ 60] = "";
 
 @implementation OsiriXSCPDataHandler

@@ -15,6 +15,7 @@
 #import "PluginManagerController.h"
 #import <Message/NSMailDelivery.h>
 #import "WaitRendering.h"
+#import "Notifications.h"
 
 
 // this is the address of the plist containing the list of the available plugins.
@@ -387,7 +388,7 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
 	[statusProgressIndicator setHidden:YES];
 	[statusProgressIndicator stopAnimation:self];
 	[self installDownloadedPluginAtPath:downloadedFilePath];
-	[[NSNotificationCenter defaultCenter] postNotificationName:@"PluginManagerControllerDownloadAndInstallDidFinish" object:self userInfo:nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName:OsirixPluginDownloadInstallDidFinishNotification object:self userInfo:nil];
 }
 
 - (void)download:(NSURLDownload *)download didFailWithError:(NSError *)error

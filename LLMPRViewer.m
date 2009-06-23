@@ -23,6 +23,7 @@
 #import "VRControllerVPRO.h"
 #import "WaitRendering.h"
 #import "VRView.h"
+#import "Notifications.h"
 
 #define BONEVALUE 250
 #define MORPH_RESAMPLE 3
@@ -59,9 +60,9 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 	selfWindowRect.origin.x = scoutWindowRect.size.width;
 	[[self window] setFrame:selfWindowRect display:YES animate:NO];
 	
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(CloseViewerNotification:) name:@"CloseViewerNotification" object:nil];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(resliceFromNotification:) name:@"LLMPRReslice" object:nil];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeWLWW:) name:@"changeWLWW" object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(CloseViewerNotification:) name:OsirixCloseViewerNotification object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(resliceFromNotification:) name:OsirixLLMPRResliceNotification object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeWLWW:) name:OsirixChangeWLWWNotification object:nil];
 
 	[splitView setDelegate:self];
 
@@ -80,8 +81,8 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 	nc = [NSNotificationCenter defaultCenter];
 //	// WL/WW Menu	
 	curWLWWMenu = [NSLocalizedString(@"Other", nil) retain];
-	[nc addObserver:self selector:@selector(UpdateWLWWMenu:) name:@"UpdateWLWWMenu" object:nil];
-	[nc postNotificationName: @"UpdateWLWWMenu" object:curWLWWMenu userInfo:nil];
+	[nc addObserver:self selector:@selector(UpdateWLWWMenu:) name:OsirixUpdateWLWWMenuNotification object:nil];
+	[nc postNotificationName: OsirixUpdateWLWWMenuNotification object:curWLWWMenu userInfo:nil];
 		
 	subtractedOriginalBuffer = nil;
 	subtractedXReslicedBuffer = nil;
@@ -933,9 +934,9 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 
 -(void) windowDidBecomeKey:(NSNotification *)aNotification
 {
-//	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: nil];
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: nil];
-	//[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateConvolutionMenu" object: curConvMenu userInfo: nil];
+//	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateCLUTMenuNotification object: curCLUTMenu userInfo: nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateWLWWMenuNotification object: curWLWWMenu userInfo: nil];
+	//[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateConvolutionMenuNotification object: curConvMenu userInfo: nil];
 	//[self refreshSubtractedViews];
 }
 

@@ -13,6 +13,7 @@
 =========================================================================*/
 
 #import "VRPresetPreview.h"
+#import "Notifications.h"
 
 @implementation VRPresetPreview
 
@@ -730,7 +731,7 @@
 
 - (BOOL)becomeFirstResponder
 {
-	[[NSNotificationCenter defaultCenter] postNotificationName:@"VRViewDidBecomeFirstResponder" object:self];
+	[[NSNotificationCenter defaultCenter] postNotificationName:OsirixVRViewDidBecomeFirstResponderNotification object:self];
 	return YES;
 }
 

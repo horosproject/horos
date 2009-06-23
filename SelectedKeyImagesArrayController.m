@@ -16,12 +16,13 @@
 #import "SelectedKeyImagesArrayController.h"
 #import "DicomImage.h"
 #import "browserController.h"
+#import "Notifications.h"
 
 
 @implementation SelectedKeyImagesArrayController
 
 - (void)awakeFromNib{
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addKeyImages:) name:@"DragMatrixImageMoved" object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addKeyImages:) name:OsirixDragMatrixImageMovedNotification object:nil];
 }
 
 - (void)dealloc{

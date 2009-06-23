@@ -17,6 +17,7 @@
 #import "VRView.h"
 #import "DCMCursor.h"
 #import "ROI.h"
+#import "Notifications.h"
 
 static float deg2rad = 3.14159265358979/180.0; 
 
@@ -102,7 +103,7 @@ static BOOL frameZoomed = NO;
 
 	[[NSNotificationCenter defaultCenter]	addObserver: self
 											selector: @selector(removeROI:)
-											name: @"removeROI"
+											name: OsirixRemoveROINotification
 											object: nil];
 
 
@@ -972,7 +973,7 @@ static BOOL frameZoomed = NO;
 			[[[viewer2D roiList] objectAtIndex: sc[ 2]] addObject: new2DPointROI];
 			
 			// notify the change
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object: new2DPointROI userInfo: nil];
+			[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object: new2DPointROI userInfo: nil];
 		}
 	}
 }

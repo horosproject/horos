@@ -13,6 +13,7 @@
 =========================================================================*/
 #import "ROIVolumeController.h"
 #import "ROIVolumeView.h"
+#import "Notifications.h"
 
 #import "DCMView.h"
 
@@ -73,7 +74,7 @@
 	NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
 	[nc addObserver: self
 		   selector: @selector(CloseViewerNotification:)
-			   name: @"CloseViewerNotification"
+			   name: OsirixCloseViewerNotification
 			 object: nil];
 	
 	[self changeParameters: self];

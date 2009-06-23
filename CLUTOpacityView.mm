@@ -14,6 +14,7 @@
 
 #import "CLUTOpacityView.h"
 #import "BrowserController.h"
+#import "Notifications.h"
 
 @implementation CLUTOpacityView
 
@@ -44,8 +45,8 @@
 		didResizeVRVIew = NO;
 		mousePositionX = 0.0;
 		
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changePointColor:) name:@"NSColorPanelColorDidChangeNotification" object:nil];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(computeHistogram:) name:@"updateVolumeData" object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changePointColor:) name:NSColorPanelColorDidChangeNotification object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(computeHistogram:) name:OsirixUpdateVolumeDataNotification object:nil];
 		
 		[self createContextualMenu];
 		undoManager = [[NSUndoManager alloc] init];
@@ -1945,7 +1946,7 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 	[path appendString:name];
 	[path appendString:@".plist"];
 	[clut writeToFile:path atomically:YES];
-	[[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateCLUTMenu" object:name userInfo:nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName:OsirixUpdateCLUTMenuNotification object:name userInfo:nil];
 	[[vrView controller] setCurCLUTMenu:name];
 }
 

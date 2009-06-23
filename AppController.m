@@ -44,6 +44,7 @@
 #import <ILCrashReporter/ILCrashReporter.h>
 #import "PluginManagerController.h"
 #import "OSIWindowController.h"
+#import "Notifications.h"
 
 #define BUILTIN_DCMTK YES
 
@@ -1011,7 +1012,7 @@ static NSDate *lastWarningDate = nil;
 	{
 		[[NSUserDefaults standardUserDefaults] setBool: NO forKey:@"updateServers"];
 		[[QueryController currentQueryController] refreshSources];
-		[[NSNotificationCenter defaultCenter] postNotificationName:@"OsiriXServerArray has changed" object:nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName:OsirixServerArrayChangedNotification object:nil];
 	}
 	
 	@try
@@ -2488,27 +2489,27 @@ static BOOL initialized = NO;
     nc = [NSNotificationCenter defaultCenter];
     [nc addObserver: self
            selector: @selector(UpdateWLWWMenu:)
-               name: @"UpdateWLWWMenu"
+               name: OsirixUpdateWLWWMenuNotification
              object: nil];
 	
     [nc addObserver: self
            selector: @selector(UpdateConvolutionMenu:)
-               name: @"UpdateConvolutionMenu"
+               name: OsirixUpdateConvolutionMenuNotification
              object: nil];
 	
 	[nc addObserver: self
            selector: @selector(UpdateCLUTMenu:)
-               name: @"UpdateCLUTMenu"
+               name: OsirixUpdateCLUTMenuNotification
              object: nil];
 	[nc addObserver: self
            selector: @selector(UpdateOpacityMenu:)
-               name: @"UpdateOpacityMenu"
+               name: OsirixUpdateOpacityMenuNotification
              object: nil];
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: NSLocalizedString(@"Linear Table", nil) userInfo: nil];
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: NSLocalizedString(@"No CLUT", nil) userInfo: nil];
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: NSLocalizedString(@"Other", nil) userInfo: nil];
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateConvolutionMenu" object:NSLocalizedString( @"No Filter", nil) userInfo: nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateOpacityMenuNotification object: NSLocalizedString(@"Linear Table", nil) userInfo: nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateCLUTMenuNotification object: NSLocalizedString(@"No CLUT", nil) userInfo: nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateWLWWMenuNotification object: NSLocalizedString(@"Other", nil) userInfo: nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateConvolutionMenuNotification object:NSLocalizedString( @"No Filter", nil) userInfo: nil];
 	
 	NSLog(@"No of screens: %d", [[NSScreen screens] count]);
 	

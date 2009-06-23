@@ -15,6 +15,7 @@
 #import "NavigatorView.h"
 #import "NavigatorWindowController.h"
 #import "ROI.h"
+#import "Notifications.h"
 
 #include <OpenGL/CGLMacro.h>
 #include <OpenGL/CGLCurrent.h>
@@ -131,10 +132,10 @@ static float deg2rad = 3.14159265358979/180.0;
 		cursorTracking = [[NSTrackingArea alloc] initWithRect:[self visibleRect] options:(NSTrackingActiveWhenFirstResponder|NSTrackingInVisibleRect|NSTrackingMouseEnteredAndExited|NSTrackingActiveInKeyWindow) owner:self userInfo:nil];
 		[self addTrackingArea:cursorTracking];
 		
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeWLWW:) name:@"changeWLWW" object:nil];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refresh:) name:@"DCMViewIndexChanged" object:nil];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshROIs:) name:@"removeROI" object:nil];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshROIs:) name:@"roiChange" object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeWLWW:) name:OsirixChangeWLWWNotification object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refresh:) name:OsirixDCMViewIndexChangedNotification object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshROIs:) name:OsirixRemoveROINotification object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshROIs:) name:OsirixROIChangeNotification object:nil];
 
 		[[self window] setDelegate:self];
 		

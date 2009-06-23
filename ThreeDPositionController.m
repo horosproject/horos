@@ -19,6 +19,7 @@
 #import "DCMPix.h"
 #import "DCMView.h"
 #import "OrthogonalMPRPETCTViewer.h"
+#import "Notifications.h"
 
 static ThreeDPositionController *nav = nil;
 
@@ -44,9 +45,9 @@ static ThreeDPositionController *nav = nil;
 		[axialPan setController: self];
 		[verticalPan setController: self];
 		
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(closeViewerNotification:) name:@"CloseViewerNotification" object:nil];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setWindowLevel:) name:@"NSApplicationWillBecomeActiveNotification" object:nil];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setWindowLevel:) name:@"NSApplicationWillResignActiveNotification" object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(closeViewerNotification:) name:OsirixCloseViewerNotification object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setWindowLevel:) name:NSApplicationWillBecomeActiveNotification object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setWindowLevel:) name:NSApplicationWillResignActiveNotification object:nil];
 	}
 	return self;
 }

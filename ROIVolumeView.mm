@@ -22,6 +22,7 @@
 #include <OpenGL/CGLCurrent.h>
 #include "math.h"
 #import "QuicktimeExport.h"
+#import "Notifications.h"
 
 #define D2R 0.01745329251994329576923690768    // degrees to radians
 #define R2D 57.2957795130823208767981548141    // radians to degrees
@@ -299,7 +300,7 @@
 		nc = [NSNotificationCenter defaultCenter];
 		[nc addObserver: self
 			   selector: @selector(CloseViewerNotification:)
-				   name: @"CloseViewerNotification"
+				   name: OsirixCloseViewerNotification
 				 object: nil];
 		computeMedialSurface = NO;
     }

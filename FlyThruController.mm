@@ -21,6 +21,7 @@
 #import "Wait.h"
 #import "BrowserController.h"
 #import "VRControllerVPRO.h"
+#import "Notifications.h"
 
 @implementation FlyThruController
 
@@ -88,7 +89,7 @@
 	
 	[[NSNotificationCenter defaultCenter]	addObserver: self
 											selector: @selector(Window3DClose:)
-											name: @"Window3DClose"
+											name: OsirixWindow3dCloseNotification
 											object: nil];
 }
 

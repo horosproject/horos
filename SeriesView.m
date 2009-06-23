@@ -19,6 +19,7 @@
 #import "DCMView.h"
 #import "ViewerController.h"
 #import "WindowLayoutManager.h"
+#import "Notifications.h"
 
 @implementation SeriesView
 
@@ -62,12 +63,12 @@
 			object: nil];
 	[[NSNotificationCenter defaultCenter] addObserver: self
            selector: @selector(defaultToolModified:)
-               name:@"defaultToolModified"
+               name:OsirixDefaultToolModifiedNotification
 			object: nil];
 			
 	[[NSNotificationCenter defaultCenter] addObserver: self
            selector: @selector(defaultRightToolModified:)
-               name:@"defaultRightToolModified"
+               name:OsirixDefaultRightToolModifiedNotification
 			object: nil];
     }
     return self;

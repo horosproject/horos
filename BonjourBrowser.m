@@ -21,6 +21,7 @@
 #import "DicomImage.h"
 #include "SimplePing.h"
 #import "DCMNetServiceDelegate.h"
+#import "Notifications.h"
 
 #import <sys/socket.h>
 #import <netinet/in.h>
@@ -161,7 +162,7 @@ static char *GetPrivateIP()
 		
 		[[NSNotificationCenter defaultCenter] addObserver: self
 												selector: @selector( updateFixedList:)
-												name: @"OsiriXServerArray has changed"
+												name: OsirixServerArrayChangedNotification
 												object: nil];
 		
 		[[NSNotificationCenter defaultCenter] addObserver: self

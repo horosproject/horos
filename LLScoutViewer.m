@@ -15,6 +15,7 @@
 #import "LLScoutViewer.h"
 #import "LLScoutView.h"
 #import "LLScoutOrthogonalReslice.h"
+#import "Notifications.h"
 
 #import "LLMPRViewer.h"
 
@@ -94,10 +95,10 @@
 	[mprController initWithPixList: pix : files : vData : vC : bC: self];
 	
 	//[[mprController xReslicedView] adjustWLWW:400 :1200];
-//	[[NSNotificationCenter defaultCenter] removeObserver:mprController name: @"changeWLWW" object: nil];
-//	[[NSNotificationCenter defaultCenter] removeObserver:[mprController originalView] name: @"changeWLWW" object: nil];
-//	[[NSNotificationCenter defaultCenter] removeObserver:[mprController xReslicedView] name: @"changeWLWW" object: nil];
-//	[[NSNotificationCenter defaultCenter] removeObserver:[mprController yReslicedView] name: @"changeWLWW" object: nil];
+//	[[NSNotificationCenter defaultCenter] removeObserver:mprController name: OsirixChangeWLWWNotification object: nil];
+//	[[NSNotificationCenter defaultCenter] removeObserver:[mprController originalView] name: OsirixChangeWLWWNotification object: nil];
+//	[[NSNotificationCenter defaultCenter] removeObserver:[mprController xReslicedView] name: OsirixChangeWLWWNotification object: nil];
+//	[[NSNotificationCenter defaultCenter] removeObserver:[mprController yReslicedView] name: OsirixChangeWLWWNotification object: nil];
 	
 	LLScoutOrthogonalReslice *reslicer = [[LLScoutOrthogonalReslice alloc] initWithOriginalDCMPixList: pix];
 	[mprController setReslicer:reslicer];
@@ -107,14 +108,14 @@
 	viewer = vC;
 	blendingViewer = bC;
 
-	[[NSNotificationCenter defaultCenter] removeObserver:self name: @"UpdateWLWWMenu" object: nil];	
-	[[NSNotificationCenter defaultCenter] removeObserver:mprController name: @"UpdateWLWWMenu" object: nil];
-	[[NSNotificationCenter defaultCenter] removeObserver:[mprController originalView] name: @"UpdateWLWWMenu" object: nil];
-	[[NSNotificationCenter defaultCenter] removeObserver:[mprController xReslicedView] name: @"UpdateWLWWMenu" object: nil];
-	[[NSNotificationCenter defaultCenter] removeObserver:[mprController yReslicedView] name: @"UpdateWLWWMenu" object: nil];
+	[[NSNotificationCenter defaultCenter] removeObserver:self name: OsirixUpdateWLWWMenuNotification object: nil];	
+	[[NSNotificationCenter defaultCenter] removeObserver:mprController name: OsirixUpdateWLWWMenuNotification object: nil];
+	[[NSNotificationCenter defaultCenter] removeObserver:[mprController originalView] name: OsirixUpdateWLWWMenuNotification object: nil];
+	[[NSNotificationCenter defaultCenter] removeObserver:[mprController xReslicedView] name: OsirixUpdateWLWWMenuNotification object: nil];
+	[[NSNotificationCenter defaultCenter] removeObserver:[mprController yReslicedView] name: OsirixUpdateWLWWMenuNotification object: nil];
 	
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(CloseViewerNotification:) name:@"CloseViewerNotification" object:nil];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(CloseMPRViewerNotification:) name:@"NSWindowWillCloseNotification" object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(CloseViewerNotification:) name:OsirixCloseViewerNotification object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(CloseMPRViewerNotification:) name:NSWindowWillCloseNotification object:nil];
 	
 	return self;
 }

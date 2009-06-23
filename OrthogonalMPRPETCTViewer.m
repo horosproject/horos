@@ -19,6 +19,7 @@
 #import "DICOMExport.h"
 #import "wait.h"
 #import "VRController.h"
+#import "Notifications.h"
 
 static NSString* 	PETCTToolbarIdentifier						= @"PETCT Viewer Toolbar Identifier";
 static NSString*	SameHeightSplitViewToolbarItemIdentifier	= @"sameHeightSplitView";
@@ -168,17 +169,17 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 	
 	[[NSNotificationCenter defaultCenter]	addObserver: self
 											selector: @selector(CloseViewerNotification:)
-											name: @"CloseViewerNotification"
+											name: OsirixCloseViewerNotification
 											object: nil];
 
 	[[NSNotificationCenter defaultCenter]	addObserver: self
 											selector: @selector(Display3DPoint:)
-											name: @"Display3DPoint"
+											name: OsirixDisplay3dPointNotification
 											object: nil];
 											
 	[[NSNotificationCenter defaultCenter]	addObserver: self
 											selector: @selector(dcmExportTextFieldDidChange:)
-											name: @"NSControlTextDidChangeNotification"
+											name: NSControlTextDidChangeNotification
 											object: nil];
 											
 	[originalSplitView setDelegate:self];
@@ -208,22 +209,22 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 	nc = [NSNotificationCenter defaultCenter];
 	[nc addObserver: self
            selector: @selector(UpdateCLUTMenu:)
-               name: @"UpdateCLUTMenu"
+               name: OsirixUpdateCLUTMenuNotification
              object: nil];
-	[nc postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: nil];
+	[nc postNotificationName: OsirixUpdateCLUTMenuNotification object: curCLUTMenu userInfo: nil];
 
 	// WL/WW Menu	
 	curWLWWMenu = [NSLocalizedString(@"Other", nil) retain];
 	[nc addObserver: self
            selector: @selector(UpdateWLWWMenu:)
-               name: @"UpdateWLWWMenu"
+               name: OsirixUpdateWLWWMenuNotification
              object: nil];
-	[nc postNotificationName: @"UpdateWLWWMenu" object: curCLUTMenu userInfo: nil];
+	[nc postNotificationName: OsirixUpdateWLWWMenuNotification object: curCLUTMenu userInfo: nil];
 
 	// Opacity Menu
 	curOpacityMenu = [NSLocalizedString(@"Linear Table", nil) retain];
-	[nc addObserver:self selector:@selector(UpdateOpacityMenu:) name:@"UpdateOpacityMenu" object:nil];
-	[nc postNotificationName:@"UpdateOpacityMenu" object:curOpacityMenu userInfo:nil];
+	[nc addObserver:self selector:@selector(UpdateOpacityMenu:) name:OsirixUpdateOpacityMenuNotification object:nil];
+	[nc postNotificationName:OsirixUpdateOpacityMenuNotification object:curOpacityMenu userInfo:nil];
 
 	// 4D
 	curMovieIndex = 0;
@@ -301,7 +302,7 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 		[curCLUTMenu release];
 		curCLUTMenu = [str retain];
 	}
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: nil];		
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateCLUTMenuNotification object: curCLUTMenu userInfo: nil];		
 	[[[clutPopup menu] itemAtIndex:0] setTitle:str];
 }
 
@@ -447,7 +448,7 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 		curWLWWMenu = [menuString retain];
 	}
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateWLWWMenuNotification object: curWLWWMenu userInfo: nil];
 }
 
 - (void) ApplyWLWW:(id) sender
@@ -519,7 +520,7 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 			[curOpacityMenu release];
 			curOpacityMenu = [str retain];
 		}
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateOpacityMenuNotification object: curOpacityMenu userInfo: nil];
 		
 		[[[OpacityPopup menu] itemAtIndex:0] setTitle:str];
 		
@@ -537,7 +538,7 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 				[curOpacityMenu release];
 				curOpacityMenu = [str retain];
 			}
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: nil];
+			[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateOpacityMenuNotification object: curOpacityMenu userInfo: nil];
 			
 			[[[OpacityPopup menu] itemAtIndex:0] setTitle:str];
 			
@@ -887,9 +888,9 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 	|| [PETController containsView: [self keyView]]
 	|| [PETCTController containsView: [self keyView]])
 	{
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: [(OrthogonalMPRPETCTView*)[self keyView] curCLUTMenu] userInfo: nil];
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: [(OrthogonalMPRPETCTView*)[self keyView] curWLWWMenu] userInfo: nil];
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: [(OrthogonalMPRPETCTView*)[self keyView] curOpacityMenu] userInfo: nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateCLUTMenuNotification object: [(OrthogonalMPRPETCTView*)[self keyView] curCLUTMenu] userInfo: nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateWLWWMenuNotification object: [(OrthogonalMPRPETCTView*)[self keyView] curWLWWMenu] userInfo: nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateOpacityMenuNotification object: [(OrthogonalMPRPETCTView*)[self keyView] curOpacityMenu] userInfo: nil];
 	}
 }
 

@@ -14,6 +14,7 @@
 
 #import "Centerline.h"
 #import "MyPoint.h"
+#import "Notifications.h"
 
 
 #define id Id
@@ -337,9 +338,9 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 			{
 				[roiList addObject: [NSDictionary dictionaryWithObjectsAndKeys: theNewROI, @"roi", [pixList objectAtIndex: i], @"curPix", nil]];
 //				[[roiList objectAtIndex:i] addObject:theNewROI];		// roiList
-//				[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:theNewROI userInfo: nil];	
+//				[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object:theNewROI userInfo: nil];	
 //				[theNewROI setROIMode: ROI_selected];
-//				[[NSNotificationCenter defaultCenter] postNotificationName: @"roiSelected" object:theNewROI userInfo: nil];
+//				[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROISelectedNotification object:theNewROI userInfo: nil];
 			}
 			[theNewROI release];
 			
@@ -685,7 +686,7 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 														imageOrigin:NSMakePoint([[[srcViewer imageView] curDCM] originX], [[[srcViewer imageView] curDCM] originY])];
 						
 						[[[srcViewer roiList] objectAtIndex:i] addObject:theNewROI];
-						[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:theNewROI userInfo: nil];	
+						[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object:theNewROI userInfo: nil];	
 						
 						if( [newname isEqualToString: NSLocalizedString( @"Segmentation Preview", nil)])
 						{
@@ -699,7 +700,7 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 						}
 						
 						[theNewROI setROIMode: ROI_selected];
-						[[NSNotificationCenter defaultCenter] postNotificationName: @"roiSelected" object:theNewROI userInfo: nil];
+						[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROISelectedNotification object:theNewROI userInfo: nil];
 						
 						[theNewROI setSliceThickness:[[[srcViewer imageView] curDCM] sliceThickness]];
 						[theNewROI release];
@@ -749,7 +750,7 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 			[theNewROI setSliceThickness:[[[srcViewer imageView] curDCM] sliceThickness]];
 			[[[srcViewer roiList] objectAtIndex:slice] addObject:theNewROI];
 			[[srcViewer imageView] roiSet];
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:theNewROI userInfo: nil];
+			[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object:theNewROI userInfo: nil];
 			
 			if( [newname isEqualToString: NSLocalizedString( @"Segmentation Preview", nil)])
 			{
@@ -768,7 +769,7 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 			}
 			
 			[theNewROI setROIMode: ROI_selected];
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"roiSelected" object:theNewROI userInfo: nil];
+			[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROISelectedNotification object:theNewROI userInfo: nil];
 			
 			[theNewROI release];
 		}

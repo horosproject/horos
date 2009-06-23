@@ -15,6 +15,7 @@
 #import "LLMPRController.h"
 #import "LLMPRViewer.h"
 #import "LLMPRView.h"
+#import "Notifications.h"
 
 #define BONEVALUE 250
 
@@ -23,7 +24,7 @@
 //- (id) initWithPixList: (NSMutableArray*) pix :(NSArray*) files :(NSData*) vData :(ViewerController*) vC :(ViewerController*) bC:(id) newViewer
 //{
 //	[super initWithPixList: pix :files :vData :vC :bC:newViewer];
-//	//[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(resliceFromNotification:) name:@"LLMPRReslice" object:nil];
+//	//[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(resliceFromNotification:) name:OsirixLLMPRResliceNotification object:nil];
 //}
 
 - (void) reslice: (long) x: (long) y: (OrthogonalMPRView*) sender
@@ -42,7 +43,7 @@
 	else if ([sender isEqualTo:yReslicedView])
 		[userInfo setObject:@"yReslicedView" forKey:@"view"];
 //NSLog(@"LLMPRController postNotificationName:LLMPRReslice");
-	[[NSNotificationCenter defaultCenter] postNotificationName:@"LLMPRReslice" object:self userInfo:userInfo];
+	[[NSNotificationCenter defaultCenter] postNotificationName:OsirixLLMPRResliceNotification object:self userInfo:userInfo];
 }
 
 - (void) resliceFromNotification: (NSNotification*) notification;

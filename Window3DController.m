@@ -21,6 +21,7 @@
 #import "VRController.h"
 #import "printView.h"
 #import "VRView.h"
+#import "Notifications.h"
 
 @implementation Window3DController
 
@@ -370,7 +371,7 @@ static float oldsetww, oldsetwl;
 			[curWLWWMenu release];
 			curWLWWMenu = [[newName stringValue] retain];
 		}
-        [[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateWLWWMenuNotification object: curWLWWMenu userInfo: nil];
     }
 }
 
@@ -386,7 +387,7 @@ static float oldsetww, oldsetwl;
 		NSMutableDictionary *presetsDict = [[[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"WLWW3"] mutableCopy] autorelease];
         [presetsDict removeObjectForKey: name];
 		[[NSUserDefaults standardUserDefaults] setObject: presetsDict forKey: @"WLWW3"];
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateWLWWMenuNotification object: curWLWWMenu userInfo: nil];
     }
 	
 	[name release];
@@ -465,7 +466,7 @@ static float oldsetww, oldsetwl;
 			[curCLUTMenu release];
 			curCLUTMenu = [[clutName stringValue] retain];
         }
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateCLUTMenuNotification object: curCLUTMenu userInfo: nil];
 		
 		[self ApplyCLUTString: curCLUTMenu];
     }
@@ -484,7 +485,7 @@ static float oldsetww, oldsetwl;
     {
         NSBeginAlertSheet(NSLocalizedString(@"Remove a Color Look Up Table", nil), NSLocalizedString(@"Delete", nil), NSLocalizedString(@"Cancel", nil), nil, [self window],
 		  self, @selector(deleteCLUT:returnCode:contextInfo:), NULL, [sender title], [NSString stringWithFormat: NSLocalizedString( @"Are you sure you want to delete this CLUT : '%@'", nil), [sender title]]);
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateCLUTMenuNotification object: curCLUTMenu userInfo: nil];
 	}
 	else if ([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSAlternateKeyMask)
     {
@@ -556,7 +557,7 @@ static float oldsetww, oldsetwl;
 		[clutDict removeObjectForKey: (id) contextInfo];
 		[[NSUserDefaults standardUserDefaults] setObject: clutDict forKey: @"CLUT"];
 
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateCLUTMenuNotification object: curCLUTMenu userInfo: nil];
     }
 }
 
@@ -623,7 +624,7 @@ static float oldsetww, oldsetwl;
     {
         NSBeginAlertSheet(NSLocalizedString(@"Remove an Opacity Table",nil), NSLocalizedString(@"Delete",nil), NSLocalizedString(@"Cancel", nil), nil, [self window], self, @selector(deleteOpacity:returnCode:contextInfo:), NULL, [sender title],
 		  [NSString stringWithFormat: NSLocalizedString(@"Are you sure you want to delete this Opacity Table : '%@'?", Nil), [sender title]]);
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateOpacityMenuNotification object: curOpacityMenu userInfo: nil];
 	}
 	else if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSAlternateKeyMask)
     {
@@ -704,7 +705,7 @@ static float oldsetww, oldsetwl;
 		// Apply it!
 		
 		[self ApplyOpacityString: [OpacityName stringValue]];
-        [[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateOpacityMenuNotification object: curOpacityMenu userInfo: nil];
     }
 	else
 	{
@@ -723,7 +724,7 @@ static float oldsetww, oldsetwl;
 		[opacityDict removeObjectForKey: (id) contextInfo];
 		[[NSUserDefaults standardUserDefaults] setObject: opacityDict forKey: @"OPACITY"];
         
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateOpacityMenuNotification object: curOpacityMenu userInfo: nil];
     }
 }
 

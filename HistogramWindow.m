@@ -18,6 +18,7 @@
 #import "ROI.h"
 #import "HistogramWindow.h"
 #import "DCMPix.h"
+#import "Notifications.h"
 
 @implementation HistoWindow
 
@@ -121,17 +122,17 @@
     nc = [NSNotificationCenter defaultCenter];
     [nc addObserver: self
            selector: @selector(removeROI:)
-               name: @"removeROI"
+               name: OsirixRemoveROINotification
              object: nil];
 			 
 	[nc addObserver: self
 		   selector: @selector(roiChange:)
-			   name: @"roiChange"
+			   name: OsirixROIChangeNotification
 			 object: nil];
 			 
 	[nc addObserver: self
 		   selector: @selector(changeWLWW:)
-			   name: @"changeWLWW"
+			   name: OsirixChangeWLWWNotification
 			 object: nil];
 	
 	return self;

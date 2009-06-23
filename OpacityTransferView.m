@@ -17,6 +17,7 @@
 
 #import "OpacityTransferView.h"
 #import "AppKit/NSColor.h"
+#import "Notifications.h"
 
 @implementation OpacityTransferView
 
@@ -207,7 +208,7 @@
 
 - (IBAction) renderButton:(id) sender
 {
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"OpacityChanged" object: self userInfo: nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixOpacityChangedNotification object: self userInfo: nil];
 }
 
 - (void) setCurrentCLUT :( unsigned char*) r : (unsigned char*) g : (unsigned char*) b

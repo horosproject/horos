@@ -15,6 +15,7 @@
 #import "OrthogonalMPRController.h"
 #import "OrthogonalMPRViewer.h"
 #import "OpacityTransferView.h"
+#import "Notifications.h"
 
 #include <OpenGL/CGLCurrent.h>
 #include <OpenGL/CGLContext.h>
@@ -113,7 +114,7 @@
 		
 		[[NSNotificationCenter defaultCenter]	addObserver: self
 												selector: @selector(changeWLWW:)
-												name: @"changeWLWW"
+												name: OsirixChangeWLWWNotification
 												object: nil];
 		
 		orientationVector = [vC orientationVector];
@@ -535,7 +536,7 @@
 	[yReslicedView adjustWLWW: iwl : iww];
 	[self setCurWLWWMenu: NSLocalizedString(@"Other", nil)];
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"changeWLWW" object: [originalView curDCM] userInfo:nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixChangeWLWWNotification object: [originalView curDCM] userInfo:nil];
 }
 
 - (void) setCurWLWWMenu:(NSString*) str

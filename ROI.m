@@ -22,6 +22,7 @@
 #import "DCMView.h"
 #import "DCMPix.h"
 #import "ITKSegmentation3D.h"
+#import "Notifications.h"
 
 #define CIRCLERESOLUTION 200
 #define ROIVERSION 10
@@ -763,7 +764,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		[self reduceTextureIfPossible];
     }
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object:self userInfo: nil];
     
     return self;
 }
@@ -981,7 +982,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 
 - (void) dealloc
 {
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:self userInfo: nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object:self userInfo: nil];
 	
 	while( [ctxArray count]) [self deleteTexture: [ctxArray lastObject]];
 	[ctxArray release];
@@ -1108,7 +1109,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		rtotal = -1;
 		Brtotal = -1;
 		
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object:self userInfo: nil];
 	}
 }
 
@@ -1183,7 +1184,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		[DCMView setDefaults];
 	}
 		
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object:self userInfo: nil];
 	return self;
 }
 
@@ -1309,7 +1310,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 			[DCMView setDefaults];
 		}
     }
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object:self userInfo: nil];
     return self;
 }
 
@@ -2125,7 +2126,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 	
 	if( [self.comments isEqualToString: @"morphing generated"] ) self.comments = @"";
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object:self userInfo: nil];
 	
 	if (type == tPlain)
 	{
@@ -2282,7 +2283,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		
 		rtotal = -1;
 		Brtotal = -1;
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object:self userInfo: nil];
 	}
 }
 
@@ -2329,7 +2330,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		
 		rtotal = -1;
 		Brtotal = -1;
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object:self userInfo: nil];
 	}
 }
 
@@ -2421,7 +2422,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 {
 	rtotal = -1;
 	Brtotal = -1;
-//	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: nil];
+//	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object:self userInfo: nil];
 }
 
 - (void) roiMove:(NSPoint) offset :(BOOL) sendNotification
@@ -2455,7 +2456,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		{
 			rtotal = -1;
 			Brtotal = -1;
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: nil];
+			[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object:self userInfo: nil];
 		}
 	}
 }
@@ -2467,7 +2468,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 
 - (BOOL) mouseRoiUp:(NSPoint) pt
 {
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: [NSDictionary dictionaryWithObjectsAndKeys:@"mouseUp", @"action", nil]];
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object:self userInfo: [NSDictionary dictionaryWithObjectsAndKeys:@"mouseUp", @"action", nil]];
 	
 	previousPoint.x = previousPoint.y = -1000;
 	
@@ -2479,7 +2480,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		{
 			rtotal = -1;
 			Brtotal = -1;
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: [NSDictionary dictionaryWithObjectsAndKeys:@"mouseUp", @"action", nil]];
+			[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object:self userInfo: [NSDictionary dictionaryWithObjectsAndKeys:@"mouseUp", @"action", nil]];
 			
 			mode = ROI_selected;
 			return NO;
@@ -3005,7 +3006,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 	if( action)
 	{
 		if ( [self.comments isEqualToString: @"morphing generated"] ) self.comments = @"";
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object:self userInfo: nil];
 	}
 	
 	[roiLock unlock];
@@ -3018,7 +3019,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 	if( mode != m)
 	{
 		mode = m;
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object:self userInfo: nil];
 	}
 }
 
@@ -3029,7 +3030,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 	if( name != a)
 	{
 		[name release]; name = [a retain];
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object:self userInfo: nil];
 	}
 	
 	if( type == tText || type == t2DPoint)
@@ -3190,7 +3191,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		break;
 	}
 
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object:self userInfo: nil];
 	
 	return [self valid];
 }
@@ -3662,7 +3663,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				
 				
 				glBlendEquation(GL_FUNC_ADD);
-				glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);			
+				glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 				
 				NSPoint p1, p2, p3, p4;
 				p1 = [[points objectAtIndex:0] point];
@@ -5673,6 +5674,9 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	glPixelStorei(GL_UNPACK_ROW_LENGTH, bytesPerRow/4);
 	glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, 1);
 
+	glTexParameteri (GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_MIN_FILTER, GL_LINEAR);	//GL_LINEAR_MIPMAP_LINEAR
+	glTexParameteri (GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	//GL_LINEAR_MIPMAP_LINEAR
+	
 	#if __BIG_ENDIAN__
 	glTexImage2D(GL_TEXTURE_RECTANGLE_EXT, 0, GL_RGBA, [layerImage size].width, [layerImage size].height, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, textureBuffer);
 	#else

@@ -17,6 +17,7 @@ PURPOSE.
 #import "PaletteController.h"
 #import "ViewerController.h"
 #import "ROI.h"
+#import "Notifications.h"
 
 @implementation PaletteController
 
@@ -56,7 +57,7 @@ PURPOSE.
 //		c.blue = b * 65535.;
 //		
 //		[(ROI*) [selectedRois objectAtIndex:i] setColor:c];
-//		[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:[selectedRois objectAtIndex:i] userInfo: nil];
+//		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object:[selectedRois objectAtIndex:i] userInfo: nil];
 //	}
 //}
 
@@ -88,7 +89,7 @@ PURPOSE.
 //	for( i = 0; i < [selectedRois count]; i++)
 //	{
 //		[(ROI*) [selectedRois objectAtIndex:i] setOpacity:[sender floatValue]];
-//		[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:[selectedRois objectAtIndex:i] userInfo: nil];
+//		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object:[selectedRois objectAtIndex:i] userInfo: nil];
 //	}
 //	
 //}
@@ -135,7 +136,7 @@ PURPOSE.
     
 	[nc addObserver: self
            selector: @selector(CloseViewerNotification:)
-               name: @"CloseViewerNotification"
+               name: OsirixCloseViewerNotification
              object: nil];
 
 	[self showWindow:self];

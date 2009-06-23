@@ -24,6 +24,7 @@
 #import "PluginManager.h"
 #import "ROI.h"
 #import "ROISRConverter.h"
+#import "Notifications.h"
 
 #import <DCMView.h>
 
@@ -4549,7 +4550,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 							  nil];
 	
 	NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
-	[nc postNotificationName:@"RTSTRUCTNotification" object:nil userInfo: noteDict];
+	[nc postNotificationName:OsirixRTStructNotification object:nil userInfo: noteDict];
 	
 #endif
 }
@@ -4583,7 +4584,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 							  nil];
 	
 	NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
-	[nc postNotificationName:@"RTSTRUCTNotification" object:nil userInfo: noteDict];
+	[nc postNotificationName:OsirixRTStructNotification object:nil userInfo: noteDict];
 	
 	
 	for ( DCMObject *refFrameSeqItem in [refFrameSequence sequence] )
@@ -4621,7 +4622,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 				[NSNumber numberWithFloat: 10.0f], @"RTSTRUCTProgressPercent",
 				nil];
 	
-	[nc postNotificationName:@"RTSTRUCTNotification" object:nil userInfo: noteDict];
+	[nc postNotificationName:OsirixRTStructNotification object:nil userInfo: noteDict];
 	
 	if ( refSeriesUIDPredicates.count == 0 )
 	{
@@ -4846,7 +4847,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 					[NSNumber numberWithFloat: percentComplete], @"RTSTRUCTProgressPercent",
 					nil];
 		
-		[nc postNotificationName:@"RTSTRUCTNotification" object:nil userInfo: noteDict];
+		[nc postNotificationName:OsirixRTStructNotification object:nil userInfo: noteDict];
 		
 	}  // Loop over ROIContourSequence
 	
@@ -4890,7 +4891,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 END_CREATE_ROIS:
 	
 	noteDict = [NSDictionary dictionaryWithObject: [NSNumber numberWithBool: NO] forKey: @"RTSTRUCTProgressBar"];
-	[nc postNotificationName:@"RTSTRUCTNotification" object:nil userInfo: noteDict];
+	[nc postNotificationName:OsirixRTStructNotification object:nil userInfo: noteDict];
 	
 	[pool release];
 #endif

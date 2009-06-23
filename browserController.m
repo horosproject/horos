@@ -68,6 +68,7 @@
 #import "PluginManager.h"
 #import "XMLController.h"
 #import "MutableArrayCategory.h"
+#import "Notifications.h"
 
 #define DATABASEVERSION @"2.4"
 #define DATABASEPATH @"/DATABASE.noindex/"
@@ -984,7 +985,7 @@ static NSArray*	statesArray = nil;
 				@try
 				{
 					NSDictionary *userInfo = [NSDictionary dictionaryWithObject:addedImagesArray forKey:@"OsiriXAddToDBArray"];
-					[[NSNotificationCenter defaultCenter] postNotificationName:@"OsirixAddToDBNotification" object: nil userInfo:userInfo];
+					[[NSNotificationCenter defaultCenter] postNotificationName:OsirixAddToDBNotification object: nil userInfo:userInfo];
 				}
 				@catch( NSException *ne)
 				{
@@ -2780,7 +2781,7 @@ static NSArray*	statesArray = nil;
 			}
 			
 			[[NSUserDefaults standardUserDefaults] setObject: dbArray forKey: @"localDatabasePaths"];
-			[[NSNotificationCenter defaultCenter] postNotificationName:@"OsiriXServerArray has changed" object:nil];
+			[[NSNotificationCenter defaultCenter] postNotificationName:OsirixServerArrayChangedNotification object:nil];
 			
 			// Select it
 			i = [self findDBPath: path dbFolder: DBFolderLocation];
@@ -2877,7 +2878,7 @@ static NSArray*	statesArray = nil;
 	
 	[self setDBWindowTitle];
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName:@"OsiriXServerArray has changed" object:nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName:OsirixServerArrayChangedNotification object:nil];
 	
 	displayEmptyDatabase = NO;
 	[self outlineViewRefresh];
@@ -4654,7 +4655,7 @@ static NSArray*	statesArray = nil;
 	else
 	{
 		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"syncOsiriXDB"])
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"OsiriXServerArray has changed" object:nil];
+			[[NSNotificationCenter defaultCenter] postNotificationName: OsirixServerArrayChangedNotification object:nil];
 	}
 }
 
@@ -5108,7 +5109,7 @@ static NSArray*	statesArray = nil;
 		NSManagedObject *studySelected = [[[item entity] name] isEqual:@"Study"] ? item : [item valueForKey:@"study"];
 		
 		NSDictionary *userInfo = [NSDictionary dictionaryWithObject:studySelected forKey:@"Selected Study"];
-		[[NSNotificationCenter defaultCenter] postNotificationName:@"NewStudySelectedNotification" object:self userInfo:(NSDictionary *)userInfo];
+		[[NSNotificationCenter defaultCenter] postNotificationName:OsirixNewStudySelectedNotification object:self userInfo:(NSDictionary *)userInfo];
 		
 		BOOL	refreshMatrix = YES;
 		long	nowFiles = [[item valueForKey:@"noFiles"] intValue];
@@ -7157,7 +7158,7 @@ static NSArray*	statesArray = nil;
 		
 		[self loadNextSeries:[[self childrenArray: series] objectAtIndex: 0] :0 :viewer :YES keyImagesOnly:keyImages];
 	}
-	[[NSNotificationCenter defaultCenter] postNotificationName:@"OsiriX Did Load New Object" object:study userInfo:nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName:OsirixDidLoadNewObjectNotification object:study userInfo:nil];
 	[viewersList release];
 	
 	[[NSUserDefaults standardUserDefaults] setBool: copyPatientsSettings forKey: @"onlyDisplayImagesOfSamePatient"];
@@ -11299,7 +11300,7 @@ static BOOL needToRezoom;
 	
 	[managedObjectContext unlock];
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName:@"OsiriX Did Load New Object" object:item userInfo:nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName:OsirixDidLoadNewObjectNotification object:item userInfo:nil];
 }
 
 
@@ -11768,17 +11769,17 @@ static NSArray*	openSubSeriesArray = nil;
 		
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(mainWindowHasChanged:) name:NSWindowDidBecomeMainNotification object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(ViewFrameDidChange:) name:NSViewFrameDidChangeNotification object:nil];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateReportToolbarIcon:) name:@"reportModeChanged" object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateReportToolbarIcon:) name:OsirixReportModeChangedNotification object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateReportToolbarIcon:) name:NSOutlineViewSelectionDidChangeNotification object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateReportToolbarIcon:) name:NSOutlineViewSelectionIsChangingNotification object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reportToolbarItemWillPopUp:) name:NSPopUpButtonWillPopUpNotification object:nil];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(rtstructNotification:) name:@"RTSTRUCTNotification" object:nil];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(AlternateButtonPressed:) name:@"AlternateButtonPressed" object:nil];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(CloseViewerNotification:) name:@"CloseViewerNotification" object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(rtstructNotification:) name:OsirixRTStructNotification object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(AlternateButtonPressed:) name:OsirixAlternateButtonPressedNotification object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(CloseViewerNotification:) name:OsirixCloseViewerNotification object:nil];
 		
 //		[[NSNotificationCenter defaultCenter] addObserver: self
 //												selector: @selector(listChangedTest:)
-//												name: @"OsiriXServerArray has changed"
+//												name: OsirixServerArrayChangedNotification
 //												object: nil];
 		
 //		[[NSTimer scheduledTimerWithTimeInterval: 5 target:self selector:@selector(autoTest:) userInfo:self repeats:NO] retain];
@@ -15749,7 +15750,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 				
 				[self saveDatabase: currentDatabasePath];
 			}
-			[[NSNotificationCenter defaultCenter] postNotificationName:@"OsirixDeletedReport" object:nil userInfo:nil];
+			[[NSNotificationCenter defaultCenter] postNotificationName:OsirixDeletedReportNotification object:nil userInfo:nil];
 		}
 		
 		[checkBonjourUpToDateThreadLock unlock];

@@ -20,6 +20,7 @@
 #import "DICOMExport.h"
 #import "wait.h"
 #import "BrowserController.h"
+#import "Notifications.h"
 
 static NSString* 	PETCTToolbarIdentifier					= @"MPROrtho Viewer Toolbar Identifier";
 static NSString*	AdjustSplitViewToolbarItemIdentifier	= @"sameSizeSplitView";
@@ -95,9 +96,9 @@ static NSString*	VRPanelToolbarItemIdentifier			= @"MIP.tif";
 	
 	viewer = [vC retain];
 	
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(CloseViewerNotification:) name:@"CloseViewerNotification" object:nil];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(Display3DPoint:) name:@"Display3DPoint" object:nil];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dcmExportTextFieldDidChange:) name:@"NSControlTextDidChangeNotification" object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(CloseViewerNotification:) name:OsirixCloseViewerNotification object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(Display3DPoint:) name:OsirixDisplay3dPointNotification object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dcmExportTextFieldDidChange:) name:NSControlTextDidChangeNotification object:nil];
 	
 	[splitView setDelegate:self];
 	
@@ -143,18 +144,18 @@ static NSString*	VRPanelToolbarItemIdentifier			= @"MIP.tif";
 	
 	NSNotificationCenter *nc;
 	nc = [NSNotificationCenter defaultCenter];
-	[nc addObserver:self selector:@selector(UpdateCLUTMenu:) name:@"UpdateCLUTMenu" object:nil];
-	[nc postNotificationName:@"UpdateCLUTMenu" object:curCLUTMenu userInfo:nil];
+	[nc addObserver:self selector:@selector(UpdateCLUTMenu:) name:OsirixUpdateCLUTMenuNotification object:nil];
+	[nc postNotificationName:OsirixUpdateCLUTMenuNotification object:curCLUTMenu userInfo:nil];
 
 	// WL/WW Menu
 	curWLWWMenu = [NSLocalizedString(@"Other", nil) retain];
-	[nc addObserver:self selector:@selector(UpdateWLWWMenu:) name:@"UpdateWLWWMenu" object:nil];
-	[nc postNotificationName:@"UpdateWLWWMenu" object:curWLWWMenu userInfo:nil];
+	[nc addObserver:self selector:@selector(UpdateWLWWMenu:) name:OsirixUpdateWLWWMenuNotification object:nil];
+	[nc postNotificationName:OsirixUpdateWLWWMenuNotification object:curWLWWMenu userInfo:nil];
 
 	// Opacity Menu
 	curOpacityMenu = [NSLocalizedString(@"Linear Table", nil) retain];
-	[nc addObserver:self selector:@selector(UpdateOpacityMenu:) name:@"UpdateOpacityMenu" object:nil];
-	[nc postNotificationName:@"UpdateOpacityMenu" object:curOpacityMenu userInfo:nil];
+	[nc addObserver:self selector:@selector(UpdateOpacityMenu:) name:OsirixUpdateOpacityMenuNotification object:nil];
+	[nc postNotificationName:OsirixUpdateOpacityMenuNotification object:curOpacityMenu userInfo:nil];
 
 	return self;
 }
@@ -227,7 +228,7 @@ static NSString*	VRPanelToolbarItemIdentifier			= @"MIP.tif";
 		[curCLUTMenu release];
 		curCLUTMenu = [str retain];
 	}
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: nil];		
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateCLUTMenuNotification object: curCLUTMenu userInfo: nil];		
 	[[[clutPopup menu] itemAtIndex:0] setTitle:str];
 }
 
@@ -330,7 +331,7 @@ static NSString*	VRPanelToolbarItemIdentifier			= @"MIP.tif";
 	
 	[[[wlwwPopup menu] itemAtIndex:0] setTitle:menuString];
 
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateWLWWMenuNotification object: curWLWWMenu userInfo: nil];
 }
 
 - (void) ApplyWLWW:(id) sender
@@ -406,7 +407,7 @@ static NSString*	VRPanelToolbarItemIdentifier			= @"MIP.tif";
 			[curOpacityMenu release];
 			curOpacityMenu = [str retain];
 		}
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateOpacityMenuNotification object: curOpacityMenu userInfo: nil];
 		
 		[[[OpacityPopup menu] itemAtIndex:0] setTitle:str];
 		
@@ -424,7 +425,7 @@ static NSString*	VRPanelToolbarItemIdentifier			= @"MIP.tif";
 				[curOpacityMenu release];
 				curOpacityMenu = [str retain];
 			}
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: nil];
+			[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateOpacityMenuNotification object: curOpacityMenu userInfo: nil];
 			
 			[[[OpacityPopup menu] itemAtIndex:0] setTitle:str];
 			
@@ -528,9 +529,9 @@ static NSString*	VRPanelToolbarItemIdentifier			= @"MIP.tif";
 
 -(void) windowDidBecomeKey:(NSNotification *)aNotification
 {
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: nil];
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: nil];
-	//[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateConvolutionMenu" object: curConvMenu userInfo: nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateCLUTMenuNotification object: curCLUTMenu userInfo: nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateWLWWMenuNotification object: curWLWWMenu userInfo: nil];
+	//[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateConvolutionMenuNotification object: curConvMenu userInfo: nil];
 }
 
 #pragma mark-

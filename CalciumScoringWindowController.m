@@ -24,6 +24,7 @@ Manages the Window for creating Calcium Scoring ROIs
 #import "browserController.h"
 #import <OsiriX/DCM.h>
 #import "CalciumScoringWindowController.h"
+#import "Notifications.h"
 
 enum ctTypes {ElectronCTType, MultiSliceCTType};
 @implementation CalciumScoringWindowController
@@ -70,18 +71,18 @@ enum ctTypes {ElectronCTType, MultiSliceCTType};
 		nc = [NSNotificationCenter defaultCenter];
 		[nc addObserver: self
 			   selector: @selector(mouseViewerDown:)
-				   name: @"mouseDown"
+				   name: OsirixMouseDownNotification
 				 object: nil];
 				 
 		
 		[nc addObserver: self
 				selector: @selector(drawStartingPoint:)
-				   name: @"PLUGINdrawObjects"
+				   name: OsirixDrawObjectsNotification
 				 object: nil];
 				 
 		[nc addObserver: self
 				selector: @selector(removeROI:)
-				   name:  @"removeROI"
+				   name:  OsirixRemoveROINotification
 				 object: nil];
 				 
 
@@ -105,7 +106,7 @@ enum ctTypes {ElectronCTType, MultiSliceCTType};
 
 	[[NSNotificationCenter defaultCenter] addObserver: self
            selector: @selector(CloseViewerNotification:)
-               name: @"CloseViewerNotification"
+               name: OsirixCloseViewerNotification
              object: nil];
 	
 }

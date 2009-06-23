@@ -15,6 +15,7 @@
 #import "OrthogonalMPRController.h"
 #import "OrthogonalMPRPETCTView.h"
 #import "OrthogonalMPRPETCTController.h"
+#import "Notifications.h"
 
 
 @implementation OrthogonalMPRPETCTView
@@ -72,9 +73,9 @@
 
 - (BOOL) becomeFirstResponder
 {
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: nil];
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: nil];
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateCLUTMenuNotification object: curCLUTMenu userInfo: nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateWLWWMenuNotification object: curWLWWMenu userInfo: nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateOpacityMenuNotification object: curOpacityMenu userInfo: nil];
 	
 	return [super becomeFirstResponder];
 }

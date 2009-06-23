@@ -31,8 +31,6 @@
 
 #pragma mark File-level and global vars:
 
-NSString *KFSplitViewDidCollapseSubviewNotification = @"KFSplitViewDidCollapseSubviewNotification";
-NSString *KFSplitViewDidExpandSubviewNotification = @"KFSplitViewDidExpandSubviewNotification";
 
 const NSPoint KFOffScreenPoint = {1000000.0,1000000.0};
 

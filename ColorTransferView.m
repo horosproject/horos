@@ -17,6 +17,7 @@
 
 #import "ColorTransferView.h"
 #import "AppKit/NSColor.h"
+#import "Notifications.h"
 
 @implementation ColorTransferView
 
@@ -41,7 +42,7 @@
 
 - (IBAction) renderButton:(id) sender
 {
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"CLUTChanged" object: self userInfo: nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixCLUTChangedNotification object: self userInfo: nil];
 }
 
 -(void) selectPicker:(id) sender
@@ -51,7 +52,7 @@
 		NSColor *newColor = [[pick color] colorUsingColorSpaceName: NSDeviceRGBColorSpace];
 		
 		[colors replaceObjectAtIndex: curIndex withObject:[NSArray arrayWithObjects: [NSNumber numberWithFloat: [newColor redComponent]], [NSNumber numberWithFloat: [newColor greenComponent]], [NSNumber numberWithFloat: [newColor blueComponent]],nil]]; 
-	//	[[NSNotificationCenter defaultCenter] postNotificationName: @"CLUTChanged" object: self userInfo: nil];
+	//	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixCLUTChangedNotification object: self userInfo: nil];
 		[self setNeedsDisplay:YES];
 	}
 }
@@ -143,7 +144,7 @@
 	
 	[position setIntValue: center.x/2];
 	
-//	[[NSNotificationCenter defaultCenter] postNotificationName: @"CLUTChanged" object: self userInfo: nil];
+//	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixCLUTChangedNotification object: self userInfo: nil];
 	
     [self setNeedsDisplay:YES];
 }

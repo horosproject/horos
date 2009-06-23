@@ -19,6 +19,7 @@
 #import "DCMView.h"
 #import "QueryController.h"
 #import "DCMNetServiceDelegate.h"
+#import "Notifications.h"
 
 #import <sys/socket.h>
 #import <netinet/in.h>
@@ -849,7 +850,7 @@ static NSTimeInterval lastConnection = 0;
 			
 			// Send the XML-RPC as a notification : give a chance to plugin to answer
 			
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"OsiriXXMLRPCMessage" object: httpServerMessage];
+			[[NSNotificationCenter defaultCenter] postNotificationName: OsirixXMLRPCMessageNotification object: httpServerMessage];
 			
 			// Did someone processed the message?
 			if( [[httpServerMessage valueForKey: @"Processed"] boolValue])

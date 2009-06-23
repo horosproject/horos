@@ -24,6 +24,7 @@
 #import "AppController.h"
 #import "DCMPix.h"
 #import "MutableArrayCategory.h"
+#import "Notifications.h"
 
 static NSString* 	XMLToolbarIdentifier					= @"XML Toolbar Identifier";
 static NSString*	ExportToolbarItemIdentifier				= @"Export.icns";
@@ -519,8 +520,8 @@ extern int delayedTileWindows;
 		
 		dictionaryArray = [[NSMutableArray array] retain];
 		
-		[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(CloseViewerNotification:) name: @"CloseViewerNotification" object: nil];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector: @selector(refresh:) name:@"DCMViewIndexChanged" object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(CloseViewerNotification:) name: OsirixCloseViewerNotification object: nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector: @selector(refresh:) name:OsirixDCMViewIndexChangedNotification object:nil];
 	}
 	return self;
 }

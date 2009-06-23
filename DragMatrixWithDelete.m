@@ -15,6 +15,7 @@
 
 #import "DragMatrixWithDelete.h"
 #import "DCMView.h"
+#import "Notifications.h"
 
 
 @implementation DragMatrixWithDelete
@@ -93,7 +94,7 @@ static NSString  *pasteBoardTypeCover = @"KeyImages";
 		NSArray *array = [[sender draggingSource] selection];
 		//NSLog(@"Selection: 
         dict = [NSDictionary dictionaryWithObject:array forKey:@"images"];
-        [nc postNotificationName:@"DragMatrixImageMoved" object:self userInfo:dict];
+        [nc postNotificationName:OsirixDragMatrixImageMovedNotification object:self userInfo:dict];
     }
 	
 	if ([types indexOfObject:pasteBoardOsiriX] != NSNotFound)
@@ -106,7 +107,7 @@ static NSString  *pasteBoardTypeCover = @"KeyImages";
 		if (array)
 		{
 			dict = [NSDictionary dictionaryWithObject:array forKey:@"images"];
-			[nc postNotificationName:@"DragMatrixImageMoved" object:self userInfo:dict];
+			[nc postNotificationName:OsirixDragMatrixImageMovedNotification object:self userInfo:dict];
 		}
 	}
     

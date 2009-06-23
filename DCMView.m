@@ -41,6 +41,7 @@
 #import <CoreVideo/CoreVideo.h>
 #import "DefaultsOsiriX.h"
 #include "NSFont_OpenGL/NSFont_OpenGL.h"
+#import "Notifications.h"
 
 // kvImageHighQualityResampling
 #define QUALITY kvImageNoFlags
@@ -832,7 +833,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			[[self windowController] setUpdateTilingViewsValue: YES];
 			
 			NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:curImage]  forKey:@"curImage"];
-			[[NSNotificationCenter defaultCenter]  postNotificationName: @"DCMUpdateCurrentImage" object: self userInfo: userInfo];
+			[[NSNotificationCenter defaultCenter]  postNotificationName: OsirixDCMUpdateCurrentImageNotification object: self userInfo: userInfo];
 			
 			[[self windowController] setUpdateTilingViewsValue : NO];
 			
@@ -1207,7 +1208,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			[loopItem1 setROIMode: ROI_selected];
 			[loopItem1 setRoiFont: labelFontListGL :labelFontListGLSize :self];
 			
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"roiSelected" object: loopItem1 userInfo: nil];
+			[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROISelectedNotification object: loopItem1 userInfo: nil];
 		}
 		
 		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"markROIImageAsKeyImage"])
@@ -1367,7 +1368,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				}
 				
 				[roiList addObject: roi];
-				[[NSNotificationCenter defaultCenter] postNotificationName: @"roiSelected" object: roi userInfo: nil];
+				[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROISelectedNotification object: roi userInfo: nil];
 				
 				[roi release];
 			}
@@ -1412,7 +1413,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				}
 				
 				[curRoiList addObject: roi];
-				[[NSNotificationCenter defaultCenter] postNotificationName: @"roiSelected" object: roi userInfo: nil];
+				[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROISelectedNotification object: roi userInfo: nil];
 			}
 			
 			[roi release];
@@ -1467,7 +1468,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		[curRoiList addObjectsFromArray: roiArray];
 		
 		for( long i = 0 ; i < [roiArray count] ; i++)
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"roiSelected" object: [roiArray objectAtIndex: i] userInfo: nil];
+			[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROISelectedNotification object: [roiArray objectAtIndex: i] userInfo: nil];
 
 		[self setNeedsDisplay:YES];
 	}
@@ -1535,7 +1536,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		if( [r ROImode] == ROI_selected && r.locked == NO)
 		{
 			groupID = [r groupID];
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:r userInfo: nil];
+			[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object:r userInfo: nil];
 			[curRoiList removeObjectAtIndex:i];
 			i--;
 			if(groupID!=0.0)
@@ -1543,7 +1544,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		}
 	}
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiRemovedFromArray" object: nil userInfo: nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIRemovedFromArrayNotification object: nil userInfo: nil];
 	
 	[drawLock unlock];
 	
@@ -2336,7 +2337,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		else
 			yearOld = [[NSString stringWithFormat:@"%@ / %@", [[dcmFilesList objectAtIndex: curImage] valueForKeyPath:@"series.study.yearOld"], [[dcmFilesList objectAtIndex: curImage] valueForKeyPath:@"series.study.yearOldAcquisition"]] retain];
 	
-		[[NSNotificationCenter defaultCenter] postNotificationName:@"DCMViewIndexChanged" object:self];
+		[[NSNotificationCenter defaultCenter] postNotificationName:OsirixDCMViewIndexChangedNotification object:self];
 	}
 	else
 	{
@@ -2420,7 +2421,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					if( [r deleteSelectedPoint] == NO && r.locked == NO)
 					{
 						groupID = [r groupID];
-						[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:r userInfo: nil];
+						[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object:r userInfo: nil];
 						[curRoiList removeObjectAtIndex:i];
 						i--;
 						if(groupID!=0.0)[self deleteROIGroupID:groupID];
@@ -2435,14 +2436,14 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				if( [r ROImode] == ROI_selected  && r.locked == NO)
 				{
 					groupID = [r groupID];
-					[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:r userInfo: nil];
+					[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object:r userInfo: nil];
 					[curRoiList removeObjectAtIndex:i];
 					i--;
 					if(groupID!=0.0)[self deleteROIGroupID:groupID];
 				}
 			}
 			
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"roiRemovedFromArray" object: nil userInfo: nil];
+			[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIRemovedFromArrayNotification object: nil userInfo: nil];
 			
 			[drawLock unlock];
 			
@@ -2568,7 +2569,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 			NSNotificationCenter *nc;
 			nc = [NSNotificationCenter defaultCenter];
-			[nc postNotificationName: @"updateView" object: self userInfo: nil];
+			[nc postNotificationName: OsirixUpdateViewNotification object: self userInfo: nil];
 		}
         else
         {
@@ -2693,7 +2694,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	{
 		if([[curRoiList objectAtIndex:i] groupID] == groupID)
 		{
-			[[NSNotificationCenter defaultCenter] postNotificationName:@"removeROI" object:[curRoiList objectAtIndex:i] userInfo:nil];
+			[[NSNotificationCenter defaultCenter] postNotificationName:OsirixRemoveROINotification object:[curRoiList objectAtIndex:i] userInfo:nil];
 			[curRoiList removeObjectAtIndex:i];
 			i--;
 		}
@@ -2918,7 +2919,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     {
 		if ( pluginOverridesMouse && ( [event modifierFlags] & NSControlKeyMask ) )
 		{  // Simulate Right Mouse Button action
-			[nc postNotificationName: @"PLUGINrightMouseUp" object: self userInfo: userInfo];
+			[nc postNotificationName: OsirixRightMouseUpNotification object: self userInfo: userInfo];
 			return;
 		}
 		
@@ -2961,7 +2962,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				
 				if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected)
 				{
-					[nc postNotificationName: @"roiSelected" object: [curRoiList objectAtIndex:i] userInfo: nil];
+					[nc postNotificationName: OsirixROISelectedNotification object: [curRoiList objectAtIndex:i] userInfo: nil];
 					break;
 				}
 			}
@@ -2970,7 +2971,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			{
 				if( [[curRoiList objectAtIndex: i] valid] == NO)
 				{
-					[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object: [curRoiList objectAtIndex:i] userInfo: nil];
+					[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object: [curRoiList objectAtIndex:i] userInfo: nil];
 					[curRoiList removeObjectAtIndex: i];
 					i--;
 				}
@@ -3063,7 +3064,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	for( long i = 0; i < [curRoiList count]; i++)
 	{
 		[[curRoiList objectAtIndex: i] setROIMode: ROI_selected];
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"roiSelected" object: [curRoiList objectAtIndex: i] userInfo: nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROISelectedNotification object: [curRoiList objectAtIndex: i] userInfo: nil];
 	}
 	
 	[self setNeedsDisplay:YES];
@@ -3519,7 +3520,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			tempPt = [self ConvertFromNSView2GL:tempPt];
 			
 			NSMutableDictionary	*dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithFloat:tempPt.y], @"Y", [NSNumber numberWithLong:tempPt.x],@"X", [NSNumber numberWithBool: NO], @"stopMouseDown", nil];
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"mouseDown" object: [self windowController] userInfo: dict];
+			[[NSNotificationCenter defaultCenter] postNotificationName: OsirixMouseDownNotification object: [self windowController] userInfo: dict];
 			
 			if( [[dict valueForKey:@"stopMouseDown"] boolValue]) return;
 		}
@@ -3644,7 +3645,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			
 			if( roiHit == NO)
 			{
-				[[NSNotificationCenter defaultCenter] postNotificationName: @"sync" object: self userInfo: instructions];
+				[[NSNotificationCenter defaultCenter] postNotificationName: OsirixSyncNotification object: self userInfo: instructions];
 			}
 		}
 		
@@ -3934,7 +3935,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						}
 						
 						if( [curROI ROImode] == ROI_selected)
-							[[NSNotificationCenter defaultCenter] postNotificationName: @"roiSelected" object: curROI userInfo: nil];
+							[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROISelectedNotification object: curROI userInfo: nil];
 					}
 					else
 					{
@@ -4063,13 +4064,13 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 							curROI = nil;
 						}
 						if( [aNewROI ROImode] == ROI_selected)
-							[[NSNotificationCenter defaultCenter] postNotificationName: @"roiSelected" object: aNewROI userInfo: nil];
+							[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROISelectedNotification object: aNewROI userInfo: nil];
 						
 						NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:	aNewROI,							@"ROI",
 																								[NSNumber numberWithInt:curImage],	@"sliceNumber", 
 																								nil];
 						
-						[[NSNotificationCenter defaultCenter] postNotificationName: @"addROI" object:self userInfo:userInfo];
+						[[NSNotificationCenter defaultCenter] postNotificationName: OsirixAddROINotification object:self userInfo:userInfo];
 					}
 				}
 			}
@@ -4410,7 +4411,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
 		NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
 			[NSNumber numberWithInt:curImage], @"curImage", event, @"event", nil];
-		[nc postNotificationName: @"PLUGINrightMouseDown" object: self userInfo: userInfo];
+		[nc postNotificationName: OsirixRightMouseDownNotification object: self userInfo: userInfo];
 		return;
 	}
 		
@@ -4428,7 +4429,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 	if ( pluginOverridesMouse )
 	{
-		[nc postNotificationName: @"PLUGINrightMouseUp" object: self userInfo: userInfo];
+		[nc postNotificationName: OsirixRightMouseUpNotification object: self userInfo: userInfo];
 	}
 	else 
 	{
@@ -4467,7 +4468,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
 		NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
 			[NSNumber numberWithInt:curImage], @"curImage", event, @"event", nil];
-		[nc postNotificationName: @"PLUGINrightMouseDragged" object: self userInfo: userInfo];
+		[nc postNotificationName: OsirixRightMouseDraggedNotification object: self userInfo: userInfo];
 		return;
 	}
 	
@@ -4921,13 +4922,13 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		[[blendingView windowController] setCurWLWWMenu: [DCMView findWLWWPreset: [[blendingView curDCM] wl] :[[blendingView curDCM] ww] :curDCM]];
 	}
 
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: [DCMView findWLWWPreset: [[blendingView curDCM] wl] :[[blendingView curDCM] ww] :curDCM] userInfo: nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateWLWWMenuNotification object: [DCMView findWLWWPreset: [[blendingView curDCM] wl] :[[blendingView curDCM] ww] :curDCM] userInfo: nil];
 
 
 	[blendingView loadTextures];
 	[self loadTextures];
 
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"changeWLWW" object: blendingView userInfo:nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixChangeWLWWNotification object: blendingView userInfo:nil];
 
 }
 
@@ -5001,7 +5002,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			[[self windowController] setCurWLWWMenu: [DCMView findWLWWPreset: curWL :curWW :curDCM]];
 		}
 		
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: [DCMView findWLWWPreset: curWL :curWW :curDCM] userInfo: nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateWLWWMenuNotification object: [DCMView findWLWWPreset: curWL :curWW :curDCM] userInfo: nil];
 		
 		[self setWLWW:curWL :curWW];
 	}
@@ -5121,7 +5122,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						
 						if( [[r comments] isEqualToString: @"morphing generated"])
 							[r setComments:@""];
-						[[NSNotificationCenter defaultCenter] postNotificationName:@"roiChange" object:r userInfo: nil];
+						[[NSNotificationCenter defaultCenter] postNotificationName:OsirixROIChangeNotification object:r userInfo: nil];
 					}
 				}
 			}
@@ -5364,7 +5365,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	[self loadTextures];
 	[self setNeedsDisplay:YES];
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"changeWLWW" object: curDCM userInfo:nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixChangeWLWWNotification object: curDCM userInfo:nil];
 	
 	if( [self is2DViewer] )
 	{
@@ -5709,32 +5710,32 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     nc = [NSNotificationCenter defaultCenter];
     [nc addObserver: self
            selector: @selector(sync:)
-               name: @"sync"
+               name: OsirixSyncNotification
              object: nil];
 	
 	[nc	addObserver: self
 			selector: @selector(Display3DPoint:)
-				name: @"Display3DPoint"
+				name: OsirixDisplay3dPointNotification
 			object: nil];
 	
 	[nc addObserver: self
            selector: @selector(roiChange:)
-               name: @"roiChange"
+               name: OsirixROIChangeNotification
              object: nil];
 	
 	[nc addObserver: self
            selector: @selector(roiRemoved:)
-               name: @"removeROI"
+               name: OsirixRemoveROINotification
              object: nil];
 	
 	[nc addObserver: self
            selector: @selector(roiSelected:)
-               name: @"roiSelected"
+               name: OsirixROISelectedNotification
              object: nil];
              
     [nc addObserver: self
            selector: @selector(updateView:)
-               name: @"updateView"
+               name: OsirixUpdateViewNotification
              object: nil];
 	
 	[nc addObserver: self
@@ -5744,17 +5745,17 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			 
 	[nc addObserver: self
            selector: @selector(changeGLFontNotification:)
-               name:  @"changeGLFontNotification" 
+               name:  OsirixGLFontChangeNotification 
              object: nil];
 	
 	[nc addObserver: self
            selector: @selector(changeLabelGLFontNotification:)
-               name:  @"changeLabelGLFontNotification" 
+               name:  OsirixLabelGLFontChangeNotification 
              object: nil];
 	
 	[nc	addObserver: self
 			selector: @selector(changeWLWW:)
-				name: @"changeWLWW"
+				name: OsirixChangeWLWWNotification
 			object: nil];
 	
     colorTransfer = NO;
@@ -5801,8 +5802,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	[self initFont];
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName:@"changeLabelGLFontNotification" object: self];
-	[[NSNotificationCenter defaultCenter] postNotificationName:@"changeGLFontNotification" object: self];
+	[[NSNotificationCenter defaultCenter] postNotificationName:OsirixLabelGLFontChangeNotification object: self];
+	[[NSNotificationCenter defaultCenter] postNotificationName:OsirixGLFontChangeNotification object: self];
 	
     currentTool =  [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULTLEFTTOOL"];
 	
@@ -5879,7 +5880,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		NSDictionary *instructions = [self syncMessage: inc];
         
 		if( stringID == nil)
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"sync" object: self userInfo: instructions];
+			[[NSNotificationCenter defaultCenter] postNotificationName: OsirixSyncNotification object: self userInfo: instructions];
 			
 		// most subclasses just need this. NO sync notification for subclasses.
 		if( blendingView) // We have to reload the blending image..
@@ -6300,7 +6301,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			[self sendSyncMessage: 0];
 		
 		if( blendingView && [note object] != blendingView)
-			[blendingView sync: [NSNotification notificationWithName: @"sync" object: self userInfo: [self syncMessage: 0]]];
+			[blendingView sync: [NSNotification notificationWithName: OsirixSyncNotification object: self userInfo: [self syncMessage: 0]]];
 			
 		avoidRecursiveSync --;
 	}
@@ -6362,7 +6363,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
     NSNotificationCenter *nc;
     nc = [NSNotificationCenter defaultCenter];
-    [nc postNotificationName: @"updateView" object: self userInfo: nil];
+    [nc postNotificationName: OsirixUpdateViewNotification object: self userInfo: nil];
 }
 
 -(void) annotMenu:(id) sender
@@ -6374,7 +6375,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
     NSNotificationCenter *nc;
     nc = [NSNotificationCenter defaultCenter];
-    [nc postNotificationName: @"updateView" object: self userInfo: nil];
+    [nc postNotificationName: OsirixUpdateViewNotification object: self userInfo: nil];
 }
 
 -(void) syncronize:(id) sender
@@ -6388,7 +6389,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 {
 	syncro = s;
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"notificationSyncSeries" object:nil userInfo: nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixSyncSeriesNotification object:nil userInfo: nil];
 }
 
 -(void) FindMinimumOpenGLCapabilities
@@ -6930,7 +6931,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		_stringSize = stringSize;
 	}
 	
-	if (annotations == 4) [[NSNotificationCenter defaultCenter] postNotificationName: @"PLUGINdrawTextInfo" object: self];
+	if (annotations == 4) [[NSNotificationCenter defaultCenter] postNotificationName: OsirixDrawTextInfoNotification object: self];
 	else //none, base, noName, full annotation
 	{
 		NSMutableString *tempString, *tempString2, *tempString3, *tempString4;
@@ -7274,7 +7275,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 													  nil];
 							
 							
-							[[NSNotificationCenter defaultCenter] postNotificationName: @"PLUGINdrawTextInfo"
+							[[NSNotificationCenter defaultCenter] postNotificationName: OsirixDrawTextInfoNotification
 																				object: self
 																			  userInfo: userInfo];
 							yRaster += increment;
@@ -7996,7 +7997,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 																					[NSNumber numberWithFloat: curDCM.pixelSpacingY], @"spacingY",
 																					nil];
 			
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"PLUGINdrawObjects" object: self userInfo: userInfo];
+			[[NSNotificationCenter defaultCenter] postNotificationName: OsirixDrawObjectsNotification object: self userInfo: userInfo];
 			
 			//**SLICE CUR FOR 3D MPR
 //			glScalef (2.0f / drawingFrameRect.size.width, -2.0f /  drawingFrameRect.size.height, 1.0f);
@@ -10540,7 +10541,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	{
 		[[NSUserDefaults standardUserDefaults] setFloat: [[NSUserDefaults standardUserDefaults] floatForKey: @"LabelFONTSIZE"] + 1 forKey: @"LabelFONTSIZE"];
 		[NSFont resetFont: 2];
-		[[NSNotificationCenter defaultCenter] postNotificationName:@"changeLabelGLFontNotification" object: sender];
+		[[NSNotificationCenter defaultCenter] postNotificationName:OsirixLabelGLFontChangeNotification object: sender];
 	}
 }
 
@@ -10550,7 +10551,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	{
 		[[NSUserDefaults standardUserDefaults] setFloat: [[NSUserDefaults standardUserDefaults] floatForKey: @"LabelFONTSIZE"] - 1 forKey: @"LabelFONTSIZE"];
 		[NSFont resetFont: 2];
-		[[NSNotificationCenter defaultCenter] postNotificationName:@"changeLabelGLFontNotification" object: sender];
+		[[NSNotificationCenter defaultCenter] postNotificationName:OsirixLabelGLFontChangeNotification object: sender];
 	}
 }
 
@@ -10606,7 +10607,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	[[NSUserDefaults standardUserDefaults] setFloat: [newFont pointSize] forKey: @"FONTSIZE"];
 	[NSFont resetFont: 0];
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName:@"changeGLFontNotification" object: sender];
+	[[NSNotificationCenter defaultCenter] postNotificationName:OsirixGLFontChangeNotification object: sender];
 }
 
 - (void)loadTexturesCompute
@@ -10704,7 +10705,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		[[self windowController] propagateSettings];
 	}
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName:@"DCMViewDidBecomeFirstResponder" object:self];
+	[[NSNotificationCenter defaultCenter] postNotificationName:OsirixDCMViewDidBecomeFirstResponderNotification object:self];
 	
 	[self flagsChanged: [[NSApplication sharedApplication] currentEvent]];
 	
@@ -10743,7 +10744,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		nc = [NSNotificationCenter defaultCenter];
 		[nc addObserver: self
            selector: @selector(updateCurrentImage:)
-               name: @"DCMUpdateCurrentImage"
+               name: OsirixDCMUpdateCurrentImageNotification
              object: nil];
     }
     return self;
@@ -11518,7 +11519,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						
 						if( [self is2DViewer] == YES) [[self windowController] setCurWLWWMenu: [wwwlValues objectAtIndex: key-Preset1WWWLHotKeyAction]];
 						
-						[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: [wwwlValues objectAtIndex: key-Preset1WWWLHotKeyAction] userInfo: nil];
+						[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateWLWWMenuNotification object: [wwwlValues objectAtIndex: key-Preset1WWWLHotKeyAction] userInfo: nil];
 					}	
 					break;
 				
@@ -11551,7 +11552,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					if( [ViewerController getToolEquivalentToHotKey: key] >= 0)
 					{
 						userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:[ViewerController getToolEquivalentToHotKey: key]], @"toolIndex", nil];
-						[[NSNotificationCenter defaultCenter] postNotificationName: @"defaultToolModified" object:nil userInfo: userInfo];
+						[[NSNotificationCenter defaultCenter] postNotificationName: OsirixDefaultToolModifiedNotification object:nil userInfo: userInfo];
 					}
 				break;
 				case EmptyHotKeyAction:

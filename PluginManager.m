@@ -19,6 +19,7 @@
 #import "browserController.h"
 #import "BLAuthentication.h"
 #import "PluginManagerController.h"
+#import "Notifications.h"
 
 static NSMutableDictionary		*plugins = nil, *pluginsDict = nil, *fileFormatPlugins = nil;
 static NSMutableDictionary		*reportPlugins = nil;
@@ -304,7 +305,7 @@ static NSMutableDictionary		*pluginsNames = nil;
 		//[self discoverPlugins];
 		[PluginManager discoverPlugins];
 		
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(downloadNext:) name:@"PluginManagerControllerDownloadAndInstallDidFinish" object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(downloadNext:) name:OsirixPluginDownloadInstallDidFinishNotification object:nil];
 	}
 	return self;
 }

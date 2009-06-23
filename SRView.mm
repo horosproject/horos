@@ -24,6 +24,7 @@
 #import "DCMView.h"
 #import "DCMCursor.h"
 #import "DICOMExport.h"
+#import "Notifications.h"
 #import "wait.h"
 #include <OpenGL/OpenGL.h>
 #include <OpenGL/CGLCurrent.h>
@@ -828,7 +829,7 @@ typedef struct _xyzArray
 		nc = [NSNotificationCenter defaultCenter];
 		[nc addObserver: self
 			   selector: @selector(CloseViewerNotification:)
-				   name: @"CloseViewerNotification"
+				   name: OsirixCloseViewerNotification
 				 object: nil];
 			 
 		point3DActorArray = [[NSMutableArray alloc] initWithCapacity:0];
@@ -1255,7 +1256,7 @@ typedef struct _xyzArray
 			NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:	[NSNumber numberWithInt: sc[0]*[firstObject pixelSpacingX]], @"x", [NSNumber numberWithInt: sc[1]*[firstObject pixelSpacingY]], @"y", [NSNumber numberWithInt: sc[2]], @"z",
 																				nil];
 			
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"Display3DPoint" object:pixList  userInfo: dict];
+			[[NSNotificationCenter defaultCenter] postNotificationName: OsirixDisplay3dPointNotification object:pixList  userInfo: dict];
 			
 			return;
 		}

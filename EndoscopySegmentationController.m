@@ -21,6 +21,7 @@
 #import "browserController.h"
 #import "OSIVoxel.h"
 #import "EndoscopyViewer.h"
+#import "Notifications.h"
 //#import "VRView.h"
 
 
@@ -36,18 +37,18 @@
 		nc = [NSNotificationCenter defaultCenter];
 		[nc addObserver: self
 			   selector: @selector(mouseViewerDown:)
-				   name: @"mouseDown"
+				   name: OsirixMouseDownNotification
 				 object: nil];
 				 
 		
 		[nc addObserver: self
 				selector: @selector(drawStartingPoint:)
-				   name: @"PLUGINdrawObjects"
+				   name: OsirixDrawObjectsNotification
 				 object: nil];
 				 
 //		[nc addObserver: self
 //				selector: @selector(removeROI:)
-//				   name:  @"removeROI"
+//				   name:  OsirixRemoveROINotification
 //				 object: nil];
 	}
 	return self;
@@ -72,7 +73,7 @@
 
 	[[NSNotificationCenter defaultCenter] addObserver: self
            selector: @selector(closeViewerNotification:)
-               name: @"CloseViewerNotification"
+               name: OsirixCloseViewerNotification
              object: nil];
 	
 }

@@ -15,6 +15,7 @@ PURPOSE.
 
 
 #import "ROIManagerController.h"
+#import "Notifications.h"
 
 @implementation ROIManagerController
 
@@ -31,23 +32,23 @@ PURPOSE.
     nc = [NSNotificationCenter defaultCenter];	
 	[nc addObserver: self
            selector: @selector(CloseViewerNotification:)
-               name: @"CloseViewerNotification"
+               name: OsirixCloseViewerNotification
              object: nil];
 	[nc addObserver: self
            selector: @selector(roiListModification:)
-               name: @"roiChange"
+               name: OsirixROIChangeNotification
              object: nil];
 	[nc addObserver: self
            selector: @selector(fireUpdate:)
-               name: @"removeROI"
+               name: OsirixRemoveROINotification
              object: nil];
 	[nc addObserver: self
            selector: @selector(roiListModification:)
-               name: @"DCMUpdateCurrentImage"
+               name: OsirixDCMUpdateCurrentImageNotification
              object: nil];
 	[nc addObserver: self
            selector: @selector(roiListModification:)
-               name: @"roiSelected"
+               name: OsirixROISelectedNotification
              object: nil];
 		 
 	viewer = v;
@@ -69,7 +70,7 @@ PURPOSE.
 	
 
 //	[editedROI setName:anObject];
-//	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:editedROI userInfo: nil];
+//	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object:editedROI userInfo: nil];
 	
 	[viewer renameSeriesROIwithName: [editedROI name] newName:anObject];
 	
@@ -103,13 +104,13 @@ PURPOSE.
 	
 		[viewer deleteSeriesROIwithName: [selectedRoi name]];
 	
-//		[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:selectedRoi userInfo: nil];
+//		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object:selectedRoi userInfo: nil];
 //		[curRoiList removeObject:selectedRoi];
 		
 		index = [indexSet indexLessThanIndex:index];
 	}
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"updateView" object:nil userInfo: nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateViewNotification object:nil userInfo: nil];
 }
 
 //- (void)tableViewSelectionDidChange:(NSNotification *)aNotification
@@ -131,7 +132,7 @@ PURPOSE.
 //			[curROI setROIMode: ROI_sleep];
 //		}
 //		
-//		[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:curROI userInfo: nil];
+//		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object:curROI userInfo: nil];
 //	}
 //}
 

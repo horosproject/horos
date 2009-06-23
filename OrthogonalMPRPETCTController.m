@@ -16,6 +16,7 @@
 #import "OrthogonalMPRPETCTView.h"
 #import "OrthogonalMPRPETCTViewer.h"
 #import "OrthogonalMPRViewer.h"
+#import "Notifications.h"
 
 @implementation OrthogonalMPRPETCTController
 
@@ -330,7 +331,7 @@
 	[viewer setWLWW: iwl : iww : self];
 	[self setCurWLWWMenu: NSLocalizedString(@"Other", nil)];
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"changeWLWW" object: [originalView curDCM] userInfo:nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixChangeWLWWNotification object: [originalView curDCM] userInfo:nil];
 }
 
 - (void) superSetWLWW:(float) iwl :(float) iww

@@ -21,6 +21,7 @@
 #import "EndoscopyViewer.h"
 #import "PreviewView.h"
 #import "IChatTheatreHelpWindowController.h"
+#import "Notifications.h"
 
 #import "VRPresetPreview.h"
 #import "VRView.h"
@@ -48,9 +49,9 @@ static IChatTheatreDelegate	*iChatDelegate = nil;
 	if(![super init]) return nil;
 	[[IMService notificationCenter] addObserver:self selector:@selector(_stateChanged:) name:IMAVManagerStateChangedNotification object:nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowChanged:) name:NSWindowDidBecomeKeyNotification object:nil];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(focusChanged:) name:@"DCMViewDidBecomeFirstResponder" object:nil];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(focusChanged:) name:@"VRViewDidBecomeFirstResponder" object:nil];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(focusChanged:) name:@"VRCameraDidChange" object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(focusChanged:) name:OsirixDCMViewDidBecomeFirstResponderNotification object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(focusChanged:) name:OsirixVRViewDidBecomeFirstResponderNotification object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(focusChanged:) name:OsirixVRCameraDidChangeNotification object:nil];
 	
 	return self;
 }
@@ -111,7 +112,7 @@ static IChatTheatreDelegate	*iChatDelegate = nil;
 - (void)focusChanged:(NSNotification *)aNotification;
 {
 	if(![self isIChatTheatreRunning]) return;
-	if([[aNotification name] isEqualToString:@"VRCameraDidChange"])
+	if([[aNotification name] isEqualToString:OsirixVRCameraDidChangeNotification])
 		if(![[(VRController*)[[aNotification object] controller] style] isEqualToString:@"panel"]) return;
 		
 	IMAVManager *avManager = [IMAVManager sharedAVManager];

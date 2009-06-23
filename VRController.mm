@@ -30,6 +30,7 @@
 #import "ROIVolumeManagerController.h"
 #import "CLUTOpacityView.h"
 #import "VRPresetPreview.h"
+#import "Notifications.h"
 
 #define PRESETS_DIRECTORY @"/3DPRESETS/"
 #define CLUTDATABASE @"/CLUTs/"
@@ -110,7 +111,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 
 -(void) revertSeries:(id) sender
 {
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"revertSeriesNotification" object: pixList[ curMovieIndex] userInfo: nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRevertSeriesNotification object: pixList[ curMovieIndex] userInfo: nil];
 	[appliedConvolutionFilters removeAllObjects];
 	if([presetsPanel isVisible])
 		[self displayPresetsForSelectedGroup];
@@ -629,58 +630,58 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	
 	[nc addObserver: self
 		selector: @selector(remove3DPoint:)
-		name: @"removeROI"
+		name: OsirixRemoveROINotification
 		object: nil];
 	[nc addObserver: self
 		selector: @selector(add3DPoint:)
-		//name: @"roiChange"
-		name: @"roiSelected"
+		//name: OsirixROIChangeNotification
+		name: OsirixROISelectedNotification
 		object: nil];
 
     [nc addObserver: self
            selector: @selector(UpdateWLWWMenu:)
-               name: @"UpdateWLWWMenu"
+               name: OsirixUpdateWLWWMenuNotification
              object: nil];
 	
 	[nc addObserver: self
            selector: @selector(updateVolumeData:)
-               name: @"updateVolumeData"
+               name: OsirixUpdateVolumeDataNotification
              object: nil];
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateWLWWMenuNotification object: curWLWWMenu userInfo: nil];
 	
 	curCLUTMenu = [NSLocalizedString(@"No CLUT", nil) retain];
 	
     [nc addObserver: self
            selector: @selector(UpdateCLUTMenu:)
-               name: @"UpdateCLUTMenu"
+               name: OsirixUpdateCLUTMenuNotification
              object: nil];
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateCLUTMenuNotification object: curCLUTMenu userInfo: nil];
 	
 	curOpacityMenu = [NSLocalizedString(@"Linear Table", nil) retain];
 	
     [nc addObserver: self
            selector: @selector(UpdateOpacityMenu:)
-               name: @"UpdateOpacityMenu"
+               name: OsirixUpdateOpacityMenuNotification
              object: nil];
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateOpacityMenuNotification object: curOpacityMenu userInfo: nil];
 	
 	[nc addObserver: self
            selector: @selector(CLUTChanged:)
-               name: @"CLUTChanged"
+               name: OsirixCLUTChangedNotification
              object: nil];
 
 	[nc addObserver: self
            selector: @selector(UpdateConvolutionMenu:)
-               name: @"UpdateConvolutionMenu"
+               name: OsirixUpdateConvolutionMenuNotification
              object: nil];
-	 [[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateConvolutionMenu" object: NSLocalizedString( @"No Filter", nil) userInfo: nil];
+	 [[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateConvolutionMenuNotification object: NSLocalizedString( @"No Filter", nil) userInfo: nil];
 			
 	 [nc addObserver: self
            selector: @selector(CloseViewerNotification:)
-               name: @"CloseViewerNotification"
+               name: OsirixCloseViewerNotification
              object: nil];
 	
 	//should we always zoom the Window?
@@ -706,7 +707,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 #ifdef roi3Dvolume
 	[self computeROIVolumes];
 	[self displayROIVolumes];
-	[nc addObserver:self selector:@selector(updateROIVolume:) name:@"ROIVolumePropertiesChanged" object:nil];
+	[nc addObserver:self selector:@selector(updateROIVolume:) name:OsirixROIVolumePropertiesChangedNotification object:nil];
 #endif
 
 //	// allow bones removal only for CT or SC scans
@@ -766,8 +767,8 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 		
 		NSLog( @"presets end");
 	}
-	[nc addObserver:self selector:@selector(windowWillCloseNotification:) name:@"NSWindowWillCloseNotification" object:nil];
-	[nc addObserver:self selector:@selector(windowWillMoveNotification:) name:@"NSWindowWillMoveNotification" object:nil];
+	[nc addObserver:self selector:@selector(windowWillCloseNotification:) name:NSWindowWillCloseNotification object:nil];
+	[nc addObserver:self selector:@selector(windowWillMoveNotification:) name:NSWindowWillMoveNotification object:nil];
 	
     return self;
 }
@@ -1027,7 +1028,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 			//BlockMoveData( undodata[ i], data, memSize);
 		}
 		
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"updateVolumeData" object: pixList[ i] userInfo: 0];
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateVolumeDataNotification object: pixList[ i] userInfo: 0];
 	}
 }
 
@@ -1117,7 +1118,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 {
 	if( [notification object] == [self window])
 	{
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"Window3DClose" object: self userInfo: 0];
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixWindow3dCloseNotification object: self userInfo: 0];
 		
 		if( movieTimer)
 		{
@@ -1216,7 +1217,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	
 	[self applyWLWWForString: menuString];
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateWLWWMenuNotification object: curWLWWMenu userInfo: nil];
 }
 
 - (void)applyWLWWForString:(NSString *)menuString
@@ -1355,7 +1356,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 		if( [previousColorName isEqualToString: NSLocalizedString( @"B/W Inverse", nil)] || [previousColorName isEqualToString:( @"B/W Inverse")])
 			[view changeColorWith: [NSColor colorWithDeviceRed:0.0 green:0.0 blue:0.0 alpha:1.0]];
 		
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateCLUTMenuNotification object: curCLUTMenu userInfo: nil];
 		
 		[[[clutPopup menu] itemAtIndex:0] setTitle:str];
 	}
@@ -1396,7 +1397,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 				if( [previousColorName isEqualToString: NSLocalizedString( @"B/W Inverse", nil)] || [previousColorName isEqualToString:( @"B/W Inverse")])
 					[view changeColorWith: [NSColor colorWithDeviceRed:0.0 green:0.0 blue:0.0 alpha:1.0]];
 			}
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: nil];
+			[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateCLUTMenuNotification object: curCLUTMenu userInfo: nil];
 			
 			[[[clutPopup menu] itemAtIndex:0] setTitle: curCLUTMenu];
 		}
@@ -1420,7 +1421,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	if( [str isEqualToString:@"Linear Table"])
 	{
 		[view setOpacity:[NSArray array]];
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateOpacityMenuNotification object: curOpacityMenu userInfo: nil];
 		
 		[[[OpacityPopup menu] itemAtIndex:0] setTitle:str];
 	}
@@ -1432,7 +1433,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 			array = [aOpacity objectForKey:@"Points"];
 			
 			[view setOpacity:array];
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: nil];
+			[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateOpacityMenuNotification object: curOpacityMenu userInfo: nil];
 			
 			[[[OpacityPopup menu] itemAtIndex:0] setTitle: curOpacityMenu];
 		}
@@ -2227,7 +2228,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 //			NSLog( @"%f %f %f", [[x2DPointsArray lastObject] floatValue], [[y2DPointsArray lastObject] floatValue], [[z2DPointsArray lastObject] floatValue]);
 			
 			// notify the change
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object: new2DPointROI userInfo: nil];
+			[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object: new2DPointROI userInfo: nil];
 		}
 	}
 }
@@ -2278,8 +2279,8 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 			// remove 2D Point on 2D viewer2D
 			[[[viewer2D roiList] objectAtIndex: [[sliceNumber2DPointsArray objectAtIndex:cur2DPointIndex] longValue]] removeObject:cur2DPoint];
 			//notify
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:cur2DPoint userInfo: nil];
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"updateView" object:nil userInfo: nil];
+			[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object:cur2DPoint userInfo: nil];
+			[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateViewNotification object:nil userInfo: nil];
 
 			// remove 2D point in our list
 			// done by remove3DPoint (through notification)
@@ -2577,7 +2578,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
         NSBeginAlertSheet(NSLocalizedString(@"Remove a Color Look Up Table", nil), NSLocalizedString(@"Delete", nil), NSLocalizedString(@"Cancel", nil), nil, [self window],
 		  self, @selector(delete16BitCLUT:returnCode:contextInfo:), NULL, [sender title], [NSString stringWithFormat: NSLocalizedString( @"Are you sure you want to delete this CLUT : '%@'", nil), [sender title]]);
 		
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateCLUTMenuNotification object: curCLUTMenu userInfo: nil];
 	}
 	else
 	{
@@ -2667,7 +2668,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 			[[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
 		else
 			NSLog( @"**** Error: CLUT plist not found!");
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object:curCLUTMenu userInfo: nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateCLUTMenuNotification object:curCLUTMenu userInfo: nil];
     }
 }
 
@@ -2827,7 +2828,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 		if([presetsPanel isVisible])
 			[settingsGroupPopUpButton selectItemWithTitle:[[presetsGroupPopUpButton selectedItem] title]];
 		
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(controlTextDidChange:) name:@"NSControlTextDidChangeNotification" object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(controlTextDidChange:) name:NSControlTextDidChangeNotification object:nil];
 
 		[self show3DSettingsNewGroupTextField:[settingsGroupPopUpButton selectedItem]];
 		

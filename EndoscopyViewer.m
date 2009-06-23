@@ -22,6 +22,7 @@
 #import "EndoscopyFlyThruController.h"
 #import "OrthogonalMPRController.h"
 #import "BrowserController.h"
+#import "Notifications.h"
 
 static NSString* 	EndoscopyToolbarIdentifier				= @"Endoscopy Viewer Toolbar Identifier";
 static NSString*	endo3DToolsToolbarItemIdentifier		= @"3DTools";
@@ -50,7 +51,7 @@ static NSString*	CenterlineToolbarItemIdentifier			= @"Centerline";
 	
 //	[[NSNotificationCenter defaultCenter]	addObserver: self
 //											selector: @selector(CloseViewerNotification:)
-//											name: @"CloseViewerNotification"
+//											name: OsirixCloseViewerNotification
 //											object: nil];
 
 	// initialisations
@@ -78,17 +79,17 @@ static NSString*	CenterlineToolbarItemIdentifier			= @"Centerline";
 	nc = [NSNotificationCenter defaultCenter];
 	[nc addObserver: self
            selector: @selector(changeFocalPoint:)
-               name: @"changeFocalPoint"
+               name: OsirixChangeFocalPointNotification
              object: nil];
 	
 	[nc addObserver: self
            selector: @selector(setCameraRepresentation:)
-               name: @"VRCameraDidChange"
+               name: OsirixVRCameraDidChangeNotification
              object: nil];
 	
 	 [nc addObserver: self
            selector: @selector(CloseViewerNotification:)
-               name: @"CloseViewerNotification"
+               name: OsirixCloseViewerNotification
              object: nil];
 			 
 	// CLUT Menu
@@ -97,17 +98,17 @@ static NSString*	CenterlineToolbarItemIdentifier			= @"Centerline";
 	nc = [NSNotificationCenter defaultCenter];
 	[nc addObserver: self
            selector: @selector(Update2DCLUTMenu:)
-               name: @"Update2DCLUTMenu"
+               name: OsirixUpdate2dCLUTMenuNotification
              object: nil];
-	[nc postNotificationName: @"Update2DCLUTMenu" object: cur2DCLUTMenu userInfo: nil];
+	[nc postNotificationName: OsirixUpdate2dCLUTMenuNotification object: cur2DCLUTMenu userInfo: nil];
 	
 	// WL/WW Menu	
 	cur2DWLWWMenu = NSLocalizedString(@"Other", nil);
 	[nc addObserver: self
            selector: @selector(Update2DWLWWMenu:)
-               name: @"Update2DWLWWMenu"
+               name: OsirixUpdate2dWLWWMenuNotification
              object: nil];
-	[nc postNotificationName: @"Update2DWLWWMenu" object: cur2DWLWWMenu userInfo: nil];
+	[nc postNotificationName: OsirixUpdate2dWLWWMenuNotification object: cur2DWLWWMenu userInfo: nil];
 
 	
 	// camera representation
@@ -564,7 +565,7 @@ static NSString*	CenterlineToolbarItemIdentifier			= @"Centerline";
 {
 	[mprController ApplyCLUTString: str];
 	cur2DCLUTMenu = str;
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"Update2DCLUTMenu" object: cur2DCLUTMenu userInfo: nil];		
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdate2dCLUTMenuNotification object: cur2DCLUTMenu userInfo: nil];		
 	[[[clut2DPopup menu] itemAtIndex:0] setTitle:str];
 }
 
@@ -603,7 +604,7 @@ static NSString*	CenterlineToolbarItemIdentifier			= @"Centerline";
 {
 	[mprController setWLWW: iwl : iww];
 	[mprController setCurWLWWMenu:cur2DWLWWMenu];
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"Update2DWLWWMenu" object: cur2DWLWWMenu userInfo: nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdate2dWLWWMenuNotification object: cur2DWLWWMenu userInfo: nil];
 }
 
 -(void) Update2DWLWWMenu: (NSNotification*) note
@@ -656,7 +657,7 @@ static NSString*	CenterlineToolbarItemIdentifier			= @"Centerline";
 	}
 	
 	[[[wlww2DPopup menu] itemAtIndex:0] setTitle:[sender title]];
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"Update2DWLWWMenu" object: cur2DWLWWMenu userInfo: nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdate2dWLWWMenuNotification object: cur2DWLWWMenu userInfo: nil];
 	cur2DWLWWMenu = NSLocalizedString(@"Other", nil);
 }
 
@@ -695,8 +696,8 @@ static NSString*	CenterlineToolbarItemIdentifier			= @"Centerline";
 
 - (void) windowWillClose:(NSNotification *)notification
 {
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"Window3DClose" object: self userInfo: 0];
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"Window3DClose" object: vrController userInfo: 0];	//<- to close the FlyThru controller !
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixWindow3dCloseNotification object: self userInfo: 0];
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixWindow3dCloseNotification object: vrController userInfo: 0];	//<- to close the FlyThru controller !
 	
     [[self window] setDelegate:nil];
 	

@@ -35,6 +35,7 @@
 #import "PluginManager.h"
 #import "DCMTKStoreSCU.h"
 #import "MutableArrayCategory.h"
+#import "Notifications.h"
 
 static volatile int sendControllerObjects = 0;
 
@@ -110,11 +111,11 @@ static volatile int sendControllerObjects = 0;
 		_lock = [[NSRecursiveLock alloc] init];
 		[_lock  lock];
 		
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setSendMessage:) name:@"DCMSendStatus" object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setSendMessage:) name:OsirixDCMSendStatusNotification object:nil];
 		
 		[[NSNotificationCenter defaultCenter] addObserver: self
 												selector: @selector( updateDestinationPopup:)
-												name: @"OsiriXServerArray has changed"
+												name: OsirixServerArrayChangedNotification
 												object: nil];
 		
 		[[NSNotificationCenter defaultCenter] addObserver: self

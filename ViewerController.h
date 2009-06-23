@@ -431,6 +431,9 @@ enum
 /** Create a new ROI object */
 - (ROI*) newROI: (long) type;
 
+/** Check if the ROI belongs to this viewer */
+- (BOOL) containsROI:(ROI*)roi;
+
 /** Are the data volumic: same height same width same orientation */
 - (BOOL) isDataVolumicIn4D:(BOOL) check4D checkEverythingLoaded:(BOOL) c;
 - (BOOL) isDataVolumicIn4D:(BOOL) check4D;
@@ -823,7 +826,7 @@ enum
 * @param  rois  ROI array to filter
 * @param action The filter to apply: Possible values are: open, close, erode, dilate
 * @param radius structuringElementRadius for the filter
-* @param sendNotification Will post an @"roiChange" notification if YES
+* @param sendNotification Will post an OsirixROIChangeNotification notification if YES
 */
 - (void) applyMorphology: (NSArray*) rois action:(NSString*) action	radius: (long) radius sendNotification: (BOOL) sendNotification;
 

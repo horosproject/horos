@@ -19,6 +19,7 @@
 #import "DicomImage.h"
 #import "ROI.h"
 #import "iPhoto.h"
+#import "Notifications.h"
 
 #define PRESETS_DIRECTORY @"/3DPRESETS/"
 #define CLUTDATABASE @"/CLUTs/"
@@ -184,23 +185,23 @@ static float deg2rad = 3.14159265358979/180.0;
 		
 		[hiddenVRView setWLWW: [[viewer imageView] curWL] :[[viewer imageView] curWW]];
 		
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(defaultToolModified:) name:@"defaultToolModified" object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(defaultToolModified:) name:OsirixDefaultToolModifiedNotification object:nil];
 		
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(UpdateWLWWMenu:) name:@"UpdateWLWWMenu" object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(UpdateWLWWMenu:) name:OsirixUpdateWLWWMenuNotification object:nil];
 		curWLWWMenu = [[viewer2D curWLWWMenu] retain];
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateWLWWMenuNotification object: curWLWWMenu userInfo: nil];
 		
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(UpdateCLUTMenu:) name:@"UpdateCLUTMenu" object: nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(UpdateCLUTMenu:) name:OsirixUpdateCLUTMenuNotification object: nil];
 		curCLUTMenu = [[viewer2D curCLUTMenu] retain];
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateCLUTMenuNotification object: curCLUTMenu userInfo: nil];
 		
 		startingOpacityMenu = [[viewer2D curOpacityMenu] retain];
 		curOpacityMenu = [startingOpacityMenu retain];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(UpdateOpacityMenu:) name:@"UpdateOpacityMenu" object:nil];
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(UpdateOpacityMenu:) name:OsirixUpdateOpacityMenuNotification object:nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateOpacityMenuNotification object: curOpacityMenu userInfo: nil];
 		
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(CloseViewerNotification:) name:@"CloseViewerNotification" object:nil];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector: @selector(changeWLWW:) name: @"changeWLWW" object: nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(CloseViewerNotification:) name:OsirixCloseViewerNotification object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector: @selector(changeWLWW:) name: OsirixChangeWLWWNotification object: nil];
 		
 		[shadingCheck setAction:@selector(switchShading:)];
 		[shadingCheck setTarget:self];
@@ -880,7 +881,7 @@ static float deg2rad = 3.14159265358979/180.0;
 //				for( x = 0; x < [roiList[ i] count] ; x++)
 //				{
 //					for( z = 0; z < [[roiList[ i] objectAtIndex: x] count]; z++)
-//						[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:[[roiList[ i] objectAtIndex: x] objectAtIndex: z] userInfo: nil];
+//						[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object:[[roiList[ i] objectAtIndex: x] objectAtIndex: z] userInfo: nil];
 //						
 //					[[roiList[ i] objectAtIndex: x] removeAllObjects];
 //				}
@@ -897,7 +898,7 @@ static float deg2rad = 3.14159265358979/180.0;
 //					for( ROI *r in [roiList[ i] objectAtIndex: x])
 //					{
 //						[imageView roiSet: r];
-//						[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object: r userInfo: nil];
+//						[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object: r userInfo: nil];
 //					}
 //				}
 //			}
@@ -1063,7 +1064,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	
 	[self applyWLWWForString: menuString];
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateWLWWMenuNotification object: curWLWWMenu userInfo: nil];
 }
 
 - (void)applyWLWWForString:(NSString *)menuString;
@@ -1266,7 +1267,7 @@ static float deg2rad = 3.14159265358979/180.0;
 			}					
 		}
 		
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateCLUTMenuNotification object: curCLUTMenu userInfo: nil];
 		
 		[[[clutPopup menu] itemAtIndex:0] setTitle:str];
 	}
@@ -1331,7 +1332,7 @@ static float deg2rad = 3.14159265358979/180.0;
 				}
 			}
 			
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: nil];
+			[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateCLUTMenuNotification object: curCLUTMenu userInfo: nil];
 			
 			[[[clutPopup menu] itemAtIndex:0] setTitle: curCLUTMenu];
 		}
@@ -1412,7 +1413,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	if( [str isEqualToString:@"Linear Table"])
 	{
 		[mprView1.vrView setOpacity:[NSArray array]];
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateOpacityMenuNotification object: curOpacityMenu userInfo: nil];
 		
 		[[[OpacityPopup menu] itemAtIndex:0] setTitle:str];
 	}
@@ -1424,7 +1425,7 @@ static float deg2rad = 3.14159265358979/180.0;
 			array = [aOpacity objectForKey:@"Points"];
 			
 			[mprView1.vrView setOpacity:array];
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: nil];
+			[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateOpacityMenuNotification object: curOpacityMenu userInfo: nil];
 			
 			[[[OpacityPopup menu] itemAtIndex:0] setTitle: curOpacityMenu];
 		}
@@ -1459,7 +1460,7 @@ static float deg2rad = 3.14159265358979/180.0;
 		}
 		
 		//lastMenuNotification = nil;
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateOpacityMenuNotification object: curOpacityMenu userInfo: nil];
 		
 		[[[OpacityPopup menu] itemAtIndex:0] setTitle:str];
 		
@@ -1487,7 +1488,7 @@ static float deg2rad = 3.14159265358979/180.0;
 			}
 			
 			//lastMenuNotification = nil;
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: nil];
+			[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateOpacityMenuNotification object: curOpacityMenu userInfo: nil];
 			
 			[[[OpacityPopup menu] itemAtIndex:0] setTitle:str];
 			
@@ -1592,7 +1593,7 @@ static float deg2rad = 3.14159265358979/180.0;
 		// switch linear opacity table
 		[curOpacityMenu release];
 		curOpacityMenu = [startingOpacityMenu retain];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(UpdateOpacityMenu:) name:@"UpdateOpacityMenu" object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(UpdateOpacityMenu:) name:OsirixUpdateOpacityMenuNotification object:nil];
 	}
 	else
 	{
@@ -1610,7 +1611,7 @@ static float deg2rad = 3.14159265358979/180.0;
 		// switch log inverse table
 		[curOpacityMenu release];
 		curOpacityMenu = [NSLocalizedString(@"Logarithmic Inverse Table", nil) retain];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(UpdateOpacityMenu:) name:@"UpdateOpacityMenu" object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(UpdateOpacityMenu:) name:OsirixUpdateOpacityMenuNotification object:nil];
 		
 		[self setTool: toolsMatrix];
 	}
@@ -2371,7 +2372,7 @@ static float deg2rad = 3.14159265358979/180.0;
 		
 		[[NSNotificationCenter defaultCenter] removeObserver: self];
 		
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"Window3DClose" object: self userInfo: 0];
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixWindow3dCloseNotification object: self userInfo: 0];
 		
 		if( movieTimer)
 		{

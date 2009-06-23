@@ -15,6 +15,7 @@
 
 #import "ROIVolumeManagerController.h"
 #import "ROIVolume.h"
+#import "Notifications.h"
 //#import "ColorWellCell.h"
 
 @implementation ROIVolumeManagerController
@@ -37,23 +38,23 @@
     nc = [NSNotificationCenter defaultCenter];	
 	[nc addObserver: self
            selector: @selector(Window3DClose:)
-               name: @"Window3DClose"
+               name: OsirixWindow3dCloseNotification
              object: nil];
 //	[nc addObserver: self
 //           selector: @selector(roiListModification:)
-//               name: @"roiChange"
+//               name: OsirixROIChangeNotification
 //             object: nil];
 //	[nc addObserver: self
 //           selector: @selector(fireUpdate:)
-//               name: @"removeROI"
+//               name: OsirixRemoveROINotification
 //             object: nil];
 //	[nc addObserver: self
 //           selector: @selector(roiListModification:)
-//               name: @"DCMUpdateCurrentImage"
+//               name: OsirixDCMUpdateCurrentImageNotification
 //             object: nil];
 //	[nc addObserver: self
 //           selector: @selector(roiListModification:)
-//               name: @"roiSelected"
+//               name: OsirixROISelectedNotification
 //             object: nil];
 	[tableView setDataSource:self];
 	//[tableView setDelegate:self];

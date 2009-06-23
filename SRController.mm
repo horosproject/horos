@@ -21,6 +21,7 @@
 #import "ROIVolumeManagerController.h"
 #import "ROIVolume.h"
 #import "BrowserController.h"
+#import "Notifications.h"
 
 static NSString* 	MIPToolbarIdentifier				= @"SR Toolbar Identifier";
 static NSString*	QTExportToolbarItemIdentifier		= @"QTExport.icns";
@@ -246,16 +247,16 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 	
 	[nc addObserver: self
 		selector: @selector(remove3DPoint:)
-		name: @"removeROI"
+		name: OsirixRemoveROINotification
 		object: nil];
 	[nc addObserver: self
 		selector: @selector(add3DPoint:)
-		//name: @"roiChange"
-		name: @"roiSelected"
+		//name: OsirixROIChangeNotification
+		name: OsirixROISelectedNotification
 		object: nil];
 	[nc	addObserver: self
 					selector: @selector(CloseViewerNotification:)
-					name: @"CloseViewerNotification"
+					name: OsirixCloseViewerNotification
 					object: nil];
 //	curWLWWMenu = @"Other";
 //	
@@ -263,19 +264,19 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 //    nc = [NSNotificationCenter defaultCenter];
 //    [nc addObserver: self
 //           selector: @selector(UpdateWLWWMenu:)
-//               name: @"UpdateWLWWMenu"
+//               name: OsirixUpdateWLWWMenuNotification
 //             object: nil];
 //	
-//	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: nil];
+//	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateWLWWMenuNotification object: curWLWWMenu userInfo: nil];
 //	
 //	curCLUTMenu = NSLocalizedString(@"No CLUT", nil);
 //	
 //    [nc addObserver: self
 //           selector: @selector(UpdateCLUTMenu:)
-//               name: @"UpdateCLUTMenu"
+//               name: OsirixUpdateCLUTMenuNotification
 //             object: nil];
 //	
-//	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: nil];
+//	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateCLUTMenuNotification object: curCLUTMenu userInfo: nil];
 	
 	roiVolumes = [[NSMutableArray alloc] initWithCapacity:0];
 #ifdef roi3Dvolume
@@ -324,7 +325,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 
 - (void)windowWillClose:(NSNotification *)notification
 {
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"Window3DClose" object: self userInfo: 0];
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixWindow3dCloseNotification object: self userInfo: 0];
 	
     [[self window] setDelegate:nil];
     
@@ -952,7 +953,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 			[y2DPointsArray addObject:[NSNumber numberWithFloat:y]];
 			[z2DPointsArray addObject:[NSNumber numberWithFloat:z]];
 			// notify the change
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object: new2DPointROI userInfo: nil];
+			[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object: new2DPointROI userInfo: nil];
 		}
 	}
 }
@@ -985,8 +986,8 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 			// remove 2D Point on 2D viewer2D
 			[[[viewer2D roiList] objectAtIndex: [[sliceNumber2DPointsArray objectAtIndex:cur2DPointIndex] longValue]] removeObject:cur2DPoint];
 			//notify
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:cur2DPoint userInfo: nil];
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"updateView" object:nil userInfo: nil];
+			[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object:cur2DPoint userInfo: nil];
+			[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateViewNotification object:nil userInfo: nil];
 
 			// remove 2D point in our list
 			// done by remove3DPoint (through notification)

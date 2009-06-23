@@ -275,7 +275,7 @@ enum
 /** Modify roi as mouse is dragged */
 - (BOOL) mouseRoiDragged:(NSPoint) pt :(unsigned int) modifier :(float) scale;
 
-/** Moedify roi on mouse up */
+/** Modify roi on mouse up */
 - (BOOL) mouseRoiUp:(NSPoint) pt;
 
 /** Returns YES if roi is valid */

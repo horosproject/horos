@@ -21,6 +21,7 @@
 #import "DCMTKStoreSCU.h"
 #import "browserController.h"
 #import "DicomFile.h"
+#import "Notifications.h"
 #undef verify
 #include "osconfig.h" /* make sure OS specific configuration is included first */
 
@@ -1605,7 +1606,7 @@ NS_ENDHANDLER
 
 - (void)updateLogEntry: (NSMutableDictionary*) userInfo
 {
-	[[NSNotificationCenter defaultCenter] postNotificationName:@"DCMSendStatus" object:self userInfo:userInfo];
+	[[NSNotificationCenter defaultCenter] postNotificationName:OsirixDCMSendStatusNotification object:self userInfo:userInfo];
 	
 	if( [[BrowserController currentBrowser] isNetworkLogsActive] == NO) return;
 	

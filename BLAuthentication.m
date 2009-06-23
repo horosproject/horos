@@ -334,8 +334,6 @@
 
 // BLAuthentication sends these notifications are sent when the user  
 // becomes authenticated or deauthenticated.
-NSString* BLAuthenticatedNotification = @"BLAuthenticatedNotification";
-NSString* BLDeauthenticatedNotification = @"BLDeauthenticatedNotification";
 
 // Sample notification observer:
 /*

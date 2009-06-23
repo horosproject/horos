@@ -13,6 +13,7 @@
 =========================================================================*/
 
 #import "DragMatrix.h"
+#import "Notifications.h"
 
 float INS_WIDTH = 2;
 float CIRCLE_SIZE = 6;
@@ -130,7 +131,7 @@ NSString *pasteBoardTypeCover = @"KeyImages";
 		NSArray *array = [[sender draggingSource] selection];
 		//NSLog(@"Selection: 
         dict = [NSDictionary dictionaryWithObject:array forKey:@"images"];
-        [nc postNotificationName:@"DragMatrixImageMoved" object:self userInfo:dict];
+        [nc postNotificationName:OsirixDragMatrixImageMovedNotification object:self userInfo:dict];
     }
 	
     

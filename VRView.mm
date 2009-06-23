@@ -34,6 +34,7 @@
 #import "DefaultsOsiriX.h" // for HotKeys
 #import "IChatTheatreDelegate.h"
 #import "DicomImage.h"
+#import "Notifications.h"
 
 #include "vtkMath.h"
 #include "vtkAbstractPropPicker.h"
@@ -1748,17 +1749,17 @@ public:
 		nc = [NSNotificationCenter defaultCenter];
 		[nc addObserver: self
 			   selector: @selector(CloseViewerNotification:)
-				   name: @"CloseViewerNotification"
+				   name: OsirixCloseViewerNotification
 				 object: nil];
 				 
 		[nc addObserver: self
 			   selector: @selector(OpacityChanged:)
-				   name: @"OpacityChanged"
+				   name: OsirixOpacityChangedNotification
 				 object: nil];
 				 
 		[nc addObserver: self
 			   selector: @selector(CLUTChanged:)
-				   name: @"CLUTChanged"
+				   name: OsirixCLUTChangedNotification
 				 object: nil];
 				 
 		[nc addObserver: self
@@ -2555,7 +2556,7 @@ public:
 			aRenderer->ResetCameraClippingRange();
 		
 		[self setNeedsDisplay:YES];
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixVRCameraDidChangeNotification object:self  userInfo: nil];
 	}
 }
 
@@ -2987,7 +2988,7 @@ public:
 					[self getInteractor]->SetEventInformation((int) mouseLoc.x, (int) mouseLoc.y, controlDown, shiftDown);
 					[self computeOrientationText];
 					[self getInteractor]->InvokeEvent(vtkCommand::MouseMoveEvent, NULL);
-					[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: nil];
+					[[NSNotificationCenter defaultCenter] postNotificationName: OsirixVRCameraDidChangeNotification object:self  userInfo: nil];
 					break;
 				
 				case t3DRotate:
@@ -3007,7 +3008,7 @@ public:
 						
 						[self computeOrientationText];
 						[self setNeedsDisplay:YES];
-						[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: nil];
+						[[NSNotificationCenter defaultCenter] postNotificationName: OsirixVRCameraDidChangeNotification object:self  userInfo: nil];
 					}
 					else
 					{
@@ -3016,7 +3017,7 @@ public:
 						[self getInteractor]->SetEventInformation((int)mouseLoc.x, (int)mouseLoc.y, controlDown, shiftDown);
 						[self computeOrientationText];
 						[self getInteractor]->InvokeEvent(vtkCommand::MouseMoveEvent, NULL);
-						[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: nil];
+						[[NSNotificationCenter defaultCenter] postNotificationName: OsirixVRCameraDidChangeNotification object:self  userInfo: nil];
 					}
 				}
 				break;
@@ -3025,7 +3026,7 @@ public:
 					controlDown = 0;
 					[self getInteractor]->SetEventInformation((int) mouseLoc.x, (int) mouseLoc.y, controlDown, shiftDown);
 					[self getInteractor]->InvokeEvent(vtkCommand::MouseMoveEvent, NULL);					
-					[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: nil];
+					[[NSNotificationCenter defaultCenter] postNotificationName: OsirixVRCameraDidChangeNotification object:self  userInfo: nil];
 					break;
 				case tZoom:
 					[self rightMouseDragged:theEvent];
@@ -3063,7 +3064,7 @@ public:
 		[self getInteractor]->SetEventInformation((int) mouseLoc.x, (int) mouseLoc.y, controlDown, shiftDown);
 		[self computeLength];
 		[self getInteractor]->InvokeEvent(vtkCommand::MouseMoveEvent, NULL);
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixVRCameraDidChangeNotification object:self  userInfo: nil];
 	}
 	else
 	{
@@ -3079,7 +3080,7 @@ public:
 			aRenderer->ResetCameraClippingRange();
 		
 		[self setNeedsDisplay:YES];
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixVRCameraDidChangeNotification object:self  userInfo: nil];
 	}
 	
 	if( croppingBox)
@@ -3145,7 +3146,7 @@ public:
 						blendingVolumeMapper->SetMinimumImageSampleDistance( LOD);
 					
 					[self getInteractor]->InvokeEvent(vtkCommand::LeftButtonReleaseEvent, NULL);
-					[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: nil];
+					[[NSNotificationCenter defaultCenter] postNotificationName: OsirixVRCameraDidChangeNotification object:self  userInfo: nil];
 				}
 			}
 			break;
@@ -3163,7 +3164,7 @@ public:
 					blendingVolumeMapper->SetMinimumImageSampleDistance( LOD);
 				
 				[self getInteractor]->InvokeEvent(vtkCommand::LeftButtonReleaseEvent, NULL);
-				[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: nil];
+				[[NSNotificationCenter defaultCenter] postNotificationName: OsirixVRCameraDidChangeNotification object:self  userInfo: nil];
 				break;
 			case tZoom:
 				[self zoomMouseUp:(NSEvent *)theEvent];
@@ -3207,7 +3208,7 @@ public:
 			[self setNeedsDisplay:YES];
 		}
 		
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixVRCameraDidChangeNotification object:self  userInfo: nil];
 	}
 }
 
@@ -3325,7 +3326,7 @@ public:
 			sc[ 2] /= [firstObject sliceInterval];
 			
 			NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: sc[0]], @"x", [NSNumber numberWithInt: sc[1]], @"y", [NSNumber numberWithInt: sc[2]], @"z", nil];
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"Display3DPoint" object:pixList  userInfo: dict];
+			[[NSNotificationCenter defaultCenter] postNotificationName: OsirixDisplay3dPointNotification object:pixList  userInfo: dict];
 		}
 		else
 		{
@@ -3333,7 +3334,7 @@ public:
 			{
 				NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:	[NSNumber numberWithInt: pix[0]], @"x", [NSNumber numberWithInt: pix[1]], @"y", [NSNumber numberWithInt: pix[2]], @"z",
 																					nil];
-				[[NSNotificationCenter defaultCenter] postNotificationName: @"Display3DPoint" object:pixList  userInfo: dict];
+				[[NSNotificationCenter defaultCenter] postNotificationName: OsirixDisplay3dPointNotification object:pixList  userInfo: dict];
 			}
 		}
 		[drawLock unlock];
@@ -3639,7 +3640,7 @@ public:
 					
 					NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:	[NSNumber numberWithInt: pix[0]], @"x", [NSNumber numberWithInt: pix[1]], @"y", [NSNumber numberWithInt: pix[2]], @"z",
 																						nil];
-					[[NSNotificationCenter defaultCenter] postNotificationName: @"Display3DPoint" object:pixList  userInfo: dict];
+					[[NSNotificationCenter defaultCenter] postNotificationName: OsirixDisplay3dPointNotification object:pixList  userInfo: dict];
 				}
 			}
 		}
@@ -4165,7 +4166,7 @@ public:
 	if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD);
 	if( blendingVolumeMapper) blendingVolumeMapper->SetMinimumImageSampleDistance( LOD);
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixVRCameraDidChangeNotification object:self  userInfo: nil];
 }
 
 - (void) keyUp:(NSEvent *)event
@@ -4324,7 +4325,7 @@ public:
 	
 	// Update everything..
 	ROIUPDATE = NO;
-	//[[NSNotificationCenter defaultCenter] postNotificationName: @"updateVolumeData" object: pixList userInfo: 0];	<- This is slow
+	//[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateVolumeDataNotification object: pixList userInfo: 0];	<- This is slow
 	
 	if( cropcallback)
 		cropcallback->Execute(croppingBox, 0, nil);
@@ -6353,7 +6354,7 @@ public:
 				if( [volumeData length] == volumeSize)
 				{
 					memcpy( data, [volumeData bytes], volumeSize);
-					[[NSNotificationCenter defaultCenter] postNotificationName: @"updateVolumeData" object: pixList userInfo: 0];
+					[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateVolumeDataNotification object: pixList userInfo: 0];
 					
 					if( croppingBox)
 						cropcallback->Execute(croppingBox, 0, nil);
@@ -6424,7 +6425,7 @@ public:
 	aCamera->SetParallelScale(parallelScale);
 	
 	aCamera->SetParallelProjection(aVtkCamera->GetParallelProjection());
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixVRCameraDidChangeNotification object:self  userInfo: nil];
 	[self setNeedsDisplay:YES];
 }
 
@@ -6522,7 +6523,7 @@ public:
 	else
 		aRenderer->ResetCameraClippingRange();
 
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixVRCameraDidChangeNotification object:self  userInfo: nil];
 }
 
 - (void) setCamera: (Camera*) cam
@@ -6628,7 +6629,7 @@ public:
 	else
 		aRenderer->ResetCameraClippingRange();
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixVRCameraDidChangeNotification object:self  userInfo: nil];
 }
 
 - (void) setLowResolutionCamera: (Camera*) cam
@@ -7607,12 +7608,12 @@ public:
 				case DefaultWWWLHotKeyAction: // default WW/WL
 								wwwlMenuString = NSLocalizedString(@"Default WL & WW", nil);	// default WW/WL
 								[windowController applyWLWWForString:wwwlMenuString];
-								[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: wwwlMenuString userInfo: nil];
+								[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateWLWWMenuNotification object: wwwlMenuString userInfo: nil];
 						break;
 				case FullDynamicWWWLHotKeyAction:  // full dynamic WW/WL
 								wwwlMenuString = NSLocalizedString(@"Full dynamic", nil);	
 								[windowController applyWLWWForString:wwwlMenuString];	
-								[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: wwwlMenuString userInfo: nil];								
+								[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateWLWWMenuNotification object: wwwlMenuString userInfo: nil];								
 						break;
 				
 				case Preset1WWWLHotKeyAction:																	// 1 - 9 will be presets WW/WL
@@ -7628,7 +7629,7 @@ public:
 					{
 								wwwlMenuString = [wwwlValues objectAtIndex:key-Preset1WWWLHotKeyAction];
 								[windowController applyWLWWForString:wwwlMenuString];
-								[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: wwwlMenuString userInfo: nil];
+								[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateWLWWMenuNotification object: wwwlMenuString userInfo: nil];
 					}	
 					break;
 				
@@ -7949,7 +7950,7 @@ public:
 
 - (BOOL)becomeFirstResponder
 {
-	[[NSNotificationCenter defaultCenter] postNotificationName:@"VRViewDidBecomeFirstResponder" object:self];
+	[[NSNotificationCenter defaultCenter] postNotificationName:OsirixVRViewDidBecomeFirstResponderNotification object:self];
 	[self connect2SpaceNavigator];
 	return [super becomeFirstResponder];
 }
@@ -8197,7 +8198,7 @@ void VRSpaceNavigatorMessageHandler(io_connect_t connection, natural_t messageTy
 							[vV setNeedsDisplay:YES];
 						}
 												
-						[[NSNotificationCenter defaultCenter] postNotificationName:@"VRCameraDidChange" object:vV userInfo:nil];
+						[[NSNotificationCenter defaultCenter] postNotificationName:OsirixVRCameraDidChangeNotification object:vV userInfo:nil];
 						[vV computeOrientationText];
 						
 						[vV displayLowRes];
@@ -8214,18 +8215,18 @@ void VRSpaceNavigatorMessageHandler(io_connect_t connection, natural_t messageTy
 						{
 							if( vV->projectionMode != 2) [vV coView:nil];
 							else [vV yaw:180.0];
-							[[NSNotificationCenter defaultCenter] postNotificationName:@"VRCameraDidChange" object:vV userInfo:nil];
+							[[NSNotificationCenter defaultCenter] postNotificationName:OsirixVRCameraDidChangeNotification object:vV userInfo:nil];
 						}
 						else if(state->buttons==2) // right button pressed
 						{
 							if( vV->projectionMode != 2) [vV saView:nil];
 							else [vV yaw:90.0];
-							[[NSNotificationCenter defaultCenter] postNotificationName:@"VRCameraDidChange" object:vV userInfo:nil];
+							[[NSNotificationCenter defaultCenter] postNotificationName:OsirixVRCameraDidChangeNotification object:vV userInfo:nil];
 						}
 						else if(state->buttons==3) // both button are presed
 						{
 							if( vV->projectionMode != 2) [vV saViewOpposite:nil];
-							[[NSNotificationCenter defaultCenter] postNotificationName:@"VRCameraDidChange" object:vV userInfo:nil];
+							[[NSNotificationCenter defaultCenter] postNotificationName:OsirixVRCameraDidChangeNotification object:vV userInfo:nil];
 						}
                         break;
                 }

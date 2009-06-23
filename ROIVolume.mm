@@ -14,6 +14,7 @@
 
 
 #import "ROIVolume.h"
+#import "Notifications.h"
 
 
 #import "ITKSegmentation3D.h"
@@ -428,7 +429,7 @@
 	blue = [c blueComponent];
 	opacity = [c alphaComponent];
 	[properties setValue:color forKey:@"color"];
-	[[NSNotificationCenter defaultCenter] postNotificationName:@"ROIVolumePropertiesChanged" object:self userInfo:[NSDictionary dictionaryWithObject:@"color" forKey:@"key"]];
+	[[NSNotificationCenter defaultCenter] postNotificationName:OsirixROIVolumePropertiesChangedNotification object:self userInfo:[NSDictionary dictionaryWithObject:@"color" forKey:@"key"]];
 }
 
 - (float) red
@@ -442,7 +443,7 @@
 	color = [NSColor colorWithCalibratedRed:red green:green blue:blue alpha:opacity];
 	if( roiVolumeActor) roiVolumeActor->GetProperty()->SetColor(red, green, blue);
 	[properties setValue:[NSNumber numberWithFloat:red] forKey:@"red"];
-	[[NSNotificationCenter defaultCenter] postNotificationName:@"ROIVolumePropertiesChanged" object:self userInfo:[NSDictionary dictionaryWithObject:@"red" forKey:@"key"]];
+	[[NSNotificationCenter defaultCenter] postNotificationName:OsirixROIVolumePropertiesChangedNotification object:self userInfo:[NSDictionary dictionaryWithObject:@"red" forKey:@"key"]];
 }
 
 - (float) green
@@ -456,7 +457,7 @@
 	color = [NSColor colorWithCalibratedRed:red green:green blue:blue alpha:opacity];
 	if( roiVolumeActor) roiVolumeActor->GetProperty()->SetColor(red, green, blue);
 	[properties setValue:[NSNumber numberWithFloat:green] forKey:@"green"];
-	[[NSNotificationCenter defaultCenter] postNotificationName:@"ROIVolumePropertiesChanged" object:self userInfo:[NSDictionary dictionaryWithObject:@"green" forKey:@"key"]];
+	[[NSNotificationCenter defaultCenter] postNotificationName:OsirixROIVolumePropertiesChangedNotification object:self userInfo:[NSDictionary dictionaryWithObject:@"green" forKey:@"key"]];
 }
 
 - (float) blue
@@ -470,7 +471,7 @@
 	color = [NSColor colorWithCalibratedRed:red green:green blue:blue alpha:opacity];
 	if( roiVolumeActor) roiVolumeActor->GetProperty()->SetColor(red, green, blue);
 	[properties setValue:[NSNumber numberWithFloat:blue] forKey:@"blue"];
-	[[NSNotificationCenter defaultCenter] postNotificationName:@"ROIVolumePropertiesChanged" object:self userInfo:[NSDictionary dictionaryWithObject:@"blue" forKey:@"key"]];
+	[[NSNotificationCenter defaultCenter] postNotificationName:OsirixROIVolumePropertiesChangedNotification object:self userInfo:[NSDictionary dictionaryWithObject:@"blue" forKey:@"key"]];
 }
 
 - (float) opacity
@@ -484,7 +485,7 @@
 	color = [NSColor colorWithCalibratedRed:red green:green blue:blue alpha:opacity];
 	if( roiVolumeActor) roiVolumeActor->GetProperty()->SetOpacity(opacity);
 	[properties setValue:[NSNumber numberWithFloat:opacity] forKey:@"opacity"];
-	[[NSNotificationCenter defaultCenter] postNotificationName:@"ROIVolumePropertiesChanged" object:self userInfo:[NSDictionary dictionaryWithObject:@"opacity" forKey:@"key"]];
+	[[NSNotificationCenter defaultCenter] postNotificationName:OsirixROIVolumePropertiesChangedNotification object:self userInfo:[NSDictionary dictionaryWithObject:@"opacity" forKey:@"key"]];
 }
 
 - (BOOL) texture
@@ -502,7 +503,7 @@
 		else roiVolumeActor->SetTexture( nil);
 	}
 	[properties setValue:[NSNumber numberWithBool: textured] forKey:@"texture"];
-	[[NSNotificationCenter defaultCenter] postNotificationName:@"ROIVolumePropertiesChanged" object:self userInfo:[NSDictionary dictionaryWithObject:@"texture" forKey:@"key"]];
+	[[NSNotificationCenter defaultCenter] postNotificationName:OsirixROIVolumePropertiesChangedNotification object:self userInfo:[NSDictionary dictionaryWithObject:@"texture" forKey:@"key"]];
 }
 
 - (float) factor
@@ -524,7 +525,7 @@
 {	
 	visible = d;
 	[properties setValue:[NSNumber numberWithBool:visible] forKey:@"visible"];
-	[[NSNotificationCenter defaultCenter] postNotificationName:@"ROIVolumePropertiesChanged" object:self userInfo:[NSDictionary dictionaryWithObject:@"visible" forKey:@"key"]];
+	[[NSNotificationCenter defaultCenter] postNotificationName:OsirixROIVolumePropertiesChangedNotification object:self userInfo:[NSDictionary dictionaryWithObject:@"visible" forKey:@"key"]];
 }
 
 - (NSString*) name

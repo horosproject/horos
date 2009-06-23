@@ -19,6 +19,7 @@
 #import "ViewerController.h"
 #import "DCMPix.h"
 #import "DCMView.h"
+#import "Notifications.h"
 
 #import "ITKSegmentation3DController.h"
 
@@ -122,17 +123,17 @@ enum algorithmTypes { intervalSegmentationType, thresholdSegmentationType, neigh
     nc = [NSNotificationCenter defaultCenter];
     [nc addObserver: self
            selector: @selector(mouseViewerDown:)
-               name: @"mouseDown"
+               name: OsirixMouseDownNotification
              object: nil];
 			 
 	[nc addObserver: self
            selector: @selector(CloseViewerNotification:)
-               name: @"CloseViewerNotification"
+               name: OsirixCloseViewerNotification
              object: nil];
 	
 	[nc addObserver: self
 			selector: @selector(drawStartingPoint:)
-               name: @"PLUGINdrawObjects"
+               name: OsirixDrawObjectsNotification
              object: nil];
 	
 	return self;

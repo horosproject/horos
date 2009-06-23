@@ -20,6 +20,7 @@
 #import "DICOMExport.h"
 #import "BrowserController.h"
 #import "DCMCursor.h"
+#import "Notifications.h"
 
 @implementation EndoscopyMPRView
 
@@ -215,7 +216,7 @@
 					[self setFocalShiftX:focalShiftX];
 					[self setFocalShiftY:focalShiftY];
 					[self setNeedsDisplay:YES];
-					[[NSNotificationCenter defaultCenter] postNotificationName: @"changeFocalPoint" object:self  userInfo: nil];
+					[[NSNotificationCenter defaultCenter] postNotificationName: OsirixChangeFocalPointNotification object:self  userInfo: nil];
 				break;
 				
 				case NSLeftMouseUp:
@@ -246,7 +247,7 @@
 	//focalShiftY = focalPointY - crossPositionY;
 	[self setFocalShiftX:[self focalShiftX]]; // will recompute focalPointX
 	[self setFocalShiftY:[self focalShiftY]]; // will recompute focalPointX
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"changeFocalPoint" object:self  userInfo: nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixChangeFocalPointNotification object:self  userInfo: nil];
 	[(EndoscopyViewer*)[[self controller] viewer] setCamera];
 }
 
@@ -265,7 +266,7 @@
 - (void) adjustWLWW:(float) wl :(float) ww
 {
 	[super adjustWLWW :wl :ww];
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"Update2DWLWWMenu" object: curWLWWMenu userInfo: nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdate2dWLWWMenuNotification object: curWLWWMenu userInfo: nil];
 }
 
 - (void) setCameraPosition: (float) x : (float) y

@@ -20,6 +20,7 @@
 #import "ROI.h"
 #import "DefaultsOsiriX.h"
 #import "ThickSlabController.h"
+#import "Notifications.h"
 
 @implementation OrthogonalMPRView
 
@@ -43,17 +44,17 @@
 	
 	[[NSNotificationCenter defaultCenter]	addObserver: self
 											selector: @selector(addROI:)
-											name: @"addROI"
+											name: OsirixAddROINotification
 											object: nil];
 	
 	[[NSNotificationCenter defaultCenter]	addObserver: self
 											selector: @selector(removeROI:)
-											name: @"removeROI"
+											name: OsirixRemoveROINotification
 											object: nil];
 											
 	[[NSNotificationCenter defaultCenter]	addObserver: self
 											selector: @selector(roiRemovedFromArray:)
-											name: @"roiRemovedFromArray"
+											name: OsirixROIRemovedFromArrayNotification
 											object: nil];
 	
 	return self;
@@ -436,7 +437,7 @@
 	{
 		[controller saveCrossPositions];
 		[super mouseDown:event];
-		[[NSNotificationCenter defaultCenter] postNotificationName:@"DCMViewDidBecomeFirstResponder" object:self];
+		[[NSNotificationCenter defaultCenter] postNotificationName:OsirixDCMViewDidBecomeFirstResponderNotification object:self];
 	}
 }
 
@@ -721,12 +722,12 @@
 				case DefaultWWWLHotKeyAction:	// default WW/WL
 						wwwlMenuString = NSLocalizedString(@"Default WL & WW", nil);	// default WW/WL
 						[windowController applyWLWWForString:wwwlMenuString];
-						[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: wwwlMenuString userInfo: nil];
+						[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateWLWWMenuNotification object: wwwlMenuString userInfo: nil];
 						break;
 				case FullDynamicWWWLHotKeyAction:											// full dynamic WW/WL
 						wwwlMenuString = NSLocalizedString(@"Full dynamic", nil);	
 						[windowController applyWLWWForString:wwwlMenuString];	
-						[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: wwwlMenuString userInfo: nil];		
+						[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateWLWWMenuNotification object: wwwlMenuString userInfo: nil];		
 						break;
 				
 				case Preset1WWWLHotKeyAction:			// 1 - 9 will be presets WW/WL
@@ -742,7 +743,7 @@
 					{
 						wwwlMenuString = [wwwlValues objectAtIndex:key-Preset1WWWLHotKeyAction];
 						[windowController applyWLWWForString:wwwlMenuString];
-						[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: wwwlMenuString userInfo: nil];
+						[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateWLWWMenuNotification object: wwwlMenuString userInfo: nil];
 					}	
 					break;
 				
@@ -922,14 +923,14 @@
 		{
 			[[self windowController] setCurWLWWMenu: [DCMView findWLWWPreset: curWL :curWW :curDCM]];
 		}
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: [DCMView findWLWWPreset: curWL :curWW :curDCM] userInfo: nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateWLWWMenuNotification object: [DCMView findWLWWPreset: curWL :curWW :curDCM] userInfo: nil];
 		
 
 		// change Window level
 		[self setWLWW: curWL :curWW];
 
 		
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"changeWLWW" object: curDCM userInfo:nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixChangeWLWWNotification object: curDCM userInfo:nil];
 		
 		if( [curDCM SUVConverted] == NO)
 		{

@@ -89,6 +89,7 @@
 #import "DicomSeries.h"
 #import "dicomFile.h"
 #import "MPRController.h"
+#import "Notifications.h"
 
 int delayedTileWindows = NO;
 
@@ -754,7 +755,7 @@ static int hotKeyToolCrossTable[] =
 				for( x = 0; x < [roiList[ i] count] ; x++)
 				{
 					for( z = 0; z < [[roiList[ i] objectAtIndex: x] count]; z++)
-						[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:[[roiList[ i] objectAtIndex: x] objectAtIndex: z] userInfo: nil];
+						[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object:[[roiList[ i] objectAtIndex: x] objectAtIndex: z] userInfo: nil];
 						
 					[[roiList[ i] objectAtIndex: x] removeAllObjects];
 				}
@@ -771,7 +772,7 @@ static int hotKeyToolCrossTable[] =
 					for( ROI *r in [roiList[ i] objectAtIndex: x])
 					{
 						[imageView roiSet: r];
-						[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object: r userInfo: nil];
+						[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object: r userInfo: nil];
 					}
 				}
 			}
@@ -855,19 +856,19 @@ static int hotKeyToolCrossTable[] =
 - (void) refreshMenus
 {
 	lastMenuNotification = nil;
-	if( wlwwPresetsMenu == nil) [[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: nil];
+	if( wlwwPresetsMenu == nil) [[NSNotificationCenter defaultCenter] postNotificationName:OsirixUpdateWLWWMenuNotification object: curWLWWMenu userInfo: nil];
 	else [wlwwPopup setMenu: [[wlwwPresetsMenu copy] autorelease]];
 	
 	lastMenuNotification = nil;
-	if( clutPresetsMenu == nil) [[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: nil];
+	if( clutPresetsMenu == nil) [[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateCLUTMenuNotification object: curCLUTMenu userInfo: nil];
 	else [clutPopup setMenu: [[clutPresetsMenu copy] autorelease]];
 	
 	lastMenuNotification = nil;
-	if( convolutionPresetsMenu == nil) [[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateConvolutionMenu" object: curConvMenu userInfo: nil];
+	if( convolutionPresetsMenu == nil) [[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateConvolutionMenuNotification object: curConvMenu userInfo: nil];
 	else [convPopup setMenu: [[convolutionPresetsMenu copy] autorelease]];
 	
 	lastMenuNotification = nil;
-	if( opacityPresetsMenu == nil) [[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: nil];
+	if( opacityPresetsMenu == nil) [[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateOpacityMenuNotification object: curOpacityMenu userInfo: nil];
 	else [OpacityPopup setMenu: [[opacityPresetsMenu copy] autorelease]];
 
 	[clutPopup setTitle:curCLUTMenu];
@@ -2351,7 +2352,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	while( ThreadLoadImage)
 		[[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
 
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"CloseViewerNotification" object: self userInfo: nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixCloseViewerNotification object: self userInfo: nil];
 	
 	if( SYNCSERIES)
 	{
@@ -3134,7 +3135,7 @@ static volatile int numberOfThreadsForRelisce = 0;
         }
 		
 		lastMenuNotification = nil;
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateWLWWMenuNotification object: curWLWWMenu userInfo: nil];
 		
 		[imageView setWLWW: iwl: iww];
     }
@@ -3921,7 +3922,7 @@ static ViewerController *draggedController = nil;
 			NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithCapacity:2];
 			[userInfo setValue:self forKey:@"destination"];
 			[userInfo setValue:sender forKey:@"dragOperation"];
-			[[NSNotificationCenter defaultCenter] postNotificationName:@"PluginDragOperationNotification" object:nil userInfo:userInfo];
+			[[NSNotificationCenter defaultCenter] postNotificationName:OsirixDragOperationNotification object:nil userInfo:userInfo];
 		}
 	}
 	else
@@ -5221,9 +5222,9 @@ static ViewerController *draggedController = nil;
 	[imageView gClickCountSetReset];
 
 	if( [[buttonToolMatrix selectedCell] tag] == 0)
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"defaultToolModified" object:sender userInfo: nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixDefaultToolModifiedNotification object:sender userInfo: nil];
 	else
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"defaultRightToolModified" object:sender userInfo: nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixDefaultRightToolModifiedNotification object:sender userInfo: nil];
 }
 
 - (void) setShutterOnOffButton:(NSNumber*) b
@@ -5339,7 +5340,7 @@ static ViewerController *draggedController = nil;
 		[[NSUserDefaults standardUserDefaults] setObject: [[DefaultsOsiriX getDefaults] objectForKey: @"CLUT"] forKey: @"CLUT"];
 		
 		lastMenuNotification = nil;
-        [[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateCLUTMenuNotification object: curCLUTMenu userInfo: nil];
 	}
 }
 
@@ -5535,13 +5536,13 @@ static ViewerController *draggedController = nil;
 	NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
 	[nc addObserver: self
 	   selector: @selector(updateImageView:)
-		   name: @"DCMUpdateCurrentImage"
+		   name: OsirixDCMUpdateCurrentImageNotification
 		 object: nil];
 	
 	[seriesView setDCM:pixList[0] :fileList[0] :roiList[0] :0 :'i' :YES];	//[pixList[0] count]/2
 	
 	NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:[[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULTLEFTTOOL"]], @"toolIndex", nil];
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"defaultToolModified" object:nil userInfo: userInfo];
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixDefaultToolModifiedNotification object:nil userInfo: userInfo];
 	
 	displayOnlyKeyImages = NO;
 	
@@ -5618,7 +5619,7 @@ static ViewerController *draggedController = nil;
 		{
 			for( z = 0; z < [[roiList[ i] objectAtIndex: x] count]; z++)
 			{
-				[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:[[roiList[ i] objectAtIndex: x] objectAtIndex: z] userInfo: nil];
+				[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object:[[roiList[ i] objectAtIndex: x] objectAtIndex: z] userInfo: nil];
 			}
 		}
 		
@@ -5773,7 +5774,7 @@ static ViewerController *draggedController = nil;
 	
 	// *****************
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"ViewerWillChangeNotification" object: self userInfo: nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixViewerWillChangeNotification object: self userInfo: nil];
 	
 	[self ActivateBlending: nil];
 	[self clear8bitRepresentations];
@@ -5781,7 +5782,7 @@ static ViewerController *draggedController = nil;
 	[self setFusionMode: 0];
 	[imageView setIndex: 0];
 
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"CloseViewerNotification" object: self userInfo: nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixCloseViewerNotification object: self userInfo: nil];
 	
 	windowWillClose = YES;
 	[imageView setDrawing: NO];
@@ -6123,7 +6124,7 @@ static ViewerController *draggedController = nil;
 	[self refreshMenus];
 	
 	NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:[imageView curImage]]  forKey:@"curImage"];
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"DCMUpdateCurrentImage" object: imageView userInfo: userInfo];
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixDCMUpdateCurrentImageNotification object: imageView userInfo: userInfo];
 	
 //	if( previousColumns != 1 || previousRows != 1)
 //		[self setImageRows: previousRows columns: previousColumns];
@@ -6144,7 +6145,7 @@ static ViewerController *draggedController = nil;
 	
 	[[[BrowserController currentBrowser] managedObjectContext] unlock];
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"ViewerDidChangeNotification" object: self userInfo: nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixViewerDidChangeNotification object: self userInfo: nil];
 	
 	[self willChangeValueForKey: @"KeyImageCounter"];
 	[self didChangeValueForKey: @"KeyImageCounter"];
@@ -6605,7 +6606,7 @@ static ViewerController *draggedController = nil;
 	
 	[imageView roiSet];
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"recomputeROI" object:self userInfo: nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRecomputeROINotification object:self userInfo: nil];
 }
 
 
@@ -8061,7 +8062,7 @@ static ViewerController *draggedController = nil;
 		[[NSUserDefaults standardUserDefaults] setObject: presetsDict forKey: @"WLWW3"];
 		
 		lastMenuNotification = nil;
-        [[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateWLWWMenuNotification object: curWLWWMenu userInfo: nil];
     }
 	
 	[name release];
@@ -8111,10 +8112,10 @@ static ViewerController *draggedController = nil;
 	[wlwwPopup setTitle: curWLWWMenu];
 	
 	lastMenuNotification = nil;
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateWLWWMenuNotification object: curWLWWMenu userInfo: nil];
 	
 	NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:[imageView curImage]]  forKey:@"curImage"];
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"DCMUpdateCurrentImage" object: imageView userInfo: userInfo];
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixDCMUpdateCurrentImageNotification object: imageView userInfo: userInfo];
 }
 
 -(IBAction) updateSetWLWW:(id) sender
@@ -8310,7 +8311,7 @@ static float oldsetww, oldsetwl;
 		
 		[self ApplyConvString:NSLocalizedString(@"No Filter", nil)];
 		
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"updateVolumeData" object: pixList[ curMovieIndex] userInfo: nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateVolumeDataNotification object: pixList[ curMovieIndex] userInfo: nil];
 	}
 	else NSRunAlertPanel(NSLocalizedString(@"Convolution", nil), NSLocalizedString(@"First, apply a convolution filter...", nil), nil, nil, nil);
 }
@@ -8390,7 +8391,7 @@ static float oldsetww, oldsetwl;
 		[[NSUserDefaults standardUserDefaults] setObject: convDict forKey: @"Convolution"];
 		
 		lastMenuNotification = nil;
-        [[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateConvolutionMenu" object: curConvMenu userInfo: nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateConvolutionMenuNotification object: curConvMenu userInfo: nil];
     }
 }
 
@@ -8461,7 +8462,7 @@ static float oldsetww, oldsetwl;
 		}
 		
 		lastMenuNotification = nil;
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateConvolutionMenu" object: curConvMenu userInfo: nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateConvolutionMenuNotification object: curConvMenu userInfo: nil];
 	}
 	
 	[[[convPopup menu] itemAtIndex:0] setTitle: str];
@@ -8474,7 +8475,7 @@ static float oldsetww, oldsetwl;
         NSBeginAlertSheet( NSLocalizedString(@"Remove a Convolution Filter", nil), NSLocalizedString(@"Delete", nil), NSLocalizedString(@"Cancel", nil), nil, [self window], self, @selector(deleteConv:returnCode:contextInfo:), NULL, [sender title], [NSString stringWithFormat: NSLocalizedString( @"Are you sure you want to delete this convolution filter : '%@'", nil), [sender title]]);
 		
 		lastMenuNotification = nil;
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateConvolutionMenu" object: curConvMenu userInfo: nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateConvolutionMenuNotification object: curConvMenu userInfo: nil];
 	}
     else if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSAlternateKeyMask)
     {
@@ -8623,7 +8624,7 @@ long				x, y;
         }
 		
 		lastMenuNotification = nil;
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateConvolutionMenu" object: curConvMenu userInfo: nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateConvolutionMenuNotification object: curConvMenu userInfo: nil];
     }
 
     [addConvWindow orderOut:sender];
@@ -8687,7 +8688,7 @@ short				matrix[25];
 		[[NSUserDefaults standardUserDefaults] setObject: clutDict forKey: @"CLUT"];
 		
 		lastMenuNotification = nil;
-        [[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateCLUTMenuNotification object: curCLUTMenu userInfo: nil];
     }
 }
 
@@ -8730,7 +8731,7 @@ short				matrix[25];
 			}
 			
 			lastMenuNotification = nil;
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: nil];
+			[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateCLUTMenuNotification object: curCLUTMenu userInfo: nil];
 			
 			[[[clutPopup menu] itemAtIndex:0] setTitle:str];
 			
@@ -8800,7 +8801,7 @@ short				matrix[25];
 				}
 				
 				lastMenuNotification = nil;
-				[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: nil];
+				[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateCLUTMenuNotification object: curCLUTMenu userInfo: nil];
 				
 				[self propagateSettings];
 				[[[clutPopup menu] itemAtIndex:0] setTitle:str];
@@ -8809,7 +8810,7 @@ short				matrix[25];
 	}
 	
 	NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:[imageView curImage]]  forKey:@"curImage"];
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"DCMUpdateCurrentImage" object: imageView userInfo: userInfo];
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixDCMUpdateCurrentImageNotification object: imageView userInfo: userInfo];
 	
 	float   iwl, iww;
 	[imageView getWLWW:&iwl :&iww];
@@ -8833,7 +8834,7 @@ short				matrix[25];
         NSBeginAlertSheet( NSLocalizedString(@"Remove a Color Look Up Table", nil), NSLocalizedString(@"Delete", nil), NSLocalizedString(@"Cancel", nil), nil, [self window], self, @selector(deleteCLUT:returnCode:contextInfo:), NULL, [sender title], [NSString stringWithFormat: NSLocalizedString( @"Are you sure you want to delete this CLUT : '%@'", nil), [sender title]]);
 		
 		lastMenuNotification = nil;
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateCLUTMenuNotification object: curCLUTMenu userInfo: nil];
 	}
     else if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSAlternateKeyMask)
     {
@@ -8916,7 +8917,7 @@ short				matrix[25];
         }
 		
 		lastMenuNotification = nil;
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateCLUTMenuNotification object: curCLUTMenu userInfo: nil];
 		
 		[self ApplyCLUTString:curCLUTMenu];
     }
@@ -8971,7 +8972,7 @@ short				matrix[25];
 		}
 		
 		lastMenuNotification = nil;
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateOpacityMenuNotification object: curOpacityMenu userInfo: nil];
 		
 		[[[OpacityPopup menu] itemAtIndex:0] setTitle:str];
 		
@@ -8998,7 +8999,7 @@ short				matrix[25];
 			}
 			
 			lastMenuNotification = nil;
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: nil];
+			[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateOpacityMenuNotification object: curOpacityMenu userInfo: nil];
 			
 			[[[OpacityPopup menu] itemAtIndex:0] setTitle:str];
 			
@@ -9019,7 +9020,7 @@ short				matrix[25];
 	}
 	
 	NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:[imageView curImage]]  forKey:@"curImage"];
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"DCMUpdateCurrentImage" object: imageView userInfo: userInfo];
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixDCMUpdateCurrentImageNotification object: imageView userInfo: userInfo];
 	
 	NSArray *viewers = [ViewerController getDisplayed2DViewers];
 	
@@ -9036,7 +9037,7 @@ short				matrix[25];
 		[[NSUserDefaults standardUserDefaults] setObject: clutDict forKey: @"OPACITY"];
 		
 		lastMenuNotification = nil;
-        [[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curCLUTMenu userInfo: nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateOpacityMenuNotification object: curCLUTMenu userInfo: nil];
     }
 }
 
@@ -9047,7 +9048,7 @@ short				matrix[25];
         NSBeginAlertSheet( NSLocalizedString(@"Remove a Color Look Up Table", nil), NSLocalizedString(@"Delete", nil), NSLocalizedString(@"Cancel", nil), nil, [self window], self, @selector(deleteOpacity:returnCode:contextInfo:), NULL, [sender title], [NSString stringWithFormat: NSLocalizedString( @"Are you sure you want to delete this Opacity Table : '%@'", nil), [sender title]]);
 		
 		lastMenuNotification = nil;
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateOpacityMenuNotification object: curOpacityMenu userInfo: nil];
 	}
 	else if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSAlternateKeyMask)
     {
@@ -9131,7 +9132,7 @@ short				matrix[25];
         }
 		
 		lastMenuNotification = nil;
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateOpacityMenuNotification object: curOpacityMenu userInfo: nil];
 		
 		[self ApplyOpacityString:curOpacityMenu];
     }
@@ -9252,7 +9253,7 @@ short				matrix[25];
 	[imageView getWLWW:&iwl :&iww];
 	[imageView setWLWW:iwl :iww];
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"recomputeROI" object:self userInfo: nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRecomputeROINotification object:self userInfo: nil];
 }
 
 - (void) activateFusion:(id) sender
@@ -10023,6 +10024,18 @@ short				matrix[25];
 	return theNewROI;
 }
 
+- (BOOL) containsROI:(ROI*)roi {
+	NSArray* localRoiList = [self roiList];
+	for (unsigned i = 0; i < [localRoiList count]; i++) {
+		NSArray* roiImageList = [localRoiList objectAtIndex:i];
+		for (unsigned i = 0; i < [roiImageList count]; i++)
+			if ([roiImageList objectAtIndex:i] == roi)
+				return YES;
+	}
+	
+	return NO;
+}
+
 - (NSMutableArray*) generateROINamesArray
 {
 	[ROINamesArray release];	
@@ -10257,7 +10270,7 @@ int i,j,l;
 					[theNewROI setColor:aColor];
 					//	NSLog(@"New roi has been created name=%@, color.red=%d, color.green=%d, color.blue=%d",[theNewROI name], aColor.red, aColor.green, aColor.blue);
 					[[[self roiList] objectAtIndex:[imageView curImage]] addObject:theNewROI];		
-					[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:theNewROI userInfo: nil];
+					[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object:theNewROI userInfo: nil];
 					[theNewROI release];
 				}
 	
@@ -10453,7 +10466,7 @@ int i,j,l;
 					[theNewROI setColor:aColor];
 					//	NSLog(@"New roi has been created name=%@, color.red=%d, color.green=%d, color.blue=%d",[theNewROI name], aColor.red, aColor.green, aColor.blue);
 					[[[self roiList] objectAtIndex:k] addObject:theNewROI];		
-					[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:theNewROI userInfo: nil];
+					[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object:theNewROI userInfo: nil];
 					[theNewROI release];
 				}
 	}
@@ -10473,7 +10486,7 @@ int i,j,l;
 //	[theNewROI setLayerImageWhenSelected:imageWhenSelected];
 
 	[[[self roiList] objectAtIndex:[imageView curImage]] addObject:theNewROI];		
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:theNewROI userInfo:nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object:theNewROI userInfo:nil];
 	[self selectROI:theNewROI deselectingOther:YES];
 	
 	return theNewROI;
@@ -10633,7 +10646,7 @@ int i,j,l;
 			ROI	*curROI = [[roiList[curMovieIndex] objectAtIndex: x] objectAtIndex: i];
 			if( curROI == roi)
 			{
-				[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:curROI userInfo: nil];
+				[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object:curROI userInfo: nil];
 				[[roiList[curMovieIndex] objectAtIndex: x] removeObject:curROI];
 				i--;
 			}
@@ -10656,7 +10669,7 @@ int i,j,l;
 			ROI	*curROI = [[roiList[curMovieIndex] objectAtIndex: x] objectAtIndex: i];
 			if( [[curROI name] isEqualToString: name])
 			{
-				[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:curROI userInfo: nil];
+				[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object:curROI userInfo: nil];
 				[[roiList[curMovieIndex] objectAtIndex: x] removeObject:curROI];
 				i--;
 			}
@@ -10681,7 +10694,7 @@ int i,j,l;
 			if( [[curROI name] isEqualToString: name])
 			{
 				[curROI setName: newString];
-				[[NSNotificationCenter defaultCenter] postNotificationName: @"changeROI" object:curROI userInfo: nil];
+				[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object:curROI userInfo: nil];
 			}
 		}
 	}
@@ -10869,7 +10882,7 @@ int i,j,l;
 			}
 		}
 		
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"updateVolumeData" object: pixList[ curMovieIndex] userInfo: nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateVolumeDataNotification object: pixList[ curMovieIndex] userInfo: nil];
 	}
 }
 
@@ -10888,7 +10901,7 @@ int i,j,l;
 			ROI	*curROI = [[roiList[curMovieIndex] objectAtIndex: x] objectAtIndex: i];
 			if( [[curROI name] isEqualToString: name] && curROI.locked == NO)
 			{
-				[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:curROI userInfo: nil];
+				[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object:curROI userInfo: nil];
 				[[roiList[ curMovieIndex] objectAtIndex: x] removeObject: curROI];
 				i--;
 			}
@@ -10938,7 +10951,7 @@ int i,j,l;
 			{
 				if( [[curROI name] isEqualToString: name] || name == nil)
 				{
-					[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:curROI userInfo: nil];
+					[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object:curROI userInfo: nil];
 					[[roiList[ curMovieIndex] objectAtIndex: x] removeObject: curROI];
 					i--;
 					
@@ -11072,7 +11085,7 @@ int i,j,l;
 				
 				if( index >= 0)
 				{
-					[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object: c userInfo: nil];
+					[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object: c userInfo: nil];
 					[[roiList[curMovieIndex] objectAtIndex: index] removeObject: c];
 				}
 			}
@@ -11247,7 +11260,7 @@ int i,j,l;
 		}
 	}
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"updateVolumeData" object: pixList[ curMovieIndex] userInfo: nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateVolumeDataNotification object: pixList[ curMovieIndex] userInfo: nil];
 }
 
 - (void) roiSetStartScheduler:(NSMutableArray*) roiToProceed
@@ -11399,7 +11412,7 @@ int i,j,l;
 					
 					[curROI setName: [roiRenameName stringValue]];
 					
-					[[NSNotificationCenter defaultCenter] postNotificationName: @"changeROI" object:curROI userInfo: nil];
+					[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object:curROI userInfo: nil];
 				}
 			break;
 			
@@ -11414,7 +11427,7 @@ int i,j,l;
 							
 							[curROI setName: [roiRenameName stringValue]];
 							
-							[[NSNotificationCenter defaultCenter] postNotificationName: @"changeROI" object:curROI userInfo: nil];
+							[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object:curROI userInfo: nil];
 						}
 					}
 				}
@@ -11433,7 +11446,7 @@ int i,j,l;
 					{
 						[curROI setName: [roiRenameName stringValue]];
 						
-						[[NSNotificationCenter defaultCenter] postNotificationName: @"changeROI" object:curROI userInfo: nil];
+						[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object:curROI userInfo: nil];
 					}
 				}
 			break;
@@ -11581,7 +11594,7 @@ int i,j,l;
 				
 				if( curROI.locked == NO)
 				{
-					[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:curROI userInfo: nil];
+					[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object:curROI userInfo: nil];
 					[[roiList[y] objectAtIndex: x] removeObject: curROI];
 				}
 			}
@@ -12476,7 +12489,7 @@ int i,j,l;
 	[roiLock unlock];
 	
 	if( sendNotification)
-		for ( i = 0; i < [rois count]; i++ ) [[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:[rois objectAtIndex:i] userInfo: nil];
+		for ( i = 0; i < [rois count]; i++ ) [[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object:[rois objectAtIndex:i] userInfo: nil];
 	
 	[filter release];
 	
@@ -12658,7 +12671,7 @@ int i,j,l;
 			
 			for( ROI *r in rois)
 			{
-				[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object: r userInfo: nil];
+				[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object: r userInfo: nil];
 				[roiListContained removeObject: r];
 			}
 		}
@@ -12728,7 +12741,7 @@ int i,j,l;
 			}
 			
 			// Remove the old ROI
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:selectedROI userInfo: nil];
+			[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object:selectedROI userInfo: nil];
 			[[roiList[curMovieIndex] objectAtIndex: index] removeObject: selectedROI];
 		}
 	}
@@ -12816,7 +12829,7 @@ int i,j,l;
 		[imageView setWLWW: cwl * updatefactor : cww * updatefactor];
 	}
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"updateVolumeData" object: pixList[ curMovieIndex] userInfo: nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateVolumeDataNotification object: pixList[ curMovieIndex] userInfo: nil];
 
 }
 
@@ -12891,7 +12904,7 @@ int i,j,l;
 		[NSApp endSheet:displaySUVWindow returnCode:[sender tag]];
 	}
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"recomputeROI" object:self userInfo: nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRecomputeROINotification object:self userInfo: nil];
 }
 
 - (IBAction) updateSUVValues:(id) sender
@@ -13139,7 +13152,7 @@ int i,j,l;
 		
 		float sliceLocation =  [[[imageView dcmPixList] objectAtIndex:[imageView  curImage]] sliceLocation];
 		NSDictionary *userInfo = [NSDictionary dictionaryWithObject: [NSNumber numberWithFloat:sliceLocation] forKey:@"sliceLocation"];
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"notificationSyncSeries" object:nil userInfo: userInfo];
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixSyncSeriesNotification object:nil userInfo: userInfo];
 	}
 	else
 	{
@@ -13192,7 +13205,7 @@ int i,j,l;
 		[[AppController sharedAppController] willChangeValueForKey:@"SYNCSERIES"];
 		SYNCSERIES = NO;
 		[[AppController sharedAppController] didChangeValueForKey:@"SYNCSERIES"];
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"notificationSyncSeries" object:nil userInfo: nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixSyncSeriesNotification object:nil userInfo: nil];
 	}
 }
 
@@ -14208,7 +14221,7 @@ int i,j,l;
     }
     else
     {
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"notificationStopPlaying" object: self userInfo: nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixStopPlayingNotification object: self userInfo: nil];
 		
         timer = [[NSTimer scheduledTimerWithTimeInterval:0 target:self selector:@selector(performAnimation:) userInfo:nil repeats:YES] retain];
         [[NSRunLoop currentRunLoop] addTimer:timer forMode:NSModalPanelRunLoopMode];
@@ -14557,7 +14570,7 @@ int i,j,l;
 			
 			[[NSUserDefaults standardUserDefaults] setFloat: fontSizeCopy * inc forKey: @"FONTSIZE"];
 			[NSFont resetFont: 0];
-			[[NSNotificationCenter defaultCenter] postNotificationName:@"changeGLFontNotification" object: self];
+			[[NSNotificationCenter defaultCenter] postNotificationName:OsirixGLFontChangeNotification object: self];
 		}
 		
 		int i;
@@ -14605,7 +14618,7 @@ int i,j,l;
 		{
 			[[NSUserDefaults standardUserDefaults] setFloat: fontSizeCopy forKey: @"FONTSIZE"];
 			[NSFont resetFont: 0];
-			[[NSNotificationCenter defaultCenter] postNotificationName:@"changeGLFontNotification" object: self];
+			[[NSNotificationCenter defaultCenter] postNotificationName:OsirixGLFontChangeNotification object: self];
 		}
 		
 		// Go back to initial frame
@@ -16819,29 +16832,29 @@ int i,j,l;
 	NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
 	
 	[nc addObserver:self selector:@selector(applicationDidResignActive:) name:NSApplicationDidResignActiveNotification object:nil];
-    [nc addObserver:self selector:@selector(UpdateWLWWMenu:) name:@"UpdateWLWWMenu" object:nil];
-	[nc	addObserver:self selector:@selector(Display3DPoint:) name:@"Display3DPoint" object:nil];
+    [nc addObserver:self selector:@selector(UpdateWLWWMenu:) name:OsirixUpdateWLWWMenuNotification object:nil];
+	[nc	addObserver:self selector:@selector(Display3DPoint:) name:OsirixDisplay3dPointNotification object:nil];
 	[nc addObserver:self selector:@selector(ViewFrameDidChange:) name:NSViewFrameDidChangeNotification object:nil];
 	[nc addObserver:self selector:@selector(ViewBoundsDidChange:) name:NSViewBoundsDidChangeNotification object:nil];
 	
-	[nc addObserver:self selector:@selector(revertSeriesNotification:) name:@"revertSeriesNotification" object:nil];
-	[nc addObserver:self selector:@selector(updateVolumeData:) name:@"updateVolumeData" object:nil];
-	[nc addObserver:self selector:@selector(roiChange:) name:@"roiChange" object:nil];
-	[nc addObserver:self selector:@selector(OpacityChanged:) name:@"OpacityChanged" object:nil];
-	[nc addObserver:self selector:@selector(defaultToolModified:) name:@"defaultToolModified" object:nil];
-	[nc addObserver:self selector:@selector(defaultRightToolModified:) name:@"defaultRightToolModified" object:nil];
-    [nc addObserver:self selector:@selector(UpdateConvolutionMenu:) name:@"UpdateConvolutionMenu" object:nil];
-	[nc addObserver:self selector:@selector(CLUTChanged:) name:@"CLUTChanged" object:nil];
-    [nc addObserver:self selector:@selector(UpdateCLUTMenu:) name:@"UpdateCLUTMenu" object:nil];
-    [nc addObserver:self selector:@selector(UpdateOpacityMenu:) name:@"UpdateOpacityMenu" object:nil];
-    [nc addObserver:self selector:@selector(CloseViewerNotification:) name:@"CloseViewerNotification" object:nil];
-	[nc addObserver:self selector:@selector(recomputeROI:) name:@"recomputeROI" object:nil];
-	[nc addObserver:self selector:@selector(notificationStopPlaying:) name:@"notificationStopPlaying" object:nil];
-	[nc addObserver:self selector:@selector(notificationiChatBroadcast:) name:@"notificationiChatBroadcast" object:nil];
-	[nc addObserver:self selector:@selector(notificationSyncSeries:) name:@"notificationSyncSeries" object:nil];
-	[nc	addObserver:self selector:@selector(exportTextFieldDidChange:) name:@"NSControlTextDidChangeNotification" object:nil];
-	[nc addObserver:self selector:@selector(updateReportToolbarIcon:) name:@"reportModeChanged" object:nil];
-	[nc addObserver:self selector:@selector(updateReportToolbarIcon:) name:@"OsirixDeletedReport" object:nil];
+	[nc addObserver:self selector:@selector(revertSeriesNotification:) name:OsirixRevertSeriesNotification object:nil];
+	[nc addObserver:self selector:@selector(updateVolumeData:) name:OsirixUpdateVolumeDataNotification object:nil];
+	[nc addObserver:self selector:@selector(roiChange:) name:OsirixROIChangeNotification object:nil];
+	[nc addObserver:self selector:@selector(OpacityChanged:) name:OsirixOpacityChangedNotification object:nil];
+	[nc addObserver:self selector:@selector(defaultToolModified:) name:OsirixDefaultToolModifiedNotification object:nil];
+	[nc addObserver:self selector:@selector(defaultRightToolModified:) name:OsirixDefaultRightToolModifiedNotification object:nil];
+    [nc addObserver:self selector:@selector(UpdateConvolutionMenu:) name:OsirixUpdateConvolutionMenuNotification object:nil];
+	[nc addObserver:self selector:@selector(CLUTChanged:) name:OsirixCLUTChangedNotification object:nil];
+    [nc addObserver:self selector:@selector(UpdateCLUTMenu:) name:OsirixUpdateCLUTMenuNotification object:nil];
+    [nc addObserver:self selector:@selector(UpdateOpacityMenu:) name:OsirixUpdateOpacityMenuNotification object:nil];
+    [nc addObserver:self selector:@selector(CloseViewerNotification:) name:OsirixCloseViewerNotification object:nil];
+	[nc addObserver:self selector:@selector(recomputeROI:) name:OsirixRecomputeROINotification object:nil];
+	[nc addObserver:self selector:@selector(notificationStopPlaying:) name:OsirixStopPlayingNotification object:nil];
+	[nc addObserver:self selector:@selector(notificationiChatBroadcast:) name:OsirixChatBroadcastNotification object:nil];
+	[nc addObserver:self selector:@selector(notificationSyncSeries:) name:OsirixSyncSeriesNotification object:nil];
+	[nc	addObserver:self selector:@selector(exportTextFieldDidChange:) name:NSControlTextDidChangeNotification object:nil];
+	[nc addObserver:self selector:@selector(updateReportToolbarIcon:) name:OsirixReportModeChangedNotification object:nil];
+	[nc addObserver:self selector:@selector(updateReportToolbarIcon:) name:OsirixDeletedReportNotification object:nil];
 	[nc addObserver:self selector:@selector(reportToolbarItemWillPopUp:) name:NSPopUpButtonWillPopUpNotification object:nil];
 
 	
@@ -17944,7 +17957,7 @@ int i,j,l;
 	
 	[self checkEverythingLoaded];
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"updateVolumeData" object: pixList[ curMovieIndex] userInfo: nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateVolumeDataNotification object: pixList[ curMovieIndex] userInfo: nil];
 }
 
 -(void) revertSeries:(id) sender

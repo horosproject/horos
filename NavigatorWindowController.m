@@ -15,6 +15,7 @@
 #import "NavigatorWindowController.h"
 #import "ViewerController.h"
 #import "AppController.h"
+#import "Notifications.h"
 
 static NavigatorWindowController *nav = nil;
 
@@ -39,9 +40,9 @@ static NavigatorWindowController *nav = nil;
 		
 		[self setViewer: viewer];
 		
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(closeViewerNotification:) name:@"CloseViewerNotification" object:nil];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setWindowLevel:) name:@"NSApplicationWillBecomeActiveNotification" object:nil];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setWindowLevel:) name:@"NSApplicationWillResignActiveNotification" object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(closeViewerNotification:) name:OsirixCloseViewerNotification object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setWindowLevel:) name:NSApplicationWillBecomeActiveNotification object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setWindowLevel:) name:NSApplicationWillResignActiveNotification object:nil];
 	}
 	return self;
 }

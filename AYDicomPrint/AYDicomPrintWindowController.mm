@@ -17,6 +17,7 @@
 #import "AYDicomPrintWindowController.h"
 #import "NSFont_OpenGL.h"
 #import "AYNSImageToDicom.h"
+#import "Notifications.h"
 
 #define VERSIONNUMBERSTRING	@"v1.00.000"
 #define ECHOTIMEOUT 5
@@ -392,7 +393,7 @@
 		
 		[[NSUserDefaults standardUserDefaults] setFloat: fontSizeCopy * inc forKey: @"FONTSIZE"];
 		[NSFont resetFont: 0];
-		[[NSNotificationCenter defaultCenter] postNotificationName:@"changeGLFontNotification" object: self];
+		[[NSNotificationCenter defaultCenter] postNotificationName:OsirixGLFontChangeNotification object: self];
 	}
 	
 	// collect images for printing
@@ -404,7 +405,7 @@
 	{
 		[[NSUserDefaults standardUserDefaults] setFloat: fontSizeCopy forKey: @"FONTSIZE"];
 		[NSFont resetFont: 0];
-		[[NSNotificationCenter defaultCenter] postNotificationName:@"changeGLFontNotification" object: self];
+		[[NSNotificationCenter defaultCenter] postNotificationName:OsirixGLFontChangeNotification object: self];
 	}
 	
 	// check, if images were collected
