@@ -72,7 +72,6 @@ enum SendServerType { osirixServer, offisServer };
 - (IBAction) endSelectServer:(id) sender;
 - (int)keyImageIndex;
 - (void)setKeyImageIndex:(int)index;
-- (int) offisTS;
 - (void)releaseSelfWhenDone:(id)sender;
 - (void)listenForAbort:(id)handler;
 - (void)abort;
