@@ -10024,12 +10024,12 @@ short				matrix[25];
 	return theNewROI;
 }
 
-- (BOOL) containsROI:(ROI*)roi {
-	NSArray* localRoiList = [self roiList];
-	for (unsigned i = 0; i < [localRoiList count]; i++) {
-		NSArray* roiImageList = [localRoiList objectAtIndex:i];
-		for (unsigned i = 0; i < [roiImageList count]; i++)
-			if ([roiImageList objectAtIndex:i] == roi)
+- (BOOL) containsROI:(ROI*)roi
+{
+	for ( NSArray* roiImageList in [self roiList])
+	{
+		for (ROI *r in roiImageList)
+			if (r == roi)
 				return YES;
 	}
 	
