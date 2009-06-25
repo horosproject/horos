@@ -3893,7 +3893,6 @@
 		CE3F99460C84724B00CB38F1 /* PETCT.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98E80C84724B00CB38F1 /* PETCT.xib */; };
 		CE3F99470C84724B00CB38F1 /* LogWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98EA0C84724B00CB38F1 /* LogWindow.xib */; };
 		CE3F99480C84724B00CB38F1 /* FlyThru.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98EC0C84724B00CB38F1 /* FlyThru.xib */; };
-		CE3F99490C84724B00CB38F1 /* CenterlineSegmentation.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98EE0C84724B00CB38F1 /* CenterlineSegmentation.xib */; };
 		CE3F994A0C84724B00CB38F1 /* ToolbarPanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98F00C84724B00CB38F1 /* ToolbarPanel.xib */; };
 		CE3F994B0C84724B00CB38F1 /* KeyObjectReport.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98F20C84724B00CB38F1 /* KeyObjectReport.xib */; };
 		CE3F994D0C84724B00CB38F1 /* PreferencePanesViewer.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98F60C84724B00CB38F1 /* PreferencePanesViewer.xib */; };
@@ -8268,7 +8267,6 @@
 		CE3F98E90C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/PETCT.xib; sourceTree = "<group>"; };
 		CE3F98EB0C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/LogWindow.xib; sourceTree = "<group>"; };
 		CE3F98ED0C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/FlyThru.xib; sourceTree = "<group>"; };
-		CE3F98EF0C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/CenterlineSegmentation.xib; sourceTree = "<group>"; };
 		CE3F98F10C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/ToolbarPanel.xib; sourceTree = "<group>"; };
 		CE3F98F30C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/KeyObjectReport.xib; sourceTree = "<group>"; };
 		CE3F98F70C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/PreferencePanesViewer.xib; sourceTree = "<group>"; };
@@ -8888,7 +8886,6 @@
 				CE3F99400C84724B00CB38F1 /* AYDicomPrint.xib */,
 				CE3F992C0C84724B00CB38F1 /* BurnViewer.xib */,
 				CE3F99000C84724B00CB38F1 /* CalciumScoring.xib */,
-				CE3F98EE0C84724B00CB38F1 /* CenterlineSegmentation.xib */,
 				CE3F990A0C84724B00CB38F1 /* Endoscopy.xib */,
 				CE3F98EC0C84724B00CB38F1 /* FlyThru.xib */,
 				CE3F99140C84724B00CB38F1 /* Histogram.xib */,
@@ -16366,7 +16363,6 @@
 				CE3F99460C84724B00CB38F1 /* PETCT.xib in Resources */,
 				CE3F99470C84724B00CB38F1 /* LogWindow.xib in Resources */,
 				CE3F99480C84724B00CB38F1 /* FlyThru.xib in Resources */,
-				CE3F99490C84724B00CB38F1 /* CenterlineSegmentation.xib in Resources */,
 				CE3F994A0C84724B00CB38F1 /* ToolbarPanel.xib in Resources */,
 				CE3F994B0C84724B00CB38F1 /* KeyObjectReport.xib in Resources */,
 				CE3F994D0C84724B00CB38F1 /* PreferencePanesViewer.xib in Resources */,
@@ -18244,14 +18240,6 @@
 				CE3F98ED0C84724B00CB38F1 /* English */,
 			);
 			name = FlyThru.xib;
-			sourceTree = "<group>";
-		};
-		CE3F98EE0C84724B00CB38F1 /* CenterlineSegmentation.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				CE3F98EF0C84724B00CB38F1 /* English */,
-			);
-			name = CenterlineSegmentation.xib;
 			sourceTree = "<group>";
 		};
 		CE3F98F00C84724B00CB38F1 /* ToolbarPanel.xib */ = {
