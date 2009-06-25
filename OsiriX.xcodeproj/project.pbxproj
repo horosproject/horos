@@ -1453,8 +1453,6 @@
 		BF76A59A06ACC6FD00FABE42 /* ButtonAndTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = BF76A59806ACC6FD00FABE42 /* ButtonAndTextField.m */; };
 		BF76A5A706ACC70C00FABE42 /* ButtonAndTextCell.h in Headers */ = {isa = PBXBuildFile; fileRef = BF76A5A506ACC70C00FABE42 /* ButtonAndTextCell.h */; };
 		BF76A5A806ACC70C00FABE42 /* ButtonAndTextCell.m in Sources */ = {isa = PBXBuildFile; fileRef = BF76A5A606ACC70C00FABE42 /* ButtonAndTextCell.m */; };
-		BF79F3C80C9F7EDD007ADFE0 /* Centerline.h in Headers */ = {isa = PBXBuildFile; fileRef = BF79F3C60C9F7EDD007ADFE0 /* Centerline.h */; };
-		BF79F3C90C9F7EDD007ADFE0 /* Centerline.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF79F3C70C9F7EDD007ADFE0 /* Centerline.mm */; };
 		BF7A835F09B8B8E70051F091 /* DICOMToNSString.h in Headers */ = {isa = PBXBuildFile; fileRef = BF7A835D09B8B8E70051F091 /* DICOMToNSString.h */; };
 		BF7A836009B8B8E70051F091 /* DICOMToNSString.m in Sources */ = {isa = PBXBuildFile; fileRef = BF7A835E09B8B8E70051F091 /* DICOMToNSString.m */; };
 		BF7A838009B8D1C20051F091 /* DCMTKStoreSCU.h in Headers */ = {isa = PBXBuildFile; fileRef = BF7A837E09B8D1C10051F091 /* DCMTKStoreSCU.h */; };
@@ -1695,8 +1693,6 @@
 		BF8449030A65F407000E9830 /* smallKey.tif in Resources */ = {isa = PBXBuildFile; fileRef = BF8449020A65F407000E9830 /* smallKey.tif */; };
 		BF84E5410CB16A2900431BC2 /* FlyThruTableView.h in Headers */ = {isa = PBXBuildFile; fileRef = BF84E53D0CB16A2900431BC2 /* FlyThruTableView.h */; };
 		BF84E5420CB16A2900431BC2 /* FlyThruTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = BF84E53E0CB16A2900431BC2 /* FlyThruTableView.m */; };
-		BF8564140CB2B781005F7178 /* EndoscopyFlyThruController.h in Headers */ = {isa = PBXBuildFile; fileRef = BF8564100CB2B781005F7178 /* EndoscopyFlyThruController.h */; };
-		BF8564150CB2B781005F7178 /* EndoscopyFlyThruController.m in Sources */ = {isa = PBXBuildFile; fileRef = BF8564110CB2B781005F7178 /* EndoscopyFlyThruController.m */; };
 		BF8B2A4C09F470F400F1F759 /* dcmqrsrv.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF8B2A4909F470F400F1F759 /* dcmqrsrv.mm */; };
 		BF8DE5E206507355005DB40E /* Album.tiff in Resources */ = {isa = PBXBuildFile; fileRef = BF8DE5DA06507355005DB40E /* Album.tiff */; };
 		BF8DE5E706507355005DB40E /* SmartAlbum.tiff in Resources */ = {isa = PBXBuildFile; fileRef = BF8DE5E006507355005DB40E /* SmartAlbum.tiff */; };
@@ -1724,8 +1720,6 @@
 		BFAFEE9408F2220B002AD789 /* PluginFileFormatDecoder.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAFEE9208F2220B002AD789 /* PluginFileFormatDecoder.h */; };
 		BFAFEE9508F2220B002AD789 /* PluginFileFormatDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = BFAFEE9308F2220B002AD789 /* PluginFileFormatDecoder.m */; };
 		BFB8F7F7087B805F007ABE20 /* libjasper2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CEB7179706CE7CBD00084CA5 /* libjasper2.a */; };
-		BFBBF2120BE28E320064E449 /* EndoscopySegmentationController.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBBF20E0BE28E320064E449 /* EndoscopySegmentationController.h */; };
-		BFBBF2130BE28E320064E449 /* EndoscopySegmentationController.m in Sources */ = {isa = PBXBuildFile; fileRef = BFBBF20F0BE28E320064E449 /* EndoscopySegmentationController.m */; };
 		BFBCD8A709E4C2E40078ABB6 /* DCMTKServiceClassUser.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBCD8A509E4C2E40078ABB6 /* DCMTKServiceClassUser.h */; };
 		BFBCD8A809E4C2E40078ABB6 /* DCMTKServiceClassUser.mm in Sources */ = {isa = PBXBuildFile; fileRef = BFBCD8A609E4C2E40078ABB6 /* DCMTKServiceClassUser.mm */; };
 		BFBF3AA109B681F500545F5E /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = BFBF3A9D09B681F500545F5E /* libcrypto.dylib */; };
@@ -5550,8 +5544,6 @@
 		BF76A59806ACC6FD00FABE42 /* ButtonAndTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ButtonAndTextField.m; sourceTree = "<group>"; };
 		BF76A5A506ACC70C00FABE42 /* ButtonAndTextCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ButtonAndTextCell.h; sourceTree = "<group>"; };
 		BF76A5A606ACC70C00FABE42 /* ButtonAndTextCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ButtonAndTextCell.m; sourceTree = "<group>"; };
-		BF79F3C60C9F7EDD007ADFE0 /* Centerline.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Centerline.h; sourceTree = "<group>"; };
-		BF79F3C70C9F7EDD007ADFE0 /* Centerline.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Centerline.mm; sourceTree = "<group>"; };
 		BF7A835D09B8B8E70051F091 /* DICOMToNSString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DICOMToNSString.h; sourceTree = "<group>"; };
 		BF7A835E09B8B8E70051F091 /* DICOMToNSString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DICOMToNSString.m; sourceTree = "<group>"; };
 		BF7A837E09B8D1C10051F091 /* DCMTKStoreSCU.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMTKStoreSCU.h; sourceTree = "<group>"; };
@@ -5561,8 +5553,6 @@
 		BF8449020A65F407000E9830 /* smallKey.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = smallKey.tif; sourceTree = "<group>"; };
 		BF84E53D0CB16A2900431BC2 /* FlyThruTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlyThruTableView.h; sourceTree = "<group>"; };
 		BF84E53E0CB16A2900431BC2 /* FlyThruTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FlyThruTableView.m; sourceTree = "<group>"; };
-		BF8564100CB2B781005F7178 /* EndoscopyFlyThruController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EndoscopyFlyThruController.h; sourceTree = "<group>"; };
-		BF8564110CB2B781005F7178 /* EndoscopyFlyThruController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EndoscopyFlyThruController.m; sourceTree = "<group>"; };
 		BF8B2A4909F470F400F1F759 /* dcmqrsrv.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = dcmqrsrv.mm; sourceTree = "<group>"; };
 		BF8DE5DA06507355005DB40E /* Album.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Album.tiff; sourceTree = "<group>"; };
 		BF8DE5E006507355005DB40E /* SmartAlbum.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SmartAlbum.tiff; sourceTree = "<group>"; };
@@ -5751,8 +5741,6 @@
 		BFAEB41706BF3BFA00C7EF1E /* DCMPixelDataAttributeJPEG16.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMPixelDataAttributeJPEG16.m; sourceTree = "<group>"; };
 		BFAFEE9208F2220B002AD789 /* PluginFileFormatDecoder.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = PluginFileFormatDecoder.h; sourceTree = "<group>"; };
 		BFAFEE9308F2220B002AD789 /* PluginFileFormatDecoder.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = PluginFileFormatDecoder.m; sourceTree = "<group>"; };
-		BFBBF20E0BE28E320064E449 /* EndoscopySegmentationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EndoscopySegmentationController.h; sourceTree = "<group>"; };
-		BFBBF20F0BE28E320064E449 /* EndoscopySegmentationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EndoscopySegmentationController.m; sourceTree = "<group>"; };
 		BFBCD8A509E4C2E40078ABB6 /* DCMTKServiceClassUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMTKServiceClassUser.h; sourceTree = "<group>"; };
 		BFBCD8A609E4C2E40078ABB6 /* DCMTKServiceClassUser.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DCMTKServiceClassUser.mm; sourceTree = "<group>"; };
 		BFBF3A9D09B681F500545F5E /* libcrypto.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcrypto.dylib; path = /usr/lib/libcrypto.dylib; sourceTree = "<absolute>"; };
@@ -9230,8 +9218,6 @@
 		A90D665D094D7071000B425B /* Endoscopy */ = {
 			isa = PBXGroup;
 			children = (
-				BF79F3C60C9F7EDD007ADFE0 /* Centerline.h */,
-				BF79F3C70C9F7EDD007ADFE0 /* Centerline.mm */,
 				A932B957094D722D0085B58A /* EndoscopyViewer.h */,
 				A932B958094D722D0085B58A /* EndoscopyViewer.m */,
 				A932BAE9094D87C90085B58A /* EndoscopyVRController.h */,
@@ -9240,10 +9226,6 @@
 				A932BBBB094DB1110085B58A /* EndoscopyMPRView.m */,
 				A94D784A09A0D58E0039F5A2 /* EndoscopyVRView.h */,
 				A94D784B09A0D58E0039F5A2 /* EndoscopyVRView.mm */,
-				BFBBF20E0BE28E320064E449 /* EndoscopySegmentationController.h */,
-				BFBBF20F0BE28E320064E449 /* EndoscopySegmentationController.m */,
-				BF8564100CB2B781005F7178 /* EndoscopyFlyThruController.h */,
-				BF8564110CB2B781005F7178 /* EndoscopyFlyThruController.m */,
 			);
 			name = Endoscopy;
 			sourceTree = "<group>";
@@ -14026,7 +14008,6 @@
 				A90202BE0B980CD60001A00B /* PluginManagerController.h in Headers */,
 				A94469E30BA7FFE7008643E5 /* BLAuthentication.h in Headers */,
 				BFF97D710BDE8BE6008333CF /* ShadingArrayController.h in Headers */,
-				BFBBF2120BE28E320064E449 /* EndoscopySegmentationController.h in Headers */,
 				CE96D0E30BEE6F9800C4E397 /* XMLControllerDCMTKCategory.h in Headers */,
 				CE96D0F90BEE71E800C4E397 /* mdfconen.h in Headers */,
 				CE96D11C0BEE732A00C4E397 /* mdfdsman.h in Headers */,
@@ -14049,7 +14030,6 @@
 				A9BDE5920C9823DC000A161F /* IChatTheatreDelegate.h in Headers */,
 				CED2CF8F0C9B28580047F123 /* PreferencePaneControllerDCMTK.h in Headers */,
 				CED2CF980C9B288C0047F123 /* CIADICOMField.h in Headers */,
-				BF79F3C80C9F7EDD007ADFE0 /* Centerline.h in Headers */,
 				A98FFBE70CA92B58000291C8 /* altivecFunctions.h in Headers */,
 				A975206B0CAA98BA005D172F /* IChatTheatreHelpWindowController.h in Headers */,
 				DB5961380CAB447B00809190 /* OSIVoxel.h in Headers */,
@@ -14062,7 +14042,6 @@
 				A978DEA80CB0D4BE00FB2C3D /* NSImage+FrameworkImage.h in Headers */,
 				A978DEB10CB0D4BE00FB2C3D /* NFHUDPopUpButton.h in Headers */,
 				BF84E5410CB16A2900431BC2 /* FlyThruTableView.h in Headers */,
-				BF8564140CB2B781005F7178 /* EndoscopyFlyThruController.h in Headers */,
 				CEDC793C0CBB7EF600411DDB /* ITKSegmentation3DController.h in Headers */,
 				CE4700FF0CC51A6600ECF78A /* WindowLayoutManager.h in Headers */,
 				A97D4C610CE3459D003FE2E6 /* PieChartImage.h in Headers */,
@@ -17406,7 +17385,6 @@
 				A90202BF0B980CD60001A00B /* PluginManagerController.m in Sources */,
 				A94469E40BA7FFE7008643E5 /* BLAuthentication.m in Sources */,
 				BFF97D720BDE8BE6008333CF /* ShadingArrayController.m in Sources */,
-				BFBBF2130BE28E320064E449 /* EndoscopySegmentationController.m in Sources */,
 				CE96D0E40BEE6F9800C4E397 /* XMLControllerDCMTKCategory.mm in Sources */,
 				CE96D0F80BEE71E800C4E397 /* mdfconen.cc in Sources */,
 				CE96D11D0BEE732A00C4E397 /* mdfdsman.cc in Sources */,
@@ -17427,7 +17405,6 @@
 				A9BDE5930C9823DC000A161F /* IChatTheatreDelegate.m in Sources */,
 				CED2CF900C9B28580047F123 /* PreferencePaneControllerDCMTK.mm in Sources */,
 				CED2CF970C9B288C0047F123 /* CIADICOMField.m in Sources */,
-				BF79F3C90C9F7EDD007ADFE0 /* Centerline.mm in Sources */,
 				A98FFBE60CA92B58000291C8 /* altivecFunctions.c in Sources */,
 				A975206C0CAA98BA005D172F /* IChatTheatreHelpWindowController.m in Sources */,
 				DB5961390CAB447B00809190 /* OSIVoxel.m in Sources */,
@@ -17440,7 +17417,6 @@
 				A978DEA70CB0D4BE00FB2C3D /* NSImage+FrameworkImage.m in Sources */,
 				A978DEB00CB0D4BE00FB2C3D /* NFHUDPopUpButton.m in Sources */,
 				BF84E5420CB16A2900431BC2 /* FlyThruTableView.m in Sources */,
-				BF8564150CB2B781005F7178 /* EndoscopyFlyThruController.m in Sources */,
 				CE4701000CC51A6600ECF78A /* WindowLayoutManager.m in Sources */,
 				A97D4C620CE3459D003FE2E6 /* PieChartImage.m in Sources */,
 				CE6CD06E0CFB0462001DF429 /* OsiriXToolbar.m in Sources */,

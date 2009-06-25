@@ -18645,22 +18645,22 @@ sourceRef);
 	}
 }
 
-- (IBAction)centerline: (id)sender
-{
-	BOOL	found = NO;
-	NSArray *winList = [NSApp windows];
-	
-	for( id loopItem in winList)
-	{
-		if( [[[loopItem windowController] windowNibName] isEqualToString:@"CenterlineSegmentation"]) found = YES;
-	}
-	
-	if( !found)
-	{
-		EndoscopySegmentationController *endoscopySegmentationController = [[EndoscopySegmentationController alloc] initWithViewer:self];
-		[endoscopySegmentationController showWindow:self];
-	}
-}
+//- (IBAction)centerline: (id)sender
+//{
+//	BOOL	found = NO;
+//	NSArray *winList = [NSApp windows];
+//	
+//	for( id loopItem in winList)
+//	{
+//		if( [[[loopItem windowController] windowNibName] isEqualToString:@"CenterlineSegmentation"]) found = YES;
+//	}
+//	
+//	if( !found)
+//	{
+//		EndoscopySegmentationController *endoscopySegmentationController = [[EndoscopySegmentationController alloc] initWithViewer:self];
+//		[endoscopySegmentationController showWindow:self];
+//	}
+//}
 
 #pragma mark-
 #pragma mark 12 Bit

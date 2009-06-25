@@ -1010,7 +1010,7 @@ enum
 /** Nonfunctional
 * Centerline only works in Endoscopy Mode 
 */
-- (IBAction)centerline: (id)sender;
+//- (IBAction)centerline: (id)sender;
 
 #pragma mark-
 #pragma mark ROI Grouping

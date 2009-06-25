@@ -35,7 +35,7 @@ static NSString*	WLWW2DToolbarItemIdentifier				= @"WLWW2D";
 static NSString*	ExportToolbarItemIdentifier				= @"Export.icns";
 static NSString*	ShadingToolbarItemIdentifier			= @"Shading";
 static NSString*	LODToolbarItemIdentifier				= @"LOD";
-static NSString*	CenterlineToolbarItemIdentifier			= @"Centerline";
+//static NSString*	CenterlineToolbarItemIdentifier			= @"Centerline";
 
 @implementation EndoscopyViewer
 
@@ -516,13 +516,13 @@ static NSString*	CenterlineToolbarItemIdentifier			= @"Centerline";
 	[[[vrController flyThruController] exportButtonOption] setAction:@selector(setExportAllViews:)];
 }
 
-- (IBAction) centerline: (id) sender
-{
-	// Display the Fly Thru Controller
-	
-	[self flyThruControllerInit: sender];
-	[(EndoscopyFlyThruController*) [vrController flyThruController] calculate: sender];
-}
+//- (IBAction) centerline: (id) sender
+//{
+//	// Display the Fly Thru Controller
+//	
+//	[self flyThruControllerInit: sender];
+//	[(EndoscopyFlyThruController*) [vrController flyThruController] calculate: sender];
+//}
 
 - (void) applyWLWWForString:(NSString*) str
 {
@@ -896,17 +896,17 @@ static NSString*	CenterlineToolbarItemIdentifier			= @"Centerline";
 		[toolbarItem setView: shadingView];
 		[toolbarItem setMinSize:NSMakeSize(NSWidth([shadingView frame]), NSHeight([shadingView frame]))];
     }
-	else if([itemIdent isEqualToString: CenterlineToolbarItemIdentifier])
-	{
-		// Set up the standard properties 
-		[toolbarItem setLabel: NSLocalizedString(@"Centerline",nil)];
-		[toolbarItem setPaletteLabel:NSLocalizedString( @"Centerline",nil)];
-		[toolbarItem setToolTip:NSLocalizedString( @"Compute Centerline",nil)];
-		
-		[toolbarItem setImage: [NSImage imageNamed: CenterlineToolbarItemIdentifier]];
-		[toolbarItem setTarget: self];
-		[toolbarItem setAction: @selector( centerline:)];	
-    }
+//	else if([itemIdent isEqualToString: CenterlineToolbarItemIdentifier])
+//	{
+//		// Set up the standard properties 
+//		[toolbarItem setLabel: NSLocalizedString(@"Centerline",nil)];
+//		[toolbarItem setPaletteLabel:NSLocalizedString( @"Centerline",nil)];
+//		[toolbarItem setToolTip:NSLocalizedString( @"Compute Centerline",nil)];
+//		
+//		[toolbarItem setImage: [NSImage imageNamed: CenterlineToolbarItemIdentifier]];
+//		[toolbarItem setTarget: self];
+//		[toolbarItem setAction: @selector( centerline:)];	
+//    }
 	else if([itemIdent isEqualToString: LODToolbarItemIdentifier])
 	{
 		// Set up the standard properties 
@@ -954,7 +954,7 @@ static NSString*	CenterlineToolbarItemIdentifier			= @"Centerline";
 											endo3DToolsToolbarItemIdentifier,
 											endoMPRToolsToolbarItemIdentifier,
 											FlyThruToolbarItemIdentifier,
-											CenterlineToolbarItemIdentifier,
+											//CenterlineToolbarItemIdentifier,
 											EngineToolbarItemIdentifier,
 											//CroppingToolbarItemIdentifier,
 											WLWW3DToolbarItemIdentifier,

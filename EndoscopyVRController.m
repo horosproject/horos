@@ -14,7 +14,7 @@
 
 
 #import "EndoscopyVRController.h"
-#import "EndoscopyFlyThruController.h"
+//#import "EndoscopyFlyThruController.h"
 #import "DCMView.h"
 #import "ROI.h"
 #import "VRView.h"
@@ -309,12 +309,10 @@
 	if( [self flyThruController]) return;
 	
 	FTAdapter = [[VRFlyThruAdapter alloc] initWithVRController: self];
-	EndoscopyFlyThruController *flyThruController = [[EndoscopyFlyThruController alloc] initWithFlyThruAdapter:FTAdapter];
+	FlyThruController *flyThruController = [[FlyThruController alloc] initWithFlyThruAdapter:FTAdapter];
 	[FTAdapter release];
 	[flyThruController loadWindow];
 	[[flyThruController window] makeKeyAndOrderFront :sender];
 	[flyThruController setWindow3DController: self];
 }
-
-
 @end

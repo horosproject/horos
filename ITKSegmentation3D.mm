@@ -12,7 +12,7 @@
      PURPOSE.
 =========================================================================*/
 
-#import "Centerline.h"
+//#import "Centerline.h"
 #import "MyPoint.h"
 #import "Notifications.h"
 
@@ -995,195 +995,195 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 }
 
 
-- (NSArray *)endoscopySegmentationForViewer:(ViewerController*) srcViewer seeds:(NSArray *)seeds {
-	// Setup 
-	//#define UseApproximateSignedDistanceMapImageFilter
-	DCMPix *curPix = [[srcViewer imageView] curDCM];
-	
-	
-	long width = (int)[curPix pwidth];
-	long height = (int)[curPix pheight];
-	long depth = (int)[[srcViewer pixList] count];
-	
-	if (_resampledData) {
-		width /=2;
-		height/=2;
-		depth /=2;
-	}
-		
-	NSLog(@"width %d height %d depth: %d", width,height,depth);
-	const unsigned int Dimension = 3; 
-
-		// Float Pixel Type
-	typedef float FloatPixelType;
-	typedef itk::Image< FloatPixelType, Dimension > FloatImageType; 
-	// Char Output image
-	typedef unsigned char CharPixelType;
-	typedef itk::Image< CharPixelType, Dimension > CharImageType;
-	// signed Char Output image
-	typedef signed char SignedCharPixelType;
-	typedef itk::Image< SignedCharPixelType, Dimension > SignedCharImageType;
-	//Short image type
-	typedef signed short SSPixelType;
-	typedef itk::Image< SSPixelType, Dimension > SSImageType;
-	// Type distance Filter
-
-
-	//Segmentation Filter
-	typedef itk::ConnectedThresholdImageFilter<FloatImageType, CharImageType > ConnectedThresholdFilterType;	
-	ConnectedThresholdFilterType::Pointer thresholdFilter = nil;
-	thresholdFilter = ConnectedThresholdFilterType::New();
-			
-	thresholdFilter->SetLower(-2000.0);
-	thresholdFilter->SetUpper(-800.0);
-	thresholdFilter->SetReplaceValue(255.0);
-	
-	typedef itk::ResampleImageFilter<FloatImageType, FloatImageType > ResampleFilterType;
-	ResampleFilterType::Pointer resampleFilter = ResampleFilterType::New();
-	typedef itk::AffineTransform< double, 3 > TransformType;
-	TransformType::Pointer transform = TransformType::New(); 
-	resampleFilter->SetTransform( transform );
-	typedef itk::NearestNeighborInterpolateImageFunction< FloatImageType, double > InterpolatorType; 
-
-	InterpolatorType::Pointer interpolator = InterpolatorType::New(); 
-	resampleFilter->SetInterpolator( interpolator );
-	
-	double resampleX = 2.0;
-	double resampleY = 2.0;
-	double resampleZ = 2.0;
-	const double *spacing = [itkImage itkImporter]->GetSpacing();
-	double newSpacing[Dimension];
-	newSpacing[0] = spacing[0] * resampleX; // pixel spacing in millimeters along X 
-	newSpacing[1] = spacing[1] * resampleY; // pixel spacing in millimeters along Y 
-	newSpacing[2] = spacing[2] * resampleZ; // pixel spacing in millimeters along Z
-	resampleFilter->SetOutputSpacing( newSpacing );
-	
-	CharImageType::SizeType size; 
-	size[0] = width/resampleX; // number of pixels along X 
-	size[1] = height/resampleY; // number of pixels along Y 
-	size[2] = depth/resampleZ;// number of pixels along Z
-	resampleFilter->SetSize( size );
-	
-	const double *origin = [itkImage itkImporter]->GetOrigin(); 
-	resampleFilter->SetOutputOrigin(origin);
-	
-	
-	/*
-	typedef itk::BinaryBallStructuringElement<CharPixelType, Dimension > StructuringElementType;
-	StructuringElementType structuringElement; 
-	structuringElement.SetRadius( 1 ); // 3x3 structuring element 
-	structuringElement.CreateStructuringElement();  
-
-	typedef itk::GrayscaleDilateImageFilter<CharImageType, CharImageType, StructuringElementType > DilateFilterType; 
-	DilateFilterType::Pointer dilateFilter =  DilateFilterType::New();
-	dilateFilter->SetKernel( structuringElement ); 
-	*/
-	
-	//id seed;
-	//Add seed points. Can use more than 1
-	
-	for (OSIVoxel *seed in seeds) {
-		FloatImageType::IndexType  index;
-		index[0] = (long) [seed x] / resampleX;
-		index[1] = (long) [seed y] / resampleY;
-		index[2] = (long) [seed z] / resampleZ;
-		thresholdFilter->AddSeed(index);
-	}
-	
-	// make connections Inputs and outputs
-	// resample then threshold
-	thresholdFilter->SetInput(resampleFilter->GetOutput());
-	resampleFilter->SetInput([itkImage itkImporter]->GetOutput());
-
-	
-	
-	WaitRendering	*wait = nil;
-	
-	wait = [[WaitRendering alloc] init: NSLocalizedString(@"Propagating Region...", nil)];
-	[wait showWindow:self];
-	
-
-
-	try
-	{
-		thresholdFilter->Update();
-	
-	}
-	catch( itk::ExceptionObject & excep )
-	{
-		NSLog(@"Segmentation failed...");
-		std::cerr << excep.GetDescription() << std::endl;
-		//return;
-	}
-
-
-	//------------------------------------------------------------------------
-	// ITK to VTK pipeline connection.
-	//------------------------------------------------------------------------
-	unsigned char *buff = thresholdFilter->GetOutput()->GetBufferPointer();
-	vtkImageImport*	image3D = vtkImageImport::New();
-	image3D->SetWholeExtent(0, size[0] - 1, 0, size[1] - 1, 0, size[2]- 1);
-	image3D->SetDataExtentToWholeExtent();
-	image3D->SetDataScalarTypeToUnsignedChar();
-	image3D->SetImportVoidPointer(buff);
-	 
-	vtkMarchingCubes*		isoContour = vtkMarchingCubes::New();
-	
-	isoContour->SetValue(0, 255);
-	isoContour->SetInput( (vtkDataObject*) image3D->GetOutput());
-	isoContour->Update();
-	
-	vtkPolyData *contour = isoContour->GetOutput();
-	[wait setString:NSLocalizedString(@"Finding Centerline Points", nil)];
-	Centerline *centerline = [[Centerline alloc] init];
-	centerline.wait = wait;
-	OSIVoxel *endingPoint = nil;
-	// Get starting point and Ending POints
-	if ([seeds count] > 2)
-		endingPoint = [seeds objectAtIndex:1];
-	OSIVoxel *firstPoint = [seeds objectAtIndex:0];
-	OSIVoxel *endPoint = nil;
-	if (endingPoint) {
-		endPoint = [OSIVoxel pointWithX:[endingPoint x] / resampleX  y:endingPoint.y / resampleY  z:endingPoint.z / resampleZ value:nil];
-		endPoint.voxelWidth = newSpacing[0];
-		endPoint.voxelHeight = newSpacing[1];
-		endPoint.voxelDepth = newSpacing[2];
-	}
-	OSIVoxel *startingPoint = [OSIVoxel pointWithX:firstPoint.x / resampleX  y:firstPoint.y / resampleY  z:firstPoint.z / resampleZ value:nil];
-	startingPoint.voxelWidth = newSpacing[0];
-	startingPoint.voxelHeight = newSpacing[1];
-	startingPoint.voxelDepth = newSpacing[2];
-	// Get array of centerline Points
-	NSArray *centerlinePoints = [centerline generateCenterline:contour startingPoint:startingPoint  endingPoint:endPoint];
-	isoContour->Delete();
-	
-	// Create Point2D ROIs for now. Need to create pipeline to Flythrough.
-	
-	for (OSIVoxel *point3D in centerlinePoints) {
-	/*
-			NSPoint point = NSMakePoint(point3D.x * resampleX, point3D.y * resampleY);
-			ROI *theNewROI  = [srcViewer newROI: t2DPoint];
-			NSMutableArray *pointArray = [theNewROI splinePoints];
-			[theNewROI setName: @"Centerline"];
-			roiImageList = [roiSeriesList objectAtIndex:point3D.z * resampleZ];
-			[roiImageList addObject: theNewROI];
-			[theNewROI mouseRoiDown:point :(int)(point3D.z * resampleZ) :1.0];
-			[theNewROI mouseRoiUp:point ];	
-	*/
-			point3D.x *= resampleX;
-			point3D.y *= resampleY;
-			point3D.z *= resampleZ;
-	}
-
-
-	[centerline release];
-	[wait close];
-	[wait release];
-	
-	[srcViewer needsDisplayUpdate];
-	
-	return centerlinePoints;
-}
+//- (NSArray *)endoscopySegmentationForViewer:(ViewerController*) srcViewer seeds:(NSArray *)seeds {
+//	// Setup 
+//	//#define UseApproximateSignedDistanceMapImageFilter
+//	DCMPix *curPix = [[srcViewer imageView] curDCM];
+//	
+//	
+//	long width = (int)[curPix pwidth];
+//	long height = (int)[curPix pheight];
+//	long depth = (int)[[srcViewer pixList] count];
+//	
+//	if (_resampledData) {
+//		width /=2;
+//		height/=2;
+//		depth /=2;
+//	}
+//		
+//	NSLog(@"width %d height %d depth: %d", width,height,depth);
+//	const unsigned int Dimension = 3; 
+//
+//		// Float Pixel Type
+//	typedef float FloatPixelType;
+//	typedef itk::Image< FloatPixelType, Dimension > FloatImageType; 
+//	// Char Output image
+//	typedef unsigned char CharPixelType;
+//	typedef itk::Image< CharPixelType, Dimension > CharImageType;
+//	// signed Char Output image
+//	typedef signed char SignedCharPixelType;
+//	typedef itk::Image< SignedCharPixelType, Dimension > SignedCharImageType;
+//	//Short image type
+//	typedef signed short SSPixelType;
+//	typedef itk::Image< SSPixelType, Dimension > SSImageType;
+//	// Type distance Filter
+//
+//
+//	//Segmentation Filter
+//	typedef itk::ConnectedThresholdImageFilter<FloatImageType, CharImageType > ConnectedThresholdFilterType;	
+//	ConnectedThresholdFilterType::Pointer thresholdFilter = nil;
+//	thresholdFilter = ConnectedThresholdFilterType::New();
+//			
+//	thresholdFilter->SetLower(-2000.0);
+//	thresholdFilter->SetUpper(-800.0);
+//	thresholdFilter->SetReplaceValue(255.0);
+//	
+//	typedef itk::ResampleImageFilter<FloatImageType, FloatImageType > ResampleFilterType;
+//	ResampleFilterType::Pointer resampleFilter = ResampleFilterType::New();
+//	typedef itk::AffineTransform< double, 3 > TransformType;
+//	TransformType::Pointer transform = TransformType::New(); 
+//	resampleFilter->SetTransform( transform );
+//	typedef itk::NearestNeighborInterpolateImageFunction< FloatImageType, double > InterpolatorType; 
+//
+//	InterpolatorType::Pointer interpolator = InterpolatorType::New(); 
+//	resampleFilter->SetInterpolator( interpolator );
+//	
+//	double resampleX = 2.0;
+//	double resampleY = 2.0;
+//	double resampleZ = 2.0;
+//	const double *spacing = [itkImage itkImporter]->GetSpacing();
+//	double newSpacing[Dimension];
+//	newSpacing[0] = spacing[0] * resampleX; // pixel spacing in millimeters along X 
+//	newSpacing[1] = spacing[1] * resampleY; // pixel spacing in millimeters along Y 
+//	newSpacing[2] = spacing[2] * resampleZ; // pixel spacing in millimeters along Z
+//	resampleFilter->SetOutputSpacing( newSpacing );
+//	
+//	CharImageType::SizeType size; 
+//	size[0] = width/resampleX; // number of pixels along X 
+//	size[1] = height/resampleY; // number of pixels along Y 
+//	size[2] = depth/resampleZ;// number of pixels along Z
+//	resampleFilter->SetSize( size );
+//	
+//	const double *origin = [itkImage itkImporter]->GetOrigin(); 
+//	resampleFilter->SetOutputOrigin(origin);
+//	
+//	
+//	/*
+//	typedef itk::BinaryBallStructuringElement<CharPixelType, Dimension > StructuringElementType;
+//	StructuringElementType structuringElement; 
+//	structuringElement.SetRadius( 1 ); // 3x3 structuring element 
+//	structuringElement.CreateStructuringElement();  
+//
+//	typedef itk::GrayscaleDilateImageFilter<CharImageType, CharImageType, StructuringElementType > DilateFilterType; 
+//	DilateFilterType::Pointer dilateFilter =  DilateFilterType::New();
+//	dilateFilter->SetKernel( structuringElement ); 
+//	*/
+//	
+//	//id seed;
+//	//Add seed points. Can use more than 1
+//	
+//	for (OSIVoxel *seed in seeds) {
+//		FloatImageType::IndexType  index;
+//		index[0] = (long) [seed x] / resampleX;
+//		index[1] = (long) [seed y] / resampleY;
+//		index[2] = (long) [seed z] / resampleZ;
+//		thresholdFilter->AddSeed(index);
+//	}
+//	
+//	// make connections Inputs and outputs
+//	// resample then threshold
+//	thresholdFilter->SetInput(resampleFilter->GetOutput());
+//	resampleFilter->SetInput([itkImage itkImporter]->GetOutput());
+//
+//	
+//	
+//	WaitRendering	*wait = nil;
+//	
+//	wait = [[WaitRendering alloc] init: NSLocalizedString(@"Propagating Region...", nil)];
+//	[wait showWindow:self];
+//	
+//
+//
+//	try
+//	{
+//		thresholdFilter->Update();
+//	
+//	}
+//	catch( itk::ExceptionObject & excep )
+//	{
+//		NSLog(@"Segmentation failed...");
+//		std::cerr << excep.GetDescription() << std::endl;
+//		//return;
+//	}
+//
+//
+//	//------------------------------------------------------------------------
+//	// ITK to VTK pipeline connection.
+//	//------------------------------------------------------------------------
+//	unsigned char *buff = thresholdFilter->GetOutput()->GetBufferPointer();
+//	vtkImageImport*	image3D = vtkImageImport::New();
+//	image3D->SetWholeExtent(0, size[0] - 1, 0, size[1] - 1, 0, size[2]- 1);
+//	image3D->SetDataExtentToWholeExtent();
+//	image3D->SetDataScalarTypeToUnsignedChar();
+//	image3D->SetImportVoidPointer(buff);
+//	 
+//	vtkMarchingCubes*		isoContour = vtkMarchingCubes::New();
+//	
+//	isoContour->SetValue(0, 255);
+//	isoContour->SetInput( (vtkDataObject*) image3D->GetOutput());
+//	isoContour->Update();
+//	
+//	vtkPolyData *contour = isoContour->GetOutput();
+//	[wait setString:NSLocalizedString(@"Finding Centerline Points", nil)];
+//	Centerline *centerline = [[Centerline alloc] init];
+//	centerline.wait = wait;
+//	OSIVoxel *endingPoint = nil;
+//	// Get starting point and Ending POints
+//	if ([seeds count] > 2)
+//		endingPoint = [seeds objectAtIndex:1];
+//	OSIVoxel *firstPoint = [seeds objectAtIndex:0];
+//	OSIVoxel *endPoint = nil;
+//	if (endingPoint) {
+//		endPoint = [OSIVoxel pointWithX:[endingPoint x] / resampleX  y:endingPoint.y / resampleY  z:endingPoint.z / resampleZ value:nil];
+//		endPoint.voxelWidth = newSpacing[0];
+//		endPoint.voxelHeight = newSpacing[1];
+//		endPoint.voxelDepth = newSpacing[2];
+//	}
+//	OSIVoxel *startingPoint = [OSIVoxel pointWithX:firstPoint.x / resampleX  y:firstPoint.y / resampleY  z:firstPoint.z / resampleZ value:nil];
+//	startingPoint.voxelWidth = newSpacing[0];
+//	startingPoint.voxelHeight = newSpacing[1];
+//	startingPoint.voxelDepth = newSpacing[2];
+//	// Get array of centerline Points
+//	NSArray *centerlinePoints = [centerline generateCenterline:contour startingPoint:startingPoint  endingPoint:endPoint];
+//	isoContour->Delete();
+//	
+//	// Create Point2D ROIs for now. Need to create pipeline to Flythrough.
+//	
+//	for (OSIVoxel *point3D in centerlinePoints) {
+//	/*
+//			NSPoint point = NSMakePoint(point3D.x * resampleX, point3D.y * resampleY);
+//			ROI *theNewROI  = [srcViewer newROI: t2DPoint];
+//			NSMutableArray *pointArray = [theNewROI splinePoints];
+//			[theNewROI setName: @"Centerline"];
+//			roiImageList = [roiSeriesList objectAtIndex:point3D.z * resampleZ];
+//			[roiImageList addObject: theNewROI];
+//			[theNewROI mouseRoiDown:point :(int)(point3D.z * resampleZ) :1.0];
+//			[theNewROI mouseRoiUp:point ];	
+//	*/
+//			point3D.x *= resampleX;
+//			point3D.y *= resampleY;
+//			point3D.z *= resampleZ;
+//	}
+//
+//
+//	[centerline release];
+//	[wait close];
+//	[wait release];
+//	
+//	[srcViewer needsDisplayUpdate];
+//	
+//	return centerlinePoints;
+//}
 
 
 @end
