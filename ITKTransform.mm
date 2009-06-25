@@ -156,7 +156,7 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 		memcpy( tempPtr, [firstObjectOriginal fImage], size * sizeof( float));
 		memcpy( tempPtr + size, [firstObjectOriginal fImage], size * sizeof( float));
 		
-		ITK *itk = [[ITK alloc] initWith: [NSArray arrayWithObjects: firstObjectOriginal, firstObjectOriginal, nil] : tempPtr : -1];
+		ITK *itk = [[ITK alloc] initWith: [NSArray arrayWithObjects: firstObjectOriginal, firstObjectOriginal, nil] : tempPtr : -2];
 		
 		p = [ITKTransform resampleWithParameters: theParameters firstObject: firstObject firstObjectOriginal: firstObjectOriginal noOfImages: 1 length: length itkImage: itk];
 		

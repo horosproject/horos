@@ -85,7 +85,7 @@
 		height = [firstObject pheight];
 		width =  [firstObject pwidth];
 				  
-		if( slice == -1) depth = [pixList count]; // size along Z
+		if( slice == -1 || slice == -2) depth = [pixList count]; // size along Z
 		else depth = 1;
 		
 		originX = [firstObject originX];
@@ -96,10 +96,14 @@
 		voxelSpacingY  = [firstObject pixelSpacingY];  
 		voxelSpacingZ  = [firstObject sliceInterval]; 
 		
-		if( voxelSpacingZ == 0 || [pixList count] == 1) voxelSpacingZ = 0.1;
+		if( voxelSpacingZ == 0 || [pixList count] == 1)
+			voxelSpacingZ = 0.1;
+		
+		if( slice == -2)
+			voxelSpacingZ = 1000;
 		
 		// get data
-		if( slice == -1)
+		if( slice == -1 || slice == -2)
 		{
 			data = volumeData;
 			// resample data decreases the size by 2 if all dimensions
