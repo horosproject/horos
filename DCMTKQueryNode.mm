@@ -1237,7 +1237,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
     /* finally conduct transmission of data */
     OFCondition cond = DIMSE_findUser(assoc, presId, &req, dataset,
                           progressCallback, &callbackData,
-                          _blockMode, _dimse_timeout,
+                          DIMSE_NONBLOCKING, _dimse_timeout,	// DIMSE_BLOCKING - _blockMode ANR 2009
                           &rsp, &statusDetail);
 
 
