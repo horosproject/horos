@@ -32,10 +32,7 @@
 - (void) dealloc
 {
 	if( importFilter)
-	{
 		importFilter->UnRegister();
-		NSLog(@"ITK Image dealloc: %d", importFilter->GetReferenceCount());
-	}
 	
 	[super dealloc];
 }
