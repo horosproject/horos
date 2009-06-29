@@ -386,6 +386,7 @@ int main(int argc, const char *argv[])
 				{
 					if( destDirec)
 					{
+						[[NSFileManager defaultManager] removeFileAtPath: curFileDest handler:nil];
 						[[NSFileManager defaultManager] movePath: curFile toPath: curFileDest handler: nil];
 						[[NSFileManager defaultManager] removeFileAtPath: curFile handler: nil];
 					}
