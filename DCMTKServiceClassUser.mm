@@ -48,7 +48,7 @@
 		_repeatCount = -1;
 		_cancelAfterNResponses = -1;
 		_networkTransferSyntax = EXS_Unknown;
-		_blockMode = DIMSE_NONBLOCKING;	//DIMSE_BLOCKING; ANR JANUARY 2009
+		_blockMode = DIMSE_BLOCKING;	//DIMSE_BLOCKING; ANR JANUARY 2009 - Move failed on HUG PACS
 		
 		if( [[NSUserDefaults standardUserDefaults] integerForKey:@"DICOMTimeout"] <= 0)
 			[[NSUserDefaults standardUserDefaults] setInteger: 20 forKey:@"DICOMTimeout"];
@@ -68,8 +68,6 @@
 		_dhparam = NULL;
 	}
 	return self;
-			
-	
 }
 
 - (void)dealloc{
