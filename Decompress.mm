@@ -31,6 +31,7 @@ extern void dcmtkSetJPEGColorSpace( int);
 
 // Because if a file is corrupted, it will not crash the OsiriX application, but only this small task.
 
+// Always modify this function in sync with compressionForModality in Decompress.mm
 int compressionForModality( NSArray *array, NSArray *arrayLow, int limit, NSString* mod, int* quality, int resolution)
 {
 	NSArray *s;
@@ -222,7 +223,13 @@ int main(int argc, const char *argv[])
 							else
 							{
 								NSLog( @"failed to compress file: %@", curFile);
-								[[NSFileManager defaultManager] removeFileAtPath: curFileDest handler: nil];
+								
+								if( destDirec)
+								{
+									[[NSFileManager defaultManager] removeFileAtPath: curFileDest handler: nil];
+									[[NSFileManager defaultManager] movePath: curFile toPath: curFileDest handler: nil];
+									[[NSFileManager defaultManager] removeFileAtPath: curFile handler: nil];
+								}
 							}
 						}
 						else if( compression == compression_JPEG)
@@ -253,8 +260,28 @@ int main(int argc, const char *argv[])
 								cond = fileformat.saveFile( [curFileDest UTF8String], tSyntax);
 								status =  (cond.good()) ? YES : NO;
 								
-								if( destDirec == nil)
-									[[NSFileManager defaultManager] movePath: curFileDest toPath: curFile handler: nil];
+								if( status == NO)
+								{
+									NSLog( @"failed to compress file: %@", curFile);
+									
+									[[NSFileManager defaultManager] removeFileAtPath: curFileDest handler: nil];
+									[[NSFileManager defaultManager] movePath: curFile toPath: curFileDest handler: nil];
+									[[NSFileManager defaultManager] removeFileAtPath: curFile handler: nil];
+								}
+								else
+								{
+									if( destDirec == nil)
+										[[NSFileManager defaultManager] movePath: curFileDest toPath: curFile handler: nil];
+								}
+							}
+						}
+						else
+						{
+							if( destDirec)
+							{
+								[[NSFileManager defaultManager] removeFileAtPath: curFileDest handler: nil];
+								[[NSFileManager defaultManager] movePath: curFile toPath: curFileDest handler: nil];
+								[[NSFileManager defaultManager] removeFileAtPath: curFile handler: nil];
 							}
 						}
 					}
@@ -347,12 +374,20 @@ int main(int argc, const char *argv[])
 					[[NSFileManager defaultManager] removeFileAtPath: curFile handler: nil];
 				}
 				
-				if( destDirec == nil)
+				if( status)
 				{
-					if( status)
+					if( destDirec == nil)
 					{
 						[[NSFileManager defaultManager] removeFileAtPath: curFile handler:nil];
 						[[NSFileManager defaultManager] movePath: curFileDest toPath: curFile handler: nil];
+					}
+				}
+				else
+				{
+					if( destDirec)
+					{
+						[[NSFileManager defaultManager] movePath: curFile toPath: curFileDest handler: nil];
+						[[NSFileManager defaultManager] removeFileAtPath: curFile handler: nil];
 					}
 				}
 			}

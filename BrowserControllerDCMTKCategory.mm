@@ -41,6 +41,54 @@ extern NSRecursiveLock *PapyrusLock;
 
 @implementation BrowserController (BrowserControllerDCMTKCategory)
 
+- (BOOL) needToCompressFile: (NSString*) path
+{
+	DcmFileFormat fileformat;
+	OFCondition cond = fileformat.loadFile( [path UTF8String]);
+	if( cond.good())
+	{
+		DcmDataset *dataset = fileformat.getDataset();
+		DcmItem *metaInfo = fileformat.getMetaInfo();
+		DcmXfer original_xfer(dataset->getOriginalXfer());
+		if (original_xfer.isEncapsulated())
+		{
+			return NO;
+		}
+		else
+		{
+			const char *string = NULL;
+			NSString *modality;
+			if (dataset->findAndGetString(DCM_Modality, string, OFFalse).good() && string != NULL)
+				modality = [NSString stringWithCString:string encoding: NSASCIIStringEncoding];
+			else
+				modality = @"OT";
+			
+			int resolution = 0;
+			unsigned short rows = 0;
+			if (dataset->findAndGetUint16( DCM_Rows, rows, OFFalse).good())
+			{
+				if( resolution == 0 || resolution > rows)
+					resolution = rows;
+			}
+			unsigned short columns = 0;
+			if (dataset->findAndGetUint16( DCM_Columns, columns, OFFalse).good())
+			{
+				if( resolution == 0 || resolution > columns)
+					resolution = columns;
+			}
+			
+			int quality, compression = [BrowserController compressionForModality: modality quality: &quality resolution: resolution];
+			
+			if( compression == compression_none)
+				return NO;
+				
+			return YES;
+		}
+	}
+	
+	return NO;
+}
+
 + (NSString*) compressionString: (NSString*) string
 {
 	if( [string isEqualToString: @"1.2.840.10008.1.2"])

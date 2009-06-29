@@ -22,4 +22,5 @@
 - (BOOL)compressDICOMWithJPEG:(NSArray *) paths;
 - (BOOL)compressDICOMWithJPEG:(NSArray *) paths to:(NSString*) dest;
 - (BOOL)decompressDICOMList:(NSArray *) files to:(NSString*) dest;
+- (BOOL) needToCompressFile: (NSString*) path;
 @end

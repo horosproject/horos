@@ -13080,11 +13080,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	return result;
 }
 
-+ (int) compressionForModality: (NSString*) mod quality:(int*) quality
-{
-	return [BrowserController compressionForModality: mod quality: quality resolution: 0];
-}
-
+// Always modify this function in sync with compressionForModality in Decompress.mm
 + (int) compressionForModality: (NSString*) mod quality:(int*) quality resolution: (int) resolution
 {
 	NSArray *array;
@@ -13514,7 +13510,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 								
 								if (isDicomFile && isImage)
 								{
-									if( (isJPEGCompressed == YES && ListenerCompressionSettings == 1) || (isJPEGCompressed == NO && ListenerCompressionSettings == 2))
+									if( (isJPEGCompressed == YES && ListenerCompressionSettings == 1) || (isJPEGCompressed == NO && ListenerCompressionSettings == 2 && [self needToCompressFile: srcPath]))
 									{
 										NSString	*compressedPath = [DECOMPRESSIONpath stringByAppendingPathComponent:[srcPath lastPathComponent]];
 										

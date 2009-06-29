@@ -349,6 +349,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 {
 	if( compressed)
 		*compressed = NO;
+		
 	if( image)
 		*image = NO;
 	
