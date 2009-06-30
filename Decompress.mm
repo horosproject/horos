@@ -120,14 +120,15 @@ int main(int argc, const char *argv[])
 		NSString	*path = [NSString stringWithCString:argv[ 1]];
 		NSString	*what = [NSString stringWithCString:argv[ 2]];
 		
+		NSMutableDictionary	*dict = [DefaultsOsiriX getDefaults];
+		[dict addEntriesFromDictionary: [[NSUserDefaults standardUserDefaults] persistentDomainForName:@"com.rossetantoine.osirix"]];
+		
+		dcmtkSetJPEGColorSpace( [[dict objectForKey:@"UseJPEGColorSpace"] intValue]);
+		
 		if( [what isEqualToString:@"compress"])
 		{
 			int quality = [[NSString stringWithCString:argv[ 3]] intValue];
 			
-			NSMutableDictionary	*dict = [DefaultsOsiriX getDefaults];
-			[dict addEntriesFromDictionary: [[NSUserDefaults standardUserDefaults] persistentDomainForName:@"com.rossetantoine.osirix"]];
-			
-			dcmtkSetJPEGColorSpace( [[dict objectForKey:@"UseJPEGColorSpace"] intValue]);
 			[DCMPixelDataAttribute setUseOpenJpeg: [[dict objectForKey:@"UseOpenJpegForJPEG2000"] intValue]];
 			
 			NSArray *compressionSettings = [dict valueForKey: @"CompressionSettings"];
@@ -169,7 +170,6 @@ int main(int argc, const char *argv[])
 							[[NSFileManager defaultManager] movePath: curFile toPath: curFileDest handler: nil];
 							[[NSFileManager defaultManager] removeFileAtPath: curFile handler: nil];
 						}
-						NSLog( @"file already compressed: %@", [curFile lastPathComponent]);
 					}
 					else
 					{
@@ -222,14 +222,15 @@ int main(int argc, const char *argv[])
 							}
 							else
 							{
-								NSLog( @"failed to compress file: %@", curFile);
+								[[NSFileManager defaultManager] removeFileAtPath: curFileDest handler:nil];
 								
 								if( destDirec)
 								{
-									[[NSFileManager defaultManager] removeFileAtPath: curFileDest handler: nil];
-									[[NSFileManager defaultManager] movePath: curFile toPath: curFileDest handler: nil];
 									[[NSFileManager defaultManager] removeFileAtPath: curFile handler: nil];
+									NSLog( @"failed to compress file: %@, the file is deleted", curFile);
 								}
+								else
+									NSLog( @"failed to compress file: %@", curFile);
 							}
 						}
 						else if( compression == compression_JPEG)
@@ -262,11 +263,14 @@ int main(int argc, const char *argv[])
 								
 								if( status == NO)
 								{
-									NSLog( @"failed to compress file: %@", curFile);
-									
-									[[NSFileManager defaultManager] removeFileAtPath: curFileDest handler: nil];
-									[[NSFileManager defaultManager] movePath: curFile toPath: curFileDest handler: nil];
-									[[NSFileManager defaultManager] removeFileAtPath: curFile handler: nil];
+									[[NSFileManager defaultManager] removeFileAtPath: curFileDest handler:nil];
+									if( destDirec)
+									{
+										[[NSFileManager defaultManager] removeFileAtPath: curFile handler: nil];
+										NSLog( @"failed to compress file: %@, the file is deleted", curFile);
+									}
+									else
+										NSLog( @"failed to compress file: %@", curFile);
 								}
 								else
 								{
@@ -291,11 +295,6 @@ int main(int argc, const char *argv[])
 		
 		if( [what isEqualToString:@"decompressList"])
 		{
-			NSMutableDictionary	*dict = [DefaultsOsiriX getDefaults];
-			[dict addEntriesFromDictionary: [[NSUserDefaults standardUserDefaults] persistentDomainForName:@"com.rossetantoine.osirix"]];
-			
-			dcmtkSetJPEGColorSpace( [[dict objectForKey:@"UseJPEGColorSpace"] intValue]);
-			
 			NSString *destDirec;
 			if( [path isEqualToString: @"sameAsDestination"])
 				destDirec = nil;
@@ -341,11 +340,18 @@ int main(int argc, const char *argv[])
 					
 					if( status == NO)
 					{
-						NSLog(@"decompress error");
 						[[NSFileManager defaultManager] removeFileAtPath: curFileDest handler:nil];
+						
+						if( destDirec)
+						{
+							[[NSFileManager defaultManager] removeFileAtPath: curFile handler: nil];
+							NSLog( @"failed to decompress file: %@, the file is deleted", curFile);
+						}
+						else
+							NSLog( @"failed to decompress file: %@", curFile);
 					}
 				}
-				else if (filexfer.getXfer() != EXS_LittleEndianExplicit)
+				else if( filexfer.getXfer() != EXS_LittleEndianExplicit || filexfer.getXfer() != EXS_LittleEndianImplicit)
 				{
 					DcmDataset *dataset = fileformat.getDataset();
 					
@@ -363,44 +369,44 @@ int main(int argc, const char *argv[])
 					
 					if( status == NO)
 					{
-						NSLog(@"decompress error");
 						[[NSFileManager defaultManager] removeFileAtPath: curFileDest handler:nil];
+						
+						if( destDirec)
+						{
+							[[NSFileManager defaultManager] removeFileAtPath: curFile handler: nil];
+							NSLog( @"failed to decompress file: %@, the file is deleted", curFile);
+						}
+						else
+							NSLog( @"failed to decompress file: %@", curFile);
 					}
 				}
-				else if( destDirec)
+				else 
 				{
-					[[NSFileManager defaultManager] removeFileAtPath: curFileDest handler: nil];
-					[[NSFileManager defaultManager] movePath: curFile toPath: curFileDest handler: nil];
-					[[NSFileManager defaultManager] removeFileAtPath: curFile handler: nil];
+					if( destDirec)
+					{
+						[[NSFileManager defaultManager] removeFileAtPath: curFileDest handler: nil];
+						[[NSFileManager defaultManager] movePath: curFile toPath: curFileDest handler: nil];
+						[[NSFileManager defaultManager] removeFileAtPath: curFile handler: nil];
+					}
+					status = NO;
 				}
 				
 				if( status)
 				{
+					[[NSFileManager defaultManager] removeFileAtPath: curFile handler: nil];
 					if( destDirec == nil)
-					{
-						[[NSFileManager defaultManager] removeFileAtPath: curFile handler:nil];
 						[[NSFileManager defaultManager] movePath: curFileDest toPath: curFile handler: nil];
-					}
-				}
-				else
-				{
-					if( destDirec)
-					{
-						[[NSFileManager defaultManager] removeFileAtPath: curFileDest handler:nil];
-						[[NSFileManager defaultManager] movePath: curFile toPath: curFileDest handler: nil];
-						[[NSFileManager defaultManager] removeFileAtPath: curFile handler: nil];
-					}
 				}
 			}
 		}
 		
 	    // deregister JPEG codecs
-		DJDecoderRegistration::cleanup();
-		DJEncoderRegistration::cleanup();
+		//DJDecoderRegistration::cleanup();	We dont care: we are just a small app : our memory will be killed by the system. Dont loose time here !
+		//DJEncoderRegistration::cleanup();	We dont care: we are just a small app : our memory will be killed by the system. Dont loose time here !
 
 		// deregister RLE codecs
-		DcmRLEDecoderRegistration::cleanup();
-		DcmRLEEncoderRegistration::cleanup();
+		//DcmRLEDecoderRegistration::cleanup();	We dont care: we are just a small app : our memory will be killed by the system. Dont loose time here !
+		//DcmRLEEncoderRegistration::cleanup();	We dont care: we are just a small app : our memory will be killed by the system. Dont loose time here !
 	}
 	
 //	[pool release]; We dont care: we are just a small app : our memory will be killed by the system. Dont loose time here !
