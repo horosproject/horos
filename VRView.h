@@ -400,6 +400,7 @@ typedef char* vtkMyCallbackVR;
 -(void) setCurrentTool:(short) i;
 - (int) currentTool;
 - (int) _tool;
+- (void) resetCroppingBox;
 -(id)initWithFrame:(NSRect)frame;
 -(short)setPixSource:(NSMutableArray*)pix :(float*) volumeData;
 -(void)dealloc;

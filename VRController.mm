@@ -115,6 +115,8 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	[appliedConvolutionFilters removeAllObjects];
 	if([presetsPanel isVisible])
 		[self displayPresetsForSelectedGroup];
+	
+	[view resetCroppingBox];
 }
 
 -(void) UpdateOpacityMenu: (NSNotification*) note

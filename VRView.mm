@@ -3789,6 +3789,179 @@ public:
 	[drawLock unlock];
 }
 
+- (void) autoCroppingBox
+{
+	if( croppingBox)
+	{
+		double a[6];
+		
+		[VRView getCroppingBox:a :volume :croppingBox];
+		
+		float v = [controller minimumValue];
+		BOOL found;
+		int width = [firstObject pwidth], height = [firstObject pheight], depth = [pixList count];
+		int slice = width * height;
+		int x, y, z;
+		
+		for( x = 0 ; x < 6; x++)
+			a[ x] /= superSampling;
+		
+		float sliceThickness = [firstObject sliceInterval];
+		
+		if( sliceThickness == 0)
+			sliceThickness = [firstObject sliceThickness];
+		
+		a[ 4] *= [firstObject pixelSpacingX];
+		a[ 4] /= sliceThickness;
+		a[ 5] *= [firstObject pixelSpacingX];
+		a[ 5] /= sliceThickness;
+		
+		a[ 0] = a[ 0] > width ? width : a[ 0];		a[ 1] = a[ 1] > width ? width : a[ 1];
+		a[ 2] = a[ 2] > height ? height : a[ 2];	a[ 3] = a[ 3] > height ? height : a[ 3];
+		a[ 4] = a[ 4] > depth ? depth : a[ 4];		a[ 5] = a[ 5] > depth ? depth : a[ 5];
+		
+		for( found = NO, x = a[ 0]; x < width && x < a[ 1]; x++)
+		{
+			for(  y = a[ 2]; y < height && y < a[ 3]; y++)
+			{
+				for(  z = a[ 4]; z < depth && z < a[ 5]; z++)
+				{
+					if( x >= 0 && y >= 0 && z >= 0)
+						if( *(data + x + y * width + z * slice) != v)
+						{
+							a[ 0] = x;	found = YES;	break;
+						}	if( found)	break;
+				}	if( found)	break;
+			}	if( found)	break;
+		}
+		
+		for( found = NO, x = a[ 1]; x >= 0 && x > a[ 0]; x--)
+		{
+			for(  y = a[ 2]; y < height && y < a[ 3]; y++)
+			{
+				for(  z = a[ 4]; z < depth && z < a[ 5]; z++)
+				{
+					if( x >= 0 && y >= 0 && z >= 0)
+						if( *(data + x + y * width + z * slice) != v)
+						{
+							a[ 1] = x;	found = YES;	break;
+						}	if( found)	break;
+				}	if( found)	break;
+			}	if( found)	break;
+		}
+		
+		////////////
+		
+		for( found = NO, y = a[ 2]; y < height && y < a[ 3]; y++)
+		{
+			for(  x = a[ 0]; x < width && x < a[ 1]; x++)
+			{
+				for(  z = a[ 4]; z < depth && z < a[ 5]; z++)
+				{
+					if( x >= 0 && y >= 0 && z >= 0)
+						if( *(data + x + y * width + z * slice) != v)
+						{
+							a[ 2] = y;	found = YES;	break;
+						}	if( found)	break;
+				}	if( found)	break;
+			}	if( found)	break;
+		}
+		
+		for( found = NO, y = a[ 3]; y >= 0 && y > a[ 2]; y--)
+		{
+			for(  x = a[ 0]; x < width && x < a[ 1]; x++)
+			{
+				for(  z = a[ 4]; z < depth && z < a[ 5]; z++)
+				{
+					if( x >= 0 && y >= 0 && z >= 0)
+						if( *(data + x + y * width + z * slice) != v)
+						{
+							a[ 3] = y;	found = YES;	break;
+						}	if( found)	break;
+				}	if( found)	break;
+			}	if( found)	break;
+		}
+		
+		////////////
+		
+		for( found = NO, z = a[ 4]; z < depth && z < a[ 5]; z++)
+		{
+			for(  x = a[ 0]; x < width && x < a[ 1]; x++)
+			{
+				for(  y = a[ 2]; y < height && y < a[ 3]; y++)
+				{
+					if( x >= 0 && y >= 0 && z >= 0)
+						if( *(data + x + y * width + z * slice) != v)
+						{
+							a[ 4] = z;	found = YES;	break;
+						}	if( found)	break;
+				}	if( found)	break;
+			}	if( found)	break;
+		}
+		
+		for( found = NO, z = a[ 5]; z >= 0 && z > a[ 4]; z--)
+		{
+			for(  x = a[ 0]; x < width && x < a[ 1]; x++)
+			{
+				for(  y = a[ 2]; y < height && y < a[ 3]; y++)
+				{
+					if( x >= 0 && y >= 0 && z >= 0)
+						if( *(data + x + y * width + z * slice) != v)
+						{
+							a[ 5] = z;	found = YES;	break;
+						}	if( found)	break;
+				}	if( found)	break;
+			}	if( found)	break;
+		}
+		
+		a[ 4] /= [firstObject pixelSpacingX];
+		a[ 4] *= sliceThickness;
+		a[ 5] /= [firstObject pixelSpacingX];
+		a[ 5] *= sliceThickness;
+		////////////
+		
+		for( x = 0 ; x < 6; x++)
+			a[ x] *= superSampling;
+		
+		[VRView setCroppingBox: a :volume];
+		
+		vtkVolumeMapper *mapper = (vtkVolumeMapper*) volume->GetMapper();
+		if( mapper)
+		{
+			double origin[3];
+			volume->GetPosition(origin);	//GetOrigin
+			
+			a[0] += origin[0];		a[1] += origin[0];
+			a[2] += origin[1];		a[3] += origin[1];
+			a[4] += origin[2];		a[5] += origin[2];
+			
+			double min[3], max[3];
+			vtkTransform *Transform = vtkTransform::New();
+			Transform->SetMatrix(volume->GetUserMatrix());
+			Transform->Push();
+			
+			min[0] = a[0];			max[0] = a[1];
+			min[1] = a[2];			max[1] = a[3];
+			min[2] = a[4];			max[2] = a[5];
+			
+			Transform->TransformPoint( min, min);
+			Transform->TransformPoint (max, max);
+			
+			a[ 0] = min[ 0];
+			a[ 2] = min[ 1];
+			a[ 4] = min[ 2];
+			
+			a[ 1] = max[ 0];
+			a[ 3] = max[ 1];
+			a[ 5] = max[ 2];
+			
+			croppingBox->PlaceWidget( a);
+			
+			Transform->Delete();
+		}
+	}
+}
+
 - (void) deleteRegion:(int) c :(NSArray*) pxList :(BOOL) blendedSeries
 {
 	long			tt, stackMax, stackOrientation, i;
@@ -4319,6 +4492,28 @@ public:
 	
 }
 
+- (void) resetCroppingBox
+{
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"dontAutoCropScissors"] == NO)
+	{
+		if( croppingBox)
+		{
+			croppingBox->SetProp3D( volume);
+			croppingBox->PlaceWidget();
+			
+			double a[ 6];
+			
+			[VRView getCroppingBox: a :volume :croppingBox];
+			[VRView setCroppingBox: a :volume];
+			
+			[VRView getCroppingBox: a :blendingVolume :croppingBox];
+			[VRView setCroppingBox: a :blendingVolume];
+			
+			[self setNeedsDisplay: YES];
+		}
+	}	
+}
+
 -(void) schedulerDidFinishSchedule: (Scheduler *)scheduler
 {
 	NSLog(@"Scissor End");
@@ -4338,6 +4533,8 @@ public:
 		// Force min/max recomputing
 		[self movieChangeSource: data];
 		
+		[self resetCroppingBox];
+		
 		gDataValuesChanged = NO;
 	}
 	else
@@ -4347,7 +4544,10 @@ public:
 	}
 	
 	[[pixList objectAtIndex: 0] freeRestore];
-
+	
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"dontAutoCropScissors"] == NO)
+		[self autoCroppingBox];
+	
 	[self setNeedsDisplay:YES];
 	
 	[deleteRegion unlock];

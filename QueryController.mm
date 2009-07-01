@@ -1577,7 +1577,7 @@ static const char *GetPrivateIP()
 				[item setShowErrorMessage: NO];
 		}
 		
-		[NSThread detachNewThreadSelector:@selector( performRetrieve:) toTarget:self withObject: [[selectedItems copy] autorelease]];
+		[NSThread detachNewThreadSelector:@selector( performRetrieve:) toTarget:self withObject: selectedItems];
 		
 		NSLog( @"-------");
 		NSLog( @"Will auto-retrieve these items:");
