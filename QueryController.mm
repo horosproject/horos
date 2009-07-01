@@ -1836,7 +1836,7 @@ static const char *GetPrivateIP()
 	[array retain];
 	
 //	NetworkMoveDataHandler *moveDataHandler = [NetworkMoveDataHandler moveDataHandler];
-	NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithDictionary: [queryManager parameters]];
+	NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithDictionary: [[[queryManager parameters] copy] autorelease]];
 	
 	NSLog( @"Retrieve START");
 	
@@ -1860,7 +1860,7 @@ static const char *GetPrivateIP()
 		{
 			NSInteger index = [sendToPopup indexOfSelectedItem] -2;
 			
-			dstDict = [[DCMNetServiceDelegate DICOMServersList] objectAtIndex: index];
+			dstDict = [[[[DCMNetServiceDelegate DICOMServersList] objectAtIndex: index] copy] autorelease];
 			
 			[dictionary setObject: [dstDict valueForKey:@"AETitle"]  forKey: @"moveDestination"];
 			
