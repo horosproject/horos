@@ -380,7 +380,7 @@ int main(int argc, const char *argv[])
 							NSLog( @"failed to decompress file: %@", curFile);
 					}
 				}
-				else 
+				else
 				{
 					if( destDirec)
 					{

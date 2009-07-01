@@ -148,12 +148,20 @@ Papy3FileOpen (char *inNameP, PAPY_FILE inVRefNum, int inToOpen, void* inFSSpec)
             else
             {
               gPapyFile [theFileNb]    = theFp; 
-              gReadOrWrite [theFileNb] = kPAPY_READ;
+			  if (inToOpen && inNameP)
+			  {
+				  gPapyFilePath[ theFileNb] = malloc( strlen( inNameP)+1);
+				  strcpy( gPapyFilePath[ theFileNb], inNameP);
+              }
+			  else
+				   gPapyFilePath [theFileNb] = 0L; 
+			  gReadOrWrite [theFileNb] = kPAPY_READ;
 			  gCachedGroupLength [theFileNb] = 0L;
 			  gSeekPos [theFileNb] = 0;
 			  gSeekPosApplied  [theFileNb] = 0;
 			  gPapyrusFileVersion [theFileNb] = (float)atof ((char *) gPapyrusVersion);
-			  
+			  gSOPClassUID[ theFileNb] = 0L;
+				
               /* set the transfert syntax to the default one */
               gArrTransfSyntax [theFileNb] = LITTLE_ENDIAN_EXPL;    
 			  
@@ -724,9 +732,12 @@ Papy3FileClose (PapyShort inFileNb, int inToClose)
   if (gPapFilename [inFileNb] != NULL)
     efree3 ((void **) &(gPapFilename [inFileNb]));
 
+  if (gPapyFilePath [inFileNb] != NULL)
+		efree3 ((void **) &(gPapyFilePath [inFileNb]));
+  
   if (gSOPClassUID [inFileNb] != NULL)
 		efree3 ((void **) &(gSOPClassUID [inFileNb]));
-	
+  
   /* frees the allocated memory for the file */
   if (gShadowOwner [inFileNb] != NULL) 
     efree3 ((void **) &(gShadowOwner [inFileNb]));
@@ -1356,7 +1367,7 @@ Papy3SkipNextGroup (PapyShort inFileNb)
 
 	if( theGrLength <= 0)
 	{
-		printf("error theGrLength <= 0 : %d\r", theGrLength);
+		printf("error theGrLength <= 0 : %d, %s\r", theGrLength, gPapyFilePath[ inFileNb]);
 		RETURN ( -1);
 	}
 	/* sets the file pointer at the begining of the next group */
@@ -2128,8 +2139,9 @@ ComputeUndefinedGroupLength3 (PapyShort inFileNb, PapyLong inMaxSize)
     i = 8L;
     if ((theErr = (PapyShort) Papy3FRead (gPapyFile [inFileNb], &i, 1L, theBuffP)) < 0)
     {
+	  printf("ComputeUndefinedGroupLength3 : %s\r", gPapyFilePath[ inFileNb]);
+		
       theErr = (PapyShort) Papy3FClose (&(gPapyFile [inFileNb]));
-	  printf("ComputeUndefinedGroupLength3\rError\r");
       return 0;
     } /* if */
     

@@ -1818,7 +1818,7 @@ Papy3GetPixelData (PapyShort inFileNb, int inImageNb, SElement *inGrOrModP, int 
 		theElement = Extract2Bytes (inFileNb, theTmpBufP, &thePos);
 
 		/* Pixel data fragment not found when expected */
-		if ((theGroup != 0xFFFE) || (theElement != 0xE000)) printf("error");
+		if ((theGroup != 0xFFFE) || (theElement != 0xE000)) printf("error GetPixelData JPEG_LOSSLESS : %s", gPapyFilePath [inFileNb]);
 		
 		theULong = Extract4Bytes (inFileNb, theTmpBufP, &thePos);
 		
@@ -1830,7 +1830,7 @@ Papy3GetPixelData (PapyShort inFileNb, int inImageNb, SElement *inGrOrModP, int 
 		if( depth == 0)
 		{
 			depth = gx0028BitsStored [inFileNb];
-			fprintf(stdout, "depth not found (scanJpegDataForBitDepth), will use: %d\r", depth);
+			fprintf(stdout, "depth not found (scanJpegDataForBitDepth), will use: %d %s\r", depth, gPapyFilePath [inFileNb]);
 		}
 		
 		free( data);
@@ -2462,7 +2462,7 @@ PutBufferInElement3 (PapyShort inFileNb, unsigned char *ioBuffP, PapyULong inEle
 		  			        theSeqGrSize, ioBufPosP, theInitialFilePos);
 	            if (theErr < 0)
 	            {
-				  printf("error from PutBufferInGroup3\n");
+				  printf("error from PutBufferInGroup3 %s\n", gPapyFilePath [inFileNb]);
 	              efree3 ((void **) &ioBuffP);
 	              RETURN (theErr);
 	            } /* if ...theErr */
@@ -2803,7 +2803,7 @@ PutBufferInGroup3 (PapyShort inFileNb, unsigned char *ioBuffP, SElement *ioGroup
         
         if ((theErr = ComputeUndefinedSequenceLength3 (inFileNb, &theElemLength)) < 0)
 		{
-			printf("err ComputeUndefinedSequenceLength3\n");
+			printf("err ComputeUndefinedSequenceLength3 %s\n", gPapyFilePath [inFileNb]);
           RETURN (theErr);
       }
         /* reset the file pointer to its previous position */
@@ -2874,13 +2874,13 @@ PutBufferInGroup3 (PapyShort inFileNb, unsigned char *ioBuffP, SElement *ioGroup
           {
 			if( theElemLength > inBytesToRead)
 			{
-				printf("err theElemLength > inBytesToRead\n");
+				printf("err theElemLength > inBytesToRead, %s\n", gPapyFilePath [inFileNb]);
 				return -1;
 			}
 			
 			if( *ioBufPosP - theInitialBufPos + theElemLength > inBytesToRead)
 			{
-				printf("err length : *ioBufPosP - theInitialBufPos + theElemLength > inBytesToRead -- BAD GROUP LENGTH - CORRUPTED DICOM FILE\n");
+				printf("err length : *ioBufPosP - theInitialBufPos + theElemLength > inBytesToRead -- BAD GROUP LENGTH - CORRUPTED DICOM FILE, %s\n", gPapyFilePath [inFileNb]);
 				RETURN (papReadGroup);
 			}
 			
@@ -2888,7 +2888,7 @@ PutBufferInGroup3 (PapyShort inFileNb, unsigned char *ioBuffP, SElement *ioGroup
 	          if ((theErr = PutBufferInElement3 (inFileNb, ioBuffP, theElemLength, 
 				               &theArrElemP [theStructPos], ioBufPosP, theInitialFilePos)) < 0)
 			{
-				printf("err PutBufferInElement3\n");
+				printf("err PutBufferInElement3, %s\n", gPapyFilePath [inFileNb]);
 			    RETURN (theErr);  
             }
 			
