@@ -5693,7 +5693,7 @@ static NSArray*	statesArray = nil;
 	{
 		if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix)
 			matrixThumbnails = YES;
-	
+		
 		if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [databaseOutline menu]) || [[self window] firstResponder] == databaseOutline)
 			matrixThumbnails = NO;
 	}
@@ -12343,12 +12343,12 @@ static NSArray*	openSubSeriesArray = nil;
 	
     if (c == NSDeleteCharacter ||
         c == NSBackspaceCharacter)
-        [self delItem:nil];
+        [self delItem: [[self window] firstResponder]];
     
 	else if(c == NSNewlineCharacter ||
              c == NSEnterCharacter ||
              c == NSCarriageReturnCharacter)
-        [self viewerDICOM:nil];
+        [self viewerDICOM: [[self window] firstResponder]];
 		
 	else if(c == ' ')
 		[animationCheck setState: ![animationCheck state]];
