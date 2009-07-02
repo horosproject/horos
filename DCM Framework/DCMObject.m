@@ -1498,12 +1498,7 @@ PixelRepresentation
 	//routine for Files
 	if (stripGroupLength)
 		[self removeGroupLengths];
-		
-	//If ts is lossy, Need  new SOPInstanceUID
-	if ([ts isEqualToTransferSyntax:[DCMTransferSyntax JPEG2000LossyTransferSyntax]]
-	 || [ts isEqualToTransferSyntax:[DCMTransferSyntax JPEGBaselineTransferSyntax]] 
-	 || [ts isEqualToTransferSyntax:[DCMTransferSyntax JPEGExtendedTransferSyntax]] )
-		[self newSOPInstanceUID];
+	
 	//need to convert PixelData TransferSyntax
 	DCMAttributeTag *pixelDataTag = [DCMAttributeTag tagWithName:@"PixelData"];
 	DCMPixelDataAttribute *pixelDataAttr = (DCMPixelDataAttribute *)[attributes objectForKey:[pixelDataTag stringValue]];
