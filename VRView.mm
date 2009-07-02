@@ -3797,11 +3797,13 @@ public:
 		
 		[VRView getCroppingBox:a :volume :croppingBox];
 		
-		float v = [controller minimumValue];
+		float v = [controller minimumValue], b;
 		BOOL found;
 		int width = [firstObject pwidth], height = [firstObject pheight], depth = [pixList count];
 		int slice = width * height;
 		int x, y, z;
+		
+//		opacityTransferFunction->GetValue( (currentPointValue + OFFSET16) * valueFactor) * superSampling
 		
 		for( x = 0 ; x < 6; x++)
 			a[ x] /= superSampling;
@@ -7103,7 +7105,7 @@ public:
 	point1[1] = cameraPosition[1];
 	point1[2] = cameraPosition[2];
 	
-		// Go beyond the object...
+	// Go beyond the object...
 	point2[0] = cameraPosition[0] + (worldPointClicked[0] - cameraPosition[0])*5000.;
 	point2[1] = cameraPosition[1] + (worldPointClicked[1] - cameraPosition[1])*5000.;
 	point2[2] = cameraPosition[2] + (worldPointClicked[2] - cameraPosition[2])*5000.;
@@ -7114,7 +7116,7 @@ public:
 	volumePosition[0] /= factor;
 	volumePosition[1] /= factor;
 	volumePosition[2] /= factor;
-
+	
 	BOOL direction;
 	
 	switch(stackOrientation)
