@@ -3828,11 +3828,13 @@ public:
 //											([controller maximumValue] - [controller minimumValue] + OFFSET16) * valueFactor,
 //											opacityTable);
 		
-		for( found = NO, x = aa[ 0]; x < width && x < aa[ 1]; x++)
+		#define CHECKINTERVAL 3
+		
+		for( found = NO, x = aa[ 0]; x < width && x < aa[ 1]; x+=CHECKINTERVAL)
 		{
-			for(  y = aa[ 2]; y < height && y < aa[ 3]; y++)
+			for(  y = aa[ 2]; y < height && y < aa[ 3]; y+=CHECKINTERVAL)
 			{
-				for(  z = aa[ 4]; z < depth && z < aa[ 5]; z++)
+				for(  z = aa[ 4]; z < depth && z < aa[ 5]; z+=CHECKINTERVAL)
 				{
 					if( x >= 0 && y >= 0 && z >= 0)
 					{
@@ -3846,11 +3848,11 @@ public:
 			}	if( found)	break;
 		}
 		
-		for( found = NO, x = aa[ 1]; x >= 0 && x > aa[ 0]; x--)
+		for( found = NO, x = aa[ 1]; x >= 0 && x > aa[ 0]; x-=CHECKINTERVAL)
 		{
-			for(  y = aa[ 2]; y < height && y < aa[ 3]; y++)
+			for(  y = aa[ 2]; y < height && y < aa[ 3]; y+=CHECKINTERVAL)
 			{
-				for(  z = aa[ 4]; z < depth && z < aa[ 5]; z++)
+				for(  z = aa[ 4]; z < depth && z < aa[ 5]; z+=CHECKINTERVAL)
 				{
 					if( x >= 0 && y >= 0 && z >= 0)
 					{
@@ -3866,11 +3868,11 @@ public:
 		
 		////////////
 		
-		for( found = NO, y = aa[ 2]; y < height && y < aa[ 3]; y++)
+		for( found = NO, y = aa[ 2]; y < height && y < aa[ 3]; y+=CHECKINTERVAL)
 		{
-			for(  x = aa[ 0]; x < width && x < aa[ 1]; x++)
+			for(  x = aa[ 0]; x < width && x < aa[ 1]; x+=CHECKINTERVAL)
 			{
-				for(  z = aa[ 4]; z < depth && z < aa[ 5]; z++)
+				for(  z = aa[ 4]; z < depth && z < aa[ 5]; z+=CHECKINTERVAL)
 				{
 					if( x >= 0 && y >= 0 && z >= 0)
 					{
@@ -3884,11 +3886,11 @@ public:
 			}	if( found)	break;
 		}
 		
-		for( found = NO, y = aa[ 3]; y >= 0 && y > aa[ 2]; y--)
+		for( found = NO, y = aa[ 3]; y >= 0 && y > aa[ 2]; y-=CHECKINTERVAL)
 		{
-			for(  x = aa[ 0]; x < width && x < aa[ 1]; x++)
+			for(  x = aa[ 0]; x < width && x < aa[ 1]; x+=CHECKINTERVAL)
 			{
-				for(  z = aa[ 4]; z < depth && z < aa[ 5]; z++)
+				for(  z = aa[ 4]; z < depth && z < aa[ 5]; z+=CHECKINTERVAL)
 				{
 					if( x >= 0 && y >= 0 && z >= 0)
 					{
@@ -3904,11 +3906,11 @@ public:
 		
 		////////////
 		
-		for( found = NO, z = aa[ 4]; z < depth && z < aa[ 5]; z++)
+		for( found = NO, z = aa[ 4]; z < depth && z < aa[ 5]; z+=CHECKINTERVAL)
 		{
-			for(  x = aa[ 0]; x < width && x < aa[ 1]; x++)
+			for(  x = aa[ 0]; x < width && x < aa[ 1]; x+=CHECKINTERVAL)
 			{
-				for(  y = aa[ 2]; y < height && y < aa[ 3]; y++)
+				for(  y = aa[ 2]; y < height && y < aa[ 3]; y+=CHECKINTERVAL)
 				{
 					if( x >= 0 && y >= 0 && z >= 0)
 					{
@@ -3922,11 +3924,11 @@ public:
 			}	if( found)	break;
 		}
 		
-		for( found = NO, z = aa[ 5]; z >= 0 && z > aa[ 4]; z--)
+		for( found = NO, z = aa[ 5]; z >= 0 && z > aa[ 4]; z-=CHECKINTERVAL)
 		{
-			for(  x = aa[ 0]; x < width && x < aa[ 1]; x++)
+			for(  x = aa[ 0]; x < width && x < aa[ 1]; x+=CHECKINTERVAL)
 			{
-				for(  y = aa[ 2]; y < height && y < aa[ 3]; y++)
+				for(  y = aa[ 2]; y < height && y < aa[ 3]; y+=CHECKINTERVAL)
 				{
 					if( x >= 0 && y >= 0 && z >= 0)
 					{
