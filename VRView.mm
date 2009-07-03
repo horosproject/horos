@@ -1780,7 +1780,8 @@ public:
 		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"autorotate3D"] && [[[self window] windowController] isKindOfClass:[VRController class]])
 			startAutoRotate = [[NSTimer scheduledTimerWithTimeInterval:60*3 target:self selector:@selector(startAutoRotate:) userInfo:nil repeats:NO] retain];
 		
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowWillClose:) name: NSWindowWillCloseNotification object: nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowWillClose:) name: NSWindowWillCloseNotification object: [self window]];
+		
 		advancedCLUT = NO;
 		
 		if( MPProcessors() >= 4)
@@ -1796,21 +1797,18 @@ public:
 
 - (void)windowWillClose:(NSNotification *)notification
 {
-	if( [notification object] == [self window])
-	{
-		[startAutoRotate invalidate];
-		[startAutoRotate release];
-		startAutoRotate = nil;
-		
-		[autoRotate invalidate];
-		[autoRotate release];
-		autoRotate = nil;
-		
-		[self deleteMouseDownTimer];
-		[self deleteRightMouseDownTimer];
-		
-		[[NSNotificationCenter defaultCenter] removeObserver: self];
-	}
+	[startAutoRotate invalidate];
+	[startAutoRotate release];
+	startAutoRotate = nil;
+	
+	[autoRotate invalidate];
+	[autoRotate release];
+	autoRotate = nil;
+	
+	[self deleteMouseDownTimer];
+	[self deleteRightMouseDownTimer];
+	
+	[[NSNotificationCenter defaultCenter] removeObserver: self];
 }
 
 - (IBAction) resetImage:(id) sender
@@ -2045,8 +2043,6 @@ public:
 	[currentOpacityArray release];
 	
 	[[NSNotificationCenter defaultCenter] removeObserver: self];
-	
-	
 	[self setBlendingPixSource: nil];
 	
 //	cbStart->Delete();
@@ -4000,6 +3996,9 @@ public:
 
 - (void) deleteRegion:(int) c :(NSArray*) pxList :(BOOL) blendedSeries
 {
+	if( deleteRegionScheduler)
+		return;
+	
 	long			tt, stackMax, stackOrientation, i;
 	vtkPoints		*roiPts = ROI3DData->GetPoints();
 	NSMutableArray	*ROIList = [NSMutableArray arrayWithCapacity:0];
@@ -4280,8 +4279,8 @@ public:
 	}
 	
 	// Create a scheduler
-	id sched = [[StaticScheduler alloc] initForSchedulableObject: self];
-	[sched setDelegate: self];
+	StaticScheduler *deleteRegionScheduler = [[StaticScheduler alloc] initForSchedulableObject: self];
+	[deleteRegionScheduler setDelegate: self];
 	
 	// Create the work units. These can be anything. We will use NSNumbers
 	NSMutableSet *unitsSet = [NSMutableSet set];
@@ -4290,7 +4289,9 @@ public:
 		[unitsSet addObject: [NSArray arrayWithObjects: [NSNumber numberWithInt:i], [NSNumber numberWithInt:stackOrientation], [NSNumber numberWithInt: c], [ROIList objectAtIndex: i], [NSNumber numberWithInt: blendedSeries], [NSNumber numberWithBool: addition], [NSNumber numberWithFloat: newVal], nil]];
 	}
 	// Perform work schedule
-	[sched performScheduleForWorkUnits:unitsSet];
+	[deleteRegionScheduler performScheduleForWorkUnits: unitsSet];
+	
+	while( [deleteRegionScheduler numberOfDetachedThreads] > 0) [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
 	
 	// Delete current ROI
 	vtkPoints *pts = vtkPoints::New();
@@ -4562,6 +4563,7 @@ public:
 		cropcallback->Execute(croppingBox, 0, nil);
 	
 	[scheduler release];
+	scheduler = nil;
 	
 	if( textureMapper || gDataValuesChanged)
 	{
