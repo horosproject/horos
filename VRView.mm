@@ -3105,9 +3105,7 @@ public:
 	if( blendingVolumeMapper) blendingVolumeMapper->SetMinimumImageSampleDistance( LOD);
 	
 	if (_resizeFrame)
-	{
 		[self setNeedsDisplay:YES];
-	}
 	else
 	{
 		switch (_tool)
@@ -3134,7 +3132,6 @@ public:
 							[self panX: ([self frame].size.width/2.) -(pWC[ 0] - xx)*10000. Y: ([self frame].size.height/2.) -(pWC[ 1] - yy) *10000.];
 						}
 					}
-					
 					[self setNeedsDisplay:YES];
 				}
 				else
