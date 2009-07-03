@@ -355,6 +355,15 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 	return splineForROI;
 }
 
+-(void)setIsSpline:(BOOL)isSpline {
+	_isSpline = isSpline;
+	_hasIsSpline = YES;
+}
+
+-(BOOL)isSpline {
+	return _hasIsSpline? _isSpline : [ROI splineForROI];
+}
+
 +(void) setDefaultName:(NSString*) n
 {
 	[defaultName release];
@@ -5804,7 +5813,7 @@ NSInteger sortPointArrayAlongX(id point1, id point2, void *context)
 -(NSMutableArray*)splinePoints:(float) scale;
 {
 	// activated in the prefs
-	if( splineForROI == NO) return [self points];
+	if ([self isSpline] == NO) return [self points];
 	
 	// available only for ROI types : Open Polygon, Close Polygon, Pencil
 	// for other types, returns the original points
@@ -5847,7 +5856,7 @@ NSInteger sortPointArrayAlongX(id point1, id point2, void *context)
 -(NSMutableArray*)splineZPositions;
 {
 	// activated in the prefs
-	if( splineForROI == NO) return zPositions;
+	if([self isSpline] == NO) return zPositions;
 	
 	// available only for ROI types : Open Polygon, Close Polygon, Pencil
 	// for other types, returns the original points
@@ -5881,5 +5890,20 @@ NSInteger sortPointArrayAlongX(id point1, id point2, void *context)
 	
 	return newPoints;
 }
+
+-(void)setNSColor:(NSColor*)nsColor {
+	[self setNSColor:nsColor globally:YES];
+}
+
+-(NSColor*)NSColor {
+	return [NSColor colorWithCalibratedRed:color.red/0xffff green:color.green/0xffff blue:color.blue/0xffff alpha:opacity];
+}
+
+-(void)setNSColor:(NSColor*)nsColor globally:(BOOL)g {
+	[self setOpacity:[nsColor alphaComponent] globally:g];
+	RGBColor rgbColor = {[nsColor redComponent]*0xffff, [nsColor greenComponent]*0xffff, [nsColor blueComponent]*0xffff};
+	[self setColor:rgbColor globally:g];
+}
+
 
 @end

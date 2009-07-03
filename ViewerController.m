@@ -3912,18 +3912,16 @@ static ViewerController *draggedController = nil;
 	{
 		// in this case, the drag operation was performed from a plugin.
 		id source = [sender draggingSource];
+
+		NSMutableDictionary* userInfo = [NSMutableDictionary dictionaryWithCapacity:2];
+		[userInfo setValue:self forKey:@"destination"]; // should not be used anymore, as [notification object] is the same (was NULL)
+		[userInfo setValue:sender forKey:@"dragOperation"]; // should use key "NSDraggingInfo"
+		[userInfo setValue:sender forKey:@"id<NSDraggingInfo>"];
+		[[NSNotificationCenter defaultCenter] postNotificationName:OsirixPerformDragOperationNotification object:self userInfo:userInfo];
 		
-		if ([source respondsToSelector:@selector(performPluginDragOperation:destination:)])
-		{
+		if ([source respondsToSelector:@selector(performPluginDragOperation:destination:)]) {
 			return [source performPluginDragOperation:sender destination:self];
 		} 
-		else
-		{
-			NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithCapacity:2];
-			[userInfo setValue:self forKey:@"destination"];
-			[userInfo setValue:sender forKey:@"dragOperation"];
-			[[NSNotificationCenter defaultCenter] postNotificationName:OsirixDragOperationNotification object:nil userInfo:userInfo];
-		}
 	}
 	else
 	{
@@ -12382,6 +12380,36 @@ int i,j,l;
 		for(i=[group count]-1; i>=0; i--)
 		{
 			[ROIs insertObject:[group objectAtIndex:i] atIndex:0];
+		}
+	}
+}
+
+- (void)sendToBackROI:(ROI*) roi;
+{
+	if([roi groupID]==0.0) // not grouped
+	{
+		[roi retain];
+		[[roiList[curMovieIndex] objectAtIndex:[imageView curImage]] insertObject:roi atIndex:[[roiList[curMovieIndex] objectAtIndex:[imageView curImage]] count]];
+		[[roiList[curMovieIndex] objectAtIndex:[imageView curImage]] removeObject:roi];
+		[roi release];
+	}
+	else // bring the whole group to front, without changing order inside the group
+	{
+		NSMutableArray *group = [NSMutableArray arrayWithCapacity:0];
+		NSMutableArray *ROIs = [roiList[curMovieIndex] objectAtIndex:[imageView curImage]];
+		int i;
+		for(i=0; i<[ROIs count]; i++)
+		{
+			if([[ROIs objectAtIndex:i] groupID]==[roi groupID])
+			{
+				[group addObject:[ROIs objectAtIndex:i]];
+				[ROIs removeObject:[ROIs objectAtIndex:i]];
+				i--;
+			}
+		}
+		for(i=[group count]-1; i>=0; i--)
+		{
+			[ROIs insertObject:[group objectAtIndex:i] atIndex:[ROIs count]];
 		}
 	}
 }

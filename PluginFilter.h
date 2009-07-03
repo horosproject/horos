@@ -75,3 +75,10 @@
 /** PRIVATE FUNCTIONS - DON'T SUBCLASS OR MODIFY */
 - (long) prepareFilter:(ViewerController*) vC;
 @end
+
+@interface PluginFilter (Optional)
+
+/** Called to pass the plugin all sorts of events sent to a ViewerController.  */
+-(BOOL)handleEvent:(NSEvent*)event forViewer:(ViewerController*)controller;
+
+@end;

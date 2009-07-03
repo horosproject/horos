@@ -25,7 +25,6 @@
 #import "SplashScreen.h"
 #import "NSFont_OpenGL.h"
 #import "Survey.h"
-#import "PluginManager.h"
 #import "DicomFile.h"
 #import "HTTPServer.h"
 #import <OsiriX/DCM.h>

@@ -42,6 +42,7 @@
 #import "DefaultsOsiriX.h"
 #include "NSFont_OpenGL/NSFont_OpenGL.h"
 #import "Notifications.h"
+#import "PluginManager.h"
 
 // kvImageHighQualityResampling
 #define QUALITY kvImageNoFlags
@@ -488,6 +489,18 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 @synthesize drawing;
 @synthesize volumicSeries;
 @synthesize isKeyView, mouseDragging;
+
+-(BOOL)eventToPlugins:(NSEvent*)event {
+	BOOL used = NO;
+	
+	for (id key in [PluginManager plugins]) {
+		if ([[[PluginManager plugins] objectForKey:key] respondsToSelector:@selector(handleEvent:forViewer:)])
+			if ([[[PluginManager plugins] objectForKey:key] handleEvent:event forViewer:[self windowController]])
+				used = YES;
+	}
+	
+	return used;
+}
 
 + (BOOL) intersectionBetweenTwoLinesA1:(NSPoint) a1 A2:(NSPoint) a2 B1:(NSPoint) b1 B2:(NSPoint) b2 result:(NSPoint*) r
 {
@@ -2383,6 +2396,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 - (void) keyDown:(NSEvent *)event
 {
+	if ([self eventToPlugins:event]) return;
+	
 	unichar		c = [[event characters] characterAtIndex:0];
 	long		xMove = 0, yMove = 0, val;
 	BOOL		Jog = NO;
@@ -2896,6 +2911,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 - (void)mouseUp:(NSEvent *)event
 {
+	if ([self eventToPlugins:event]) return;
+	
 	mouseDragging = NO;
 	
 	// get rid of timer
@@ -2914,6 +2931,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	// If caplock is on changes to scale, rotation, zoom, ww/wl will apply only to the current image
 	BOOL modifyImageOnly = NO;
 	if ([event modifierFlags] & NSAlphaShiftKeyMask) modifyImageOnly = YES;
+	
+	
 	
     if( dcmPixList)
     {
@@ -3274,6 +3293,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 -(void) mouseMoved: (NSEvent*) theEvent
 {
+	if ([self eventToPlugins:theEvent]) return;
+	
 	if( !drawing) return;
 	
 	if( [[self window] isVisible] == NO) return;
@@ -3501,6 +3522,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 - (void) mouseDown:(NSEvent *)event
 {	
+	if ([self eventToPlugins:event]) return;
+	
 	currentMouseEventTool = -1;
 	
 	if( !drawing) return;
@@ -4391,6 +4414,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 - (void) otherMouseDown:(NSEvent *)event
 {
+	if ([self eventToPlugins:event]) return;
+
 	if( curImage < 0) return;
 	
 	[[self window] makeKeyAndOrderFront: self];
@@ -4401,6 +4426,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 - (void) rightMouseDown:(NSEvent *)event
 {
+	if ([self eventToPlugins:event]) return;
+	
 	if( curImage < 0) return;
 	
 	[[self window] makeKeyAndOrderFront: self];
@@ -4421,6 +4448,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 - (void) rightMouseUp:(NSEvent *)event
 {
+	if ([self eventToPlugins:event]) return;
+	
 	mouseDragging = NO;
 	
 	NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
@@ -4456,11 +4485,17 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 - (void)otherMouseDragged:(NSEvent *)event
 {
+	if ([self eventToPlugins:event]) return;
 	[self mouseDragged:(NSEvent *)event];
+}
+
+-(void)otherMouseUp:(NSEvent*)event {
+	[self eventToPlugins:event];
 }
 
 - (void)rightMouseDragged:(NSEvent *)event
 {
+	if ([self eventToPlugins:event]) return;
 	
 	if ( pluginOverridesMouse )
 	{
@@ -4515,6 +4550,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 #pragma mark Mouse dragging methods	
 - (void)mouseDragged:(NSEvent *)event
 {
+	if ([self eventToPlugins:event]) return;
+
 	[self deleteLens];
 	
 	mouseDragging = YES;
@@ -10774,6 +10811,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 -(void)keyUp:(NSEvent *)theEvent
 {
+	if ([self eventToPlugins:theEvent]) return;
 	[super keyUp:theEvent];
 }
 
@@ -10904,11 +10942,14 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 - (void)mouseEntered:(NSEvent *)theEvent
 {
+	[self eventToPlugins:theEvent];
 	cursorSet = YES;
 }
 
 - (void)mouseExited:(NSEvent *)theEvent
 {
+	[self eventToPlugins:theEvent];
+
 	[self deleteLens];
 #ifdef new_loupe
 	[self hideLoupe];
@@ -10999,7 +11040,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	else return pixelMouseValue * curDCM.patientsWeight * 1000.0f / (curDCM.radionuclideTotalDoseCorrected * [curDCM decayFactor]);
 }
 
-+ (void)setPluginOverridesMouse: (BOOL)override {
+
++ (void)setPluginOverridesMouse: (BOOL)override { // is deprecated in @interface
 	pluginOverridesMouse = override;
 }
 

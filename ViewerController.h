@@ -486,6 +486,7 @@ enum
 * @param roi The ROI that should be up front
 */
 - (void)bringToFrontROI:(ROI*)roi;
+- (void)sendToBackROI:(ROI*) roi;
 
 /** Change fusion status
 * Called by an action.

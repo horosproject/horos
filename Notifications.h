@@ -64,7 +64,7 @@ extern NSString* OsirixLabelGLFontChangeNotification;
 extern NSString* OsirixDrawTextInfoNotification;
 extern NSString* OsirixDrawObjectsNotification;
 extern NSString* OsirixDCMViewDidBecomeFirstResponderNotification;
-extern NSString* OsirixDragOperationNotification;
+extern NSString* OsirixPerformDragOperationNotification;
 extern NSString* OsirixViewerWillChangeNotification;
 extern NSString* OsirixViewerDidChangeNotification;
 extern NSString* OsirixUpdateViewNotification;

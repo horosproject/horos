@@ -68,6 +68,7 @@ enum
 	NSMutableArray  *points;
 	NSMutableArray  *zPositions;
 	NSRect			rect;
+	BOOL			_hasIsSpline, _isSpline;
 	
 	long			type;
 	long			mode;
@@ -161,7 +162,10 @@ enum
 @property(retain) ROI *parentROI;
 @property double sliceThickness, pixelSpacingX, pixelSpacingY;
 @property float min, max, mean;
+@property(assign) NSColor* NSColor;
+@property(assign) BOOL isSpline;
 
+- (void) setNSColor:(NSColor*)color globally:(BOOL)g;
 - (void) setColor:(RGBColor) a globally: (BOOL) g;
 - (void) setThickness:(float) a globally: (BOOL) g;
 - (void) setOpacity:(float)newOpacity globally: (BOOL) g;

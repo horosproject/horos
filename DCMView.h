@@ -329,7 +329,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 
 + (void) setDefaults;
 + (void) setCLUTBARS:(int) c ANNOTATIONS:(int) a;
-+ (void)setPluginOverridesMouse: (BOOL)override;
++ (void)setPluginOverridesMouse: (BOOL)override DEPRECATED_ATTRIBUTE;
 + (void) computePETBlendingCLUT;
 + (NSString*) findWLWWPreset: (float) wl :(float) ww :(DCMPix*) pix;
 + (NSSize)sizeOfString:(NSString *)string forFont:(NSFont *)font;
