@@ -3791,19 +3791,16 @@ public:
 
 - (void) autoCroppingBox
 {
-	if( croppingBox)
+	if( croppingBox && isRGB == NO)
 	{
 		double a[6];
+		int aa[6];
 		
 		[VRView getCroppingBox:a :volume :croppingBox];
 		
 		float v = [controller minimumValue], b;
 		BOOL found;
-		int width = [firstObject pwidth], height = [firstObject pheight], depth = [pixList count];
-		int slice = width * height;
-		int x, y, z;
-		
-//		opacityTransferFunction->GetValue( (currentPointValue + OFFSET16) * valueFactor) * superSampling
+		int width = [firstObject pwidth], height = [firstObject pheight], depth = [pixList count], slice = width * height, x, y, z;
 		
 		for( x = 0 ; x < 6; x++)
 			a[ x] /= superSampling;
@@ -3822,104 +3819,135 @@ public:
 		a[ 2] = a[ 2] > height ? height : a[ 2];	a[ 3] = a[ 3] > height ? height : a[ 3];
 		a[ 4] = a[ 4] > depth ? depth : a[ 4];		a[ 5] = a[ 5] > depth ? depth : a[ 5];
 		
-		for( found = NO, x = a[ 0]; x < width && x < a[ 1]; x++)
+		for( x = 0 ; x < 6; x++)
+			aa[ x] = a[ x];
+		
+//		double *opacityTable = opacityTransferFunction->GetDataPointer();
+//		for( x = 0 ; x < opacityTransferFunction->GetSize(); x++)
+//			NSLog( @"%f", opacityTable[ x]);
+		
+		NSLog( @"start autocropping");
+		
+		for( found = NO, x = aa[ 0]; x < width && x < aa[ 1]; x++)
 		{
-			for(  y = a[ 2]; y < height && y < a[ 3]; y++)
+			for(  y = aa[ 2]; y < height && y < aa[ 3]; y++)
 			{
-				for(  z = a[ 4]; z < depth && z < a[ 5]; z++)
+				for(  z = aa[ 4]; z < depth && z < aa[ 5]; z++)
 				{
 					if( x >= 0 && y >= 0 && z >= 0)
-						if( *(data + x + y * width + z * slice) != v)
+					{
+						float p = *(data + x + y * width + z * slice);
+						if( p != v) // && opacityTransferFunction->GetValue( (p + OFFSET16) * valueFactor)  > 0)
 						{
-							a[ 0] = x;	found = YES;	break;
+							aa[ 0] = x;	found = YES;	break;
 						}	if( found)	break;
+					}
 				}	if( found)	break;
 			}	if( found)	break;
 		}
 		
-		for( found = NO, x = a[ 1]; x >= 0 && x > a[ 0]; x--)
+		for( found = NO, x = aa[ 1]; x >= 0 && x > aa[ 0]; x--)
 		{
-			for(  y = a[ 2]; y < height && y < a[ 3]; y++)
+			for(  y = aa[ 2]; y < height && y < aa[ 3]; y++)
 			{
-				for(  z = a[ 4]; z < depth && z < a[ 5]; z++)
+				for(  z = aa[ 4]; z < depth && z < aa[ 5]; z++)
 				{
 					if( x >= 0 && y >= 0 && z >= 0)
-						if( *(data + x + y * width + z * slice) != v)
+					{
+						float p = *(data + x + y * width + z * slice);
+						if( p != v) // && opacityTransferFunction->GetValue( (p + OFFSET16) * valueFactor)  > 0)
 						{
-							a[ 1] = x;	found = YES;	break;
+							aa[ 1] = x;	found = YES;	break;
 						}	if( found)	break;
-				}	if( found)	break;
-			}	if( found)	break;
-		}
-		
-		////////////
-		
-		for( found = NO, y = a[ 2]; y < height && y < a[ 3]; y++)
-		{
-			for(  x = a[ 0]; x < width && x < a[ 1]; x++)
-			{
-				for(  z = a[ 4]; z < depth && z < a[ 5]; z++)
-				{
-					if( x >= 0 && y >= 0 && z >= 0)
-						if( *(data + x + y * width + z * slice) != v)
-						{
-							a[ 2] = y;	found = YES;	break;
-						}	if( found)	break;
-				}	if( found)	break;
-			}	if( found)	break;
-		}
-		
-		for( found = NO, y = a[ 3]; y >= 0 && y > a[ 2]; y--)
-		{
-			for(  x = a[ 0]; x < width && x < a[ 1]; x++)
-			{
-				for(  z = a[ 4]; z < depth && z < a[ 5]; z++)
-				{
-					if( x >= 0 && y >= 0 && z >= 0)
-						if( *(data + x + y * width + z * slice) != v)
-						{
-							a[ 3] = y;	found = YES;	break;
-						}	if( found)	break;
+					}
 				}	if( found)	break;
 			}	if( found)	break;
 		}
 		
 		////////////
 		
-		for( found = NO, z = a[ 4]; z < depth && z < a[ 5]; z++)
+		for( found = NO, y = aa[ 2]; y < height && y < aa[ 3]; y++)
 		{
-			for(  x = a[ 0]; x < width && x < a[ 1]; x++)
+			for(  x = aa[ 0]; x < width && x < aa[ 1]; x++)
 			{
-				for(  y = a[ 2]; y < height && y < a[ 3]; y++)
+				for(  z = aa[ 4]; z < depth && z < aa[ 5]; z++)
 				{
 					if( x >= 0 && y >= 0 && z >= 0)
-						if( *(data + x + y * width + z * slice) != v)
+					{
+						float p = *(data + x + y * width + z * slice);
+						if( p != v) // && opacityTransferFunction->GetValue( (p + OFFSET16) * valueFactor)  > 0)
 						{
-							a[ 4] = z;	found = YES;	break;
+							aa[ 2] = y;	found = YES;	break;
 						}	if( found)	break;
+					}
 				}	if( found)	break;
 			}	if( found)	break;
 		}
 		
-		for( found = NO, z = a[ 5]; z >= 0 && z > a[ 4]; z--)
+		for( found = NO, y = aa[ 3]; y >= 0 && y > aa[ 2]; y--)
 		{
-			for(  x = a[ 0]; x < width && x < a[ 1]; x++)
+			for(  x = aa[ 0]; x < width && x < aa[ 1]; x++)
 			{
-				for(  y = a[ 2]; y < height && y < a[ 3]; y++)
+				for(  z = aa[ 4]; z < depth && z < aa[ 5]; z++)
 				{
 					if( x >= 0 && y >= 0 && z >= 0)
-						if( *(data + x + y * width + z * slice) != v)
+					{
+						float p = *(data + x + y * width + z * slice);
+						if( p != v) // && opacityTransferFunction->GetValue( (p + OFFSET16) * valueFactor)  > 0)
 						{
-							a[ 5] = z;	found = YES;	break;
+							aa[ 3] = y;	found = YES;	break;
 						}	if( found)	break;
+					}
 				}	if( found)	break;
 			}	if( found)	break;
 		}
+		
+		////////////
+		
+		for( found = NO, z = aa[ 4]; z < depth && z < aa[ 5]; z++)
+		{
+			for(  x = aa[ 0]; x < width && x < aa[ 1]; x++)
+			{
+				for(  y = aa[ 2]; y < height && y < aa[ 3]; y++)
+				{
+					if( x >= 0 && y >= 0 && z >= 0)
+					{
+						float p = *(data + x + y * width + z * slice);
+						if( p != v) // && opacityTransferFunction->GetValue( (p + OFFSET16) * valueFactor)  > 0)
+						{
+							aa[ 4] = z;	found = YES;	break;
+						}	if( found)	break;
+					}
+				}	if( found)	break;
+			}	if( found)	break;
+		}
+		
+		for( found = NO, z = aa[ 5]; z >= 0 && z > aa[ 4]; z--)
+		{
+			for(  x = aa[ 0]; x < width && x < aa[ 1]; x++)
+			{
+				for(  y = aa[ 2]; y < height && y < aa[ 3]; y++)
+				{
+					if( x >= 0 && y >= 0 && z >= 0)
+					{
+						float p = *(data + x + y * width + z * slice);
+						if( p != v) // && opacityTransferFunction->GetValue( (p + OFFSET16) * valueFactor)  > 0)
+						{
+							aa[ 5] = z;	found = YES;	break;
+						}	if( found)	break;
+					}
+				}	if( found)	break;
+			}	if( found)	break;
+		}
+		
+		for( x = 0 ; x < 6; x++)
+			a[ x] = aa[ x];
 		
 		a[ 4] /= [firstObject pixelSpacingX];
 		a[ 4] *= sliceThickness;
 		a[ 5] /= [firstObject pixelSpacingX];
 		a[ 5] *= sliceThickness;
+		
 		////////////
 		
 		for( x = 0 ; x < 6; x++)
@@ -3961,6 +3989,8 @@ public:
 			
 			Transform->Delete();
 		}
+		
+		NSLog( @"end autocropping");
 	}
 }
 

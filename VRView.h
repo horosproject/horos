@@ -395,6 +395,7 @@ typedef char* vtkMyCallbackVR;
 //-(void) runRendering;
 //-(void) startRendering;
 //-(void) stopRendering;
+- (void) autoCroppingBox;
 - (float) LOD;
 -(void) setLOD:(float)f;
 -(void) setCurrentTool:(short) i;
