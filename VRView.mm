@@ -3819,11 +3819,14 @@ public:
 		for( x = 0 ; x < 6; x++)
 			aa[ x] = a[ x];
 		
-//		double *opacityTable = opacityTransferFunction->GetDataPointer();
-//		for( x = 0 ; x < opacityTransferFunction->GetSize(); x++)
-//			NSLog( @"%f", opacityTable[ x]);
-		
 		NSLog( @"start autocropping");
+		
+//		double *opacityTable = (double*) malloc( ([controller maximumValue] - [controller minimumValue] + OFFSET16) * valueFactor * sizeof( double));
+//		
+//		opacityTransferFunction->GetTable(	([controller minimumValue] + OFFSET16) * valueFactor,
+//											([controller maximumValue] + OFFSET16) * valueFactor,
+//											([controller maximumValue] - [controller minimumValue] + OFFSET16) * valueFactor,
+//											opacityTable);
 		
 		for( found = NO, x = aa[ 0]; x < width && x < aa[ 1]; x++)
 		{
@@ -3834,7 +3837,7 @@ public:
 					if( x >= 0 && y >= 0 && z >= 0)
 					{
 						float p = *(data + x + y * width + z * slice);
-						if( p != v) // && opacityTransferFunction->GetValue( (p + OFFSET16) * valueFactor)  > 0)
+						if( p != v) // && opacityTable[ (int) ((p + OFFSET16) * valueFactor)] > 0)
 						{
 							aa[ 0] = x;	found = YES;	break;
 						}	if( found)	break;
@@ -3852,7 +3855,7 @@ public:
 					if( x >= 0 && y >= 0 && z >= 0)
 					{
 						float p = *(data + x + y * width + z * slice);
-						if( p != v) // && opacityTransferFunction->GetValue( (p + OFFSET16) * valueFactor)  > 0)
+						if( p != v) // && oacityTable[ (int) ((p + OFFSET16) * valueFactor)] > 0)
 						{
 							aa[ 1] = x;	found = YES;	break;
 						}	if( found)	break;
@@ -3872,7 +3875,7 @@ public:
 					if( x >= 0 && y >= 0 && z >= 0)
 					{
 						float p = *(data + x + y * width + z * slice);
-						if( p != v) // && opacityTransferFunction->GetValue( (p + OFFSET16) * valueFactor)  > 0)
+						if( p != v) // && oacityTable[ (int) ((p + OFFSET16) * valueFactor)] > 0)
 						{
 							aa[ 2] = y;	found = YES;	break;
 						}	if( found)	break;
@@ -3890,7 +3893,7 @@ public:
 					if( x >= 0 && y >= 0 && z >= 0)
 					{
 						float p = *(data + x + y * width + z * slice);
-						if( p != v) // && opacityTransferFunction->GetValue( (p + OFFSET16) * valueFactor)  > 0)
+						if( p != v) // && oacityTable[ (int) ((p + OFFSET16) * valueFactor)] > 0)
 						{
 							aa[ 3] = y;	found = YES;	break;
 						}	if( found)	break;
@@ -3910,7 +3913,7 @@ public:
 					if( x >= 0 && y >= 0 && z >= 0)
 					{
 						float p = *(data + x + y * width + z * slice);
-						if( p != v) // && opacityTransferFunction->GetValue( (p + OFFSET16) * valueFactor)  > 0)
+						if( p != v) // && oacityTable[ (int) ((p + OFFSET16) * valueFactor)] > 0)
 						{
 							aa[ 4] = z;	found = YES;	break;
 						}	if( found)	break;
@@ -3928,7 +3931,7 @@ public:
 					if( x >= 0 && y >= 0 && z >= 0)
 					{
 						float p = *(data + x + y * width + z * slice);
-						if( p != v) // && opacityTransferFunction->GetValue( (p + OFFSET16) * valueFactor)  > 0)
+						if( p != v) // && oacityTable[ (int) ((p + OFFSET16) * valueFactor)] > 0)
 						{
 							aa[ 5] = z;	found = YES;	break;
 						}	if( found)	break;
@@ -3944,6 +3947,8 @@ public:
 		a[ 4] *= sliceThickness;
 		a[ 5] /= [firstObject pixelSpacingX];
 		a[ 5] *= sliceThickness;
+		
+//		free( opacityTable);
 		
 		////////////
 		
