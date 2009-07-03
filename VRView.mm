@@ -3996,9 +3996,6 @@ public:
 
 - (void) deleteRegion:(int) c :(NSArray*) pxList :(BOOL) blendedSeries
 {
-	if( deleteRegionScheduler)
-		return;
-	
 	long			tt, stackMax, stackOrientation, i;
 	vtkPoints		*roiPts = ROI3DData->GetPoints();
 	NSMutableArray	*ROIList = [NSMutableArray arrayWithCapacity:0];
@@ -4293,6 +4290,8 @@ public:
 	
 	while( [deleteRegionScheduler numberOfDetachedThreads] > 0) [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
 	
+	[deleteRegionScheduler release];
+	
 	// Delete current ROI
 	vtkPoints *pts = vtkPoints::New();
 	vtkCellArray *rect = vtkCellArray::New();
@@ -4561,9 +4560,6 @@ public:
 	
 	if( cropcallback)
 		cropcallback->Execute(croppingBox, 0, nil);
-	
-	[scheduler release];
-	scheduler = nil;
 	
 	if( textureMapper || gDataValuesChanged)
 	{
