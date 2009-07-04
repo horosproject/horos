@@ -2934,7 +2934,6 @@ public:
 					else
 						colorTransferFunction->BuildFunctionFromTable( valueFactor*(OFFSET16 + wl-ww/2), valueFactor*(OFFSET16 + wl+ww/2), 255, (double*) &table);
 					
-
 					if( [[[controller viewer2D] modality] isEqualToString:@"PT"] || ([[NSUserDefaults standardUserDefaults] boolForKey:@"mouseWindowingNM"] == YES && [[[controller viewer2D] modality] isEqualToString:@"NM"] == YES))
 					{
 						if( ww < 50) sprintf(WLWWString, "From: %0.4f   To: %0.4f ", wl-ww/2, wl+ww/2);
@@ -2945,6 +2944,9 @@ public:
 						if( ww < 50) sprintf(WLWWString, "WL: %0.4f WW: %0.4f ", wl, ww);
 						else sprintf(WLWWString, "WL: %0.f WW: %0.f ", wl, ww);
 					}
+					
+					if( [[NSUserDefaults standardUserDefaults] boolForKey: @"dontAutoCropScissors"] == NO)
+						[self autoCroppingBox];
 					
 					textWLWW->SetInput( WLWWString);
 					[self setNeedsDisplay:YES];
@@ -3786,15 +3788,18 @@ public:
 {
 	if( croppingBox && isRGB == NO)
 	{
-		double a[6];
+		double a[6], originalPositions[ 6];
 		int aa[6];
 		
 		[VRView getCroppingBox:a :volume :croppingBox];
 		
-		float v = [controller minimumValue], b;
+		float b;
 		BOOL found;
 		int width = [firstObject pwidth], height = [firstObject pheight], depth = [pixList count], slice = width * height, x, y, z;
 		
+		for( x = 0 ; x < 6; x++)
+			originalPositions[ x] = a[ x];
+			
 		for( x = 0 ; x < 6; x++)
 			a[ x] /= superSampling;
 		
@@ -3817,12 +3822,16 @@ public:
 		
 		NSLog( @"start autocropping");
 		
-//		double *opacityTable = (double*) malloc( ([controller maximumValue] - [controller minimumValue] + OFFSET16) * valueFactor * sizeof( double));
-//		
-//		opacityTransferFunction->GetTable(	([controller minimumValue] + OFFSET16) * valueFactor,
-//											([controller maximumValue] + OFFSET16) * valueFactor,
-//											([controller maximumValue] - [controller minimumValue] + OFFSET16) * valueFactor,
-//											opacityTable);
+		double *opacityTable = (double*) malloc( ([controller maximumValue] - [controller minimumValue] + OFFSET16) * valueFactor * sizeof( double));
+		
+		opacityTransferFunction->GetTable(	([controller minimumValue] + OFFSET16) * valueFactor,
+											([controller maximumValue] + OFFSET16) * valueFactor,
+											([controller maximumValue] - [controller minimumValue]) * valueFactor,
+											opacityTable);
+		short *sdata = (short*) data8;
+		short v = ([controller minimumValue] + OFFSET16) * valueFactor;
+		
+//		NSLog( @"%f %f", opacityTable[ *sdata], opacityTransferFunction->GetValue( (*data + OFFSET16)*valueFactor));
 		
 		#define CHECKINTERVAL 3
 		
@@ -3834,8 +3843,8 @@ public:
 				{
 					if( x >= 0 && y >= 0 && z >= 0)
 					{
-						float p = *(data + x + y * width + z * slice);
-						if( p != v) // && opacityTable[ (int) ((p + OFFSET16) * valueFactor)] > 0)
+						short p = *(sdata + x + y * width + z * slice);
+						if( p != v && opacityTable[ p] > 0)
 						{
 							aa[ 0] = x;	found = YES;	break;
 						}	if( found)	break;
@@ -3852,8 +3861,8 @@ public:
 				{
 					if( x >= 0 && y >= 0 && z >= 0)
 					{
-						float p = *(data + x + y * width + z * slice);
-						if( p != v) // && oacityTable[ (int) ((p + OFFSET16) * valueFactor)] > 0)
+						short p = *(sdata + x + y * width + z * slice);
+						if( p != v && opacityTable[ p] > 0)
 						{
 							aa[ 1] = x;	found = YES;	break;
 						}	if( found)	break;
@@ -3872,8 +3881,8 @@ public:
 				{
 					if( x >= 0 && y >= 0 && z >= 0)
 					{
-						float p = *(data + x + y * width + z * slice);
-						if( p != v) // && oacityTable[ (int) ((p + OFFSET16) * valueFactor)] > 0)
+						short p = *(sdata + x + y * width + z * slice);
+						if( p != v && opacityTable[ p] > 0)
 						{
 							aa[ 2] = y;	found = YES;	break;
 						}	if( found)	break;
@@ -3890,8 +3899,8 @@ public:
 				{
 					if( x >= 0 && y >= 0 && z >= 0)
 					{
-						float p = *(data + x + y * width + z * slice);
-						if( p != v) // && oacityTable[ (int) ((p + OFFSET16) * valueFactor)] > 0)
+						short p = *(sdata + x + y * width + z * slice);
+						if( p != v && opacityTable[ p] > 0)
 						{
 							aa[ 3] = y;	found = YES;	break;
 						}	if( found)	break;
@@ -3910,8 +3919,8 @@ public:
 				{
 					if( x >= 0 && y >= 0 && z >= 0)
 					{
-						float p = *(data + x + y * width + z * slice);
-						if( p != v) // && oacityTable[ (int) ((p + OFFSET16) * valueFactor)] > 0)
+						short p = *(sdata + x + y * width + z * slice);
+						if( p != v && opacityTable[ p] > 0)
 						{
 							aa[ 4] = z;	found = YES;	break;
 						}	if( found)	break;
@@ -3928,8 +3937,8 @@ public:
 				{
 					if( x >= 0 && y >= 0 && z >= 0)
 					{
-						float p = *(data + x + y * width + z * slice);
-						if( p != v) // && oacityTable[ (int) ((p + OFFSET16) * valueFactor)] > 0)
+						short p = *(sdata + x + y * width + z * slice);
+						if( p != v && opacityTable[ p] > 0)
 						{
 							aa[ 5] = z;	found = YES;	break;
 						}	if( found)	break;
@@ -3937,6 +3946,14 @@ public:
 				}	if( found)	break;
 			}	if( found)	break;
 		}
+		
+		aa[ 1]++;	aa[ 0]--;
+		aa[ 3]++;	aa[ 2]--;
+		aa[ 5]++;	aa[ 4]--;
+		
+		NSLog( @"x: %d", aa[ 1] - aa[ 0]);
+		NSLog( @"y: %d", aa[ 3] - aa[ 2]);
+		NSLog( @"z: %d", aa[ 5] - aa[ 4]);
 		
 		for( x = 0 ; x < 6; x++)
 			a[ x] = aa[ x];
@@ -3946,49 +3963,61 @@ public:
 		a[ 5] /= [firstObject pixelSpacingX];
 		a[ 5] *= sliceThickness;
 		
-//		free( opacityTable);
+		free( opacityTable);
 		
 		////////////
 		
 		for( x = 0 ; x < 6; x++)
 			a[ x] *= superSampling;
 		
+		for( x = 0 ; x < 6; x++)
+		{
+			if( originalPositions[ 0] > a[ 0]) a[ 0] = originalPositions[ 0];
+			if( originalPositions[ 1] < a[ 1]) a[ 1] = originalPositions[ 1];
+			
+			if( originalPositions[ 2] > a[ 2]) a[ 2] = originalPositions[ 2];
+			if( originalPositions[ 3] < a[ 3]) a[ 3] = originalPositions[ 3];
+			
+			if( originalPositions[ 4] > a[ 4]) a[ 4] = originalPositions[ 4];
+			if( originalPositions[ 5] < a[ 5]) a[ 5] = originalPositions[ 5];
+		}
+		
 		[VRView setCroppingBox: a :volume];
 		
-		vtkVolumeMapper *mapper = (vtkVolumeMapper*) volume->GetMapper();
-		if( mapper)
-		{
-			double origin[3];
-			volume->GetPosition(origin);	//GetOrigin
-			
-			a[0] += origin[0];		a[1] += origin[0];
-			a[2] += origin[1];		a[3] += origin[1];
-			a[4] += origin[2];		a[5] += origin[2];
-			
-			double min[3], max[3];
-			vtkTransform *Transform = vtkTransform::New();
-			Transform->SetMatrix(volume->GetUserMatrix());
-			Transform->Push();
-			
-			min[0] = a[0];			max[0] = a[1];
-			min[1] = a[2];			max[1] = a[3];
-			min[2] = a[4];			max[2] = a[5];
-			
-			Transform->TransformPoint( min, min);
-			Transform->TransformPoint (max, max);
-			
-			a[ 0] = min[ 0];
-			a[ 2] = min[ 1];
-			a[ 4] = min[ 2];
-			
-			a[ 1] = max[ 0];
-			a[ 3] = max[ 1];
-			a[ 5] = max[ 2];
-			
-			croppingBox->PlaceWidget( a);
-			
-			Transform->Delete();
-		}
+//		vtkVolumeMapper *mapper = (vtkVolumeMapper*) volume->GetMapper();
+//		if( mapper)
+//		{
+//			double origin[3];
+//			volume->GetPosition(origin);	//GetOrigin
+//			
+//			a[0] += origin[0];		a[1] += origin[0];
+//			a[2] += origin[1];		a[3] += origin[1];
+//			a[4] += origin[2];		a[5] += origin[2];
+//			
+//			double min[3], max[3];
+//			vtkTransform *Transform = vtkTransform::New();
+//			Transform->SetMatrix(volume->GetUserMatrix());
+//			Transform->Push();
+//			
+//			min[0] = a[0];			max[0] = a[1];
+//			min[1] = a[2];			max[1] = a[3];
+//			min[2] = a[4];			max[2] = a[5];
+//			
+//			Transform->TransformPoint( min, min);
+//			Transform->TransformPoint (max, max);
+//			
+//			a[ 0] = min[ 0];
+//			a[ 2] = min[ 1];
+//			a[ 4] = min[ 2];
+//			
+//			a[ 1] = max[ 0];
+//			a[ 3] = max[ 1];
+//			a[ 5] = max[ 2];
+//			
+//			croppingBox->PlaceWidget( a);
+//			
+//			Transform->Delete();
+//		}
 		
 		NSLog( @"end autocropping");
 	}
