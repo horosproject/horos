@@ -2009,10 +2009,16 @@ public:
 			
 			if( isRGB == NO)
 			{
-				*(data+0) = firstPixel;
-				*(data+1) = secondPixel;
+				if( [[controller viewer2D] maxMovieIndex] > 1)
+				{
+					*(data+0+[firstObject pwidth]) = firstPixel;
+					*(data+1+[firstObject pwidth]) = secondPixel;
+					
+					vImageConvert_FTo16U( &srcf, &dst8, -OFFSET16, 1./valueFactor, 0);
+				}
 				
-				vImageConvert_FTo16U( &srcf, &dst8, -OFFSET16, 1./valueFactor, 0);
+				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"dontAutoCropScissors"] == NO)
+					[self autoCroppingBox];
 			}
 		}
 		
@@ -3828,7 +3834,7 @@ public:
 		aa[ 2] = aa[ 2] < 0 ? 0 : aa[ 2];		aa[ 3] = aa[ 3] < 0 ? 0 : aa[ 3];
 		aa[ 4] = aa[ 4] < 0 ? 0 : aa[ 4];		aa[ 5] = aa[ 5] < 0 ? 0 : aa[ 5];
 		
-		NSLog( @"start autocropping");
+//		NSLog( @"start autocropping");
 		
 		int opacityTableSize = (([controller maximumValue] - [controller minimumValue]) * valueFactor);
 		
@@ -3842,6 +3848,9 @@ public:
 											opacityTable);
 		short *sdata = (short*) data8;
 		short v = ([controller minimumValue] + OFFSET16) * valueFactor;
+		
+		for( x = 0 ; x < opacityTableSize ; x++)
+			opacityTable[ x] -= 0.01;
 		
 		#define CHECKINTERVAL 3
 		
@@ -3949,29 +3958,27 @@ public:
 		}
 		A7:
 		
-		aa[ 1]+=2;	aa[ 0]-=2;
-		aa[ 3]+=2;	aa[ 2]-=2;
-		aa[ 5]+=2;	aa[ 4]-=2;
+		aa[ 1]+=CHECKINTERVAL;	aa[ 0]-=CHECKINTERVAL;
+		aa[ 3]+=CHECKINTERVAL;	aa[ 2]-=CHECKINTERVAL;
+		aa[ 5]+=CHECKINTERVAL;	aa[ 4]-=CHECKINTERVAL;
 		
 		aa[ 0] = aa[ 0] < 0 ? 0 : aa[ 0];		aa[ 1] = aa[ 1] < 0 ? 0 : aa[ 1];
 		aa[ 2] = aa[ 2] < 0 ? 0 : aa[ 2];		aa[ 3] = aa[ 3] < 0 ? 0 : aa[ 3];
 		aa[ 4] = aa[ 4] < 0 ? 0 : aa[ 4];		aa[ 5] = aa[ 5] < 0 ? 0 : aa[ 5];
 		
-		NSLog( @"x: %d", aa[ 1] - aa[ 0]);
-		NSLog( @"y: %d", aa[ 3] - aa[ 2]);
-		NSLog( @"z: %d", aa[ 5] - aa[ 4]);
+		NSLog( @"x: %d %%, y: %d %%, z: %d %%",  100 * (aa[ 1] - aa[ 0]) / (width), 100 * (aa[ 3] - aa[ 2]) / (height), 100 * (aa[ 5] - aa[ 4]) / (depth));
 		
 		for( x = 0 ; x < 6; x++)
 			a[ x] = aa[ x];
 		
+		a[ 0] = a[ 0] >= width ? width-1 : a[ 0];		a[ 1] = a[ 1] >= width ? width-1 : a[ 1];
+		a[ 2] = a[ 2] >= height ? height-1 : a[ 2];		a[ 3] = a[ 3] >= height ? height-1 : a[ 3];
+		a[ 4] = a[ 4] >= depth ? depth-1 : a[ 4];		a[ 5] = a[ 5] >= depth ? depth-1 : a[ 5];
+
 		a[ 4] /= [firstObject pixelSpacingX];
 		a[ 4] *= sliceThickness;
 		a[ 5] /= [firstObject pixelSpacingX];
 		a[ 5] *= sliceThickness;
-		
-		a[ 0] = a[ 0] >= width ? width-1 : a[ 0];		a[ 1] = a[ 1] >= width ? width-1 : a[ 1];
-		a[ 2] = a[ 2] >= height ? height-1 : a[ 2];		a[ 3] = a[ 3] >= height ? height-1 : a[ 3];
-		a[ 4] = a[ 4] >= depth ? depth-1 : a[ 4];		a[ 5] = a[ 5] >= depth ? depth-1 : a[ 5];
 		
 		free( opacityTable);
 		
@@ -3994,7 +4001,7 @@ public:
 		
 		[VRView setCroppingBox: a :volume];
 		
-		NSLog( @"end autocropping");
+//		NSLog( @"end autocropping");
 	}
 }
 
@@ -5712,11 +5719,14 @@ public:
 		NSLog( @"maxValueOfSeries = %f", [controller maximumValue]);
 		NSLog( @"minValueOfSeries = %f", [controller minimumValue]);
 		
-		firstPixel = *(data+0);
-		secondPixel = *(data+1);
+		firstPixel = *(data+0+[firstObject pwidth]);
+		secondPixel = *(data+1+[firstObject pwidth]);
 		
-		*(data+0) = [controller maximumValue];		// To avoid the min/max saturation problem with 4D data...
-		*(data+1) = [controller minimumValue];		// To avoid the min/max saturation problem with 4D data...
+		if( [[controller viewer2D] maxMovieIndex] > 1)
+		{
+			*(data+0+[firstObject pwidth]) = [controller minimumValue];		// To avoid the min/max saturation problem with 4D data...
+			*(data+1+[firstObject pwidth]) = [controller maximumValue];		// To avoid the min/max saturation problem with 4D data...
+		}
 		
 		[self computeValueFactor];
 		vImageConvert_FTo16U( &srcf, &dst8, -OFFSET16, 1./valueFactor, 0);
