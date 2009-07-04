@@ -173,6 +173,9 @@ public:
 		[VRView getCroppingBox: a :blendingVolume :widget];
 		[VRView setCroppingBox: a :blendingVolume];
 		
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"dontAutoCropScissors"] == NO)
+			[snVRView autoCroppingBox];
+		
 		widget->SetHandleSize( 0.005);
     }
 };
@@ -3255,6 +3258,7 @@ public:
 
 - (void)mouseDown:(NSEvent *)theEvent
 {
+	snVRView = self;
 	dontRenderVolumeRenderingOsiriX = 0;
 	
 	_hasChanged = YES;
@@ -3813,25 +3817,31 @@ public:
 		a[ 5] *= [firstObject pixelSpacingX];
 		a[ 5] /= sliceThickness;
 		
-		a[ 0] = a[ 0] > width ? width : a[ 0];		a[ 1] = a[ 1] > width ? width : a[ 1];
-		a[ 2] = a[ 2] > height ? height : a[ 2];	a[ 3] = a[ 3] > height ? height : a[ 3];
-		a[ 4] = a[ 4] > depth ? depth : a[ 4];		a[ 5] = a[ 5] > depth ? depth : a[ 5];
+		a[ 0] = a[ 0] >= width ? width-1 : a[ 0];		a[ 1] = a[ 1] >= width ? width-1 : a[ 1];
+		a[ 2] = a[ 2] >= height ? height-1 : a[ 2];		a[ 3] = a[ 3] >= height ? height-1 : a[ 3];
+		a[ 4] = a[ 4] >= depth ? depth-1 : a[ 4];		a[ 5] = a[ 5] >= depth ? depth-1 : a[ 5];
 		
 		for( x = 0 ; x < 6; x++)
 			aa[ x] = a[ x];
 		
+		aa[ 0] = aa[ 0] < 0 ? 0 : aa[ 0];		aa[ 1] = aa[ 1] < 0 ? 0 : aa[ 1];
+		aa[ 2] = aa[ 2] < 0 ? 0 : aa[ 2];		aa[ 3] = aa[ 3] < 0 ? 0 : aa[ 3];
+		aa[ 4] = aa[ 4] < 0 ? 0 : aa[ 4];		aa[ 5] = aa[ 5] < 0 ? 0 : aa[ 5];
+		
 		NSLog( @"start autocropping");
 		
-		double *opacityTable = (double*) malloc( ([controller maximumValue] - [controller minimumValue] + OFFSET16) * valueFactor * sizeof( double));
+		int opacityTableSize = (([controller maximumValue] - [controller minimumValue]) * valueFactor);
+		
+		opacityTableSize += 2;
+		
+		double *opacityTable = (double*) malloc( opacityTableSize * sizeof( double));
 		
 		opacityTransferFunction->GetTable(	([controller minimumValue] + OFFSET16) * valueFactor,
 											([controller maximumValue] + OFFSET16) * valueFactor,
-											([controller maximumValue] - [controller minimumValue]) * valueFactor,
+											opacityTableSize,
 											opacityTable);
 		short *sdata = (short*) data8;
 		short v = ([controller minimumValue] + OFFSET16) * valueFactor;
-		
-//		NSLog( @"%f %f", opacityTable[ *sdata], opacityTransferFunction->GetValue( (*data + OFFSET16)*valueFactor));
 		
 		#define CHECKINTERVAL 3
 		
@@ -3841,115 +3851,111 @@ public:
 			{
 				for(  z = aa[ 4]; z < depth && z < aa[ 5]; z+=CHECKINTERVAL)
 				{
-					if( x >= 0 && y >= 0 && z >= 0)
+					short p = *(sdata + x + y * width + z * slice);
+					if( p != v && opacityTable[ p] > 0)
 					{
-						short p = *(sdata + x + y * width + z * slice);
-						if( p != v && opacityTable[ p] > 0)
-						{
-							aa[ 0] = x;	found = YES;	break;
-						}	if( found)	break;
+						aa[ 0] = x;
+						goto A2;
 					}
-				}	if( found)	break;
-			}	if( found)	break;
+				}
+			}
 		}
 		
+		A2:
 		for( found = NO, x = aa[ 1]; x >= 0 && x > aa[ 0]; x-=CHECKINTERVAL)
 		{
 			for(  y = aa[ 2]; y < height && y < aa[ 3]; y+=CHECKINTERVAL)
 			{
 				for(  z = aa[ 4]; z < depth && z < aa[ 5]; z+=CHECKINTERVAL)
 				{
-					if( x >= 0 && y >= 0 && z >= 0)
+					short p = *(sdata + x + y * width + z * slice);
+					if( p != v && opacityTable[ p] > 0)
 					{
-						short p = *(sdata + x + y * width + z * slice);
-						if( p != v && opacityTable[ p] > 0)
-						{
-							aa[ 1] = x;	found = YES;	break;
-						}	if( found)	break;
+						aa[ 1] = x;
+						goto A3;
 					}
-				}	if( found)	break;
-			}	if( found)	break;
+				}
+			}
 		}
 		
 		////////////
-		
+		A3:
 		for( found = NO, y = aa[ 2]; y < height && y < aa[ 3]; y+=CHECKINTERVAL)
 		{
 			for(  x = aa[ 0]; x < width && x < aa[ 1]; x+=CHECKINTERVAL)
 			{
 				for(  z = aa[ 4]; z < depth && z < aa[ 5]; z+=CHECKINTERVAL)
 				{
-					if( x >= 0 && y >= 0 && z >= 0)
+					short p = *(sdata + x + y * width + z * slice);
+					if( p != v && opacityTable[ p] > 0)
 					{
-						short p = *(sdata + x + y * width + z * slice);
-						if( p != v && opacityTable[ p] > 0)
-						{
-							aa[ 2] = y;	found = YES;	break;
-						}	if( found)	break;
+						aa[ 2] = y;
+						goto A4;
 					}
-				}	if( found)	break;
-			}	if( found)	break;
+				}
+			}
 		}
 		
+		A4:
 		for( found = NO, y = aa[ 3]; y >= 0 && y > aa[ 2]; y-=CHECKINTERVAL)
 		{
 			for(  x = aa[ 0]; x < width && x < aa[ 1]; x+=CHECKINTERVAL)
 			{
 				for(  z = aa[ 4]; z < depth && z < aa[ 5]; z+=CHECKINTERVAL)
 				{
-					if( x >= 0 && y >= 0 && z >= 0)
+					short p = *(sdata + x + y * width + z * slice);
+					if( p != v && opacityTable[ p] > 0)
 					{
-						short p = *(sdata + x + y * width + z * slice);
-						if( p != v && opacityTable[ p] > 0)
-						{
-							aa[ 3] = y;	found = YES;	break;
-						}	if( found)	break;
+						aa[ 3] = y;
+						goto A5;
 					}
-				}	if( found)	break;
-			}	if( found)	break;
+				}
+			}
 		}
 		
 		////////////
-		
+		A5:
 		for( found = NO, z = aa[ 4]; z < depth && z < aa[ 5]; z+=CHECKINTERVAL)
 		{
 			for(  x = aa[ 0]; x < width && x < aa[ 1]; x+=CHECKINTERVAL)
 			{
 				for(  y = aa[ 2]; y < height && y < aa[ 3]; y+=CHECKINTERVAL)
 				{
-					if( x >= 0 && y >= 0 && z >= 0)
+					short p = *(sdata + x + y * width + z * slice);
+					if( p != v && opacityTable[ p] > 0)
 					{
-						short p = *(sdata + x + y * width + z * slice);
-						if( p != v && opacityTable[ p] > 0)
-						{
-							aa[ 4] = z;	found = YES;	break;
-						}	if( found)	break;
+						aa[ 4] = z;
+						goto A6;
 					}
-				}	if( found)	break;
-			}	if( found)	break;
+				}
+			}
 		}
 		
+		A6:
 		for( found = NO, z = aa[ 5]; z >= 0 && z > aa[ 4]; z-=CHECKINTERVAL)
 		{
 			for(  x = aa[ 0]; x < width && x < aa[ 1]; x+=CHECKINTERVAL)
 			{
 				for(  y = aa[ 2]; y < height && y < aa[ 3]; y+=CHECKINTERVAL)
 				{
-					if( x >= 0 && y >= 0 && z >= 0)
+					short p = *(sdata + x + y * width + z * slice);
+					if( p != v && opacityTable[ p] > 0)
 					{
-						short p = *(sdata + x + y * width + z * slice);
-						if( p != v && opacityTable[ p] > 0)
-						{
-							aa[ 5] = z;	found = YES;	break;
-						}	if( found)	break;
+						aa[ 5] = z;
+						goto A7;
 					}
-				}	if( found)	break;
-			}	if( found)	break;
+				}
+			}
 		}
+		A7:
 		
-		aa[ 1]++;	aa[ 0]--;
-		aa[ 3]++;	aa[ 2]--;
-		aa[ 5]++;	aa[ 4]--;
+		aa[ 1]+=2;	aa[ 0]-=2;
+		aa[ 3]+=2;	aa[ 2]-=2;
+		aa[ 5]+=2;	aa[ 4]-=2;
+		
+		aa[ 0] = aa[ 0] < 0 ? 0 : aa[ 0];		aa[ 1] = aa[ 1] < 0 ? 0 : aa[ 1];
+		aa[ 2] = aa[ 2] < 0 ? 0 : aa[ 2];		aa[ 3] = aa[ 3] < 0 ? 0 : aa[ 3];
+		aa[ 4] = aa[ 4] < 0 ? 0 : aa[ 4];		aa[ 5] = aa[ 5] < 0 ? 0 : aa[ 5];
 		
 		NSLog( @"x: %d", aa[ 1] - aa[ 0]);
 		NSLog( @"y: %d", aa[ 3] - aa[ 2]);
@@ -3962,6 +3968,10 @@ public:
 		a[ 4] *= sliceThickness;
 		a[ 5] /= [firstObject pixelSpacingX];
 		a[ 5] *= sliceThickness;
+		
+		a[ 0] = a[ 0] >= width ? width-1 : a[ 0];		a[ 1] = a[ 1] >= width ? width-1 : a[ 1];
+		a[ 2] = a[ 2] >= height ? height-1 : a[ 2];		a[ 3] = a[ 3] >= height ? height-1 : a[ 3];
+		a[ 4] = a[ 4] >= depth ? depth-1 : a[ 4];		a[ 5] = a[ 5] >= depth ? depth-1 : a[ 5];
 		
 		free( opacityTable);
 		
@@ -3983,41 +3993,6 @@ public:
 		}
 		
 		[VRView setCroppingBox: a :volume];
-		
-//		vtkVolumeMapper *mapper = (vtkVolumeMapper*) volume->GetMapper();
-//		if( mapper)
-//		{
-//			double origin[3];
-//			volume->GetPosition(origin);	//GetOrigin
-//			
-//			a[0] += origin[0];		a[1] += origin[0];
-//			a[2] += origin[1];		a[3] += origin[1];
-//			a[4] += origin[2];		a[5] += origin[2];
-//			
-//			double min[3], max[3];
-//			vtkTransform *Transform = vtkTransform::New();
-//			Transform->SetMatrix(volume->GetUserMatrix());
-//			Transform->Push();
-//			
-//			min[0] = a[0];			max[0] = a[1];
-//			min[1] = a[2];			max[1] = a[3];
-//			min[2] = a[4];			max[2] = a[5];
-//			
-//			Transform->TransformPoint( min, min);
-//			Transform->TransformPoint (max, max);
-//			
-//			a[ 0] = min[ 0];
-//			a[ 2] = min[ 1];
-//			a[ 4] = min[ 2];
-//			
-//			a[ 1] = max[ 0];
-//			a[ 3] = max[ 1];
-//			a[ 5] = max[ 2];
-//			
-//			croppingBox->PlaceWidget( a);
-//			
-//			Transform->Delete();
-//		}
 		
 		NSLog( @"end autocropping");
 	}
@@ -4998,6 +4973,9 @@ public:
 		else sprintf(WLWWString, "WL: %0.f WW: %0.f ", wl, ww);
 	}
 	textWLWW->SetInput( WLWWString);
+	
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"dontAutoCropScissors"] == NO)
+		[self autoCroppingBox];
 	
 	[self setNeedsDisplay:YES];
 }

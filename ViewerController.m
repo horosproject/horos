@@ -7546,7 +7546,7 @@ static ViewerController *draggedController = nil;
 -(void) displayWarningIfGantryTitled
 {
 	if( titledGantry)
-		NSRunInformationalAlertPanel( NSLocalizedString(@"Warning!", nil), NSLocalizedString(@"These images were acquired with a gantry tilt. This gantry tilt will produce a distortion in 3D post-processing.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+		NSRunInformationalAlertPanel( NSLocalizedString(@"Warning!", nil), NSLocalizedString(@"These images were acquired with a gantry tilt. This gantry tilt will produce a distortion in 3D post-processing. You can use the plugin 'Gantry Tilt Correction' to convert these images.", nil), NSLocalizedString(@"OK", nil), nil, nil);
 }
 
 - (void) computeIntervalAsync
