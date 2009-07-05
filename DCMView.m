@@ -58,6 +58,7 @@ static		int							CLUTBARS, ANNOTATIONS = -999, SOFTWAREINTERPOLATION_MAX, DISPL
 static		BOOL						gClickCountSet = NO;
 static		NSDictionary				*_hotKeyDictionary = nil, *_hotKeyModifiersDictionary = nil;
 static		NSRecursiveLock				*drawLock = nil;
+static		NSMutableArray				*globalStringTextureCache = nil;
 
 NSString *pasteBoardOsiriX = @"OsiriX pasteboard";
 NSString *pasteBoardOsiriXPlugin = @"OsiriXPluginDataType";
@@ -1616,13 +1617,25 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		[self DrawNSStringGL:str :fontL :x :y align:DCMViewTextAlignLeft useStringTexture:stringTex];
 }
 
++ (void) purgeStringTextureCache
+{
+	for( NSMutableDictionary *s in globalStringTextureCache)
+		[s removeAllObjects];
+}
+
 - (void)DrawNSStringGL:(NSString*)str :(GLuint)fontL :(long)x :(long)y align:(DCMViewTextAlign)align useStringTexture:(BOOL)stringTex;
 {
 	if( stringTex)
 	{
 		#define STRCAPACITY 500
 	
-		if( stringTextureCache == nil) stringTextureCache = [[NSMutableDictionary alloc] initWithCapacity: STRCAPACITY];
+		if( stringTextureCache == nil)
+		{
+			stringTextureCache = [[NSMutableDictionary alloc] initWithCapacity: STRCAPACITY];
+			if( globalStringTextureCache == nil) globalStringTextureCache = [[NSMutableArray alloc] init];
+			[globalStringTextureCache addObject: stringTextureCache];
+		}
+		
 		if( iChatStringTextureCache == nil) iChatStringTextureCache = [[NSMutableDictionary alloc] initWithCapacity: STRCAPACITY];
 		
 		NSMutableDictionary *_stringTextureCache;
@@ -2133,6 +2146,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	[yearOld release];
 	
 	[cursor release];
+	[globalStringTextureCache removeObject: stringTextureCache];
 	[stringTextureCache release];
 	[iChatStringTextureCache release];
 	
@@ -10629,6 +10643,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	[fontGL makeGLDisplayListFirst:' ' count:150 base: fontListGL :fontListGLSize :0];
 	stringSize = [DCMView sizeOfString:@"B" forFont:fontGL];
 	
+	[globalStringTextureCache removeObject: stringTextureCache];
 	[stringTextureCache release];
 	stringTextureCache = nil;
 	

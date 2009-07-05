@@ -327,6 +327,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 @property BOOL volumicSeries;
 @property(readonly) BOOL isKeyView, mouseDragging;
 
++ (void) purgeStringTextureCache;
 + (void) setDefaults;
 + (void) setCLUTBARS:(int) c ANNOTATIONS:(int) a;
 + (void)setPluginOverridesMouse: (BOOL)override DEPRECATED_ATTRIBUTE;
