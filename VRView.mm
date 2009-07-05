@@ -1800,18 +1800,21 @@ public:
 
 - (void)windowWillClose:(NSNotification *)notification
 {
-	[startAutoRotate invalidate];
-	[startAutoRotate release];
-	startAutoRotate = nil;
-	
-	[autoRotate invalidate];
-	[autoRotate release];
-	autoRotate = nil;
-	
-	[self deleteMouseDownTimer];
-	[self deleteRightMouseDownTimer];
-	
-	[[NSNotificationCenter defaultCenter] removeObserver: self];
+	if( [self window] && [self window] == [notification object])
+	{
+		[startAutoRotate invalidate];
+		[startAutoRotate release];
+		startAutoRotate = nil;
+		
+		[autoRotate invalidate];
+		[autoRotate release];
+		autoRotate = nil;
+		
+		[self deleteMouseDownTimer];
+		[self deleteRightMouseDownTimer];
+		
+		[[NSNotificationCenter defaultCenter] removeObserver: self];
+	}
 }
 
 - (IBAction) resetImage:(id) sender
@@ -3849,9 +3852,6 @@ public:
 		short *sdata = (short*) data8;
 		short v = ([controller minimumValue] + OFFSET16) * valueFactor;
 		
-		for( x = 0 ; x < opacityTableSize ; x++)
-			opacityTable[ x] -= 0.01;
-		
 		#define CHECKINTERVAL 3
 		
 		for( found = NO, x = aa[ 0]; x < width && x < aa[ 1]; x+=CHECKINTERVAL)
@@ -4422,7 +4422,8 @@ public:
 	}
 	else if( c == ' ')
 	{
-		if( [[[self window] windowController] isKindOfClass:[VRController class]]) rotate = !rotate;
+		if( [[[self window] windowController] isKindOfClass:[VRController class]])
+			rotate = !rotate;
 	}
 	else if( c == 't')
 	{

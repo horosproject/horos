@@ -3,12 +3,12 @@
 	<data>
 		<int key="IBDocument.SystemTarget">1050</int>
 		<string key="IBDocument.SystemVersion">9J61</string>
-		<string key="IBDocument.InterfaceBuilderVersion">672</string>
+		<string key="IBDocument.InterfaceBuilderVersion">670</string>
 		<string key="IBDocument.AppKitVersion">949.46</string>
 		<string key="IBDocument.HIToolboxVersion">353.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="12980"/>
+			<integer value="13065"/>
 			<integer value="13468"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
@@ -1412,7 +1412,7 @@
 								</object>
 								<object class="NSMenuItem" id="144660445">
 									<reference key="NSMenu" ref="986057026"/>
-									<string key="NSTitle">Fuse/De-Fuse PET-CT</string>
+									<string key="NSTitle">Fuse/De-Fuse PET/SPECT - CT</string>
 									<string key="NSKeyEquiv">F</string>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -20625,7 +20625,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
-					<string>{{635, -17}, {428, 853}}</string>
+					<string>{{481, -3}, {428, 853}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
 					<string>{{390, 35}, {428, 753}}</string>
@@ -21910,7 +21910,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>Apply2DCLUT:</string>
 							<string>ApplyWLWW:</string>
-							<string>centerline:</string>
 							<string>change2DTool:</string>
 							<string>change3DTool:</string>
 							<string>endDCMExportSettings:</string>
@@ -21919,7 +21918,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>id</string>
 							<string>id</string>
 							<string>id</string>
 							<string>id</string>
@@ -23599,7 +23597,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 							<string>blendingSlider:</string>
 							<string>brushTool:</string>
 							<string>calciumScoring:</string>
-							<string>centerline:</string>
 							<string>changeMatrixSize:</string>
 							<string>closeModal:</string>
 							<string>clutAction:</string>
@@ -23715,7 +23712,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>id</string>
 							<string>id</string>
 							<string>id</string>
 							<string>id</string>

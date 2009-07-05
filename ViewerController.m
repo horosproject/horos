@@ -9314,21 +9314,21 @@ short				matrix[25];
 		return;
 	}
 	
-	for( i = 0; i < [viewersCT count]; i++)
+	for( ViewerController *vCT in viewersCT)
 	{
-		if( [[[viewersCT objectAtIndex: i] modality] isEqualToString:@"CT"])
+		if( [[vCT modality] isEqualToString:@"CT"])
 		{
-			for( x = 0; x < [viewersPET count]; x++)
+			for( ViewerController *vPET in viewersPET)
 			{
-				if( x != i)
+				if( vPET != vCT)
 				{
-					if( [[[viewersPET objectAtIndex: x] modality] isEqualToString:@"PT"] && [[[viewersPET objectAtIndex: x] studyInstanceUID] isEqualToString: [[viewersCT objectAtIndex: i] studyInstanceUID]])
+					if( ([[vPET modality] isEqualToString:@"PT"] || [[vPET modality] isEqualToString:@"NM"]) && [[vPET studyInstanceUID] isEqualToString: [vCT studyInstanceUID]])
 					{
-						ViewerController* a = [viewersCT objectAtIndex: i];
+						ViewerController* a = vCT;
 						
 						if( [a blendingController] == nil)
 						{
-							ViewerController* b = [viewersPET objectAtIndex: x];
+							ViewerController* b = vPET;
 							
 							float orientA[ 9], orientB[ 9], result[ 9];
 							
