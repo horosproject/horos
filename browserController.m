@@ -7481,6 +7481,7 @@ static BOOL withReset = NO;
 					[imageView getWLWW:&wl :&ww];
 					
 					[previewPix replaceObjectAtIndex:[cell tag] withObject:(id) dcmPix];
+					
 					[dcmPix release];
 					
 					[imageView setIndex:[cell tag]];
@@ -8241,7 +8242,6 @@ static BOOL withReset = NO;
 	NSMutableArray					*ipreviewPixThumbnails = [dict valueForKey: @"previewPixThumbnails"];
 	NSMutableArray					*ipreviewPix = [dict valueForKey: @"previewPix"];
 	
-	
 	@try
 	{
 		for( int i = 0; i < filesPaths.count; i++)
@@ -8262,8 +8262,9 @@ static BOOL withReset = NO;
 				if( thumbnail == notFoundImage)
 				{
 					[dcmPix revert];	// <- Kill the raw data
-					
 					thumbnail = [dcmPix generateThumbnailImageWithWW:0 WL:0];
+					[dcmPix revert];	// <- Kill the raw data
+					
 					if( thumbnail == nil) thumbnail = notFoundImage;
 					
 					[ipreviewPixThumbnails replaceObjectAtIndex: i withObject: thumbnail];

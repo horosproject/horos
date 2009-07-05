@@ -11488,7 +11488,9 @@ END_CREATE_ROIS:
 	[patientPosition release];					patientPosition = nil;
 	[units release];							units = nil;
 	[decayCorrection release];					decayCorrection = nil;
-
+	
+	[self reloadAnnotations];
+	
 	[self clearCachedDCMFrameworkFiles];
 	[self clearCachedPapyGroups];
 	
@@ -11505,8 +11507,6 @@ END_CREATE_ROIS:
 	needToCompute8bitRepresentation = YES;
 	
 	[checking unlock];
-	
-	[self reloadAnnotations];
 }
 
 - (void)dealloc
