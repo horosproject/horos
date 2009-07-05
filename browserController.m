@@ -7458,7 +7458,7 @@ static BOOL withReset = NO;
     NSButtonCell    *cell = [oMatrix selectedCell];
     if( cell)
 	{
-		if( [cell isEnabled] == YES)
+		if( [cell isEnabled])
 		{
 			if( [cell tag] >= [matrixViewArray count]) return;
 			
@@ -7740,7 +7740,7 @@ static BOOL withReset = NO;
 	[self matrixDisplayIcons: self];
 }
 
-- (void)matrixNewIcon:(long) index: (NSManagedObject*)curFile
+- (void) matrixNewIcon:(long) index: (NSManagedObject*)curFile
 {	
 //	if( shouldDie == NO )
 	{

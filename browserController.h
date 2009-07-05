@@ -296,6 +296,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (void) setDBDate;
 - (void) setDockIcon;
 - (void) showEntireDatabase;
+- (void)matrixNewIcon:(long) index: (NSManagedObject*)curFile;
 - (IBAction) querySelectedStudy:(id) sender;
 - (NSPredicate*) smartAlbumPredicate:(NSManagedObject*) album;
 - (NSPredicate*) smartAlbumPredicateString:(NSString*) string;
