@@ -24,9 +24,9 @@
 
 - (void) refresh
 {
-long	i;
-float	iY, aY;
-
+	long	i;
+	float	iY, aY;
+	
 	if( data) free( data);
 	data = [curROI dataValuesAsFloatPointer: &dataSize];
 	
