@@ -8812,11 +8812,11 @@ static BOOL withReset = NO;
 	
 	[contextual addItem: [NSMenuItem separatorItem]];
 	
-	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Compress DICOM files in JPEG", nil)  action:@selector(compressSelectedFiles:) keyEquivalent:@""];
+	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Compress DICOM files", nil)  action:@selector(compressSelectedFiles:) keyEquivalent:@""];
 	[contextual addItem:item];
 	[item release];
 	
-	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Decompress DICOM JPEG files", nil)  action:@selector(decompressSelectedFiles:) keyEquivalent:@""];
+	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Decompress DICOM files", nil)  action:@selector(decompressSelectedFiles:) keyEquivalent:@""];
 	[contextual addItem:item];
 	[item release];
 	
@@ -12030,11 +12030,11 @@ static NSArray*	openSubSeriesArray = nil;
 		
 		[menu addItem: [NSMenuItem separatorItem]];
 		
-		exportItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Compress DICOM files in JPEG", nil)  action:@selector(compressSelectedFiles:) keyEquivalent:@""];
+		exportItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Compress DICOM files", nil)  action:@selector(compressSelectedFiles:) keyEquivalent:@""];
 		[menu addItem:exportItem];
 		[exportItem release];
 		
-		exportItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Decompress DICOM JPEG files", nil)  action:@selector(decompressSelectedFiles:) keyEquivalent:@""];
+		exportItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Decompress DICOM files", nil)  action:@selector(decompressSelectedFiles:) keyEquivalent:@""];
 		[menu addItem:exportItem];
 		[exportItem release];
 		

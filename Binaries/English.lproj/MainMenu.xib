@@ -3,13 +3,12 @@
 	<data>
 		<int key="IBDocument.SystemTarget">1050</int>
 		<string key="IBDocument.SystemVersion">9J61</string>
-		<string key="IBDocument.InterfaceBuilderVersion">670</string>
+		<string key="IBDocument.InterfaceBuilderVersion">672</string>
 		<string key="IBDocument.AppKitVersion">949.46</string>
 		<string key="IBDocument.HIToolboxVersion">353.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="13065"/>
-			<integer value="13468"/>
+			<integer value="849"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -490,7 +489,7 @@
 								</object>
 								<object class="NSMenuItem" id="791901755">
 									<reference key="NSMenu" ref="152609316"/>
-									<string key="NSTitle">Compress selected DICOM in JPEG</string>
+									<string key="NSTitle">Compress selected DICOM files</string>
 									<string key="NSKeyEquiv"/>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -499,7 +498,7 @@
 								</object>
 								<object class="NSMenuItem" id="986448206">
 									<reference key="NSMenu" ref="152609316"/>
-									<string key="NSTitle">Decompress selected DICOM</string>
+									<string key="NSTitle">Decompress selected DICOM files</string>
 									<string key="NSKeyEquiv"/>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -3578,7 +3577,7 @@
 				<string key="NSWindowContentMaxSize">{9000, 9000}</string>
 				<string key="NSWindowContentMinSize">{600, 600}</string>
 				<object class="NSView" key="NSWindowView" id="1039447468">
-					<reference key="NSNextResponder"/>
+					<nil key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<object class="NSMutableArray" key="NSSubviews">
 						<bool key="EncodedWithXMLCoder">YES</bool>
@@ -4372,7 +4371,6 @@
 											<string key="NSFrame">{{1, 17}, {1102, 299}}</string>
 											<string key="NSBounds">{{4, 0}, {1102, 299}}</string>
 											<reference key="NSSuperview" ref="832526649"/>
-											<reference key="NSNextKeyView" ref="300364488"/>
 											<reference key="NSDocView" ref="300364488"/>
 											<reference key="NSBGColor" ref="629680496"/>
 											<int key="NScvFlags">4</int>
@@ -4407,7 +4405,6 @@
 											</object>
 											<string key="NSFrame">{{1, 0}, {1102, 17}}</string>
 											<reference key="NSSuperview" ref="832526649"/>
-											<reference key="NSNextKeyView" ref="658526862"/>
 											<reference key="NSDocView" ref="658526862"/>
 											<reference key="NSBGColor" ref="629680496"/>
 											<int key="NScvFlags">4</int>
@@ -4416,7 +4413,6 @@
 									</object>
 									<string key="NSFrameSize">{1119, 332}</string>
 									<reference key="NSSuperview" ref="948665668"/>
-									<reference key="NSNextKeyView" ref="613998968"/>
 									<int key="NSsFlags">178</int>
 									<reference key="NSVScroller" ref="8580273"/>
 									<reference key="NSHScroller" ref="435897027"/>
@@ -4719,7 +4715,6 @@
 													</object>
 													<string key="NSFrame">{{1, 1}, {420, 432}}</string>
 													<reference key="NSSuperview" ref="84064525"/>
-													<reference key="NSNextKeyView" ref="691984007"/>
 													<reference key="NSDocView" ref="691984007"/>
 													<reference key="NSBGColor" ref="999148946"/>
 													<int key="NScvFlags">4</int>
@@ -4748,7 +4743,6 @@
 											</object>
 											<string key="NSFrameSize">{437, 434}</string>
 											<reference key="NSSuperview" ref="766578884"/>
-											<reference key="NSNextKeyView" ref="150457028"/>
 											<int key="NSsFlags">210</int>
 											<reference key="NSVScroller" ref="361142642"/>
 											<reference key="NSHScroller" ref="828164548"/>
@@ -5062,7 +5056,6 @@
 						</object>
 					</object>
 					<string key="NSFrameSize">{1132, 808}</string>
-					<reference key="NSSuperview"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1440, 878}}</string>
 				<string key="NSMinSize">{600, 622}</string>
