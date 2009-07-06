@@ -268,6 +268,9 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 {
 	long i;
 	
+	if( [[note userInfo] objectForKey: @"sender"] == view)
+		return;
+	
 	for( i = 0; i < maxMovieIndex; i++)
 	{
 		if( [note object] == pixList[ i])

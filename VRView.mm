@@ -4568,7 +4568,7 @@ public:
 	
 	// Update everything..
 	ROIUPDATE = NO;
-	//[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateVolumeDataNotification object: pixList userInfo: 0];	<- This is slow
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateVolumeDataNotification object: pixList userInfo: [NSDictionary dictionaryWithObject: self forKey: @"sender"]];
 	
 	if( cropcallback)
 		cropcallback->Execute(croppingBox, 0, nil);
