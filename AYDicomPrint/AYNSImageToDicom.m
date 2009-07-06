@@ -13,6 +13,7 @@
 =========================================================================*/
 
 #import "AYNSImageToDicom.h"
+#import "OSIWindowController.h"
 
 @interface AYNSImageToDicom (private)
 - (NSString *) _createDicomImageWithViewer: (ViewerController *) viewer toDestinationPath: (NSString *) destPath asColorPrint: (BOOL) colorPrint withAnnotations: (BOOL) annotations;
@@ -203,7 +204,16 @@
 //********************************************************************************************
 - (NSString *) _createDicomImageWithViewer: (ViewerController *) viewer toDestinationPath: (NSString *) destPath asColorPrint: (BOOL) colorPrint withAnnotations: (BOOL) annotations
 {
+//	NSRect r = [[viewer window] frame];
+//	BOOL m = [viewer magnetic];
+//	[viewer setMagnetic : NO];
+//	[[viewer window] setFrame: NSMakeRect(0, 0, r.size.width * 4, r.size.height * 4) display: NO];
+	
 	NSImage *currentImage = [[viewer imageView] nsimage: NO]; //NO=image sized by window
+	
+//	[[currentImage TIFFRepresentation] writeToFile: @"/test.tiff" atomically: YES];	
+//	[viewer setMagnetic : m];
+//	[[viewer window] setFrame: r display: NO];
 
 	NSDictionary *patientInfoDict = [self _getAnnotationDictionary: viewer];
 	
