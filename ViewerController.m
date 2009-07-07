@@ -14659,17 +14659,17 @@ int i,j,l;
 		
 		[[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"allowSmartCropping"];
 		
-		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"printAt100%Minimum"])
-		{
-			[self setMagnetic : m];
-			[[self window] setFrame: rf display: YES];
-		}
-		
 		if( fontSizeCopy != [[NSUserDefaults standardUserDefaults] floatForKey: @"FONTSIZE"])
 		{
 			[[NSUserDefaults standardUserDefaults] setFloat: fontSizeCopy forKey: @"FONTSIZE"];
 			[NSFont resetFont: 0];
 			[[NSNotificationCenter defaultCenter] postNotificationName:OsirixGLFontChangeNotification object: self];
+		}
+		
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"printAt100%Minimum"])
+		{
+			[self setMagnetic : m];
+			[[self window] setFrame: rf display: YES];
 		}
 		
 		// Go back to initial frame

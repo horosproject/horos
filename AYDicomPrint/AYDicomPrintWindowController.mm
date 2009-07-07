@@ -417,18 +417,18 @@
 	[images retain];
 	
 	[[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"allowSmartCropping"];
-	
-	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"printAt100%Minimum"])
-	{
-		[m_CurrentViewer setMagnetic : m];
-		[[m_CurrentViewer window] setFrame: r display: YES];
-	}
-	
+		
 	if( fontSizeCopy != [[NSUserDefaults standardUserDefaults] floatForKey: @"FONTSIZE"])
 	{
 		[[NSUserDefaults standardUserDefaults] setFloat: fontSizeCopy forKey: @"FONTSIZE"];
 		[NSFont resetFont: 0];
 		[[NSNotificationCenter defaultCenter] postNotificationName:OsirixGLFontChangeNotification object: self];
+	}
+	
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"printAt100%Minimum"])
+	{
+		[m_CurrentViewer setMagnetic : m];
+		[[m_CurrentViewer window] setFrame: r display: YES];
 	}
 	
 	// check, if images were collected
