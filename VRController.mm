@@ -31,6 +31,7 @@
 #import "CLUTOpacityView.h"
 #import "VRPresetPreview.h"
 #import "Notifications.h"
+#import "OSIWindow.h"
 
 #define PRESETS_DIRECTORY @"/3DPRESETS/"
 #define CLUTDATABASE @"/CLUTs/"
@@ -1585,7 +1586,14 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 
 -(void) bestRendering:(id) sender
 {
-	[view bestRendering: sender];
+//	if( [[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSAlternateKeyMask)
+//	{
+//		[OSIWindow setDontConstrainWindow: YES];
+//		[[self window] setFrame: NSMakeRect(0, [[[self window] screen] visibleFrame].origin.y - (3000-[[[self window] screen] visibleFrame].size.height), 3000, 3000) display: NO];
+//		[OSIWindow setDontConstrainWindow: NO];
+//	}
+//	else
+		[view bestRendering: sender];
 }
 
 // ============================================================
@@ -3558,11 +3566,11 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 	[infoConvolutionFilterTextField setStringValue:convolutionFiltersString];
 	
 	[infoBackgroundColorTextField setStringValue:[NSString stringWithFormat:NSLocalizedString(@"r:%.0f%%, g:%.0f%%, b:%.0f%%", nil), 100*[[presetDictionary objectForKey:@"backgroundColorRedComponent"] floatValue], 100*[[presetDictionary objectForKey:@"backgroundColorGreenComponent"] floatValue], 100*[[presetDictionary objectForKey:@"backgroundColorBlueComponent"] floatValue]]];
-			
+	
 	[infoBackgroundColorView setColor:[NSColor colorWithDeviceRed:[[presetDictionary objectForKey:@"backgroundColorRedComponent"] floatValue] green:[[presetDictionary objectForKey:@"backgroundColorGreenComponent"] floatValue] blue:[[presetDictionary objectForKey:@"backgroundColorBlueComponent"] floatValue] alpha:1.0]];
-
+	
 	[infoBackgroundColorView setNeedsDisplay:YES];
-
+	
 //	if([presetsInfoPanel isVisible])
 //		[infoBackgroundColorView display];
 	

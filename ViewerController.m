@@ -5451,6 +5451,11 @@ static ViewerController *draggedController = nil;
 #pragma mark-
 #pragma mark 4.1. single viewport
 
+- (BOOL) isDataVolumic
+{
+	return [self isDataVolumicIn4D: NO checkEverythingLoaded: YES];
+}
+
 - (BOOL) isDataVolumicIn4D: (BOOL) check4D checkEverythingLoaded:(BOOL) c;
 {
 	BOOL volumicData = YES;
@@ -14614,6 +14619,9 @@ int i,j,l;
 			[[NSNotificationCenter defaultCenter] postNotificationName:OsirixGLFontChangeNotification object: self];
 		}
 		
+		if( [self isDataVolumic] == NO)
+			[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"allowSmartCropping"];
+		
 		int i;
 		for( i = from; i < to; i += interval)
 		{
@@ -14649,6 +14657,8 @@ int i,j,l;
 			
 			[pool release];
 		}
+		
+		[[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"allowSmartCropping"];
 		
 		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"printAt100%Minimum"])
 		{

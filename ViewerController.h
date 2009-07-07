@@ -435,6 +435,7 @@ enum
 - (BOOL) containsROI:(ROI*)roi;
 
 /** Are the data volumic: same height same width same orientation */
+- (BOOL) isDataVolumic;
 - (BOOL) isDataVolumicIn4D:(BOOL) check4D checkEverythingLoaded:(BOOL) c;
 - (BOOL) isDataVolumicIn4D:(BOOL) check4D;
 - (void) displayAWarningIfNonTrueVolumicData;

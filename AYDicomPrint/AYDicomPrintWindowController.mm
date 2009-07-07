@@ -409,10 +409,15 @@
 		[[NSNotificationCenter defaultCenter] postNotificationName:OsirixGLFontChangeNotification object: self];
 	}
 	
+	if( [m_CurrentViewer isDataVolumic] == NO)
+		[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"allowSmartCropping"];
+	
 	// collect images for printing
 	AYNSImageToDicom *dicomConverter = [[AYNSImageToDicom alloc] init];
 	NSArray *images = [dicomConverter dicomFileListForViewer: m_CurrentViewer destinationPath: destPath options: options asColorPrint: [[dict valueForKey: @"colorPrint"] intValue] withAnnotations: NO];
 	[images retain];
+	
+	[[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"allowSmartCropping"];
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"printAt100%Minimum"])
 	{
