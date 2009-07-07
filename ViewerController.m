@@ -47,8 +47,7 @@
 #import "Mailer.h"
 #import "ITKSegmentation3DController.h"
 #import "ITKSegmentation3D.h"
-//#import "MSRGWindowController.h"
-//#import "MSRGSegmentation.h"
+#import "OSIWindow.h"
 #import "iPhoto.h"
 #import "CurvedMPR.h"
 #import "SeriesView.h"
@@ -14590,13 +14589,27 @@ int i,j,l;
 		int currentImageIndex = [imageView curImage];
 		
 		float fontSizeCopy = [[NSUserDefaults standardUserDefaults] floatForKey: @"FONTSIZE"];
+		float scaleFactor = 1.0;
 		
-		if( columns != 1)
+		NSRect rf = [[self window] frame];
+		BOOL m = [self magnetic];
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"printAt100%Minimum"] && [self scaleValue] < 1.0)
 		{
-			float inc = (1 + ((columns - 1) * 0.35));
-			if( inc > 2.5) inc = 2.5;
+			scaleFactor = 1. / [self scaleValue];
 			
-			[[NSUserDefaults standardUserDefaults] setFloat: fontSizeCopy * inc forKey: @"FONTSIZE"];
+			[OSIWindow setDontConstrainWindow: YES];
+			[self setMagnetic : NO];
+			NSPoint o = [[[self window] screen] visibleFrame].origin;
+			o.y += [[[self window] screen] visibleFrame].size.height;
+			[[self window] setFrame: NSMakeRect( o.x, o.y, rf.size.width * scaleFactor, rf.size.height * scaleFactor) display: NO];
+		}
+		
+		float inc = (1 + ((columns - 1) * 0.35));
+		if( inc > 2.5) inc = 2.5;
+		
+		if( inc * scaleFactor != 1)
+		{
+			[[NSUserDefaults standardUserDefaults] setFloat: fontSizeCopy * inc * scaleFactor forKey: @"FONTSIZE"];
 			[NSFont resetFont: 0];
 			[[NSNotificationCenter defaultCenter] postNotificationName:OsirixGLFontChangeNotification object: self];
 		}
@@ -14628,11 +14641,6 @@ int i,j,l;
 				
 				NSData *bitmapData = [im  TIFFRepresentation];
 				
-				// since a zoom will be applied, conversion to jpeg here is inadequate
-				//NSData *imageData = [im  TIFFRepresentation];
-				//NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData:imageData];
-				//NSData *bitmapData = [imageRep representationUsingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
-				
 				[files addObject: [tmpFolder stringByAppendingFormat:@"/%d", i]];
 				[bitmapData writeToFile: [files lastObject] atomically:YES];
 			}
@@ -14640,6 +14648,12 @@ int i,j,l;
 			[splash incrementBy: 1];
 			
 			[pool release];
+		}
+		
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"printAt100%Minimum"])
+		{
+			[self setMagnetic : m];
+			[[self window] setFrame: rf display: NO];
 		}
 		
 		if( fontSizeCopy != [[NSUserDefaults standardUserDefaults] floatForKey: @"FONTSIZE"])

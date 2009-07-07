@@ -18,6 +18,7 @@
 #import "NSFont_OpenGL.h"
 #import "AYNSImageToDicom.h"
 #import "Notifications.h"
+#import "OSIWindow.h"
 
 #define VERSIONNUMBERSTRING	@"v1.00.000"
 #define ECHOTIMEOUT 5
@@ -382,16 +383,28 @@
 
 	NSDictionary	*options = [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: [[m_ImageSelection selectedCell] tag]], @"mode", [NSNumber numberWithInt: from], @"from", [NSNumber numberWithInt: to], @"to", [NSNumber numberWithInt: [entireSeriesInterval intValue]], @"interval", nil];
 	
-	NSLog( [options description]);
+	float fontSizeCopy = [[NSUserDefaults standardUserDefaults] floatForKey: @"FONTSIZE"], zoomFactor;
+	float scaleFactor = 1.0;
 	
-	float fontSizeCopy = [[NSUserDefaults standardUserDefaults] floatForKey: @"FONTSIZE"];
-	
-	if( columns / 2 != 1)
+	NSRect r = [[m_CurrentViewer window] frame];
+	BOOL m = [m_CurrentViewer magnetic];
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"printAt100%Minimum"] && [m_CurrentViewer scaleValue] < 1.0)
 	{
-		float inc = (1 + ((columns - 1) * 0.35));
-		if( inc > 2.5) inc = 2.5;
+		scaleFactor = 1. / [m_CurrentViewer scaleValue];
 		
-		[[NSUserDefaults standardUserDefaults] setFloat: fontSizeCopy * inc forKey: @"FONTSIZE"];
+		[OSIWindow setDontConstrainWindow: YES];
+		[m_CurrentViewer setMagnetic : NO];
+		NSPoint o = [[[m_CurrentViewer window] screen] visibleFrame].origin;
+		o.y += [[[m_CurrentViewer window] screen] visibleFrame].size.height;
+		[[m_CurrentViewer window] setFrame: NSMakeRect( o.x, o.y, r.size.width * scaleFactor, r.size.height * scaleFactor) display: NO];
+	}
+	
+	float inc = (1 + ((columns - 1) * 0.35));
+	if( inc > 2.5) inc = 2.5;
+		
+	if( inc * scaleFactor != 1)
+	{
+		[[NSUserDefaults standardUserDefaults] setFloat: fontSizeCopy * inc * scaleFactor forKey: @"FONTSIZE"];
 		[NSFont resetFont: 0];
 		[[NSNotificationCenter defaultCenter] postNotificationName:OsirixGLFontChangeNotification object: self];
 	}
@@ -400,6 +413,12 @@
 	AYNSImageToDicom *dicomConverter = [[AYNSImageToDicom alloc] init];
 	NSArray *images = [dicomConverter dicomFileListForViewer: m_CurrentViewer destinationPath: destPath options: options asColorPrint: [[dict valueForKey: @"colorPrint"] intValue] withAnnotations: NO];
 	[images retain];
+	
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"printAt100%Minimum"])
+	{
+		[m_CurrentViewer setMagnetic : m];
+		[[m_CurrentViewer window] setFrame: r display: NO];
+	}
 	
 	if( fontSizeCopy != [[NSUserDefaults standardUserDefaults] floatForKey: @"FONTSIZE"])
 	{

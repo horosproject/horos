@@ -176,6 +176,8 @@
 		84A220E90F25E41800C6C3EB /* Keys.tif in Resources */ = {isa = PBXBuildFile; fileRef = 84A220E70F25E41800C6C3EB /* Keys.tif */; };
 		84A679060EEECF2F00AE5C98 /* jpeg_memsrc.c in Sources */ = {isa = PBXBuildFile; fileRef = 84A679050EEECF2F00AE5C98 /* jpeg_memsrc.c */; };
 		84A6790E0EEED04000AE5C98 /* jpeg_memsrc.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A6790D0EEED04000AE5C98 /* jpeg_memsrc.h */; };
+		84C4510B10033B8100138F70 /* OSIWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 84C450F51003384000138F70 /* OSIWindow.m */; };
+		84C4510C10033B8200138F70 /* OSIWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = 84C450F41003384000138F70 /* OSIWindow.h */; };
 		84F4533E0FC3DF3800D29666 /* ILCrashReporter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABE881440FC1444D009F5C80 /* ILCrashReporter.framework */; };
 		84F453570FC3DF5400D29666 /* ILCrashReporter.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = ABE881440FC1444D009F5C80 /* ILCrashReporter.framework */; };
 		A90202BE0B980CD60001A00B /* PluginManagerController.h in Headers */ = {isa = PBXBuildFile; fileRef = A90202BA0B980CD60001A00B /* PluginManagerController.h */; };
@@ -4970,6 +4972,8 @@
 		84A220E70F25E41800C6C3EB /* Keys.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Keys.tif; sourceTree = "<group>"; };
 		84A679050EEECF2F00AE5C98 /* jpeg_memsrc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = jpeg_memsrc.c; path = Papyrus3/jpeg_memsrc.c; sourceTree = "<group>"; };
 		84A6790D0EEED04000AE5C98 /* jpeg_memsrc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = jpeg_memsrc.h; path = Papyrus3/jpeg_memsrc.h; sourceTree = "<group>"; };
+		84C450F41003384000138F70 /* OSIWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSIWindow.h; sourceTree = "<group>"; };
+		84C450F51003384000138F70 /* OSIWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSIWindow.m; sourceTree = "<group>"; };
 		A90202BA0B980CD60001A00B /* PluginManagerController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = PluginManagerController.h; sourceTree = "<group>"; };
 		A90202BB0B980CD60001A00B /* PluginManagerController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = PluginManagerController.m; sourceTree = "<group>"; };
 		A9044D370BBAA29200F36689 /* ROISelector.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ROISelector.tiff; sourceTree = "<group>"; };
@@ -5482,8 +5486,6 @@
 		BF1584070A6ABCB0009965C8 /* KeyObjectPopupController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = KeyObjectPopupController.mm; sourceTree = "<group>"; };
 		BF1745D208E0C7E200822756 /* LogWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LogWindowController.h; sourceTree = "<group>"; };
 		BF1745D308E0C7E200822756 /* LogWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LogWindowController.m; sourceTree = "<group>"; };
-		BF17E97D0887662400ECF621 /* NetworkMoveDataHandler.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = NetworkMoveDataHandler.h; sourceTree = "<group>"; };
-		BF17E97E0887662400ECF621 /* NetworkMoveDataHandler.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = NetworkMoveDataHandler.m; sourceTree = "<group>"; };
 		BF17E98D088768CA00ECF621 /* LogArrayController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = LogArrayController.h; sourceTree = "<group>"; };
 		BF17E98E088768CA00ECF621 /* LogArrayController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = LogArrayController.m; sourceTree = "<group>"; };
 		BF17E98F088768CA00ECF621 /* LogTableView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = LogTableView.h; sourceTree = "<group>"; };
@@ -9572,6 +9574,8 @@
 				CE6CD06C0CFB0462001DF429 /* OsiriXToolbar.m */,
 				BF09B13D0B2E681D00AA97E2 /* OSIWindowController.h */,
 				BF09B13E0B2E681D00AA97E2 /* OSIWindowController.m */,
+				84C450F41003384000138F70 /* OSIWindow.h */,
+				84C450F51003384000138F70 /* OSIWindow.m */,
 				A97D4C5F0CE3459D003FE2E6 /* PieChartImage.h */,
 				A97D4C600CE3459D003FE2E6 /* PieChartImage.m */,
 				ABD64CE7064D93F500EE3393 /* PMDICOMStoreSCU.h */,
@@ -10139,8 +10143,6 @@
 				BF17E98E088768CA00ECF621 /* LogArrayController.m */,
 				BF17E98F088768CA00ECF621 /* LogTableView.h */,
 				BF17E990088768CA00ECF621 /* LogTableView.m */,
-				BF17E97D0887662400ECF621 /* NetworkMoveDataHandler.h */,
-				BF17E97E0887662400ECF621 /* NetworkMoveDataHandler.m */,
 				BF9201E80883667800A3D77B /* OsiriXSCPDataHandler.h */,
 				BF9201E90883667800A3D77B /* OsiriXSCPDataHandler.mm */,
 				BF1745D208E0C7E200822756 /* LogWindowController.h */,
@@ -15643,6 +15645,7 @@
 				AB0DF7460FD79FEA00A7C57E /* dviface.h in Headers */,
 				848631C30FE77E1F00B96E99 /* jpeg_memdest.h in Headers */,
 				59C2B8EC0FF0EB7700B50385 /* Notifications.h in Headers */,
+				84C4510C10033B8200138F70 /* OSIWindow.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -17438,6 +17441,7 @@
 				CE778E390FDA636A00CC4C7D /* DicomDirDatasetRead.c in Sources */,
 				848631C40FE77E1F00B96E99 /* jpeg_memdest.c in Sources */,
 				59C2B8EB0FF0EB6A00B50385 /* Notifications.m in Sources */,
+				84C4510B10033B8100138F70 /* OSIWindow.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

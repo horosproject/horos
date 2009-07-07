@@ -9469,7 +9469,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 -(NSImage*) nsimage:(BOOL) originalSize
 {
-	return [self nsimage: NO allViewers: NO];
+	return [self nsimage: originalSize allViewers: NO];
 }
 
 -(NSImage*) nsimage:(BOOL) originalSize allViewers:(BOOL) allViewers
