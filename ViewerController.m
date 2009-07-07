@@ -14619,8 +14619,7 @@ int i,j,l;
 			[[NSNotificationCenter defaultCenter] postNotificationName:OsirixGLFontChangeNotification object: self];
 		}
 		
-		if( [self isDataVolumic] == NO)
-			[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"allowSmartCropping"];
+		[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"allowSmartCropping"];
 		
 		int i;
 		for( i = from; i < to; i += interval)
@@ -14663,7 +14662,7 @@ int i,j,l;
 		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"printAt100%Minimum"])
 		{
 			[self setMagnetic : m];
-			[[self window] setFrame: rf display: NO];
+			[[self window] setFrame: rf display: YES];
 		}
 		
 		if( fontSizeCopy != [[NSUserDefaults standardUserDefaults] floatForKey: @"FONTSIZE"])

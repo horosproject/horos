@@ -409,8 +409,7 @@
 		[[NSNotificationCenter defaultCenter] postNotificationName:OsirixGLFontChangeNotification object: self];
 	}
 	
-	if( [m_CurrentViewer isDataVolumic] == NO)
-		[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"allowSmartCropping"];
+	[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"allowSmartCropping"];
 	
 	// collect images for printing
 	AYNSImageToDicom *dicomConverter = [[AYNSImageToDicom alloc] init];
@@ -422,7 +421,7 @@
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"printAt100%Minimum"])
 	{
 		[m_CurrentViewer setMagnetic : m];
-		[[m_CurrentViewer window] setFrame: r display: NO];
+		[[m_CurrentViewer window] setFrame: r display: YES];
 	}
 	
 	if( fontSizeCopy != [[NSUserDefaults standardUserDefaults] floatForKey: @"FONTSIZE"])
