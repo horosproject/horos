@@ -99,7 +99,6 @@ static	BOOL					SYNCSERIES = NO, ViewBoundsDidChangeProtect = NO, recursiveClose
 static NSString* 	ViewerToolbarIdentifier				= @"Viewer Toolbar Identifier";
 static NSString*	QTSaveToolbarItemIdentifier			= @"QTExport.icns";
 static NSString*	iPhotoToolbarItemIdentifier			= @"iPhoto2";
-static NSString*	PagePadToolbarItemIdentifier		= @"PagePad";
 static NSString*	PlayToolbarItemIdentifier			= @"Play.icns";
 static NSString*	XMLToolbarItemIdentifier			= @"XML.icns";
 static NSString*	SpeedToolbarItemIdentifier			= @"Speed";
@@ -2136,9 +2135,12 @@ static volatile int numberOfThreadsForRelisce = 0;
 	[self checkView: subCtrlView :NO];
 	
 	[[self window] setInitialFirstResponder: imageView];
+	
 	contextualDictionaryPath = [@"default" retain];
-	keyObjectPopupController = [[KeyObjectPopupController alloc]initWithViewerController:self popup:keyImagePopUpButton];
-	[keyImagePopUpButton selectItemAtIndex:displayOnlyKeyImages];
+	
+//	keyObjectPopupController = [[KeyObjectPopupController alloc]initWithViewerController:self popup:keyImagePopUpButton];
+	[keyImagePopUpButton selectItemAtIndex: displayOnlyKeyImages];
+
 	seriesView = [[[studyView seriesViews] objectAtIndex:0] retain];
 	imageView = [[[seriesView imageViews] objectAtIndex:0] retain];
 }
@@ -4393,34 +4395,6 @@ static ViewerController *draggedController = nil;
 //	[toolbarItem setMinSize:NSMakeSize(NSWidth([iPhotoView frame]), NSHeight([iPhotoView frame]))];
 	[toolbarItem setMaxSize:NSMakeSize(NSWidth([iPhotoView frame]), NSHeight([iPhotoView frame]))];
     }
-	else  if ([itemIdent isEqualToString: PagePadToolbarItemIdentifier]) {
-        
-	[toolbarItem setLabel: NSLocalizedString(@"PagePad", nil)];
-	[toolbarItem setPaletteLabel: NSLocalizedString(@"PagePad", nil)];
-	[toolbarItem setToolTip: NSLocalizedString(@"Open a PagePad template for the current study", nil)];
-	
-	[toolbarItem setView: PagePad];
-	[toolbarItem setMinSize:NSMakeSize(NSWidth([PagePad frame]), NSHeight([PagePad frame]))];
-	[toolbarItem setMaxSize:NSMakeSize(NSWidth([PagePad frame]), NSHeight([PagePad frame]))];
-/*	
-	[toolbarItem setView: subCtrlView];
-	[toolbarItem setMinSize:NSMakeSize(NSWidth([subCtrlView frame]), NSHeight([subCtrlView frame]))];
-	[toolbarItem setMaxSize:NSMakeSize(NSWidth([subCtrlView frame]),NSHeight([subCtrlView frame]))];
-
-	
-	// By default, in text only mode, a custom items label will be shown as disabled text, but you can provide a 
-	// custom menu of your own by using <item> setMenuFormRepresentation] 
-	submenu = [[[NSMenu alloc] init] autorelease];
-	submenuItem = [[[NSMenuItem alloc] initWithTitle: @"Search Panel" action: @selector(searchUsingSearchPanel:) keyEquivalent: @""] autorelease];
-	menuFormRep = [[[NSMenuItem alloc] init] autorelease];
-
-	[submenu addItem: submenuItem];
-	[submenuItem setTarget: self];
-	[menuFormRep setSubmenu: submenu];
-	[menuFormRep setTitle: [toolbarItem label]];
-	[toolbarItem setMenuFormRepresentation: menuFormRep];
-*/
-    }
 	else if ([itemIdent isEqualToString: MailToolbarItemIdentifier]) {
         
 	[toolbarItem setLabel: NSLocalizedString(@"Email", nil)];
@@ -4581,9 +4555,9 @@ static ViewerController *draggedController = nil;
     } 
 	else if ([itemIdent isEqualToString: iChatBroadCastToolbarItemIdentifier]) {
 	
-	[toolbarItem setLabel: NSLocalizedString(@"Broadcast", nil)];
-	[toolbarItem setPaletteLabel: NSLocalizedString(@"Broadcast", nil)];
-	[toolbarItem setToolTip: NSLocalizedString(@"Broadcast", nil)];
+	[toolbarItem setLabel: NSLocalizedString(@"iChat", nil)];
+	[toolbarItem setPaletteLabel: NSLocalizedString(@"iChat", nil)];
+	[toolbarItem setToolTip: NSLocalizedString(@"iChat", nil)];
 //	[toolbarItem setImage: [NSImage imageNamed: iChatBroadCastToolbarItemIdentifier]]; //	/Applications/iChat/Contents/Resources/Prefs_Camera.icns is maybe a better image...
 	NSString *path = [[NSWorkspace sharedWorkspace] absolutePathForAppBundleWithIdentifier:@"com.apple.iChat"];
 	[toolbarItem setImage: [[NSWorkspace sharedWorkspace] iconForFile:path]];
@@ -4860,9 +4834,9 @@ static ViewerController *draggedController = nil;
     }
 	else if([itemIdent isEqualToString: CobbAngleToolbarItemIdentifier])
 	{
-		[toolbarItem setLabel:NSLocalizedString(@"Cobb's", nil)];
-		[toolbarItem setPaletteLabel:NSLocalizedString(@"Cobb's", nil)];
-		[toolbarItem setToolTip:NSLocalizedString(@"3Cobb's", nil)];
+		[toolbarItem setLabel:NSLocalizedString(@"Cobb", nil)];
+		[toolbarItem setPaletteLabel:NSLocalizedString(@"Cobb", nil)];
+		[toolbarItem setToolTip:NSLocalizedString(@"Cobb's Angle", nil)];
 		[toolbarItem setImage:[NSImage imageNamed:@"CobbAngle.tif"]];
 		[toolbarItem setTarget: nil];
 		[toolbarItem setAction:@selector( switchCobbAngle:)];
@@ -4956,7 +4930,6 @@ static ViewerController *draggedController = nil;
 														PrintToolbarItemIdentifier,
 														ExportToolbarItemIdentifier,
 														iPhotoToolbarItemIdentifier,
-														PagePadToolbarItemIdentifier,
 														QTSaveToolbarItemIdentifier,
 														XMLToolbarItemIdentifier,
 														ReconstructionToolbarItemIdentifier,
@@ -5685,7 +5658,7 @@ static ViewerController *draggedController = nil;
 	
 	[roiLock release];
 	
-	[keyObjectPopupController release];
+//	[keyObjectPopupController release];
 	
 	[contextualDictionaryPath release];
 	
@@ -14589,6 +14562,7 @@ int i,j,l;
 		[[NSFileManager defaultManager] createDirectoryAtPath:tmpFolder attributes:nil];
 		
 		Wait *splash = [[Wait alloc] initWithString:NSLocalizedString(@"Preparing printing...", nil)];
+		[splash setCancel: YES];
 		[splash showWindow:self];
 		[[splash progress] setMaxValue: (to - from) / interval];
 		
@@ -14674,6 +14648,9 @@ int i,j,l;
 			[splash incrementBy: 1];
 			
 			[pool release];
+			
+			if( [splash aborted])
+				break;
 		}
 		
 		/////// ****************

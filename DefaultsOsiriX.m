@@ -321,7 +321,11 @@ static NSHost *currentHost = nil;
 	}
 	{
 		short				vals[9] = {1, -2, 1, -2, 4, -2, 1, -2, 1};
-		[self addConvolutionFilter:3 :vals :@"Highpass" :convValues];
+		[self addConvolutionFilter:3 :vals :@"Highpass 3x3" :convValues];
+	}
+	{
+		short				vals[25] = {0, -1, -1, -1, 0, -1, 2, -4, 2, -1, -1, -4, 13, -4, -1, -1, 2, -4, 2, -1, 0, -1, -1, -1, 0};
+		[self addConvolutionFilter:5 :vals :@"Highpass 5x5" :convValues];
 	}
 	{
 		short				vals[25] = {1, 1, 2, 1, 1, 1, 2, 4, 2, 1, 2, 4, 8, 4, 2, 1, 2, 4, 2, 1, 1, 1, 2, 1, 1};
@@ -336,22 +340,18 @@ static NSHost *currentHost = nil;
 		[self addConvolutionFilter:5 :vals :@"Laplacian" :convValues];
 	}
 	{
-		short				vals[25] = {0, -1, -1, -1, 0, -1, 2, -4, 2, -1, -1, -4, 13, -4, -1, -1, 2, -4, 2, -1, 0, -1, -1, -1, 0};
-		[self addConvolutionFilter:5 :vals :@"highpass" :convValues];
+		short				vals[9] = {-1, -1, -1, -1, 9, -1, -1, -1, -1};
+		[self addConvolutionFilter:3 :vals :@"Sharpen 3x3" :convValues];
 	}
 	{
-		short				vals[9] = {-1, -1, -1, -1, 9, -1, -1, -1, -1};
-		[self addConvolutionFilter:3 :vals :@"Sharpen" :convValues];
+		short				vals[25] = {-1, -1, -1, -1, -1, -1, 2, 2, 2, -1, -1, 2, 8, 2, -1, -1, 2, 2, 2, -1, -1, -1, -1, -1, -1};
+		[self addConvolutionFilter:5 :vals :@"Sharpen 5x5" :convValues];
 	}
 	{
 		short				vals[9] = {1, 1, 1, 1, -7, 1, 1, 1, 1};
 		[self addConvolutionFilter:3 :vals :@"Excessive edges" :convValues];
 	}
-	{
-		short				vals[25] = {-1, -1, -1, -1, -1, -1, 2, 2, 2, -1, -1, 2, 8, 2, -1, -1, 2, 2, 2, -1, -1, -1, -1, -1, -1};
-		[self addConvolutionFilter:5 :vals :@"5x5 sharpen" :convValues];
-	}
-
+	
 	// --
 	
 	[defaultValues setObject:convValues forKey:@"Convolution"];

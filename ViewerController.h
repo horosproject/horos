@@ -284,7 +284,7 @@ enum
 	BOOL					morphoFunctionPreviewApplied;
 	IBOutlet NSPopUpButton	*keyImagePopUpButton;
 	
-	KeyObjectPopupController *keyObjectPopupController;
+//	KeyObjectPopupController *keyObjectPopupController;
 	BOOL					displayOnlyKeyImages;
 	
 	int						qt_to, qt_from, qt_interval, qt_dimension, current_qt_interval, qt_allViewers;

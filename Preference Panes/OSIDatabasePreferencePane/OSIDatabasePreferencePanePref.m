@@ -12,15 +12,6 @@
      PURPOSE.
 =========================================================================*/
 
-/***************************************** Modifications *********************************************
-
-Version 2.3
-	20060116	LP	Added CombineProjectionSeries and splitMultiechoMR options
-Version 2.4
-	20060608	LP	Added DICOM SR option for reports
-	
-*****************************************************************************************************/
-
 #import "OSIDatabasePreferencePanePref.h"
 #import "PreferencePaneController.h"
 #import "PreferencePaneControllerDCMTK.h"
@@ -92,9 +83,9 @@ Version 2.4
 	else
 	{
 		if(numberOfReportPlugins == 1)
-			[[reportsMode itemAtIndex:5] setTitle:@"Plugin"];
+			[[reportsMode itemAtIndex:4] setTitle:@"Plugin"];
 		[reportsMode setAutoenablesItems:NO];
-		[[reportsMode itemAtIndex:5] setEnabled:NO];
+		[[reportsMode itemAtIndex:4] setEnabled:NO];
 	}
 }
 
