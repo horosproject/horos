@@ -14,6 +14,8 @@
 
 #import "AYNSImageToDicom.h"
 #import "OSIWindow.h"
+#import "NSFont_OpenGL.h"
+#import "Notifications.h"
 
 @interface AYNSImageToDicom (private)
 - (NSString *) _createDicomImageWithViewer: (ViewerController *) viewer toDestinationPath: (NSString *) destPath asColorPrint: (BOOL) colorPrint withAnnotations: (BOOL) annotations;
@@ -173,27 +175,92 @@
 		}
 	}
 
-	return [self dicomFileListForViewer: currentViewer destinationPath: destPath fileList: images asColorPrint: colorPrint withAnnotations: annotations];
+	return [self dicomFileListForViewer: currentViewer destinationPath: destPath options: options fileList: images asColorPrint: colorPrint withAnnotations: annotations];
 }
 
 //********************************************************************************************
 // returnValue must be retained and released by caller
 //********************************************************************************************
-- (NSArray *) dicomFileListForViewer: (ViewerController *) currentViewer destinationPath: (NSString *) destPath fileList: (NSArray *) fileList asColorPrint: (BOOL) colorPrint withAnnotations: (BOOL) annotations
+- (NSArray *) dicomFileListForViewer: (ViewerController *) currentViewer destinationPath: (NSString *) destPath options: (NSDictionary*) options fileList: (NSArray *) fileList asColorPrint: (BOOL) colorPrint withAnnotations: (BOOL) annotations 
 {
 	NSMutableArray	*dicomFilePathList = [NSMutableArray arrayWithCapacity: 0];
 	int currentImageIndex = [[currentViewer imageView] curImage];
-
-	for(id loopItem in fileList)
+	
+	/////// ****************
+	
+	float fontSizeCopy = [[NSUserDefaults standardUserDefaults] floatForKey: @"FONTSIZE"];
+	float scaleFactor = 1.0;
+	
+	NSRect rf = [[currentViewer window] frame];
+	BOOL m = [currentViewer magnetic];
+	BOOL v = [currentViewer checkFrameSize];
+	[OSIWindow setDontConstrainWindow: YES];
+	[currentViewer setMagnetic : NO];
+	[currentViewer setMatrixVisible: NO];
+	
+	int columns = [[options valueForKey: @"columns"] intValue];
+	
+	float inc = (1 + ((columns - 1) * 0.35));
+	if( inc > 2.5) inc = 2.5;
+	
+	[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"allowSmartCropping"];
+	
+	NSPoint o = [[[currentViewer window] screen] visibleFrame].origin;
+	o.y += [[[currentViewer window] screen] visibleFrame].size.height;
+	
+	/////// ****************
+	
+	for(NSNumber *imageIndex in fileList)
 	{
 		NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
 		
-		[currentViewer setImageIndex: [loopItem intValue]];
+		[currentViewer setImageIndex: [imageIndex intValue]];
+		
+		BOOL windowSizeChanged = NO;
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"printAt100%Minimum"] && [currentViewer scaleValue] < 1.0)
+		{
+			scaleFactor = 1. / [currentViewer scaleValue];
+			
+			if( scaleFactor > 5)
+				scaleFactor = 5;
+			
+			windowSizeChanged = YES;
+			[[currentViewer window] setFrame: NSMakeRect( o.x, o.y, rf.size.width * scaleFactor, rf.size.height * scaleFactor) display: YES];
+		}
+		else scaleFactor = 1.0;
+		
+		if( fontSizeCopy * inc * scaleFactor != [[NSUserDefaults standardUserDefaults] floatForKey: @"FONTSIZE"])
+		{
+			[[NSUserDefaults standardUserDefaults] setFloat: fontSizeCopy * inc * scaleFactor forKey: @"FONTSIZE"];
+			[NSFont resetFont: 0];
+			[[NSNotificationCenter defaultCenter] postNotificationName: OsirixGLFontChangeNotification object: currentViewer];
+		}
+		
 		[dicomFilePathList addObject: [self _createDicomImageWithViewer: currentViewer toDestinationPath: destPath asColorPrint: colorPrint withAnnotations: annotations]];
+		
+		if( windowSizeChanged)
+			[[currentViewer window] setFrame: NSMakeRect( o.x, o.y, rf.size.width, rf.size.height) display: YES];
 		
 		[pool release];
 	}
-
+	
+	/////// ****************
+	
+	[[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"allowSmartCropping"];
+	
+	if( fontSizeCopy != [[NSUserDefaults standardUserDefaults] floatForKey: @"FONTSIZE"])
+	{
+		[[NSUserDefaults standardUserDefaults] setFloat: fontSizeCopy forKey: @"FONTSIZE"];
+		[NSFont resetFont: 0];
+		[[NSNotificationCenter defaultCenter] postNotificationName:OsirixGLFontChangeNotification object: currentViewer];
+	}
+	
+	[currentViewer setMagnetic : m];
+	[[currentViewer window] setFrame: rf display: YES];
+	[currentViewer setMatrixVisible: v];
+	
+	/////// ****************
+	
 	[[currentViewer imageView] setIndex: currentImageIndex];
 	[[currentViewer imageView] sendSyncMessage:0];
 	[currentViewer adjustSlider];

@@ -381,55 +381,12 @@
 	if( from < 0) from = 0;
 	if( to == from) to = from+1;
 
-	NSDictionary	*options = [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: [[m_ImageSelection selectedCell] tag]], @"mode", [NSNumber numberWithInt: from], @"from", [NSNumber numberWithInt: to], @"to", [NSNumber numberWithInt: [entireSeriesInterval intValue]], @"interval", nil];
-	
-	float fontSizeCopy = [[NSUserDefaults standardUserDefaults] floatForKey: @"FONTSIZE"], zoomFactor;
-	float scaleFactor = 1.0;
-	
-	NSRect r = [[m_CurrentViewer window] frame];
-	BOOL m = [m_CurrentViewer magnetic];
-	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"printAt100%Minimum"] && [m_CurrentViewer scaleValue] < 1.0)
-	{
-		scaleFactor = 1. / [m_CurrentViewer scaleValue];
-		
-		[OSIWindow setDontConstrainWindow: YES];
-		[m_CurrentViewer setMagnetic : NO];
-		NSPoint o = [[[m_CurrentViewer window] screen] visibleFrame].origin;
-		o.y += [[[m_CurrentViewer window] screen] visibleFrame].size.height;
-		[[m_CurrentViewer window] setFrame: NSMakeRect( o.x, o.y, r.size.width * scaleFactor, r.size.height * scaleFactor) display: NO];
-	}
-	
-	float inc = (1 + ((columns - 1) * 0.35));
-	if( inc > 2.5) inc = 2.5;
-		
-	if( inc * scaleFactor != 1)
-	{
-		[[NSUserDefaults standardUserDefaults] setFloat: fontSizeCopy * inc * scaleFactor forKey: @"FONTSIZE"];
-		[NSFont resetFont: 0];
-		[[NSNotificationCenter defaultCenter] postNotificationName:OsirixGLFontChangeNotification object: self];
-	}
-	
-	[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"allowSmartCropping"];
+	NSDictionary	*options = [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: columns], @"columns", [NSNumber numberWithInt: rows], @"rows", [NSNumber numberWithInt: [[m_ImageSelection selectedCell] tag]], @"mode", [NSNumber numberWithInt: from], @"from", [NSNumber numberWithInt: to], @"to", [NSNumber numberWithInt: [entireSeriesInterval intValue]], @"interval", nil];
 	
 	// collect images for printing
 	AYNSImageToDicom *dicomConverter = [[AYNSImageToDicom alloc] init];
 	NSArray *images = [dicomConverter dicomFileListForViewer: m_CurrentViewer destinationPath: destPath options: options asColorPrint: [[dict valueForKey: @"colorPrint"] intValue] withAnnotations: NO];
 	[images retain];
-	
-	[[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"allowSmartCropping"];
-		
-	if( fontSizeCopy != [[NSUserDefaults standardUserDefaults] floatForKey: @"FONTSIZE"])
-	{
-		[[NSUserDefaults standardUserDefaults] setFloat: fontSizeCopy forKey: @"FONTSIZE"];
-		[NSFont resetFont: 0];
-		[[NSNotificationCenter defaultCenter] postNotificationName:OsirixGLFontChangeNotification object: self];
-	}
-	
-	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"printAt100%Minimum"])
-	{
-		[m_CurrentViewer setMagnetic : m];
-		[[m_CurrentViewer window] setFrame: r display: YES];
-	}
 	
 	// check, if images were collected
 	if ([images count] == 0)

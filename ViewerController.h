@@ -585,6 +585,7 @@ enum
 - (IBAction) reSyncOrigin:(id) sender;
 - (void) loadROI:(long) mIndex;
 - (void) saveROI:(long) mIndex;
+- (void) setMatrixVisible: (BOOL) visible;
 - (id) findPlayStopButton;
 - (IBAction)setKeyImage:(id)sender;
 - (IBAction) roiSelectDeselectAll:(id) sender;

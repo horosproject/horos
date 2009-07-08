@@ -14582,6 +14582,7 @@ int i,j,l;
 		}
 		
 		//--------------------------Preparation images in /tmp/print---------------------------------
+		
 		NSMutableArray	*files = [NSMutableArray array];
 		NSString	*tmpFolder = [NSString stringWithFormat:@"/tmp/print"];		
 		[[NSFileManager defaultManager] removeFileAtPath: tmpFolder handler:nil];
@@ -14593,33 +14594,27 @@ int i,j,l;
 		
 		int currentImageIndex = [imageView curImage];
 		
+		/////// ****************
+		
 		float fontSizeCopy = [[NSUserDefaults standardUserDefaults] floatForKey: @"FONTSIZE"];
 		float scaleFactor = 1.0;
 		
 		NSRect rf = [[self window] frame];
 		BOOL m = [self magnetic];
-		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"printAt100%Minimum"] && [self scaleValue] < 1.0)
-		{
-			scaleFactor = 1. / [self scaleValue];
-			
-			[OSIWindow setDontConstrainWindow: YES];
-			[self setMagnetic : NO];
-			NSPoint o = [[[self window] screen] visibleFrame].origin;
-			o.y += [[[self window] screen] visibleFrame].size.height;
-			[[self window] setFrame: NSMakeRect( o.x, o.y, rf.size.width * scaleFactor, rf.size.height * scaleFactor) display: NO];
-		}
+		BOOL v = [self checkFrameSize];
+		[OSIWindow setDontConstrainWindow: YES];
+		[self setMagnetic : NO];
+		[self setMatrixVisible: NO];
 		
 		float inc = (1 + ((columns - 1) * 0.35));
 		if( inc > 2.5) inc = 2.5;
 		
-		if( inc * scaleFactor != 1)
-		{
-			[[NSUserDefaults standardUserDefaults] setFloat: fontSizeCopy * inc * scaleFactor forKey: @"FONTSIZE"];
-			[NSFont resetFont: 0];
-			[[NSNotificationCenter defaultCenter] postNotificationName:OsirixGLFontChangeNotification object: self];
-		}
-		
 		[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"allowSmartCropping"];
+		
+		NSPoint o = [[[self window] screen] visibleFrame].origin;
+		o.y += [[[self window] screen] visibleFrame].size.height;
+		
+		/////// ****************
 		
 		int i;
 		for( i = from; i < to; i += interval)
@@ -14641,7 +14636,31 @@ int i,j,l;
 			if( saveImage)
 			{
 				[self setImageIndex: i];
-				NSImage *im = [imageView nsimage: [[printFormat selectedCell] tag]]; //original
+				
+				BOOL windowSizeChanged = NO;
+				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"printAt100%Minimum"] && [self scaleValue] < 1.0)
+				{
+					scaleFactor = 1. / [self scaleValue];
+					
+					if( scaleFactor > 5)
+						scaleFactor = 5;
+					
+					windowSizeChanged = YES;
+					[[self window] setFrame: NSMakeRect( o.x, o.y, rf.size.width * scaleFactor, rf.size.height * scaleFactor) display: YES];
+				}
+				else scaleFactor = 1.0;
+				
+				if( fontSizeCopy * inc * scaleFactor != [[NSUserDefaults standardUserDefaults] floatForKey: @"FONTSIZE"])
+				{
+					[[NSUserDefaults standardUserDefaults] setFloat: fontSizeCopy * inc * scaleFactor forKey: @"FONTSIZE"];
+					[NSFont resetFont: 0];
+					[[NSNotificationCenter defaultCenter] postNotificationName:OsirixGLFontChangeNotification object: self];
+				}
+				
+				NSImage *im = [imageView nsimage: [[printFormat selectedCell] tag]];
+				
+				if( windowSizeChanged)
+					[[self window] setFrame: NSMakeRect( o.x, o.y, rf.size.width, rf.size.height) display: YES];
 				
 				if( columns * rows > 4)
 					im = [DCMPix resizeIfNecessary: im dcmPix: [imageView curDCM]];
@@ -14657,6 +14676,8 @@ int i,j,l;
 			[pool release];
 		}
 		
+		/////// ****************
+		
 		[[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"allowSmartCropping"];
 		
 		if( fontSizeCopy != [[NSUserDefaults standardUserDefaults] floatForKey: @"FONTSIZE"])
@@ -14666,11 +14687,11 @@ int i,j,l;
 			[[NSNotificationCenter defaultCenter] postNotificationName:OsirixGLFontChangeNotification object: self];
 		}
 		
-		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"printAt100%Minimum"])
-		{
-			[self setMagnetic : m];
-			[[self window] setFrame: rf display: YES];
-		}
+		[self setMagnetic : m];
+		[[self window] setFrame: rf display: YES];
+		[self setMatrixVisible: v];
+		
+		/////// ****************
 		
 		// Go back to initial frame
 		[imageView setIndex: currentImageIndex];
