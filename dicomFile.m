@@ -455,15 +455,9 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			TIFFGetField(tif, TIFFTAG_IMAGEWIDTH, &w);
 			TIFFGetField(tif, TIFFTAG_IMAGELENGTH, &h);
 			
-			
 			width = w;
 			height = h;
 			
-			height /= 2;
-			height *= 2;
-			width /= 2;
-			width *= 2;
-						
 			name = [[NSString alloc] initWithString: [filePath lastPathComponent]];
 //			name = [[NSString alloc] initWithCString:mm_head.Name encoding:NSWindowsCP1252StringEncoding];
 			patientID = [[NSString alloc] initWithString:name];
@@ -679,12 +673,6 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 					}
 				}
 				
-								
-				height /= 2;
-				height *= 2;
-				width /= 2;
-				width *= 2;
-				
 				if( [tempString length] >= 4) strNo[ 0] = [tempString characterAtIndex: [tempString length] -4];	else strNo[ 0]= 0;
 				if( [tempString length] >= 3) strNo[ 1] = [tempString characterAtIndex: [tempString length] -3];	else strNo[ 1]= 0;
 				if( [tempString length] >= 2) strNo[ 2] = [tempString characterAtIndex: [tempString length] -2];	else strNo[ 2]= 0;
@@ -823,11 +811,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				tempRect.top = 0;
 				
 				height = tempRect.bottom;
-				height /= 2;
-				height *= 2;
 				width = tempRect.right;
-				width /= 2;
-				width *= 2;
 				
 				NoOfFrames = 1;
 				NoOfSeries = 1;
@@ -886,11 +870,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				[movie gotoBeginning];
 				
 				height = [[movie currentFrameImage] size].height;
-				height /= 2;
-				height *= 2;
 				width = [[movie currentFrameImage] size].width;
-				width /= 2;
-				width *= 2;
 				
 				NoOfFrames = 0;
 				NoOfSeries = 1;
@@ -1062,18 +1042,11 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			//////////////////////////////////////////////////////////////////////////////////////
 			
 			short realheight = NSSwapLittleShortToHost(header.ny);
-			height = realheight/2;
-			height *= 2;
+			height = realheight;
 			short realwidth = NSSwapLittleShortToHost(header.nx);
-			width =realwidth/ 2;
-			width *= 2;			
+			width = realwidth;	
 			NoOfFrames = NSSwapLittleShortToHost(header.npic);
 			NoOfSeries = 1;
-			/*GJ: 040609 - Nice idea, but need to do more to implement this
-			if([channelString isEqualToString:@"02"]) NoOfSeries = 2;
-			if([channelString isEqualToString:@"03"]) NoOfSeries = 3;
-			NSLog(@"No of Series = %d",NoOfSeries);
-			*/
 			
 			date = [[[[NSFileManager defaultManager] fileAttributesAtPath:filePath traverseLink:NO ] fileCreationDate] retain];
 			
@@ -1478,12 +1451,8 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				
 				height = Analyze->dime.dim[ 1];
 				if( intelByteOrder) height = Endian16_Swap( height);
-				height /= 2;
-				height *= 2;
 				width = Analyze->dime.dim[ 2];
 				if( intelByteOrder) width = Endian16_Swap( width);
-				width /= 2;
-				width *= 2;
 				
 				NoOfFrames = Analyze->dime.dim[ 3];
 				if( intelByteOrder) NoOfFrames = Endian16_Swap( NoOfFrames);
@@ -1548,12 +1517,8 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			date = [[[[NSFileManager defaultManager] fileAttributesAtPath:filePath traverseLink:NO ] fileCreationDate] retain];
 			
 			width = NIfTI->dim[ 1];
-			width /= 2;
-			width *= 2;
 
 			height = NIfTI->dim[ 2];
-			height /= 2;
-			height *= 2;
 			
 			NoOfFrames = NIfTI->dim[ 3];
 			NoOfSeries = 1;
@@ -2391,16 +2356,13 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				if (val != NULL)
 				{
 					height = (int) (*val).us;
-					height /=2;
-					height *=2;
 				}
 				// COLUMNS
 				val = Papy3GetElement (theGroupP, papColumnsGr, &nbVal, &itemType);
 				if (val != NULL) 
 				{
 					realwidth = (int) (*val).us;
-					width = realwidth/2;
-					width *=2;
+					width = realwidth;
 				}
 				theErr = Papy3GroupFree (&theGroupP, TRUE);
 			}

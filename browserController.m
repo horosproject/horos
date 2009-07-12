@@ -10233,15 +10233,18 @@ static BOOL needToRezoom;
 			
 			if( [loadList count] == 1 && ( [[curFile valueForKey:@"numberOfFrames"] intValue] > 1 || [[curFile valueForKey:@"numberOfSeries"] intValue] > 1))  //     **We selected a multi-frame image !!!
 			{
-				mem += [[curFile valueForKey:@"width"] intValue]* [[curFile valueForKey:@"height"] intValue] * [[curFile valueForKey:@"numberOfFrames"] intValue];
-				memBlock += [[curFile valueForKey:@"width"] intValue] * [[curFile valueForKey:@"height"] intValue] * [[curFile valueForKey:@"numberOfFrames"] intValue];
+				long imSize = ([[curFile valueForKey:@"width"] intValue] +1) * ([[curFile valueForKey:@"height"] intValue]+1);
+				mem += imSize * [[curFile valueForKey:@"numberOfFrames"] intValue];
+				memBlock += imSize * [[curFile valueForKey:@"numberOfFrames"] intValue];
 			}
 			else
 			{
 				for( curFile in loadList )
-				{				
-					mem += [[curFile valueForKey:@"width"] intValue] * [[curFile valueForKey:@"height"] intValue];
-					memBlock += [[curFile valueForKey:@"width"] intValue] * [[curFile valueForKey:@"height"] intValue];
+				{
+					long imSize = ([[curFile valueForKey:@"width"] intValue] +1) * ([[curFile valueForKey:@"height"] intValue]+1);
+					
+					mem += imSize;
+					memBlock += imSize;
 				}
 			}
 			
@@ -10364,17 +10367,17 @@ static BOOL needToRezoom;
 					{
 						multiFrame = YES;
 						
-						mem += [[curFile valueForKey:@"width"] intValue] * [[curFile valueForKey:@"height"] intValue] * [[curFile valueForKey:@"numberOfFrames"] intValue];
-						memBlock += [[curFile valueForKey:@"width"] intValue] * [[curFile valueForKey:@"height"] intValue] * [[curFile valueForKey:@"numberOfFrames"] intValue];
+						long imSize = ([[curFile valueForKey:@"width"] intValue] +1) * ([[curFile valueForKey:@"height"] intValue] +1);
+						
+						mem += imSize * [[curFile valueForKey:@"numberOfFrames"] intValue];
+						memBlock += imSize * [[curFile valueForKey:@"numberOfFrames"] intValue];
 					}
 					else
 					{
 						for( curFile in loadList )
 						{
-							long h = [[curFile valueForKey:@"height"] intValue];
-							long w = [[curFile valueForKey:@"width"] intValue];
-							
-							w += 2;
+							long h = [[curFile valueForKey:@"height"] intValue]+1;
+							long w = [[curFile valueForKey:@"width"] intValue]+1;
 							
 							if( w*h < 256*256)
 							{
@@ -10556,7 +10559,7 @@ static BOOL needToRezoom;
 							
 							if( dcmPix )
 							{
-								mem += [[curFile valueForKey:@"width"] intValue] * [[curFile valueForKey:@"height"] intValue];
+								mem += ([[curFile valueForKey:@"width"] intValue]+1) * ([[curFile valueForKey:@"height"] intValue]+1);
 								
 								[viewerPix[0] addObject: dcmPix];
 								[correspondingObjects addObject: curFile];
@@ -10574,7 +10577,7 @@ static BOOL needToRezoom;
 							
 							if( dcmPix )
 							{
-								mem += [[curFile valueForKey:@"width"] intValue] * [[curFile valueForKey:@"height"] intValue];
+								mem += ([[curFile valueForKey:@"width"] intValue] +1) * ([[curFile valueForKey:@"height"] intValue] +1);
 								
 								[viewerPix[0] addObject: dcmPix];
 								[correspondingObjects addObject: curFile];

@@ -3167,13 +3167,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		imTot = 1;
 		
 		height = yDim;
-		height /= 2;
-		height *= 2;
-		
 		width = xDim;
-		width /= 2;
-		width *= 2;
-		
 		pixelSpacingX = xSpace;
 		pixelSpacingY = ySpace;
 		if( pixelSpacingY != 0 && pixelSpacingX != 0) pixelRatio = pixelSpacingY / pixelSpacingX;
@@ -3212,7 +3206,6 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 					break;
 					
 					case 8:		// RGBA -> argb
-					//rowBytes = width * 4;
 					fImage = malloc(width*height*4);
 					
 					if( im)
@@ -3387,7 +3380,6 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	copy->fImage = self->fImage;	// Don't load the image!
 	copy->height = self->height;
 	copy->width = self->width;
-//	copy->rowBytes = self->rowBytes;
 	copy->wl = self->wl;
 	copy->ww = self->ww;
 	copy->sliceInterval = self->sliceInterval;
@@ -3465,11 +3457,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		
 		// Note that Biorad files are in little endian format
 		realheight = NSSwapLittleShortToHost(header.ny);
-		height = realheight/2;
-		height *= 2;
+		height = realheight;
 		realwidth = NSSwapLittleShortToHost(header.nx);
-		width =realwidth/ 2;
-		width *= 2;
+		width = realwidth;
 		
 		maxImage = NSSwapLittleShortToHost(header.npic);
 		
@@ -3666,18 +3656,6 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		count = 0;
 		while (count < directory && TIFFReadDirectory (tif))
 			count++;
-		/*
-		 if( frameNo != 0)
-		 {
-		 count = 0;
-		 do
-		 {
-		 TIFFReadDirectory (tif);
-		 count++;
-		 } while (!TIFFLastDirectory (tif) && count != frameNo);
-		 }*/
-		
-		//	NSLog(@"dir:%d", count);
 		
 		TIFFGetField(tif, TIFFTAG_IMAGEWIDTH, &w);
 		TIFFGetField(tif, TIFFTAG_IMAGELENGTH, &h);
@@ -3686,14 +3664,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		TIFFGetField(tif, TIFFTAG_DATATYPE, &dataType);
 		TIFFGetField(tif, TIFFTAG_PLANARCONFIG, &planarConfig);
 		
-//		NSLog( @"Bits Per Sample: %d, Samples Per Pixel: %d PlanarConfig: %d", bpp, tifspp, planarConfig);
-		
 		height = h;
-		height /= 2;
-		height *= 2;
 		realwidth = w;
-		width = realwidth/2;
-		width *= 2;
+		width = realwidth;
 		
 		totSize = (height+1) * (width+1);
 		
@@ -3983,8 +3956,6 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 			}
 			
 			memcpy( fImage, oImage, width*height*4);
-			
-//			rowBytes = width * 4;
 		}
 		
 		free(oImage);
@@ -4275,7 +4246,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 				
 				case 256:
 					realwidth = ((TAG1[11] & MASK2) << 24) | ((TAG1[10] & MASK2) << 16) | ((TAG1[9] & MASK2) << 8) | (TAG1[8] & MASK2);
-					width =realwidth/ 2; width *= 2;
+					
+					width = realwidth;
 				break;
 				
 				case 257:
@@ -5173,16 +5145,13 @@ END_CREATE_ROIS:
 	if( [dcmObject attributeValueWithName:@"Rows"])
 	{
 		height = [[dcmObject attributeValueWithName:@"Rows"] intValue];
-		height /= 2;
-		height *= 2;
 	}
 	
 	if( [dcmObject attributeValueWithName:@"Columns"])
 	{
 		width =  [[dcmObject attributeValueWithName:@"Columns"] intValue];
 		realwidth = width;
-		width = realwidth/2;
-		width *= 2;
+		width = realwidth;
 	}
 	
 	if( shutterRect_w == 0) shutterRect_w = width;
@@ -5348,11 +5317,9 @@ END_CREATE_ROIS:
 		//NSLog(@"tiffRep: %@", [TIFFRep description]);
 		
 		height = [TIFFRep pixelsHigh];
-		height /= 2;
-		height *= 2;
 		realwidth = [TIFFRep pixelsWide];
-		width = realwidth/2;
-		width *= 2;
+		width = realwidth;
+		
 		unsigned char *srcImage = [TIFFRep bitmapData];
 		
 		unsigned char   *argbImage, *tmpPtr, *srcPtr;
@@ -6582,8 +6549,7 @@ END_CREATE_ROIS:
 	if ( val )
 	{
 		realwidth = (int) (*val).us;
-		width = realwidth/2;
-		width *=2;
+		width = realwidth;
 		
 		if( realwidth != width) NSLog(@"width!=realwidth");
 	}
@@ -8251,12 +8217,9 @@ END_CREATE_ROIS:
 	NSBitmapImageRep	*TIFFRep = [[NSBitmapImageRep alloc] initWithData: [otherImage TIFFRepresentation]];
 	
 	height = [TIFFRep pixelsHigh];
-	height /= 2;
-	height *= 2;
 	
 	realwidth = [TIFFRep pixelsWide];
-	width = realwidth/2;
-	width *= 2;
+	width = realwidth;
 	
 	unsigned char *srcImage = [TIFFRep bitmapData];
 	unsigned char *argbImage = nil, *srcPtr = nil, *tmpPtr = nil;
@@ -8273,103 +8236,92 @@ END_CREATE_ROIS:
 	
 	switch( [TIFFRep bitsPerPixel])
 	{
-	case 8:
-		NSLog(@"8 bits");
-		tmpPtr = argbImage;
-		for( y = 0 ; y < height; y++)
-		{
-			srcPtr = srcImage + y*[TIFFRep bytesPerRow];
-			
-			x = width;
-			while( x-->0)
+		case 8:
+			NSLog(@"8 bits");
+			tmpPtr = argbImage;
+			for( y = 0 ; y < height; y++)
 			{
-				tmpPtr++;
-				*tmpPtr++ = *srcPtr;
-				*tmpPtr++ = *srcPtr;
-				*tmpPtr++ = *srcPtr;
-				srcPtr++;
-			}
-		}
-		break;
-		
-		case 32:
-		NSLog(@"32 bits");
-		tmpPtr = argbImage;
-		for( y = 0 ; y < height; y++)
-		{
-			srcPtr = srcImage + y*[TIFFRep bytesPerRow];
-			
-			x = width;
-			while( x-->0)
-			{
-				tmpPtr++;
-				*tmpPtr++ = *srcPtr++;
-				*tmpPtr++ = *srcPtr++;
-				*tmpPtr++ = *srcPtr++;
-				srcPtr++;
-			}
-			
-			//BlockMoveData( srcPtr, tmpPtr, width*4);
-			//tmpPtr += width*4;
-		}
-		break;
-		
-		case 24:
-		NSLog(@"24 bits");
-		tmpPtr = argbImage;
-		for( y = 0 ; y < height; y++)
-		{
-			srcPtr = srcImage + y*[TIFFRep bytesPerRow];
-			
-			x = width;
-			while( x-->0)
-			{
-				tmpPtr++;
+				srcPtr = srcImage + y*[TIFFRep bytesPerRow];
 				
-				*((short*)tmpPtr) = *((short*)srcPtr);
-				tmpPtr+=2;
-				srcPtr+=2;
-				
-				*tmpPtr++ = *srcPtr++;
-				
-				//									tmpPtr++;
-				//									*tmpPtr++ = srcPtr[ 1];
-				//									*tmpPtr++ = srcPtr[ 0];
-				//									*tmpPtr++ = srcPtr[ 2];
-				//									
-				//									srcPtr += 3;
+				x = width;
+				while( x-->0)
+				{
+					tmpPtr++;
+					*tmpPtr++ = *srcPtr;
+					*tmpPtr++ = *srcPtr;
+					*tmpPtr++ = *srcPtr;
+					srcPtr++;
+				}
 			}
-		}
-		break;
-		
-		case 48:
-		NSLog(@"48 bits");
-		tmpPtr = argbImage;
-		for( y = 0 ; y < height; y++)
-		{
-			srcPtr = srcImage + y*[TIFFRep bytesPerRow];
+			break;
 			
-			x = width;
-			while( x-->0)
+			case 32:
+			NSLog(@"32 bits");
+			tmpPtr = argbImage;
+			for( y = 0 ; y < height; y++)
 			{
-				tmpPtr++;
-				*tmpPtr++ = *srcPtr;	srcPtr += 2;
-				*tmpPtr++ = *srcPtr;	srcPtr += 2;
-				*tmpPtr++ = *srcPtr;	srcPtr += 2;
+				srcPtr = srcImage + y*[TIFFRep bytesPerRow];
+				
+				x = width;
+				while( x-->0)
+				{
+					tmpPtr++;
+					*tmpPtr++ = *srcPtr++;
+					*tmpPtr++ = *srcPtr++;
+					*tmpPtr++ = *srcPtr++;
+					srcPtr++;
+				}
+				
+				//BlockMoveData( srcPtr, tmpPtr, width*4);
+				//tmpPtr += width*4;
 			}
+			break;
 			
-			//BlockMoveData( srcPtr, tmpPtr, width*4);
-			//tmpPtr += width*4;
-		}
-		break;
-		
+			case 24:
+			NSLog(@"24 bits");
+			tmpPtr = argbImage;
+			for( y = 0 ; y < height; y++)
+			{
+				srcPtr = srcImage + y*[TIFFRep bytesPerRow];
+				
+				x = width;
+				while( x-->0)
+				{
+					tmpPtr++;
+					
+					*((short*)tmpPtr) = *((short*)srcPtr);
+					tmpPtr+=2;
+					srcPtr+=2;
+					
+					*tmpPtr++ = *srcPtr++;
+				}
+			}
+			break;
+			
+			case 48:
+			NSLog(@"48 bits");
+			tmpPtr = argbImage;
+			for( y = 0 ; y < height; y++)
+			{
+				srcPtr = srcImage + y*[TIFFRep bytesPerRow];
+				
+				x = width;
+				while( x-->0)
+				{
+					tmpPtr++;
+					*tmpPtr++ = *srcPtr;	srcPtr += 2;
+					*tmpPtr++ = *srcPtr;	srcPtr += 2;
+					*tmpPtr++ = *srcPtr;	srcPtr += 2;
+				}
+			}
+			break;
+			
 		default:
-		NSLog(@"Error - Unknow...");
+			NSLog(@"Error - Unknow bitsPerPixel ...");
 		break;
-}
+	}
 	
 	fImage = (float*) argbImage;
-//	rowBytes = width * 4;
 	isRGB = YES;
 	
 	[TIFFRep release];
@@ -8523,8 +8475,7 @@ END_CREATE_ROIS:
 				//NSLog(@"width %d : %d", width, [decoder width]);
 				height = [[decoder height] intValue];
 				//NSLog(@"height %d : %d", height, [decoder height]);
-				isRGB = [decoder isRGB];
-//					rowBytes = [[decoder rowBytes] intValue];				
+				isRGB = [decoder isRGB];			
 				[decoder release];					
 				
 			}
@@ -8542,11 +8493,9 @@ END_CREATE_ROIS:
 					
 					// size of the image
 					height = [TIFFRep pixelsHigh];
-					height /= 2;
-					height *= 2;
+					
 					realwidth = [TIFFRep pixelsWide];
-					width = realwidth/2;
-					width *= 2;
+					width = realwidth;
 					
 					long totSize;
 					totSize = height * width * 4;
@@ -8580,7 +8529,6 @@ END_CREATE_ROIS:
 					}
 					
 					fImage = (float*) argbImage;
-//						rowBytes = width * 4;
 					isRGB = YES;
 					[TIFFRep release];
 				}
@@ -8619,13 +8567,10 @@ END_CREATE_ROIS:
 					{
 						width = NIfTI->dim[ 1];
 						realwidth = width;
-						width /= 2;
-						width *= 2;
+						width = realwidth;
 						
 						height = NIfTI->dim[ 2];
 						realheight = height;
-						height /= 2;
-						height *= 2;
 						
 						pixelSpacingX = NIfTI->pixdim[ 1];
 						pixelSpacingY = NIfTI->pixdim[ 2];
@@ -8667,7 +8612,7 @@ END_CREATE_ROIS:
 								long			loop;
 								
 								bufPtr = (unsigned char*) [fileData bytes]+ frameNo*(realheight * realwidth);
-								ptr    = oImage;
+								ptr = oImage;
 								
 								loop = realheight * realwidth;
 								while( loop-- > 0)
@@ -8997,13 +8942,10 @@ END_CREATE_ROIS:
 								height = Analyze->dime.dim[ 2];
 								if( swapByteOrder) height = Endian16_Swap( height);
 								realheight = height;
-								height /= 2;
-								height *= 2;
 								width = Analyze->dime.dim[ 1];
 								if( swapByteOrder) width = Endian16_Swap( width);
 								realwidth = width;
-								width /= 2;
-								width *= 2;
+								width = realwidth;
 								
 								float pX = Analyze->dime.pixdim[ 1];
 								if( swapByteOrder) SwitchFloat( &pX);
@@ -9035,7 +8977,7 @@ END_CREATE_ROIS:
 										long			loop;
 										
 										bufPtr = (unsigned char*) [fileData bytes]+ frameNo*(realheight * realwidth);
-										ptr    = oImage;
+										ptr = oImage;
 										
 										loop = realheight * realwidth;
 										while( loop-- > 0)
@@ -9300,12 +9242,8 @@ END_CREATE_ROIS:
 					long			totSize;
 					
 					height = tempRect.bottom;
-					height /= 2;
-					height *= 2;
 					realwidth = tempRect.right;
-					width = realwidth/2;
-					width *= 2;
-//						rowBytes = GetPixRowBytes(pixMapHandle);
+					width = realwidth;
 					oImage = nil;
 					srcImage = (unsigned char*) pixBaseAddr;
 					
@@ -9330,7 +9268,6 @@ END_CREATE_ROIS:
 					
 					UnlockPixels (pixMapHandle);
 					
-//						rowBytes = width * 4;
 					fImage = (float*) argbImage;
 					isRGB = YES;
 					
@@ -9363,7 +9300,6 @@ END_CREATE_ROIS:
 			
 			height = 128;
 			width = 128;
-//				rowBytes = width*4;
 			oImage = nil;
 			isRGB = NO;
 			
@@ -10204,7 +10140,6 @@ END_CREATE_ROIS:
 			break;
 	}
 	
-//	[self setRowBytes: [self pwidth]*sizeof( float)];
 	[self setBaseAddr: malloc( [self pwidth] * [self pheight])];
 	
 	[self setRGB: NO];
@@ -10272,8 +10207,6 @@ END_CREATE_ROIS:
 			vImageConvert_Planar8toARGB8888(&dst8, &dst8, &dst8, &dst8, &dst8888, 0);
 			break;
 	}
-	
-//	[self setRowBytes: [self pwidth]*4];
 	
 	[self setBaseAddr: malloc( [self pwidth] * [self pheight] * 4)];
 	
@@ -10931,7 +10864,6 @@ END_CREATE_ROIS:
 				
 				thickSlabVRActivated = YES;
 				
-//				[self setRowBytes: width*4];
 				[self setBaseAddr: (char*) rgbaImage];
 			}
 			break;
@@ -11412,21 +11344,6 @@ END_CREATE_ROIS:
 {
 	[self CheckLoad];
     return height;
-}
-
-- (void) setRowBytes:(long) r
-{
-	NSLog( @"*** DEPRECATED : [DCMPix setRowBytes] is deprecated, use pwidth instead.");
-}
-
-- (long) rowBytes
-{
-	[self CheckLoad];
-	
-	NSLog( @"*** DEPRECATED : [DCMPix rowBytes] is deprecated, use pwidth instead.");
-	
-	if( isRGB) return width*4;
-	else return width;
 }
 
 - (void)setUpdateToApply { updateToBeApplied = YES; }

@@ -685,16 +685,13 @@ extern NSRecursiveLock *PapyrusLock;
 		unsigned short rows = 0;
 		if (dataset->findAndGetUint16(DCM_Rows, rows, OFFalse).good()){
 			height = rows;
-			height /=2;
-			height *=2;
 		}
 		
 		//Columns
 		
 		unsigned short columns = 0;
 		if (dataset->findAndGetUint16(DCM_Columns, columns, OFFalse).good()){
-			width = columns/2;
-			width *=2;
+			width = columns;
 		}
 		
 		//Number of Frames
