@@ -14616,8 +14616,10 @@ int i,j,l;
 				{
 					scaleFactor = 1. / [self scaleValue];
 					
-					if( scaleFactor > 5)
-						scaleFactor = 5;
+					#define MAXWindowSize 8000
+					
+					if( rf.size.width * scaleFactor > MAXWindowSize)
+						scaleFactor = MAXWindowSize / rf.size.width;
 					
 					windowSizeChanged = YES;
 					[[self window] setFrame: NSMakeRect( o.x, o.y, rf.size.width * scaleFactor, rf.size.height * scaleFactor) display: YES];

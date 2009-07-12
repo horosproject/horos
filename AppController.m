@@ -1415,7 +1415,7 @@ static NSDate *lastWarningDate = nil;
 	[BonjourDICOMService stop];
 	[BonjourDICOMService release];
 	BonjourDICOMService = nil;
-
+	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"publishDICOMBonjour"])
 	{
 		//Start DICOM Bonjour 
