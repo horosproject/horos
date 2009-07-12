@@ -6513,16 +6513,6 @@ END_CREATE_ROIS:
 		// get the last slope
 		for ( int j = 1; j < pos; j++ ) tmpVal3++;
 		slope = atof( tmpVal3->a);
-		
-		//	NSLog(@"slope:%f", slope);
-		
-		//						if( slope != 0 && fabs( slope) < 0.01)
-		//						{
-		//							while( slope < 0.01)
-		//							{
-		//								slope *= 100.;
-		//							}
-		//						}
 	}
 	
 	val = Papy3GetElement (theGroupP, papBitsAllocatedGr, &nbVal, &elemType);
