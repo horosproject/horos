@@ -10233,18 +10233,15 @@ static BOOL needToRezoom;
 			
 			if( [loadList count] == 1 && ( [[curFile valueForKey:@"numberOfFrames"] intValue] > 1 || [[curFile valueForKey:@"numberOfSeries"] intValue] > 1))  //     **We selected a multi-frame image !!!
 			{
-				long imSize = ([[curFile valueForKey:@"width"] intValue] +1) * ([[curFile valueForKey:@"height"] intValue]+1);
-				mem += imSize * [[curFile valueForKey:@"numberOfFrames"] intValue];
-				memBlock += imSize * [[curFile valueForKey:@"numberOfFrames"] intValue];
+				mem += ([[curFile valueForKey:@"width"] intValue] +1) * ([[curFile valueForKey:@"height"] intValue]+1) * [[curFile valueForKey:@"numberOfFrames"] intValue];
+				memBlock += ([[curFile valueForKey:@"width"] intValue] ) * ([[curFile valueForKey:@"height"] intValue]) * [[curFile valueForKey:@"numberOfFrames"] intValue];
 			}
 			else
 			{
 				for( curFile in loadList )
 				{
-					long imSize = ([[curFile valueForKey:@"width"] intValue] +1) * ([[curFile valueForKey:@"height"] intValue]+1);
-					
-					mem += imSize;
-					memBlock += imSize;
+					mem += ([[curFile valueForKey:@"width"] intValue] +1) * ([[curFile valueForKey:@"height"] intValue] +1);
+					memBlock += ([[curFile valueForKey:@"width"] intValue] ) * ([[curFile valueForKey:@"height"] intValue]);
 				}
 			}
 			
@@ -10367,17 +10364,15 @@ static BOOL needToRezoom;
 					{
 						multiFrame = YES;
 						
-						long imSize = ([[curFile valueForKey:@"width"] intValue] +1) * ([[curFile valueForKey:@"height"] intValue] +1);
-						
-						mem += imSize * [[curFile valueForKey:@"numberOfFrames"] intValue];
-						memBlock += imSize * [[curFile valueForKey:@"numberOfFrames"] intValue];
+						mem += ([[curFile valueForKey:@"width"] intValue] +1) * ([[curFile valueForKey:@"height"] intValue] +1) * [[curFile valueForKey:@"numberOfFrames"] intValue];
+						memBlock += ([[curFile valueForKey:@"width"] intValue] ) * ([[curFile valueForKey:@"height"] intValue] ) * [[curFile valueForKey:@"numberOfFrames"] intValue];
 					}
 					else
 					{
 						for( curFile in loadList )
 						{
-							long h = [[curFile valueForKey:@"height"] intValue]+1;
-							long w = [[curFile valueForKey:@"width"] intValue]+1;
+							long h = [[curFile valueForKey:@"height"] intValue];
+							long w = [[curFile valueForKey:@"width"] intValue];
 							
 							if( w*h < 256*256)
 							{
@@ -10385,7 +10380,7 @@ static BOOL needToRezoom;
 								h = 256;
 							}
 							
-							mem += w * h;
+							mem += (w+1) * (h+1);
 							memBlock += w * h;
 						}
 					}
@@ -10531,7 +10526,6 @@ static BOOL needToRezoom;
 		{
 			for( unsigned long x = 0; x < [toOpenArray count]; x++ )
 			{
-//				NSLog(@"Current block to malloc: %d Mb", (memBlockSize[ x] * sizeof( float)) / (1024*1024));
 				fVolumePtr = malloc( memBlockSize[ x] * sizeof(float));
 				unsigned long mem = 0;
 				
@@ -10559,7 +10553,7 @@ static BOOL needToRezoom;
 							
 							if( dcmPix )
 							{
-								mem += ([[curFile valueForKey:@"width"] intValue]+1) * ([[curFile valueForKey:@"height"] intValue]+1);
+								mem += ([[curFile valueForKey:@"width"] intValue]) * ([[curFile valueForKey:@"height"] intValue]);
 								
 								[viewerPix[0] addObject: dcmPix];
 								[correspondingObjects addObject: curFile];
@@ -10577,7 +10571,7 @@ static BOOL needToRezoom;
 							
 							if( dcmPix )
 							{
-								mem += ([[curFile valueForKey:@"width"] intValue] +1) * ([[curFile valueForKey:@"height"] intValue] +1);
+								mem += ([[curFile valueForKey:@"width"] intValue] ) * ([[curFile valueForKey:@"height"] intValue] );
 								
 								[viewerPix[0] addObject: dcmPix];
 								[correspondingObjects addObject: curFile];
