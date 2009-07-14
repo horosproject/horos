@@ -10469,15 +10469,10 @@ int i,j,l;
 
 - (ROI*)createLayerROIFromROI:(ROI*)roi;
 {
-	return [self createLayerROIFromROI:roi splineScale:2];
-}
-
-- (ROI*)createLayerROIFromROI:(ROI*)roi splineScale:(float)splineScale;
-{
 	float *data;
 	float *locations;
 	long dataSize;
-	data = [[[roi curView] curDCM] getROIValue:&dataSize :roi :&locations :splineScale];
+	data = [[[roi curView] curDCM] getROIValue:&dataSize :roi :&locations];
 
 	float minX = locations[0];
 	float minY = locations[1];	

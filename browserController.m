@@ -7630,12 +7630,12 @@ static BOOL withReset = NO;
 	
 	if( change > 0 )
 	{
-		change = ceil( change);
+		change = 1;
 		pos += change;
 	}
 	else
 	{
-		change = floor( change);
+		change = -1;
 		pos += change;
 	}
 	

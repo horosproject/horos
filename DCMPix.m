@@ -1791,11 +1791,6 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 }
 
 - (float*) getROIValue: (long*)numberOfValues : (ROI*)roi : (float**)locations {
-	return [self getROIValue:numberOfValues	:roi :locations :2];
-}
-
-- (float*) getROIValue: (long*)numberOfValues : (ROI*)roi : (float**)locations :(float)splineScale
-{
     long			count = 0, no;
 	float			*values = nil;
 	long			upleftx, uplefty, downrightx, downrighty;
@@ -1849,7 +1844,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	}
 	else
 	{
-		NSMutableArray  *ptsTemp = [roi splinePoints:splineScale];
+		NSMutableArray  *ptsTemp = [roi splinePoints];
 		
 		if( [ptsTemp count] == 0) return nil;
 		

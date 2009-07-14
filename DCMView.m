@@ -4318,16 +4318,14 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					
 					if( change > 0)
 					{
-						change = ceil( change);
-						if( change < 1) change = 1;
+						change = 1;
 						
 						inc = _imageRows * _imageColumns * change;
 						curImage += inc;
 					}
 					else
 					{
-						change = floor( change);
-						if( change > -1) change = -1;
+						change = -1;
 						
 						inc = _imageRows * _imageColumns * change;
 						curImage += inc;

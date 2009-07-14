@@ -391,7 +391,6 @@ Note setter is different to not break existing usage. :-( */
 * Returns a pointer to the pixel locations. Each point has the x position followed by the y position
 * Locations is malloced but not freed
 */
-- (float*) getROIValue :(long*) numberOfValues :(ROI*) roi :(float**) locations :(float)splineScale;
 - (float*) getROIValue :(long*) numberOfValues :(ROI*) roi :(float**) locations;
 
 /** Returns a pointer with all pixels values contained in the current ROI
