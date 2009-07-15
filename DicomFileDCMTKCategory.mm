@@ -12,6 +12,47 @@
      PURPOSE.
 =========================================================================*/
 
+//TransferSyntaxUID
+//ImageComments
+//SOPClassUID
+//EncapsulatedDocument
+//SpecificCharacterSet
+//ImageType
+//SOPInstanceUID
+//StudyDescription
+//Modality
+//ContentDate
+//ContentTime
+//AcquisitionDate
+//AcquisitionTime
+//SeriesDate
+//SeriesTime
+//StudyDate
+//StudyTime
+//SeriesDescription
+//InstitutionName
+//ReferringPhysiciansName
+//PerformingPhysiciansName
+//AccessionNumber
+//PatientsName
+//PatientID
+//PatientsAge
+//PatientsBirthDate
+//PatientsSex
+//ScanOptions
+//ProtocolName
+//EchoTime
+//InstanceNumber
+//ImagePositionPatient
+//ImageOrientationPatient
+//SeriesNumber
+//SeriesInstanceUID
+//StudyInstanceUID
+//StudyID
+//Rows
+//Columns
+//NumberOfFrames
+
 #import "DicomFileDCMTKCategory.h"
 #import <OsiriX/DCMAbstractSyntaxUID.h>
 #import "Papyrus3/Papyrus3.h"
