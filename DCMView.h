@@ -327,6 +327,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 @property BOOL volumicSeries;
 @property(readonly) BOOL isKeyView, mouseDragging;
 
++ (BOOL) noPropagateSettingsInSeriesForModality: (NSString*) m;
 + (void) purgeStringTextureCache;
 + (void) setDefaults;
 + (void) setCLUTBARS:(int) c ANNOTATIONS:(int) a;

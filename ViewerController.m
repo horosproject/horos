@@ -5917,7 +5917,7 @@ static ViewerController *draggedController = nil;
 		}
 		else [self ApplyOpacityString: NSLocalizedString( @"Linear Table", nil)];
 		
-		if(([[self modality] isEqualToString:@"CR"] || [[self modality] isEqualToString:@"MG"] || [[self modality] isEqualToString:@"XA"] || [[self modality] isEqualToString:@"RF"]) && [[NSUserDefaults standardUserDefaults] boolForKey:@"automatic12BitTotoku"] && [AppController canDisplay12Bit])
+		if(([[self modality] isEqualToString:@"CR"] || [[self modality] isEqualToString:@"DR"] || [[self modality] isEqualToString:@"DX"] || [[self modality] isEqualToString:@"MG"] || [[self modality] isEqualToString:@"XA"] || [[self modality] isEqualToString:@"RF"]) && [[NSUserDefaults standardUserDefaults] boolForKey:@"automatic12BitTotoku"] && [AppController canDisplay12Bit])
 		{
 			[imageView setIsLUT12Bit:YES];
 			[display12bitToolbarItemMatrix selectCellWithTag:0];
@@ -13343,7 +13343,7 @@ int i,j,l;
 			{
 			//	if( [[vC modality] isEqualToString:[self modality]])	For PET CT, we have to sync this even if the modalities are not equal!
 				
-				if( [[vC modality] isEqualToString: @"CR"] && [[self modality] isEqualToString: @"CR"] && [[NSUserDefaults standardUserDefaults] boolForKey:@"IndependentCRWLWW"])
+				if( [DCMView noPropagateSettingsInSeriesForModality: [vC modality]] && [DCMView noPropagateSettingsInSeriesForModality: [self modality]])
 				{
 				
 				}
@@ -13374,8 +13374,9 @@ int i,j,l;
 			{
 			//	if( [[vC modality] isEqualToString:[self modality]])	For PET CT, we have to sync this even if the modalities are not equal!
 				
-				if( [[vC modality] isEqualToString: @"CR"] && [[self modality] isEqualToString: @"CR"] && [[NSUserDefaults standardUserDefaults] boolForKey:@"IndependentCRWLWW"])
+				if( [DCMView noPropagateSettingsInSeriesForModality: [vC modality]] && [DCMView noPropagateSettingsInSeriesForModality: [self modality]])
 				{
+				
 				}
 				else
 				{
