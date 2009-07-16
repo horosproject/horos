@@ -8,7 +8,7 @@
 		<string key="IBDocument.HIToolboxVersion">353.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="536"/>
+			<integer value="369"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -22055,13 +22055,13 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 										<object class="NSButton" id="216806096">
 											<reference key="NSNextResponder" ref="996091986"/>
 											<int key="NSvFlags">256</int>
-											<string key="NSFrame">{{9, 36}, {201, 26}}</string>
+											<string key="NSFrame">{{9, 36}, {202, 26}}</string>
 											<reference key="NSSuperview" ref="996091986"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSButtonCell" key="NSCell" id="195534608">
 												<int key="NSCellFlags">67239424</int>
 												<int key="NSCellFlags2">131072</int>
-												<string key="NSContents">For CR, DR and RF, always:</string>
+												<string key="NSContents">For CR, DR, DX and RF:</string>
 												<reference key="NSSupport" ref="454940033"/>
 												<reference key="NSControlView" ref="216806096"/>
 												<int key="NSButtonFlags">1211912703</int>
@@ -22118,7 +22118,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 										<object class="NSMatrix" id="998533160">
 											<reference key="NSNextResponder" ref="996091986"/>
 											<int key="NSvFlags">256</int>
-											<string key="NSFrame">{{206, 40}, {160, 18}}</string>
+											<string key="NSFrame">{{185, 40}, {186, 18}}</string>
 											<reference key="NSSuperview" ref="996091986"/>
 											<bool key="NSEnabled">YES</bool>
 											<int key="NSNumRows">1</int>
@@ -22157,7 +22157,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 													<int key="NSPeriodicInterval">75</int>
 												</object>
 											</object>
-											<string key="NSCellSize">{79, 18}</string>
+											<string key="NSCellSize">{92, 18}</string>
 											<string key="NSIntercellSpacing">{2, 2}</string>
 											<int key="NSMatrixFlags">1143472128</int>
 											<string key="NSCellClass">NSActionCell</string>
@@ -24497,9 +24497,9 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
-					<string>{{557, 130}, {889, 726}}</string>
+					<string>{{157, 130}, {889, 726}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{557, 130}, {889, 726}}</string>
+					<string>{{157, 130}, {889, 726}}</string>
 					<reference ref="9"/>
 					<string>{{110, -136}, {893, 757}}</string>
 					<reference ref="8"/>
@@ -24619,7 +24619,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
-					<string>{{790, 127}, {241, 93}}</string>
+					<string>{{390, 127}, {217, 93}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
