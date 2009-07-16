@@ -1270,13 +1270,16 @@ extern int delayedTileWindows;
 - (BOOL) validateToolbarItem: (NSToolbarItem *) toolbarItem
 {
     // Optional method:  This message is sent to us since we are the target of some toolbar item actions 
-    // (for example:  of the save items action) 
+    // (for example:  of the save items action)
+	
     BOOL enable = YES;
- //   if ([[toolbarItem itemIdentifier] isEqual: ImportToolbarItemIdentifier]) {
-	// We will return YES (ie  the button is enabled) only when the document is dirty and needs saving 
-//	enable = YES;
- // }	
-    return enable;
+	
+	if ([[toolbarItem itemIdentifier] isEqual: SortSeriesToolbarItemIdentifier])
+	{
+		if( viewer)	enable = YES;
+	}	
+    
+	return enable;
 }
 
 - (void) expandAllItems: (id) sender
