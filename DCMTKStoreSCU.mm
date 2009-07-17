@@ -879,17 +879,6 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 
 @implementation DCMTKStoreSCU
 
-/************ Transfer Syntaxes *******************
-	@"Explicit Little Endian"  
-	@"JPEG 2000 Lossless" 
-	@"JPEG 2000 Lossy" 
-	@"JPEG Lossless"
-	@"JPEG Lossy"	
-	@"Implicit"
-	@"RLE"
-	@"Deflated"
-*************************************************/
-
 - (id) initWithCallingAET:(NSString *)myAET  
 			calledAET:(NSString *)theirAET  
 			hostname:(NSString *)hostname 

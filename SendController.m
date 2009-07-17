@@ -12,20 +12,6 @@
      PURPOSE.
 =========================================================================*/
 
-/************ Transfer Syntaxes *******************
-	@"Explicit Little Endian"  
-	@"JPEG 2000 Lossless" 
-	@"JPEG 2000 Lossy 10:1" 
-	@"JPEG 2000 Lossy 20:1"
-	@"JPEG 2000 Lossy 50:1"
-	@"JPEG Lossless"
-	@"JPEG High Quality (9)"	
-	@"JPEG Medium High Quality (8)"	
-	@"JPEG Medium Quality (7)"
-	@"Implicit"
-	@"RLE"
-*************************************************/
-
 #import "BrowserController.h"
 #import "SendController.h"
 #import "Wait.h"

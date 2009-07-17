@@ -8,7 +8,6 @@
 		<string key="IBDocument.HIToolboxVersion">353.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="441"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -38,7 +37,7 @@
 				<string key="NSWindowContentMaxSize">{3.40282e+38, 3.40282e+38}</string>
 				<string key="NSWindowContentMinSize">{224.663, 10}</string>
 				<object class="NSView" key="NSWindowView" id="778350391">
-					<reference key="NSNextResponder"/>
+					<nil key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<object class="NSMutableArray" key="NSSubviews">
 						<bool key="EncodedWithXMLCoder">YES</bool>
@@ -616,15 +615,17 @@
 																		<string key="NSKeyEquivalent"/>
 																		<int key="NSPeriodicDelay">400</int>
 																		<int key="NSPeriodicInterval">75</int>
-																		<object class="NSMenuItem" key="NSMenuItem" id="580922063">
+																		<object class="NSMenuItem" key="NSMenuItem" id="837659781">
 																			<reference key="NSMenu" ref="117698950"/>
-																			<string key="NSTitle">Explicit Little Endian</string>
+																			<string key="NSTitle">JPEG Lossy - Good Quality</string>
 																			<string key="NSKeyEquiv"/>
 																			<int key="NSKeyEquivModMask">1048576</int>
 																			<int key="NSMnemonicLoc">2147483647</int>
+																			<int key="NSState">1</int>
 																			<reference key="NSOnImage" ref="380501155"/>
 																			<reference key="NSMixedImage" ref="161796402"/>
 																			<string key="NSAction">_popUpItemAction:</string>
+																			<int key="NSTag">6</int>
 																			<reference key="NSTarget" ref="300701341"/>
 																		</object>
 																		<bool key="NSMenuItemRespectAlignment">YES</bool>
@@ -632,7 +633,17 @@
 																			<string key="NSTitle"/>
 																			<object class="NSMutableArray" key="NSMenuItems">
 																				<bool key="EncodedWithXMLCoder">YES</bool>
-																				<reference ref="580922063"/>
+																				<object class="NSMenuItem" id="580922063">
+																					<reference key="NSMenu" ref="117698950"/>
+																					<string key="NSTitle">Explicit Little Endian</string>
+																					<string key="NSKeyEquiv"/>
+																					<int key="NSKeyEquivModMask">1048576</int>
+																					<int key="NSMnemonicLoc">2147483647</int>
+																					<reference key="NSOnImage" ref="380501155"/>
+																					<reference key="NSMixedImage" ref="161796402"/>
+																					<string key="NSAction">_popUpItemAction:</string>
+																					<reference key="NSTarget" ref="300701341"/>
+																				</object>
 																				<object class="NSMenuItem" id="860274817">
 																					<reference key="NSMenu" ref="117698950"/>
 																					<string key="NSTitle">Implicit Little Endian</string>
@@ -731,18 +742,7 @@
 																					<int key="NSTag">5</int>
 																					<reference key="NSTarget" ref="300701341"/>
 																				</object>
-																				<object class="NSMenuItem" id="837659781">
-																					<reference key="NSMenu" ref="117698950"/>
-																					<string key="NSTitle">JPEG Lossy - High Quality</string>
-																					<string key="NSKeyEquiv"/>
-																					<int key="NSKeyEquivModMask">1048576</int>
-																					<int key="NSMnemonicLoc">2147483647</int>
-																					<reference key="NSOnImage" ref="380501155"/>
-																					<reference key="NSMixedImage" ref="161796402"/>
-																					<string key="NSAction">_popUpItemAction:</string>
-																					<int key="NSTag">6</int>
-																					<reference key="NSTarget" ref="300701341"/>
-																				</object>
+																				<reference ref="837659781"/>
 																				<object class="NSMenuItem" id="400140940">
 																					<reference key="NSMenu" ref="117698950"/>
 																					<string key="NSTitle">JPEG Lossy - Medium Quality</string>
@@ -794,6 +794,7 @@
 																				</object>
 																			</object>
 																		</object>
+																		<int key="NSSelectedIndex">9</int>
 																		<int key="NSPreferredEdge">3</int>
 																		<bool key="NSUsesItemFromMenu">YES</bool>
 																		<bool key="NSAltersState">YES</bool>
@@ -835,7 +836,6 @@
 													</object>
 													<string key="NSFrame">{{1, 17}, {644, 87}}</string>
 													<reference key="NSSuperview" ref="23618400"/>
-													<reference key="NSNextKeyView" ref="42370160"/>
 													<reference key="NSDocView" ref="42370160"/>
 													<reference key="NSBGColor" ref="49564343"/>
 													<int key="NScvFlags">4</int>
@@ -868,7 +868,6 @@
 													</object>
 													<string key="NSFrame">{{1, 0}, {644, 17}}</string>
 													<reference key="NSSuperview" ref="23618400"/>
-													<reference key="NSNextKeyView" ref="1006382496"/>
 													<reference key="NSDocView" ref="1006382496"/>
 													<reference key="NSBGColor" ref="49564343"/>
 													<int key="NScvFlags">4</int>
@@ -877,7 +876,6 @@
 											</object>
 											<string key="NSFrame">{{14, 165}, {661, 120}}</string>
 											<reference key="NSSuperview" ref="780474503"/>
-											<reference key="NSNextKeyView" ref="843396249"/>
 											<int key="NSsFlags">50</int>
 											<reference key="NSVScroller" ref="977052346"/>
 											<reference key="NSHScroller" ref="464887026"/>
@@ -1323,7 +1321,6 @@ A</string>
 													</object>
 													<string key="NSFrame">{{1, 17}, {644, 87}}</string>
 													<reference key="NSSuperview" ref="296148898"/>
-													<reference key="NSNextKeyView" ref="735346347"/>
 													<reference key="NSDocView" ref="735346347"/>
 													<reference key="NSBGColor" ref="49564343"/>
 													<int key="NScvFlags">4</int>
@@ -1356,7 +1353,6 @@ A</string>
 													</object>
 													<string key="NSFrame">{{1, 0}, {644, 17}}</string>
 													<reference key="NSSuperview" ref="296148898"/>
-													<reference key="NSNextKeyView" ref="935769667"/>
 													<reference key="NSDocView" ref="935769667"/>
 													<reference key="NSBGColor" ref="49564343"/>
 													<int key="NScvFlags">4</int>
@@ -1365,7 +1361,6 @@ A</string>
 											</object>
 											<string key="NSFrame">{{14, 64}, {661, 120}}</string>
 											<reference key="NSSuperview" ref="671672400"/>
-											<reference key="NSNextKeyView" ref="943190487"/>
 											<int key="NSsFlags">50</int>
 											<reference key="NSVScroller" ref="309033452"/>
 											<reference key="NSHScroller" ref="641724822"/>
@@ -1663,7 +1658,6 @@ A</string>
 													</object>
 													<string key="NSFrame">{{1, 17}, {644, 87}}</string>
 													<reference key="NSSuperview" ref="915818956"/>
-													<reference key="NSNextKeyView" ref="306962159"/>
 													<reference key="NSDocView" ref="306962159"/>
 													<reference key="NSBGColor" ref="49564343"/>
 													<int key="NScvFlags">4</int>
@@ -1696,7 +1690,6 @@ A</string>
 													</object>
 													<string key="NSFrame">{{1, 0}, {644, 17}}</string>
 													<reference key="NSSuperview" ref="915818956"/>
-													<reference key="NSNextKeyView" ref="438106230"/>
 													<reference key="NSDocView" ref="438106230"/>
 													<reference key="NSBGColor" ref="49564343"/>
 													<int key="NScvFlags">4</int>
@@ -1705,7 +1698,6 @@ A</string>
 											</object>
 											<string key="NSFrame">{{14, 34}, {661, 120}}</string>
 											<reference key="NSSuperview" ref="198216807"/>
-											<reference key="NSNextKeyView" ref="325696444"/>
 											<int key="NSsFlags">50</int>
 											<reference key="NSVScroller" ref="485523936"/>
 											<reference key="NSHScroller" ref="457419642"/>
@@ -1762,7 +1754,6 @@ A</string>
 						</object>
 					</object>
 					<string key="NSFrameSize">{729, 763}</string>
-					<reference key="NSSuperview"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {2560, 1578}}</string>
 				<string key="NSMinSize">{224.663, 32}</string>
@@ -4291,9 +4282,9 @@ A</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
-					<string>{{1211, 184}, {729, 763}}</string>
+					<string>{{126, 93}, {729, 763}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{1211, 184}, {729, 763}}</string>
+					<string>{{126, 93}, {729, 763}}</string>
 					<reference ref="9"/>
 					<string>{{744, 378}, {729, 738}}</string>
 					<integer value="0"/>
@@ -4415,7 +4406,7 @@ A</string>
 					<reference ref="9"/>
 					<reference ref="9"/>
 					<reference ref="9"/>
-					<string>{{1234, 678}, {644, 220}}</string>
+					<string>{{149, 587}, {644, 220}}</string>
 					<reference ref="9"/>
 					<reference ref="9"/>
 					<reference ref="9"/>
