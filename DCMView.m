@@ -4326,7 +4326,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					
 					if( change > 0)
 					{
-						if( [DefaultsOsiriX isHUG])
+						if( [PluginManager isComPACS])
 							change = 1;
 						else if( change < 1)
 							change = 1;
@@ -4336,7 +4336,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					}
 					else
 					{
-						if( [DefaultsOsiriX isHUG])
+						if( [PluginManager isComPACS])
 							change = -1;
 						else if( change > -1)
 							change = -1;

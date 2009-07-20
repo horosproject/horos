@@ -28,10 +28,25 @@ static NSMutableArray			*preProcessPlugins = nil;
 static NSMenu					*fusionPluginsMenu = nil;
 static NSMutableArray			*fusionPlugins = nil;
 static NSMutableDictionary		*pluginsNames = nil;
+static BOOL						ComPACSTested = NO, isComPACS = NO;
 
 @implementation PluginManager
 
 @synthesize downloadQueue;
+
++ (BOOL) isComPACS
+{
+	if( ComPACSTested == NO)
+	{
+		ComPACSTested = YES;
+		
+		if( [[PluginManager plugins] valueForKey:@"ComPACS"])
+			isComPACS = YES;
+		else
+			isComPACS = NO;
+	}
+	return isComPACS;
+}
 
 + (NSMutableDictionary*) plugins
 {

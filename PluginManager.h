@@ -38,6 +38,7 @@
 + (NSString*) pathResolved:(NSString*) inPath;
 + (void)discoverPlugins;
 + (void) setMenus:(NSMenu*) filtersMenu :(NSMenu*) roisMenu :(NSMenu*) othersMenu :(NSMenu*) dbMenu;
++ (BOOL) isComPACS;
 
 + (NSString*)activePluginsDirectoryPath;
 + (NSString*)inactivePluginsDirectoryPath;
