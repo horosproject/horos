@@ -4326,15 +4326,21 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					
 					if( change > 0)
 					{
-						change = 1;
+						if( [DefaultsOsiriX isHUG])
+							change = 1;
+						else if( change < 1)
+							change = 1;
 						
 						inc = _imageRows * _imageColumns * change;
 						curImage += inc;
 					}
 					else
 					{
-						change = -1;
-						
+						if( [DefaultsOsiriX isHUG])
+							change = -1;
+						else if( change > -1)
+							change = -1;
+							
 						inc = _imageRows * _imageColumns * change;
 						curImage += inc;
 					}
