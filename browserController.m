@@ -5730,7 +5730,7 @@ static NSArray*	statesArray = nil;
 	
 	if( result == NSAlertOtherReturn)	// REMOVE FROM CURRENT ALBUMS, BUT DONT DELETE IT FROM THE DATABASE
 	{
-		NSIndexSet		*selectedRows = [databaseOutline selectedRowIndexes];
+		NSIndexSet *selectedRows = [databaseOutline selectedRowIndexes];
 		
 		if( [databaseOutline selectedRow] >= 0 )
 		{			
@@ -5741,13 +5741,13 @@ static NSArray*	statesArray = nil;
 			{
 				NSInteger row = ( x == 0 ) ? [selectedRows firstIndex] : [selectedRows indexGreaterThanIndex: row];
 				
-				NSManagedObject	*study = [databaseOutline itemAtRow: row];
+				NSManagedObject *study = [databaseOutline itemAtRow: row];
 				
 				if( [[study valueForKey:@"type"] isEqualToString: @"Study"] )
 				{
 					[studiesToRemove addObject: study];
 					
-					NSMutableSet	*studies = [album mutableSetValueForKey: @"studies"];
+					NSMutableSet *studies = [album mutableSetValueForKey: @"studies"];
 					[studies removeObject: study];
 				}
 			}
@@ -12501,6 +12501,19 @@ static NSArray*	openSubSeriesArray = nil;
 	else if( [menuItem action] == @selector( delItem:))
 	{
 		if( isCurrentDatabaseBonjour) return NO;
+		
+		BOOL matrixThumbnails = YES;
+		
+		if( menuItem.menu == [oMatrix menu] || [[self window] firstResponder] == oMatrix)
+			matrixThumbnails = YES;
+			
+		if( menuItem.menu == [databaseOutline menu] || [[self window] firstResponder] == databaseOutline)
+			matrixThumbnails = NO;
+		
+		if( matrixThumbnails)
+			[menuItem setTitle: NSLocalizedString( @"Delete Selected Series Thumbnails", nil)];
+		else
+			[menuItem setTitle: NSLocalizedString( @"Delete Selected Lines", nil)];
 	}
 	else if( [menuItem action] == @selector( mergeStudies:))
 	{
