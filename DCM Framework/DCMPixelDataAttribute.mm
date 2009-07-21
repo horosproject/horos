@@ -1613,7 +1613,7 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 		int image_height = _rows;
 		int sample_pixel = _samplesPerPixel;
 		int bitsallocated = [[_dcmObject attributeValueWithName:@"BitsAllocated"] intValue];
-		int bitsstored = [[_dcmObject attributeValueWithName:@"BitsStored"] intValue];
+		int bitsstored = [[_dcmObject attributeValueWithName:@"BitsAllocated"] intValue]; //[[_dcmObject attributeValueWithName:@"BitsStored"] intValue];
 		DCMAttributeTag *signedTag = [DCMAttributeTag tagWithName:@"PixelRepresentation"];
 		DCMAttribute *signedAttr = [[_dcmObject attributes] objectForKey:[signedTag stringValue]];
 		BOOL sign = [[signedAttr value] boolValue];

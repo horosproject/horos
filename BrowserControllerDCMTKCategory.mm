@@ -122,6 +122,8 @@ extern NSRecursiveLock *PapyrusLock;
 //		NSLog( @"dcmObject writeToFile failed: %@", e);
 //	}
 //	[dcmObject release];
+//	
+//	return YES;
 
 // ********
 
