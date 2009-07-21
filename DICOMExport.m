@@ -60,7 +60,7 @@
 		
 		ww = wl = -1;
 		
-		exportInstanceNumber = 0;
+		exportInstanceNumber = 1;
 		exportSeriesNumber = 5000;
 		
 		DCMObject *dcmObject = [[[DCMObject alloc] init] autorelease];
@@ -495,6 +495,7 @@
 			if( contentTime) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:contentTime] forName:@"ContentTime"];
 			
 			[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt:exportInstanceNumber++]] forName:@"InstanceNumber"];
+			[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt: 1]] forName:@"AcquisitionNumber"];
 			
 			[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:rows] forName:@"Rows"];
 			[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:columns] forName:@"Columns"];
