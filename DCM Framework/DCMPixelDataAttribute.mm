@@ -1063,8 +1063,6 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 		else if (quality == DCMLowQuality)
 			q = 70;
 		
-		_min = 0;
-		_max = 0;
 		for ( NSMutableData *data in values )
 		{
 			NSMutableData *newData;
@@ -1561,7 +1559,7 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 
 - (NSMutableData *)encodeJPEG2000:(NSMutableData *)data quality:(int)quality
 {
-	if( UseOpenJpeg == YES || quality != DCMLosslessQuality)	//Jasper doesn't understand the rate=0.05 parameter.... strange! Switch to openjpeg if a rate is selected
+	if( UseOpenJpeg == YES)
 	{
 		opj_cparameters_t parameters;
 		opj_event_mgr_t event_mgr;
@@ -1613,14 +1611,38 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 		int image_height = _rows;
 		int sample_pixel = _samplesPerPixel;
 		int bitsallocated = [[_dcmObject attributeValueWithName:@"BitsAllocated"] intValue];
-		int bitsstored = [[_dcmObject attributeValueWithName:@"BitsAllocated"] intValue]; //[[_dcmObject attributeValueWithName:@"BitsStored"] intValue];
+		int bitsstored = bitsallocated;
+		
+		if( bitsallocated >= 16)
+		{
+			[self findMinAndMax: data];
+			
+			int amplitude = _max;
+			
+			int bits = 1, value = 2;
+			
+			while( value < amplitude)
+			{
+				value *= 2;
+				bits++;
+			}
+			
+			if( bits < 10)
+				bits = 10;
+			else if( bits < 12)
+				bits = 12;
+			else if( bits < 16)
+				bits = 16;
+			
+			NSLog( @"%d", bits);
+			
+			bitsstored = bits;
+		}
+		
 		DCMAttributeTag *signedTag = [DCMAttributeTag tagWithName:@"PixelRepresentation"];
 		DCMAttribute *signedAttr = [[_dcmObject attributes] objectForKey:[signedTag stringValue]];
 		BOOL sign = [[signedAttr value] boolValue];
-//		DCMAttributeTag *tag = [DCMAttributeTag tagWithName:@"PlanarConfiguration"];
-//		DCMAttribute *attr = [_dcmObject attributeForTag:(DCMAttributeTag *)tag];
-//		int pc = [[attr value] intValue];
-	
+		
 		image = rawtoimage( (char*) [data bytes], &parameters,  static_cast<int>( [data length]),  image_width, image_height, sample_pixel, bitsallocated, bitsstored, sign, quality, 0);
 		
 		parameters.cod_format = 0; /* J2K format output */
@@ -1676,6 +1698,33 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 		int height = _rows;
 		int spp = _samplesPerPixel;
 		int prec = [[_dcmObject attributeValueWithName:@"BitsAllocated"] intValue];
+		
+		if( prec >= 16)
+		{
+			[self findMinAndMax: data];
+			
+			int amplitude = _max;
+			
+			int bits = 1, value = 2;
+			
+			while( value < amplitude)
+			{
+				value *= 2;
+				bits++;
+			}
+			
+			if( bits < 10)
+				bits = 10;
+			else if( bits < 12)
+				bits = 12;
+			else if( bits < 16)
+				bits = 16;
+			
+			NSLog( @"%d", bits);
+			
+			prec = bits;
+		}
+		
 		DCMAttributeTag *signedTag = [DCMAttributeTag tagWithName:@"PixelRepresentation"];
 		DCMAttribute *signedAttr = [[_dcmObject attributes] objectForKey:[signedTag stringValue]];
 		BOOL sgnd = [[signedAttr value] boolValue];
@@ -1798,7 +1847,29 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 		}  // y
 		//done  reading data	
 		
-		char *optstr = nil;
+		char optstr[ 128] = "";
+		
+		switch( quality)
+		{
+			case DCMLosslessQuality:
+			break;
+				
+			case DCMHighQuality:
+				strcpy( optstr, "rate=0.25");
+			break;
+				
+			case DCMMediumQuality:
+				strcpy( optstr, "rate=0.12");
+			break;
+				
+			case DCMLowQuality:
+				strcpy( optstr, "rate=0.0625");
+			break;
+				
+			default:
+				NSLog( @"****** warning unknown compression rate -> lossless : %d", quality);
+			break;
+		}
 		
 		long theLength = [data length];
 		unsigned char *outBuffer = (unsigned char *) malloc( theLength);
@@ -2342,84 +2413,41 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 	else if (_pixelDepth <= 16)
 		length = [data length]/2;
 	else
-		length = [data length] / 4;
+		length = [data length]/4;
 		
 	float *fBuffer = (float*) malloc(length * 4);
-	if (_pixelDepth <= 8) {
-		unsigned char *buffer = (unsigned char *)[data bytes];
-		while (i < length) {
-			fBuffer[i] = (float)buffer[i];
-			i++;
-		}
-	}
-	else if (_pixelDepth <= 16 && (isSigned || _isSigned)) {
-		signed short  *buffer = (signed short *)[data bytes];
-		while (i < length) {
-			fBuffer[i] = (float)buffer[i];
-			i++;
-		}
-	}
-	else if (_pixelDepth <= 16) {
-		unsigned short  *buffer = (unsigned short  *)[data bytes];
-		while (i < length){
-			fBuffer[i] = (float)buffer[i];
-			i++;
-		}
-	}
-//	else
-//		int *buffer = (int *) [data bytes];
+	if( fBuffer)
+	{
+		vImage_Buffer src, dstf;
+		dstf.height = src.height = _rows;
+		dstf.width = src.width = _columns;
+		dstf.rowBytes = _columns*sizeof(float);
+		dstf.data = fBuffer;
+		src.data = (void*) [data bytes];
 		
-	vDSP_minv (fBuffer, 1, &min, length);
-	vDSP_maxv (fBuffer, 1, &max, length);
-	NSLog(@"vmax: %f vmin: %f", max, min);
-	
-	free(fBuffer);
-
-	/*
-	if (_pixelDepth <= 8) {
-		_max = 255;
-		_min = 0;
-	}
-	else  {
-	
-		if ((_min == 0) && (_max == 0)) {
-			if (isSigned || _isSigned) {				
-				signed short *buffer = (signed short *)[data bytes];
-				signed short value;
-				length = [data length]/ 2;
-				_min = 32768;
-				_max = -32767;
-				for (i= 0; i < length; i++) {
-					value = buffer[i];
-					if (value < _min) {
-						//NSLog(@"New min: %d old min: %d i: %d x: %d  y: %d", value, _min, i, i/256, i%256);
-						_min = value;
-					}
-					if (value > _max)
-						_max = value;
-					
-				}
-			}
-			else {
-				_max = 0;
-				_min = 65535;
-				unsigned short *buffer = (unsigned short *)[data bytes];
-				unsigned short value;
-				length = [data length]/ 2;
-				for (i = 0; i < length; i++) {
-					value = buffer[i];
-					if (value < _min)
-						_min = value;
-					if (value > _max)
-						_max = value;
-					
-				}
-			}
+		if (_pixelDepth <= 8)
+		{
+			src.rowBytes = _columns;
+			vImageConvert_Planar8toPlanarF( &src, &dstf, 0, 1, 0);
 		}
+		else if (_pixelDepth <= 16)
+		{
+			src.rowBytes = _columns * 2;
+			
+			if( isSigned)
+				vImageConvert_16SToF( &src, &dstf, 0, 1, 0);
+			else
+				vImageConvert_16UToF( &src, &dstf, 0, 1, 0);
+		}
+		
+		vDSP_minv( fBuffer, 1, &min, length);
+		vDSP_maxv( fBuffer, 1, &max, length);
+		
+		_min = min;
+		_max = max;
+		
+		free(fBuffer);
 	}
-	*/
-	if (DCMDEBUG)
-		NSLog(@"min %d max %d", _min, _max);
 }
 
 - (NSData *)convertPaletteToRGB:(NSData *)data
@@ -3169,11 +3197,10 @@ NS_ENDHANDLER
 	}
 	else if( _pixelDepth == 32)
 	{
-		unsigned int	*uslong = (unsigned int*) [data bytes];
-		int				*slong = (int*) [data bytes];
+		unsigned int *uslong = (unsigned int*) [data bytes];
+		int	 *slong = (int*) [data bytes];
 		floatData = [NSMutableData dataWithLength:[data length]];
-		float			*tDestF = (float *)[floatData mutableBytes];
-	
+		float *tDestF = (float *)[floatData mutableBytes];
 		
 		if(_isSigned)
 		{

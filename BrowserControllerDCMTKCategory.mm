@@ -115,7 +115,7 @@ extern NSRecursiveLock *PapyrusLock;
 //	@try
 //	{
 //		DCMTransferSyntax *tsx = [DCMTransferSyntax JPEG2000LosslessTransferSyntax];
-//		succeed = [dcmObject writeToFile: [[paths lastObject] stringByAppendingString:@"aa.dcm"] withTransferSyntax: tsx quality: 2 AET:@"OsiriX" atomically:YES];
+//		succeed = [dcmObject writeToFile: [[paths lastObject] stringByAppendingString:@"aa.dcm"] withTransferSyntax: tsx quality: 1 AET:@"OsiriX" atomically:YES];
 //	}
 //	@catch (NSException *e)
 //	{

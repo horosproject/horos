@@ -492,10 +492,8 @@ jpeg12_NSData_dest (j_compress_ptr cinfo, NSMutableData *aData)
 			[self findMinAndMax:data];
 			if (_min < 0) 
 				[self encodeRescale:data WithRescaleIntercept:_min];
-			NSLog(@"min %d", _min);
 		}
 		else {
-			NSLog(@"CT");
 			[self encodeRescale:data WithPixelDepth:12];
 		}
 	}
