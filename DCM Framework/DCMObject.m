@@ -1527,16 +1527,21 @@ PixelRepresentation
 	NSMutableArray *mutableKeys = [NSMutableArray arrayWithArray:[attributes allKeys]];
 	NSArray *sortedKeys = [mutableKeys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
 
-	for ( NSString *key in sortedKeys ) {
+	for ( NSString *key in sortedKeys)
+	{
 		//if (DCMDEBUG)
 		//	NSLog(@"key:%@ %@", key, NSStringFromClass([key class]));
 		DCMAttribute *attr = [attributes objectForKey:key];
-		if (attr) {
+		if (attr)
+		{
 			//skip metaheader for dataset
-			if ( attr.attrTag.group == 0x0002 ) {
-				if ( flag ) {
+			if ( attr.attrTag.group == 0x0002)
+			{
+				if ( flag)
+				{
 					[container setUseMetaheaderTS:YES];
-					if (![attr writeToDataContainer:container withTransferSyntax:explicitTS]) {
+					if (![attr writeToDataContainer:container withTransferSyntax:explicitTS])
+					{
 						exception = [NSException exceptionWithName:@"DCMWriteDataError" reason:[NSString stringWithFormat:@"Cannot write %@ to data", [attr description]] userInfo:nil];
 						[exception raise];
 					}

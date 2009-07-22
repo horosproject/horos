@@ -1634,8 +1634,6 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 			else if( bits < 16)
 				bits = 16;
 			
-			NSLog( @"%d", bits);
-			
 			bitsstored = bits;
 		}
 		
@@ -1719,8 +1717,6 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 				bits = 12;
 			else if( bits < 16)
 				bits = 16;
-			
-			NSLog( @"%d", bits);
 			
 			prec = bits;
 		}

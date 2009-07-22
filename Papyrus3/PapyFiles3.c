@@ -1340,11 +1340,13 @@ Papy3SkipNextGroup (PapyShort inFileNb)
 		/* if (theTempL != 4L) RETURN (papElemSize); this is to let pass little endian impl gr2 files */
 		theGrLength = Extract4Bytes (inFileNb, theBuff, &i);
 
-		//	if( theGrLength <= 0)
+//		if( theGrLength <= 0)
 		{
 			theErr = Papy3FSeek (theFp, (int) SEEK_CUR, (PapyLong) - kLength_length);
 			theGrLength = ComputeUndefinedGroupLength3 (inFileNb, -1L);
 		}
+//		else
+//			theGrLength += 12;
 	} /* if ...extract group length from buffer */
 
 	/* else the group length element not here compute it */
@@ -1913,8 +1915,8 @@ ComputeUndefinedItemLength3 (PapyShort inFileNb, PapyULong *ioItemLengthP)
         i = 4L;
         if (Papy3FRead (gPapyFile [inFileNb], &i, 1L, theBuffP) < 0)
         {
-	  Papy3FClose (&(gPapyFile [inFileNb]));
-	  RETURN (papReadFile)
+			Papy3FClose (&(gPapyFile [inFileNb]));
+			RETURN (papReadFile)
         } /* if */
         *ioItemLengthP += 4L;
         theBufPos = 0L;
@@ -2124,6 +2126,9 @@ ComputeUndefinedGroupLength3 (PapyShort inFileNb, PapyLong inMaxSize)
   theGrNb       = Extract2Bytes (inFileNb, theBuffP, &theBufPos);
   theElemNb     = Extract2Bytes (inFileNb, theBuffP, &theBufPos);
   
+// if( theGrNb == 0x2005)
+//	 OK = TRUE;
+//	
   /* set some comparison variables */
   theCmpGrNb   	= theGrNb;
   theCmpElemNb 	= theElemNb;
