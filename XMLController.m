@@ -471,9 +471,19 @@ extern int delayedTileWindows;
 	}
 	else
 	{
-		NSXMLElement *rootElement = [[NSXMLElement alloc] initWithName:@"Unsupported Meta-Data"];
-		xmlDocument = [[NSXMLDocument alloc] initWithRootElement:rootElement];
-		[rootElement release];
+		DCMObject *dcmObject = [DCMObject objectWithContentsOfFile:srcFile decodingPixelData:NO];
+		
+		if( dcmObject)
+		{
+			xmlDocument = [[dcmObject xmlDocument] retain];
+			isDICOM = YES;
+		}
+		else
+		{
+			NSXMLElement *rootElement = [[NSXMLElement alloc] initWithName:@"Unsupported Meta-Data"];
+			xmlDocument = [[NSXMLDocument alloc] initWithRootElement:rootElement];
+			[rootElement release];
+		}
 	}
 	
 	[table reloadData];

@@ -1263,18 +1263,18 @@ struct cachedGroupStruct
 {
 	int group;
 	int length;
+//	PapyLong position;
 };
 typedef struct cachedGroupStruct cachedGroupStruct;
 
 PapyShort CALLINGCONV
 Papy3SkipNextGroup (PapyShort inFileNb)
 {
-	PAPY_FILE		theFp;
-	unsigned char	theBuff [kLength_length];
-	PapyULong		i;
-	PapyULong		theGrLength, theTempL;
-	PapyUShort	theTempS, theGrNb;
-	int			theErr;
+	PAPY_FILE theFp;
+	unsigned char theBuff [kLength_length];
+	PapyULong i, theGrLength, theTempL;
+	PapyUShort theTempS, theGrNb;
+	int	theErr;
 	
 	theFp = gPapyFile[ inFileNb];
 	
@@ -1288,6 +1288,9 @@ Papy3SkipNextGroup (PapyShort inFileNb)
 		cachedGroup[0].length = 0;
 		cachedGroup[0].group = 0;
 	}
+	
+//	PapyLong currentPosition;
+//	theErr = Papy3FTell ((PAPY_FILE) gPapyFile [inFileNb], (PapyLong *) &currentPosition);
 	
 	i = kLength_length;
 	if ((theErr = (PapyShort) Papy3FRead (theFp, &i, 1L, theBuff)) < 0)
@@ -1372,12 +1375,15 @@ Papy3SkipNextGroup (PapyShort inFileNb)
 		printf("error theGrLength <= 0 : %d, %s\r", theGrLength, gPapyFilePath[ inFileNb]);
 		RETURN ( -1);
 	}
-	/* sets the file pointer at the begining of the next group */
-	if (Papy3FSeek (theFp, (int) SEEK_CUR, (PapyLong) theGrLength) != 0)
-		RETURN (papPositioning);
 	
 	cachedGroup[ z].group = theGrNb;
 	cachedGroup[ z].length = theGrLength;
+	
+//	theErr = Papy3FTell ((PAPY_FILE) gPapyFile [inFileNb], (PapyLong *) &cachedGroup[ z].position);
+	
+	/* sets the file pointer at the begining of the next group */
+	if (Papy3FSeek (theFp, (int) SEEK_CUR, (PapyLong) theGrLength) != 0)
+		RETURN (papPositioning);
 	
 	cachedGroup[ z+1].group = 0;
 	cachedGroup[ z+1].length = 0;
@@ -1434,7 +1440,7 @@ Papy3GotoGroupNb (PapyShort inFileNb, PapyShort inGroupNb)
       Papy3FSeek (gPapyFile [inFileNb], (int) SEEK_SET, (PapyLong) theStartPos);
       RETURN (theErr);
     } /* if */
-      
+	
     theLastGroupNb = theCurrGroupNb;
     theCurrGroupNb = Papy3GetNextGroupNb (inFileNb);
     if (theCurrGroupNb < 0)
@@ -1934,7 +1940,7 @@ ComputeUndefinedItemLength3 (PapyShort inFileNb, PapyULong *ioItemLengthP)
       {
         /* restore the previous file position */
         if ((theGrNb == 0x0002 || gArrTransfSyntax [inFileNb] == LITTLE_ENDIAN_EXPL || gArrTransfSyntax [inFileNb] == BIG_ENDIAN_EXPL) &&
-            (strcmp (theVR, "SQ") == 0 || strcmp (theVR, "OB") == 0 || strcmp (theVR, "OW") == 0))
+            (strcmp (theVR, "SQ") == 0 || strcmp (theVR, "OB") == 0 || strcmp (theVR, "OW") == 0 || strcmp (theVR, "UN") == 0 || strcmp (theVR, "UT") == 0))
         {
           Papy3FSeek (gPapyFile [inFileNb], (int) SEEK_CUR, (PapyLong) -12L);
           *ioItemLengthP -= 12L;
@@ -2126,9 +2132,6 @@ ComputeUndefinedGroupLength3 (PapyShort inFileNb, PapyLong inMaxSize)
   theGrNb       = Extract2Bytes (inFileNb, theBuffP, &theBufPos);
   theElemNb     = Extract2Bytes (inFileNb, theBuffP, &theBufPos);
   
-// if( theGrNb == 0x2005)
-//	 OK = TRUE;
-//	
   /* set some comparison variables */
   theCmpGrNb   	= theGrNb;
   theCmpElemNb 	= theElemNb;
