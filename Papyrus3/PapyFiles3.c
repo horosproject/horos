@@ -1940,7 +1940,11 @@ ComputeUndefinedItemLength3 (PapyShort inFileNb, PapyULong *ioItemLengthP)
       {
         /* restore the previous file position */
         if ((theGrNb == 0x0002 || gArrTransfSyntax [inFileNb] == LITTLE_ENDIAN_EXPL || gArrTransfSyntax [inFileNb] == BIG_ENDIAN_EXPL) &&
-            (strcmp (theVR, "SQ") == 0 || strcmp (theVR, "OB") == 0 || strcmp (theVR, "OW") == 0 || strcmp (theVR, "UN") == 0 || strcmp (theVR, "UT") == 0))
+            ((theVR[0] == 'O' && theVR[1] == 'B') ||
+			(theVR[0] == 'O' && theVR[1] == 'W') || 
+			(theVR[0] == 'S' && theVR[1] == 'Q') || 
+			(theVR[0] == 'U' && theVR[1] == 'N') || 
+			(theVR[0] == 'U' && theVR[1] == 'T')))
         {
           Papy3FSeek (gPapyFile [inFileNb], (int) SEEK_CUR, (PapyLong) -12L);
           *ioItemLengthP -= 12L;
