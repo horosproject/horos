@@ -8045,9 +8045,13 @@ static BOOL withReset = NO;
 				if( dcmPix)
 				{
 					NSImage *thumbnail = [dcmPix generateThumbnailImageWithWW:0 WL:0];
-					NSData *data = [BrowserController produceJPEGThumbnail: thumbnail];
 					
-					if( thumbnail && data) [series setValue: data forKey:@"thumbnail"];
+					if( dcmPix.notAbleToLoadImage == NO)
+					{
+						NSData *data = [BrowserController produceJPEGThumbnail: thumbnail];
+						if( thumbnail && data) [series setValue: data forKey:@"thumbnail"];
+					}
+					
 					[dcmPix release];
 				}
 				
@@ -8291,7 +8295,7 @@ static BOOL withReset = NO;
 					thumbnail = [dcmPix generateThumbnailImageWithWW:0 WL:0];
 					[dcmPix revert];	// <- Kill the raw data
 					
-					if( thumbnail == nil) thumbnail = notFoundImage;
+					if( thumbnail == nil || dcmPix.notAbleToLoadImage == YES) thumbnail = notFoundImage;
 					
 					[ipreviewPixThumbnails replaceObjectAtIndex: i withObject: thumbnail];
 				}
@@ -11698,7 +11702,6 @@ static NSArray*	openSubSeriesArray = nil;
 		standardOsiriXIcon = [[NSImage imageNamed:@"Osirix.icns"] retain];
 		
 		notFoundImage = [[NSImage imageNamed:@"FileNotFound.tif"] retain];
-		//		notFoundDataThumbnail = [[BrowserController produceJPEGThumbnail: notFound] retain];
 		
 		bonjourReportFilesToCheck = [[NSMutableDictionary dictionary] retain];
 		

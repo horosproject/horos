@@ -1553,11 +1553,11 @@ PixelRepresentation
 				
 				DCMTransferSyntax *tts = ts;
 				
-//				if( [attr isKindOfClass:[DCMSequenceAttribute class]] && [attr.attrTag isPrivate] == YES)	//We will NOT write unknown & private sequence group... To avoid JPEG2000 compression bug
-//				{
-//					
-//				}
-//				else
+				if( [attr isKindOfClass:[DCMSequenceAttribute class]] && [attr.attrTag isPrivate] == YES)	//We will NOT write unknown & private sequence group... To avoid JPEG2000 decompression bug that DCM Framework creates for unknown SQ.
+				{
+					
+				}
+				else
 				if (![attr writeToDataContainer:container withTransferSyntax: tts])
 				{
 					exception = [NSException exceptionWithName:@"DCMWriteDataError" reason:[NSString stringWithFormat:@"Cannot write %@ to data with syntax:%@", [attr description], [ts transferSyntax]] userInfo:nil];

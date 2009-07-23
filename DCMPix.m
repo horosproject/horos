@@ -1132,7 +1132,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 @implementation DCMPix
 
 @synthesize countstackMean, stackDirection, full32bitPipeline, needToCompute8bitRepresentation, subtractedfImage;
-@synthesize frameNo;
+@synthesize frameNo, notAbleToLoadImage;
 @synthesize minValueOfSeries, maxValueOfSeries;
 @synthesize isRGB, pwidth = width, pheight = height;
 @synthesize pixelRatio, transferFunction, subPixOffset, isOriginDefined;
@@ -9307,8 +9307,10 @@ END_CREATE_ROIS:
 			width = 128;
 			oImage = nil;
 			isRGB = NO;
+			notAbleToLoadImage = YES;
 			
-			for( long i = 0; i < 128*128; i++ ) fImage[ i ] = i;
+			for( long i = 0; i < 128*128; i++)
+				fImage[ i ] = i;
 		}
 		
 		if( isRGB)	// COMPUTE ALPHA MASK = ALPHA = R+G+B/3

@@ -162,7 +162,7 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 	NSString			*generatedName;
 	NSLock				*checking;
 	
-	BOOL				useVOILUT;
+	BOOL				useVOILUT, notAbleToLoadImage;
 	int					VOILUT_first;
 	unsigned int		VOILUT_number, VOILUT_depth, *VOILUT_table;
 	
@@ -210,6 +210,7 @@ Note setter is different to not break existing usage. :-( */
 @property float savedWW, savedWL, *subtractedfImage;
 
 @property(readonly) float slope, offset;
+@property(readonly) BOOL notAbleToLoadImage;
 
 /**  X/Y ratio - non-square pixels */
 @property double pixelRatio;
