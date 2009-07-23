@@ -11567,8 +11567,6 @@ static NSArray*	openSubSeriesArray = nil;
 
 }
 
-
-
 + (unsigned int)_currentModifierFlags
 {
     unsigned int flags = 0;
@@ -11587,7 +11585,7 @@ static NSArray*	openSubSeriesArray = nil;
 
 // For the DB: fullscreen is equivalent to 'go to the search field'
 
-- (IBAction)fullScreenMenu: (id)sender
+- (IBAction) searchField: (id)sender
 {
 	// Is the item available in the toolbar?
 	NSArray	*visibleItems = [toolbar visibleItems];
@@ -12415,6 +12413,14 @@ static NSArray*	openSubSeriesArray = nil;
 	if ( menuItem.menu == imageTileMenu )
 	{
 		return [mainWindow.windowController isKindOfClass:[ViewerController class]];
+	}
+	else if( [menuItem action] == @selector( unifyStudies:))
+	{
+		if( isCurrentDatabaseBonjour) return NO;
+		
+		if( [[databaseOutline selectedRowIndexes] count] <= 1) return NO;
+		
+		return YES;
 	}
 	else if( [menuItem action] == @selector( unifyStudies:))
 	{
