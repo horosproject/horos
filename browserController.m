@@ -7339,11 +7339,16 @@ static NSArray*	statesArray = nil;
 
 - (IBAction) copy: (id)sender
 {
-    NSPasteboard	*pb = [NSPasteboard generalPasteboard];
+    NSPasteboard *pb = [NSPasteboard generalPasteboard];
 	
 	[pb declareTypes:[NSArray arrayWithObject:NSStringPboardType] owner:self];
 	
-	NSString *string = [self exportDBListOnlySelected: YES];
+	NSString *string;
+	
+	if( [[databaseOutline selectedRowIndexes] count] == 1)
+		string = [[databaseOutline itemAtRow: [databaseOutline selectedRowIndexes].firstIndex] valueForKey: @"name"];
+	else 
+		string = [self exportDBListOnlySelected: YES];
 	
 	[pb setString: string forType:NSStringPboardType];
 }

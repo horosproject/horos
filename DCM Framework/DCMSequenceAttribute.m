@@ -102,14 +102,18 @@
 - (void)writeBaseToData:(DCMDataContainer *)dcmData transferSyntax:(DCMTransferSyntax *)ts{
 	[dcmData addUnsignedShort:[self group]];
 	[dcmData addUnsignedShort:[self element]];
+	
 	if (DCMDEBUG)
 		NSLog(@"Write Sequence Base Length:%d", 0xFFFFFFFF);
-	if ([ts isExplicit]) {
-		[dcmData addString:_vr];
-		[dcmData  addUnsignedShort:0];		// reserved bytes
-		[dcmData  addUnsignedLong:(0xFFFFFFFF)];
+	
+	if ([ts isExplicit])
+	{
+		[dcmData addString: _vr];
+		[dcmData addUnsignedShort:0];		// reserved bytes
+		[dcmData addUnsignedLong:(0xFFFFFFFF)];
 	}
-	else {
+	else
+	{
 		[dcmData  addUnsignedLong:(0xFFFFFFFF)];
 	}
 }
@@ -119,7 +123,7 @@
 	// valueLength should be 0xFFFFFFFF from constructor
 
 	[self writeBaseToData:container transferSyntax:ts];
-				
+	
 	for ( NSDictionary *object in sequenceItems ) {
 		[container addUnsignedShort:(0xfffe)];		// Item
 		[container addUnsignedShort:(0xe000)];

@@ -8,7 +8,7 @@
 		<string key="IBDocument.HIToolboxVersion">353.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="1493"/>
+			<integer value="11171"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -461,8 +461,8 @@
 								<object class="NSMenuItem" id="381454005">
 									<reference key="NSMenu" ref="152609316"/>
 									<string key="NSTitle">Search</string>
-									<string key="NSKeyEquiv">F</string>
-									<int key="NSKeyEquivModMask">1048576</int>
+									<string key="NSKeyEquiv">f</string>
+									<int key="NSKeyEquivModMask">1310720</int>
 									<int key="NSMnemonicLoc">2147483647</int>
 									<reference key="NSOnImage" ref="125626618"/>
 									<reference key="NSMixedImage" ref="973943092"/>
@@ -807,15 +807,6 @@
 												<reference key="NSMixedImage" ref="973943092"/>
 												<int key="NSTag">1</int>
 											</object>
-											<object class="NSMenuItem" id="733035597">
-												<reference key="NSMenu" ref="618561121"/>
-												<string key="NSTitle">Underline</string>
-												<string key="NSKeyEquiv">u</string>
-												<int key="NSKeyEquivModMask">1048576</int>
-												<int key="NSMnemonicLoc">2147483647</int>
-												<reference key="NSOnImage" ref="125626618"/>
-												<reference key="NSMixedImage" ref="973943092"/>
-											</object>
 											<object class="NSMenuItem" id="701443663">
 												<reference key="NSMenu" ref="618561121"/>
 												<bool key="NSIsDisabled">YES</bool>
@@ -1096,7 +1087,7 @@
 											</object>
 											<object class="NSMenuItem" id="942051992">
 												<reference key="NSMenu" ref="418998391"/>
-												<string key="NSTitle">Rotation 0 degrees</string>
+												<string key="NSTitle">Rotation 0 Degrees</string>
 												<string key="NSKeyEquiv"/>
 												<int key="NSKeyEquivModMask">1048576</int>
 												<int key="NSMnemonicLoc">2147483647</int>
@@ -1105,7 +1096,7 @@
 											</object>
 											<object class="NSMenuItem" id="36336372">
 												<reference key="NSMenu" ref="418998391"/>
-												<string key="NSTitle">Rotation 90 degrees</string>
+												<string key="NSTitle">Rotation 90 Degrees</string>
 												<string key="NSKeyEquiv"/>
 												<int key="NSKeyEquivModMask">1048576</int>
 												<int key="NSMnemonicLoc">2147483647</int>
@@ -1114,7 +1105,7 @@
 											</object>
 											<object class="NSMenuItem" id="953565628">
 												<reference key="NSMenu" ref="418998391"/>
-												<string key="NSTitle">Rotation 180 degrees</string>
+												<string key="NSTitle">Rotation 180 Degrees</string>
 												<string key="NSKeyEquiv"/>
 												<int key="NSKeyEquivModMask">1048576</int>
 												<int key="NSMnemonicLoc">2147483647</int>
@@ -1162,7 +1153,7 @@
 								</object>
 								<object class="NSMenuItem" id="711376034">
 									<reference key="NSMenu" ref="986057026"/>
-									<string key="NSTitle">Use VOI LUT if available</string>
+									<string key="NSTitle">Use VOI LUT if Available</string>
 									<string key="NSKeyEquiv"/>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -1228,7 +1219,7 @@
 								</object>
 								<object class="NSMenuItem" id="506974568">
 									<reference key="NSMenu" ref="986057026"/>
-									<string key="NSTitle">Propagate settings between series</string>
+									<string key="NSTitle">Propagate Settings Between Series</string>
 									<string key="NSKeyEquiv">g</string>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -1238,7 +1229,7 @@
 								</object>
 								<object class="NSMenuItem" id="974818372">
 									<reference key="NSMenu" ref="986057026"/>
-									<string type="base64-UTF8" key="NSTitle">RG9uJ3QgcHJvcGFnYXRlIFdMJldXIGJldHdlZW4gc2VyaWVzA</string>
+									<string type="base64-UTF8" key="NSTitle">RG9uJ3QgUHJvcGFnYXRlIFdMJldXIEJldHdlZW4gU2VyaWVzA</string>
 									<string key="NSKeyEquiv">g</string>
 									<int key="NSKeyEquivModMask">1572864</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -1248,7 +1239,7 @@
 								</object>
 								<object class="NSMenuItem" id="161899617">
 									<reference key="NSMenu" ref="986057026"/>
-									<string key="NSTitle">Propagate settings in current series</string>
+									<string key="NSTitle">Propagate Settings in Current Series</string>
 									<string key="NSKeyEquiv">G</string>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -1257,7 +1248,7 @@
 								</object>
 								<object class="NSMenuItem" id="760647850">
 									<reference key="NSMenu" ref="986057026"/>
-									<string key="NSTitle">Sync Series (same study)</string>
+									<string key="NSTitle">Sync Series (Same Study)</string>
 									<string key="NSKeyEquiv"/>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -1265,7 +1256,7 @@
 									<reference key="NSMixedImage" ref="973943092"/>
 									<string key="NSAction">submenuAction:</string>
 									<object class="NSMenu" key="NSSubmenu" id="571606708">
-										<string key="NSTitle">Sync Series (same study)</string>
+										<string key="NSTitle">Sync Series (Same Study)</string>
 										<object class="NSMutableArray" key="NSMenuItems">
 											<bool key="EncodedWithXMLCoder">YES</bool>
 											<object class="NSMenuItem" id="648738364">
@@ -1330,7 +1321,7 @@
 											</object>
 											<object class="NSMenuItem" id="481601095">
 												<reference key="NSMenu" ref="571606708"/>
-												<string key="NSTitle">Limit to same study</string>
+												<string key="NSTitle">Limit to Same Study</string>
 												<string key="NSKeyEquiv"/>
 												<int key="NSKeyEquivModMask">1048576</int>
 												<int key="NSMnemonicLoc">2147483647</int>
@@ -1342,7 +1333,7 @@
 								</object>
 								<object class="NSMenuItem" id="778542243">
 									<reference key="NSMenu" ref="986057026"/>
-									<string key="NSTitle">Sync Series (different studies) at current position</string>
+									<string key="NSTitle">Sync Series (Different Studies) at Current Position</string>
 									<string key="NSKeyEquiv"/>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -2290,7 +2281,7 @@
 								</object>
 								<object class="NSMenuItem" id="696115746">
 									<reference key="NSMenu" ref="504415738"/>
-									<string key="NSTitle">Reset to initial view</string>
+									<string key="NSTitle">Reset to Initial View</string>
 									<string key="NSKeyEquiv">r</string>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -2299,7 +2290,7 @@
 								</object>
 								<object class="NSMenuItem" id="950163889">
 									<reference key="NSMenu" ref="504415738"/>
-									<string key="NSTitle">Revert series</string>
+									<string key="NSTitle">Revert Series</string>
 									<string key="NSKeyEquiv">R</string>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -2475,7 +2466,7 @@
 								</object>
 								<object class="NSMenuItem" id="739225274">
 									<reference key="NSMenu" ref="504415738"/>
-									<string key="NSTitle">Save current State as 3D Preset...</string>
+									<string key="NSTitle">Save Current State as 3D Preset...</string>
 									<string key="NSKeyEquiv"/>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -2529,7 +2520,7 @@
 								</object>
 								<object class="NSMenuItem" id="421201842">
 									<reference key="NSMenu" ref="1010933659"/>
-									<string key="NSTitle">Save All ROIs of this series...</string>
+									<string key="NSTitle">Save All ROIs of this Series...</string>
 									<string key="NSKeyEquiv"/>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -2558,7 +2549,7 @@
 								</object>
 								<object class="NSMenuItem" id="735900879">
 									<reference key="NSMenu" ref="1010933659"/>
-									<string key="NSTitle">Delete All ROIs with same name as selected ROI</string>
+									<string key="NSTitle">Delete All ROIs with Same Name as Selected ROI</string>
 									<string key="NSKeyEquiv"/>
 									<int key="NSMnemonicLoc">2147483647</int>
 									<reference key="NSOnImage" ref="125626618"/>
@@ -2811,7 +2802,7 @@
 											</object>
 											<object class="NSMenuItem" id="184748515">
 												<reference key="NSMenu" ref="230163980"/>
-												<string key="NSTitle">Erase content</string>
+												<string key="NSTitle">Erase Content</string>
 												<string key="NSKeyEquiv"/>
 												<int key="NSKeyEquivModMask">1048576</int>
 												<int key="NSMnemonicLoc">2147483647</int>
@@ -2820,7 +2811,7 @@
 											</object>
 											<object class="NSMenuItem" id="694364529">
 												<reference key="NSMenu" ref="230163980"/>
-												<string key="NSTitle">Restore content</string>
+												<string key="NSTitle">Restore Content</string>
 												<string key="NSKeyEquiv"/>
 												<int key="NSKeyEquivModMask">1048576</int>
 												<int key="NSMnemonicLoc">2147483647</int>
@@ -3037,7 +3028,7 @@
 											</object>
 											<object class="NSMenuItem" id="678530967">
 												<reference key="NSMenu" ref="654640977"/>
-												<string key="NSTitle">Convert between Polygon / Brush ROIs</string>
+												<string key="NSTitle">Convert Between Polygon / Brush ROIs</string>
 												<string key="NSKeyEquiv"/>
 												<int key="NSKeyEquivModMask">1048576</int>
 												<int key="NSMnemonicLoc">2147483647</int>
@@ -9520,14 +9511,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBActionConnection" key="connection">
-						<string key="label">underline:</string>
-						<reference key="source" ref="298258082"/>
-						<reference key="destination" ref="733035597"/>
-					</object>
-					<int key="connectionID">1522</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
 						<string key="label">addFontTrait:</string>
 						<reference key="source" ref="12457708"/>
 						<reference key="destination" ref="677040976"/>
@@ -13637,7 +13620,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 							<reference ref="763186496"/>
 							<reference ref="969929328"/>
 							<reference ref="592386796"/>
-							<reference ref="733035597"/>
 							<reference ref="910257785"/>
 							<reference ref="701443663"/>
 							<reference ref="677040976"/>
@@ -13667,11 +13649,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<object class="IBObjectRecord">
 						<int key="objectID">1488</int>
 						<reference key="object" ref="592386796"/>
-						<reference key="parent" ref="618561121"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">1496</int>
-						<reference key="object" ref="733035597"/>
 						<reference key="parent" ref="618561121"/>
 					</object>
 					<object class="IBObjectRecord">
@@ -18637,6 +18614,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<string>13004.ImportedFromIB2</string>
 					<string>13007.IBPluginDependency</string>
 					<string>13007.ImportedFromIB2</string>
+					<string>13008.IBEditorWindowLastContentRect</string>
 					<string>13008.IBPluginDependency</string>
 					<string>13008.ImportedFromIB2</string>
 					<string>13010.IBPluginDependency</string>
@@ -18683,6 +18661,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<string>13067.ImportedFromIB2</string>
 					<string>13068.IBPluginDependency</string>
 					<string>13068.ImportedFromIB2</string>
+					<string>13069.IBEditorWindowLastContentRect</string>
 					<string>13069.IBPluginDependency</string>
 					<string>13069.ImportedFromIB2</string>
 					<string>13070.IBPluginDependency</string>
@@ -18716,6 +18695,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<string>13083.ImportedFromIB2</string>
 					<string>13084.IBPluginDependency</string>
 					<string>13084.ImportedFromIB2</string>
+					<string>13085.IBEditorWindowLastContentRect</string>
 					<string>13085.IBPluginDependency</string>
 					<string>13085.ImportedFromIB2</string>
 					<string>13086.IBPluginDependency</string>
@@ -18848,6 +18828,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<string>13163.ImportedFromIB2</string>
 					<string>13164.IBPluginDependency</string>
 					<string>13164.ImportedFromIB2</string>
+					<string>13165.IBEditorWindowLastContentRect</string>
 					<string>13165.IBPluginDependency</string>
 					<string>13165.ImportedFromIB2</string>
 					<string>13166.IBPluginDependency</string>
@@ -19120,8 +19101,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<string>1493.IBEditorWindowLastContentRect</string>
 					<string>1493.IBPluginDependency</string>
 					<string>1493.ImportedFromIB2</string>
-					<string>1496.IBPluginDependency</string>
-					<string>1496.ImportedFromIB2</string>
 					<string>150.IBPluginDependency</string>
 					<string>150.ImportedFromIB2</string>
 					<string>1501.IBPluginDependency</string>
@@ -19172,10 +19151,12 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<string>1703.editorWindowContentRectSynchronizationRect</string>
 					<string>1704.IBPluginDependency</string>
 					<string>1704.ImportedFromIB2</string>
+					<string>1705.IBEditorWindowLastContentRect</string>
 					<string>1705.IBPluginDependency</string>
 					<string>1705.ImportedFromIB2</string>
 					<string>1708.IBPluginDependency</string>
 					<string>1708.ImportedFromIB2</string>
+					<string>1709.IBEditorWindowLastContentRect</string>
 					<string>1709.IBPluginDependency</string>
 					<string>1709.ImportedFromIB2</string>
 					<string>171.IBPluginDependency</string>
@@ -19703,7 +19684,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
-					<string>{{826, 851}, {332, 133}}</string>
+					<string>{{972, 43}, {331, 133}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
 					<string>{{1457, 357}, {332, 133}}</string>
@@ -19902,7 +19883,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
-					<string>{{569, 387}, {323, 463}}</string>
+					<string>{{676, 433}, {326, 463}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
 					<string>{{936, 574}, {323, 303}}</string>
@@ -20030,6 +20011,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
+					<string>{{972, 323}, {222, 123}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -20066,7 +20048,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
-					<string>{{481, -3}, {428, 853}}</string>
+					<string>{{588, 43}, {431, 853}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
 					<string>{{390, 35}, {428, 753}}</string>
@@ -20076,6 +20058,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
+					<string>{{1019, 180}, {64, 6}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -20084,17 +20067,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
-					<string>{{1411, 989}, {235, 123}}</string>
-					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="9"/>
-					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="9"/>
-					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="9"/>
-					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="9"/>
-					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="9"/>
+					<string>{{1019, 363}, {235, 123}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -20119,8 +20092,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
-					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="9"/>
+					<string>{{1019, -217}, {105, 353}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -20151,7 +20123,19 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
-					<string>{{1018, 511}, {216, 443}}</string>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<reference ref="9"/>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<reference ref="9"/>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<reference ref="9"/>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<reference ref="9"/>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<reference ref="9"/>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<reference ref="9"/>
+					<string>{{1019, -137}, {216, 443}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
 					<string>{{993, -141}, {216, 443}}</string>
@@ -20211,7 +20195,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
-					<string>{{1233, 722}, {272, 133}}</string>
+					<string>{{1019, 153}, {272, 133}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
 					<string>{{1286, 407}, {272, 133}}</string>
@@ -20229,7 +20213,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
-					<string>{{1233, 829}, {64, 6}}</string>
+					<string>{{1019, 260}, {64, 6}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
 					<string>{{993, 236}, {64, 6}}</string>
@@ -20241,6 +20225,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
+					<string>{{1019, 663}, {217, 113}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -20287,7 +20272,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
-					<string>{{1233, 712}, {203, 83}}</string>
+					<string>{{1019, 143}, {203, 83}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
 					<string>{{993, 119}, {203, 83}}</string>
@@ -20424,13 +20409,13 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
-					<string>{{1233, 809}, {64, 6}}</string>
+					<string>{{1019, 240}, {64, 6}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
 					<string>{{993, 216}, {64, 6}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
-					<string>{{1233, 789}, {64, 6}}</string>
+					<string>{{1019, 200}, {64, 6}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
 					<string>{{993, 216}, {64, 6}}</string>
@@ -20454,7 +20439,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
-					<string>{{981, 692}, {423, 773}}</string>
+					<string>{{547, 123}, {425, 773}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
 					<string>{{1034, 437}, {423, 583}}</string>
@@ -20504,15 +20489,13 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
-					<string>{{731, 738}, {219, 73}}</string>
+					<string>{{305, 823}, {219, 73}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
 					<string>{{782, 804}, {219, 73}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
-					<string>{{950, 598}, {178, 163}}</string>
-					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="9"/>
+					<string>{{950, 618}, {178, 143}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -20553,18 +20536,24 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
-					<string>{{687, 678}, {154, 133}}</string>
+					<string>{{261, 763}, {154, 133}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
 					<string>{{415, 683}, {154, 153}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
-					<string>{{630, 1605}, {195, 113}}</string>
+					<string>{{589, 783}, {195, 113}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
 					<string>{{608, 675}, {195, 113}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
+					<string>{{784, 890}, {64, 6}}</string>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<reference ref="9"/>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<reference ref="9"/>
+					<string>{{784, 870}, {64, 6}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -20587,14 +20576,10 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
+					<string>{{657, 753}, {212, 143}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
-					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="9"/>
-					<string>{{698, 1575}, {212, 143}}</string>
-					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="9"/>
-					<string>{{570, 811}, {596, 20}}</string>
+					<string>{{144, 896}, {596, 20}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
 					<string>{{163, 788}, {596, 20}}</string>
@@ -20616,7 +20601,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
-					<string>{{645, 218}, {337, 593}}</string>
+					<string>{{219, 303}, {337, 593}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
 					<string>{{706, 407}, {337, 613}}</string>
