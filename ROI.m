@@ -25,7 +25,7 @@
 #import "Notifications.h"
 
 #define CIRCLERESOLUTION 200
-#define ROIVERSION 10
+#define ROIVERSION 11
 
 static		float					deg2rad = M_PI / 180.0f; 
 static		float					fontHeight = 0;
@@ -745,6 +745,17 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 			isAliased = NO;
 		}
 		
+		if( fileVersion >= 11)
+		{
+			_isSpline = [[coder decodeObject] boolValue];
+			_hasIsSpline = [[coder decodeObject] boolValue];
+		}
+		else
+		{
+			_isSpline = NO;
+			_hasIsSpline = NO;
+		}
+		
 		[points retain];
 		[name retain];
 		[comments retain];
@@ -968,6 +979,10 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 	
 	// ROIVERSION = 10
 	[coder encodeObject:[NSNumber numberWithBool: isAliased]];
+	
+	// ROIVERSION = 11
+	[coder encodeObject:[NSNumber numberWithBool: _isSpline]];
+	[coder encodeObject:[NSNumber numberWithBool: _hasIsSpline]];
 }
 
 - (NSData*) data { return [NSArchiver archivedDataWithRootObject: self]; }
@@ -2267,11 +2282,16 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 	float intYCenter, intXCenter;
 	NSMutableArray	*pts = self.points;
 	
+	if( type == tROI)
+	{
+		self.isSpline = NO;
+	}
+	
     intUpper = [pts count];
 	if( intUpper > 0)
 	{
 		theta = deg2rad * angle; 
-				
+		
 		if( type == tROI || type == tOval)
 		{
 			type = tCPolygon;
@@ -2321,20 +2341,27 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 	{
 		if( type == tROI || type == tOval)
 		{
-			type = tCPolygon;
-			[points release];
-			points = [pts retain];
-		}
-		
-		intXCenter = center.x;
-		intYCenter = center.y;
-		
-		for( long i = 0; i < intUpper; i++)
-		{ 
-			new_x = ([[pts objectAtIndex: i] x] - intXCenter) * factor;
-			new_y = ([[pts objectAtIndex: i] y] - intYCenter) * factor;
+			intXCenter = center.x;
+			intYCenter = center.y;
 			
-			[[pts objectAtIndex: i] setPoint: NSMakePoint( new_x + intXCenter, new_y + intYCenter)];
+			rect.origin.y = intYCenter + (rect.origin.y - intYCenter) * factor;
+			rect.origin.x = intXCenter + (rect.origin.x - intXCenter) * factor;
+			
+			rect.size.width *= factor;
+			rect.size.height *= factor;
+		}
+		else
+		{
+			intXCenter = center.x;
+			intYCenter = center.y;
+			
+			for( long i = 0; i < intUpper; i++)
+			{ 
+				new_x = ([[pts objectAtIndex: i] x] - intXCenter) * factor;
+				new_y = ([[pts objectAtIndex: i] y] - intYCenter) * factor;
+				
+				[[pts objectAtIndex: i] setPoint: NSMakePoint( new_x + intXCenter, new_y + intYCenter)];
+			}
 		}
 		
 		rtotal = -1;

@@ -4707,9 +4707,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	// Command and Alternate rotate ROI
 	if (([event modifierFlags] & NSCommandKeyMask) && ([event modifierFlags] & NSAlternateKeyMask))
 	{
-		NSPoint rotatePoint = [[[event window] contentView] convertPoint:start toView:self];
-		rotatePoint.y = start.y ;
-		rotatePoint = [self ConvertFromNSView2GL: rotatePoint];
+		NSPoint rotatePoint = [self ConvertFromNSView2GL: start];
 
 		NSPoint offset;
 		
@@ -4728,9 +4726,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	// Command and Shift scale
 	else if (([event modifierFlags] & NSCommandKeyMask) && !([event modifierFlags] & NSShiftKeyMask))
 	{
-		NSPoint rotatePoint = [[[event window] contentView] convertPoint:start toView:self];
-		rotatePoint.y = start.y ;
-		rotatePoint = [self ConvertFromNSView2GL: rotatePoint];
+		NSPoint rotatePoint = [self ConvertFromNSView2GL: start];
 		
 		double ss = 1.0 - (previous.x - current.x)/200.;
 		
