@@ -1919,7 +1919,7 @@ static NSArray*	statesArray = nil;
 		localizedDescription = [error localizedDescription];
 		error = [NSError errorWithDomain:@"OsiriXDomain" code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:error, NSUnderlyingErrorKey, [NSString stringWithFormat:@"Store Configuration Failure: %@", ((localizedDescription != nil) ? localizedDescription : @"Unknown Error")], NSLocalizedDescriptionKey, nil]];
     }
-
+	
 	[[managedObjectContext undoManager] setLevelsOfUndo: 1];
 	[[managedObjectContext undoManager] disableUndoRegistration];
 
