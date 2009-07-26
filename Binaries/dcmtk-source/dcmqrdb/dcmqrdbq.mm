@@ -602,7 +602,7 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::startFindRequest(
 	
 	// Search Core Data here
 	if( handle -> dataHandler == 0L)
-		handle -> dataHandler = [[OsiriXSCPDataHandler requestDataHandlerWithDestinationFolder:0L debugLevel:0] retain];
+		handle -> dataHandler = [[OsiriXSCPDataHandler requestDataHandler] retain];
 		
 	cond = [handle->dataHandler prepareFindForDataSet:findRequestIdentifiers];
 	MatchFound = [handle->dataHandler findMatchFound];
@@ -809,7 +809,7 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::nextFindResponse (
 	dbdebug(1, "nextFindResponse () : new dataset\n") ;
 	
 	if( handle -> dataHandler == 0L)
-		handle -> dataHandler = [[OsiriXSCPDataHandler requestDataHandlerWithDestinationFolder:0L debugLevel:0] retain];
+		handle -> dataHandler = [[OsiriXSCPDataHandler requestDataHandler] retain];
 		
 	cond = [handle ->dataHandler nextFindObject:*findResponseIdentifiers  isComplete:&isComplete];
 	dbdebug(1, "nextFindResponse () : next response\n") ;
@@ -871,7 +871,7 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::nextMoveResponse(
 	 status->setStatus(STATUS_Pending);
 	 /**** Goto the next matching image number  *****/
 	if( handle -> dataHandler == 0L)
-		handle -> dataHandler = [[OsiriXSCPDataHandler requestDataHandlerWithDestinationFolder:0L debugLevel:0] retain];
+		handle -> dataHandler = [[OsiriXSCPDataHandler requestDataHandler] retain];
 		
 	OFCondition cond = [handle->dataHandler nextMoveObject:imageFileName];
 	DcmFileFormat fileformat;
@@ -1060,7 +1060,7 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::startMoveRequest(
 	// Search Core Data here
 	//NSLog(@"search core data for move");
 	if( handle -> dataHandler == 0L)
-		handle -> dataHandler = [[OsiriXSCPDataHandler requestDataHandlerWithDestinationFolder:0L debugLevel:0] retain];
+		handle -> dataHandler = [[OsiriXSCPDataHandler requestDataHandler] retain];
 	
 	handle -> dataHandler.callingAET = [NSString stringWithUTF8String: handle -> callingAET];
 	
@@ -1135,7 +1135,7 @@ DcmQueryRetrieveOsiriXDatabaseHandle::DcmQueryRetrieveOsiriXDatabaseHandle(
 		handle -> findResponseList = NULL;
 		handle -> uidList = NULL;
 		result = EC_Normal;
-		handle -> dataHandler = NULL;	//[[OsiriXSCPDataHandler requestDataHandlerWithDestinationFolder:0L debugLevel:0] retain];
+		handle -> dataHandler = NULL;	//[[OsiriXSCPDataHandler requestDataHandler] retain];
 		handle -> logEntry = NULL;
 		handle -> imageCount = 0;
 		handle -> logCreated = NO;

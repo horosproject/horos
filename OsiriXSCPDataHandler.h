@@ -60,7 +60,7 @@ typedef struct
 
 @property (retain) NSString *callingAET;
 
-+ (id)requestDataHandlerWithDestinationFolder:(NSString *)destination  debugLevel:(int)debug;
++ (id)requestDataHandler;
 
 -(NSTimeInterval)endOfDay:(NSCalendarDate *)day;
 -(NSTimeInterval)startOfDay:(NSCalendarDate *)day;

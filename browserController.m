@@ -13545,10 +13545,35 @@ static volatile int numberOfThreadsForJPEG = 0;
 		
 		@try
 		{
-			NSString *INpath = [[self documentsDirectory] stringByAppendingPathComponent:INCOMINGPATH];
-			NSString *ERRpath = [[self documentsDirectory] stringByAppendingPathComponent:ERRPATH];
-			NSString *OUTpath = [[self documentsDirectory] stringByAppendingPathComponent:DATABASEPATH];
-			NSString *DECOMPRESSIONpath = [[self documentsDirectory] stringByAppendingPathComponent:DECOMPRESSIONPATH];
+			NSManagedObjectContext *sqlContext;
+			NSString *dbFolder = [self documentsDirectory];
+			
+			if( isCurrentDatabaseBonjour)
+			{
+				dbFolder = [self documentsDirectoryFor: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULT_DATABASELOCATION"] url: [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"]];
+				NSString *sqlFile = [dbFolder stringByAppendingPathComponent:@"Database.sql"];
+				
+				NSPersistentStoreCoordinator *sc = [[[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel: self.managedObjectModel] autorelease];
+				sqlContext = [[[NSManagedObjectContext alloc] init] autorelease];
+				
+				[sqlContext setPersistentStoreCoordinator: sc];
+						
+				if( [[sqlContext undoManager] isUndoRegistrationEnabled])
+				{
+					[[sqlContext undoManager] setLevelsOfUndo: 1];
+					[[sqlContext undoManager] disableUndoRegistration];
+				}
+				
+				NSError	*error = nil;
+				[sc addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:[NSURL fileURLWithPath: sqlFile] options:nil error:&error];
+			}
+			else
+				sqlContext = managedObjectContext;
+			
+			NSString *INpath = [dbFolder stringByAppendingPathComponent:INCOMINGPATH];
+			NSString *ERRpath = [dbFolder stringByAppendingPathComponent:ERRPATH];
+			NSString *OUTpath = [dbFolder stringByAppendingPathComponent:DATABASEPATH];
+			NSString *DECOMPRESSIONpath = [dbFolder stringByAppendingPathComponent:DECOMPRESSIONPATH];
 			
 			//NSLog(@"Scan folder START");
 			
@@ -13630,10 +13655,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 										continue;
 									}
 									
-									dstPath = [self getNewFileDatabasePath:@"dcm"];
+									dstPath = [self getNewFileDatabasePath:@"dcm" dbFolder: dbFolder];
 								}
-								else dstPath = [self getNewFileDatabasePath: [[srcPath pathExtension] lowercaseString]];
-								//else dstPath = [self getNewFileDatabasePath:[[srcPath stringByDeletingPathExtension] lastPathComponent]: [[srcPath pathExtension] lowercaseString]];
+								else dstPath = [self getNewFileDatabasePath: [[srcPath pathExtension] lowercaseString] dbFolder: dbFolder];
 								
 								if( isAlias)
 								{
@@ -13653,7 +13677,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 									{
 										if ([[NSFileManager defaultManager] fileExistsAtPath:[[srcPath stringByDeletingPathExtension] stringByAppendingString:@".xml"]])
 										{
-											
 											// move the XML first
 											[[NSFileManager defaultManager]
 											 movePath	:[[srcPath stringByDeletingPathExtension] stringByAppendingString:@".xml"]
@@ -13705,7 +13728,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 						[filter processFiles: filesArray];
 					}
 					
-					NSArray*	addedFiles = [[self addFilesToDatabase: filesArray]  valueForKey:@"completePath"];
+					NSArray* addedFiles = [[self addFilesToDatabase: filesArray onlyDICOM:NO safeRebuild:NO produceAddedFiles:YES parseExistingObject: NO context: sqlContext dbFolder: dbFolder] valueForKey:@"completePath"];
 					
 					if( addedFiles)
 					{
@@ -13790,7 +13813,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (void)checkIncomingNow: (id)sender
 {
-	if( isCurrentDatabaseBonjour) return;
+//	if( isCurrentDatabaseBonjour) return;
 	if( DatabaseIsEdited == YES && [[self window] isKeyWindow] == YES) return;
 	if( managedObjectContext == nil) return;
 	if( [NSDate timeIntervalSinceReferenceDate] - lastCheckIncoming < 0.5) return;
@@ -13823,7 +13846,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (void)checkIncoming: (id)sender
 {
-	if( isCurrentDatabaseBonjour) return;
+//	if( isCurrentDatabaseBonjour) return;
 	if( DatabaseIsEdited == YES && [[self window] isKeyWindow] == YES) return;
 	if( managedObjectContext == nil) return;
 	if( [NSDate timeIntervalSinceReferenceDate] - lastCheckIncoming < 0.5) return;

@@ -1411,6 +1411,7 @@ PixelRepresentation
 	//NSLog(@"Pixel Data %@", [pixelDataAttr description]);
 	
 	//if we have the attr and the conversion failed stop
+	
 	if (pixelDataAttr && ![pixelDataAttr convertToTransferSyntax: transferSyntax quality:DCMLosslessQuality]) {
 		NSLog(@"Could not convert pixel Data to %@", transferSyntax.description);
 		return NO;
