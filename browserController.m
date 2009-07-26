@@ -13556,7 +13556,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			NSManagedObjectContext *sqlContext;
 			NSString *dbFolder = [self documentsDirectory];
 			
-			if( isCurrentDatabaseBonjour)
+			if( isCurrentDatabaseBonjour || [[self fixedDocumentsDirectory] isEqualToString: dbFolder] == NO)
 			{
 				dbFolder = [self documentsDirectoryFor: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULT_DATABASELOCATION"] url: [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"]];
 				NSString *sqlFile = [dbFolder stringByAppendingPathComponent:@"Database.sql"];
@@ -13576,7 +13576,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 				[sc addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:[NSURL fileURLWithPath: sqlFile] options:nil error:&error];
 			}
 			else
+			{
 				sqlContext = managedObjectContext;
+			}
 			
 			NSString *INpath = [dbFolder stringByAppendingPathComponent:INCOMINGPATH];
 			NSString *ERRpath = [dbFolder stringByAppendingPathComponent:ERRPATH];
