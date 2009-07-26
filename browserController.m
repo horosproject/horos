@@ -230,7 +230,14 @@ static NSArray*	statesArray = nil;
 + (int) DefaultFolderSizeForDB
 {
 	if( DefaultFolderSizeForDB == 0)
+	{
 		DefaultFolderSizeForDB = [[NSUserDefaults standardUserDefaults] integerForKey: @"DefaultFolderSizeForDB"];
+		if( DefaultFolderSizeForDB == 0)
+		{
+			DefaultFolderSizeForDB = 10000;
+			[[NSUserDefaults standardUserDefaults] setInteger: DefaultFolderSizeForDB forKey: @"DefaultFolderSizeForDB"];
+		}
+	}
 	
 	return DefaultFolderSizeForDB;
 }
@@ -11631,10 +11638,54 @@ static NSArray*	openSubSeriesArray = nil;
 		if( [[NSFileManager defaultManager] destinationOfSymbolicLinkAtPath: path error: nil])
 			path = [[NSFileManager defaultManager] destinationOfSymbolicLinkAtPath: path error: nil];
 		
+		// Delete empty directory
 		for( NSString *f in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:path error: nil])
 		{
-			long c = [f integerValue];
-			if( c > v) v = c;
+			NSDictionary *fileAttributes = [[NSFileManager defaultManager] fileAttributesAtPath: [path stringByAppendingPathComponent: f] traverseLink:YES];
+			
+			if ( [[fileAttributes objectForKey: NSFileType] isEqualToString: NSFileTypeDirectory]) 
+			{
+				if( [[fileAttributes objectForKey: NSFileReferenceCount] intValue] < 4)	// check if this folder is empty, and delete it if necessary
+				{
+					int numberOfValidFiles = 0;
+					for( NSString *s in [[NSFileManager defaultManager] contentsOfDirectoryAtPath: [path stringByAppendingPathComponent: f] error: nil])
+					{
+						if( [[s stringByDeletingPathExtension] integerValue] > 0)
+							numberOfValidFiles++;
+					}
+					
+					if( numberOfValidFiles == 0)
+						[[NSFileManager defaultManager] removeFileAtPath: [path stringByAppendingPathComponent: f] handler: nil];
+				}
+			}
+		}
+		
+		/// SCAN
+		for( NSString *f in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:path error: nil])
+		{
+			NSDictionary *fileAttributes = [[NSFileManager defaultManager] fileAttributesAtPath: [path stringByAppendingPathComponent: f] traverseLink:YES];
+			
+			if ( [[fileAttributes objectForKey: NSFileType] isEqualToString: NSFileTypeDirectory]) 
+			{
+				long c = [f integerValue];
+				if( c > v)
+					v = c;
+			}
+		}
+		
+		if( v > 0)
+		{
+			NSArray *paths = [[NSFileManager defaultManager] contentsOfDirectoryAtPath: [path stringByAppendingPathComponent: [NSString stringWithFormat: @"%d", v]] error: nil];
+			
+			v -= [BrowserController DefaultFolderSizeForDB];
+			if( v < 0) v = 0;
+			
+			for( NSString *s in paths)
+			{
+				long c = [[s stringByDeletingPathExtension] integerValue];
+				if( c > v)
+					v = c;
+			}
 		}
 		
 		DATABASEINDEX = v;

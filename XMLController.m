@@ -900,16 +900,17 @@ extern int delayedTileWindows;
 	NSTask *theTask = [[NSTask alloc] init];
 
 	NSPipe *thePipe = [NSPipe pipe];
-	[theTask setStandardError: thePipe];
 	
 	[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/dciodvfy"]];
-	[theTask setArguments: [NSMutableArray arrayWithObject: srcFile]];		
-	[theTask setStandardOutput:thePipe];
+	[theTask setArguments: [NSMutableArray arrayWithObject: srcFile]];
+	[theTask setStandardError: thePipe];
 	[theTask launch];
+	
+	NSData *resData = [[thePipe fileHandleForReading] readDataToEndOfFile];
+//    [[thePipe fileHandleForReading] closeFile];
+	
 	[theTask waitUntilExit];
 	
-	
-	NSData *resData = [[thePipe fileHandleForReading] availableData];
 	NSString *resString = [[[NSString alloc] initWithData:resData encoding:NSUTF8StringEncoding] autorelease];
 	
 	[validatorText setString: resString];

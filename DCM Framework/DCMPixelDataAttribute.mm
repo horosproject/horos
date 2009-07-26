@@ -950,6 +950,7 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 	NS_DURING
 	if (DCMDEBUG)
 		NSLog(@"Convert Syntax %@ to %@", transferSyntax.description, ts.description );
+		
 		//already there do nothing
 	if ([transferSyntax isEqualToTransferSyntax:ts])  {
 		status = YES;
