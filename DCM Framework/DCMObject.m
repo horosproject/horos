@@ -621,9 +621,9 @@ PixelRepresentation
 					*byteOffset = [self readNewSequenceAttribute:attr dicomData:dicomData byteOffset:byteOffset lengthToRead:vl specificCharacterSet:specificCharacterSet];
 				} 
 				// "7FE0,0010" == PixelData
-				else if (strcmp(tagUTF8, "7FE0,0010") == 0)
+				else if (strcmp(tagUTF8, "7FE0,0010") == 0 && tag.isPrivate == NO)
 				{
-					attr = (DCMPixelDataAttribute *) [[[DCMPixelDataAttribute alloc]	initWithAttributeTag:(DCMAttributeTag *)tag 
+					attr = (DCMPixelDataAttribute *) [[[DCMPixelDataAttribute alloc] initWithAttributeTag:(DCMAttributeTag *)tag 
 					vr:(NSString *)vr 
 					length:(long) vl 
 					data:(DCMDataContainer *)dicomData 

@@ -907,11 +907,10 @@ extern int delayedTileWindows;
 	[theTask launch];
 	
 	NSData *resData = [[thePipe fileHandleForReading] readDataToEndOfFile];
-//    [[thePipe fileHandleForReading] closeFile];
 	
 	[theTask waitUntilExit];
 	
-	NSString *resString = [[[NSString alloc] initWithData:resData encoding:NSUTF8StringEncoding] autorelease];
+	NSString *resString = [[[NSString alloc] initWithData:resData encoding: NSUTF8StringEncoding] autorelease];
 	
 	[validatorText setString: resString];
 	
