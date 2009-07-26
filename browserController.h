@@ -307,6 +307,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (NSString*) getNewFileDatabasePath: (NSString*) extension dbFolder: (NSString*) dbFolder;
 - (NSManagedObjectModel *) managedObjectModel;
 - (NSManagedObjectContext *) managedObjectContext;
+- (NSManagedObjectContext *) localManagedObjectContext;
 - (NSManagedObjectContext *) defaultManagerObjectContext;
 - (NSArray*) childrenArray: (NSManagedObject*) item;
 - (NSArray*) childrenArray: (NSManagedObject*) item onlyImages:(BOOL) onlyImages;

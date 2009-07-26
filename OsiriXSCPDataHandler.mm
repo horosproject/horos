@@ -1146,7 +1146,7 @@ char currentDestinationMoveAET[ 60] = "";
 					
 		error = nil;
 		
-		NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
+		NSManagedObjectContext *context = [[BrowserController currentBrowser] localManagedObjectContext];
 		
 		[context lock];
 		
@@ -1314,7 +1314,7 @@ char currentDestinationMoveAET[ 60] = "";
 	
 	error = nil;
 	
-	NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
+	NSManagedObjectContext *context = [[BrowserController currentBrowser] localManagedObjectContext];
 	
 	[context lock];
 	
@@ -1448,7 +1448,7 @@ char currentDestinationMoveAET[ 60] = "";
 {
 	id item;
 	
-	NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
+	NSManagedObjectContext *context = [[BrowserController currentBrowser] localManagedObjectContext];
 	
 	[context lock];
 	

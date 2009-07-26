@@ -1263,7 +1263,7 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 #ifdef HAVE_FORK
         else
         {
-			NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
+			NSManagedObjectContext *context = [[BrowserController currentBrowser] localManagedObjectContext];
 			[[[BrowserController currentBrowser] checkIncomingLock] lock];
 			[context lock]; //Try to avoid deadlock
 			

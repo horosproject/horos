@@ -1963,6 +1963,14 @@ static NSArray*	statesArray = nil;
 	return [self managedObjectContextLoadIfNecessary: YES];
 }
 
+- (NSManagedObjectContext *) localManagedObjectContext
+{
+	if( isCurrentDatabaseBonjour)
+		return [self defaultManagerObjectContext];
+	else
+		return [self managedObjectContextLoadIfNecessary: YES];
+}
+
 - (void) addDICOMDIR:(NSString*) dicomdir :(NSMutableArray*) files
 {
 	DicomDirParser *parsed = [[DicomDirParser alloc] init: dicomdir];
