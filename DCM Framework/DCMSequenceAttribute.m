@@ -48,7 +48,14 @@
 
 	if (self = [super initWithAttributeTag:(DCMAttributeTag *)tag]) 
 		sequenceItems  = [[NSMutableArray array] retain];
-
+	
+	if( [_vr isEqualToString: @"UN"])
+	{
+		[_vr release];
+		_vr = [[NSString stringWithString:@"SQ"] retain];
+		
+		// UN is not acceptable for a SQ, because we will write an undefined length (0xffffffff), not allowed for a UN !!
+	}
 	return self;
 }
 	
@@ -62,6 +69,13 @@
 	if (self = [super  initWithAttributeTag:(DCMAttributeTag *)tag]) 
 		sequenceItems  = [[NSMutableArray array] retain];
 		
+	if( [_vr isEqualToString: @"UN"])
+	{
+		[_vr release];
+		_vr = [[NSString stringWithString:@"SQ"] retain];
+		
+		// UN is not acceptable for a SQ, because we will write an undefined length (0xffffffff), not allowed for a UN !!
+	}
 	return self;
 }
 
@@ -99,22 +113,46 @@
 
 // use super
 
-- (void)writeBaseToData:(DCMDataContainer *)dcmData transferSyntax:(DCMTransferSyntax *)ts{
+- (void)writeBaseToData:(DCMDataContainer *)dcmData transferSyntax:(DCMTransferSyntax *)ts
+{
 	[dcmData addUnsignedShort:[self group]];
 	[dcmData addUnsignedShort:[self element]];
 	
-	if (DCMDEBUG)
-		NSLog(@"Write Sequence Base Length:%d", 0xFFFFFFFF);
+//	DCMDataContainer *dummyContainer = [DCMDataContainer dataContainer];
+//	
+//	for ( NSDictionary *object in sequenceItems )
+//	{
+//		[dummyContainer addUnsignedShort:(0xfffe)];		// Item
+//		[dummyContainer addUnsignedShort:(0xe000)];		
+//		[dummyContainer addUnsignedLong:(0xFFFFFFFF)];	// undefined length
+//		
+//		DCMObject *o = [object objectForKey:@"item"];
+//		DCMPixelDataAttribute *pixelDataAttr = nil;
+//		
+//		[o writeToDataContainer: dummyContainer withTransferSyntax: ts asDICOM3:NO];
+//		
+//		[dummyContainer addUnsignedShort:(0xfffe)];		// Item Delimiter
+//		[dummyContainer addUnsignedShort:(0xe00d)];
+//		[dummyContainer addUnsignedLong:(0)];			// dummy length
+//	}
+//	
+//	[dummyContainer addUnsignedShort:(0xfffe)];	// Sequence Delimiter
+//	[dummyContainer addUnsignedShort:(0xe0dd)];
+//	[dummyContainer addUnsignedLong:(0)];		// dummy length
+//	
+//	long length = [[dummyContainer dicomData] length];
+//	
+//	NSLog( @"computed sequence UN : %d (%0004X,%0004X)", length, [self attrTag].group, [self attrTag].element);
 	
 	if ([ts isExplicit])
 	{
 		[dcmData addString: _vr];
 		[dcmData addUnsignedShort:0];		// reserved bytes
-		[dcmData addUnsignedLong:(0xFFFFFFFF)];
+		[dcmData addUnsignedLong: 0xFFFFFFFF];
 	}
 	else
 	{
-		[dcmData  addUnsignedLong:(0xFFFFFFFF)];
+		[dcmData  addUnsignedLong: 0xFFFFFFFF];
 	}
 }
 
@@ -123,8 +161,10 @@
 {
 	// valueLength should be 0xFFFFFFFF from constructor
 	
-	if( [_vr isEqualToString: @"UN"]) //We dont write sequences with UN for VR value
-		return YES;
+	if( [_vr isEqualToString: @"SQ"] == NO)
+	{
+		NSLog( @"******* error SQ needs to be encoded as a SQ object !!!");
+	}
 	
 	[self writeBaseToData:container transferSyntax:ts];
 	
@@ -142,8 +182,9 @@
 		[container addUnsignedShort:(0xfffe)];		// Item Delimiter
 		[container addUnsignedShort:(0xe00d)];
 		[container addUnsignedLong:(0)];			// dummy length
-		
 	}
+	
+	// This Sequence Delimiter is NOT required if SQ length is NOT equal to 0xFFFFFFFF
 	
 	[container addUnsignedShort:(0xfffe)];	// Sequence Delimiter
 	[container addUnsignedShort:(0xe0dd)];

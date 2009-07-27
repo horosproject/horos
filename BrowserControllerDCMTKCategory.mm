@@ -172,6 +172,23 @@ extern NSRecursiveLock *PapyrusLock;
 
 - (BOOL)decompressDICOMList:(NSArray *) files to:(NSString*) dest
 {
+//	DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile: [files lastObject] decodingPixelData: NO];
+//							
+//	BOOL succeed = NO;
+//	
+//	@try
+//	{
+//		DCMTransferSyntax *tsx = [DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax]; // JPEG2000LosslessTransferSyntax];
+//		succeed = [dcmObject writeToFile: [[files lastObject] stringByAppendingString:@"bb.dcm"] withTransferSyntax: tsx quality: 1 AET:@"OsiriX" atomically:YES];
+//	}
+//	@catch (NSException *e)
+//	{
+//		NSLog( @"dcmObject writeToFile failed: %@", e);
+//	}
+//	[dcmObject release];
+//	
+//	return YES;
+
 	NSTask *theTask = [[NSTask alloc] init];
 	
 	if( dest == nil)
