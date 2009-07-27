@@ -2785,7 +2785,9 @@ static NSArray*	statesArray = nil;
 				dbArray = [dbArray arrayByAddingObject: [NSDictionary dictionaryWithObjectsAndKeys: path, @"Path", [[[path lastPathComponent] stringByDeletingPathExtension] stringByAppendingString:@" DB"], @"Description", nil]];
 			}
 			
-			[[NSUserDefaults standardUserDefaults] setObject: dbArray forKey: @"localDatabasePaths"];
+			if( DICOMDIRCDMODE == NO)
+				[[NSUserDefaults standardUserDefaults] setObject: dbArray forKey: @"localDatabasePaths"];
+	
 			[[NSNotificationCenter defaultCenter] postNotificationName:OsirixServerArrayChangedNotification object:nil];
 			
 			// Select it
@@ -3158,6 +3160,7 @@ static NSArray*	statesArray = nil;
 	if( isCurrentDatabaseBonjour) return nil;
 	if( [filesInput count] == 0) return filesInput;
 	if( COPYDATABASE == NO) return filesInput;
+	if( DICOMDIRCDMODE) return filesInput;
 	
 	NSMutableArray *newList = [NSMutableArray arrayWithCapacity: [filesInput count]];
 	NSString *INpath = [[self documentsDirectory] stringByAppendingPathComponent:DATABASEFPATH];
@@ -5672,6 +5675,12 @@ static NSArray*	statesArray = nil;
 	NSManagedObjectContext	*context = self.managedObjectContext;
 	BOOL					matrixThumbnails = YES;
 	int						animState = [animationCheck state];
+	
+	if( DICOMDIRCDMODE)
+	{
+		NSRunInformationalAlertPanel(NSLocalizedString(@"OsiriX CD/DVD", nil), NSLocalizedString(@"OsiriX is running in read-only mode, from a CD/DVD.", nil), NSLocalizedString(@"OK",nil), nil, nil);
+		return;
+	}
 	
 	[self checkResponder];
 	
@@ -12401,6 +12410,8 @@ static NSArray*	openSubSeriesArray = nil;
 	
 	[bonjourSharingCheck setState: NSOffState];
 	[bonjourPublisher toggleSharing:NO];
+	
+	[[NSFileManager defaultManager] removeFileAtPath: @"/tmp/OsiriXTemporaryDatabase" handler: nil];
 }
 
 - (BOOL)shouldTerminate: (id)sender
@@ -13792,10 +13803,10 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (void)checkIncomingNow: (id)sender
 {
-//	if( isCurrentDatabaseBonjour) return;
 	if( DatabaseIsEdited == YES && [[self window] isKeyWindow] == YES) return;
 	if( managedObjectContext == nil) return;
 	if( [NSDate timeIntervalSinceReferenceDate] - lastCheckIncoming < 0.5) return;
+	if( DICOMDIRCDMODE) return;
 	
 	[checkIncomingLock lock];
 	if( [managedObjectContext tryLock])
@@ -13825,7 +13836,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (void)checkIncoming: (id)sender
 {
-//	if( isCurrentDatabaseBonjour) return;
+	if( DICOMDIRCDMODE) return;
 	if( DatabaseIsEdited == YES && [[self window] isKeyWindow] == YES) return;
 	if( managedObjectContext == nil) return;
 	if( [NSDate timeIntervalSinceReferenceDate] - lastCheckIncoming < 0.5) return;
@@ -15214,6 +15225,12 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (IBAction)querySelectedStudy: (id)sender
 {
+	if( DICOMDIRCDMODE)
+	{
+		NSRunInformationalAlertPanel(NSLocalizedString(@"OsiriX CD/DVD", nil), NSLocalizedString(@"OsiriX is running in read-only mode, from a CD/DVD.", nil), NSLocalizedString(@"OK",nil), nil, nil);
+		return;
+	}
+	
 	[self.window makeKeyAndOrderFront:sender];
 	
     if( [QueryController currentQueryController] == nil) [[QueryController alloc] init];
@@ -15240,6 +15257,12 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (void)queryDICOM: (id)sender
 {
+	if( DICOMDIRCDMODE)
+	{
+		NSRunInformationalAlertPanel(NSLocalizedString(@"OsiriX CD/DVD", nil), NSLocalizedString(@"OsiriX is running in read-only mode, from a CD/DVD.", nil), NSLocalizedString(@"OK",nil), nil, nil);
+		return;
+	}
+
 	if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask)	// Query selected patient
 		[self querySelectedStudy: self];
 	else
@@ -17005,6 +17028,12 @@ static volatile int numberOfThreadsForJPEG = 0;
 {
 	BOOL isDirectory;
 	
+	if( DICOMDIRCDMODE)
+	{
+		NSRunInformationalAlertPanel(NSLocalizedString(@"OsiriX CD/DVD", nil), NSLocalizedString(@"OsiriX is running in read-only mode, from a CD/DVD.", nil), NSLocalizedString(@"OK",nil), nil, nil);
+		return;
+	}
+	
 	if( [[NSFileManager defaultManager] fileExistsAtPath: path isDirectory: &isDirectory])
 	{
 		if( isDirectory)
@@ -17032,6 +17061,14 @@ static volatile int numberOfThreadsForJPEG = 0;
 - (IBAction)bonjourServiceClickedProceed: (id)sender
 {
 	if( [bonjourServicesList selectedRow] == -1) return;
+	if( DICOMDIRCDMODE)
+	{
+		dontLoadSelectionSource = YES;
+		[bonjourServicesList selectRow: 0 byExtendingSelection: NO];
+		dontLoadSelectionSource = NO;
+		NSRunInformationalAlertPanel(NSLocalizedString(@"OsiriX CD/DVD", nil), NSLocalizedString(@"OsiriX is running in read-only mode, from a CD/DVD.", nil), NSLocalizedString(@"OK",nil), nil, nil);
+		return;
+	}
 	
 	dontLoadSelectionSource = YES;
 	
