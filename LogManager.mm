@@ -79,7 +79,8 @@ LogManager *currentLogManager;
 	[super dealloc];
 }
 
-- (NSString *)logFolder{
+- (NSString *)logFolder
+{
 	NSString *path =  [[[BrowserController currentBrowser] fixedDocumentsDirectory] stringByAppendingPathComponent:@"TEMP.noindex"];
 	NSFileManager *manager = [NSFileManager defaultManager];
 	BOOL isDir;
