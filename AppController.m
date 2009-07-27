@@ -2597,6 +2597,8 @@ static BOOL initialized = NO;
 												 object: nil];
 	
 	[[NSUserDefaults standardUserDefaults] setBool:YES forKey: @"SAMESTUDY"];
+	
+//	*(long*)0 = 0xDEADBEEF;	// Test for ILCrashReporter
 }
 
 - (IBAction) updateViews:(id) sender
