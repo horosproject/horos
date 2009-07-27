@@ -13234,9 +13234,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (void)decompressDICOMJPEGinINCOMING: (NSArray*) array
 {
-	NSAutoreleasePool   *pool = [[NSAutoreleasePool alloc] init];
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
-	NSString			*INpath = [[self documentsDirectory] stringByAppendingPathComponent:INCOMINGPATH];
+	NSString *INpath = [[self localDocumentsDirectory] stringByAppendingPathComponent:INCOMINGPATH];
 	
 	[self decompressDICOMList: array to: INpath];
 	
@@ -13274,7 +13274,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 {
 	NSAutoreleasePool   *pool = [[NSAutoreleasePool alloc] init];
 	
-	NSString			*INpath = [[self documentsDirectory] stringByAppendingPathComponent:INCOMINGPATH];
+	NSString			*INpath = [[self localDocumentsDirectory] stringByAppendingPathComponent:INCOMINGPATH];
 	
 	[self compressDICOMWithJPEG: array to: INpath];
 	
