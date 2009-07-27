@@ -2,10 +2,10 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="7.02">
 	<data>
 		<int key="IBDocument.SystemTarget">1050</int>
-		<string key="IBDocument.SystemVersion">9E17</string>
-		<string key="IBDocument.InterfaceBuilderVersion">670</string>
-		<string key="IBDocument.AppKitVersion">949.33</string>
-		<string key="IBDocument.HIToolboxVersion">352.00</string>
+		<string key="IBDocument.SystemVersion">9J61</string>
+		<string key="IBDocument.InterfaceBuilderVersion">672</string>
+		<string key="IBDocument.AppKitVersion">949.46</string>
+		<string key="IBDocument.HIToolboxVersion">353.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
 			<integer value="737"/>
@@ -512,8 +512,8 @@
 											<reference key="NSBackgroundColor" ref="986368147"/>
 											<reference key="NSTextColor" ref="364769861"/>
 										</object>
-										<int key="NSSelectedRow">7</int>
-										<reference key="NSSelectedCell" ref="165121295"/>
+										<int key="NSSelectedRow">-1</int>
+										<int key="NSSelectedCol">-1</int>
 										<reference key="NSBackgroundColor" ref="346508496"/>
 										<reference key="NSCellBackgroundColor" ref="346508496"/>
 									</object>
@@ -1567,7 +1567,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 			<object class="NSWindowTemplate" id="388988117">
 				<int key="NSWindowStyleMask">1</int>
 				<int key="NSWindowBacking">2</int>
-				<string key="NSWindowRect">{{1004, 426}, {552, 425}}</string>
+				<string key="NSWindowRect">{{1004, 421}, {644, 430}}</string>
 				<int key="NSWTFlags">1886912512</int>
 				<string key="NSWindowTitle">Anonymize</string>
 				<object class="NSMutableString" key="NSWindowClass">
@@ -1586,7 +1586,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<object class="NSButton" id="253706258">
 							<reference key="NSNextResponder" ref="884034154"/>
 							<int key="NSvFlags">256</int>
-							<string key="NSFrame">{{449, 7}, {97, 32}}</string>
+							<string key="NSFrame">{{533, 12}, {97, 32}}</string>
 							<reference key="NSSuperview" ref="884034154"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="574562201">
@@ -1607,7 +1607,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<object class="NSButton" id="600213754">
 							<reference key="NSNextResponder" ref="884034154"/>
 							<int key="NSvFlags">256</int>
-							<string key="NSFrame">{{352, 7}, {97, 32}}</string>
+							<string key="NSFrame">{{436, 12}, {97, 32}}</string>
 							<reference key="NSSuperview" ref="884034154"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="355451969">
@@ -1628,13 +1628,13 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<object class="NSCustomView" id="770925787">
 							<reference key="NSNextResponder" ref="884034154"/>
 							<int key="NSvFlags">256</int>
-							<string key="NSFrame">{{0, 46}, {552, 379}}</string>
+							<string key="NSFrame">{{0, 51}, {644, 379}}</string>
 							<reference key="NSSuperview" ref="884034154"/>
 							<string key="NSClassName">NSView</string>
 							<string key="NSExtension">NSResponder</string>
 						</object>
 					</object>
-					<string key="NSFrameSize">{552, 425}</string>
+					<string key="NSFrameSize">{644, 430}</string>
 					<reference key="NSSuperview"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {2560, 1577}}</string>
@@ -2087,8 +2087,8 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<object class="NSMutableArray" key="children">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<reference ref="770925787"/>
-							<reference ref="600213754"/>
 							<reference ref="253706258"/>
+							<reference ref="600213754"/>
 						</object>
 						<reference key="parent" ref="388988117"/>
 					</object>
@@ -3008,11 +3008,11 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
-					<string>{{168, 925}, {552, 425}}</string>
+					<string>{{168, 920}, {644, 430}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{168, 925}, {552, 425}}</string>
+					<string>{{168, 920}, {644, 430}}</string>
 					<reference ref="9"/>
-					<reference ref="9"/>
+					<integer value="0"/>
 					<reference ref="9"/>
 					<string>{3.40282e+38, 3.40282e+38}</string>
 					<string>{213, 107}</string>
@@ -3202,6 +3202,13 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">KFSplitView.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">ViewerController.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">

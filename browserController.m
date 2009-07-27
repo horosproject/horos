@@ -2718,8 +2718,6 @@ static NSArray*	statesArray = nil;
 
 - (void) loadDatabase:(NSString*) path
 {
-	long        i;
-	
 	[[AppController sharedAppController] closeAllViewers: self];
 	
 	displayEmptyDatabase = YES;
@@ -2767,7 +2765,7 @@ static NSArray*	statesArray = nil;
 		else
 			[[NSFileManager defaultManager] removeFileAtPath: [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"DBFOLDER_LOCATION"] handler: nil];
 			
-		i = [self findDBPath: path dbFolder: DBFolderLocation];
+		long i = [self findDBPath: path dbFolder: DBFolderLocation];
 		if( i == -1 )
 		{
 			NSLog( @"DB Not found -> we add it");
@@ -2846,30 +2844,10 @@ static NSArray*	statesArray = nil;
 		[wait release];
 	}
 	
-	// CHECK IF A DICOMDIR FILE IS AVAILABLE AT SAME LEVEL AS OSIRIX!?
-	NSString	*dicomdir = [[[[NSBundle mainBundle] bundlePath] stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"/DICOMDIR"];
-	if ([[NSFileManager defaultManager] fileExistsAtPath:dicomdir] )
-	{
-		DICOMDIRCDMODE = YES;
-		
-		NSMutableArray		*filesArray = [[NSMutableArray alloc] initWithCapacity:0];
-		[self addDICOMDIR:dicomdir :filesArray];
-		[self addFilesAndFolderToDatabase:filesArray];
-        [filesArray release];
-	}
+	if( NEEDTOREBUILD)
+		[self ReBuildDatabase:self];
 	else
-	{
-		DICOMDIRCDMODE = NO;
-		
-		if( NEEDTOREBUILD )
-		{
-			[self ReBuildDatabase:self];
-		}
-		else
-		{
-			[self outlineViewRefresh];
-		}
-	}
+		[self outlineViewRefresh];
 	
 	NSString *pathTemp = [[self documentsDirectory] stringByAppendingString:@"/Loading"];
 	
@@ -11831,7 +11809,27 @@ static NSArray*	openSubSeriesArray = nil;
 				COMPLETEREBUILD = YES;
 			}
 		}
+		
+		NSString *dicomdir = [[[[NSBundle mainBundle] bundlePath] stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"/DICOMDIR"];
+		if ([[NSFileManager defaultManager] fileExistsAtPath:dicomdir] )
+		{
+			DICOMDIRCDMODE = YES;
+			
+			[currentDatabasePath release];
+			currentDatabasePath = [[NSString stringWithString: @"/tmp/OsiriXTemporaryDatabase"] retain];
+			[[NSFileManager defaultManager] removeFileAtPath: currentDatabasePath handler: nil];
+		}
+		
 		[self loadDatabase: currentDatabasePath];
+		
+		if( DICOMDIRCDMODE)
+		{
+			NSMutableArray *filesArray = [[NSMutableArray alloc] initWithCapacity:0];
+			[self addDICOMDIR:dicomdir :filesArray];
+			[self addFilesAndFolderToDatabase:filesArray];
+			[filesArray release];
+		}
+		
 		[self setFixedDocumentsDirectory];
 		[self setNetworkLogs];
 		

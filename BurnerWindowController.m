@@ -263,20 +263,12 @@ NSString* asciiString (NSString* name);
 		[[NSFileManager defaultManager] removeFileAtPath:[self folderToBurn] handler:nil];
 		[[NSFileManager defaultManager] removeFileAtPath:[NSString stringWithFormat:@"/tmp/burnAnonymized"] handler:nil];
 		
-		[nameField setEnabled: NO];
-		[compressionMode setEnabled: NO];
-		[anonymizedCheckButton setEnabled: NO];
-		[misc1 setEnabled: NO];
-		[misc2 setEnabled: NO];
-		[misc3 setEnabled: NO];
-		[misc4 setEnabled: NO];
-
 		writeDMG = NO;
 		if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask) writeDMG = YES;
 
 		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"anonymizedBeforeBurning"])
 		{
-			AnonymizerWindowController	*anonymizer = [[AnonymizerWindowController alloc] init];
+			AnonymizerWindowController *anonymizer = [[AnonymizerWindowController alloc] init];
 			
 			[anonymizer setFilesToAnonymize:files :dbObjects];
 			[anonymizer showWindow:self];
@@ -286,12 +278,26 @@ NSString* asciiString (NSString* name);
 			
 			[anonymizedFiles release];
 			anonymizedFiles = [[anonymizer producedFiles] retain];
+			
+			if( [anonymizedFiles count] == 0) // Cancel
+			{
+				return;
+			}
 		}
 		else
 		{
 			[anonymizedFiles release];
 			anonymizedFiles = nil;
 		}
+		
+		[nameField setEnabled: NO];
+		[compressionMode setEnabled: NO];
+		[anonymizedCheckButton setEnabled: NO];
+		[misc1 setEnabled: NO];
+		[misc2 setEnabled: NO];
+		[misc3 setEnabled: NO];
+		[misc4 setEnabled: NO];
+
 		
 		if (cdName != nil && [cdName length] > 0)
 		{
