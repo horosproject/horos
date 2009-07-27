@@ -189,9 +189,9 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 - (NSString*) SRPathForFrame: (int) frameNo
 {
 	#ifdef OSIRIX_VIEWER
-	NSString	*documentsDirectory = [[[BrowserController currentBrowser] fixedDocumentsDirectory] stringByAppendingPathComponent:ROIDATABASE];
+	NSString *d = [[DicomImage dbPathForManagedContext: [self managedObjectContext]] stringByAppendingPathComponent:ROIDATABASE];
 	
-	return [documentsDirectory stringByAppendingPathComponent: [self SRFilenameForFrame: frameNo]];
+	return [d stringByAppendingPathComponent: [self SRFilenameForFrame: frameNo]];
 	#else
 	return nil;
 	#endif
@@ -658,6 +658,17 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 	[self didChangeValueForKey: @"pathString"];
 }
 
++ (NSString*) dbPathForManagedContext: (NSManagedObjectContext *) c
+{
+	NSPersistentStoreCoordinator *sc = [c persistentStoreCoordinator];
+	NSArray *stores = [sc persistentStores];
+	
+	if( [stores count] != 1)
+		NSLog( @"*** warning [stores count] != 1");
+		
+	return [[[sc URLForPersistentStore: [stores lastObject]] path] stringByDeletingLastPathComponent];
+}
+
 -(NSString*) completePathWithDownload:(BOOL) download
 {
 	if( completePathCache) return completePathCache;
@@ -681,7 +692,8 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 		{
 			if( [path characterAtIndex: 0] != '/')
 			{
-				completePathCache = [[DicomImage completePathForLocalPath: path directory: [cB fixedDocumentsDirectory]] retain];
+				completePathCache = [[DicomImage completePathForLocalPath: path directory: [DicomImage dbPathForManagedContext: [self managedObjectContext]]] retain];
+				
 				return completePathCache;
 			}
 		}

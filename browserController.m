@@ -404,7 +404,7 @@ static NSArray*	statesArray = nil;
 	long					addFailed = NO;
 	BOOL					DELETEFILELISTENER = [[NSUserDefaults standardUserDefaults] boolForKey: @"DELETEFILELISTENER"];
 	BOOL					COMMENTSAUTOFILL = [[NSUserDefaults standardUserDefaults] boolForKey: @"COMMENTSAUTOFILL"];
-	NSString				*ERRpath = [[self documentsDirectory] stringByAppendingPathComponent:ERRPATH];
+	NSString				*ERRpath = [dbFolder stringByAppendingPathComponent:ERRPATH];
 	BOOL					newStudy = NO, newObject = NO;
 	NSMutableArray			*vlToRebuild = [NSMutableArray arrayWithCapacity: 0];
 	NSMutableArray			*vlToReload = [NSMutableArray arrayWithCapacity: 0];
@@ -562,7 +562,7 @@ static NSArray*	statesArray = nil;
 	if (error)
 	{
 		NSLog( @"addFilesToDatabase ERROR: %@", [error localizedDescription]);
-		//managedObjectContext = nil;
+		
 		[context unlock];
 		[context release];
 		
@@ -1022,11 +1022,11 @@ static NSArray*	statesArray = nil;
 		
 		@try
 		{
-			if( [NSDate timeIntervalSinceReferenceDate] - lastSaved > 120)
+			if( [NSDate timeIntervalSinceReferenceDate] - lastSaved > 120 || context != managedObjectContext)
 			{
 				[self autoCleanDatabaseFreeSpace: self];
 			
-				if( [self saveDatabase:currentDatabasePath] != 0)
+				if( [self saveDatabase: [[DicomImage dbPathForManagedContext: context] stringByAppendingString: DATAFILEPATH] context: context] != 0)
 				{
 					//All these files were NOT saved..... due to an error. Move them back to the INCOMING folder.
 					addFailed = YES;
@@ -1961,14 +1961,6 @@ static NSArray*	statesArray = nil;
 - (NSManagedObjectContext *) managedObjectContext
 {
 	return [self managedObjectContextLoadIfNecessary: YES];
-}
-
-- (NSManagedObjectContext *) localManagedObjectContext
-{
-	if( isCurrentDatabaseBonjour)
-		return [self defaultManagerObjectContext];
-	else
-		return [self managedObjectContextLoadIfNecessary: YES];
 }
 
 - (void) addDICOMDIR:(NSString*) dicomdir :(NSMutableArray*) files
@@ -2928,15 +2920,14 @@ static NSArray*	statesArray = nil;
 //	[context unlock];
 }
 
--(long)saveDatabase: (NSString*)path
+-(long) saveDatabase: (NSString*)path context: (NSManagedObjectContext*) context
 {
 	long retError = 0;
 	
-	if( DICOMDIRCDMODE == NO && isCurrentDatabaseBonjour == NO && currentDatabasePath != nil )
+	if( DICOMDIRCDMODE == NO)
 	{
 		@try
 		{
-			NSManagedObjectContext *context = self.managedObjectContext;
 			NSError *error = nil;
 			
 			[context retain];
@@ -2950,7 +2941,8 @@ static NSArray*	statesArray = nil;
 				retError = -1L;
 			}
 			
-			if( path == nil) path = currentDatabasePath;
+			if( path == nil)
+				path = currentDatabasePath;
 			
 			[[NSString stringWithString:DATABASEVERSION] writeToFile: [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"DB_VERSION"] atomically:YES];
 			
@@ -2971,6 +2963,12 @@ static NSArray*	statesArray = nil;
 	}
 	
 	return retError;
+}
+
+
+-(long) saveDatabase: (NSString*)path
+{
+	return [self saveDatabase: path context: self.managedObjectContext];
 }
 
 - (void)selectThisStudy: (id)study
@@ -13553,32 +13551,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 		
 		@try
 		{
-			NSManagedObjectContext *sqlContext;
-			NSString *dbFolder = [self documentsDirectory];
-			
-			if( isCurrentDatabaseBonjour || [[self fixedDocumentsDirectory] isEqualToString: dbFolder] == NO)
-			{
-				dbFolder = [self documentsDirectoryFor: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULT_DATABASELOCATION"] url: [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"]];
-				NSString *sqlFile = [dbFolder stringByAppendingPathComponent:@"Database.sql"];
-				
-				NSPersistentStoreCoordinator *sc = [[[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel: self.managedObjectModel] autorelease];
-				sqlContext = [[[NSManagedObjectContext alloc] init] autorelease];
-				
-				[sqlContext setPersistentStoreCoordinator: sc];
-						
-				if( [[sqlContext undoManager] isUndoRegistrationEnabled])
-				{
-					[[sqlContext undoManager] setLevelsOfUndo: 1];
-					[[sqlContext undoManager] disableUndoRegistration];
-				}
-				
-				NSError	*error = nil;
-				[sc addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:[NSURL fileURLWithPath: sqlFile] options:nil error:&error];
-			}
-			else
-			{
-				sqlContext = managedObjectContext;
-			}
+			NSString *dbFolder = [self localDocumentsDirectory];
+			NSManagedObjectContext *sqlContext = [self localManagedObjectContext];
 			
 			NSString *INpath = [dbFolder stringByAppendingPathComponent:INCOMINGPATH];
 			NSString *ERRpath = [dbFolder stringByAppendingPathComponent:ERRPATH];
@@ -13587,8 +13561,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 			
 			//NSLog(@"Scan folder START");
 			
-			if( bonjourDownloading == NO && isCurrentDatabaseBonjour == NO )
-			{	
+			if( bonjourDownloading == NO)
+			{
 				//need to resolve aliases and symbolic links
 				INpath = [self folderPathResolvingAliasAndSymLink:INpath];
 				OUTpath = [self folderPathResolvingAliasAndSymLink:OUTpath];
@@ -17149,7 +17123,19 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (NSString*) localDatabasePath
 {
-	return [[self documentsDirectory] stringByAppendingPathComponent:DATAFILEPATH];
+	return [[self localDocumentsDirectory] stringByAppendingPathComponent:DATAFILEPATH];
+}
+
+- (NSManagedObjectContext *) localManagedObjectContext
+{
+	if( isCurrentDatabaseBonjour || [[self localDocumentsDirectory] isEqualToString: [self documentsDirectory]] == NO)
+	{
+		return [self defaultManagerObjectContext];
+	}
+	else
+	{
+		return [self managedObjectContextLoadIfNecessary: YES];
+	}
 }
 
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
@@ -17159,8 +17145,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (void)executeFilterFromString: (NSString*)name
 {
-	long			result;
-    id				filter = [[PluginManager plugins] objectForKey:name];
+	long result;
+    id filter = [[PluginManager plugins] objectForKey:name];
 	
 	if (filter==nil)
 	{
@@ -17220,19 +17206,31 @@ static volatile int numberOfThreadsForJPEG = 0;
 	return fixedDocumentsDirectory;
 }
 
-- (NSString *)fixedDocumentsDirectory
+- (NSString *) localDocumentsDirectory
+{
+	NSString *p;
+	
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"addNewIncomingFilesToDefaultDBOnly"])
+		p = [self documentsDirectoryFor: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULT_DATABASELOCATION"] url: [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"]];
+	else
+		p = [self documentsDirectory];
+		
+	return p;
+}
+
+- (NSString *) fixedDocumentsDirectory
 {
 	if( fixedDocumentsDirectory == nil) [self setFixedDocumentsDirectory];
 	return fixedDocumentsDirectory;
 }
 
-- (char *)cfixedDocumentsDirectory
+- (char *) cfixedDocumentsDirectory
 { return cfixedDocumentsDirectory; }
 
-- (char *)cfixedIncomingDirectory
+- (char *) cfixedIncomingDirectory
 { return cfixedIncomingDirectory;}
 
-- (NSString *)documentsDirectory
+- (NSString *) documentsDirectory
 {
 	NSString *dir = documentsDirectory();
 	return dir;
@@ -17240,7 +17238,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (NSString *) documentsDirectoryFor:(int) mode url:(NSString*) url
 {
-	NSString	*dir = documentsDirectoryFor( mode, url);
+	NSString *dir = documentsDirectoryFor( mode, url);
 	return dir;
 }
 

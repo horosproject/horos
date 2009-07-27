@@ -8,6 +8,7 @@
 		<string key="IBDocument.HIToolboxVersion">353.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
+			<integer value="6"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -37,7 +38,7 @@
 				<string key="NSWindowContentMaxSize">{3.40282e+38, 3.40282e+38}</string>
 				<string key="NSWindowContentMinSize">{224.663, 10}</string>
 				<object class="NSView" key="NSWindowView" id="738391672">
-					<nil key="NSNextResponder"/>
+					<reference key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<object class="NSMutableArray" key="NSSubviews">
 						<bool key="EncodedWithXMLCoder">YES</bool>
@@ -1189,7 +1190,7 @@
 											<object class="NSButtonCell" key="NSCell" id="545640080">
 												<int key="NSCellFlags">67239424</int>
 												<int key="NSCellFlags2">0</int>
-												<string key="NSContents">Add new incoming files to the default database only (see default DB location in DB Preferences)</string>
+												<string key="NSContents">Incoming and outcoming files are always linked to the default database  (see path in DB Preferences)</string>
 												<reference key="NSSupport" ref="349069678"/>
 												<reference key="NSControlView" ref="255321613"/>
 												<int key="NSButtonFlags">1211912703</int>
@@ -1712,16 +1713,13 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						</object>
 					</object>
 					<string key="NSFrameSize">{725, 742}</string>
+					<reference key="NSSuperview"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {2560, 1578}}</string>
 				<string key="NSMinSize">{224.663, 32}</string>
 				<string key="NSMaxSize">{3.40282e+38, 3.40282e+38}</string>
 			</object>
 			<object class="NSUserDefaultsController" id="896066363">
-				<object class="NSMutableArray" key="NSDeclaredKeys">
-					<bool key="EncodedWithXMLCoder">YES</bool>
-					<string>hideListenerError</string>
-				</object>
 				<bool key="NSSharedInstance">YES</bool>
 			</object>
 		</object>
@@ -3249,8 +3247,8 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<reference ref="9"/>
 					<string>{{543, 167}, {725, 742}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="6"/>
-					<reference ref="6"/>
+					<reference ref="8"/>
+					<reference ref="8"/>
 					<string>{{543, 167}, {725, 742}}</string>
 					<reference ref="9"/>
 					<string>{{770, 336}, {725, 672}}</string>
