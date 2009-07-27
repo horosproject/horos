@@ -48,6 +48,7 @@ typedef struct
 	NSString *specificCharacterSet;
 	NSEnumerator *findEnumerator;
 	NSString *callingAET;
+	NSManagedObjectContext *context;
 	
 	int numberMoving;
 	

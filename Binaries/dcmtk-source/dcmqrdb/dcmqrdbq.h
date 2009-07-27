@@ -26,14 +26,14 @@
 #include "dcmqrdbi.h" // for DB_Level
 #include "dcmqridx.h"
 
-#import "DCMTKDataHandlerCategory.h"
-
 struct StudyDescRecord;
 struct DB_OsiriX_Handle;
 struct DB_SmallDcmElmt;
 struct IdxRecord;
 struct DB_ElementList;
 class DcmQueryRetrieveConfig;
+
+#import "OsiriXSCPDataHandler.h"
 
 struct DB_OsiriX_Handle
 {	

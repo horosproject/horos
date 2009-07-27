@@ -33,6 +33,10 @@ char currentDestinationMoveAET[ 60] = "";
 
 - (void)dealloc
 {
+	if( context)
+		[context release];
+	context = 0L;
+	
 	for( int i = 0 ; i < moveArraySize; i++) free( moveArray[ i]);
 	free( moveArray);
 	moveArray = nil;
@@ -41,6 +45,8 @@ char currentDestinationMoveAET[ 60] = "";
 	if( logFiles) free( logFiles);
 	logFiles = nil;
 	
+	[findArray release];
+	findArray = nil;
 	
 	if( specificCharacterSet)
 		[specificCharacterSet release];
@@ -1146,8 +1152,10 @@ char currentDestinationMoveAET[ 60] = "";
 					
 		error = nil;
 		
-		NSManagedObjectContext *context = [[BrowserController currentBrowser] localManagedObjectContext];
+		[context release];
 		
+		context = [[BrowserController currentBrowser] localManagedObjectContext];
+		[context retain];
 		[context lock];
 		
 		[findArray release];
@@ -1161,6 +1169,8 @@ char currentDestinationMoveAET[ 60] = "";
 			{
 				findArray = [findArray filteredArrayUsingPredicate: predicate];
 			}
+			
+			[findArray retain];
 		}
 		@catch (NSException * e)
 		{
@@ -1172,18 +1182,18 @@ char currentDestinationMoveAET[ 60] = "";
 		
 		if (error)
 		{
+			[findArray release];
 			findArray = nil;
 			cond = EC_IllegalParameter;
 		}
 		else
-		{
-			[findArray retain];
 			cond = EC_Normal;
-		}
 	}
 	else
 	{
+		[findArray release];
 		findArray = nil;
+		
 		cond = EC_IllegalParameter;
 	}
 	
@@ -1223,7 +1233,7 @@ char currentDestinationMoveAET[ 60] = "";
 			FILE * pFile;
 			char dir[ 1024], newdir[1024];
 			unsigned int random = (unsigned int)time(NULL);
-			sprintf( dir, "%s/%s%d", [[BrowserController currentBrowser] cfixedDocumentsDirectory], "TEMP.noindex/move_log_", random);
+			sprintf( dir, "%s/%s%d", [[BrowserController currentBrowser] cfixedIncomingDirectory], "TEMP.noindex/move_log_", random);
 			pFile = fopen (dir,"w+");
 			if( pFile)
 			{
@@ -1255,7 +1265,7 @@ char currentDestinationMoveAET[ 60] = "";
 			FILE * pFile;
 			char dir[ 1024], newdir[1024];
 			unsigned int random = (unsigned int)time(NULL);
-			sprintf( dir, "%s/%s%d", [[BrowserController currentBrowser] cfixedDocumentsDirectory], "TEMP.noindex/move_log_", random);
+			sprintf( dir, "%s/%s%d", [[BrowserController currentBrowser] cfixedIncomingDirectory], "TEMP.noindex/move_log_", random);
 			pFile = fopen (dir,"w+");
 			if( pFile)
 			{
@@ -1314,8 +1324,10 @@ char currentDestinationMoveAET[ 60] = "";
 	
 	error = nil;
 	
-	NSManagedObjectContext *context = [[BrowserController currentBrowser] localManagedObjectContext];
+	[context release];
 	
+	context = [[BrowserController currentBrowser] localManagedObjectContext];
+	[context retain];
 	[context lock];
 	
 	NSArray *array = nil;
@@ -1410,6 +1422,8 @@ char currentDestinationMoveAET[ 60] = "";
 	}
 
 	[context unlock];
+	[context release];
+	context = 0L;
 	
 	// TO AVOID DEADLOCK
 	
@@ -1444,16 +1458,14 @@ char currentDestinationMoveAET[ 60] = "";
 	return moveArraySize;
 }
 
-- (OFCondition) nextFindObject:(DcmDataset *)dataset  isComplete:(BOOL *)isComplete
+- (OFCondition) nextFindObject:(DcmDataset *)dataset isComplete:(BOOL *)isComplete
 {
 	id item;
-	
-	NSManagedObjectContext *context = [[BrowserController currentBrowser] localManagedObjectContext];
 	
 	[context lock];
 	
 	@try
-	{	
+	{
 		if (item = [findEnumerator nextObject])
 		{
 			if ([[item valueForKey:@"type"] isEqualToString:@"Series"])
@@ -1471,9 +1483,15 @@ char currentDestinationMoveAET[ 60] = "";
 			*isComplete = NO;
 		}
 		else
+		{
+			[context unlock];
+			[context release];
+			context = nil;
+			
 			*isComplete = YES;
+		}
 	}
-		
+	
 	@catch (NSException * e)
 	{
 		NSLog( @"******* nextFindObject exception : %@", e);
@@ -1508,7 +1526,7 @@ char currentDestinationMoveAET[ 60] = "";
 		FILE * pFile;
 		char dir[ 1024], newdir[1024];
 		unsigned int random = (unsigned int)time(NULL);
-		sprintf( dir, "%s/%s%d", [[BrowserController currentBrowser] cfixedDocumentsDirectory], "TEMP.noindex/move_log_", random);
+		sprintf( dir, "%s/%s%d", [[BrowserController currentBrowser] cfixedIncomingDirectory], "TEMP.noindex/move_log_", random);
 		pFile = fopen (dir,"w+");
 		if( pFile)
 		{
