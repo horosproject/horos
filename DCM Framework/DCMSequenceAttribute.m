@@ -49,7 +49,7 @@
 	if (self = [super initWithAttributeTag:(DCMAttributeTag *)tag]) 
 		sequenceItems  = [[NSMutableArray array] retain];
 	
-	if( [_vr isEqualToString: @"UN"])
+	if( [_vr isEqualToString: @"SQ"] == NO)
 	{
 		[_vr release];
 		_vr = [[NSString stringWithString:@"SQ"] retain];
@@ -69,7 +69,7 @@
 	if (self = [super  initWithAttributeTag:(DCMAttributeTag *)tag]) 
 		sequenceItems  = [[NSMutableArray array] retain];
 		
-	if( [_vr isEqualToString: @"UN"])
+	if( [_vr isEqualToString: @"SQ"] == NO)
 	{
 		[_vr release];
 		_vr = [[NSString stringWithString:@"SQ"] retain];
@@ -164,6 +164,7 @@
 	if( [_vr isEqualToString: @"SQ"] == NO)
 	{
 		NSLog( @"******* error SQ needs to be encoded as a SQ object !!!");
+		return YES;
 	}
 	
 	[self writeBaseToData:container transferSyntax:ts];
