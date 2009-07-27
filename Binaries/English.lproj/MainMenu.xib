@@ -8,7 +8,7 @@
 		<string key="IBDocument.HIToolboxVersion">353.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="11171"/>
+			<integer value="849"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -546,35 +546,6 @@
 								<object class="NSMenuItem" id="430346711">
 									<reference key="NSMenu" ref="152609316"/>
 									<string key="NSTitle">Rebuild Selected Thumbnails</string>
-									<string key="NSKeyEquiv"/>
-									<int key="NSKeyEquivModMask">1048576</int>
-									<int key="NSMnemonicLoc">2147483647</int>
-									<reference key="NSOnImage" ref="125626618"/>
-									<reference key="NSMixedImage" ref="973943092"/>
-								</object>
-								<object class="NSMenuItem" id="404084567">
-									<reference key="NSMenu" ref="152609316"/>
-									<bool key="NSIsDisabled">YES</bool>
-									<bool key="NSIsSeparator">YES</bool>
-									<string key="NSTitle"/>
-									<string key="NSKeyEquiv"/>
-									<int key="NSKeyEquivModMask">1048576</int>
-									<int key="NSMnemonicLoc">2147483647</int>
-									<reference key="NSOnImage" ref="125626618"/>
-									<reference key="NSMixedImage" ref="973943092"/>
-								</object>
-								<object class="NSMenuItem" id="534644276">
-									<reference key="NSMenu" ref="152609316"/>
-									<string key="NSTitle">New Database SQL Index File...</string>
-									<string key="NSKeyEquiv"/>
-									<int key="NSKeyEquivModMask">1048576</int>
-									<int key="NSMnemonicLoc">2147483647</int>
-									<reference key="NSOnImage" ref="125626618"/>
-									<reference key="NSMixedImage" ref="973943092"/>
-								</object>
-								<object class="NSMenuItem" id="96625857">
-									<reference key="NSMenu" ref="152609316"/>
-									<string key="NSTitle">Open Database SQL Index File...</string>
 									<string key="NSKeyEquiv"/>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -9662,14 +9633,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<int key="connectionID">1724</int>
 				</object>
 				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">createDatabase:</string>
-						<reference key="source" ref="772029037"/>
-						<reference key="destination" ref="534644276"/>
-					</object>
-					<int key="connectionID">1729</int>
-				</object>
-				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
 						<string key="label">window</string>
 						<reference key="source" ref="772029037"/>
@@ -11245,14 +11208,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBActionConnection" key="connection">
-						<string key="label">openDatabase:</string>
-						<reference key="source" ref="772029037"/>
-						<reference key="destination" ref="96625857"/>
-					</object>
-					<int key="connectionID">12986</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
 						<string key="label">createDatabaseFolder:</string>
 						<reference key="source" ref="772029037"/>
 						<reference key="destination" ref="924270389"/>
@@ -12808,9 +12763,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 							<reference ref="133543259"/>
 							<reference ref="791901755"/>
 							<reference ref="13492439"/>
-							<reference ref="404084567"/>
-							<reference ref="534644276"/>
-							<reference ref="96625857"/>
 							<reference ref="243396991"/>
 						</object>
 						<reference key="parent" ref="98589897"/>
@@ -12868,11 +12820,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<object class="IBObjectRecord">
 						<int key="objectID">1725</int>
 						<reference key="object" ref="528911973"/>
-						<reference key="parent" ref="152609316"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">1726</int>
-						<reference key="object" ref="534644276"/>
 						<reference key="parent" ref="152609316"/>
 					</object>
 					<object class="IBObjectRecord">
@@ -13073,18 +13020,8 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						<reference key="parent" ref="152609316"/>
 					</object>
 					<object class="IBObjectRecord">
-						<int key="objectID">12983</int>
-						<reference key="object" ref="96625857"/>
-						<reference key="parent" ref="152609316"/>
-					</object>
-					<object class="IBObjectRecord">
 						<int key="objectID">12984</int>
 						<reference key="object" ref="577026085"/>
-						<reference key="parent" ref="152609316"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">12985</int>
-						<reference key="object" ref="404084567"/>
 						<reference key="parent" ref="152609316"/>
 					</object>
 					<object class="IBObjectRecord">
@@ -18582,12 +18519,8 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<string>12980.ImportedFromIB2</string>
 					<string>12982.IBPluginDependency</string>
 					<string>12982.ImportedFromIB2</string>
-					<string>12983.IBPluginDependency</string>
-					<string>12983.ImportedFromIB2</string>
 					<string>12984.IBPluginDependency</string>
 					<string>12984.ImportedFromIB2</string>
-					<string>12985.IBPluginDependency</string>
-					<string>12985.ImportedFromIB2</string>
 					<string>12989.IBPluginDependency</string>
 					<string>12989.ImportedFromIB2</string>
 					<string>12990.IBPluginDependency</string>
@@ -19171,8 +19104,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<string>1723.ImportedFromIB2</string>
 					<string>1725.IBPluginDependency</string>
 					<string>1725.ImportedFromIB2</string>
-					<string>1726.IBPluginDependency</string>
-					<string>1726.ImportedFromIB2</string>
 					<string>1728.IBPluginDependency</string>
 					<string>1728.ImportedFromIB2</string>
 					<string>19.IBPluginDependency</string>
@@ -19987,10 +19918,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
-					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="9"/>
-					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="9"/>
 					<string>{{266, 614}, {296, 113}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>{{266, 614}, {296, 113}}</string>
@@ -20574,8 +20501,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
-					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="9"/>
 					<string>{{657, 753}, {212, 143}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
@@ -20601,7 +20526,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
-					<string>{{219, 303}, {337, 593}}</string>
+					<string>{{219, 353}, {337, 543}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
 					<string>{{706, 407}, {337, 613}}</string>
