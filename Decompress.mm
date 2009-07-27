@@ -330,7 +330,7 @@ int main(int argc, const char *argv[])
 					DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile: curFile decodingPixelData: NO];
 					@try
 					{
-						status = [dcmObject writeToFile: curFileDest withTransferSyntax:[DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax] quality:1 AET:@"OsiriX" atomically:YES];	//ImplicitVRLittleEndianTransferSyntax
+						status = [dcmObject writeToFile: curFileDest withTransferSyntax:[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax] quality:1 AET:@"OsiriX" atomically:YES];	//ImplicitVRLittleEndianTransferSyntax
 					}
 					@catch (NSException *e)
 					{

@@ -713,7 +713,6 @@
 	int length = [string length];
 	if (length%2)
 		[self addUnsignedChar:0];
-		//[self addUnsignedChar:0];
 	
 }
 - (void)addString:(NSString *)string withEncoding:(NSStringEncoding)encoding{
@@ -722,7 +721,6 @@
 	int length = [string length];
 	if (length%2)
 		[self addUnsignedChar:0];
-		//[self addUnsignedChar:0];
 	
 }
 

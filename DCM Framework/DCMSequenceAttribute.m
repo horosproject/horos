@@ -136,10 +136,6 @@
 //		[dummyContainer addUnsignedLong:(0)];			// dummy length
 //	}
 //	
-//	[dummyContainer addUnsignedShort:(0xfffe)];	// Sequence Delimiter
-//	[dummyContainer addUnsignedShort:(0xe0dd)];
-//	[dummyContainer addUnsignedLong:(0)];		// dummy length
-//	
 //	long length = [[dummyContainer dicomData] length];
 //	
 //	NSLog( @"computed sequence UN : %d (%0004X,%0004X)", length, [self attrTag].group, [self attrTag].element);
