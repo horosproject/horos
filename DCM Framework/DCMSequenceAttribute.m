@@ -123,45 +123,21 @@
 {
 	// valueLength should be 0xFFFFFFFF from constructor
 	
-	BOOL checkForPixelData = NO;
-	
-	if( [self.attrTag isPrivate])
-	{
-		checkForPixelData = YES;
-		
-		if( [sequenceItems count] == 1)
-		{
-			DCMObject *o = [[sequenceItems lastObject] objectForKey:@"item"];
-			DCMPixelDataAttribute *pixelDataAttr = nil;
-			
-			if( checkForPixelData)
-				pixelDataAttr = (DCMPixelDataAttribute *)[[o attributes] objectForKey: [[DCMAttributeTag tagWithName:@"PixelData"] stringValue]];
-			
-			if( pixelDataAttr)
-				NSLog( @"PixelData in Private Group - Not written"); // We dont write it - we cannot be sure how it is encoded //[o writeToDataContainer:container withTransferSyntax: [DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax] asDICOM3:NO];
-			
-			return YES;
-		}
-	}
+	if( [_vr isEqualToString: @"UN"]) //We dont write sequences with UN for VR value
+		return YES;
 	
 	[self writeBaseToData:container transferSyntax:ts];
 	
 	for ( NSDictionary *object in sequenceItems )
 	{
-		[container addUnsignedShort:(0xfffe)]; // Item
-		[container addUnsignedShort:(0xe000)];
-		[container addUnsignedLong:(0xFFFFFFFF)]; // undefined length
+		[container addUnsignedShort:(0xfffe)];		// Item
+		[container addUnsignedShort:(0xe000)];		
+		[container addUnsignedLong:(0xFFFFFFFF)];	// undefined length
 		
 		DCMObject *o = [object objectForKey:@"item"];
 		DCMPixelDataAttribute *pixelDataAttr = nil;
 		
-		if( checkForPixelData)
-			pixelDataAttr = (DCMPixelDataAttribute *)[[o attributes] objectForKey: [[DCMAttributeTag tagWithName:@"PixelData"] stringValue]];
-			
-		if( pixelDataAttr)
-			NSLog( @"PixelData in Private Group - Not written"); // We dont write it - we cannot be sure how it is encoded //[o writeToDataContainer:container withTransferSyntax: [DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax] asDICOM3:NO];
-		else
-			[o writeToDataContainer:container withTransferSyntax: ts asDICOM3:NO];
+		[o writeToDataContainer:container withTransferSyntax: ts asDICOM3:NO];
 		
 		[container addUnsignedShort:(0xfffe)];		// Item Delimiter
 		[container addUnsignedShort:(0xe00d)];
