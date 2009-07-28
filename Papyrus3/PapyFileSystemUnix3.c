@@ -235,6 +235,12 @@ Papy3FSeek (PAPY_FILE inFp, int inPosMode, PapyLong inOffset)
 			gSeekPosApplied [ i] = 0;
 		}
 	}
+	else if( inPosMode == SEEK_END)
+	{
+		fseek (inFp, inOffset, SEEK_END);
+		gSeekPos[ i] = ftell( inFp);
+		gSeekPosApplied [ i] = 1;
+	}
 	else if( inPosMode == SEEK_CUR)
 	{
 		if( inOffset != 0)

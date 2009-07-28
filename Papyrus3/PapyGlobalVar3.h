@@ -36,6 +36,7 @@ WHERE3 int		gIsPapy3Inited;
 
 /* Papyrus file pointers to the currently open files */
 WHERE3 PAPY_FILE	gPapyFile		[kMax_file_open];
+WHERE3 PapyULong    gPapyFileSize	[kMax_file_open];
 WHERE3 char			*gPapyFilePath	[kMax_file_open];
 WHERE3 int      	gSeekPos		[kMax_file_open];
 WHERE3 char      	gSeekPosApplied	[kMax_file_open];

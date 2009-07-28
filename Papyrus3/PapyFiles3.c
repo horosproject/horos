@@ -161,6 +161,8 @@ Papy3FileOpen (char *inNameP, PAPY_FILE inVRefNum, int inToOpen, void* inFSSpec)
 			  gSeekPosApplied  [theFileNb] = 0;
 			  gPapyrusFileVersion [theFileNb] = (float)atof ((char *) gPapyrusVersion);
 			  gSOPClassUID[ theFileNb] = 0L;
+			  Papy3FSeek (gPapyFile [theFileNb], (int) SEEK_END, 0L);
+			  Papy3FTell (gPapyFile [theFileNb], (PapyLong *) &gPapyFileSize[ theFileNb]);
 				
               /* set the transfert syntax to the default one */
               gArrTransfSyntax [theFileNb] = LITTLE_ENDIAN_EXPL;    
@@ -2110,16 +2112,19 @@ PapyULong
 ComputeUndefinedGroupLength3 (PapyShort inFileNb, PapyLong inMaxSize)
 {
   PapyULong	theGroupLength, theElemLength, theBufPos, theFileStartPos, i;
-  PapyUShort	theGrNb, theCmpGrNb, theElemNb, theCmpElemNb;
+  PapyUShort theGrNb, theCmpGrNb, theElemNb, theCmpElemNb;
   PapyShort	theErr;
-  char		theVR [3];
+  char theVR [3];
   unsigned char	*theBuffP, theBuff [8];
-  int		OK;
+  int OK;
   
   theGroupLength  = 0L;
   Papy3FTell (gPapyFile [inFileNb], (PapyLong *) &theFileStartPos);
   theBuffP = (unsigned char *) &theBuff [0];
   
+  if( inMaxSize == 0xFFFFFFFF)
+	  inMaxSize = gPapyFileSize [inFileNb] - theFileStartPos;
+	
   /* read the group number and the element number from the file */
   i = 4L;
   if ((theErr = (PapyShort) Papy3FRead (gPapyFile [inFileNb], &i, 1L, theBuffP)) < 0)
