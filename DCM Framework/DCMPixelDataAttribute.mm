@@ -1628,11 +1628,13 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 				bits++;
 			}
 			
-			if( bits < 10)
+			if( bits <= 10)
 				bits = 10;
-			else if( bits < 12)
+			else if( bits <= 12)
 				bits = 12;
-			else if( bits < 16)
+			else if( bits <= 16)
+				bits = 16;
+			else
 				bits = 16;
 			
 			bitsstored = bits;
@@ -1712,11 +1714,13 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 				bits++;
 			}
 			
-			if( bits < 10)
+			if( bits <= 10)
 				bits = 10;
-			else if( bits < 12)
+			else if( bits <= 12)
 				bits = 12;
-			else if( bits < 16)
+			else if( bits <= 16)
+				bits = 16;
+			else
 				bits = 16;
 			
 			prec = bits;
