@@ -395,9 +395,6 @@ int main(int argc, const char *argv[])
 				
 				if( status)
 				{
-					if( [[NSFileManager defaultManager] fileExistsAtPath: curFileDest] == NO)
-						NSLog( @"**** failed to decompress file: %@", curFileDest);
-					
 					[[NSFileManager defaultManager] removeFileAtPath: curFile handler: nil];
 					if( destDirec == nil)
 						[[NSFileManager defaultManager] movePath: curFileDest toPath: curFile handler: nil];

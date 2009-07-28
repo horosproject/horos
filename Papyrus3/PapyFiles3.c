@@ -2116,9 +2116,6 @@ ComputeUndefinedGroupLength3 (PapyShort inFileNb, PapyLong inMaxSize)
   unsigned char	*theBuffP, theBuff [8];
   int		OK;
   
-  
-  /* initializations */
-  if (inMaxSize == -1) inMaxSize = 1000000; /* arbitrary value */
   theGroupLength  = 0L;
   Papy3FTell (gPapyFile [inFileNb], (PapyLong *) &theFileStartPos);
   theBuffP = (unsigned char *) &theBuff [0];
@@ -2225,7 +2222,7 @@ ComputeUndefinedGroupLength3 (PapyShort inFileNb, PapyLong inMaxSize)
 	} /* else ...EXPLICIT VR */
     
     /* makes sure the element belongs to the group */
-    if (theCmpGrNb == theGrNb && theCmpElemNb <= theElemNb && theGroupLength < (PapyULong) inMaxSize)
+    if (theCmpGrNb == theGrNb && theCmpElemNb <= theElemNb && (inMaxSize == 0xFFFFFFFF || theGroupLength < inMaxSize))
     {
       /* if the element has an undefined length (i.e. VR = SQ) */
       if (theElemLength == 0xFFFFFFFF)
@@ -2261,6 +2258,11 @@ ComputeUndefinedGroupLength3 (PapyShort inFileNb, PapyLong inMaxSize)
   /* reset the file position to the begining of the group */
   Papy3FSeek (gPapyFile [inFileNb], (int) SEEK_SET, (PapyLong) theFileStartPos);
   
+  if( inMaxSize != 0xFFFFFFFF)
+  {
+	  if( theGroupLength > inMaxSize)
+		  printf("*** warning - computed length is not equal to stored length\r");
+  }
   return theGroupLength;
 
 } /* endof ComputeUndefinedGroupLength3 */
