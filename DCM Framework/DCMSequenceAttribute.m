@@ -118,11 +118,11 @@
 
 - (BOOL)writeToDataContainer:(DCMDataContainer *)container withTransferSyntax:(DCMTransferSyntax *)ts
 {
-//	if( [_vr isEqualToString: @"SQ"] == NO)
-//	{
-//		// we dont write UN sequences
-//		return YES;
-//	}
+	if( [_vr isEqualToString: @"SQ"] == NO)
+	{
+		// we dont write UN sequences
+		return YES;
+	}
 	
 	SQLength = 0xFFFFFFFF;
 	
