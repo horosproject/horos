@@ -11630,39 +11630,34 @@ static NSArray*	openSubSeriesArray = nil;
 		if( [[NSFileManager defaultManager] destinationOfSymbolicLinkAtPath: path error: nil])
 			path = [[NSFileManager defaultManager] destinationOfSymbolicLinkAtPath: path error: nil];
 		
-		// Delete empty directory
-		for( NSString *f in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:path error: nil])
-		{
-			NSDictionary *fileAttributes = [[NSFileManager defaultManager] fileAttributesAtPath: [path stringByAppendingPathComponent: f] traverseLink:YES];
-			
-			if ( [[fileAttributes objectForKey: NSFileType] isEqualToString: NSFileTypeDirectory]) 
-			{
-				if( [[fileAttributes objectForKey: NSFileReferenceCount] intValue] < 4)	// check if this folder is empty, and delete it if necessary
-				{
-					int numberOfValidFiles = 0;
-					for( NSString *s in [[NSFileManager defaultManager] contentsOfDirectoryAtPath: [path stringByAppendingPathComponent: f] error: nil])
-					{
-						if( [[s stringByDeletingPathExtension] integerValue] > 0)
-							numberOfValidFiles++;
-					}
-					
-					if( numberOfValidFiles == 0)
-						[[NSFileManager defaultManager] removeFileAtPath: [path stringByAppendingPathComponent: f] handler: nil];
-				}
-			}
-		}
+//		// Delete empty directory <- This is too slow for NAS systems
+//		for( NSString *f in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:path error: nil])
+//		{
+//			NSDictionary *fileAttributes = [[NSFileManager defaultManager] fileAttributesAtPath: [path stringByAppendingPathComponent: f] traverseLink:YES];
+//			
+//			if ( [[fileAttributes objectForKey: NSFileType] isEqualToString: NSFileTypeDirectory]) 
+//			{
+//				if( [[fileAttributes objectForKey: NSFileReferenceCount] intValue] < 4)	// check if this folder is empty, and delete it if necessary
+//				{
+//					int numberOfValidFiles = 0;
+//					for( NSString *s in [[NSFileManager defaultManager] contentsOfDirectoryAtPath: [path stringByAppendingPathComponent: f] error: nil])
+//					{
+//						if( [[s stringByDeletingPathExtension] integerValue] > 0)
+//							numberOfValidFiles++;
+//					}
+//					
+//					if( numberOfValidFiles == 0)
+//						[[NSFileManager defaultManager] removeFileAtPath: [path stringByAppendingPathComponent: f] handler: nil];
+//				}
+//			}
+//		}
 		
 		/// SCAN
 		for( NSString *f in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:path error: nil])
 		{
-			NSDictionary *fileAttributes = [[NSFileManager defaultManager] fileAttributesAtPath: [path stringByAppendingPathComponent: f] traverseLink:YES];
-			
-			if ( [[fileAttributes objectForKey: NSFileType] isEqualToString: NSFileTypeDirectory]) 
-			{
-				long c = [f integerValue];
-				if( c > v)
-					v = c;
-			}
+			long c = [f integerValue];
+			if( c > v)
+				v = c;
 		}
 		
 		if( v > 0)
