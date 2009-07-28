@@ -104,79 +104,58 @@
 	[dcmData addUnsignedShort:[self group]];
 	[dcmData addUnsignedShort:[self element]];
 	
-	unsigned long length = 0xFFFFFFFF;
-	
-	if( [_vr isEqualToString: @"SQ"] == NO)
-	{
-		DCMDataContainer *dummyContainer = [DCMDataContainer dataContainer];
-		
-		for ( NSDictionary *object in sequenceItems)
-		{
-			[dummyContainer addUnsignedShort:(0xfffe)];		// Item
-			[dummyContainer addUnsignedShort:(0xe000)];		
-			[dummyContainer addUnsignedLong:(0xFFFFFFFF)];	// undefined length
-			
-			DCMObject *o = [object objectForKey:@"item"];
-			DCMPixelDataAttribute *pixelDataAttr = nil;
-			
-			[o writeToDataContainer: dummyContainer withTransferSyntax: ts asDICOM3:NO];
-			
-			[dummyContainer addUnsignedShort:(0xfffe)];		// Item Delimiter
-			[dummyContainer addUnsignedShort:(0xe00d)];
-			[dummyContainer addUnsignedLong:(0)];			// dummy length
-		}
-		
-		length = [[dummyContainer dicomData] length];
-	}
-	
 	if ([ts isExplicit])
 	{
 		[dcmData addString: _vr];
 		[dcmData addUnsignedShort:0];		// reserved bytes
-		[dcmData addUnsignedLong: length];
+		[dcmData addUnsignedLong: SQLength];
 	}
 	else
 	{
-		[dcmData  addUnsignedLong: length];
+		[dcmData  addUnsignedLong: SQLength];
 	}
 }
 
-
 - (BOOL)writeToDataContainer:(DCMDataContainer *)container withTransferSyntax:(DCMTransferSyntax *)ts
 {
-	// valueLength should be 0xFFFFFFFF from constructor
+//	if( [_vr isEqualToString: @"SQ"] == NO)
+//	{
+//		// we dont write UN sequences
+//		return YES;
+//	}
 	
-	if( [_vr isEqualToString: @"SQ"] == NO)
+	SQLength = 0xFFFFFFFF;
+	
+	DCMDataContainer *dummyContainer = [DCMDataContainer dataContainer];
+	
+	for( NSDictionary *object in sequenceItems)
 	{
-		// we dont write UN sequences
-		return YES;
-	}
-	
-	[self writeBaseToData:container transferSyntax:ts];
-	
-	for ( NSDictionary *object in sequenceItems )
-	{
-		[container addUnsignedShort:(0xfffe)];		// Item
-		[container addUnsignedShort:(0xe000)];		
-		[container addUnsignedLong:(0xFFFFFFFF)];	// undefined length
+		[dummyContainer addUnsignedShort:(0xfffe)];		// Item
+		[dummyContainer addUnsignedShort:(0xe000)];		
+		[dummyContainer addUnsignedLong:(0xFFFFFFFF)];	// undefined length
 		
 		DCMObject *o = [object objectForKey:@"item"];
-		DCMPixelDataAttribute *pixelDataAttr = nil;
 		
-		[o writeToDataContainer:container withTransferSyntax: ts asDICOM3:NO];
+		[o writeToDataContainer: dummyContainer withTransferSyntax: ts asDICOM3:NO];
 		
-		[container addUnsignedShort:(0xfffe)];		// Item Delimiter
-		[container addUnsignedShort:(0xe00d)];
-		[container addUnsignedLong:(0)];			// dummy length
+		[dummyContainer addUnsignedShort:(0xfffe)];		// Item Delimiter
+		[dummyContainer addUnsignedShort:(0xe00d)];
+		[dummyContainer addUnsignedLong:(0)];			// dummy length
 	}
 	
+	if( [_vr isEqualToString: @"SQ"] == NO)
+		SQLength = [[dummyContainer dicomData] length];
+	
 	// This Sequence Delimiter is NOT required if SQ length is NOT equal to 0xFFFFFFFF
-	if( [_vr isEqualToString: @"SQ"])
+	if( SQLength == 0xFFFFFFFF)
 	{
-		[container addUnsignedShort:(0xfffe)];	// Sequence Delimiter
-		[container addUnsignedShort:(0xe0dd)];
-		[container addUnsignedLong:(0)];		// dummy length
+		[dummyContainer addUnsignedShort:(0xfffe)];	// Sequence Delimiter
+		[dummyContainer addUnsignedShort:(0xe0dd)];
+		[dummyContainer addUnsignedLong:(0)];		// dummy length
 	}
+	
+	[self writeBaseToData: container transferSyntax:ts];
+	[container addData: [dummyContainer dicomData]];
 	
 	return YES;
 }

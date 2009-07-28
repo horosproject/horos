@@ -16,8 +16,9 @@
 #import "DCMAttribute.h"
 
 
-@interface DCMSequenceAttribute : DCMAttribute {
-
+@interface DCMSequenceAttribute : DCMAttribute
+{
+	long SQLength;
 	NSMutableArray *sequenceItems;
 }
 
