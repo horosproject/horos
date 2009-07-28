@@ -506,6 +506,7 @@ short HasAltiVec ( )
 
 //———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
+
 BOOL hasMacOSXLeopard()
 {
 	OSErr						err;       
@@ -2742,30 +2743,18 @@ static BOOL initialized = NO;
 
 - (IBAction) checkForUpdates: (id) sender
 {
-	NSURL				*url;
-	NSAutoreleasePool   *pool = [[NSAutoreleasePool alloc] init];
+	NSURL *url;
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
 	if( sender != self) verboseUpdateCheck = YES;
 	else verboseUpdateCheck = NO;
 	
 	if (hasMacOSXLeopard())
-		url=[NSURL URLWithString:@"http://pubimage.hcuge.ch:8080/versionLeopard.xml"];
-	else if (hasMacOSXTiger())
-		url=[NSURL URLWithString:@"http://pubimage.hcuge.ch:8080/versionTiger.xml"];
+		url = [NSURL URLWithString:@"http://www.osirix-viewer.com/versionLeopard.xml"];
 	else
-		url=[NSURL URLWithString:@"http://pubimage.hcuge.ch:8080/version.xml"];
+		url = [NSURL URLWithString:@"http://www.osirix-viewer.com/version.xml"];
 	
-	if( url == nil)
-	{
-		if (hasMacOSXLeopard())
-			url=[NSURL URLWithString:@"http://www.osirix-viewer.com/versionLeopard.xml"];
-		else if (hasMacOSXTiger())
-			url=[NSURL URLWithString:@"http://www.osirix-viewer.com/versionTiger.xml"];
-		else
-			url=[NSURL URLWithString:@"http://www.osirix-viewer.com/version.xml"];
-	}
-	
-	if (url)
+	if( url)
 	{
 		NSString *currVersionNumber = [[[NSBundle bundleForClass:[self class]] infoDictionary] objectForKey:@"CFBundleVersion"];
 		NSDictionary *productVersionDict = [NSDictionary dictionaryWithContentsOfURL: url];
