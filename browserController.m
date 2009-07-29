@@ -12705,6 +12705,8 @@ static NSArray*	openSubSeriesArray = nil;
 		
 		for( NSString *f in folders)
 		{
+			[checkIncomingLock lock];
+			
 			NSDictionary *fileAttributes = [[NSFileManager defaultManager] fileAttributesAtPath: f traverseLink: NO];
 			
 			if( [[fileAttributes objectForKey: NSFileType] isEqualToString: NSFileTypeDirectory]) 
@@ -12722,9 +12724,11 @@ static NSArray*	openSubSeriesArray = nil;
 					{
 						NSLog( @"delete Queue: delete folder: %@", f);
 						[[NSFileManager defaultManager] removeFileAtPath: f handler: nil];
+						
 					}
 				}
 			}
+			[checkIncomingLock unlock];
 		}
 		
 		
