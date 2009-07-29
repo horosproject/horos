@@ -5619,38 +5619,55 @@ static NSArray*	statesArray = nil;
 		WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Updating database...", nil)];
 		[wait showWindow:self];
 		
-		[context save: nil];
+		@try
+		{	[context save: nil];}
+		@catch( NSException *e)
+		{	NSLog( @"context save: nil: %@", e);}
+		
 		@try
 		{
 			// Remove series without images !
 			for( NSManagedObject *series in seriesArray)
 			{
-				if( [[series valueForKey:@"images"] count] == 0 )
+				@try
 				{
-					[context deleteObject: series];
+					if( [[series valueForKey:@"images"] count] == 0 )
+					{
+						[context deleteObject: series];
+					}
+					else
+					{
+						[series setValue: [NSNumber numberWithInt:0]  forKey:@"numberOfImages"];
+						[series setValue: nil forKey:@"thumbnail"];	
+					}
 				}
-				else
-				{
-					[series setValue:[NSNumber numberWithInt:0]  forKey:@"numberOfImages"];
-					[series setValue: nil forKey:@"thumbnail"];	
-				}
+				@catch( NSException *e)
+				{	NSLog( @"context deleteObject: series: %@", e);}
 			}
 			
-			[context save: nil];
-			
+			@try
+			{	[context save: nil];}
+			@catch( NSException *e)
+			{	NSLog( @"context save: nil: %@", e);}
+				
 			// Remove studies without series !
 			for( NSManagedObject *study in studiesArray )
 			{
-				NSLog( @"Delete Study: %@ - %@", [study valueForKey:@"name"], [study valueForKey:@"patientID"]);
-				
-				if( [[study valueForKey:@"imageSeries"] count] == 0 )
+				@try
 				{
-					[context deleteObject: study];
+					NSLog( @"Delete Study: %@ - %@", [study valueForKey:@"name"], [study valueForKey:@"patientID"]);
+					
+					if( [[study valueForKey:@"imageSeries"] count] == 0 )
+					{
+						[context deleteObject: study];
+					}
+					else
+					{
+						[study setValue:[NSNumber numberWithInt:0]  forKey:@"numberOfImages"];
+					}
 				}
-				else
-				{
-					[study setValue:[NSNumber numberWithInt:0]  forKey:@"numberOfImages"];
-				}
+				@catch( NSException *e)
+				{	NSLog( @"context deleteObject: study: %@", e);}
 			}
 			[self saveDatabase: currentDatabasePath];
 			
@@ -12675,10 +12692,42 @@ static NSArray*	openSubSeriesArray = nil;
 	{
 		[appController growlTitle: NSLocalizedString( @"Files removing", nil) description: [NSString stringWithFormat: NSLocalizedString( @"%d files to delete", nil), [copyArray count]]  name:@"delete"];
 		
+		NSMutableArray *folders = [NSMutableArray array];
+		
 		NSLog(@"delete Queue start: %d objects", [copyArray count]);
-		for( NSString *file in copyArray )
-			unlink( [file UTF8String] );		// <- this is faster
-		//			[[NSFileManager defaultManager] removeFileAtPath:[copyArray objectAtIndex: i] handler:nil];
+		for( NSString *file in copyArray)
+		{
+			unlink( [file UTF8String]);		// <- this is faster
+			[folders addObject: [file stringByDeletingLastPathComponent]];
+		}
+		
+		[folders removeDuplicatedStrings];
+		
+		for( NSString *f in folders)
+		{
+			NSDictionary *fileAttributes = [[NSFileManager defaultManager] fileAttributesAtPath: f traverseLink: NO];
+			
+			if( [[fileAttributes objectForKey: NSFileType] isEqualToString: NSFileTypeDirectory]) 
+			{
+				if( [[fileAttributes objectForKey: NSFileReferenceCount] intValue] < 4)	// check if this folder is empty, and delete it if necessary
+				{
+					int numberOfValidFiles = 0;
+					for( NSString *s in [[NSFileManager defaultManager] contentsOfDirectoryAtPath: f error: nil])
+					{
+						if( [[s lastPathComponent] characterAtIndex: 0] != '.')
+							numberOfValidFiles++;
+					}
+					
+					if( numberOfValidFiles == 0)
+					{
+						NSLog( @"delete Queue: delete folder: %@", f);
+						[[NSFileManager defaultManager] removeFileAtPath: f handler: nil];
+					}
+				}
+			}
+		}
+		
+		
 		NSLog(@"delete Queue end");
 		
 		[appController growlTitle: NSLocalizedString( @"Files removing", nil) description: NSLocalizedString( @"Finished", nil) name:@"delete"];
@@ -12796,6 +12845,18 @@ static NSArray*	openSubSeriesArray = nil;
 
 -(void) ReadDicomCDRom:(id) sender
 {
+	if( isCurrentDatabaseBonjour)
+	{
+		NSRunInformationalAlertPanel(NSLocalizedString(@"OsiriX CD/DVD", nil), NSLocalizedString(@"Switch to a local database to load a CD/DVD.", nil), NSLocalizedString(@"OK",nil), nil, nil);
+		return;
+	}
+	
+	if( DICOMDIRCDMODE)
+	{
+		NSRunInformationalAlertPanel(NSLocalizedString(@"OsiriX CD/DVD", nil), NSLocalizedString(@"OsiriX is running in read-only mode, from a CD/DVD.", nil), NSLocalizedString(@"OK",nil), nil, nil);
+		return;
+	}
+	
 	NSArray	*removeableMedia = [[NSWorkspace sharedWorkspace] mountedRemovableMedia];
 	BOOL found = NO;
 	
@@ -12973,6 +13034,7 @@ static NSArray*	openSubSeriesArray = nil;
 					NSArray	*newImages = [self addFilesToDatabase:filesArray :YES];
 					mountedVolume = NO;
 					
+					[self saveDatabase: nil];
 					[self outlineViewRefresh];
 					
 					if( [newImages count] > 0)
@@ -13594,9 +13656,12 @@ static volatile int numberOfThreadsForJPEG = 0;
 					if( isAlias) srcPath = [self pathResolved: srcPath];
 					
 					// Is it a real file? Is it writable (transfer done)?
-					if ([[NSFileManager defaultManager] isWritableFileAtPath:srcPath] == YES)
+//					if ([[NSFileManager defaultManager] isWritableFileAtPath:srcPath] == YES)	<- Problems with CD : read-only files, but valid files
 					{
 						NSDictionary *fattrs = [[NSFileManager defaultManager] fileAttributesAtPath:srcPath traverseLink: YES];
+						
+						// http://www.noodlesoft.com/blog/2007/03/07/mystery-bug-heisenbergs-uncertainty-principle/
+						[fattrs allKeys];
 						
 						if( [[fattrs objectForKey:NSFileType] isEqualToString: NSFileTypeDirectory] == YES)
 						{
@@ -15297,52 +15362,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 {
 	if( isCurrentDatabaseBonjour) return;
 	
-	// FIND ALL images that ARENT local, and REMOVE non-available images
-	NSManagedObjectContext		*context = self.managedObjectContext;
-	NSManagedObjectModel		*model = self.managedObjectModel;
-	
-	[context retain];
-	[context lock];
-	
-	NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-	[dbRequest setEntity: [[model entitiesByName] objectForKey:@"Series"]];
-	[dbRequest setPredicate: [NSPredicate predicateWithValue: YES]];
-	NSError	*error = nil;
-	NSArray *seriesArray = [[context executeFetchRequest:dbRequest error:&error] filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"mountedVolume == YES"]];
-	
-	@try
-	{
-		if( [seriesArray count] > 0 )
-		{
-			NSMutableArray			*viewersList = [ViewerController getDisplayed2DViewers];
-			
-			// Find unavailable files
-			for( NSManagedObject *study in seriesArray )
-			{
-				
-				// Is a viewer containing this study opened? -> close it
-				for( ViewerController *vc in viewersList )
-				{
-					if( study == [[[vc fileList] objectAtIndex: 0] valueForKeyPath:@"series.study"] )
-					{
-						[vc.window close];
-					}
-				}
-				
-				[context deleteObject: study];
-			}
-			
-			[self saveDatabase: currentDatabasePath];
-		}
-	}
-	@catch( NSException *ne)
-	{
-		NSLog( @"RemoveAllMounted Exception");
-		NSLog( ne.description );
-	}
-	
-	[context unlock];
-	[context release];
+	[self removeMountedImages: nil];
 }
 
 - (void)willVolumeUnmount: (NSNotification *)notification
@@ -15404,27 +15424,16 @@ static volatile int numberOfThreadsForJPEG = 0;
 	copyThread = NO;
 }
 
-- (void)volumeUnmount: (NSNotification *)notification
+- (void) removeMountedImages: (NSString*) sNewDrive
 {
-	BOOL		needsUpdate = NO;
-	NSRange		range;
+	// FIND ALL images that ARE NOT local, and REMOVE non-available images
+	NSManagedObjectContext *context = self.managedObjectContext;
+	NSManagedObjectModel *model = self.managedObjectModel;
+	BOOL needsUpdate = NO;
 	
-	if( isCurrentDatabaseBonjour) return;
-	if( checkForMountedFiles == NO) return;
-	
-	NSLog(@"volume unmounted");
-	
-	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"UNMOUNT"] == NO) return;
-	
-	NSString *sNewDrive = [[ notification userInfo] objectForKey : @"NSDevicePath"];	//uppercaseString];
-	NSLog( sNewDrive);
-	
+	NSRange range;
 	range.location = 0;
 	range.length = [sNewDrive length];
-	
-	// FIND ALL images that ARENT local, and REMOVE non-available images
-	NSManagedObjectContext		*context = self.managedObjectContext;
-	NSManagedObjectModel		*model = self.managedObjectModel;
 	
 	if( [context tryLock])
 	{
@@ -15448,7 +15457,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 				for( int i = 0; i < [seriesArray count]; i++ )
 				{
 					NSManagedObject	*image = [[[seriesArray objectAtIndex:i] valueForKey:@"images"] anyObject];
-					if( [[image  valueForKey:@"completePath"] compare:sNewDrive options:NSCaseInsensitiveSearch range:range] == 0 )
+					if( sNewDrive == nil || [[image  valueForKey:@"completePath"] compare: sNewDrive options: NSCaseInsensitiveSearch range: range] == 0)
 					{
 						NSManagedObject	*study = [[seriesArray objectAtIndex:i] valueForKey:@"study"];
 						
@@ -15486,10 +15495,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 				NSLog( [ne description]);
 			}
 			
-			if( needsUpdate )
-			{
+			if( needsUpdate)
 				[self saveDatabase: currentDatabasePath];
-			}
 			
 			[self outlineViewRefresh];
 			[self refreshMatrix: self];
@@ -15500,6 +15507,23 @@ static volatile int numberOfThreadsForJPEG = 0;
 		
 		DatabaseIsEdited = NO;
 	}
+}
+
+- (void)volumeUnmount: (NSNotification *)notification
+{
+	BOOL		needsUpdate = NO;
+	
+	if( isCurrentDatabaseBonjour) return;
+	if( checkForMountedFiles == NO) return;
+	
+	NSLog(@"volume unmounted");
+	
+	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"UNMOUNT"] == NO) return;
+	
+	NSString *sNewDrive = [[ notification userInfo] objectForKey : @"NSDevicePath"];	//uppercaseString];
+	NSLog( sNewDrive);
+	
+	[self removeMountedImages: sNewDrive];
 	
 	[self displayBonjourServices];
 }

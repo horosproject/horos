@@ -447,6 +447,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (void) syncReportsIfNecessary;
 - (void) syncReportsIfNecessary: (int) index;
 - (void) removeAllMounted;
+- (void) removeMountedImages: (NSString*) sNewDrive;
 
 //bonjour
 - (void) getDICOMROIFiles:(NSArray*) files;

@@ -740,6 +740,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 - (void) computeColor
 {
+	if( [self is2DViewer] == NO)
+		return;
+	
 	@try
 	{
 		id curSeries = [self seriesObj];
