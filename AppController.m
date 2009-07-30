@@ -1069,6 +1069,7 @@ static NSDate *lastWarningDate = nil;
 	[DCMPixelDataAttribute setUseOpenJpeg: UseOpenJpeg];
 	
 	[[BrowserController currentBrowser] setNetworkLogs];
+	[[BrowserController currentBrowser] createDBContextualMenu]; // Update the routing rules
 	[DicomFile resetDefaults];
 	
 	[DCMView setDefaults];
