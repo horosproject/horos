@@ -592,7 +592,7 @@ PapyShort ExtractJPEG2000 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong i
 	int				fmtid;
 	PapyUChar		theTmpBuf [256];
 	PapyUChar		*theTmpBufP;
-	PapyULong		i, thePos, theLength, theULong, x, y;
+	PapyULong		i, thePos, theLength, theULong, x;
 	PapyShort		theErr;
 	PapyUShort		theUShort1, theUShort2;
 	PapyUChar		*theCompressedP;
@@ -1415,7 +1415,7 @@ Papy3GetPixelData (PapyShort inFileNb, int inImageNb, SElement *inGrOrModP, int 
   PapyUChar	 *theBufP = 0L, theTmpBuf [256], *theTmpBufP;
   PapyUShort theUShort1, theUShort2;
   PapyShort	 theErr;
-  int		 theFrameCount = 1, theLoop, ok, theIsModule;
+  int		 theFrameCount = 1, ok, theIsModule;
   PAPY_FILE	 theFp;
   PapyULong	 theBytesToRead, i, theULong, thePos, *theOffsetTableP = NULL;
   PapyULong	 theRefPoint, thePixelStart;
