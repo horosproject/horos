@@ -1005,7 +1005,7 @@ static NSArray*	statesArray = nil;
 					growlString = [NSString stringWithFormat: NSLocalizedString(@"Patient: %@\r%d images added to the database", nil), [[addedImagesArray objectAtIndex:0] valueForKeyPath:@"series.study.name"], [addedImagesArray count]];
 				}
 				
-				[self executeAutorouting: addedImagesArray rules: nil manually: YES];
+				[self executeAutorouting: addedImagesArray rules: nil manually: NO];
 			}
 		}
 		@catch( NSException *ne)
