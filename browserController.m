@@ -630,13 +630,13 @@ static NSArray*	statesArray = nil;
 				   && [DCMAbstractSyntaxUID isStructuredReport: [curDict objectForKey: @"SOPClassUID"]] == NO
 				   && [DCMAbstractSyntaxUID isKeyObjectDocument: [curDict objectForKey: @"SOPClassUID"]] == NO)
 				{
-					NSLog(@"unsupported DICOM SOP CLASS -> Reject the file");
+					NSLog(@"unsupported DICOM SOP CLASS (%@)-> Reject the file : %@", [curDict objectForKey: @"SOPClassUID"], newFile);
 					curDict = nil;
 				}
 				
 				if( [curDict objectForKey:@"SOPClassUID"] == nil && [[curDict objectForKey: @"fileType"] hasPrefix:@"DICOM"] == YES)
 				{
-					NSLog(@"no DICOM SOP CLASS -> Reject the file");
+					NSLog(@"no DICOM SOP CLASS -> Reject the file: %@", newFile);
 					curDict = nil;
 				}
 				
@@ -1270,7 +1270,7 @@ static NSArray*	statesArray = nil;
 							{
 								folderSkip = nil;
 								
-								if( [[[itemPath lastPathComponent] uppercaseString] isEqualToString:@"DICOMDIR"] == YES)
+								if( [[[itemPath lastPathComponent] uppercaseString] isEqualToString:@"DICOMDIR"] == YES || [[[itemPath lastPathComponent] uppercaseString] isEqualToString:@"DICOMDIR."] == YES)
 								{
 									[self addDICOMDIR: filename : filesArray];
 								}
@@ -1318,7 +1318,7 @@ static NSArray*	statesArray = nil;
 					{
 						
 					}
-					else if( [[[filename lastPathComponent] uppercaseString] isEqualToString:@"DICOMDIR"] == YES)
+					else if( [[[filename lastPathComponent] uppercaseString] isEqualToString:@"DICOMDIR"] == YES || [[[filename lastPathComponent] uppercaseString] isEqualToString:@"DICOMDIR."] == YES)
 					{
 						[self addDICOMDIR: filename :filesArray];
 					}
@@ -13005,7 +13005,7 @@ static NSArray*	openSubSeriesArray = nil;
 								break;
 							}
 							
-							if( [[itemPath lastPathComponent] isEqualToString:@"DICOMDIR"] == YES)
+							if( [[itemPath lastPathComponent] isEqualToString:@"DICOMDIR"] == YES || [[itemPath lastPathComponent] isEqualToString:@"DICOMDIR."] == YES)
 								addFile = NO;
 							
 							if( [[[itemPath lastPathComponent] uppercaseString] isEqualToString:@".DS_STORE"] == YES)
@@ -14816,7 +14816,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			
 			NSString *tempPath = [path stringByAppendingPathComponent:name];
 			
-			if( [[NSFileManager defaultManager] fileExistsAtPath:[tempPath stringByAppendingPathComponent:@"DICOMDIR"]] == NO )
+			if( [[NSFileManager defaultManager] fileExistsAtPath: [tempPath stringByAppendingPathComponent:@"DICOMDIR"]] == NO )
 			{
 				NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 				
@@ -15381,6 +15381,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 - (void)willVolumeUnmount: (NSNotification *)notification
 {
 	NSString *sNewDrive = [[ notification userInfo] objectForKey : @"NSDevicePath"];
+	
+	[DCMPix purgeCachedDictionaries]; // <- This is very important to 'unlink' all opened files, otherwise MacOS will display the famous 'The disk is in use and could not be ejected'
 	
 	// Is it an iPod?
 	if ([[NSFileManager defaultManager] fileExistsAtPath: [sNewDrive stringByAppendingPathComponent:@"iPod_Control"]] )

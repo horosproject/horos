@@ -1661,7 +1661,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	else fileNb = Papy3FileOpen ( (char*) [filePath UTF8String], (PAPY_FILE) 0, TRUE, 0);
 	if( fileNb < 0)
 	{
-		NSLog( @"fileNb < 0 : %@", filePath);
+		NSLog( @"fileNb < 0 : %d , %@", fileNb, filePath);
 		if( [self getDicomFileDCMTK] == 0)	// First, try with dcmtk
 		{
 			[PapyrusLock unlock];

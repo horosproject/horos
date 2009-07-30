@@ -17,6 +17,7 @@
 #import <OsiriX/DCM.h>
 #import <OsiriX/DCMTransferSyntax.h>
 #import "AppController.h"
+#import "DCMPix.h"
 
 #undef verify
 #include "osconfig.h" /* make sure OS specific configuration is included first */
@@ -157,6 +158,8 @@ extern NSRecursiveLock *PapyrusLock;
 //	}
 //	NSLog( @"** END");
 	
+	[DCMPix purgeCachedDictionaries];
+	
 	if( dest == nil)
 		dest = @"sameAsDestination";
 	
@@ -188,7 +191,9 @@ extern NSRecursiveLock *PapyrusLock;
 //	[dcmObject release];
 //	
 //	return YES;
-
+	
+	[DCMPix purgeCachedDictionaries];
+	
 	NSTask *theTask = [[NSTask alloc] init];
 	
 	if( dest == nil)

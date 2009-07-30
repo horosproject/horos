@@ -11102,19 +11102,21 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 }
 
 //Database links
-- (NSManagedObject *)imageObj {
-																																			  
-	if( stringID == nil ) {
+- (NSManagedObject *)imageObj
+{
+	if( stringID == nil || [stringID isEqualToString:@"previewDatabase"])
+	{
 		if( curDCM)	return curDCM.imageObj;
 		else return nil;
 	}
 	else return nil;
 }
 
-- (NSManagedObject *)seriesObj {
-																																			  
-	if( stringID == nil || [stringID isEqualToString:@"previewDatabase"]) {
-		if( curDCM ) return curDCM.seriesObj;
+- (NSManagedObject *)seriesObj
+{
+	if( stringID == nil || [stringID isEqualToString:@"previewDatabase"])
+	{
+		if( curDCM) return curDCM.seriesObj;
 		else return nil;
 	}
 	else return nil;

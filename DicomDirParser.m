@@ -72,7 +72,7 @@
 		{
 			NSString *ext = [uppercaseFilePath pathExtension];
 			
-			// only files with DCM or no extension
+			// only files with DCM or no extension, or a number like 82873.9982.9928.22
 			if ([ext isEqualToString: @".DCM"] || [ext isEqualToString: @""] || [ext length] > 4 || [ext length] < 3 || [ext holdsIntegerValue] == YES)
 			{
 				int j = 0;
@@ -84,7 +84,7 @@
 				
 				for( NSString *s in dicomdirFileList)
 				{
-					if ([cutFilePath isEqualToString: s])
+					if ([cutFilePath isEqualToString: s] || [[cutFilePath stringByDeletingPathExtension] isEqualToString: s] || [filePath isEqualToString: s])
 					{
 						[files addObject: filePath];
 						break;
