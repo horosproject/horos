@@ -1433,7 +1433,7 @@ static NSArray*	statesArray = nil;
 		[splash showWindow:self];
 	}
 	
-	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOROUTINGACTIVATED"] || manually)
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOROUTINGACTIVATED"] == YES || manually == YES)
 	{
 		for( NSDictionary *routingRule in autoroutingRules)
 		{
