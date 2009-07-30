@@ -121,6 +121,10 @@
 	if( [_vr isEqualToString: @"SQ"] == NO)
 	{
 		// we dont write UN sequences
+//		[_vr release];
+//		_vr = @"SQ";
+//		[_vr retain];
+		
 		return YES;
 	}
 	
