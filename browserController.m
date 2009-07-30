@@ -3103,8 +3103,6 @@ static NSArray*	statesArray = nil;
 	else
 		files = [self filesForDatabaseOutlineSelection: objects onlyImages: NO];
 	
-	[files removeDuplicatedStringsInSyncWithThisArray: objects];
-	
 	Wait *splash = [[Wait alloc] initWithString: NSLocalizedString(@"Copying linked files into Database...", nil)];
 		
 	[splash showWindow:self];
@@ -3112,6 +3110,11 @@ static NSArray*	statesArray = nil;
 	[splash setCancel: YES];
 		
 	[managedObjectContext lock];
+	
+	NSArray *objectsCopy = [[objects copy] autorelease];
+	
+	[files removeDuplicatedStringsInSyncWithThisArray: objects];
+	
 	@try
 	{
 		for( NSManagedObject *im in objects)
@@ -3128,10 +3131,16 @@ static NSArray*	statesArray = nil;
 				
 				if( [[NSFileManager defaultManager] copyPath:srcPath toPath:dstPath handler:nil])
 				{
-					[im setValue: [NSNumber numberWithBool: YES] forKey:@"inDatabaseFolder"];
-					[im setValue: [dstPath lastPathComponent] forKey:@"path"];
-					[im setValue: [NSNumber numberWithBool: NO] forKey:@"mountedVolume"];
-					[[im valueForKey:@"series"] setValue: [NSNumber numberWithBool: NO] forKey:@"mountedVolume"];
+					for( NSManagedObject *c in objectsCopy)
+					{
+						if( [[c valueForKey:@"completePath"] isEqualToString: srcPath])
+						{
+							[c setValue: [NSNumber numberWithBool: YES] forKey:@"inDatabaseFolder"];
+							[c setValue: [dstPath lastPathComponent] forKey:@"path"];
+							[c setValue: [NSNumber numberWithBool: NO] forKey:@"mountedVolume"];
+							[[c valueForKey:@"series"] setValue: [NSNumber numberWithBool: NO] forKey:@"mountedVolume"];
+						}
+					}
 				}
 			}
 			
@@ -8781,11 +8790,11 @@ static BOOL withReset = NO;
 	
 	if ( contextual == nil ) contextual	= [[NSMenu alloc] initWithTitle:NSLocalizedString(@"Tools", nil)];
 	
-	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Open images", nil)  action:@selector(viewerDICOM:) keyEquivalent:@""];
+	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Open Images", nil)  action:@selector(viewerDICOM:) keyEquivalent:@""];
 	[contextual addItem:item];
 	[item release];
 	
-	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Open images in 4D", nil)  action:@selector(MovieViewerDICOM:) keyEquivalent:@""];
+	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Open Images in 4D", nil)  action:@selector(MovieViewerDICOM:) keyEquivalent:@""];
 	[contextual addItem:item];
 	[item release];
 	
@@ -8847,7 +8856,7 @@ static BOOL withReset = NO;
 	
 	[contextual addItem: [NSMenuItem separatorItem]];
 	
-	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Toggle images/series displaying", nil)  action:@selector(displayImagesOfSeries:) keyEquivalent:@""];
+	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Toggle Images/Series Displaying", nil)  action:@selector(displayImagesOfSeries:) keyEquivalent:@""];
 	[contextual addItem:item];
 	[item release];
 	
@@ -8865,7 +8874,7 @@ static BOOL withReset = NO;
 	
 	[contextual addItem: [NSMenuItem separatorItem]];
 	
-	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Query this patient from Q&R window", nil)  action:@selector(querySelectedStudy:) keyEquivalent:@""];
+	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Query Selected Patient from Q&R Window...", nil)  action:@selector(querySelectedStudy:) keyEquivalent:@""];
 	[contextual addItem:item];
 	[item release];
 	
@@ -8881,7 +8890,7 @@ static BOOL withReset = NO;
 	[contextual addItem:item];
 	[item release];
 	
-	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Copy linked files to Database folder", nil)  action:@selector(copyToDBFolder:) keyEquivalent:@""];
+	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Copy Linked Files to Database Folder", nil)  action:@selector(copyToDBFolder:) keyEquivalent:@""];
 	[contextual addItem:item];
 	[item release];
 	
@@ -8899,7 +8908,7 @@ static BOOL withReset = NO;
 	
 	// Now remove non-applicable items - usually related to images (most RT objects don't have embedded images)
 	
-	NSInteger indx = [contextualRT indexOfItemWithTitle: NSLocalizedString( @"Open images in 4D", nil)];
+	NSInteger indx = [contextualRT indexOfItemWithTitle: NSLocalizedString( @"Open Images in 4D", nil)];
 	if ( indx >= 0 ) [contextualRT removeItemAtIndex: indx];
 	indx = [contextualRT indexOfItemWithTitle: NSLocalizedString( @"Open Key Images", nil)];
 	if ( indx >= 0 ) [contextualRT removeItemAtIndex: indx];
@@ -12047,11 +12056,11 @@ static NSArray*	openSubSeriesArray = nil;
 		
 		[menu addItem: [NSMenuItem separatorItem]];
 		
-		exportItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Open images", nil) action: @selector(viewerDICOM:) keyEquivalent:@""];
+		exportItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Open Images", nil) action: @selector(viewerDICOM:) keyEquivalent:@""];
 		[exportItem setTarget:self];
 		[menu addItem:exportItem];
 		[exportItem release];
-		exportItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Open images in 4D", nil) action: @selector(MovieViewerDICOM:) keyEquivalent:@""];
+		exportItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Open Images in 4D", nil) action: @selector(MovieViewerDICOM:) keyEquivalent:@""];
 		[exportItem setTarget:self];
 		[menu addItem:exportItem];
 		[exportItem release];
@@ -12142,7 +12151,7 @@ static NSArray*	openSubSeriesArray = nil;
 		
 		[menu addItem: [NSMenuItem separatorItem]];
 		
-		sendItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Query this patient from Q&R window", nil) action: @selector(querySelectedStudy:) keyEquivalent:@""];
+		sendItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Query Selected Patient from Q&R Window...", nil) action: @selector(querySelectedStudy:) keyEquivalent:@""];
 		[sendItem setTarget:self];
 		[menu addItem:sendItem];
 		[sendItem release];
@@ -12159,7 +12168,7 @@ static NSArray*	openSubSeriesArray = nil;
 		[menu addItem:anonymizeItem];
 		[anonymizeItem release];
 		
-		exportItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Copy linked files to Database folder", nil)  action:@selector(copyToDBFolder:) keyEquivalent:@""];
+		exportItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Copy Linked Files to Database Folder", nil)  action:@selector(copyToDBFolder:) keyEquivalent:@""];
 		[menu addItem:exportItem];
 		[exportItem release];
 		

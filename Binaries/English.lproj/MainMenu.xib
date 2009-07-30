@@ -3,7 +3,7 @@
 	<data>
 		<int key="IBDocument.SystemTarget">1050</int>
 		<string key="IBDocument.SystemVersion">9J61</string>
-		<string key="IBDocument.InterfaceBuilderVersion">672</string>
+		<string key="IBDocument.InterfaceBuilderVersion">670</string>
 		<string key="IBDocument.AppKitVersion">949.46</string>
 		<string key="IBDocument.HIToolboxVersion">353.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
@@ -424,7 +424,7 @@
 								</object>
 								<object class="NSMenuItem" id="686804606">
 									<reference key="NSMenu" ref="152609316"/>
-									<string key="NSTitle">Query / Retrieve Selected Patient...</string>
+									<string type="base64-UTF8" key="NSTitle">UXVlcnkgU2VsZWN0ZWQgUGF0aWVudCBmcm9tIFEmUiBXaW5kb3cuLi4</string>
 									<string key="NSKeyEquiv">R</string>
 									<int key="NSKeyEquivModMask">393475</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -451,7 +451,7 @@
 								</object>
 								<object class="NSMenuItem" id="13492439">
 									<reference key="NSMenu" ref="152609316"/>
-									<string key="NSTitle">Copy linked files to Database folder</string>
+									<string key="NSTitle">Copy Linked Files to Database Folder</string>
 									<string key="NSKeyEquiv"/>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -20526,7 +20526,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
-					<string>{{219, 353}, {337, 543}}</string>
+					<string>{{219, 353}, {388, 543}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
 					<string>{{706, 407}, {337, 613}}</string>
