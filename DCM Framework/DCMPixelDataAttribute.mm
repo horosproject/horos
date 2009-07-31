@@ -1405,7 +1405,11 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 			}
 			else
 			{
-				[_dcmObject setAttributeValues:[NSMutableArray arrayWithObject:@"RGB"] forName:@"PhotometricInterpretation"];	//YUV_RCT support....
+				[_dcmObject setAttributeValues:[NSMutableArray arrayWithObject:@"RGB"] forName:@"PhotometricInterpretation"];
+				[_dcmObject setAttributeValues:[NSMutableArray arrayWithObject:@"3"] forName:@"SamplesperPixel"];
+				[_dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt:8]] forName:@"BitsStored"];
+				[_dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt:8]] forName:@"BitsAllocated"];
+				[_dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt:7]] forName:@"HighBit"];
 				
 				for( i = 0 ; i < numcmpts; i++)
 					jas_image_readcmpt(jasImage, i, 0, 0, width, height, pixels[ i]);
@@ -1475,7 +1479,7 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 			data = [NSMutableData dataWithLength:decompressedLength];
 			unsigned char *newData = (unsigned char*) [data mutableBytes];
 			position = offsetTable[1];
-			NSLog(@"position: %d", position);
+//			NSLog(@"position: %d", position);
 			while ( j < decompressedLength) {
 				if ((buffer[position] >= 0)) {
 					int runLength = buffer[position] + 1;
@@ -1611,6 +1615,22 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 		int image_width = _columns;
 		int image_height = _rows;
 		int sample_pixel = _samplesPerPixel;
+		
+		DCMAttributeTag *tag = [DCMAttributeTag tagWithName: @"PhotometricInterpretation"];
+		DCMAttribute *attr = [[_dcmObject attributes] objectForKey:[tag stringValue]];
+		NSString *photometricInterpretation = [attr value];
+		
+		if ([photometricInterpretation isEqualToString:@"MONOCHROME1"] || [photometricInterpretation isEqualToString:@"MONOCHROME2"])
+		{
+		
+		}
+		else
+		{
+			if( sample_pixel != 3)
+				NSLog( @"*** RGB Photometric?, but... SamplesPerPixel != 3 ?");
+			sample_pixel = 3;
+		}
+		
 		int bitsallocated = [[_dcmObject attributeValueWithName:@"BitsAllocated"] intValue];
 		int bitsstored = bitsallocated;
 		
@@ -1697,6 +1717,21 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 		int spp = _samplesPerPixel;
 		int prec = [[_dcmObject attributeValueWithName:@"BitsAllocated"] intValue];
 		
+		DCMAttributeTag *tag = [DCMAttributeTag tagWithName: @"PhotometricInterpretation"];
+		DCMAttribute *attr = [[_dcmObject attributes] objectForKey:[tag stringValue]];
+		NSString *photometricInterpretation = [attr value];
+		
+		if ([photometricInterpretation isEqualToString:@"MONOCHROME1"] || [photometricInterpretation isEqualToString:@"MONOCHROME2"])
+		{
+		
+		}
+		else
+		{
+			if( spp != 3)
+				NSLog( @"*** RGB Photometric?, but... spp != 3 ?");
+			spp = 3;
+		}
+		
 		if( prec >= 16)
 		{
 			[self findMinAndMax: data];
@@ -1746,10 +1781,6 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 			return nil;
 		}
 		
-		//set colorspace
-		DCMAttributeTag *tag = [DCMAttributeTag tagWithName:@"PhotometricInterpretation"];
-		DCMAttribute *attr = [[_dcmObject attributes] objectForKey:[tag stringValue]];
-		NSString *photometricInterpretation = [attr value];
 		//int jasColorSpace = JAS_CLRSPC_UNKNOWN;
 		if ([photometricInterpretation isEqualToString:@"MONOCHROME1"] || [photometricInterpretation isEqualToString:@"MONOCHROME2"])
 		{
@@ -1924,6 +1955,10 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 			}
 		[attributes removeObjectsForKeys:keysToRemove];
 		[_dcmObject setAttributeValues:[NSMutableArray arrayWithObject:@"RGB"] forName:@"PhotometricInterpretation"];
+		[_dcmObject setAttributeValues:[NSMutableArray arrayWithObject:@"3"] forName:@"SamplesperPixel"];
+		[_dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt:8]] forName:@"BitsStored"];
+		[_dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt:8]] forName:@"BitsAllocated"];
+		[_dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt:7]] forName:@"HighBit"];
 	}
 	[pool release];
 }
@@ -2699,7 +2734,7 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 		// EXTRACT THE PALETTE data only if there is 256 entries and depth is 16 bits
 		else if (clutDepthR == 16  && clutDepthG == 16  && clutDepthB == 16)
 		{
-			NSLog(@"16 bit PALETTE");
+//			NSLog(@"16 bit PALETTE");
 			NSData *redCLUT = [_dcmObject attributeValueWithName:@"RedPaletteColorLookupTableData"];
 			if (redCLUT) {
 				if (clutEntryR == 0) 
@@ -3247,6 +3282,10 @@ NS_ENDHANDLER
 		[_values release];
 		_values = [newValues retain];
 		[_dcmObject setAttributeValues:[NSMutableArray arrayWithObject:@"RGB"] forName:@"PhotometricInterpretation"];
+		[_dcmObject setAttributeValues:[NSMutableArray arrayWithObject:@"3"] forName:@"SamplesperPixel"];
+		[_dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt:8]] forName:@"BitsStored"];
+		[_dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt:8]] forName:@"BitsAllocated"];
+		[_dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt:7]] forName:@"HighBit"];
 	}
 	else if ([colorspace hasPrefix:@"PALETTE"]){
 	
@@ -3265,7 +3304,10 @@ NS_ENDHANDLER
 			}
 		[attributes removeObjectsForKeys:keysToRemove];
 		[_dcmObject setAttributeValues:[NSMutableArray arrayWithObject:@"RGB"] forName:@"PhotometricInterpretation"];
+		[_dcmObject setAttributeValues:[NSMutableArray arrayWithObject:@"3"] forName:@"SamplesperPixel"];
 		[_dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt:8]] forName:@"BitsStored"];
+		[_dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt:8]] forName:@"BitsAllocated"];
+		[_dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt:7]] forName:@"HighBit"];
 		_pixelDepth = 8;
 	}
 	

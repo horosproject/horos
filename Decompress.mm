@@ -303,6 +303,8 @@ int main(int argc, const char *argv[])
 			else
 				destDirec = path;
 			
+			[DCMPixelDataAttribute setUseOpenJpeg: [[dict objectForKey:@"UseOpenJpegForJPEG2000"] intValue]];
+			
 			int i;
 			for( i = 3; i < argc ; i++)
 			{
@@ -328,7 +330,7 @@ int main(int argc, const char *argv[])
 				
 				if (filexfer.getXfer() == EXS_JPEG2000LosslessOnly || filexfer.getXfer() == EXS_JPEG2000)
 				{
-					[DCMPixelDataAttribute setUseOpenJpeg: [[dict objectForKey:@"UseOpenJpegForJPEG2000"] intValue]];
+					
 					DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile: curFile decodingPixelData: NO];
 					@try
 					{
@@ -368,6 +370,22 @@ int main(int argc, const char *argv[])
 						status =  (cond.good()) ? YES : NO;
 					}
 					else status = NO;
+					
+					if( status == NO) // Try DCM Framework...
+					{
+						[[NSFileManager defaultManager] removeFileAtPath: curFileDest handler:nil];
+						
+						DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile: curFile decodingPixelData: NO];
+						@try
+						{
+							status = [dcmObject writeToFile: curFileDest withTransferSyntax:[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax] quality:1 AET:@"OsiriX" atomically:YES];	//ImplicitVRLittleEndianTransferSyntax
+						}
+						@catch (NSException *e)
+						{
+							NSLog( @"dcmObject writeToFile failed: %@", e);
+						}
+						[dcmObject release];
+					}
 					
 					if( status == NO)
 					{
