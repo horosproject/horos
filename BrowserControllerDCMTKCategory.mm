@@ -158,8 +158,6 @@ extern NSRecursiveLock *PapyrusLock;
 //	}
 //	NSLog( @"** END");
 	
-	[DCMPix purgeCachedDictionaries];
-	
 	if( dest == nil)
 		dest = @"sameAsDestination";
 	
@@ -191,8 +189,6 @@ extern NSRecursiveLock *PapyrusLock;
 //	[dcmObject release];
 //	
 //	return YES;
-	
-	[DCMPix purgeCachedDictionaries];
 	
 	NSTask *theTask = [[NSTask alloc] init];
 	

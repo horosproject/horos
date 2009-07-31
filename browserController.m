@@ -13469,6 +13469,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[waitCompressionWindow showWindow:self];
 		[[waitCompressionWindow progress] setMaxValue: [decompressArray count]];
 		
+		[DCMPix purgeCachedDictionaries];
+		
 		[NSThread detachNewThreadSelector: @selector( decompressThread:) toTarget:self withObject: [NSNumber numberWithChar: 'C']];
 		[decompressThreadRunning unlock];
 	}
@@ -13506,6 +13508,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 		
 		[waitCompressionWindow showWindow:self];
 		[[waitCompressionWindow progress] setMaxValue: [decompressArray count]];
+		
+		[DCMPix purgeCachedDictionaries];
 		
 		[NSThread detachNewThreadSelector: @selector( decompressThread:) toTarget:self withObject: [NSNumber numberWithChar: 'D']];
 		[decompressThreadRunning unlock];
