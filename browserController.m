@@ -12112,24 +12112,27 @@ static NSArray*	openSubSeriesArray = nil;
 	
 	NSArray	*autoroutingRules = [[NSUserDefaults standardUserDefaults] arrayForKey: @"AUTOROUTINGDICTIONARY"];
 	
-	item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"All routing rules", nil)  action:@selector( applyRoutingRule:) keyEquivalent:@""] autorelease];
-	[submenu addItem: item];
-	[submenu addItem: [NSMenuItem separatorItem]];
-	
-	for( NSDictionary *routingRule in autoroutingRules)
+	if( [autoroutingRules count])
 	{
-		if( [[routingRule valueForKey: @"description"] length] > 0)
-			item = [[[NSMenuItem alloc] initWithTitle: [NSString stringWithFormat: @"%@ - %@", [routingRule valueForKey: @"name"], [routingRule valueForKey: @"description"]] action: @selector( applyRoutingRule:) keyEquivalent:@""] autorelease];
-		else
-			item = [[[NSMenuItem alloc] initWithTitle: [routingRule valueForKey: @"name"] action: @selector( applyRoutingRule:) keyEquivalent:@""] autorelease];
-		[item setRepresentedObject: routingRule];
-		
-		if( [routingRule valueForKey:@"activated"] == nil || [[routingRule valueForKey:@"activated"] boolValue])
-			[item setEnabled: NO];
-		else
-			[item setEnabled: NO];
-		
+		item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"All routing rules", nil)  action:@selector( applyRoutingRule:) keyEquivalent:@""] autorelease];
 		[submenu addItem: item];
+		[submenu addItem: [NSMenuItem separatorItem]];
+		
+		for( NSDictionary *routingRule in autoroutingRules)
+		{
+			if( [[routingRule valueForKey: @"description"] length] > 0)
+				item = [[[NSMenuItem alloc] initWithTitle: [NSString stringWithFormat: @"%@ - %@", [routingRule valueForKey: @"name"], [routingRule valueForKey: @"description"]] action: @selector( applyRoutingRule:) keyEquivalent:@""] autorelease];
+			else
+				item = [[[NSMenuItem alloc] initWithTitle: [routingRule valueForKey: @"name"] action: @selector( applyRoutingRule:) keyEquivalent:@""] autorelease];
+			[item setRepresentedObject: routingRule];
+			
+			if( [routingRule valueForKey:@"activated"] == nil || [[routingRule valueForKey:@"activated"] boolValue])
+				[item setEnabled: NO];
+			else
+				[item setEnabled: NO];
+			
+			[submenu addItem: item];
+		}
 	}
 	
 	item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Apply this Routing Rule to Selection", nil)  action: nil keyEquivalent:@""] autorelease];

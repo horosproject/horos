@@ -3872,7 +3872,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 						else
 							sprintf (line2, "Area: %0.3f pix2", area);
 						
-						sprintf (line3, "Mean: %0.3f SDev: %0.3f Total: %0.0f", rmean, rdev, rtotal);
+						sprintf (line3, "Mean: %0.3f SDev: %0.3f Sum: %0.0f", rmean, rdev, rtotal);
 						sprintf (line4, "Min: %0.3f Max: %0.3f", rmin, rmax);
 					}
 					else {
@@ -4448,7 +4448,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 						}
 						else
 							sprintf (line2, "Area: %0.3f pix2", fabs( NSWidth(rect)*NSHeight(rect)));
-						sprintf (line3, "Mean: %0.3f SDev: %0.3f Total: %0.0f", rmean, rdev, rtotal);
+						sprintf (line3, "Mean: %0.3f SDev: %0.3f Sum: %0.0f", rmean, rdev, rtotal);
 						sprintf (line4, "Min: %0.3f Max: %0.3f", rmin, rmax);
 						
 						if( [curView blendingView])
@@ -4471,7 +4471,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 							
 							[blendedPix computeROI: blendedROI :&Brmean :&Brtotal :&Brdev :&Brmin :&Brmax];
 							
-							sprintf (line5, "Fused Image Mean: %0.3f SDev: %0.3f Total: %0.0f", Brmean, Brdev, Brtotal);
+							sprintf (line5, "Fused Image Mean: %0.3f SDev: %0.3f Sum: %0.0f", Brmean, Brdev, Brtotal);
 							sprintf (line6, "Fused Image Min: %0.3f Max: %0.3f", Brmin, Brmax);
 						}
 					}
@@ -4559,7 +4559,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					else
 						sprintf (line2, "Area: %0.3f pix2", [self EllipseArea]);
 					
-					sprintf (line3, "Mean: %0.3f SDev: %0.3f Total: %0.0f", rmean, rdev, rtotal);
+					sprintf (line3, "Mean: %0.3f SDev: %0.3f Sum: %0.0f", rmean, rdev, rtotal);
 					sprintf (line4, "Min: %0.3f Max: %0.3f", rmin, rmax);
 					
 					if( [curView blendingView])
@@ -4576,7 +4576,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 						[blendedROI setPoints: pts];
 						[blendedPix computeROI: blendedROI :&Brmean :&Brtotal :&Brdev :&Brmin :&Brmax];
 						
-						sprintf (line5, "Fused Image Mean: %0.3f SDev: %0.3f Total: %0.0f", Brmean, Brdev, Brtotal);
+						sprintf (line5, "Fused Image Mean: %0.3f SDev: %0.3f Sum: %0.0f", Brmean, Brdev, Brtotal);
 						sprintf (line6, "Fused Image Min: %0.3f Max: %0.3f", Brmin, Brmax);
 					}
 				}
@@ -4633,7 +4633,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					}
 					else
 						sprintf (line2, "Area: %0.3f pix2", [self Area]);
-					sprintf (line3, "Mean: %0.3f SDev: %0.3f Total: %0.0f", rmean, rdev, rtotal);
+					sprintf (line3, "Mean: %0.3f SDev: %0.3f Sum: %0.0f", rmean, rdev, rtotal);
 					sprintf (line4, "Min: %0.3f Max: %0.3f", rmin, rmax);
 					
 					length = 0;
@@ -4910,7 +4910,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 						else
 							sprintf (line2, "Area: %0.3f pix2", [self Area]);
 						
-						sprintf (line3, "Mean: %0.3f SDev: %0.3f Total: %0.0f", rmean, rdev, rtotal);
+						sprintf (line3, "Mean: %0.3f SDev: %0.3f Sum: %0.0f", rmean, rdev, rtotal);
 						sprintf (line4, "Min: %0.3f Max: %0.3f", rmin, rmax);
 						
 						length = 0;
@@ -5009,7 +5009,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 						}
 						else
 							sprintf (line2, "Area: %0.3f pix2", [self Area]);
-						sprintf (line3, "Mean: %0.3f SDev: %0.3f Total: %0.0f", rmean, rdev, rtotal);
+						sprintf (line3, "Mean: %0.3f SDev: %0.3f Sum: %0.0f", rmean, rdev, rtotal);
 						sprintf (line4, "Min: %0.3f Max: %0.3f", rmin, rmax);
 						
 						if( [curView blendingView])
@@ -5026,7 +5026,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 							[blendedROI setPoints: pts];
 							[blendedPix computeROI: blendedROI :&Brmean :&Brtotal :&Brdev :&Brmin :&Brmax];
 							
-							sprintf (line5, "Fused Image Mean: %0.3f SDev: %0.3f Total: %0.0f", Brmean, Brdev, Brtotal);
+							sprintf (line5, "Fused Image Mean: %0.3f SDev: %0.3f Sum: %0.0f", Brmean, Brdev, Brtotal);
 							sprintf (line6, "Fused Image Min: %0.3f Max: %0.3f", Brmin, Brmax);
 						}
 						else
@@ -5074,7 +5074,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 						else
 							sprintf (line2, "Area: %0.3f pix2", [self Area]);
 						
-						sprintf (line3, "Mean: %0.3f SDev: %0.3f Total: %0.0f", rmean, rdev, rtotal);
+						sprintf (line3, "Mean: %0.3f SDev: %0.3f Sum: %0.0f", rmean, rdev, rtotal);
 						sprintf (line4, "Min: %0.3f Max: %0.3f", rmin, rmax);
 						
 						if( [curView blendingView])
@@ -5091,7 +5091,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 							[blendedROI setPoints: pts];
 							[blendedPix computeROI: blendedROI :&Brmean :&Brtotal :&Brdev :&Brmin :&Brmax];
 							
-							sprintf (line5, "Fused Image Mean: %0.3f SDev: %0.3f Total: %0.0f", Brmean, Brdev, Brtotal);
+							sprintf (line5, "Fused Image Mean: %0.3f SDev: %0.3f Sum: %0.0f", Brmean, Brdev, Brtotal);
 							sprintf (line6, "Fused Image Min: %0.3f Max: %0.3f", Brmin, Brmax);
 						}
 						else
