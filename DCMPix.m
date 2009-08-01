@@ -5635,10 +5635,32 @@ END_CREATE_ROIS:
 		orientation[ 3] = 0;	orientation[ 4] = 0;	orientation[ 5] = 0;
 		
 		NSArray *iop = [detectorInformation attributeArrayWithName:@"ImageOrientationPatient"];
-		if( iop )
+		if( iop)
 		{
-			for ( int j = 0; j < iop.count; j++ ) 
-				orientation[ j ] = [[iop objectAtIndex:j] floatValue];
+			BOOL equalZero = YES;
+			
+			for ( int j = 0; j < iop.count; j++) 
+				if( [[iop objectAtIndex:j] floatValue] != 0)
+					equalZero = NO;
+			
+			if( equalZero == NO)
+			{
+				for ( int j = 0; j < iop.count; j++) 
+					orientation[ j ] = [[iop objectAtIndex:j] floatValue];
+			}
+			else // doesnt the root Image Orientation contains valid data? if not use the normal vector
+			{
+				equalZero = YES;
+				for ( int j = 0; j < 6; j++ )
+					if( orientation[ j] != 0)
+						equalZero = NO;
+				
+				if( equalZero)
+				{
+					orientation[ 0] = 1;	orientation[ 1] = 0;	orientation[ 2] = 0;
+					orientation[ 3] = 0;	orientation[ 4] = 1;	orientation[ 5] = 0;
+				}
+			}
 		}
 	}
 	
@@ -6687,50 +6709,50 @@ END_CREATE_ROIS:
 						unsigned short  *ptrs =  (unsigned short*) val->a;
 						nbVal = theGroupP[ papSegmentedRedPaletteColorLookupTableDataGr].length / 2;
 						
-						NSLog(@"red");
+//						NSLog(@"red");
 						
 						xxindex = 0;
 						for( jj = 0; jj < nbVal;jj++)
 						{
-							NSLog(@"val: %d", ptrs[jj]);
+//							NSLog(@"val: %d", ptrs[jj]);
 							switch( ptrs[jj])
-						{
-							case 0:	// Discrete
-								jj++;
-								length = ptrs[jj];
-								NSLog(@"length: %d", length);
-								jj++;
-								for( xx = xxindex; xxindex < xx + length; xxindex++)
-								{
-									shortRed[ xxindex] = ptrs[ jj++];
-									if( xxindex < 256) NSLog(@"%d", shortRed[ xxindex]);
-								}
-								jj--;
-								break;
-								
-								case 1:	// Linear
-								jj++;
-								length = ptrs[jj];
-								for( xx = xxindex; xxindex < xx + length; xxindex++)
-								{
-									shortRed[ xxindex] = shortRed[ xx-1] + ((ptrs[jj+1] - shortRed[ xx-1]) * (1+xxindex - xx)) / (length);
-									//		if( xxindex < 256) NSLog(@"%d", shortRed[ xxindex]);
-								}
-								jj ++;
-								break;
-								
-								case 2: // Indirect
-								NSLog(@"indirect not supported");
-								jj++;
-								length = ptrs[jj];
-								
-								jj += 2;
-								break;
-								
-								default:
-								NSLog(@"Error, Error, OsiriX will soon crash...");
-								break;
-						}
+							{
+								case 0:	// Discrete
+									jj++;
+									length = ptrs[jj];
+	//								NSLog(@"length: %d", length);
+									jj++;
+									for( xx = xxindex; xxindex < xx + length; xxindex++)
+									{
+										shortRed[ xxindex] = ptrs[ jj++];
+										if( xxindex < 256) NSLog(@"%d", shortRed[ xxindex]);
+									}
+									jj--;
+									break;
+									
+									case 1:	// Linear
+									jj++;
+									length = ptrs[jj];
+									for( xx = xxindex; xxindex < xx + length; xxindex++)
+									{
+										shortRed[ xxindex] = shortRed[ xx-1] + ((ptrs[jj+1] - shortRed[ xx-1]) * (1+xxindex - xx)) / (length);
+										//		if( xxindex < 256) NSLog(@"%d", shortRed[ xxindex]);
+									}
+									jj ++;
+									break;
+									
+									case 2: // Indirect
+									NSLog(@"indirect not supported");
+									jj++;
+									length = ptrs[jj];
+									
+									jj += 2;
+									break;
+									
+									default:
+									NSLog(@"Error, Error, OsiriX will soon crash...");
+									break;
+							}
 						}
 						found16 = YES; 	// this is used to let us know we have to look for the other element */
 					}//endif
@@ -6742,48 +6764,48 @@ END_CREATE_ROIS:
 						unsigned short  *ptrs =  (unsigned short*) val->a;
 						nbVal = theGroupP[ papSegmentedGreenPaletteColorLookupTableDataGr].length / 2;
 						
-						NSLog(@"green");
+//						NSLog(@"green");
 						
 						xxindex = 0;
 						for( jj = 0; jj < nbVal; jj++)
 						{
 							switch( ptrs[jj])
-						{
-							case 0:	// Discrete
-								jj++;
-								length = ptrs[jj];
-								jj++;
-								for( xx = xxindex; xxindex < xx + length; xxindex++)
-								{
-									shortGreen[ xxindex] = ptrs[ jj++];
-									//			if( xxindex < 256) NSLog(@"%d", shortGreen[ xxindex]);
-								}
-								jj--;
-								break;
-								
-								case 1:	// Linear
-								jj++;
-								length = ptrs[jj];
-								for( xx = xxindex; xxindex < xx + length; xxindex++)
-								{
-									shortGreen[ xxindex] = shortGreen[ xx-1] + ((ptrs[jj+1] - shortGreen[ xx-1]) * (1+xxindex - xx)) / (length);
-									//	if( xxindex < 256) NSLog(@"%d", shortGreen[ xxindex]);
-								}
-								jj ++;
-								break;
-								
-								case 2: // Indirect
-								NSLog(@"indirect not supported");
-								jj++;
-								length = ptrs[jj];
-								
-								jj += 2;
-								break;
-								
-								default:
-								NSLog(@"Error, Error, OsiriX will soon crash...");
-								break;
-						}
+							{
+								case 0:	// Discrete
+									jj++;
+									length = ptrs[jj];
+									jj++;
+									for( xx = xxindex; xxindex < xx + length; xxindex++)
+									{
+										shortGreen[ xxindex] = ptrs[ jj++];
+										//			if( xxindex < 256) NSLog(@"%d", shortGreen[ xxindex]);
+									}
+									jj--;
+									break;
+									
+									case 1:	// Linear
+									jj++;
+									length = ptrs[jj];
+									for( xx = xxindex; xxindex < xx + length; xxindex++)
+									{
+										shortGreen[ xxindex] = shortGreen[ xx-1] + ((ptrs[jj+1] - shortGreen[ xx-1]) * (1+xxindex - xx)) / (length);
+										//	if( xxindex < 256) NSLog(@"%d", shortGreen[ xxindex]);
+									}
+									jj ++;
+									break;
+									
+									case 2: // Indirect
+									NSLog(@"indirect not supported");
+									jj++;
+									length = ptrs[jj];
+									
+									jj += 2;
+									break;
+									
+									default:
+									NSLog(@"Error, Error, OsiriX will soon crash...");
+									break;
+							}
 						}
 						found16 = YES; 	// this is used to let us know we have to look for the other element */
 						NSLog(@"%d", xxindex);
@@ -6796,51 +6818,51 @@ END_CREATE_ROIS:
 						unsigned short  *ptrs =  (unsigned short*) val->a;
 						nbVal = theGroupP[ papSegmentedBluePaletteColorLookupTableDataGr].length / 2;
 						
-						NSLog(@"blue");
+//						NSLog(@"blue");
 						
 						xxindex = 0;
 						for( jj = 0; jj < nbVal; jj++)
 						{
 							switch( ptrs[jj])
-						{
-							case 0:	// Discrete
-								jj++;
-								length = ptrs[jj];
-								jj++;
-								for( xx = xxindex; xxindex < xx + length; xxindex++)
-								{
-									shortBlue[ xxindex] = ptrs[ jj++];
-									//			if( xxindex < 256) NSLog(@"%d", shortBlue[ xxindex]);
-								}
-								jj--;
-								break;
-								
-								case 1:	// Linear
-								jj++;
-								length = ptrs[jj];
-								for( xx = xxindex; xxindex < xx + length; xxindex++)
-								{
-									shortBlue[ xxindex] = shortBlue[ xx-1] + ((ptrs[jj+1] - shortBlue[ xx-1]) * (xxindex - xx + 1)) / (length);
-									//			if( xxindex < 256) NSLog(@"%d", shortBlue[ xxindex]);
-								}
-								jj ++;
-								break;
-								
-								case 2: // Indirect
-								NSLog(@"indirect not supported");
-								jj++;
-								length = ptrs[jj];
-								
-								jj += 2;
-								break;
-								
-								default:
-								NSLog(@"Error, Error, OsiriX will soon crash...");
-								break;
-						}
+							{
+								case 0:	// Discrete
+									jj++;
+									length = ptrs[jj];
+									jj++;
+									for( xx = xxindex; xxindex < xx + length; xxindex++)
+									{
+										shortBlue[ xxindex] = ptrs[ jj++];
+										//			if( xxindex < 256) NSLog(@"%d", shortBlue[ xxindex]);
+									}
+									jj--;
+									break;
+									
+									case 1:	// Linear
+									jj++;
+									length = ptrs[jj];
+									for( xx = xxindex; xxindex < xx + length; xxindex++)
+									{
+										shortBlue[ xxindex] = shortBlue[ xx-1] + ((ptrs[jj+1] - shortBlue[ xx-1]) * (xxindex - xx + 1)) / (length);
+										//			if( xxindex < 256) NSLog(@"%d", shortBlue[ xxindex]);
+									}
+									jj ++;
+									break;
+									
+									case 2: // Indirect
+									NSLog(@"indirect not supported");
+									jj++;
+									length = ptrs[jj];
+									
+									jj += 2;
+									break;
+									
+									default:
+									NSLog(@"Error, Error, OsiriX will soon crash...");
+									break;
+							}
 						}
 						found16 = YES; 	// this is used to let us know we have to look for the other element */
-						NSLog(@"%d", xxindex);
+//						NSLog(@"%d", xxindex);
 					}//endif
 					
 					for( jj = 0; jj < 65535; jj++)
@@ -7210,27 +7232,53 @@ END_CREATE_ROIS:
 									else
 										originZ += frameNo * sliceThickness;
 									
-									orientation[ 0] = 0;	orientation[ 1] = 0;	orientation[ 2] = 0;
-									orientation[ 3] = 0;	orientation[ 4] = 0;	orientation[ 5] = 0;
-									
 									val = Papy3GetElement (gr, papImageOrientationPatientGr, &nbVal, &elemType);
-									if ( val )
+									if ( val)
 									{
-										tmpVal3 = val;
 										if( nbVal != 6)
 										{
 											NSLog(@"Orientation is NOT 6 !!!");
 											if( nbVal > 6 ) nbVal = 6;
 										}
 										
+										BOOL equalZero = YES;
+										
+										tmpVal3 = val;
 										for ( int j = 0; j < nbVal; j++ )
 										{
-											orientation[ j]  = atof( tmpVal3->a);
+											if( atof( tmpVal3->a) != 0) equalZero = NO;
 											tmpVal3++;
 										}
 										
-										for (int j = nbVal; j < 6; j++)
-											orientation[ j] = 0;
+										if( equalZero == NO)
+										{
+											orientation[ 0] = 0;	orientation[ 1] = 0;	orientation[ 2] = 0;
+											orientation[ 3] = 0;	orientation[ 4] = 0;	orientation[ 5] = 0;
+											
+											tmpVal3 = val;
+											for ( int j = 0; j < nbVal; j++ )
+											{
+												orientation[ j]  = atof( tmpVal3->a);
+												tmpVal3++;
+											}
+											
+											for (int j = nbVal; j < 6; j++)
+												orientation[ j] = 0;
+										}
+										else // doesnt the root Image Orientation contains valid data? if not use the normal vector
+										{
+											equalZero = YES;
+											for ( int j = 0; j < 6; j++ )
+											{
+												if( orientation[ j] != 0) equalZero = NO;
+											}
+											
+											if( equalZero)
+											{
+												orientation[ 0] = 1;	orientation[ 1] = 0;	orientation[ 2] = 0;
+												orientation[ 3] = 0;	orientation[ 4] = 1;	orientation[ 5] = 0;
+											}
+										}
 									}
 									break;
 								}
@@ -7721,7 +7769,7 @@ END_CREATE_ROIS:
 							gArrPhotoInterpret [fileNb] == YBR_FULL_422 ||
 							gArrPhotoInterpret [fileNb] == YBR_PARTIAL_422)
 						{
-							NSLog(@"YBR WORLD");
+//							NSLog(@"YBR WORLD");
 							
 							char *rgbPixel = (char*) [self ConvertYbrToRgb:(unsigned char *) oImage :realwidth :height :gArrPhotoInterpret [fileNb] :(char) fPlanarConf];
 							fPlanarConf = 0;	//ConvertYbrToRgb -> planar is converted

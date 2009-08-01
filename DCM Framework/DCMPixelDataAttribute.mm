@@ -1411,6 +1411,8 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 				[_dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt:8]] forName:@"BitsAllocated"];
 				[_dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt:7]] forName:@"HighBit"];
 				
+				_samplesPerPixel = [[[_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"SamplesperPixel"]] value] intValue];
+				
 				for( i = 0 ; i < numcmpts; i++)
 					jas_image_readcmpt(jasImage, i, 0, 0, width, height, pixels[ i]);
 				
@@ -1959,6 +1961,8 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 		[_dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt:8]] forName:@"BitsStored"];
 		[_dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt:8]] forName:@"BitsAllocated"];
 		[_dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt:7]] forName:@"HighBit"];
+		
+		_samplesPerPixel = [[[_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"SamplesperPixel"]] value] intValue];
 	}
 	[pool release];
 }
@@ -2950,7 +2954,7 @@ NS_ENDHANDLER
   int			y, y1, r;
   NSMutableData *rgbData;
   
-  NSLog(@"convertYBrToRGB:%@ isPlanar:%d", theKind, isPlanar);
+//  NSLog(@"convertYBrToRGB:%@ isPlanar:%d", theKind, isPlanar);
   // the planar configuration should be set to 0 whenever
   // YBR_FULL_422 or YBR_PARTIAL_422 is used
   if (![theKind isEqualToString:@"YBR_FULL"] && isPlanar == 1)
@@ -3100,7 +3104,7 @@ NS_ENDHANDLER
     case 1 : // each plane is stored separately (only allowed for YBR_FULL)
     {
       unsigned char *pY, *pB, *pR;	// ptr to Y, Cb and Cr channels of the original image
-      NSLog(@"YBR FULL and planar");  
+//      NSLog(@"YBR FULL and planar");  
       // points to the begining of each channel in memory
       pY = (unsigned char *)[ybrData bytes];
       pB = (unsigned char *) (pY + size);
@@ -3286,6 +3290,8 @@ NS_ENDHANDLER
 		[_dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt:8]] forName:@"BitsStored"];
 		[_dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt:8]] forName:@"BitsAllocated"];
 		[_dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt:7]] forName:@"HighBit"];
+		
+		_samplesPerPixel = [[[_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"SamplesperPixel"]] value] intValue];
 	}
 	else if ([colorspace hasPrefix:@"PALETTE"]){
 	
@@ -3308,6 +3314,9 @@ NS_ENDHANDLER
 		[_dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt:8]] forName:@"BitsStored"];
 		[_dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt:8]] forName:@"BitsAllocated"];
 		[_dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt:7]] forName:@"HighBit"];
+		
+		_samplesPerPixel = [[[_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"SamplesperPixel"]] value] intValue];
+		
 		_pixelDepth = 8;
 	}
 	
