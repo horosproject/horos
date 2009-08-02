@@ -9340,16 +9340,12 @@ END_CREATE_ROIS:
 		
 		if( fImage == nil )
 		{
-			NSLog(@"not able to load the image...");
+			NSLog(@"not able to load the image : %@", srcFile);
 			
 			if( fExternalOwnedImage )
-			{
 				fImage = fExternalOwnedImage;
-			}
 			else
-			{
 				fImage = malloc( 128 * 128 * 4);
-			}
 			
 			height = 128;
 			width = 128;

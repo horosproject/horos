@@ -3714,9 +3714,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 							
 							if( img == nil)
 							{
-								DCMPix*     dcmPix = [[DCMPix alloc] myinit: [[images objectAtIndex: i] valueForKey:@"completePath"] :0 :0 :nil :0 :[[[images objectAtIndex: i] valueForKeyPath:@"series.id"] intValue] isBonjour:[[BrowserController currentBrowser] isCurrentDatabaseBonjour] imageObj:[images objectAtIndex: i]];
+								DCMPix* dcmPix = [[DCMPix alloc] myinit: [[images objectAtIndex: i] valueForKey:@"completePath"] :0 :0 :nil :0 :[[[images objectAtIndex: i] valueForKeyPath:@"series.id"] intValue] isBonjour:[[BrowserController currentBrowser] isCurrentDatabaseBonjour] imageObj:[images objectAtIndex: i]];
 								
-								if( dcmPix)
+								if( dcmPix && dcmPix.notAbleToLoadImage == NO)
 								{
 									NSImage *img = [dcmPix generateThumbnailImageWithWW:0 WL:0];
 									
