@@ -1922,7 +1922,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		y = (downrighty - uplefty);
 		x = (downrightx - upleftx);
 		
-		if( count > x*y ) NSLog(@"%d / %d", count, (long) ((downrighty - uplefty) * (downrightx - upleftx)));
+//		if( count > x*y ) NSLog(@"%d / %d", count, (long) ((downrighty - uplefty) * (downrightx - upleftx)));
 		
 		if( roi ) free( pts );
 	}

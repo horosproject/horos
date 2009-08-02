@@ -2533,7 +2533,7 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 		NSMutableData *segmentedRedData = [_dcmObject attributeValueWithName:@"SegmentedRedPaletteColorLookupTableData"];		
 		if (segmentedRedData)	// SEGMENTED PALETTE - 16 BIT !
 		{
-			NSLog(@"Segmented LUT");
+			//NSLog(@"Segmented LUT");
 			if (clutDepthR == 16  && clutDepthG == 16  && clutDepthB == 16)
 			{
 				long			length, xx, xxindex, jj;
@@ -2549,7 +2549,7 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 					unsigned short  *ptrs =  (unsigned short*) val;
 					nbVal = [segmentedRedData length] / 2;
 					
-					NSLog(@"red");
+					//NSLog(@"red");
 					
 					xxindex = 0;
 					for( jj = 0; jj < nbVal;jj++)
@@ -2597,7 +2597,7 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 						}
 					}
 					found16 = YES; 	// this is used to let us know we have to look for the other element */
-					NSLog(@"%d", xxindex);
+					//NSLog(@"%d", xxindex);
 				}//endif
 				
 				// extract the GREEN palette clut data
@@ -2608,7 +2608,7 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 					unsigned short  *ptrs =  (unsigned short*) val;
 					nbVal = [segmentedGreenData length] / 2;
 					
-					NSLog(@"green");
+					//NSLog(@"green");
 					
 					xxindex = 0;
 					for( jj = 0; jj < nbVal; jj++)
@@ -2656,7 +2656,7 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 						}
 					}
 					found16 = YES; 	// this is used to let us know we have to look for the other element 
-					NSLog(@"%d", xxindex);
+					//NSLog(@"%d", xxindex);
 				}//endif
 				
 				// extract the BLUE palette clut data
@@ -2667,7 +2667,7 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 					unsigned short  *ptrs =  (unsigned short*) val;
 					nbVal = [segmentedBlueData length] / 2;
 					
-					NSLog(@"blue");
+					//NSLog(@"blue");
 					
 					xxindex = 0;
 					for( jj = 0; jj < nbVal; jj++)
@@ -2715,7 +2715,7 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 						}
 					}
 					found16 = YES; 	// this is used to let us know we have to look for the other element 
-					NSLog(@"%d", xxindex);
+					//NSLog(@"%d", xxindex);
 				}//endif
 				/*
 				for( jj = 0; jj < 65535; jj++)
