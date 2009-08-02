@@ -8111,6 +8111,8 @@ static BOOL withReset = NO;
 				
 				DCMPix	*dcmPix  = [[DCMPix alloc] myinit:[image valueForKey:@"completePath"] :0 :1 :nil :frame :[[image valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:image];
 				
+				[dcmPix CheckLoad];
+				
 				if( dcmPix)
 				{
 					NSImage *thumbnail = [dcmPix generateThumbnailImageWithWW:0 WL:0];

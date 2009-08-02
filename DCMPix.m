@@ -6182,29 +6182,26 @@ END_CREATE_ROIS:
 {
 	[PapyrusLock lock];
 	
-	if( fImage)
+	NSMutableDictionary *cachedGroupsForThisFile = [cachedPapyGroups valueForKey: srcFile];
+	
+	if( cachedGroupsForThisFile)
 	{
-		NSMutableDictionary *cachedGroupsForThisFile = [cachedPapyGroups valueForKey: srcFile];
+		[cachedGroupsForThisFile setValue: [NSNumber numberWithInt: [[cachedGroupsForThisFile objectForKey: @"count"] intValue]-1] forKey: @"count"];
 		
-		if( cachedGroupsForThisFile)
+		if( [[cachedGroupsForThisFile objectForKey: @"count"] intValue] <= 0)
 		{
-			[cachedGroupsForThisFile setValue: [NSNumber numberWithInt: [[cachedGroupsForThisFile objectForKey: @"count"] intValue]-1] forKey: @"count"];
+			int fileNb = [[cachedGroupsForThisFile valueForKey: @"fileNb"] intValue];
+			[cachedGroupsForThisFile removeObjectForKey: @"fileNb"];
+			[cachedGroupsForThisFile removeObjectForKey: @"count"];
 			
-			if( [[cachedGroupsForThisFile objectForKey: @"count"] intValue] <= 0)
+			for( NSValue *pointer in [cachedGroupsForThisFile allValues] )
 			{
-				int fileNb = [[cachedGroupsForThisFile valueForKey: @"fileNb"] intValue];
-				[cachedGroupsForThisFile removeObjectForKey: @"fileNb"];
-				[cachedGroupsForThisFile removeObjectForKey: @"count"];
-				
-				for( NSValue *pointer in [cachedGroupsForThisFile allValues] )
-				{
-					SElement *theGroupP = (SElement*) [pointer pointerValue];
-					Papy3GroupFree ( &theGroupP, TRUE);
-				}
-				
-				[cachedPapyGroups removeObjectForKey: srcFile];
-				Papy3FileClose (fileNb, TRUE);
+				SElement *theGroupP = (SElement*) [pointer pointerValue];
+				Papy3GroupFree ( &theGroupP, TRUE);
 			}
+			
+			[cachedPapyGroups removeObjectForKey: srcFile];
+			Papy3FileClose (fileNb, TRUE);
 		}
 	}
 	
@@ -7050,7 +7047,16 @@ END_CREATE_ROIS:
 		
 		[PapyrusLock lock];
 		if( [[cachedPapyGroups valueForKey: srcFile] valueForKey: @"fileNb"])
+		{
 			fileNb = [[[cachedPapyGroups valueForKey: srcFile] valueForKey: @"fileNb"] intValue];
+			if( gPapyFile[ fileNb] == nil)
+			{
+				NSLog( @"***** not cached *****");
+				[self clearCachedPapyGroups];
+				fileNb = -1;
+				[self getPapyGroup: 0];
+			}
+		}
 		[PapyrusLock unlock];
 		
 		modalityString = nil;
