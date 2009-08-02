@@ -3580,9 +3580,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 			
 			for( x = 0; x < [studiesArray count]; x++)
 			{
-				DicomStudy			*curStudy = [studiesArray objectAtIndex: x];
-				NSArray				*series = [seriesArray objectAtIndex: x];
-				NSArray				*images = [[BrowserController currentBrowser] imagesArray: curStudy preferredObject: oAny];
+				DicomStudy *curStudy = [studiesArray objectAtIndex: x];
+				NSArray *series = [seriesArray objectAtIndex: x];
+				NSArray *images = [[BrowserController currentBrowser] imagesArray: curStudy preferredObject: oAny];
 				
 				if( [series count] != [images count])
 				{

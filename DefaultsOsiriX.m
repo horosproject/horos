@@ -787,7 +787,7 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject: @"1" forKey:@"UNMOUNT"];
 	[defaultValues setObject: @"1" forKey: @"USEDICOMDIR"];
 	[defaultValues setObject: @"1" forKey: @"SAVEROIS"];
-	[defaultValues setObject: @"0" forKey: @"NOLOCALIZER"];
+	[defaultValues setObject: @"1" forKey: @"NOLOCALIZER"];
 	[defaultValues setObject: @"0" forKey: @"TRANSITIONEFFECT"];
 	[defaultValues setObject: @"0" forKey:@"NOINTERPOLATION"];
 	[defaultValues setObject: @"0" forKey: @"WINDOWSIZEVIEWER"];
