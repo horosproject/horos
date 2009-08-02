@@ -3173,7 +3173,7 @@ static NSArray*	statesArray = nil;
 				{
 					for( NSManagedObject *c in objectsCopy)
 					{
-						if( [[c valueForKey:@"completePath"] isEqualToString: srcPath])
+						if( [c valueForKey: @"series"] == [im valueForKey: @"series"] && [[c valueForKey:@"completePath"] isEqualToString: srcPath])
 						{
 							[c setValue: [NSNumber numberWithBool: YES] forKey:@"inDatabaseFolder"];
 							[c setValue: [dstPath lastPathComponent] forKey:@"path"];

@@ -608,10 +608,15 @@ static const char *GetPrivateIP()
 }
 
 - (void) refresh: (id) sender
+{
+	return [self refresh: sender now: NO];
+}
+
+- (void) refresh: (id) sender now: (BOOL) now
 {	
-	if( DatabaseIsEdited == NO && [[self window] isVisible] == YES)
+	if( (DatabaseIsEdited == NO && [[self window] isVisible] == YES) || now == YES)
 	{
-		if( [[self window] isKeyWindow] == YES || lastListRefresh < [NSDate timeIntervalSinceReferenceDate])
+		if( [[self window] isKeyWindow] == YES || lastListRefresh < [NSDate timeIntervalSinceReferenceDate] || now == YES)
 		{
 			lastListRefresh = [NSDate timeIntervalSinceReferenceDate] + 30;
 			[studyArrayInstanceUID release];
@@ -991,7 +996,7 @@ static const char *GetPrivateIP()
 	id item = [outlineView itemAtRow: [outlineView selectedRow]];
 	
 	[resultArray sortUsingDescriptors: [self sortArray]];
-	[self refresh: self];
+	[self refresh: self now: YES];
 	
 	NSArray *s = [outlineView sortDescriptors];
 	
@@ -1416,7 +1421,7 @@ static const char *GetPrivateIP()
 	
 	[resultArray removeAllObjects];
 	[resultArray addObjectsFromArray: l];
-	[self refresh: self];
+	[self refresh: self now: YES];
 	
 	[l release];
 }
@@ -1461,7 +1466,7 @@ static const char *GetPrivateIP()
 	[queryManager performQuery];
 	[progressIndicator stopAnimation:nil];
 	[resultArray sortUsingDescriptors: [self sortArray]];
-	[self refresh: self];
+	[self refresh: self now: YES];
 	[pool release];
 	
 	queryPerformed = YES;
@@ -1682,7 +1687,7 @@ static const char *GetPrivateIP()
 	[searchFieldID setStringValue:@""];
 	[searchFieldAN setStringValue:@""];
 	[searchFieldStudyDescription setStringValue:@""];
-	[self refresh: self];
+	[self refresh: self now: YES];
 }
 
 -(IBAction) copy:(id) sender
@@ -2404,7 +2409,7 @@ static const char *GetPrivateIP()
 
 - (void)windowDidBecomeKey:(NSNotification *)notification
 {
-	[self refresh: self];
+	[self refresh: self now: YES];
 }
 
 - (void)windowDidLoad

@@ -100,6 +100,7 @@
 - (IBAction)abort:(id)sender;
 - (IBAction)controlAction:(id)sender;
 - (void) refresh: (id) sender;
+- (void) refresh: (id) sender now: (BOOL) now;
 - (IBAction) pressButtons:(id) sender;
 - (NSArray*) localSeries:(id) item;
 - (NSArray*) localStudy:(id) item;
