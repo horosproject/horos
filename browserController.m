@@ -3151,8 +3151,6 @@ static NSArray*	statesArray = nil;
 		
 	[managedObjectContext lock];
 	
-	NSArray *objectsCopy = [[objects copy] autorelease];
-	
 	[files removeDuplicatedStringsInSyncWithThisArray: objects];
 	
 	@try
@@ -3171,14 +3169,15 @@ static NSArray*	statesArray = nil;
 				
 				if( [[NSFileManager defaultManager] copyPath:srcPath toPath:dstPath handler:nil])
 				{
-					for( NSManagedObject *c in objectsCopy)
+					[[im valueForKey:@"series"] setValue: [NSNumber numberWithBool: NO] forKey:@"mountedVolume"];
+					
+					for( NSManagedObject *c in [[im valueForKeyPath: @"series.images"] allObjects]) // For multi frame files
 					{
-						if( [c valueForKey: @"series"] == [im valueForKey: @"series"] && [[c valueForKey:@"completePath"] isEqualToString: srcPath])
+						if( [[c valueForKey:@"completePath"] isEqualToString: srcPath])
 						{
 							[c setValue: [NSNumber numberWithBool: YES] forKey:@"inDatabaseFolder"];
 							[c setValue: [dstPath lastPathComponent] forKey:@"path"];
 							[c setValue: [NSNumber numberWithBool: NO] forKey:@"mountedVolume"];
-							[[c valueForKey:@"series"] setValue: [NSNumber numberWithBool: NO] forKey:@"mountedVolume"];
 						}
 					}
 				}
