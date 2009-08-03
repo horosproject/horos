@@ -2433,7 +2433,7 @@ PutBufferInElement3 (PapyShort inFileNb, unsigned char *ioBuffP, PapyULong inEle
 	            theErr = Papy3FSeek (gPapyFile [inFileNb], SEEK_SET, (theInitialFilePos + (PapyLong) (*ioBufPosP)));
 	          
 	            /* computes the group length */
-	            theSeqGrSize = ComputeUndefinedGroupLength3 (inFileNb, (PapyLong) theSeqSize);
+	            theSeqGrSize = ComputeUndefinedGroupLength3 (inFileNb, (PapyULong) theSeqSize);
 	            
 	            /* then reset the file pointer to its previous position */
 	            theErr = Papy3FSeek (gPapyFile [inFileNb], SEEK_SET, theCurrFilePos);

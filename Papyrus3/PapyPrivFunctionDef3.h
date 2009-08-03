@@ -61,7 +61,7 @@ WriteDicomHeader3               (PAPY_FILE, PapyShort, PapyULong *);
 /* --- PapyFiles3 --- */
 
 PapyULong 
-ComputeUndefinedGroupLength3    (PapyShort, PapyLong);
+ComputeUndefinedGroupLength3    (PapyShort, PapyULong);
 
 PapyShort 
 ComputeUndefinedSequenceLength3	(PapyShort, PapyULong *);

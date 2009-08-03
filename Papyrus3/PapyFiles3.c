@@ -992,7 +992,7 @@ ReadGroup3 (PapyShort inFileNb, PapyUShort *outGroupNbP, unsigned char **outBuff
   {
     theErr = Papy3FSeek (theFp, (int) SEEK_CUR, - (long) theFirstElemLength);
     if (*outGroupNbP != 0x7FE0)
-      theGrLength = ComputeUndefinedGroupLength3 (inFileNb, -1L);
+      theGrLength = ComputeUndefinedGroupLength3 (inFileNb, 0xFFFFFFFF);
     else
     {
       if (gArrTransfSyntax [inFileNb] == LITTLE_ENDIAN_EXPL || gArrTransfSyntax [inFileNb] == BIG_ENDIAN_EXPL) theGrLength = 12L;
@@ -1348,7 +1348,7 @@ Papy3SkipNextGroup (PapyShort inFileNb)
 //		if( theGrLength <= 0)
 		{
 			theErr = Papy3FSeek (theFp, (int) SEEK_CUR, (PapyLong) - kLength_length);
-			theGrLength = ComputeUndefinedGroupLength3 (inFileNb, -1L);
+			theGrLength = ComputeUndefinedGroupLength3 (inFileNb, 0xFFFFFFFF);
 		}
 //		else
 //			theGrLength += 12;
@@ -1361,14 +1361,14 @@ Papy3SkipNextGroup (PapyShort inFileNb)
 		if (gArrTransfSyntax [inFileNb] == LITTLE_ENDIAN_IMPL && theGrNb == 0x0002)
 		{
 			theErr = Papy3FSeek (theFp, (int) SEEK_CUR, (PapyLong) - kLength_length);
-			theGrLength = ComputeUndefinedGroupLength3 (inFileNb, -1L);
+			theGrLength = ComputeUndefinedGroupLength3 (inFileNb, 0xFFFFFFFF);
 			if( theGrLength == 8)
 				theGrLength = 28;
 		}
 		else
 		{
 			theErr = Papy3FSeek (theFp, (int) SEEK_CUR, (PapyLong) - kLength_length);
-			theGrLength = ComputeUndefinedGroupLength3 (inFileNb, -1L);
+			theGrLength = ComputeUndefinedGroupLength3 (inFileNb, 0xFFFFFFFF);
 		}
 	} /* else ...undefined group length */
 
@@ -1957,7 +1957,7 @@ ComputeUndefinedItemLength3 (PapyShort inFileNb, PapyULong *ioItemLengthP)
           *ioItemLengthP -= 8L;
         } /* else */
         
-        theElemLength = ComputeUndefinedGroupLength3 (inFileNb, -1L);
+        theElemLength = ComputeUndefinedGroupLength3 (inFileNb, 0xFFFFFFFF);
         if ((int) theElemLength < 0) RETURN ((PapyShort) theElemLength);
       } /* if ...has to compute the group length */
     
@@ -2109,7 +2109,7 @@ ComputeUndefinedSequenceLength3 (PapyShort inFileNb, PapyULong *ioSeqLengthP)
 /********************************************************************************/
 
 PapyULong
-ComputeUndefinedGroupLength3 (PapyShort inFileNb, PapyLong inMaxSize)
+ComputeUndefinedGroupLength3 (PapyShort inFileNb, PapyULong inMaxSize)
 {
   PapyULong	theGroupLength, theElemLength, theBufPos, theFileStartPos, i;
   PapyUShort theGrNb, theCmpGrNb, theElemNb, theCmpElemNb;

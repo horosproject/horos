@@ -5570,22 +5570,24 @@ END_CREATE_ROIS:
 		{
 			if( oData) free( oData);
 			oData = malloc( oRows*oColumns);
-			
-			unsigned short *pixels = (unsigned short*) [data bytes];
-			char			valBit [ 16];
-			char			mask = 1;
-			
-			for ( int i = 0; i < oColumns*oRows/16; i++ )
+			if( oData)
 			{
-				unsigned short	octet = pixels[ i];
+				unsigned short *pixels = (unsigned short*) [data bytes];
+				char			valBit [ 16];
+				char			mask = 1;
 				
-				for ( int x = 0; x < 16; x++ )
+				for ( int i = 0; i < oColumns*oRows/16; i++ )
 				{
-					valBit[ x ] = octet & mask ? 1 : 0;
-					octet = octet >> 1;
+					unsigned short	octet = pixels[ i];
 					
-					if ( valBit[ x]) oData[ i*16 + x] = 0xFF;
-					else oData[ i*16 + x] = 0;
+					for ( int x = 0; x < 16; x++ )
+					{
+						valBit[ x ] = octet & mask ? 1 : 0;
+						octet = octet >> 1;
+						
+						if ( valBit[ x]) oData[ i*16 + x] = 0xFF;
+						else oData[ i*16 + x] = 0;
+					}
 				}
 			}
 		}
@@ -7663,23 +7665,25 @@ END_CREATE_ROIS:
 				{
 					if( oData) free( oData);
 					oData = malloc( oRows*oColumns);
-					
-					unsigned short *pixels = val->ow;
-					char			valBit [ 16];
-					char			mask = 1;
-					int				x;
-					
-					for ( i = 0; i < oColumns*oRows/16; i++)
+					if( oData)
 					{
-						unsigned short	octet = pixels[ i];
+						unsigned short *pixels = val->ow;
+						char			valBit [ 16];
+						char			mask = 1;
+						int				x;
 						
-						for (x = 0; x < 16;x ++)
+						for ( i = 0; i < oColumns*oRows/16; i++)
 						{
-							valBit[ x] = octet & mask ? 1 : 0;
-							octet = octet >> 1;
+							unsigned short	octet = pixels[ i];
 							
-							if( valBit[ x]) oData[ i*16 + x] = 0xFF;
-							else oData[ i*16 + x] = 0;
+							for (x = 0; x < 16;x ++)
+							{
+								valBit[ x] = octet & mask ? 1 : 0;
+								octet = octet >> 1;
+								
+								if( valBit[ x]) oData[ i*16 + x] = 0xFF;
+								else oData[ i*16 + x] = 0;
+							}
 						}
 					}
 				}

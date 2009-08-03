@@ -25,6 +25,36 @@ static NSString *albumDragType = @"Osirix Album drag";
 	return YES;
 }
 
+- (id) selectedCell
+{
+	NSButtonCell *s = [super selectedCell];
+	
+	if( [s isTransparent])
+	{
+		for( NSButtonCell *c in [super selectedCells])
+		{
+			if( [c isTransparent] == NO)
+				return c;
+		}
+	}
+	
+	return s;
+}
+
+- (NSArray*) selectedCells
+{
+	NSMutableArray *m = [NSMutableArray arrayWithArray: [super selectedCells]];
+	NSMutableArray *r = [NSMutableArray arrayWithCapacity: [m count]];
+	
+	for( NSButtonCell *c in m)
+	{
+		if( [c isTransparent] == NO)
+			[r addObject: c];
+	}
+	
+	return r;
+} 
+
 - (void) selectCellEvent:(NSEvent*) theEvent
 {
 	NSInteger row, column;

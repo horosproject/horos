@@ -11375,7 +11375,7 @@ static BOOL needToRezoom;
 
 - (void)newViewerDICOM: (id)sender
 {
-	NSManagedObject		*item = [databaseOutline itemAtRow: [databaseOutline selectedRow]];
+	NSManagedObject	*item = [databaseOutline itemAtRow: [databaseOutline selectedRow]];
 	
 	[managedObjectContext lock];
 	
