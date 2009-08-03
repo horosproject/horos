@@ -13649,10 +13649,16 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	[pool release];
 	
-	if( mainThread != [NSThread currentThread])
-		[DCMPix performSelectorOnMainThread: @selector( purgeCachedDictionaries) withObject: nil waitUntilDone: NO];
-	else
-		[DCMPix purgeCachedDictionaries];
+	switch( tow)
+	{
+		case 'C':
+		case 'D':
+			if( mainThread != [NSThread currentThread])
+				[DCMPix performSelectorOnMainThread: @selector( purgeCachedDictionaries) withObject: nil waitUntilDone: NO];
+			else
+				[DCMPix purgeCachedDictionaries];
+		break;
+	}
 	
 	[decompressThreadRunning unlock];
 }

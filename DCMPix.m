@@ -69,6 +69,7 @@ static NSMutableDictionary *cachedDCMFrameworkFiles = nil;
 static NSMutableArray *nonLinearWLWWThreads = nil;
 static NSMutableArray *minmaxThreads = nil;
 static NSConditionLock *processorsLock = nil;
+static volatile BOOL purgeCacheLock = NO;
 static float deg2rad = 3.14159265358979/180.0; 
 
 struct NSPointInt
@@ -5250,10 +5251,12 @@ END_CREATE_ROIS:
 
 - (BOOL)loadDICOMDCMFramework
 {
-	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
 	DCMObject *dcmObject = 0L;
 	
+	purgeCacheLock = YES;
+
 	[PapyrusLock lock];
 	
 	if( [cachedDCMFrameworkFiles objectForKey: srcFile])
@@ -5283,6 +5286,7 @@ END_CREATE_ROIS:
 	if(dcmObject == nil)
 	{
 		NSLog(@"loadDICOMDCMFramework - no DCMObject at srcFile address, nothing to do");
+		purgeCacheLock = NO;
 		[pool release];
 		return NO;
 	}
@@ -5421,6 +5425,7 @@ END_CREATE_ROIS:
 			[self loadCustomImageAnnotationsPapyLink:-1 DCMLink:dcmObject];
 		#endif
 		
+		purgeCacheLock = NO;
 		[pool release];
 		return YES;												 
 	} // end encapsulatedPDF
@@ -6035,6 +6040,7 @@ END_CREATE_ROIS:
 		[self loadCustomImageAnnotationsPapyLink:-1 DCMLink:dcmObject];
 	#endif
 	
+	purgeCacheLock = NO;
 	[pool release];
 	
 	return YES;
@@ -6064,7 +6070,10 @@ END_CREATE_ROIS:
 			[cachedGroupsForThisFile setValue: [NSNumber numberWithInt: 1] forKey: @"count"];
 			
 			if( [cachedPapyGroups count] >= kMax_file_open)
-				NSLog( @"WARNING: Too much files opened for Papyrus Toolkit");
+				NSLog( @"******* WARNING: Too much files opened for Papyrus Toolkit");
+				
+			if( gPapyFile[ fileNb] == nil)
+				NSLog( @"******* WARNING: gPapyFile[ fileNb] == nil");
 		}
 		else
 			NSLog( @"Papy3FileOpen failed : %d", fileNb);
@@ -6128,6 +6137,9 @@ END_CREATE_ROIS:
 
 + (void) purgeCachedDictionaries
 {
+	while( purgeCacheLock == YES)
+		[NSThread sleepForTimeInterval: 0.01]; 
+
 	[PapyrusLock lock];
 	
 	[cachedDCMFrameworkFiles removeAllObjects];
@@ -7002,7 +7014,7 @@ END_CREATE_ROIS:
 	}
 }
 
-- (BOOL) loadDICOMPapyrus // PLEASE, KEEP BOTH FUNCTIONS FOR TESTING PURPOSE. THANKS
+- (BOOL) loadDICOMPapyrus
 {
 	int				elemType;
 	PapyShort		imageNb,  err;
@@ -7039,25 +7051,12 @@ END_CREATE_ROIS:
 	originY = 0;
 	originZ = 0;
 	
+	purgeCacheLock = YES;
+	
 	if( [self getPapyGroup: 0])	// This group is mandatory...
 	{
-		UValue_T		*val3, *tmpVal3;
-		unsigned short	*shortRed, *shortGreen, *shortBlue;
-		int				fileNb = -1;
-		
-		[PapyrusLock lock];
-		if( [[cachedPapyGroups valueForKey: srcFile] valueForKey: @"fileNb"])
-		{
-			fileNb = [[[cachedPapyGroups valueForKey: srcFile] valueForKey: @"fileNb"] intValue];
-			if( gPapyFile[ fileNb] == nil)
-			{
-				NSLog( @"***** not cached *****");
-				[self clearCachedPapyGroups];
-				fileNb = -1;
-				[self getPapyGroup: 0];
-			}
-		}
-		[PapyrusLock unlock];
+		UValue_T *val3, *tmpVal3;
+		unsigned short *shortRed, *shortGreen, *shortBlue;
 		
 		modalityString = nil;
 		
@@ -7706,6 +7705,15 @@ END_CREATE_ROIS:
 			BOOL toBeUnlocked = YES;
 			[PapyrusLock lock];
 			
+			int fileNb = -1;
+			if( [[cachedPapyGroups valueForKey: srcFile] valueForKey: @"fileNb"] == nil)
+				[self getPapyGroup: 0];
+			
+			if( [cachedPapyGroups valueForKey: srcFile] != nil && [[cachedPapyGroups valueForKey: srcFile] valueForKey: @"fileNb"] == nil)
+				NSLog( @"******** [cachedPapyGroups valueForKey: srcFile] != nil && [[cachedPapyGroups valueForKey: srcFile] valueForKey: @fileNb] == nil");
+			
+			fileNb = [[[cachedPapyGroups valueForKey: srcFile] valueForKey: @"fileNb"] intValue];
+			
 			if( fileNb >= 0)
 			{
 				short *oImage = nil;
@@ -8249,6 +8257,8 @@ END_CREATE_ROIS:
 		else NSLog( @"[self getPapyGroup: 0x0028] failed");
 	}
 	else NSLog( @"[self getPapyGroup: 0] failed");
+	
+	purgeCacheLock = NO;
 	
 	return returnValue;
 }
