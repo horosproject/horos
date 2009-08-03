@@ -104,6 +104,64 @@
 	}
 }
 
+- (IBAction) saveList: (id) sender
+{
+	NSSavePanel		*sPanel		= [NSSavePanel savePanel];
+
+	[sPanel setRequiredFileType:@"plist"];
+		
+	if ([sPanel runModalForDirectory:0L file:NSLocalizedString(@"DICOMPrinters.plist", nil)] == NSFileHandlingPanelOKButton)
+	{
+		[[m_PrinterController arrangedObjects] writeToFile:[sPanel filename] atomically: YES];
+	}
+}
+
+- (IBAction) loadList: (id) sender
+{
+	NSOpenPanel		*sPanel		= [NSOpenPanel openPanel];
+	
+	[sPanel setRequiredFileType:@"plist"];
+	
+	if ([sPanel runModalForDirectory:0L file:nil types:[NSArray arrayWithObject:@"plist"]] == NSFileHandlingPanelOKButton)
+	{
+		NSArray	*r = [NSArray arrayWithContentsOfFile: [sPanel filename]];
+		
+		if( r)
+		{
+			if( NSRunInformationalAlertPanel(NSLocalizedString(@"Load printers", 0L), NSLocalizedString(@"Should I add or replace the printer list? If you choose 'replace', the current list will be deleted.", 0L), NSLocalizedString(@"Add",nil), NSLocalizedString(@"Replace",nil), nil) == NSAlertDefaultReturn)
+			{
+				
+			}
+			else [m_PrinterController removeObjects: [m_PrinterController arrangedObjects]];
+			
+			[m_PrinterController addObjects: r];
+			
+			int i, x;
+			
+			for( i = 0; i < [[m_PrinterController arrangedObjects] count]; i++)
+			{
+				NSDictionary	*server = [[m_PrinterController arrangedObjects] objectAtIndex: i];
+				
+				for( x = 0; x < [[m_PrinterController arrangedObjects] count]; x++)
+				{
+					NSDictionary	*c = [[m_PrinterController arrangedObjects] objectAtIndex: x];
+					
+					if( c != server)
+					{
+						if( [[server valueForKey:@"host"] isEqualToString: [c valueForKey:@"host"]] &&
+							[[server valueForKey:@"port"] isEqualToString: [c valueForKey:@"port"]])
+							{
+								[m_PrinterController removeObjectAtArrangedObjectIndex: i];
+								i--;
+								x = [[m_PrinterController arrangedObjects] count];
+							}
+					}
+				}
+			}
+		}
+	}
+}
+
 - (IBAction) addPrinter: (id) sender
 {
 	int printerCount = [[m_PrinterController arrangedObjects] count] + 1;
@@ -126,7 +184,7 @@
 	[printer setValue: @"MED" forKey: @"priority"];
 	[printer setValue: @"Blue Film" forKey: @"medium"];
 	[printer setValue: @"1" forKey: @"copies"];
-
+	
 	// add new printer & select it
 	[m_PrinterController addObject: printer];
 	[m_PrinterController setSelectedObjects: [NSArray arrayWithObject: printer]];

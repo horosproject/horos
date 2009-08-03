@@ -69,12 +69,13 @@
 
 -(IBAction) dontShowAgain : (id) sender
 {
-	[[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"SURVEYDONE3"];
+	[[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"SURVEYDONE4"];
 }
 
 -(IBAction) done : (id) sender
 {
-	if( [sender tag] == 2) [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.osirix-viewer.com/RSNA2005.html"]];
+	if( [sender tag] == 2)
+		[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.osirix-viewer.com/OsiriXWorkshopParis-FR.pdf"]];
 	
 	[[self window] orderOut: self];
 }

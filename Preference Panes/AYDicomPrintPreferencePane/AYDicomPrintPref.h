@@ -20,6 +20,9 @@
 - (IBAction) addPrinter: (id) sender;
 - (IBAction) setDefaultPrinter: (id) sender;
 
+- (IBAction) loadList: (id) sender;
+- (IBAction) saveList: (id) sender;
+
 /* not needed by now
 - (IBAction) applyChanges: (id) sender;
 - (IBAction) restoreChanges: (id) sender;

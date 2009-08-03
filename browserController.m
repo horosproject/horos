@@ -12119,8 +12119,9 @@ static NSArray*	openSubSeriesArray = nil;
 		
 		for( NSDictionary *routingRule in autoroutingRules)
 		{
-			if( [[routingRule valueForKey: @"description"] length] > 0)
-				item = [[[NSMenuItem alloc] initWithTitle: [NSString stringWithFormat: @"%@ - %@", [routingRule valueForKey: @"name"], [routingRule valueForKey: @"description"]] action: @selector( applyRoutingRule:) keyEquivalent:@""] autorelease];
+			NSString *s = [routingRule valueForKey: @"description"];
+			if( [s length] > 0)
+				item = [[[NSMenuItem alloc] initWithTitle: [NSString stringWithFormat: @"%@ - %@", [routingRule valueForKey: @"name"], s] action: @selector( applyRoutingRule:) keyEquivalent:@""] autorelease];
 			else
 				item = [[[NSMenuItem alloc] initWithTitle: [routingRule valueForKey: @"name"] action: @selector( applyRoutingRule:) keyEquivalent:@""] autorelease];
 			[item setRepresentedObject: routingRule];

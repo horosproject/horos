@@ -448,6 +448,7 @@
 		AB3674C00BE0CEB1003634E6 /* HUDSliderTrackRight.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB36745F0BE0CEB1003634E6 /* HUDSliderTrackRight.tiff */; };
 		AB381AFF0ABE9F5100239326 /* OSIAutoroutingPreferencePane.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = AB381AE90ABE9F5100239326 /* OSIAutoroutingPreferencePane.prefPane */; };
 		AB3886AC0B2449CD00831F74 /* SagSmallOpposite.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB7598280AEE62CE005EE3A9 /* SagSmallOpposite.tif */; };
+		AB3AADC110270F7600A1CC12 /* OsiriXParisEBC.jpg in Resources */ = {isa = PBXBuildFile; fileRef = AB3AADC010270F7600A1CC12 /* OsiriXParisEBC.jpg */; };
 		AB3F4A1F0672674000E61A6C /* Window3DController.h in Headers */ = {isa = PBXBuildFile; fileRef = AB3F4A1D0672674000E61A6C /* Window3DController.h */; };
 		AB3F4A200672674000E61A6C /* Window3DController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB3F4A1E0672674000E61A6C /* Window3DController.m */; };
 		AB46648D09A331DF005A2766 /* Report.icns in Resources */ = {isa = PBXBuildFile; fileRef = AB46648C09A331DF005A2766 /* Report.icns */; };
@@ -5213,6 +5214,7 @@
 		AB381AE90ABE9F5100239326 /* OSIAutoroutingPreferencePane.prefPane */ = {isa = PBXFileReference; lastKnownFileType = folder; name = OSIAutoroutingPreferencePane.prefPane; path = "Preference Panes/OSIAutoroutingPreferencePane/build/Development/OSIAutoroutingPreferencePane.prefPane"; sourceTree = "<group>"; };
 		AB381B020ABE9F9A00239326 /* OSIAutoroutingPreferencePane.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = OSIAutoroutingPreferencePane.xcodeproj; path = "Preference Panes/OSIAutoroutingPreferencePane/OSIAutoroutingPreferencePane.xcodeproj"; sourceTree = "<group>"; };
 		AB38FC99057A9B050041FEBB /* AGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AGL.framework; path = /System/Library/Frameworks/AGL.framework; sourceTree = "<absolute>"; };
+		AB3AADC010270F7600A1CC12 /* OsiriXParisEBC.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = OsiriXParisEBC.jpg; path = Binaries/Icons/OsiriXParisEBC.jpg; sourceTree = "<group>"; };
 		AB3C6A8E057ADCA60001052D /* NSFont_OpenGL.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = NSFont_OpenGL.h; path = NSFont_OpenGL/NSFont_OpenGL.h; sourceTree = "<group>"; };
 		AB3C6A8F057ADCA60001052D /* NSFont_OpenGL.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = NSFont_OpenGL.m; path = NSFont_OpenGL/NSFont_OpenGL.m; sourceTree = "<group>"; };
 		AB3F4A1D0672674000E61A6C /* Window3DController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = Window3DController.h; sourceTree = "<group>"; };
@@ -8866,6 +8868,7 @@
 				CE898D8A0CBA1B470029E907 /* Osirix32bitShell.icns */,
 				CECDBE690C95467B006B11A5 /* AnnotationsDefault.plist */,
 				CE897DD30C21D951005C669E /* texture.tif */,
+				AB3AADC010270F7600A1CC12 /* OsiriXParisEBC.jpg */,
 				B78675430AD9C56400731977 /* diameter570frame512.pbm */,
 				B78675440AD9C56400731977 /* diameter1140frame1024.pbm */,
 				844003990E8CF99500A00EBD /* dciodvfy */,
@@ -16443,6 +16446,7 @@
 				A9D4D06D0F73922500483A3A /* loupeMask.png in Resources */,
 				CE1C4EF20FDA6F4600185561 /* nameDictionary.plist in Resources */,
 				CE1C4EF30FDA6F5300185561 /* tagDictionary.plist in Resources */,
+				AB3AADC110270F7600A1CC12 /* OsiriXParisEBC.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

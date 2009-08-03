@@ -2527,7 +2527,7 @@ static BOOL initialized = NO;
 	long startCount = [[NSUserDefaults standardUserDefaults] integerForKey: @"STARTCOUNT"];
 	[[NSUserDefaults standardUserDefaults] setInteger: startCount+1 forKey: @"STARTCOUNT"];
 	
-	if (startCount==0)			// Replaces FIRSTTIME.
+	if (startCount == 0) // Replaces FIRSTTIME.
 	{
 		switch( NSRunInformationalAlertPanel( NSLocalizedString(@"OsiriX Updates", nil), NSLocalizedString( @"Would you like to activate automatic checking for updates?", nil), NSLocalizedString( @"Yes", nil), NSLocalizedString( @"No", nil), nil))
 		{
@@ -2538,10 +2538,9 @@ static BOOL initialized = NO;
 	}
 	else
 	{
-//		[[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"SURVEYDONE3"];	// No survey for now...
-		if (![[NSUserDefaults standardUserDefaults] boolForKey: @"SURVEYDONE3"])
+		if (![[NSUserDefaults standardUserDefaults] boolForKey: @"SURVEYDONE5"])
 		{
-//			if ([[NSUserDefaults standardUserDefaults] integerForKey: @"STARTCOUNT"] > 20)
+//			if ([[NSUserDefaults standardUserDefaults] integerForKey: @"STARTCOUNT2"] > 20)
 //			{
 //				switch( NSRunInformationalAlertPanel(@"OsiriX", @"Thank you for using OsiriX!\rDo you agree to answer a small survey to improve OsiriX?", @"Yes, sure!", @"Maybe next time", nil))
 //				{
@@ -2555,18 +2554,12 @@ static BOOL initialized = NO;
 //				}
 //			}
 
-//			if( [[NSCalendarDate dateWithYear:2005 month:12 day:2 hour:12 minute:0 second:0 timeZone:[NSTimeZone timeZoneWithAbbreviation:@"EST"]] timeIntervalSinceNow] > 0)
+//			if( [[NSCalendarDate dateWithYear:2009 month:10 day:14 hour:12 minute:0 second:0 timeZone:[NSTimeZone timeZoneWithAbbreviation:@"EST"]] timeIntervalSinceNow] > 0)
 //			{
-//				int generated = (random() % 100) + 1;
-//				
-//				if( generated < 30)
-//				{
-//					Survey		*survey = [[Survey alloc] initWithWindowNibName:@"Survey"];
-//					[[survey window] center];
-//					[survey showWindow:self];
-//				}
+//				Survey *survey = [[Survey alloc] initWithWindowNibName:@"Survey"];
+//				[[survey window] center];
+//				[survey showWindow: self];
 //			}
-
 		}
 		else
 		{
