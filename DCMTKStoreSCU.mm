@@ -12,16 +12,12 @@
      PURPOSE.
 =========================================================================*/
 
-/*
-** svn Log
-** $Log: DCMTKStoreSCU.mm,v $
-*/
-
 #import "AppController.h"
 #import "DCMTKStoreSCU.h"
 #import "browserController.h"
 #import "DicomFile.h"
 #import "Notifications.h"
+#import "MutableArrayCategory.h"
 #undef verify
 #include "osconfig.h" /* make sure OS specific configuration is included first */
 
@@ -759,9 +755,12 @@ storeSCU(T_ASC_Association * assoc, const char *fname)
 		
 		fname = outfname;
 	}
-	 
-    if (filexfer.getXfer() != EXS_Unknown) presId = ASC_findAcceptedPresentationContextID(assoc, sopClass, filexfer.getXferID());
-    else presId = ASC_findAcceptedPresentationContextID(assoc, sopClass);
+	
+    if (filexfer.getXfer() != EXS_Unknown)
+		presId = ASC_findAcceptedPresentationContextID(assoc, sopClass, filexfer.getXferID());
+    else
+		presId = ASC_findAcceptedPresentationContextID(assoc, sopClass);
+	
     if (presId == 0) {
         const char *modalityName = dcmSOPClassUIDToModality(sopClass);
         if (!modalityName) modalityName = dcmFindNameOfUID(sopClass);
@@ -899,7 +898,8 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 		_transferSyntax = transferSyntax;
 		_compression = compression;
 		
-		_filesToSend = [filesToSend retain];
+		_filesToSend = [[NSMutableArray arrayWithArray: filesToSend] retain];
+		[_filesToSend removeDuplicatedStrings];
 		_numberOfFiles = [filesToSend count];
 		_numberSent = 0;
 		_numberErrors = 0;
@@ -1003,8 +1003,8 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 	opt_port = _port;
 	
 	//verbose option set to true for now
-	opt_verbose=OFFalse;
-	opt_showPresentationContexts=OFFalse;
+	opt_verbose = OFFalse;
+	opt_showPresentationContexts = OFFalse;
 	
 	//debug code off for now
 	opt_debug = OFFalse;
@@ -1187,7 +1187,6 @@ NS_DURING
       OFBool ignoreName;
 	  
 	 /* finally parse filenames */
-	 //populate temp folder Just symbolic links for the moment for testing
 	  for (int i=0; i < paramCount; i++)
       {
 		[paths addObject:[_filesToSend objectAtIndex:i]];

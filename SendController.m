@@ -132,6 +132,8 @@ static volatile int sendControllerObjects = 0;
 
 - (void)dealloc
 {
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
+	
 	NSLog(@"SendController Released");
 	[_destinationServer release];
 	[_files release];
@@ -140,7 +142,7 @@ static volatile int sendControllerObjects = 0;
 	[_lock lock];
 	[_lock unlock];
 	[_lock release];
-	[[NSNotificationCenter defaultCenter] removeObserver:self];
+	
 	[super dealloc];
 }
 

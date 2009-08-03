@@ -1429,7 +1429,7 @@ static NSArray*	statesArray = nil;
 	
 	if( manually)
 	{	
-		splash = [[WaitRendering alloc] init: NSLocalizedString(@"Preparing Routing Rule(s) for Selection...", nil)];
+		splash = [[WaitRendering alloc] init: NSLocalizedString(@"Preparing Routing for Selection...", nil)];
 		[splash showWindow:self];
 	}
 	
@@ -1723,84 +1723,82 @@ static NSArray*	statesArray = nil;
 	[autoroutingQueueArray removeAllObjects];
 	[autoroutingQueue unlock];
 	
-	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOROUTINGACTIVATED"])
+	if( [copyArray count] )
 	{
-		if( [copyArray count] )
+		NSLog(@"autorouting Queue start: %d objects", [copyArray count]);
+		for ( NSDictionary *copy in copyArray )
 		{
-			NSLog(@"autorouting Queue start: %d objects", [copyArray count]);
-			for ( NSDictionary *copy in copyArray )
+			NSArray			*objectsToSend = [copy objectForKey:@"objects"];
+			NSString		*serverName = [copy objectForKey:@"server"];
+			NSDictionary	*server = nil;
+			
+			for ( NSDictionary *aServer in serversArray)
 			{
-				NSArray			*objectsToSend = [copy objectForKey:@"objects"];
-				NSString		*serverName = [copy objectForKey:@"server"];
-				NSDictionary	*server = nil;
-				
-				for ( NSDictionary *aServer in serversArray)
+				if ([[aServer objectForKey:@"Description"] isEqualToString: serverName]) 
 				{
-					if ([[aServer objectForKey:@"Description"] isEqualToString: serverName]) 
-					{
-						NSLog( [aServer description]);
-						server = aServer;
-						break;
-					}
-				}
-				
-				if( server)
-				{
-					@try
-					{
-						NSSortDescriptor	*sort = [[[NSSortDescriptor alloc] initWithKey:@"series.study.patientID" ascending:YES] autorelease];
-						NSArray				*sortDescriptors = [NSArray arrayWithObject: sort];
-						
-						objectsToSend = [objectsToSend sortedArrayUsingDescriptors: sortDescriptors];
-						
-						NSString			*previousPatientUID = nil;
-						NSMutableArray		*samePatientArray = [NSMutableArray arrayWithCapacity: [objectsToSend count]];
-						
-						for( NSManagedObject *objectToSend in objectsToSend )
-						{
-							if( [[NSFileManager defaultManager] fileExistsAtPath: [objectToSend valueForKey: @"completePath"]]) // Dont try to send files that are not available
-							{
-								if( [previousPatientUID isEqualToString: [objectToSend valueForKeyPath:@"series.study.patientID"]])
-								{
-									[samePatientArray addObject: objectToSend];
-								}
-								else
-								{
-									// Send the collected files from the same patient
-									
-									if( [samePatientArray count]) [self executeSend: samePatientArray server: server dictionary: copy];
-									
-									// Reset
-									[samePatientArray removeAllObjects];
-									[samePatientArray addObject: objectToSend];
-									
-									previousPatientUID = [objectToSend valueForKeyPath:@"series.study.patientID"];
-								}
-							}
-						}
-						
-						if( [samePatientArray count])
-							[self executeSend: samePatientArray server: server dictionary: copy];
-					}
-						
-					@catch( NSException *ne)
-					{
-						NSLog( [ne name]);
-						NSLog( [ne reason]);
-					}
-				}
-				else
-				{
-					NSLog(@"server not found for autorouting: %@", serverName);
-					NSException *ne = [NSException exceptionWithName: NSLocalizedString(@"Unknown destination server. Add it to the Locations list - see Preferences.", nil) reason: [NSString stringWithFormat:@"Destination: %@", serverName] userInfo:nil];
-					
-					[self performSelectorOnMainThread:@selector(showErrorMessage:) withObject: [NSDictionary dictionaryWithObjectsAndKeys: ne, @"exception", [NSDictionary dictionary], @"server", nil] waitUntilDone: NO];
+					NSLog( [aServer description]);
+					server = aServer;
+					break;
 				}
 			}
 			
-			NSLog(@"autorouting Queue end");
+			if( server)
+			{
+				@try
+				{
+					NSSortDescriptor	*sort = [[[NSSortDescriptor alloc] initWithKey:@"series.study.patientID" ascending:YES] autorelease];
+					NSArray				*sortDescriptors = [NSArray arrayWithObject: sort];
+					
+					objectsToSend = [objectsToSend sortedArrayUsingDescriptors: sortDescriptors];
+					
+					NSString			*previousPatientUID = nil;
+					NSMutableArray		*samePatientArray = [NSMutableArray arrayWithCapacity: [objectsToSend count]];
+					
+					for( NSManagedObject *objectToSend in objectsToSend )
+					{
+						if( [[NSFileManager defaultManager] fileExistsAtPath: [objectToSend valueForKey: @"completePath"]]) // Dont try to send files that are not available
+						{
+							if( [previousPatientUID isEqualToString: [objectToSend valueForKeyPath:@"series.study.patientID"]])
+							{
+								[samePatientArray addObject: objectToSend];
+							}
+							else
+							{
+								// Send the collected files from the same patient
+								
+								if( [samePatientArray count]) [self executeSend: samePatientArray server: server dictionary: copy];
+								
+								// Reset
+								[samePatientArray removeAllObjects];
+								[samePatientArray addObject: objectToSend];
+								
+								previousPatientUID = [objectToSend valueForKeyPath:@"series.study.patientID"];
+							}
+						}
+					}
+					
+					if( [samePatientArray count])
+						[self executeSend: samePatientArray server: server dictionary: copy];
+				}
+					
+				@catch( NSException *ne)
+				{
+					NSLog( [ne name]);
+					NSLog( [ne reason]);
+				}
+			}
+			else
+			{
+				NSLog(@"server not found for autorouting: %@", serverName);
+				NSException *ne = [NSException exceptionWithName: NSLocalizedString(@"Unknown destination server. Add it to the Locations list - see Preferences.", nil) reason: [NSString stringWithFormat:@"Destination: %@", serverName] userInfo:nil];
+				
+				[self performSelectorOnMainThread:@selector(showErrorMessage:) withObject: [NSDictionary dictionaryWithObjectsAndKeys: ne, @"exception", [NSDictionary dictionary], @"server", nil] waitUntilDone: NO];
+			}
 		}
+		
+		NSLog(@"autorouting Queue end");
 	}
+		
 	[autoroutingInProgress unlock];
 	[pool release];
 }

@@ -422,7 +422,7 @@ const char* dcmAllStorageSOPClassUIDs[] =
     UID_DigitalXRayImageStorageForProcessing,
     UID_EncapsulatedPDFStorage,
     UID_EnhancedCTImageStorage,
-	UID_EnhancedPETImageStorage
+	UID_EnhancedPETImageStorage,
     UID_EnhancedMRImageStorage,
     UID_EnhancedSR,
     UID_EnhancedXAImageStorage,
@@ -781,7 +781,7 @@ static const DcmModalityTable modalities[] = {
     { UID_DigitalXRayImageStorageForProcessing,                "DP",  2 * 2048 * 2048 },
     { UID_EncapsulatedPDFStorage,                              "PDF", 1024 * 1024 },
     { UID_EnhancedCTImageStorage,                              "CTe", 256 * 512 * 512 },
-	{ UID_EnhancedCTImageStorage,                              "PTe", 256 * 512 * 512 },
+	{ UID_EnhancedPETImageStorage,                             "PTe", 256 * 512 * 512 },
     { UID_EnhancedMRImageStorage,                              "MRe", 256 * 512 * 512 },
     { UID_EnhancedSR,                                          "SRe", 4096 },
     { UID_EnhancedXAImageStorage,                              "XAe", 256 * 512 * 512 },

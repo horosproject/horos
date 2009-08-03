@@ -980,8 +980,6 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
       T_ASC_SC_ROLE role;
       int npc = ASC_countPresentationContexts(assoc->params);
 	  
-	 // NSLog( @"****************************"); WARNING NO NSLOG !!! fork() !!!!!
-	  
       for (i=0; i<npc; i++)
       {
         ASC_getPresentationContext(assoc->params, i, &pc);
@@ -1008,8 +1006,6 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
                */
               if (strcmp(pc.proposedTransferSyntaxes[j], transferSyntaxes[k]) == 0)
               {
-			    // NSLog( @"context: %s\r", transferSyntaxes[k]);WARNING NO NSLOG !!! fork() !!!!!
-			  
                 cond = ASC_acceptPresentationContext(
                     assoc->params, pc.presentationContextID, transferSyntaxes[k], role);
                 if (cond.bad()) return cond;
@@ -1017,6 +1013,8 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
             }
           }
         }
+//		else
+//			printf("not a storage: %s\r", pc.abstractSyntax);
       } /* for */
 	  
 	  // NSLog( @"****************************");WARNING NO NSLOG !!! fork() !!!!!

@@ -1189,6 +1189,13 @@ ASC_acceptContextsWithTransferSyntax(
         if (cond.bad()) return cond;
         abstractOK = OFFalse;
         accepted = OFFalse;
+		
+		if( strcmp( pc.abstractSyntax, UID_EnhancedMRImageStorage) == 0)
+			printf("r\r");
+		
+		if( strcmp( pc.abstractSyntax, UID_EnhancedCTImageStorage) == 0)
+			printf("r\r");
+		
         for (j = 0; j < abstractSyntaxCount && !accepted; j++) {
             if (strcmp(pc.abstractSyntax, abstractSyntaxes[j]) == 0) {
                 abstractOK = OFTrue;
@@ -1232,7 +1239,8 @@ ASC_acceptContextsWithTransferSyntax(
                 cond = ASC_refusePresentationContext(params,
                                               pc.presentationContextID,
                                               reason);
-                if (cond.bad()) return cond;
+                if (cond.bad())
+					return cond;
             }
         }
 

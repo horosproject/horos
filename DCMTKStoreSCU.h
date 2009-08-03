@@ -32,7 +32,7 @@ int runStoreSCU(const char *myAET, const char*peerAET, const char*hostname, int 
 	BOOL _shouldAbort;
 	int _transferSyntax;
 	float _compression;
-	NSArray *_filesToSend;
+	NSMutableArray *_filesToSend;
 	int _numberOfFiles;
 	int _numberSent;
 	int _numberErrors;

@@ -69,7 +69,7 @@ static NSMutableDictionary *cachedDCMFrameworkFiles = nil;
 static NSMutableArray *nonLinearWLWWThreads = nil;
 static NSMutableArray *minmaxThreads = nil;
 static NSConditionLock *processorsLock = nil;
-static volatile BOOL purgeCacheLock = NO;
+static NSConditionLock *purgeCacheLock = nil;
 static float deg2rad = 3.14159265358979/180.0; 
 
 struct NSPointInt
@@ -5255,8 +5255,12 @@ END_CREATE_ROIS:
 	
 	DCMObject *dcmObject = 0L;
 	
-	purgeCacheLock = YES;
-
+	if( purgeCacheLock == nil)
+		purgeCacheLock = [[NSConditionLock alloc] init];
+		
+	[purgeCacheLock lock];
+	[purgeCacheLock unlockWithCondition: [purgeCacheLock condition]+1];
+	
 	[PapyrusLock lock];
 	
 	if( [cachedDCMFrameworkFiles objectForKey: srcFile])
@@ -5286,7 +5290,8 @@ END_CREATE_ROIS:
 	if(dcmObject == nil)
 	{
 		NSLog(@"loadDICOMDCMFramework - no DCMObject at srcFile address, nothing to do");
-		purgeCacheLock = NO;
+		[purgeCacheLock lock];
+		[purgeCacheLock unlockWithCondition: [purgeCacheLock condition]-1];
 		[pool release];
 		return NO;
 	}
@@ -5425,7 +5430,8 @@ END_CREATE_ROIS:
 			[self loadCustomImageAnnotationsPapyLink:-1 DCMLink:dcmObject];
 		#endif
 		
-		purgeCacheLock = NO;
+		[purgeCacheLock lock];
+		[purgeCacheLock unlockWithCondition: [purgeCacheLock condition]-1];
 		[pool release];
 		return YES;												 
 	} // end encapsulatedPDF
@@ -6040,7 +6046,8 @@ END_CREATE_ROIS:
 		[self loadCustomImageAnnotationsPapyLink:-1 DCMLink:dcmObject];
 	#endif
 	
-	purgeCacheLock = NO;
+	[purgeCacheLock lock];
+	[purgeCacheLock unlockWithCondition: [purgeCacheLock condition]-1];
 	[pool release];
 	
 	return YES;
@@ -6137,9 +6144,10 @@ END_CREATE_ROIS:
 
 + (void) purgeCachedDictionaries
 {
-	while( purgeCacheLock == YES)
-		[NSThread sleepForTimeInterval: 0.01]; 
-
+	if( purgeCacheLock == nil)
+		purgeCacheLock = [[NSConditionLock alloc] init];
+		
+	[purgeCacheLock lockWhenCondition: 0];
 	[PapyrusLock lock];
 	
 	[cachedDCMFrameworkFiles removeAllObjects];
@@ -6168,6 +6176,7 @@ END_CREATE_ROIS:
 	[cachedPapyGroups removeAllObjects];
 	
 	[PapyrusLock unlock];
+	[purgeCacheLock unlock];
 }
 
 - (void) clearCachedDCMFrameworkFiles
@@ -7060,7 +7069,11 @@ END_CREATE_ROIS:
 	originY = 0;
 	originZ = 0;
 	
-	purgeCacheLock = YES;
+	if( purgeCacheLock == nil)
+		purgeCacheLock = [[NSConditionLock alloc] init];
+	
+	[purgeCacheLock lock];
+	[purgeCacheLock unlockWithCondition: [purgeCacheLock condition]+1];
 	
 	if( [self getPapyGroup: 0])	// This group is mandatory...
 	{
@@ -8269,7 +8282,8 @@ END_CREATE_ROIS:
 	}
 	else NSLog( @"[self getPapyGroup: 0] failed");
 	
-	purgeCacheLock = NO;
+	[purgeCacheLock lock];
+	[purgeCacheLock unlockWithCondition: [purgeCacheLock condition]-1];
 	
 	return returnValue;
 }

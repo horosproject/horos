@@ -193,7 +193,7 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 	//some misc UIDs that I'm not using yet
 	
 	static NSString *StorageService = @"1.2.840.10008.4.2";
-	static NSString *MediaCreationManagement = @"1.2.840.10008.5.1.4.1.1.2.1";
+//	static NSString *MediaCreationManagement = @"1.2.840.10008.5.1.4.1.1.2.1";
 	static NSString *SpatialRegistrationStorage = @"1.2.840.10008.5.1.4.1.1.66.1";
 	static NSString *SpatialFiducialsStorage = @"1.2.840.10008.5.1.4.1.1.66.2";
 	static NSString *OphthalmicPhotography8BitImageStorage = @"1.2.840.10008.5.1.4.1.1.77.1.5.1";
