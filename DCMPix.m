@@ -6643,11 +6643,20 @@ END_CREATE_ROIS:
 	
 	[PapyrusLock lock];
 	
-	if( [[cachedPapyGroups valueForKey: srcFile] valueForKey: @"fileNb"])
+	int fileNb = -1;
+	NSDictionary *dict = [cachedPapyGroups valueForKey: srcFile];
+	
+	if( [dict valueForKey: @"fileNb"] == nil)
+		[self getPapyGroup: 0];
+	
+	if( dict != nil && [dict valueForKey: @"fileNb"] == nil)
+		NSLog( @"******** dict != nil && [dict valueForKey: @fileNb] == nil");
+	
+	fileNb = [[dict valueForKey: @"fileNb"] intValue];
+	
+	if( fileNb >= 0)
 	{
-		int fileNb = [[[cachedPapyGroups valueForKey: srcFile] valueForKey: @"fileNb"] intValue];
-		
-		if (gArrPhotoInterpret [fileNb] == PALETTE)
+		if (gArrPhotoInterpret[ fileNb] == PALETTE)
 		{
 			BOOL found = NO, found16 = NO;
 			
@@ -7706,13 +7715,15 @@ END_CREATE_ROIS:
 			[PapyrusLock lock];
 			
 			int fileNb = -1;
-			if( [[cachedPapyGroups valueForKey: srcFile] valueForKey: @"fileNb"] == nil)
+			NSDictionary *dict = [cachedPapyGroups valueForKey: srcFile];
+			
+			if( [dict valueForKey: @"fileNb"] == nil)
 				[self getPapyGroup: 0];
 			
-			if( [cachedPapyGroups valueForKey: srcFile] != nil && [[cachedPapyGroups valueForKey: srcFile] valueForKey: @"fileNb"] == nil)
-				NSLog( @"******** [cachedPapyGroups valueForKey: srcFile] != nil && [[cachedPapyGroups valueForKey: srcFile] valueForKey: @fileNb] == nil");
+			if( dict != nil && [dict valueForKey: @"fileNb"] == nil)
+				NSLog( @"******** dict != nil && [dict valueForKey: @fileNb] == nil");
 			
-			fileNb = [[[cachedPapyGroups valueForKey: srcFile] valueForKey: @"fileNb"] intValue];
+			fileNb = [[dict valueForKey: @"fileNb"] intValue];
 			
 			if( fileNb >= 0)
 			{
