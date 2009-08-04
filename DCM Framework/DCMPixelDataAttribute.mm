@@ -1698,6 +1698,11 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 		if ([jpeg2000Data length] % 2) 
 			[jpeg2000Data appendBytes:&zero length:1];
 		
+		if( [data length] / [jpeg2000Data length] > 20)
+		{
+			NSLog( @"****** warning compress ratio is very high?? Problem during compression?");
+		}
+		
 		return jpeg2000Data;
 	}
 	else
@@ -1915,6 +1920,11 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 		char zero = 0;
 		if ([jpeg2000Data length] % 2) 
 			[jpeg2000Data appendBytes:&zero length:1];
+		
+		if( [data length] / [jpeg2000Data length] > 20)
+		{
+			NSLog( @"****** warning compress ratio is very high?? Problem during compression?");
+		}
 		
 		return jpeg2000Data;
 	}
