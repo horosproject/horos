@@ -904,22 +904,19 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 	if (DCMDEBUG) 
 		NSLog(@"Write PixelData with TS:%@  vr: %@ encapsulated: %d", ts.description, _vr, ts.isEncapsulated );
 	//NS_DURING
-	if ( ts.isEncapsulated && [transferSyntax isEqualToTransferSyntax:ts]) {
+	if ( ts.isEncapsulated && [transferSyntax isEqualToTransferSyntax:ts])
+	{
 		[self writeBaseToData:container transferSyntax:ts];
-		for ( id object in _values ) {
+		for ( id object in _values)
+		{
 			if (DCMDEBUG)
 				NSLog(@"Write Item with length:%d", [(NSData *)object length]);
+			
 			[container addUnsignedShort:(0xfffe)];		// Item
 			[container addUnsignedShort:(0xe000)];
 			[container addUnsignedLong:[(NSData *)object length]];		
 			
 			[container addData:object];
-			/*
-			[container addUnsignedShort:(0xfffe)];		// Item Delimiter
-			[container addUnsignedShort:(0xe00d)];
-			[container addUnsignedLong:(0)];
-			// dummy length
-			*/
 			
 		}
 		if (DCMDEBUG)
@@ -930,15 +927,12 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 	
 		status = YES;
 	}
-	else {
+	else
+	{
 		status = [super  writeToDataContainer:container withTransferSyntax:ts];
-	} 
-	/*
-	NS_HANDLER
-		status = NO;
-	NS_ENDHANDLER
-	*/
-		return status;
+	}
+	
+	return status;
 }
 
 - (NSString *)description{

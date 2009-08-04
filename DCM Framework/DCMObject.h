@@ -277,6 +277,7 @@
 * @param flag Write as DICOM3. Add metainformation and DICM at offset 128.
 */
 - (BOOL)writeToDataContainer:(DCMDataContainer *)container withTransferSyntax:(DCMTransferSyntax *)ts AET:(NSString *)aet  asDICOM3:(BOOL)flag;
+- (BOOL)writeToDataContainer:(DCMDataContainer *)container withTransferSyntax:(DCMTransferSyntax *)ts AET:(NSString *)aet  asDICOM3:(BOOL)flag implicitForPixelData: (BOOL) ipd;
 
 /** Write to a DCMDataContainer 
 * @param container DCMDataContainer to write to

@@ -1388,37 +1388,42 @@ PixelRepresentation
 	}
 }
 
-- (BOOL)writeToDataContainer:(DCMDataContainer *)container withTransferSyntax:(DCMTransferSyntax *)ts  asDICOM3:(BOOL)flag{
+- (BOOL)writeToDataContainer:(DCMDataContainer *)container withTransferSyntax:(DCMTransferSyntax *)ts  asDICOM3:(BOOL)flag
+{
 	return [self writeToDataContainer:(DCMDataContainer *)container withTransferSyntax:(DCMTransferSyntax *)ts AET:@"OSIRIX"  asDICOM3:(BOOL)flag];
 }
 
-- (BOOL)writeToDataContainer:(DCMDataContainer *)container withTransferSyntax:(DCMTransferSyntax *)ts AET:(NSString *)aet  asDICOM3:(BOOL)flag{
+- (BOOL)writeToDataContainer:(DCMDataContainer *)container withTransferSyntax:(DCMTransferSyntax *)ts AET:(NSString *)aet  asDICOM3:(BOOL)flag
+{
+	return [self writeToDataContainer: container withTransferSyntax: ts AET: aet  asDICOM3: flag implicitForPixelData: NO];
+}
 
+- (BOOL)writeToDataContainer:(DCMDataContainer *)container withTransferSyntax:(DCMTransferSyntax *)ts AET:(NSString *)aet  asDICOM3:(BOOL)flag implicitForPixelData: (BOOL) ipd
+{
 	if (!ts)
 		ts = transferSyntax;
+	
 	DCMTransferSyntax *explicitTS = [DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax];
 	[container setTransferSyntaxForDataset:ts];	
 	
 	NSException *exception;
 	BOOL status = YES;
-	//NS_DURING
 		
 	[self removeGroupLengths];
 	
 	//need to convert PixelData TransferSyntax
 	DCMAttributeTag *pixelData = [DCMAttributeTag tagWithName:@"PixelData"];
 	DCMPixelDataAttribute *pixelDataAttr = (DCMPixelDataAttribute *)[attributes objectForKey:[pixelData stringValue]];
-	//NSLog(@"Pixel Data %@", [pixelDataAttr description]);
 	
 	//if we have the attr and the conversion failed stop
-	
-	if (pixelDataAttr && ![pixelDataAttr convertToTransferSyntax: transferSyntax quality:DCMLosslessQuality]) {
+	if (pixelDataAttr && ![pixelDataAttr convertToTransferSyntax: transferSyntax quality:DCMLosslessQuality])
+	{
 		NSLog(@"Could not convert pixel Data to %@", transferSyntax.description);
 		return NO;
 	}
 	
-	
-	if (flag) {
+	if (flag)
+	{
 		[self updateMetaInformationWithTransferSyntax:ts aet:aet];
 		[container addPremable];
 	}
@@ -1426,33 +1431,31 @@ PixelRepresentation
 	NSMutableArray *mutableKeys = [NSMutableArray arrayWithArray:[attributes allKeys]];
 	NSArray *sortedKeys = [mutableKeys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
 
-	for ( NSString *key in sortedKeys ) {
-		//if (DCMDEBUG)
-		//	NSLog(@"key:%@ %@", key, NSStringFromClass([key class]));
+	for(NSString *key in sortedKeys)
+	{
 		DCMAttribute *attr = [attributes objectForKey:key];
-		if (attr) {
-			if (flag && ([(DCMAttributeTag *)[attr attrTag] group] == 0x0002)) {
+		if (attr)
+		{
+			if (flag && ([(DCMAttributeTag *)[attr attrTag] group] == 0x0002))
+			{
 				[container setUseMetaheaderTS:YES];
-				if (![attr writeToDataContainer:container withTransferSyntax:explicitTS]) {
+				if (![attr writeToDataContainer:container withTransferSyntax:explicitTS])
+				{
 					exception = [NSException exceptionWithName:@"DCMWriteDataError" reason:[NSString stringWithFormat:@"Cannot write %@ to data", [attr description]] userInfo:nil];
 					[exception raise];
 				}
 			}
-			else {		
-				[container setUseMetaheaderTS:NO];
-				if (![attr writeToDataContainer:container withTransferSyntax:ts]) {
+			else
+			{
+				[container setUseMetaheaderTS: NO];
+				if (![attr writeToDataContainer:container withTransferSyntax: ts])
+				{
 					exception = [NSException exceptionWithName:@"DCMWriteDataError" reason:[NSString stringWithFormat:@"Cannot write %@ to data with syntax:%@", [attr description], [ts transferSyntax]] userInfo:nil];
 					[exception raise];
 				}			
 			}
 		}
 	}
-	
-//	NS_HANDLER
-//		if (exception)
-//			NSLog(@"Exception:%@	reason:%@", [exception name], [exception reason]);
-//		status =  NO;
-//	NS_ENDHANDLER
 	
 	return status;
 }

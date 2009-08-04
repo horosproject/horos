@@ -111,9 +111,7 @@
 		[dcmData addUnsignedLong: SQLength];
 	}
 	else
-	{
 		[dcmData  addUnsignedLong: SQLength];
-	}
 }
 
 - (BOOL)writeToDataContainer:(DCMDataContainer *)container withTransferSyntax:(DCMTransferSyntax *)ts
@@ -128,35 +126,28 @@
 		return YES;
 	}
 	
-	SQLength = 0xFFFFFFFF;
-	
 	DCMDataContainer *dummyContainer = [DCMDataContainer dataContainer];
 	
 	for( NSDictionary *object in sequenceItems)
 	{
-		[dummyContainer addUnsignedShort:(0xfffe)];		// Item
-		[dummyContainer addUnsignedShort:(0xe000)];		
-		[dummyContainer addUnsignedLong:(0xFFFFFFFF)];	// undefined length
+		[dummyContainer addUnsignedShort:(0xfffe)];
+		[dummyContainer addUnsignedShort:(0xe000)];
 		
 		DCMObject *o = [object objectForKey:@"item"];
 		
-		[o writeToDataContainer: dummyContainer withTransferSyntax: ts asDICOM3:NO];
+		DCMDataContainer *c = [DCMDataContainer dataContainer];
 		
-		[dummyContainer addUnsignedShort:(0xfffe)];		// Item Delimiter
-		[dummyContainer addUnsignedShort:(0xe00d)];
-		[dummyContainer addUnsignedLong:(0)];			// dummy length
+		// We dont support PixelData in a SQ
+		[[o attributes] removeObjectForKey: [[DCMAttributeTag tagWithName:@"PixelData"] stringValue]];
+		
+		[o writeToDataContainer: c withTransferSyntax: ts AET: @"OSIRIX" asDICOM3: NO implicitForPixelData: YES];
+		
+		long l = [[c dicomData] length];
+		[dummyContainer addUnsignedLong:( l)];
+		[dummyContainer addData: [c dicomData]];
 	}
 	
-	if( [_vr isEqualToString: @"SQ"] == NO)
-		SQLength = [[dummyContainer dicomData] length];
-	
-	// This Sequence Delimiter is NOT required if SQ length is NOT equal to 0xFFFFFFFF
-	if( SQLength == 0xFFFFFFFF)
-	{
-		[dummyContainer addUnsignedShort:(0xfffe)];	// Sequence Delimiter
-		[dummyContainer addUnsignedShort:(0xe0dd)];
-		[dummyContainer addUnsignedLong:(0)];		// dummy length
-	}
+	SQLength = [[dummyContainer dicomData] length];
 	
 	[self writeBaseToData: container transferSyntax:ts];
 	[container addData: [dummyContainer dicomData]];
