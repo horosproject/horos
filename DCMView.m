@@ -1923,7 +1923,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	self.scaleValue = [self scaleToFitForDCMPix: curDCM];
 	
-	if( curDCM.DCMPixShutterOnOff)
+	if( curDCM.DCMPixShutterOnOff && curDCM.shutterPolygonal)
 	{
 		origin.x = ((curDCM.pwidth  * 0.5f ) - ( curDCM.DCMPixShutterRectOriginX + ( curDCM.DCMPixShutterRectWidth  * 0.5f ))) * scaleValue;
 		origin.y = -((curDCM.pheight * 0.5f ) - ( curDCM.DCMPixShutterRectOriginY + ( curDCM.DCMPixShutterRectHeight * 0.5f ))) * scaleValue;
@@ -10100,6 +10100,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		intFULL32BITPIPELINE = NO;
 		
 	if( curDCM.subtractedfImage) 
+		intFULL32BITPIPELINE = NO;
+	
+	if( curDCM.DCMPixShutterOnOff) 
 		intFULL32BITPIPELINE = NO;
 	
 	if( curDCM.pwidth >= maxTextureSize) 

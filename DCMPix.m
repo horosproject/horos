@@ -1133,7 +1133,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 @implementation DCMPix
 
 @synthesize countstackMean, stackDirection, full32bitPipeline, needToCompute8bitRepresentation, subtractedfImage;
-@synthesize frameNo, notAbleToLoadImage;
+@synthesize frameNo, notAbleToLoadImage, shutterPolygonal;
 @synthesize minValueOfSeries, maxValueOfSeries;
 @synthesize isRGB, pwidth = width, pheight = height;
 @synthesize pixelRatio, transferFunction, subPixOffset, isOriginDefined;
@@ -10651,6 +10651,12 @@ END_CREATE_ROIS:
 	shutterRect_y = y;
 	shutterRect_w = w;
 	shutterRect_h = h;
+	
+	if( shutterPolygonal)
+	{
+		free( shutterPolygonal);
+		shutterPolygonal = nil;
+	}
 }
 
 -(BOOL) DCMPixShutterOnOff  {return DCMPixShutterOnOff;}
@@ -10702,7 +10708,6 @@ END_CREATE_ROIS:
 		else
 		{
 			char*	tempMem = malloc( height * width * sizeof(char));
-			
 			
 			if( tempMem)
 			{

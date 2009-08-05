@@ -5276,14 +5276,12 @@ static ViewerController *draggedController = nil;
 				[[[imageView dcmPixList] objectAtIndex: i] DCMPixShutterRect:(long)shutterRect.origin.x :(long)shutterRect.origin.y :(long)shutterRect.size.width :(long)shutterRect.size.height];
 				[[[imageView dcmPixList] objectAtIndex: i] DCMPixShutterOnOff: NSOnState];
 			}
-			[imageView scaleToFit];
 		}
 		else
 		{
 			//using stored shutterRect?
-			if  ([curPix DCMPixShutterRectWidth] == 0 || ([curPix DCMPixShutterRectWidth] == [curPix pwidth] && [curPix DCMPixShutterRectHeight] == [curPix pheight]))
+			if ( ([curPix DCMPixShutterRectWidth] == 0 || ([curPix DCMPixShutterRectWidth] == [curPix pwidth] && [curPix DCMPixShutterRectHeight] == [curPix pheight])) && curPix.shutterPolygonal == nil)
 			{
-				//NSLog(@"no shutter rectangle available");
 				[shutterOnOff setState:NSOffState];
 				
 				NSRunCriticalAlertPanel(NSLocalizedString(@"Shutter", nil), NSLocalizedString(@"Please first define a rectangle with a rectangular ROI.", nil), NSLocalizedString(@"OK", nil), nil, nil);
@@ -5291,15 +5289,13 @@ static ViewerController *draggedController = nil;
 			else //reuse preconfigured shutterRect
 			{
 				for( i = 0; i < [[imageView dcmPixList] count]; i++) [[[imageView dcmPixList] objectAtIndex: i] DCMPixShutterOnOff: NSOnState];
-				[imageView scaleToFit];	
 			}
 		}
 	}
 	else
 	{
-		for( i = 0; i < [[imageView dcmPixList] count]; i++) [[[imageView dcmPixList] objectAtIndex: i] DCMPixShutterOnOff: NSOffState];
-		[imageView setOrigin: NSMakePoint( 0, 0)];
-		[imageView scaleToFit];
+		for( i = 0; i < [[imageView dcmPixList] count]; i++)
+			[[[imageView dcmPixList] objectAtIndex: i] DCMPixShutterOnOff: NSOffState];
 	}
 	[imageView setIndex: [imageView curImage]]; //refresh viewer only
 }

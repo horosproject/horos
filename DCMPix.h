@@ -211,6 +211,7 @@ Note setter is different to not break existing usage. :-( */
 
 @property(readonly) float slope, offset;
 @property(readonly) BOOL notAbleToLoadImage;
+@property(readonly) NSPoint *shutterPolygonal;
 
 /**  X/Y ratio - non-square pixels */
 @property double pixelRatio;
@@ -486,6 +487,7 @@ Note setter is different to not break existing usage. :-( */
 - (BOOL) updateToApply;
 - (id) myinitEmpty;  /**< Returns an Empty object */
 - (short*) kernel;
+- (void) applyShutter;
 + (NSPoint) rotatePoint:(NSPoint)pt aroundPoint:(NSPoint)c angle:(float)a;
 - (short) normalization;
 - (short) kernelsize;
