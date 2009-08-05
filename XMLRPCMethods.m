@@ -817,7 +817,6 @@ static NSTimeInterval lastConnection = 0;
 						
 						NSError *error = nil;
 						NSXMLDocument *doc = [[[NSXMLDocument alloc] initWithXMLString:xml options:NSXMLNodeOptionsNone error:&error] autorelease];
-						[httpServerMessage setValue: [NSNumber numberWithBool: YES] forKey: @"Processed"];
 						[httpServerMessage setValue: doc forKey: @"NSXMLDocumentResponse"];
 						[httpServerMessage setValue: [NSNumber numberWithBool: YES] forKey: @"Processed"];		// To tell to other XML-RPC that we processed this order
 					}
@@ -858,7 +857,6 @@ static NSTimeInterval lastConnection = 0;
 						
 						NSError *error = nil;
 						NSXMLDocument *doc = [[[NSXMLDocument alloc] initWithXMLString:xml options:NSXMLNodeOptionsNone error:&error] autorelease];
-						[httpServerMessage setValue: [NSNumber numberWithBool: YES] forKey: @"Processed"];
 						[httpServerMessage setValue: doc forKey: @"NSXMLDocumentResponse"];
 						[httpServerMessage setValue: [NSNumber numberWithBool: YES] forKey: @"Processed"];		// To tell to other XML-RPC that we processed this order
 					}
@@ -868,6 +866,19 @@ static NSTimeInterval lastConnection = 0;
 			if( [[httpServerMessage valueForKey: @"Processed"] boolValue] == NO)
 			{
 				CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 404, NULL, (CFStringRef) vers); // Not found
+				[mess setResponse:response];
+				CFRelease(response);
+				
+				NSLog( @"**** unable to understand this xml-rpc message: %@", selName);
+				
+				return;
+			}
+			else
+			{
+				NSData *data = [[httpServerMessage valueForKey: @"NSXMLDocumentResponse"] XMLData];
+				CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 200, NULL, (CFStringRef) vers); // OK
+				CFHTTPMessageSetHeaderFieldValue(response, (CFStringRef)@"Content-Length", (CFStringRef)[NSString stringWithFormat:@"%d", [data length]]);
+				CFHTTPMessageSetBody(response, (CFDataRef)data);
 				[mess setResponse:response];
 				CFRelease(response);
 				

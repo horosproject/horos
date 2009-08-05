@@ -1699,6 +1699,8 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 		if ([jpeg2000Data length] % 2) 
 			[jpeg2000Data appendBytes:&zero length:1];
 		
+//		NSLog( @"%d", [data length] / [jpeg2000Data length]);
+		
 //		if( [data length] / [jpeg2000Data length] > 30 && quality != DCMLosslessQuality)
 //		{
 //			NSLog( @"****** warning compress ratio is very high : %d?? Problem during compression? -> will use jp2k lossless", [data length] / [jpeg2000Data length]);
