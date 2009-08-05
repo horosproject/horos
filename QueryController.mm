@@ -1840,65 +1840,68 @@ static const char *GetPrivateIP()
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	[array retain];
 	
-//	NetworkMoveDataHandler *moveDataHandler = [NetworkMoveDataHandler moveDataHandler];
-	NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithDictionary: [[[queryManager parameters] copy] autorelease]];
-	
-	NSLog( @"Retrieve START");
-	
-//	[dictionary setObject:moveDataHandler  forKey:@"receivedDataHandler"];
-	
-	for( NSUInteger i = 0; i < [array count] ; i++)
+	@try
 	{
-		DCMTKQueryNode	*object = [array objectAtIndex: i];
+		NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithDictionary: [[[queryManager parameters] copy] autorelease]];
 		
-		if( [[object extraParameters] valueForKey: @"CGET"])
-			[dictionary setObject: [[object extraParameters] valueForKey: @"CGET"] forKey:@"CGET"];
-		[dictionary setObject:[object valueForKey:@"calledAET"] forKey:@"calledAET"];
-		[dictionary setObject:[object valueForKey:@"hostname"] forKey:@"hostname"];
-		[dictionary setObject:[object valueForKey:@"port"] forKey:@"port"];
-		[dictionary setObject:[object valueForKey:@"transferSyntax"] forKey:@"transferSyntax"];
+		NSLog( @"Retrieve START");
+		
+		for( NSUInteger i = 0; i < [array count] ; i++)
+		{
+			DCMTKQueryNode	*object = [array objectAtIndex: i];
+			
+			if( [[object extraParameters] valueForKey: @"CGET"])
+				[dictionary setObject: [[object extraParameters] valueForKey: @"CGET"] forKey:@"CGET"];
+			[dictionary setObject:[object valueForKey:@"calledAET"] forKey:@"calledAET"];
+			[dictionary setObject:[object valueForKey:@"hostname"] forKey:@"hostname"];
+			[dictionary setObject:[object valueForKey:@"port"] forKey:@"port"];
+			[dictionary setObject:[object valueForKey:@"transferSyntax"] forKey:@"transferSyntax"];
 
-		NSDictionary *dstDict = nil;
-		BOOL allowCGET = YES;
-		
-		if( [sendToPopup indexOfSelectedItem] != 0)
-		{
-			NSInteger index = [sendToPopup indexOfSelectedItem] -2;
+			NSDictionary *dstDict = nil;
+			BOOL allowCGET = YES;
 			
-			dstDict = [[[[DCMNetServiceDelegate DICOMServersList] objectAtIndex: index] copy] autorelease];
-			
-			[dictionary setObject: [dstDict valueForKey:@"AETitle"]  forKey: @"moveDestination"];
-			
-			allowCGET = NO;
-		}
-		
-		if( [[dstDict valueForKey:@"Port"] intValue]  == [[dictionary valueForKey:@"port"] intValue] &&
-			[[dstDict valueForKey:@"Address"] isEqualToString: [dictionary valueForKey:@"hostname"]])
+			if( [sendToPopup indexOfSelectedItem] != 0)
 			{
-				NSLog( @"move source == move destination -> Do Nothing");
-			}
-		else
-		{
-			int numberPacketsReceived = 0;
-			if( [[NSUserDefaults standardUserDefaults] boolForKey:@"Ping"] == NO || (SimplePing( [[dictionary valueForKey:@"hostname"] UTF8String], 1, [[NSUserDefaults standardUserDefaults] integerForKey:@"DICOMTimeout"], 1,  &numberPacketsReceived) == 0 && numberPacketsReceived > 0))
-			{
-				[object move:dictionary allowCGET: allowCGET];
+				NSInteger index = [sendToPopup indexOfSelectedItem] -2;
 				
-				@synchronized( previousAutoRetrieve)
+				dstDict = [[[[DCMNetServiceDelegate DICOMServersList] objectAtIndex: index] copy] autorelease];
+				
+				[dictionary setObject: [dstDict valueForKey:@"AETitle"]  forKey: @"moveDestination"];
+				
+				allowCGET = NO;
+			}
+			
+			if( [[dstDict valueForKey:@"Port"] intValue]  == [[dictionary valueForKey:@"port"] intValue] &&
+				[[dstDict valueForKey:@"Address"] isEqualToString: [dictionary valueForKey:@"hostname"]])
 				{
-					[previousAutoRetrieve removeObjectForKey: [self stringIDForStudy: object]];
+					NSLog( @"move source == move destination -> Do Nothing");
+				}
+			else
+			{
+				int numberPacketsReceived = 0;
+				if( [[NSUserDefaults standardUserDefaults] boolForKey:@"Ping"] == NO || (SimplePing( [[dictionary valueForKey:@"hostname"] UTF8String], 1, [[NSUserDefaults standardUserDefaults] integerForKey:@"DICOMTimeout"], 1,  &numberPacketsReceived) == 0 && numberPacketsReceived > 0))
+				{
+					[object move:dictionary allowCGET: allowCGET];
+					
+					@synchronized( previousAutoRetrieve)
+					{
+						[previousAutoRetrieve removeObjectForKey: [self stringIDForStudy: object]];
+					}
 				}
 			}
 		}
+		
+		[NSThread sleepForTimeInterval: 0.5];	// To allow errorMessage on the main thread...
+		
+		for( id item in array)
+			[item setShowErrorMessage: YES];
+		
+		NSLog(@"Retrieve END");
 	}
-	
-	[NSThread sleepForTimeInterval: 0.5];	// To allow errorMessage on the main thread...
-	
-	for( id item in array)
-		[item setShowErrorMessage: YES];
-	
-	NSLog(@"Retrieve END");
-	
+	@catch (NSException *e)
+	{
+		NSLog( @"performRetrieve exception: %@", e);
+	}
 	[array release];
 	
 	[pool release];
