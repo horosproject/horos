@@ -7337,7 +7337,7 @@ static ViewerController *draggedController = nil;
 {
 	if ([sender tag] == 30) [subCtrlSharpenButton  setState: ![subCtrlSharpenButton state]];
 	if ([subCtrlSharpenButton state] == NSOnState)	[self ApplyConvString:@"Sharpen 5x5"];
-	else								[self ApplyConvString:NSLocalizedString(@"No Filter", nil)];
+	else [self ApplyConvString:NSLocalizedString(@"No Filter", nil)];
 }
 
 #pragma mark-
@@ -8421,25 +8421,30 @@ static float oldsetww, oldsetwl;
 		
 		aConv = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"Convolution"] objectForKey:str];
 		
-		nomalization = [[aConv objectForKey:@"Normalization"] longValue];
-		size = [[aConv objectForKey:@"Size"] longValue];
-		array = [aConv objectForKey:@"Matrix"];
-		
-		for( i = 0; i < size*size; i++)
+		if( aConv == nil)
+			NSRunAlertPanel(NSLocalizedString(@"Error", nil), NSLocalizedString(@"This convolution filter cannot be loaded.", nil), nil, nil, nil);
+		else
 		{
-			matrix[i] = [[array objectAtIndex: i] longValue];
+			nomalization = [[aConv objectForKey:@"Normalization"] longValue];
+			size = [[aConv objectForKey:@"Size"] longValue];
+			array = [aConv objectForKey:@"Matrix"];
+			
+			for( i = 0; i < size*size; i++)
+			{
+				matrix[i] = [[array objectAtIndex: i] longValue];
+			}
+			
+			[self setConv:matrix :size: nomalization];
+			[imageView setIndex:[imageView curImage]];
+			if( str != curConvMenu)
+			{
+				[curConvMenu release];
+				curConvMenu = [str retain];
+			}
+			
+			lastMenuNotification = nil;
+			[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateConvolutionMenuNotification object: curConvMenu userInfo: nil];
 		}
-		
-		[self setConv:matrix :size: nomalization];
-		[imageView setIndex:[imageView curImage]];
-		if( str != curConvMenu)
-		{
-			[curConvMenu release];
-			curConvMenu = [str retain];
-		}
-		
-		lastMenuNotification = nil;
-		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateConvolutionMenuNotification object: curConvMenu userInfo: nil];
 	}
 	
 	[[[convPopup menu] itemAtIndex:0] setTitle: str];
