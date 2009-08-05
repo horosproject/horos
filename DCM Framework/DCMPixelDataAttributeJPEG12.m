@@ -480,130 +480,130 @@ jpeg12_NSData_dest (j_compress_ptr cinfo, NSMutableData *aData)
 	return rawData;
 }
 
-- (NSMutableData *)compressJPEG12:(NSMutableData *)data  compressionSyntax:(DCMTransferSyntax *)compressionSyntax  quality:(float)quality{
-	unsigned short *image_buffer;
-	DCMAttributeTag *signedTag = [DCMAttributeTag tagWithName:@"PixelRepresentation"];
-	DCMAttribute *signedAttr = [[_dcmObject attributes] objectForKey:[signedTag stringValue]];
-	BOOL isSigned = [[signedAttr value] boolValue];
-
-	if (isSigned || _pixelDepth > 12) {
-	
-		if (![[_dcmObject attributeValueWithName:@"Modality"] isEqualToString:@"CT"]) {
-			[self findMinAndMax:data];
-			if (_min < 0) 
-				[self encodeRescale:data WithRescaleIntercept:_min];
-		}
-		else {
-			[self encodeRescale:data WithPixelDepth:12];
-		}
-	}
-	
-	image_buffer = (unsigned short *)[data bytes];
-	
-	NSMutableData *jpegData = [NSMutableData data];
-	int columns = _columns;
-	int rows = _rows;
-	int samplesPerPixel = _samplesPerPixel;
-	struct jpeg_compress_struct cinfo;
-	JPEG12ErrorStruct jerr;
-	cinfo.err = jpeg_std_error(&jerr.pub);
-	jerr.instance = self;
-
-	NS_DURING
-	jpeg_create_compress(&cinfo);
-	jerr.pub.error_exit = JPEG12ErrorExit;
-	jerr.pub.output_message = JPEG12OutputMessage;
-	  // Specify destination manager
-	 jpeg12_NSData_dest (&cinfo, jpegData);
-
-	cinfo.image_width = columns;
-	cinfo.image_height = rows;
-	cinfo.input_components = samplesPerPixel;
-	  
-	DCMAttributeTag *tag = [DCMAttributeTag tagWithName:@"PhotometricInterpretation"];
-	DCMAttribute *attr = [[_dcmObject attributes] objectForKey:[tag stringValue]];
-	NSString *photometricInterpretation = [attr value];
-
-	J_COLOR_SPACE jpegColorSpace = JCS_UNKNOWN;
-	if ([photometricInterpretation isEqualToString:@"MONOCHROME1"] || [photometricInterpretation isEqualToString:@"MONOCHROME1"])
-		jpegColorSpace = JCS_GRAYSCALE;
-	if ([photometricInterpretation isEqualToString:@"RGB"] || [photometricInterpretation isEqualToString:@"ARGB"])
-		jpegColorSpace = JCS_RGB;
-	if ([photometricInterpretation isEqualToString:@"YBR_FULL_422"] || [photometricInterpretation isEqualToString:@"YBR_PARTIAL_422"] || [photometricInterpretation isEqualToString:@"YBR_FULL"])
-		jpegColorSpace = JCS_YCbCr;
-	if ([photometricInterpretation isEqualToString:@"CMYK"])
-		jpegColorSpace = JCS_CMYK;
-
-	cinfo.in_color_space = jpegColorSpace;
-
-	jpeg_set_defaults(&cinfo);
-  
-	// prevent IJG library from doing any color space conversion
-	jpeg_set_colorspace (&cinfo, cinfo.in_color_space);
-	
-	//cinfo.optimize_coding =
-	if ([compressionSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEGBaselineTransferSyntax]] ||[compressionSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEGExtendedTransferSyntax]])
-		jpeg_set_quality(&cinfo, quality, 0);
-	else if ([compressionSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEGLosslessTransferSyntax]])
-			// always disables any kind of color space conversion
-     jpeg_simple_lossless(&cinfo,1,0);
-	 
-	 if ([photometricInterpretation isEqualToString:@"YBR_FULL"]) {
-		/* 4:4:4 sampling (no subsampling) */
-        cinfo.comp_info[0].h_samp_factor = 1;
-        cinfo.comp_info[0].v_samp_factor = 1;
-	}
-	else if ([photometricInterpretation isEqualToString:@"YBR_FULL_422"]) {
-	 /* 4:2:2 sampling (horizontal subsampling of chroma components) */
-        cinfo.comp_info[0].h_samp_factor = 2;
-        cinfo.comp_info[0].v_samp_factor = 1;
-	}
-	else if ([photometricInterpretation isEqualToString:@"YBR_PARTIAL_422"]) {
-	 /* 4:1:1 sampling (horizontal and vertical subsampling of chroma components) */
-        cinfo.comp_info[0].h_samp_factor = 2;
-        cinfo.comp_info[0].v_samp_factor = 2;
-	}
-	else {
-    // JPEG color space is not YCbCr, disable subsampling.
-    cinfo.comp_info[0].h_samp_factor = 1;
-    cinfo.comp_info[0].v_samp_factor = 1;
-  }
-  int sfi;
-    // all other components are set to 1x1
-  for (sfi=1; sfi< MAX_COMPONENTS; sfi++)
-  {
-    cinfo.comp_info[sfi].h_samp_factor = 1;
-    cinfo.comp_info[sfi].v_samp_factor = 1;
-  }
-	
-  JSAMPROW row_pointer[1];
-  jpeg_start_compress(&cinfo,TRUE);
-  int row_stride = columns * samplesPerPixel;
- //int row_stride = columns * samplesPerPixel * 2;
-  while (cinfo.next_scanline < cinfo.image_height) 
-  {
-    row_pointer[0] = (JSAMPROW) (&image_buffer[cinfo.next_scanline * row_stride]);
-    jpeg_write_scanlines(&cinfo, row_pointer, 1);
-  }
-  
-NS_HANDLER
-	jpegData = nil;
-	if (dcmException)
-		NSLog([dcmException  reason]);
-  NS_ENDHANDLER
-  
-  jpeg_finish_compress(&cinfo);
-  jpeg_destroy_compress(&cinfo);
-
-// if ([jpegData length] % 2) length++; // ensure even length 
-	char zero = 0;
-
-	if ([jpegData length] % 2) {
-		[jpegData appendBytes:&zero length:1];
-	}
-		
-	return jpegData;
-}
+//- (NSMutableData *)compressJPEG12:(NSMutableData *)data  compressionSyntax:(DCMTransferSyntax *)compressionSyntax  quality:(float)quality{
+//	unsigned short *image_buffer;
+//	DCMAttributeTag *signedTag = [DCMAttributeTag tagWithName:@"PixelRepresentation"];
+//	DCMAttribute *signedAttr = [[_dcmObject attributes] objectForKey:[signedTag stringValue]];
+//	BOOL isSigned = [[signedAttr value] boolValue];
+//
+//	if (isSigned || _pixelDepth > 12) {
+//	
+//		if (![[_dcmObject attributeValueWithName:@"Modality"] isEqualToString:@"CT"]) {
+//			[self findMinAndMax:data];
+//			if (_min < 0) 
+//				[self encodeRescale:data WithRescaleIntercept:_min];
+//		}
+//		else {
+//			[self encodeRescale:data WithPixelDepth:12];
+//		}
+//	}
+//	
+//	image_buffer = (unsigned short *)[data bytes];
+//	
+//	NSMutableData *jpegData = [NSMutableData data];
+//	int columns = _columns;
+//	int rows = _rows;
+//	int samplesPerPixel = _samplesPerPixel;
+//	struct jpeg_compress_struct cinfo;
+//	JPEG12ErrorStruct jerr;
+//	cinfo.err = jpeg_std_error(&jerr.pub);
+//	jerr.instance = self;
+//
+//	NS_DURING
+//	jpeg_create_compress(&cinfo);
+//	jerr.pub.error_exit = JPEG12ErrorExit;
+//	jerr.pub.output_message = JPEG12OutputMessage;
+//	  // Specify destination manager
+//	 jpeg12_NSData_dest (&cinfo, jpegData);
+//
+//	cinfo.image_width = columns;
+//	cinfo.image_height = rows;
+//	cinfo.input_components = samplesPerPixel;
+//	  
+//	DCMAttributeTag *tag = [DCMAttributeTag tagWithName:@"PhotometricInterpretation"];
+//	DCMAttribute *attr = [[_dcmObject attributes] objectForKey:[tag stringValue]];
+//	NSString *photometricInterpretation = [attr value];
+//
+//	J_COLOR_SPACE jpegColorSpace = JCS_UNKNOWN;
+//	if ([photometricInterpretation isEqualToString:@"MONOCHROME1"] || [photometricInterpretation isEqualToString:@"MONOCHROME1"])
+//		jpegColorSpace = JCS_GRAYSCALE;
+//	if ([photometricInterpretation isEqualToString:@"RGB"] || [photometricInterpretation isEqualToString:@"ARGB"])
+//		jpegColorSpace = JCS_RGB;
+//	if ([photometricInterpretation isEqualToString:@"YBR_FULL_422"] || [photometricInterpretation isEqualToString:@"YBR_PARTIAL_422"] || [photometricInterpretation isEqualToString:@"YBR_FULL"])
+//		jpegColorSpace = JCS_YCbCr;
+//	if ([photometricInterpretation isEqualToString:@"CMYK"])
+//		jpegColorSpace = JCS_CMYK;
+//
+//	cinfo.in_color_space = jpegColorSpace;
+//
+//	jpeg_set_defaults(&cinfo);
+//  
+//	// prevent IJG library from doing any color space conversion
+//	jpeg_set_colorspace (&cinfo, cinfo.in_color_space);
+//	
+//	//cinfo.optimize_coding =
+//	if ([compressionSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEGBaselineTransferSyntax]] ||[compressionSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEGExtendedTransferSyntax]])
+//		jpeg_set_quality(&cinfo, quality, 0);
+//	else if ([compressionSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEGLosslessTransferSyntax]])
+//			// always disables any kind of color space conversion
+//     jpeg_simple_lossless(&cinfo,1,0);
+//	 
+//	 if ([photometricInterpretation isEqualToString:@"YBR_FULL"]) {
+//		/* 4:4:4 sampling (no subsampling) */
+//        cinfo.comp_info[0].h_samp_factor = 1;
+//        cinfo.comp_info[0].v_samp_factor = 1;
+//	}
+//	else if ([photometricInterpretation isEqualToString:@"YBR_FULL_422"]) {
+//	 /* 4:2:2 sampling (horizontal subsampling of chroma components) */
+//        cinfo.comp_info[0].h_samp_factor = 2;
+//        cinfo.comp_info[0].v_samp_factor = 1;
+//	}
+//	else if ([photometricInterpretation isEqualToString:@"YBR_PARTIAL_422"]) {
+//	 /* 4:1:1 sampling (horizontal and vertical subsampling of chroma components) */
+//        cinfo.comp_info[0].h_samp_factor = 2;
+//        cinfo.comp_info[0].v_samp_factor = 2;
+//	}
+//	else {
+//    // JPEG color space is not YCbCr, disable subsampling.
+//    cinfo.comp_info[0].h_samp_factor = 1;
+//    cinfo.comp_info[0].v_samp_factor = 1;
+//  }
+//  int sfi;
+//    // all other components are set to 1x1
+//  for (sfi=1; sfi< MAX_COMPONENTS; sfi++)
+//  {
+//    cinfo.comp_info[sfi].h_samp_factor = 1;
+//    cinfo.comp_info[sfi].v_samp_factor = 1;
+//  }
+//	
+//  JSAMPROW row_pointer[1];
+//  jpeg_start_compress(&cinfo,TRUE);
+//  int row_stride = columns * samplesPerPixel;
+// //int row_stride = columns * samplesPerPixel * 2;
+//  while (cinfo.next_scanline < cinfo.image_height) 
+//  {
+//    row_pointer[0] = (JSAMPROW) (&image_buffer[cinfo.next_scanline * row_stride]);
+//    jpeg_write_scanlines(&cinfo, row_pointer, 1);
+//  }
+//  
+//NS_HANDLER
+//	jpegData = nil;
+//	if (dcmException)
+//		NSLog([dcmException  reason]);
+//  NS_ENDHANDLER
+//  
+//  jpeg_finish_compress(&cinfo);
+//  jpeg_destroy_compress(&cinfo);
+//
+//// if ([jpegData length] % 2) length++; // ensure even length 
+//	char zero = 0;
+//
+//	if ([jpegData length] % 2) {
+//		[jpegData appendBytes:&zero length:1];
+//	}
+//		
+//	return jpegData;
+//}
 
 
 @end

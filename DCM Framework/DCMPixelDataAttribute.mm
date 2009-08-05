@@ -975,12 +975,6 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 	if( _isDecoded == NO)
 		[self decodeData];
 	
-	// may need to change PixelRepresentation to 1 if it was compressed and has a intercept
-	if ([[_dcmObject attributeValueWithName:@"RescaleIntercept" ] intValue] < 0) {
-		//NSLog(@"Set Pixel Representation to 1");
-		[_dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithBool:YES]] forName:@"PixelRepresentation"];
-	}
-		
 	//unencapsulated syntaxes
 	if ([[DCMTransferSyntax ExplicitVRBigEndianTransferSyntax] isEqualToTransferSyntax:ts]) {
 		//[_dcmObject removePlanarAndRescaleAttributes];
@@ -1040,54 +1034,54 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 		//return YES;
 	}
 	
-		//jpeg
-	if ([[DCMTransferSyntax JPEGBaselineTransferSyntax] isEqualToTransferSyntax:ts] || [[DCMTransferSyntax JPEGExtendedTransferSyntax] isEqualToTransferSyntax:ts] || [[DCMTransferSyntax JPEGLosslessTransferSyntax] isEqualToTransferSyntax:ts] ) {
-		
-		NSMutableArray *values = [NSMutableArray arrayWithArray:_values];
-		[_values removeAllObjects];
-		//NSMutableArray *array = [NSMutableArray array];
-		//[_dcmObject removePlanarAndRescaleAttributes];
-		float q = 1.0;
-		
-		if (quality == DCMLosslessQuality)
-			q = 100;
-		else if (quality == DCMHighQuality)
-			q = 90;
-		else if (quality == DCMMediumQuality)
-			q = 80;
-		else if (quality == DCMLowQuality)
-			q = 70;
-		
-		for ( NSMutableData *data in values )
-		{
-			NSMutableData *newData;
-			if (_pixelDepth <= 8) 
-				newData = [self compressJPEG8:data  compressionSyntax:ts   quality:q];
-			//else if (_pixelDepth <= 12) 
-			else if (_pixelDepth <= 16) 				
-				newData = [self compressJPEG12:data  compressionSyntax:ts   quality:q];
-			else	{	
-				newData = [self compressJPEG12:data  compressionSyntax:ts   quality:q];
-
-			}
-			[self addFrame:newData];
-
-		}
-		
-		/*
-		for (i = 0; i< [array count]; i++) {
-			[_values replaceObjectAtIndex:i withObject:[array objectAtIndex:i]];
-		}
-		*/	
-		if 	( [[DCMTransferSyntax JPEGBaselineTransferSyntax] isEqualToTransferSyntax:ts] || [[DCMTransferSyntax JPEGExtendedTransferSyntax] isEqualToTransferSyntax:ts])
-			[self setLossyImageCompressionRatio:[_values objectAtIndex:0]];
-		[self createOffsetTable];
-		self.transferSyntax = ts;
-
-		status = YES;
-		//goto finishedConversion;
-		//return YES;
-	}
+//		//jpeg
+//	if ([[DCMTransferSyntax JPEGBaselineTransferSyntax] isEqualToTransferSyntax:ts] || [[DCMTransferSyntax JPEGExtendedTransferSyntax] isEqualToTransferSyntax:ts] || [[DCMTransferSyntax JPEGLosslessTransferSyntax] isEqualToTransferSyntax:ts] ) {
+//		
+//		NSMutableArray *values = [NSMutableArray arrayWithArray:_values];
+//		[_values removeAllObjects];
+//		//NSMutableArray *array = [NSMutableArray array];
+//		//[_dcmObject removePlanarAndRescaleAttributes];
+//		float q = 1.0;
+//		
+//		if (quality == DCMLosslessQuality)
+//			q = 100;
+//		else if (quality == DCMHighQuality)
+//			q = 90;
+//		else if (quality == DCMMediumQuality)
+//			q = 80;
+//		else if (quality == DCMLowQuality)
+//			q = 70;
+//		
+//		for ( NSMutableData *data in values )
+//		{
+//			NSMutableData *newData;
+//			if (_pixelDepth <= 8) 
+//				newData = [self compressJPEG8:data  compressionSyntax:ts   quality:q];
+//			//else if (_pixelDepth <= 12) 
+//			else if (_pixelDepth <= 16) 				
+//				newData = [self compressJPEG12:data  compressionSyntax:ts   quality:q];
+//			else	{	
+//				newData = [self compressJPEG12:data  compressionSyntax:ts   quality:q];
+//
+//			}
+//			[self addFrame:newData];
+//
+//		}
+//		
+//		/*
+//		for (i = 0; i< [array count]; i++) {
+//			[_values replaceObjectAtIndex:i withObject:[array objectAtIndex:i]];
+//		}
+//		*/	
+//		if 	( [[DCMTransferSyntax JPEGBaselineTransferSyntax] isEqualToTransferSyntax:ts] || [[DCMTransferSyntax JPEGExtendedTransferSyntax] isEqualToTransferSyntax:ts])
+//			[self setLossyImageCompressionRatio:[_values objectAtIndex:0]];
+//		[self createOffsetTable];
+//		self.transferSyntax = ts;
+//
+//		status = YES;
+//		//goto finishedConversion;
+//		//return YES;
+//	}
 	finishedConversion:
 	status = status;
 	NS_HANDLER
@@ -1636,6 +1630,9 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 			
 			int amplitude = _max;
 			
+			if( _min < 0)
+				amplitude -= _min;
+			
 			int bits = 1, value = 2;
 			
 			while( value < amplitude)
@@ -1646,11 +1643,19 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 			
 			if( bits < 9) bits = 9;
 			if( bits > 16) bits = 16;
+			
+			if( _min < 0)
+			{
+				[_dcmObject setAttributeValues: [NSMutableArray arrayWithObject: [NSNumber numberWithBool: YES]] forName:@"PixelRepresentation"];
+				bits++;  // For the sign
+			}
+			else
+				[_dcmObject setAttributeValues: [NSMutableArray arrayWithObject: [NSNumber numberWithBool: NO]] forName:@"PixelRepresentation"];
+			
 			bitsstored = bits;
 		}
 		
-		DCMAttributeTag *signedTag = [DCMAttributeTag tagWithName:@"PixelRepresentation"];
-		DCMAttribute *signedAttr = [[_dcmObject attributes] objectForKey:[signedTag stringValue]];
+		DCMAttribute *signedAttr = [[_dcmObject attributes] objectForKey:[[DCMAttributeTag tagWithName:@"PixelRepresentation"] stringValue]];
 		BOOL sign = [[signedAttr value] boolValue];
 		
 		image = rawtoimage( (char*) [data bytes], &parameters,  static_cast<int>( [data length]),  image_width, image_height, sample_pixel, bitsallocated, bitsstored, sign, quality, 0);
@@ -1736,6 +1741,9 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 			
 			int amplitude = _max;
 			
+			if( _min < 0)
+				amplitude -= _min;
+			
 			int bits = 1, value = 2;
 			
 			while( value < amplitude)
@@ -1746,15 +1754,20 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 			
 			if( bits < 9) bits = 9;
 			if( bits > 16) bits = 16;
+			
+			if( _min < 0)
+			{
+				[_dcmObject setAttributeValues: [NSMutableArray arrayWithObject: [NSNumber numberWithBool:YES]] forName:@"PixelRepresentation"];
+				bits++;  // For the sign
+			}
+			else
+				[_dcmObject setAttributeValues: [NSMutableArray arrayWithObject: [NSNumber numberWithBool:NO]] forName:@"PixelRepresentation"];
+			
 			prec = bits;
 		}
 		
-		DCMAttributeTag *signedTag = [DCMAttributeTag tagWithName:@"PixelRepresentation"];
-		DCMAttribute *signedAttr = [[_dcmObject attributes] objectForKey:[signedTag stringValue]];
+		DCMAttribute *signedAttr = [[_dcmObject attributes] objectForKey:[[DCMAttributeTag tagWithName:@"PixelRepresentation"] stringValue]];
 		BOOL sgnd = [[signedAttr value] boolValue];
-		
-		if (_isSigned)
-			sgnd = _isSigned;
 		
 		//set up component parameters
 		for (i = 0, cmptparm = cmptparms; i < spp; ++i, ++cmptparm)
@@ -1967,316 +1980,307 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 
 
 
-- (void)decodeRescale{
-/*
-	NSEnumerator *enumerator = [_values objectEnumerator];
-	NSMutableData *data;
-	while (data = [enumerator nextObject]) {
-		[self decodeRescaleScalar:data];
-	}	
-*/
+- (void)decodeRescale
+{
 }
 
-- (void)encodeRescale:(NSMutableData *)data WithRescaleIntercept:(int)offset{
-	int length = [data length];
-	int halfLength = length/2;
-	[_dcmObject  setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithFloat:1.0]] forName:@"RescaleSlope"];
-	[_dcmObject  setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithFloat:offset]] forName:@"RescaleIntercept"];
-	int i;
-	signed short *pixelData = (signed short *)[data bytes]; 
-	for (i= 0; i<halfLength; i++) {
-		pixelData[i] =  (pixelData[i]  - offset); 
-		
-		if (DCMDEBUG && !( i % 2500))
-			NSLog(@"rescaled %d", pixelData[i]);
-		
-	}
-}
+//- (void)encodeRescale:(NSMutableData *)data WithRescaleIntercept:(int)offset{
+//	int length = [data length];
+//	int halfLength = length/2;
+//	[_dcmObject  setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithFloat:1.0]] forName:@"RescaleSlope"];
+//	[_dcmObject  setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithFloat:offset]] forName:@"RescaleIntercept"];
+//	int i;
+//	signed short *pixelData = (signed short *)[data bytes]; 
+//	for (i= 0; i<halfLength; i++)
+//	{
+//		pixelData[i] =  (pixelData[i]  - offset); 
+//	}
+//}
+//
+//- (void)encodeRescale:(NSMutableData *)data WithPixelDepth:(int)pixelDepth{
+//
+//	[self encodeRescaleScalar:data withPixelDepth:pixelDepth];
+//
+//}
+//
+//#if __ppc__
+//- (void)decodeRescaleAltivec:(NSMutableData *)data{
+//	union vectorShort rescaleInterceptV ;
+//    union  vectorFloat rescaleSlopeV;
+//   // NSMutableData *tempData;
+//    short rescaleIntercept;
+//    float rescaleSlope;
+//    vector unsigned short eight = (vector unsigned short)(8);
+//    vector short *vPointer = (vector short *)[data mutableBytes];
+//	signed short *pointer =  (signed short *)[data mutableBytes]; 
+//    int length = [data length];
+//    int i = 0;
+//    int j = 0;
+//	
+//	if ([_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"RescaleIntercept" ]] != nil)
+//            rescaleIntercept = ([[[_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"RescaleIntercept" ]] value] intValue]);
+//	else 
+//            rescaleIntercept = 0.0;
+//            
+//    //rescale Slope
+//	if ([_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"RescaleSlope" ]] != nil) 
+//            rescaleSlope = [[[_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"RescaleSlope" ]] value] floatValue];
+//        
+//	else 
+//            rescaleSlope = 1.0;
+//		
+//	if ((rescaleIntercept != 0) || (rescaleSlope != 1)) {		
+//	   
+//		//Swap non G4 acceptable values. Then do rest with Altivec
+//	   int halfLength = length/2;
+//	   int vectorLength = length/16;
+//	   int nonVectorLength = (int)fmod(length,8);
+//		*pointer =+ (length - nonVectorLength);
+//		
+//		//align
+//		for (i= 0;  i < vectorLength; i++)            
+//			*vPointer++ = vec_rl(*vPointer, eight);
+//			//vPointer[i] = vec_rl(vPointer[i], eight);
+//		
+//		for (j = 0; j < 8; j++)
+//			rescaleInterceptV.scalar[j] = rescaleIntercept;                       
+//		
+//		for (j = 0; j < 4; j++)
+//			 rescaleSlopeV.scalar[j] = rescaleSlope;
+//			 
+//			 
+//		//slope is one can vecadd
+//		if ((rescaleIntercept != 0) && (rescaleSlope == 1)) {
+//			
+//			short *pixelData = (short *)[data mutableBytes];
+//			vPointer = (vector short *)[data mutableBytes];
+//			
+//			for (i = length - nonVectorLength ; i< length; i++)
+//				pixelData[i] =  pixelData[i] + rescaleIntercept; 
+//					
+//			for (i= 0; i<vectorLength; i++)   
+//				*vPointer++ = vec_add(*vPointer, rescaleInterceptV.shortVec);
+//		}  
+//		//can't vec multiple and add      
+//		else if ((rescaleIntercept != 0) && (rescaleSlope != 1)) {
+//			short *pixelData = (short *)[data bytes]; 
+//			//no vector for shorts and floats
+//			for (i= 0; i<halfLength; i++) 
+//				*pixelData++ =  *pixelData * rescaleSlope + rescaleIntercept;  
+//		}    
+//	}
+//}
+//- (void)encodeRescaleAltivec:(NSMutableData *)data withPixelDepth:(int)pixelDepth;{
+//	short rescaleIntercept = 0;
+//    float rescaleSlope = 1.0;
+//	int length = [data length];
+//	int halfLength = length/2;
+//	if ([_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"RescaleIntercept" ]] != nil)
+//		rescaleIntercept = ([[[_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"RescaleIntercept" ]] value] intValue]);
+//	else {
+//		switch (_pixelDepth) {
+//			case 8:
+//				rescaleIntercept = -127;
+//				break;
+//			case 9:
+//				rescaleIntercept = -255;
+//				break;
+//			case 10:
+//				rescaleIntercept = -511;
+//				break;
+//			case 11:
+//				rescaleIntercept = -1023;
+//				break;
+//			case 12:
+//				rescaleIntercept = -2047;
+//				break;
+//			case 13:
+//				rescaleIntercept = -4095;
+//				break;
+//			case 14:
+//				rescaleIntercept = -8191;
+//				break;
+//			case 15:
+//				rescaleIntercept = -16383;
+//				break;
+//			case 16:
+//				rescaleIntercept = -32767;
+//				break;
+//		}	
+//		DCMAttributeTag *tag = [DCMAttributeTag tagWithName:@"RescaleIntercept" ];
+//		DCMAttribute *attr = [DCMAttribute attributeWithAttributeTag:tag  vr:[tag vr]  values:[NSMutableArray arrayWithObject:[NSString stringWithFormat:@"%f", rescaleIntercept]]];
+//		[_dcmObject setAttribute:attr];
+//	}
+//            
+//    //rescale Slope
+//	if ([_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"RescaleSlope" ]] != nil) 
+//		rescaleSlope = [[[_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"RescaleSlope" ]] value] floatValue];
+//        
+//	else  {
+//		rescaleSlope = 1.0;
+//		DCMAttributeTag *tag = [DCMAttributeTag tagWithName:@"RescaleSlope" ];
+//		DCMAttribute *attr = [DCMAttribute attributeWithAttributeTag:tag  vr:[tag vr]  values:[NSMutableArray arrayWithObject:[NSString stringWithFormat:@"%f", rescaleSlope]]];
+//		[_dcmObject setAttribute:attr];
+//	}
+//	
+//	union vectorShort rescaleInterceptV ;
+//    union  vectorFloat rescaleSlopeV;
+//   // NSMutableData *tempData;
+//
+//    vector unsigned short eight = (vector unsigned short)(8);
+//    vector short *vPointer = (vector short *)[data mutableBytes];
+//	signed short *pointer =  (signed short *)[data mutableBytes]; 
+//
+//    int i = 0;
+//    int j = 0;
+//
+//	  //rescale Intercept
+//       
+//            //Swap non G4 acceptable values. Then do rest with Altivec
+//
+//
+//       int vectorLength = length/16;
+//       int nonVectorLength = (int)fmod(length,8);
+//
+//        *pointer =+ (length - nonVectorLength);
+//        
+//        for (i= nonVectorLength;  i < vectorLength; i++)            
+//            *vPointer++ = vec_rl(*vPointer, eight);
+//        
+//        for (j = 0; j < 8; j++)
+//			rescaleInterceptV.scalar[j] = -rescaleIntercept;                       
+//		
+//		for (j = 0; j < 4; j++)
+//			 rescaleSlopeV.scalar[j] = rescaleSlope;
+//
+//        if ((rescaleIntercept != 0) && (rescaleSlope == 1)) {
+//            
+//            short *pixelData = (short *)[data mutableBytes];
+//            vPointer = (vector short *)[data mutableBytes];
+//            for (i = 0; i< nonVectorLength; i++)
+//				*pixelData++ =  *pixelData - rescaleIntercept; 
+//                    
+//            for (i= nonVectorLength; i<vectorLength; i++)   
+//                *vPointer++ = vec_add(*vPointer, rescaleInterceptV.shortVec);
+//        }        
+//        else if ((rescaleIntercept != 0) && (rescaleSlope != 1)) {
+//            short *pixelData = (short *)[data bytes]; 
+//			//n0 vector for shorts and floats
+//            for (i= 0; i<halfLength; i++) 
+//                *pixelData++ =  *pixelData / rescaleSlope - rescaleIntercept;  
+//        }
+//
+//    
+//}
+//
+//#endif
 
-- (void)encodeRescale:(NSMutableData *)data WithPixelDepth:(int)pixelDepth{
+//- (void)decodeRescaleScalar:(NSMutableData *)data{
+//    short rescaleIntercept;
+//    float rescaleSlope;
+//	int length = [data length];
+//	 int halfLength = length/2;
+//	if ([_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"RescaleIntercept" ]] != nil)
+//            rescaleIntercept = ([[[_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"RescaleIntercept" ]] value] intValue]);
+//	else 
+//            rescaleIntercept = 0.0;
+//            
+//    //rescale Slope
+//	if ([_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"RescaleSlope" ]] != nil) 
+//            rescaleSlope = [[[_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"RescaleSlope" ]] value] floatValue];
+//        
+//	else 
+//            rescaleSlope = 1.0;
+//			
+//	if ((rescaleIntercept != 0) || (rescaleSlope != 1)) {
+//		
+//		int i;
+//		short *pixelData = (short *)[data bytes]; 
+//		short value;
+//		for (i= 0; i<halfLength; i++) {
+//			value = *pixelData * rescaleSlope + rescaleIntercept;
+//			if (value < 0)
+//				_isSigned = YES;
+//			*pixelData++ =  value; 
+//		}
+//	}
+//}
 
-	[self encodeRescaleScalar:data withPixelDepth:pixelDepth];
-
-}
-
-#if __ppc__
-- (void)decodeRescaleAltivec:(NSMutableData *)data{
-	union vectorShort rescaleInterceptV ;
-    union  vectorFloat rescaleSlopeV;
-   // NSMutableData *tempData;
-    short rescaleIntercept;
-    float rescaleSlope;
-    vector unsigned short eight = (vector unsigned short)(8);
-    vector short *vPointer = (vector short *)[data mutableBytes];
-	signed short *pointer =  (signed short *)[data mutableBytes]; 
-    int length = [data length];
-    int i = 0;
-    int j = 0;
-	
-	if ([_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"RescaleIntercept" ]] != nil)
-            rescaleIntercept = ([[[_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"RescaleIntercept" ]] value] intValue]);
-	else 
-            rescaleIntercept = 0.0;
-            
-    //rescale Slope
-	if ([_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"RescaleSlope" ]] != nil) 
-            rescaleSlope = [[[_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"RescaleSlope" ]] value] floatValue];
-        
-	else 
-            rescaleSlope = 1.0;
-		
-	if ((rescaleIntercept != 0) || (rescaleSlope != 1)) {		
-	   
-		//Swap non G4 acceptable values. Then do rest with Altivec
-	   int halfLength = length/2;
-	   int vectorLength = length/16;
-	   int nonVectorLength = (int)fmod(length,8);
-		*pointer =+ (length - nonVectorLength);
-		
-		//align
-		for (i= 0;  i < vectorLength; i++)            
-			*vPointer++ = vec_rl(*vPointer, eight);
-			//vPointer[i] = vec_rl(vPointer[i], eight);
-		
-		for (j = 0; j < 8; j++)
-			rescaleInterceptV.scalar[j] = rescaleIntercept;                       
-		
-		for (j = 0; j < 4; j++)
-			 rescaleSlopeV.scalar[j] = rescaleSlope;
-			 
-			 
-		//slope is one can vecadd
-		if ((rescaleIntercept != 0) && (rescaleSlope == 1)) {
-			
-			short *pixelData = (short *)[data mutableBytes];
-			vPointer = (vector short *)[data mutableBytes];
-			
-			for (i = length - nonVectorLength ; i< length; i++)
-				pixelData[i] =  pixelData[i] + rescaleIntercept; 
-					
-			for (i= 0; i<vectorLength; i++)   
-				*vPointer++ = vec_add(*vPointer, rescaleInterceptV.shortVec);
-		}  
-		//can't vec multiple and add      
-		else if ((rescaleIntercept != 0) && (rescaleSlope != 1)) {
-			short *pixelData = (short *)[data bytes]; 
-			//no vector for shorts and floats
-			for (i= 0; i<halfLength; i++) 
-				*pixelData++ =  *pixelData * rescaleSlope + rescaleIntercept;  
-		}    
-	}
-}
-- (void)encodeRescaleAltivec:(NSMutableData *)data withPixelDepth:(int)pixelDepth;{
-	short rescaleIntercept = 0;
-    float rescaleSlope = 1.0;
-	int length = [data length];
-	int halfLength = length/2;
-	if ([_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"RescaleIntercept" ]] != nil)
-		rescaleIntercept = ([[[_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"RescaleIntercept" ]] value] intValue]);
-	else {
-		switch (_pixelDepth) {
-			case 8:
-				rescaleIntercept = -127;
-				break;
-			case 9:
-				rescaleIntercept = -255;
-				break;
-			case 10:
-				rescaleIntercept = -511;
-				break;
-			case 11:
-				rescaleIntercept = -1023;
-				break;
-			case 12:
-				rescaleIntercept = -2047;
-				break;
-			case 13:
-				rescaleIntercept = -4095;
-				break;
-			case 14:
-				rescaleIntercept = -8191;
-				break;
-			case 15:
-				rescaleIntercept = -16383;
-				break;
-			case 16:
-				rescaleIntercept = -32767;
-				break;
-		}	
-		DCMAttributeTag *tag = [DCMAttributeTag tagWithName:@"RescaleIntercept" ];
-		DCMAttribute *attr = [DCMAttribute attributeWithAttributeTag:tag  vr:[tag vr]  values:[NSMutableArray arrayWithObject:[NSString stringWithFormat:@"%f", rescaleIntercept]]];
-		[_dcmObject setAttribute:attr];
-	}
-            
-    //rescale Slope
-	if ([_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"RescaleSlope" ]] != nil) 
-		rescaleSlope = [[[_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"RescaleSlope" ]] value] floatValue];
-        
-	else  {
-		rescaleSlope = 1.0;
-		DCMAttributeTag *tag = [DCMAttributeTag tagWithName:@"RescaleSlope" ];
-		DCMAttribute *attr = [DCMAttribute attributeWithAttributeTag:tag  vr:[tag vr]  values:[NSMutableArray arrayWithObject:[NSString stringWithFormat:@"%f", rescaleSlope]]];
-		[_dcmObject setAttribute:attr];
-	}
-	
-	union vectorShort rescaleInterceptV ;
-    union  vectorFloat rescaleSlopeV;
-   // NSMutableData *tempData;
-
-    vector unsigned short eight = (vector unsigned short)(8);
-    vector short *vPointer = (vector short *)[data mutableBytes];
-	signed short *pointer =  (signed short *)[data mutableBytes]; 
-
-    int i = 0;
-    int j = 0;
-
-	  //rescale Intercept
-       
-            //Swap non G4 acceptable values. Then do rest with Altivec
-
-
-       int vectorLength = length/16;
-       int nonVectorLength = (int)fmod(length,8);
-
-        *pointer =+ (length - nonVectorLength);
-        
-        for (i= nonVectorLength;  i < vectorLength; i++)            
-            *vPointer++ = vec_rl(*vPointer, eight);
-        
-        for (j = 0; j < 8; j++)
-			rescaleInterceptV.scalar[j] = -rescaleIntercept;                       
-		
-		for (j = 0; j < 4; j++)
-			 rescaleSlopeV.scalar[j] = rescaleSlope;
-
-        if ((rescaleIntercept != 0) && (rescaleSlope == 1)) {
-            
-            short *pixelData = (short *)[data mutableBytes];
-            vPointer = (vector short *)[data mutableBytes];
-            for (i = 0; i< nonVectorLength; i++)
-				*pixelData++ =  *pixelData - rescaleIntercept; 
-                    
-            for (i= nonVectorLength; i<vectorLength; i++)   
-                *vPointer++ = vec_add(*vPointer, rescaleInterceptV.shortVec);
-        }        
-        else if ((rescaleIntercept != 0) && (rescaleSlope != 1)) {
-            short *pixelData = (short *)[data bytes]; 
-			//n0 vector for shorts and floats
-            for (i= 0; i<halfLength; i++) 
-                *pixelData++ =  *pixelData / rescaleSlope - rescaleIntercept;  
-        }
-
-    
-}
-
-#endif
-
-- (void)decodeRescaleScalar:(NSMutableData *)data{
-    short rescaleIntercept;
-    float rescaleSlope;
-	int length = [data length];
-	 int halfLength = length/2;
-	if ([_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"RescaleIntercept" ]] != nil)
-            rescaleIntercept = ([[[_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"RescaleIntercept" ]] value] intValue]);
-	else 
-            rescaleIntercept = 0.0;
-            
-    //rescale Slope
-	if ([_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"RescaleSlope" ]] != nil) 
-            rescaleSlope = [[[_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"RescaleSlope" ]] value] floatValue];
-        
-	else 
-            rescaleSlope = 1.0;
-			
-	if ((rescaleIntercept != 0) || (rescaleSlope != 1)) {
-		
-		int i;
-		short *pixelData = (short *)[data bytes]; 
-		short value;
-		for (i= 0; i<halfLength; i++) {
-			value = *pixelData * rescaleSlope + rescaleIntercept;
-			if (value < 0)
-				_isSigned = YES;
-			*pixelData++ =  value; 
-		}
-	}
-}
-
-- (void)encodeRescaleScalar:(NSMutableData *)data withPixelDepth:(int)pixelDepth;{
-
-	short rescaleIntercept = 0;
-    float rescaleSlope = 1.0;
-	int length = [data length];
-	int halfLength = length/2;
-	if ([_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"RescaleIntercept" ]] != nil &&
-			[[[_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"RescaleIntercept" ]] value] intValue] < 0)
-		rescaleIntercept = ([[[_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"RescaleIntercept" ]] value] intValue]);
-	else {
-		switch (_pixelDepth) {
-			case 8:
-				rescaleIntercept = -127;
-				break;
-			case 9:
-				rescaleIntercept = -255;
-				break;
-			case 10:
-				rescaleIntercept = -511;
-				break;
-			case 11:
-				rescaleIntercept = -1023;
-				break;
-			case 12:
-				rescaleIntercept = -2047;
-				break;
-			case 13:
-				//rescaleIntercept = 4095;
-				//break;
-			case 14:
-				//rescaleIntercept = 8191;
-				//break;
-			case 15:
-				//rescaleIntercept = 16383;
-				//break;
-			case 16:
-				//rescaleIntercept = 32767;
-				[self findMinAndMax:data];
-				if (_min < 0)
-					rescaleIntercept = _min;
-				break;
-			default: rescaleIntercept = -2047;
-		}	
-
-	[_dcmObject  setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt:rescaleIntercept]] forName:@"RescaleIntercept"];
-	}
-            
-    //rescale Slope
-	if ([_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"RescaleSlope" ]] != nil) 
-		rescaleSlope = [[[_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"RescaleSlope" ]] value] floatValue];
-        
-	else  {
-	
-		if (rescaleIntercept > -2048)
-			rescaleSlope = 1.0;
-		else if (_max - _min > pow(2, pixelDepth))
-			rescaleSlope = (_max - _min) / pow(2, pixelDepth);
-				
-		rescaleSlope = 1.0;	
-		[_dcmObject  setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithFloat:rescaleSlope]] forName:@"RescaleSlope"];
-	}
-		
-	if (DCMDEBUG) {
-		NSLog(@"rescales Intercept: %d slope: %f", rescaleIntercept, rescaleSlope);
-		NSLog(@"max: %d min %d", _max, _min);
-	}
-	if ((rescaleIntercept != 0) || (rescaleSlope != 1)) {
-		int i;
-		signed short *pixelData = (signed short *)[data bytes]; 
-		for (i= 0; i<halfLength; i++)
-		{
-			pixelData[i] =  (pixelData[i]  - rescaleIntercept) / rescaleSlope;
-		}
-	}
-}
+//- (void)encodeRescaleScalar:(NSMutableData *)data withPixelDepth:(int)pixelDepth;{
+//
+//	short rescaleIntercept = 0;
+//    float rescaleSlope = 1.0;
+//	int length = [data length];
+//	int halfLength = length/2;
+//	if ([_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"RescaleIntercept" ]] != nil &&
+//			[[[_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"RescaleIntercept" ]] value] intValue] < 0)
+//		rescaleIntercept = ([[[_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"RescaleIntercept" ]] value] intValue]);
+//	else {
+//		switch (_pixelDepth) {
+//			case 8:
+//				rescaleIntercept = -127;
+//				break;
+//			case 9:
+//				rescaleIntercept = -255;
+//				break;
+//			case 10:
+//				rescaleIntercept = -511;
+//				break;
+//			case 11:
+//				rescaleIntercept = -1023;
+//				break;
+//			case 12:
+//				rescaleIntercept = -2047;
+//				break;
+//			case 13:
+//				//rescaleIntercept = 4095;
+//				//break;
+//			case 14:
+//				//rescaleIntercept = 8191;
+//				//break;
+//			case 15:
+//				//rescaleIntercept = 16383;
+//				//break;
+//			case 16:
+//				//rescaleIntercept = 32767;
+//				[self findMinAndMax:data];
+//				if (_min < 0)
+//					rescaleIntercept = _min;
+//				break;
+//			default: rescaleIntercept = -2047;
+//		}	
+//
+//	[_dcmObject  setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt:rescaleIntercept]] forName:@"RescaleIntercept"];
+//	}
+//            
+//    //rescale Slope
+//	if ([_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"RescaleSlope" ]] != nil) 
+//		rescaleSlope = [[[_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"RescaleSlope" ]] value] floatValue];
+//        
+//	else  {
+//	
+//		if (rescaleIntercept > -2048)
+//			rescaleSlope = 1.0;
+//		else if (_max - _min > pow(2, pixelDepth))
+//			rescaleSlope = (_max - _min) / pow(2, pixelDepth);
+//				
+//		rescaleSlope = 1.0;	
+//		[_dcmObject  setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithFloat:rescaleSlope]] forName:@"RescaleSlope"];
+//	}
+//		
+//	if (DCMDEBUG) {
+//		NSLog(@"rescales Intercept: %d slope: %f", rescaleIntercept, rescaleSlope);
+//		NSLog(@"max: %d min %d", _max, _min);
+//	}
+//	if ((rescaleIntercept != 0) || (rescaleSlope != 1)) {
+//		int i;
+//		signed short *pixelData = (signed short *)[data bytes]; 
+//		for (i= 0; i<halfLength; i++)
+//		{
+//			pixelData[i] =  (pixelData[i]  - rescaleIntercept) / rescaleSlope;
+//		}
+//	}
+//}
 
 
 -(void)createOffsetTable{
