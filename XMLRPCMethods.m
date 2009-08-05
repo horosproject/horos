@@ -871,6 +871,7 @@ static NSTimeInterval lastConnection = 0;
 				
 				NSLog( @"**** unable to understand this xml-rpc message: %@", selName);
 				NSLog( @"%@", doc);
+				NSLog( @"************************************************************");
 				
 				return;
 			}
@@ -886,12 +887,15 @@ static NSTimeInterval lastConnection = 0;
 				return;
 			}
 		}
+		NSLog( @"**** Bad Request : methodName?");
 		
         CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 400, NULL, (CFStringRef) vers); // Bad Request
         [mess setResponse:response];
         CFRelease(response);
         return;
     }
+
+	NSLog( @"**** Bad Request: we accept only http POST");
 
     CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 405, NULL, (CFStringRef) vers); // Method Not Allowed
     [mess setResponse:response];
