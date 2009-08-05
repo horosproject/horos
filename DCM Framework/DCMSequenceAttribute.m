@@ -126,6 +126,15 @@
 		return YES;
 	}
 	
+	// We only support PixelData at the root level
+	for( NSDictionary *object in sequenceItems)
+	{
+		DCMObject *o = [object objectForKey:@"item"];
+		
+		if( [[o attributes] objectForKey: [[DCMAttributeTag tagWithName:@"PixelData"] stringValue]])
+			return YES;
+	}
+	
 	DCMDataContainer *dummyContainer = [DCMDataContainer dataContainer];
 	
 	for( NSDictionary *object in sequenceItems)
@@ -137,10 +146,7 @@
 		
 		DCMDataContainer *c = [DCMDataContainer dataContainer];
 		
-		// We dont support PixelData in a SQ
-		[[o attributes] removeObjectForKey: [[DCMAttributeTag tagWithName:@"PixelData"] stringValue]];
-		
-		[o writeToDataContainer: c withTransferSyntax: ts AET: @"OSIRIX" asDICOM3: NO implicitForPixelData: YES];
+		[o writeToDataContainer: c withTransferSyntax: ts AET: @"OSIRIX" asDICOM3: NO];
 		
 		long l = [[c dicomData] length];
 		[dummyContainer addUnsignedLong:( l)];
