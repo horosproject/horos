@@ -870,6 +870,7 @@ static NSTimeInterval lastConnection = 0;
 				CFRelease(response);
 				
 				NSLog( @"**** unable to understand this xml-rpc message: %@", selName);
+				NSLog( @"%@", doc);
 				
 				return;
 			}
