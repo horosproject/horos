@@ -7336,7 +7336,7 @@ static ViewerController *draggedController = nil;
 - (IBAction) subSharpen:(id) sender
 {
 	if ([sender tag] == 30) [subCtrlSharpenButton  setState: ![subCtrlSharpenButton state]];
-	if ([subCtrlSharpenButton state] == NSOnState)	[self ApplyConvString:@"5x5 sharpen"];
+	if ([subCtrlSharpenButton state] == NSOnState)	[self ApplyConvString:@"Sharpen 5x5"];
 	else								[self ApplyConvString:NSLocalizedString(@"No Filter", nil)];
 }
 
