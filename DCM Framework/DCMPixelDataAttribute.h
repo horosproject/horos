@@ -101,7 +101,7 @@ enum photometricmode{DCM_UNKNOWN_PHOTOMETRIC, DCM_MONOCHROME1,  DCM_MONOCHROME2,
 - (void)createFrames;
 - (void)setLossyImageCompressionRatio:(NSMutableData *)data;
 - (void)findMinAndMax:(NSMutableData *)data;
-- (void)decodeRescale;
+//- (void)decodeRescale;
 //RGB data will be interleaved after being converted from Palette or YBR.
 - (void)convertToRGBColorspace;
 - (NSData *)convertDataToRGBColorSpace:(NSData *)data;

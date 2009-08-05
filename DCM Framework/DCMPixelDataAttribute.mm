@@ -1980,9 +1980,9 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 
 
 
-- (void)decodeRescale
-{
-}
+//- (void)decodeRescale
+//{
+//}
 
 //- (void)encodeRescale:(NSMutableData *)data WithRescaleIntercept:(int)offset{
 //	int length = [data length];
