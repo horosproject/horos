@@ -53,7 +53,6 @@ void* sopInstanceUIDEncode( NSString *sopuid);
 + (NSString*) completePathForLocalPath:(NSString*) path directory:(NSString*) directory;
 - (NSString*) SRFilenameForFrame: (int) frameNo;
 - (NSString*) SRPathForFrame: (int) frameNo;
-- (NSArray*) SRFilenames;
 - (NSArray*) SRPaths;
 - (NSString	*)sopInstanceUID;
 @end

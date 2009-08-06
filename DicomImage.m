@@ -162,18 +162,6 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 	return roiFiles;
 }
 
-- (NSArray*) SRFilenames
-{
-	NSMutableArray	*roiFiles = [NSMutableArray array];
-	int	x;
-	
-	NSString	*roiPath = [self SRFilenameForFrame: [[self valueForKey: @"frameID"] intValue]];
-	
-	if( [[NSFileManager defaultManager] fileExistsAtPath: roiPath])
-		[roiFiles addObject: roiPath];
-	
-	return roiFiles;
-}
 
 - (NSString*) SRFilenameForFrame: (int) frameNo
 {
