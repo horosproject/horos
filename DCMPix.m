@@ -3187,35 +3187,43 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 					fImage = malloc(width*height*sizeof(float));
 					long i;
 					
-					if( im)
+					if( fImage)
 					{
-						if( xDim != width)
+						if( im)
 						{
-							//	NSLog(@"Allocate a new fImage");
-							for( i =0; i < height; i++)
+							if( xDim != width)
 							{
-								memcpy( fImage + i*width, im + i*xDim, width*sizeof(float));
+								//	NSLog(@"Allocate a new fImage");
+								for( i =0; i < height; i++)
+								{
+									memcpy( fImage + i*width, im + i*xDim, width*sizeof(float));
+								}
 							}
+							else memcpy( fImage, im, width*height*sizeof(float));
 						}
-						else memcpy( fImage, im, width*height*sizeof(float));
 					}
+					else NSLog( @"*** Not enough memory - malloc failed");
 					break;
 					
 					case 8:		// RGBA -> argb
 					fImage = malloc(width*height*4);
 					
-					if( im)
+					if( fImage)
 					{
-						unsigned char *src = (unsigned char*) im, *dst = (unsigned char*) fImage;
-						
-						for( i =0; i < height*width*4; i+= 4)
+						if( im)
 						{
-							dst[ i] = src[ i+3];
-							dst[ i+1] = src[ i];
-							dst[ i+2] = src[ i+1];
-							dst[ i+3] = src[ i+2];
+							unsigned char *src = (unsigned char*) im, *dst = (unsigned char*) fImage;
+							
+							for( i =0; i < height*width*4; i+= 4)
+							{
+								dst[ i] = src[ i+3];
+								dst[ i+1] = src[ i];
+								dst[ i+2] = src[ i+1];
+								dst[ i+3] = src[ i+2];
+							}
 						}
 					}
+					else NSLog( @"*** Not enough memory - malloc failed");
 					
 					isRGB = YES;
 					break;
@@ -3622,7 +3630,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		
 		dstf.data = fImage;
 		
-		vImageConvert_16SToF( &src16, &dstf, 0, 1, 0);
+		if( dstf.data)
+			vImageConvert_16SToF( &src16, &dstf, 0, 1, 0);
+		else NSLog( @"*** Not enough memory - malloc failed");
 		
 		free(oImage);
 		oImage = nil;
@@ -3928,17 +3938,21 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 			
 			dstf.data = fImage;
 			
-			switch( dataType)
+			if( dstf.data)
 			{
-				case TIFF_SSHORT:
-				case TIFF_SLONG:
-					vImageConvert_16SToF( &src16, &dstf, 0, 1, 0);
-					break;
-					
-				default:
-					vImageConvert_16UToF( &src16, &dstf, 0, 1, 0);
-					break;
+				switch( dataType)
+				{
+					case TIFF_SSHORT:
+					case TIFF_SLONG:
+						vImageConvert_16SToF( &src16, &dstf, 0, 1, 0);
+						break;
+						
+					default:
+						vImageConvert_16UToF( &src16, &dstf, 0, 1, 0);
+						break;
+				}
 			}
+			else NSLog( @"*** Not enough memory - malloc failed");
 		}
 		else
 		{
@@ -3951,7 +3965,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 				fImage = malloc(width*height*sizeof(float) + 100);
 			}
 			
-			memcpy( fImage, oImage, width*height*4);
+			if( fImage)
+				memcpy( fImage, oImage, width*height*4);
+			else NSLog( @"*** Not enough memory - malloc failed");
 		}
 		
 		free(oImage);
@@ -5945,22 +5961,26 @@ END_CREATE_ROIS:
 					tDestF = fImage = malloc(width*height*sizeof(float) + 100);
 				}
 				
-				if( fIsSigned > 0 )
+				if( tDestF)
 				{
-					int x = height * width;
-					while( x-->0 )
+					if( fIsSigned > 0 )
 					{
-						*tDestF++ = ((float) (*sint++)) * slope + offset;
+						int x = height * width;
+						while( x-->0 )
+						{
+							*tDestF++ = ((float) (*sint++)) * slope + offset;
+						}
+					}
+					else
+					{
+						int x = height * width;
+						while( x-->0 )
+						{
+							*tDestF++ = ((float) (*usint++)) * slope + offset;
+						}
 					}
 				}
-				else
-				{
-					int x = height * width;
-					while( x-->0 )
-					{
-						*tDestF++ = ((float) (*usint++)) * slope + offset;
-					}
-				}
+				else NSLog( @"*** Not enough memory - malloc failed");
 				
 				free(oImage);
 				oImage = nil;
@@ -5986,21 +6006,25 @@ END_CREATE_ROIS:
 				
 				dstf.data = fImage;
 				
-				if( fIsSigned > 0 )
+				if( dstf.data)
 				{
-					vImageConvert_16SToF( &src16, &dstf, offset, slope, 0);
-				}
-				else
-				{
+					if( fIsSigned > 0 )
+					{
+						vImageConvert_16SToF( &src16, &dstf, offset, slope, 0);
+					}
+					else
+					{
+						
+						vImageConvert_16UToF( &src16, &dstf, offset, slope, 0);
+					}
 					
-					vImageConvert_16UToF( &src16, &dstf, offset, slope, 0);
+					if( inverseVal )
+					{
+						float neg = -1;
+						vDSP_vsmul( fImage, 1, &neg, fImage, 1, height * width);
+					}
 				}
-				
-				if( inverseVal )
-				{
-					float neg = -1;
-					vDSP_vsmul( fImage, 1, &neg, fImage, 1, height * width);
-				}
+				else NSLog( @"*** Not enough memory - malloc failed");
 				
 				free(oImage);
 				oImage = nil;
@@ -8154,22 +8178,26 @@ END_CREATE_ROIS:
 							tDestF = fImage = malloc(width*height*sizeof(float) + 100);
 						}
 						
-						if( fIsSigned)
+						if( tDestF)
 						{
-							int x = height * width;
-							while( x-->0)
+							if( fIsSigned)
 							{
-								*tDestF++ = ((float) (*sint++)) * slope + offset;
+								int x = height * width;
+								while( x-->0)
+								{
+									*tDestF++ = ((float) (*sint++)) * slope + offset;
+								}
+							}
+							else
+							{
+								int x = height * width;
+								while( x-->0)
+								{
+									*tDestF++ = ((float) (*usint++)) * slope + offset;
+								}
 							}
 						}
-						else
-						{
-							int x = height * width;
-							while( x-->0)
-							{
-								*tDestF++ = ((float) (*usint++)) * slope + offset;
-							}
-						}
+						else NSLog( @"*** Not enough memory - malloc failed");
 						
 						free(oImage);
 						oImage = nil;
@@ -8206,16 +8234,20 @@ END_CREATE_ROIS:
 							
 							dstf.data = fImage;
 							
-							if( fIsSigned)
-								vImageConvert_16SToF( &src16, &dstf, offset, slope, 0);
-							else
-								vImageConvert_16UToF( &src16, &dstf, offset, slope, 0);
-							
-							if( inverseVal)
+							if( dstf.data)
 							{
-								float neg = -1;
-								vDSP_vsmul( fImage, 1, &neg, fImage, 1, height * width);
+								if( fIsSigned)
+									vImageConvert_16SToF( &src16, &dstf, offset, slope, 0);
+								else
+									vImageConvert_16UToF( &src16, &dstf, offset, slope, 0);
+								
+								if( inverseVal)
+								{
+									float neg = -1;
+									vDSP_vsmul( fImage, 1, &neg, fImage, 1, height * width);
+								}
 							}
+							else NSLog( @"*** Not enough memory - malloc failed");
 							
 							free(oImage);
 						}
@@ -8766,8 +8798,12 @@ END_CREATE_ROIS:
 								if( [fileData length] < realheight * realwidth * sizeof(float))
 									NSLog( @"****** [fileData length] < realheight * realwidth * sizeof(float)");
 								
-								for( i = 0; i < height;i++)
-									memcpy( fImage + i * width, [fileData bytes]+ frameNo * (realheight * realwidth)*sizeof(float) + i*realwidth*sizeof(float), width * sizeof(float));
+								if( fImage)
+								{
+									for( i = 0; i < height;i++)
+										memcpy( fImage + i * width, [fileData bytes]+ frameNo * (realheight * realwidth)*sizeof(float) + i*realwidth*sizeof(float), width * sizeof(float));
+								}
+								else NSLog( @"*** Not enough memory - malloc failed");
 								
 								free(oImage);
 								oImage = nil;
@@ -8814,7 +8850,11 @@ END_CREATE_ROIS:
 							
 							dstf.data = fImage;
 							
-							vImageConvert_16SToF( &src16, &dstf, 0, 1, 0);
+							if( dstf.data)
+							{
+								vImageConvert_16SToF( &src16, &dstf, 0, 1, 0);
+							}
+							else NSLog( @"*** Not enough memory - malloc failed");
 							
 							free(oImage);
 							oImage = nil;
@@ -9131,10 +9171,14 @@ END_CREATE_ROIS:
 											fImage = malloc(width*height*sizeof(float) + 100);
 										}
 										
-										for( i = 0; i < height;i++)
+										if( fImage)
 										{
-											memcpy( fImage + i * width, [fileData bytes]+ frameNo * (realheight * realwidth)*sizeof(float) + i*realwidth*sizeof(float), width*sizeof(float));
+											for( i = 0; i < height;i++)
+											{
+												memcpy( fImage + i * width, [fileData bytes]+ frameNo * (realheight * realwidth)*sizeof(float) + i*realwidth*sizeof(float), width*sizeof(float));
+											}
 										}
+										else NSLog( @"*** Not enough memory - malloc failed");
 										
 										free(oImage);
 										oImage = nil;
@@ -9182,7 +9226,9 @@ END_CREATE_ROIS:
 									
 									dstf.data = fImage;
 									
-									vImageConvert_16SToF( &src16, &dstf, 0, 1, 0);
+									if( dstf.data)
+										vImageConvert_16SToF( &src16, &dstf, 0, 1, 0);
+									else NSLog( @"*** Not enough memory - malloc failed");
 									
 									free(oImage);
 									oImage = nil;

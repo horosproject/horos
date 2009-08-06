@@ -152,15 +152,12 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 - (NSArray*) SRPaths
 {
 	NSMutableArray	*roiFiles = [NSMutableArray array];
-	int	noOfFrames = [[self valueForKey: @"numberOfFrames"] intValue], x;
+	int	x;
 	
-	for( x = 0; x < noOfFrames; x++)
-	{
-		NSString	*roiPath = [self SRPathForFrame: x];
-		
-		if( [[NSFileManager defaultManager] fileExistsAtPath: roiPath])
-			[roiFiles addObject: roiPath];
-	}
+	NSString	*roiPath = [self SRPathForFrame: [[self valueForKey: @"frameID"] intValue]];
+	
+	if( [[NSFileManager defaultManager] fileExistsAtPath: roiPath])
+		[roiFiles addObject: roiPath];
 	
 	return roiFiles;
 }
@@ -168,15 +165,12 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 - (NSArray*) SRFilenames
 {
 	NSMutableArray	*roiFiles = [NSMutableArray array];
-	int	noOfFrames = [[self valueForKey: @"numberOfFrames"] intValue], x;
+	int	x;
 	
-	for( x = 0; x < noOfFrames; x++)
-	{
-		NSString	*roiPath = [self SRFilenameForFrame: x];
-		
-		if( [[NSFileManager defaultManager] fileExistsAtPath: roiPath])
-			[roiFiles addObject: roiPath];
-	}
+	NSString	*roiPath = [self SRFilenameForFrame: [[self valueForKey: @"frameID"] intValue]];
+	
+	if( [[NSFileManager defaultManager] fileExistsAtPath: roiPath])
+		[roiFiles addObject: roiPath];
 	
 	return roiFiles;
 }

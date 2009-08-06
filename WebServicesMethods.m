@@ -254,58 +254,59 @@ extern NSThread					*mainThread;
 					
 		for (DicomImage *im in dicomImageArray)
 		{
-			for (int x = 0; x < [[im valueForKey:@"numberOfFrames"] intValue]; x++)
+			NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+			
+			DCMPix* dcmPix = [[DCMPix alloc] myinit:[im valueForKey:@"completePathResolved"] :0 :1 :nil :[[im valueForKey:@"frameID"] intValue] :[[im valueForKeyPath:@"series.id"] intValue] isBonjour:NO imageObj:im];
+		  
+			if(dcmPix)
 			{
-				DCMPix* dcmPix = [[DCMPix alloc] myinit:[im valueForKey:@"completePathResolved"] :0 :1 :nil :x :[[im valueForKeyPath:@"series.id"] intValue] isBonjour:NO imageObj:im];
-			  
-				if(dcmPix)
-				{
-					float curWW = 0;
-					float curWL = 0;
-					
-					if([[im valueForKey:@"series"] valueForKey:@"windowWidth"])
-					{
-						curWW = [[[im valueForKey:@"series"] valueForKey:@"windowWidth"] floatValue];
-						curWL = [[[im valueForKey:@"series"] valueForKey:@"windowLevel"] floatValue];
-					}
-					
-					if(curWW!=0 && curWW!=curWL)
-						[dcmPix checkImageAvailble:curWW :curWL];
-					else
-						[dcmPix checkImageAvailble:[dcmPix savedWW] :[dcmPix savedWL]];
-					
-					NSImage *im = [dcmPix image];
-					
-					int width = [dcmPix pwidth];
-					int height = [dcmPix pheight];
-					
-					BOOL resize = NO;
-		
-					if(width>maxWidth)
-					{
-						height = height * maxWidth / width;
-						width = maxWidth;
-						resize = YES;
-					}
-					
-					if(height>maxHeight)
-					{
-						width = width * maxHeight / height;
-						height = maxHeight;
-						resize = YES;
-					}
-					
-					NSImage *newImage;
+				float curWW = 0;
+				float curWL = 0;
 				
-					if( resize)
-						newImage = [im imageByScalingProportionallyToSize:NSMakeSize(width, height)];
-					else
-						newImage = im;
-					
-					[imagesArray addObject: newImage];
-					[dcmPix release];
+				if([[im valueForKey:@"series"] valueForKey:@"windowWidth"])
+				{
+					curWW = [[[im valueForKey:@"series"] valueForKey:@"windowWidth"] floatValue];
+					curWL = [[[im valueForKey:@"series"] valueForKey:@"windowLevel"] floatValue];
 				}
+				
+				if(curWW!=0 && curWW!=curWL)
+					[dcmPix checkImageAvailble:curWW :curWL];
+				else
+					[dcmPix checkImageAvailble:[dcmPix savedWW] :[dcmPix savedWL]];
+				
+				NSImage *im = [dcmPix image];
+				
+				int width = [dcmPix pwidth];
+				int height = [dcmPix pheight];
+				
+				BOOL resize = NO;
+	
+				if(width>maxWidth)
+				{
+					height = height * maxWidth / width;
+					width = maxWidth;
+					resize = YES;
+				}
+				
+				if(height>maxHeight)
+				{
+					width = width * maxHeight / height;
+					height = maxHeight;
+					resize = YES;
+				}
+				
+				NSImage *newImage;
+			
+				if( resize)
+					newImage = [im imageByScalingProportionallyToSize:NSMakeSize(width, height)];
+				else
+					newImage = im;
+				
+				[imagesArray addObject: newImage];
+				[dcmPix release];
 			}
+			
+			[pool release];
 		}
 		
 		[context unlock];	// It's important because writeMovie will call performonmainthread !!!
@@ -809,7 +810,7 @@ extern NSThread					*mainThread;
 			NSArray *series = [self seriesForPredicate:browsePredicate];
 			NSArray *imagesArray = [[[series lastObject] valueForKey:@"images"] allObjects];
 			
-			if([imagesArray count] == 1 && [[[imagesArray lastObject] valueForKey: @"numberOfFrames"] intValue] <= 1)
+			if([imagesArray count] == 1)
 			{
 				[templateString replaceOccurrencesOfString:@"<!--[if !IE]>-->" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 				[templateString replaceOccurrencesOfString:@"<!--<![endif]-->" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
@@ -894,7 +895,7 @@ extern NSThread					*mainThread;
 				NSMutableArray *imagesArray = [NSMutableArray array];
 				NSArray *dicomImageArray = [[[series lastObject] valueForKey:@"images"] allObjects];
 				DicomImage *im;
-				if([dicomImageArray count] == 1 && [[[dicomImageArray lastObject] valueForKey: @"numberOfFrames"] intValue] <= 1)
+				if([dicomImageArray count] == 1)
 				{
 					im = [dicomImageArray lastObject];
 				}
@@ -995,7 +996,7 @@ extern NSThread					*mainThread;
 					NSLog( [e description]);
 				}
 				
-				if([dicomImageArray count] > 1 || [[[dicomImageArray lastObject] valueForKey: @"numberOfFrames"] intValue] > 1)
+				if([dicomImageArray count] > 1)
 				{
 					NSString *path = @"/tmp/osirixwebservices";
 					[[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
@@ -1402,8 +1403,8 @@ extern NSThread					*mainThread;
 		int nbFiles = [[series valueForKey:@"noFiles"] intValue];
 		if( nbFiles <= 1)
 		{
-			nbFiles = [[[[series valueForKey: @"images"] anyObject] valueForKey: @"numberOfFrames"] intValue];
-			if( nbFiles == 0) nbFiles = 1;
+			if( nbFiles == 0)
+				nbFiles = 1;
 		}
 		NSString *imagesLabel = (nbFiles>1)? NSLocalizedString(@"Images", @"") : NSLocalizedString(@"Image", @"");
 		[tempHTML replaceOccurrencesOfString:@"%SeriesImageNumber%" withString:[NSString stringWithFormat:@"%d %@", nbFiles, imagesLabel] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
