@@ -285,6 +285,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 + (void) replaceNotAdmitted:(NSMutableString*) name;
 + (NSArray*) statesArray;
 + (void) updateActivity;
++ (BOOL) isHardDiskFull;
 + (NSData*) produceJPEGThumbnail:(NSImage*) image;
 + (int) DefaultFolderSizeForDB;
 + (void) computeDATABASEINDEXforDatabase:(NSString*) path;

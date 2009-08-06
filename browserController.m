@@ -3976,6 +3976,25 @@ static NSArray*	statesArray = nil;
 	[self autoCleanDatabaseFreeSpace: 0L];
 }
 
++ (BOOL) isHardDiskFull
+{
+	NSDictionary *fsattrs = [[NSFileManager defaultManager] fileSystemAttributesAtPath: [[BrowserController currentBrowser] localDocumentsDirectory]];
+			
+	unsigned long long free = [[fsattrs objectForKey:NSFileSystemFreeSize] unsignedLongLongValue];
+	
+	free /= 1024;
+	free /= 1024;
+	
+	// 300 MB
+	if( free < 300)
+	{
+		NSLog( @"******* HARD DISK is FULL: we will not accept DICOM network communications, we will delete all incoming files !");
+		return YES;
+	}
+	else
+		return NO;
+}
+
 - (void) autoCleanDatabaseFreeSpace: (id)sender
 {
 	NSUserDefaults	*defaults = [NSUserDefaults standardUserDefaults];
@@ -3990,7 +4009,7 @@ static NSArray*	statesArray = nil;
 		}
 		else
 		{
-			NSDictionary	*fsattrs = [[NSFileManager defaultManager] fileSystemAttributesAtPath: currentDatabasePath];
+			NSDictionary *fsattrs = [[NSFileManager defaultManager] fileSystemAttributesAtPath: currentDatabasePath];
 			
 			unsigned long long free = [[fsattrs objectForKey:NSFileSystemFreeSize] unsignedLongLongValue];
 			
@@ -13974,6 +13993,15 @@ static volatile int numberOfThreadsForJPEG = 0;
 	{
 		NSLog(@"checkIncoming locked...");
 		newFilesInIncoming = YES;
+	}
+	
+	// HARD DISK CHECK
+	if( [BrowserController isHardDiskFull])
+	{
+		// Kill the incoming directory
+		[[NSFileManager defaultManager] removeItemAtPath: [[self localDocumentsDirectory] stringByAppendingPathComponent: INCOMINGPATH] error: nil];
+		
+		[appController growlTitle: NSLocalizedString( @"WARNING", nil) description: NSLocalizedString(@"Hard Disk is Full ! Cannot accept more files.", nil) name:@"newfiles"];
 	}
 	
 	[self setDockIcon];

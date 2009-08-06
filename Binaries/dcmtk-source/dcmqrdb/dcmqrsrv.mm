@@ -1179,8 +1179,7 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
     if (! go_cleanup)
     {
         /* Implementation Class UID */
-        if (options_.rejectWhenNoImplementationClassUID_ &&
-        strlen(assoc->params->theirImplementationClassUID) == 0)
+        if (options_.rejectWhenNoImplementationClassUID_ && strlen(assoc->params->theirImplementationClassUID) == 0)
         {
             /* reject: no implementation Class UID provided */
             if (options_.verbose_)
@@ -1191,7 +1190,21 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
             go_cleanup = OFTrue;
         }
     }
-
+	
+	if(! go_cleanup)
+	{
+		if( [BrowserController isHardDiskFull])
+		{
+			/* reject: no enough memory on the hard disk */
+            if (options_.verbose_)
+            {
+                DcmQueryRetrieveOptions::errmsg("No enough memory on the hard disk");
+            }
+            cond = refuseAssociation(&assoc, CTN_NoReason);
+            go_cleanup = OFTrue;
+		}
+	}
+	
 	/* Does peer AE have access to required service ?? */
 	/*
     if (! go_cleanup)
