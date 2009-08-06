@@ -12,9 +12,6 @@
      PURPOSE.
 =========================================================================*/
 
-// 7/5/2005  Changed startReadingDataSet to check for group > 0x0002 instead of checking for length of metaheader. in case metaheader length is wrong. LP
-// 7/7/2005  Changed testing of explicit TS to after checking  if reading dataset. LP.
-
 #import "DCMObject.h"
 #import "DCM.h"
 #import "DCMAbstractSyntaxUID.h"
@@ -33,7 +30,7 @@ static unsigned int globallyUnique = 100000;
 @synthesize pixelDataIsDecoded = _decodePixelData;
 @synthesize transferSyntax;
 @synthesize specificCharacterSet;
-@synthesize attributes;
+@synthesize attributes, isSequence;
 
 + (BOOL)isDICOM:(NSData *)data{
 	//int position = 128;
@@ -746,6 +743,7 @@ PixelRepresentation
 				if (DCMDEBUG)
 					NSLog(@"New Item");
 				DCMObject *object = [[[[self class] alloc] initWithDataContainer:dicomData lengthToRead:vl byteOffset:byteOffset characterSet:specificCharacterSet decodingPixelData:NO] autorelease];
+				object.isSequence = YES;
 				[(DCMSequenceAttribute *)attr  addItem:object offset:itemStartOffset];
 				if (DCMDEBUG)
 					NSLog(@"end New Item");
@@ -1416,7 +1414,8 @@ PixelRepresentation
 	DCMPixelDataAttribute *pixelDataAttr = (DCMPixelDataAttribute *)[attributes objectForKey:[pixelData stringValue]];
 	
 	//if we have the attr and the conversion failed stop
-	if (pixelDataAttr && ![pixelDataAttr convertToTransferSyntax: transferSyntax quality:DCMLosslessQuality])
+//	if(ipd == NO && pixelDataAttr && ![pixelDataAttr convertToTransferSyntax: transferSyntax quality:DCMLosslessQuality])
+	if( pixelDataAttr && ![pixelDataAttr convertToTransferSyntax: transferSyntax quality:DCMLosslessQuality])
 	{
 		NSLog(@"Could not convert pixel Data to %@", transferSyntax.description);
 		return NO;
@@ -1448,6 +1447,10 @@ PixelRepresentation
 			else
 			{
 				[container setUseMetaheaderTS: NO];
+				
+//				if( ipd && attr.group == 0x7FE0 && attr.element == 0x0010)
+//					[attr writeToDataContainer:container withTransferSyntax: explicitTS];
+//				else
 				if (![attr writeToDataContainer:container withTransferSyntax: ts])
 				{
 					exception = [NSException exceptionWithName:@"DCMWriteDataError" reason:[NSString stringWithFormat:@"Cannot write %@ to data with syntax:%@", [attr description], [ts transferSyntax]] userInfo:nil];

@@ -40,10 +40,11 @@
 + (id)dataContainerWithContentsOfURL:(NSURL *)aURL;
 + (id)dataContainerWithData:(NSData *)aData;
 + (id)dataContainerWithData:(NSData *)aData transferSyntax:(DCMTransferSyntax *)syntax;
-
++ (id)dataContainerWithMutableData:(NSMutableData *)aData transferSyntax:(DCMTransferSyntax *)syntax;
 
 - (id)initWithData:(NSData *)data;
 - (id)initWithData:(NSData *)data transferSyntax:(DCMTransferSyntax *)syntax;
+- (id)initWithMutableData:(NSMutableData *)data transferSyntax:(DCMTransferSyntax *)syntax;
 - (id)initWithContentsOfFile:(NSString *)path;
 - (id)initWithContentsOfURL:(NSURL *)aURL;
 - (id)initWithBytes:(const void *)bytes length:(NSUInteger)length;

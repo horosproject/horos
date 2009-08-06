@@ -58,6 +58,10 @@
 	return [[[DCMDataContainer alloc] initWithData:aData transferSyntax:syntax] autorelease];
 }
 
++ (id)dataContainerWithMutableData:(NSMutableData *)aData transferSyntax:(DCMTransferSyntax *)syntax{
+	//NSLog(@"Data Length: %d", [aData length]);
+	return [[[DCMDataContainer alloc] initWithData:aData transferSyntax:syntax] autorelease];
+}
 
 
 
@@ -85,6 +89,16 @@
 	return self;
 }
 
+- (id)initWithMutableData:(NSMutableData *)data transferSyntax:(DCMTransferSyntax *)syntax{
+	if (self = [super init]) {
+		dicomData = [data retain];
+		transferSyntaxForMetaheader = [syntax retain];
+		transferSyntaxForDataset = [syntax retain];
+		transferSyntaxInUse = [transferSyntaxForDataset retain];
+		_ptr = (unsigned char *)[dicomData bytes];
+	}
+	return self;
+}
 
 - (id)initWithContentsOfFile:(NSString *)path{
 	NSData *aData = [[[NSData alloc] initWithContentsOfFile:path] autorelease];

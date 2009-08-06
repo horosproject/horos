@@ -608,7 +608,8 @@ Note setter is different to not break existing usage. :-( */
 
 
 /** Releases the fImage and sets all values to nil. */
-- (void)revert;
+- (void) revert;
+- (void) revert:(BOOL) reloadAnnotations;
 
 /** finds the min and max pixel values. 
 * Sets the appropriate values for fullWW and fullWL 

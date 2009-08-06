@@ -7606,7 +7606,7 @@ static BOOL withReset = NO;
 										if( p != dcmPix)
 										{
 											[p kill8bitsImage];
-											[p revert];
+											[p revert: NO];
 										}
 									}
 								}
@@ -7647,7 +7647,7 @@ static BOOL withReset = NO;
 										if( p != dcmPix)
 										{
 											[p kill8bitsImage];
-											[p revert];
+											[p revert: NO];
 										}
 									}
 								}
@@ -8360,9 +8360,9 @@ static BOOL withReset = NO;
 			{
 				if( thumbnail == notFoundImage)
 				{
-					[dcmPix revert];	// <- Kill the raw data
+					[dcmPix revert: NO];	// <- Kill the raw data
 					thumbnail = [dcmPix generateThumbnailImageWithWW:0 WL:0];
-					[dcmPix revert];	// <- Kill the raw data
+					[dcmPix revert: NO];	// <- Kill the raw data
 					
 					if( thumbnail == nil || dcmPix.notAbleToLoadImage == YES) thumbnail = notFoundImage;
 					
@@ -10462,7 +10462,7 @@ static BOOL needToRezoom;
 						for( DCMPix *p in previewPix)
 						{
 							[p kill8bitsImage];
-							[p revert];
+							[p revert: NO];
 						}
 					}
 					@catch (NSException *e) {}

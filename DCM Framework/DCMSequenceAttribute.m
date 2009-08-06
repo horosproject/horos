@@ -135,7 +135,7 @@
 			return YES;
 	}
 	
-	DCMDataContainer *dummyContainer = [DCMDataContainer dataContainer];
+	DCMDataContainer *dummyContainer = [DCMDataContainer dataContainerWithMutableData: [NSMutableData data] transferSyntax: ts];
 	
 	for( NSDictionary *object in sequenceItems)
 	{
@@ -144,7 +144,7 @@
 		
 		DCMObject *o = [object objectForKey:@"item"];
 		
-		DCMDataContainer *c = [DCMDataContainer dataContainer];
+		DCMDataContainer *c = [DCMDataContainer dataContainerWithMutableData: [NSMutableData data] transferSyntax: ts];
 		
 		[o writeToDataContainer: c withTransferSyntax: ts AET: @"OSIRIX" asDICOM3: NO];
 		

@@ -38,7 +38,7 @@
 	DCMCharacterSet *specificCharacterSet;
 	DCMTransferSyntax *transferSyntax;
 	BOOL _decodePixelData;
-
+	BOOL isSequence;
 }
 
 @property(readonly) NSMutableDictionary *attributes; /**< Attributes as an NSDictionary */
@@ -48,6 +48,7 @@
 @property(readonly) NSXMLDocument *xmlDocument; /**< The object as an xml document */
 @property(readonly) NSXMLNode *xmlNode; /**< The object as an xml node */
 @property(readonly) NSString *description; /**< Human readable description */
+@property BOOL isSequence;
 
 + (NSString*) globallyUniqueString;
 

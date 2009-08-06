@@ -11530,7 +11530,12 @@ END_CREATE_ROIS:
 	updateToBeApplied = YES;
 }
 
-- (void)revert
+- (void) revert
+{
+	[self revert: YES];
+}
+
+- (void) revert:(BOOL) reloadAnnotations
 {
 	if( fImage == nil ) return;
 	
@@ -11553,7 +11558,8 @@ END_CREATE_ROIS:
 	[units release];							units = nil;
 	[decayCorrection release];					decayCorrection = nil;
 	
-	[self reloadAnnotations];
+	if( reloadAnnotations)
+		[self reloadAnnotations];
 	
 	[self clearCachedDCMFrameworkFiles];
 	[self clearCachedPapyGroups];
