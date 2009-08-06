@@ -1349,6 +1349,8 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 		int width = jas_image_cmptwidth(jasImage, 0);
 		int height = jas_image_cmptheight(jasImage, 0);
 		int depth = jas_image_cmptprec(jasImage, 0);
+		int sign = jas_image_cmptsgnd(jasImage, 0);
+		
 		//int j;
 		//int k = 0;
 		fmtname = jas_image_fmttostr(fmtid);
@@ -1364,69 +1366,69 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 		decompressedLength =  width * height * bitDepth * numcmpts;
 		unsigned char *newPixelData = (unsigned char*) malloc(decompressedLength);
 		
-			for (i=0; i < numcmpts; i++)
-				pixels[ i] = jas_matrix_create( height, width);
+		for (i=0; i < numcmpts; i++)
+			pixels[ i] = jas_matrix_create( height, width);
 			
-			if( numcmpts == 1)
+		if( numcmpts == 1)
+		{
+			if (depth > 8)
 			{
-				if (depth > 8)
-				{
-					jas_image_readcmpt(jasImage, 0, 0, 0, width, height, pixels[0]);
-					
-					unsigned short *px = (unsigned short*) newPixelData;
-					
-					int_fast32_t	*ptr = &(pixels[0])->rows_[0][0];
-					x = width*height;
-					while( x-- > 0) *px++ = *ptr++;			//jas_matrix_getv(pixels[0],x);
-				}
-				else
-				{
-					jas_image_readcmpt(jasImage, 0, 0, 0, width, height, pixels[0]);
-					
-					char *px = (char *) newPixelData;
-					
-					//ICI char * aulieu de 32
-					int_fast32_t	*ptr = &(pixels[0])->rows_[0][0];
-					x = width*height;
-					while( x-- > 0) *px++ =	*ptr++;		//jas_matrix_getv(pixels[0],x);
-				}
+				jas_image_readcmpt(jasImage, 0, 0, 0, width, height, pixels[0]);
+				
+				unsigned short *px = (unsigned short*) newPixelData;
+				
+				int_fast32_t	*ptr = &(pixels[0])->rows_[0][0];
+				x = width*height;
+				while( x-- > 0) *px++ = *ptr++;			//jas_matrix_getv(pixels[0],x);
 			}
 			else
 			{
-				[_dcmObject setAttributeValues:[NSMutableArray arrayWithObject:@"RGB"] forName:@"PhotometricInterpretation"];
-				[_dcmObject setAttributeValues:[NSMutableArray arrayWithObject:@"3"] forName:@"SamplesperPixel"];
-				[_dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt:8]] forName:@"BitsStored"];
-				[_dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt:8]] forName:@"BitsAllocated"];
-				[_dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt:7]] forName:@"HighBit"];
+				jas_image_readcmpt(jasImage, 0, 0, 0, width, height, pixels[0]);
 				
-				_samplesPerPixel = [[[_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"SamplesperPixel"]] value] intValue];
-				
-				for( i = 0 ; i < numcmpts; i++)
-					jas_image_readcmpt(jasImage, i, 0, 0, width, height, pixels[ i]);
-				
-				char *px = (char*) newPixelData;
-				
-				int_fast32_t	*ptr1 = &(pixels[0])->rows_[0][0];
-				int_fast32_t	*ptr2 = &(pixels[1])->rows_[0][0];
-				int_fast32_t	*ptr3 = &(pixels[2])->rows_[0][0];
-				
+				char *px = (char *) newPixelData;
+					
+				//ICI char * aulieu de 32
+				int_fast32_t	*ptr = &(pixels[0])->rows_[0][0];
 				x = width*height;
-				while( x-- > 0)
-				{
-					*px++ =	*ptr1++;
-					*px++ =	*ptr2++;
-					*px++ =	*ptr3++;		//jas_matrix_getv(pixels[0],x);
-				}
+				while( x-- > 0) *px++ =	*ptr++;		//jas_matrix_getv(pixels[0],x);
 			}
+		}
+		else
+		{
+			[_dcmObject setAttributeValues:[NSMutableArray arrayWithObject:@"RGB"] forName:@"PhotometricInterpretation"];
+			[_dcmObject setAttributeValues:[NSMutableArray arrayWithObject:@"3"] forName:@"SamplesperPixel"];
+			[_dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt:8]] forName:@"BitsStored"];
+			[_dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt:8]] forName:@"BitsAllocated"];
+			[_dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt:7]] forName:@"HighBit"];
 			
-			for (i=0; i < numcmpts; i++)
-				jas_matrix_destroy( pixels[ i]);
-		
-		
-			jas_image_destroy(jasImage);
-		//	jas_image_clearfmts();
+			_samplesPerPixel = [[[_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"SamplesperPixel"]] value] intValue];
 			
-			pixelData = [NSMutableData dataWithBytesNoCopy:newPixelData length:decompressedLength freeWhenDone: YES];
+			for( i = 0 ; i < numcmpts; i++)
+				jas_image_readcmpt(jasImage, i, 0, 0, width, height, pixels[ i]);
+			
+			char *px = (char*) newPixelData;
+			
+			int_fast32_t	*ptr1 = &(pixels[0])->rows_[0][0];
+			int_fast32_t	*ptr2 = &(pixels[1])->rows_[0][0];
+			int_fast32_t	*ptr3 = &(pixels[2])->rows_[0][0];
+			
+			x = width*height;
+			while( x-- > 0)
+			{
+				*px++ =	*ptr1++;
+				*px++ =	*ptr2++;
+				*px++ =	*ptr3++;		//jas_matrix_getv(pixels[0],x);
+			}
+		}
+		
+		for (i=0; i < numcmpts; i++)
+			jas_matrix_destroy( pixels[ i]);
+	
+	
+		jas_image_destroy(jasImage);
+	//	jas_image_clearfmts();
+		
+		pixelData = [NSMutableData dataWithBytesNoCopy:newPixelData length:decompressedLength freeWhenDone: YES];
 	}
 	
 	return pixelData;
@@ -1643,6 +1645,8 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 			
 			if( bits < 9) bits = 9;
 			if( bits > 16) bits = 16;
+			
+//			NSLog( @"jp2k : bits: %d min: %d max: %d", bits, _min, _max);
 			
 			if( _min < 0)
 			{
