@@ -3985,7 +3985,7 @@ static NSArray*	statesArray = nil;
 	free /= 1024;
 	free /= 1024;
 	
-	// 300 MB
+	// 300 MB is the extreme lower limit
 	if( free < 300)
 	{
 		NSLog( @"******* HARD DISK is FULL: we will not accept DICOM network communications, we will delete all incoming files !");
