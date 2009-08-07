@@ -16742,9 +16742,16 @@ static volatile int numberOfThreadsForJPEG = 0;
 	}
 
 	NSMutableArray *roisImagesArray = [NSMutableArray array];
-
+	
 	if( [selectedItems count] > 0)
 	{
+		NSArray *rois;
+		
+//		if( [selectedItems count] > [[[[NSFileManager defaultManager] fileAttributesAtPath: [[self documentsDirectory] stringByAppendingPathComponent:@"ROIs"] traverseLink: YES] objectForKey: NSFileReferenceCount] intValue])
+//			rois = [[NSFileManager defaultManager] contentsOfDirectoryAtPath: [[self documentsDirectory] stringByAppendingPathComponent:@"ROIs"] error: nil];
+//		else
+			rois = nil;
+		
 		for( DicomImage *image in selectedItems)
 		{
 			NSString *str = [image SRPathForFrame: 0];
@@ -16755,10 +16762,20 @@ static volatile int numberOfThreadsForJPEG = 0;
 				str = [[imagePath stringByDeletingLastPathComponent] stringByAppendingPathComponent: [str lastPathComponent]];
 			}
 			
-			if( [[NSFileManager defaultManager] fileExistsAtPath: str])
-				[roisImagesArray addObject: image];
-			else if( [[image valueForKey:@"isKeyImage"] boolValue] == YES)
-				[roisImagesArray addObject: image];
+			if( rois)
+			{
+				if( [rois containsObject: str])
+					[roisImagesArray addObject: image];
+				else if( [[image valueForKey:@"isKeyImage"] boolValue] == YES)
+					[roisImagesArray addObject: image];
+			}
+			else
+			{
+				if( [[NSFileManager defaultManager] fileExistsAtPath: str])
+					[roisImagesArray addObject: image];
+				else if( [[image valueForKey:@"isKeyImage"] boolValue] == YES)
+					[roisImagesArray addObject: image];
+			}
 		}
 		
 		if( sameSeries)
@@ -16913,6 +16930,13 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 	if( [selectedItems count] > 0)
 	{
+		NSArray *rois;
+		
+//		if( [selectedItems count] > [[[[NSFileManager defaultManager] fileAttributesAtPath: [[self documentsDirectory] stringByAppendingPathComponent:@"ROIs"] traverseLink: YES] objectForKey: NSFileReferenceCount] intValue])
+//			rois = [[NSFileManager defaultManager] contentsOfDirectoryAtPath: [[self documentsDirectory] stringByAppendingPathComponent:@"ROIs"] error: nil];
+//		else
+			rois = nil;
+		
 		for( DicomImage *image in selectedItems)
 		{
 			NSString	*str = [image SRPathForFrame: 0];
@@ -16923,8 +16947,16 @@ static volatile int numberOfThreadsForJPEG = 0;
 				str = [[imagePath stringByDeletingLastPathComponent] stringByAppendingPathComponent: [str lastPathComponent]];
 			}
 			
-			if( [[NSFileManager defaultManager] fileExistsAtPath: str])
-				[roisImagesArray addObject: image];
+			if( rois)
+			{
+				if( [rois containsObject: str])
+					[roisImagesArray addObject: image];
+			}
+			else
+			{
+				if( [[NSFileManager defaultManager] fileExistsAtPath: str])
+					[roisImagesArray addObject: image];
+			}
 		}
 		
 		if( sameSeries)
