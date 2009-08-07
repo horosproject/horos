@@ -95,6 +95,7 @@ static NSMenu *contextual = nil;
 static NSMenu *contextualRT = nil;  // Alternate menus for RT objects (which often don't have images)
 static int DicomDirScanDepth;
 static int DefaultFolderSizeForDB = 0;
+static NSTimeInterval lastHardDiskCheck = 0;
 
 //extern NSData* compressJPEG2000(int inQuality, unsigned char* inImageBuffP, int inImageHeight, int inImageWidth, int samplesPerPixel);
 //extern NSImage* decompressJPEG2000( unsigned char* inImageBuffP, long theLength);
@@ -3978,12 +3979,16 @@ static NSArray*	statesArray = nil;
 
 + (BOOL) isHardDiskFull
 {
+	if( [NSDate timeIntervalSinceReferenceDate] - lastHardDiskCheck < 30) return NO;
+	
 	NSDictionary *fsattrs = [[NSFileManager defaultManager] fileSystemAttributesAtPath: [[BrowserController currentBrowser] localDocumentsDirectory]];
 			
 	unsigned long long free = [[fsattrs objectForKey:NSFileSystemFreeSize] unsignedLongLongValue];
 	
 	free /= 1024;
 	free /= 1024;
+	
+	lastHardDiskCheck = [NSDate timeIntervalSinceReferenceDate];
 	
 	// 300 MB is the extreme lower limit
 	if( free < 300)
@@ -7734,14 +7739,14 @@ static BOOL withReset = NO;
 
 - (IBAction) matrixPressed: (id)sender
 {
-    id          theCell = [sender selectedCell];
-    int         index;
+    id theCell = [sender selectedCell];
+    int index;
     
 	[self.window makeFirstResponder: oMatrix];
 	
 	if( [theCell tag] >= 0 )
 	{
-		NSManagedObject         *dcmFile = [databaseOutline itemAtRow:[databaseOutline selectedRow]];
+		NSManagedObject *dcmFile = [databaseOutline itemAtRow:[databaseOutline selectedRow]];
 		
 		if( [[dcmFile valueForKey:@"type"] isEqualToString: @"Series"] && [[[dcmFile valueForKey:@"images"] allObjects] count] > 1)
 		{
@@ -7762,7 +7767,7 @@ static BOOL withReset = NO;
 	
     if( [theCell tag] >= 0 )
 	{
-		NSManagedObject         *dcmFile = [databaseOutline itemAtRow:[databaseOutline selectedRow]];
+		NSManagedObject *dcmFile = [databaseOutline itemAtRow:[databaseOutline selectedRow]];
 		
 		if( [[dcmFile valueForKey:@"type"] isEqualToString: @"Study"] == NO )
 		{
