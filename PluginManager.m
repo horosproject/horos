@@ -350,128 +350,135 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
 
 + (void) discoverPlugins
 {
-    NSString	*appSupport = @"Library/Application Support/OsiriX/";
-	NSString	*appPath = [[NSBundle mainBundle] builtInPlugInsPath];
-    NSString	*userPath = [NSHomeDirectory() stringByAppendingPathComponent:appSupport];
-    NSString	*sysPath = [@"/" stringByAppendingPathComponent:appSupport];
-    
-	if ([[NSFileManager defaultManager] fileExistsAtPath:appPath] == NO) [[NSFileManager defaultManager] createDirectoryAtPath:appPath attributes:nil];
-	if ([[NSFileManager defaultManager] fileExistsAtPath:userPath] == NO) [[NSFileManager defaultManager] createDirectoryAtPath:userPath attributes:nil];
-	if ([[NSFileManager defaultManager] fileExistsAtPath:sysPath] == NO) [[NSFileManager defaultManager] createDirectoryAtPath:sysPath attributes:nil];
-	
-    appSupport = [appSupport stringByAppendingPathComponent :@"Plugins/"];
-	
-	userPath = [NSHomeDirectory() stringByAppendingPathComponent:appSupport];
-	sysPath = [@"/" stringByAppendingPathComponent:appSupport];
-	
-	if ([[NSFileManager defaultManager] fileExistsAtPath:userPath] == NO) [[NSFileManager defaultManager] createDirectoryAtPath:userPath attributes:nil];
-	if ([[NSFileManager defaultManager] fileExistsAtPath:sysPath] == NO) [[NSFileManager defaultManager] createDirectoryAtPath:sysPath attributes:nil];
-	
-	NSArray *paths = [NSArray arrayWithObjects:appPath, userPath, sysPath, nil];
-    NSString *path;
-	
-	[plugins release];
-	[pluginsDict release];
-	[fileFormatPlugins release];
-	[preProcessPlugins release];
-	[reportPlugins release];
-	[fusionPlugins release];
-	[fusionPluginsMenu release];
-	[pluginsNames  release];
-	
-    plugins = [[NSMutableDictionary alloc] init];
-	pluginsDict = [[NSMutableDictionary alloc] init];
-	fileFormatPlugins = [[NSMutableDictionary alloc] init];
-	preProcessPlugins = [[NSMutableArray alloc] initWithCapacity:0];
-	reportPlugins = [[NSMutableDictionary alloc] init];
-	pluginsNames = [[NSMutableDictionary alloc] init];
-	fusionPlugins = [[NSMutableArray alloc] initWithCapacity:0];
-	
-	fusionPluginsMenu = [[NSMenu alloc] initWithTitle:@""];
-	[fusionPluginsMenu insertItemWithTitle:NSLocalizedString(@"Select a fusion plug-in", nil) action:nil keyEquivalent:@"" atIndex:0];
-	
-    for ( path in paths )
+	@try
 	{
-		NSEnumerator *e = [[[NSFileManager defaultManager] directoryContentsAtPath:path] objectEnumerator];
-		NSString *name;
+		NSString	*appSupport = @"Library/Application Support/OsiriX/";
+		NSString	*appPath = [[NSBundle mainBundle] builtInPlugInsPath];
+		NSString	*userPath = [NSHomeDirectory() stringByAppendingPathComponent:appSupport];
+		NSString	*sysPath = [@"/" stringByAppendingPathComponent:appSupport];
 		
-		while ( name = [e nextObject] )
+		if ([[NSFileManager defaultManager] fileExistsAtPath:appPath] == NO) [[NSFileManager defaultManager] createDirectoryAtPath:appPath attributes:nil];
+		if ([[NSFileManager defaultManager] fileExistsAtPath:userPath] == NO) [[NSFileManager defaultManager] createDirectoryAtPath:userPath attributes:nil];
+		if ([[NSFileManager defaultManager] fileExistsAtPath:sysPath] == NO) [[NSFileManager defaultManager] createDirectoryAtPath:sysPath attributes:nil];
+		
+		appSupport = [appSupport stringByAppendingPathComponent :@"Plugins/"];
+		
+		userPath = [NSHomeDirectory() stringByAppendingPathComponent:appSupport];
+		sysPath = [@"/" stringByAppendingPathComponent:appSupport];
+		
+		if ([[NSFileManager defaultManager] fileExistsAtPath:userPath] == NO) [[NSFileManager defaultManager] createDirectoryAtPath:userPath attributes:nil];
+		if ([[NSFileManager defaultManager] fileExistsAtPath:sysPath] == NO) [[NSFileManager defaultManager] createDirectoryAtPath:sysPath attributes:nil];
+		
+		NSArray *paths = [NSArray arrayWithObjects:appPath, userPath, sysPath, nil];
+		NSString *path;
+		
+		[plugins release];
+		[pluginsDict release];
+		[fileFormatPlugins release];
+		[preProcessPlugins release];
+		[reportPlugins release];
+		[fusionPlugins release];
+		[fusionPluginsMenu release];
+		[pluginsNames  release];
+		
+		plugins = [[NSMutableDictionary alloc] init];
+		pluginsDict = [[NSMutableDictionary alloc] init];
+		fileFormatPlugins = [[NSMutableDictionary alloc] init];
+		preProcessPlugins = [[NSMutableArray alloc] initWithCapacity:0];
+		reportPlugins = [[NSMutableDictionary alloc] init];
+		pluginsNames = [[NSMutableDictionary alloc] init];
+		fusionPlugins = [[NSMutableArray alloc] initWithCapacity:0];
+		
+		fusionPluginsMenu = [[NSMenu alloc] initWithTitle:@""];
+		[fusionPluginsMenu insertItemWithTitle:NSLocalizedString(@"Select a fusion plug-in", nil) action:nil keyEquivalent:@"" atIndex:0];
+		
+		for ( path in paths )
 		{
-			if ( [[name pathExtension] isEqualToString:@"plugin"] || [[name pathExtension] isEqualToString:@"osirixplugin"])
+			NSEnumerator *e = [[[NSFileManager defaultManager] directoryContentsAtPath:path] objectEnumerator];
+			NSString *name;
+			
+			while ( name = [e nextObject] )
 			{
-				if( [pluginsNames valueForKey: [[name lastPathComponent] stringByDeletingPathExtension]])
+				if ( [[name pathExtension] isEqualToString:@"plugin"] || [[name pathExtension] isEqualToString:@"osirixplugin"])
 				{
-					NSLog( @"***** Multiple plugins: %@", [name lastPathComponent]);
-					NSRunAlertPanel( NSLocalizedString(@"Plugins", nil),  NSLocalizedString(@"Warning! Multiple instances of the same plugin have been found. Only one instance will be loaded. Check the Plugin Manager (Plugins menu) for multiple identical plugins.", nil), nil, nil, nil);
-				}
-				else
-				{
-					[pluginsNames setValue: path forKey: [[name lastPathComponent] stringByDeletingPathExtension]];
-					
-					NSBundle *plugin = [NSBundle bundleWithPath: [PluginManager pathResolved: [path stringByAppendingPathComponent:name]]];
-					
-					if( plugin == nil)
-						NSLog( @"Bundle opening failed for: %@", [path stringByAppendingPathComponent:name]);
+					if( [pluginsNames valueForKey: [[name lastPathComponent] stringByDeletingPathExtension]])
+					{
+						NSLog( @"***** Multiple plugins: %@", [name lastPathComponent]);
+						NSRunAlertPanel( NSLocalizedString(@"Plugins", nil),  NSLocalizedString(@"Warning! Multiple instances of the same plugin have been found. Only one instance will be loaded. Check the Plugin Manager (Plugins menu) for multiple identical plugins.", nil), nil, nil, nil);
+					}
 					else
 					{
-						Class filterClass = [plugin principalClass];
+						[pluginsNames setValue: path forKey: [[name lastPathComponent] stringByDeletingPathExtension]];
 						
-						if( filterClass)
+						NSBundle *plugin = [NSBundle bundleWithPath: [PluginManager pathResolved: [path stringByAppendingPathComponent:name]]];
+						
+						if( plugin == nil)
+							NSLog( @"Bundle opening failed for: %@", [path stringByAppendingPathComponent:name]);
+						else
 						{
-							if ( filterClass == NSClassFromString( @"ARGS" ) ) continue;
+							Class filterClass = [plugin principalClass];
 							
-							if ([[[plugin infoDictionary] objectForKey:@"pluginType"] isEqualToString:@"Pre-Process"]) 
+							if( filterClass)
 							{
-								PluginFilter*	filter = [filterClass filter];
-								[preProcessPlugins addObject: filter];
-							}
-							else if ([[plugin infoDictionary] objectForKey:@"FileFormats"]) 
-							{
-								NSEnumerator *enumerator = [[[plugin infoDictionary] objectForKey:@"FileFormats"] objectEnumerator];
-								NSString *fileFormat;
-								while (fileFormat = [enumerator nextObject])
-								{
-									//we will save the bundle rather than a filter.  Each file decode will require a separate decoder
-									[fileFormatPlugins setObject:plugin forKey:fileFormat];
-								}
-							}
-							else if ( [filterClass instancesRespondToSelector:@selector(filterImage:)] )
-							{
-								NSArray		*menuTitles = [[plugin infoDictionary] objectForKey:@"MenuTitles"];
-								PluginFilter	*filter = [filterClass filter];
+								if ( filterClass == NSClassFromString( @"ARGS" ) ) continue;
 								
-								if( menuTitles)
+								if ([[[plugin infoDictionary] objectForKey:@"pluginType"] isEqualToString:@"Pre-Process"]) 
 								{
-									for( NSString *menuTitle in menuTitles)
+									PluginFilter*	filter = [filterClass filter];
+									[preProcessPlugins addObject: filter];
+								}
+								else if ([[plugin infoDictionary] objectForKey:@"FileFormats"]) 
+								{
+									NSEnumerator *enumerator = [[[plugin infoDictionary] objectForKey:@"FileFormats"] objectEnumerator];
+									NSString *fileFormat;
+									while (fileFormat = [enumerator nextObject])
 									{
-										[plugins setObject:filter forKey:menuTitle];
-										[pluginsDict setObject:plugin forKey:menuTitle];
+										//we will save the bundle rather than a filter.  Each file decode will require a separate decoder
+										[fileFormatPlugins setObject:plugin forKey:fileFormat];
+									}
+								}
+								else if ( [filterClass instancesRespondToSelector:@selector(filterImage:)] )
+								{
+									NSArray		*menuTitles = [[plugin infoDictionary] objectForKey:@"MenuTitles"];
+									PluginFilter	*filter = [filterClass filter];
+									
+									if( menuTitles)
+									{
+										for( NSString *menuTitle in menuTitles)
+										{
+											[plugins setObject:filter forKey:menuTitle];
+											[pluginsDict setObject:plugin forKey:menuTitle];
+										}
+									}
+									
+									NSArray		*toolbarNames = [[plugin infoDictionary] objectForKey:@"ToolbarNames"];
+									
+									if( toolbarNames)
+									{
+										for( NSString *toolbarName in toolbarNames)
+										{
+											[plugins setObject:filter forKey:toolbarName];
+											[pluginsDict setObject:plugin forKey:toolbarName];
+										}
 									}
 								}
 								
-								NSArray		*toolbarNames = [[plugin infoDictionary] objectForKey:@"ToolbarNames"];
-								
-								if( toolbarNames)
+								if ([[[plugin infoDictionary] objectForKey:@"pluginType"] isEqualToString:@"Report"]) 
 								{
-									for( NSString *toolbarName in toolbarNames)
-									{
-										[plugins setObject:filter forKey:toolbarName];
-										[pluginsDict setObject:plugin forKey:toolbarName];
-									}
+									[reportPlugins setObject: plugin forKey:[[plugin infoDictionary] objectForKey:@"CFBundleExecutable"]];
 								}
 							}
-							
-							if ([[[plugin infoDictionary] objectForKey:@"pluginType"] isEqualToString:@"Report"]) 
-							{
-								[reportPlugins setObject: plugin forKey:[[plugin infoDictionary] objectForKey:@"CFBundleExecutable"]];
-							}
+							else NSLog( @"********* principal class not found for: %@ - %@", name, [plugin principalClass]);
 						}
-						else NSLog( @"********* principal class not found for: %@ - %@", name, [plugin principalClass]);
 					}
 				}
 			}
 		}
-    }
+	}
+	@catch (NSException * e)
+	{
+		NSLog( @"discoverPlugins exception pluginmanager: %@", e);
+	}
 }
 
 -(void) noPlugins:(id) sender

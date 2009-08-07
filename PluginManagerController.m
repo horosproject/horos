@@ -162,8 +162,15 @@ static NSDate *CachedPluginsListDate = nil;
 {
 	if( pluginsNeedToReload)
 	{
-		[self refreshPluginList];
-		[self loadPlugins];
+		@try
+		{
+			[self refreshPluginList];
+			[self loadPlugins];
+		}
+		@catch (NSException * e)
+		{
+			NSLog( @"windowwillClose exception pluginmanagercontroller: %@", e);
+		}
 	}
 }
 
