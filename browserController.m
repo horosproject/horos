@@ -8831,18 +8831,20 @@ static BOOL withReset = NO;
 	}
 }
 
-- (void)createContextualMenu
+- (void) createContextualMenu
 {
 	NSMenuItem		*item;
 	
 	NSMenu *albumContextual	= [[[NSMenu alloc] initWithTitle:NSLocalizedString(@"Albums", nil)] autorelease];
 	
 	item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Save Albums", nil)  action:@selector( saveAlbums:) keyEquivalent:@""] autorelease];
+	[item setTarget: self]; // required because the drawner is the first responder
 	[albumContextual addItem:item];
 	
 	[albumContextual addItem: [NSMenuItem separatorItem]];
 	
 	item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Add Albums", nil)  action:@selector( addAlbums:) keyEquivalent:@""] autorelease];
+	[item setTarget: self]; // required because the drawner is the first responder
 	[albumContextual addItem:item];
 	
 	[albumTable setMenu: albumContextual];
