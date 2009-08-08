@@ -1620,8 +1620,10 @@ NS_ENDHANDLER
 			[_logEntry setValue:@"Send" forKey:@"type"];
 			[_logEntry setValue:_calledAET forKey:@"destinationName"];
 			[_logEntry setValue:_callingAET forKey:@"originName"];
+			
 			if (_patientName)
 				[_logEntry setValue:_patientName forKey:@"patientName"];
+			
 			if (_studyDescription)
 				[_logEntry setValue:_studyDescription forKey:@"studyName"];
 		}
@@ -1632,7 +1634,8 @@ NS_ENDHANDLER
 		[_logEntry setValue:[NSDate date] forKey:@"endTime"];
 		[_logEntry setValue:[userInfo valueForKey:@"Message"] forKey:@"message"];
 	}
-	@catch (NSException * e) {
+	@catch (NSException * e)
+	{
 		NSLog( @"updateLogEntry exception");
 		NSLog( [e description]);
 	}
