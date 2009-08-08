@@ -1413,7 +1413,9 @@ NS_DURING
 			[userInfo setObject:@"Complete" forKey:@"Message"];
 		}
 		
-		[self performSelectorOnMainThread:@selector(updateLogEntry:) withObject:userInfo waitUntilDone:NO];
+		[self updateLogEntry: userInfo];
+		
+		[self performSelectorOnMainThread:@selector( sendStatusNotification:) withObject:userInfo waitUntilDone:NO];
     }
 	
     /* tear down association, i.e. terminate network connection to SCP */
@@ -1581,7 +1583,9 @@ NS_ENDHANDLER
 			[[AppController sharedAppController] growlTitle: NSLocalizedString( @"DICOM Send", nil) description: NSLocalizedString(@"Done !", nil) name:@"result"];
 		}
 		
-		[self performSelectorOnMainThread:@selector(updateLogEntry:) withObject:userInfo waitUntilDone:NO];
+		[self updateLogEntry: userInfo];
+		
+		[self performSelectorOnMainThread:@selector( sendStatusNotification:) withObject:userInfo waitUntilDone:NO];
 	}
 
 	[paths release];
@@ -1592,10 +1596,13 @@ NS_ENDHANDLER
 	[localException raise];
 }
 
-- (void)updateLogEntry: (NSMutableDictionary*) userInfo
+- (void) sendStatusNotification:(NSMutableDictionary*) userInfo
 {
 	[[NSNotificationCenter defaultCenter] postNotificationName:OsirixDCMSendStatusNotification object:self userInfo:userInfo];
-	
+}
+
+- (void) updateLogEntry: (NSMutableDictionary*) userInfo
+{
 	if( [[BrowserController currentBrowser] isNetworkLogsActive] == NO) return;
 	
 	NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContextLoadIfNecessary: NO];

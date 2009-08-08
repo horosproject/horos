@@ -4262,7 +4262,7 @@ public:
 	BOOL	addition = NO;
 	float	newVal = 0;
 	
-	if( c == NSDeleteCharacter)
+	if( c == NSDeleteFunctionKey || c == NSDeleteCharacter || c == NSBackspaceCharacter || c == NSDeleteCharFunctionKey)
 	{
 		if( [[NSApp currentEvent] modifierFlags] & NSShiftKeyMask)
 		{
@@ -4468,7 +4468,7 @@ public:
 		
 		dontRenderVolumeRenderingOsiriX = 0;
 	}
-	else if((c == NSDeleteCharacter || c == 27) && currentTool == tMesure)
+	else if((c == 27 || c == NSDeleteFunctionKey || c == NSDeleteCharacter || c == NSBackspaceCharacter || c == NSDeleteCharFunctionKey) && currentTool == tMesure)
 	{
 		vtkPoints *pts = Line2DData->GetPoints();
 		
@@ -4494,7 +4494,7 @@ public:
 		
 		dontRenderVolumeRenderingOsiriX = 0;
 	}
-	else if( (c == NSCarriageReturnCharacter || c == NSEnterCharacter || c == NSDeleteCharacter || c == NSTabCharacter) && currentTool == t3DCut)
+	else if( (c == NSCarriageReturnCharacter || c == NSEnterCharacter || c == NSTabCharacter || c == NSDeleteFunctionKey || c == NSDeleteCharacter || c == NSBackspaceCharacter || c == NSDeleteCharFunctionKey) && currentTool == t3DCut)
 	{
 		vtkPoints		*roiPts = ROI3DData->GetPoints();
 		
@@ -4525,7 +4525,7 @@ public:
 			[waiting release];
 		}
 	}
-	else if((c == NSDeleteFunctionKey || c == NSDeleteCharacter || c == NSBackspaceCharacter) && currentTool == t3Dpoint)
+	else if((c == NSDeleteFunctionKey || c == NSDeleteCharacter || c == NSBackspaceCharacter || c == NSDeleteCharFunctionKey) && currentTool == t3Dpoint)
 	{
 		if([self isAny3DPointSelected])
 		{

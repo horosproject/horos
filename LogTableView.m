@@ -12,18 +12,18 @@
      PURPOSE.
 =========================================================================*/
 
-
-
 #import "LogTableView.h"
-
 
 @implementation LogTableView
 
-- (void)keyDown:(NSEvent *)theEvent{
-	if ([[theEvent characters] characterAtIndex:0] == NSDeleteCharacter)
+- (void)keyDown:(NSEvent *)event
+{
+	unichar c = [[event characters] characterAtIndex:0];
+	
+	if (c == NSDeleteFunctionKey || c == NSDeleteCharacter || c == NSBackspaceCharacter || c == NSDeleteCharFunctionKey)
 		[[self target] remove:self];
 	else
-		[super keyDown:(NSEvent *)theEvent];
+		[super keyDown: event];
 	
 }
 

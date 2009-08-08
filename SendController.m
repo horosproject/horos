@@ -77,6 +77,8 @@ static volatile int sendControllerObjects = 0;
 	{
 		NSLog( @"SendController initWithFiles");
 		
+		sendControllerObjects++;
+		
 		_abort = NO;
 		_files = [files copy];
 		int count = [_files  count];
@@ -100,12 +102,12 @@ static volatile int sendControllerObjects = 0;
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setSendMessage:) name:OsirixDCMSendStatusNotification object:nil];
 		
 		[[NSNotificationCenter defaultCenter] addObserver: self
-												selector: @selector( updateDestinationPopup:)
+												selector: @selector( updateDestinationPopup)
 												name: OsirixServerArrayChangedNotification
 												object: nil];
 		
 		[[NSNotificationCenter defaultCenter] addObserver: self
-												selector: @selector( updateDestinationPopup:)
+												selector: @selector( updateDestinationPopup)
 												name: @"DCMNetServicesDidChange"
 												object: nil];
 	}
@@ -415,6 +417,8 @@ static volatile int sendControllerObjects = 0;
 	[self performSelectorOnMainThread:@selector(closeSendPanel:) withObject:nil waitUntilDone: YES];	
 		
 	[pool release];
+	
+	[NSThread sleepForTimeInterval: 2];
 	
 	//need to unlock to allow release of self after send complete
 	[_lock performSelectorOnMainThread:@selector(unlock) withObject:nil waitUntilDone: NO];

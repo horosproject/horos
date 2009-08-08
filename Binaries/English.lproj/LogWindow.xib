@@ -2,13 +2,13 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="7.02">
 	<data>
 		<int key="IBDocument.SystemTarget">1050</int>
-		<string key="IBDocument.SystemVersion">9E17</string>
+		<string key="IBDocument.SystemVersion">9L30</string>
 		<string key="IBDocument.InterfaceBuilderVersion">670</string>
-		<string key="IBDocument.AppKitVersion">949.33</string>
-		<string key="IBDocument.HIToolboxVersion">352.00</string>
+		<string key="IBDocument.AppKitVersion">949.54</string>
+		<string key="IBDocument.HIToolboxVersion">353.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="87"/>
+			<integer value="80"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -1397,11 +1397,10 @@
 							<int key="NSExpressionType">0</int>
 							<string key="NSConstantValue">Receive</string>
 						</object>
-						<object class="NSSubstringPredicateOperator" key="NSPredicateOperator">
-							<int key="NSOperatorType">8</int>
+						<object class="NSInPredicateOperator" key="NSPredicateOperator">
+							<int key="NSOperatorType">99</int>
 							<int key="NSModifier">0</int>
 							<int key="NSFlags">3</int>
-							<int key="NSPosition">0</int>
 						</object>
 					</object>
 				</object>
@@ -1443,11 +1442,10 @@
 							<int key="NSExpressionType">0</int>
 							<string key="NSConstantValue">Send</string>
 						</object>
-						<object class="NSSubstringPredicateOperator" key="NSPredicateOperator">
-							<int key="NSOperatorType">8</int>
+						<object class="NSInPredicateOperator" key="NSPredicateOperator">
+							<int key="NSOperatorType">99</int>
 							<int key="NSModifier">0</int>
 							<int key="NSFlags">3</int>
-							<int key="NSPosition">0</int>
 						</object>
 					</object>
 				</object>
@@ -1494,11 +1492,10 @@
 							<int key="NSExpressionType">0</int>
 							<string key="NSConstantValue">Move</string>
 						</object>
-						<object class="NSSubstringPredicateOperator" key="NSPredicateOperator">
-							<int key="NSOperatorType">8</int>
+						<object class="NSInPredicateOperator" key="NSPredicateOperator">
+							<int key="NSOperatorType">99</int>
 							<int key="NSModifier">0</int>
 							<int key="NSFlags">3</int>
-							<int key="NSPosition">0</int>
 						</object>
 					</object>
 				</object>
@@ -2068,7 +2065,7 @@
 							<string key="NSKeyPath">arrangedObjects.numberSent</string>
 							<object class="NSDictionary" key="NSOptions">
 								<string key="NS.key.0">NSConditionallySetsEditable</string>
-								<integer value="1" key="NS.object.0"/>
+								<reference key="NS.object.0" ref="9"/>
 							</object>
 							<int key="NSNibBindingConnectorVersion">2</int>
 						</object>
@@ -2974,9 +2971,9 @@
 					<string>QueryLogController</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
-					<string>{{649, 469}, {822, 607}}</string>
+					<string>{{540, 469}, {822, 607}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{649, 469}, {822, 607}}</string>
+					<string>{{540, 469}, {822, 607}}</string>
 					<reference ref="9"/>
 					<string>{{46, 216}, {822, 607}}</string>
 					<reference ref="9"/>
@@ -3111,6 +3108,13 @@
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">KFSplitView.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">ViewerController.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">

@@ -141,7 +141,7 @@
 - (void) keyDown:(NSEvent *)theEvent
 {
 	unichar	c = [[theEvent characters] characterAtIndex:0];
-	if (c == NSDeleteCharacter)
+	if (c == NSDeleteFunctionKey || c == NSDeleteCharacter || c == NSBackspaceCharacter || c == NSDeleteCharFunctionKey)
 	{
 		[stepsArrayController  keyDown:(NSEvent *)theEvent];
 	}

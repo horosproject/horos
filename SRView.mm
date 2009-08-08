@@ -1571,7 +1571,7 @@ typedef struct _xyzArray
 	{
 		[[[self window] windowController] offFullScreen];
 	}
-	else if(c == NSDeleteFunctionKey || c == NSDeleteCharacter || c == NSBackspaceCharacter)
+	else if(c == NSDeleteFunctionKey || c == NSDeleteCharacter || c == NSBackspaceCharacter || c == NSDeleteCharFunctionKey) 
 	{
 		if([self isAny3DPointSelected])
 		{

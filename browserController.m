@@ -2737,6 +2737,12 @@ static NSArray*	statesArray = nil;
 
 - (void) loadDatabase:(NSString*) path
 {
+	[self waitForRunningProcesses];
+	
+	[[LogManager currentLogManager] checkLogs: nil];
+	[self resetLogWindowController];
+	[[LogManager currentLogManager] resetLogs];
+	
 	[[AppController sharedAppController] closeAllViewers: self];
 	
 	displayEmptyDatabase = YES;
@@ -2884,7 +2890,7 @@ static NSArray*	statesArray = nil;
 	
 	[self setDBWindowTitle];
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName:OsirixServerArrayChangedNotification object:nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixServerArrayChangedNotification object:nil];
 	
 	displayEmptyDatabase = NO;
 	[self outlineViewRefresh];
@@ -4731,6 +4737,8 @@ static NSArray*	statesArray = nil;
 	if( bonjourDownloading) return;
 	if( DatabaseIsEdited) return;
 	if( [databaseOutline editedRow] != -1) return;
+	
+	if( albumTable.selectedRow >= [self.albumArray count]) return;
 	
 	if( needDBRefresh || [[[self.albumArray objectAtIndex: albumTable.selectedRow] valueForKey:@"smartAlbum"] boolValue] == YES )
 	{
@@ -12498,8 +12506,7 @@ static NSArray*	openSubSeriesArray = nil;
 {
     unichar c = [[event characters] characterAtIndex:0];
 	
-    if (c == NSDeleteCharacter ||
-        c == NSBackspaceCharacter)
+    if (c == NSDeleteFunctionKey || c == NSDeleteCharacter || c == NSBackspaceCharacter || c == NSDeleteCharFunctionKey)
         [self delItem: [[self window] firstResponder]];
     
 	else if(c == NSNewlineCharacter ||

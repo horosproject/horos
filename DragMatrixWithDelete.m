@@ -55,9 +55,11 @@ static NSString  *pasteBoardTypeCover = @"KeyImages";
     return self;
 }
 
-- (BOOL)performKeyEquivalent:(NSEvent *)theEvent
+- (BOOL)performKeyEquivalent:(NSEvent *)event
 {
-	if ([[theEvent characters] characterAtIndex:0] == NSDeleteCharacter)
+	unichar c = [[event characters] characterAtIndex:0];
+	
+    if( c == NSDeleteFunctionKey || c == NSDeleteCharacter || c == NSBackspaceCharacter || c == NSDeleteCharFunctionKey)
 	{
 		[arrayController remove:self];
 		return YES;

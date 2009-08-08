@@ -80,7 +80,8 @@ PURPOSE.
 - (void) keyDown:(NSEvent *)event
 {
 	unichar c = [[event characters] characterAtIndex:0];
-    if( c == 127)
+	
+    if( c == NSDeleteFunctionKey || c == NSDeleteCharacter || c == NSBackspaceCharacter || c == NSDeleteCharFunctionKey)
 	{
 		[self deleteROI: self];
 	}

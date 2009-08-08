@@ -574,7 +574,7 @@ static const char *GetPrivateIP()
 	
 	if( [[self window] firstResponder] == outlineView)
 	{
-		if( c == NSDeleteCharacter)
+		if(c == NSDeleteFunctionKey || c == NSDeleteCharacter || c == NSBackspaceCharacter || c == NSDeleteCharFunctionKey)
 		{
 			[self deleteSelection: self];
 		}

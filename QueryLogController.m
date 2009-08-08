@@ -19,11 +19,10 @@
 
 @implementation QueryLogController
 
-- (void)awakeFromNib{
-	[self setManagedObjectContext:[[BrowserController currentBrowser] managedObjectContext]];
-	//NSLog(@"filter Predicate: %@", [[self filterPredicate] description]);
+- (void)awakeFromNib
+{
+	[self setManagedObjectContext: [[BrowserController currentBrowser] managedObjectContext]];
 	[self fetch:nil];
-	//NSLog(@"Content: %@", [[self content] description]);
 	
 	[self setSortDescriptors:[NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey:@"startTime" ascending:NO] autorelease]]];
 }
@@ -33,10 +32,9 @@
 	return [[BrowserController currentBrowser] managedObjectContext];
 }
 
-- (IBAction)nothing:(id)sender{
-//	[self fetch:sender];
-//	NSLog(@"Content: %@", [[self content] description]);
-}
+- (IBAction)nothing:(id)sender
+{
 
+}
 
 @end
