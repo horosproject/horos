@@ -78,5 +78,5 @@ enum SendServerType { osirixServer, offisServer };
 - (void)closeSendPanel:(id)sender;
 - (IBAction)selectServer: (id)sender;
 - (void) sendToNode: (NSDictionary*) node;
-- (void) updateDestinationPopup;
+- (void) updateDestinationPopup:(NSNotification*) note;
 @end

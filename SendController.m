@@ -102,12 +102,12 @@ static volatile int sendControllerObjects = 0;
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setSendMessage:) name:OsirixDCMSendStatusNotification object:nil];
 		
 		[[NSNotificationCenter defaultCenter] addObserver: self
-												selector: @selector( updateDestinationPopup)
+												selector: @selector( updateDestinationPopup:)
 												name: OsirixServerArrayChangedNotification
 												object: nil];
 		
 		[[NSNotificationCenter defaultCenter] addObserver: self
-												selector: @selector( updateDestinationPopup)
+												selector: @selector( updateDestinationPopup:)
 												name: @"DCMNetServicesDidChange"
 												object: nil];
 	}
@@ -118,7 +118,7 @@ static volatile int sendControllerObjects = 0;
 {
 	if 	([_files  count])
 	{
-		[self updateDestinationPopup];
+		[self updateDestinationPopup: nil];
 		
 		int count = [[DCMNetServiceDelegate DICOMServersListSendOnly:YES QROnly:NO] count];
 		if (_serverIndex < count)
@@ -418,8 +418,6 @@ static volatile int sendControllerObjects = 0;
 		
 	[pool release];
 	
-	[NSThread sleepForTimeInterval: 2];
-	
 	//need to unlock to allow release of self after send complete
 	[_lock performSelectorOnMainThread:@selector(unlock) withObject:nil waitUntilDone: NO];
 }
@@ -440,7 +438,7 @@ static volatile int sendControllerObjects = 0;
 	}
 }
 
-- (void)setSendMessage:(NSNotification *)note
+- (void)setSendMessage: (NSNotification *)note
 {
 	if( [note object] == storeSCU)
 		[self performSelectorOnMainThread:@selector(setSendMessageThread:) withObject:[note userInfo] waitUntilDone:YES]; // <- GUI operations are permitted ONLY on the main thread
@@ -448,7 +446,7 @@ static volatile int sendControllerObjects = 0;
 
 #pragma mark serversArray functions
 
-- (void) updateDestinationPopup
+- (void) updateDestinationPopup: (NSNotification *)note
 {
 	NSString *currentTitle = [[[newServerList selectedItem] title] retain];
 	
