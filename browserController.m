@@ -13102,6 +13102,9 @@ static NSArray*	openSubSeriesArray = nil;
 					
 				}
 				
+				BOOL copyOnlyDICOM = [[NSUserDefaults standardUserDefaults] boolForKey: @"onlyDICOM"];
+				[[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"onlyDICOM"];
+				
 				[self autoCleanDatabaseFreeSpace: self];
 				
 				NSMutableArray	*newfilesArray = [self copyFilesIntoDatabaseIfNeeded:filesArray async: YES];
@@ -13123,6 +13126,8 @@ static NSArray*	openSubSeriesArray = nil;
 						[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
 					}
 				}
+				
+				[[NSUserDefaults standardUserDefaults] setBool: copyOnlyDICOM forKey: @"onlyDICOM"];
 				
 				[self autoCleanDatabaseFreeSpace: self];
 			}

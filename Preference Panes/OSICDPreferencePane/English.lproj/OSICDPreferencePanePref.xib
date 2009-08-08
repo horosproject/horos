@@ -2,9 +2,9 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="7.02">
 	<data>
 		<int key="IBDocument.SystemTarget">1050</int>
-		<string key="IBDocument.SystemVersion">9J61</string>
-		<string key="IBDocument.InterfaceBuilderVersion">670</string>
-		<string key="IBDocument.AppKitVersion">949.46</string>
+		<string key="IBDocument.SystemVersion">9L30</string>
+		<string key="IBDocument.InterfaceBuilderVersion">672</string>
+		<string key="IBDocument.AppKitVersion">949.54</string>
 		<string key="IBDocument.HIToolboxVersion">353.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -142,7 +142,7 @@
 																<object class="NSButtonCell" id="257334181">
 																	<int key="NSCellFlags">-2080244224</int>
 																	<int key="NSCellFlags2">0</int>
-																	<string key="NSContents">Load all DICOM files available on the CD/DVD</string>
+																	<string key="NSContents">Load all DICOM files available on the CD/DVD, ignoring the DICOMDIR file</string>
 																	<reference key="NSSupport" ref="255335428"/>
 																	<reference key="NSControlView" ref="468243953"/>
 																	<int key="NSButtonFlags">1211912703</int>
@@ -627,17 +627,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<string key="NSMaxSize">{3.40282e+38, 3.40282e+38}</string>
 			</object>
 			<object class="NSUserDefaultsController" id="154481161">
-				<object class="NSMutableArray" key="NSDeclaredKeys">
-					<bool key="EncodedWithXMLCoder">YES</bool>
-					<string>BurnSupplementaryFolder</string>
-					<string>SupplementaryBurnPath</string>
-					<string>BurnHtml</string>
-					<string>BurnOsirixApplication</string>
-					<string>MOUNT</string>
-					<string>UNMOUNT</string>
-					<string>USEDICOMDIR</string>
-					<string>STILLMOVIEMODE</string>
-				</object>
 				<bool key="NSSharedInstance">YES</bool>
 			</object>
 		</object>
@@ -1206,12 +1195,12 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					</object>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
-					<string>{{664, 348}, {726, 469}}</string>
+					<string>{{320, 348}, {726, 469}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{664, 348}, {726, 469}}</string>
+					<string>{{320, 348}, {726, 469}}</string>
 					<reference ref="9"/>
 					<string>{{102, 1105}, {726, 451}}</string>
-					<reference ref="9"/>
+					<integer value="0"/>
 					<reference ref="9"/>
 					<string>{3.40282e+38, 3.40282e+38}</string>
 					<string>{224.663, 10}</string>
