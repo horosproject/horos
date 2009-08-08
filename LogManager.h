@@ -15,14 +15,15 @@
 #import <Cocoa/Cocoa.h>
 
 /** \brief Managed network logging */
-@interface LogManager : NSObject {
+@interface LogManager : NSObject
+{
 	NSTimer *_timer;
 	NSMutableDictionary *_currentLogs;
 }
 
-+ (id)currentLogManager;
-- (void)checkLogs:(NSTimer *)timer;
-- (NSString *)logFolder;
++ (id) currentLogManager;
+- (void) checkLogs:(NSTimer *)timer;
+- (NSString *) logFolder;
 - (void) resetLogs;
 
 @end

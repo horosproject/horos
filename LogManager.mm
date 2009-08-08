@@ -17,19 +17,18 @@
 #import "DICOMToNSString.h"
 #import "DicomFile.h"
 
-LogManager *currentLogManager;
-
+static LogManager *currentLogManager = nil;
 
 @implementation LogManager
 
-+ (id)currentLogManager
++ (id) currentLogManager
 {
 	if (!currentLogManager)
 		currentLogManager = [[LogManager alloc] init];
 	return currentLogManager;
 }
 
-- (id)init
+- (id) init
 {
 	if (self = [super init])
 	{
@@ -71,7 +70,7 @@ LogManager *currentLogManager;
 	[context release];
 }
 
-- (void)dealloc
+- (void) dealloc
 {
 	[_currentLogs release];
 	[_timer invalidate];
@@ -79,7 +78,7 @@ LogManager *currentLogManager;
 	[super dealloc];
 }
 
-- (NSString *)logFolder
+- (NSString *) logFolder
 {
 	NSString *path =  [[[BrowserController currentBrowser] fixedDocumentsDirectory] stringByAppendingPathComponent:@"TEMP.noindex"];
 	NSFileManager *manager = [NSFileManager defaultManager];
@@ -91,12 +90,16 @@ LogManager *currentLogManager;
 	return path;
 }
 
-- (void)checkLogs:(NSTimer *)timer
+- (void) checkLogs:(NSTimer *)timer
 {
 	if( [[BrowserController currentBrowser] isNetworkLogsActive])
 	{
 		NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContextLoadIfNecessary: NO];
-		if( context == nil) return;
+		if( context == nil)
+		{
+			NSLog(@"***** log context == nil");
+			return;
+		}
 		
 		if( [[BrowserController currentBrowser] isCurrentDatabaseBonjour]) return;
 		
@@ -127,8 +130,9 @@ LogManager *currentLogManager;
 		[context retain];
 		if( [context tryLock])
 		{
+			NSString *logFolder = [self logFolder];
 			NSFileManager *manager = [NSFileManager defaultManager];
-			NSDirectoryEnumerator *enumerator = [manager enumeratorAtPath:[self logFolder]];
+			NSDirectoryEnumerator *enumerator = [manager enumeratorAtPath: logFolder];
 			NSString *path;
 			
 			NS_DURING
@@ -136,7 +140,7 @@ LogManager *currentLogManager;
 			{
 				if ([[path pathExtension] isEqualToString: @"log"])
 				{
-					NSString *file = [[self logFolder] stringByAppendingPathComponent:path];
+					NSString *file = [logFolder stringByAppendingPathComponent:path];
 					NSString *newfile = [file stringByAppendingString:@"reading"];
 					
 					rename( [file UTF8String], [newfile UTF8String]);
@@ -146,11 +150,11 @@ LogManager *currentLogManager;
 					pFile = fopen ( [newfile UTF8String], "r");
 					if( pFile)
 					{
-						char	data[ 4096];
+						char data[ 4096];
 						
 						fread( data, 4096, 1 ,pFile);
 						
-						char	*curData = data;
+						char *curData = data;
 						
 						if(curData) strcpy( logPatientName, strsep( &curData, "\r"));
 						if(curData) strcpy( logStudyDescription, strsep( &curData, "\r"));
@@ -168,8 +172,7 @@ LogManager *currentLogManager;
 						remove( [newfile UTF8String]);
 						
 						// Encoding
-						
-						NSStringEncoding	encoding[ 10];
+						NSStringEncoding encoding[ 10];
 						for( int i = 0; i < 10; i++) encoding[ i] = NSISOLatin1StringEncoding;
 						NSArray	*c = [[NSString stringWithCString: logEncoding] componentsSeparatedByString:@"\\"];
 						
@@ -178,7 +181,6 @@ LogManager *currentLogManager;
 							for( int i = 0; i < [c count]; i++) encoding[ i] = [NSString encodingForDICOMCharacterSet: [c objectAtIndex: i]];
 							for( int i = [c count]; i < 10; i++) encoding[ i] = [NSString encodingForDICOMCharacterSet: [c lastObject]];
 						}
-						//
 						
 						if( [[NSString stringWithUTF8String: logMessage] isEqualToString:@"In Progress"] || [[NSString stringWithUTF8String: logMessage] isEqualToString:@"Complete"])
 						{				
@@ -207,8 +209,7 @@ LogManager *currentLogManager;
 								{
 									if( [[NSString stringWithUTF8String: logEndTime] intValue] == 0)
 										strcpy( logEndTime, [[NSString stringWithFormat:@"%d", time (NULL)] UTF8String]);
-									
-									NSLog(@"LogManager transfer Complete");
+										
 									[_currentLogs removeObjectForKey: uid];
 								}
 								
@@ -216,8 +217,9 @@ LogManager *currentLogManager;
 									[logEntry setValue:[NSDate dateWithTimeIntervalSince1970: [[NSString stringWithUTF8String: logEndTime] intValue]] forKey:@"endTime"];
 							}
 						}
-						else NSLog(@"Unknown log message type");
+						else NSLog(@"***** Unknown log message type");
 					}
+					else NSLog(@"***** Unable to load a log message");
 				}
 			}
 
@@ -230,19 +232,5 @@ LogManager *currentLogManager;
 		
 		[context release];
 	}
-	
-//	NSManagedObjectContext		*context = [[BrowserController currentBrowser] managedObjectContextLoadIfNecessary: NO];
-//	NSManagedObjectModel		*model = [[BrowserController currentBrowser] managedObjectModel];
-//	
-//	[context lock];
-//	
-//	NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-//	[dbRequest setEntity: [[model entitiesByName] objectForKey:@"LogEntry"]];
-//	[dbRequest setPredicate: [NSPredicate predicateWithValue: YES]];
-//	NSError	*error = nil;
-//	NSLog( @"%@", [context executeFetchRequest:dbRequest error:&error]);
-//
-//	[context unlock];
 }
-
 @end
