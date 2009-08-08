@@ -61,7 +61,7 @@ static OFString    opt_ciphersuites(SSL3_TXT_RSA_DES_192_CBC3_SHA);
 
 #endif
 
-NSException* queryException;
+NSException* queryException = nil;
 int debugLevel = 1;
 
 typedef struct {

@@ -23,8 +23,6 @@
 #import <DiscRecordingUI/DRBurnProgressPanel.h>
 #import  "BrowserController.h"
 
-extern BrowserController  *browserWindow;
-
 NSString* asciiString (NSString* name);
 
 @implementation BurnerWindowController
@@ -168,7 +166,7 @@ NSString* asciiString (NSString* name);
 {
 	runBurnAnimation = NO;
 
-	[browserWindow setBurnerWindowControllerToNIL];
+	[[BrowserController currentBrowser] setBurnerWindowControllerToNIL];
 		
 	[anonymizedFiles release];
 	[filesToBurn release];
@@ -783,11 +781,11 @@ NSString* asciiString (NSString* name);
 		switch( [compressionMode selectedTag])
 		{
 			case 1:
-				[browserWindow decompressArrayOfFiles: compressedArray work: [NSNumber numberWithChar: 'C']];
+				[[BrowserController currentBrowser] decompressArrayOfFiles: compressedArray work: [NSNumber numberWithChar: 'C']];
 			break;
 			
 			case 2:
-				[browserWindow decompressArrayOfFiles: compressedArray work: [NSNumber numberWithChar: 'D']];
+				[[BrowserController currentBrowser] decompressArrayOfFiles: compressedArray work: [NSNumber numberWithChar: 'D']];
 			break;
 		}
 		

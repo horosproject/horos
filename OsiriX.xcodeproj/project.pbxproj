@@ -96,8 +96,6 @@
 		7E0B3A880675274200908593 /* DCMValueRepresentation.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E0B3A1D067526A600908593 /* DCMValueRepresentation.m */; };
 		7E0B3A8E0675274300908593 /* dicomDictionary.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7E0B3A1E067526A600908593 /* dicomDictionary.plist */; };
 		7E0B3AA00675274500908593 /* version.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7E0B3A21067526A600908593 /* version.plist */; };
-		7E1123DF08A7CB9F0037819D /* LogArrayController.m in Sources */ = {isa = PBXBuildFile; fileRef = BF17E98E088768CA00ECF621 /* LogArrayController.m */; };
-		7E1123E008A7CBA20037819D /* LogArrayController.h in Headers */ = {isa = PBXBuildFile; fileRef = BF17E98D088768CA00ECF621 /* LogArrayController.h */; };
 		7E172F580933CAE00057BCE8 /* DCMObjectDBImport.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E172F540933CAE00057BCE8 /* DCMObjectDBImport.h */; };
 		7E172F590933CAE00057BCE8 /* DCMObjectDBImport.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E172F550933CAE00057BCE8 /* DCMObjectDBImport.m */; };
 		7E172F660933D5FF0057BCE8 /* DCMObjectPixelDataImport.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E172F620933D5FF0057BCE8 /* DCMObjectPixelDataImport.h */; };
@@ -5488,8 +5486,6 @@
 		BF1584070A6ABCB0009965C8 /* KeyObjectPopupController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = KeyObjectPopupController.mm; sourceTree = "<group>"; };
 		BF1745D208E0C7E200822756 /* LogWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LogWindowController.h; sourceTree = "<group>"; };
 		BF1745D308E0C7E200822756 /* LogWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LogWindowController.m; sourceTree = "<group>"; };
-		BF17E98D088768CA00ECF621 /* LogArrayController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = LogArrayController.h; sourceTree = "<group>"; };
-		BF17E98E088768CA00ECF621 /* LogArrayController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = LogArrayController.m; sourceTree = "<group>"; };
 		BF17E98F088768CA00ECF621 /* LogTableView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = LogTableView.h; sourceTree = "<group>"; };
 		BF17E990088768CA00ECF621 /* LogTableView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = LogTableView.m; sourceTree = "<group>"; };
 		BF1833CF09AD833D0046C295 /* FlipHorizontal.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = FlipHorizontal.tif; sourceTree = "<group>"; };
@@ -10142,8 +10138,6 @@
 			isa = PBXGroup;
 			children = (
 				ABB7A43606343BFF00AD1777 /* Query */,
-				BF17E98D088768CA00ECF621 /* LogArrayController.h */,
-				BF17E98E088768CA00ECF621 /* LogArrayController.m */,
 				BF17E98F088768CA00ECF621 /* LogTableView.h */,
 				BF17E990088768CA00ECF621 /* LogTableView.m */,
 				BF9201E80883667800A3D77B /* OsiriXSCPDataHandler.h */,
@@ -13515,7 +13509,6 @@
 				A99B7ECC0885A620004328C0 /* BonjourPublisher.h in Headers */,
 				A99B7ECE0885A621004328C0 /* BonjourBrowser.h in Headers */,
 				7EBE4B2708917A7500FC1C36 /* LogTableView.h in Headers */,
-				7E1123E008A7CBA20037819D /* LogArrayController.h in Headers */,
 				CE88575E08AF938800B72DA7 /* ROIVolumeView.h in Headers */,
 				CE88575F08AF938800B72DA7 /* ROIVolumeController.h in Headers */,
 				7EE416FB08B2615A00D4C9CC /* QueryLogController.h in Headers */,
@@ -16835,7 +16828,6 @@
 				A99B7ECB0885A61F004328C0 /* BonjourPublisher.m in Sources */,
 				A99B7ECD0885A621004328C0 /* BonjourBrowser.m in Sources */,
 				7EBE4B2608917A7200FC1C36 /* LogTableView.m in Sources */,
-				7E1123DF08A7CB9F0037819D /* LogArrayController.m in Sources */,
 				CE88576008AF938800B72DA7 /* ROIVolumeController.mm in Sources */,
 				CE88576108AF938800B72DA7 /* ROIVolumeView.mm in Sources */,
 				7EE416FC08B2615B00D4C9CC /* QueryLogController.m in Sources */,

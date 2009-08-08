@@ -21,6 +21,7 @@
 #include <stdio.h>
 
 static TIFFExtendProc _TIFFParentExtender = NULL;
+
 static void _FVTIFFDefaultDirectory(TIFF *tif);
 
 int FV_Read_DIM_INFO(const char* data, FV_MM_DIM_INFO* info)

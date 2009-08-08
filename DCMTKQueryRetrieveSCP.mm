@@ -92,7 +92,7 @@ const char *opt_configFileName = "dcmqrscp.cfg";
 OFBool      opt_checkFindIdentifier = OFFalse;
 OFBool      opt_checkMoveIdentifier = OFFalse;
 OFCmdUnsignedInt opt_port = 0;
-DcmQueryRetrieveSCP *scp;
+DcmQueryRetrieveSCP *scp = nil;
 
 
 OFCondition mainStoreSCP(T_ASC_Association * assoc, T_DIMSE_C_StoreRQ * request, T_ASC_PresentationContextID presId, DcmQueryRetrieveDatabaseHandle *dbHandle)

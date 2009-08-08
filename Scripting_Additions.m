@@ -12,13 +12,8 @@
      PURPOSE.
 =========================================================================*/
 
-
-
-
 #import "Scripting_Additions.h"
 #import "BrowserController.h"
-
-extern		BrowserController  *browserWindow;
 
 @implementation OsiriXScripts
 
@@ -57,9 +52,9 @@ extern		BrowserController  *browserWindow;
 		{
 			NSLog( convertedPath);
 			
-			[browserWindow addFilesAndFolderToDatabase: [NSArray arrayWithObject: convertedPath]];
+			[[BrowserController currentBrowser] addFilesAndFolderToDatabase: [NSArray arrayWithObject: convertedPath]];
 			
-			if( [browserWindow findAndSelectFile: convertedPath image: nil shouldExpand :YES])
+			if( [[BrowserController currentBrowser] findAndSelectFile: convertedPath image: nil shouldExpand :YES])
 			{
 				NSLog(@"done!");
 			}
@@ -70,16 +65,16 @@ extern		BrowserController  *browserWindow;
 	{
 		NSString	*url = [[self arguments] objectForKey:@"URL"];
 		
-		NSArray	*files = [browserWindow addURLToDatabaseFiles: [NSArray arrayWithObject: [NSURL URLWithString:url]]];
+		NSArray	*files = [[BrowserController currentBrowser] addURLToDatabaseFiles: [NSArray arrayWithObject: [NSURL URLWithString:url]]];
 		
-		if( [browserWindow findAndSelectFile: [[files objectAtIndex:0] valueForKey:@"completePath"] image: nil shouldExpand: NO])
+		if( [[BrowserController currentBrowser] findAndSelectFile: [[files objectAtIndex:0] valueForKey:@"completePath"] image: nil shouldExpand: NO])
 		{
 			NSLog(@"done!");
 		}
 	}
 	
-	if( [command isEqualToString:@"OpenViewerForSelected"]) [browserWindow viewerDICOM: self];
-	if( [command isEqualToString:@"DeleteSelected"]) [browserWindow delItem: self];
+	if( [command isEqualToString:@"OpenViewerForSelected"]) [[BrowserController currentBrowser] viewerDICOM: self];
+	if( [command isEqualToString:@"DeleteSelected"]) [[BrowserController currentBrowser] delItem: self];
 	
     return nil;
 }

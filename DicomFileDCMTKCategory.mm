@@ -12,55 +12,11 @@
      PURPOSE.
 =========================================================================*/
 
-//TransferSyntaxUID
-//ImageComments
-//SOPClassUID
-//EncapsulatedDocument
-//SpecificCharacterSet
-//ImageType
-//SOPInstanceUID
-//StudyDescription
-//Modality
-//ContentDate
-//ContentTime
-//AcquisitionDate
-//AcquisitionTime
-//SeriesDate
-//SeriesTime
-//StudyDate
-//StudyTime
-//SeriesDescription
-//InstitutionName
-//ReferringPhysiciansName
-//PerformingPhysiciansName
-//AccessionNumber
-//PatientsName
-//PatientID
-//PatientsAge
-//PatientsBirthDate
-//PatientsSex
-//ScanOptions
-//ProtocolName
-//EchoTime
-//InstanceNumber
-//ImagePositionPatient
-//ImageOrientationPatient
-//SeriesNumber
-//SeriesInstanceUID
-//StudyInstanceUID
-//StudyID
-//Rows
-//Columns
-//NumberOfFrames
-
 #import "DicomFileDCMTKCategory.h"
 #import <OsiriX/DCMAbstractSyntaxUID.h>
 #import "Papyrus3/Papyrus3.h"
 #import "DICOMToNSString.h"
 #import "MutableArrayCategory.h"
-//#import "SRAnnotation.h"
-
-// #undef verify
 
 #include "osconfig.h"
 #include "dcfilefo.h"
@@ -80,21 +36,6 @@
 #endif
 
 #include <string>
-
-//#define id Id
-//#include "itkImage.h"
-//#include "itkExceptionObject.h"
-//#include "itkNumericTraits.h"
-//#include "itkImageRegionIterator.h"
-//#include "itkImageIOFactory.h"
-//#include "itkBrains2MaskImageIO.h"
-//#include "itkBrains2MaskImageIOFactory.h"
-//#include "stdlib.h"
-//#include <itksys/SystemTools.hxx>
-//#include "itkImageFileWriter.h"
-//#include "itkImageFileReader.h"
-//#include "itkFlipImageFilter.h"
-//#undef id
 
 extern NSRecursiveLock *PapyrusLock;
 

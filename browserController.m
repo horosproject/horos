@@ -78,10 +78,6 @@
 #define DATABASEFPATH @"/DATABASE.noindex"
 #define DATAFILEPATH @"/Database.sql"
 
-//enum DCM_CompressionQuality {DCMLosslessQuality, DCMHighQuality, DCMMediumQuality, DCMLowQuality};
-
-BrowserController  *browserWindow = nil;
-
 #include <CoreFoundation/CoreFoundation.h>
 #include <CoreServices/CoreServices.h>
 #include <IOKit/IOKitLib.h>
@@ -89,36 +85,20 @@ BrowserController  *browserWindow = nil;
 #include <IOKit/storage/IOCDMedia.h>
 #include <IOKit/storage/IODVDMedia.h>
 
+static BrowserController *browserWindow = nil;
 static NSString *albumDragType = @"Osirix Album drag";
 static BOOL loadingIsOver = NO;
 static NSMenu *contextual = nil;
 static NSMenu *contextualRT = nil;  // Alternate menus for RT objects (which often don't have images)
-static int DicomDirScanDepth;
+static int DicomDirScanDepth = 0;
 static int DefaultFolderSizeForDB = 0;
 static NSTimeInterval lastHardDiskCheck = 0;
+static long DATABASEINDEX = 0;
 
-//extern NSData* compressJPEG2000(int inQuality, unsigned char* inImageBuffP, int inImageHeight, int inImageWidth, int samplesPerPixel);
-//extern NSImage* decompressJPEG2000( unsigned char* inImageBuffP, long theLength);
-
-//extern void compressJPEG (int inQuality, char* filename, unsigned char* inImageBuffP, int inImageHeight, int inImageWidth, int monochrome);
 extern unsigned char* compressJPEG (int inQuality, unsigned char* inImageBuffP, int inImageHeight, int inImageWidth, int monochrome, int *destSize);
-extern BOOL hasMacOSXTiger();
-extern BOOL hasMacOSXLeopard();
-
 extern int delayedTileWindows;
-extern AppController *appController;
-extern NSThread *mainThread;
 extern BOOL NEEDTOREBUILD, COMPLETEREBUILD;
-extern NSMutableDictionary *DATABASECOLUMNS;
 extern NSRecursiveLock *PapyrusLock;
-
-long DATABASEINDEX;
-
-//static void
-//sig_alrm(int signo)
-//{
-//    /* nothing to do, just return to wake up the pause */
-//}
 
 NSString *asciiString( NSString* name )
 {
@@ -319,7 +299,7 @@ static NSArray*	statesArray = nil;
 
 - (void) setGrowlMessage:(NSString*) message
 {
-	[appController growlTitle: NSLocalizedString( @"Incoming Files", nil) description: message name: @"newfiles"];
+	[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Incoming Files", nil) description: message name: @"newfiles"];
 }
 					
 - (void) callAddFilesToDatabaseSafe: (NSArray*) newFilesArray
@@ -432,7 +412,7 @@ static NSArray*	statesArray = nil;
 	
 	if( safeProcess) NSLog( @"safe Process DB process");
 	
-	if( mainThread == [NSThread currentThread] )
+	if( [AppController mainThread] == [NSThread currentThread] )
 	{
 		isCDMedia = [BrowserController isItCD: [newFilesArray objectAtIndex: 0]];
 		
@@ -1084,7 +1064,7 @@ static NSArray*	statesArray = nil;
 			if( growlString)
 				[self performSelectorOnMainThread:@selector( setGrowlMessage:) withObject: growlString waitUntilDone:NO];
 			
-			if( mainThread == [NSThread currentThread])
+			if( [AppController mainThread] == [NSThread currentThread])
 				[self newFilesGUIUpdate: self];
 				
 			[newFilesConditionLock lock];
@@ -1105,7 +1085,7 @@ static NSArray*	statesArray = nil;
 			if( newStudy || prevCondition == 1) [newFilesConditionLock unlockWithCondition: 1];
 			else [newFilesConditionLock unlockWithCondition: 2];
 			
-			if( mainThread == [NSThread currentThread])
+			if( [AppController mainThread] == [NSThread currentThread])
 				[self newFilesGUIUpdate: self];
 			
 			databaseLastModification = [NSDate timeIntervalSinceReferenceDate];
@@ -1812,7 +1792,7 @@ static NSArray*	statesArray = nil;
 		{
 			if( [autoroutingInProgress tryLock])
 			{
-				[appController growlTitle: NSLocalizedString( @"Autorouting", nil) description: NSLocalizedString(@"Autorouting starting...", nil) name: @"newfiles"];
+				[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Autorouting", nil) description: NSLocalizedString(@"Autorouting starting...", nil) name: @"newfiles"];
 				
 				[autoroutingInProgress unlock];
 				[NSThread detachNewThreadSelector:@selector(processAutorouting) toTarget:self withObject:nil];
@@ -2970,7 +2950,7 @@ static NSArray*	statesArray = nil;
 			[context unlock];
 			[context release];
 			
-			if( [NSThread currentThread] == mainThread)
+			if( [NSThread currentThread] == [AppController mainThread])
 				[self outlineViewRefresh];
 		}
 		
@@ -7360,10 +7340,10 @@ static NSArray*	statesArray = nil;
 	if( delayedTileWindows)
 	{
 		delayedTileWindows = NO;
-		[NSObject cancelPreviousPerformRequestsWithTarget:appController selector:@selector(tileWindows:) object:nil];
+		[NSObject cancelPreviousPerformRequestsWithTarget:[AppController sharedAppController] selector:@selector(tileWindows:) object:nil];
 	}
 	
-	[appController tileWindows: self];
+	[[AppController sharedAppController] tileWindows: self];
 }
 
 - (ViewerController*) loadSeries:(NSManagedObject *) series :(ViewerController*) viewer :(BOOL) firstViewer keyImagesOnly:(BOOL) keyImages
@@ -8503,9 +8483,9 @@ static BOOL withReset = NO;
 		}
 		
 		if( delayedTileWindows)
-			[NSObject cancelPreviousPerformRequestsWithTarget:appController selector:@selector(tileWindows:) object:nil];
+			[NSObject cancelPreviousPerformRequestsWithTarget:[AppController sharedAppController] selector:@selector(tileWindows:) object:nil];
 		delayedTileWindows = YES;
-		[appController performSelector: @selector(tileWindows:) withObject:nil afterDelay: 0.1];
+		[[AppController sharedAppController] performSelector: @selector(tileWindows:) withObject:nil afterDelay: 0.1];
 	}
 }
 
@@ -11783,11 +11763,6 @@ static NSArray*	openSubSeriesArray = nil;
 		visibleScreenRect[ i] = [[[NSScreen screens] objectAtIndex: i] visibleFrame];
 	}
 	
-	if (hasMacOSXLeopard() == NO)	{
-		NSRunCriticalAlertPanel(NSLocalizedString(@"MacOS X", nil), NSLocalizedString(@"This application requires MacOS X 10.5 or higher. Please upgrade your operating system.", nil), NSLocalizedString(@"OK", nil), nil, nil);
-		exit(0);
-	}
-	
 	self = [super initWithWindow: window];
 	if( self )
 	{
@@ -12200,12 +12175,6 @@ static NSArray*	openSubSeriesArray = nil;
 		// thumbnails : no background color
 		[thumbnailsScrollView setDrawsBackground:NO];
 		[[thumbnailsScrollView contentView] setDrawsBackground:NO];
-		
-		if (hasMacOSXLeopard() == NO)
-		{
-			NSRunCriticalAlertPanel(NSLocalizedString(@"MacOS X", nil), NSLocalizedString(@"This application requires MacOS X 10.5 or higher. Please upgrade your operating system.", nil), NSLocalizedString(@"OK", nil), nil, nil);
-			exit(0);
-		}
 		
 		//	[self splitViewDidResizeSubviews:nil];
 		[self.window setFrameAutosaveName:@"DBWindow"];
@@ -12766,7 +12735,7 @@ static NSArray*	openSubSeriesArray = nil;
 	
 	if( copyArray.count )
 	{
-		[appController growlTitle: NSLocalizedString( @"Files removing", nil) description: [NSString stringWithFormat: NSLocalizedString( @"%d files to delete", nil), [copyArray count]]  name:@"delete"];
+		[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Files removing", nil) description: [NSString stringWithFormat: NSLocalizedString( @"%d files to delete", nil), [copyArray count]]  name:@"delete"];
 		
 		NSMutableArray *folders = [NSMutableArray array];
 		
@@ -12810,7 +12779,7 @@ static NSArray*	openSubSeriesArray = nil;
 		
 		NSLog(@"delete Queue end");
 		
-		[appController growlTitle: NSLocalizedString( @"Files removing", nil) description: NSLocalizedString( @"Finished", nil) name:@"delete"];
+		[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Files removing", nil) description: NSLocalizedString( @"Finished", nil) name:@"delete"];
 	}
 	
 	[deleteInProgress unlock];
@@ -13146,7 +13115,7 @@ static NSArray*	openSubSeriesArray = nil;
 			if( [[[device status] valueForKey: DRDeviceIsTrayOpenKey] boolValue] == YES)
 			{
 				[device closeTray];
-				[appController growlTitle: NSLocalizedString( @"CD/DVD", nil) description: NSLocalizedString(@"Please wait. CD/DVD is loading...", nil) name:@"newfiles"];
+				[[AppController sharedAppController] growlTitle: NSLocalizedString( @"CD/DVD", nil) description: NSLocalizedString(@"Please wait. CD/DVD is loading...", nil) name:@"newfiles"];
 				return;
 			}
 			else
@@ -13155,7 +13124,7 @@ static NSArray*	openSubSeriesArray = nil;
 					[device openTray];
 				else
 				{
-					[appController growlTitle: NSLocalizedString( @"CD/DVD", nil) description: NSLocalizedString(@"Cannot find a valid DICOM CD/DVD format.", nil) name:@"newfiles"];
+					[[AppController sharedAppController] growlTitle: NSLocalizedString( @"CD/DVD", nil) description: NSLocalizedString(@"Cannot find a valid DICOM CD/DVD format.", nil) name:@"newfiles"];
 					return;
 				}
 			}
@@ -13408,7 +13377,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	if( windowVisible)
 	{
-		if( mainThread != [NSThread currentThread])
+		if( [AppController mainThread] != [NSThread currentThread])
 			[self performSelectorOnMainThread: @selector(decompressWaitIncrementation:) withObject: [NSNumber numberWithInt: [array count]] waitUntilDone: NO];
 		else
 			[self decompressWaitIncrementation: [NSNumber numberWithInt: [array count]]];
@@ -13446,7 +13415,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	if( windowVisible)
 	{
-		if( mainThread != [NSThread currentThread])
+		if( [AppController mainThread] != [NSThread currentThread])
 			[self performSelectorOnMainThread: @selector(decompressWaitIncrementation:) withObject: [NSNumber numberWithInt: [array count]] waitUntilDone: NO];
 		else
 			[self decompressWaitIncrementation: [NSNumber numberWithInt: [array count]]];
@@ -13599,11 +13568,11 @@ static volatile int numberOfThreadsForJPEG = 0;
 	switch( tow)
 	{
 		case 'C':
-			[appController growlTitle: NSLocalizedString( @"Files Compression", nil) description:[NSString stringWithFormat: NSLocalizedString(@"Starting to compress %d files", nil), [array count]] name:@"newfiles"];
+			[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Files Compression", nil) description:[NSString stringWithFormat: NSLocalizedString(@"Starting to compress %d files", nil), [array count]] name:@"newfiles"];
 			break;
 			
 		case 'D':
-			[appController growlTitle: NSLocalizedString( @"Files Decompression", nil) description:[NSString stringWithFormat: NSLocalizedString(@"Starting to decompress %d files", nil), [array count]] name:@"newfiles"];
+			[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Files Decompression", nil) description:[NSString stringWithFormat: NSLocalizedString(@"Starting to decompress %d files", nil), [array count]] name:@"newfiles"];
 			break;
 	}
 	
@@ -13669,11 +13638,11 @@ static volatile int numberOfThreadsForJPEG = 0;
 	switch( tow)
 	{
 		case 'C':
-			[appController growlTitle: NSLocalizedString( @"Files Compression", nil) description: NSLocalizedString(@"Done !", nil) name:@"newfiles"];
+			[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Files Compression", nil) description: NSLocalizedString(@"Done !", nil) name:@"newfiles"];
 			break;
 			
 		case 'D':
-			[appController growlTitle: NSLocalizedString( @"Files Decompression", nil) description: NSLocalizedString(@"Done !", nil) name:@"newfiles"];
+			[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Files Decompression", nil) description: NSLocalizedString(@"Done !", nil) name:@"newfiles"];
 			break;
 	}
 	
@@ -13683,7 +13652,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	{
 		case 'C':
 		case 'D':
-			if( mainThread != [NSThread currentThread])
+			if( [AppController mainThread] != [NSThread currentThread])
 				[DCMPix performSelectorOnMainThread: @selector( purgeCachedDictionaries) withObject: nil waitUntilDone: NO];
 			else
 				[DCMPix purgeCachedDictionaries];
@@ -14013,7 +13982,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		// Kill the incoming directory
 		[[NSFileManager defaultManager] removeItemAtPath: [[self localDocumentsDirectory] stringByAppendingPathComponent: INCOMINGPATH] error: nil];
 		
-		[appController growlTitle: NSLocalizedString( @"WARNING", nil) description: NSLocalizedString(@"Hard Disk is Full ! Cannot accept more files.", nil) name:@"newfiles"];
+		[[AppController sharedAppController] growlTitle: NSLocalizedString( @"WARNING", nil) description: NSLocalizedString(@"Hard Disk is Full ! Cannot accept more files.", nil) name:@"newfiles"];
 	}
 	
 	[self setDockIcon];
@@ -14039,7 +14008,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 {
 	QTMovie *mMovie = nil;
 	
-	if( mainThread != [NSThread currentThread])
+	if( [AppController mainThread] != [NSThread currentThread])
 	{
 		[QTMovie enterQTKitOnThread];
 		
@@ -14091,7 +14060,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[mMovie writeToFile: fileName withAttributes: [NSDictionary dictionaryWithObject: [NSNumber numberWithBool: YES] forKey: QTMovieFlatten]];
 	[[NSFileManager defaultManager] removeFileAtPath:[fileName stringByAppendingString:@"temp"] handler: nil];
 
-	if( mainThread != [NSThread currentThread])
+	if( [AppController mainThread] != [NSThread currentThread])
 	{
 		[mMovie detachFromCurrentThread];
 		[QTMovie exitQTKitOnThread];
@@ -17014,10 +16983,10 @@ static volatile int numberOfThreadsForJPEG = 0;
 	if( delayedTileWindows)
 	{
 		delayedTileWindows = NO;
-		[NSObject cancelPreviousPerformRequestsWithTarget:appController selector:@selector(tileWindows:) object:nil];
+		[NSObject cancelPreviousPerformRequestsWithTarget:[AppController sharedAppController] selector:@selector(tileWindows:) object:nil];
 	}
 	
-	[appController tileWindows: self];
+	[[AppController sharedAppController] tileWindows: self];
 }
 
 - (BOOL)validateToolbarItem: (NSToolbarItem *)toolbarItem

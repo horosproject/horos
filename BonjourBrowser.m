@@ -37,8 +37,6 @@ static NSLock *resolveServiceThreadLock = nil;
 
 #define OSIRIXRUNMODE @"OsiriXLoopMode"
 
-extern NSThread			*mainThread;
-
 volatile static BOOL threadIsRunning = NO;
 
 #include <netdb.h>

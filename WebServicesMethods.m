@@ -20,6 +20,7 @@
 #import "DCMPix.h"
 #import <QTKit/QTKit.h>
 #import "DCMNetServiceDelegate.h"
+#import "AppController.h"
 
 #include <netdb.h>
 #include <sys/socket.h>
@@ -29,8 +30,6 @@
 #include <arpa/inet.h>
 
 #define maxResolution 1024
-
-extern NSThread					*mainThread;
 
 @interface NSImage (ProportionalScaling)
 - (NSImage*)imageByScalingProportionallyToSize:(NSSize)targetSize;
@@ -1729,7 +1728,7 @@ extern NSThread					*mainThread;
 	QTMovie *aMovie = nil;
 	
     // create a QTMovie from the file
-	if( mainThread != [NSThread currentThread])
+	if( [AppController mainThread] != [NSThread currentThread])
 	{
 		[QTMovie enterQTKitOnThread];
 		
@@ -1772,7 +1771,7 @@ extern NSThread					*mainThread;
 		NSLog(@"exportMovieToiPhone Error : %@", error);
     }
 	
-	if( mainThread != [NSThread currentThread])
+	if( [AppController mainThread] != [NSThread currentThread])
 	{
 		[aMovie detachFromCurrentThread];
 		[QTMovie exitQTKitOnThread];

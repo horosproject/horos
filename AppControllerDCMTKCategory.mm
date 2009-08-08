@@ -12,8 +12,6 @@
      PURPOSE.
 =========================================================================*/
 
-
-
 #import "AppControllerDCMTKCategory.h"
 
 #undef verify

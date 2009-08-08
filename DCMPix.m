@@ -80,7 +80,7 @@ struct NSPointInt
 typedef struct NSPointInt NSPointInt;
 
 NSString* filenameWithDate( NSString *inputfile);
-extern NSThread *mainThread;
+
 extern NSRecursiveLock *PapyrusLock;
 extern short Altivec;
 
