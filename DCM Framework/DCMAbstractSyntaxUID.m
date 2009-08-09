@@ -12,11 +12,6 @@
      PURPOSE.
 =========================================================================*/
 
-/*************
-The networking code of the DCMFramework is predominantly a port of the 11/4/04 version of the java pixelmed toolkit by David Clunie.
-htt://www.pixelmed.com   
-**************/
-
 #import "DCMAbstractSyntaxUID.h"
 
 static NSString *DCM_Verification = @"1.2.840.10008.1.1";
