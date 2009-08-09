@@ -1654,7 +1654,7 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 			if( bits < 9) bits = 9;
 			
 			// avoid the artifacts... switch to lossless
-			if( (_max == 32767 && _min == -32768) || _max == 65535 || bits > 16)
+			if( (_max >= 32000 && _min <= -32000) || _max >= 65000 || bits > 16)
 			{
 				parameters.tcp_rates[0] = 0;
 				parameters.tcp_numlayers = 1;
@@ -1776,7 +1776,7 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 			if( bits < 9) bits = 9;
 			
 			// avoid the artifacts... switch to lossless
-			if( (_max == 32767 && _min == -32768) || _max == 65535 || bits > 16)
+			if( (_max >= 32000 && _min <= -32000) || _max >= 65000 || bits > 16)
 			{
 				quality = DCMLosslessQuality;
 			}

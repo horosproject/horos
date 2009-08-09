@@ -55,7 +55,7 @@ static		float						deg2rad = 3.14159265358979/180.0;
 static		unsigned char				*PETredTable = nil, *PETgreenTable = nil, *PETblueTable = nil;
 static		BOOL						NOINTERPOLATION = NO, FULL32BITPIPELINE = NO, SOFTWAREINTERPOLATION = NO, IndependentCRWLWW, pluginOverridesMouse = NO;  // Allows plugins to override mouse click actions.
 static		int							CLUTBARS, ANNOTATIONS = -999, SOFTWAREINTERPOLATION_MAX, DISPLAYCROSSREFERENCELINES = YES;
-static		BOOL						gClickCountSet = NO;
+static		BOOL						gClickCountSet = NO, avoidSetWLWWRentry = NO;
 static		NSDictionary				*_hotKeyDictionary = nil, *_hotKeyModifiersDictionary = nil;
 static		NSRecursiveLock				*drawLock = nil;
 static		NSMutableArray				*globalStringTextureCache = nil;
@@ -5426,7 +5426,12 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	[self loadTextures];
 	[self setNeedsDisplay:YES];
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixChangeWLWWNotification object: curDCM userInfo:nil];
+	if( avoidSetWLWWRentry == NO)
+	{
+		avoidSetWLWWRentry = YES;
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixChangeWLWWNotification object: curDCM userInfo:nil];
+		avoidSetWLWWRentry = NO;
+	}
 	
 	if( [self is2DViewer] )
 	{

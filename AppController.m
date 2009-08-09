@@ -1024,10 +1024,10 @@ static NSDate *lastWarningDate = nil;
 			{
 				NSMutableDictionary *d = [[defaultSettings mutableCopy] autorelease];
 				
-				if( [[defaultSettings valueForKey: @"compression"] intValue] == 0)
+				if( [[defaultSettings valueForKey: @"compression"] intValue] == 0) // same as default
 					[d setObject: @"1" forKey: @"compression"];
 				
-				if( [[defaultSettings valueForKey: @"modality"] isEqualToString: NSLocalizedString( @"default", nil)] == NO)
+				if( [[defaultSettings valueForKey: @"modality"] isEqualToString: NSLocalizedString( @"default", nil)] == NO) // item 0 IS default
 					[d setObject: NSLocalizedString( @"default", nil) forKey: @"modality"];
 				
 				NSMutableArray *a = [[[[NSUserDefaults standardUserDefaults] arrayForKey: @"CompressionSettings"] mutableCopy] autorelease];
@@ -1045,10 +1045,10 @@ static NSDate *lastWarningDate = nil;
 			{
 				NSMutableDictionary *d = [[defaultSettings mutableCopy] autorelease];
 				
-				if( [[defaultSettings valueForKey: @"compression"] intValue] == 0)
+				if( [[defaultSettings valueForKey: @"compression"] intValue] == 0) // same as default
 					[d setObject: @"1" forKey: @"compression"];
 				
-				if( [[defaultSettings valueForKey: @"modality"] isEqualToString: NSLocalizedString( @"default", nil)] == NO)
+				if( [[defaultSettings valueForKey: @"modality"] isEqualToString: NSLocalizedString( @"default", nil)] == NO) // item 0 IS default
 					[d setObject: NSLocalizedString( @"default", nil) forKey: @"modality"];
 				
 				NSMutableArray *a = [[[[NSUserDefaults standardUserDefaults] arrayForKey: @"CompressionSettingsLowRes"] mutableCopy] autorelease];
