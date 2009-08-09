@@ -271,9 +271,15 @@ static NSString *albumDragType = @"Osirix Album drag";
 	{		
 		BOOL keepOn = YES;
 		
-		[NSEvent stopPeriodicEvents];
-		[NSEvent startPeriodicEventsAfterDelay: 0 withPeriod:0.001];
-		
+		@try
+		{
+			[NSEvent stopPeriodicEvents];
+			[NSEvent startPeriodicEventsAfterDelay: 0 withPeriod:0.001];
+		}
+		@catch (NSException *e)
+		{
+			NSLog( @"[NSEvent startPeriodicEventsAfterDelay: 0 withPeriod:0.001] : %@", e);
+		}
 		NSDate	*start = [NSDate date];
 		NSEvent *ev = nil;
 		
