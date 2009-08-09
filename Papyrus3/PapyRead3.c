@@ -532,11 +532,12 @@ bool read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 		   }
 		   else
 		   {
-			   uint32_t *data32 = (uint32_t*)raw + compno;
-			   int *data = image->comps[compno].data;
-			   int i = wr * hr;
-			   while( i -- > 0)
-				   *data32++ = (uint32_t) *data++;
+				printf( "****** 32-bit jpeg encoded is NOT supported\r");
+//			   uint32_t *data32 = (uint32_t*)raw + compno;
+//			   int *data = image->comps[compno].data;
+//			   int i = wr * hr;
+//			   while( i -- > 0)
+//				   *data32++ = (uint32_t) *data++;
 		   }
 	   }
 	   else
@@ -561,12 +562,13 @@ bool read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 			}
 			else
 			{
-			 uint32_t *data32 = (uint32_t*)raw + compno;
-			 for (int i = 0; i < wr * hr; i++)
-			 {
-				*data32 = (uint32_t) (image->comps[compno].data[i / wr * w + i % wr]);
-				data32 += numcomps;
-			 }
+				printf( "****** 32-bit jpeg encoded is NOT supported\r");
+//			 uint32_t *data32 = (uint32_t*)raw + compno;
+//			 for (int i = 0; i < wr * hr; i++)
+//			 {
+//				*data32 = (uint32_t) (image->comps[compno].data[i / wr * w + i % wr]);
+//				data32 += numcomps;
+//			 }
 			}
 	   }
       //free(image.comps[compno].data);

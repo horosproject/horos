@@ -1643,11 +1643,6 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 				bits++;
 			}
 			
-			if( bits < 9) bits = 9;
-			if( bits > 16) bits = 16;
-			
-//			NSLog( @"jp2k : bits: %d min: %d max: %d", bits, _min, _max);
-			
 			if( _min < 0)
 			{
 				[_dcmObject setAttributeValues: [NSMutableArray arrayWithObject: [NSNumber numberWithBool: YES]] forName:@"PixelRepresentation"];
@@ -1655,6 +1650,18 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 			}
 			else
 				[_dcmObject setAttributeValues: [NSMutableArray arrayWithObject: [NSNumber numberWithBool: NO]] forName:@"PixelRepresentation"];
+			
+			if( bits < 9) bits = 9;
+			
+			// avoid the artifacts... switch to lossless
+			if( (_max == 32767 && _min == -32768) || _max == 65535 || bits > 16)
+			{
+				parameters.tcp_rates[0] = 0;
+				parameters.tcp_numlayers = 1;
+				parameters.cp_disto_alloc = 1;
+			}
+			
+			if( bits > 16) bits = 16;
 			
 			bitsstored = bits;
 		}
@@ -1758,9 +1765,6 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 				bits++;
 			}
 			
-			if( bits < 9) bits = 9;
-			if( bits > 16) bits = 16;
-			
 			if( _min < 0)
 			{
 				[_dcmObject setAttributeValues: [NSMutableArray arrayWithObject: [NSNumber numberWithBool:YES]] forName:@"PixelRepresentation"];
@@ -1768,6 +1772,16 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 			}
 			else
 				[_dcmObject setAttributeValues: [NSMutableArray arrayWithObject: [NSNumber numberWithBool:NO]] forName:@"PixelRepresentation"];
+			
+			if( bits < 9) bits = 9;
+			
+			// avoid the artifacts... switch to lossless
+			if( (_max == 32767 && _min == -32768) || _max == 65535 || bits > 16)
+			{
+				quality = DCMLosslessQuality;
+			}
+			
+			if( bits > 16) bits = 16;
 			
 			prec = bits;
 		}
@@ -2488,36 +2502,36 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 		_min = min;
 		_max = max;
 		
-		// The goal of this 'trick' is to avoid the problem that some annotations can generate, if they are 'incrusted' in the image
-		// the jp2k algorithm doesn't like them at all...
-		if( isSigned == NO && _max == 65535)
-		{
-			long i = _columns * _rows;
-			
-			// Compute the new max
-			while( i-->0)
-			{
-				if( fBuffer[ i] == 0xFFFF)
-					fBuffer[ i] = _min;
-			}
-			
-			vDSP_minv( fBuffer, 1, &min, length);
-			vDSP_maxv( fBuffer, 1, &max, length);
-			
-			_min = min;
-			_max = max;
-			
-			// Modify the original data
-			
-			unsigned short *ptr = (unsigned short*) [data bytes];
-			
-			i = _columns * _rows;
-			while( i-->0)
-			{
-				if( ptr[ i] == 0xFFFF)
-					ptr[ i] = _max;
-			}
-		}
+//		// The goal of this 'trick' is to avoid the problem that some annotations can generate, if they are 'incrusted' in the image
+//		// the jp2k algorithm doesn't like them at all...
+//		
+//		if( isSigned == NO && _max == 65535)
+//		{
+//			long i = _columns * _rows;
+//			// Compute the new max
+//			while( i-->0)
+//			{
+//				if( fBuffer[ i] == 0xFFFF)
+//					fBuffer[ i] = _min;
+//			}
+//			
+//			vDSP_minv( fBuffer, 1, &min, length);
+//			vDSP_maxv( fBuffer, 1, &max, length);
+//			
+//			_min = min;
+//			_max = max;
+//			
+//			// Modify the original data
+//			
+//			unsigned short *ptr = (unsigned short*) [data bytes];
+//			
+//			i = _columns * _rows;
+//			while( i-->0)
+//			{
+//				if( ptr[ i] == 0xFFFF)
+//					ptr[ i] = _max;
+//			}
+//		}
 		
 		free(fBuffer);
 	}
