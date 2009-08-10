@@ -3071,9 +3071,9 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 	
 	if( type == tText || type == t2DPoint)
 	{
-		NSString	*finalString;
+		NSString *finalString;
 		
-		if( [comments length] > 0)	finalString  = [name stringByAppendingFormat:@"\r%@", comments];
+		if( [comments length] > 0) finalString = [name stringByAppendingFormat:@"\r%@", comments];
 		else finalString = name;
 		
 		if (stringTex) [stringTex setString:finalString withAttributes:stanStringAttrib];
@@ -3086,7 +3086,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		rect.size = [stringTex frameSize];
 		if( pixelSpacingX != 0 && pixelSpacingY != 0 )
 			rect.size.height *= pixelSpacingX/pixelSpacingY;
-	}	
+	}
 }
 
 - (void) setColor:(RGBColor) a
