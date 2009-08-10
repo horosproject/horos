@@ -1093,84 +1093,66 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 }
 
 //Pixel Decoding
-- (NSData *)convertDataFromLittleEndianToHost:(NSMutableData *)data{
-
-	void *ptr = malloc([data length]);	// Much faster than using the mutableBytes function
+- (NSData *)convertDataFromLittleEndianToHost:(NSMutableData *)data
+{
+	void *ptr = malloc([data length]);
 	if( ptr)
 	{
 		memcpy( ptr, [data bytes], [data length]);
 		
-		if (NSHostByteOrder() == NS_BigEndian){
-			if (_pixelDepth <= 16 && _pixelDepth > 8) {		
-				//NSLog(@"Swap shorts");
-				
-				#if __ppc__
-				if ( DCMHasAltiVec()) { 
-					 SwapShorts( (vector unsigned short *) ptr, [data length]/2); 
-				}
-				else
-				#endif
-				{	
-					
-					int i = 0;
-					unsigned short *shortsToSwap = (unsigned short *) ptr;
-					//signed short *signedShort = ptr;
-					int length = [data length]/2;
-					for (i = 0; i < length; i++) {
-						shortsToSwap[i] = NSSwapShort(shortsToSwap[i]);
-					}
-				}
+		if (NSHostByteOrder() == NS_BigEndian)
+		{
+			if (_pixelDepth <= 16 && _pixelDepth > 8)
+			{
+				unsigned short *shortsToSwap = (unsigned short *) ptr;
+				int length = [data length]/2;
+				while( length-- > 0)
+					shortsToSwap[ length] = NSSwapShort( shortsToSwap[ length]);
 			}
-			else if (_pixelDepth > 16) {
-				
-				#if __ppc__
-				if ( DCMHasAltiVec()) { 
-					 SwapLongs( (vector unsigned int *) ptr, [data length]/4);			 
-				}
-				else
-				#endif
-				{		
-					int i = 0;
-					unsigned long *longsToSwap = (unsigned long *) ptr;
-					//signed short *signedShort = ptr;
-					int length = [data length]/4;
-					for (i = 0; i < length; i++) {
-						longsToSwap[i] = NSSwapLong(longsToSwap[i]);
-					}
-				}
+			else if (_pixelDepth > 16)
+			{
+				unsigned long *longsToSwap = (unsigned long *) ptr;
+				int length = [data length]/4;
+				while( length-- > 0)
+					longsToSwap[ length] = NSSwapLong(longsToSwap[ length]);
 			}
 		}
-		
 		[data replaceBytesInRange:NSMakeRange(0, [data length]) withBytes: ptr];
-		
 		free( ptr);
 	}
 	return data;
 }
-//  Big Endian to host will need Intel Vectorizing rather than Altivec
-- (NSData *)convertDataFromBigEndianToHost:(NSMutableData *)data{
-	if (NSHostByteOrder() == NS_LittleEndian){
-		if (_pixelDepth <= 16 && _pixelDepth > 8) {		
-			int i = 0;
-			unsigned short *shortsToSwap = (unsigned short *) [data mutableBytes];
-			//signed short *signedShort = [data mutableBytes];
-			int length = [data length]/2;
-			for (i = 0; i < length; i++) {
-				shortsToSwap[i] = NSSwapShort(shortsToSwap[i]);
-			}
-		}
-		else if (_pixelDepth > 16) {
-			int i = 0;
-			unsigned long *longsToSwap = (unsigned long *) [data mutableBytes];
-			//signed short *signedShort = [data mutableBytes];
-			int length = [data length]/4;
-			for (i = 0; i < length; i++) {
-				longsToSwap[i] = NSSwapLong(longsToSwap[i]);
-			}
-		}
-	}
-	return data;
 
+//  Big Endian to host will need 
+- (NSData *)convertDataFromBigEndianToHost:(NSMutableData *)data
+{
+	void *ptr = malloc([data length]);
+	if( ptr)
+	{
+		memcpy( ptr, [data bytes], [data length]);
+		
+		if (NSHostByteOrder() == NS_LittleEndian)
+		{
+			if (_pixelDepth <= 16 && _pixelDepth > 8)
+			{
+				unsigned short *shortsToSwap = (unsigned short *) ptr;
+				int length = [data length]/2;
+				while( length-- > 0)
+					shortsToSwap[ length] = NSSwapShort(shortsToSwap[ length]);
+			}
+			else if (_pixelDepth > 16)
+			{
+				unsigned long *longsToSwap = (unsigned long *) ptr;
+				int length = [data length]/4;
+				while( length-- > 0)
+					longsToSwap[ length] = NSSwapLong(longsToSwap[ length]);
+			}
+		}
+		[data replaceBytesInRange:NSMakeRange(0, [data length]) withBytes: ptr];
+		free( ptr);
+	}
+	
+	return data;
 }
 - (void)convertBigEndianToHost{
 }
@@ -3749,18 +3731,41 @@ NS_ENDHANDLER
 		{
 			if( [[_framesDecoded objectAtIndex: index] boolValue] == NO)
 			{
-				//Little Endian Data and BigEndian Host
 				if ((NSHostByteOrder() == NS_BigEndian) && ([transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax]] || [transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax]]))
 				{
-					data = [self convertDataFromLittleEndianToHost:subData];
-					[_framesDecoded replaceObjectAtIndex: index withObject: [NSNumber numberWithBool: YES]];
+					data = [self convertDataFromLittleEndianToHost: subData];
 				}
 				//Big Endian Data and little Endian host
 				else  if ((NSHostByteOrder() == NS_LittleEndian) && [transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax ExplicitVRBigEndianTransferSyntax]])
 				{
-					data = [self convertDataFromBigEndianToHost:subData];
-					[_framesDecoded replaceObjectAtIndex: index withObject: [NSNumber numberWithBool: YES]];
+					data = [self convertDataFromBigEndianToHost: subData];
 				}
+				[_framesDecoded replaceObjectAtIndex: index withObject: [NSNumber numberWithBool: YES]];
+			}
+		}
+		else if(transferSyntax.isEncapsulated == NO && [self.vr isEqualToString: @"OW"])
+		{
+			if( [[_framesDecoded objectAtIndex: index] boolValue] == NO)
+			{
+				if( (NSHostByteOrder() != NS_BigEndian && [transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax ExplicitVRBigEndianTransferSyntax]]) ||
+					(NSHostByteOrder() == NS_BigEndian && [transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax ExplicitVRBigEndianTransferSyntax]] == NO))
+				{
+					void *ptr = malloc( [subData length]);
+					if( ptr)
+					{
+						memcpy( ptr, [subData bytes], [subData length]);
+						
+						unsigned short *shortsToSwap = (unsigned short *) ptr;
+						int length = [data length]/2;
+						while( length-- > 0)
+							shortsToSwap[ length] = NSSwapShort( shortsToSwap[ length]);
+						
+						[subData replaceBytesInRange:NSMakeRange(0, [subData length]) withBytes: ptr];
+						free( ptr);
+					}
+					data = subData;
+				}
+				[_framesDecoded replaceObjectAtIndex: index withObject: [NSNumber numberWithBool: YES]];
 			}
 		}
 		

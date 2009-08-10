@@ -1497,7 +1497,15 @@ Papy3GetPixelData (PapyShort inFileNb, int inImageNb, SElement *inGrOrModP, int 
       return NULL;
       break;
   } /* switch */
-    
+
+
+  if (gArrTransfSyntax [inFileNb] == LITTLE_ENDIAN_IMPL) // We need the vr ! even for implicit syntaxes
+  {
+	if ( gx0028BitsStored [inFileNb] <= 8 || gArrCompression [inFileNb] != NONE) 
+		theElemP->vr = OB;
+	else
+		theElemP->vr = OW;
+  }
   
   /* get the size of the pixel data */
   if (inModuleId == IconImage) 
@@ -1643,7 +1651,39 @@ Papy3GetPixelData (PapyShort inFileNb, int inImageNb, SElement *inGrOrModP, int 
 	  }
 	  
     } /* if ...more than 8 bits depth image */
-    
+    else
+	{
+		if( gArrCompression [inFileNb] == NONE && theElemP->vr == OW)
+		{
+		  register PapyUShort	 *theUShortP = (PapyUShort *) theBufP;
+		  register long			ii;
+		  
+		  ii = theBytesToRead / 2;
+		  #if __BIG_ENDIAN__
+		  {
+			if( gArrTransfSyntax [inFileNb] != BIG_ENDIAN_EXPL)
+			{
+			  while( ii-- > 0)
+			  {
+			    *theUShortP++ = OSSwapLittleToHostInt16( *theUShortP);
+			  }
+			}
+		  }
+		  #else
+		  if( gArrTransfSyntax [inFileNb] != BIG_ENDIAN_EXPL)
+		  {
+		  
+		  }
+		  else
+		  {
+			while( ii-- > 0)
+			  {
+				*theUShortP++ = OSSwapBigToHostInt16( *theUShortP);
+			  }
+		  }
+		  #endif
+		}
+	}
   } /* if ...module IconImage or photometric interpretation is monochrome/palette/rgb */
   
   /* *** not IconImage module and the pixels are compressed *** */
@@ -2882,27 +2922,22 @@ PutBufferInGroup3 (PapyShort inFileNb, unsigned char *ioBuffP, SElement *ioGroup
 			
 			if( *ioBufPosP - theInitialBufPos + theElemLength > inBytesToRead)
 			{
-				printf("err length : *ioBufPosP - theInitialBufPos + theElemLength > inBytesToRead -- BAD GROUP LENGTH - CORRUPTED DICOM FILE, %s\n", gPapyFilePath [inFileNb]);
+				printf("****** err length : *ioBufPosP - theInitialBufPos + theElemLength > inBytesToRead -- BAD GROUP LENGTH - CORRUPTED DICOM FILE, %s\n", gPapyFilePath [inFileNb]);
 				RETURN (papReadGroup);
 			}
 			
             /* extract the element depending on the value representation */
-	          if ((theErr = PutBufferInElement3 (inFileNb, ioBuffP, theElemLength, 
-				               &theArrElemP [theStructPos], ioBufPosP, theInitialFilePos)) < 0)
+	          if ((theErr = PutBufferInElement3 (inFileNb, ioBuffP, theElemLength, &theArrElemP [theStructPos], ioBufPosP, theInitialFilePos)) < 0)
 			{
-				printf("err PutBufferInElement3, %s\n", gPapyFilePath [inFileNb]);
+				printf("****** err PutBufferInElement3, %s\n", gPapyFilePath [inFileNb]);
 			    RETURN (theErr);  
             }
 			
 			/* if it was a sequence with an undefined length, move the buffer accordingly */
             if (theIsUndefSeqLen)
-			{
               *ioBufPosP += 8L;		//ANTOINE - au lieu de + !!!
-			  
-            }
-
+			
 			*ioBufPosP = ccval + theElemLength; //ANTOINE
-
 		  } /* if ...theElemLength > 0 */
         } /* else ...element found */
 	

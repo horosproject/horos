@@ -646,7 +646,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 						
 						NoOfFrames = count;
 						
-						NSLog( @"TIFF NoOfFrames: %d", NoOfFrames);
+//						NSLog( @"TIFF NoOfFrames: %d", NoOfFrames);
 						
 						TIFFClose(tif);
 					}
