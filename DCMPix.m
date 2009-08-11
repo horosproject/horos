@@ -1230,7 +1230,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 {
 	// Why this? NSUserDefaults performances are poor if not in main thread
 	
-	if( update) gUserDefaultsSet = NO;
+	if( update)
+		gUserDefaultsSet = NO;
 	
 	if( gUserDefaultsSet == NO)
 	{
@@ -1251,10 +1252,13 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		gFULL32BITPIPELINE = NO;
 #endif
 		
-		//		NSLog( @"gUseShutter == %d", gUseShutter);
-		//		NSLog( @"gDisplayDICOMOverlays == %d", gDisplayDICOMOverlays);
-		//		NSLog( @"gUseVOILUT == %d", gUseVOILUT);
-		//		NSLog( @"gUSEPAPYRUSDCMPIX == %d", gUSEPAPYRUSDCMPIX);
+		if( gUseVOILUT == YES && gUSEPAPYRUSDCMPIX == NO)
+		{
+			[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"UseVOILUT"];
+			gUseVOILUT = NO; // VOILUT is not supported with DCMFramework
+			
+			NSLog( @"**** VOILUT is not supported with DCMFramework -> It will be turned off");
+		}
 	}
 }
 
@@ -4883,8 +4887,8 @@ END_CREATE_ROIS:
 
 - (void) setVOILUT:(int) first number :(unsigned int) number depth :(unsigned int) depth table :(unsigned int *)table image:(unsigned short*) src isSigned:(BOOL) isSigned
 {
-	long			i;
-	int				index;
+	int i, index;
+	BOOL atLeastOnePixel = NO;
 	
 	if( isSigned)
 	{
@@ -4895,7 +4899,8 @@ END_CREATE_ROIS:
 		{
 			index = signedSrc[ i] - first;
 			if( index <= 0) index = 0;
-			if( index >= number) index = number -1;
+			else if( index >= number) index = number -1;
+			else atLeastOnePixel = YES;
 			
 			src[ i] = table[ index];
 		}
@@ -4907,10 +4912,18 @@ END_CREATE_ROIS:
 		{
 			index = src[ i] - first;
 			if( index <= 0) index = 0;
-			if( index >= number) index = number -1;
+			else if( index >= number) index = number -1;
+			else atLeastOnePixel = YES;
 			
 			src[ i] = table[ index];
 		}
+	}
+	
+	if( atLeastOnePixel == NO)
+	{
+		gUseVOILUT = NO;
+		[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"UseVOILUT"];
+		NSLog( @"***** VOI LUT seems corrupted ! -> It will be turned OFF");
 	}
 }
 
@@ -7035,7 +7048,7 @@ END_CREATE_ROIS:
 						if( val)
 						{
 							VOILUT_number = val->us;		val++;
-							VOILUT_first = val->us;			val++;
+							VOILUT_first = val->ss;			val++;	// By definition it should be us, but some images with neg values expect a ss
 							VOILUT_depth = val->us;			val++;
 						}
 						
