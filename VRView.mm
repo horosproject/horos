@@ -1078,7 +1078,14 @@ public:
 		
 		[exportDCM setOffset: offset];
 		[exportDCM setSigned: isSigned];
-		[exportDCM setDefaultWWWL: ww :wl];
+		
+		if( [[[controller viewer2D] modality] isEqualToString:@"PT"] == YES && firstObject.SUVConverted == YES && firstObject.factorPET2SUV != 0)
+		{
+			float slope = firstObject.factorPET2SUV * firstObject.slope;
+			[exportDCM setDefaultWWWL: ww*slope :wl*slope];
+		}
+		else
+			[exportDCM setDefaultWWWL: ww :wl];
 		
 		[self getOrientation: o];
 		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"exportOrientationIn3DExport"])
@@ -6365,8 +6372,8 @@ public:
 			
 			float slope = 1;
 			
-			if( [[[controller blendingController] modality] isEqualToString:@"PT"])
-				slope = 1. / im.factorPET2SUV;
+			if( [[[controller viewer2D] modality] isEqualToString:@"PT"] == YES && firstObject.SUVConverted == YES && firstObject.factorPET2SUV != 0)
+				slope = firstObject.factorPET2SUV * firstObject.slope;
 			
 			buf = (unsigned char*) malloc( *width * *height * *spp * *bpp / 8);
 			if( buf)

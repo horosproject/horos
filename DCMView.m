@@ -9016,8 +9016,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			
 			float slope = 1;
 			
-			if( [[[dcmFilesList objectAtIndex: curImage] valueForKey:@"modality"] isEqualToString:@"PT"])
-				slope = 1. / im.factorPET2SUV;
+			if( [[[dcmFilesList objectAtIndex: curImage] valueForKey:@"modality"] isEqualToString:@"PT"] == YES && im.SUVConverted == YES && im.factorPET2SUV != 0)
+				slope = im.factorPET2SUV * im.slope;
 			
 			if( buf)
 			{
@@ -9170,8 +9170,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				
 				float slope = 1;
 				
-				if( [[[dcmFilesList objectAtIndex: curImage] valueForKey:@"modality"] isEqualToString:@"PT"])
-					slope = 1. / im.factorPET2SUV;
+				if( [[[dcmFilesList objectAtIndex: curImage] valueForKey:@"modality"] isEqualToString:@"PT"] == YES && dcm.SUVConverted == YES && dcm.factorPET2SUV != 0)
+					slope = dcm.factorPET2SUV * dcm.slope;
 				
 				long i = *width * *height * *spp * *bpp / 8;
 				buf = malloc( i);
