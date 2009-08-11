@@ -82,7 +82,7 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 	NSString			*patientPosition;
 	BOOL				hasSUV, SUVConverted;
 	NSString			*units, *decayCorrection;
-	float				decayFactor;
+	float				decayFactor, factorPET2SUV;
 	float				radionuclideTotalDose;
 	float				radionuclideTotalDoseCorrected;
 	NSCalendarDate		*acquisitionTime;
@@ -193,7 +193,7 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 @property long frameNo;
 @property(setter=setID:) long ID;
 
-@property float minValueOfSeries, maxValueOfSeries;
+@property float minValueOfSeries, maxValueOfSeries, factorPET2SUV;
 
 // Dimensions in pixels
 @property long pwidth, pheight;

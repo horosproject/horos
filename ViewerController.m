@@ -1103,6 +1103,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 				// SUV
 				[[newPixList lastObject] setDisplaySUVValue: [firstPix displaySUVValue]];
 				[[newPixList lastObject] setSUVConverted: [firstPix SUVConverted]];
+				[[newPixList lastObject] setFactorPET2SUV: [firstPix factorPET2SUV]];
 				[[newPixList lastObject] setRadiopharmaceuticalStartTime: [firstPix radiopharmaceuticalStartTime]];
 				[[newPixList lastObject] setPatientsWeight: [firstPix patientsWeight]];
 				[[newPixList lastObject] setRadionuclideTotalDose: [firstPix radionuclideTotalDose]];
@@ -12798,6 +12799,7 @@ int i,j,l;
 					*imageData++ *=  factorPET2SUV;
 				
 				pix.SUVConverted = YES;
+				pix.factorPET2SUV = factorPET2SUV;
 			}
 			
 			[pix computePixMinPixMax];

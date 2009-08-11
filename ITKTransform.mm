@@ -220,6 +220,7 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 			// SUV
 			[curPix setDisplaySUVValue: [originalPix displaySUVValue]];
 			[curPix setSUVConverted: [originalPix SUVConverted]];
+			[curPix setFactorPET2SUV: [originalPix factorPET2SUV]];
 			[curPix setRadiopharmaceuticalStartTime: [originalPix radiopharmaceuticalStartTime]];
 			[curPix setPatientsWeight: [originalPix patientsWeight]];
 			[curPix setRadionuclideTotalDose: [originalPix radionuclideTotalDose]];

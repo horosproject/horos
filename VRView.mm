@@ -6363,6 +6363,11 @@ public:
 			d8.width = *width;
 			d8.rowBytes = *width * sizeof( short);
 			
+			float slope = 1;
+			
+			if( [[[controller blendingController] modality] isEqualToString:@"PT"])
+				slope = 1. / im.factorPET2SUV;
+			
 			buf = (unsigned char*) malloc( *width * *height * *spp * *bpp / 8);
 			if( buf)
 			{
@@ -6373,7 +6378,7 @@ public:
 					if( isSigned) *isSigned = YES;
 					if( offset) *offset = 0;
 					
-					vImageConvert_FTo16S( &sf, &d8, 0,  1, 0);
+					vImageConvert_FTo16S( &sf, &d8, 0, slope, 0);
 				}
 				else
 				{
@@ -6382,12 +6387,12 @@ public:
 					if( [controller minimumValue] >= 0)
 					{
 						if( offset) *offset = 0;
-						vImageConvert_FTo16U( &sf, &d8, 0,  1, 0);
+						vImageConvert_FTo16U( &sf, &d8, 0, slope, 0);
 					}
 					else
 					{
 						if( offset) *offset = -1024;
-						vImageConvert_FTo16U( &sf, &d8, -1024,  1, 0);
+						vImageConvert_FTo16U( &sf, &d8, -1024, slope, 0);
 					}
 				}
 			}

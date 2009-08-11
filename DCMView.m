@@ -9014,6 +9014,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			srcf.data = [im fImage];
 			dst8.data = buf;
 			
+			float slope = 1;
+			
+			if( [[[dcmFilesList objectAtIndex: curImage] valueForKey:@"modality"] isEqualToString:@"PT"])
+				slope = 1. / im.factorPET2SUV;
+			
 			if( buf)
 			{
 				if( [curDCM minValueOfSeries] < -1024)
@@ -9021,7 +9026,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					if( isSigned) *isSigned = YES;
 					if( offset) *offset = 0;
 					
-					vImageConvert_FTo16S( &srcf, &dst8, 0,  1, 0);
+					vImageConvert_FTo16S( &srcf, &dst8, 0,  slope, 0);
 				}
 				else
 				{
@@ -9030,12 +9035,12 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					if( [curDCM minValueOfSeries] >= 0)
 					{
 						if( offset) *offset = 0;
-						vImageConvert_FTo16U( &srcf, &dst8, 0,  1, 0);
+						vImageConvert_FTo16U( &srcf, &dst8, 0,  slope, 0);
 					}
 					else
 					{
 						if( offset) *offset = -1024;
-						vImageConvert_FTo16U( &srcf, &dst8, -1024,  1, 0);
+						vImageConvert_FTo16U( &srcf, &dst8, -1024,  slope, 0);
 					}
 				}
 			}
@@ -9163,6 +9168,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				
 				srcf.data = [dcm computefImage];
 				
+				float slope = 1;
+				
+				if( [[[dcmFilesList objectAtIndex: curImage] valueForKey:@"modality"] isEqualToString:@"PT"])
+					slope = 1. / im.factorPET2SUV;
+				
 				long i = *width * *height * *spp * *bpp / 8;
 				buf = malloc( i);
 				if( buf)
@@ -9174,7 +9184,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						if( isSigned) *isSigned = YES;
 						if( offset) *offset = 0;
 						
-						vImageConvert_FTo16S( &srcf, &dst8, 0,  1, 0);
+						vImageConvert_FTo16S( &srcf, &dst8, 0,  slope, 0);
 					}
 					else
 					{
@@ -9183,12 +9193,12 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						if( [dcm minValueOfSeries] >= 0)
 						{
 							if( offset) *offset = 0;
-							vImageConvert_FTo16U( &srcf, &dst8, 0,  1, 0);
+							vImageConvert_FTo16U( &srcf, &dst8, 0,  slope, 0);
 						}
 						else
 						{
 							if( offset) *offset = -1024;
-							vImageConvert_FTo16U( &srcf, &dst8, -1024,  1, 0);
+							vImageConvert_FTo16U( &srcf, &dst8, -1024,  slope, 0);
 						}
 					}
 				}
