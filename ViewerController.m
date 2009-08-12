@@ -387,10 +387,6 @@ static int hotKeyToolCrossTable[] =
 	{
 		if( [self selectedROI]) valid = YES;
 	}
-	else if( [item action] == @selector( createLayerROIFromSelectedROI:))
-	{
-		if( [self selectedROI]) valid = YES;
-	}
 	else if( [item action] == @selector( roiVolume:))
 	{
 		if( [self selectedROI]) valid = YES;
@@ -398,6 +394,20 @@ static int hotKeyToolCrossTable[] =
 	else if( [item action] == @selector( roiVolumeEraseRestore:))
 	{
 		if( [self selectedROI]) valid = YES;
+	}
+	else if( [item action] == @selector( createLayerROIFromSelectedROI:))
+	{
+		if( [self selectedROI])
+		{
+			valid = YES;
+			
+			ROI *r = [self selectedROI];
+			
+			if( r.type == tText) valid = NO;
+			if( r.type == tMesure) valid = NO;
+			if( r.type == t2DPoint) valid = NO;
+			if( r.type == tArrow) valid = NO;
+		}
 	}
 	else if( [item action] == @selector( groupSelectedROIs:))
 	{
@@ -10473,6 +10483,11 @@ int i,j,l;
 
 - (ROI*)createLayerROIFromROI:(ROI*)roi;
 {
+	if( roi.type == tText) return nil;
+	if( roi.type == tMesure) return nil;
+	if( roi.type == tArrow) return nil;
+	if( roi.type == t2DPoint) return nil;
+	
 	float *data;
 	float *locations;
 	long dataSize;
