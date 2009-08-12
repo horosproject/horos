@@ -8712,7 +8712,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		long viewSize =  *bpp * *spp * *width * *height / 8;
 		int	globalWidth = *width * _imageColumns;
 		int globalHeight = *height * _imageRows;
-		
+			
 		globalView = malloc( viewSize * _imageColumns * _imageRows);
 		
 		free( firstView);
@@ -8813,7 +8813,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	{
 		for( ROI *r in curRoiList)	[r setROIMode: ROI_sleep];
 		
-		if( force8bits == YES || colorTransfer == YES || curDCM.isRGB == YES || blendingView != nil || [curDCM SUVConverted] || [[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"PT"] )		// Screen Capture in RGB - 8 bit
+		if( force8bits == YES || curDCM.isRGB == YES || blendingView != nil)		// Screen Capture in RGB - 8 bit
 		{
 			NSPoint shiftOrigin;
 			BOOL smartCropped = NO;
@@ -9102,42 +9102,42 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				}
 			}
 		}
-		else if( colorBuf != nil)		// A CLUT is applied
-		{
-//			BOOL BWInverse = YES;
-//			
-//			// Is it inverse BW? We consider an inverse BW as a mono-channel image.
-//			for( int i = 0; i < 256 && BWInverse == YES; i++)
-//			{
-//				if( redTable[i] != 255-i || greenTable[i] != 255 -i || blueTable[i] != 255-i) BWInverse = NO;
-//			}
-//			
-//			if( BWInverse == NO)
-//			{
-				[self display];
-				
-				*spp = 3;
-				*bpp = 8;
-				
-				long i = *width * *height * *spp * *bpp / 8;
-				buf = malloc( i );
-				if( buf)
-				{
-					unsigned char *dst = buf, *src = colorBuf;
-					i = *width * *height;
-					
-					// CONVERT ARGB TO RGB
-					while( i-- > 0)
-					{
-						src++;
-						*dst++ = *src++;
-						*dst++ = *src++;
-						*dst++ = *src++;
-					}
-				}
-//			}
-//			else processed = NO;
-		}
+//		else if( colorBuf != nil)		// A CLUT is applied
+//		{
+////			BOOL BWInverse = YES;
+////			
+////			// Is it inverse BW? We consider an inverse BW as a mono-channel image.
+////			for( int i = 0; i < 256 && BWInverse == YES; i++)
+////			{
+////				if( redTable[i] != 255-i || greenTable[i] != 255 -i || blueTable[i] != 255-i) BWInverse = NO;
+////			}
+////			
+////			if( BWInverse == NO)
+////			{
+//				[self display];
+//				
+//				*spp = 3;
+//				*bpp = 8;
+//				
+//				long i = *width * *height * *spp * *bpp / 8;
+//				buf = malloc( i );
+//				if( buf)
+//				{
+//					unsigned char *dst = buf, *src = colorBuf;
+//					i = *width * *height;
+//					
+//					// CONVERT ARGB TO RGB
+//					while( i-- > 0)
+//					{
+//						src++;
+//						*dst++ = *src++;
+//						*dst++ = *src++;
+//						*dst++ = *src++;
+//					}
+//				}
+////			}
+////			else processed = NO;
+//		}
 		else
 		{
 			if( force8bits)	// I don't want 16 bits data, only 8 bits data

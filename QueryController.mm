@@ -1838,24 +1838,25 @@ static const char *GetPrivateIP()
 - (void) performRetrieve:(NSArray*) array
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	
 	[array retain];
 	
 	@try
 	{
-		NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithDictionary: [[[queryManager parameters] copy] autorelease]];
+		NSMutableDictionary *dictionary = [[NSMutableDictionary alloc] initWithDictionary: [queryManager parameters] copyItems: YES];
 		
 		NSLog( @"Retrieve START");
 		
 		for( NSUInteger i = 0; i < [array count] ; i++)
 		{
-			DCMTKQueryNode	*object = [array objectAtIndex: i];
+			DCMTKQueryNode *object = [[array objectAtIndex: i] retain];
 			
 			if( [[object extraParameters] valueForKey: @"CGET"])
-				[dictionary setObject: [[object extraParameters] valueForKey: @"CGET"] forKey:@"CGET"];
-			[dictionary setObject:[object valueForKey:@"calledAET"] forKey:@"calledAET"];
-			[dictionary setObject:[object valueForKey:@"hostname"] forKey:@"hostname"];
-			[dictionary setObject:[object valueForKey:@"port"] forKey:@"port"];
-			[dictionary setObject:[object valueForKey:@"transferSyntax"] forKey:@"transferSyntax"];
+				[dictionary setObject: [[[[object extraParameters] valueForKey: @"CGET"] copy] autorelease] forKey:@"CGET"];
+			[dictionary setObject:[[[object valueForKey:@"calledAET"] copy] autorelease] forKey:@"calledAET"];
+			[dictionary setObject:[[[object valueForKey:@"hostname"] copy] autorelease] forKey:@"hostname"];
+			[dictionary setObject:[[[object valueForKey:@"port"] copy] autorelease] forKey:@"port"];
+			[dictionary setObject:[[[object valueForKey:@"transferSyntax"] copy] autorelease] forKey:@"transferSyntax"];
 
 			NSDictionary *dstDict = nil;
 			BOOL allowCGET = YES;
@@ -1881,7 +1882,7 @@ static const char *GetPrivateIP()
 				int numberPacketsReceived = 0;
 				if( [[NSUserDefaults standardUserDefaults] boolForKey:@"Ping"] == NO || (SimplePing( [[dictionary valueForKey:@"hostname"] UTF8String], 1, [[NSUserDefaults standardUserDefaults] integerForKey:@"DICOMTimeout"], 1,  &numberPacketsReceived) == 0 && numberPacketsReceived > 0))
 				{
-					[object move:dictionary allowCGET: allowCGET];
+					[object move: dictionary allowCGET: allowCGET];
 					
 					@synchronized( previousAutoRetrieve)
 					{
@@ -1889,6 +1890,8 @@ static const char *GetPrivateIP()
 					}
 				}
 			}
+			
+			[object release];
 		}
 		
 		[NSThread sleepForTimeInterval: 0.5];	// To allow errorMessage on the main thread...
@@ -1897,11 +1900,14 @@ static const char *GetPrivateIP()
 			[item setShowErrorMessage: YES];
 		
 		NSLog(@"Retrieve END");
+		
+		[dictionary release];
 	}
 	@catch (NSException *e)
 	{
 		NSLog( @"performRetrieve exception: %@", e);
 	}
+	
 	[array release];
 	
 	[pool release];
