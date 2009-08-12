@@ -10546,6 +10546,12 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						float min = curWL - curWW / 2;
 						float max = curWL + curWW / 2;
 						
+						if( max-min == 0)
+						{
+							min = [curDCM fullwl] - [curDCM fullww] / 2;
+							max = [curDCM fullwl] + [curDCM fullww] / 2;
+						}
+						
 						glPixelTransferf( GL_RED_BIAS, -min/(max-min));
 						glPixelTransferf( GL_RED_SCALE, 1./(max-min));
 						glTexImage2D (TEXTRECTMODE, 0, GL_LUMINANCE_FLOAT32_APPLE, currWidth, currHeight, 0, GL_LUMINANCE, GL_FLOAT, pBuffer);
