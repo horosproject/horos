@@ -1134,7 +1134,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 
 @synthesize countstackMean, stackDirection, full32bitPipeline, needToCompute8bitRepresentation, subtractedfImage;
 @synthesize frameNo, notAbleToLoadImage, shutterPolygonal;
-@synthesize minValueOfSeries, maxValueOfSeries, factorPET2SUV;
+@synthesize minValueOfSeries, maxValueOfSeries, factorPET2SUV, slope;
 @synthesize isRGB, pwidth = width, pheight = height;
 @synthesize pixelRatio, transferFunction, subPixOffset, isOriginDefined;
 
@@ -3363,6 +3363,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	copy->patientsWeight = self->patientsWeight;
 	copy->SUVConverted = self->SUVConverted;
 	copy->factorPET2SUV = self->factorPET2SUV;
+	copy->slope = self->slope;
+	copy->offset = self->offset;
 	
 	copy->units = [self->units retain];
 	copy->decayCorrection = [self->decayCorrection retain];
@@ -11607,6 +11609,8 @@ END_CREATE_ROIS:
 	self.displaySUVValue = from.displaySUVValue;
 	self.SUVConverted = from.SUVConverted;
 	self.factorPET2SUV = from.factorPET2SUV;
+	self.slope = from.slope;
+	
 	self.decayCorrection = from.decayCorrection;
 	self.maxValueOfSeries = from.maxValueOfSeries;
 	self.minValueOfSeries = from.minValueOfSeries;

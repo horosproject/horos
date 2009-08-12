@@ -207,9 +207,8 @@ Note setter is different to not break existing usage. :-( */
 
 /** WW & WL */
 @property(readonly) float ww, wl, fullww, fullwl;
-@property float savedWW, savedWL, *subtractedfImage;
+@property float slope, offset, savedWW, savedWL, *subtractedfImage;
 
-@property(readonly) float slope, offset;
 @property(readonly) BOOL notAbleToLoadImage;
 @property(readonly) NSPoint *shutterPolygonal;
 

@@ -15111,9 +15111,9 @@ int i,j,l;
 	
 	switch( screenCapture)
 	{
-		case 0: /*memory data*/		force8bits = NO;	modalityAsSource = YES;		break;
+		case 0: /*memory data*/		force8bits = NO;	modalityAsSource = YES;		break; // 16-bit
 		case 1: /*screen capture*/	force8bits = YES;	break;
-		case 2: /*screen capture*/	force8bits = NO;	break;
+		case 2: /*screen capture*/	force8bits = NO;	modalityAsSource = YES;		break; // 16-bit
 	}
 	
 	unsigned char *data = nil;
