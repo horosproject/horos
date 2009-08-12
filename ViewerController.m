@@ -15308,6 +15308,7 @@ int i,j,l;
 		{
 			float slope = [[imageView curDCM] factorPET2SUV] * [[imageView curDCM] slope];
 			[exportDCM setDefaultWWWL: cww*slope :cwl*slope];
+			[exportDCM setSlope: [[imageView curDCM] slope]];
 		}
 		else
 			[exportDCM setDefaultWWWL: cww :cwl];

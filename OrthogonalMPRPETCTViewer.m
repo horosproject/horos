@@ -2139,7 +2139,15 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 		[exportDCM setSeriesDescription: [dcmSeriesName stringValue]];
 		
 		[curView getWLWW:&cwl :&cww];
-		[exportDCM setDefaultWWWL: cww :cwl];
+		
+		if( [[[[curView controller] originalDCMFilesList] valueForKeyPath: @"series.modality"] isEqualToString: @"PT"] == YES && [[curView controller] firtsDCMPixInOriginalDCMPixList].SUVConverted == YES && [[curView controller] firtsDCMPixInOriginalDCMPixList].factorPET2SUV != 0)
+		{
+			float slope = [[curView controller] firtsDCMPixInOriginalDCMPixList].factorPET2SUV * [[curView controller] firtsDCMPixInOriginalDCMPixList].slope;
+			[exportDCM setDefaultWWWL: cww*slope :cwl*slope];
+			[exportDCM setSlope: [[curView controller] firtsDCMPixInOriginalDCMPixList].slope];
+		}
+		else
+			[exportDCM setDefaultWWWL: cww :cwl];
 		
 		[exportDCM setPixelSpacing: imSpacing[ 0] :imSpacing[ 1]];
 			

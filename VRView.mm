@@ -1083,6 +1083,7 @@ public:
 		{
 			float slope = firstObject.factorPET2SUV * firstObject.slope;
 			[exportDCM setDefaultWWWL: ww*slope :wl*slope];
+			[exportDCM setSlope: firstObject.slope];
 		}
 		else
 			[exportDCM setDefaultWWWL: ww :wl];

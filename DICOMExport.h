@@ -42,7 +42,7 @@
 		NSString			*exportSeriesDescription;
 		
 		long				ww, wl;
-		float				spacingX, spacingY;
+		float				spacingX, spacingY, slope;
 		float				sliceThickness;
 		float				sliceInterval;
 		float				orientation[ 6];
@@ -74,6 +74,7 @@
 - (void) setSeriesDescription: (NSString*) desc;
 - (void) setSeriesNumber: (long) no;
 - (void) setDefaultWWWL: (long) ww :(long) wl;
+- (void) setSlope: (float) s;
 - (void) setPixelSpacing: (float) x :(float) y;
 - (void) setSliceThickness: (double) t;
 - (void) setOrientation: (float*) o;

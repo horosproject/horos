@@ -9247,6 +9247,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				
 			free( buf);
 			
+			if( imSpacing)
+				imSpacing[ 1] = imSpacing[ 0];
+			
 			buf = dstVimage.data;
 			*height = dstVimage.height;
 		}

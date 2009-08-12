@@ -70,12 +70,12 @@
 		exportSeriesDescription = @"OsiriX SC";
 		[exportSeriesDescription retain];
 		
-		
 		spacingX = 0;
 		spacingY = 0;
 		sliceThickness = 0;
 		sliceInterval = 0;
 		slicePosition = 0;
+		slope = 1;
 		
 		int i;
 		for( i = 0; i < 6; i++) orientation[ i] = 0;
@@ -118,6 +118,11 @@
 - (void) setOffset: (int) o
 {
 	offset = o;
+}
+
+- (void) setSlope: (float) s
+{
+	slope = s;
 }
 
 - (long) setPixelData:		(unsigned char*) idata
@@ -527,8 +532,8 @@
 					[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt: offset]] forName:@"RescaleIntercept"];
 				else
 					[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt: 0]] forName:@"RescaleIntercept"];
-					
-				[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt:1]] forName:@"RescaleSlope"];
+				
+				[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithFloat: slope]] forName:@"RescaleSlope"];
 				
 				if( [[dcmObject attributeValueWithName:@"Modality"] isEqualToString:@"CT"]) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject: @"HU"] forName:@"RescaleType"];
 				else [dcmDst setAttributeValues:[NSMutableArray arrayWithObject: @"US"] forName:@"RescaleType"];

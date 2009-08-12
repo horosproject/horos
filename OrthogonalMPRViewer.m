@@ -1297,7 +1297,15 @@ static NSString*	VRPanelToolbarItemIdentifier			= @"MIP.tif";
 		[exportDCM setSeriesDescription: [dcmSeriesName stringValue]];
 		
 		[[self keyView] getWLWW:&cwl :&cww];
-		[exportDCM setDefaultWWWL: cww :cwl];
+		
+		if( [[viewer modality] isEqualToString: @"PT"] == YES && [[viewer imageView] curDCM].SUVConverted == YES && [[viewer imageView] curDCM].factorPET2SUV != 0)
+		{
+			float slope = [[viewer imageView] curDCM].factorPET2SUV * [[viewer imageView] curDCM].slope;
+			[exportDCM setDefaultWWWL: cww*slope :cwl*slope];
+			[exportDCM setSlope: [[viewer imageView] curDCM].slope];
+		}
+		else
+			[exportDCM setDefaultWWWL: cww :cwl];
 		
 		[exportDCM setPixelSpacing: imSpacing[ 0] :imSpacing[ 1]];
 			

@@ -108,7 +108,7 @@
 - (NSMutableArray*) pointsROIAtY: (long) y;
 
 - (NSMenu *)contextualMenu;
-
+- (DCMPix*) firtsDCMPixInOriginalDCMPixList;
 - (IBAction) flipVertical: (id)sender;
 - (IBAction) flipHorizontal: (id)sender;
 
