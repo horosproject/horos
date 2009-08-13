@@ -6566,7 +6566,7 @@ static NSArray*	statesArray = nil;
 		
 		[managedObjectContext unlock];
 		
-		if([imagesArray count]==1 )
+		if([imagesArray count] == 1)
 		{
 			if([[imagesArray objectAtIndex:0] isEqualToString:@"XMLDESCRIPTOR"])
 				return;

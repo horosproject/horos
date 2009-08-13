@@ -1062,66 +1062,73 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 	if( ipixelSpacingx == 0) return;
 	if( ipixelSpacingy == 0) return;
 	
-	if( pixelSpacingX != ipixelSpacingx)
+	if( pixelSpacingY == 0 || pixelSpacingX == 0)
 	{
-		change = YES;
+	
 	}
-	
-	if( pixelSpacingY != ipixelSpacingy)
+	else
 	{
-		change = YES;
-	}
-	
-	if( imageOrigin.x != iimageOrigin.x || imageOrigin.y != iimageOrigin.y)
-	{
-		change = YES;
-	}
-	
-	if( change == NO) return;
-	
-	NSPoint offset;
-	
-	offset.x = (imageOrigin.x - iimageOrigin.x)/pixelSpacingX;
-	offset.y = (imageOrigin.y - iimageOrigin.y)/pixelSpacingY;
-	
-	long modeSaved = mode;
-	mode = ROI_selected;
-	
-	[self roiMove:offset :sendNotification];
-	
-	if( pix)
-	{
-		BOOL inImage = NO;
-		NSRect imRect = NSMakeRect( 0, 0, pix.pwidth, pix.pheight);
-		NSArray *pts = [self points];
-		for( MyPoint* pt in pts)
+		if( pixelSpacingX != ipixelSpacingx)
 		{
-			if( NSPointInRect( NSMakePoint( pt.x, pt.y), imRect))
-			{
-				inImage = YES;
-				break;
-			}
+			change = YES;
 		}
 		
-		if( inImage == NO)
-			[self roiMove: NSMakePoint( -offset.x, -offset.y) :sendNotification];
-	}
-	
-	mode = modeSaved;
+		if( pixelSpacingY != ipixelSpacingy)
+		{
+			change = YES;
+		}
+		
+		if( imageOrigin.x != iimageOrigin.x || imageOrigin.y != iimageOrigin.y)
+		{
+			change = YES;
+		}
+		
+		if( change == NO) return;
+		
+		NSPoint offset;
+		
+		offset.x = (imageOrigin.x - iimageOrigin.x)/pixelSpacingX;
+		offset.y = (imageOrigin.y - iimageOrigin.y)/pixelSpacingY;
+		
+		long modeSaved = mode;
+		mode = ROI_selected;
+		
+		[self roiMove:offset :sendNotification];
+		
+		if( pix)
+		{
+			BOOL inImage = NO;
+			NSRect imRect = NSMakeRect( 0, 0, pix.pwidth, pix.pheight);
+			NSArray *pts = [self points];
+			for( MyPoint* pt in pts)
+			{
+				if( NSPointInRect( NSMakePoint( pt.x, pt.y), imRect))
+				{
+					inImage = YES;
+					break;
+				}
+			}
+			
+			if( inImage == NO)
+				[self roiMove: NSMakePoint( -offset.x, -offset.y) :sendNotification];
+		}
+		
+		mode = modeSaved;
 
-	rect.origin.x *= (pixelSpacingX/ipixelSpacingx);
-	rect.origin.y *= (pixelSpacingY/ipixelSpacingy);
-	rect.size.width *= (pixelSpacingX/ipixelSpacingx);
-	rect.size.height *= (pixelSpacingY/ipixelSpacingy);
-	
-	for( long i = 0; i < [points count]; i++)
-	{
-		NSPoint aPoint = [[points objectAtIndex:i] point];
+		rect.origin.x *= (pixelSpacingX/ipixelSpacingx);
+		rect.origin.y *= (pixelSpacingY/ipixelSpacingy);
+		rect.size.width *= (pixelSpacingX/ipixelSpacingx);
+		rect.size.height *= (pixelSpacingY/ipixelSpacingy);
 		
-		aPoint.x *= (pixelSpacingX/ipixelSpacingx);
-		aPoint.y *= (pixelSpacingY/ipixelSpacingy);
-		
-		[[points objectAtIndex:i] setPoint: aPoint];
+		for( int i = 0; i < [points count]; i++)
+		{
+			NSPoint aPoint = [[points objectAtIndex:i] point];
+			
+			aPoint.x *= (pixelSpacingX/ipixelSpacingx);
+			aPoint.y *= (pixelSpacingY/ipixelSpacingy);
+			
+			[[points objectAtIndex:i] setPoint: aPoint];
+		}
 	}
 	
 	pixelSpacingX = ipixelSpacingx;
