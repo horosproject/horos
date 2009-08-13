@@ -85,21 +85,12 @@ enum photometricmode{DCM_UNKNOWN_PHOTOMETRIC, DCM_MONOCHROME1,  DCM_MONOCHROME2,
 - (NSData *)convertJPEG8ToHost:(NSData *)jpegData;
 - (NSData *)convertJPEG2000ToHost:(NSData *)jpegData;
 - (NSData *)convertRLEToHost:(NSData *)rleData;
-//- (void)decodeRescale:(NSMutableData *)data;
-//- (void)encodeRescale:(NSMutableData *)data WithRescaleIntercept:(int)offset;
-//- (void)encodeRescale:(NSMutableData *)data WithPixelDepth:(int)pixelDepth;
-#if __ppc__
-//- (void)decodeRescaleAltivec:(NSMutableData *)data;
-//- (void)encodeRescaleAltivec:(NSMutableData *)data withPixelDepth:(int)pixelDepth;
-#endif
-//- (void)decodeRescaleScalar: (NSMutableData *)data;
-//- (void)encodeRescaleScalar:(NSMutableData *)data withPixelDepth:(int)pixelDepth;
 - (void)createOffsetTable;
 - (void)interleavePlanes;
 - (NSData *)interleavePlanesInData:(NSData *)data;
 - (NSMutableData *)createFrameAtIndex:(int)index;
 - (void)createFrames;
-- (void)setLossyImageCompressionRatio:(NSMutableData *)data;
+- (void)setLossyImageCompressionRatio:(NSMutableData *)data quality: (int) quality;
 - (void)findMinAndMax:(NSMutableData *)data;
 //- (void)decodeRescale;
 //RGB data will be interleaved after being converted from Palette or YBR.

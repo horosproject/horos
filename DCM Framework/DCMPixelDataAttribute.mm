@@ -939,14 +939,16 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 	return  [NSString stringWithFormat:@"%@\t %@\t vl:%d\t vm:%d", _tag.description, _vr, self.valueLength, self.valueMultiplicity];
 }
 
-- (BOOL)convertToTransferSyntax:(DCMTransferSyntax *)ts quality:(int)quality{
+- (BOOL)convertToTransferSyntax:(DCMTransferSyntax *)ts quality:(int)quality
+{
 	BOOL status = NO;
 	NS_DURING
 	if (DCMDEBUG)
-		NSLog(@"Convert Syntax %@ to %@", transferSyntax.description, ts.description );
+		NSLog(@"Convert Syntax %@ to %@", transferSyntax.description, ts.description);
 		
 		//already there do nothing
-	if ([transferSyntax isEqualToTransferSyntax:ts])  {
+	if ([transferSyntax isEqualToTransferSyntax:ts])
+	{
 		status = YES;
 		goto finishedConversion;
 		//return YES;
@@ -966,17 +968,20 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 		self.transferSyntax = ts;
 		goto finishedConversion;
 	}
-	if ([[DCMTransferSyntax JPEG2000LossyTransferSyntax] isEqualToTransferSyntax:transferSyntax] && [[DCMTransferSyntax JPEG2000LosslessTransferSyntax] isEqualToTransferSyntax:ts]) {
+	if ([[DCMTransferSyntax JPEG2000LossyTransferSyntax] isEqualToTransferSyntax:transferSyntax] && [[DCMTransferSyntax JPEG2000LosslessTransferSyntax] isEqualToTransferSyntax:ts])
+	{
 		status = YES;
 		self.transferSyntax = ts;
 		goto finishedConversion;
 	}
+	
 	// we need to decode pixel data
 	if( _isDecoded == NO)
 		[self decodeData];
 	
 	//unencapsulated syntaxes
-	if ([[DCMTransferSyntax ExplicitVRBigEndianTransferSyntax] isEqualToTransferSyntax:ts]) {
+	if ([[DCMTransferSyntax ExplicitVRBigEndianTransferSyntax] isEqualToTransferSyntax:ts])
+	{
 		//[_dcmObject removePlanarAndRescaleAttributes];
 	
 		self.transferSyntax = ts;
@@ -984,19 +989,27 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 		goto finishedConversion;
 		//return YES;
 	}
-	if ([[DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax] isEqualToTransferSyntax:ts]) {
+	
+	if ([[DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax] isEqualToTransferSyntax:ts])
+	{
 		if (_pixelDepth > 8)
 			[self convertHostToLittleEndian];
+			
 		//[_dcmObject removePlanarAndRescaleAttributes];
+		
 		self.transferSyntax = ts;
 		status = YES;
 		goto finishedConversion;
 		//return YES;
 	}
-	if ([[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax] isEqualToTransferSyntax:ts]) {
+	
+	if ([[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax] isEqualToTransferSyntax:ts])
+	{
 		if (_pixelDepth > 8)
 			[self convertHostToLittleEndian];
+			
 		//[_dcmObject removePlanarAndRescaleAttributes];
+		
 		self.transferSyntax = ts;
 		status = YES;
 		goto finishedConversion;
@@ -1004,7 +1017,7 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 	}
 	
 	//jpeg2000
-	if ([[DCMTransferSyntax JPEG2000LosslessTransferSyntax] isEqualToTransferSyntax:ts] || [[DCMTransferSyntax JPEG2000LossyTransferSyntax] isEqualToTransferSyntax:ts] )
+	if ([[DCMTransferSyntax JPEG2000LosslessTransferSyntax] isEqualToTransferSyntax:ts] || [[DCMTransferSyntax JPEG2000LossyTransferSyntax] isEqualToTransferSyntax:ts])
 	{
 		if( JasperInitialized == NO)
 		{
@@ -1013,75 +1026,29 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 		}
 			
 		NSMutableArray *array = [NSMutableArray array];
-		for ( NSMutableData *data in _values ) {
+		for ( NSMutableData *data in _values )
+		{
 			NSMutableData *newData = [self encodeJPEG2000:data quality:quality];
 			[array addObject:newData];
 		}
-		for ( int i = 0; i< [array count]; i++ ) {
+		for ( int i = 0; i< [array count]; i++ )
+		{
 			[_values replaceObjectAtIndex:i withObject:[array objectAtIndex:i]];
 		}
 		
 		if 	( [[DCMTransferSyntax JPEG2000LossyTransferSyntax] isEqualToTransferSyntax:ts] )
-			[self setLossyImageCompressionRatio:[_values objectAtIndex:0]];
+			[self setLossyImageCompressionRatio:[_values objectAtIndex:0] quality: quality];
 			
 		//[_dcmObject removePlanarAndRescaleAttributes];
+		
 		[self createOffsetTable];
 		self.transferSyntax = ts;
 		if (DCMDEBUG)
 			NSLog(@"Converted to Syntax %@", transferSyntax.description );
 		status = YES;
 		goto finishedConversion;
-		//return YES;
 	}
 	
-//		//jpeg
-//	if ([[DCMTransferSyntax JPEGBaselineTransferSyntax] isEqualToTransferSyntax:ts] || [[DCMTransferSyntax JPEGExtendedTransferSyntax] isEqualToTransferSyntax:ts] || [[DCMTransferSyntax JPEGLosslessTransferSyntax] isEqualToTransferSyntax:ts] ) {
-//		
-//		NSMutableArray *values = [NSMutableArray arrayWithArray:_values];
-//		[_values removeAllObjects];
-//		//NSMutableArray *array = [NSMutableArray array];
-//		//[_dcmObject removePlanarAndRescaleAttributes];
-//		float q = 1.0;
-//		
-//		if (quality == DCMLosslessQuality)
-//			q = 100;
-//		else if (quality == DCMHighQuality)
-//			q = 90;
-//		else if (quality == DCMMediumQuality)
-//			q = 80;
-//		else if (quality == DCMLowQuality)
-//			q = 70;
-//		
-//		for ( NSMutableData *data in values )
-//		{
-//			NSMutableData *newData;
-//			if (_pixelDepth <= 8) 
-//				newData = [self compressJPEG8:data  compressionSyntax:ts   quality:q];
-//			//else if (_pixelDepth <= 12) 
-//			else if (_pixelDepth <= 16) 				
-//				newData = [self compressJPEG12:data  compressionSyntax:ts   quality:q];
-//			else	{	
-//				newData = [self compressJPEG12:data  compressionSyntax:ts   quality:q];
-//
-//			}
-//			[self addFrame:newData];
-//
-//		}
-//		
-//		/*
-//		for (i = 0; i< [array count]; i++) {
-//			[_values replaceObjectAtIndex:i withObject:[array objectAtIndex:i]];
-//		}
-//		*/	
-//		if 	( [[DCMTransferSyntax JPEGBaselineTransferSyntax] isEqualToTransferSyntax:ts] || [[DCMTransferSyntax JPEGExtendedTransferSyntax] isEqualToTransferSyntax:ts])
-//			[self setLossyImageCompressionRatio:[_values objectAtIndex:0]];
-//		[self createOffsetTable];
-//		self.transferSyntax = ts;
-//
-//		status = YES;
-//		//goto finishedConversion;
-//		//return YES;
-//	}
 	finishedConversion:
 	status = status;
 	NS_HANDLER
@@ -2419,7 +2386,8 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 	}
 }
 
-- (void)setLossyImageCompressionRatio:(NSMutableData *)data{
+- (void)setLossyImageCompressionRatio:(NSMutableData *)data quality: (int) quality
+{
 	int numBytes = 1;
 	if (_pixelDepth > 8)
 		numBytes = 2;
@@ -2431,8 +2399,12 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 	DCMAttribute *ratioAttr = [DCMAttribute attributeWithAttributeTag:ratioTag vr:[ratioTag vr] values:[NSMutableArray arrayWithObject:ratio]];
 	
 	DCMAttributeTag *compressionTag = [DCMAttributeTag tagWithName:@"LossyImageCompression"];
-	DCMAttribute *compressionAttr = [DCMAttribute attributeWithAttributeTag:compressionTag vr:[compressionTag vr] values:[NSMutableArray arrayWithObject:@"01"]];
-	
+	DCMAttribute *compressionAttr;
+	if( quality != DCMLosslessQuality)
+		compressionAttr = [DCMAttribute attributeWithAttributeTag:compressionTag vr:[compressionTag vr] values:[NSMutableArray arrayWithObject:@"01"]];
+	else
+		compressionAttr = [DCMAttribute attributeWithAttributeTag:compressionTag vr:[compressionTag vr] values:[NSMutableArray arrayWithObject:@"00"]];
+
 	[[_dcmObject attributes] setObject:ratioAttr  forKey:[ratioTag stringValue]];
 	[[_dcmObject attributes] setObject:compressionAttr  forKey:[compressionTag stringValue]];
 	//LossyImageCompression
