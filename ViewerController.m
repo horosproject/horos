@@ -15319,14 +15319,12 @@ int i,j,l;
 		
 		[imageView getWLWW:&cwl :&cww];
 		
-		if( [[self modality] isEqualToString:@"PT"] == YES && [[imageView curDCM] SUVConverted] == YES && [[imageView curDCM] factorPET2SUV] != 0)
+		if( [[self modality] isEqualToString:@"PT"] == YES)
 		{
-			float slope = [[imageView curDCM] factorPET2SUV] * [[imageView curDCM] slope];
-			[exportDCM setDefaultWWWL: cww*slope :cwl*slope];
-			[exportDCM setSlope: [[imageView curDCM] slope]];
+			float slope = [[imageView curDCM] appliedFactorPET2SUV] * [[imageView curDCM] slope];
+			[exportDCM setSlope: slope];
 		}
-		else
-			[exportDCM setDefaultWWWL: cww :cwl];
+		[exportDCM setDefaultWWWL: cww :cwl];
 		
 		float thickness, location;
 		

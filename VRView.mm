@@ -1079,14 +1079,12 @@ public:
 		[exportDCM setOffset: offset];
 		[exportDCM setSigned: isSigned];
 		
-		if( [[[controller viewer2D] modality] isEqualToString:@"PT"] == YES && firstObject.SUVConverted == YES && firstObject.factorPET2SUV != 0)
+		if( [[[controller viewer2D] modality] isEqualToString:@"PT"] == YES)
 		{
-			float slope = firstObject.factorPET2SUV * firstObject.slope;
-			[exportDCM setDefaultWWWL: ww*slope :wl*slope];
-			[exportDCM setSlope: firstObject.slope];
+			float slope = firstObject.appliedFactorPET2SUV * firstObject.slope;
+			[exportDCM setSlope: slope];
 		}
-		else
-			[exportDCM setDefaultWWWL: ww :wl];
+		[exportDCM setDefaultWWWL: ww :wl];
 		
 		[self getOrientation: o];
 		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"exportOrientationIn3DExport"])
@@ -6373,8 +6371,8 @@ public:
 			
 			float slope = 1;
 			
-			if( [[[controller viewer2D] modality] isEqualToString:@"PT"] == YES && firstObject.SUVConverted == YES && firstObject.factorPET2SUV != 0)
-				slope = firstObject.factorPET2SUV * firstObject.slope;
+			if( [[[controller viewer2D] modality] isEqualToString:@"PT"] == YES)
+				slope = firstObject.appliedFactorPET2SUV * firstObject.slope;
 			
 			buf = (unsigned char*) malloc( *width * *height * *spp * *bpp / 8);
 			if( buf)

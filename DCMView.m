@@ -4936,8 +4936,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 		float eWW, eWL;
 		
-		NSLog( @"PT");
-		
 		switch( [[NSUserDefaults standardUserDefaults] integerForKey: @"PETWindowingMode"])
 		{
 			case 0:
@@ -9016,8 +9014,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			
 			float slope = 1;
 			
-			if( [[[dcmFilesList objectAtIndex: curImage] valueForKey:@"modality"] isEqualToString:@"PT"] == YES && im.SUVConverted == YES && im.factorPET2SUV != 0)
-				slope = im.factorPET2SUV * im.slope;
+			if( [[[dcmFilesList objectAtIndex: curImage] valueForKey:@"modality"] isEqualToString:@"PT"] == YES)
+				slope = im.appliedFactorPET2SUV * im.slope;
 			
 			if( buf)
 			{
@@ -9170,8 +9168,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				
 				float slope = 1;
 				
-				if( [[[dcmFilesList objectAtIndex: curImage] valueForKey:@"modality"] isEqualToString:@"PT"] == YES && dcm.SUVConverted == YES && dcm.factorPET2SUV != 0)
-					slope = dcm.factorPET2SUV * dcm.slope;
+				if( [[[dcmFilesList objectAtIndex: curImage] valueForKey:@"modality"] isEqualToString:@"PT"] == YES)
+					slope = dcm.appliedFactorPET2SUV * dcm.slope;
 				
 				long i = *width * *height * *spp * *bpp / 8;
 				buf = malloc( i);
@@ -11152,12 +11150,13 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 {
 	NSManagedObject *series = [self seriesObj];
 	NSManagedObject *image = [self imageObj];
-	if( series )
+	
+	if( series)
 	{
 		if( [image valueForKey:@"xFlipped"])
-				self.xFlipped = [[image valueForKey:@"xFlipped"] boolValue];
+			self.xFlipped = [[image valueForKey:@"xFlipped"] boolValue];
 		else if( !onlyImage)
-				self.xFlipped = [[series valueForKey:@"xFlipped"] boolValue];
+			self.xFlipped = [[series valueForKey:@"xFlipped"] boolValue];
 		
 		if( [image valueForKey:@"yFlipped"]) self.yFlipped = [[image valueForKey:@"yFlipped"] boolValue];
 		else if( !onlyImage) self.yFlipped = [[series valueForKey:@"yFlipped"] boolValue];
@@ -11210,6 +11209,12 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 		if( [image valueForKey:@"windowLevel"]) wl = [[image valueForKey:@"windowLevel"] floatValue];
 		else if( !onlyImage && [series valueForKey:@"windowLevel"]) wl= [[series valueForKey:@"windowLevel"] floatValue];
+		
+		if( ww == 0)
+		{
+			ww = curDCM.savedWW;
+			wl = curDCM.savedWL;
+		}
 		
 		if( ww != 0 || wl != 0)
 		{

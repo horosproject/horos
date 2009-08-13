@@ -1134,7 +1134,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 
 @synthesize countstackMean, stackDirection, full32bitPipeline, needToCompute8bitRepresentation, subtractedfImage;
 @synthesize frameNo, notAbleToLoadImage, shutterPolygonal;
-@synthesize minValueOfSeries, maxValueOfSeries, factorPET2SUV, slope;
+@synthesize minValueOfSeries, maxValueOfSeries, factorPET2SUV, slope, offset;
 @synthesize isRGB, pwidth = width, pheight = height;
 @synthesize pixelRatio, transferFunction, subPixOffset, isOriginDefined;
 
@@ -2981,95 +2981,95 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	return f;
 }
 
-- (float*)fImage
+- (float*) fImage
 {
     [self CheckLoad];
     return fImage;
 }
 
-- (double)pixelRatio { [self CheckLoad]; return pixelRatio; }
+- (double) pixelRatio { [self CheckLoad]; return pixelRatio; }
 
-- (double)pixelSpacingY { [self CheckLoad]; return pixelSpacingY; }
-- (double)pixelSpacingX { [self CheckLoad]; return pixelSpacingX; }
+- (double) pixelSpacingY { [self CheckLoad]; return pixelSpacingY; }
+- (double) pixelSpacingX { [self CheckLoad]; return pixelSpacingX; }
 
-- (void)setPixelSpacingX :(double) s { [self CheckLoad];
+- (void) setPixelSpacingX :(double) s { [self CheckLoad];
 	pixelSpacingX = s;
 	if( pixelSpacingX) pixelRatio = pixelSpacingY / pixelSpacingX;
 }
 
-- (void)setPixelSpacingY :(double) s
+- (void) setPixelSpacingY :(double) s
 {
 	[self CheckLoad];
 	pixelSpacingY = s;
 	if( pixelSpacingX) pixelRatio = pixelSpacingY / pixelSpacingX;
 }
 
-- (double)originX { [self CheckLoad]; return originX;}
-- (double)originY { [self CheckLoad]; return originY;}
-- (double)originZ { [self CheckLoad]; return originZ;}
+- (double) originX { [self CheckLoad]; return originX;}
+- (double) originY { [self CheckLoad]; return originY;}
+- (double) originZ { [self CheckLoad]; return originZ;}
 
-- (void)origin: (float*)o
+- (void) origin: (float*)o
 {
 	[self CheckLoad];
 	o[ 0] = originX;
 	o[ 1] = originY;
 	o[ 2] = originZ;
 }
-- (void)originDouble: (double*)o
+- (void) originDouble: (double*)o
 {
 	[self CheckLoad];
 	o[ 0] = originX;
 	o[ 1] = originY;
 	o[ 2] = originZ;
 }
-- (void)setOrigin: (float*)o
+- (void) setOrigin: (float*)o
 {
 	originX = o[ 0];
 	originY = o[ 1];
 	originZ = o[ 2];
 }
-- (void)setOriginDouble: (double*)o
+- (void) setOriginDouble: (double*)o
 {
 	originX = o[ 0];
 	originY = o[ 1];
 	originZ = o[ 2];
 };
-- (double)sliceLocation{ [self CheckLoad]; return sliceLocation;}
-- (void)setSliceLocation: (double)l { [self CheckLoad]; sliceLocation = l;}
-- (double)sliceThickness { [self CheckLoad]; return sliceThickness;}
-- (void)setSliceThickness: (double)l
+- (double) sliceLocation{ [self CheckLoad]; return sliceLocation;}
+- (void) setSliceLocation: (double)l { [self CheckLoad]; sliceLocation = l;}
+- (double) sliceThickness { [self CheckLoad]; return sliceThickness;}
+- (void) setSliceThickness: (double)l
 {
 	[self CheckLoad];
 	sliceThickness = l;
 }
 - (double) spacingBetweenSlices { [self CheckLoad]; return spacingBetweenSlices;}
 
-- (double)sliceInterval { [self CheckLoad]; return sliceInterval; }
-- (void)setSliceInterval: (double)s { [self CheckLoad]; sliceInterval = s; }
+- (double) sliceInterval { [self CheckLoad]; return sliceInterval; }
+- (void) setSliceInterval: (double)s { [self CheckLoad]; sliceInterval = s; }
 
-- (float)slope { [self CheckLoad]; return slope; }
-- (float)offset { [self CheckLoad]; return offset; }
+- (float) slope { [self CheckLoad]; return slope; }
+- (float) offset { [self CheckLoad]; return offset; }
 
 // WW & WL
-- (float)ww { [self CheckLoad]; return ww; }
-- (float)wl { [self CheckLoad]; return wl; }
+- (float) ww { [self CheckLoad]; return ww; }
+- (float) wl { [self CheckLoad]; return wl; }
 
-- (float)fullww
+- (float) fullww
 {
 	if( fullww == 0 && fullwl == 0) [self computePixMinPixMax];
 	return fullww;
 }
 
-- (float)fullwl
+- (float) fullwl
 {
 	if( fullww == 0 && fullwl == 0) [self computePixMinPixMax];
 	return fullwl;
 }
 
-- (float)savedWL { [self CheckLoad]; return savedWL; }
-- (float)savedWW { [self CheckLoad]; return savedWW; }
-- (void)setSavedWL: (float)l { [self CheckLoad]; savedWL = l; }
-- (void)setSavedWW: (float)w { [self CheckLoad]; savedWW = w; }
+- (float) savedWL { [self CheckLoad]; return savedWL; }
+- (float) savedWW { [self CheckLoad]; return savedWW; }
+- (void) setSavedWL: (float)l { [self CheckLoad]; savedWL = l; }
+- (void) setSavedWW: (float)w { [self CheckLoad]; savedWW = w; }
 
 
 -(float) cineRate {[self CheckLoad]; return cineRate;}
@@ -3138,6 +3138,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	subtractedfZero = 0.8;
 	subtractedfGamma = 2.0;
 	
+	factorPET2SUV = 1.0;
 	maskID = 1;
 	
 	//----------------------------------orientation		
@@ -11304,7 +11305,7 @@ END_CREATE_ROIS:
 	else                          // need to compute best values... problem with subtraction performed afterwards
 	{
 		[self computePixMinPixMax];
-		
+	
 		ww = fullww;
 		wl = fullwl;
 	}
@@ -11597,6 +11598,14 @@ END_CREATE_ROIS:
 // SUV stuff
 #pragma mark-
 #pragma mark SUV
+
+- (float) appliedFactorPET2SUV
+{
+	if( SUVConverted)
+		return factorPET2SUV;
+	else
+		return 1.0;
+}
 
 -(void) copySUVfrom: (DCMPix*)from
 {

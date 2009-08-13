@@ -301,6 +301,7 @@ Note setter is different to not break existing usage. :-( */
 
 @property BOOL isLUT12Bit;
 
+- (float) appliedFactorPET2SUV;
 - (void) copySUVfrom: (DCMPix*) from;  /**< Copy the SUV from another DCMPic */
 - (float) getPixelValueX: (long) x Y:(long) y;  /**< Get the pixel for a point with x,y coordinates */
 
