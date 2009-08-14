@@ -140,6 +140,8 @@ static NSString*	LUT12BitToolbarItemIdentifier		= @"LUT12Bit";
 static NSString*	NavigatorToolbarItemIdentifier		= @"Navigator";
 static NSString*	ThreeDPositionToolbarItemIdentifier	= @"3DPosition";
 static NSString*	CobbAngleToolbarItemIdentifier		= @"CobbAngle";
+static NSString*	SetPixelValueItemIdentifier			= @"SetPixelValue.png";
+static NSString*	GrowingRegionItemIdentifier			= @"GrowingRegion.png";
 
 static NSArray*		DefaultROINames;
 
@@ -4817,6 +4819,24 @@ static ViewerController *draggedController = nil;
 	[toolbarItem setTarget: nil];
 	[toolbarItem setAction: @selector(flipVertical:)];
 	}
+	else if ([itemIdent isEqualToString: SetPixelValueItemIdentifier]) {
+	
+	[toolbarItem setLabel: NSLocalizedString(@"Set Pixels", nil)];
+	[toolbarItem setPaletteLabel: NSLocalizedString(@"Set Pixels", nil)];
+	[toolbarItem setToolTip: NSLocalizedString(@"Set Pixels Values to...", nil)];
+	[toolbarItem setImage: [NSImage imageNamed: SetPixelValueItemIdentifier]];
+	[toolbarItem setTarget: nil];
+	[toolbarItem setAction: @selector( roiSetPixelsSetup:)];
+	}
+	else if ([itemIdent isEqualToString: GrowingRegionItemIdentifier]) {
+	
+	[toolbarItem setLabel: NSLocalizedString(@"Growing", nil)];
+	[toolbarItem setPaletteLabel: NSLocalizedString(@"Growing", nil)];
+	[toolbarItem setToolTip: NSLocalizedString(@"Growing Region", nil)];
+	[toolbarItem setImage: [NSImage imageNamed: GrowingRegionItemIdentifier]];
+	[toolbarItem setTarget: nil];
+	[toolbarItem setAction: @selector( segmentationTest:)];
+	}
    	else if ([itemIdent isEqualToString: VRPanelToolbarItemIdentifier]) {
 
  	[toolbarItem setLabel: NSLocalizedString(@"3D Panel", nil)];
@@ -4980,6 +5000,8 @@ static ViewerController *draggedController = nil;
 														NavigatorToolbarItemIdentifier,
 														ThreeDPositionToolbarItemIdentifier,
 														CobbAngleToolbarItemIdentifier,
+														GrowingRegionItemIdentifier,
+														SetPixelValueItemIdentifier,
 														nil];
 	
 	if([AppController canDisplay12Bit]) array = [array arrayByAddingObject: LUT12BitToolbarItemIdentifier];

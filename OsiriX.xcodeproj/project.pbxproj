@@ -4368,6 +4368,8 @@
 		CECDBE6A0C95467B006B11A5 /* AnnotationsDefault.plist in Resources */ = {isa = PBXBuildFile; fileRef = CECDBE690C95467B006B11A5 /* AnnotationsDefault.plist */; };
 		CECEF72E081BB265002ECC99 /* DICOMExport.h in Headers */ = {isa = PBXBuildFile; fileRef = CECEF72C081BB265002ECC99 /* DICOMExport.h */; };
 		CECEF72F081BB265002ECC99 /* DICOMExport.m in Sources */ = {isa = PBXBuildFile; fileRef = CECEF72D081BB265002ECC99 /* DICOMExport.m */; };
+		CED1FD1B1035E9BB0076AB33 /* SetPixelValue.png in Resources */ = {isa = PBXBuildFile; fileRef = CED1FD191035E9BB0076AB33 /* SetPixelValue.png */; };
+		CED1FD1C1035E9BB0076AB33 /* GrowingRegion.png in Resources */ = {isa = PBXBuildFile; fileRef = CED1FD1A1035E9BB0076AB33 /* GrowingRegion.png */; };
 		CED2CF8F0C9B28580047F123 /* PreferencePaneControllerDCMTK.h in Headers */ = {isa = PBXBuildFile; fileRef = CED2CF8D0C9B28580047F123 /* PreferencePaneControllerDCMTK.h */; };
 		CED2CF900C9B28580047F123 /* PreferencePaneControllerDCMTK.mm in Sources */ = {isa = PBXBuildFile; fileRef = CED2CF8E0C9B28580047F123 /* PreferencePaneControllerDCMTK.mm */; };
 		CED2CF970C9B288C0047F123 /* CIADICOMField.m in Sources */ = {isa = PBXBuildFile; fileRef = CED2CF950C9B288C0047F123 /* CIADICOMField.m */; };
@@ -8441,6 +8443,8 @@
 		CECDBE690C95467B006B11A5 /* AnnotationsDefault.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = AnnotationsDefault.plist; path = Binaries/AnnotationsDefault.plist; sourceTree = "<group>"; };
 		CECEF72C081BB265002ECC99 /* DICOMExport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DICOMExport.h; sourceTree = "<group>"; };
 		CECEF72D081BB265002ECC99 /* DICOMExport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DICOMExport.m; sourceTree = "<group>"; };
+		CED1FD191035E9BB0076AB33 /* SetPixelValue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = SetPixelValue.png; sourceTree = "<group>"; };
+		CED1FD1A1035E9BB0076AB33 /* GrowingRegion.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = GrowingRegion.png; sourceTree = "<group>"; };
 		CED2CF8D0C9B28580047F123 /* PreferencePaneControllerDCMTK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PreferencePaneControllerDCMTK.h; sourceTree = "<group>"; };
 		CED2CF8E0C9B28580047F123 /* PreferencePaneControllerDCMTK.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PreferencePaneControllerDCMTK.mm; sourceTree = "<group>"; };
 		CED2CF950C9B288C0047F123 /* CIADICOMField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CIADICOMField.m; path = "Preference Panes/OSICustomImageAnnotations/CIADICOMField.m"; sourceTree = "<group>"; };
@@ -9670,6 +9674,8 @@
 		ABBB647A063587B200D9531F /* Icons */ = {
 			isa = PBXGroup;
 			children = (
+				CED1FD191035E9BB0076AB33 /* SetPixelValue.png */,
+				CED1FD1A1035E9BB0076AB33 /* GrowingRegion.png */,
 				84A220E60F25E41800C6C3EB /* ROIs.tif */,
 				84A220E70F25E41800C6C3EB /* Keys.tif */,
 				AB932A950EA38DEF0006DF1B /* CobbAngle.tif */,
@@ -16440,6 +16446,8 @@
 				CE1C4EF20FDA6F4600185561 /* nameDictionary.plist in Resources */,
 				CE1C4EF30FDA6F5300185561 /* tagDictionary.plist in Resources */,
 				AB3AADC110270F7600A1CC12 /* OsiriXParisEBC.jpg in Resources */,
+				CED1FD1B1035E9BB0076AB33 /* SetPixelValue.png in Resources */,
+				CED1FD1C1035E9BB0076AB33 /* GrowingRegion.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
