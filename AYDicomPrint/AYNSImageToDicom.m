@@ -231,9 +231,9 @@
 		}
 		else scaleFactor = 1.0;
 		
-		if( fontSizeCopy * inc * scaleFactor != [[NSUserDefaults standardUserDefaults] floatForKey: @"FONTSIZE"])
+		if( fontSizeCopy * inc * scaleFactor * 1.2 != [[NSUserDefaults standardUserDefaults] floatForKey: @"FONTSIZE"])
 		{
-			[[NSUserDefaults standardUserDefaults] setFloat: fontSizeCopy * inc * scaleFactor forKey: @"FONTSIZE"];
+			[[NSUserDefaults standardUserDefaults] setFloat: fontSizeCopy * inc * scaleFactor * 1.2 forKey: @"FONTSIZE"];
 			[NSFont resetFont: 0];
 			[[NSNotificationCenter defaultCenter] postNotificationName: OsirixGLFontChangeNotification object: currentViewer];
 		}

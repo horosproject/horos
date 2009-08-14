@@ -7246,6 +7246,8 @@ static NSArray*	statesArray = nil;
 	NSMutableArray			*viewersList = [[NSMutableArray alloc] initWithCapacity:0];
 	BOOL					applyToAllViewers = [[NSUserDefaults standardUserDefaults] boolForKey:@"nextSeriesToAllViewers"];
 	
+	int previousNumberOf2DViewers = [[ViewerController getDisplayed2DViewers] count];
+	
 	if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask)
 		applyToAllViewers = !applyToAllViewers;
 	
@@ -7345,13 +7347,16 @@ static NSArray*	statesArray = nil;
 	
 	[viewersList release];
 	
-	if( delayedTileWindows)
+	if( previousNumberOf2DViewers != [[ViewerController getDisplayed2DViewers] count])
 	{
-		delayedTileWindows = NO;
-		[NSObject cancelPreviousPerformRequestsWithTarget:[AppController sharedAppController] selector:@selector(tileWindows:) object:nil];
+		if( delayedTileWindows)
+		{
+			delayedTileWindows = NO;
+			[NSObject cancelPreviousPerformRequestsWithTarget:[AppController sharedAppController] selector:@selector(tileWindows:) object:nil];
+		}
+		
+		[[AppController sharedAppController] tileWindows: self];
 	}
-	
-	[[AppController sharedAppController] tileWindows: self];
 }
 
 - (ViewerController*) loadSeries:(NSManagedObject *) series :(ViewerController*) viewer :(BOOL) firstViewer keyImagesOnly:(BOOL) keyImages
