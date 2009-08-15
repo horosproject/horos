@@ -51,7 +51,7 @@
 		dcmDst = nil;
 		
 		data = nil;
-		width = height = spp = bpp = 0;
+		width = height = spp = bps = 0;
 		
 		image = nil;
 		imageData = nil;
@@ -126,13 +126,13 @@
 }
 
 - (long) setPixelData:		(unsigned char*) idata
-		samplePerPixel:		(long) ispp
-		bitsPerPixel:		(long) ibpp // TODO: it's actually bits per sample
+		samplesPerPixel:	(long) ispp
+		bitsPerSample:		(long) ibps
 		width:				(long) iwidth
 		height:				(long) iheight
 {
 	spp = ispp;
-	bpp = ibpp;
+	bps = ibps;
 	width = iwidth;
 	height = iheight;
 	data = idata;
@@ -141,6 +141,16 @@
 	offset = -1024;
 	
 	return 0;
+}
+
+
+- (long) setPixelData:		(unsigned char*) idata
+		samplePerPixel:		(long) ispp
+		bitsPerPixel:		(long) ibps
+		width:				(long) iwidth
+		height:				(long) iheight
+{
+	return [self setPixelData:idata samplesPerPixel:ispp bitsPerSample:ibps width:iwidth height:iheight];
 }
 
 - (long) setPixelNSImage:	(NSImage*) iimage
@@ -187,8 +197,8 @@
 			else imageData = [imageRepresentation bitmapData];
 			
 			return [self setPixelData:		imageData
-						samplePerPixel:		[imageRepresentation samplesPerPixel]
-						bitsPerPixel:		[imageRepresentation bitsPerPixel]
+						samplesPerPixel:	[imageRepresentation samplesPerPixel]
+						bitsPerSample:		[imageRepresentation bitsPerPixel] / [imageRepresentation samplesPerPixel]
 						width:				w
 						height:				h];
 		}
@@ -241,6 +251,27 @@
 
 - (NSString*) writeDCMFile: (NSString*) dstPath withExportDCM:(DCMExportPlugin*) dcmExport
 {
+	if( spp != 1 && spp != 3)
+	{
+		NSLog( @"**** DICOM Export: sample per pixel not supported: %d", spp);
+		return nil;
+	}
+	
+	if( spp == 3)
+	{
+		if( bps != 8)
+		{
+			NSLog( @"**** DICOM Export: for RGB images, only 8 bits per sample is supported: %d", bps);
+			return nil;
+		}
+	}
+	
+	if( bps != 8 && bps != 16 && bps != 32)
+	{
+		NSLog( @"**** DICOM Export: unknown bits per sample: %d", bps);
+		return nil;
+	}
+	
 	if( dstPath == nil)
 	{
 		BOOL			isDir = YES;
@@ -330,7 +361,7 @@
 			{
 				if( spacingX != spacingY)	// Convert to square pixels
 				{
-					if( bpp == 16)
+					if( bps == 16)
 					{
 						vImage_Buffer	srcVimage, dstVimage;
 						long			newHeight = ((float) height * spacingY) / spacingX;
@@ -338,7 +369,7 @@
 						newHeight /= 2;
 						newHeight *= 2;
 						
-						squaredata = malloc( newHeight * width * bpp/8);
+						squaredata = malloc( newHeight * width * bps/8);
 						
 						float	*tempFloatSrc = malloc( height * width * sizeof( float));
 						float	*tempFloatDst = malloc( newHeight * width * sizeof( float));
@@ -351,7 +382,7 @@
 							srcVimage.data = data;
 							srcVimage.height =  height;
 							srcVimage.width = width;
-							srcVimage.rowBytes = width* bpp/8;
+							srcVimage.rowBytes = width* bps/8;
 							
 							dstVimage.data = tempFloatSrc;
 							dstVimage.height =  height;
@@ -386,7 +417,7 @@
 							dstVimage.data = squaredata;
 							dstVimage.height =  newHeight;
 							dstVimage.width = width;
-							dstVimage.rowBytes = width* bpp/8;
+							dstVimage.rowBytes = width* bps/8;
 							
 							if( isSigned)
 								err = vImageConvert_FTo16S( &srcVimage, &dstVimage, 0,  1, 0);
@@ -406,19 +437,19 @@
 			}
 			
 			#if __BIG_ENDIAN__
-			if( bpp == 16)
+			if( bps == 16)
 			{
 				//Convert to little endian
 				InverseShorts( (vector unsigned short*) data, height * width);
 			}
 			#endif
 			
-			int elemLength = height * width * spp * bpp / 8;
+			int elemLength = height * width * spp * bps / 8;
 			
 			if( elemLength%2 != 0)
 			{
 				height--;
-				elemLength = height * width * spp * bpp / 8;
+				elemLength = height * width * spp * bps / 8;
 				
 				if( elemLength%2 != 0) NSLog( @"***************** ODD element !!!!!!!!!!");
 			}
@@ -432,7 +463,7 @@
 			int bitsAllocated;
 			float numberBytes;
 			
-			switch( bpp)
+			switch( bps)
 			{
 				case 8:			
 					highBit = 7;
@@ -446,8 +477,14 @@
 					numberBytes = 2;
 				break;
 				
+				case 32:  // float support
+					highBit = 31;
+					bitsAllocated = 32;
+					numberBytes = 4;
+				break;
+				
 				default:
-					NSLog(@"Unsupported bpp: %d", bpp);
+					NSLog(@"Unsupported bps: %d", bps);
 					return nil;
 				break;
 			}
@@ -456,8 +493,7 @@
 			if (spp == 3) photometricInterpretation = @"RGB";
 			
 			[dcmDst release];
-			dcmDst = [[DCMObject secondaryCaptureObjectWithBitDepth: bpp  samplesPerPixel:spp numberOfFrames:1] retain];
-			
+			dcmDst = [[DCMObject secondaryCaptureObjectWithBitDepth: bps  samplesPerPixel:spp numberOfFrames:1] retain];
 			
 			if( charSet) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:charSet] forName:@"SpecificCharacterSet"];
 			if( studyUID) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:studyUID] forName:@"StudyInstanceUID"];
@@ -524,7 +560,23 @@
 			if( slicePosition != 0) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithFloat:slicePosition]] forName:@"SliceLocation"];
 			if( spp == 3) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithFloat:0]] forName:@"PlanarConfiguration"];
 			
-			if( bpp == 16)
+			if( bps == 32) // float support
+			{
+				vr = @"FL";
+				
+				[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt: offset]] forName:@"RescaleIntercept"];
+				[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithFloat: slope]] forName:@"RescaleSlope"];
+				
+				if( [[dcmObject attributeValueWithName:@"Modality"] isEqualToString:@"CT"]) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject: @"HU"] forName:@"RescaleType"];
+				else [dcmDst setAttributeValues:[NSMutableArray arrayWithObject: @"US"] forName:@"RescaleType"];
+				
+				if( ww != -1 && ww != -1)
+				{
+					[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt:wl]] forName:@"WindowCenter"];
+					[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt:ww]] forName:@"WindowWidth"];
+				}
+			}
+			else if( bps == 16)
 			{
 				vr = @"OW";
 				
@@ -556,11 +608,6 @@
 				vr = @"OB";
 			}
 			
-			//[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:@"US"] forName:@"RescaleType"];
-			
-			//add Pixel data
-			
-
 			DCMTransferSyntax *ts;
 			ts = [DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax];
 			

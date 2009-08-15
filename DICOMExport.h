@@ -27,7 +27,7 @@
 		
 		// Raw data support
 		unsigned char		*data;
-		long				width, height, spp, bpp;
+		long				width, height, spp, bps;
 		BOOL				isSigned, modalityAsSource;
 		int					offset;
 		
@@ -55,8 +55,14 @@
 
 // Set Pixel Data from a raw source
 - (long) setPixelData:		(unsigned char*) idata
+		samplesPerPixel:	(long) ispp
+		bitsPerSample:		(long) ibps
+		width:				(long) iwidth
+		height:				(long) iheight;
+
+- (long) setPixelData:		(unsigned char*) idata
 		samplePerPixel:		(long) ispp
-		bitsPerPixel:		(long) ibpp
+		bitsPerPixel:		(long) ibps // This is INCORRECT - backward compatibility
 		width:				(long) iwidth
 		height:				(long) iheight;
 
