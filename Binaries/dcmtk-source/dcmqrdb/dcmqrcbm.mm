@@ -1053,10 +1053,10 @@ OFCondition DcmQueryRetrieveMoveContext::addAllStoragePresentationContexts(T_ASC
 	transferSyntaxes[5] = UID_JPEGProcess2_4TransferSyntax;
 	transferSyntaxes[6] = UID_JPEG2000TransferSyntax;
 	transferSyntaxes[7] = UID_JPEG2000LosslessOnlyTransferSyntax;
-	transferSyntaxes[8] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;
-	transferSyntaxes[9] = UID_RLELosslessTransferSyntax;
+//	transferSyntaxes[8] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;
+	transferSyntaxes[8] = UID_RLELosslessTransferSyntax;
 	
-	numTransferSyntaxes = 10;
+	numTransferSyntaxes = 9;
 
 //#ifdef DISABLE_COMPRESSION_EXTENSION
 //    /* gLocalByteOrder is defined in dcxfer.h */
