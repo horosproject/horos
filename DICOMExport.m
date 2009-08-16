@@ -126,8 +126,8 @@
 }
 
 - (long) setPixelData:		(unsigned char*) idata
-		samplesPerPixel:	(long) ispp
-		bitsPerSample:		(long) ibps
+		samplesPerPixel:	(int) ispp
+		bitsPerSample:		(int) ibps
 		width:				(long) iwidth
 		height:				(long) iheight
 {

@@ -55,16 +55,16 @@
 
 // Set Pixel Data from a raw source
 - (long) setPixelData:		(unsigned char*) idata
-		samplesPerPixel:	(long) ispp
-		bitsPerSample:		(long) ibps
+		samplesPerPixel:	(int) ispp
+		bitsPerSample:		(int) ibps
 		width:				(long) iwidth
 		height:				(long) iheight;
 
-- (long) setPixelData:		(unsigned char*) idata
-		samplePerPixel:		(long) ispp
-		bitsPerPixel:		(long) ibps // This is INCORRECT - backward compatibility
-		width:				(long) iwidth
-		height:				(long) iheight;
+- (long) setPixelData:		(unsigned char*) deprecated
+		samplePerPixel:		(long) deprecated
+		bitsPerPixel:		(long) deprecated // This is INCORRECT - backward compatibility
+		width:				(long) deprecated
+		height:				(long) deprecated;
 
 - (void) setSigned: (BOOL) s;
 - (void) setOffset: (int) o;
