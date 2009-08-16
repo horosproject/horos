@@ -31,7 +31,7 @@ static NSString *DCM_ComprehensiveSR = @"1.2.840.10008.5.1.4.1.1.88.33";
 static NSString *DCM_ComputedRadiographyImageStorage = @"1.2.840.10008.5.1.4.1.1.1";
 static NSString *DCM_CTImageStorage = @"1.2.840.10008.5.1.4.1.1.2";
 */
-static NSString *DCM_DeflatedExplicitVRLittleEndian = @"1.2.840.10008.1.2.1.99";
+//static NSString *DCM_DeflatedExplicitVRLittleEndian = @"1.2.840.10008.1.2.1.99";
 /*
 static NSString *DCM_DetachedInterpretationManagement = @"1.2.840.10008.3.1.2.6.1";
 static NSString *DCM_DetachedPatientManagement = @"1.2.840.10008.3.1.2.1.1";
