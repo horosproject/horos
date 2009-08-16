@@ -424,7 +424,7 @@
 			
 			if( dataPtr)
 			{
-				[dcmSequence setPixelData: dataPtr samplePerPixel:spp bitsPerPixel:bpp width: width height: height];
+				[dcmSequence setPixelData: dataPtr samplesPerPixel:spp bitsPerSample:bpp width: width height: height];
 				
 				[[controller3D view] getOrientation: o];
 				

@@ -1320,7 +1320,7 @@ static NSString*	VRPanelToolbarItemIdentifier			= @"MIP.tif";
 		[exportDCM setOrientation: o];
 		
 		[exportDCM setPosition: imOrigin];
-		[exportDCM setPixelData: data samplePerPixel:spp bitsPerPixel:bpp width: width height: height];
+		[exportDCM setPixelData: data samplesPerPixel:spp bitsPerSample:bpp width: width height: height];
 		[exportDCM setSigned: isSigned];
 		[exportDCM setOffset: offset];
 		[exportDCM setModalityAsSource: YES];

@@ -1038,7 +1038,7 @@ static NSString*	LODToolbarItemIdentifier				= @"LOD";
 			[exportDCM setSourceFile: [[[mprController originalView] curDCM] sourceFile]];
 			[exportDCM setSeriesDescription: [exportDCMSeriesName stringValue]];
 			[exportDCM setSeriesNumber:5500];
-			[exportDCM setPixelData: dataPtr samplePerPixel:spp bitsPerPixel:bpp width: width height: height];
+			[exportDCM setPixelData: dataPtr samplesPerPixel:spp bitsPerSample:bpp width: width height: height];
 			[[vrController view] getOrientation: o];
 			
 			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"exportOrientationIn3DExport"])

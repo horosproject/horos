@@ -473,7 +473,7 @@
 			[curPix convertPixX: tempPt.x pixY: tempPt.y toDICOMCoords: o pixelCenter: YES];
 			[exportDCM setPosition: o];
 			
-			[exportDCM setPixelData: data samplePerPixel:spp bitsPerPixel:bpp width: width height: height];
+			[exportDCM setPixelData: data samplesPerPixel:spp bitsPerSample:bpp width: width height: height];
 			
 			NSString *f = [exportDCM writeDCMFile: nil];
 			if( f == nil) NSRunCriticalAlertPanel( NSLocalizedString(@"Error", nil),  NSLocalizedString(@"Error during the creation of the DICOM File!", nil), NSLocalizedString(@"OK", nil), nil, nil);

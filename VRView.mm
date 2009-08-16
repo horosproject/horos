@@ -1074,7 +1074,7 @@ public:
 		[exportDCM setSourceFile: [firstObject sourceFile]];
 		[exportDCM setSeriesDescription: dcmSeriesString];
 		
-		[exportDCM setPixelData: dataPtr samplePerPixel:spp bitsPerPixel:bpp width: width height: height];
+		[exportDCM setPixelData: dataPtr samplesPerPixel:spp bitsPerSample:bpp width: width height: height];
 		
 		[exportDCM setOffset: offset];
 		[exportDCM setSigned: isSigned];

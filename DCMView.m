@@ -9473,7 +9473,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		[exportDCM setOrientation: o];
 		[exportDCM setPosition: imOrigin];
 		[exportDCM setPixelSpacing: imSpacing[ 0] :imSpacing[ 1]];
-		[exportDCM setPixelData: data samplePerPixel:spp bitsPerPixel:bpp width: width height: height];
+		[exportDCM setPixelData: data samplesPerPixel:spp bitsPerSample:bpp width: width height: height];
 		[exportDCM setModalityAsSource: NO];
 		
 		f = [exportDCM writeDCMFile: nil withExportDCM: dcmExportPlugin];

@@ -547,7 +547,7 @@ typedef struct _xyzArray
 				[exportDCM setSourceFile: [firstObject sourceFile]];
 				[exportDCM setSeriesDescription: [dcmSeriesName stringValue]];
 				[exportDCM setSeriesNumber:5500];
-				[exportDCM setPixelData: dataPtr samplePerPixel:spp bitsPerPixel:bpp width: width height: height];
+				[exportDCM setPixelData: dataPtr samplesPerPixel:spp bitsPerSample:bpp width: width height: height];
 				
 				[self getOrientation: o];
 				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"exportOrientationIn3DExport"])
@@ -606,7 +606,7 @@ typedef struct _xyzArray
 					if( [[NSUserDefaults standardUserDefaults] boolForKey: @"exportOrientationIn3DExport"])
 						[dcmSequence setOrientation: o];
 					
-					[dcmSequence setPixelData: dataPtr samplePerPixel:spp bitsPerPixel:bpp width: width height: height];
+					[dcmSequence setPixelData: dataPtr samplesPerPixel:spp bitsPerSample:bpp width: width height: height];
 				
 //					if( aCamera->GetParallelProjection())
 //						[dcmSequence setPixelSpacing: [self getResolution] :[self getResolution]];
