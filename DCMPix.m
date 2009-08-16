@@ -3849,6 +3849,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		
 		if( realwidth != width)
 		{
+			NSLog(@"******** Update realwidth != width : WE SHOULD NOT BE HERE");
+			
 			if( isRGB == NO)	// 16 bits
 			{
 				for( i = 0; i < height;i++)
@@ -5844,6 +5846,8 @@ END_CREATE_ROIS:
 		
 		if( realwidth != width )
 		{
+			NSLog(@"******** Update realwidth != width : WE SHOULD NOT BE HERE");
+			
 			if( isRGB )
 			{
 				char	*ptr = (char*) oImage;
@@ -5904,41 +5908,19 @@ END_CREATE_ROIS:
 		}
 		else
 		{
-			if( bitsAllocated == 32 )
+			if( bitsAllocated == 32) // 32-bit float
 			{
-				unsigned int	*usint = (unsigned int*) oImage;
-				int				*sint = (int*) oImage;
-				float			*tDestF;
+				float			*sfloat = (float*) oImage;
 				
 				if( fExternalOwnedImage)
-				{
-					tDestF = fImage = fExternalOwnedImage;
-				}
+					fImage = fExternalOwnedImage;
 				else
-				{
-					tDestF = fImage = malloc(width*height*sizeof(float) + 100);
-				}
+					fImage = malloc(width*height*sizeof(float) + 100);
 				
-				if( tDestF)
-				{
-					if( fIsSigned > 0 )
-					{
-						int x = height * width;
-						while( x-->0 )
-						{
-							*tDestF++ = ((float) (*sint++)) * slope + offset;
-						}
-					}
-					else
-					{
-						int x = height * width;
-						while( x-->0 )
-						{
-							*tDestF++ = ((float) (*usint++)) * slope + offset;
-						}
-					}
-				}
-				else NSLog( @"*** Not enough memory - malloc failed");
+				if( fImage)
+					memcpy( fImage, sfloat, height * width * sizeof( float));
+				else
+					NSLog( @"*** Not enough memory - malloc failed");
 				
 				free(oImage);
 				oImage = nil;
@@ -6562,8 +6544,6 @@ END_CREATE_ROIS:
 	{
 		realwidth = (int) (*val).us;
 		width = realwidth;
-		
-		if( realwidth != width) NSLog(@"width!=realwidth");
 	}
 	
 	if( shutterRect_w == 0) shutterRect_w = width;
@@ -8049,7 +8029,7 @@ END_CREATE_ROIS:
 						
 						if( realwidth != width)
 						{
-							NSLog(@"Update width");
+							NSLog(@"******** Update realwidth != width : WE SHOULD NOT BE HERE");
 							if( isRGB)
 							{
 								char	*ptr = (char*) oImage;
@@ -8121,41 +8101,19 @@ END_CREATE_ROIS:
 				}
 				else
 				{
-					if( bitsAllocated == 32)
+					if( bitsAllocated == 32) // 32-bit float
 					{
-						unsigned int	*usint = (unsigned int*) oImage;
-						int				*sint = (int*) oImage;
-						float			*tDestF;
+						float *sfloat = (float*) oImage;
 						
 						if( fExternalOwnedImage)
-						{
-							tDestF = fImage = fExternalOwnedImage;
-						}
+							fImage = fExternalOwnedImage;
 						else
-						{
-							tDestF = fImage = malloc(width*height*sizeof(float) + 100);
-						}
+							fImage = malloc(width*height*sizeof(float) + 100);
 						
-						if( tDestF)
-						{
-							if( fIsSigned)
-							{
-								int x = height * width;
-								while( x-->0)
-								{
-									*tDestF++ = ((float) (*sint++)) * slope + offset;
-								}
-							}
-							else
-							{
-								int x = height * width;
-								while( x-->0)
-								{
-									*tDestF++ = ((float) (*usint++)) * slope + offset;
-								}
-							}
-						}
-						else NSLog( @"*** Not enough memory - malloc failed");
+						if( fImage)
+							memcpy( fImage, sfloat, height * width * sizeof( float));
+						else
+							NSLog( @"*** Not enough memory - malloc failed");
 						
 						free(oImage);
 						oImage = nil;

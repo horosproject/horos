@@ -754,7 +754,6 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 	singleThread = [[NSLock alloc] init];
 
 	NSString *theVR = @"OW";
-	BOOL forImplicitUseOW = NO;
 	_dcmObject = dcmObject;
 	_isSigned = NO;
 	_framesCreated = NO;
@@ -766,21 +765,20 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 		theVR = vr;	
 	else if ( _bitsStored <= 8 || dicomData.isEncapsulated ) 
 		theVR = @"OB";
-	else {
-		forImplicitUseOW = YES;
+	else
 		theVR = @"OW";
-	}	
+	
 	if (DCMDEBUG)
 		NSLog(@"init Pixel Data");
-	// may may an ImageIconSequence in an encapsualted file. The icon is not encapsulated so don't de-encapsulate
-	
-	if ( dicomData.isEncapsulated && vl == 0xFFFFFFFF ) {
-		self = [super initWithAttributeTag:tag  vr:theVR];
-		[self deencapsulateData:dicomData];
 		
+	// may an ImageIconSequence in an encapsualted file. The icon is not encapsulated so don't de-encapsulate
+	if ( dicomData.isEncapsulated && vl == 0xFFFFFFFF)
+	{
+		self = [super initWithAttributeTag:tag vr:theVR];
+		[self deencapsulateData:dicomData];
 	}
-	else{
-	
+	else
+	{
 		self = [super init];	
 		_vr = [theVR retain];
 		characterSet = [specificCharacterSet retain];
@@ -788,16 +786,14 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 		_valueLength = vl;
 		_values =  nil;
 		_framesDecoded = nil;
-	
-		//NSLog(@"data length: %d", [dicomData length]);
+		
 		if (dicomData) 
 			_values = [[self valuesForVR:_vr length:_valueLength data:dicomData] retain];
 		else
 			_values = [[NSMutableArray array] retain];
 		
 		if (DCMDEBUG) 
-			NSLog( self.description );
-
+			NSLog( self.description);
 	}
 
 	_compression = 0;

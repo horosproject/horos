@@ -564,8 +564,8 @@
 			{
 				vr = @"FL";
 				
-				[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt: offset]] forName:@"RescaleIntercept"];
-				[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithFloat: slope]] forName:@"RescaleSlope"];
+				[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt: 0]] forName:@"RescaleIntercept"];
+				[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithFloat: 1]] forName:@"RescaleSlope"];
 				
 				if( [[dcmObject attributeValueWithName:@"Modality"] isEqualToString:@"CT"]) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject: @"HU"] forName:@"RescaleType"];
 				else [dcmDst setAttributeValues:[NSMutableArray arrayWithObject: @"US"] forName:@"RescaleType"];
@@ -609,7 +609,7 @@
 			}
 			
 			DCMTransferSyntax *ts;
-			ts = [DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax];
+			ts = [DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax];
 			
 			DCMAttributeTag *tag = [DCMAttributeTag tagWithName:@"PixelData"];
 			DCMPixelDataAttribute *attr = [[[DCMPixelDataAttribute alloc] initWithAttributeTag:tag 
@@ -626,7 +626,7 @@
 			if (dcmExport)
 				[dcmExport finalize: dcmDst withSourceObject: dcmObject];
 			
-			[dcmDst writeToFile:dstPath withTransferSyntax:[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax] quality:DCMLosslessQuality atomically:YES];
+			[dcmDst writeToFile:dstPath withTransferSyntax:ts quality:DCMLosslessQuality atomically:YES];
 			
 			if( squaredata)
 				free( squaredata);
