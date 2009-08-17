@@ -182,7 +182,6 @@ extern "C"
 - (IBAction) okModal: (id) sender;
 - (NSString*) privateIP;
 - (void) killDICOMListenerWait:(BOOL) w;
-- (BOOL) echoTest;
 - (void) runPreferencesUpdateCheck:(NSTimer*) timer;
 + (void) checkForPreferencesUpdate: (BOOL) b;
 + (BOOL) USETOOLBARPANEL;

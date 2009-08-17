@@ -2358,12 +2358,6 @@ static BOOL initialized = NO;
 	dcmtkQRSCP = nil;
 }
 
-- (BOOL) echoTest
-{
-	NSLog(@"C-ECHO TO THIS IP: %@", dicomListenerIP);
-	return [QueryController echo: dicomListenerIP port:[dcmtkQRSCP port] AET: [dcmtkQRSCP aeTitle]];
-}
-
 - (void) switchHandler:(NSNotification*) notification
 {
     if ([[notification name] isEqualToString:

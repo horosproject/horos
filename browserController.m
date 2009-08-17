@@ -12837,24 +12837,6 @@ static NSArray*	openSubSeriesArray = nil;
 			}
 		}
 	}
-	
-//	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"checkDICOMListenerWithEcho"] && newFilesInIncoming == NO)
-//	{
-//		// Send a c-echo on our ip
-//		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"STORESCP"])
-//		{
-//			if( [[AppController sharedAppController] echoTest] == NO)
-//			{
-//				NSLog(@"********");
-//				NSLog(@"******** C-ECHO FAILED ON OUR IP ADDRESS - RESTART DICOM LISTENER ************");
-//				NSLog(@"********");
-//				
-//				[[AppController sharedAppController] killDICOMListenerWait: NO];
-//				[[AppController sharedAppController] restartSTORESCP];
-//			}
-//			else NSLog(@"C-ECHO TEST: SUCCEEDED");
-//		}
-//	}
 }
 
 - (void)addFileToDeleteQueue: (NSString*)file
