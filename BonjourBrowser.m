@@ -116,8 +116,8 @@ static char *GetPrivateIP()
 		#endif
 		
 		resolveServiceThreadLock = [[NSLock alloc] init];
-		async = [[NSLock alloc] init];
-		asyncWrite = [[NSLock alloc] init];
+		async = [[NSRecursiveLock alloc] init];
+		asyncWrite = [[NSRecursiveLock alloc] init];
 		browser = [[NSNetServiceBrowser alloc] init];
 		services = [[NSMutableArray array] retain];
 		
@@ -451,7 +451,7 @@ static char *GetPrivateIP()
 		
 		if( size > 0)
 		{
-			
+			[NSThread sleepForTimeInterval: 2.0];
 			FILE *f = fopen ([p UTF8String], "ab");
 			fwrite( currentDataPtr + pos, size, 1, f);
 			fclose( f);
@@ -502,8 +502,8 @@ static char *GetPrivateIP()
 	{
 		[self asyncWrite: tempDatabaseFile];
 		
-		[async lock];
 		[asyncWrite lock];
+		[async lock];
 		
 		[self processTheData: nil];
 		
@@ -520,8 +520,8 @@ static char *GetPrivateIP()
 		[currentConnection release];
 		currentConnection = nil;
 		
-		[asyncWrite unlock];
 		[async unlock];
+		[asyncWrite unlock];
 	}
 }
 
@@ -1677,18 +1677,18 @@ static char *GetPrivateIP()
 					
 					if( currentDataPtr)
 					{
-						[async lock];
+						[asyncWrite lock];
 						free( currentDataPtr);
 						currentDataPtr = nil;
-						[async unlock];
+						[asyncWrite unlock];
 					}
 					
 					// For async writing
 					[[NSFileManager defaultManager] removeFileAtPath: tempDatabaseFile handler: nil];
 					[[NSFileManager defaultManager] createFileAtPath: tempDatabaseFile contents:nil attributes:nil];
 					lastAsyncPos = 0;
-					[async lock];
-					[async unlock];
+					[asyncWrite lock];
+					[asyncWrite unlock];
 					
 					if( [self connectToServer: index message: @"DATAB"] == YES)
 					{
@@ -1706,10 +1706,10 @@ static char *GetPrivateIP()
 					
 					if( currentDataPtr)
 					{
-						[async lock];
+						[asyncWrite lock];
 						free( currentDataPtr);
 						currentDataPtr = nil;
-						[async unlock];
+						[asyncWrite unlock];
 					}
 				}
 				else
