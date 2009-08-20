@@ -1451,13 +1451,19 @@ static NSDate *lastWarningDate = nil;
 	if( [[aNetService type] isEqualToString: @"_snosirix._tcp."])
 	{
 		NSDictionary *d = [NSNetService dictionaryFromTXTRecordData: [aNetService TXTRecordData]];
-		if( [checkSN64String isEqualToString: [[[NSString alloc] initWithData: [d valueForKey: @"sn"] encoding: NSUTF8StringEncoding] autorelease]] == YES)
+		
+		NSString *otherString = [[[NSString alloc] initWithData: [d valueForKey: @"sn"] encoding: NSUTF8StringEncoding] autorelease];
+		
+		if( [checkSN64String length] > 4 && [otherString length] > 4)
 		{
-			[checkSN64Service release];
-			checkSN64Service = nil;
-			
-			NSRunCriticalAlertPanel( NSLocalizedString( @"64-bit Extension License", nil), NSLocalizedString( @"There is already another running OsiriX application using this 64-bit extension serial number. Buy a site license to run an unlimited number of OsiriX applications at the same time.", nil), NSLocalizedString( @"OK", nil), nil, nil);
-			exit(0);
+			if( [checkSN64String isEqualToString: otherString] == YES)
+			{
+				[checkSN64Service release];
+				checkSN64Service = nil;
+				
+				NSRunCriticalAlertPanel( NSLocalizedString( @"64-bit Extension License", nil), NSLocalizedString( @"There is already another running OsiriX application using this 64-bit extension serial number. Buy a site license to run an unlimited number of OsiriX applications at the same time.", nil), NSLocalizedString( @"OK", nil), nil, nil);
+				exit(0);
+			}
 		}
 	}
 }
