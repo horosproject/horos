@@ -451,7 +451,6 @@ static char *GetPrivateIP()
 		
 		if( size > 0)
 		{
-			[NSThread sleepForTimeInterval: 2.0];
 			FILE *f = fopen ([p UTF8String], "ab");
 			fwrite( currentDataPtr + pos, size, 1, f);
 			fclose( f);
