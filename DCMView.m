@@ -3762,7 +3762,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				if( [roiArray count]>0)
 				{
 					ROI *r = [roiArray objectAtIndex:0];
-					if( r.type != tPlain)
+					if( r.type != tPlain && r.type != tArrow && r.type != tAngle && r.type != tAxis && r.type != tDynAngle)
 					{
 						NSPoint pt = [[[[roiArray objectAtIndex:0] points] objectAtIndex:0] point];
 						float dx = (pt.x-tempPt.x);
@@ -3774,14 +3774,14 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				}
 				
 				NSMutableArray *points;
-				for( int i=0; i<[roiArray count]; i++ )
+				for( int i = 0; i < [roiArray count]; i++ )
 				{
 					ROI *r = [roiArray objectAtIndex: i];
-					if( r.type != tPlain)
+					if( r.type != tPlain && r.type != tArrow && r.type != tAngle && r.type != tAxis && r.type != tDynAngle)
 					{
 						points = [r points];
 																																				  
-						for( int j=0; j<[points count]; j++ )
+						for( int j = 0; j < [points count]; j++ )
 						{
 							NSPoint pt = [[points objectAtIndex:j] point];
 							float dx = (pt.x-tempPt.x);
@@ -5113,7 +5113,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	{
 		ROI *r = [roiArray objectAtIndex:i];
 		
-		if([r type] != tAxis && [r type] != tDynAngle && [r type] != tPlain && r.locked == NO)
+		if([r type] != tAxis && [r type] != tAngle && [r type] != tArrow && [r type] != tDynAngle && [r type] != tPlain && r.locked == NO)
 		{		
 			points = [r points];
 			int n = 0;
