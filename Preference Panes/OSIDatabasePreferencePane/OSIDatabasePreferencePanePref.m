@@ -359,13 +359,13 @@
 		
 		if( [[location lastPathComponent] isEqualToString:@"OsiriX Data"])
 		{
-			NSLog( [location lastPathComponent]);
+			NSLog( @"%@", [location lastPathComponent]);
 			location = [location stringByDeletingLastPathComponent];
 		}
 		
 		if( [[location lastPathComponent] isEqualToString:@"DATABASE"] && [[[location stringByDeletingLastPathComponent] lastPathComponent] isEqualToString:@"OsiriX Data"])
 		{
-			NSLog( [location lastPathComponent]);
+			NSLog( @"%@", [location lastPathComponent]);
 			location = [[location stringByDeletingLastPathComponent] stringByDeletingLastPathComponent];
 		}
 		

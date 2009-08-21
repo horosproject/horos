@@ -793,7 +793,7 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 			_values = [[NSMutableArray array] retain];
 		
 		if (DCMDEBUG) 
-			NSLog( self.description);
+			NSLog( @"%@", self.description);
 	}
 
 	_compression = 0;

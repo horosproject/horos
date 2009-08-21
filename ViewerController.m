@@ -4133,7 +4133,7 @@ static ViewerController *draggedController = nil;
 	{
 		if( !timer)  [self PlayStop:[self findPlayStopButton]];  // PLAY
 		
-		NSLog([event characters]);
+		NSLog( @"%@", [event characters]);
 		
 		if( (c >='a' && c <= 'g')) {c -= 'a' -1;	direction = -1;}
 		if( (c >='1' && c <= '7')) {c -= '1' -1;	direction = 1;}

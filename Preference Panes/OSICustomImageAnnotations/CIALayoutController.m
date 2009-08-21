@@ -738,7 +738,7 @@
 	return [[pboard stringForType:NSStringPboardType] componentsSeparatedByString:@", "];
 }
 
-- (NSArray *)tokenField:(NSTokenField *)tokenField shouldAddObjects:(NSArray *)tokens atIndex:(unsigned)index
+- (NSArray *)tokenField:(NSTokenField *)tokenField shouldAddObjects:(NSArray *)tokens atIndex:(NSUInteger)index
 {
 	[self performSelector:@selector(resizeTokenField) withObject:nil afterDelay:0.1];
 	return tokens;
@@ -804,7 +804,7 @@
 }
 
 // auto completion
-- (NSArray *)tokenField:(NSTokenField *)tokenField completionsForSubstring:(NSString *)substring indexOfToken:(int)tokenIndex indexOfSelectedItem:(int *)selectedIndex
+- (NSArray *)tokenField:(NSTokenField *)tokenField completionsForSubstring:(NSString *)substring indexOfToken:(NSInteger)tokenIndex indexOfSelectedItem:(NSInteger *)selectedIndex
 {
 	int i, j;
 	NSMutableArray *resultArray = [NSMutableArray array];

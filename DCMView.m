@@ -483,7 +483,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 @synthesize fontListGL, fontGL;
 @synthesize tag = _tag;
 @synthesize curWW, curWL;
-@synthesize scaleValue;
 @synthesize rows = _imageRows, columns = _imageColumns;
 @synthesize cursor;
 @synthesize eraserFlag;
@@ -2833,7 +2832,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	NSMutableDictionary *stanStringAttrib = [NSMutableDictionary dictionary];
 	[stanStringAttrib setObject: [NSFont fontWithName:@"Helvetica-Bold" size:30] forKey:NSFontAttributeName];
 	
-	if( description == nil) description = @""; 
+	if( description == nil)
+		description = [NSMutableString stringWithString:@""]; 
 	
 	NSAttributedString *text = [[[NSAttributedString alloc] initWithString: description attributes: stanStringAttrib] autorelease];
 	

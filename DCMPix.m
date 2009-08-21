@@ -1151,7 +1151,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 @synthesize serieNo, pixArray;
 @synthesize pixPos, transferFunctionPtr;
 @synthesize stackMode, generated, generatedName;
-@synthesize sourceFile, imageObj;
+@synthesize imageObj;
 @synthesize srcFile, annotationsDictionary;
 
 // SUV properties

@@ -704,7 +704,7 @@ PixelRepresentation
 	@catch (NSException *ne)
 	{
 		NSLog(@"Error reading data for dicom object");
-		NSLog( [ne description]);
+		NSLog( @"%@", [ne description]);
 		*byteOffset = 0xFFFFFFFF;
 	}
 	//NSLog(@"DCMObject  End readDataSet: %f", -[timestamp  timeIntervalSinceNow]);

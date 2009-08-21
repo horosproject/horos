@@ -97,7 +97,7 @@
 	
 	for( i = 0; i < [routesArray count]; i++)
 	{
-		NSLog( [[routesArray objectAtIndex:i] valueForKey:@"server"]);
+		NSLog( @"%@", [[routesArray objectAtIndex:i] valueForKey:@"server"]);
 		
 		int		x;
 		BOOL	found = NO;
@@ -277,7 +277,7 @@ static BOOL newRouteMode = NO;
 }
 
 
-- (int)numberOfRowsInTableView:(NSTableView *)aTableView
+- (NSInteger)numberOfRowsInTableView:(NSTableView *)aTableView
 {
 	if( [aTableView tag] == 0)	return [routesArray count];
 	
@@ -295,7 +295,7 @@ static BOOL newRouteMode = NO;
 
 - (id)tableView:(NSTableView *)aTableView
     objectValueForTableColumn:(NSTableColumn *)aTableColumn
-    row:(int)rowIndex
+    row:(NSInteger)rowIndex
 {
 	NSMutableDictionary *theRecord;
 	
@@ -311,7 +311,7 @@ static BOOL newRouteMode = NO;
 	return 0L;
 }
 
-- (void)tableView:(NSTableView *)aTableView setObjectValue:(id)anObject forTableColumn:(NSTableColumn *)aTableColumn row:(int)rowIndex
+- (void)tableView:(NSTableView *)aTableView setObjectValue:(id)anObject forTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex
 {
 	if( [_authView authorizationState] == SFAuthorizationViewUnlockedState)
 	{
@@ -320,7 +320,7 @@ static BOOL newRouteMode = NO;
 	}
 }
 
-- (BOOL)tableView:(NSTableView *)aTableView shouldEditTableColumn:(NSTableColumn *)aTableColumn row:(int)rowIndex
+- (BOOL)tableView:(NSTableView *)aTableView shouldEditTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex
 {
 	if( [_authView authorizationState] == SFAuthorizationViewUnlockedState) return YES;
 	else return NO;

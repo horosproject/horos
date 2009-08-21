@@ -87,7 +87,7 @@ void scaniDiskDir( DMiDiskSession* mySession, NSString* path, NSArray* dir, NSMu
 		
 		BOOL isDirectory;
 		
-		NSLog( item);
+		NSLog( @"%@", item);
 		
 		if( [mySession fileExistsAtPath:item isDirectory:&isDirectory])
 		{
@@ -185,11 +185,11 @@ int executeProcess(int argc, char *argv[])
 					{
 						NSArray *dirContent = [mySession directoryContentsAtPath: DICOMpath];
 						
-						NSLog( [dirContent description]);
+						NSLog( @"%@", [dirContent description]);
 						
 						scaniDiskDir( mySession, DICOMpath, dirContent, filesArray);
 						
-						NSLog( [filesArray description]);
+						NSLog( @"%@", [filesArray description]);
 						
 						[wait showWindow: nil];
 						[[wait progress] setMaxValue: [filesArray count]];
@@ -227,7 +227,7 @@ int executeProcess(int argc, char *argv[])
 		{
 			NSArray	*files2Copy = [NSArray arrayWithContentsOfFile: [NSString stringWithCString:argv[ 2]]];
 			
-			NSLog( [files2Copy description]);
+			NSLog( @"%@", [files2Copy description]);
 			
 			NSString	*DICOMpath = @"Documents/DICOM";
 			
@@ -258,8 +258,8 @@ int executeProcess(int argc, char *argv[])
 						
 						dstPath = [DICOMpath stringByAppendingPathComponent: [srcPath lastPathComponent]];
 						
-						NSLog( srcPath);
-						NSLog( dstPath);
+						NSLog( @"%@", srcPath);
+						NSLog( @"%@", dstPath);
 						
 						if( ![mySession fileExistsAtPath: dstPath]) [mySession copyPath: srcPath toPath: dstPath handler:nil];
 						else {
@@ -343,7 +343,7 @@ int executeProcess(int argc, char *argv[])
 			{
 				NSDictionary *component = [NSDictionary dictionaryWithContentsOfFile: [NSString stringWithCString:argv[ 3]]];
 				
-				NSLog( [component description]);
+				NSLog( @"%@", [component description]);
 				
 				
 				// **** See QuicktimeExport.m
@@ -564,7 +564,7 @@ CHECK;
 	
 	NSLog( @"**** 32-bit shell started");
 	
-	NSLog( [arguments description]);
+	NSLog( @"%@", [arguments description]);
 	
 	int argc = [arguments count];
 	

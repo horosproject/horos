@@ -18680,7 +18680,7 @@
 					"\"$(SRCROOT)/Binaries/VTKLibs\"",
 					"\"$(SRCROOT)/ITK180/bin\"",
 				);
-				MACOSX_DEPLOYMENT_TARGET = "";
+				MACOSX_DEPLOYMENT_TARGET = 10.5;
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
 					"-Wno-deprecated",

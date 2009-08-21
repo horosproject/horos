@@ -1987,7 +1987,7 @@ static NSDate *lastWarningDate = nil;
 	
 	for( NSString *s in [[DefaultsOsiriX currentHost] names])
 	{
-		NSLog( s);
+		NSLog( @"%@", s);
 	}
 	
 	NSLog( @"end DNSResolve");
@@ -3732,17 +3732,17 @@ static BOOL initialized = NO;
 	NSString *templateFile;
 
 	templateFile = [htmlTemplatesDirectory stringByAppendingPathComponent:@"QTExportPatientsTemplate.html"];
-	NSLog(templateFile);
+	NSLog( @"%@", templateFile);
 	if ([[NSFileManager defaultManager] fileExistsAtPath:templateFile] == NO)
 		[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/QTExportPatientsTemplate.html"] toPath:templateFile handler:nil];
 
 	templateFile = [htmlTemplatesDirectory stringByAppendingPathComponent:@"QTExportStudiesTemplate.html"];
-	NSLog(templateFile);
+	NSLog( @"%@", templateFile);
 	if ([[NSFileManager defaultManager] fileExistsAtPath:templateFile] == NO)
 		[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/QTExportStudiesTemplate.html"] toPath:templateFile handler:nil];
 
 	templateFile = [htmlTemplatesDirectory stringByAppendingPathComponent:@"QTExportSeriesTemplate.html"];
-	NSLog(templateFile);
+	NSLog( @"%@", templateFile);
 	if ([[NSFileManager defaultManager] fileExistsAtPath:templateFile] == NO)
 		[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/QTExportSeriesTemplate.html"] toPath:templateFile handler:nil];
 	

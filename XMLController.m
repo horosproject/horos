@@ -1084,22 +1084,22 @@ extern int delayedTileWindows;
 			else
 				[copyString appendFormat:@"%@ %@", [item valueForKey: @"name"], [self stringsSeparatedForNode: item]];
 			
-			NSLog( [item description]);
+			NSLog( @"%@", [item description]);
 			
 			NSLog( @"---");
 			
-			NSLog( [item valueForKey: @"name"]);
+			NSLog( @"%@", [item valueForKey: @"name"]);
 			
-			NSLog( [[item attributeForName:@"group"] stringValue]);
-			NSLog( [[item attributeForName:@"element"] stringValue]);
+			NSLog( @"%@", [[item attributeForName:@"group"] stringValue]);
+			NSLog( @"%@", [[item attributeForName:@"element"] stringValue]);
 			
-			NSLog( [[item attributeForName:@"attributeTag"] stringValue]);
+			NSLog( @"%@", [[item attributeForName:@"attributeTag"] stringValue]);
 			
-			NSLog( [item valueForKey: @"stringValue"]);
+			NSLog( @"%@", [item valueForKey: @"stringValue"]);
 			
 			NSLog( @"---");
 			
-			NSLog( [self stringsSeparatedForNode: item]);
+			NSLog( @"%@", [self stringsSeparatedForNode: item]);
 	   }
 	}
 	

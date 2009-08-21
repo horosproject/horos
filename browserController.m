@@ -110,7 +110,7 @@ NSString *asciiString( NSString* name )
 	[BrowserController replaceNotAdmitted:outString];
 	
 	if( [outString length] == 0)
-		outString = @"AAA";
+		outString = [NSMutableString stringWithString: @"AAA"];
 	
 	return outString;
 }
@@ -1448,7 +1448,7 @@ static NSArray*	statesArray = nil;
 							
 							for( NSString *patientUID in [patients allKeys])
 							{
-								NSLog( patientUID);
+								NSLog( @"%@", patientUID);
 								
 								id study = [patients objectForKey: patientUID];
 								
@@ -1589,8 +1589,8 @@ static NSArray*	statesArray = nil;
 				{
 					result = nil;
 					NSLog( @"Error in autorouting filter :");
-					NSLog( [ne name]);
-					NSLog( [ne reason]);
+					NSLog( @"%@", [ne name]);
+					NSLog( @"%@", [ne reason]);
 				}
 				
 				if( [result count])
@@ -1669,8 +1669,8 @@ static NSArray*	statesArray = nil;
 	@catch (NSException *ne)
 	{
 		NSLog( @"Autorouting FAILED");
-		NSLog( [ne name]);
-		NSLog( [ne reason]);
+		NSLog( @"%@", [ne name]);
+		NSLog( @"%@", [ne reason]);
 		
 		[self performSelectorOnMainThread:@selector(showErrorMessage:) withObject: [NSDictionary dictionaryWithObjectsAndKeys: ne, @"exception", server, @"server", nil] waitUntilDone: NO];
 		
@@ -1717,7 +1717,7 @@ static NSArray*	statesArray = nil;
 			{
 				if ([[aServer objectForKey:@"Description"] isEqualToString: serverName]) 
 				{
-					NSLog( [aServer description]);
+					NSLog( @"%@", [aServer description]);
 					server = aServer;
 					break;
 				}
@@ -1764,8 +1764,8 @@ static NSArray*	statesArray = nil;
 					
 				@catch( NSException *ne)
 				{
-					NSLog( [ne name]);
-					NSLog( [ne reason]);
+					NSLog( @"%@", [ne name]);
+					NSLog( @"%@", [ne reason]);
 				}
 			}
 			else
@@ -2502,7 +2502,7 @@ static NSArray*	statesArray = nil;
 		@catch (NSException *e)
 		{
 			NSLog( @"updateDatabaseModel failed...");
-			NSLog( [e description]);
+			NSLog( @"%@", [e description]);
 			
 			NEEDTOREBUILD = YES;
 			COMPLETEREBUILD = YES;
@@ -2962,8 +2962,8 @@ static NSArray*	statesArray = nil;
 		
 		@catch( NSException *ne )
 		{
-			NSLog( [ne name]);
-			NSLog( [ne reason]);
+			NSLog( @"%@", [ne name]);
+			NSLog( @"%@", [ne reason]);
 		}
 	}
 	
@@ -2977,7 +2977,7 @@ static NSArray*	statesArray = nil;
 
 - (void)selectThisStudy: (id)study
 {
-	NSLog( [study description]);
+	NSLog( @"%@", [study description]);
 	[self outlineViewRefresh];
 	
 	[databaseOutline selectRow: [databaseOutline rowForItem: study] byExtendingSelection: NO];
@@ -3229,7 +3229,7 @@ static NSArray*	statesArray = nil;
 		case cdOnly:
 		{
 			
-			NSLog( [filesInput objectAtIndex:0]);
+			NSLog( @"%@", [filesInput objectAtIndex:0]);
 			
 			if( [BrowserController isItCD: [filesInput objectAtIndex:0]] == NO) return filesInput;
 		}
@@ -4007,7 +4007,7 @@ static NSArray*	statesArray = nil;
 			if( free <= 0 )
 			{
 				NSLog( @"*** autoCleanDatabaseFreeSpace free <= 0 ??");
-				NSLog( currentDatabasePath);
+				NSLog( @"%@", currentDatabasePath);
 				
 				return;
 			}
@@ -4166,7 +4166,7 @@ static NSArray*	statesArray = nil;
 				@catch ( NSException *e)
 				{
 					NSLog( @"autoCleanDatabaseFreeSpace exception");
-					NSLog( [e description]);
+					NSLog( @"%@", [e description]);
 				}
 				
 				[context unlock];
@@ -4655,7 +4655,7 @@ static NSArray*	statesArray = nil;
 	@catch (NSException * e)
 	{
 		NSLog( @"checkBonjourUpToDateThread");
-		NSLog( [e description]);
+		NSLog( @"%@", [e description]);
 	}
 
 	[checkIncomingLock unlock];
@@ -4751,7 +4751,7 @@ static NSArray*	statesArray = nil;
 			@catch (NSException * e)
 			{
 				NSLog( @"refreshDatabase exception");
-				NSLog( [e description]);
+				NSLog( @"%@", [e description]);
 			}
 			[checkIncomingLock unlock];
 		}
@@ -4786,7 +4786,7 @@ static NSArray*	statesArray = nil;
 		
 		@catch (NSException * e)
 		{
-			NSLog( [e description]);
+			NSLog( @"%@", [e description]);
 		}
 
 		[managedObjectContext unlock];
@@ -4815,7 +4815,7 @@ static NSArray*	statesArray = nil;
 		}
 		@catch (NSException * e)
 		{
-			NSLog( [e description]);
+			NSLog( @"%@", [e description]);
 		}
 		
 		[managedObjectContext unlock];
@@ -5734,7 +5734,7 @@ static NSArray*	statesArray = nil;
 		@catch( NSException *ne)
 		{
 			NSLog( @"Exception during delItem");
-			NSLog( [ne description]);
+			NSLog( @"%@", [ne description]);
 		}
 		
 		[context unlock];
@@ -5847,7 +5847,7 @@ static NSArray*	statesArray = nil;
 		@catch( NSException *ne)
 		{
 			NSLog( @"Exception Updating database...");
-			NSLog( [ne description]);
+			NSLog( @"%@", [ne description]);
 		}
 		
 		[wait close];
@@ -6016,7 +6016,7 @@ static NSArray*	statesArray = nil;
 	}
 	@catch (NSException * e)
 	{
-		NSLog( [e description]);
+		NSLog( @"%@", [e description]);
 	}
 
 	[managedObjectContext unlock];
@@ -6186,7 +6186,7 @@ static NSArray*	statesArray = nil;
 	
 	@catch (NSException * e)
 	{
-		NSLog( [e description]);
+		NSLog( @"%@", [e description]);
 	}
 
 	[managedObjectContext unlock];
@@ -7015,7 +7015,7 @@ static NSArray*	statesArray = nil;
 	@catch (NSException * e)
 	{
 		NSLog( @"******* BrowserController findObject Exception");
-		NSLog( [e description]);
+		NSLog( @"%@", [e description]);
 	}
 	
 	if( element)
@@ -7158,7 +7158,7 @@ static NSArray*	statesArray = nil;
 			@catch (NSException * e)
 			{
 				NSLog( @"******* BrowserController findObject Exception - Delete");
-				NSLog( [e description]);
+				NSLog( @"%@", [e description]);
 			}
 		}
 		
@@ -7995,11 +7995,11 @@ static BOOL withReset = NO;
 	NSDateFormatter *datetimeFormatter = [[[NSDateFormatter alloc]initWithDateFormat:@"%Y%m%d.%H%M%S" allowNaturalLanguage:NO] autorelease];
 	pathToPDF = [pathToPDF stringByAppendingPathComponent: [datetimeFormatter stringFromDate:[NSDate date]]];
 	pathToPDF = [pathToPDF stringByAppendingPathExtension:@"pdf"];
-	NSLog(pathToPDF);
+	NSLog( @"%@", pathToPDF);
 	
 	//creating file and opening it with preview
 	NSManagedObject		*curObj = [matrixViewArray objectAtIndex: [[sender selectedCell] tag]];
-	NSLog([curObj valueForKey: @"type"]);
+	NSLog( @"%@", [curObj valueForKey: @"type"]);
 	
 	[managedObjectContext retain];
 	[managedObjectContext lock];
@@ -8009,13 +8009,13 @@ static BOOL withReset = NO;
 	[managedObjectContext unlock];
 	[managedObjectContext release];
 	
-	NSLog([curObj valueForKey: @"completePath"]);	
+	NSLog( @"%@", [curObj valueForKey: @"completePath"]);	
 	
 	DCMObject *dcmObject = [DCMObject objectWithContentsOfFile:[curObj valueForKey: @"completePath"] decodingPixelData:NO];
 	NSData *encapsulatedPDF = [dcmObject attributeValueWithName:@"EncapsulatedDocument"];
 	NSFileManager *fileManager = [NSFileManager defaultManager];
 	if( [fileManager createFileAtPath:pathToPDF contents:encapsulatedPDF attributes:nil]) [[NSWorkspace sharedWorkspace] openFile:pathToPDF];
-	else NSLog(@"couldn't open pdf");
+	else NSLog( @"couldn't open pdf");
 	
 	[pool release];	
 }
@@ -8119,7 +8119,7 @@ static BOOL withReset = NO;
 				if( [image valueForKey:@"frameID"]) frame = [[image valueForKey:@"frameID"] intValue];
 				
 				NSLog( @"Build thumbnail for:");
-				NSLog( [image valueForKey:@"completePath"]);
+				NSLog( @"%@", [image valueForKey:@"completePath"]);
 				
 				[[NSFileManager defaultManager] removeFileAtPath: recoveryPath handler: nil];
 				[[[[[series valueForKey:@"study"] objectID] URIRepresentation] absoluteString] writeToFile: recoveryPath atomically: YES encoding: NSASCIIStringEncoding  error: nil];
@@ -8462,8 +8462,8 @@ static BOOL withReset = NO;
 			
 			if( [[self window] screen] == s)
 			{
-				NSLog( NSStringFromRect( [[self window] frame]));
-				NSLog( NSStringFromRect( visibleScreenRect[ i]));
+				NSLog( @"%@", NSStringFromRect( [[self window] frame]));
+				NSLog( @"%@", NSStringFromRect( visibleScreenRect[ i]));
 				
 				dbScreenChanged = YES;
 			}
@@ -9044,7 +9044,7 @@ static BOOL withReset = NO;
 			format = [format stringByAppendingFormat: @"(%@)", search];
 		}
 		
-		NSLog( format);
+		NSLog( @"%@", format);
 		[album setValue:format forKey:@"predicateString"];
 		
 		[self saveDatabase: currentDatabasePath];
@@ -9673,8 +9673,8 @@ static BOOL needToRezoom;
 	@catch (NSException *ne)
 	{
 		NSLog( @"Bonjour DICOM Send FAILED");
-		NSLog( ne.name );
-		NSLog( ne.reason );
+		NSLog( @"%@", ne.name );
+		NSLog( @"%@", ne.reason );
 	}
 	
 	[storeSCU release];
@@ -10061,7 +10061,7 @@ static BOOL needToRezoom;
 					
 					@catch (NSException * e)
 					{
-						NSLog( [e description]);
+						NSLog( @"%@", [e description]);
 						NSLog( @"Exception LOCAL PATH - DATABASE - tableView *******");
 					}
 				}
@@ -13138,8 +13138,8 @@ static NSArray*	openSubSeriesArray = nil;
 		
 		for( NSString *mediaPath in removeableMedia )
 		{
-			NSLog( path );
-			NSLog( mediaPath );
+			NSLog( @"%@",  path );
+			NSLog( @"%@",  mediaPath );
 			if( [[mediaPath commonPrefixWithString: path options: NSCaseInsensitiveSearch] isEqualToString: mediaPath] )
 			{
 				BOOL		isWritable, isUnmountable, isRemovable, hasDICOMDIR = NO;
@@ -14919,7 +14919,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Preparing the files...", nil)];
 		[wait showWindow:self];
 		
-		NSLog( [sender description]);
+		NSLog( @"%@",  [sender description]);
 		[self checkResponder];
 		if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix)
 		{

@@ -160,7 +160,9 @@
 // basic methods that pick up defaults
 - (id) initWithAttributedString:(NSAttributedString *)attributedString;
 {
-	if( attributedString == nil) attributedString = @"";
+	if( attributedString == nil)
+		attributedString = [[[NSAttributedString alloc] initWithString: @""] autorelease];
+		
 	return [self initWithAttributedString:attributedString withTextColor:[NSColor colorWithDeviceRed:1.0f green:1.0f blue:1.0f alpha:1.0f] withBoxColor:[NSColor colorWithDeviceRed:1.0f green:1.0f blue:1.0f alpha:0.0f] withBorderColor:[NSColor colorWithDeviceRed:1.0f green:1.0f blue:1.0f alpha:0.0f]];
 }
 

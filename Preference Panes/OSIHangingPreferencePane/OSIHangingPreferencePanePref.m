@@ -100,7 +100,7 @@
 
 //****** TABLEVIEW
 
-- (int)numberOfRowsInTableView:(NSTableView *)aTableView
+- (NSInteger)numberOfRowsInTableView:(NSTableView *)aTableView
 {
 	return [[hangingProtocols objectForKey:modalityForHangingProtocols] count];
 }
@@ -108,7 +108,7 @@
 - (void)tableView:(NSTableView *)aTableView
     setObjectValue:anObject
     forTableColumn:(NSTableColumn *)aTableColumn
-    row:(int)rowIndex
+    row:(NSInteger)rowIndex
 {
 	NSMutableArray *hangingProtocolArray = [[[hangingProtocols objectForKey:modalityForHangingProtocols] mutableCopy] autorelease];
 	
@@ -129,7 +129,7 @@
 
 - (id)tableView:(NSTableView *)aTableView
     objectValueForTableColumn:(NSTableColumn *)aTableColumn
-    row:(int)rowIndex
+    row:(NSInteger)rowIndex
 {
 	NSMutableArray *hangingProtocolArray = [[[hangingProtocols objectForKey:modalityForHangingProtocols] mutableCopy] autorelease];
 	NSParameterAssert(rowIndex >= 0 && rowIndex < [hangingProtocolArray count]);
@@ -154,7 +154,7 @@
 	return [theRecord objectForKey:[aTableColumn identifier]];
 }
 
-- (BOOL)tableView:(NSTableView *)aTableView shouldEditTableColumn:(NSTableColumn *)aTableColumn row:(int)rowIndex
+- (BOOL)tableView:(NSTableView *)aTableView shouldEditTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex
 {
 	if( [_authView authorizationState] != SFAuthorizationViewUnlockedState) return NO;
 	

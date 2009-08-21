@@ -88,7 +88,7 @@ static const char *GetPrivateIP()
 	}
 	@catch (NSException * e)
 	{
-		NSLog( [e description]);
+		NSLog( @"%@",  [e description]);
 	}
 	
 	return array;
@@ -138,7 +138,7 @@ static const char *GetPrivateIP()
 	}
 	@catch (NSException * e)
 	{
-		NSLog( [e description]);
+		NSLog( @"%@",  [e description]);
 		error = -2;
 	}
 	
@@ -1959,7 +1959,7 @@ static const char *GetPrivateIP()
 		{
 			NSPredicate	*predicate = [NSPredicate predicateWithFormat:  @"(seriesDICOMUID == %@)", [item valueForKey:@"uid"]];
 			
-			NSLog( [predicate description]);
+			NSLog( @"%@",  [predicate description]);
 			
 			[request setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey:@"Series"]];
 			[request setPredicate: predicate];
@@ -1967,7 +1967,7 @@ static const char *GetPrivateIP()
 			seriesArray = [context executeFetchRequest:request error:&error];
 			if( [seriesArray count] > 0)
 			{
-				NSLog( [seriesArray description]);
+				NSLog( @"%@",  [seriesArray description]);
 				
 				NSManagedObject	*series = [seriesArray objectAtIndex: 0];
 				
@@ -2294,7 +2294,7 @@ static const char *GetPrivateIP()
 	{
 		NSDictionary *server = [serversArray objectAtIndex: i];
 		
-		NSLog( [server description]);
+		NSLog( @"%@",  [server description]);
 		
 		if( ([[server valueForKey:@"QR"] boolValue] == YES || [server valueForKey:@"QR"] == nil ))
 		

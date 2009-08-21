@@ -27,7 +27,7 @@ NSMutableDictionary *transferSyntaxDict;
 
 }
 @property(readonly) NSString *transferSyntax;
-@property(readonly) NSString *name, *description;
+@property(readonly) NSString *name;
 @property(readonly )BOOL isEncapsulated;
 @property(readonly) BOOL isLittleEndian;
 @property(readonly) BOOL isExplicit;

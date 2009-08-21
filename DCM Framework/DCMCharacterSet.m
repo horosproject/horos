@@ -33,7 +33,7 @@ char* DCMreplaceInvalidCharacter( char* str ) {
 
 @implementation DCMCharacterSet
 
-@synthesize encoding, encodings, characterSet = _characterSet, description = _characterSet;
+@synthesize encoding, encodings, characterSet = _characterSet;
 
 + (NSString*) NSreplaceBadCharacter: (NSString*) str
 {
@@ -170,4 +170,8 @@ char* DCMreplaceInvalidCharacter( char* str ) {
 	[super dealloc];
 }
 
+- (NSString*) description
+{
+	return _characterSet;
+}
 @end

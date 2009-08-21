@@ -72,7 +72,7 @@
 			NSArray *array = [self valuesForVR:_vr length:_valueLength data:dicomData];
 			_values = [[NSMutableArray alloc]  initWithArray:array];
 			if (DCMDEBUG){
-				NSLog([self description]);
+				NSLog( @"%@", [self description]);
 			}
 		}
 		_dataPtr = nil;

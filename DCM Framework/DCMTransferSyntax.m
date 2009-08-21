@@ -46,7 +46,7 @@ static NSString *DCM_MPEG2Main = @"1.2.840.10008.1.2.4.100";
 
 @implementation DCMTransferSyntax
 
-@synthesize transferSyntax, name, description = name;
+@synthesize transferSyntax, name;
 @synthesize isEncapsulated, isLittleEndian, isExplicit;
 
 +(id)ExplicitVRLittleEndianTransferSyntax{
@@ -250,6 +250,11 @@ static NSString *DCM_MPEG2Main = @"1.2.840.10008.1.2.4.100";
 
 - (BOOL)isEqual:(id)object{
 	return [self isEqualToTransferSyntax:object];
+}
+
+- (NSString*) description
+{
+	return name;
 }
 
 @end
