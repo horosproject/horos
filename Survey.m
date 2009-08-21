@@ -69,7 +69,7 @@
 
 -(IBAction) dontShowAgain : (id) sender
 {
-	[[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"SURVEYDONE4"];
+	[[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"SURVEYDONE5"];
 }
 
 -(IBAction) done : (id) sender
