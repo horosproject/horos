@@ -99,6 +99,7 @@ extern unsigned char* compressJPEG (int inQuality, unsigned char* inImageBuffP, 
 extern int delayedTileWindows;
 extern BOOL NEEDTOREBUILD, COMPLETEREBUILD;
 extern NSRecursiveLock *PapyrusLock;
+BOOL hasMacOSXSnowLeopard();
 
 NSString *asciiString( NSString* name )
 {
@@ -12162,11 +12163,13 @@ static NSArray*	openSubSeriesArray = nil;
 	
 	if( sizeof( long) == 8 )
 	{
-		wait = [[WaitRendering alloc] init: NSLocalizedString(@"Starting 64-bit version", nil)];
+		if( hasMacOSXSnowLeopard()) wait = [[WaitRendering alloc] init: NSLocalizedString(@"Starting Snow OsiriX 64-bit", nil)];
+		else wait = [[WaitRendering alloc] init: NSLocalizedString(@"Starting OsiriX 64-bit", nil)];
 	}
 	else
 	{
-		wait = [[WaitRendering alloc] init: NSLocalizedString(@"Starting 32-bit version", nil)];
+		if( hasMacOSXSnowLeopard()) wait = [[WaitRendering alloc] init: NSLocalizedString(@"Starting Snow OsiriX 32-bit", nil)];
+		else wait = [[WaitRendering alloc] init: NSLocalizedString(@"Starting OsiriX 32-bit", nil)];
 	}
 	
 	waitCompressionWindow  = [[Wait alloc] initWithString: NSLocalizedString( @"File Conversion", nil) :NO];

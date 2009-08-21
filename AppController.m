@@ -506,6 +506,21 @@ short HasAltiVec ( )
 
 //———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
+BOOL hasMacOSXSnowLeopard()
+{
+	OSErr						err;       
+	SInt32						osVersion;
+	
+	err = Gestalt ( gestaltSystemVersion, &osVersion );       
+	if ( err == noErr)       
+	{
+		if ( osVersion < 0x1060UL )
+		{
+			return NO;
+		}
+	}
+	return YES;                   
+}
 
 BOOL hasMacOSXLeopard()
 {
@@ -522,7 +537,6 @@ BOOL hasMacOSXLeopard()
 	}
 	return YES;                   
 }
-
 
 BOOL hasMacOSXTiger()
 {
