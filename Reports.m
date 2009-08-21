@@ -174,7 +174,7 @@ static id aedesc_to_id(AEDesc *desc)
 	[s appendString:@"close active document saving no\n"];
 	[s appendString:@"end tell\n"];
 	
-	NSLog( s);
+	NSLog( @"%@", s);
 	
 	return s;
 }
@@ -294,7 +294,7 @@ static id aedesc_to_id(AEDesc *desc)
 						NSString	*dicomField = [rtfString substringWithRange: NSMakeRange( firstChar.location+firstChar.length, secondChar.location - (firstChar.location+firstChar.length))];
 						
 						
-						NSLog( dicomField);
+						NSLog( @"%@", dicomField);
 						
 						DCMObject *dcmObject = [DCMObject objectWithContentsOfFile: [imagePathsArray objectAtIndex: 0] decodingPixelData:NO];
 						if (dcmObject)
@@ -488,7 +488,7 @@ CHECK;
 				}
 				while( sChar.location != NSNotFound);
 				
-				NSLog( dicomField);
+				NSLog( @"%@", dicomField);
 				
 				DCMObject *dcmObject = [DCMObject objectWithContentsOfFile: [imagePathsArray objectAtIndex: 0] decodingPixelData:NO];
 				if (dcmObject)

@@ -35,7 +35,7 @@
 	int			i, argc = [params count];
 	char		*argv[ argc];
 	
-	NSLog( [params description]);
+	NSLog( @"%@", [params description]);
 	
 	for( i = 0; i < argc; i++)
 	{

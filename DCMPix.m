@@ -5662,7 +5662,7 @@ END_CREATE_ROIS:
 		@catch ( NSException *e)
 		{
 			NSLog( @"philipsFactor exception");
-			NSLog( [e description]);
+			NSLog( @"%@", [e description]);
 		}
 		//NSLog( @"philipsFactor = %f", philipsFactor);
 	}
@@ -8491,7 +8491,7 @@ END_CREATE_ROIS:
 			@catch ( NSException *e)
 			{
 				NSLog( @"CheckLoadIn Exception");
-				NSLog( [e description]);
+				NSLog( @"%@", [e description]);
 				NSLog( @"Exception for this file: %@", srcFile);
 				success = NO;
 			}

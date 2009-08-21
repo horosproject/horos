@@ -176,7 +176,7 @@ void DcmQueryRetrieveSCP::writeErrorMessage( const char *str)
 	FILE * pFile = fopen (dir,"w+");
 	if( pFile)
 	{
-		fprintf(pFile, str);
+		fprintf( pFile, "%s", str);
 		fclose (pFile);
 	}
 }

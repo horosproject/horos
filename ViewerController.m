@@ -13037,7 +13037,7 @@ int i,j,l;
 		superMenu = [currentMenu supermenu];
 		i++;
 	}
-	NSLog(composedMenuTitle);
+	NSLog( @"%@", composedMenuTitle);
 	
 	if ([composedMenuTitle isEqualToString:@"?"]) //creating a content panel
 	{
@@ -15823,8 +15823,10 @@ int i,j,l;
 		pathToTemplate = [pathToTemplate stringByAppendingPathExtension:@"template"];	
 		
 		//copy file pathToTemplate to pathToPAGES
-		if([fileManager copyPath:pathToTemplate toPath:[pathToPAGES stringByAppendingPathExtension:@"pages"] handler:nil]) NSLog([NSString stringWithFormat:@"%@ is a copy of %@",[pathToPAGES stringByAppendingPathExtension:@"pages"], pathToTemplate]);
-		else NSLog(@"template not available");
+		if([fileManager copyPath:pathToTemplate toPath:[pathToPAGES stringByAppendingPathExtension:@"pages"] handler:nil])
+			NSLog( @"%@", [NSString stringWithFormat:@"%@ is a copy of %@",[pathToPAGES stringByAppendingPathExtension:@"pages"], pathToTemplate]);
+		else
+			NSLog(@"template not available");
 	}
 
 	
@@ -15999,11 +16001,10 @@ int i,j,l;
 //0008,0018 (1) SOP Common Module Attributes
 			pdf2dcmContent = [pdf2dcmContent stringByAppendingFormat: @"\r# SOP Instance UID\r#00080018"];
 
-	if(
-		[fileManager createFileAtPath:[pathToPAGES stringByAppendingPathExtension:@"cfg"]
+	if( [fileManager createFileAtPath:[pathToPAGES stringByAppendingPathExtension:@"cfg"]
 							contents:[pdf2dcmContent dataUsingEncoding:NSUTF8StringEncoding]
-						  attributes:nil
-	    ]) NSLog([NSString stringWithFormat:@"created %@ for dicom pdf creation with dcm4che pdf2dcm",[pathToPAGES stringByAppendingPathExtension:@"cfg"]]);
+						  attributes:nil])
+		NSLog( @"%@", [NSString stringWithFormat:@"created %@ for dicom pdf creation with dcm4che pdf2dcm",[pathToPAGES stringByAppendingPathExtension:@"cfg"]]);
 
 
 	if (!([[sender title] isEqualToString: @"SCAN"]))

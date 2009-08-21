@@ -11442,7 +11442,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	NS_DURING
 	_dragInProgress = YES;
 	NSEvent *event = (NSEvent *)[theTimer userInfo];
-	NSLog( [event description]);
+	NSLog( @"%@", [event description]);
 	
 	NSSize dragOffset = NSMakeSize(0.0, 0.0);
     NSPasteboard *pboard = [NSPasteboard pasteboardWithName: NSDragPboard]; 

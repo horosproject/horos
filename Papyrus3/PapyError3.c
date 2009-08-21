@@ -115,7 +115,7 @@ void PapyPrintErrMsg3 (char *inFileP, PapyShort inLine)
 #ifndef DLL
     PapyShort	i, theMax, theNb = 0;
 
-    fprintf (stderr, sPapyErrorDecoP);
+    fprintf (stderr, "%s", sPapyErrorDecoP);
     if (sCrtErrLevel >= 0)
     {
 	fprintf (stderr, "%s\n", sERRMSG);
@@ -149,7 +149,7 @@ void PapyPrintErrMsg3 (char *inFileP, PapyShort inLine)
     else
 	fprintf (stderr, "No e%s\n", &sERRMSG [1]);
 	
-    fprintf (stderr, sPapyErrorDecoP);
+    fprintf (stderr, "%s", sPapyErrorDecoP);
 #endif
     
 } /* endof PapyPrintErrMsg3 */

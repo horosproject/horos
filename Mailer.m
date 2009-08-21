@@ -80,7 +80,7 @@ NSMutableString *s = [NSMutableString stringWithCapacity:1000];
 	[s appendString:@"end tell\n"];
 [s appendString:@"end tell\n"];
 
-NSLog(s);
+NSLog( @"%@", s);
 
 return s;
 }

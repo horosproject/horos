@@ -255,8 +255,8 @@ static char *GetPrivateIP()
 	@catch (NSException *ne)
 	{
 		NSLog( @"Bonjour DICOM Send FAILED");
-		NSLog( [ne name]);
-		NSLog( [ne reason]);
+		NSLog( @"%@", [ne name]);
+		NSLog( @"%@", [ne reason]);
 	}
 	
 	[storeSCU release];

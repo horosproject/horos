@@ -789,7 +789,7 @@ extern int delayedTileWindows;
 				
 				path = [path substringToIndex: [path length]-3];
 				
-				NSLog( path);
+				NSLog( @"%@", path);
 				NSLog( @"%d", index);
 				
 				NSMutableArray	*values = [NSMutableArray arrayWithArray: [[self stringsSeparatedForNode: [item parent]] componentsSeparatedByString:@"\\"]];
@@ -1001,7 +1001,7 @@ extern int delayedTileWindows;
 								
 								path = [path substringToIndex: [path length]-3];
 								
-								NSLog( path);
+								NSLog( @"%@",  path);
 								NSLog( @"%d", index);
 								
 								NSMutableArray	*values = [NSMutableArray arrayWithArray: [[self stringsSeparatedForNode: [item parent]] componentsSeparatedByString:@"\\"]];
@@ -1354,7 +1354,7 @@ extern int delayedTileWindows;
 	{
 		if( [[loopItem substringToIndex: 15] isEqualToString: string])
 		{
-			NSLog( loopItem);
+			NSLog( @"%@",  loopItem);
 			[dicomFieldsCombo setStringValue: [loopItem substringFromIndex: 16]];
 			
 			return;

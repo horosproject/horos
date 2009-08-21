@@ -38,7 +38,7 @@
 		}
 	}
 	
-	NSLog( [dict description]);
+	NSLog( @"%@", [dict description]);
 	
 	return dict;
 }
@@ -282,7 +282,7 @@
 	[checkReplace setHidden: YES];
 	
 	templates = [[NSMutableDictionary alloc] initWithDictionary: [[NSUserDefaults standardUserDefaults] dictionaryForKey:@"anonymizeTemplate"]];
-	NSLog( [templates description]);
+	NSLog( @"%@", [templates description]);
 	
 	[templatesMenu removeAllItems];
 	[templatesMenu addItemsWithTitles: [templates allKeys]];
@@ -326,7 +326,7 @@
 	[checkReplace setHidden: NO];
 	
 	templates = [[NSMutableDictionary alloc] initWithDictionary: [[NSUserDefaults standardUserDefaults] dictionaryForKey:@"anonymizeTemplate"]];
-	NSLog( [templates description]);
+	NSLog( @"%@", [templates description]);
 	
 	[templatesMenu removeAllItems];
 	[templatesMenu addItemsWithTitles: [templates allKeys]];

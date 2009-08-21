@@ -992,7 +992,7 @@
 				}
 				@catch (NSException * e)
 				{
-					NSLog( [e description]);
+					NSLog( @"%@", [e description]);
 				}
 				
 				if([dicomImageArray count] > 1)
@@ -1579,8 +1579,8 @@
 	@catch(NSException *ne)
 	{
 		NSLog( @"WebService DICOM Send FAILED");
-		NSLog( [ne name]);
-		NSLog( [ne reason]);
+		NSLog( @"%@", [ne name]);
+		NSLog( @"%@", [ne reason]);
 	}
 	
 	[sendLock unlock];

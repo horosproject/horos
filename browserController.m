@@ -3749,7 +3749,7 @@ static NSArray*	statesArray = nil;
 		@catch (NSException * e)
 		{
 			NSLog( @"autoCleanDatabaseDate exception");
-			NSLog( [e description]);
+			NSLog( @"%@", [e description]);
 		}
 		
 		[context unlock];
@@ -3881,7 +3881,7 @@ static NSArray*	statesArray = nil;
 				@catch (NSException * e)
 				{
 					NSLog( @"autoCleanDatabaseDate");
-					NSLog( [e description]);
+					NSLog( @"%@", [e description]);
 				}
 				
 				if( [toBeRemoved count] > 0)							// (DDP: 051109) was > 1, i.e. required at least 2 studies out of date to be removed.
@@ -3947,7 +3947,7 @@ static NSArray*	statesArray = nil;
 					@catch (NSException * e)
 					{
 						NSLog( @"autoCleanDatabaseDate");
-						NSLog( [e description]);
+						NSLog( @"%@", [e description]);
 					}
 					[wait close];
 					[wait release];
@@ -12963,7 +12963,7 @@ static NSArray*	openSubSeriesArray = nil;
 						
 						@catch (NSException *e)
 						{
-							NSLog( e.description );
+							NSLog( @"%@", e.description );
 						}
 						
 						
@@ -14233,7 +14233,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	@catch (NSException * e)
 	{
-		NSLog( [e description]);
+		NSLog( @"%@", [e description]);
 	}
 	
 	[managedObjectContext unlock];
@@ -15418,7 +15418,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	NSString *sNewDrive = [[ notification userInfo] objectForKey : @"NSDevicePath"];
 	
-	NSLog( sNewDrive);
+	NSLog( @"%@", sNewDrive);
 	
 	if( [BrowserController isItCD: sNewDrive] == YES )
 	{
@@ -15564,7 +15564,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			@catch( NSException *ne)
 			{
 				NSLog( @"Unmount exception");
-				NSLog( [ne description]);
+				NSLog( @"%@", [ne description]);
 			}
 			
 			if( needsUpdate)
@@ -15593,7 +15593,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"UNMOUNT"] == NO) return;
 	
 	NSString *sNewDrive = [[ notification userInfo] objectForKey : @"NSDevicePath"];	//uppercaseString];
-	NSLog( sNewDrive);
+	NSLog( @"%@", sNewDrive);
 	
 	[self removeMountedImages: sNewDrive];
 	

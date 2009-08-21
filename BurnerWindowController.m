@@ -360,7 +360,7 @@ NSString* asciiString (NSString* name);
 {
 	NSString *name = [[nameField stringValue] uppercaseString];
 	[self setCDTitle:name];
-	NSLog(cdName);
+	NSLog( @"%@", cdName);
 }
 
 -(NSString *)folderToBurn

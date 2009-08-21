@@ -42,7 +42,7 @@
 {
 	NSString *command = [[self commandDescription] commandName];
 
-	NSLog( command);
+	NSLog( @"%@", command);
 
 	if( [command isEqualToString:@"SelectImageFile"])
 	{
@@ -50,7 +50,7 @@
 		
 		if( convertedPath)
 		{
-			NSLog( convertedPath);
+			NSLog( @"%@", convertedPath);
 			
 			[[BrowserController currentBrowser] addFilesAndFolderToDatabase: [NSArray arrayWithObject: convertedPath]];
 			

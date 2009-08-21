@@ -258,7 +258,7 @@ static char *GetPrivateIP()
 				
 				dicomListener = [dicomListener retain];
 				
-				NSLog( [dicomListener description]);
+				NSLog( @"%@", [dicomListener description]);
 			}
 			else if ( strcmp( messageToRemoteService, "MFILE") == 0)
 			{

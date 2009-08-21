@@ -141,7 +141,7 @@
 			[array addObject:dictionary];
 			[nameStr release];
 			
-			NSLog( [dictionary description]);
+			NSLog( @"%@", [dictionary description]);
 		}
 		
 		DisposeHandle(name);
@@ -175,7 +175,7 @@
 			[array addObject:dictionary];
 			[nameStr release];
 			
-			NSLog( [dictionary description]);
+			NSLog( @"%@", [dictionary description]);
 		}
 		
 		DisposeHandle(name);
@@ -209,7 +209,7 @@
 			[array addObject:dictionary];
 			[nameStr release];
 			
-			NSLog( [dictionary description]);
+			NSLog( @"%@", [dictionary description]);
 		}
 		
 		DisposeHandle(name);
@@ -244,7 +244,7 @@
 			[array addObject:dictionary];
 			[nameStr release];
 			
-			NSLog( [dictionary description]);
+			NSLog( @"%@", [dictionary description]);
 		}
 		
 		DisposeHandle(name);
@@ -268,7 +268,7 @@
 	ComponentResult err;
 	
 	NSString	*prefString = [NSString stringWithFormat:@"Quicktime Export:%d", [[component valueForKey:@"subtype"] unsignedLongValue]];
-	NSLog( prefString);
+	NSLog( @"%@", prefString);
 	
 	NSData *data = [[NSUserDefaults standardUserDefaults] dataForKey: prefString];
 	char	*ptr = (char*) [data bytes];

@@ -1637,7 +1637,7 @@ NS_ENDHANDLER
 	@catch (NSException * e)
 	{
 		NSLog( @"updateLogEntry exception");
-		NSLog( [e description]);
+		NSLog( @"%@", [e description]);
 	}
 
 	[context unlock];

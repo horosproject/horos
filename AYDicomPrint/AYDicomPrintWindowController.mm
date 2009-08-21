@@ -434,7 +434,7 @@
 	}
 
 	NSString *xmlPath = [NSString stringWithFormat: @"%@/printjob-%@.xml", destPath, [[NSDate date] description]];
-	NSLog( xmlPath);
+	NSLog( @"%@", xmlPath);
 	if (![[document XMLData] writeToFile: xmlPath atomically: YES])
 	{
 		[self performSelectorOnMainThread: @selector(_setProgressMessage:) withObject: @"Can't write to temporary directory." waitUntilDone: NO];

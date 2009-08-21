@@ -1175,7 +1175,7 @@ char currentDestinationMoveAET[ 60] = "";
 		@catch (NSException * e)
 		{
 			NSLog( @"prepareFindForDataSet exception");
-			NSLog( [e description]);
+			NSLog( @"%@", [e description]);
 		}
 		
 		[context unlock];
@@ -1417,8 +1417,8 @@ char currentDestinationMoveAET[ 60] = "";
 	@catch (NSException * e)
 	{
 		NSLog( @"prepareMoveForDataSet exception");
-		NSLog( [e description]);
-		NSLog( [predicate description]);
+		NSLog( @"%@", [e description]);
+		NSLog( @"%@", [predicate description]);
 	}
 
 	[context unlock];
