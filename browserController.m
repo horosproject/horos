@@ -4936,18 +4936,18 @@ static NSArray*	statesArray = nil;
 	return [[self imagesArray: item] valueForKey: @"completePath"];
 }
 
-- (void)deleteEmptyFoldersForDatabaseOutlineSelection
+- (void) deleteEmptyFoldersForDatabaseOutlineSelection
 {
-	NSEnumerator		*rowEnumerator = [databaseOutline selectedRowEnumerator];
-	NSNumber			*row;
-	NSManagedObject		*curObj;
-	NSManagedObjectContext	*context = self.managedObjectContext;
+	NSIndexSet *rowEnumerator = [databaseOutline selectedRowIndexes];
+	NSManagedObject *curObj;
+	NSManagedObjectContext *context = self.managedObjectContext;
 	
 	[[[BrowserController currentBrowser] managedObjectContext] lock];
 	
-	while ( row = [rowEnumerator nextObject] )
-	{
-		curObj = [databaseOutline itemAtRow:[row intValue]];
+	NSUInteger row = [rowEnumerator firstIndex];
+    while (row != NSNotFound)
+    {
+		curObj = [databaseOutline itemAtRow: row];
 		
 		if( [[curObj valueForKey:@"type"] isEqualToString:@"Series"] )
 		{
@@ -4960,7 +4960,9 @@ static NSArray*	statesArray = nil;
 			if( [[curObj valueForKey:@"imageSeries"] count] == 0)
 				[context deleteObject: curObj];
 		}
-	}
+		
+		row = [rowEnumerator indexGreaterThanIndex: row];
+    }
 	
 	[[[BrowserController currentBrowser] managedObjectContext] unlock];
 }
@@ -4986,9 +4988,8 @@ static NSArray*	statesArray = nil;
 
 - (NSMutableArray *) filesForDatabaseOutlineSelection :(NSMutableArray*) correspondingManagedObjects onlyImages:(BOOL) onlyImages
 {
-	NSMutableArray		*selectedFiles = [NSMutableArray array];
-	NSEnumerator		*rowEnumerator = [databaseOutline selectedRowEnumerator];
-	NSNumber			*row;
+	NSMutableArray *selectedFiles = [NSMutableArray array];
+	NSIndexSet *rowEnumerator = [databaseOutline selectedRowIndexes];
 	
 	if( cachedFilesForDatabaseOutlineSelectionIndex && [[databaseOutline selectedRowIndexes] isEqualToIndexSet: cachedFilesForDatabaseOutlineSelectionIndex]) 
 	{
@@ -5009,9 +5010,10 @@ static NSArray*	statesArray = nil;
 	
 	@try
 	{
-		while (row = [rowEnumerator nextObject])
+		NSUInteger row = [rowEnumerator firstIndex];
+		while (row != NSNotFound)
 		{
-			NSManagedObject *curObj = [databaseOutline itemAtRow:[row intValue]];
+			NSManagedObject *curObj = [databaseOutline itemAtRow: row];
 			
 			if( [[curObj valueForKey:@"type"] isEqualToString:@"Series"] )
 			{
@@ -5038,6 +5040,7 @@ static NSArray*	statesArray = nil;
 				if( onlyImages == NO && totImage == 0)							// We don't want empty studies
 					[context deleteObject: curObj];
 			}
+			row = [rowEnumerator indexGreaterThanIndex: row];
 		}
 		
 		[correspondingManagedObjects removeDuplicatedObjects];
@@ -5144,8 +5147,8 @@ static NSArray*	statesArray = nil;
 	[cachedFilesForDatabaseOutlineSelectionCorrespondingObjects release]; cachedFilesForDatabaseOutlineSelectionCorrespondingObjects = nil;
 	[cachedFilesForDatabaseOutlineSelectionIndex release]; cachedFilesForDatabaseOutlineSelectionIndex = nil;
 	
-	NSIndexSet			*index = [databaseOutline selectedRowIndexes];
-	NSManagedObject		*item = [databaseOutline itemAtRow:[index firstIndex]];
+	NSIndexSet *index = [databaseOutline selectedRowIndexes];
+	NSManagedObject *item = [databaseOutline itemAtRow:[index firstIndex]];
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"displaySamePatientWithColorBackground"])
 	{
@@ -5366,7 +5369,7 @@ static NSArray*	statesArray = nil;
 		[context retain];
 		[context lock];
 		
-		NSIndexSet		*selectedRows = [databaseOutline selectedRowIndexes];
+		NSIndexSet *selectedRows = [databaseOutline selectedRowIndexes];
 		
 		NSManagedObject	*destStudy = [databaseOutline itemAtRow: [databaseOutline selectedRow]];
 		if( [[destStudy valueForKey:@"type"] isEqualToString: @"Study"] == NO) destStudy = [destStudy valueForKey:@"study"];
