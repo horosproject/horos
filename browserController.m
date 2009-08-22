@@ -2090,7 +2090,7 @@ static NSArray*	statesArray = nil;
 			{
 				NSManagedObject		*object = [[newImages objectAtIndex: 0] valueForKeyPath:@"series.study"];
 				
-				[databaseOutline selectRow: [databaseOutline rowForItem: object] byExtendingSelection: NO];
+				[databaseOutline selectRowIndexes: [NSIndexSet indexSetWithIndex: [databaseOutline rowForItem: object]] byExtendingSelection: NO];
 				[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
 			}
 		}
@@ -2585,7 +2585,7 @@ static NSArray*	statesArray = nil;
 	timeIntervalType = 0;
 	[timeIntervalPopup selectItemWithTag: 0];
 	
-	[albumTable selectRow:0 byExtendingSelection:NO];
+	[albumTable selectRowIndexes: [NSIndexSet indexSetWithIndex: 0] byExtendingSelection:NO];
 	self.searchString = @"";
 }
 
@@ -2750,7 +2750,7 @@ static NSArray*	statesArray = nil;
 	[self outlineViewRefresh];
 	[self refreshMatrix: self];
 	
-	[albumTable selectRow:0 byExtendingSelection:NO];
+	[albumTable selectRowIndexes: [NSIndexSet indexSetWithIndex: 0] byExtendingSelection:NO];
 	
 	NSString	*DBVersion, *DBFolderLocation, *curPath = [self.documentsDirectory stringByDeletingLastPathComponent];
 	
@@ -2824,7 +2824,7 @@ static NSArray*	statesArray = nil;
 		{
 			if( i == -1) NSLog( @"**** NOT FOUND??? WHY? we added it... no?");
 			dontLoadSelectionSource = YES;
-			[bonjourServicesList selectRow: i byExtendingSelection: NO];
+			[bonjourServicesList selectRowIndexes: [NSIndexSet indexSetWithIndex: i] byExtendingSelection: NO];
 			dontLoadSelectionSource = NO;
 		}
 	}
@@ -2981,7 +2981,7 @@ static NSArray*	statesArray = nil;
 	NSLog( @"%@", [study description]);
 	[self outlineViewRefresh];
 	
-	[databaseOutline selectRow: [databaseOutline rowForItem: study] byExtendingSelection: NO];
+	[databaseOutline selectRowIndexes: [NSIndexSet indexSetWithIndex: [databaseOutline rowForItem: study]] byExtendingSelection: NO];
 	[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
 }
 
@@ -4625,7 +4625,7 @@ static NSArray*	statesArray = nil;
 		BOOL extend = NO;
 		for( id obj in previousObjects )
 		{
-			[databaseOutline selectRow: [databaseOutline rowForItem: obj] byExtendingSelection: extend];
+			[databaseOutline selectRowIndexes: [NSIndexSet indexSetWithIndex: [databaseOutline rowForItem: obj]] byExtendingSelection: extend];
 			extend = YES;
 		}
 	}
@@ -5398,7 +5398,7 @@ static NSArray*	statesArray = nil;
 		
 		[self outlineViewRefresh];
 		
-		[databaseOutline selectRow:[databaseOutline rowForItem: destStudy] byExtendingSelection: NO];
+		[databaseOutline selectRowIndexes: [NSIndexSet indexSetWithIndex: [databaseOutline rowForItem: destStudy]] byExtendingSelection: NO];
 		[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
 		
 		[self refreshMatrix: self];
@@ -5489,7 +5489,7 @@ static NSArray*	statesArray = nil;
 		
 		[self outlineViewRefresh];
 		
-		[databaseOutline selectRow:[databaseOutline rowForItem: destStudy] byExtendingSelection: NO];
+		[databaseOutline selectRowIndexes: [NSIndexSet indexSetWithIndex: [databaseOutline rowForItem: destStudy]] byExtendingSelection: NO];
 		[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
 		
 		[self refreshMatrix: self];
@@ -5638,7 +5638,7 @@ static NSArray*	statesArray = nil;
 							[context deleteObject: obj ];
 						}
 						
-						[databaseOutline selectRow:[selectedRows firstIndex] byExtendingSelection:NO];
+						[databaseOutline selectRowIndexes: [NSIndexSet indexSetWithIndex: [selectedRows firstIndex]] byExtendingSelection:NO];
 					}
 					
 					if( result == NSAlertOtherReturn)
@@ -5808,7 +5808,7 @@ static NSArray*	statesArray = nil;
 		NSIndexSet *selectedRows = [databaseOutline selectedRowIndexes];
 		
 		if( [databaseOutline selectedRow] >= 0 )
-		{			
+		{
 			NSMutableArray *studiesToRemove = [NSMutableArray array];
 			NSManagedObject	*album = [self.albumArray objectAtIndex: albumTable.selectedRow];
 			
@@ -5834,7 +5834,7 @@ static NSArray*	statesArray = nil;
 				[bonjourBrowser removeStudies: studiesToRemove fromAlbum: album bonjourIndex:[bonjourServicesList selectedRow]-1];
 			}
 			
-			[databaseOutline selectRow:[selectedRows firstIndex] byExtendingSelection:NO];
+			[databaseOutline selectRowIndexes: [NSIndexSet indexSetWithIndex: [selectedRows firstIndex]] byExtendingSelection:NO];
 		}
 		
 		WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Updating database...", nil)];
@@ -6239,7 +6239,7 @@ static NSArray*	statesArray = nil;
 	
 	if( [[[[databaseOutline sortDescriptors] objectAtIndex: 0] key] isEqualToString:@"name"] == NO )
 	{
-		[databaseOutline selectRow: 0 byExtendingSelection: NO];
+		[databaseOutline selectRowIndexes: [NSIndexSet indexSetWithIndex: 0] byExtendingSelection: NO];
 	}
 	
 	[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
@@ -6407,7 +6407,7 @@ static NSArray*	statesArray = nil;
 	BOOL extend = NO;
 	for( id pbItem in pbItems )
 	{
-		[olv selectRow:	[olv rowForItem: pbItem] byExtendingSelection: extend];
+		[olv selectRowIndexes: [NSIndexSet indexSetWithIndex: [olv rowForItem: pbItem]] byExtendingSelection: extend];
 		extend = YES;
 		[xmlArray addObject: [pbItem dictionary]];
 	}
@@ -6926,7 +6926,7 @@ static NSArray*	statesArray = nil;
 			
 			if( [databaseOutline rowForItem: [curImage valueForKey:@"series"]] != [databaseOutline selectedRow] )
 			{
-				[databaseOutline selectRow:[databaseOutline rowForItem: [curImage valueForKey:@"series"]] byExtendingSelection: extendingSelection];
+				[databaseOutline selectRowIndexes: [NSIndexSet indexSetWithIndex: [databaseOutline rowForItem: [curImage valueForKey:@"series"]]] byExtendingSelection: extendingSelection];
 				[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
 			}
 		}
@@ -6934,7 +6934,7 @@ static NSArray*	statesArray = nil;
 		{
 			if( [databaseOutline rowForItem: study] != [databaseOutline selectedRow] )
 			{
-				[databaseOutline selectRow:[databaseOutline rowForItem: study] byExtendingSelection: extendingSelection];
+				[databaseOutline selectRowIndexes: [NSIndexSet indexSetWithIndex: [databaseOutline rowForItem: study]] byExtendingSelection: extendingSelection];
 				[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
 			}
 		}
@@ -7042,7 +7042,7 @@ static NSArray*	statesArray = nil;
 			{
 				if( [databaseOutline rowForItem: study] != [databaseOutline selectedRow])
 				{
-					[databaseOutline selectRow:[databaseOutline rowForItem: study] byExtendingSelection: NO];
+					[databaseOutline selectRowIndexes: [NSIndexSet indexSetWithIndex: [databaseOutline rowForItem: study]] byExtendingSelection: NO];
 					[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
 				}
 				
@@ -9053,7 +9053,7 @@ static BOOL withReset = NO;
 		needDBRefresh = YES;
 		[albumTable reloadData];
 		
-		[albumTable selectRow:[self.albumArray indexOfObject: album] byExtendingSelection: NO];
+		[albumTable selectRowIndexes: [NSIndexSet indexSetWithIndex: [self.albumArray indexOfObject: album]] byExtendingSelection: NO];
 		
 		[context unlock];
 		[context release];
@@ -9268,7 +9268,7 @@ static BOOL needToRezoom;
 				
 				[self saveDatabase: currentDatabasePath];
 				
-				[albumTable selectRow: [self.albumArray indexOfObject:album] byExtendingSelection: NO];
+				[albumTable selectRowIndexes: [NSIndexSet indexSetWithIndex: [self.albumArray indexOfObject:album]] byExtendingSelection: NO];
 				
 				[self outlineViewRefresh];
 				
@@ -9319,7 +9319,7 @@ static BOOL needToRezoom;
 					
 					[self saveDatabase: currentDatabasePath];
 					
-					[albumTable selectRow: [self.albumArray indexOfObject:album] byExtendingSelection: NO];
+					[albumTable selectRowIndexes: [NSIndexSet indexSetWithIndex: [self.albumArray indexOfObject:album]] byExtendingSelection: NO];
 					
 					[albumTable reloadData];
 					
@@ -11409,7 +11409,7 @@ static BOOL needToRezoom;
 		
 		for( id obj in array )
 		{
-			[databaseOutline selectRow: [databaseOutline rowForItem: obj] byExtendingSelection: NO];
+			[databaseOutline selectRowIndexes: [NSIndexSet indexSetWithIndex: [databaseOutline rowForItem: obj]] byExtendingSelection: NO];
 			[self databaseOpenStudy: obj];
 		}
 		
@@ -12283,7 +12283,7 @@ static NSArray*	openSubSeriesArray = nil;
 		else
 			[databaseOutline setSortDescriptors:[NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)] autorelease]]];
 		
-		[databaseOutline selectRow: 0 byExtendingSelection:NO];
+		[databaseOutline selectRowIndexes: [NSIndexSet indexSetWithIndex: 0] byExtendingSelection:NO];
 		[databaseOutline scrollRowToVisible: 0];
 		[self buildColumnsMenu];
 		
@@ -12328,7 +12328,7 @@ static NSArray*	openSubSeriesArray = nil;
 		
 		[bonjourServicesList registerForDraggedTypes:[NSArray arrayWithObject:albumDragType]];
 		
-		[bonjourServicesList selectRow: 0 byExtendingSelection:NO];
+		[bonjourServicesList selectRowIndexes: [NSIndexSet indexSetWithIndex: 0] byExtendingSelection:NO];
 		
 		[splitViewVert restoreDefault:@"SPLITVERT2"];
 		[splitViewHorz restoreDefault:@"SPLITHORZ2"];
@@ -12538,7 +12538,7 @@ static NSArray*	openSubSeriesArray = nil;
 		
 		if( [result count] )
 		{
-			[databaseOutline selectRow: [databaseOutline rowForItem: [result objectAtIndex: 0]] byExtendingSelection: NO];
+			[databaseOutline selectRowIndexes: [NSIndexSet indexSetWithIndex: [databaseOutline rowForItem: [result objectAtIndex: 0]]] byExtendingSelection: NO];
 			[databaseOutline scrollRowToVisible: databaseOutline.selectedRow];
 		}
 		else NSBeep();
@@ -13090,7 +13090,7 @@ static NSArray*	openSubSeriesArray = nil;
 					{
 						NSManagedObject		*object = [[newImages objectAtIndex: 0] valueForKeyPath:@"series.study"];
 						
-						[databaseOutline selectRow: [databaseOutline rowForItem: object] byExtendingSelection: NO];
+						[databaseOutline selectRowIndexes: [NSIndexSet indexSetWithIndex: [databaseOutline rowForItem: object]] byExtendingSelection: NO];
 						[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
 					}
 				}
@@ -15054,7 +15054,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		{
 			NSManagedObject *object = [[newImages objectAtIndex: 0] valueForKeyPath:@"series.study"];
 			
-			[databaseOutline selectRow: [databaseOutline rowForItem: object] byExtendingSelection: NO];
+			[databaseOutline selectRowIndexes: [NSIndexSet indexSetWithIndex: [databaseOutline rowForItem: object]] byExtendingSelection: NO];
 			[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
 		}
 	}
@@ -17062,7 +17062,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 - (void)setCurrentBonjourService: (int)index
 {
 	dontLoadSelectionSource = YES;
-	[bonjourServicesList selectRow: index+1 byExtendingSelection: NO];
+	[bonjourServicesList selectRowIndexes: [NSIndexSet indexSetWithIndex: index+1] byExtendingSelection: NO];
 	dontLoadSelectionSource = NO;
 }
 
@@ -17135,7 +17135,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (void)resetToLocalDatabase 
 {
-	[bonjourServicesList selectRow:0 byExtendingSelection:NO];
+	[bonjourServicesList selectRowIndexes: [NSIndexSet indexSetWithIndex: 0] byExtendingSelection:NO];
 	[self bonjourServiceClicked: bonjourServicesList];
 }
 
@@ -17187,7 +17187,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	if( DICOMDIRCDMODE)
 	{
 		dontLoadSelectionSource = YES;
-		[bonjourServicesList selectRow: 0 byExtendingSelection: NO];
+		[bonjourServicesList selectRowIndexes: [NSIndexSet indexSetWithIndex: 0] byExtendingSelection: NO];
 		dontLoadSelectionSource = NO;
 		NSRunInformationalAlertPanel(NSLocalizedString(@"OsiriX CD/DVD", nil), NSLocalizedString(@"OsiriX is running in read-only mode, from a CD/DVD.", nil), NSLocalizedString(@"OK",nil), nil, nil);
 		return;
@@ -17210,7 +17210,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		{
 			NSRunAlertPanel( NSLocalizedString(@"DICOM Destination", nil), NSLocalizedString(@"It is a DICOM destination node: you cannot browse its content. You can only drag & drop studies on them.", nil), nil, nil, nil);
 			
-			[bonjourServicesList selectRow: previousBonjourIndex+1 byExtendingSelection:NO];
+			[bonjourServicesList selectRowIndexes: [NSIndexSet indexSetWithIndex: previousBonjourIndex+1] byExtendingSelection:NO];
 		}
 		// LOCAL PATH - DATABASE
 		else if( [[object valueForKey: @"type"] isEqualToString:@"localPath"])

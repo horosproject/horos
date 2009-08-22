@@ -12,6 +12,7 @@
 		</object>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
+			<integer value="1007"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -47,7 +48,7 @@
 				<object class="NSMutableString" key="NSViewClass">
 					<characters key="NS.bytes">View</characters>
 				</object>
-				<string key="NSWindowContentMaxSize">{3.40282e+38, 3.40282e+38}</string>
+				<string key="NSWindowContentMaxSize">{1.79769e+308, 1.79769e+308}</string>
 				<string key="NSWindowContentMinSize">{213, 107}</string>
 				<object class="NSView" key="NSWindowView" id="283617184">
 					<nil key="NSNextResponder"/>
@@ -84,7 +85,7 @@
 									<string key="NSColorName">controlColor</string>
 									<object class="NSColor" key="NSColor">
 										<int key="NSColorSpace">3</int>
-										<bytes key="NSWhite">MC42NjY2NjY2ODY1AA</bytes>
+										<bytes key="NSWhite">MC42NjY2NjY2NjY3AA</bytes>
 									</object>
 								</object>
 								<object class="NSColor" key="NSTextColor" id="868407003">
@@ -103,7 +104,7 @@
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {2560, 1578}}</string>
 				<string key="NSMinSize">{213, 129}</string>
-				<string key="NSMaxSize">{3.40282e+38, 3.40282e+38}</string>
+				<string key="NSMaxSize">{1.79769e+308, 1.79769e+308}</string>
 			</object>
 			<object class="NSWindowTemplate" id="34719911">
 				<int key="NSWindowStyleMask">1</int>
@@ -115,7 +116,7 @@
 				<object class="NSMutableString" key="NSViewClass">
 					<characters key="NS.bytes">View</characters>
 				</object>
-				<string key="NSWindowContentMaxSize">{3.40282e+38, 3.40282e+38}</string>
+				<string key="NSWindowContentMaxSize">{1.79769e+308, 1.79769e+308}</string>
 				<string key="NSWindowContentMinSize">{213, 107}</string>
 				<object class="NSView" key="NSWindowView" id="771817436">
 					<nil key="NSNextResponder"/>
@@ -341,7 +342,7 @@
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {2560, 1578}}</string>
 				<string key="NSMinSize">{213, 129}</string>
-				<string key="NSMaxSize">{3.40282e+38, 3.40282e+38}</string>
+				<string key="NSMaxSize">{1.79769e+308, 1.79769e+308}</string>
 			</object>
 			<object class="NSCustomView" id="777754218">
 				<nil key="NSNextResponder"/>
@@ -945,7 +946,7 @@
 				<object class="NSMutableString" key="NSViewClass">
 					<characters key="NS.bytes">View</characters>
 				</object>
-				<string key="NSWindowContentMaxSize">{3.40282e+38, 3.40282e+38}</string>
+				<string key="NSWindowContentMaxSize">{1.79769e+308, 1.79769e+308}</string>
 				<string key="NSWindowContentMinSize">{213, 107}</string>
 				<object class="NSView" key="NSWindowView" id="880855170">
 					<nil key="NSNextResponder"/>
@@ -1153,7 +1154,7 @@ Lg</string>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {2560, 1578}}</string>
 				<string key="NSMinSize">{213, 129}</string>
-				<string key="NSMaxSize">{3.40282e+38, 3.40282e+38}</string>
+				<string key="NSMaxSize">{1.79769e+308, 1.79769e+308}</string>
 			</object>
 			<object class="NSCustomView" id="549101025">
 				<nil key="NSNextResponder"/>
@@ -1233,7 +1234,7 @@ Lg</string>
 				<object class="NSMutableString" key="NSViewClass">
 					<characters key="NS.bytes">View</characters>
 				</object>
-				<string key="NSWindowContentMaxSize">{3.40282e+38, 3.40282e+38}</string>
+				<string key="NSWindowContentMaxSize">{1.79769e+308, 1.79769e+308}</string>
 				<string key="NSWindowContentMinSize">{213, 107}</string>
 				<object class="NSView" key="NSWindowView" id="534748825">
 					<nil key="NSNextResponder"/>
@@ -1405,7 +1406,7 @@ ZSBtZW51OiBzZWxlY3QgaXQgd2hpbGUgaG9sZGluZyBkb3duIHRoZSBhbHQvb3B0aW9uIGtleS4</str
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {2560, 1578}}</string>
 				<string key="NSMinSize">{213, 129}</string>
-				<string key="NSMaxSize">{3.40282e+38, 3.40282e+38}</string>
+				<string key="NSMaxSize">{1.79769e+308, 1.79769e+308}</string>
 			</object>
 			<object class="NSWindowTemplate" id="955613807">
 				<int key="NSWindowStyleMask">1</int>
@@ -1417,7 +1418,7 @@ ZSBtZW51OiBzZWxlY3QgaXQgd2hpbGUgaG9sZGluZyBkb3duIHRoZSBhbHQvb3B0aW9uIGtleS4</str
 				<object class="NSMutableString" key="NSViewClass">
 					<characters key="NS.bytes">View</characters>
 				</object>
-				<string key="NSWindowContentMaxSize">{3.40282e+38, 3.40282e+38}</string>
+				<string key="NSWindowContentMaxSize">{1.79769e+308, 1.79769e+308}</string>
 				<string key="NSWindowContentMinSize">{548, 100}</string>
 				<object class="NSView" key="NSWindowView" id="602006729">
 					<nil key="NSNextResponder"/>
@@ -1840,7 +1841,7 @@ ZSBtZW51OiBzZWxlY3QgaXQgd2hpbGUgaG9sZGluZyBkb3duIHRoZSBhbHQvb3B0aW9uIGtleS4</str
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {2560, 1578}}</string>
 				<string key="NSMinSize">{548, 122}</string>
-				<string key="NSMaxSize">{3.40282e+38, 3.40282e+38}</string>
+				<string key="NSMaxSize">{1.79769e+308, 1.79769e+308}</string>
 			</object>
 			<object class="NSCustomView" id="366863067">
 				<nil key="NSNextResponder"/>
@@ -1981,7 +1982,7 @@ ZSBtZW51OiBzZWxlY3QgaXQgd2hpbGUgaG9sZGluZyBkb3duIHRoZSBhbHQvb3B0aW9uIGtleS4</str
 				<object class="NSMutableString" key="NSViewClass">
 					<characters key="NS.bytes">View</characters>
 				</object>
-				<string key="NSWindowContentMaxSize">{3.40282e+38, 3.40282e+38}</string>
+				<string key="NSWindowContentMaxSize">{1.79769e+308, 1.79769e+308}</string>
 				<string key="NSWindowContentMinSize">{131.13, 5}</string>
 				<object class="NSView" key="NSWindowView" id="988240954">
 					<nil key="NSNextResponder"/>
@@ -2333,7 +2334,7 @@ ZSBtZW51OiBzZWxlY3QgaXQgd2hpbGUgaG9sZGluZyBkb3duIHRoZSBhbHQvb3B0aW9uIGtleS4</str
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {2560, 1578}}</string>
 				<string key="NSMinSize">{131.13, 27}</string>
-				<string key="NSMaxSize">{3.40282e+38, 3.40282e+38}</string>
+				<string key="NSMaxSize">{1.79769e+308, 1.79769e+308}</string>
 			</object>
 			<object class="NSCustomView" id="653520776">
 				<nil key="NSNextResponder"/>
@@ -2645,7 +2646,7 @@ ZSBtZW51OiBzZWxlY3QgaXQgd2hpbGUgaG9sZGluZyBkb3duIHRoZSBhbHQvb3B0aW9uIGtleS4</str
 				<object class="NSMutableString" key="NSViewClass">
 					<characters key="NS.bytes">View</characters>
 				</object>
-				<string key="NSWindowContentMaxSize">{3.40282e+38, 3.40282e+38}</string>
+				<string key="NSWindowContentMaxSize">{1.79769e+308, 1.79769e+308}</string>
 				<string key="NSWindowContentMinSize">{548, 208}</string>
 				<object class="NSView" key="NSWindowView" id="56226107">
 					<nil key="NSNextResponder"/>
@@ -3319,7 +3320,7 @@ ZSBtZW51OiBzZWxlY3QgaXQgd2hpbGUgaG9sZGluZyBkb3duIHRoZSBhbHQvb3B0aW9uIGtleS4</str
 									<reference key="NSSupport" ref="140508487"/>
 									<reference key="NSControlView" ref="682613182"/>
 									<int key="NSButtonFlags">1211912703</int>
-									<int key="NSButtonFlags2">128</int>
+									<int key="NSButtonFlags2">0</int>
 									<reference key="NSAlternateImage" ref="973286848"/>
 									<string key="NSAlternateContents"/>
 									<string key="NSKeyEquivalent"/>
@@ -3334,7 +3335,7 @@ ZSBtZW51OiBzZWxlY3QgaXQgd2hpbGUgaG9sZGluZyBkb3duIHRoZSBhbHQvb3B0aW9uIGtleS4</str
 									<reference key="NSControlView" ref="682613182"/>
 									<int key="NSTag">1</int>
 									<int key="NSButtonFlags">1211912703</int>
-									<int key="NSButtonFlags2">128</int>
+									<int key="NSButtonFlags2">0</int>
 									<object class="NSImage" key="NSNormalImage">
 										<int key="NSImageFlags">549453824</int>
 										<string key="NSSize">{18, 18}</string>
@@ -3446,7 +3447,7 @@ QXBwbGUgQ29tcHV0ZXIsIEluYy4sIDIwMDUAAAAAA</bytes>
 								<string key="NSContents">Radio</string>
 								<reference key="NSSupport" ref="140508487"/>
 								<int key="NSButtonFlags">1211912703</int>
-								<int key="NSButtonFlags2">128</int>
+								<int key="NSButtonFlags2">0</int>
 								<object class="NSImage" key="NSNormalImage">
 									<int key="NSImageFlags">549453824</int>
 									<string key="NSSize">{18, 18}</string>
@@ -3502,7 +3503,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {2560, 1578}}</string>
 				<string key="NSMinSize">{548, 230}</string>
-				<string key="NSMaxSize">{3.40282e+38, 3.40282e+38}</string>
+				<string key="NSMaxSize">{1.79769e+308, 1.79769e+308}</string>
 			</object>
 			<object class="NSWindowTemplate" id="461975933">
 				<int key="NSWindowStyleMask">1</int>
@@ -3514,7 +3515,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<object class="NSMutableString" key="NSViewClass">
 					<characters key="NS.bytes">View</characters>
 				</object>
-				<string key="NSWindowContentMaxSize">{3.40282e+38, 3.40282e+38}</string>
+				<string key="NSWindowContentMaxSize">{1.79769e+308, 1.79769e+308}</string>
 				<string key="NSWindowContentMinSize">{213, 107}</string>
 				<object class="NSView" key="NSWindowView" id="1021958235">
 					<nil key="NSNextResponder"/>
@@ -3784,7 +3785,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {2560, 1578}}</string>
 				<string key="NSMinSize">{213, 129}</string>
-				<string key="NSMaxSize">{3.40282e+38, 3.40282e+38}</string>
+				<string key="NSMaxSize">{1.79769e+308, 1.79769e+308}</string>
 			</object>
 			<object class="NSCustomView" id="576235242">
 				<nil key="NSNextResponder"/>
@@ -3960,7 +3961,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<object class="NSMutableString" key="NSViewClass">
 					<characters key="NS.bytes">View</characters>
 				</object>
-				<string key="NSWindowContentMaxSize">{3.40282e+38, 3.40282e+38}</string>
+				<string key="NSWindowContentMaxSize">{1.79769e+308, 1.79769e+308}</string>
 				<string key="NSWindowContentMinSize">{263, 93}</string>
 				<object class="NSView" key="NSWindowView" id="318583258">
 					<nil key="NSNextResponder"/>
@@ -4093,7 +4094,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {2560, 1578}}</string>
 				<string key="NSMinSize">{263, 109}</string>
-				<string key="NSMaxSize">{3.40282e+38, 3.40282e+38}</string>
+				<string key="NSMaxSize">{1.79769e+308, 1.79769e+308}</string>
 			</object>
 			<object class="NSCustomView" id="556922661">
 				<nil key="NSNextResponder"/>
@@ -4324,10 +4325,10 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<object class="NSMutableString" key="NSViewClass">
 					<characters key="NS.bytes">View</characters>
 				</object>
-				<string key="NSWindowContentMaxSize">{3.40282e+38, 3.40282e+38}</string>
+				<string key="NSWindowContentMaxSize">{1.79769e+308, 1.79769e+308}</string>
 				<string key="NSWindowContentMinSize">{213, 56}</string>
 				<object class="NSView" key="NSWindowView" id="978140554">
-					<nil key="NSNextResponder"/>
+					<reference key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<object class="NSMutableArray" key="NSSubviews">
 						<bool key="EncodedWithXMLCoder">YES</bool>
@@ -4410,10 +4411,11 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						</object>
 					</object>
 					<string key="NSFrameSize">{218, 63}</string>
+					<reference key="NSSuperview"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {2560, 1578}}</string>
 				<string key="NSMinSize">{213, 78}</string>
-				<string key="NSMaxSize">{3.40282e+38, 3.40282e+38}</string>
+				<string key="NSMaxSize">{1.79769e+308, 1.79769e+308}</string>
 			</object>
 			<object class="NSCustomView" id="67423534">
 				<nil key="NSNextResponder"/>
@@ -4474,7 +4476,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<object class="NSMutableString" key="NSViewClass">
 					<characters key="NS.bytes">View</characters>
 				</object>
-				<string key="NSWindowContentMaxSize">{3.40282e+38, 3.40282e+38}</string>
+				<string key="NSWindowContentMaxSize">{1.79769e+308, 1.79769e+308}</string>
 				<string key="NSWindowContentMinSize">{213, 113}</string>
 				<object class="NSView" key="NSWindowView" id="615584741">
 					<nil key="NSNextResponder"/>
@@ -5172,7 +5174,7 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {2560, 1578}}</string>
 				<string key="NSMinSize">{213, 132}</string>
-				<string key="NSMaxSize">{3.40282e+38, 3.40282e+38}</string>
+				<string key="NSMaxSize">{1.79769e+308, 1.79769e+308}</string>
 			</object>
 			<object class="NSArrayController" id="1041403913">
 				<object class="NSMutableArray" key="NSDeclaredKeys">
@@ -5204,7 +5206,7 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 				<object class="NSMutableString" key="NSViewClass">
 					<characters key="NS.bytes">View</characters>
 				</object>
-				<string key="NSWindowContentMaxSize">{3.40282e+38, 3.40282e+38}</string>
+				<string key="NSWindowContentMaxSize">{1.79769e+308, 1.79769e+308}</string>
 				<string key="NSWindowContentMinSize">{213, 107}</string>
 				<object class="NSView" key="NSWindowView" id="895917018">
 					<nil key="NSNextResponder"/>
@@ -5577,7 +5579,7 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {2560, 1578}}</string>
 				<string key="NSMinSize">{213, 129}</string>
-				<string key="NSMaxSize">{3.40282e+38, 3.40282e+38}</string>
+				<string key="NSMaxSize">{1.79769e+308, 1.79769e+308}</string>
 			</object>
 			<object class="NSWindowTemplate" id="858880278">
 				<int key="NSWindowStyleMask">8211</int>
@@ -5589,7 +5591,7 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 				<object class="NSMutableString" key="NSViewClass">
 					<characters key="NS.bytes">View</characters>
 				</object>
-				<string key="NSWindowContentMaxSize">{3.40282e+38, 3.40282e+38}</string>
+				<string key="NSWindowContentMaxSize">{1.79769e+308, 1.79769e+308}</string>
 				<string key="NSWindowContentMinSize">{213, 113}</string>
 				<object class="NSView" key="NSWindowView" id="285777737">
 					<nil key="NSNextResponder"/>
@@ -6095,7 +6097,7 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {2560, 1578}}</string>
 				<string key="NSMinSize">{213, 132}</string>
-				<string key="NSMaxSize">{3.40282e+38, 3.40282e+38}</string>
+				<string key="NSMaxSize">{1.79769e+308, 1.79769e+308}</string>
 				<string key="NSFrameAutosaveName">3DPresetsPanel</string>
 			</object>
 			<object class="NSWindowTemplate" id="163218500">
@@ -6108,7 +6110,7 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 				<object class="NSMutableString" key="NSViewClass">
 					<characters key="NS.bytes">View</characters>
 				</object>
-				<string key="NSWindowContentMaxSize">{3.40282e+38, 3.40282e+38}</string>
+				<string key="NSWindowContentMaxSize">{1.79769e+308, 1.79769e+308}</string>
 				<string key="NSWindowContentMinSize">{213, 113}</string>
 				<object class="NSView" key="NSWindowView" id="761108611">
 					<nil key="NSNextResponder"/>
@@ -6308,7 +6310,7 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {2560, 1578}}</string>
 				<string key="NSMinSize">{213, 132}</string>
-				<string key="NSMaxSize">{3.40282e+38, 3.40282e+38}</string>
+				<string key="NSMaxSize">{1.79769e+308, 1.79769e+308}</string>
 				<string key="NSFrameAutosaveName">3DPresetsInfoPanel</string>
 			</object>
 			<object class="NSWindowTemplate" id="319151375">
@@ -6321,7 +6323,7 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 				<object class="NSMutableString" key="NSViewClass">
 					<characters key="NS.bytes">View</characters>
 				</object>
-				<string key="NSWindowContentMaxSize">{3.40282e+38, 3.40282e+38}</string>
+				<string key="NSWindowContentMaxSize">{1.79769e+308, 1.79769e+308}</string>
 				<string key="NSWindowContentMinSize">{213, 107}</string>
 				<object class="NSView" key="NSWindowView" id="401088085">
 					<nil key="NSNextResponder"/>
@@ -6456,7 +6458,7 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 										<bool key="NS.raise.dividebyzero">YES</bool>
 									</object>
 									<string key="NS.decimal">.</string>
-									<string key="NS.thousand">'</string>
+									<string key="NS.thousand">,</string>
 									<bool key="NS.hasthousands">NO</bool>
 									<bool key="NS.localized">NO</bool>
 									<bool key="NS.allowsfloats">YES</bool>
@@ -6515,7 +6517,7 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 										<bool key="NS.raise.dividebyzero">YES</bool>
 									</object>
 									<string key="NS.decimal">.</string>
-									<string key="NS.thousand">'</string>
+									<string key="NS.thousand">,</string>
 									<bool key="NS.hasthousands">NO</bool>
 									<bool key="NS.localized">NO</bool>
 									<bool key="NS.allowsfloats">YES</bool>
@@ -6575,10 +6577,10 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1920, 1178}}</string>
 				<string key="NSMinSize">{213, 129}</string>
-				<string key="NSMaxSize">{3.40282e+38, 3.40282e+38}</string>
+				<string key="NSMaxSize">{1.79769e+308, 1.79769e+308}</string>
 			</object>
 			<object class="NSCustomView" id="67304725">
-				<nil key="NSNextResponder"/>
+				<reference key="NSNextResponder"/>
 				<int key="NSvFlags">256</int>
 				<object class="NSMutableArray" key="NSSubviews">
 					<bool key="EncodedWithXMLCoder">YES</bool>
@@ -6587,6 +6589,7 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 						<int key="NSvFlags">256</int>
 						<string key="NSFrame">{{23, 12}, {43, 17}}</string>
 						<reference key="NSSuperview" ref="67304725"/>
+						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSTextFieldCell" key="NSCell" id="747293598">
 							<int key="NSCellFlags">67239424</int>
@@ -6603,6 +6606,7 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 						<int key="NSvFlags">256</int>
 						<string key="NSFrame">{{25, 0}, {194, 16}}</string>
 						<reference key="NSSuperview" ref="67304725"/>
+						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSliderCell" key="NSCell" id="31561149">
 							<int key="NSCellFlags">67501824</int>
@@ -6627,6 +6631,7 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 						<int key="NSvFlags">256</int>
 						<string key="NSFrame">{{171, 12}, {51, 17}}</string>
 						<reference key="NSSuperview" ref="67304725"/>
+						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSTextFieldCell" key="NSCell" id="39071661">
 							<int key="NSCellFlags">67239424</int>
@@ -6643,6 +6648,7 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 						<int key="NSvFlags">256</int>
 						<string key="NSFrame">{{84, 12}, {85, 17}}</string>
 						<reference key="NSSuperview" ref="67304725"/>
+						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSTextFieldCell" key="NSCell" id="149159210">
 							<int key="NSCellFlags">67239424</int>
@@ -6692,7 +6698,7 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 									<bool key="NS.raise.dividebyzero">YES</bool>
 								</object>
 								<string key="NS.decimal">.</string>
-								<string key="NS.thousand">'</string>
+								<string key="NS.thousand">,</string>
 								<bool key="NS.hasthousands">NO</bool>
 								<bool key="NS.localized">NO</bool>
 								<bool key="NS.allowsfloats">YES</bool>
@@ -6707,6 +6713,7 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 						<int key="NSvFlags">268</int>
 						<string key="NSFrame">{{2, 6}, {18, 18}}</string>
 						<reference key="NSSuperview" ref="67304725"/>
+						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSButtonCell" key="NSCell" id="1884939">
 							<int key="NSCellFlags">-2080244224</int>
@@ -6715,7 +6722,7 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 							<reference key="NSSupport" ref="26"/>
 							<reference key="NSControlView" ref="823635217"/>
 							<int key="NSButtonFlags">1211912703</int>
-							<int key="NSButtonFlags2">130</int>
+							<int key="NSButtonFlags2">2</int>
 							<reference key="NSNormalImage" ref="973957069"/>
 							<reference key="NSAlternateImage" ref="213408125"/>
 							<string key="NSAlternateContents"/>
@@ -6726,6 +6733,8 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 					</object>
 				</object>
 				<string key="NSFrameSize">{222, 29}</string>
+				<reference key="NSSuperview"/>
+				<reference key="NSWindow"/>
 				<object class="NSMutableString" key="NSClassName">
 					<characters key="NS.bytes">NSView</characters>
 				</object>
@@ -6743,7 +6752,7 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 				<object class="_NSManagedProxy" key="_NSManagedProxy"/>
 			</object>
 			<object class="NSCustomView" id="1066502290">
-				<reference key="NSNextResponder"/>
+				<nil key="NSNextResponder"/>
 				<int key="NSvFlags">256</int>
 				<object class="NSMutableArray" key="NSSubviews">
 					<bool key="EncodedWithXMLCoder">YES</bool>
@@ -6752,7 +6761,6 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 						<int key="NSvFlags">268</int>
 						<string key="NSFrame">{{4, 23}, {64, 17}}</string>
 						<reference key="NSSuperview" ref="1066502290"/>
-						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSButtonCell" key="NSCell" id="974940726">
 							<int key="NSCellFlags">-2080244224</int>
@@ -6773,7 +6781,6 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 						<int key="NSvFlags">268</int>
 						<string key="NSFrame">{{4, 4}, {64, 17}}</string>
 						<reference key="NSSuperview" ref="1066502290"/>
-						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSButtonCell" key="NSCell" id="345312539">
 							<int key="NSCellFlags">-2080244224</int>
@@ -6810,8 +6817,6 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 					</object>
 				</object>
 				<string key="NSFrameSize">{72, 43}</string>
-				<reference key="NSSuperview"/>
-				<reference key="NSWindow"/>
 				<object class="NSMutableString" key="NSClassName">
 					<characters key="NS.bytes">NSView</characters>
 				</object>
@@ -15590,9 +15595,9 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 					<integer value="1"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<integer value="1"/>
-					<string>{{146, 93}, {584, 359}}</string>
+					<string>{{295, 909}, {584, 359}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{146, 93}, {584, 359}}</string>
+					<string>{{295, 909}, {584, 359}}</string>
 					<integer value="1"/>
 					<integer value="0"/>
 					<integer value="1"/>

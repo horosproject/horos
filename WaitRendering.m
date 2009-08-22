@@ -195,7 +195,6 @@
 	
 	[progress setUsesThreadedAnimation:YES];
 	[progress setIndeterminate:YES];
-	[progress setAnimationDelay:0.01];
 	[progress startAnimation:self];
 	[lastTimeText setStringValue:@""];
 
