@@ -147,7 +147,7 @@ char *GetPrivateIP()
 	NSString *ip = [[self IPv4Address] componentsJoinedByString:@", "];
 	char hostname[ _POSIX_HOST_NAME_MAX+1];
 	gethostname(hostname, _POSIX_HOST_NAME_MAX);
-	NSString *name = [NSString stringWithCString: hostname];
+	NSString *name = [NSString stringWithUTF8String: hostname];
 	
 	[ipField setStringValue: ip];
 	[nameField setStringValue: name];
