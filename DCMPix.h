@@ -466,6 +466,7 @@ Note setter is different to not break existing usage. :-( */
 - (long) maskID;
 - (void) maskTime:(float)newMaskTime;
 - (float) maskTime;
+- (void) getDataFromNSImage:(NSImage*) otherImage;
 - (void) positionerPrimaryAngle:(NSNumber *)newPositionerPrimaryAngle;
 - (NSNumber*) positionerPrimaryAngle;
 - (void) positionerSecondaryAngle:(NSNumber*)newPositionerSecondaryAngle;

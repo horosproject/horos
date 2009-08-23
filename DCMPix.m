@@ -5288,113 +5288,116 @@ END_CREATE_ROIS:
 		[rep setCurrentPage:frameNo];	
 		NSImage *pdfImage = [[[NSImage alloc] init] autorelease];
 		[pdfImage addRepresentation:rep];
-		[pdfImage setBackgroundColor: [NSColor whiteColor]];
 		
-		NSData *tiffData = [pdfImage TIFFRepresentation];
-		//NSString *dest = [NSString stringWithFormat:@"%@/Desktop/pdf.tif", NSHomeDirectory()];
+		[self getDataFromNSImage: pdfImage];
 		
-		NSBitmapImageRep	*TIFFRep = [NSBitmapImageRep imageRepWithData: tiffData];
-		//NSLog(@"tiffRep: %@", [TIFFRep description]);
-		
-		height = [TIFFRep pixelsHigh];
-		realwidth = [TIFFRep pixelsWide];
-		width = realwidth;
-		
-		unsigned char *srcImage = [TIFFRep bitmapData];
-		
-		unsigned char   *argbImage, *tmpPtr, *srcPtr;
-		
-		argbImage = malloc( height * width * 4);
-		isRGB = YES;
-		
-		//NSLog(@"height %d", height);
-		//NSLog(@"width %d", width);
-		switch( [TIFFRep bitsPerPixel] )
-		{
-			case 8:
-				tmpPtr = argbImage;
-				for( int y = 0 ; y < height; y++)
-				{
-					srcPtr = srcImage + y*[TIFFRep bytesPerRow];
-					
-					int x = width;
-					while( x-- > 0 )
-					{
-						tmpPtr++;
-						*tmpPtr++ = *srcPtr;
-						*tmpPtr++ = *srcPtr;
-						*tmpPtr++ = *srcPtr;
-						srcPtr++;
-					}
-					isRGB = NO;
-				}
-				break;
-				
-				case 32:
-				tmpPtr = argbImage;
-				for( int y = 0 ; y < height; y++ )
-				{
-					srcPtr = srcImage + y*[TIFFRep bytesPerRow];
-					int x = width;
-					while( x-- > 0 )
-					{
-						unsigned char r = *srcPtr++;
-						unsigned char g = *srcPtr++;
-						unsigned char b = *srcPtr++;
-						unsigned char a = *srcPtr++;
-						*tmpPtr++ = a;
-						*tmpPtr++ = r;
-						*tmpPtr++ = g;
-						*tmpPtr++ = b;
-					}			
-				}
-				break;
-				
-				case 24:
-				tmpPtr = argbImage;
-				for( int y = 0 ; y < height; y++ )
-				{
-					srcPtr = srcImage + y*[TIFFRep bytesPerRow];
-					
-					int x = width;
-					while( x-- > 0 )
-					{
-						unsigned char r = *srcPtr++;
-						unsigned char g = *srcPtr++;
-						unsigned char b = *srcPtr++;
-						unsigned char a = 1.0;
-						*tmpPtr++ = a;
-						*tmpPtr++ = r;
-						*tmpPtr++ = g;
-						*tmpPtr++ = b;
-					}
-				}
-				break;
-				
-				case 48:
-				NSLog(@"48 bits");
-				tmpPtr = argbImage;
-				for( int y = 0 ; y < height; y++ )
-				{
-					srcPtr = srcImage + y*[TIFFRep bytesPerRow];
-					
-					int x = width;
-					while( x-- > 0 )
-					{
-						tmpPtr++;
-						*tmpPtr++ = *srcPtr;	srcPtr += 2;
-						*tmpPtr++ = *srcPtr;	srcPtr += 2;
-						*tmpPtr++ = *srcPtr;	srcPtr += 2;
-					}
-				}
-				break;
-				
-				default:
-				NSLog(@"Error - Unknow...");
-				break;
-		}
-		
-		fImage = (float*) argbImage;
+//		[pdfImage setBackgroundColor: [NSColor whiteColor]];
+//		
+//		NSData *tiffData = [pdfImage TIFFRepresentation];
+//		//NSString *dest = [NSString stringWithFormat:@"%@/Desktop/pdf.tif", NSHomeDirectory()];
+//		
+//		NSBitmapImageRep	*TIFFRep = [NSBitmapImageRep imageRepWithData: tiffData];
+//		//NSLog(@"tiffRep: %@", [TIFFRep description]);
+//		
+//		height = [TIFFRep pixelsHigh];
+//		realwidth = [TIFFRep pixelsWide];
+//		width = realwidth;
+//		
+//		unsigned char *srcImage = [TIFFRep bitmapData];
+//		
+//		unsigned char   *argbImage, *tmpPtr, *srcPtr;
+//		
+//		argbImage = malloc( height * width * 4);
+//		isRGB = YES;
+//		
+//		//NSLog(@"height %d", height);
+//		//NSLog(@"width %d", width);
+//		switch( [TIFFRep bitsPerPixel] )
+//		{
+//			case 8:
+//				tmpPtr = argbImage;
+//				for( int y = 0 ; y < height; y++)
+//				{
+//					srcPtr = srcImage + y*[TIFFRep bytesPerRow];
+//					
+//					int x = width;
+//					while( x-- > 0 )
+//					{
+//						tmpPtr++;
+//						*tmpPtr++ = *srcPtr;
+//						*tmpPtr++ = *srcPtr;
+//						*tmpPtr++ = *srcPtr;
+//						srcPtr++;
+//					}
+//					isRGB = NO;
+//				}
+//				break;
+//				
+//				case 32:
+//				tmpPtr = argbImage;
+//				for( int y = 0 ; y < height; y++ )
+//				{
+//					srcPtr = srcImage + y*[TIFFRep bytesPerRow];
+//					int x = width;
+//					while( x-- > 0 )
+//					{
+//						unsigned char r = *srcPtr++;
+//						unsigned char g = *srcPtr++;
+//						unsigned char b = *srcPtr++;
+//						unsigned char a = *srcPtr++;
+//						*tmpPtr++ = a;
+//						*tmpPtr++ = r;
+//						*tmpPtr++ = g;
+//						*tmpPtr++ = b;
+//					}			
+//				}
+//				break;
+//				
+//				case 24:
+//				tmpPtr = argbImage;
+//				for( int y = 0 ; y < height; y++ )
+//				{
+//					srcPtr = srcImage + y*[TIFFRep bytesPerRow];
+//					
+//					int x = width;
+//					while( x-- > 0 )
+//					{
+//						unsigned char r = *srcPtr++;
+//						unsigned char g = *srcPtr++;
+//						unsigned char b = *srcPtr++;
+//						unsigned char a = 1.0;
+//						*tmpPtr++ = a;
+//						*tmpPtr++ = r;
+//						*tmpPtr++ = g;
+//						*tmpPtr++ = b;
+//					}
+//				}
+//				break;
+//				
+//				case 48:
+//				NSLog(@"48 bits");
+//				tmpPtr = argbImage;
+//				for( int y = 0 ; y < height; y++ )
+//				{
+//					srcPtr = srcImage + y*[TIFFRep bytesPerRow];
+//					
+//					int x = width;
+//					while( x-- > 0 )
+//					{
+//						tmpPtr++;
+//						*tmpPtr++ = *srcPtr;	srcPtr += 2;
+//						*tmpPtr++ = *srcPtr;	srcPtr += 2;
+//						*tmpPtr++ = *srcPtr;	srcPtr += 2;
+//					}
+//				}
+//				break;
+//				
+//				default:
+//				NSLog(@"Error - Unknow...");
+//				break;
+//		}
+//		
+//		fImage = (float*) argbImage;
 		
 		#ifdef OSIRIX_VIEWER
 			[self loadCustomImageAnnotationsPapyLink:-1 DCMLink:dcmObject];

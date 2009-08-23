@@ -664,8 +664,8 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 						[otherImage setScalesWhenResized:YES];
 						[otherImage setSize: newSize];
 						
-						height = [otherImage size].height;
-						width = [otherImage size].width;
+						height = ceil( [otherImage size].height);
+						width = ceil( [otherImage size].width);
 					}
 					else
 					{

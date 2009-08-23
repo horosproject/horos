@@ -47,8 +47,8 @@
 	[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:@"OT"] forName:@"Modality"];
 	[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:@"6000"] forName:@"SeriesNumber"];
 	[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:@"PDF"] forName:@"SeriesDescription"];
-	DCMSequenceAttribute * sequence = [DCMSequenceAttribute sequenceAttributeWithName:@"ConceptNameCodeSequence"];
-	[dcmObject setAttribute:sequence];
+//	DCMSequenceAttribute * sequence = [DCMSequenceAttribute sequenceAttributeWithName:@"ConceptNameCodeSequence"];
+//	[dcmObject setAttribute:sequence];
 	[dcmObject setAttributeValues:[NSMutableArray array] forName:@"CodeValue"];
 	[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:@"application/pdf"] forName:@"MIMETypeOfEncapsulatedDocument"];
 	[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:pdf] forName:@"EncapsulatedDocument"];

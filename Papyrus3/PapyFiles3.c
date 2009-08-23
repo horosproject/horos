@@ -2153,10 +2153,9 @@ ComputeUndefinedGroupLength3 (PapyShort inFileNb, PapyULong inMaxSize)
     i = 8L;
     if ((theErr = (PapyShort) Papy3FRead (gPapyFile [inFileNb], &i, 1L, theBuffP)) < 0)
     {
-	  printf("ComputeUndefinedGroupLength3 : %s\r", gPapyFilePath[ inFileNb]);
-		
-      theErr = (PapyShort) Papy3FClose (&(gPapyFile [inFileNb]));
-      return 0;
+		printf("ComputeUndefinedGroupLength3 : %s\r", gPapyFilePath[ inFileNb]);
+		theErr = (PapyShort) Papy3FClose (&(gPapyFile [inFileNb]));
+		return 0;
     } /* if */
     
     theGroupLength += 8L;
