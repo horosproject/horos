@@ -7909,11 +7909,6 @@ static BOOL withReset = NO;
 				{
 					[cell setTitle: [NSString stringWithFormat: @"%@\r%@", name, modality]];
 				}
-//				else if ([seriesSOPClassUID isEqualToString: [DCMAbstractSyntaxUID pdfStorageClassUID]])
-//				{
-//					[cell setTitle: @"PDF"];
-//					img = [[NSImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForImageResource:@"pdf"]];
-//				}
 				else if ([fileType isEqualToString: @"DICOMMPEG2"])
 				{
 					long count = [[curFile valueForKey:@"noFiles"] intValue];
