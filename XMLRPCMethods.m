@@ -424,7 +424,7 @@ static NSTimeInterval lastConnection = 0;
 						{
 							if( [[album valueForKey:@"name"] isEqualToString: [paramDict valueForKey:@"name"]])
 							{
-								[albumTable selectRow: [albumArray indexOfObject: album] byExtendingSelection: NO];
+								[albumTable selectRowIndexes: [NSIndexSet indexSetWithIndex: [albumArray indexOfObject: album]] byExtendingSelection: NO];
 								ret = [NSNumber numberWithInt: 0];
 							}
 						}

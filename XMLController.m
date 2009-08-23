@@ -259,7 +259,7 @@ extern int delayedTileWindows;
 				{
 					if( [[[[table itemAtRow: i] attributeForName:@"attributeTag"] stringValue] isEqualToString: searchGpEl])
 					{
-						[table selectRow: i byExtendingSelection: NO];
+						[table selectRowIndexes: [NSIndexSet indexSetWithIndex: i] byExtendingSelection: NO];
 					}
 				}
 			}
@@ -372,7 +372,7 @@ extern int delayedTileWindows;
 		}
 	}
 	
-	[table selectRow: selectedRow byExtendingSelection: NO];
+	[table selectRowIndexes: [NSIndexSet indexSetWithIndex: selectedRow] byExtendingSelection: NO];
 	[[tableScrollView contentView] scrollToPoint: origin];
 	[tableScrollView reflectScrolledClipView: [tableScrollView contentView]];
 	[table setNeedsDisplay];

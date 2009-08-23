@@ -1680,7 +1680,7 @@ static NSDate *lastWarningDate = nil;
 		{
 			NSManagedObject		*object = [[newImages objectAtIndex: 0] valueForKeyPath:@"series.study"];
 				
-			[[[BrowserController currentBrowser] databaseOutline] selectRow: [[[BrowserController currentBrowser] databaseOutline] rowForItem: object] byExtendingSelection: NO];
+			[[[BrowserController currentBrowser] databaseOutline] selectRowIndexes: [NSIndexSet indexSetWithIndex: [[[BrowserController currentBrowser] databaseOutline] rowForItem: object]] byExtendingSelection: NO];
 			[[[BrowserController currentBrowser] databaseOutline] scrollRowToVisible: [[[BrowserController currentBrowser] databaseOutline] selectedRow]];
 		}
 	}

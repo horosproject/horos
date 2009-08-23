@@ -95,7 +95,7 @@ static NSDate *CachedPluginsListDate = nil;
 	}
 	
 	[self refreshPluginList];
-	[pluginTable selectRow:[pluginTable clickedRow] byExtendingSelection:NO];
+	[pluginTable selectRowIndexes: [NSIndexSet indexSetWithIndex: [pluginTable clickedRow]] byExtendingSelection:NO];
 }
 
 - (IBAction)delete:(id)sender;

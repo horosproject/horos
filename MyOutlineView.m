@@ -309,7 +309,7 @@
 			{
 				NSManagedObject		*object = [[newImages objectAtIndex: 0] valueForKeyPath:@"series.study"];
 					
-				[self selectRow: [self rowForItem: object] byExtendingSelection: NO];
+				[self selectRowIndexes: [NSIndexSet indexSetWithIndex: [self rowForItem: object]] byExtendingSelection: NO];
 				[self scrollRowToVisible: [self selectedRow]];
 			}
 		}

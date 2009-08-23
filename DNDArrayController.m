@@ -14,7 +14,7 @@ NSString *CopiedRowsType = @"COPIED_ROWS_TYPE";
 - (void)addObject:(id)object
 {
 	[super addObject: object];
-	[tableView selectRow: [[self arrangedObjects] count]-1 byExtendingSelection: NO];
+	[tableView selectRowIndexes: [NSIndexSet indexSetWithIndex: [[self arrangedObjects] count]-1] byExtendingSelection: NO];
 }
 
 - (void) setAuthView:( SFAuthorizationView*) v;
@@ -103,7 +103,7 @@ NSString *CopiedRowsType = @"COPIED_ROWS_TYPE";
 	NSNumber *idx;
 	for (idx in rows) {
 		[rowCopies addObject:[[self arrangedObjects] objectAtIndex:[idx intValue]]];
-		[tableView selectRow: [idx intValue] byExtendingSelection: NO];
+		[tableView selectRowIndexes: [NSIndexSet indexSetWithIndex: [idx intValue]] byExtendingSelection: NO];
 	}
 	// setPropertyList works here because we're using dictionaries, strings,
 	// and dates; otherwise, archive collection to NSData...
@@ -233,7 +233,7 @@ NSString *CopiedRowsType = @"COPIED_ROWS_TYPE";
 		[self removeObjectAtArrangedObjectIndex:removeIndex];
 		[self insertObject:object atArrangedObjectIndex:insertIndex];
 		
-		[tableView selectRow: insertIndex byExtendingSelection: NO];
+		[tableView selectRowIndexes: [NSIndexSet indexSetWithIndex: insertIndex] byExtendingSelection: NO];
 		
 		index = [indexSet indexLessThanIndex:index];
     }

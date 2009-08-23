@@ -663,13 +663,18 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 						
 						[otherImage setScalesWhenResized:YES];
 						[otherImage setSize: newSize];
+						
+						height = [otherImage size].height;
+						width = [otherImage size].width;
 					}
-
-					rep = [NSBitmapImageRep imageRepWithData:[otherImage TIFFRepresentation]];
-					if( rep)
+					else
 					{
-						height = [rep pixelsHigh];
-						width = [rep pixelsWide];
+						rep = [NSBitmapImageRep imageRepWithData:[otherImage TIFFRepresentation]];
+						if( rep)
+						{
+							height = [rep pixelsHigh];
+							width = [rep pixelsWide];
+						}
 					}
 				}
 				

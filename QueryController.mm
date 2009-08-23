@@ -383,7 +383,7 @@ static const char *GetPrivateIP()
 						{
 							if( [[src valueForKey: @"AddressAndPort"] isEqualToString: [r lastObject]])
 							{
-								[sourcesTable selectRow: [sourcesArray indexOfObject: src] byExtendingSelection: NO];
+								[sourcesTable selectRowIndexes: [NSIndexSet indexSetWithIndex: [sourcesArray indexOfObject: src]] byExtendingSelection: NO];
 								[sourcesTable scrollRowToVisible: [sourcesArray indexOfObject: src]];
 							}
 						}
@@ -403,7 +403,7 @@ static const char *GetPrivateIP()
 									if( first)
 									{
 										first = NO;
-										[sourcesTable selectRow: [sourcesArray indexOfObject: src] byExtendingSelection: NO];
+										[sourcesTable selectRowIndexes: [NSIndexSet indexSetWithIndex: [sourcesArray indexOfObject: src]] byExtendingSelection: NO];
 										[sourcesTable scrollRowToVisible: [sourcesArray indexOfObject: src]];
 									}
 								}
@@ -599,7 +599,7 @@ static const char *GetPrivateIP()
 			
 			if( [resultFilter count])
 			{
-				[outlineView selectRow: [outlineView rowForItem: [resultFilter objectAtIndex: 0]] byExtendingSelection: NO];
+				[outlineView selectRowIndexes: [NSIndexSet indexSetWithIndex: [outlineView rowForItem: [resultFilter objectAtIndex: 0]]] byExtendingSelection: NO];
 				[outlineView scrollRowToVisible: [outlineView selectedRow]];
 			}
 			else NSBeep();
@@ -1004,7 +1004,7 @@ static const char *GetPrivateIP()
 	{
 		if( [[[s objectAtIndex: 0] key] isEqualToString:@"name"] == NO)
 		{
-			[outlineView selectRow: 0 byExtendingSelection: NO];
+			[outlineView selectRowIndexes: [NSIndexSet indexSetWithIndex: 0] byExtendingSelection: NO];
 		}
 		else [outlineView selectRowIndexes: [NSIndexSet indexSetWithIndex: [outlineView rowForItem: item]] byExtendingSelection: NO];
 	}
@@ -1192,7 +1192,7 @@ static const char *GetPrivateIP()
 			aServer = [[sourcesArray objectAtIndex:i] valueForKey:@"server"];
 			
 			if( showError)
-				[sourcesTable selectRow: i byExtendingSelection: NO];
+				[sourcesTable selectRowIndexes: [NSIndexSet indexSetWithIndex: i] byExtendingSelection: NO];
 			
 			NSString *myAET = [[NSUserDefaults standardUserDefaults] objectForKey:@"AETITLE"]; 			
 			theirAET = [aServer objectForKey:@"AETitle"];
@@ -1428,7 +1428,7 @@ static const char *GetPrivateIP()
 
 - (void) displayQueryResults
 {
-	[sourcesTable selectRow: [sourcesTable selectedRow] byExtendingSelection: NO];
+	[sourcesTable selectRowIndexes: [NSIndexSet indexSetWithIndex: [sourcesTable selectedRow]] byExtendingSelection: NO];
 	
 	if( [resultArray count] <= 1) [numberOfStudies setStringValue: [NSString stringWithFormat:@"%d study found", [resultArray count]]];
 	else [numberOfStudies setStringValue: [NSString stringWithFormat:@"%d studies found", [resultArray count]]];
@@ -2218,7 +2218,7 @@ static const char *GetPrivateIP()
 	{
 		if( [[[sourcesArray objectAtIndex: i] valueForKey:@"activated"] boolValue] == YES)
 		{
-			[sourcesTable selectRow: i byExtendingSelection: NO];
+			[sourcesTable selectRowIndexes: [NSIndexSet indexSetWithIndex: i] byExtendingSelection: NO];
 			[sourcesTable scrollRowToVisible: i];
 			break;
 		}
@@ -2537,7 +2537,7 @@ static const char *GetPrivateIP()
 	
 	for( NSUInteger i = 0 ; i < [sourcesArray count]; i++)
 	{
-		[sourcesTable selectRow: i byExtendingSelection: NO];
+		[sourcesTable selectRowIndexes: [NSIndexSet indexSetWithIndex: i] byExtendingSelection: NO];
 		[sourcesTable scrollRowToVisible: i];
 		
 		NSMutableDictionary *aServer = [sourcesArray objectAtIndex: i];
@@ -2552,7 +2552,7 @@ static const char *GetPrivateIP()
 		[aServer setObject:[NSNumber numberWithInt: status] forKey:@"test"];
 	}
 	
-	[sourcesTable selectRow: selectedRow byExtendingSelection: NO];
+	[sourcesTable selectRowIndexes: [NSIndexSet indexSetWithIndex: selectedRow] byExtendingSelection: NO];
 	
 	[self didChangeValueForKey:@"sourcesArray"];
 	

@@ -5312,7 +5312,6 @@ END_CREATE_ROIS:
 		switch( [TIFFRep bitsPerPixel] )
 		{
 			case 8:
-				NSLog(@"8 bit DICOM PDF");
 				tmpPtr = argbImage;
 				for( int y = 0 ; y < height; y++)
 				{
@@ -5332,9 +5331,6 @@ END_CREATE_ROIS:
 				break;
 				
 				case 32:
-				//already argb
-				//argbImage = srcImage;				
-				//NSLog(@"32 bits DICOM PDF");
 				tmpPtr = argbImage;
 				for( int y = 0 ; y < height; y++ )
 				{
@@ -5352,11 +5348,9 @@ END_CREATE_ROIS:
 						*tmpPtr++ = b;
 					}			
 				}
-				NSLog(@"finished 32  bit");
 				break;
 				
 				case 24:
-				//NSLog(@"loadDICOMDCMFramework 24 bits");
 				tmpPtr = argbImage;
 				for( int y = 0 ; y < height; y++ )
 				{
@@ -8260,10 +8254,17 @@ END_CREATE_ROIS:
 {
 	int x, y;
 	
-	NSBitmapImageRep	*TIFFRep = [[NSBitmapImageRep alloc] initWithData: [otherImage TIFFRepresentation]];
+	NSImage *r = [[[NSImage alloc] initWithSize: [otherImage size]] autorelease];
+	
+	[r lockFocus];
+	[[NSColor whiteColor] set];
+	NSRectFill( NSMakeRect( 0, 0, [otherImage size].width, [otherImage size].height));
+	[otherImage drawAtPoint: NSMakePoint(0, 0) fromRect:NSMakeRect(0,0,[otherImage size].width, [otherImage size].height) operation: NSCompositeSourceOver fraction: 1.0];
+	[r unlockFocus];
+	
+	NSBitmapImageRep *TIFFRep = [[NSBitmapImageRep alloc] initWithData: [r TIFFRepresentation]];
 	
 	height = [TIFFRep pixelsHigh];
-	
 	realwidth = [TIFFRep pixelsWide];
 	width = realwidth;
 	
@@ -8272,18 +8273,13 @@ END_CREATE_ROIS:
 	
 	int totSize = height * width * 4;
 	if( fExternalOwnedImage)
-	{
 		argbImage =	(unsigned char*) fExternalOwnedImage;
-	}
 	else
-	{
 		argbImage = malloc( totSize);
-	}
 	
 	switch( [TIFFRep bitsPerPixel])
 	{
 		case 8:
-			NSLog(@"8 bits");
 			tmpPtr = argbImage;
 			for( y = 0 ; y < height; y++)
 			{
@@ -8299,10 +8295,9 @@ END_CREATE_ROIS:
 					srcPtr++;
 				}
 			}
-			break;
+		break;
 			
-			case 32:
-			NSLog(@"32 bits");
+		case 32:
 			tmpPtr = argbImage;
 			for( y = 0 ; y < height; y++)
 			{
@@ -8311,20 +8306,16 @@ END_CREATE_ROIS:
 				x = width;
 				while( x-->0)
 				{
-					tmpPtr++;
+					*tmpPtr++ = 255;
 					*tmpPtr++ = *srcPtr++;
 					*tmpPtr++ = *srcPtr++;
 					*tmpPtr++ = *srcPtr++;
 					srcPtr++;
 				}
-				
-				//BlockMoveData( srcPtr, tmpPtr, width*4);
-				//tmpPtr += width*4;
 			}
-			break;
+		break;
 			
-			case 24:
-			NSLog(@"24 bits");
+		case 24:
 			tmpPtr = argbImage;
 			for( y = 0 ; y < height; y++)
 			{
@@ -8342,10 +8333,9 @@ END_CREATE_ROIS:
 					*tmpPtr++ = *srcPtr++;
 				}
 			}
-			break;
+		break;
 			
-			case 48:
-			NSLog(@"48 bits");
+		case 48:
 			tmpPtr = argbImage;
 			for( y = 0 ; y < height; y++)
 			{
@@ -8360,7 +8350,7 @@ END_CREATE_ROIS:
 					*tmpPtr++ = *srcPtr;	srcPtr += 2;
 				}
 			}
-			break;
+		break;
 			
 		default:
 			NSLog(@"Error - Unknow bitsPerPixel ...");
@@ -9225,7 +9215,7 @@ END_CREATE_ROIS:
 						
 						if( [tempID isKindOfClass: [NSPDFImageRep class]] )
 						{
-							NSPDFImageRep		*pdfRepresentation = tempID;
+							NSPDFImageRep *pdfRepresentation = tempID;
 							
 							[pdfRepresentation setCurrentPage:frameNo];
 						}
@@ -9234,7 +9224,7 @@ END_CREATE_ROIS:
 					[self getDataFromNSImage: otherImage];
 				}
 				
-				if( otherImage) [otherImage release];
+				[otherImage release];
 			}
 			else	// It's a Movie ??
 			{
