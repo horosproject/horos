@@ -656,7 +656,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				{
 					if( [extension isEqualToString:@"pdf"])
 					{
-						NSSize			newSize = [otherImage size];
+						NSSize newSize = [otherImage size];
 							
 						newSize.width *= 1.5;		// Increase PDF resolution to 72 * 1.5 DPI !
 						newSize.height *= 1.5;		// KEEP THIS VALUE IN SYNC WITH DCMPIX.M
@@ -2377,17 +2377,24 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			
 			if( patientID == nil) patientID = [[NSString alloc] initWithString:@""];
 		}
-		/*
-		// Go to groups 0s0042 for Encapsulated Document Possible PDF
+		
+		// Go to groups 0x0042 for Encapsulated Document Possible PDF
 		theErr = Papy3GotoGroupNb (fileNb, (PapyShort) 0x0042);
 		if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
 		{
-			val = Papy3GetElement (theGroupP, 0x0011, &nbVal, &itemType);
-			if (val != NULL) {
-				NSLog(@"Encapsulated PDF decode with Papyrus");
+			SElement *element = theGroupP + papEncapsulatedDocumentGr;
+			
+			if( element->nb_val > 0)
+			{
+				NSPDFImageRep *rep = [NSPDFImageRep imageRepWithData: [NSData dataWithBytes: element->value->a length: element->length]];
+				NoOfFrames = [rep pageCount];
+				
+				height = ceil( [rep bounds].size.height * 1.5);
+				width = ceil( [rep bounds].size.width * 1.5);
 			}
+			
+			theErr = Papy3GroupFree (&theGroupP, TRUE);
 		}
-		*/
 		
 		// close and free the file and the associated allocated memory 
 		Papy3FileClose (fileNb, TRUE);
@@ -2451,9 +2458,6 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		}
 	}
 	
-	if ([sopClassUID isEqualToString:[DCMAbstractSyntaxUID pdfStorageClassUID]])
-		return [self getDicomFileDCMTK];
-		
 	if( converted)
 	{
 		if ([[NSFileManager defaultManager] fileExistsAtPath:converted])
@@ -2701,11 +2705,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		
 		if ([dcmObject attributeValueWithName:@"ProtocolName"])
 			[dicomElements setObject:[dcmObject attributeValueWithName:@"ProtocolName"] forKey:@"protocolName"];
-		/*	
-		if ([dcmObject attributeValueWithName:@"ProtocolName"])
-			[dicomElements setObject:[dcmObject attributeValueWithName:@"ProtocolName"] forKey:@"protocolName"];
-		*/
-//		NSLog(@"get Instance Number");
+		
 		if (imageID = [dcmObject attributeValueWithName:@"InstanceNumber"])
 		{
 			int val = [imageID intValue];
@@ -2789,12 +2789,6 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		
 		if( [dcmObject attributeValueWithName:@"SOPClassUID"])
 			[dicomElements setObject:[dcmObject attributeValueWithName:@"SOPClassUID"] forKey:@"SOPClassUID"];
-		
-		if ([[dcmObject attributeValueWithName:@"SOPClassUID"] isEqualToString:[DCMAbstractSyntaxUID pdfStorageClassUID]]){
-			NSData *pdfData = [dcmObject attributeValueWithName:@"EncapsulatedDocument"];
-			NSPDFImageRep *rep = [NSPDFImageRep imageRepWithData:pdfData];						
-			NoOfFrames = [rep pageCount];							
-		}
 		
 		// *********** WARNING : SERIESID MUST BE IDENTICAL BETWEEN DCMFRAMEWORK & PAPYRUS TOOLKIT !!!!! OTHERWISE muliple identical series will be created during DATABASE rebuild !
 				
@@ -2894,7 +2888,18 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		returnValue = 0;
 		
 		width = [[dcmObject attributeValueWithName:@"Columns"] intValue];
-		height= [[dcmObject attributeValueWithName:@"Rows"] intValue];
+		height = [[dcmObject attributeValueWithName:@"Rows"] intValue];
+		
+		if ([[dcmObject attributeValueWithName:@"SOPClassUID"] isEqualToString:[DCMAbstractSyntaxUID pdfStorageClassUID]])
+		{
+			NSData *pdfData = [dcmObject attributeValueWithName:@"EncapsulatedDocument"];
+			NSPDFImageRep *rep = [NSPDFImageRep imageRepWithData:pdfData];						
+			NoOfFrames = [rep pageCount];
+			
+			height = ceil( [rep bounds].size.height * 1.5);
+			width = ceil( [rep bounds].size.width * 1.5);
+		}
+		
 		if (width < 4)
 			width = 4;
 		if (height < 4)
@@ -2902,8 +2907,6 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	}
 	
 	[pool release];
-	
-
 	
 	return returnValue;
 }

@@ -215,52 +215,29 @@ Papy3FileOpen (char *inNameP, PAPY_FILE inVRefNum, int inToOpen, void* inFSSpec)
 								gSOPClassUID[ theFileNb] = malloc( strlen( theValP->a)+1);
 								strcpy( gSOPClassUID[ theFileNb], theValP->a);
 							}
-							 theErr = Papy3GroupFree (&theGroupP, TRUE);
+							
+							theValP = Papy3GetElement (theGroupP, papModalityGr, &theNbVal, &theElemType);
+							if (theValP != NULL)
+							{
+								ExtractModality (theValP, theFileNb);
+								thePapyrusFile = DICOM_NOT10; /* non-part 10 DICOM file */
+							}
+							else
+								thePapyrusFile = DICOM10; /* neither a DICOM file nor a PAPYRUS one */
+							
+							theErr = Papy3GroupFree (&theGroupP, TRUE);
 						}
                     }
-                    
-					if( iResult == papNoError)
-                    {
-                      if ((theErr = Papy3GroupRead (theFileNb, &theGroupP)) < 0)
-                      {
-						iResult = papNotPapyrusFile;
-                      }
-                    } /* else ...group 0x0008 found */
 					
-                    if (iResult == papNoError)
-                    {
-                      /* try to extract the modality */
-
-                      theValP = Papy3GetElement (theGroupP, papModalityGr, &theNbVal, &theElemType);
-                      if (theValP != NULL)
-                      {
-                        ExtractModality (theValP, theFileNb);
-                        thePapyrusFile = DICOM_NOT10; /* non-part 10 DICOM file */
-                      }
-                      else
-                      {
-                        thePapyrusFile = DICOM10; /* neither a DICOM file nor a PAPYRUS one */
-
-                      } /* theValp NULL */
-					  
-                      /* free the group 8 */
-                      theErr = Papy3GroupFree (&theGroupP, TRUE);
-    
-                      /* reset the file pointer to its previous position */
-                      theErr = Papy3FSeek (gPapyFile [theFileNb], SEEK_SET, 0L);
-      
-                      /* neither a PAPYRUS nor a DICOM file */
-                      if (thePapyrusFile == DICOM10)
-                      {
+					/* reset the file pointer to its previous position */
+					theErr = Papy3FSeek (gPapyFile [theFileNb], SEEK_SET, 0L);
+					
+					/* neither a PAPYRUS nor a DICOM file */
+					if (thePapyrusFile == DICOM10)
                         iResult = papNotPapyrusFile;
-                      } 
-
-                    } /* if ...no error til yet ... */
-
                   } /* if ...could it be a non-part 10 DICOM file ? */
                   else  /* is it a DICOMDIR file? */
                   {
-
                     ExtractDicomdirFromPath (inNameP, theFilename);
                     if (theFilename [0] != '\0' &&
                         ((strncmp ((char*) theFilename, "dicomdir", 8) == 0) ||
@@ -2263,8 +2240,8 @@ ComputeUndefinedGroupLength3 (PapyShort inFileNb, PapyULong inMaxSize)
   
   if( inMaxSize != 0xFFFFFFFF)
   {
-	  if( theGroupLength > inMaxSize)
-		  printf("*** warning - computed length is not equal to stored length\r");
+	if( theGroupLength > inMaxSize)
+		printf("*** warning - computed length is not equal to stored length\r");
   }
   return theGroupLength;
 

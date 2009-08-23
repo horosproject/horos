@@ -5285,9 +5285,9 @@ END_CREATE_ROIS:
 		NSData *pdfData = [dcmObject attributeValueWithName:@"EncapsulatedDocument"];
 		
 		NSPDFImageRep *rep = [NSPDFImageRep imageRepWithData: pdfData];	
-		[rep setCurrentPage:frameNo];	
+		[rep setCurrentPage: frameNo];	
 		NSImage *pdfImage = [[[NSImage alloc] init] autorelease];
-		[pdfImage addRepresentation:rep];
+		[pdfImage addRepresentation: rep];
 		
 		[self getDataFromNSImage: pdfImage];
 		
