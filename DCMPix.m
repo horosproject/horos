@@ -5282,122 +5282,14 @@ END_CREATE_ROIS:
 #pragma mark *pdf
 	if ([ SOPClassUID isEqualToString:[DCMAbstractSyntaxUID pdfStorageClassUID]])
 	{
-		NSLog(@"have PDF");
 		NSData *pdfData = [dcmObject attributeValueWithName:@"EncapsulatedDocument"];
-		NSPDFImageRep *rep = [NSPDFImageRep imageRepWithData:pdfData];	
+		
+		NSPDFImageRep *rep = [NSPDFImageRep imageRepWithData: pdfData];	
 		[rep setCurrentPage:frameNo];	
 		NSImage *pdfImage = [[[NSImage alloc] init] autorelease];
 		[pdfImage addRepresentation:rep];
 		
 		[self getDataFromNSImage: pdfImage];
-		
-//		[pdfImage setBackgroundColor: [NSColor whiteColor]];
-//		
-//		NSData *tiffData = [pdfImage TIFFRepresentation];
-//		//NSString *dest = [NSString stringWithFormat:@"%@/Desktop/pdf.tif", NSHomeDirectory()];
-//		
-//		NSBitmapImageRep	*TIFFRep = [NSBitmapImageRep imageRepWithData: tiffData];
-//		//NSLog(@"tiffRep: %@", [TIFFRep description]);
-//		
-//		height = [TIFFRep pixelsHigh];
-//		realwidth = [TIFFRep pixelsWide];
-//		width = realwidth;
-//		
-//		unsigned char *srcImage = [TIFFRep bitmapData];
-//		
-//		unsigned char   *argbImage, *tmpPtr, *srcPtr;
-//		
-//		argbImage = malloc( height * width * 4);
-//		isRGB = YES;
-//		
-//		//NSLog(@"height %d", height);
-//		//NSLog(@"width %d", width);
-//		switch( [TIFFRep bitsPerPixel] )
-//		{
-//			case 8:
-//				tmpPtr = argbImage;
-//				for( int y = 0 ; y < height; y++)
-//				{
-//					srcPtr = srcImage + y*[TIFFRep bytesPerRow];
-//					
-//					int x = width;
-//					while( x-- > 0 )
-//					{
-//						tmpPtr++;
-//						*tmpPtr++ = *srcPtr;
-//						*tmpPtr++ = *srcPtr;
-//						*tmpPtr++ = *srcPtr;
-//						srcPtr++;
-//					}
-//					isRGB = NO;
-//				}
-//				break;
-//				
-//				case 32:
-//				tmpPtr = argbImage;
-//				for( int y = 0 ; y < height; y++ )
-//				{
-//					srcPtr = srcImage + y*[TIFFRep bytesPerRow];
-//					int x = width;
-//					while( x-- > 0 )
-//					{
-//						unsigned char r = *srcPtr++;
-//						unsigned char g = *srcPtr++;
-//						unsigned char b = *srcPtr++;
-//						unsigned char a = *srcPtr++;
-//						*tmpPtr++ = a;
-//						*tmpPtr++ = r;
-//						*tmpPtr++ = g;
-//						*tmpPtr++ = b;
-//					}			
-//				}
-//				break;
-//				
-//				case 24:
-//				tmpPtr = argbImage;
-//				for( int y = 0 ; y < height; y++ )
-//				{
-//					srcPtr = srcImage + y*[TIFFRep bytesPerRow];
-//					
-//					int x = width;
-//					while( x-- > 0 )
-//					{
-//						unsigned char r = *srcPtr++;
-//						unsigned char g = *srcPtr++;
-//						unsigned char b = *srcPtr++;
-//						unsigned char a = 1.0;
-//						*tmpPtr++ = a;
-//						*tmpPtr++ = r;
-//						*tmpPtr++ = g;
-//						*tmpPtr++ = b;
-//					}
-//				}
-//				break;
-//				
-//				case 48:
-//				NSLog(@"48 bits");
-//				tmpPtr = argbImage;
-//				for( int y = 0 ; y < height; y++ )
-//				{
-//					srcPtr = srcImage + y*[TIFFRep bytesPerRow];
-//					
-//					int x = width;
-//					while( x-- > 0 )
-//					{
-//						tmpPtr++;
-//						*tmpPtr++ = *srcPtr;	srcPtr += 2;
-//						*tmpPtr++ = *srcPtr;	srcPtr += 2;
-//						*tmpPtr++ = *srcPtr;	srcPtr += 2;
-//					}
-//				}
-//				break;
-//				
-//				default:
-//				NSLog(@"Error - Unknow...");
-//				break;
-//		}
-//		
-//		fImage = (float*) argbImage;
 		
 		#ifdef OSIRIX_VIEWER
 			[self loadCustomImageAnnotationsPapyLink:-1 DCMLink:dcmObject];
@@ -7715,10 +7607,18 @@ END_CREATE_ROIS:
 					{
 						if ((err = Papy3GroupRead (fileNb, &theGroupP)) > 0) 
 						{
-							val = Papy3GetElement (theGroupP, papEncapsulatedDocumentGr, &nbVal, &elemType);
-							if( nbVal > 0)
+							SElement *element = theGroupP + papEncapsulatedDocumentGr;
+							
+							if( element->nb_val > 0)
 							{
-								NSLog( @"encapsulated pdf");
+								NSPDFImageRep *rep = [NSPDFImageRep imageRepWithData: [NSData dataWithBytes: element->value->a length: element->length]];
+								
+								[rep setCurrentPage: frameNo];	
+								
+								NSImage *pdfImage = [[[NSImage alloc] init] autorelease];
+								[pdfImage addRepresentation: rep];
+								
+								[self getDataFromNSImage: pdfImage];
 							}
 							
 							err = Papy3GroupFree (&theGroupP, TRUE);
@@ -8084,120 +7984,121 @@ END_CREATE_ROIS:
 							[PapyrusLock unlock];
 						} // endif ...group 7FE0 read 
 					}
-				}
-		#pragma mark RGB or fPlanar
 				
-				//***********
-				if( isRGB)
-				{
-					if( fExternalOwnedImage)
+					#pragma mark RGB or fPlanar
+				
+					//***********
+					if( isRGB)
 					{
-						fImage = fExternalOwnedImage;
-						memcpy( fImage, oImage, width*height*sizeof(float));
-						free(oImage);
-					}
-					else fImage = (float*) oImage;
-					oImage = nil;
-					
-					if( oData && gDisplayDICOMOverlays)
-					{
-						unsigned char	*rgbData = (unsigned char*) fImage;
-						int				y, x;
-						
-						for( y = 0; y < oRows; y++)
+						if( fExternalOwnedImage)
 						{
-							for( x = 0; x < oColumns; x++)
+							fImage = fExternalOwnedImage;
+							memcpy( fImage, oImage, width*height*sizeof(float));
+							free(oImage);
+						}
+						else fImage = (float*) oImage;
+						oImage = nil;
+						
+						if( oData && gDisplayDICOMOverlays)
+						{
+							unsigned char	*rgbData = (unsigned char*) fImage;
+							int				y, x;
+							
+							for( y = 0; y < oRows; y++)
 							{
-								if( oData[ y * oColumns + x])
+								for( x = 0; x < oColumns; x++)
 								{
-									rgbData[ y * width*4 + x*4 + 1] = 0xFF;
-									rgbData[ y * width*4 + x*4 + 2] = 0xFF;
-									rgbData[ y * width*4 + x*4 + 3] = 0xFF;
+									if( oData[ y * oColumns + x])
+									{
+										rgbData[ y * width*4 + x*4 + 1] = 0xFF;
+										rgbData[ y * width*4 + x*4 + 2] = 0xFF;
+										rgbData[ y * width*4 + x*4 + 3] = 0xFF;
+									}
 								}
 							}
 						}
-					}
-				}
-				else
-				{
-					if( bitsAllocated == 32) // 32-bit float
-					{
-						float *sfloat = (float*) oImage;
-						
-						if( fExternalOwnedImage)
-							fImage = fExternalOwnedImage;
-						else
-							fImage = malloc(width*height*sizeof(float) + 100);
-						
-						if( fImage)
-							memcpy( fImage, sfloat, height * width * sizeof( float));
-						else
-							NSLog( @"*** Not enough memory - malloc failed");
-						
-						free(oImage);
-						oImage = nil;
 					}
 					else
 					{
-						if( oImage)
+						if( bitsAllocated == 32) // 32-bit float
 						{
-							vImage_Buffer src16, dstf;
-							
-							dstf.height = src16.height = height;
-							dstf.width = src16.width = width;
-							src16.rowBytes = width*2;
-							dstf.rowBytes = width*sizeof(float);
-							
-							src16.data = oImage;
-							
-							if( VOILUT_number != 0 && VOILUT_depth != 0 && VOILUT_table != nil)
-							{
-								[self setVOILUT:VOILUT_first number:VOILUT_number depth:VOILUT_depth table:VOILUT_table image:(unsigned short*) oImage isSigned: fIsSigned];
-								
-								free( VOILUT_table);
-								VOILUT_table = nil;
-							}
+							float *sfloat = (float*) oImage;
 							
 							if( fExternalOwnedImage)
-							{
 								fImage = fExternalOwnedImage;
-							}
 							else
-							{
 								fImage = malloc(width*height*sizeof(float) + 100);
-							}
 							
-							dstf.data = fImage;
-							
-							if( dstf.data)
-							{
-								if( fIsSigned)
-									vImageConvert_16SToF( &src16, &dstf, offset, slope, 0);
-								else
-									vImageConvert_16UToF( &src16, &dstf, offset, slope, 0);
-								
-								if( inverseVal)
-								{
-									float neg = -1;
-									vDSP_vsmul( fImage, 1, &neg, fImage, 1, height * width);
-								}
-							}
-							else NSLog( @"*** Not enough memory - malloc failed");
+							if( fImage)
+								memcpy( fImage, sfloat, height * width * sizeof( float));
+							else
+								NSLog( @"*** Not enough memory - malloc failed");
 							
 							free(oImage);
+							oImage = nil;
 						}
-						oImage = nil;
-					}
-					
-					if( oData && gDisplayDICOMOverlays)
-					{
-						int			y, x;
-						
-						for( y = 0; y < oRows; y++)
+						else
 						{
-							for( x = 0; x < oColumns; x++)
+							if( oImage)
 							{
-								if( oData[ y * oColumns + x]) fImage[ y * width + x] = 0xFF;
+								vImage_Buffer src16, dstf;
+								
+								dstf.height = src16.height = height;
+								dstf.width = src16.width = width;
+								src16.rowBytes = width*2;
+								dstf.rowBytes = width*sizeof(float);
+								
+								src16.data = oImage;
+								
+								if( VOILUT_number != 0 && VOILUT_depth != 0 && VOILUT_table != nil)
+								{
+									[self setVOILUT:VOILUT_first number:VOILUT_number depth:VOILUT_depth table:VOILUT_table image:(unsigned short*) oImage isSigned: fIsSigned];
+									
+									free( VOILUT_table);
+									VOILUT_table = nil;
+								}
+								
+								if( fExternalOwnedImage)
+								{
+									fImage = fExternalOwnedImage;
+								}
+								else
+								{
+									fImage = malloc(width*height*sizeof(float) + 100);
+								}
+								
+								dstf.data = fImage;
+								
+								if( dstf.data)
+								{
+									if( fIsSigned)
+										vImageConvert_16SToF( &src16, &dstf, offset, slope, 0);
+									else
+										vImageConvert_16UToF( &src16, &dstf, offset, slope, 0);
+									
+									if( inverseVal)
+									{
+										float neg = -1;
+										vDSP_vsmul( fImage, 1, &neg, fImage, 1, height * width);
+									}
+								}
+								else NSLog( @"*** Not enough memory - malloc failed");
+								
+								free(oImage);
+							}
+							oImage = nil;
+						}
+						
+						if( oData && gDisplayDICOMOverlays)
+						{
+							int			y, x;
+							
+							for( y = 0; y < oRows; y++)
+							{
+								for( x = 0; x < oColumns; x++)
+								{
+									if( oData[ y * oColumns + x]) fImage[ y * width + x] = 0xFF;
+								}
 							}
 						}
 					}
