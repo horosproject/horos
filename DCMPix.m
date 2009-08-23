@@ -6074,7 +6074,8 @@ END_CREATE_ROIS:
 			{
 				int theErr = 0;
 				
-				if (gIsPapyFile[ fileNb] == DICOM10) theErr = Papy3FSeek (gPapyFile [fileNb], SEEK_SET, 132L);
+				if (gIsPapyFile[ fileNb] == DICOM10)
+					theErr = Papy3FSeek (gPapyFile [fileNb], SEEK_SET, 132L);
 				
 				if( theErr == 0 )
 				{
@@ -7705,364 +7706,385 @@ END_CREATE_ROIS:
 			{
 				short *oImage = nil;
 				
-				// position the file pointer to the begining of the data set 
-				err = Papy3GotoNumber (fileNb, (PapyShort) imageNb, DataSetID);
-				
-				// then goto group 0x7FE0 
-				if ((err = Papy3GotoGroupNb (fileNb, 0x7FE0)) == 0)
+				if( strcmp( gSOPClassUID[ fileNb], "1.2.840.10008.5.1.4.1.1.104.1") == 0)
 				{
-					// read group 0x7FE0 from the file 
-					if ((err = Papy3GroupRead (fileNb, &theGroupP)) > 0) 
+					if (gIsPapyFile[ fileNb] == DICOM10)
+						err = Papy3FSeek (gPapyFile [fileNb], SEEK_SET, 132L);
+					
+					if ((err = Papy3GotoGroupNb (fileNb, 0x0042)) == 0)
 					{
-						if( gArrCompression [fileNb] == JPEG_LOSSLESS || gArrCompression [fileNb] == JPEG_LOSSY || gArrCompression [fileNb] == JPEG2000)
+						if ((err = Papy3GroupRead (fileNb, &theGroupP)) > 0) 
 						{
-							if(gArrPhotoInterpret [fileNb] == RGB)
-								fPlanarConf = 0;
-						}
-						
-						if( bitsStored == 8 && bitsAllocated == 16 && gArrPhotoInterpret[ fileNb] == RGB)
-							bitsAllocated = 8;
-						
-						// PIXEL DATA
-						if( gUseJPEGColorSpace)
-						{
-							if( gArrCompression [fileNb] == JPEG_LOSSLESS || gArrCompression [fileNb] == JPEG_LOSSY)
+							val = Papy3GetElement (theGroupP, papEncapsulatedDocumentGr, &nbVal, &elemType);
+							if( nbVal > 0)
 							{
-								if(	gArrPhotoInterpret [fileNb] == YBR_FULL  	||
-								   gArrPhotoInterpret [fileNb] == YBR_FULL_422	||
-								   gArrPhotoInterpret [fileNb] == YBR_RCT  	||
-								   gArrPhotoInterpret [fileNb] == YBR_ICT	||
-								   gArrPhotoInterpret [fileNb] == YUV_RCT	||
-								   gArrPhotoInterpret [fileNb] == YBR_PARTIAL_422 ||
-								   gArrPhotoInterpret [fileNb] == RGB)
-									gArrPhotoInterpret [fileNb] = UNKNOWN_COLOR;
+								NSLog( @"encapsulated pdf");
 							}
-						}
-						
-						oImage = (short*) Papy3GetPixelData (fileNb, imageNb, theGroupP, ImagePixel);
-						
-						[PapyrusLock unlock];
-						toBeUnlocked = NO;
-						
-						if( oImage == nil)
-						{
-							NSLog(@"This is really bad..... Please send this file to rossetantoine@bluewin.ch");
-							oImage = malloc( height * width * 4);
 							
-							long yo = 0;
-							for( i = 0 ; i < height * width * 2; i++)
+							err = Papy3GroupFree (&theGroupP, TRUE);
+						}
+					}
+				}  
+				else
+				{
+					// position the file pointer to the begining of the data set 
+					err = Papy3GotoNumber (fileNb, (PapyShort) imageNb, DataSetID);
+					
+					// then goto group 0x7FE0 
+					if ((err = Papy3GotoGroupNb (fileNb, 0x7FE0)) == 0)
+					{
+						// read group 0x7FE0 from the file 
+						if ((err = Papy3GroupRead (fileNb, &theGroupP)) > 0) 
+						{
+							if( gArrCompression [fileNb] == JPEG_LOSSLESS || gArrCompression [fileNb] == JPEG_LOSSY || gArrCompression [fileNb] == JPEG2000)
 							{
-								oImage[ i] = yo++;
-								if( yo>= width) yo = 0;
+								if(gArrPhotoInterpret [fileNb] == RGB)
+									fPlanarConf = 0;
 							}
-						}
-						
-						if( gArrPhotoInterpret [fileNb] == MONOCHROME1) // INVERSE IMAGE!
-						{
-							inverseVal = YES;
-							savedWL = -savedWL;
-						}
-						else inverseVal = NO;
-						
-						isRGB = NO;
-						
-						if (gArrPhotoInterpret [fileNb] == YBR_FULL ||
-							gArrPhotoInterpret [fileNb] == YBR_FULL_422 ||
-							gArrPhotoInterpret [fileNb] == YBR_PARTIAL_422)
-						{
-//							NSLog(@"YBR WORLD");
 							
-							char *rgbPixel = (char*) [self ConvertYbrToRgb:(unsigned char *) oImage :realwidth :height :gArrPhotoInterpret [fileNb] :(char) fPlanarConf];
-							fPlanarConf = 0;	//ConvertYbrToRgb -> planar is converted
+							if( bitsStored == 8 && bitsAllocated == 16 && gArrPhotoInterpret[ fileNb] == RGB)
+								bitsAllocated = 8;
 							
-							efree3 ((void **) &oImage);
-							oImage = (short*) rgbPixel;
-						}
-						
-						// This image has a palette -> Convert it to a RGB image !
-						if( fSetClut)
-						{
-							if( clutRed != nil && clutGreen != nil && clutBlue != nil)
+							// PIXEL DATA
+							if( gUseJPEGColorSpace)
 							{
-								unsigned char   *bufPtr = (unsigned char*) oImage;
-								unsigned short	*bufPtr16 = (unsigned short*) oImage;
+								if( gArrCompression [fileNb] == JPEG_LOSSLESS || gArrCompression [fileNb] == JPEG_LOSSY)
+								{
+									if(	gArrPhotoInterpret [fileNb] == YBR_FULL  	||
+									   gArrPhotoInterpret [fileNb] == YBR_FULL_422	||
+									   gArrPhotoInterpret [fileNb] == YBR_RCT  	||
+									   gArrPhotoInterpret [fileNb] == YBR_ICT	||
+									   gArrPhotoInterpret [fileNb] == YUV_RCT	||
+									   gArrPhotoInterpret [fileNb] == YBR_PARTIAL_422 ||
+									   gArrPhotoInterpret [fileNb] == RGB)
+										gArrPhotoInterpret [fileNb] = UNKNOWN_COLOR;
+								}
+							}
+							
+							oImage = (short*) Papy3GetPixelData (fileNb, imageNb, theGroupP, ImagePixel);
+							
+							[PapyrusLock unlock];
+							toBeUnlocked = NO;
+							
+							if( oImage == nil)
+							{
+								NSLog(@"This is really bad..... Please send this file to rossetantoine@bluewin.ch");
+								oImage = malloc( height * width * 4);
+								
+								long yo = 0;
+								for( i = 0 ; i < height * width * 2; i++)
+								{
+									oImage[ i] = yo++;
+									if( yo>= width) yo = 0;
+								}
+							}
+							
+							if( gArrPhotoInterpret [fileNb] == MONOCHROME1) // INVERSE IMAGE!
+							{
+								inverseVal = YES;
+								savedWL = -savedWL;
+							}
+							else inverseVal = NO;
+							
+							isRGB = NO;
+							
+							if (gArrPhotoInterpret [fileNb] == YBR_FULL ||
+								gArrPhotoInterpret [fileNb] == YBR_FULL_422 ||
+								gArrPhotoInterpret [fileNb] == YBR_PARTIAL_422)
+							{
+	//							NSLog(@"YBR WORLD");
+								
+								char *rgbPixel = (char*) [self ConvertYbrToRgb:(unsigned char *) oImage :realwidth :height :gArrPhotoInterpret [fileNb] :(char) fPlanarConf];
+								fPlanarConf = 0;	//ConvertYbrToRgb -> planar is converted
+								
+								efree3 ((void **) &oImage);
+								oImage = (short*) rgbPixel;
+							}
+							
+							// This image has a palette -> Convert it to a RGB image !
+							if( fSetClut)
+							{
+								if( clutRed != nil && clutGreen != nil && clutBlue != nil)
+								{
+									unsigned char   *bufPtr = (unsigned char*) oImage;
+									unsigned short	*bufPtr16 = (unsigned short*) oImage;
+									unsigned char   *tmpImage;
+									int				totSize, pixelR, pixelG, pixelB, x, y;
+									
+									totSize = (int) ((int) height * (int) realwidth * 3L);
+									tmpImage = malloc( totSize);
+									
+									fPlanarConf = NO;
+									
+									//	if( bitsAllocated != 8) NSLog(@"Palette with a non-8 bit image???");
+									
+									switch( bitsAllocated)
+									{
+										case 8:
+											for( y = 0; y < height; y++)
+											{
+												for( x = 0; x < width; x++)
+												{
+													pixelR = pixelG = pixelB = bufPtr[y*width + x];
+													
+													if( pixelR > clutEntryR) {	pixelR = clutEntryR-1;}
+													if( pixelG > clutEntryG) {	pixelG = clutEntryG-1;}
+													if( pixelB > clutEntryB) {	pixelB = clutEntryB-1;}
+													
+													tmpImage[y*width*3 + x*3 + 0] = clutRed[ pixelR];
+													tmpImage[y*width*3 + x*3 + 1] = clutGreen[ pixelG];
+													tmpImage[y*width*3 + x*3 + 2] = clutBlue[ pixelB];
+												}
+											}
+											break;
+											
+											case 16:
+				#if __BIG_ENDIAN__
+											InverseShorts( (vector unsigned short*) oImage, height * realwidth);
+				#endif
+											
+											for( y = 0; y < height; y++)
+											{
+												for( x = 0; x < width; x++)
+												{
+													pixelR = pixelG = pixelB = bufPtr16[y*width + x];
+													
+													//	if( pixelR > clutEntryR) {	pixelR = clutEntryR-1;}
+													//	if( pixelG > clutEntryG) {	pixelG = clutEntryG-1;}
+													//	if( pixelB > clutEntryB) {	pixelB = clutEntryB-1;}
+													
+													tmpImage[y*width*3 + x*3 + 0] = clutRed[ pixelR];
+													tmpImage[y*width*3 + x*3 + 1] = clutGreen[ pixelG];
+													tmpImage[y*width*3 + x*3 + 2] = clutBlue[ pixelB];
+												}
+											}
+											bitsAllocated = 8;
+											break;
+									}
+									
+									isRGB = YES;
+									
+									efree3 ((void **) &oImage);
+									oImage = (short*) tmpImage;
+								}
+							}
+							
+							if( fSetClut16)
+							{
+								unsigned short	*bufPtr = (unsigned short*) oImage;
 								unsigned char   *tmpImage;
-								int				totSize, pixelR, pixelG, pixelB, x, y;
+								int				totSize, x, y, ii;
+								unsigned short pixel;
+								
+								fPlanarConf = NO;
 								
 								totSize = (int) ((int) height * (int) realwidth * 3L);
 								tmpImage = malloc( totSize);
 								
-								fPlanarConf = NO;
+								if( bitsAllocated != 16) NSLog(@"Segmented Palette with a non-16 bit image???");
 								
-								//	if( bitsAllocated != 8) NSLog(@"Palette with a non-8 bit image???");
+								ii = height * realwidth;
 								
-								switch( bitsAllocated)
+			#if __ppc__ || __ppc64__
+								if( Altivec)
 								{
-									case 8:
-										for( y = 0; y < height; y++)
-										{
-											for( x = 0; x < width; x++)
-											{
-												pixelR = pixelG = pixelB = bufPtr[y*width + x];
-												
-												if( pixelR > clutEntryR) {	pixelR = clutEntryR-1;}
-												if( pixelG > clutEntryG) {	pixelG = clutEntryG-1;}
-												if( pixelB > clutEntryB) {	pixelB = clutEntryB-1;}
-												
-												tmpImage[y*width*3 + x*3 + 0] = clutRed[ pixelR];
-												tmpImage[y*width*3 + x*3 + 1] = clutGreen[ pixelG];
-												tmpImage[y*width*3 + x*3 + 2] = clutBlue[ pixelB];
-											}
-										}
-										break;
-										
-										case 16:
-			#if __BIG_ENDIAN__
-										InverseShorts( (vector unsigned short*) oImage, height * realwidth);
+									InverseShorts( (vector unsigned short*) oImage, ii);
+								}
+								else
 			#endif
-										
-										for( y = 0; y < height; y++)
-										{
-											for( x = 0; x < width; x++)
-											{
-												pixelR = pixelG = pixelB = bufPtr16[y*width + x];
-												
-												//	if( pixelR > clutEntryR) {	pixelR = clutEntryR-1;}
-												//	if( pixelG > clutEntryG) {	pixelG = clutEntryG-1;}
-												//	if( pixelB > clutEntryB) {	pixelB = clutEntryB-1;}
-												
-												tmpImage[y*width*3 + x*3 + 0] = clutRed[ pixelR];
-												tmpImage[y*width*3 + x*3 + 1] = clutGreen[ pixelG];
-												tmpImage[y*width*3 + x*3 + 2] = clutBlue[ pixelB];
-											}
-										}
-										bitsAllocated = 8;
-										break;
+									
+			#if __BIG_ENDIAN__
+								{
+									PapyUShort	 *theUShortP = (PapyUShort *) oImage;
+									PapyUShort val;
+									
+									while( ii-- > 0)
+									{
+										val = *theUShortP;
+										*theUShortP++ = (val >> 8) | (val << 8);   // & 0x00FF  --  & 0xFF00
+									}
+								}
+			#endif
+								
+								for( y = 0; y < height; y++)
+								{
+									for( x = 0; x < width; x++)
+									{
+										pixel = bufPtr[y*width + x];
+										tmpImage[y*width*3 + x*3 + 0] = shortRed[ pixel];
+										tmpImage[y*width*3 + x*3 + 1] = shortGreen[ pixel];
+										tmpImage[y*width*3 + x*3 + 2] = shortBlue[ pixel];
+									}
 								}
 								
 								isRGB = YES;
 								
 								efree3 ((void **) &oImage);
 								oImage = (short*) tmpImage;
-							}
-						}
-						
-						if( fSetClut16)
-						{
-							unsigned short	*bufPtr = (unsigned short*) oImage;
-							unsigned char   *tmpImage;
-							int				totSize, x, y, ii;
-							unsigned short pixel;
-							
-							fPlanarConf = NO;
-							
-							totSize = (int) ((int) height * (int) realwidth * 3L);
-							tmpImage = malloc( totSize);
-							
-							if( bitsAllocated != 16) NSLog(@"Segmented Palette with a non-16 bit image???");
-							
-							ii = height * realwidth;
-							
-		#if __ppc__ || __ppc64__
-							if( Altivec)
-							{
-								InverseShorts( (vector unsigned short*) oImage, ii);
-							}
-							else
-		#endif
 								
-		#if __BIG_ENDIAN__
+								free( shortRed);
+								free( shortGreen);
+								free( shortBlue);
+							}
+							
+							// we need to know how the pixels are stored
+							if (isRGB == YES ||
+								gArrPhotoInterpret [fileNb] == RGB ||
+								gArrPhotoInterpret [fileNb] == YBR_FULL ||
+								gArrPhotoInterpret [fileNb] == YBR_FULL_422 ||
+								gArrPhotoInterpret [fileNb] == YBR_PARTIAL_422 ||
+								gArrPhotoInterpret [fileNb] == YBR_ICT ||
+								gArrPhotoInterpret [fileNb] == YBR_RCT)
 							{
-								PapyUShort	 *theUShortP = (PapyUShort *) oImage;
-								PapyUShort val;
 								
-								while( ii-- > 0)
+								unsigned char   *ptr, *tmpImage;
+								int				loop, totSize;
+								
+								isRGB = YES;
+								
+								// CONVERT RGB TO ARGB FOR BETTER PERFORMANCE THRU VIMAGE
+								
+								totSize = (int) ((int) height * (int) realwidth * 4L);
+								tmpImage = malloc( totSize);
+								if( tmpImage)
 								{
-									val = *theUShortP;
-									*theUShortP++ = (val >> 8) | (val << 8);   // & 0x00FF  --  & 0xFF00
+									ptr    = tmpImage;
+									
+									if( bitsAllocated > 8) // RGB - 16 bits
+									{
+										unsigned short   *bufPtr;
+										bufPtr = (unsigned short*) oImage;
+										
+										#if __BIG_ENDIAN__
+										InverseShorts( (vector unsigned short*) oImage, height * realwidth * 3);
+										#endif
+										
+										if( fPlanarConf > 0)	// PLANAR MODE
+										{
+											int imsize = (int) height * (int) realwidth;
+											int x = 0;
+											
+											loop = totSize/4;
+											while( loop-- > 0)
+											{
+												*ptr++	= 255;			//ptr++;
+												*ptr++	= bufPtr[ 0 * imsize + x];		//ptr++;  bufPtr++;
+												*ptr++	= bufPtr[ 1 * imsize + x];		//ptr++;  bufPtr++;
+												*ptr++	= bufPtr[ 2 * imsize + x];		//ptr++;  bufPtr++;
+												
+												x++;
+											}
+										}
+										else
+										{
+											loop = totSize/4;
+											while( loop-- > 0)
+											{
+												*ptr++	= 255;			//ptr++;
+												*ptr++	= *bufPtr++;		//ptr++;  bufPtr++;
+												*ptr++	= *bufPtr++;		//ptr++;  bufPtr++;
+												*ptr++	= *bufPtr++;		//ptr++;  bufPtr++;
+											}
+										}
+									}
+									else
+									{
+										unsigned char   *bufPtr;
+										bufPtr = (unsigned char*) oImage;
+										
+										if( fPlanarConf > 0)	// PLANAR MODE
+										{
+											int imsize = (int) height * (int) realwidth;
+											int x = 0;
+											
+											loop = totSize/4;
+											while( loop-- > 0)
+											{
+												*ptr++	= 255;			//ptr++;
+												*ptr++	= bufPtr[ 0 * imsize + x];		//ptr++;  bufPtr++;
+												*ptr++	= bufPtr[ 1 * imsize + x];		//ptr++;  bufPtr++;
+												*ptr++	= bufPtr[ 2 * imsize + x];		//ptr++;  bufPtr++;
+												
+												x++;
+											}
+										}
+										else
+										{
+											loop = totSize/4;
+											while( loop-- > 0)
+											{
+												*ptr++	= 255;
+												*ptr++	= *bufPtr++;
+												*ptr++	= *bufPtr++;
+												*ptr++	= *bufPtr++;
+											}
+										}
+									}
+									efree3 ((void **) &oImage);
+									oImage = (short*) tmpImage;
 								}
 							}
-		#endif
-							
-							for( y = 0; y < height; y++)
+							else if( bitsAllocated == 8)	// Black & White 8 bit image -> 16 bits image
 							{
-								for( x = 0; x < width; x++)
-								{
-									pixel = bufPtr[y*width + x];
-									tmpImage[y*width*3 + x*3 + 0] = shortRed[ pixel];
-									tmpImage[y*width*3 + x*3 + 1] = shortGreen[ pixel];
-									tmpImage[y*width*3 + x*3 + 2] = shortBlue[ pixel];
-								}
-							}
-							
-							isRGB = YES;
-							
-							efree3 ((void **) &oImage);
-							oImage = (short*) tmpImage;
-							
-							free( shortRed);
-							free( shortGreen);
-							free( shortBlue);
-						}
-						
-						// we need to know how the pixels are stored
-						if (isRGB == YES ||
-							gArrPhotoInterpret [fileNb] == RGB ||
-							gArrPhotoInterpret [fileNb] == YBR_FULL ||
-							gArrPhotoInterpret [fileNb] == YBR_FULL_422 ||
-							gArrPhotoInterpret [fileNb] == YBR_PARTIAL_422 ||
-							gArrPhotoInterpret [fileNb] == YBR_ICT ||
-							gArrPhotoInterpret [fileNb] == YBR_RCT)
-						{
-							
-							unsigned char   *ptr, *tmpImage;
-							int				loop, totSize;
-							
-							isRGB = YES;
-							
-							// CONVERT RGB TO ARGB FOR BETTER PERFORMANCE THRU VIMAGE
-							
-							totSize = (int) ((int) height * (int) realwidth * 4L);
-							tmpImage = malloc( totSize);
-							if( tmpImage)
-							{
+								unsigned char   *bufPtr;
+								short			*ptr, *tmpImage;
+								int				loop, totSize;
+								
+								totSize = (int) ((int) height * (int) realwidth * 2L);
+								tmpImage = malloc( totSize);
+								
+								bufPtr = (unsigned char*) oImage;
 								ptr    = tmpImage;
 								
-								if( bitsAllocated > 8) // RGB - 16 bits
+								loop = totSize/2;
+								while( loop-- > 0)
 								{
-									unsigned short   *bufPtr;
-									bufPtr = (unsigned short*) oImage;
-									
-									#if __BIG_ENDIAN__
-									InverseShorts( (vector unsigned short*) oImage, height * realwidth * 3);
-									#endif
-									
-									if( fPlanarConf > 0)	// PLANAR MODE
-									{
-										int imsize = (int) height * (int) realwidth;
-										int x = 0;
-										
-										loop = totSize/4;
-										while( loop-- > 0)
-										{
-											*ptr++	= 255;			//ptr++;
-											*ptr++	= bufPtr[ 0 * imsize + x];		//ptr++;  bufPtr++;
-											*ptr++	= bufPtr[ 1 * imsize + x];		//ptr++;  bufPtr++;
-											*ptr++	= bufPtr[ 2 * imsize + x];		//ptr++;  bufPtr++;
-											
-											x++;
-										}
-									}
-									else
-									{
-										loop = totSize/4;
-										while( loop-- > 0)
-										{
-											*ptr++	= 255;			//ptr++;
-											*ptr++	= *bufPtr++;		//ptr++;  bufPtr++;
-											*ptr++	= *bufPtr++;		//ptr++;  bufPtr++;
-											*ptr++	= *bufPtr++;		//ptr++;  bufPtr++;
-										}
-									}
+									*ptr++ = *bufPtr++;
 								}
-								else
-								{
-									unsigned char   *bufPtr;
-									bufPtr = (unsigned char*) oImage;
-									
-									if( fPlanarConf > 0)	// PLANAR MODE
-									{
-										int imsize = (int) height * (int) realwidth;
-										int x = 0;
-										
-										loop = totSize/4;
-										while( loop-- > 0)
-										{
-											*ptr++	= 255;			//ptr++;
-											*ptr++	= bufPtr[ 0 * imsize + x];		//ptr++;  bufPtr++;
-											*ptr++	= bufPtr[ 1 * imsize + x];		//ptr++;  bufPtr++;
-											*ptr++	= bufPtr[ 2 * imsize + x];		//ptr++;  bufPtr++;
-											
-											x++;
-										}
-									}
-									else
-									{
-										loop = totSize/4;
-										while( loop-- > 0)
-										{
-											*ptr++	= 255;
-											*ptr++	= *bufPtr++;
-											*ptr++	= *bufPtr++;
-											*ptr++	= *bufPtr++;
-										}
-									}
-								}
+								
 								efree3 ((void **) &oImage);
-								oImage = (short*) tmpImage;
-							}
-						}
-						else if( bitsAllocated == 8)	// Black & White 8 bit image -> 16 bits image
-						{
-							unsigned char   *bufPtr;
-							short			*ptr, *tmpImage;
-							int				loop, totSize;
-							
-							totSize = (int) ((int) height * (int) realwidth * 2L);
-							tmpImage = malloc( totSize);
-							
-							bufPtr = (unsigned char*) oImage;
-							ptr    = tmpImage;
-							
-							loop = totSize/2;
-							while( loop-- > 0)
-							{
-								*ptr++ = *bufPtr++;
+								oImage =  (short*) tmpImage;
 							}
 							
-							efree3 ((void **) &oImage);
-							oImage =  (short*) tmpImage;
-						}
-						
-						if( realwidth != width)
-						{
-							NSLog(@"******** Update realwidth != width : WE SHOULD NOT BE HERE");
-							if( isRGB)
+							if( realwidth != width)
 							{
-								char	*ptr = (char*) oImage;
-								for( i = 0; i < height;i++)
+								NSLog(@"******** Update realwidth != width : WE SHOULD NOT BE HERE");
+								if( isRGB)
 								{
-									memmove( ptr + i*width*4, ptr + i*realwidth*4, width*4);
-								}
-							}
-							else
-							{
-								if( bitsAllocated == 32)
-								{
+									char	*ptr = (char*) oImage;
 									for( i = 0; i < height;i++)
 									{
-										memmove( oImage + i*width*2, oImage + i*realwidth*2, width*4);
+										memmove( ptr + i*width*4, ptr + i*realwidth*4, width*4);
 									}
 								}
 								else
 								{
-									for( i = 0; i < height;i++)
+									if( bitsAllocated == 32)
 									{
-										memmove( oImage + i*width, oImage + i*realwidth, width*2);
+										for( i = 0; i < height;i++)
+										{
+											memmove( oImage + i*width*2, oImage + i*realwidth*2, width*4);
+										}
+									}
+									else
+									{
+										for( i = 0; i < height;i++)
+										{
+											memmove( oImage + i*width, oImage + i*realwidth, width*2);
+										}
 									}
 								}
 							}
-						}
-						
-						//if( fIsSigned == YES && 
-						
-						[PapyrusLock lock];
-						// free group 7FE0 
-						err = Papy3GroupFree (&theGroupP, TRUE);
-						[PapyrusLock unlock];
-					} // endif ...group 7FE0 read 
+							
+							//if( fIsSigned == YES && 
+							
+							[PapyrusLock lock];
+							// free group 7FE0 
+							err = Papy3GroupFree (&theGroupP, TRUE);
+							[PapyrusLock unlock];
+						} // endif ...group 7FE0 read 
+					}
 				}
-				
 		#pragma mark RGB or fPlanar
 				
 				//***********

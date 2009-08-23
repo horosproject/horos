@@ -1229,7 +1229,6 @@ Papy3GetNextGroupNb (PapyShort inFileNb)
   i = 2L;
   if ((theErr = (PapyShort) Papy3FRead (theFp, &i, 1L, (void *) theBuff)) < 0)
   {
-    theErr = Papy3FClose (&theFp);
     RETURN (papReadFile)
   } /* if */
 
@@ -1444,11 +1443,7 @@ Papy3GotoGroupNb (PapyShort inFileNb, PapyShort inGroupNb)
     } /* if */
 	
     theLastGroupNb = theCurrGroupNb;
-    theCurrGroupNb = Papy3GetNextGroupNb (inFileNb);
-    if (theCurrGroupNb < 0)
-	{
-	
-	}
+	theCurrGroupNb = Papy3GetNextGroupNb (inFileNb);
   } /* while */
     
   if (theCurrGroupNb != inGroupNb)
@@ -1456,10 +1451,8 @@ Papy3GotoGroupNb (PapyShort inFileNb, PapyShort inGroupNb)
     Papy3FSeek (gPapyFile [inFileNb], (int) SEEK_SET, (PapyLong) theStartPos);
     RETURN (papGroupNumber);
   } /* if ...group missing */
-    
-    
+
   RETURN (papNoError);
-    
 } /* endof Papy3GotoGroupNb */
 
 
@@ -2153,110 +2146,116 @@ ComputeUndefinedGroupLength3 (PapyShort inFileNb, PapyULong inMaxSize)
     i = 8L;
     if ((theErr = (PapyShort) Papy3FRead (gPapyFile [inFileNb], &i, 1L, theBuffP)) < 0)
     {
-		printf("ComputeUndefinedGroupLength3 : %s\r", gPapyFilePath[ inFileNb]);
-		theErr = (PapyShort) Papy3FClose (&(gPapyFile [inFileNb]));
-		return 0;
-    } /* if */
+		if( theErr == -2) // EOF
+			OK = TRUE;
+		else
+		{
+			printf("ComputeUndefinedGroupLength3 : %s\r", gPapyFilePath[ inFileNb]);
+			return 0;
+		}
+	} /* if */
     
-    theGroupLength += 8L;
-
-    /* get the group number, the element number and the element length */
-    theBufPos = 0L;
-    theGrNb       = Extract2Bytes (inFileNb, theBuffP, &theBufPos);
-    theElemNb     = Extract2Bytes (inFileNb, theBuffP, &theBufPos);
-    
-    /* reset the VR ... */
-    theVR [0] = 'A'; theVR [1] = 'A';
-
-    /* extract the element length depending on the syntax */
-    if ((gArrTransfSyntax [inFileNb] == LITTLE_ENDIAN_IMPL && theGrNb != 0x0002) ||
-        (theGrNb == 0xFFFE && theElemNb == 0xE000) ||
-        (theGrNb == 0xFFFE && theElemNb == 0xE00D))
+	if( theErr >= 0)
 	{
-       theElemLength = Extract4Bytes (inFileNb, theBuffP, &theBufPos);
-    }
-	else
-    {
-      /* extract the VR */
-      theBuffP  += theBufPos;
-      theVR [0]  = (char) *theBuffP;
-      theVR [1]  = (char) *(theBuffP + 1);
-      theBuffP   = (unsigned char *) &theBuff [0];
-      theBufPos += 2;
-      
-      /* get the element length depending on the VR */
-      if (	(theVR[0] == 'O' && theVR[1] == 'B') ||
-			(theVR[0] == 'O' && theVR[1] == 'W') || 
-			(theVR[0] == 'S' && theVR[1] == 'Q') || 
-			(theVR[0] == 'U' && theVR[1] == 'N') || 
-			(theVR[0] == 'U' && theVR[1] == 'T'))
-      {
-        /* DICOMDIR : here is the record sequence*/
-        if (theGrNb == 0x0004 && theElemNb == 0x1220)
-        {
-          i = 6L;
-          /* read 6 more bytes: 2(elem) 4(value unuseful) */
-          if (Papy3FRead (gPapyFile [inFileNb], &i, 1L, theBuffP) < 0)
-          {
-            Papy3FClose (&(gPapyFile [inFileNb]));
-            RETURN (papReadFile)
-          } /* if */
-          theGroupLength -= 8L;
-          theElemLength = 0L;
-          OK = TRUE;
-        } /* if ...elem = 0x0004, 0x1220 */
-        else
-        {
-          /* read 4 more bytes */
-          i = 4L;
-          if (Papy3FRead (gPapyFile [inFileNb], &i, 1L, theBuffP) < 0)
-          {
-            Papy3FClose (&(gPapyFile [inFileNb]));
-            RETURN (papReadFile)
-          } /* if */
-          theGroupLength += 4L;
-          theBufPos       = 0L;
-          theElemLength   = Extract4Bytes (inFileNb, theBuffP, &theBufPos);
-        } /* else ...elem not 0x0004, 0x1220 */
-      } /* if ...VR = OB, OW, SQ, Un or UT */
-      else
-	  {
-        theElemLength = (PapyULong) Extract2Bytes (inFileNb, theBuffP, &theBufPos);
-	  }
-	} /* else ...EXPLICIT VR */
-    
-    /* makes sure the element belongs to the group */
-    if (theCmpGrNb == theGrNb && theCmpElemNb <= theElemNb && (inMaxSize == 0xFFFFFFFF || theGroupLength < inMaxSize))
-    {
-      /* if the element has an undefined length (i.e. VR = SQ) */
-      if (theElemLength == 0xFFFFFFFF)
-      {
-        theElemLength = 0L;
-        if ((theErr = ComputeUndefinedSequenceLength3 (inFileNb, &theElemLength)) < 0)
-          RETURN ((PapyULong) theErr);
-      } /* if */
-      
-      /* add the size of the element to the group size */
-      theGroupLength += theElemLength;
-      
-      /* move the file pointer */
-      if ((theErr = Papy3FSeek (gPapyFile [inFileNb], (int) SEEK_CUR, (PapyLong) theElemLength)) < 0)
-        RETURN ((PapyULong) theErr);
-    } /* if ...element in group */
-    else
-    {
-		OK = TRUE;
-		theGroupLength -= 8L;
+		theGroupLength += 8L;
+
+		/* get the group number, the element number and the element length */
+		theBufPos = 0L;
+		theGrNb       = Extract2Bytes (inFileNb, theBuffP, &theBufPos);
+		theElemNb     = Extract2Bytes (inFileNb, theBuffP, &theBufPos);
 		
-       if (	(theVR[0] == 'O' && theVR[1] == 'B') ||
-			(theVR[0] == 'O' && theVR[1] == 'W') || 
-			(theVR[0] == 'S' && theVR[1] == 'Q') || 
-			(theVR[0] == 'U' && theVR[1] == 'N') || 
-			(theVR[0] == 'U' && theVR[1] == 'T'))
-			 // ANTOINE: UN et UT RAJOUTE!
-        theGroupLength -= 4L;
-    } /* else ...end of group reached */
-    
+		/* reset the VR ... */
+		theVR [0] = 'A'; theVR [1] = 'A';
+
+		/* extract the element length depending on the syntax */
+		if ((gArrTransfSyntax [inFileNb] == LITTLE_ENDIAN_IMPL && theGrNb != 0x0002) ||
+			(theGrNb == 0xFFFE && theElemNb == 0xE000) ||
+			(theGrNb == 0xFFFE && theElemNb == 0xE00D))
+		{
+		   theElemLength = Extract4Bytes (inFileNb, theBuffP, &theBufPos);
+		}
+		else
+		{
+		  /* extract the VR */
+		  theBuffP  += theBufPos;
+		  theVR [0]  = (char) *theBuffP;
+		  theVR [1]  = (char) *(theBuffP + 1);
+		  theBuffP   = (unsigned char *) &theBuff [0];
+		  theBufPos += 2;
+		  
+		  /* get the element length depending on the VR */
+		  if (	(theVR[0] == 'O' && theVR[1] == 'B') ||
+				(theVR[0] == 'O' && theVR[1] == 'W') || 
+				(theVR[0] == 'S' && theVR[1] == 'Q') || 
+				(theVR[0] == 'U' && theVR[1] == 'N') || 
+				(theVR[0] == 'U' && theVR[1] == 'T'))
+		  {
+			/* DICOMDIR : here is the record sequence*/
+			if (theGrNb == 0x0004 && theElemNb == 0x1220)
+			{
+			  i = 6L;
+			  /* read 6 more bytes: 2(elem) 4(value unuseful) */
+			  if (Papy3FRead (gPapyFile [inFileNb], &i, 1L, theBuffP) < 0)
+			  {
+				Papy3FClose (&(gPapyFile [inFileNb]));
+				RETURN (papReadFile)
+			  } /* if */
+			  theGroupLength -= 8L;
+			  theElemLength = 0L;
+			  OK = TRUE;
+			} /* if ...elem = 0x0004, 0x1220 */
+			else
+			{
+			  /* read 4 more bytes */
+			  i = 4L;
+			  if (Papy3FRead (gPapyFile [inFileNb], &i, 1L, theBuffP) < 0)
+			  {
+				Papy3FClose (&(gPapyFile [inFileNb]));
+				RETURN (papReadFile)
+			  } /* if */
+			  theGroupLength += 4L;
+			  theBufPos       = 0L;
+			  theElemLength   = Extract4Bytes (inFileNb, theBuffP, &theBufPos);
+			} /* else ...elem not 0x0004, 0x1220 */
+		  } /* if ...VR = OB, OW, SQ, Un or UT */
+		  else
+		  {
+			theElemLength = (PapyULong) Extract2Bytes (inFileNb, theBuffP, &theBufPos);
+		  }
+		} /* else ...EXPLICIT VR */
+		
+		/* makes sure the element belongs to the group */
+		if (theCmpGrNb == theGrNb && theCmpElemNb <= theElemNb && (inMaxSize == 0xFFFFFFFF || theGroupLength < inMaxSize))
+		{
+		  /* if the element has an undefined length (i.e. VR = SQ) */
+		  if (theElemLength == 0xFFFFFFFF)
+		  {
+			theElemLength = 0L;
+			if ((theErr = ComputeUndefinedSequenceLength3 (inFileNb, &theElemLength)) < 0)
+			  RETURN ((PapyULong) theErr);
+		  } /* if */
+		  
+		  /* add the size of the element to the group size */
+		  theGroupLength += theElemLength;
+		  
+		  /* move the file pointer */
+		  if ((theErr = Papy3FSeek (gPapyFile [inFileNb], (int) SEEK_CUR, (PapyLong) theElemLength)) < 0)
+			RETURN ((PapyULong) theErr);
+		} /* if ...element in group */
+		else
+		{
+			OK = TRUE;
+			theGroupLength -= 8L;
+			
+		   if (	(theVR[0] == 'O' && theVR[1] == 'B') ||
+				(theVR[0] == 'O' && theVR[1] == 'W') || 
+				(theVR[0] == 'S' && theVR[1] == 'Q') || 
+				(theVR[0] == 'U' && theVR[1] == 'N') || 
+				(theVR[0] == 'U' && theVR[1] == 'T'))
+				 // ANTOINE: UN et UT RAJOUTE!
+			theGroupLength -= 4L;
+		} /* else ...end of group reached */
+	}
   } /* while ...loop on the elem of the group */
   
   /* reset the file position to the begining of the group */

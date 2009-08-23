@@ -399,7 +399,10 @@ InitGroupNbAndSize3 ()
 
   gArrGroup [(int) Group41].number	= 0x0041;
   gArrGroup [(int) Group41].size	= papEndGroup41;
-
+  
+  gArrGroup [(int) Group42].number	= 0x0042;
+  gArrGroup [(int) Group42].size	= papEndGroup42;
+  
   gArrGroup [(int) Group50].number	= 0x0050;
   gArrGroup [(int) Group50].size	= papEndGroup50;
 
@@ -2601,6 +2604,9 @@ InitGroup3 (int inGroupEnum, SElement *ioElemP)
       break;
     case Group41 :
       init_group41 (ioElemP);
+      break;
+	case Group42 :
+      init_group42 (ioElemP);
       break;
     case Group50 :
       init_group50 (ioElemP);

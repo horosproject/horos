@@ -171,7 +171,7 @@ Papy3FRead (PAPY_FILE inFp, PapyULong *ioBytesToReadP, PapyULong inNb, void *ioB
 		if( feof(inFp) != 0)
 		{
 			if( packets == 0)
-				return -1;
+				return -2;
 			else
 				return 0;
 		}

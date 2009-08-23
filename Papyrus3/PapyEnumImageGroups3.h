@@ -1128,6 +1128,16 @@ papImageSequenceGr,
 papEndGroup41
 };
 
+/*	Group42		*/
+
+enum {
+papDocumentTitleGr = 1,
+papEncapsulatedDocumentGr,
+papMIMETypeOfEncapsulatedDocumentGr,
+papSourceInstanceSequenceGr,
+papEndGroup42
+};
+
 /*	Group50		*/
 
 enum {

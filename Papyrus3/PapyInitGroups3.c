@@ -10760,6 +10760,69 @@ init_group41 (SElement ioElem [])
 
 /********************************************************************************/
 /*										*/
+/*	init_group42 : initializes the elements of the group 42			*/
+/*										*/
+/********************************************************************************/
+
+void
+init_group42 (SElement ioElem [])
+{
+  SElement	*theWrkP;
+  
+  theWrkP = &ioElem [papGroupLength];
+  theWrkP->group = 0x0042;
+  theWrkP->element = 0x0000;
+  theWrkP->length = 0L;
+  theWrkP->vr = UL;
+  theWrkP->vm = "1";
+  theWrkP->type_t = T3;
+  theWrkP->nb_val = 0;
+  theWrkP->value = NULL;
+
+  theWrkP = &ioElem [papDocumentTitleGr];
+  theWrkP->group = 0x0042;
+  theWrkP->element = 0x0010;
+  theWrkP->length = 0L;
+  theWrkP->vr = ST;
+  theWrkP->vm = "1";
+  theWrkP->type_t = T3;
+  theWrkP->nb_val = 0;
+  theWrkP->value = NULL;
+
+  theWrkP = &ioElem [papEncapsulatedDocumentGr];
+  theWrkP->group = 0x0042;
+  theWrkP->element = 0x0011;
+  theWrkP->length = 0L;
+  theWrkP->vr = OB;
+  theWrkP->vm = "1";
+  theWrkP->type_t = T3;
+  theWrkP->nb_val = 0;
+  theWrkP->value = NULL;
+
+  theWrkP = &ioElem [papMIMETypeOfEncapsulatedDocumentGr];
+  theWrkP->group = 0x0042;
+  theWrkP->element = 0x0012;
+  theWrkP->length = 0L;
+  theWrkP->vr = LO;
+  theWrkP->vm = "1";
+  theWrkP->type_t = T3;
+  theWrkP->nb_val = 0;
+  theWrkP->value = NULL;
+
+  theWrkP = &ioElem [papSourceInstanceSequenceGr];
+  theWrkP->group = 0x0042;
+  theWrkP->element = 0x0013;
+  theWrkP->length = 0L;
+  theWrkP->vr = SQ;
+  theWrkP->vm = "1";
+  theWrkP->type_t = T3;
+  theWrkP->nb_val = 0;
+  theWrkP->value = NULL;
+} /* endof init_group42 */
+
+
+/********************************************************************************/
+/*										*/
 /*	init_group50 : initializes the elements of the group 50			*/
 /*										*/
 /********************************************************************************/
