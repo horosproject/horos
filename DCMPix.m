@@ -5542,7 +5542,7 @@ END_CREATE_ROIS:
 		}
 	}
 	
-	if( [dcmObject attributeValueForKey: @"7053,1000"] )
+	if( [dcmObject attributeValueForKey: @"7053,1000"])
 	{
 		@try
 		{
@@ -5565,20 +5565,14 @@ END_CREATE_ROIS:
 	orientation[7] = orientation[2]*orientation[3] - orientation[0]*orientation[5];
 	orientation[8] = orientation[0]*orientation[4] - orientation[1]*orientation[3];
 	
-	if( fabs( orientation[6]) > fabs(orientation[7]) && fabs( orientation[6]) > fabs(orientation[8]) )
-	{
+	if( fabs( orientation[6]) > fabs(orientation[7]) && fabs( orientation[6]) > fabs(orientation[8]))
 		sliceLocation = originX;
-	}
 	
-	if( fabs( orientation[7]) > fabs(orientation[6]) && fabs( orientation[7]) > fabs(orientation[8]) )
-	{ 
+	if( fabs( orientation[7]) > fabs(orientation[6]) && fabs( orientation[7]) > fabs(orientation[8]))
 		sliceLocation = originY;
-	}
 	
-	if( fabs( orientation[8]) > fabs(orientation[6]) && fabs( orientation[8]) > fabs(orientation[7]) )
-	{
+	if( fabs( orientation[8]) > fabs(orientation[6]) && fabs( orientation[8]) > fabs(orientation[7]))
 		sliceLocation = originZ;
-	}	
 	
 	
 #pragma mark READ PIXEL DATA		
@@ -7550,10 +7544,7 @@ END_CREATE_ROIS:
 				if( nbVal > 0)
 				{
 					if( val->a)
-					{
 						philipsFactor = atof( val->a);
-						//NSLog( @"philipsFactor = %f", philipsFactor);
-					}
 				}
 			}
 			
@@ -7564,19 +7555,13 @@ END_CREATE_ROIS:
 			orientation[8] = orientation[0]*orientation[4] - orientation[1]*orientation[3];
 			
 			if( fabs( orientation[6]) > fabs(orientation[7]) && fabs( orientation[6]) > fabs(orientation[8]))
-			{
 				sliceLocation = originX;
-			}
 			
 			if( fabs( orientation[7]) > fabs(orientation[6]) && fabs( orientation[7]) > fabs(orientation[8]))
-			{
 				sliceLocation = originY;
-			}
 			
 			if( fabs( orientation[8]) > fabs(orientation[6]) && fabs( orientation[8]) > fabs(orientation[7]))
-			{
 				sliceLocation = originZ;
-			}
 			
 	#pragma mark read pixel data
 			
@@ -8148,7 +8133,8 @@ END_CREATE_ROIS:
 			if( pixelSpacingY < 0) pixelSpacingY = -pixelSpacingY;
 			if( pixelSpacingY != 0 && pixelSpacingX != 0) pixelRatio = pixelSpacingY / pixelSpacingX;
 			
-			returnValue =  YES;
+			if( err >= 0)
+				returnValue = YES;
 		}
 		else NSLog( @"[self getPapyGroup: 0x0028] failed");
 	}

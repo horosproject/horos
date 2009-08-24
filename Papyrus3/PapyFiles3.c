@@ -952,35 +952,34 @@ ReadGroup3 (PapyShort inFileNb, PapyUShort *outGroupNbP, unsigned char **outBuff
   /* IMPLICIT VR */
   else theTempL = Extract4Bytes (inFileNb, *outBuffP, &i);	/* element length */
         
-        
+
+  theGrLength = 0xFFFFFFFF;
   /* length of the group element is present */
   /* or DICOMDIR, so compute it */
   if (theElemNb == 0) /* && *outGroupNbP != 0x0004)*/
     theGrLength = Extract4Bytes (inFileNb, *outBuffP, &i);
-  /* group with no length set, so compute it */
-  else
+  /* group with no length set, so compute it... we will compute it anyways and compare it with the stored value... */
+//  else
   {
-    theErr = Papy3FSeek (theFp, (int) SEEK_CUR, - (long) theFirstElemLength);
-    if (*outGroupNbP != 0x7FE0)
-	{
-      theGrLength = ComputeUndefinedGroupLength3 (inFileNb, 0xFFFFFFFF);
+  theErr = Papy3FSeek (theFp, (int) SEEK_CUR, - (long) theFirstElemLength);
+  if (*outGroupNbP != 0x7FE0)
+  {
+      theGrLength = ComputeUndefinedGroupLength3 (inFileNb, theGrLength);
 	  if( theGrLength == 0xFFFFFFFF)
 		RETURN (papReadFile)
-    }
-	else
-    {
-      if (gArrTransfSyntax [inFileNb] == LITTLE_ENDIAN_EXPL || gArrTransfSyntax [inFileNb] == BIG_ENDIAN_EXPL) theGrLength = 12L;
-      else theGrLength = 8L;
-    } /* else ...group 0x7FE0 */
-     
-    /* tell Papy3GroupRead to fill the group length element */
-    *outGroupLengthP   = theGrLength;
-    *outBytesReadP     = 0L;	/* have not read the group length element */
-    theFirstElemLength = 0L;
-      
-  } /* else ...undefined group length */
-    
-    
+  }
+  else
+  {
+	if (gArrTransfSyntax [inFileNb] == LITTLE_ENDIAN_EXPL || gArrTransfSyntax [inFileNb] == BIG_ENDIAN_EXPL) theGrLength = 12L;
+	else theGrLength = 8L;
+  } /* else ...group 0x7FE0 */
+  }
+  
+  /* tell Papy3GroupRead to fill the group length element */
+  *outGroupLengthP   = theGrLength;
+  *outBytesReadP     = 0L;	/* have not read the group length element */
+  theFirstElemLength = 0L;
+  
   /* different ways of reading depending on the group number */
   switch (*outGroupNbP)
   {
@@ -2256,7 +2255,7 @@ ComputeUndefinedGroupLength3 (PapyShort inFileNb, PapyULong storedGrLength)
   if( storedGrLength != 0xFFFFFFFF)
   {
 	if( theGroupLength != storedGrLength + 12)
-		printf("*** DICOM Papyrus warning - computed length is not equal to stored length !\r");
+		printf("*** DICOM Papyrus warning - computed length is not equal to stored length ! corrupted DICOM file?\r");
   }
   
   return theGroupLength;

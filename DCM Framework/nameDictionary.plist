@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
 	<key>AccessionNumber</key>
@@ -651,19 +651,19 @@
 	<key>CurrentTreatmentStatus</key>
 	<string>3008,0200</string>
 	<key>CurveData</key>
-	<string>5000,3000</string>	
+	<string>5000,3000</string>
 	<key>CurveData2</key>
-	<string>5002,3000</string>	
+	<string>5002,3000</string>
 	<key>CurveData4</key>
-	<string>5004,3000</string>	
+	<string>5004,3000</string>
 	<key>CurveData6</key>
-	<string>5006,3000</string>	
+	<string>5006,3000</string>
 	<key>CurveData8</key>
 	<string>5008,3000</string>
 	<key>CurveData10</key>
-	<string>5010,3000</string>	
+	<string>5010,3000</string>
 	<key>CurveData12</key>
-	<string>5012,3000</string>	
+	<string>5012,3000</string>
 	<key>CurveData14</key>
 	<string>5014,3000</string>
 	<key>CurveDate</key>
@@ -675,7 +675,7 @@
 	<key>CurveDescription4</key>
 	<string>5004,0022</string>
 	<key>CurveDescription6</key>
-	<string>5006,0022</string>	
+	<string>5006,0022</string>
 	<key>CurveDescription8</key>
 	<string>5008,0022</string>
 	<key>CurveDescription10</key>
@@ -745,21 +745,21 @@
 	<key>DataSetTrailingPadding</key>
 	<string>FFFC,FFFC</string>
 	<key>DataSetType</key>
-	<string>0000,0800</string>	
+	<string>0000,0800</string>
 	<key>DataValueRepresentation</key>
 	<string>5000,0103</string>
 	<key>DataValueRepresentation2</key>
 	<string>5002,0103</string>
 	<key>DataValueRepresentation4</key>
-	<string>5004,0103</string>	
+	<string>5004,0103</string>
 	<key>DataValueRepresentation6</key>
-	<string>5006,0103</string>	
+	<string>5006,0103</string>
 	<key>DataValueRepresentation8</key>
 	<string>5008,0103</string>
 	<key>DataValueRepresentation10</key>
 	<string>5010,0103</string>
 	<key>DataValueRepresentation12</key>
-	<string>5012,0103</string>	
+	<string>5012,0103</string>
 	<key>DataValueRepresentation14</key>
 	<string>5014,0103</string>
 	<key>Date</key>
@@ -1320,7 +1320,7 @@
 	<string>0040,0314</string>
 	<key>HardcopyCreationDeviceID</key>
 	<string>0018,1011</string>
-	<key>HardcopyDeviceManfuacturer'sModelName</key>
+	<key>HardcopyDeviceManfuacturer&apos;sModelName</key>
 	<string>0018,101B</string>
 	<key>HardcopyDeviceManufacturer</key>
 	<string>0018,1017</string>
@@ -2044,7 +2044,7 @@
 	<string>0010,0032</string>
 	<key>PatientsInsurancePlanCodeSequence</key>
 	<string>0010,0050</string>
-	<key>PatientsMother'sBirthName</key>
+	<key>PatientsMother&apos;sBirthName</key>
 	<string>0010,1060</string>
 	<key>PatientsReligiousPreference</key>
 	<string>0010,21F0</string>
@@ -2164,6 +2164,8 @@
 	<string>0054,0032</string>
 	<key>PhaseVector</key>
 	<string>0054,0030</string>
+	<key>PhilipsFactor</key>
+	<string>7053,1000</string>
 	<key>PhosphorType</key>
 	<string>0018,1261</string>
 	<key>PhotometricInterpretation</key>
@@ -2722,7 +2724,7 @@
 	<string>300C,00C0</string>
 	<key>ReferencetoRecordedSound</key>
 	<string>4008,0103</string>
-	<key>ReferringPhysician'sAddress</key>
+	<key>ReferringPhysician&apos;sAddress</key>
 	<string>0008,0092</string>
 	<key>ReferringPhysicianIdentificationSequence</key>
 	<string>0008,0096</string>
@@ -3494,7 +3496,6 @@
 	<string>0002,0010</string>
 	<key>TransferTubeLength</key>
 	<string>300A,02A4</string>
-	
 	<key>TransferTubeNumber</key>
 	<string>300A,02A2</string>
 	<key>TransmitCoilManufacturerName</key>
@@ -3558,14 +3559,14 @@
 	<key>TriggerWindow</key>
 	<string>0018,1094</string>
 	<key>Trim</key>
-	<string>2010,0140</string>	
+	<string>2010,0140</string>
 	<key>TypeOfData</key>
 	<string>5000,0020</string>
 	<key>TypeOfData2</key>
 	<string>5002,0020</string>
 	<key>TypeOfData4</key>
 	<string>5004,0020</string>
-	<key>TypeOfData6</key>	
+	<key>TypeOfData6</key>
 	<string>5006,0020</string>
 	<key>TypeOfData8</key>
 	<string>5008,0020</string>
@@ -3737,7 +3738,6 @@
 	<string>0018,702B</string>
 	<key>MetaboliteMapCodeSequence</key>
 	<string>0018,9083</string>
-	
 	<key>ChemicalShiftsMinimumIntegrationLimitInPPM</key>
 	<string>0018,9295</string>
 	<key>ChemicalShiftsMaximumIntegrationLimitInPPM</key>
@@ -3889,7 +3889,7 @@
 	<key>StereoPairsSequence</key>
 	<string>0022,0020</string>
 	<key>LeftImageSequence</key>
-	<string>0022,0021</string>	
+	<string>0022,0021</string>
 	<key>RightImageSequence</key>
 	<string>0022,0022</string>
 	<key>SamplesperPixelUsed</key>
@@ -3900,7 +3900,6 @@
 	<string>0028,2114</string>
 	<key>FrameofInterestType</key>
 	<string>0028,6023</string>
-	
 	<key>MultiplexedAudioChannelsDescriptionCodeSequence</key>
 	<string>003A,0300</string>
 	<key>ChannelIdentificationCode</key>
@@ -3986,7 +3985,7 @@
 	<key>AllowLossyCompression</key>
 	<string>2200,000F</string>
 	<key>RequestPriority</key>
-	<string>2200,0020</string>	
+	<string>2200,0020</string>
 	<key>FluenceMapSequence</key>
 	<string>3002,0040</string>
 	<key>FluenceDataSource</key>
@@ -4003,6 +4002,5 @@
 	<string>300A,00F9</string>
 	<key>ReferencedRelatedGeneralSOPClassUIDinFile</key>
 	<string>0004,151A</string>
-
 </dict>
 </plist>

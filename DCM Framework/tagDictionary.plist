@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
 	<key>0000,0000</key>
@@ -958,7 +958,7 @@
 		<key>VR</key>
 		<string>UI</string>
 	</dict>
-		<key>0008,001B</key>
+	<key>0008,001B</key>
 	<dict>
 		<key>Description</key>
 		<string>OriginalSpecializedSOPClassUID</string>
@@ -1222,7 +1222,7 @@
 	<key>0008,0092</key>
 	<dict>
 		<key>Description</key>
-		<string>ReferringPhysician'sAddress</string>
+		<string>ReferringPhysician&apos;sAddress</string>
 		<key>VM</key>
 		<string>1</string>
 		<key>VR</key>
@@ -2212,7 +2212,7 @@
 	<key>0010,1060</key>
 	<dict>
 		<key>Description</key>
-		<string>PatientsMother'sBirthName</string>
+		<string>PatientsMother&apos;sBirthName</string>
 		<key>VM</key>
 		<string>1</string>
 		<key>VR</key>
@@ -2641,7 +2641,7 @@
 		<key>VR</key>
 		<string>CS</string>
 	</dict>
-		<key>0018,003A</key>
+	<key>0018,003A</key>
 	<dict>
 		<key>Description</key>
 		<string>InterventionDescription</string>
@@ -2968,7 +2968,7 @@
 	<key>0018,101B</key>
 	<dict>
 		<key>Description</key>
-		<string>HardcopyDeviceManfuacturer'sModelName</string>
+		<string>HardcopyDeviceManfuacturer&apos;sModelName</string>
 		<key>VM</key>
 		<string>1</string>
 		<key>VR</key>
@@ -4351,7 +4351,7 @@
 		<key>VR</key>
 		<string>CS</string>
 	</dict>
-		<key>0018,1803</key>
+	<key>0018,1803</key>
 	<dict>
 		<key>Description</key>
 		<string>NTPSourceAddress</string>
@@ -5008,7 +5008,7 @@
 		<key>VR</key>
 		<string>FL</string>
 	</dict>
-		<key>0018,6060</key>
+	<key>0018,6060</key>
 	<dict>
 		<key>Description</key>
 		<string>RWaveTimeVector</string>
@@ -5206,7 +5206,7 @@
 		<key>VR</key>
 		<string>LO</string>
 	</dict>
-		<key>0018,702B</key>
+	<key>0018,702B</key>
 	<dict>
 		<key>Description</key>
 		<string>DetectorManfacturersModelName</string>
@@ -6636,7 +6636,7 @@
 		<string>1</string>
 		<key>VR</key>
 		<string>SQ</string>
-	</dict>	
+	</dict>
 	<key>0018,9302</key>
 	<dict>
 		<key>Description</key>
@@ -7537,7 +7537,6 @@
 		<key>VR</key>
 		<string>LO</string>
 	</dict>
-	
 	<key>0022,0001</key>
 	<dict>
 		<key>Description</key>
@@ -7826,7 +7825,7 @@
 		<key>VR</key>
 		<string>US</string>
 	</dict>
-		<key>0028,0003</key>
+	<key>0028,0003</key>
 	<dict>
 		<key>Description</key>
 		<string>SamplesperPixelUsed</string>
@@ -7871,7 +7870,7 @@
 		<key>VR</key>
 		<string>AT</string>
 	</dict>
-		<key>0028,000A</key>
+	<key>0028,000A</key>
 	<dict>
 		<key>Description</key>
 		<string>FrameDimensionPointer</string>
@@ -9221,7 +9220,6 @@
 		<key>VR</key>
 		<string>DS</string>
 	</dict>
-	
 	<key>003A,0300</key>
 	<dict>
 		<key>Description</key>
@@ -9249,8 +9247,6 @@
 		<key>VR</key>
 		<string>CS</string>
 	</dict>
-	
-	
 	<key>0040,0001</key>
 	<dict>
 		<key>Description</key>
@@ -9728,7 +9724,6 @@
 		<key>VR</key>
 		<string>LT</string>
 	</dict>
-	
 	<key>0040,0440</key>
 	<dict>
 		<key>Description</key>
@@ -9747,9 +9742,6 @@
 		<key>VR</key>
 		<string>SQ</string>
 	</dict>
-	
-	
-	
 	<key>0040,050A</key>
 	<dict>
 		<key>Description</key>
@@ -9939,7 +9931,6 @@
 		<key>VR</key>
 		<string>SH</string>
 	</dict>
-	
 	<key>0040,100A</key>
 	<dict>
 		<key>Description</key>
@@ -9949,8 +9940,6 @@
 		<key>VR</key>
 		<string>SQ</string>
 	</dict>
-	
-	
 	<key>0040,1010</key>
 	<dict>
 		<key>Description</key>
@@ -10167,7 +10156,6 @@
 		<key>VR</key>
 		<string>SQ</string>
 	</dict>
-	
 	<key>0040,4010</key>
 	<dict>
 		<key>Description</key>
@@ -10177,7 +10165,6 @@
 		<key>VR</key>
 		<string>DT</string>
 	</dict>
-	
 	<key>0040,4011</key>
 	<dict>
 		<key>Description</key>
@@ -10835,7 +10822,7 @@
 		<key>VR</key>
 		<string>UL</string>
 	</dict>
-		<key>0042,0010</key>
+	<key>0042,0010</key>
 	<dict>
 		<key>Description</key>
 		<string>DocumentTitle</string>
@@ -10844,7 +10831,7 @@
 		<key>VR</key>
 		<string>ST</string>
 	</dict>
-		<key>0042,0011</key>
+	<key>0042,0011</key>
 	<dict>
 		<key>Description</key>
 		<string>EncapsulatedDocument</string>
@@ -10853,7 +10840,7 @@
 		<key>VR</key>
 		<string>OB</string>
 	</dict>
-		<key>0042,0012</key>
+	<key>0042,0012</key>
 	<dict>
 		<key>Description</key>
 		<string>MIMETypeOfEncapsulatedDocument</string>
@@ -10862,7 +10849,7 @@
 		<key>VR</key>
 		<string>LO</string>
 	</dict>
-		<key>0042,0013</key>
+	<key>0042,0013</key>
 	<dict>
 		<key>Description</key>
 		<string>SourceInstanceSequence</string>
@@ -11114,8 +11101,6 @@
 		<key>VR</key>
 		<string>CS</string>
 	</dict>
-	
-	
 	<key>0054,0050</key>
 	<dict>
 		<key>Description</key>
@@ -12052,7 +12037,6 @@
 		<key>VR</key>
 		<string>FL</string>
 	</dict>
-	
 	<key>0070,0306</key>
 	<dict>
 		<key>Description</key>
@@ -12188,8 +12172,6 @@
 		<key>VR</key>
 		<string>SQ</string>
 	</dict>
-	
-	
 	<key>0088,0130</key>
 	<dict>
 		<key>Description</key>
@@ -13289,7 +13271,7 @@
 		<string>1</string>
 		<key>VR</key>
 		<string>SQ</string>
-	</dict>	
+	</dict>
 	<key>2200,0001</key>
 	<dict>
 		<key>Description</key>
@@ -13326,9 +13308,6 @@
 		<key>VR</key>
 		<string>LT</string>
 	</dict>
-
-
-	
 	<key>2200,0005</key>
 	<dict>
 		<key>Description</key>
@@ -13437,10 +13416,6 @@
 		<key>VR</key>
 		<string>CS</string>
 	</dict>
-	
-	
-	
-	
 	<key>3002,0002</key>
 	<dict>
 		<key>Description</key>
@@ -13612,7 +13587,6 @@
 		<key>VR</key>
 		<string>DS</string>
 	</dict>
-	
 	<key>3002,0040</key>
 	<dict>
 		<key>Description</key>
@@ -13640,7 +13614,6 @@
 		<key>VR</key>
 		<string>DS</string>
 	</dict>
-	
 	<key>3004,0001</key>
 	<dict>
 		<key>Description</key>
@@ -17790,7 +17763,6 @@
 		<key>VR</key>
 		<string>FL</string>
 	</dict>
-
 	<key>5008,0005</key>
 	<dict>
 		<key>Description</key>
@@ -18106,7 +18078,7 @@
 		<key>VR</key>
 		<string>OF</string>
 	</dict>
-<key>6000,60ff</key>
+	<key>6000,60ff</key>
 	<dict>
 		<key>Description</key>
 		<string>OverlayBitsForCodeWord</string>
@@ -18116,6 +18088,15 @@
 		<string>US</string>
 		<key>Version</key>
 		<string>ACR/NEMA2C</string>
+	</dict>
+	<key>7053,1000</key>
+	<dict>
+		<key>Description</key>
+		<string>PhilipsFactor</string>
+		<key>VM</key>
+		<string>1</string>
+		<key>VR</key>
+		<string>DS</string>
 	</dict>
 	<key>7F00,7fff</key>
 	<dict>
@@ -18183,7 +18164,6 @@
 		<key>Version</key>
 		<string>ACR/NEMA2C</string>
 	</dict>
-
 	<key>FFFA,FFFA</key>
 	<dict>
 		<key>Description</key>
@@ -18235,6 +18215,5 @@
 		<key>Version</key>
 		<string>dicom98</string>
 	</dict>
-
 </dict>
 </plist>
