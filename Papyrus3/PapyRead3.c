@@ -1499,13 +1499,13 @@ Papy3GetPixelData (PapyShort inFileNb, int inImageNb, SElement *inGrOrModP, int 
   } /* switch */
 
 
-  if (gArrTransfSyntax [inFileNb] == LITTLE_ENDIAN_IMPL) // We need the vr ! even for implicit syntaxes
-  {
-	if ( gx0028BitsStored [inFileNb] <= 8 || gArrCompression [inFileNb] != NONE) 
-		theElemP->vr = OB;
-	else
-		theElemP->vr = OW;
-  }
+//  if (gArrTransfSyntax [inFileNb] == LITTLE_ENDIAN_IMPL) // We need the vr ! even for implicit syntaxes
+//  {
+//	if ( gx0028BitsStored [inFileNb] <= 8 || gArrCompression [inFileNb] != NONE) 
+//		theElemP->vr = OB;
+//	else
+//		theElemP->vr = OW;
+//  }
   
   /* get the size of the pixel data */
   if (inModuleId == IconImage) 
