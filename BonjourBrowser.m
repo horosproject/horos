@@ -895,10 +895,15 @@ static char *GetPrivateIP()
 
 - (void)showErrorMessage: (NSString*) s
 {	
-	NSAlert* alert = [NSAlert new];
-	[alert setMessageText: NSLocalizedString(@"Network Error",nil)];
-	[alert setInformativeText: s];
-	[alert runModal];
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"] == NO)
+	{
+		NSAlert* alert = [NSAlert new];
+		[alert setMessageText: NSLocalizedString(@"Network Error",nil)];
+		[alert setInformativeText: s];
+		[alert runModal];
+	}
+	else
+		NSLog( @"*** Bonjour Browser Error (not displayed - hideListenerError): %@", s);
 }
 
 - (void) buildFixedIPList
