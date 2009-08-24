@@ -1318,15 +1318,14 @@ Papy3SkipNextGroup (PapyShort inFileNb)
 		/* if (theTempL != 4L) RETURN (papElemSize); this is to let pass little endian impl gr2 files */
 		theGrLength = Extract4Bytes (inFileNb, theBuff, &i);
 
-//		if( theGrLength <= 0)
-		{
-			theErr = Papy3FSeek (theFp, (int) SEEK_CUR, (PapyLong) - kLength_length);
-			theGrLength = ComputeUndefinedGroupLength3 (inFileNb, 0xFFFFFFFF);
-			if( theGrLength == 0xFFFFFFFF)
-				RETURN (papReadFile)
-		}
-//		else
-//			theGrLength += 12;
+		if( theGrLength <= 0)
+			theGrLength = 0xFFFFFFFF;
+			
+		theErr = Papy3FSeek (theFp, (int) SEEK_CUR, (PapyLong) - kLength_length);
+		theGrLength = ComputeUndefinedGroupLength3 (inFileNb, theGrLength);
+		if( theGrLength == 0xFFFFFFFF)
+			RETURN (papReadFile)
+			
 	} /* if ...extract group length from buffer */
 
 	/* else the group length element not here compute it */
@@ -2256,7 +2255,7 @@ ComputeUndefinedGroupLength3 (PapyShort inFileNb, PapyULong storedGrLength)
   
   if( storedGrLength != 0xFFFFFFFF)
   {
-	if( theGroupLength > storedGrLength)
+	if( theGroupLength != storedGrLength + 12)
 		printf("*** DICOM Papyrus warning - computed length is not equal to stored length !\r");
   }
   
