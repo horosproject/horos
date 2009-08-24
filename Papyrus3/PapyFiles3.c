@@ -187,6 +187,8 @@ Papy3FileOpen (char *inNameP, PAPY_FILE inVRefNum, int inToOpen, void* inFSSpec)
                   theBuff [4] = '\0';
                   if (strcmp ((char *) theBuff, "DICM") != 0)
                   {
+					thePapyrusFile = other;
+					
                     /* it could still be a non-part 10 DICOM file */
                     /* so try to get the modality element, if everything works fine */
                     /* assume it is the case */
@@ -198,32 +200,30 @@ Papy3FileOpen (char *inNameP, PAPY_FILE inVRefNum, int inToOpen, void* inFSSpec)
                     gArrTransfSyntax [theFileNb] = LITTLE_ENDIAN_IMPL;
                     gArrCompression  [theFileNb] = NONE;
 					
-					// Antoine - 25 July 2008
 					if ((theErr = ExtractFileMetaInformation3 (theFileNb)) < 0)
-					{
 						theErr = Papy3FSeek (theFp, (int) SEEK_SET, (PapyLong) 0L);
-					}
 					
                     /* goto group number 8 and if found read it */
                     if ((theErr = Papy3GotoGroupNb (theFileNb, 0x0008)) >= 0)
                     {
 						if ((theErr = Papy3GroupRead (theFileNb, &theGroupP)) >= 0)
 						{
-							theValP = Papy3GetElement (theGroupP, papSOPClassUIDGr, &theNbVal, &theElemType);
-							if (theValP != NULL)
-							{
-								gSOPClassUID[ theFileNb] = malloc( strlen( theValP->a)+1);
-								strcpy( gSOPClassUID[ theFileNb], theValP->a);
-							}
-							
 							theValP = Papy3GetElement (theGroupP, papModalityGr, &theNbVal, &theElemType);
 							if (theValP != NULL)
 							{
 								ExtractModality (theValP, theFileNb);
 								thePapyrusFile = DICOM_NOT10; /* non-part 10 DICOM file */
 							}
-							else
-								thePapyrusFile = DICOM10; /* neither a DICOM file nor a PAPYRUS one */
+							
+							if( thePapyrusFile != other)
+							{
+								theValP = Papy3GetElement (theGroupP, papSOPClassUIDGr, &theNbVal, &theElemType);
+								if (theValP != NULL)
+								{
+									gSOPClassUID[ theFileNb] = malloc( strlen( theValP->a)+1);
+									strcpy( gSOPClassUID[ theFileNb], theValP->a);
+								}
+							}
 							
 							theErr = Papy3GroupFree (&theGroupP, TRUE);
 						}
@@ -233,7 +233,7 @@ Papy3FileOpen (char *inNameP, PAPY_FILE inVRefNum, int inToOpen, void* inFSSpec)
 					theErr = Papy3FSeek (gPapyFile [theFileNb], SEEK_SET, 0L);
 					
 					/* neither a PAPYRUS nor a DICOM file */
-					if (thePapyrusFile == DICOM10)
+					if (thePapyrusFile == other)
                         iResult = papNotPapyrusFile;
                   } /* if ...could it be a non-part 10 DICOM file ? */
                   else  /* is it a DICOMDIR file? */
@@ -279,13 +279,6 @@ Papy3FileOpen (char *inNameP, PAPY_FILE inVRefNum, int inToOpen, void* inFSSpec)
 						if (gShadowOwner [theFileNb] != NULL) 
 							efree3 ((void **) &(gShadowOwner [theFileNb]));
                       }
-					  
-//					  if( gArrTransfSyntax [theFileNb] == BIG_ENDIAN_EXPL) 
-//					  {
-//						//This is a sad reality..... OsiriX is not Big endian savvy for DICOM files............
-//						iResult = -1;
-//						printf("Transfer Syntax is BIG_ENDIAN_EXPL : unsupported by Papy Toolkit\r");
-//						}
 					} /* if ...anything but a DICOM not 10 file */
     
                     if (iResult == papNoError)
@@ -969,8 +962,12 @@ ReadGroup3 (PapyShort inFileNb, PapyUShort *outGroupNbP, unsigned char **outBuff
   {
     theErr = Papy3FSeek (theFp, (int) SEEK_CUR, - (long) theFirstElemLength);
     if (*outGroupNbP != 0x7FE0)
+	{
       theGrLength = ComputeUndefinedGroupLength3 (inFileNb, 0xFFFFFFFF);
-    else
+	  if( theGrLength == 0xFFFFFFFF)
+		RETURN (papReadFile)
+    }
+	else
     {
       if (gArrTransfSyntax [inFileNb] == LITTLE_ENDIAN_EXPL || gArrTransfSyntax [inFileNb] == BIG_ENDIAN_EXPL) theGrLength = 12L;
       else theGrLength = 8L;
@@ -1325,6 +1322,8 @@ Papy3SkipNextGroup (PapyShort inFileNb)
 		{
 			theErr = Papy3FSeek (theFp, (int) SEEK_CUR, (PapyLong) - kLength_length);
 			theGrLength = ComputeUndefinedGroupLength3 (inFileNb, 0xFFFFFFFF);
+			if( theGrLength == 0xFFFFFFFF)
+				RETURN (papReadFile)
 		}
 //		else
 //			theGrLength += 12;
@@ -1338,6 +1337,9 @@ Papy3SkipNextGroup (PapyShort inFileNb)
 		{
 			theErr = Papy3FSeek (theFp, (int) SEEK_CUR, (PapyLong) - kLength_length);
 			theGrLength = ComputeUndefinedGroupLength3 (inFileNb, 0xFFFFFFFF);
+			if( theGrLength == 0xFFFFFFFF)
+				RETURN (papReadFile)
+				
 			if( theGrLength == 8)
 				theGrLength = 28;
 		}
@@ -1345,6 +1347,8 @@ Papy3SkipNextGroup (PapyShort inFileNb)
 		{
 			theErr = Papy3FSeek (theFp, (int) SEEK_CUR, (PapyLong) - kLength_length);
 			theGrLength = ComputeUndefinedGroupLength3 (inFileNb, 0xFFFFFFFF);
+			if( theGrLength == 0xFFFFFFFF)
+				RETURN (papReadFile)
 		}
 	} /* else ...undefined group length */
 
@@ -1928,7 +1932,11 @@ ComputeUndefinedItemLength3 (PapyShort inFileNb, PapyULong *ioItemLengthP)
         } /* else */
         
         theElemLength = ComputeUndefinedGroupLength3 (inFileNb, 0xFFFFFFFF);
-        if ((int) theElemLength < 0) RETURN ((PapyShort) theElemLength);
+		if( theElemLength == 0xFFFFFFFF)
+		{
+			Papy3FClose (&(gPapyFile [inFileNb]));
+			RETURN (papReadFile)
+		}
       } /* if ...has to compute the group length */
     
       /* add the size of the group to the item length */
@@ -2079,11 +2087,12 @@ ComputeUndefinedSequenceLength3 (PapyShort inFileNb, PapyULong *ioSeqLengthP)
 /********************************************************************************/
 
 PapyULong
-ComputeUndefinedGroupLength3 (PapyShort inFileNb, PapyULong inMaxSize)
+ComputeUndefinedGroupLength3 (PapyShort inFileNb, PapyULong storedGrLength)
 {
   PapyULong	theGroupLength, theElemLength, theBufPos, theFileStartPos, i;
   PapyUShort theGrNb, theCmpGrNb, theElemNb, theCmpElemNb;
   PapyShort	theErr;
+  PapyULong inMaxSize;
   char theVR [3];
   unsigned char	*theBuffP, theBuff [8];
   int OK;
@@ -2092,15 +2101,14 @@ ComputeUndefinedGroupLength3 (PapyShort inFileNb, PapyULong inMaxSize)
   Papy3FTell (gPapyFile [inFileNb], (PapyLong *) &theFileStartPos);
   theBuffP = (unsigned char *) &theBuff [0];
   
-  if( inMaxSize == 0xFFFFFFFF)
-	  inMaxSize = gPapyFileSize [inFileNb] - theFileStartPos;
-	
+  inMaxSize = gPapyFileSize [inFileNb] - theFileStartPos;
+  
   /* read the group number and the element number from the file */
   i = 4L;
   if ((theErr = (PapyShort) Papy3FRead (gPapyFile [inFileNb], &i, 1L, theBuffP)) < 0)
   {
     theErr = (PapyShort) Papy3FClose (&(gPapyFile [inFileNb]));
-    RETURN (papReadFile)
+    return 0xFFFFFFFF;
   } /* if */
 
   /* get the group number and the element number */
@@ -2128,7 +2136,8 @@ ComputeUndefinedGroupLength3 (PapyShort inFileNb, PapyULong inMaxSize)
 		else
 		{
 			printf("ComputeUndefinedGroupLength3 : %s\r", gPapyFilePath[ inFileNb]);
-			return 0;
+			Papy3FClose (&(gPapyFile [inFileNb]));
+			return 0xFFFFFFFF;
 		}
 	} /* if */
     
@@ -2175,7 +2184,7 @@ ComputeUndefinedGroupLength3 (PapyShort inFileNb, PapyULong inMaxSize)
 			  if (Papy3FRead (gPapyFile [inFileNb], &i, 1L, theBuffP) < 0)
 			  {
 				Papy3FClose (&(gPapyFile [inFileNb]));
-				RETURN (papReadFile)
+				return 0xFFFFFFFF;
 			  } /* if */
 			  theGroupLength -= 8L;
 			  theElemLength = 0L;
@@ -2188,7 +2197,7 @@ ComputeUndefinedGroupLength3 (PapyShort inFileNb, PapyULong inMaxSize)
 			  if (Papy3FRead (gPapyFile [inFileNb], &i, 1L, theBuffP) < 0)
 			  {
 				Papy3FClose (&(gPapyFile [inFileNb]));
-				RETURN (papReadFile)
+				return 0xFFFFFFFF;
 			  } /* if */
 			  theGroupLength += 4L;
 			  theBufPos       = 0L;
@@ -2202,14 +2211,14 @@ ComputeUndefinedGroupLength3 (PapyShort inFileNb, PapyULong inMaxSize)
 		} /* else ...EXPLICIT VR */
 		
 		/* makes sure the element belongs to the group */
-		if (theCmpGrNb == theGrNb && theCmpElemNb <= theElemNb && (inMaxSize == 0xFFFFFFFF || theGroupLength < inMaxSize))
+		if (theCmpGrNb == theGrNb && theCmpElemNb <= theElemNb && theGroupLength < inMaxSize)
 		{
 		  /* if the element has an undefined length (i.e. VR = SQ) */
 		  if (theElemLength == 0xFFFFFFFF)
 		  {
 			theElemLength = 0L;
 			if ((theErr = ComputeUndefinedSequenceLength3 (inFileNb, &theElemLength)) < 0)
-			  RETURN ((PapyULong) theErr);
+			  return 0xFFFFFFFF;
 		  } /* if */
 		  
 		  /* add the size of the element to the group size */
@@ -2217,7 +2226,7 @@ ComputeUndefinedGroupLength3 (PapyShort inFileNb, PapyULong inMaxSize)
 		  
 		  /* move the file pointer */
 		  if ((theErr = Papy3FSeek (gPapyFile [inFileNb], (int) SEEK_CUR, (PapyLong) theElemLength)) < 0)
-			RETURN ((PapyULong) theErr);
+			return 0xFFFFFFFF;
 		} /* if ...element in group */
 		else
 		{
@@ -2238,11 +2247,19 @@ ComputeUndefinedGroupLength3 (PapyShort inFileNb, PapyULong inMaxSize)
   /* reset the file position to the begining of the group */
   Papy3FSeek (gPapyFile [inFileNb], (int) SEEK_SET, (PapyLong) theFileStartPos);
   
-  if( inMaxSize != 0xFFFFFFFF)
+  if( theGroupLength > inMaxSize)
   {
-	if( theGroupLength > inMaxSize)
-		printf("*** warning - computed length is not equal to stored length\r");
+	printf("*** DICOM Papyrus error - computed length is larger than remaining byte in the file !\r");
+	Papy3FClose (&(gPapyFile [inFileNb]));
+	return 0xFFFFFFFF;
   }
+  
+  if( storedGrLength != 0xFFFFFFFF)
+  {
+	if( theGroupLength > storedGrLength)
+		printf("*** DICOM Papyrus warning - computed length is not equal to stored length !\r");
+  }
+  
   return theGroupLength;
 
 } /* endof ComputeUndefinedGroupLength3 */

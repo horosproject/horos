@@ -324,57 +324,15 @@ int main(int argc, const char *argv[])
 				
 				DcmFileFormat fileformat;
 				cond = fileformat.loadFile(fname);
-				DcmXfer filexfer(fileformat.getDataset()->getOriginalXfer());
 				
-				//hopefully dcmtk willsupport jpeg2000 compression and decompression in the future
-				
-				if (filexfer.getXfer() == EXS_JPEG2000LosslessOnly || filexfer.getXfer() == EXS_JPEG2000)
+				if (cond.good())
 				{
+					DcmXfer filexfer(fileformat.getDataset()->getOriginalXfer());
 					
-					DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile: curFile decodingPixelData: NO];
-					@try
-					{
-						status = [dcmObject writeToFile: curFileDest withTransferSyntax:[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax] quality:1 AET:@"OsiriX" atomically:YES];	//ImplicitVRLittleEndianTransferSyntax
-					}
-					@catch (NSException *e)
-					{
-						NSLog( @"dcmObject writeToFile failed: %@", e);
-					}
-					[dcmObject release];
+					//hopefully dcmtk willsupport jpeg2000 compression and decompression in the future
 					
-					if( status == NO)
+					if (filexfer.getXfer() == EXS_JPEG2000LosslessOnly || filexfer.getXfer() == EXS_JPEG2000)
 					{
-						[[NSFileManager defaultManager] removeFileAtPath: curFileDest handler:nil];
-						
-						if( destDirec)
-						{
-							[[NSFileManager defaultManager] removeFileAtPath: curFile handler: nil];
-							NSLog( @"failed to decompress file: %@, the file is deleted", curFile);
-						}
-						else
-							NSLog( @"failed to decompress file: %@", curFile);
-					}
-				}
-				else if( filexfer.getXfer() != EXS_LittleEndianExplicit || filexfer.getXfer() != EXS_LittleEndianImplicit)
-				{
-					DcmDataset *dataset = fileformat.getDataset();
-					
-					// decompress data set if compressed
-					dataset->chooseRepresentation(EXS_LittleEndianExplicit, NULL);
-					
-					// check if everything went well
-					if (dataset->canWriteXfer(EXS_LittleEndianExplicit))
-					{
-						fileformat.loadAllDataIntoMemory();
-						cond = fileformat.saveFile(destination, EXS_LittleEndianExplicit);
-						status =  (cond.good()) ? YES : NO;
-					}
-					else status = NO;
-					
-					if( status == NO) // Try DCM Framework...
-					{
-						[[NSFileManager defaultManager] removeFileAtPath: curFileDest handler:nil];
-						
 						DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile: curFile decodingPixelData: NO];
 						@try
 						{
@@ -385,30 +343,75 @@ int main(int argc, const char *argv[])
 							NSLog( @"dcmObject writeToFile failed: %@", e);
 						}
 						[dcmObject release];
-					}
-					
-					if( status == NO)
-					{
-						[[NSFileManager defaultManager] removeFileAtPath: curFileDest handler:nil];
 						
+						if( status == NO)
+						{
+							[[NSFileManager defaultManager] removeFileAtPath: curFileDest handler:nil];
+							
+							if( destDirec)
+							{
+								[[NSFileManager defaultManager] removeFileAtPath: curFile handler: nil];
+								NSLog( @"failed to decompress file: %@, the file is deleted", curFile);
+							}
+							else
+								NSLog( @"failed to decompress file: %@", curFile);
+						}
+					}
+					else if( filexfer.getXfer() != EXS_LittleEndianExplicit || filexfer.getXfer() != EXS_LittleEndianImplicit)
+					{
+						DcmDataset *dataset = fileformat.getDataset();
+						
+						// decompress data set if compressed
+						dataset->chooseRepresentation(EXS_LittleEndianExplicit, NULL);
+						
+						// check if everything went well
+						if (dataset->canWriteXfer(EXS_LittleEndianExplicit))
+						{
+							fileformat.loadAllDataIntoMemory();
+							cond = fileformat.saveFile(destination, EXS_LittleEndianExplicit);
+							status =  (cond.good()) ? YES : NO;
+						}
+						else status = NO;
+						
+						if( status == NO) // Try DCM Framework...
+						{
+							[[NSFileManager defaultManager] removeFileAtPath: curFileDest handler:nil];
+							
+							DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile: curFile decodingPixelData: NO];
+							@try
+							{
+								status = [dcmObject writeToFile: curFileDest withTransferSyntax:[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax] quality:1 AET:@"OsiriX" atomically:YES];	//ImplicitVRLittleEndianTransferSyntax
+							}
+							@catch (NSException *e)
+							{
+								NSLog( @"dcmObject writeToFile failed: %@", e);
+							}
+							[dcmObject release];
+						}
+						
+						if( status == NO)
+						{
+							[[NSFileManager defaultManager] removeFileAtPath: curFileDest handler:nil];
+							
+							if( destDirec)
+							{
+								[[NSFileManager defaultManager] removeFileAtPath: curFile handler: nil];
+								NSLog( @"failed to decompress file: %@, the file is deleted", curFile);
+							}
+							else
+								NSLog( @"failed to decompress file: %@", curFile);
+						}
+					}
+					else
+					{
 						if( destDirec)
 						{
+							[[NSFileManager defaultManager] removeFileAtPath: curFileDest handler: nil];
+							[[NSFileManager defaultManager] movePath: curFile toPath: curFileDest handler: nil];
 							[[NSFileManager defaultManager] removeFileAtPath: curFile handler: nil];
-							NSLog( @"failed to decompress file: %@, the file is deleted", curFile);
 						}
-						else
-							NSLog( @"failed to decompress file: %@", curFile);
+						status = NO;
 					}
-				}
-				else
-				{
-					if( destDirec)
-					{
-						[[NSFileManager defaultManager] removeFileAtPath: curFileDest handler: nil];
-						[[NSFileManager defaultManager] movePath: curFile toPath: curFileDest handler: nil];
-						[[NSFileManager defaultManager] removeFileAtPath: curFile handler: nil];
-					}
-					status = NO;
 				}
 				
 				if( status)

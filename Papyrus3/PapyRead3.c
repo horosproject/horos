@@ -2437,9 +2437,9 @@ PutBufferInElement3 (PapyShort inFileNb, unsigned char *ioBuffP, PapyULong inEle
 	        /* loop on the groups of the item */
 	        /*while (theSeqSize > (thePosInSeq - 8L))*/
 	        /*while (inElemLength > (thePosInSeq - 8L))*/
-          /*while (inElemLength > thePosInSeq) last = CHG 5.11.99 */
-          /*while (theSeqSize > thePosInSeq) last = CHG 8.11.99 */
-          /*while (theSeqSize > (thePosInSeq - 8L)) last = CHG 8.11.99 */
+          /*while (inElemLength > thePosInSeq) last =  */
+          /*while (theSeqSize > thePosInSeq) last = 9 */
+          /*while (theSeqSize > (thePosInSeq - 8L)) last = */
           /* or see PapOldPatch.tar.gzip */
           if (theSeqSize > 8L)
 		 while (theSeqSize -8 > thePosInItem )
@@ -2475,8 +2475,11 @@ PutBufferInElement3 (PapyShort inFileNb, unsigned char *ioBuffP, PapyULong inEle
 	            theErr = Papy3FSeek (gPapyFile [inFileNb], SEEK_SET, (theInitialFilePos + (PapyLong) (*ioBufPosP)));
 	          
 	            /* computes the group length */
-	            theSeqGrSize = ComputeUndefinedGroupLength3 (inFileNb, (PapyULong) theSeqSize);
-	            
+	            theSeqGrSize = ComputeUndefinedGroupLength3 (inFileNb, (PapyULong) 0xFFFFFFFF);
+	            if( theSeqGrSize == 0xFFFFFFFF)
+				{
+					RETURN (papReadFile)
+				}
 	            /* then reset the file pointer to its previous position */
 	            theErr = Papy3FSeek (gPapyFile [inFileNb], SEEK_SET, theCurrFilePos);
 	            

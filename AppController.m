@@ -407,9 +407,10 @@ NSString* filenameWithDate( NSString *inputfile)
 
 NSString* convertDICOM( NSString *inputfile)
 {
-	NSString		*outputfile = [documentsDirectory() stringByAppendingFormat:@"/TEMP.noindex/%@", filenameWithDate( inputfile)];
+	NSString *outputfile = [documentsDirectory() stringByAppendingFormat:@"/TEMP.noindex/%@", filenameWithDate( inputfile)];
 	
-	if ([[NSFileManager defaultManager] fileExistsAtPath:outputfile]) return outputfile;
+	if ([[NSFileManager defaultManager] fileExistsAtPath:outputfile])
+		return outputfile;
 	
 	converting = YES;
 	NSLog(@"convertDICOM - FAILED to use current DICOM File Parser : %@", inputfile);
