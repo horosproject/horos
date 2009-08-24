@@ -31,6 +31,7 @@
 				CEAB83080B20979D0019A9AE /* PBXTargetDependency */,
 				CEDAAED50C7B489100809161 /* PBXTargetDependency */,
 				CE8DF1260B470DC50035C230 /* PBXTargetDependency */,
+				59A63E851042C748003F4069 /* PBXTargetDependency */,
 			);
 			name = "Build All Prerequisites";
 			productName = "Build All Prerequisites";
@@ -80,6 +81,8 @@
 		183C865C08563F3A000E6A68 /* VRFlyThruAdapter.h in Headers */ = {isa = PBXBuildFile; fileRef = 183C864808563F3A000E6A68 /* VRFlyThruAdapter.h */; };
 		183C865D08563F3A000E6A68 /* VRFlyThruAdapter.m in Sources */ = {isa = PBXBuildFile; fileRef = 183C864908563F3A000E6A68 /* VRFlyThruAdapter.m */; };
 		32E422150C97301600E193CA /* altivecFunctions.h in Headers */ = {isa = PBXBuildFile; fileRef = 32E422140C97301600E193CA /* altivecFunctions.h */; };
+		59A63E8C1042C776003F4069 /* Nitrogen.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 59A63E8B1042C776003F4069 /* Nitrogen.framework */; };
+		59A63E971042C7FB003F4069 /* Nitrogen.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 59A63E8B1042C776003F4069 /* Nitrogen.framework */; };
 		59C2B8EB0FF0EB6A00B50385 /* Notifications.m in Sources */ = {isa = PBXBuildFile; fileRef = 59E088A80FF0AB9400452F19 /* Notifications.m */; };
 		59C2B8EC0FF0EB7700B50385 /* Notifications.h in Headers */ = {isa = PBXBuildFile; fileRef = 59E088A70FF0AB9400452F19 /* Notifications.h */; };
 		7E0B3A4A0675273500908593 /* DCM Framework_Prefix.pch in Resources */ = {isa = PBXBuildFile; fileRef = 7E0B3A12067526A600908593 /* DCM Framework_Prefix.pch */; };
@@ -4519,6 +4522,20 @@
 			remoteGlobalIDString = 7E0B3A3E067526CD00908593;
 			remoteInfo = "DCM Framework";
 		};
+		59A63E811042C702003F4069 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 59A63E7A1042C702003F4069 /* Nitrogen.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 8DC2EF5B0486A6940098B216 /* Nitrogen.framework */;
+			remoteInfo = Nitrogen;
+		};
+		59A63E841042C748003F4069 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 59A63E7A1042C702003F4069 /* Nitrogen.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 8DC2EF4F0486A6940098B216 /* Nitrogen */;
+			remoteInfo = Nitrogen;
+		};
 		A9FF849F0C5F187800D50C95 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = A9FF849B0C5F187800D50C95 /* OSICustomImageAnnotations.xcodeproj */;
@@ -4762,6 +4779,7 @@
 				CE9A04440C7DBC060007809F /* libxerces-c.27.dylib in CopyFiles */,
 				84F453570FC3DF5400D29666 /* ILCrashReporter.framework in CopyFiles */,
 				CE9A04450C7DBC060007809F /* libdcmprintscu.dylib in CopyFiles */,
+				59A63E971042C7FB003F4069 /* Nitrogen.framework in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4796,6 +4814,8 @@
 		4A16D0970965E15300F82EC4 /* Unit Testing (Cocoa)-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Unit Testing (Cocoa)-Info.plist"; path = "UnitTesting/Unit Testing (Cocoa)-Info.plist"; sourceTree = "<group>"; };
 		4A16D0A20965E21800F82EC4 /* UnitTestingBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UnitTestingBase.h; path = UnitTesting/UnitTestingBase.h; sourceTree = "<group>"; };
 		4A16D0A30965E21800F82EC4 /* UnitTestingBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UnitTestingBase.m; path = UnitTesting/UnitTestingBase.m; sourceTree = "<group>"; };
+		59A63E7A1042C702003F4069 /* Nitrogen.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Nitrogen.xcodeproj; path = ../nitrogen/Nitrogen.xcodeproj; sourceTree = SOURCE_ROOT; };
+		59A63E8B1042C776003F4069 /* Nitrogen.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Nitrogen.framework; path = ../nitrogen/build/Release/Nitrogen.framework; sourceTree = SOURCE_ROOT; };
 		59E088A70FF0AB9400452F19 /* Notifications.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Notifications.h; sourceTree = "<group>"; };
 		59E088A80FF0AB9400452F19 /* Notifications.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Notifications.m; sourceTree = "<group>"; };
 		7E0339E607415C4F0025DDB4 /* BurnerWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BurnerWindowController.h; sourceTree = "<group>"; };
@@ -8652,6 +8672,7 @@
 				84F4533E0FC3DF3800D29666 /* ILCrashReporter.framework in Frameworks */,
 				CE8D057E0FD8505000165DDE /* OsiriX.framework in Frameworks */,
 				CECBF93D0FE6B1C400425ED4 /* libopenjpeg.a in Frameworks */,
+				59A63E8C1042C776003F4069 /* Nitrogen.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8968,6 +8989,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				59A63E8B1042C776003F4069 /* Nitrogen.framework */,
 				A97E19EE0CDF55E50065EE29 /* 3DconnexionClient.framework */,
 				CE6693C60AF551210073D923 /* libxerces-c.27.dylib */,
 				CE586CC30C74B75D00DB7D5A /* libdcmprintscu.dylib */,
@@ -9025,8 +9047,17 @@
 				CE4E42ED08758A1700D0AFDB /* OSIGeneralPreferencePane.xcodeproj */,
 				CE4E42F008758A1700D0AFDB /* OSIListenerPreferencePane.xcodeproj */,
 				AB381B020ABE9F9A00239326 /* OSIAutoroutingPreferencePane.xcodeproj */,
+				59A63E7A1042C702003F4069 /* Nitrogen.xcodeproj */,
 			);
 			name = Dependencies;
+			sourceTree = "<group>";
+		};
+		59A63E7B1042C702003F4069 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				59A63E821042C702003F4069 /* Nitrogen.framework */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 		7E0339E307415C330025DDB4 /* Burning */ = {
@@ -15872,6 +15903,10 @@
 					ProjectRef = CEA048460C76E2A600B4CA0A /* DICOMQuickLook.xcodeproj */;
 				},
 				{
+					ProductGroup = 59A63E7B1042C702003F4069 /* Products */;
+					ProjectRef = 59A63E7A1042C702003F4069 /* Nitrogen.xcodeproj */;
+				},
+				{
 					ProductGroup = ABC398F109F527C4000A6508 /* Products */;
 					ProjectRef = ABC398F009F527C4000A6508 /* OSI3DPreferencePane.xcodeproj */;
 				},
@@ -15936,6 +15971,13 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
+		59A63E821042C702003F4069 /* Nitrogen.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Nitrogen.framework;
+			remoteRef = 59A63E811042C702003F4069 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		A9FF84A00C5F187800D50C95 /* OSICustomImageAnnotations.prefPane */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
@@ -18066,6 +18108,11 @@
 			target = 7E0B3A3E067526CD00908593 /* DCM Framework */;
 			targetProxy = 4A2F590C078D124B00C514A2 /* PBXContainerItemProxy */;
 		};
+		59A63E851042C748003F4069 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = Nitrogen;
+			targetProxy = 59A63E841042C748003F4069 /* PBXContainerItemProxy */;
+		};
 		AB381B090ABE9FA600239326 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = OSIAutoroutingPreferencePane;
@@ -18643,6 +18690,7 @@
 					"\"$(SRCROOT)/Binaries\"",
 					"\"$(SRCROOT)/../plugins/ROI Enhancement\"",
 					"\"$(SRCROOT)/build/Development\"",
+					"\"$(SRCROOT)/../nitrogen/build/Release\"",
 				);
 				GCC_ALTIVEC_EXTENSIONS = YES;
 				GCC_AUTO_VECTORIZATION = NO;
@@ -18861,6 +18909,7 @@
 					"\"$(SRCROOT)/Binaries\"",
 					"\"$(SRCROOT)/../plugins/ROI Enhancement\"",
 					"\"$(SRCROOT)/build/Development\"",
+					"\"$(SRCROOT)/../nitrogen/build/Release\"",
 				);
 				GCC_ALTIVEC_EXTENSIONS = YES;
 				GCC_AUTO_VECTORIZATION = NO;
@@ -19147,6 +19196,7 @@
 					"\"$(SRCROOT)/Binaries\"",
 					"\"$(SRCROOT)/../plugins/ROI Enhancement\"",
 					"\"$(SRCROOT)/build/Development\"",
+					"\"$(SRCROOT)/../nitrogen/build/Release\"",
 				);
 				GCC_ALTIVEC_EXTENSIONS = YES;
 				GCC_AUTO_VECTORIZATION = YES;
@@ -19455,6 +19505,7 @@
 					"\"$(SRCROOT)/Binaries\"",
 					"\"$(SRCROOT)/../plugins/ROI Enhancement\"",
 					"\"$(SRCROOT)/build/Development\"",
+					"\"$(SRCROOT)/../nitrogen/build/Release\"",
 				);
 				GCC_ALTIVEC_EXTENSIONS = YES;
 				GCC_AUTO_VECTORIZATION = YES;
