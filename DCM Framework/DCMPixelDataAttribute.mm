@@ -3711,31 +3711,31 @@ NS_ENDHANDLER
 				[_framesDecoded replaceObjectAtIndex: index withObject: [NSNumber numberWithBool: YES]];
 			}
 		}
-		else if(transferSyntax.isEncapsulated == NO && [self.vr isEqualToString: @"OW"])
-		{
-			if( [[_framesDecoded objectAtIndex: index] boolValue] == NO)
-			{
-				if( (NSHostByteOrder() != NS_BigEndian && [transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax ExplicitVRBigEndianTransferSyntax]]) ||
-					(NSHostByteOrder() == NS_BigEndian && [transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax ExplicitVRBigEndianTransferSyntax]] == NO))
-				{
-					void *ptr = malloc( [subData length]);
-					if( ptr)
-					{
-						memcpy( ptr, [subData bytes], [subData length]);
-						
-						unsigned short *shortsToSwap = (unsigned short *) ptr;
-						int length = [data length]/2;
-						while( length-- > 0)
-							shortsToSwap[ length] = NSSwapShort( shortsToSwap[ length]);
-						
-						[subData replaceBytesInRange:NSMakeRange(0, [subData length]) withBytes: ptr];
-						free( ptr);
-					}
-					data = subData;
-				}
-				[_framesDecoded replaceObjectAtIndex: index withObject: [NSNumber numberWithBool: YES]];
-			}
-		}
+//		else if(transferSyntax.isEncapsulated == NO && [self.vr isEqualToString: @"OW"])
+//		{
+//			if( [[_framesDecoded objectAtIndex: index] boolValue] == NO)
+//			{
+//				if( (NSHostByteOrder() != NS_BigEndian && [transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax ExplicitVRBigEndianTransferSyntax]]) ||
+//					(NSHostByteOrder() == NS_BigEndian && [transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax ExplicitVRBigEndianTransferSyntax]] == NO))
+//				{
+//					void *ptr = malloc( [subData length]);
+//					if( ptr)
+//					{
+//						memcpy( ptr, [subData bytes], [subData length]);
+//						
+//						unsigned short *shortsToSwap = (unsigned short *) ptr;
+//						int length = [data length]/2;
+//						while( length-- > 0)
+//							shortsToSwap[ length] = NSSwapShort( shortsToSwap[ length]);
+//						
+//						[subData replaceBytesInRange:NSMakeRange(0, [subData length]) withBytes: ptr];
+//						free( ptr);
+//					}
+//					data = subData;
+//				}
+//				[_framesDecoded replaceObjectAtIndex: index withObject: [NSNumber numberWithBool: YES]];
+//			}
+//		}
 		
 		[singleThread unlock];
 		

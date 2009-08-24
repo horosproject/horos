@@ -2247,7 +2247,7 @@ ComputeUndefinedGroupLength3 (PapyShort inFileNb, PapyULong storedGrLength)
   
   if( theGroupLength > inMaxSize)
   {
-	printf("*** DICOM Papyrus error - computed length is larger than remaining byte in the file !\r");
+	printf("*** DICOM Papyrus error - computed length is larger than remaining byte in the file !\r%s\n", gPapyFilePath [inFileNb]);
 	Papy3FClose (&(gPapyFile [inFileNb]));
 	return 0xFFFFFFFF;
   }
@@ -2255,7 +2255,7 @@ ComputeUndefinedGroupLength3 (PapyShort inFileNb, PapyULong storedGrLength)
   if( storedGrLength != 0xFFFFFFFF)
   {
 	if( theGroupLength != storedGrLength + 12)
-		printf("*** DICOM Papyrus warning - computed length is not equal to stored length ! corrupted DICOM file?\r");
+		printf("*** DICOM Papyrus warning - computed length is not equal to stored length ! corrupted DICOM file?\r%s\n", gPapyFilePath [inFileNb]);
   }
   
   return theGroupLength;

@@ -1651,39 +1651,39 @@ Papy3GetPixelData (PapyShort inFileNb, int inImageNb, SElement *inGrOrModP, int 
 	  }
 	  
     } /* if ...more than 8 bits depth image */
-    else
-	{
-		if( gArrCompression [inFileNb] == NONE && theElemP->vr == OW)
-		{
-		  register PapyUShort	 *theUShortP = (PapyUShort *) theBufP;
-		  register long			ii;
-		  
-		  ii = theBytesToRead / 2;
-		  #if __BIG_ENDIAN__
-		  {
-			if( gArrTransfSyntax [inFileNb] != BIG_ENDIAN_EXPL)
-			{
-			  while( ii-- > 0)
-			  {
-			    *theUShortP++ = OSSwapLittleToHostInt16( *theUShortP);
-			  }
-			}
-		  }
-		  #else
-		  if( gArrTransfSyntax [inFileNb] != BIG_ENDIAN_EXPL)
-		  {
-		  
-		  }
-		  else
-		  {
-			while( ii-- > 0)
-			  {
-				*theUShortP++ = OSSwapBigToHostInt16( *theUShortP);
-			  }
-		  }
-		  #endif
-		}
-	}
+//    else
+//	{
+//		if( gArrCompression [inFileNb] == NONE && theElemP->vr == OW)
+//		{
+//		  register PapyUShort	 *theUShortP = (PapyUShort *) theBufP;
+//		  register long			ii;
+//		  
+//		  ii = theBytesToRead / 2;
+//		  #if __BIG_ENDIAN__
+//		  {
+//			if( gArrTransfSyntax [inFileNb] != BIG_ENDIAN_EXPL)
+//			{
+//			  while( ii-- > 0)
+//			  {
+//			    *theUShortP++ = OSSwapLittleToHostInt16( *theUShortP);
+//			  }
+//			}
+//		  }
+//		  #else
+//		  if( gArrTransfSyntax [inFileNb] != BIG_ENDIAN_EXPL)
+//		  {
+//		  
+//		  }
+//		  else
+//		  {
+//			while( ii-- > 0)
+//			  {
+//				*theUShortP++ = OSSwapBigToHostInt16( *theUShortP);
+//			  }
+//		  }
+//		  #endif
+//		}
+//	}
   } /* if ...module IconImage or photometric interpretation is monochrome/palette/rgb */
   
   /* *** not IconImage module and the pixels are compressed *** */
