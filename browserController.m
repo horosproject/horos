@@ -4540,15 +4540,18 @@ static NSArray*	statesArray = nil;
 			else
 			{
 				[request setPredicate: [NSPredicate predicateWithValue: YES]];
-				outlineViewArray = [context executeFetchRequest: request error:&error];
+				outlineViewArray = [context executeFetchRequest: request error: &error];
 				outlineViewArray = [outlineViewArray filteredArrayUsingPredicate: predicate];
 			}
 		}
 		else
 		{
 			if( albumArrayContent) outlineViewArray = [albumArrayContent filteredArrayUsingPredicate: predicate];
-			else outlineViewArray = [context executeFetchRequest:request error:&error];
+			else outlineViewArray = [context executeFetchRequest:request error: &error];
 		}
+		
+		if( error)
+			NSLog( @"**** executeFetchRequest: %@", error);
 		
 		if( [albumNoOfStudiesCache count] > albumTable.selectedRow && filtered == NO)
 		{
