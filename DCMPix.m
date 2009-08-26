@@ -6419,8 +6419,6 @@ END_CREATE_ROIS:
 	if ( val )
 	{
 		height = (int) (*val).us;
-		height /=2;
-		height *=2;
 	}
 	// COLUMNS
 	val = Papy3GetElement (theGroupP, papColumnsGr, &nbVal, &elemType);
