@@ -488,7 +488,7 @@ static char *GetPrivateIP()
 			currentDataPos += length;
 		}
 		
-		if( currentDataPos - lastAsyncPos > 1024L * 1024L * 10L)
+		if( currentDataPos - lastAsyncPos > 1024L * 1024L * 20L)
 			[NSThread detachNewThreadSelector: @selector( asyncWrite:) toTarget: self withObject: tempDatabaseFile];
 		
 		[async unlock];
