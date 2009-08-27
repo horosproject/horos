@@ -4549,7 +4549,7 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = AB0F3A2B1046BD2B004129DD /* OsiriX Headers */;
+			remoteGlobalIDString = AB0F3A2B1046BD2B004129DD;
 			remoteInfo = "OsiriX Headers";
 		};
 		AB381B060ABE9F9A00239326 /* PBXContainerItemProxy */ = {
@@ -19481,7 +19481,6 @@
 					"$(SRCROOT)/Binaries/Jasper",
 					"\"$(SRCROOT)/Binaries/openjpeg\"",
 				);
-				MACOSX_DEPLOYMENT_TARGET = "";
 				OTHER_LDFLAGS = (
 					"-seg1addr",
 					0x20000000,
