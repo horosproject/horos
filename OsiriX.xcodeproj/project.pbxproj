@@ -350,6 +350,7 @@
 		AB0E6B140FAF4BF600A5C046 /* libvtkzlib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AB0E6B120FAF4BF600A5C046 /* libvtkzlib.a */; };
 		AB0E6B170FAF4C2100A5C046 /* libitkzlib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AB0E6B160FAF4C2000A5C046 /* libitkzlib.a */; };
 		AB0F20AD06460F7F0075465D /* Burner.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB0F20AB06460F7F0075465D /* Burner.tif */; };
+		AB0F3A3A1046BDC6004129DD /* ViewerController.h in Headers */ = {isa = PBXBuildFile; fileRef = ABE17661056D2659009C93B5 /* ViewerController.h */; };
 		AB10FA680B96C95500D74684 /* OsirixDownload.icns in Resources */ = {isa = PBXBuildFile; fileRef = AB10FA670B96C95500D74684 /* OsirixDownload.icns */; };
 		AB154F820627413600BD57AF /* SRView.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB154F7E0627413600BD57AF /* SRView.mm */; };
 		AB154F830627413600BD57AF /* SRView.h in Headers */ = {isa = PBXBuildFile; fileRef = AB154F7F0627413600BD57AF /* SRView.h */; };
@@ -5192,6 +5193,8 @@
 		AB0E6B160FAF4C2000A5C046 /* libitkzlib.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libitkzlib.a; path = ITK180/bin/libitkzlib.a; sourceTree = "<group>"; };
 		AB0EA93B056EDC7E004BBDD3 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
 		AB0F20AB06460F7F0075465D /* Burner.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Burner.tif; sourceTree = "<group>"; };
+		AB0F3A2C1046BD2B004129DD /* OsiriX Headers.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = "OsiriX Headers.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
+		AB0F3A2D1046BD2B004129DD /* OsiriX Headers-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "OsiriX Headers-Info.plist"; sourceTree = "<group>"; };
 		AB10FA670B96C95500D74684 /* OsirixDownload.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = OsirixDownload.icns; sourceTree = "<group>"; };
 		AB142DFC05600D76008461A0 /* AppController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppController.h; sourceTree = "<group>"; };
 		AB142DFD05600D76008461A0 /* AppController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppController.m; sourceTree = "<group>"; };
@@ -8587,6 +8590,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		AB0F3A2A1046BD2B004129DD /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		AB28B42D05B7921E00A9906C /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -8841,6 +8851,7 @@
 				CE9CED810C75BD8C00752D4B /* libDCM StaticLibrary.a */,
 				CEDAAECA0C7B486A00809161 /* 32-bit shell.app */,
 				844719AF0FD8EF50003BFDF8 /* OsiriX.framework */,
+				AB0F3A2C1046BD2B004129DD /* OsiriX Headers.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -8865,6 +8876,7 @@
 				4A2F58D9078D119600C514A2 /* Dependencies */,
 				4A16D0A10965E1D900F82EC4 /* Unit Testing */,
 				CEDAAECC0C7B486A00809161 /* 32bit shell-Info.plist */,
+				AB0F3A2D1046BD2B004129DD /* OsiriX Headers-Info.plist */,
 			);
 			name = OsiriX;
 			sourceTree = "<group>";
@@ -13385,6 +13397,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		AB0F3A271046BD2B004129DD /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AB0F3A3A1046BDC6004129DD /* ViewerController.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		AB28B42A05B7921E00A9906C /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -15775,6 +15795,25 @@
 			productReference = 844719AF0FD8EF50003BFDF8 /* OsiriX.framework */;
 			productType = "com.apple.product-type.framework";
 		};
+		AB0F3A2B1046BD2B004129DD /* OsiriX Headers */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AB0F3A321046BD2D004129DD /* Build configuration list for PBXNativeTarget "OsiriX Headers" */;
+			buildPhases = (
+				AB0F3A271046BD2B004129DD /* Headers */,
+				AB0F3A281046BD2B004129DD /* Resources */,
+				AB0F3A291046BD2B004129DD /* Sources */,
+				AB0F3A2A1046BD2B004129DD /* Frameworks */,
+				AB0F3A3F1046BE51004129DD /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "OsiriX Headers";
+			productName = "OsiriXHeaders Framework";
+			productReference = AB0F3A2C1046BD2B004129DD /* OsiriX Headers.framework */;
+			productType = "com.apple.product-type.framework";
+		};
 		AB28B42E05B7921E00A9906C /* OsiriX */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 7E76BEC6085757B70073649A /* Build configuration list for PBXNativeTarget "OsiriX" */;
@@ -15966,6 +16005,7 @@
 				CEDF6C600B46FE99008B45B8 /* DICOMPrint */,
 				CEDAAEC90C7B486A00809161 /* 32-bit shell */,
 				BF7486A50CC6AA5C00198387 /* Documentation */,
+				AB0F3A2B1046BD2B004129DD /* OsiriX Headers */,
 			);
 		};
 /* End PBXProject section */
@@ -16088,6 +16128,13 @@
 				7E0B3AA00675274500908593 /* version.plist in Resources */,
 				BFEB76410677FDA700F242F3 /* nameDictionary.plist in Resources */,
 				BFEB76420677FDA700F242F3 /* tagDictionary.plist in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AB0F3A281046BD2B004129DD /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -16519,6 +16566,20 @@
 			shellPath = /bin/sh;
 			shellScript = "cd \"$SRCROOT/Binaries\"\nunzip -uo DCMTK.zip\nunzip -uo LibTiff.zip\nunzip -uo VTKLibs.zip\nunzip -uo DB_Previous_Models.zip\nunzip -uo DicomImporter.mdimporter.zip\nunzip -uo PAGES.zip\nunzip -uo OsiriXReport.template.zip\nunzip -uo ILCrashReporter.framework.zip\nunzip -uo Growl.framework.zip\nunzip -uo 3DconnexionClient.framework.zip\nunzip -uo openjpeg.zip\nunzip -uo dciodvfy.zip\nunzip -uo ILCrashReporter.framework.zip\n\ncd \"$SRCROOT/AYDicomPrint\"\nunzip -uo libdcmprintscu.dylib.zip\nunzip -uo libxerces-c.27.dylib.zip\nunzip -uo xercesc.zip\n\ncd \"$SRCROOT/Binaries/Jasper\"\nunzip -uo libjasper.a.zip\n\ncd $SRCROOT\nunzip -uo DotMacKit.framework.zip\nunzip -uo VTKHeaders.zip\nunzip -uo ITK180.zip\n\ncd $SRCROOT\ncd VolumePRO\nunzip -uo vli3.framework.zip\n\nexit 0\n";
 		};
+		AB0F3A3F1046BE51004129DD /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "#
+";
+		};
 		BF7486A40CC6AA5C00198387 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -16766,6 +16827,13 @@
 				BF7DEBB209D1FC6D00A332B8 /* jcapimin.c in Sources */,
 				BF7DEBB309D1FC6E00A332B8 /* jaricom.c in Sources */,
 				CE79D9890FD84C350043DD73 /* DCMAbstractSyntaxUID.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AB0F3A291046BD2B004129DD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -18806,6 +18874,105 @@
 			};
 			name = Development;
 		};
+		AB0F3A2E1046BD2D004129DD /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				INFOPLIST_FILE = "OsiriX Headers-Info.plist";
+				INSTALL_PATH = "@executable_path/../Frameworks";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = "OsiriX Headers";
+			};
+			name = Development;
+		};
+		AB0F3A2F1046BD2D004129DD /* Development 64-bits */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				INFOPLIST_FILE = "OsiriX Headers-Info.plist";
+				INSTALL_PATH = "$(HOME)/Library/Frameworks";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = "OsiriX Headers";
+			};
+			name = "Development 64-bits";
+		};
+		AB0F3A301046BD2D004129DD /* Deployment Universal 32-bit */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				INFOPLIST_FILE = "OsiriX Headers-Info.plist";
+				INSTALL_PATH = "$(HOME)/Library/Frameworks";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = "OsiriX Headers";
+			};
+			name = "Deployment Universal 32-bit";
+		};
+		AB0F3A311046BD2D004129DD /* Deployment Universal 64-bit */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				INFOPLIST_FILE = "OsiriX Headers-Info.plist";
+				INSTALL_PATH = "$(HOME)/Library/Frameworks";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = "OsiriX Headers";
+			};
+			name = "Deployment Universal 64-bit";
+		};
 		AB724FF40ADE6ECB00A212A0 /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -20016,6 +20183,17 @@
 				CE53147D0C717B0400A2B75F /* Development 64-bits */,
 				CE5314AA0C717C3000A2B75F /* Deployment Universal 32-bit */,
 				CE5314B50C717C3000A2B75F /* Deployment Universal 64-bit */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Development;
+		};
+		AB0F3A321046BD2D004129DD /* Build configuration list for PBXNativeTarget "OsiriX Headers" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AB0F3A2E1046BD2D004129DD /* Development */,
+				AB0F3A2F1046BD2D004129DD /* Development 64-bits */,
+				AB0F3A301046BD2D004129DD /* Deployment Universal 32-bit */,
+				AB0F3A311046BD2D004129DD /* Deployment Universal 64-bit */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Development;

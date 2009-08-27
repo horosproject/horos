@@ -8163,12 +8163,14 @@ END_CREATE_ROIS:
 {
 	int x, y;
 	
-	NSImage *r = [[[NSImage alloc] initWithSize: [otherImage size]] autorelease];
+	NSBitmapImageRep *rep = [NSBitmapImageRep imageRepWithData: [otherImage TIFFRepresentation]];
+	
+	NSImage *r = [[[NSImage alloc] initWithSize: NSMakeSize( [rep pixelsWide], [rep pixelsHigh])] autorelease];
 	
 	[r lockFocus];
 	[[NSColor whiteColor] set];
-	NSRectFill( NSMakeRect( 0, 0, [otherImage size].width, [otherImage size].height));
-	[otherImage drawAtPoint: NSMakePoint(0, 0) fromRect:NSMakeRect(0,0,[otherImage size].width, [otherImage size].height) operation: NSCompositeSourceOver fraction: 1.0];
+	NSRectFill( NSMakeRect( 0, 0, [r size].width, [r size].height));
+	[otherImage drawInRect: NSMakeRect(0,0,[r size].width, [r size].height) fromRect:NSMakeRect(0,0,[otherImage size].width, [otherImage size].height) operation: NSCompositeSourceOver fraction: 1.0];
 	[r unlockFocus];
 	
 	NSBitmapImageRep *TIFFRep = [[NSBitmapImageRep alloc] initWithData: [r TIFFRepresentation]];
