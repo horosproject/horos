@@ -32,6 +32,7 @@
 				CEDAAED50C7B489100809161 /* PBXTargetDependency */,
 				CE8DF1260B470DC50035C230 /* PBXTargetDependency */,
 				59A63E851042C748003F4069 /* PBXTargetDependency */,
+				AB0F3A421046BFB9004129DD /* PBXTargetDependency */,
 			);
 			name = "Build All Prerequisites";
 			productName = "Build All Prerequisites";
@@ -4543,6 +4544,13 @@
 			proxyType = 2;
 			remoteGlobalIDString = A90117090C563E84004928BF;
 			remoteInfo = OSICustomImageAnnotations;
+		};
+		AB0F3A411046BFB9004129DD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = AB0F3A2B1046BD2B004129DD /* OsiriX Headers */;
+			remoteInfo = "OsiriX Headers";
 		};
 		AB381B060ABE9F9A00239326 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -18180,6 +18188,11 @@
 			isa = PBXTargetDependency;
 			name = Nitrogen;
 			targetProxy = 59A63E841042C748003F4069 /* PBXContainerItemProxy */;
+		};
+		AB0F3A421046BFB9004129DD /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = AB0F3A2B1046BD2B004129DD /* OsiriX Headers */;
+			targetProxy = AB0F3A411046BFB9004129DD /* PBXContainerItemProxy */;
 		};
 		AB381B090ABE9FA600239326 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
