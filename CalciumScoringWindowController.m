@@ -64,8 +64,7 @@ enum ctTypes {ElectronCTType, MultiSliceCTType};
 															[NSNumber numberWithFloat:0.0], @"mass",
 															[NSNumber numberWithFloat:0.0], @"volume",
 															nil]];
-															
-									
+		
 		[self setRoiName:NSLocalizedString(@"Left Coronary Artery", nil)];
 		NSNotificationCenter *nc;
 		nc = [NSNotificationCenter defaultCenter];
@@ -84,10 +83,6 @@ enum ctTypes {ElectronCTType, MultiSliceCTType};
 				selector: @selector(removeROI:)
 				   name:  OsirixRemoveROINotification
 				 object: nil];
-				 
-
-
-				
 	}
 	return self;
 }
