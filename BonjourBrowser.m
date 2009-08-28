@@ -30,7 +30,6 @@
 
 #define FILESSIZE 512*512*2
 
-static BOOL bugFixedForDNSResolve = NO;
 static int TIMEOUT	= 10;
 static NSLock *resolveServiceThreadLock = nil;
 #define USEZIP NO
@@ -104,16 +103,6 @@ static char *GetPrivateIP()
 		SInt32 osVersion;
 		
 		serviceBeingResolvedIndex = -1;
-		
-		err = Gestalt ( gestaltSystemVersion, &osVersion );       
-		if ( err == noErr)       
-		{
-			if ( osVersion >= 0x1052UL ) bugFixedForDNSResolve = YES;
-		}
-		
-		#if !__LP64__
-			bugFixedForDNSResolve = YES;
-		#endif
 		
 		resolveServiceThreadLock = [[NSLock alloc] init];
 		async = [[NSRecursiveLock alloc] init];
@@ -1092,8 +1081,6 @@ static char *GetPrivateIP()
 
 - (void) netServiceDidResolveAddress:(NSNetService *)sender
 {
-	if( bugFixedForDNSResolve)
-	{
 	   if ([[sender addresses] count] > 0)
 	   {
 			NSData * address;
@@ -1142,7 +1129,6 @@ static char *GetPrivateIP()
 				}
 			}
 		}
-	}
 }
 
 // This object is the delegate of its NSNetServiceBrowser object.
@@ -1161,42 +1147,13 @@ static char *GetPrivateIP()
 		
 		// Resolve the address and port for this NSNetService
 		
-		if( bugFixedForDNSResolve)
-		{
-			[aNetService setDelegate:self];
-			[aNetService resolveWithTimeout: 5];
-		}
+		[aNetService setDelegate:self];
+		[aNetService resolveWithTimeout: 5];
 	}
 	
 	// update interface
     if(!moreComing)
 	{
-		if( bugFixedForDNSResolve == NO)
-		{
-			NSTask *theTask = [[NSTask alloc] init];
-			
-			[[NSFileManager defaultManager] removeFileAtPath: @"/tmp/dnsresolve" handler:nil];
-			[theTask setArguments: [NSArray arrayWithObjects: @"DNSResolve", @"/tmp/dnsresolve", nil]];
-			[theTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"/32-bit shell.app/Contents/MacOS/32-bit shell"]];
-			[theTask launch];
-			[theTask waitUntilExit];
-			[theTask release];
-			
-			NSMutableArray *newServices = [NSMutableArray arrayWithContentsOfFile: @"/tmp/dnsresolve"];
-			
-			for (NSDictionary *newDict in newServices)
-			{
-				for( NSMutableDictionary *s in services)
-				{
-					if( [[newDict valueForKey:@"Name"] isEqualToString: [[s objectForKey:@"service"] name]])
-					{	
-						[s setValue: [newDict valueForKey:@"Address"] forKey:@"Address"];
-						[s setValue: [newDict valueForKey:@"OsiriXPort"] forKey:@"OsiriXPort"];
-					}
-				}
-			}
-		}
-		
 		[self arrangeServices];
 		[interfaceOsiriX displayBonjourServices];
 	}
@@ -1266,17 +1223,15 @@ static char *GetPrivateIP()
 	}
 	else if( [[dict valueForKey:@"type"] isEqualToString:@"bonjour"])
 	{   
-		if( [dict valueForKey:@"Address"] && [dict valueForKey:@"OsiriXPort"])
+		if( [dict valueForKey:@"Address"] != nil && [dict valueForKey:@"OsiriXPort"] != nil)
 		{
 			resolved = NO;
 			succeed = [self connectToAdress: [dict valueForKey:@"Address"]  port: [[dict valueForKey:@"OsiriXPort"] intValue]];
 		}
 		else
 		{
-			if( bugFixedForDNSResolve == NO)
-				NSRunCriticalAlertPanel( NSLocalizedString( @"Bonjour Error", nil), NSLocalizedString( @"There is a bug in MacOS 10.5 for 64-bit application. Bonjour addresses cannot be resolved. Try to add this OsiriX workstation as a fixed node in Locations-Preferences.", nil), NSLocalizedString(@"OK", nil), 0, 0);
-			else
-				NSRunCriticalAlertPanel( NSLocalizedString( @"Bonjour Error", nil), NSLocalizedString( @"This address wasn't resolved. Try to add this OsiriX workstation as a fixed node in Locations-Preferences.", nil), NSLocalizedString(@"OK", nil), 0, 0);
+			NSRunCriticalAlertPanel( NSLocalizedString( @"Bonjour Error", nil), NSLocalizedString( @"This address wasn't resolved. Try to add this OsiriX workstation as a fixed node in Locations-Preferences.", nil), NSLocalizedString(@"OK", nil), 0, 0);
+			NSLog( @"***** Unresolved node: %@", dict);
 			
 			resolved = NO;
 			succeed = NO;
