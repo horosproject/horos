@@ -47,7 +47,7 @@
 + (id)tagWithTag:(DCMAttributeTag *)tag;
 
 /** Create a tag  from a string representation of the element and tag\n
-* Format for the string is oxGGGGEEEE
+* Format for the string is 0xGGGG,0xEEEE
 */
 + (id)tagWithTagString:(NSString *)tagString;
 
