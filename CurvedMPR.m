@@ -253,7 +253,7 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 //				xInc += noOfPoints;
 //			}
 //			
-//			DCMPix	*pix = [[DCMPix alloc] initwithdata:curData :32 :newX :newY :[firstObject pixelSpacingX] :fabs( [firstObject sliceInterval]) :0 :0 :0 :YES];
+//			DCMPix	*pix = [[DCMPix alloc] initWithData:curData :32 :newX :newY :[firstObject pixelSpacingX] :fabs( [firstObject sliceInterval]) :0 :0 :0 :YES];
 //			[pix changeWLWW: [[roiViewer imageView] curWL] : [[roiViewer imageView] curWW]];
 //			
 //			[pix setTot: thickSlab];
@@ -491,7 +491,7 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 							}
 						}
 
-						DCMPix	*pix = [[DCMPix alloc] initwithdata:curData :32 :newX :newY :[firstObject pixelSpacingX] :fabs( [firstObject sliceInterval]) :0 :0 :0 :YES];
+						DCMPix	*pix = [[DCMPix alloc] initWithData:curData :32 :newX :newY :[firstObject pixelSpacingX] :fabs( [firstObject sliceInterval]) :0 :0 :0 :YES];
 						[pix changeWLWW: [[roiViewer imageView] curWL] : [[roiViewer imageView] curWW]];
 						
 					//	[pix setTot: thickSlab];
@@ -925,7 +925,7 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 				ySpace = [firstObject pixelSpacingX];
 			}
 			
-			DCMPix	*pix = [[DCMPix alloc] initwithdata:curData :32 :newX :newY :xSpace :ySpace :0 :0 :0 :YES];
+			DCMPix	*pix = [[DCMPix alloc] initWithData:curData :32 :newX :newY :xSpace :ySpace :0 :0 :0 :YES];
 			[pix changeWLWW: [[roiViewer imageView] curWL] : [[roiViewer imageView] curWW]];
 			
 			[pix copySUVfrom: firstObject];

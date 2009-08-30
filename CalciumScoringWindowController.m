@@ -309,7 +309,7 @@ enum ctTypes {ElectronCTType, MultiSliceCTType};
 		if ([pdf length] % 2 != 0)
 			[pdf increaseLengthBy:1];
 		// create DICOM OBJECT
-		DCMObject *dcmObject = [DCMObject newEncapsulatedPDF:pdf];
+		DCMObject *dcmObject = [DCMObject encapsulatedPDF:pdf];
 		
 		[dcmObject setAttributeValues:[NSArray arrayWithObject:[study valueForKey:@"studyInstanceUID"]] forName:@"StudyInstanceUID"];
 		//[dcmObject setAttributeValues:[NSArray arrayWithObject:_seriesInstanceUID] forName:@"SeriesInstanceUID"];

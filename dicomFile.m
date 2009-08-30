@@ -654,7 +654,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				else
 				#endif
 				{
-					if( [extension isEqualToString:@"pdf"])
+					if( otherImage && [extension isEqualToString:@"pdf"])
 					{
 						NSSize newSize = [otherImage size];
 							
@@ -3297,8 +3297,9 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 															sourceURL, &xmlData,
 															NULL, NULL, // properties 
 															&errorCode);
-		//NSLog(@"xmlData: %@", xmlData);
-		//NSLog(@"errorCode: %d", errorCode);
+		
+		CFRelease( sourceURL);
+		
 		if (errorCode==0)
 		{
 			//NSLog(@"cfXMLTree");
@@ -3318,6 +3319,9 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			// 
 			CFTreeRef attributesTree;
 			attributesTree = CFTreeGetChildAtIndex(cfXMLTree, 0);
+			
+			CFRelease( cfXMLTree);
+			
 			//NSLog(@"attributesTree: %@", attributesTree);
 			// NSMutableDictionary* xmlData = [[NSMutableDictionary alloc] initWithCapacity:14];
 			NSMutableDictionary* xmlData = [NSMutableDictionary dictionaryWithContentsOfFile:pathToXMLDescriptor];
@@ -3373,7 +3377,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			
 			[dicomElements setObject:[self patientUID] forKey:@"patientUID"];
 			[dicomElements setObject:serieID forKey:@"seriesID"];
-			[dicomElements setObject:[[NSString alloc] initWithString:[filePath lastPathComponent]] forKey:@"seriesDescription"];
+			[dicomElements setObject:[[[NSString alloc] initWithString:[filePath lastPathComponent]] autorelease] forKey:@"seriesDescription"];
 			[dicomElements setObject:[NSNumber numberWithInt: 0] forKey:@"seriesNumber"];
 			[dicomElements setObject:imageID forKey:@"SOPUID"];
 			[dicomElements setObject:[NSNumber numberWithInt:[imageID intValue]] forKey:@"imageID"];

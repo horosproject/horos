@@ -801,7 +801,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 - (NSImage *)image
 {
 	#ifdef OSIRIX_VIEWER
-	DCMPix *pix = [[DCMPix alloc] myinit:[self valueForKey:@"completePath"] :0 :0 :nil :0 :[[self valueForKeyPath:@"series.id"] intValue] isBonjour:NO imageObj:self];
+	DCMPix *pix = [[DCMPix alloc] initWithPath:[self valueForKey:@"completePath"] :0 :0 :nil :0 :[[self valueForKeyPath:@"series.id"] intValue] isBonjour:NO imageObj:self];
 	NSData	*data = [[pix image] TIFFRepresentation];
 	NSImage *thumbnail = [[[NSImage alloc] initWithData: data] autorelease];
 
@@ -813,7 +813,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 - (NSImage *)thumbnail
 {
 	#ifdef OSIRIX_VIEWER
-	DCMPix *pix = [[DCMPix alloc] myinit:[self valueForKey:@"completePath"] :0 :0 :nil :0 :[[self valueForKeyPath:@"series.id"] intValue] isBonjour:NO imageObj:self];
+	DCMPix *pix = [[DCMPix alloc] initWithPath:[self valueForKey:@"completePath"] :0 :0 :nil :0 :[[self valueForKeyPath:@"series.id"] intValue] isBonjour:NO imageObj:self];
 	NSData	*data = [[pix generateThumbnailImageWithWW:0 WL:0] TIFFRepresentation];
 	NSImage *thumbnail = [[[NSImage alloc] initWithData: data] autorelease];
 	[pix release];

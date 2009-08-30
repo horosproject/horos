@@ -902,7 +902,7 @@
 			{
 				if((long)([[[aROI points] objectAtIndex:0] x])==x)
 				{
-					ROI *new2DPointROI = [[ROI alloc] initWithType: t2DPoint :[yReslicedView pixelSpacingX] :[yReslicedView pixelSpacingY] :NSMakePoint( [yReslicedView origin].x, [yReslicedView origin].y)];
+					ROI *new2DPointROI = [[[ROI alloc] initWithType: t2DPoint :[yReslicedView pixelSpacingX] :[yReslicedView pixelSpacingY] :NSMakePoint( [yReslicedView origin].x, [yReslicedView origin].y)] autorelease];
 					NSRect irect;
 					irect.origin.x = [[[aROI points] objectAtIndex:0] y];
 					long sliceIndex = (sign>0)? [[originalView dcmPixList] count]-1 -i : i; // i is slice number
@@ -937,7 +937,7 @@
 			{
 				if((long)([[[aROI points] objectAtIndex:0] y])==y)
 				{
-					ROI *new2DPointROI = [[ROI alloc] initWithType: t2DPoint :[xReslicedView pixelSpacingX] :[xReslicedView pixelSpacingY] :NSMakePoint( [xReslicedView origin].x, [xReslicedView origin].y)];
+					ROI *new2DPointROI = [[[ROI alloc] initWithType: t2DPoint :[xReslicedView pixelSpacingX] :[xReslicedView pixelSpacingY] :NSMakePoint( [xReslicedView origin].x, [xReslicedView origin].y)] autorelease];
 					NSRect irect;
 					irect.origin.x = [[[aROI points] objectAtIndex:0] x];
 					long sliceIndex = (sign>0)? [[originalView dcmPixList] count]-1 -i : i; // i is slice number

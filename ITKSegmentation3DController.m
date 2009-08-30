@@ -236,7 +236,7 @@ enum algorithmTypes { intervalSegmentationType, thresholdSegmentationType, neigh
 		memcpy( fVolumePtr, [viewer volumePtr], mem);
 		
 		// Create a NSData object to control the new pointer
-		NSData		*volumeData = [[NSData alloc] initWithBytesNoCopy:fVolumePtr length:mem freeWhenDone:YES]; 
+		NSData		*volumeData = [[[NSData alloc] initWithBytesNoCopy:fVolumePtr length:mem freeWhenDone:YES] autorelease]; 
 		
 		// Now copy the DCMPix with the new fVolumePtr
 		NSMutableArray *newPixList = [NSMutableArray arrayWithCapacity:0];
@@ -256,7 +256,7 @@ enum algorithmTypes { intervalSegmentationType, thresholdSegmentationType, neigh
 		// NSData volumeData contains the images, represented in the DCMPix objects
 		new2DViewer = [viewer newWindow:newPixList :[viewer fileList] :volumeData];
 		
-		[new2DViewer roiDeleteAll:self];
+		[new2DViewer roiDeleteAll: self];
 		
 		return new2DViewer;
 	}

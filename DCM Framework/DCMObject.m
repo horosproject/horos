@@ -871,8 +871,8 @@ PixelRepresentation
 	else{
 		NSString *sopClassUID = [self attributeValueWithName:@"SOPClassUID"];
 		if (sopClassUID) {
-			tag = [[DCMAttributeTag alloc] initWithName:@"MediaStorageSOPClassUID"];
-			attr = [[DCMAttribute alloc] initWithAttributeTag:(DCMAttributeTag *)tag];
+			tag = [[[DCMAttributeTag alloc] initWithName:@"MediaStorageSOPClassUID"] autorelease];
+			attr = [[[DCMAttribute alloc] initWithAttributeTag:(DCMAttributeTag *)tag] autorelease];
 			[attr addValue:sopClassUID];
 			[attributes setObject:attr forKey:[(DCMAttributeTag *)tag stringValue]];
 			gl += attr.paddedLength;
@@ -887,8 +887,8 @@ PixelRepresentation
 	else{
 		NSString *sopInstanceUID = [self attributeValueWithName:@"SOPInstanceUID"];
 		if (sopInstanceUID) {
-			tag = [[DCMAttributeTag alloc] initWithName:@"MediaStorageSOPInstanceUID"];
-			attr = [[DCMAttribute alloc] initWithAttributeTag:(DCMAttributeTag *)tag];
+			tag = [[[DCMAttributeTag alloc] initWithName:@"MediaStorageSOPInstanceUID"] autorelease];
+			attr = [[[DCMAttribute alloc] initWithAttributeTag:(DCMAttributeTag *)tag] autorelease];
 			[attr addValue:sopInstanceUID];
 			[attributes setObject:attr forKey:[(DCMAttributeTag *)tag stringValue]];
 			gl += attr.paddedLength;

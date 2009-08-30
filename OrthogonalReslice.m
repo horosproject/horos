@@ -453,7 +453,7 @@
 		{
 			if( stack >= [newPixListX count])
 			{
-				curPix = [[DCMPix alloc] initwithdata: nil :32 :newX :newY :1 :1 :0 :0 :0 :NO];
+				curPix = [[DCMPix alloc] initWithData: nil :32 :newX :newY :1 :1 :0 :0 :0 :NO];
 				[curPix copySUVfrom: firstPix];
 				curPix.frameOfReferenceUID = firstPix.frameOfReferenceUID;
 				[newPixListX addObject: curPix];
@@ -465,7 +465,7 @@
 		{
 			if( stack  >= [newPixListY count])
 			{
-				curPix = [[DCMPix alloc] initwithdata: nil :32 :newX :newY :1 :1 :0 :0 :0 :NO];
+				curPix = [[DCMPix alloc] initWithData: nil :32 :newX :newY :1 :1 :0 :0 :0 :NO];
 				[curPix copySUVfrom: firstPix];
 				curPix.frameOfReferenceUID = firstPix.frameOfReferenceUID;
 				[newPixListY addObject: curPix];

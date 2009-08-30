@@ -317,7 +317,7 @@ extern int delayedTileWindows;
 			}
 			else
 			{
-				NSAlert* alert = [NSAlert new];
+				NSAlert* alert = [[NSAlert new] autorelease];
 				[alert setMessageText: NSLocalizedString(@"DICOM Editing", nil)];
 				[alert setInformativeText: NSLocalizedString(@"DICOM editing is now activated. You can edit any DICOM fields.\r\rSelect at which level you want to apply the changes (this image only, this series or the entire study.\r\rWarning !\rModifying DICOM fields can corrupt the DICOM files!\r\"With Great Power, Comes Great Responsibility\"", nil)];
 				[alert setShowsSuppressionButton:YES];
@@ -1249,32 +1249,6 @@ extern int delayedTileWindows;
 										VerifyToolbarItemIdentifier,
 										SearchToolbarItemIdentifier,
 										nil];
-}
-
-- (void) toolbarWillAddItem: (NSNotification *) notif {
-    // Optional delegate method:  Before an new item is added to the toolbar, this notification is posted.
-    // This is the best place to notice a new item is going into the toolbar.  For instance, if you need to 
-    // cache a reference to the toolbar item or need to set up some initial state, this is the best place 
-    // to do it.  The notification object is the toolbar to which the item is being added.  The item being 
-    // added is found by referencing the @"item" key in the userInfo 
-    NSToolbarItem *addedItem = [[notif userInfo] objectForKey: @"item"];
-	
-	[addedItem retain];
-}  
-
-- (void) toolbarDidRemoveItem: (NSNotification *) notif {
-    // Optional delegate method:  After an item is removed from a toolbar, this notification is sent.   This allows 
-    // the chance to tear down information related to the item that may have been cached.   The notification object
-    // is the toolbar from which the item is being removed.  The item being added is found by referencing the @"item"
-    // key in the userInfo 
-    NSToolbarItem *removedItem = [[notif userInfo] objectForKey: @"item"];
-	
-	[removedItem release];
-	
-/*    if (removedItem==activeSearchItem) {
-	[activeSearchItem autorelease];
-	activeSearchItem = nil;    
-    }*/
 }
 
 - (BOOL) validateToolbarItem: (NSToolbarItem *) toolbarItem

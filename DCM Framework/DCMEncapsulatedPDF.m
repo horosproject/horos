@@ -19,7 +19,13 @@
 
 @implementation  DCMObject (DCMEncapsulatedPDF)
 
-+ (id)newEncapsulatedPDF:(NSData *)pdf{
++ (DCMObject*) newEncapsulatedPDF:(NSData *)pdf
+{
+	return [DCMObject encapsulatedPDF: pdf];
+}
+
++ (DCMObject*) encapsulatedPDF:(NSData *)pdf
+{
 	DCMObject *dcmObject = [DCMObject dcmObject];
 	[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[DCMAbstractSyntaxUID pdfStorageClassUID]] forName:@"SOPClassUID"];
 	[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[DCMAbstractSyntaxUID pdfStorageClassUID]] forName:@"MediaStorageSOPClassUID"];

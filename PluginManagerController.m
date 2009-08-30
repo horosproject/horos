@@ -477,7 +477,8 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
     [aTask setArguments:args];
     [aTask launch];
 	[aTask waitUntilExit];
-		
+	[aTask release];
+	
 	if([[NSFileManager defaultManager] fileExistsAtPath:[path stringByDeletingPathExtension]])
 	{
 		return YES;
@@ -489,7 +490,7 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
 		return boo;
 	}
 	
-	[aTask release];
+	
 }
 
 #pragma mark submit plugin

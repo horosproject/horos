@@ -58,14 +58,14 @@ static float deg2rad = 3.14159265358979/180.0;
 {
 	long size = sizeof( float) * w * h;
 	float *imagePtr = malloc( size);
-	DCMPix *emptyPix = [[[DCMPix alloc] initwithdata: imagePtr :32 :w :h :[oP pixelSpacingX] :[oP pixelSpacingY] :[oP originX] :[oP originY] :[oP originZ]] autorelease];
+	DCMPix *emptyPix = [[DCMPix alloc] initWithData: imagePtr :32 :w :h :[oP pixelSpacingX] :[oP pixelSpacingY] :[oP originX] :[oP originY] :[oP originZ]];
 	free( imagePtr);
 	
 	[emptyPix setImageObj: [oP imageObj]];
 	[emptyPix setSrcFile: [oP srcFile]];
 	[emptyPix setAnnotationsDictionary: [oP annotationsDictionary]];
 	
-	return emptyPix;
+	return [emptyPix autorelease];
 }
 
 - (id)initWithDCMPixList:(NSMutableArray*)pix filesList:(NSMutableArray*)files volumeData:(NSData*)volume viewerController:(ViewerController*)viewer fusedViewerController:(ViewerController*)fusedViewer;
@@ -417,7 +417,7 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (IBAction) setTool:(id)sender;
 {
-	int toolIndex;
+	int toolIndex = 0;
 	
 	if([sender isKindOfClass:[NSMatrix class]])
 		toolIndex = [[sender selectedCell] tag];
@@ -1200,8 +1200,6 @@ static float deg2rad = 3.14159265358979/180.0;
 
 -(void) ApplyCLUTString:(NSString*) str
 {
-	NSString	*previousColorName = [NSString stringWithString: curCLUTMenu];
-	
 	if( str == nil) return;
 		
 	[OpacityPopup setEnabled:YES];
@@ -1727,15 +1725,12 @@ static float deg2rad = 3.14159265358979/180.0;
 	}
 	
 	Camera *c1, *c2, *c3;
-	int savedIndex = self.curMovieIndex;
 	
 	c1 = [[[mprView1 camera] copy] autorelease];
 	c2 = [[[mprView2 camera] copy] autorelease];
 	c3 = [[[mprView3 camera] copy] autorelease];
 	
 	mprView1.viewExport = mprView2.viewExport = mprView3.viewExport = -1;
-	
-	int savedCurMovieIndex = curMovieIndex;
 	
 	if( [sender tag])
 	{

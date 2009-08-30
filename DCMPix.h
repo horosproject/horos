@@ -504,6 +504,7 @@ Note setter is different to not break existing usage. :-( */
 * with hello = NO and iO = nil
 */
 - (id) myinit:(NSString*) s :(long) pos :(long) tot :(float*) ptr :(long) f :(long) ss;
+- (id) initWithPath:(NSString*) s :(long) pos :(long) tot :(float*) ptr :(long) f :(long) ss;
 
 /**  Initialize
 * doesn't load pix data, only initializes instance variables
@@ -517,6 +518,7 @@ Note setter is different to not break existing usage. :-( */
 * @param iO  coreData image Entity for image
 */ 
 - (id) myinit:(NSString*) s :(long) pos :(long) tot :(float*) ptr :(long) f :(long) ss isBonjour:(BOOL) hello imageObj: (NSManagedObject*) iO;
+- (id) initWithPath:(NSString*) s :(long) pos :(long) tot :(float*) ptr :(long) f :(long) ss isBonjour:(BOOL) hello imageObj: (NSManagedObject*) iO;
 
 /** init with data pointer
 * @param im  pointer to image data
@@ -530,6 +532,7 @@ Note setter is different to not break existing usage. :-( */
 * @param oZ z position of origin
 */
 - (id) initwithdata :(float*) im :(short) pixelSize :(long) xDim :(long) yDim :(float) xSpace :(float) ySpace :(float) oX :(float) oY :(float) oZ;
+- (id) initWithData :(float*) im :(short) pixelSize :(long) xDim :(long) yDim :(float) xSpace :(float) ySpace :(float) oX :(float) oY :(float) oZ;
 
 /** init with data pointer
 * @param im = pointer to image data
@@ -544,6 +547,8 @@ Note setter is different to not break existing usage. :-( */
 * @param volSize ?
 */
 - (id) initwithdata :(float*) im :(short) pixelSize :(long) xDim :(long) yDim :(float) xSpace :(float) ySpace :(float) oX :(float) oY :(float) oZ :(BOOL) volSize;
+- (id) initWithData :(float*) im :(short) pixelSize :(long) xDim :(long) yDim :(float) xSpace :(float) ySpace :(float) oX :(float) oY :(float) oZ :(BOOL) volSize;
+
 - (id) initWithImageObj: (NSManagedObject *)entity;
 - (id) initWithContentsOfFile: (NSString *)file; 
 /** create an NSImage from the current pix

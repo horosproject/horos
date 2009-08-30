@@ -1317,7 +1317,7 @@ static const char *GetPrivateIP()
 								}
 								else
 								{
-									NSAlert* alert = [NSAlert new];
+									NSAlert* alert = [[NSAlert new] autorelease];
 									[alert setMessageText: NSLocalizedString(@"Query", nil)];
 									[alert setInformativeText: NSLocalizedString(@"No query parameters provided. The query may take a long time.", nil)];
 									[alert setShowsSuppressionButton:YES ];

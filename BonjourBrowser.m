@@ -886,7 +886,7 @@ static char *GetPrivateIP()
 {	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"] == NO)
 	{
-		NSAlert* alert = [NSAlert new];
+		NSAlert* alert = [[NSAlert new] autorelease];
 		[alert setMessageText: NSLocalizedString(@"Network Error",nil)];
 		[alert setInformativeText: s];
 		[alert runModal];

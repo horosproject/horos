@@ -253,9 +253,9 @@
 					
 		for (DicomImage *im in dicomImageArray)
 		{
-			NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+			NSAutoreleasePool *pool2 = [[NSAutoreleasePool alloc] init];
 			
-			DCMPix* dcmPix = [[DCMPix alloc] myinit:[im valueForKey:@"completePathResolved"] :0 :1 :nil :[[im valueForKey:@"frameID"] intValue] :[[im valueForKeyPath:@"series.id"] intValue] isBonjour:NO imageObj:im];
+			DCMPix* dcmPix = [[DCMPix alloc] initWithPath:[im valueForKey:@"completePathResolved"] :0 :1 :nil :[[im valueForKey:@"frameID"] intValue] :[[im valueForKeyPath:@"series.id"] intValue] isBonjour:NO imageObj:im];
 		  
 			if(dcmPix)
 			{
@@ -305,7 +305,7 @@
 				[dcmPix release];
 			}
 			
-			[pool release];
+			[pool2 release];
 		}
 		
 		[context unlock];	// It's important because writeMovie will call performonmainthread !!!
@@ -903,7 +903,7 @@
 					im = [dicomImageArray objectAtIndex:[dicomImageArray count]/2];
 				}
 				
-				DCMPix* dcmPix = [[DCMPix alloc] myinit:[im valueForKey:@"completePathResolved"] :0 :1 :nil :[[[dicomImageArray lastObject] valueForKey: @"numberOfFrames"] intValue]/2 :[[im valueForKeyPath:@"series.id"] intValue] isBonjour:NO imageObj:im];
+				DCMPix* dcmPix = [[DCMPix alloc] initWithPath:[im valueForKey:@"completePathResolved"] :0 :1 :nil :[[[dicomImageArray lastObject] valueForKey: @"numberOfFrames"] intValue]/2 :[[im valueForKeyPath:@"series.id"] intValue] isBonjour:NO imageObj:im];
 				  
 				if(dcmPix)
 				{

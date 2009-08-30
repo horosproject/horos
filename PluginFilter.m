@@ -80,7 +80,7 @@
 		memcpy( fVolumePtr, [viewerController volumePtr], mem);
 		
 		// Create a NSData object to control the new pointer
-		NSData		*volumeData = [[NSData alloc] initWithBytesNoCopy:fVolumePtr length:mem freeWhenDone:YES]; 
+		NSData		*volumeData = [[[NSData alloc] initWithBytesNoCopy:fVolumePtr length:mem freeWhenDone:YES] autorelease];
 		
 		// Now copy the DCMPix with the new fVolumePtr
 		NSMutableArray *newPixList = [NSMutableArray arrayWithCapacity:0];

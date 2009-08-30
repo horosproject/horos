@@ -3304,8 +3304,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	buffer = malloc([bitmap bytesPerRow] * imageSize.height);
 	memcpy(buffer, [bitmap bitmapData], [bitmap bytesPerRow] * imageSize.height);
 	
-	[bitmap release];
-	
 	CGLContextObj cgl_ctx = [[self openGLContext] CGLContextObj];
 	glGenTextures(1, texName);
 	glActiveTexture(textureUnit);
@@ -3313,6 +3311,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	glPixelStorei(GL_UNPACK_ROW_LENGTH, [bitmap bytesPerRow]/[bitmap samplesPerPixel]);
 	glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, 1);
 	glTexImage2D(GL_TEXTURE_RECTANGLE_EXT, 0, ([bitmap samplesPerPixel]==4)?GL_RGBA:GL_RGB, imageSize.width, imageSize.height, 0, ([bitmap samplesPerPixel]==4)?GL_RGBA:GL_RGB, GL_UNSIGNED_BYTE, buffer);
+	
+	[bitmap release];
 }
 
 -(void) mouseMoved: (NSEvent*) theEvent
@@ -5168,7 +5168,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 									NSPoint pt3;
 									pt3.x = (pt2.x+pt.x)/2.0;
 									pt3.y = (pt2.y+pt.y)/2.0;
-									MyPoint *p = [[MyPoint alloc] initWithPoint:pt3];
+									MyPoint *p = [[[MyPoint alloc] initWithPoint:pt3] autorelease];
 									int index = (delta==-1)? j : j+1 ;
 									if(delta==-1) j++;
 									[points insertObject:p atIndex:index];

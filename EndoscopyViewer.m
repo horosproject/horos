@@ -284,9 +284,9 @@ static NSString*	LODToolbarItemIdentifier				= @"LOD";
 	
 	//NSLog(@"new camera 3D position : %f, %f, %f", position1[0], position1[1], position2[1]);
 
-	[curCamera setPosition:[[Point3D alloc] initWithValues: position1[0]
+	[curCamera setPosition:[[[Point3D alloc] initWithValues: position1[0]
 													: position1[1]
-													: position1[2]]];
+													: position1[2]] autorelease]];
 	// change the Focal Point
 	[[[self pixList]	objectAtIndex:[[mprController originalView] curImage]]
 						convertPixDoubleX: [(EndoscopyMPRView*)[mprController originalView] focalPointX]
@@ -320,10 +320,10 @@ static NSString*	LODToolbarItemIdentifier				= @"LOD";
 	
 	//NSLog(@"new camera 3D focal point : %f, %f, %f", focalPoint1[0], focalPoint1[1], focalPointZ);
 						
-	[curCamera setFocalPoint:[[Point3D alloc] initWithValues	: focalPoint1[0]
+	[curCamera setFocalPoint:[[[Point3D alloc] initWithValues	: focalPoint1[0]
 														: focalPoint1[1]
 //														: focalPoint2[1]]];
-														: focalPointZ]];
+														: focalPointZ] autorelease]];
 
 //	[cam setFocalPoint:[[Point3D alloc] initWithValues	: position1[0]+[(EndoscopyMPRView*)[mprController originalView] focalShiftX]
 //														: position1[1]+[(EndoscopyMPRView*)[mprController originalView] focalShiftY]
@@ -399,13 +399,13 @@ static NSString*	LODToolbarItemIdentifier				= @"LOD";
 	fp[2] *= factor;
 
 	
-	[curCamera setPosition:[[Point3D alloc] initWithValues: pos[0]
+	[curCamera setPosition:[[[Point3D alloc] initWithValues: pos[0]
 													: pos[1]
-													: pos[2]]];
+													: pos[2]] autorelease]];
 													
-	[curCamera setFocalPoint:[[Point3D alloc] initWithValues: fp[0]
+	[curCamera setFocalPoint:[[[Point3D alloc] initWithValues: fp[0]
 														: fp[1]
-														: fp[2]]];
+														: fp[2]] autorelease]];
 
 	[[vrController view] setCenterlineCamera: curCamera];
 	[[vrController view] setNeedsDisplay:YES];
@@ -1030,7 +1030,7 @@ static NSString*	LODToolbarItemIdentifier				= @"LOD";
 		unsigned char *dataPtr = [self getRawPixels:&width :&height :&spp :&bpp];
 				
 		// let's write the file on the disk
-		DICOMExport *exportDCM = [[DICOMExport alloc] init];
+		DICOMExport *exportDCM = [[[DICOMExport alloc] init] autorelease];
 		float	o[9];
 
 		if(dataPtr)

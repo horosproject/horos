@@ -3318,12 +3318,12 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 -(BOOL) checkFrameSize
 {
-	NSRect	frameRight, previous, frame;
+	NSRect	frameRight, frame;
 	BOOL	visible = NO;
 	
 	stopViewFrameDidChangeNotification = YES;
 	
-	frame = previous = [[[splitView subviews] objectAtIndex: 0] frame];
+	frame = [[[splitView subviews] objectAtIndex: 0] frame];
 	
 	if( frame.size.width > 0)
 	{
@@ -3727,7 +3727,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 							
 							if( img == nil)
 							{
-								DCMPix* dcmPix = [[DCMPix alloc] myinit: [[images objectAtIndex: i] valueForKey:@"completePath"] :0 :0 :nil :0 :[[[images objectAtIndex: i] valueForKeyPath:@"series.id"] intValue] isBonjour:[[BrowserController currentBrowser] isCurrentDatabaseBonjour] imageObj:[images objectAtIndex: i]];
+								DCMPix* dcmPix = [[DCMPix alloc] initWithPath: [[images objectAtIndex: i] valueForKey:@"completePath"] :0 :0 :nil :0 :[[[images objectAtIndex: i] valueForKeyPath:@"series.id"] intValue] isBonjour:[[BrowserController currentBrowser] isCurrentDatabaseBonjour] imageObj:[images objectAtIndex: i]];
 								
 								[dcmPix CheckLoad];
 								
@@ -8076,7 +8076,7 @@ static ViewerController *draggedController = nil;
 
 - (void) ApplyWLWW:(id) sender
 {
-	NSString	*name = [sender title];
+	NSString *name = [sender title];
 	
 	if( [[sender title] isEqualToString:NSLocalizedString(@"Other", nil)] == YES)
 	{
@@ -8404,11 +8404,11 @@ static float oldsetww, oldsetwl;
 - (void) setConv:(short*) m :(short) s :(short) norm
 {
 	long			x, i;
-	short			kernelsize, normalization;
+	short			kernelsize;
 	short			kernel[ 25];
 	
 	kernelsize = s;
-	normalization = norm;
+	
 	if( m)
 	{
 		long i;
@@ -10131,7 +10131,7 @@ short				matrix[25];
 	
 	if( !found)
 	{
-		ROIManagerController		*manager = [[ROIManagerController alloc] initWithViewer: self];
+		ROIManagerController *manager = [[ROIManagerController alloc] initWithViewer: self];
 		if( manager)
 		{
 			[manager showWindow:self];
@@ -10282,7 +10282,6 @@ int i,j,l;
 					//	NSLog(@"New roi has been created name=%@, color.red=%d, color.green=%d, color.blue=%d",[theNewROI name], aColor.red, aColor.green, aColor.blue);
 					[[[self roiList] objectAtIndex:[imageView curImage]] addObject:theNewROI];		
 					[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object:theNewROI userInfo: nil];
-					[theNewROI release];
 				}
 	
 }
@@ -10478,7 +10477,6 @@ int i,j,l;
 					//	NSLog(@"New roi has been created name=%@, color.red=%d, color.green=%d, color.blue=%d",[theNewROI name], aColor.red, aColor.green, aColor.blue);
 					[[[self roiList] objectAtIndex:k] addObject:theNewROI];		
 					[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object:theNewROI userInfo: nil];
-					[theNewROI release];
 				}
 	}
 }
@@ -12627,12 +12625,12 @@ int i,j,l;
 		free( texture);
 	}
 	
-	return theNewROI;
+	return [theNewROI autorelease];
 }
 
 - (ROI*) convertBrushROItoPolygon:(ROI*) selectedROI numPoints: (int) numPoints
 {
-	ROI*	newROI = nil;
+	ROI* newROI = nil;
 	
 	if( [selectedROI type] == tPlain)
 	{
@@ -14951,7 +14949,7 @@ int i,j,l;
 	
 	current_qt_interval = qt_interval;
 	
-	mov = [[QuicktimeExport alloc] initWithSelector: self : @selector(imageForFrame: maxFrame:) :qt_to - qt_from];
+	mov = [[[QuicktimeExport alloc] initWithSelector: self : @selector(imageForFrame: maxFrame:) :qt_to - qt_from] autorelease];
 	
 	switch( qt_dimension)
 	{

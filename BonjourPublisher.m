@@ -137,7 +137,7 @@ static char *GetPrivateIP()
 				}
 				else
 				{
-					NSAlert* alert = [NSAlert new];
+					NSAlert* alert = [[NSAlert new] autorelease];
 					[alert setMessageText: NSLocalizedString(@"Bonjour Port", nil)];
 					[alert setInformativeText : NSLocalizedString(@"Cannot use port 8780 for Bonjour sharing. It is already used, another port will be selected.", nil)];
 					[alert setShowsSuppressionButton:YES];

@@ -93,7 +93,7 @@
 			NSArray *timeComponents = [string componentsSeparatedByString:@"."];
 			NSString *format;
 			int length = [string length];
-			format = @"%Y%m%d%H%M%S";
+			
 			switch ([(NSString *)[timeComponents objectAtIndex:0] length]) {
 				case 14:format = @"%Y%m%d%H%M%S";
 					break;

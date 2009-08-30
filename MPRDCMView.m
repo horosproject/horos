@@ -349,8 +349,6 @@ static BOOL frameZoomed = NO;
 			
 			if( [curRoiList count] > 0)
 			{
-				float wx = [pix pwidth]/2., hx = [pix pheight]/2.;
-				
 				if( previousOriginInPlane == NO || arePlanesParallel( orientation+6, previousOrientation+6) == NO)
 					cameraMoved = YES;
 				else
@@ -965,7 +963,7 @@ static BOOL frameZoomed = NO;
 		if (sc[ 2] >= 0 && sc[ 2] < [[viewer2D pixList] count])
 		{
 			// Create the new 2D Point ROI
-			ROI *new2DPointROI = [[ROI alloc] initWithType: t2DPoint :p.pixelSpacingX :p.pixelSpacingY :[DCMPix originCorrectedAccordingToOrientation: p]];
+			ROI *new2DPointROI = [[[ROI alloc] initWithType: t2DPoint :p.pixelSpacingX :p.pixelSpacingY :[DCMPix originCorrectedAccordingToOrientation: p]] autorelease];
 			
 			[new2DPointROI setROIRect: NSMakeRect( sc[ 0], sc[ 1], 0, 0)];
 			

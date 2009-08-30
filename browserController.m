@@ -1638,7 +1638,7 @@ static NSArray*	statesArray = nil;
 	
 	NSString	*message = [NSString stringWithFormat:@"%@\r\r%@\r%@\r\rServer:%@-%@:%@", NSLocalizedString( @"Autorouting DICOM StoreSCU operation failed.\rI will try again in 30 secs.", nil), [ne name], [ne reason], [server objectForKey:@"AETitle"], [server objectForKey:@"Address"], [server objectForKey:@"Port"]];
 	
-	NSAlert* alert = [NSAlert new];
+	NSAlert* alert = [[NSAlert new] autorelease];
 	[alert setMessageText: NSLocalizedString(@"Autorouting Error",nil)];
 	[alert setInformativeText: message];
 	[alert setShowsSuppressionButton:YES];
@@ -7178,7 +7178,7 @@ static NSArray*	statesArray = nil;
 -(void) loadNextPatient:(NSManagedObject *) curImage :(long) direction :(ViewerController*) viewer :(BOOL) firstViewer keyImagesOnly:(BOOL) keyImages
 {
 	NSArray					*winList = [NSApp windows];
-	NSMutableArray			*viewersList = [[NSMutableArray alloc] initWithCapacity:0];
+	NSMutableArray			*viewersList = [[[NSMutableArray alloc] initWithCapacity:0] autorelease];
 	BOOL					applyToAllViewers = [[NSUserDefaults standardUserDefaults] boolForKey:@"nextSeriesToAllViewers"];
 	BOOL					copyPatientsSettings = [[NSUserDefaults standardUserDefaults] boolForKey: @"onlyDisplayImagesOfSamePatient"];
 	
@@ -7240,7 +7240,6 @@ static NSArray*	statesArray = nil;
 		[self loadNextSeries:[[self childrenArray: series] objectAtIndex: 0] :0 :viewer :YES keyImagesOnly:keyImages];
 	}
 	[[NSNotificationCenter defaultCenter] postNotificationName:OsirixDidLoadNewObjectNotification object:study userInfo:nil];
-	[viewersList release];
 	
 	[[NSUserDefaults standardUserDefaults] setBool: copyPatientsSettings forKey: @"onlyDisplayImagesOfSamePatient"];
 }
@@ -7563,7 +7562,7 @@ static BOOL withReset = NO;
 				noOfImages = [[image valueForKey:@"numberOfFrames"] intValue];
 				animate = YES;
 				
-				DCMPix *dcmPix = [[DCMPix alloc] myinit: [image valueForKey:@"completePath"] :[animationSlider intValue] :noOfImages :nil :[animationSlider intValue] :[[image valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:image];
+				DCMPix *dcmPix = [[DCMPix alloc] initWithPath: [image valueForKey:@"completePath"] :[animationSlider intValue] :noOfImages :nil :[animationSlider intValue] :[[image valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:image];
 				
 				if( dcmPix )
 				{
@@ -7607,7 +7606,7 @@ static BOOL withReset = NO;
 						if( [[[imageView curDCM] sourceFile] isEqualToString: [[images objectAtIndex: [animationSlider intValue]] valueForKey:@"completePath"]] == NO || [[imageObj valueForKey: @"frameID"] intValue] != [[[imageView imageObj] valueForKey: @"frameID"] intValue])
 						{
 							DCMPix *dcmPix = nil;
-							dcmPix = [[DCMPix alloc] myinit: [imageObj valueForKey:@"completePath"] :[animationSlider intValue] :[images count] :nil :[[imageObj valueForKey: @"frameID"] intValue] :[[imageObj valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj: imageObj];
+							dcmPix = [[DCMPix alloc] initWithPath: [imageObj valueForKey:@"completePath"] :[animationSlider intValue] :[images count] :nil :[[imageObj valueForKey: @"frameID"] intValue] :[[imageObj valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj: imageObj];
 							
 							if( dcmPix )
 							{
@@ -7648,7 +7647,7 @@ static BOOL withReset = NO;
 						   || [[imageView curDCM] frameNo] != [animationSlider intValue]
 						   || [[imageView curDCM] serieNo] != [[[images objectAtIndex: 0] valueForKeyPath:@"series.id"] intValue])
 						{
-							DCMPix*     dcmPix = [[DCMPix alloc] myinit: [[images objectAtIndex: 0] valueForKey:@"completePath"] :[animationSlider intValue] :noOfImages :nil :[animationSlider intValue] :[[[images objectAtIndex: 0] valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:[images objectAtIndex: 0]];
+							DCMPix*     dcmPix = [[DCMPix alloc] initWithPath: [[images objectAtIndex: 0] valueForKey:@"completePath"] :[animationSlider intValue] :noOfImages :nil :[animationSlider intValue] :[[[images objectAtIndex: 0] valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:[images objectAtIndex: 0]];
 							
 							if( dcmPix )
 							{
@@ -8126,7 +8125,7 @@ static BOOL withReset = NO;
 				[[NSFileManager defaultManager] removeFileAtPath: recoveryPath handler: nil];
 				[[[[[series valueForKey:@"study"] objectID] URIRepresentation] absoluteString] writeToFile: recoveryPath atomically: YES encoding: NSASCIIStringEncoding  error: nil];
 				
-				DCMPix	*dcmPix  = [[DCMPix alloc] myinit:[image valueForKey:@"completePath"] :0 :1 :nil :frame :[[image valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:image];
+				DCMPix	*dcmPix  = [[DCMPix alloc] initWithPath:[image valueForKey:@"completePath"] :0 :1 :nil :frame :[[image valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:image];
 				
 				[dcmPix CheckLoad];
 				
@@ -8373,7 +8372,7 @@ static BOOL withReset = NO;
 			
 			if( [[files objectAtIndex: i] valueForKey:@"frameID"]) frame = [[[files objectAtIndex: i] valueForKey:@"frameID"] intValue];
 			
-			DCMPix *dcmPix  = [[DCMPix alloc] myinit:[filesPaths objectAtIndex:i] :position :subGroupCount :nil :frame :0 isBonjour:isCurrentDatabaseBonjour imageObj: [files objectAtIndex: i]];
+			DCMPix *dcmPix  = [[DCMPix alloc] initWithPath:[filesPaths objectAtIndex:i] :position :subGroupCount :nil :frame :0 isBonjour:isCurrentDatabaseBonjour imageObj: [files objectAtIndex: i]];
 			
 			if( dcmPix)
 			{
@@ -10641,7 +10640,7 @@ static BOOL needToRezoom;
 						for( unsigned long i = 0; i < [[curFile valueForKey:@"numberOfFrames"] intValue]; i++ )
 						{
 							NSManagedObject*  curFile = [loadList objectAtIndex: 0];								
-							DCMPix*	dcmPix = [[DCMPix alloc] myinit: [curFile valueForKey:@"completePath"] :i :[[curFile valueForKey:@"numberOfFrames"] intValue] :fVolumePtr+mem :i :[[curFile valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:curFile];
+							DCMPix*	dcmPix = [[DCMPix alloc] initWithPath: [curFile valueForKey:@"completePath"] :i :[[curFile valueForKey:@"numberOfFrames"] intValue] :fVolumePtr+mem :i :[[curFile valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:curFile];
 							
 							if( dcmPix )
 							{
@@ -10659,7 +10658,7 @@ static BOOL needToRezoom;
 						for( unsigned long i = 0; i < [loadList count]; i++ )
 						{
 							NSManagedObject*  curFile = [loadList objectAtIndex: i];
-							DCMPix* dcmPix = [[DCMPix alloc] myinit: [curFile valueForKey:@"completePath"] :i :[loadList count] :fVolumePtr+mem :[[curFile valueForKey:@"frameID"] intValue] :[[curFile valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:curFile];
+							DCMPix* dcmPix = [[DCMPix alloc] initWithPath: [curFile valueForKey:@"completePath"] :i :[loadList count] :fVolumePtr+mem :[[curFile valueForKey:@"frameID"] intValue] :[[curFile valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:curFile];
 							
 							if( dcmPix )
 							{
@@ -10925,7 +10924,7 @@ static BOOL needToRezoom;
 				{
 					for( id o in singleSeries)	//We need to extract the *true* sliceLocation
 					{
-						DCMPix *p = [[DCMPix alloc] myinit:[o valueForKey:@"completePath"] :0 :1 :nil :[[o valueForKey:@"frameID"] intValue] :[[o valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj: o];
+						DCMPix *p = [[DCMPix alloc] initWithPath:[o valueForKey:@"completePath"] :0 :1 :nil :[[o valueForKey:@"frameID"] intValue] :[[o valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj: o];
 						
 						[intervalArray addObject: [NSNumber numberWithFloat: [p sliceLocation]]];
 						
@@ -11061,7 +11060,7 @@ static BOOL needToRezoom;
 				{
 					NSManagedObject	*oob = [[splittedSeries objectAtIndex:i] objectAtIndex: [[splittedSeries objectAtIndex:i] count] / 2];
 					
-					DCMPix *dcmPix  = [[DCMPix alloc] myinit:[oob valueForKey:@"completePath"] :0 :1 :nil :[[oob valueForKey:@"frameID"] intValue] :[[oob valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj: oob];
+					DCMPix *dcmPix  = [[DCMPix alloc] initWithPath:[oob valueForKey:@"completePath"] :0 :1 :nil :[[oob valueForKey:@"frameID"] intValue] :[[oob valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj: oob];
 					
 					if( dcmPix )
 					{
@@ -11084,7 +11083,7 @@ static BOOL needToRezoom;
 					{
 						NSManagedObject	*oob = [[splittedSeries objectAtIndex: 0] objectAtIndex: i];
 						
-						DCMPix *dcmPix  = [[DCMPix alloc] myinit:[oob valueForKey:@"completePath"] :0 :1 :nil :[[oob valueForKey:@"frameID"] intValue] :[[oob valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj: oob];
+						DCMPix *dcmPix  = [[DCMPix alloc] initWithPath:[oob valueForKey:@"completePath"] :0 :1 :nil :[[oob valueForKey:@"frameID"] intValue] :[[oob valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj: oob];
 						
 						if( dcmPix)
 						{
@@ -12049,7 +12048,7 @@ static NSArray*	openSubSeriesArray = nil;
 	item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Open ROIs Images", nil) action: @selector(viewerDICOMROIsImages:) keyEquivalent:@""] autorelease];
 	[menu addItem:item];
 	
-	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Open ROIs and Key Images", nil) action: @selector(viewerKeyImagesAndROIsImages:) keyEquivalent:@""];
+	item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Open ROIs and Key Images", nil) action: @selector(viewerKeyImagesAndROIsImages:) keyEquivalent:@""] autorelease];
 	[menu addItem:item];
 	
 	item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Open Merged Selection", nil) action: @selector(viewerDICOMMergeSelection:) keyEquivalent:@""] autorelease];
@@ -12815,7 +12814,7 @@ static NSArray*	openSubSeriesArray = nil;
 		NSString *alertSuppress = @"hideListenerError";
 		if ([[NSUserDefaults standardUserDefaults] boolForKey: alertSuppress] == NO)
 		{
-			NSAlert* alert = [NSAlert new];
+			NSAlert* alert = [[NSAlert new] autorelease];
 			[alert setMessageText: NSLocalizedString( @"DICOM Network Error", nil)];
 			[alert setInformativeText: str];
 			[alert setShowsSuppressionButton:YES ];
@@ -13214,7 +13213,7 @@ static NSArray*	openSubSeriesArray = nil;
 		}
 		CFRelease(url);
 	}
-	return (NSString *)resolvedPath;
+	return [(NSString *)resolvedPath autorelease];
 }
 
 - (BOOL) isAliasPath:(NSString *)inPath
@@ -14183,7 +14182,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 				if( [curImage valueForKey:@"frameID"])
 					frame = [[curImage valueForKey:@"frameID"] intValue];
 				
-				DCMPix* dcmPix = [[DCMPix alloc] myinit: [curImage valueForKey:@"completePathResolved"] :0 :1 :nil :frame :[[curImage valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:curImage];
+				DCMPix* dcmPix = [[DCMPix alloc] initWithPath: [curImage valueForKey:@"completePathResolved"] :0 :1 :nil :frame :[[curImage valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:curImage];
 				
 				if( dcmPix )
 				{
@@ -14365,7 +14364,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 				t++;
 			}
 			
-			DCMPix* dcmPix = [[DCMPix alloc] myinit: [curImage valueForKey:@"completePathResolved"] :0 :1 :nil :[[curImage valueForKey:@"frameID"] intValue] :[[curImage valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:curImage];
+			DCMPix* dcmPix = [[DCMPix alloc] initWithPath: [curImage valueForKey:@"completePathResolved"] :0 :1 :nil :[[curImage valueForKey:@"frameID"] intValue] :[[curImage valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:curImage];
 			
 			if( dcmPix )
 			{
@@ -17498,7 +17497,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		}
 		
 	}
-	return description;
+	return [description autorelease];
 }
 
 - (NSPredicate *)createFilterPredicate

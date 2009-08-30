@@ -194,17 +194,17 @@ static NSHost *currentHost = nil;
 	typeCode = IORegistryEntryCreateCFProperty(dspPorts[0], CFSTR("IOFBMemorySize"), kCFAllocatorDefault, kNilOptions);
 	
 	// Validate our data and make sure we're getting the right type
-	if(typeCode && CFGetTypeID(typeCode) == CFNumberGetTypeID())
+	if(typeCode)
 	{
 		long vramStorage = 0;
 		// Convert this to a useable number
-		CFNumberGetValue(typeCode, kCFNumberSInt32Type, &vramStorage);
-		// If we get something other than 0, we'll use it
+		
+		if( CFGetTypeID(typeCode) == CFNumberGetTypeID())
+			CFNumberGetValue(typeCode, kCFNumberSInt32Type, &vramStorage);
 		
 		CFRelease( typeCode);
 		
-		if(vramStorage > 0)
-			return vramStorage;
+		return vramStorage;
 	}
 	
 	return 0;

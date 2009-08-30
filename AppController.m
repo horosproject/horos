@@ -1488,7 +1488,7 @@ static NSDate *lastWarningDate = nil;
 	NSString *alertSuppress = @"hideListenerError";
 	if ([[NSUserDefaults standardUserDefaults] boolForKey: alertSuppress] == NO)
 	{
-		NSAlert* alert = [NSAlert new];
+		NSAlert* alert = [[NSAlert new] autorelease];
 		[alert setMessageText: NSLocalizedString( @"DICOM Listener Error", nil)];
 		[alert setInformativeText: err];
 		[alert setShowsSuppressionButton:YES ];
@@ -1672,7 +1672,7 @@ static NSDate *lastWarningDate = nil;
 	
 	if( [BrowserController currentBrowser] != nil)
 	{
-		filesArray = [[BrowserController currentBrowser] copyFilesIntoDatabaseIfNeeded:filesArray];
+		filesArray = [[BrowserController currentBrowser] copyFilesIntoDatabaseIfNeeded: filesArray];
 		
 		NSArray	*newImages = [[BrowserController currentBrowser] addFilesToDatabase:filesArray];
 		[[BrowserController currentBrowser] outlineViewRefresh];
@@ -1709,7 +1709,10 @@ static NSDate *lastWarningDate = nil;
 						
 			CFStringRef versionString;
 			if(bundleInfoDict != NULL)
+			{
 				versionString = CFDictionaryGetValue(bundleInfoDict, CFSTR("CFBundleVersion"));
+				CFRelease( bundleInfoDict);
+			}
 			
 			NSString *pluginBundleVersion;
 			if(versionString != NULL)
@@ -1735,7 +1738,6 @@ static NSDate *lastWarningDate = nil;
 					[active setObject:[plug objectForKey:@"active"] forKey:path];
 				}
 			}
-			CFRelease(versionString);
 		}
 		
 		pluginNames = [NSMutableString stringWithString:[pluginNames substringToIndex:[pluginNames length]-2]];
@@ -2481,7 +2483,7 @@ static BOOL initialized = NO;
 			{
 				dialog = YES;
 				
-				NSAlert* alert = [NSAlert new];
+				NSAlert* alert = [[NSAlert new] autorelease];
 				[alert setMessageText: NSLocalizedString(@"Growl !", nil)];
 				[alert setInformativeText: NSLocalizedString(@"Did you know that OsiriX supports Growl? An amazing notification system for MacOS. You can download it for free on Internet.", nil)];
 				[alert setShowsSuppressionButton:YES ];
@@ -3780,7 +3782,7 @@ static BOOL initialized = NO;
 	// Pages template directory
 	NSArray *templateDirectoryPathArray = [NSArray arrayWithObjects:NSHomeDirectory(), @"Library", @"Application Support", @"iWork", @"Pages", @"Templates", @"OsiriX", nil];
 	int i;
-	NSString *templateDirectory;
+	NSString *templateDirectory = nil;
 	for(i=0; i<[templateDirectoryPathArray count]; i++)
 	{
 		templateDirectory = [NSString pathWithComponents:[templateDirectoryPathArray subarrayWithRange:NSMakeRange(0,i+1)]];

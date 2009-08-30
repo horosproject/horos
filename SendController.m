@@ -44,7 +44,7 @@ static volatile int sendControllerObjects = 0;
 	
 	[NSThread detachNewThreadSelector: @selector(releaseSelfWhenDone:) toTarget:sendController withObject: nil];
 	
-	[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"sendROIs"];
+	[[NSUserDefaults standardUserDefaults] setBool: s forKey: @"sendROIs"];
 }
 
 + (void)sendFiles:(NSArray *)files

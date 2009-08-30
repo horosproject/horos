@@ -527,15 +527,18 @@
 		
 		if( [[NSFileManager defaultManager] fileExistsAtPath: location isDirectory: &isDirectory])
 		{
-			NSDictionary	*dict;
+			NSDictionary	*dict = nil;
 			
-			if( isDirectory) dict = [NSDictionary dictionaryWithObjectsAndKeys: location, @"Path", [[location lastPathComponent] stringByAppendingString:@" DB"], @"Description", nil];
+			if( isDirectory)
+			{
+				dict = [NSDictionary dictionaryWithObjectsAndKeys: location, @"Path", [[location lastPathComponent] stringByAppendingString:@" DB"], @"Description", nil];
 				
-			[localPaths addObject: dict];
+				[localPaths addObject: dict];
 			
-			[[localPaths tableView] scrollRowToVisible: [[localPaths tableView] selectedRow]];
+				[[localPaths tableView] scrollRowToVisible: [[localPaths tableView] selectedRow]];
 			
-			[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"updateServers"];
+				[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"updateServers"];
+			}
 		}
 	}
 	

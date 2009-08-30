@@ -466,9 +466,9 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 		{
 			[self applyShiftX:xShift/4 y:yShift/4 toBuffer:subtractedOriginalBuffer withWidth:width height:height];
 		}
-		//newAxialPix = [[[DCMPix alloc] initwithdata:subtractedOriginalBuffer :32 :width :height :pixelSpacingX :pixelSpacingY :[curPix originX] :[curPix originY] :[curPix originZ]] autorelease];
-		//newAxialPix = [[DCMPix alloc] initwithdata:subtractedOriginalBuffer :32 :width :height :pixelSpacingX :pixelSpacingY :[curPix originX] :[curPix originY] :[curPix originZ]];
-		newAxialPix = [[DCMPix alloc] initwithdata:subtractedOriginalBuffer :32 :width :height :pixelSpacingX :pixelSpacingY :[curPix originX] :[curPix originY] :[curPix originZ]];
+		//newAxialPix = [[[DCMPix alloc] initWithData:subtractedOriginalBuffer :32 :width :height :pixelSpacingX :pixelSpacingY :[curPix originX] :[curPix originY] :[curPix originZ]] autorelease];
+		//newAxialPix = [[DCMPix alloc] initWithData:subtractedOriginalBuffer :32 :width :height :pixelSpacingX :pixelSpacingY :[curPix originX] :[curPix originY] :[curPix originZ]];
+		newAxialPix = [[DCMPix alloc] initWithData:subtractedOriginalBuffer :32 :width :height :pixelSpacingX :pixelSpacingY :[curPix originX] :[curPix originY] :[curPix originZ]];
 		[LLSubtraction subtractDCMPix:[[[controller originalView] dcmPixList] objectAtIndex:i] to:newAxialPix minValueA:injectedMinValue maxValueA:injectedMaxValue minValueB:notInjectedMinValue maxValueB:notInjectedMaxValue minValueSubtraction:subtractionMinValue maxValueSubtraction:subtractionMaxValue displayBones:displayBones bonesThreshold:bonesThreshold];// subtraction
 //		[LLSubtraction dilate:[newAxialPix fImage] withWidth:width height:height structuringElementRadius:dilatationRadius];
 //		[LLSubtraction close:[newAxialPix fImage] withWidth:width height:height structuringElementRadius:closingRadius];
@@ -578,8 +578,8 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 		{
 			[self applyShiftX:xShift/4 y:zShift/4 toBuffer:subtractedXReslicedBuffer withWidth:width height:height];
 		}
-		//newCoronalPix = [[[DCMPix alloc] initwithdata :subtractedXReslicedBuffer :32 :width :height :pixelSpacingX :pixelSpacingY :[curPix originX] :[curPix originY] :[curPix originZ]] autorelease];
-		newCoronalPix = [[DCMPix alloc] initwithdata :subtractedXReslicedBuffer :32 :width :height :pixelSpacingX :pixelSpacingY :[curPix originX] :[curPix originY] :[curPix originZ]];
+		//newCoronalPix = [[[DCMPix alloc] initWithData :subtractedXReslicedBuffer :32 :width :height :pixelSpacingX :pixelSpacingY :[curPix originX] :[curPix originY] :[curPix originZ]] autorelease];
+		newCoronalPix = [[DCMPix alloc] initWithData :subtractedXReslicedBuffer :32 :width :height :pixelSpacingX :pixelSpacingY :[curPix originX] :[curPix originY] :[curPix originZ]];
 		[LLSubtraction subtractDCMPix:[[[controller xReslicedView] dcmPixList] objectAtIndex:i] to:newCoronalPix minValueA:injectedMinValue maxValueA:injectedMaxValue minValueB:notInjectedMinValue maxValueB:notInjectedMaxValue minValueSubtraction:subtractionMinValue maxValueSubtraction:subtractionMaxValue displayBones:displayBones bonesThreshold:bonesThreshold];// subtraction
 //		[LLSubtraction dilate:[newCoronalPix fImage] withWidth:width height:height structuringElementRadius:dilatationRadius];
 //		[LLSubtraction close:[newCoronalPix fImage] withWidth:width height:height structuringElementRadius:closingRadius];
@@ -690,8 +690,8 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 		{
 			[self applyShiftX:yShift/4 y:zShift/4 toBuffer:subtractedYReslicedBuffer withWidth:width height:height];
 		}
-		//newSagitalPix = [[[DCMPix alloc] initwithdata :subtractedYReslicedBuffer :32 :width :height :pixelSpacingX :pixelSpacingY :[curPix originX] :[curPix originY] :[curPix originZ]] autorelease];
-		newSagitalPix = [[DCMPix alloc] initwithdata :subtractedYReslicedBuffer :32 :width :height :pixelSpacingX :pixelSpacingY :[curPix originX] :[curPix originY] :[curPix originZ]];
+		//newSagitalPix = [[[DCMPix alloc] initWithData :subtractedYReslicedBuffer :32 :width :height :pixelSpacingX :pixelSpacingY :[curPix originX] :[curPix originY] :[curPix originZ]] autorelease];
+		newSagitalPix = [[DCMPix alloc] initWithData :subtractedYReslicedBuffer :32 :width :height :pixelSpacingX :pixelSpacingY :[curPix originX] :[curPix originY] :[curPix originZ]];
 		[LLSubtraction subtractDCMPix:[[[controller yReslicedView] dcmPixList] objectAtIndex:i] to:newSagitalPix minValueA:injectedMinValue maxValueA:injectedMaxValue minValueB:notInjectedMinValue maxValueB:notInjectedMaxValue minValueSubtraction:subtractionMinValue maxValueSubtraction:subtractionMaxValue displayBones:displayBones bonesThreshold:bonesThreshold];// subtraction
 //		[LLSubtraction dilate:[newSagitalPix fImage] withWidth:width height:height structuringElementRadius:dilatationRadius];
 //		[LLSubtraction close:[newSagitalPix fImage] withWidth:width height:height structuringElementRadius:closingRadius];
@@ -1051,7 +1051,7 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 			for(i=0; i<height; i++)
 				for(j=0; j<width; j++)
 					newBuffer[i*width+j] = -1000;
-			DCMPix *newDCMPix = [[DCMPix alloc] initwithdata:newBuffer :32 :width :height :[firstPix pixelSpacingX] :[firstPix pixelSpacingY] :[firstPix originX] :[firstPix originY] :[firstPix originZ]];
+			DCMPix *newDCMPix = [[DCMPix alloc] initWithData:newBuffer :32 :width :height :[firstPix pixelSpacingX] :[firstPix pixelSpacingY] :[firstPix originX] :[firstPix originY] :[firstPix originZ]];
 			float o[9];
 			[firstPix orientation: o];
 			[newDCMPix setOrientation:o];
@@ -1243,7 +1243,7 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 //			{
 //				[self applyShiftX:xShift/4 y:yShift/4 toBuffer:resampledBuffer withWidth:curWidth height:curHeight];
 //			}
-//			//newAxialPix = [[DCMPix alloc] initwithdata:fVolumePtr :32 :curWidth :curHeight :[curPix pixelSpacingX] :[curPix pixelSpacingY] :[curPix originX] :[curPix originY] :[curPix originZ] :YES];
+//			//newAxialPix = [[DCMPix alloc] initWithData:fVolumePtr :32 :curWidth :curHeight :[curPix pixelSpacingX] :[curPix pixelSpacingY] :[curPix originX] :[curPix originY] :[curPix originZ] :YES];
 //			
 //			newAxialPix = [curPix copy];
 //			[newAxialPix setfImage: fVolumePtr];
@@ -1316,7 +1316,7 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 		{
 			[self applyShiftX:xShift/4 y:yShift/4 toBuffer:resampledBuffer withWidth:curWidth height:curHeight];
 		}
-		//newAxialPix = [[DCMPix alloc] initwithdata:fVolumePtr :32 :curWidth :curHeight :[curPix pixelSpacingX] :[curPix pixelSpacingY] :[curPix originX] :[curPix originY] :[curPix originZ] :YES];
+		//newAxialPix = [[DCMPix alloc] initWithData:fVolumePtr :32 :curWidth :curHeight :[curPix pixelSpacingX] :[curPix pixelSpacingY] :[curPix originX] :[curPix originY] :[curPix originZ] :YES];
 		
 		newAxialPix = [pix objectAtIndex: i];
 		[newAxialPix setfImage: fVolumePtr];

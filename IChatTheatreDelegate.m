@@ -104,7 +104,7 @@ static IChatTheatreDelegate	*iChatDelegate = nil;
 		[[IMAVManager sharedAVManager] setVideoDataSource: [self retain]];
 	}
 	else
-		[self setVideoDataSource:[aNotification object]];
+		[self setVideoDataSource: [[aNotification object] retain]];
 	
 	[[IMAVManager sharedAVManager] start];
 }

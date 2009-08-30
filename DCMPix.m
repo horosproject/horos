@@ -2009,7 +2009,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		{
 			DCMPix	*s = [pixArray objectAtIndex:i];
 			
-			restoreImageCache[ i ] = [[DCMPix alloc] myinit: s.srcFile : i : pixArray.count : nil : s.frameNo : 0];
+			restoreImageCache[ i ] = [[DCMPix alloc] initWithPath: s.srcFile : i : pixArray.count : nil : s.frameNo : 0];
 		}
 		
 		NSLog( @"prepare Restore cache");
@@ -3158,6 +3158,11 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 
 - (id) initwithdata :(float*) im :(short) pixelSize :(long) xDim :(long) yDim :(float) xSpace :(float) ySpace :(float) oX :(float) oY :(float) oZ :(BOOL) volSize
 {
+	return [self initWithData :(float*) im :(short) pixelSize :(long) xDim :(long) yDim :(float) xSpace :(float) ySpace :(float) oX :(float) oY :(float) oZ :(BOOL) volSize];
+}
+
+- (id) initWithData :(float*) im :(short) pixelSize :(long) xDim :(long) yDim :(float) xSpace :(float) ySpace :(float) oX :(float) oY :(float) oZ :(BOOL) volSize
+{
 	//if( pixelSize != 32) NSLog( @"Only floating images are supported...");
 	if( self = [super init])
     {
@@ -3180,7 +3185,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 			fImage = im;
 			
 			if( im == nil)
-				NSLog( @"DCMPix initwithdata ERROR im == nil");
+				NSLog( @"DCMPix initWithData ERROR im == nil");
 		}
 		else
 		{
@@ -3255,21 +3260,26 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
     return self;
 }
 
+- (id) initWithData :(float*) im :(short) pixelSize :(long) xDim :(long) yDim :(float) xSpace :(float) ySpace :(float) oX :(float) oY :(float) oZ
+{
+	return [self initWithData: im :pixelSize :xDim :yDim :xSpace :ySpace :oX :oY :oZ :NO];
+}
+
 - (id) initwithdata :(float*) im :(short) pixelSize :(long) xDim :(long) yDim :(float) xSpace :(float) ySpace :(float) oX :(float) oY :(float) oZ
 {
-	return [self initwithdata: im :pixelSize :xDim :yDim :xSpace :ySpace :oX :oY :oZ :NO];
+	return [self initWithData: im :pixelSize :xDim :yDim :xSpace :ySpace :oX :oY :oZ :NO];
 }
 
 - (id) initWithImageObj: (NSManagedObject *)entity{
-	return  [self myinit:[entity valueForKey:@"completePath"] :0 :1 :nil :0 :0 isBonjour:NO imageObj: entity];
+	return  [self initWithPath:[entity valueForKey:@"completePath"] :0 :1 :nil :0 :0 isBonjour:NO imageObj: entity];
 }
 
  - (id)initWithContentsOfFile: (NSString *)file
 {
-	return  [self myinit:file :0 :1 :nil :0 :0 isBonjour:NO imageObj: nil];
+	return  [self initWithPath:file :0 :1 :nil :0 :0 isBonjour:NO imageObj: nil];
 }
 
-- (id) myinit:(NSString*) s :(long) pos :(long) tot :(float*) ptr :(long) f :(long) ss isBonjour:(BOOL) hello imageObj: (NSManagedObject*) iO
+- (id) initWithPath:(NSString*) s :(long) pos :(long) tot :(float*) ptr :(long) f :(long) ss isBonjour:(BOOL) hello imageObj: (NSManagedObject*) iO
 {	
 	// doesn't load pix data, only initializes instance variables
 	if( hello == NO && s != nil)
@@ -3293,14 +3303,24 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
     return self;
 }
 
+- (id) myinit:(NSString*) s :(long) pos :(long) tot :(float*) ptr :(long) f :(long) ss isBonjour:(BOOL) hello imageObj: (NSManagedObject*) iO
+{
+	return [self initWithPath: (NSString*) s :(long) pos :(long) tot :(float*) ptr :(long) f :(long) ss isBonjour:(BOOL) hello imageObj: (NSManagedObject*) iO];
+}
+
+- (id) initWithPath:(NSString*) s :(long) pos :(long) tot :(float*) ptr :(long) f :(long) ss
+{
+	return [self initWithPath: s :pos :tot :ptr :f :ss isBonjour:NO imageObj: nil];
+}
+
 - (id) myinit:(NSString*) s :(long) pos :(long) tot :(float*) ptr :(long) f :(long) ss
 {
-	return [self myinit: s :pos :tot :ptr :f :ss isBonjour:NO imageObj: nil];
+	return [self initWithPath: s :pos :tot :ptr :f :ss isBonjour:NO imageObj: nil];
 }
 
 - (id) copyWithZone:(NSZone *)zone
 {
-	DCMPix *copy = [[[self class] allocWithZone: zone] myinit:self->srcFile :self->imID :self->imTot :self->fExternalOwnedImage :self->frameNo :self->serieNo];
+	DCMPix *copy = [[[self class] allocWithZone: zone] initWithPath:self->srcFile :self->imID :self->imTot :self->fExternalOwnedImage :self->frameNo :self->serieNo];
 	
 	if( copy == nil)
 	{
