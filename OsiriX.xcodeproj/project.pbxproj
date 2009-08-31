@@ -87,6 +87,7 @@
 		59C2B8EB0FF0EB6A00B50385 /* Notifications.m in Sources */ = {isa = PBXBuildFile; fileRef = 59E088A80FF0AB9400452F19 /* Notifications.m */; };
 		59C2B8EC0FF0EB7700B50385 /* Notifications.h in Headers */ = {isa = PBXBuildFile; fileRef = 59E088A70FF0AB9400452F19 /* Notifications.h */; };
 		59F19C18104BA410009E3215 /* Nitrogen.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 59A63E8B1042C776003F4069 /* Nitrogen.framework */; };
+		59F1A4C8104BA5BE009E3215 /* OsiriXHeaders.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59F1A4C7104BA5BE009E3215 /* OsiriXHeaders.mm */; };
 		7E0B3A4A0675273500908593 /* DCM Framework_Prefix.pch in Resources */ = {isa = PBXBuildFile; fileRef = 7E0B3A12067526A600908593 /* DCM Framework_Prefix.pch */; };
 		7E0B3A4D0675273500908593 /* DCM.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E0B3A13067526A600908593 /* DCM.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7E0B3A530675273600908593 /* DCMAttribute.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E0B3A14067526A600908593 /* DCMAttribute.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -4839,6 +4840,7 @@
 		59A63E8B1042C776003F4069 /* Nitrogen.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Nitrogen.framework; path = ../nitrogen/build/Release/Nitrogen.framework; sourceTree = SOURCE_ROOT; };
 		59E088A70FF0AB9400452F19 /* Notifications.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Notifications.h; sourceTree = "<group>"; };
 		59E088A80FF0AB9400452F19 /* Notifications.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Notifications.m; sourceTree = "<group>"; };
+		59F1A4C7104BA5BE009E3215 /* OsiriXHeaders.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = OsiriXHeaders.mm; sourceTree = "<group>"; };
 		7E0339E607415C4F0025DDB4 /* BurnerWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BurnerWindowController.h; sourceTree = "<group>"; };
 		7E0339E707415C4F0025DDB4 /* BurnerWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BurnerWindowController.m; sourceTree = "<group>"; };
 		7E0B3A12067526A600908593 /* DCM Framework_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = "DCM Framework_Prefix.pch"; sourceTree = "<group>"; };
@@ -8905,6 +8907,7 @@
 			isa = PBXGroup;
 			children = (
 				29B97316FDCFA39411CA2CEA /* main.m */,
+				59F1A4C7104BA5BE009E3215 /* OsiriXHeaders.mm */,
 				32E422140C97301600E193CA /* altivecFunctions.h */,
 			);
 			name = "Other Sources";
@@ -16855,6 +16858,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				59F1A4C8104BA5BE009E3215 /* OsiriXHeaders.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
