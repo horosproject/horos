@@ -86,8 +86,8 @@
 		59A63E971042C7FB003F4069 /* Nitrogen.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 59A63E8B1042C776003F4069 /* Nitrogen.framework */; };
 		59C2B8EB0FF0EB6A00B50385 /* Notifications.m in Sources */ = {isa = PBXBuildFile; fileRef = 59E088A80FF0AB9400452F19 /* Notifications.m */; };
 		59C2B8EC0FF0EB7700B50385 /* Notifications.h in Headers */ = {isa = PBXBuildFile; fileRef = 59E088A70FF0AB9400452F19 /* Notifications.h */; };
-		59F19C18104BA410009E3215 /* Nitrogen.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 59A63E8B1042C776003F4069 /* Nitrogen.framework */; };
 		59F1A4C8104BA5BE009E3215 /* OsiriXHeaders.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59F1A4C7104BA5BE009E3215 /* OsiriXHeaders.mm */; };
+		59F1A515104BA8AE009E3215 /* OsiriX.Headers.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = AB0F3A2C1046BD2B004129DD /* OsiriX.Headers.framework */; };
 		7E0B3A4A0675273500908593 /* DCM Framework_Prefix.pch in Resources */ = {isa = PBXBuildFile; fileRef = 7E0B3A12067526A600908593 /* DCM Framework_Prefix.pch */; };
 		7E0B3A4D0675273500908593 /* DCM.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E0B3A13067526A600908593 /* DCM.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7E0B3A530675273600908593 /* DCMAttribute.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E0B3A14067526A600908593 /* DCMAttribute.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -4767,17 +4767,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		59F19BED104BA3DD009E3215 /* Copy Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				59F19C18104BA410009E3215 /* Nitrogen.framework in Copy Frameworks */,
-			);
-			name = "Copy Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		CE9B516D0CA8F42E00C6C982 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -4794,6 +4783,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				59F1A515104BA8AE009E3215 /* OsiriX.Headers.framework in CopyFiles */,
 				CE81E2A50FDA9F00000D3D96 /* OsiriX.framework in CopyFiles */,
 				CE438F4D0CB621EC006AAFD9 /* Growl.framework in CopyFiles */,
 				CE438F420CB621DF006AAFD9 /* DotMacKit.framework in CopyFiles */,
@@ -15827,7 +15817,6 @@
 				AB0F3A291046BD2B004129DD /* Sources */,
 				AB0F3A2A1046BD2B004129DD /* Frameworks */,
 				AB0F3A3F1046BE51004129DD /* Copy headers and create OsiriX.h */,
-				59F19BED104BA3DD009E3215 /* Copy Frameworks */,
 			);
 			buildRules = (
 			);
