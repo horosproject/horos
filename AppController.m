@@ -2509,12 +2509,10 @@ static BOOL initialized = NO;
            selector: @selector(UpdateWLWWMenu:)
                name: OsirixUpdateWLWWMenuNotification
              object: nil];
-	
     [nc addObserver: self
            selector: @selector(UpdateConvolutionMenu:)
                name: OsirixUpdateConvolutionMenuNotification
              object: nil];
-	
 	[nc addObserver: self
            selector: @selector(UpdateCLUTMenu:)
                name: OsirixUpdateCLUTMenuNotification
@@ -2538,9 +2536,9 @@ static BOOL initialized = NO;
 		[toolbarPanel[ i] fixSize];
 		
 //	if( USETOOLBARPANEL) [[toolbarPanel window] makeKeyAndOrderFront:self];
-
+	
 // Increment the startup counter.
-
+	
 	long startCount = [[NSUserDefaults standardUserDefaults] integerForKey: @"STARTCOUNT"];
 	[[NSUserDefaults standardUserDefaults] setInteger: startCount+1 forKey: @"STARTCOUNT"];
 	
@@ -2570,7 +2568,7 @@ static BOOL initialized = NO;
 //						break;
 //				}
 //			}
-
+			
 			if( [[NSCalendarDate dateWithYear:2009 month:10 day:14 hour:12 minute:0 second:0 timeZone:[NSTimeZone timeZoneWithAbbreviation:@"EST"]] timeIntervalSinceNow] > 0 &&
 				[[NSCalendarDate dateWithYear:2009 month:9 day:1 hour:12 minute:0 second:0 timeZone:[NSTimeZone timeZoneWithAbbreviation:@"EST"]] timeIntervalSinceNow] < 0)
 			{

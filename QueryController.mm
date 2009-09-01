@@ -1839,10 +1839,13 @@ static const char *GetPrivateIP()
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
+	NSMutableArray *moveArray = [NSMutableArray array];
+	
 	[array retain];
 	
 	@try
 	{
+		NSAutoreleasePool *subPool = [[NSAutoreleasePool alloc] init];
 		NSMutableDictionary *dictionary = [[NSMutableDictionary alloc] initWithDictionary: [queryManager parameters] copyItems: YES];
 		
 		NSLog( @"Retrieve START");
@@ -1882,16 +1885,35 @@ static const char *GetPrivateIP()
 				int numberPacketsReceived = 0;
 				if( [[NSUserDefaults standardUserDefaults] boolForKey:@"Ping"] == NO || (SimplePing( [[dictionary valueForKey:@"hostname"] UTF8String], 1, [[NSUserDefaults standardUserDefaults] integerForKey:@"DICOMTimeout"], 1,  &numberPacketsReceived) == 0 && numberPacketsReceived > 0))
 				{
-					[object move: dictionary allowCGET: allowCGET];
+					NSMutableDictionary *d = [NSMutableDictionary dictionary];
+					[d setObject: object forKey: @"query"];
+					[d setObject: [NSNumber numberWithBool: allowCGET] forKey: @"allowCGET"];
 					
-					@synchronized( previousAutoRetrieve)
-					{
-						[previousAutoRetrieve removeObjectForKey: [self stringIDForStudy: object]];
-					}
+					if( [dictionary objectForKey: @"CGET"])
+						[d setObject: [dictionary objectForKey: @"CGET"] forKey: @"CGET"];
+					
+					if( [dictionary objectForKey: @"moveDestination"])
+						[d setObject: [dictionary objectForKey: @"moveDestination"] forKey: @"moveDestination"];
+					
+					[moveArray addObject: d];
 				}
 			}
 			
 			[object release];
+		}
+		
+		[dictionary release];
+		[subPool release];
+		
+		for( NSDictionary *d in moveArray)
+		{
+			DCMTKQueryNode *object = [d objectForKey: @"query"];
+			[object move: d allowCGET: [[d objectForKey: @"allowCGET"] boolValue]];
+			
+			@synchronized( previousAutoRetrieve)
+			{
+				[previousAutoRetrieve removeObjectForKey: [self stringIDForStudy: object]];
+			}
 		}
 		
 		[NSThread sleepForTimeInterval: 0.5];	// To allow errorMessage on the main thread...
@@ -1900,8 +1922,6 @@ static const char *GetPrivateIP()
 			[item setShowErrorMessage: YES];
 		
 		NSLog(@"Retrieve END");
-		
-		[dictionary release];
 	}
 	@catch (NSException *e)
 	{
