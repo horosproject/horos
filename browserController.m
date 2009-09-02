@@ -3744,7 +3744,11 @@ static NSArray*	statesArray = nil;
 		{
 			logArray = [context executeFetchRequest:request error:&error];
 			
-			for( id log in logArray ) [context deleteObject: log];
+			if( error)
+				NSLog( @"%@", error);
+			
+			for( id log in logArray )
+				[context deleteObject: log];
 		}
 		@catch (NSException * e)
 		{
@@ -12399,6 +12403,26 @@ static NSArray*	openSubSeriesArray = nil;
 	[self refreshMatrix: self];
 	
 	[sourcesSplitView restoreDefault:@"SPLITSOURCE"];
+
+	// 
+	
+//	NSFetchRequest	*dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+//	[dbRequest setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"LogEntry"]];
+//	[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
+//	
+//	NSError *error = nil;
+//	NSArray *logArray = [self.managedObjectContext executeFetchRequest:dbRequest error: &error];
+//	
+//	if( error)
+//		NSLog( @"%@", error);
+//	NSLog( @"%@", logArray);
+//	
+//	for( id log in logArray)
+//	{
+//		NSLog( @"%@", [log valueForKey: @"type"]);
+//	}
+//	
+//	for( id log in logArray) [self.managedObjectContext deleteObject: log];
 }
 
 - (IBAction)customize:(id)sender

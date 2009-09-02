@@ -25,8 +25,14 @@
 	return  [super initWithWindowNibName:@"LogWindow"];
 }
 
-- (NSManagedObjectContext *)managedObjectContext{
-	return nil;
+- (NSManagedObjectContext *) managedObjectContext
+{
+	return [[BrowserController currentBrowser] managedObjectContext];
+}
+
+- (void) setManagedObjectContext: (NSManagedObjectContext *) m
+{
+	NSLog( @"*** setManagedObjectContext LogWindowController");
 }
 	
 -(void) awakeFromNib
