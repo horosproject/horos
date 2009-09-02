@@ -9273,6 +9273,21 @@
 			name = Routing;
 			sourceTree = "<group>";
 		};
+		84AA013C104EA39E0091E49B /* Log Window */ = {
+			isa = PBXGroup;
+			children = (
+				BF17E98F088768CA00ECF621 /* LogTableView.h */,
+				BF17E990088768CA00ECF621 /* LogTableView.m */,
+				7EE416C708B2612600D4C9CC /* QueryLogController.h */,
+				7EE416C808B2612600D4C9CC /* QueryLogController.m */,
+				BF1745D208E0C7E200822756 /* LogWindowController.h */,
+				BF1745D308E0C7E200822756 /* LogWindowController.m */,
+				BFF5D23E09F93B3F0077E16B /* LogManager.h */,
+				BFF5D23F09F93B3F0077E16B /* LogManager.mm */,
+			);
+			name = "Log Window";
+			sourceTree = "<group>";
+		};
 		A90D665D094D7071000B425B /* Endoscopy */ = {
 			isa = PBXGroup;
 			children = (
@@ -9695,8 +9710,6 @@
 				ABC3E5510B330A58006704E3 /* DNDArrayController.h */,
 				ABE33369063D624400C8E087 /* QueryFilter.h */,
 				ABE3336A063D624400C8E087 /* QueryFilter.m */,
-				7EE416C708B2612600D4C9CC /* QueryLogController.h */,
-				7EE416C808B2612600D4C9CC /* QueryLogController.m */,
 				BF432BC709E313EE00AC322E /* DCMTKQueryNode.h */,
 				BF432BC809E313EF00AC322E /* DCMTKQueryNode.mm */,
 				BF432BF609E31CD700AC322E /* DCMTKRootQueryNode.h */,
@@ -10199,21 +10212,16 @@
 		BF9201E70883664600A3D77B /* Network */ = {
 			isa = PBXGroup;
 			children = (
+				84AA013C104EA39E0091E49B /* Log Window */,
 				ABB7A43606343BFF00AD1777 /* Query */,
-				BF17E98F088768CA00ECF621 /* LogTableView.h */,
-				BF17E990088768CA00ECF621 /* LogTableView.m */,
 				BF9201E80883667800A3D77B /* OsiriXSCPDataHandler.h */,
 				BF9201E90883667800A3D77B /* OsiriXSCPDataHandler.mm */,
-				BF1745D208E0C7E200822756 /* LogWindowController.h */,
-				BF1745D308E0C7E200822756 /* LogWindowController.m */,
 				BFBCD8A509E4C2E40078ABB6 /* DCMTKServiceClassUser.h */,
 				BFBCD8A609E4C2E40078ABB6 /* DCMTKServiceClassUser.mm */,
 				BF7A837E09B8D1C10051F091 /* DCMTKStoreSCU.h */,
 				BF7A837F09B8D1C20051F091 /* DCMTKStoreSCU.mm */,
 				BF8E5ABC09CA0D8200DE02FF /* DCMTKQueryRetrieveSCP.h */,
 				BF8E5ABD09CA0D8200DE02FF /* DCMTKQueryRetrieveSCP.mm */,
-				BFF5D23E09F93B3F0077E16B /* LogManager.h */,
-				BFF5D23F09F93B3F0077E16B /* LogManager.mm */,
 				BF9998FE0A1E695800F50753 /* DCMTKPrintSCU.h */,
 				BF9998FF0A1E695800F50753 /* DCMTKPrintSCU.mm */,
 			);

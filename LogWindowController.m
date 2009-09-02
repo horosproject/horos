@@ -25,16 +25,6 @@
 	return  [super initWithWindowNibName:@"LogWindow"];
 }
 
-- (NSManagedObjectContext *) managedObjectContext
-{
-	return [[BrowserController currentBrowser] managedObjectContext];
-}
-
-- (void) setManagedObjectContext: (NSManagedObjectContext *) m
-{
-	NSLog( @"*** setManagedObjectContext LogWindowController");
-}
-	
 -(void) awakeFromNib
 {
 	[[self window] setFrameAutosaveName:@"LogWindow"];

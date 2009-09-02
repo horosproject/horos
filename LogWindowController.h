@@ -21,6 +21,4 @@
 {
 }
 
-- (NSManagedObjectContext *) managedObjectContext;
-
 @end

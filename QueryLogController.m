@@ -22,7 +22,7 @@
 - (void)awakeFromNib
 {
 	[self setManagedObjectContext: [[BrowserController currentBrowser] managedObjectContext]];
-	[self fetch:nil];
+	[self fetch: nil];
 	
 	[self setSortDescriptors:[NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey:@"startTime" ascending:NO] autorelease]]];
 }
