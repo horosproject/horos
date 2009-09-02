@@ -37,6 +37,10 @@
 	[super dealloc];
 }
 
+-(NSManagedObjectContext *)managedObjectContext
+{
+	return [[BrowserController currentBrowser] managedObjectContext];
+}
 
 -(IBAction) showWindow:(id) sender
 {
