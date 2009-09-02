@@ -46,6 +46,8 @@
 
 #import "dcmqrdbq.h";
 
+NSManagedObjectContext *staticContext = nil;
+
 static char *last(char *p, int c)
 {
   char *t;              /* temporary variable */
@@ -1261,6 +1263,9 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
                 ASC_dumpParameters(assoc->params, COUT);
         }
 		
+		staticContext = [[BrowserController currentBrowser] localManagedObjectContext];
+		[staticContext retain];
+		
 		if (singleProcess)
         {
             /* don't spawn a sub-process to handle the association */
@@ -1274,9 +1279,8 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 #ifdef HAVE_FORK
         else
         {
-			NSManagedObjectContext *context = [[BrowserController currentBrowser] localManagedObjectContext];
 			[[[BrowserController currentBrowser] checkIncomingLock] lock];
-			[context lock]; //Try to avoid deadlock
+			[staticContext lock]; //Try to avoid deadlock
 			
 			[DCMNetServiceDelegate DICOMServersList];
 			
@@ -1313,9 +1317,12 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
                 _Exit(3);	//to avoid spin_lock
             }
 			
-			[context unlock];
+			[staticContext unlock];
+			
 			[[[BrowserController currentBrowser] checkIncomingLock] unlock];
 		}
+		[staticContext release];
+		staticContext = nil;
 #endif
     }
 

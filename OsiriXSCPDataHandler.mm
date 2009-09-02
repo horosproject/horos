@@ -27,6 +27,8 @@
 
 char currentDestinationMoveAET[ 60] = "";
 
+extern NSManagedObjectContext *staticContext;
+
 @implementation OsiriXSCPDataHandler
 
 @synthesize callingAET;
@@ -1154,7 +1156,7 @@ char currentDestinationMoveAET[ 60] = "";
 		
 		[context release];
 		
-		context = [[BrowserController currentBrowser] localManagedObjectContext];
+		context = staticContext;
 		[context retain];
 		[context lock];
 		
@@ -1326,7 +1328,7 @@ char currentDestinationMoveAET[ 60] = "";
 	
 	[context release];
 	
-	context = [[BrowserController currentBrowser] localManagedObjectContext];
+	context = staticContext;
 	[context retain];
 	[context lock];
 	

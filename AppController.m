@@ -375,15 +375,25 @@ NSString * documentsDirectoryFor( int mode, NSString *url)
 
 NSString * documentsDirectory()
 {
-	NSString *path = documentsDirectoryFor( [[NSUserDefaults standardUserDefaults] integerForKey: @"DATABASELOCATION"], [[NSUserDefaults standardUserDefaults] stringForKey: @"DATABASELOCATIONURL"]);
+	NSString *path = nil;
 	
-	if( [[NSFileManager defaultManager] fileExistsAtPath:path] == NO || path == 0L)	// STILL NOT AVAILABLE??
-	{   // Use the default folder.. and reset this strange URL..
-		
-		[[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"DATABASELOCATION"];
-		[[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"DEFAULT_DATABASELOCATION"];
-		
-		return documentsDirectoryFor( [[NSUserDefaults standardUserDefaults] integerForKey: @"DATABASELOCATION"], [[NSUserDefaults standardUserDefaults] stringForKey: @"DATABASELOCATIONURL"]);
+	@try
+	{
+		path = documentsDirectoryFor( [[NSUserDefaults standardUserDefaults] integerForKey: @"DATABASELOCATION"], [[NSUserDefaults standardUserDefaults] stringForKey: @"DATABASELOCATIONURL"]);
+	
+		if( [[NSFileManager defaultManager] fileExistsAtPath:path] == NO || path == 0L)	// STILL NOT AVAILABLE??
+		{   // Use the default folder.. and reset this strange URL..
+			
+			[[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"DATABASELOCATION"];
+			[[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"DEFAULT_DATABASELOCATION"];
+			
+			return documentsDirectoryFor( [[NSUserDefaults standardUserDefaults] integerForKey: @"DATABASELOCATION"], [[NSUserDefaults standardUserDefaults] stringForKey: @"DATABASELOCATIONURL"]);
+		}
+	}
+	
+	@catch (NSException *e)
+	{
+		NSLog( @"**** exception documentsDirectory: %@", e);
 	}
 	
 	return path;
