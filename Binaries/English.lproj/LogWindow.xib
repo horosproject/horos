@@ -12,6 +12,7 @@
 		</object>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
+			<integer value="80"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -52,7 +53,7 @@
 				<string key="NSWindowContentMaxSize">{1.79769e+308, 1.79769e+308}</string>
 				<string key="NSWindowContentMinSize">{213, 107}</string>
 				<object class="NSView" key="NSWindowView" id="951316499">
-					<nil key="NSNextResponder"/>
+					<reference key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<object class="NSMutableArray" key="NSSubviews">
 						<bool key="EncodedWithXMLCoder">YES</bool>
@@ -1377,6 +1378,7 @@
 						</object>
 					</object>
 					<string key="NSFrameSize">{820, 607}</string>
+					<reference key="NSSuperview"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {2560, 1578}}</string>
 				<string key="NSMinSize">{213, 129}</string>
@@ -1790,38 +1792,6 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
-						<string key="label">sortDescriptors: sortDescriptors</string>
-						<reference key="source" ref="608042377"/>
-						<reference key="destination" ref="294517618"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="608042377"/>
-							<reference key="NSDestination" ref="294517618"/>
-							<string key="NSLabel">sortDescriptors: sortDescriptors</string>
-							<string key="NSBinding">sortDescriptors</string>
-							<string key="NSKeyPath">sortDescriptors</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">121</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">sortDescriptors: sortDescriptors</string>
-						<reference key="source" ref="902365320"/>
-						<reference key="destination" ref="662580737"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="902365320"/>
-							<reference key="NSDestination" ref="662580737"/>
-							<string key="NSLabel">sortDescriptors: sortDescriptors</string>
-							<string key="NSBinding">sortDescriptors</string>
-							<string key="NSKeyPath">sortDescriptors</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">126</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
 						<string key="label">value: arrangedObjects.endTime</string>
 						<reference key="source" ref="783614510"/>
 						<reference key="destination" ref="294517618"/>
@@ -2003,22 +1973,6 @@
 						</object>
 					</object>
 					<int key="connectionID">236</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">sortDescriptors: sortDescriptors</string>
-						<reference key="source" ref="422116393"/>
-						<reference key="destination" ref="690975501"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="422116393"/>
-							<reference key="NSDestination" ref="690975501"/>
-							<string key="NSLabel">sortDescriptors: sortDescriptors</string>
-							<string key="NSBinding">sortDescriptors</string>
-							<string key="NSKeyPath">sortDescriptors</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">239</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
