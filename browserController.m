@@ -441,11 +441,18 @@ static NSArray*	statesArray = nil;
 			DicomFile		*curFile = nil;
 			NSDictionary	*curDict = nil;
 			
-			#ifdef RANDOMFILES
-				curFile = [[DicomFile alloc] initRandom];
-			#else
-				curFile = [[DicomFile alloc] init: newFile];
-			#endif
+			@try
+			{
+				#ifdef RANDOMFILES
+					curFile = [[DicomFile alloc] initRandom];
+				#else
+					curFile = [[DicomFile alloc] init: newFile];
+				#endif
+			}
+			@catch (NSException * e)
+			{
+				NSLog( @"*** exception [[DicomFile alloc] init: newFile] : %@", e);
+			}
 			
 			if(curFile == nil && [[newFile pathExtension] isEqualToString:@"zip"] == YES)
 			{

@@ -694,7 +694,7 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject:@"0" forKey:@"ROITEXTIFSELECTED"];
 	[defaultValues setObject:@"1" forKey: @"STORESCP"];
 	[defaultValues setObject:@"1" forKey: @"DCMPRINT_Interval"];
-	[defaultValues setObject:@"10" forKey: @"LISTENERCHECKINTERVAL"];
+	[defaultValues setObject:@"3" forKey: @"LISTENERCHECKINTERVAL"];
 	[defaultValues setObject:@"1" forKey: @"AUTOTILING"];
 	[defaultValues setObject:@"1" forKey: @"USEALWAYSTOOLBARPANEL2"];
 	[defaultValues setObject:@"1" forKey: @"SquareWindowForPrinting"];

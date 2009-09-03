@@ -89,16 +89,25 @@ extern char currentDestinationMoveAET[ 60];
 OFCondition decompressFileFormat(DcmFileFormat fileformat, const char *fname)
 {
 	OFBool status = YES;
-	OFCondition cond;
+	OFCondition cond = EC_Normal;
+	
 	DcmXfer filexfer(fileformat.getDataset()->getOriginalXfer());
 	
 	if (filexfer.getXfer() == EXS_JPEG2000LosslessOnly || filexfer.getXfer() == EXS_JPEG2000)
 	{
-		NSString *path = [NSString stringWithCString:fname encoding:[NSString defaultCStringEncoding]];
-		DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile:path decodingPixelData: NO];
-		[[NSFileManager defaultManager] removeFileAtPath:path handler:0L];
-		[dcmObject writeToFile:path withTransferSyntax:[DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax] quality:DCMLosslessQuality AET:@"OsiriX" atomically:YES];
-		[dcmObject release];
+		@try
+		{
+			NSString *path = [NSString stringWithCString:fname encoding:[NSString defaultCStringEncoding]];
+			DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile:path decodingPixelData: NO];
+			[[NSFileManager defaultManager] removeFileAtPath:path handler:0L];
+			[dcmObject writeToFile:path withTransferSyntax:[DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax] quality:DCMLosslessQuality AET:@"OsiriX" atomically:YES];
+			[dcmObject release];
+		}
+		@catch (NSException *e)
+		{
+			NSLog( @"*** decompressFileFormat exception: %@", e);
+			status = NO;
+		}
 	}
 	else
 	{
@@ -114,50 +123,67 @@ OFCondition decompressFileFormat(DcmFileFormat fileformat, const char *fname)
 			[[NSFileManager defaultManager] removeFileAtPath:[NSString stringWithCString:fname] handler:0L];
 			cond = fileformat.saveFile(fname, EXS_LittleEndianExplicit);
 			status =  (cond.good()) ? YES : NO;
-			
 		  }
 		  else
 			status = NO;
 	}
 	
 	printf("\n*** Decompress for C-Move/C-Get\n");
+	if( status == NO)
+		cond = EC_MemoryExhausted;
 	
 	return cond;
 }
 
 OFBool compressFileFormat(DcmFileFormat fileformat, const char *fname, char *outfname, E_TransferSyntax newXfer)
 {
-	OFCondition cond;
+	OFCondition cond = EC_Normal;
 	OFBool status = YES;
 	DcmXfer filexfer(fileformat.getDataset()->getOriginalXfer());
 	
 	if (newXfer == EXS_JPEG2000)
 	{
-		NSString *path = [NSString stringWithCString:fname encoding:[NSString defaultCStringEncoding]];
-		NSString *outpath = [NSString stringWithCString:outfname encoding:[NSString defaultCStringEncoding]];
-		
-		DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile:path decodingPixelData: NO];
-		
-		unlink( outfname);
-		
-		[dcmObject writeToFile:outpath withTransferSyntax:[DCMTransferSyntax JPEG2000LossyTransferSyntax] quality: DCMHighQuality AET:@"OsiriX" atomically:YES];
-		[dcmObject release];
-		
-		printf("\n**** compressFileFormat EXS_JPEG2000\n");
+		@try
+		{
+			NSString *path = [NSString stringWithCString:fname encoding:[NSString defaultCStringEncoding]];
+			NSString *outpath = [NSString stringWithCString:outfname encoding:[NSString defaultCStringEncoding]];
+			
+			DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile:path decodingPixelData: NO];
+			
+			unlink( outfname);
+			
+			[dcmObject writeToFile:outpath withTransferSyntax:[DCMTransferSyntax JPEG2000LossyTransferSyntax] quality: DCMHighQuality AET:@"OsiriX" atomically:YES];
+			[dcmObject release];
+			
+			printf("\n**** compressFileFormat EXS_JPEG2000\n");
+		}
+		@catch (NSException *e)
+		{
+			NSLog( @"*** compressFileFormat EXS_JPEG2000 exception: %@", e);
+			status = NO;
+		}
 	}
 	else if  (newXfer == EXS_JPEG2000LosslessOnly)
 	{
-		NSString *path = [NSString stringWithCString:fname encoding:[NSString defaultCStringEncoding]];
-		NSString *outpath = [NSString stringWithCString:outfname encoding:[NSString defaultCStringEncoding]];
-		
-		DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile:path decodingPixelData: NO];
-		
-		unlink( outfname);
-		
-		[dcmObject writeToFile:outpath withTransferSyntax:[DCMTransferSyntax JPEG2000LosslessTransferSyntax] quality: DCMLosslessQuality AET:@"OsiriX" atomically:YES];
-		[dcmObject release];
-		
-		printf("\n**** compressFileFormat EXS_JPEG2000LosslessOnly\n");
+		@try
+		{
+			NSString *path = [NSString stringWithCString:fname encoding:[NSString defaultCStringEncoding]];
+			NSString *outpath = [NSString stringWithCString:outfname encoding:[NSString defaultCStringEncoding]];
+			
+			DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile:path decodingPixelData: NO];
+			
+			unlink( outfname);
+			
+			[dcmObject writeToFile:outpath withTransferSyntax:[DCMTransferSyntax JPEG2000LosslessTransferSyntax] quality: DCMLosslessQuality AET:@"OsiriX" atomically:YES];
+			[dcmObject release];
+			
+			printf("\n**** compressFileFormat EXS_JPEG2000LosslessOnly\n");
+		}
+		@catch (NSException *e)
+		{
+			NSLog( @"*** compressFileFormat EXS_JPEG2000LosslessOnly exception: %@", e);
+			status = NO;
+		}
 	}
 	else
 	{
