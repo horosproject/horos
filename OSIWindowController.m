@@ -25,6 +25,8 @@ extern  BOOL USETOOLBARPANEL;
 extern  ToolbarPanelController  *toolbarPanel[ 10];
 extern int delayedTileWindows;
 
+static protectedReentryWindowDidResize = NO;
+
 @implementation OSIWindowController
 
 #pragma mark-
@@ -47,6 +49,9 @@ extern int delayedTileWindows;
 
 - (void) windowDidResize:(NSNotification *)aNotification
 {
+	if( protectedReentryWindowDidResize) return;
+	
+	protectedReentryWindowDidResize = YES;
 	if( magneticWindowActivated)
 	{
 		if( dontEnterMagneticFunctions == NO && Button() != 0)
@@ -64,7 +69,11 @@ extern int delayedTileWindows;
 				float gravityX = 30;
 				float gravityY = 30;
 				
-				if ([[NSApp currentEvent] modifierFlags] & NSAlternateKeyMask) return;
+				if ([[NSApp currentEvent] modifierFlags] & NSAlternateKeyMask)
+				{
+					protectedReentryWindowDidResize = NO;
+					return;
+				}
 				
 				NSMutableArray	*rects = [NSMutableArray array];
 				
@@ -196,6 +205,8 @@ extern int delayedTileWindows;
 			[(ViewerController*)self showCurrentThumbnail: self];
 		}
 	}
+	
+	protectedReentryWindowDidResize = NO;
 }
 
 - (void) autoHideMatrix
