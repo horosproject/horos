@@ -2635,12 +2635,17 @@ public:
 	
 	if( aCamera->GetParallelProjection())
 	{
-		[s appendFormat: NSLocalizedString( @"   Scale: %2.3f %% ", nil),  100./([firstObject pixelSpacingX] * aCamera->GetParallelScale())];
+		[s appendFormat: NSLocalizedString( @"   Scale: %2.3f %% ", nil), [self scaleFactor]];
 	}
 	
 	[pixelInformation setStringValue: s];
 	
 	[drawLock unlock];
+}
+
+- (float) scaleFactor
+{
+	return 100./([firstObject pixelSpacingX] * aCamera->GetParallelScale());
 }
 
 -(void) squareView:(id) sender

@@ -452,6 +452,7 @@ typedef char* vtkMyCallbackVR;
 -(void) bestRendering:(id) sender;
 - (void) setMode: (long) modeID;
 - (long) mode;
+- (float) scaleFactor;
 - (double) getResolution;
 - (void) getCosMatrix: (float *) cos;
 - (void) getOrigin: (float *) origin;

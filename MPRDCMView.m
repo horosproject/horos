@@ -600,6 +600,14 @@ static BOOL frameZoomed = NO;
 	}
 }
 
+- (void) drawTextualData:(NSRect) size :(long) annotations
+{
+	float copyScale = scaleValue;
+	scaleValue = 1;
+	[super drawTextualData: size :annotations];
+	scaleValue = copyScale;
+}
+
 - (void) subDrawRect: (NSRect) r
 {
 	if( [stringID isEqualToString: @"export"])
