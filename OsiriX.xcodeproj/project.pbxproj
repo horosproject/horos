@@ -4029,6 +4029,8 @@
 		CE8D062A0FD8731B00165DDE /* libDCM StaticLibrary.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE9CED810C75BD8C00752D4B /* libDCM StaticLibrary.a */; };
 		CE8D062C0FD8733C00165DDE /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB5E1A300595697700C48BEB /* Accelerate.framework */; };
 		CE90D8C4095F5B48004FC7E2 /* FlipData.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE90D8C3095F5B48004FC7E2 /* FlipData.tiff */; };
+		CE94FC021053FFD3006D92E4 /* CurveFitter.h in Headers */ = {isa = PBXBuildFile; fileRef = CE94FC001053FFD3006D92E4 /* CurveFitter.h */; };
+		CE94FC031053FFD3006D92E4 /* CurveFitter.m in Sources */ = {isa = PBXBuildFile; fileRef = CE94FC011053FFD3006D92E4 /* CurveFitter.m */; };
 		CE96D0E30BEE6F9800C4E397 /* XMLControllerDCMTKCategory.h in Headers */ = {isa = PBXBuildFile; fileRef = CE96D0DB0BEE6F9800C4E397 /* XMLControllerDCMTKCategory.h */; };
 		CE96D0E40BEE6F9800C4E397 /* XMLControllerDCMTKCategory.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE96D0DC0BEE6F9800C4E397 /* XMLControllerDCMTKCategory.mm */; };
 		CE96D0F80BEE71E800C4E397 /* mdfconen.cc in Sources */ = {isa = PBXBuildFile; fileRef = CE96D0F20BEE71E800C4E397 /* mdfconen.cc */; };
@@ -8425,6 +8427,8 @@
 		CE8CAB0A0B4715DD0068DBAE /* DICOMPrint */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = DICOMPrint; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE8D057D0FD8505000165DDE /* OsiriX.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = OsiriX.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE90D8C3095F5B48004FC7E2 /* FlipData.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = FlipData.tiff; sourceTree = "<group>"; };
+		CE94FC001053FFD3006D92E4 /* CurveFitter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CurveFitter.h; sourceTree = "<group>"; };
+		CE94FC011053FFD3006D92E4 /* CurveFitter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CurveFitter.m; sourceTree = "<group>"; };
 		CE96D0DB0BEE6F9800C4E397 /* XMLControllerDCMTKCategory.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = XMLControllerDCMTKCategory.h; sourceTree = "<group>"; };
 		CE96D0DC0BEE6F9800C4E397 /* XMLControllerDCMTKCategory.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = XMLControllerDCMTKCategory.mm; sourceTree = "<group>"; };
 		CE96D0F20BEE71E800C4E397 /* mdfconen.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = mdfconen.cc; path = "Binaries/dcmtk-source/sample apps/dcmdump/mdfconen.cc"; sourceTree = "<group>"; };
@@ -9689,6 +9693,8 @@
 				CE4700FC0CC51A6600ECF78A /* WindowLayoutManager.m */,
 				59E088A70FF0AB9400452F19 /* Notifications.h */,
 				59E088A80FF0AB9400452F19 /* Notifications.m */,
+				CE94FC001053FFD3006D92E4 /* CurveFitter.h */,
+				CE94FC011053FFD3006D92E4 /* CurveFitter.m */,
 			);
 			name = Utilities;
 			sourceTree = SOURCE_ROOT;
@@ -15720,6 +15726,7 @@
 				848631C30FE77E1F00B96E99 /* jpeg_memdest.h in Headers */,
 				59C2B8EC0FF0EB7700B50385 /* Notifications.h in Headers */,
 				84C4510C10033B8200138F70 /* OSIWindow.h in Headers */,
+				CE94FC021053FFD3006D92E4 /* CurveFitter.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -17578,6 +17585,7 @@
 				848631C40FE77E1F00B96E99 /* jpeg_memdest.c in Sources */,
 				59C2B8EB0FF0EB6A00B50385 /* Notifications.m in Sources */,
 				84C4510B10033B8100138F70 /* OSIWindow.m in Sources */,
+				CE94FC031053FFD3006D92E4 /* CurveFitter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
