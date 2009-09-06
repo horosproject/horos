@@ -142,7 +142,9 @@
 	// Calculate some things that might be useful for predicting parametres
 	numParams = [self getNumParams];
 	numVertices = numParams + 1;      // need 1 more vertice than parametres,
-	simp = malloc( numVertices*numVertices * sizeof( double));
+	simp = malloc( numVertices * sizeof( double*));
+	for( int i = 0 ; i < numVertices; i++)
+		simp[ i] = malloc( numVertices * sizeof(double));
 	next = malloc( numVertices * sizeof( double));
 
 	double firstx = xData[0];
@@ -538,7 +540,17 @@
 	
 	if( yData)
 		free( yData);
-		
+	
+	if( simp)
+	{
+		for( int i = 0 ; i < numVertices; i++)
+			free( simp[ i]);
+		free( simp);
+	}
+	
+	if( next)
+		free( next);
+	
 	[super dealloc];
 }
 

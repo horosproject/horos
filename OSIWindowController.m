@@ -25,7 +25,7 @@ extern  BOOL USETOOLBARPANEL;
 extern  ToolbarPanelController  *toolbarPanel[ 10];
 extern int delayedTileWindows;
 
-static protectedReentryWindowDidResize = NO;
+static BOOL protectedReentryWindowDidResize = NO;
 
 @implementation OSIWindowController
 
