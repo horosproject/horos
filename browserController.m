@@ -12410,7 +12410,7 @@ static NSArray*	openSubSeriesArray = nil;
 	[self refreshMatrix: self];
 	
 	[sourcesSplitView restoreDefault:@"SPLITSOURCE"];
-
+	
 //	NSFetchRequest	*dbRequest = [[[NSFetchRequest alloc] init] autorelease];
 //	[dbRequest setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"LogEntry"]];
 //	[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];

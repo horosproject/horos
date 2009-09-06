@@ -918,7 +918,7 @@
 
 - (NSException *)testForLength: (int)elementLength{
 		
-	if (position + elementLength > [dicomData length]) {
+	if (position + elementLength > [dicomData length] || elementLength < 0) {
 		NSArray *keys = [NSArray arrayWithObjects:@"position", @"elementLength", @"dataLength", nil];
 		NSArray *objects = [NSArray arrayWithObjects:[NSNumber numberWithInt:position], [NSNumber numberWithInt:elementLength], [NSNumber numberWithInt:[dicomData length]], nil];
 	

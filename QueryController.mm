@@ -1430,8 +1430,8 @@ static const char *GetPrivateIP()
 {
 	[sourcesTable selectRowIndexes: [NSIndexSet indexSetWithIndex: [sourcesTable selectedRow]] byExtendingSelection: NO];
 	
-	if( [resultArray count] <= 1) [numberOfStudies setStringValue: [NSString stringWithFormat:@"%d study found", [resultArray count]]];
-	else [numberOfStudies setStringValue: [NSString stringWithFormat:@"%d studies found", [resultArray count]]];
+	if( [resultArray count] <= 1) [numberOfStudies setStringValue: [NSString stringWithFormat: NSLocalizedString( @"%d study found", nil), [resultArray count]]];
+	else [numberOfStudies setStringValue: [NSString stringWithFormat: NSLocalizedString( @"%d studies found", nil), [resultArray count]]];
 }
 
 -(void) query:(id)sender

@@ -847,7 +847,7 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 				break;
 		else
 		{
-			[dicomData nextDataWithLength:vl];	
+			[dicomData nextDataWithLength:vl];
 		}
 	}
 	
