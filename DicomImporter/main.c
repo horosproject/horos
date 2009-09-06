@@ -1,15 +1,3 @@
-//
-//  main.c
-//  DicomImporter
-//
-//  Created by Lance Pysher on 11/5/04.
-//  Copyright (c) 2004 Macrad, LLC. All rights reserved.
-//
-
-
-
-
-
 //==============================================================================
 //
 //	DO NO MODIFY THE CONTENT OF THIS FILE

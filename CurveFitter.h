@@ -34,4 +34,25 @@
     double maxError;     // maximum error tolerance
 }
 
+- (double) sqr:(double) d;
+- (void) doFit: (int) fitType;
+- (void) initialize;
+- (void) restart: (int) n;
+- (int) getNumParams;
+- (double) f:(int) f :(double *)p :(double) x;
+- (double*) getParams;
+- (double*) getResiduals;
+- (double) getSumResidualsSqr;
+- (double) getSD;
+- (double) getFitGoodness;
+- (void) sumResiduals: (double*) x;
+- (void) newVertex;
+- (void) order;
+- (int) getIterations;
+- (int) getMaxIterations;
+- (void) setMaxIterations:(int) x;
+- (int) getRestarts;
+- (void) setRestarts:(int) x;
+- (int) getMax:(double*) array;
+
 @end

@@ -1,8 +1,3 @@
-//
-//  HangingProtocolController.h
-//  OsiriX
-//
-//  Created by Lance Pysher on 1/10/07.
 /*=========================================================================
   Program:   OsiriX
 
