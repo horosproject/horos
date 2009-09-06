@@ -29,7 +29,7 @@
 
 @implementation CurveFitter
 
-- (id) initCurveFitterWithXData: (double[]) xD andYData: (double[]) yD length: (int) l
+- (id) initCurveFitterWithXData: (double*) xD andYData: (double*) yD length: (int) l
 {
 	self = [super init];
 	
