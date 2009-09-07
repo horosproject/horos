@@ -23,10 +23,8 @@
 // called from ViewerController endPrint:
 //-----------------------------------------------------------------------
 
-- (id)initWithViewer:(id) v settings:(NSDictionary*) s files:(NSArray*) f
+- (id)initWithViewer:(id) v settings:(NSDictionary*) s files:(NSArray*) f printInfo:(NSPrintInfo*) pi
 {
-	NSPrintInfo	*pi = [NSPrintInfo sharedPrintInfo];
-
 	NSLog(@"%@",[pi paperName]);	
 	//imageablePageBounds gives the NSRect that is authorized for printing in a specific paper size for a specific printer. It respects custom margins of custom papersize as well.
 	NSRect imageablePageBounds = [pi imageablePageBounds];
@@ -45,6 +43,15 @@
     }
     return self;
 }
+
+//-----------------------------------------------------------------------
+// Accessors, mainly used for unit tests
+//-----------------------------------------------------------------------
+
+- (int)columns { return columns; }
+- (int)rows { return rows; }
+- (int)ipp { return ipp; }
+
 
 //-----------------------------------------------------------------------
 
@@ -139,7 +146,6 @@
 }
 	
 //-----------------------------------------------------------------------
-	
 
 - (void)drawRect:(NSRect)rect
 {

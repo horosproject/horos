@@ -168,7 +168,7 @@
 
 	// ************
 	
-	printView	*pV = [[[printView alloc] initWithViewer: self settings: settings files: files] autorelease];
+	printView	*pV = [[[printView alloc] initWithViewer: self settings: settings files: files printInfo: [NSPrintInfo sharedPrintInfo]] autorelease];
 			
 	NSPrintOperation * printOperation = [NSPrintOperation printOperationWithView: pV];
 	

@@ -27,9 +27,14 @@
 	int						rows;
 	int						ipp;
 	float					headerHeight;
-
 }
 
-- (id)initWithViewer:(id) v settings:(NSDictionary*) s files:(NSArray*) f;
+- (id)initWithViewer:(id) v
+			settings:(NSDictionary*) s
+			   files:(NSArray*) f
+		   printInfo:(NSPrintInfo*) pi;
+- (int)columns;
+- (int)rows;
+- (int)ipp;
 
 @end

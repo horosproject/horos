@@ -201,7 +201,7 @@
 	int columns = [[options valueForKey: @"columns"] intValue];
 	
 	float inc = (1 + ((columns - 1) * 0.35));
-	if( inc > 2.5) inc = 2.5;
+	if( inc > 2.0) inc = 2.0;
 	
 	[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"allowSmartCropping"];
 	
