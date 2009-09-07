@@ -4478,8 +4478,13 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 {
 	// WARNING : only time is correct. NOT year/month/day
 	float timebetween = -[radiopharmaceuticalStartTime timeIntervalSinceDate: acquisitionTime];
-	if( halflife > 0 && timebetween > 0) radionuclideTotalDoseCorrected = radionuclideTotalDose * exp( -timebetween * logf(2)/halflife);
-	else NSLog(@"ERROR IN computeTotalDoseCorrected : halflife: %f timebetween: %f", halflife, timebetween);
+	
+//	timebetween += frameReferenceTime / 1000.;
+	
+	if( halflife > 0 && timebetween > 0)
+		radionuclideTotalDoseCorrected = radionuclideTotalDose * exp( -timebetween * logf( 2) / halflife);
+	else
+		NSLog(@"ERROR IN computeTotalDoseCorrected : halflife: %f timebetween: %f", halflife, timebetween);
 }
 
 - (void)createROIsFromRTSTRUCT: (DCMObject*)dcmObject
@@ -5492,6 +5497,8 @@ END_CREATE_ROIS:
 	
 	if( [dcmObject attributeValueWithName:@"DecayFactor"])
 		decayFactor = [[dcmObject attributeValueWithName:@"DecayFactor"] floatValue];
+	
+	decayFactor = 1.0 / decayFactor;
 	
 	DCMSequenceAttribute *radiopharmaceuticalInformationSequence = (DCMSequenceAttribute *)[dcmObject attributeWithName:@"RadiopharmaceuticalInformationSequence"];
 	if( radiopharmaceuticalInformationSequence && radiopharmaceuticalInformationSequence.sequence.count > 0 )
@@ -7025,16 +7032,22 @@ END_CREATE_ROIS:
 			if( theGroupP )
 			{
 				val = Papy3GetElement (theGroupP, papUnitsGr, &pos, &elemType );
-				if( val ) units = val? [[NSString stringWithCString:val->a] retain] : nil;
+				if( val ) units = [[NSString stringWithCString:val->a] retain];
 				else units = nil;
 				
 				val = Papy3GetElement (theGroupP, papDecayCorrectionGr, &pos, &elemType );
-				if( val ) decayCorrection = val? [[NSString stringWithCString:val->a] retain] : nil;
+				if( val ) decayCorrection = [[NSString stringWithCString:val->a] retain];
 				else decayCorrection = nil;
 				
 				val = Papy3GetElement (theGroupP, papDecayFactorGr, &pos, &elemType );
-				if( val ) decayFactor = val? atof( val->a) : 0;
+				if( val ) decayFactor = atof( val->a);
 				else decayFactor = 1.0;
+				
+				decayFactor = 1.0 / decayFactor;
+				
+				val = Papy3GetElement (theGroupP, papFrameReferenceTimeGr, &pos, &elemType );
+				if( val ) frameReferenceTime = atof( val->a);
+				else frameReferenceTime = 0.0;
 				
 				val = Papy3GetElement (theGroupP, papRadiopharmaceuticalInformationSequenceGr, &pos, &elemType );
 				

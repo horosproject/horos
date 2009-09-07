@@ -87,7 +87,7 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 	float				radionuclideTotalDoseCorrected;
 	NSCalendarDate		*acquisitionTime;
 	NSCalendarDate		*radiopharmaceuticalStartTime;
-	float				halflife;
+	float				halflife, frameReferenceTime;
     float				philipsFactor;
 	BOOL				displaySUVValue;
 
