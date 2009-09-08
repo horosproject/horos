@@ -2303,7 +2303,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 	[[self window] setAcceptsMouseMovedEvents: YES];
 
-	if( dcmPixList && index > -1)
+	if( dcmPixList && index > -1 && [dcmPixList count] > 0)
 	{
 		if( [[[[dcmFilesList objectAtIndex: 0] valueForKey:@"completePath"] lastPathComponent] isEqualToString:@"Empty.tif"]) noScale = YES;
 		else noScale = NO;
@@ -2313,16 +2313,15 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		if( curImage < 0) curImage = 0;
 		
 		[curDCM release];
-        curDCM = [[dcmPixList objectAtIndex:curImage] retain];
+		curDCM = [[dcmPixList objectAtIndex:curImage] retain];
+
 		[curDCM CheckLoad];
 		
 		[curRoiList release];
 		
 		if( dcmRoiList) curRoiList = [[dcmRoiList objectAtIndex: curImage] retain];
 		else
-		{
 			curRoiList = [[NSMutableArray alloc] initWithCapacity:0];
-		}
 
 		keepIt = NO;
 		for( int i = 0; i < [curRoiList count]; i++ )

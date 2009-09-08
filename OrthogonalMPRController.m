@@ -212,8 +212,8 @@
 	{
 		int stackCount = [[originalView dcmPixList] count];
 		
-		stackCount /= 2;
-		stackCount *= 2;
+//		stackCount /= 2;
+//		stackCount *= 2;
 		
 		// slice index on axial view
 		int sliceIndex = (sign>0)? stackCount-1 -y : y;

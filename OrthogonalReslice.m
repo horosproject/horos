@@ -125,47 +125,34 @@
 
 -(void) performWorkUnits:(NSSet *)workUnits forScheduler:(Scheduler *)scheduler
 {
-	DCMPix					*fPix = [originalDCMPixList objectAtIndex: 0];
-	NSDictionary			*object;
-	long					z, z2;
-	const register long		maxY = [fPix pheight];
-	const register long		maxX = [fPix pwidth];
+	DCMPix *fPix = [originalDCMPixList objectAtIndex: 0];
+	NSDictionary *object;
+	int	z;
+	const register int maxY = [fPix pheight];
+	const register int maxX = [fPix pwidth];
 	
 	for (object in workUnits)
 	{
 		if( [[object objectForKey:@"action"] isEqualToString: @"Ycache"])
 		{
 			z = [[object objectForKey:@"zValue"] intValue];
-			z2 = z+1;
 			
 			register float *basedstPtr = Ycache + z*maxY*maxX;
 			register float *basesrcPtr = [[originalDCMPixList objectAtIndex: z] fImage];
-			register float *basedstPtr2 = Ycache + z2*maxY*maxX;
-			register float *basesrcPtr2 = [[originalDCMPixList objectAtIndex: z2] fImage];
-			register long x = maxX;
+			register int x = maxX;
 			while (x-->0)
 			{
 				register float *dstPtr = basedstPtr;
 				register float *srcPtr = basesrcPtr;
-				register float *dstPtr2 = basedstPtr2;
-				register float *srcPtr2 = basesrcPtr2;
 				
 				basedstPtr += maxY;
-				basedstPtr2 += maxY;
 				basesrcPtr++;
-				basesrcPtr2++;
 				
-				register long yy = maxY/2;
+				register int yy = maxY;
 				while (yy-->0)
 				{
 					*dstPtr++ = *srcPtr;
-					*dstPtr2++ = *srcPtr2;
 					srcPtr += maxX;
-					srcPtr2 += maxX;
-					*dstPtr++ = *srcPtr;
-					*dstPtr2++ = *srcPtr2;
-					srcPtr += maxX;
-					srcPtr2 += maxX;
 				}
 			}
 		}
@@ -327,15 +314,6 @@
 		newYSpace = fabs(sliceInterval);
 	}
 	
-	newTotal /= 2;
-	newTotal *= 2;
-	
-	newX /= 2;
-	newX *= 2;
-	
-	newY /= 2;
-	newY *= 2;
-
 	size = sizeof(float) * newX * newY;	// image weight in bytes
 	
 	// CREATE A NEW SERIES WITH *ONE* IMAGE !
@@ -386,7 +364,7 @@
 				
 				// Create the work units.
 				NSMutableSet *unitsSet = [NSMutableSet set];
-				for ( x = 0; x < newY; x += 2)
+				for ( x = 0; x < newY; x ++)
 				{
 					[unitsSet addObject: [NSDictionary dictionaryWithObjectsAndKeys: @"Ycache", @"action", [NSNumber numberWithInt:x], @"zValue", nil]];
 				}
