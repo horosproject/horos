@@ -758,11 +758,11 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 	_framesCreated = NO;
 	
 	_pixelDepth = [[[_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"BitsStored"]] value] intValue];
-	_bitsStored = [[[_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"BitsAllocated"]] value] intValue];
+	_bitsAllocated = [[[_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"BitsAllocated"]] value] intValue];
 		
 	if ( ts.isExplicit && ([vr isEqualToString:@"OB"] || [vr isEqualToString:@"OW"]))
 		theVR = vr;	
-	else if ( _bitsStored <= 8 || dicomData.isEncapsulated ) 
+	else if ( _bitsAllocated <= 8 || dicomData.isEncapsulated ) 
 		theVR = @"OB";
 	else
 		theVR = @"OW";
@@ -1808,7 +1808,7 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 			{
 				for (cmptno = 0; cmptno < spp; ++cmptno)
 				{
-					if (_pixelDepth <= 8)
+					if (_bitsAllocated <= 8)
 					{
 						unsigned char s;
 						s = *(unsigned char*) dataPointer;
@@ -2414,9 +2414,9 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 	BOOL isSigned = [[signedAttr value] boolValue];
 	float max,  min;
 	
-	if (_bitsStored <= 8) 
+	if (_bitsAllocated <= 8) 
 		length = [data length];
-	else if (_bitsStored <= 16)
+	else if (_bitsAllocated <= 16)
 		length = [data length]/2;
 	else
 		length = [data length]/4;
@@ -2431,12 +2431,12 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 		dstf.data = fBuffer;
 		src.data = (void*) [data bytes];
 		
-		if (_bitsStored <= 8)
+		if (_bitsAllocated <= 8)
 		{
 			src.rowBytes = _columns;
 			vImageConvert_Planar8toPlanarF( &src, &dstf, 0, 256, 0);
 		}
-		else if (_bitsStored <= 16)
+		else if (_bitsAllocated <= 16)
 		{
 			src.rowBytes = _columns * 2;
 			
@@ -3415,9 +3415,9 @@ NS_ENDHANDLER
 		else if (_numberOfFrames > 1)
 		{
 			int depth = 1;
-			if (_bitsStored <= 8) 
+			if (_bitsAllocated <= 8) 
 				depth = 1;
-			else if (_bitsStored  <= 16)
+			else if (_bitsAllocated  <= 16)
 				depth = 2;
 			else
 				depth = 4;
@@ -3542,9 +3542,9 @@ NS_ENDHANDLER
 			if (_numberOfFrames > 0)
 			{
 				int depth = 1;
-				if (_bitsStored <= 8) 
+				if (_bitsAllocated <= 8) 
 					depth = 1;
-				else if (_bitsStored  <= 16)
+				else if (_bitsAllocated  <= 16)
 					depth = 2;
 				else
 					depth = 4;
@@ -3695,7 +3695,7 @@ NS_ENDHANDLER
 		}
 		
 		//non encapsulated
-		if( transferSyntax.isEncapsulated == NO && _bitsStored > 8)
+		if( transferSyntax.isEncapsulated == NO && _bitsAllocated > 8)
 		{
 			if( [[_framesDecoded objectAtIndex: index] boolValue] == NO)
 			{
