@@ -22,7 +22,6 @@
 #import "DCMPixelDataAttributeJPEG12.h"
 #import "DCMPixelDataAttributeJPEG16.h"
 #import "Accelerate/Accelerate.h"
-//#import "DCMPixelDataAttributeJPEG2000.h"
 
 #import "jasper.h"
 
@@ -2406,7 +2405,8 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 	//LossyImageCompression
 }
 
-- (void)findMinAndMax:(NSMutableData *)data{
+- (void)findMinAndMax:(NSMutableData *)data
+{
 	int i = 0;
 	int length;
 	DCMAttributeTag *signedTag = [DCMAttributeTag tagWithName:@"PixelRepresentation"];
@@ -2414,9 +2414,9 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 	BOOL isSigned = [[signedAttr value] boolValue];
 	float max,  min;
 	
-	if (_pixelDepth <= 8) 
+	if (_bitsStored <= 8) 
 		length = [data length];
-	else if (_pixelDepth <= 16)
+	else if (_bitsStored <= 16)
 		length = [data length]/2;
 	else
 		length = [data length]/4;
@@ -2431,12 +2431,12 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 		dstf.data = fBuffer;
 		src.data = (void*) [data bytes];
 		
-		if (_pixelDepth <= 8)
+		if (_bitsStored <= 8)
 		{
 			src.rowBytes = _columns;
-			vImageConvert_Planar8toPlanarF( &src, &dstf, 0, 1, 0);
+			vImageConvert_Planar8toPlanarF( &src, &dstf, 0, 256, 0);
 		}
-		else if (_pixelDepth <= 16)
+		else if (_bitsStored <= 16)
 		{
 			src.rowBytes = _columns * 2;
 			
@@ -3412,7 +3412,8 @@ NS_ENDHANDLER
 
 		} //end encapsulated
 		//multiple frames
-		else if (_numberOfFrames > 1) {
+		else if (_numberOfFrames > 1)
+		{
 			int depth = 1;
 			if (_bitsStored <= 8) 
 				depth = 1;
@@ -3536,24 +3537,23 @@ NS_ENDHANDLER
 				[self addFrame:subData];
 			}
 		}
-		else{
-		if (_numberOfFrames > 0) {
-				//need to parse data into separate frame NSData objects:
-				//NSDate *timeStamp = [NSDate date];
-				//NSLog(@"Start create Frames: %f", -[timeStamp timeIntervalSinceNow]);
+		else
+		{
+			if (_numberOfFrames > 0)
+			{
 				int depth = 1;
-				if (_pixelDepth <= 8) 
+				if (_bitsStored <= 8) 
 					depth = 1;
-				else if (_pixelDepth  <= 16)
+				else if (_bitsStored  <= 16)
 					depth = 2;
 				else
 					depth = 4;
 				int frameLength = _rows * _columns * _samplesPerPixel * depth;
 				NSMutableData *rawData = [[[_values objectAtIndex:0] retain] autorelease];
 				[_values removeAllObjects];
-				for ( unsigned int i = 0; i < _numberOfFrames; i++ ) {
+				for ( unsigned int i = 0; i < _numberOfFrames; i++ )
+				{
 					NSAutoreleasePool *subPool = [[NSAutoreleasePool alloc] init];
-					//NSLog(@"create Frame %d: %f", i , -[timeStamp timeIntervalSinceNow]);
 					NSRange range = NSMakeRange(i * frameLength, frameLength);
 					NSMutableData *data = [NSMutableData dataWithData:[rawData subdataWithRange:range]];
 					[self addFrame:data];
