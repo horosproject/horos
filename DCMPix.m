@@ -4479,12 +4479,10 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	// WARNING : only time is correct. NOT year/month/day
 	float timebetween = -[radiopharmaceuticalStartTime timeIntervalSinceDate: acquisitionTime];
 	
-//	timebetween += frameReferenceTime / 1000.;
-	
 	if( halflife > 0 && timebetween > 0)
 		radionuclideTotalDoseCorrected = radionuclideTotalDose * exp( -timebetween * logf( 2) / halflife);
 	else
-		NSLog(@"ERROR IN computeTotalDoseCorrected : halflife: %f timebetween: %f", halflife, timebetween);
+		NSLog(@"*** failed to computeTotalDoseCorrected : halflife: %f timebetween: %f", halflife, timebetween);
 }
 
 - (void)createROIsFromRTSTRUCT: (DCMObject*)dcmObject
