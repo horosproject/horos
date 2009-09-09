@@ -16019,7 +16019,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (IBAction) generateReport: (id)sender
 {
-	[self updateReportToolbarIcon:nil];
 	NSIndexSet			*index = [databaseOutline selectedRowIndexes];
 	NSManagedObject		*item = [databaseOutline itemAtRow:[index firstIndex]];
 	int reportsMode = [[[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSMODE"] intValue];

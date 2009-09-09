@@ -4545,9 +4545,6 @@ static ViewerController *draggedController = nil;
 	[self setToolbarReportIconForItem:toolbarItem];
 	[toolbarItem setTarget: self];
 	[toolbarItem setAction: @selector(generateReport:)];
-//	[toolbarItem setImage: [NSImage imageNamed: ReportToolbarItemIdentifier]];
-//	[toolbarItem setTarget: [BrowserController currentBrowser]];
-//	[toolbarItem setAction: @selector(generateReport:)];
     } 
 	else if ( [itemIdent isEqualToString: DeleteToolbarItemIdentifier])
 	{
@@ -18574,7 +18571,6 @@ sourceRef);
 
 - (IBAction)generateReport:(id)sender;
 {
-	[self updateReportToolbarIcon:nil];
 	[[BrowserController currentBrowser] generateReport:sender];
 	[self updateReportToolbarIcon:nil];
 }
@@ -18611,10 +18607,10 @@ sourceRef);
 	for(i=0; i<[toolbarItems count]; i++)
 	{
 		item = [toolbarItems objectAtIndex:i];
-		if ([[item itemIdentifier] isEqualToString:ReportToolbarItemIdentifier])
+		if ([[item itemIdentifier] isEqualToString: ReportToolbarItemIdentifier])
 		{
 			[toolbar removeItemAtIndex:i];
-			[toolbar insertItemWithItemIdentifier:ReportToolbarItemIdentifier atIndex:i];
+			[toolbar insertItemWithItemIdentifier: ReportToolbarItemIdentifier atIndex:i];
 		}
 	}
 }
