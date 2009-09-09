@@ -1579,18 +1579,19 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 {
 	yFlipped = v;
 	
-	[[[BrowserController currentBrowser] managedObjectContext] lock];
-	
-	// Series Level
-	[[self seriesObj]  setValue:[NSNumber numberWithBool:yFlipped] forKey:@"yFlipped"];
-	
-	// Image Level
-	if( ([DCMView noPropagateSettingsInSeriesForModality: [[dcmFilesList objectAtIndex:0] valueForKey:@"modality"]]) || COPYSETTINGSINSERIES == NO)
-		[[self imageObj] setValue:[NSNumber numberWithBool:yFlipped] forKey:@"yFlipped"];
-	else
-		[[self imageObj] setValue: nil forKey:@"yFlipped"];
-	
-	[[[BrowserController currentBrowser] managedObjectContext] unlock];
+	if( [[[BrowserController currentBrowser] managedObjectContext] tryLock])
+	{
+		// Series Level
+		[[self seriesObj]  setValue:[NSNumber numberWithBool:yFlipped] forKey:@"yFlipped"];
+		
+		// Image Level
+		if( ([DCMView noPropagateSettingsInSeriesForModality: [[dcmFilesList objectAtIndex:0] valueForKey:@"modality"]]) || COPYSETTINGSINSERIES == NO)
+			[[self imageObj] setValue:[NSNumber numberWithBool:yFlipped] forKey:@"yFlipped"];
+		else
+			[[self imageObj] setValue: nil forKey:@"yFlipped"];
+		
+		[[[BrowserController currentBrowser] managedObjectContext] unlock];
+	}
 	
 	[self updateTilingViews];
 	
@@ -1601,17 +1602,18 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 {
 	xFlipped = v;
 	
-	[[[BrowserController currentBrowser] managedObjectContext] lock];
-	
-	[[self seriesObj]  setValue:[NSNumber numberWithBool:xFlipped] forKey:@"xFlipped"];
-	
-	// Image Level
-	if( [DCMView noPropagateSettingsInSeriesForModality: [[dcmFilesList objectAtIndex:0] valueForKey:@"modality"]] || COPYSETTINGSINSERIES == NO)
-		[[self imageObj] setValue:[NSNumber numberWithBool:xFlipped] forKey:@"xFlipped"];
-	else
-		[[self imageObj] setValue: nil forKey:@"xFlipped"];
-	
-	[[[BrowserController currentBrowser] managedObjectContext] unlock];
+	if( [[[BrowserController currentBrowser] managedObjectContext] tryLock])
+	{
+		[[self seriesObj]  setValue:[NSNumber numberWithBool:xFlipped] forKey:@"xFlipped"];
+		
+		// Image Level
+		if( [DCMView noPropagateSettingsInSeriesForModality: [[dcmFilesList objectAtIndex:0] valueForKey:@"modality"]] || COPYSETTINGSINSERIES == NO)
+			[[self imageObj] setValue:[NSNumber numberWithBool:xFlipped] forKey:@"xFlipped"];
+		else
+			[[self imageObj] setValue: nil forKey:@"xFlipped"];
+		
+		[[[BrowserController currentBrowser] managedObjectContext] unlock];
+	}
 	
 	[self updateTilingViews];
 	
@@ -4857,12 +4859,13 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	//set value for Series Object Presentation State
 	if( [self is2DViewer] == YES && [[self windowController] isPostprocessed] == NO)
 	{
-		[[[BrowserController currentBrowser] managedObjectContext] lock];
-		
-		[[self seriesObj] setValue:[NSNumber numberWithFloat:origin.x] forKey:@"xOffset"];
-		[[self seriesObj] setValue:[NSNumber numberWithFloat:origin.y] forKey:@"yOffset"];
-		
-		[[[BrowserController currentBrowser] managedObjectContext] unlock];
+		if( [[[BrowserController currentBrowser] managedObjectContext] tryLock])
+		{
+			[[self seriesObj] setValue:[NSNumber numberWithFloat:origin.x] forKey:@"xOffset"];
+			[[self seriesObj] setValue:[NSNumber numberWithFloat:origin.y] forKey:@"yOffset"];
+			
+			[[[BrowserController currentBrowser] managedObjectContext] unlock];
+		}
 	}
 }
 
