@@ -1921,12 +1921,11 @@ static NSArray*	statesArray = nil;
     NSString *localizedDescription;
 	NSFileManager *fileManager;
 	
-	if( currentDatabasePath == nil) return nil;
+	if( currentDatabasePath == nil)
+		return nil;
 	
-	[[managedObjectContext undoManager] setLevelsOfUndo: 1];
-	[[managedObjectContext undoManager] disableUndoRegistration];
-	
-    if (managedObjectContext) return managedObjectContext;
+    if (managedObjectContext)
+		return managedObjectContext;
 	
 	if( loadIfNecessary == NO) return nil;
 	
