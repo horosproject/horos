@@ -5508,38 +5508,19 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     [self loadTextures];
     [self setNeedsDisplay:YES];
 	
-	[[[BrowserController currentBrowser] managedObjectContext] lock];
-	
-	//set value for Series Object Presentation State
-	if( curDCM.SUVConverted == NO)
+	if( [[[BrowserController currentBrowser] managedObjectContext] tryLock])
 	{
-		[[self seriesObj] setValue:[NSNumber numberWithFloat:curWW] forKey:@"windowWidth"];
-		[[self seriesObj] setValue:[NSNumber numberWithFloat:curWL] forKey:@"windowLevel"];
-		
-		// Image Level
-		if( [DCMView noPropagateSettingsInSeriesForModality: [[dcmFilesList objectAtIndex:0] valueForKey:@"modality"]] || COPYSETTINGSINSERIES == NO)
+		//set value for Series Object Presentation State
+		if( curDCM.SUVConverted == NO)
 		{
-			[[self imageObj] setValue:[NSNumber numberWithFloat:curWW] forKey:@"windowWidth"];
-			[[self imageObj] setValue:[NSNumber numberWithFloat:curWL] forKey:@"windowLevel"];
-		}
-		else
-		{
-			[[self imageObj] setValue: nil forKey:@"windowWidth"];
-			[[self imageObj] setValue: nil forKey:@"windowLevel"];
-		}
-	}
-	else
-	{
-		if( [self is2DViewer] == YES)
-		{
-			[[self seriesObj] setValue:[NSNumber numberWithFloat:curWW / [[self windowController] factorPET2SUV]] forKey:@"windowWidth"];
-			[[self seriesObj] setValue:[NSNumber numberWithFloat:curWL / [[self windowController] factorPET2SUV]] forKey:@"windowLevel"];
+			[[self seriesObj] setValue:[NSNumber numberWithFloat:curWW] forKey:@"windowWidth"];
+			[[self seriesObj] setValue:[NSNumber numberWithFloat:curWL] forKey:@"windowLevel"];
 			
 			// Image Level
 			if( [DCMView noPropagateSettingsInSeriesForModality: [[dcmFilesList objectAtIndex:0] valueForKey:@"modality"]] || COPYSETTINGSINSERIES == NO)
 			{
-				[[self imageObj] setValue:[NSNumber numberWithFloat:curWW / [[self windowController] factorPET2SUV]] forKey:@"windowWidth"];
-				[[self imageObj] setValue:[NSNumber numberWithFloat:curWL / [[self windowController] factorPET2SUV]] forKey:@"windowLevel"];
+				[[self imageObj] setValue:[NSNumber numberWithFloat:curWW] forKey:@"windowWidth"];
+				[[self imageObj] setValue:[NSNumber numberWithFloat:curWL] forKey:@"windowLevel"];
 			}
 			else
 			{
@@ -5547,8 +5528,28 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				[[self imageObj] setValue: nil forKey:@"windowLevel"];
 			}
 		}
+		else
+		{
+			if( [self is2DViewer] == YES)
+			{
+				[[self seriesObj] setValue:[NSNumber numberWithFloat:curWW / [[self windowController] factorPET2SUV]] forKey:@"windowWidth"];
+				[[self seriesObj] setValue:[NSNumber numberWithFloat:curWL / [[self windowController] factorPET2SUV]] forKey:@"windowLevel"];
+				
+				// Image Level
+				if( [DCMView noPropagateSettingsInSeriesForModality: [[dcmFilesList objectAtIndex:0] valueForKey:@"modality"]] || COPYSETTINGSINSERIES == NO)
+				{
+					[[self imageObj] setValue:[NSNumber numberWithFloat:curWW / [[self windowController] factorPET2SUV]] forKey:@"windowWidth"];
+					[[self imageObj] setValue:[NSNumber numberWithFloat:curWL / [[self windowController] factorPET2SUV]] forKey:@"windowLevel"];
+				}
+				else
+				{
+					[[self imageObj] setValue: nil forKey:@"windowWidth"];
+					[[self imageObj] setValue: nil forKey:@"windowLevel"];
+				}
+			}
+		}
+		[[[BrowserController currentBrowser] managedObjectContext] unlock];
 	}
-	[[[BrowserController currentBrowser] managedObjectContext] unlock];
 }
 
 -(void) setFusion:(short) mode :(short) stacks
@@ -9799,19 +9800,20 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 		if( [self is2DViewer])
 		{
-			[[[BrowserController currentBrowser] managedObjectContext] lock];
-			
-			// Series Level
-			[[self seriesObj] setValue:[NSNumber numberWithFloat: scaleValue / sqrt( [self frame].size.height * [self frame].size.width)] forKey:@"scale"];
-			[[self seriesObj] setValue:[NSNumber numberWithInt: 3] forKey: @"displayStyle"];
-			
-			// Image Level
-			if( [DCMView noPropagateSettingsInSeriesForModality: [[dcmFilesList objectAtIndex:0] valueForKey:@"modality"]] || COPYSETTINGSINSERIES == NO)
-				[[self imageObj] setValue:[NSNumber numberWithFloat:scaleValue] forKey:@"scale"];
-			else
-				[[self imageObj] setValue: nil forKey:@"scale"];
-			
-			[[[BrowserController currentBrowser] managedObjectContext] unlock];
+			if( [[[BrowserController currentBrowser] managedObjectContext] tryLock])
+			{
+				// Series Level
+				[[self seriesObj] setValue:[NSNumber numberWithFloat: scaleValue / sqrt( [self frame].size.height * [self frame].size.width)] forKey:@"scale"];
+				[[self seriesObj] setValue:[NSNumber numberWithInt: 3] forKey: @"displayStyle"];
+				
+				// Image Level
+				if( [DCMView noPropagateSettingsInSeriesForModality: [[dcmFilesList objectAtIndex:0] valueForKey:@"modality"]] || COPYSETTINGSINSERIES == NO)
+					[[self imageObj] setValue:[NSNumber numberWithFloat:scaleValue] forKey:@"scale"];
+				else
+					[[self imageObj] setValue: nil forKey:@"scale"];
+				
+				[[[BrowserController currentBrowser] managedObjectContext] unlock];
+			}
 		}
 		
 		[self updateTilingViews];
@@ -9839,19 +9841,20 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		{
 			if( [[self windowController] isPostprocessed] == NO)
 			{
-				[[[BrowserController currentBrowser] managedObjectContext] lock];
-				
-				// Series Level
-				[[self seriesObj] setValue:[NSNumber numberWithFloat: scaleValue / sqrt( [self frame].size.height * [self frame].size.width)] forKey:@"scale"];
-				[[self seriesObj] setValue:[NSNumber numberWithInt: 3] forKey: @"displayStyle"];
-				
-				// Image Level
-				if( [DCMView noPropagateSettingsInSeriesForModality: [[dcmFilesList objectAtIndex:0] valueForKey:@"modality"]] || COPYSETTINGSINSERIES == NO)
-					[[self imageObj] setValue:[NSNumber numberWithFloat:scaleValue] forKey:@"scale"];
-				else
-					[[self imageObj] setValue: nil forKey:@"scale"];
-				
-				[[[BrowserController currentBrowser] managedObjectContext] unlock];
+				if( [[[BrowserController currentBrowser] managedObjectContext] tryLock])
+				{				
+					// Series Level
+					[[self seriesObj] setValue:[NSNumber numberWithFloat: scaleValue / sqrt( [self frame].size.height * [self frame].size.width)] forKey:@"scale"];
+					[[self seriesObj] setValue:[NSNumber numberWithInt: 3] forKey: @"displayStyle"];
+					
+					// Image Level
+					if( [DCMView noPropagateSettingsInSeriesForModality: [[dcmFilesList objectAtIndex:0] valueForKey:@"modality"]] || COPYSETTINGSINSERIES == NO)
+						[[self imageObj] setValue:[NSNumber numberWithFloat:scaleValue] forKey:@"scale"];
+					else
+						[[self imageObj] setValue: nil forKey:@"scale"];
+					
+					[[[BrowserController currentBrowser] managedObjectContext] unlock];
+				}
 			}
 		}
 		
@@ -9970,17 +9973,18 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		if( rotation < 0) rotation += 360;
 		if( rotation > 360) rotation -= 360;
 		
-		[[[BrowserController currentBrowser] managedObjectContext] lock];
-		
-		[[self seriesObj] setValue:[NSNumber numberWithFloat:rotation] forKey:@"rotationAngle"];
-		
-		// Image Level
-		if( [DCMView noPropagateSettingsInSeriesForModality: [[dcmFilesList objectAtIndex:0] valueForKey:@"modality"]] || COPYSETTINGSINSERIES == NO)
-			[[self imageObj] setValue:[NSNumber numberWithFloat:rotation] forKey:@"rotationAngle"];
-		else
-			[[self imageObj] setValue: nil forKey:@"rotationAngle"];
-		
-		[[[BrowserController currentBrowser] managedObjectContext] unlock];
+		if( [[[BrowserController currentBrowser] managedObjectContext] tryLock])
+		{		
+			[[self seriesObj] setValue:[NSNumber numberWithFloat:rotation] forKey:@"rotationAngle"];
+			
+			// Image Level
+			if( [DCMView noPropagateSettingsInSeriesForModality: [[dcmFilesList objectAtIndex:0] valueForKey:@"modality"]] || COPYSETTINGSINSERIES == NO)
+				[[self imageObj] setValue:[NSNumber numberWithFloat:rotation] forKey:@"rotationAngle"];
+			else
+				[[self imageObj] setValue: nil forKey:@"rotationAngle"];
+			
+			[[[BrowserController currentBrowser] managedObjectContext] unlock];
+		}
 		
 		[self updateTilingViews];
 	}
@@ -10073,25 +10077,26 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 	if( [self is2DViewer] == YES && [[self windowController] isPostprocessed] == NO)
 	{
-		[[[BrowserController currentBrowser] managedObjectContext] lock];
-		
-		// Series Level
-		[[self seriesObj] setValue:[NSNumber numberWithFloat:x] forKey:@"xOffset"];
-		[[self seriesObj] setValue:[NSNumber numberWithFloat:y] forKey:@"yOffset"];
-		
-		// Image Level
-		if( [DCMView noPropagateSettingsInSeriesForModality: [[dcmFilesList objectAtIndex:0] valueForKey:@"modality"]] || COPYSETTINGSINSERIES == NO)
-		{
-			[[self imageObj] setValue:[NSNumber numberWithFloat:x] forKey:@"xOffset"];
-			[[self imageObj] setValue:[NSNumber numberWithFloat:y] forKey:@"yOffset"];
+		if( [[[BrowserController currentBrowser] managedObjectContext] tryLock])
+		{		
+			// Series Level
+			[[self seriesObj] setValue:[NSNumber numberWithFloat:x] forKey:@"xOffset"];
+			[[self seriesObj] setValue:[NSNumber numberWithFloat:y] forKey:@"yOffset"];
+			
+			// Image Level
+			if( [DCMView noPropagateSettingsInSeriesForModality: [[dcmFilesList objectAtIndex:0] valueForKey:@"modality"]] || COPYSETTINGSINSERIES == NO)
+			{
+				[[self imageObj] setValue:[NSNumber numberWithFloat:x] forKey:@"xOffset"];
+				[[self imageObj] setValue:[NSNumber numberWithFloat:y] forKey:@"yOffset"];
+			}
+			else
+			{
+				[[self imageObj] setValue: nil forKey:@"xOffset"];
+				[[self imageObj] setValue: nil forKey:@"yOffset"];
+			}
+			
+			[[[BrowserController currentBrowser] managedObjectContext] unlock];
 		}
-		else
-		{
-			[[self imageObj] setValue: nil forKey:@"xOffset"];
-			[[self imageObj] setValue: nil forKey:@"yOffset"];
-		}
-		
-		[[[BrowserController currentBrowser] managedObjectContext] unlock];
 	}
 	
 	[self updateTilingViews];
@@ -11190,8 +11195,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	NSManagedObject *series = [self seriesObj];
 	NSManagedObject *image = [self imageObj];
 	
-	[[[BrowserController currentBrowser] managedObjectContext] lock];
-	
 	if( series)
 	{
 		if( [image valueForKey:@"xFlipped"])
@@ -11368,8 +11371,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			}
 		}
 	}
-	
-	[[[BrowserController currentBrowser] managedObjectContext] unlock];
 }
 
 - (void) updatePresentationStateFromSeries
