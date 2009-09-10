@@ -18566,13 +18566,13 @@ sourceRef);
 - (IBAction)deleteReport:(id)sender;
 {
 	[[BrowserController currentBrowser] deleteReport:sender];
-	[self updateReportToolbarIcon:nil];
+	[self performSelector: @selector( updateReportToolbarIcon:) withObject: nil afterDelay: 0.1];
 }
 
 - (IBAction)generateReport:(id)sender;
 {
 	[[BrowserController currentBrowser] generateReport:sender];
-	[self updateReportToolbarIcon:nil];
+	[self performSelector: @selector( updateReportToolbarIcon:) withObject: nil afterDelay: 0.1];
 }
 
 - (NSImage*)reportIcon;
@@ -18599,7 +18599,7 @@ sourceRef);
 	return [NSImage imageNamed:iconName];
 }
 
-- (void)updateReportToolbarIcon:(NSNotification *)note
+- (void) updateReportToolbarIcon:(NSNotification *)note
 {
 	long i;
 	NSToolbarItem *item;

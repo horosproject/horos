@@ -442,7 +442,6 @@
 	}
 
 	float fontSize = imageRect.size.width / theLongest;
-	#pragma mark TODO: font size min/max values (isPrinting)
 
 	//---------------------------------
 	// upper left corner

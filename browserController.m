@@ -16012,7 +16012,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		}
 		
 		[checkBonjourUpToDateThreadLock unlock];
-		[self updateReportToolbarIcon:nil];
+		[self performSelector: @selector( updateReportToolbarIcon:) withObject: nil afterDelay: 0.1];
 	}
 }
 
@@ -16166,7 +16166,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			[checkBonjourUpToDateThreadLock unlock];
 		}
 	}
-	[self updateReportToolbarIcon:nil];
+	[self performSelector: @selector( updateReportToolbarIcon:) withObject: nil afterDelay: 0.1];
 }
 
 - (NSImage*) reportIcon
