@@ -52,13 +52,13 @@
 
 - (void) _testForValidFilePath: (NSMutableArray*) dicomdirFileList path: (NSString*) startDirectory files: (NSMutableArray*) files
 {
-	NSString				*filePath					= nil;
-	NSString				*cutFilePath				= nil;
-	NSArray					*fileNames					= nil;
-	NSString				*uppercaseFilePath;
-	BOOL					isDirectory					= FALSE;
-	NSFileManager			*fileManager				= [NSFileManager defaultManager];
-	int						i							= 0;
+	NSString *filePath = nil;
+	NSString *cutFilePath = nil;
+	NSArray *fileNames = nil;
+	NSString *uppercaseFilePath;
+	BOOL isDirectory = FALSE;
+	NSFileManager *fileManager = [NSFileManager defaultManager];
+	int i = 0;
 	
 	if (startDirectory==Nil || files==Nil) return;
 	
@@ -70,26 +70,36 @@
 		isDirectory = FALSE;
 		if ([fileManager fileExistsAtPath:filePath isDirectory: &isDirectory] && !isDirectory)
 		{
-			NSString *ext = [uppercaseFilePath pathExtension];
-			
-			// only files with DCM or no extension, or a number like 82873.9982.9928.22
-			if ([ext isEqualToString: @".DCM"] || [ext isEqualToString: @""] || [ext length] > 4 || [ext length] < 3 || [ext holdsIntegerValue] == YES)
+			@try
 			{
-				int j = 0;
+				NSString *ext = [uppercaseFilePath pathExtension];
 				
-				if( [ext length] <= 4 && [ext length] >= 3 && [ext holdsIntegerValue] == NO)
-					cutFilePath = [uppercaseFilePath stringByDeletingPathExtension];
-				else
-					cutFilePath = uppercaseFilePath;
-				
-				for( NSString *s in dicomdirFileList)
+				// only files with DCM or no extension, or a number like 82873.9982.9928.22
+				if ([ext isEqualToString: @"DCM"] || [ext isEqualToString: @""] || [ext length] > 4 || [ext length] < 3 || [ext holdsIntegerValue] == YES)
 				{
-					if ([cutFilePath isEqualToString: s] || [[cutFilePath stringByDeletingPathExtension] isEqualToString: s] || [filePath isEqualToString: s])
+					int j = 0;
+					
+					if( [ext length] <= 4 && [ext length] >= 3 && [ext holdsIntegerValue] == NO)
+						cutFilePath = [uppercaseFilePath stringByDeletingPathExtension];
+					else
+						cutFilePath = uppercaseFilePath;
+					
+					if( [cutFilePath length] < 2000)
 					{
-						[files addObject: filePath];
-						break;
+						for( NSString *s in dicomdirFileList)
+						{
+							if ([cutFilePath isEqualToString: s] || [[cutFilePath stringByDeletingPathExtension] isEqualToString: s] || [filePath isEqualToString: s])
+							{
+								[files addObject: filePath];
+								break;
+							}
+						}
 					}
 				}
+			}
+			@catch (NSException *e)
+			{
+				NSLog( @"**** _testForValidFilePath exception: %@", e);
 			}
 		}
 		isDirectory = FALSE;
@@ -109,9 +119,9 @@
 - (void) parseArray:(NSMutableArray*) files
 {
 	NSMutableArray *result = [[[NSMutableArray alloc] initWithCapacity:0] autorelease];
-	long			i, start, length;
-	char			*buffer;
-	NSString		*file;
+	long i, start, length;
+	char *buffer;
+	NSString *file;
 	
 	buffer = (char*)  [data UTF8String];
 	
@@ -150,11 +160,11 @@
 
 -(id) init:(NSString*) srcFile
 {
-    NSTask          *aTask;
-    NSMutableArray  *theArguments = [NSMutableArray array];
-    NSPipe          *newPipe = [NSPipe pipe];
-    NSData          *inData = nil;
-    NSString        *s = [NSString stringWithString:@""];
+    NSTask *aTask;
+    NSMutableArray *theArguments = [NSMutableArray array];
+    NSPipe *newPipe = [NSPipe pipe];
+    NSData *inData = nil;
+    NSString *s = [NSString stringWithString:@""];
     
 	dirpath = [[NSString alloc] initWithFormat: @"%@/", [srcFile stringByDeletingLastPathComponent]];
 	

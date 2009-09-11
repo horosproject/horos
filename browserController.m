@@ -10347,7 +10347,7 @@ static BOOL needToRezoom;
 			}
 			
 			memBlock *= sizeof(float);
-			memBlock += 4096;
+			memBlock += 2L * 1024L * 1024L;
 			
 			#if __LP64__
 			#else
