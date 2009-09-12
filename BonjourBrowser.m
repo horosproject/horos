@@ -74,7 +74,7 @@ static char *GetPrivateIP()
 	NSMutableString	*destPath = [NSMutableString string];
 	
 	[destPath appendString:[[BrowserController currentBrowser] documentsDirectory]];
-	[destPath appendString:@"/TEMP/"];
+	[destPath appendString:@"/TEMP.noindex/"];
 	[destPath appendString: [str lastPathComponent]];
 
 	return destPath;
@@ -340,7 +340,8 @@ static char *GetPrivateIP()
 					
 					if( [curData length])
 					{
-						if ([[NSFileManager defaultManager] fileExistsAtPath: localPath]) NSLog(@"strange...");
+						if ([[NSFileManager defaultManager] fileExistsAtPath: localPath])
+							NSLog(@"*** DB Network Browser: strange the file is already available : %@", localPath);
 						
 						[curData writeToFile: localPath atomically: YES];
 					}
