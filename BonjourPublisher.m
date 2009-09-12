@@ -1002,6 +1002,9 @@ static char *GetPrivateIP()
 	//					NSData	*content = [[NSFileManager defaultManager] contentsAtPath: path];
 						NSData	*content = [NSData dataWithContentsOfMappedFile: path];
 						
+//						if( content == nil)
+//							NSLog( @"*** DB Publisher : file not found: %@", path);
+						
 						size = NSSwapHostIntToBig( [content length]);
 						[representationToSend appendBytes: &size length: 4];
 						[representationToSend appendData: content];
