@@ -12169,6 +12169,14 @@ static NSArray*	openSubSeriesArray = nil;
 
 -(void) awakeFromNib
 {
+//	dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+// 
+//	dispatch_apply(count, queue,
+//	^(size_t i)
+//	{
+//		printf("%u\n",i);
+//	});
+
 	WaitRendering *wait = nil;
 	
 	if( sizeof( long) == 8 )

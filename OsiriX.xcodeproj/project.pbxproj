@@ -458,7 +458,6 @@
 		AB3F4A200672674000E61A6C /* Window3DController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB3F4A1E0672674000E61A6C /* Window3DController.m */; };
 		AB46648D09A331DF005A2766 /* Report.icns in Resources */ = {isa = PBXBuildFile; fileRef = AB46648C09A331DF005A2766 /* Report.icns */; };
 		AB4CD7690F72619900699111 /* FlyThruController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 183C863D08563F3A000E6A68 /* FlyThruController.mm */; };
-		AB52E5FC0A19D93500726305 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB52E5C70A19D93500726305 /* Security.framework */; };
 		AB64A2DA0C4E0F61000E0981 /* HornRegistration.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB64A2D60C4E0F61000E0981 /* HornRegistration.mm */; };
 		AB64A2DB0C4E0F61000E0981 /* HornRegistration.h in Headers */ = {isa = PBXBuildFile; fileRef = AB64A2D70C4E0F61000E0981 /* HornRegistration.h */; };
 		AB695A1F063D8261002BDF78 /* Analyze.h in Headers */ = {isa = PBXBuildFile; fileRef = AB695A1D063D8261002BDF78 /* Analyze.h */; };
@@ -1440,7 +1439,6 @@
 		BF47CBD60A2E31B100700AA9 /* viewHTML.tif in Resources */ = {isa = PBXBuildFile; fileRef = BF47CBCD0A2E31B100700AA9 /* viewHTML.tif */; };
 		BF47CBD70A2E31B100700AA9 /* viewSR.tif in Resources */ = {isa = PBXBuildFile; fileRef = BF47CBCE0A2E31B100700AA9 /* viewSR.tif */; };
 		BF47CBD80A2E31B100700AA9 /* viewXML.tif in Resources */ = {isa = PBXBuildFile; fileRef = BF47CBCF0A2E31B100700AA9 /* viewXML.tif */; };
-		BF47CC240A2E3BC500700AA9 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF47CBF20A2E3BC500700AA9 /* WebKit.framework */; };
 		BF47CC370A2E4AD900700AA9 /* StructuredReport.h in Headers */ = {isa = PBXBuildFile; fileRef = BF47CC310A2E4AD800700AA9 /* StructuredReport.h */; };
 		BF47CC380A2E4AD900700AA9 /* StructuredReport.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF47CC320A2E4AD900700AA9 /* StructuredReport.mm */; };
 		BF4CEBD609CB736D0073E928 /* dcmqrcnf.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF4CEBD509CB736D0073E928 /* dcmqrcnf.mm */; };
@@ -1454,7 +1452,6 @@
 		BF62905C0A2B7D5000BB0B62 /* StructuredReportController.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF6290560A2B7D5000BB0B62 /* StructuredReportController.mm */; };
 		BF62907B0A2B7E8600BB0B62 /* SRArrayController.h in Headers */ = {isa = PBXBuildFile; fileRef = BF6290750A2B7E8600BB0B62 /* SRArrayController.h */; };
 		BF62907C0A2B7E8600BB0B62 /* SRArrayController.m in Sources */ = {isa = PBXBuildFile; fileRef = BF6290760A2B7E8600BB0B62 /* SRArrayController.m */; };
-		BF6290B10A2B80A800BB0B62 /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF62909A0A2B80A800BB0B62 /* AddressBook.framework */; };
 		BF6F18DC0CAD6ACF006DE602 /* FlyThruStepsArrayController.h in Headers */ = {isa = PBXBuildFile; fileRef = BF6F18DA0CAD6ACF006DE602 /* FlyThruStepsArrayController.h */; };
 		BF6F18DD0CAD6AD0006DE602 /* FlyThruStepsArrayController.m in Sources */ = {isa = PBXBuildFile; fileRef = BF6F18DB0CAD6ACF006DE602 /* FlyThruStepsArrayController.m */; };
 		BF76A59906ACC6FD00FABE42 /* ButtonAndTextField.h in Headers */ = {isa = PBXBuildFile; fileRef = BF76A59706ACC6FD00FABE42 /* ButtonAndTextField.h */; };
@@ -4001,6 +3998,9 @@
 		CE778E390FDA636A00CC4C7D /* DicomDirDatasetRead.c in Sources */ = {isa = PBXBuildFile; fileRef = CE778E340FDA636A00CC4C7D /* DicomDirDatasetRead.c */; };
 		CE77B0740CB9718C00BE873C /* WaitRendering.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F991A0C84724B00CB38F1 /* WaitRendering.xib */; };
 		CE77B0B10CB9719C00BE873C /* WaitRendering.m in Sources */ = {isa = PBXBuildFile; fileRef = ABB218B805CF1E9300D8B619 /* WaitRendering.m */; };
+		CE790A1A105D4DE200CE6AAF /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE790A17105D4DE200CE6AAF /* AddressBook.framework */; };
+		CE790A1B105D4DE200CE6AAF /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE790A18105D4DE200CE6AAF /* Security.framework */; };
+		CE790A1C105D4DE200CE6AAF /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE790A19105D4DE200CE6AAF /* WebKit.framework */; };
 		CE79D9890FD84C350043DD73 /* DCMAbstractSyntaxUID.m in Sources */ = {isa = PBXBuildFile; fileRef = CE79D9870FD84C350043DD73 /* DCMAbstractSyntaxUID.m */; };
 		CE79D98A0FD84C350043DD73 /* DCMAbstractSyntaxUID.h in Headers */ = {isa = PBXBuildFile; fileRef = CE79D9860FD84C350043DD73 /* DCMAbstractSyntaxUID.h */; };
 		CE79D98B0FD84C350043DD73 /* DCMAbstractSyntaxUID.m in Sources */ = {isa = PBXBuildFile; fileRef = CE79D9870FD84C350043DD73 /* DCMAbstractSyntaxUID.m */; };
@@ -5266,7 +5266,6 @@
 		AB4E3C0505ADD50F001411D1 /* PapyDataSetRead3.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = PapyDataSetRead3.c; path = Papyrus3/PapyDataSetRead3.c; sourceTree = "<group>"; };
 		AB4E3CAE05ADDE13001411D1 /* DicomDirParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DicomDirParser.h; sourceTree = "<group>"; };
 		AB4E3CAF05ADDE13001411D1 /* DicomDirParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DicomDirParser.m; sourceTree = "<group>"; };
-		AB52E5C70A19D93500726305 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = /Developer/SDKs/MacOSX10.4u.sdk/System/Library/Frameworks/Security.framework; sourceTree = "<absolute>"; };
 		AB59B18205697FD400B77AFC /* DCMView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = DCMView.m; sourceTree = "<group>"; };
 		AB59B18405697FD700B77AFC /* DCMView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DCMView.h; sourceTree = "<group>"; };
 		AB5E1A300595697700C48BEB /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = /System/Library/Frameworks/Accelerate.framework; sourceTree = "<absolute>"; };
@@ -5559,7 +5558,6 @@
 		BF47CBCD0A2E31B100700AA9 /* viewHTML.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = viewHTML.tif; sourceTree = "<group>"; };
 		BF47CBCE0A2E31B100700AA9 /* viewSR.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = viewSR.tif; sourceTree = "<group>"; };
 		BF47CBCF0A2E31B100700AA9 /* viewXML.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = viewXML.tif; sourceTree = "<group>"; };
-		BF47CBF20A2E3BC500700AA9 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = /Developer/SDKs/MacOSX10.4u.sdk/System/Library/Frameworks/WebKit.framework; sourceTree = "<absolute>"; };
 		BF47CC310A2E4AD800700AA9 /* StructuredReport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StructuredReport.h; sourceTree = "<group>"; };
 		BF47CC320A2E4AD900700AA9 /* StructuredReport.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = StructuredReport.mm; sourceTree = "<group>"; };
 		BF4CEBD509CB736D0073E928 /* dcmqrcnf.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = dcmqrcnf.mm; sourceTree = "<group>"; };
@@ -5574,7 +5572,6 @@
 		BF6290560A2B7D5000BB0B62 /* StructuredReportController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = StructuredReportController.mm; sourceTree = "<group>"; };
 		BF6290750A2B7E8600BB0B62 /* SRArrayController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SRArrayController.h; sourceTree = "<group>"; };
 		BF6290760A2B7E8600BB0B62 /* SRArrayController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SRArrayController.m; sourceTree = "<group>"; };
-		BF62909A0A2B80A800BB0B62 /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = /Developer/SDKs/MacOSX10.4u.sdk/System/Library/Frameworks/AddressBook.framework; sourceTree = "<absolute>"; };
 		BF6F18DA0CAD6ACF006DE602 /* FlyThruStepsArrayController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlyThruStepsArrayController.h; sourceTree = "<group>"; };
 		BF6F18DB0CAD6ACF006DE602 /* FlyThruStepsArrayController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FlyThruStepsArrayController.m; sourceTree = "<group>"; };
 		BF746FB50CC6811A00198387 /* Documentation */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Documentation; path = ../Documentation; sourceTree = SOURCE_ROOT; };
@@ -8406,6 +8403,9 @@
 		CE778E320FDA636A00CC4C7D /* DicomDirInit.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = DicomDirInit.c; sourceTree = "<group>"; };
 		CE778E330FDA636A00CC4C7D /* DicomDirFiles.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = DicomDirFiles.c; sourceTree = "<group>"; };
 		CE778E340FDA636A00CC4C7D /* DicomDirDatasetRead.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = DicomDirDatasetRead.c; sourceTree = "<group>"; };
+		CE790A17105D4DE200CE6AAF /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = System/Library/Frameworks/AddressBook.framework; sourceTree = SDKROOT; };
+		CE790A18105D4DE200CE6AAF /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		CE790A19105D4DE200CE6AAF /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		CE79D9860FD84C350043DD73 /* DCMAbstractSyntaxUID.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMAbstractSyntaxUID.h; sourceTree = "<group>"; };
 		CE79D9870FD84C350043DD73 /* DCMAbstractSyntaxUID.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMAbstractSyntaxUID.m; sourceTree = "<group>"; };
 		CE7A0F1A0AED55E700540017 /* ShellMainClass.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = ShellMainClass.mm; sourceTree = "<group>"; };
@@ -8451,7 +8451,6 @@
 		CEA20534073A810100F0DAB7 /* iPhoto.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = iPhoto.m; sourceTree = "<group>"; };
 		CEA337BA06AD9BF6006D2357 /* iDiskGet.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = iDiskGet.icns; sourceTree = "<group>"; };
 		CEA337BB06AD9BF6006D2357 /* iDiskSend.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = iDiskSend.icns; sourceTree = "<group>"; };
-		CEA656CB094EF64300D4E5E5 /* vli3.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = vli3.framework; path = VolumePRO/vli3.framework; sourceTree = "<group>"; };
 		CEAE02DF0DE7E33B00E9BD01 /* DICOMDestination.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = DICOMDestination.tif; sourceTree = "<group>"; };
 		CEAF4ECC089D6E9400DE46AF /* OsiriXTables.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = OsiriXTables.pdf; sourceTree = "<group>"; };
 		CEB1DA6608A3B1040058C303 /* smalltrash.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = smalltrash.tif; sourceTree = "<group>"; };
@@ -8633,9 +8632,6 @@
 				7E54303D07A05E7100500ABB /* DiscRecording.framework in Frameworks */,
 				7E54303E07A05E7100500ABB /* DiscRecordingUI.framework in Frameworks */,
 				CEFE605A0979B1DB00891EA9 /* DotMacKit.framework in Frameworks */,
-				AB52E5FC0A19D93500726305 /* Security.framework in Frameworks */,
-				BF6290B10A2B80A800BB0B62 /* AddressBook.framework in Frameworks */,
-				BF47CC240A2E3BC500700AA9 /* WebKit.framework in Frameworks */,
 				AB6B75EC0A53F60600F0CA8F /* QTKit.framework in Frameworks */,
 				CE2C82E30C708B310093C162 /* InstantMessage.framework in Frameworks */,
 				CE2C82EC0C708B380093C162 /* CoreVideo.framework in Frameworks */,
@@ -8699,6 +8695,9 @@
 				CE8D057E0FD8505000165DDE /* OsiriX.framework in Frameworks */,
 				CECBF93D0FE6B1C400425ED4 /* libopenjpeg.a in Frameworks */,
 				59A63E8C1042C776003F4069 /* Nitrogen.framework in Frameworks */,
+				CE790A1A105D4DE200CE6AAF /* AddressBook.framework in Frameworks */,
+				CE790A1B105D4DE200CE6AAF /* Security.framework in Frameworks */,
+				CE790A1C105D4DE200CE6AAF /* WebKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8793,10 +8792,9 @@
 				ABE881440FC1444D009F5C80 /* ILCrashReporter.framework */,
 				ABDF6E2D0BE0904D00793094 /* Growl.framework */,
 				BF5F14C20B14E12700B309B9 /* CoreVideo.framework */,
-				BF47CBF20A2E3BC500700AA9 /* WebKit.framework */,
-				BF62909A0A2B80A800BB0B62 /* AddressBook.framework */,
-				AB52E5C70A19D93500726305 /* Security.framework */,
-				CEA656CB094EF64300D4E5E5 /* vli3.framework */,
+				CE790A17105D4DE200CE6AAF /* AddressBook.framework */,
+				CE790A18105D4DE200CE6AAF /* Security.framework */,
+				CE790A19105D4DE200CE6AAF /* WebKit.framework */,
 				CEFE60580979B1DB00891EA9 /* DotMacKit.framework */,
 				7E54303B07A05E7100500ABB /* DiscRecording.framework */,
 				7E54303C07A05E7100500ABB /* DiscRecordingUI.framework */,
