@@ -218,20 +218,20 @@ static char *GetPrivateIP()
 	BOOL				success = YES;
 	
 	if ( strcmp( messageToRemoteService, "DATAB") == 0)
-			{
-				// we asked for a SQL file, let's write it on disc
-				[dbFileName release];
-				
-				NSDictionary	*dict = [[self services] objectAtIndex:serviceBeingResolvedIndex];
-				
-				if( [[dict valueForKey:@"type"] isEqualToString:@"bonjour"]) dbFileName = [[self databaseFilePathForService:[[dict valueForKey:@"service"] name]] retain];
-				else dbFileName = [[self databaseFilePathForService:[dict valueForKey:@"Description"]] retain];
-				
-				[[NSFileManager defaultManager] removeFileAtPath: dbFileName handler:nil];
-				[[NSFileManager defaultManager] movePath: tempDatabaseFile toPath: dbFileName handler: nil];
-				
+	{
+		// we asked for a SQL file, let's write it on disc
+		[dbFileName release];
+		
+		NSDictionary	*dict = [[self services] objectAtIndex:serviceBeingResolvedIndex];
+		
+		if( [[dict valueForKey:@"type"] isEqualToString:@"bonjour"]) dbFileName = [[self databaseFilePathForService:[[dict valueForKey:@"service"] name]] retain];
+		else dbFileName = [[self databaseFilePathForService:[dict valueForKey:@"Description"]] retain];
+		
+		[[NSFileManager defaultManager] removeFileAtPath: dbFileName handler:nil];
+		[[NSFileManager defaultManager] movePath: tempDatabaseFile toPath: dbFileName handler: nil];
+		
 //				success = [data writeToFile: dbFileName atomically:YES];
-			}
+	}
 			
 	if( data)
 	{
@@ -321,21 +321,21 @@ static char *GetPrivateIP()
 				
 				int pos = 0, noOfFiles, size, i;
 				
-				noOfFiles = NSSwapBigIntToHost( *((int*)[[data subdataWithRange: NSMakeRange(pos, 4)] bytes]));
+				noOfFiles = NSSwapBigIntToHost( *((int*)([data bytes] + pos)));
 				pos += 4;
 					
 				for( i = 0 ; i < noOfFiles; i++)
 				{
-					size = NSSwapBigIntToHost( *((int*)[[data subdataWithRange: NSMakeRange(pos, 4)] bytes]));
+					size = NSSwapBigIntToHost( *((int*)([data bytes] + pos)));
 					pos += 4;
 					
 					NSData	*curData = [NSData dataWithBytesNoCopy:(void *) ([data bytes] + pos) length:size freeWhenDone:NO];		//[data subdataWithRange: NSMakeRange(pos, size)];
 					pos += size;
 					
-					size = NSSwapBigIntToHost( *((int*)[[data subdataWithRange: NSMakeRange(pos, 4)] bytes]));
+					size = NSSwapBigIntToHost( *((int*)([data bytes] + pos)));
 					pos += 4;
 					
-					NSString *localPath = [NSString stringWithUTF8String: [[data subdataWithRange: NSMakeRange(pos,size)] bytes]];
+					NSString *localPath = [NSString stringWithUTF8String: ([data bytes] + pos)];
 					pos += size;
 					
 					if( [curData length])
@@ -343,7 +343,7 @@ static char *GetPrivateIP()
 						if ([[NSFileManager defaultManager] fileExistsAtPath: localPath])
 							NSLog(@"*** DB Network Browser: strange the file is already available : %@", localPath);
 						
-						[curData writeToFile: localPath atomically: YES];
+						[curData writeToFile: localPath atomically: NO];
 					}
 				}
 			}

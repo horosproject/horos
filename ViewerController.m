@@ -6156,6 +6156,8 @@ static ViewerController *draggedController = nil;
 	[imageView computeColor];
 	
 	[self propagateSettings];
+	
+	loadingPauseDelay = 0;
 }
 
 - (void) showWindowTransition
