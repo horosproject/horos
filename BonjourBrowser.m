@@ -229,8 +229,6 @@ static char *GetPrivateIP()
 		
 		[[NSFileManager defaultManager] removeFileAtPath: dbFileName handler:nil];
 		[[NSFileManager defaultManager] movePath: tempDatabaseFile toPath: dbFileName handler: nil];
-		
-//				success = [data writeToFile: dbFileName atomically:YES];
 	}
 			
 	if( data)
@@ -839,8 +837,6 @@ static char *GetPrivateIP()
 								NSDate *oldCurrentTimeOut = currentTimeOut;
 								currentTimeOut = [[NSDate dateWithTimeIntervalSinceNow: TIMEOUT] retain];
 								[oldCurrentTimeOut release];
-								
-	//							NSLog( @"%d", [readData length]);
 							}
 							
 							[self processTheData: data];

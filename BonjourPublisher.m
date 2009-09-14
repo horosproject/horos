@@ -997,13 +997,10 @@ static char *GetPrivateIP()
 					{
 						NSString	*path = [localPaths objectAtIndex: i];
 						
-						if ([[NSFileManager defaultManager] fileExistsAtPath: path] == NO) NSLog( @"Bonjour Publisher - File doesn't exist at path: %@", path);
+//						if ([[NSFileManager defaultManager] fileExistsAtPath: path] == NO)
+//							NSLog( @"Bonjour Publisher - File doesn't exist at path: %@", path);
 						
-	//					NSData	*content = [[NSFileManager defaultManager] contentsAtPath: path];
 						NSData	*content = [NSData dataWithContentsOfMappedFile: path];
-						
-//						if( content == nil)
-//							NSLog( @"*** DB Publisher : file not found: %@", path);
 						
 						size = NSSwapHostIntToBig( [content length]);
 						[representationToSend appendBytes: &size length: 4];
@@ -1014,10 +1011,13 @@ static char *GetPrivateIP()
 						
 						[representationToSend appendBytes:&stringSize length: 4];
 						[representationToSend appendBytes:string length: strlen( string)+1];
+						
+						[incomingConnection writeData: representationToSend];
+						[representationToSend setLength: 0];
 					}
 				}
 				
-				[incomingConnection writeData:representationToSend];
+				[incomingConnection writeData: representationToSend];
 			}
 		}
 	}
