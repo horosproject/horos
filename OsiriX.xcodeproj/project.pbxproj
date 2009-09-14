@@ -87,7 +87,7 @@
 		59C2B8EB0FF0EB6A00B50385 /* Notifications.m in Sources */ = {isa = PBXBuildFile; fileRef = 59E088A80FF0AB9400452F19 /* Notifications.m */; };
 		59C2B8EC0FF0EB7700B50385 /* Notifications.h in Headers */ = {isa = PBXBuildFile; fileRef = 59E088A70FF0AB9400452F19 /* Notifications.h */; };
 		59F1A4C8104BA5BE009E3215 /* OsiriXHeaders.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59F1A4C7104BA5BE009E3215 /* OsiriXHeaders.mm */; };
-		59F1A515104BA8AE009E3215 /* OsiriX Headers.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = AB0F3A2C1046BD2B004129DD /* OsiriX Headers.framework */; };
+		59F1A515104BA8AE009E3215 /* OsiriX.Headers.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = AB0F3A2C1046BD2B004129DD /* OsiriX.Headers.framework */; };
 		7E0B3A4A0675273500908593 /* DCM Framework_Prefix.pch in Resources */ = {isa = PBXBuildFile; fileRef = 7E0B3A12067526A600908593 /* DCM Framework_Prefix.pch */; };
 		7E0B3A4D0675273500908593 /* DCM.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E0B3A13067526A600908593 /* DCM.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7E0B3A530675273600908593 /* DCMAttribute.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E0B3A14067526A600908593 /* DCMAttribute.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -4785,7 +4785,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				59F1A515104BA8AE009E3215 /* OsiriX Headers.framework in CopyFiles */,
+				59F1A515104BA8AE009E3215 /* OsiriX.Headers.framework in CopyFiles */,
 				CE81E2A50FDA9F00000D3D96 /* OsiriX.framework in CopyFiles */,
 				CE438F4D0CB621EC006AAFD9 /* Growl.framework in CopyFiles */,
 				CE438F420CB621DF006AAFD9 /* DotMacKit.framework in CopyFiles */,
@@ -5207,7 +5207,7 @@
 		AB0E6B160FAF4C2000A5C046 /* libitkzlib.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libitkzlib.a; path = ITK180/bin/libitkzlib.a; sourceTree = "<group>"; };
 		AB0EA93B056EDC7E004BBDD3 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
 		AB0F20AB06460F7F0075465D /* Burner.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Burner.tif; sourceTree = "<group>"; };
-		AB0F3A2C1046BD2B004129DD /* OsiriX Headers.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = "OsiriX Headers.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
+		AB0F3A2C1046BD2B004129DD /* OsiriX.Headers.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = OsiriX.Headers.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AB0F3A2D1046BD2B004129DD /* OsiriX Headers-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "OsiriX Headers-Info.plist"; sourceTree = "<group>"; };
 		AB10FA670B96C95500D74684 /* OsirixDownload.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = OsirixDownload.icns; sourceTree = "<group>"; };
 		AB142DFC05600D76008461A0 /* AppController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppController.h; sourceTree = "<group>"; };
@@ -8865,7 +8865,7 @@
 				CE9CED810C75BD8C00752D4B /* libDCM StaticLibrary.a */,
 				CEDAAECA0C7B486A00809161 /* 32-bit shell.app */,
 				844719AF0FD8EF50003BFDF8 /* OsiriX.framework */,
-				AB0F3A2C1046BD2B004129DD /* OsiriX Headers.framework */,
+				AB0F3A2C1046BD2B004129DD /* OsiriX.Headers.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -15837,7 +15837,7 @@
 			);
 			name = OsiriX.Headers;
 			productName = "OsiriXHeaders Framework";
-			productReference = AB0F3A2C1046BD2B004129DD /* OsiriX Headers.framework */;
+			productReference = AB0F3A2C1046BD2B004129DD /* OsiriX.Headers.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 		AB28B42E05B7921E00A9906C /* OsiriX */ = {
@@ -15850,7 +15850,7 @@
 				AB28B42D05B7921E00A9906C /* Frameworks */,
 				CECA66E306CD8C1500D8750E /* CopyFiles */,
 				CEED244F0C71EEDC00E3BEC5 /* SVN Revision number */,
-				59F69A4E1056328D008585F5 /* Clean OsiriX.Headers Framework */,
+				59F69A4E1056328D008585F5 /* Clean frameworks */,
 			);
 			buildRules = (
 			);
@@ -16593,19 +16593,19 @@
 			shellPath = /bin/sh;
 			shellScript = "cd \"$SRCROOT/Binaries\"\nunzip -uo DCMTK.zip\nunzip -uo LibTiff.zip\nunzip -uo VTKLibs.zip\nunzip -uo DB_Previous_Models.zip\nunzip -uo DicomImporter.mdimporter.zip\nunzip -uo PAGES.zip\nunzip -uo OsiriXReport.template.zip\nunzip -uo ILCrashReporter.framework.zip\nunzip -uo Growl.framework.zip\nunzip -uo 3DconnexionClient.framework.zip\nunzip -uo openjpeg.zip\nunzip -uo dciodvfy.zip\nunzip -uo ILCrashReporter.framework.zip\n\ncd \"$SRCROOT/AYDicomPrint\"\nunzip -uo libdcmprintscu.dylib.zip\nunzip -uo libxerces-c.27.dylib.zip\nunzip -uo xercesc.zip\n\ncd \"$SRCROOT/Binaries/Jasper\"\nunzip -uo libjasper.a.zip\n\ncd $SRCROOT\nunzip -uo DotMacKit.framework.zip\nunzip -uo VTKHeaders.zip\nunzip -uo ITK180.zip\n\ncd $SRCROOT\ncd VolumePRO\nunzip -uo vli3.framework.zip\n\nexit 0\n";
 		};
-		59F69A4E1056328D008585F5 /* Clean OsiriX.Headers Framework */ = {
+		59F69A4E1056328D008585F5 /* Clean frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Clean OsiriX.Headers Framework";
+			name = "Clean frameworks";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "rm -Rf $TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/OsiriX.Headers.framework/Versions/A/Headers/*\nrm -Rf $TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/OsiriX.Headers.framework/Versions/A/Frameworks/Nitrogen.framework\nexit 0";
+			shellPath = /bin/csh;
+			shellScript = "rm -Rf $TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/OsiriX.Headers.framework/Versions/A/Headers/*\nrm -Rf $TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/OsiriX.Headers.framework/Versions/A/Frameworks/Nitrogen.framework\n\nif ( $DEBUGGING_SYMBOLS != \"YES\" ) then\n\trm -Rf $TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/Nitrogen.framework/Versions/A/Nitrogen.framework.dSYM\nendif\n\nexit 0";
 		};
 		AB0F3A3F1046BE51004129DD /* Copy headers and create OsiriX.h */ = {
 			isa = PBXShellScriptBuildPhase;
