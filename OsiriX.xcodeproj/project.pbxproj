@@ -16619,7 +16619,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /usr/bin/perl;
-			shellScript = "#!/usr/bin/perl\n\nuse strict;\nuse File::Copy;\nuse File::Basename;\nmy $root = $ENV{PROJECT_DIR};\nmy $destination = \"$ENV{TARGET_BUILD_DIR}/$ENV{PUBLIC_HEADERS_FOLDER_PATH}\";\n\nmkdir $destination unless -d $destination;\nopen OsiriX_h, \">\", \"$destination/OsiriX.h\" or die $!;\n\nprint OsiriX_h \"#ifndef __OsiriX_Headers\\n#define __OsiriX_Headers\\n\\n\";\n\nopendir(DIR, $root);\nmy @files = readdir(DIR);\nforeach (@files) {\n\tmy $filename = $_;\n\tnext unless -f $filename && $filename =~ /\\.h$/s;\n\tcopy($filename, \"$destination/\".(basename $filename)) or die \"Copy failed: $!\";\n\tprint OsiriX_h \"#include <OsiriX.Headers/$filename>\\n\";\n}\n\nprint OsiriX_h \"\\n#endif\\n\";\nclose OsiriX_h;\n\nexit 0;";
+			shellScript = "#!/usr/bin/perl\n\nuse strict;\nuse File::Copy;\nuse File::Basename;\nmy $root = $ENV{PROJECT_DIR};\nmy $destination = \"$ENV{TARGET_BUILD_DIR}/$ENV{PUBLIC_HEADERS_FOLDER_PATH}\";\n\nmkdir $destination unless -d $destination;\nopen OsiriX_h, \">\", \"$destination/OsiriX.h\" or die $!;\n\nprint OsiriX_h \"#ifndef __OsiriX_Headers\\n#define __OsiriX_Headers\\n\\n\";\n\nopendir(DIR, $root);\nmy @files = readdir(DIR);\nforeach (@files) {\n\tmy $filename = $_;\n\tnext unless -f \"$root/$filename\" && $filename =~ /\\.h$/s;\n\tcopy(\"$root/$filename\", \"$destination/\".(basename $filename)) or die \"Copy failed: $!\";\n\tprint OsiriX_h \"#include <OsiriX.Headers/$filename>\\n\";\n}\n\nprint OsiriX_h \"\\n#endif\\n\";\nclose OsiriX_h;\n\nexit 0;";
 		};
 		BF7486A40CC6AA5C00198387 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
