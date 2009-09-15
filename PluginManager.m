@@ -710,11 +710,25 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
 
 + (NSString*) deletePluginWithName:(NSString*)pluginName;
 {
+	return [PluginManager deletePluginWithName: pluginName availability: nil];
+}
+
++ (NSString*) deletePluginWithName:(NSString*)pluginName availability: (NSString*) availability
+{
 	NSMutableArray *pluginsPaths = [NSMutableArray arrayWithArray:[PluginManager activeDirectories]];
 	[pluginsPaths addObjectsFromArray:[PluginManager inactiveDirectories]];
 	
     NSString *path, *returnPath = nil;
 	NSString *trashDir = [NSHomeDirectory() stringByAppendingPathComponent:@".Trash"];
+	
+	NSString *directory = nil;
+	NSArray *availabilities = [PluginManager availabilities];
+	if( [availability isEqualTo:[availabilities objectAtIndex:0]])
+		directory = [PluginManager userActivePluginsDirectoryPath];
+	else if([availability isEqualTo:[availabilities objectAtIndex:1]])
+		directory = [PluginManager systemActivePluginsDirectoryPath];
+	else if([availability isEqualTo:[availabilities objectAtIndex:2]])
+		directory = [PluginManager appActivePluginsDirectoryPath];
 	
 	for(path in pluginsPaths)
 	{
@@ -722,7 +736,7 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
 		NSString *name;
 		while(name = [e nextObject])
 		{
-			if([[name stringByDeletingPathExtension] isEqualToString: [pluginName stringByDeletingPathExtension]])
+			if([[name stringByDeletingPathExtension] isEqualToString: [pluginName stringByDeletingPathExtension]] && (directory == nil || [directory isEqualTo: path]))
 			{
 				NSInteger tag;
 				[[NSWorkspace sharedWorkspace] performFileOperation:NSWorkspaceRecycleOperation source:path destination:trashDir files:[NSArray arrayWithObject:name] tag:&tag];

@@ -6606,7 +6606,14 @@ public:
 	long			volumeSize = [firstObject pheight] * [pixList count] * [firstObject pwidth] * sizeof(float);
 	WaitRendering	*waiting = nil;
 	
-	switch( [[sender selectedCell] tag])
+	int tag;
+	
+	if ([sender isKindOfClass:[NSMatrix class]])
+		tag = [[sender selectedCell] tag];
+	else
+		tag = [sender tag];
+	
+	switch( tag)
 	{
 		case 2:
 			[[NSFileManager defaultManager] removeFileAtPath: str handler: nil];

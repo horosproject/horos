@@ -108,8 +108,9 @@ static NSDate *CachedPluginsListDate = nil;
 	{
 		NSArray *pluginsList = [pluginsArrayController arrangedObjects];
 		NSString *pluginName = [[pluginsList objectAtIndex:[pluginTable selectedRow]] objectForKey:@"name"];
-	
-		[PluginManager deletePluginWithName:pluginName];
+		NSString *availability = [[pluginsList objectAtIndex:[pluginTable selectedRow]] objectForKey:@"availability"];
+		
+		[PluginManager deletePluginWithName:pluginName availability: availability];
 	
 		[self refreshPluginList];
 	}
@@ -432,13 +433,13 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
 	
 	NSString *oldPath = [PluginManager deletePluginWithName: [pluginPath lastPathComponent]];
 	
-	// determine in which directory to install the plugin (default = user active dir, or if the plugin was already installed: in the same dir)	
+	// determine in which directory to install the plugin (default = user dir, or if the plugin was already installed: in the same dir)	
 	NSString *installDirectoryPath;
 
 	if( oldPath)
 		installDirectoryPath = oldPath;
 	else
-		installDirectoryPath = [PluginManager userActivePluginsDirectoryPath]; // default = user active directory
+		installDirectoryPath = [PluginManager userActivePluginsDirectoryPath];
 	
 	[PluginManager movePluginFromPath:pluginPath toPath:installDirectoryPath];	
 	
