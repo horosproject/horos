@@ -2121,7 +2121,11 @@ static float deg2rad = 3.14159265358979/180.0;
 	else
 		self.dcmFormat = 1; // full depth
 	
+	if( [[[self selectedView] curRoiList] count] > 0)
+		self.dcmFormat = 0; //SC in 8-bit
+	
 	self.dcmMode = [[NSUserDefaults standardUserDefaults] integerForKey: @"lastMPRdcmExportMode"];
+	
 	if( [self getMovieDataAvailable] == NO && self.dcmMode == 2)
 		self.dcmMode = 0;
 }

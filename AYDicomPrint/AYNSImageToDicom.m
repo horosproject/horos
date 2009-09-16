@@ -199,6 +199,7 @@
 	[currentViewer setMatrixVisible: NO];
 	
 	int columns = [[options valueForKey: @"columns"] intValue];
+	int rows = [[options valueForKey: @"rows"] intValue];
 	
 	float inc = (1 + ((columns - 1) * 0.35));
 	if( inc > 2.0) inc = 2.0;
@@ -221,13 +222,24 @@
 		{
 			scaleFactor = 1. / [currentViewer scaleValue];
 			
-			#define MAXWindowSize 8000
+			#define MAXWindowSize 5000
 			
-			if( rf.size.width * scaleFactor > MAXWindowSize)
-				scaleFactor = MAXWindowSize / rf.size.width;
+			int noFactor = (columns * rows) / 2;
+			if( noFactor < 1) noFactor = 1;
+			if( noFactor > 6) noFactor = 6;
 			
-			windowSizeChanged = YES;
-			[[currentViewer window] setFrame: NSMakeRect( o.x, o.y, rf.size.width * scaleFactor, rf.size.height * scaleFactor) display: YES];
+			int cMAXWindowSize = MAXWindowSize / noFactor;
+			
+			if( rf.size.width * scaleFactor > cMAXWindowSize)
+				scaleFactor = cMAXWindowSize / rf.size.width;
+			
+			if( scaleFactor <= 1.0)
+				scaleFactor = 1.0;
+			else
+			{
+				windowSizeChanged = YES;
+				[[currentViewer window] setFrame: NSMakeRect( o.x, o.y, rf.size.width * scaleFactor, rf.size.height * scaleFactor) display: YES];	
+			}
 		}
 		else scaleFactor = 1.0;
 		

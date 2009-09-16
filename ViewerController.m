@@ -14696,13 +14696,24 @@ int i,j,l;
 				{
 					scaleFactor = 1. / [self scaleValue];
 					
-					#define MAXWindowSize 8000
+					#define MAXWindowSize 5000
 					
-					if( rf.size.width * scaleFactor > MAXWindowSize)
-						scaleFactor = MAXWindowSize / rf.size.width;
+					int noFactor = (columns * rows) / 2;
+					if( noFactor < 1) noFactor = 1;
+					if( noFactor > 6) noFactor = 6;
 					
-					windowSizeChanged = YES;
-					[[self window] setFrame: NSMakeRect( o.x, o.y, rf.size.width * scaleFactor, rf.size.height * scaleFactor) display: YES];
+					int cMAXWindowSize = MAXWindowSize / noFactor;
+					
+					if( rf.size.width * scaleFactor > cMAXWindowSize)
+						scaleFactor = cMAXWindowSize / rf.size.width;
+					
+					if( scaleFactor <= 1.0)
+						scaleFactor = 1.0;
+					else
+					{
+						windowSizeChanged = YES;
+						[[self window] setFrame: NSMakeRect( o.x, o.y, rf.size.width * scaleFactor, rf.size.height * scaleFactor) display: YES];
+					}
 				}
 				else scaleFactor = 1.0;
 				
@@ -15703,9 +15714,18 @@ int i,j,l;
 	if( [[imageView curDCM] isRGB])
 	{
 		if( [dcmFormat selectedTag] == 2) [dcmFormat selectCellWithTag: 1];
+		
 		[[dcmFormat cellWithTag: 2] setEnabled: NO];
 	}
-	else [[dcmFormat cellWithTag: 2] setEnabled: YES];
+	else
+	{
+		[[dcmFormat cellWithTag: 2] setEnabled: YES];
+		
+		if( [[imageView curRoiList] count] > 0)
+			[dcmFormat selectCellWithTag: 1];
+		else
+			[dcmFormat selectCellWithTag: 2];
+	}
 	
 	if( [[[imageView seriesObj] valueForKey: @"keyImages"] count]) [[dcmSelection cellWithTag: 2] setEnabled: YES];
 	else [[dcmSelection cellWithTag: 2] setEnabled: NO];
