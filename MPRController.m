@@ -1796,6 +1796,9 @@ static float deg2rad = 3.14159265358979/180.0;
 			{
 				self.curMovieIndex = i;
 				
+				[[self window] makeFirstResponder: curExportView];
+				[curExportView restoreCamera];
+				[curExportView updateViewMPR];
 				[curExportView restoreCamera];
 				
 				if( quicktimeExportMode)
@@ -2125,6 +2128,12 @@ static float deg2rad = 3.14159265358979/180.0;
 		self.dcmFormat = 0; //SC in 8-bit
 	
 	self.dcmMode = [[NSUserDefaults standardUserDefaults] integerForKey: @"lastMPRdcmExportMode"];
+	
+	if( quicktimeExportMode)
+	{
+		if( self.dcmMode == 1) // Current Image is not supported for Quicktime Export
+			self.dcmMode = 0;
+	}
 	
 	if( [self getMovieDataAvailable] == NO && self.dcmMode == 2)
 		self.dcmMode = 0;
