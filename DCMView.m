@@ -11204,9 +11204,15 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			self.xFlipped = [[image valueForKey:@"xFlipped"] boolValue];
 		else if( !onlyImage)
 			self.xFlipped = [[series valueForKey:@"xFlipped"] boolValue];
-		
-		if( [image valueForKey:@"yFlipped"]) self.yFlipped = [[image valueForKey:@"yFlipped"] boolValue];
-		else if( !onlyImage) self.yFlipped = [[series valueForKey:@"yFlipped"] boolValue];
+		else
+			self.xFlipped = NO;
+			
+		if( [image valueForKey:@"yFlipped"])
+			self.yFlipped = [[image valueForKey:@"yFlipped"] boolValue];
+		else if( !onlyImage)
+			self.yFlipped = [[series valueForKey:@"yFlipped"] boolValue];
+		else
+			self.yFlipped = NO;
 		
 		if( ([self is2DViewer] && firstTimeDisplay && [[NSUserDefaults standardUserDefaults] boolForKey:@"AlwaysScaleToFit"] == NO) || COPYSETTINGSINSERIES == NO)
 		{
@@ -11229,11 +11235,17 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				}
 				else [self scaleToFit];
 			}
+			else 
+				[self scaleToFit];
 		}
 		else [self scaleToFit];
 		
-		if( [image valueForKey:@"rotationAngle"]) [self setRotation: [[image valueForKey:@"rotationAngle"] floatValue]];
-		else if( !onlyImage) [self setRotation:  [[series valueForKey:@"rotationAngle"] floatValue]];
+		if( [image valueForKey:@"rotationAngle"])
+			[self setRotation: [[image valueForKey:@"rotationAngle"] floatValue]];
+		else if( !onlyImage)
+			[self setRotation:  [[series valueForKey:@"rotationAngle"] floatValue]];
+		else
+			[self setRotation: 0];
 		
 		if( ([self is2DViewer] == YES && [[NSUserDefaults standardUserDefaults] boolForKey:@"AlwaysScaleToFit"] == NO) || COPYSETTINGSINSERIES == NO)
 		{
