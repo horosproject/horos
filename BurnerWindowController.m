@@ -675,24 +675,24 @@ NSString* asciiString (NSString* name);
 	[[BrowserController currentBrowser] exportQuicktimeInt:dbObjects :burnFolder :YES];
 }
 
-- (NSNumber*)getSizeOfDirectory:(NSString*)path
+- (NSNumber*) getSizeOfDirectory: (NSString*) path
 {
 	if( [[NSFileManager defaultManager] fileExistsAtPath: path] == NO) return [NSNumber numberWithLong: 0];
 
 	if( [[[NSFileManager defaultManager] fileAttributesAtPath:path traverseLink:NO]fileType]!=NSFileTypeSymbolicLink || [[[NSFileManager defaultManager] fileAttributesAtPath:path traverseLink:NO]fileType]!=NSFileTypeUnknown)
 	{
-		NSArray *args;
-		NSPipe *fromPipe;
-		NSFileHandle *fromDu;
-		NSData *duOutput;
-		NSString *size;
-		NSArray *stringComponents;
-		char aBuffer[70];
+		NSArray *args = nil;
+		NSPipe *fromPipe = nil;
+		NSFileHandle *fromDu = nil;
+		NSData *duOutput = nil;
+		NSString *size = nil;
+		NSArray *stringComponents = nil;
+		char aBuffer[ 300];
 
 		args = [NSArray arrayWithObjects:@"-ks",path,nil];
-		fromPipe=[NSPipe pipe];
-		fromDu=[fromPipe fileHandleForWriting];
-		NSTask *duTool=[[[NSTask alloc] init] autorelease];
+		fromPipe =[NSPipe pipe];
+		fromDu = [fromPipe fileHandleForWriting];
+		NSTask *duTool = [[[NSTask alloc] init] autorelease];
 
 		[duTool setLaunchPath:@"/usr/bin/du"];
 		[duTool setStandardOutput:fromDu];
@@ -700,15 +700,14 @@ NSString* asciiString (NSString* name);
 		[duTool launch];
 		[duTool waitUntilExit];
 		
-		duOutput=[[fromPipe fileHandleForReading] availableData];
+		duOutput = [[fromPipe fileHandleForReading] availableData];
 		[duOutput getBytes:aBuffer];
 		
-		size=[NSString stringWithCString:aBuffer];
-		stringComponents=[size pathComponents];
+		size = [NSString stringWithCString:aBuffer];
+		stringComponents = [size pathComponents];
 		
-		
-		size=[stringComponents objectAtIndex:0];
-		size=[size substringToIndex:[size length]-1];
+		size = [stringComponents objectAtIndex:0];
+		size = [size substringToIndex:[size length]-1];
 		
 		return [NSNumber numberWithUnsignedLongLong:(unsigned long long)[size doubleValue]];
 	}
@@ -796,21 +795,23 @@ NSString* asciiString (NSString* name);
 		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"BurnOsirixApplication"])
 		{
 			NSString *OsiriXPath = [[NSBundle mainBundle] bundlePath];
-			[manager copyPath:OsiriXPath toPath: [NSString stringWithFormat:@"%@/Osirix.app", burnFolder] handler:nil];
+			
+			[manager copyPath:OsiriXPath toPath: [NSString stringWithFormat:@"%@/OsiriX.app", burnFolder] handler:nil];
+			[manager removeItemAtPath: [burnFolder stringByAppendingPathComponent: @"/OsiriX.app/Contents/Resources/sn64"]  error: nil];
 			
 			// Remove 64-bit binaries
 			
-			NSString	*pathExecutable = [[NSBundle bundleWithPath: [NSString stringWithFormat:@"%@/Osirix.app", burnFolder]] executablePath];
+			NSString	*pathExecutable = [[NSBundle bundleWithPath: [NSString stringWithFormat:@"%@/OsiriX.app", burnFolder]] executablePath];
 			NSString	*pathLightExecutable = [[pathExecutable stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"light"];
 			
 			// **********
 			
 			@try
 			{
-				NSTask		*todo = [[[NSTask alloc]init]autorelease];
+				NSTask *todo = [[[NSTask alloc]init] autorelease];
 				[todo setLaunchPath: @"/usr/bin/lipo"];
 				
-				NSArray *args = [NSArray arrayWithObjects: pathExecutable, @"-remove", @"x86_64", @"-remove", @"ppc64", @"-output", pathLightExecutable, nil];
+				NSArray *args = [NSArray arrayWithObjects: pathExecutable, @"-remove", @"x86_64", @"-output", pathLightExecutable, nil];
 
 				[todo setArguments:args];
 				[todo launch];
