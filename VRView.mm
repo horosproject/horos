@@ -3686,33 +3686,13 @@ public:
 				
 				NSArray	*roiList = nil;
 				
-//				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"useFastGrowingRegionWithVolume"])
-//				{
-//					NSLog( @"fastGrowingRegionWithVolume");
-//					NSPoint seedPoint;
-//					seedPoint.x = pix[ 0];
-//					seedPoint.y = pix[ 1];
-//					
-//					long seed[ 3];
-//					
-//					seed[ 0] = (long) seedPoint.x;
-//					seed[ 1] = (long) seedPoint.y;
-//					seed[ 2] = pix[ 2];
-//					
-//					roiList =	[ITKSegmentation3D fastGrowingRegionWithVolume:		data
-//																		width:		[[pixList objectAtIndex: 0] pwidth]
-//																		height:		[[pixList objectAtIndex: 0] pheight]
-//																		depth:		[pixList count]
-//																		seedPoint:	seed
-//																		from:		BONEVALUE
-//																		pixList:	pixList];
-//				}
-//				else
+				NSLog( @"ITKSegmentation3D");
+				
+				for ( int m = 0; m < [[controller viewer2D] maxMovieIndex] ; m++)
 				{
-					NSLog( @"ITKSegmentation3D");
-					
+					[[controller viewer2D] setMovieIndex: m];
 					[[[controller viewer2D] imageView] setIndex: pix[ 2]]; //set the DCMview on the good slice
-  
+					
 					NSPoint seedPoint;
 					seedPoint.x = pix[ 0];
 					seedPoint.y = pix[ 1];
@@ -3748,43 +3728,45 @@ public:
 					roiList = d;
 					
 					[itkSegmentation release];
+					
+					// Dilatation
+					
+					[[controller viewer2D] applyMorphology: [roiList valueForKey:@"roi"] action:@"dilate" radius: 10 sendNotification:NO];
+					[[controller viewer2D] applyMorphology: [roiList valueForKey:@"roi"] action:@"erode" radius: 6 sendNotification:NO];
+					
+					BOOL addition = NO;
+					
+					// Bone Removal
+					NSNumber		*nsnewValue	= [NSNumber numberWithFloat: -1000];		//-1000
+					NSNumber		*nsminValue	= [NSNumber numberWithFloat: -99999];		//-99999
+					NSNumber		*nsmaxValue	= [NSNumber numberWithFloat: 99999];
+					NSNumber		*nsoutside	= [NSNumber numberWithBool: NO];
+					NSNumber		*nsaddition	= [NSNumber numberWithBool: addition];
+					NSMutableArray	*roiToProceed = [NSMutableArray array];
+					
+					for( NSDictionary *rr in roiList)
+					{
+						[roiToProceed addObject: [NSDictionary dictionaryWithObjectsAndKeys:  [rr objectForKey:@"roi"], @"roi", [rr objectForKey:@"curPix"], @"curPix", @"setPixelRoi", @"action", nsnewValue, @"newValue", nsminValue, @"minValue", nsmaxValue, @"maxValue", nsoutside, @"outside", nsaddition, @"addition", nil]];
+					}
+					
+					[[controller viewer2D] roiSetStartScheduler: roiToProceed];
+					
+					NSLog( @"**** Set Pixels");
+					
+					// Update 3D image
+					if( textureMapper) 
+					{
+						// Force min/max recomputing
+						[self movieChangeSource: data];
+						//reader->Modified();
+					}
+					else
+					{
+						if( isRGB == NO)
+							vImageConvert_FTo16U( &srcf, &dst8, -OFFSET16, 1./valueFactor, 0);
+					}
 				}
-				// Dilatation
 				
-				[[controller viewer2D] applyMorphology: [roiList valueForKey:@"roi"] action:@"dilate" radius: 10 sendNotification:NO];
-				[[controller viewer2D] applyMorphology: [roiList valueForKey:@"roi"] action:@"erode" radius: 6 sendNotification:NO];
-				
-				BOOL addition = NO;
-				
-				// Bone Removal
-				NSNumber		*nsnewValue	= [NSNumber numberWithFloat: -1000];		//-1000
-				NSNumber		*nsminValue	= [NSNumber numberWithFloat: -99999];		//-99999
-				NSNumber		*nsmaxValue	= [NSNumber numberWithFloat: 99999];
-				NSNumber		*nsoutside	= [NSNumber numberWithBool: NO];
-				NSNumber		*nsaddition	= [NSNumber numberWithBool: addition];
-				NSMutableArray	*roiToProceed = [NSMutableArray array];
-				
-				for( NSDictionary *rr in roiList)
-				{
-					[roiToProceed addObject: [NSDictionary dictionaryWithObjectsAndKeys:  [rr objectForKey:@"roi"], @"roi", [rr objectForKey:@"curPix"], @"curPix", @"setPixelRoi", @"action", nsnewValue, @"newValue", nsminValue, @"minValue", nsmaxValue, @"maxValue", nsoutside, @"outside", nsaddition, @"addition", nil]];
-				}
-				
-				[[controller viewer2D] roiSetStartScheduler: roiToProceed];
-				
-				NSLog( @"**** Set Pixels");
-				
-				// Update 3D image
-				if( textureMapper) 
-				{
-					// Force min/max recomputing
-					[self movieChangeSource: data];
-					//reader->Modified();
-				}
-				else
-				{
-					if( isRGB == NO)
-						vImageConvert_FTo16U( &srcf, &dst8, -OFFSET16, 1./valueFactor, 0);
-				}
 				[self setNeedsDisplay:YES];
 				
 				[waiting close];
@@ -3794,7 +3776,8 @@ public:
 				
 				[[controller viewer2D] needsDisplayUpdate];
 			}
-			
+			else NSRunAlertPanel(NSLocalizedString(@"Bone Removing", nil), NSLocalizedString(@"Failed to detect a high dentisty voxel to start growing region.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+
 			NSLog( @"**** Bone Removal End");
 		}
 		else [super mouseDown:theEvent];
