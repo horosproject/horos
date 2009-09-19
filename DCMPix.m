@@ -6589,7 +6589,6 @@ END_CREATE_ROIS:
 				if (clutDepthR == 16  && clutDepthG == 16  && clutDepthB == 16)
 				{
 					long length, xx, xxindex, jj;
-					unsigned short	*shortRed, *shortGreen, *shortBlue;
 					
 					if( shortRed) free( shortRed);
 					if( shortGreen) free( shortGreen);
@@ -6622,7 +6621,7 @@ END_CREATE_ROIS:
 									for( xx = xxindex; xxindex < xx + length; xxindex++)
 									{
 										shortRed[ xxindex] = ptrs[ jj++];
-										if( xxindex < 256) NSLog(@"%d", shortRed[ xxindex]);
+//										if( xxindex < 256) NSLog(@"%d", shortRed[ xxindex]);
 									}
 									jj--;
 									break;
@@ -6948,7 +6947,6 @@ END_CREATE_ROIS:
 	if( [self getPapyGroup: 0])	// This group is mandatory...
 	{
 		UValue_T *val3, *tmpVal3;
-		unsigned short *shortRed, *shortGreen, *shortBlue;
 		
 		modalityString = nil;
 		
@@ -7611,7 +7609,7 @@ END_CREATE_ROIS:
 			{
 				short *oImage = nil;
 				
-				if( strcmp( gSOPClassUID[ fileNb], "1.2.840.10008.5.1.4.1.1.104.1") == 0)
+				if( gSOPClassUID[ fileNb] != nil && strcmp( gSOPClassUID[ fileNb], "1.2.840.10008.5.1.4.1.1.104.1") == 0)
 				{
 					if (gIsPapyFile[ fileNb] == DICOM10)
 						err = Papy3FSeek (gPapyFile [fileNb], SEEK_SET, 132L);
@@ -7682,7 +7680,8 @@ END_CREATE_ROIS:
 							if( oImage == nil)
 							{
 								NSLog(@"This is really bad..... Please send this file to rossetantoine@bluewin.ch");
-								oImage = malloc( height * width * 4);
+								goImageSize[ fileNb] = height * width * 4;
+								oImage = malloc( goImageSize[ fileNb]);
 								
 								long yo = 0;
 								for( i = 0 ; i < height * width * 2; i++)
@@ -7712,6 +7711,7 @@ END_CREATE_ROIS:
 								
 								efree3 ((void **) &oImage);
 								oImage = (short*) rgbPixel;
+								goImageSize[ fileNb] = realwidth * height * 3;
 							}
 							
 							// This image has a palette -> Convert it to a RGB image !
@@ -7779,6 +7779,7 @@ END_CREATE_ROIS:
 									
 									efree3 ((void **) &oImage);
 									oImage = (short*) tmpImage;
+									goImageSize[ fileNb] = realwidth * height * 3;
 								}
 							}
 							
@@ -7834,6 +7835,7 @@ END_CREATE_ROIS:
 								
 								efree3 ((void **) &oImage);
 								oImage = (short*) tmpImage;
+								goImageSize[ fileNb] = realwidth * height * 3;
 								
 								free( shortRed);
 								free( shortGreen);
@@ -7849,92 +7851,93 @@ END_CREATE_ROIS:
 								gArrPhotoInterpret [fileNb] == YBR_ICT ||
 								gArrPhotoInterpret [fileNb] == YBR_RCT)
 							{
-								
 								unsigned char   *ptr, *tmpImage;
 								int				loop, totSize;
 								
 								isRGB = YES;
 								
 								// CONVERT RGB TO ARGB FOR BETTER PERFORMANCE THRU VIMAGE
-								
-								totSize = (int) ((int) height * (int) realwidth * 4L);
-								tmpImage = malloc( totSize);
-								if( tmpImage)
 								{
-									ptr    = tmpImage;
-									
-									if( bitsAllocated > 8) // RGB - 16 bits
+									totSize = (int) ((int) height * (int) realwidth * 4L);
+									tmpImage = malloc( totSize);
+									if( tmpImage)
 									{
-										unsigned short   *bufPtr;
-										bufPtr = (unsigned short*) oImage;
+										ptr    = tmpImage;
 										
-										#if __BIG_ENDIAN__
-										InverseShorts( (vector unsigned short*) oImage, height * realwidth * 3);
-										#endif
-										
-										if( fPlanarConf > 0)	// PLANAR MODE
+										if( bitsAllocated > 8) // RGB - 16 bits
 										{
-											int imsize = (int) height * (int) realwidth;
-											int x = 0;
+											unsigned short   *bufPtr;
+											bufPtr = (unsigned short*) oImage;
 											
-											loop = totSize/4;
-											while( loop-- > 0)
+											#if __BIG_ENDIAN__
+											InverseShorts( (vector unsigned short*) oImage, height * realwidth * 3);
+											#endif
+											
+											if( fPlanarConf > 0)	// PLANAR MODE
 											{
-												*ptr++	= 255;			//ptr++;
-												*ptr++	= bufPtr[ 0 * imsize + x];		//ptr++;  bufPtr++;
-												*ptr++	= bufPtr[ 1 * imsize + x];		//ptr++;  bufPtr++;
-												*ptr++	= bufPtr[ 2 * imsize + x];		//ptr++;  bufPtr++;
+												int imsize = (int) height * (int) realwidth;
+												int x = 0;
 												
-												x++;
+												loop = totSize/4;
+												while( loop-- > 0)
+												{
+													*ptr++	= 255;			//ptr++;
+													*ptr++	= bufPtr[ 0 * imsize + x];		//ptr++;  bufPtr++;
+													*ptr++	= bufPtr[ 1 * imsize + x];		//ptr++;  bufPtr++;
+													*ptr++	= bufPtr[ 2 * imsize + x];		//ptr++;  bufPtr++;
+													
+													x++;
+												}
+											}
+											else
+											{
+												loop = totSize/4;
+												while( loop-- > 0)
+												{
+													*ptr++	= 255;			//ptr++;
+													*ptr++	= *bufPtr++;		//ptr++;  bufPtr++;
+													*ptr++	= *bufPtr++;		//ptr++;  bufPtr++;
+													*ptr++	= *bufPtr++;		//ptr++;  bufPtr++;
+												}
 											}
 										}
 										else
 										{
-											loop = totSize/4;
-											while( loop-- > 0)
-											{
-												*ptr++	= 255;			//ptr++;
-												*ptr++	= *bufPtr++;		//ptr++;  bufPtr++;
-												*ptr++	= *bufPtr++;		//ptr++;  bufPtr++;
-												*ptr++	= *bufPtr++;		//ptr++;  bufPtr++;
-											}
-										}
-									}
-									else
-									{
-										unsigned char   *bufPtr;
-										bufPtr = (unsigned char*) oImage;
-										
-										if( fPlanarConf > 0)	// PLANAR MODE
-										{
-											int imsize = (int) height * (int) realwidth;
-											int x = 0;
+											unsigned char   *bufPtr;
+											bufPtr = (unsigned char*) oImage;
 											
-											loop = totSize/4;
-											while( loop-- > 0)
+											if( fPlanarConf > 0)	// PLANAR MODE
 											{
-												*ptr++	= 255;			//ptr++;
-												*ptr++	= bufPtr[ 0 * imsize + x];		//ptr++;  bufPtr++;
-												*ptr++	= bufPtr[ 1 * imsize + x];		//ptr++;  bufPtr++;
-												*ptr++	= bufPtr[ 2 * imsize + x];		//ptr++;  bufPtr++;
+												int imsize = (int) height * (int) realwidth;
+												int x = 0;
 												
-												x++;
+												loop = totSize/4;
+												while( loop-- > 0)
+												{
+													*ptr++	= 255;			//ptr++;
+													*ptr++	= bufPtr[ 0 * imsize + x];		//ptr++;  bufPtr++;
+													*ptr++	= bufPtr[ 1 * imsize + x];		//ptr++;  bufPtr++;
+													*ptr++	= bufPtr[ 2 * imsize + x];		//ptr++;  bufPtr++;
+													
+													x++;
+												}
 											}
-										}
-										else
-										{
-											loop = totSize/4;
-											while( loop-- > 0)
+											else
 											{
-												*ptr++	= 255;
-												*ptr++	= *bufPtr++;
-												*ptr++	= *bufPtr++;
-												*ptr++	= *bufPtr++;
+												loop = totSize/4;
+												while( loop-- > 0)
+												{
+													*ptr++	= 255;
+													*ptr++	= *bufPtr++;
+													*ptr++	= *bufPtr++;
+													*ptr++	= *bufPtr++;
+												}
 											}
 										}
+										efree3 ((void **) &oImage);
+										oImage = (short*) tmpImage;
+										goImageSize[ fileNb] = realwidth * height * 4;
 									}
-									efree3 ((void **) &oImage);
-									oImage = (short*) tmpImage;
 								}
 							}
 							else if( bitsAllocated == 8)	// Black & White 8 bit image -> 16 bits image
@@ -7957,6 +7960,7 @@ END_CREATE_ROIS:
 								
 								efree3 ((void **) &oImage);
 								oImage =  (short*) tmpImage;
+								goImageSize[ fileNb] = height * (int) realwidth * 2L;
 							}
 							
 							if( realwidth != width)

@@ -455,7 +455,7 @@ ExtractDicomDataSetInformation3 (PapyShort inFileNb)
   PapyULong	theULong;
   PapyULong	theOffsetDataSet, theOffsetImage;
   
-  if( strcmp( gSOPClassUID[ inFileNb], "1.2.840.10008.5.1.4.1.1.104.1") == 0)	// EncapsulatedPDFStorage -> No Pixel Data
+  if( gSOPClassUID[ inFileNb] != 0L && strcmp( gSOPClassUID[ inFileNb], "1.2.840.10008.5.1.4.1.1.104.1") == 0)	// EncapsulatedPDFStorage -> No Pixel Data
 	return 0;
 	
   /* move the file pointer to group 0x7FE0 */

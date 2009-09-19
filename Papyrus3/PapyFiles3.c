@@ -159,6 +159,7 @@ Papy3FileOpen (char *inNameP, PAPY_FILE inVRefNum, int inToOpen, void* inFSSpec)
 			  gCachedGroupLength [theFileNb] = 0L;
 			  gSeekPos [theFileNb] = 0;
 			  gSeekPosApplied  [theFileNb] = 0;
+			  goImageSize[ theFileNb] = 0;
 			  gPapyrusFileVersion [theFileNb] = (float)atof ((char *) gPapyrusVersion);
 			  gSOPClassUID[ theFileNb] = 0L;
 			  Papy3FSeek (gPapyFile [theFileNb], (int) SEEK_END, 0L);

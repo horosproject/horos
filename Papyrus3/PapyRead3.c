@@ -1536,8 +1536,8 @@ Papy3GetPixelData (PapyShort inFileNb, int inImageNb, SElement *inGrOrModP, int 
   
   /* allocate the memory for the pixel data */
   
+  goImageSize[ inFileNb] = theBytesToRead;
   theBufP = (PapyUChar *) emalloc3 ((PapyULong) theBytesToRead);
-  
   
   /* image reading depending on the image encoding */
   

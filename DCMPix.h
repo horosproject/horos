@@ -166,6 +166,8 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 	int					VOILUT_first;
 	unsigned int		VOILUT_number, VOILUT_depth, *VOILUT_table;
 	
+	unsigned short *shortRed, *shortGreen, *shortBlue;
+	
 	char				blackIndex;
 	
 	NSData				*transferFunction;
