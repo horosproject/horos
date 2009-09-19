@@ -429,13 +429,19 @@ ExtractDicomdirFromPath (char *inFilePathP, char *outExtrNameP)
 void
 ExtractModality (UValue_T *inValP, PapyShort inFileNb)
 {
-  int           i;
-  char		theModality [8];
+  int i;
+  char theModality[ 10];
         
 
   /* is there a value ? */
   if (inValP != NULL)
   {
+    if( strlen( inValP->a) > 8)
+	{
+		printf( "***** ExtractModality modality len > 8 ??");
+		gFileModality[ inFileNb] = SEC_CAPT_IM;
+		return;
+	}	
     strcpy (theModality, inValP->a);
     switch (theModality [0])
     {

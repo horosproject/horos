@@ -3418,7 +3418,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 -(void) LoadBioradPic
 {
 	FILE		*fp = fopen( [srcFile UTF8String], "r");
-	long		i, realheight;
+	long		i;
 	
 	//NSLog(@"Handling Biorad PIC File in CheckLoad");
 	if( fp)
@@ -3429,10 +3429,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		fread(&header, BIORAD_HEADER_LENGTH, 1, fp);
 		
 		// Note that Biorad files are in little endian format
-		realheight = NSSwapLittleShortToHost(header.ny);
-		height = realheight;
-		realwidth = NSSwapLittleShortToHost(header.nx);
-		width = realwidth;
+		height = NSSwapLittleShortToHost(header.ny);
+		width = NSSwapLittleShortToHost(header.nx);
+		
 		
 		maxImage = NSSwapLittleShortToHost(header.npic);
 		
@@ -3443,17 +3442,17 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 			bytesPerPixel=2;
 		}
 		
-		totSize = realheight * realwidth * 2;
+		totSize = height * width * 2;
 		short *oImage = malloc( totSize);
 		
 		if( NSSwapLittleShortToHost(header.byte_format) != 1)  // 16 bit
 		{  // GJ: Fetch the data from an offset given by header + frame *bytes per frame
 			
-			fseek(fp, BIORAD_HEADER_LENGTH +frameNo*(realheight * realwidth * 2), SEEK_SET);
+			fseek(fp, BIORAD_HEADER_LENGTH +frameNo*(height * width * 2), SEEK_SET);
 			
-			fread( oImage, realheight * realwidth * 2, 1, fp);
+			fread( oImage, height * width * 2, 1, fp);
 			
-			i = realheight * realwidth;
+			i = height * width;
 			while( i-- > 0)
 			{
 				oImage[ i] = NSSwapLittleShortToHost( oImage[ i]);
@@ -3466,10 +3465,10 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 			//NSLog(@"Reading 8 bit PIC file");
 			// GJ: Fetch the data from an offset given by header + frame *bytes per frame
 			
-			fseek(fp, BIORAD_HEADER_LENGTH +frameNo*(realheight * realwidth), SEEK_SET);
+			fseek(fp, BIORAD_HEADER_LENGTH +frameNo*(height * width), SEEK_SET);
 			
-			bufPtr = malloc( realheight * realwidth);
-			fread( bufPtr, realheight * realwidth, 1, fp);
+			bufPtr = malloc( height * width);
+			fread( bufPtr, height * width, 1, fp);
 			
 			ptr    = oImage;
 			
@@ -3480,13 +3479,6 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 			}
 		}
 		
-		if( width != realwidth)
-		{
-			for( i = 0; i < height;i++)
-			{
-				memmove( oImage + i*width, oImage + i*realwidth, width*2);
-			}
-		}
 		
 		// FIND THICKNESS AND PIXEL SIZE
 		// NSLog(@"Entering Biorad PIC File footer");
@@ -3494,7 +3486,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		// GJ: This isn't strictly necessary and some files don't have this flag set.
 		//if( header.notesAvailable || 1) {
 		
-		long numBytes = realheight*realwidth*maxImage*bytesPerPixel;
+		long numBytes = height*width*maxImage*bytesPerPixel;
 		
 		fseek(fp, BIORAD_HEADER_LENGTH + numBytes, SEEK_SET);
 		
@@ -3640,8 +3632,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		TIFFGetField(tif, TIFFTAG_PLANARCONFIG, &planarConfig);
 		
 		height = h;
-		realwidth = w;
-		width = realwidth;
+		width = w;
+		
 		
 		totSize = (height+1) * (width+1);
 		
@@ -3867,24 +3859,6 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 			_TIFFfree(buf);
 		}
 		
-		if( realwidth != width)
-		{
-			NSLog(@"******** Update realwidth != width : WE SHOULD NOT BE HERE");
-			
-			if( isRGB == NO)	// 16 bits
-			{
-				for( i = 0; i < height;i++)
-				{
-					memmove( oImage + i*width, oImage + i*realwidth, width*2);
-				}
-			}
-			else				// 32 bits
-			{
-				for( i = 0; i < height;i++)
-					memmove( oImage + i*width*2, oImage + i*realwidth*2, width*4);
-			}
-		}
-		
 		if( isRGB == NO)
 		{
 			// CONVERSION TO FLOAT
@@ -4024,8 +3998,6 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	int	pos = 8, k;
 	short shortval;
 	int lsmDebug=0;  // Flag to determine if debugging messages are printed
-	
-	int	realheight;
 	
 	int	TIF_NEWSUBFILETYPE = 0; // GJ: flag indicating whether image is "real" or thumbnail 
 	int	LENGTH2, TIF_STRIPOFFSETS; // GJ: Number of channels & offset containing file offset to image data
@@ -4228,14 +4200,13 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 				break;
 				
 				case 256:
-					realwidth = ((TAG1[11] & MASK2) << 24) | ((TAG1[10] & MASK2) << 16) | ((TAG1[9] & MASK2) << 8) | (TAG1[8] & MASK2);
+					width = ((TAG1[11] & MASK2) << 24) | ((TAG1[10] & MASK2) << 16) | ((TAG1[9] & MASK2) << 8) | (TAG1[8] & MASK2);
 					
-					width = realwidth;
+					
 				break;
 				
 				case 257:
-					realheight = ((TAG1[11] & MASK2) << 24) | ((TAG1[10] & MASK2) << 16) | ((TAG1[9] & MASK2) << 8) | (TAG1[8] & MASK2);
-					height = realheight/2; height *= 2;
+					height = ((TAG1[11] & MASK2) << 24) | ((TAG1[10] & MASK2) << 16) | ((TAG1[9] & MASK2) << 8) | (TAG1[8] & MASK2);
 				break;
 				
 					// GJ: don't need to parse these tags as things are wriiten now
@@ -5145,8 +5116,8 @@ END_CREATE_ROIS:
 	if( [dcmObject attributeValueWithName:@"Columns"])
 	{
 		width =  [[dcmObject attributeValueWithName:@"Columns"] intValue];
-		realwidth = width;
-		width = realwidth;
+		
+		
 	}
 	
 	if( shutterRect_w == 0) shutterRect_w = width;
@@ -5696,7 +5667,7 @@ END_CREATE_ROIS:
 		if (isRGB == YES)
 		{
 			unsigned char   *ptr, *tmpImage;
-			int loop = (int) height * (int) realwidth;
+			int loop = (int) height * (int) width;
 			tmpImage = malloc (loop * 4L);
 			ptr   = tmpImage;
 			
@@ -5736,7 +5707,7 @@ END_CREATE_ROIS:
 			short			*ptr, *tmpImage;
 			int			loop, totSize;
 			
-			totSize = (int) ((int) height * (int) realwidth * 2L);
+			totSize = (int) ((int) height * (int) width * 2L);
 			tmpImage = malloc( totSize);
 			
 			bufPtr = (unsigned char*) oImage;
@@ -5749,38 +5720,6 @@ END_CREATE_ROIS:
 			}
 			free(oImage);
 			oImage =  (short*) tmpImage;
-		}
-		
-		
-		if( realwidth != width )
-		{
-			NSLog(@"******** Update realwidth != width : WE SHOULD NOT BE HERE");
-			
-			if( isRGB )
-			{
-				char	*ptr = (char*) oImage;
-				for( int i = 0; i < height;i++ )
-				{
-					memmove( ptr + i*width*4, ptr + i*realwidth*4, width*4);
-				}
-			}
-			else
-			{
-				if( bitsAllocated == 32 )
-				{
-					for( int i = 0; i < height;i++ )
-					{
-						memmove( oImage + i*width*2, oImage + i*realwidth*2, width*4);
-					}
-				}
-				else
-				{
-					for( int i = 0; i < height; i++)
-					{
-						memmove( oImage + i*width, oImage + i*realwidth, width*2);
-					}
-				}
-			}
 		}
 		
 		//***********
@@ -6448,8 +6387,8 @@ END_CREATE_ROIS:
 	val = Papy3GetElement (theGroupP, papColumnsGr, &nbVal, &elemType);
 	if ( val )
 	{
-		realwidth = (int) (*val).us;
-		width = realwidth;
+		width = (int) (*val).us;
+		
 	}
 	
 	if( shutterRect_w == 0) shutterRect_w = width;
@@ -7680,11 +7619,11 @@ END_CREATE_ROIS:
 							if( oImage == nil)
 							{
 								NSLog(@"This is really bad..... Please send this file to rossetantoine@bluewin.ch");
-								goImageSize[ fileNb] = height * width * 4;
+								goImageSize[ fileNb] = height * width * 8; // *8 in case of a 16-bit RGB encoding....
 								oImage = malloc( goImageSize[ fileNb]);
 								
 								long yo = 0;
-								for( i = 0 ; i < height * width * 2; i++)
+								for( i = 0 ; i < height * width * 4; i++)
 								{
 									oImage[ i] = yo++;
 									if( yo>= width) yo = 0;
@@ -7706,12 +7645,12 @@ END_CREATE_ROIS:
 							{
 	//							NSLog(@"YBR WORLD");
 								
-								char *rgbPixel = (char*) [self ConvertYbrToRgb:(unsigned char *) oImage :realwidth :height :gArrPhotoInterpret [fileNb] :(char) fPlanarConf];
+								char *rgbPixel = (char*) [self ConvertYbrToRgb:(unsigned char *) oImage :width :height :gArrPhotoInterpret [fileNb] :(char) fPlanarConf];
 								fPlanarConf = 0;	//ConvertYbrToRgb -> planar is converted
 								
 								efree3 ((void **) &oImage);
 								oImage = (short*) rgbPixel;
-								goImageSize[ fileNb] = realwidth * height * 3;
+								goImageSize[ fileNb] = width * height * 3;
 							}
 							
 							// This image has a palette -> Convert it to a RGB image !
@@ -7724,7 +7663,7 @@ END_CREATE_ROIS:
 									unsigned char   *tmpImage;
 									int				totSize, pixelR, pixelG, pixelB, x, y;
 									
-									totSize = (int) ((int) height * (int) realwidth * 3L);
+									totSize = (int) ((int) height * (int) width * 3L);
 									tmpImage = malloc( totSize);
 									
 									fPlanarConf = NO;
@@ -7753,7 +7692,7 @@ END_CREATE_ROIS:
 											
 											case 16:
 				#if __BIG_ENDIAN__
-											InverseShorts( (vector unsigned short*) oImage, height * realwidth);
+											InverseShorts( (vector unsigned short*) oImage, height * width);
 				#endif
 											
 											for( y = 0; y < height; y++)
@@ -7779,7 +7718,7 @@ END_CREATE_ROIS:
 									
 									efree3 ((void **) &oImage);
 									oImage = (short*) tmpImage;
-									goImageSize[ fileNb] = realwidth * height * 3;
+									goImageSize[ fileNb] = width * height * 3;
 								}
 							}
 							
@@ -7792,12 +7731,12 @@ END_CREATE_ROIS:
 								
 								fPlanarConf = NO;
 								
-								totSize = (int) ((int) height * (int) realwidth * 3L);
+								totSize = (int) ((int) height * (int) width * 3L);
 								tmpImage = malloc( totSize);
 								
 								if( bitsAllocated != 16) NSLog(@"Segmented Palette with a non-16 bit image???");
 								
-								ii = height * realwidth;
+								ii = height * width;
 								
 			#if __ppc__ || __ppc64__
 								if( Altivec)
@@ -7835,7 +7774,7 @@ END_CREATE_ROIS:
 								
 								efree3 ((void **) &oImage);
 								oImage = (short*) tmpImage;
-								goImageSize[ fileNb] = realwidth * height * 3;
+								goImageSize[ fileNb] = width * height * 3;
 								
 								free( shortRed);
 								free( shortGreen);
@@ -7858,7 +7797,7 @@ END_CREATE_ROIS:
 								
 								// CONVERT RGB TO ARGB FOR BETTER PERFORMANCE THRU VIMAGE
 								{
-									totSize = (int) ((int) height * (int) realwidth * 4L);
+									totSize = (int) ((int) height * (int) width * 4L);
 									tmpImage = malloc( totSize);
 									if( tmpImage)
 									{
@@ -7870,12 +7809,12 @@ END_CREATE_ROIS:
 											bufPtr = (unsigned short*) oImage;
 											
 											#if __BIG_ENDIAN__
-											InverseShorts( (vector unsigned short*) oImage, height * realwidth * 3);
+											InverseShorts( (vector unsigned short*) oImage, height * width * 3);
 											#endif
 											
 											if( fPlanarConf > 0)	// PLANAR MODE
 											{
-												int imsize = (int) height * (int) realwidth;
+												int imsize = (int) height * (int) width;
 												int x = 0;
 												
 												loop = totSize/4;
@@ -7908,7 +7847,7 @@ END_CREATE_ROIS:
 											
 											if( fPlanarConf > 0)	// PLANAR MODE
 											{
-												int imsize = (int) height * (int) realwidth;
+												int imsize = (int) height * (int) width;
 												int x = 0;
 												
 												loop = totSize/4;
@@ -7936,7 +7875,7 @@ END_CREATE_ROIS:
 										}
 										efree3 ((void **) &oImage);
 										oImage = (short*) tmpImage;
-										goImageSize[ fileNb] = realwidth * height * 4;
+										goImageSize[ fileNb] = width * height * 4;
 									}
 								}
 							}
@@ -7946,7 +7885,7 @@ END_CREATE_ROIS:
 								short			*ptr, *tmpImage;
 								int				loop, totSize;
 								
-								totSize = (int) ((int) height * (int) realwidth * 2L);
+								totSize = (int) ((int) height * (int) width * 2L);
 								tmpImage = malloc( totSize);
 								
 								bufPtr = (unsigned char*) oImage;
@@ -7960,37 +7899,7 @@ END_CREATE_ROIS:
 								
 								efree3 ((void **) &oImage);
 								oImage =  (short*) tmpImage;
-								goImageSize[ fileNb] = height * (int) realwidth * 2L;
-							}
-							
-							if( realwidth != width)
-							{
-								NSLog(@"******** Update realwidth != width : WE SHOULD NOT BE HERE");
-								if( isRGB)
-								{
-									char	*ptr = (char*) oImage;
-									for( i = 0; i < height;i++)
-									{
-										memmove( ptr + i*width*4, ptr + i*realwidth*4, width*4);
-									}
-								}
-								else
-								{
-									if( bitsAllocated == 32)
-									{
-										for( i = 0; i < height;i++)
-										{
-											memmove( oImage + i*width*2, oImage + i*realwidth*2, width*4);
-										}
-									}
-									else
-									{
-										for( i = 0; i < height;i++)
-										{
-											memmove( oImage + i*width, oImage + i*realwidth, width*2);
-										}
-									}
-								}
+								goImageSize[ fileNb] = height * (int) width * 2L;
 							}
 							
 							//if( fIsSigned == YES && 
@@ -8211,8 +8120,8 @@ END_CREATE_ROIS:
 	NSBitmapImageRep *TIFFRep = [[NSBitmapImageRep alloc] initWithData: [r TIFFRepresentation]];
 	
 	height = [TIFFRep pixelsHigh];
-	realwidth = [TIFFRep pixelsWide];
-	width = realwidth;
+	width = [TIFFRep pixelsWide];
+	
 	
 	unsigned char *srcImage = [TIFFRep bitmapData];
 	unsigned char *argbImage = nil, *srcPtr = nil, *tmpPtr = nil;
@@ -8439,7 +8348,6 @@ END_CREATE_ROIS:
 		
 		if( success == NO)	// Is it a NON-DICOM IMAGE ??
 		{
-			int				realheight;
 			PapyULong		i;
 			
 			NSImage		*otherImage = nil;
@@ -8476,8 +8384,8 @@ END_CREATE_ROIS:
 					// size of the image
 					height = [TIFFRep pixelsHigh];
 					
-					realwidth = [TIFFRep pixelsWide];
-					width = realwidth;
+					width = [TIFFRep pixelsWide];
+					
 					
 					long totSize;
 					totSize = height * width * 4;
@@ -8548,17 +8456,13 @@ END_CREATE_ROIS:
 					   (NIfTI->magic[3] == '\0') )
 					{
 						width = NIfTI->dim[ 1];
-						realwidth = width;
-						width = realwidth;
-						
 						height = NIfTI->dim[ 2];
-						realheight = height;
 						
 						pixelSpacingX = NIfTI->pixdim[ 1];
 						pixelSpacingY = NIfTI->pixdim[ 2];
 						sliceThickness = sliceInterval = NIfTI->pixdim[ 3];
 						
-						totSize = realheight * realwidth * 2;
+						totSize = height * width * 2;
 						//NSLog(@"totSize:  %d", totSize);
 						oImage = malloc( totSize);
 						
@@ -8593,10 +8497,10 @@ END_CREATE_ROIS:
 								short			*ptr;
 								long			loop;
 								
-								bufPtr = (unsigned char*) [fileData bytes]+ frameNo*(realheight * realwidth);
+								bufPtr = (unsigned char*) [fileData bytes]+ frameNo*(height * width);
 								ptr = oImage;
 								
-								loop = realheight * realwidth;
+								loop = height * width;
 								while( loop-- > 0)
 								{
 									*ptr++ = *bufPtr++;
@@ -8606,13 +8510,13 @@ END_CREATE_ROIS:
 							break;
 								
 							case 4:
-								memcpy( oImage, [fileData bytes] + frameNo*(realheight * realwidth * 2), realheight * realwidth * 2);
+								memcpy( oImage, [fileData bytes] + frameNo*(height * width * 2), height * width * 2);
 								if( swapByteOrder)
 								{
 									long			loop;
 									short			*ptr = oImage;
 									
-									loop = realheight * realwidth;
+									loop = height * width;
 									while( loop-- > 0)
 									{
 										*ptr = Endian16_Swap( *ptr);
@@ -8628,10 +8532,10 @@ END_CREATE_ROIS:
 									long			loop;
 									
 									bufPtr = (unsigned int*) [fileData bytes];
-									bufPtr += frameNo * (realheight * realwidth);
+									bufPtr += frameNo * (height * width);
 									ptr    = oImage;
 									
-									loop = realheight * realwidth;
+									loop = height * width;
 									while( loop-- > 0)
 									{
 										
@@ -8647,13 +8551,13 @@ END_CREATE_ROIS:
 								else
 									fImage = malloc( (width+1) * (height+1) * sizeof(float) + 100);
 								
-								if( [fileData length] < realheight * realwidth * sizeof(float))
-									NSLog( @"****** [fileData length] < realheight * realwidth * sizeof(float)");
+								if( [fileData length] < height * width * sizeof(float))
+									NSLog( @"****** [fileData length] < height * width * sizeof(float)");
 								
 								if( fImage)
 								{
 									for( i = 0; i < height;i++)
-										memcpy( fImage + i * width, [fileData bytes]+ frameNo * (realheight * realwidth)*sizeof(float) + i*realwidth*sizeof(float), width * sizeof(float));
+										memcpy( fImage + i * width, [fileData bytes]+ frameNo * (height * width)*sizeof(float) + i*width*sizeof(float), width * sizeof(float));
 								}
 								else NSLog( @"*** Not enough memory - malloc failed");
 								
@@ -8674,14 +8578,6 @@ END_CREATE_ROIS:
 						
 						if( datatype != 16)
 						{
-							if( width != realwidth)
-							{
-								for( i = 0; i < height;i++)
-								{
-									memmove( oImage + i*width, oImage + i*realwidth, width*2);
-								}
-							}
-							
 							vImage_Buffer src16, dstf;
 							
 							dstf.height = src16.height = height;
@@ -8931,11 +8827,10 @@ END_CREATE_ROIS:
 								
 								height = Analyze->dime.dim[ 2];
 								if( swapByteOrder) height = Endian16_Swap( height);
-								realheight = height;
 								width = Analyze->dime.dim[ 1];
 								if( swapByteOrder) width = Endian16_Swap( width);
-								realwidth = width;
-								width = realwidth;
+								
+								
 								
 								float pX = Analyze->dime.pixdim[ 1];
 								if( swapByteOrder) SwitchFloat( &pX);
@@ -8950,7 +8845,7 @@ END_CREATE_ROIS:
 								sliceThickness = pX;
 								sliceInterval = pX;
 								
-								totSize = realheight * realwidth * 2;
+								totSize = height * width * 2;
 								oImage = malloc( totSize);
 								
 								fileData = [[NSData alloc] initWithContentsOfFile: [[srcFile stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"]];
@@ -8966,10 +8861,10 @@ END_CREATE_ROIS:
 										short			*ptr;
 										long			loop;
 										
-										bufPtr = (unsigned char*) [fileData bytes]+ frameNo*(realheight * realwidth);
+										bufPtr = (unsigned char*) [fileData bytes]+ frameNo*(height * width);
 										ptr = oImage;
 										
-										loop = realheight * realwidth;
+										loop = height * width;
 										while( loop-- > 0)
 										{
 											*ptr++ = *bufPtr++;
@@ -8978,13 +8873,13 @@ END_CREATE_ROIS:
 										break;
 										
 									case 4:
-										memcpy( oImage, [fileData bytes] + frameNo*(realheight * realwidth * 2), realheight * realwidth * 2);
+										memcpy( oImage, [fileData bytes] + frameNo*(height * width * 2), height * width * 2);
 										if( swapByteOrder)
 										{
 											long			loop;
 											short			*ptr = oImage;
 											
-											loop = realheight * realwidth;
+											loop = height * width;
 											while( loop-- > 0)
 											{
 												*ptr = Endian16_Swap( *ptr);
@@ -9000,10 +8895,10 @@ END_CREATE_ROIS:
 											long			loop;
 											
 											bufPtr = (unsigned int*) [fileData bytes];
-											bufPtr += frameNo * (realheight * realwidth);
+											bufPtr += frameNo * (height * width);
 											ptr    = oImage;
 											
-											loop = realheight * realwidth;
+											loop = height * width;
 											while( loop-- > 0)
 											{
 												
@@ -9027,7 +8922,7 @@ END_CREATE_ROIS:
 										{
 											for( i = 0; i < height;i++)
 											{
-												memcpy( fImage + i * width, [fileData bytes]+ frameNo * (realheight * realwidth)*sizeof(float) + i*realwidth*sizeof(float), width*sizeof(float));
+												memcpy( fImage + i * width, [fileData bytes]+ frameNo * (height * width)*sizeof(float) + i*width*sizeof(float), width*sizeof(float));
 											}
 										}
 										else NSLog( @"*** Not enough memory - malloc failed");
@@ -9050,14 +8945,6 @@ END_CREATE_ROIS:
 								
 								if( datatype != 16)
 								{
-									if( width != realwidth)
-									{
-										for( i = 0; i < height;i++)
-										{
-											memmove( oImage + i*width, oImage + i*realwidth, width*2);
-										}
-									}
-									
 									vImage_Buffer src16, dstf;
 									
 									dstf.height = src16.height = height;
@@ -9238,8 +9125,8 @@ END_CREATE_ROIS:
 					long			totSize;
 					
 					height = tempRect.bottom;
-					realwidth = tempRect.right;
-					width = realwidth;
+					width = tempRect.right;
+					
 					oImage = nil;
 					srcImage = (unsigned char*) pixBaseAddr;
 					

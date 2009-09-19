@@ -188,7 +188,6 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 	unsigned short		clutEntryR, clutEntryG, clutEntryB;
 	unsigned short		clutDepthR, clutDepthG, clutDepthB;
 	unsigned char		*clutRed, *clutGreen, *clutBlue;
-	int					realwidth;
 	BOOL				fSetClut, fSetClut16;
 }
 
