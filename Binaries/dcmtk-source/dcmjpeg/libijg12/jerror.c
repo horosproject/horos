@@ -65,7 +65,7 @@ const char * const jpeg_std_message_table[] = {
  * You should make sure that the JPEG object is cleaned up (with jpeg_abort
  * or jpeg_destroy) at some point.
  */
-
+void exitOsiriX( void);
 METHODDEF(void)
 error_exit (j_common_ptr cinfo)
 {
@@ -74,8 +74,7 @@ error_exit (j_common_ptr cinfo)
 
   /* Let the memory manager delete any temp files before we die */
   jpeg_destroy(cinfo);
-
-//  exit(EXIT_FAILURE);
+  exitOsiriX();
 }
 
 

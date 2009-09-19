@@ -87,7 +87,11 @@ ExtractJPEGlossy12 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelS
   
   /* initialize the JPEG decompression object */
   jpeg_create_decompress (&theCInfo);
-
+  if( theCInfo.mem == 0L)
+  {
+	printf( "**** theCInfo.mem == 0L\r");
+	RETURN (papBadArgument);
+  }
   /* specify the data source */
 //  jpeg_stdio_src (&theCInfo, gPapyFile [inFileNb]);
 
@@ -106,7 +110,8 @@ ExtractJPEGlossy12 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelS
 	  
   /* read file parameter */
   (void) jpeg_read_header (&theCInfo, TRUE);
-
+   
+	
   if (gArrPhotoInterpret [inFileNb] == MONOCHROME1 ||
       gArrPhotoInterpret [inFileNb] == MONOCHROME2)
     theCInfo.out_color_space = JCS_GRAYSCALE;

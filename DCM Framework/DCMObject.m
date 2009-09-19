@@ -25,6 +25,11 @@ static NSString *implementationName = @"OSIRIX";
 static NSString *softwareVersion = @"001";
 static unsigned int globallyUnique = 100000;
 
+void exitOsiriX(void)
+{
+	[NSException raise: @"JPEG error exception raised" format: @"JPEG error exception raised - See Console.app for error message"];
+}
+
 @implementation DCMObject
 
 @synthesize pixelDataIsDecoded = _decodePixelData;

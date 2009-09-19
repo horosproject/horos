@@ -91,7 +91,11 @@ ExtractJPEGlossy8 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelSt
   
   /* initialize the JPEG decompression object */
   jpeg_create_decompress (&theCInfo);
-
+  if( theCInfo.mem == 0L)
+  {
+	printf( "**** theCInfo.mem == 0L\r");
+	RETURN (papBadArgument);
+  }
   /* specify the data source */
 //  jpeg_stdio_src (&theCInfo, gPapyFile [inFileNb]);
 	
@@ -110,7 +114,7 @@ ExtractJPEGlossy8 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelSt
 	  
 	  /* read file parameter */
 	  (void) jpeg_read_header (&theCInfo, TRUE);
-
+	
 	  if (theCInfo.data_precision == 12)
 	  {
 		jpeg_destroy_decompress (&theCInfo);
