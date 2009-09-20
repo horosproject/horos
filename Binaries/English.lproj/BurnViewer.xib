@@ -515,7 +515,8 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 			<object class="NSUserDefaultsController" id="329076172">
 				<object class="NSMutableArray" key="NSDeclaredKeys">
 					<bool key="EncodedWithXMLCoder">YES</bool>
-					<string>BurnHtml</string>
+					<string>BurnOsirixApplication</string>
+					<string>BurnSupplementaryFolder</string>
 				</object>
 				<bool key="NSSharedInstance">YES</bool>
 			</object>
@@ -621,38 +622,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: values.Burn Osirix Application</string>
-						<reference key="source" ref="251360819"/>
-						<reference key="destination" ref="329076172"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="251360819"/>
-							<reference key="NSDestination" ref="329076172"/>
-							<string key="NSLabel">value: values.Burn Osirix Application</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">values.Burn Osirix Application</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">50</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: values.Burn Supplementary Folder</string>
-						<reference key="source" ref="71935462"/>
-						<reference key="destination" ref="329076172"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="71935462"/>
-							<reference key="NSDestination" ref="329076172"/>
-							<string key="NSLabel">value: values.Burn Supplementary Folder</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">values.Burn Supplementary Folder</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">52</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
 						<string key="label">value: values.Supplementary Burn Path</string>
 						<reference key="source" ref="869202051"/>
 						<reference key="destination" ref="329076172"/>
@@ -746,6 +715,38 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						</object>
 					</object>
 					<int key="connectionID">80</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: values.BurnOsirixApplication</string>
+						<reference key="source" ref="251360819"/>
+						<reference key="destination" ref="329076172"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="251360819"/>
+							<reference key="NSDestination" ref="329076172"/>
+							<string key="NSLabel">value: values.BurnOsirixApplication</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">values.BurnOsirixApplication</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">81</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: values.BurnSupplementaryFolder</string>
+						<reference key="source" ref="71935462"/>
+						<reference key="destination" ref="329076172"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="71935462"/>
+							<reference key="NSDestination" ref="329076172"/>
+							<string key="NSLabel">value: values.BurnSupplementaryFolder</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">values.BurnSupplementaryFolder</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">82</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -1220,7 +1221,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">80</int>
+			<int key="maxID">82</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">

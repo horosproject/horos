@@ -13177,8 +13177,6 @@ static NSArray*	openSubSeriesArray = nil;
 		
 		for( NSString *mediaPath in removeableMedia )
 		{
-			NSLog( @"%@",  path );
-			NSLog( @"%@",  mediaPath );
 			if( [[mediaPath commonPrefixWithString: path options: NSCaseInsensitiveSearch] isEqualToString: mediaPath] )
 			{
 				BOOL		isWritable, isUnmountable, isRemovable, hasDICOMDIR = NO;
@@ -15522,11 +15520,12 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[self displayBonjourServices];
 	}
 	
+	checkForMountedFiles = YES;
 	
-	if( [BrowserController isItCD: sNewDrive] == YES)
-		checkForMountedFiles = YES;
-	else
-		checkForMountedFiles = NO;
+//	if( [BrowserController isItCD: sNewDrive] == YES)
+//		checkForMountedFiles = YES;
+//	else
+//		checkForMountedFiles = NO;
 	
 	//Are we currently copying files from a CD (separate thread?) -> stop it !
 	copyThread = NO;
