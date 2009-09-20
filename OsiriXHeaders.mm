@@ -11,4 +11,10 @@
 @interface DummyClass : NSObject
 @end
 @implementation DummyClass
+
+- (void) test
+{
+	NSLog( @"test");
+}
+
 @end

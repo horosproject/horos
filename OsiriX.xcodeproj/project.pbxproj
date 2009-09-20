@@ -87,7 +87,7 @@
 		59C2B8EB0FF0EB6A00B50385 /* Notifications.m in Sources */ = {isa = PBXBuildFile; fileRef = 59E088A80FF0AB9400452F19 /* Notifications.m */; };
 		59C2B8EC0FF0EB7700B50385 /* Notifications.h in Headers */ = {isa = PBXBuildFile; fileRef = 59E088A70FF0AB9400452F19 /* Notifications.h */; };
 		59F1A4C8104BA5BE009E3215 /* OsiriXHeaders.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59F1A4C7104BA5BE009E3215 /* OsiriXHeaders.mm */; };
-		59F1A515104BA8AE009E3215 /* OsiriX Headers.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = AB0F3A2C1046BD2B004129DD /* OsiriX Headers.framework */; };
+		59F1A515104BA8AE009E3215 /* OsiriX.Headers.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = AB0F3A2C1046BD2B004129DD /* OsiriX.Headers.framework */; };
 		7E0B3A4A0675273500908593 /* DCM Framework_Prefix.pch in Resources */ = {isa = PBXBuildFile; fileRef = 7E0B3A12067526A600908593 /* DCM Framework_Prefix.pch */; };
 		7E0B3A4D0675273500908593 /* DCM.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E0B3A13067526A600908593 /* DCM.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7E0B3A530675273600908593 /* DCMAttribute.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E0B3A14067526A600908593 /* DCMAttribute.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -353,7 +353,6 @@
 		AB0E6B140FAF4BF600A5C046 /* libvtkzlib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AB0E6B120FAF4BF600A5C046 /* libvtkzlib.a */; };
 		AB0E6B170FAF4C2100A5C046 /* libitkzlib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AB0E6B160FAF4C2000A5C046 /* libitkzlib.a */; };
 		AB0F20AD06460F7F0075465D /* Burner.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB0F20AB06460F7F0075465D /* Burner.tif */; };
-		AB0F3A3A1046BDC6004129DD /* ViewerController.h in Headers */ = {isa = PBXBuildFile; fileRef = ABE17661056D2659009C93B5 /* ViewerController.h */; };
 		AB10FA680B96C95500D74684 /* OsirixDownload.icns in Resources */ = {isa = PBXBuildFile; fileRef = AB10FA670B96C95500D74684 /* OsirixDownload.icns */; };
 		AB154F820627413600BD57AF /* SRView.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB154F7E0627413600BD57AF /* SRView.mm */; };
 		AB154F830627413600BD57AF /* SRView.h in Headers */ = {isa = PBXBuildFile; fileRef = AB154F7F0627413600BD57AF /* SRView.h */; };
@@ -409,7 +408,6 @@
 		AB28B8F705B79D2E00A9906C /* dicomFile.h in Headers */ = {isa = PBXBuildFile; fileRef = AB06EDF005635642006AFFB9 /* dicomFile.h */; };
 		AB28B8F805B79D2F00A9906C /* NSSplitViewSave.h in Headers */ = {isa = PBXBuildFile; fileRef = AB08564B059211F9009962D7 /* NSSplitViewSave.h */; };
 		AB28B8F905B79D3000A9906C /* Accelerate.h in Headers */ = {isa = PBXBuildFile; fileRef = AB5E1AFA05956BB600C48BEB /* Accelerate.h */; };
-		AB28B8FB05B79D3200A9906C /* ViewerController.h in Headers */ = {isa = PBXBuildFile; fileRef = ABE17661056D2659009C93B5 /* ViewerController.h */; };
 		AB28B8FC05B79D3400A9906C /* dicomFile.m in Sources */ = {isa = PBXBuildFile; fileRef = AB06EDEF05635642006AFFB9 /* dicomFile.m */; };
 		AB28B8FF05B79D3600A9906C /* DicomDirParser.m in Sources */ = {isa = PBXBuildFile; fileRef = AB4E3CAF05ADDE13001411D1 /* DicomDirParser.m */; };
 		AB28B90005B79D3800A9906C /* DCMView.m in Sources */ = {isa = PBXBuildFile; fileRef = AB59B18205697FD400B77AFC /* DCMView.m */; };
@@ -4368,6 +4366,7 @@
 		CEC1720E0874839C0021C3FC /* burn_anim10.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEC172020874839C0021C3FC /* burn_anim10.tif */; };
 		CEC1720F0874839C0021C3FC /* burn_anim11.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEC172030874839C0021C3FC /* burn_anim11.tif */; };
 		CEC3B293086C87D900DFD83E /* 3DRotateCamera.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEC3B292086C87D900DFD83E /* 3DRotateCamera.tiff */; };
+		CEC4467C10664C2B0061B338 /* ViewerController.h in Headers */ = {isa = PBXBuildFile; fileRef = ABE17661056D2659009C93B5 /* ViewerController.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CEC4B5C10C7DF2D600AF5A76 /* 3DPRESETS in Resources */ = {isa = PBXBuildFile; fileRef = CEC4B5A20C7DF2D600AF5A76 /* 3DPRESETS */; };
 		CEC57C350875C9A300389622 /* OSIDatabasePreferencePane.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = CEC57C260875C9A300389622 /* OSIDatabasePreferencePane.prefPane */; };
 		CECBF93A0FE6B1C200425ED4 /* libopenjpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ABDEB38B0D1827440079C938 /* libopenjpeg.a */; };
@@ -4785,7 +4784,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				59F1A515104BA8AE009E3215 /* OsiriX Headers.framework in CopyFiles */,
+				59F1A515104BA8AE009E3215 /* OsiriX.Headers.framework in CopyFiles */,
 				CE81E2A50FDA9F00000D3D96 /* OsiriX.framework in CopyFiles */,
 				CE438F4D0CB621EC006AAFD9 /* Growl.framework in CopyFiles */,
 				CE438F420CB621DF006AAFD9 /* DotMacKit.framework in CopyFiles */,
@@ -5207,7 +5206,7 @@
 		AB0E6B160FAF4C2000A5C046 /* libitkzlib.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libitkzlib.a; path = ITK180/bin/libitkzlib.a; sourceTree = "<group>"; };
 		AB0EA93B056EDC7E004BBDD3 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
 		AB0F20AB06460F7F0075465D /* Burner.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Burner.tif; sourceTree = "<group>"; };
-		AB0F3A2C1046BD2B004129DD /* OsiriX Headers.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = "OsiriX Headers.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
+		AB0F3A2C1046BD2B004129DD /* OsiriX.Headers.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = OsiriX.Headers.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AB0F3A2D1046BD2B004129DD /* OsiriX Headers-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "OsiriX Headers-Info.plist"; sourceTree = "<group>"; };
 		AB10FA670B96C95500D74684 /* OsirixDownload.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = OsirixDownload.icns; sourceTree = "<group>"; };
 		AB142DFC05600D76008461A0 /* AppController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppController.h; sourceTree = "<group>"; };
@@ -8865,7 +8864,7 @@
 				CE9CED810C75BD8C00752D4B /* libDCM StaticLibrary.a */,
 				CEDAAECA0C7B486A00809161 /* 32-bit shell.app */,
 				844719AF0FD8EF50003BFDF8 /* OsiriX.framework */,
-				AB0F3A2C1046BD2B004129DD /* OsiriX Headers.framework */,
+				AB0F3A2C1046BD2B004129DD /* OsiriX.Headers.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -13422,14 +13421,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		AB0F3A271046BD2B004129DD /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				AB0F3A3A1046BDC6004129DD /* ViewerController.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		AB28B42A05B7921E00A9906C /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -13448,7 +13439,6 @@
 				AB28B8F705B79D2E00A9906C /* dicomFile.h in Headers */,
 				AB28B8F805B79D2F00A9906C /* NSSplitViewSave.h in Headers */,
 				AB28B8F905B79D3000A9906C /* Accelerate.h in Headers */,
-				AB28B8FB05B79D3200A9906C /* ViewerController.h in Headers */,
 				AB28B90305B79D3A00A9906C /* DicomDirParser.h in Headers */,
 				AB28B90405B79D3B00A9906C /* DCMView.h in Headers */,
 				AB0CA46105BE159500F52729 /* ColorTransferView.h in Headers */,
@@ -15800,6 +15790,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CEC4468110664C300061B338 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CEC4467C10664C2B0061B338 /* ViewerController.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
@@ -15825,7 +15823,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = AB0F3A321046BD2D004129DD /* Build configuration list for PBXNativeTarget "OsiriX.Headers" */;
 			buildPhases = (
-				AB0F3A271046BD2B004129DD /* Headers */,
+				CEC4468110664C300061B338 /* Headers */,
 				AB0F3A281046BD2B004129DD /* Resources */,
 				AB0F3A291046BD2B004129DD /* Sources */,
 				AB0F3A2A1046BD2B004129DD /* Frameworks */,
@@ -15837,7 +15835,7 @@
 			);
 			name = OsiriX.Headers;
 			productName = "OsiriXHeaders Framework";
-			productReference = AB0F3A2C1046BD2B004129DD /* OsiriX Headers.framework */;
+			productReference = AB0F3A2C1046BD2B004129DD /* OsiriX.Headers.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 		AB28B42E05B7921E00A9906C /* OsiriX */ = {
