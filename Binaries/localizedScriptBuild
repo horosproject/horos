@@ -1,0 +1,37 @@
+#!/bin/bash
+
+cp -R OSI3DPreferencePane/$1.lproj /Users/antoinerosset/osirix/osirix/build/Deployment\ Universal\ 32-bit/OsiriX.app/Contents/Resources/OSI3DPreferencePane.prefPane/Contents/Resources
+
+
+cp -R OSIAutoroutingPreferencePane/$1.lproj /Users/antoinerosset/osirix/osirix/build/Deployment\ Universal\ 32-bit/OsiriX.app/Contents/Resources/OSIAutoroutingPreferencePane.prefPane/Contents/Resources
+
+
+cp -R OSICDPreferencePane/$1.lproj /Users/antoinerosset/osirix/osirix/build/Deployment\ Universal\ 32-bit/OsiriX.app/Contents/Resources/OSICDPreferencePane.prefPane/Contents/Resources
+
+
+cp -R OSICustomImageAnnotations/$1.lproj /Users/antoinerosset/osirix/osirix/build/Deployment\ Universal\ 32-bit/OsiriX.app/Contents/Resources/OSICustomImageAnnotations.prefPane/Contents/Resources
+
+
+cp -R OSIDatabasePreferencePane/$1.lproj /Users/antoinerosset/osirix/osirix/build/Deployment\ Universal\ 32-bit/OsiriX.app/Contents/Resources/OSIDatabasePreferencePane.prefPane/Contents/Resources
+
+
+cp -R OSIGeneralPreferencePane/$1.lproj /Users/antoinerosset/osirix/osirix/build/Deployment\ Universal\ 32-bit/OsiriX.app/Contents/Resources/OSIGeneralPreferencePane.prefPane/Contents/Resources
+
+
+cp -R OSIHangingPreferencePane/$1.lproj /Users/antoinerosset/osirix/osirix/build/Deployment\ Universal\ 32-bit/OsiriX.app/Contents/Resources/OSIHangingPreferencePane.prefPane/Contents/Resources
+
+
+cp -R OSIHotKeys/$1.lproj /Users/antoinerosset/osirix/osirix/build/Deployment\ Universal\ 32-bit/OsiriX.app/Contents/Resources/OSIHotKeys.prefPane/Contents/Resources
+
+
+cp -R OSIListenerPreferencePane/$1.lproj /Users/antoinerosset/osirix/osirix/build/Deployment\ Universal\ 32-bit/OsiriX.app/Contents/Resources/OSIListenerPreferencePane.prefPane/Contents/Resources
+
+
+cp -R OSILocationsPreferencePane/$1.lproj /Users/antoinerosset/osirix/osirix/build/Deployment\ Universal\ 32-bit/OsiriX.app/Contents/Resources/OSILocationsPreferencePane.prefPane/Contents/Resources
+
+
+cp -R OSIPETPreferencePane/$1.lproj /Users/antoinerosset/osirix/osirix/build/Deployment\ Universal\ 32-bit/OsiriX.app/Contents/Resources/OSIPETPreferencePane.prefPane/Contents/Resources
+
+
+cp -R OSIViewerPreferencePane/$1.lproj /Users/antoinerosset/osirix/osirix/build/Deployment\ Universal\ 32-bit/OsiriX.app/Contents/Resources/OSIViewerPreferencePane.prefPane/Contents/Resources
+
