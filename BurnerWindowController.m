@@ -776,7 +776,25 @@ NSString* asciiString (NSString* name);
 	}
 	
 	if( [newFiles count] > 0)
-	{	
+	{
+		NSArray *copyCompressionSettings = nil;
+		int copyCompressionResolutionLimit = 0;
+		
+		// Change the JPEG2000 settings
+		if( [compressionMode selectedTag] == 1 && [[NSUserDefaults standardUserDefaults] boolForKey: @"JPEGinsteadJPEG2000"] == YES)
+		{
+			copyCompressionSettings = [[NSUserDefaults standardUserDefaults] objectForKey: @"CompressionSettings"];
+			copyCompressionResolutionLimit = [[NSUserDefaults standardUserDefaults] integerForKey: @"CompressionResolutionLimit"];
+			
+			// 2 == compression_JPEG
+			[[NSUserDefaults standardUserDefaults] setObject: [NSArray arrayWithObject: [NSDictionary dictionaryWithObjectsAndKeys: NSLocalizedString( @"default", nil), @"modality", @"2", @"compression", @"1", @"quality", nil]] forKey: @"CompressionSettings"];
+			[[NSUserDefaults standardUserDefaults] setObject: @"1" forKey: @"CompressionResolutionLimit"];
+			[[NSUserDefaults standardUserDefaults] synchronize];
+			
+			// First decompress them, if compressed
+			[[BrowserController currentBrowser] decompressArrayOfFiles: compressedArray work: [NSNumber numberWithChar: 'D']];
+		}
+		
 		switch( [compressionMode selectedTag])
 		{
 			case 1:
@@ -786,6 +804,13 @@ NSString* asciiString (NSString* name);
 			case 2:
 				[[BrowserController currentBrowser] decompressArrayOfFiles: compressedArray work: [NSNumber numberWithChar: 'D']];
 			break;
+		}
+		
+		// Restore the settings
+		if( copyCompressionSettings)
+		{
+			[[NSUserDefaults standardUserDefaults] setObject: copyCompressionSettings forKey: @"CompressionSettings"];
+			[[NSUserDefaults standardUserDefaults] setInteger: copyCompressionResolutionLimit forKey: @"CompressionResolutionLimit"];
 		}
 		
 		[self addDICOMDIRUsingDCMTK];
