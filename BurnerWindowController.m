@@ -789,7 +789,7 @@ NSString* asciiString (NSString* name);
 			// 2 == compression_JPEG
 			[[NSUserDefaults standardUserDefaults] setObject: [NSArray arrayWithObject: [NSDictionary dictionaryWithObjectsAndKeys: NSLocalizedString( @"default", nil), @"modality", @"2", @"compression", @"1", @"quality", nil]] forKey: @"CompressionSettings"];
 			[[NSUserDefaults standardUserDefaults] setObject: @"1" forKey: @"CompressionResolutionLimit"];
-			[[NSUserDefaults standardUserDefaults] synchronize];
+			[[NSUserDefaults standardUserDefaults] synchronize]; // We need this, because compression/decompression is done in a separate process
 			
 			// First decompress them, if compressed
 			[[BrowserController currentBrowser] decompressArrayOfFiles: compressedArray work: [NSNumber numberWithChar: 'D']];
