@@ -5478,11 +5478,12 @@ END_CREATE_ROIS:
 		radiopharmaceuticalStartTime = [[NSCalendarDate	dateWithString: [[radionuclideTotalDoseObject attributeValueWithName:@"RadiopharmaceuticalStartTime"] descriptionWithCalendarFormat:@"%Y-%m-%d %H:%M:%S %z"]] retain];
 		
 		// WARNING : only time is correct. NOT year/month/day
-		acquisitionTime = [[NSCalendarDate dateWithString:[[dcmObject attributeValueWithName:@"SeriesTime"] descriptionWithCalendarFormat:@"%Y-%m-%d %H:%M:%S %z"]] retain];
+		
+		acquisitionTime = [[NSCalendarDate dateWithString:[[dcmObject attributeValueWithName:@"AcquisitionTime"] descriptionWithCalendarFormat:@"%Y-%m-%d %H:%M:%S %z"]] retain];
 		
 		if( acquisitionTime == nil)
-			acquisitionTime = [[NSCalendarDate dateWithString:[[dcmObject attributeValueWithName:@"AcquisitionTime"] descriptionWithCalendarFormat:@"%Y-%m-%d %H:%M:%S %z"]] retain];
-		
+			acquisitionTime = [[NSCalendarDate dateWithString:[[dcmObject attributeValueWithName:@"SeriesTime"] descriptionWithCalendarFormat:@"%Y-%m-%d %H:%M:%S %z"]] retain];
+			
 		[self computeTotalDoseCorrected];
 	}
 	
@@ -6903,7 +6904,7 @@ END_CREATE_ROIS:
 			val = Papy3GetElement (theGroupP, papRecommendedDisplayFrameRateGr, &nbVal, &elemType );
 			if ( val ) cineRate = atof( val->a);	//[[NSString stringWithFormat:@"%0.1f", ] floatValue];
 			
-			val = Papy3GetElement (theGroupP, papSeriesTimeGr, &nbVal, &elemType );
+			val = Papy3GetElement (theGroupP, papAcquisitionTimeGr, &nbVal, &elemType );
 			if( val )
 			{
 				NSString		*cc = [[NSString alloc] initWithCString:val->a encoding: NSASCIIStringEncoding];
@@ -6919,7 +6920,7 @@ END_CREATE_ROIS:
 			}
 			else
 			{
-				val = Papy3GetElement (theGroupP, papAcquisitionTimeGr, &nbVal, &elemType );
+				val = Papy3GetElement (theGroupP, papSeriesTimeGr, &nbVal, &elemType );
 				if( val )
 				{
 					NSString		*cc = [[NSString alloc] initWithCString:val->a encoding: NSASCIIStringEncoding];
