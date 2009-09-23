@@ -183,7 +183,7 @@ public:
 @implementation VRView
 
 @synthesize clipRangeActivated, projectionMode, clippingRangeThickness, keep3DRotateCentered, dontResetImage, renderingMode, currentOpacityArray, exportDCM, dcmSeriesString, bestRenderingMode;
-@synthesize lowResLODFactor;
+@synthesize lowResLODFactor, dontUseAutoCropping;
 
 - (BOOL) checkPointInVolume: (double*) position
 {
@@ -3793,7 +3793,7 @@ public:
 
 - (void) autoCroppingBox
 {
-	if( croppingBox && isRGB == NO)
+	if( croppingBox && isRGB == NO && dontUseAutoCropping == NO)
 	{
 		double a[6], originalPositions[ 6];
 		int aa[6];

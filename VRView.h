@@ -248,6 +248,9 @@ typedef char* vtkMyCallbackVR;
 	vtkOrientationMarkerWidget	*orientationWidget;
 	vtkBoxWidget				*croppingBox;
 	double						initialCroppingBoxBounds[6];
+	BOOL						dontUseAutoCropping;
+	
+	
 	// MAPPERS
 	
 	OsiriXFixedPointVolumeRayCastMapper *volumeMapper;
@@ -343,7 +346,7 @@ typedef char* vtkMyCallbackVR;
 	int fullDepthMode;
 }
 
-@property BOOL clipRangeActivated, keep3DRotateCentered, dontResetImage, bestRenderingMode;
+@property BOOL dontUseAutoCropping, clipRangeActivated, keep3DRotateCentered, dontResetImage, bestRenderingMode;
 @property int projectionMode;
 @property double clippingRangeThickness;
 @property float lowResLODFactor;

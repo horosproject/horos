@@ -33,6 +33,8 @@
     {
 		[self connect2SpaceNavigator];
 		
+		dontUseAutoCropping = YES;
+		
 		superSampling = 4.0;
 	}
 	return self;
