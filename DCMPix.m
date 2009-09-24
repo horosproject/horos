@@ -5464,10 +5464,10 @@ END_CREATE_ROIS:
 	[decayCorrection release];
 	decayCorrection = [[dcmObject attributeValueWithName:@"DecayCorrection"] retain];
 	
-	if( [dcmObject attributeValueWithName:@"DecayFactor"])
-		decayFactor = [[dcmObject attributeValueWithName:@"DecayFactor"] floatValue];
+//	if( [dcmObject attributeValueWithName:@"DecayFactor"])
+//		decayFactor = [[dcmObject attributeValueWithName:@"DecayFactor"] floatValue];
 	
-	decayFactor = 1.0 / decayFactor;
+	decayFactor = 1.0;
 	
 	DCMSequenceAttribute *radiopharmaceuticalInformationSequence = (DCMSequenceAttribute *)[dcmObject attributeWithName:@"RadiopharmaceuticalInformationSequence"];
 	if( radiopharmaceuticalInformationSequence && radiopharmaceuticalInformationSequence.sequence.count > 0 )
@@ -6975,11 +6975,10 @@ END_CREATE_ROIS:
 				if( val ) decayCorrection = [[NSString stringWithCString:val->a] retain];
 				else decayCorrection = nil;
 				
-				val = Papy3GetElement (theGroupP, papDecayFactorGr, &pos, &elemType );
-				if( val ) decayFactor = atof( val->a);
-				else decayFactor = 1.0;
-				
-				decayFactor = 1.0 / decayFactor;
+//				val = Papy3GetElement (theGroupP, papDecayFactorGr, &pos, &elemType );
+//				if( val ) decayFactor = atof( val->a);
+//				else decayFactor = 1.0;
+				decayFactor = 1.0;
 				
 				val = Papy3GetElement (theGroupP, papFrameReferenceTimeGr, &pos, &elemType );
 				if( val ) frameReferenceTime = atof( val->a);
