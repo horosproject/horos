@@ -9940,7 +9940,9 @@ END_CREATE_ROIS:
 {
 	float pixmin, pixmax;
 	
-	if( fImage == nil ) return;
+	if( fImage == nil || width * height <= 0) return;
+	
+	[checking lock];
 	
 	if( isRGB )
 	{
@@ -9965,6 +9967,8 @@ END_CREATE_ROIS:
 	
 	fullwl = pixmin + (pixmax - pixmin)/2;
 	fullww = (pixmax - pixmin);
+	
+	[checking unlock];
 }
 
 - (short)stack{ if( stackMode == 0 ) return 1; return stack; }

@@ -5382,10 +5382,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	{
 		avoidChangeWLWWRecursive = YES;
 		
-		if( [self is2DViewer])
-			[[self windowController] setCurWLWWMenu: [DCMView findWLWWPreset: curWL :curWW :curDCM]];
-		
 		if( [DCMView noPropagateSettingsInSeriesForModality: [[dcmFilesList objectAtIndex:0] valueForKey:@"modality"]] || COPYSETTINGSINSERIES == NO) return;
+		
+		BOOL updateMenu = NO;
 		
 		if( [dcmPixList containsObject: otherPix] )
 		{
@@ -5395,7 +5394,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			iwl = otherPix.wl;
 			
 			if( iww != curDCM.ww || iwl != curDCM.wl)
+			{
 				[self setWLWW: iwl :iww];
+				if( [self is2DViewer])
+					updateMenu = YES;
+			}
 		}
 		
 		if( blendingView)
@@ -5415,6 +5418,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				}
 			}
 		}
+		
+		if( updateMenu || (otherPix == curDCM && [self is2DViewer] == YES))
+			[[self windowController] setCurWLWWMenu: [DCMView findWLWWPreset: curWL :curWW :curDCM]];
 		
 		avoidChangeWLWWRecursive = NO;
 	}
