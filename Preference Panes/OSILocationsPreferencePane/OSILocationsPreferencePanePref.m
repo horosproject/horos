@@ -202,8 +202,8 @@
 	
     NSMutableDictionary *aServer = [NSMutableDictionary dictionary];
     [aServer setObject:@"127.0.0.1" forKey:@"Address"];
-    [aServer setObject:@"AETITLE" forKey:@"AETitle"];
-    [aServer setObject:@"4096" forKey:@"Port"];
+    [aServer setObject:@"PACS" forKey:@"AETitle"];
+    [aServer setObject:@"11112" forKey:@"Port"];
 	[aServer setObject:[NSNumber numberWithBool:YES] forKey:@"QR"];
 	[aServer setObject:[NSNumber numberWithBool:YES] forKey:@"Send"];
     [aServer setObject:@"Description" forKey:@"Description"];
