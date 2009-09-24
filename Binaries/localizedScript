@@ -1,37 +1,38 @@
 #!/bin/bash
 
-mv OSI3DPreferencePane./Contents/Resources/$1.lproj /Users/antoinerosset/Desktop/Localized3.6.1/Preference\ Panes/OSI3DPreferencePane
+rm -R -f /Users/rossetantoine/Desktop/Localized3.6.1/Preference\ Panes/OSI3DPreferencePane/$1.lproj
+cp -R OSI3DPreferencePane.prefPane/Contents/Resources/$1.lproj /Users/rossetantoine/Desktop/Localized3.6.1/Preference\ Panes/OSI3DPreferencePane
 
+rm -R -f /Users/rossetantoine/Desktop/Localized3.6.1/Preference\ Panes/OSIAutoroutingPreferencePane/$1.lproj
+cp -R OSIAutoroutingPreferencePane.prefPane/Contents/Resources/$1.lproj /Users/rossetantoine/Desktop/Localized3.6.1/Preference\ Panes/OSIAutoroutingPreferencePane
 
-mv OSIAutoroutingPreferencePane./Contents/Resources/$1.lproj /Users/antoinerosset/Desktop/Localized3.6.1/Preference\ Panes/OSIAutoroutingPreferencePane
+rm -R -f /Users/rossetantoine/Desktop/Localized3.6.1/Preference\ Panes/OSICDPreferencePane/$1.lproj
+cp -R OSICDPreferencePane.prefPane/Contents/Resources/$1.lproj /Users/rossetantoine/Desktop/Localized3.6.1/Preference\ Panes/OSICDPreferencePane
 
+rm -R -f /Users/rossetantoine/Desktop/Localized3.6.1/Preference\ Panes/OSICustomImageAnnotations/$1.lproj
+cp -R OSICustomImageAnnotations.prefPane/Contents/Resources/$1.lproj /Users/rossetantoine/Desktop/Localized3.6.1/Preference\ Panes/OSICustomImageAnnotations
 
-mv OSICDPreferencePane./Contents/Resources/$1.lproj /Users/antoinerosset/Desktop/Localized3.6.1/Preference\ Panes/OSICDPreferencePane
+rm -R -f /Users/rossetantoine/Desktop/Localized3.6.1/Preference\ Panes/OSIDatabasePreferencePane/$1.lproj
+cp -R OSIDatabasePreferencePane.prefPane/Contents/Resources/$1.lproj /Users/rossetantoine/Desktop/Localized3.6.1/Preference\ Panes/OSIDatabasePreferencePane
 
+rm -R -f /Users/rossetantoine/Desktop/Localized3.6.1/Preference\ Panes/OSIGeneralPreferencePane/$1.lproj
+cp -R OSIGeneralPreferencePane.prefPane/Contents/Resources/$1.lproj /Users/rossetantoine/Desktop/Localized3.6.1/Preference\ Panes/OSIGeneralPreferencePane
 
-mv OSICustomImageAnnotations./Contents/Resources/$1.lproj /Users/antoinerosset/Desktop/Localized3.6.1/Preference\ Panes/OSICustomImageAnnotations
+rm -R -f /Users/rossetantoine/Desktop/Localized3.6.1/Preference\ Panes/OSIHangingPreferencePane/$1.lproj
+cp -R OSIHangingPreferencePane.prefPane/Contents/Resources/$1.lproj /Users/rossetantoine/Desktop/Localized3.6.1/Preference\ Panes/OSIHangingPreferencePane
 
+rm -R -f /Users/rossetantoine/Desktop/Localized3.6.1/Preference\ Panes/OSIHotKeys/$1.lproj
+cp -R OSIHotKeys.prefPane/Contents/Resources/$1.lproj /Users/rossetantoine/Desktop/Localized3.6.1/Preference\ Panes/OSIHotKeys
 
-mv OSIDatabasePreferencePane./Contents/Resources/$1.lproj /Users/antoinerosset/Desktop/Localized3.6.1/Preference\ Panes/OSIDatabasePreferencePane
+rm -R -f /Users/rossetantoine/Desktop/Localized3.6.1/Preference\ Panes/OSIListenerPreferencePane/$1.lproj
+cp -R OSIListenerPreferencePane.prefPane/Contents/Resources/$1.lproj /Users/rossetantoine/Desktop/Localized3.6.1/Preference\ Panes/OSIListenerPreferencePane
 
+rm -R -f /Users/rossetantoine/Desktop/Localized3.6.1/Preference\ Panes/OSILocationsPreferencePane/$1.lproj
+cp -R OSILocationsPreferencePane.prefPane/Contents/Resources/$1.lproj /Users/rossetantoine/Desktop/Localized3.6.1/Preference\ Panes/OSILocationsPreferencePane
 
-mv OSIGeneralPreferencePane./Contents/Resources/$1.lproj /Users/antoinerosset/Desktop/Localized3.6.1/Preference\ Panes/OSIGeneralPreferencePane
+rm -R -f /Users/rossetantoine/Desktop/Localized3.6.1/Preference\ Panes/OSIPETPreferencePane/$1.lproj
+cp -R OSIPETPreferencePane.prefPane/Contents/Resources/$1.lproj /Users/rossetantoine/Desktop/Localized3.6.1/Preference\ Panes/OSIPETPreferencePane
 
-
-mv OSIHangingPreferencePane./Contents/Resources/$1.lproj /Users/antoinerosset/Desktop/Localized3.6.1/Preference\ Panes/OSIHangingPreferencePane
-
-
-mv OSIHotKeys./Contents/Resources/$1.lproj /Users/antoinerosset/Desktop/Localized3.6.1/Preference\ Panes/OSIHotKeysPreferencePane
-
-
-mv OSIListenerPreferencePane./Contents/Resources/$1.lproj /Users/antoinerosset/Desktop/Localized3.6.1/Preference\ Panes/OSIListenerPreferencePane
-
-
-mv OSILocationsPreferencePane./Contents/Resources/$1.lproj /Users/antoinerosset/Desktop/Localized3.6.1/Preference\ Panes/OSILocationsPreferencePane
-
-
-mv OSIPETPreferencePane./Contents/Resources/$1.lproj /Users/antoinerosset/Desktop/Localized3.6.1/Preference\ Panes/OSIPETPreferencePane
-
-
-mv OSIViewerPreferencePane./Contents/Resources/$1.lproj /Users/antoinerosset/Desktop/Localized3.6.1/Preference\ Panes/OSIViewerPreferencePane
+rm -R -f /Users/rossetantoine/Desktop/Localized3.6.1/Preference\ Panes/OSIViewerPreferencePane/$1.lproj
+cp -R OSIViewerPreferencePane.prefPane/Contents/Resources/$1.lproj /Users/rossetantoine/Desktop/Localized3.6.1/Preference\ Panes/OSIViewerPreferencePane
 
