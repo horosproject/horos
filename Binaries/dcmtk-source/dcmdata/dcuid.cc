@@ -521,7 +521,7 @@ const char* dcmLongSCUStorageSOPClassUIDs[] =
     UID_DigitalXRayImageStorageForProcessing,
     UID_EncapsulatedPDFStorage,
     UID_EnhancedCTImageStorage,
-	UID_EnhancedPETImageStorage
+	UID_EnhancedPETImageStorage,
     UID_EnhancedMRImageStorage,
     UID_EnhancedSR,
     UID_EnhancedXAImageStorage,
