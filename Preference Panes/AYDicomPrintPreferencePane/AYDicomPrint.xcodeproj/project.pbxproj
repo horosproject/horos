@@ -248,7 +248,6 @@
 					i386,
 					ppc,
 					x86_64,
-					ppc64,
 				);
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;

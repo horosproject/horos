@@ -63,7 +63,7 @@
 		A9FDDD0C0C843D1600E24423 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = /System/Library/Frameworks/QuartzCore.framework; sourceTree = "<absolute>"; };
 		AB54F6F40C6CABE200B6F653 /* Security.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Security.tiff; sourceTree = "<group>"; };
 		AB54F6FC0C6CAC8A00B6F653 /* AlphaGray.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = AlphaGray.tif; sourceTree = "<group>"; };
-		AB80A66D0A19C8EC00FED357 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = /Developer/SDKs/MacOSX10.4u.sdk/System/Library/Frameworks/Security.framework; sourceTree = "<absolute>"; };
+		AB80A66D0A19C8EC00FED357 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		CE2414700CD2A04A009D0877 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/Localizable.strings; sourceTree = "<group>"; };
 		CE729C52097075C30064790F /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = /System/Library/Frameworks/IOKit.framework; sourceTree = "<absolute>"; };
 		CE9217630C972E8200A6DA13 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/OSICustomImageAnnotations.xib; sourceTree = "<group>"; };
@@ -355,7 +355,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = (
-					ppc64,
 					i386,
 					ppc,
 					x86_64,

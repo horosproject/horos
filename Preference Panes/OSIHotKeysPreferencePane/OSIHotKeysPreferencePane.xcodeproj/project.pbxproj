@@ -42,7 +42,7 @@
 		BF2EEC9C0B1F8B5C007E9088 /* HotKeyFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HotKeyFormatter.m; sourceTree = "<group>"; };
 		BF2EECA50B1F8DDE007E9088 /* HotKeyTextFieldCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HotKeyTextFieldCell.h; sourceTree = "<group>"; };
 		BF2EECA60B1F8DDE007E9088 /* HotKeyTextFieldCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HotKeyTextFieldCell.m; sourceTree = "<group>"; };
-		BF92A1CC0B1D4433001DB893 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = /Developer/SDKs/MacOSX10.4u.sdk/System/Library/Frameworks/Security.framework; sourceTree = "<absolute>"; };
+		BF92A1CC0B1D4433001DB893 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		CE24147B0CD2A05C009D0877 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/Localizable.strings; sourceTree = "<group>"; };
 		CE5C6D010CAD9B2900597FEF /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/OSIHotKeysPref.xib; sourceTree = "<group>"; };
 		CEB157C50D545D7D00941790 /* HotKeyArrayController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HotKeyArrayController.h; sourceTree = "<group>"; };
@@ -297,7 +297,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = (
-					ppc64,
 					ppc,
 					i386,
 					x86_64,

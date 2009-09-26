@@ -32,7 +32,7 @@
 		AB381A710ABE8BD200239326 /* OSIAutoroutingPreferencePanePref.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = OSIAutoroutingPreferencePanePref.tiff; sourceTree = "<group>"; };
 		AB381A770ABE8D8F00239326 /* OSIAutoroutingPreferencePanePref.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = OSIAutoroutingPreferencePanePref.m; sourceTree = "<group>"; };
 		AB381A780ABE8D8F00239326 /* OSIAutoroutingPreferencePanePref.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = OSIAutoroutingPreferencePanePref.h; sourceTree = "<group>"; };
-		AB80A65B0A19C8CB00FED357 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = /Developer/SDKs/MacOSX10.4u.sdk/System/Library/Frameworks/Security.framework; sourceTree = "<absolute>"; };
+		AB80A65B0A19C8CB00FED357 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		ABACC7000ABEC02200DAA92B /* ServerTableView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ServerTableView.h; sourceTree = "<group>"; };
 		ABACC7010ABEC02200DAA92B /* ServerTableView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = ServerTableView.m; sourceTree = "<group>"; };
 		CE1EF6CA0AF0067800A728F2 /* English */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -295,7 +295,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = (
-					ppc64,
 					i386,
 					ppc,
 					x86_64,
