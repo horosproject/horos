@@ -455,6 +455,7 @@
 		AB3F4A1F0672674000E61A6C /* Window3DController.h in Headers */ = {isa = PBXBuildFile; fileRef = AB3F4A1D0672674000E61A6C /* Window3DController.h */; };
 		AB3F4A200672674000E61A6C /* Window3DController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB3F4A1E0672674000E61A6C /* Window3DController.m */; };
 		AB46648D09A331DF005A2766 /* Report.icns in Resources */ = {isa = PBXBuildFile; fileRef = AB46648C09A331DF005A2766 /* Report.icns */; };
+		AB49C4831070AA8000706298 /* ViewerController.h in Headers */ = {isa = PBXBuildFile; fileRef = ABE17661056D2659009C93B5 /* ViewerController.h */; };
 		AB4CD7690F72619900699111 /* FlyThruController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 183C863D08563F3A000E6A68 /* FlyThruController.mm */; };
 		AB64A2DA0C4E0F61000E0981 /* HornRegistration.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB64A2D60C4E0F61000E0981 /* HornRegistration.mm */; };
 		AB64A2DB0C4E0F61000E0981 /* HornRegistration.h in Headers */ = {isa = PBXBuildFile; fileRef = AB64A2D70C4E0F61000E0981 /* HornRegistration.h */; };
@@ -15715,6 +15716,7 @@
 				59C2B8EC0FF0EB7700B50385 /* Notifications.h in Headers */,
 				84C4510C10033B8200138F70 /* OSIWindow.h in Headers */,
 				CE94FC021053FFD3006D92E4 /* CurveFitter.h in Headers */,
+				AB49C4831070AA8000706298 /* ViewerController.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
