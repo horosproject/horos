@@ -3272,6 +3272,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 		[[self window] makeKeyAndOrderFront: self];
 		[self refreshToolbar];
 		[self updateNavigator];
+		
+		[newViewer showCurrentThumbnail: self];
 	}
 	else
 	{
