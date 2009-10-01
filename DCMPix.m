@@ -8315,9 +8315,9 @@ END_CREATE_ROIS:
 					success = [self loadDICOMPapyrus];
 					
 					//only try again if is strict DICOM
-					if (success == NO && [DCMObject isDICOM:[NSData dataWithContentsOfFile:srcFile]])
+					if (success == NO && [DCMObject isDICOM:[NSData dataWithContentsOfFile: srcFile]])
 					{
-						NSLog( @"DICOM File opening: Papyrus Toolkit failed. Try DCMFramework");
+						NSLog( @"DCMPix: Papyrus failed. Try DCMFramework : %@", srcFile);
 						success = [self loadDICOMDCMFramework];
 					}
 				}

@@ -392,6 +392,8 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
 		fusionPluginsMenu = [[NSMenu alloc] initWithTitle:@""];
 		[fusionPluginsMenu insertItemWithTitle:NSLocalizedString(@"Select a fusion plug-in", nil) action:nil keyEquivalent:@"" atIndex:0];
 		
+		NSLog( @"*********** Plugins loading START ***********");
+		
 		for ( path in paths )
 		{
 			NSEnumerator *e = [[[NSFileManager defaultManager] directoryContentsAtPath:path] objectEnumerator];
@@ -413,13 +415,15 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
 						NSBundle *plugin = [NSBundle bundleWithPath: [PluginManager pathResolved: [path stringByAppendingPathComponent:name]]];
 						
 						if( plugin == nil)
-							NSLog( @"Bundle opening failed for: %@", [path stringByAppendingPathComponent:name]);
+							NSLog( @"**** Bundle opening failed for plugin: %@", [path stringByAppendingPathComponent:name]);
 						else
 						{
 							Class filterClass = [plugin principalClass];
 							
 							if( filterClass)
 							{
+								NSLog( @"Plugin loaded and initialized: %@", [path stringByAppendingPathComponent: name]);
+								
 								if ( filterClass == NSClassFromString( @"ARGS" ) ) continue;
 								
 								if ([[[plugin infoDictionary] objectForKey:@"pluginType"] isEqualToString:@"Pre-Process"]) 
@@ -474,6 +478,8 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
 				}
 			}
 		}
+		
+		NSLog( @"*********** Plugins loading END ***********");
 	}
 	@catch (NSException * e)
 	{
