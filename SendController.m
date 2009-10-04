@@ -363,59 +363,69 @@ static volatile int sendControllerObjects = 0;
 {
 	NSAutoreleasePool   *pool = [[NSAutoreleasePool alloc] init];
 
-	NSSortDescriptor	*sort = [[[NSSortDescriptor alloc] initWithKey:@"series.study.patientUID" ascending:YES] autorelease];
-	NSArray				*sortDescriptors = [NSArray arrayWithObject: sort];
-	
-	tempObjectsToSend = [tempObjectsToSend sortedArrayUsingDescriptors: sortDescriptors];
-
-	NSString *calledAET = [[self server] objectForKey:@"AETitle"];
-	
-	// Remove duplicated files 
-	NSMutableArray *objectsToSend = [NSMutableArray arrayWithArray: tempObjectsToSend];
-	NSMutableArray *paths = [NSMutableArray arrayWithArray: [objectsToSend valueForKey: @"completePathResolved"]];
-	
-	[paths removeDuplicatedStringsInSyncWithThisArray: objectsToSend];
-	
-	NSLog(@"Server destination: %@", [[self server] description]);	
-			
-	NSString			*previousPatientUID = nil;
-	NSMutableArray		*samePatientArray = [NSMutableArray arrayWithCapacity: [objectsToSend count]];
-	
-	for( id loopItem in objectsToSend)
+	@try
 	{
-		[[[BrowserController currentBrowser] managedObjectContext] lock];
-		NSString *patientUID = [loopItem valueForKeyPath:@"series.study.patientUID"];
-		[[[BrowserController currentBrowser] managedObjectContext] unlock];
+		NSSortDescriptor	*sort = [[[NSSortDescriptor alloc] initWithKey:@"series.study.patientUID" ascending:YES] autorelease];
+		NSArray				*sortDescriptors = [NSArray arrayWithObject: sort];
 		
-		if( [previousPatientUID isEqualToString: patientUID])
+		tempObjectsToSend = [tempObjectsToSend sortedArrayUsingDescriptors: sortDescriptors];
+
+		NSString *calledAET = [[self server] objectForKey:@"AETitle"];
+		
+		if( calledAET == nil)
+			calledAET = @"AETITLE";
+		
+		// Remove duplicated files 
+		NSMutableArray *objectsToSend = [NSMutableArray arrayWithArray: tempObjectsToSend];
+		NSMutableArray *paths = [NSMutableArray arrayWithArray: [objectsToSend valueForKey: @"completePathResolved"]];
+		
+		[paths removeDuplicatedStringsInSyncWithThisArray: objectsToSend];
+		
+		NSLog(@"Server destination: %@", [[self server] description]);	
+				
+		NSString			*previousPatientUID = nil;
+		NSMutableArray		*samePatientArray = [NSMutableArray arrayWithCapacity: [objectsToSend count]];
+		
+		for( id loopItem in objectsToSend)
 		{
-			[samePatientArray addObject: loopItem];
-		}
-		else
-		{
-			if( [samePatientArray count])
-				[self executeSend: samePatientArray];
+			[[[BrowserController currentBrowser] managedObjectContext] lock];
+			NSString *patientUID = [loopItem valueForKeyPath:@"series.study.patientUID"];
+			[[[BrowserController currentBrowser] managedObjectContext] unlock];
 			
-			// Reset
-			[samePatientArray removeAllObjects];
-			[samePatientArray addObject: loopItem];
-			
-			previousPatientUID = [[patientUID copy] autorelease];
+			if( [previousPatientUID isEqualToString: patientUID])
+			{
+				[samePatientArray addObject: loopItem];
+			}
+			else
+			{
+				if( [samePatientArray count])
+					[self executeSend: samePatientArray];
+				
+				// Reset
+				[samePatientArray removeAllObjects];
+				[samePatientArray addObject: loopItem];
+				
+				previousPatientUID = [[patientUID copy] autorelease];
+			}
 		}
+		
+		if( [samePatientArray count]) [self executeSend: samePatientArray];
+		
+		NSMutableDictionary *info = [NSMutableDictionary dictionary];
+		[info setObject:[NSNumber numberWithInt:[objectsToSend count]] forKey:@"SendTotal"];
+		[info setObject:[NSNumber numberWithInt:[objectsToSend count]] forKey:@"NumberSent"];
+		[info setObject:[NSNumber numberWithBool:YES] forKey:@"Sent"];
+		[info setObject:calledAET forKey:@"CalledAET"];
+		
+		sendControllerObjects--;
+		
+		[self performSelectorOnMainThread:@selector(closeSendPanel:) withObject:nil waitUntilDone: YES];	
+	}
+	@catch (NSException *e)
+	{
+		NSLog( @"***** sendDICOMFilesOffis exception: %@", e);
 	}
 	
-	if( [samePatientArray count]) [self executeSend: samePatientArray];
-	
-	NSMutableDictionary *info = [NSMutableDictionary dictionary];
-	[info setObject:[NSNumber numberWithInt:[objectsToSend count]] forKey:@"SendTotal"];
-	[info setObject:[NSNumber numberWithInt:[objectsToSend count]] forKey:@"NumberSent"];
-	[info setObject:[NSNumber numberWithBool:YES] forKey:@"Sent"];
-	[info setObject:calledAET forKey:@"CalledAET"];
-	
-	sendControllerObjects--;
-	
-	[self performSelectorOnMainThread:@selector(closeSendPanel:) withObject:nil waitUntilDone: YES];	
-		
 	[pool release];
 	
 	//need to unlock to allow release of self after send complete

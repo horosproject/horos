@@ -5222,37 +5222,45 @@ END_CREATE_ROIS:
 - (BOOL)loadDICOMDCMFramework
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	
+	BOOL returnValue = YES;
 	DCMObject *dcmObject = 0L;
 	
 	if( purgeCacheLock == nil)
-		purgeCacheLock = [[NSConditionLock alloc] init];
+		purgeCacheLock = [[NSConditionLock alloc] initWithCondition: 0];
 		
 	[purgeCacheLock lock];
 	[purgeCacheLock unlockWithCondition: [purgeCacheLock condition]+1];
 	
 	[PapyrusLock lock];
 	
-	if( [cachedDCMFrameworkFiles objectForKey: srcFile])
+	@try
 	{
-		NSMutableDictionary *dic = [cachedDCMFrameworkFiles objectForKey: srcFile];
-		
-		dcmObject = [dic objectForKey: @"dcmObject"];
-		[dic setValue: [NSNumber numberWithInt: [[dic objectForKey: @"count"] intValue]+1] forKey: @"count"];
-	}
-	else
-	{
-		dcmObject = [DCMObject objectWithContentsOfFile:srcFile decodingPixelData:NO];
-		
-		if( dcmObject)
+		if( [cachedDCMFrameworkFiles objectForKey: srcFile])
 		{
-			NSMutableDictionary *dic = [NSMutableDictionary dictionary];
+			NSMutableDictionary *dic = [cachedDCMFrameworkFiles objectForKey: srcFile];
 			
-			[dic setValue: dcmObject forKey: @"dcmObject"];
-			[dic setValue: [NSNumber numberWithInt: 1] forKey: @"count"];
-			
-			[cachedDCMFrameworkFiles setObject: dic forKey: srcFile];
+			dcmObject = [dic objectForKey: @"dcmObject"];
+			[dic setValue: [NSNumber numberWithInt: [[dic objectForKey: @"count"] intValue]+1] forKey: @"count"];
 		}
+		else
+		{
+			dcmObject = [DCMObject objectWithContentsOfFile:srcFile decodingPixelData:NO];
+			
+			if( dcmObject)
+			{
+				NSMutableDictionary *dic = [NSMutableDictionary dictionary];
+				
+				[dic setValue: dcmObject forKey: @"dcmObject"];
+				[dic setValue: [NSNumber numberWithInt: 1] forKey: @"count"];
+				
+				[cachedDCMFrameworkFiles setObject: dic forKey: srcFile];
+			}
+		}
+	}
+	@catch (NSException *e)
+	{
+		NSLog( @"loadDICOMDCMFramework exception : %@", e);
+		dcmObject = nil;
 	}
 	
 	[PapyrusLock unlock];
@@ -5295,576 +5303,583 @@ END_CREATE_ROIS:
 		return YES;												 
 	} // end encapsulatedPDF
 	
-	
-	pixelSpacingX = 0;
-	pixelSpacingY = 0;
-	offset = 0.0;
-	slope = 1.0;
-	
-	[self dcmFrameworkLoad0x0018: dcmObject];
-	[self dcmFrameworkLoad0x0020: dcmObject];
-	[self dcmFrameworkLoad0x0028: dcmObject];
-	
-#pragma mark *MR/CT functional multiframe
-	
-	// Is it a new MR/CT multi-frame exam?
-	DCMSequenceAttribute *sharedFunctionalGroupsSequence = (DCMSequenceAttribute *)[dcmObject attributeWithName:@"SharedFunctionalGroupsSequence"];
-	if (sharedFunctionalGroupsSequence)
+	@try
 	{
-		for ( DCMObject *sequenceItem in sharedFunctionalGroupsSequence.sequence )
+		pixelSpacingX = 0;
+		pixelSpacingY = 0;
+		offset = 0.0;
+		slope = 1.0;
+		
+		[self dcmFrameworkLoad0x0018: dcmObject];
+		[self dcmFrameworkLoad0x0020: dcmObject];
+		[self dcmFrameworkLoad0x0028: dcmObject];
+		
+	#pragma mark *MR/CT functional multiframe
+		
+		// Is it a new MR/CT multi-frame exam?
+		DCMSequenceAttribute *sharedFunctionalGroupsSequence = (DCMSequenceAttribute *)[dcmObject attributeWithName:@"SharedFunctionalGroupsSequence"];
+		if (sharedFunctionalGroupsSequence)
 		{
-			DCMSequenceAttribute *MRTimingAndRelatedParametersSequence = (DCMSequenceAttribute *)[sequenceItem attributeWithName:@"MRTimingAndRelatedParametersSequence"];
-			DCMObject *MRTimingAndRelatedParametersObject = [[MRTimingAndRelatedParametersSequence sequence] objectAtIndex:0];
-			if( MRTimingAndRelatedParametersObject)
-				[self dcmFrameworkLoad0x0020: MRTimingAndRelatedParametersObject];
-			
-			DCMSequenceAttribute *planeOrientationSequence = (DCMSequenceAttribute *)[sequenceItem attributeWithName:@"PlaneOrientationSequence"];
-			DCMObject *planeOrientationObject = [[planeOrientationSequence sequence] objectAtIndex:0];
-			if( planeOrientationObject)
-				[self dcmFrameworkLoad0x0020: planeOrientationObject];
-			
-			DCMSequenceAttribute *pixelMeasureSequence = (DCMSequenceAttribute *)[sequenceItem attributeWithName:@"PixelMeasuresSequence"];
-			DCMObject *pixelMeasureObject = [[pixelMeasureSequence sequence] objectAtIndex:0];
-			if( pixelMeasureObject)
-				[self dcmFrameworkLoad0x0018: pixelMeasureObject];
-			if( pixelMeasureObject)
-				[self dcmFrameworkLoad0x0028: pixelMeasureObject];
-			
-			DCMSequenceAttribute *pixelTransformationSequence = (DCMSequenceAttribute *)[sequenceItem attributeWithName:@"PixelValueTransformationSequence"];
-			DCMObject *pixelTransformationSequenceObject = [[pixelTransformationSequence sequence] objectAtIndex:0];
-			if( pixelTransformationSequenceObject)
-				[self dcmFrameworkLoad0x0028: pixelTransformationSequenceObject];
-		}
-	}
-	
-	
-#pragma mark *per frame
-	
-	// ****** ****** ****** ************************************************************************
-	// PER FRAME
-	// ****** ****** ****** ************************************************************************
-	
-	//long frameCount = 0;
-	DCMSequenceAttribute *perFrameFunctionalGroupsSequence = (DCMSequenceAttribute *)[dcmObject attributeWithName:@"Per-frameFunctionalGroupsSequence"];
-	
-	//NSLog(@"perFrameFunctionalGroupsSequence: %@", [perFrameFunctionalGroupsSequence description]);
-	if (perFrameFunctionalGroupsSequence)
-	{
-		if ( perFrameFunctionalGroupsSequence.sequence.count > imageNb && imageNb >= 0 )
-		{
-			DCMObject *sequenceItem = [[perFrameFunctionalGroupsSequence sequence] objectAtIndex:imageNb];
-			if (sequenceItem)
+			for ( DCMObject *sequenceItem in sharedFunctionalGroupsSequence.sequence )
 			{
-				if ([sequenceItem attributeArrayWithName:@"MREchoSequence"])
-				{
-					DCMSequenceAttribute *seq = (DCMSequenceAttribute *) [sequenceItem attributeWithName:@"MREchoSequence"];
-					DCMObject *object = [[seq sequence] objectAtIndex: 0];
-					if( object)
-						[self dcmFrameworkLoad0x0018: object];
-				}
+				DCMSequenceAttribute *MRTimingAndRelatedParametersSequence = (DCMSequenceAttribute *)[sequenceItem attributeWithName:@"MRTimingAndRelatedParametersSequence"];
+				DCMObject *MRTimingAndRelatedParametersObject = [[MRTimingAndRelatedParametersSequence sequence] objectAtIndex:0];
+				if( MRTimingAndRelatedParametersObject)
+					[self dcmFrameworkLoad0x0020: MRTimingAndRelatedParametersObject];
 				
-				if ([sequenceItem attributeArrayWithName:@"PixelMeasuresSequence"])
-				{
-					DCMSequenceAttribute *seq = (DCMSequenceAttribute *) [sequenceItem attributeWithName:@"PixelMeasuresSequence"];
-					DCMObject *object = [[seq sequence] objectAtIndex: 0];
-					if( object)
-						[self dcmFrameworkLoad0x0018: object];
-					if( object)
-						[self dcmFrameworkLoad0x0028: object];
-				}
+				DCMSequenceAttribute *planeOrientationSequence = (DCMSequenceAttribute *)[sequenceItem attributeWithName:@"PlaneOrientationSequence"];
+				DCMObject *planeOrientationObject = [[planeOrientationSequence sequence] objectAtIndex:0];
+				if( planeOrientationObject)
+					[self dcmFrameworkLoad0x0020: planeOrientationObject];
 				
-				if ([sequenceItem attributeArrayWithName:@"PlanePositionSequence"])
-				{
-					DCMSequenceAttribute *seq = (DCMSequenceAttribute *) [sequenceItem attributeWithName:@"PlanePositionSequence"];
-					DCMObject *object = [[seq sequence] objectAtIndex: 0];
-					
-					if( object)
-						[self dcmFrameworkLoad0x0020: object];
-					if( object)
-						[self dcmFrameworkLoad0x0028: object];
-				}
-					
-				if ([sequenceItem attributeArrayWithName:@"PlaneOrientationSequence"])
-				{
-					DCMSequenceAttribute *seq = (DCMSequenceAttribute *) [sequenceItem attributeWithName:@"PlaneOrientationSequence"];
-					DCMObject *object = [[seq sequence] objectAtIndex: 0];
-					if( object)
-						[self dcmFrameworkLoad0x0020: object];
-				}
+				DCMSequenceAttribute *pixelMeasureSequence = (DCMSequenceAttribute *)[sequenceItem attributeWithName:@"PixelMeasuresSequence"];
+				DCMObject *pixelMeasureObject = [[pixelMeasureSequence sequence] objectAtIndex:0];
+				if( pixelMeasureObject)
+					[self dcmFrameworkLoad0x0018: pixelMeasureObject];
+				if( pixelMeasureObject)
+					[self dcmFrameworkLoad0x0028: pixelMeasureObject];
+				
+				DCMSequenceAttribute *pixelTransformationSequence = (DCMSequenceAttribute *)[sequenceItem attributeWithName:@"PixelValueTransformationSequence"];
+				DCMObject *pixelTransformationSequenceObject = [[pixelTransformationSequence sequence] objectAtIndex:0];
+				if( pixelTransformationSequenceObject)
+					[self dcmFrameworkLoad0x0028: pixelTransformationSequenceObject];
 			}
 		}
-		else
+		
+		
+	#pragma mark *per frame
+		
+		// ****** ****** ****** ************************************************************************
+		// PER FRAME
+		// ****** ****** ****** ************************************************************************
+		
+		//long frameCount = 0;
+		DCMSequenceAttribute *perFrameFunctionalGroupsSequence = (DCMSequenceAttribute *)[dcmObject attributeWithName:@"Per-frameFunctionalGroupsSequence"];
+		
+		//NSLog(@"perFrameFunctionalGroupsSequence: %@", [perFrameFunctionalGroupsSequence description]);
+		if (perFrameFunctionalGroupsSequence)
 		{
-			NSLog(@"No Frame %d in preFrameFunctionalGroupsSequence", imageNb);
-		}		
-	}
-	
-#pragma mark *tag group 6000
-	
-	if( [dcmObject attributeValueForKey: @"6000,0010"] && [[dcmObject attributeValueForKey: @"6000,0010"] isKindOfClass: [NSNumber class]])
-	{
-		oRows = [[dcmObject attributeValueForKey: @"6000,0010"] intValue];
-		
-		if( [dcmObject attributeValueForKey: @"6000,0011"])
-			oColumns = [[dcmObject attributeValueForKey: @"6000,0011"] intValue];
-		
-		if( [dcmObject attributeValueForKey: @"6000,0040"])
-			oType = [[dcmObject attributeValueForKey: @"6000,0040"] characterAtIndex: 0];
-		
-		if( [dcmObject attributeValueForKey: @"6000,0050"] ) 
-		{
-			oOrigin[ 0] = [[dcmObject attributeValueForKey: @"6000,0050"] intValue];
-			oOrigin[ 1] = [[dcmObject attributeValueForKey: @"6000,0050"] intValue];
-		}
-		
-		if( [dcmObject attributeValueForKey: @"6000,0100"])
-			oBits = [[dcmObject attributeValueForKey: @"6000,0100"] intValue];
-		
-		if( [dcmObject attributeValueForKey: @"6000,0102"])
-			oBitPosition = [[dcmObject attributeValueForKey: @"6000,0102"] intValue];
-		
-		NSData	*data = [dcmObject attributeValueForKey: @"6000,3000"];
-		
-		if (data && oBits == 1 && oRows == height && oColumns == width && oType == 'G' && oBitPosition == 0 && oOrigin[ 0] == 1 && oOrigin[ 1] == 1)
-		{
-			if( oData) free( oData);
-			oData = malloc( oRows*oColumns);
-			if( oData)
+			if ( perFrameFunctionalGroupsSequence.sequence.count > imageNb && imageNb >= 0 )
 			{
-				unsigned short *pixels = (unsigned short*) [data bytes];
-				char			valBit [ 16];
-				char			mask = 1;
-				
-				for ( int i = 0; i < oColumns*oRows/16; i++ )
+				DCMObject *sequenceItem = [[perFrameFunctionalGroupsSequence sequence] objectAtIndex:imageNb];
+				if (sequenceItem)
 				{
-					unsigned short	octet = pixels[ i];
-					
-					for ( int x = 0; x < 16; x++ )
+					if ([sequenceItem attributeArrayWithName:@"MREchoSequence"])
 					{
-						valBit[ x ] = octet & mask ? 1 : 0;
-						octet = octet >> 1;
+						DCMSequenceAttribute *seq = (DCMSequenceAttribute *) [sequenceItem attributeWithName:@"MREchoSequence"];
+						DCMObject *object = [[seq sequence] objectAtIndex: 0];
+						if( object)
+							[self dcmFrameworkLoad0x0018: object];
+					}
+					
+					if ([sequenceItem attributeArrayWithName:@"PixelMeasuresSequence"])
+					{
+						DCMSequenceAttribute *seq = (DCMSequenceAttribute *) [sequenceItem attributeWithName:@"PixelMeasuresSequence"];
+						DCMObject *object = [[seq sequence] objectAtIndex: 0];
+						if( object)
+							[self dcmFrameworkLoad0x0018: object];
+						if( object)
+							[self dcmFrameworkLoad0x0028: object];
+					}
+					
+					if ([sequenceItem attributeArrayWithName:@"PlanePositionSequence"])
+					{
+						DCMSequenceAttribute *seq = (DCMSequenceAttribute *) [sequenceItem attributeWithName:@"PlanePositionSequence"];
+						DCMObject *object = [[seq sequence] objectAtIndex: 0];
 						
-						if ( valBit[ x]) oData[ i*16 + x] = 0xFF;
-						else oData[ i*16 + x] = 0;
+						if( object)
+							[self dcmFrameworkLoad0x0020: object];
+						if( object)
+							[self dcmFrameworkLoad0x0028: object];
+					}
+						
+					if ([sequenceItem attributeArrayWithName:@"PlaneOrientationSequence"])
+					{
+						DCMSequenceAttribute *seq = (DCMSequenceAttribute *) [sequenceItem attributeWithName:@"PlaneOrientationSequence"];
+						DCMObject *object = [[seq sequence] objectAtIndex: 0];
+						if( object)
+							[self dcmFrameworkLoad0x0020: object];
 					}
 				}
 			}
-		}
-	}
-	
-#pragma mark *SUV	
-	
-	// Get values needed for SUV calcs:
-	if( [dcmObject attributeValueWithName:@"PatientsWeight"]) patientsWeight = [[dcmObject attributeValueWithName:@"PatientsWeight"] floatValue];
-	else patientsWeight = 0.0;
-	
-	[units release];
-	units = [[dcmObject attributeValueWithName:@"Units"] retain];
-	
-	[decayCorrection release];
-	decayCorrection = [[dcmObject attributeValueWithName:@"DecayCorrection"] retain];
-	
-//	if( [dcmObject attributeValueWithName:@"DecayFactor"])
-//		decayFactor = [[dcmObject attributeValueWithName:@"DecayFactor"] floatValue];
-	
-	decayFactor = 1.0;
-	
-	DCMSequenceAttribute *radiopharmaceuticalInformationSequence = (DCMSequenceAttribute *)[dcmObject attributeWithName:@"RadiopharmaceuticalInformationSequence"];
-	if( radiopharmaceuticalInformationSequence && radiopharmaceuticalInformationSequence.sequence.count > 0 )
-	{
-		DCMObject *radionuclideTotalDoseObject = [radiopharmaceuticalInformationSequence.sequence objectAtIndex:0];
-		radionuclideTotalDose = [[radionuclideTotalDoseObject attributeValueWithName:@"RadionuclideTotalDose"] floatValue];
-		halflife = [[radionuclideTotalDoseObject attributeValueWithName:@"RadionuclideHalfLife"] floatValue];
-		radiopharmaceuticalStartTime = [[NSCalendarDate	dateWithString: [[radionuclideTotalDoseObject attributeValueWithName:@"RadiopharmaceuticalStartTime"] descriptionWithCalendarFormat:@"%Y-%m-%d %H:%M:%S %z"]] retain];
-		
-		// WARNING : only time is correct. NOT year/month/day
-		
-		acquisitionTime = [[NSCalendarDate dateWithString:[[dcmObject attributeValueWithName:@"AcquisitionTime"] descriptionWithCalendarFormat:@"%Y-%m-%d %H:%M:%S %z"]] retain];
-		
-		if( acquisitionTime == nil)
-			acquisitionTime = [[NSCalendarDate dateWithString:[[dcmObject attributeValueWithName:@"SeriesTime"] descriptionWithCalendarFormat:@"%Y-%m-%d %H:%M:%S %z"]] retain];
-			
-		[self computeTotalDoseCorrected];
-	}
-	
-	DCMSequenceAttribute *detectorInformationSequence = (DCMSequenceAttribute *)[dcmObject attributeWithName:@"DetectorInformationSequence"];
-	if( detectorInformationSequence && detectorInformationSequence.sequence.count > 0 )
-	{
-		DCMObject *detectorInformation = [detectorInformationSequence.sequence objectAtIndex:0];
-		
-		NSArray *ipp = [detectorInformation attributeArrayWithName:@"ImagePositionPatient"];
-		if( ipp )
-		{
-			originX = [[ipp objectAtIndex:0] floatValue];
-			originY = [[ipp objectAtIndex:1] floatValue];
-			originZ = [[ipp objectAtIndex:2] floatValue];
-			isOriginDefined = YES;
-		}
-		
-		if( spacingBetweenSlices)
-			originZ += frameNo * spacingBetweenSlices;
-		else
-			originZ += frameNo * sliceThickness;
-			
-		orientation[ 0] = 0;	orientation[ 1] = 0;	orientation[ 2] = 0;
-		orientation[ 3] = 0;	orientation[ 4] = 0;	orientation[ 5] = 0;
-		
-		NSArray *iop = [detectorInformation attributeArrayWithName:@"ImageOrientationPatient"];
-		if( iop)
-		{
-			BOOL equalZero = YES;
-			
-			for ( int j = 0; j < iop.count; j++) 
-				if( [[iop objectAtIndex:j] floatValue] != 0)
-					equalZero = NO;
-			
-			if( equalZero == NO)
-			{
-				for ( int j = 0; j < iop.count; j++) 
-					orientation[ j ] = [[iop objectAtIndex:j] floatValue];
-			}
-			else // doesnt the root Image Orientation contains valid data? if not use the normal vector
-			{
-				equalZero = YES;
-				for ( int j = 0; j < 6; j++ )
-					if( orientation[ j] != 0)
-						equalZero = NO;
-				
-				if( equalZero)
-				{
-					orientation[ 0] = 1;	orientation[ 1] = 0;	orientation[ 2] = 0;
-					orientation[ 3] = 0;	orientation[ 4] = 1;	orientation[ 5] = 0;
-				}
-			}
-		}
-	}
-	
-	if( [dcmObject attributeValueForKey: @"7053,1000"])
-	{
-		@try
-		{
-			philipsFactor = [[dcmObject attributeValueForKey: @"7053,1000"] floatValue];
-		}
-		@catch ( NSException *e)
-		{
-			NSLog( @"philipsFactor exception");
-			NSLog( @"%@", [e description]);
-		}
-		//NSLog( @"philipsFactor = %f", philipsFactor);
-	}
-	
-	// End SUV		
-	
-#pragma mark *compute normal vector				
-	// Compute normal vector
-	
-	orientation[6] = orientation[1]*orientation[5] - orientation[2]*orientation[4];
-	orientation[7] = orientation[2]*orientation[3] - orientation[0]*orientation[5];
-	orientation[8] = orientation[0]*orientation[4] - orientation[1]*orientation[3];
-	
-	if( fabs( orientation[6]) > fabs(orientation[7]) && fabs( orientation[6]) > fabs(orientation[8]))
-		sliceLocation = originX;
-	
-	if( fabs( orientation[7]) > fabs(orientation[6]) && fabs( orientation[7]) > fabs(orientation[8]))
-		sliceLocation = originY;
-	
-	if( fabs( orientation[8]) > fabs(orientation[6]) && fabs( orientation[8]) > fabs(orientation[7]))
-		sliceLocation = originZ;
-	
-	
-#pragma mark READ PIXEL DATA		
-	
-	maxFrame = [[dcmObject attributeValueWithName:@"NumberofFrames"] intValue];
-	if( maxFrame == 0) maxFrame = 1;
-	if( pixArray == nil) maxFrame = 1;
-	//pixelAttr contains the whole PixelData attribute of every frames. Hence needs to be before the loop
-	if ([dcmObject attributeValueWithName:@"PixelData"])
-	{
-		DCMPixelDataAttribute *pixelAttr = (DCMPixelDataAttribute *)[dcmObject attributeWithName:@"PixelData"];
-			
-		//=====================================================================
-		
-	#pragma mark *loading a frame
-		
-		if ( [[dcmObject attributeValueWithName:@"Modality"] isEqualToString: @"RTDOSE"] )
-		{  // Set Z value for each frame
-			NSArray *gridFrameOffsetArray = [dcmObject attributeArrayWithName: @"GridFrameOffsetVector"];  //List of Z values
-			originZ += [[gridFrameOffsetArray objectAtIndex: imageNb] floatValue];
-			if( fabs( orientation[6]) > fabs(orientation[7]) && fabs( orientation[6]) > fabs(orientation[8]) )
-			{
-				sliceLocation = originX;
-			}
-			
-			if( fabs( orientation[7]) > fabs(orientation[6]) && fabs( orientation[7]) > fabs(orientation[8]) )
-			{
-				sliceLocation = originY;
-			}
-			
-			if( fabs( orientation[8]) > fabs(orientation[6]) && fabs( orientation[8]) > fabs(orientation[7]) )
-			{
-				sliceLocation = originZ;
-			}	
-		}
-		
-		if( gUseShutter && imageNb != frameNo && maxFrame > 1 )
-		{
-			self->shutterRect_x = shutterRect_x;
-			self->shutterRect_y = shutterRect_y;
-			self->shutterRect_w = shutterRect_w;
-			self->shutterRect_h = shutterRect_h;
-			
-			self->shutterCircular_x = shutterCircular_x;
-			self->shutterCircular_y = shutterCircular_y;
-			self->shutterCircular_radius = shutterCircular_radius;
-			
-			if( shutterPolygonalSize )
-			{
-				self->shutterPolygonalSize = shutterPolygonalSize;
-				self->shutterPolygonal = malloc( shutterPolygonalSize * sizeof( NSPoint));
-				memcpy( self->shutterPolygonal, shutterPolygonal, shutterPolygonalSize * sizeof( NSPoint ) );
-			}
-			
-			self->DCMPixShutterOnOff = DCMPixShutterOnOff;
-		}
-		
-		//get PixelData
-		NSData *pixData = [pixelAttr decodeFrameAtIndex:imageNb];
-		short *oImage =  malloc([pixData length]);	//pointer to a memory zone where each pixel of the data has a short value reserved
-		[pixData getBytes:oImage];
-		
-		if( oImage == nil ) //there was no data for this frame -> create empty image
-		{
-			//NSLog(@"image size: %d", ( height * width * 2));
-			oImage = malloc( height * width * 2);
-			//gArrPhotoInterpret [fileNb] = MONOCHROME2;
-			
-			long yo = 0;
-			for( unsigned long i = 0 ; i < height * width; i++ )
-			{
-				oImage[ i] = yo++;
-				if( yo>= width) yo = 0;
-			}
-		}
-		
-		//-----------------------frame data already loaded in (short) oImage --------------
-		
-		isRGB = NO;
-		inverseVal = NO;
-		
-		NSString *colorspace = [dcmObject attributeValueWithName:@"PhotometricInterpretation"];		
-		if ([colorspace rangeOfString:@"MONOCHROME1"].location != NSNotFound)
-			{inverseVal = YES; savedWL = -savedWL;}													
-		/*else if ( [colorspace hasPrefix:@"MONOCHROME2"])	{inverseVal = NO; savedWL = savedWL;} */
-		if ( [colorspace hasPrefix:@"YBR"]) isRGB = YES;		
-		if ( [colorspace hasPrefix:@"PALETTE"])	{ bitsAllocated = 8; isRGB = YES; NSLog(@"Palette depth conveted to 8 bit");}
-		if ([colorspace rangeOfString:@"RGB"].location != NSNotFound) isRGB = YES;			
-		/******** dcm Object will do this *******convertYbrToRgb -> planar is converted***/		
-		if ([colorspace rangeOfString:@"YBR"].location != NSNotFound)
-		{
-			fPlanarConf = 0;
-			isRGB = YES;
-		}
-		
-		if (isRGB == YES)
-		{
-			unsigned char   *ptr, *tmpImage;
-			int loop = (int) height * (int) width;
-			tmpImage = malloc (loop * 4L);
-			ptr   = tmpImage;
-			
-			if( bitsAllocated > 8)
-			{ // RGB_FFF
-				unsigned short   *bufPtr;
-				bufPtr = (unsigned short*) oImage;
-				while( loop-- > 0)
-				{		//unsigned short=16 bit, then I suppose A should be 65535
-					*ptr++	= 255;			//ptr++;
-					*ptr++	= *bufPtr++;		//ptr++;  bufPtr++;
-					*ptr++	= *bufPtr++;		//ptr++;  bufPtr++;
-					*ptr++	= *bufPtr++;		//ptr++;  bufPtr++;
-				}
-			}
 			else
-			{ // RGB_888
-				unsigned char   *bufPtr;
-				bufPtr = (unsigned char*) oImage;
-				
-				while( loop-- > 0 )
-				{
-					*ptr++	= 255;			//ptr++;
-					*ptr++	= *bufPtr++;		//ptr++;  bufPtr++;
-					*ptr++	= *bufPtr++;		//ptr++;  bufPtr++;
-					*ptr++	= *bufPtr++;		//ptr++;  bufPtr++;
-				}
-				
-			}
-			free(oImage);
-			oImage = (short*) tmpImage;
-		}
-		else if( bitsAllocated == 8)
-		{	// Planar 8
-			//-> 16 bits image
-			unsigned char   *bufPtr;
-			short			*ptr, *tmpImage;
-			int			loop, totSize;
-			
-			totSize = (int) ((int) height * (int) width * 2L);
-			tmpImage = malloc( totSize);
-			
-			bufPtr = (unsigned char*) oImage;
-			ptr    = tmpImage;
-			
-			loop = totSize/2;
-			while( loop-- > 0 )
 			{
-				*ptr++ = *bufPtr++;
-			}
-			free(oImage);
-			oImage =  (short*) tmpImage;
+				NSLog(@"No Frame %d in preFrameFunctionalGroupsSequence", imageNb);
+			}		
 		}
 		
-		//***********
+	#pragma mark *tag group 6000
 		
-		if( isRGB )
+		if( [dcmObject attributeValueForKey: @"6000,0010"] && [[dcmObject attributeValueForKey: @"6000,0010"] isKindOfClass: [NSNumber class]])
 		{
-			if( fExternalOwnedImage)
-			{
-				fImage = fExternalOwnedImage;
-				memcpy( fImage, oImage, width*height*sizeof(float));
-				free(oImage);
-			}
-			else fImage = (float*) oImage;
-			oImage = nil;
+			oRows = [[dcmObject attributeValueForKey: @"6000,0010"] intValue];
 			
-			if( oData && gDisplayDICOMOverlays )
+			if( [dcmObject attributeValueForKey: @"6000,0011"])
+				oColumns = [[dcmObject attributeValueForKey: @"6000,0011"] intValue];
+			
+			if( [dcmObject attributeValueForKey: @"6000,0040"])
+				oType = [[dcmObject attributeValueForKey: @"6000,0040"] characterAtIndex: 0];
+			
+			if( [dcmObject attributeValueForKey: @"6000,0050"] ) 
 			{
-				unsigned char	*rgbData = (unsigned char*) fImage;
-				
-				for( int y = 0; y < oRows; y++ )
+				oOrigin[ 0] = [[dcmObject attributeValueForKey: @"6000,0050"] intValue];
+				oOrigin[ 1] = [[dcmObject attributeValueForKey: @"6000,0050"] intValue];
+			}
+			
+			if( [dcmObject attributeValueForKey: @"6000,0100"])
+				oBits = [[dcmObject attributeValueForKey: @"6000,0100"] intValue];
+			
+			if( [dcmObject attributeValueForKey: @"6000,0102"])
+				oBitPosition = [[dcmObject attributeValueForKey: @"6000,0102"] intValue];
+			
+			NSData	*data = [dcmObject attributeValueForKey: @"6000,3000"];
+			
+			if (data && oBits == 1 && oRows == height && oColumns == width && oType == 'G' && oBitPosition == 0 && oOrigin[ 0] == 1 && oOrigin[ 1] == 1)
+			{
+				if( oData) free( oData);
+				oData = malloc( oRows*oColumns);
+				if( oData)
 				{
-					for( int x = 0; x < oColumns; x++ )
+					unsigned short *pixels = (unsigned short*) [data bytes];
+					char			valBit [ 16];
+					char			mask = 1;
+					
+					for ( int i = 0; i < oColumns*oRows/16; i++ )
 					{
-						if( oData[ y * oColumns + x] )
+						unsigned short	octet = pixels[ i];
+						
+						for ( int x = 0; x < 16; x++ )
 						{
-							rgbData[ y * width*4 + x*4 + 1] = 0xFF;
-							rgbData[ y * width*4 + x*4 + 2] = 0xFF;
-							rgbData[ y * width*4 + x*4 + 3] = 0xFF;
+							valBit[ x ] = octet & mask ? 1 : 0;
+							octet = octet >> 1;
+							
+							if ( valBit[ x]) oData[ i*16 + x] = 0xFF;
+							else oData[ i*16 + x] = 0;
 						}
 					}
 				}
 			}
 		}
-		else
+		
+	#pragma mark *SUV	
+		
+		// Get values needed for SUV calcs:
+		if( [dcmObject attributeValueWithName:@"PatientsWeight"]) patientsWeight = [[dcmObject attributeValueWithName:@"PatientsWeight"] floatValue];
+		else patientsWeight = 0.0;
+		
+		[units release];
+		units = [[dcmObject attributeValueWithName:@"Units"] retain];
+		
+		[decayCorrection release];
+		decayCorrection = [[dcmObject attributeValueWithName:@"DecayCorrection"] retain];
+		
+	//	if( [dcmObject attributeValueWithName:@"DecayFactor"])
+	//		decayFactor = [[dcmObject attributeValueWithName:@"DecayFactor"] floatValue];
+		
+		decayFactor = 1.0;
+		
+		DCMSequenceAttribute *radiopharmaceuticalInformationSequence = (DCMSequenceAttribute *)[dcmObject attributeWithName:@"RadiopharmaceuticalInformationSequence"];
+		if( radiopharmaceuticalInformationSequence && radiopharmaceuticalInformationSequence.sequence.count > 0 )
 		{
-			if( bitsAllocated == 32) // 32-bit float
+			DCMObject *radionuclideTotalDoseObject = [radiopharmaceuticalInformationSequence.sequence objectAtIndex:0];
+			radionuclideTotalDose = [[radionuclideTotalDoseObject attributeValueWithName:@"RadionuclideTotalDose"] floatValue];
+			halflife = [[radionuclideTotalDoseObject attributeValueWithName:@"RadionuclideHalfLife"] floatValue];
+			radiopharmaceuticalStartTime = [[NSCalendarDate	dateWithString: [[radionuclideTotalDoseObject attributeValueWithName:@"RadiopharmaceuticalStartTime"] descriptionWithCalendarFormat:@"%Y-%m-%d %H:%M:%S %z"]] retain];
+			
+			// WARNING : only time is correct. NOT year/month/day
+			
+			acquisitionTime = [[NSCalendarDate dateWithString:[[dcmObject attributeValueWithName:@"AcquisitionTime"] descriptionWithCalendarFormat:@"%Y-%m-%d %H:%M:%S %z"]] retain];
+			
+			if( acquisitionTime == nil)
+				acquisitionTime = [[NSCalendarDate dateWithString:[[dcmObject attributeValueWithName:@"SeriesTime"] descriptionWithCalendarFormat:@"%Y-%m-%d %H:%M:%S %z"]] retain];
+				
+			[self computeTotalDoseCorrected];
+		}
+		
+		DCMSequenceAttribute *detectorInformationSequence = (DCMSequenceAttribute *)[dcmObject attributeWithName:@"DetectorInformationSequence"];
+		if( detectorInformationSequence && detectorInformationSequence.sequence.count > 0 )
+		{
+			DCMObject *detectorInformation = [detectorInformationSequence.sequence objectAtIndex:0];
+			
+			NSArray *ipp = [detectorInformation attributeArrayWithName:@"ImagePositionPatient"];
+			if( ipp )
 			{
-				float			*sfloat = (float*) oImage;
+				originX = [[ipp objectAtIndex:0] floatValue];
+				originY = [[ipp objectAtIndex:1] floatValue];
+				originZ = [[ipp objectAtIndex:2] floatValue];
+				isOriginDefined = YES;
+			}
+			
+			if( spacingBetweenSlices)
+				originZ += frameNo * spacingBetweenSlices;
+			else
+				originZ += frameNo * sliceThickness;
 				
-				if( fExternalOwnedImage)
-					fImage = fExternalOwnedImage;
+			orientation[ 0] = 0;	orientation[ 1] = 0;	orientation[ 2] = 0;
+			orientation[ 3] = 0;	orientation[ 4] = 0;	orientation[ 5] = 0;
+			
+			NSArray *iop = [detectorInformation attributeArrayWithName:@"ImageOrientationPatient"];
+			if( iop)
+			{
+				BOOL equalZero = YES;
+				
+				for ( int j = 0; j < iop.count; j++) 
+					if( [[iop objectAtIndex:j] floatValue] != 0)
+						equalZero = NO;
+				
+				if( equalZero == NO)
+				{
+					for ( int j = 0; j < iop.count; j++) 
+						orientation[ j ] = [[iop objectAtIndex:j] floatValue];
+				}
+				else // doesnt the root Image Orientation contains valid data? if not use the normal vector
+				{
+					equalZero = YES;
+					for ( int j = 0; j < 6; j++ )
+						if( orientation[ j] != 0)
+							equalZero = NO;
+					
+					if( equalZero)
+					{
+						orientation[ 0] = 1;	orientation[ 1] = 0;	orientation[ 2] = 0;
+						orientation[ 3] = 0;	orientation[ 4] = 1;	orientation[ 5] = 0;
+					}
+				}
+			}
+		}
+		
+		if( [dcmObject attributeValueForKey: @"7053,1000"])
+		{
+			@try
+			{
+				philipsFactor = [[dcmObject attributeValueForKey: @"7053,1000"] floatValue];
+			}
+			@catch ( NSException *e)
+			{
+				NSLog( @"philipsFactor exception");
+				NSLog( @"%@", [e description]);
+			}
+			//NSLog( @"philipsFactor = %f", philipsFactor);
+		}
+		
+		// End SUV		
+		
+	#pragma mark *compute normal vector				
+		// Compute normal vector
+		
+		orientation[6] = orientation[1]*orientation[5] - orientation[2]*orientation[4];
+		orientation[7] = orientation[2]*orientation[3] - orientation[0]*orientation[5];
+		orientation[8] = orientation[0]*orientation[4] - orientation[1]*orientation[3];
+		
+		if( fabs( orientation[6]) > fabs(orientation[7]) && fabs( orientation[6]) > fabs(orientation[8]))
+			sliceLocation = originX;
+		
+		if( fabs( orientation[7]) > fabs(orientation[6]) && fabs( orientation[7]) > fabs(orientation[8]))
+			sliceLocation = originY;
+		
+		if( fabs( orientation[8]) > fabs(orientation[6]) && fabs( orientation[8]) > fabs(orientation[7]))
+			sliceLocation = originZ;
+		
+		
+	#pragma mark READ PIXEL DATA		
+		
+		maxFrame = [[dcmObject attributeValueWithName:@"NumberofFrames"] intValue];
+		if( maxFrame == 0) maxFrame = 1;
+		if( pixArray == nil) maxFrame = 1;
+		//pixelAttr contains the whole PixelData attribute of every frames. Hence needs to be before the loop
+		if ([dcmObject attributeValueWithName:@"PixelData"])
+		{
+			DCMPixelDataAttribute *pixelAttr = (DCMPixelDataAttribute *)[dcmObject attributeWithName:@"PixelData"];
+				
+			//=====================================================================
+			
+		#pragma mark *loading a frame
+			
+			if ( [[dcmObject attributeValueWithName:@"Modality"] isEqualToString: @"RTDOSE"] )
+			{  // Set Z value for each frame
+				NSArray *gridFrameOffsetArray = [dcmObject attributeArrayWithName: @"GridFrameOffsetVector"];  //List of Z values
+				originZ += [[gridFrameOffsetArray objectAtIndex: imageNb] floatValue];
+				if( fabs( orientation[6]) > fabs(orientation[7]) && fabs( orientation[6]) > fabs(orientation[8]) )
+				{
+					sliceLocation = originX;
+				}
+				
+				if( fabs( orientation[7]) > fabs(orientation[6]) && fabs( orientation[7]) > fabs(orientation[8]) )
+				{
+					sliceLocation = originY;
+				}
+				
+				if( fabs( orientation[8]) > fabs(orientation[6]) && fabs( orientation[8]) > fabs(orientation[7]) )
+				{
+					sliceLocation = originZ;
+				}	
+			}
+			
+			if( gUseShutter && imageNb != frameNo && maxFrame > 1 )
+			{
+				self->shutterRect_x = shutterRect_x;
+				self->shutterRect_y = shutterRect_y;
+				self->shutterRect_w = shutterRect_w;
+				self->shutterRect_h = shutterRect_h;
+				
+				self->shutterCircular_x = shutterCircular_x;
+				self->shutterCircular_y = shutterCircular_y;
+				self->shutterCircular_radius = shutterCircular_radius;
+				
+				if( shutterPolygonalSize )
+				{
+					self->shutterPolygonalSize = shutterPolygonalSize;
+					self->shutterPolygonal = malloc( shutterPolygonalSize * sizeof( NSPoint));
+					memcpy( self->shutterPolygonal, shutterPolygonal, shutterPolygonalSize * sizeof( NSPoint ) );
+				}
+				
+				self->DCMPixShutterOnOff = DCMPixShutterOnOff;
+			}
+			
+			//get PixelData
+			NSData *pixData = [pixelAttr decodeFrameAtIndex:imageNb];
+			short *oImage =  malloc([pixData length]);	//pointer to a memory zone where each pixel of the data has a short value reserved
+			[pixData getBytes:oImage];
+			
+			if( oImage == nil ) //there was no data for this frame -> create empty image
+			{
+				//NSLog(@"image size: %d", ( height * width * 2));
+				oImage = malloc( height * width * 2);
+				//gArrPhotoInterpret [fileNb] = MONOCHROME2;
+				
+				long yo = 0;
+				for( unsigned long i = 0 ; i < height * width; i++ )
+				{
+					oImage[ i] = yo++;
+					if( yo>= width) yo = 0;
+				}
+			}
+			
+			//-----------------------frame data already loaded in (short) oImage --------------
+			
+			isRGB = NO;
+			inverseVal = NO;
+			
+			NSString *colorspace = [dcmObject attributeValueWithName:@"PhotometricInterpretation"];		
+			if ([colorspace rangeOfString:@"MONOCHROME1"].location != NSNotFound)
+				{inverseVal = YES; savedWL = -savedWL;}													
+			/*else if ( [colorspace hasPrefix:@"MONOCHROME2"])	{inverseVal = NO; savedWL = savedWL;} */
+			if ( [colorspace hasPrefix:@"YBR"]) isRGB = YES;		
+			if ( [colorspace hasPrefix:@"PALETTE"])	{ bitsAllocated = 8; isRGB = YES; NSLog(@"Palette depth conveted to 8 bit");}
+			if ([colorspace rangeOfString:@"RGB"].location != NSNotFound) isRGB = YES;			
+			/******** dcm Object will do this *******convertYbrToRgb -> planar is converted***/		
+			if ([colorspace rangeOfString:@"YBR"].location != NSNotFound)
+			{
+				fPlanarConf = 0;
+				isRGB = YES;
+			}
+			
+			if (isRGB == YES)
+			{
+				unsigned char   *ptr, *tmpImage;
+				int loop = (int) height * (int) width;
+				tmpImage = malloc (loop * 4L);
+				ptr   = tmpImage;
+				
+				if( bitsAllocated > 8)
+				{ // RGB_FFF
+					unsigned short   *bufPtr;
+					bufPtr = (unsigned short*) oImage;
+					while( loop-- > 0)
+					{		//unsigned short=16 bit, then I suppose A should be 65535
+						*ptr++	= 255;			//ptr++;
+						*ptr++	= *bufPtr++;		//ptr++;  bufPtr++;
+						*ptr++	= *bufPtr++;		//ptr++;  bufPtr++;
+						*ptr++	= *bufPtr++;		//ptr++;  bufPtr++;
+					}
+				}
 				else
-					fImage = malloc(width*height*sizeof(float) + 100);
-				
-				if( fImage)
-					memcpy( fImage, sfloat, height * width * sizeof( float));
-				else
-					NSLog( @"*** Not enough memory - malloc failed");
-				
+				{ // RGB_888
+					unsigned char   *bufPtr;
+					bufPtr = (unsigned char*) oImage;
+					
+					while( loop-- > 0 )
+					{
+						*ptr++	= 255;			//ptr++;
+						*ptr++	= *bufPtr++;		//ptr++;  bufPtr++;
+						*ptr++	= *bufPtr++;		//ptr++;  bufPtr++;
+						*ptr++	= *bufPtr++;		//ptr++;  bufPtr++;
+					}
+					
+				}
 				free(oImage);
+				oImage = (short*) tmpImage;
+			}
+			else if( bitsAllocated == 8)
+			{	// Planar 8
+				//-> 16 bits image
+				unsigned char   *bufPtr;
+				short			*ptr, *tmpImage;
+				int			loop, totSize;
+				
+				totSize = (int) ((int) height * (int) width * 2L);
+				tmpImage = malloc( totSize);
+				
+				bufPtr = (unsigned char*) oImage;
+				ptr    = tmpImage;
+				
+				loop = totSize/2;
+				while( loop-- > 0 )
+				{
+					*ptr++ = *bufPtr++;
+				}
+				free(oImage);
+				oImage =  (short*) tmpImage;
+			}
+			
+			//***********
+			
+			if( isRGB )
+			{
+				if( fExternalOwnedImage)
+				{
+					fImage = fExternalOwnedImage;
+					memcpy( fImage, oImage, width*height*sizeof(float));
+					free(oImage);
+				}
+				else fImage = (float*) oImage;
 				oImage = nil;
+				
+				if( oData && gDisplayDICOMOverlays )
+				{
+					unsigned char	*rgbData = (unsigned char*) fImage;
+					
+					for( int y = 0; y < oRows; y++ )
+					{
+						for( int x = 0; x < oColumns; x++ )
+						{
+							if( oData[ y * oColumns + x] )
+							{
+								rgbData[ y * width*4 + x*4 + 1] = 0xFF;
+								rgbData[ y * width*4 + x*4 + 2] = 0xFF;
+								rgbData[ y * width*4 + x*4 + 3] = 0xFF;
+							}
+						}
+					}
+				}
 			}
 			else
 			{
-				vImage_Buffer src16, dstf;
-				dstf.height = src16.height = height;
-				dstf.width = src16.width = width;
-				src16.rowBytes = width*2;
-				dstf.rowBytes = width*sizeof(float);
-				
-				src16.data = oImage;
-				
-				if( fExternalOwnedImage)
+				if( bitsAllocated == 32) // 32-bit float
 				{
-					fImage = fExternalOwnedImage;
+					float			*sfloat = (float*) oImage;
+					
+					if( fExternalOwnedImage)
+						fImage = fExternalOwnedImage;
+					else
+						fImage = malloc(width*height*sizeof(float) + 100);
+					
+					if( fImage)
+						memcpy( fImage, sfloat, height * width * sizeof( float));
+					else
+						NSLog( @"*** Not enough memory - malloc failed");
+					
+					free(oImage);
+					oImage = nil;
 				}
 				else
 				{
-					fImage = malloc(width*height*sizeof(float) + 100);
-				}
-				
-				dstf.data = fImage;
-				
-				if( dstf.data)
-				{
-					if( fIsSigned > 0 )
+					vImage_Buffer src16, dstf;
+					dstf.height = src16.height = height;
+					dstf.width = src16.width = width;
+					src16.rowBytes = width*2;
+					dstf.rowBytes = width*sizeof(float);
+					
+					src16.data = oImage;
+					
+					if( fExternalOwnedImage)
 					{
-						vImageConvert_16SToF( &src16, &dstf, offset, slope, 0);
+						fImage = fExternalOwnedImage;
 					}
 					else
 					{
-						
-						vImageConvert_16UToF( &src16, &dstf, offset, slope, 0);
+						fImage = malloc(width*height*sizeof(float) + 100);
 					}
 					
-					if( inverseVal )
+					dstf.data = fImage;
+					
+					if( dstf.data)
 					{
-						float neg = -1;
-						vDSP_vsmul( fImage, 1, &neg, fImage, 1, height * width);
+						if( fIsSigned > 0 )
+						{
+							vImageConvert_16SToF( &src16, &dstf, offset, slope, 0);
+						}
+						else
+						{
+							
+							vImageConvert_16UToF( &src16, &dstf, offset, slope, 0);
+						}
+						
+						if( inverseVal )
+						{
+							float neg = -1;
+							vDSP_vsmul( fImage, 1, &neg, fImage, 1, height * width);
+						}
+					}
+					else NSLog( @"*** Not enough memory - malloc failed");
+					
+					free(oImage);
+					oImage = nil;
+				}
+				
+				if( oData && gDisplayDICOMOverlays )
+				{
+					for( int y = 0; y < oRows; y++ )
+					{
+						for( int x = 0; x < oColumns; x++ )
+						{
+							if( oData[ y * oColumns + x]) fImage[ y * width + x] = 0xFF;
+						}
 					}
 				}
-				else NSLog( @"*** Not enough memory - malloc failed");
-				
-				free(oImage);
-				oImage = nil;
 			}
 			
-			if( oData && gDisplayDICOMOverlays )
+			wl = 0;
+			ww = 0; //Computed later, only if needed
+			
+			if( savedWW != 0 )
 			{
-				for( int y = 0; y < oRows; y++ )
-				{
-					for( int x = 0; x < oColumns; x++ )
-					{
-						if( oData[ y * oColumns + x]) fImage[ y * width + x] = 0xFF;
-					}
-				}
+				wl = savedWL;
+				ww = savedWW;
+			}
+			
+		#pragma mark *after loading a frame
+			
+		}//end of if ([dcmObject attributeValueWithName:@"PixelData"])
+
+		if( pixelSpacingY != 0)
+		{
+			if( fabs(pixelSpacingX) / fabs(pixelSpacingY) > 10000 || fabs(pixelSpacingX) / fabs(pixelSpacingY) < 0.0001)
+			{
+				pixelSpacingX = 1;
+				pixelSpacingY = 1;
 			}
 		}
 		
-		wl = 0;
-		ww = 0; //Computed later, only if needed
+		if( pixelSpacingX < 0) pixelSpacingX = -pixelSpacingX;
+		if( pixelSpacingY < 0) pixelSpacingY = -pixelSpacingY;
+		if( pixelSpacingY != 0 && pixelSpacingX != 0) pixelRatio = pixelSpacingY / pixelSpacingX;
 		
-		if( savedWW != 0 )
-		{
-			wl = savedWL;
-			ww = savedWW;
-		}
-		
-	#pragma mark *after loading a frame
-		
-	}//end of if ([dcmObject attributeValueWithName:@"PixelData"])
-
-	if( pixelSpacingY != 0)
-	{
-		if( fabs(pixelSpacingX) / fabs(pixelSpacingY) > 10000 || fabs(pixelSpacingX) / fabs(pixelSpacingY) < 0.0001)
-		{
-			pixelSpacingX = 1;
-			pixelSpacingY = 1;
-		}
+		#ifdef OSIRIX_VIEWER
+			[self loadCustomImageAnnotationsPapyLink:-1 DCMLink:dcmObject];
+		#endif
 	}
-	
-	if( pixelSpacingX < 0) pixelSpacingX = -pixelSpacingX;
-	if( pixelSpacingY < 0) pixelSpacingY = -pixelSpacingY;
-	if( pixelSpacingY != 0 && pixelSpacingX != 0) pixelRatio = pixelSpacingY / pixelSpacingX;
-	
-	#ifdef OSIRIX_VIEWER
-		[self loadCustomImageAnnotationsPapyLink:-1 DCMLink:dcmObject];
-	#endif
+	@catch (NSException *e)
+	{
+		NSLog( @"loadDICOMDCMFramework exception 2: %@", e);
+		returnValue = NO;
+	}
 	
 	[purgeCacheLock lock];
 	[purgeCacheLock unlockWithCondition: [purgeCacheLock condition]-1];
 	[pool release];
 	
-	return YES;
+	return returnValue;
 }
 
 - (void*) getPapyGroup: (int) group
@@ -5960,8 +5975,8 @@ END_CREATE_ROIS:
 + (void) purgeCachedDictionaries
 {
 	if( purgeCacheLock == nil)
-		purgeCacheLock = [[NSConditionLock alloc] init];
-		
+		purgeCacheLock = [[NSConditionLock alloc] initWithCondition: 0];
+	
 	[purgeCacheLock lockWhenCondition: 0];
 	[PapyrusLock lock];
 	
@@ -6879,48 +6894,34 @@ END_CREATE_ROIS:
 	originZ = 0;
 	
 	if( purgeCacheLock == nil)
-		purgeCacheLock = [[NSConditionLock alloc] init];
+		purgeCacheLock = [[NSConditionLock alloc] initWithCondition: 0];
 	
 	[purgeCacheLock lock];
 	[purgeCacheLock unlockWithCondition: [purgeCacheLock condition]+1];
 	
-	if( [self getPapyGroup: 0])	// This group is mandatory...
+	@try
 	{
-		UValue_T *val3, *tmpVal3;
-		
-		modalityString = nil;
-		
-		imageNb = 1 + frameNo; 
-		
-		pixelSpacingX = 0;
-		pixelSpacingY = 0;
-		
-		offset = 0.0;
-		slope = 1.0;
-		
-		theGroupP = (SElement*) [self getPapyGroup: 0x0008];
-		if( theGroupP )
+		if( [self getPapyGroup: 0])	// This group is mandatory...
 		{
-			val = Papy3GetElement (theGroupP, papRecommendedDisplayFrameRateGr, &nbVal, &elemType );
-			if ( val ) cineRate = atof( val->a);	//[[NSString stringWithFormat:@"%0.1f", ] floatValue];
+			UValue_T *val3, *tmpVal3;
 			
-			val = Papy3GetElement (theGroupP, papAcquisitionTimeGr, &nbVal, &elemType );
-			if( val )
+			modalityString = nil;
+			
+			imageNb = 1 + frameNo; 
+			
+			pixelSpacingX = 0;
+			pixelSpacingY = 0;
+			
+			offset = 0.0;
+			slope = 1.0;
+			
+			theGroupP = (SElement*) [self getPapyGroup: 0x0008];
+			if( theGroupP )
 			{
-				NSString		*cc = [[NSString alloc] initWithCString:val->a encoding: NSASCIIStringEncoding];
-				NSCalendarDate	*cd = [[NSCalendarDate alloc] initWithString:cc calendarFormat:@"%H%M%S"];
+				val = Papy3GetElement (theGroupP, papRecommendedDisplayFrameRateGr, &nbVal, &elemType );
+				if ( val ) cineRate = atof( val->a);	//[[NSString stringWithFormat:@"%0.1f", ] floatValue];
 				
-				if( cd == nil) cd = [[NSCalendarDate alloc] initWithString:cc calendarFormat:@"%H%M"];
-				
-				if( cd)
-					acquisitionTime = [[NSCalendarDate	dateWithString: [cd descriptionWithCalendarFormat:@"%Y-%m-%d %H:%M:%S %z"]] retain];
-				
-				[cd release];
-				[cc release];
-			}
-			else
-			{
-				val = Papy3GetElement (theGroupP, papSeriesTimeGr, &nbVal, &elemType );
+				val = Papy3GetElement (theGroupP, papAcquisitionTimeGr, &nbVal, &elemType );
 				if( val )
 				{
 					NSString		*cc = [[NSString alloc] initWithCString:val->a encoding: NSASCIIStringEncoding];
@@ -6934,784 +6935,856 @@ END_CREATE_ROIS:
 					[cd release];
 					[cc release];
 				}
-			}
-			
-			val = Papy3GetElement (theGroupP, papModalityGr, &nbVal, &elemType);
-			if (val != NULL) modalityString = [NSString stringWithCString:val->a encoding: NSASCIIStringEncoding];
-		}
-		
-		theGroupP = (SElement*) [self getPapyGroup: 0x0010];
-		if( theGroupP )
-		{
-			val = Papy3GetElement (theGroupP, papPatientsWeightGr, &nbVal, &elemType);
-			if ( val ) patientsWeight = atof( val->a);
-			else patientsWeight = 0;
-		}
-		
-		theGroupP = (SElement*) [self getPapyGroup: 0x0018];
-		if( theGroupP)
-			[self papyLoadGroup0x0018: theGroupP];
-			
-		theGroupP = (SElement*) [self getPapyGroup: 0x0020];
-		if( theGroupP)
-			[self papyLoadGroup0x0020: theGroupP];
-		
-		theGroupP = (SElement*) [self getPapyGroup: 0x0028];
-		if( theGroupP ) // This group is MANDATORY...
-		{
-			[self papyLoadGroup0x0028: theGroupP];
-			
-	#pragma mark SUV
-			
-			// Get values needed for SUV calcs:
-			theGroupP = (SElement*) [self getPapyGroup: 0x0054];
-			if( theGroupP )
-			{
-				val = Papy3GetElement (theGroupP, papUnitsGr, &pos, &elemType );
-				if( val ) units = [[NSString stringWithCString:val->a] retain];
-				else units = nil;
-				
-				val = Papy3GetElement (theGroupP, papDecayCorrectionGr, &pos, &elemType );
-				if( val ) decayCorrection = [[NSString stringWithCString:val->a] retain];
-				else decayCorrection = nil;
-				
-//				val = Papy3GetElement (theGroupP, papDecayFactorGr, &pos, &elemType );
-//				if( val ) decayFactor = atof( val->a);
-//				else decayFactor = 1.0;
-				decayFactor = 1.0;
-				
-				val = Papy3GetElement (theGroupP, papFrameReferenceTimeGr, &pos, &elemType );
-				if( val ) frameReferenceTime = atof( val->a);
-				else frameReferenceTime = 0.0;
-				
-				val = Papy3GetElement (theGroupP, papRadiopharmaceuticalInformationSequenceGr, &pos, &elemType );
-				
-				// Loop over sequence to find injected dose
-				
-				if ( val )
+				else
 				{
-					if( val->sq )
+					val = Papy3GetElement (theGroupP, papSeriesTimeGr, &nbVal, &elemType );
+					if( val )
 					{
-						Papy_List	*dcmList = val->sq;
-						while (dcmList != NULL)
-						{
-							if( dcmList->object->item)
-							{
-								SElement *gr = (SElement *)dcmList->object->item->object->group;
-								if ( gr->group == 0x0018 )
-								{
-									val = Papy3GetElement (gr, papRadionuclideTotalDoseGr, &pos, &elemType );
-									radionuclideTotalDose = val? atof( val->a) : 0.0;
-									
-									val = Papy3GetElement (gr, papRadiopharmaceuticalStartTimeGr, &pos, &elemType );
-									if( val )
-									{
-										NSString		*cc = [[NSString alloc] initWithCString:val->a encoding: NSASCIIStringEncoding];
-										NSCalendarDate	*cd = [[NSCalendarDate alloc] initWithString:cc calendarFormat:@"%H%M%S"];
-										if( cd == nil) cd = [[NSCalendarDate alloc] initWithString:cc calendarFormat:@"%H%M"];
-										
-										radiopharmaceuticalStartTime = [[NSCalendarDate	dateWithString: [cd descriptionWithCalendarFormat:@"%Y-%m-%d %H:%M:%S %z"]] retain];
-										
-										[cd release];
-										[cc release];
-									}
-									
-									val = Papy3GetElement (gr, papRadionuclideHalfLifeGr, &pos, &elemType );
-									halflife = val? atof( val->a) : 0.0;
-									break;
-								}
-							}
-							dcmList = dcmList->next;
-						}
+						NSString		*cc = [[NSString alloc] initWithCString:val->a encoding: NSASCIIStringEncoding];
+						NSCalendarDate	*cd = [[NSCalendarDate alloc] initWithString:cc calendarFormat:@"%H%M%S"];
+						
+						if( cd == nil) cd = [[NSCalendarDate alloc] initWithString:cc calendarFormat:@"%H%M"];
+						
+						if( cd)
+							acquisitionTime = [[NSCalendarDate	dateWithString: [cd descriptionWithCalendarFormat:@"%Y-%m-%d %H:%M:%S %z"]] retain];
+						
+						[cd release];
+						[cc release];
 					}
-					
-					[self computeTotalDoseCorrected];
-					
-					// End of SUV required values
 				}
 				
-				val = Papy3GetElement (theGroupP, papDetectorInformationSequenceGr, &pos, &elemType );
+				val = Papy3GetElement (theGroupP, papModalityGr, &nbVal, &elemType);
+				if (val != NULL) modalityString = [NSString stringWithCString:val->a encoding: NSASCIIStringEncoding];
+			}
+			
+			theGroupP = (SElement*) [self getPapyGroup: 0x0010];
+			if( theGroupP )
+			{
+				val = Papy3GetElement (theGroupP, papPatientsWeightGr, &nbVal, &elemType);
+				if ( val ) patientsWeight = atof( val->a);
+				else patientsWeight = 0;
+			}
+			
+			theGroupP = (SElement*) [self getPapyGroup: 0x0018];
+			if( theGroupP)
+				[self papyLoadGroup0x0018: theGroupP];
 				
-				if ( val )
+			theGroupP = (SElement*) [self getPapyGroup: 0x0020];
+			if( theGroupP)
+				[self papyLoadGroup0x0020: theGroupP];
+			
+			theGroupP = (SElement*) [self getPapyGroup: 0x0028];
+			if( theGroupP ) // This group is MANDATORY...
+			{
+				[self papyLoadGroup0x0028: theGroupP];
+				
+		#pragma mark SUV
+				
+				// Get values needed for SUV calcs:
+				theGroupP = (SElement*) [self getPapyGroup: 0x0054];
+				if( theGroupP )
 				{
-					if( val->sq )
+					val = Papy3GetElement (theGroupP, papUnitsGr, &pos, &elemType );
+					if( val ) units = [[NSString stringWithCString:val->a] retain];
+					else units = nil;
+					
+					val = Papy3GetElement (theGroupP, papDecayCorrectionGr, &pos, &elemType );
+					if( val ) decayCorrection = [[NSString stringWithCString:val->a] retain];
+					else decayCorrection = nil;
+					
+	//				val = Papy3GetElement (theGroupP, papDecayFactorGr, &pos, &elemType );
+	//				if( val ) decayFactor = atof( val->a);
+	//				else decayFactor = 1.0;
+					decayFactor = 1.0;
+					
+					val = Papy3GetElement (theGroupP, papFrameReferenceTimeGr, &pos, &elemType );
+					if( val ) frameReferenceTime = atof( val->a);
+					else frameReferenceTime = 0.0;
+					
+					val = Papy3GetElement (theGroupP, papRadiopharmaceuticalInformationSequenceGr, &pos, &elemType );
+					
+					// Loop over sequence to find injected dose
+					
+					if ( val )
 					{
-						Papy_List *dcmList = val->sq->object->item;
-						while (dcmList != NULL)
+						if( val->sq )
 						{
-							SElement * gr = (SElement *) dcmList->object->group;
-								
-							if( gr)
+							Papy_List	*dcmList = val->sq;
+							while (dcmList != NULL)
 							{
-								if( gr->group == 0x0020 )
+								if( dcmList->object->item)
 								{
-									val = Papy3GetElement (gr, papImagePositionPatientGr, &nbVal, &elemType);
-									if ( val )
+									SElement *gr = (SElement *)dcmList->object->item->object->group;
+									if ( gr->group == 0x0018 )
 									{
-										tmp = val;
+										val = Papy3GetElement (gr, papRadionuclideTotalDoseGr, &pos, &elemType );
+										radionuclideTotalDose = val? atof( val->a) : 0.0;
 										
-										originX = atof( tmp->a);
-										
-										if( nbVal > 1)
+										val = Papy3GetElement (gr, papRadiopharmaceuticalStartTimeGr, &pos, &elemType );
+										if( val )
 										{
-											tmp++;
-											originY = atof( tmp->a);
+											NSString		*cc = [[NSString alloc] initWithCString:val->a encoding: NSASCIIStringEncoding];
+											NSCalendarDate	*cd = [[NSCalendarDate alloc] initWithString:cc calendarFormat:@"%H%M%S"];
+											if( cd == nil) cd = [[NSCalendarDate alloc] initWithString:cc calendarFormat:@"%H%M"];
+											
+											radiopharmaceuticalStartTime = [[NSCalendarDate	dateWithString: [cd descriptionWithCalendarFormat:@"%Y-%m-%d %H:%M:%S %z"]] retain];
+											
+											[cd release];
+											[cc release];
 										}
 										
-										if( nbVal > 2)
-										{
-											tmp++;
-											originZ = atof( tmp->a);
-										}
-										
-										isOriginDefined = YES;
+										val = Papy3GetElement (gr, papRadionuclideHalfLifeGr, &pos, &elemType );
+										halflife = val? atof( val->a) : 0.0;
+										break;
 									}
+								}
+								dcmList = dcmList->next;
+							}
+						}
+						
+						[self computeTotalDoseCorrected];
+						
+						// End of SUV required values
+					}
+					
+					val = Papy3GetElement (theGroupP, papDetectorInformationSequenceGr, &pos, &elemType );
+					
+					if ( val )
+					{
+						if( val->sq )
+						{
+							Papy_List *dcmList = val->sq->object->item;
+							while (dcmList != NULL)
+							{
+								SElement * gr = (SElement *) dcmList->object->group;
 									
-									if( spacingBetweenSlices)
-										originZ += frameNo * spacingBetweenSlices;
-									else
-										originZ += frameNo * sliceThickness;
-									
-									val = Papy3GetElement (gr, papImageOrientationPatientGr, &nbVal, &elemType);
-									if ( val)
+								if( gr)
+								{
+									if( gr->group == 0x0020 )
 									{
-										if( nbVal != 6)
+										val = Papy3GetElement (gr, papImagePositionPatientGr, &nbVal, &elemType);
+										if ( val )
 										{
-											NSLog(@"Orientation is NOT 6 !!!");
-											if( nbVal > 6 ) nbVal = 6;
+											tmp = val;
+											
+											originX = atof( tmp->a);
+											
+											if( nbVal > 1)
+											{
+												tmp++;
+												originY = atof( tmp->a);
+											}
+											
+											if( nbVal > 2)
+											{
+												tmp++;
+												originZ = atof( tmp->a);
+											}
+											
+											isOriginDefined = YES;
 										}
 										
-										BOOL equalZero = YES;
+										if( spacingBetweenSlices)
+											originZ += frameNo * spacingBetweenSlices;
+										else
+											originZ += frameNo * sliceThickness;
 										
-										tmpVal3 = val;
-										for ( int j = 0; j < nbVal; j++ )
+										val = Papy3GetElement (gr, papImageOrientationPatientGr, &nbVal, &elemType);
+										if ( val)
 										{
-											if( atof( tmpVal3->a) != 0) equalZero = NO;
-											tmpVal3++;
-										}
-										
-										if( equalZero == NO)
-										{
-											orientation[ 0] = 0;	orientation[ 1] = 0;	orientation[ 2] = 0;
-											orientation[ 3] = 0;	orientation[ 4] = 0;	orientation[ 5] = 0;
+											if( nbVal != 6)
+											{
+												NSLog(@"Orientation is NOT 6 !!!");
+												if( nbVal > 6 ) nbVal = 6;
+											}
+											
+											BOOL equalZero = YES;
 											
 											tmpVal3 = val;
 											for ( int j = 0; j < nbVal; j++ )
 											{
-												orientation[ j]  = atof( tmpVal3->a);
+												if( atof( tmpVal3->a) != 0) equalZero = NO;
 												tmpVal3++;
 											}
 											
-											for (int j = nbVal; j < 6; j++)
-												orientation[ j] = 0;
-										}
-										else // doesnt the root Image Orientation contains valid data? if not use the normal vector
-										{
-											equalZero = YES;
-											for ( int j = 0; j < 6; j++ )
+											if( equalZero == NO)
 											{
-												if( orientation[ j] != 0) equalZero = NO;
+												orientation[ 0] = 0;	orientation[ 1] = 0;	orientation[ 2] = 0;
+												orientation[ 3] = 0;	orientation[ 4] = 0;	orientation[ 5] = 0;
+												
+												tmpVal3 = val;
+												for ( int j = 0; j < nbVal; j++ )
+												{
+													orientation[ j]  = atof( tmpVal3->a);
+													tmpVal3++;
+												}
+												
+												for (int j = nbVal; j < 6; j++)
+													orientation[ j] = 0;
 											}
-											
-											if( equalZero)
+											else // doesnt the root Image Orientation contains valid data? if not use the normal vector
 											{
-												orientation[ 0] = 1;	orientation[ 1] = 0;	orientation[ 2] = 0;
-												orientation[ 3] = 0;	orientation[ 4] = 1;	orientation[ 5] = 0;
+												equalZero = YES;
+												for ( int j = 0; j < 6; j++ )
+												{
+													if( orientation[ j] != 0) equalZero = NO;
+												}
+												
+												if( equalZero)
+												{
+													orientation[ 0] = 1;	orientation[ 1] = 0;	orientation[ 2] = 0;
+													orientation[ 3] = 0;	orientation[ 4] = 1;	orientation[ 5] = 0;
+												}
 											}
 										}
+										break;
 									}
-									break;
 								}
+								dcmList = dcmList->next;
 							}
-							dcmList = dcmList->next;
 						}
+						
+						[self computeTotalDoseCorrected];
+						
+						// End of SUV required values
 					}
-					
-					[self computeTotalDoseCorrected];
-					
-					// End of SUV required values
 				}
-			}
-			
-			// End SUV			
-			
-			#pragma mark MR/CT multiframe		
-			// Is it a new MR/CT multi-frame exam?
-			
-			SElement *groupOverlay = (SElement*) [self getPapyGroup: 0x5200];
-			if( groupOverlay )
-			{
-				// ****** ****** ****** ************************************************************************
-				// SHARED FRAME
-				// ****** ****** ****** ************************************************************************
 				
-				val = Papy3GetElement (groupOverlay, papSharedFunctionalGroupsSequence, &nbVal, &elemType);
+				// End SUV			
 				
-				// there is an element
-				if ( val )
+				#pragma mark MR/CT multiframe		
+				// Is it a new MR/CT multi-frame exam?
+				
+				SElement *groupOverlay = (SElement*) [self getPapyGroup: 0x5200];
+				if( groupOverlay )
 				{
-					// there is a sequence
-					if (val->sq )
+					// ****** ****** ****** ************************************************************************
+					// SHARED FRAME
+					// ****** ****** ****** ************************************************************************
+					
+					val = Papy3GetElement (groupOverlay, papSharedFunctionalGroupsSequence, &nbVal, &elemType);
+					
+					// there is an element
+					if ( val )
 					{
-						// get a pointer to the first element of the list
-						Papy_List *dcmList = val->sq->object->item;
-						
-						// loop through the elements of the sequence
-						while (dcmList != NULL)
+						// there is a sequence
+						if (val->sq )
 						{
-							SElement * gr = (SElement *) dcmList->object->group;
+							// get a pointer to the first element of the list
+							Papy_List *dcmList = val->sq->object->item;
 							
-							switch( gr->group)
+							// loop through the elements of the sequence
+							while (dcmList != NULL)
 							{
-								case 0x0018:
-									val3 = Papy3GetElement (gr, papMRTimingAndRelatedParametersSequence, &nbVal, &elemType);
-									if (val3 != NULL && nbVal >= 1)
-									{
-										if (val3->sq )
-										{
-											Papy_List *PixelMatrixSeq = val3->sq->object->item;
-											
-											while (PixelMatrixSeq)
-											{
-												SElement * gr = (SElement *) PixelMatrixSeq->object->group;
-												
-												switch( gr->group)
-												{
-													case 0x0018: [self papyLoadGroup0x0018: gr]; break;
-												}
-												PixelMatrixSeq = PixelMatrixSeq->next;
-											}
-										}
-									}
-								break;
+								SElement * gr = (SElement *) dcmList->object->group;
 								
-								case 0x0020:
-									val3 = Papy3GetElement (gr, papPlaneOrientationSequence, &nbVal, &elemType);
-									if (val3 != NULL && nbVal >= 1)
-									{
-										// there is a sequence
-										if (val3->sq )
-										{
-											Papy_List *PixelMatrixSeq = val3->sq->object->item;
-											
-											// loop through the elements of the sequence
-											while (PixelMatrixSeq)
-											{
-												SElement * gr = (SElement *) PixelMatrixSeq->object->group;
-												
-												switch( gr->group)
-												{
-													case 0x0020: [self papyLoadGroup0x0020: gr]; break;
-												}
-												
-												// get the next element of the list
-												PixelMatrixSeq = PixelMatrixSeq->next;
-											}
-										}
-									}
-								break;
-									
-								case 0x0028:
-									val3 = Papy3GetElement (gr, papPixelMatrixSequence, &nbVal, &elemType);
-									if (val3 != NULL && nbVal >= 1)
-									{
-										// there is a sequence
-										if (val3->sq != NULL)
-										{
-											Papy_List	  *PixelMatrixSeq = val3->sq->object->item;
-											
-											// loop through the elements of the sequence
-											while (PixelMatrixSeq != NULL)
-											{
-												SElement * gr = (SElement *) PixelMatrixSeq->object->group;
-												
-												switch( gr->group)
-												{
-													case 0x0018: [self papyLoadGroup0x0018: gr]; break;
-													case 0x0028: [self papyLoadGroup0x0028: gr]; break;
-												}
-												
-												// get the next element of the list
-												PixelMatrixSeq = PixelMatrixSeq->next;
-											}
-										}
-									}
-									
-									val3 = Papy3GetElement (gr, papPixelValueTransformationSequence, &nbVal, &elemType);
-									if (val3 != NULL && nbVal >= 1)
-									{
-										// there is a sequence
-										if (val3->sq)
-										{
-											// get a pointer to the first element of the list
-											Papy_List *PixelMatrixSeq = val3->sq->object->item;
-											
-											// loop through the elements of the sequence
-											while (PixelMatrixSeq)
-											{
-												SElement * gr = (SElement *) PixelMatrixSeq->object->group;
-												
-												switch( gr->group)
-												{
-													case 0x0028: [self papyLoadGroup0x0028: gr]; break;
-												}
-												
-												// get the next element of the list
-												PixelMatrixSeq = PixelMatrixSeq->next;
-											}
-										}
-									}
-									
-								break;
-							}
-							
-							// get the next element of the list
-							dcmList = dcmList->next;
-						} // while ...loop through the sequence
-					} // if ...there is a sequence of groups
-				} // if ...val is not NULL
-				
-	#pragma mark code for each frame				
-				// ****** ****** ****** ************************************************************************
-				// PER FRAME
-				// ****** ****** ****** ************************************************************************
-				
-				long frameCount = 0;
-				
-				val = Papy3GetElement (groupOverlay, papPerFrameFunctionalGroupsSequence, &nbVal, &elemType);
-				
-				// there is an element
-				if ( val )
-				{
-					// there is a sequence
-					if (val->sq)
-					{
-						// get a pointer to the first element of the list
-						Papy_List *dcmList = val->sq;
-						
-						// loop through the elements of the sequence
-						while (dcmList)
-						{
-							if( dcmList->object->item)
-							{
-								if( frameCount == imageNb-1 )
+								switch( gr->group)
 								{
-									Papy_List *groupsForFrame = dcmList->object->item;
-									
-									while( groupsForFrame)
-									{
-										if( groupsForFrame->object->group)
+									case 0x0018:
+										val3 = Papy3GetElement (gr, papMRTimingAndRelatedParametersSequence, &nbVal, &elemType);
+										if (val3 != NULL && nbVal >= 1)
 										{
-											SElement * gr = (SElement *) groupsForFrame->object->group;
-											
-											switch( gr->group)
+											if (val3->sq )
 											{
-												case 0x0018:
-													val = Papy3GetElement (gr, papMREchoSequence, &nbVal, &elemType);
-													if (val != NULL && nbVal >= 1)
-													{
-														// there is a sequence
-														if (val->sq)
-														{
-															// get a pointer to the first element of the list
-															Papy_List *seq = val->sq->object->item;
-															
-															// loop through the elements of the sequence
-															while (seq)
-															{
-																SElement * gr20 = (SElement *) seq->object->group;
-																
-																switch( gr20->group)
-																{
-																	case 0x0018: [self papyLoadGroup0x0018: gr20]; break;
-																}
-																
-																// get the next element of the list
-																seq = seq->next;
-															}
-														}
-													}
-												break;
+												Papy_List *PixelMatrixSeq = val3->sq->object->item;
 												
-												case 0x0028:
-													val = Papy3GetElement (gr, papPixelMatrixSequence, &nbVal, &elemType);
-													if (val != NULL && nbVal >= 1)
+												while (PixelMatrixSeq)
+												{
+													SElement * gr = (SElement *) PixelMatrixSeq->object->group;
+													
+													switch( gr->group)
 													{
-														// there is a sequence
-														if (val->sq)
-														{
-															// get a pointer to the first element of the list
-															Papy_List *seq = val->sq->object->item;
-															
-															// loop through the elements of the sequence
-															while (seq)
-															{
-																SElement * gr20 = (SElement *) seq->object->group;
-																
-																switch( gr20->group)
-																{
-																	case 0x0018: [self papyLoadGroup0x0018: gr20]; break;
-																	case 0x0028: [self papyLoadGroup0x0028: gr20]; break;
-																}
-																
-																// get the next element of the list
-																seq = seq->next;
-															}
-														}
+														case 0x0018: [self papyLoadGroup0x0018: gr]; break;
 													}
-												break;
+													PixelMatrixSeq = PixelMatrixSeq->next;
+												}
+											}
+										}
+									break;
+									
+									case 0x0020:
+										val3 = Papy3GetElement (gr, papPlaneOrientationSequence, &nbVal, &elemType);
+										if (val3 != NULL && nbVal >= 1)
+										{
+											// there is a sequence
+											if (val3->sq )
+											{
+												Papy_List *PixelMatrixSeq = val3->sq->object->item;
 												
-												case 0x0020:
-													val = Papy3GetElement (gr, papPlanePositionSequence, &nbVal, &elemType);
-													if (val != NULL && nbVal >= 1)
+												// loop through the elements of the sequence
+												while (PixelMatrixSeq)
+												{
+													SElement * gr = (SElement *) PixelMatrixSeq->object->group;
+													
+													switch( gr->group)
 													{
-														// there is a sequence
-														if (val->sq)
-														{
-															// get a pointer to the first element of the list
-															Papy_List *seq = val->sq->object->item;
-															
-															// loop through the elements of the sequence
-															while (seq)
-															{
-																SElement * gr = (SElement *) seq->object->group;
-																
-																switch( gr->group)
-																{
-																	case 0x0020: [self papyLoadGroup0x0020: gr]; break;
-																	case 0x0028: [self papyLoadGroup0x0028: gr]; break;
-																}
-																
-																// get the next element of the list
-																seq = seq->next;
-															}
-														}
+														case 0x0020: [self papyLoadGroup0x0020: gr]; break;
 													}
 													
-													val = Papy3GetElement (gr, papPlaneOrientationSequence, &nbVal, &elemType);
-													if (val != NULL && nbVal >= 1)
-													{
-														// there is a sequence
-														if (val->sq)
-														{
-															// get a pointer to the first element of the list
-															Papy_List *seq = val->sq->object->item;
-															
-															// loop through the elements of the sequence
-															while (seq)
-															{
-																SElement * gr = (SElement *) seq->object->group;
-																
-																switch( gr->group)
-																{
-																	case 0x0020: [self papyLoadGroup0x0020: gr]; break;
-																}
-																
-																// get the next element of the list
-																seq = seq->next;
-															}
-														}
-													}
-												break;
-											} // switch( gr->group)
-										} // if( groupsForFrame->object->item)
-										
-										if( groupsForFrame)
-										{
-											// get the next element of the list
-											groupsForFrame = groupsForFrame->next;
+													// get the next element of the list
+													PixelMatrixSeq = PixelMatrixSeq->next;
+												}
+											}
 										}
-									} // while groupsForFrame
-									
-									// STOP the loop
-									dcmList = nil;
-								} // right frame?
-							}
-							
-							if( dcmList )
-							{
+									break;
+										
+									case 0x0028:
+										val3 = Papy3GetElement (gr, papPixelMatrixSequence, &nbVal, &elemType);
+										if (val3 != NULL && nbVal >= 1)
+										{
+											// there is a sequence
+											if (val3->sq != NULL)
+											{
+												Papy_List	  *PixelMatrixSeq = val3->sq->object->item;
+												
+												// loop through the elements of the sequence
+												while (PixelMatrixSeq != NULL)
+												{
+													SElement * gr = (SElement *) PixelMatrixSeq->object->group;
+													
+													switch( gr->group)
+													{
+														case 0x0018: [self papyLoadGroup0x0018: gr]; break;
+														case 0x0028: [self papyLoadGroup0x0028: gr]; break;
+													}
+													
+													// get the next element of the list
+													PixelMatrixSeq = PixelMatrixSeq->next;
+												}
+											}
+										}
+										
+										val3 = Papy3GetElement (gr, papPixelValueTransformationSequence, &nbVal, &elemType);
+										if (val3 != NULL && nbVal >= 1)
+										{
+											// there is a sequence
+											if (val3->sq)
+											{
+												// get a pointer to the first element of the list
+												Papy_List *PixelMatrixSeq = val3->sq->object->item;
+												
+												// loop through the elements of the sequence
+												while (PixelMatrixSeq)
+												{
+													SElement * gr = (SElement *) PixelMatrixSeq->object->group;
+													
+													switch( gr->group)
+													{
+														case 0x0028: [self papyLoadGroup0x0028: gr]; break;
+													}
+													
+													// get the next element of the list
+													PixelMatrixSeq = PixelMatrixSeq->next;
+												}
+											}
+										}
+										
+									break;
+								}
+								
 								// get the next element of the list
 								dcmList = dcmList->next;
+							} // while ...loop through the sequence
+						} // if ...there is a sequence of groups
+					} // if ...val is not NULL
+					
+		#pragma mark code for each frame				
+					// ****** ****** ****** ************************************************************************
+					// PER FRAME
+					// ****** ****** ****** ************************************************************************
+					
+					long frameCount = 0;
+					
+					val = Papy3GetElement (groupOverlay, papPerFrameFunctionalGroupsSequence, &nbVal, &elemType);
+					
+					// there is an element
+					if ( val )
+					{
+						// there is a sequence
+						if (val->sq)
+						{
+							// get a pointer to the first element of the list
+							Papy_List *dcmList = val->sq;
+							
+							// loop through the elements of the sequence
+							while (dcmList)
+							{
+								if( dcmList->object->item)
+								{
+									if( frameCount == imageNb-1 )
+									{
+										Papy_List *groupsForFrame = dcmList->object->item;
+										
+										while( groupsForFrame)
+										{
+											if( groupsForFrame->object->group)
+											{
+												SElement * gr = (SElement *) groupsForFrame->object->group;
+												
+												switch( gr->group)
+												{
+													case 0x0018:
+														val = Papy3GetElement (gr, papMREchoSequence, &nbVal, &elemType);
+														if (val != NULL && nbVal >= 1)
+														{
+															// there is a sequence
+															if (val->sq)
+															{
+																// get a pointer to the first element of the list
+																Papy_List *seq = val->sq->object->item;
+																
+																// loop through the elements of the sequence
+																while (seq)
+																{
+																	SElement * gr20 = (SElement *) seq->object->group;
+																	
+																	switch( gr20->group)
+																	{
+																		case 0x0018: [self papyLoadGroup0x0018: gr20]; break;
+																	}
+																	
+																	// get the next element of the list
+																	seq = seq->next;
+																}
+															}
+														}
+													break;
+													
+													case 0x0028:
+														val = Papy3GetElement (gr, papPixelMatrixSequence, &nbVal, &elemType);
+														if (val != NULL && nbVal >= 1)
+														{
+															// there is a sequence
+															if (val->sq)
+															{
+																// get a pointer to the first element of the list
+																Papy_List *seq = val->sq->object->item;
+																
+																// loop through the elements of the sequence
+																while (seq)
+																{
+																	SElement * gr20 = (SElement *) seq->object->group;
+																	
+																	switch( gr20->group)
+																	{
+																		case 0x0018: [self papyLoadGroup0x0018: gr20]; break;
+																		case 0x0028: [self papyLoadGroup0x0028: gr20]; break;
+																	}
+																	
+																	// get the next element of the list
+																	seq = seq->next;
+																}
+															}
+														}
+													break;
+													
+													case 0x0020:
+														val = Papy3GetElement (gr, papPlanePositionSequence, &nbVal, &elemType);
+														if (val != NULL && nbVal >= 1)
+														{
+															// there is a sequence
+															if (val->sq)
+															{
+																// get a pointer to the first element of the list
+																Papy_List *seq = val->sq->object->item;
+																
+																// loop through the elements of the sequence
+																while (seq)
+																{
+																	SElement * gr = (SElement *) seq->object->group;
+																	
+																	switch( gr->group)
+																	{
+																		case 0x0020: [self papyLoadGroup0x0020: gr]; break;
+																		case 0x0028: [self papyLoadGroup0x0028: gr]; break;
+																	}
+																	
+																	// get the next element of the list
+																	seq = seq->next;
+																}
+															}
+														}
+														
+														val = Papy3GetElement (gr, papPlaneOrientationSequence, &nbVal, &elemType);
+														if (val != NULL && nbVal >= 1)
+														{
+															// there is a sequence
+															if (val->sq)
+															{
+																// get a pointer to the first element of the list
+																Papy_List *seq = val->sq->object->item;
+																
+																// loop through the elements of the sequence
+																while (seq)
+																{
+																	SElement * gr = (SElement *) seq->object->group;
+																	
+																	switch( gr->group)
+																	{
+																		case 0x0020: [self papyLoadGroup0x0020: gr]; break;
+																	}
+																	
+																	// get the next element of the list
+																	seq = seq->next;
+																}
+															}
+														}
+													break;
+												} // switch( gr->group)
+											} // if( groupsForFrame->object->item)
+											
+											if( groupsForFrame)
+											{
+												// get the next element of the list
+												groupsForFrame = groupsForFrame->next;
+											}
+										} // while groupsForFrame
+										
+										// STOP the loop
+										dcmList = nil;
+									} // right frame?
+								}
 								
-								frameCount++;
-							}
-						} // while ...loop through the sequence
-					} // if ...there is a sequence of groups
-				} // if ...val is not NULL
-			}
-			
-	#pragma mark tag group 6000		
-			
-			theGroupP = (SElement*) [self getPapyGroup: 0x6000];
-			if( theGroupP)
-			{
-				val = Papy3GetElement (theGroupP, papOverlayRows6000Gr, &nbVal, &elemType);
-				if ( val ) oRows	= val->us;
-				
-				val = Papy3GetElement (theGroupP, papOverlayColumns6000Gr, &nbVal, &elemType);
-				if ( val ) oColumns	= val->us;
-				
-				//			val = Papy3GetElement (theGroupP, papNumberofFramesinOverlayGr, &nbVal, &elemType);
-				//			if ( val ) oRows	= val->us;
-				
-				val = Papy3GetElement (theGroupP, papOverlayTypeGr, &nbVal, &elemType);
-				if ( val ) oType	= val->a[ 0];
-				
-				val = Papy3GetElement (theGroupP, papOriginGr, &nbVal, &elemType);
-				if ( val )
-				{
-					oOrigin[ 0]	= val->us;
-					val++;
-					oOrigin[ 1]	= val->us;
+								if( dcmList )
+								{
+									// get the next element of the list
+									dcmList = dcmList->next;
+									
+									frameCount++;
+								}
+							} // while ...loop through the sequence
+						} // if ...there is a sequence of groups
+					} // if ...val is not NULL
 				}
 				
-				val = Papy3GetElement (theGroupP, papOverlayBitsAllocatedGr, &nbVal, &elemType);
-				if ( val ) oBits	= val->us;
+		#pragma mark tag group 6000		
 				
-				val = Papy3GetElement (theGroupP, papBitPositionGr, &nbVal, &elemType);
-				if ( val ) oBitPosition	= val->us;
-				
-				val = Papy3GetElement (theGroupP, papOverlayDataGr, &nbVal, &elemType);
-				if (val != NULL && oBits == 1 && oRows == height && oColumns == width && oType == 'G' && oBitPosition == 0 && oOrigin[ 0] == 1 && oOrigin[ 1] == 1)
+				theGroupP = (SElement*) [self getPapyGroup: 0x6000];
+				if( theGroupP)
 				{
-					if( oData) free( oData);
-					oData = malloc( oRows*oColumns);
-					if( oData)
+					val = Papy3GetElement (theGroupP, papOverlayRows6000Gr, &nbVal, &elemType);
+					if ( val ) oRows	= val->us;
+					
+					val = Papy3GetElement (theGroupP, papOverlayColumns6000Gr, &nbVal, &elemType);
+					if ( val ) oColumns	= val->us;
+					
+					//			val = Papy3GetElement (theGroupP, papNumberofFramesinOverlayGr, &nbVal, &elemType);
+					//			if ( val ) oRows	= val->us;
+					
+					val = Papy3GetElement (theGroupP, papOverlayTypeGr, &nbVal, &elemType);
+					if ( val ) oType	= val->a[ 0];
+					
+					val = Papy3GetElement (theGroupP, papOriginGr, &nbVal, &elemType);
+					if ( val )
 					{
-						unsigned short *pixels = val->ow;
-						char			valBit [ 16];
-						char			mask = 1;
-						int				x;
+						oOrigin[ 0]	= val->us;
+						val++;
+						oOrigin[ 1]	= val->us;
+					}
+					
+					val = Papy3GetElement (theGroupP, papOverlayBitsAllocatedGr, &nbVal, &elemType);
+					if ( val ) oBits	= val->us;
+					
+					val = Papy3GetElement (theGroupP, papBitPositionGr, &nbVal, &elemType);
+					if ( val ) oBitPosition	= val->us;
+					
+					val = Papy3GetElement (theGroupP, papOverlayDataGr, &nbVal, &elemType);
+					if (val != NULL && oBits == 1 && oRows == height && oColumns == width && oType == 'G' && oBitPosition == 0 && oOrigin[ 0] == 1 && oOrigin[ 1] == 1)
+					{
+						if( oData) free( oData);
+						oData = malloc( oRows*oColumns);
+						if( oData)
+						{
+							unsigned short *pixels = val->ow;
+							char			valBit [ 16];
+							char			mask = 1;
+							int				x;
+							
+							for ( i = 0; i < oColumns*oRows/16; i++)
+							{
+								unsigned short	octet = pixels[ i];
+								
+								for (x = 0; x < 16;x ++)
+								{
+									valBit[ x] = octet & mask ? 1 : 0;
+									octet = octet >> 1;
+									
+									if( valBit[ x]) oData[ i*16 + x] = 0xFF;
+									else oData[ i*16 + x] = 0;
+								}
+							}
+						}
+					}
+				}
+				
+		#pragma mark PhilipsFactor		
+				theGroupP = (SElement*) [self getPapyGroup: 0x7053];
+				if( theGroupP)
+				{
+					val = Papy3GetElement (theGroupP, papSUVFactor7053Gr, &nbVal, &elemType);
+					
+					if( nbVal > 0)
+					{
+						if( val->a)
+							philipsFactor = atof( val->a);
+					}
+				}
+				
+		#pragma mark compute normal vector
+				
+				orientation[6] = orientation[1]*orientation[5] - orientation[2]*orientation[4];
+				orientation[7] = orientation[2]*orientation[3] - orientation[0]*orientation[5];
+				orientation[8] = orientation[0]*orientation[4] - orientation[1]*orientation[3];
+				
+				if( fabs( orientation[6]) > fabs(orientation[7]) && fabs( orientation[6]) > fabs(orientation[8]))
+					sliceLocation = originX;
+				
+				if( fabs( orientation[7]) > fabs(orientation[6]) && fabs( orientation[7]) > fabs(orientation[8]))
+					sliceLocation = originY;
+				
+				if( fabs( orientation[8]) > fabs(orientation[6]) && fabs( orientation[8]) > fabs(orientation[7]))
+					sliceLocation = originZ;
+				
+		#pragma mark read pixel data
+				
+				BOOL toBeUnlocked = YES;
+				[PapyrusLock lock];
+				
+				int fileNb = -1;
+				NSDictionary *dict = [cachedPapyGroups valueForKey: srcFile];
+				
+				if( [dict valueForKey: @"fileNb"] == nil)
+					[self getPapyGroup: 0];
+				
+				if( dict != nil && [dict valueForKey: @"fileNb"] == nil)
+					NSLog( @"******** dict != nil && [dict valueForKey: @fileNb] == nil");
+				
+				fileNb = [[dict valueForKey: @"fileNb"] intValue];
+				
+				if( fileNb >= 0)
+				{
+					short *oImage = nil;
+					
+					if( gSOPClassUID[ fileNb] != nil && strcmp( gSOPClassUID[ fileNb], "1.2.840.10008.5.1.4.1.1.104.1") == 0)
+					{
+						if (gIsPapyFile[ fileNb] == DICOM10)
+							err = Papy3FSeek (gPapyFile [fileNb], SEEK_SET, 132L);
 						
-						for ( i = 0; i < oColumns*oRows/16; i++)
+						if ((err = Papy3GotoGroupNb (fileNb, 0x0042)) == 0)
 						{
-							unsigned short	octet = pixels[ i];
-							
-							for (x = 0; x < 16;x ++)
+							if ((err = Papy3GroupRead (fileNb, &theGroupP)) > 0) 
 							{
-								valBit[ x] = octet & mask ? 1 : 0;
-								octet = octet >> 1;
+								SElement *element = theGroupP + papEncapsulatedDocumentGr;
 								
-								if( valBit[ x]) oData[ i*16 + x] = 0xFF;
-								else oData[ i*16 + x] = 0;
+								if( element->nb_val > 0)
+								{
+									NSPDFImageRep *rep = [NSPDFImageRep imageRepWithData: [NSData dataWithBytes: element->value->a length: element->length]];
+									
+									[rep setCurrentPage: frameNo];	
+									
+									NSImage *pdfImage = [[[NSImage alloc] init] autorelease];
+									[pdfImage addRepresentation: rep];
+									
+									[self getDataFromNSImage: pdfImage];
+								}
+								
+								err = Papy3GroupFree (&theGroupP, TRUE);
 							}
 						}
-					}
-				}
-			}
-			
-	#pragma mark PhilipsFactor		
-			theGroupP = (SElement*) [self getPapyGroup: 0x7053];
-			if( theGroupP)
-			{
-				val = Papy3GetElement (theGroupP, papSUVFactor7053Gr, &nbVal, &elemType);
-				
-				if( nbVal > 0)
-				{
-					if( val->a)
-						philipsFactor = atof( val->a);
-				}
-			}
-			
-	#pragma mark compute normal vector
-			
-			orientation[6] = orientation[1]*orientation[5] - orientation[2]*orientation[4];
-			orientation[7] = orientation[2]*orientation[3] - orientation[0]*orientation[5];
-			orientation[8] = orientation[0]*orientation[4] - orientation[1]*orientation[3];
-			
-			if( fabs( orientation[6]) > fabs(orientation[7]) && fabs( orientation[6]) > fabs(orientation[8]))
-				sliceLocation = originX;
-			
-			if( fabs( orientation[7]) > fabs(orientation[6]) && fabs( orientation[7]) > fabs(orientation[8]))
-				sliceLocation = originY;
-			
-			if( fabs( orientation[8]) > fabs(orientation[6]) && fabs( orientation[8]) > fabs(orientation[7]))
-				sliceLocation = originZ;
-			
-	#pragma mark read pixel data
-			
-			BOOL toBeUnlocked = YES;
-			[PapyrusLock lock];
-			
-			int fileNb = -1;
-			NSDictionary *dict = [cachedPapyGroups valueForKey: srcFile];
-			
-			if( [dict valueForKey: @"fileNb"] == nil)
-				[self getPapyGroup: 0];
-			
-			if( dict != nil && [dict valueForKey: @"fileNb"] == nil)
-				NSLog( @"******** dict != nil && [dict valueForKey: @fileNb] == nil");
-			
-			fileNb = [[dict valueForKey: @"fileNb"] intValue];
-			
-			if( fileNb >= 0)
-			{
-				short *oImage = nil;
-				
-				if( gSOPClassUID[ fileNb] != nil && strcmp( gSOPClassUID[ fileNb], "1.2.840.10008.5.1.4.1.1.104.1") == 0)
-				{
-					if (gIsPapyFile[ fileNb] == DICOM10)
-						err = Papy3FSeek (gPapyFile [fileNb], SEEK_SET, 132L);
-					
-					if ((err = Papy3GotoGroupNb (fileNb, 0x0042)) == 0)
+					}  
+					else
 					{
-						if ((err = Papy3GroupRead (fileNb, &theGroupP)) > 0) 
+						// position the file pointer to the begining of the data set 
+						err = Papy3GotoNumber (fileNb, (PapyShort) imageNb, DataSetID);
+						
+						// then goto group 0x7FE0 
+						if ((err = Papy3GotoGroupNb (fileNb, 0x7FE0)) == 0)
 						{
-							SElement *element = theGroupP + papEncapsulatedDocumentGr;
-							
-							if( element->nb_val > 0)
+							// read group 0x7FE0 from the file 
+							if ((err = Papy3GroupRead (fileNb, &theGroupP)) > 0) 
 							{
-								NSPDFImageRep *rep = [NSPDFImageRep imageRepWithData: [NSData dataWithBytes: element->value->a length: element->length]];
-								
-								[rep setCurrentPage: frameNo];	
-								
-								NSImage *pdfImage = [[[NSImage alloc] init] autorelease];
-								[pdfImage addRepresentation: rep];
-								
-								[self getDataFromNSImage: pdfImage];
-							}
-							
-							err = Papy3GroupFree (&theGroupP, TRUE);
-						}
-					}
-				}  
-				else
-				{
-					// position the file pointer to the begining of the data set 
-					err = Papy3GotoNumber (fileNb, (PapyShort) imageNb, DataSetID);
-					
-					// then goto group 0x7FE0 
-					if ((err = Papy3GotoGroupNb (fileNb, 0x7FE0)) == 0)
-					{
-						// read group 0x7FE0 from the file 
-						if ((err = Papy3GroupRead (fileNb, &theGroupP)) > 0) 
-						{
-							if( gArrCompression [fileNb] == JPEG_LOSSLESS || gArrCompression [fileNb] == JPEG_LOSSY || gArrCompression [fileNb] == JPEG2000)
-							{
-								if(gArrPhotoInterpret [fileNb] == RGB)
-									fPlanarConf = 0;
-							}
-							
-							if( bitsStored == 8 && bitsAllocated == 16 && gArrPhotoInterpret[ fileNb] == RGB)
-								bitsAllocated = 8;
-							
-							// PIXEL DATA
-							if( gUseJPEGColorSpace)
-							{
-								if( gArrCompression [fileNb] == JPEG_LOSSLESS || gArrCompression [fileNb] == JPEG_LOSSY)
+								if( gArrCompression [fileNb] == JPEG_LOSSLESS || gArrCompression [fileNb] == JPEG_LOSSY || gArrCompression [fileNb] == JPEG2000)
 								{
-									if(	gArrPhotoInterpret [fileNb] == YBR_FULL  	||
-									   gArrPhotoInterpret [fileNb] == YBR_FULL_422	||
-									   gArrPhotoInterpret [fileNb] == YBR_RCT  	||
-									   gArrPhotoInterpret [fileNb] == YBR_ICT	||
-									   gArrPhotoInterpret [fileNb] == YUV_RCT	||
-									   gArrPhotoInterpret [fileNb] == YBR_PARTIAL_422 ||
-									   gArrPhotoInterpret [fileNb] == RGB)
-										gArrPhotoInterpret [fileNb] = UNKNOWN_COLOR;
+									if(gArrPhotoInterpret [fileNb] == RGB)
+										fPlanarConf = 0;
 								}
-							}
-							
-							oImage = (short*) Papy3GetPixelData (fileNb, imageNb, theGroupP, ImagePixel);
-							
-							[PapyrusLock unlock];
-							toBeUnlocked = NO;
-							
-							if( oImage == nil)
-							{
-								NSLog(@"This is really bad..... Please send this file to rossetantoine@bluewin.ch");
-								goImageSize[ fileNb] = height * width * 8; // *8 in case of a 16-bit RGB encoding....
-								oImage = malloc( goImageSize[ fileNb]);
 								
-								long yo = 0;
-								for( i = 0 ; i < height * width * 4; i++)
+								if( bitsStored == 8 && bitsAllocated == 16 && gArrPhotoInterpret[ fileNb] == RGB)
+									bitsAllocated = 8;
+								
+								// PIXEL DATA
+								if( gUseJPEGColorSpace)
 								{
-									oImage[ i] = yo++;
-									if( yo>= width) yo = 0;
+									if( gArrCompression [fileNb] == JPEG_LOSSLESS || gArrCompression [fileNb] == JPEG_LOSSY)
+									{
+										if(	gArrPhotoInterpret [fileNb] == YBR_FULL  	||
+										   gArrPhotoInterpret [fileNb] == YBR_FULL_422	||
+										   gArrPhotoInterpret [fileNb] == YBR_RCT  	||
+										   gArrPhotoInterpret [fileNb] == YBR_ICT	||
+										   gArrPhotoInterpret [fileNb] == YUV_RCT	||
+										   gArrPhotoInterpret [fileNb] == YBR_PARTIAL_422 ||
+										   gArrPhotoInterpret [fileNb] == RGB)
+											gArrPhotoInterpret [fileNb] = UNKNOWN_COLOR;
+									}
 								}
-							}
-							
-							if( gArrPhotoInterpret [fileNb] == MONOCHROME1) // INVERSE IMAGE!
-							{
-								inverseVal = YES;
-								savedWL = -savedWL;
-							}
-							else inverseVal = NO;
-							
-							isRGB = NO;
-							
-							if (gArrPhotoInterpret [fileNb] == YBR_FULL ||
-								gArrPhotoInterpret [fileNb] == YBR_FULL_422 ||
-								gArrPhotoInterpret [fileNb] == YBR_PARTIAL_422)
-							{
-	//							NSLog(@"YBR WORLD");
 								
-								char *rgbPixel = (char*) [self ConvertYbrToRgb:(unsigned char *) oImage :width :height :gArrPhotoInterpret [fileNb] :(char) fPlanarConf];
-								fPlanarConf = 0;	//ConvertYbrToRgb -> planar is converted
+								oImage = (short*) Papy3GetPixelData (fileNb, imageNb, theGroupP, ImagePixel);
 								
-								efree3 ((void **) &oImage);
-								oImage = (short*) rgbPixel;
-								goImageSize[ fileNb] = width * height * 3;
-							}
-							
-							// This image has a palette -> Convert it to a RGB image !
-							if( fSetClut)
-							{
-								if( clutRed != nil && clutGreen != nil && clutBlue != nil)
+								[PapyrusLock unlock];
+								toBeUnlocked = NO;
+								
+								if( oImage == nil)
 								{
-									unsigned char   *bufPtr = (unsigned char*) oImage;
-									unsigned short	*bufPtr16 = (unsigned short*) oImage;
+									NSLog(@"This is really bad..... Please send this file to rossetantoine@bluewin.ch");
+									goImageSize[ fileNb] = height * width * 8; // *8 in case of a 16-bit RGB encoding....
+									oImage = malloc( goImageSize[ fileNb]);
+									
+									long yo = 0;
+									for( i = 0 ; i < height * width * 4; i++)
+									{
+										oImage[ i] = yo++;
+										if( yo>= width) yo = 0;
+									}
+								}
+								
+								if( gArrPhotoInterpret [fileNb] == MONOCHROME1) // INVERSE IMAGE!
+								{
+									inverseVal = YES;
+									savedWL = -savedWL;
+								}
+								else inverseVal = NO;
+								
+								isRGB = NO;
+								
+								if (gArrPhotoInterpret [fileNb] == YBR_FULL ||
+									gArrPhotoInterpret [fileNb] == YBR_FULL_422 ||
+									gArrPhotoInterpret [fileNb] == YBR_PARTIAL_422)
+								{
+		//							NSLog(@"YBR WORLD");
+									
+									char *rgbPixel = (char*) [self ConvertYbrToRgb:(unsigned char *) oImage :width :height :gArrPhotoInterpret [fileNb] :(char) fPlanarConf];
+									fPlanarConf = 0;	//ConvertYbrToRgb -> planar is converted
+									
+									efree3 ((void **) &oImage);
+									oImage = (short*) rgbPixel;
+									goImageSize[ fileNb] = width * height * 3;
+								}
+								
+								// This image has a palette -> Convert it to a RGB image !
+								if( fSetClut)
+								{
+									if( clutRed != nil && clutGreen != nil && clutBlue != nil)
+									{
+										unsigned char   *bufPtr = (unsigned char*) oImage;
+										unsigned short	*bufPtr16 = (unsigned short*) oImage;
+										unsigned char   *tmpImage;
+										int				totSize, pixelR, pixelG, pixelB, x, y;
+										
+										totSize = (int) ((int) height * (int) width * 3L);
+										tmpImage = malloc( totSize);
+										
+										fPlanarConf = NO;
+										
+										//	if( bitsAllocated != 8) NSLog(@"Palette with a non-8 bit image???");
+										
+										switch( bitsAllocated)
+										{
+											case 8:
+												for( y = 0; y < height; y++)
+												{
+													for( x = 0; x < width; x++)
+													{
+														pixelR = pixelG = pixelB = bufPtr[y*width + x];
+														
+														if( pixelR > clutEntryR) {	pixelR = clutEntryR-1;}
+														if( pixelG > clutEntryG) {	pixelG = clutEntryG-1;}
+														if( pixelB > clutEntryB) {	pixelB = clutEntryB-1;}
+														
+														tmpImage[y*width*3 + x*3 + 0] = clutRed[ pixelR];
+														tmpImage[y*width*3 + x*3 + 1] = clutGreen[ pixelG];
+														tmpImage[y*width*3 + x*3 + 2] = clutBlue[ pixelB];
+													}
+												}
+												break;
+												
+												case 16:
+					#if __BIG_ENDIAN__
+												InverseShorts( (vector unsigned short*) oImage, height * width);
+					#endif
+												
+												for( y = 0; y < height; y++)
+												{
+													for( x = 0; x < width; x++)
+													{
+														pixelR = pixelG = pixelB = bufPtr16[y*width + x];
+														
+														//	if( pixelR > clutEntryR) {	pixelR = clutEntryR-1;}
+														//	if( pixelG > clutEntryG) {	pixelG = clutEntryG-1;}
+														//	if( pixelB > clutEntryB) {	pixelB = clutEntryB-1;}
+														
+														tmpImage[y*width*3 + x*3 + 0] = clutRed[ pixelR];
+														tmpImage[y*width*3 + x*3 + 1] = clutGreen[ pixelG];
+														tmpImage[y*width*3 + x*3 + 2] = clutBlue[ pixelB];
+													}
+												}
+												bitsAllocated = 8;
+												break;
+										}
+										
+										isRGB = YES;
+										
+										efree3 ((void **) &oImage);
+										oImage = (short*) tmpImage;
+										goImageSize[ fileNb] = width * height * 3;
+									}
+								}
+								
+								if( fSetClut16)
+								{
+									unsigned short	*bufPtr = (unsigned short*) oImage;
 									unsigned char   *tmpImage;
-									int				totSize, pixelR, pixelG, pixelB, x, y;
+									int				totSize, x, y, ii;
+									unsigned short pixel;
+									
+									fPlanarConf = NO;
 									
 									totSize = (int) ((int) height * (int) width * 3L);
 									tmpImage = malloc( totSize);
 									
-									fPlanarConf = NO;
+									if( bitsAllocated != 16) NSLog(@"Segmented Palette with a non-16 bit image???");
 									
-									//	if( bitsAllocated != 8) NSLog(@"Palette with a non-8 bit image???");
+									ii = height * width;
 									
-									switch( bitsAllocated)
+				#if __ppc__ || __ppc64__
+									if( Altivec)
 									{
-										case 8:
-											for( y = 0; y < height; y++)
-											{
-												for( x = 0; x < width; x++)
-												{
-													pixelR = pixelG = pixelB = bufPtr[y*width + x];
-													
-													if( pixelR > clutEntryR) {	pixelR = clutEntryR-1;}
-													if( pixelG > clutEntryG) {	pixelG = clutEntryG-1;}
-													if( pixelB > clutEntryB) {	pixelB = clutEntryB-1;}
-													
-													tmpImage[y*width*3 + x*3 + 0] = clutRed[ pixelR];
-													tmpImage[y*width*3 + x*3 + 1] = clutGreen[ pixelG];
-													tmpImage[y*width*3 + x*3 + 2] = clutBlue[ pixelB];
-												}
-											}
-											break;
-											
-											case 16:
-				#if __BIG_ENDIAN__
-											InverseShorts( (vector unsigned short*) oImage, height * width);
+										InverseShorts( (vector unsigned short*) oImage, ii);
+									}
+									else
 				#endif
-											
-											for( y = 0; y < height; y++)
-											{
-												for( x = 0; x < width; x++)
-												{
-													pixelR = pixelG = pixelB = bufPtr16[y*width + x];
-													
-													//	if( pixelR > clutEntryR) {	pixelR = clutEntryR-1;}
-													//	if( pixelG > clutEntryG) {	pixelG = clutEntryG-1;}
-													//	if( pixelB > clutEntryB) {	pixelB = clutEntryB-1;}
-													
-													tmpImage[y*width*3 + x*3 + 0] = clutRed[ pixelR];
-													tmpImage[y*width*3 + x*3 + 1] = clutGreen[ pixelG];
-													tmpImage[y*width*3 + x*3 + 2] = clutBlue[ pixelB];
-												}
-											}
-											bitsAllocated = 8;
-											break;
+										
+				#if __BIG_ENDIAN__
+									{
+										PapyUShort	 *theUShortP = (PapyUShort *) oImage;
+										PapyUShort val;
+										
+										while( ii-- > 0)
+										{
+											val = *theUShortP;
+											*theUShortP++ = (val >> 8) | (val << 8);   // & 0x00FF  --  & 0xFF00
+										}
+									}
+				#endif
+									
+									for( y = 0; y < height; y++)
+									{
+										for( x = 0; x < width; x++)
+										{
+											pixel = bufPtr[y*width + x];
+											tmpImage[y*width*3 + x*3 + 0] = shortRed[ pixel];
+											tmpImage[y*width*3 + x*3 + 1] = shortGreen[ pixel];
+											tmpImage[y*width*3 + x*3 + 2] = shortBlue[ pixel];
+										}
 									}
 									
 									isRGB = YES;
@@ -7719,367 +7792,317 @@ END_CREATE_ROIS:
 									efree3 ((void **) &oImage);
 									oImage = (short*) tmpImage;
 									goImageSize[ fileNb] = width * height * 3;
-								}
-							}
-							
-							if( fSetClut16)
-							{
-								unsigned short	*bufPtr = (unsigned short*) oImage;
-								unsigned char   *tmpImage;
-								int				totSize, x, y, ii;
-								unsigned short pixel;
-								
-								fPlanarConf = NO;
-								
-								totSize = (int) ((int) height * (int) width * 3L);
-								tmpImage = malloc( totSize);
-								
-								if( bitsAllocated != 16) NSLog(@"Segmented Palette with a non-16 bit image???");
-								
-								ii = height * width;
-								
-			#if __ppc__ || __ppc64__
-								if( Altivec)
-								{
-									InverseShorts( (vector unsigned short*) oImage, ii);
-								}
-								else
-			#endif
 									
-			#if __BIG_ENDIAN__
+									free( shortRed);
+									free( shortGreen);
+									free( shortBlue);
+								}
+								
+								// we need to know how the pixels are stored
+								if (isRGB == YES ||
+									gArrPhotoInterpret [fileNb] == RGB ||
+									gArrPhotoInterpret [fileNb] == YBR_FULL ||
+									gArrPhotoInterpret [fileNb] == YBR_FULL_422 ||
+									gArrPhotoInterpret [fileNb] == YBR_PARTIAL_422 ||
+									gArrPhotoInterpret [fileNb] == YBR_ICT ||
+									gArrPhotoInterpret [fileNb] == YBR_RCT)
 								{
-									PapyUShort	 *theUShortP = (PapyUShort *) oImage;
-									PapyUShort val;
+									unsigned char   *ptr, *tmpImage;
+									int				loop, totSize;
 									
-									while( ii-- > 0)
+									isRGB = YES;
+									
+									// CONVERT RGB TO ARGB FOR BETTER PERFORMANCE THRU VIMAGE
 									{
-										val = *theUShortP;
-										*theUShortP++ = (val >> 8) | (val << 8);   // & 0x00FF  --  & 0xFF00
+										totSize = (int) ((int) height * (int) width * 4L);
+										tmpImage = malloc( totSize);
+										if( tmpImage)
+										{
+											ptr    = tmpImage;
+											
+											if( bitsAllocated > 8) // RGB - 16 bits
+											{
+												unsigned short   *bufPtr;
+												bufPtr = (unsigned short*) oImage;
+												
+												#if __BIG_ENDIAN__
+												InverseShorts( (vector unsigned short*) oImage, height * width * 3);
+												#endif
+												
+												if( fPlanarConf > 0)	// PLANAR MODE
+												{
+													int imsize = (int) height * (int) width;
+													int x = 0;
+													
+													loop = totSize/4;
+													while( loop-- > 0)
+													{
+														*ptr++	= 255;			//ptr++;
+														*ptr++	= bufPtr[ 0 * imsize + x];		//ptr++;  bufPtr++;
+														*ptr++	= bufPtr[ 1 * imsize + x];		//ptr++;  bufPtr++;
+														*ptr++	= bufPtr[ 2 * imsize + x];		//ptr++;  bufPtr++;
+														
+														x++;
+													}
+												}
+												else
+												{
+													loop = totSize/4;
+													while( loop-- > 0)
+													{
+														*ptr++	= 255;			//ptr++;
+														*ptr++	= *bufPtr++;		//ptr++;  bufPtr++;
+														*ptr++	= *bufPtr++;		//ptr++;  bufPtr++;
+														*ptr++	= *bufPtr++;		//ptr++;  bufPtr++;
+													}
+												}
+											}
+											else
+											{
+												unsigned char   *bufPtr;
+												bufPtr = (unsigned char*) oImage;
+												
+												if( fPlanarConf > 0)	// PLANAR MODE
+												{
+													int imsize = (int) height * (int) width;
+													int x = 0;
+													
+													loop = totSize/4;
+													while( loop-- > 0)
+													{
+														*ptr++	= 255;			//ptr++;
+														*ptr++	= bufPtr[ 0 * imsize + x];		//ptr++;  bufPtr++;
+														*ptr++	= bufPtr[ 1 * imsize + x];		//ptr++;  bufPtr++;
+														*ptr++	= bufPtr[ 2 * imsize + x];		//ptr++;  bufPtr++;
+														
+														x++;
+													}
+												}
+												else
+												{
+													loop = totSize/4;
+													while( loop-- > 0)
+													{
+														*ptr++	= 255;
+														*ptr++	= *bufPtr++;
+														*ptr++	= *bufPtr++;
+														*ptr++	= *bufPtr++;
+													}
+												}
+											}
+											efree3 ((void **) &oImage);
+											oImage = (short*) tmpImage;
+											goImageSize[ fileNb] = width * height * 4;
+										}
 									}
 								}
-			#endif
-								
-								for( y = 0; y < height; y++)
+								else if( bitsAllocated == 8)	// Black & White 8 bit image -> 16 bits image
 								{
-									for( x = 0; x < width; x++)
-									{
-										pixel = bufPtr[y*width + x];
-										tmpImage[y*width*3 + x*3 + 0] = shortRed[ pixel];
-										tmpImage[y*width*3 + x*3 + 1] = shortGreen[ pixel];
-										tmpImage[y*width*3 + x*3 + 2] = shortBlue[ pixel];
-									}
-								}
-								
-								isRGB = YES;
-								
-								efree3 ((void **) &oImage);
-								oImage = (short*) tmpImage;
-								goImageSize[ fileNb] = width * height * 3;
-								
-								free( shortRed);
-								free( shortGreen);
-								free( shortBlue);
-							}
-							
-							// we need to know how the pixels are stored
-							if (isRGB == YES ||
-								gArrPhotoInterpret [fileNb] == RGB ||
-								gArrPhotoInterpret [fileNb] == YBR_FULL ||
-								gArrPhotoInterpret [fileNb] == YBR_FULL_422 ||
-								gArrPhotoInterpret [fileNb] == YBR_PARTIAL_422 ||
-								gArrPhotoInterpret [fileNb] == YBR_ICT ||
-								gArrPhotoInterpret [fileNb] == YBR_RCT)
-							{
-								unsigned char   *ptr, *tmpImage;
-								int				loop, totSize;
-								
-								isRGB = YES;
-								
-								// CONVERT RGB TO ARGB FOR BETTER PERFORMANCE THRU VIMAGE
-								{
-									totSize = (int) ((int) height * (int) width * 4L);
+									unsigned char   *bufPtr;
+									short			*ptr, *tmpImage;
+									int				loop, totSize;
+									
+									totSize = (int) ((int) height * (int) width * 2L);
 									tmpImage = malloc( totSize);
-									if( tmpImage)
+									
+									bufPtr = (unsigned char*) oImage;
+									ptr    = tmpImage;
+									
+									loop = totSize/2;
+									while( loop-- > 0)
 									{
-										ptr    = tmpImage;
-										
-										if( bitsAllocated > 8) // RGB - 16 bits
-										{
-											unsigned short   *bufPtr;
-											bufPtr = (unsigned short*) oImage;
-											
-											#if __BIG_ENDIAN__
-											InverseShorts( (vector unsigned short*) oImage, height * width * 3);
-											#endif
-											
-											if( fPlanarConf > 0)	// PLANAR MODE
-											{
-												int imsize = (int) height * (int) width;
-												int x = 0;
-												
-												loop = totSize/4;
-												while( loop-- > 0)
-												{
-													*ptr++	= 255;			//ptr++;
-													*ptr++	= bufPtr[ 0 * imsize + x];		//ptr++;  bufPtr++;
-													*ptr++	= bufPtr[ 1 * imsize + x];		//ptr++;  bufPtr++;
-													*ptr++	= bufPtr[ 2 * imsize + x];		//ptr++;  bufPtr++;
-													
-													x++;
-												}
-											}
-											else
-											{
-												loop = totSize/4;
-												while( loop-- > 0)
-												{
-													*ptr++	= 255;			//ptr++;
-													*ptr++	= *bufPtr++;		//ptr++;  bufPtr++;
-													*ptr++	= *bufPtr++;		//ptr++;  bufPtr++;
-													*ptr++	= *bufPtr++;		//ptr++;  bufPtr++;
-												}
-											}
-										}
-										else
-										{
-											unsigned char   *bufPtr;
-											bufPtr = (unsigned char*) oImage;
-											
-											if( fPlanarConf > 0)	// PLANAR MODE
-											{
-												int imsize = (int) height * (int) width;
-												int x = 0;
-												
-												loop = totSize/4;
-												while( loop-- > 0)
-												{
-													*ptr++	= 255;			//ptr++;
-													*ptr++	= bufPtr[ 0 * imsize + x];		//ptr++;  bufPtr++;
-													*ptr++	= bufPtr[ 1 * imsize + x];		//ptr++;  bufPtr++;
-													*ptr++	= bufPtr[ 2 * imsize + x];		//ptr++;  bufPtr++;
-													
-													x++;
-												}
-											}
-											else
-											{
-												loop = totSize/4;
-												while( loop-- > 0)
-												{
-													*ptr++	= 255;
-													*ptr++	= *bufPtr++;
-													*ptr++	= *bufPtr++;
-													*ptr++	= *bufPtr++;
-												}
-											}
-										}
-										efree3 ((void **) &oImage);
-										oImage = (short*) tmpImage;
-										goImageSize[ fileNb] = width * height * 4;
+										*ptr++ = *bufPtr++;
 									}
-								}
-							}
-							else if( bitsAllocated == 8)	// Black & White 8 bit image -> 16 bits image
-							{
-								unsigned char   *bufPtr;
-								short			*ptr, *tmpImage;
-								int				loop, totSize;
-								
-								totSize = (int) ((int) height * (int) width * 2L);
-								tmpImage = malloc( totSize);
-								
-								bufPtr = (unsigned char*) oImage;
-								ptr    = tmpImage;
-								
-								loop = totSize/2;
-								while( loop-- > 0)
-								{
-									*ptr++ = *bufPtr++;
+									
+									efree3 ((void **) &oImage);
+									oImage =  (short*) tmpImage;
+									goImageSize[ fileNb] = height * (int) width * 2L;
 								}
 								
-								efree3 ((void **) &oImage);
-								oImage =  (short*) tmpImage;
-								goImageSize[ fileNb] = height * (int) width * 2L;
-							}
-							
-							//if( fIsSigned == YES && 
-							
-							[PapyrusLock lock];
-							// free group 7FE0 
-							err = Papy3GroupFree (&theGroupP, TRUE);
-							[PapyrusLock unlock];
-						} // endif ...group 7FE0 read 
-					}
-				
-					#pragma mark RGB or fPlanar
-				
-					//***********
-					if( isRGB)
-					{
-						if( fExternalOwnedImage)
-						{
-							fImage = fExternalOwnedImage;
-							memcpy( fImage, oImage, width*height*sizeof(float));
-							free(oImage);
+								//if( fIsSigned == YES && 
+								
+								[PapyrusLock lock];
+								// free group 7FE0 
+								err = Papy3GroupFree (&theGroupP, TRUE);
+								[PapyrusLock unlock];
+							} // endif ...group 7FE0 read 
 						}
-						else fImage = (float*) oImage;
-						oImage = nil;
-						
-						if( oData && gDisplayDICOMOverlays)
+					
+						#pragma mark RGB or fPlanar
+					
+						//***********
+						if( isRGB)
 						{
-							unsigned char	*rgbData = (unsigned char*) fImage;
-							int				y, x;
-							
-							for( y = 0; y < oRows; y++)
-							{
-								for( x = 0; x < oColumns; x++)
-								{
-									if( oData[ y * oColumns + x])
-									{
-										rgbData[ y * width*4 + x*4 + 1] = 0xFF;
-										rgbData[ y * width*4 + x*4 + 2] = 0xFF;
-										rgbData[ y * width*4 + x*4 + 3] = 0xFF;
-									}
-								}
-							}
-						}
-					}
-					else
-					{
-						if( bitsAllocated == 32) // 32-bit float
-						{
-							float *sfloat = (float*) oImage;
-							
 							if( fExternalOwnedImage)
+							{
 								fImage = fExternalOwnedImage;
-							else
-								fImage = malloc(width*height*sizeof(float) + 100);
-							
-							if( fImage)
-								memcpy( fImage, sfloat, height * width * sizeof( float));
-							else
-								NSLog( @"*** Not enough memory - malloc failed");
-							
-							free(oImage);
+								memcpy( fImage, oImage, width*height*sizeof(float));
+								free(oImage);
+							}
+							else fImage = (float*) oImage;
 							oImage = nil;
+							
+							if( oData && gDisplayDICOMOverlays)
+							{
+								unsigned char	*rgbData = (unsigned char*) fImage;
+								int				y, x;
+								
+								for( y = 0; y < oRows; y++)
+								{
+									for( x = 0; x < oColumns; x++)
+									{
+										if( oData[ y * oColumns + x])
+										{
+											rgbData[ y * width*4 + x*4 + 1] = 0xFF;
+											rgbData[ y * width*4 + x*4 + 2] = 0xFF;
+											rgbData[ y * width*4 + x*4 + 3] = 0xFF;
+										}
+									}
+								}
+							}
 						}
 						else
 						{
-							if( oImage)
+							if( bitsAllocated == 32) // 32-bit float
 							{
-								vImage_Buffer src16, dstf;
-								
-								dstf.height = src16.height = height;
-								dstf.width = src16.width = width;
-								src16.rowBytes = width*2;
-								dstf.rowBytes = width*sizeof(float);
-								
-								src16.data = oImage;
-								
-								if( VOILUT_number != 0 && VOILUT_depth != 0 && VOILUT_table != nil)
-								{
-									[self setVOILUT:VOILUT_first number:VOILUT_number depth:VOILUT_depth table:VOILUT_table image:(unsigned short*) oImage isSigned: fIsSigned];
-									
-									free( VOILUT_table);
-									VOILUT_table = nil;
-								}
+								float *sfloat = (float*) oImage;
 								
 								if( fExternalOwnedImage)
-								{
 									fImage = fExternalOwnedImage;
-								}
 								else
-								{
 									fImage = malloc(width*height*sizeof(float) + 100);
-								}
 								
-								dstf.data = fImage;
-								
-								if( dstf.data)
-								{
-									if( fIsSigned)
-										vImageConvert_16SToF( &src16, &dstf, offset, slope, 0);
-									else
-										vImageConvert_16UToF( &src16, &dstf, offset, slope, 0);
-									
-									if( inverseVal)
-									{
-										float neg = -1;
-										vDSP_vsmul( fImage, 1, &neg, fImage, 1, height * width);
-									}
-								}
-								else NSLog( @"*** Not enough memory - malloc failed");
+								if( fImage)
+									memcpy( fImage, sfloat, height * width * sizeof( float));
+								else
+									NSLog( @"*** Not enough memory - malloc failed");
 								
 								free(oImage);
+								oImage = nil;
 							}
-							oImage = nil;
-						}
-						
-						if( oData && gDisplayDICOMOverlays)
-						{
-							int			y, x;
-							
-							for( y = 0; y < oRows; y++)
+							else
 							{
-								for( x = 0; x < oColumns; x++)
+								if( oImage)
 								{
-									if( oData[ y * oColumns + x]) fImage[ y * width + x] = 0xFF;
+									vImage_Buffer src16, dstf;
+									
+									dstf.height = src16.height = height;
+									dstf.width = src16.width = width;
+									src16.rowBytes = width*2;
+									dstf.rowBytes = width*sizeof(float);
+									
+									src16.data = oImage;
+									
+									if( VOILUT_number != 0 && VOILUT_depth != 0 && VOILUT_table != nil)
+									{
+										[self setVOILUT:VOILUT_first number:VOILUT_number depth:VOILUT_depth table:VOILUT_table image:(unsigned short*) oImage isSigned: fIsSigned];
+										
+										free( VOILUT_table);
+										VOILUT_table = nil;
+									}
+									
+									if( fExternalOwnedImage)
+									{
+										fImage = fExternalOwnedImage;
+									}
+									else
+									{
+										fImage = malloc(width*height*sizeof(float) + 100);
+									}
+									
+									dstf.data = fImage;
+									
+									if( dstf.data)
+									{
+										if( fIsSigned)
+											vImageConvert_16SToF( &src16, &dstf, offset, slope, 0);
+										else
+											vImageConvert_16UToF( &src16, &dstf, offset, slope, 0);
+										
+										if( inverseVal)
+										{
+											float neg = -1;
+											vDSP_vsmul( fImage, 1, &neg, fImage, 1, height * width);
+										}
+									}
+									else NSLog( @"*** Not enough memory - malloc failed");
+									
+									free(oImage);
+								}
+								oImage = nil;
+							}
+							
+							if( oData && gDisplayDICOMOverlays)
+							{
+								int			y, x;
+								
+								for( y = 0; y < oRows; y++)
+								{
+									for( x = 0; x < oColumns; x++)
+									{
+										if( oData[ y * oColumns + x]) fImage[ y * width + x] = 0xFF;
+									}
 								}
 							}
 						}
 					}
+					//***********
+					
+					//	endTime = MyGetTime();
+					//	NSLog([ NSString stringWithFormat: @"%d", ((long) (endTime - startTime))/1000 ]);
+					
+					wl = 0;
+					ww = 0; //Computed later, only if needed
+					
+					if( isRGB)
+					{
+						savedWL = 0;
+						savedWW = 0;
+					}
+					
+					if( savedWW != 0)
+					{
+						wl = savedWL;
+						ww = savedWW;
+					}
+					
+					if( clutRed) free( clutRed);
+					if( clutGreen) free( clutGreen);
+					if( clutBlue) free( clutBlue);
 				}
-				//***********
 				
-				//	endTime = MyGetTime();
-				//	NSLog([ NSString stringWithFormat: @"%d", ((long) (endTime - startTime))/1000 ]);
+				if( toBeUnlocked)
+					[PapyrusLock unlock];
 				
-				wl = 0;
-				ww = 0; //Computed later, only if needed
+				#ifdef OSIRIX_VIEWER
+				[self loadCustomImageAnnotationsPapyLink: fileNb DCMLink:nil];
+				#endif
 				
-				if( isRGB)
+				if( pixelSpacingY != 0)
 				{
-					savedWL = 0;
-					savedWW = 0;
+					if( fabs(pixelSpacingX) / fabs(pixelSpacingY) > 10000 || fabs(pixelSpacingX) / fabs(pixelSpacingY) < 0.0001)
+					{
+						pixelSpacingX = 1;
+						pixelSpacingY = 1;
+					}
 				}
 				
-				if( savedWW != 0)
-				{
-					wl = savedWL;
-					ww = savedWW;
-				}
+				if( pixelSpacingX < 0) pixelSpacingX = -pixelSpacingX;
+				if( pixelSpacingY < 0) pixelSpacingY = -pixelSpacingY;
+				if( pixelSpacingY != 0 && pixelSpacingX != 0) pixelRatio = pixelSpacingY / pixelSpacingX;
 				
-				if( clutRed) free( clutRed);
-				if( clutGreen) free( clutGreen);
-				if( clutBlue) free( clutBlue);
+				if( err >= 0)
+					returnValue = YES;
 			}
-			
-			if( toBeUnlocked)
-				[PapyrusLock unlock];
-			
-			#ifdef OSIRIX_VIEWER
-			[self loadCustomImageAnnotationsPapyLink: fileNb DCMLink:nil];
-			#endif
-			
-			if( pixelSpacingY != 0)
-			{
-				if( fabs(pixelSpacingX) / fabs(pixelSpacingY) > 10000 || fabs(pixelSpacingX) / fabs(pixelSpacingY) < 0.0001)
-				{
-					pixelSpacingX = 1;
-					pixelSpacingY = 1;
-				}
-			}
-			
-			if( pixelSpacingX < 0) pixelSpacingX = -pixelSpacingX;
-			if( pixelSpacingY < 0) pixelSpacingY = -pixelSpacingY;
-			if( pixelSpacingY != 0 && pixelSpacingX != 0) pixelRatio = pixelSpacingY / pixelSpacingX;
-			
-			if( err >= 0)
-				returnValue = YES;
+			else NSLog( @"[self getPapyGroup: 0x0028] failed");
 		}
-		else NSLog( @"[self getPapyGroup: 0x0028] failed");
+		else NSLog( @"[self getPapyGroup: 0] failed");
 	}
-	else NSLog( @"[self getPapyGroup: 0] failed");
+	@catch (NSException *e)
+	{
+		NSLog( @"***load DICOM Papyrus exeption: %@", e);
+		returnValue = NO;
+	}
 	
 	[purgeCacheLock lock];
 	[purgeCacheLock unlockWithCondition: [purgeCacheLock condition]-1];

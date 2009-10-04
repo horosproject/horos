@@ -14652,7 +14652,10 @@ static volatile int numberOfThreadsForJPEG = 0;
 		else
 		{
 			NSMutableString *name;
-			if ([(NSString*) [curImage valueForKeyPath: @"series.study.name"] length] > 8)
+			
+			if( [curImage valueForKeyPath: @"series.study.name"] == nil)
+				name = [NSMutableString stringWithString: @"unnamed"];
+			else if ([(NSString*) [curImage valueForKeyPath: @"series.study.name"] length] > 8)
 				name = [NSMutableString stringWithString:[[[curImage valueForKeyPath: @"series.study.name"] substringToIndex:7] uppercaseString]];
 			else
 				name = [NSMutableString stringWithString:[[curImage valueForKeyPath: @"series.study.name"] uppercaseString]];
@@ -14694,15 +14697,24 @@ static volatile int numberOfThreadsForJPEG = 0;
 		
 		if( [folderTree selectedTag] == 0 )
 		{
-			if (!addDICOMDIR)		
-				tempPath = [tempPath stringByAppendingPathComponent: [NSString stringWithFormat: @"%@ - %@", [curImage valueForKeyPath: @"series.study.studyName"], [curImage valueForKeyPath: @"series.study.id"]]];
+			NSString *studyId = [curImage valueForKeyPath: @"series.study.id"];
+			NSString *studyName = [curImage valueForKeyPath: @"series.study.studyName"];
+			
+			if( studyId == nil)
+				studyId = [NSString stringWithString: @"0"];
+			
+			if( studyName == nil)
+				studyName = [NSString stringWithString: @"unnamed"];
+			
+			if (!addDICOMDIR)
+				tempPath = [tempPath stringByAppendingPathComponent: [NSString stringWithFormat: @"%@ - %@", studyName, studyId]];
 			else
 			{				
 				NSMutableString *name;
-				if ([(NSString*)[curImage valueForKeyPath: @"series.study.id"] length] > 8 )
-					name = [NSMutableString stringWithString:[[[curImage valueForKeyPath:@"series.study.id"] substringToIndex:7] uppercaseString]];
+				if ([(NSString*)studyId length] > 8 )
+					name = [NSMutableString stringWithString:[[studyId substringToIndex:7] uppercaseString]];
 				else
-					name = [NSMutableString stringWithString:[[curImage valueForKeyPath: @"series.study.id"] uppercaseString]];
+					name = [NSMutableString stringWithString:[studyId uppercaseString]];
 				
 				NSData* asciiData = [name dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];
 				name = [[[NSMutableString alloc] initWithData:asciiData encoding:NSASCIIStringEncoding] autorelease];
@@ -14725,14 +14737,23 @@ static volatile int numberOfThreadsForJPEG = 0;
 				if (![[NSFileManager defaultManager] fileExistsAtPath: roiFolder]) [[NSFileManager defaultManager] createDirectoryAtPath: roiFolder attributes:nil];
 			}
 			
-			if ( !addDICOMDIR )
+			NSNumber *seriesId = [curImage valueForKeyPath: @"series.id"];
+			NSString *seriesName = [curImage valueForKeyPath: @"series.name"];
+			
+			if( seriesId == nil)
+				seriesId = [NSNumber numberWithInt: 0];
+			
+			if( seriesName == nil)
+				seriesName = [NSString stringWithString: @"unnamed"];
+			
+			if ( !addDICOMDIR)
 			{
-				NSMutableString *seriesStr = [NSMutableString stringWithString: [curImage valueForKeyPath: @"series.name"]];
+				NSMutableString *seriesStr = [NSMutableString stringWithString: seriesName];
 				
 				[BrowserController replaceNotAdmitted:seriesStr];
 				
 				tempPath = [tempPath stringByAppendingPathComponent: seriesStr ];
-				tempPath = [tempPath stringByAppendingFormat:@"_%@", [curImage valueForKeyPath: @"series.id"]];
+				tempPath = [tempPath stringByAppendingFormat:@"_%@", seriesId];
 			}
 			else
 			{
@@ -14742,7 +14763,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 				//				else
 				//					name = [NSMutableString stringWithString:[[curImage valueForKeyPath: @"series.name"] uppercaseString]];
 				
-				name = [NSMutableString stringWithString: [[[curImage valueForKeyPath: @"series.id"] stringValue] uppercaseString]];
+				name = [NSMutableString stringWithString: [[seriesId stringValue] uppercaseString]];
 				
 				NSData* asciiData = [name dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];
 				name = [[[NSMutableString alloc] initWithData:asciiData encoding:NSASCIIStringEncoding] autorelease];	
