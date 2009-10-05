@@ -19,6 +19,7 @@
 extern BOOL USETOOLBARPANEL;
 
 static 	NSMutableDictionary *associatedScreen = nil;
+static int increment = 0;
 
 @implementation ToolbarPanelController
 
@@ -178,9 +179,8 @@ static 	NSMutableDictionary *associatedScreen = nil;
 	
 	[super windowDidLoad];
 	
-	emptyToolbar = [[NSToolbar alloc] initWithIdentifier: @"nstoolbar osirix"];
+	emptyToolbar = [[NSToolbar alloc] initWithIdentifier: [NSString stringWithFormat:@"nstoolbar osirix %d", increment++]];
 	[[self window] setToolbar: emptyToolbar];
-	
 	
 	[[self window] setLevel: NSNormalWindowLevel];
 }
@@ -203,7 +203,7 @@ static 	NSMutableDictionary *associatedScreen = nil;
 		else
 			[associatedScreen removeObjectForKey: [NSValue valueWithPointer: toolbar]];
 		
-		[[self window] setToolbar: nil];
+		[[self window] setToolbar: emptyToolbar];
 //		[[self window] orderOut: self];
 		
 		[associatedScreen removeObjectForKey: [NSValue valueWithPointer: toolbar]];
@@ -221,6 +221,9 @@ static 	NSMutableDictionary *associatedScreen = nil;
 {
 	if( associatedScreen == nil) associatedScreen = [[NSMutableDictionary alloc] init];
 	
+	if( tb == nil)
+		tb = emptyToolbar;
+	
 	if( tb == toolbar)
 	{
 		if( viewer != nil)
@@ -231,7 +234,7 @@ static 	NSMutableDictionary *associatedScreen = nil;
 			if( [associatedScreen objectForKey: [NSValue valueWithPointer: toolbar]] != [[self window] screen])
 			{
 				if( [[NSScreen screens] count] > 1)
-					[[self window] setToolbar: nil];
+					[[self window] setToolbar: emptyToolbar];
 				[[self window] setToolbar: toolbar];
 				
 				if( [[self window] screen])
@@ -258,7 +261,7 @@ static 	NSMutableDictionary *associatedScreen = nil;
 		if( [associatedScreen objectForKey: [NSValue valueWithPointer: toolbar]] != [[self window] screen])
 		{
 			if( [[NSScreen screens] count] > 1)
-				[[self window] setToolbar: nil];	//To avoid the stupid add an item in customize toolbar.....
+				[[self window] setToolbar: emptyToolbar];	//To avoid the stupid add an item in customize toolbar.....
 				
 			if( [[self window] screen])
 				[associatedScreen setObject: [[self window] screen] forKey: [NSValue valueWithPointer: toolbar]];

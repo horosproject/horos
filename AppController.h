@@ -127,6 +127,7 @@ extern "C"
 + (void) resizeWindowWithAnimation:(NSWindow*) window newSize: (NSRect) newWindowFrame;
 + (NSThread*) mainThread;
 + (void) pause;
++ (void) resetToolbars;
 
 #pragma mark-
 #pragma mark HTML Templates

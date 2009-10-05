@@ -725,6 +725,22 @@ static NSDate *lastWarningDate = nil;
 	return mainThread;
 }
 
++ (void) resetToolbars
+{
+	int numberOfScreens = [[NSScreen screens] count];
+	
+	for( int i = 0; i < numberOfScreens; i++)
+	{
+		if( toolbarPanel[ i]) [toolbarPanel[ i] release];
+	}
+	
+	for( int i = 0; i < numberOfScreens; i++)
+		toolbarPanel[ i] = [[ToolbarPanelController alloc] initForScreen: i];
+	
+	for( int i = 0; i < numberOfScreens; i++)
+		[toolbarPanel[ i] fixSize];
+}
+
 + (void) resizeWindowWithAnimation:(NSWindow*) window newSize: (NSRect) newWindowFrame
 {
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"NSWindowsSetFrameAnimate"])
@@ -2537,14 +2553,8 @@ static BOOL initialized = NO;
 	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateWLWWMenuNotification object: NSLocalizedString(@"Other", nil) userInfo: nil];
 	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateConvolutionMenuNotification object:NSLocalizedString( @"No Filter", nil) userInfo: nil];
 	
-	NSLog(@"No of screens: %d", [[NSScreen screens] count]);
+	[AppController resetToolbars];
 	
-	for( int i = 0; i < 10; i++)
-		toolbarPanel[ i] = [[ToolbarPanelController alloc] initForScreen: i];
-	
-	for( int i = 0; i < 10; i++)
-		[toolbarPanel[ i] fixSize];
-		
 //	if( USETOOLBARPANEL) [[toolbarPanel window] makeKeyAndOrderFront:self];
 	
 // Increment the startup counter.
