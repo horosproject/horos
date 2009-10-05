@@ -87,14 +87,26 @@ static NSString*	VRPanelToolbarItemIdentifier			= @"MIP.tif";
 	return [viewer pixList];
 }
 
+- (void) awakeFromNib
+{
+	NSScreen *s = [viewer get3DViewerScreen: viewer];
+	
+	if( [s frame].size.height > [s frame].size.width)
+		[splitView setVertical: NO];
+	else
+		[splitView setVertical: YES];
+	
+	[super awakeFromNib];
+}
+
 -(id)initWithPixList:(NSMutableArray*)pix :(NSArray*)files :(NSData*)vData :(ViewerController*)vC :(ViewerController*)bC
 {
+	viewer = [vC retain];
+	
 	self = [super initWithWindowNibName:@"OrthogonalMPR"];
 	[[self window] setDelegate:self];
 	[[self window] setShowsResizeIndicator:YES];
 	//[[self window] performZoom:self];
-	
-	viewer = [vC retain];
 	
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(CloseViewerNotification:) name:OsirixCloseViewerNotification object:nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(Display3DPoint:) name:OsirixDisplay3dPointNotification object:nil];
@@ -102,11 +114,6 @@ static NSString*	VRPanelToolbarItemIdentifier			= @"MIP.tif";
 	
 	[splitView setDelegate:self];
 	
-	if ([[NSUserDefaults standardUserDefaults] boolForKey:@"orthogonalMPRVertialNSSplitView"])
-		[splitView setVertical:[[NSUserDefaults standardUserDefaults] boolForKey:@"orthogonalMPRVertialNSSplitView"]];
-	else
-		[splitView setVertical:YES];
-
 	[self updateToolbarItems];
 	
 	// 4D
@@ -507,8 +514,6 @@ static NSString*	VRPanelToolbarItemIdentifier			= @"MIP.tif";
 - (void) windowWillClose:(NSNotification *)notification
 {
 	[[NSNotificationCenter defaultCenter] removeObserver: self];
-	
-	[[NSUserDefaults standardUserDefaults] setBool:[splitView isVertical] forKey: @"orthogonalMPRVertialNSSplitView"];
 	
 	if( movieTimer)
 	{
