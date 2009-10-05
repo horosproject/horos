@@ -3038,7 +3038,13 @@ static NSArray*	statesArray = nil;
 					// Remove the '.'
 					
 					NSString *newDstPath = [[dstPath stringByDeletingLastPathComponent] stringByAppendingPathComponent: [[dstPath lastPathComponent] substringFromIndex: 1]];
-					[[NSFileManager defaultManager] movePath: dstPath toPath: newDstPath handler:nil];
+					if( [[NSFileManager defaultManager] moveItemAtPath: dstPath toPath: newDstPath error:nil] == NO)
+					{
+						[NSThread sleepForTimeInterval: 1];
+						
+						if( [[NSFileManager defaultManager] moveItemAtPath: dstPath toPath: newDstPath error:nil] == NO)
+							NSLog( @"***** copyFilesThread FAILED: %@ -> %@", dstPath, newDstPath);
+					}
 					dstPath = newDstPath;
 					
 					if( [extension isEqualToString:@"hdr"])		// ANALYZE -> COPY IMG
