@@ -3038,17 +3038,20 @@ static NSArray*	statesArray = nil;
 					// Remove the '.'
 					
 					NSString *newDstPath = [[dstPath stringByDeletingLastPathComponent] stringByAppendingPathComponent: [[dstPath lastPathComponent] substringFromIndex: 1]];
-					
-					if( [newDstPath characterAtIndex: 0] == '.')
-						newDstPath = [NSString stringWithFormat: @"NoPointAtBeginning-%lf", [NSDate timeIntervalSinceNow]];
+					[[NSFileManager defaultManager] removeItemAtPath: newDstPath error: nil];
 					
 					if( [[NSFileManager defaultManager] moveItemAtPath: dstPath toPath: newDstPath error:nil] == NO)
 					{
-						[NSThread sleepForTimeInterval: 1];
+						[NSThread sleepForTimeInterval: 0.5];
 						
 						if( [[NSFileManager defaultManager] moveItemAtPath: dstPath toPath: newDstPath error:nil] == NO)
+						{
 							NSLog( @"***** copyFilesThread FAILED: %@ -> %@", dstPath, newDstPath);
+							
+							[[NSFileManager defaultManager] removeItemAtPath: dstPath error: nil];
+						}
 					}
+					
 					dstPath = newDstPath;
 					
 					if( [extension isEqualToString:@"hdr"])		// ANALYZE -> COPY IMG
@@ -13755,7 +13758,14 @@ static volatile int numberOfThreadsForJPEG = 0;
 						continue;
 					
 					if ( [[srcPath lastPathComponent] length] > 0 && [[srcPath lastPathComponent] characterAtIndex: 0] == '.')
+					{
+						NSDictionary *atr = [[NSFileManager defaultManager] attributesOfItemAtPath: srcPath error: nil];
+						
+						if( [[atr fileModificationDate] timeIntervalSinceNow] < -60*60*24)
+							[[NSFileManager defaultManager] removeItemAtPath: srcPath error: nil];
+						
 						continue;
+					}
 					
 					BOOL result, isAlias = [self isAliasPath: srcPath];
 					if( isAlias) srcPath = [self pathResolved: srcPath];
