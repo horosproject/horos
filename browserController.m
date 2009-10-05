@@ -13762,8 +13762,10 @@ static volatile int numberOfThreadsForJPEG = 0;
 						NSDictionary *atr = [[NSFileManager defaultManager] attributesOfItemAtPath: srcPath error: nil];
 						
 						if( [[atr fileModificationDate] timeIntervalSinceNow] < -60*60*24)
+						{
+							NSLog( @"old files with '.' -> delete it : %@", srcPath);
 							[[NSFileManager defaultManager] removeItemAtPath: srcPath error: nil];
-						
+						}
 						continue;
 					}
 					
