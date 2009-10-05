@@ -727,7 +727,7 @@ static NSDate *lastWarningDate = nil;
 
 + (void) resetToolbars
 {
-	int numberOfScreens = [[NSScreen screens] count];
+	int numberOfScreens = [[NSScreen screens] count] + 1; //Just in case, we connect a second monitor when using OsiriX.
 	
 	for( int i = 0; i < numberOfScreens; i++)
 	{
