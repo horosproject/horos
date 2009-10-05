@@ -745,23 +745,36 @@ static NSDate *lastWarningDate = nil;
 {
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"NSWindowsSetFrameAnimate"])
 	{
-		NSDictionary *windowResize = [NSDictionary dictionaryWithObjectsAndKeys:
-									 window, NSViewAnimationTargetKey,
-									 [NSValue valueWithRect: newWindowFrame],
-									 NSViewAnimationEndFrameKey,
-									 nil];
 		
-		if( accumulateAnimations)
+		
+		@try
 		{
-			if( accumulateAnimationsArray == nil) accumulateAnimationsArray = [[NSMutableArray array] retain];
-			[accumulateAnimationsArray addObject: windowResize];
+			NSDictionary *windowResize = [NSDictionary dictionaryWithObjectsAndKeys:
+										 window, NSViewAnimationTargetKey,
+										 [NSValue valueWithRect: newWindowFrame],
+										 NSViewAnimationEndFrameKey,
+										 nil];
+			
+			if( accumulateAnimations)
+			{
+				if( accumulateAnimationsArray == nil) accumulateAnimationsArray = [[NSMutableArray array] retain];
+				[accumulateAnimationsArray addObject: windowResize];
+			}
+			else
+			{
+				[OSIWindowController setDontEnterWindowDidChangeScreen: YES];
+				
+				NSViewAnimation * animation = [[[NSViewAnimation alloc]  initWithViewAnimations: [NSArray arrayWithObjects: windowResize, nil]] autorelease];
+				[animation setAnimationBlockingMode: NSAnimationBlocking];
+				[animation setDuration: 0.15];
+				[animation startAnimation];
+			
+				[OSIWindowController setDontEnterWindowDidChangeScreen: NO];
+			}
 		}
-		else
+		@catch( NSException *e)
 		{
-			NSViewAnimation * animation = [[[NSViewAnimation alloc]  initWithViewAnimations: [NSArray arrayWithObjects: windowResize, nil]] autorelease];
-			[animation setAnimationBlockingMode: NSAnimationBlocking];
-			[animation setDuration: 0.15];
-			[animation startAnimation];
+			NSLog( @"resizeWindowWithAnimation exception: %@", e);
 		}
 	}
 	else
@@ -3651,6 +3664,7 @@ static BOOL initialized = NO;
 	if( [accumulateAnimationsArray count])
 	{
 		[OSIWindowController setDontEnterMagneticFunctions: YES];
+		[OSIWindowController setDontEnterWindowDidChangeScreen: YES];
 		
 		NSViewAnimation * animation = [[[NSViewAnimation alloc]  initWithViewAnimations: accumulateAnimationsArray] autorelease];
 		[animation setAnimationBlockingMode: NSAnimationBlocking];
@@ -3665,6 +3679,7 @@ static BOOL initialized = NO;
 		accumulateAnimationsArray = nil;
 		
 		[OSIWindowController setDontEnterMagneticFunctions: NO];
+		[OSIWindowController setDontEnterWindowDidChangeScreen: NO];
 	}
 	
 	[AppController checkForPreferencesUpdate: NO];

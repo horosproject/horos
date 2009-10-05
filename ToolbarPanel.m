@@ -180,9 +180,41 @@ static int increment = 0;
 	[super windowDidLoad];
 	
 	emptyToolbar = [[NSToolbar alloc] initWithIdentifier: [NSString stringWithFormat:@"nstoolbar osirix %d", increment++]];
+	[emptyToolbar setDelegate: self];
+	[emptyToolbar insertItemWithItemIdentifier: @"emptyItem" atIndex: 0];
+	
 	[[self window] setToolbar: emptyToolbar];
 	
 	[[self window] setLevel: NSNormalWindowLevel];
+}
+
+- (NSArray *) toolbarAllowedItemIdentifiers: (NSToolbar *) toolbar
+{
+	 return [NSArray arrayWithObject: @"emptyItem"];
+}
+
+- (NSArray *) toolbarDefaultItemIdentifiers: (NSToolbar *) toolbar
+{
+	  return [NSArray arrayWithObject: @"emptyItem"];
+}
+
+- (NSToolbarItem *) toolbar: (NSToolbar *)toolbar itemForItemIdentifier: (NSString *) itemIdent willBeInsertedIntoToolbar:(BOOL) willBeInserted
+{
+	 NSToolbarItem *toolbarItem = [[NSToolbarItem alloc] initWithItemIdentifier: itemIdent];
+	 
+	 if ([itemIdent isEqualToString: @"emptyItem"])
+	 {
+		#define HEIGHT 53
+		[toolbarItem setLabel: @"Aqpghil"];
+		[toolbarItem setView: [[[NSView alloc] initWithFrame: NSMakeRect( 0, 0, HEIGHT, HEIGHT)] autorelease]];
+		[toolbarItem setMinSize: NSMakeSize( HEIGHT, HEIGHT)];
+		[toolbarItem setMaxSize: NSMakeSize( HEIGHT, HEIGHT)];
+		[toolbarItem setTarget: nil];
+		[toolbarItem setAction: nil];
+    }
+	else NSLog( @"********** ToolbarPanel.m uh??");
+	
+	 return [toolbarItem autorelease];
 }
 
 - (NSToolbar*) toolbar

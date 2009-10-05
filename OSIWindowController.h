@@ -37,6 +37,8 @@ enum OsiriXBlendingTypes {BlendingPlugin = -1, BlendingFusion = 1, BlendingSubtr
 	NSRect savedWindowsFrameO;
 }
 
++ (BOOL) dontWindowDidChangeScreen;
++ (void) setDontEnterWindowDidChangeScreen:(BOOL) a;
 + (void) setDontEnterMagneticFunctions:(BOOL) a;
 - (void) setMagnetic:(BOOL) a;
 - (BOOL) magnetic;

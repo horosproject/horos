@@ -21,6 +21,7 @@
 #import "BrowserController.h"
 
 static	BOOL dontEnterMagneticFunctions = NO;
+static	BOOL dontWindowDidChangeScreen = NO;
 extern  BOOL USETOOLBARPANEL;
 extern  ToolbarPanelController  *toolbarPanel[ 10];
 extern int delayedTileWindows;
@@ -45,6 +46,16 @@ static BOOL protectedReentryWindowDidResize = NO;
 + (void) setDontEnterMagneticFunctions:(BOOL) a
 {
 	dontEnterMagneticFunctions = a;
+}
+
++ (BOOL) dontWindowDidChangeScreen
+{
+	return dontWindowDidChangeScreen;
+}
+
++ (void) setDontEnterWindowDidChangeScreen:(BOOL) a
+{
+	dontWindowDidChangeScreen = a;
 }
 
 - (void) windowDidResize:(NSNotification *)aNotification

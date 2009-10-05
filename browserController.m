@@ -16195,6 +16195,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 		}
 	}
 	[self performSelector: @selector( updateReportToolbarIcon:) withObject: nil afterDelay: 0.1];
+	
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixReportModeChangedNotification object: nil userInfo: nil];
 }
 
 - (NSImage*) reportIcon

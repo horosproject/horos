@@ -2588,6 +2588,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 {
 	int i;
 	
+	if( [OSIWindowController dontWindowDidChangeScreen])
+		return;
+	
 	if( [AppController USETOOLBARPANEL])
 	{
 		for( i = 0; i < [[NSScreen screens] count]; i++)
