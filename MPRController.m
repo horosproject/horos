@@ -75,6 +75,8 @@ static float deg2rad = 3.14159265358979/180.0;
 		if( [[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] == annotNone)
 			[[NSUserDefaults standardUserDefaults] setInteger: annotGraphics forKey: @"ANNOTATIONS"];
 		
+		viewer2D = viewer;
+		
 		self = [super initWithWindowNibName:@"MPR"];
 		
 		[[self window] setWindowController: self];
@@ -91,7 +93,7 @@ static float deg2rad = 3.14159265358979/180.0;
 		pixList[0] = pix;
 		filesList[0] = files;
 		volumeData[0] = volume;
-		viewer2D = viewer;
+		
 		fusedViewer2D = fusedViewer;
 		clippingRangeMode = 1;
 		LOD = 1;
@@ -354,6 +356,14 @@ static float deg2rad = 3.14159265358979/180.0;
 
 -(void) awakeFromNib
 {
+	NSScreen *s = [viewer2D get3DViewerScreen: viewer2D];
+	
+	if( [s frame].size.height > [s frame].size.width)
+	{
+		[horizontalSplit setVertical: YES];
+		[verticalSplit setVertical: NO];
+	}
+	
 	[shadingsPresetsController setWindowController: self];
 	[shadingCheck setAction:@selector(switchShading:)];
 	[shadingCheck setTarget:self];

@@ -17295,7 +17295,7 @@ int i,j,l;
 	return viewer;
 }
 
-- (void) place3DViewerWindow:(NSWindowController*) viewer
+- (NSScreen*) get3DViewerScreen: (ViewerController*) v
 {
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ThreeDViewerOnAnotherScreen"])
 	{
@@ -17303,19 +17303,23 @@ int i,j,l;
 		
 		for( id loopItem in allScreens)
 		{
-			if( [[[self window] screen] frame].origin.x != [loopItem frame].origin.x || [[[self window] screen] frame].origin.y != [loopItem frame].origin.y)
+			if( [[[v window] screen] frame].origin.x != [loopItem frame].origin.x || [[[v window] screen] frame].origin.y != [loopItem frame].origin.y)
 			{
-				[[viewer window] setFrame: [loopItem visibleFrame] display:NO];
-				return;
+				return loopItem;
 			}
 		}
 		
-		[[viewer window] setFrame: [[[self window] screen] visibleFrame] display:NO];
+		return [[v window] screen];
 	}
 	else
 	{
-		[[viewer window] setFrame: [[[self window] screen] visibleFrame] display:NO];
+		return [[v window] screen];
 	}
+}
+
+- (void) place3DViewerWindow:(NSWindowController*) viewer
+{
+	[[viewer window] setFrame: [[self get3DViewerScreen: self] visibleFrame] display:NO];
 }
 
 -(IBAction) VRViewer:(id) sender

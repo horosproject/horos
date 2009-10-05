@@ -548,6 +548,7 @@ enum
 - (BOOL) updateTilingViewsValue;
 - (void) setUpdateTilingViewsValue:(BOOL) v;
 - (IBAction) ConvertToBWMenu:(id) sender;
+- (NSScreen*) get3DViewerScreen: (ViewerController*) v;
 - (void) place3DViewerWindow:(NSWindowController*) viewer;
 - (IBAction) export2PACS:(id) sender;
 - (void) print:(id) sender;
