@@ -3040,7 +3040,7 @@ static NSArray*	statesArray = nil;
 					NSString *newDstPath = [[dstPath stringByDeletingLastPathComponent] stringByAppendingPathComponent: [[dstPath lastPathComponent] substringFromIndex: 1]];
 					
 					if( [newDstPath characterAtIndex: 0] == '.')
-						newDstPath = [NSString stringWithFormat: @"NoPointAtBeginning-%lf", [NSTimeInterval timeIntervalSinceNow]];
+						newDstPath = [NSString stringWithFormat: @"NoPointAtBeginning-%lf", [NSDate timeIntervalSinceNow]];
 					
 					if( [[NSFileManager defaultManager] moveItemAtPath: dstPath toPath: newDstPath error:nil] == NO)
 					{
