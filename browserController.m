@@ -3038,6 +3038,10 @@ static NSArray*	statesArray = nil;
 					// Remove the '.'
 					
 					NSString *newDstPath = [[dstPath stringByDeletingLastPathComponent] stringByAppendingPathComponent: [[dstPath lastPathComponent] substringFromIndex: 1]];
+					
+					if( [newDstPath characterAtIndex: 0] == '.')
+						newDstPath = [NSString stringWithFormat: @"NoPointAtBeginning-%lf", [NSTimeInterval timeIntervalSinceNow]];
+					
 					if( [[NSFileManager defaultManager] moveItemAtPath: dstPath toPath: newDstPath error:nil] == NO)
 					{
 						[NSThread sleepForTimeInterval: 1];
