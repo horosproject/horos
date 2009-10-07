@@ -415,9 +415,6 @@ static const char *GetPrivateIP()
 				}
 			}
 			
-			if( [presets valueForKey: @"autoRetrieving"])
-				[[NSUserDefaults standardUserDefaults] setBool: [[presets valueForKey:@"autoRetrieving"] boolValue] forKey: @"autoRetrieving"];
-			
 			if( [presets valueForKey: @"autoRefreshQueryResults"])
 			   [[NSUserDefaults standardUserDefaults] setInteger: [[presets valueForKey:@"autoRefreshQueryResults"] intValue] forKey: @"autoRefreshQueryResults"];
 				
@@ -472,6 +469,15 @@ static const char *GetPrivateIP()
 				case 2:		[searchFieldAN selectText: self];				break;
 				case 3:		[searchFieldName selectText: self];				break;
 				case 4:		[searchFieldStudyDescription selectText: self];	break;
+			}
+			
+			if( [presets valueForKey: @"autoRetrieving"])
+			{
+				if( [[presets valueForKey:@"autoRetrieving"] boolValue] != [[NSUserDefaults standardUserDefaults] boolForKey: @"autoRetrieving"])
+				{
+					[[NSUserDefaults standardUserDefaults] setBool: [[presets valueForKey:@"autoRetrieving"] boolValue] forKey: @"autoRetrieving"];
+					[self switchAutoRetrieving: self];
+				}
 			}
 		}
 	}

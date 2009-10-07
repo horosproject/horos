@@ -7983,9 +7983,7 @@ END_CREATE_ROIS:
 									NSLog( @"*** Not enough memory - malloc failed");
 								
 								if( slope != 1.0)
-								{
 									vDSP_vsmul( fImage, 1, &slope, fImage, 1, height * width);
-								}
 								
 								free(oImage);
 								oImage = nil;
