@@ -95,8 +95,6 @@ static NSString*	VRPanelToolbarItemIdentifier			= @"MIP.tif";
 		[splitView setVertical: NO];
 	else
 		[splitView setVertical: YES];
-	
-	[super awakeFromNib];
 }
 
 -(id)initWithPixList:(NSMutableArray*)pix :(NSArray*)files :(NSData*)vData :(ViewerController*)vC :(ViewerController*)bC
