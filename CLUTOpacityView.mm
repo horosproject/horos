@@ -137,25 +137,28 @@
 	histogramSize = (int)((HUmax-HUmin)/2);
 	if(histogram) free(histogram);
 	histogram = (vImagePixelCount*) malloc(sizeof(vImagePixelCount) * (histogramSize + 10));
-	vImageHistogramCalculation_PlanarF(&buffer, histogram, histogramSize, HUmin, HUmax, kvImageDoNotTile);
-	
-	int i;
-	vImagePixelCount min = histogram[0], max = 0;
-	
-	for(i=0; i<histogramSize; i++)
+	if( histogram)
 	{
-		if(histogram[i]<min) min = histogram[i];
-		if(histogram[i]>max) max = histogram[i];
-	}
+		vImageHistogramCalculation_PlanarF(&buffer, histogram, histogramSize, HUmin, HUmax, kvImageDoNotTile);
+		
+		int i;
+		vImagePixelCount min = histogram[0], max = 0;
+		
+		for(i=0; i<histogramSize; i++)
+		{
+			if(histogram[i]<min) min = histogram[i];
+			if(histogram[i]>max) max = histogram[i];
+		}
 
-	float temp;
-	for(i=0; i<histogramSize; i++)
-	{
-		temp = ((float)(histogram[i] - min) / (float)max)*10000.0;
-		if (temp >= 1)
-			histogram[i] = (vImagePixelCount)(log(temp)*1000);
-		else
-			histogram[i] = (vImagePixelCount)temp;
+		float temp;
+		for(i=0; i<histogramSize; i++)
+		{
+			temp = ((float)(histogram[i] - min) / (float)max)*10000.0;
+			if (temp >= 1)
+				histogram[i] = (vImagePixelCount)(log(temp)*1000);
+			else
+				histogram[i] = (vImagePixelCount)temp;
+		}
 	}
 	[self simplifyHistogram];
 }
