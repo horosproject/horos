@@ -14491,6 +14491,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[name replaceOccurrencesOfString:@"<" withString:@"" options:0 range:NSMakeRange(0, [name length])];
 	[name replaceOccurrencesOfString:@">" withString:@"" options:0 range:NSMakeRange(0, [name length])];
 	[name replaceOccurrencesOfString:@"?" withString:@"" options:0 range:NSMakeRange(0, [name length])];
+	[name replaceOccurrencesOfString:@"#" withString:@"" options:0 range:NSMakeRange(0, [name length])];
 }
 
 - (void) importCommentsAndStatusFromDictionary:(NSDictionary*) d
