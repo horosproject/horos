@@ -19,8 +19,7 @@
 
 /** \brief Wrapper for NSPoint */
 
-@interface MyPoint : NSValue<NSCoding>
-{
+@interface MyPoint : NSObject<NSCoding> {
 	NSPoint pt;
 }
 
