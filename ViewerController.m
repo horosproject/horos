@@ -14675,6 +14675,9 @@ int i,j,l;
 		
 		/////// ****************
 		
+		[OSIWindowController setDontEnterMagneticFunctions: YES];
+		[OSIWindowController setDontEnterWindowDidChangeScreen: YES];
+		
 		int i;
 		for( i = from; i < to; i += interval)
 		{
@@ -14766,6 +14769,8 @@ int i,j,l;
 		[[self window] setFrame: rf display: YES];
 		[self setMatrixVisible: v];
 		
+		[OSIWindowController setDontEnterMagneticFunctions: NO];
+		[OSIWindowController setDontEnterWindowDidChangeScreen: NO];
 		/////// ****************
 		
 		// Go back to initial frame

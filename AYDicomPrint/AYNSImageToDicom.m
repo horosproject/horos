@@ -211,6 +211,9 @@
 	
 	/////// ****************
 	
+	[OSIWindowController setDontEnterMagneticFunctions: YES];
+	[OSIWindowController setDontEnterWindowDidChangeScreen: YES];
+	
 	for(NSNumber *imageIndex in fileList)
 	{
 		NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
@@ -254,6 +257,9 @@
 		
 		if( windowSizeChanged)
 			[[currentViewer window] setFrame: NSMakeRect( o.x, o.y, rf.size.width, rf.size.height) display: YES];
+		
+		[OSIWindowController setDontEnterMagneticFunctions: NO];
+		[OSIWindowController setDontEnterWindowDidChangeScreen: NO];
 		
 		[pool release];
 	}
