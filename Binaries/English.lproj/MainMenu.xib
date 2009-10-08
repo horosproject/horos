@@ -12,7 +12,7 @@
 		</object>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="1400"/>
+			<integer value="849"/>
 			<integer value="12366"/>
 			<integer value="966"/>
 		</object>
@@ -445,6 +445,15 @@
 									<int key="NSMnemonicLoc">2147483647</int>
 									<reference key="NSOnImage" ref="125626618"/>
 									<reference key="NSMixedImage" ref="973943092"/>
+								</object>
+								<object class="NSMenuItem" id="1026019421">
+									<reference key="NSMenu" ref="152609316"/>
+									<string key="NSTitle">Auto Query / Retrieve...</string>
+									<string key="NSKeyEquiv"/>
+									<int key="NSMnemonicLoc">2147483647</int>
+									<reference key="NSOnImage" ref="125626618"/>
+									<reference key="NSMixedImage" ref="973943092"/>
+									<int key="NSTag">1</int>
 								</object>
 								<object class="NSMenuItem" id="22194255">
 									<reference key="NSMenu" ref="152609316"/>
@@ -4101,7 +4110,7 @@
 												</object>
 											</object>
 											<string key="NSFrame">{{1, 17}, {1102, 299}}</string>
-											<string key="NSBounds">{{1096, 0}, {1102, 299}}</string>
+											<string key="NSBounds">{{4, 0}, {1102, 299}}</string>
 											<reference key="NSSuperview" ref="832526649"/>
 											<reference key="NSNextKeyView" ref="300364488"/>
 											<reference key="NSDocView" ref="300364488"/>
@@ -4126,7 +4135,7 @@
 											<int key="NSsFlags">1</int>
 											<reference key="NSTarget" ref="832526649"/>
 											<string key="NSAction">_doScroller:</string>
-											<double key="NSCurValue">0.9759572573463936</double>
+											<double key="NSCurValue">0.0035618878005342831</double>
 											<double key="NSPercent">0.49528089887640447</double>
 										</object>
 										<object class="NSClipView" id="903567248">
@@ -4137,7 +4146,7 @@
 												<reference ref="658526862"/>
 											</object>
 											<string key="NSFrame">{{1, 0}, {1102, 17}}</string>
-											<string key="NSBounds">{{1096, 0}, {1102, 17}}</string>
+											<string key="NSBounds">{{4, 0}, {1102, 17}}</string>
 											<reference key="NSSuperview" ref="832526649"/>
 											<reference key="NSNextKeyView" ref="658526862"/>
 											<reference key="NSDocView" ref="658526862"/>
@@ -12310,6 +12319,14 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					</object>
 					<int key="connectionID">13774</int>
 				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">queryDICOM:</string>
+						<reference key="source" ref="772029037"/>
+						<reference key="destination" ref="1026019421"/>
+					</object>
+					<int key="connectionID">13776</int>
+				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
 				<object class="NSArray" key="orderedObjects">
@@ -12638,6 +12655,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 							<reference ref="791901755"/>
 							<reference ref="13492439"/>
 							<reference ref="243396991"/>
+							<reference ref="1026019421"/>
 						</object>
 						<reference key="parent" ref="98589897"/>
 					</object>
@@ -17623,6 +17641,11 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						<reference key="object" ref="884241353"/>
 						<reference key="parent" ref="150963371"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">13775</int>
+						<reference key="object" ref="1026019421"/>
+						<reference key="parent" ref="152609316"/>
+					</object>
 				</object>
 			</object>
 			<object class="NSMutableDictionary" key="flattenedProperties">
@@ -18961,6 +18984,8 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<string>13761.ImportedFromIB2</string>
 					<string>13772.IBPluginDependency</string>
 					<string>13772.ImportedFromIB2</string>
+					<string>13775.IBPluginDependency</string>
+					<string>13775.ImportedFromIB2</string>
 					<string>1400.IBEditorWindowLastContentRect</string>
 					<string>1400.IBPluginDependency</string>
 					<string>1400.ImportedFromIB2</string>
@@ -20483,6 +20508,8 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<integer value="1"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<integer value="1"/>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<integer value="1"/>
 					<string>{{547, 153}, {422, 743}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<integer value="1"/>
@@ -20639,7 +20666,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<integer value="1"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<integer value="1"/>
-					<string>{{219, 353}, {388, 543}}</string>
+					<string>{{219, 333}, {385, 563}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<integer value="1"/>
 					<string>{{706, 407}, {337, 613}}</string>
@@ -20688,7 +20715,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">13774</int>
+			<int key="maxID">13776</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">

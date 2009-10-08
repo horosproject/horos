@@ -69,13 +69,19 @@
 	
 	NSArray									*studyArrayInstanceUID, *studyArrayCache;
 	NSTimeInterval							lastComputeStudyArrayInstanceUID, lastListRefresh;
+	
+	BOOL									autoQuery;
 }
 
+@property BOOL autoQuery;
+
 + (QueryController*) currentQueryController;
++ (QueryController*) currentAutoQueryController;
 + (BOOL) echo: (NSString*) address port:(int) port AET:(NSString*) aet;
 + (int) queryAndRetrieveAccessionNumber:(NSString*) an server: (NSDictionary*) aServer;
 + (NSArray*) queryStudyInstanceUID:(NSString*) an server: (NSDictionary*) aServer;
 
+- (id) initAutoQuery: (BOOL) autoQuery;
 - (IBAction) cancel:(id)sender;
 - (IBAction) ok:sender;
 - (void) refreshAutoQR: (id) sender;

@@ -15441,7 +15441,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	[self.window makeKeyAndOrderFront:sender];
 	
-    if( [QueryController currentQueryController] == nil) [[QueryController alloc] init];
+    if( [QueryController currentQueryController] == nil) [[QueryController alloc] initAutoQuery : NO];
 	else [[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"updateServers"];
 	
     [[QueryController currentQueryController] showWindow:self];
@@ -15463,7 +15463,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	}
 }
 
-- (void)queryDICOM: (id)sender
+- (void)queryDICOM: (id) sender
 {
 	if( DICOMDIRCDMODE)
 	{
@@ -15477,10 +15477,15 @@ static volatile int numberOfThreadsForJPEG = 0;
 	{
 		[self.window makeKeyAndOrderFront:sender];
 		
-		if(![QueryController currentQueryController]) [[QueryController alloc] init];
+		if( [sender tag] == 0 && [QueryController currentQueryController] == nil) [[QueryController alloc] initAutoQuery: NO];
+		else if( [sender tag] == 1 && [QueryController currentAutoQueryController] == nil) [[QueryController alloc] initAutoQuery: YES];
 		else [[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"updateServers"];
 		
-		[[QueryController currentQueryController] showWindow:self];
+		if( [sender tag] == 0)
+			[[QueryController currentQueryController] showWindow:self];
+			
+		if( [sender tag] == 1)
+			[[QueryController currentAutoQueryController] showWindow:self];
 	}
 }
 
@@ -16472,6 +16477,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[toolbarItem setImage: [NSImage imageNamed: QueryToolbarItemIdentifier]];
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(queryDICOM:)];
+		[toolbarItem setTag: 0];
     }
     else if ([itemIdent isEqualToString: SendToolbarItemIdentifier])
 	{

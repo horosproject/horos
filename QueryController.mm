@@ -38,7 +38,8 @@ static NSString *AccessionNumber = @"AccessionNumber";
 static NSString *StudyDescription = @"StudyDescription";
 static NSString *PatientBirthDate = @"PatientBirthDate";
 
-static QueryController	*currentQueryController = nil;
+static QueryController *currentQueryController = nil;
+static QueryController *currentAutoQueryController = nil;
 
 static const char *GetPrivateIP()
 {
@@ -55,6 +56,8 @@ static const char *GetPrivateIP()
 }
 
 @implementation QueryController
+
+@synthesize autoQuery;
 
 + (NSArray*) queryStudyInstanceUID:(NSString*) an server: (NSDictionary*) aServer
 {
@@ -151,6 +154,12 @@ static const char *GetPrivateIP()
 {
 	return currentQueryController;
 }
+
++ (QueryController*) currentAutoQueryController
+{
+	return currentAutoQueryController;
+}
+
 
 + (BOOL) echo: (NSString*) address port:(int) port AET:(NSString*) aet
 {
@@ -471,7 +480,7 @@ static const char *GetPrivateIP()
 				case 4:		[searchFieldStudyDescription selectText: self];	break;
 			}
 			
-			if( [presets valueForKey: @"autoRetrieving"])
+			if( [presets valueForKey: @"autoRetrieving"] && autoQuery == YES)
 			{
 				if( [[presets valueForKey:@"autoRetrieving"] boolValue] != [[NSUserDefaults standardUserDefaults] boolForKey: @"autoRetrieving"])
 				{
@@ -2356,7 +2365,7 @@ static const char *GetPrivateIP()
 	[previousItem release];
 }
 
--(id) init
+- (id) initAutoQuery: (BOOL) autoQR
 {
     if ( self = [super initWithWindowNibName:@"Query"])
 	{
@@ -2372,6 +2381,7 @@ static const char *GetPrivateIP()
 		currentQueryKey = nil;
 		echoSuccess = nil;
 		activeMoves = nil;
+		autoQuery = autoQR;
 		
 //		partiallyInDatabase = [[NSImage imageNamed:@"QRpartiallyInDatabase.tif"] retain];
 //		alreadyInDatabase = [[NSImage imageNamed:@"QRalreadyInDatabase.tif"] retain];
@@ -2389,12 +2399,21 @@ static const char *GetPrivateIP()
 		if( sourcesArray == nil) sourcesArray = [[NSMutableArray array] retain];
 		
 		[self refreshSources];
-				
+		
 		[[self window] setDelegate:self];
 		
 		[self setDateQuery: dateFilterMatrix];
 		
-		currentQueryController = self;
+		if( autoQuery == NO)
+		{
+			currentQueryController = self;
+			[[self window] setTitle: NSLocalizedString( @"DICOM Query/Retrieve", nil)];
+		}
+		else
+		{
+			currentAutoQueryController = self;
+			[[self window] setTitle: NSLocalizedString( @"DICOM Auto Query/Retrieve", nil)];
+		}
 	}
     
     return self;
