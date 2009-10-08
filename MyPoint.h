@@ -19,20 +19,20 @@
 
 /** \brief Wrapper for NSPoint */
 
-@interface MyPoint : NSObject  <NSCoding>
-{
+@interface MyPoint : NSValue<NSCoding> {
 	NSPoint pt;
 }
 
-+ (MyPoint*) point: (NSPoint) a;
+@property(assign) NSPoint point;
+@property(readonly) CGFloat x, y;
 
-- (id) initWithPoint:(NSPoint) a;
-- (void) setPoint:(NSPoint) a;
-- (float) y;
-- (float) x;
-- (NSPoint) point;
-- (BOOL) isEqualToPoint:(NSPoint) a;
-- (BOOL) isNearToPoint:(NSPoint) a :(float) scale :(float) ratio;
-- (void) move:(float) x :(float) y;
++(MyPoint*)point:(NSPoint)a;
+-(id)initWithPoint:(NSPoint)a;
+
+-(void)setPoint:(NSPoint)a;
+-(void)move:(float)x :(float)y;
+
+-(BOOL)isEqualToPoint:(NSPoint)a;
+-(BOOL)isNearToPoint:(NSPoint)a :(float)scale :(float)ratio;
 
 @end
