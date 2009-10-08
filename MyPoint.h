@@ -24,7 +24,7 @@
 }
 
 @property(assign) NSPoint point;
-@property(readonly) CGFloat x, y;
+@property(readonly) float x, y;
 
 +(MyPoint*)point:(NSPoint)a;
 -(id)initWithPoint:(NSPoint)a;
