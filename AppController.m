@@ -1923,6 +1923,16 @@ static NSDate *lastWarningDate = nil;
 	return [[BrowserController currentBrowser] checkBurner];
 }
 
+- (BOOL) applicationShouldHandleReopen:(NSApplication *)theApplication hasVisibleWindows:(BOOL)flag
+{
+	if( flag == NO)
+	{
+		[[[BrowserController currentBrowser] window] makeKeyAndOrderFront: self];
+	}
+	
+	return YES;
+}
+
 - (void) applicationWillTerminate: (NSNotification*) aNotification
 {
 	[webServer release];
