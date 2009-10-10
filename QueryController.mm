@@ -224,17 +224,22 @@ static const char *GetPrivateIP()
 //				[defaults setBool:YES forKey:alertSuppress];
 //			}
 //		}
+		int result = 0;
 		
-		[NSApp beginSheet:	autoRetrieveWindow
-			modalForWindow: self.window
-			modalDelegate: nil
-			didEndSelector: nil
-			contextInfo: nil];
-		
-		int result = [NSApp runModalForWindow: autoRetrieveWindow];
-		[autoRetrieveWindow orderOut: self];
-		
-		[NSApp endSheet: autoRetrieveWindow];
+		if( [self.window isVisible])
+		{
+			[NSApp beginSheet:	autoRetrieveWindow
+				modalForWindow: self.window
+				modalDelegate: nil
+				didEndSelector: nil
+				contextInfo: nil];
+			
+			result = [NSApp runModalForWindow: autoRetrieveWindow];
+			[autoRetrieveWindow orderOut: self];
+			
+			[NSApp endSheet: autoRetrieveWindow];
+		}
+		else result = NSRunStoppedResponse;
 		
 		if( result == NSRunStoppedResponse)
 		{
@@ -246,6 +251,57 @@ static const char *GetPrivateIP()
 		}
 		else [[NSUserDefaults standardUserDefaults] setBool:NO forKey: @"autoRetrieving"];
 	}
+}
+
+- (NSDictionary*) savePresetInDictionaryWithDICOMNodes: (BOOL) includeDICOMNodes
+{
+	NSMutableDictionary *presets = [NSMutableDictionary dictionary];
+	
+	if( includeDICOMNodes)
+	{
+		NSMutableArray *srcArray = [NSMutableArray array];
+		for( id src in sourcesArray)
+		{
+			if( [[src valueForKey: @"activated"] boolValue] == YES)
+				[srcArray addObject: [src valueForKey: @"AddressAndPort"]];
+		}
+		
+		if( [srcArray count] == 0 && [sourcesTable selectedRow] >= 0)
+			[srcArray addObject: [[sourcesArray objectAtIndex: [sourcesTable selectedRow]] valueForKey: @"AddressAndPort"]];
+		
+		[presets setValue: srcArray forKey: @"DICOMNodes"];
+	}
+	
+	[presets setValue: [searchFieldName stringValue] forKey: @"searchFieldName"];
+	[presets setValue: [searchFieldID stringValue] forKey: @"searchFieldID"];
+	[presets setValue: [searchFieldAN stringValue] forKey: @"searchFieldAN"];
+	[presets setValue: [searchFieldStudyDescription stringValue] forKey: @"searchFieldStudyDescription"];
+	
+	[presets setValue: [NSNumber numberWithInt: [dateFilterMatrix selectedTag]] forKey: @"dateFilterMatrix"];
+	
+	NSMutableString *cellsString = [NSMutableString string];
+	for( NSCell *cell in [modalityFilterMatrix cells])
+	{
+		if( [cell state] == NSOnState)
+		{
+			NSInteger row, col;
+			
+			[modalityFilterMatrix getRow: &row column: &col ofCell:cell];
+			[cellsString appendString: [NSString stringWithFormat:@"%d %d ", row, col]];
+		}
+	}
+	[presets setValue: cellsString forKey: @"modalityFilterMatrixString"];
+	
+	[presets setValue: [NSNumber numberWithInt: [PatientModeMatrix indexOfTabViewItem: [PatientModeMatrix selectedTabViewItem]]] forKey: @"PatientModeMatrix"];
+	
+	[presets setValue: [NSNumber numberWithDouble: [[fromDate dateValue] timeIntervalSinceReferenceDate]] forKey: @"fromDate"];
+	[presets setValue: [NSNumber numberWithDouble: [[toDate dateValue] timeIntervalSinceReferenceDate]] forKey: @"toDate"];
+	[presets setValue: [NSNumber numberWithDouble: [[searchBirth dateValue] timeIntervalSinceReferenceDate]] forKey: @"searchBirth"];
+	
+	[presets setValue: [NSNumber numberWithBool: [[NSUserDefaults standardUserDefaults] boolForKey: @"autoRetrieving"]] forKey: @"autoRetrieving"];
+	[presets setValue: [NSNumber numberWithInt: [[NSUserDefaults standardUserDefaults] integerForKey: @"autoRefreshQueryResults"]] forKey: @"autoRefreshQueryResults"];
+	
+	return presets;
 }
 
 - (IBAction) endAddPreset:(id) sender
@@ -262,60 +318,17 @@ static const char *GetPrivateIP()
 		
 		if( savedPresets == nil) savedPresets = [NSDictionary dictionary];
 		
-		NSMutableDictionary *presets = [NSMutableDictionary dictionary];
-		
 		NSString *psName = [presetName stringValue];
 		
 		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"includeDICOMNodes"])
-		{
-			NSMutableArray *srcArray = [NSMutableArray array];
-			for( id src in sourcesArray)
-			{
-				if( [[src valueForKey: @"activated"] boolValue] == YES)
-					[srcArray addObject: [src valueForKey: @"AddressAndPort"]];
-			}
-			
-			if( [srcArray count] == 0 && [sourcesTable selectedRow] >= 0)
-				[srcArray addObject: [[sourcesArray objectAtIndex: [sourcesTable selectedRow]] valueForKey: @"AddressAndPort"]];
-			
-			[presets setValue: srcArray forKey: @"DICOMNodes"];
-			
 			psName = [psName stringByAppendingString: NSLocalizedString( @" & DICOM Nodes", nil)];
-		}
 		
 		if( [savedPresets objectForKey: psName])
 		{
 			if (NSRunCriticalAlertPanel( NSLocalizedString(@"Add Preset", nil),  NSLocalizedString(@"A Preset with the same name already exists. Should I replace it with the current one?", nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), nil) != NSAlertDefaultReturn) return;
 		}
 		
-		[presets setValue: [searchFieldName stringValue] forKey: @"searchFieldName"];
-		[presets setValue: [searchFieldID stringValue] forKey: @"searchFieldID"];
-		[presets setValue: [searchFieldAN stringValue] forKey: @"searchFieldAN"];
-		[presets setValue: [searchFieldStudyDescription stringValue] forKey: @"searchFieldStudyDescription"];
-		
-		[presets setValue: [NSNumber numberWithInt: [dateFilterMatrix selectedTag]] forKey: @"dateFilterMatrix"];
-		
-		NSMutableString *cellsString = [NSMutableString string];
-		for( NSCell *cell in [modalityFilterMatrix cells])
-		{
-			if( [cell state] == NSOnState)
-			{
-				NSInteger row, col;
-				
-				[modalityFilterMatrix getRow: &row column: &col ofCell:cell];
-				[cellsString appendString: [NSString stringWithFormat:@"%d %d ", row, col]];
-			}
-		}
-		[presets setValue: cellsString forKey: @"modalityFilterMatrixString"];
-		
-		[presets setValue: [NSNumber numberWithInt: [PatientModeMatrix indexOfTabViewItem: [PatientModeMatrix selectedTabViewItem]]] forKey: @"PatientModeMatrix"];
-		
-		[presets setValue: [NSNumber numberWithDouble: [[fromDate dateValue] timeIntervalSinceReferenceDate]] forKey: @"fromDate"];
-		[presets setValue: [NSNumber numberWithDouble: [[toDate dateValue] timeIntervalSinceReferenceDate]] forKey: @"toDate"];
-		[presets setValue: [NSNumber numberWithDouble: [[searchBirth dateValue] timeIntervalSinceReferenceDate]] forKey: @"searchBirth"];
-		
-		[presets setValue: [NSNumber numberWithBool: [[NSUserDefaults standardUserDefaults] boolForKey: @"autoRetrieving"]] forKey: @"autoRetrieving"];
-		[presets setValue: [NSNumber numberWithInt: [[NSUserDefaults standardUserDefaults] integerForKey: @"autoRefreshQueryResults"]] forKey: @"autoRefreshQueryResults"];
+		NSDictionary *presets = [self savePresetInDictionaryWithDICOMNodes: [[NSUserDefaults standardUserDefaults] boolForKey: @"includeDICOMNodes"]];
 		
 		NSMutableDictionary *m = [NSMutableDictionary dictionaryWithDictionary: savedPresets];
 		[m setValue: presets forKey: psName];
@@ -324,7 +337,7 @@ static const char *GetPrivateIP()
 		
 		[self buildPresetsMenu];
 	}
-
+	
 	[presetWindow orderOut:sender];
     [NSApp endSheet:presetWindow returnCode:[sender tag]];
 }
@@ -346,6 +359,127 @@ static const char *GetPrivateIP()
 	[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"autoRetrieving"];
 	
 	[searchFieldName selectText: self];
+}
+
+- (void) applyPresetDictionary: (NSDictionary *) presets
+{
+	if( [presets valueForKey: @"DICOMNodes"])
+	{
+		NSArray *r = [presets valueForKey: @"DICOMNodes"];
+		
+		if( [r count])
+		{
+			[self willChangeValueForKey:@"sourcesArray"];
+			
+			for( id src in sourcesArray)
+			{
+				[src setValue: [NSNumber numberWithBool: NO] forKey: @"activated"];
+			}
+			
+			if( [r count] == 1)
+			{
+				for( id src in sourcesArray)
+				{
+					if( [[src valueForKey: @"AddressAndPort"] isEqualToString: [r lastObject]])
+					{
+						[sourcesTable selectRowIndexes: [NSIndexSet indexSetWithIndex: [sourcesArray indexOfObject: src]] byExtendingSelection: NO];
+						[sourcesTable scrollRowToVisible: [sourcesArray indexOfObject: src]];
+					}
+				}
+			}
+			else
+			{
+				BOOL first = YES;
+				
+				for( id v in r)
+				{
+					for( id src in sourcesArray)
+					{
+						if( [[src valueForKey: @"AddressAndPort"] isEqualToString: v])
+						{
+							[src setValue: [NSNumber numberWithBool: YES] forKey: @"activated"];
+							
+							if( first)
+							{
+								first = NO;
+								[sourcesTable selectRowIndexes: [NSIndexSet indexSetWithIndex: [sourcesArray indexOfObject: src]] byExtendingSelection: NO];
+								[sourcesTable scrollRowToVisible: [sourcesArray indexOfObject: src]];
+							}
+						}
+					}
+				}
+			}
+			
+			[self didChangeValueForKey:@"sourcesArray"];
+		}
+	}
+	
+	if( [presets valueForKey: @"autoRefreshQueryResults"])
+	   [[NSUserDefaults standardUserDefaults] setInteger: [[presets valueForKey:@"autoRefreshQueryResults"] intValue] forKey: @"autoRefreshQueryResults"];
+		
+	if( [presets valueForKey: @"searchFieldName"])
+		[searchFieldName setStringValue: [presets valueForKey: @"searchFieldName"]];
+	
+	if( [presets valueForKey: @"searchFieldID"])
+		[searchFieldID setStringValue: [presets valueForKey: @"searchFieldID"]];
+	
+	if( [presets valueForKey: @"searchFieldAN"])
+		[searchFieldAN setStringValue: [presets valueForKey: @"searchFieldAN"]];
+	
+	if( [presets valueForKey: @"searchFieldStudyDescription"])
+		[searchFieldStudyDescription setStringValue: [presets valueForKey: @"searchFieldStudyDescription"]];
+	
+	[dateFilterMatrix selectCellWithTag: [[presets valueForKey: @"dateFilterMatrix"] intValue]];
+	
+	[modalityFilterMatrix deselectAllCells];
+	
+	if( [presets valueForKey: @"modalityFilterMatrixRow"] && [presets valueForKey: @"modalityFilterMatrixColumn"])
+		[modalityFilterMatrix selectCellAtRow: [[presets valueForKey: @"modalityFilterMatrixRow"] intValue]  column:[[presets valueForKey: @"modalityFilterMatrixColumn"] intValue]];
+	else
+	{
+		NSString *s = [presets valueForKey: @"modalityFilterMatrixString"];
+		
+		NSScanner *scan = [NSScanner scannerWithString: s];
+		
+		BOOL more;
+		do
+		{
+			NSInteger row, col;
+			
+			more = [scan scanInteger: &row];
+			more = [scan scanInteger: &col];
+			
+			if( more)
+				[modalityFilterMatrix selectCellAtRow: row column: col];
+			
+		}
+		while( more);
+	}
+	
+	[PatientModeMatrix selectTabViewItemAtIndex: [[presets valueForKey: @"PatientModeMatrix"] intValue]];
+	
+	[fromDate setDateValue: [NSDate dateWithTimeIntervalSinceReferenceDate: [[presets valueForKey: @"fromDate"] doubleValue]]];
+	[toDate setDateValue: [NSDate dateWithTimeIntervalSinceReferenceDate: [[presets valueForKey: @"toDate"] doubleValue]]];
+	[searchBirth setDateValue: [NSDate dateWithTimeIntervalSinceReferenceDate: [[presets valueForKey: @"searchBirth"] doubleValue]]];
+	
+	switch( [PatientModeMatrix indexOfTabViewItem: [PatientModeMatrix selectedTabViewItem]])
+	{
+		case 0:		[searchFieldName selectText: self];				break;
+		case 1:		[searchFieldID selectText: self];				break;
+		case 2:		[searchFieldAN selectText: self];				break;
+		case 3:		[searchFieldName selectText: self];				break;
+		case 4:		[searchFieldStudyDescription selectText: self];	break;
+	}
+	
+	if( [presets valueForKey: @"autoRetrieving"] && autoQuery == YES)
+	{
+		if( [[presets valueForKey:@"autoRetrieving"] boolValue] != [[NSUserDefaults standardUserDefaults] boolForKey: @"autoRetrieving"])
+		{
+			[[NSUserDefaults standardUserDefaults] setBool: [[presets valueForKey:@"autoRetrieving"] boolValue] forKey: @"autoRetrieving"];
+			[self switchAutoRetrieving: self];
+		}
+	}
+
 }
 
 - (void) applyPreset:(id) sender
@@ -373,121 +507,7 @@ static const char *GetPrivateIP()
 		{
 			NSDictionary *presets = [savedPresets objectForKey: [sender title]];
 			
-			if( [presets valueForKey: @"DICOMNodes"])
-			{
-				NSArray *r = [presets valueForKey: @"DICOMNodes"];
-				
-				if( [r count])
-				{
-					[self willChangeValueForKey:@"sourcesArray"];
-					
-					for( id src in sourcesArray)
-					{
-						[src setValue: [NSNumber numberWithBool: NO] forKey: @"activated"];
-					}
-					
-					if( [r count] == 1)
-					{
-						for( id src in sourcesArray)
-						{
-							if( [[src valueForKey: @"AddressAndPort"] isEqualToString: [r lastObject]])
-							{
-								[sourcesTable selectRowIndexes: [NSIndexSet indexSetWithIndex: [sourcesArray indexOfObject: src]] byExtendingSelection: NO];
-								[sourcesTable scrollRowToVisible: [sourcesArray indexOfObject: src]];
-							}
-						}
-					}
-					else
-					{
-						BOOL first = YES;
-						
-						for( id v in r)
-						{
-							for( id src in sourcesArray)
-							{
-								if( [[src valueForKey: @"AddressAndPort"] isEqualToString: v])
-								{
-									[src setValue: [NSNumber numberWithBool: YES] forKey: @"activated"];
-									
-									if( first)
-									{
-										first = NO;
-										[sourcesTable selectRowIndexes: [NSIndexSet indexSetWithIndex: [sourcesArray indexOfObject: src]] byExtendingSelection: NO];
-										[sourcesTable scrollRowToVisible: [sourcesArray indexOfObject: src]];
-									}
-								}
-							}
-						}
-					}
-					
-					[self didChangeValueForKey:@"sourcesArray"];
-				}
-			}
-			
-			if( [presets valueForKey: @"autoRefreshQueryResults"])
-			   [[NSUserDefaults standardUserDefaults] setInteger: [[presets valueForKey:@"autoRefreshQueryResults"] intValue] forKey: @"autoRefreshQueryResults"];
-				
-			if( [presets valueForKey: @"searchFieldName"])
-				[searchFieldName setStringValue: [presets valueForKey: @"searchFieldName"]];
-			
-			if( [presets valueForKey: @"searchFieldID"])
-				[searchFieldID setStringValue: [presets valueForKey: @"searchFieldID"]];
-			
-			if( [presets valueForKey: @"searchFieldAN"])
-				[searchFieldAN setStringValue: [presets valueForKey: @"searchFieldAN"]];
-			
-			if( [presets valueForKey: @"searchFieldStudyDescription"])
-				[searchFieldStudyDescription setStringValue: [presets valueForKey: @"searchFieldStudyDescription"]];
-			
-			[dateFilterMatrix selectCellWithTag: [[presets valueForKey: @"dateFilterMatrix"] intValue]];
-			
-			[modalityFilterMatrix deselectAllCells];
-			
-			if( [presets valueForKey: @"modalityFilterMatrixRow"] && [presets valueForKey: @"modalityFilterMatrixColumn"])
-				[modalityFilterMatrix selectCellAtRow: [[presets valueForKey: @"modalityFilterMatrixRow"] intValue]  column:[[presets valueForKey: @"modalityFilterMatrixColumn"] intValue]];
-			else
-			{
-				NSString *s = [presets valueForKey: @"modalityFilterMatrixString"];
-				
-				NSScanner *scan = [NSScanner scannerWithString: s];
-				
-				BOOL more;
-				do
-				{
-					NSInteger row, col;
-					
-					more = [scan scanInteger: &row];
-					more = [scan scanInteger: &col];
-					
-					if( more)
-						[modalityFilterMatrix selectCellAtRow: row column: col];
-					
-				}while( more);
-			}
-			
-			[PatientModeMatrix selectTabViewItemAtIndex: [[presets valueForKey: @"PatientModeMatrix"] intValue]];
-			
-			[fromDate setDateValue: [NSDate dateWithTimeIntervalSinceReferenceDate: [[presets valueForKey: @"fromDate"] doubleValue]]];
-			[toDate setDateValue: [NSDate dateWithTimeIntervalSinceReferenceDate: [[presets valueForKey: @"toDate"] doubleValue]]];
-			[searchBirth setDateValue: [NSDate dateWithTimeIntervalSinceReferenceDate: [[presets valueForKey: @"searchBirth"] doubleValue]]];
-			
-			switch( [PatientModeMatrix indexOfTabViewItem: [PatientModeMatrix selectedTabViewItem]])
-			{
-				case 0:		[searchFieldName selectText: self];				break;
-				case 1:		[searchFieldID selectText: self];				break;
-				case 2:		[searchFieldAN selectText: self];				break;
-				case 3:		[searchFieldName selectText: self];				break;
-				case 4:		[searchFieldStudyDescription selectText: self];	break;
-			}
-			
-			if( [presets valueForKey: @"autoRetrieving"] && autoQuery == YES)
-			{
-				if( [[presets valueForKey:@"autoRetrieving"] boolValue] != [[NSUserDefaults standardUserDefaults] boolForKey: @"autoRetrieving"])
-				{
-					[[NSUserDefaults standardUserDefaults] setBool: [[presets valueForKey:@"autoRetrieving"] boolValue] forKey: @"autoRetrieving"];
-					[self switchAutoRetrieving: self];
-				}
-			}
+			[self applyPresetDictionary: presets];
 		}
 	}
 }
@@ -1483,8 +1503,6 @@ static const char *GetPrivateIP()
 	[resultArray sortUsingDescriptors: [self sortArray]];
 	[self refresh: self now: YES];
 	[pool release];
-	
-	queryPerformed = YES;
 }
 
 - (NSString*) stringIDForStudy:(id) item
@@ -1647,28 +1665,27 @@ static const char *GetPrivateIP()
 
 - (void) autoQueryTimerFunction:(NSTimer*) t
 {
-	if( queryPerformed)
+	if( DatabaseIsEdited == NO)
 	{
-		if( DatabaseIsEdited == NO)
+		if( --autoQueryRemainingSecs <= 0)
 		{
-			if( --autoQueryRemainingSecs <= 0)
+			if( [autoQueryLock tryLock])
 			{
-				if( [autoQueryLock tryLock])
-				{
-					[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Q&R Auto-Query", nil) description: NSLocalizedString( @"Refreshing...", nil) name: @"newfiles"];
-					
-					[NSThread detachNewThreadSelector: @selector( autoQueryThread) toTarget: self withObject: nil];
-					
-					autoQueryRemainingSecs = 60*[[NSUserDefaults standardUserDefaults] integerForKey: @"autoRefreshQueryResults"]; 
-					
-					[autoQueryLock unlock];
-				}
-				else autoQueryRemainingSecs = 0;
+				[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Q&R Auto-Query", nil) description: NSLocalizedString( @"Refreshing...", nil) name: @"newfiles"];
+				
+				[NSThread detachNewThreadSelector: @selector( autoQueryThread) toTarget: self withObject: nil];
+				
+				autoQueryRemainingSecs = 60*[[NSUserDefaults standardUserDefaults] integerForKey: @"autoRefreshQueryResults"]; 
+				
+				[autoQueryLock unlock];
 			}
+			else autoQueryRemainingSecs = 0;
 		}
-		
-		[autoQueryCounter setStringValue: [NSString stringWithFormat: @"%2.2d:%2.2d", (int) (autoQueryRemainingSecs/60), (int) (autoQueryRemainingSecs%60)]];
 	}
+	
+	[autoQueryCounter setStringValue: [NSString stringWithFormat: @"%2.2d:%2.2d", (int) (autoQueryRemainingSecs/60), (int) (autoQueryRemainingSecs%60)]];
+	
+	[self saveSettings];
 }
 
 - (IBAction) autoQueryTimer:(id) sender
@@ -2413,6 +2430,9 @@ static const char *GetPrivateIP()
 		{
 			currentAutoQueryController = self;
 			[[self window] setTitle: NSLocalizedString( @"DICOM Auto Query/Retrieve", nil)];
+			
+			NSDictionary *d = [[NSUserDefaults standardUserDefaults] objectForKey: @"savedAutoDICOMQuerySettings"];
+			[self applyPresetDictionary: d];
 		}
 	}
     
@@ -2535,12 +2555,23 @@ static const char *GetPrivateIP()
 	
 	[fromDate setDateValue: [NSCalendarDate dateWithYear:[[NSCalendarDate date] yearOfCommonEra] month:[[NSCalendarDate date] monthOfYear] day:[[NSCalendarDate date] dayOfMonth] hour:0 minute:0 second:0 timeZone: nil]];
 	[toDate setDateValue: [NSCalendarDate dateWithYear:[[NSCalendarDate date] yearOfCommonEra] month:[[NSCalendarDate date] monthOfYear] day:[[NSCalendarDate date] dayOfMonth] hour:0 minute:0 second:0 timeZone: nil]];
+}
+
+- (void) saveSettings
+{
+	NSDictionary *settings = [self savePresetInDictionaryWithDICOMNodes: YES];
 	
+	if( autoQuery)
+		[[NSUserDefaults standardUserDefaults] setObject: settings forKey: @"savedAutoDICOMQuerySettings"];
+	else
+		[[NSUserDefaults standardUserDefaults] setObject: settings forKey: @"savedDICOMQuerySettings"];
 }
 
 - (void)windowWillClose:(NSNotification *)notification
 {
-	[[NSUserDefaults standardUserDefaults] setObject:sourcesArray forKey: @"SavedQueryArray"];
+	[[NSUserDefaults standardUserDefaults] setObject: sourcesArray forKey: @"SavedQueryArray"];
+	
+	[self saveSettings];
 	
 	[[self window] orderOut: self];
 }
@@ -2567,12 +2598,12 @@ static const char *GetPrivateIP()
 	return status;
 }
 
-- (void)updateServers:(NSNotification *)note
+- (void) updateServers:(NSNotification *)note
 {
 	[self refreshSources];
 }
 
-- (IBAction)verify:(id)sender
+- (IBAction) verify:(id)sender
 {
 	int				status, selectedRow = [sourcesTable selectedRow];
 	

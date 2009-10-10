@@ -57,7 +57,7 @@
 	
 	QueryFilter								*dateQueryFilter, *timeQueryFilter, *modalityQueryFilter;
 	NSString								*currentQueryKey;
-	BOOL									echoSuccess, queryPerformed;
+	BOOL									echoSuccess;
 	NSMutableDictionary						*activeMoves;
 	int										checkAndViewTry;
 	

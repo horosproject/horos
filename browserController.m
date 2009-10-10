@@ -12431,6 +12431,11 @@ static NSArray*	openSubSeriesArray = nil;
 	
 	[sourcesSplitView restoreDefault:@"SPLITSOURCE"];
 	
+	if( [[NSUserDefaults standardUserDefaults] objectForKey: @"savedAutoDICOMQuerySettings"])
+	{
+		[[QueryController alloc] initAutoQuery: YES];
+	}
+	
 //	NSFetchRequest	*dbRequest = [[[NSFetchRequest alloc] init] autorelease];
 //	[dbRequest setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"LogEntry"]];
 //	[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
