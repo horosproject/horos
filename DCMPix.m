@@ -5116,8 +5116,27 @@ END_CREATE_ROIS:
 	if( [dcmObject attributeValueWithName:@"Columns"])
 	{
 		width =  [[dcmObject attributeValueWithName:@"Columns"] intValue];
+	}
+	
+	if( imageObj)
+	{
+		int savedHeight = [[imageObj valueForKey:@"height"] intValue];
+		if( savedHeight != 0 && savedHeight != height)
+		{
+			NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height");
+			[imageObj setValue: [NSNumber numberWithInt: height] forKey: @"height"];
+			if( height > savedHeight)
+				height = savedHeight;
+		}
 		
-		
+		int savedWidth = [[imageObj valueForKey:@"width"] intValue];
+		if( savedWidth != 0 && savedWidth != width)
+		{
+			NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width");
+			[imageObj setValue: [NSNumber numberWithInt: width] forKey: @"width"];
+			if( width > savedWidth)
+				width = savedWidth;
+		}
 	}
 	
 	if( shutterRect_w == 0) shutterRect_w = width;
@@ -6402,14 +6421,37 @@ END_CREATE_ROIS:
 	// ROWS
 	val = Papy3GetElement (theGroupP, papRowsGr, &nbVal, &elemType);
 	if ( val )
+	{
 		height = (int) (*val).us;
+		if( imageObj)
+		{
+			int savedHeight = [[imageObj valueForKey:@"height"] intValue];
+			if( savedHeight != 0 && savedHeight != height)
+			{
+				NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height");
+				[imageObj setValue: [NSNumber numberWithInt: height] forKey: @"height"];
+				if( height > savedHeight)
+					height = savedHeight;
+			}
+		}
+	}
 	
 	// COLUMNS
 	val = Papy3GetElement (theGroupP, papColumnsGr, &nbVal, &elemType);
 	if ( val )
 	{
 		width = (int) (*val).us;
-		
+		if( imageObj)
+		{
+			int savedWidth = [[imageObj valueForKey:@"width"] intValue];
+			if( savedWidth != 0 && savedWidth != width)
+			{
+				NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width");
+				[imageObj setValue: [NSNumber numberWithInt: width] forKey: @"width"];
+				if( width > savedWidth)
+					width = savedWidth;
+			}
+		}
 	}
 	
 	if( shutterRect_w == 0) shutterRect_w = width;
@@ -8153,7 +8195,27 @@ END_CREATE_ROIS:
 	height = [TIFFRep pixelsHigh];
 	width = [TIFFRep pixelsWide];
 	
-	
+	if( imageObj)
+	{
+		int savedHeight = [[imageObj valueForKey:@"height"] intValue];
+		if( savedHeight != 0 && savedHeight != height)
+		{
+			NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height");
+			[imageObj setValue: [NSNumber numberWithInt: height] forKey: @"height"];
+			if( height > savedHeight)
+				height = savedHeight;
+		}
+		
+		int savedWidth = [[imageObj valueForKey:@"width"] intValue];
+		if( savedWidth != 0 && savedWidth != width)
+		{
+			NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width");
+			[imageObj setValue: [NSNumber numberWithInt: width] forKey: @"width"];
+			if( width > savedWidth)
+				width = savedWidth;
+		}
+	}
+
 	unsigned char *srcImage = [TIFFRep bitmapData];
 	unsigned char *argbImage = nil, *srcPtr = nil, *tmpPtr = nil;
 	
