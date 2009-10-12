@@ -13420,7 +13420,10 @@ static volatile int numberOfThreadsForJPEG = 0;
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
-	BOOL windowVisible = [[waitCompressionWindow window] isVisible];
+	BOOL windowVisible = NO;
+	
+	if([[waitCompressionWindow window] isVisible] == YES || [[waitCompressionWindow window] isMiniaturized] == YES)
+	   windowVisible = YES;
 	
 	[self decompressDICOMList: array to: nil];
 	
@@ -13458,7 +13461,10 @@ static volatile int numberOfThreadsForJPEG = 0;
 {
 	NSAutoreleasePool		*pool = [[NSAutoreleasePool alloc] init];
 	
-	BOOL windowVisible = [[waitCompressionWindow window] isVisible];
+	BOOL windowVisible = NO;
+	
+	if( [[waitCompressionWindow window] isVisible] == YES || [[waitCompressionWindow window] isMiniaturized] == YES)
+		windowVisible = YES;
 	
 	[self compressDICOMWithJPEG: array];
 	
@@ -13571,7 +13577,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (void) decompressWaitIncrementation: (NSNumber*) n
 {
-	if( [[waitCompressionWindow window] isVisible] == YES && waitCompressionAbort == NO)
+	if( ([[waitCompressionWindow window] isVisible] == YES || [[waitCompressionWindow window] isMiniaturized] == YES) && waitCompressionAbort == NO)
 	{
 		[waitCompressionWindow incrementBy: [n intValue]];
 		
@@ -13628,7 +13634,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	int chunk = [array count] / MPProcessors();
 	if( chunk < 15) chunk = 15;
 	
-	if( [[waitCompressionWindow window] isVisible])
+	if( ([[waitCompressionWindow window] isVisible] == YES || [[waitCompressionWindow window] isMiniaturized] == YES))
 	{
 		if( chunk > 20) chunk = 20;
 	}

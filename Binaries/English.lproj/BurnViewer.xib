@@ -421,7 +421,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<object class="NSButton" id="150537468">
 							<reference key="NSNextResponder" ref="206647154"/>
 							<int key="NSvFlags">256</int>
-							<string key="NSFrame">{{114, 64}, {366, 18}}</string>
+							<string key="NSFrame">{{114, 44}, {366, 18}}</string>
 							<reference key="NSSuperview" ref="206647154"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="838545431">
@@ -443,7 +443,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<object class="NSButton" id="71935462">
 							<reference key="NSNextResponder" ref="206647154"/>
 							<int key="NSvFlags">256</int>
-							<string key="NSFrame">{{114, 44}, {366, 18}}</string>
+							<string key="NSFrame">{{114, 64}, {366, 18}}</string>
 							<reference key="NSSuperview" ref="206647154"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="444345951">
@@ -515,8 +515,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 			<object class="NSUserDefaultsController" id="329076172">
 				<object class="NSMutableArray" key="NSDeclaredKeys">
 					<bool key="EncodedWithXMLCoder">YES</bool>
-					<string>BurnOsirixApplication</string>
-					<string>BurnSupplementaryFolder</string>
+					<string>anonymizedBeforeBurning</string>
 				</object>
 				<bool key="NSSharedInstance">YES</bool>
 			</object>
@@ -748,6 +747,38 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					</object>
 					<int key="connectionID">82</int>
 				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">hidden: values.anonymizedBeforeBurning</string>
+						<reference key="source" ref="150537468"/>
+						<reference key="destination" ref="329076172"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="150537468"/>
+							<reference key="NSDestination" ref="329076172"/>
+							<string key="NSLabel">hidden: values.anonymizedBeforeBurning</string>
+							<string key="NSBinding">hidden</string>
+							<string key="NSKeyPath">values.anonymizedBeforeBurning</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">87</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">hidden: values.anonymizedBeforeBurning</string>
+						<reference key="source" ref="1017478722"/>
+						<reference key="destination" ref="329076172"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="1017478722"/>
+							<reference key="NSDestination" ref="329076172"/>
+							<string key="NSLabel">hidden: values.anonymizedBeforeBurning</string>
+							<string key="NSBinding">hidden</string>
+							<string key="NSKeyPath">values.anonymizedBeforeBurning</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">89</int>
+				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
 				<object class="NSArray" key="orderedObjects">
@@ -796,11 +827,11 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<reference ref="744693312"/>
 							<reference ref="13509583"/>
 							<reference ref="251360819"/>
-							<reference ref="150537468"/>
 							<reference ref="71935462"/>
 							<reference ref="869202051"/>
 							<reference ref="1017478722"/>
 							<reference ref="561634971"/>
+							<reference ref="150537468"/>
 						</object>
 						<reference key="parent" ref="278581616"/>
 					</object>
@@ -1221,7 +1252,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">82</int>
+			<int key="maxID">89</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">

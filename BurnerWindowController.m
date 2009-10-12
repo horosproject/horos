@@ -891,7 +891,7 @@ NSString* asciiString (NSString* name);
 			}
 		}
 		
-		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"copyReportsToCD"])
+		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"copyReportsToCD"] == YES && [[NSUserDefaults standardUserDefaults] boolForKey:@"anonymizedBeforeBurning"] == NO)
 		{
 			NSMutableArray *studies = [NSMutableArray array];
 			

@@ -2084,6 +2084,7 @@ static BOOL initialized = NO;
 			{
 				NSRunCriticalAlertPanel(NSLocalizedString(@"Outdated Version", nil), NSLocalizedString(@"Please update your application. Available on the web site.", nil), NSLocalizedString(@"OK", nil), nil, nil);
 				[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"Outdated"];
+				[[NSUserDefaults standardUserDefaults] synchronize];
 				exit( 0);
 			}
 			#endif

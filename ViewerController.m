@@ -16863,20 +16863,24 @@ int i,j,l;
 				long numberOfValues;
 				
 				float *tempPtr = [curPix getROIValue: &numberOfValues :curROI :nil];
-				
-				float *newPtr = malloc( (memSize + numberOfValues)*sizeof( float));
-				
-				if( totalPtr)
-					memcpy( newPtr, totalPtr, memSize * sizeof(float));
-				
-				free( totalPtr);
-				totalPtr = newPtr;
-				
-				memcpy( newPtr + memSize, tempPtr, numberOfValues * sizeof(float));
-				
-				memSize += numberOfValues;
-				
-				free( tempPtr);
+				if( tempPtr)
+				{
+					float *newPtr = malloc( (memSize + numberOfValues)*sizeof( float));
+					if( newPtr)
+					{
+						if( totalPtr)
+							memcpy( newPtr, totalPtr, memSize * sizeof(float));
+						
+						free( totalPtr);
+						totalPtr = newPtr;
+						
+						memcpy( newPtr + memSize, tempPtr, numberOfValues * sizeof(float));
+						
+						memSize += numberOfValues;
+					}
+					
+					free( tempPtr);
+				}
 			}
 			
 			gtotal = 0;
