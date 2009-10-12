@@ -12431,7 +12431,7 @@ static NSArray*	openSubSeriesArray = nil;
 	
 	[sourcesSplitView restoreDefault:@"SPLITSOURCE"];
 	
-	if( [[NSUserDefaults standardUserDefaults] objectForKey: @"savedAutoDICOMQuerySettings"])
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"restartAutoQueryAndRetrieve"] == YES && [[NSUserDefaults standardUserDefaults] objectForKey: @"savedAutoDICOMQuerySettings"] != nil)
 	{
 		[[QueryController alloc] initAutoQuery: YES];
 	}

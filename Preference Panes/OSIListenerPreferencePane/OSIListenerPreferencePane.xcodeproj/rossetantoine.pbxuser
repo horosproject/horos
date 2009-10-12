@@ -72,15 +72,12 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 249483730;
-			PBXWorkspaceStateSaveDate = 249483730;
+			PBXPerProjectTemplateStateSaveDate = 277021067;
+			PBXWorkspaceStateSaveDate = 277021067;
 		};
 		perUserProjectItems = {
 			AB52E74B0A19FC0F00726305 /* PBXTextBookmark */ = AB52E74B0A19FC0F00726305 /* PBXTextBookmark */;
-			AB52E74E0A19FC0F00726305 /* PBXTextBookmark */ = AB52E74E0A19FC0F00726305 /* PBXTextBookmark */;
-			AB7925FD09FCBE46006E342C /* PBXTextBookmark */ = AB7925FD09FCBE46006E342C /* PBXTextBookmark */;
 			AB80AB470A19CF1800FED357 /* PBXTextBookmark */ = AB80AB470A19CF1800FED357 /* PBXTextBookmark */;
-			AB80AB4C0A19CF1800FED357 /* PBXTextBookmark */ = AB80AB4C0A19CF1800FED357 /* PBXTextBookmark */;
 			ABF8345B0AC7CD680035413E /* PBXTextBookmark */ = ABF8345B0AC7CD680035413E /* PBXTextBookmark */;
 		};
 		sourceControlManager = AB34B6EA09AA0E9A0057FE0E /* Source Control */;
@@ -95,6 +92,9 @@
 		fallbackIsa = XCSourceControlManager;
 		isSCMEnabled = 0;
 		scmConfiguration = {
+			repositoryNamesForRoots = {
+				"" = "";
+			};
 		};
 		scmType = "";
 	};
@@ -113,6 +113,9 @@
 		configStateDict = {
 		};
 		customDataFormattersEnabled = 1;
+		dataTipCustomDataFormattersEnabled = 1;
+		dataTipShowTypeColumn = 1;
+		dataTipSortType = 0;
 		debuggerPlugin = GDBDebugging;
 		disassemblyDisplayState = 0;
 		dylibVariantSuffix = "";
@@ -126,6 +129,7 @@
 		name = Executable;
 		savedGlobals = {
 		};
+		showTypeColumn = 0;
 		sourceDirectories = (
 		);
 	};
@@ -146,26 +150,6 @@
 		vrLen = 1682;
 		vrLoc = 1295;
 	};
-	AB52E74E0A19FC0F00726305 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = AB80AB4F0A19CF1800FED357 /* OSIViewerPreferencePanePref.m */;
-		name = "OSIViewerPreferencePanePref.m: 72";
-		rLen = 0;
-		rLoc = 1899;
-		rType = 0;
-		vrLen = 1682;
-		vrLoc = 1295;
-	};
-	AB7925FD09FCBE46006E342C /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = F506C03D013D9D7901CA16C8 /* OSIListenerPreferencePanePref.m */;
-		name = "gethostname(hostname, 99);";
-		rLen = 28;
-		rLoc = 673;
-		rType = 0;
-		vrLen = 1091;
-		vrLoc = 97;
-	};
 	AB80AB470A19CF1800FED357 /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
 		fRef = AB80AB480A19CF1800FED357 /* OSIViewerPreferencePanePref copy.m */;
@@ -177,23 +161,6 @@
 		vrLoc = 0;
 	};
 	AB80AB480A19CF1800FED357 /* OSIViewerPreferencePanePref copy.m */ = {
-		isa = PBXFileReference;
-		lastKnownFileType = sourcecode.c.objc;
-		name = "OSIViewerPreferencePanePref copy.m";
-		path = "/Users/rossetantoine/osirix/osirix/Preference Panes/OSIViewerPreferencePane/OSIViewerPreferencePanePref copy.m";
-		sourceTree = "<absolute>";
-	};
-	AB80AB4C0A19CF1800FED357 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = AB80AB4D0A19CF1800FED357 /* OSIViewerPreferencePanePref copy.m */;
-		name = "(null): 1";
-		rLen = 0;
-		rLoc = 0;
-		rType = 0;
-		vrLen = 1492;
-		vrLoc = 0;
-	};
-	AB80AB4D0A19CF1800FED357 /* OSIViewerPreferencePanePref copy.m */ = {
 		isa = PBXFileReference;
 		lastKnownFileType = sourcecode.c.objc;
 		name = "OSIViewerPreferencePanePref copy.m";

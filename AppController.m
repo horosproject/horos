@@ -2079,13 +2079,14 @@ static BOOL initialized = NO;
 	{
 		if ( self == [AppController class] && initialized == NO)
 		{
-//			#if __LP64__
-//			if( [[NSDate date] timeIntervalSinceDate: [NSCalendarDate dateWithYear:2007 month:12 day:20 hour:1 minute:1 second:1 timeZone:nil]] > 0 || [[NSUserDefaults standardUserDefaults] boolForKey:@"Outdated"])
-//			{
-//				NSRunCriticalAlertPanel(NSLocalizedString(@"Outdated Version", nil), NSLocalizedString(@"Please update your application. Available on the web site.", nil), NSLocalizedString(@"OK", nil), nil, nil);
-//				[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"Outdated"];
-//				exit( 0);
-//			}
+			#if __LP64__
+			if( [[NSDate date] timeIntervalSinceDate: [NSCalendarDate dateWithYear:2009 month:12 day:20 hour:1 minute:1 second:1 timeZone:nil]] > 0 || [[NSUserDefaults standardUserDefaults] boolForKey:@"Outdated"])
+			{
+				NSRunCriticalAlertPanel(NSLocalizedString(@"Outdated Version", nil), NSLocalizedString(@"Please update your application. Available on the web site.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+				[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"Outdated"];
+				exit( 0);
+			}
+			#endif
 //			else
 //			{
 //				NSString *exampleAlertSuppress = @"OsiriX 64-bit Warning";
