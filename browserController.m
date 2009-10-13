@@ -15495,7 +15495,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[self querySelectedStudy: self];
 	else
 	{
-		[self.window makeKeyAndOrderFront:sender];
+//		[self.window makeKeyAndOrderFront:sender];
 		
 		if( [sender tag] == 0 && [QueryController currentQueryController] == nil) [[QueryController alloc] initAutoQuery: NO];
 		else if( [sender tag] == 1 && [QueryController currentAutoQueryController] == nil) [[QueryController alloc] initAutoQuery: YES];
