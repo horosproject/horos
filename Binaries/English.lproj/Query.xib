@@ -3639,22 +3639,6 @@ IGJlIHJldHJpZXZlZCBkdXJpbmcgbmV4dCAncmVmcmVzaCcuA</string>
 					<int key="connectionID">815</int>
 				</object>
 				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">selectedTag: values.autoRefreshQueryResults</string>
-						<reference key="source" ref="271767141"/>
-						<reference key="destination" ref="524337109"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="271767141"/>
-							<reference key="NSDestination" ref="524337109"/>
-							<string key="NSLabel">selectedTag: values.autoRefreshQueryResults</string>
-							<string key="NSBinding">selectedTag</string>
-							<string key="NSKeyPath">values.autoRefreshQueryResults</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">834</int>
-				</object>
-				<object class="IBConnectionRecord">
 					<object class="IBActionConnection" key="connection">
 						<string key="label">autoQueryTimer:</string>
 						<reference key="source" ref="934212155"/>
@@ -3934,6 +3918,22 @@ IGJlIHJldHJpZXZlZCBkdXJpbmcgbmV4dCAncmVmcmVzaCcuA</string>
 						</object>
 					</object>
 					<int key="connectionID">917</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">selectedTag: autoRefreshQueryResults</string>
+						<reference key="source" ref="271767141"/>
+						<reference key="destination" ref="934212155"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="271767141"/>
+							<reference key="NSDestination" ref="934212155"/>
+							<string key="NSLabel">selectedTag: autoRefreshQueryResults</string>
+							<string key="NSBinding">selectedTag</string>
+							<string key="NSKeyPath">autoRefreshQueryResults</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">919</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -5840,9 +5840,9 @@ IGJlIHJldHJpZXZlZCBkdXJpbmcgbmV4dCAncmVmcmVzaCcuA</string>
 				<object class="NSMutableArray" key="dict.values">
 					<bool key="EncodedWithXMLCoder">YES</bool>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{21, 787}, {911, 746}}</string>
+					<string>{{21, 410}, {911, 746}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{21, 787}, {911, 746}}</string>
+					<string>{{21, 410}, {911, 746}}</string>
 					<integer value="1"/>
 					<string>{{154, 110}, {911, 746}}</string>
 					<integer value="0"/>
@@ -6216,7 +6216,7 @@ IGJlIHJldHJpZXZlZCBkdXJpbmcgbmV4dCAncmVmcmVzaCcuA</string>
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">917</int>
+			<int key="maxID">919</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
