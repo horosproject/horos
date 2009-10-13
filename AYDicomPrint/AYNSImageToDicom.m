@@ -225,7 +225,7 @@
 		{
 			scaleFactor = 1. / [currentViewer scaleValue];
 			
-			#define MAXWindowSize 5000
+			#define MAXWindowSize 3000
 			
 			int noFactor = (columns * rows) / 2;
 			if( noFactor < 1) noFactor = 1;
@@ -235,6 +235,9 @@
 			
 			if( rf.size.width * scaleFactor > cMAXWindowSize)
 				scaleFactor = cMAXWindowSize / rf.size.width;
+			
+			if( rf.size.height * scaleFactor > cMAXWindowSize)
+				scaleFactor = cMAXWindowSize / rf.size.height;
 			
 			if( scaleFactor <= 1.0)
 				scaleFactor = 1.0;

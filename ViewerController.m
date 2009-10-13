@@ -14488,34 +14488,34 @@ int i,j,l;
 		[printLayout selectItemWithTag: tag];
 		ipp = [[printLayout selectedItem] tag];
 		
-		// optimize layout
-		NSSize page = [[NSPrintInfo sharedPrintInfo] imageablePageBounds].size;
-		
-		float optimizationFactor;
-		
-		if( [[printFormat selectedCell] tag]) // original size
-			optimizationFactor = (page.width*[imageView curDCM].pwidth) / (page.height*[imageView curDCM].pheight);
-		else
-			optimizationFactor = (page.width*imageView.frame.size.width) / (page.height*imageView.frame.size.height);
-			
-		float new_columns = sqrt( ipp * optimizationFactor );
-		float new_rows = ipp / new_columns;
-		
-		int columns = (int) round( new_columns);
-		int rows = (int) round( new_rows);
-		ipp = columns * rows;
-		
-		BOOL found = NO;
-		
-		// Try to find it in the popup menu
-		for( int i = 0 ; i < [[printLayout menu] numberOfItems] ; i++)
-		{
-			if( [[[printLayout menu] itemAtIndex: i] tag] == ipp && [[[[printLayout menu] itemAtIndex: i] title] rangeOfString: [NSString stringWithFormat:@"%dx%d"]].location != NSNotFound)
-			{
-				found = YES;
-				[printLayout selectItemWithTag: ipp];
-			}
-		}
+//		// optimize layout
+//		NSSize page = [[NSPrintInfo sharedPrintInfo] imageablePageBounds].size;
+//		
+//		float optimizationFactor;
+//		
+//		if( [[printFormat selectedCell] tag]) // original size
+//			optimizationFactor = (page.width*[imageView curDCM].pwidth) / (page.height*[imageView curDCM].pheight);
+//		else
+//			optimizationFactor = (page.width*imageView.frame.size.width) / (page.height*imageView.frame.size.height);
+//			
+//		float new_columns = sqrt( ipp * optimizationFactor );
+//		float new_rows = ipp / new_columns;
+//		
+//		int columns = (int) round( new_columns);
+//		int rows = (int) round( new_rows);
+//		ipp = columns * rows;
+//		
+//		BOOL found = NO;
+//		
+//		// Try to find it in the popup menu
+//		for( int i = 0 ; i < [[printLayout menu] numberOfItems] ; i++)
+//		{
+//			if( [[[printLayout menu] itemAtIndex: i] tag] == ipp && [[[[printLayout menu] itemAtIndex: i] title] rangeOfString: [NSString stringWithFormat:@"%dx%d"]].location != NSNotFound)
+//			{
+//				found = YES;
+//				[printLayout selectItemWithTag: ipp];
+//			}
+//		}
 	}
 	
 	if( count % ipp == 0) [printPagesToPrint setStringValue: [NSString stringWithFormat:@"%d pages", count / ipp]];
@@ -14548,24 +14548,24 @@ int i,j,l;
 		NSMutableDictionary	*settings = [NSMutableDictionary dictionary];
 		
 		//--------------------------Layout---------------------------------
-//		int columns = [[[[printLayout selectedItem] title] substringWithRange: NSMakeRange(0, 1)] intValue];
-//		int rows = [[[[printLayout selectedItem] title] substringWithRange: NSMakeRange(2, 1)] intValue];		
+		int columns = [[[[printLayout selectedItem] title] substringWithRange: NSMakeRange(0, 1)] intValue];
+		int rows = [[[[printLayout selectedItem] title] substringWithRange: NSMakeRange(2, 1)] intValue];		
 		[settings setObject: [[printLayout selectedItem] title] forKey: @"layout"];
 		
-		NSSize page = [[NSPrintInfo sharedPrintInfo] imageablePageBounds].size;
-		float optimizationFactor;
-		
-		if( [[printFormat selectedCell] tag]) // original size
-			optimizationFactor = (page.width*[imageView curDCM].pwidth) / (page.height*[imageView curDCM].pheight);
-		else
-			optimizationFactor = (page.width*imageView.frame.size.width) / (page.height*imageView.frame.size.height);
-		
-		int ipp = [[printLayout selectedItem] tag];
-		float new_columns = sqrt( ipp * optimizationFactor );
-		float new_rows = ipp / new_columns;
-		
-		int columns = (int) round( new_columns);
-		int rows = (int) round( new_rows);
+//		NSSize page = [[NSPrintInfo sharedPrintInfo] imageablePageBounds].size;
+//		float optimizationFactor;
+//		
+//		if( [[printFormat selectedCell] tag]) // original size
+//			optimizationFactor = (page.width*[imageView curDCM].pwidth) / (page.height*[imageView curDCM].pheight);
+//		else
+//			optimizationFactor = (page.width*imageView.frame.size.width) / (page.height*imageView.frame.size.height);
+//		
+//		int ipp = [[printLayout selectedItem] tag];
+//		float new_columns = sqrt( ipp * optimizationFactor );
+//		float new_rows = ipp / new_columns;
+//		
+//		int columns = (int) round( new_columns);
+//		int rows = (int) round( new_rows);
 		
 		[settings setObject: [NSNumber numberWithInt: columns] forKey: @"columns"];
 		[settings setObject: [NSNumber numberWithInt: rows] forKey: @"rows"];
@@ -14704,7 +14704,7 @@ int i,j,l;
 				{
 					scaleFactor = 1. / [self scaleValue];
 					
-					#define MAXWindowSize 5000
+					#define MAXWindowSize 3000
 					
 					int noFactor = (columns * rows) / 2;
 					if( noFactor < 1) noFactor = 1;
@@ -14714,6 +14714,9 @@ int i,j,l;
 					
 					if( rf.size.width * scaleFactor > cMAXWindowSize)
 						scaleFactor = cMAXWindowSize / rf.size.width;
+					
+					if( rf.size.height * scaleFactor > cMAXWindowSize)
+						scaleFactor = cMAXWindowSize / rf.size.height;
 					
 					if( scaleFactor <= 1.0)
 						scaleFactor = 1.0;

@@ -2629,7 +2629,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			
 			if( [self actionForHotKey:[event characters]] == NO) [super keyDown:event];
         }
-        
 		
 		if( Jog == YES)
 		{

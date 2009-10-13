@@ -25,7 +25,6 @@
 
 - (id)initWithViewer:(id) v settings:(NSDictionary*) s files:(NSArray*) f printInfo:(NSPrintInfo*) pi
 {
-	NSLog(@"%@",[pi paperName]);	
 	//imageablePageBounds gives the NSRect that is authorized for printing in a specific paper size for a specific printer. It respects custom margins of custom papersize as well.
 	NSRect imageablePageBounds = [pi imageablePageBounds];
 	NSLog(@"imageablePageBounds origin.x=%f origin.y=%f size.width=%f size.height=%f",imageablePageBounds.origin.x, imageablePageBounds.origin.y, imageablePageBounds.size.width, imageablePageBounds.size.height);

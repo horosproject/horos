@@ -2262,7 +2262,9 @@ ComputeUndefinedGroupLength3 (PapyShort inFileNb, PapyULong storedGrLength)
   if( storedGrLength != 0xFFFFFFFF)
   {
 	if( theGroupLength != storedGrLength + 12)
+	{
 		printf("*** DICOM Papyrus warning - computed length is not equal to stored length ! corrupted DICOM file?\r%s\n", gPapyFilePath [inFileNb]);
+	}
   }
   
   return theGroupLength;
