@@ -375,6 +375,12 @@ Papy3FileOpen (char *inNameP, PAPY_FILE inVRefNum, int inToOpen, void* inFSSpec)
             /* if error */
             if (iResult < 0)
             {
+			  if( gPapyFilePath [theFileNb])
+				  free( gPapyFilePath [theFileNb]);
+			  if( gSOPClassUID [theFileNb])
+				  free( gSOPClassUID [theFileNb]);
+			  gPapyFilePath [theFileNb] = 0L; 
+			  gSOPClassUID[ theFileNb] = 0L;
               gPapyFile [theFileNb] = 0; 
             } /* if */
 

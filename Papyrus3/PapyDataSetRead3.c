@@ -274,41 +274,41 @@ ExtractFileMetaInformation3 (PapyShort inFileNb)
   /* if theValP NULL or not found or untrustable file (...) */
   /* look for the element 0x0008:0x0060 modality 	*/
    /*if ((theValP == NULL) || (!found) || gIsPapyFile [inFileNb] == DICOM10)*/
-  if (!found)
-  {
-    i = 0;
-    /* keep the position in the file */
-    theErr = Papy3FTell (gPapyFile [inFileNb], &theFilePos);
-    
-    /* reset the file pointer to its previous position */
-    theErr = Papy3FSeek (gPapyFile [inFileNb], SEEK_SET, 132L);
-
-    /* goto group 8 and read it */
-    if ((theErr = Papy3GotoGroupNb (inFileNb, 0x0008)) < 0)
-      { Papy3GroupFree (&theGroup2P, TRUE); RETURN (theErr); } 
-    if ((theErr = Papy3GroupRead (inFileNb, &theGroupTmpP)) < 0)
-      { Papy3GroupFree (&theGroup2P, TRUE); RETURN (theErr); }
-    
-    /* extract the modality */
-    theValP = Papy3GetElement (theGroupTmpP, papModalityGr, &theNbVal, &theElemType);
-    if (theValP != NULL)
-      ExtractModality (theValP, inFileNb);
-    /* else this file will not live */
-    else 
-    {
-      /* free the group 8 */
-      theErr = Papy3GroupFree (&theGroupTmpP, TRUE);
-      theErr = Papy3GroupFree (&theGroup2P, TRUE); 
-      RETURN (papElemOfTypeOneNotFilled);
-    
-    }
-    /* free the group 8 */
-    theErr = Papy3GroupFree (&theGroupTmpP, TRUE);
-    
-    /* reset the file pointer to its previous position */
-    theErr = Papy3FSeek (gPapyFile [inFileNb], SEEK_SET, theFilePos);
-    
-  } /* if ...theValP is NULL or unknown UID */
+//  if (!found)
+//  {
+//    i = 0;
+//    /* keep the position in the file */
+//    theErr = Papy3FTell (gPapyFile [inFileNb], &theFilePos);
+//    
+//    /* reset the file pointer to its previous position */
+//    theErr = Papy3FSeek (gPapyFile [inFileNb], SEEK_SET, 132L);
+//
+//    /* goto group 8 and read it */
+//    if ((theErr = Papy3GotoGroupNb (inFileNb, 0x0008)) < 0)
+//      { Papy3GroupFree (&theGroup2P, TRUE); RETURN (theErr); } 
+//    if ((theErr = Papy3GroupRead (inFileNb, &theGroupTmpP)) < 0)
+//      { Papy3GroupFree (&theGroup2P, TRUE); RETURN (theErr); }
+//    
+//    /* extract the modality */
+//    theValP = Papy3GetElement (theGroupTmpP, papModalityGr, &theNbVal, &theElemType);
+//    if (theValP != NULL)
+//      ExtractModality (theValP, inFileNb);
+//    /* else this file will not live */
+//    else 
+//    {
+//      /* free the group 8 */
+//      theErr = Papy3GroupFree (&theGroupTmpP, TRUE);
+//      theErr = Papy3GroupFree (&theGroup2P, TRUE); 
+//      RETURN (papElemOfTypeOneNotFilled);
+//    
+//    }
+//    /* free the group 8 */
+//    theErr = Papy3GroupFree (&theGroupTmpP, TRUE);
+//    
+//    /* reset the file pointer to its previous position */
+//    theErr = Papy3FSeek (gPapyFile [inFileNb], SEEK_SET, theFilePos);
+//    
+//  } /* if ...theValP is NULL or unknown UID */
       
   /* free group 2 as we do not need it anymore */
   theErr = Papy3GroupFree (&theGroup2P, TRUE);  
@@ -457,7 +457,10 @@ ExtractDicomDataSetInformation3 (PapyShort inFileNb)
   
   if( gSOPClassUID[ inFileNb] != 0L && strcmp( gSOPClassUID[ inFileNb], "1.2.840.10008.5.1.4.1.1.104.1") == 0)	// EncapsulatedPDFStorage -> No Pixel Data
 	return 0;
-	
+  
+  if( gSOPClassUID[ inFileNb] != 0L && strncmp( gSOPClassUID[ inFileNb], "1.2.840.10008.5.1.4.1.1.11", strlen( "1.2.840.10008.5.1.4.1.1.11")) == 0)	// Presentation States -> No Pixel Data
+	return 0;
+  
   /* move the file pointer to group 0x7FE0 */
   if ((theErr = Papy3GotoGroupNb (inFileNb, 0x7FE0)) < 0) RETURN (theErr);
   

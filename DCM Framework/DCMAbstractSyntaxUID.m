@@ -115,6 +115,9 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 
 	/***/
 	static NSString *GrayscaleSoftcopyPresentationStateStorage = @"1.2.840.10008.5.1.4.1.1.11.1";
+	static NSString *ColorSoftcopyPresentationStateStorage = @"1.2.840.10008.5.1.4.1.1.11.2";
+	static NSString *PseudoColorSoftcopyPresentationStateStorage = @"1.2.840.10008.5.1.4.1.1.11.3";
+	static NSString *BlendingSoftcopyPresentationStateStorage = @"1.2.840.10008.5.1.4.1.1.11.4";
 	
 		// Waveforms ...
 
@@ -504,7 +507,10 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 	 */
 + (BOOL) isPresentationState:(NSString *)sopClassUID {
 		return sopClassUID != nil && (
-		       [sopClassUID isEqualToString:GrayscaleSoftcopyPresentationStateStorage]
+				[sopClassUID isEqualToString:GrayscaleSoftcopyPresentationStateStorage]
+			||	[sopClassUID isEqualToString:ColorSoftcopyPresentationStateStorage]
+			||	[sopClassUID isEqualToString:PseudoColorSoftcopyPresentationStateStorage]
+			||	[sopClassUID isEqualToString:BlendingSoftcopyPresentationStateStorage]
 		);
 }
 

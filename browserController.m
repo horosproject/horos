@@ -617,7 +617,8 @@ static NSArray*	statesArray = nil;
 				   && [DCMAbstractSyntaxUID isImageStorage: [curDict objectForKey: @"SOPClassUID"]] == NO 
 				   && [DCMAbstractSyntaxUID isRadiotherapy: [curDict objectForKey: @"SOPClassUID"]] == NO
 				   && [DCMAbstractSyntaxUID isStructuredReport: [curDict objectForKey: @"SOPClassUID"]] == NO
-				   && [DCMAbstractSyntaxUID isKeyObjectDocument: [curDict objectForKey: @"SOPClassUID"]] == NO)
+				   && [DCMAbstractSyntaxUID isKeyObjectDocument: [curDict objectForKey: @"SOPClassUID"]] == NO
+				   && [DCMAbstractSyntaxUID isPresentationState: [curDict objectForKey: @"SOPClassUID"]] == NO)
 				{
 					NSLog(@"unsupported DICOM SOP CLASS (%@)-> Reject the file : %@", [curDict objectForKey: @"SOPClassUID"], newFile);
 					curDict = nil;
@@ -12433,7 +12434,15 @@ static NSArray*	openSubSeriesArray = nil;
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"restartAutoQueryAndRetrieve"] == YES && [[NSUserDefaults standardUserDefaults] objectForKey: @"savedAutoDICOMQuerySettings"] != nil)
 	{
+		[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Auto-Query", nil) description: NSLocalizedString( @"DICOM Auto-Query is restarting...", nil)  name:@"newfiles"];
+		NSLog( @"-------- automatically restart DICOM AUTO-QUERY --------");
+		
+		WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Restarting Auto Query/Retrieve...", nil)];
+		[wait showWindow:self]; 
 		[[QueryController alloc] initAutoQuery: YES];
+		[NSThread sleepForTimeInterval: 1];
+		[wait close];
+		[wait release];
 	}
 	
 //	NSFetchRequest	*dbRequest = [[[NSFetchRequest alloc] init] autorelease];

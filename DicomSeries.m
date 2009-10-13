@@ -79,7 +79,9 @@
 		
 		[[self managedObjectContext] lock];
 		
-		if( [DCMAbstractSyntaxUID isStructuredReport: [self valueForKey: @"seriesSOPClassUID"]] == NO)
+		NSString *sopClassUID = [self valueForKey: @"seriesSOPClassUID"];
+		
+		if( [DCMAbstractSyntaxUID isStructuredReport: sopClassUID] == NO && [DCMAbstractSyntaxUID isPresentationState: sopClassUID] == NO)
 		{
 			no = [NSNumber numberWithInt: [[self valueForKey:@"images"] count]];
 			

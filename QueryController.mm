@@ -1541,6 +1541,9 @@ static const char *GetPrivateIP()
 
 - (void) autoRetrieveThread: (NSArray*) list
 {
+	if( autoQuery == NO)
+		return;
+	
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
 	[autoQueryLock lock];

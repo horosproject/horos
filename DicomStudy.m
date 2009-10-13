@@ -173,7 +173,7 @@ NSString* soundex4( NSString *inString)
 	
 	NSMutableArray *r = [NSMutableArray array];
 	
-	BOOL SC = NO, SR = NO;
+	BOOL SC = NO, SR = NO, PR = NO;
 	
 	for( NSString *mod in seriesModalities)
 	{
@@ -181,6 +181,8 @@ NSString* soundex4( NSString *inString)
 			SR = YES;
 		else if( [mod isEqualToString:@"SC"])
 			SC = YES;
+		else if( [mod isEqualToString:@"PR"])
+			PR = YES;
 		else if( [mod isEqualToString:@"RTSTRUCT"] == YES && [r containsString: mod] == NO)
 			[r addObject: @"RT"];
 		else if( [mod isEqualToString:@"KO"])
@@ -195,7 +197,11 @@ NSString* soundex4( NSString *inString)
 	if( [r count] == 0)
 	{
 		if( SC) [r addObject: @"SC"];
-		else if( SR) [r addObject: @"SR"];
+		else
+		{
+			if( SR) [r addObject: @"SR"];
+			if( PR) [r addObject: @"PR"];
+		}
 	}
 	
 	m = [r componentsJoinedByString:@"\\"];

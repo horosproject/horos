@@ -2603,18 +2603,27 @@ PutBufferInElement3 (PapyShort inFileNb, unsigned char *ioBuffP, PapyULong inEle
 			if (*theCharWrkP == '\\' || j == 0)
 			{
 				int len = theCharWrkP - previousCharWrkP + 1;
+				
 				if( j != 0)
 					len--;
+				
+				if( len < 0 ) len = 0;
 				
 				char *ptr = emalloc3 ( len+1);
 				if( ptr == 0L) return -1;
 				
 				memcpy( ptr, previousCharWrkP, len);
-				if( ptr[ len - 1] == ' ')
-					ptr[ len - 1] = '\0';
+				
+				if( len > 0)
+				{
+					if( ptr[ len - 1] == ' ')
+						ptr[ len - 1] = '\0';
+					else
+						ptr[ len] = '\0';
+				}
 				else
 					ptr[ len] = '\0';
-				
+
 				globalElementPtrs[ pos] = ptr;
 				pos++;
 				if( pos >= MAXLIST)
