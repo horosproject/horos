@@ -898,6 +898,10 @@ static NSDate *lastWarningDate = nil;
 
 - (void) runPreferencesUpdateCheck:(NSTimer*) timer
 {
+	[updateTimer invalidate];
+	[updateTimer release];
+	updateTimer = nil;
+	
 	BOOL restartListener = NO;
 	BOOL refreshDatabase = NO;
 	BOOL refreshColumns = NO;
@@ -1156,11 +1160,7 @@ static NSDate *lastWarningDate = nil;
 	if( checkForPreferencesUpdate == NO) return;
 	
 	if( updateTimer)
-	{
-		[updateTimer invalidate];
-		[updateTimer release];
-		updateTimer = nil;
-	}
+		return;
 	
 	updateTimer = [[NSTimer scheduledTimerWithTimeInterval: 1 target: self selector:@selector(runPreferencesUpdateCheck:) userInfo:nil repeats: NO] retain];
 }

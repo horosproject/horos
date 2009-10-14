@@ -1707,9 +1707,11 @@ static const char *GetPrivateIP()
 			{
 				[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Q&R Auto-Query", nil) description: NSLocalizedString( @"Refreshing...", nil) name: @"newfiles"];
 				
+				[self saveSettings];
+				
 				[NSThread detachNewThreadSelector: @selector( autoQueryThread) toTarget: self withObject: nil];
 				
-					autoQueryRemainingSecs = 60*self.autoRefreshQueryResults; 
+				autoQueryRemainingSecs = 60*self.autoRefreshQueryResults; 
 				
 				[autoQueryLock unlock];
 			}
@@ -1718,8 +1720,6 @@ static const char *GetPrivateIP()
 	}
 	
 	[autoQueryCounter setStringValue: [NSString stringWithFormat: @"%2.2d:%2.2d", (int) (autoQueryRemainingSecs/60), (int) (autoQueryRemainingSecs%60)]];
-	
-	[self saveSettings];
 }
 
 - (IBAction) autoQueryTimer:(id) sender
