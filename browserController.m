@@ -278,6 +278,7 @@ static NSArray*	statesArray = nil;
 	}
 	
 	[[QueryController currentQueryController] refresh: self];
+	[[QueryController currentAutoQueryController] refresh: self];
 }
 
 - (void) rebuildViewers: (NSMutableArray*) vlToRebuild
@@ -2905,6 +2906,8 @@ static NSArray*	statesArray = nil;
 	[self refreshMatrix: self];
 	
 	[[QueryController currentQueryController] refresh: self];
+	[[QueryController currentAutoQueryController] refresh: self];
+	
 	[[LogManager currentLogManager] resetLogs];
 	
 //	NSData *str = [DicomImage sopInstanceUIDEncodeString: @"1.2.826.0.1.3680043.2.1143.8797283371159.20060125163148762.58"];
@@ -4792,6 +4795,7 @@ static NSArray*	statesArray = nil;
 	}
 	
 	[[QueryController currentQueryController] refresh: self];
+	[[QueryController currentAutoQueryController] refresh: self];
 }
 
 - (NSArray*)childrenArray: (NSManagedObject*)item onlyImages: (BOOL)onlyImages
@@ -5918,6 +5922,7 @@ static NSArray*	statesArray = nil;
 		}
 		
 		[[QueryController currentQueryController] refresh: self];
+		[[QueryController currentAutoQueryController] refresh: self];
 	}
 	
 	[context unlock];
@@ -6255,6 +6260,8 @@ static NSArray*	statesArray = nil;
 	[self saveDatabase: currentDatabasePath];
 	
 	[[QueryController currentQueryController] refresh: self];
+	[[QueryController currentAutoQueryController] refresh: self];
+	
 	[databaseOutline reloadData];
 }
 
@@ -15020,15 +15027,13 @@ static volatile int numberOfThreadsForJPEG = 0;
 		WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Preparing the files...", nil)];
 		[wait showWindow:self];
 		
-		NSLog( @"%@",  [sender description]);
 		[self checkResponder];
 		if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix)
 		{
-			//Burn additional Files. Not just images. Add SRs
-			filesToExport = [self filesForDatabaseMatrixSelection: dicomFiles2Export onlyImages:YES];
+			filesToExport = [self filesForDatabaseMatrixSelection: dicomFiles2Export onlyImages: YES];
 			NSLog(@"Files from contextual menu: %d", [filesToExport count]);
 		}
-		else filesToExport = [self filesForDatabaseOutlineSelection: dicomFiles2Export onlyImages:YES];
+		else filesToExport = [self filesForDatabaseOutlineSelection: dicomFiles2Export onlyImages: YES];
 		
 		[wait close];
 		[wait release];

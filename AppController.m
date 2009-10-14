@@ -1066,6 +1066,7 @@ static NSDate *lastWarningDate = nil;
 	{
 		[[NSUserDefaults standardUserDefaults] setBool: NO forKey:@"updateServers"];
 		[[QueryController currentQueryController] refreshSources];
+		[[QueryController currentAutoQueryController] refreshSources];
 		[[NSNotificationCenter defaultCenter] postNotificationName:OsirixServerArrayChangedNotification object:nil];
 	}
 	
@@ -1996,6 +1997,7 @@ static NSDate *lastWarningDate = nil;
 		[w orderOut:sender];
 	
 	[[QueryController currentQueryController] release];
+	[[QueryController currentAutoQueryController] release];
 
 	[[NSUserDefaults standardUserDefaults] synchronize];
 	
