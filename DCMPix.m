@@ -3291,6 +3291,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		srcFile = [s retain];
 		imageObj = [iO retain];
 		
+		savedHeightInDB = [[imageObj valueForKey:@"height"] intValue];
+		savedWidthInDB = [[imageObj valueForKey:@"width"] intValue];
+		
 		imID = pos;
 		imTot = tot;
 		fExternalOwnedImage = ptr;
@@ -3432,6 +3435,21 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		height = NSSwapLittleShortToHost(header.ny);
 		width = NSSwapLittleShortToHost(header.nx);
 		
+		if( savedWidthInDB != 0 && savedWidthInDB != width)
+		{
+			NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width");
+			[imageObj setValue: [NSNumber numberWithInt: width] forKey: @"width"];
+			if( width > savedWidthInDB)
+				width = savedWidthInDB;
+		}
+		
+		if( savedHeightInDB != 0 && savedHeightInDB != height)
+		{
+			NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height");
+			[imageObj setValue: [NSNumber numberWithInt: height] forKey: @"height"];
+			if( height > savedHeightInDB)
+				height = savedHeightInDB;
+		}
 		
 		maxImage = NSSwapLittleShortToHost(header.npic);
 		
@@ -3634,6 +3652,21 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		height = h;
 		width = w;
 		
+		if( savedHeightInDB != 0 && savedHeightInDB != height)
+		{
+			NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height");
+			[imageObj setValue: [NSNumber numberWithInt: height] forKey: @"height"];
+			if( height > savedHeightInDB)
+				height = savedHeightInDB;
+		}
+		
+		if( savedWidthInDB != 0 && savedWidthInDB != width)
+		{
+			NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width");
+			[imageObj setValue: [NSNumber numberWithInt: width] forKey: @"width"];
+			if( width > savedWidthInDB)
+				width = savedWidthInDB;
+		}
 		
 		totSize = (height+1) * (width+1);
 		
@@ -4202,11 +4235,25 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 				case 256:
 					width = ((TAG1[11] & MASK2) << 24) | ((TAG1[10] & MASK2) << 16) | ((TAG1[9] & MASK2) << 8) | (TAG1[8] & MASK2);
 					
-					
+					if( savedWidthInDB != 0 && savedWidthInDB != width)
+					{
+						NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width");
+						[imageObj setValue: [NSNumber numberWithInt: width] forKey: @"width"];
+						if( width > savedWidthInDB)
+							width = savedWidthInDB;
+					}
 				break;
 				
 				case 257:
 					height = ((TAG1[11] & MASK2) << 24) | ((TAG1[10] & MASK2) << 16) | ((TAG1[9] & MASK2) << 8) | (TAG1[8] & MASK2);
+					
+					if( savedHeightInDB != 0 && savedHeightInDB != height)
+					{
+						NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height");
+						[imageObj setValue: [NSNumber numberWithInt: height] forKey: @"height"];
+						if( height > savedHeightInDB)
+							height = savedHeightInDB;
+					}
 				break;
 				
 					// GJ: don't need to parse these tags as things are wriiten now
@@ -5118,25 +5165,20 @@ END_CREATE_ROIS:
 		width =  [[dcmObject attributeValueWithName:@"Columns"] intValue];
 	}
 	
-	if( imageObj)
+	if( savedHeightInDB != 0 && savedHeightInDB != height)
 	{
-		int savedHeight = [[imageObj valueForKey:@"height"] intValue];
-		if( savedHeight != 0 && savedHeight != height)
-		{
-			NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height");
-			[imageObj setValue: [NSNumber numberWithInt: height] forKey: @"height"];
-			if( height > savedHeight)
-				height = savedHeight;
-		}
-		
-		int savedWidth = [[imageObj valueForKey:@"width"] intValue];
-		if( savedWidth != 0 && savedWidth != width)
-		{
-			NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width");
-			[imageObj setValue: [NSNumber numberWithInt: width] forKey: @"width"];
-			if( width > savedWidth)
-				width = savedWidth;
-		}
+		NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height");
+		[imageObj setValue: [NSNumber numberWithInt: height] forKey: @"height"];
+		if( height > savedHeightInDB)
+			height = savedHeightInDB;
+	}
+	
+	if( savedWidthInDB != 0 && savedWidthInDB != width)
+	{
+		NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width");
+		[imageObj setValue: [NSNumber numberWithInt: width] forKey: @"width"];
+		if( width > savedWidthInDB)
+			width = savedWidthInDB;
 	}
 	
 	if( shutterRect_w == 0) shutterRect_w = width;
@@ -6423,16 +6465,12 @@ END_CREATE_ROIS:
 	if ( val )
 	{
 		height = (int) (*val).us;
-		if( imageObj)
+		if( savedHeightInDB != 0 && savedHeightInDB != height)
 		{
-			int savedHeight = [[imageObj valueForKey:@"height"] intValue];
-			if( savedHeight != 0 && savedHeight != height)
-			{
-				NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height");
-				[imageObj setValue: [NSNumber numberWithInt: height] forKey: @"height"];
-				if( height > savedHeight)
-					height = savedHeight;
-			}
+			NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height");
+			[imageObj setValue: [NSNumber numberWithInt: height] forKey: @"height"];
+			if( height > savedHeightInDB)
+				height = savedHeightInDB;
 		}
 	}
 	
@@ -6441,16 +6479,12 @@ END_CREATE_ROIS:
 	if ( val )
 	{
 		width = (int) (*val).us;
-		if( imageObj)
+		if( savedWidthInDB != 0 && savedWidthInDB != width)
 		{
-			int savedWidth = [[imageObj valueForKey:@"width"] intValue];
-			if( savedWidth != 0 && savedWidth != width)
-			{
-				NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width");
-				[imageObj setValue: [NSNumber numberWithInt: width] forKey: @"width"];
-				if( width > savedWidth)
-					width = savedWidth;
-			}
+			NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width");
+			[imageObj setValue: [NSNumber numberWithInt: width] forKey: @"width"];
+			if( width > savedWidthInDB)
+				width = savedWidthInDB;
 		}
 	}
 	
@@ -8195,25 +8229,20 @@ END_CREATE_ROIS:
 	height = [TIFFRep pixelsHigh];
 	width = [TIFFRep pixelsWide];
 	
-	if( imageObj)
+	if( savedHeightInDB != 0 && savedHeightInDB != height)
 	{
-		int savedHeight = [[imageObj valueForKey:@"height"] intValue];
-		if( savedHeight != 0 && savedHeight != height)
-		{
-			NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height");
-			[imageObj setValue: [NSNumber numberWithInt: height] forKey: @"height"];
-			if( height > savedHeight)
-				height = savedHeight;
-		}
-		
-		int savedWidth = [[imageObj valueForKey:@"width"] intValue];
-		if( savedWidth != 0 && savedWidth != width)
-		{
-			NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width");
-			[imageObj setValue: [NSNumber numberWithInt: width] forKey: @"width"];
-			if( width > savedWidth)
-				width = savedWidth;
-		}
+		NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height");
+		[imageObj setValue: [NSNumber numberWithInt: height] forKey: @"height"];
+		if( height > savedHeightInDB)
+			height = savedHeightInDB;
+	}
+	
+	if( savedWidthInDB != 0 && savedWidthInDB != width)
+	{
+		NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width");
+		[imageObj setValue: [NSNumber numberWithInt: width] forKey: @"width"];
+		if( width > savedWidthInDB)
+			width = savedWidthInDB;
 	}
 
 	unsigned char *srcImage = [TIFFRep bitmapData];

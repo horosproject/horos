@@ -189,6 +189,8 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 	unsigned short		clutDepthR, clutDepthG, clutDepthB;
 	unsigned char		*clutRed, *clutGreen, *clutBlue;
 	BOOL				fSetClut, fSetClut16;
+	
+	int					savedHeightInDB, savedWidthInDB;
 }
 
 @property long frameNo;
