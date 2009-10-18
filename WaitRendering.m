@@ -191,17 +191,12 @@
 -(void) windowDidLoad
 {
 	[[self window] center];
-	[message setStringValue:string];
 	
-	[progress setUsesThreadedAnimation:YES];
-	[progress setIndeterminate:YES];
-	[progress startAnimation:self];
-	[lastTimeText setStringValue:@""];
-
-//	[progress setUsesThreadedAnimation:YES];
-//	[progress setIndeterminate:YES];
-//	
-//	session = [NSApp beginModalSessionForWindow:[self window]];
+	[message setStringValue: string];
+	[progress setUsesThreadedAnimation: YES];
+	[progress setIndeterminate: YES];
+	[progress startAnimation: self];
+	[lastTimeText setStringValue: @""];
 }
 
 -(id) init:(NSString*) str
