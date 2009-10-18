@@ -24,6 +24,8 @@
 
 @implementation OrthogonalMPRController
 
+@synthesize orientationVector;
+
 - (void) setCrossPosition: (float) x: (float) y: (id) sender
 {
 }

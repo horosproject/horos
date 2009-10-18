@@ -278,8 +278,6 @@ static NSString*	LODToolbarItemIdentifier				= @"LOD";
 						toDICOMCoords: focalPoint1
 						pixelCenter: YES];
 	
-	float s = ([pix sliceInterval]>0)? 1.0: -1.0;
-	
 	DCMPix *pix1 = [[[mprController originalView] pixList] objectAtIndex: 0];
 	DCMPix *pix2 = [[[mprController originalView] pixList] objectAtIndex: 1];
 	
@@ -299,11 +297,37 @@ static NSString*	LODToolbarItemIdentifier				= @"LOD";
 	
 	[pix orientationDouble: orientation];
 	
-	NSLog( @"%f %f %f *** %f", xd, yd, zd, [pix sliceInterval]);
+	long orientationVector = [mprController orientationVector];
+
+	float xSign = 1.0;
+	float ySign = 1.0;
 	
-	float zShift = s * [pix sliceInterval] * -1.0 * (float)[(EndoscopyMPRView*)[mprController xReslicedView] focalShiftY];
+//	switch( orientationVector)	// See applyOrientation in OrthogonalMPRController.mm
+//	{
+//		case eSagittalPos:
+//		case eSagittalNeg:
+//			xSign = -1.0;
+//			ySign = -1.0;
+//		break;
+//		
+//		case eCoronalPos:
+//		case eCoronalNeg:
+//			xSign = -1.0;
+//			ySign = 1.0;
+//		break;
+//		
+//		case eAxialPos:
+//			xSign = 1.0;
+//			ySign = 1.0;
+//		break;
+//		
+//		case eAxialNeg: 
+//			xSign = -1.0;
+//			ySign = -1.0;
+//		break;
+//	}
 	
-	
+	float zShift = xSign * [pix sliceInterval] * -1.0 * (float)[(EndoscopyMPRView*)[mprController xReslicedView] focalShiftY];
 	
 	focalPoint1[ 0] += zShift * orientation[ 6];
 	focalPoint1[ 1] += zShift * orientation[ 7];

@@ -81,6 +81,12 @@
 	float cfocalShiftX = focalShiftX;
 	float cfocalShiftY = focalShiftY;
 	
+	if( xFlipped)
+		cfocalShiftX *= -1.0;
+		
+	if( yFlipped)
+		cfocalShiftY *= -1.0;
+	
 	cfocalShiftX = cfocalShiftX;
 	cfocalShiftY = cfocalShiftY;
 	
@@ -210,9 +216,6 @@
 					focalShiftX = (mouseLoc.x - crossPositionX)*scaleFactor;
 					focalShiftY = (mouseLoc.y - crossPositionY)*scaleFactor;
 					
-					if( xFlipped) focalShiftX = -focalShiftX;
-					if( yFlipped) focalShiftY = -focalShiftY;
-					
 					[self setFocalShiftX:focalShiftX];
 					[self setFocalShiftY:focalShiftY];
 					[self setNeedsDisplay:YES];
@@ -243,8 +246,6 @@
 - (void) setCrossPosition: (float) x: (float) y
 {
 	[super setCrossPosition: x: y];
-	//focalShiftX = focalPointX - crossPositionX;
-	//focalShiftY = focalPointY - crossPositionY;
 	[self setFocalShiftX:[self focalShiftX]]; // will recompute focalPointX
 	[self setFocalShiftY:[self focalShiftY]]; // will recompute focalPointX
 	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixChangeFocalPointNotification object:self  userInfo: nil];
@@ -320,12 +321,18 @@
 {
 	focalPointX = x;
 	focalShiftX = focalPointX - crossPositionX;
+	
+	if( xFlipped)
+		focalShiftX *= -1.0;
 }
 
 - (void) setFocalPointY: (long) y
 {
 	focalPointY = y;
 	focalShiftY = focalPointY - crossPositionY;
+	
+	if( yFlipped)
+		focalShiftY *= -1.0;
 }
 
 - (long) focalPointX
@@ -341,23 +348,37 @@
 - (void) setFocalShiftX: (long) x
 {
 	focalShiftX = x;
-	focalPointX = crossPositionX + focalShiftX;
+	
+	if( xFlipped)
+		focalPointX = crossPositionX - focalShiftX;
+	else
+		focalPointX = crossPositionX + focalShiftX;
 }
 
 - (void) setFocalShiftY: (long) y
 {
 	focalShiftY = y;
-	focalPointY = crossPositionY + focalShiftY;
+	
+	if( yFlipped)
+		focalPointY = crossPositionY - focalShiftY;
+	else
+		focalPointY = crossPositionY + focalShiftY;
 }
 
 - (long) focalShiftX
 {
-	return focalShiftX;
+//	if( xFlipped)
+//		return -focalShiftX;
+//	else
+		return focalShiftX;
 }
 
 - (long) focalShiftY
 {
-	return focalShiftY;
+//	if( yFlipped)
+//		return -focalShiftY;
+//	else
+		return focalShiftY;
 }
 
 - (void) setViewUpX: (long) x
