@@ -31,8 +31,8 @@
 		selectedPointColor = [[NSColor whiteColor] retain];
 		curveColor = [[NSColor grayColor] retain];
 		
-		HUmin = -1000.0;
-		HUmax = 1000.0;
+		HUmin = -100000.0;
+		HUmax = 100000.0;
 		curves = [[NSMutableArray arrayWithCapacity:0] retain];
 		pointColors = [[NSMutableArray arrayWithCapacity:0] retain];
 		selectedPoint.y = -1.0;
@@ -136,7 +136,7 @@
 	
 	histogramSize = (int)((HUmax-HUmin)/2);
 	if(histogram) free(histogram);
-	histogram = (vImagePixelCount*) malloc(sizeof(vImagePixelCount) * (histogramSize + 10));
+	histogram = (vImagePixelCount*) malloc(sizeof(vImagePixelCount) * (histogramSize*2L));
 	if( histogram)
 	{
 		vImageHistogramCalculation_PlanarF(&buffer, histogram, histogramSize, HUmin, HUmax, kvImageDoNotTile);
@@ -296,8 +296,7 @@
 	
 	BOOL needsShift = NO;
 	NSPoint c1, c2;
-	int i;
-	for (i=0; i<[curves count]; i++)
+	for( int i = 0; i < [curves count]; i++)
 	{
 		c1 = [[[curves objectAtIndex:i] objectAtIndex:0] pointValue];
 		c2 = [[[curves objectAtIndex:i] lastObject] pointValue];
@@ -659,16 +658,16 @@
 #pragma mark -
 #pragma mark Coordinate to NSView Transform
 
-- (NSAffineTransform*)transform;
+- (NSAffineTransform*) transform;
 {
 	NSAffineTransform* transform = [NSAffineTransform transform];
-//	[transform translateXBy:-HUmin*[self bounds].size.width/(HUmax-HUmin)*zoomFactor yBy:0.0];
-//	[transform scaleXBy:[self bounds].size.width/(HUmax-HUmin)*zoomFactor yBy:[self bounds].size.height];
-[transform translateXBy:-HUmin*drawingRect.size.width/(HUmax-HUmin)*zoomFactor+drawingRect.origin.x yBy:0.0];
-[transform scaleXBy:drawingRect.size.width/(HUmax-HUmin)*zoomFactor yBy:drawingRect.size.height];
-	NSAffineTransform* transform2 = [NSAffineTransform transform];
-	[transform2 translateXBy:-zoomFixedPoint*(zoomFactor) yBy:0.0];		// -1.0
-	[transform appendTransform:transform2];
+	[transform translateXBy: -HUmin*drawingRect.size.width/(HUmax-HUmin)*zoomFactor+drawingRect.origin.x yBy:0.0];
+	[transform scaleXBy: drawingRect.size.width/(HUmax-HUmin)*zoomFactor yBy: drawingRect.size.height];
+	
+	NSAffineTransform* transform3 = [NSAffineTransform transform];
+	[transform3 translateXBy: -zoomFixedPoint*(zoomFactor) yBy:0.0];
+	[transform appendTransform: transform3];
+	
 	return transform;
 }
 

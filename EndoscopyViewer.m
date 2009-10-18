@@ -251,39 +251,23 @@ static NSString*	LODToolbarItemIdentifier				= @"LOD";
 - (void) setCamera
 {
 	double position1[3], focalPoint1[3];
+	DCMPix *pix = [[[mprController originalView] pixList] objectAtIndex:[[mprController originalView] curImage]];
 	
 	// get the camera
-	// Camera *cam = [[vrController view] camera];
 	Camera *curCamera = [[vrController view] cameraWithThumbnail: NO];
-	// change the Position	
-	[[[[mprController originalView] pixList] objectAtIndex:[[mprController originalView] curImage]] convertPixDoubleX:[(EndoscopyMPRView*)[mprController originalView] crossPositionX]
-																									pixY:[(EndoscopyMPRView*)[mprController originalView] crossPositionY]
-																									toDICOMCoords:position1
-																									pixelCenter: YES];
-						
-//	[[[[mprController xReslicedView] pixList] objectAtIndex:[[mprController xReslicedView] curImage]]	convertPixDoubleX: [(EndoscopyMPRView*)[mprController xReslicedView] crossPositionX]
-//																										pixY: [(EndoscopyMPRView*)[mprController xReslicedView] crossPositionY]
-//																										toDICOMCoords: position2];
-
-	float factor = [vrController factor];
-	float sliceInterval;
-	if ([[[self pixList] objectAtIndex:0] sliceInterval] == 0)
-	{
-		sliceInterval = [[pixList objectAtIndex: 1] sliceLocation]-[[pixList objectAtIndex:0] sliceLocation];
-	}
-	else
-	{
-		sliceInterval = [[pixList objectAtIndex:0] sliceInterval];
-	}
 	
-//	position1[2] -= sliceInterval/2.;
+	// change the Position	
+	[pix convertPixDoubleX:[(EndoscopyMPRView*)[mprController originalView] crossPositionX]
+												pixY:[(EndoscopyMPRView*)[mprController originalView] crossPositionY]
+												toDICOMCoords:position1
+												pixelCenter: YES];
+	
+	float factor = [vrController factor];
 	
 	position1[0] = position1[0] * factor;
 	position1[1] = position1[1] * factor;
 	position1[2] = position1[2] * factor;
 	
-	//NSLog(@"new camera 3D position : %f, %f, %f", position1[0], position1[1], position2[1]);
-
 	[curCamera setPosition:[[[Point3D alloc] initWithValues: position1[0]
 													: position1[1]
 													: position1[2]] autorelease]];
@@ -294,47 +278,45 @@ static NSString*	LODToolbarItemIdentifier				= @"LOD";
 						toDICOMCoords: focalPoint1
 						pixelCenter: YES];
 	
-	float s = (sliceInterval>0)? 1.0: -1.0;
+	float s = ([pix sliceInterval]>0)? 1.0: -1.0;
 	
-	//long focalPointZ = focalPoint1[2] + [mprController sign] * [[[mprController originalView] curDCM] sliceInterval] * [(EndoscopyMPRView*)[mprController xReslicedView] focalShiftY];
-	float focalPointZ = focalPoint1[2] + s * sliceInterval * (-1.0) * (float)[(EndoscopyMPRView*)[mprController xReslicedView] focalShiftY];
-	//NSLog(@"focalPoint1[2] : %f", focalPoint1[2]);
-	//NSLog(@"s : %f", s);
-	//NSLog(@"sliceInterval : %f", sliceInterval);
-	//NSLog(@"[(EndoscopyMPRView*)[mprController xReslicedView] focalShiftY] : %d", [(EndoscopyMPRView*)[mprController xReslicedView] focalShiftY]);
-	//NSLog(@"focalPointZ : %f", focalPointZ);
-		
-//	long focalPointZ = [(EndoscopyMPRView*)[mprController xReslicedView] focalPointY];
-//	focalPointZ = ([mprController sign]>0)? [[[mprController originalView] dcmPixList] count]-focalPointZ-1 : focalPointZ ;
+	DCMPix *pix1 = [[[mprController originalView] pixList] objectAtIndex: 0];
+	DCMPix *pix2 = [[[mprController originalView] pixList] objectAtIndex: 1];
 	
-//	[[[[mprController xReslicedView] pixList]	objectAtIndex:[[mprController xReslicedView] curImage]]
-//						convertPixX: [(EndoscopyMPRView*)[mprController xReslicedView] focalPointX]
-//						pixY: focalPointZ
-//						toDICOMCoords: focalPoint2];
-
-	//NSLog(@"new camera 3D focal point : %f, %f, %f", focalPoint1[0], focalPoint1[1], focalPoint2[1]);
+	double interval3d;
 	
-	focalPoint1[0] = focalPoint1[0] * factor;
-	focalPoint1[1] = focalPoint1[1] * factor;
-	focalPointZ = focalPointZ * factor;
+	double xd = [pix2 originX] - [pix1 originX];
+	double yd = [pix2 originY] - [pix1 originY];
+	double zd = [pix2 originZ] - [pix1 originZ];
 	
-	//NSLog(@"new camera 3D focal point : %f, %f, %f", focalPoint1[0], focalPoint1[1], focalPointZ);
-						
-	[curCamera setFocalPoint:[[[Point3D alloc] initWithValues	: focalPoint1[0]
-														: focalPoint1[1]
-//														: focalPoint2[1]]];
-														: focalPointZ] autorelease]];
-
-//	[cam setFocalPoint:[[Point3D alloc] initWithValues	: position1[0]+[(EndoscopyMPRView*)[mprController originalView] focalShiftX]
-//														: position1[1]+[(EndoscopyMPRView*)[mprController originalView] focalShiftY]
-//														: position1[2]+[(EndoscopyMPRView*)[mprController xReslicedView] focalShiftY]]];
-														
-	// change the Angle
-	//[cam setViewAngle:[(EndoscopyMPRView*)[mprController originalView] cameraAngle]];
-	// set the new amera
+	interval3d = sqrt(xd*xd + yd*yd + zd*zd);
+	
+	xd /= interval3d;			
+	yd /= interval3d;
+	zd /= interval3d;
+	
+	double orientation[9];
+	
+	[pix orientationDouble: orientation];
+	
+	NSLog( @"%f %f %f *** %f", xd, yd, zd, [pix sliceInterval]);
+	
+	float zShift = s * [pix sliceInterval] * -1.0 * (float)[(EndoscopyMPRView*)[mprController xReslicedView] focalShiftY];
+	
+	
+	
+	focalPoint1[ 0] += zShift * orientation[ 6];
+	focalPoint1[ 1] += zShift * orientation[ 7];
+	focalPoint1[ 2] += zShift * orientation[ 8];
+	
+	focalPoint1[ 0] = focalPoint1[ 0] * factor;
+	focalPoint1[ 1] = focalPoint1[ 1] * factor;
+	focalPoint1[ 2] = focalPoint1[ 2] * factor;
+	
+	[curCamera setFocalPoint:[[[Point3D alloc] initWithValues: focalPoint1[0] :focalPoint1[1] :focalPoint1[2]] autorelease]];
+	
+	// set the new camera
 	[[vrController view] setCamera: curCamera];
-	//NSLog(@"curCamera : %@", curCamera);
-
 }
 
 - (void) changeFocalPoint: (NSNotification*) note

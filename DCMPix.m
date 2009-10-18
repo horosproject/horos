@@ -1391,7 +1391,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		
 		for( DCMPix* pix in pixArray)	 
 		{
-			if( tmaxValueOfSeries < [pix fullwl] + [pix fullww]/2) tmaxValueOfSeries = [pix fullwl] + [pix fullww]/2;
+			if( tmaxValueOfSeries < [pix fullwl] + [pix fullww]/2)
+				tmaxValueOfSeries = [pix fullwl] + [pix fullww]/2;
 		}
 		
 		for( DCMPix* pix in pixArray)

@@ -46,20 +46,7 @@
     float sliceThickness = fabs( [firstObject sliceInterval]);
 	
 	// Find Minimum Value
-	
-	if( [firstObject isRGB] == NO)
-	{
-		float *tempData = (float*) [volumeData[0] bytes];
-		
-		i = [firstObject pwidth] * [firstObject pheight] * [pix count] / 16;
-		i -= 32;
-		minimumValue = *tempData;
-		while( i-- > 0)
-		{
-			if( *tempData < minimumValue) minimumValue = *tempData;
-			tempData += 16;
-		}
-	}
+	if( [firstObject isRGB] == NO) [self computeMinMax];
 	else minimumValue = 0;
     
     if( sliceThickness == 0)

@@ -7943,23 +7943,22 @@ public:
 	
 		opacityTransferFunction->AddSegment([controller minimumValue], 0.0, [controller maximumValue], 0.0);
 		
-		int i,j;
-		for(i=0; i<[curves count]; i++)
+		for(int i=0; i<[curves count]; i++)
 		{
 			NSMutableArray *aCurve = [NSMutableArray arrayWithArray:[curves objectAtIndex:i]];
 			NSMutableArray *someColors = [NSMutableArray arrayWithArray:[pointColors objectAtIndex:i]];
-			for(j=0; j<[aCurve count]; j++)
+			for(int j=0; j<[aCurve count]; j++)
 			{
-				colorTransferFunction->AddRGBPoint(OFFSET16 + [[aCurve objectAtIndex:j] pointValue].x, [[someColors objectAtIndex:j] redComponent], [[someColors objectAtIndex:j] greenComponent], [[someColors objectAtIndex:j] blueComponent]);
+				colorTransferFunction->AddRGBPoint( (OFFSET16 + [[aCurve objectAtIndex:j] pointValue].x) * valueFactor, [[someColors objectAtIndex:j] redComponent], [[someColors objectAtIndex:j] greenComponent], [[someColors objectAtIndex:j] blueComponent]);
 				
-				float		opacityAdapter = 1;
+				float opacityAdapter = 1;
 				
 				if( renderingMode == 0) // VR
 					opacityAdapter = superSampling;
 				
 				float o = [[aCurve objectAtIndex:j] pointValue].y * [[aCurve objectAtIndex:j] pointValue].y / opacityAdapter;
 				
-				opacityTransferFunction->AddPoint(OFFSET16 + [[aCurve objectAtIndex:j] pointValue].x, o);
+				opacityTransferFunction->AddPoint( (OFFSET16 + [[aCurve objectAtIndex:j] pointValue].x) * valueFactor, o);
 			}			
 		}
 		

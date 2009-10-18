@@ -428,6 +428,8 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	}
 	
 //	NSLog( @"min: %f max: %f", minimumValue, maximumValue);
+
+	[clutOpacityView setHUmin:minimumValue HUmax:maximumValue];
 }
 
 -(id) initWithPix:(NSMutableArray*) pix :(NSArray*) f :(NSData*) vData :(ViewerController*) bC :(ViewerController*) vC style:(NSString*) m mode:(NSString*) renderingMode
@@ -1347,7 +1349,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	[self ApplyOpacityString:curOpacityMenu];
 	
 	if( [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"CLUT"] objectForKey: str] == nil)
-		str = @"No CLUT";
+		str = NSLocalizedString(@"No CLUT", nil);
 	
 	if( curCLUTMenu != str)
 	{
@@ -1424,7 +1426,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 		curOpacityMenu = [str retain];
 	}
 	
-	if( [str isEqualToString:@"Linear Table"])
+	if( [str isEqualToString: NSLocalizedString(@"Linear Table", nil)])
 	{
 		[view setOpacity:[NSArray array]];
 		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateOpacityMenuNotification object: curOpacityMenu userInfo: nil];
@@ -2567,15 +2569,16 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 
 - (void)showCLUTOpacityPanel:(id)sender;
 {
+	[clutOpacityView setVolumePointer:[[pixList[0] objectAtIndex: 0] fImage] width:[[pixList[0] objectAtIndex: 0] pwidth] height:[[pixList[0] objectAtIndex: 0] pheight] numberOfSlices:[pixList[0] count]];
+	[self computeMinMax];
+	[clutOpacityView setHUmin:minimumValue HUmax:maximumValue];
+
 	[[clutOpacityView window] setBackgroundColor:[NSColor blackColor]];
 	[clutOpacityDrawer setTrailingOffset:[clutOpacityDrawer leadingOffset]];
 	if([clutOpacityDrawer state]==NSDrawerClosedState)
 		[clutOpacityDrawer openOnEdge:NSMinYEdge];
 	else
 		[clutOpacityDrawer close];
-	[clutOpacityView setVolumePointer:[[pixList[0] objectAtIndex: 0] fImage] width:[[pixList[0] objectAtIndex: 0] pwidth] height:[[pixList[0] objectAtIndex: 0] pheight] numberOfSlices:[pixList[0] count]];
-	[self computeMinMax];
-	[clutOpacityView setHUmin:minimumValue HUmax:maximumValue];
 	[clutOpacityView computeHistogram];
 	[clutOpacityView addCurveIfNeeded];
 	[clutOpacityView updateView];

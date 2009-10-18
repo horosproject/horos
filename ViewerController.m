@@ -17006,7 +17006,7 @@ int i,j,l;
 	
 	[wlwwPopup setTitle:NSLocalizedString(@"Default WL & WW", nil)];
 	[convPopup setTitle:NSLocalizedString(@"No Filter", nil)];
-	curOpacityMenu = [@"Linear Table" retain];
+	curOpacityMenu = [NSLocalizedString(@"Linear Table", nil) retain];
 	
 	NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
 	

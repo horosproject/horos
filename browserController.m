@@ -9071,12 +9071,11 @@ static BOOL withReset = NO;
 		for( NSString *search in criteria )
 		{
 			if ( first ) first = NO;
-			else format = [format stringByAppendingFormat: NSLocalizedString(@" AND ", nil)];
+			else format = [format stringByAppendingFormat: @" AND "];
 			
 			format = [format stringByAppendingFormat: @"(%@)", search];
 		}
 		
-		NSLog( @"%@", format);
 		[album setValue:format forKey:@"predicateString"];
 		
 		[self saveDatabase: currentDatabasePath];

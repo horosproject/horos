@@ -1217,7 +1217,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	[self ApplyOpacityString:curOpacityMenu];
 	
 	if( [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"CLUT"] objectForKey: str] == nil)
-		str = @"No CLUT";
+		str = NSLocalizedString(@"No CLUT", nil);
 	
 	if( curCLUTMenu != str)
 	{
@@ -1418,7 +1418,7 @@ static float deg2rad = 3.14159265358979/180.0;
 		curOpacityMenu = [str retain];
 	}
 	
-	if( [str isEqualToString:@"Linear Table"])
+	if( [str isEqualToString: NSLocalizedString(@"Linear Table", nil)])
 	{
 		[mprView1.vrView setOpacity:[NSArray array]];
 		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateOpacityMenuNotification object: curOpacityMenu userInfo: nil];
