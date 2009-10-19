@@ -2185,7 +2185,18 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		return NO;
 	}
 	
-	if( type == tText || type == t2DPoint)
+	if( type == t2DPoint)
+	{
+		rect.origin.x = pt.x;
+		rect.origin.y = pt.y;
+		rect.size.height = 0;
+		rect.size.width = 0;
+		
+		mode = ROI_selected;
+		
+		return NO;
+	}
+	else if( type == tText)
 	{
 		rect.size = [stringTex frameSize];
 		rect.origin.x = pt.x;// - rect.size.width/2;
@@ -2193,15 +2204,6 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		
 		if( pixelSpacingX != 0 && pixelSpacingY != 0 )
 			rect.size.height *= pixelSpacingX/pixelSpacingY;
-			
-		if( type == t2DPoint)
-		{
-			rect.size.height = 0;// - rect.size.width/2;
-			rect.size.width = 0;// - rect.size.height/2;
-		}
-		
-//		rect.size.width /= scale;
-//		rect.size.height /= scale;
 		
 		mode = ROI_selected;
 		
@@ -3074,12 +3076,16 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 	if( name != a && ![name isEqualToString:a])
 	{
 		[name release];
-		name = [[NSString alloc] initWithData: [a dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES] encoding: NSASCIIStringEncoding];
+		
+		if( type == tText)
+			name = [a copy];
+		else
+			name = [[NSString alloc] initWithData: [a dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES] encoding: NSASCIIStringEncoding];
 		
 		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object:self userInfo: nil];
 	}
 	
-	if( type == tText || type == t2DPoint)
+	if( type == tText)
 	{
 		NSString *finalString;
 		
