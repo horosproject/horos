@@ -1084,10 +1084,9 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 			NSRecursiveLock *lock = [[NSRecursiveLock alloc] init];
 			NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: lock, @"lock", [NSValue valueWithPointer: net], @"net", [NSValue valueWithPointer: params], @"params", nil];
 			
-			[NSThread detachNewThreadSelector: @selector( requestAssociationThread:) toTarget: self withObject: dict];
-			[NSThread sleepForTimeInterval: 0.2];
-			
 			globalCondition = EC_Normal;
+			[NSThread detachNewThreadSelector: @selector( requestAssociationThread:) toTarget: self withObject: dict];
+			[NSThread sleepForTimeInterval: 0.1];
 			
 			while( [lock tryLock] == NO && [wait aborted] == NO)
 			{
@@ -1178,10 +1177,9 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 					NSRecursiveLock *lock = [[NSRecursiveLock alloc] init];
 					NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: lock, @"lock", [NSValue valueWithPointer: assoc], @"assoc", [NSValue valueWithPointer: dataset], @"dataset", nil];
 					
-					[NSThread detachNewThreadSelector: @selector( cFindThread:) toTarget: self withObject: dict];
-					[NSThread sleepForTimeInterval: 0.2];
-					
 					globalCondition = EC_Normal;
+					[NSThread detachNewThreadSelector: @selector( cFindThread:) toTarget: self withObject: dict];
+					[NSThread sleepForTimeInterval: 0.1];
 					
 					while( [lock tryLock] == NO && [wait aborted] == NO)
 					{
