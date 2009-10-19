@@ -12,7 +12,7 @@
      PURPOSE.
 =========================================================================*/
 
-
+#import "WaitRendering.h"
 #import "DCMTKQueryNode.h"
 #import <OsiriX/DCMCalendarDate.h>
 #import "DICOMToNSString.h"
@@ -63,6 +63,7 @@ static OFString    opt_ciphersuites(SSL3_TXT_RSA_DES_192_CBC3_SHA);
 
 NSException* queryException = nil;
 int debugLevel = 1;
+OFCondition globalCondition = EC_Normal;
 
 typedef struct {
     T_ASC_Association *assoc;
@@ -782,6 +783,76 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	return [self setupNetworkWithSyntax:(const char *)abstractSyntax dataset:(DcmDataset *)dataset destination: nil];
 }
 
+- (void) requestAssociationThread: (NSMutableDictionary*) dict
+{
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	
+	T_ASC_Network *net = (T_ASC_Network*) [[dict objectForKey: @"net"] pointerValue];
+	T_ASC_Parameters *params = (T_ASC_Parameters*) [[dict objectForKey: @"params"] pointerValue];
+	NSRecursiveLock *lock = [dict objectForKey: @"lock"];
+	
+	[self retain];
+	[dict retain];
+	[lock retain];
+	
+	[lock lock];
+	
+	@try
+	{
+		T_ASC_Association *assoc = NULL;
+		
+		OFCondition cond = ASC_requestAssociation(net, params, &assoc);
+		globalCondition = cond;
+		
+		if( cond == EC_Normal)
+			[dict setObject: [NSValue valueWithPointer: assoc] forKey: @"assoc"];
+	}
+	@catch (NSException * e)
+	{
+		NSLog( @"requestAssociationThread exception: %@", e);
+	}
+	
+	[lock unlock];
+	[lock release];
+	[dict release];
+	[self release];
+	
+	[pool release];
+}
+
+
+- (void) cFindThread: (NSMutableDictionary*) dict
+{
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	
+	T_ASC_Association *assoc = (T_ASC_Association*) [[dict objectForKey: @"assoc"] pointerValue];
+	DcmDataset *dataset = (DcmDataset*) [[dict objectForKey: @"dataset"] pointerValue];
+	NSRecursiveLock *lock = [dict objectForKey: @"lock"];
+	
+	[self retain];
+	[dict retain];
+	[lock retain];
+	
+	[lock lock];
+	
+	@try
+	{
+		OFCondition cond = [self cfind:assoc dataset:dataset];
+		globalCondition = cond;
+	}
+	@catch (NSException * e)
+	{
+		NSLog( @"cFindThread exception: %@", e);
+	}
+	
+	[lock unlock];
+	[lock release];
+	[dict release];
+	[self release];
+	
+	[pool release];
+}
+
 //common network code for move and query
 - (BOOL)setupNetworkWithSyntax:(const char *)abstractSyntax dataset:(DcmDataset *)dataset destination:(NSString*) destination
 {
@@ -829,6 +900,16 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	}
 	else
 		_networkTransferSyntax = EXS_LittleEndianExplicit;
+	
+	WaitRendering *wait = nil;
+	
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"dontUseThreadForAssociationAndCFind"] == NO && [NSThread currentThread] == [AppController mainThread])
+	{
+		wait = [[WaitRendering alloc] init: NSLocalizedString(@"Connecting...", nil)];
+		[wait showWindow: self];
+		[wait setCancel: YES];
+		[wait start];
+	}
 	
 	@try
 	{
@@ -993,11 +1074,56 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 			}
 		}
 		
-			/* create association, i.e. try to establish a network connection to another */
+		/* create association, i.e. try to establish a network connection to another */
 		/* DICOM application. This call creates an instance of T_ASC_Association*. */
 		if (_verbose)
 			printf("Requesting Association\n");
-		cond = ASC_requestAssociation(net, params, &assoc);
+		
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"dontUseThreadForAssociationAndCFind"] == NO && [NSThread currentThread] == [AppController mainThread])
+		{
+			NSRecursiveLock *lock = [[NSRecursiveLock alloc] init];
+			NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: lock, @"lock", [NSValue valueWithPointer: net], @"net", [NSValue valueWithPointer: params], @"params", nil];
+			
+			[NSThread detachNewThreadSelector: @selector( requestAssociationThread:) toTarget: self withObject: dict];
+			[NSThread sleepForTimeInterval: 0.2];
+			
+			globalCondition = EC_Normal;
+			
+			while( [lock tryLock] == NO && [wait aborted] == NO)
+			{
+				[wait run];
+			}
+			
+			if( [wait aborted])
+			{
+				_abortAssociation = YES;
+				cond = DUL_NETWORKCLOSED;
+			}
+			else
+			{
+				[lock unlock];
+				cond = globalCondition;
+				
+				if( cond == EC_Normal)
+				{
+					if( [dict objectForKey: @"assoc"])
+						assoc = (T_ASC_Association *) [[dict objectForKey: @"assoc"] pointerValue];
+					else
+						cond = EC_IllegalParameter;
+				}
+			}
+			
+			if( cond != EC_Normal)
+			{
+				[wait end];
+				[wait release];
+				wait = nil;
+			}
+			
+			[lock release];
+		}
+		else cond = ASC_requestAssociation(net, params, &assoc);
+		
 		if (cond.bad())
 		{
 			if (cond == DUL_ASSOCIATIONREJECTED)
@@ -1043,11 +1169,43 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		}
 		
 		//specific for Move vs find
-		if (strcmp(abstractSyntax, UID_FINDStudyRootQueryRetrieveInformationModel) == 0) {
+		if (strcmp(abstractSyntax, UID_FINDStudyRootQueryRetrieveInformationModel) == 0)
+		{
 			if (cond == EC_Normal) // compare with EC_Normal since DUL_PEERREQUESTEDRELEASE is also good()
-			  {
-				cond = [self cfind:assoc dataset:dataset];
-			  }
+			{
+				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"dontUseThreadForAssociationAndCFind"] == NO && [NSThread currentThread] == [AppController mainThread])
+				{
+					NSRecursiveLock *lock = [[NSRecursiveLock alloc] init];
+					NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: lock, @"lock", [NSValue valueWithPointer: assoc], @"assoc", [NSValue valueWithPointer: dataset], @"dataset", nil];
+					
+					[NSThread detachNewThreadSelector: @selector( cFindThread:) toTarget: self withObject: dict];
+					[NSThread sleepForTimeInterval: 0.2];
+					
+					globalCondition = EC_Normal;
+					
+					while( [lock tryLock] == NO && [wait aborted] == NO)
+					{
+						[wait run];
+					}
+					
+					if( [wait aborted])
+					{
+						_abortAssociation = YES;
+						cond = DUL_NETWORKCLOSED;
+					}
+					else
+					{
+						[lock unlock];
+						cond = globalCondition;
+					}
+					[lock release];
+					
+					[wait end];
+					[wait release];
+					wait = nil;
+				}
+				else cond = [self cfind:assoc dataset:dataset];
+			}
 		}
 		else if (strcmp(abstractSyntax, UID_MOVEStudyRootQueryRetrieveInformationModel) == 0)
 		{
@@ -1067,7 +1225,8 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		/* tear down association, i.e. terminate network connection to SCP */
 		if (cond == EC_Normal)
 		{
-			if (_abortAssociation) {
+			if (_abortAssociation)
+			{
 				if (_verbose)
 					printf("Aborting Association\n");
 				cond = ASC_abortAssociation(assoc);
@@ -1076,7 +1235,6 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 					DimseCondition::dump(cond);
 					queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"Association Abort Failed %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
 					[queryException raise];
-					//return;
 				}
 			} else {
 				/* release association */
@@ -1089,7 +1247,6 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 					DimseCondition::dump(cond);
 					queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"Association Release Failed %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
 					[queryException raise];
-					//return;
 				}
 			}
 		}
@@ -1142,6 +1299,10 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		
 		succeed = NO;
 	}
+	
+	[wait end];
+	[wait release];
+	wait = nil;
 	
 	// CLEANUP
 	
