@@ -129,14 +129,11 @@
 
 - (BOOL) mouseOnFocal:(NSEvent *)theEvent
 {
-	NSPoint		focalPointLocation, mouseLocStart, mouseLoc;
+	NSPoint		mouseLocStart, mouseLoc;
 	
 	mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView: self];
 	mouseLocStart = [[[theEvent window] contentView] convertPoint:mouseLocStart toView:self];
 	mouseLocStart = [self ConvertFromNSView2GL:mouseLocStart];
-	
-	focalPointLocation.x = crossPositionX + focalShiftX;
-	focalPointLocation.y = crossPositionY + focalShiftY;
 	
 	// normalization of focal vector
 	float vectNorm = sqrt(pow(focalShiftX,2)+pow(focalShiftY/[self pixelSpacingX]*[self pixelSpacingY],2));
@@ -148,8 +145,17 @@
 	float normalizationFactor = maxSize/vectNorm;
 	float scaleFactor = scaleValue;
 	
-	if( (mouseLocStart.x > crossPositionX+focalShiftX*normalizationFactor/scaleFactor-near/scaleFactor && mouseLocStart.x < crossPositionX+focalShiftX*normalizationFactor/scaleFactor+near/scaleFactor) &&
-		(mouseLocStart.y > crossPositionY+focalShiftY*normalizationFactor/scaleFactor-near/scaleFactor && mouseLocStart.y < crossPositionY+focalShiftY*normalizationFactor/scaleFactor+near/scaleFactor) )		//
+	float sX = focalShiftX;
+	float sY = focalShiftY;
+	
+	if( xFlipped)
+		sX *= -1.0;
+		
+	if( yFlipped)
+		sY *= -1.0;
+	
+	if( (mouseLocStart.x > crossPositionX+sX*normalizationFactor/scaleFactor-near/scaleFactor && mouseLocStart.x < crossPositionX+sX*normalizationFactor/scaleFactor+near/scaleFactor) &&
+		(mouseLocStart.y > crossPositionY+sY*normalizationFactor/scaleFactor-near/scaleFactor && mouseLocStart.y < crossPositionY+sY*normalizationFactor/scaleFactor+near/scaleFactor) )		//
 	{
 		return YES;
 	}
@@ -179,14 +185,11 @@
 
 - (void) mouseDown:(NSEvent *)theEvent
 {
-	NSPoint		focalPointLocation, mouseLocStart, mouseLoc;
+	NSPoint		mouseLocStart, mouseLoc;
 	
 	mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView: self];
 	mouseLocStart = [[[theEvent window] contentView] convertPoint:mouseLocStart toView:self];
 	mouseLocStart = [self ConvertFromNSView2GL:mouseLocStart];
-	
-	focalPointLocation.x = crossPositionX + focalShiftX;
-	focalPointLocation.y = crossPositionY + focalShiftY;
 	
 	// normalization of focal vector
 	float vectNorm = sqrt(pow(focalShiftX,2)+pow(focalShiftY/[self pixelSpacingX]*[self pixelSpacingY],2));
@@ -198,8 +201,17 @@
 	float normalizationFactor = maxSize/vectNorm;
 	float scaleFactor = scaleValue;
 	
-	if( (mouseLocStart.x > crossPositionX+focalShiftX*normalizationFactor/scaleFactor-near/scaleFactor && mouseLocStart.x < crossPositionX+focalShiftX*normalizationFactor/scaleFactor+near/scaleFactor) &&
-		(mouseLocStart.y > crossPositionY+focalShiftY*normalizationFactor/scaleFactor-near/scaleFactor && mouseLocStart.y < crossPositionY+focalShiftY*normalizationFactor/scaleFactor+near/scaleFactor) )		//
+	float sX = focalShiftX;
+	float sY = focalShiftY;
+	
+	if( xFlipped)
+		sX *= -1.0;
+		
+	if( yFlipped)
+		sY *= -1.0;
+	
+	if( (mouseLocStart.x > crossPositionX+sX*normalizationFactor/scaleFactor-near/scaleFactor && mouseLocStart.x < crossPositionX+sX*normalizationFactor/scaleFactor+near/scaleFactor) &&
+		(mouseLocStart.y > crossPositionY+sY*normalizationFactor/scaleFactor-near/scaleFactor && mouseLocStart.y < crossPositionY+sY*normalizationFactor/scaleFactor+near/scaleFactor) )		//
 	{
 		BOOL keepOn = YES;
 		while (keepOn)
@@ -347,37 +359,35 @@
 
 - (void) setFocalShiftX: (long) x
 {
-	focalShiftX = x;
-	
 	if( xFlipped)
-		focalPointX = crossPositionX - focalShiftX;
-	else
+		x *= -1.0;
+		
+	focalShiftX = x;
 		focalPointX = crossPositionX + focalShiftX;
 }
 
 - (void) setFocalShiftY: (long) y
 {
-	focalShiftY = y;
-	
 	if( yFlipped)
-		focalPointY = crossPositionY - focalShiftY;
-	else
+		y *= -1.0;
+		
+	focalShiftY = y;
 		focalPointY = crossPositionY + focalShiftY;
 }
 
 - (long) focalShiftX
 {
-//	if( xFlipped)
-//		return -focalShiftX;
-//	else
+	if( xFlipped)
+		return -focalShiftX;
+	else
 		return focalShiftX;
 }
 
 - (long) focalShiftY
 {
-//	if( yFlipped)
-//		return -focalShiftY;
-//	else
+	if( yFlipped)
+		return -focalShiftY;
+	else
 		return focalShiftY;
 }
 

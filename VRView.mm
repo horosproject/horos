@@ -3688,6 +3688,8 @@ public:
 				
 				NSLog( @"ITKSegmentation3D");
 				
+				int savedMovieIndex = [[controller viewer2D] curMovieIndex];
+				
 				for ( int m = 0; m < [[controller viewer2D] maxMovieIndex] ; m++)
 				{
 					[[controller viewer2D] setMovieIndex: m];
@@ -3766,6 +3768,8 @@ public:
 							vImageConvert_FTo16U( &srcf, &dst8, -OFFSET16, 1./valueFactor, 0);
 					}
 				}
+				
+				[[controller viewer2D] setMovieIndex: savedMovieIndex];
 				
 				[self setNeedsDisplay:YES];
 				
@@ -4252,8 +4256,6 @@ public:
 	
 	Transform->Delete();
 	
-	[[pixList objectAtIndex: 0] prepareRestore];
-	
 	BOOL	addition = NO;
 	float	newVal = 0;
 	
@@ -4281,22 +4283,35 @@ public:
 		gDataValuesChanged = YES;
 	}
 	
-	// Create a scheduler
-	StaticScheduler *deleteRegionScheduler = [[StaticScheduler alloc] initForSchedulableObject: self];
-	[deleteRegionScheduler setDelegate: self];
+	int savedMovieFrame = [controller curMovieIndex];
 	
-	// Create the work units. These can be anything. We will use NSNumbers
-	NSMutableSet *unitsSet = [NSMutableSet set];
-	for ( i = 0; i < stackMax; i++ )
+	for ( int m = 0; m < [[controller viewer2D] maxMovieIndex] ; m++)
 	{
-		[unitsSet addObject: [NSArray arrayWithObjects: [NSNumber numberWithInt:i], [NSNumber numberWithInt:stackOrientation], [NSNumber numberWithInt: c], [ROIList objectAtIndex: i], [NSNumber numberWithInt: blendedSeries], [NSNumber numberWithBool: addition], [NSNumber numberWithFloat: newVal], nil]];
+		[controller setMovieFrame: m];
+		
+		[[[controller curPixList] objectAtIndex: 0] prepareRestore];
+		
+		// Create a scheduler
+		StaticScheduler *deleteRegionScheduler = [[StaticScheduler alloc] initForSchedulableObject: self];
+		[deleteRegionScheduler setDelegate: self];
+		
+		// Create the work units. These can be anything. We will use NSNumbers
+		NSMutableSet *unitsSet = [NSMutableSet set];
+		for ( i = 0; i < stackMax; i++ )
+		{
+			[unitsSet addObject: [NSArray arrayWithObjects: [NSNumber numberWithInt:i], [NSNumber numberWithInt:stackOrientation], [NSNumber numberWithInt: c], [ROIList objectAtIndex: i], [NSNumber numberWithInt: blendedSeries], [NSNumber numberWithBool: addition], [NSNumber numberWithFloat: newVal], nil]];
+		}
+		// Perform work schedule
+		[deleteRegionScheduler performScheduleForWorkUnits: unitsSet];
+		
+		while( [deleteRegionScheduler numberOfDetachedThreads] > 0) [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
+		
+		[deleteRegionScheduler release];
+		
+		[[[controller curPixList] objectAtIndex: 0] freeRestore];
 	}
-	// Perform work schedule
-	[deleteRegionScheduler performScheduleForWorkUnits: unitsSet];
 	
-	while( [deleteRegionScheduler numberOfDetachedThreads] > 0) [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
-	
-	[deleteRegionScheduler release];
+	[controller setMovieFrame: savedMovieFrame];
 	
 	// Delete current ROI
 	vtkPoints *pts = vtkPoints::New();
@@ -4491,7 +4506,7 @@ public:
 	}
 	else if( (c == NSCarriageReturnCharacter || c == NSEnterCharacter || c == NSTabCharacter || c == NSDeleteFunctionKey || c == NSDeleteCharacter || c == NSBackspaceCharacter || c == NSDeleteCharFunctionKey) && currentTool == t3DCut)
 	{
-		vtkPoints		*roiPts = ROI3DData->GetPoints();
+		vtkPoints *roiPts = ROI3DData->GetPoints();
 		
 		if( roiPts->GetNumberOfPoints() < 3)
 		{
@@ -4570,21 +4585,28 @@ public:
 	
 	if( textureMapper || gDataValuesChanged)
 	{
+		double a[ 6];
+		BOOL validBox = [VRView getCroppingBox: a :volume :croppingBox];
+	
 		[self computeValueFactor];
 		// Force min/max recomputing
 		[self movieChangeSource: data];
 		
-		[self resetCroppingBox];
-		
 		gDataValuesChanged = NO;
+		
+		if( validBox)
+		{
+			[self setCroppingBox: a];
+			
+			[VRView getCroppingBox: a :blendingVolume :croppingBox];
+			[self setBlendingCroppingBox: a];
+		}
 	}
 	else
 	{
 		if( isRGB == NO)
 			vImageConvert_FTo16U( &srcf, &dst8, -OFFSET16, 1./valueFactor, 0);
 	}
-	
-	[[pixList objectAtIndex: 0] freeRestore];
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"dontAutoCropScissors"] == NO)
 		[self autoCroppingBox];

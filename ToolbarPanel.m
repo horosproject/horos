@@ -32,7 +32,6 @@ static int increment = 0;
 
 - (void) checkPosition
 {
-	
 	if( [[NSScreen screens] count] > screen)
 	{
 		NSPoint o = NSMakePoint([[[NSScreen screens] objectAtIndex: screen] visibleFrame].origin.x, [[[NSScreen screens] objectAtIndex: screen] visibleFrame].origin.y+[[[NSScreen screens] objectAtIndex: screen] visibleFrame].size.height);
@@ -186,6 +185,8 @@ static int increment = 0;
 	[[self window] setToolbar: emptyToolbar];
 	
 	[[self window] setLevel: NSNormalWindowLevel];
+	
+	[self checkPosition];
 }
 
 - (NSArray *) toolbarAllowedItemIdentifiers: (NSToolbar *) toolbar

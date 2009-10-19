@@ -3068,11 +3068,14 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 
 - (void) setName:(NSString*) a
 {
-	if( a == nil) a = @"";
+	if( a == nil)
+		a = @"";
 	
 	if( name != a && ![name isEqualToString:a])
 	{
-		[name release]; name = [a retain];
+		[name release];
+		name = [[NSString alloc] initWithData: [a dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES] encoding: NSASCIIStringEncoding];
+		
 		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object:self userInfo: nil];
 	}
 	
