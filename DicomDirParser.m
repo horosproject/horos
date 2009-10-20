@@ -60,10 +60,10 @@
 	NSFileManager *fileManager = [NSFileManager defaultManager];
 	int i = 0;
 	
-	if (startDirectory==Nil || files==Nil) return;
+	if (startDirectory == Nil || files == Nil) return;
 	
 	fileNames = [fileManager directoryContentsAtPath: startDirectory];
-	for (i = 0; i < [fileNames count] && [files count] < [dicomdirFileList count]; i++)
+	for (i = 0; i < [fileNames count]; i++)
 	{
 		filePath = [startDirectory stringByAppendingPathComponent: [fileNames objectAtIndex: i]];
 		uppercaseFilePath = [filePath uppercaseString];
@@ -93,6 +93,15 @@
 								[files addObject: filePath];
 								break;
 							}
+							
+							if( [[s pathExtension] isEqualToString: @""])	/// for this case: 738495.		// GE Scanner
+							{
+								if( [[cutFilePath stringByDeletingPathExtension] isEqualToString: [s stringByDeletingPathExtension]])
+								{
+									[files addObject: filePath];
+									break;
+								}
+							}
 						}
 					}
 				}
@@ -118,7 +127,7 @@
 
 - (void) parseArray:(NSMutableArray*) files
 {
-	NSMutableArray *result = [[[NSMutableArray alloc] initWithCapacity:0] autorelease];
+	NSMutableArray *result = [NSMutableArray array];
 	long i, start, length;
 	char *buffer;
 	NSString *file;
