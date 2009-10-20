@@ -37,6 +37,7 @@ static NSString *PatientID = @"PatientID";
 static NSString *AccessionNumber = @"AccessionNumber";
 static NSString *StudyDescription = @"StudyDescription";
 static NSString *PatientBirthDate = @"PatientBirthDate";
+static NSString *ReferringPhysician = @"ReferringPhysiciansName";
 
 static QueryController *currentQueryController = nil;
 static QueryController *currentAutoQueryController = nil;
@@ -289,6 +290,7 @@ static const char *GetPrivateIP()
 	}
 	
 	[presets setValue: [searchFieldName stringValue] forKey: @"searchFieldName"];
+	[presets setValue: [searchFieldRefPhysician stringValue] forKey: @"searchFieldRefPhysician"];
 	[presets setValue: [searchFieldID stringValue] forKey: @"searchFieldID"];
 	[presets setValue: [searchFieldAN stringValue] forKey: @"searchFieldAN"];
 	[presets setValue: [searchFieldStudyDescription stringValue] forKey: @"searchFieldStudyDescription"];
@@ -366,6 +368,7 @@ static const char *GetPrivateIP()
 
 - (void) emptyPreset:(id) sender
 {
+	[searchFieldRefPhysician setStringValue: @""];
 	[searchFieldName setStringValue: @""];
 	[searchFieldID setStringValue: @""];
 	[searchFieldAN setStringValue: @""];
@@ -438,6 +441,9 @@ static const char *GetPrivateIP()
 		self.autoRefreshQueryResults = [[presets valueForKey:@"autoRefreshQueryResults"] intValue];
 	}
 	
+	if( [presets valueForKey: @"searchFieldRefPhysician"])
+		[searchFieldRefPhysician setStringValue: [presets valueForKey: @"searchFieldRefPhysician"]];
+	
 	if( [presets valueForKey: @"searchFieldName"])
 		[searchFieldName setStringValue: [presets valueForKey: @"searchFieldName"]];
 	
@@ -490,6 +496,7 @@ static const char *GetPrivateIP()
 		case 2:		[searchFieldAN selectText: self];				break;
 		case 3:		[searchFieldName selectText: self];				break;
 		case 4:		[searchFieldStudyDescription selectText: self];	break;
+		case 5:		[searchFieldRefPhysician selectText: self];		break;
 	}
 	
 	if( [presets valueForKey: @"autoRetrieving"] && autoQuery == YES)
@@ -1285,6 +1292,7 @@ static const char *GetPrivateIP()
 						case 2:		currentQueryKey = AccessionNumber;	break;
 						case 3:		currentQueryKey = PatientBirthDate;	break;
 						case 4:		currentQueryKey = StudyDescription;	break;
+						case 5:		currentQueryKey = ReferringPhysician;	break;
 					}
 					
 					BOOL queryItem = NO;
@@ -1299,6 +1307,16 @@ static const char *GetPrivateIP()
 							queryItem = YES;
 						}
 					}
+					else if( currentQueryKey == ReferringPhysician)
+					{
+						NSString *filterValue = [[searchFieldRefPhysician stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+						
+						if ([filterValue length] > 0)
+						{
+							[queryManager addFilter:[filterValue stringByAppendingString:@"*"] forDescription:currentQueryKey];
+							queryItem = YES;
+						}
+					}					
 					else if( currentQueryKey == PatientBirthDate)
 					{
 						[queryManager addFilter: [[searchBirth dateValue] descriptionWithCalendarFormat:@"%Y%m%d" timeZone:nil locale:nil] forDescription:currentQueryKey];
@@ -1750,6 +1768,7 @@ static const char *GetPrivateIP()
 	queryManager = nil;
 	[progressIndicator stopAnimation:nil];
 	[searchFieldName setStringValue:@""];
+	[searchFieldRefPhysician setStringValue:@""];
 	[searchFieldID setStringValue:@""];
 	[searchFieldAN setStringValue:@""];
 	[searchFieldStudyDescription setStringValue:@""];
@@ -2243,6 +2262,31 @@ static const char *GetPrivateIP()
 	{
 		NSMenu *cellMenu = [[[NSMenu alloc] initWithTitle:@"Search Menu"] autorelease];
 		NSMenuItem *item1, *item2, *item3;
+		id searchCell = [searchFieldRefPhysician cell];
+		item1 = [[NSMenuItem alloc] initWithTitle:@"Recent Searches"
+										   action:NULL
+									keyEquivalent:@""];
+		[item1 setTag:NSSearchFieldRecentsTitleMenuItemTag];
+		[cellMenu insertItem:item1 atIndex:0];
+		[item1 release];
+		item2 = [[NSMenuItem alloc] initWithTitle:@"Recents"
+										   action:NULL
+									keyEquivalent:@""];
+		[item2 setTag:NSSearchFieldRecentsMenuItemTag];
+		[cellMenu insertItem:item2 atIndex:1];
+		[item2 release];
+		item3 = [[NSMenuItem alloc] initWithTitle:@"Clear"
+										   action:NULL
+									keyEquivalent:@""];
+		[item3 setTag:NSSearchFieldClearRecentsMenuItemTag];
+		[cellMenu insertItem:item3 atIndex:2];
+		[item3 release];
+		[searchCell setSearchMenuTemplate:cellMenu];
+	}
+	
+	{
+		NSMenu *cellMenu = [[[NSMenu alloc] initWithTitle:@"Search Menu"] autorelease];
+		NSMenuItem *item1, *item2, *item3;
 		id searchCell = [searchFieldID cell];
 		item1 = [[NSMenuItem alloc] initWithTitle:@"Recent Searches"
 								action:NULL
@@ -2529,6 +2573,11 @@ static const char *GetPrivateIP()
 
 	searchCell = [searchFieldAN cell];
 
+	[[searchCell cancelButtonCell] setTarget:self];
+	[[searchCell cancelButtonCell] setAction:@selector(clearQuery:)];
+	
+	searchCell = [searchFieldRefPhysician cell];
+	
 	[[searchCell cancelButtonCell] setTarget:self];
 	[[searchCell cancelButtonCell] setAction:@selector(clearQuery:)];
 	
