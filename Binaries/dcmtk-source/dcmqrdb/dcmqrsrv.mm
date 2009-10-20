@@ -219,6 +219,7 @@ void DcmQueryRetrieveSCP::waitUnlockFileWithPID(int pid)
 		kill( pid, 15);
 		NSLog( @"******* waitUnlockFile for 30 min");
 	}
+	
 	if( rc < 0) NSLog( @"******* waitUnlockFile : child process died...");
 }
 
