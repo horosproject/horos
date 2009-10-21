@@ -16605,7 +16605,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/csh;
-			shellScript = "rm -Rf $TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/OsiriX.Headers.framework/Versions/A/Headers/*\nrm -Rf $TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/OsiriX.Headers.framework/Versions/A/Frameworks/Nitrogen.framework\n\nif ( $DEBUGGING_SYMBOLS != \"YES\" ) then\n\trm -Rf $TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/Nitrogen.framework/Versions/A/Nitrogen.framework.dSYM\nendif\n\nexit 0";
+			shellScript = "rm -Rf $TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/OsiriX.Headers.framework/Versions/A/Headers/*\nrm -Rf $TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/OsiriX.Headers.framework/Versions/A/Frameworks/Nitrogen.framework\n\nif ( $DEBUGGING_SYMBOLS != \"YES\" ) then\n\trm -Rf $TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/Nitrogen.framework/Versions/A/Nitrogen.framework.dSYM\nendif\n";
 		};
 		AB0F3A3F1046BE51004129DD /* Copy headers and create OsiriX.h */ = {
 			isa = PBXShellScriptBuildPhase;

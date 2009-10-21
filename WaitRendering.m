@@ -19,7 +19,19 @@
 
 - (void) showWindow: (id) sender
 {
+	NSMutableArray *winList = [NSMutableArray array];
+	
+	for( NSWindow *w in [NSApp orderedWindows])
+	{
+		if( [[w windowController] isKindOfClass: [WaitRendering class]])
+			[winList addObject: [w windowController]];
+	}
+	
+	[[self window] setFrameTopLeftPoint: NSMakePoint( [[self window] frame].origin.x, [[self window] frame].origin.y - [winList count] * (10 + [[self window] frame].size.height))];
+	
 	[[self window] makeKeyAndOrderFront: sender];
+	[[self window] display];
+	[[self window] flushWindow];
 	[[self window] display];
 	[[self window] flushWindow];
 	
@@ -37,7 +49,7 @@
 
 - (void) thread:(id) sender
 {
-	NSAutoreleasePool               *pool=[[NSAutoreleasePool alloc] init];
+	NSAutoreleasePool *pool=[[NSAutoreleasePool alloc] init];
 	
 	while( stop == NO)
 	{
