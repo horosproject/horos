@@ -3,7 +3,7 @@
 //  OsiriX
 //
 //  Created by antoinerosset on 13.07.08.
-//  Copyright 2008 LaTour / HUG. All rights reserved.
+//  Copyright 2008 OsiriX Team. All rights reserved.
 //
 
 #import <Cocoa/Cocoa.h>

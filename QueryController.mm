@@ -2168,6 +2168,7 @@ static const char *GetPrivateIP()
 		DCMCalendarDate *date = nil;
 		
 		int searchType = searchAfter;
+		NSString *between = nil;
 		
 		switch( [sender selectedTag])
 		{
@@ -2177,12 +2178,27 @@ static const char *GetPrivateIP()
 			case 3:			date = [DCMCalendarDate dateWithTimeIntervalSinceNow: -60*60*24*7 -1];									break;
 			case 4:			date = [DCMCalendarDate dateWithTimeIntervalSinceNow: -60*60*24*31 -1];									break;
 			
+			case 106:
+			case 112:
+				searchType = searchAfter;
+				
+				if( [sender selectedTag] == 106)
+				{
+					date = [DCMCalendarDate dateWithTimeIntervalSinceNow: -60*60*6];
+					between = [NSString stringWithFormat:@"%@.000-", [[NSCalendarDate dateWithTimeIntervalSinceNow: -60*60*6] descriptionWithCalendarFormat: @"%H%M%S"]];
+				}
+				if( [sender selectedTag] == 112)
+				{
+					date = [DCMCalendarDate dateWithTimeIntervalSinceNow: -60*60*12];
+					between = [NSString stringWithFormat:@"%@.000-", [[NSCalendarDate dateWithTimeIntervalSinceNow: -60*60*12] descriptionWithCalendarFormat: @"%H%M%S"]];
+				}
+				timeQueryFilter = [[QueryFilter queryFilterWithObject:between ofSearchType:searchExactMatch  forKey:@"StudyTime"] retain];				
+			break;
+				
 			case 10:	// AM & PM
 			case 11:
 				date = [DCMCalendarDate date];
 				searchType = SearchToday;
-				
-				NSString	*between;
 				
 				if( [sender selectedTag] == 10)
 					between = [NSString stringWithString:@"000000.000-120000.000"];
@@ -2190,7 +2206,7 @@ static const char *GetPrivateIP()
 					between = [NSString stringWithString:@"120000.000-235959.000"];
 				
 				timeQueryFilter = [[QueryFilter queryFilterWithObject:between ofSearchType:searchExactMatch  forKey:@"StudyTime"] retain];
-			break;				
+			break;
 		}
 		dateQueryFilter = [[QueryFilter queryFilterWithObject:date ofSearchType:searchType  forKey:@"StudyDate"] retain];
 	}

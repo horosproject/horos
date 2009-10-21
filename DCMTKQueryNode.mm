@@ -1243,7 +1243,9 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 					queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"Association Abort Failed %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
 					[queryException raise];
 				}
-			} else {
+			}
+			else
+			{
 				/* release association */
 				if (_verbose)
 					printf("Releasing Association\n");
