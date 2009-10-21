@@ -21,14 +21,18 @@
 {
 	NSMutableArray *winList = [NSMutableArray array];
 	
-	for( NSWindow *w in [NSApp orderedWindows])
+	for( NSWindow *w in [NSApp windows])
 	{
 		if( [[w windowController] isKindOfClass: [WaitRendering class]] || [[w windowController] isKindOfClass: [Wait class]])
-			[winList addObject: [w windowController]];
+			if( [w isVisible])
+				[winList addObject: [w windowController]];
 	}
 	
-	[[self window] setFrameTopLeftPoint: NSMakePoint( [[self window] frame].origin.x, [[self window] frame].origin.y - [winList count] * (10 + [[self window] frame].size.height))];
-	
+	if( [[self window] isVisible] == NO)
+	{
+		[[self window] center];
+		[[self window] setFrame: NSMakeRect( [[self window] frame].origin.x, [[self window] frame].origin.y - [winList count] * (5 + [[self window] frame].size.height), [[self window] frame].size.width, [[self window] frame].size.height) display: NO];
+	}
 	[super showWindow: sender];
 	[[self window] makeKeyAndOrderFront: sender];
 	[[self window] display];
@@ -134,8 +138,7 @@
 		}
 		else [lastTimeText setStringValue:@""];
 		
-		[[self window] center];
-		[[self window] orderFront:self];
+		[[self window] makeKeyAndOrderFront:self];
 	}
 }
 
@@ -222,7 +225,6 @@
 	startTime = nil;
 	displayedTime = [NSDate timeIntervalSinceReferenceDate];
 	
-	[[self window] center];
 	[[self window] setLevel: NSModalPanelWindowLevel];
 
 	return self;
