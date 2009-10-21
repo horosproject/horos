@@ -1353,7 +1353,6 @@ static const char *GetPrivateIP()
 						}
 					}
 					
-					//
 					if ([dateQueryFilter object])
 					{
 						[queryManager addFilter:[dateQueryFilter filteredValue] forDescription:@"StudyDate"];
