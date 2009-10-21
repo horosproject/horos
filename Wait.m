@@ -12,7 +12,7 @@
      PURPOSE.
 =========================================================================*/
 
-
+#import "WaitRendering.h"
 #import "Wait.h"
 #import "SendController.h"
 
@@ -20,8 +20,20 @@
 
 - (void) showWindow: (id) sender
 {
+	NSMutableArray *winList = [NSMutableArray array];
+	
+	for( NSWindow *w in [NSApp orderedWindows])
+	{
+		if( [[w windowController] isKindOfClass: [WaitRendering class]] || [[w windowController] isKindOfClass: [Wait class]])
+			[winList addObject: [w windowController]];
+	}
+	
+	[[self window] setFrameTopLeftPoint: NSMakePoint( [[self window] frame].origin.x, [[self window] frame].origin.y - [winList count] * (10 + [[self window] frame].size.height))];
+	
 	[super showWindow: sender];
 	[[self window] makeKeyAndOrderFront: sender];
+	[[self window] display];
+	[[self window] flushWindow];
 	[[self window] display];
 	[[self window] flushWindow];
 	[[self window] setDelegate: self];
