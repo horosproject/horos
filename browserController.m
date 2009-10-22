@@ -3712,6 +3712,62 @@ static NSArray*	statesArray = nil;
 		  contextInfo: nil];
 }
 
+- (void) dumpSQLFile
+{
+	@try
+	{
+		NSTask *theTask;
+		
+		theTask = [[NSTask alloc] init];
+		[theTask setLaunchPath: @"/usr/bin/sqlite3"];
+		
+		NSString *repairedDBFile = [[currentDatabasePath stringByDeletingLastPathComponent] stringByAppendingPathComponent: @"Repaired.txt"];
+		[[NSFileManager defaultManager] removeItemAtPath: repairedDBFile error: nil];
+		[[NSFileManager defaultManager] createFileAtPath: repairedDBFile contents: [NSData data] attributes: nil];
+		[theTask setStandardOutput: [NSFileHandle fileHandleForWritingAtPath: repairedDBFile]];
+		[theTask setCurrentDirectoryPath: [currentDatabasePath stringByDeletingLastPathComponent]];
+		[theTask setArguments: [NSArray arrayWithObjects:@"Database.sql", @".dump", nil]];		
+		
+		[theTask launch];
+		[theTask waitUntilExit];
+		
+		if( [theTask terminationStatus] == 0)
+		{
+			[theTask release];
+			
+			theTask = [[NSTask alloc] init];
+			[theTask setLaunchPath: @"/usr/bin/sqlite3"];
+			
+			NSString *repairedDBFinalFile = [[currentDatabasePath stringByDeletingLastPathComponent] stringByAppendingPathComponent: @"RepairedFinal.sql"];
+			[[NSFileManager defaultManager] removeItemAtPath: repairedDBFinalFile error: nil];
+			
+			[theTask setStandardInput: [NSFileHandle fileHandleForReadingAtPath: repairedDBFile]];
+			[theTask setCurrentDirectoryPath: [currentDatabasePath stringByDeletingLastPathComponent]];
+			[theTask setArguments: [NSArray arrayWithObjects: @"RepairedFinal.sql", nil]];		
+			
+			[theTask launch];
+			[theTask waitUntilExit];
+			
+			if( [theTask terminationStatus] == 0)
+			{
+				NSInteger tag = 0;
+				
+				[[NSWorkspace sharedWorkspace] performFileOperation: NSWorkspaceRecycleOperation source: [currentDatabasePath stringByDeletingLastPathComponent] destination: nil files:[NSArray arrayWithObject: [currentDatabasePath lastPathComponent]] tag:&tag];
+				
+				[[NSFileManager defaultManager] moveItemAtPath: repairedDBFinalFile toPath: currentDatabasePath error: nil];
+			}
+			[theTask release];
+		}
+		else
+			[theTask release];
+	}
+	
+	@catch (NSException * e)
+	{
+		NSLog( @"***** dumpSQLFile exception: %@", e);
+	}
+}
+
 - (IBAction) rebuildSQLFile:(id) sender
 {
 	if( isCurrentDatabaseBonjour ) return;
@@ -3727,8 +3783,10 @@ static NSArray*	statesArray = nil;
 		[checkIncomingLock lock];
 		
 		[self saveDatabase: currentDatabasePath];
-				
+		
 		[[self window] display];
+		
+		[self dumpSQLFile];
 		
 		[self updateDatabaseModel: currentDatabasePath :DATABASEVERSION];
 		
