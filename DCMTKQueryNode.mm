@@ -49,7 +49,7 @@
 #define APPLICATIONTITLE        "FINDSCU"
 #define PEERAPPLICATIONTITLE    "ANY-SCP"
 
-
+extern int AbortAssociationTimeOut;
 
 #ifdef WITH_OPENSSL
 
@@ -1235,8 +1235,13 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 			{
 				if (_verbose)
 					printf("Aborting Association\n");
+					
+				AbortAssociationTimeOut = 2;
 				cond = ASC_abortAssociation(assoc);
-				if (cond.bad()) {
+				AbortAssociationTimeOut = -1;
+				
+				if (cond.bad())
+				{
 					errmsg("Association Abort Failed:");
 					DimseCondition::dump(cond);
 					queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"Association Abort Failed %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
@@ -1264,9 +1269,14 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 			if (_verbose)
 				printf("Aborting Association\n");
 			
-			 queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"Protocol Error: peer requested release (Aborting) %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
+			queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"Protocol Error: peer requested release (Aborting) %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
+			
+			AbortAssociationTimeOut = 2;
 			cond = ASC_abortAssociation(assoc);
-			if (cond.bad()) {
+			AbortAssociationTimeOut = -1;
+			
+			if (cond.bad())
+			{
 				errmsg("Association Abort Failed:");
 				DimseCondition::dump(cond);
 			}
@@ -1284,8 +1294,13 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 				printf("Aborting Association\n");
 			
 			queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"SCU Failed %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
+			
+			AbortAssociationTimeOut = 2;
 			cond = ASC_abortAssociation(assoc);
-			if (cond.bad()) {
+			AbortAssociationTimeOut = -1;
+			
+			if (cond.bad())
+			{
 				errmsg("Association Abort Failed:");
 				DimseCondition::dump(cond);
 			}

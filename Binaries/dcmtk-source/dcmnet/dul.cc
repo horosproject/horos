@@ -140,6 +140,8 @@ END_EXTERN_C
 #include "dcmlayer.h"
 #include "ofstd.h"
 
+int AbortAssociationTimeOut = PRV_DEFAULTTIMEOUT;
+
 OFGlobal<OFBool> dcmDisableGethostbyaddr(OFFalse);
 OFGlobal<Sint32> dcmConnectionTimeout(-1);
 OFGlobal<int>    dcmExternalSocketHandle(-1);
@@ -962,7 +964,7 @@ DUL_AbortAssociation(DUL_ASSOCIATIONKEY ** callerAssociation)
     OFBool done = OFFalse;
     while (!done)
     {
-        cond = PRV_NextPDUType(association, DUL_NOBLOCK, PRV_DEFAULTTIMEOUT, &pduType); // may return DUL_NETWORKCLOSED.
+        cond = PRV_NextPDUType(association, DUL_NOBLOCK, AbortAssociationTimeOut, &pduType); // may return DUL_NETWORKCLOSED. // ANR 2009 PRV_DEFAULTTIMEOUT
 
         if (cond == DUL_NETWORKCLOSED) event = TRANS_CONN_CLOSED;
         else if (cond == DUL_READTIMEOUT) event = ARTIM_TIMER_EXPIRED;

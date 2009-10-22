@@ -225,7 +225,7 @@
 		{
 			scaleFactor = 1. / [currentViewer scaleValue];
 			
-			#define MAXWindowSize 3000
+			int MAXWindowSize = [[NSUserDefaults standardUserDefaults] integerForKey: @"MAXWindowSize"];
 			
 			int noFactor = (columns * rows) / 2;
 			if( noFactor < 1) noFactor = 1;

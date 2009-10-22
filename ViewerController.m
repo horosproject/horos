@@ -14704,7 +14704,7 @@ int i,j,l;
 				{
 					scaleFactor = 1. / [self scaleValue];
 					
-					#define MAXWindowSize 3000
+					int MAXWindowSize = [[NSUserDefaults standardUserDefaults] integerForKey: @"MAXWindowSize"];
 					
 					int noFactor = (columns * rows) / 2;
 					if( noFactor < 1) noFactor = 1;
@@ -14738,7 +14738,12 @@ int i,j,l;
 				NSImage *im = [imageView nsimage: [[printFormat selectedCell] tag]];
 				
 				if( windowSizeChanged)
+				{
+					[[NSUserDefaults standardUserDefaults] setFloat: fontSizeCopy forKey: @"FONTSIZE"];
+					[NSFont resetFont: 0];
+					[[NSNotificationCenter defaultCenter] postNotificationName:OsirixGLFontChangeNotification object: self];
 					[[self window] setFrame: NSMakeRect( o.x, o.y, rf.size.width, rf.size.height) display: YES];
+				}
 				
 				if( columns * rows > 4)
 					im = [DCMPix resizeIfNecessary: im dcmPix: [imageView curDCM]];

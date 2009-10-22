@@ -9764,7 +9764,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						  bytesPerRow:width*bpp*spp/8
 						 bitsPerPixel:bpp*spp] autorelease];
 	
-	memcpy( [rep bitmapData], data, height*width*bpp*spp/8);
+	if( data)
+		memcpy( [rep bitmapData], data, height*width*bpp*spp/8);
 	
 	NSImage *image = [[[NSImage alloc] init] autorelease];
 	[image addRepresentation:rep];

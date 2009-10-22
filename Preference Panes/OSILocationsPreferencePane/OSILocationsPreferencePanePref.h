@@ -33,7 +33,6 @@
 - (IBAction) newServer:(id)sender;
 - (IBAction) osirixNewServer:(id)sender;
 - (IBAction) setStringEncoding:(id)sender;
-- (IBAction)setTransferSyntax:(id)sender;
 - (IBAction) test:(id) sender;
 - (void) resetTest;
 - (IBAction) saveAs:(id) sender;

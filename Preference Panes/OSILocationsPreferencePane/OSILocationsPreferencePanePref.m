@@ -207,7 +207,7 @@
 	[aServer setObject:[NSNumber numberWithBool:YES] forKey:@"QR"];
 	[aServer setObject:[NSNumber numberWithBool:YES] forKey:@"Send"];
     [aServer setObject:@"Description" forKey:@"Description"];
-	[aServer setObject:[NSNumber numberWithInt:0] forKey:@"Transfer Syntax"];
+	[aServer setObject:[NSNumber numberWithInt:0] forKey:@"TransferSyntax"];
     
 	[dicomNodes addObject:aServer];
 	[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"updateServers"];
@@ -496,10 +496,6 @@
 	[[NSUserDefaults standardUserDefaults] setObject:encoding forKey:@"STRINGENCODING"];
 	[stringEncoding release];
 	stringEncoding = [encoding retain];
-}
-
-- (IBAction)setTransferSyntax:(id)sender{
-	//NSLog (@"sender: %@", [sender description]);
 }
 
 - (IBAction) addPath:(id) sender
