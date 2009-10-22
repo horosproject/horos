@@ -1906,7 +1906,7 @@ static NSDate *lastWarningDate = nil;
 {
 	if( [[[BrowserController currentBrowser] window] isMiniaturized] == YES || [[[BrowserController currentBrowser] window] isVisible] == NO)
 	{
-		NSArray				*winList = [NSApp windows];
+		NSArray *winList = [NSApp windows];
 		
 		for( id loopItem in winList)
 		{

@@ -103,7 +103,8 @@ static int increment = 0;
 	{
 		if( [[self window] isVisible])
 		{
-			[[viewer window] makeKeyAndOrderFront: self];
+			if( [[viewer window] isVisible])
+				[[viewer window] makeKeyAndOrderFront: self];
 			[[self window] orderWindow: NSWindowBelow relativeTo: [[viewer window] windowNumber]];
 		}
 	}
