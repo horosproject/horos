@@ -10899,10 +10899,12 @@ END_CREATE_ROIS:
 				
 				for( int i = 0; i < MPProcessors(); i++ )
 				{
-					[minmaxThreads addObject: [NSMutableDictionary dictionaryWithObjectsAndKeys: [[[NSConditionLock alloc] initWithCondition: 0] autorelease], @"threadLock", nil]];
+					[minmaxThreads addObject: [[NSMutableDictionary dictionaryWithObjectsAndKeys: [[NSConditionLock alloc] initWithCondition: 0], @"threadLock", nil] retain]];
 					
 					[NSThread detachNewThreadSelector: @selector( computeMaxThread:) toTarget: [[PixThread alloc] init] withObject: [minmaxThreads lastObject]];
 				}
+				
+				[NSThread sleepForTimeInterval: 0.2];
 			}
 			
 			int numberOfThreadsForCompute = MPProcessors ();
