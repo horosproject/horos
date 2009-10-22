@@ -138,7 +138,7 @@
 		}
 		else [lastTimeText setStringValue:@""];
 		
-		[[self window] makeKeyAndOrderFront:self];
+		[self showWindow: self];
 	}
 }
 
