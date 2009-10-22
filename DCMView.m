@@ -3812,7 +3812,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				
 				if( [roiArray count] == 0 || distance == 0)
 				{
-					NSRunCriticalAlertPanel(NSLocalizedString(@"Repulsor",nil),NSLocalizedString(@"The Repulsor tool works only if there are ROIs on the image.",nil), NSLocalizedString(@"OK",nil), nil,nil);
+					NSRunCriticalAlertPanel(NSLocalizedString(@"Repulsor",nil),NSLocalizedString(@"The Repulsor tool works only if ROIs (Length ROI, Opened and Closed Polygon ROI and Pencil ROI) are on the image.",nil), NSLocalizedString(@"OK",nil), nil,nil);
 				}
 			}
 		}
