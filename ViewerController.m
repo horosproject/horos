@@ -10870,11 +10870,11 @@ int i,j,l;
 	{
 		if( [sender tag])	// Restore
 		{
-			[self roiSetPixels: selectedRoi :0 :NO :NO :-99999 :99999 :0 :YES];
+			[self roiSetPixels: selectedRoi :0 :NO :NO :-FLT_MAX :FLT_MAX :0 :YES];	//MINFLOAT //maxfloat float.h
 		}
 		else				// Erase
 		{
-			[self roiSetPixels: selectedRoi :0 :NO :NO :-99999 :99999 :[[pixList[ curMovieIndex] objectAtIndex: 0] minValueOfSeries] :NO];
+			[self roiSetPixels: selectedRoi :0 :NO :NO :-FLT_MAX :FLT_MAX :[[pixList[ curMovieIndex] objectAtIndex: 0] minValueOfSeries] :NO];
 		}
 		
 		// Recompute!!!! Apply WL/WW
@@ -11243,8 +11243,8 @@ int i,j,l;
 	BOOL outside = [[InOutROI selectedCell] tag];
 	short allRois = [[AllROIsRadio selectedCell] tag];
 	
-	float minValue = -99999;
-	float maxValue = 99999;
+	float minValue = -FLT_MAX;
+	float maxValue = FLT_MAX;
 	if( [checkMaxValue state] == NSOnState) maxValue = [maxValueText floatValue];
 	if( [checkMinValue state] == NSOnState) minValue = [minValueText floatValue];
 

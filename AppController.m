@@ -44,6 +44,7 @@
 #import "PluginManagerController.h"
 #import "OSIWindowController.h"
 #import "Notifications.h"
+#import "WaitRendering.h"
 
 #define BUILTIN_DCMTK YES
 
@@ -1934,8 +1935,26 @@ static NSDate *lastWarningDate = nil;
 	return YES;
 }
 
+- (IBAction) killAllStoreSCU:(id) sender
+{
+	WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Abort Incoming DICOM processes...", nil)];
+	[wait showWindow: self];
+	
+	[[NSFileManager defaultManager] createFileAtPath: @"/tmp/kill_all_storescu" contents: [NSData data] attributes: nil];
+	[NSThread sleepForTimeInterval: 5];
+	
+	[wait close];
+	[wait release];
+	
+	unlink( "/tmp/kill_all_storescu");
+	
+	[[BrowserController currentBrowser] checkIncomingNow: self];
+}
+
 - (void) applicationWillTerminate: (NSNotification*) aNotification
 {
+	unlink( "/tmp/kill_all_storescu");
+	
 	[webServer release];
 	webServer = nil;
 	
@@ -2461,6 +2480,8 @@ static BOOL initialized = NO;
 
 - (void) applicationDidFinishLaunching:(NSNotification*) aNotification
 {
+	unlink( "/tmp/kill_all_storescu");
+
 	[NSSplitView loadSplitView];
 	
     [[[NSWorkspace sharedWorkspace] notificationCenter]

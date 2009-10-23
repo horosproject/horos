@@ -134,7 +134,11 @@ static const char *GetPrivateIP()
 				[dictionary setObject: [object valueForKey:@"port"] forKey:@"port"];
 				[dictionary setObject: [object valueForKey:@"transferSyntax"] forKey:@"transferSyntax"];
 				
-				[object move: dictionary];
+				FILE * pFile = fopen ("/tmp/kill_all_storescu", "r");
+				if( pFile)
+					fclose (pFile);
+				else
+					[object move: dictionary];
 			}
 			
 			if( [array count] == 0) error = -3;
@@ -1655,10 +1659,10 @@ static const char *GetPrivateIP()
 			}
 			
 			[selectedItems addObjectsFromArray: previousStudies];
-			
-			for( id item in selectedItems)
-				[item setShowErrorMessage: NO];
 		}
+		
+		for( id item in selectedItems)
+			[item setShowErrorMessage: NO];
 		
 		[NSThread detachNewThreadSelector:@selector( performRetrieve:) toTarget:self withObject: selectedItems];
 		
@@ -1992,7 +1996,12 @@ static const char *GetPrivateIP()
 		for( NSDictionary *d in moveArray)
 		{
 			DCMTKQueryNode *object = [d objectForKey: @"query"];
-			[object move: d allowCGET: [[d objectForKey: @"allowCGET"] boolValue]];
+			
+			FILE * pFile = fopen ("/tmp/kill_all_storescu", "r");
+			if( pFile)
+				fclose (pFile);
+			else
+				[object move: d allowCGET: [[d objectForKey: @"allowCGET"] boolValue]];
 			
 			@synchronized( previousAutoRetrieve)
 			{
@@ -2002,8 +2011,17 @@ static const char *GetPrivateIP()
 		
 		[NSThread sleepForTimeInterval: 0.5];	// To allow errorMessage on the main thread...
 		
-		for( id item in array)
-			[item setShowErrorMessage: YES];
+		if( [[self window] isVisible])
+		{
+			FILE * pFile = fopen( "/tmp/kill_all_storescu", "r");
+			if( pFile)
+				fclose (pFile);
+			else
+			{
+				for( id item in array)
+					[item setShowErrorMessage: YES];
+			}
+		}
 		
 		NSLog(@"Retrieve END");
 	}

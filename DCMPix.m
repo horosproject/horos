@@ -815,6 +815,16 @@ void ras_FillPolygon(	NSPointInt *p,
     struct	edge *active;
 	long curY;
 	
+	float test;
+	
+	test = -FLT_MAX;
+	if( test != -FLT_MAX)
+		NSLog( @"******* test != -FLT_MAX");
+	
+	test = FLT_MAX;
+	if( test != FLT_MAX)
+		NSLog( @"******* test != FLT_MAX");
+	
     FillEdges(p, no, edgeTable);
 	
     for ( curY = 0; edgeTable[ curY] == NULL; curY++ )
@@ -2114,7 +2124,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		if( ptsInt != nil && no > 1 )	{
 			BOOL restore = NO, addition = NO, outside = NO;
 			
-			ras_FillPolygon( ptsInt, no, tempImage, size->width, size->height, [pixArray count], -99999, 99999, outside, 255, addition, NO, NO, nil, nil, nil, nil, nil, 0, 2, 0, restore);
+			ras_FillPolygon( ptsInt, no, tempImage, size->width, size->height, [pixArray count], -FLT_MAX, FLT_MAX, outside, 255, addition, NO, NO, nil, nil, nil, nil, nil, 0, 2, 0, restore);
 		}
 		
 		// Convert float to char
@@ -2679,8 +2689,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	itotal = 0;
 	imean = 0;
 	idev = 0;
-	imin = 99999;
-	imax = -99999;
+	imin = FLT_MAX;
+	imax = -FLT_MAX;
 	
 	[self CheckLoad];
 	
@@ -2887,12 +2897,12 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	
 	if( max)
 	{
-		if( *max == -99999) *max = 0;
+		if( *max == -FLT_MAX) *max = 0;
 	}
 	
 	if( min)
 	{
-		if( *min == 99999) *min = 0;
+		if( *min == FLT_MAX) *min = 0;
 	}
 }
 
@@ -3854,7 +3864,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		else if( bpp == 32)
 		{
 			unsigned short  fmt;
-			float			*buf, max=-99999, min=99999, diff;
+			float			*buf, max=-FLT_MAX, min=FLT_MAX, diff;
 			short			*dst;
 			
 			TIFFGetField(tif, TIFFTAG_SAMPLEFORMAT, &fmt);

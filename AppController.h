@@ -164,6 +164,8 @@ extern "C"
 - (IBAction) help: (id) sender;  /**< Open help window */
 //=============================================
 
+- (IBAction) killAllStoreSCU:(id) sender;
+
 #pragma mark-
 #pragma mark window routines
 - (IBAction) updateViews:(id) sender;  /**< Update Viewers */

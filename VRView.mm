@@ -3740,8 +3740,8 @@ public:
 					
 					// Bone Removal
 					NSNumber		*nsnewValue	= [NSNumber numberWithFloat: -1000];		//-1000
-					NSNumber		*nsminValue	= [NSNumber numberWithFloat: -99999];		//-99999
-					NSNumber		*nsmaxValue	= [NSNumber numberWithFloat: 99999];
+					NSNumber		*nsminValue	= [NSNumber numberWithFloat: -FLT_MAX];		//-99999
+					NSNumber		*nsmaxValue	= [NSNumber numberWithFloat: FLT_MAX];
 					NSNumber		*nsoutside	= [NSNumber numberWithBool: NO];
 					NSNumber		*nsaddition	= [NSNumber numberWithBool: addition];
 					NSMutableArray	*roiToProceed = [NSMutableArray array];
@@ -7219,7 +7219,7 @@ public:
 	long p, n;
 	BOOL pointFound = NO;
 	float opacitySum = 0.0;
-	float maxValue = -99999;
+	float maxValue = -FLT_MAX;
 	int blendMode;
 	if( volumeMapper) blendMode = volumeMapper->GetBlendMode();
 	if( textureMapper) blendMode = textureMapper->GetBlendMode();

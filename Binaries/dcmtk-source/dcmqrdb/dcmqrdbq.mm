@@ -1198,7 +1198,7 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::makeNewStoreFileName(
     char prefix[12];
 
     const char *m = dcmSOPClassUIDToModality(SOPClassUID);
-    if (m==NULL) m = "XX";
+    if (m == NULL) m = "XX";
     sprintf(prefix, "%s_%d_", m, getpid());	// getpid is very important, to be sure that this filename is UNIQUE, if multiple associations are currently running
 	
 	seed++;
@@ -1214,7 +1214,7 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::makeNewStoreFileName(
 	}
     strcpy(newImageFileName, filename.c_str());
 	
-    return EC_Normal;
+	return EC_Normal;
 }
 
 OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::storeRequest(

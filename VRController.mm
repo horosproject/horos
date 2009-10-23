@@ -954,11 +954,11 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	
 	if( blendedSeries)
 	{
-		[[blendingPixList objectAtIndex: index] fillROI:roi newVal:newVal minValue:-999999 maxValue:999999 outside:outside orientationStack:stackOrientation stackNo:i restore:restore addition:addition spline: NO];
+		[[blendingPixList objectAtIndex: index] fillROI:roi newVal:newVal minValue: -FLT_MAX maxValue: FLT_MAX outside:outside orientationStack:stackOrientation stackNo:i restore:restore addition:addition spline: NO];
 	}
 	else
 	{
-		[[pixList[ curMovieIndex] objectAtIndex: index] fillROI:roi newVal:newVal minValue:-999999 maxValue:999999 outside:outside orientationStack:stackOrientation stackNo:i restore:restore addition:addition spline: NO];
+		[[pixList[ curMovieIndex] objectAtIndex: index] fillROI:roi newVal:newVal minValue: -FLT_MAX maxValue: FLT_MAX outside:outside orientationStack:stackOrientation stackNo:i restore:restore addition:addition spline: NO];
 	}
 }
 

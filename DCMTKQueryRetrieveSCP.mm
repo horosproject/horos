@@ -312,9 +312,7 @@ DcmQueryRetrieveConfig config;
 	scp = NULL;
 	
 	if (cond.bad())
-	{
-		NSLog(@"wwwwwwww");
-	}
+		errmsg("****** cond.good() != normal ---- DCMTKQueryRetrieve");
 	
 	cond = ASC_dropNetwork(&options.net_);
     if (cond.bad()) {

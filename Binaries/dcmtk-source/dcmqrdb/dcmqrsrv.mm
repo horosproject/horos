@@ -524,7 +524,9 @@ OFCondition DcmQueryRetrieveSCP::storeSCP(T_ASC_Association * assoc, T_DIMSE_C_S
             request->AffectedSOPClassUID,
             request->AffectedSOPInstanceUID,
             imageFileName);
-        if (dbcond.bad()) {
+        
+		if (dbcond.bad())
+		{
             DcmQueryRetrieveOptions::errmsg("storeSCP: Database: makeNewStoreFileName Failed");
             /* must still receive data */
             strcpy(imageFileName, NULL_DEVICE_NAME);
@@ -532,7 +534,14 @@ OFCondition DcmQueryRetrieveSCP::storeSCP(T_ASC_Association * assoc, T_DIMSE_C_S
             context.setStatus(STATUS_STORE_Refused_OutOfResources);
         }
     }
-
+	
+	FILE * pFile = fopen ("/tmp/kill_all_storescu", "r");
+	if( pFile)
+	{
+		fclose (pFile);
+		cond = ASC_abortAssociation(assoc);
+	}
+	
 #ifdef LOCK_IMAGE_FILES
     /* exclusively lock image file */
 #ifdef O_BINARY
