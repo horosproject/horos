@@ -748,9 +748,13 @@ static const char *GetPrivateIP()
 	{
 		if (![(DCMTKQueryNode *)item children])
 		{
+			performingCFind = YES; // to avoid re-entries during WaitRendering window, and separate thread for cFind
+			
 			[progressIndicator startAnimation:nil];
 			[item queryWithValues:nil];
 			[progressIndicator stopAnimation:nil];
+			
+			performingCFind = NO;
 		}
 	}
 	return  (item == nil) ? [resultArray count] : [[(DCMTKQueryNode *) item children] count];
@@ -1544,7 +1548,9 @@ static const char *GetPrivateIP()
 	
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	[progressIndicator startAnimation:nil];
+	performingCFind = YES;
 	[queryManager performQuery];
+	performingCFind = NO;
 	[progressIndicator stopAnimation:nil];
 	[resultArray sortUsingDescriptors: [self sortArray]];
 	[self refresh: self now: YES];
@@ -2592,8 +2598,11 @@ static const char *GetPrivateIP()
 	currentQueryController = nil;
 }
 
-- (void)windowDidBecomeKey:(NSNotification *)notification
+- (void) windowDidBecomeKey:(NSNotification *)notification
 {
+	if( performingCFind)
+		return;
+		
 	[self refresh: self now: YES];
 }
 

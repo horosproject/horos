@@ -9694,7 +9694,9 @@ static BOOL needToRezoom;
 						// Root?
 						BOOL isThereAnOsiriXDataAtTheRoot = NO;
 						
-						NSArray* mountedVolumes = [[NSWorkspace sharedWorkspace] mountedLocalVolumePaths];
+						if( mountedVolumes == nil)
+							mountedVolumes = [[[NSWorkspace sharedWorkspace] mountedLocalVolumePaths] copy];
+						
 						for( NSString *vol in mountedVolumes )
 						{
 							if( [vol isEqualToString: path]) isThereAnOsiriXDataAtTheRoot = YES;
@@ -15590,6 +15592,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[self ReadDicomCDRom: nil];
 	}
 	
+	[mountedVolumes release];
+	mountedVolumes = [[[NSWorkspace sharedWorkspace] mountedLocalVolumePaths] copy];
+	
 	[self displayBonjourServices];
 }
 
@@ -15648,6 +15653,10 @@ static volatile int numberOfThreadsForJPEG = 0;
 			
 			[selectedDict release];
 		}
+		
+		[mountedVolumes release];
+		mountedVolumes = [[[NSWorkspace sharedWorkspace] mountedLocalVolumePaths] copy];
+	
 		[self displayBonjourServices];
 	}
 	
@@ -15762,6 +15771,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 	NSLog( @"%@", sNewDrive);
 	
 	[self removeMountedImages: sNewDrive];
+	
+	[mountedVolumes release];
+	mountedVolumes = [[[NSWorkspace sharedWorkspace] mountedLocalVolumePaths] copy];
 	
 	[self displayBonjourServices];
 }

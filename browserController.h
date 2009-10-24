@@ -237,6 +237,8 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	NSMutableArray					*cachedFilesForDatabaseOutlineSelectionSelectedFiles;
 	NSMutableArray					*cachedFilesForDatabaseOutlineSelectionCorrespondingObjects;
 	NSIndexSet						*cachedFilesForDatabaseOutlineSelectionIndex;
+	
+	NSArray							*mountedVolumes;
 }
 
 @property(readonly) NSDateFormatter *DateTimeFormat;

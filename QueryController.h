@@ -70,7 +70,7 @@
 	NSArray									*studyArrayInstanceUID, *studyArrayCache;
 	NSTimeInterval							lastComputeStudyArrayInstanceUID, lastListRefresh;
 	
-	BOOL									autoQuery, queryButtonPressed;
+	BOOL									autoQuery, queryButtonPressed, performingCFind;
 	
 	NSInteger								autoRefreshQueryResults;
 }

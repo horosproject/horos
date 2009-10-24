@@ -1941,7 +1941,7 @@ static NSDate *lastWarningDate = nil;
 	[wait showWindow: self];
 	
 	[[NSFileManager defaultManager] createFileAtPath: @"/tmp/kill_all_storescu" contents: [NSData data] attributes: nil];
-	[NSThread sleepForTimeInterval: 5];
+	[NSThread sleepForTimeInterval: 3];
 	
 	[wait close];
 	[wait release];
