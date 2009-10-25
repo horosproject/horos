@@ -211,6 +211,32 @@ static const char *GetPrivateIP()
 	[NSApp stopModal];
 }
 
+- (void) autoRetrieveSettings: (id) sender
+{
+	NSNumber *NumberOfPreviousStudyToRetrieve = [[NSUserDefaults standardUserDefaults] objectForKey: @"NumberOfPreviousStudyToRetrieve"];
+	NSNumber *retrieveSameModality = [[NSUserDefaults standardUserDefaults] objectForKey: @"retrieveSameModality"];
+	NSNumber *retrieveSameDescription = [[NSUserDefaults standardUserDefaults] objectForKey: @"retrieveSameDescription"];
+
+	[NSApp beginSheet:	autoRetrieveWindow
+				modalForWindow: self.window
+				modalDelegate: nil
+				didEndSelector: nil
+				contextInfo: nil];
+			
+	int result = [NSApp runModalForWindow: autoRetrieveWindow];
+	
+	[autoRetrieveWindow orderOut: self];
+	
+	[NSApp endSheet: autoRetrieveWindow];
+	
+	if( result != NSRunStoppedResponse)
+	{
+		[[NSUserDefaults standardUserDefaults] setObject: NumberOfPreviousStudyToRetrieve forKey: @"NumberOfPreviousStudyToRetrieve"];
+		[[NSUserDefaults standardUserDefaults] setObject: retrieveSameModality forKey: @"retrieveSameModality"];
+		[[NSUserDefaults standardUserDefaults] setObject: retrieveSameDescription forKey: @"retrieveSameDescription"];
+	}
+}
+
 - (IBAction) switchAutoRetrieving: (id) sender
 {
 	NSLog( @"auto-retrieving switched");
@@ -222,55 +248,11 @@ static const char *GetPrivateIP()
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"autoRetrieving"])
 	{
-//		BOOL doit = NO;
-//		NSString *alertSuppress = @"auto retrieving warning";
-//		NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-//		if ([defaults boolForKey: alertSuppress])
-//		{
-//			doit = YES;
-//		}
-//		else
-//		{
-//			NSAlert* alert = [NSAlert new];
-//			[alert setMessageText: NSLocalizedString(@"Auto-Retrieving", nil)];
-//			[alert setInformativeText: NSLocalizedString(@"Are you sure that you want to activate the Auto-Retrieving function : each study displayed in the Query & Retrieve list will be automatically retrieved to destination computer.\r\r(Only 10 studies is retrieved each time. Next 10 studies during next 'refresh'.)", nil)];
-//			[alert setShowsSuppressionButton:YES ];
-//			[alert addButtonWithTitle: NSLocalizedString(@"Yes", nil)];
-//			[alert addButtonWithTitle: NSLocalizedString(@"Cancel", nil)];
-//			
-//			if ( [alert runModal] == NSAlertFirstButtonReturn) doit = YES;
-//			
-//			if ([[alert suppressionButton] state] == NSOnState)
-//			{
-//				[defaults setBool:YES forKey:alertSuppress];
-//			}
-//		}
-		int result = 0;
-		
-		if( [self.window isVisible])
+		if( [autoQueryLock tryLock])
 		{
-			[NSApp beginSheet:	autoRetrieveWindow
-				modalForWindow: self.window
-				modalDelegate: nil
-				didEndSelector: nil
-				contextInfo: nil];
-			
-			result = [NSApp runModalForWindow: autoRetrieveWindow];
-			[autoRetrieveWindow orderOut: self];
-			
-			[NSApp endSheet: autoRetrieveWindow];
+			[self autoQueryThread];
+			[autoQueryLock unlock];
 		}
-		else result = NSRunStoppedResponse;
-		
-		if( result == NSRunStoppedResponse)
-		{
-			if( [autoQueryLock tryLock])
-			{
-				[self autoQueryThread];
-				[autoQueryLock unlock];
-			}
-		}
-		else [[NSUserDefaults standardUserDefaults] setBool:NO forKey: @"autoRetrieving"];
 	}
 }
 

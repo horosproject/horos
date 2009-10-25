@@ -17,6 +17,8 @@
 
 @implementation WaitRendering
 
+@synthesize sheetForWindow;
+
 - (void) showWindow: (id) sender
 {
 	NSMutableArray *winList = [NSMutableArray array];
@@ -86,9 +88,12 @@
 {
 	if( startTime == nil) return;	// NOT STARTED
 	
+	if( sheetForWindow)
+		[NSApp endSheet: [self window]];
+	
 	[[self window] orderOut:self];
 	
-	if( session != nil)
+	if( session != nil && sheetForWindow == nil)
 	{
 		[NSApp abortModal];
 		[NSApp endModalSession:session];
@@ -156,9 +161,19 @@
 	{
 		NSTimeInterval  thisTime = [NSDate timeIntervalSinceReferenceDate];
 		
-		if( session == nil) session = [NSApp beginModalSessionForWindow:[self window]];
+		if( session == nil) 
+		{
+			if( sheetForWindow)
+			{
+				session = (NSModalSession) 1;
+				[NSApp beginSheet: [self window] modalForWindow: sheetForWindow modalDelegate: self didEndSelector: nil contextInfo: nil];
+			}
+			else
+				session = [NSApp beginModalSessionForWindow:[self window]];
+		}
 		
-		[NSApp runModalSession:session];
+		if( sheetForWindow == nil)
+			[NSApp runModalSession:session];
 		
 		if( thisTime - lastTimeFrame > 1.0)
 		{
@@ -191,6 +206,7 @@
 
 - (void) dealloc
 {
+	[sheetForWindow release];
 	[string release];
 	[super dealloc];
 }

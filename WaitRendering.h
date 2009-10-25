@@ -35,7 +35,12 @@
 	id							cancelDelegate;
 	
 	NSTimeInterval				displayedTime;
+	
+	NSWindow					*sheetForWindow;
 }
+
+@property (retain) NSWindow *sheetForWindow;
+
 - (id) init:(NSString*) s;
 - (BOOL) run;
 - (void) start;

@@ -84,6 +84,7 @@
 + (int) queryAndRetrieveAccessionNumber:(NSString*) an server: (NSDictionary*) aServer;
 + (NSArray*) queryStudyInstanceUID:(NSString*) an server: (NSDictionary*) aServer;
 
+- (void) autoRetrieveSettings: (id) sender;
 - (void) saveSettings;
 - (id) initAutoQuery: (BOOL) autoQuery;
 - (IBAction) cancel:(id)sender;

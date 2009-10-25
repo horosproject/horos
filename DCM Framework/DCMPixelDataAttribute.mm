@@ -1514,37 +1514,34 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 		memset(&parameters, 0, sizeof(parameters));
 		opj_set_default_encoder_parameters(&parameters);
 		
+		parameters.tcp_numlayers = 1;
+		parameters.cp_disto_alloc = 1;
+		
 		switch( quality)
 		{
 			case DCMLosslessQuality:
 				parameters.tcp_rates[0] = 0;
-				parameters.tcp_numlayers = 1;
-				parameters.cp_disto_alloc = 1;
+				
 			break;
 			
 			case DCMHighQuality:
 				parameters.tcp_rates[0] = 4;
-				parameters.tcp_numlayers = 1;
-				parameters.cp_disto_alloc = 1;
 			break;
 			
 			case DCMMediumQuality:
-				parameters.tcp_rates[0] = 8;
-				parameters.tcp_numlayers = 1;
-				parameters.cp_disto_alloc = 1;
+				if( _columns <= 600 || _rows <= 600)
+					parameters.tcp_rates[0] = 6;
+				else
+					parameters.tcp_rates[0] = 8;
 			break;
 			
 			case DCMLowQuality:
 				parameters.tcp_rates[0] = 16;
-				parameters.tcp_numlayers = 1;
-				parameters.cp_disto_alloc = 1;
 			break;
 			
 			default:
 				NSLog( @"****** warning unknown compression rate -> lossless : %d", quality);
 				parameters.tcp_rates[0] = 0;
-				parameters.tcp_numlayers = 1;
-				parameters.cp_disto_alloc = 1;
 			break;
 		}
 		
@@ -1856,7 +1853,10 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 			break;
 				
 			case DCMMediumQuality:
-				strcpy( optstr, "rate=0.12");
+				if( _columns <= 600 || _rows <= 600)
+					strcpy( optstr, "rate=0.16");
+				else
+					strcpy( optstr, "rate=0.12");
 			break;
 				
 			case DCMLowQuality:
