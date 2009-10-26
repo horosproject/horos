@@ -2698,7 +2698,7 @@ AQAAAA4QAAVDRVNUAENFVAAAAAEBAAABAQ</bytes>
 						<object class="NSPopUpButton" id="271767141">
 							<reference key="NSNextResponder" ref="265611195"/>
 							<int key="NSvFlags">265</int>
-							<string key="NSFrame">{{720, 526}, {153, 22}}</string>
+							<string key="NSFrame">{{686, 526}, {153, 22}}</string>
 							<reference key="NSSuperview" ref="265611195"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSPopUpButtonCell" key="NSCell" id="1068243602">
@@ -2802,7 +2802,7 @@ AQAAAA4QAAVDRVNUAENFVAAAAAEBAAABAQ</bytes>
 						<object class="NSTextField" id="179047244">
 							<reference key="NSNextResponder" ref="265611195"/>
 							<int key="NSvFlags">265</int>
-							<string key="NSFrame">{{673, 530}, {49, 14}}</string>
+							<string key="NSFrame">{{826, 531}, {49, 14}}</string>
 							<reference key="NSSuperview" ref="265611195"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="717417091">
@@ -2864,7 +2864,7 @@ AQAAAA4QAAVDRVNUAENFVAAAAAEBAAABAQ</bytes>
 						<object class="NSButton" id="489404932">
 							<reference key="NSNextResponder" ref="265611195"/>
 							<int key="NSvFlags">265</int>
-							<string key="NSFrame">{{800, 512}, {59, 16}}</string>
+							<string key="NSFrame">{{788, 512}, {70, 16}}</string>
 							<reference key="NSSuperview" ref="265611195"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="1003056002">
@@ -3116,6 +3116,10 @@ AQAAAA4QAAVDRVNUAENFVAAAAAEBAAABAQ</bytes>
 				<string key="NSMaxSize">{1.79769e+308, 1.79769e+308}</string>
 			</object>
 			<object class="NSUserDefaultsController" id="524337109">
+				<object class="NSMutableArray" key="NSDeclaredKeys">
+					<bool key="EncodedWithXMLCoder">YES</bool>
+					<string>dontAuthorizeAutoRetrieve</string>
+				</object>
 				<bool key="NSSharedInstance">YES</bool>
 			</object>
 			<object class="NSWindowTemplate" id="665538993">
@@ -4110,6 +4114,66 @@ ZWQgZHVyaW5nIG5leHQgJ3JlZnJlc2gnLg</string>
 					<int key="connectionID">933</int>
 				</object>
 				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">autoRetrieveSettings:</string>
+						<reference key="source" ref="934212155"/>
+						<reference key="destination" ref="489404932"/>
+					</object>
+					<int key="connectionID">942</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: autoRefreshQueryResults</string>
+						<reference key="source" ref="489404932"/>
+						<reference key="destination" ref="934212155"/>
+						<object class="NSNibBindingConnector" key="connector" id="606799819">
+							<reference key="NSSource" ref="489404932"/>
+							<reference key="NSDestination" ref="934212155"/>
+							<string key="NSLabel">enabled: autoRefreshQueryResults</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">autoRefreshQueryResults</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">943</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled2: values.dontAuthorizeAutoRetrieve</string>
+						<reference key="source" ref="489404932"/>
+						<reference key="destination" ref="524337109"/>
+						<object class="NSNibBindingConnector" key="connector" id="685714740">
+							<reference key="NSSource" ref="489404932"/>
+							<reference key="NSDestination" ref="524337109"/>
+							<string key="NSLabel">enabled2: values.dontAuthorizeAutoRetrieve</string>
+							<string key="NSBinding">enabled2</string>
+							<string key="NSKeyPath">values.dontAuthorizeAutoRetrieve</string>
+							<object class="NSDictionary" key="NSOptions">
+								<bool key="EncodedWithXMLCoder">YES</bool>
+								<object class="NSArray" key="dict.sortedKeys">
+									<bool key="EncodedWithXMLCoder">YES</bool>
+									<string>NSMultipleValuesPlaceholder</string>
+									<string>NSNoSelectionPlaceholder</string>
+									<string>NSNotApplicablePlaceholder</string>
+									<string>NSNullPlaceholder</string>
+									<string>NSValueTransformerName</string>
+								</object>
+								<object class="NSMutableArray" key="dict.values">
+									<bool key="EncodedWithXMLCoder">YES</bool>
+									<integer value="-1"/>
+									<integer value="-1"/>
+									<integer value="-1"/>
+									<integer value="-1"/>
+									<string>NSNegateBoolean</string>
+								</object>
+							</object>
+							<reference key="NSPreviousConnector" ref="606799819"/>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">947</int>
+				</object>
+				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
 						<string key="label">hidden: autoQuery</string>
 						<reference key="source" ref="489404932"/>
@@ -4124,18 +4188,11 @@ ZWQgZHVyaW5nIG5leHQgJ3JlZnJlc2gnLg</string>
 								<string key="NS.key.0">NSValueTransformerName</string>
 								<string key="NS.object.0">NSNegateBoolean</string>
 							</object>
+							<reference key="NSPreviousConnector" ref="685714740"/>
 							<int key="NSNibBindingConnectorVersion">2</int>
 						</object>
 					</object>
-					<int key="connectionID">941</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">autoRetrieveSettings:</string>
-						<reference key="source" ref="934212155"/>
-						<reference key="destination" ref="489404932"/>
-					</object>
-					<int key="connectionID">942</int>
+					<int key="connectionID">948</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -4186,14 +4243,14 @@ ZWQgZHVyaW5nIG5leHQgJ3JlZnJlc2gnLg</string>
 							<reference ref="484885489"/>
 							<reference ref="365057364"/>
 							<reference ref="1002543309"/>
-							<reference ref="179047244"/>
 							<reference ref="968854848"/>
 							<reference ref="162008091"/>
 							<reference ref="213012663"/>
 							<reference ref="493782390"/>
-							<reference ref="271767141"/>
 							<reference ref="366844117"/>
 							<reference ref="489404932"/>
+							<reference ref="179047244"/>
+							<reference ref="271767141"/>
 						</object>
 						<reference key="parent" ref="206394704"/>
 					</object>
@@ -6496,7 +6553,7 @@ ZWQgZHVyaW5nIG5leHQgJ3JlZnJlc2gnLg</string>
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">942</int>
+			<int key="maxID">948</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
