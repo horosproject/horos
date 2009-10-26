@@ -1797,8 +1797,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	keepROITool = keepROITool || [self roiTool:currentTool] || [self roiTool:i];
     currentTool = i;
 	
-//  Not activated by default    
-//	[[NSUserDefaults standardUserDefaults] setInteger:currentTool forKey: @"DEFAULTLEFTTOOL"];
+	[[NSUserDefaults standardUserDefaults] setInteger:currentTool forKey: @"DEFAULTLEFTTOOL"];
 	
 	[self stopROIEditingForce: YES];
 	
@@ -5901,8 +5900,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	[[NSNotificationCenter defaultCenter] postNotificationName:OsirixLabelGLFontChangeNotification object: self];
 	[[NSNotificationCenter defaultCenter] postNotificationName:OsirixGLFontChangeNotification object: self];
 	
-    currentTool =  [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULTLEFTTOOL"];
-	
+	if( [self is2DViewer])
+		currentTool =  [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULTLEFTTOOL"];
+	else
+		currentTool = tWL;
+		
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowWillClose:) name: NSWindowWillCloseNotification object: nil];
 	
 	_alternateContext = [[NSOpenGLContext alloc] initWithFormat:pixFmt shareContext:[self openGLContext]];
