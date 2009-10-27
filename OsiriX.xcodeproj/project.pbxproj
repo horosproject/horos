@@ -82,12 +82,13 @@
 		183C865C08563F3A000E6A68 /* VRFlyThruAdapter.h in Headers */ = {isa = PBXBuildFile; fileRef = 183C864808563F3A000E6A68 /* VRFlyThruAdapter.h */; };
 		183C865D08563F3A000E6A68 /* VRFlyThruAdapter.m in Sources */ = {isa = PBXBuildFile; fileRef = 183C864908563F3A000E6A68 /* VRFlyThruAdapter.m */; };
 		32E422150C97301600E193CA /* altivecFunctions.h in Headers */ = {isa = PBXBuildFile; fileRef = 32E422140C97301600E193CA /* altivecFunctions.h */; };
-		59A63E8C1042C776003F4069 /* Nitrogen.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 59A63E8B1042C776003F4069 /* Nitrogen.framework */; };
-		59A63E971042C7FB003F4069 /* Nitrogen.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 59A63E8B1042C776003F4069 /* Nitrogen.framework */; };
 		59C2B8EB0FF0EB6A00B50385 /* Notifications.m in Sources */ = {isa = PBXBuildFile; fileRef = 59E088A80FF0AB9400452F19 /* Notifications.m */; };
 		59C2B8EC0FF0EB7700B50385 /* Notifications.h in Headers */ = {isa = PBXBuildFile; fileRef = 59E088A70FF0AB9400452F19 /* Notifications.h */; };
 		59F1A4C8104BA5BE009E3215 /* OsiriXHeaders.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59F1A4C7104BA5BE009E3215 /* OsiriXHeaders.mm */; };
 		59F1A515104BA8AE009E3215 /* OsiriX Headers.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = AB0F3A2C1046BD2B004129DD /* OsiriX Headers.framework */; };
+		59FF1CE21097107A00F5EDA0 /* Nitrogen.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 59FF1CE11097107A00F5EDA0 /* Nitrogen.framework */; };
+		59FF1CE31097107A00F5EDA0 /* Nitrogen.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 59FF1CE11097107A00F5EDA0 /* Nitrogen.framework */; };
+		59FF1D0B109710CD00F5EDA0 /* Nitrogen.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 59FF1CE11097107A00F5EDA0 /* Nitrogen.framework */; };
 		7E0B3A4A0675273500908593 /* DCM Framework_Prefix.pch in Resources */ = {isa = PBXBuildFile; fileRef = 7E0B3A12067526A600908593 /* DCM Framework_Prefix.pch */; };
 		7E0B3A4D0675273500908593 /* DCM.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E0B3A13067526A600908593 /* DCM.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7E0B3A530675273600908593 /* DCMAttribute.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E0B3A14067526A600908593 /* DCMAttribute.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -4793,7 +4794,7 @@
 				CE9A04440C7DBC060007809F /* libxerces-c.27.dylib in CopyFiles */,
 				84F453570FC3DF5400D29666 /* ILCrashReporter.framework in CopyFiles */,
 				CE9A04450C7DBC060007809F /* libdcmprintscu.dylib in CopyFiles */,
-				59A63E971042C7FB003F4069 /* Nitrogen.framework in CopyFiles */,
+				59FF1D0B109710CD00F5EDA0 /* Nitrogen.framework in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4829,10 +4830,10 @@
 		4A16D0A20965E21800F82EC4 /* UnitTestingBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UnitTestingBase.h; path = UnitTesting/UnitTestingBase.h; sourceTree = "<group>"; };
 		4A16D0A30965E21800F82EC4 /* UnitTestingBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UnitTestingBase.m; path = UnitTesting/UnitTestingBase.m; sourceTree = "<group>"; };
 		59A63E7A1042C702003F4069 /* Nitrogen.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Nitrogen.xcodeproj; path = ../nitrogen/Nitrogen.xcodeproj; sourceTree = SOURCE_ROOT; };
-		59A63E8B1042C776003F4069 /* Nitrogen.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Nitrogen.framework; path = ../nitrogen/build/Release/Nitrogen.framework; sourceTree = SOURCE_ROOT; };
 		59E088A70FF0AB9400452F19 /* Notifications.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Notifications.h; sourceTree = "<group>"; };
 		59E088A80FF0AB9400452F19 /* Notifications.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Notifications.m; sourceTree = "<group>"; };
 		59F1A4C7104BA5BE009E3215 /* OsiriXHeaders.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = OsiriXHeaders.mm; sourceTree = "<group>"; };
+		59FF1CE11097107A00F5EDA0 /* Nitrogen.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Nitrogen.framework; path = ../nitrogen/build/Development/Nitrogen.framework; sourceTree = SOURCE_ROOT; };
 		7E0339E607415C4F0025DDB4 /* BurnerWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BurnerWindowController.h; sourceTree = "<group>"; };
 		7E0339E707415C4F0025DDB4 /* BurnerWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BurnerWindowController.m; sourceTree = "<group>"; };
 		7E0B3A12067526A600908593 /* DCM Framework_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = "DCM Framework_Prefix.pch"; sourceTree = "<group>"; };
@@ -8609,6 +8610,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				59FF1CE21097107A00F5EDA0 /* Nitrogen.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8694,10 +8696,10 @@
 				84F4533E0FC3DF3800D29666 /* ILCrashReporter.framework in Frameworks */,
 				CE8D057E0FD8505000165DDE /* OsiriX.framework in Frameworks */,
 				CECBF93D0FE6B1C400425ED4 /* libopenjpeg.a in Frameworks */,
-				59A63E8C1042C776003F4069 /* Nitrogen.framework in Frameworks */,
 				CE790A1A105D4DE200CE6AAF /* AddressBook.framework in Frameworks */,
 				CE790A1B105D4DE200CE6AAF /* Security.framework in Frameworks */,
 				CE790A1C105D4DE200CE6AAF /* WebKit.framework in Frameworks */,
+				59FF1CE31097107A00F5EDA0 /* Nitrogen.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -9016,7 +9018,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				59A63E8B1042C776003F4069 /* Nitrogen.framework */,
+				59FF1CE11097107A00F5EDA0 /* Nitrogen.framework */,
 				A97E19EE0CDF55E50065EE29 /* 3DconnexionClient.framework */,
 				CE6693C60AF551210073D923 /* libxerces-c.27.dylib */,
 				CE586CC30C74B75D00DB7D5A /* libdcmprintscu.dylib */,
@@ -16619,7 +16621,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /usr/bin/perl;
-			shellScript = "#!/usr/bin/perl\n\nuse strict;\nuse File::Copy;\nuse File::Basename;\nmy $root = $ENV{PROJECT_DIR};\nmy $destination = \"$ENV{TARGET_BUILD_DIR}/$ENV{PUBLIC_HEADERS_FOLDER_PATH}\";\n\nmkdir $destination unless -d $destination;\nopen OsiriX_h, \">\", \"$destination/OsiriX.h\" or die $!;\n\nprint OsiriX_h \"#ifndef __OsiriX_Headers\\n#define __OsiriX_Headers\\n\\n\";\n\nopendir(DIR, $root);\nmy @files = readdir(DIR);\nforeach (@files) {\n\tmy $filename = $_;\n\tnext unless -f \"$root/$filename\" && $filename =~ /\\.h$/s;\n\tcopy(\"$root/$filename\", \"$destination/\".(basename $filename)) or die \"Copy failed: $!\";\n\tprint OsiriX_h \"#include <OsiriX.Headers/$filename>\\n\";\n}\n\nprint OsiriX_h \"\\n#endif\\n\";\nclose OsiriX_h;\n\nexit 0;";
+			shellScript = "#!/usr/bin/perl\n\nuse strict;\nuse File::Copy;\nuse File::Basename;\nmy $root = $ENV{PROJECT_DIR};\nmy $destination = \"$ENV{TARGET_BUILD_DIR}/$ENV{PUBLIC_HEADERS_FOLDER_PATH}\";\n\nmkdir $destination unless -d $destination;\nopen OsiriX_h, \">\", \"$destination/OsiriX.h\" or die $!;\n\nprint OsiriX_h \"#ifndef __OsiriX_Headers\\n#define __OsiriX_Headers\\n\\n\";\n\nopendir(DIR, $root);\nmy @files = readdir(DIR);\nforeach (@files) {\n\tmy $filename = $_;\n\tnext unless -f \"$root/$filename\" && $filename =~ /\\.h$/s;\n\tcopy(\"$root/$filename\", \"$destination/\".(basename $filename)) or die \"Copy failed: $!\";\n\tprint OsiriX_h \"#include <OsiriX.Headers/$filename>\\n\";\n}\n\nprint OsiriX_h \"\\n#endif\\n\";\nclose OsiriX_h;\n\nchdir \"$ENV{TARGET_BUILD_DIR}/$ENV{FULL_PRODUCT_NAME}\";\nsymlink \"Versions/Current/Headers\", \"Headers\";\nsymlink \"Versions/Current/Frameworks\", \"Frameworks\";\n\nexit 0;";
 		};
 		BF7486A40CC6AA5C00198387 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -18807,6 +18809,7 @@
 					"\"$(SRCROOT)/../plugins/ROI Enhancement\"",
 					"\"$(SRCROOT)/build/Development\"",
 					"\"$(SRCROOT)/../nitrogen/build/Release\"",
+					"\"$(SRCROOT)/../nitrogen/build/Development\"",
 				);
 				GCC_ALTIVEC_EXTENSIONS = YES;
 				GCC_AUTO_VECTORIZATION = NO;
@@ -18930,6 +18933,10 @@
 				COPY_PHASE_STRIP = NO;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../nitrogen/build/Development\"",
+				);
 				FRAMEWORK_VERSION = A;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
@@ -18957,6 +18964,10 @@
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../nitrogen/build/Development\"",
+				);
 				FRAMEWORK_VERSION = A;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
@@ -18982,6 +18993,10 @@
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../nitrogen/build/Development\"",
+				);
 				FRAMEWORK_VERSION = A;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
@@ -19007,6 +19022,10 @@
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../nitrogen/build/Development\"",
+				);
 				FRAMEWORK_VERSION = A;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
@@ -19129,6 +19148,7 @@
 					"\"$(SRCROOT)/../plugins/ROI Enhancement\"",
 					"\"$(SRCROOT)/build/Development\"",
 					"\"$(SRCROOT)/../nitrogen/build/Release\"",
+					"\"$(SRCROOT)/../nitrogen/build/Development\"",
 				);
 				GCC_ALTIVEC_EXTENSIONS = YES;
 				GCC_AUTO_VECTORIZATION = NO;
@@ -19416,6 +19436,7 @@
 					"\"$(SRCROOT)/../plugins/ROI Enhancement\"",
 					"\"$(SRCROOT)/build/Development\"",
 					"\"$(SRCROOT)/../nitrogen/build/Release\"",
+					"\"$(SRCROOT)/../nitrogen/build/Development\"",
 				);
 				GCC_ALTIVEC_EXTENSIONS = YES;
 				GCC_AUTO_VECTORIZATION = YES;
@@ -19723,6 +19744,7 @@
 					"\"$(SRCROOT)/../plugins/ROI Enhancement\"",
 					"\"$(SRCROOT)/build/Development\"",
 					"\"$(SRCROOT)/../nitrogen/build/Release\"",
+					"\"$(SRCROOT)/../nitrogen/build/Development\"",
 				);
 				GCC_ALTIVEC_EXTENSIONS = YES;
 				GCC_AUTO_VECTORIZATION = YES;
