@@ -1787,7 +1787,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 {
 	currentToolRight = i;
 	
-	[[NSUserDefaults standardUserDefaults] setInteger:currentToolRight forKey: @"DEFAULTRIGHTTOOL"];
+	if( [self is2DViewer])
+		[[NSUserDefaults standardUserDefaults] setInteger:currentToolRight forKey: @"DEFAULTRIGHTTOOL"];
 }
 
 -(void) setCurrentTool:(short) i
@@ -1797,7 +1798,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	keepROITool = keepROITool || [self roiTool:currentTool] || [self roiTool:i];
     currentTool = i;
 	
-	[[NSUserDefaults standardUserDefaults] setInteger:currentTool forKey: @"DEFAULTLEFTTOOL"];
+	if( [self is2DViewer])
+		[[NSUserDefaults standardUserDefaults] setInteger:currentTool forKey: @"DEFAULTLEFTTOOL"];
 	
 	[self stopROIEditingForce: YES];
 	
@@ -5783,7 +5785,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	cursor = [[NSCursor contrastCursor] retain];
 	syncRelativeDiff = 0;
 	volumicSeries = YES;
-	currentToolRight = [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULTRIGHTTOOL"];
+	if( [self is2DViewer])
+		currentToolRight = [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULTRIGHTTOOL"];
+	else
+		currentToolRight = tZoom;
+	
 	thickSlabMode = 0;
 	thickSlabStacks = 0;
 	COPYSETTINGSINSERIES = YES;
