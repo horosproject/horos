@@ -2658,7 +2658,7 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 	
 	[[CTController reslicer] setOriginalDCMPixList: subPix];
 	[[CTController reslicer] setUseYcache:NO];
-	[[CTController originalView] setDCM:subPix :[[viewer fileList:i] subarrayWithRange:NSMakeRange(fistCTSlice,sliceRangeCT)] :[viewer roiList:i] :0 :'i' :NO];
+	[[CTController originalView] setPixels:subPix files:[[viewer fileList:i] subarrayWithRange:NSMakeRange(fistCTSlice,sliceRangeCT)] rois:[viewer roiList:i] firstImage:0 level:'i' reset:NO];
 	
 //	if( wasDataFlipped) [self flipDataSeries: self];
 	[[CTController originalView] setIndex:index];
@@ -2670,7 +2670,7 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 	index = [[PETController originalView] curImage];
 	[[PETController reslicer] setOriginalDCMPixList:subPix];
 	[[PETController reslicer] setUseYcache:NO];
-	[[PETController originalView] setDCM:subPix :[[blendingViewerController fileList:i] subarrayWithRange:NSMakeRange(fistPETSlice,sliceRangePET)] :[blendingViewerController roiList:i] :0 :'i' :NO];
+	[[PETController originalView] setPixels:subPix files:[[blendingViewerController fileList:i] subarrayWithRange:NSMakeRange(fistPETSlice,sliceRangePET)] rois:[blendingViewerController roiList:i] firstImage:0 level:'i' reset:NO];
 //	if( wasDataFlipped) [self flipDataSeries: self];
 	[[PETController originalView] setIndex:index];
 	//[[CTController originalView] sendSyncMessage:0];

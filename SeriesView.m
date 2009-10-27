@@ -183,7 +183,7 @@
 			DCMView *dcmView = [[[DCMView alloc] initWithFrame:[self bounds]  imageRows:rows  imageColumns:columns] autorelease];
 			[self addSubview:dcmView];
 			[dcmView setTag:i];	
-			[dcmView setDCM: dcmPixList :dcmFilesList :dcmRoiList :0 :listType :YES];
+			[dcmView setPixels: dcmPixList files:dcmFilesList rois:dcmRoiList firstImage:0 level:listType reset:YES];
 		}	
 	}
 	
@@ -265,33 +265,34 @@
     }
 }
 
- 
- - (void) setDCM:(NSMutableArray*) c :(NSArray*)d :(NSMutableArray*)e :(short) firstImage :(char) type :(BOOL) reset
- {
-	if( dcmPixList) [dcmPixList release];
-    dcmPixList = c;
-    [dcmPixList retain];
+- (void) setPixels: (NSMutableArray*) pixels files: (NSArray*) files rois: (NSMutableArray*) rois firstImage: (short) firstImage level: (char) level reset: (BOOL) reset
+{
+	[dcmPixList release];
+    dcmPixList = [pixels retain];
     
-    if( dcmFilesList) [dcmFilesList release];
-    dcmFilesList = d;
-    [dcmFilesList retain];
+	[dcmFilesList release];
+    dcmFilesList = [files retain];
 	
-	if( dcmRoiList) [dcmRoiList release];
-    dcmRoiList = e;
-    [dcmRoiList retain];
+	[dcmRoiList release];
+    dcmRoiList = [rois retain];
     	
-    listType = type;
+    listType = level;
 	
 	DCMView *view;
 	int i = firstImage;
 	for (view in imageViews)
 	{
 		if (i < [dcmPixList count])
-			[view setDCM: c :d :e :i++ :type :reset];
+			[view setPixels: pixels files:files rois:rois firstImage:i++ level:level reset:reset];
 		else
-			[view setDCM: c :d :e :-1 :type :reset];
+			[view setPixels: pixels files:files rois:rois firstImage:-1 level:level reset:reset];
 	}
  }
+
+- (void) setDCM:(NSMutableArray*) c :(NSArray*)d :(NSMutableArray*)e :(short) firstImage :(char) type :(BOOL) reset
+{
+	[self setPixels: c files: d rois: e firstImage: firstImage level: type reset: reset];
+}
  
  - (void) setBlendingFactor:(float) value{
 	DCMView *view;

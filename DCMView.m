@@ -2031,7 +2031,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	}
 }
 
-- (void) setDCM:(NSMutableArray*) c :(NSArray*)d :(NSMutableArray*)e :(short) firstImage :(char) type :(BOOL) reset
+- (void) setPixels: (NSMutableArray*) pixels files: (NSArray*) files rois: (NSMutableArray*) rois firstImage: (short) firstImage level: (char) level reset: (BOOL) reset
 {
 	[drawLock lock];
 	
@@ -2040,16 +2040,16 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	volumicData = -1;
 	
-	if( dcmPixList != c)
+	if( dcmPixList != pixels)
 	{
-		if( dcmPixList) [dcmPixList release];
-		dcmPixList = c;
-		[dcmPixList retain];
+		[dcmPixList release];
+		dcmPixList = [pixels retain];
+		
 		volumicSeries = YES;
 		
-		if( [d count] > 0)
+		if( [files count] > 0)
 		{
-			id sopclassuid = [[d objectAtIndex: 0] valueForKeyPath:@"series.seriesSOPClassUID"];
+			id sopclassuid = [[files objectAtIndex: 0] valueForKeyPath:@"series.seriesSOPClassUID"];
 			if ([DCMAbstractSyntaxUID isImageStorage: sopclassuid] || [DCMAbstractSyntaxUID isRadiotherapy: sopclassuid] || sopclassuid == nil)
 			{
 				
@@ -2065,29 +2065,38 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			}
 			else volumicSeries = NO;
 		}
+		
+		BOOL rgb = [[dcmPixList lastObject] isRGB];
+		for( DCMPix *p in dcmPixList)
+		{
+			if( [p isRGB] != rgb)
+				differentChannelRepresentation = YES;
+		}
     }
 	
-	if( dcmFilesList != d)
+	if( dcmFilesList != files)
 	{
-		if( dcmFilesList) [dcmFilesList release];
-		dcmFilesList = d;
-		[dcmFilesList retain];
+		[dcmFilesList release];
+		dcmFilesList = [files retain];
 	}
 	
 	flippedData = NO;
 	
-	if( dcmRoiList != e)
+	if( dcmRoiList != rois)
 	{
-		if( dcmRoiList) [dcmRoiList release];
-		dcmRoiList = e;
-		[dcmRoiList retain];
+		[dcmRoiList release];
+		dcmRoiList = [rois retain];
     }
 	
-    listType = type;
+    listType = level;
 	
 	if( dcmPixList)
 	{
-		if( reset == YES)
+		
+		if( differentChannelRepresentation)
+			COPYSETTINGSINSERIES = NO;
+		
+		if( reset)
 		{
 			[self setIndexWithReset: firstImage :YES];
 			[self updatePresentationStateFromSeries];
@@ -2099,10 +2108,17 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	[drawLock unlock];
 }
 
+- (void) setDCM:(NSMutableArray*) c :(NSArray*)d :(NSMutableArray*)e :(short) firstImage :(char) type :(BOOL) reset
+{
+	[self setPixels: c files: d rois: e firstImage: firstImage level: type reset: reset];
+}
+
 - (void) dealloc
 {
 	NSLog(@"DCMView released");
-	 [[NSNotificationCenter defaultCenter] removeObserver: self];
+	
+	[[NSNotificationCenter defaultCenter] removeObserver: self];
+	
 	[self deleteMouseDownTimer];
 	
 	[matrix release];
@@ -5771,7 +5787,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	thickSlabMode = 0;
 	thickSlabStacks = 0;
 	COPYSETTINGSINSERIES = YES;
-	
+	differentChannelRepresentation = NO;
 	suppress_labels = NO;
 	
 //	NSOpenGLPixelFormatAttribute attrs[] =
@@ -9098,7 +9114,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			imSpacing[ 1] = [dcm pixelSpacingY];
 		}
 		
-		BOOL	isRGB = dcm.isRGB;
+		BOOL isRGB = dcm.isRGB;
 		
 		*width = dcm.pwidth;
 		*height = dcm.pheight;

@@ -129,13 +129,13 @@ static float deg2rad = 3.14159265358979/180.0;
 			blendedMprView3 = [[DCMView alloc] initWithFrame: [mprView3 frame]];
 			
 			emptyPix = [[[[fusedViewer2D imageView] curDCM] copy] autorelease];
-			[blendedMprView1 setDCM:  [NSMutableArray arrayWithObject: emptyPix] : [NSArray arrayWithObject: [files lastObject]] :nil :0 :'i' :YES];
+			[blendedMprView1 setPixels: [NSMutableArray arrayWithObject: emptyPix] files: [NSArray arrayWithObject: [files lastObject]] rois:nil firstImage:0 level:'i' reset:YES];
 			
 			emptyPix = [[[[fusedViewer2D imageView] curDCM] copy] autorelease];
-			[blendedMprView2 setDCM:  [NSMutableArray arrayWithObject: emptyPix] : [NSArray arrayWithObject: [files lastObject]] :nil :0 :'i' :YES];
+			[blendedMprView2 setPixels:  [NSMutableArray arrayWithObject: emptyPix] files: [NSArray arrayWithObject: [files lastObject]] rois:nil firstImage:0 level:'i' reset:YES];
 			
 			emptyPix = [[[[fusedViewer2D imageView] curDCM] copy] autorelease];
-			[blendedMprView3 setDCM:  [NSMutableArray arrayWithObject: emptyPix] : [NSArray arrayWithObject: [files lastObject]] :nil :0 :'i' :YES];
+			[blendedMprView3 setPixels:  [NSMutableArray arrayWithObject: emptyPix] files: [NSArray arrayWithObject: [files lastObject]] rois:nil firstImage:0 level:'i' reset:YES];
 			
 			unsigned char *aR, *aG, *aB;
 			[[fusedViewer2D imageView] getCLUT: &aR :&aG :&aB];

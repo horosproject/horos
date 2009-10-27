@@ -99,7 +99,7 @@ static BOOL frameZoomed = NO;
 
 - (void) setDCMPixList:(NSMutableArray*)pixList filesList:(NSArray*)files roiList:(NSMutableArray*)rois firstImage:(short)firstImage type:(char)type reset:(BOOL)reset;
 {
-	[super setDCM:pixList :files :rois :firstImage :type :reset];
+	[super setPixels:pixList files:files rois:rois firstImage:firstImage level:type reset:reset];
 
 	[[NSNotificationCenter defaultCenter]	addObserver: self
 											selector: @selector(removeROI:)

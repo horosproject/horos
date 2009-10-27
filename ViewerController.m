@@ -5547,7 +5547,7 @@ static ViewerController *draggedController = nil;
 		   name: OsirixDCMUpdateCurrentImageNotification
 		 object: nil];
 	
-	[seriesView setDCM:pixList[0] :fileList[0] :roiList[0] :0 :'i' :YES];	//[pixList[0] count]/2
+	[seriesView setPixels:pixList[0] files:fileList[0] rois:roiList[0] firstImage:0 level:'i' reset:YES];	//[pixList[0] count]/2
 	
 	NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:[[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULTLEFTTOOL"]], @"toolIndex", nil];
 	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixDefaultToolModifiedNotification object:nil userInfo: userInfo];
@@ -5876,7 +5876,7 @@ static ViewerController *draggedController = nil;
 		}
 		[self loadROI:0];
 		
-		[imageView setDCM:pixList[0] :fileList[0] :roiList[0] :imageIndex :'i' :!sameSeries];
+		[imageView setPixels:pixList[0] files:fileList[0] rois:roiList[0] firstImage:imageIndex level:'i' reset:!sameSeries];
 		
 		if( sameSeries)
 		{
@@ -5929,7 +5929,7 @@ static ViewerController *draggedController = nil;
 	[moviePlayStop setEnabled:NO];
 	[speedText setStringValue:[NSString stringWithFormat:NSLocalizedString(@"%0.1f im/s", nil), (float) [self frameRate]*direction]];
 
-	[seriesView setDCM:pixList[0] :fileList[0] :roiList[0] :imageIndex :'i' :!sameSeries];
+	[seriesView setPixels:pixList[0] files:fileList[0] rois:roiList[0] firstImage:imageIndex level:'i' reset:!sameSeries];
 	
 	if( [[pixList[0] objectAtIndex: 0] isRGB] == NO)
 	{
@@ -14047,7 +14047,7 @@ int i,j,l;
 	
 	[moviePosSlider setIntValue:curMovieIndex];
 	
-	[imageView setDCM:pixList[curMovieIndex] :fileList[curMovieIndex] :roiList[curMovieIndex] :0 :'i' :NO];
+	[imageView setPixels:pixList[curMovieIndex] files:fileList[curMovieIndex] rois:roiList[curMovieIndex] firstImage:0 level:'i' reset:NO];
 	[self setWindowTitle: self];
 	
 	if( wasDataFlipped) [self flipDataSeries: self];

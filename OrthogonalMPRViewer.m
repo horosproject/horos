@@ -1360,6 +1360,15 @@ static NSString*	VRPanelToolbarItemIdentifier			= @"MIP.tif";
 		{
 			[producedFiles addObject: [self exportDICOMFileInt: [[dcmFormat selectedCell] tag]]];
 		}
+		else if( [[dcmSelection selectedCell] tag] == 2) // 4th Dimension
+		{
+			for( int i = 0; i < maxMovieIndex; i ++)
+			{
+				[self setMovieIndex: i];
+				
+				[producedFiles addObject: [self exportDICOMFileInt: [[dcmFormat selectedCell] tag]]];
+			}
+		}
 		else
 		{
 			long deltaX, deltaY, x, y, oldX, oldY, max;
@@ -1759,7 +1768,7 @@ static NSString*	VRPanelToolbarItemIdentifier			= @"MIP.tif";
 	
 	[[controller reslicer] setOriginalDCMPixList:[viewer pixList:i]];
 	[[controller reslicer] setUseYcache:NO];
-	[[controller originalView] setDCM:[viewer pixList:i] :[viewer fileList:i] :[viewer roiList:i] :0 :'i' :NO];
+	[[controller originalView] setPixels:[viewer pixList:i] files:[viewer fileList:i] rois:[viewer roiList:i] firstImage:0 level:'i' reset:NO];
 	
 	[controller setFusion];
 	

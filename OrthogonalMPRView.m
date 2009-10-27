@@ -74,7 +74,7 @@
 {
 	long i;
 	
-	[self setDCM:pix :files :rois :0 :'i' :NO];
+	[self setPixels:pix files:files rois:rois firstImage:0 level:'i' reset:NO];
 	
 	//if( [[[[self window] windowController] windowNibName] isEqualToString:@"OrthogonalMPR"])
 	if(![[[[self window] windowController] windowNibName] isEqualToString:@"PETCT"])

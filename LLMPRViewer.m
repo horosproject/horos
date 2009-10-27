@@ -507,7 +507,7 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 	}
 	//[tempPool release];
 
-	[subtractedOriginalView setDCM:axialPixList :nil :nil :0 :'i' :NO];
+	[subtractedOriginalView setPixels:axialPixList files:nil rois:nil firstImage:0 level:'i' reset:NO];
 	
 	for( i = 0; i < [axialPixList count]; i++)
 	{
@@ -618,7 +618,7 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 	}
 	//[tempPool release];
 
-	[subtractedXReslicedView setDCM:coronalPixList :nil :nil :[[injectedMPRController xReslicedView] curImage] :'i' :NO];
+	[subtractedXReslicedView setPixels:coronalPixList files:nil rois:nil firstImage:[[injectedMPRController xReslicedView] curImage] level:'i' reset:NO];
 	
 	for( i = 0; i < [coronalPixList count]; i++)
 	{
@@ -730,7 +730,7 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 	}
 	//[tempPool release];
 
-	[subtractedYReslicedView setDCM:sagitalPixList :nil :nil :[[injectedMPRController yReslicedView] curImage] :'i' :NO];
+	[subtractedYReslicedView setPixels:sagitalPixList files:nil rois:nil firstImage:[[injectedMPRController yReslicedView] curImage] level:'i' reset:NO];
 
 	for( i = 0; i < [sagitalPixList count]; i++)
 	{

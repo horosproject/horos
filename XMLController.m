@@ -380,10 +380,12 @@ extern int delayedTileWindows;
 	
 	[viewer checkEverythingLoaded];
 	
+	int fileSize = [[[[NSFileManager defaultManager] attributesOfItemAtPath: srcFile error: nil] valueForKey: NSFileSize] longLongValue] / 1024L;
+	
 	if( viewer)
-		[[self window] setTitle: [NSString stringWithFormat:@"Meta-Data: %@", [[viewer window] title]]];
+		[[self window] setTitle: [NSString stringWithFormat:@"Meta-Data: %@ (%d KB)", [[viewer window] title], fileSize]];
 	else
-		[[self window] setTitle: [NSString stringWithFormat:@"Meta-Data: %@", srcFile]];
+		[[self window] setTitle: [NSString stringWithFormat:@"Meta-Data: %@ (%d KB)", srcFile, fileSize]];
 		
 	dontClose = NO;
 }
@@ -518,7 +520,13 @@ extern int delayedTileWindows;
 		
 		[self changeImageObject: image];
 		
-		[[self window] setTitle:name];
+		int fileSize = [[[[NSFileManager defaultManager] attributesOfItemAtPath: srcFile error: nil] valueForKey: NSFileSize] longLongValue] / 1024L;
+		
+		if( viewer)
+			[[self window] setTitle: [NSString stringWithFormat:@"Meta-Data: %@ (%d KB)", [[viewer window] title], fileSize]];
+		else
+			[[self window] setTitle: [NSString stringWithFormat:@"Meta-Data: %@ (%d KB)", srcFile, fileSize]];
+		
 		[[self window] setFrameAutosaveName:@"XMLWindow"];
 		[[self window] setDelegate:self];
 		

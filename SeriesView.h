@@ -50,6 +50,7 @@
 - (void)setImageViewMatrixForRows:(int)rows  columns:(int)columns;
 - (void)updateImageTiling:(NSNotification *)note;
 - (void) setDCM:(NSMutableArray*) c :(NSArray*)d :(NSMutableArray*)e :(short) firstImage :(char) type :(BOOL) reset;
+- (void) setPixels: (NSMutableArray*) pixels files: (NSArray*) files rois: (NSMutableArray*) rois firstImage: (short) firstImage level: (char) level reset: (BOOL) reset;
 - (void) setBlendingFactor:(float) value;
 - (void) setBlendingMode:(int) value;
 - (void) setFlippedData:(BOOL) value;

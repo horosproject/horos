@@ -3926,7 +3926,7 @@ static NSArray*	statesArray = nil;
 						}
 					}
 					
-					for ( int i = 0; i < [toBeRemoved count]; i++ )					// Check if studies are in an album or added this week.  If so don't autoclean that study from the database (DDP: 051108).
+					for ( int i = 0; i < [toBeRemoved count]; i++ ) // Check if studies are in an album or added this week.  If so don't autoclean that study from the database (DDP: 051108).
 					{
 						if ( [[[toBeRemoved objectAtIndex: i] valueForKey: @"albums"] count] > 0 ||
 							[[[toBeRemoved objectAtIndex: i] valueForKey: @"dateAdded"] timeIntervalSinceNow] > -60*60*7*24.0 )  // within 7 days
@@ -3969,7 +3969,7 @@ static NSArray*	statesArray = nil;
 					NSLog( @"%@", [e description]);
 				}
 				
-				if( [toBeRemoved count] > 0)							// (DDP: 051109) was > 1, i.e. required at least 2 studies out of date to be removed.
+				if( [toBeRemoved count] > 0)
 				{
 					NSLog(@"Will delete: %d studies", [toBeRemoved count]);
 					
@@ -7914,7 +7914,7 @@ static BOOL withReset = NO;
 	
 	[oMatrix sizeToCells];
 	
-	[imageView setDCM:nil :nil :nil :0 :0 :YES];
+	[imageView setPixels:nil files:nil rois:nil firstImage:0 level:0 reset:YES];
 	
 	[self matrixDisplayIcons: self];
 }
@@ -8038,7 +8038,7 @@ static BOOL withReset = NO;
 					{
 						NSManagedObject* aFile = [databaseOutline itemAtRow:[index firstIndex]];
 						
-						[imageView setDCM:previewPix :[self imagesArray: aFile preferredObject: oAny] :nil :[[oMatrix selectedCell] tag] :'i' :YES];
+						[imageView setPixels:previewPix files:[self imagesArray: aFile preferredObject: oAny] rois:nil firstImage:[[oMatrix selectedCell] tag] level:'i' reset:YES];
 						[imageView setStringID:@"previewDatabase"];
 						setDCMDone = YES;
 					}

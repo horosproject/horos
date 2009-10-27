@@ -198,9 +198,9 @@
 	}
 	else
 	{
-		[originalView setDCM:[[[viewer CTController] originalView] pixList]  :originalDCMFilesList :nil :[[[viewer CTController] originalView] curImage] :1 :YES];
-		[xReslicedView setDCM:[[[viewer CTController] xReslicedView] pixList]  :originalDCMFilesList :nil :0 :1 :YES];
-		[yReslicedView setDCM:[[[viewer CTController] yReslicedView] pixList]  :originalDCMFilesList :nil :0 :1 :YES];
+		[originalView setPixels:[[[viewer CTController] originalView] pixList]  files:originalDCMFilesList rois:nil firstImage:[[[viewer CTController] originalView] curImage] level:1 reset:YES];
+		[xReslicedView setPixels:[[[viewer CTController] xReslicedView] pixList]  files:originalDCMFilesList rois:nil firstImage:0 level:1 reset:YES];
+		[yReslicedView setPixels:[[[viewer CTController] yReslicedView] pixList]  files:originalDCMFilesList rois:nil firstImage:0 level:1 reset:YES];
 		
 		[originalView setBlending:[[viewer PETController] originalView]];
 		[originalView setBlendingFactor: blendingFactor];
