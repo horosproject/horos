@@ -6453,6 +6453,19 @@ static ViewerController *draggedController = nil;
 #pragma mark modality dependant code, once images are already displayed in 2D viewer
 	if( stopThreadLoadImage == NO)
 	{
+		if( [pixList[ 0] count] > 0)
+		{
+			BOOL identicalChannelRepresentation = YES;
+			BOOL rgb = [[pixList[ 0] lastObject] isRGB];
+			for( DCMPix *p in pixList[ 0])
+			{
+				if( [p isRGB] != rgb)
+					identicalChannelRepresentation = NO;
+			}
+			
+			[imageView setCOPYSETTINGSINSERIESdirectly: identicalChannelRepresentation];
+		}
+		
 #pragma mark XA
 		enableSubtraction = FALSE;
 		subCtrlMinMaxComputed = NO;

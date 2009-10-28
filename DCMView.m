@@ -2046,7 +2046,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	{
 		[dcmPixList release];
 		dcmPixList = [pixels retain];
-		differentChannelRepresentation = NO;
 		
 		volumicSeries = YES;
 		
@@ -2068,13 +2067,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			}
 			else volumicSeries = NO;
 		}
-		
-		BOOL rgb = [[dcmPixList lastObject] isRGB];
-		for( DCMPix *p in dcmPixList)
-		{
-			if( [p isRGB] != rgb)
-				differentChannelRepresentation = YES;
-		}
     }
 	
 	if( dcmFilesList != files)
@@ -2095,11 +2087,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	if( dcmPixList)
 	{
-		if( differentChannelRepresentation)
-			COPYSETTINGSINSERIES = NO;
-		else
-			COPYSETTINGSINSERIES = YES;
-		
 		if( reset)
 		{
 			[self setIndexWithReset: firstImage :YES];
@@ -2229,6 +2216,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 - (BOOL) COPYSETTINGSINSERIES
 {
 	return COPYSETTINGSINSERIES;
+}
+
+- (void) setCOPYSETTINGSINSERIESdirectly: (BOOL) b
+{
+	COPYSETTINGSINSERIES = b;
 }
 
 - (void) setCOPYSETTINGSINSERIES: (BOOL) b
@@ -5795,7 +5787,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	thickSlabMode = 0;
 	thickSlabStacks = 0;
 	COPYSETTINGSINSERIES = YES;
-	differentChannelRepresentation = NO;
 	suppress_labels = NO;
 	
 //	NSOpenGLPixelFormatAttribute attrs[] =

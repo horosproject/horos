@@ -282,7 +282,6 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 	int avoidRecursiveSync;
 	BOOL avoidChangeWLWWRecursive;
 	BOOL TextureComputed32bitPipeline;
-	BOOL differentChannelRepresentation;
 	
 	NSImage *loupeImage, *loupeMaskImage;
 	GLuint loupeTextureID, loupeTextureWidth, loupeTextureHeight;
@@ -477,6 +476,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 - (void) roiLoadFromFilesArray: (NSArray*) filenames;
 - (id)windowController;
 - (BOOL)is2DViewer;
+- (void) setCOPYSETTINGSINSERIESdirectly: (BOOL) b;
 -(BOOL)actionForHotKey:(NSString *)hotKey;
 +(NSDictionary*) hotKeyDictionary;
 +(NSDictionary*) hotKeyModifiersDictionary;
