@@ -38,6 +38,7 @@
 	[super showWindow: sender];
 	[[self window] makeKeyAndOrderFront: sender];
 	[[self window] display];
+	[NSThread sleepForTimeInterval: 0.05];
 	[[self window] flushWindow];
 	[[self window] display];
 	[[self window] flushWindow];
