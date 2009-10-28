@@ -31,5 +31,6 @@
 - (NSString *)dicomSeriesInstanceUID;
 - (NSDictionary *)dictionary;
 - (NSComparisonResult)compareName:(DicomSeries*)series;
+- (NSNumber *) noFilesExcludingMultiFrames;
 
 @end

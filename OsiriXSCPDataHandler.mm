@@ -1011,23 +1011,22 @@ extern NSManagedObjectContext *staticContext;
 			dataset ->putAndInsertString(DCM_InstitutionName,  [[fetchedObject valueForKey:@"institutionName"]  cStringUsingEncoding:NSUTF8StringEncoding]);
 		else
 			dataset ->putAndInsertString(DCM_InstitutionName, NULL);
-			
-		//dataset ->putAndInsertString(DCM_SpecificCharacterSet,  "ISO_IR 192") ;
+		
 		dataset ->putAndInsertString(DCM_SpecificCharacterSet,  [specificCharacterSet cStringUsingEncoding:NSISOLatin1StringEncoding]) ;
 			
-		if ([fetchedObject valueForKey:@"noFiles"]) {		
-			int numberInstances = [[fetchedObject valueForKey:@"noFiles"] intValue];
+		if ([fetchedObject valueForKey:@"noFiles"])
+		{
+			int numberInstances = [[fetchedObject valueForKey:@"noFilesExcludingMultiFrames"] intValue];
 			char value[10];
 			sprintf(value, "%d", numberInstances);
-			//NSLog(@"number files: %d", numberInstances);
-			dataset ->putAndInsertString(DCM_NumberOfStudyRelatedInstances, value);
+			dataset->putAndInsertString(DCM_NumberOfStudyRelatedInstances, value);
 		}
 			
-		if ([fetchedObject valueForKey:@"series"]) {
+		if ([fetchedObject valueForKey:@"series"])
+		{
 			int numberInstances = [[fetchedObject valueForKey:@"series"] count];
 			char value[10];
 			sprintf(value, "%d", numberInstances);
-			//NSLog(@"number series: %d", numberInstances);
 			dataset ->putAndInsertString(DCM_NumberOfStudyRelatedSeries, value);
 		}
 		
@@ -1082,11 +1081,11 @@ extern NSManagedObjectContext *staticContext;
 			dataset ->putAndInsertString(DCM_StudyInstanceUID, NULL);
 		
 
-		if ([fetchedObject valueForKey:@"noFiles"]) {
-			int numberInstances = [[fetchedObject valueForKey:@"noFiles"] intValue];
+		if ([fetchedObject valueForKey:@"noFiles"])
+		{
+			int numberInstances = [[fetchedObject valueForKey:@"noFilesExcludingMultiFrames"] intValue];
 			char value[10];
 			sprintf(value, "%d", numberInstances);
-			//NSLog(@"number series: %d", numberInstances);
 			dataset ->putAndInsertString(DCM_NumberOfSeriesRelatedInstances, value);
 
 		}

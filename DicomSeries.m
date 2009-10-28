@@ -25,9 +25,6 @@
 	[super dealloc];
 }
 
-#pragma mark-
-#pragma mark-
-
 - (void)setValue:(id)value forUndefinedKey:(NSString *)key
 {
 }
@@ -73,9 +70,11 @@
 
 - (NSNumber *) noFiles
 {
-	if( [[self primitiveValueForKey:@"numberOfImages"] intValue] == 0)
+	int n = [[self primitiveValueForKey:@"numberOfImages"] intValue];
+	
+	if( n == 0)
 	{
-		NSNumber	*no;
+		NSNumber *no;
 		
 		[[self managedObjectContext] lock];
 		
@@ -83,11 +82,18 @@
 		
 		if( [DCMAbstractSyntaxUID isStructuredReport: sopClassUID] == NO && [DCMAbstractSyntaxUID isPresentationState: sopClassUID] == NO)
 		{
-			no = [NSNumber numberWithInt: [[self valueForKey:@"images"] count]];
+			int v = [[[[self valueForKey:@"images"] anyObject] valueForKey:@"numberOfFrames"] intValue];
+			
+			if( v > 1) // There are frames !
+				no = [NSNumber numberWithInt: -[[self valueForKey:@"images"] count]];
+			else
+				no = [NSNumber numberWithInt: [[self valueForKey:@"images"] count]];
 			
 			[self willChangeValueForKey: @"numberOfImages"];
 			[self setPrimitiveValue:no forKey:@"numberOfImages"];
 			[self didChangeValueForKey: @"numberOfImages"];
+			
+			no = [NSNumber numberWithInt: [[self valueForKey:@"images"] count]]; // For the return
 		}
 		else no = [NSNumber numberWithInt: 0];
 		
@@ -95,7 +101,32 @@
 		
 		return no;
 	}
-	else return [self primitiveValueForKey:@"numberOfImages"];
+	else
+	{
+		if( n < 0) // There are frames !
+			return [NSNumber numberWithInt: -n];
+		else
+			return [self primitiveValueForKey:@"numberOfImages"];
+	}
+}
+
+- (NSNumber *) noFilesExcludingMultiFrames
+{
+	if( [[self primitiveValueForKey:@"numberOfImages"] intValue] <= 0) // There are frames !
+	{
+		int v = [[[[self valueForKey:@"images"] anyObject] valueForKey:@"numberOfFrames"] intValue];
+		
+		NSNumber *no;
+		
+		if( v > 1)
+			no = [NSNumber numberWithInt: [[self valueForKey:@"images"] count] - v + 1];
+		else
+			no = [self noFiles];
+		
+		return no;
+	}
+	else
+		return [self noFiles];
 }
 
 - (NSSet *)paths

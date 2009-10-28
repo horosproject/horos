@@ -39,6 +39,7 @@
 - (NSDictionary *)dictionary;
 - (BOOL) isHidden;
 - (void) setHidden: (BOOL) h;
+- (NSNumber *) noFilesExcludingMultiFrames;
 
 - (NSComparisonResult)compareName:(DicomStudy*)study;
 

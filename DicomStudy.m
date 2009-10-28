@@ -394,36 +394,73 @@ NSString* soundex4( NSString *inString)
 
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 
-- (NSNumber *) noFiles
+- (NSNumber *) noFilesExcludingMultiFrames
 {
-	if( [[self primitiveValueForKey:@"numberOfImages"] intValue] == 0)
+	if( [[self primitiveValueForKey:@"numberOfImages"] intValue] <= 0) // There are frames !
 	{
-		[[self managedObjectContext] lock];
-		
-		NSSet	*series = [self valueForKey:@"series"];
+		NSSet *series = [self valueForKey:@"series"];
 		NSArray	*array = [series allObjects];
 		
-		long sum = 0;
+		int sum = 0;
 		
 		for( id loopItem in array)
 		{
 			if( [DCMAbstractSyntaxUID isStructuredReport: [loopItem valueForKey: @"seriesSOPClassUID"]] == NO)
-				sum += [[loopItem valueForKey:@"noFiles"] intValue];
+				sum += [[loopItem valueForKey:@"noFilesExcludingMultiFrames"] intValue];
 		}
 		
-		NSNumber	*no = [NSNumber numberWithInt:sum];
+		NSNumber *no = [NSNumber numberWithInt:sum];
+	}
+	else return [self noFiles];
+}
+
+- (NSNumber *) noFiles
+{
+	int n = [[self primitiveValueForKey:@"numberOfImages"] intValue];
+	if( n == 0)
+	{
+		[[self managedObjectContext] lock];
+		
+		NSArray	*array = [[self valueForKey:@"series"] allObjects];
+		
+		int sum = 0;
+		BOOL framesInSeries = NO;
+		
+		for( DicomSeries *s in array)
+		{
+			if( [DCMAbstractSyntaxUID isStructuredReport: [s valueForKey: @"seriesSOPClassUID"]] == NO)
+			{
+				sum += [[s valueForKey:@"noFiles"] intValue];
+				
+				if( [[s primitiveValueForKey:@"numberOfImages"] intValue] < 0) // There are frames !
+					framesInSeries = YES;
+			}
+		}
+		
+		if( framesInSeries)
+			sum = -sum;
+		
+		NSNumber *no = [NSNumber numberWithInt: sum];
 		
 		[self willChangeValueForKey: @"numberOfImages"];
-		[self setPrimitiveValue:no forKey:@"numberOfImages"];
+		[self setPrimitiveValue: no forKey:@"numberOfImages"];
 		[self didChangeValueForKey: @"numberOfImages"];
 		
 		[[self managedObjectContext] unlock];
 		
-		return no;
+		if( sum < 0)
+			return [NSNumber numberWithInt: -sum];
+		else
+			return no;
 	}
-	else return [self primitiveValueForKey:@"numberOfImages"];
+	else
+	{
+		if( n < 0)
+			return [NSNumber numberWithInt: -n];
+		else
+			return [self primitiveValueForKey:@"numberOfImages"];
+	}
 }
-
 
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 
