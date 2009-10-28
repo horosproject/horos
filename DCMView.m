@@ -2046,6 +2046,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	{
 		[dcmPixList release];
 		dcmPixList = [pixels retain];
+		differentChannelRepresentation = NO;
 		
 		volumicSeries = YES;
 		
@@ -2094,7 +2095,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	if( dcmPixList)
 	{
-		
 		if( differentChannelRepresentation)
 			COPYSETTINGSINSERIES = NO;
 		
