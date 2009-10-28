@@ -84,16 +84,19 @@
 		{
 			int v = [[[[self valueForKey:@"images"] anyObject] valueForKey:@"numberOfFrames"] intValue];
 			
+			int count = [[self valueForKey:@"images"] count];
+			
 			if( v > 1) // There are frames !
-				no = [NSNumber numberWithInt: -[[self valueForKey:@"images"] count]];
+				no = [NSNumber numberWithInt: -count];
 			else
-				no = [NSNumber numberWithInt: [[self valueForKey:@"images"] count]];
+				no = [NSNumber numberWithInt: count];
 			
 			[self willChangeValueForKey: @"numberOfImages"];
 			[self setPrimitiveValue:no forKey:@"numberOfImages"];
 			[self didChangeValueForKey: @"numberOfImages"];
 			
-			no = [NSNumber numberWithInt: [[self valueForKey:@"images"] count]]; // For the return
+			if( v > 1)
+				no = [NSNumber numberWithInt: count]; // For the return
 		}
 		else no = [NSNumber numberWithInt: 0];
 		

@@ -398,18 +398,17 @@ NSString* soundex4( NSString *inString)
 {
 	if( [[self primitiveValueForKey:@"numberOfImages"] intValue] <= 0) // There are frames !
 	{
-		NSSet *series = [self valueForKey:@"series"];
-		NSArray	*array = [series allObjects];
+		NSArray	*array = [[self valueForKey:@"series"] allObjects];
 		
 		int sum = 0;
 		
-		for( id loopItem in array)
+		for( DicomSeries *s in array)
 		{
-			if( [DCMAbstractSyntaxUID isStructuredReport: [loopItem valueForKey: @"seriesSOPClassUID"]] == NO)
-				sum += [[loopItem valueForKey:@"noFilesExcludingMultiFrames"] intValue];
+			if( [DCMAbstractSyntaxUID isStructuredReport: [s valueForKey: @"seriesSOPClassUID"]] == NO)
+				sum += [[s valueForKey:@"noFilesExcludingMultiFrames"] intValue];
 		}
 		
-		NSNumber *no = [NSNumber numberWithInt:sum];
+		return [NSNumber numberWithInt:sum];
 	}
 	else return [self noFiles];
 }
