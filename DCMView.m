@@ -2097,6 +2097,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	{
 		if( differentChannelRepresentation)
 			COPYSETTINGSINSERIES = NO;
+		else
+			COPYSETTINGSINSERIES = YES;
 		
 		if( reset)
 		{
