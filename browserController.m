@@ -2105,9 +2105,38 @@ static NSArray*	statesArray = nil;
 	}
 }
 
--(void)openDatabaseIn: (NSString*)a Bonjour: (BOOL)isBonjour
+-(void) openDatabaseIn: (NSString*)a Bonjour: (BOOL)isBonjour
+{
+	[self openDatabaseIn: a Bonjour: isBonjour refresh: NO];
+}
+
+-(void) openDatabaseIn: (NSString*)a Bonjour: (BOOL)isBonjour refresh: (BOOL) refresh
 {
 	[self waitForRunningProcesses];
+	
+	NSString *searchString = nil, *albumName = nil, *selectedItem = nil;
+	int timeInt;
+	
+	if( refresh)
+	{
+		searchString = [[[searchField stringValue] copy] autorelease];
+		
+		NSArray *albumArray = self.albumArray;
+		if( [albumArray count] > albumTable.selectedRow && albumTable.selectedRow >= 0)
+			albumName = [[[[albumArray objectAtIndex: albumTable.selectedRow] valueForKey:@"name"] copy] autorelease];
+		
+		if( [databaseOutline selectedRow] >= 0)
+		{
+			if( [[[databaseOutline itemAtRow:[databaseOutline selectedRow]] valueForKey: @"type"] isEqualToString: @"Study"])
+				selectedItem = [[databaseOutline itemAtRow:[databaseOutline selectedRow]] valueForKey: @"studyInstanceUID"];
+				
+			if( [[[databaseOutline itemAtRow:[databaseOutline selectedRow]] valueForKey: @"type"] isEqualToString: @"Series"])
+				selectedItem = [[[databaseOutline itemAtRow:[databaseOutline selectedRow]] valueForKey: @"study"] valueForKey: @"studyInstanceUID"];
+				
+			selectedItem = [[selectedItem copy] autorelease];
+		}
+		timeInt = timeIntervalType;
+	}
 	
 	WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Opening OsiriX database...", nil)];
 	[wait showWindow:self];
@@ -2121,13 +2150,40 @@ static NSArray*	statesArray = nil;
 	
 	[self loadDatabase: currentDatabasePath];
 	
+	if( refresh)
+	{
+		if( albumName)
+		{
+			for( NSManagedObject *a in self.albumArray)
+			{
+				if( [[a valueForKey: @"name"] isEqualToString: albumName])
+					[albumTable selectRowIndexes: [NSIndexSet indexSetWithIndex: [self.albumArray indexOfObject: a]] byExtendingSelection: NO];
+			}
+		}
+		
+		timeIntervalType = timeInt;
+		[timeIntervalPopup selectItemWithTag: 0];
+		
+		[self setSearchString: searchString];
+		
+		for( NSManagedObject *obj in outlineViewArray)
+		{
+			if( [[obj valueForKey: @"studyInstanceUID"] isEqualToString: selectedItem])
+				[databaseOutline selectRowIndexes: [NSIndexSet indexSetWithIndex: [databaseOutline rowForItem: obj]] byExtendingSelection: NO];
+		}
+		
+		[self refreshMatrix: self];
+		
+		[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
+	}
+	
 	[wait close];
 	[wait release];
 }
 
 - (void)openDatabaseInBonjour: (NSString*)path
 { 
-	[self openDatabaseIn: path Bonjour: YES];
+	[self openDatabaseIn: path Bonjour: YES refresh: YES];
 }
 
 - (IBAction)openDatabase: (id)sender
@@ -4749,11 +4805,11 @@ static NSArray*	statesArray = nil;
 
 	[checkIncomingLock unlock];
 	[checkBonjourUpToDateThreadLock unlock];
-
+	
 	if( path != nil )
-		[self performSelectorOnMainThread:@selector(openDatabaseInBonjour:) withObject:path waitUntilDone:YES];
-		
-//	[self performSelectorOnMainThread:@selector(outlineViewRefresh) withObject:nil waitUntilDone:YES];
+	{
+		[self performSelectorOnMainThread:@selector( openDatabaseInBonjour:) withObject: path waitUntilDone:YES];
+	}
 	
 	[pool release];
 }
@@ -4769,7 +4825,7 @@ static NSArray*	statesArray = nil;
 	
 	if( isCurrentDatabaseBonjour)
 	{
-		BOOL		doit = YES;
+		BOOL doit = YES;
 		
 		if( [[ViewerController getDisplayed2DViewers] count]) doit = NO;
 		
@@ -5899,7 +5955,7 @@ static NSArray*	statesArray = nil;
 	{
 		NSIndexSet *selectedRows = [databaseOutline selectedRowIndexes];
 		
-		if( [databaseOutline selectedRow] >= 0 )
+		if( [databaseOutline selectedRow] >= 0)
 		{
 			NSMutableArray *studiesToRemove = [NSMutableArray array];
 			NSManagedObject	*album = [self.albumArray objectAtIndex: albumTable.selectedRow];
@@ -9254,49 +9310,41 @@ static BOOL needToRezoom;
 
 - (void)drawerDidClose: (NSNotification *)notification
 {
-	if( needToRezoom )
-	{
+	if( needToRezoom)
 		[self.window zoom:self];
-	}
 }
 
 - (void)drawerWillClose: (NSNotification *)notification
 {
-	if( self.window.isZoomed )
-	{
+	if( self.window.isZoomed)
 		needToRezoom = YES;
-	}
-	else needToRezoom = NO;
+	else
+		needToRezoom = NO;
 }
 
 - (void)drawerDidOpen: (NSNotification *)notification
 {
-	if( needToRezoom )
-	{
+	if( needToRezoom)
 		[self.window zoom:self];
-	}
 }
 
 - (void)drawerWillOpen: (NSNotification *)notification
 {
-		needToRezoom = self.window.isZoomed;
+	needToRezoom = self.window.isZoomed;
 }
 
 - (IBAction)smartAlbumHelpButton: (id)sender
 {
-	if( [sender tag] == 0 )
-	{
+	if( [sender tag] == 0)
 		[[NSWorkspace sharedWorkspace] openFile:[[NSBundle mainBundle] pathForResource:@"OsiriXTables" ofType:@"pdf"]];
-	}
 	
-	if( [sender tag] == 1){
+	if( [sender tag] == 1)
 		[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://developer.apple.com/documentation/Cocoa/Conceptual/Predicates/Articles/pSyntax.html#//apple_ref/doc/uid/TP40001795"]];
-	}
 }
 
-- (IBAction)albumTableDoublePressed: (id)sender
+- (IBAction) albumTableDoublePressed: (id)sender
 {
-	if( albumTable.selectedRow > 0)
+	if( albumTable.selectedRow > 0 && isCurrentDatabaseBonjour == NO)
 	{
 		NSManagedObject	*album = [self.albumArray objectAtIndex: albumTable.selectedRow];
 		
@@ -12016,7 +12064,7 @@ static NSArray*	openSubSeriesArray = nil;
 		if([[NSUserDefaults standardUserDefaults] integerForKey:@"LISTENERCHECKINTERVAL"] < 1) [[NSUserDefaults standardUserDefaults] setInteger:1 forKey:@"LISTENERCHECKINTERVAL"];
 		IncomingTimer = [[NSTimer scheduledTimerWithTimeInterval:[[NSUserDefaults standardUserDefaults] integerForKey:@"LISTENERCHECKINTERVAL"] target:self selector:@selector(checkIncoming:) userInfo:self repeats:YES] retain];
 		refreshTimer = [[NSTimer scheduledTimerWithTimeInterval:63.33 target:self selector:@selector(refreshDatabase:) userInfo:self repeats:YES] retain];
-		bonjourTimer = [[NSTimer scheduledTimerWithTimeInterval: 5*60 target:self selector:@selector(checkBonjourUpToDate:) userInfo:self repeats:YES] retain];	//*60
+		bonjourTimer = [[NSTimer scheduledTimerWithTimeInterval: 60 target:self selector:@selector(checkBonjourUpToDate:) userInfo:self repeats:YES] retain];	//*60
 		databaseCleanerTimer = [[NSTimer scheduledTimerWithTimeInterval:60*60 + 2.5 target:self selector:@selector(autoCleanDatabaseDate:) userInfo:self repeats:YES] retain];
 		deleteQueueTimer = [[NSTimer scheduledTimerWithTimeInterval: 10 target:self selector:@selector(emptyDeleteQueue:) userInfo:self repeats:YES] retain];
 		autoroutingQueueTimer = [[NSTimer scheduledTimerWithTimeInterval:35 target:self selector:@selector(emptyAutoroutingQueue:) userInfo:self repeats:YES] retain];
@@ -12544,7 +12592,7 @@ static NSArray*	openSubSeriesArray = nil;
 {
 	[BrowserController tryLock: checkIncomingLock during: 120];
 	[BrowserController tryLock: managedObjectContext during: 120];
-	[BrowserController tryLock: checkBonjourUpToDateThreadLock during: 120];
+	[BrowserController tryLock: checkBonjourUpToDateThreadLock during: 60];
 	
 	while( [SendController sendControllerObjects] > 0 )
 		[NSThread sleepForTimeInterval: 0.04];

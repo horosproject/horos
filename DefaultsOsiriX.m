@@ -700,7 +700,7 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject:@"1" forKey: @"SquareWindowForPrinting"];
 	[defaultValues setObject:@"Softw Tissue CT" forKey: @"LAST_3D_PRESET"];
 	[defaultValues setObject:@"0" forKey:@"HIDEPATIENTNAME"];
-	[defaultValues setObject:@"0" forKey:@"onlyDICOM"];
+	[defaultValues setObject:@"1" forKey:@"onlyDICOM"];
 	[defaultValues setObject:@"0" forKey:@"CheckForMultipleVolumesInSeries"];
 	[defaultValues setObject:@"3000" forKey:@"MAXWindowSize"];
 	[defaultValues setObject:@"1" forKey:@"ScreenCaptureSmartCropping"];

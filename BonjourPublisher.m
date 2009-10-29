@@ -22,8 +22,6 @@
 #import <netinet/in.h>
 #import <unistd.h>
 
-#define USEZIP NO
-
 // BY DEFAULT OSIRIX USES 8780 PORT
 
 #include <netdb.h>
