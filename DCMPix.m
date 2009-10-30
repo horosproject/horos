@@ -4865,8 +4865,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		
 		NSString *path = [ROISRConverter archiveROIsAsDICOM: roiArray[ i ] toPath: str forImage: img];
 		
-		if ( path ) [newDICOMSR addObject: path];
-		
+		if ( path)
+			[newDICOMSR addObject: path];
 	}
 	
 	if( newDICOMSR.count ) [[BrowserController currentBrowser] addFilesToDatabase: newDICOMSR];

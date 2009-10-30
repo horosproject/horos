@@ -9931,12 +9931,12 @@ short				matrix[25];
 	if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && isDir)
 		[[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
 	
-	[[[BrowserController currentBrowser] managedObjectContext] lock];
-	
-	NSMutableArray *newDICOMSR = [NSMutableArray array];
-	
 	if( [[fileList[ mIndex] lastObject] isKindOfClass:[NSManagedObject class]])
 	{
+		[[[BrowserController currentBrowser] managedObjectContext] lock];
+		
+		NSMutableArray *newDICOMSR = [NSMutableArray array];
+		
 		for( i = 0; i < [fileList[ mIndex] count]; i++)
 		{
 			if( [[pixList[mIndex] objectAtIndex:i] generated] == NO)
@@ -9970,13 +9970,17 @@ short				matrix[25];
 						
 						if( [roisArray count])
 						{
-							NSString	*path = [ROISRConverter archiveROIsAsDICOM: roisArray  toPath: str forImage:image];
+							NSString *path = [ROISRConverter archiveROIsAsDICOM: roisArray  toPath: str forImage:image];
 							
 							if( path)
 							{
 								[newDICOMSR addObject: path];
 								toBeSaved = YES;
 							}
+							else {
+								NSLog( @"*************** why???");
+							}
+
 						}
 						else
 						{
@@ -10035,22 +10039,22 @@ short				matrix[25];
 				}
 			}
 		}
-	}
-	
-	[[[BrowserController currentBrowser] managedObjectContext] unlock];
-	
-	if( toBeSaved)
-	{
-		if( [[BrowserController currentBrowser] isCurrentDatabaseBonjour])
+		
+		if( toBeSaved)
 		{
-			if( [[BrowserController currentBrowser] sendFilesToCurrentBonjourDB: newDICOMSR] == NO)
-				NSLog( @"****** FAILED to send ROI SR to original DB");
+			if( [[BrowserController currentBrowser] isCurrentDatabaseBonjour])
+			{
+				if( [[BrowserController currentBrowser] sendFilesToCurrentBonjourDB: newDICOMSR] == NO)
+					NSLog( @"****** FAILED to send ROI SR to original DB");
+			}
+			else
+			{
+				[[BrowserController currentBrowser] addFilesToDatabase: newDICOMSR];
+				[[BrowserController currentBrowser] saveDatabase: nil];
+			}
 		}
-		else
-		{
-			[[BrowserController currentBrowser] addFilesToDatabase: newDICOMSR];
-			[[BrowserController currentBrowser] saveDatabase: nil];
-		}
+		
+		[[[BrowserController currentBrowser] managedObjectContext] unlock];
 	}
 }
 
