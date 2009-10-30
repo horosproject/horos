@@ -9916,18 +9916,24 @@ short				matrix[25];
 
 - (void) saveROI:(long) mIndex
 {
-	NSString		*path = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:ROIDATABASE];
-	BOOL			isDir = YES, toBeSaved = NO;
-	int				i;
+	NSString *path;
+	BOOL isDir = YES, toBeSaved = NO;
+	int i;
 	
-	if( [[BrowserController currentBrowser] isCurrentDatabaseBonjour] || [[NSUserDefaults standardUserDefaults] boolForKey: @"SAVEROIS"] == NO ) return;
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"SAVEROIS"] == NO)
+		return;
+	
+	if( [[BrowserController currentBrowser] isCurrentDatabaseBonjour])
+		path = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent: @"TEMP.noindex"];
+	else
+		path = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent: ROIDATABASE];
 	
 	if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && isDir)
 		[[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
 	
 	[[[BrowserController currentBrowser] managedObjectContext] lock];
 	
-	NSMutableArray	*newDICOMSR = [NSMutableArray array];
+	NSMutableArray *newDICOMSR = [NSMutableArray array];
 	
 	if( [[fileList[ mIndex] lastObject] isKindOfClass:[NSManagedObject class]])
 	{
@@ -9965,7 +9971,7 @@ short				matrix[25];
 						if( [roisArray count])
 						{
 							NSString	*path = [ROISRConverter archiveROIsAsDICOM: roisArray  toPath: str forImage:image];
-						
+							
 							if( path)
 							{
 								[newDICOMSR addObject: path];
@@ -9985,7 +9991,7 @@ short				matrix[25];
 								if( roiSRSeries)
 								{
 									//Check to see if there is already this ROI-image
-									NSArray			*srs = [(NSSet *)[roiSRSeries valueForKey:@"images"] allObjects];
+									NSArray *srs = [(NSSet *)[roiSRSeries valueForKey:@"images"] allObjects];
 									
 									BOOL	found = NO;
 									
@@ -10022,7 +10028,7 @@ short				matrix[25];
 					
 					@catch( NSException *ne)
 					{
-						NSLog(@"saveROI failed: %@", [ne description]);
+						NSLog( @"saveROI failed: %@", [ne description]);
 					}
 					
 					[pool release];
@@ -10035,8 +10041,16 @@ short				matrix[25];
 	
 	if( toBeSaved)
 	{
-		[[BrowserController currentBrowser] addFilesToDatabase: newDICOMSR];
-		[[BrowserController currentBrowser] saveDatabase: nil];
+		if( [[BrowserController currentBrowser] isCurrentDatabaseBonjour])
+		{
+			if( [[BrowserController currentBrowser] sendFilesToCurrentBonjourDB: newDICOMSR] == NO)
+				NSLog( @"****** FAILED to send ROI SR to original DB");
+		}
+		else
+		{
+			[[BrowserController currentBrowser] addFilesToDatabase: newDICOMSR];
+			[[BrowserController currentBrowser] saveDatabase: nil];
+		}
 	}
 }
 

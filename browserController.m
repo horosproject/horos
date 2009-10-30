@@ -455,15 +455,6 @@ static NSArray*	statesArray = nil;
 				NSLog( @"*** exception [[DicomFile alloc] init: newFile] : %@", e);
 			}
 			
-			if(curFile == nil && [[newFile pathExtension] isEqualToString:@"zip"] == YES)
-			{
-				NSString *filePathWithoutExtension = [newFile stringByDeletingPathExtension];
-				NSString *xmlFilePath = [filePathWithoutExtension stringByAppendingString:@".xml"];
-				
-				if([[NSFileManager defaultManager] fileExistsAtPath:xmlFilePath])
-					curFile = [[DicomFile alloc] initWithXMLDescriptor:xmlFilePath path:newFile];
-			}
-			
 			if( curFile)
 			{
 				curDict = [curFile dicomElements];
@@ -4065,11 +4056,6 @@ static NSArray*	statesArray = nil;
 								{
 									[[NSFileManager defaultManager] removeFileAtPath:[[path stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"] handler:nil];
 								}
-								
-								if( [[path pathExtension] isEqualToString:@"zip"])		// ZIP -> DELETE XML
-								{
-									[[NSFileManager defaultManager] removeFileAtPath:[[path stringByDeletingPathExtension] stringByAppendingPathExtension:@"xml"] handler:nil];
-								}
 							}
 						}
 						
@@ -5800,11 +5786,6 @@ static NSArray*	statesArray = nil;
 								[[NSFileManager defaultManager] removeFileAtPath:[[path stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"] handler:nil];
 							}
 							
-							if( [[path pathExtension] isEqualToString:@"zip"])		// ZIP -> DELETE XML
-							{
-								[[NSFileManager defaultManager] removeFileAtPath:[[path stringByDeletingPathExtension] stringByAppendingPathExtension:@"xml"] handler:nil];
-							}
-							
 							NSString *currentDirectory = [[path stringByDeletingLastPathComponent] stringByAppendingString:@"/"];
 							NSArray *dirContent = [[NSFileManager defaultManager] directoryContentsAtPath:currentDirectory];
 							
@@ -6637,46 +6618,46 @@ static NSArray*	statesArray = nil;
 		
 		DicomImage *im = [[item valueForKey: @"images"] anyObject];
 		
-		// ZIP files with XML descriptor
-		if([[item valueForKey:@"noFiles"] intValue] == 1)
-		{
-			if([[im valueForKey:@"fileType"] isEqualToString:@"XMLDESCRIPTOR"] )
-			{
-				NSLog(@"******** XMLDESCRIPTOR ********");
-				
-				NSSavePanel *savePanel = [NSSavePanel savePanel];
-				[savePanel setCanSelectHiddenExtension:YES];
-				[savePanel setRequiredFileType:@"zip"];
-				
-				NSString *filePath = [im valueForKey: @"completePath"];
-				NSString *fileName = [filePath lastPathComponent];
-				
-				if([savePanel runModalForDirectory:nil file:fileName] == NSFileHandlingPanelOKButton)
-				{
-					// write the file to the specified location on the disk
-					NSFileManager *fileManager = [NSFileManager defaultManager];
-					// zip
-					NSString *newFilePath = [[savePanel URL] path];
-					if ([fileManager fileExistsAtPath:filePath])
-						[fileManager copyPath:filePath toPath:newFilePath handler:nil];
-					// xml
-					NSMutableString *xmlFilePath = [NSMutableString stringWithCapacity:[filePath length]];
-					[xmlFilePath appendString: [filePath substringToIndex:[filePath length]-[[filePath pathExtension] length]]];
-					[xmlFilePath appendString: @"xml"];
-					NSLog(@"xmlFilePath : %@", xmlFilePath);
-					
-					NSMutableString *newXmlFilePath = [NSMutableString stringWithCapacity:[newFilePath length]];
-					[newXmlFilePath appendString: [newFilePath substringToIndex:[newFilePath length]-[[newFilePath pathExtension] length]]];
-					[newXmlFilePath appendString: @"xml"];
-					NSLog(@"newXmlFilePath : %@", newXmlFilePath);
-					
-					if ([fileManager fileExistsAtPath:xmlFilePath])
-						[fileManager copyPath:xmlFilePath toPath:newXmlFilePath handler:nil];
-				}
-				
-				r = YES;
-			}
-		}
+//		// ZIP files with XML descriptor
+//		if([[item valueForKey:@"noFiles"] intValue] == 1)
+//		{
+//			if([[im valueForKey:@"fileType"] isEqualToString:@"XMLDESCRIPTOR"] )
+//			{
+//				NSLog(@"******** XMLDESCRIPTOR ********");
+//				
+//				NSSavePanel *savePanel = [NSSavePanel savePanel];
+//				[savePanel setCanSelectHiddenExtension:YES];
+//				[savePanel setRequiredFileType:@"zip"];
+//				
+//				NSString *filePath = [im valueForKey: @"completePath"];
+//				NSString *fileName = [filePath lastPathComponent];
+//				
+//				if([savePanel runModalForDirectory:nil file:fileName] == NSFileHandlingPanelOKButton)
+//				{
+//					// write the file to the specified location on the disk
+//					NSFileManager *fileManager = [NSFileManager defaultManager];
+//					// zip
+//					NSString *newFilePath = [[savePanel URL] path];
+//					if ([fileManager fileExistsAtPath:filePath])
+//						[fileManager copyPath:filePath toPath:newFilePath handler:nil];
+//					// xml
+//					NSMutableString *xmlFilePath = [NSMutableString stringWithCapacity:[filePath length]];
+//					[xmlFilePath appendString: [filePath substringToIndex:[filePath length]-[[filePath pathExtension] length]]];
+//					[xmlFilePath appendString: @"xml"];
+//					NSLog(@"xmlFilePath : %@", xmlFilePath);
+//					
+//					NSMutableString *newXmlFilePath = [NSMutableString stringWithCapacity:[newFilePath length]];
+//					[newXmlFilePath appendString: [newFilePath substringToIndex:[newFilePath length]-[[newFilePath pathExtension] length]]];
+//					[newXmlFilePath appendString: @"xml"];
+//					NSLog(@"newXmlFilePath : %@", newXmlFilePath);
+//					
+//					if ([fileManager fileExistsAtPath:xmlFilePath])
+//						[fileManager copyPath:xmlFilePath toPath:newXmlFilePath handler:nil];
+//				}
+//				
+//				r = YES;
+//			}
+//		}
 		
 		if ([[im valueForKey:@"fileType"] isEqualToString:@"DICOMMPEG2"])
 		{
@@ -9886,6 +9867,19 @@ static BOOL needToRezoom;
 	else return nil;
 }
 
+- (BOOL) sendFilesToCurrentBonjourDB: (NSArray*) files
+{
+	BOOL result = NO;
+	
+	int row = [bonjourServicesList selectedRow];
+	if( row > 0)
+	{
+		result = [bonjourBrowser sendDICOMFile: row-1 paths: files];
+	}
+	
+	return result;
+}
+
 - (BOOL)tableView:(NSTableView *)tableView acceptDrop:(id <NSDraggingInfo>)info row:(NSInteger)row dropOperation:(NSTableViewDropOperation)operation
 {
 	if ([tableView isEqual:albumTable])
@@ -9954,20 +9948,20 @@ static BOOL needToRezoom;
 			NSString *filePath, *destPath;
 			NSMutableArray *imagesArray = [NSMutableArray arrayWithCapacity:0];
 			
-			for( NSManagedObject *object in draggedItems )
+			for( NSManagedObject *object in draggedItems)
 			{
-				if( [[object valueForKey:@"type"] isEqualToString:@"Study"] )
+				if( [[object valueForKey:@"type"] isEqualToString:@"Study"])
 				{
-					for ( NSManagedObject *curSerie in [object valueForKey:@"series"] )
+					for( NSManagedObject *curSerie in [object valueForKey:@"series"])
 					{
 						[imagesArray addObjectsFromArray: [[curSerie valueForKey:@"images"] allObjects]];
 					}
 				}
 				
-				if( [[object valueForKey:@"type"] isEqualToString:@"Series"] )
+				if( [[object valueForKey:@"type"] isEqualToString:@"Series"])
 					[imagesArray addObjectsFromArray: [[object valueForKey:@"images"] allObjects]];
 				
-				if( [[object valueForKey:@"type"] isEqualToString:@"Image"] )
+				if( [[object valueForKey:@"type"] isEqualToString:@"Image"])
 					[imagesArray addObject: object];
 			}
 			
@@ -9980,7 +9974,7 @@ static BOOL needToRezoom;
 			
 			NSDictionary *object = nil;
 			
-			if( row > 0 ) object = [[bonjourBrowser services] objectAtIndex: row-1];
+			if( row > 0) object = [[bonjourBrowser services] objectAtIndex: row-1];
 			
 			if( [[object valueForKey: @"type"] isEqualToString:@"dicomDestination"])
 			{
@@ -10246,14 +10240,6 @@ static BOOL needToRezoom;
 						
 						[[NSFileManager defaultManager] copyPath:filePath toPath:destPath handler:nil];
 						
-						if([[filePath pathExtension] isEqualToString:@"zip"])
-						{
-							// it is a ZIP
-							NSString *xmlPath = [[filePath stringByDeletingPathExtension] stringByAppendingPathExtension:@"xml"];
-							NSString *xmlDestPath = [[destPath stringByDeletingPathExtension] stringByAppendingPathExtension:@"xml"];
-							[[NSFileManager defaultManager] copyPath:xmlPath toPath:xmlDestPath handler:nil];
-						}
-						
 						[splash incrementBy:1];
 						
 						[pool release];
@@ -10266,13 +10252,14 @@ static BOOL needToRezoom;
 			}
 			else if( [bonjourServicesList selectedRow] != row)	 // Copying From Local to distant
 			{
-				BOOL	OnlyDICOM = YES;
+				BOOL OnlyDICOM = YES;
 				
 				NSDictionary *dcmNode = [[bonjourBrowser services] objectAtIndex: row-1];
 				
-				if( OnlyDICOM == NO ) NSLog( @"Not Only DICOM !");
+				if( OnlyDICOM == NO)
+					NSLog( @"Not Only DICOM !");
 				
-				if( [dcmNode valueForKey:@"Port"] == nil && OnlyDICOM )
+				if( [dcmNode valueForKey:@"Port"] == nil && OnlyDICOM)
 				{
 					NSMutableDictionary	*dict = [NSMutableDictionary dictionaryWithDictionary: dcmNode];
 					[dict addEntriesFromDictionary: [bonjourBrowser getDICOMDestinationInfo: row-1]];
@@ -10281,13 +10268,21 @@ static BOOL needToRezoom;
 					dcmNode = dict;
 				}
 				
-				if( [dcmNode valueForKey:@"Port"] && OnlyDICOM )
+				if( [dcmNode valueForKey:@"Port"] && OnlyDICOM)
 				{
+					NSMutableArray		*packArray = [NSMutableArray arrayWithCapacity: 10];
+					
+					// Add the ROIs
+					for( DicomImage *img in imagesArray )
+					{
+						[packArray addObjectsFromArray: [img SRPaths]];
+					}
+					
 					[SendController sendFiles: imagesArray toNode: dcmNode];
 				}
 				else
 				{
-					Wait	*splash = [[Wait alloc] initWithString:@"Copying to OsiriX database..."];
+					Wait *splash = [[Wait alloc] initWithString:@"Copying to OsiriX database..."];
 					[splash showWindow:self];
 					[[splash progress] setMaxValue:[imagesArray count]];
 					
@@ -10296,11 +10291,11 @@ static BOOL needToRezoom;
 						NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
 						NSMutableArray		*packArray = [NSMutableArray arrayWithCapacity: 10];
 						
-						for( int x = 0; x < 10; x++ )
+						for( int x = 0; x < 10; x++)
 						{
-							if( i <  [imagesArray count] )
+							if( i <  [imagesArray count])
 							{
-								NSString	*sendPath = [self getLocalDCMPath:[imagesArray objectAtIndex: i] :1];
+								NSString *sendPath = [self getLocalDCMPath:[imagesArray objectAtIndex: i] :1];
 								
 								[packArray addObject: sendPath];
 								
@@ -10310,12 +10305,6 @@ static BOOL needToRezoom;
 									[packArray addObjectsFromArray: [[imagesArray objectAtIndex: i] SRPaths]];
 								}
 								
-								if([[sendPath pathExtension] isEqualToString:@"zip"] )
-								{
-									// it is a ZIP
-									NSString *xmlPath = [[sendPath stringByDeletingPathExtension] stringByAppendingPathExtension:@"xml"];
-									[packArray addObject: xmlPath];
-								}
 								[splash incrementBy:1];
 							}
 							i++;
@@ -13935,9 +13924,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 							if( isDicomFile == YES ||
 							   (([DicomFile isFVTiffFile:srcPath] ||
 								 [DicomFile isTiffFile:srcPath] ||
-								 [DicomFile isNRRDFile:srcPath] ||
-								 [DicomFile isXMLDescriptedFile:srcPath]||
-								 [DicomFile isXMLDescriptorFile:srcPath]) 
+								 [DicomFile isNRRDFile:srcPath])
 								&& [[NSFileManager defaultManager] fileExistsAtPath:dstPath] == NO))
 							{
 								newFilesInIncoming = YES;
@@ -13966,30 +13953,11 @@ static volatile int numberOfThreadsForJPEG = 0;
 								}
 								else
 								{
-									if ([DicomFile isXMLDescriptorFile:srcPath])
-									{ // XML comes before ZIP in alphabetic order...
-										[[NSFileManager defaultManager] movePath:srcPath toPath:dstPath handler:nil]; // move the XML first
-										srcPath = [[srcPath stringByDeletingPathExtension] stringByAppendingString:@".zip"];
-										dstPath = [[dstPath stringByDeletingPathExtension] stringByAppendingString:@".zip"];
-									}
-									
-									if ([DicomFile isXMLDescriptedFile:srcPath])
-									{
-										if ([[NSFileManager defaultManager] fileExistsAtPath:[[srcPath stringByDeletingPathExtension] stringByAppendingString:@".xml"]])
-										{
-											// move the XML first
-											[[NSFileManager defaultManager]
-											 movePath	:[[srcPath stringByDeletingPathExtension] stringByAppendingString:@".xml"]
-											 toPath		:[[dstPath stringByDeletingPathExtension] stringByAppendingString:@".xml"] 
-											 handler		:nil];
-											// the ZIP will be moved next line
-										}
-									}
-									
 									result = [[NSFileManager defaultManager] movePath:srcPath toPath:dstPath handler:nil];
 								}
+
 								
-								if ( result == YES )
+								if ( result == YES)
 								{
 									[filesArray addObject:dstPath];
 								}

@@ -307,6 +307,8 @@ Papy3FileOpen (char *inNameP, PAPY_FILE inVRefNum, int inToOpen, void* inFSSpec)
 						
                         if (iResult == papNoError)
                         {
+						  int isImage = 1;
+						  
                           /* extract some information from group 28 */
                           /* first : keep the position in the file */
                           theErr = Papy3FTell (gPapyFile [theFileNb], &theFilePos);
@@ -328,6 +330,9 @@ Papy3FileOpen (char *inNameP, PAPY_FILE inVRefNum, int inToOpen, void* inFSSpec)
 									{
 										gSOPClassUID[ theFileNb] = malloc( strlen( theValP->a)+1);
 										strcpy( gSOPClassUID[ theFileNb], theValP->a);
+										
+										if( strncmp( "1.2.840.10008.5.1.4.1.1.88", gSOPClassUID[ theFileNb], strlen( "1.2.840.10008.5.1.4.1.1.88")) == 0) // SR Files
+											isImage = 0;
 									}
 									theErr = Papy3GroupFree (&theGroupP, TRUE);
 								}
@@ -335,7 +340,7 @@ Papy3FileOpen (char *inNameP, PAPY_FILE inVRefNum, int inToOpen, void* inFSSpec)
 							
                           /* extract the informations from group28 from the file */
 						  
-                          if ((theErr = ExtractGroup28Information (theFileNb)) < 0)
+                          if( isImage && (theErr = ExtractGroup28Information (theFileNb)) < 0)
                           {
 								iResult = theErr;
 								if (gShadowOwner [theFileNb] != NULL) 
@@ -349,7 +354,7 @@ Papy3FileOpen (char *inNameP, PAPY_FILE inVRefNum, int inToOpen, void* inFSSpec)
 							
                           /* extract data set information for the DICOM files */
 						  
-                          if ((gIsPapyFile [theFileNb] == DICOM10 || gIsPapyFile [theFileNb] == DICOM_NOT10) && (iResult == papNoError))
+                          if( (gIsPapyFile [theFileNb] == DICOM10 || gIsPapyFile [theFileNb] == DICOM_NOT10) && (iResult == papNoError))
                           {
                             if ((theErr = ExtractDicomDataSetInformation3 (theFileNb)) < 0)
                             {

@@ -171,7 +171,12 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 - (NSString*) SRPathForFrame: (int) frameNo
 {
 	#ifdef OSIRIX_VIEWER
-	NSString *d = [[DicomImage dbPathForManagedContext: [self managedObjectContext]] stringByAppendingPathComponent:ROIDATABASE];
+	NSString *d;
+	
+	if( [[BrowserController currentBrowser] isCurrentDatabaseBonjour])
+		d = [DicomImage dbPathForManagedContext: [self managedObjectContext]];
+	else
+		d = [[DicomImage dbPathForManagedContext: [self managedObjectContext]] stringByAppendingPathComponent:ROIDATABASE];
 	
 	return [d stringByAppendingPathComponent: [self SRFilenameForFrame: frameNo]];
 	#else
