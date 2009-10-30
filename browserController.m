@@ -13955,9 +13955,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 								{
 									result = [[NSFileManager defaultManager] movePath:srcPath toPath:dstPath handler:nil];
 								}
-
 								
-								if ( result == YES)
+								if( result == YES)
 								{
 									[filesArray addObject:dstPath];
 								}
