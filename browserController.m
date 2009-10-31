@@ -581,7 +581,11 @@ static NSArray*	statesArray = nil;
 						NSString	*uidName = [SRAnnotation getFilenameFromSR: newFile];
 						NSString	*destPath = [roiFolder stringByAppendingPathComponent: uidName];
 						
-						if( [newFile isEqualToString: destPath] == NO)
+						if( context == managedObjectContext && isCurrentDatabaseBonjour == YES) // It's a Bonjour shared DB -> We don't need to add this ROI to the ROIs folder. We keep it in the TEMP.noindex folder
+						{
+							
+						}
+						else if( [newFile isEqualToString: destPath] == NO)
 						{
 							[[NSFileManager defaultManager] removeFileAtPath:destPath handler:nil];
 							if( [newFile length] >= [INpath length] && [newFile compare:INpath options:NSLiteralSearch range:NSMakeRange(0, [INpath length])] == NSOrderedSame)
@@ -3807,6 +3811,8 @@ static NSArray*	statesArray = nil;
 		}
 		else
 			[theTask release];
+			
+		[[NSFileManager defaultManager] removeItemAtPath: repairedDBFile error: nil];
 	}
 	
 	@catch (NSException * e)
@@ -17250,8 +17256,10 @@ static volatile int numberOfThreadsForJPEG = 0;
 	return @"";
 }
 
-- (long)currentBonjourService
-{ return [bonjourServicesList selectedRow] - 1; }
+- (long) currentBonjourService
+{
+	return [bonjourServicesList selectedRow] - 1;
+}
 
 - (void)setCurrentBonjourService: (int)index
 {

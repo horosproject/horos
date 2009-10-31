@@ -43,6 +43,8 @@
 	NSMutableArray		*albumStudies;
 	NSString			*albumUID;
 	
+	NSString			*dbObjectUID;
+	
 	NSString			*setValueObject, *setValueKey;
 	id					setValueValue;
 	
@@ -72,6 +74,8 @@
 
 + (NSString*) bonjour2local: (NSString*) str;
 + (NSString*) uniqueLocalPath:(NSManagedObject*) image;
++ (BonjourBrowser*) currentBrowser;
+
 - (void) waitTheLock;
 - (void) setWaitDialog: (WaitRendering*) w;
 
@@ -98,6 +102,9 @@
 - (BOOL) sendFile:(NSString*) pathFile index:(int) index;
 - (BOOL) retrieveDICOMFilesWithSTORESCU:(int) indexFrom to:(int) indexTo paths:(NSArray*) ip;
 - (NSDate*) getFileModification:(NSString*) pathFile index:(int) index;
+
+- (void) deleteObject: (NSManagedObject*) o bonjourIndex: (int) index;
+- (void) deleteObject: (NSManagedObject*) o;
 
 - (void) buildFixedIPList;
 - (void) buildLocalPathsList;

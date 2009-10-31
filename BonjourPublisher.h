@@ -48,5 +48,6 @@
 - (void)setServiceName:(NSString *) newName;
 - (NSString *) serviceName;
 - (int) OsiriXDBCurrentPort;
++ (BonjourPublisher*) currentPublisher;
 
 @end

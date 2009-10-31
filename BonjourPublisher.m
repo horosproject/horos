@@ -29,6 +29,8 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
+static BonjourPublisher *currentPublisher = nil;
+
 static char *GetPrivateIP()
 {
 	struct			hostent *h;
@@ -45,11 +47,17 @@ static char *GetPrivateIP()
 
 @implementation BonjourPublisher
 
++ (BonjourPublisher*) currentPublisher
+{
+	return currentPublisher;
+}
+
 - (id) initWithBrowserController: (BrowserController*) bC
 {
 	self = [super init];
 	if (self != nil)
 	{
+		currentPublisher = self;
 		serviceName = [[NSString stringWithString:@"OsiriX DataBase"] retain];
 		interfaceOsiriX = bC;
 		
@@ -269,8 +277,8 @@ static char *GetPrivateIP()
 {
 	NSAutoreleasePool	*mPool = [[NSAutoreleasePool alloc] init];
 
-	BOOL				saveDB = NO;
-	BOOL				refreshDB = NO;
+	BOOL saveDB = NO;
+	BOOL refreshDB = NO;
 
 	[incomingConnection retain];
 	
@@ -468,6 +476,51 @@ static char *GetPrivateIP()
 						[[data subdataWithRange: NSMakeRange(pos,fileSize)] writeToFile:dstPath atomically: YES];
 						
 						pos += fileSize;
+					}
+					
+					representationToSend = nil;
+				}
+				else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"DELOB" length: 6]]) // Delete DB Object
+				{
+					int pos = 6, stringSize;
+					
+					// We read 4 bytes that contain the string size
+					while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
+					[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &stringSize];	stringSize = NSSwapBigIntToHost( stringSize);
+					pos += 4;
+					
+					// We read the string
+					while ( [data length] < pos + stringSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
+					NSString *object = [NSString stringWithUTF8String: [[data subdataWithRange: NSMakeRange(pos,stringSize)] bytes]];
+					pos += stringSize;
+					
+					if( [object writeToFile:@"/tmp/DELOB" atomically: YES])
+					{
+						NSDictionary *d = [NSDictionary dictionaryWithContentsOfFile: @"/tmp/DELOB"];
+						
+						NSString *objectUID = [d objectForKey:@"objectUID"];
+						
+						NSManagedObjectContext *context = [interfaceOsiriX defaultManagerObjectContext];
+						[context lock];
+						
+						@try
+						{
+							NSManagedObject *object = [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: objectUID]]];
+							
+							[context deleteObject: object];
+							
+							refreshDB = YES;
+							saveDB = YES;
+						}
+						
+						@catch (NSException * e)
+						{
+							NSLog(@"Exception in BonjourPublisher DELOB: %@");
+						}
+						
+						NSError *error = nil;
+						[context save: &error];
+						[context unlock];
 					}
 					
 					representationToSend = nil;

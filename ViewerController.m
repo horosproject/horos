@@ -9993,9 +9993,12 @@ short				matrix[25];
 									
 									BOOL	found = NO;
 									
-									for( id loopItem1 in srs)
+									for( NSManagedObject *item in srs)
 									{
-										if( [[loopItem1 valueForKey:@"completePath"] isEqualToString: str])
+										if( [[BrowserController currentBrowser] isCurrentDatabaseBonjour])
+											[[BonjourBrowser currentBrowser] deleteObject: item];
+										
+										if( [[item valueForKey:@"completePath"] isEqualToString: str])
 										{
 											NSManagedObjectContext	*context = [[BrowserController currentBrowser] managedObjectContext];
 											
@@ -10003,7 +10006,7 @@ short				matrix[25];
 											
 											@try
 											{
-												[context deleteObject: loopItem1];
+												[context deleteObject: item];
 											}
 											@catch (NSException * e)
 											{

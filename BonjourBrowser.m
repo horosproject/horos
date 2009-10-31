@@ -32,6 +32,8 @@
 
 static int TIMEOUT	= 10;
 static NSLock *resolveServiceThreadLock = nil;
+static BonjourBrowser *currentBrowser = nil;
+
 #define USEZIP NO
 
 #define OSIRIXRUNMODE @"OsiriXLoopMode"
@@ -58,6 +60,11 @@ static char *GetPrivateIP()
 }
 
 @implementation BonjourBrowser
+
++ (BonjourBrowser*) currentBrowser
+{
+	return currentBrowser;
+}
 
 - (void) waitTheLock
 {
@@ -102,6 +109,7 @@ static char *GetPrivateIP()
 		OSErr err;       
 		SInt32 osVersion;
 		
+		currentBrowser = self;
 		serviceBeingResolvedIndex = -1;
 		
 		resolveServiceThreadLock = [[NSLock alloc] init];
@@ -156,7 +164,6 @@ static char *GetPrivateIP()
 												selector: @selector( updateFixedList:)
 												name: @"DCMNetServicesDidChange"
 												object: nil];
-												
 	}
 	return self;
 }
@@ -390,6 +397,10 @@ static char *GetPrivateIP()
 			{
 				
 			}
+			else if (strcmp( messageToRemoteService, "DELOB") == 0)
+			{
+				
+			}
 
 			if( success == NO)
 			{
@@ -565,7 +576,19 @@ static char *GetPrivateIP()
 				NSMutableData	*toTransfer = [NSMutableData dataWithCapacity:0];
 				
 				[toTransfer appendBytes:messageToRemoteService length: 6];
-
+				
+				if (strcmp( messageToRemoteService, "DELOB") == 0)
+				{
+					const char* string;
+					int stringSize;
+					
+					string = [[[NSDictionary dictionaryWithObjectsAndKeys: dbObjectUID, @"objectUID", nil] description] UTF8String];
+					stringSize  = NSSwapHostIntToBig( strlen( string)+1);	// +1 to include the last 0 !
+					
+					[toTransfer appendBytes:&stringSize length: 4];
+					[toTransfer appendBytes:string length: strlen( string)+1];
+				}
+				
 				if (strcmp( messageToRemoteService, "ADDAL") == 0)
 				{
 					const char* string;
@@ -1412,6 +1435,32 @@ static char *GetPrivateIP()
 	[self connectToServer: index message:@"VERSI"];
 	localVersion = BonjourDatabaseVersion;
 	
+	[[[BrowserController currentBrowser] managedObjectContext] unlock];
+}
+
+- (void) deleteObject: (NSManagedObject*) o
+{
+	[self deleteObject: o bonjourIndex: [[BrowserController currentBrowser] currentBonjourService]];
+}
+
+- (void) deleteObject: (NSManagedObject*) o bonjourIndex: (int) index
+{
+	if( index < 0)
+	{
+		NSLog( @"***** deleteObject < 1 -- BonjourBrowser");
+		return;
+	}
+	
+	[[[BrowserController currentBrowser] managedObjectContext] lock];
+	
+	dbObjectUID = [[[[o objectID] URIRepresentation] absoluteString] retain];
+	
+	[self connectToServer: index message:@"DELOB"];
+	
+	[NSThread sleepForTimeInterval: 0.1];  // for rock stable opening/closing socket
+	
+	[dbObjectUID release];
+		
 	[[[BrowserController currentBrowser] managedObjectContext] unlock];
 }
 
