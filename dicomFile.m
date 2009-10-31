@@ -2379,21 +2379,24 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		}
 		
 		// Go to groups 0x0042 for Encapsulated Document Possible PDF
-		theErr = Papy3GotoGroupNb (fileNb, (PapyShort) 0x0042);
-		if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
+		if ([sopClassUID isEqualToString: [DCMAbstractSyntaxUID pdfStorageClassUID]])
 		{
-			SElement *element = theGroupP + papEncapsulatedDocumentGr;
-			
-			if( element->nb_val > 0)
+			theErr = Papy3GotoGroupNb (fileNb, (PapyShort) 0x0042);
+			if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
 			{
-				NSPDFImageRep *rep = [NSPDFImageRep imageRepWithData: [NSData dataWithBytes: element->value->a length: element->length]];
-				NoOfFrames = [rep pageCount];
+				SElement *element = theGroupP + papEncapsulatedDocumentGr;
 				
-				height = ceil( [rep bounds].size.height * 1.5);
-				width = ceil( [rep bounds].size.width * 1.5);
+				if( element->nb_val > 0)
+				{
+					NSPDFImageRep *rep = [NSPDFImageRep imageRepWithData: [NSData dataWithBytes: element->value->a length: element->length]];
+					NoOfFrames = [rep pageCount];
+					
+					height = ceil( [rep bounds].size.height * 1.5);
+					width = ceil( [rep bounds].size.width * 1.5);
+				}
+				
+				theErr = Papy3GroupFree (&theGroupP, TRUE);
 			}
-			
-			theErr = Papy3GroupFree (&theGroupP, TRUE);
 		}
 		
 		// close and free the file and the associated allocated memory 

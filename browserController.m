@@ -12946,7 +12946,7 @@ static NSArray*	openSubSeriesArray = nil;
 							numberOfValidFiles++;
 					}
 					
-					if( numberOfValidFiles == 0)
+					if( numberOfValidFiles == 0 && [[f lastPathComponent] isEqualToString: @"ROIs"] == NO)
 					{
 						NSLog( @"delete Queue: delete folder: %@", f);
 						[[NSFileManager defaultManager] removeFileAtPath: f handler: nil];
