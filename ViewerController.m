@@ -9936,6 +9936,7 @@ short				matrix[25];
 		[[[BrowserController currentBrowser] managedObjectContext] lock];
 		
 		NSMutableArray *newDICOMSR = [NSMutableArray array];
+		NSMutableArray *allDICOMSR = [NSMutableArray array];
 		
 		for( i = 0; i < [fileList[ mIndex] count]; i++)
 		{
@@ -9970,17 +9971,10 @@ short				matrix[25];
 						
 						if( [roisArray count])
 						{
-							NSString *path = [ROISRConverter archiveROIsAsDICOM: roisArray  toPath: str forImage:image];
+							if( [ROISRConverter archiveROIsAsDICOM: roisArray toPath: str forImage: image] != nil)
+								[newDICOMSR addObject: str];
 							
-							if( path)
-							{
-								[newDICOMSR addObject: path];
-								toBeSaved = YES;
-							}
-							else {
-								NSLog( @"*************** why???");
-							}
-
+							[allDICOMSR addObject: str];
 						}
 						else
 						{
@@ -10018,7 +10012,6 @@ short				matrix[25];
 											[context unlock];
 											
 											found = YES;
-											toBeSaved = YES;
 											break;
 										}
 									}
@@ -10040,18 +10033,16 @@ short				matrix[25];
 			}
 		}
 		
-		if( toBeSaved)
+		if( [[BrowserController currentBrowser] isCurrentDatabaseBonjour] && [allDICOMSR count] != 0)
 		{
-			if( [[BrowserController currentBrowser] isCurrentDatabaseBonjour])
-			{
-				if( [[BrowserController currentBrowser] sendFilesToCurrentBonjourDB: newDICOMSR] == NO)
-					NSLog( @"****** FAILED to send ROI SR to original DB");
-			}
-			else
-			{
-				[[BrowserController currentBrowser] addFilesToDatabase: newDICOMSR];
-				[[BrowserController currentBrowser] saveDatabase: nil];
-			}
+			if( [[BrowserController currentBrowser] sendFilesToCurrentBonjourDB: allDICOMSR] == NO)
+				NSLog( @"****** FAILED to send ROI SR to original DB");
+		}
+		
+		if( [newDICOMSR count])
+		{
+			[[BrowserController currentBrowser] addFilesToDatabase: newDICOMSR];
+			[[BrowserController currentBrowser] saveDatabase: nil];
 		}
 		
 		[[[BrowserController currentBrowser] managedObjectContext] unlock];

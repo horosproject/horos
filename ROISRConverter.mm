@@ -48,28 +48,36 @@
 }
 
 //All the ROIs for an image are archived as an NSArray.  We will need to extract all the necessary ROI info to create the basic SR before adding archived data. 
-+ (NSString*) archiveROIsAsDICOM:(NSArray *)rois toPath:(NSString *)path  forImage:(id)image
++ (NSString*) archiveROIsAsDICOM: (NSArray *) rois toPath: (NSString *) path forImage: (id) image
 {
 	SRAnnotation *sr = [[SRAnnotation alloc] initWithROIs:rois path:path forImage:image];
 	id study = [image valueForKeyPath:@"series.study"];
 	
 	NSManagedObject *roiSRSeries = [study roiSRSeries];
 	
+	if( roiSRSeries == nil)
+	{
+		[sr writeToFileAtPath: path];
+		
+		[[BrowserController currentBrowser] addFilesToDatabase: [NSArray arrayWithObject: path]];
+		roiSRSeries = [study roiSRSeries];
+		if( roiSRSeries == nil)
+			NSLog( @"********** roiSRSeries == nil -- archiveROIsAsDICOM");
+	}
+	
 	NSString *seriesInstanceUID = [roiSRSeries valueForKey:@"seriesDICOMUID"];
 	
 	[sr setSeriesInstanceUID: seriesInstanceUID];
-	[sr writeToFileAtPath:path];
+	[sr writeToFileAtPath: path];
 	
 	BOOL AddIt = NO;
 	
 	[[[BrowserController currentBrowser] managedObjectContext] lock];
 	
-	//Check to see if there is already a roi Series.
 	if( roiSRSeries)
 	{
 		//Check to see if there is already this ROI-image
 		NSString		*sopInstanceUID = [sr sopInstanceUID];
-		
 		NSArray			*srs = [(NSSet *)[roiSRSeries valueForKey:@"images"] allObjects];
 		NSPredicate		*predicate = [NSComparisonPredicate predicateWithLeftExpression: [NSExpression expressionForKeyPath: @"compressedSopInstanceUID"] rightExpression: [NSExpression expressionForConstantValue: [DicomImage sopInstanceUIDEncodeString: sopInstanceUID]] customSelector: @selector( isEqualToSopInstanceUID:)];
 		NSPredicate		*notNilPredicate = [NSPredicate predicateWithFormat:@"compressedSopInstanceUID != NIL"];
@@ -78,20 +86,15 @@
 		if ([found count] < 1)
 			AddIt = YES;
 	}
-	else AddIt = YES;
+	else NSLog( @"********** roiSRSeries == nil -- archiveROIsAsDICOM");
 	
 	[[[BrowserController currentBrowser] managedObjectContext] unlock];
 	
 	[sr release];
 	
-	if( seriesInstanceUID == nil)	//Add it NOW to the DB! We need the seriesInstanceUID for the others
-	{
-		[[BrowserController currentBrowser] addFilesToDatabase: [NSArray arrayWithObject: path]];
-		
+	if( AddIt)
 		return path;
-	}
-	else if( AddIt) return path;
-	
+		
 	return nil;
 }
 @end
