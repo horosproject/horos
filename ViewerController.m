@@ -9996,9 +9996,31 @@ short				matrix[25];
 									for( NSManagedObject *item in srs)
 									{
 										if( [[BrowserController currentBrowser] isCurrentDatabaseBonjour])
-											[[BonjourBrowser currentBrowser] deleteObject: item];
-										
-										if( [[item valueForKey:@"completePath"] isEqualToString: str])
+										{
+											if( [[[item valueForKey:@"path"] lastPathComponent] isEqualToString: [str lastPathComponent]])
+											{
+												NSLog( [str lastPathComponent]);
+												[[BonjourBrowser currentBrowser] deleteObject: item];
+												
+												NSManagedObjectContext	*context = [[BrowserController currentBrowser] managedObjectContext];
+											
+												[context lock];
+												
+												@try
+												{
+													[context deleteObject: item];
+												}
+												@catch (NSException * e)
+												{
+												}
+												
+												[context unlock];
+												
+												found = YES;
+												break;
+											}
+										}
+										else if( [[item valueForKey:@"completePath"] isEqualToString: str])
 										{
 											NSManagedObjectContext	*context = [[BrowserController currentBrowser] managedObjectContext];
 											

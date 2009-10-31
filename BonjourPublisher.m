@@ -507,8 +507,15 @@ static char *GetPrivateIP()
 						{
 							NSManagedObject *object = [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: objectUID]]];
 							
-							[context deleteObject: object];
-							
+							if( object)
+							{
+								[context deleteObject: object];
+								
+								[[BrowserController currentBrowser] emptyDeleteQueueNow: self];
+							}
+							else
+								NSLog( @"****** BonjourPublisher : object to delete not found");
+								
 							refreshDB = YES;
 							saveDB = YES;
 						}

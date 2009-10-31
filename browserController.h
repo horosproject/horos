@@ -297,6 +297,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (void) databaseOpenStudy: (NSManagedObject*) item;
 - (IBAction) databaseDoublePressed:(id)sender;
 - (void) setDBDate;
+- (void) emptyDeleteQueueNow: (id) sender;
 - (void) setDockIcon;
 - (void) showEntireDatabase;
 - (void)matrixNewIcon:(long) index: (NSManagedObject*)curFile;
