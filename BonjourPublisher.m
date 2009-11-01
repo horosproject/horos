@@ -84,7 +84,7 @@ static char *GetPrivateIP()
 	return OsiriXDBCurrentPort;
 }
 
-- (void)toggleSharing:(BOOL)boo
+- (void) toggleSharing:(BOOL) activated
 {
     uint16_t chosenPort;
     if( !listeningSocket)
@@ -159,13 +159,18 @@ static char *GetPrivateIP()
 				}
 			}
 			
-			NSLog(@"Chosen port: %d", chosenPort);
+			NSLog(@"Chosen port for DB sharing: %d", chosenPort);
 			
 			OsiriXDBCurrentPort = chosenPort;
 
 			// Once we're here, we know bind must have returned, so we can start the listen
 			if(listen(fdForListening, 1) == 0)
+			{
 				listeningSocket = [[NSFileHandle alloc] initWithFileDescriptor:fdForListening closeOnDealloc: NO];
+				
+				[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(connectionReceived:) name:NSFileHandleConnectionAcceptedNotification object:listeningSocket];
+				[listeningSocket acceptConnectionInBackgroundAndNotify];
+			}
 		}
     }
 
@@ -188,18 +193,13 @@ static char *GetPrivateIP()
 
     if( netService && listeningSocket)
 	{
-        if(boo)
-		{
-            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(connectionReceived:) name:NSFileHandleConnectionAcceptedNotification object:listeningSocket];
-            [listeningSocket acceptConnectionInBackgroundAndNotify];
+        if( activated)
             [netService publish];
-        }
 		else
-		{
-			[[NSNotificationCenter defaultCenter] removeObserver:self name:NSFileHandleConnectionAcceptedNotification object:listeningSocket];
             [netService stop];
-        }
     }
+	
+	dbPublished = activated;
 }
 
 //- (NSData *)dataByZippingLocalPath:(NSString *)_path
@@ -1114,9 +1114,9 @@ static char *GetPrivateIP()
 	[mPool release];
 }
 
-- (void) connectionReceived:(NSNotification *)aNotification
+- (void) connectionReceived:(NSNotification *) aNotification
 {
-	if( netService == nil)
+	if( dbPublished == NO)
 		return;
 
 	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];		// <- Keep this line, very important to avoid memory crash - Antoine
@@ -1132,12 +1132,12 @@ static char *GetPrivateIP()
 }
 
 // work as a delegate of the NSNetService
-- (void)netServiceWillPublish:(NSNetService *)sender
+- (void)netServiceWillPublish:(NSNetService *) sender
 {
 	[interfaceOsiriX bonjourWillPublish];
 }
 
-- (void)netService:(NSNetService *)sender didNotPublish:(NSDictionary *)errorDict
+- (void)netService:(NSNetService *) sender didNotPublish:(NSDictionary *)errorDict
 {
 	// we should send an error message
 	// here ...
@@ -1147,12 +1147,9 @@ static char *GetPrivateIP()
     netService = nil;
 }
 
-- (void)netServiceDidStop:(NSNetService *)sender
+- (void) netServiceDidStop:(NSNetService *)sender
 {
 	[interfaceOsiriX bonjourDidStop];
-	
-	[netService release];
-	netService = nil;
 }
 
 - (NSNetService*) netService

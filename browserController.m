@@ -15635,7 +15635,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	{
 		// Is it currently selected? -> switch back to default DB path
 		int row = [bonjourServicesList selectedRow];
-		if( row > 0 )
+		if( row > 0)
 		{
 			if( [[[[bonjourBrowser services] objectAtIndex: row-1] valueForKey:@"Path"] isEqualToString: sNewDrive])
 				[self resetToLocalDatabase];

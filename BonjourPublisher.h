@@ -19,6 +19,8 @@
 
 @interface BonjourPublisher : NSObject
 {
+	BOOL				dbPublished;
+	
 	NSString			*serviceName;
 	NSNetService		*netService;
 	NSFileHandle		*listeningSocket;

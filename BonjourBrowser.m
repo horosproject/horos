@@ -1007,8 +1007,8 @@ static char *GetPrivateIP()
 	int i = [[BrowserController currentBrowser] currentBonjourService];
 	
 	NSDictionary	*selectedDict = nil;
-	
-	if( i >= 0) selectedDict = [[services objectAtIndex: i] retain];
+	if( i >= 0) 
+		selectedDict = [[services objectAtIndex: i] retain];
 	
 	[self buildFixedIPList];
 	[self buildLocalPathsList];
@@ -1107,7 +1107,8 @@ static char *GetPrivateIP()
 			int index;
 
 			// Iterate through addresses until we find an IPv4 address
-			for (index = 0; index < [[sender addresses] count]; index++) {
+			for (index = 0; index < [[sender addresses] count]; index++)
+			{
 				address = [[sender addresses] objectAtIndex:index];
 				socketAddress = (struct sockaddr *)[address bytes];
 
@@ -1168,10 +1169,28 @@ static char *GetPrivateIP()
 	}
 	
 	// update interface
-    if(!moreComing)
+    if( !moreComing)
 	{
+		int i = [[BrowserController currentBrowser] currentBonjourService];
+	
+		NSDictionary	*selectedDict = nil;
+		if( i >= 0) 
+			selectedDict = [[services objectAtIndex: i] retain];
+		
 		[self arrangeServices];
 		[interfaceOsiriX displayBonjourServices];
+		
+		if( selectedDict)
+		{
+			NSInteger index = [services indexOfObject: selectedDict];
+			
+			if( index == NSNotFound)
+				[[BrowserController currentBrowser] resetToLocalDatabase];
+			else
+				[[BrowserController currentBrowser] setCurrentBonjourService: index];
+			
+			[selectedDict release];
+		}
 	}
 }
 
@@ -1190,12 +1209,11 @@ static char *GetPrivateIP()
 			{
 				[[NSFileManager defaultManager] removeFileAtPath: [self databaseFilePathForService:[[currentNetService valueForKey: @"service"] name]] handler:self];
 			}
-			if( [interfaceOsiriX currentBonjourService] > 0)
+			
+			if( [interfaceOsiriX currentBonjourService] >= 0)
 			{
 				if( [[services objectAtIndex: [interfaceOsiriX currentBonjourService]] valueForKey: @"service"] == aNetService)
-				{
 					[interfaceOsiriX resetToLocalDatabase];
-				}
 			}
 			
 			// deleting service from list
@@ -1209,7 +1227,7 @@ static char *GetPrivateIP()
         }
     }
 	
-    if(!moreComing)
+    if( !moreComing)
 	{
 		[self arrangeServices];
 		[interfaceOsiriX displayBonjourServices];
