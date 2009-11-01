@@ -123,6 +123,7 @@ static char *GetPrivateIP()
 				if (bind(fdForListening, (struct sockaddr *)&serverAddress, namelen) < 0)
 				{
 					close (fdForListening);
+					fdForListening = 0;
 					return;
 				}
             }
