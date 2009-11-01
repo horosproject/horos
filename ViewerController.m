@@ -9937,6 +9937,9 @@ short				matrix[25];
 		
 		NSMutableArray *newDICOMSR = [NSMutableArray array];
 		NSMutableArray *allDICOMSR = [NSMutableArray array];
+		NSMutableArray *toDeleteDICOMSR = [NSMutableArray array];
+		
+		NSManagedObject *roiSRSeries = [[[fileList[ mIndex] lastObject] valueForKeyPath:@"series.study"] roiSRSeries];
 		
 		for( i = 0; i < [fileList[ mIndex] count]; i++)
 		{
@@ -9982,9 +9985,6 @@ short				matrix[25];
 							{
 								[[NSFileManager defaultManager] removeFileAtPath: str handler: nil];
 								
-								//Remove it from the DB, if necessary
-								NSManagedObject *roiSRSeries = [[image valueForKeyPath:@"series.study"] roiSRSeries];
-								
 								//Check to see if there is already a roi Series.
 								if( roiSRSeries)
 								{
@@ -9996,30 +9996,8 @@ short				matrix[25];
 									for( NSManagedObject *item in srs)
 									{
 										if( [[BrowserController currentBrowser] isCurrentDatabaseBonjour])
-										{
-											if( [[[item valueForKey:@"path"] lastPathComponent] isEqualToString: [str lastPathComponent]])
-											{
-												NSLog( [str lastPathComponent]);
-												[[BonjourBrowser currentBrowser] deleteObject: item];
-												
-												NSManagedObjectContext	*context = [[BrowserController currentBrowser] managedObjectContext];
-											
-												[context lock];
-												
-												@try
-												{
-													[context deleteObject: item];
-												}
-												@catch (NSException * e)
-												{
-												}
-												
-												[context unlock];
-												
-												found = YES;
-												break;
-											}
-										}
+											[toDeleteDICOMSR addObject: [str lastPathComponent]];
+										
 										else if( [[item valueForKey:@"completePath"] isEqualToString: str])
 										{
 											NSManagedObjectContext	*context = [[BrowserController currentBrowser] managedObjectContext];
@@ -10058,15 +10036,21 @@ short				matrix[25];
 			}
 		}
 		
-		if( [[BrowserController currentBrowser] isCurrentDatabaseBonjour] && [allDICOMSR count] != 0)
+		if( [[BrowserController currentBrowser] isCurrentDatabaseBonjour])
 		{
-			if( [[BrowserController currentBrowser] sendFilesToCurrentBonjourDB: allDICOMSR] == NO)
-				NSLog( @"****** FAILED to send ROI SR to original DB");
+			if( [allDICOMSR count])
+			{
+				if( [[BrowserController currentBrowser] sendFilesToCurrentBonjourDB: allDICOMSR] == NO)
+					NSLog( @"****** FAILED to send ROI SR to original DB");
+			}
+			
+			if( [toDeleteDICOMSR count])
+				[[BonjourBrowser currentBrowser] deleteRoisObject: roiSRSeries paths: toDeleteDICOMSR];
 		}
 		
 		if( [newDICOMSR count])
 		{
-			[[BrowserController currentBrowser] addFilesToDatabase: newDICOMSR];
+			[[BrowserController currentBrowser] addFilesToDatabase: newDICOMSR]; // Here is the problem : the UID will NOT correspond, if we delete the file.......
 			[[BrowserController currentBrowser] saveDatabase: nil];
 		}
 		

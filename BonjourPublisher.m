@@ -493,15 +493,13 @@ static char *GetPrivateIP()
 					
 					// We read the string
 					while ( [data length] < pos + stringSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-					NSString *object = [NSString stringWithUTF8String: [[data subdataWithRange: NSMakeRange(pos,stringSize)] bytes]];
+					NSDictionary *d = [NSPropertyListSerialization propertyListFromData: [data subdataWithRange: NSMakeRange(pos,stringSize)] mutabilityOption: NSPropertyListImmutable format: nil errorDescription: nil];
 					pos += stringSize;
 					
-					if( [object writeToFile:@"/tmp/DELOB" atomically: YES])
+					if( d)
 					{
-						NSDictionary *d = [NSDictionary dictionaryWithContentsOfFile: @"/tmp/DELOB"];
-						
 						NSString *objectUID = [d objectForKey:@"objectUID"];
-						NSArray *roiPaths = [d objectForKey:@"roiPath"];
+						NSArray *roiPaths = [d objectForKey:@"roiPaths"];
 						
 						NSManagedObjectContext *context = [interfaceOsiriX defaultManagerObjectContext];
 						[context lock];
@@ -510,14 +508,14 @@ static char *GetPrivateIP()
 						{
 							NSManagedObject *roiSRSeries = [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: objectUID]]];
 							
-							if( object)
+							if( roiSRSeries)
 							{
 								//Check to see if there is already this ROI-image
 								NSArray *srs = [(NSSet *)[roiSRSeries valueForKey:@"images"] allObjects];
 								
 								for( NSManagedObject *item in srs)
 								{
-									for( NSArray *path in roiPaths)
+									for( NSString *path in roiPaths)
 									{
 										if( [[[item valueForKey:@"path"] lastPathComponent] isEqualToString: [path lastPathComponent]])
 										{

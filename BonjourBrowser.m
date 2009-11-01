@@ -579,14 +579,20 @@ static char *GetPrivateIP()
 				
 				if (strcmp( messageToRemoteService, "DELOB") == 0)
 				{
-					const char* string;
-					int stringSize;
+//					const char* string;
+//					int stringSize;
+//					
+//					string = [[[NSDictionary dictionaryWithObjectsAndKeys: dbObjectUID, @"objectUID", nil] description] UTF8String];
+//					stringSize  = NSSwapHostIntToBig( strlen( string)+1);	// +1 to include the last 0 !
+//					
+//					[toTransfer appendBytes:&stringSize length: 4];
+//					[toTransfer appendBytes:string length: strlen( string)+1];
 					
-					string = [[[NSDictionary dictionaryWithObjectsAndKeys: dbObjectUID, @"objectUID", nil] description] UTF8String];
-					stringSize  = NSSwapHostIntToBig( strlen( string)+1);	// +1 to include the last 0 !
+					NSData *data = [NSPropertyListSerialization dataFromPropertyList: [NSDictionary dictionaryWithObjectsAndKeys: dbObjectUID, @"objectUID", roiPaths, @"roiPaths", nil]  format: kCFPropertyListBinaryFormat_v1_0 errorDescription: nil];
 					
-					[toTransfer appendBytes:&stringSize length: 4];
-					[toTransfer appendBytes:string length: strlen( string)+1];
+					int stringSize = NSSwapHostIntToBig( [data length]);
+					[toTransfer appendBytes: &stringSize length: 4];
+					[toTransfer appendData: data];
 				}
 				
 				if (strcmp( messageToRemoteService, "ADDAL") == 0)
@@ -1438,14 +1444,9 @@ static char *GetPrivateIP()
 	[[[BrowserController currentBrowser] managedObjectContext] unlock];
 }
 
-- (void) deleteObject: (NSManagedObject*) o
+- (void) deleteRoisObject: (NSManagedObject*) o paths: (NSArray*) p
 {
-	[self deleteObject: o bonjourIndex: [[BrowserController currentBrowser] currentBonjourService]];
-}
-
-- (void) deleteObject: (NSManagedObject*) o bonjourIndex: (int) index
-{
-	if( index < 0)
+	if( [[BrowserController currentBrowser] currentBonjourService] < 0)
 	{
 		NSLog( @"***** deleteObject < 1 -- BonjourBrowser");
 		return;
@@ -1454,12 +1455,14 @@ static char *GetPrivateIP()
 	[[[BrowserController currentBrowser] managedObjectContext] lock];
 	
 	dbObjectUID = [[[[o objectID] URIRepresentation] absoluteString] retain];
+	roiPaths = [p retain];
 	
-	[self connectToServer: index message:@"DELOB"];
+	[self connectToServer: [[BrowserController currentBrowser] currentBonjourService] message:@"DELOB"];
 	
 	[NSThread sleepForTimeInterval: 0.1];  // for rock stable opening/closing socket
 	
 	[dbObjectUID release];
+	[roiPaths release];
 		
 	[[[BrowserController currentBrowser] managedObjectContext] unlock];
 }

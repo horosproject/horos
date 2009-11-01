@@ -44,6 +44,7 @@
 	NSString			*albumUID;
 	
 	NSString			*dbObjectUID;
+	NSArray				*roiPaths;
 	
 	NSString			*setValueObject, *setValueKey;
 	id					setValueValue;
@@ -103,8 +104,7 @@
 - (BOOL) retrieveDICOMFilesWithSTORESCU:(int) indexFrom to:(int) indexTo paths:(NSArray*) ip;
 - (NSDate*) getFileModification:(NSString*) pathFile index:(int) index;
 
-- (void) deleteObject: (NSManagedObject*) o bonjourIndex: (int) index;
-- (void) deleteObject: (NSManagedObject*) o;
+- (void) deleteRoisObject: (NSManagedObject*) o paths: (NSArray*) p;
 
 - (void) buildFixedIPList;
 - (void) buildLocalPathsList;
