@@ -579,8 +579,7 @@ static char *GetPrivateIP()
 				
 				if (strcmp( messageToRemoteService, "NEWMS") == 0) // New Messaging System
 				{
-					NSData *data = [NSPropertyListSerialization dataFromPropertyList: messageToSend  format: kCFPropertyListBinaryFormat_v1_0 errorDescription: nil];
-					
+					NSData *data = [NSPropertyListSerialization dataFromPropertyList: messageToSend format: kCFPropertyListBinaryFormat_v1_0 errorDescription: nil];
 					int stringSize = NSSwapHostIntToBig( [data length]);
 					[toTransfer appendBytes: &stringSize length: 4];
 					[toTransfer appendData: data];
@@ -1445,7 +1444,7 @@ static char *GetPrivateIP()
 	
 	[[[BrowserController currentBrowser] managedObjectContext] lock];
 	
-	messageToSend = [NSDictionary dictionaryWithObjectsAndKeys: @"deleteRois", @"message", dbObjectUID, @"objectUID", roiPaths, @"roiPaths", nil];
+	messageToSend = [NSDictionary dictionaryWithObjectsAndKeys: @"deleteRois", @"message", [[[dbObjectUID objectID] URIRepresentation] absoluteString], @"objectUID", roiPaths, @"roiPaths", nil];
 	
 	[self connectToServer: [[BrowserController currentBrowser] currentBonjourService] message: @"NEWMS"];
 	

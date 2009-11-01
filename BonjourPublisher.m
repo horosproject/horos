@@ -87,13 +87,14 @@ static char *GetPrivateIP()
 - (void)toggleSharing:(BOOL)boo
 {
     uint16_t chosenPort;
-    if(!listeningSocket)
+    if( !listeningSocket)
 	{
         // Here, create the socket from traditional BSD socket calls, and then set up an NSFileHandle with
         //that to listen for incoming connections.
 		
-		if(fdForListening) close(fdForListening);
-		fdForListening= 0;
+		if( fdForListening)
+			close( fdForListening);
+		fdForListening = 0;
 	
         struct sockaddr_in serverAddress;
         socklen_t namelen = sizeof(serverAddress);
@@ -127,8 +128,10 @@ static char *GetPrivateIP()
             }
 			
             // Find out what port number was chosen.
-            if (getsockname(fdForListening, (struct sockaddr *)&serverAddress, &namelen) < 0) {
+            if (getsockname(fdForListening, (struct sockaddr *)&serverAddress, &namelen) < 0)
+			{
                 close(fdForListening);
+				fdForListening = 0;
                 return;
             }
 			
@@ -161,14 +164,11 @@ static char *GetPrivateIP()
 
 			// Once we're here, we know bind must have returned, so we can start the listen
 			if(listen(fdForListening, 1) == 0)
-			{
-				listeningSocket = [[NSFileHandle alloc] initWithFileDescriptor:fdForListening closeOnDealloc:NO];
-			}
-			else listeningSocket = nil;
+				listeningSocket = [[NSFileHandle alloc] initWithFileDescriptor:fdForListening closeOnDealloc: NO];
 		}
     }
 
-    if(!netService)
+    if( !netService)
 	{
         // lazily instantiate the NSNetService object that will advertise on our behalf.  Passing in "" for the domain causes the service
         // to be registered in the default registration domain, which will currently always be "local"
@@ -185,23 +185,18 @@ static char *GetPrivateIP()
 		}
     }
 
-    if(netService && listeningSocket)
+    if( netService && listeningSocket)
 	{
         if(boo)
 		{
             [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(connectionReceived:) name:NSFileHandleConnectionAcceptedNotification object:listeningSocket];
             [listeningSocket acceptConnectionInBackgroundAndNotify];
             [netService publish];
-			
         }
 		else
 		{
-			OsiriXDBCurrentPort = 0;
+			[[NSNotificationCenter defaultCenter] removeObserver:self name:NSFileHandleConnectionAcceptedNotification object:listeningSocket];
             [netService stop];
-            [[NSNotificationCenter defaultCenter] removeObserver:self name:NSFileHandleConnectionAcceptedNotification object:listeningSocket];
-            // There is at present no way to get an NSFileHandle to -stop- listening for events, so we'll just have to tear it down and recreate it the next time we need it.
-//            [listeningSocket release];
-//            listeningSocket = nil;
         }
     }
 }
@@ -1118,6 +1113,9 @@ static char *GetPrivateIP()
 
 - (void) connectionReceived:(NSNotification *)aNotification
 {
+	if( netService == nil)
+		return;
+
 	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];		// <- Keep this line, very important to avoid memory crash - Antoine
     
 	[connectionLock lock];
@@ -1142,9 +1140,6 @@ static char *GetPrivateIP()
 	// here ...
 	
 	NSLog(@"did not publish... why?");
-	
-    [listeningSocket release];
-    listeningSocket = nil;
     [netService release];
     netService = nil;
 }
@@ -1153,8 +1148,6 @@ static char *GetPrivateIP()
 {
 	[interfaceOsiriX bonjourDidStop];
 	
-	[listeningSocket release];
-    listeningSocket = nil;
 	[netService release];
 	netService = nil;
 }
