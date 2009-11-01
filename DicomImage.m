@@ -720,10 +720,6 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 			{
 				[[BrowserController currentBrowser] addFileToDeleteQueue: [[[self valueForKey:@"completePath"] stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"]];
 			}
-			else if([pathExtension isEqualToString:@"zip"])		// ZIP -> DELETE XML
-			{
-				[[BrowserController currentBrowser] addFileToDeleteQueue: [[[self valueForKey:@"completePath"] stringByDeletingPathExtension] stringByAppendingPathExtension:@"xml"]];
-			}
 			
 			[self setValue:[NSNumber numberWithBool:NO] forKey:@"inDatabaseFolder"];
 		}
@@ -733,13 +729,6 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 			[[NSFileManager defaultManager] removeFileAtPath: [VRController getUniqueFilenameScissorStateFor: self] handler: nil];
 		}
 		
-//		// Delete the associated ROIs
-//		NSArray	*ROIsPaths = [self SRPaths];
-//		if( [ROIsPaths count])
-//		{
-//			int i;
-//			for( i = 0 ; i < [ROIsPaths count]; i++) [[NSFileManager defaultManager] removeFileAtPath:[ROIsPaths objectAtIndex: i] handler:nil];
-//		}
 		#endif
 	}
 	return delete;

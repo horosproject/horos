@@ -478,9 +478,11 @@ static char *GetPrivateIP()
 						pos += fileSize;
 					}
 					
+					[[BrowserController currentBrowser] checkIncomingNow: self];
+					
 					representationToSend = nil;
 				}
-				else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"DELOB" length: 6]]) // Delete DB Object
+				else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"DELOB" length: 6]]) // Delete ROIs DB Object
 				{
 					int pos = 6, stringSize;
 					
@@ -499,19 +501,36 @@ static char *GetPrivateIP()
 						NSDictionary *d = [NSDictionary dictionaryWithContentsOfFile: @"/tmp/DELOB"];
 						
 						NSString *objectUID = [d objectForKey:@"objectUID"];
+						NSArray *roiPaths = [d objectForKey:@"roiPath"];
 						
 						NSManagedObjectContext *context = [interfaceOsiriX defaultManagerObjectContext];
 						[context lock];
 						
 						@try
 						{
-							NSManagedObject *object = [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: objectUID]]];
+							NSManagedObject *roiSRSeries = [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: objectUID]]];
 							
 							if( object)
 							{
-								[context deleteObject: object];
+								//Check to see if there is already this ROI-image
+								NSArray *srs = [(NSSet *)[roiSRSeries valueForKey:@"images"] allObjects];
 								
-								[[BrowserController currentBrowser] emptyDeleteQueueNow: self];
+								for( NSManagedObject *item in srs)
+								{
+									for( NSArray *path in roiPaths)
+									{
+										if( [[[item valueForKey:@"path"] lastPathComponent] isEqualToString: [path lastPathComponent]])
+										{
+											@try
+											{
+												[context deleteObject: item];
+											}
+											@catch (NSException * e)
+											{
+											}
+										}
+									}
+								}
 							}
 							else
 								NSLog( @"****** BonjourPublisher : object to delete not found");
