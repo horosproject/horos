@@ -516,7 +516,7 @@ static char *GetPrivateIP()
 									{
 										for( NSString *path in roiPaths)
 										{
-											if( [[[item valueForKey:@"path"] lastPathComponent] isEqualToString: [path lastPathComponent]])
+											if( [[[item valueForKey:@"completePath"] lastPathComponent] isEqualToString: [path lastPathComponent]])
 											{
 												@try
 												{
@@ -525,6 +525,8 @@ static char *GetPrivateIP()
 												@catch (NSException * e)
 												{
 												}
+												
+												[[NSFileManager defaultManager] removeItemAtPath: [item valueForKey:@"completePath"] error: nil];
 											}
 										}
 									}
