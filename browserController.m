@@ -17396,7 +17396,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	dontLoadSelectionSource = YES;
 	
-	[self saveDatabase:currentDatabasePath];
+	[self saveDatabase: currentDatabasePath];
 	
     int index = [bonjourServicesList selectedRow]-1;
 	

@@ -1637,7 +1637,7 @@ static char *GetPrivateIP()
 			waitWindow = nil;
 			
 			if( modelVersion == nil || [modelVersion length] == 0)
-				NSRunAlertPanel( NSLocalizedString( @"Bonjour Database", nil), NSLocalizedString( @"Failed to connect to the distant computer. Is database sharing activated on the distant computer?", nil), nil, nil, nil);
+				NSLog( @"Failed to connect to the distant computer. Is database sharing activated on the distant computer?");
 			else
 				NSRunAlertPanel( NSLocalizedString( @"Bonjour Database", nil), NSLocalizedString( @"Database structure is not identical. Use the SAME version of OsiriX on clients and servers to correct the problem.", nil), nil, nil, nil);
 			

@@ -246,7 +246,7 @@ static const char *GetPrivateIP()
 		[previousAutoRetrieve removeAllObjects];
 	}
 	
-	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"autoRetrieving"])
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"autoRetrieving"]  && autoQuery == YES)
 	{
 		if( [autoQueryLock tryLock])
 		{
@@ -301,8 +301,6 @@ static const char *GetPrivateIP()
 	[presets setValue: [NSNumber numberWithDouble: [[fromDate dateValue] timeIntervalSinceReferenceDate]] forKey: @"fromDate"];
 	[presets setValue: [NSNumber numberWithDouble: [[toDate dateValue] timeIntervalSinceReferenceDate]] forKey: @"toDate"];
 	[presets setValue: [NSNumber numberWithDouble: [[searchBirth dateValue] timeIntervalSinceReferenceDate]] forKey: @"searchBirth"];
-	
-	[presets setValue: [NSNumber numberWithBool: [[NSUserDefaults standardUserDefaults] boolForKey: @"autoRetrieving"]] forKey: @"autoRetrieving"];
 	
 	[presets setValue: [NSNumber numberWithInt: self.autoRefreshQueryResults] forKey: @"autoRefreshQueryResults"];
 
@@ -362,7 +360,6 @@ static const char *GetPrivateIP()
 	[dateFilterMatrix selectCellWithTag: 0];
 	[modalityFilterMatrix deselectAllCells];
 	[PatientModeMatrix selectTabViewItemAtIndex: 0];
-	[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"autoRetrieving"];
 	
 	[searchFieldName selectText: self];
 	
@@ -484,16 +481,6 @@ static const char *GetPrivateIP()
 		case 4:		[searchFieldStudyDescription selectText: self];	break;
 		case 5:		[searchFieldRefPhysician selectText: self];		break;
 	}
-	
-	if( [presets valueForKey: @"autoRetrieving"] && autoQuery == YES)
-	{
-		if( [[presets valueForKey:@"autoRetrieving"] boolValue] != [[NSUserDefaults standardUserDefaults] boolForKey: @"autoRetrieving"])
-		{
-			[[NSUserDefaults standardUserDefaults] setBool: [[presets valueForKey:@"autoRetrieving"] boolValue] forKey: @"autoRetrieving"];
-			[self switchAutoRetrieving: self];
-		}
-	}
-
 }
 
 - (void) applyPreset:(id) sender
@@ -1680,7 +1667,7 @@ static const char *GetPrivateIP()
 {
 	[self displayQueryResults];
 	
-	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"autoRetrieving"])
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"autoRetrieving"] && autoQuery == YES)
 	{
 		[NSThread detachNewThreadSelector:@selector( autoRetrieveThread:) toTarget:self withObject: [NSArray arrayWithArray: resultArray]];
 	}
@@ -1751,8 +1738,8 @@ static const char *GetPrivateIP()
 		[QueryTimer release];
 		QueryTimer = nil;
 		
-		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"autoRetrieving"])
-			[self switchAutoRetrieving: self];
+		if( autoQuery == YES)
+			[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"autoRetrieving"];
 	}
 }
 
