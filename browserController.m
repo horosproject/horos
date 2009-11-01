@@ -15309,7 +15309,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			{
 				NSString *volumeName = [path lastPathComponent];
 				
-				NSLog(@"Got a volume named %@", volumeName);
+				//NSLog(@"Got a volume named %@", volumeName);
 							
 				// Find the OsiriX Data folder at root
 				if (![[NSFileManager defaultManager] fileExistsAtPath: [path stringByAppendingPathComponent:@"OsiriX Data"]]) [[NSFileManager defaultManager] createDirectoryAtPath:[path stringByAppendingPathComponent:@"OsiriX Data"] attributes:nil];

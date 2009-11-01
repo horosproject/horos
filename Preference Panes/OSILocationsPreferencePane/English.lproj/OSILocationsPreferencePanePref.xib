@@ -12,7 +12,7 @@
 		</object>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="112"/>
+			<integer value="6"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -1812,6 +1812,10 @@
 				<string key="NSMaxSize">{1.79769e+308, 1.79769e+308}</string>
 			</object>
 			<object class="NSUserDefaultsController" id="396218433">
+				<object class="NSMutableArray" key="NSDeclaredKeys">
+					<bool key="EncodedWithXMLCoder">YES</bool>
+					<string>preferencesModificationsEnabled</string>
+				</object>
 				<bool key="NSSharedInstance">YES</bool>
 			</object>
 			<object class="NSArrayController" id="936546954">
@@ -1819,7 +1823,6 @@
 					<bool key="EncodedWithXMLCoder">YES</bool>
 					<string>Path</string>
 					<string>Description</string>
-					<string>preferencesModificationsEnabled</string>
 				</object>
 				<bool key="NSEditable">YES</bool>
 				<object class="_NSManagedProxy" key="_NSManagedProxy"/>
@@ -1834,7 +1837,6 @@
 					<bool key="EncodedWithXMLCoder">YES</bool>
 					<string>Address</string>
 					<string>Description</string>
-					<string>preferencesModificationsEnabled</string>
 				</object>
 				<bool key="NSEditable">YES</bool>
 				<object class="_NSManagedProxy" key="_NSManagedProxy"/>
@@ -1854,7 +1856,6 @@
 					<string>QR</string>
 					<string>TransferSyntax</string>
 					<string>Send</string>
-					<string>preferencesModificationsEnabled</string>
 					<string>CGET</string>
 				</object>
 				<bool key="NSEditable">YES</bool>
@@ -2923,22 +2924,6 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled: selection.preferencesModificationsEnabled</string>
-						<reference key="source" ref="285136721"/>
-						<reference key="destination" ref="936546954"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="285136721"/>
-							<reference key="NSDestination" ref="936546954"/>
-							<string key="NSLabel">enabled: selection.preferencesModificationsEnabled</string>
-							<string key="NSBinding">enabled</string>
-							<string key="NSKeyPath">selection.preferencesModificationsEnabled</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">425</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
 						<string key="label">enabled: values.preferencesModificationsEnabled</string>
 						<reference key="source" ref="876822861"/>
 						<reference key="destination" ref="396218433"/>
@@ -3184,6 +3169,54 @@
 						</object>
 					</object>
 					<int key="connectionID">465</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: values.preferencesModificationsEnabled</string>
+						<reference key="source" ref="285136721"/>
+						<reference key="destination" ref="396218433"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="285136721"/>
+							<reference key="NSDestination" ref="396218433"/>
+							<string key="NSLabel">enabled: values.preferencesModificationsEnabled</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">values.preferencesModificationsEnabled</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">467</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: values.preferencesModificationsEnabled</string>
+						<reference key="source" ref="580556850"/>
+						<reference key="destination" ref="396218433"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="580556850"/>
+							<reference key="NSDestination" ref="396218433"/>
+							<string key="NSLabel">enabled: values.preferencesModificationsEnabled</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">values.preferencesModificationsEnabled</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">469</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: values.preferencesModificationsEnabled</string>
+						<reference key="source" ref="348247556"/>
+						<reference key="destination" ref="396218433"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="348247556"/>
+							<reference key="NSDestination" ref="396218433"/>
+							<string key="NSLabel">enabled: values.preferencesModificationsEnabled</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">values.preferencesModificationsEnabled</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">470</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -4389,9 +4422,9 @@
 					<integer value="1"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<integer value="1"/>
-					<string>{{819, 181}, {729, 818}}</string>
+					<string>{{770, 181}, {729, 818}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{819, 181}, {729, 818}}</string>
+					<string>{{770, 181}, {729, 818}}</string>
 					<integer value="1"/>
 					<string>{{744, 378}, {729, 738}}</string>
 					<integer value="0"/>
@@ -4635,7 +4668,7 @@
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">465</int>
+			<int key="maxID">470</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
