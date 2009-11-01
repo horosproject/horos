@@ -1629,14 +1629,17 @@ static char *GetPrivateIP()
 	{
 		[NSThread sleepForTimeInterval: 0.1]; // for rock stable opening/closing socket
 		
-		if( [modelVersion isEqualToString:[[NSUserDefaults standardUserDefaults] stringForKey: @"DATABASEVERSION"]] == NO)
+		if( [modelVersion isEqualToString: [[NSUserDefaults standardUserDefaults] stringForKey: @"DATABASEVERSION"]] == NO)
 		{
 			[[[BrowserController currentBrowser] managedObjectContext] unlock];
 			[waitWindow end];
 			[waitWindow release];
 			waitWindow = nil;
 			
-			NSRunAlertPanel( NSLocalizedString( @"Bonjour Database", nil), NSLocalizedString( @"Database structure is not identical. Use the SAME version of OsiriX on clients and servers to correct the problem.", nil), nil, nil, nil);
+			if( modelVersion == nil || [modelVersion length] == 0)
+				NSRunAlertPanel( NSLocalizedString( @"Bonjour Database", nil), NSLocalizedString( @"Failed to connect to the distant computer. Is database sharing activated on the distant computer?", nil), nil, nil, nil);
+			else
+				NSRunAlertPanel( NSLocalizedString( @"Bonjour Database", nil), NSLocalizedString( @"Database structure is not identical. Use the SAME version of OsiriX on clients and servers to correct the problem.", nil), nil, nil, nil);
 			
 			return nil;
 		}
