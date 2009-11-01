@@ -30,6 +30,19 @@
 static NSArray *CachedPluginsList = nil;
 static NSDate *CachedPluginsListDate = nil;
 
+@implementation PluginsTableView
+
+- (void)keyDown:(NSEvent *)event
+{
+	unichar c = [[event characters] characterAtIndex:0];
+	if ((c == NSDeleteCharacter || c == NSBackspaceCharacter) && [self selectedRow] >= 0 && [self numberOfRows] > 0)
+		[[self delegate] delete:self];
+	else
+		 [super keyDown:event];
+}
+
+@end
+
 @implementation PluginManagerController
 
 - (id)init
@@ -109,8 +122,9 @@ static NSDate *CachedPluginsListDate = nil;
 		NSArray *pluginsList = [pluginsArrayController arrangedObjects];
 		NSString *pluginName = [[pluginsList objectAtIndex:[pluginTable selectedRow]] objectForKey:@"name"];
 		NSString *availability = [[pluginsList objectAtIndex:[pluginTable selectedRow]] objectForKey:@"availability"];
+		BOOL pluginIsActive = [[[pluginsList objectAtIndex:[pluginTable selectedRow]] objectForKey:@"active"] boolValue];
 		
-		[PluginManager deletePluginWithName:pluginName availability: availability];
+		[PluginManager deletePluginWithName:pluginName availability: availability isActive: pluginIsActive];
 	
 		[self refreshPluginList];
 	}
@@ -353,6 +367,7 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
 		else if([name isEqualToString:NSLocalizedString(@"Your Plugin here!", nil)])
 		{
 			[self loadSubmitPluginPage];
+			return;
 		}
 	}
 }
@@ -504,8 +519,6 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
 	else
 	#endif
 		[self setURL:PLUGIN_SUBMISSION_NO_MAIL_APP_URL];
-	
-	[self setDownloadURL:@""];
 }
 
 - (void)sendPluginSubmission:(NSString*)request;

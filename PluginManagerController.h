@@ -18,7 +18,14 @@
 
 /** \brief Window Controller for PluginFilter management */
 
-@interface PluginManagerController : NSWindowController {
+@interface PluginsTableView : NSTableView
+{
+
+}
+@end
+
+@interface PluginManagerController : NSWindowController
+{
 
     IBOutlet NSMenu	*filtersMenu;
 	IBOutlet NSMenu	*roisMenu;
@@ -27,7 +34,7 @@
 
 	NSMutableArray* plugins;
 	IBOutlet NSArrayController* pluginsArrayController;
-	IBOutlet NSTableView *pluginTable;
+	IBOutlet PluginsTableView *pluginTable;
 	
 	IBOutlet NSTabView *tabView;
 	IBOutlet NSTabViewItem *installedPluginsTabViewItem, *webViewTabViewItem;

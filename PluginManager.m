@@ -716,10 +716,10 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
 
 + (NSString*) deletePluginWithName:(NSString*)pluginName;
 {
-	return [PluginManager deletePluginWithName: pluginName availability: nil];
+	return [PluginManager deletePluginWithName: pluginName availability: nil isActive: YES];
 }
 
-+ (NSString*) deletePluginWithName:(NSString*)pluginName availability: (NSString*) availability
++ (NSString*) deletePluginWithName:(NSString*)pluginName availability: (NSString*) availability isActive:(BOOL) isActive
 {
 	NSMutableArray *pluginsPaths = [NSMutableArray arrayWithArray:[PluginManager activeDirectories]];
 	[pluginsPaths addObjectsFromArray:[PluginManager inactiveDirectories]];
@@ -729,12 +729,27 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
 	
 	NSString *directory = nil;
 	NSArray *availabilities = [PluginManager availabilities];
-	if( [availability isEqualTo:[availabilities objectAtIndex:0]])
-		directory = [PluginManager userActivePluginsDirectoryPath];
-	else if([availability isEqualTo:[availabilities objectAtIndex:1]])
-		directory = [PluginManager systemActivePluginsDirectoryPath];
-	else if([availability isEqualTo:[availabilities objectAtIndex:2]])
-		directory = [PluginManager appActivePluginsDirectoryPath];
+	if( [availability isEqualToString:[availabilities objectAtIndex:0]])
+	{
+		if( isActive)
+			directory = [PluginManager userActivePluginsDirectoryPath];
+		else
+			directory = [PluginManager userInactivePluginsDirectoryPath];
+	}
+	else if( [availability isEqualToString:[availabilities objectAtIndex:1]])
+	{
+		if(isActive)
+			directory = [PluginManager systemActivePluginsDirectoryPath];
+		else
+			directory = [PluginManager systemInactivePluginsDirectoryPath];
+	}
+	else if([availability isEqualToString:[availabilities objectAtIndex:2]])
+	{
+		if(isActive)
+			directory = [PluginManager appActivePluginsDirectoryPath];
+		else
+			directory = [PluginManager appInactivePluginsDirectoryPath];
+	}
 	
 	for(path in pluginsPaths)
 	{
