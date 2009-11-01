@@ -482,69 +482,73 @@ static char *GetPrivateIP()
 					
 					representationToSend = nil;
 				}
-				else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"DELOB" length: 6]]) // Delete ROIs DB Object
+				else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"NEWMS" length: 6]]) // New Messaging System
 				{
 					int pos = 6, stringSize;
 					
-					// We read 4 bytes that contain the string size
+					// We read 4 bytes that contain the data size
 					while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
 					[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &stringSize];	stringSize = NSSwapBigIntToHost( stringSize);
 					pos += 4;
 					
-					// We read the string
+					// We read the data
 					while ( [data length] < pos + stringSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
 					NSDictionary *d = [NSPropertyListSerialization propertyListFromData: [data subdataWithRange: NSMakeRange(pos,stringSize)] mutabilityOption: NSPropertyListImmutable format: nil errorDescription: nil];
 					pos += stringSize;
 					
 					if( d)
 					{
-						NSString *objectUID = [d objectForKey:@"objectUID"];
-						NSArray *roiPaths = [d objectForKey:@"roiPaths"];
-						
-						NSManagedObjectContext *context = [interfaceOsiriX defaultManagerObjectContext];
-						[context lock];
-						
-						@try
+						NSString *message = [d objectForKey:@"message"];
+						if( [message isEqualToString: @"deleteRois"])
 						{
-							NSManagedObject *roiSRSeries = [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: objectUID]]];
+							NSString *objectUID = [d objectForKey:@"objectUID"];
+							NSArray *roiPaths = [d objectForKey:@"roiPaths"];
 							
-							if( roiSRSeries)
+							NSManagedObjectContext *context = [interfaceOsiriX defaultManagerObjectContext];
+							[context lock];
+							
+							@try
 							{
-								//Check to see if there is already this ROI-image
-								NSArray *srs = [(NSSet *)[roiSRSeries valueForKey:@"images"] allObjects];
+								NSManagedObject *roiSRSeries = [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: objectUID]]];
 								
-								for( NSManagedObject *item in srs)
+								if( roiSRSeries)
 								{
-									for( NSString *path in roiPaths)
+									//Check to see if there is already this ROI-image
+									NSArray *srs = [(NSSet *)[roiSRSeries valueForKey:@"images"] allObjects];
+									
+									for( NSManagedObject *item in srs)
 									{
-										if( [[[item valueForKey:@"path"] lastPathComponent] isEqualToString: [path lastPathComponent]])
+										for( NSString *path in roiPaths)
 										{
-											@try
+											if( [[[item valueForKey:@"path"] lastPathComponent] isEqualToString: [path lastPathComponent]])
 											{
-												[context deleteObject: item];
-											}
-											@catch (NSException * e)
-											{
+												@try
+												{
+													[context deleteObject: item];
+												}
+												@catch (NSException * e)
+												{
+												}
 											}
 										}
 									}
 								}
+								else
+									NSLog( @"****** BonjourPublisher : object to delete not found");
+									
+								refreshDB = YES;
+								saveDB = YES;
 							}
-							else
-								NSLog( @"****** BonjourPublisher : object to delete not found");
-								
-							refreshDB = YES;
-							saveDB = YES;
+							
+							@catch (NSException * e)
+							{
+								NSLog(@"Exception in BonjourPublisher NEWMS: %@");
+							}
+							
+							NSError *error = nil;
+							[context save: &error];
+							[context unlock];
 						}
-						
-						@catch (NSException * e)
-						{
-							NSLog(@"Exception in BonjourPublisher DELOB: %@");
-						}
-						
-						NSError *error = nil;
-						[context save: &error];
-						[context unlock];
 					}
 					
 					representationToSend = nil;

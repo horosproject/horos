@@ -10019,8 +10019,11 @@ short				matrix[25];
 										}
 									}
 									
-									if( found == NO)
-										NSLog( @"**** strange... corresponding ROI object not found in the ROI Series");
+									if( [[BrowserController currentBrowser] isCurrentDatabaseBonjour] == NO)
+									{
+										if( found == NO)
+											NSLog( @"**** strange... corresponding ROI object not found in the ROI Series");
+									}
 								}
 							}
 						}

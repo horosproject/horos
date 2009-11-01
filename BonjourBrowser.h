@@ -43,9 +43,6 @@
 	NSMutableArray		*albumStudies;
 	NSString			*albumUID;
 	
-	NSString			*dbObjectUID;
-	NSArray				*roiPaths;
-	
 	NSString			*setValueObject, *setValueKey;
 	id					setValueValue;
 	
@@ -71,6 +68,10 @@
 	int					currentDataPos;
 	
 	NSDate				*currentTimeOut;
+	
+	// *********************** New system
+	
+	NSDictionary		*messageToSend;
 }
 
 + (NSString*) bonjour2local: (NSString*) str;

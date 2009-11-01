@@ -397,7 +397,7 @@ static char *GetPrivateIP()
 			{
 				
 			}
-			else if (strcmp( messageToRemoteService, "DELOB") == 0)
+			else if (strcmp( messageToRemoteService, "NEWMS") == 0) // New Messaging System
 			{
 				
 			}
@@ -577,18 +577,9 @@ static char *GetPrivateIP()
 				
 				[toTransfer appendBytes:messageToRemoteService length: 6];
 				
-				if (strcmp( messageToRemoteService, "DELOB") == 0)
+				if (strcmp( messageToRemoteService, "NEWMS") == 0) // New Messaging System
 				{
-//					const char* string;
-//					int stringSize;
-//					
-//					string = [[[NSDictionary dictionaryWithObjectsAndKeys: dbObjectUID, @"objectUID", nil] description] UTF8String];
-//					stringSize  = NSSwapHostIntToBig( strlen( string)+1);	// +1 to include the last 0 !
-//					
-//					[toTransfer appendBytes:&stringSize length: 4];
-//					[toTransfer appendBytes:string length: strlen( string)+1];
-					
-					NSData *data = [NSPropertyListSerialization dataFromPropertyList: [NSDictionary dictionaryWithObjectsAndKeys: dbObjectUID, @"objectUID", roiPaths, @"roiPaths", nil]  format: kCFPropertyListBinaryFormat_v1_0 errorDescription: nil];
+					NSData *data = [NSPropertyListSerialization dataFromPropertyList: messageToSend  format: kCFPropertyListBinaryFormat_v1_0 errorDescription: nil];
 					
 					int stringSize = NSSwapHostIntToBig( [data length]);
 					[toTransfer appendBytes: &stringSize length: 4];
@@ -1444,7 +1435,7 @@ static char *GetPrivateIP()
 	[[[BrowserController currentBrowser] managedObjectContext] unlock];
 }
 
-- (void) deleteRoisObject: (NSManagedObject*) o paths: (NSArray*) p
+- (void) deleteRoisObject: (NSManagedObject*) dbObjectUID paths: (NSArray*) roiPaths
 {
 	if( [[BrowserController currentBrowser] currentBonjourService] < 0)
 	{
@@ -1454,16 +1445,12 @@ static char *GetPrivateIP()
 	
 	[[[BrowserController currentBrowser] managedObjectContext] lock];
 	
-	dbObjectUID = [[[[o objectID] URIRepresentation] absoluteString] retain];
-	roiPaths = [p retain];
+	messageToSend = [NSDictionary dictionaryWithObjectsAndKeys: @"deleteRois", @"message", dbObjectUID, @"objectUID", roiPaths, @"roiPaths", nil];
 	
-	[self connectToServer: [[BrowserController currentBrowser] currentBonjourService] message:@"DELOB"];
+	[self connectToServer: [[BrowserController currentBrowser] currentBonjourService] message: @"NEWMS"];
 	
 	[NSThread sleepForTimeInterval: 0.1];  // for rock stable opening/closing socket
 	
-	[dbObjectUID release];
-	[roiPaths release];
-		
 	[[[BrowserController currentBrowser] managedObjectContext] unlock];
 }
 
