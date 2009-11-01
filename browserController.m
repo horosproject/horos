@@ -241,6 +241,9 @@ static NSArray*	statesArray = nil;
 	NSString		*subFolder;
 	long			subFolderInt;
 	
+	if( [extension length] == 0)
+		extension = [NSString stringWithString:@"dcm"];
+		
 	if( [extension length] > 4 || [extension length] < 3)
 	{
 		NSLog( @" **** WARNING : strange extension : %@ - It will be replaced by dcm.", extension);
