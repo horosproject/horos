@@ -1194,25 +1194,25 @@ static char *GetPrivateIP()
 	}
 }
 
-- (void)netServiceBrowser:(NSNetServiceBrowser *)aNetServiceBrowser didRemoveService:(NSNetService *)aNetService moreComing:(BOOL)moreComing 
+- (void)netServiceBrowser:(NSNetServiceBrowser *) aNetServiceBrowser didRemoveService:(NSNetService *) aNetService moreComing:(BOOL) moreComing 
 {
     // This case is slightly more complicated. We need to find the object in the list and remove it.
     NSEnumerator * enumerator = [services objectEnumerator];
     NSNetService * currentNetService;
 	
-    while(currentNetService = [enumerator nextObject])
+    while( currentNetService = [enumerator nextObject])
 	{
         if( [[currentNetService valueForKey: @"service"] isEqual: aNetService])
 		{
 			// deleting the associate SQL temporary file
-			if ([[NSFileManager defaultManager] fileExistsAtPath: [self databaseFilePathForService:[aNetService name]] ])
+			if ([[NSFileManager defaultManager] fileExistsAtPath: [self databaseFilePathForService: [aNetService name]] ])
 			{
 				[[NSFileManager defaultManager] removeFileAtPath: [self databaseFilePathForService:[[currentNetService valueForKey: @"service"] name]] handler:self];
 			}
 			
 			if( [interfaceOsiriX currentBonjourService] >= 0)
 			{
-				if( [[services objectAtIndex: [interfaceOsiriX currentBonjourService]] valueForKey: @"service"] == aNetService)
+				if( [services objectAtIndex: [interfaceOsiriX currentBonjourService]] == currentNetService)
 					[interfaceOsiriX resetToLocalDatabase];
 			}
 			

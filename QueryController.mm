@@ -1750,6 +1750,9 @@ static const char *GetPrivateIP()
 		[QueryTimer invalidate];
 		[QueryTimer release];
 		QueryTimer = nil;
+		
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"autoRetrieving"])
+			[self switchAutoRetrieving: self];
 	}
 }
 
