@@ -2946,7 +2946,8 @@ static NSArray*	statesArray = nil;
 	[AppController createNoIndexDirectoryIfNecessary: [[self documentsDirectory] stringByAppendingPathComponent: DATABASEPATH]];
 	[AppController createNoIndexDirectoryIfNecessary: [[self documentsDirectory] stringByAppendingPathComponent: INCOMINGPATH]];
 	
-	[BrowserController computeDATABASEINDEXforDatabase: [[self documentsDirectory] stringByAppendingPathComponent: DATABASEPATH]];
+	if( isCurrentDatabaseBonjour == NO)
+		[BrowserController computeDATABASEINDEXforDatabase: [[self documentsDirectory] stringByAppendingPathComponent: DATABASEPATH]];
 	
 	[self setDBWindowTitle];
 	
@@ -11882,7 +11883,8 @@ static NSArray*	openSubSeriesArray = nil;
 		DATABASEINDEX = v;
 		NSLog( @"DATABASEINDEX: %d", DATABASEINDEX);
 	}
-	@catch (NSException * e) {
+	@catch (NSException * e)
+	{
 		NSLog( @"**** computeDATABASEINDEXforDatabase: %@", e);
 	}
 }
@@ -15290,10 +15292,12 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (void)loadDICOMFromiPod
 {
-	NSArray *allVolumes = [[NSWorkspace sharedWorkspace] mountedLocalVolumePaths];
-	NSString	*defaultPath = documentsDirectoryFor( [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULT_DATABASELOCATION"], [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"]);
+	if( mountedVolumes == nil)
+		mountedVolumes = [[[NSWorkspace sharedWorkspace] mountedLocalVolumePaths] copy];
 	
-	for ( NSString *path in allVolumes)
+	NSString *defaultPath = documentsDirectoryFor( [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULT_DATABASELOCATION"], [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"]);
+	
+	for ( NSString *path in mountedVolumes)
 	{
 		NSString *iPodControlPath = [path stringByAppendingPathComponent:@"iPod_Control"];
 		BOOL isItAnIpod = [[NSFileManager defaultManager] fileExistsAtPath:iPodControlPath];
