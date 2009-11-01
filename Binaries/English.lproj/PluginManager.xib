@@ -21,7 +21,7 @@
 		</object>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="15"/>
+			<integer value="6"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -606,13 +606,14 @@
 						<object class="NSTextField" id="514240010">
 							<reference key="NSNextResponder" ref="426249796"/>
 							<int key="NSvFlags">290</int>
-							<string key="NSFrame">{{20, 20}, {375, 14}}</string>
+							<string key="NSFrame">{{20, 7}, {375, 28}}</string>
 							<reference key="NSSuperview" ref="426249796"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="746363317">
 								<int key="NSCellFlags">67239488</int>
-								<int key="NSCellFlags2">272630784</int>
-								<string key="NSContents">Close this window to apply the changes.</string>
+								<int key="NSCellFlags2">272761856</int>
+								<string type="base64-UTF8" key="NSContents">Q2xvc2UgdGhpcyB3aW5kb3cgdG8gYXBwbHkgdGhlIGNoYW5nZXMuClNlbGVjdCAgYSBwbHVnaW4gYW5k
+IHByZXNzIHRoZSBEZWxldGUga2V5IHRvIGRlbGV0ZSBhIHBsdWdpbi4</string>
 								<reference key="NSSupport" ref="26"/>
 								<reference key="NSControlView" ref="514240010"/>
 								<reference key="NSBackgroundColor" ref="262854087"/>
