@@ -1544,6 +1544,14 @@ static NSString*	VRPanelToolbarItemIdentifier			= @"MIP.tif";
 	count /= [dcmIntervalTextField intValue];
 	[dcmCountTextField setStringValue: [NSString stringWithFormat:@"%d images", count]];
 	
+	if( maxMovieIndex > 1)
+		[[dcmSelection cellWithTag: 2] setEnabled: YES];
+	else
+		[[dcmSelection cellWithTag: 2] setEnabled: NO];
+	
+	if( [[dcmSelection selectedCell] isEnabled] == NO)
+		[dcmSelection selectCellWithTag: 0];
+	
 	[self checkView: dcmBox :([[dcmSelection selectedCell] tag] == 1)];
 	
     [NSApp beginSheet: dcmExportWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];

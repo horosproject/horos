@@ -15550,6 +15550,16 @@ int i,j,l;
 			
 			if( s) [producedFiles addObject: s];
 		}
+		else if( [[dcmSelection selectedCell] tag] == 3) // 4th Dimension
+		{
+			for (i = 0 ; i < maxMovieIndex; i ++)
+			{
+				[self setMovieIndex: i];
+			
+				NSDictionary* s = [self exportDICOMFileInt:[[dcmFormat selectedCell] tag] withName:[dcmSeriesName stringValue] allViewers: [dcmAllViewers state]];
+				if( s) [producedFiles addObject: s];
+			}
+		}
 		else
 		{
 			int from, to, interval;
@@ -15811,8 +15821,14 @@ int i,j,l;
 			[dcmFormat selectCellWithTag: 2];
 	}
 	
+	if( maxMovieIndex > 1) [[dcmSelection cellWithTag: 3] setEnabled: YES];
+	else [[dcmSelection cellWithTag: 3] setEnabled: NO];
+	
 	if( [[[imageView seriesObj] valueForKey: @"keyImages"] count]) [[dcmSelection cellWithTag: 2] setEnabled: YES];
 	else [[dcmSelection cellWithTag: 2] setEnabled: NO];
+	
+	if( [[dcmSelection cellWithTag: 3] isEnabled] == NO)
+		[dcmSelection selectCellWithTag: 0];
 	
 	if( blendingController)
 		[dcmFormat selectCellWithTag: 1];
