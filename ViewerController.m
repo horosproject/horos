@@ -9552,7 +9552,11 @@ short				matrix[25];
 	{
 		returnCode = -returnCode - 1;
 		[self clear8bitRepresentations];
-		[self executeFilterFromString: [[PluginManager fusionPlugins] objectAtIndex:returnCode]];
+		
+		if( [[[PluginManager fusionPlugins] objectAtIndex: returnCode] isEqualToString: @"Subtraction Angio-CT"])
+			[self blendWithViewer:blendedWindow blendingType: 9]; // LL filter
+		else
+			[self executeFilterFromString: [[PluginManager fusionPlugins] objectAtIndex: returnCode]];
 	}
 	else if (returnCode > 0)
 	{
@@ -15473,6 +15477,7 @@ int i,j,l;
 			float slope = [[imageView curDCM] appliedFactorPET2SUV] * [[imageView curDCM] slope];
 			[exportDCM setSlope: slope];
 		}
+		
 		[exportDCM setDefaultWWWL: cww :cwl];
 		
 		float thickness, location;
@@ -15781,15 +15786,24 @@ int i,j,l;
 	[dcmFormat setEnabled: YES];
 	[dcmAllViewers setState: NSOffState];
 	
-	if( [[imageView curDCM] isRGB])
+	if( [[imageView curDCM] isRGB] || [self subtractionActivated])
 	{
-		if( [dcmFormat selectedTag] == 2) [dcmFormat selectCellWithTag: 1];
-		
+		if( [dcmFormat selectedTag] == 2)
+			[dcmFormat selectCellWithTag: 1];
 		[[dcmFormat cellWithTag: 2] setEnabled: NO];
+		
+		if( [self subtractionActivated])
+		{
+			if( [dcmFormat selectedTag] == 0)
+				[dcmFormat selectCellWithTag: 1];
+			
+			[[dcmFormat cellWithTag: 0] setEnabled: NO];
+		}
 	}
 	else
 	{
 		[[dcmFormat cellWithTag: 2] setEnabled: YES];
+		[[dcmFormat cellWithTag: 0] setEnabled: YES];
 		
 		if( [[imageView curRoiList] count] > 0)
 			[dcmFormat selectCellWithTag: 1];
