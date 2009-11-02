@@ -1518,7 +1518,7 @@ static char *GetPrivateIP()
 
 - (NSDate*) getFileModification:(NSString*) pathFile index:(int) index 
 {
-	NSDate			*modificationDate = nil;
+	NSDate *modificationDate = nil;
 	
 	if( [[NSFileManager defaultManager] fileExistsAtPath: [BonjourBrowser bonjour2local: pathFile]])
 	{
