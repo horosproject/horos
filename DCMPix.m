@@ -678,7 +678,7 @@ static inline void DrawRuns(	struct edge *active,
 				{
 					if( restore && restoreImageCache)
 					{
-						if( RGB == NO )
+						if( RGB == NO)
 						{
 							if( orientation)
 							{
@@ -703,7 +703,7 @@ static inline void DrawRuns(	struct edge *active,
 						}
 						else
 						{
-							if( orientation )
+							if( orientation)
 							{
 								while( x-- >= 0)
 								{
@@ -719,7 +719,7 @@ static inline void DrawRuns(	struct edge *active,
 							}
 							else
 							{
-								while( x-- >= 0 )
+								while( x-- >= 0)
 								{
 									unsigned char*  rgbPtr = (unsigned char*) curPix;
 									
@@ -735,11 +735,11 @@ static inline void DrawRuns(	struct edge *active,
 					}
 					else
 					{
-						if( RGB == NO )
+						if( RGB == NO)
 						{
-							if( addition )
+							if( addition)
 							{
-								while( x-- >= 0 )
+								while( x-- >= 0)
 								{
 									if( *curPix >= min && *curPix <= max) *curPix += newVal;
 									
@@ -764,7 +764,7 @@ static inline void DrawRuns(	struct edge *active,
 							{
 								unsigned char*  rgbPtr = (unsigned char*) curPix;
 								
-								if( addition )
+								if( addition)
 								{
 									if( rgbPtr[ 1] >= min && rgbPtr[ 1] <= max) rgbPtr[ 1] += newVal;
 									if( rgbPtr[ 2] >= min && rgbPtr[ 2] <= max) rgbPtr[ 2] += newVal;
@@ -827,7 +827,7 @@ void ras_FillPolygon(	NSPointInt *p,
 	
     FillEdges(p, no, edgeTable);
 	
-    for ( curY = 0; edgeTable[ curY] == NULL; curY++ )
+    for ( curY = 0; edgeTable[ curY] == NULL; curY++)
 	{
         if (curY == MAXVERTICAL - 1)
 		{
@@ -848,7 +848,7 @@ static inline long pnpoly( NSPoint *p, long count, float x, float y)
 {
 	long	c = 0;
     
-    for ( int i = 0, j = count-1; i < count; j = i++ )
+    for ( int i = 0, j = count-1; i < count; j = i++)
 	{
 		if ((((p[i].y <= y) && (y < p[j].y)) ||
 			 ((p[j].y <= y) && (y < p[i].y))) &&
@@ -862,7 +862,7 @@ inline long pnpolyInt( struct NSPointInt *p, long count, long x, long y)
 {
 	long	c = 0;
     
-    for ( int i = 0, j = count-1; i < count; j = i++ )
+    for ( int i = 0, j = count-1; i < count; j = i++)
 	{
 		if ((((p[i].y <= y) && (y < p[j].y)) ||
 			 ((p[j].y <= y) && (y < p[i].y))) &&
@@ -893,7 +893,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 	if (Ay > By) { Yincr=-1; } else { Yincr=1; }	// which direction in Y?
 	
 	//------------------------------------------------------------------------
-	// DETERMINE INDEPENDENT VARIABLE (ONE THAT ALWAYS INCREMENTS BY 1 (OR -1) )
+	// DETERMINE INDEPENDENT VARIABLE (ONE THAT ALWAYS INCREMENTS BY 1 (OR -1))
 	// AND INITIATE APPROPRIATE LINE DRAWING ROUTINE (BASED ON FIRST OCTANT
 	// ALWAYS). THE X AND Y'S MAY BE FLIPPED IF Y IS THE INDEPENDENT VARIABLE.
 	//------------------------------------------------------------------------
@@ -1046,16 +1046,16 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	int stackDirection = o.stackDirection;
 	int stackMode = o.stackMode;
 	
-	for( int i = 1; i < stack; i++ )
+	for( int i = 1; i < stack; i++)
 	{
 		int res;
 		if( stackDirection) res = ppos-i;
 		else res = ppos+i;
 		
-		if( res < p.count && res >= 0 )
+		if( res < p.count && res >= 0)
 		{
 			fNext = [[p objectAtIndex: res] fImage];
-			if( fNext )
+			if( fNext)
 			{
 				if( stackMode == 2) vDSP_vmax( fResult + from, 1, fNext + from, 1, fResult + from, 1, size);
 				else if( stackMode == 1) 
@@ -1118,7 +1118,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		
 		if( tfPtr)
 		{
-			while( ii-- > 0 )
+			while( ii-- > 0)
 			{
 				int value = ratio * (*src32Ptr++ - from);
 				
@@ -1185,18 +1185,18 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 
 //- (void) convertToFull16Bits: (unsigned short*) rawdata size:(long) RawSize BitsAllocated:(long) BitsAllocated BitsStored:(long) BitsStored HighBitPosition:(long) HighBitPosition PixelSign:(BOOL) PixelSign
 //{
-//	int l = (int)( RawSize / ( BitsAllocated / 8 ) );
+//	int l = (int)( RawSize / ( BitsAllocated / 8));
 //	int i;
 //	
-//	if ( BitsAllocated == 16 )
+//	if ( BitsAllocated == 16)
 //	{
 //		// pmask : to mask the 'unused bits' (may contain overlays)
 //		uint16_t pmask = 0xffff;
-//		pmask = pmask >> ( BitsAllocated - BitsStored );
+//		pmask = pmask >> ( BitsAllocated - BitsStored);
 //
 //		uint16_t *deb = (uint16_t*) rawdata;
 //	
-//		if ( !PixelSign )  // Pixels are unsigned
+//		if ( !PixelSign)  // Pixels are unsigned
 //		{
 //			for(i = 0; i<l; i++)
 //			{   
@@ -1208,15 +1208,15 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 //		{
 //			// smask : to check the 'sign' when BitsStored != BitsAllocated
 //			uint16_t smask = 0x0001;
-//			smask = smask << ( 16 - (BitsAllocated - BitsStored + 1) );
+//			smask = smask << ( 16 - (BitsAllocated - BitsStored + 1));
 //			// nmask : to propagate sign bit on negative values
 //			int16_t nmask = (int16_t)0x8000;  
-//			nmask = nmask >> ( BitsAllocated - BitsStored - 1 );
+//			nmask = nmask >> ( BitsAllocated - BitsStored - 1);
 //			
 //			for(i = 0; i<l; i++)
 //			{
 //				*deb = *deb >> (BitsStored - HighBitPosition - 1);
-//				if ( *deb & smask )
+//				if ( *deb & smask)
 //				{
 //					*deb = *deb | nmask;
 //				}
@@ -1730,9 +1730,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	
     [self CheckLoad];
 	
-	pts = (NSPoint*) malloc( ptsTemp.count * sizeof(NSPoint) );
+	pts = (NSPoint*) malloc( ptsTemp.count * sizeof(NSPoint));
 	no = [ptsTemp count];
-	for( long i = 0; i < no; i++ )
+	for( long i = 0; i < no; i++)
 	{
 		pts[ i] = [[ptsTemp objectAtIndex: i] point];
 		//	pts[ i].x+=1.5;
@@ -1768,14 +1768,14 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 					&yPoints);
 	
 	values = (float*) malloc( size * sizeof(float));
-	if( values )
+	if( values)
 	{
 		count = 0;
-		for( long i = 0; i < size; i++ )
+		for( long i = 0; i < size; i++)
 		{
-			if( yPoints[ i] >= 0 && yPoints[ i] < height && xPoints[ i] >= 0 && xPoints[ i] < width )
+			if( yPoints[ i] >= 0 && yPoints[ i] < height && xPoints[ i] >= 0 && xPoints[ i] < width)
 			{
-				if( isRGB )
+				if( isRGB)
 				{
 					unsigned char*  rgbPtr = (unsigned char*) fImage;
 					long			pos;
@@ -1798,10 +1798,10 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	}
 	*numberOfValues = count;
 	
-	if( roi ) free( pts );
+	if( roi) free( pts);
 	
-	free( xPoints );
-	free( yPoints );
+	free( xPoints);
+	free( yPoints);
 	
 	return values;
 }
@@ -1812,7 +1812,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	long			upleftx, uplefty, downrightx, downrighty;
 	NSPoint			*pts;
 	
-	if( roi.type == tPlain )
+	if( roi.type == tPlain)
 	{
 		long			textWidth = roi.textureWidth;
 		long			textHeight = roi.textureHeight;
@@ -1827,9 +1827,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		if( values)	{
 			count = 0;
 			
-			for( long y = 0; y < textHeight; y++ )
+			for( long y = 0; y < textHeight; y++)
 			{
-				for( long x = 0; x < textWidth; x++ )
+				for( long x = 0; x < textWidth; x++)
 				{
 					if( buf [ x + y * textWidth] != 0)
 					{
@@ -1873,7 +1873,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		upleftx = downrightx = [[ptsTemp objectAtIndex:0] x];
 		uplefty = downrighty = [[ptsTemp objectAtIndex:0] y];
 		
-		for( long i = 0; i < [ptsTemp count]; i++ )
+		for( long i = 0; i < [ptsTemp count]; i++)
 		{
 			if( upleftx > [[ptsTemp objectAtIndex:i] x]) upleftx = [[ptsTemp objectAtIndex:i] x];
 			if( uplefty > [[ptsTemp objectAtIndex:i] y]) uplefty = [[ptsTemp objectAtIndex:i] y];
@@ -1922,9 +1922,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 							values[ count] = fImage[ width*y + x];
 						}
 						
-						if( locations )
+						if( locations)
 						{
-							if( *locations )	{
+							if( *locations)	{
 								(*locations)[ count*2] = x;
 								(*locations)[ count*2 + 1] = y;
 							}
@@ -1938,9 +1938,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		y = (downrighty - uplefty);
 		x = (downrightx - upleftx);
 		
-//		if( count > x*y ) NSLog(@"%d / %d", count, (long) ((downrighty - uplefty) * (downrightx - upleftx)));
+//		if( count > x*y) NSLog(@"%d / %d", count, (long) ((downrighty - uplefty) * (downrightx - upleftx)));
 		
-		if( roi ) free( pts );
+		if( roi) free( pts);
 	}
 	
 	*numberOfValues = count;
@@ -2015,8 +2015,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	
 	restoreImageCache = malloc( [pixArray count] * sizeof(void*));
 	
-	if( restoreImageCache )	{
-		for( int i = 0; i < [pixArray count]; i++ )
+	if( restoreImageCache)	{
+		for( int i = 0; i < [pixArray count]; i++)
 		{
 			DCMPix	*s = [pixArray objectAtIndex:i];
 			
@@ -2032,7 +2032,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 {
 	if( restoreImageCache)
 	{
-		for( int i = 0; i < pixArray.count; i++ )	[restoreImageCache[ i] release];
+		for( int i = 0; i < pixArray.count; i++)	[restoreImageCache[ i] release];
 		
 		free( restoreImageCache);
 		restoreImageCache = nil;
@@ -2046,12 +2046,12 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	unsigned char*	map = nil;
 	float*			tempImage = nil;
 	
-	if( [roi type] == tCPolygon || [roi type] == tOPolygon || [roi type] == tPencil )
+	if( [roi type] == tCPolygon || [roi type] == tOPolygon || [roi type] == tPencil)
 	{
 		NSArray *ptsTemp = [roi points];
 		
 		int no = ptsTemp.count;
-		struct NSPointInt *ptsInt = (struct NSPointInt*) malloc( no * sizeof(struct NSPointInt) );
+		struct NSPointInt *ptsInt = (struct NSPointInt*) malloc( no * sizeof(struct NSPointInt));
 		
 		if( no == 0) NSLog( @"******** ERROR no == 0 getMapFromPolygonROI");
 		
@@ -2102,14 +2102,14 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		
 //		BOOL clip = NO;
 		
-//		for( int i = 0; i < no && clip == NO; i++ ) {
+//		for( int i = 0; i < no && clip == NO; i++) {
 //			if( ptsInt[ i].x < 0) clip = YES;
 //			if( ptsInt[ i].y < 0) clip = YES;
 //			if( ptsInt[ i].x >= width) clip = YES;
 //			if( ptsInt[ i].y >= height) clip = YES;
 //		}
 //		
-//		if( clip ) {
+//		if( clip) {
 //			long newNo;
 //			
 //			pTemp = (NSPointInt*) malloc( sizeof(NSPointInt) * 4 * no);
@@ -2121,7 +2121,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 //			no = newNo;
 //		}
 		
-		if( ptsInt != nil && no > 1 )	{
+		if( ptsInt != nil && no > 1)	{
 			BOOL restore = NO, addition = NO, outside = NO;
 			
 			ras_FillPolygon( ptsInt, no, tempImage, size->width, size->height, [pixArray count], -FLT_MAX, FLT_MAX, outside, 255, addition, NO, NO, nil, nil, nil, nil, nil, 0, 2, 0, restore);
@@ -2129,12 +2129,12 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		
 		// Convert float to char
 		int i = size->height * size->width;
-		while ( i-- > 0 )	{
+		while ( i-- > 0)	{
 			map[ i] = tempImage[ i];
 		}
 		
 		// Keep a free box around the image
-		for ( int i = 0 ; i < (int)size->width; i++ )
+		for ( int i = 0 ; i < (int)size->width; i++)
 		{
 			map[ i] = 0;
 			map[(int)size->height*((int)size->width-2) +i] = 0;
@@ -2179,9 +2179,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		restore = NO;
 	}
 	
-	if( roi )
+	if( roi)
 	{
-		if( roi.type == tPlain )
+		if( roi.type == tPlain)
 		{
 			long			textWidth = roi.textureWidth;
 			long			textHeight = roi.textureHeight;
@@ -2214,7 +2214,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 										rgbPtr[ 2] = fTempRestore[ 2];
 										rgbPtr[ 3] = fTempRestore[ 3];
 									}
-									else if( addition )
+									else if( addition)
 									{
 										if( rgbPtr[ 1] >= minValue && rgbPtr[ 1] <= maxValue) rgbPtr[ 1] += newVal;
 										if( rgbPtr[ 2] >= minValue && rgbPtr[ 2] <= maxValue) rgbPtr[ 2] += newVal;
@@ -2265,7 +2265,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 			
 			else
 			{
-				for( long y = 0; y < height; y++ ) 
+				for( long y = 0; y < height; y++) 
 				{
 					for( long x = 0; x < width; x++)
 					{
@@ -2328,7 +2328,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 			
 			ptsInt = (struct NSPointInt*) malloc( no * sizeof( struct NSPointInt));
 
-			for( long i = 0; i < no; i++ )
+			for( long i = 0; i < no; i++)
 			{
 				ptsInt[ i].x = [[ptsTemp objectAtIndex: i] point].x;
 				ptsInt[ i].y = [[ptsTemp objectAtIndex: i] point].y;
@@ -2378,7 +2378,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 						if( ptsInt[ i].x < 0) clip = YES;
 						if( ptsInt[ i].y < 0) clip = YES;
 						if( ptsInt[ i].x >= height) clip = YES;
-						if( ptsInt[ i].y >= pixArray.count ) clip = YES;
+						if( ptsInt[ i].y >= pixArray.count) clip = YES;
 					}
 					
 					if( clip)
@@ -2386,7 +2386,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 						long newNo;
 						
 						pTemp = (NSPointInt*) malloc( sizeof(NSPointInt) * 4 * no);
-						CLIP_Polygon( ptsInt, no, pTemp, &newNo, height, pixArray.count );
+						CLIP_Polygon( ptsInt, no, pTemp, &newNo, height, pixArray.count);
 						
 						free( ptsInt);
 						ptsInt = pTemp;
@@ -2400,15 +2400,15 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 						if( ptsInt[ i].x < 0) clip = YES;
 						if( ptsInt[ i].y < 0) clip = YES;
 						if( ptsInt[ i].x >= width) clip = YES;
-						if( ptsInt[ i].y >= pixArray.count ) clip = YES;
+						if( ptsInt[ i].y >= pixArray.count) clip = YES;
 					}
 					
-					if( clip )
+					if( clip)
 					{
 						long newNo;
 						
 						pTemp = (NSPointInt*) malloc( sizeof(NSPointInt) * 4 * no);
-						CLIP_Polygon( ptsInt, no, pTemp, &newNo, width, pixArray.count );
+						CLIP_Polygon( ptsInt, no, pTemp, &newNo, width, pixArray.count);
 						
 						free( ptsInt);
 						ptsInt = pTemp;
@@ -2431,7 +2431,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 			case 2:	yIm = height;				xIm = width;	break;
 		}
 		
-		if( roi ) uplefty = downrighty = ptsInt[0].y;
+		if( roi) uplefty = downrighty = ptsInt[0].y;
 		else
 		{
 			uplefty = 0;
@@ -2451,9 +2451,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		if( downrighty >= yIm) downrighty = yIm-1;
 		
 		
-		if( isRGB )
+		if( isRGB)
 		{
-			for( long y = 0; y < uplefty ; y++ )
+			for( long y = 0; y < uplefty ; y++)
 			{
 				switch( orientationStack)
 				{
@@ -2484,7 +2484,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 					case 2:		fTempImage = fImage + width*y;							break;
 				}
 				
-				for( long x = 0; x < width ; x++ )
+				for( long x = 0; x < width ; x++)
 				{
 					unsigned char*  rgbPtr = (unsigned char*) fTempImage;
 					
@@ -2508,7 +2508,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 					case 2:		fTempImage = fImage + width*y;							break;
 				}
 				
-				for( long x = 0; x < width ; x++ )
+				for( long x = 0; x < width ; x++)
 				{
 					if( *fTempImage >= minValue && *fTempImage <= maxValue) *fTempImage = newVal;
 					
@@ -2526,7 +2526,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 					case 2:		fTempImage = fImage + width*y;							break;
 				}
 				
-				for( long x = 0; x < width ; x++ )
+				for( long x = 0; x < width ; x++)
 				{ 
 					if( *fTempImage >= minValue && *fTempImage <= maxValue) *fTempImage = newVal;
 					
@@ -2556,7 +2556,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 			
 			if( isRGB)
 			{
-				for( long y = 0; y < yIm ; y++ )
+				for( long y = 0; y < yIm ; y++)
 				{
 					switch( orientationStack)
 					{
@@ -2565,7 +2565,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 						case 2:		fTempImage = fImage + width*y;							break;
 					}
 					
-					for( long x = 0; x < xIm ; x++ )
+					for( long x = 0; x < xIm ; x++)
 					{
 						unsigned char*  rgbPtr = (unsigned char*) fTempImage;
 						
@@ -2589,7 +2589,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 						case 2:		fTempImage = fImage + width*y;							break;
 					}
 					
-					for( long x = 0; x < xIm ; x++ )
+					for( long x = 0; x < xIm ; x++)
 					{
 						if( *fTempImage >= minValue && *fTempImage <= maxValue) *fTempImage = newVal;
 						
@@ -2608,7 +2608,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 //		pix.maxValueOfSeries = 0;
 //	}
 		
-	if( roi ) free( ptsInt);
+	if( roi) free( ptsInt);
 }
 
 - (void) fillROI:(ROI*) roi :(float) newVal :(float) minValue :(float) maxValue :(BOOL) outside :(long) orientationStack :(long) stackNo
@@ -2634,7 +2634,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	int count = 0;
 	[self CheckLoad];
 	
-	if( roi.type == tPlain )
+	if( roi.type == tPlain)
 	{
 		long			textWidth = roi.textureWidth;
 		long			textHeight = roi.textureHeight;
@@ -2656,7 +2656,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 					
 					if( xx >= 0 && xx < width && yy >= 0 && yy < height)
 					{
-						if( isRGB == NO )
+						if( isRGB == NO)
 						{
 							float	val = *fImageTemp;
 							
@@ -2703,20 +2703,20 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		unsigned char *buf = roi.textureBuffer;
 		float *fImageTemp;
 		
-		for( int y = 0; y < textHeight; y++ )
+		for( int y = 0; y < textHeight; y++)
 		{
 			fImageTemp = fImage + ((y + textureUpLeftCornerY) * width) + textureUpLeftCornerX;
 			
 			for( int x = 0; x < textWidth; x++, fImageTemp++)
 			{
-				if( *buf++ != 0 )
+				if( *buf++ != 0)
 				{
 					int	xx = (x + textureUpLeftCornerX);
 					int	yy = (y + textureUpLeftCornerY);
 					
 					if( xx >= 0 && xx < width && yy >= 0 && yy < height)
 					{
-						if( isRGB )
+						if( isRGB)
 						{
 							unsigned char*  rgbPtr = (unsigned char*) &fImage[ (yy * width) + xx];
 							float val = rgbPtr[ 0] + rgbPtr[ 1] + rgbPtr[2] / 3;
@@ -2744,13 +2744,13 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		
 		if( count != 0) imean = itotal / count;
 		
-		if( dev != nil && count > 0 )
+		if( dev != nil && count > 0)
 		{
 			idev = 0;
 			
 			buf = [roi textureBuffer];
 			
-			for( int y = 0; y < textHeight; y++ )
+			for( int y = 0; y < textHeight; y++)
 			{
 				fImageTemp = fImage + ((y + textureUpLeftCornerY) * width) + textureUpLeftCornerX;
 				
@@ -2799,9 +2799,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		NSMutableArray  *ptsTemp = [roi splinePoints];
 		NSPointInt		*pts;
 		
-		pts = (NSPointInt*) malloc( ptsTemp.count * sizeof(NSPointInt) );
+		pts = (NSPointInt*) malloc( ptsTemp.count * sizeof(NSPointInt));
 		no = [ptsTemp count];
-		for( int i = 0; i < no; i++ )
+		for( int i = 0; i < no; i++)
 		{
 			pts[ i].x = [[ptsTemp objectAtIndex: i] point].x;
 			pts[ i].y = [[ptsTemp objectAtIndex: i] point].y;
@@ -2819,9 +2819,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 			if( pts[ i].y >= height) clip = YES;
 		}
 		
-		if( no == 1 )
+		if( no == 1)
 		{
-			if( clip )
+			if( clip)
 			{
 				if( max) *max = 0;
 				if( min) *min = 0;
@@ -2856,7 +2856,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		}
 		else
 		{
-			if( clip )
+			if( clip)
 			{
 				long newNo;
 				
@@ -3377,7 +3377,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	copy->originY = self->originY;
 	copy->originZ = self->originZ;
 	
-	memcpy( copy->orientation, self->orientation, sizeof orientation );
+	memcpy( copy->orientation, self->orientation, sizeof orientation);
 	
 	copy->frameOfReferenceUID = [self->frameOfReferenceUID retain];
 	
@@ -3573,7 +3573,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 					{
 						NSArray *listItems = [aLine componentsSeparatedByString:@" "];
 						NSString	*subStringVal;
-						if ( listItems.count >= 3 )
+						if ( listItems.count >= 3)
 						{
 							subStringVal=[listItems objectAtIndex:2];
 							zCorrection=[subStringVal floatValue];
@@ -3647,7 +3647,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	isRGB = NO;
 	
 	TIFF* tif = TIFFOpen([srcFile UTF8String], "r");
-	if( tif )
+	if( tif)
 	{
 		count = 0;
 		while (count < directory && TIFFReadDirectory (tif))
@@ -4086,7 +4086,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 			int MASK = 0x00ff;
 			int MASK2 = 0x000000ff;
 			
-			TAGTYPE = ((tags2[1] & MASK) << 8) | ((tags2[0] & MASK ) <<0);
+			TAGTYPE = ((tags2[1] & MASK) << 8) | ((tags2[0] & MASK) <<0);
 			LENGTH = ((tags2[7] & MASK2) << 24) | ((tags2[6] & MASK2) << 16) | ((tags2[5] & MASK2) << 8) | (tags2[4] & MASK2);
 			if(lsmDebug) NSLog(@"FirstTagRound: Analysing tag %d of type %d and length %d",k,TAGTYPE,LENGTH);  //GJ: for reporting
 			switch (TAGTYPE)
@@ -4225,7 +4225,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 			int MASK2 = 0x000000ff;
 			
 			
-			TAGTYPE = ((TAG1[1] & MASK) << 8) | ((TAG1[0] & MASK ) <<0);
+			TAGTYPE = ((TAG1[1] & MASK) << 8) | ((TAG1[0] & MASK) <<0);
 			LENGTH = ((TAG1[7] & MASK2) << 24) | ((TAG1[6] & MASK2) << 16) | ((TAG1[5] & MASK2) << 8) | (TAG1[4] & MASK2);
 			
 			//NSLog(@"Analysing tag %d of type %d and length %d",k,TAGTYPE,LENGTH);  //GJ: for reporting
@@ -4521,11 +4521,11 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	
 	if( [[BrowserController currentBrowser] isCurrentDatabaseBonjour])
 	{
-		NSLog( @"Can't (or shouldn't?) export ROIs to Bonjour mounted Database" );
+		NSLog( @"Can't (or shouldn't?) export ROIs to Bonjour mounted Database");
 		return;
 	}
 	
-	NSLog( @"createROIsFromRTSTRUCT" );
+	NSLog( @"createROIsFromRTSTRUCT");
 	
 	NSDictionary *dict = [NSDictionary dictionaryWithObject: dcmObject forKey: @"dcmObject"];
 	
@@ -4557,9 +4557,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	
 	DCMSequenceAttribute *refFrameSequence = (DCMSequenceAttribute *)[dcmObject attributeWithName:@"ReferencedFrameofReferenceSequence"];
 	
-	if ( refFrameSequence == nil )
+	if ( refFrameSequence == nil)
 	{
-		NSLog( @"ReferencedFrameofReferenceSequence not found" );
+		NSLog( @"ReferencedFrameofReferenceSequence not found");
 		goto END_CREATE_ROIS;
 	}
 	
@@ -4574,15 +4574,15 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	[nc postNotificationName:OsirixRTStructNotification object:nil userInfo: noteDict];
 	
 	
-	for ( DCMObject *refFrameSeqItem in [refFrameSequence sequence] )
+	for ( DCMObject *refFrameSeqItem in [refFrameSequence sequence])
 	{
 		DCMSequenceAttribute *refStudySeq = (DCMSequenceAttribute *)[refFrameSeqItem attributeWithName: @"RTReferencedStudySequence"];
 		
-		for ( DCMObject *refStudySeqItem in refStudySeq.sequence )
+		for ( DCMObject *refStudySeqItem in refStudySeq.sequence)
 		{
 			DCMSequenceAttribute *refSeriesSeq = (DCMSequenceAttribute *)[refStudySeqItem attributeWithName: @"RTReferencedSeriesSequence"];
 			
-			for ( DCMObject *refSeriesSeqItem in refSeriesSeq.sequence )
+			for ( DCMObject *refSeriesSeqItem in refSeriesSeq.sequence)
 			{
 				
 				NSString *refSeriesUID = [refSeriesSeqItem attributeValueWithName: @"SeriesInstanceUID"];
@@ -4594,7 +4594,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 				 NSEnumerator *contourImgSeqEnum = [[contourImgSeq sequence] objectEnumerator];
 				 DCMObject *contourImgSeqItem;
 				 
-				 while ( contourImgSeqItem = [contourImgSeqEnum nextObject] ) {
+				 while ( contourImgSeqItem = [contourImgSeqEnum nextObject]) {
 				 NSString *refImgUID = [contourImgSeqItem attributeValueWithName: @"ReferencedSOPInstanceUID"];
 				 NSPredicate *pred = [NSPredicate predicateWithFormat: @"sopInstanceUID like %@", refImgUID];
 				 [refImgUIDPredicates addObject: pred];
@@ -4611,9 +4611,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	
 	[nc postNotificationName:OsirixRTStructNotification object:nil userInfo: noteDict];
 	
-	if ( refSeriesUIDPredicates.count == 0 )
+	if ( refSeriesUIDPredicates.count == 0)
 	{
-		NSLog( @"No reference series found." );
+		NSLog( @"No reference series found.");
 		goto END_CREATE_ROIS;
 	}
 	
@@ -4627,9 +4627,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	NSArray *imgObjects = [moc executeFetchRequest: request error: &error];
 	[moc unlock];
 	
-	if ( imgObjects.count == 0 )
+	if ( imgObjects.count == 0)
 	{
-		NSLog( @"No images in Series" );
+		NSLog( @"No images in Series");
 		goto END_CREATE_ROIS;
 	}
 	
@@ -4638,7 +4638,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	NSMutableDictionary *imgDict = [NSMutableDictionary dictionaryWithCapacity: imgObjects.count];
 	NSMutableArray *dcmImgObjects = [NSMutableArray arrayWithCapacity: imgObjects.count];
 	
-	for ( DicomImage *imgObj in imgObjects )
+	for ( DicomImage *imgObj in imgObjects)
 	{
 		[imgDict setObject: imgObj forKey: [imgObj valueForKey: @"sopInstanceUID"]];
 		[dcmImgObjects addObject: [DCMObject objectWithContentsOfFile: [imgObj completePath] decodingPixelData: NO]];
@@ -4646,15 +4646,15 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	
 	DCMSequenceAttribute *roiSequence = (DCMSequenceAttribute *)[dcmObject attributeWithName:@"StructureSetROISequence"];
 	
-	if ( roiSequence == nil )
+	if ( roiSequence == nil)
 	{
-		NSLog( @"StructureSetROISequence not found" );
+		NSLog( @"StructureSetROISequence not found");
 		goto END_CREATE_ROIS;
 	}
 	
 	NSMutableDictionary *roiNames = [NSMutableDictionary dictionary];
 	
-	for ( DCMObject *sequenceItem in [roiSequence sequence] )
+	for ( DCMObject *sequenceItem in [roiSequence sequence])
 	{
 		[roiNames setValue: [sequenceItem attributeValueWithName: @"ROIName"]
 					forKey: [sequenceItem attributeValueWithName: @"ROINumber"]];
@@ -4662,9 +4662,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	
 	DCMSequenceAttribute *roiContourSequence = (DCMSequenceAttribute *)[dcmObject attributeWithName:@"ROIContourSequence"];
 	
-	if ( roiContourSequence == nil )
+	if ( roiContourSequence == nil)
 	{
-		NSLog( @"ROIContourSequence not found" );
+		NSLog( @"ROIContourSequence not found");
 		goto END_CREATE_ROIS;
 	}
 	
@@ -4674,9 +4674,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	
 	NSMutableArray *roiArray[ imgObjects.count ];  // Array of ROIs for each defined 'image' referenced by the RTSTRUCT
 	
-	for ( unsigned int i = 0; i < imgObjects.count; i++ ) roiArray[ i ] = [NSMutableArray arrayWithCapacity: 0];
+	for ( unsigned int i = 0; i < imgObjects.count; i++) roiArray[ i ] = [NSMutableArray arrayWithCapacity: 0];
 	
-	for ( DCMObject *sequenceItem in [roiContourSequence sequence] )
+	for ( DCMObject *sequenceItem in [roiContourSequence sequence])
 	{
 		
 		float
@@ -4693,28 +4693,28 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		
 		NSString *roiName = [roiNames valueForKey: [sequenceItem attributeValueWithName: @"ReferencedROINumber"]];
 		
-		NSLog( @"roiName = %@", roiName );
+		NSLog( @"roiName = %@", roiName);
 		DCMSequenceAttribute *contourSequence = (DCMSequenceAttribute *)[sequenceItem attributeWithName:@"ContourSequence"];
-		if ( roiContourSequence == nil )
+		if ( roiContourSequence == nil)
 		{
-			NSLog( @"contourSequence not found" );
+			NSLog( @"contourSequence not found");
 			goto END_CREATE_ROIS;
 		}
 		
-		for ( DCMObject *contourItem in [contourSequence sequence] )
+		for ( DCMObject *contourItem in [contourSequence sequence])
 		{
 			
 			//				DCMSequenceAttribute *contourImageSequence = (DCMSequenceAttribute*)[contourItem attributeWithName: @"ContourImageSequence"];
-			//				if ( contourImageSequence == nil ) {
-			//					NSLog( @"contourImageSequence not found" );
+			//				if ( contourImageSequence == nil) {
+			//					NSLog( @"contourImageSequence not found");
 			//					goto END_CREATE_ROIS;
 			//				}
 			
 			NSString *contourType = [contourItem attributeValueWithName: @"ContourGeometricType"];
 			
-			if ( [contourType isEqualToString: @"CLOSED_PLANAR"] == NO && [contourType isEqualToString: @"INTERPOLATED_PLANAR"] == NO )
+			if ( [contourType isEqualToString: @"CLOSED_PLANAR"] == NO && [contourType isEqualToString: @"INTERPOLATED_PLANAR"] == NO)
 			{
-				NSLog( @"Contour type %@ is not supported at this time.", contourType );
+				NSLog( @"Contour type %@ is not supported at this time.", contourType);
 				continue;
 			}
 			
@@ -4726,15 +4726,15 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 			// This of course assumes that ALL the points in the contour are in the same slice.
 			// Not considering at this time the possibility that the contour intersects multiple slices.
 			
-			for ( unsigned int imgIndex = 0; imgIndex < imgObjects.count; imgIndex++ )
+			for ( unsigned int imgIndex = 0; imgIndex < imgObjects.count; imgIndex++)
 			{  
 				DicomImage *img = [imgObjects objectAtIndex: imgIndex];
 				
 				DCMObject *imgObject = [dcmImgObjects objectAtIndex: imgIndex];
 				
-				if ( imgObject == nil )
+				if ( imgObject == nil)
 				{
-					NSLog( @"Error opening referenced image file" );
+					NSLog( @"Error opening referenced image file");
 					goto END_CREATE_ROIS;
 				}
 				
@@ -4748,7 +4748,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 				pixSpacingX = [[pixSpacings objectAtIndex: 0] floatValue];
 				pixSpacingY = [[pixSpacings objectAtIndex: 1] floatValue];
 				
-				if ( pixSpacingX == 0.0f || pixSpacingY == 0.0f ) continue;  // Bad slice?
+				if ( pixSpacingX == 0.0f || pixSpacingY == 0.0f) continue;  // Bad slice?
 				
 				float pixSpacingXrecip = 1.0f / pixSpacingX;
 				float pixSpacingYrecip = 1.0f / pixSpacingY;
@@ -4759,7 +4759,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 				
 				float orients[ 9 ];
 				
-				for ( unsigned int i = 0; i < 6; i++ )
+				for ( unsigned int i = 0; i < 6; i++)
 				{
 					orients[ i ] = [[imageOrientation objectAtIndex: i] floatValue];
 				}
@@ -4775,11 +4775,11 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 				temp[ 1 ] = [[dcmPoints objectAtIndex: 1] floatValue] - posY;
 				temp[ 2 ] = [[dcmPoints objectAtIndex: 2] floatValue] - posZ;
 				
-				float distToSlice = fabs( temp[ 0 ] * orients[ 6 ] + temp[ 1 ] * orients[ 7 ] + temp[ 2 ] * orients[ 8 ] );
+				float distToSlice = fabs( temp[ 0 ] * orients[ 6 ] + temp[ 1 ] * orients[ 7 ] + temp[ 2 ] * orients[ 8 ]);
 				float distCriterion = [[imgObject attributeValueWithName: @"SliceThickness"] floatValue] * 0.4;
-				if ( distCriterion <= 0.0f ) distCriterion = 0.1f;  // mm
+				if ( distCriterion <= 0.0f) distCriterion = 0.1f;  // mm
 				
-				if ( distToSlice < distCriterion )
+				if ( distToSlice < distCriterion)
 				{
 					float sliceCoords[ 2 ];
 					
@@ -4791,11 +4791,11 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 					int numPoints = [[contourItem attributeValueWithName: @"NumberofContourPoints"] intValue];
 					NSMutableArray *pointsArray = [NSMutableArray arrayWithCapacity: numPoints];
 					
-					[pointsArray addObject: [MyPoint point:NSMakePoint( sliceCoords[ 0 ], sliceCoords[ 1 ] )]];
+					[pointsArray addObject: [MyPoint point:NSMakePoint( sliceCoords[ 0 ], sliceCoords[ 1 ])]];
 					
 					// Convert rest of points in contour to sliceCoord space
 					
-					for ( unsigned int pointIndex = 1; pointIndex < numPoints; pointIndex++ )
+					for ( unsigned int pointIndex = 1; pointIndex < numPoints; pointIndex++)
 					{
 						temp[ 0 ] = [[dcmPoints objectAtIndex: 3 * pointIndex] floatValue] - posX;
 						temp[ 1 ] = [[dcmPoints objectAtIndex: 3 * pointIndex + 1] floatValue] - posY;
@@ -4805,13 +4805,13 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 						sliceCoords[ 1 ] = temp[ 0 ] * orients[ 3 ] + temp[ 1 ] * orients[ 4 ] + temp[ 2 ] * orients[ 5 ];
 						sliceCoords[ 0 ] *= pixSpacingXrecip;
 						sliceCoords[ 1 ] *= pixSpacingYrecip;
-						[pointsArray addObject: [MyPoint point:NSMakePoint( sliceCoords[ 0 ], sliceCoords[ 1 ] )]];
+						[pointsArray addObject: [MyPoint point:NSMakePoint( sliceCoords[ 0 ], sliceCoords[ 1 ])]];
 					}
 					
 					ROI *roi = [[[ROI alloc] initWithType: type
 														 : pixSpacingX
 														 : pixSpacingY
-														 : NSMakePoint( posX, posY )] autorelease];
+														 : NSMakePoint( posX, posY)] autorelease];
 					
 					roi.name = roiName;
 					roi.rgbcolor = color;
@@ -4827,7 +4827,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		
 		iStruct++;
 		
-		float percentComplete = ( iStruct / (float)numStructs ) * 90.0f + 10.0f;
+		float percentComplete = ( iStruct / (float)numStructs) * 90.0f + 10.0f;
 		
 		noteDict = [NSDictionary dictionaryWithObjectsAndKeys: 
 					[NSNumber numberWithBool: YES], @"RTSTRUCTProgressBar",
@@ -4842,10 +4842,10 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	
 	NSMutableArray	*newDICOMSR = [NSMutableArray array];
 	
-	for ( unsigned int i = 0; i < imgObjects.count; i++ )
+	for ( unsigned int i = 0; i < imgObjects.count; i++)
 	{
 		
-		if ( roiArray[ i ].count == 0 ) continue;  // Nothing to see, move on.
+		if ( roiArray[ i ].count == 0) continue;  // Nothing to see, move on.
 		
 		DicomImage *img = [imgObjects objectAtIndex: i];
 		
@@ -4855,10 +4855,11 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		
 		NSData *data = [ROISRConverter roiFromDICOM: str];
 		
-		if ( data )
+		if ( data)
 		{
 			NSMutableArray *array = [NSUnarchiver unarchiveObjectWithData: data];
-			if ( array ) [roiArray[ i ] addObjectsFromArray: array];
+			if ( array)
+				[roiArray[ i ] addObjectsFromArray: array];
 		}
 		
 		// Write out the concatenated roiArray
@@ -4869,7 +4870,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 			[newDICOMSR addObject: path];
 	}
 	
-	if( newDICOMSR.count ) [[BrowserController currentBrowser] addFilesToDatabase: newDICOMSR];
+	if( newDICOMSR.count)
+		[[BrowserController currentBrowser] addFilesToDatabase: newDICOMSR];
 	
 	[[BrowserController currentBrowser] saveDatabase: nil];
 	
@@ -4894,7 +4896,7 @@ END_CREATE_ROIS:
 		int *signedSrc = (int*) src;
 		
 		i = width * height;
-		while( i-- > 0 )
+		while( i-- > 0)
 		{
 			index = signedSrc[ i] - first;
 			if( index <= 0) index = 0;
@@ -4907,7 +4909,7 @@ END_CREATE_ROIS:
 	else
 	{
 		i = width * height;
-		while( i-- > 0 )
+		while( i-- > 0)
 		{
 			index = src[ i] - first;
 			if( index <= 0) index = 0;
@@ -5070,9 +5072,9 @@ END_CREATE_ROIS:
 		{
 			NSArray *shutterArray = [dcmObject attributeArrayWithName:@"ShutterShape"];
 			
-			for( NSString *shutter in shutterArray )
+			for( NSString *shutter in shutterArray)
 			{
-				if ( [shutter isEqualToString:@"RECTANGULAR"] )
+				if ( [shutter isEqualToString:@"RECTANGULAR"])
 				{
 					DCMPixShutterOnOff = YES;
 					
@@ -5081,7 +5083,7 @@ END_CREATE_ROIS:
 					shutterRect_y = [[dcmObject attributeValueWithName:@"ShutterUpperHorizontalEdge"] floatValue]; 
 					shutterRect_h = [[dcmObject attributeValueWithName:@"ShutterLowerHorizontalEdge"] floatValue]  - shutterRect_y;
 				}
-				else if( [shutter isEqualToString:@"CIRCULAR"] )
+				else if( [shutter isEqualToString:@"CIRCULAR"])
 				{
 					DCMPixShutterOnOff = YES;
 					
@@ -5095,7 +5097,7 @@ END_CREATE_ROIS:
 					
 					shutterCircular_radius = [[dcmObject attributeValueWithName:@"RadiusofCircularShutter"] floatValue];
 				}
-				else if( [shutter isEqualToString:@"POLYGONAL"] )
+				else if( [shutter isEqualToString:@"POLYGONAL"])
 				{
 					DCMPixShutterOnOff = YES;
 					
@@ -5105,14 +5107,14 @@ END_CREATE_ROIS:
 					
 					shutterPolygonalSize = 0;
 					shutterPolygonal = malloc( [locArray count] * sizeof( NSPoint) / 2);
-					for( unsigned int i = 0, x = 0; i < [locArray count]; i+=2, x++ )
+					for( unsigned int i = 0, x = 0; i < [locArray count]; i+=2, x++)
 					{
 						shutterPolygonal[ x].x = [[locArray objectAtIndex: i] intValue];
 						shutterPolygonal[ x].y = [[locArray objectAtIndex: i+1] intValue];
 						shutterPolygonalSize++;
 					}
 				}
-				else NSLog( @"Shutter not supported: %@", shutter );
+				else NSLog( @"Shutter not supported: %@", shutter);
 			}
 		}
 	}
@@ -5123,7 +5125,7 @@ END_CREATE_ROIS:
 //orientation
 	originX = 0;	originY = 0;	originZ = 0;
 	NSArray *ipp = [dcmObject attributeArrayWithName:@"ImagePositionPatient"];
-	if( ipp )
+	if( ipp)
 	{
 		originX = [[ipp objectAtIndex:0] floatValue];
 		originY = [[ipp objectAtIndex:1] floatValue];
@@ -5134,9 +5136,9 @@ END_CREATE_ROIS:
 	orientation[ 0] = 0;	orientation[ 1] = 0;	orientation[ 2] = 0;
 	orientation[ 3] = 0;	orientation[ 4] = 0;	orientation[ 5] = 0;
 	NSArray *iop = [dcmObject attributeArrayWithName:@"ImageOrientationPatient"];
-	if( iop )
+	if( iop)
 	{
-		for ( int j = 0; j < iop.count; j++ ) 
+		for ( int j = 0; j < iop.count; j++) 
 			orientation[ j ] = [[iop objectAtIndex:j] floatValue];
 	}
 	
@@ -5163,7 +5165,7 @@ END_CREATE_ROIS:
 		bitsAllocated = 8;
 	
 	if ([dcmObject attributeValueWithName:@"RescaleIntercept"]) offset = [[dcmObject attributeValueWithName:@"RescaleIntercept"] floatValue];
-	if ([dcmObject attributeValueWithName:@"RescaleSlope"] ) slope = [[dcmObject attributeValueWithName:@"RescaleSlope"] floatValue]; 
+	if ([dcmObject attributeValueWithName:@"RescaleSlope"]) slope = [[dcmObject attributeValueWithName:@"RescaleSlope"] floatValue]; 
 	
 	// image size
 	if( [dcmObject attributeValueWithName:@"Rows"])
@@ -5206,12 +5208,12 @@ END_CREATE_ROIS:
 	
 	//pixel Spacing
 	NSArray *pixelSpacing = [dcmObject attributeArrayWithName:@"PixelSpacing"];
-	if(pixelSpacing.count >= 2 )
+	if(pixelSpacing.count >= 2)
 	{
 		pixelSpacingY = [[pixelSpacing objectAtIndex:0] floatValue];
 		pixelSpacingX = [[pixelSpacing objectAtIndex:1] floatValue];
 	}
-	else if(pixelSpacing.count >= 1 )
+	else if(pixelSpacing.count >= 1)
 	{ 
 		pixelSpacingY = [[pixelSpacing objectAtIndex:0] floatValue];
 		pixelSpacingX = [[pixelSpacing objectAtIndex:0] floatValue];
@@ -5219,12 +5221,12 @@ END_CREATE_ROIS:
 	else
 	{
 		NSArray *pixelSpacing = [dcmObject attributeArrayWithName:@"ImagerPixelSpacing"];
-		if(pixelSpacing.count >= 2 )
+		if(pixelSpacing.count >= 2)
 		{
 			pixelSpacingY = [[pixelSpacing objectAtIndex:0] floatValue];
 			pixelSpacingX = [[pixelSpacing objectAtIndex:1] floatValue];
 		}
-		else if(pixelSpacing.count >= 1 )
+		else if(pixelSpacing.count >= 1)
 		{
 			pixelSpacingY = [[pixelSpacing objectAtIndex:0] floatValue];
 			pixelSpacingX = [[pixelSpacing objectAtIndex:0] floatValue];
@@ -5237,7 +5239,7 @@ END_CREATE_ROIS:
 	{
 		BOOL spacingFound = NO;
 		
-		for ( DCMObject *sequenceItem in seq.sequence )
+		for ( DCMObject *sequenceItem in seq.sequence)
 		{
 			if( spacingFound == NO)
 			{
@@ -5267,13 +5269,13 @@ END_CREATE_ROIS:
 	
 	//PixelAspectRatio
 	NSArray *par = [dcmObject attributeArrayWithName:@"PixelAspectRatio"];
-	if ( par.count >= 2 )
+	if ( par.count >= 2)
 	{
 		float ratiox = 1, ratioy = 1;
 		ratiox = [[par objectAtIndex:0] floatValue];
 		ratioy = [[par objectAtIndex:1] floatValue];
 		
-		if( ratioy != 0 )
+		if( ratioy != 0)
 		{
 			pixelRatio = ratiox / ratioy;
 		}
@@ -5392,7 +5394,7 @@ END_CREATE_ROIS:
 		DCMSequenceAttribute *sharedFunctionalGroupsSequence = (DCMSequenceAttribute *)[dcmObject attributeWithName:@"SharedFunctionalGroupsSequence"];
 		if (sharedFunctionalGroupsSequence)
 		{
-			for ( DCMObject *sequenceItem in sharedFunctionalGroupsSequence.sequence )
+			for ( DCMObject *sequenceItem in sharedFunctionalGroupsSequence.sequence)
 			{
 				DCMSequenceAttribute *MRTimingAndRelatedParametersSequence = (DCMSequenceAttribute *)[sequenceItem attributeWithName:@"MRTimingAndRelatedParametersSequence"];
 				DCMObject *MRTimingAndRelatedParametersObject = [[MRTimingAndRelatedParametersSequence sequence] objectAtIndex:0];
@@ -5431,7 +5433,7 @@ END_CREATE_ROIS:
 		//NSLog(@"perFrameFunctionalGroupsSequence: %@", [perFrameFunctionalGroupsSequence description]);
 		if (perFrameFunctionalGroupsSequence)
 		{
-			if ( perFrameFunctionalGroupsSequence.sequence.count > imageNb && imageNb >= 0 )
+			if ( perFrameFunctionalGroupsSequence.sequence.count > imageNb && imageNb >= 0)
 			{
 				DCMObject *sequenceItem = [[perFrameFunctionalGroupsSequence sequence] objectAtIndex:imageNb];
 				if (sequenceItem)
@@ -5492,7 +5494,7 @@ END_CREATE_ROIS:
 			if( [dcmObject attributeValueForKey: @"6000,0040"])
 				oType = [[dcmObject attributeValueForKey: @"6000,0040"] characterAtIndex: 0];
 			
-			if( [dcmObject attributeValueForKey: @"6000,0050"] ) 
+			if( [dcmObject attributeValueForKey: @"6000,0050"]) 
 			{
 				oOrigin[ 0] = [[dcmObject attributeValueForKey: @"6000,0050"] intValue];
 				oOrigin[ 1] = [[dcmObject attributeValueForKey: @"6000,0050"] intValue];
@@ -5516,11 +5518,11 @@ END_CREATE_ROIS:
 					char			valBit [ 16];
 					char			mask = 1;
 					
-					for ( int i = 0; i < oColumns*oRows/16; i++ )
+					for ( int i = 0; i < oColumns*oRows/16; i++)
 					{
 						unsigned short	octet = pixels[ i];
 						
-						for ( int x = 0; x < 16; x++ )
+						for ( int x = 0; x < 16; x++)
 						{
 							valBit[ x ] = octet & mask ? 1 : 0;
 							octet = octet >> 1;
@@ -5551,7 +5553,7 @@ END_CREATE_ROIS:
 		decayFactor = 1.0;
 		
 		DCMSequenceAttribute *radiopharmaceuticalInformationSequence = (DCMSequenceAttribute *)[dcmObject attributeWithName:@"RadiopharmaceuticalInformationSequence"];
-		if( radiopharmaceuticalInformationSequence && radiopharmaceuticalInformationSequence.sequence.count > 0 )
+		if( radiopharmaceuticalInformationSequence && radiopharmaceuticalInformationSequence.sequence.count > 0)
 		{
 			DCMObject *radionuclideTotalDoseObject = [radiopharmaceuticalInformationSequence.sequence objectAtIndex:0];
 			radionuclideTotalDose = [[radionuclideTotalDoseObject attributeValueWithName:@"RadionuclideTotalDose"] floatValue];
@@ -5569,12 +5571,12 @@ END_CREATE_ROIS:
 		}
 		
 		DCMSequenceAttribute *detectorInformationSequence = (DCMSequenceAttribute *)[dcmObject attributeWithName:@"DetectorInformationSequence"];
-		if( detectorInformationSequence && detectorInformationSequence.sequence.count > 0 )
+		if( detectorInformationSequence && detectorInformationSequence.sequence.count > 0)
 		{
 			DCMObject *detectorInformation = [detectorInformationSequence.sequence objectAtIndex:0];
 			
 			NSArray *ipp = [detectorInformation attributeArrayWithName:@"ImagePositionPatient"];
-			if( ipp )
+			if( ipp)
 			{
 				originX = [[ipp objectAtIndex:0] floatValue];
 				originY = [[ipp objectAtIndex:1] floatValue];
@@ -5607,7 +5609,7 @@ END_CREATE_ROIS:
 				else // doesnt the root Image Orientation contains valid data? if not use the normal vector
 				{
 					equalZero = YES;
-					for ( int j = 0; j < 6; j++ )
+					for ( int j = 0; j < 6; j++)
 						if( orientation[ j] != 0)
 							equalZero = NO;
 					
@@ -5667,27 +5669,27 @@ END_CREATE_ROIS:
 			
 		#pragma mark *loading a frame
 			
-			if ( [[dcmObject attributeValueWithName:@"Modality"] isEqualToString: @"RTDOSE"] )
+			if ( [[dcmObject attributeValueWithName:@"Modality"] isEqualToString: @"RTDOSE"])
 			{  // Set Z value for each frame
 				NSArray *gridFrameOffsetArray = [dcmObject attributeArrayWithName: @"GridFrameOffsetVector"];  //List of Z values
 				originZ += [[gridFrameOffsetArray objectAtIndex: imageNb] floatValue];
-				if( fabs( orientation[6]) > fabs(orientation[7]) && fabs( orientation[6]) > fabs(orientation[8]) )
+				if( fabs( orientation[6]) > fabs(orientation[7]) && fabs( orientation[6]) > fabs(orientation[8]))
 				{
 					sliceLocation = originX;
 				}
 				
-				if( fabs( orientation[7]) > fabs(orientation[6]) && fabs( orientation[7]) > fabs(orientation[8]) )
+				if( fabs( orientation[7]) > fabs(orientation[6]) && fabs( orientation[7]) > fabs(orientation[8]))
 				{
 					sliceLocation = originY;
 				}
 				
-				if( fabs( orientation[8]) > fabs(orientation[6]) && fabs( orientation[8]) > fabs(orientation[7]) )
+				if( fabs( orientation[8]) > fabs(orientation[6]) && fabs( orientation[8]) > fabs(orientation[7]))
 				{
 					sliceLocation = originZ;
 				}	
 			}
 			
-			if( gUseShutter && imageNb != frameNo && maxFrame > 1 )
+			if( gUseShutter && imageNb != frameNo && maxFrame > 1)
 			{
 				self->shutterRect_x = shutterRect_x;
 				self->shutterRect_y = shutterRect_y;
@@ -5698,11 +5700,11 @@ END_CREATE_ROIS:
 				self->shutterCircular_y = shutterCircular_y;
 				self->shutterCircular_radius = shutterCircular_radius;
 				
-				if( shutterPolygonalSize )
+				if( shutterPolygonalSize)
 				{
 					self->shutterPolygonalSize = shutterPolygonalSize;
 					self->shutterPolygonal = malloc( shutterPolygonalSize * sizeof( NSPoint));
-					memcpy( self->shutterPolygonal, shutterPolygonal, shutterPolygonalSize * sizeof( NSPoint ) );
+					memcpy( self->shutterPolygonal, shutterPolygonal, shutterPolygonalSize * sizeof( NSPoint));
 				}
 				
 				self->DCMPixShutterOnOff = DCMPixShutterOnOff;
@@ -5713,14 +5715,14 @@ END_CREATE_ROIS:
 			short *oImage =  malloc([pixData length]);	//pointer to a memory zone where each pixel of the data has a short value reserved
 			[pixData getBytes:oImage];
 			
-			if( oImage == nil ) //there was no data for this frame -> create empty image
+			if( oImage == nil) //there was no data for this frame -> create empty image
 			{
 				//NSLog(@"image size: %d", ( height * width * 2));
 				oImage = malloc( height * width * 2);
 				//gArrPhotoInterpret [fileNb] = MONOCHROME2;
 				
 				long yo = 0;
-				for( unsigned long i = 0 ; i < height * width; i++ )
+				for( unsigned long i = 0 ; i < height * width; i++)
 				{
 					oImage[ i] = yo++;
 					if( yo>= width) yo = 0;
@@ -5770,7 +5772,7 @@ END_CREATE_ROIS:
 					unsigned char   *bufPtr;
 					bufPtr = (unsigned char*) oImage;
 					
-					while( loop-- > 0 )
+					while( loop-- > 0)
 					{
 						*ptr++	= 255;			//ptr++;
 						*ptr++	= *bufPtr++;		//ptr++;  bufPtr++;
@@ -5796,7 +5798,7 @@ END_CREATE_ROIS:
 				ptr    = tmpImage;
 				
 				loop = totSize/2;
-				while( loop-- > 0 )
+				while( loop-- > 0)
 				{
 					*ptr++ = *bufPtr++;
 				}
@@ -5806,7 +5808,7 @@ END_CREATE_ROIS:
 			
 			//***********
 			
-			if( isRGB )
+			if( isRGB)
 			{
 				if( fExternalOwnedImage)
 				{
@@ -5817,15 +5819,15 @@ END_CREATE_ROIS:
 				else fImage = (float*) oImage;
 				oImage = nil;
 				
-				if( oData && gDisplayDICOMOverlays )
+				if( oData && gDisplayDICOMOverlays)
 				{
 					unsigned char	*rgbData = (unsigned char*) fImage;
 					
-					for( int y = 0; y < oRows; y++ )
+					for( int y = 0; y < oRows; y++)
 					{
-						for( int x = 0; x < oColumns; x++ )
+						for( int x = 0; x < oColumns; x++)
 						{
-							if( oData[ y * oColumns + x] )
+							if( oData[ y * oColumns + x])
 							{
 								rgbData[ y * width*4 + x*4 + 1] = 0xFF;
 								rgbData[ y * width*4 + x*4 + 2] = 0xFF;
@@ -5882,7 +5884,7 @@ END_CREATE_ROIS:
 					
 					if( dstf.data)
 					{
-						if( fIsSigned > 0 )
+						if( fIsSigned > 0)
 						{
 							vImageConvert_16SToF( &src16, &dstf, offset, slope, 0);
 						}
@@ -5892,7 +5894,7 @@ END_CREATE_ROIS:
 							vImageConvert_16UToF( &src16, &dstf, offset, slope, 0);
 						}
 						
-						if( inverseVal )
+						if( inverseVal)
 						{
 							float neg = -1;
 							vDSP_vsmul( fImage, 1, &neg, fImage, 1, height * width);
@@ -5904,11 +5906,11 @@ END_CREATE_ROIS:
 					oImage = nil;
 				}
 				
-				if( oData && gDisplayDICOMOverlays )
+				if( oData && gDisplayDICOMOverlays)
 				{
-					for( int y = 0; y < oRows; y++ )
+					for( int y = 0; y < oRows; y++)
 					{
-						for( int x = 0; x < oColumns; x++ )
+						for( int x = 0; x < oColumns; x++)
 						{
 							if( oData[ y * oColumns + x]) fImage[ y * width + x] = 0xFF;
 						}
@@ -5919,7 +5921,7 @@ END_CREATE_ROIS:
 			wl = 0;
 			ww = 0; //Computed later, only if needed
 			
-			if( savedWW != 0 )
+			if( savedWW != 0)
 			{
 				wl = savedWL;
 				ww = savedWW;
@@ -6020,7 +6022,7 @@ END_CREATE_ROIS:
 				if (gIsPapyFile[ fileNb] == DICOM10)
 					theErr = Papy3FSeek (gPapyFile [fileNb], SEEK_SET, 132L);
 				
-				if( theErr == 0 )
+				if( theErr == 0)
 				{
 					theErr = Papy3GotoGroupNb (fileNb, group);
 					
@@ -6069,7 +6071,7 @@ END_CREATE_ROIS:
 			[cachedGroupsForThisFile removeObjectForKey: @"fileNb"];
 			[cachedGroupsForThisFile removeObjectForKey: @"count"];
 				
-			for( NSValue *pointer in [cachedGroupsForThisFile allValues] )
+			for( NSValue *pointer in [cachedGroupsForThisFile allValues])
 			{
 				SElement *theGroupP = (SElement*) [pointer pointerValue];
 				Papy3GroupFree ( &theGroupP, TRUE);
@@ -6122,7 +6124,7 @@ END_CREATE_ROIS:
 			[cachedGroupsForThisFile removeObjectForKey: @"fileNb"];
 			[cachedGroupsForThisFile removeObjectForKey: @"count"];
 			
-			for( NSValue *pointer in [cachedGroupsForThisFile allValues] )
+			for( NSValue *pointer in [cachedGroupsForThisFile allValues])
 			{
 				SElement *theGroupP = (SElement*) [pointer pointerValue];
 				Papy3GroupFree ( &theGroupP, TRUE);
@@ -6154,10 +6156,10 @@ END_CREATE_ROIS:
 		sliceThickness = atof( val->a);
 	
 	val = Papy3GetElement (theGroupP, papSpacingBetweenSlicesGr, &nbVal, &elemType);
-	if ( val ) spacingBetweenSlices = atof( val->a);
+	if ( val) spacingBetweenSlices = atof( val->a);
 	
 	val = Papy3GetElement (theGroupP, papRepetitionTimeGr, &nbVal, &elemType);
-	if ( val )
+	if ( val)
 	{
 		[repetitiontime release];
 		repetitiontime = [[NSString stringWithFormat:@"%0.1f", atof( val->a)] retain];
@@ -6192,28 +6194,28 @@ END_CREATE_ROIS:
 	}
 	
 	val = Papy3GetElement (theGroupP, papViewPositionGr, &nbVal, &elemType);
-	if ( val )
+	if ( val)
 	{
 		[viewPosition release];
 		viewPosition = [[NSString stringWithCString:val->a] retain];
 	}
 	
 	val = Papy3GetElement (theGroupP, papPositionerPrimaryAngleGr, &nbVal, &elemType);
-	if ( val )
+	if ( val)
 	{
 		[positionerPrimaryAngle release];
 		positionerPrimaryAngle = [[NSNumber numberWithDouble: atof( val->a)] retain];
 	}
 	
 	val = Papy3GetElement (theGroupP, papPositionerSecondaryAngleGr, &nbVal, &elemType);
-	if ( val )
+	if ( val)
 	{
 		[positionerSecondaryAngle release];
 		positionerSecondaryAngle = [[NSNumber numberWithDouble: atof( val->a)] retain];
 	}
 	
 	val = Papy3GetElement (theGroupP, papPatientPositionGr, &nbVal, &elemType);
-	if ( val )
+	if ( val)
 	{
 		[patientPosition release];
 		patientPosition = [[NSString stringWithCString:val->a] retain];
@@ -6228,7 +6230,7 @@ END_CREATE_ROIS:
 		val = Papy3GetElement (theGroupP, papSequenceofUltrasoundRegionsGr, &nbVal, &elemType);
 		if ( val != NULL)
 		{
-			if( val->sq != NULL )
+			if( val->sq != NULL)
 			{
 				BOOL spacingFound = NO;
 				
@@ -6244,18 +6246,18 @@ END_CREATE_ROIS:
 							int physicalUnitsY = 0;
 							
 							val = Papy3GetElement (gr, papPhysicalUnitsXDirectionGr, &nbVal, &elemType);
-							if ( val ) physicalUnitsX = val->us;
+							if ( val) physicalUnitsX = val->us;
 							val = Papy3GetElement (gr, papPhysicalUnitsYDirectionGr, &nbVal, &elemType);
-							if ( val ) physicalUnitsY = val->us;
+							if ( val) physicalUnitsY = val->us;
 							
 							if( physicalUnitsX == 3 && physicalUnitsY == 3)	// We want only cm !
 							{
 								double xxx = 0, yyy = 0;
 								
 								val = Papy3GetElement (gr, papPhysicalDeltaXGr, &nbVal, &elemType);
-								if ( val ) xxx = val->fd;
+								if ( val) xxx = val->fd;
 								val = Papy3GetElement (gr, papPhysicalDeltaYGr, &nbVal, &elemType);
-								if ( val ) yyy = val->fd;
+								if ( val) yyy = val->fd;
 								
 								if( xxx && yyy)
 								{
@@ -6273,7 +6275,7 @@ END_CREATE_ROIS:
 	}
 	
 	val = Papy3GetElement (theGroupP, papImagerPixelSpacingGr, &nbVal, &elemType);
-	if ( val )
+	if ( val)
 	{
 		tmp = val;
 		pixelSpacingY = atof( tmp->a);
@@ -6288,7 +6290,7 @@ END_CREATE_ROIS:
 	if(!cineRate)
 	{
 		val = Papy3GetElement (theGroupP, papFrameDelayGr, &nbVal, &elemType);
-		if ( val )
+		if ( val)
 		{
 			if( atof( val->a) > 0)
 				cineRate = 1000./atof( val->a);
@@ -6298,7 +6300,7 @@ END_CREATE_ROIS:
 	if(!cineRate)
 	{
 		val = Papy3GetElement (theGroupP, papFrameTimeVectorGr, &nbVal, &elemType);
-		if ( val )
+		if ( val)
 		{
 			if( atof( val->a) > 0)
 				cineRate = 1000./atof( val->a);
@@ -6308,7 +6310,7 @@ END_CREATE_ROIS:
 	if( gUseShutter)
 	{
 		val = Papy3GetElement (theGroupP, papShutterShapeGr, &nbVal, &elemType);
-		if ( val )
+		if ( val)
 		{
 			PapyULong nbtmp;
 			
@@ -6379,7 +6381,7 @@ END_CREATE_ROIS:
 	int elemType;
 	
 	val = Papy3GetElement (theGroupP, papImagePositionPatientGr, &nbVal, &elemType);
-	if ( val )
+	if ( val)
 	{
 		tmp = val;
 		
@@ -6401,36 +6403,36 @@ END_CREATE_ROIS:
 	}
 	
 	val = Papy3GetElement (theGroupP, papImageOrientationPatientGr, &nbVal, &elemType);
-	if ( val )
+	if ( val)
 	{
 		tmpVal3 = val;
 		if( nbVal != 6)
 		{
 			NSLog(@"Orientation is NOT 6 !!!");
-			if( nbVal > 6 ) nbVal = 6;
+			if( nbVal > 6) nbVal = 6;
 		}
 		
-		for ( int j = 0; j < nbVal; j++ )
+		for ( int j = 0; j < nbVal; j++)
 		{
 			orientation[ j]  = atof( tmpVal3->a);
 			tmpVal3++;
 		}
 		
-		for ( int j = nbVal; j < 6; j++ )
+		for ( int j = nbVal; j < 6; j++)
 			orientation[ j] = 0;
 	}
 	
 	val = Papy3GetElement (theGroupP, papImageLateralityGr, &nbVal, &elemType);
-	if ( val )
+	if ( val)
 	{
 		[laterality release];
 		laterality = [[NSString stringWithCString:val->a] retain];
 	}
 	
-	if( laterality == nil )
+	if( laterality == nil)
 	{
 		val = Papy3GetElement (theGroupP, papLateralityGr, &nbVal, &elemType);
-		if ( val )
+		if ( val)
 		{
 			[laterality release];
 			laterality = [[NSString stringWithCString:val->a] retain];
@@ -6445,18 +6447,18 @@ END_CREATE_ROIS:
 	int elemType;
 
 	val3 = Papy3GetElement (theGroupP, papRescaleInterceptGr, &pos, &elemType);
-	if ( val3 )	{
+	if ( val3)	{
 		tmpVal3 = val3;
 		// get the last offset
-		for ( int j = 1; j < pos; j++ ) tmpVal3++;
+		for ( int j = 1; j < pos; j++) tmpVal3++;
 		offset =  atof( tmpVal3->a);
 	}
 	val3 = Papy3GetElement (theGroupP, papRescaleSlopeGr, &pos, &elemType);
-	if ( val3 )
+	if ( val3)
 	{
 		tmpVal3 = val3;
 		// get the last slope
-		for ( int j = 1; j < pos; j++ ) tmpVal3++;
+		for ( int j = 1; j < pos; j++) tmpVal3++;
 		slope = atof( tmpVal3->a);
 	}
 	
@@ -6473,7 +6475,7 @@ END_CREATE_ROIS:
 	
 	// ROWS
 	val = Papy3GetElement (theGroupP, papRowsGr, &nbVal, &elemType);
-	if ( val )
+	if ( val)
 	{
 		height = (int) (*val).us;
 		if( savedHeightInDB != 0 && savedHeightInDB != height)
@@ -6487,7 +6489,7 @@ END_CREATE_ROIS:
 	
 	// COLUMNS
 	val = Papy3GetElement (theGroupP, papColumnsGr, &nbVal, &elemType);
-	if ( val )
+	if ( val)
 	{
 		width = (int) (*val).us;
 		if( savedWidthInDB != 0 && savedWidthInDB != width)
@@ -6511,11 +6513,11 @@ END_CREATE_ROIS:
 	}
 	
 	val = Papy3GetElement (theGroupP, papWindowCenterGr, &nbVal, &elemType);
-	if ( val )
+	if ( val)
 		savedWL = atof( val->a);
 	
 	val = Papy3GetElement (theGroupP, papWindowWidthGr, &nbVal, &elemType);
-	if ( val )
+	if ( val)
 	{
 		savedWW = atof( val->a);
 		if(  savedWW < 0) savedWW =-savedWW;
@@ -6527,7 +6529,7 @@ END_CREATE_ROIS:
 		fPlanarConf = (int) val->us;
 	
 	val = Papy3GetElement (theGroupP, papPixelSpacingGr, &nbVal, &elemType);
-	if ( val )
+	if ( val)
 	{
 		tmp = val;
 		
@@ -6542,7 +6544,7 @@ END_CREATE_ROIS:
 	}
 	
 	val = Papy3GetElement (theGroupP, papPixelAspectRatioGr, &nbVal, &elemType);
-	if ( val )
+	if ( val)
 	{
 		float ratiox = 1, ratioy = 1;
 		
@@ -6601,7 +6603,7 @@ END_CREATE_ROIS:
 			// read the RED descriptor of the color lookup table
 			val = Papy3GetElement (theGroupP, papRedPaletteColorLookupTableDescriptorGr, &nbVal, &elemType);
 			tmp = val;
-			if ( val )
+			if ( val)
 			{
 				clutEntryR = tmp->us;
 				tmp++;tmp++;
@@ -6610,7 +6612,7 @@ END_CREATE_ROIS:
 			
 			// read the GREEN descriptor of the color lookup table
 			val = Papy3GetElement (theGroupP, papGreenPaletteColorLookupTableDescriptorGr, &nbVal, &elemType);
-			if ( val )
+			if ( val)
 			{
 				clutEntryG	= val->us;
 				tmp			= val + 2;
@@ -6619,7 +6621,7 @@ END_CREATE_ROIS:
 			
 			// read the BLUE descriptor of the color lookup table
 			val = Papy3GetElement (theGroupP, papBluePaletteColorLookupTableDescriptorGr, &nbVal, &elemType);
-			if ( val )
+			if ( val)
 			{
 				clutEntryB = val->us;
 				tmp     = val + 2;
@@ -6631,7 +6633,7 @@ END_CREATE_ROIS:
 			if( clutEntryB > 256) NSLog(@"B-Palette > 256");
 			
 			val = Papy3GetElement (theGroupP, papSegmentedRedPaletteColorLookupTableDataGr, &nbVal, &elemType);
-			if ( val )	// SEGMENTED PALETTE - 16 BIT !
+			if ( val)	// SEGMENTED PALETTE - 16 BIT !
 			{
 				if (clutDepthR == 16  && clutDepthG == 16  && clutDepthB == 16)
 				{
@@ -6647,7 +6649,7 @@ END_CREATE_ROIS:
 					
 					// extract the RED palette clut data
 					val = Papy3GetElement (theGroupP, papSegmentedRedPaletteColorLookupTableDataGr, &nbVal, &elemType);
-					if ( val )
+					if ( val)
 					{
 						unsigned short  *ptrs =  (unsigned short*) val->a;
 						nbVal = theGroupP[ papSegmentedRedPaletteColorLookupTableDataGr].length / 2;
@@ -6702,7 +6704,7 @@ END_CREATE_ROIS:
 					
 					// extract the GREEN palette clut data
 					val = Papy3GetElement (theGroupP, papSegmentedGreenPaletteColorLookupTableDataGr, &nbVal, &elemType);
-					if ( val )
+					if ( val)
 					{
 						unsigned short  *ptrs =  (unsigned short*) val->a;
 						nbVal = theGroupP[ papSegmentedGreenPaletteColorLookupTableDataGr].length / 2;
@@ -6756,7 +6758,7 @@ END_CREATE_ROIS:
 					
 					// extract the BLUE palette clut data
 					val = Papy3GetElement (theGroupP, papSegmentedBluePaletteColorLookupTableDataGr, &nbVal, &elemType);
-					if ( val )
+					if ( val)
 					{
 						unsigned short  *ptrs =  (unsigned short*) val->a;
 						nbVal = theGroupP[ papSegmentedBluePaletteColorLookupTableDataGr].length / 2;
@@ -6842,34 +6844,34 @@ END_CREATE_ROIS:
 				
 				// extract the RED palette clut data
 				val = Papy3GetElement (theGroupP, papRedPaletteCLUTDataGr, &nbVal, &elemType);
-				if ( val )
+				if ( val)
 				{
 					unsigned short  *ptrs =  (unsigned short*) val->a;
-					for ( int j = 0; j < clutEntryR; j++, ptrs++ ) clutRed [j] = (int) (*ptrs/256);
+					for ( int j = 0; j < clutEntryR; j++, ptrs++) clutRed [j] = (int) (*ptrs/256);
 					
 					found = YES; 	// this is used to let us know we have to look for the other element */
 				}//endif
 				
 				// extract the GREEN palette clut data
 				val = Papy3GetElement (theGroupP, papGreenPaletteCLUTDataGr, &nbVal, &elemType);
-				if ( val )
+				if ( val)
 				{
 					unsigned short  *ptrs = (unsigned short*) val->a;
-					for ( int j = 0; j < clutEntryG; j++, ptrs++ ) clutGreen [j] = (int) (*ptrs/256);
+					for ( int j = 0; j < clutEntryG; j++, ptrs++) clutGreen [j] = (int) (*ptrs/256);
 				}
 				// extract the BLUE palette clut data
 				val = Papy3GetElement (theGroupP, papBluePaletteCLUTDataGr, &nbVal, &elemType);
-				if ( val )
+				if ( val)
 				{
 					unsigned short  *ptrs =  (unsigned short*) val->a;
-					for ( int j = 0; j < clutEntryB; j++, ptrs++ ) clutBlue [j] = (int) (*ptrs/256);
+					for ( int j = 0; j < clutEntryB; j++, ptrs++) clutBlue [j] = (int) (*ptrs/256);
 				}
 			} // if ...the palette has 256 entries and thus we extract the clut datas
 			else if (clutDepthR == 8  && clutDepthG == 8  && clutDepthB == 8)
 			{
 				// extract the RED palette clut data
 				val = Papy3GetElement (theGroupP, papRedPaletteCLUTDataGr, &nbVal, &elemType);
-				if ( val )
+				if ( val)
 				{
 					unsigned short  *ptrs =  (unsigned short*) val->a;
 					for ( int j = 0; j < clutEntryR; j++, ptrs++) clutRed [j] = (int) (*ptrs);
@@ -6878,14 +6880,14 @@ END_CREATE_ROIS:
 				
 				// extract the GREEN palette clut data
 				val = Papy3GetElement (theGroupP, papGreenPaletteCLUTDataGr, &nbVal, &elemType);
-				if ( val )
+				if ( val)
 				{
 					unsigned short  *ptrs =  (unsigned short*) val->a;
 					for ( int j = 0; j < clutEntryG; j++, ptrs++) clutGreen [j] = (int) (*ptrs);
 				}
 				// extract the BLUE palette clut data
 				val = Papy3GetElement (theGroupP, papBluePaletteCLUTDataGr, &nbVal, &elemType);
-				if ( val )
+				if ( val)
 				{
 					unsigned short  *ptrs =  (unsigned short*) val->a;
 					for ( int j = 0; j < clutEntryB; j++, ptrs++) clutBlue [j] = (int) (*ptrs);
@@ -6906,22 +6908,22 @@ END_CREATE_ROIS:
 	
 	if( gUseVOILUT)
 	{
-		val = Papy3GetElement (theGroupP, papVOILUTSequenceGr, &pos, &elemType );
+		val = Papy3GetElement (theGroupP, papVOILUTSequenceGr, &pos, &elemType);
 		
 		// Loop over sequence
 		
 		if ( val != NULL)
 		{
-			if( val->sq != NULL )
+			if( val->sq != NULL)
 			{
 				Papy_List	*dcmList = val->sq->object->item;
 				if (dcmList != NULL)	// We use ONLY the first VOILut available
 				{
 					SElement *gr = (SElement *)dcmList->object->group;
-					if ( gr->group == 0x0028 )
+					if ( gr->group == 0x0028)
 					{
 						
-						val = Papy3GetElement (gr, papLUTDescriptorGr, &pos, &elemType );
+						val = Papy3GetElement (gr, papLUTDescriptorGr, &pos, &elemType);
 						if( val)
 						{
 							VOILUT_number = val->us;		val++;
@@ -6929,14 +6931,14 @@ END_CREATE_ROIS:
 							VOILUT_depth = val->us;			val++;
 						}
 						
-						val = Papy3GetElement (gr, papLUTDataGr, &pos, &elemType );
+						val = Papy3GetElement (gr, papLUTDataGr, &pos, &elemType);
 						if( val)
 						{
 							VOILUT_number = pos;
 							
 							if( VOILUT_table) free( VOILUT_table);
 							VOILUT_table = malloc( sizeof(unsigned int) * VOILUT_number);
-							for ( int j = 0; j < VOILUT_number; j++ )
+							for ( int j = 0; j < VOILUT_number; j++)
 							{
 								VOILUT_table [j] = (unsigned int) val->us;			val++;
 							}
@@ -7008,13 +7010,13 @@ END_CREATE_ROIS:
 			slope = 1.0;
 			
 			theGroupP = (SElement*) [self getPapyGroup: 0x0008];
-			if( theGroupP )
+			if( theGroupP)
 			{
-				val = Papy3GetElement (theGroupP, papRecommendedDisplayFrameRateGr, &nbVal, &elemType );
-				if ( val ) cineRate = atof( val->a);	//[[NSString stringWithFormat:@"%0.1f", ] floatValue];
+				val = Papy3GetElement (theGroupP, papRecommendedDisplayFrameRateGr, &nbVal, &elemType);
+				if ( val) cineRate = atof( val->a);	//[[NSString stringWithFormat:@"%0.1f", ] floatValue];
 				
-				val = Papy3GetElement (theGroupP, papAcquisitionTimeGr, &nbVal, &elemType );
-				if( val )
+				val = Papy3GetElement (theGroupP, papAcquisitionTimeGr, &nbVal, &elemType);
+				if( val)
 				{
 					NSString		*cc = [[NSString alloc] initWithCString:val->a encoding: NSASCIIStringEncoding];
 					NSCalendarDate	*cd = [[NSCalendarDate alloc] initWithString:cc calendarFormat:@"%H%M%S"];
@@ -7029,8 +7031,8 @@ END_CREATE_ROIS:
 				}
 				else
 				{
-					val = Papy3GetElement (theGroupP, papSeriesTimeGr, &nbVal, &elemType );
-					if( val )
+					val = Papy3GetElement (theGroupP, papSeriesTimeGr, &nbVal, &elemType);
+					if( val)
 					{
 						NSString		*cc = [[NSString alloc] initWithCString:val->a encoding: NSASCIIStringEncoding];
 						NSCalendarDate	*cd = [[NSCalendarDate alloc] initWithString:cc calendarFormat:@"%H%M%S"];
@@ -7050,10 +7052,10 @@ END_CREATE_ROIS:
 			}
 			
 			theGroupP = (SElement*) [self getPapyGroup: 0x0010];
-			if( theGroupP )
+			if( theGroupP)
 			{
 				val = Papy3GetElement (theGroupP, papPatientsWeightGr, &nbVal, &elemType);
-				if ( val ) patientsWeight = atof( val->a);
+				if ( val) patientsWeight = atof( val->a);
 				else patientsWeight = 0;
 			}
 			
@@ -7066,7 +7068,7 @@ END_CREATE_ROIS:
 				[self papyLoadGroup0x0020: theGroupP];
 			
 			theGroupP = (SElement*) [self getPapyGroup: 0x0028];
-			if( theGroupP ) // This group is MANDATORY...
+			if( theGroupP) // This group is MANDATORY...
 			{
 				[self papyLoadGroup0x0028: theGroupP];
 				
@@ -7074,32 +7076,32 @@ END_CREATE_ROIS:
 				
 				// Get values needed for SUV calcs:
 				theGroupP = (SElement*) [self getPapyGroup: 0x0054];
-				if( theGroupP )
+				if( theGroupP)
 				{
-					val = Papy3GetElement (theGroupP, papUnitsGr, &pos, &elemType );
-					if( val ) units = [[NSString stringWithCString:val->a] retain];
+					val = Papy3GetElement (theGroupP, papUnitsGr, &pos, &elemType);
+					if( val) units = [[NSString stringWithCString:val->a] retain];
 					else units = nil;
 					
-					val = Papy3GetElement (theGroupP, papDecayCorrectionGr, &pos, &elemType );
-					if( val ) decayCorrection = [[NSString stringWithCString:val->a] retain];
+					val = Papy3GetElement (theGroupP, papDecayCorrectionGr, &pos, &elemType);
+					if( val) decayCorrection = [[NSString stringWithCString:val->a] retain];
 					else decayCorrection = nil;
 					
-	//				val = Papy3GetElement (theGroupP, papDecayFactorGr, &pos, &elemType );
-	//				if( val ) decayFactor = atof( val->a);
+	//				val = Papy3GetElement (theGroupP, papDecayFactorGr, &pos, &elemType);
+	//				if( val) decayFactor = atof( val->a);
 	//				else decayFactor = 1.0;
 					decayFactor = 1.0;
 					
-					val = Papy3GetElement (theGroupP, papFrameReferenceTimeGr, &pos, &elemType );
-					if( val ) frameReferenceTime = atof( val->a);
+					val = Papy3GetElement (theGroupP, papFrameReferenceTimeGr, &pos, &elemType);
+					if( val) frameReferenceTime = atof( val->a);
 					else frameReferenceTime = 0.0;
 					
-					val = Papy3GetElement (theGroupP, papRadiopharmaceuticalInformationSequenceGr, &pos, &elemType );
+					val = Papy3GetElement (theGroupP, papRadiopharmaceuticalInformationSequenceGr, &pos, &elemType);
 					
 					// Loop over sequence to find injected dose
 					
-					if ( val )
+					if ( val)
 					{
-						if( val->sq )
+						if( val->sq)
 						{
 							Papy_List	*dcmList = val->sq;
 							while (dcmList != NULL)
@@ -7107,13 +7109,13 @@ END_CREATE_ROIS:
 								if( dcmList->object->item)
 								{
 									SElement *gr = (SElement *)dcmList->object->item->object->group;
-									if ( gr->group == 0x0018 )
+									if ( gr->group == 0x0018)
 									{
-										val = Papy3GetElement (gr, papRadionuclideTotalDoseGr, &pos, &elemType );
+										val = Papy3GetElement (gr, papRadionuclideTotalDoseGr, &pos, &elemType);
 										radionuclideTotalDose = val? atof( val->a) : 0.0;
 										
-										val = Papy3GetElement (gr, papRadiopharmaceuticalStartTimeGr, &pos, &elemType );
-										if( val )
+										val = Papy3GetElement (gr, papRadiopharmaceuticalStartTimeGr, &pos, &elemType);
+										if( val)
 										{
 											NSString		*cc = [[NSString alloc] initWithCString:val->a encoding: NSASCIIStringEncoding];
 											NSCalendarDate	*cd = [[NSCalendarDate alloc] initWithString:cc calendarFormat:@"%H%M%S"];
@@ -7125,7 +7127,7 @@ END_CREATE_ROIS:
 											[cc release];
 										}
 										
-										val = Papy3GetElement (gr, papRadionuclideHalfLifeGr, &pos, &elemType );
+										val = Papy3GetElement (gr, papRadionuclideHalfLifeGr, &pos, &elemType);
 										halflife = val? atof( val->a) : 0.0;
 										break;
 									}
@@ -7139,11 +7141,11 @@ END_CREATE_ROIS:
 						// End of SUV required values
 					}
 					
-					val = Papy3GetElement (theGroupP, papDetectorInformationSequenceGr, &pos, &elemType );
+					val = Papy3GetElement (theGroupP, papDetectorInformationSequenceGr, &pos, &elemType);
 					
-					if ( val )
+					if ( val)
 					{
-						if( val->sq )
+						if( val->sq)
 						{
 							Papy_List *dcmList = val->sq->object->item;
 							while (dcmList != NULL)
@@ -7152,10 +7154,10 @@ END_CREATE_ROIS:
 									
 								if( gr)
 								{
-									if( gr->group == 0x0020 )
+									if( gr->group == 0x0020)
 									{
 										val = Papy3GetElement (gr, papImagePositionPatientGr, &nbVal, &elemType);
-										if ( val )
+										if ( val)
 										{
 											tmp = val;
 											
@@ -7187,13 +7189,13 @@ END_CREATE_ROIS:
 											if( nbVal != 6)
 											{
 												NSLog(@"Orientation is NOT 6 !!!");
-												if( nbVal > 6 ) nbVal = 6;
+												if( nbVal > 6) nbVal = 6;
 											}
 											
 											BOOL equalZero = YES;
 											
 											tmpVal3 = val;
-											for ( int j = 0; j < nbVal; j++ )
+											for ( int j = 0; j < nbVal; j++)
 											{
 												if( atof( tmpVal3->a) != 0) equalZero = NO;
 												tmpVal3++;
@@ -7205,7 +7207,7 @@ END_CREATE_ROIS:
 												orientation[ 3] = 0;	orientation[ 4] = 0;	orientation[ 5] = 0;
 												
 												tmpVal3 = val;
-												for ( int j = 0; j < nbVal; j++ )
+												for ( int j = 0; j < nbVal; j++)
 												{
 													orientation[ j]  = atof( tmpVal3->a);
 													tmpVal3++;
@@ -7217,7 +7219,7 @@ END_CREATE_ROIS:
 											else // doesnt the root Image Orientation contains valid data? if not use the normal vector
 											{
 												equalZero = YES;
-												for ( int j = 0; j < 6; j++ )
+												for ( int j = 0; j < 6; j++)
 												{
 													if( orientation[ j] != 0) equalZero = NO;
 												}
@@ -7248,7 +7250,7 @@ END_CREATE_ROIS:
 				// Is it a new MR/CT multi-frame exam?
 				
 				SElement *groupOverlay = (SElement*) [self getPapyGroup: 0x5200];
-				if( groupOverlay )
+				if( groupOverlay)
 				{
 					// ****** ****** ****** ************************************************************************
 					// SHARED FRAME
@@ -7257,10 +7259,10 @@ END_CREATE_ROIS:
 					val = Papy3GetElement (groupOverlay, papSharedFunctionalGroupsSequence, &nbVal, &elemType);
 					
 					// there is an element
-					if ( val )
+					if ( val)
 					{
 						// there is a sequence
-						if (val->sq )
+						if (val->sq)
 						{
 							// get a pointer to the first element of the list
 							Papy_List *dcmList = val->sq->object->item;
@@ -7276,7 +7278,7 @@ END_CREATE_ROIS:
 										val3 = Papy3GetElement (gr, papMRTimingAndRelatedParametersSequence, &nbVal, &elemType);
 										if (val3 != NULL && nbVal >= 1)
 										{
-											if (val3->sq )
+											if (val3->sq)
 											{
 												Papy_List *PixelMatrixSeq = val3->sq->object->item;
 												
@@ -7299,7 +7301,7 @@ END_CREATE_ROIS:
 										if (val3 != NULL && nbVal >= 1)
 										{
 											// there is a sequence
-											if (val3->sq )
+											if (val3->sq)
 											{
 												Papy_List *PixelMatrixSeq = val3->sq->object->item;
 												
@@ -7390,7 +7392,7 @@ END_CREATE_ROIS:
 					val = Papy3GetElement (groupOverlay, papPerFrameFunctionalGroupsSequence, &nbVal, &elemType);
 					
 					// there is an element
-					if ( val )
+					if ( val)
 					{
 						// there is a sequence
 						if (val->sq)
@@ -7403,7 +7405,7 @@ END_CREATE_ROIS:
 							{
 								if( dcmList->object->item)
 								{
-									if( frameCount == imageNb-1 )
+									if( frameCount == imageNb-1)
 									{
 										Papy_List *groupsForFrame = dcmList->object->item;
 										
@@ -7537,7 +7539,7 @@ END_CREATE_ROIS:
 									} // right frame?
 								}
 								
-								if( dcmList )
+								if( dcmList)
 								{
 									// get the next element of the list
 									dcmList = dcmList->next;
@@ -7555,19 +7557,19 @@ END_CREATE_ROIS:
 				if( theGroupP)
 				{
 					val = Papy3GetElement (theGroupP, papOverlayRows6000Gr, &nbVal, &elemType);
-					if ( val ) oRows	= val->us;
+					if ( val) oRows	= val->us;
 					
 					val = Papy3GetElement (theGroupP, papOverlayColumns6000Gr, &nbVal, &elemType);
-					if ( val ) oColumns	= val->us;
+					if ( val) oColumns	= val->us;
 					
 					//			val = Papy3GetElement (theGroupP, papNumberofFramesinOverlayGr, &nbVal, &elemType);
-					//			if ( val ) oRows	= val->us;
+					//			if ( val) oRows	= val->us;
 					
 					val = Papy3GetElement (theGroupP, papOverlayTypeGr, &nbVal, &elemType);
-					if ( val ) oType	= val->a[ 0];
+					if ( val) oType	= val->a[ 0];
 					
 					val = Papy3GetElement (theGroupP, papOriginGr, &nbVal, &elemType);
-					if ( val )
+					if ( val)
 					{
 						oOrigin[ 0]	= val->us;
 						val++;
@@ -7575,10 +7577,10 @@ END_CREATE_ROIS:
 					}
 					
 					val = Papy3GetElement (theGroupP, papOverlayBitsAllocatedGr, &nbVal, &elemType);
-					if ( val ) oBits	= val->us;
+					if ( val) oBits	= val->us;
 					
 					val = Papy3GetElement (theGroupP, papBitPositionGr, &nbVal, &elemType);
-					if ( val ) oBitPosition	= val->us;
+					if ( val) oBitPosition	= val->us;
 					
 					val = Papy3GetElement (theGroupP, papOverlayDataGr, &nbVal, &elemType);
 					if (val != NULL && oBits == 1 && oRows == height && oColumns == width && oType == 'G' && oBitPosition == 0 && oOrigin[ 0] == 1 && oOrigin[ 1] == 1)
@@ -8586,7 +8588,7 @@ END_CREATE_ROIS:
 					if( (NIfTI->magic[0] == 'n')                           &&
 					   (NIfTI->magic[1] == 'i' || NIfTI->magic[1] == '+')   &&
 					   (NIfTI->magic[2] == '1')                           &&
-					   (NIfTI->magic[3] == '\0') )
+					   (NIfTI->magic[3] == '\0'))
 					{
 						width = NIfTI->dim[ 1];
 						height = NIfTI->dim[ 2];
@@ -8608,7 +8610,7 @@ END_CREATE_ROIS:
 						if( (NIfTI->magic[0] == 'n')    &&
 						   (NIfTI->magic[1] == 'i')	&&
 						   (NIfTI->magic[2] == '1')    &&
-						   (NIfTI->magic[3] == '\0') )
+						   (NIfTI->magic[3] == '\0'))
 						{
 							// This is a "two file" nifti file.  Image file is separated from header.
 							fileData = [[NSData alloc] initWithContentsOfFile: [[srcFile stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"]];
@@ -9128,7 +9130,7 @@ END_CREATE_ROIS:
 				{
 #ifndef STATIC_DICOM_LIB
 					TIFF* tif = TIFFOpen([srcFile UTF8String], "r");
-					if( tif )
+					if( tif)
 					{
 						short   bpp, count, tifspp;
 						
@@ -9151,7 +9153,7 @@ END_CREATE_ROIS:
 					}
 #endif
 					
-					if( USECUSTOMTIFF == NO )
+					if( USECUSTOMTIFF == NO)
 					{
 						otherImage = [[NSImage alloc] initWithContentsOfFile:srcFile];
 					}
@@ -9167,7 +9169,7 @@ END_CREATE_ROIS:
 				{
 					[otherImage setBackgroundColor: [NSColor whiteColor]];
 					
-					if( [extension isEqualToString:@"pdf"] )
+					if( [extension isEqualToString:@"pdf"])
 					{
 						NSSize			newSize = [otherImage size];
 						
@@ -9179,7 +9181,7 @@ END_CREATE_ROIS:
 						
 						id tempID = [otherImage bestRepresentationForDevice:nil];
 						
-						if( [tempID isKindOfClass: [NSPDFImageRep class]] )
+						if( [tempID isKindOfClass: [NSPDFImageRep class]])
 						{
 							NSPDFImageRep *pdfRepresentation = tempID;
 							
@@ -9205,7 +9207,7 @@ END_CREATE_ROIS:
 					movie = [[NSMovie alloc] initWithURL:[NSURL fileURLWithPath:srcFile] byReference:NO];
 				}
 				
-				if( movie )
+				if( movie)
 				{
 					Movie			mov = [movie QTMovie];
 					TimeValue		aTime = 0;
@@ -9265,7 +9267,7 @@ END_CREATE_ROIS:
 					
 					totSize = height * width * 4;
 					
-					if ( fExternalOwnedImage )
+					if ( fExternalOwnedImage)
 					{
 						argbImage =	(unsigned char*) fExternalOwnedImage;
 					}
@@ -9275,7 +9277,7 @@ END_CREATE_ROIS:
 					}
 					
 					tmpPtr = argbImage;
-					for( long y = 0 ; y < height; y++ )
+					for( long y = 0 ; y < height; y++)
 					{
 						srcPtr = srcImage + y*GetPixRowBytes(pixMapHandle);
 						memcpy( tmpPtr, srcPtr, width*4);
@@ -9301,11 +9303,11 @@ END_CREATE_ROIS:
 #endif
 		}
 		
-		if( fImage == nil )
+		if( fImage == nil)
 		{
 			NSLog(@"not able to load the image : %@", srcFile);
 			
-			if( fExternalOwnedImage )
+			if( fExternalOwnedImage)
 				fImage = fExternalOwnedImage;
 			else
 				fImage = malloc( 128 * 128 * 4);
@@ -9325,7 +9327,7 @@ END_CREATE_ROIS:
 			unsigned char*	argbPtr = (unsigned char*) fImage;
 			long			ss = width * height;
 			
-			while( ss-->0 )	{
+			while( ss-->0)	{
 				*argbPtr = (*(argbPtr+1) + *(argbPtr+2) + *(argbPtr+3)) / 3;
 				argbPtr+=4;
 			}
@@ -9384,7 +9386,7 @@ END_CREATE_ROIS:
 - (unsigned char*)LUT12baseAddr;
 {
     [self CheckLoad];
-	if( LUT12baseAddr == nil )
+	if( LUT12baseAddr == nil)
 		[self allocate8bitRepresentation];
     return LUT12baseAddr;
 }
@@ -9552,7 +9554,7 @@ END_CREATE_ROIS:
 	}
 	else
 	{
-		if( yFlipped )
+		if( yFlipped)
 		{
 			xRot *= -1;
 			yRot *= -1;
@@ -9562,7 +9564,7 @@ END_CREATE_ROIS:
 			o[ 5] *= -1;
 		}
 		
-		if( xFlipped )
+		if( xFlipped)
 		{
 			xRot *= -1;
 			yRot *= -1;
@@ -9595,7 +9597,7 @@ END_CREATE_ROIS:
 	o[7] = o[2]*o[3] - o[0]*o[5];
 	o[8] = o[0]*o[4] - o[1]*o[3];
 
-	memcpy( correctedOrientation, o, sizeof o );
+	memcpy( correctedOrientation, o, sizeof o);
 	#endif
 }
 
@@ -9744,7 +9746,7 @@ END_CREATE_ROIS:
 		dst.rowBytes = dst.width*4;
 		dst.data = malloc( dst.height * dst.rowBytes);
 		if( dst.data)
-			vImageScale_PlanarF( &src, &dst, nil, kvImageHighQualityResampling );
+			vImageScale_PlanarF( &src, &dst, nil, kvImageHighQualityResampling);
 		
 		// Rotation
 		if( src.data != [self fImage]) free( src.data);
@@ -10051,15 +10053,15 @@ END_CREATE_ROIS:
 	
 	float minDist = MAXFLOAT;
 	
-	for ( unsigned int i = 0; i < count; i++ )
+	for ( unsigned int i = 0; i < count; i++)
 	{
 		float sliceCoords[ 3 ];
 		DCMPix *pix = [pixList objectAtIndex: i];
 		[pix convertDICOMCoords: dicomCoords toSliceCoords: sliceCoords];
-		if ( fabs( sliceCoords[ 2 ] ) < minDist )
+		if ( fabs( sliceCoords[ 2 ]) < minDist)
 		{
-			minDist = fabs( sliceCoords[ 2 ] );
-			memcpy( nearestSliceCoords, sliceCoords, sizeof sliceCoords );
+			minDist = fabs( sliceCoords[ 2 ]);
+			memcpy( nearestSliceCoords, sliceCoords, sizeof sliceCoords);
 			nearestSliceIndx = i;
 		}
 	}
@@ -10076,7 +10078,7 @@ END_CREATE_ROIS:
 	
 	[checking lock];
 	
-	if( isRGB )
+	if( isRGB)
 	{
 		pixmax = 255;
 		pixmin = 0;
@@ -10103,7 +10105,7 @@ END_CREATE_ROIS:
 	[checking unlock];
 }
 
-- (short)stack{ if( stackMode == 0 ) return 1; return stack; }
+- (short)stack{ if( stackMode == 0) return 1; return stack; }
 
 - (void)setFusion: (short)m : (short)s : (short)direction
 {
@@ -10234,12 +10236,12 @@ END_CREATE_ROIS:
 	
 	free( dst8.data);
 	
-	if( isRGB )
+	if( isRGB)
 	{
 		unsigned char*	argbPtr = (unsigned char*) fImage;
 		long			ss = width * height;
 		
-		while( ss-->0 )
+		while( ss-->0)
 		{
 			*argbPtr = (*(argbPtr+1) + *(argbPtr+2) + *(argbPtr+3)) / 3;
 			argbPtr+=4;
@@ -10271,7 +10273,7 @@ END_CREATE_ROIS:
 	
 	if( (stackMode == 1 || stackMode == 2 || stackMode == 3) && stack >= 1)
 	{
-		if( isRGB == NO )
+		if( isRGB == NO)
 		{
 			float   *fNext = nil;
 			long	countstack = 0;
@@ -10279,16 +10281,16 @@ END_CREATE_ROIS:
 			val = fImage[ x + (y * width)];
 			countstack++;
 			
-			for( long i = 1; i < stack; i++ )
+			for( long i = 1; i < stack; i++)
 			{
 				long next;
 				if( stackDirection) next = pixPos-i;
 				else next = pixPos+i;
 				
-				if( next < pixArray.count && next >= 0 )
+				if( next < pixArray.count && next >= 0)
 				{
 					fNext = [[pixArray objectAtIndex: next] fImage];
-					if( fNext )
+					if( fNext)
 					{
 						switch( stackMode)
 						{
@@ -10331,7 +10333,7 @@ END_CREATE_ROIS:
 	if( subPixOffset.x == 0 && subPixOffset.y == 0)
 	{
 #if __ppc__ || __ppc64__
-		if( Altivec ) vmultiply( (vector float *)input, (vector float *)subfImage, (vector float *)result, i);
+		if( Altivec) vmultiply( (vector float *)input, (vector float *)subfImage, (vector float *)result, i);
 		else
 #endif
 			vmultiplyNoAltivec(input, subfImage, result, i);
@@ -10394,7 +10396,7 @@ END_CREATE_ROIS:
 	if( subPixOffset.x == 0 && subPixOffset.y == 0)
 	{
 #if __ppc__ || __ppc64__
-		if( Altivec )
+		if( Altivec)
 		{
 			if (abs)
 				vsubtractAbs( (vector float *)input, (vector float *)subfImage, (vector float *)result, i);
@@ -10426,13 +10428,13 @@ END_CREATE_ROIS:
 		
 		if( abs)
 		{
-			for( long y = startheight; y < subheight; y++ )
+			for( long y = startheight; y < subheight; y++)
  			{
 				tempResult = result + y*width;
 				tempIn = input + y*width;
 				tempOut = subfImage + (y-offsetY)*width - offsetX;
 				long x = subwidth - startwidth;
-				while ( x-- > 0 )
+				while ( x-- > 0)
 				{
 					*tempResult++ = fabsf(*tempIn++ - *tempOut++);
 				}
@@ -10440,13 +10442,13 @@ END_CREATE_ROIS:
 		}
 		else
 		{
-			for( long y = startheight; y < subheight; y++ )
+			for( long y = startheight; y < subheight; y++)
 			{
 				tempResult = result + y*width;
 				tempIn = input + y*width;
 				tempOut = subfImage + (y-offsetY)*width - offsetX;
 				long x = subwidth - startwidth;
-				while ( x-- > 0 )
+				while ( x-- > 0)
 				{
 					*tempResult++ = *tempIn++ - *tempOut++;
 				}
@@ -10468,7 +10470,7 @@ END_CREATE_ROIS:
 	
 	if( subGammaFunction) vImageDestroyGammaFunction( subGammaFunction);
 	
-	subGammaFunction = vImageCreateGammaFunction( subtractedfGamma, kvImageGamma_UseGammaValue_half_precision, 0 );	
+	subGammaFunction = vImageCreateGammaFunction( subtractedfGamma, kvImageGamma_UseGammaValue_half_precision, 0);	
 	
 	updateToBeApplied = YES;
 }
@@ -10744,7 +10746,7 @@ END_CREATE_ROIS:
 {
 	long			diff;
 	float			*fNext = NULL;
-	float			*fResult = malloc( height * width * sizeof(float) );
+	float			*fResult = malloc( height * width * sizeof(float));
 	long			next;
 	float			min, max, iwl, iww;
 	
@@ -10775,13 +10777,13 @@ END_CREATE_ROIS:
 			if( stackDirection) next = pixPos-1;
 			else next = pixPos+1;
 			
-			if( next < pixArray.count  && next >= 0 )
+			if( next < pixArray.count  && next >= 0)
 			{
 				fNext = [[pixArray objectAtIndex: next] fImage];
-				if( fNext )
+				if( fNext)
 				{
 #if __ppc__ || __ppc64__
-					if( Altivec )
+					if( Altivec)
 					{
 						if( stackMode == 2) vmax8( (vector unsigned char*)fNext, (vector unsigned char*)fImage, (vector unsigned char*)fResult, height * width);
 						else vmin8( (vector unsigned char*)fNext, (vector unsigned char*)fImage, (vector unsigned char*)fResult, height * width);
@@ -10789,30 +10791,30 @@ END_CREATE_ROIS:
 					else NSLog( @"Altivec is REQUIRED");
 #else
 				{
-					if( stackMode == 2) vmax8Intel( (vUInt8*) fNext, (vUInt8*) fImage, (vUInt8*) fResult, height * width );
-					else vmin8Intel( (vUInt8*) fNext, (vUInt8*) fImage, (vUInt8*) fResult, height * width );
+					if( stackMode == 2) vmax8Intel( (vUInt8*) fNext, (vUInt8*) fImage, (vUInt8*) fResult, height * width);
+					else vmin8Intel( (vUInt8*) fNext, (vUInt8*) fImage, (vUInt8*) fResult, height * width);
 				}
 #endif
 				}
 				
-				for( long i = 2; i < stack; i++ )
+				for( long i = 2; i < stack; i++)
 				{
 					long res;
 					if( stackDirection) res = pixPos-i;
 					else res = pixPos+i;
 					
-					if( res < pixArray.count )
+					if( res < pixArray.count)
 					{
 						long res;
 						if( stackDirection) res = pixPos-i;
 						else res = pixPos+i;
 						
-						if( res < pixArray.count && res >= 0 )
+						if( res < pixArray.count && res >= 0)
 						{
 							fNext = [[pixArray objectAtIndex: res] fImage];
-							if( fNext )	{
+							if( fNext)	{
 #if __ppc__ || __ppc64__
-								if( Altivec )
+								if( Altivec)
 								{
 									if( stackMode == 2) vmax8( (vector unsigned char*)fResult, (vector unsigned char*)fNext, (vector unsigned char*)fResult, height * width);
 									else vmin8( (vector unsigned char*)fResult, (vector unsigned char*)fNext, (vector unsigned char*)fResult, height * width);
@@ -10820,8 +10822,8 @@ END_CREATE_ROIS:
 								else NSLog( @"Altivec is REQUIRED");
 #else
 							{
-								if( stackMode == 2) vmax8Intel( (vUInt8*) fResult, (vUInt8*) fNext, (vUInt8*) fResult, height * width );
-								else vmin8Intel( (vUInt8*) fResult, (vUInt8*) fNext, (vUInt8*) fResult, height * width );
+								if( stackMode == 2) vmax8Intel( (vUInt8*) fResult, (vUInt8*) fNext, (vUInt8*) fResult, height * width);
+								else vmin8Intel( (vUInt8*) fResult, (vUInt8*) fNext, (vUInt8*) fResult, height * width);
 							}
 #endif
 							}
@@ -10831,7 +10833,7 @@ END_CREATE_ROIS:
 			}
 			else
 			{
-				memcpy( fResult, fImage, height * width * sizeof(float) );
+				memcpy( fResult, fImage, height * width * sizeof(float));
 			}
 			break;			
 	} //end of switch
@@ -10847,7 +10849,7 @@ END_CREATE_ROIS:
 	float			min, max, iwl, iww;
 	float			*fResult = nil;
 	
-	if( fixed8bitsWLWW )
+	if( fixed8bitsWLWW)
 	{
 		iww = 256;
 		iwl = 127;
@@ -10861,14 +10863,14 @@ END_CREATE_ROIS:
 	min = iwl - iww / 2; 
 	max = iwl + iww / 2;
 	
-	switch( stackMode )
+	switch( stackMode)
 	{
 		case 4:		// Volume Rendering
 			flip = YES;
 		case 5:		// Volume Rendering
-			if( thickSlab )
+			if( thickSlab)
 			{											
-				if( stackDirection )
+				if( stackDirection)
 				{
 					if( pixPos-stack < 0) stacksize = pixPos+1; 
 					else stacksize = stack+1;
@@ -10900,14 +10902,14 @@ END_CREATE_ROIS:
 			fResult = malloc( height * width * sizeof(float));
 			memcpy( fResult, fImage, height * width * sizeof(float));
 			
-			if( processorsLock == nil )
+			if( processorsLock == nil)
 				processorsLock = [[NSConditionLock alloc] init];
 			
 			if( minmaxThreads == nil)
 			{
 				minmaxThreads = [[NSMutableArray array] retain];
 				
-				for( int i = 0; i < MPProcessors(); i++ )
+				for( int i = 0; i < MPProcessors(); i++)
 				{
 					[minmaxThreads addObject: [[NSMutableDictionary dictionaryWithObjectsAndKeys: [[NSConditionLock alloc] initWithCondition: 0], @"threadLock", nil] retain]];
 					
@@ -10922,7 +10924,7 @@ END_CREATE_ROIS:
 			[processorsLock lock];
 			[processorsLock unlockWithCondition: numberOfThreadsForCompute];
 			
-			for( int i = 0; i < numberOfThreadsForCompute; i++ )
+			for( int i = 0; i < numberOfThreadsForCompute; i++)
 			{
 				NSMutableDictionary *d = [minmaxThreads objectAtIndex: i];
 				
@@ -10937,7 +10939,7 @@ END_CREATE_ROIS:
 			[processorsLock lockWhenCondition: 0];
 			[processorsLock unlock];
 			
-			if( countstackMean > 1 )
+			if( countstackMean > 1)
 			{
 				float   invCount = 1.0f / countstackMean;
 				
@@ -10986,7 +10988,7 @@ END_CREATE_ROIS:
 {
 	float			iwl, iww;
 	
-	if( fixed8bitsWLWW )
+	if( fixed8bitsWLWW)
 	{
 		iww = 256;
 		iwl = 127;
@@ -11024,7 +11026,7 @@ END_CREATE_ROIS:
 			
 			// CONVERSION TO 8-BIT for displaying
 			
-			if( thickSlabVRActivated == NO )
+			if( thickSlabVRActivated == NO)
 			{
 				dst8.height = height;
 				dst8.width = width;
@@ -11062,14 +11064,14 @@ END_CREATE_ROIS:
 					}
 					else
 					{
-						if( processorsLock == nil )
+						if( processorsLock == nil)
 							processorsLock = [[NSConditionLock alloc] init];
 						
 						if( nonLinearWLWWThreads == nil)
 						{
 							nonLinearWLWWThreads = [[NSMutableArray array] retain];
 							
-							for( int i = 0; i < MPProcessors(); i++ )
+							for( int i = 0; i < MPProcessors(); i++)
 							{
 								[nonLinearWLWWThreads addObject: [NSMutableDictionary dictionaryWithObjectsAndKeys: [[[NSConditionLock alloc] initWithCondition: 0] autorelease], @"threadLock", nil]];
 								[NSThread detachNewThreadSelector: @selector( applyNonLinearWLWWThread:) toTarget:[[PixThread alloc] init] withObject: [nonLinearWLWWThreads lastObject]];
@@ -11086,7 +11088,7 @@ END_CREATE_ROIS:
 						[processorsLock lock];
 						[processorsLock unlockWithCondition: numberOfThreadsForCompute];
 						
-						for( int i = 0; i < numberOfThreadsForCompute; i++ )
+						for( int i = 0; i < numberOfThreadsForCompute; i++)
 						{
 							start = i * (int) (height / numberOfThreadsForCompute);
 							end = (i+1) * (int) (height / numberOfThreadsForCompute);
@@ -11127,7 +11129,7 @@ END_CREATE_ROIS:
 		// ***** SOURCE IMAGE IS RGBA
 		// ***** ***** ***** ***** *****
 		
-		if( isRGB )
+		if( isRGB)
 		{
 			vImage_Buffer   src, dst;
 			Pixel_8			convTable[256];
@@ -11146,7 +11148,7 @@ END_CREATE_ROIS:
 			
 			if( transferFunctionPtr == nil)	// LINEAR
 			{
-				for( long i = 0; i < 256; i++ )
+				for( long i = 0; i < 256; i++)
 				{
 					val = (((i-min) * 255L) / diff);
 					if( val < 0) val = 0;
@@ -11156,7 +11158,7 @@ END_CREATE_ROIS:
 			}
 			else
 			{
-				for( long i = 0; i < 256; i++ )
+				for( long i = 0; i < 256; i++)
 				{
 					val = (((i-min) * 255L) / diff);
 					if( val < 0) val = 0;
@@ -11189,7 +11191,7 @@ END_CREATE_ROIS:
 
 - (void) changeWLWW:(float)newWL :(float)newWW
 {
-	if( baseAddr == nil )
+	if( baseAddr == nil)
 	{
 		[self checkImageAvailble:newWW :newWL];
 		return;
@@ -11199,11 +11201,11 @@ END_CREATE_ROIS:
 	
 	if( newWW !=0 || newWL != 0)   // new values to be applied
 	{
-		if( fullww > 256 )
+		if( fullww > 256)
 		{
 			if( newWW < 1) newWW = 2;
 			
-			if( newWL - newWW/2 == 0 )
+			if( newWL - newWW/2 == 0)
 			{
 				//				newWW = (int) newWW;
 				//				newWL = (int) newWL;
@@ -11274,7 +11276,7 @@ END_CREATE_ROIS:
     
 	NSBitmapImageRep *bitmapRep = nil;
 	
-	if( isRGB )
+	if( isRGB)
 	{
 		bitmapRep = [[[NSBitmapImageRep alloc] 
 					 initWithBitmapDataPlanes: nil
@@ -11305,11 +11307,11 @@ END_CREATE_ROIS:
 					 ] autorelease];
 	}
 	
-	if( bitmapRep )
+	if( bitmapRep)
 	{
-		if( newWW == 0 && newWL == 0 )
+		if( newWW == 0 && newWL == 0)
 		{
-			if( ww == 0 && wl == 0 )
+			if( ww == 0 && wl == 0)
 			{
 				[self computePixMinPixMax];
 				ww = fullww;
@@ -11336,7 +11338,7 @@ END_CREATE_ROIS:
 	if( baseAddr) free( baseAddr);
 	baseAddr = nil;
 	
-	if( isRGB )
+	if( isRGB)
 		baseAddr = calloc( ((width*4) + 4) * ((height*4) + 4), 1);
 	else
 		baseAddr = calloc( (width + 4) * (height + 4), 1);
@@ -11393,12 +11395,12 @@ END_CREATE_ROIS:
 -(void) setConvolutionKernel:(short*)val :(short) size :(short) norm
 {
 	
-	if( val )
+	if( val)
 	{
 		kernelsize = size;
 		convolution = YES;
 		normalization = norm;
-		for( long i = 0; i < kernelsize*kernelsize; i++ ) kernel[i] = val[i];
+		for( long i = 0; i < kernelsize*kernelsize; i++) kernel[i] = val[i];
 	}
 	else
 	{
@@ -11415,7 +11417,7 @@ END_CREATE_ROIS:
 
 - (void) revert:(BOOL) reloadAnnotations
 {
-	if( fImage == nil ) return;
+	if( fImage == nil) return;
 	
 	[checking lock];
 	
@@ -11442,9 +11444,9 @@ END_CREATE_ROIS:
 	[self clearCachedDCMFrameworkFiles];
 	[self clearCachedPapyGroups];
 	
-	if( fExternalOwnedImage == nil )
+	if( fExternalOwnedImage == nil)
 	{
-		if( fImage != nil )
+		if( fImage != nil)
 		{
 			free(fImage);
 			fImage = nil;
@@ -11480,7 +11482,7 @@ END_CREATE_ROIS:
 	
 	if( fExternalOwnedImage == nil)
 	{
-		if( fImage != nil )
+		if( fImage != nil)
 		{
 			free(fImage);
 			fImage = nil;
@@ -11498,7 +11500,7 @@ END_CREATE_ROIS:
 	[checking release];
 	checking = nil;
 	
-	if( oData ) free( oData);
+	if( oData) free( oData);
 	if( VOILUT_table) free( VOILUT_table);
 	
 	if( subGammaFunction) vImageDestroyGammaFunction( subGammaFunction);
@@ -11555,21 +11557,21 @@ END_CREATE_ROIS:
 {
 	hasSUV = NO;
 	
-	if ( ![self.units isEqualToString: @"BQML"] && ![self.units isEqualToString: @"CNTS"] ) return;  // Must be BQ/cc
+	if ( ![self.units isEqualToString: @"BQML"] && ![self.units isEqualToString: @"CNTS"]) return;  // Must be BQ/cc
 	
 	if( [self.units isEqualToString: @"CNTS"] && philipsFactor == 0.0) return;
 	
-	if ( self.decayCorrection == nil ) return;
+	if ( self.decayCorrection == nil) return;
 	
-	if( decayFactor == 0.0f ) return;
+	if( decayFactor == 0.0f) return;
 	
-	if ( [self.decayCorrection isEqualToString: @"START"] == NO ) return;
+	if ( [self.decayCorrection isEqualToString: @"START"] == NO) return;
 	
-	if ( self.radionuclideTotalDose <= 0.0 ) return;	
+	if ( self.radionuclideTotalDose <= 0.0) return;	
 	
-	if ( halflife <= 0.0f ) return;
+	if ( halflife <= 0.0f) return;
 	
-	if ( acquisitionTime == nil || radiopharmaceuticalStartTime == nil ) return;
+	if ( acquisitionTime == nil || radiopharmaceuticalStartTime == nil) return;
 	
 	hasSUV = YES;
 }

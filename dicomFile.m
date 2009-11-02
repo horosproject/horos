@@ -331,7 +331,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		if( (NIfTI->magic[0] != 'n')                           ||
 					(NIfTI->magic[1] != 'i' && NIfTI->magic[1] != '+')   ||
 					(NIfTI->magic[2] != '1')                           ||
-					(NIfTI->magic[3] != '\0') )
+					(NIfTI->magic[3] != '\0'))
 		{
 			success = NO;
 		}
@@ -1148,7 +1148,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 						int MASK = 0x00ff;
 						int MASK2 = 0x000000ff;
 						
-						TAGTYPE = ((tags2[1] & MASK) << 8) | ((tags2[0] & MASK ) <<0);
+						TAGTYPE = ((tags2[1] & MASK) << 8) | ((tags2[0] & MASK) <<0);
 						LENGTH = ((tags2[7] & MASK2) << 24) | ((tags2[6] & MASK2) << 16) | ((tags2[5] & MASK2) << 8) | (tags2[4] & MASK2);
 						
 						switch (TAGTYPE)
@@ -1203,11 +1203,11 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				fread( &nextoff, 4, 1, fp);
 				pos = EndianU32_LtoN( nextoff);
 				counter++;
-			//	if (LENGTH2==1) STRIPOFF.add( new Long( lsm_fi.TIF_STRIPOFFSETS  ) );
+			//	if (LENGTH2==1) STRIPOFF.add( new Long( lsm_fi.TIF_STRIPOFFSETS ));
 			//	else
-			//		STRIPOFF.add( new Long( lsm_fi.TIF_STRIPOFFSETS1  ) );
+			//		STRIPOFF.add( new Long( lsm_fi.TIF_STRIPOFFSETS1 ));
 					
-			//	IMAGETYPE.add( new Long( lsm_fi.TIF_NEWSUBFILETYPE ) );
+			//	IMAGETYPE.add( new Long( lsm_fi.TIF_NEWSUBFILETYPE));
 
 			} while( 0);	//while (nextoff!=0);
 
@@ -1230,7 +1230,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 					int MASK = 0x00ff;
 					int MASK2 = 0x000000ff;
 					
-					TAGTYPE = ((TAG1[1] & MASK) << 8) | ((TAG1[0] & MASK ) <<0);
+					TAGTYPE = ((TAG1[1] & MASK) << 8) | ((TAG1[0] & MASK) <<0);
 					LENGTH = ((TAG1[7] & MASK2) << 24) | ((TAG1[6] & MASK2) << 16) | ((TAG1[5] & MASK2) << 8) | (TAG1[4] & MASK2);
 					
 					switch (TAGTYPE)
@@ -1509,7 +1509,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		if( (NIfTI->magic[0] == 'n')                           &&
 			(NIfTI->magic[1] == 'i' || NIfTI->magic[1] == '+')   &&
 			(NIfTI->magic[2] == '1')                           &&
-			(NIfTI->magic[3] == '\0') )
+			(NIfTI->magic[3] == '\0'))
 		{
 			name = [[DicomFile NSreplaceBadCharacter: [filePath lastPathComponent]] retain];
 			patientID = [[NSString alloc] initWithString:name];
@@ -1617,12 +1617,12 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		}
 		
 		// Review the NIfTI extension list and add any elements to list.
-		if( NIfTI->num_ext > 0 && NIfTI->ext_list != NULL )
+		if( NIfTI->num_ext > 0 && NIfTI->ext_list != NULL)
 		{
 			int c = 0;
 			nifti1_extension * ext;
 			ext = NIfTI->ext_list;
-			for ( c = 0; c < NIfTI->num_ext; c++ )
+			for ( c = 0; c < NIfTI->num_ext; c++)
 			{
 				NSXMLElement *node = [[[NSXMLElement alloc] initWithName:
 					[@"extension: ecode " stringByAppendingString:[NSString stringWithFormat:@"%i", ext->ecode]]] autorelease];
@@ -2213,7 +2213,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 					if( nbVal != 6)
 					{
 						NSLog(@"Orientation is NOT 6 !!!");
-						if( nbVal > 6 ) nbVal = 6;
+						if( nbVal > 6) nbVal = 6;
 					}
 					for (j = 0; j < nbVal; j++)
 					{

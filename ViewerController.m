@@ -2198,7 +2198,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	
 	if( NSIsEmptyRect( standardRect)) standardRect = currentFrame;
 	
-	if( [AppController USETOOLBARPANEL] )
+	if( [AppController USETOOLBARPANEL])
 		screenRect.size.height -= [ToolbarPanelController fixedHeight];	
 
 	if (currentFrame.size.height >= screenRect.size.height - 20 && currentFrame.size.width >= screenRect.size.width - 20)
@@ -2313,7 +2313,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	
 	// **************************
 
-	if( FullScreenOn == YES ) [self fullScreenMenu: self];
+	if( FullScreenOn == YES) [self fullScreenMenu: self];
 	
 	if( [subCtrlOnOff state]) [imageView setWLWW: 0 :0];
 	
@@ -2581,7 +2581,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	
 	if (AUTOHIDEMATRIX) [self autoHideMatrix];
 	
-	if( FullScreenOn == YES ) [self fullScreenMenu: self];
+	if( FullScreenOn == YES) [self fullScreenMenu: self];
 }
 
 - (void)windowDidChangeScreen:(NSNotification *)aNotification
@@ -2861,7 +2861,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 //		screenRect = newFrame;
 //		//screenRect = standardRect;
 //		
-//	else if( USETOOLBARPANEL ) {
+//	else if( USETOOLBARPANEL) {
 //		NSLog(@"toolbar height: %d", [ToolbarPanelController fixedHeight]);
 //		screenRect.size.height -= [ToolbarPanelController fixedHeight];	
 //	}
@@ -2951,7 +2951,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (void)applicationDidResignActive:(NSNotification *)aNotification
 {
-	if( FullScreenOn == YES ) [self fullScreenMenu: self];
+	if( FullScreenOn == YES) [self fullScreenMenu: self];
 }
 
 -(IBAction) fullScreenMenu:(id) sender
@@ -2962,7 +2962,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	
 	[self selectFirstTilingView];
 	
-    if( FullScreenOn == YES ) // we need to go back to non-full screen
+    if( FullScreenOn == YES) // we need to go back to non-full screen
     {
         [StartingWindow setContentView: contentView];
     
@@ -3032,7 +3032,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 -(void) offFullScreen
 {
-	if( FullScreenOn == YES ) [self fullScreenMenu:self];
+	if( FullScreenOn == YES) [self fullScreenMenu:self];
 }
 
 
@@ -4905,13 +4905,13 @@ static ViewerController *draggedController = nil;
 			[toolbarItem setLabel: itemIdent];
 			[toolbarItem setPaletteLabel: itemIdent];
 			NSDictionary* toolTips = [info objectForKey: @"ToolbarToolTips"];
-			if( toolTips )
+			if( toolTips)
 				[toolbarItem setToolTip: [toolTips objectForKey: itemIdent]];
 			else
 				[toolbarItem setToolTip: itemIdent];
 			
 			NSImage	*image = [[[NSImage alloc] initWithContentsOfFile:[bundle pathForImageResource:[info objectForKey:@"ToolbarIcon"]]] autorelease];
-			if( !image ) image = [[NSWorkspace sharedWorkspace] iconForFile: [bundle bundlePath]];
+			if( !image) image = [[NSWorkspace sharedWorkspace] iconForFile: [bundle bundlePath]];
 			[toolbarItem setImage: image];
 			
 			[toolbarItem setTarget: self];
@@ -5722,7 +5722,7 @@ static ViewerController *draggedController = nil;
 
 -(void) changeImageData:(NSMutableArray*)f :(NSMutableArray*)d :(NSData*) v :(BOOL) newViewerWindow
 {
-	if( windowWillClose ) return;
+	if( windowWillClose) return;
 	
 	if( delayedTileWindows)
 	{
@@ -6397,7 +6397,7 @@ static ViewerController *draggedController = nil;
 				[subLoadingThread lock];
 				[subLoadingThread unlockWithCondition: numberOfThreadsForCompute];
 				
-				for( i = 0; i < numberOfThreadsForCompute; i++ )
+				for( i = 0; i < numberOfThreadsForCompute; i++)
 				{
 					NSMutableDictionary *d = [NSMutableDictionary dictionary];
 					
@@ -7008,7 +7008,7 @@ static ViewerController *draggedController = nil;
 	if (enableSubtraction)
 	{
 		//asked from menu (tag=0) or keyboard (tag=15 => asked from button)
-		if( [sender tag] == 0 ) [subCtrlOnOff setState: ![subCtrlOnOff state]]; //"on"
+		if( [sender tag] == 0) [subCtrlOnOff setState: ![subCtrlOnOff state]]; //"on"
 
 		long i;	
 		
@@ -7759,8 +7759,8 @@ static ViewerController *draggedController = nil;
 					
 					for(  i = 0 ; i < [pixList[ z] count]; i++)
 					{
-						if( [firstObject pheight] != [[pixList[ z] objectAtIndex: i] pheight] ) sameSize = NO;
-						if( [firstObject pwidth] != [[pixList[ z] objectAtIndex: i] pwidth] ) sameSize = NO;
+						if( [firstObject pheight] != [[pixList[ z] objectAtIndex: i] pheight]) sameSize = NO;
+						if( [firstObject pwidth] != [[pixList[ z] objectAtIndex: i] pwidth]) sameSize = NO;
 					}
 					
 					if( sameSize)
@@ -11059,7 +11059,7 @@ int i,j,l;
 		{
 			if( interval)
 			{
-				if( fabs( [curPix sliceLocation] - preLocation - interval) > 1.0 )
+				if( fabs( [curPix sliceLocation] - preLocation - interval) > 1.0)
 				{
 					NSRunCriticalAlertPanel(NSLocalizedString(@"ROIs Volume Error", nil), NSLocalizedString(@"Slice Interval is not constant!", nil) , NSLocalizedString(@"OK", nil), nil, nil);
 					return;
@@ -11320,7 +11320,7 @@ int i,j,l;
 		
 		// Create the work units.
 		NSMutableSet *unitsSet = [NSMutableSet set];
-		for ( id loopItem in roiToProceed )
+		for ( id loopItem in roiToProceed)
 		{
 			[unitsSet addObject: loopItem];
 		}
@@ -12552,7 +12552,7 @@ int i,j,l;
 	// Create the work units.
 	long i;
 	NSMutableSet *unitsSet = [NSMutableSet set];
-	for ( i = 0; i < [rois count]; i++ )
+	for ( i = 0; i < [rois count]; i++)
 	{
 		[unitsSet addObject: [NSDictionary dictionaryWithObjectsAndKeys: [rois objectAtIndex:i], @"roi", action, @"action", filter, @"filter", [NSNumber numberWithInt: radius], @"radius", nil]];
 	}
@@ -12566,7 +12566,7 @@ int i,j,l;
 	[roiLock unlock];
 	
 	if( sendNotification)
-		for ( i = 0; i < [rois count]; i++ ) [[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object:[rois objectAtIndex:i] userInfo: nil];
+		for ( i = 0; i < [rois count]; i++) [[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object:[rois objectAtIndex:i] userInfo: nil];
 	
 	[filter release];
 	
@@ -14532,7 +14532,7 @@ int i,j,l;
 //		else
 //			optimizationFactor = (page.width*imageView.frame.size.width) / (page.height*imageView.frame.size.height);
 //			
-//		float new_columns = sqrt( ipp * optimizationFactor );
+//		float new_columns = sqrt( ipp * optimizationFactor);
 //		float new_rows = ipp / new_columns;
 //		
 //		int columns = (int) round( new_columns);
@@ -14598,7 +14598,7 @@ int i,j,l;
 //			optimizationFactor = (page.width*imageView.frame.size.width) / (page.height*imageView.frame.size.height);
 //		
 //		int ipp = [[printLayout selectedItem] tag];
-//		float new_columns = sqrt( ipp * optimizationFactor );
+//		float new_columns = sqrt( ipp * optimizationFactor);
 //		float new_rows = ipp / new_columns;
 //		
 //		int columns = (int) round( new_columns);
@@ -16029,7 +16029,7 @@ int i,j,l;
 			tagString = [curImage valueForKeyPath: @"series.study.referringPhysician"];
 			if (tagString) pdf2dcmContent = [pdf2dcmContent stringByAppendingFormat: @"\r# Referring Physician's Name\r00080090:%@",tagString];
 
-//0008,1050 ( ) General Study
+//0008,1050 () General Study
 			tagString = [[[self fileList] objectAtIndex:0] valueForKeyPath: @"series.study.performingPhysician"];
 			if (tagString) pdf2dcmContent = [pdf2dcmContent stringByAppendingFormat: @"\r# Performing Physician's Name\r00081050:%@",tagString];	
 
@@ -17226,7 +17226,7 @@ int i,j,l;
 			
 			if( [[pixList[0] objectAtIndex: 0] isRGB] == NO)
 			{
-				if( [[self modality] isEqualToString:@"PT"] == YES )
+				if( [[self modality] isEqualToString:@"PT"] == YES)
 				{
 					if( [[imageView curDCM] SUVConverted] == YES)
 					{
@@ -18024,7 +18024,7 @@ int i,j,l;
 
 -(IBAction) loadPatient:(id) sender
 {
-	if( windowWillClose ) return;
+	if( windowWillClose) return;
 	
 	if( delayedTileWindows)
 	{
@@ -18038,7 +18038,7 @@ int i,j,l;
 
 -(void) loadSeries:(NSNumber*) t
 {
-	if( windowWillClose ) return;
+	if( windowWillClose) return;
 	
 	int dir = [t intValue];
 	
@@ -18085,21 +18085,21 @@ int i,j,l;
 
 -(void) loadSeriesUp
 {
-	if( windowWillClose ) return;
+	if( windowWillClose) return;
 	
 	[self loadSeries: [NSNumber numberWithInt: 1]];
 }
 
 -(void) loadSeriesDown
 {
-	if( windowWillClose ) return;
+	if( windowWillClose) return;
 	
 	[self loadSeries: [NSNumber numberWithInt: -1]];
 }
 
 -(IBAction) loadSerie:(id) sender
 {
-	if( windowWillClose ) return;
+	if( windowWillClose) return;
 
 	if( delayedTileWindows)
 	{
