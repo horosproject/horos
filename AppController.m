@@ -1905,6 +1905,9 @@ static NSDate *lastWarningDate = nil;
 
 - (void)applicationDidBecomeActive:(NSNotification *)aNotification
 {
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"]) // Server mode
+		return;
+
 	if( [[[BrowserController currentBrowser] window] isMiniaturized] == YES || [[[BrowserController currentBrowser] window] isVisible] == NO)
 	{
 		NSArray *winList = [NSApp windows];
@@ -1927,10 +1930,11 @@ static NSDate *lastWarningDate = nil;
 
 - (BOOL) applicationShouldHandleReopen:(NSApplication *)theApplication hasVisibleWindows:(BOOL)flag
 {
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"]) // Server mode
+			return YES;
+	
 	if( flag == NO)
-	{
 		[[[BrowserController currentBrowser] window] makeKeyAndOrderFront: self];
-	}
 	
 	return YES;
 }
@@ -2519,6 +2523,10 @@ static BOOL initialized = NO;
 		[NSThread detachNewThreadSelector:@selector(checkForUpdates:) toTarget:pluginManager withObject:pluginManager];
 	
 	[NSThread detachNewThreadSelector: @selector(checkForUpdates:) toTarget:self withObject: self];
+	
+	
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"]) // Server mode
+		[[[BrowserController currentBrowser] window] orderOut: self];
 }
 
 - (void) applicationWillFinishLaunching: (NSNotification *) aNotification
