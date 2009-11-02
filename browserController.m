@@ -12516,13 +12516,10 @@ static NSArray*	openSubSeriesArray = nil;
 	
 	[self setDBWindowTitle];
 	
-	if( [[NSUserDefaults standardUserDefaults] objectForKey: @"drawerState"])
-	{
-		if( [[[NSUserDefaults standardUserDefaults] objectForKey: @"drawerState"] intValue] == NSDrawerOpenState)
-			[albumDrawer openOnEdge:NSMinXEdge];
-		else
-			[albumDrawer close];
-	}
+	if( [[[NSUserDefaults standardUserDefaults] objectForKey: @"drawerState"] intValue] == NSDrawerOpenState && [[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"] == NO)
+		[albumDrawer openOnEdge:NSMinXEdge];
+	else
+		[albumDrawer close];
 	
 	loadingIsOver = YES;
 	
