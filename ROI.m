@@ -5291,6 +5291,20 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 }
 
 
+-(NSPoint)pointAtIndex:(NSUInteger)index {
+	return [[[self points] objectAtIndex:index] point];
+}
+
+-(void)setPoint:(NSPoint)point atIndex:(NSUInteger)index {
+	[[[self points] objectAtIndex:index] setPoint:point];
+}
+
+-(void)addPoint:(NSPoint)point {
+	[[self points] addObject:[MyPoint point:point]];
+}
+
+
+
 - (NSMutableDictionary*) dataString
 {
 	NSMutableDictionary*		array = nil;

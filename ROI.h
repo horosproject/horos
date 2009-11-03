@@ -253,6 +253,11 @@ enum
 - (float*) dataValuesAsFloatPointer :(long*) no;
 - (NSMutableArray*) dataValues;
 
+
+-(NSPoint)pointAtIndex:(NSUInteger)index;
+-(void)setPoint:(NSPoint)point atIndex:(NSUInteger)index;
+-(void)addPoint:(NSPoint)point;
+
 /** Find a point between two points 
 *  @param a First point
 *  @param b Second point
