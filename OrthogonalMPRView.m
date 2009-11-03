@@ -112,43 +112,14 @@
 
 - (void) setCurRoiList: (NSMutableArray*) rois
 {
-//	NSMutableArray	*previousParents = [NSMutableArray	array];
-//	NSMutableArray	*previousMode = [NSMutableArray	array];
-//	
-//	if( curRoiList)
-//	{
-//		for( i = 0 ; i < [curRoiList count]; i++)
-//		{
-//			if( [[curRoiList objectAtIndex: i] parentROI])
-//			{
-//				[previousParents addObject: [[curRoiList objectAtIndex: i] parentROI]];
-//				[previousMode addObject: [NSNumber numberWithInt:[[curRoiList objectAtIndex: i] ROImode]]];
-//			}
-//		}
-//	}
-	
-	[curRoiList release];
-	
-	curRoiList = [rois retain];
-	
-	for(id loopItem in curRoiList)
+	if( rois != curRoiList)
 	{
-		[self roiSet:loopItem];
+		[curRoiList release];
+		curRoiList = [rois retain];
 	}
 	
-//	for( i = 0 ; i < [curRoiList count]; i++)
-//	{
-//		if( [[curRoiList objectAtIndex: i] parentROI])
-//		{
-//			if( [previousParents containsObject: [[curRoiList objectAtIndex: i] parentROI]])
-//			{
-//				NSInteger index = [previousParents indexOfObject: [[curRoiList objectAtIndex: i] parentROI]];
-//				
-//				[[curRoiList objectAtIndex: i] setROIMode: [[previousMode objectAtIndex: index] intValue]];
-//			}
-//		}
-//	}
-
+	for( ROI *r  in curRoiList)
+		[self roiSet: r];
 }
 
 - (NSMutableArray*) dcmRoiList
@@ -674,8 +645,7 @@
 		
 		if( [roi parentROI])
 		{
-			int i;
-			for(i=0; i<[[[controller originalView] dcmRoiList] count]; i++)
+			for(int i=0; i<[[[controller originalView] dcmRoiList] count]; i++)
 			{
 				if([[[[controller originalView] dcmRoiList] objectAtIndex:i] containsObject:[roi parentROI]])
 				{
