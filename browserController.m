@@ -4102,14 +4102,15 @@ static NSArray*	statesArray = nil;
 	NSDictionary *fsattrs = [[NSFileManager defaultManager] fileSystemAttributesAtPath: [[BrowserController currentBrowser] localDocumentsDirectory]];
 			
 	unsigned long long free = [[fsattrs objectForKey:NSFileSystemFreeSize] unsignedLongLongValue];
+	unsigned long long thousand = 1024;
 	
-	free /= 1024;
-	free /= 1024;
+	free /= thousand;
+	free /= thousand;
 	
 	lastHardDiskCheck = [NSDate timeIntervalSinceReferenceDate];
 	
 	// 300 MB is the extreme lower limit
-	if( free < 300)
+	if( free < 300 && free > 0)
 	{
 		NSLog( @"******* HARD DISK is FULL: we will not accept DICOM network communications, we will delete all incoming files !");
 		return YES;
@@ -4135,6 +4136,7 @@ static NSArray*	statesArray = nil;
 			NSDictionary *fsattrs = [[NSFileManager defaultManager] fileSystemAttributesAtPath: currentDatabasePath];
 			
 			unsigned long long free = [[fsattrs objectForKey:NSFileSystemFreeSize] unsignedLongLongValue];
+			unsigned long long thousand = 1024;
 			
 			if( free <= 0)
 			{
@@ -4144,8 +4146,8 @@ static NSArray*	statesArray = nil;
 				return;
 			}
 			
-			free /= 1024;
-			free /= 1024;
+			free /= thousand;
+			free /= thousand;
 			
 			NSLog(@"HD Free Space: %d MB", (long) free);
 			
@@ -4313,12 +4315,14 @@ static NSArray*	statesArray = nil;
 		NSDictionary	*fsattrs = [[NSFileManager defaultManager] fileSystemAttributesAtPath: currentDatabasePath];
 		
 		unsigned long long free = [[fsattrs objectForKey:NSFileSystemFreeSize] unsignedLongLongValue];
-		free /= 1024;
-		free /= 1024;
+		unsigned long long thousand = 1024;
+		
+		free /= thousand;
+		free /= thousand;
 		
 		NSLog(@"HD Free Space: %d MB", (long) free);
 		
-		if( free < 300)
+		if( free < 300 && free > 0)
 		{
 			NSRunCriticalAlertPanel( NSLocalizedString(@"Warning", nil),  NSLocalizedString(@"Hard disk is FULL !!!! Major risks of failure !!\r\rClean your database! ", nil), NSLocalizedString(@"OK",nil), nil, nil);
 		}
