@@ -7706,6 +7706,12 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	NSPoint offset = { 0.0f, 0.0f };
 	
+	if( NSEqualRects( drawingFrameRect, aRect) == NO)
+	{
+		[[self openGLContext] clearDrawable];
+		[[self openGLContext] setView: self];	
+	}
+	
 	drawingFrameRect = aRect;
 	
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
@@ -8610,6 +8616,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	// Swap buffer to screen
 	[ctx  flushBuffer];
+//	[NSOpenGLContext clearCurrentContext];
 	
 	if(iChatRunning) [drawLock unlock];
 	
@@ -8622,6 +8629,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 {
 	if( dcmPixList && [[self window] isVisible] && dontEnterReshape == NO)
     {
+		[[self openGLContext] makeCurrentContext];
+		
 		NSRect rect = [self frame];
 		
 		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AlwaysScaleToFit"] && [self is2DViewer])
@@ -8732,6 +8741,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			else previousViewSize = rect.size;
 		}
     }
+	
+	[super reshape];
 }
 
 -(unsigned char*) getRawPixels:(long*) width :(long*) height :(long*) spp :(long*) bpp :(BOOL) screenCapture :(BOOL) force8bits
