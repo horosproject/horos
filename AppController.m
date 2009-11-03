@@ -693,7 +693,8 @@ static NSDate *lastWarningDate = nil;
 	
 	if( ![[NSFileManager defaultManager] fileExistsAtPath: path])
 	{
-		[[NSFileManager defaultManager] createDirectoryAtPath: path attributes: nil];
+		if( [[NSFileManager defaultManager] createDirectoryAtPath: path withIntermediateDirectories: NO attributes: nil error: nil] == NO)
+			NSLog( @"******* failed to create directory: %@", path);
 		newFolder = YES;
 	}
 	
@@ -702,8 +703,6 @@ static NSDate *lastWarningDate = nil;
 	
 	if( newFolder)
 	{
-		NSLog( @"check noindex folder attributes");
-		
 		NSDictionary *d = [[NSFileManager defaultManager] attributesOfItemAtPath:path error: nil];
 	
 		if( d && [[d objectForKey: NSFileExtensionHidden] boolValue] == NO)
