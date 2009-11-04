@@ -2702,7 +2702,7 @@ static const char *GetPrivateIP()
 
 - (IBAction) verify:(id)sender
 {
-	int				status, selectedRow = [sourcesTable selectedRow];
+	int status, selectedRow = [sourcesTable selectedRow];
 	
 	[progressIndicator startAnimation:nil];
 	

@@ -12543,10 +12543,13 @@ static NSArray*	openSubSeriesArray = nil;
 		WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Restarting Auto Query/Retrieve...", nil)];
 		[wait showWindow:self]; 
 		[[QueryController alloc] initAutoQuery: YES];
-		[NSThread sleepForTimeInterval: 1];
+		[[QueryController currentAutoQueryController] switchAutoRetrieving: self];
+		[NSThread sleepForTimeInterval: 0.5];
 		[wait close];
 		[wait release];
 	}
+	else 
+		[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"autoRetrieving"];
 	
 //	NSFetchRequest	*dbRequest = [[[NSFetchRequest alloc] init] autorelease];
 //	[dbRequest setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"LogEntry"]];

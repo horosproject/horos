@@ -2195,7 +2195,6 @@ static BOOL initialized = NO;
 				
 				[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"is12bitPluginAvailable"];
 				[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"DONTCOPYWLWWSETTINGS"];
-				[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"autoRetrieving"];
 				[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"ROITEXTNAMEONLY"];
 				
 				pluginManager = [[PluginManager alloc] init];
