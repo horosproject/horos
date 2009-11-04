@@ -7709,7 +7709,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	if( NSEqualRects( drawingFrameRect, aRect) == NO)
 	{
 		[[self openGLContext] clearDrawable];
-		[[self openGLContext] setView: self];	
+		[[self openGLContext] setView: self];
 	}
 	
 	drawingFrameRect = aRect;
