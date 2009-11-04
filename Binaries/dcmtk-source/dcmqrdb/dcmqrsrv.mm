@@ -213,36 +213,36 @@ void DcmQueryRetrieveSCP::waitUnlockFileWithPID(int pid)
 		usleep( 100000);
 		inc++;
 	}
-	while( fileExist == YES && inc < 1800 && rc >= 0);	// 1800 = 30 min
+	while( fileExist == YES && inc < 600 && rc >= 0);	// 600 = 10 min
 	if( inc > 1800)
 	{
 		kill( pid, 15);
-		NSLog( @"******* waitUnlockFile for 30 min");
+		NSLog( @"******* waitUnlockFile for 10 min");
 	}
 	
 	if( rc < 0) NSLog( @"******* waitUnlockFile : child process died...");
 }
 
-void DcmQueryRetrieveSCP::waitUnlockFile(void)
-{
-	BOOL fileExist = YES;
-	int inc = 0;
-	char dir[ 1024];
-	sprintf( dir, "%s", "/tmp/lock_process");
-	
-	do
-	{
-		FILE * pFile = fopen (dir,"r");
-		if( pFile)
-			fclose (pFile);
-		else
-			fileExist = NO;
-		usleep( 100000);
-		inc++;
-	}
-	while( fileExist == YES && inc < 1800);	// 1800 = 30 min
-	if( inc > 1800) NSLog( @"******* waitUnlockFile for 1 hour");
-}
+//void DcmQueryRetrieveSCP::waitUnlockFile(void)
+//{
+//	BOOL fileExist = YES;
+//	int inc = 0;
+//	char dir[ 1024];
+//	sprintf( dir, "%s", "/tmp/lock_process");
+//	
+//	do
+//	{
+//		FILE * pFile = fopen (dir,"r");
+//		if( pFile)
+//			fclose (pFile);
+//		else
+//			fileExist = NO;
+//		usleep( 100000);
+//		inc++;
+//	}
+//	while( fileExist == YES && inc < 1800);	// 1800 = 30 min
+//	if( inc > 1800) NSLog( @"******* waitUnlockFile for 30 min");
+//}
 
 OFCondition DcmQueryRetrieveSCP::dispatch(T_ASC_Association *assoc, OFBool correctUIDPadding)
 {
@@ -311,7 +311,7 @@ OFCondition DcmQueryRetrieveSCP::dispatch(T_ASC_Association *assoc, OFBool corre
 						cond = getSCP(assoc, &msg.msg.CGetRQ, presID, *dbHandle);
                     else
 					{
-						 cond = DIMSE_BADCOMMANDTYPE;
+						cond = DIMSE_BADCOMMANDTYPE;
 						DcmQueryRetrieveOptions::errmsg("Cannot handle command: 0x%x\n", (unsigned)msg.CommandField);
 					}
 					break;
