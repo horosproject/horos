@@ -213,36 +213,19 @@ void DcmQueryRetrieveSCP::waitUnlockFileWithPID(int pid)
 		usleep( 100000);
 		inc++;
 	}
-	while( fileExist == YES && inc < 600 && rc >= 0);	// 600 = 10 min
-	if( inc > 1800)
+	
+	#define TIMEOUT 300
+	
+	while( fileExist == YES && inc < TIMEOUT && rc >= 0);
+	if( inc > TIMEOUT)
 	{
 		kill( pid, 15);
-		NSLog( @"******* waitUnlockFile for 10 min");
+		NSLog( @"******* waitUnlockFile for %d min", TIMEOUT / 60);
 	}
 	
-	if( rc < 0) NSLog( @"******* waitUnlockFile : child process died...");
+	if( rc < 0)
+		NSLog( @"******* waitUnlockFile : child process died...");
 }
-
-//void DcmQueryRetrieveSCP::waitUnlockFile(void)
-//{
-//	BOOL fileExist = YES;
-//	int inc = 0;
-//	char dir[ 1024];
-//	sprintf( dir, "%s", "/tmp/lock_process");
-//	
-//	do
-//	{
-//		FILE * pFile = fopen (dir,"r");
-//		if( pFile)
-//			fclose (pFile);
-//		else
-//			fileExist = NO;
-//		usleep( 100000);
-//		inc++;
-//	}
-//	while( fileExist == YES && inc < 1800);	// 1800 = 30 min
-//	if( inc > 1800) NSLog( @"******* waitUnlockFile for 30 min");
-//}
 
 OFCondition DcmQueryRetrieveSCP::dispatch(T_ASC_Association *assoc, OFBool correctUIDPadding)
 {
