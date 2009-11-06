@@ -8324,7 +8324,6 @@
 		CE3F991D0C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/Plot.xib; sourceTree = "<group>"; };
 		CE3F991F0C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/ROIVolume.xib; sourceTree = "<group>"; };
 		CE3F99210C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/VRPanel.xib; sourceTree = "<group>"; };
-		CE3F99230C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/VRVPRO.xib; sourceTree = "<group>"; };
 		CE3F99270C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/PaletteBrush.xib; sourceTree = "<group>"; };
 		CE3F99290C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/Anonymize.xib; sourceTree = "<group>"; };
 		CE3F992B0C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/LLScoutView.xib; sourceTree = "<group>"; };
@@ -8978,7 +8977,6 @@
 				8459A7250F5D63EF00146B28 /* VREmpty.xib */,
 				CE3F99300C84724B00CB38F1 /* VR.xib */,
 				CE3F99200C84724B00CB38F1 /* VRPanel.xib */,
-				CE3F99220C84724B00CB38F1 /* VRVPRO.xib */,
 				CE3F993A0C84724B00CB38F1 /* Wait.xib */,
 				CE3F991A0C84724B00CB38F1 /* WaitRendering.xib */,
 				CE3F993E0C84724B00CB38F1 /* XMLViewer.xib */,
@@ -18574,14 +18572,6 @@
 				CE3F99210C84724B00CB38F1 /* English */,
 			);
 			name = VRPanel.xib;
-			sourceTree = "<group>";
-		};
-		CE3F99220C84724B00CB38F1 /* VRVPRO.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				CE3F99230C84724B00CB38F1 /* English */,
-			);
-			name = VRVPRO.xib;
 			sourceTree = "<group>";
 		};
 		CE3F99260C84724B00CB38F1 /* PaletteBrush.xib */ = {

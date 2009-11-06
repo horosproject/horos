@@ -5558,15 +5558,46 @@ END_CREATE_ROIS:
 			DCMObject *radionuclideTotalDoseObject = [radiopharmaceuticalInformationSequence.sequence objectAtIndex:0];
 			radionuclideTotalDose = [[radionuclideTotalDoseObject attributeValueWithName:@"RadionuclideTotalDose"] floatValue];
 			halflife = [[radionuclideTotalDoseObject attributeValueWithName:@"RadionuclideHalfLife"] floatValue];
-			radiopharmaceuticalStartTime = [[NSCalendarDate	dateWithString: [[radionuclideTotalDoseObject attributeValueWithName:@"RadiopharmaceuticalStartTime"] descriptionWithCalendarFormat:@"%Y-%m-%d %H:%M:%S %z"]] retain];
 			
-			// WARNING : only time is correct. NOT year/month/day
+			NSString *seriesDate = [[dcmObject attributeValueWithName:@"SeriesDate"] dateString];
+			NSString *seriesTime = [[dcmObject attributeValueWithName:@"SeriesTime"] timeString];
+			NSString *acqDate = [[dcmObject attributeValueWithName:@"AcquisitionDate"] dateString];
+			NSString *acqTime = [[dcmObject attributeValueWithName:@"AcquisitionTime"] timeString];
+			NSString *radioTime = [[radionuclideTotalDoseObject attributeValueWithName:@"RadiopharmaceuticalStartTime"] timeString];
 			
-			acquisitionTime = [[NSCalendarDate dateWithString:[[dcmObject attributeValueWithName:@"AcquisitionTime"] descriptionWithCalendarFormat:@"%Y-%m-%d %H:%M:%S %z"]] retain];
+			if (acqDate)
+			{
+				if( [radioTime length] >= 6)
+					radiopharmaceuticalStartTime = [[NSCalendarDate alloc] initWithString:[acqDate stringByAppendingString:radioTime] calendarFormat:@"%Y%m%d%H%M%S"];
+				else
+					radiopharmaceuticalStartTime = [[NSCalendarDate alloc] initWithString:[acqDate stringByAppendingString:radioTime] calendarFormat:@"%Y%m%d%H%M"];
+			}
+			else if( seriesDate)
+			{
+				if( [seriesTime length] >= 6)
+					radiopharmaceuticalStartTime = [[NSCalendarDate alloc] initWithString:[seriesDate stringByAppendingString:radioTime] calendarFormat:@"%Y%m%d%H%M%S"];
+				else
+					radiopharmaceuticalStartTime = [[NSCalendarDate alloc] initWithString:[seriesDate stringByAppendingString:radioTime] calendarFormat:@"%Y%m%d%H%M"];
+			}
+			[radiopharmaceuticalStartTime retain];
 			
-			if( acquisitionTime == nil)
-				acquisitionTime = [[NSCalendarDate dateWithString:[[dcmObject attributeValueWithName:@"SeriesTime"] descriptionWithCalendarFormat:@"%Y-%m-%d %H:%M:%S %z"]] retain];
-				
+			if (acqDate && acqTime)
+			{
+				if( [acqTime length] >= 6)
+					acquisitionTime = [[NSCalendarDate alloc] initWithString:[acqDate stringByAppendingString:acqTime] calendarFormat:@"%Y%m%d%H%M%S"];
+				else
+					acquisitionTime = [[NSCalendarDate alloc] initWithString:[acqDate stringByAppendingString:acqTime] calendarFormat:@"%Y%m%d%H%M"];
+			}
+			else if (seriesDate && seriesTime)
+			{
+				if( [seriesTime length] >= 6)
+					acquisitionTime = [[NSCalendarDate alloc] initWithString:[seriesDate stringByAppendingString:seriesTime] calendarFormat:@"%Y%m%d%H%M%S"];
+				else
+					acquisitionTime = [[NSCalendarDate alloc] initWithString:[seriesDate stringByAppendingString:seriesTime] calendarFormat:@"%Y%m%d%H%M"];
+			}
+			
+			[acquisitionTime retain];
+			
 			[self computeTotalDoseCorrected];
 		}
 		

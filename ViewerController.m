@@ -174,7 +174,7 @@ NSInteger sortROIByName(id roi1, id roi2, void *context)
 @implementation ViewerController
 
 @synthesize currentOrientationTool, loadingPercentage;
-@synthesize timer, keyImageCheck;
+@synthesize timer, keyImageCheck, injectionDateTime;
 @synthesize blendingTypeWindow, blendingTypeMultiply, blendingTypeSubtract, blendingTypeRGB, blendingPlugins, blendingResample;
 @synthesize blendedWindow;
 
@@ -5704,6 +5704,7 @@ static ViewerController *draggedController = nil;
 	
 	[subLoadingThread release];
 	[toolbar release];
+	[injectionDateTime release];
     [super dealloc];
 	
 //	[[AppController sharedAppController] tileWindows: nil];	<- We cannot do this, because:
@@ -12832,6 +12833,43 @@ int i,j,l;
 
 #pragma mark SUV
 
+- (IBAction) cancel:(id)sender
+{
+	[NSApp stopModal];
+	self.injectionDateTime = nil;
+}
+
+- (IBAction) ok:(id)sender
+{
+	[NSApp stopModal];
+}
+
+- (IBAction) editSUVinjectionTime:(id)sender
+{
+	self.injectionDateTime = [[[[imageView curDCM] radiopharmaceuticalStartTime] copy] autorelease];
+	
+	[NSApp beginSheet: injectionTimeWindow
+	   modalForWindow: displaySUVWindow
+		modalDelegate: nil
+	   didEndSelector: nil
+		  contextInfo: nil];
+	
+	int result = [NSApp runModalForWindow: injectionTimeWindow];
+	[NSApp endSheet: injectionTimeWindow];
+	[injectionTimeWindow orderOut: self];
+	
+	if( injectionDateTime != nil)
+	{
+		for( int y = 0; y < maxMovieIndex; y++)
+		{
+			for( DCMPix *p in pixList[y])
+				p.radiopharmaceuticalStartTime = injectionDateTime;
+		}
+		
+		[[suvForm cellAtIndex: 3] setObjectValue: [[imageView curDCM] radiopharmaceuticalStartTime]];
+	}
+}
+
 - (float) factorPET2SUV
 {
 	return factorPET2SUV;
@@ -12943,7 +12981,7 @@ int i,j,l;
 				{
 					[[pixList[y] objectAtIndex: x] setPatientsWeight: [[suvForm cellAtIndex: 0] floatValue]];
 					[[pixList[y] objectAtIndex: x] setRadionuclideTotalDose: [[suvForm cellAtIndex: 1] floatValue] * 1000000.];
-					[[pixList[y] objectAtIndex: x] setRadiopharmaceuticalStartTime: [NSCalendarDate dateWithString:[[suvForm cellAtIndex: 3] stringValue] calendarFormat:@"%H:%M:%S"]];
+					[[pixList[y] objectAtIndex: x] setRadiopharmaceuticalStartTime: [[suvForm cellAtIndex: 3] objectValue]];
 					[[pixList[y] objectAtIndex: x] computeTotalDoseCorrected];
 				}
 			}
@@ -12992,7 +13030,7 @@ int i,j,l;
 - (IBAction) updateSUVValues:(id) sender
 {
 	int			x, y;
-	NSDate		*newDate = [NSCalendarDate dateWithString:[[suvForm cellAtIndex: 3] stringValue] calendarFormat:@"%H:%M:%S"];
+	NSDate		*newDate = [[suvForm cellAtIndex: 3] objectValue];
 	float		newInjectedDose = [[suvForm cellAtIndex: 1] floatValue] * 1000000.;
 	
 	if( -[newDate timeIntervalSinceDate: [[imageView curDCM] acquisitionTime]] <= 0)
@@ -13000,7 +13038,7 @@ int i,j,l;
 		NSRunAlertPanel(NSLocalizedString(@"SUV Error", nil), NSLocalizedString(@"Injection time CANNOT be after acquisition time !", nil), nil, nil, nil);
 
 		if( [[imageView curDCM] radiopharmaceuticalStartTime])
-			[[suvForm cellAtIndex: 3] setStringValue: [[[imageView curDCM] radiopharmaceuticalStartTime] descriptionWithCalendarFormat:@"%H:%M:%S"]];			
+			[[suvForm cellAtIndex: 3] setObjectValue: [[imageView curDCM] radiopharmaceuticalStartTime]];			
 	}
 	else
 	{
@@ -13009,7 +13047,7 @@ int i,j,l;
 			for( x = 0; x < [pixList[y] count]; x++)
 			{
 				[[pixList[y] objectAtIndex: x] setRadionuclideTotalDose: newInjectedDose];
-				[[pixList[y] objectAtIndex: x] setRadiopharmaceuticalStartTime: [NSCalendarDate dateWithString:[[suvForm cellAtIndex: 3] stringValue] calendarFormat:@"%H:%M:%S"]];
+				[[pixList[y] objectAtIndex: x] setRadiopharmaceuticalStartTime: [[suvForm cellAtIndex: 3] objectValue]];
 				[[pixList[y] objectAtIndex: x] computeTotalDoseCorrected];
 			}
 		}
@@ -13019,7 +13057,7 @@ int i,j,l;
 		[[suvForm cellAtIndex: 2] setStringValue: [NSString stringWithFormat:@"%2.3f", [[imageView curDCM] radionuclideTotalDoseCorrected] / 1000000. ]];
 
 		if( [[imageView curDCM] radiopharmaceuticalStartTime])
-			[[suvForm cellAtIndex: 3] setStringValue: [[[imageView curDCM] radiopharmaceuticalStartTime] descriptionWithCalendarFormat:@"%H:%M:%S"]];
+			[[suvForm cellAtIndex: 3] setObjectValue: [[imageView curDCM] radiopharmaceuticalStartTime]];
 	}
 }
 
@@ -13038,10 +13076,10 @@ int i,j,l;
 		[[suvForm cellAtIndex: 2] setStringValue: [NSString stringWithFormat:@"%2.3f", [[imageView curDCM] radionuclideTotalDoseCorrected] / 1000000. ]];
 		
 		if( [[imageView curDCM] radiopharmaceuticalStartTime])
-			[[suvForm cellAtIndex: 3] setStringValue: [[[imageView curDCM] radiopharmaceuticalStartTime] descriptionWithCalendarFormat:@"%H:%M:%S"]];
+			[[suvForm cellAtIndex: 3] setObjectValue: [[imageView curDCM] radiopharmaceuticalStartTime]];
 		
-		if( [[imageView curDCM] radiopharmaceuticalStartTime])
-			[[suvForm cellAtIndex: 4] setStringValue: [[[imageView curDCM] acquisitionTime] descriptionWithCalendarFormat:@"%H:%M:%S"]];
+		if( [[imageView curDCM] acquisitionTime])
+			[[suvForm cellAtIndex: 4] setObjectValue: [[imageView curDCM] acquisitionTime]];
 		
 		[[suvForm cellAtIndex: 5] setStringValue: [NSString stringWithFormat:@"%2.2f", [[imageView curDCM] halflife] / 60.]];
 		

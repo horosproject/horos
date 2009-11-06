@@ -206,7 +206,7 @@ static const char *GetPrivateIP()
 	[NSApp abortModal];
 }
 
-- (IBAction) ok:sender
+- (IBAction) ok:(id)sender
 {
 	[NSApp stopModal];
 }

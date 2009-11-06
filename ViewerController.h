@@ -327,8 +327,11 @@ enum
 	IBOutlet NSView			*display12bitToolbarItemView;
 	IBOutlet NSMatrix		*display12bitToolbarItemMatrix;
 	NSTimer					*t12BitTimer;
+	
+	NSCalendarDate			*injectionDateTime;
+	IBOutlet NSWindow		*injectionTimeWindow;
 }
-
+@property(retain) NSCalendarDate *injectionDateTime;
 @property(readonly) short currentOrientationTool;
 @property(readonly) volatile float loadingPercentage;
 
@@ -449,10 +452,6 @@ enum
 /**  methods to access global variables */
 + (int) numberOf2DViewer;
 
-// UNDOCUMENTED FUNCTIONS
-// For more informations: rossetantoine@bluewin.ch
-
-
 /** Adds to undo queue
 *  @param string  The type of undo
 *  This method calls - (id) prepareObjectForUndo:(NSString*) string get the undo object
@@ -543,6 +542,9 @@ enum
 - (void) setLoadingPause:(BOOL) lp;
 - (void) setImageIndex:(long) i;
 - (long) imageIndex;
+- (IBAction) editSUVinjectionTime:(id)sender;
+- (IBAction) ok:(id)sender;
+- (IBAction) cancel:(id)sender;
 - (void) viewerControllerInit;
 - (IBAction) ConvertToRGBMenu:(id) sender;
 - (BOOL) updateTilingViewsValue;
