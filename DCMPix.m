@@ -4505,7 +4505,6 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 
 - (void) computeTotalDoseCorrected
 {
-	// WARNING : only time is correct. NOT year/month/day
 	float timebetween = -[radiopharmaceuticalStartTime timeIntervalSinceDate: acquisitionTime];
 	
 	if( halflife > 0 && timebetween > 0)

@@ -42,7 +42,7 @@
 				<int key="NSWindowStyleMask">401</int>
 				<int key="NSWindowBacking">2</int>
 				<string key="NSWindowRect">{{299, 668}, {278, 67}}</string>
-				<int key="NSWTFlags">-805306368</int>
+				<int key="NSWTFlags">1342177280</int>
 				<string key="NSWindowTitle"/>
 				<string key="NSWindowClass">NSPanel</string>
 				<object class="NSMutableString" key="NSViewClass">
@@ -386,9 +386,9 @@
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<integer value="1"/>
-					<string>{{0, 1473}, {278, 67}}</string>
+					<string>{{0, 855}, {278, 67}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{0, 1473}, {278, 67}}</string>
+					<string>{{0, 855}, {278, 67}}</string>
 					<integer value="1"/>
 					<string>{{299, 668}, {278, 67}}</string>
 					<boolean value="NO"/>
@@ -1218,7 +1218,7 @@
 			<integer value="3000" key="NS.object.0"/>
 		</object>
 		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>
-		<string key="IBDocument.LastKnownRelativeProjectPath">../../../OsiriX.xcodeproj</string>
+		<string key="IBDocument.LastKnownRelativeProjectPath">../../OsiriX.xcodeproj</string>
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
 	</data>
 </archive>
