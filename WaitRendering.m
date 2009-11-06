@@ -243,7 +243,7 @@
 	displayedTime = [NSDate timeIntervalSinceReferenceDate];
 	
 	[[self window] setLevel: NSModalPanelWindowLevel];
-
+	
 	return self;
 }
 

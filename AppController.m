@@ -2562,8 +2562,7 @@ static BOOL initialized = NO;
 		}
 	}
 	
-	NSNotificationCenter *nc;
-    nc = [NSNotificationCenter defaultCenter];
+	NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
     [nc addObserver: self
            selector: @selector(UpdateWLWWMenu:)
                name: OsirixUpdateWLWWMenuNotification
