@@ -13055,7 +13055,8 @@ static NSArray*	openSubSeriesArray = nil;
 			isDirectory = FALSE;
 			if ([fileManager fileExistsAtPath:filePath isDirectory:&isDirectory])
 			{
-				if(isDirectory == YES && DicomDirScanDepth < 3)	{
+				if(isDirectory == YES && DicomDirScanDepth < 3)
+				{
 					if((filePath = [BrowserController _findFirstDicomdirOnCDMedia: filePath found:found]) != nil)
 						return filePath;
 				}
@@ -13109,14 +13110,14 @@ static NSArray*	openSubSeriesArray = nil;
 					hasDICOMDIR = YES;
 			}
 			
-			if(  hasDICOMDIR == YES)
+			if( hasDICOMDIR == YES)
 			{
 				// ADD ALL FILES OF THIS VOLUME TO THE DATABASE!
 				NSMutableArray  *filesArray = [[[NSMutableArray alloc] initWithCapacity:0] autorelease];
 				
 				found = YES;
 				
-				if ([[NSUserDefaults standardUserDefaults] boolForKey: @"USEDICOMDIR"])
+				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"USEDICOMDIR"])
 				{
 					NSString    *aPath = mediaPath;
 					NSDirectoryEnumerator *enumer = [[NSFileManager defaultManager] enumeratorAtPath:aPath];
@@ -13178,10 +13179,16 @@ static NSArray*	openSubSeriesArray = nil;
 					else
 					{
 						if( sender)
-							NSRunCriticalAlertPanel(NSLocalizedString(@"DICOMDIR",nil), NSLocalizedString(@"No DICOMDIR file has been found on this CD/DVD. Unable to load images.",nil),NSLocalizedString( @"OK",nil), nil, nil);
+						{
+							NSInteger response = NSRunCriticalAlertPanel(NSLocalizedString(@"DICOMDIR",nil), NSLocalizedString(@"No DICOMDIR file has been found on this CD/DVD. I will try to scan the entier CD/DVD for DICOM files.",nil), NSLocalizedString( @"OK",nil), NSLocalizedString( @"Cancel",nil), nil);
+							
+							if( response != NSAlertDefaultReturn)
+								sender = nil;
+						}
 					}
 				}
-				else
+				
+				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"USEDICOMDIR"] == NO || (sender != nil && [filesArray count] == 0))
 				{
 					NSString    *pathname;
 					NSString    *aPath = mediaPath;
