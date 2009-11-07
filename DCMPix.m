@@ -6671,9 +6671,9 @@ END_CREATE_ROIS:
 					if( shortGreen) free( shortGreen);
 					if( shortBlue) free( shortBlue);
 					
-					shortRed = malloc( 65535L * sizeof( unsigned short));
-					shortGreen = malloc( 65535L * sizeof( unsigned short));
-					shortBlue = malloc( 65535L * sizeof( unsigned short));
+					shortRed = malloc( 65536L * sizeof( unsigned short));
+					shortGreen = malloc( 65536L * sizeof( unsigned short));
+					shortBlue = malloc( 65536L * sizeof( unsigned short));
 					
 					// extract the RED palette clut data
 					val = Papy3GetElement (theGroupP, papSegmentedRedPaletteColorLookupTableDataGr, &nbVal, &elemType);
@@ -6843,11 +6843,6 @@ END_CREATE_ROIS:
 						shortRed[jj] =shortRed[jj]>>8;
 						shortGreen[jj] =shortGreen[jj]>>8;
 						shortBlue[jj] =shortBlue[jj]>>8;
-						
-						//								if( shortRed[jj] == shortGreen[jj] && shortRed[jj] == shortBlue[jj])
-						//								{
-						//									NSLog(@"%d : %d/%d/%d", jj, shortRed[jj], shortGreen[jj], shortBlue[jj]);
-						//								}
 					}
 				}
 				else if (clutDepthR == 8  && clutDepthG == 8  && clutDepthB == 8)
@@ -7930,6 +7925,7 @@ END_CREATE_ROIS:
 									}
 									
 									isRGB = YES;
+									bitsAllocated = 8;
 									
 									efree3 ((void **) &oImage);
 									oImage = (short*) tmpImage;

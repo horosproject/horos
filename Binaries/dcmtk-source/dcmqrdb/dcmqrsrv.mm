@@ -220,7 +220,7 @@ void DcmQueryRetrieveSCP::waitUnlockFileWithPID(int pid)
 	if( inc > TIMEOUT)
 	{
 		kill( pid, 15);
-		NSLog( @"******* waitUnlockFile for %d min", TIMEOUT / 60);
+		NSLog( @"******* waitUnlockFile for %d min", inc / 60);
 	}
 	
 	if( rc < 0)
