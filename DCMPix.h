@@ -79,7 +79,7 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 	NSString			*flipAngle, *laterality;
 	NSString			*protocolName;
 	NSString			*viewPosition;
-	NSString			*patientPosition;
+	NSString			*patientPosition, *acquisitionDate;
 	BOOL				hasSUV, SUVConverted;
 	NSString			*units, *decayCorrection;
 	float				decayFactor, factorPET2SUV;
@@ -295,6 +295,7 @@ Note setter is different to not break existing usage. :-( */
 @property float radionuclideTotalDose;
 @property float radionuclideTotalDoseCorrected;
 @property(retain) NSCalendarDate *acquisitionTime;
+@property(retain) NSString *acquisitionDate;
 @property(retain) NSCalendarDate *radiopharmaceuticalStartTime;
 @property BOOL SUVConverted, full32bitPipeline, needToCompute8bitRepresentation;
 @property(readonly) BOOL hasSUV;
