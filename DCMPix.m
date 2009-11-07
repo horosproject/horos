@@ -1250,7 +1250,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		gUseShutter = [[NSUserDefaults standardUserDefaults] boolForKey:@"UseShutter"];
 		gDisplayDICOMOverlays = [[NSUserDefaults standardUserDefaults] boolForKey:@"DisplayDICOMOverlays"];
 		gUseVOILUT = [[NSUserDefaults standardUserDefaults] boolForKey:@"UseVOILUT"];
-		gUSEPAPYRUSDCMPIX = [[NSUserDefaults standardUserDefaults] boolForKey:@"USEPAPYRUSDCMPIX2"];
+		gUSEPAPYRUSDCMPIX = [[NSUserDefaults standardUserDefaults] boolForKey:@"USEPAPYRUSDCMPIX3"];
 		gUseJPEGColorSpace = [[NSUserDefaults standardUserDefaults] boolForKey:@"UseJPEGColorSpace"];
 		gFULL32BITPIPELINE = [[NSUserDefaults standardUserDefaults] boolForKey:@"FULL32BITPIPELINE"];
 		
