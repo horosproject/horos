@@ -12846,8 +12846,12 @@ int i,j,l;
 
 - (IBAction) editSUVinjectionTime:(id)sender
 {
-	self.injectionDateTime = [[[[imageView curDCM] radiopharmaceuticalStartTime] copy] autorelease];
+	if( [sender tag] == 0)
+		self.injectionDateTime = [[[[imageView curDCM] radiopharmaceuticalStartTime] copy] autorelease];
 	
+	if( [sender tag] == 1)
+		self.injectionDateTime = [[[[imageView curDCM] acquisitionTime] copy] autorelease];
+		
 	[NSApp beginSheet: injectionTimeWindow
 	   modalForWindow: displaySUVWindow
 		modalDelegate: nil
@@ -12863,10 +12867,20 @@ int i,j,l;
 		for( int y = 0; y < maxMovieIndex; y++)
 		{
 			for( DCMPix *p in pixList[y])
-				p.radiopharmaceuticalStartTime = injectionDateTime;
+			{
+				if( [sender tag] == 0)
+					p.radiopharmaceuticalStartTime = injectionDateTime;
+					
+				if( [sender tag] == 1)
+					p.acquisitionTime = injectionDateTime;
+			}
 		}
 		
-		[[suvForm cellAtIndex: 3] setObjectValue: [[imageView curDCM] radiopharmaceuticalStartTime]];
+		if( [sender tag] == 0)
+			[[suvForm cellAtIndex: 3] setObjectValue: injectionDateTime];
+		
+		if( [sender tag] == 1)
+			[[suvForm cellAtIndex: 4] setObjectValue: injectionDateTime];
 	}
 }
 
