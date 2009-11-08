@@ -2522,11 +2522,12 @@ static BOOL initialized = NO;
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"UseOpenJpegForJPEG2000"] == NO)
 		[self growlTitle: NSLocalizedString( @"Warning!", nil) description: NSLocalizedString( @"Jasper library is selected for JPEG2000. The performance and quality of this toolkit are lower.", nil)  name:@"newfiles"];
 	
+	#ifndef OSIRIX_LIGHT
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"checkForUpdatesPlugins"])
 		[NSThread detachNewThreadSelector:@selector(checkForUpdates:) toTarget:pluginManager withObject:pluginManager];
 	
 	[NSThread detachNewThreadSelector: @selector(checkForUpdates:) toTarget:self withObject: self];
-	
+	#endif
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"]) // Server mode
 		[[[BrowserController currentBrowser] window] orderOut: self];
@@ -2841,6 +2842,7 @@ static BOOL initialized = NO;
 	[msg release];
 }
 
+#ifndef OSIRIX_LIGHT
 - (IBAction) checkForUpdates: (id) sender
 {
 	NSURL *url;
@@ -2888,6 +2890,7 @@ static BOOL initialized = NO;
 	
 	[pool release];
 }
+#endif
 
 - (void) URL: (NSURL*) sender resourceDidFailLoadingWithReason: (NSString*) reason
 {

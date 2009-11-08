@@ -13599,6 +13599,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[pool release];
 }
 
+#ifndef OSIRIX_LIGHT
 - (void)compressDICOMJPEGinINCOMING: (NSArray*) array
 {
 	NSAutoreleasePool   *pool = [[NSAutoreleasePool alloc] init];
@@ -13873,6 +13874,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	[decompressThreadRunning unlock];
 }
+#endif
 
 - (void)checkIncomingThread: (id)sender
 {
@@ -13883,6 +13885,10 @@ static volatile int numberOfThreadsForJPEG = 0;
 		BOOL ListenerCompressionSettings = [[NSUserDefaults standardUserDefaults] integerForKey: @"ListenerCompressionSettings"];
 		NSMutableArray  *filesArray = [NSMutableArray array];
 		NSMutableArray	*compressedPathArray = [NSMutableArray array];
+		
+		#ifdef OSIRIX_LIGHT
+		ListenerCompressionSettings = 0;
+		#endif
 		
 		[checkIncomingLock lock];
 		
