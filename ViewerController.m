@@ -18863,6 +18863,8 @@ sourceRef);
 	{
 		[item setImage:[self reportIcon]];
 	}
+	#else
+	[item setImage: [NSImage imageNamed: @"Report.icns"]];
 	#endif
 }
 

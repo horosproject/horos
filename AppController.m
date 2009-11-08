@@ -1885,6 +1885,7 @@ static NSDate *lastWarningDate = nil;
 			[PluginManager discoverPlugins];
 			[PluginManager setMenus: filtersMenu :roisMenu :othersMenu :dbMenu];
 			
+			#ifndef OSIRIX_LIGHT
 			// refresh the plugin manager window (if open)
 			NSArray *winList = [NSApp windows];		
 			for(NSWindow *window in winList)
@@ -1892,6 +1893,7 @@ static NSDate *lastWarningDate = nil;
 				if( [[window windowController] isKindOfClass:[PluginManagerController class]])
 					[[window windowController] refreshPluginList];
 			}
+			#endif
 			
 			NSRunInformationalAlertPanel(NSLocalizedString(@"Plugin Update Completed", @""), NSLocalizedString(@"All your plugins are now up to date. Restart OsiriX to use the new or updated plugins.", @""), NSLocalizedString(@"OK", @""), nil, nil);
 		}

@@ -6389,7 +6389,6 @@
 		CEC7097410A5C844008935EA /* DarkBox.m in Sources */ = {isa = PBXBuildFile; fileRef = BF4108E70B126C7800AAC648 /* DarkBox.m */; };
 		CEC7097510A5C844008935EA /* OSIWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = BF09B13E0B2E681D00AA97E2 /* OSIWindowController.m */; };
 		CEC7097910A5C844008935EA /* MenuDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = B78490FA0B4BE86400BA93EF /* MenuDictionary.m */; };
-		CEC7097C10A5C844008935EA /* PluginManagerController.m in Sources */ = {isa = PBXBuildFile; fileRef = A90202BB0B980CD60001A00B /* PluginManagerController.m */; };
 		CEC7097D10A5C844008935EA /* BLAuthentication.m in Sources */ = {isa = PBXBuildFile; fileRef = A94469E00BA7FFE7008643E5 /* BLAuthentication.m */; };
 		CEC7098010A5C844008935EA /* mdfconen.cc in Sources */ = {isa = PBXBuildFile; fileRef = CE96D0F20BEE71E800C4E397 /* mdfconen.cc */; };
 		CEC7098110A5C844008935EA /* mdfdsman.cc in Sources */ = {isa = PBXBuildFile; fileRef = CE96D1170BEE732900C4E397 /* mdfdsman.cc */; };
@@ -6832,7 +6831,6 @@
 		CEC7FEED10A5C844008935EA /* DarkBox.h in Headers */ = {isa = PBXBuildFile; fileRef = BF4108E60B126C7800AAC648 /* DarkBox.h */; };
 		CEC7FEEE10A5C844008935EA /* OSIWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = BF09B13D0B2E681D00AA97E2 /* OSIWindowController.h */; };
 		CEC7FEF210A5C844008935EA /* MenuDictionary.h in Headers */ = {isa = PBXBuildFile; fileRef = B78490F90B4BE86400BA93EF /* MenuDictionary.h */; };
-		CEC7FEF510A5C844008935EA /* PluginManagerController.h in Headers */ = {isa = PBXBuildFile; fileRef = A90202BA0B980CD60001A00B /* PluginManagerController.h */; };
 		CEC7FEF610A5C844008935EA /* BLAuthentication.h in Headers */ = {isa = PBXBuildFile; fileRef = A94469DF0BA7FFE7008643E5 /* BLAuthentication.h */; };
 		CEC7FEF910A5C844008935EA /* mdfconen.h in Headers */ = {isa = PBXBuildFile; fileRef = CE96D0F30BEE71E800C4E397 /* mdfconen.h */; };
 		CEC7FEFA10A5C844008935EA /* mdfdsman.h in Headers */ = {isa = PBXBuildFile; fileRef = CE96D1160BEE732900C4E397 /* mdfdsman.h */; };
@@ -19242,7 +19240,6 @@
 				CEC7FEED10A5C844008935EA /* DarkBox.h in Headers */,
 				CEC7FEEE10A5C844008935EA /* OSIWindowController.h in Headers */,
 				CEC7FEF210A5C844008935EA /* MenuDictionary.h in Headers */,
-				CEC7FEF510A5C844008935EA /* PluginManagerController.h in Headers */,
 				CEC7FEF610A5C844008935EA /* BLAuthentication.h in Headers */,
 				CEC7FEF910A5C844008935EA /* mdfconen.h in Headers */,
 				CEC7FEFA10A5C844008935EA /* mdfdsman.h in Headers */,
@@ -24032,7 +24029,6 @@
 				CEC7097410A5C844008935EA /* DarkBox.m in Sources */,
 				CEC7097510A5C844008935EA /* OSIWindowController.m in Sources */,
 				CEC7097910A5C844008935EA /* MenuDictionary.m in Sources */,
-				CEC7097C10A5C844008935EA /* PluginManagerController.m in Sources */,
 				CEC7097D10A5C844008935EA /* BLAuthentication.m in Sources */,
 				CEC7098010A5C844008935EA /* mdfconen.cc in Sources */,
 				CEC7098110A5C844008935EA /* mdfdsman.cc in Sources */,

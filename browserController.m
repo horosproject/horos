@@ -16504,6 +16504,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 		
 		[item setImage: icon];
 	}
+	#else
+	[item setImage: [NSImage imageNamed: @"Report.icns"]];
 	#endif
 }
 
