@@ -40,7 +40,6 @@
 #import "SearchWindowController.h"
 #import "Wait.h"
 #import "WaitRendering.h"
-#import "DotMacKit/DotMacKit.h"
 #import "BurnerWindowController.h"
 #import "DCMTransferSyntax.h"
 #import "DCMAttributeTag.h"
@@ -15378,6 +15377,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	}
 }
 
+#ifndef OSIRIX_LIGHT
 - (void)loadDICOMFromiDisk: (id)sender
 {
 	if( isCurrentDatabaseBonjour) return;
@@ -15529,6 +15529,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 			[[NSFileManager defaultManager] removeFileAtPath: directoryPath handler: nil];
 	}
 }
+
+#endif
 
 - (void)selectServer: (NSArray*)objects
 {

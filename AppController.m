@@ -40,7 +40,9 @@
 #import "QueryController.h"
 #import "NSSplitViewSave.h"
 #import "altivecFunctions.h"
+#ifndef OSIRIX_LIGHT
 #import <ILCrashReporter/ILCrashReporter.h>
+#endif
 #import "PluginManagerController.h"
 #import "OSIWindowController.h"
 #import "Notifications.h"
@@ -2382,7 +2384,7 @@ static BOOL initialized = NO;
 
 - (void) growlTitle:(NSString*) title description:(NSString*) description name:(NSString*) name
 {
-//#if !__LP64__
+#ifndef OSIRIX_LIGHT
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"doNotUseGrowl"]) return;
 	
@@ -2393,7 +2395,7 @@ static BOOL initialized = NO;
 							priority: 0
 							isSticky: NO
 							clickContext: nil];
-//#endif
+#endif
 }
 
 - (NSDictionary *) registrationDictionaryForGrowl
@@ -2405,11 +2407,11 @@ static BOOL initialized = NO;
 
     NSDictionary *dict = nil;
 	
-//	#if !__LP64__
+#ifndef OSIRIX_LIGHT
     dict = [NSDictionary dictionaryWithObjectsAndKeys:
                              notifications, GROWL_NOTIFICATIONS_ALL,
                          notifications, GROWL_NOTIFICATIONS_DEFAULT, nil];
-//	#endif
+#endif
 	
     return (dict);
 }
@@ -2517,6 +2519,7 @@ static BOOL initialized = NO;
 		
 	}
 	
+	#ifndef OSIRIX_LIGHT
 	@try
 	{
 		[[ILCrashReporter defaultReporter] launchReporterForCompany:@"OsiriX Developers" reportAddr:@"crash@osirix-viewer.com"];
@@ -2525,6 +2528,8 @@ static BOOL initialized = NO;
 	{
 		NSLog( @"**** Exception ILCrashReporter: %@", e);
 	}
+	#endif
+	
 	[PluginManager setMenus: filtersMenu :roisMenu :othersMenu :dbMenu];
     
 	theTask = nil;
@@ -2533,6 +2538,7 @@ static BOOL initialized = NO;
 	[self initDCMTK];
 	[self restartSTORESCP];
 
+	#ifndef OSIRIX_LIGHT
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"doNotUseGrowl"] == NO)
 	{
 		[GrowlApplicationBridge setGrowlDelegate:self];
@@ -2563,6 +2569,7 @@ static BOOL initialized = NO;
 			}
 		}
 	}
+	#endif
 	
 	NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
     [nc addObserver: self

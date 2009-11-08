@@ -12,8 +12,10 @@
      PURPOSE.
 =========================================================================*/
 
-
+#ifndef OSIRIX_LIGHT
 #include "FVTiff.h"
+#endif
+
 #import <dicomFile.h>
 #import "Papyrus3/Papyrus3.h"
 #import "ViewerController.h"
@@ -27,7 +29,9 @@
 #import "DICOMToNSString.h"
 #import "DefaultsOsiriX.h"
 #import <QTKit/QTKit.h>
+#ifndef OSIRIX_LIGHT
 #include "tiffio.h"
+#endif
 #import "DicomFileDCMTKCategory.h"
 #import "PluginManager.h"
 #include "nifti1.h"
@@ -270,6 +274,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	int success = NO;
 	
 	#ifndef STATIC_DICOM_LIB
+	#ifndef OSIRIX_LIGHT
 	NSString *extension = [[file pathExtension] lowercaseString];
 	
 	if( [extension isEqualToString:@"tiff"] == YES ||
@@ -285,7 +290,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	}
 	
 	#endif
-	
+	#endif
 	return success;
 }
 
@@ -294,7 +299,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	int success = NO;
 
 	#ifndef STATIC_DICOM_LIB
-	
+	#ifndef OSIRIX_LIGHT
 	NSString *extension = [[file pathExtension] lowercaseString];
 	
 	if( [extension isEqualToString:@"tiff"] == YES ||
@@ -309,6 +314,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			TIFFClose(tif);
 		}
 	}
+	#endif
 	#endif
 	return success;
 }
@@ -417,7 +423,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	int success = 0;
 	
 	#ifndef STATIC_DICOM_LIB
-	
+	#ifndef OSIRIX_LIGHT
 	NSString *extension = [[filePath pathExtension] lowercaseString];
 	
 	if( [extension isEqualToString:@"tiff"] == YES ||
@@ -547,6 +553,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	}
 	
 	#endif
+	#endif
 	
 	if (success)
 		return 0;
@@ -618,6 +625,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				NSBitmapImageRep	*rep;
 				
 				#ifndef STATIC_DICOM_LIB
+				#ifndef OSIRIX_LIGHT
 				if( [extension isEqualToString:@"tiff"] == YES ||
 					[extension isEqualToString:@"stk"] == YES ||
 					[extension isEqualToString:@"tif"] == YES)
@@ -652,6 +660,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 					}
 				}
 				else
+				#endif
 				#endif
 				{
 					if( otherImage && [extension isEqualToString:@"pdf"])

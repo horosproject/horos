@@ -32,9 +32,9 @@
 @class OrthogonalMPRPETCTViewer;
 @class SRController;
 @class EndoscopyViewer;
-//@class VRPROController;
-@class ViewerController;
 @class MPRController;
+@class ViewerController;
+
 
 @interface NSObject(OsiriXPluginDraggingDestination)
 - (BOOL)performPluginDragOperation:(id <NSDraggingInfo>)sender destination:(ViewerController*)vc;

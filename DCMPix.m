@@ -31,8 +31,10 @@
 #import "ThickSlabController.h"
 #import "dicomFile.h"
 #import "PluginFileFormatDecoder.h"
+#ifndef OSIRIX_LIGHT
 #include "tiffio.h"
 #include "FVTiff.h"
+#endif
 #include "Analyze.h"
 #include "nifti1.h"
 #include "nifti1_io.h"
@@ -3638,7 +3640,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 -(void) LoadTiff:(long) directory
 {
 #ifndef STATIC_DICOM_LIB
-	
+#ifndef OSIRIX_LIGHT
 	long			i, totSize;
 	int				w, h, row;
 	short			bpp, count, tifspp;
@@ -3966,13 +3968,14 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		TIFFClose(tif);
 	}
 	else NSLog( @"ERROR TIFF UNKNOWN");
-	
+#endif
 #endif
 }
 
 -(void) LoadFVTiff
 {
 #ifndef STATIC_DICOM_LIB
+#ifndef OSIRIX_LIGHT
 	int success = 0, i;
 	short head_size = 0;
 	char* head_data = 0;
@@ -4027,6 +4030,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 			pixelRatio = pixelSpacingY / pixelSpacingX;
 	}
 	if(tif) TIFFClose(tif);
+#endif
 #endif
 }
 
@@ -9173,6 +9177,7 @@ END_CREATE_ROIS:
 							[extension isEqualToString:@"tif"] == YES)
 				{
 #ifndef STATIC_DICOM_LIB
+#ifndef OSIRIX_LIGHT
 					TIFF* tif = TIFFOpen([srcFile UTF8String], "r");
 					if( tif)
 					{
@@ -9196,7 +9201,7 @@ END_CREATE_ROIS:
 						TIFFClose(tif);
 					}
 #endif
-					
+#endif
 					if( USECUSTOMTIFF == NO)
 					{
 						otherImage = [[NSImage alloc] initWithContentsOfFile:srcFile];

@@ -12,7 +12,9 @@
      PURPOSE.
 =========================================================================*/
 
+#ifndef OSIRIX_LIGHT
 #include "FVTiff.h"
+#endif
 
 #import "XMLController.h"
 #import "XMLControllerDCMTKCategory.h"
@@ -463,6 +465,7 @@ extern int delayedTileWindows;
 		
 		isDICOM = YES;
 	}
+	#ifndef OSIRIX_LIGHT
 	else if([DicomFile isFVTiffFile:srcFile])
 	{
 		xmlDocument = XML_from_FVTiff(srcFile);
@@ -471,6 +474,7 @@ extern int delayedTileWindows;
 	{
 		xmlDocument = [[DicomFile getNIfTIXML:srcFile] retain];
 	}
+	#endif
 	else
 	{
 		DCMObject *dcmObject = [DCMObject objectWithContentsOfFile:srcFile decodingPixelData:NO];

@@ -1,0 +1,6 @@
+#ifdef __OBJC__
+    #import <Cocoa/Cocoa.h>
+#endif
+
+#define OSIRIX_VIEWER
+#define OSIRIX_LIGHT

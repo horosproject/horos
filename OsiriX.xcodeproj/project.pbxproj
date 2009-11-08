@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 45;
+	objectVersion = 46;
 	objects = {
 
 /* Begin PBXAggregateTarget section */
@@ -4352,6 +4352,20 @@
 		CEBD8ACD0875B233000E42D6 /* OSIViewerPreferencePane.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = CEBD8AB80875B233000E42D6 /* OSIViewerPreferencePane.prefPane */; };
 		CEBD8E5F0B675A75008FD772 /* Propagate.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEBD8E5B0B675A75008FD772 /* Propagate.tif */; };
 		CEBD8EF80B6761CC008FD772 /* PropagateOn.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEBD8EF40B6761CC008FD772 /* PropagateOn.tif */; };
+		CEBEAD0610A6F11600E4C7C9 /* DotMacKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEFE60580979B1DB00891EA9 /* DotMacKit.framework */; };
+		CEBEAD3110A6F27600E4C7C9 /* znzlib.h in Headers */ = {isa = PBXBuildFile; fileRef = AB87FA790C06BEB200CD2976 /* znzlib.h */; };
+		CEBEAD3210A6F27700E4C7C9 /* znzlib.c in Sources */ = {isa = PBXBuildFile; fileRef = AB87FA780C06BEB200CD2976 /* znzlib.c */; };
+		CEBEAD3310A6F27700E4C7C9 /* nifti1_io.h in Headers */ = {isa = PBXBuildFile; fileRef = AB87FA770C06BEB200CD2976 /* nifti1_io.h */; };
+		CEBEAD3410A6F27800E4C7C9 /* nifti1_io.c in Sources */ = {isa = PBXBuildFile; fileRef = AB87FA760C06BEB200CD2976 /* nifti1_io.c */; };
+		CEBEAD3510A6F27800E4C7C9 /* nifti1.h in Headers */ = {isa = PBXBuildFile; fileRef = AB87FA750C06BEB200CD2976 /* nifti1.h */; };
+		CEBEADA410A6F72C00E4C7C9 /* DotMacKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEFE60580979B1DB00891EA9 /* DotMacKit.framework */; };
+		CEBEADA510A6F73100E4C7C9 /* DotMacKit.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = CEFE60580979B1DB00891EA9 /* DotMacKit.framework */; };
+		CEBEADCB10A6F8FC00E4C7C9 /* Growl.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABDF6E2D0BE0904D00793094 /* Growl.framework */; };
+		CEBEADCC10A6F8FF00E4C7C9 /* Growl.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = ABDF6E2D0BE0904D00793094 /* Growl.framework */; };
+		CEBEAE4B10A6FCFA00E4C7C9 /* ILCrashReporter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABE881440FC1444D009F5C80 /* ILCrashReporter.framework */; };
+		CEBEAE5310A6FD0A00E4C7C9 /* ILCrashReporter.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = ABE881440FC1444D009F5C80 /* ILCrashReporter.framework */; };
+		CEBEAE5F10A6FD4600E4C7C9 /* Nitrogen.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 59FF1CE11097107A00F5EDA0 /* Nitrogen.framework */; };
+		CEBEAE8410A6FD4D00E4C7C9 /* Nitrogen.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 59FF1CE11097107A00F5EDA0 /* Nitrogen.framework */; };
 		CEC172040874839C0021C3FC /* burn_anim00.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEC171F80874839C0021C3FC /* burn_anim00.tif */; };
 		CEC172050874839C0021C3FC /* burn_anim01.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEC171F90874839C0021C3FC /* burn_anim01.tif */; };
 		CEC172060874839C0021C3FC /* burn_anim02.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEC171FA0874839C0021C3FC /* burn_anim02.tif */; };
@@ -6197,7 +6211,6 @@
 		CEC7075910A5C844008935EA /* QueryLogController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EE416C808B2612600D4C9CC /* QueryLogController.m */; };
 		CEC7075A10A5C844008935EA /* LogWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = BF1745D308E0C7E200822756 /* LogWindowController.m */; };
 		CEC7075B10A5C844008935EA /* PluginFileFormatDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = BFAFEE9308F2220B002AD789 /* PluginFileFormatDecoder.m */; };
-		CEC7075C10A5C844008935EA /* FVTiff.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE73FC808F44724002A395F /* FVTiff.m */; };
 		CEC7075D10A5C844008935EA /* stringNumericCompare.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE73FD108F44749002A395F /* stringNumericCompare.m */; };
 		CEC7075E10A5C844008935EA /* ROIManagerController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9762FC08FABDA600E6F8B0 /* ROIManagerController.m */; };
 		CEC7075F10A5C844008935EA /* PaletteController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9762FF08FABDA600E6F8B0 /* PaletteController.m */; };
@@ -6724,8 +6737,6 @@
 		CEC7098110A5C844008935EA /* mdfdsman.cc in Sources */ = {isa = PBXBuildFile; fileRef = CE96D1170BEE732900C4E397 /* mdfdsman.cc */; };
 		CEC7098510A5C844008935EA /* stringAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = A918CC7A0C02E51B00CAC7A3 /* stringAdditions.m */; };
 		CEC7098610A5C844008935EA /* BrowserMatrix.m in Sources */ = {isa = PBXBuildFile; fileRef = ABC47B580C031397001CEA21 /* BrowserMatrix.m */; };
-		CEC7098710A5C844008935EA /* nifti1_io.c in Sources */ = {isa = PBXBuildFile; fileRef = AB87FA760C06BEB200CD2976 /* nifti1_io.c */; };
-		CEC7098810A5C844008935EA /* znzlib.c in Sources */ = {isa = PBXBuildFile; fileRef = AB87FA780C06BEB200CD2976 /* znzlib.c */; };
 		CEC7098A10A5C844008935EA /* JPEGExif.m in Sources */ = {isa = PBXBuildFile; fileRef = ABB230BA0C2F95DD00B38596 /* JPEGExif.m */; };
 		CEC7098C10A5C844008935EA /* OsiriXDB_DataModel.xcdatamodel in Sources */ = {isa = PBXBuildFile; fileRef = CE0718FD0C71D5F3006332F3 /* OsiriXDB_DataModel.xcdatamodel */; };
 		CEC7098D10A5C844008935EA /* XMLRPCMethods.m in Sources */ = {isa = PBXBuildFile; fileRef = CE882AC50C889B6500D4F982 /* XMLRPCMethods.m */; };
@@ -6790,7 +6801,6 @@
 		CEC709D310A5C844008935EA /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = BFBF3A9F09B681F500545F5E /* libxml2.dylib */; };
 		CEC709D410A5C844008935EA /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = BFBF3AA009B681F500545F5E /* libz.dylib */; };
 		CEC709D610A5C844008935EA /* libtiff.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CE7BBFD30C82DCA5000AD12F /* libtiff.dylib */; };
-		CEC709D710A5C844008935EA /* libtiff.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE7BBFD40C82DCA5000AD12F /* libtiff.a */; };
 		CEC709D810A5C844008935EA /* Growl.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABDF6E2D0BE0904D00793094 /* Growl.framework */; };
 		CEC70A0510A5C844008935EA /* ILCrashReporter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABE881440FC1444D009F5C80 /* ILCrashReporter.framework */; };
 		CEC70A0610A5C844008935EA /* ILCrashReporter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABE881440FC1444D009F5C80 /* ILCrashReporter.framework */; };
@@ -6800,13 +6810,8 @@
 		CEC70A0B10A5C844008935EA /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE790A19105D4DE200CE6AAF /* WebKit.framework */; };
 		CEC70A0C10A5C844008935EA /* Nitrogen.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 59FF1CE11097107A00F5EDA0 /* Nitrogen.framework */; };
 		CEC70A0F10A5C844008935EA /* OsiriX.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE8D057D0FD8505000165DDE /* OsiriX.framework */; };
-		CEC70A1010A5C844008935EA /* Growl.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = ABDF6E2D0BE0904D00793094 /* Growl.framework */; };
-		CEC70A1110A5C844008935EA /* DotMacKit.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = CEFE60580979B1DB00891EA9 /* DotMacKit.framework */; };
-		CEC70A1210A5C844008935EA /* libtiff.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE7BBFD30C82DCA5000AD12F /* libtiff.dylib */; };
-		CEC70A1410A5C844008935EA /* ILCrashReporter.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = ABE881440FC1444D009F5C80 /* ILCrashReporter.framework */; };
 		CEC70A8A10A5CBB4008935EA /* libopenjpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ABDEB38B0D1827440079C938 /* libopenjpeg.a */; };
 		CEC70A8F10A5CBCC008935EA /* Nitrogen.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 59FF1CE11097107A00F5EDA0 /* Nitrogen.framework */; };
-		CEC70B1E10A5D5B3008935EA /* Nitrogen.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 59FF1CE11097107A00F5EDA0 /* Nitrogen.framework */; };
 		CEC7FC6E10A5C844008935EA /* MyOutlineView.h in Headers */ = {isa = PBXBuildFile; fileRef = AB0813D6057C698900A72813 /* MyOutlineView.h */; };
 		CEC7FC7010A5C844008935EA /* NSFont_OpenGL.h in Headers */ = {isa = PBXBuildFile; fileRef = AB3C6A8E057ADCA60001052D /* NSFont_OpenGL.h */; };
 		CEC7FC7110A5C844008935EA /* NSFullScreenWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = ABAA284B058A4F7F00F0601D /* NSFullScreenWindow.h */; };
@@ -6834,18 +6839,6 @@
 		CEC7FC8910A5C844008935EA /* OpacityTransferView.h in Headers */ = {isa = PBXBuildFile; fileRef = ABCA5BA20625FC1100637E73 /* OpacityTransferView.h */; };
 		CEC7FC8C10A5C844008935EA /* MutableArrayCategory.h in Headers */ = {isa = PBXBuildFile; fileRef = AB94E72406343D91003E4C48 /* MutableArrayCategory.h */; };
 		CEC7FC8D10A5C844008935EA /* QuicktimeExport.h in Headers */ = {isa = PBXBuildFile; fileRef = AB0128620635991400A74AA1 /* QuicktimeExport.h */; };
-		CEC7FC8E10A5C844008935EA /* port.h in Headers */ = {isa = PBXBuildFile; fileRef = ABDE6E0B06398E3400F0C5DD /* port.h */; };
-		CEC7FC8F10A5C844008935EA /* t4.h in Headers */ = {isa = PBXBuildFile; fileRef = ABDE6E0C06398E3400F0C5DD /* t4.h */; };
-		CEC7FC9010A5C844008935EA /* tif_dir.h in Headers */ = {isa = PBXBuildFile; fileRef = ABDE6E0D06398E3400F0C5DD /* tif_dir.h */; };
-		CEC7FC9110A5C844008935EA /* tif_fax3.h in Headers */ = {isa = PBXBuildFile; fileRef = ABDE6E0E06398E3400F0C5DD /* tif_fax3.h */; };
-		CEC7FC9210A5C844008935EA /* tif_predict.h in Headers */ = {isa = PBXBuildFile; fileRef = ABDE6E0F06398E3400F0C5DD /* tif_predict.h */; };
-		CEC7FC9310A5C844008935EA /* tiff.h in Headers */ = {isa = PBXBuildFile; fileRef = ABDE6E1006398E3400F0C5DD /* tiff.h */; };
-		CEC7FC9410A5C844008935EA /* tiffcomp.h in Headers */ = {isa = PBXBuildFile; fileRef = ABDE6E1106398E3400F0C5DD /* tiffcomp.h */; };
-		CEC7FC9510A5C844008935EA /* tiffconf.h in Headers */ = {isa = PBXBuildFile; fileRef = ABDE6E1206398E3400F0C5DD /* tiffconf.h */; };
-		CEC7FC9610A5C844008935EA /* tiffio.h in Headers */ = {isa = PBXBuildFile; fileRef = ABDE6E1306398E3400F0C5DD /* tiffio.h */; };
-		CEC7FC9710A5C844008935EA /* tiffiop.h in Headers */ = {isa = PBXBuildFile; fileRef = ABDE6E1406398E3400F0C5DD /* tiffiop.h */; };
-		CEC7FC9810A5C844008935EA /* tiffvers.h in Headers */ = {isa = PBXBuildFile; fileRef = ABDE6E1506398E3400F0C5DD /* tiffvers.h */; };
-		CEC7FC9910A5C844008935EA /* uvcode.h in Headers */ = {isa = PBXBuildFile; fileRef = ABDE6E1606398E3400F0C5DD /* uvcode.h */; };
 		CEC7FC9A10A5C844008935EA /* QueryFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = ABE33369063D624400C8E087 /* QueryFilter.h */; };
 		CEC7FC9B10A5C844008935EA /* AdvancedQuerySubview.h in Headers */ = {isa = PBXBuildFile; fileRef = ABE33386063D627800C8E087 /* AdvancedQuerySubview.h */; };
 		CEC7FC9C10A5C844008935EA /* Analyze.h in Headers */ = {isa = PBXBuildFile; fileRef = AB695A1D063D8261002BDF78 /* Analyze.h */; };
@@ -6947,7 +6940,6 @@
 		CEC7FD0C10A5C844008935EA /* QueryLogController.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EE416C708B2612600D4C9CC /* QueryLogController.h */; };
 		CEC7FD0D10A5C844008935EA /* LogWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = BF1745D208E0C7E200822756 /* LogWindowController.h */; };
 		CEC7FD0E10A5C844008935EA /* PluginFileFormatDecoder.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAFEE9208F2220B002AD789 /* PluginFileFormatDecoder.h */; };
-		CEC7FD0F10A5C844008935EA /* FVTiff.h in Headers */ = {isa = PBXBuildFile; fileRef = CEE73FC708F44724002A395F /* FVTiff.h */; };
 		CEC7FD1010A5C844008935EA /* stringNumericCompare.h in Headers */ = {isa = PBXBuildFile; fileRef = CEE73FD208F44749002A395F /* stringNumericCompare.h */; };
 		CEC7FD1110A5C844008935EA /* ROIManagerController.h in Headers */ = {isa = PBXBuildFile; fileRef = CE9762FD08FABDA600E6F8B0 /* ROIManagerController.h */; };
 		CEC7FD1210A5C844008935EA /* PaletteController.h in Headers */ = {isa = PBXBuildFile; fileRef = CE9762FE08FABDA600E6F8B0 /* PaletteController.h */; };
@@ -7416,9 +7408,6 @@
 		CEC7FEFA10A5C844008935EA /* mdfdsman.h in Headers */ = {isa = PBXBuildFile; fileRef = CE96D1160BEE732900C4E397 /* mdfdsman.h */; };
 		CEC7FEFE10A5C844008935EA /* stringAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = A918CC790C02E51B00CAC7A3 /* stringAdditions.h */; };
 		CEC7FEFF10A5C844008935EA /* BrowserMatrix.h in Headers */ = {isa = PBXBuildFile; fileRef = ABC47B570C031397001CEA21 /* BrowserMatrix.h */; };
-		CEC7FF0010A5C844008935EA /* nifti1.h in Headers */ = {isa = PBXBuildFile; fileRef = AB87FA750C06BEB200CD2976 /* nifti1.h */; };
-		CEC7FF0110A5C844008935EA /* nifti1_io.h in Headers */ = {isa = PBXBuildFile; fileRef = AB87FA770C06BEB200CD2976 /* nifti1_io.h */; };
-		CEC7FF0210A5C844008935EA /* znzlib.h in Headers */ = {isa = PBXBuildFile; fileRef = AB87FA790C06BEB200CD2976 /* znzlib.h */; };
 		CEC7FF0410A5C844008935EA /* JPEGExif.h in Headers */ = {isa = PBXBuildFile; fileRef = ABB230B90C2F95DD00B38596 /* JPEGExif.h */; };
 		CEC7FF0610A5C844008935EA /* NrrdIO.h in Headers */ = {isa = PBXBuildFile; fileRef = CE542D280C6F8F7B0021A0E7 /* NrrdIO.h */; };
 		CEC7FF0710A5C844008935EA /* XMLRPCMethods.h in Headers */ = {isa = PBXBuildFile; fileRef = CE882AC40C889B6500D4F982 /* XMLRPCMethods.h */; };
@@ -8086,12 +8075,11 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				CEBEAE8410A6FD4D00E4C7C9 /* Nitrogen.framework in CopyFiles */,
+				CEBEAE5310A6FD0A00E4C7C9 /* ILCrashReporter.framework in CopyFiles */,
+				CEBEADCC10A6F8FF00E4C7C9 /* Growl.framework in CopyFiles */,
+				CEBEADA510A6F73100E4C7C9 /* DotMacKit.framework in CopyFiles */,
 				CEC70A0F10A5C844008935EA /* OsiriX.framework in CopyFiles */,
-				CEC70A1010A5C844008935EA /* Growl.framework in CopyFiles */,
-				CEC70A1110A5C844008935EA /* DotMacKit.framework in CopyFiles */,
-				CEC70A1210A5C844008935EA /* libtiff.dylib in CopyFiles */,
-				CEC70A1410A5C844008935EA /* ILCrashReporter.framework in CopyFiles */,
-				CEC70B1E10A5D5B3008935EA /* Nitrogen.framework in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -11790,7 +11778,7 @@
 		CEC3B292086C87D900DFD83E /* 3DRotateCamera.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = 3DRotateCamera.tif; sourceTree = "<group>"; };
 		CEC4B5A20C7DF2D600AF5A76 /* 3DPRESETS */ = {isa = PBXFileReference; lastKnownFileType = folder; name = 3DPRESETS; path = Binaries/3DPRESETS; sourceTree = "<group>"; };
 		CEC57C260875C9A300389622 /* OSIDatabasePreferencePane.prefPane */ = {isa = PBXFileReference; lastKnownFileType = folder; name = OSIDatabasePreferencePane.prefPane; path = "Preference Panes/OSIDatabasePreferencePane/build/Development/OSIDatabasePreferencePane.prefPane"; sourceTree = "<group>"; };
-		CEC70A1E10A5C845008935EA /* OsiriX Light.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "OsiriX Light.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		CEC70A1E10A5C845008935EA /* OsiriX Lite.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "OsiriX Lite.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CEC70A2010A5C845008935EA /* Deployment-Info copy.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Deployment-Info copy.plist"; sourceTree = "<group>"; };
 		CECDBE690C95467B006B11A5 /* AnnotationsDefault.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = AnnotationsDefault.plist; path = Binaries/AnnotationsDefault.plist; sourceTree = "<group>"; };
 		CECEF72C081BB265002ECC99 /* DICOMExport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DICOMExport.h; sourceTree = "<group>"; };
@@ -12072,7 +12060,6 @@
 				CEC709D310A5C844008935EA /* libxml2.dylib in Frameworks */,
 				CEC709D410A5C844008935EA /* libz.dylib in Frameworks */,
 				CEC709D610A5C844008935EA /* libtiff.dylib in Frameworks */,
-				CEC709D710A5C844008935EA /* libtiff.a in Frameworks */,
 				CEC709D810A5C844008935EA /* Growl.framework in Frameworks */,
 				CEC70A0510A5C844008935EA /* ILCrashReporter.framework in Frameworks */,
 				CEC70A0610A5C844008935EA /* ILCrashReporter.framework in Frameworks */,
@@ -12083,6 +12070,11 @@
 				CEC70A0C10A5C844008935EA /* Nitrogen.framework in Frameworks */,
 				CEC70A8A10A5CBB4008935EA /* libopenjpeg.a in Frameworks */,
 				CEC70A8F10A5CBCC008935EA /* Nitrogen.framework in Frameworks */,
+				CEBEAD0610A6F11600E4C7C9 /* DotMacKit.framework in Frameworks */,
+				CEBEADA410A6F72C00E4C7C9 /* DotMacKit.framework in Frameworks */,
+				CEBEADCB10A6F8FC00E4C7C9 /* Growl.framework in Frameworks */,
+				CEBEAE4B10A6FCFA00E4C7C9 /* ILCrashReporter.framework in Frameworks */,
+				CEBEAE5F10A6FD4600E4C7C9 /* Nitrogen.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -12225,7 +12217,7 @@
 				CEDAAECA0C7B486A00809161 /* 32-bit shell.app */,
 				844719AF0FD8EF50003BFDF8 /* OsiriX.framework */,
 				AB0F3A2C1046BD2B004129DD /* OsiriX Headers.framework */,
-				CEC70A1E10A5C845008935EA /* OsiriX Light.app */,
+				CEC70A1E10A5C845008935EA /* OsiriX Lite.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -19188,18 +19180,6 @@
 				CEC7FC8910A5C844008935EA /* OpacityTransferView.h in Headers */,
 				CEC7FC8C10A5C844008935EA /* MutableArrayCategory.h in Headers */,
 				CEC7FC8D10A5C844008935EA /* QuicktimeExport.h in Headers */,
-				CEC7FC8E10A5C844008935EA /* port.h in Headers */,
-				CEC7FC8F10A5C844008935EA /* t4.h in Headers */,
-				CEC7FC9010A5C844008935EA /* tif_dir.h in Headers */,
-				CEC7FC9110A5C844008935EA /* tif_fax3.h in Headers */,
-				CEC7FC9210A5C844008935EA /* tif_predict.h in Headers */,
-				CEC7FC9310A5C844008935EA /* tiff.h in Headers */,
-				CEC7FC9410A5C844008935EA /* tiffcomp.h in Headers */,
-				CEC7FC9510A5C844008935EA /* tiffconf.h in Headers */,
-				CEC7FC9610A5C844008935EA /* tiffio.h in Headers */,
-				CEC7FC9710A5C844008935EA /* tiffiop.h in Headers */,
-				CEC7FC9810A5C844008935EA /* tiffvers.h in Headers */,
-				CEC7FC9910A5C844008935EA /* uvcode.h in Headers */,
 				CEC7FC9A10A5C844008935EA /* QueryFilter.h in Headers */,
 				CEC7FC9B10A5C844008935EA /* AdvancedQuerySubview.h in Headers */,
 				CEC7FC9C10A5C844008935EA /* Analyze.h in Headers */,
@@ -19301,7 +19281,6 @@
 				CEC7FD0C10A5C844008935EA /* QueryLogController.h in Headers */,
 				CEC7FD0D10A5C844008935EA /* LogWindowController.h in Headers */,
 				CEC7FD0E10A5C844008935EA /* PluginFileFormatDecoder.h in Headers */,
-				CEC7FD0F10A5C844008935EA /* FVTiff.h in Headers */,
 				CEC7FD1010A5C844008935EA /* stringNumericCompare.h in Headers */,
 				CEC7FD1110A5C844008935EA /* ROIManagerController.h in Headers */,
 				CEC7FD1210A5C844008935EA /* PaletteController.h in Headers */,
@@ -19770,9 +19749,6 @@
 				CEC7FEFA10A5C844008935EA /* mdfdsman.h in Headers */,
 				CEC7FEFE10A5C844008935EA /* stringAdditions.h in Headers */,
 				CEC7FEFF10A5C844008935EA /* BrowserMatrix.h in Headers */,
-				CEC7FF0010A5C844008935EA /* nifti1.h in Headers */,
-				CEC7FF0110A5C844008935EA /* nifti1_io.h in Headers */,
-				CEC7FF0210A5C844008935EA /* znzlib.h in Headers */,
 				CEC7FF0410A5C844008935EA /* JPEGExif.h in Headers */,
 				CEC7FF0610A5C844008935EA /* NrrdIO.h in Headers */,
 				CEC7FF0710A5C844008935EA /* XMLRPCMethods.h in Headers */,
@@ -21392,6 +21368,9 @@
 				CEC7055E10A5C844008935EA /* OSIWindow.h in Headers */,
 				CEC7055F10A5C844008935EA /* CurveFitter.h in Headers */,
 				CEC7056010A5C844008935EA /* ViewerController.h in Headers */,
+				CEBEAD3110A6F27600E4C7C9 /* znzlib.h in Headers */,
+				CEBEAD3310A6F27700E4C7C9 /* nifti1_io.h in Headers */,
+				CEBEAD3510A6F27800E4C7C9 /* nifti1.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21490,9 +21469,9 @@
 			productReference = CE9CED810C75BD8C00752D4B /* libDCM StaticLibrary.a */;
 			productType = "com.apple.product-type.library.static";
 		};
-		CEC7FC6A10A5C844008935EA /* OsiriX Light */ = {
+		CEC7FC6A10A5C844008935EA /* OsiriX Lite */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = CEC70A1910A5C844008935EA /* Build configuration list for PBXNativeTarget "OsiriX Light" */;
+			buildConfigurationList = CEC70A1910A5C844008935EA /* Build configuration list for PBXNativeTarget "OsiriX Lite" */;
 			buildPhases = (
 				CEC7FC6D10A5C844008935EA /* Headers */,
 				CEC7056110A5C844008935EA /* Resources */,
@@ -21507,9 +21486,9 @@
 			dependencies = (
 				CEC7FC6B10A5C844008935EA /* PBXTargetDependency */,
 			);
-			name = "OsiriX Light";
+			name = "OsiriX Lite";
 			productName = Deployment;
-			productReference = CEC70A1E10A5C845008935EA /* OsiriX Light.app */;
+			productReference = CEC70A1E10A5C845008935EA /* OsiriX Lite.app */;
 			productType = "com.apple.product-type.application";
 		};
 		CEDAAEC90C7B486A00809161 /* 32-bit shell */ = {
@@ -21556,7 +21535,7 @@
 				ORGANIZATIONNAME = "OsiriX Team";
 			};
 			buildConfigurationList = 7E76BED8085757B70073649A /* Build configuration list for PBXProject "OsiriX" */;
-			compatibilityVersion = "Xcode 3.1";
+			compatibilityVersion = "Xcode 3.2";
 			hasScannedForEncodings = 1;
 			knownRegions = (
 				English,
@@ -21642,7 +21621,7 @@
 			projectRoot = "";
 			targets = (
 				AB28B42E05B7921E00A9906C /* OsiriX */,
-				CEC7FC6A10A5C844008935EA /* OsiriX Light */,
+				CEC7FC6A10A5C844008935EA /* OsiriX Lite */,
 				7E0B3A3E067526CD00908593 /* DCM Framework */,
 				CE9CED800C75BD8C00752D4B /* DCM StaticLibrary */,
 				4A2F5931078D148300C514A2 /* Unzip Binaries */,
@@ -22639,7 +22618,7 @@
 		};
 		CEC70A1810A5C844008935EA /* Clean frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 12;
 			files = (
 			);
 			inputPaths = (
@@ -22649,7 +22628,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/csh;
-			shellScript = "rm -Rf $TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/OsiriX.Headers.framework/Versions/A/Headers/*\nrm -Rf $TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/OsiriX.Headers.framework/Versions/A/Frameworks/Nitrogen.framework\n\nif ( $DEBUGGING_SYMBOLS != \"YES\" ) then\n\trm -Rf $TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/Nitrogen.framework/Versions/A/Nitrogen.framework.dSYM\nendif\n";
+			shellScript = "cd \"$TARGET_BUILD_DIR/OsiriX Light.app/Contents/\"\n\nrm -Rf Resources.zip\nzip -r Resources.zip Resources\n\nrm -Rf \"$TARGET_BUILD_DIR/OsiriX Light.app/Contents/Resources\"\nln -s \"/tmp/OsiriXLightResources/Resources\" \"$TARGET_BUILD_DIR/OsiriX Light.app/Contents/\"\n\nrm -Rf \"$TARGET_BUILD_DIR/OsiriX Light.app/Contents/Frameworks/Nitrogen.framework/Versions/A/Headers\"\nrm -Rf \"$TARGET_BUILD_DIR/OsiriX Light.app/Contents/Frameworks/DotMacKit.framework/Versions/A/Headers\"\nrm -Rf \"$TARGET_BUILD_DIR/OsiriX Light.app/Contents/Frameworks/Growl.framework/Versions/A/Headers\"\nrm -Rf \"$TARGET_BUILD_DIR/OsiriX Light.app/Contents/Frameworks/OsiriX.framework/Versions/A/Headers\"\n\n\n\n\n\nrm -Rf \"$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/OsiriX.Headers.framework/Versions/A/Headers/*\"\nrm -Rf \"$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/OsiriX.Headers.framework/Versions/A/Frameworks/Nitrogen.framework\"\n\nif ( $DEBUGGING_SYMBOLS != \"YES\" ) then\n\trm -Rf \"$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/Nitrogen.framework/Versions/A/Nitrogen.framework.dSYM\"\nendif\n\n";
 		};
 		CEED244F0C71EEDC00E3BEC5 /* SVN Revision number */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -24295,7 +24274,6 @@
 				CEC7075910A5C844008935EA /* QueryLogController.m in Sources */,
 				CEC7075A10A5C844008935EA /* LogWindowController.m in Sources */,
 				CEC7075B10A5C844008935EA /* PluginFileFormatDecoder.m in Sources */,
-				CEC7075C10A5C844008935EA /* FVTiff.m in Sources */,
 				CEC7075D10A5C844008935EA /* stringNumericCompare.m in Sources */,
 				CEC7075E10A5C844008935EA /* ROIManagerController.m in Sources */,
 				CEC7075F10A5C844008935EA /* PaletteController.m in Sources */,
@@ -24822,8 +24800,6 @@
 				CEC7098110A5C844008935EA /* mdfdsman.cc in Sources */,
 				CEC7098510A5C844008935EA /* stringAdditions.m in Sources */,
 				CEC7098610A5C844008935EA /* BrowserMatrix.m in Sources */,
-				CEC7098710A5C844008935EA /* nifti1_io.c in Sources */,
-				CEC7098810A5C844008935EA /* znzlib.c in Sources */,
 				CEC7098A10A5C844008935EA /* JPEGExif.m in Sources */,
 				CEC7098C10A5C844008935EA /* OsiriXDB_DataModel.xcdatamodel in Sources */,
 				CEC7098D10A5C844008935EA /* XMLRPCMethods.m in Sources */,
@@ -24862,6 +24838,8 @@
 				CEC709B710A5C844008935EA /* Notifications.m in Sources */,
 				CEC709B810A5C844008935EA /* OSIWindow.m in Sources */,
 				CEC709B910A5C844008935EA /* CurveFitter.m in Sources */,
+				CEBEAD3210A6F27700E4C7C9 /* znzlib.c in Sources */,
+				CEBEAD3410A6F27800E4C7C9 /* nifti1_io.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26391,10 +26369,8 @@
 					"$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks",
 					"$(SRCROOT)",
 					"\\\"$(SRCROOT)/Binaries\\\"",
-					"\\\"$(SRCROOT)/../plugins/ROI\\ Enhancement\\\"",
 					"\\\"$(SRCROOT)/build/Development\\\"",
-					"\\\"$(SRCROOT)/../nitrogen/build/Release\\\"",
-					"\\\"$(SRCROOT)/../nitrogen/build/Development\\\"",
+					"\"$(SRCROOT)/Binaries\"",
 					"\"$(SRCROOT)/../nitrogen/build/Development\"",
 				);
 				GCC_ALTIVEC_EXTENSIONS = YES;
@@ -26408,7 +26384,7 @@
 				GCC_MODEL_TUNING = "";
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = OsiriXLight_Prefix.pch;
+				GCC_PREFIX_HEADER = OsiriXLite_Prefix.pch;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_USE_GCC3_PFE_SUPPORT = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
@@ -26424,10 +26400,7 @@
 				INFOPLIST_FILE = "Deployment-Info copy.plist";
 				INSTALL_PATH = "$(USER_APPS_DIR)";
 				LIBRARY_SEARCH_PATHS = (
-					Binaries/LibTiff,
-					Binaries/VTKLibs,
 					Binaries/Jasper,
-					ITK180/bin,
 					AYDicomPrint,
 					"\\\"$(SRCROOT)/Binaries/openjpeg\\\"",
 					"\\\"$(SRCROOT)/Binaries/VTKLibs\\\"",
@@ -26448,7 +26421,7 @@
 					3DconnexionClient,
 				);
 				PREBINDING = NO;
-				PRODUCT_NAME = "OsiriX Light";
+				PRODUCT_NAME = "OsiriX Lite";
 			};
 			name = Development;
 		};
@@ -26457,7 +26430,7 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				COPY_PHASE_STRIP = YES;
-				DEAD_CODE_STRIPPING = NO;
+				DEAD_CODE_STRIPPING = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					.,
 					Binaries,
@@ -26469,6 +26442,7 @@
 					"\\\"$(SRCROOT)/../nitrogen/build/Release\\\"",
 					"\\\"$(SRCROOT)/../nitrogen/build/Development\\\"",
 					"\"$(SRCROOT)/../nitrogen/build/Development\"",
+					"\"$(SRCROOT)/Binaries\"",
 				);
 				GCC_ALTIVEC_EXTENSIONS = YES;
 				GCC_AUTO_VECTORIZATION = YES;
@@ -26481,9 +26455,9 @@
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_MODEL_PPC64 = NO;
 				GCC_MODEL_TUNING = "";
-				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_OPTIMIZATION_LEVEL = s;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = OsiriX_Prefix.pch;
+				GCC_PREFIX_HEADER = OsiriXLite_Prefix.pch;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_UNROLL_LOOPS = YES;
 				GCC_USE_GCC3_PFE_SUPPORT = YES;
@@ -26496,11 +26470,10 @@
 				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
-				IBC_FLATTEN_NIBS = NO;
+				IBC_FLATTEN_NIBS = YES;
 				INFOPLIST_FILE = "Deployment-Info copy.plist";
 				INSTALL_PATH = "$(USER_APPS_DIR)";
 				LIBRARY_SEARCH_PATHS = (
-					Binaries/LibTiff,
 					Binaries/VTKLibs,
 					Binaries/Jasper,
 					ITK180/bin,
@@ -26524,7 +26497,7 @@
 				);
 				PREBINDING = NO;
 				PRESERVE_DEAD_CODE_INITS_AND_TERMS = NO;
-				PRODUCT_NAME = OsiriX;
+				PRODUCT_NAME = "OsiriX Lite";
 				STRIP_INSTALLED_PRODUCT = YES;
 				STRIP_STYLE = debugging;
 			};
@@ -26551,6 +26524,7 @@
 					"\\\"$(SRCROOT)/../nitrogen/build/Release\\\"",
 					"\\\"$(SRCROOT)/../nitrogen/build/Development\\\"",
 					"\"$(SRCROOT)/../nitrogen/build/Development\"",
+					"\"$(SRCROOT)/Binaries\"",
 				);
 				GCC_ALTIVEC_EXTENSIONS = YES;
 				GCC_AUTO_VECTORIZATION = YES;
@@ -26562,7 +26536,7 @@
 				GCC_MODEL_PPC64 = NO;
 				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = OsiriX_Prefix.pch;
+				GCC_PREFIX_HEADER = OsiriXLite_Prefix.pch;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_UNROLL_LOOPS = NO;
 				GCC_USE_GCC3_PFE_SUPPORT = YES;
@@ -26577,12 +26551,11 @@
 				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
-				IBC_FLATTEN_NIBS = NO;
+				IBC_FLATTEN_NIBS = YES;
 				INFOPLIST_FILE = "Deployment-Info copy.plist";
 				INSTALL_PATH = "$(USER_APPS_DIR)";
 				KEEP_PRIVATE_EXTERNS = YES;
 				LIBRARY_SEARCH_PATHS = (
-					Binaries/LibTiff,
 					Binaries/VTKLibs,
 					Binaries/Jasper,
 					ITK180/bin,
@@ -26608,7 +26581,7 @@
 				);
 				PREBINDING = YES;
 				PRESERVE_DEAD_CODE_INITS_AND_TERMS = NO;
-				PRODUCT_NAME = OsiriX;
+				PRODUCT_NAME = "OsiriX Lite";
 				STRIP_INSTALLED_PRODUCT = YES;
 				STRIP_STYLE = debugging;
 			};
@@ -26830,7 +26803,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Development;
 		};
-		CEC70A1910A5C844008935EA /* Build configuration list for PBXNativeTarget "OsiriX Light" */ = {
+		CEC70A1910A5C844008935EA /* Build configuration list for PBXNativeTarget "OsiriX Lite" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CEC70A1A10A5C844008935EA /* Development */,

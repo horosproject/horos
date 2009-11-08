@@ -26,7 +26,9 @@
 */
 
 #ifdef OSIRIX_VIEWER
+#ifndef OSIRIX_LIGHT
 #import <Growl/Growl.h>
+#endif
 #endif
 
 #import <AppKit/AppKit.h>
@@ -79,7 +81,7 @@ extern "C"
 *
 */
 
-#ifdef OSIRIX_VIEWER
+#if defined(OSIRIX_VIEWER) && !defined(OSIRIX_LIGHT)
 @interface AppController : NSObject	<GrowlApplicationBridgeDelegate>
 #else
 @interface AppController : NSObject
