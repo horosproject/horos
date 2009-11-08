@@ -4352,20 +4352,11 @@
 		CEBD8ACD0875B233000E42D6 /* OSIViewerPreferencePane.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = CEBD8AB80875B233000E42D6 /* OSIViewerPreferencePane.prefPane */; };
 		CEBD8E5F0B675A75008FD772 /* Propagate.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEBD8E5B0B675A75008FD772 /* Propagate.tif */; };
 		CEBD8EF80B6761CC008FD772 /* PropagateOn.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEBD8EF40B6761CC008FD772 /* PropagateOn.tif */; };
-		CEBEAD0610A6F11600E4C7C9 /* DotMacKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEFE60580979B1DB00891EA9 /* DotMacKit.framework */; };
 		CEBEAD3110A6F27600E4C7C9 /* znzlib.h in Headers */ = {isa = PBXBuildFile; fileRef = AB87FA790C06BEB200CD2976 /* znzlib.h */; };
 		CEBEAD3210A6F27700E4C7C9 /* znzlib.c in Sources */ = {isa = PBXBuildFile; fileRef = AB87FA780C06BEB200CD2976 /* znzlib.c */; };
 		CEBEAD3310A6F27700E4C7C9 /* nifti1_io.h in Headers */ = {isa = PBXBuildFile; fileRef = AB87FA770C06BEB200CD2976 /* nifti1_io.h */; };
 		CEBEAD3410A6F27800E4C7C9 /* nifti1_io.c in Sources */ = {isa = PBXBuildFile; fileRef = AB87FA760C06BEB200CD2976 /* nifti1_io.c */; };
 		CEBEAD3510A6F27800E4C7C9 /* nifti1.h in Headers */ = {isa = PBXBuildFile; fileRef = AB87FA750C06BEB200CD2976 /* nifti1.h */; };
-		CEBEADA410A6F72C00E4C7C9 /* DotMacKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEFE60580979B1DB00891EA9 /* DotMacKit.framework */; };
-		CEBEADA510A6F73100E4C7C9 /* DotMacKit.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = CEFE60580979B1DB00891EA9 /* DotMacKit.framework */; };
-		CEBEADCB10A6F8FC00E4C7C9 /* Growl.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABDF6E2D0BE0904D00793094 /* Growl.framework */; };
-		CEBEADCC10A6F8FF00E4C7C9 /* Growl.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = ABDF6E2D0BE0904D00793094 /* Growl.framework */; };
-		CEBEAE4B10A6FCFA00E4C7C9 /* ILCrashReporter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABE881440FC1444D009F5C80 /* ILCrashReporter.framework */; };
-		CEBEAE5310A6FD0A00E4C7C9 /* ILCrashReporter.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = ABE881440FC1444D009F5C80 /* ILCrashReporter.framework */; };
-		CEBEAE5F10A6FD4600E4C7C9 /* Nitrogen.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 59FF1CE11097107A00F5EDA0 /* Nitrogen.framework */; };
-		CEBEAE8410A6FD4D00E4C7C9 /* Nitrogen.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 59FF1CE11097107A00F5EDA0 /* Nitrogen.framework */; };
 		CEC172040874839C0021C3FC /* burn_anim00.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEC171F80874839C0021C3FC /* burn_anim00.tif */; };
 		CEC172050874839C0021C3FC /* burn_anim01.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEC171F90874839C0021C3FC /* burn_anim01.tif */; };
 		CEC172060874839C0021C3FC /* burn_anim02.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEC171FA0874839C0021C3FC /* burn_anim02.tif */; };
@@ -6790,7 +6781,6 @@
 		CEC709C710A5C844008935EA /* PreferencePanes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E3E38650715FFDC0049E72E /* PreferencePanes.framework */; };
 		CEC709C810A5C844008935EA /* DiscRecording.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E54303B07A05E7100500ABB /* DiscRecording.framework */; };
 		CEC709C910A5C844008935EA /* DiscRecordingUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E54303C07A05E7100500ABB /* DiscRecordingUI.framework */; };
-		CEC709CA10A5C844008935EA /* DotMacKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEFE60580979B1DB00891EA9 /* DotMacKit.framework */; };
 		CEC709CB10A5C844008935EA /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB6B75DE0A53F60600F0CA8F /* QTKit.framework */; };
 		CEC709CC10A5C844008935EA /* InstantMessage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2C82E20C708B310093C162 /* InstantMessage.framework */; };
 		CEC709CD10A5C844008935EA /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF5F14C20B14E12700B309B9 /* CoreVideo.framework */; };
@@ -6800,18 +6790,12 @@
 		CEC709D210A5C844008935EA /* libssl.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = BFBF3A9E09B681F500545F5E /* libssl.dylib */; };
 		CEC709D310A5C844008935EA /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = BFBF3A9F09B681F500545F5E /* libxml2.dylib */; };
 		CEC709D410A5C844008935EA /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = BFBF3AA009B681F500545F5E /* libz.dylib */; };
-		CEC709D610A5C844008935EA /* libtiff.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CE7BBFD30C82DCA5000AD12F /* libtiff.dylib */; };
-		CEC709D810A5C844008935EA /* Growl.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABDF6E2D0BE0904D00793094 /* Growl.framework */; };
-		CEC70A0510A5C844008935EA /* ILCrashReporter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABE881440FC1444D009F5C80 /* ILCrashReporter.framework */; };
-		CEC70A0610A5C844008935EA /* ILCrashReporter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABE881440FC1444D009F5C80 /* ILCrashReporter.framework */; };
 		CEC70A0710A5C844008935EA /* OsiriX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE8D057D0FD8505000165DDE /* OsiriX.framework */; };
 		CEC70A0910A5C844008935EA /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE790A17105D4DE200CE6AAF /* AddressBook.framework */; };
 		CEC70A0A10A5C844008935EA /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE790A18105D4DE200CE6AAF /* Security.framework */; };
 		CEC70A0B10A5C844008935EA /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE790A19105D4DE200CE6AAF /* WebKit.framework */; };
-		CEC70A0C10A5C844008935EA /* Nitrogen.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 59FF1CE11097107A00F5EDA0 /* Nitrogen.framework */; };
 		CEC70A0F10A5C844008935EA /* OsiriX.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE8D057D0FD8505000165DDE /* OsiriX.framework */; };
 		CEC70A8A10A5CBB4008935EA /* libopenjpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ABDEB38B0D1827440079C938 /* libopenjpeg.a */; };
-		CEC70A8F10A5CBCC008935EA /* Nitrogen.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 59FF1CE11097107A00F5EDA0 /* Nitrogen.framework */; };
 		CEC7FC6E10A5C844008935EA /* MyOutlineView.h in Headers */ = {isa = PBXBuildFile; fileRef = AB0813D6057C698900A72813 /* MyOutlineView.h */; };
 		CEC7FC7010A5C844008935EA /* NSFont_OpenGL.h in Headers */ = {isa = PBXBuildFile; fileRef = AB3C6A8E057ADCA60001052D /* NSFont_OpenGL.h */; };
 		CEC7FC7110A5C844008935EA /* NSFullScreenWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = ABAA284B058A4F7F00F0601D /* NSFullScreenWindow.h */; };
@@ -8075,10 +8059,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				CEBEAE8410A6FD4D00E4C7C9 /* Nitrogen.framework in CopyFiles */,
-				CEBEAE5310A6FD0A00E4C7C9 /* ILCrashReporter.framework in CopyFiles */,
-				CEBEADCC10A6F8FF00E4C7C9 /* Growl.framework in CopyFiles */,
-				CEBEADA510A6F73100E4C7C9 /* DotMacKit.framework in CopyFiles */,
 				CEC70A0F10A5C844008935EA /* OsiriX.framework in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -12049,7 +12029,6 @@
 				CEC709C710A5C844008935EA /* PreferencePanes.framework in Frameworks */,
 				CEC709C810A5C844008935EA /* DiscRecording.framework in Frameworks */,
 				CEC709C910A5C844008935EA /* DiscRecordingUI.framework in Frameworks */,
-				CEC709CA10A5C844008935EA /* DotMacKit.framework in Frameworks */,
 				CEC709CB10A5C844008935EA /* QTKit.framework in Frameworks */,
 				CEC709CC10A5C844008935EA /* InstantMessage.framework in Frameworks */,
 				CEC709CD10A5C844008935EA /* CoreVideo.framework in Frameworks */,
@@ -12059,22 +12038,11 @@
 				CEC709D210A5C844008935EA /* libssl.dylib in Frameworks */,
 				CEC709D310A5C844008935EA /* libxml2.dylib in Frameworks */,
 				CEC709D410A5C844008935EA /* libz.dylib in Frameworks */,
-				CEC709D610A5C844008935EA /* libtiff.dylib in Frameworks */,
-				CEC709D810A5C844008935EA /* Growl.framework in Frameworks */,
-				CEC70A0510A5C844008935EA /* ILCrashReporter.framework in Frameworks */,
-				CEC70A0610A5C844008935EA /* ILCrashReporter.framework in Frameworks */,
 				CEC70A0710A5C844008935EA /* OsiriX.framework in Frameworks */,
 				CEC70A0910A5C844008935EA /* AddressBook.framework in Frameworks */,
 				CEC70A0A10A5C844008935EA /* Security.framework in Frameworks */,
 				CEC70A0B10A5C844008935EA /* WebKit.framework in Frameworks */,
-				CEC70A0C10A5C844008935EA /* Nitrogen.framework in Frameworks */,
 				CEC70A8A10A5CBB4008935EA /* libopenjpeg.a in Frameworks */,
-				CEC70A8F10A5CBCC008935EA /* Nitrogen.framework in Frameworks */,
-				CEBEAD0610A6F11600E4C7C9 /* DotMacKit.framework in Frameworks */,
-				CEBEADA410A6F72C00E4C7C9 /* DotMacKit.framework in Frameworks */,
-				CEBEADCB10A6F8FC00E4C7C9 /* Growl.framework in Frameworks */,
-				CEBEAE4B10A6FCFA00E4C7C9 /* ILCrashReporter.framework in Frameworks */,
-				CEBEAE5F10A6FD4600E4C7C9 /* Nitrogen.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22628,7 +22596,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/csh;
-			shellScript = "cd \"$TARGET_BUILD_DIR/OsiriX Light.app/Contents/\"\n\nrm -Rf Resources.zip\nzip -r Resources.zip Resources\n\nrm -Rf \"$TARGET_BUILD_DIR/OsiriX Light.app/Contents/Resources\"\nln -s \"/tmp/OsiriXLightResources/Resources\" \"$TARGET_BUILD_DIR/OsiriX Light.app/Contents/\"\n\nrm -Rf \"$TARGET_BUILD_DIR/OsiriX Light.app/Contents/Frameworks/Nitrogen.framework/Versions/A/Headers\"\nrm -Rf \"$TARGET_BUILD_DIR/OsiriX Light.app/Contents/Frameworks/DotMacKit.framework/Versions/A/Headers\"\nrm -Rf \"$TARGET_BUILD_DIR/OsiriX Light.app/Contents/Frameworks/Growl.framework/Versions/A/Headers\"\nrm -Rf \"$TARGET_BUILD_DIR/OsiriX Light.app/Contents/Frameworks/OsiriX.framework/Versions/A/Headers\"\n\n\n\n\n\nrm -Rf \"$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/OsiriX.Headers.framework/Versions/A/Headers/*\"\nrm -Rf \"$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/OsiriX.Headers.framework/Versions/A/Frameworks/Nitrogen.framework\"\n\nif ( $DEBUGGING_SYMBOLS != \"YES\" ) then\n\trm -Rf \"$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/Nitrogen.framework/Versions/A/Nitrogen.framework.dSYM\"\nendif\n\n";
+			shellScript = "cd \"$TARGET_BUILD_DIR/OsiriX Lite.app/Contents/\"\n\nrm -Rf Resources.zip\nzip -r Resources.zip Resources\n\nrm -Rf \"$TARGET_BUILD_DIR/OsiriX Lite.app/Contents/Resources\"\nln -s \"/tmp/OsiriXLightResources/Resources\" \"$TARGET_BUILD_DIR/OsiriX Lite.app/Contents/\"\n\nrm -Rf \"$TARGET_BUILD_DIR/OsiriX Lite.app/Contents/Frameworks/Nitrogen.framework/Versions/A/Headers\"\nrm -Rf \"$TARGET_BUILD_DIR/OsiriX Lite.app/Contents/Frameworks/DotMacKit.framework/Versions/A/Headers\"\nrm -Rf \"$TARGET_BUILD_DIR/OsiriX Lite.app/Contents/Frameworks/Growl.framework/Versions/A/Headers\"\nrm -Rf \"$TARGET_BUILD_DIR/OsiriX Lite.app/Contents/Frameworks/OsiriX.framework/Versions/A/Headers\"\n\n\n\n\n\nrm -Rf \"$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/OsiriX.Headers.framework/Versions/A/Headers/*\"\nrm -Rf \"$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/OsiriX.Headers.framework/Versions/A/Frameworks/Nitrogen.framework\"\n\nif ( $DEBUGGING_SYMBOLS != \"YES\" ) then\n\trm -Rf \"$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/Nitrogen.framework/Versions/A/Nitrogen.framework.dSYM\"\nendif\n\n";
 		};
 		CEED244F0C71EEDC00E3BEC5 /* SVN Revision number */ = {
 			isa = PBXShellScriptBuildPhase;
