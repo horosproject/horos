@@ -1256,6 +1256,10 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		gUseJPEGColorSpace = [[NSUserDefaults standardUserDefaults] boolForKey:@"UseJPEGColorSpace"];
 		gFULL32BITPIPELINE = [[NSUserDefaults standardUserDefaults] boolForKey:@"FULL32BITPIPELINE"];
 		
+#ifdef OSIRIX_LIGHT
+		gUSEPAPYRUSDCMPIX = YES;
+#endif
+
 #ifdef STATIC_DICOM_LIB
 		gUSEPAPYRUSDCMPIX = YES;
 		gUseShutter = NO;
@@ -4518,6 +4522,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		NSLog(@"*** failed to computeTotalDoseCorrected : halflife: %f timebetween: %f", halflife, timebetween);
 }
 
+#ifndef OSIRIX_LIGHT
 - (void)createROIsFromRTSTRUCT: (DCMObject*)dcmObject
 {
 	
@@ -4890,6 +4895,8 @@ END_CREATE_ROIS:
 #endif
 } // end createROIsFromRTSTRUCT
 
+#endif
+
 - (void) setVOILUT:(int) first number :(unsigned int) number depth :(unsigned int) depth table :(unsigned int *)table image:(unsigned short*) src isSigned:(BOOL) isSigned
 {
 	int i, index;
@@ -4965,6 +4972,7 @@ END_CREATE_ROIS:
 					[self clearCachedPapyGroups];
 			}
 		}
+		#ifndef OSIRIX_LIGHT
 		else
 		{
 			[self clearCachedDCMFrameworkFiles];
@@ -4996,6 +5004,7 @@ END_CREATE_ROIS:
 			if( dcmObject)
 				[self loadCustomImageAnnotationsPapyLink:-1 DCMLink:dcmObject];
 		}
+		#endif
 	}
 	@catch (NSException * e)
 	{
@@ -5297,6 +5306,7 @@ END_CREATE_ROIS:
 	}
 }
 
+#ifndef OSIRIX_LIGHT
 - (BOOL)loadDICOMDCMFramework
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -5992,6 +6002,7 @@ END_CREATE_ROIS:
 	
 	return returnValue;
 }
+#endif
 
 - (void*) getPapyGroup: (int) group
 {
@@ -8497,13 +8508,16 @@ END_CREATE_ROIS:
 				{
 					success = [self loadDICOMPapyrus];
 					
+					#ifndef OSIRIX_LIGHT
 					//only try again if is strict DICOM
 					if (success == NO && [DCMObject isDICOM:[NSData dataWithContentsOfFile: srcFile]])
 					{
 						NSLog( @"DCMPix: Papyrus failed. Try DCMFramework : %@", srcFile);
 						success = [self loadDICOMDCMFramework];
 					}
+					#endif
 				}
+				#ifndef OSIRIX_LIGHT
 				else
 				{
 					success = [self loadDICOMDCMFramework];
@@ -8511,6 +8525,7 @@ END_CREATE_ROIS:
 					if (success == NO && [DCMObject isDICOM:[NSData dataWithContentsOfFile:srcFile]])
 						success = [self loadDICOMPapyrus];
 				}
+				#endif
 				
 				if( [[imageObj valueForKey: @"numberOfFrames"] intValue] <= 1)
 					[self clearCachedPapyGroups];
@@ -11673,13 +11688,16 @@ END_CREATE_ROIS:
 	if( group)
 		inGrOrModP = [self getPapyGroup: group];
 	
+	#ifndef OSIRIX_LIGHT
 	if( inGrOrModP == nil) // Papyrus failed... unknown group? Try DCM Framework
 	{
 		DCMObject *dcmObject = [DCMObject objectWithContentsOfFile:srcFile decodingPixelData:NO];
 		
 		return [self getDICOMFieldValueForGroup: group element: element DCMLink: dcmObject];
 	}
-	else if( inGrOrModP)
+	else 
+	#endif
+	if( inGrOrModP)
 	{
 		int theEnumGrNb = Papy3ToEnumGroup(group);
 		int theMaxElem = gArrGroup [theEnumGrNb].size;
@@ -11798,13 +11816,16 @@ END_CREATE_ROIS:
 		
 		if( elementDefinitionFound == NO)	// Papyrus doesn't have the definition of all dicom tags.... 2004?
 		{
+			#ifndef OSIRIX_LIGHT
 			DCMObject *dcmObject = [DCMObject objectWithContentsOfFile:srcFile decodingPixelData:NO];
 			return [self getDICOMFieldValueForGroup: group element: element DCMLink: dcmObject];
+			#endif
 		}
 	}
 	return field;
 }
 
+#ifndef OSIRIX_LIGHT
 - (NSString*)getDICOMFieldValueForGroup:(int)group element:(int)element DCMLink:(DCMObject*)dcmObject
 {
 	DCMAttribute *attr = [dcmObject attributeForTag: [DCMAttributeTag tagWithGroup: group element: element]];
@@ -11867,6 +11888,7 @@ END_CREATE_ROIS:
 	}
 	return nil;
 }
+#endif
 
 - (void)loadCustomImageAnnotationsPapyLink:(int)fileNb DCMLink:(DCMObject*)dcmObject
 {

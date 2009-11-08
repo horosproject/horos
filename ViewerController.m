@@ -3815,6 +3815,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	return YES;
 }
 
+#ifndef OSIRIX_LIGHT
 - (void) viewXML:(id) sender
 {
 	[self checkEverythingLoaded];
@@ -3844,7 +3845,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		}
 	}
 }
-
+#endif
 
 #pragma mark-
 #pragma mark 3. mouse management
@@ -14411,7 +14412,7 @@ int i,j,l;
 
 #define DATABASEPATH @"/DATABASE.noindex/"
 
-
+#ifndef OSIRIX_LIGHT
 - (BOOL) sortSeriesByDICOMGroup: (int) gr element: (int) el
 {
 	[self checkEverythingLoaded];
@@ -14522,6 +14523,7 @@ int i,j,l;
 	
 	return YES;
 }
+#endif
 
 -(IBAction) setPagesToPrint:(id) sender
 {
@@ -15322,6 +15324,7 @@ int i,j,l;
 	[NSApp beginSheet: quicktimeWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
 }
 
+#ifndef OSIRIX_LIGHT
 - (NSDictionary*) exportDICOMFileInt:(int) screenCapture
 {
 	return [self exportDICOMFileInt:screenCapture withName:[dcmSeriesName stringValue]];
@@ -15592,6 +15595,7 @@ int i,j,l;
 	
 	return [NSDictionary dictionaryWithObjectsAndKeys: f, @"file", sopuid, @"SOPInstanceUID", nil];
 }
+#endif
 
 -(id) findPlayStopButton
 {
@@ -15608,6 +15612,7 @@ int i,j,l;
 	return nil;
 }
 
+#ifndef OSIRIX_LIGHT
 -(IBAction) endExportDICOMFileSettings:(id) sender
 {
 	int i, curImage;
@@ -15765,6 +15770,7 @@ int i,j,l;
 	
 	[self adjustSlider];
 }
+#endif
 
 -(void) exportRAW:(id) sender
 {
@@ -15868,6 +15874,7 @@ int i,j,l;
 	}
 }
 
+#ifndef OSIRIX_LIGHT
 - (void) exportDICOMFile:(id) sender
 {
 	[dcmFormat setEnabled: YES];
@@ -15947,6 +15954,7 @@ int i,j,l;
 	
     [NSApp beginSheet: dcmExportWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
 }
+#endif
 
 - (IBAction) export2PACS:(id) sender
 {
@@ -18837,8 +18845,10 @@ sourceRef);
 	}
 }
 
+
 - (void)setToolbarReportIconForItem:(NSToolbarItem *)item;
 {
+	#ifndef OSIRIX_LIGHT
 	NSMutableArray *pagesTemplatesArray = [Reports pagesTemplatesList];
 
 	NSManagedObject *studySelected = [[fileList[0] objectAtIndex:0] valueForKeyPath:@"series.study"];
@@ -18853,10 +18863,13 @@ sourceRef);
 	{
 		[item setImage:[self reportIcon]];
 	}
+	#endif
 }
+
 
 - (void)reportToolbarItemWillPopUp:(NSNotification *)notif;
 {
+	#ifndef OSIRIX_LIGHT
 	if([[notif object] isEqualTo:reportTemplatesListPopUpButton])
 	{
 		NSMutableArray *pagesTemplatesArray = [Reports pagesTemplatesList];
@@ -18865,6 +18878,7 @@ sourceRef);
 		[reportTemplatesListPopUpButton addItemsWithTitles:pagesTemplatesArray];
 		[reportTemplatesListPopUpButton setAction:@selector(generateReport:)];
 	}
+	#endif
 }
 
 

@@ -223,6 +223,11 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			
 			PREFERPAPYRUSFORCD = [sd integerForKey: @"PREFERPAPYRUSFORCD"];
 			TOOLKITPARSER = [sd integerForKey: @"TOOLKITPARSER3"];
+			
+			#ifdef OSIRIX_LIGHT
+			TOOLKITPARSER = 2;
+			#endif
+			
 			COMMENTSAUTOFILL = [sd boolForKey: @"COMMENTSAUTOFILL"];
 			SEPARATECARDIAC4D = [sd boolForKey: @"SEPARATECARDIAC4D"];
 			
@@ -2500,6 +2505,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	return [self getDicomFileDCMTK];
 }
 
+#ifndef OSIRIX_LIGHT
 -(short) decodeDICOMFileWithDCMFramework
 {
 	BOOL returnValue = -1;
@@ -2922,6 +2928,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	
 	return returnValue;
 }
+#endif
 
 - (id) initRandom
 {

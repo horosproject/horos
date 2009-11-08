@@ -89,6 +89,14 @@ enum	{kSuccess = 0,
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
+#ifdef OSIRIX_LIGHT
+void exitOsiriX(void)
+{
+	[NSException raise: @"JPEG error exception raised" format: @"JPEG error exception raised - See Console.app for error message"];
+}
+#endif
+
+
 static char *GetPrivateIP()
 {
 	struct			hostent *h;
@@ -1047,6 +1055,7 @@ static NSDate *lastWarningDate = nil;
 		}
 	}
 	
+	#ifndef OSIRIX_LIGHT
 	if( [defaults boolForKey: @"updateServers"])
 	{
 		[[NSUserDefaults standardUserDefaults] setBool: NO forKey:@"updateServers"];
@@ -1054,6 +1063,7 @@ static NSDate *lastWarningDate = nil;
 		[[QueryController currentAutoQueryController] refreshSources];
 		[[NSNotificationCenter defaultCenter] postNotificationName:OsirixServerArrayChangedNotification object:nil];
 	}
+	#endif
 	
 	@try
 	{
@@ -1106,7 +1116,9 @@ static NSDate *lastWarningDate = nil;
 	
 	UseOpenJpeg = [[NSUserDefaults standardUserDefaults] boolForKey:@"UseOpenJpegForJPEG2000"];
 	
+	#ifndef OSIRIX_LIGHT
 	[DCMPixelDataAttribute setUseOpenJpeg: UseOpenJpeg];
+	#endif
 	
 	[[BrowserController currentBrowser] setNetworkLogs];
 	[[BrowserController currentBrowser] createDBContextualMenu]; // Update the routing rules
@@ -1460,6 +1472,7 @@ static NSDate *lastWarningDate = nil;
 		[NSTimer scheduledTimerWithTimeInterval: 10 target: self selector: @selector( startDICOMBonjour:) userInfo: nil repeats: NO];
 	}
 	
+	#ifndef OSIRIX_LIGHT
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"httpXMLRPCServer"])
 	{
 		if(XMLRPCServer == nil) XMLRPCServer = [[XMLRPCMethods alloc] init];
@@ -1469,6 +1482,7 @@ static NSDate *lastWarningDate = nil;
 	{
 		if(webServer == nil) webServer = [[WebServicesMethods alloc] init];
 	}
+	#endif
 	
 	#if __LP64__
 	checkSN64Service = [[NSNetService alloc] initWithDomain:@"" type:@"_snosirix._tcp." name: [self privateIP] port: 8486];
@@ -1526,6 +1540,7 @@ static NSDate *lastWarningDate = nil;
 {
 	// this method is always executed as a new thread detached from the NSthread command of RestartSTORESCP method
 
+	#ifndef OSIRIX_LIGHT
 	[STORESCP lock];
 	
 		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -1554,8 +1569,8 @@ static NSDate *lastWarningDate = nil;
 		[pool release];
 	
 	[STORESCP unlock];
-	
-		return;
+	#endif
+	return;
 	
 //	// this method is always executed as a new thread detached from the NSthread command of RestartSTORESCP method
 //	// this implies it needs it's own pool of objects
@@ -1999,9 +2014,11 @@ static NSDate *lastWarningDate = nil;
 	for( NSWindow *w in [NSApp windows])
 		[w orderOut:sender];
 	
+	#ifndef OSIRIX_LIGHT
 	[[QueryController currentQueryController] release];
 	[[QueryController currentAutoQueryController] release];
-
+	#endif
+	
 	[[NSUserDefaults standardUserDefaults] synchronize];
 	
 	[NSApp terminate: sender];
@@ -2337,7 +2354,9 @@ static BOOL initialized = NO;
 				
 				UseOpenJpeg = [[NSUserDefaults standardUserDefaults] boolForKey:@"UseOpenJpegForJPEG2000"];
 				
+				#ifndef OSIRIX_LIGHT
 				[DCMPixelDataAttribute setUseOpenJpeg: UseOpenJpeg];
+				#endif
 				
 				// CHECK FOR THE HTML TEMPLATES DIRECTORY
 //				
@@ -2421,7 +2440,10 @@ static BOOL initialized = NO;
 - (void) killDICOMListenerWait: (BOOL) wait
 {
 	[dcmtkQRSCP abort];
+	
+	#ifndef OSIRIX_LIGHT
 	[QueryController echo: [NSString stringWithCString:GetPrivateIP()] port:[dcmtkQRSCP port] AET: [dcmtkQRSCP aeTitle]];
+	#endif
 	
 	[NSThread sleepForTimeInterval: 1.0];
 	
@@ -2669,6 +2691,13 @@ static BOOL initialized = NO;
 												 object: nil];
 	
 	[[NSUserDefaults standardUserDefaults] setBool:YES forKey: @"SAMESTUDY"];
+	
+	#ifdef OSIRIX_LIGHT
+	int button = NSRunAlertPanel( NSLocalizedString( @"OsiriX Lite", nil), NSLocalizedString( @"This is the lite version of OsiriX: many functions are not available. You can download the full version of OsiriX on the Internet.", nil), NSLocalizedString( @"Continue", nil), NSLocalizedString( @"Download", nil), nil);
+		
+	if (NSCancelButton == button)
+		[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.osirix-viewer.com"]];
+	#endif
 	
 //	*(long*)0 = 0xDEADBEEF;	// Test for ILCrashReporter
 }

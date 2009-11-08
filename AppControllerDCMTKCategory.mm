@@ -25,7 +25,9 @@
 
 @implementation AppController (AppControllerDCMTKCategory)
 
-- (void)initDCMTK{
+- (void)initDCMTK
+{
+	#ifndef OSIRIX_LIGHT
 	    // register global JPEG decompression codecs
     DJDecoderRegistration::registerCodecs();
 
@@ -61,8 +63,11 @@
 
     // register RLE decompression codec
     DcmRLEDecoderRegistration::registerCodecs();
+	#endif
 }
-- (void)destroyDCMTK{
+- (void)destroyDCMTK
+{
+	#ifndef OSIRIX_LIGHT
     // deregister JPEG codecs
     DJDecoderRegistration::cleanup();
     DJEncoderRegistration::cleanup();
@@ -70,7 +75,7 @@
     // deregister RLE codecs
     DcmRLEDecoderRegistration::cleanup();
     DcmRLEEncoderRegistration::cleanup();
-
+	#endif
 }
 
 @end

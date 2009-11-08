@@ -63,12 +63,13 @@
 		exportInstanceNumber = 1;
 		exportSeriesNumber = 5000;
 		
+		#ifndef OSIRIX_LIGHT
 		DCMObject *dcmObject = [[[DCMObject alloc] init] autorelease];
 		[dcmObject newSeriesInstanceUID];
-		
 		exportSeriesUID = [[dcmObject attributeValueWithName:@"SeriesInstanceUID"] retain];
 		exportSeriesDescription = @"OsiriX SC";
 		[exportSeriesDescription retain];
+		#endif
 		
 		spacingX = 0;
 		spacingY = 0;

@@ -504,6 +504,7 @@ static OFBool decompressFile(DcmFileFormat fileformat, const char *fname, char *
 	
 	NSLog( @"SEND - decompress: %s", fname);
 	
+	#ifndef OSIRIX_LIGHT
 	if (filexfer.getXfer() == EXS_JPEG2000LosslessOnly || filexfer.getXfer() == EXS_JPEG2000)
 	{
 		NSString *path = [NSString stringWithCString:fname encoding:[NSString defaultCStringEncoding]];
@@ -514,7 +515,9 @@ static OFBool decompressFile(DcmFileFormat fileformat, const char *fname, char *
 		[dcmObject writeToFile: outpath withTransferSyntax:[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax] quality:1 AET:@"OsiriX" atomically:YES];
 		[dcmObject release];
 	}
-	else {
+	else
+	#endif
+	{
 		  DcmDataset *dataset = fileformat.getDataset();
 
 		  // decompress data set if compressed
@@ -541,6 +544,7 @@ static OFBool compressFile(DcmFileFormat fileformat, const char *fname, char *ou
 	OFBool status = YES;
 	DcmXfer filexfer(fileformat.getDataset()->getOriginalXfer());
 	
+	#ifndef OSIRIX_LIGHT
 	if (opt_networkTransferSyntax == EXS_JPEG2000)
 	{
 		NSLog(@"SEND - Compress JPEG 2000 Lossy (%d) : %s", opt_Quality, fname);
@@ -585,7 +589,9 @@ static OFBool compressFile(DcmFileFormat fileformat, const char *fname, char *ou
 		[dcmObject release];
 	}
 	else
+	#endif
 	{
+		#ifndef OSIRIX_LIGHT
 		NSLog(@"SEND - Compress JPEG: %s", fname);
 		
 		DcmDataset *dataset = fileformat.getDataset();
@@ -624,6 +630,7 @@ static OFBool compressFile(DcmFileFormat fileformat, const char *fname, char *ou
 		}
 		else
 			status = NO;
+		#endif
 	}
 
 	return status;

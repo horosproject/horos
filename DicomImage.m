@@ -741,6 +741,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 	return [NSSet setWithObject:[self completePath]];
 }
 
+#ifndef OSIRIX_LIGHT
 // DICOM Presentation State
 - (DCMSequenceAttribute *)graphicAnnotationSequence
 {
@@ -793,6 +794,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 	[pool release];
 	 return graphicAnnotationSequence;
 }
+#endif
 
 - (NSImage *)image
 {

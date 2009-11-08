@@ -279,8 +279,10 @@ static NSArray*	statesArray = nil;
 		}
 	}
 	
+	#ifndef OSIRIX_LIGHT
 	[[QueryController currentQueryController] refresh: self];
 	[[QueryController currentAutoQueryController] refresh: self];
+	#endif
 }
 
 - (void) rebuildViewers: (NSMutableArray*) vlToRebuild
@@ -1336,12 +1338,14 @@ static NSArray*	statesArray = nil;
 		[self importCommentsAndStatusFromDictionary: [NSDictionary dictionaryWithContentsOfFile: path]];
 	}
 	
+	#ifndef OSIRIX_LIGHT
 	for( NSString *path in reports)
 	{
 		NSString *pathXML = [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent: @"reportStudyUID.xml"];
 	
 		[self importReport: path UID: [NSString stringWithContentsOfFile: pathXML]];
 	}
+	#endif
 	
 	[self outlineViewRefresh];
 	
@@ -1411,6 +1415,7 @@ static NSArray*	statesArray = nil;
 
 - (void) executeAutorouting: (NSArray *)newImages rules: (NSArray*) autoroutingRules manually: (BOOL) manually
 {
+	#ifndef OSIRIX_LIGHT
 	WaitRendering *splash = nil;
 	
 	if( autoroutingRules == nil) autoroutingRules = [[NSUserDefaults standardUserDefaults] arrayForKey: @"AUTOROUTINGDICTIONARY"];
@@ -1633,6 +1638,7 @@ static NSArray*	statesArray = nil;
 	
 	[splash close];
 	[splash release];
+	#endif
 }
 
 - (void)showErrorMessage: (NSDictionary*)dict
@@ -2959,8 +2965,10 @@ static NSArray*	statesArray = nil;
 	[self outlineViewRefresh];
 	[self refreshMatrix: self];
 	
+	#ifndef OSIRIX_LIGHT
 	[[QueryController currentQueryController] refresh: self];
 	[[QueryController currentAutoQueryController] refresh: self];
+	#endif
 	
 	[[LogManager currentLogManager] resetLogs];
 	
@@ -3650,6 +3658,7 @@ static NSArray*	statesArray = nil;
 				if( deleted == NO) [context deleteObject: study];
 			}
 			
+			#ifndef OSIRIX_LIGHT
 			// SCAN THE STUDIES FOR REPORTS
 			NSString	*reportPath = nil;
 			
@@ -3676,6 +3685,7 @@ static NSArray*	statesArray = nil;
 				reportPath = [basePath stringByAppendingFormat:@"%@.rtf",[Reports getOldUniqueFilename: study]];
 				if( [[NSFileManager defaultManager] fileExistsAtPath: reportPath]) [study setValue:reportPath forKey:@"reportURL"];
 			}
+			#endif
 		}
 	}
 	
@@ -4895,8 +4905,10 @@ static NSArray*	statesArray = nil;
 		[databaseOutline reloadData];
 	}
 	
+	#ifndef OSIRIX_LIGHT
 	[[QueryController currentQueryController] refresh: self];
 	[[QueryController currentAutoQueryController] refresh: self];
+	#endif
 }
 
 - (NSArray*)childrenArray: (NSManagedObject*)item onlyImages: (BOOL)onlyImages
@@ -6017,8 +6029,10 @@ static NSArray*	statesArray = nil;
 			[self delObjects: objectsToDelete];
 		}
 		
+		#ifndef OSIRIX_LIGHT
 		[[QueryController currentQueryController] refresh: self];
 		[[QueryController currentAutoQueryController] refresh: self];
+		#endif
 	}
 	
 	[context unlock];
@@ -6355,8 +6369,10 @@ static NSArray*	statesArray = nil;
 	
 	[self saveDatabase: currentDatabasePath];
 	
+	#ifndef OSIRIX_LIGHT
 	[[QueryController currentQueryController] refresh: self];
 	[[QueryController currentAutoQueryController] refresh: self];
+	#endif
 	
 	[databaseOutline reloadData];
 }
@@ -8107,6 +8123,7 @@ static BOOL withReset = NO;
 	[oMatrix setNeedsDisplay:YES];
 }
 
+#ifndef OSIRIX_LIGHT
 - (void) pdfPreview:(id)sender
 {
     [self matrixPressed:sender];
@@ -8147,6 +8164,7 @@ static BOOL withReset = NO;
 	
 	[pool release];	
 }
+#endif
 
 - (void)matrixDisplayIcons:(id) sender
 {
@@ -12538,6 +12556,7 @@ static NSArray*	openSubSeriesArray = nil;
 	
 	[sourcesSplitView restoreDefault:@"SPLITSOURCE"];
 	
+	#ifndef OSIRIX_LIGHT
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"restartAutoQueryAndRetrieve"] == YES && [[NSUserDefaults standardUserDefaults] objectForKey: @"savedAutoDICOMQuerySettings"] != nil)
 	{
 		[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Auto-Query", nil) description: NSLocalizedString( @"DICOM Auto-Query is restarting...", nil)  name:@"newfiles"];
@@ -12553,6 +12572,7 @@ static NSArray*	openSubSeriesArray = nil;
 	}
 	else 
 		[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"autoRetrieving"];
+	#endif
 	
 //	NSFetchRequest	*dbRequest = [[[NSFetchRequest alloc] init] autorelease];
 //	[dbRequest setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"LogEntry"]];
@@ -13363,6 +13383,7 @@ static NSArray*	openSubSeriesArray = nil;
 
 - (void)listenerAnonymizeFiles: (NSArray*)files
 {
+	#ifndef OSIRIX_LIGHT
 	NSArray				*array = [NSArray arrayWithObjects: [DCMAttributeTag tagWithName:@"PatientsName"], @"******", nil];
 	NSMutableArray		*tags = [NSMutableArray array];
 	
@@ -13376,6 +13397,7 @@ static NSArray*	openSubSeriesArray = nil;
 		[[NSFileManager defaultManager] removeFileAtPath: file handler: nil];
 		[[NSFileManager defaultManager] movePath:destPath toPath: file handler: nil];
 	}
+	#endif
 }
 
 - (NSString*) pathResolved:(NSString*) inPath
@@ -14669,6 +14691,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[context unlock];
 }
 
+#ifndef OSIRIX_LIGHT
 - (void) importReport:(NSString*) path UID: (NSString*) uid
 {
 	if( [[NSFileManager defaultManager] fileExistsAtPath: path])
@@ -14711,6 +14734,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[context unlock];
 	}
 }
+#endif
 
 - (NSDictionary*) dictionaryWithCommentsAndStatus:(NSManagedObject *)s
 {
@@ -15158,6 +15182,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	return YES;
 }
 
+#ifndef OSIRIX_LIGHT
 - (void)burnDICOM: (id)sender
 {
 	if( burnerWindowController == nil)
@@ -15182,7 +15207,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[[burnerWindowController window] makeKeyAndOrderFront:self];
 	}
 }
+#endif
 
+#ifndef OSIRIX_LIGHT
 - (IBAction)anonymizeDICOM: (id)sender
 {
 	NSMutableArray *paths = [NSMutableArray array];
@@ -15261,6 +15288,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	[filesToAnonymize release];
 }	
+#endif
 
 - (void) unmountPath:(NSString*) path
 {
@@ -15558,6 +15586,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[self selectServer: objects];
 }
 
+#ifndef OSIRIX_LIGHT
 - (IBAction)querySelectedStudy: (id)sender
 {
 	if( DICOMDIRCDMODE)
@@ -15615,6 +15644,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			[[QueryController currentAutoQueryController] showWindow:self];
 	}
 }
+#endif
 
 -(void)volumeMount: (NSNotification *)notification
 {
@@ -15827,6 +15857,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[sender release];
 }
 
+#ifndef OSIRIX_LIGHT
 - (IBAction)importRawData:(id)sender
 {
 	[[rdPatientForm cellWithTag:0] setStringValue:@"Raw Data"]; //Patient Name
@@ -16027,12 +16058,14 @@ static volatile int numberOfThreadsForJPEG = 0;
     
     [xmlController showWindow:self];
 }
+#endif
 
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 
 #pragma mark -
 #pragma mark RTSTRUCT
 
+#ifndef OSIRIX_LIGHT
 - (void)createROIsFromRTSTRUCT: (id)sender
 {
 	NSMutableArray *filesArray = [NSMutableArray array];
@@ -16050,6 +16083,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		}
 	}
 }
+#endif
 
 - (void)rtstructNotification: (NSNotification *)note
 {
@@ -16209,6 +16243,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	}
 }
 
+#ifndef OSIRIX_LIGHT
 - (IBAction) generateReport: (id)sender
 {
 	NSIndexSet			*index = [databaseOutline selectedRowIndexes];
@@ -16363,6 +16398,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixReportModeChangedNotification object: nil userInfo: nil];
 }
+#endif
 
 - (NSImage*) reportIcon
 {
@@ -16420,8 +16456,10 @@ static volatile int numberOfThreadsForJPEG = 0;
 	}
 }
 
+
 - (void)setToolbarReportIconForItem: (NSToolbarItem *)item
 {
+	#ifndef OSIRIX_LIGHT
 	NSMutableArray *pagesTemplatesArray = [Reports pagesTemplatesList];
 	
 	NSIndexSet *index = [databaseOutline selectedRowIndexes];
@@ -16460,10 +16498,13 @@ static volatile int numberOfThreadsForJPEG = 0;
 		
 		[item setImage: icon];
 	}
+	#endif
 }
+
 
 - (void)reportToolbarItemWillPopUp: (NSNotification *)notif
 {
+	#ifndef OSIRIX_LIGHT
 	if([[notif object] isEqualTo:reportTemplatesListPopUpButton])
 	{
 		NSMutableArray *pagesTemplatesArray = [Reports pagesTemplatesList];
@@ -16472,6 +16513,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[reportTemplatesListPopUpButton addItemsWithTitles:pagesTemplatesArray];
 		[reportTemplatesListPopUpButton setAction:@selector(generateReport:)];
 	}
+	#endif
 }
 
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ

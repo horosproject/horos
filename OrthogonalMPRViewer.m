@@ -1272,6 +1272,7 @@ static NSString*	VRPanelToolbarItemIdentifier			= @"MIP.tif";
 	}
 }
 
+#ifndef OSIRIX_LIGHT
 - (NSDictionary*) exportDICOMFileInt :(BOOL) screenCapture
 {
 	DCMPix *curPix = [[self keyView] curDCM];
@@ -1556,6 +1557,7 @@ static NSString*	VRPanelToolbarItemIdentifier			= @"MIP.tif";
 	
     [NSApp beginSheet: dcmExportWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
 }
+#endif
 
 - (IBAction) changeFromAndToBounds:(id) sender
 {

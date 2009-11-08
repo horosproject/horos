@@ -92,7 +92,7 @@ OFCondition decompressFileFormat(DcmFileFormat fileformat, const char *fname)
 	OFCondition cond = EC_Normal;
 	
 	DcmXfer filexfer(fileformat.getDataset()->getOriginalXfer());
-	
+	#ifndef OSIRIX_LIGHT
 	if (filexfer.getXfer() == EXS_JPEG2000LosslessOnly || filexfer.getXfer() == EXS_JPEG2000)
 	{
 		@try
@@ -110,6 +110,7 @@ OFCondition decompressFileFormat(DcmFileFormat fileformat, const char *fname)
 		}
 	}
 	else
+	#endif
 	{
 		  DcmDataset *dataset = fileformat.getDataset();
 
@@ -141,6 +142,7 @@ OFBool compressFileFormat(DcmFileFormat fileformat, const char *fname, char *out
 	OFBool status = YES;
 	DcmXfer filexfer(fileformat.getDataset()->getOriginalXfer());
 	
+	#ifndef OSIRIX_LIGHT
 	if (newXfer == EXS_JPEG2000)
 	{
 		@try
@@ -186,7 +188,9 @@ OFBool compressFileFormat(DcmFileFormat fileformat, const char *fname, char *out
 		}
 	}
 	else
+	#endif
 	{
+		#ifndef OSIRIX_LIGHT
 		DcmDataset *dataset = fileformat.getDataset();
 		DcmItem *metaInfo = fileformat.getMetaInfo();
 		DcmRepresentationParameter *params;
@@ -233,6 +237,7 @@ OFBool compressFileFormat(DcmFileFormat fileformat, const char *fname, char *out
 			
 			printf("\n**** compressFileFormat failed\n");
 		}
+		#endif
 	}
 	
 	return status;
@@ -778,6 +783,7 @@ void DcmQueryRetrieveMoveContext::moveNextImage(DcmQueryRetrieveDatabaseStatus *
 		}
 		else if (filexfer.isEncapsulated() && preferredXfer.isEncapsulated())
 		{
+			#ifndef OSIRIX_LIGHT
 			// The file is already compressed, we will re-compress the file.....
 			if( strcmp( filexfer.getXferID(), preferredXfer.getXferID()) != 0)
 			{
@@ -801,6 +807,7 @@ void DcmQueryRetrieveMoveContext::moveNextImage(DcmQueryRetrieveDatabaseStatus *
 						strcpy( subImgFileName, outfname);
 				}
 			}
+			#endif
 		}
 		else if (filexfer.isEncapsulated() && preferredXfer.isNotEncapsulated())
 		{
