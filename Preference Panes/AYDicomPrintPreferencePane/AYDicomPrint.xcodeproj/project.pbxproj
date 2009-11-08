@@ -10,7 +10,6 @@
 		8D202CEA0486D31800D8A456 /* AYDicomPrint_Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = 32DBCFA20370C41700C91783 /* AYDicomPrint_Prefix.pch */; };
 		8D202CEB0486D31800D8A456 /* AYDicomPrintPref.h in Headers */ = {isa = PBXBuildFile; fileRef = F506C03C013D9D7901CA16C8 /* AYDicomPrintPref.h */; };
 		8D202CED0486D31800D8A456 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C167DFE841241C02AAC07 /* InfoPlist.strings */; };
-		8D202CEE0486D31800D8A456 /* AYDicomPrintPref.tiff in Resources */ = {isa = PBXBuildFile; fileRef = F506C040013D9D8001CA16C8 /* AYDicomPrintPref.tiff */; };
 		8D202CF10486D31800D8A456 /* AYDicomPrintPref.m in Sources */ = {isa = PBXBuildFile; fileRef = F506C03D013D9D7901CA16C8 /* AYDicomPrintPref.m */; };
 		8D202CF30486D31800D8A456 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */; };
 		8D202CF40486D31800D8A456 /* PreferencePanes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F506C035013D953901CA16C8 /* PreferencePanes.framework */; };
@@ -29,7 +28,6 @@
 		F506C035013D953901CA16C8 /* PreferencePanes.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PreferencePanes.framework; path = /System/Library/Frameworks/PreferencePanes.framework; sourceTree = "<absolute>"; };
 		F506C03C013D9D7901CA16C8 /* AYDicomPrintPref.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AYDicomPrintPref.h; sourceTree = "<group>"; };
 		F506C03D013D9D7901CA16C8 /* AYDicomPrintPref.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AYDicomPrintPref.m; sourceTree = "<group>"; };
-		F506C040013D9D8001CA16C8 /* AYDicomPrintPref.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = AYDicomPrintPref.tiff; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -72,7 +70,6 @@
 				8D202CF70486D31800D8A456 /* Info.plist */,
 				ABE0D67A0CDB179800F0494B /* AYDicomPrintPref.xib */,
 				089C167DFE841241C02AAC07 /* InfoPlist.strings */,
-				F506C040013D9D8001CA16C8 /* AYDicomPrintPref.tiff */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -178,7 +175,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				8D202CED0486D31800D8A456 /* InfoPlist.strings in Resources */,
-				8D202CEE0486D31800D8A456 /* AYDicomPrintPref.tiff in Resources */,
 				ABE0D67C0CDB179800F0494B /* AYDicomPrintPref.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

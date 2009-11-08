@@ -7023,6 +7023,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 //	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glLineWidth(1.0);
 	
+	#ifndef OSIRIX_LIGHT
 	if([[IChatTheatreDelegate sharedDelegate] isIChatTheatreRunning] && cgl_ctx==[_alternateContext CGLContextObj])
 	{
 		if(!iChatFontListGL) iChatFontListGL = glGenLists(150);
@@ -7030,6 +7031,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		[iChatFontGL makeGLDisplayListFirst:' ' count:150 base:iChatFontListGL :iChatFontListGLSize :1];
 		iChatStringSize = [DCMView sizeOfString:@"B" forFont:iChatFontGL];
 	}
+	#endif
 	
 	GLuint fontList;
 	NSSize _stringSize;
@@ -7674,7 +7676,12 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 {
 	long		clutBars	= CLUTBARS;
 	long		annotations	= ANNOTATIONS;
+	
+	#ifndef OSIRIX_LIGHT
 	BOOL		iChatRunning = [[IChatTheatreDelegate sharedDelegate] isIChatTheatreRunning];
+	#else
+	BOOL		iChatRunning = NO;
+	#endif
 	
 	if( firstTimeDisplay == NO && [self is2DViewer])
 	{
@@ -7780,6 +7787,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		}
 		
 		// highlight the visible part of the view (the part visible through iChat)
+		#ifndef OSIRIX_LIGHT
 		if([[IChatTheatreDelegate sharedDelegate] isIChatTheatreRunning] && ctx!=_alternateContext && [[self window] isMainWindow] && isKeyView && iChatWidth>0 && iChatHeight>0)
 		{
 			glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
@@ -7840,7 +7848,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 			[self DrawNSStringGL:NSLocalizedString(@"iChat Theatre shared view", nil) :fontListGL :iChatTheatreSharedViewLabelPosition.x :iChatTheatreSharedViewLabelPosition.y align:DCMViewTextAlignCenter useStringTexture:YES];
 		}
-		
+		#endif
 		// ***********************
 		// DRAW CLUT BARS ********
 		
@@ -8864,7 +8872,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	if( isSigned) *isSigned = NO;
 	if( offset) *offset = 0;
 	
-	if( [self class] == [OrthogonalMPRPETCTView class] ||
+	if( 
+		#ifndef OSIRIX_LIGHT
+		[self class] == [OrthogonalMPRPETCTView class] ||
+		#endif
 		[self class] == [OrthogonalMPRView class]) allowSmartCropping = NO;	// <- MPR 2D, Ortho MPR
 	
 	if( screenCapture)	// Pixels displayed in current window

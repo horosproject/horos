@@ -1,4 +1,4 @@
-#!/bin/bash
+wd#!/bin/bash
 
 rm -R -f /Users/rossetantoine/Desktop/Localized3.6.1/Preference\ Panes/OSI3DPreferencePane/$1.lproj
 cp -R OSI3DPreferencePane.prefPane/Contents/Resources/$1.lproj /Users/rossetantoine/Desktop/Localized3.6.1/Preference\ Panes/OSI3DPreferencePane

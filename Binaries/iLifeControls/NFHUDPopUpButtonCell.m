@@ -14,7 +14,7 @@
 -(void)drawWithFrame:(NSRect)cellFrame inView:(NSView *)controlView
 {
 	NSString *state = [self isHighlighted] ? @"P" : @"N";
-	NSImage *leftImage = [NSImage frameworkImageNamed:[NSString stringWithFormat:@"HUDPopUpLeft%@.tiff", state]];
+	NSImage *leftImage = [NSImage frameworkImageNamed:[NSString stringWithFormat:@"HUDPopUpLeft%@.tif", state]];
 	NSImage *fillImage = [NSImage frameworkImageNamed:[NSString stringWithFormat:@"HUDPopUpFill%@", state]];
 	NSImage *rightImage = [NSImage frameworkImageNamed:[NSString stringWithFormat:@"HUDPopUpRight%@", state]];
 				

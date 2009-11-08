@@ -33,8 +33,8 @@ static NSString*	BlendingToolbarItemIdentifier			= @"2DBlending";
 static NSString*	MovieToolbarItemIdentifier				= @"Movie";
 static NSString*	ExportToolbarItemIdentifier				= @"Export.icns";
 static NSString*	MailToolbarItemIdentifier				= @"Mail.icns";
-static NSString*	ResetToolbarItemIdentifier				= @"Reset.tiff";
-static NSString*	FlipVolumeToolbarItemIdentifier			= @"FlipData.tiff";
+static NSString*	ResetToolbarItemIdentifier				= @"Reset.tif";
+static NSString*	FlipVolumeToolbarItemIdentifier			= @"FlipData.tif";
 static NSString*	VRPanelToolbarItemIdentifier			= @"MIP.tif";
 
 

@@ -20,7 +20,7 @@
 	
 	NSString *state = [self isHighlighted] ? @"P" : @"N";
 	NSString *position = [self intValue] ? @"On" : @"Off";
-	NSImage *checkImage = [NSImage frameworkImageNamed:[NSString stringWithFormat:@"HUDCheckbox%@%@.tiff", position, state]];
+	NSImage *checkImage = [NSImage frameworkImageNamed:[NSString stringWithFormat:@"HUDCheckbox%@%@.tif", position, state]];
 	
 	NSSize size = [checkImage size];
 	float addX = 2;
@@ -38,7 +38,7 @@
 	}
 
 	NSString *state = [self isHighlighted] ? @"P" : @"N";
-	NSImage *leftImage = [NSImage frameworkImageNamed:[NSString stringWithFormat:@"HUDButtonLeft%@.tiff", state]];
+	NSImage *leftImage = [NSImage frameworkImageNamed:[NSString stringWithFormat:@"HUDButtonLeft%@.tif", state]];
 	NSImage *fillImage = [NSImage frameworkImageNamed:[NSString stringWithFormat:@"HUDButtonFill%@", state]];
 	NSImage *rightImage = [NSImage frameworkImageNamed:[NSString stringWithFormat:@"HUDButtonRight%@", state]];
 				

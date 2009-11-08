@@ -981,8 +981,10 @@ enum
 - (SRController *)openSRViewer;
 
 /** Returns the MPRController for this ViewerController; creating one if necessary */
+#ifndef OSIRIX_LIGHT
 - (MPRController *)openMPRViewer;
 - (IBAction)mprViewer:(id)sender;
+#endif
 
 /** Current SeriesView */
 - (SeriesView *) seriesView;

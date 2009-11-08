@@ -2524,11 +2524,11 @@ static float deg2rad = 3.14159265358979/180.0;
 		[toolbarItem setView: tbLOD];
 		[toolbarItem setMinSize: NSMakeSize(NSWidth([tbLOD frame]), NSHeight([tbLOD frame]))];
     }
-	else if ([itemIdent isEqualToString: @"Reset.tiff"])
+	else if ([itemIdent isEqualToString: @"Reset.tif"])
 	{
 		[toolbarItem setLabel: NSLocalizedString(@"Reset",nil)];
 		[toolbarItem setPaletteLabel:NSLocalizedString(@"Reset",nil)];
-		[toolbarItem setImage: [NSImage imageNamed: @"Reset.tiff"]];
+		[toolbarItem setImage: [NSImage imageNamed: @"Reset.tif"]];
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector( showWindow:)];
     }
@@ -2657,7 +2657,7 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (NSArray *) toolbarDefaultItemIdentifiers: (NSToolbar *) toolbar
 {
-		return [NSArray arrayWithObjects: @"tbTools", @"tbWLWW", @"tbThickSlab", @"tbShading", NSToolbarFlexibleSpaceItemIdentifier, @"Reset.tiff", @"Export.icns", @"Capture.icns", @"QTExport.icns", @"AxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", nil];
+		return [NSArray arrayWithObjects: @"tbTools", @"tbWLWW", @"tbThickSlab", @"tbShading", NSToolbarFlexibleSpaceItemIdentifier, @"Reset.tif", @"Export.icns", @"Capture.icns", @"QTExport.icns", @"AxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", nil];
 }
 
 - (NSArray *) toolbarAllowedItemIdentifiers: (NSToolbar *) toolbar
@@ -2666,7 +2666,7 @@ static float deg2rad = 3.14159265358979/180.0;
 											NSToolbarFlexibleSpaceItemIdentifier,
 											NSToolbarSpaceItemIdentifier,
 											NSToolbarSeparatorItemIdentifier,
-											@"tbTools", @"tbWLWW", @"tbLOD", @"tbThickSlab", @"tbBlending", @"tbShading", @"tbMovie", @"Reset.tiff", @"Export.icns", @"Capture.icns", @"QTExport.icns", @"AxisColors", @"AxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", nil];
+											@"tbTools", @"tbWLWW", @"tbLOD", @"tbThickSlab", @"tbBlending", @"tbShading", @"tbMovie", @"Reset.tif", @"Export.icns", @"Capture.icns", @"QTExport.icns", @"AxisColors", @"AxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", nil];
 }
 
 - (void)updateToolbarItems;

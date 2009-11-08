@@ -25,10 +25,12 @@
 
 @implementation Window3DController
 
+#ifndef OSIRIX_LIGHT
 - (void) mprViewer:(id) sender
 {
 	[[self viewer] mprViewer: sender];
 }
+#endif
 
 - (void) endoscopyViewer:(id) sender
 {

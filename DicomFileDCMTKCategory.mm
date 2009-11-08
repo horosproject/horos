@@ -32,7 +32,9 @@
 #include "dipijpeg.h"    /* for dcmimage JPEG plugin */
 
 #ifdef OSIRIX_VIEWER
+#ifndef OSIRIX_LIGHT
 #include "NrrdIO.h"
+#endif
 #endif
 
 #include <string>
@@ -64,6 +66,7 @@ extern NSRecursiveLock *PapyrusLock;
 -(short) getNRRDFile
 {
 	#ifdef OSIRIX_VIEWER
+	#ifndef OSIRIX_LIGHT
 	int			success = 0;
 	NSString	*extension = [[filePath pathExtension] lowercaseString];
 	char		*err = nil;
@@ -176,6 +179,7 @@ extern NSRecursiveLock *PapyrusLock;
 	if (success)
 		return 0;
 	else
+	#endif
 	#endif
 		return -1;
 }

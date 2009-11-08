@@ -1201,7 +1201,7 @@ extern int delayedTileWindows;
 		[toolbarItem setLabel: NSLocalizedString(@"Sort Images", nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Sort Images", nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"Sort Series Images by selected element", nil)];
-		[toolbarItem setImage: [NSImage imageNamed: @"Revert.tiff"]];
+		[toolbarItem setImage: [NSImage imageNamed: @"Revert.tif"]];
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector( sortSeries:)];
     }

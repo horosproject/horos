@@ -13,9 +13,9 @@
 
 - (void)drawBarInside:(NSRect)cellFrame flipped:(BOOL)flipped
 {
-	NSImage *leftImage = [NSImage frameworkImageNamed:@"HUDSliderTrackLeft.tiff"];
-	NSImage *fillImage = [NSImage frameworkImageNamed:@"HUDSliderTrackFill.tiff"];
-	NSImage *rightImage = [NSImage frameworkImageNamed:@"HUDSliderTrackRight.tiff"];
+	NSImage *leftImage = [NSImage frameworkImageNamed:@"HUDSliderTrackLeft.tif"];
+	NSImage *fillImage = [NSImage frameworkImageNamed:@"HUDSliderTrackFill.tif"];
+	NSImage *rightImage = [NSImage frameworkImageNamed:@"HUDSliderTrackRight.tif"];
 				
 	NSSize size = [leftImage size];
 	float addX = size.width / 2.0;
@@ -43,9 +43,9 @@
 	NSImage *knob;
 	
 	if([self numberOfTickMarks] == 0)
-		knob = [NSImage frameworkImageNamed:@"HUDSliderKnobRound.tiff"];
+		knob = [NSImage frameworkImageNamed:@"HUDSliderKnobRound.tif"];
 	else
-		knob = [NSImage frameworkImageNamed:@"HUDSliderKnob.tiff"];
+		knob = [NSImage frameworkImageNamed:@"HUDSliderKnob.tif"];
 	
 	float x = rect.origin.x + (rect.size.width - [knob size].width) / 2;
 	float y = NSMaxY(rect) - (rect.size.height - [knob size].height) / 2 ;

@@ -2015,7 +2015,9 @@ static NSDate *lastWarningDate = nil;
 	
 	[[NSAppleEventManager sharedAppleEventManager] setEventHandler:self andSelector:@selector(getUrl:withReplyEvent:) forEventClass:kInternetEventClass andEventID:kAEGetURL];
 	
+	#ifndef OSIRIX_LIGHT
 	[IChatTheatreDelegate sharedDelegate];
+	#endif
 	
 	return self;
 }
@@ -2909,7 +2911,9 @@ static BOOL initialized = NO;
 	[dcmtkQRSCP release];
 	dcmtkQRSCP = nil;
 	
+	#ifndef OSIRIX_LIGHT
 	[IChatTheatreDelegate releaseSharedDelegate];
+	#endif
 	
     [super dealloc];
 }

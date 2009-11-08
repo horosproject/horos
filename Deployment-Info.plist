@@ -148,14 +148,8 @@
 	</array>
 	<key>CFBundleExecutable</key>
 	<string>OsiriX</string>
-	<key>SVNRevision</key>
-	<string>$Rev$ $Date$</string>
 	<key>CFBundleGetInfoString</key>
 	<string>OsiriX v.3.6.5b2</string>
-	<key>CFBundleShortVersionString</key>
-	<string>3.6.5b2</string>
-	<key>CFBundleVersion</key>
-	<string>6066M</string>
 	<key>CFBundleIconFile</key>
 	<string>Osirix.icns</string>
 	<key>CFBundleIdentifier</key>
@@ -164,8 +158,29 @@
 	<string>6.0</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>3.6.5b2</string>
 	<key>CFBundleSignature</key>
 	<string>OsiX</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>OsiriX Remote Access</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>osirix</string>
+			</array>
+			<key>LSIsAppleDefaultForType</key>
+			<string>Yes</string>
+		</dict>
+	</array>
+	<key>CFBundleVersion</key>
+	<string>6066M</string>
+	<key>LSCanProvideIMVideoDataSource</key>
+	<string>Yes</string>
 	<key>NSAppleScriptEnabled</key>
 	<string>YES</string>
 	<key>NSHumanReadableCopyright</key>
@@ -174,6 +189,8 @@
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
+	<key>SVNRevision</key>
+	<string>$Rev$ $Date$</string>
 	<key>UTImportedTypeDeclarations</key>
 	<array>
 		<dict>
@@ -200,22 +217,5 @@
 			</dict>
 		</dict>
 	</array>
-	<key>CFBundleURLTypes</key>
-	<array>
-		<dict>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-			<key>CFBundleURLName</key>
-			<string>OsiriX Remote Access</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>osirix</string>
-			</array>
-			<key>LSIsAppleDefaultForType</key>
-			<string>Yes</string>
-		</dict>
-	</array>
-	<key>LSCanProvideIMVideoDataSource</key>
-	<string>Yes</string>
 </dict>
 </plist>

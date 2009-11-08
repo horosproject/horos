@@ -724,10 +724,12 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 			[self setValue:[NSNumber numberWithBool:NO] forKey:@"inDatabaseFolder"];
 		}
 		
+		#ifndef OSIRIX_LIGHT
 		if( [[NSFileManager defaultManager] fileExistsAtPath: [VRController getUniqueFilenameScissorStateFor: self]])
 		{
 			[[NSFileManager defaultManager] removeFileAtPath: [VRController getUniqueFilenameScissorStateFor: self] handler: nil];
 		}
+		#endif
 		
 		#endif
 	}

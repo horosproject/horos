@@ -144,9 +144,8 @@ ExtractFileMetaInformation3 (PapyShort inFileNb)
   int		found, i;
   PapyShort	theErr;
   PapyULong	theNbVal;
-  PapyLong	theFilePos;
   int		theElemType, theElength;
-  SElement	*theGroup2P, *theGroupTmpP;
+  SElement	*theGroup2P;
   UValue_T	*theValP;
   
   if ((theErr = Papy3GroupRead (inFileNb, &theGroup2P)) < 0) RETURN (papReadGroup);

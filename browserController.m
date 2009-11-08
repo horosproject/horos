@@ -132,7 +132,7 @@ static NSString*	MovieToolbarItemIdentifier			= @"Movie.icns";
 static NSString*	TrashToolbarItemIdentifier			= @"trash.icns";
 static NSString*	ReportToolbarItemIdentifier			= @"Report.icns";
 static NSString*	BurnerToolbarItemIdentifier			= @"Burner.tif";
-static NSString*	ToggleDrawerToolbarItemIdentifier   = @"StartupDisk.tiff";
+static NSString*	ToggleDrawerToolbarItemIdentifier   = @"StartupDisk.tif";
 static NSString*	SearchToolbarItemIdentifier			= @"Search";
 static NSString*	TimeIntervalToolbarItemIdentifier	= @"TimeInterval";
 static NSString*	XMLToolbarItemIdentifier			= @"XML.icns";
@@ -9652,22 +9652,22 @@ static BOOL needToRezoom;
 			{
 				if (isCurrentDatabaseBonjour)
 				{
-					[(ImageAndTextCell*) aCell setImage:[NSImage imageNamed:@"small_sharedSmartAlbum.tiff"]];
+					[(ImageAndTextCell*) aCell setImage:[NSImage imageNamed:@"small_sharedSmartAlbum.tif"]];
 				}
 				else
 				{
-					[(ImageAndTextCell*) aCell setImage:[NSImage imageNamed:@"small_smartAlbum.tiff"]];
+					[(ImageAndTextCell*) aCell setImage:[NSImage imageNamed:@"small_smartAlbum.tif"]];
 				}
 			}
 			else
 			{
 				if (isCurrentDatabaseBonjour)
 				{
-					[(ImageAndTextCell*) aCell setImage:[NSImage imageNamed:@"small_sharedAlbum.tiff"]];
+					[(ImageAndTextCell*) aCell setImage:[NSImage imageNamed:@"small_sharedAlbum.tif"]];
 				}
 				else
 				{
-					[(ImageAndTextCell*) aCell setImage:[NSImage imageNamed:@"small_album.tiff"]];
+					[(ImageAndTextCell*) aCell setImage:[NSImage imageNamed:@"small_album.tif"]];
 				}
 			}
 		}
@@ -9689,11 +9689,11 @@ static BOOL needToRezoom;
 		
 		if (rowIndex == 0)
 		{
-			[(ImageAndTextCell*) aCell setImage:[NSImage imageNamed:@"osirix16x16.tiff"]];
+			[(ImageAndTextCell*) aCell setImage:[NSImage imageNamed:@"osirix16x16.tif"]];
 		}
 		else if( [[dict valueForKey:@"type"] isEqualToString:@"bonjour"])
 		{
-			[(ImageAndTextCell*) aCell setImage:[NSImage imageNamed:@"bonjour.tiff"]];
+			[(ImageAndTextCell*) aCell setImage:[NSImage imageNamed:@"bonjour.tif"]];
 		}
 		else
 		{

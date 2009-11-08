@@ -1645,7 +1645,6 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 
 - (NSMutableArray*) points
 {
-	
 	if(type == t2DPoint)
 	{
 		NSMutableArray  *tempArray = [NSMutableArray arrayWithCapacity:0];
@@ -1700,6 +1699,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		return tempArray;
 	}
 	
+	#ifndef OSIRIX_LIGHT
 	if( type == tPlain)
 	{
 		NSMutableArray  *tempArray = [ITKSegmentation3D extractContour:textureBuffer width:textureWidth height:textureHeight];
@@ -1709,6 +1709,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		
 		return tempArray;
 	}
+	#endif
 	
 	return points;
 }

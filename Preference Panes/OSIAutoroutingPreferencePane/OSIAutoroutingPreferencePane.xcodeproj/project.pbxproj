@@ -11,7 +11,6 @@
 		8D202CF30486D31800D8A456 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */; };
 		8D202CF40486D31800D8A456 /* PreferencePanes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F506C035013D953901CA16C8 /* PreferencePanes.framework */; };
 		AB381A6D0ABE8BBD00239326 /* OSIAutoroutingPreferencePane_Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = AB381A6C0ABE8BBD00239326 /* OSIAutoroutingPreferencePane_Prefix.pch */; };
-		AB381A720ABE8BD200239326 /* OSIAutoroutingPreferencePanePref.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB381A710ABE8BD200239326 /* OSIAutoroutingPreferencePanePref.tiff */; };
 		AB381A790ABE8D8F00239326 /* OSIAutoroutingPreferencePanePref.m in Sources */ = {isa = PBXBuildFile; fileRef = AB381A770ABE8D8F00239326 /* OSIAutoroutingPreferencePanePref.m */; };
 		AB381A7A0ABE8D8F00239326 /* OSIAutoroutingPreferencePanePref.h in Headers */ = {isa = PBXBuildFile; fileRef = AB381A780ABE8D8F00239326 /* OSIAutoroutingPreferencePanePref.h */; };
 		AB80A65C0A19C8CB00FED357 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB80A65B0A19C8CB00FED357 /* Security.framework */; };
@@ -29,7 +28,6 @@
 		8D202CF70486D31800D8A456 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		8D202CF80486D31800D8A456 /* OSIAutoroutingPreferencePane.prefPane */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OSIAutoroutingPreferencePane.prefPane; sourceTree = BUILT_PRODUCTS_DIR; };
 		AB381A6C0ABE8BBD00239326 /* OSIAutoroutingPreferencePane_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = OSIAutoroutingPreferencePane_Prefix.pch; sourceTree = "<group>"; };
-		AB381A710ABE8BD200239326 /* OSIAutoroutingPreferencePanePref.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = OSIAutoroutingPreferencePanePref.tiff; sourceTree = "<group>"; };
 		AB381A770ABE8D8F00239326 /* OSIAutoroutingPreferencePanePref.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = OSIAutoroutingPreferencePanePref.m; sourceTree = "<group>"; };
 		AB381A780ABE8D8F00239326 /* OSIAutoroutingPreferencePanePref.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = OSIAutoroutingPreferencePanePref.h; sourceTree = "<group>"; };
 		AB80A65B0A19C8CB00FED357 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
@@ -79,7 +77,6 @@
 			isa = PBXGroup;
 			children = (
 				CE1EF6C90AF0067800A728F2 /* Localizable.strings */,
-				AB381A710ABE8BD200239326 /* OSIAutoroutingPreferencePanePref.tiff */,
 				CE5C6D2D0CAD9B4D00597FEF /* OSIAutoroutingPreferencePanePref.xib */,
 				8D202CF70486D31800D8A456 /* Info.plist */,
 				089C167DFE841241C02AAC07 /* InfoPlist.strings */,
@@ -192,7 +189,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				8D202CED0486D31800D8A456 /* InfoPlist.strings in Resources */,
-				AB381A720ABE8BD200239326 /* OSIAutoroutingPreferencePanePref.tiff in Resources */,
 				CE1EF6CB0AF0067800A728F2 /* Localizable.strings in Resources */,
 				CE5C6D2F0CAD9B4D00597FEF /* OSIAutoroutingPreferencePanePref.xib in Resources */,
 			);

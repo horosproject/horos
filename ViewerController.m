@@ -119,15 +119,15 @@ static NSString*	MailToolbarItemIdentifier			= @"Mail.icns";
 static NSString*	iChatBroadCastToolbarItemIdentifier = @"iChat.icns";
 static NSString*	StatusToolbarItemIdentifier			= @"status";
 static NSString*	SyncSeriesToolbarItemIdentifier		= @"Sync.tif";
-static NSString*	ResetToolbarItemIdentifier			= @"Reset.tiff";
-static NSString*	RevertToolbarItemIdentifier			= @"Revert.tiff";
-static NSString*	FlipDataToolbarItemIdentifier		= @"FlipData.tiff";
+static NSString*	ResetToolbarItemIdentifier			= @"Reset.tif";
+static NSString*	RevertToolbarItemIdentifier			= @"Revert.tif";
+static NSString*	FlipDataToolbarItemIdentifier		= @"FlipData.tif";
 static NSString*	DatabaseWindowToolbarItemIdentifier = @"DatabaseWindow.icns";
 static NSString*	KeyImagesToolbarItemIdentifier		= @"keyImages";
 static NSString*	DeleteToolbarItemIdentifier			= @"trash.icns";
 static NSString*	TileWindowsToolbarItemIdentifier	= @"windows.tif";
 static NSString*	SUVToolbarItemIdentifier			= @"SUV.tif";
-static NSString*	ROIManagerToolbarItemIdentifier		= @"ROIManager.tiff";
+static NSString*	ROIManagerToolbarItemIdentifier		= @"ROIManager.tif";
 static NSString*	ReportToolbarItemIdentifier			= @"Report.icns";
 static NSString*	FlipVerticalToolbarItemIdentifier	= @"FlipVertical.tif";
 static NSString*	FlipHorizontalToolbarItemIdentifier	= @"FlipHorizontal.tif";
@@ -4881,7 +4881,7 @@ static ViewerController *draggedController = nil;
 		[toolbarItem setLabel:NSLocalizedString(@"3D Pos", nil)];
 		[toolbarItem setPaletteLabel:NSLocalizedString(@"3D Pos", nil)];
 		[toolbarItem setToolTip:NSLocalizedString(@"3D Pos", nil)];
-		[toolbarItem setImage:[NSImage imageNamed:@"OrientationWidget.tiff"]];
+		[toolbarItem setImage:[NSImage imageNamed:@"OrientationWidget.tif"]];
 		[toolbarItem setTarget:nil];
 		[toolbarItem setAction:@selector(threeDPanel:)];
     }
@@ -9232,7 +9232,9 @@ short				matrix[25];
 			unsigned char *r, *g, *b;
 			DCMPix  *pix = [pixList[ curMovieIndex] objectAtIndex:0];
 			
+			#ifndef OSIRIX_LIGHT
 			thickSlab = [[ThickSlabController alloc] init];
+			#endif
 			
 			[thickSlab setImageData :[pix pwidth] :[pix pheight] :100 :[pix pixelSpacingX] :[pix pixelSpacingY] :[pix sliceThickness] :flip];
 			
@@ -9451,10 +9453,12 @@ short				matrix[25];
 						proceed = NO;
 					break;
 					
+					#ifndef OSIRIX_LIGHT
 					case NSAlertDefaultReturn:		// Resample
 						blendingController = [self resampleSeries: blendingController];
 						if( blendingController) proceed = YES;
 					break;
+					#endif
 					
 					case NSAlertOtherReturn:
 						proceed = YES;
@@ -9707,14 +9711,17 @@ short				matrix[25];
 			[self computeRegistrationWithMovingViewer: bc];
 		break;
 		
+		#ifndef OSIRIX_LIGHT
 		case 11:
 			[self resampleSeries: bc];
 		break;
+		#endif
 		
 		case 8:		// 3D Registration
 		
 		break;
 		
+		#ifndef OSIRIX_LIGHT
 		case 9: // LL
 		{
 			[self checkEverythingLoaded];
@@ -9727,6 +9734,7 @@ short				matrix[25];
 			}
 		}
 		break;
+		#endif
 		
 		case 10:	// Copy ROIs
 		{
@@ -9767,6 +9775,10 @@ short				matrix[25];
 			[splash close];
 			[splash release];
 		}
+		break;
+		
+		default:
+			NSRunCriticalAlertPanel(NSLocalizedString(@"OsiriX Light",nil), NSLocalizedString(@"This function is not available in OsiriX Light. Download the complete version of OsiriX to solve this issue.",nil) , NSLocalizedString(@"OK",nil), nil, nil);
 		break;
 	}
 }
@@ -11030,6 +11042,8 @@ int i,j,l;
 	[self roiDeleteGeneratedROIsForName: nil];
 }
 
+#ifndef OSIRIX_LIGHT
+
 - (IBAction) roiVolume:(id) sender
 {
 	long				i, x;
@@ -11159,6 +11173,7 @@ int i,j,l;
 		return;
 	}
 }
+#endif
 
 -(IBAction) roiSetPixelsSetup:(id) sender
 {
@@ -12492,6 +12507,7 @@ int i,j,l;
 
 - (NSLock*) roiLock { return roiLock;}
 
+#ifndef OSIRIX_LIGHT
 //obligatory class for protocol Schedulable.h
 -(void)performWorkUnits:(NSSet *)workUnits forScheduler:(Scheduler *)scheduler
 {
@@ -12637,6 +12653,7 @@ int i,j,l;
 		return;
 	}
 }
+#endif
 
 - (ROI*) convertPolygonROItoBrush:(ROI*) selectedROI
 {
@@ -12671,6 +12688,7 @@ int i,j,l;
 	return [theNewROI autorelease];
 }
 
+#ifndef OSIRIX_LIGHT
 - (ROI*) convertBrushROItoPolygon:(ROI*) selectedROI numPoints: (int) numPoints
 {
 	ROI* newROI = nil;
@@ -12711,6 +12729,7 @@ int i,j,l;
 	
 	return newROI;
 }
+#endif
 
 -(int) imageIndexOfROI:(ROI*) c
 {
@@ -13631,6 +13650,7 @@ int i,j,l;
 //			[vC updateBlendingImage];
 //	}
 	
+	#ifndef OSIRIX_LIGHT
 	// *** VR Viewers ***
 	viewersList = [NSMutableArray array];
 	
@@ -13647,6 +13667,7 @@ int i,j,l;
 		if( [vC blendingController])
 			[vC updateBlendingImage];
 	}
+	#endif
 }
 
 #pragma mark Registration
@@ -13684,6 +13705,7 @@ int i,j,l;
 	return points2D;
 }
 
+#ifndef OSIRIX_LIGHT
 - (ViewerController*) resampleSeriesInNewOrientation
 {
 	return nil;
@@ -13929,6 +13951,7 @@ int i,j,l;
 	
 	[previousNames release];
 }
+#endif
 
 #pragma mark segmentation
 //
@@ -15013,6 +15036,7 @@ int i,j,l;
 	[NSApp beginSheet: printWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
 }
 
+#ifndef OSIRIX_LIGHT
 - (void) printDICOM:(id) sender
 {
 	int AlwaysScaleToFit = [[NSUserDefaults standardUserDefaults] integerForKey: @"AlwaysScaleToFit"];
@@ -15034,6 +15058,7 @@ int i,j,l;
 	
 	[[NSUserDefaults standardUserDefaults] setInteger: AlwaysScaleToFit forKey: @"AlwaysScaleToFit"];
 }
+#endif
 
 -(NSImage*) imageForFrame:(NSNumber*) cur maxFrame:(NSNumber*) max
 {
@@ -16539,6 +16564,7 @@ int i,j,l;
 #define ICHAT_WIDTH 640
 #define ICHAT_HEIGHT 480
 
+#ifndef OSIRIX_LIGHT
 - (void)iChatBroadcast:(id)sender
 {
 	[[IChatTheatreDelegate sharedDelegate] showIChatHelp];
@@ -16554,7 +16580,6 @@ int i,j,l;
 
 -(id) findiChatButton
 {
-	
 //	for( x = 0; x < [[NSScreen screens] count]; x++)
 	{
 		NSArray *items = [toolbar items];
@@ -16570,6 +16595,7 @@ int i,j,l;
 	
 	return nil;
 }
+#endif
 
 - (void)exportTextFieldDidChange:(NSNotification *)note
 {
@@ -16674,6 +16700,7 @@ int i,j,l;
 	return volumeData[ i];
 }
 
+#ifndef OSIRIX_LIGHT
 - (float) computeVolume:(ROI*) selectedRoi points:(NSMutableArray**) pts error:(NSString**) error
 {
 	return [self computeVolume:(ROI*) selectedRoi points:(NSMutableArray**) pts generateMissingROIs: NO generatedROIs: nil computeData: nil error:(NSString**) error];
@@ -17073,7 +17100,7 @@ int i,j,l;
 	
 	return volume;
 }
-
+#endif
 
 -(void) updateVolumeData: (NSNotification*) note
 {
@@ -17265,6 +17292,7 @@ int i,j,l;
 	[orientationMatrix setEnabled: NO];
 }
 
+#ifndef OSIRIX_LIGHT
 - (IBAction) Panel3D:(id) sender
 {
 	long i;
@@ -17347,8 +17375,9 @@ int i,j,l;
 		}
 	}
 }
+#endif
 
-
+#ifndef OSIRIX_LIGHT
 -(IBAction) segmentationTest:(id) sender
 {
 	BOOL volumicData = [self isDataVolumicIn4D: NO];
@@ -17384,7 +17413,9 @@ int i,j,l;
 		}
 	}
 }
+#endif
 
+#ifndef OSIRIX_LIGHT
 -(IBAction) VRVPROViewer:(id) sender
 {
 
@@ -17445,6 +17476,7 @@ int i,j,l;
 	}
 	return viewer;
 }
+#endif
 
 - (NSScreen*) get3DViewerScreen: (ViewerController*) v
 {
@@ -17541,6 +17573,7 @@ int i,j,l;
 	}
 }
 
+#ifndef OSIRIX_LIGHT
 - (SRController *)openSRViewer
 {
 	SRController *viewer;
@@ -17595,6 +17628,7 @@ int i,j,l;
 		}
 	}
 }
+#endif
 
 -(CurvedMPR*) curvedController
 {
@@ -17819,6 +17853,7 @@ int i,j,l;
 	return viewer;
 }
 
+#ifndef OSIRIX_LIGHT
 - (OrthogonalMPRPETCTViewer *)openOrthogonalMPRPETCTViewer
 {
 	OrthogonalMPRPETCTViewer  *viewer;
@@ -17868,6 +17903,7 @@ int i,j,l;
 	}
 	return nil;	
 }
+#endif
 
 -(IBAction) orthogonalMPRViewer:(id) sender
 {
@@ -17936,6 +17972,7 @@ int i,j,l;
 	}
 }
 
+#ifndef OSIRIX_LIGHT
 - (EndoscopyViewer *)openEndoscopyViewer
 {
 	[self checkEverythingLoaded];
@@ -17993,6 +18030,7 @@ int i,j,l;
 		}
 	}
 }
+#endif
 
 //-(IBAction) MIPViewer:(id) sender
 //{
@@ -18035,7 +18073,7 @@ int i,j,l;
 //	}
 //}
 
-
+#ifndef OSIRIX_LIGHT
 - (MPRController *)openMPRViewer
 {
 	[self checkEverythingLoaded];
@@ -18099,6 +18137,7 @@ int i,j,l;
 	}
 }
 
+#endif
 
 #pragma mark-
 #pragma mark 4.5.4 Study navigation
@@ -18948,7 +18987,7 @@ sourceRef);
 	[self setImageRows: rows columns: columns];
 }
 
-
+#ifndef OSIRIX_LIGHT
 - (IBAction)calciumScoring:(id)sender
 {
 	BOOL	found = NO;
@@ -18965,6 +19004,7 @@ sourceRef);
 		[calciumScoringWindowController showWindow:self];
 	}
 }
+#endif
 
 //- (IBAction)centerline: (id)sender
 //{
