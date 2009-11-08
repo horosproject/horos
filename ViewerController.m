@@ -17505,6 +17505,7 @@ int i,j,l;
 	[[viewer window] setFrame: [[self get3DViewerScreen: self] visibleFrame] display:NO];
 }
 
+#ifndef OSIRIX_LIGHT
 -(IBAction) VRViewer:(id) sender
 {
 	[self checkEverythingLoaded];
@@ -17573,7 +17574,6 @@ int i,j,l;
 	}
 }
 
-#ifndef OSIRIX_LIGHT
 - (SRController *)openSRViewer
 {
 	SRController *viewer;

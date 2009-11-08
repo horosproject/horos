@@ -12298,6 +12298,9 @@ static NSArray*	openSubSeriesArray = nil;
 
 	WaitRendering *wait = nil;
 	
+	#ifdef OSIRIX_LIGHT
+	wait = [[WaitRendering alloc] init: NSLocalizedString(@"Starting OsiriX Lite...", nil)];
+	#else
 	if( sizeof( long) == 8)
 	{
 		if( hasMacOSXSnowLeopard()) wait = [[WaitRendering alloc] init: NSLocalizedString(@"Starting Snow OsiriX 64-bit", nil)];
@@ -12308,6 +12311,7 @@ static NSArray*	openSubSeriesArray = nil;
 		if( hasMacOSXSnowLeopard()) wait = [[WaitRendering alloc] init: NSLocalizedString(@"Starting Snow OsiriX 32-bit", nil)];
 		else wait = [[WaitRendering alloc] init: NSLocalizedString(@"Starting OsiriX 32-bit", nil)];
 	}
+	#endif
 	
 	waitCompressionWindow  = [[Wait alloc] initWithString: NSLocalizedString( @"File Conversion", nil) :NO];
 	[waitCompressionWindow setCancel:YES];

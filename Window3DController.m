@@ -30,7 +30,6 @@
 {
 	[[self viewer] mprViewer: sender];
 }
-#endif
 
 - (void) endoscopyViewer:(id) sender
 {
@@ -46,7 +45,7 @@
 {
 	[[self viewer] SRViewer: sender];
 }
-
+#endif
 - (void) orthogonalMPRViewer:(id) sender
 {
 	[[self viewer] orthogonalMPRViewer: sender];
