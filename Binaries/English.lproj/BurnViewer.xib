@@ -614,7 +614,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<object class="NSTextField" id="64125627">
 							<reference key="NSNextResponder" ref="771728513"/>
 							<int key="NSvFlags">268</int>
-							<string key="NSFrame">{{-3, 53}, {114, 17}}</string>
+							<string key="NSFrame">{{-3, 50}, {114, 17}}</string>
 							<reference key="NSSuperview" ref="771728513"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="335428675">
@@ -1283,9 +1283,9 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<object class="NSMutableArray" key="children">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<reference ref="571648711"/>
-							<reference ref="64125627"/>
 							<reference ref="599730992"/>
 							<reference ref="1002687882"/>
+							<reference ref="64125627"/>
 						</object>
 						<reference key="parent" ref="266316169"/>
 					</object>
