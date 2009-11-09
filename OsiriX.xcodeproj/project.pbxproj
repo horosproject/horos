@@ -894,6 +894,8 @@
 		ABB230BE0C2F95DD00B38596 /* JPEGExif.m in Sources */ = {isa = PBXBuildFile; fileRef = ABB230BA0C2F95DD00B38596 /* JPEGExif.m */; };
 		ABB36D800AF2548C00DBEEA2 /* away.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABB36D7E0AF2548C00DBEEA2 /* away.tif */; };
 		ABB36D810AF2548C00DBEEA2 /* available.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABB36D7F0AF2548C00DBEEA2 /* available.tif */; };
+		ABB5F95910A81736003924FD /* OsiriX Lite.zip in Frameworks */ = {isa = PBXBuildFile; fileRef = ABB5F95810A81736003924FD /* OsiriX Lite.zip */; };
+		ABB5F9B210A8189D003924FD /* OsiriX Lite.zip in Resources */ = {isa = PBXBuildFile; fileRef = ABB5F95810A81736003924FD /* OsiriX Lite.zip */; };
 		ABB7A43406343BCA00AD1777 /* dicomDictionary.plist in Resources */ = {isa = PBXBuildFile; fileRef = ABB7A43306343BC900AD1777 /* dicomDictionary.plist */; };
 		ABBA8DA0065AB90200A1F89C /* VR Bones.plist in Resources */ = {isa = PBXBuildFile; fileRef = ABBA8D9A065AB90200A1F89C /* VR Bones.plist */; };
 		ABBA8DA1065AB90200A1F89C /* VR Red Vessels.plist in Resources */ = {isa = PBXBuildFile; fileRef = ABBA8D9B065AB90200A1F89C /* VR Red Vessels.plist */; };
@@ -5890,7 +5892,6 @@
 		CEC705EE10A5C844008935EA /* OSICDPreferencePane.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = CEBD8A5E0875B233000E42D6 /* OSICDPreferencePane.prefPane */; };
 		CEC705EF10A5C844008935EA /* OSIGeneralPreferencePane.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = CEBD8A7C0875B233000E42D6 /* OSIGeneralPreferencePane.prefPane */; };
 		CEC705F010A5C844008935EA /* OSIHangingPreferencePane.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = CEBD8A8B0875B233000E42D6 /* OSIHangingPreferencePane.prefPane */; };
-		CEC705F210A5C844008935EA /* OSILocationsPreferencePane.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = CEBD8AA90875B233000E42D6 /* OSILocationsPreferencePane.prefPane */; };
 		CEC705F310A5C844008935EA /* OSIViewerPreferencePane.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = CEBD8AB80875B233000E42D6 /* OSIViewerPreferencePane.prefPane */; };
 		CEC705F410A5C844008935EA /* OSIDatabasePreferencePane.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = CEC57C260875C9A300389622 /* OSIDatabasePreferencePane.prefPane */; };
 		CEC705F510A5C844008935EA /* FlyThru.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE1D97CE0883B65E005A3A22 /* FlyThru.tif */; };
@@ -6033,7 +6034,6 @@
 		CEC7068A10A5C844008935EA /* iPodEjectOff.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE0817B70C0FEEAE00BBD907 /* iPodEjectOff.tif */; };
 		CEC7068B10A5C844008935EA /* iPodEjectOn.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE0817B80C0FEEAE00BBD907 /* iPodEjectOn.tif */; };
 		CEC7068C10A5C844008935EA /* 3DPresetsPanel.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE27BA0E0C113BBA00BDC9B3 /* 3DPresetsPanel.tif */; };
-		CEC7068E10A5C844008935EA /* OSICustomImageAnnotations.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = A918A4D40C621BED00DD88D1 /* OSICustomImageAnnotations.prefPane */; };
 		CEC7068F10A5C844008935EA /* CustomImageAnnotations.png in Resources */ = {isa = PBXBuildFile; fileRef = A922F3BA0C631F3C0007AB98 /* CustomImageAnnotations.png */; };
 		CEC7069710A5C844008935EA /* Survey.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98E20C84724B00CB38F1 /* Survey.xib */; };
 		CEC7069810A5C844008935EA /* SmartAlbum.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98E40C84724B00CB38F1 /* SmartAlbum.xib */; };
@@ -8361,6 +8361,7 @@
 		ABB36D7F0AF2548C00DBEEA2 /* available.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = available.tif; sourceTree = "<group>"; };
 		ABB3DB0B05868E34006494CB /* VTKView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VTKView.h; sourceTree = "<group>"; };
 		ABB3DB0C05868E34006494CB /* VTKView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = VTKView.mm; sourceTree = "<group>"; };
+		ABB5F95810A81736003924FD /* OsiriX Lite.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; name = "OsiriX Lite.zip"; path = "Binaries/OsiriX Lite.zip"; sourceTree = "<group>"; };
 		ABB7A43306343BC900AD1777 /* dicomDictionary.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.xml; path = dicomDictionary.plist; sourceTree = "<group>"; };
 		ABBA8D9A065AB90200A1F89C /* VR Bones.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.xml; path = "VR Bones.plist"; sourceTree = "<group>"; };
 		ABBA8D9B065AB90200A1F89C /* VR Red Vessels.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.xml; path = "VR Red Vessels.plist"; sourceTree = "<group>"; };
@@ -11699,6 +11700,7 @@
 				CE790A1B105D4DE200CE6AAF /* Security.framework in Frameworks */,
 				CE790A1C105D4DE200CE6AAF /* WebKit.framework in Frameworks */,
 				59FF1CE31097107A00F5EDA0 /* Nitrogen.framework in Frameworks */,
+				ABB5F95910A81736003924FD /* OsiriX Lite.zip in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -11944,6 +11946,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				ABB5F95810A81736003924FD /* OsiriX Lite.zip */,
 				AB78245B0D3BACC700460DCE /* WebServicesHTML */,
 				CEC4B5A20C7DF2D600AF5A76 /* 3DPRESETS */,
 				ABE0D69A0CDB1B9E00F0494B /* iChatTheatreHelp */,
@@ -21301,6 +21304,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				ABB5F9B210A8189D003924FD /* OsiriX Lite.zip in Resources */,
 				CE289B1D0D00AF91004F0A93 /* Mail.scpt in Resources */,
 				ABB7A43406343BCA00AD1777 /* dicomDictionary.plist in Resources */,
 				ABBB63A70635874E00D9531F /* dcmdump in Resources */,
@@ -21843,7 +21847,6 @@
 				CEC705EE10A5C844008935EA /* OSICDPreferencePane.prefPane in Resources */,
 				CEC705EF10A5C844008935EA /* OSIGeneralPreferencePane.prefPane in Resources */,
 				CEC705F010A5C844008935EA /* OSIHangingPreferencePane.prefPane in Resources */,
-				CEC705F210A5C844008935EA /* OSILocationsPreferencePane.prefPane in Resources */,
 				CEC705F310A5C844008935EA /* OSIViewerPreferencePane.prefPane in Resources */,
 				CEC705F410A5C844008935EA /* OSIDatabasePreferencePane.prefPane in Resources */,
 				CEC705F510A5C844008935EA /* FlyThru.tif in Resources */,
@@ -21986,7 +21989,6 @@
 				CEC7068A10A5C844008935EA /* iPodEjectOff.tif in Resources */,
 				CEC7068B10A5C844008935EA /* iPodEjectOn.tif in Resources */,
 				CEC7068C10A5C844008935EA /* 3DPresetsPanel.tif in Resources */,
-				CEC7068E10A5C844008935EA /* OSICustomImageAnnotations.prefPane in Resources */,
 				CEC7068F10A5C844008935EA /* CustomImageAnnotations.png in Resources */,
 				CEC7069710A5C844008935EA /* Survey.xib in Resources */,
 				CEC7069810A5C844008935EA /* SmartAlbum.xib in Resources */,

@@ -819,51 +819,57 @@ NSString* asciiString (NSString* name);
 		
 		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"BurnOsirixApplication"])
 		{
-			NSString *OsiriXPath = [[NSBundle mainBundle] bundlePath];
+			// unzip the file
+			NSTask *unzipTask = [[NSTask alloc] init];
+			[unzipTask setLaunchPath: @"/usr/bin/unzip"];
+			[unzipTask setCurrentDirectoryPath: burnFolder];
+			[unzipTask setArguments: [NSArray arrayWithObjects: @"-o", [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"OsiriX Lite.zip"], nil]]; // -o to override existing report w/ same name
+			[unzipTask launch];
+			[unzipTask waitUntilExit];
+			[unzipTask release];
 			
-			[manager copyPath:OsiriXPath toPath: [NSString stringWithFormat:@"%@/OsiriX.app", burnFolder] handler:nil];
-			[manager removeItemAtPath: [burnFolder stringByAppendingPathComponent: @"/OsiriX.app/Contents/Resources/sn64"]  error: nil];
-			
-			// Remove 64-bit binaries
-			
-			NSString	*pathExecutable = [[NSBundle bundleWithPath: [NSString stringWithFormat:@"%@/OsiriX.app", burnFolder]] executablePath];
-			NSString	*pathLightExecutable = [[pathExecutable stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"light"];
-			
-			// **********
-			
-			@try
-			{
-				NSTask *todo = [[[NSTask alloc]init] autorelease];
-				[todo setLaunchPath: @"/usr/bin/lipo"];
-				
-				NSArray *args = [NSArray arrayWithObjects: pathExecutable, @"-remove", @"x86_64", @"-output", pathLightExecutable, nil];
-
-				[todo setArguments:args];
-				[todo launch];
-				[todo waitUntilExit];
-				
-				// **********
-				
-				todo = [[[NSTask alloc]init]autorelease];
-				[todo setLaunchPath: @"/usr/bin/mv"];
-
-				args = [NSArray arrayWithObjects:pathLightExecutable, pathExecutable, @"-f", nil];
-
-				[todo setArguments:args];
-				[todo launch];
-				[todo waitUntilExit];
-			}
-			
-			@catch( NSException *ne)
-			{
-				NSLog( @"lipo / mv exception");
-			}
-			
-			if( [[NSFileManager defaultManager] fileExistsAtPath: pathLightExecutable])
-			{
-				[[NSFileManager defaultManager] removeFileAtPath: pathExecutable handler: nil];
-				[[NSFileManager defaultManager] movePath: pathLightExecutable toPath: pathExecutable handler: nil];
-			}
+//			[manager removeItemAtPath: [burnFolder stringByAppendingPathComponent: @"/OsiriX.app/Contents/Resources/sn64"]  error: nil];
+//			
+//			// Remove 64-bit binaries
+//			
+//			NSString	*pathExecutable = [[NSBundle bundleWithPath: [NSString stringWithFormat:@"%@/OsiriX.app", burnFolder]] executablePath];
+//			NSString	*pathLightExecutable = [[pathExecutable stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"light"];
+//			
+//			// **********
+//			
+//			@try
+//			{
+//				NSTask *todo = [[[NSTask alloc]init] autorelease];
+//				[todo setLaunchPath: @"/usr/bin/lipo"];
+//				
+//				NSArray *args = [NSArray arrayWithObjects: pathExecutable, @"-remove", @"x86_64", @"-output", pathLightExecutable, nil];
+//
+//				[todo setArguments:args];
+//				[todo launch];
+//				[todo waitUntilExit];
+//				
+//				// **********
+//				
+//				todo = [[[NSTask alloc]init]autorelease];
+//				[todo setLaunchPath: @"/usr/bin/mv"];
+//
+//				args = [NSArray arrayWithObjects:pathLightExecutable, pathExecutable, @"-f", nil];
+//
+//				[todo setArguments:args];
+//				[todo launch];
+//				[todo waitUntilExit];
+//			}
+//			
+//			@catch( NSException *ne)
+//			{
+//				NSLog( @"lipo / mv exception");
+//			}
+//			
+//			if( [[NSFileManager defaultManager] fileExistsAtPath: pathLightExecutable])
+//			{
+//				[[NSFileManager defaultManager] removeFileAtPath: pathExecutable handler: nil];
+//				[[NSFileManager defaultManager] movePath: pathLightExecutable toPath: pathExecutable handler: nil];
+//			}
 			// **********
 		}
 		
@@ -938,11 +944,7 @@ NSString* asciiString (NSString* name);
 	
 	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"BurnOsirixApplication"])
 	{
-		size += [[self getSizeOfDirectory: [[NSBundle mainBundle] bundlePath]] longLongValue];
-		
-		#if __LP64__				// Remove the 64-bit binary
-		size -= 44 * 1024;			// About 44 MB
-		#endif
+		size += 15 * 1024 * 1024; // About 15MB
 	}
 	
 	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"BurnSupplementaryFolder"])
