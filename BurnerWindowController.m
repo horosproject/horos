@@ -26,6 +26,7 @@
 NSString* asciiString (NSString* name);
 
 @implementation BurnerWindowController
+@synthesize password;
 
 - (void) createDMG:(NSString*) imagePath withSource:(NSString*) directoryPath
 {
@@ -78,6 +79,7 @@ NSString* asciiString (NSString* name);
 	[misc2 setEnabled: YES];
 	[misc3 setEnabled: YES];
 	[misc4 setEnabled: YES];
+	[misc5 setEnabled: YES];
 }
 
 - (void) copyDefaultsSettings
@@ -172,6 +174,8 @@ NSString* asciiString (NSString* name);
 	[filesToBurn release];
 	[dbObjects release];
 	[cdName release];
+	[password release];
+	
 	NSLog(@"Burner dealloc");	
 	[super dealloc];
 }
@@ -295,7 +299,7 @@ NSString* asciiString (NSString* name);
 		[misc2 setEnabled: NO];
 		[misc3 setEnabled: NO];
 		[misc4 setEnabled: NO];
-
+		[misc5 setEnabled: NO];
 		
 		if (cdName != nil && [cdName length] > 0)
 		{
@@ -318,19 +322,33 @@ NSString* asciiString (NSString* name);
 	isSettingUpBurn = NO;
 	
 	int no = 0;
-	
+		
 	if( anonymizedFiles) no = [anonymizedFiles count];
 	else no = [files count];
-	
-	if( no)
+		
+	if( [[NSFileManager defaultManager] fileExistsAtPath: [self folderToBurn]])
 	{
-		if( writeDMG) [self performSelectorOnMainThread:@selector(writeDMG:) withObject:nil waitUntilDone:YES];
-		else [self performSelectorOnMainThread:@selector(burnCD:) withObject:nil waitUntilDone:YES];
+		if( no)
+		{
+			if( writeDMG) [self performSelectorOnMainThread:@selector( writeDMG:) withObject:nil waitUntilDone:YES];
+			else [self performSelectorOnMainThread:@selector( burnCD:) withObject:nil waitUntilDone:YES];
+		}
+	}
+	else
+	{
+		[nameField setEnabled: YES];
+		[compressionMode setEnabled: YES];
+		[anonymizedCheckButton setEnabled: YES];
+		[misc1 setEnabled: YES];
+		[misc2 setEnabled: YES];
+		[misc3 setEnabled: YES];
+		[misc4 setEnabled: YES];
+		[misc5 setEnabled: YES];
 	}
 	
 	burning = NO;
 	runBurnAnimation = NO;
-
+	
 	[pool release];
 }
 
@@ -409,6 +427,7 @@ NSString* asciiString (NSString* name);
 	[misc2 setEnabled: YES];
 	[misc3 setEnabled: YES];
 	[misc4 setEnabled: YES];
+	[misc5 setEnabled: YES];
 }
 
 
@@ -716,7 +735,17 @@ NSString* asciiString (NSString* name);
 	else return [NSNumber numberWithUnsignedLongLong:(unsigned long long)0];
 }
 
-- (void)addDicomdir
+- (IBAction) cancel:(id)sender
+{
+	[NSApp abortModal];
+}
+
+- (IBAction) ok:(id)sender
+{
+	[NSApp stopModal];
+}
+
+- (void) addDicomdir
 {
 	[finalSizeField performSelectorOnMainThread:@selector(setStringValue:) withObject:@"" waitUntilDone:YES];
 
@@ -925,23 +954,37 @@ NSString* asciiString (NSString* name);
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"EncryptCD"])
 	{
-		NSTask *t;
-		NSArray *args;
+		[NSApp beginSheet: passwordWindow
+			modalForWindow: self.window
+			modalDelegate: nil
+			didEndSelector: nil
+			contextInfo: nil];
+	
+		int result = [NSApp runModalForWindow: passwordWindow];
+		[NSApp endSheet: passwordWindow];
+		[passwordWindow orderOut: self];
 		
-		[[NSFileManager defaultManager] removeItemAtPath: [[burnFolder stringByDeletingLastPathComponent] stringByAppendingPathComponent: @"encryptedDICOM.dmg"] error: nil];
-		
-		t = [[[NSTask alloc] init] autorelease];
-		[t setLaunchPath: @"/usr/bin/hdiutil"];
-		args = [NSArray arrayWithObjects: @"create", [[burnFolder stringByDeletingLastPathComponent] stringByAppendingPathComponent: @"encryptedDICOM.dmg"], @"-srcfolder", burnFolder, @"-format", @"UDTO", @"-encryption", @"-passphrase", @"secret", nil];
-		[t setArguments: args];
-		[t launch];
-		[t waitUntilExit];
-		
-		[[NSFileManager defaultManager] removeItemAtPath: burnFolder error: nil];
-		[[NSFileManager defaultManager] createDirectoryAtPath: burnFolder attributes: nil];
-		
-		[[NSFileManager defaultManager] moveItemAtPath: [[burnFolder stringByDeletingLastPathComponent] stringByAppendingPathComponent: @"encryptedDICOM.dmg.cdr"] toPath: [burnFolder stringByAppendingPathComponent: @"encryptedDICOM.iso"] error: nil];
-		[[NSFileManager defaultManager] moveItemAtPath: [[burnFolder stringByDeletingLastPathComponent] stringByAppendingPathComponent: @"encryptedDICOM.dmg.iso"] toPath: [burnFolder stringByAppendingPathComponent: @"encryptedDICOM.iso"] error: nil];
+		if( result == NSRunStoppedResponse)
+		{
+			NSTask *t;
+			NSArray *args;
+			
+			[[NSFileManager defaultManager] removeItemAtPath: [[burnFolder stringByDeletingLastPathComponent] stringByAppendingPathComponent: @"encryptedDICOM.dmg"] error: nil];
+			
+			t = [[[NSTask alloc] init] autorelease];
+			[t setLaunchPath: @"/usr/bin/hdiutil"];
+			args = [NSArray arrayWithObjects: @"create", [[burnFolder stringByDeletingLastPathComponent] stringByAppendingPathComponent: @"encryptedDICOM.dmg"], @"-srcfolder", burnFolder, @"-format", @"UDTO", @"-encryption", @"-passphrase", @"secret", nil];
+			[t setArguments: args];
+			[t launch];
+			[t waitUntilExit];
+			
+			[[NSFileManager defaultManager] removeItemAtPath: burnFolder error: nil];
+			[[NSFileManager defaultManager] createDirectoryAtPath: burnFolder attributes: nil];
+			
+			[[NSFileManager defaultManager] moveItemAtPath: [[burnFolder stringByDeletingLastPathComponent] stringByAppendingPathComponent: @"encryptedDICOM.dmg.cdr"] toPath: [burnFolder stringByAppendingPathComponent: @"encryptedDICOM.iso"] error: nil];
+			[[NSFileManager defaultManager] moveItemAtPath: [[burnFolder stringByDeletingLastPathComponent] stringByAppendingPathComponent: @"encryptedDICOM.dmg.iso"] toPath: [burnFolder stringByAppendingPathComponent: @"encryptedDICOM.iso"] error: nil];
+		}
+		else [[NSFileManager defaultManager] removeItemAtPath: burnFolder error: nil];
 	}
 	
 	[finalSizeField performSelectorOnMainThread:@selector(setStringValue:) withObject:[NSString stringWithFormat:@"Final files size to burn: %3.2fMB", (float) ([[self getSizeOfDirectory: burnFolder] longLongValue] / 1024)] waitUntilDone:YES];
@@ -950,7 +993,6 @@ NSString* asciiString (NSString* name);
 		NSLog(@"Exception while creating DICOMDIR: %@", [localException name]);
 	NS_ENDHANDLER
 }
-
 
 - (IBAction) estimateFolderSize: (id) sender
 {

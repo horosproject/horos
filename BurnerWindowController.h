@@ -19,7 +19,8 @@
 
 @class DRTrack;
 /** \brief Window Controller for DICOM disk burning */
-@interface BurnerWindowController : NSWindowController {
+@interface BurnerWindowController : NSWindowController
+{
 	volatile BOOL burning, isIrisAnimation;
 	NSMutableArray *nodeArray;
 	NSMutableArray *files, *anonymizedFiles;
@@ -29,7 +30,7 @@
 	IBOutlet NSTextField *sizeField, *finalSizeField;
 	IBOutlet NSMatrix	 *compressionMode;
 	IBOutlet NSButton *burnButton;
-	IBOutlet NSButton *anonymizedCheckButton, *misc1, *misc2, *misc3, *misc4;
+	IBOutlet NSButton *anonymizedCheckButton, *misc1, *misc2, *misc3, *misc4, *misc5;
 	NSString *cdName;
 	NSString *folderSize;
 	NSTimer *burnAnimationTimer;
@@ -42,9 +43,17 @@
 	BOOL _multiplePatients;
 	BOOL writeDMG;
 	int sizeInMb;
+	NSString *password;
+	IBOutlet NSWindow *passwordWindow;
 	
 	BOOL burnSuppFolder, burnOsiriX, burnHtml;
 }
+
+@property (retain) NSString *password;
+
+- (IBAction) ok:(id)sender;
+- (IBAction) cancel:(id)sender;
+
 - (IBAction) setAnonymizedCheck: (id) sender;
 - (id) initWithFiles:(NSArray *)theFiles;
 - (id)initWithFiles:(NSArray *)theFiles managedObjects:(NSArray *)managedObjects;
