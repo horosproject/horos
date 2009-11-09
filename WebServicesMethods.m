@@ -128,8 +128,14 @@
 	[httpServ setRunloopmode: @"OsiriXWebServerRunLoop"];
 
 	NSString *bundlePath = [NSMutableString stringWithString:[[NSBundle mainBundle] resourcePath]];
-	webDirectory = [[bundlePath stringByAppendingPathComponent:@"WebServicesHTML"] retain];
-
+	webDirectory = [bundlePath stringByAppendingPathComponent: @"WebServicesHTML"];
+	
+	BOOL isDirectory = NO;
+	if( [[NSFileManager defaultManager] fileExistsAtPath: [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent: @"WebServicesHTML"] isDirectory: &isDirectory] == YES && isDirectory == YES)
+		webDirectory = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent: @"WebServicesHTML"];
+		
+	[webDirectory retain];
+	
 	NSError *error = nil;
 	if (![httpServ start:&error])
 	{
@@ -561,6 +567,7 @@
 			NSMutableString *templateString = [NSMutableString stringWithContentsOfFile:[webDirectory stringByAppendingPathComponent:@"index.html"]];
 			
 			[templateString replaceOccurrencesOfString:@"%LocalizedLabel_SearchPatient%" withString:NSLocalizedString(@"Search Patient", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+			[templateString replaceOccurrencesOfString:@"%LocalizedLabel_SearchPatientID%" withString:NSLocalizedString(@"Search Patient ID", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 			[templateString replaceOccurrencesOfString:@"%LocalizedLabel_SearchButton%" withString:NSLocalizedString(@"Search", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 			[templateString replaceOccurrencesOfString:@"%LocalizedLabel_Browse%" withString:NSLocalizedString(@"Browse", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 			[templateString replaceOccurrencesOfString:@"%LocalizedLabel_Last6Hours%" withString:NSLocalizedString(@"Last 6 Hours", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
@@ -633,6 +640,26 @@
 				searchString = [newComponents componentsJoinedByString:@" "];
 				
 				[search appendFormat:@"name CONTAINS[cd] '%@'", searchString]; // [c] is for 'case INsensitive' and [d] is to ignore accents (diacritic)
+				browsePredicate = [NSPredicate predicateWithFormat:search];
+				pageTitle = NSLocalizedString(@"Search Result", @"");
+			}
+			else if([parameters objectForKey:@"searchID"])
+			{
+				NSMutableString *search = [NSMutableString string];
+				NSString *searchString = [NSString stringWithString: [[parameters objectForKey:@"searchID"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+				searchString = [WebServicesMethods decodeURLString:searchString];
+				
+				NSArray *components = [searchString componentsSeparatedByString:@" "];
+				NSMutableArray *newComponents = [NSMutableArray array];
+				for (NSString *comp in components)
+				{
+					if(![comp isEqualToString:@""])
+						[newComponents addObject:comp];
+				}
+				
+				searchString = [newComponents componentsJoinedByString:@" "];
+				
+				[search appendFormat:@"patientID CONTAINS[cd] '%@'", searchString]; // [c] is for 'case INsensitive' and [d] is to ignore accents (diacritic)
 				browsePredicate = [NSPredicate predicateWithFormat:search];
 				pageTitle = NSLocalizedString(@"Search Result", @"");
 			}

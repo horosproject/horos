@@ -4899,7 +4899,7 @@ public:
 		appliedCurves = nil;
 	}
 	
-	long	i;
+	int i;
 
 	if( isRGB)
 	{

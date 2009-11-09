@@ -21,6 +21,12 @@
 			<input type="hidden" name="dicomcstoreport" value="%DicomCStorePort%" name="search"/>
 			<input type="submit" id="searchButton" value="%LocalizedLabel_SearchButton%"/>
 		</form>	
+		<h2 style="padding-top:10px">%LocalizedLabel_SearchPatientID%</h2>
+		<form action="/studyList" method="get">
+			<input type="text" id="searchID" name="searchID"/>
+			<input type="hidden" name="dicomcstoreport" value="%DicomCStorePort%" name="search"/>
+			<input type="submit" id="searchButton" value="%LocalizedLabel_SearchButton%"/>
+		</form>	
 		
 		<h2 style="padding-top:10px">%LocalizedLabel_Browse%</h2>
 		<ul>
