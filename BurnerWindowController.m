@@ -312,7 +312,9 @@ NSString* asciiString (NSString* name);
 {	 
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	isSettingUpBurn = YES;
+	
 	[self addDicomdir];
+	
 	isSettingUpBurn = NO;
 	
 	int no = 0;
@@ -731,7 +733,7 @@ NSString* asciiString (NSString* name);
 	NSFileManager *manager = [NSFileManager defaultManager];
 	int i = 0;
 
-//create burn Folder and dicomdir.
+	//create burn Folder and dicomdir.
 	
 	if (![manager fileExistsAtPath:burnFolder])
 		[manager createDirectoryAtPath:burnFolder attributes:nil];
@@ -882,13 +884,13 @@ NSString* asciiString (NSString* name);
 
 		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"BurnSupplementaryFolder"])
 		{
-			NSString *supplementaryBurnPath=[[NSUserDefaults standardUserDefaults] stringForKey: @"SupplementaryBurnPath"];
+			NSString *supplementaryBurnPath = [[NSUserDefaults standardUserDefaults] stringForKey: @"SupplementaryBurnPath"];
 			if (supplementaryBurnPath)
 			{
-				supplementaryBurnPath=[supplementaryBurnPath stringByExpandingTildeInPath];
+				supplementaryBurnPath = [supplementaryBurnPath stringByExpandingTildeInPath];
 				if ([manager fileExistsAtPath: supplementaryBurnPath])
 				{
-					NSEnumerator *enumerator=[manager enumeratorAtPath: supplementaryBurnPath];
+					NSEnumerator *enumerator = [manager enumeratorAtPath: supplementaryBurnPath];
 					while (file=[enumerator nextObject])
 					{
 						[manager copyPath: [NSString stringWithFormat:@"%@/%@", supplementaryBurnPath,file] toPath: [NSString stringWithFormat:@"%@/%@", burnFolder,file] handler:nil]; 
@@ -919,9 +921,30 @@ NSString* asciiString (NSString* name);
 			
 			[[[BrowserController currentBrowser] managedObjectContext] unlock];
 		}
-		
-		[finalSizeField performSelectorOnMainThread:@selector(setStringValue:) withObject:[NSString stringWithFormat:@"Final files size to burn: %3.2fMB", (float) ([[self getSizeOfDirectory: burnFolder] longLongValue] / 1024)] waitUntilDone:YES];
 	}
+	
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"EncryptCD"])
+	{
+		NSTask *t;
+		NSArray *args;
+		
+		[[NSFileManager defaultManager] removeItemAtPath: [[burnFolder stringByDeletingLastPathComponent] stringByAppendingPathComponent: @"encryptedDICOM.dmg"] error: nil];
+		
+		t = [[[NSTask alloc] init] autorelease];
+		[t setLaunchPath: @"/usr/bin/hdiutil"];
+		args = [NSArray arrayWithObjects: @"create", [[burnFolder stringByDeletingLastPathComponent] stringByAppendingPathComponent: @"encryptedDICOM.dmg"], @"-srcfolder", burnFolder, @"-format", @"UDTO", @"-encryption", @"-passphrase", @"secret", nil];
+		[t setArguments: args];
+		[t launch];
+		[t waitUntilExit];
+		
+		[[NSFileManager defaultManager] removeItemAtPath: burnFolder error: nil];
+		[[NSFileManager defaultManager] createDirectoryAtPath: burnFolder attributes: nil];
+		
+		[[NSFileManager defaultManager] moveItemAtPath: [[burnFolder stringByDeletingLastPathComponent] stringByAppendingPathComponent: @"encryptedDICOM.dmg.cdr"] toPath: [burnFolder stringByAppendingPathComponent: @"encryptedDICOM.iso"] error: nil];
+		[[NSFileManager defaultManager] moveItemAtPath: [[burnFolder stringByDeletingLastPathComponent] stringByAppendingPathComponent: @"encryptedDICOM.dmg.iso"] toPath: [burnFolder stringByAppendingPathComponent: @"encryptedDICOM.iso"] error: nil];
+	}
+	
+	[finalSizeField performSelectorOnMainThread:@selector(setStringValue:) withObject:[NSString stringWithFormat:@"Final files size to burn: %3.2fMB", (float) ([[self getSizeOfDirectory: burnFolder] longLongValue] / 1024)] waitUntilDone:YES];
 	
 	NS_HANDLER
 		NSLog(@"Exception while creating DICOMDIR: %@", [localException name]);
@@ -944,7 +967,7 @@ NSString* asciiString (NSString* name);
 	
 	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"BurnOsirixApplication"])
 	{
-		size += 15 * 1024 * 1024; // About 15MB
+		size += 15 * 1024; // About 15MB
 	}
 	
 	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"BurnSupplementaryFolder"])
