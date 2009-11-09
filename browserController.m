@@ -1365,6 +1365,7 @@ static NSArray*	statesArray = nil;
 - (void) testAutorouting
 {
 	// Test the routing filters
+	#ifndef OSIRIX_LIGHT
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOROUTINGACTIVATED"])
 	{
 		NSArray	*autoroutingRules = [[NSUserDefaults standardUserDefaults] arrayForKey: @"AUTOROUTINGDICTIONARY"];
@@ -1382,6 +1383,7 @@ static NSArray*	statesArray = nil;
 			}
 		}
 	}
+	#endif
 }
 
 - (void) applyRoutingRule: (id) sender // For manually applying a routing rule, from the DB contextual menu 

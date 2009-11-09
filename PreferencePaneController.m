@@ -318,6 +318,15 @@ extern OSStatus SetupAuthorization(void)
 			break;
 
 	}
+	
+	#ifdef OSIRIX_LIGHT
+	if( pathToPrefPaneBundle == nil)
+	{
+		NSRunInformationalAlertPanel(NSLocalizedString(@"OsiriX Lite", @""), NSLocalizedString(@"This tool is not implemented in OsiriX Lite version. Download the complete version of OsiriX to solve this issue.", @""), NSLocalizedString(@"OK", @""), nil, nil);
+		[[self window] setTitle: NSLocalizedString( @"Preferences", nil)];
+	}
+	#endif
+	
 	[[self window] setRepresentedFilename: pathToPrefPaneBundle];
 	
 	if( bundles == nil) bundles = [[NSMutableDictionary dictionary] retain];

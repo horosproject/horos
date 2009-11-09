@@ -5890,7 +5890,6 @@
 		CEC705EE10A5C844008935EA /* OSICDPreferencePane.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = CEBD8A5E0875B233000E42D6 /* OSICDPreferencePane.prefPane */; };
 		CEC705EF10A5C844008935EA /* OSIGeneralPreferencePane.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = CEBD8A7C0875B233000E42D6 /* OSIGeneralPreferencePane.prefPane */; };
 		CEC705F010A5C844008935EA /* OSIHangingPreferencePane.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = CEBD8A8B0875B233000E42D6 /* OSIHangingPreferencePane.prefPane */; };
-		CEC705F110A5C844008935EA /* OSIListenerPreferencePane.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = CEBD8A9A0875B233000E42D6 /* OSIListenerPreferencePane.prefPane */; };
 		CEC705F210A5C844008935EA /* OSILocationsPreferencePane.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = CEBD8AA90875B233000E42D6 /* OSILocationsPreferencePane.prefPane */; };
 		CEC705F310A5C844008935EA /* OSIViewerPreferencePane.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = CEBD8AB80875B233000E42D6 /* OSIViewerPreferencePane.prefPane */; };
 		CEC705F410A5C844008935EA /* OSIDatabasePreferencePane.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = CEC57C260875C9A300389622 /* OSIDatabasePreferencePane.prefPane */; };
@@ -5946,7 +5945,6 @@
 		CEC7062910A5C844008935EA /* cerveau_icon.jpg in Resources */ = {isa = PBXBuildFile; fileRef = A9C63A9B09BD7C5D00E312AE /* cerveau_icon.jpg */; };
 		CEC7062A10A5C844008935EA /* add-large.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE5D33B309E1C26400CC6884 /* add-large.tif */; };
 		CEC7062B10A5C844008935EA /* minus-large.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE5D33B409E1C26400CC6884 /* minus-large.tif */; };
-		CEC7062C10A5C844008935EA /* OSI3DPreferencePane.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = ABC3938C09F51D6B000A6508 /* OSI3DPreferencePane.prefPane */; };
 		CEC7062D10A5C844008935EA /* OSIPETPreferencePane.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = ABC3993109F52842000A6508 /* OSIPETPreferencePane.prefPane */; };
 		CEC7062E10A5C844008935EA /* small_sharedSmartAlbum.tif in Resources */ = {isa = PBXBuildFile; fileRef = A9B411C10890496400913770 /* small_sharedSmartAlbum.tif */; };
 		CEC7062F10A5C844008935EA /* FileNotFound.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB95C0380A2B08ED00380C65 /* FileNotFound.tif */; };
@@ -5966,7 +5964,6 @@
 		CEC7063D10A5C844008935EA /* PAGES in Resources */ = {isa = PBXBuildFile; fileRef = B7CDAC730AB3003200068D70 /* PAGES */; };
 		CEC7063E10A5C844008935EA /* page.tif in Resources */ = {isa = PBXBuildFile; fileRef = B7CDAD000AB30E7600068D70 /* page.tif */; };
 		CEC7063F10A5C844008935EA /* pdf.tif in Resources */ = {isa = PBXBuildFile; fileRef = B7CDAD010AB30E7600068D70 /* pdf.tif */; };
-		CEC7064010A5C844008935EA /* OSIAutoroutingPreferencePane.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = AB381AE90ABE9F5100239326 /* OSIAutoroutingPreferencePane.prefPane */; };
 		CEC7064110A5C844008935EA /* Shutter.tif in Resources */ = {isa = PBXBuildFile; fileRef = B78DA71A0ACEDA9A005C2C04 /* Shutter.tif */; };
 		CEC7064610A5C844008935EA /* ReportPages.icns in Resources */ = {isa = PBXBuildFile; fileRef = A9ADBBCE0ADE80E60022DFC7 /* ReportPages.icns */; };
 		CEC7064710A5C844008935EA /* ReportRTF.icns in Resources */ = {isa = PBXBuildFile; fileRef = A9ADBBCF0ADE80E60022DFC7 /* ReportRTF.icns */; };
@@ -5975,7 +5972,6 @@
 		CEC7064A10A5C844008935EA /* SagSmall.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABD559F50AEE146900108895 /* SagSmall.tif */; };
 		CEC7064B10A5C844008935EA /* CorSmall.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABD559F60AEE146900108895 /* CorSmall.tif */; };
 		CEC7064C10A5C844008935EA /* AxialSmall.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABD559F70AEE146900108895 /* AxialSmall.tif */; };
-		CEC7064D10A5C844008935EA /* AYDicomPrint.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = ABD908C60AF2119200E47345 /* AYDicomPrint.prefPane */; };
 		CEC7064E10A5C844008935EA /* SmallPrinter.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB17D1C80AF2137C00231B11 /* SmallPrinter.tif */; };
 		CEC7064F10A5C844008935EA /* away.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABB36D7E0AF2548C00DBEEA2 /* away.tif */; };
 		CEC7065010A5C844008935EA /* available.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABB36D7F0AF2548C00DBEEA2 /* available.tif */; };
@@ -6037,15 +6033,12 @@
 		CEC7068A10A5C844008935EA /* iPodEjectOff.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE0817B70C0FEEAE00BBD907 /* iPodEjectOff.tif */; };
 		CEC7068B10A5C844008935EA /* iPodEjectOn.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE0817B80C0FEEAE00BBD907 /* iPodEjectOn.tif */; };
 		CEC7068C10A5C844008935EA /* 3DPresetsPanel.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE27BA0E0C113BBA00BDC9B3 /* 3DPresetsPanel.tif */; };
-		CEC7068D10A5C844008935EA /* texture.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE897DD30C21D951005C669E /* texture.tif */; };
 		CEC7068E10A5C844008935EA /* OSICustomImageAnnotations.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = A918A4D40C621BED00DD88D1 /* OSICustomImageAnnotations.prefPane */; };
 		CEC7068F10A5C844008935EA /* CustomImageAnnotations.png in Resources */ = {isa = PBXBuildFile; fileRef = A922F3BA0C631F3C0007AB98 /* CustomImageAnnotations.png */; };
-		CEC7069610A5C844008935EA /* 3DPRESETS in Resources */ = {isa = PBXBuildFile; fileRef = CEC4B5A20C7DF2D600AF5A76 /* 3DPRESETS */; };
 		CEC7069710A5C844008935EA /* Survey.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98E20C84724B00CB38F1 /* Survey.xib */; };
 		CEC7069810A5C844008935EA /* SmartAlbum.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98E40C84724B00CB38F1 /* SmartAlbum.xib */; };
 		CEC7069910A5C844008935EA /* ROIVolumeManager.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98E60C84724B00CB38F1 /* ROIVolumeManager.xib */; };
 		CEC7069B10A5C844008935EA /* LogWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98EA0C84724B00CB38F1 /* LogWindow.xib */; };
-		CEC7069C10A5C844008935EA /* FlyThru.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98EC0C84724B00CB38F1 /* FlyThru.xib */; };
 		CEC7069D10A5C844008935EA /* ToolbarPanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98F00C84724B00CB38F1 /* ToolbarPanel.xib */; };
 		CEC7069E10A5C844008935EA /* KeyObjectReport.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98F20C84724B00CB38F1 /* KeyObjectReport.xib */; };
 		CEC7069F10A5C844008935EA /* PreferencePanesViewer.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98F60C84724B00CB38F1 /* PreferencePanesViewer.xib */; };
@@ -6075,17 +6068,9 @@
 		CEC706C210A5C844008935EA /* Centerline.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEEB5CCA0CCDD161008803E2 /* Centerline.tif */; };
 		CEC706C310A5C844008935EA /* QRpartiallyInDatabase.tif in Resources */ = {isa = PBXBuildFile; fileRef = A977ECAB0CD1F7E500C418D8 /* QRpartiallyInDatabase.tif */; };
 		CEC706C410A5C844008935EA /* QRalreadyInDatabase.tif in Resources */ = {isa = PBXBuildFile; fileRef = A977ECAC0CD1F7E500C418D8 /* QRalreadyInDatabase.tif */; };
-		CEC706C510A5C844008935EA /* iChatHelper.xib in Resources */ = {isa = PBXBuildFile; fileRef = ABE0D6920CDB1A4400F0494B /* iChatHelper.xib */; };
-		CEC706C610A5C844008935EA /* browse2OsiriX_small.png in Resources */ = {isa = PBXBuildFile; fileRef = ABE0D69B0CDB1B9E00F0494B /* browse2OsiriX_small.png */; };
-		CEC706C710A5C844008935EA /* iChatIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = ABE0D69C0CDB1B9E00F0494B /* iChatIcon.png */; };
-		CEC706C810A5C844008935EA /* iChatTheatre-English.html in Resources */ = {isa = PBXBuildFile; fileRef = ABE0D69D0CDB1B9E00F0494B /* iChatTheatre-English.html */; };
-		CEC706C910A5C844008935EA /* shareFromMenu_small.png in Resources */ = {isa = PBXBuildFile; fileRef = ABE0D69F0CDB1B9E00F0494B /* shareFromMenu_small.png */; };
-		CEC706CA10A5C844008935EA /* shareFromVideoChatWindow_small.png in Resources */ = {isa = PBXBuildFile; fileRef = ABE0D6A00CDB1B9E00F0494B /* shareFromVideoChatWindow_small.png */; };
-		CEC706CB10A5C844008935EA /* style.css in Resources */ = {isa = PBXBuildFile; fileRef = ABE0D6A10CDB1B9E00F0494B /* style.css */; };
 		CEC706CC10A5C844008935EA /* TIFFSmall.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEDEF7D30D020E9100CADB15 /* TIFFSmall.tif */; };
 		CEC706CD10A5C844008935EA /* MailSmall.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEDEF7D40D020E9100CADB15 /* MailSmall.tif */; };
 		CEC706CE10A5C844008935EA /* JPEGSmall.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEDEF7D50D020E9100CADB15 /* JPEGSmall.tif */; };
-		CEC706CF10A5C844008935EA /* WebServicesHTML in Resources */ = {isa = PBXBuildFile; fileRef = AB78245B0D3BACC700460DCE /* WebServicesHTML */; };
 		CEC706D010A5C844008935EA /* displayRGB.tif in Resources */ = {isa = PBXBuildFile; fileRef = A9897D970D4A142200BAC447 /* displayRGB.tif */; };
 		CEC706D110A5C844008935EA /* displayTotoku.tif in Resources */ = {isa = PBXBuildFile; fileRef = A9897D980D4A142200BAC447 /* displayTotoku.tif */; };
 		CEC706D210A5C844008935EA /* Navigator.xib in Resources */ = {isa = PBXBuildFile; fileRef = A987B3DF0D5A069200BF89C0 /* Navigator.xib */; };
@@ -7244,7 +7229,6 @@
 		CEFA94A510A7444D00F9512D /* dimdump.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D1D09B6828600545F5E /* dimdump.cc */; };
 		CEFA94A610A7444D00F9512D /* dimecho.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D1E09B6828600545F5E /* dimecho.cc */; };
 		CEFA94A710A7444D00F9512D /* dimfind.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D1F09B6828600545F5E /* dimfind.cc */; };
-		CEFA94A810A7444D00F9512D /* dimget.mm in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D2009B6828600545F5E /* dimget.mm */; };
 		CEFA94A910A7444D00F9512D /* dimmove.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D2109B6828600545F5E /* dimmove.cc */; };
 		CEFA94AA10A7444D00F9512D /* dimse.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D2209B6828600545F5E /* dimse.cc */; };
 		CEFA94AB10A7444D00F9512D /* dimse.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D2309B6828600545F5E /* dimse.h */; };
@@ -7265,7 +7249,6 @@
 		CEFA94BA10A7444D00F9512D /* extneg.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D3209B6828600545F5E /* extneg.h */; };
 		CEFA94BB10A7444D00F9512D /* lst.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D3309B6828600545F5E /* lst.cc */; };
 		CEFA94BC10A7444D00F9512D /* lst.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D3409B6828600545F5E /* lst.h */; };
-		CEFA951D10A75C5200F9512D /* ijg12.dsp in Resources */ = {isa = PBXBuildFile; fileRef = 7E2269C706BEF624003B09E5 /* ijg12.dsp */; };
 		CEFA951E10A75C5200F9512D /* jaricom.c in Sources */ = {isa = PBXBuildFile; fileRef = 7E2269C806BEF624003B09E5 /* jaricom.c */; };
 		CEFA951F10A75C5200F9512D /* jcapimin.c in Sources */ = {isa = PBXBuildFile; fileRef = 7E2269C906BEF624003B09E5 /* jcapimin.c */; };
 		CEFA952010A75C5200F9512D /* jcapistd.c in Sources */ = {isa = PBXBuildFile; fileRef = 7E2269CA06BEF624003B09E5 /* jcapistd.c */; };
@@ -7343,10 +7326,7 @@
 		CEFA956810A75C5200F9512D /* jquant2.c in Sources */ = {isa = PBXBuildFile; fileRef = 7E226A1206BEF624003B09E5 /* jquant2.c */; };
 		CEFA956910A75C5200F9512D /* jutils.c in Sources */ = {isa = PBXBuildFile; fileRef = 7E226A1306BEF624003B09E5 /* jutils.c */; };
 		CEFA956A10A75C5200F9512D /* jversion12.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E226A1406BEF624003B09E5 /* jversion12.h */; };
-		CEFA956B10A75C5200F9512D /* Makefile.dep in Resources */ = {isa = PBXBuildFile; fileRef = 7E226A1506BEF624003B09E5 /* Makefile.dep */; };
-		CEFA956C10A75C5200F9512D /* Makefile.in in Resources */ = {isa = PBXBuildFile; fileRef = 7E226A1606BEF624003B09E5 /* Makefile.in */; };
 		CEFA956D10A75C5200F9512D /* osconfig.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E226A1706BEF624003B09E5 /* osconfig.h */; };
-		CEFA956E10A75C5500F9512D /* ijg16.dsp in Resources */ = {isa = PBXBuildFile; fileRef = BFAEB15606BF2C4F00C7EF1E /* ijg16.dsp */; };
 		CEFA956F10A75C5500F9512D /* jaricom.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB15706BF2C4F00C7EF1E /* jaricom.c */; };
 		CEFA957010A75C5500F9512D /* jcapimin.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB15806BF2C4F00C7EF1E /* jcapimin.c */; };
 		CEFA957110A75C5500F9512D /* jcapistd.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB15906BF2C4F00C7EF1E /* jcapistd.c */; };
@@ -7424,9 +7404,6 @@
 		CEFA95B910A75C5500F9512D /* jquant2.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB1A106BF2C5000C7EF1E /* jquant2.c */; };
 		CEFA95BA10A75C5500F9512D /* jutils.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB1A206BF2C5000C7EF1E /* jutils.c */; };
 		CEFA95BB10A75C5500F9512D /* jversion16.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB1A306BF2C5000C7EF1E /* jversion16.h */; };
-		CEFA95BC10A75C5500F9512D /* Makefile.dep in Resources */ = {isa = PBXBuildFile; fileRef = BFAEB1A406BF2C5000C7EF1E /* Makefile.dep */; };
-		CEFA95BD10A75C5500F9512D /* Makefile.in in Resources */ = {isa = PBXBuildFile; fileRef = BFAEB1A506BF2C5000C7EF1E /* Makefile.in */; };
-		CEFA95BE10A75C5900F9512D /* ijg8.dsp in Resources */ = {isa = PBXBuildFile; fileRef = BFAEB10506BF2C4E00C7EF1E /* ijg8.dsp */; };
 		CEFA95BF10A75C5900F9512D /* jaricom.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB10606BF2C4E00C7EF1E /* jaricom.c */; };
 		CEFA95C010A75C5900F9512D /* jcapimin.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB10706BF2C4E00C7EF1E /* jcapimin.c */; };
 		CEFA95C110A75C5900F9512D /* jcapistd.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB10806BF2C4E00C7EF1E /* jcapistd.c */; };
@@ -7504,8 +7481,6 @@
 		CEFA960910A75C5900F9512D /* jquant2.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB15006BF2C4F00C7EF1E /* jquant2.c */; };
 		CEFA960A10A75C5900F9512D /* jutils.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB15106BF2C4F00C7EF1E /* jutils.c */; };
 		CEFA960B10A75C5900F9512D /* jversion8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB15206BF2C4F00C7EF1E /* jversion8.h */; };
-		CEFA960C10A75C5900F9512D /* Makefile.dep in Resources */ = {isa = PBXBuildFile; fileRef = BFAEB15306BF2C4F00C7EF1E /* Makefile.dep */; };
-		CEFA960D10A75C5900F9512D /* Makefile.in in Resources */ = {isa = PBXBuildFile; fileRef = BFAEB15406BF2C4F00C7EF1E /* Makefile.in */; };
 		CEFA963110A75DA100F9512D /* DCMTransferSyntax.h in Headers */ = {isa = PBXBuildFile; fileRef = BF3BB37E067808D5004F6E91 /* DCMTransferSyntax.h */; };
 		CEFA963210A75DA200F9512D /* DCMTransferSyntax.m in Sources */ = {isa = PBXBuildFile; fileRef = BF3BB37F067808D5004F6E91 /* DCMTransferSyntax.m */; };
 		CEFA963B10A75DBF00F9512D /* DCMAbstractSyntaxUID.h in Headers */ = {isa = PBXBuildFile; fileRef = CE79D9860FD84C350043DD73 /* DCMAbstractSyntaxUID.h */; };
@@ -8524,6 +8499,7 @@
 		ABF7D84C0BE1EB5E00D1A1B4 /* Axis.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Axis.tif; sourceTree = "<group>"; };
 		ABFA7CD2056056F300963FF8 /* dicomData.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = dicomData.m; sourceTree = "<group>"; };
 		ABFA7CD3056056F300963FF8 /* dicomData.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dicomData.h; sourceTree = "<group>"; };
+		ABFDE81610A8003100E33E0F /* Deployment-Info OsiriXLite.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Deployment-Info OsiriXLite.plist"; sourceTree = "<group>"; };
 		ABFF0970056D92460066794C /* QuickTime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickTime.framework; path = /System/Library/Frameworks/QuickTime.framework; sourceTree = "<absolute>"; };
 		ABFF0A95056D97800066794C /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = /System/Library/Frameworks/ApplicationServices.framework; sourceTree = "<absolute>"; };
 		B78490F90B4BE86400BA93EF /* MenuDictionary.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = MenuDictionary.h; sourceTree = "<group>"; };
@@ -11502,7 +11478,6 @@
 		CEC4B5A20C7DF2D600AF5A76 /* 3DPRESETS */ = {isa = PBXFileReference; lastKnownFileType = folder; name = 3DPRESETS; path = Binaries/3DPRESETS; sourceTree = "<group>"; };
 		CEC57C260875C9A300389622 /* OSIDatabasePreferencePane.prefPane */ = {isa = PBXFileReference; lastKnownFileType = folder; name = OSIDatabasePreferencePane.prefPane; path = "Preference Panes/OSIDatabasePreferencePane/build/Development/OSIDatabasePreferencePane.prefPane"; sourceTree = "<group>"; };
 		CEC70A1E10A5C845008935EA /* OsiriX Lite.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "OsiriX Lite.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		CEC70A2010A5C845008935EA /* Deployment-Info copy.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Deployment-Info copy.plist"; sourceTree = "<group>"; };
 		CECDBE690C95467B006B11A5 /* AnnotationsDefault.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = AnnotationsDefault.plist; path = Binaries/AnnotationsDefault.plist; sourceTree = "<group>"; };
 		CECEF72C081BB265002ECC99 /* DICOMExport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DICOMExport.h; sourceTree = "<group>"; };
 		CECEF72D081BB265002ECC99 /* DICOMExport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DICOMExport.m; sourceTree = "<group>"; };
@@ -12039,6 +12014,7 @@
 				CE3F993E0C84724B00CB38F1 /* XMLViewer.xib */,
 				ABD7BC2E063EFD8D00E24B0E /* BlackBody.plist */,
 				ABBFDA3F063480490011BD0A /* Deployment-Info.plist */,
+				ABFDE81610A8003100E33E0F /* Deployment-Info OsiriXLite.plist */,
 				ABB7A43306343BC900AD1777 /* dicomDictionary.plist */,
 				ABD7BC4C063F00A900E24B0E /* Flow.plist */,
 				ABD7BC50063F00A900E24B0E /* GEcolor.plist */,
@@ -12066,7 +12042,6 @@
 				CE1606620769EFE60036CAD3 /* VR Muscles-Bones.plist */,
 				ABBA8D9B065AB90200A1F89C /* VR Red Vessels.plist */,
 				B7CDAC730AB3003200068D70 /* PAGES */,
-				CEC70A2010A5C845008935EA /* Deployment-Info copy.plist */,
 			);
 			name = Resources;
 			sourceTree = SOURCE_ROOT;
@@ -21868,7 +21843,6 @@
 				CEC705EE10A5C844008935EA /* OSICDPreferencePane.prefPane in Resources */,
 				CEC705EF10A5C844008935EA /* OSIGeneralPreferencePane.prefPane in Resources */,
 				CEC705F010A5C844008935EA /* OSIHangingPreferencePane.prefPane in Resources */,
-				CEC705F110A5C844008935EA /* OSIListenerPreferencePane.prefPane in Resources */,
 				CEC705F210A5C844008935EA /* OSILocationsPreferencePane.prefPane in Resources */,
 				CEC705F310A5C844008935EA /* OSIViewerPreferencePane.prefPane in Resources */,
 				CEC705F410A5C844008935EA /* OSIDatabasePreferencePane.prefPane in Resources */,
@@ -21924,7 +21898,6 @@
 				CEC7062910A5C844008935EA /* cerveau_icon.jpg in Resources */,
 				CEC7062A10A5C844008935EA /* add-large.tif in Resources */,
 				CEC7062B10A5C844008935EA /* minus-large.tif in Resources */,
-				CEC7062C10A5C844008935EA /* OSI3DPreferencePane.prefPane in Resources */,
 				CEC7062D10A5C844008935EA /* OSIPETPreferencePane.prefPane in Resources */,
 				CEC7062E10A5C844008935EA /* small_sharedSmartAlbum.tif in Resources */,
 				CEC7062F10A5C844008935EA /* FileNotFound.tif in Resources */,
@@ -21944,7 +21917,6 @@
 				CEC7063D10A5C844008935EA /* PAGES in Resources */,
 				CEC7063E10A5C844008935EA /* page.tif in Resources */,
 				CEC7063F10A5C844008935EA /* pdf.tif in Resources */,
-				CEC7064010A5C844008935EA /* OSIAutoroutingPreferencePane.prefPane in Resources */,
 				CEC7064110A5C844008935EA /* Shutter.tif in Resources */,
 				CEC7064610A5C844008935EA /* ReportPages.icns in Resources */,
 				CEC7064710A5C844008935EA /* ReportRTF.icns in Resources */,
@@ -21953,7 +21925,6 @@
 				CEC7064A10A5C844008935EA /* SagSmall.tif in Resources */,
 				CEC7064B10A5C844008935EA /* CorSmall.tif in Resources */,
 				CEC7064C10A5C844008935EA /* AxialSmall.tif in Resources */,
-				CEC7064D10A5C844008935EA /* AYDicomPrint.prefPane in Resources */,
 				CEC7064E10A5C844008935EA /* SmallPrinter.tif in Resources */,
 				CEC7064F10A5C844008935EA /* away.tif in Resources */,
 				CEC7065010A5C844008935EA /* available.tif in Resources */,
@@ -22015,15 +21986,12 @@
 				CEC7068A10A5C844008935EA /* iPodEjectOff.tif in Resources */,
 				CEC7068B10A5C844008935EA /* iPodEjectOn.tif in Resources */,
 				CEC7068C10A5C844008935EA /* 3DPresetsPanel.tif in Resources */,
-				CEC7068D10A5C844008935EA /* texture.tif in Resources */,
 				CEC7068E10A5C844008935EA /* OSICustomImageAnnotations.prefPane in Resources */,
 				CEC7068F10A5C844008935EA /* CustomImageAnnotations.png in Resources */,
-				CEC7069610A5C844008935EA /* 3DPRESETS in Resources */,
 				CEC7069710A5C844008935EA /* Survey.xib in Resources */,
 				CEC7069810A5C844008935EA /* SmartAlbum.xib in Resources */,
 				CEC7069910A5C844008935EA /* ROIVolumeManager.xib in Resources */,
 				CEC7069B10A5C844008935EA /* LogWindow.xib in Resources */,
-				CEC7069C10A5C844008935EA /* FlyThru.xib in Resources */,
 				CEC7069D10A5C844008935EA /* ToolbarPanel.xib in Resources */,
 				CEC7069E10A5C844008935EA /* KeyObjectReport.xib in Resources */,
 				CEC7069F10A5C844008935EA /* PreferencePanesViewer.xib in Resources */,
@@ -22053,17 +22021,9 @@
 				CEC706C210A5C844008935EA /* Centerline.tif in Resources */,
 				CEC706C310A5C844008935EA /* QRpartiallyInDatabase.tif in Resources */,
 				CEC706C410A5C844008935EA /* QRalreadyInDatabase.tif in Resources */,
-				CEC706C510A5C844008935EA /* iChatHelper.xib in Resources */,
-				CEC706C610A5C844008935EA /* browse2OsiriX_small.png in Resources */,
-				CEC706C710A5C844008935EA /* iChatIcon.png in Resources */,
-				CEC706C810A5C844008935EA /* iChatTheatre-English.html in Resources */,
-				CEC706C910A5C844008935EA /* shareFromMenu_small.png in Resources */,
-				CEC706CA10A5C844008935EA /* shareFromVideoChatWindow_small.png in Resources */,
-				CEC706CB10A5C844008935EA /* style.css in Resources */,
 				CEC706CC10A5C844008935EA /* TIFFSmall.tif in Resources */,
 				CEC706CD10A5C844008935EA /* MailSmall.tif in Resources */,
 				CEC706CE10A5C844008935EA /* JPEGSmall.tif in Resources */,
-				CEC706CF10A5C844008935EA /* WebServicesHTML in Resources */,
 				CEC706D010A5C844008935EA /* displayRGB.tif in Resources */,
 				CEC706D110A5C844008935EA /* displayTotoku.tif in Resources */,
 				CEC706D210A5C844008935EA /* Navigator.xib in Resources */,
@@ -22089,15 +22049,6 @@
 				CEC706E910A5C844008935EA /* tagDictionary.plist in Resources */,
 				CEC706EB10A5C844008935EA /* SetPixelValue.png in Resources */,
 				CEC706EC10A5C844008935EA /* GrowingRegion.png in Resources */,
-				CEFA951D10A75C5200F9512D /* ijg12.dsp in Resources */,
-				CEFA956B10A75C5200F9512D /* Makefile.dep in Resources */,
-				CEFA956C10A75C5200F9512D /* Makefile.in in Resources */,
-				CEFA956E10A75C5500F9512D /* ijg16.dsp in Resources */,
-				CEFA95BC10A75C5500F9512D /* Makefile.dep in Resources */,
-				CEFA95BD10A75C5500F9512D /* Makefile.in in Resources */,
-				CEFA95BE10A75C5900F9512D /* ijg8.dsp in Resources */,
-				CEFA960C10A75C5900F9512D /* Makefile.dep in Resources */,
-				CEFA960D10A75C5900F9512D /* Makefile.in in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24087,7 +24038,6 @@
 				CEFA94A510A7444D00F9512D /* dimdump.cc in Sources */,
 				CEFA94A610A7444D00F9512D /* dimecho.cc in Sources */,
 				CEFA94A710A7444D00F9512D /* dimfind.cc in Sources */,
-				CEFA94A810A7444D00F9512D /* dimget.mm in Sources */,
 				CEFA94A910A7444D00F9512D /* dimmove.cc in Sources */,
 				CEFA94AA10A7444D00F9512D /* dimse.cc in Sources */,
 				CEFA94AC10A7444D00F9512D /* dimstore.cc in Sources */,
@@ -25853,7 +25803,7 @@
 				GCC_WARN_SHADOW = NO;
 				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = YES;
 				IBC_FLATTEN_NIBS = YES;
-				INFOPLIST_FILE = "Deployment-Info copy.plist";
+				INFOPLIST_FILE = "Deployment-Info OsiriXLite.plist";
 				INSTALL_PATH = "$(USER_APPS_DIR)";
 				LIBRARY_SEARCH_PATHS = (
 					Binaries/Jasper,
@@ -25927,7 +25877,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				IBC_FLATTEN_NIBS = YES;
-				INFOPLIST_FILE = "Deployment-Info copy.plist";
+				INFOPLIST_FILE = "Deployment-Info OsiriXLite.plist";
 				INSTALL_PATH = "$(USER_APPS_DIR)";
 				LIBRARY_SEARCH_PATHS = (
 					Binaries/VTKLibs,
@@ -26008,7 +25958,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				IBC_FLATTEN_NIBS = YES;
-				INFOPLIST_FILE = "Deployment-Info copy.plist";
+				INFOPLIST_FILE = "Deployment-Info OsiriXLite.plist";
 				INSTALL_PATH = "$(USER_APPS_DIR)";
 				KEEP_PRIVATE_EXTERNS = YES;
 				LIBRARY_SEARCH_PATHS = (
