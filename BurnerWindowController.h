@@ -30,7 +30,7 @@
 	IBOutlet NSTextField *sizeField, *finalSizeField;
 	IBOutlet NSMatrix	 *compressionMode;
 	IBOutlet NSButton *burnButton;
-	IBOutlet NSButton *anonymizedCheckButton, *misc1, *misc2, *misc3, *misc4, *misc5;
+	IBOutlet NSButton *anonymizedCheckButton;
 	NSString *cdName;
 	NSString *folderSize;
 	NSTimer *burnAnimationTimer;
@@ -46,9 +46,11 @@
 	NSString *password;
 	IBOutlet NSWindow *passwordWindow;
 	
+	BOOL buttonsDisabled;
 	BOOL burnSuppFolder, burnOsiriX, burnHtml;
 }
 
+@property BOOL buttonsDisabled;
 @property (retain) NSString *password;
 
 - (IBAction) ok:(id)sender;

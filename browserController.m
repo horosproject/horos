@@ -13133,7 +13133,6 @@ static NSArray*	openSubSeriesArray = nil;
 					if( [[p lastPathComponent] isEqualToString: @"encryptedDICOM.iso"]) // See BurnerWindowController
 					{
 						[[NSWorkspace sharedWorkspace] openFile: [aPath stringByAppendingPathComponent: p]];
-						return;
 					}
 				}
 			}
@@ -13379,21 +13378,40 @@ static NSArray*	openSubSeriesArray = nil;
 				
 				if( isRemovable == YES)
 				{
-					// hasDICOMDIR ?
-					NSString *aPath = mediaPath;
-					NSDirectoryEnumerator *enumer = [[NSFileManager defaultManager] enumeratorAtPath:aPath];
-					
-					if( enumer == nil)
-						aPath = [NSString stringWithFormat:@"/Volumes/Untitled"];
-					
-					DicomDirScanDepth = 0;
-					aPath = [BrowserController _findFirstDicomdirOnCDMedia: aPath found: FALSE];
-					
-					if( [[NSFileManager defaultManager] fileExistsAtPath:aPath])
-						hasDICOMDIR = YES;
+					// has EncryptedDICOM.iso ?
+					{
+						NSString *aPath = mediaPath;
+						NSDirectoryEnumerator *enumer = [[NSFileManager defaultManager] enumeratorAtPath:aPath];
 						
-					if(  hasDICOMDIR == YES)
-						return YES;
+						if( enumer == nil)
+							aPath = [NSString stringWithFormat:@"/Volumes/Untitled"];
+						
+						for( NSString *p in [[NSFileManager defaultManager] contentsOfDirectoryAtPath: aPath error: nil])
+						{
+							if( [[p lastPathComponent] isEqualToString: @"encryptedDICOM.iso"]) // See BurnerWindowController
+							{
+								return YES;
+							}
+						}
+					}
+					
+					// hasDICOMDIR ?
+					{
+						NSString *aPath = mediaPath;
+						NSDirectoryEnumerator *enumer = [[NSFileManager defaultManager] enumeratorAtPath:aPath];
+						
+						if( enumer == nil)
+							aPath = [NSString stringWithFormat:@"/Volumes/Untitled"];
+						
+						DicomDirScanDepth = 0;
+						aPath = [BrowserController _findFirstDicomdirOnCDMedia: aPath found: FALSE];
+						
+						if( [[NSFileManager defaultManager] fileExistsAtPath:aPath])
+							hasDICOMDIR = YES;
+							
+						if(  hasDICOMDIR == YES)
+							return YES;
+					}
 				}
 			}
 		}
@@ -13903,8 +13921,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 		BOOL DELETEFILELISTENER = [[NSUserDefaults standardUserDefaults] boolForKey: @"DELETEFILELISTENER"];
 		BOOL ListenerCompressionSettings = [[NSUserDefaults standardUserDefaults] integerForKey: @"ListenerCompressionSettings"];
-		NSMutableArray  *filesArray = [NSMutableArray array];
-		NSMutableArray	*compressedPathArray = [NSMutableArray array];
+		NSMutableArray *filesArray = [NSMutableArray array];
+		NSMutableArray *compressedPathArray = [NSMutableArray array];
 		
 		#ifdef OSIRIX_LIGHT
 		ListenerCompressionSettings = 0;
@@ -13912,7 +13930,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		
 		[checkIncomingLock lock];
 		
-		lastCheckIncoming  = [NSDate timeIntervalSinceReferenceDate];
+		lastCheckIncoming = [NSDate timeIntervalSinceReferenceDate];
 		
 		@try
 		{
@@ -13936,7 +13954,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 				
 				[AppController createNoIndexDirectoryIfNecessary: OUTpath];
 				
-				NSString        *pathname;
+				NSString *pathname;
 				
 				NSDirectoryEnumerator *enumer = [[NSFileManager defaultManager] enumeratorAtPath:INpath];
 				
@@ -13964,7 +13982,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 					}
 					
 					BOOL result, isAlias = [self isAliasPath: srcPath];
-					if( isAlias) srcPath = [self pathResolved: srcPath];
+					if( isAlias)
+						srcPath = [self pathResolved: srcPath];
 					
 					// Is it a real file? Is it writable (transfer done)?
 //					if ([[NSFileManager defaultManager] isWritableFileAtPath:srcPath] == YES)	<- Problems with CD : read-only files, but valid files
@@ -14024,29 +14043,21 @@ static volatile int numberOfThreadsForJPEG = 0;
 									[[NSFileManager defaultManager] removeFileAtPath:originalPath handler:nil];
 								}
 								else
-								{
 									result = [[NSFileManager defaultManager] movePath:srcPath toPath:dstPath handler:nil];
-								}
 								
 								if( result == YES)
-								{
 									[filesArray addObject:dstPath];
-								}
 							}
 							else // DELETE or MOVE THIS UNKNOWN FILE ?
 							{
 								if ( DELETEFILELISTENER)
-								{
 									[[NSFileManager defaultManager] removeFileAtPath:srcPath handler:nil];
-								}
 								else
 								{
 									//	NSLog( [ERRpath stringByAppendingPathComponent: [srcPath lastPathComponent]]);
 									
 									if( [[NSFileManager defaultManager] movePath:srcPath toPath:[ERRpath stringByAppendingPathComponent: [srcPath lastPathComponent]]  handler:nil] == NO)
-									{
 										[[NSFileManager defaultManager] removeFileAtPath:srcPath handler:nil];
-									}
 								}
 							}
 						}
@@ -14058,9 +14069,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 					newFilesInIncoming = YES;
 					
 					if ( [[NSUserDefaults standardUserDefaults] boolForKey:@"ANONYMIZELISTENER"] == YES)
-					{
 						[self listenerAnonymizeFiles: filesArray];
-					}
 					
 					for( id filter in [PluginManager preProcessPlugins])
 					{
@@ -14075,7 +14084,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 					else	// Add failed.... Keep these files: move them back to the INCOMING folder and try again later....
 					{
 						NSString *dstPath;
-						long x = 0;
+						int x = 0;
 						
 						NSLog(@"Move the files back to the incoming folder...");
 						

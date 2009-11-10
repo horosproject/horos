@@ -26,7 +26,7 @@
 NSString* asciiString (NSString* name);
 
 @implementation BurnerWindowController
-@synthesize password;
+@synthesize password, buttonsDisabled;
 
 - (void) createDMG:(NSString*) imagePath withSource:(NSString*) directoryPath
 {
@@ -72,14 +72,7 @@ NSString* asciiString (NSString* name);
 	NSFileManager *manager = [NSFileManager defaultManager];
 	[manager removeFileAtPath:[self folderToBurn] handler:nil];
 	
-	[nameField setEnabled: YES];
-	[compressionMode setEnabled: YES];
-	[anonymizedCheckButton setEnabled: YES];
-	[misc1 setEnabled: YES];
-	[misc2 setEnabled: YES];
-	[misc3 setEnabled: YES];
-	[misc4 setEnabled: YES];
-	[misc5 setEnabled: YES];
+	self.buttonsDisabled = NO;
 }
 
 - (void) copyDefaultsSettings
@@ -293,14 +286,7 @@ NSString* asciiString (NSString* name);
 			anonymizedFiles = nil;
 		}
 		
-		[nameField setEnabled: NO];
-		[compressionMode setEnabled: NO];
-		[anonymizedCheckButton setEnabled: NO];
-		[misc1 setEnabled: NO];
-		[misc2 setEnabled: NO];
-		[misc3 setEnabled: NO];
-		[misc4 setEnabled: NO];
-		[misc5 setEnabled: NO];
+		self.buttonsDisabled = YES;
 		
 		if (cdName != nil && [cdName length] > 0)
 		{
@@ -337,14 +323,7 @@ NSString* asciiString (NSString* name);
 	}
 	else
 	{
-		[nameField setEnabled: YES];
-		[compressionMode setEnabled: YES];
-		[anonymizedCheckButton setEnabled: YES];
-		[misc1 setEnabled: YES];
-		[misc2 setEnabled: YES];
-		[misc3 setEnabled: YES];
-		[misc4 setEnabled: YES];
-		[misc5 setEnabled: YES];
+		self.buttonsDisabled = NO;
 	}
 	
 	burning = NO;
@@ -421,14 +400,7 @@ NSString* asciiString (NSString* name);
 		}
 	}
 	
-	[nameField setEnabled: YES];
-	[compressionMode setEnabled: YES];
-	[anonymizedCheckButton setEnabled: YES];
-	[misc1 setEnabled: YES];
-	[misc2 setEnabled: YES];
-	[misc3 setEnabled: YES];
-	[misc4 setEnabled: YES];
-	[misc5 setEnabled: YES];
+	self.buttonsDisabled = NO;
 }
 
 
@@ -955,15 +927,21 @@ NSString* asciiString (NSString* name);
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"EncryptCD"])
 	{
-		[NSApp beginSheet: passwordWindow
-			modalForWindow: self.window
-			modalDelegate: nil
-			didEndSelector: nil
-			contextInfo: nil];
-	
-		int result = [NSApp runModalForWindow: passwordWindow];
-		[NSApp endSheet: passwordWindow];
-		[passwordWindow orderOut: self];
+		self.password = @"";
+		int result = 0;
+		do
+		{
+			[NSApp beginSheet: passwordWindow
+				modalForWindow: self.window
+				modalDelegate: nil
+				didEndSelector: nil
+				contextInfo: nil];
+		
+			result = [NSApp runModalForWindow: passwordWindow];
+			[NSApp endSheet: passwordWindow];
+			[passwordWindow orderOut: self];
+		}
+		while( [self.password length] == 0 && result == NSRunStoppedResponse);
 		
 		if( result == NSRunStoppedResponse)
 		{
@@ -974,7 +952,7 @@ NSString* asciiString (NSString* name);
 			
 			t = [[[NSTask alloc] init] autorelease];
 			[t setLaunchPath: @"/usr/bin/hdiutil"];
-			args = [NSArray arrayWithObjects: @"create", [[burnFolder stringByDeletingLastPathComponent] stringByAppendingPathComponent: @"encryptedDICOM.dmg"], @"-srcfolder", burnFolder, @"-format", @"UDTO", @"-encryption", @"-passphrase", @"secret", nil];
+			args = [NSArray arrayWithObjects: @"create", [[burnFolder stringByDeletingLastPathComponent] stringByAppendingPathComponent: @"encryptedDICOM.dmg"], @"-srcfolder", burnFolder, @"-format", @"UDTO", @"-encryption", @"-passphrase", self.password, nil];
 			[t setArguments: args];
 			[t launch];
 			[t waitUntilExit];
@@ -984,6 +962,7 @@ NSString* asciiString (NSString* name);
 			
 			[[NSFileManager defaultManager] moveItemAtPath: [[burnFolder stringByDeletingLastPathComponent] stringByAppendingPathComponent: @"encryptedDICOM.dmg.cdr"] toPath: [burnFolder stringByAppendingPathComponent: @"encryptedDICOM.iso"] error: nil];
 			[[NSFileManager defaultManager] moveItemAtPath: [[burnFolder stringByDeletingLastPathComponent] stringByAppendingPathComponent: @"encryptedDICOM.dmg.iso"] toPath: [burnFolder stringByAppendingPathComponent: @"encryptedDICOM.iso"] error: nil];
+			[[NSString stringWithString: NSLocalizedString( @"The images are encrypted in this ISO file. On Mac, simply double-click on the file. On Windows, you need to install an ISO mounter, such as Gizmo Drive : http://arainia.com/software/gizmo/overview.php?nID=4", nil)] writeToFile: [burnFolder stringByAppendingPathComponent: @"ReadMe.txt"] atomically: YES encoding: NSASCIIStringEncoding error: nil];
 		}
 		else [[NSFileManager defaultManager] removeItemAtPath: burnFolder error: nil];
 	}
