@@ -13120,6 +13120,24 @@ static NSArray*	openSubSeriesArray = nil;
 		
 		if( isRemovable == YES)
 		{
+			// has EncryptedDICOM.iso ?
+			{
+				NSString *aPath = mediaPath;
+				NSDirectoryEnumerator *enumer = [[NSFileManager defaultManager] enumeratorAtPath:aPath];
+				
+				if( enumer == nil)
+					aPath = [NSString stringWithFormat:@"/Volumes/Untitled"];
+				
+				for( NSString *p in [[NSFileManager defaultManager] contentsOfDirectoryAtPath: aPath error: nil])
+				{
+					if( [[p lastPathComponent] isEqualToString: @"encryptedDICOM.iso"]) // See BurnerWindowController
+					{
+						[[NSWorkspace sharedWorkspace] openFile: [aPath stringByAppendingPathComponent: p]];
+						return;
+					}
+				}
+			}
+			
 			// hasDICOMDIR ?
 			{
 				NSString *aPath = mediaPath;

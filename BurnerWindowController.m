@@ -267,7 +267,8 @@ NSString* asciiString (NSString* name);
 		
 		writeDMG = NO;
 		if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask) writeDMG = YES;
-
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"saveAsDMGFile"]) writeDMG = YES;
+		
 		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"anonymizedBeforeBurning"])
 		{
 			AnonymizerWindowController *anonymizer = [[AnonymizerWindowController alloc] init];
