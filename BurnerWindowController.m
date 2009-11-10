@@ -938,6 +938,8 @@ NSString* asciiString (NSString* name);
 				contextInfo: nil];
 		
 			result = [NSApp runModalForWindow: passwordWindow];
+			[passwordWindow makeFirstResponder: nil];
+			
 			[NSApp endSheet: passwordWindow];
 			[passwordWindow orderOut: self];
 		}
@@ -952,7 +954,7 @@ NSString* asciiString (NSString* name);
 			
 			t = [[[NSTask alloc] init] autorelease];
 			[t setLaunchPath: @"/usr/bin/hdiutil"];
-			args = [NSArray arrayWithObjects: @"create", [[burnFolder stringByDeletingLastPathComponent] stringByAppendingPathComponent: @"encryptedDICOM.dmg"], @"-srcfolder", burnFolder, @"-format", @"UDTO", @"-encryption", @"-passphrase", self.password, nil];
+			args = [NSArray arrayWithObjects: @"create", [[burnFolder stringByDeletingLastPathComponent] stringByAppendingPathComponent: @"encryptedDICOM.dmg"], @"-srcfolder", burnFolder, @"-fs", @"MS-DOS", @"-format", @"UDTO", @"-encryption", @"-passphrase", self.password, nil];
 			[t setArguments: args];
 			[t launch];
 			[t waitUntilExit];
