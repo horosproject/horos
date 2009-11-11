@@ -2003,6 +2003,9 @@ static NSDate *lastWarningDate = nil;
 	if ([[NSFileManager defaultManager] fileExistsAtPath:decompressionDirectory]) [[NSFileManager defaultManager] removeFileAtPath:decompressionDirectory handler: nil];
 
 	[NSSplitView saveSplitView];
+	
+	
+	[[NSFileManager defaultManager] removeFileAtPath: @"/tmp/zippedCD/" handler: nil];
 }
 
 

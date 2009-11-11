@@ -943,18 +943,21 @@ NSString* asciiString (NSString* name);
 			[NSApp endSheet: passwordWindow];
 			[passwordWindow orderOut: self];
 		}
-		while( [self.password length] == 0 && result == NSRunStoppedResponse);
+		while( [self.password length] < 8 && result == NSRunStoppedResponse);
 		
 		if( result == NSRunStoppedResponse)
 		{
+			// ZIP method - zip test.zip /testFolder -r -e -P hello
+			
 			NSTask *t;
 			NSArray *args;
 			
-			[[NSFileManager defaultManager] removeItemAtPath: [[burnFolder stringByDeletingLastPathComponent] stringByAppendingPathComponent: @"encryptedDICOM.dmg"] error: nil];
+			[[NSFileManager defaultManager] removeItemAtPath: [[burnFolder stringByDeletingLastPathComponent] stringByAppendingPathComponent: @"encryptedDICOM.zip"] error: nil];
 			
 			t = [[[NSTask alloc] init] autorelease];
-			[t setLaunchPath: @"/usr/bin/hdiutil"];
-			args = [NSArray arrayWithObjects: @"create", [[burnFolder stringByDeletingLastPathComponent] stringByAppendingPathComponent: @"encryptedDICOM.dmg"], @"-srcfolder", burnFolder, @"-fs", @"MS-DOS", @"-format", @"UDTO", @"-encryption", @"-passphrase", self.password, nil];
+			[t setLaunchPath: @"/usr/bin/zip"];
+			[t setCurrentDirectoryPath: [burnFolder stringByDeletingLastPathComponent]];
+			args = [NSArray arrayWithObjects: [[burnFolder stringByDeletingLastPathComponent] stringByAppendingPathComponent: @"encryptedDICOM.zip"], [burnFolder lastPathComponent], @"-r", @"-e", @"-P", self.password, nil];
 			[t setArguments: args];
 			[t launch];
 			[t waitUntilExit];
@@ -962,9 +965,27 @@ NSString* asciiString (NSString* name);
 			[[NSFileManager defaultManager] removeItemAtPath: burnFolder error: nil];
 			[[NSFileManager defaultManager] createDirectoryAtPath: burnFolder attributes: nil];
 			
-			[[NSFileManager defaultManager] moveItemAtPath: [[burnFolder stringByDeletingLastPathComponent] stringByAppendingPathComponent: @"encryptedDICOM.dmg.cdr"] toPath: [burnFolder stringByAppendingPathComponent: @"encryptedDICOM.iso"] error: nil];
-			[[NSFileManager defaultManager] moveItemAtPath: [[burnFolder stringByDeletingLastPathComponent] stringByAppendingPathComponent: @"encryptedDICOM.dmg.iso"] toPath: [burnFolder stringByAppendingPathComponent: @"encryptedDICOM.iso"] error: nil];
-			[[NSString stringWithString: NSLocalizedString( @"The images are encrypted in this ISO file. On Mac, simply double-click on the file. On Windows, you need to install an ISO mounter, such as Gizmo Drive : http://arainia.com/software/gizmo/overview.php?nID=4", nil)] writeToFile: [burnFolder stringByAppendingPathComponent: @"ReadMe.txt"] atomically: YES encoding: NSASCIIStringEncoding error: nil];
+			[[NSFileManager defaultManager] moveItemAtPath: [[burnFolder stringByDeletingLastPathComponent] stringByAppendingPathComponent: @"encryptedDICOM.zip"] toPath: [burnFolder stringByAppendingPathComponent: @"encryptedDICOM.zip"] error: nil];
+			[[NSString stringWithString: NSLocalizedString( @"The images are encrypted with a password in this ZIP file. On MacOS it requires Stuffit Expander to decompress it. On Windows, use WinZIP.", nil)] writeToFile: [burnFolder stringByAppendingPathComponent: @"ReadMe.txt"] atomically: YES encoding: NSASCIIStringEncoding error: nil];
+			
+//			NSTask *t;
+//			NSArray *args;
+//			
+//			[[NSFileManager defaultManager] removeItemAtPath: [[burnFolder stringByDeletingLastPathComponent] stringByAppendingPathComponent: @"encryptedDICOM.dmg"] error: nil];
+//			
+//			t = [[[NSTask alloc] init] autorelease];
+//			[t setLaunchPath: @"/usr/bin/hdiutil"];
+//			args = [NSArray arrayWithObjects: @"create", [[burnFolder stringByDeletingLastPathComponent] stringByAppendingPathComponent: @"encryptedDICOM.dmg"], @"-srcfolder", burnFolder, @"-fs", @"MS-DOS", @"-format", @"UDTO", @"-encryption", @"-passphrase", self.password, nil];
+//			[t setArguments: args];
+//			[t launch];
+//			[t waitUntilExit];
+//			
+//			[[NSFileManager defaultManager] removeItemAtPath: burnFolder error: nil];
+//			[[NSFileManager defaultManager] createDirectoryAtPath: burnFolder attributes: nil];
+//			
+//			[[NSFileManager defaultManager] moveItemAtPath: [[burnFolder stringByDeletingLastPathComponent] stringByAppendingPathComponent: @"encryptedDICOM.dmg.cdr"] toPath: [burnFolder stringByAppendingPathComponent: @"encryptedDICOM.iso"] error: nil];
+//			[[NSFileManager defaultManager] moveItemAtPath: [[burnFolder stringByDeletingLastPathComponent] stringByAppendingPathComponent: @"encryptedDICOM.dmg.iso"] toPath: [burnFolder stringByAppendingPathComponent: @"encryptedDICOM.iso"] error: nil];
+//			[[NSString stringWithString: NSLocalizedString( @"The images are encrypted in this ISO file. On Mac, simply double-click on the file. On Windows, you need to install an ISO mounter, such as Gizmo Drive : http://arainia.com/software/gizmo/overview.php?nID=4", nil)] writeToFile: [burnFolder stringByAppendingPathComponent: @"ReadMe.txt"] atomically: YES encoding: NSASCIIStringEncoding error: nil];
 		}
 		else [[NSFileManager defaultManager] removeItemAtPath: burnFolder error: nil];
 	}

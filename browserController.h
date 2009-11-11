@@ -151,7 +151,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	
 	IBOutlet NSWindow				*mainWindow;
 	IBOutlet NSMenu					*imageTileMenu;
-	IBOutlet NSWindow				*urlWindow;
+	IBOutlet NSWindow				*urlWindow, *CDpasswordWindow;
 	IBOutlet NSTextField			*urlString;
 	
 	IBOutlet NSForm					*rdPatientForm;
@@ -182,7 +182,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	NSPredicate						*_filterPredicate;
 	NSString						*_filterPredicateDescription;
 	
-	NSString						*fixedDocumentsDirectory;
+	NSString						*fixedDocumentsDirectory, *CDpassword;
 	
 	char							cfixedDocumentsDirectory[ 4096], cfixedIncomingDirectory[ 4096];
 	
@@ -272,7 +272,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 @property(readonly) NSString *fixedDocumentsDirectory;
 @property(readonly) char *cfixedDocumentsDirectory, *cfixedIncomingDirectory;
 
-@property(retain) NSString *searchString;
+@property(retain) NSString *searchString, *CDpassword;
 @property(retain) NSPredicate *fetchPredicate;
 @property(readonly) NSPredicate *filterPredicate;
 @property(readonly) NSString *filterPredicateDescription;

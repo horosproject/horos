@@ -148,36 +148,16 @@ static NSArray*	statesArray = nil;
 
 @class DCMTKStudyQueryNode;
 
-@synthesize checkIncomingLock;
-@synthesize DateTimeFormat;
-@synthesize DateOfBirthFormat;
-@synthesize TimeFormat;
-@synthesize TimeWithSecondsFormat;
-@synthesize DateTimeWithSecondsFormat;
-@synthesize matrixViewArray;
-@synthesize oMatrix;
-@synthesize COLUMN;
-@synthesize databaseOutline;
-@synthesize albumTable;
-@synthesize currentDatabasePath;
-
-@synthesize isCurrentDatabaseBonjour;
-@synthesize bonjourDownloading;
-@synthesize bonjourSourcesBox;
-@synthesize bonjourServiceName;
-@synthesize bonjourPasswordTextField = bonjourPassword;
-@synthesize bonjourSharingCheck;
-@synthesize bonjourPasswordCheck;
-@synthesize bonjourBrowser;
-
-@synthesize searchString = _searchString;
-@synthesize fetchPredicate = _fetchPredicate;
-@synthesize filterPredicate = _filterPredicate;
-@synthesize filterPredicateDescription = _filterPredicateDescription;
-
-@synthesize rtstructProgressBar, rtstructProgressPercent;
-
-@synthesize pluginManagerController;
+@synthesize checkIncomingLock, CDpassword, DateTimeFormat;
+@synthesize DateOfBirthFormat,TimeFormat, TimeWithSecondsFormat;
+@synthesize DateTimeWithSecondsFormat, matrixViewArray, oMatrix;
+@synthesize COLUMN, databaseOutline, albumTable, currentDatabasePath;
+@synthesize isCurrentDatabaseBonjour, bonjourDownloading, bonjourSourcesBox;
+@synthesize bonjourServiceName, bonjourPasswordTextField = bonjourPassword, bonjourSharingCheck;
+@synthesize bonjourPasswordCheck, bonjourBrowser;
+@synthesize searchString = _searchString, fetchPredicate = _fetchPredicate;
+@synthesize filterPredicate = _filterPredicate, filterPredicateDescription = _filterPredicateDescription;
+@synthesize rtstructProgressBar, rtstructProgressPercent, pluginManagerController;
 
 + (BOOL) tryLock:(id) c during:(NSTimeInterval) sec
 {
@@ -13094,6 +13074,27 @@ static NSArray*	openSubSeriesArray = nil;
 	return nil;
 }
 
+- (BOOL) unzipFile: (NSString*) file withPassword: (NSString*) pass
+{
+	[[NSFileManager defaultManager] removeFileAtPath: @"/tmp/zippedCD/" handler: nil];
+	
+	NSTask *t;
+	NSArray *args;
+	
+	t = [[[NSTask alloc] init] autorelease];
+	[t setLaunchPath: @"/usr/bin/unzip"];
+	[t setCurrentDirectoryPath: @"/tmp/"];
+	args = [NSArray arrayWithObjects: @"-o", @"-d", @"zippedCD/", @"-P", pass, file, nil];
+	[t setArguments: args];
+	[t launch];
+	[t waitUntilExit];
+	
+	if( [t terminationStatus] == 0)
+		return YES;
+	
+	return NO;
+}
+
 -(void) ReadDicomCDRom:(id) sender
 {
 	if( isCurrentDatabaseBonjour)
@@ -13120,7 +13121,7 @@ static NSArray*	openSubSeriesArray = nil;
 		
 		if( isRemovable == YES)
 		{
-			// has EncryptedDICOM.iso ?
+			// has EncryptedDICOM.zip ?
 			{
 				NSString *aPath = mediaPath;
 				NSDirectoryEnumerator *enumer = [[NSFileManager defaultManager] enumeratorAtPath:aPath];
@@ -13130,9 +13131,27 @@ static NSArray*	openSubSeriesArray = nil;
 				
 				for( NSString *p in [[NSFileManager defaultManager] contentsOfDirectoryAtPath: aPath error: nil])
 				{
-					if( [[p lastPathComponent] isEqualToString: @"encryptedDICOM.iso"]) // See BurnerWindowController
+					if( [[p lastPathComponent] isEqualToString: @"encryptedDICOM.zip"]) // See BurnerWindowController
 					{
-						[[NSWorkspace sharedWorkspace] openFile: [aPath stringByAppendingPathComponent: p]];
+						self.CDpassword = @"";
+						int result = 0;
+						do
+						{
+							[NSApp beginSheet: CDpasswordWindow
+							   modalForWindow: self.window
+								modalDelegate: nil
+							   didEndSelector: nil
+								  contextInfo: nil];
+							
+							result = [NSApp runModalForWindow: CDpasswordWindow];
+							[CDpasswordWindow makeFirstResponder: nil];
+							
+							[NSApp endSheet: CDpasswordWindow];
+							[CDpasswordWindow orderOut: self];
+						}
+						while( [self unzipFile: [aPath stringByAppendingPathComponent: p] withPassword: self.CDpassword] == NO && result == NSRunStoppedResponse);
+						
+						return;
 					}
 				}
 			}
@@ -13378,7 +13397,7 @@ static NSArray*	openSubSeriesArray = nil;
 				
 				if( isRemovable == YES)
 				{
-					// has EncryptedDICOM.iso ?
+					// has encryptedDICOM.zip ?
 					{
 						NSString *aPath = mediaPath;
 						NSDirectoryEnumerator *enumer = [[NSFileManager defaultManager] enumeratorAtPath:aPath];
@@ -13388,7 +13407,7 @@ static NSArray*	openSubSeriesArray = nil;
 						
 						for( NSString *p in [[NSFileManager defaultManager] contentsOfDirectoryAtPath: aPath error: nil])
 						{
-							if( [[p lastPathComponent] isEqualToString: @"encryptedDICOM.iso"]) // See BurnerWindowController
+							if( [[p lastPathComponent] isEqualToString: @"encryptedDICOM.zip"]) // See BurnerWindowController
 							{
 								return YES;
 							}
