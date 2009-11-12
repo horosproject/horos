@@ -65,8 +65,6 @@ NSString* asciiString (NSString* name);
 		
 		[wait close];
 		[wait release];
-		
-		[sizeField setStringValue: NSLocalizedString( @"DMG writing is finished !", nil)];
 	}
 	
 	NSFileManager *manager = [NSFileManager defaultManager];
@@ -240,10 +238,12 @@ NSString* asciiString (NSString* name);
 }
 
 //Actions
--(IBAction)burn:(id)sender
+-(IBAction) burn: (id)sender
 {
 	if (!(isExtracting || isSettingUpBurn || burning))
 	{
+		[sizeField setStringValue: @""];
+		
 		[[NSFileManager defaultManager] removeFileAtPath:[self folderToBurn] handler:nil];
 		
 		[cdName release];
@@ -975,7 +975,7 @@ NSString* asciiString (NSString* name);
 //			
 //			t = [[[NSTask alloc] init] autorelease];
 //			[t setLaunchPath: @"/usr/bin/hdiutil"];
-//			args = [NSArray arrayWithObjects: @"create", [[burnFolder stringByDeletingLastPathComponent] stringByAppendingPathComponent: @"encryptedDICOM.dmg"], @"-srcfolder", burnFolder, @"-fs", @"MS-DOS", @"-format", @"UDTO", @"-encryption", @"-passphrase", self.password, nil];
+//			args = [NSArray arrayWithObjects: @"create", [[burnFolder stringByDeletingLastPathComponent] stringByAppendingPathComponent: @"encryptedDICOM.dmg"], @"-srcfolder", burnFolder, @"-fs", @"MS-DOS", @"-format", @"UDTO", nil]; // @"-encryption", @"-passphrase", self.password
 //			[t setArguments: args];
 //			[t launch];
 //			[t waitUntilExit];

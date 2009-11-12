@@ -13151,7 +13151,12 @@ static NSArray*	openSubSeriesArray = nil;
 						}
 						while( [self unzipFile: [aPath stringByAppendingPathComponent: p] withPassword: self.CDpassword] == NO && result == NSRunStoppedResponse);
 						
-						return;
+						if( result == NSRunStoppedResponse)
+						{
+							mediaPath = @"/tmp/zippedCD/";
+							break;
+						}
+						else return;
 					}
 				}
 			}
@@ -13180,7 +13185,7 @@ static NSArray*	openSubSeriesArray = nil;
 				
 				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"USEDICOMDIR"])
 				{
-					NSString    *aPath = mediaPath;
+					NSString *aPath = mediaPath;
 					NSDirectoryEnumerator *enumer = [[NSFileManager defaultManager] enumeratorAtPath:aPath];
 					
 					if( enumer == nil)
