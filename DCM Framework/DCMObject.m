@@ -455,19 +455,22 @@ PixelRepresentation
 	return self;
 }
 
-- (id)initWithObject:(DCMObject *)object{
-	if (self = [super init]){
+- (id)initWithObject:(DCMObject *)object
+{
+	if (self = [super init])
+	{
 		specificCharacterSet = [[object specificCharacterSet] copy];
 		attributes = [[object attributes] mutableCopy];
 		transferSyntax = [[object transferSyntax] copy];
 		_decodePixelData = [object pixelDataIsDecoded];
 	}
-	//NSLog(@"initWithObject");
 	return self;
 }
 
-- (id)init {
-	if (self = [super init]) {
+- (id)init
+{
+	if (self = [super init])
+	{
 		sharedTagDictionary = [DCMTagDictionary sharedTagDictionary];
 		sharedTagForNameDictionary = [DCMTagForNameDictionary sharedTagForNameDictionary];
 		attributes = [[NSMutableDictionary dictionary] retain];
@@ -475,18 +478,18 @@ PixelRepresentation
 	return self;
 }
 
-- (id)copyWithZone:(NSZone *)zone {
+- (id)copyWithZone:(NSZone *)zone
+{
 	return [[DCMObject allocWithZone:zone] initWithObject:self];
 }
 
-- (void) dealloc {
-	//NSLog(@"Dealloc DCMObject");
+- (void) dealloc
+{
 	[specificCharacterSet release];
 	[attributes release];
 	[transferSyntax release];
 	[super dealloc];
 }
-
 
 - (int)readDataSet:(DCMDataContainer *)dicomData lengthToRead:(int)lengthToRead byteOffset:(int *)byteOffset
 {

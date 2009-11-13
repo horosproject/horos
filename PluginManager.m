@@ -100,7 +100,7 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
 		NSString	*pluginName = [[plugin infoDictionary] objectForKey:@"CFBundleExecutable"];
 		NSString	*pluginType = [[plugin infoDictionary] objectForKey:@"pluginType"];
 		NSArray		*menuTitles = [[plugin infoDictionary] objectForKey:@"MenuTitles"];
-	
+		
 		if( menuTitles)
 		{
 			if( [menuTitles count] > 1)
@@ -122,12 +122,12 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
 						item = [[[NSMenuItem alloc] init] autorelease];
 						[item setTitle:menuTitle];
 						
-						if( [pluginType isEqualToString:@"fusionFilter"])
+						if( [pluginType rangeOfString: @"fusionFilter"].location != NSNotFound)
 						{
 							[fusionPlugins addObject:[item title]];
 							[item setAction:@selector(endBlendingType:)];
 						}
-						else if( [pluginType isEqualToString:@"Database"] || [pluginType isEqualToString:@"Report"])
+						else if( [pluginType rangeOfString: @"Database"].location != NSNotFound || [pluginType rangeOfString: @"Report"].location != NSNotFound)
 						{
 							[item setTarget: [BrowserController currentBrowser]];	//  browserWindow responds to DB plugins
 							[item setAction:@selector(executeFilterDB:)];
@@ -144,7 +144,7 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
 				
 				id  subMenuItem;
 				
-				if( [pluginType isEqualToString:@"imageFilter"])
+				if( [pluginType rangeOfString: @"imageFilter"].location != NSNotFound)
 				{
 					if( [filtersMenu indexOfItemWithTitle: pluginName] == -1)
 					{
@@ -152,7 +152,7 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
 						[filtersMenu setSubmenu:subMenu forItem:subMenuItem];
 					}
 				}
-				else if( [pluginType isEqualToString:@"roiTool"])
+				else if( [pluginType rangeOfString: @"roiTool"].location != NSNotFound)
 				{
 					if( [roisMenu indexOfItemWithTitle: pluginName] == -1)
 					{
@@ -160,7 +160,7 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
 						[roisMenu setSubmenu:subMenu forItem:subMenuItem];
 					}
 				}
-				else if( [pluginType isEqualToString:@"fusionFilter"])
+				else if( [pluginType rangeOfString: @"fusionFilter"].location != NSNotFound)
 				{
 					if( [fusionPluginsMenu indexOfItemWithTitle: pluginName] == -1)
 					{
@@ -168,7 +168,7 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
 						[fusionPluginsMenu setSubmenu:subMenu forItem:subMenuItem];
 					}
 				}
-				else if( [pluginType isEqualToString:@"Database"])
+				else if( [pluginType rangeOfString: @"Database"].location != NSNotFound)
 				{
 					if( [dbMenu indexOfItemWithTitle: pluginName] == -1)
 					{
@@ -193,12 +193,12 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
 				
 				[item setTitle: [menuTitles objectAtIndex: 0]];	//pluginName];
 				
-				if( [pluginType isEqualToString:@"fusionFilter"])
+				if( [pluginType rangeOfString: @"fusionFilter"].location != NSNotFound)
 				{
 					[fusionPlugins addObject:[item title]];
 					[item setAction:@selector(endBlendingType:)];
 				}
-				else if( [pluginType isEqualToString:@"Database"] || [pluginType isEqualToString:@"Report"])
+				else if( [pluginType rangeOfString: @"Database"].location != NSNotFound || [pluginType rangeOfString: @"Report"].location != NSNotFound)
 				{
 					[item setTarget:[BrowserController currentBrowser]];	//  browserWindow responds to DB plugins
 					[item setAction:@selector(executeFilterDB:)];
@@ -209,17 +209,20 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
 					[item setAction:@selector(executeFilter:)];
 				}
 				
-				if( [pluginType isEqualToString:@"imageFilter"])
+				if( [pluginType rangeOfString: @"imageFilter"].location != NSNotFound)
 					[filtersMenu insertItem:item atIndex:[filtersMenu numberOfItems]];
-				else if( [pluginType isEqualToString:@"roiTool"])
+				
+				else if( [pluginType rangeOfString: @"roiTool"].location != NSNotFound)
 					[roisMenu insertItem:item atIndex:[roisMenu numberOfItems]];
-				else if( [pluginType isEqualToString:@"fusionFilter"])
-				{
+				
+				else if( [pluginType rangeOfString: @"fusionFilter"].location != NSNotFound)
 					[fusionPluginsMenu insertItem:item atIndex:[fusionPluginsMenu numberOfItems]];
-				}
-				else if( [pluginType isEqualToString:@"Database"])
+				
+				else if( [pluginType rangeOfString: @"Database"].location != NSNotFound)
 					[dbMenu insertItem:item atIndex:[dbMenu numberOfItems]];
-				else [othersMenu insertItem:item atIndex:[othersMenu numberOfItems]];
+				
+				else
+					[othersMenu insertItem:item atIndex:[othersMenu numberOfItems]];
 			}
 		}
 	}
@@ -426,9 +429,9 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
 								
 								if ( filterClass == NSClassFromString( @"ARGS" ) ) continue;
 								
-								if ([[[plugin infoDictionary] objectForKey:@"pluginType"] isEqualToString:@"Pre-Process"]) 
+								if ([[[plugin infoDictionary] objectForKey:@"pluginType"] rangeOfString:@"Pre-Process"].location != NSNotFound) 
 								{
-									PluginFilter*	filter = [filterClass filter];
+									PluginFilter *filter = [filterClass filter];
 									[preProcessPlugins addObject: filter];
 								}
 								else if ([[plugin infoDictionary] objectForKey:@"FileFormats"]) 
@@ -443,8 +446,8 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
 								}
 								else if ( [filterClass instancesRespondToSelector:@selector(filterImage:)] )
 								{
-									NSArray		*menuTitles = [[plugin infoDictionary] objectForKey:@"MenuTitles"];
-									PluginFilter	*filter = [filterClass filter];
+									NSArray *menuTitles = [[plugin infoDictionary] objectForKey:@"MenuTitles"];
+									PluginFilter *filter = [filterClass filter];
 									
 									if( menuTitles)
 									{
@@ -455,7 +458,7 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
 										}
 									}
 									
-									NSArray		*toolbarNames = [[plugin infoDictionary] objectForKey:@"ToolbarNames"];
+									NSArray *toolbarNames = [[plugin infoDictionary] objectForKey:@"ToolbarNames"];
 									
 									if( toolbarNames)
 									{
@@ -467,7 +470,7 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
 									}
 								}
 								
-								if ([[[plugin infoDictionary] objectForKey:@"pluginType"] isEqualToString:@"Report"]) 
+								if ([[[plugin infoDictionary] objectForKey:@"pluginType"] rangeOfString: @"Report"].location != NSNotFound) 
 								{
 									[reportPlugins setObject: plugin forKey:[[plugin infoDictionary] objectForKey:@"CFBundleExecutable"]];
 								}
