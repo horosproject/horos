@@ -507,17 +507,20 @@ PixelRepresentation
 			NSAutoreleasePool *subPool = [[NSAutoreleasePool alloc] init];
 			if (DCMDEBUG)
 			{
-				NSLog(@"byteOffset:%d, endByteOffset:%d", *byteOffset, endByteOffset);
+				NSLog( @"byteOffset:%d, endByteOffset:%d", *byteOffset, endByteOffset);
 			}
 			
 			int group = [self getGroup:dicomData];
 			int element = [self getElement:dicomData];
-			if (group > 0x0002) {
+			
+			if (group > 0x0002)
+			{
 				//NSLog(@"start reading dataset");
 				[dicomData startReadingDataSet];
 			}
 			
-			else if (transferSyntax != nil && group == 0x0002 && element == 0x0010) {
+			else if (transferSyntax != nil && group == 0x0002 && element == 0x0010)
+			{
 				//workaround for extra Transfer Syntax element in some Conquest files
 				[dicomData startReadingDataSet];
 			}
@@ -532,7 +535,8 @@ PixelRepresentation
 			if (DCMDEBUG)
 				NSLog(@"Tag: %@  group: 0x%4000x  word 0x%4000x", tag.description, group, element);
 				// "FFFE,E00D" == Item Delimitation Item
-			if (strcmp(tagUTF8, "FFFE,E00D") == 0) {
+			if (strcmp(tagUTF8, "FFFE,E00D") == 0)
+			{
 				// Read and discard value length
 				[dicomData nextUnsignedLong];
 				*byteOffset+=4;
@@ -543,7 +547,8 @@ PixelRepresentation
 			}
 			
 			// "FFFE,E000" == Item 
-			else if (strcmp(tagUTF8, "FFFE,E000") == 0) {
+			else if (strcmp(tagUTF8, "FFFE,E000") == 0)
+			{
 				// this is bad ... there shouldn't be Items here since they should
 				// only be found during readNewSequenceAttribute()
 				// however, try to work around Philips bug ...
@@ -554,7 +559,8 @@ PixelRepresentation
 				//continue;
 			}
 			// get tag Values
-			else {
+			else
+			{
 			// get vr
 
 				NSString *vr = nil;
@@ -592,18 +598,22 @@ PixelRepresentation
 				//if (DCMDEBUG)
 				//	NSLog(@"byteoffset after vr %d, VR:%@",*byteOffset,  vr, vl);
 			//  ****** get length *********
-				if (isExplicit) {
-					if ([DCMValueRepresentation isShortValueLengthVR:vr]) {
+				if (isExplicit)
+				{
+					if ([DCMValueRepresentation isShortValueLengthVR:vr])
+					{
 						vl = [dicomData nextUnsignedShort];
 						*byteOffset+=2;
 					}
-					else {
+					else
+					{
 						[dicomData nextUnsignedShort];	// reserved bytes
 						vl = [dicomData nextUnsignedLong];
 						*byteOffset+=6;
 					}
 				}
-				else {
+				else
+				{
 					vl = [dicomData nextUnsignedLong];
 					*byteOffset += 4;
 				}
@@ -636,7 +646,8 @@ PixelRepresentation
 					
 					*byteOffset = endByteOffset;
 				}
-				else if (vl != 0xFFFFFFFF && vl != 0) {
+				else if (vl != 0xFFFFFFFF) // && vl != 0 ANR 2009
+				{
 					if ([self isNeededAttribute:(char *)tagUTF8])
 						attr = [[[DCMAttribute alloc] initWithAttributeTag:tag 
 							vr:vr 
@@ -654,15 +665,20 @@ PixelRepresentation
 					if (DCMDEBUG)
 						NSLog(@"byteOffset %d attr %@", *byteOffset, [attr description]);
 				}
-
+				
+				//if( [[attr description] rangeOfString: @"Laterality"].location != NSNotFound)
+					NSLog(@"Attr: %@", [attr description]);
+				
 				if (DCMDEBUG)
 					NSLog(@"Attr: %@", [attr description]);
+				
 				//add attr to attributes
 				if (attr)
 					CFDictionarySetValue((CFMutableDictionaryRef)attributes, [tag stringValue], attr);
 					
 				// 0002,0000 = MetaElementGroupLength
-				if (strcmp(tagUTF8, "0002,0000") == 0) {
+				if (strcmp(tagUTF8, "0002,0000") == 0)
+				{
 					readingMetaHeader = YES;
 					if (DCMDEBUG)
 						NSLog(@"metaheader length : %d", [[attr value] intValue]);
@@ -1692,17 +1708,17 @@ PixelRepresentation
 	return myNode;
 }
 
-- (NSXMLDocument *)xmlDocument{
-	
+- (NSXMLDocument *)xmlDocument
+{
 	NSXMLElement *rootElement = [[[NSXMLElement alloc] initWithName:@"DICOMObject"] autorelease];
 	NSMutableArray *mutableKeys = [NSMutableArray arrayWithArray:[attributes allKeys]];
 	NSArray *sortedKeys = [mutableKeys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
 
-	for ( NSString *key in sortedKeys ) {
-		
+	for ( NSString *key in sortedKeys)
+	{
 		DCMAttribute *attr = [attributes objectForKey:key];
-		if (attr) {
-			
+		if (attr)
+		{
 			[rootElement addChild:[attr xmlNode]];
 		}
 		
