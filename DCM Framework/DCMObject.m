@@ -488,8 +488,8 @@ PixelRepresentation
 }
 
 
-- (int)readDataSet:(DCMDataContainer *)dicomData lengthToRead:(int)lengthToRead byteOffset:(int *)byteOffset{
-
+- (int)readDataSet:(DCMDataContainer *)dicomData lengthToRead:(int)lengthToRead byteOffset:(int *)byteOffset
+{
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	BOOL readingMetaHeader = NO;
 	int endMetaHeaderPosition = 0;					
@@ -527,7 +527,7 @@ PixelRepresentation
 			
 			isExplicit = [[dicomData transferSyntaxInUse] isExplicit];
 			//NSLog(@"DCMObject readTag: %f", -[timestamp  timeIntervalSinceNow]);
-			DCMAttributeTag *tag = [[[DCMAttributeTag alloc]  initWithGroup:group element:element] autorelease];
+			DCMAttributeTag *tag = [[[DCMAttributeTag alloc] initWithGroup:group element:element] autorelease];
 			*byteOffset+=4;
 			
 			const char *tagUTF8 = [tag.stringValue UTF8String];
@@ -621,12 +621,11 @@ PixelRepresentation
 					NSLog(@"Tag: %@, length: %d", [tag description], vl);
 				//if (DCMDEBUG)
 				//	NSLog(@"byteoffset after length %d, VR:%@  length:%d",*byteOffset,  vr, vl);
-					
-			
+				
 				// generate Attributes
 				DCMAttribute *attr = nil;
-				//sequence attribute
 				
+				//sequence attribute
 				if( [DCMValueRepresentation isSequenceVR:vr] || ([DCMValueRepresentation  isUnknownVR:vr] && vl == 0xFFFFFFFF))
 				{
 					attr = (DCMAttribute *) [[[DCMSequenceAttribute alloc] initWithAttributeTag:(DCMAttributeTag *)tag] autorelease];
@@ -685,8 +684,7 @@ PixelRepresentation
 				//0002,0010 == TransferSyntaxUID
 				else if (strcmp(tagUTF8, "0002,0010") == 0  
 					&& transferSyntax == nil)  //some conquest files have the transfer Syntax twice. Need to ignore to second one
-					 {
-						
+				{
 					DCMTransferSyntax *ts = [[[DCMTransferSyntax alloc] initWithTS:[attr value]] autorelease];
 					[transferSyntax release];
 					transferSyntax = [ts retain];
@@ -694,13 +692,12 @@ PixelRepresentation
 				}
 				
 				//0008,0005 == SpecificCharacterSet
-				else if (strcmp(tagUTF8, "0008,0005") == 0) {
+				else if (strcmp(tagUTF8, "0008,0005") == 0)
+				{
 					[specificCharacterSet release];
-					
 					specificCharacterSet = [[DCMCharacterSet alloc] initWithCode: [[attr values] componentsJoinedByString:@"//"]];
 				}
-
-					
+				
 				/*
 				if (readingMetaHeader && (*byteOffset >= endMetaHeaderPosition)) {
 					if (DCMDEBUG)
@@ -708,8 +705,7 @@ PixelRepresentation
 					readingMetaHeader = NO;
 					[dicomData startReadingDataSet];
 				}
-				*/	
-					
+				*/
 
 			}
 			[subPool release];
@@ -723,6 +719,7 @@ PixelRepresentation
 	{
 		NSLog(@"Error reading data for dicom object");
 		NSLog( @"%@", [ne description]);
+		
 		*byteOffset = 0xFFFFFFFF;
 	}
 	//NSLog(@"DCMObject  End readDataSet: %f", -[timestamp  timeIntervalSinceNow]);
