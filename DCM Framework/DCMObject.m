@@ -666,9 +666,6 @@ PixelRepresentation
 						NSLog(@"byteOffset %d attr %@", *byteOffset, [attr description]);
 				}
 				
-				//if( [[attr description] rangeOfString: @"Laterality"].location != NSNotFound)
-					NSLog(@"Attr: %@", [attr description]);
-				
 				if (DCMDEBUG)
 					NSLog(@"Attr: %@", [attr description]);
 				
