@@ -912,8 +912,10 @@ OFBool DcmQueryRetrieveMoveContext::mapMoveDestination(
 			port = [server objectForKey:@"Port"];
 			//set preferred Syntax
 			NSNumber *tsIndex = [server objectForKey:@"TransferSyntax"];
-			if (tsIndex) {
-				switch ([tsIndex intValue] ) {
+			if (tsIndex)
+			{
+				switch ([tsIndex intValue])
+				{
 					case SendExplicitLittleEndian: preferredTS = EXS_LittleEndianExplicit;
 						break;
 					case SendJPEG2000Lossless: preferredTS = EXS_JPEG2000LosslessOnly;

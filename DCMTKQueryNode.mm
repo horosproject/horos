@@ -20,6 +20,7 @@
 #import "MoveManager.h"
 #import "browserController.h"
 #import "AppController.h"
+#import "SendController.h"
 
 #undef verify
 #include "osconfig.h" /* make sure OS specific configuration is included first */
@@ -64,6 +65,7 @@ static OFString    opt_ciphersuites(SSL3_TXT_RSA_DES_192_CBC3_SHA);
 
 NSException* queryException = nil;
 int debugLevel = 1;
+int wadoUnique = 0;
 OFCondition globalCondition = EC_Normal;
 
 typedef struct {
@@ -583,17 +585,115 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	return [self move: dict retrieveMode: CMOVERetrieveMode];
 }
 
+- (NSString*) syntaxStringFor:( int) ts imageQuality: (int*) q
+{
+	*q = 100;
+	switch ( ts)
+	{
+		case SendExplicitLittleEndian:
+			return [NSString stringWithFormat: @"%s", UID_LittleEndianExplicitTransferSyntax];
+		break;
+		case SendJPEG2000Lossless:
+			return [NSString stringWithFormat: @"%s", UID_JPEG2000LosslessOnlyTransferSyntax];
+		break;
+		case SendJPEG2000Lossy10: 
+			*q = 90;
+			return [NSString stringWithFormat: @"%s", UID_JPEG2000TransferSyntax];
+		break;
+		case SendJPEG2000Lossy20:
+			*q = 70;
+			return [NSString stringWithFormat: @"%s", UID_JPEG2000TransferSyntax];
+		break;
+		case SendJPEG2000Lossy50:
+			*q = 50;
+			return [NSString stringWithFormat: @"%s", UID_JPEG2000TransferSyntax];
+		break;
+		case SendJPEGLossless: 
+			return [NSString stringWithFormat: @"%s", UID_JPEGProcess14SV1TransferSyntax];
+		break;
+		case SendJPEGLossy9:
+			*q = 90;
+			return [NSString stringWithFormat: @"%s", UID_JPEGProcess2_4TransferSyntax];
+		break;
+		case SendJPEGLossy8:
+			*q = 70;
+			return [NSString stringWithFormat: @"%s", UID_JPEGProcess2_4TransferSyntax];
+		break;
+		case SendJPEGLossy7:
+			*q = 50;
+			return [NSString stringWithFormat: @"%s", UID_JPEGProcess2_4TransferSyntax];
+		break;
+		case SendImplicitLittleEndian:
+			return [NSString stringWithFormat: @"%s", UID_LittleEndianImplicitTransferSyntax];
+		break;
+		case SendRLE:
+			return [NSString stringWithFormat: @"%s", UID_RLELosslessTransferSyntax];
+		break;
+		case SendExplicitBigEndian:
+			return [NSString stringWithFormat: @"%s", UID_BigEndianExplicitTransferSyntax];
+		break;
+	}
+	
+	NSLog( @"****** unknown transfer syntax");
+	
+	return [NSString stringWithFormat: @"%s", UID_LittleEndianExplicitTransferSyntax];
+}
+
+- (void) WADORetrieve
+{
+//	http://dicom.vital-it.ch:8089/wado?requestType=WADO&studyUID=1.2.250.1.59.40211.12345678.678910 &seriesUID=1.2.250.1.59.40211.789001276.14556172.67789 &objectUID=1.2.250.1.59.40211.2678810.87991027.899772.2 &contentType=application%2Fdicom&transferSyntax=1.2.840.10008.1.2.4.50
+	
+	NSString *baseURL = [NSString stringWithFormat: @"http://%@:%d/%@?requestType=WADO", _hostname, 8089, @"wado"];
+	
+	int quality = 100;
+	NSString *ts = [self syntaxStringFor: SendJPEG2000Lossless imageQuality: &quality];
+	
+	// search the series
+	if( [self children] == nil)
+		[self queryWithValues: nil];
+	
+	NSMutableArray *urlToDownload = [NSMutableArray array];
+	
+	for( DCMTKQueryNode *series in [self children])
+	{
+		// search the images
+		if( [series children] == nil)
+			[series queryWithValues: nil];
+		
+		for( DCMTKQueryNode *image in [series children])
+		{
+			NSURL *url = [NSURL URLWithString: [baseURL stringByAppendingFormat:@"&studyUID=%@&seriesUID=%@&objectUID=%@&contentType=application/dicom&transferSyntax=%@&imageQuality=%d", [self uid], [series uid], [image uid], ts, quality]]; 
+			[urlToDownload addObject: url];
+		}
+		
+		[series purgeChildren];
+	}
+	
+	NSLog( @"------ WADO downloading : %d files", [urlToDownload count]);
+	for( NSURL *url in urlToDownload)
+	{
+		NSError *error = nil;
+		NSData *dicom = [NSData dataWithContentsOfURL: url options: 0 error: &error];
+		NSString *path = [NSString stringWithFormat:@"%s/INCOMING.noindex/", [[BrowserController currentBrowser] cfixedIncomingDirectory]];
+		[dicom writeToFile: [path stringByAppendingFormat: @"WADO-%d.dcm", wadoUnique++] atomically: YES];
+	}
+}
+
 - (void) move:(NSDictionary*) dict retrieveMode: (int) retrieveMode
 {
 	if( [[dict valueForKey: @"retrieveMode"] intValue] == CGETRetrieveMode && retrieveMode == CGETRetrieveMode)
 	{
 		DcmDataset *dataset = [self moveDataset];
-		if ([self setupNetworkWithSyntax:UID_GETStudyRootQueryRetrieveInformationModel  dataset:dataset destination: [dict objectForKey:@"moveDestination"]])
+		if ([self setupNetworkWithSyntax: UID_GETStudyRootQueryRetrieveInformationModel dataset:dataset destination: [dict objectForKey:@"moveDestination"]])
 		{
 		
 		}
 		
 		if (dataset != NULL) delete dataset;
+	}
+	else if( [[dict valueForKey: @"retrieveMode"] intValue] == WADORetrieveMode && retrieveMode == WADORetrieveMode)
+	{
+		[self WADORetrieve];
 	}
 	else
 	{

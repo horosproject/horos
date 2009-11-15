@@ -43,7 +43,6 @@ enum SendServerType { osirixServer, offisServer };
 @interface SendController : NSWindowController
 {
 	NSArray				*_files;
-	NSString			*_transferSyntaxString;
 	NSString			*_numberFiles;
 	NSInteger			_keyImageIndex;
 	NSInteger			_serverIndex;

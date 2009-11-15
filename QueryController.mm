@@ -736,7 +736,7 @@ static const char *GetPrivateIP()
 	
 	if( [item isMemberOfClass:[DCMTKSeriesQueryNode class]] == YES)
 	{
-		NSManagedObjectContext		*context = [[BrowserController currentBrowser] managedObjectContext];
+		NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
 		
 		[context lock];
 		

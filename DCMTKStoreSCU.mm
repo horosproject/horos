@@ -1020,7 +1020,8 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 	DIMSE_debug(OFFalse);
 	SetDebugLevel(0);
 	
-	switch (_transferSyntax) {
+	switch (_transferSyntax)
+	{
 		case SendExplicitLittleEndian:
 			opt_networkTransferSyntax = EXS_LittleEndianExplicit;
 			break;

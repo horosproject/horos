@@ -12,7 +12,7 @@
 		</object>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="112"/>
+			<integer value="472"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -3249,30 +3249,6 @@
 						</object>
 					</object>
 					<int key="connectionID">470</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">switchRetrieveMode:</string>
-						<reference key="source" ref="815364985"/>
-						<reference key="destination" ref="548808338"/>
-					</object>
-					<int key="connectionID">509</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">switchRetrieveMode:</string>
-						<reference key="source" ref="815364985"/>
-						<reference key="destination" ref="915597715"/>
-					</object>
-					<int key="connectionID">510</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">switchRetrieveMode:</string>
-						<reference key="source" ref="815364985"/>
-						<reference key="destination" ref="165130087"/>
-					</object>
-					<int key="connectionID">511</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">

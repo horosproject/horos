@@ -139,7 +139,6 @@ static volatile int sendControllerObjects = 0;
 	NSLog(@"SendController Released");
 	[_destinationServer release];
 	[_files release];
-	[_transferSyntaxString release];
 	[_numberFiles release];
 	[_lock lock];
 	[_lock unlock];
@@ -196,7 +195,7 @@ static volatile int sendControllerObjects = 0;
 	{
 		int preferredTS = [[[self server] objectForKey:@"TransferSyntax"] intValue];
 				
-		if (preferredTS ==  SendExplicitLittleEndian || 
+		if (preferredTS == SendExplicitLittleEndian || 
 			preferredTS == SendImplicitLittleEndian || 
 			preferredTS == SendRLE ||
 			preferredTS == SendJPEGLossless)
