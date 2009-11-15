@@ -209,6 +209,10 @@
     [aServer setObject:@"Description" forKey:@"Description"];
 	[aServer setObject:[NSNumber numberWithInt:0] forKey:@"TransferSyntax"];
     
+	[aServer setObject:[NSNumber numberWithBool: YES] forKey:@"CMOVE"];
+	[aServer setObject:[NSNumber numberWithBool: NO] forKey:@"CGET"];
+	[aServer setObject:[NSNumber numberWithBool: NO] forKey:@"WADO"];
+	
 	[dicomNodes addObject:aServer];
 	[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"updateServers"];
 	

@@ -27,10 +27,10 @@
 
 - (id)initWithCallingAET:(NSString *)myAET calledAET:(NSString *)theirAET  hostName:(NSString *)host  port:(NSString *)tcpPort netService:(NSNetService *)netService;
 {
-	return [self initWithCallingAET:myAET calledAET:theirAET  hostName:host  port:tcpPort cget: NO netService:netService];
+	return [self initWithCallingAET:myAET calledAET:theirAET  hostName:host  port:tcpPort retrieveMode: CMOVERetrieveMode netService:netService];
 }
 
-- (id)initWithCallingAET:(NSString *)myAET calledAET:(NSString *)theirAET  hostName:(NSString *)host  port:(NSString *)tcpPort cget: (BOOL) cget netService:(NSNetService *)netService;
+- (id)initWithCallingAET:(NSString *)myAET calledAET:(NSString *)theirAET  hostName:(NSString *)host  port:(NSString *)tcpPort retrieveMode: (int) rm netService:(NSNetService *)netService;
 {
 	if (self = [super init]){		
 		rootNode = nil;
@@ -40,7 +40,7 @@
 		hostname = [host retain];
 		port = [tcpPort retain];
 		queries = nil;
-		cgetSupport = cget;
+		retrieveMode = rm;
 		_netService = [netService retain];
 	}
 	return self;
@@ -137,7 +137,7 @@
 										port:[port intValue]
 										transferSyntax: 0		//EXS_LittleEndianExplicit / EXS_JPEGProcess14SV1TransferSyntax
 										compression: nil
-										extraParameters: [NSDictionary dictionaryWithObject: [NSNumber numberWithBool: cgetSupport] forKey: @"CGET"]] retain];
+										extraParameters: [NSDictionary dictionaryWithObject: [NSNumber numberWithInt: retrieveMode] forKey: @"retrieveMode"]] retain];
 		NSMutableArray *filterArray = [NSMutableArray array];
 		NSEnumerator *enumerator = [filters keyEnumerator];
 		NSString *key;

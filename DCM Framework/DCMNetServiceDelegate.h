@@ -12,6 +12,12 @@
      PURPOSE.
 =========================================================================*/
 
+enum
+{
+	CMOVERetrieveMode = 0,
+	CGETRetrieveMode = 1,
+	WADORetrieveMode = 2
+};
 
 #import <Cocoa/Cocoa.h>
 

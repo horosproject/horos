@@ -29,11 +29,11 @@
 	NSArray *queries;
 	NSNetService *_netService;
 	NSLock *queryLock;
-	BOOL cgetSupport;
+	int retrieveMode;
 }
 
 - (id)initWithCallingAET:(NSString *)myAET calledAET:(NSString *)theirAET  hostName:(NSString *)host  port:(NSString *)tcpPort netService:(NSNetService *)netService;
-- (id)initWithCallingAET:(NSString *)myAET calledAET:(NSString *)theirAET  hostName:(NSString *)host  port:(NSString *)tcpPort cget: (BOOL) cget netService:(NSNetService *)netService;
+- (id)initWithCallingAET:(NSString *)myAET calledAET:(NSString *)theirAET  hostName:(NSString *)host  port:(NSString *)tcpPort retrieveMode: (int) rm netService:(NSNetService *)netService;
 
 - (id)rootNode;
 - (NSArray *)queries;

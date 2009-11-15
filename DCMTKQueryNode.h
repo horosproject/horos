@@ -103,6 +103,6 @@
 - (OFCondition) cget:(T_ASC_Association *)assoc network:(T_ASC_Network *)net dataset:(DcmDataset *)dataset;
 - (OFCondition) getSCU:(T_ASC_Association *)assoc  network:(T_ASC_Network *)net dataset:( DcmDataset *)dataset;
 
-- (void) move:(NSDictionary*) dict allowCGET: (BOOL) allowCGET;
+- (void) move:(NSDictionary*) dict retrieveMode: (int) retrieveMode;
 - (void) move:(NSDictionary*) dict;
 @end

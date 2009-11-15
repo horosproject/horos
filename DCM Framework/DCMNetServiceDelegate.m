@@ -204,6 +204,37 @@ static NSLock *currentHostLock = nil;
 	{
 		serversArray = [NSMutableArray arrayWithArray: [[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"]];
 		
+		// Check if we have the new/old format
+		
+		BOOL toBeSaved = NO;
+		for( int i = 0 ; i < [serversArray count] ; i++)
+		{
+			NSDictionary *d = [serversArray objectAtIndex: i];
+			
+			if( [d objectForKey: @"retrieveMode"] == nil)
+			{
+				NSMutableDictionary *mdict = [NSMutableDictionary dictionaryWithDictionary: d];
+				
+				if( [[d objectForKey: @"CGET"] boolValue] == YES)
+					[mdict setObject: [NSNumber numberWithInt: CGETRetrieveMode] forKey: @"retrieveMode"];
+				else
+					[mdict setObject: [NSNumber numberWithInt: CMOVERetrieveMode] forKey: @"retrieveMode"];
+					
+				[mdict removeObjectForKey: @"CGET"];
+				[mdict removeObjectForKey: @"CMOVE"];
+				[mdict removeObjectForKey: @"WADO"];
+				
+				[serversArray replaceObjectAtIndex: [serversArray indexOfObject: d] withObject: mdict];
+				
+				toBeSaved = YES;
+			}
+		}
+		
+		if( toBeSaved)
+		{
+			[[NSUserDefaults standardUserDefaults] setObject: serversArray forKey: @"SERVERS"];
+		}
+		
 		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"searchDICOMBonjour"])
 		{
 			NSArray *dicomServices = [[DCMNetServiceDelegate sharedNetServiceDelegate] dicomServices];
@@ -249,20 +280,19 @@ static NSLock *currentHostLock = nil;
 							transferSyntax = SendRLE;
 					}
 					
-					BOOL cgetSupported = NO;
+					BOOL retrieveMode = CMOVERetrieveMode;
 					
 					if( [dict valueForKey: @"CGET"])
 					{
 						NSString *cg = [[[NSString alloc] initWithData: [dict valueForKey: @"CGET"] encoding:NSUTF8StringEncoding] autorelease];
-						
-						cgetSupported = [cg boolValue];
+						retrieveMode = CGETRetrieveMode;
 					}
 					
 					NSMutableDictionary *s = [NSMutableDictionary dictionaryWithObjectsAndKeys:	hostname, @"Address",
 																									[aServer name], @"AETitle",
 																									[NSString stringWithFormat:@"%d", port], @"Port",
 																									[NSNumber numberWithBool:YES] , @"QR",
-																									[NSNumber numberWithBool:cgetSupported] , @"CGET",
+																									[NSNumber numberWithInt: retrieveMode] , @"retrieveMode",
 																									[NSNumber numberWithBool:YES] , @"Send",
 																									description, @"Description",
 																									[NSNumber numberWithInt: transferSyntax], @"TransferSyntax",

@@ -15,6 +15,7 @@
 #import "WaitRendering.h"
 #import "DCMTKQueryNode.h"
 #import <OsiriX/DCMCalendarDate.h>
+#import <OsiriX/DCMNetServiceDelegate.h>
 #import "DICOMToNSString.h"
 #import "MoveManager.h"
 #import "browserController.h"
@@ -579,12 +580,12 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 
 - (void) move:(NSDictionary*) dict
 {
-	return [self move: dict allowCGET: YES];
+	return [self move: dict retrieveMode: CMOVERetrieveMode];
 }
 
-- (void) move:(NSDictionary*) dict allowCGET: (BOOL) allowCGET
+- (void) move:(NSDictionary*) dict retrieveMode: (int) retrieveMode
 {
-	if( [[dict valueForKey: @"CGET"] boolValue] == YES && allowCGET == YES)
+	if( [[dict valueForKey: @"retrieveMode"] intValue] == CGETRetrieveMode && retrieveMode == CGETRetrieveMode)
 	{
 		DcmDataset *dataset = [self moveDataset];
 		if ([self setupNetworkWithSyntax:UID_GETStudyRootQueryRetrieveInformationModel  dataset:dataset destination: [dict objectForKey:@"moveDestination"]])

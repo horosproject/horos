@@ -71,9 +71,8 @@ static const char *GetPrivateIP()
 		NSString *theirAET = [aServer objectForKey:@"AETitle"];
 		NSString *hostname = [aServer objectForKey:@"Address"];
 		NSString *port = [aServer objectForKey:@"Port"];
-		BOOL cget = [[aServer objectForKey:@"CGET"] boolValue];
 		
-		qm = [[[QueryArrayController alloc] initWithCallingAET:myAET calledAET:theirAET  hostName:hostname port:port cget:cget netService:nil] autorelease];
+		qm = [[[QueryArrayController alloc] initWithCallingAET:myAET calledAET:theirAET  hostName:hostname port:port retrieveMode: [[aServer objectForKey: @"retrieveMode"] intValue] netService:nil] autorelease];
 		
 		NSString *filterValue = [an stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 		
@@ -109,9 +108,8 @@ static const char *GetPrivateIP()
 		NSString *theirAET = [aServer objectForKey:@"AETitle"];
 		NSString *hostname = [aServer objectForKey:@"Address"];
 		NSString *port = [aServer objectForKey:@"Port"];
-		BOOL cget = [[aServer objectForKey:@"CGET"] boolValue];
 		
-		qm = [[QueryArrayController alloc] initWithCallingAET:myAET calledAET:theirAET  hostName:hostname port:port cget:cget netService:nil];
+		qm = [[QueryArrayController alloc] initWithCallingAET:myAET calledAET:theirAET  hostName:hostname port:port retrieveMode: [[aServer objectForKey: @"retrieveMode"] intValue] netService:nil];
 		
 		NSString *filterValue = [an stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 		
@@ -1140,7 +1138,7 @@ static const char *GetPrivateIP()
 	NSNetService		*netService = nil;
 	id					aServer;
 	int					selectedServer;
-	BOOL				atLeastOneSource = NO, noChecked = YES, error = NO, cget = NO;
+	BOOL				atLeastOneSource = NO, noChecked = YES, error = NO;
 	NSArray				*copiedSources = [NSArray arrayWithArray: sourcesArray];
 	
 	noChecked = YES;
@@ -1172,12 +1170,11 @@ static const char *GetPrivateIP()
 				theirAET = [aServer objectForKey:@"AETitle"];
 				hostname = [aServer objectForKey:@"Address"];
 				port = [aServer objectForKey:@"Port"];
-				cget = [[aServer objectForKey:@"CGET"] boolValue];
 				
 				int numberPacketsReceived = 0;
 				if( [[NSUserDefaults standardUserDefaults] boolForKey:@"Ping"] == NO || (SimplePing( [hostname UTF8String], 1, [[NSUserDefaults standardUserDefaults] integerForKey:@"DICOMTimeout"], 1,  &numberPacketsReceived) == 0 && numberPacketsReceived > 0))
 				{
-					QueryArrayController *qm = [[QueryArrayController alloc] initWithCallingAET:myAET calledAET:theirAET  hostName:hostname port:port cget:cget netService:netService];
+					QueryArrayController *qm = [[QueryArrayController alloc] initWithCallingAET:myAET calledAET:theirAET  hostName:hostname port:port retrieveMode: [[aServer objectForKey: @"retrieveMode"] intValue] netService:netService];
 					
 					[qm addFilter:filterValue forDescription: PatientID];
 					
@@ -1202,7 +1199,7 @@ static const char *GetPrivateIP()
 	NSNetService		*netService = nil;
 	id					aServer;
 	int					selectedServer;
-	BOOL				atLeastOneSource = NO, noChecked = YES, error = NO, cget = NO;
+	BOOL				atLeastOneSource = NO, noChecked = YES, error = NO;
 	
 	[autoQueryLock lock];
 	
@@ -1240,7 +1237,6 @@ static const char *GetPrivateIP()
 			theirAET = [aServer objectForKey:@"AETitle"];
 			hostname = [aServer objectForKey:@"Address"];
 			port = [aServer objectForKey:@"Port"];
-			cget = [[aServer objectForKey:@"CGET"] boolValue];
 			
 			int numberPacketsReceived = 0;
 			if( [[NSUserDefaults standardUserDefaults] boolForKey:@"Ping"] == NO || (SimplePing( [hostname UTF8String], 1, [[NSUserDefaults standardUserDefaults] integerForKey:@"DICOMTimeout"], 1,  &numberPacketsReceived) == 0 && numberPacketsReceived > 0))
@@ -1255,7 +1251,7 @@ static const char *GetPrivateIP()
 					[queryManager release];
 					queryManager = nil;
 					
-					queryManager = [[QueryArrayController alloc] initWithCallingAET:myAET calledAET:theirAET  hostName:hostname port:port cget:cget netService:netService];
+					queryManager = [[QueryArrayController alloc] initWithCallingAET:myAET calledAET:theirAET  hostName:hostname port:port retrieveMode: [[aServer objectForKey: @"retrieveMode"] intValue] netService:netService];
 					// add filters as needed
 					
 					if( [[[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"] isEqualToString:@"ISO_IR 100"] == NO)
@@ -1415,7 +1411,7 @@ static const char *GetPrivateIP()
 						}
 					}
 					
-					if( cget)
+					if( [[aServer objectForKey: @"retrieveMode"] intValue] != CMOVERetrieveMode)
 					{
 						[sendToPopup selectItemAtIndex: 0];
 						[sendToPopup setEnabled: NO];
@@ -1916,19 +1912,20 @@ static const char *GetPrivateIP()
 		
 		NSLog( @"Retrieve START");
 		
+		BOOL allowNonCMOVE = YES;
+		
 		for( NSUInteger i = 0; i < [array count] ; i++)
 		{
 			DCMTKQueryNode *object = [[array objectAtIndex: i] retain];
 			
-			if( [[object extraParameters] valueForKey: @"CGET"])
-				[dictionary setObject: [[[[object extraParameters] valueForKey: @"CGET"] copy] autorelease] forKey:@"CGET"];
+			[dictionary setObject:[[[[object extraParameters] valueForKey: @"retrieveMode"] copy] autorelease] forKey:@"retrieveMode"];
 			[dictionary setObject:[[[object valueForKey:@"calledAET"] copy] autorelease] forKey:@"calledAET"];
 			[dictionary setObject:[[[object valueForKey:@"hostname"] copy] autorelease] forKey:@"hostname"];
 			[dictionary setObject:[[[object valueForKey:@"port"] copy] autorelease] forKey:@"port"];
 			[dictionary setObject:[[[object valueForKey:@"transferSyntax"] copy] autorelease] forKey:@"transferSyntax"];
 
 			NSDictionary *dstDict = nil;
-			BOOL allowCGET = YES;
+			
 			
 			if( [sendToPopup indexOfSelectedItem] != 0)
 			{
@@ -1938,7 +1935,7 @@ static const char *GetPrivateIP()
 				
 				[dictionary setObject: [dstDict valueForKey:@"AETitle"]  forKey: @"moveDestination"];
 				
-				allowCGET = NO;
+				allowNonCMOVE = NO;
 			}
 			
 			if( [[dstDict valueForKey:@"Port"] intValue]  == [[dictionary valueForKey:@"port"] intValue] &&
@@ -1953,10 +1950,7 @@ static const char *GetPrivateIP()
 				{
 					NSMutableDictionary *d = [NSMutableDictionary dictionary];
 					[d setObject: object forKey: @"query"];
-					[d setObject: [NSNumber numberWithBool: allowCGET] forKey: @"allowCGET"];
-					
-					if( [dictionary objectForKey: @"CGET"])
-						[d setObject: [dictionary objectForKey: @"CGET"] forKey: @"CGET"];
+					[d setObject: [dictionary objectForKey: @"retrieveMode"] forKey: @"retrieveMode"];
 					
 					if( [dictionary objectForKey: @"moveDestination"])
 						[d setObject: [dictionary objectForKey: @"moveDestination"] forKey: @"moveDestination"];
@@ -1979,7 +1973,12 @@ static const char *GetPrivateIP()
 			if( pFile)
 				fclose (pFile);
 			else
-				[object move: d allowCGET: [[d objectForKey: @"allowCGET"] boolValue]];
+			{
+				if( allowNonCMOVE)
+					[object move: d retrieveMode: [[d objectForKey: @"retrieveMode"] intValue]];
+				else
+					[object move: d retrieveMode: CMOVERetrieveMode];
+			}
 			
 			@synchronized( previousAutoRetrieve)
 			{
