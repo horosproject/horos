@@ -663,6 +663,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	}
 	
 	NSLog( @"------ WADO downloading : %d files", [urlToDownload count]);
+	
 	for( NSURL *url in urlToDownload)
 	{
 		NSError *error = nil;
@@ -673,6 +674,9 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		
 		NSString *path = [NSString stringWithFormat:@"%s/INCOMING.noindex/", [[BrowserController currentBrowser] cfixedIncomingDirectory]];
 		[dicom writeToFile: [path stringByAppendingFormat: @"WADO-%d.dcm", wadoUnique++] atomically: YES];
+		
+		if( [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/kill_all_storescu"])
+			break;
 	}
 }
 

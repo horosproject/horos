@@ -1854,14 +1854,15 @@
 				<bool key="NSClearsFilterPredicateOnInsertion">YES</bool>
 			</object>
 			<object class="NSWindowTemplate" id="96172950">
-				<int key="NSWindowStyleMask">15</int>
+				<int key="NSWindowStyleMask">1</int>
 				<int key="NSWindowBacking">2</int>
-				<string key="NSWindowRect">{{340, 544}, {404, 145}}</string>
+				<string key="NSWindowRect">{{913, 1061}, {404, 145}}</string>
 				<int key="NSWTFlags">611844096</int>
 				<string key="NSWindowTitle">Window</string>
 				<string key="NSWindowClass">NSWindow</string>
 				<nil key="NSViewClass"/>
-				<string key="NSWindowContentMaxSize">{1.79769e+308, 1.79769e+308}</string>
+				<string key="NSWindowContentMaxSize">{404, 145}</string>
+				<string key="NSWindowContentMinSize">{404, 145}</string>
 				<object class="NSView" key="NSWindowView" id="429380868">
 					<reference key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
@@ -2173,7 +2174,8 @@
 					<reference key="NSSuperview"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {2560, 1578}}</string>
-				<string key="NSMaxSize">{1.79769e+308, 1.79769e+308}</string>
+				<string key="NSMinSize">{404, 167}</string>
+				<string key="NSMaxSize">{404, 167}</string>
 			</object>
 		</object>
 		<object class="IBObjectContainer" key="IBDocument.Objects">
@@ -4997,6 +4999,10 @@
 					<string>537.IBPluginDependency</string>
 					<string>537.IBWindowTemplateEditedContentRect</string>
 					<string>537.NSWindowTemplate.visibleAtLaunch</string>
+					<string>537.windowTemplate.hasMaxSize</string>
+					<string>537.windowTemplate.hasMinSize</string>
+					<string>537.windowTemplate.maxSize</string>
+					<string>537.windowTemplate.minSize</string>
 					<string>538.IBPluginDependency</string>
 					<string>539.IBPluginDependency</string>
 					<string>540.IBPluginDependency</string>
@@ -5292,6 +5298,10 @@
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>{{913, 1061}, {404, 145}}</string>
 					<boolean value="NO"/>
+					<boolean value="YES"/>
+					<boolean value="YES"/>
+					<string>{404, 145}</string>
+					<string>{404, 145}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
