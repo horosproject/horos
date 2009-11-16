@@ -1933,6 +1933,12 @@ static const char *GetPrivateIP()
 					[d setObject: object forKey: @"query"];
 					[d setObject: [dictionary objectForKey: @"retrieveMode"] forKey: @"retrieveMode"];
 					
+					if( [object isMemberOfClass: [DCMTKSeriesQueryNode class]])
+					{
+						if( [outlineView parentForItem: object])
+							[d setObject: [outlineView parentForItem: object] forKey:@"study"];	// for WADO retrieve at Series level
+					}
+					
 					if( [dictionary objectForKey: @"moveDestination"])
 						[d setObject: [dictionary objectForKey: @"moveDestination"] forKey: @"moveDestination"];
 					

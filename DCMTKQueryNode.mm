@@ -12,6 +12,9 @@
      PURPOSE.
 =========================================================================*/
 
+#import "DCMTKStudyQueryNode.h"
+#import "DCMTKSeriesQueryNode.h"
+
 #import "WaitRendering.h"
 #import "DCMTKQueryNode.h"
 #import <OsiriX/DCMCalendarDate.h>
@@ -660,7 +663,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	[urlToDownload release];
 }
 
-- (void) WADORetrieve // requestService: WFIND?
+- (void) WADORetrieve: (DCMTKStudyQueryNode*) study // requestService: WFIND?
 {
 	NSString *baseURL = [NSString stringWithFormat: @"http://%@:%d/%@?requestType=WADO", _hostname, [[_extraParameters valueForKey: @"WADOPort"] intValue], [_extraParameters valueForKey: @"WADOUrl"]];
 	
@@ -673,19 +676,37 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	
 	NSMutableArray *urlToDownload = [NSMutableArray array];
 	
-	for( DCMTKQueryNode *series in [self children])
+	if( [self isMemberOfClass:[DCMTKStudyQueryNode class]])
+	{
+		for( DCMTKQueryNode *series in [self children])
+		{
+			// search the images
+			if( [series children] == nil)
+				[series queryWithValues: nil];
+			
+			for( DCMTKQueryNode *image in [series children])
+			{
+				NSURL *url = [NSURL URLWithString: [baseURL stringByAppendingFormat:@"&studyUID=%@&seriesUID=%@&objectUID=%@&contentType=application/dicom", [self uid], [series uid], [image uid]]];
+				[urlToDownload addObject: url];
+			}
+			
+			[series purgeChildren];
+		}
+	}
+	
+	if( [self isMemberOfClass:[DCMTKSeriesQueryNode class]])
 	{
 		// search the images
-		if( [series children] == nil)
-			[series queryWithValues: nil];
+		if( [self children] == nil)
+			[self queryWithValues: nil];
 		
-		for( DCMTKQueryNode *image in [series children])
+		for( DCMTKQueryNode *image in [self children])
 		{
-			NSURL *url = [NSURL URLWithString: [baseURL stringByAppendingFormat:@"&studyUID=%@&seriesUID=%@&objectUID=%@&contentType=application/dicom", [self uid], [series uid], [image uid]]];
+			NSURL *url = [NSURL URLWithString: [baseURL stringByAppendingFormat:@"&studyUID=%@&seriesUID=%@&objectUID=%@&contentType=application/dicom", [study uid], [self uid], [image uid]]];
 			[urlToDownload addObject: url];
 		}
 		
-		[series purgeChildren];
+		[self purgeChildren];
 	}
 	
 	NSLog( @"------ WADO downloading : %d files", [urlToDownload count]);
@@ -717,7 +738,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	}
 	else if( [[dict valueForKey: @"retrieveMode"] intValue] == WADORetrieveMode && retrieveMode == WADORetrieveMode)
 	{
-		[self WADORetrieve];
+		[self WADORetrieve: [dict valueForKey: @"study"]];
 	}
 	else
 	{
