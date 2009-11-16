@@ -639,7 +639,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	return [NSString stringWithFormat: @"%s", UID_LittleEndianExplicitTransferSyntax];
 }
 
-- (void) WADORetrieve
+- (void) WADORetrieve // requestService: WFIND
 {
 //	http://dicom.vital-it.ch:8089/wado?requestType=WADO&studyUID=1.2.250.1.59.40211.12345678.678910 &seriesUID=1.2.250.1.59.40211.789001276.14556172.67789 &objectUID=1.2.250.1.59.40211.2678810.87991027.899772.2 &contentType=application%2Fdicom&transferSyntax=1.2.840.10008.1.2.4.50
 	
@@ -662,7 +662,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		
 		for( DCMTKQueryNode *image in [series children])
 		{
-			NSURL *url = [NSURL URLWithString: [baseURL stringByAppendingFormat:@"&studyUID=%@&seriesUID=%@&objectUID=%@&contentType=application/dicom&transferSyntax=%@&imageQuality=%d", [self uid], [series uid], [image uid], ts, quality]]; 
+			NSURL *url = [NSURL URLWithString: [baseURL stringByAppendingFormat:@"&studyUID=%@&seriesUID=%@&objectUID=%@&contentType=application/dicom&transferSyntax=%@", [self uid], [series uid], [image uid], ts]]; //&imageQuality=%d , quality
 			[urlToDownload addObject: url];
 		}
 		
