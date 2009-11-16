@@ -636,6 +636,8 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 
 - (void) WADODownload: (NSArray*) urlToDownload
 {
+	[urlToDownload retain];
+	
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
 	for( NSURL *url in urlToDownload)
@@ -654,6 +656,8 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	}
 	
 	[pool release];
+	
+	[urlToDownload release];
 }
 
 - (void) WADORetrieve // requestService: WFIND?
