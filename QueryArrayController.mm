@@ -25,32 +25,31 @@
 
 @implementation QueryArrayController
 
-- (id)initWithCallingAET:(NSString *)myAET calledAET:(NSString *)theirAET  hostName:(NSString *)host  port:(NSString *)tcpPort netService:(NSNetService *)netService;
+- (id)initWithCallingAET:(NSString *) myAET distantServer: (NSDictionary*) ds;
 {
-	return [self initWithCallingAET:myAET calledAET:theirAET  hostName:host  port:tcpPort retrieveMode: CMOVERetrieveMode netService:netService];
-}
-
-- (id)initWithCallingAET:(NSString *)myAET calledAET:(NSString *)theirAET  hostName:(NSString *)host  port:(NSString *)tcpPort retrieveMode: (int) rm netService:(NSNetService *)netService;
-{
-	if (self = [super init]){		
+	if (self = [super init])
+	{
 		rootNode = nil;
 		filters = [[NSMutableDictionary dictionary] retain];
 		callingAET = [myAET retain];
-		calledAET = [theirAET retain];
-		hostname = [host retain];
-		port = [tcpPort retain];
+		
+		distantServer = [ds retain];
+		calledAET = [[ds valueForKey: @"AETitle"] retain];
+		hostname = [[ds valueForKey: @"Address"] retain];
+		port = [[ds valueForKey: @"Port"] retain];
+		
 		queries = nil;
-		retrieveMode = rm;
-		_netService = [netService retain];
 	}
 	return self;
 }
 
-- (id)rootNode{
+- (id)rootNode
+{
 	return rootNode;
 }
 
-- (void)dealloc{
+- (void)dealloc
+{
 	[queryLock lock];
 	[queryLock unlock];
 	[queryLock release];
@@ -62,7 +61,8 @@
 	[hostname release];
 	[port release];
 	[queries release];
-	[_netService release];
+	[distantServer release];
+	
 	[super dealloc];
 }
 
@@ -130,14 +130,15 @@
 	else
 	{
 		[rootNode release];
-		rootNode = [[DCMTKRootQueryNode queryNodeWithDataset:nil
-										callingAET:callingAET
-										calledAET:calledAET 
-										hostname:hostname
-										port:[port intValue]
+		rootNode = [[DCMTKRootQueryNode queryNodeWithDataset: nil
+										callingAET: callingAET
+										calledAET: calledAET 
+										hostname: hostname
+										port: [port intValue]
 										transferSyntax: 0		//EXS_LittleEndianExplicit / EXS_JPEGProcess14SV1TransferSyntax
 										compression: nil
-										extraParameters: [NSDictionary dictionaryWithObject: [NSNumber numberWithInt: retrieveMode] forKey: @"retrieveMode"]] retain];
+										extraParameters: distantServer] retain];
+										
 		NSMutableArray *filterArray = [NSMutableArray array];
 		NSEnumerator *enumerator = [filters keyEnumerator];
 		NSString *key;
@@ -175,20 +176,17 @@
 	return [self performQuery: [[NSUserDefaults standardUserDefaults] boolForKey:@"showErrorsIfQueryFailed"]];
 }
 
-- (NSDictionary *)parameters{	
+- (NSDictionary *)parameters
+{
 	NSMutableDictionary *params = [NSMutableDictionary dictionary];
 	NS_DURING
 		
-		[params setObject:[NSNumber numberWithInt:1] forKey:@"debugLevel"];
+		[params setObject: [NSNumber numberWithInt:1] forKey:@"debugLevel"];
 		[params setObject:callingAET forKey:@"callingAET"];
 		[params setObject:calledAET forKey:@"calledAET"];
-		if (_netService)
-			[params setObject:_netService  forKey:@"netService"];
-		else {
-			[params setObject:hostname  forKey:@"hostname"];
-			[params setObject:port forKey:@"port"];
-		}
-
+		[params setObject:hostname forKey:@"hostname"];
+		[params setObject:port forKey:@"port"];
+		
 		[params setObject:[DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax] forKey:@"transferSyntax"];		//
 		[params setObject:[DCMAbstractSyntaxUID  studyRootQueryRetrieveInformationModelFind] forKey:@"affectedSOPClassUID"];
 	NS_HANDLER

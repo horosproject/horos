@@ -12,14 +12,12 @@
      PURPOSE.
 =========================================================================*/
 
-
-
-
 #import <Cocoa/Cocoa.h>
 
 
 /** \brief Controller for performing query */
-@interface QueryArrayController : NSObject {
+@interface QueryArrayController : NSObject
+{
 	id rootNode;
 	NSMutableDictionary *filters;
 	NSString *callingAET;
@@ -27,13 +25,12 @@
 	NSString *hostname;
 	NSString *port;
 	NSArray *queries;
-	NSNetService *_netService;
+	NSDictionary *distantServer;
 	NSLock *queryLock;
 	int retrieveMode;
 }
 
-- (id)initWithCallingAET:(NSString *)myAET calledAET:(NSString *)theirAET  hostName:(NSString *)host  port:(NSString *)tcpPort netService:(NSNetService *)netService;
-- (id)initWithCallingAET:(NSString *)myAET calledAET:(NSString *)theirAET  hostName:(NSString *)host  port:(NSString *)tcpPort retrieveMode: (int) rm netService:(NSNetService *)netService;
+- (id)initWithCallingAET:(NSString *) myAET distantServer: (NSDictionary*) ds;
 
 - (id)rootNode;
 - (NSArray *)queries;

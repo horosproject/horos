@@ -331,7 +331,8 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 			port:(int)port 
 			transferSyntax:(int)transferSyntax
 			compression: (float)compression
-			extraParameters:(NSDictionary *)extraParameters{
+			extraParameters:(NSDictionary *)extraParameters
+{
 	return [[[DCMTKQueryNode alloc] initWithDataset:(DcmDataset *)dataset
 									callingAET:(NSString *)myAET  
 									calledAET:(NSString *)theirAET  
@@ -348,7 +349,8 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 			port:(int)port 
 			transferSyntax:(int)transferSyntax
 			compression: (float)compression
-			extraParameters:(NSDictionary *)extraParameters{
+			extraParameters:(NSDictionary *)extraParameters
+			{
 			
 	if (self = [super initWithCallingAET:(NSString *)myAET  
 							calledAET:(NSString *)theirAET  
@@ -357,8 +359,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 							transferSyntax:(int)transferSyntax
 							compression: (float)compression
 							extraParameters:(NSDictionary *)extraParameters])
-		{
-		//_children = [[NSMutableArray alloc] init];
+	{
 		debugLevel = [[NSUserDefaults standardUserDefaults] integerForKey:@"NetworkDebugLevel"];
 		
 		_children = nil;
@@ -377,12 +378,6 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		showErrorMessage = YES;
 		if (debugLevel > 0)
 			_verbose = YES;
-		//if (debugLevel > 0) {	
-			//dataset->print(COUT);
-		//	if (dataset != NULL)
-		//		dataset->writeXML(cout, 0); 
-		//}
-		
 	}
 	return self;
 }
@@ -591,62 +586,60 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	switch ( ts)
 	{
 		case SendExplicitLittleEndian:
-			return [NSString stringWithFormat: @"%s", UID_LittleEndianExplicitTransferSyntax];
+			return [NSString stringWithFormat: @"&transferSyntax=%s", UID_LittleEndianExplicitTransferSyntax];
 		break;
 		case SendJPEG2000Lossless:
-			return [NSString stringWithFormat: @"%s", UID_JPEG2000LosslessOnlyTransferSyntax];
+			return [NSString stringWithFormat: @"&transferSyntax=%s", UID_JPEG2000LosslessOnlyTransferSyntax];
 		break;
 		case SendJPEG2000Lossy10: 
 			*q = 90;
-			return [NSString stringWithFormat: @"%s", UID_JPEG2000TransferSyntax];
+			return [NSString stringWithFormat: @"&transferSyntax=%s", UID_JPEG2000TransferSyntax];
 		break;
 		case SendJPEG2000Lossy20:
 			*q = 70;
-			return [NSString stringWithFormat: @"%s", UID_JPEG2000TransferSyntax];
+			return [NSString stringWithFormat: @"&transferSyntax=%s", UID_JPEG2000TransferSyntax];
 		break;
 		case SendJPEG2000Lossy50:
 			*q = 50;
-			return [NSString stringWithFormat: @"%s", UID_JPEG2000TransferSyntax];
+			return [NSString stringWithFormat: @"&transferSyntax=%s", UID_JPEG2000TransferSyntax];
 		break;
 		case SendJPEGLossless: 
-			return [NSString stringWithFormat: @"%s", UID_JPEGProcess14SV1TransferSyntax];
+			return [NSString stringWithFormat: @"&transferSyntax=%s", UID_JPEGProcess14SV1TransferSyntax];
 		break;
 		case SendJPEGLossy9:
 			*q = 90;
-			return [NSString stringWithFormat: @"%s", UID_JPEGProcess2_4TransferSyntax];
+			return [NSString stringWithFormat: @"&transferSyntax=%s", UID_JPEGProcess2_4TransferSyntax];
 		break;
 		case SendJPEGLossy8:
 			*q = 70;
-			return [NSString stringWithFormat: @"%s", UID_JPEGProcess2_4TransferSyntax];
+			return [NSString stringWithFormat: @"&transferSyntax=%s", UID_JPEGProcess2_4TransferSyntax];
 		break;
 		case SendJPEGLossy7:
 			*q = 50;
-			return [NSString stringWithFormat: @"%s", UID_JPEGProcess2_4TransferSyntax];
+			return [NSString stringWithFormat: @"&transferSyntax=%s", UID_JPEGProcess2_4TransferSyntax];
 		break;
 		case SendImplicitLittleEndian:
-			return [NSString stringWithFormat: @"%s", UID_LittleEndianImplicitTransferSyntax];
+			return [NSString stringWithFormat: @"&transferSyntax=%s", UID_LittleEndianImplicitTransferSyntax];
 		break;
 		case SendRLE:
-			return [NSString stringWithFormat: @"%s", UID_RLELosslessTransferSyntax];
+			return [NSString stringWithFormat: @"&transferSyntax=%s", UID_RLELosslessTransferSyntax];
 		break;
 		case SendExplicitBigEndian:
-			return [NSString stringWithFormat: @"%s", UID_BigEndianExplicitTransferSyntax];
+			return [NSString stringWithFormat: @"&transferSyntax=%s", UID_BigEndianExplicitTransferSyntax];
 		break;
 	}
 	
 	NSLog( @"****** unknown transfer syntax");
 	
-	return [NSString stringWithFormat: @"%s", UID_LittleEndianExplicitTransferSyntax];
+	return [NSString stringWithFormat: @"&useOrig=true"];
 }
 
-- (void) WADORetrieve // requestService: WFIND
+- (void) WADORetrieve // requestService: WFIND?
 {
-//	http://dicom.vital-it.ch:8089/wado?requestType=WADO&studyUID=1.2.250.1.59.40211.12345678.678910 &seriesUID=1.2.250.1.59.40211.789001276.14556172.67789 &objectUID=1.2.250.1.59.40211.2678810.87991027.899772.2 &contentType=application%2Fdicom&transferSyntax=1.2.840.10008.1.2.4.50
-	
-	NSString *baseURL = [NSString stringWithFormat: @"http://%@:%d/%@?requestType=WADO", _hostname, 8089, @"wado"];
+	NSString *baseURL = [NSString stringWithFormat: @"http://%@:%d/%@?requestType=WADO", _hostname, [[_extraParameters valueForKey: @"WADOPort"] intValue], [_extraParameters valueForKey: @"WADOUrl"]];
 	
 	int quality = 100;
-	NSString *ts = [self syntaxStringFor: SendJPEG2000Lossless imageQuality: &quality];
+	NSString *ts = [self syntaxStringFor: [[_extraParameters valueForKey: @"WADOTransferSyntax"] intValue] imageQuality: &quality];
 	
 	// search the series
 	if( [self children] == nil)
@@ -662,7 +655,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		
 		for( DCMTKQueryNode *image in [series children])
 		{
-			NSURL *url = [NSURL URLWithString: [baseURL stringByAppendingFormat:@"&studyUID=%@&seriesUID=%@&objectUID=%@&contentType=application/dicom&transferSyntax=%@", [self uid], [series uid], [image uid], ts]]; //&imageQuality=%d , quality
+			NSURL *url = [NSURL URLWithString: [baseURL stringByAppendingFormat:@"&studyUID=%@&seriesUID=%@&objectUID=%@&contentType=application/dicom", [self uid], [series uid], [image uid]]];
 			[urlToDownload addObject: url];
 		}
 		
@@ -674,6 +667,10 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	{
 		NSError *error = nil;
 		NSData *dicom = [NSData dataWithContentsOfURL: url options: 0 error: &error];
+		
+		if( error)
+			NSLog( @"****** error WADO download: %@ - url: %@", error, url);
+		
 		NSString *path = [NSString stringWithFormat:@"%s/INCOMING.noindex/", [[BrowserController currentBrowser] cfixedIncomingDirectory]];
 		[dicom writeToFile: [path stringByAppendingFormat: @"WADO-%d.dcm", wadoUnique++] atomically: YES];
 	}

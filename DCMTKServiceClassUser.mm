@@ -28,8 +28,8 @@
 			port:(int)port 
 			transferSyntax:(int)transferSyntax
 			compression: (float)compression
-			extraParameters:(NSDictionary *)extraParameters{
-	
+			extraParameters:(NSDictionary *)extraParameters
+{	
 	if (self = [super init])
 	{
 		_callingAET = [myAET retain];

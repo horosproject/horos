@@ -12,11 +12,6 @@
      PURPOSE.
 =========================================================================*/
 
-/***************************************** Modifications *********************************************
-* Version 2.3
-*	20051215	LP	Added Transfer Syntax Option for Servers 
-*****************************************************************************************************/
-
 #import "OSILocationsPreferencePanePref.h"
 #include "SimplePing.h"
 
@@ -35,6 +30,8 @@
 *************************************************/
 
 @implementation OSILocationsPreferencePanePref
+
+@synthesize WADOPort, WADOTransferSyntax, WADOUrl;
 
 - (void) checkUniqueAETitle
 {
@@ -190,16 +187,17 @@
 	[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"updateServers"];
 }
 
-- (void)dealloc{
+- (void)dealloc
+{
 	NSLog(@"dealloc OSILocationsPreferencePanePref");
 	
+	[WADOUrl release];
 	[stringEncoding release];
 	[super dealloc];
 }
 
 - (IBAction) newServer:(id)sender
 {
-	
     NSMutableDictionary *aServer = [NSMutableDictionary dictionary];
     [aServer setObject:@"127.0.0.1" forKey:@"Address"];
     [aServer setObject:@"PACS" forKey:@"AETitle"];
@@ -208,10 +206,10 @@
 	[aServer setObject:[NSNumber numberWithBool:YES] forKey:@"Send"];
     [aServer setObject:@"Description" forKey:@"Description"];
 	[aServer setObject:[NSNumber numberWithInt:0] forKey:@"TransferSyntax"];
-    
-	[aServer setObject:[NSNumber numberWithBool: YES] forKey:@"CMOVE"];
-	[aServer setObject:[NSNumber numberWithBool: NO] forKey:@"CGET"];
-	[aServer setObject:[NSNumber numberWithBool: NO] forKey:@"WADO"];
+	[aServer setObject: [NSNumber numberWithInt: 0] forKey: @"retrieveMode"]; // CMove
+	[aServer setObject: [NSNumber numberWithInt: 8080] forKey: @"WADOPort"];
+	[aServer setObject: [NSNumber numberWithInt: -1] forKey: @"WADOTransferSyntax"]; // useOrig=true
+	[aServer setObject: @"wado" forKey: @"WADOUrl"];
 	
 	[dicomNodes addObject:aServer];
 	[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"updateServers"];
@@ -235,7 +233,47 @@
 	[[[self mainView] window] makeKeyAndOrderFront: self];
 }
 
-//****** TABLEVIEW
+- (IBAction) cancel:(id)sender
+{
+	[NSApp abortModal];
+}
+
+- (IBAction) ok:(id)sender
+{
+	[NSApp stopModal];
+}
+
+- (IBAction) editWADO: (id) sender
+{
+	NSMutableDictionary *aServer = [[dicomNodes arrangedObjects] objectAtIndex: [[dicomNodes tableView] selectedRow]];
+	
+	self.WADOPort = [[aServer valueForKey: @"WADOPort"] intValue];
+	self.WADOUrl = [aServer valueForKey: @"WADOUrl"];
+	self.WADOTransferSyntax = [[aServer valueForKey: @"WADOTransferSyntax"] intValue];
+	
+	[NSApp beginSheet: WADOSettings
+		modalForWindow: [[self mainView] window]
+		modalDelegate: nil
+		didEndSelector: nil
+		contextInfo: nil];
+	
+	int result = [NSApp runModalForWindow: WADOSettings];
+	[WADOSettings makeFirstResponder: nil];
+	
+	[NSApp endSheet: WADOSettings];
+	[WADOSettings orderOut: self];
+	
+	if( result == NSRunStoppedResponse)
+	{
+		[aServer setObject: [NSNumber numberWithInt: 2] forKey: @"retrieveMode"]; // WADORetrieveMode
+		[aServer setObject: [NSNumber numberWithInt: WADOPort] forKey: @"WADOPort"];
+		[aServer setObject: [NSNumber numberWithInt: WADOTransferSyntax] forKey: @"WADOTransferSyntax"];
+		[aServer setObject: WADOUrl forKey: @"WADOUrl"];
+		
+		[[NSUserDefaults standardUserDefaults] setObject: [dicomNodes arrangedObjects] forKey: @"SERVERS"];
+		[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"updateServers"];
+	}
+}
 
 - (void) resetTest
 {
@@ -244,7 +282,7 @@
 	for( i = 0 ; i < [[dicomNodes arrangedObjects] count]; i++)
 	{
 		NSMutableDictionary *aServer = [[dicomNodes arrangedObjects] objectAtIndex: i];
-		[aServer removeObjectForKey:@"test"];
+		[aServer removeObjectForKey: @"test"];
 	}
 }
 
@@ -459,7 +497,8 @@
 }
 
 
-- (IBAction) setStringEncoding:(id)sender{
+- (IBAction) setStringEncoding:(id)sender
+{
 	NSString *encoding;
 
 	switch ([[sender selectedItem] tag]){

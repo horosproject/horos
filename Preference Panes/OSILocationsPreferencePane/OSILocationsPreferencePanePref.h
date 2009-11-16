@@ -25,8 +25,17 @@
 	
 	IBOutlet DNDArrayController		*localPaths, *osiriXServers, *dicomNodes;
 	
+	IBOutlet NSWindow				*WADOSettings;
+	
+	int								WADOPort;
+	int								WADOTransferSyntax;
+	NSString						*WADOUrl;
+	
 	IBOutlet SFAuthorizationView	*_authView;
 }
+
+@property int WADOPort, WADOTransferSyntax;
+@property (retain) NSString *WADOUrl;
 
 - (IBAction) refreshNodesListURL: (id) sender;
 - (void) mainViewDidLoad;
@@ -41,4 +50,9 @@
 - (IBAction) OsiriXDBsaveAs:(id) sender;
 - (IBAction) refreshNodesOsiriXDB: (id) sender;
 - (IBAction) OsiriXDBloadFrom:(id) sender;
+
+- (IBAction) cancel:(id)sender;
+- (IBAction) ok:(id)sender;
+- (IBAction) editWADO: (id) sender;
+
 @end

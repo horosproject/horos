@@ -67,12 +67,7 @@ static const char *GetPrivateIP()
 	
 	@try
 	{
-		NSString *myAET = [[NSUserDefaults standardUserDefaults] objectForKey:@"AETITLE"]; 			
-		NSString *theirAET = [aServer objectForKey:@"AETitle"];
-		NSString *hostname = [aServer objectForKey:@"Address"];
-		NSString *port = [aServer objectForKey:@"Port"];
-		
-		qm = [[[QueryArrayController alloc] initWithCallingAET:myAET calledAET:theirAET  hostName:hostname port:port retrieveMode: [[aServer objectForKey: @"retrieveMode"] intValue] netService:nil] autorelease];
+		qm = [[[QueryArrayController alloc] initWithCallingAET: [[NSUserDefaults standardUserDefaults] objectForKey:@"AETITLE"] distantServer: aServer] autorelease];
 		
 		NSString *filterValue = [an stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 		
@@ -104,12 +99,7 @@ static const char *GetPrivateIP()
 	
 	@try
 	{
-		NSString *myAET = [[NSUserDefaults standardUserDefaults] objectForKey:@"AETITLE"]; 			
-		NSString *theirAET = [aServer objectForKey:@"AETitle"];
-		NSString *hostname = [aServer objectForKey:@"Address"];
-		NSString *port = [aServer objectForKey:@"Port"];
-		
-		qm = [[QueryArrayController alloc] initWithCallingAET:myAET calledAET:theirAET  hostName:hostname port:port retrieveMode: [[aServer objectForKey: @"retrieveMode"] intValue] netService:nil];
+		qm = [[QueryArrayController alloc] initWithCallingAET: [[NSUserDefaults standardUserDefaults] objectForKey:@"AETITLE"] distantServer: aServer];
 		
 		NSString *filterValue = [an stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 		
@@ -1135,7 +1125,6 @@ static const char *GetPrivateIP()
 	NSString			*theirAET;
 	NSString			*hostname;
 	NSString			*port;
-	NSNetService		*netService = nil;
 	id					aServer;
 	int					selectedServer;
 	BOOL				atLeastOneSource = NO, noChecked = YES, error = NO;
@@ -1166,15 +1155,12 @@ static const char *GetPrivateIP()
 			{
 				aServer = [[copiedSources objectAtIndex:i] valueForKey:@"server"];
 				
-				NSString *myAET = [[NSUserDefaults standardUserDefaults] objectForKey:@"AETITLE"]; 			
-				theirAET = [aServer objectForKey:@"AETitle"];
 				hostname = [aServer objectForKey:@"Address"];
-				port = [aServer objectForKey:@"Port"];
 				
 				int numberPacketsReceived = 0;
 				if( [[NSUserDefaults standardUserDefaults] boolForKey:@"Ping"] == NO || (SimplePing( [hostname UTF8String], 1, [[NSUserDefaults standardUserDefaults] integerForKey:@"DICOMTimeout"], 1,  &numberPacketsReceived) == 0 && numberPacketsReceived > 0))
 				{
-					QueryArrayController *qm = [[QueryArrayController alloc] initWithCallingAET:myAET calledAET:theirAET  hostName:hostname port:port retrieveMode: [[aServer objectForKey: @"retrieveMode"] intValue] netService:netService];
+					QueryArrayController *qm = [[QueryArrayController alloc] initWithCallingAET: [[NSUserDefaults standardUserDefaults] objectForKey:@"AETITLE"] distantServer: aServer];
 					
 					[qm addFilter:filterValue forDescription: PatientID];
 					
@@ -1233,15 +1219,11 @@ static const char *GetPrivateIP()
 			if( showError)
 				[sourcesTable selectRowIndexes: [NSIndexSet indexSetWithIndex: i] byExtendingSelection: NO];
 			
-			NSString *myAET = [[NSUserDefaults standardUserDefaults] objectForKey:@"AETITLE"]; 			
-			theirAET = [aServer objectForKey:@"AETitle"];
 			hostname = [aServer objectForKey:@"Address"];
-			port = [aServer objectForKey:@"Port"];
 			
 			int numberPacketsReceived = 0;
 			if( [[NSUserDefaults standardUserDefaults] boolForKey:@"Ping"] == NO || (SimplePing( [hostname UTF8String], 1, [[NSUserDefaults standardUserDefaults] integerForKey:@"DICOMTimeout"], 1,  &numberPacketsReceived) == 0 && numberPacketsReceived > 0))
 			{
-				//if( [QueryController echo: hostname port: [port intValue] AET:theirAET])
 				{
 					[self setDateQuery: dateFilterMatrix];
 					[self setModalityQuery: modalityFilterMatrix];
@@ -1251,7 +1233,7 @@ static const char *GetPrivateIP()
 					[queryManager release];
 					queryManager = nil;
 					
-					queryManager = [[QueryArrayController alloc] initWithCallingAET:myAET calledAET:theirAET  hostName:hostname port:port retrieveMode: [[aServer objectForKey: @"retrieveMode"] intValue] netService:netService];
+					queryManager = [[QueryArrayController alloc] initWithCallingAET: [[NSUserDefaults standardUserDefaults] objectForKey: @"AETITLE"] distantServer: aServer];
 					// add filters as needed
 					
 					if( [[[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"] isEqualToString:@"ISO_IR 100"] == NO)
@@ -1918,14 +1900,13 @@ static const char *GetPrivateIP()
 		{
 			DCMTKQueryNode *object = [[array objectAtIndex: i] retain];
 			
-			[dictionary setObject:[[[[object extraParameters] valueForKey: @"retrieveMode"] copy] autorelease] forKey:@"retrieveMode"];
-			[dictionary setObject:[[[object valueForKey:@"calledAET"] copy] autorelease] forKey:@"calledAET"];
-			[dictionary setObject:[[[object valueForKey:@"hostname"] copy] autorelease] forKey:@"hostname"];
-			[dictionary setObject:[[[object valueForKey:@"port"] copy] autorelease] forKey:@"port"];
-			[dictionary setObject:[[[object valueForKey:@"transferSyntax"] copy] autorelease] forKey:@"transferSyntax"];
-
-			NSDictionary *dstDict = nil;
+			[dictionary setObject: [[[[object extraParameters] valueForKey: @"retrieveMode"] copy] autorelease] forKey:@"retrieveMode"];
+			[dictionary setObject: [[[object valueForKey:@"calledAET"] copy] autorelease] forKey:@"calledAET"];
+			[dictionary setObject: [[[object valueForKey:@"hostname"] copy] autorelease] forKey:@"hostname"];
+			[dictionary setObject: [[[object valueForKey:@"port"] copy] autorelease] forKey:@"port"];
+			[dictionary setObject: [[[object valueForKey:@"transferSyntax"] copy] autorelease] forKey:@"transferSyntax"];
 			
+			NSDictionary *dstDict = nil;
 			
 			if( [sendToPopup indexOfSelectedItem] != 0)
 			{
@@ -1933,7 +1914,7 @@ static const char *GetPrivateIP()
 				
 				dstDict = [[[[DCMNetServiceDelegate DICOMServersList] objectAtIndex: index] copy] autorelease];
 				
-				[dictionary setObject: [dstDict valueForKey:@"AETitle"]  forKey: @"moveDestination"];
+				[dictionary setObject: [dstDict valueForKey:@"AETitle"] forKey: @"moveDestination"];
 				
 				allowNonCMOVE = NO;
 			}
