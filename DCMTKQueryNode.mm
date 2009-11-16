@@ -634,6 +634,28 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	return [NSString stringWithFormat: @"&useOrig=true"];
 }
 
+- (void) WADODownload: (NSArray*) urlToDownload
+{
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	
+	for( NSURL *url in urlToDownload)
+	{
+		NSError *error = nil;
+		NSData *dicom = [NSData dataWithContentsOfURL: url options: 0 error: &error];
+		
+		if( error)
+			NSLog( @"****** error WADO download: %@ - url: %@", error, url);
+		
+		NSString *path = [NSString stringWithFormat:@"%s/INCOMING.noindex/", [[BrowserController currentBrowser] cfixedIncomingDirectory]];
+		[dicom writeToFile: [path stringByAppendingFormat: @"WADO-%d.dcm", wadoUnique++] atomically: YES];
+		
+		if( [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/kill_all_storescu"])
+			break;
+	}
+	
+	[pool release];
+}
+
 - (void) WADORetrieve // requestService: WFIND?
 {
 	NSString *baseURL = [NSString stringWithFormat: @"http://%@:%d/%@?requestType=WADO", _hostname, [[_extraParameters valueForKey: @"WADOPort"] intValue], [_extraParameters valueForKey: @"WADOUrl"]];
@@ -664,19 +686,16 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	
 	NSLog( @"------ WADO downloading : %d files", [urlToDownload count]);
 	
-	for( NSURL *url in urlToDownload)
+	#define NumberOfWADOThreads 3
+	NSRange range = NSMakeRange( 0, 1+ ([urlToDownload count] / NumberOfWADOThreads));
+	for( int i = 0 ; i < NumberOfWADOThreads; i++)
 	{
-		NSError *error = nil;
-		NSData *dicom = [NSData dataWithContentsOfURL: url options: 0 error: &error];
+		if( range.length > 0)
+			[NSThread detachNewThreadSelector: @selector( WADODownload:) toTarget: self withObject: [urlToDownload subarrayWithRange: range]];
 		
-		if( error)
-			NSLog( @"****** error WADO download: %@ - url: %@", error, url);
-		
-		NSString *path = [NSString stringWithFormat:@"%s/INCOMING.noindex/", [[BrowserController currentBrowser] cfixedIncomingDirectory]];
-		[dicom writeToFile: [path stringByAppendingFormat: @"WADO-%d.dcm", wadoUnique++] atomically: YES];
-		
-		if( [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/kill_all_storescu"])
-			break;
+		range.location += range.length;
+		if( range.location + range.length > [urlToDownload count])
+			range.length = [urlToDownload count] - range.location;
 	}
 }
 
@@ -708,7 +727,8 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	}
 }
 
-- (OFCondition) addPresentationContext:(T_ASC_Parameters *)params abstractSyntax:(const char *)abstractSyntax{
+- (OFCondition) addPresentationContext:(T_ASC_Parameters *)params abstractSyntax:(const char *)abstractSyntax
+{
    /*
     ** We prefer to use Explicitly encoded transfer syntaxes.
     ** If we are running on a Little Endian machine we prefer
