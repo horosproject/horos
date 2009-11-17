@@ -68,7 +68,7 @@ static OFString    opt_ciphersuites(SSL3_TXT_RSA_DES_192_CBC3_SHA);
 
 NSException* queryException = nil;
 int debugLevel = 1;
-int wadoUnique = 0;
+int wadoUnique = 0, wadoUniqueThreadID = 0;
 OFCondition globalCondition = EC_Normal;
 
 typedef struct {
@@ -641,6 +641,11 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 {
 	[urlToDownload retain];
 	
+	@synchronized( self)
+	{
+		wadoUniqueThreadID++;
+	}
+	
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
 	for( NSURL *url in urlToDownload)
@@ -652,7 +657,12 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 			NSLog( @"****** error WADO download: %@ - url: %@", error, url);
 		
 		NSString *path = [NSString stringWithFormat:@"%s/INCOMING.noindex/", [[BrowserController currentBrowser] cfixedIncomingDirectory]];
-		[dicom writeToFile: [path stringByAppendingFormat: @"WADO-%d.dcm", wadoUnique++] atomically: YES];
+		
+		@synchronized( self)
+		{
+			wadoUnique++;
+		}
+		[dicom writeToFile: [path stringByAppendingFormat: @"WADO-%d-%d.dcm", wadoUnique, wadoUniqueThreadID] atomically: YES];
 		
 		if( [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/kill_all_storescu"])
 			break;

@@ -17,17 +17,16 @@
 
 @interface OSI3DPreferencePanePref : NSPreferencePane 
 {
-	IBOutlet NSSlider						*bestRenderingSlider, *max3DTextureSlider, *max3DTextureSliderShading;
-	
-	IBOutlet NSTextField					*max3DTextureString, *max3DTextureStringShading, *bestRenderingString;
-	
-	IBOutlet NSTextField					*recommandations;
+//	IBOutlet NSSlider						*bestRenderingSlider, *max3DTextureSlider, *max3DTextureSliderShading;
+//	IBOutlet NSTextField					*bestRenderingString, *max3DTextureString, *max3DTextureStringShading;
+//	IBOutlet NSTextField					*recommandations;
 	
 	IBOutlet SFAuthorizationView			*_authView;
 }
 
 - (void) mainViewDidLoad;
-- (IBAction) setBestRendering: (id) sender;
-- (IBAction) setMax3DTexture: (id) sender;
-- (IBAction) setMax3DTextureShading: (id) sender;
+
+//- (IBAction) setBestRendering: (id) sender;
+//- (IBAction) setMax3DTexture: (id) sender;
+//- (IBAction) setMax3DTextureShading: (id) sender;
 @end

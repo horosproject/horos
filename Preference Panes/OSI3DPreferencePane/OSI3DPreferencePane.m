@@ -93,7 +93,7 @@
 
 - (void) mainViewDidLoad
 {
-	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+//	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 	
 	[_authView setDelegate:self];
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTHENTICATION"])
@@ -110,106 +110,106 @@
 	[_authView updateStatus:self];
 
 	
-	//setup GUI	
-	long vram = [self vramSize]  / (1024L * 1024L);
-	long with, without;
+//	//setup GUI	
+//	long vram = [self vramSize]  / (1024L * 1024L);
+//	long with, without;
+//	
+//	if( vram >= 512)
+//	{	
+//		without = 256;
+//		with = 128;
+//	}
+//	else if( vram >= 256)
+//	{
+//		without = 128;
+//		with = 64;
+//	}
+//	else if( vram >= 128)
+//	{
+//		without = 128;
+//		with = 32;
+//	}
+//	else
+//	{
+//		without = 32;
+//		with = 32;
+//	}
+//	
+//	[recommandations setStringValue: [NSString stringWithFormat: @"%@ (%d MB): %d %@ / %d %@" , NSLocalizedString( @"Recommended for your video board", 0L), vram, without, NSLocalizedString( @"without shading", 0L), with, NSLocalizedString( @"with shading", 0L)]];
+//
+//	
+//	[bestRenderingSlider setFloatValue: 2.1 - [defaults floatForKey: @"BESTRENDERING"]];
+//	[bestRenderingString setStringValue: [NSString stringWithFormat:@"%2.2f", [defaults floatForKey: @"BESTRENDERING"]]];
 	
-	if( vram >= 512)
-	{	
-		without = 256;
-		with = 128;
-	}
-	else if( vram >= 256)
-	{
-		without = 128;
-		with = 64;
-	}
-	else if( vram >= 128)
-	{
-		without = 128;
-		with = 32;
-	}
-	else
-	{
-		without = 32;
-		with = 32;
-	}
 	
-	[recommandations setStringValue: [NSString stringWithFormat: @"%@ (%d MB): %d %@ / %d %@" , NSLocalizedString( @"Recommended for your video board", 0L), vram, without, NSLocalizedString( @"without shading", 0L), with, NSLocalizedString( @"with shading", 0L)]];
-
-	
-	[bestRenderingSlider setFloatValue: 2.1 - [defaults floatForKey: @"BESTRENDERING"]];
-	[bestRenderingString setStringValue: [NSString stringWithFormat:@"%2.2f", [defaults floatForKey: @"BESTRENDERING"]]];
-	
-	
-	int i = [defaults integerForKey: @"MAX3DTEXTURE"], x = 1;
-	
-	while( i > 32)
-	{
-		i /= 2;
-		x++;
-	}
-	
-	[max3DTextureSlider setFloatValue: x];
-	[max3DTextureString setIntValue: [defaults integerForKey: @"MAX3DTEXTURE"]];
-	
-	i = [defaults integerForKey: @"MAX3DTEXTURESHADING"];
-	x = 1;
-	
-	while( i > 32)
-	{
-		i /= 2;
-		x++;
-	}
-	
-	[max3DTextureSliderShading setFloatValue: x];
-	[max3DTextureStringShading setIntValue: [defaults integerForKey: @"MAX3DTEXTURESHADING"]];
+//	int i = [defaults integerForKey: @"MAX3DTEXTURE"], x = 1;
+//	
+//	while( i > 32)
+//	{
+//		i /= 2;
+//		x++;
+//	}
+//	
+//	[max3DTextureSlider setFloatValue: x];
+//	[max3DTextureString setIntValue: [defaults integerForKey: @"MAX3DTEXTURE"]];
+//	
+//	i = [defaults integerForKey: @"MAX3DTEXTURESHADING"];
+//	x = 1;
+//	
+//	while( i > 32)
+//	{
+//		i /= 2;
+//		x++;
+//	}
+//	
+//	[max3DTextureSliderShading setFloatValue: x];
+//	[max3DTextureStringShading setIntValue: [defaults integerForKey: @"MAX3DTEXTURESHADING"]];
 }
 
-- (IBAction) setBestRendering: (id) sender
-{
-	[[NSUserDefaults standardUserDefaults] setFloat: 2.1 - [sender floatValue] forKey: @"BESTRENDERING"];
-	[bestRenderingString setStringValue: [NSString stringWithFormat:@"%2.2f", [[NSUserDefaults standardUserDefaults] floatForKey: @"BESTRENDERING"]]];
-	NSLog(@"Rendering resolution: %f", [[NSUserDefaults standardUserDefaults] floatForKey:@"BESTRENDERING"] );
-}
+//- (IBAction) setBestRendering: (id) sender
+//{
+//	[[NSUserDefaults standardUserDefaults] setFloat: 2.1 - [sender floatValue] forKey: @"BESTRENDERING"];
+//	[bestRenderingString setStringValue: [NSString stringWithFormat:@"%2.2f", [[NSUserDefaults standardUserDefaults] floatForKey: @"BESTRENDERING"]]];
+//	NSLog(@"Rendering resolution: %f", [[NSUserDefaults standardUserDefaults] floatForKey:@"BESTRENDERING"] );
+//}
 
-- (IBAction) setMax3DTexture: (id) sender
-{
-	int i = [sender intValue], x = 32;
-	
-	while( i > 1)
-	{
-		x *= 2;
-		i--;
-	}
-	
-	[[NSUserDefaults standardUserDefaults] setInteger: x forKey: @"MAX3DTEXTURE"];
-	[max3DTextureString setIntValue: [[NSUserDefaults standardUserDefaults] integerForKey:@"MAX3DTEXTURE"]];
-	NSLog(@"MAX3DTEXTURE: %d", [[NSUserDefaults standardUserDefaults] integerForKey:@"MAX3DTEXTURE"] );
-}
-
-- (IBAction) setMax3DTextureShading: (id) sender
-{
-	int i = [sender intValue], x = 32;
-	
-	while( i > 1)
-	{
-		x *= 2;
-		i--;
-	}
-	
-	[[NSUserDefaults standardUserDefaults] setInteger: x forKey: @"MAX3DTEXTURESHADING"];
-	[max3DTextureStringShading setIntValue: [[NSUserDefaults standardUserDefaults] integerForKey:@"MAX3DTEXTURESHADING"]];
-	NSLog(@"MAX3DTEXTURESHADING: %d", [[NSUserDefaults standardUserDefaults] integerForKey:@"MAX3DTEXTURESHADING"] );
-	
-	// No shading value is at least equal
-	
-	if( [[NSUserDefaults standardUserDefaults] integerForKey: @"MAX3DTEXTURESHADING"] > [[NSUserDefaults standardUserDefaults] integerForKey: @"MAX3DTEXTURE"])
-	{
-		[[NSUserDefaults standardUserDefaults] setInteger: x forKey: @"MAX3DTEXTURE"];
-		[self mainViewDidLoad];
-	}
-}
+//- (IBAction) setMax3DTexture: (id) sender
+//{
+//	int i = [sender intValue], x = 32;
+//	
+//	while( i > 1)
+//	{
+//		x *= 2;
+//		i--;
+//	}
+//	
+//	[[NSUserDefaults standardUserDefaults] setInteger: x forKey: @"MAX3DTEXTURE"];
+//	[max3DTextureString setIntValue: [[NSUserDefaults standardUserDefaults] integerForKey:@"MAX3DTEXTURE"]];
+//	NSLog(@"MAX3DTEXTURE: %d", [[NSUserDefaults standardUserDefaults] integerForKey:@"MAX3DTEXTURE"] );
+//}
+//
+//- (IBAction) setMax3DTextureShading: (id) sender
+//{
+//	int i = [sender intValue], x = 32;
+//	
+//	while( i > 1)
+//	{
+//		x *= 2;
+//		i--;
+//	}
+//	
+//	[[NSUserDefaults standardUserDefaults] setInteger: x forKey: @"MAX3DTEXTURESHADING"];
+//	[max3DTextureStringShading setIntValue: [[NSUserDefaults standardUserDefaults] integerForKey:@"MAX3DTEXTURESHADING"]];
+//	NSLog(@"MAX3DTEXTURESHADING: %d", [[NSUserDefaults standardUserDefaults] integerForKey:@"MAX3DTEXTURESHADING"] );
+//	
+//	// No shading value is at least equal
+//	
+//	if( [[NSUserDefaults standardUserDefaults] integerForKey: @"MAX3DTEXTURESHADING"] > [[NSUserDefaults standardUserDefaults] integerForKey: @"MAX3DTEXTURE"])
+//	{
+//		[[NSUserDefaults standardUserDefaults] setInteger: x forKey: @"MAX3DTEXTURE"];
+//		[self mainViewDidLoad];
+//	}
+//}
 
 
 @end
