@@ -603,6 +603,10 @@
 			
 			data = [returnHTML dataUsingEncoding:NSUTF8StringEncoding];
 		}
+		else if([fileURL isEqualToString:@"/wado"])
+		{
+			NSLog( @"%@", parameters);
+		}
 		else if([fileURL isEqualToString:@"/studyList"])
 		{
 			NSPredicate *browsePredicate;
