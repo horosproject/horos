@@ -66,7 +66,7 @@ typedef struct
 -(NSTimeInterval)endOfDay:(NSCalendarDate *)day;
 -(NSTimeInterval)startOfDay:(NSCalendarDate *)day;
 
-- (NSPredicate *)predicateForDataset:( DcmDataset *)dataset;
+- (NSPredicate *)predicateForDataset:( DcmDataset *)dataset compressedSOPInstancePredicate: (NSPredicate**) csopPredicate;
 - (void)studyDatasetForFetchedObject:(id)fetchedObject dataset:(DcmDataset *)dataset;
 - (void)seriesDatasetForFetchedObject:(id)fetchedObject dataset:(DcmDataset *)dataset;
 - (void)imageDatasetForFetchedObject:(id)fetchedObject dataset:(DcmDataset *)dataset;

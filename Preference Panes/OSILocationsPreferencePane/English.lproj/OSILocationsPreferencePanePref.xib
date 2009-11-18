@@ -12,7 +12,7 @@
 		</object>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="538"/>
+			<integer value="552"/>
 			<integer value="104"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
@@ -1971,9 +1971,9 @@
 								<string key="NSKeyEquivalent"/>
 								<int key="NSPeriodicDelay">400</int>
 								<int key="NSPeriodicInterval">75</int>
-								<object class="NSMenuItem" key="NSMenuItem" id="57705969">
+								<object class="NSMenuItem" key="NSMenuItem" id="813787613">
 									<reference key="NSMenu" ref="566528243"/>
-									<string key="NSTitle">JPEG 2000 Lossy - Good Quality</string>
+									<string key="NSTitle">Original Syntax</string>
 									<string key="NSKeyEquiv"/>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -1981,7 +1981,7 @@
 									<reference key="NSOnImage" ref="380501155"/>
 									<reference key="NSMixedImage" ref="161796402"/>
 									<string key="NSAction">_popUpItemAction:</string>
-									<int key="NSTag">2</int>
+									<int key="NSTag">-1</int>
 									<reference key="NSTarget" ref="701217965"/>
 								</object>
 								<bool key="NSMenuItemRespectAlignment">YES</bool>
@@ -2012,18 +2012,7 @@
 											<int key="NSTag">9</int>
 											<reference key="NSTarget" ref="701217965"/>
 										</object>
-										<object class="NSMenuItem" id="813787613">
-											<reference key="NSMenu" ref="566528243"/>
-											<string key="NSTitle">Original Syntax (dcm4chee only)</string>
-											<string key="NSKeyEquiv"/>
-											<int key="NSKeyEquivModMask">1048576</int>
-											<int key="NSMnemonicLoc">2147483647</int>
-											<reference key="NSOnImage" ref="380501155"/>
-											<reference key="NSMixedImage" ref="161796402"/>
-											<string key="NSAction">_popUpItemAction:</string>
-											<int key="NSTag">-1</int>
-											<reference key="NSTarget" ref="701217965"/>
-										</object>
+										<reference ref="813787613"/>
 										<object class="NSMenuItem" id="949192378">
 											<reference key="NSMenu" ref="566528243"/>
 											<bool key="NSIsDisabled">YES</bool>
@@ -2049,7 +2038,18 @@
 											<int key="NSTag">1</int>
 											<reference key="NSTarget" ref="701217965"/>
 										</object>
-										<reference ref="57705969"/>
+										<object class="NSMenuItem" id="57705969">
+											<reference key="NSMenu" ref="566528243"/>
+											<string key="NSTitle">JPEG 2000 Lossy - Good Quality</string>
+											<string key="NSKeyEquiv"/>
+											<int key="NSKeyEquivModMask">1048576</int>
+											<int key="NSMnemonicLoc">2147483647</int>
+											<reference key="NSOnImage" ref="380501155"/>
+											<reference key="NSMixedImage" ref="161796402"/>
+											<string key="NSAction">_popUpItemAction:</string>
+											<int key="NSTag">2</int>
+											<reference key="NSTarget" ref="701217965"/>
+										</object>
 										<object class="NSMenuItem" id="414165367">
 											<reference key="NSMenu" ref="566528243"/>
 											<string key="NSTitle">JPEG 2000 Lossy - Medium Quality</string>
@@ -2102,7 +2102,7 @@
 									</object>
 									<reference key="NSMenuFont" ref="410584755"/>
 								</object>
-								<int key="NSSelectedIndex">5</int>
+								<int key="NSSelectedIndex">2</int>
 								<int key="NSPreferredEdge">1</int>
 								<bool key="NSUsesItemFromMenu">YES</bool>
 								<bool key="NSAltersState">YES</bool>
@@ -5082,9 +5082,9 @@
 					<integer value="1"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<integer value="1"/>
-					<string>{{743, 241}, {729, 818}}</string>
+					<string>{{599, 241}, {729, 818}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{743, 241}, {729, 818}}</string>
+					<string>{{599, 241}, {729, 818}}</string>
 					<integer value="1"/>
 					<string>{{744, 378}, {729, 738}}</string>
 					<integer value="0"/>
@@ -5294,9 +5294,9 @@
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{913, 1061}, {404, 145}}</string>
+					<string>{{913, 1011}, {404, 145}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{913, 1061}, {404, 145}}</string>
+					<string>{{913, 1011}, {404, 145}}</string>
 					<boolean value="NO"/>
 					<boolean value="YES"/>
 					<boolean value="YES"/>
@@ -5311,7 +5311,7 @@
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{1026, 976}, {302, 183}}</string>
+					<string>{{1017, 910}, {302, 183}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<integer value="1"/>

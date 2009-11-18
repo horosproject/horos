@@ -21,6 +21,7 @@
 #import <QTKit/QTKit.h>
 #import "DCMNetServiceDelegate.h"
 #import "AppController.h"
+#import "BrowserControllerDCMTKCategory.h"
 
 #include <netdb.h>
 #include <sys/socket.h>
@@ -28,6 +29,8 @@
 #include <unistd.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+
+#import "DCMTransferSyntax.h"
 
 #define maxResolution 1024
 
@@ -610,57 +613,103 @@
 				NSString *studyUID = [[parameters objectForKey:@"studyUID"] lowercaseString];
 				NSString *seriesUID = [[parameters objectForKey:@"seriesUID"] lowercaseString];
 				NSString *objectUID = [[parameters objectForKey:@"objectUID"] lowercaseString];
-				NSString *contentType = [[parameters objectForKey:@"contentType"] lowercaseString];
-				NSString *transferSyntax = [[parameters objectForKey:@"transferSyntax"] lowercaseString];
+				NSString *contentType = [[[[parameters objectForKey:@"contentType"] lowercaseString] componentsSeparatedByString: @","] objectAtIndex: 0];
+				int rows = [[parameters objectForKey:@"rows"] intValue];
+				int columns = [[parameters objectForKey:@"columns"] intValue];
+				int windowCenter = [[parameters objectForKey:@"windowCenter"] intValue];
+				int windowWidth = [[parameters objectForKey:@"windowWidth"] intValue];
+				int frameNumber = [[parameters objectForKey:@"frameNumber"] intValue];
+				int imageQuality = [[parameters objectForKey:@"imageQuality"] intValue];
 				
-				if( [contentType isEqualToString: @"application/dicom"])
+				NSString *transferSyntax = [[parameters objectForKey:@"transferSyntax"] lowercaseString];
+				NSString *useOrig = [[parameters objectForKey:@"useOrig"] lowercaseString];
+				
+				NSError *error = nil;
+				NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+				[dbRequest setEntity:[[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey:@"Study"]];
+				
+				NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
+				[context lock];
+				
+				@try
 				{
-					NSError *error = nil;
-					NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-					[dbRequest setEntity:[[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey:@"Study"]];
+					[dbRequest setPredicate: [NSPredicate predicateWithFormat: @"studyInstanceUID == %@", studyUID]];
 					
-					NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
-					[context lock];
+					NSArray *studies = [context executeFetchRequest: dbRequest error: &error];
 					
-					@try
+					if( [studies count] == 0)
+						NSLog( @"****** WADO Server : study not found");
+					
+					if( [studies count] > 1)
+						NSLog( @"****** WADO Server : more than 1 study with same uid");
+					
+					NSArray *allSeries = [[[studies lastObject] valueForKey: @"series"] allObjects];
+					allSeries = [allSeries filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"seriesDICOMUID == %@", seriesUID]];
+					
+					NSArray *allImages = [NSArray array];
+					for( id series in allSeries)
+						allImages = [allImages arrayByAddingObjectsFromArray: [[series valueForKey: @"images"] allObjects]];
+					
+					NSPredicate *predicate = [NSComparisonPredicate predicateWithLeftExpression: [NSExpression expressionForKeyPath: @"compressedSopInstanceUID"] rightExpression: [NSExpression expressionForConstantValue: [DicomImage sopInstanceUIDEncodeString: objectUID]] customSelector: @selector( isEqualToSopInstanceUID:)];
+					NSPredicate *notNilPredicate = [NSPredicate predicateWithFormat:@"compressedSopInstanceUID != NIL"];
+					
+					NSArray *images = [[allImages filteredArrayUsingPredicate: notNilPredicate] filteredArrayUsingPredicate: predicate];
+					
+					if( [images count])
 					{
-						[dbRequest setPredicate: [NSPredicate predicateWithFormat: @"studyInstanceUID == %@", studyUID]];
-						
-						NSArray *studies = [context executeFetchRequest: dbRequest error: &error];
-						
-						if( [studies count] == 0)
-							NSLog( @"****** WADO Server : study not found");
-						
-						if( [studies count] > 1)
-							NSLog( @"****** WADO Server : more than 1 study with same uid");
-						
-						NSArray *allSeries = [[[studies lastObject] valueForKey: @"series"] allObjects];
-						allSeries = [allSeries filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"seriesDICOMUID == %@", seriesUID]];
-						
-						NSArray *allImages = [NSArray array];
-						for( id series in allSeries)
-							allImages = [allImages arrayByAddingObjectsFromArray: [[series valueForKey: @"images"] allObjects]];
-						
-						NSPredicate *predicate = [NSComparisonPredicate predicateWithLeftExpression: [NSExpression expressionForKeyPath: @"compressedSopInstanceUID"] rightExpression: [NSExpression expressionForConstantValue: [DicomImage sopInstanceUIDEncodeString: objectUID]] customSelector: @selector( isEqualToSopInstanceUID:)];
-						NSPredicate *notNilPredicate = [NSPredicate predicateWithFormat:@"compressedSopInstanceUID != NIL"];
-						
-						NSArray *images = [[allImages filteredArrayUsingPredicate: notNilPredicate] filteredArrayUsingPredicate: predicate];
-						
-						if( [images count])
+						if( [contentType isEqualToString: @"application/dicom"])
 						{
-							data = [NSData dataWithContentsOfFile: [[images lastObject] valueForKey: @"completePath"]];
+							if( [useOrig isEqualToString: @"true"] || [useOrig isEqualToString: @"1"] || [useOrig isEqualToString: @"yes"])
+							{
+								data = [NSData dataWithContentsOfFile: [[images lastObject] valueForKey: @"completePath"]];
+							}
+							else
+							{
+								DCMTransferSyntax *ts = [[[DCMTransferSyntax alloc] initWithTS: transferSyntax] autorelease];
+								
+								if( [ts isEqualToTransferSyntax: [DCMTransferSyntax JPEG2000LosslessTransferSyntax]] ||
+								    [ts isEqualToTransferSyntax: [DCMTransferSyntax JPEG2000LossyTransferSyntax]] ||
+									[ts isEqualToTransferSyntax: [DCMTransferSyntax JPEGBaselineTransferSyntax]] ||
+								    [ts isEqualToTransferSyntax: [DCMTransferSyntax JPEGLossless14TransferSyntax]] ||
+								    [ts isEqualToTransferSyntax: [DCMTransferSyntax JPEGBaselineTransferSyntax]])
+								{
+									
+								}
+								else // Explicit VR Little Endian
+									ts = [DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax];
+								
+								data = [[BrowserController currentBrowser] getDICOMFile: [[images lastObject] valueForKey: @"completePath"] inSyntax: ts.transferSyntax quality: imageQuality];
+							}
 							err = NO;
 						}
-						else NSLog( @"****** WADO Server : image uid not found !");
+						else if( [contentType isEqualToString: @"video/mpeg"])
+						{
+							
+						}
+						else if( [contentType isEqualToString: @"image/gif"])
+						{
+							
+						}
+						else if( [contentType isEqualToString: @"image/png"])
+						{
+							
+						}
+						else if( [contentType isEqualToString: @"image/jp2"])
+						{
+							
+						}
+						else // image/jpeg
+						{
+							
+						}
 					}
-					@catch (NSException * e)
-					{
-						NSLog( @"****** WADO Server exception: %@", e);
-					}
-					[context unlock];
+					else NSLog( @"****** WADO Server : image uid not found !");
 				}
-				else
-					NSLog( @"****** WADO Server : for now, we only support DICOM objects");
+				@catch (NSException * e)
+				{
+					NSLog( @"****** WADO Server exception: %@", e);
+				}
+				[context unlock];
 			}
 		}
 		else if([fileURL isEqualToString:@"/studyList"])

@@ -42,6 +42,51 @@ extern NSRecursiveLock *PapyrusLock;
 
 @implementation BrowserController (BrowserControllerDCMTKCategory)
 
+- (NSData*) getDICOMFile:(NSString*) file inSyntax:(NSString*) syntax quality: (int) quality
+{
+	OFCondition cond;
+	OFBool status = NO;
+	
+	DcmFileFormat fileformat;
+	cond = fileformat.loadFile( [file UTF8String]);
+	
+	if (cond.good())
+	{
+		DcmXfer filexfer(fileformat.getDataset()->getOriginalXfer());
+		DcmXfer xfer( [syntax UTF8String]);
+		
+		if (filexfer.getXfer() == xfer.getXfer())
+			return [NSData dataWithContentsOfFile: file];
+		
+		DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile: file decodingPixelData: NO];
+		
+		@try
+		{
+			[[NSFileManager defaultManager] removeItemAtPath: @"/tmp/wado-recompress.dcm"  error: nil];
+			status = [dcmObject writeToFile: @"/tmp/wado-recompress.dcm" withTransferSyntax: [[[DCMTransferSyntax alloc] initWithTS: syntax] autorelease] quality: quality AET:@"OsiriX" atomically:YES];
+		
+			if( status == NO || [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/wado-recompress.dcm"] == NO)
+			{
+				status = [dcmObject writeToFile: @"/tmp/wado-recompress.dcm" withTransferSyntax: [DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax] quality: quality AET:@"OsiriX" atomically:YES];
+			}
+		}
+		@catch (NSException *e)
+		{
+			NSLog( @"dcmObject writeToFile failed: %@", e);
+		}
+		
+		[dcmObject release];
+		
+		NSData *data = [NSData dataWithContentsOfFile: @"/tmp/wado-recompress.dcm"];
+		
+		[[NSFileManager defaultManager] removeItemAtPath: @"/tmp/wado-recompress.dcm"  error: nil];
+		
+		return data;
+	}
+	
+	return nil;
+}
+
 - (BOOL) needToCompressFile: (NSString*) path
 {
 	DcmFileFormat fileformat;
