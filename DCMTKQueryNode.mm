@@ -696,7 +696,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 			
 			for( DCMTKQueryNode *image in [series children])
 			{
-				NSURL *url = [NSURL URLWithString: [baseURL stringByAppendingFormat:@"&studyUID=%@&seriesUID=%@&objectUID=%@&contentType=application/dicom", [self uid], [series uid], [image uid]]];
+				NSURL *url = [NSURL URLWithString: [baseURL stringByAppendingFormat:@"&studyUID=%@&seriesUID=%@&objectUID=%@&contentType=application/dicom%@", [self uid], [series uid], [image uid], ts]];
 				[urlToDownload addObject: url];
 			}
 			
@@ -712,7 +712,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		
 		for( DCMTKQueryNode *image in [self children])
 		{
-			NSURL *url = [NSURL URLWithString: [baseURL stringByAppendingFormat:@"&studyUID=%@&seriesUID=%@&objectUID=%@&contentType=application/dicom", [study uid], [self uid], [image uid]]];
+			NSURL *url = [NSURL URLWithString: [baseURL stringByAppendingFormat:@"&studyUID=%@&seriesUID=%@&objectUID=%@&contentType=application/dicom%@", [study uid], [self uid], [image uid], ts]];
 			[urlToDownload addObject: url];
 		}
 		
