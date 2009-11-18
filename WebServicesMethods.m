@@ -22,6 +22,7 @@
 #import "DCMNetServiceDelegate.h"
 #import "AppController.h"
 #import "BrowserControllerDCMTKCategory.h"
+#import "DCM.h"
 
 #include <netdb.h>
 #include <sys/socket.h>
@@ -619,7 +620,19 @@
 				int windowCenter = [[parameters objectForKey:@"windowCenter"] intValue];
 				int windowWidth = [[parameters objectForKey:@"windowWidth"] intValue];
 				int frameNumber = [[parameters objectForKey:@"frameNumber"] intValue];
-				int imageQuality = [[parameters objectForKey:@"imageQuality"] intValue];
+				int imageQuality = DCMLosslessQuality;
+				
+				if( [parameters objectForKey:@"imageQuality"])
+				{
+					if( [[parameters objectForKey:@"imageQuality"] intValue] > 80)
+						imageQuality = DCMLosslessQuality;
+					else if( [[parameters objectForKey:@"imageQuality"] intValue] > 60)
+						imageQuality = DCMHighQuality;
+					else if( [[parameters objectForKey:@"imageQuality"] intValue] > 30)
+						imageQuality = DCMMediumQuality;
+					else if( [[parameters objectForKey:@"imageQuality"] intValue] >= 0)
+						imageQuality = DCMLowQuality;
+				}
 				
 				NSString *transferSyntax = [[parameters objectForKey:@"transferSyntax"] lowercaseString];
 				NSString *useOrig = [[parameters objectForKey:@"useOrig"] lowercaseString];
