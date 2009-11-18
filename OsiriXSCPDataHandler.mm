@@ -389,7 +389,7 @@ extern NSManagedObjectContext *staticContext;
 	return predicate;
 }
 
-- (NSPredicate *)predicateForDataset:( DcmDataset *)dataset
+- (NSPredicate *)predicateForDataset:( DcmDataset *)dataset compressedSOPInstancePredicate: (NSPredicate**) csopPredicate
 {
 	NSPredicate *compoundPredicate = nil;
 	const char *sType = NULL;
@@ -833,7 +833,8 @@ extern NSManagedObjectContext *staticContext;
 						predicateArray = [predicateArray arrayByAddingObject: p];
 					}
 					
-					predicate = [NSCompoundPredicate orPredicateWithSubpredicates:predicateArray];
+					predicate = [NSPredicate predicateWithFormat:@"compressedSopInstanceUID != NIL"];
+					*csopPredicate = [NSCompoundPredicate orPredicateWithSubpredicates: predicateArray];
 				}
 			}
 			else if (key == DCM_InstanceNumber)
@@ -1127,7 +1128,8 @@ extern NSManagedObjectContext *staticContext;
 	NSManagedObjectModel *model = [[BrowserController currentBrowser] managedObjectModel];
 	NSError *error = nil;
 	NSEntityDescription *entity;
-	NSPredicate *predicate = [self predicateForDataset:dataset];
+	NSPredicate *compressedSOPInstancePredicate = nil;
+	NSPredicate *predicate = [self predicateForDataset: dataset compressedSOPInstancePredicate: &compressedSOPInstancePredicate];
 	NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
 	const char *sType;
 	dataset->findAndGetString (DCM_QueryRetrieveLevel, sType, OFFalse);
@@ -1146,10 +1148,7 @@ extern NSManagedObjectContext *staticContext;
 	{
 		[request setEntity:entity];
 		
-		if( strcmp(sType, "IMAGE") == 0)
-			[request setPredicate: [NSPredicate predicateWithFormat:@"compressedSopInstanceUID != NIL"]];
-		else
-			[request setPredicate: predicate];
+		[request setPredicate: predicate];
 					
 		error = nil;
 		
@@ -1166,10 +1165,8 @@ extern NSManagedObjectContext *staticContext;
 		{
 			findArray = [context executeFetchRequest:request error:&error];
 			
-			if( strcmp(sType, "IMAGE") == 0)
-			{
-				findArray = [findArray filteredArrayUsingPredicate: predicate];
-			}
+			if( strcmp(sType, "IMAGE") == 0 && compressedSOPInstancePredicate)
+				findArray = [findArray filteredArrayUsingPredicate: compressedSOPInstancePredicate];
 			
 			[findArray retain];
 		}
@@ -1302,7 +1299,8 @@ extern NSManagedObjectContext *staticContext;
 	NSManagedObjectModel *model = [[BrowserController currentBrowser] managedObjectModel];
 	NSError *error = nil;
 	NSEntityDescription *entity;
-	NSPredicate *predicate = [self predicateForDataset:dataset];
+	NSPredicate *compressedSOPInstancePredicate = nil;
+	NSPredicate *predicate = [self predicateForDataset:dataset compressedSOPInstancePredicate: &compressedSOPInstancePredicate];
 	NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
 	const char *sType;
 	dataset->findAndGetString (DCM_QueryRetrieveLevel, sType, OFFalse);
@@ -1318,10 +1316,7 @@ extern NSManagedObjectContext *staticContext;
 	
 	[request setEntity:entity];
 	
-	if( strcmp(sType, "IMAGE") == 0)
-		[request setPredicate: [NSPredicate predicateWithFormat:@"compressedSopInstanceUID != NIL"]];
-	else
-		[request setPredicate: predicate];
+	[request setPredicate: predicate];
 	
 	error = nil;
 	
@@ -1339,10 +1334,8 @@ extern NSManagedObjectContext *staticContext;
 	{
 		array = [context executeFetchRequest:request error:&error];
 		
-		if( strcmp(sType, "IMAGE") == 0)
-		{
-			array = [array filteredArrayUsingPredicate: predicate];
-		}
+		if( strcmp(sType, "IMAGE") == 0 && compressedSOPInstancePredicate)
+			array = [array filteredArrayUsingPredicate: compressedSOPInstancePredicate];
 		
 		if( [array count] == 0)
 		{

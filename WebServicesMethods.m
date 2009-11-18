@@ -605,15 +605,62 @@
 		}
 		else if([fileURL isEqualToString:@"/wado"])
 		{
-			NSLog( @"%@", parameters);
-			
-			if([[[parameters objectForKey:@"requestType"] lowercaseString] isEqualToString: @"WADO"])
+			if([[[parameters objectForKey:@"requestType"] lowercaseString] isEqualToString: @"wado"])
 			{
-				NSString *studyUID = [parameters objectForKey:@"studyUID"];
-				NSString *seriesUID = [parameters objectForKey:@"seriesUID"];
-				NSString *objectUID = [parameters objectForKey:@"objectUID"];
-				NSString *contentType = [parameters objectForKey:@"contentType"];
-				NSString *transferSyntax = [parameters objectForKey:@"transferSyntax"];
+				NSString *studyUID = [[parameters objectForKey:@"studyUID"] lowercaseString];
+				NSString *seriesUID = [[parameters objectForKey:@"seriesUID"] lowercaseString];
+				NSString *objectUID = [[parameters objectForKey:@"objectUID"] lowercaseString];
+				NSString *contentType = [[parameters objectForKey:@"contentType"] lowercaseString];
+				NSString *transferSyntax = [[parameters objectForKey:@"transferSyntax"] lowercaseString];
+				
+				if( [contentType isEqualToString: @"application/dicom"])
+				{
+					NSError *error = nil;
+					NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+					[dbRequest setEntity:[[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey:@"Study"]];
+					
+					NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
+					[context lock];
+					
+					@try
+					{
+						[dbRequest setPredicate: [NSPredicate predicateWithFormat: @"studyInstanceUID == %@", studyUID]];
+						
+						NSArray *studies = [context executeFetchRequest: dbRequest error: &error];
+						
+						if( [studies count] == 0)
+							NSLog( @"****** WADO Server : study not found");
+						
+						if( [studies count] > 1)
+							NSLog( @"****** WADO Server : more than 1 study with same uid");
+						
+						NSArray *allSeries = [[[studies lastObject] valueForKey: @"series"] allObjects];
+						allSeries = [allSeries filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"seriesDICOMUID == %@", seriesUID]];
+						
+						NSArray *allImages = [NSArray array];
+						for( id series in allSeries)
+							allImages = [allImages arrayByAddingObjectsFromArray: [[series valueForKey: @"images"] allObjects]];
+						
+						NSPredicate *predicate = [NSComparisonPredicate predicateWithLeftExpression: [NSExpression expressionForKeyPath: @"compressedSopInstanceUID"] rightExpression: [NSExpression expressionForConstantValue: [DicomImage sopInstanceUIDEncodeString: objectUID]] customSelector: @selector( isEqualToSopInstanceUID:)];
+						NSPredicate *notNilPredicate = [NSPredicate predicateWithFormat:@"compressedSopInstanceUID != NIL"];
+						
+						NSArray *images = [[allImages filteredArrayUsingPredicate: notNilPredicate] filteredArrayUsingPredicate: predicate];
+						
+						if( [images count])
+						{
+							data = [NSData dataWithContentsOfFile: [[images lastObject] valueForKey: @"completePath"]];
+							err = NO;
+						}
+						else NSLog( @"****** WADO Server : image uid not found !");
+					}
+					@catch (NSException * e)
+					{
+						NSLog( @"****** WADO Server exception: %@", e);
+					}
+					[context unlock];
+				}
+				else
+					NSLog( @"****** WADO Server : for now, we only support DICOM objects");
 			}
 		}
 		else if([fileURL isEqualToString:@"/studyList"])
@@ -1202,7 +1249,6 @@
 	
 	@try
 	{
-		// Find all studies
 		NSError *error = nil;
 		NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
 		[dbRequest setEntity:[[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey:@"Series"]];

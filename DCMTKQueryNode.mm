@@ -719,18 +719,21 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		[self purgeChildren];
 	}
 	
-	NSLog( @"------ WADO downloading : %d files", [urlToDownload count]);
-	
-	#define NumberOfWADOThreads 3
-	NSRange range = NSMakeRange( 0, 1+ ([urlToDownload count] / NumberOfWADOThreads));
-	for( int i = 0 ; i < NumberOfWADOThreads; i++)
+	if( [urlToDownload count])
 	{
-		if( range.length > 0)
-			[NSThread detachNewThreadSelector: @selector( WADODownload:) toTarget: self withObject: [urlToDownload subarrayWithRange: range]];
+		NSLog( @"------ WADO downloading : %d files", [urlToDownload count]);
 		
-		range.location += range.length;
-		if( range.location + range.length > [urlToDownload count])
-			range.length = [urlToDownload count] - range.location;
+		#define NumberOfWADOThreads 3
+		NSRange range = NSMakeRange( 0, 1+ ([urlToDownload count] / NumberOfWADOThreads));
+		for( int i = 0 ; i < NumberOfWADOThreads; i++)
+		{
+			if( range.length > 0)
+				[NSThread detachNewThreadSelector: @selector( WADODownload:) toTarget: self withObject: [urlToDownload subarrayWithRange: range]];
+			
+			range.location += range.length;
+			if( range.location + range.length > [urlToDownload count])
+				range.length = [urlToDownload count] - range.location;
+		}
 	}
 }
 
