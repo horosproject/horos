@@ -25,7 +25,6 @@
 #import "OrthogonalMPRViewer.h"
 #import "SRController.h"
 #import "EndoscopyViewer.h"
-#import "LayoutWindowController.h";
 #import "PlaceholderWindowController.h"
 #import "OrthogonalMPRPETCTViewer.h"
 

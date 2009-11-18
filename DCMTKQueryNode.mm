@@ -1778,7 +1778,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		{
 			DIMSE_printCMoveRSP(stdout, &rsp);
 			
-			[self performSelectorOnMainThread:@selector(errorMessage:) withObject:[NSArray arrayWithObjects: NSLocalizedString(@"Move Failed", nil), [NSString stringWithCString: DU_cmoveStatusString(rsp.DimseStatus)], NSLocalizedString(@"Continue", nil), nil] waitUntilDone:YES];
+			[self performSelectorOnMainThread:@selector(errorMessage:) withObject:[NSArray arrayWithObjects: NSLocalizedString(@"Move Failed", nil), [NSString stringWithCString: DU_cmoveStatusString(rsp.DimseStatus)], NSLocalizedString(@"Continue", nil), nil] waitUntilDone: NO];
 		}
 		
         if (_verbose)
@@ -1792,7 +1792,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
     }
 	else
 	{
-		[self performSelectorOnMainThread:@selector(errorMessage:) withObject:[NSArray arrayWithObjects: NSLocalizedString(@"Move Failed", nil), [NSString stringWithCString: cond.text()], NSLocalizedString(@"Continue", nil), nil] waitUntilDone:NO];
+		[self performSelectorOnMainThread:@selector(errorMessage:) withObject:[NSArray arrayWithObjects: NSLocalizedString(@"Move Failed", nil), [NSString stringWithCString: cond.text()], NSLocalizedString(@"Continue", nil), nil] waitUntilDone: NO];
         errmsg("Move Failed:");
         DimseCondition::dump(cond);
     }
@@ -1875,7 +1875,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		{
 			DIMSE_printCGetRSP(stdout, &rsp);
 			
-			[self performSelectorOnMainThread:@selector(errorMessage:) withObject:[NSArray arrayWithObjects: NSLocalizedString(@"Get Failed", nil), [NSString stringWithCString: DU_cmoveStatusString(rsp.DimseStatus)], NSLocalizedString(@"Continue", nil), nil] waitUntilDone:YES];
+			[self performSelectorOnMainThread:@selector(errorMessage:) withObject:[NSArray arrayWithObjects: NSLocalizedString(@"Get Failed", nil), [NSString stringWithCString: DU_cmoveStatusString(rsp.DimseStatus)], NSLocalizedString(@"Continue", nil), nil] waitUntilDone:NO];
 		}
 		
         if (_verbose)

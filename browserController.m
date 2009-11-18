@@ -73,6 +73,7 @@
 #define DATABASEPATH @"/DATABASE.noindex/"
 #define DECOMPRESSIONPATH @"/DECOMPRESSION.noindex/"
 #define INCOMINGPATH @"/INCOMING.noindex/"
+#define TOBEINDEXED @"/TOBEINDEXED.noindex/"
 #define ERRPATH @"/NOT READABLE/"
 #define DATABASEFPATH @"/DATABASE.noindex"
 #define DATAFILEPATH @"/Database.sql"
@@ -13945,6 +13946,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 		BOOL DELETEFILELISTENER = [[NSUserDefaults standardUserDefaults] boolForKey: @"DELETEFILELISTENER"];
 		BOOL ListenerCompressionSettings = [[NSUserDefaults standardUserDefaults] integerForKey: @"ListenerCompressionSettings"];
+		BOOL twoStepsIndexing = [[NSUserDefaults standardUserDefaults] boolForKey: @"twoStepsIndexing"];
 		NSMutableArray *filesArray = [NSMutableArray array];
 		NSMutableArray *compressedPathArray = [NSMutableArray array];
 		
@@ -13959,14 +13961,15 @@ static volatile int numberOfThreadsForJPEG = 0;
 		@try
 		{
 			NSString *dbFolder = [self localDocumentsDirectory];
-			NSManagedObjectContext *sqlContext = [self localManagedObjectContext];
 			
 			NSString *INpath = [dbFolder stringByAppendingPathComponent:INCOMINGPATH];
+			NSString *toBeIndexed = [dbFolder stringByAppendingPathComponent:TOBEINDEXED];
 			NSString *ERRpath = [dbFolder stringByAppendingPathComponent:ERRPATH];
 			NSString *OUTpath = [dbFolder stringByAppendingPathComponent:DATABASEPATH];
 			NSString *DECOMPRESSIONpath = [dbFolder stringByAppendingPathComponent:DECOMPRESSIONPATH];
 			
-			//NSLog(@"Scan folder START");
+			NSMutableArray *twoStepsIndexingArrayFrom = [NSMutableArray array];
+			NSMutableArray *twoStepsIndexingArrayTo = [NSMutableArray array];
 			
 			if( bonjourDownloading == NO)
 			{
@@ -13974,6 +13977,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 				INpath = [self folderPathResolvingAliasAndSymLink:INpath];
 				OUTpath = [self folderPathResolvingAliasAndSymLink:OUTpath];
 				ERRpath = [self folderPathResolvingAliasAndSymLink:ERRpath];
+				toBeIndexed = [self folderPathResolvingAliasAndSymLink: toBeIndexed];
 				DECOMPRESSIONpath = [self folderPathResolvingAliasAndSymLink:DECOMPRESSIONpath];
 				
 				[AppController createNoIndexDirectoryIfNecessary: OUTpath];
@@ -14063,11 +14067,42 @@ static volatile int numberOfThreadsForJPEG = 0;
 								
 								if( isAlias)
 								{
-									result = [[NSFileManager defaultManager] copyPath:srcPath toPath:dstPath handler:nil];
-									[[NSFileManager defaultManager] removeFileAtPath:originalPath handler:nil];
+									if( twoStepsIndexing)
+									{
+										NSString *stepsPath = [toBeIndexed stringByAppendingPathComponent: [dstPath lastPathComponent]];
+										
+										result = [[NSFileManager defaultManager] copyPath:srcPath toPath: stepsPath handler:nil];
+										[[NSFileManager defaultManager] removeFileAtPath:originalPath handler:nil];
+										
+										if( result)
+										{
+											[twoStepsIndexingArrayFrom addObject: stepsPath];
+											[twoStepsIndexingArrayTo addObject: dstPath];
+										}
+									}
+									else
+									{
+										result = [[NSFileManager defaultManager] copyPath:srcPath toPath: dstPath handler:nil];
+										[[NSFileManager defaultManager] removeFileAtPath:originalPath handler:nil];
+									}
 								}
 								else
-									result = [[NSFileManager defaultManager] movePath:srcPath toPath:dstPath handler:nil];
+								{
+									if( twoStepsIndexing)
+									{
+										NSString *stepsPath = [toBeIndexed stringByAppendingPathComponent: [dstPath lastPathComponent]];
+										
+										result = [[NSFileManager defaultManager] movePath:srcPath toPath: stepsPath handler:nil];
+										
+										if( result)
+										{
+											[twoStepsIndexingArrayFrom addObject: stepsPath];
+											[twoStepsIndexingArrayTo addObject: dstPath];
+										}
+									}
+									else
+										result = [[NSFileManager defaultManager] movePath:srcPath toPath: dstPath handler:nil];
+								}
 								
 								if( result == YES)
 									[filesArray addObject:dstPath];
@@ -14088,6 +14123,18 @@ static volatile int numberOfThreadsForJPEG = 0;
 					}
 				}
 				
+				if( twoStepsIndexing == YES && [twoStepsIndexingArrayFrom count] > 0)
+				{
+					[checkIncomingLock unlock];
+					
+					for( int i = 0 ; i < [twoStepsIndexingArrayFrom count] ; i++)
+					{
+						[[NSFileManager defaultManager] moveItemAtPath: [twoStepsIndexingArrayFrom objectAtIndex: i] toPath: [twoStepsIndexingArrayTo objectAtIndex: i] error: nil];
+					}
+					
+					[checkIncomingLock lock];
+				}
+				
 				if ( [filesArray count] > 0)
 				{
 					newFilesInIncoming = YES;
@@ -14100,6 +14147,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 						[filter processFiles: filesArray];
 					}
 					
+					NSManagedObjectContext *sqlContext = [self localManagedObjectContext];
 					NSArray* addedFiles = [[self addFilesToDatabase: filesArray onlyDICOM:NO safeRebuild:NO produceAddedFiles:YES parseExistingObject: NO context: sqlContext dbFolder: dbFolder] valueForKey:@"completePath"];
 					
 					if( addedFiles)

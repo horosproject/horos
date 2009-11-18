@@ -606,6 +606,15 @@
 		else if([fileURL isEqualToString:@"/wado"])
 		{
 			NSLog( @"%@", parameters);
+			
+			if([[[parameters objectForKey:@"requestType"] lowercaseString] isEqualToString: @"WADO"])
+			{
+				NSString *studyUID = [parameters objectForKey:@"studyUID"];
+				NSString *seriesUID = [parameters objectForKey:@"seriesUID"];
+				NSString *objectUID = [parameters objectForKey:@"objectUID"];
+				NSString *contentType = [parameters objectForKey:@"contentType"];
+				NSString *transferSyntax = [parameters objectForKey:@"transferSyntax"];
+			}
 		}
 		else if([fileURL isEqualToString:@"/studyList"])
 		{
