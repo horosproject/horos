@@ -797,9 +797,27 @@ static NSDate *lastWarningDate = nil;
 	}
 }
 
+- (NSString *) computerName
+{
+	CFStringRef name;
+	NSString *computerName;
+	name=SCDynamicStoreCopyComputerName(NULL,NULL);
+	computerName=[NSString stringWithString:(NSString *)name];
+	CFRelease(name);
+	return computerName;
+}
+
 - (NSString*) privateIP
 {
-	return [NSString stringWithCString: GetPrivateIP()];
+	NSString *ip = nil;
+	
+	if( GetPrivateIP())
+		ip = [NSString stringWithCString: GetPrivateIP()];
+	
+	if( ip == nil)
+		ip = [self computerName];
+	
+	return ip;
 }
 
 - (IBAction)cancelModal:(id)sender
