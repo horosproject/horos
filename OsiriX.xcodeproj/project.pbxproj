@@ -172,6 +172,8 @@
 		7EE416FB08B2615A00D4C9CC /* QueryLogController.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EE416C708B2612600D4C9CC /* QueryLogController.h */; };
 		7EE416FC08B2615B00D4C9CC /* QueryLogController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EE416C808B2612600D4C9CC /* QueryLogController.m */; };
 		7EE713BC097450B000510E88 /* dcmmkdir in Resources */ = {isa = PBXBuildFile; fileRef = 7EE713BA097450B000510E88 /* dcmmkdir */; };
+		8406956310B6800E00C37AD0 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8406956210B6800E00C37AD0 /* SystemConfiguration.framework */; };
+		8406956410B6800E00C37AD0 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8406956210B6800E00C37AD0 /* SystemConfiguration.framework */; };
 		8440039A0E8CF99500A00EBD /* dciodvfy in Resources */ = {isa = PBXBuildFile; fileRef = 844003990E8CF99500A00EBD /* dciodvfy */; };
 		8459A7270F5D63EF00146B28 /* VREmpty.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8459A7250F5D63EF00146B28 /* VREmpty.xib */; };
 		8483ABA60E1BE33900C21B31 /* crossCursor.tif in Resources */ = {isa = PBXBuildFile; fileRef = 8483ABA50E1BE33900C21B31 /* crossCursor.tif */; };
@@ -8000,6 +8002,7 @@
 		7EE416C708B2612600D4C9CC /* QueryLogController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QueryLogController.h; sourceTree = "<group>"; };
 		7EE416C808B2612600D4C9CC /* QueryLogController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QueryLogController.m; sourceTree = "<group>"; };
 		7EE713BA097450B000510E88 /* dcmmkdir */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = dcmmkdir; sourceTree = "<group>"; };
+		8406956210B6800E00C37AD0 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		844003990E8CF99500A00EBD /* dciodvfy */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = dciodvfy; path = Binaries/dciodvfy; sourceTree = "<group>"; };
 		844719AF0FD8EF50003BFDF8 /* OsiriX.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = OsiriX.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8459A7260F5D63EF00146B28 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/VREmpty.xib; sourceTree = "<group>"; };
@@ -11701,6 +11704,7 @@
 				CE790A1C105D4DE200CE6AAF /* WebKit.framework in Frameworks */,
 				59FF1CE31097107A00F5EDA0 /* Nitrogen.framework in Frameworks */,
 				ABB5F95910A81736003924FD /* OsiriX Lite.zip in Frameworks */,
+				8406956310B6800E00C37AD0 /* SystemConfiguration.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -11761,6 +11765,7 @@
 				CEC70A0A10A5C844008935EA /* Security.framework in Frameworks */,
 				CEC70A0B10A5C844008935EA /* WebKit.framework in Frameworks */,
 				CEC70A8A10A5CBB4008935EA /* libopenjpeg.a in Frameworks */,
+				8406956410B6800E00C37AD0 /* SystemConfiguration.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -11826,13 +11831,10 @@
 		1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				ABE881440FC1444D009F5C80 /* ILCrashReporter.framework */,
-				ABDF6E2D0BE0904D00793094 /* Growl.framework */,
 				BF5F14C20B14E12700B309B9 /* CoreVideo.framework */,
 				CE790A17105D4DE200CE6AAF /* AddressBook.framework */,
 				CE790A18105D4DE200CE6AAF /* Security.framework */,
 				CE790A19105D4DE200CE6AAF /* WebKit.framework */,
-				CEFE60580979B1DB00891EA9 /* DotMacKit.framework */,
 				7E54303B07A05E7100500ABB /* DiscRecording.framework */,
 				7E54303C07A05E7100500ABB /* DiscRecordingUI.framework */,
 				CEF0E6DA06AEF5CB001FF9E5 /* Carbon.framework */,
@@ -11845,6 +11847,12 @@
 				1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */,
 				CE2C82E20C708B310093C162 /* InstantMessage.framework */,
 				ABD95D170625BAEC00C77D11 /* ScreenSaver.framework */,
+				8406956210B6800E00C37AD0 /* SystemConfiguration.framework */,
+				7E3E38650715FFDC0049E72E /* PreferencePanes.framework */,
+				29B97325FDCFA39411CA2CEA /* Foundation.framework */,
+				AB38FC99057A9B050041FEBB /* AGL.framework */,
+				AB0EA93B056EDC7E004BBDD3 /* OpenGL.framework */,
+				29B97324FDCFA39411CA2CEA /* AppKit.framework */,
 			);
 			name = "Linked Frameworks";
 			sourceTree = "<group>";
@@ -11852,12 +11860,10 @@
 		1058C7A2FEA54F0111CA2CBB /* Other Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				ABE881440FC1444D009F5C80 /* ILCrashReporter.framework */,
+				ABDF6E2D0BE0904D00793094 /* Growl.framework */,
+				CEFE60580979B1DB00891EA9 /* DotMacKit.framework */,
 				CE8D057D0FD8505000165DDE /* OsiriX.framework */,
-				7E3E38650715FFDC0049E72E /* PreferencePanes.framework */,
-				29B97325FDCFA39411CA2CEA /* Foundation.framework */,
-				AB38FC99057A9B050041FEBB /* AGL.framework */,
-				AB0EA93B056EDC7E004BBDD3 /* OpenGL.framework */,
-				29B97324FDCFA39411CA2CEA /* AppKit.framework */,
 			);
 			name = "Other Frameworks";
 			sourceTree = "<group>";

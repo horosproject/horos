@@ -12,7 +12,7 @@
      PURPOSE.
 =========================================================================*/
 
-
+#import "SystemConfiguration/SCDynamicStoreCopySpecific.h"
 #include <CoreFoundation/CoreFoundation.h>
 #include <ApplicationServices/ApplicationServices.h>
 #import "ToolbarPanel.h"
@@ -797,14 +797,9 @@ static NSDate *lastWarningDate = nil;
 	}
 }
 
-- (NSString *) computerName
+- (NSString *)computerName
 {
-	CFStringRef name;
-	NSString *computerName;
-	name=SCDynamicStoreCopyComputerName(NULL,NULL);
-	computerName=[NSString stringWithString:(NSString *)name];
-	CFRelease(name);
-	return computerName;
+	return [(id)SCDynamicStoreCopyComputerName(NULL, NULL) autorelease];
 }
 
 - (NSString*) privateIP
