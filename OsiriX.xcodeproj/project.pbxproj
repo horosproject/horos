@@ -11831,6 +11831,13 @@
 		1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				BFBF3A9D09B681F500545F5E /* libcrypto.dylib */,
+				BFBF3A9E09B681F500545F5E /* libssl.dylib */,
+				BFBF3A9F09B681F500545F5E /* libxml2.dylib */,
+				BFBF3AA009B681F500545F5E /* libz.dylib */,
+				7E350845097C514C00B7F40D /* CoreServices.framework */,
+				7E350843097C512200B7F40D /* CoreFoundation.framework */,
+				BFEA82DF0940F1D500B90699 /* Quartz.framework */,
 				BF5F14C20B14E12700B309B9 /* CoreVideo.framework */,
 				CE790A17105D4DE200CE6AAF /* AddressBook.framework */,
 				CE790A18105D4DE200CE6AAF /* Security.framework */,
@@ -11860,6 +11867,10 @@
 		1058C7A2FEA54F0111CA2CBB /* Other Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				59FF1CE11097107A00F5EDA0 /* Nitrogen.framework */,
+				A97E19EE0CDF55E50065EE29 /* 3DconnexionClient.framework */,
+				CE6693C60AF551210073D923 /* libxerces-c.27.dylib */,
+				CE586CC30C74B75D00DB7D5A /* libdcmprintscu.dylib */,
 				ABE881440FC1444D009F5C80 /* ILCrashReporter.framework */,
 				ABDF6E2D0BE0904D00793094 /* Growl.framework */,
 				CEFE60580979B1DB00891EA9 /* DotMacKit.framework */,
@@ -12058,22 +12069,11 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				59FF1CE11097107A00F5EDA0 /* Nitrogen.framework */,
-				A97E19EE0CDF55E50065EE29 /* 3DconnexionClient.framework */,
-				CE6693C60AF551210073D923 /* libxerces-c.27.dylib */,
-				CE586CC30C74B75D00DB7D5A /* libdcmprintscu.dylib */,
-				BFBF3A9D09B681F500545F5E /* libcrypto.dylib */,
-				BFBF3A9E09B681F500545F5E /* libssl.dylib */,
-				BFBF3A9F09B681F500545F5E /* libxml2.dylib */,
-				BFBF3AA009B681F500545F5E /* libz.dylib */,
-				7E350845097C514C00B7F40D /* CoreServices.framework */,
-				7E350843097C512200B7F40D /* CoreFoundation.framework */,
-				BFEA82DF0940F1D500B90699 /* Quartz.framework */,
 				CE11138608EDD5E2005B15E1 /* ITKLibs */,
-				CE355D740EED998A005A823F /* VTKHeaders */,
 				CE11138108EDD5CE005B15E1 /* VTKLibs */,
 				CEB7179706CE7CBD00084CA5 /* libjasper2.a */,
-				AB11ED140D1826FA00EF109B /* openJpeg */,
+				ABDEB38B0D1827440079C938 /* libopenjpeg.a */,
+				ABDEB38C0D1827440079C938 /* openjpeg.h */,
 				ABDE6E0806398E3400F0C5DD /* LibTiff */,
 				1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */,
 				1058C7A2FEA54F0111CA2CBB /* Other Frameworks */,
@@ -12449,15 +12449,6 @@
 			);
 			name = dcmpstat;
 			path = "Binaries/dcmtk-source/ofstd";
-			sourceTree = "<group>";
-		};
-		AB11ED140D1826FA00EF109B /* openJpeg */ = {
-			isa = PBXGroup;
-			children = (
-				ABDEB38B0D1827440079C938 /* libopenjpeg.a */,
-				ABDEB38C0D1827440079C938 /* openjpeg.h */,
-			);
-			name = openJpeg;
 			sourceTree = "<group>";
 		};
 		AB154F8A0627414000BD57AF /* SR 3D */ = {
@@ -14476,6 +14467,7 @@
 		CE11138108EDD5CE005B15E1 /* VTKLibs */ = {
 			isa = PBXGroup;
 			children = (
+				CE355D740EED998A005A823F /* VTKHeaders */,
 				AB0E6B110FAF4BF600A5C046 /* libvtkpng.a */,
 				AB0E6B120FAF4BF600A5C046 /* libvtkzlib.a */,
 				CE2449020DA42A7600B8D506 /* libvtkCommon.a */,

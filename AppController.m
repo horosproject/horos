@@ -809,7 +809,7 @@ static NSDate *lastWarningDate = nil;
 	if( GetPrivateIP())
 		ip = [NSString stringWithCString: GetPrivateIP()];
 	
-	if( ip == nil)
+	if( ip == nil || [ip length] == 0)
 		ip = [self computerName];
 	
 	return ip;
