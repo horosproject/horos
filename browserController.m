@@ -12669,6 +12669,8 @@ static NSArray*	openSubSeriesArray = nil;
 	if( newFilesInIncoming)
 	{
 		if( NSRunInformationalAlertPanel( NSLocalizedString(@"DICOM Listener - STORE", nil), NSLocalizedString(@"New files are arriving in the DICOM Database. Are you sure you want to quit now? The DICOM Listener will be stopped.", nil), NSLocalizedString(@"No", nil), NSLocalizedString(@"Quit", nil), nil) == NSAlertDefaultReturn) return NO;
+	
+		[[AppController sharedAppController] killAllStoreSCU: self];
 	}
 	
 	if( [SendController sendControllerObjects] > 0)

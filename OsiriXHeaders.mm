@@ -12,9 +12,10 @@
 @end
 @implementation DummyClass
 
-- (void) test
+- (id)init
 {
-	NSLog( @"test");
+    self = [super init];
+    return self;
 }
 
 @end
