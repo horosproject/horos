@@ -5560,7 +5560,10 @@ static NSArray*	statesArray = nil;
 		return;
 	}
 	
-	NSInteger result = NSRunInformationalAlertPanel(NSLocalizedString(@"Merge Studies", nil), NSLocalizedString(@"Are you sure you want to merge the selected studies? It cannot be cancelled.\r\rWARNING! If you merge multiple patients, the Patient Name and ID will be identical.", nil), NSLocalizedString(@"OK",nil), NSLocalizedString(@"Cancel",nil), nil);
+	NSString *nameAndStudy = [[databaseOutline itemAtRow: [databaseOutline selectedRow]] valueForKey: @"name"];
+	nameAndStudy = [nameAndStudy stringByAppendingFormat:@"-%@", [[databaseOutline itemAtRow: [databaseOutline selectedRow]] valueForKey: @"studyName"]];
+	
+	NSInteger result = NSRunInformationalAlertPanel(NSLocalizedString(@"Merge Studies", nil), [NSString stringWithFormat: NSLocalizedString(@"Are you sure you want to merge the selected studies to %@. It cannot be cancelled.\r\rWARNING! If you merge multiple different patients, the Patient Name and ID will be identical.", nil), nameAndStudy], NSLocalizedString(@"OK",nil), NSLocalizedString(@"Cancel",nil), nil);
 	
 	if( result == NSAlertDefaultReturn)
 	{
@@ -5569,25 +5572,30 @@ static NSArray*	statesArray = nil;
 		[context retain];
 		[context lock];
 		
-		NSIndexSet		*selectedRows = [databaseOutline selectedRowIndexes];
+		NSIndexSet *selectedRows = [databaseOutline selectedRowIndexes];
 		
 		// The destination study : prefer DICOM study
-		NSManagedObject	*destStudy = [databaseOutline itemAtRow: [selectedRows firstIndex]];
-		for( NSInteger x = 0; x < [selectedRows count] ; x++)
+		NSManagedObject	*destStudy = [databaseOutline itemAtRow: [databaseOutline selectedRow]];
+		
+		if( [[[[[[destStudy valueForKey:@"series"] anyObject] valueForKey: @"images"] anyObject] valueForKey:@"extension"] isEqualToString:@"dcm"] == NO)
 		{
-			NSInteger row = ( x == 0) ? [selectedRows firstIndex] : [selectedRows indexGreaterThanIndex: row];
-			
-			NSManagedObject	*study = [databaseOutline itemAtRow: row];
-			
-			if( [[study valueForKey:@"type"] isEqualToString: @"Study"] == NO) study = [study valueForKey:@"study"];
-			
-			NSManagedObject *image = [[[[study valueForKey:@"series"] anyObject] valueForKey: @"images"] anyObject];
-			
-			if( [[image valueForKey:@"extension"] isEqualToString:@"dcm"])
-				destStudy = study;
+			for( NSInteger x = 0; x < [selectedRows count] ; x++)
+			{
+				NSInteger row = ( x == 0) ? [selectedRows firstIndex] : [selectedRows indexGreaterThanIndex: row];
+				
+				NSManagedObject	*study = [databaseOutline itemAtRow: row];
+				
+				if( [[study valueForKey:@"type"] isEqualToString: @"Study"] == NO) study = [study valueForKey:@"study"];
+				
+				NSManagedObject *image = [[[[study valueForKey:@"series"] anyObject] valueForKey: @"images"] anyObject];
+				
+				if( [[image valueForKey:@"extension"] isEqualToString:@"dcm"])
+					destStudy = study;
+			}
 		}
 		
-		if( [[destStudy valueForKey:@"type"] isEqualToString: @"Study"] == NO) destStudy = [destStudy valueForKey:@"study"];
+		if( [[destStudy valueForKey:@"type"] isEqualToString: @"Study"] == NO)
+			destStudy = [destStudy valueForKey:@"study"];
 		
 		NSLog(@"MERGING STUDIES: %@", destStudy);
 		
