@@ -610,7 +610,8 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::startFindRequest(
     ****    return a failed status
     ***/
 
-    if (cond != EC_Normal) {
+    if (cond != EC_Normal)
+	{
        DB_FreeElementList (handle->findRequestList) ;
         handle->findRequestList = NULL ;
 #ifdef DEBUG
@@ -1120,7 +1121,7 @@ DcmQueryRetrieveOsiriXDatabaseHandle::DcmQueryRetrieveOsiriXDatabaseHandle(
 , debugLevel(0)
 {
 	
-    handle = (DB_OsiriX_Handle *) malloc ( sizeof(DB_OsiriX_Handle) );
+    handle = (DB_OsiriX_Handle *) malloc ( sizeof(DB_OsiriX_Handle));
 	
 #ifdef DEBUG
    // dbdebug(1, "DB_createHandle () : Handle created for %s\n",storageArea);
@@ -1130,12 +1131,13 @@ DcmQueryRetrieveOsiriXDatabaseHandle::DcmQueryRetrieveOsiriXDatabaseHandle(
 
     if (handle)
 	{
+		bzero( handle, sizeof(DB_OsiriX_Handle));
 		strcpy((char *)(handle -> callingAET), callingAET);
 		handle -> findRequestList = NULL;
 		handle -> findResponseList = NULL;
 		handle -> uidList = NULL;
 		result = EC_Normal;
-		handle -> dataHandler = NULL;	//[[OsiriXSCPDataHandler requestDataHandler] retain];
+		handle -> dataHandler = NULL;
 		handle -> logEntry = NULL;
 		handle -> imageCount = 0;
 		handle -> logCreated = NO;
@@ -1181,7 +1183,8 @@ DcmQueryRetrieveOsiriXDatabaseHandle::~DcmQueryRetrieveOsiriXDatabaseHandle()
 		DB_FreeElementList (handle -> findResponseList);
 		DB_FreeUidList (handle -> uidList);
 		[handle -> dataHandler release];
-		free ( (char *)(handle) );
+		free ( (char *) handle);
+		handle = nil;
 	}
 }
 

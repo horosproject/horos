@@ -42,8 +42,8 @@ struct DB_OsiriX_Handle
     DB_ElementList *findResponseList ;
     DB_LEVEL queryLevel ;
     char storageArea[1024] ;
-    long maxBytesPerStudy ;
-    long maxStudiesAllowed ;
+    int maxBytesPerStudy ;
+    int maxStudiesAllowed ;
     int idxCounter ;
     DB_CounterList *moveCounterList ;
     int NumberRemainOperations ;
@@ -58,12 +58,12 @@ struct DB_OsiriX_Handle
 	char logPatientName[1024];
 	char logStudyDescription[1024];
 	char logCallingAET[1024];
-	long logStartTime;
+	int logStartTime;
 	char logMessage[1024];
 	char logUID[1024];
 	char logSpecificCharacterSet[1024];
-	long logNumberReceived;
-	long logEndTime;
+	int logNumberReceived;
+	int logEndTime;
 };
 
 /** This class maintains database handles based on OsiriX core Data .

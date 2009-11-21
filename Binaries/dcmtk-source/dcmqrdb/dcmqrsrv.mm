@@ -483,11 +483,11 @@ OFCondition DcmQueryRetrieveSCP::storeSCP(T_ASC_Association * assoc, T_DIMSE_C_S
              DcmQueryRetrieveDatabaseHandle& dbHandle,
              OFBool correctUIDPadding)
 {
+	DcmFileFormat dcmff;
     OFCondition cond = EC_Normal;
     OFCondition dbcond = EC_Normal;
     char imageFileName[MAXPATHLEN+1];
-    DcmFileFormat dcmff;
-
+   
     DcmQueryRetrieveStoreContext context(dbHandle, options_, STATUS_Success, &dcmff, correctUIDPadding);
 
     if (options_.verbose_) {

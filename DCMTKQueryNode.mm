@@ -1819,7 +1819,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	//add self to list of moves. Prevents deallocating  the move if a new query is done
 	[[MoveManager sharedManager] addMove:self];
 
-  T_ASC_PresentationContextID presId;
+	T_ASC_PresentationContextID presId;
     T_DIMSE_C_GetRQ    req;
     T_DIMSE_C_GetRSP   rsp;
     DIC_US              msgId = assoc->nextMsgID++;

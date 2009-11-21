@@ -107,7 +107,7 @@ DIMSE_getUser(
         DcmDataset **rspIds)
 {
     T_DIMSE_Message req, rsp;
-    DIC_US msgId;
+    DIC_US msgId = 0;
     int responseCount = 0;
     T_ASC_Association *subAssoc = NULL;
     DIC_US status = STATUS_Pending;
