@@ -1108,16 +1108,16 @@ static const char *GetPrivateIP()
 	else NSRunCriticalAlertPanel( NSLocalizedString(@"No Study Selected", nil), NSLocalizedString(@"Select a study to query all studies of this patient.", nil), NSLocalizedString(@"OK", nil), nil, nil) ;
 }
 
-- (BOOL) array: uidArray containsObject: (NSString*) uid
+- (int) array: uidArray containsObject: (NSString*) uid
 {
 	BOOL result = NO;
 	
 	for( NSUInteger x = 0 ; x < [uidArray count]; x++)
 	{
-		if( [[uidArray objectAtIndex: x] isEqualToString: uid]) return YES;
+		if( [[uidArray objectAtIndex: x] isEqualToString: uid]) return x;
 	}
 	
-	return result;
+	return -1;
 }
 
 - (NSArray*) queryPatientIDwithoutGUI: (NSString*) patientID
@@ -1381,14 +1381,19 @@ static const char *GetPrivateIP()
 					}
 					else
 					{
-						NSArray		*curResult = [queryManager queries];
-						NSArray		*uidArray = [tempResultArray valueForKey: @"uid"];
+						NSArray	*curResult = [queryManager queries];
+						NSArray *uidArray = [tempResultArray valueForKey: @"uid"];
 						
 						for( NSUInteger x = 0 ; x < [curResult count] ; x++)
 						{
-							if( [self array: uidArray containsObject: [[curResult objectAtIndex: x] valueForKey:@"uid"]] == NO)
-							{
+							int index = [self array: uidArray containsObject: [[curResult objectAtIndex: x] valueForKey:@"uid"]];
+							
+							if( index == -1) // not found
 								[tempResultArray addObject: [curResult objectAtIndex: x]];
+							else 
+							{
+								if( [[[tempResultArray objectAtIndex: index] valueForKey: @"numberImages"] intValue] != [[[curResult objectAtIndex: x] valueForKey: @"numberImages"] intValue])
+									[tempResultArray addObject: [curResult objectAtIndex: x]];
 							}
 						}
 					}
