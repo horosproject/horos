@@ -41,6 +41,7 @@ static NSString *ReferringPhysician = @"ReferringPhysiciansName";
 
 static QueryController *currentQueryController = nil;
 static QueryController *currentAutoQueryController = nil;
+static NSRecursiveLock *autoQueryLock = nil;
 
 static const char *GetPrivateIP()
 {
@@ -2488,8 +2489,8 @@ static const char *GetPrivateIP()
 		resultArray = [[NSMutableArray array] retain];
 		activeMoves = [[NSMutableDictionary dictionary] retain];
 		previousAutoRetrieve = [[NSMutableDictionary dictionary] retain];
-		autoQueryLock = [[NSRecursiveLock alloc] init];
-		performRetrievelock = [[NSRecursiveLock alloc] init];
+		if( autoQueryLock == nil)
+			autoQueryLock = [[NSRecursiveLock alloc] init];
 //		displayLock = [[NSLock alloc] init];
 		
 		sourcesArray = [[[NSUserDefaults standardUserDefaults] objectForKey: @"SavedQueryArray"] mutableCopy];
@@ -2521,14 +2522,8 @@ static const char *GetPrivateIP()
 
 - (void)dealloc
 {
-	[performRetrievelock lock];
-	[performRetrievelock unlock];
 	[autoQueryLock lock];
 	[autoQueryLock unlock];
-	
-//	[displayLock lock];
-//	[displayLock unlock];
-//	[displayLock release];
 	
 	[[NSUserDefaults standardUserDefaults] setObject:sourcesArray forKey: @"SavedQueryArray"];
 
@@ -2545,8 +2540,6 @@ static const char *GetPrivateIP()
 	[previousAutoRetrieve release];
 	[sourcesArray release];
 	[resultArray release];
-	[autoQueryLock release];
-	[performRetrievelock release];
 	[QueryTimer invalidate];
 	[QueryTimer release];
 	

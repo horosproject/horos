@@ -43,7 +43,6 @@
     IBOutlet	NSPopUpButton				*sendToPopup;
 	
 	int										autoQueryRemainingSecs;
-	NSRecursiveLock							*autoQueryLock, *performRetrievelock;
 	IBOutlet NSTextField					*autoQueryCounter;
 	
 	
