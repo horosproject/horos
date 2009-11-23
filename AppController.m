@@ -2671,13 +2671,13 @@ static BOOL initialized = NO;
 //				}
 //			}
 			
-			if( [[NSCalendarDate dateWithYear:2009 month:10 day:14 hour:12 minute:0 second:0 timeZone:[NSTimeZone timeZoneWithAbbreviation:@"EST"]] timeIntervalSinceNow] > 0 &&
-				[[NSCalendarDate dateWithYear:2009 month:9 day:1 hour:12 minute:0 second:0 timeZone:[NSTimeZone timeZoneWithAbbreviation:@"EST"]] timeIntervalSinceNow] < 0)
-			{
-				Survey *survey = [[Survey alloc] initWithWindowNibName:@"Survey"];
-				[[survey window] center];
-				[survey showWindow: self];
-			}
+//			if( [[NSCalendarDate dateWithYear:2009 month:10 day:14 hour:12 minute:0 second:0 timeZone:[NSTimeZone timeZoneWithAbbreviation:@"EST"]] timeIntervalSinceNow] > 0 &&
+//				[[NSCalendarDate dateWithYear:2009 month:9 day:1 hour:12 minute:0 second:0 timeZone:[NSTimeZone timeZoneWithAbbreviation:@"EST"]] timeIntervalSinceNow] < 0)
+//			{
+//				Survey *survey = [[Survey alloc] initWithWindowNibName:@"Survey"];
+//				[[survey window] center];
+//				[survey showWindow: self];
+//			}
 		}
 		else
 		{
