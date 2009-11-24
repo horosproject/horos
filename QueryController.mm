@@ -1401,14 +1401,6 @@ static const char *GetPrivateIP()
 							}
 						}
 					}
-					
-					if( [[aServer objectForKey: @"retrieveMode"] intValue] != CMOVERetrieveMode)
-					{
-						[sendToPopup selectItemAtIndex: 0];
-						[sendToPopup setEnabled: NO];
-					}
-					else
-						[sendToPopup setEnabled: YES];
 				}
 //				else
 //				{
