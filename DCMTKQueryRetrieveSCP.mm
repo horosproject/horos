@@ -321,9 +321,7 @@ DcmQueryRetrieveConfig config;
 	}
 	
 	if( _abort)
-	{
 		NSLog( @"**** store-SCP aborted");
-	}
 	
 	delete scp;
 	scp = NULL;
@@ -344,6 +342,7 @@ DcmQueryRetrieveConfig config;
 
 -(void)abort
 {
+	NSLog( @"**** store-SCP abort !");
 	_abort = YES;
 }
 

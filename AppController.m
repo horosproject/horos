@@ -2024,10 +2024,10 @@ static NSDate *lastWarningDate = nil;
 
 - (void) terminate :(id) sender
 {
+	if( [[BrowserController currentBrowser] shouldTerminate: sender] == NO) return;
+	
 	[dcmtkQRSCP abort];
 	[NSThread sleepForTimeInterval: 1];
-	
-	if( [[BrowserController currentBrowser] shouldTerminate: sender] == NO) return;
 	
 	for( NSWindow *w in [NSApp windows])
 		[w orderOut:sender];

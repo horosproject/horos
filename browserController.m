@@ -14237,7 +14237,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 	{
 		currentIcon = image;
 		[[NSApplication sharedApplication] setApplicationIconImage: image];
-		NSLog( @"dock icon set");
 	}
 }
 
