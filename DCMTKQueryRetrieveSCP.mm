@@ -97,7 +97,13 @@ DcmQueryRetrieveSCP *scp = nil;
 
 OFCondition mainStoreSCP(T_ASC_Association * assoc, T_DIMSE_C_StoreRQ * request, T_ASC_PresentationContextID presId, DcmQueryRetrieveDatabaseHandle *dbHandle)
 {
-	return scp->storeSCP( assoc, request, presId, *dbHandle, FALSE);
+	if( scp == nil)
+	{
+		NSLog( @"***** scp == nil !");
+		return EC_IllegalCall;
+	}
+	else
+		return scp->storeSCP( assoc, request, presId, *dbHandle, FALSE);
 }
 
 void errmsg(const char* msg, ...)
@@ -138,9 +144,10 @@ void errmsg(const char* msg, ...)
 	return self;
 }
 
-- (void)dealloc{
-
-	if (scp != NULL) {
+- (void)dealloc
+{
+	if (scp != NULL)
+	{
 		 scp->cleanChildren(OFTrue);  // clean up any child processes 		 
 		 delete scp;
 		 scp = nil;
@@ -304,8 +311,11 @@ DcmQueryRetrieveConfig config;
     /* loop waiting for associations */
     while (cond.good() && !_abort)
     {
-		if( _abort == NO) cond = scp->waitForAssociation(options.net_);
-		if( _abort == NO) scp->cleanChildren(OFTrue);  /* clean up any child processes  This needs to be here*/
+		if( _abort == NO)
+			cond = scp->waitForAssociation(options.net_);
+		
+		if( _abort == NO)
+			scp->cleanChildren(OFTrue);  /* clean up any child processes  This needs to be here*/
 	}
 	
 	delete scp;

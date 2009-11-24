@@ -20,8 +20,8 @@ typedef struct
 	time_t logStartTime;
 	char logMessage[ 1024];
 	char logUID[ 1024];
-	int logNumberReceived;
-	int logNumberTotal;
+	long logNumberReceived;
+	long logNumberTotal;
 	time_t logEndTime;
 	char logType[ 1024];
 	char logEncoding[ 1024];

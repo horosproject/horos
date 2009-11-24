@@ -58,12 +58,12 @@ struct DB_OsiriX_Handle
 	char logPatientName[1024];
 	char logStudyDescription[1024];
 	char logCallingAET[1024];
-	int logStartTime;
+	long logStartTime;
 	char logMessage[1024];
 	char logUID[1024];
 	char logSpecificCharacterSet[1024];
-	int logNumberReceived;
-	int logEndTime;
+	long logNumberReceived;
+	long logEndTime;
 };
 
 /** This class maintains database handles based on OsiriX core Data .

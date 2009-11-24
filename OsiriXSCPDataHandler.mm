@@ -1250,7 +1250,7 @@ extern NSManagedObjectContext *staticContext;
 				unsigned int random2 = rand();
 				sprintf( logFiles->logUID, "%d%d%s", random, random2, logFiles->logPatientName);
 
-				fprintf (pFile, "%s\r%s\r%s\r%ld\r%s\r%s\r%d\r%ld\r%s\r%s\r\%d\r", logFiles->logPatientName, logFiles->logStudyDescription, logFiles->logCallingAET, logFiles->logStartTime, logFiles->logMessage, logFiles->logUID, logFiles->logNumberReceived, logFiles->logEndTime, logFiles->logType, logFiles->logEncoding, logFiles->logNumberTotal);
+				fprintf (pFile, "%s\r%s\r%s\r%ld\r%s\r%s\r%ld\r%ld\r%s\r%s\r\%ld\r", logFiles->logPatientName, logFiles->logStudyDescription, logFiles->logCallingAET, logFiles->logStartTime, logFiles->logMessage, logFiles->logUID, logFiles->logNumberReceived, logFiles->logEndTime, logFiles->logType, logFiles->logEncoding, logFiles->logNumberTotal);
 				
 				fclose (pFile);
 				strcpy( newdir, dir);
@@ -1282,7 +1282,7 @@ extern NSManagedObjectContext *staticContext;
 				unsigned int random2 = rand();
 				sprintf( logFiles->logUID, "%d%d%s", random, random2, logFiles->logPatientName);
 				
-				fprintf (pFile, "%s\r%s\r%s\r%ld\r%s\r%s\r%d\r%ld\r%s\r%s\r\%d\r", logFiles->logPatientName, logFiles->logStudyDescription, logFiles->logCallingAET, logFiles->logStartTime, logFiles->logMessage, logFiles->logUID, logFiles->logNumberReceived, logFiles->logEndTime, logFiles->logType, logFiles->logEncoding, logFiles->logNumberTotal);
+				fprintf (pFile, "%s\r%s\r%s\r%ld\r%s\r%s\r%ld\r%ld\r%s\r%s\r\%ld\r", logFiles->logPatientName, logFiles->logStudyDescription, logFiles->logCallingAET, logFiles->logStartTime, logFiles->logMessage, logFiles->logUID, logFiles->logNumberReceived, logFiles->logEndTime, logFiles->logType, logFiles->logEncoding, logFiles->logNumberTotal);
 				
 				fclose (pFile);
 				strcpy( newdir, dir);
@@ -1530,7 +1530,7 @@ extern NSManagedObjectContext *staticContext;
 			logFiles->logNumberReceived++;
 			logFiles->logEndTime = time (NULL);
 			
-			fprintf (pFile, "%s\r%s\r%s\r%ld\r%s\r%s\r%d\r%ld\r%s\r%s\r\%d\r", logFiles->logPatientName, logFiles->logStudyDescription, logFiles->logCallingAET, logFiles->logStartTime, logFiles->logMessage, logFiles->logUID, logFiles->logNumberReceived, logFiles->logEndTime, logFiles->logType, logFiles->logEncoding, logFiles->logNumberTotal);
+			fprintf (pFile, "%s\r%s\r%s\r%ld\r%s\r%s\r%ld\r%ld\r%s\r%s\r\%ld\r", logFiles->logPatientName, logFiles->logStudyDescription, logFiles->logCallingAET, logFiles->logStartTime, logFiles->logMessage, logFiles->logUID, logFiles->logNumberReceived, logFiles->logEndTime, logFiles->logType, logFiles->logEncoding, logFiles->logNumberTotal);
 			
 			fclose (pFile);
 			strcpy( newdir, dir);
