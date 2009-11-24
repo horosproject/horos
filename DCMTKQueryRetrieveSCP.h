@@ -19,6 +19,7 @@
 * DCMTKQueryRetrieveSCP is the Query/ Retrieve Server and listener
 * based on DCMTK 
 */
+
 @interface DCMTKQueryRetrieveSCP : NSObject {
 	int _port;
 	NSString *_aeTitle;
@@ -27,6 +28,7 @@
 	BOOL running;
 }
 
++ (BOOL) storeSCP;
 - (id)initWithPort:(int)port aeTitle:(NSString *)aeTitle  extraParamaters:(NSDictionary *)params;
 - (void)run;
 - (void)abort;

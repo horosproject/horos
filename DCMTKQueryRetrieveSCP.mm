@@ -120,6 +120,14 @@ void errmsg(const char* msg, ...)
 
 @implementation DCMTKQueryRetrieveSCP
 
++ (BOOL) storeSCP
+{
+	if( scp)
+		return YES;
+	else
+		return NO;
+}
+
 - (BOOL) running
 {
 	return running;
@@ -157,12 +165,6 @@ void errmsg(const char* msg, ...)
 	[_params release];
 	[super dealloc];
 }
-
-
-//- (void)cleanup:(NSTimer *)timer{
-//	if (scp != NULL) 
-//		scp->cleanChildren(OFTrue);  // clean up any child processes 	
-//}
 
 - (void)run
 {
@@ -316,6 +318,11 @@ DcmQueryRetrieveConfig config;
 		
 		if( _abort == NO)
 			scp->cleanChildren(OFTrue);  /* clean up any child processes  This needs to be here*/
+	}
+	
+	if( _abort)
+	{
+		NSLog( @"**** store-SCP aborted");
 	}
 	
 	delete scp;

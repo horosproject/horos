@@ -41,7 +41,7 @@
 		_transferSyntax = transferSyntax;
 		_compression = compression;
 		
-		_verbose = YES;
+		_verbose = NO;
 		_debug = NO;
 		_abortAssociation = NO;
 		_maxReceivePDULength = ASC_DEFAULTMAXPDU;

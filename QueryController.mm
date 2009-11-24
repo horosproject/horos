@@ -27,7 +27,7 @@
 #import "DCMTKStudyQueryNode.h"
 #import "DCMTKSeriesQueryNode.h"
 #import "BrowserController.h"
-
+#import "DCMTKQueryRetrieveSCP.h"
 #include "SimplePing.h"
 
 #import "PieChartImage.h"
@@ -1802,7 +1802,7 @@ static const char *GetPrivateIP()
 			if( [sendToPopup indexOfSelectedItem] != 0 && forViewing == YES)
 			{
 				if( showGUI)
-					NSRunCriticalAlertPanel(NSLocalizedString(@"DICOM Query & Retrieve",nil),NSLocalizedString( @"If you want to retrieve & view these images, change the destination to this computer ('retrieve to' menu).",nil),NSLocalizedString( @"OK",nil), nil, nil);
+					NSRunCriticalAlertPanel(NSLocalizedString( @"DICOM Query & Retrieve",nil), NSLocalizedString( @"If you want to retrieve & view these images, change the destination to this computer ('retrieve to' menu).",nil),NSLocalizedString( @"OK",nil), nil, nil);
 			}
 			else
 			{
@@ -1812,6 +1812,14 @@ static const char *GetPrivateIP()
 				{
 					wait = [[WaitRendering alloc] init: NSLocalizedString(@"Starting Retrieving...", nil)];
 					[wait showWindow:self];
+				}
+				
+				if( [DCMTKQueryRetrieveSCP storeSCP] == NO)
+				{
+					if( showGUI)
+						NSRunCriticalAlertPanel(NSLocalizedString( @"DICOM Query & Retrieve",nil),NSLocalizedString( @"DICOM Listener is not running, OsiriX cannot retrieve images.",nil),NSLocalizedString( @"OK",nil), nil, nil);
+					else
+						NSLog( @"***** DICOM Listener is not running, OsiriX cannot retrieve images.");
 				}
 				
 				checkAndViewTry = -1;
@@ -1887,6 +1895,9 @@ static const char *GetPrivateIP()
 
 - (void) performRetrieve:(NSArray*) array
 {
+	if( [DCMTKQueryRetrieveSCP storeSCP] == NO)
+		return;
+	
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
 	NSMutableArray *moveArray = [NSMutableArray array];

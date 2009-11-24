@@ -67,7 +67,7 @@ static OFString    opt_ciphersuites(SSL3_TXT_RSA_DES_192_CBC3_SHA);
 #endif
 
 NSException* queryException = nil;
-int debugLevel = 1;
+int debugLevel = 0;
 int wadoUnique = 0, wadoUniqueThreadID = 0;
 OFCondition globalCondition = EC_Normal;
 
@@ -115,7 +115,8 @@ progressCallback(
      */
 {	
 
-	if (debugLevel > 0) {
+	if (debugLevel > 0)
+	{
 		/* dump response number */
 		printf("RESPONSE: %d (%s)\n", responseCount,
 			DU_cfindStatusString(rsp->DimseStatus));
@@ -363,8 +364,6 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 							compression: (float)compression
 							extraParameters:(NSDictionary *)extraParameters])
 	{
-		debugLevel = [[NSUserDefaults standardUserDefaults] integerForKey:@"NetworkDebugLevel"];
-		
 		_children = nil;
 		_uid = nil;
 		_theDescription = nil;
@@ -379,13 +378,13 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		_numberImages = nil;
 		_specificCharacterSet = nil;
 		showErrorMessage = YES;
-		if (debugLevel > 0)
-			_verbose = YES;
+		_verbose = NO;
 	}
 	return self;
 }
 
-- (void)dealloc{
+- (void)dealloc
+{
 	[_children release];
 	[_uid release];
 	[_theDescription release];
@@ -1058,8 +1057,6 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	opt_peer = [_hostname UTF8String];
 	opt_port = _port;
 	
-//	//verbose option set to true for now
-	_verbose = OFTrue;
 //
 //	
 //	//debug code activated for now
@@ -1188,7 +1185,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 
 	/* initialize asscociation parameters, i.e. create an instance of T_ASC_Parameters*. */
 		cond = ASC_createAssociationParameters(&params, _maxReceivePDULength);
-		DimseCondition::dump(cond);
+//		DimseCondition::dump(cond);
 		if (cond.bad()) {
 			DimseCondition::dump(cond);
 			queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"ASC_createAssociationParameters - %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
@@ -1318,7 +1315,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		}
 		
 		  /* dump the presentation contexts which have been accepted/refused */
-			if (_verbose)
+		if (_verbose)
 		{
 			if( strcmp(abstractSyntax, UID_GETPatientRootQueryRetrieveInformationModel) == 0 ||
 			strcmp(abstractSyntax, UID_GETStudyRootQueryRetrieveInformationModel) == 0 ||
@@ -1554,17 +1551,15 @@ subOpCallback(void * /*subOpCallbackData*/ ,
     DcmDataset *statusDetail = NULL;
     MyCallbackInfo callbackData;
     
-
- 
-
     /* figure out which of the accepted presentation contexts should be used */
     presId = ASC_findAcceptedPresentationContextID(
         assoc, UID_FINDStudyRootQueryRetrieveInformationModel);
-    if (presId == 0) {
+    if (presId == 0)
+	{
         errmsg("No presentation context");
         return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
     }
-
+	
     /* prepare the transmission of data */
     bzero((char*)&req, sizeof(req));
     req.MessageID = msgId;
@@ -1578,7 +1573,8 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	callbackData.node = self;
 
     /* if required, dump some more general information */
-    if (_verbose) {
+    if (_verbose)
+	{
         printf("Find SCU RQ: MsgID %d\n", msgId);
         printf("REQUEST:\n");
         dataset->print(COUT);
@@ -1618,9 +1614,12 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 				
 		}
 				
-        if (_verbose) {
+        if (_verbose)
+		{
             DIMSE_printCFindRSP(stdout, &rsp);
-        } else {
+        }
+		else
+		{
             if (rsp.DimseStatus != STATUS_Success)
 			{
                 printf("Response: %s\n", DU_cfindStatusString(rsp.DimseStatus));
@@ -1628,7 +1627,9 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 				
             }
         }
-    } else {
+    }
+	else
+	{
 		errmsg("Find Failed\n Condition:\n");
 		//dataset->print(COUT);
         DimseCondition::dump(cond);
@@ -1734,7 +1735,8 @@ subOpCallback(void * /*subOpCallbackData*/ ,
     presId = ASC_findAcceptedPresentationContextID(assoc, UID_MOVEStudyRootQueryRetrieveInformationModel);
     if (presId == 0) return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
 
-    if (_verbose) {
+    if (_verbose)
+	{
         printf("Move SCU RQ: MsgID %d\n", msgId);
         printf("Request:\n");
         dataset->print(COUT);
@@ -1762,7 +1764,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	
 	OFCondition cond;
 	
-		cond = DIMSE_moveUser(assoc, presId, &req, dataset,
+	cond = DIMSE_moveUser(assoc, presId, &req, dataset,
         moveCallback, &callbackData, _blockMode, _dimse_timeout,
         net, subOpCallback, NULL,
         &rsp, &statusDetail, &rspIds , OFTrue);
