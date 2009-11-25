@@ -622,8 +622,18 @@ static NSArray*	statesArray = nil;
 					{
 						/*******************************************/
 						/*********** Find study object *************/
+						// match: StudyInstanceUID and patientUID (see patientUID function in dicomFile.m, based on patientName, patientID and patientBirthDate)
+						study = nil;
+						
 						index = [studiesArrayStudyInstanceUID indexOfObject:[curDict objectForKey: @"studyID"]];
-						if( index == NSNotFound)
+						
+						if( index != NSNotFound)
+						{
+							if( [[curDict objectForKey: @"patientUID"] caseInsensitiveCompare: [[studiesArray objectAtIndex: index] valueForKey: @"patientUID"]] == NSOrderedSame)
+								study = [studiesArray objectAtIndex: index];
+						}
+						
+						if( study == nil)
 						{
 							// Fields
 							study = [NSEntityDescription insertNewObjectForEntityForName:@"Study" inManagedObjectContext:context];
@@ -640,8 +650,6 @@ static NSArray*	statesArray = nil;
 						}
 						else
 						{
-							study = [studiesArray objectAtIndex: index];
-							
 							if( DICOMROI == NO)
 								[study setValue:today forKey:@"dateAdded"];
 							
