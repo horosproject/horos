@@ -152,12 +152,12 @@ typedef char* vtkMyCallbackVR;
 *
 *   View for volume rendering and MIP
 */
-
 #ifdef __cplusplus
-@interface VRView : VTKView <Schedulable>
 #else
-@interface VRView : NSView
+#define VTKView NSView
 #endif
+
+@interface VRView : VTKView <Schedulable>
 {
 	NSTimer						*autoRotate, *startAutoRotate;
 	BOOL						rotate, flyto;

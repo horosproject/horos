@@ -82,10 +82,12 @@ extern "C"
 */
 
 #if defined(OSIRIX_VIEWER) && !defined(OSIRIX_LIGHT)
-@interface AppController : NSObject	<GrowlApplicationBridgeDelegate>
 #else
-@interface AppController : NSObject
+@protocol GrowlApplicationBridgeDelegate
+@end
 #endif
+
+@interface AppController : NSObject	<GrowlApplicationBridgeDelegate>
 {
 	IBOutlet BrowserController		*browserController;
 

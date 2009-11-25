@@ -175,6 +175,7 @@
 		8406956310B6800E00C37AD0 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8406956210B6800E00C37AD0 /* SystemConfiguration.framework */; };
 		8406956410B6800E00C37AD0 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8406956210B6800E00C37AD0 /* SystemConfiguration.framework */; };
 		8440039A0E8CF99500A00EBD /* dciodvfy in Resources */ = {isa = PBXBuildFile; fileRef = 844003990E8CF99500A00EBD /* dciodvfy */; };
+		8447756C10BD378100F62DAB /* OsiriX Lite.zip in Frameworks */ = {isa = PBXBuildFile; fileRef = ABB5F95810A81736003924FD /* OsiriX Lite.zip */; };
 		8459A7270F5D63EF00146B28 /* VREmpty.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8459A7250F5D63EF00146B28 /* VREmpty.xib */; };
 		8483ABA60E1BE33900C21B31 /* crossCursor.tif in Resources */ = {isa = PBXBuildFile; fileRef = 8483ABA50E1BE33900C21B31 /* crossCursor.tif */; };
 		848631C30FE77E1F00B96E99 /* jpeg_memdest.h in Headers */ = {isa = PBXBuildFile; fileRef = 848631C10FE77E1F00B96E99 /* jpeg_memdest.h */; };
@@ -896,7 +897,6 @@
 		ABB230BE0C2F95DD00B38596 /* JPEGExif.m in Sources */ = {isa = PBXBuildFile; fileRef = ABB230BA0C2F95DD00B38596 /* JPEGExif.m */; };
 		ABB36D800AF2548C00DBEEA2 /* away.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABB36D7E0AF2548C00DBEEA2 /* away.tif */; };
 		ABB36D810AF2548C00DBEEA2 /* available.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABB36D7F0AF2548C00DBEEA2 /* available.tif */; };
-		ABB5F95910A81736003924FD /* OsiriX Lite.zip in Frameworks */ = {isa = PBXBuildFile; fileRef = ABB5F95810A81736003924FD /* OsiriX Lite.zip */; };
 		ABB5F9B210A8189D003924FD /* OsiriX Lite.zip in Resources */ = {isa = PBXBuildFile; fileRef = ABB5F95810A81736003924FD /* OsiriX Lite.zip */; };
 		ABB7A43406343BCA00AD1777 /* dicomDictionary.plist in Resources */ = {isa = PBXBuildFile; fileRef = ABB7A43306343BC900AD1777 /* dicomDictionary.plist */; };
 		ABBA8DA0065AB90200A1F89C /* VR Bones.plist in Resources */ = {isa = PBXBuildFile; fileRef = ABBA8D9A065AB90200A1F89C /* VR Bones.plist */; };
@@ -11703,8 +11703,8 @@
 				CE790A1B105D4DE200CE6AAF /* Security.framework in Frameworks */,
 				CE790A1C105D4DE200CE6AAF /* WebKit.framework in Frameworks */,
 				59FF1CE31097107A00F5EDA0 /* Nitrogen.framework in Frameworks */,
-				ABB5F95910A81736003924FD /* OsiriX Lite.zip in Frameworks */,
 				8406956310B6800E00C37AD0 /* SystemConfiguration.framework in Frameworks */,
+				8447756C10BD378100F62DAB /* OsiriX Lite.zip in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

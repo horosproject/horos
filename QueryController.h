@@ -72,6 +72,7 @@
 	BOOL									autoQuery, queryButtonPressed, performingCFind;
 	
 	NSInteger								autoRefreshQueryResults;
+	NSRecursiveLock							*autoQueryLock;
 }
 
 @property BOOL autoQuery;

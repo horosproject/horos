@@ -28,7 +28,6 @@
 	IBOutlet NSTextField *checkIntervalField, *timeout;
 	IBOutlet NSButton *singleProcessButton;
 	IBOutlet NSPopUpButton *logDurationPopup;
-	
 	IBOutlet SFAuthorizationView *_authView;
 }
 

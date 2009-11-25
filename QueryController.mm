@@ -41,7 +41,6 @@ static NSString *ReferringPhysician = @"ReferringPhysiciansName";
 
 static QueryController *currentQueryController = nil;
 static QueryController *currentAutoQueryController = nil;
-static NSRecursiveLock *autoQueryLock = nil;
 
 static const char *GetPrivateIP()
 {
@@ -2487,17 +2486,12 @@ static const char *GetPrivateIP()
 		activeMoves = nil;
 		autoQuery = autoQR;
 		
-//		partiallyInDatabase = [[NSImage imageNamed:@"QRpartiallyInDatabase.tif"] retain];
-//		alreadyInDatabase = [[NSImage imageNamed:@"QRalreadyInDatabase.tif"] retain];
-		
 		pressedKeys = [[NSMutableString stringWithString:@""] retain];
 		queryFilters = [[NSMutableArray array] retain];
 		resultArray = [[NSMutableArray array] retain];
 		activeMoves = [[NSMutableDictionary dictionary] retain];
 		previousAutoRetrieve = [[NSMutableDictionary dictionary] retain];
-		if( autoQueryLock == nil)
-			autoQueryLock = [[NSRecursiveLock alloc] init];
-//		displayLock = [[NSLock alloc] init];
+		autoQueryLock = [[NSRecursiveLock alloc] init];
 		
 		sourcesArray = [[[NSUserDefaults standardUserDefaults] objectForKey: @"SavedQueryArray"] mutableCopy];
 		if( sourcesArray == nil) sourcesArray = [[NSMutableArray array] retain];
@@ -2531,6 +2525,7 @@ static const char *GetPrivateIP()
 	[autoQueryLock lock];
 	[autoQueryLock unlock];
 	
+	
 	[[NSUserDefaults standardUserDefaults] setObject:sourcesArray forKey: @"SavedQueryArray"];
 
 	NSLog( @"dealloc QueryController");
@@ -2555,8 +2550,10 @@ static const char *GetPrivateIP()
 	[studyArrayInstanceUID release];
 	studyArrayInstanceUID = nil;
 	
+	
 	[super dealloc];
 	
+	[autoQueryLock release];
 	currentQueryController = nil;
 }
 
