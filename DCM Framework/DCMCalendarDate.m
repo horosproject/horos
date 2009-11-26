@@ -25,7 +25,8 @@
 	if( string == nil) 
 		return nil;
 		
-	if ([string rangeOfString:@"-"].location == NSNotFound){
+	if ([string rangeOfString:@"-"].location == NSNotFound)
+	{
 		//format for DA is YYMMDD = @"%Y%m%d"
 		if (DCMDEBUG)
 			NSLog (@"date string: %@ intValue: %d", string,[string intValue] );
@@ -52,8 +53,13 @@
 	else
 		return [DCMCalendarDate queryDate:string];
 }
-+ (id)dicomTime:(NSString *)string{
-	if ([string rangeOfString:@"-"].location == NSNotFound){
++ (id)dicomTime:(NSString *)string
+{
+	if( string == nil) 
+		return nil;
+		
+	if ([string rangeOfString:@"-"].location == NSNotFound)
+	{
 		//format for TM is HHMMSS.ffffff = @"%H%M%S.%U";"
 		// %U is our code for microseconds
 			if (DCMDEBUG)
@@ -87,7 +93,11 @@
 	else
 		return [DCMCalendarDate queryDate:string];
 }
-+ (id)dicomDateTime:(NSString *)string{
++ (id)dicomDateTime:(NSString *)string
+{
+	if( string == nil) 
+		return nil;
+		
 	if ([string rangeOfString:@"-"].location == NSNotFound){
 		//format for DT is HHMMSS.ffffff = @"@"%H%M%S.%U";"
 		// %U is our code for microseconds
@@ -152,14 +162,16 @@
 		
 }
 
-+ (id)dicomDateWithDate:(NSDate *)date{
++ (id)dicomDateWithDate:(NSDate *)date
+{
 	NSString *format = @"%Y%m%d";
 	NSCalendarDate  *cDate= [date dateWithCalendarFormat:format timeZone:nil];
 	NSString *dateString = [cDate descriptionWithCalendarFormat:format];
 	return [DCMCalendarDate dicomDate:dateString];
 }
 	
-+ (id)dicomTimeWithDate:(NSDate *)date{
++ (id)dicomTimeWithDate:(NSDate *)date
+{
 	NSString *format = @"%H%M%S";
 	//NSLog(@"time for date: %@", [date description]);
 	NSCalendarDate  *cDate= [date dateWithCalendarFormat:format timeZone:nil];
@@ -167,7 +179,8 @@
 	return [DCMCalendarDate dicomTime:dateString];
 }
 
-+ (id)dicomDateTimeWithDicomDate:(DCMCalendarDate*)date dicomTime:(DCMCalendarDate*)time{
++ (id)dicomDateTimeWithDicomDate:(DCMCalendarDate*)date dicomTime:(DCMCalendarDate*)time
+{
 	if (date == nil || time == nil)
 		return nil;
 	
