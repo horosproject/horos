@@ -3824,6 +3824,9 @@ public:
 		a[ 5] *= [firstObject pixelSpacingX];
 		a[ 5] /= sliceThickness;
 		
+		a[ 2] *= [firstObject pixelSpacingX] / [firstObject pixelSpacingY];
+		a[ 3] *= [firstObject pixelSpacingX] / [firstObject pixelSpacingY];
+		
 		a[ 0] = a[ 0] >= width ? width-1 : a[ 0];		a[ 1] = a[ 1] >= width ? width-1 : a[ 1];
 		a[ 2] = a[ 2] >= height ? height-1 : a[ 2];		a[ 3] = a[ 3] >= height ? height-1 : a[ 3];
 		a[ 4] = a[ 4] >= depth ? depth-1 : a[ 4];		a[ 5] = a[ 5] >= depth ? depth-1 : a[ 5];
@@ -3974,7 +3977,10 @@ public:
 			a[ 0] = a[ 0] >= width ? width-1 : a[ 0];		a[ 1] = a[ 1] >= width ? width-1 : a[ 1];
 			a[ 2] = a[ 2] >= height ? height-1 : a[ 2];		a[ 3] = a[ 3] >= height ? height-1 : a[ 3];
 			a[ 4] = a[ 4] >= depth ? depth-1 : a[ 4];		a[ 5] = a[ 5] >= depth ? depth-1 : a[ 5];
-
+			
+			a[ 2] /= [firstObject pixelSpacingX] / [firstObject pixelSpacingY];
+			a[ 3] /= [firstObject pixelSpacingX] / [firstObject pixelSpacingY];
+			
 			a[ 4] /= [firstObject pixelSpacingX];
 			a[ 4] *= sliceThickness;
 			a[ 5] /= [firstObject pixelSpacingX];
