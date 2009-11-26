@@ -6357,7 +6357,6 @@
 		CEC7089710A5C844008935EA /* KeyObjectController.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF038E7D0A3FB49700663EBB /* KeyObjectController.mm */; };
 		CEC7089810A5C844008935EA /* KeyObjectReport.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF038E7F0A3FB49700663EBB /* KeyObjectReport.mm */; };
 		CEC7089910A5C844008935EA /* DefaultsOsiriX.m in Sources */ = {isa = PBXBuildFile; fileRef = AB6FF5960A47D08000C501F0 /* DefaultsOsiriX.m */; };
-		CEC708A110A5C844008935EA /* BrowserControllerDCMTKCategory.mm in Sources */ = {isa = PBXBuildFile; fileRef = BFA7D2170A51D1460013F76E /* BrowserControllerDCMTKCategory.mm */; };
 		CEC708A210A5C844008935EA /* DicomFileDCMTKCategory.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF2425500A51D39500D3D76B /* DicomFileDCMTKCategory.mm */; };
 		CEC708A410A5C844008935EA /* DicomImageDCMTKCategory.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF26843C0A5CBB1C004EB838 /* DicomImageDCMTKCategory.mm */; settings = {COMPILER_FLAGS = "-I ./ITK180 -I ./ITK180/Code -I ./ITK180/Code/Algorithms -I ./ITK180/Code/BasicFilters -I ./ITK180/Code/Common -I ./ITK180/Code/Numerics -I ./ITK180/Code/IO -I ./ITK180/Code/Numerics/FEM -I ./ITK180/Code/Numerics/Statistics -I ./ITK180/Code/SpatialObject -I ./ITK180/Code/Utilities/MetaIO -I ./ITK180/Code/Utilities/expat -I ./ITK180/Code/Utilities/NrrdIO -I ./ITK180/Code/Utilities/DICOMParser -I ./ITK180/Utilities -I ./ITK180/Utilities/vxl/vcl -I ./ITK180/Utilities/vxl/core"; }; };
 		CEC708A510A5C844008935EA /* KeyObjectPopupController.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF1584070A6ABCB0009965C8 /* KeyObjectPopupController.mm */; };
@@ -23961,7 +23960,6 @@
 				CEC7089710A5C844008935EA /* KeyObjectController.mm in Sources */,
 				CEC7089810A5C844008935EA /* KeyObjectReport.mm in Sources */,
 				CEC7089910A5C844008935EA /* DefaultsOsiriX.m in Sources */,
-				CEC708A110A5C844008935EA /* BrowserControllerDCMTKCategory.mm in Sources */,
 				CEC708A210A5C844008935EA /* DicomFileDCMTKCategory.mm in Sources */,
 				CEC708A410A5C844008935EA /* DicomImageDCMTKCategory.mm in Sources */,
 				CEC708A510A5C844008935EA /* KeyObjectPopupController.mm in Sources */,
