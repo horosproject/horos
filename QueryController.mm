@@ -1808,14 +1808,6 @@ static const char *GetPrivateIP()
 					[wait showWindow:self];
 				}
 				
-				if( [DCMTKQueryRetrieveSCP storeSCP] == NO)
-				{
-					if( showGUI)
-						NSRunCriticalAlertPanel(NSLocalizedString( @"DICOM Query & Retrieve",nil),NSLocalizedString( @"DICOM Listener is not running, OsiriX cannot retrieve images.",nil),NSLocalizedString( @"OK",nil), nil, nil);
-					else
-						NSLog( @"***** DICOM Listener is not running, OsiriX cannot retrieve images.");
-				}
-				
 				checkAndViewTry = -1;
 				[NSThread detachNewThreadSelector:@selector( performRetrieve:) toTarget:self withObject: selectedItems];
 				

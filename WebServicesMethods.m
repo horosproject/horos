@@ -278,7 +278,7 @@
 					curWL = [[[im valueForKey:@"series"] valueForKey:@"windowLevel"] floatValue];
 				}
 				
-				if(curWW!=0 && curWW!=curWL)
+				if( curWW != 0)
 					[dcmPix checkImageAvailble:curWW :curWL];
 				else
 					[dcmPix checkImageAvailble:[dcmPix savedWW] :[dcmPix savedWL]];
@@ -619,7 +619,7 @@
 				int columns = [[parameters objectForKey:@"columns"] intValue];
 				int windowCenter = [[parameters objectForKey:@"windowCenter"] intValue];
 				int windowWidth = [[parameters objectForKey:@"windowWidth"] intValue];
-				int frameNumber = [[parameters objectForKey:@"frameNumber"] intValue];
+//				int frameNumber = [[parameters objectForKey:@"frameNumber"] intValue]; -> OsiriX stores frames as images
 				int imageQuality = DCMLosslessQuality;
 				
 				if( [parameters objectForKey:@"imageQuality"])
@@ -697,23 +697,122 @@
 						}
 						else if( [contentType isEqualToString: @"video/mpeg"])
 						{
+							DicomImage *im = [images lastObject];
 							
-						}
-						else if( [contentType isEqualToString: @"image/gif"])
-						{
+							NSArray *dicomImageArray = [[[im valueForKey: @"series"] valueForKey:@"images"] allObjects];
 							
-						}
-						else if( [contentType isEqualToString: @"image/png"])
-						{
+							@try
+							{
+								// Sort images with "instanceNumber"
+								NSSortDescriptor *sort = [[NSSortDescriptor alloc] initWithKey:@"instanceNumber" ascending:YES];
+								NSArray *sortDescriptors = [NSArray arrayWithObject:sort];
+								[sort release];
+								dicomImageArray = [dicomImageArray sortedArrayUsingDescriptors:sortDescriptors];
+								
+							}
+							@catch (NSException * e)
+							{
+								NSLog( @"%@", [e description]);
+							}
 							
-						}
-						else if( [contentType isEqualToString: @"image/jp2"])
-						{
-							
+							if( [dicomImageArray count] > 1)
+							{
+								NSString *path = @"/tmp/osirixwebservices";
+								[[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
+								
+								NSString *name = [NSString stringWithFormat:@"%@",[parameters objectForKey:@"id"]];//[[series lastObject] valueForKey:@"id"];
+								name = [name stringByAppendingFormat:@"-NBIM-%d", [dicomImageArray count]];
+								
+								NSString *fileName = [path stringByAppendingPathComponent:name];
+								fileName = [fileName stringByAppendingString:@".mov"];
+								NSString *outFile;
+								if( isiPhone)
+									outFile = [NSString stringWithFormat:@"%@2.m4v", [fileName stringByDeletingPathExtension]];
+								else
+									outFile = fileName;
+									
+								NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: isiPhone], @"isiPhone", fileURL, @"fileURL", fileName, @"fileName", outFile, @"outFile", mess, @"mess", parameters, @"parameters", dicomImageArray, @"dicomImageArray", [NSThread currentThread], @"thread", contentRange, @"contentRange", nil];
+								
+								[[[BrowserController currentBrowser] managedObjectContext] unlock];	// It's important because writeMovie will call performonmainthread !!!
+								
+								[self generateMovie: dict];
+								
+								[[[BrowserController currentBrowser] managedObjectContext] lock];
+								
+								data = [NSData dataWithContentsOfFile: outFile];
+								
+								if( data)
+									err = NO;
+							}
 						}
 						else // image/jpeg
 						{
+							DicomImage *im = [images lastObject];
 							
+							DCMPix* dcmPix = [[[DCMPix alloc] initWithPath:[im valueForKey:@"completePathResolved"] :0 :1 :nil :0 :[[im valueForKeyPath:@"series.id"] intValue] isBonjour:NO imageObj:im] autorelease];
+							
+							if(dcmPix)
+							{
+								NSImage *image = nil;
+								
+								float curWW = windowWidth;
+								float curWL = windowCenter;
+								
+								if( curWW == 0 && [[im valueForKey:@"series"] valueForKey:@"windowWidth"])
+								{
+									curWW = [[[im valueForKey:@"series"] valueForKey:@"windowWidth"] floatValue];
+									curWL = [[[im valueForKey:@"series"] valueForKey:@"windowLevel"] floatValue];
+								}
+								
+								if( curWW != 0)
+									[dcmPix checkImageAvailble:curWW :curWL];
+								else
+									[dcmPix checkImageAvailble:[dcmPix savedWW] :[dcmPix savedWL]];
+								
+								image = [dcmPix image];
+								float width = [image size].width;
+								float height = [image size].height;
+								
+								int maxWidth = columns;
+								int maxHeight = rows;
+								
+								BOOL resize = NO;
+								
+								if(width > maxWidth && maxWidth > 0)
+								{
+									height =  height * maxWidth / width;
+									width = maxWidth;
+									resize = YES;
+								}
+								if(height > maxHeight && maxHeight > 0)
+								{
+									width = width * maxHeight / height;
+									height = maxHeight;
+									resize = YES;
+								}
+								
+								NSImage *newImage;
+								
+								if( resize)
+									newImage = [image imageByScalingProportionallyToSize: NSMakeSize(width, height)];
+								else
+									newImage = image;
+									
+								NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData:[newImage TIFFRepresentation]];
+								NSDictionary *imageProps = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:1.0] forKey:NSImageCompressionFactor];
+								
+								if( [contentType isEqualToString: @"image/gif"])
+									data = [imageRep representationUsingType: NSGIFFileType properties:imageProps];
+								else if( [contentType isEqualToString: @"image/png"])
+									data = [imageRep representationUsingType: NSPNGFileType properties:imageProps];
+								else if( [contentType isEqualToString: @"image/jp2"])
+									data = [imageRep representationUsingType: NSJPEG2000FileType properties:imageProps];
+								else
+									data = [imageRep representationUsingType: NSJPEGFileType properties:imageProps];
+								
+								if( data)
+									err = NO;
+							}
 						}
 					}
 					else NSLog( @"****** WADO Server : image uid not found !");
@@ -1044,15 +1143,11 @@
 				NSArray *dicomImageArray = [[[series lastObject] valueForKey:@"images"] allObjects];
 				DicomImage *im;
 				if([dicomImageArray count] == 1)
-				{
 					im = [dicomImageArray lastObject];
-				}
 				else
-				{
 					im = [dicomImageArray objectAtIndex:[dicomImageArray count]/2];
-				}
 				
-				DCMPix* dcmPix = [[DCMPix alloc] initWithPath:[im valueForKey:@"completePathResolved"] :0 :1 :nil :[[[dicomImageArray lastObject] valueForKey: @"numberOfFrames"] intValue]/2 :[[im valueForKeyPath:@"series.id"] intValue] isBonjour:NO imageObj:im];
+				DCMPix* dcmPix = [[DCMPix alloc] initWithPath:[im valueForKey:@"completePathResolved"] :0 :1 :nil :[[im valueForKey: @"numberOfFrames"] intValue]/2 :[[im valueForKeyPath:@"series.id"] intValue] isBonjour:NO imageObj:im];
 				  
 				if(dcmPix)
 				{
@@ -1065,7 +1160,7 @@
 						curWL = [[[im valueForKey:@"series"] valueForKey:@"windowLevel"] floatValue];
 					}
 					
-					if(curWW!=0 && curWW!=curWL)
+					if( curWW != 0)
 						[dcmPix checkImageAvailble:curWW :curWL];
 					else
 						[dcmPix checkImageAvailble:[dcmPix savedWW] :[dcmPix savedWL]];
@@ -1108,7 +1203,6 @@
 				NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData:[newImage TIFFRepresentation]];
 				NSDictionary *imageProps = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:1.0] forKey:NSImageCompressionFactor];
 				data = [imageRep representationUsingType:NSPNGFileType properties:imageProps];
-				
 			}
 			
 			err = NO;

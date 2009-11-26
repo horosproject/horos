@@ -55,7 +55,13 @@ extern NSRecursiveLock *PapyrusLock;
 		DcmXfer filexfer(fileformat.getDataset()->getOriginalXfer());
 		DcmXfer xfer( [syntax UTF8String]);
 		
-		if (filexfer.getXfer() == xfer.getXfer())
+		if( filexfer.getXfer() == xfer.getXfer())
+			return [NSData dataWithContentsOfFile: file];
+		
+		if(  filexfer.getXfer() == EXS_JPEG2000 && xfer.getXfer() == EXS_JPEG2000LosslessOnly)
+			return [NSData dataWithContentsOfFile: file];
+			
+		if(  filexfer.getXfer() == EXS_JPEG2000LosslessOnly && xfer.getXfer() == EXS_JPEG2000)
 			return [NSData dataWithContentsOfFile: file];
 		
 		DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile: file decodingPixelData: NO];
