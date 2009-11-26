@@ -957,7 +957,7 @@ NSString* asciiString (NSString* name);
 			t = [[[NSTask alloc] init] autorelease];
 			[t setLaunchPath: @"/usr/bin/zip"];
 			[t setCurrentDirectoryPath: [burnFolder stringByDeletingLastPathComponent]];
-			args = [NSArray arrayWithObjects: [[burnFolder stringByDeletingLastPathComponent] stringByAppendingPathComponent: @"encryptedDICOM.zip"], [burnFolder lastPathComponent], @"-r", @"-e", @"-P", self.password, nil];
+			args = [NSArray arrayWithObjects: @"-P", self.password, @"-r", @"-e", [[burnFolder stringByDeletingLastPathComponent] stringByAppendingPathComponent: @"encryptedDICOM.zip"], [burnFolder lastPathComponent], nil];
 			[t setArguments: args];
 			[t launch];
 			[t waitUntilExit];
