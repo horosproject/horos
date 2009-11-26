@@ -21,6 +21,10 @@
 
 
 + (id)dicomDate:(NSString *)string{
+
+	if( string == nil) 
+		return nil;
+		
 	if ([string rangeOfString:@"-"].location == NSNotFound){
 		//format for DA is YYMMDD = @"%Y%m%d"
 		if (DCMDEBUG)
