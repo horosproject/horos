@@ -372,6 +372,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (IBAction)showhide:(id)sender;
 - (IBAction) selectAll3DSeries:(id) sender;
 - (IBAction) selectAll4DSeries:(id) sender;
+- (IBAction) switchSoundex: (id)sender;
 - (void) exportDICOMFile:(id) sender;
 - (void) viewerDICOM:(id) sender;
 - (void)newViewerDICOM:(id) sender;

@@ -11821,12 +11821,18 @@ static NSArray*	openSubSeriesArray = nil;
 
 // For the DB: fullscreen is equivalent to 'go to the search field'
 
+- (IBAction) switchSoundex: (id)sender
+{
+	[self setSearchString: _searchString];
+}
+
 - (IBAction) searchField: (id)sender
 {
 	// Is the item available in the toolbar?
 	NSArray	*visibleItems = [toolbar visibleItems];
 	
-	for( id toolbarItem in visibleItems){
+	for( id toolbarItem in visibleItems)
+	{
 		if( [[toolbarItem itemIdentifier] isEqualToString: SearchToolbarItemIdentifier])
 		{
 			[self.window makeFirstResponder: searchField];
