@@ -5249,7 +5249,7 @@ static NSArray*	statesArray = nil;
 	NSMutableArray *i = [NSMutableArray arrayWithArray: [[toolbar items] valueForKey: @"itemIdentifier"]];
 	if( [i containsString: OpenKeyImagesAndROIsToolbarItemIdentifier] && isCurrentDatabaseBonjour == NO)
 	{
-		if( [[self window] firstResponder] == databaseOutline && [[databaseOutline selectedRowIndexes] count] > 10)
+		if( [[databaseOutline selectedRowIndexes] count] > 10)	//[[self window] firstResponder] == databaseOutline && 
 			ROIsAndKeyImagesButtonAvailable = YES;
 		else
 		{
