@@ -26,7 +26,7 @@
 		DCMObject			*dcmDst;
 		
 		// Raw data support
-		unsigned char		*data;
+		unsigned char		*data, *localData;
 		long				width, height, spp, bps;
 		BOOL				isSigned, modalityAsSource;
 		int					offset;

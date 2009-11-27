@@ -90,7 +90,10 @@
 {
 	NSLog(@"DICOMExport released");
 	
-	// NSImage support
+	if( localData)
+		free( localData);
+	localData = nil;
+	
 	[image release];
 	[imageRepresentation release];
 	if( freeImageData) free( imageData);
@@ -132,6 +135,10 @@
 		width:				(long) iwidth
 		height:				(long) iheight
 {
+	if( localData)
+		free( localData);
+	localData = nil;
+	
 	spp = ispp;
 	bps = ibps;
 	width = iwidth;
@@ -141,6 +148,26 @@
 	isSigned = NO;
 	offset = -1024;
 	
+	if( spp == 4 && bps == 8)
+	{
+		localData = malloc( width * height * 3);
+		if( localData)
+		{
+			spp = 3;
+			
+			for( int y = 0; y < height; y++)
+			{
+				for( int x = 0; x < width; x++)
+				{
+					localData[ 0 + x*3 + y*width*3] = data[ 0+ x*4 + y*width*4];
+					localData[ 1 + x*3 + y*width*3] = data[ 1+ x*4 + y*width*4];
+					localData[ 2 + x*3 + y*width*3] = data[ 2+ x*4 + y*width*4];
+				}
+			}
+			
+			data = localData;
+		}
+	}
 	return 0;
 }
 
