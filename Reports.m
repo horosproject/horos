@@ -335,6 +335,7 @@ static id aedesc_to_id(AEDesc *desc)
 		case 5:
 		{
 			NSString *destinationFile = [NSString stringWithFormat:@"%@%@.%@", path, uniqueFilename, @"odt"];
+			[[NSFileManager defaultManager] copyPath:[[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/ReportTemplate.odt"] toPath:destinationFile handler: nil];
 			[self createNewOpenDocumentReportForStudy:study toDestinationPath:destinationFile];
 			[study setValue:destinationFile forKey:@"reportURL"];
 		}
@@ -445,6 +446,9 @@ CHECK;
 
 - (void)searchAndReplaceFieldsFromStudy:(NSManagedObject*)aStudy inString:(NSMutableString*)aString;
 {
+	if( aString == nil)
+		return;
+		
 	NSManagedObjectModel *model = [[[aStudy managedObjectContext] persistentStoreCoordinator] managedObjectModel];
 	NSArray *properties = [[[[model entitiesByName] objectForKey:@"Study"] attributesByName] allKeys];
 	
@@ -466,10 +470,12 @@ CHECK;
 		//		« is encoded as &#xAB;
 		//      » is encoded as &#xBB;
 		[aString replaceOccurrencesOfString:[NSString stringWithFormat:@"&#xAB;%@&#xBB;", propertyName] withString:propertyValue options:NSLiteralSearch range:NSMakeRange(0, [aString length])];
+		[aString replaceOccurrencesOfString:[NSString stringWithFormat:@"«%@»", propertyName] withString:propertyValue options:NSLiteralSearch range:NSMakeRange(0, [aString length])];
 	}
 	
 	// "today"
 	[aString replaceOccurrencesOfString:@"&#xAB;today&#xBB;" withString:[date stringFromDate: [NSDate date]] options:NSLiteralSearch range:NSMakeRange(0, [aString length])];
+	[aString replaceOccurrencesOfString:@"«today»" withString:[date stringFromDate: [NSDate date]] options:NSLiteralSearch range:NSMakeRange(0, [aString length])];
 	
 	NSArray	*seriesArray = [[BrowserController currentBrowser] childrenArray: aStudy];
 	NSArray	*imagePathsArray = [[BrowserController currentBrowser] imagesPathArray: [seriesArray objectAtIndex: 0]];
@@ -479,9 +485,15 @@ CHECK;
 	do
 	{
 		NSRange firstChar = [aString rangeOfString: @"&#xAB;DICOM_FIELD:"];
+		
+		if( firstChar.location == NSNotFound)
+			firstChar = [aString rangeOfString: @"«DICOM_FIELD:"];
+		
 		if( firstChar.location != NSNotFound)
 		{
 			NSRange secondChar = [aString rangeOfString: @"&#xBB;"];
+			if( secondChar.location == NSNotFound)
+				secondChar = [aString rangeOfString: @"»"];
 			
 			if( secondChar.location != NSNotFound)
 			{
@@ -552,8 +564,10 @@ CHECK;
 	// decompress the gzipped index.xml.gz file in the .pages bundle
 	NSTask *unzip = [[[NSTask alloc] init] autorelease];
 	[unzip setLaunchPath:@"/usr/bin/unzip"];
-	[unzip setCurrentDirectoryPath: aPath];
-	[unzip setArguments:[NSArray arrayWithObjects:@"-d", @"OOOsiriX", nil]];
+	[unzip setCurrentDirectoryPath: [aPath stringByDeletingLastPathComponent]];
+	
+	[[NSFileManager defaultManager] removeItemAtPath: [[aPath stringByDeletingLastPathComponent] stringByAppendingPathComponent: @"OOOsiriX"] error: nil];
+	[unzip setArguments: [NSArray arrayWithObjects: aPath, @"-d", @"OOOsiriX", nil]];
 	[unzip launch];
 
 	[unzip waitUntilExit];
@@ -568,11 +582,11 @@ CHECK;
 	}
 	
 	// read the xml file and find & replace templated string with patient's datas
-	NSString *indexFilePath = [NSString stringWithFormat:@"%@/content.xml", aPath];
+	NSString *indexFilePath = [NSString stringWithFormat:@"%@/OOOsiriX/content.xml", [aPath stringByDeletingLastPathComponent]];
 	NSError *xmlError = nil;
 	NSStringEncoding xmlFileEncoding = NSUTF8StringEncoding;
 	NSMutableString *xmlContentString = [NSMutableString stringWithContentsOfFile:indexFilePath encoding:xmlFileEncoding error:&xmlError];
-
+	
 	[self searchAndReplaceFieldsFromStudy:aStudy inString:xmlContentString];
 	
 	if(![xmlContentString writeToFile:indexFilePath atomically:YES encoding:xmlFileEncoding error:&xmlError])
@@ -581,20 +595,22 @@ CHECK;
 	// zip back the index.xml file
 	unzip = [[[NSTask alloc] init] autorelease];
 	[unzip setLaunchPath:@"/usr/bin/zip"];
-	[unzip setCurrentDirectoryPath:aPath];
-	[unzip setArguments:[NSArray arrayWithObjects:@"content.xml", nil]];
+	[unzip setCurrentDirectoryPath: [[aPath stringByDeletingLastPathComponent] stringByAppendingPathComponent: @"OOOsiriX"]];
+	[unzip setArguments: [NSArray arrayWithObjects: @"-r", aPath, @"content.xml", nil]];
 	[unzip launch];
 
 	[unzip waitUntilExit];
 	status = [unzip terminationStatus];
  
 	if (status == 0)
-		NSLog(@"OO Report creation. Gzip succeeded.");
+		NSLog(@"OO Report creation. zip succeeded.");
 	else
 	{
-		NSLog(@"OO Report creation  failed. Cause: Gzip failed.");
+		NSLog(@"OO Report creation  failed. Cause: zip failed.");
 		// we don't need to return NO, because the xml has been modified. Thus, even if the file is not compressed, the report is valid...
 	}
+	
+	[[NSFileManager defaultManager] removeItemAtPath: [[aPath stringByDeletingLastPathComponent] stringByAppendingPathComponent: @"OOOsiriX"] error: nil];
 	
 	// open the modified .odt file
 	[[NSWorkspace sharedWorkspace] openFile:aPath withApplication:@"OpenOffice"];
