@@ -35,7 +35,7 @@ static NSDate *CachedPluginsListDate = nil;
 - (void)keyDown:(NSEvent *)event
 {
 	unichar c = [[event characters] characterAtIndex:0];
-	if ((c == NSDeleteCharacter || c == NSBackspaceCharacter) && [self selectedRow] >= 0 && [self numberOfRows] > 0)
+	if (( c == NSDeleteFunctionKey || c == NSDeleteCharacter || c == NSBackspaceCharacter || c == NSDeleteCharFunctionKey) && [self selectedRow] >= 0 && [self numberOfRows] > 0)
 		[[self delegate] delete:self];
 	else
 		 [super keyDown:event];
