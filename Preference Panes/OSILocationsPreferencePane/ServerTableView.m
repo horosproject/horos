@@ -18,23 +18,25 @@
 
 @implementation ServerTableView
 
-- (void)keyDown:(NSEvent *)event{
+- (void) keyDown: (NSEvent *) event
+{
 	unichar c = [[event characters] characterAtIndex:0];
-	if ((c == NSDeleteCharacter || c == NSBackspaceCharacter) && [self selectedRow] >= 0 && [self numberOfRows] > 0) {
-			[[self delegate] deleteSelectedRow:self];
+	
+	if (( c == NSDeleteFunctionKey || c == NSDeleteCharacter || c == NSBackspaceCharacter || c == NSDeleteCharFunctionKey) && [self selectedRow] >= 0 && [self numberOfRows] > 0)
+	{
+		[[self delegate] deleteSelectedRow:self];
 	}
 	else
-		 [super keyDown:event];
+		[super keyDown:event];
 }
 
 - (NSDragOperation)draggingSourceOperationMaskForLocal:(BOOL)flag
 {
-	if (!flag) {
+	if( !flag)
+	{
 		// link for external dragged URLs
 		return NSDragOperationLink;
 	}
 	return [super draggingSourceOperationMaskForLocal:flag];
 }
-
-
 @end
