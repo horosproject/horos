@@ -201,6 +201,7 @@
 	// 2 : Pages
 	// 3 : Plugin
 	// 4 : DICOM SR
+	// 5 : OO
 	
 	NSUserDefaults	*defaults = [NSUserDefaults standardUserDefaults];
 	

@@ -181,13 +181,13 @@ static id aedesc_to_id(AEDesc *desc)
 
 - (BOOL) createNewReport:(NSManagedObject*) study destination:(NSString*) path type:(int) type
 {	
-	NSString	*uniqueFilename = [Reports getUniqueFilename: study];
+	NSString *uniqueFilename = [Reports getUniqueFilename: study];
 	
 	switch( type)
 	{
 		case 0:
 		{
-			NSString	*destinationFile = [NSString stringWithFormat:@"%@%@.%@", path, uniqueFilename, @"doc"];
+			NSString *destinationFile = [NSString stringWithFormat:@"%@%@.%@", path, uniqueFilename, @"doc"];
 			
 			[self runScript: [self reportScriptBody: study path: destinationFile]];
 			
@@ -328,6 +328,14 @@ static id aedesc_to_id(AEDesc *desc)
 		{
 			NSString *destinationFile = [NSString stringWithFormat:@"%@%@.%@", path, uniqueFilename, @"pages"];
 			[self createNewPagesReportForStudy:study toDestinationPath:destinationFile];
+			[study setValue:destinationFile forKey:@"reportURL"];
+		}
+		break;
+		
+		case 5:
+		{
+			NSString *destinationFile = [NSString stringWithFormat:@"%@%@.%@", path, uniqueFilename, @"odt"];
+			[self createNewOpenDocumentReportForStudy:study toDestinationPath:destinationFile];
 			[study setValue:destinationFile forKey:@"reportURL"];
 		}
 		break;
@@ -536,6 +544,63 @@ CHECK;
 	[script appendString:@"end tell\n"];
 	
 	return script;
+}
+
+
+- (BOOL) createNewOpenDocumentReportForStudy:(NSManagedObject*)aStudy toDestinationPath:(NSString*)aPath;
+{
+	// decompress the gzipped index.xml.gz file in the .pages bundle
+	NSTask *unzip = [[[NSTask alloc] init] autorelease];
+	[unzip setLaunchPath:@"/usr/bin/unzip"];
+	[unzip setCurrentDirectoryPath: aPath];
+	[unzip setArguments:[NSArray arrayWithObjects:@"-d", @"OOOsiriX", nil]];
+	[unzip launch];
+
+	[unzip waitUntilExit];
+	int status = [unzip terminationStatus];
+ 
+	if (status == 0)
+		NSLog(@"OO Report creation. unzip -d succeeded.");
+	else
+	{
+		NSLog(@"OO Report creation  failed. Cause: unzip -d failed.");
+		return NO;
+	}
+	
+	// read the xml file and find & replace templated string with patient's datas
+	NSString *indexFilePath = [NSString stringWithFormat:@"%@/content.xml", aPath];
+	NSError *xmlError = nil;
+	NSStringEncoding xmlFileEncoding = NSUTF8StringEncoding;
+	NSMutableString *xmlContentString = [NSMutableString stringWithContentsOfFile:indexFilePath encoding:xmlFileEncoding error:&xmlError];
+
+	[self searchAndReplaceFieldsFromStudy:aStudy inString:xmlContentString];
+	
+	if(![xmlContentString writeToFile:indexFilePath atomically:YES encoding:xmlFileEncoding error:&xmlError])
+		return NO;
+	
+	// zip back the index.xml file
+	unzip = [[[NSTask alloc] init] autorelease];
+	[unzip setLaunchPath:@"/usr/bin/zip"];
+	[unzip setCurrentDirectoryPath:aPath];
+	[unzip setArguments:[NSArray arrayWithObjects:@"content.xml", nil]];
+	[unzip launch];
+
+	[unzip waitUntilExit];
+	status = [unzip terminationStatus];
+ 
+	if (status == 0)
+		NSLog(@"OO Report creation. Gzip succeeded.");
+	else
+	{
+		NSLog(@"OO Report creation  failed. Cause: Gzip failed.");
+		// we don't need to return NO, because the xml has been modified. Thus, even if the file is not compressed, the report is valid...
+	}
+	
+	// open the modified .odt file
+	[[NSWorkspace sharedWorkspace] openFile:aPath withApplication:@"OpenOffice"];
+	
+	// end
+	return YES;
 }
 
 - (BOOL)createNewPagesReportForStudy:(NSManagedObject*)aStudy toDestinationPath:(NSString*)aPath;

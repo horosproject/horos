@@ -13985,12 +13985,11 @@ static volatile int numberOfThreadsForJPEG = 0;
 		@try
 		{
 			NSString *dbFolder = [self localDocumentsDirectory];
-			
 			NSString *INpath = [dbFolder stringByAppendingPathComponent:INCOMINGPATH];
-			NSString *toBeIndexed = [dbFolder stringByAppendingPathComponent:TOBEINDEXED];
 			NSString *ERRpath = [dbFolder stringByAppendingPathComponent:ERRPATH];
 			NSString *OUTpath = [dbFolder stringByAppendingPathComponent:DATABASEPATH];
 			NSString *DECOMPRESSIONpath = [dbFolder stringByAppendingPathComponent:DECOMPRESSIONPATH];
+			NSString *toBeIndexed = [dbFolder stringByAppendingPathComponent:TOBEINDEXED];
 			
 			NSMutableArray *twoStepsIndexingArrayFrom = [NSMutableArray array];
 			NSMutableArray *twoStepsIndexingArrayTo = [NSMutableArray array];
@@ -14001,9 +14000,10 @@ static volatile int numberOfThreadsForJPEG = 0;
 				INpath = [self folderPathResolvingAliasAndSymLink:INpath];
 				OUTpath = [self folderPathResolvingAliasAndSymLink:OUTpath];
 				ERRpath = [self folderPathResolvingAliasAndSymLink:ERRpath];
-				toBeIndexed = [self folderPathResolvingAliasAndSymLink: toBeIndexed];
 				DECOMPRESSIONpath = [self folderPathResolvingAliasAndSymLink:DECOMPRESSIONpath];
-				
+				if( twoStepsIndexing)
+					toBeIndexed = [self folderPathResolvingAliasAndSymLink: toBeIndexed];
+					
 				[AppController createNoIndexDirectoryIfNecessary: OUTpath];
 				
 				NSString *pathname;
@@ -14154,6 +14154,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 					for( int i = 0 ; i < [twoStepsIndexingArrayFrom count] ; i++)
 					{
 						[[NSFileManager defaultManager] moveItemAtPath: [twoStepsIndexingArrayFrom objectAtIndex: i] toPath: [twoStepsIndexingArrayTo objectAtIndex: i] error: nil];
+						[[NSFileManager defaultManager] removeItemAtPath: [twoStepsIndexingArrayFrom objectAtIndex: i]  error: nil];
 					}
 					
 					[checkIncomingLock lock];
@@ -16448,7 +16449,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 					
 					if( localFile != nil && [[NSFileManager defaultManager] fileExistsAtPath: localFile] == YES)
 					{
-						if (reportsMode < 3)
+						if (reportsMode != 3)
 							[[NSWorkspace sharedWorkspace] openFile: localFile];
 						else
 						{
@@ -16487,7 +16488,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 					// Is there a Report URL ? If yes, open it; If no, create a new one
 					if( [studySelected valueForKey:@"reportURL"] != nil && [[NSFileManager defaultManager] fileExistsAtPath:[studySelected valueForKey:@"reportURL"]] == YES)
 					{
-						if (reportsMode < 3)
+						if (reportsMode != 3)
 							[[NSWorkspace sharedWorkspace] openFile: [studySelected valueForKey:@"reportURL"]];
 						else
 						{
@@ -16499,7 +16500,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 					}
 					else
 					{
-						if (reportsMode < 3)
+						if (reportsMode != 3)
 						{
 							Reports	*report = [[Reports alloc] init];
 							if([[sender class] isEqualTo:[reportTemplatesListPopUpButton class]])[report setTemplateName:[[sender selectedItem] title]];
@@ -16551,6 +16552,11 @@ static volatile int numberOfThreadsForJPEG = 0;
 			
 			iconName = @"ReportPages.icns";
 			reportToolbarItemType = 2;
+		break;
+		case 5:
+		//	OpenOffice.app
+		//	iconName = @"ReportOO.icns";
+			reportToolbarItemType = 3;
 		break;
 		default:
 			reportToolbarItemType = 3;

@@ -2339,6 +2339,12 @@ static BOOL initialized = NO;
 				
 				[path writeToFile:path atomically:NO encoding: NSUTF8StringEncoding error: nil];
 				
+				if( [[NSFileManager defaultManager] fileExistsAtPath:[documentsDirectory() stringByAppendingPathComponent:@"/TOBEINDEXED.noindex/"]])
+				{
+					[[NSFileManager defaultManager]	movePath: [documentsDirectory() stringByAppendingPathComponent:@"/TOBEINDEXED.noindex/"]
+													toPath: [documentsDirectory() stringByAppendingPathComponent:@"/INCOMING.noindex/TOBEINDEXED.noindex"] handler: nil];
+				}
+				
 				NSString *reportsDirectory = [documentsDirectory() stringByAppendingPathComponent:@"/REPORTS/"];
 				if ([[NSFileManager defaultManager] fileExistsAtPath:reportsDirectory] == NO) [[NSFileManager defaultManager] createDirectoryAtPath:reportsDirectory attributes:nil];
 				
@@ -2366,6 +2372,11 @@ static BOOL initialized = NO;
 				reportFile = [documentsDirectory() stringByAppendingPathComponent:@"/ReportTemplate.rtf"];
 				if ([[NSFileManager defaultManager] fileExistsAtPath:reportFile] == NO)
 					[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/ReportTemplate.rtf"] toPath:[documentsDirectory() stringByAppendingPathComponent:@"/ReportTemplate.rtf"] handler:nil];
+				
+				reportFile = [documentsDirectory() stringByAppendingPathComponent:@"/ReportTemplate.odt"];
+				if ([[NSFileManager defaultManager] fileExistsAtPath:reportFile] == NO)
+					[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/ReportTemplate.odt"] toPath:[documentsDirectory() stringByAppendingPathComponent:@"/ReportTemplate.odt"] handler:nil];
+				
 				
 				[AppController checkForHTMLTemplates];
 				[AppController checkForPagesTemplate];

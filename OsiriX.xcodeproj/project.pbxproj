@@ -7490,6 +7490,7 @@
 		CEFA965110A75E5B00F9512D /* DCMNetServiceDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EBB31080887269B00BF6B39 /* DCMNetServiceDelegate.m */; };
 		CEFA967610A760E700F9512D /* DCMCalendarDate.m in Sources */ = {isa = PBXBuildFile; fileRef = BF61E58D06A5BB9E001C0B29 /* DCMCalendarDate.m */; };
 		CEFA967710A760E800F9512D /* DCMCalendarDate.h in Headers */ = {isa = PBXBuildFile; fileRef = BF61E58C06A5BB9E001C0B29 /* DCMCalendarDate.h */; };
+		CEFB8A9910C19902000DCCB0 /* ReportTemplate.odt in Resources */ = {isa = PBXBuildFile; fileRef = CEFB8A9810C19902000DCCB0 /* ReportTemplate.odt */; };
 		CEFBB1910B358C8F00666FA9 /* BackPressed.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEFBB18B0B358C8F00666FA9 /* BackPressed.tif */; };
 		CEFBB1920B358C8F00666FA9 /* ForwardDisabled.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEFBB18C0B358C8F00666FA9 /* ForwardDisabled.tif */; };
 		CEFBB1930B358C8F00666FA9 /* BackDisabled.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEFBB18D0B358C8F00666FA9 /* BackDisabled.tif */; };
@@ -11583,6 +11584,7 @@
 		CEF9E7D60811B67D00412C8A /* Scheduler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Scheduler.m; sourceTree = "<group>"; };
 		CEF9E7DE0811B69B00412C8A /* StaticScheduler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StaticScheduler.h; sourceTree = "<group>"; };
 		CEF9E7E60811B6AD00412C8A /* StaticScheduler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StaticScheduler.m; sourceTree = "<group>"; };
+		CEFB8A9810C19902000DCCB0 /* ReportTemplate.odt */ = {isa = PBXFileReference; lastKnownFileType = file; name = ReportTemplate.odt; path = Binaries/ReportTemplate.odt; sourceTree = "<group>"; };
 		CEFBB1890B358C8F00666FA9 /* Back.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Back.tif; sourceTree = "<group>"; };
 		CEFBB18A0B358C8F00666FA9 /* Forward.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Forward.tif; sourceTree = "<group>"; };
 		CEFBB18B0B358C8F00666FA9 /* BackPressed.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = BackPressed.tif; sourceTree = "<group>"; };
@@ -11975,6 +11977,7 @@
 				CE8CAB0A0B4715DD0068DBAE /* DICOMPrint */,
 				AB7250370ADE6F5D00A212A0 /* Decompress */,
 				AB9DCD7A09A9C47800AA19E7 /* ReportTemplate.rtf */,
+				CEFB8A9810C19902000DCCB0 /* ReportTemplate.odt */,
 				ABEF846909A23EF5006CEC3E /* ReportTemplate.doc */,
 				A92155E50ADCF319008D881E /* OsiriX Report.template */,
 				A95B98AA0A6E65C900E476D4 /* QTExportPatientsTemplate.html */,
@@ -21694,6 +21697,7 @@
 				CE1C4EF30FDA6F5300185561 /* tagDictionary.plist in Resources */,
 				CED1FD1B1035E9BB0076AB33 /* SetPixelValue.png in Resources */,
 				CED1FD1C1035E9BB0076AB33 /* GrowingRegion.png in Resources */,
+				CEFB8A9910C19902000DCCB0 /* ReportTemplate.odt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
