@@ -726,7 +726,7 @@
 	[dicomData appendData:data];
 	int length = [string length];
 	if (length%2)
-		[self addUnsignedChar:0];
+		[self addUnsignedChar: ' '];
 	
 }
 - (void)addString:(NSString *)string withEncoding:(NSStringEncoding)encoding{
@@ -734,7 +734,7 @@
 	[dicomData appendData:data];
 	int length = [string length];
 	if (length%2)
-		[self addUnsignedChar:0];
+		[self addUnsignedChar:' '];
 	
 }
 
