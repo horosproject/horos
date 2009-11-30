@@ -878,7 +878,8 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
 						
 					[pluginDescription setObject:pluginVersion forKey:@"version"];
 					
-					if(bundleInfoDict != NULL) CFRelease( bundleInfoDict);
+					if(bundleInfoDict != NULL)
+						CFRelease( bundleInfoDict);
 					
 					// plugin description dictionary
 					[plugins addObject:pluginDescription];

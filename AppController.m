@@ -1756,14 +1756,11 @@ static NSDate *lastWarningDate = nil;
 			NSURL *bundleURL = [NSURL fileURLWithPath:[PluginManager pathResolved:path]];
 			CFDictionaryRef bundleInfoDict = CFBundleCopyInfoDictionaryInDirectory((CFURLRef)bundleURL);
 						
-			CFStringRef versionString;
+			CFStringRef versionString = nil;
 			if(bundleInfoDict != NULL)
-			{
 				versionString = CFDictionaryGetValue(bundleInfoDict, CFSTR("CFBundleVersion"));
-				CFRelease( bundleInfoDict);
-			}
 			
-			NSString *pluginBundleVersion;
+			NSString *pluginBundleVersion = nil;
 			if(versionString != NULL)
 				pluginBundleVersion = (NSString*)versionString;
 			else
@@ -1787,6 +1784,9 @@ static NSDate *lastWarningDate = nil;
 					[active setObject:[plug objectForKey:@"active"] forKey:path];
 				}
 			}
+			
+			if( bundleInfoDict)
+				CFRelease( bundleInfoDict);
 		}
 		
 		pluginNames = [NSMutableString stringWithString:[pluginNames substringToIndex:[pluginNames length]-2]];
