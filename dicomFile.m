@@ -672,7 +672,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 					{
 						NSSize newSize = [otherImage size];
 							
-						newSize.width *= 1.5;		// Increase PDF resolution to 72 * 1.5 DPI !
+						newSize.width *= 1.5;		// Increase PDF resolution to 72 * X DPI !
 						newSize.height *= 1.5;		// KEEP THIS VALUE IN SYNC WITH DCMPIX.M
 						
 						[otherImage setScalesWhenResized:YES];
@@ -773,7 +773,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 					
 					NoOfFrames = [pdfRepresentation pageCount];
 					
-					if( NoOfFrames > 20) NoOfFrames = 20;   // Limit number of pages to 20 !
+					if( NoOfFrames > 50) NoOfFrames = 50;   // Limit number of pages
 				}
 				
 				[dicomElements setObject:studyID forKey:@"studyID"];

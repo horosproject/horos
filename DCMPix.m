@@ -5375,9 +5375,18 @@ END_CREATE_ROIS:
 		NSData *pdfData = [dcmObject attributeValueWithName:@"EncapsulatedDocument"];
 		
 		NSPDFImageRep *rep = [NSPDFImageRep imageRepWithData: pdfData];	
-		[rep setCurrentPage: frameNo];	
+		[rep setCurrentPage: frameNo];
+		
 		NSImage *pdfImage = [[[NSImage alloc] init] autorelease];
 		[pdfImage addRepresentation: rep];
+		
+		NSSize newSize = [pdfImage size];
+		
+		newSize.width *= 1.5;		// Increase PDF resolution to 72 * X DPI !
+		newSize.height *= 1.5;		// KEEP THIS VALUE IN SYNC WITH DICOMFILE.M
+		
+		[pdfImage setScalesWhenResized:YES];
+		[pdfImage setSize: newSize];
 		
 		[self getDataFromNSImage: pdfImage];
 		
@@ -7737,6 +7746,14 @@ END_CREATE_ROIS:
 									NSImage *pdfImage = [[[NSImage alloc] init] autorelease];
 									[pdfImage addRepresentation: rep];
 									
+									NSSize newSize = [pdfImage size];
+									
+									newSize.width *= 1.5;		// Increase PDF resolution to 72 * X DPI !
+									newSize.height *= 1.5;		// KEEP THIS VALUE IN SYNC WITH DICOMFILE.M
+									
+									[pdfImage setScalesWhenResized:YES];
+									[pdfImage setSize: newSize];
+									
 									[self getDataFromNSImage: pdfImage];
 								}
 								
@@ -8288,7 +8305,12 @@ END_CREATE_ROIS:
 	
 	NSBitmapImageRep *rep = [NSBitmapImageRep imageRepWithData: [otherImage TIFFRepresentation]];
 	
-	NSImage *r = [[[NSImage alloc] initWithSize: NSMakeSize( [rep pixelsWide], [rep pixelsHigh])] autorelease];
+	NSImage *r = nil;
+	
+	if( [rep pixelsWide] > [otherImage size].width)
+		r = [[[NSImage alloc] initWithSize: NSMakeSize( [rep pixelsWide], [rep pixelsHigh])] autorelease];
+	else
+		r = [[[NSImage alloc] initWithSize: NSMakeSize( [otherImage size].width, [otherImage size].height)] autorelease];
 	
 	[r lockFocus];
 	[[NSColor whiteColor] set];
@@ -9237,7 +9259,7 @@ END_CREATE_ROIS:
 					{
 						NSSize			newSize = [otherImage size];
 						
-						newSize.width *= 1.5;		// Increase PDF resolution to 72 * 1.5 DPI !
+						newSize.width *= 1.5;		// Increase PDF resolution to 72 * X DPI !
 						newSize.height *= 1.5;		// KEEP THIS VALUE IN SYNC WITH DICOMFILE.M
 						
 						[otherImage setScalesWhenResized:YES];
