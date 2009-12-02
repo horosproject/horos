@@ -631,6 +631,22 @@ static NSArray*	statesArray = nil;
 						{
 							if( [[curDict objectForKey: @"patientUID"] caseInsensitiveCompare: [[studiesArray objectAtIndex: index] valueForKey: @"patientUID"]] == NSOrderedSame)
 								study = [studiesArray objectAtIndex: index];
+							else
+							{
+								NSLog( @"**** same studyUID (%@), but not same patientUID (%@ versus %@)", [curDict objectForKey: @"studyID"], [curDict objectForKey: @"patientUID"], [[studiesArray objectAtIndex: index] valueForKey: @"patientUID"]);
+								
+								NSString *curUID = [curDict objectForKey: @"studyID"];
+								for( int i = 0 ; i < [studiesArrayStudyInstanceUID count]; i++)
+								{
+									NSString *uid = [studiesArrayStudyInstanceUID objectAtIndex: i];
+									
+									if( [uid isEqualToString: curUID])
+									{
+										if( [[curDict objectForKey: @"patientUID"] caseInsensitiveCompare: [[studiesArray objectAtIndex: i] valueForKey: @"patientUID"]] == NSOrderedSame)
+											study = [studiesArray objectAtIndex: i];
+									}
+								}
+							}
 						}
 						
 						if( study == nil)
