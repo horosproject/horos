@@ -74,6 +74,7 @@ NSMutableArray			*accumulateAnimationsArray = nil;
 BOOL					accumulateAnimations = NO;
 
 extern int delayedTileWindows;
+extern NSString* getMacAddress( void);
 
 enum	{kSuccess = 0,
         kCouldNotFindRequestedProcess = -1, 
@@ -1341,7 +1342,7 @@ static NSDate *lastWarningDate = nil;
 		if( checkSN64String && checkSN64Service)
 		{
 			[checkSN64Service setDelegate: self];
-			[checkSN64Service setTXTRecordData: [NSNetService dataFromTXTRecordDictionary: [NSDictionary dictionaryWithObject: checkSN64String forKey: @"sn"]]];
+			[checkSN64Service setTXTRecordData: [NSNetService dataFromTXTRecordDictionary: [NSDictionary dictionaryWithObjectsAndKeys: checkSN64String, @"sn", getMacAddress(), @"MAC", nil]]];
 			[checkSN64Service publishWithOptions: NSNetServiceNoAutoRename];
 		}
 	}
@@ -1516,10 +1517,11 @@ static NSDate *lastWarningDate = nil;
 		NSDictionary *d = [NSNetService dictionaryFromTXTRecordData: [aNetService TXTRecordData]];
 		
 		NSString *otherString = [[[NSString alloc] initWithData: [d valueForKey: @"sn"] encoding: NSUTF8StringEncoding] autorelease];
+		NSString *otherMAC = [[[NSString alloc] initWithData: [d valueForKey: @"MAC"] encoding: NSUTF8StringEncoding] autorelease];
 		
 		if( [checkSN64String length] > 4 && [otherString length] > 4)
 		{
-			if( [checkSN64String isEqualToString: otherString] == YES)
+			if( [checkSN64String isEqualToString: otherString] == YES && [otherMAC isEqualToString: getMacAddress()] == NO)
 			{
 				[checkSN64Service release];
 				checkSN64Service = nil;

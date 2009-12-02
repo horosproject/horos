@@ -4347,6 +4347,7 @@
 		CEBA30200EEDB5F200D920B4 /* libvtksys.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2448FE0DA42A7600B8D506 /* libvtksys.a */; };
 		CEBA30220EEDB62300D920B4 /* libvtktiff.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE24490E0DA42A7600B8D506 /* libvtktiff.a */; };
 		CEBA30240EEDB71D00D920B4 /* libvtkWidgets.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2448FF0DA42A7600B8D506 /* libvtkWidgets.a */; };
+		CEBA709D10C70039003A6186 /* GetPrimaryMACAddress.m in Sources */ = {isa = PBXBuildFile; fileRef = CEBA709C10C70039003A6186 /* GetPrimaryMACAddress.m */; };
 		CEBBE1820C82F33900247888 /* libtiff.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE7BBFD30C82DCA5000AD12F /* libtiff.dylib */; };
 		CEBD8AC70875B233000E42D6 /* OSICDPreferencePane.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = CEBD8A5E0875B233000E42D6 /* OSICDPreferencePane.prefPane */; };
 		CEBD8AC90875B233000E42D6 /* OSIGeneralPreferencePane.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = CEBD8A7C0875B233000E42D6 /* OSIGeneralPreferencePane.prefPane */; };
@@ -11458,6 +11459,7 @@
 		CEAF4ECC089D6E9400DE46AF /* OsiriXTables.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = OsiriXTables.pdf; sourceTree = "<group>"; };
 		CEB1DA6608A3B1040058C303 /* smalltrash.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = smalltrash.tif; sourceTree = "<group>"; };
 		CEB7179706CE7CBD00084CA5 /* libjasper2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libjasper2.a; path = Binaries/Jasper/libjasper2.a; sourceTree = SOURCE_ROOT; };
+		CEBA709C10C70039003A6186 /* GetPrimaryMACAddress.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GetPrimaryMACAddress.m; sourceTree = "<group>"; };
 		CEBD8A5E0875B233000E42D6 /* OSICDPreferencePane.prefPane */ = {isa = PBXFileReference; lastKnownFileType = folder; name = OSICDPreferencePane.prefPane; path = "Preference Panes/OSICDPreferencePane/build/Development/OSICDPreferencePane.prefPane"; sourceTree = "<group>"; };
 		CEBD8A7C0875B233000E42D6 /* OSIGeneralPreferencePane.prefPane */ = {isa = PBXFileReference; lastKnownFileType = folder; name = OSIGeneralPreferencePane.prefPane; path = "Preference Panes/OSIGeneralPreferencePane/build/Development/OSIGeneralPreferencePane.prefPane"; sourceTree = "<group>"; };
 		CEBD8A8B0875B233000E42D6 /* OSIHangingPreferencePane.prefPane */ = {isa = PBXFileReference; lastKnownFileType = folder; name = OSIHangingPreferencePane.prefPane; path = "Preference Panes/OSIHangingPreferencePane/build/Development/OSIHangingPreferencePane.prefPane"; sourceTree = "<group>"; };
@@ -12624,6 +12626,7 @@
 			isa = PBXGroup;
 			children = (
 				AB5E1AFA05956BB600C48BEB /* Accelerate.h */,
+				CEBA709C10C70039003A6186 /* GetPrimaryMACAddress.m */,
 				A98FFBE30CA92B58000291C8 /* altivecFunctions.c */,
 				A98FFBE40CA92B58000291C8 /* altivecFunctions.h */,
 				7ED5C2660699E08E00875C39 /* AnonymizerWindowController.h */,
@@ -23115,6 +23118,7 @@
 				59C2B8EB0FF0EB6A00B50385 /* Notifications.m in Sources */,
 				84C4510B10033B8100138F70 /* OSIWindow.m in Sources */,
 				CE94FC031053FFD3006D92E4 /* CurveFitter.m in Sources */,
+				CEBA709D10C70039003A6186 /* GetPrimaryMACAddress.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
