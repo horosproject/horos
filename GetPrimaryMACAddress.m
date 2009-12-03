@@ -231,6 +231,7 @@ NSString* getMacAddress( void)
 		else
 		{
 			result = [NSString stringWithFormat: @"%02x:%02x:%02x:%02x:%02x:%02x", MACAddress[0], MACAddress[1], MACAddress[2], MACAddress[3], MACAddress[4], MACAddress[5]];
+			NSLog( @"MAC Address: %@", result);
 		}
     }
     

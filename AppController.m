@@ -67,7 +67,7 @@ BOOL					USETOOLBARPANEL = NO;
 short					Altivec = 1, UseOpenJpeg = 1;
 AppController			*appController = nil;
 DCMTKQueryRetrieveSCP   *dcmtkQRSCP = nil;
-NSString				*dicomListenerIP = nil, *checkSN64String = nil;
+NSString				*checkSN64String = nil;
 NSNetService			*checkSN64Service = nil;
 NSRecursiveLock			*PapyrusLock = nil, *STORESCP = nil;			// Papyrus is NOT thread-safe
 NSMutableArray			*accumulateAnimationsArray = nil;
@@ -102,11 +102,13 @@ static char *GetPrivateIP()
 {
 	struct			hostent *h;
 	char			hostname[100];
+	
 	gethostname(hostname, 99);
-	if ((h=gethostbyname(hostname)) == NULL)
+	
+	if( (h=gethostbyname(hostname)) == NULL)
 	{
-        perror("Error: ");
-        return "(Error locating Private IP Address)";
+        NSLog( @"**** Cannot GetPrivateIP -> return nil");
+        return nil;
     }
 	
     return (char*) inet_ntoa(*((struct in_addr *)h->h_addr));
@@ -806,9 +808,10 @@ static NSDate *lastWarningDate = nil;
 - (NSString*) privateIP
 {
 	NSString *ip = nil;
+	char *c = GetPrivateIP();
 	
-	if( GetPrivateIP())
-		ip = [NSString stringWithCString: GetPrivateIP()];
+	if( c)
+		ip = [NSString stringWithCString: c];
 	
 	if( ip == nil || [ip length] == 0)
 		ip = [self computerName];
@@ -1574,9 +1577,6 @@ static NSDate *lastWarningDate = nil;
 		int port = [[[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"] intValue];
 		NSDictionary *params = nil;
 		
-		if( dicomListenerIP == nil)
-			dicomListenerIP = [[self privateIP] retain];
-
 		dcmtkQRSCP = [[DCMTKQueryRetrieveSCP alloc] initWithPort:port  aeTitle:(NSString *)aeTitle  extraParamaters:(NSDictionary *)params];
 		[dcmtkQRSCP run];
 		
@@ -2473,7 +2473,7 @@ static BOOL initialized = NO;
 	[dcmtkQRSCP abort];
 	
 	#ifndef OSIRIX_LIGHT
-	[QueryController echo: [NSString stringWithCString:GetPrivateIP()] port:[dcmtkQRSCP port] AET: [dcmtkQRSCP aeTitle]];
+	[QueryController echo: [self privateIP] port:[dcmtkQRSCP port] AET: [dcmtkQRSCP aeTitle]];
 	#endif
 	
 	[NSThread sleepForTimeInterval: 1.0];

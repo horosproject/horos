@@ -46,11 +46,14 @@ static const char *GetPrivateIP()
 {
 	struct			hostent *h;
 	char			hostname[100];
+	
 	gethostname(hostname, 99);
+	
 	if ((h=gethostbyname(hostname)) == NULL)
 	{
-        perror("Error: ");
-        return "(Error locating Private IP Address)"; 
+        NSLog( @"**** Cannot GetPrivateIP -> will use hostname");
+		
+        return hostname; 
     }
 	
     return (char*) inet_ntoa(*((struct in_addr *)h->h_addr));
