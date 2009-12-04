@@ -78,3 +78,4 @@ NSString* KFSplitViewDidCollapseSubviewNotification = @"KFSplitViewDidCollapseSu
 NSString* KFSplitViewDidExpandSubviewNotification = @"KFSplitViewDidExpandSubviewNotification";
 NSString* BLAuthenticatedNotification = @"BLAuthenticatedNotification";
 NSString* BLDeauthenticatedNotification = @"BLDeauthenticatedNotification";
+NSString* OsirixPopulatedContextualMenuNotification = @"OsirixPopulatedContextualMenuNotification";

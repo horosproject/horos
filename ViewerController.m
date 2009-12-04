@@ -169,6 +169,13 @@ NSInteger sortROIByName(id roi1, id roi2, void *context)
     return [n1 compare:n2 options:NSNumericSearch];
 }
 
+@interface ViewerController (Private)
+
+-(NSMenu*)contextualMenu;
+-(NSMenu*)contextualMenuForROI:(ROI*)roi;
+
+@end
+
 #pragma mark-
 
 @implementation ViewerController
@@ -1876,7 +1883,49 @@ static volatile int numberOfThreadsForRelisce = 0;
 - (void) computeContextualMenu
 {
 	NSLog(@"2D Viewer Contextual Menu - Generate");
-	[imageView setMenu: [[[self contextualMenu] copy] autorelease]];
+	NSMenu* menu = [[self contextualMenu] copy];
+	[[NSNotificationCenter defaultCenter] postNotificationName:OsirixPopulatedContextualMenuNotification object:menu
+													  userInfo:[NSDictionary dictionaryWithObjectsAndKeys: 
+																self, [ViewerController className], NULL]];
+	[imageView setMenu:[menu autorelease]];
+}
+
+- (void)computeContextualMenuForROI:(ROI*)roi {
+	NSLog(@"2D Viewer Contextual Menu - Generate for ROI: %@", roi);
+	NSMenu* menu = [[self contextualMenuForROI:roi] copy];
+	
+	[[NSNotificationCenter defaultCenter] postNotificationName:OsirixPopulatedContextualMenuNotification object:menu
+													  userInfo:[NSDictionary dictionaryWithObjectsAndKeys: 
+																self, [ViewerController className],
+																roi, [ROI className], NULL]];
+	[imageView setMenu:menu];
+}
+
+-(NSMenu*)contextualMenuForROI:(ROI*)roi {
+	NSMenu* menu = [[NSMenu alloc] init];
+	NSMenuItem* temp;
+	
+	temp = [[NSMenuItem alloc] initWithTitle:[NSString stringWithFormat:@"ROI: %@", [roi name]] action:NULL keyEquivalent:@""];
+	[menu addItem:temp];
+	[temp release];
+	
+	[menu addItem:[NSMenuItem separatorItem]];
+	
+	temp = [[NSMenuItem alloc] initWithTitle:@"Remove" action:@selector(roiContextualMenuActionRemove:) keyEquivalent:@""];
+	[temp setRepresentedObject:roi];
+	[temp setTarget:self];
+	[menu addItem:temp];
+	[temp release];
+	
+	return [menu autorelease];
+}
+
+-(void)roiContextualMenuActionRemove:(NSMenuItem*)source {
+	ROI* roi = [source representedObject];
+	[roi retain];
+	[[[roi curView] curRoiList] removeObject:roi];
+	[[NSNotificationCenter defaultCenter] postNotificationName:OsirixRemoveROINotification object:roi];
+	[roi release];
 }
 
 - (NSMenu*) contextualMenu

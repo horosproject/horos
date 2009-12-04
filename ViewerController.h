@@ -659,7 +659,8 @@ enum
 - (ViewerController*) blendingController;
 - (void)blendWithViewer:(ViewerController *)bc blendingType:(int)blendingType;
 - (void)blendingSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
-- (void) computeContextualMenu;
+- (void)computeContextualMenu;
+- (void)computeContextualMenuForROI:(ROI*)roi;
 
 /** Modality of the study */
 - (NSString*) modality;
@@ -705,8 +706,6 @@ enum
 
 /** Action to open SRViewer (Surface Rendering) */
 - (IBAction) SRViewer:(id) sender;
-
-- (NSMenu *)contextualMenu;
 
 /** Action to export as JPEG */
 - (void) exportJPEG:(id) sender;

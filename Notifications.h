@@ -78,3 +78,14 @@ extern NSString* KFSplitViewDidCollapseSubviewNotification;
 extern NSString* KFSplitViewDidExpandSubviewNotification;
 extern NSString* BLAuthenticatedNotification;
 extern NSString* BLDeauthenticatedNotification;
+
+/**
+ * OsirixPopulatedContextualMenuNotification
+ * object: NSMenu*
+ * userInfo:
+ *  - key [ViewerController className]
+ *		the ViewerController the rightclick occurred in
+ *	- key [ROI className], optional
+ *		the rightclicked ROI
+ **/
+extern NSString* OsirixPopulatedContextualMenuNotification;
