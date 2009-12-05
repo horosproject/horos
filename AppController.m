@@ -101,7 +101,7 @@ void exitOsiriX(void)
 static char *GetPrivateIP()
 {
 	struct			hostent *h;
-	char			hostname[100];
+	static char		hostname[100];
 	
 	gethostname(hostname, 99);
 	
