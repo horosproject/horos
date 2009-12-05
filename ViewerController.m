@@ -1890,7 +1890,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 	[imageView setMenu:[menu autorelease]];
 }
 
-- (void)computeContextualMenuForROI:(ROI*)roi {
+- (void)computeContextualMenuForROI:(ROI*)roi
+{
 	NSLog(@"2D Viewer Contextual Menu - Generate for ROI: %@", roi);
 	NSMenu* menu = [[[self contextualMenuForROI:roi] copy] autorelease];
 	
@@ -1901,7 +1902,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 	[imageView setMenu:menu];
 }
 
--(NSMenu*)contextualMenuForROI:(ROI*)roi {
+-(NSMenu*)contextualMenuForROI:(ROI*)roi
+{
 	NSMenu* menu = [[NSMenu alloc] init];
 	NSMenuItem* temp;
 	
@@ -1920,7 +1922,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 	return [menu autorelease];
 }
 
--(void)roiContextualMenuActionRemove:(NSMenuItem*)source {
+-(void)roiContextualMenuActionRemove:(NSMenuItem*)source
+{
 	ROI* roi = [source representedObject];
 	[roi retain];
 	[[[roi curView] curRoiList] removeObject:roi];

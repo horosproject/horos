@@ -223,7 +223,7 @@ extern int delayedTileWindows;
 			
 			NSString	*path = [NSString stringWithFormat:@"(%@,%@)", [NSString stringWithFormat:@"%04x", group], [NSString stringWithFormat:@"%04x", element]];
 			
-			[groupsAndElements addObjectsFromArray: [NSArray arrayWithObjects: @"-i", [NSString stringWithFormat: @"%@=%@", path, [addValue stringValue]], nil]];
+			[groupsAndElements addObjectsFromArray: [NSArray arrayWithObjects: @"-i", [NSString stringWithFormat: @"%@=%@", path, [[[NSString alloc] initWithData: [[addValue stringValue] dataUsingEncoding: NSASCIIStringEncoding allowLossyConversion: YES] encoding: NSASCIIStringEncoding] autorelease]], nil]];
 			
 			NSMutableArray	*params = [NSMutableArray arrayWithObjects:@"dcmodify", @"--verbose", @"--ignore-errors", nil];
 			[params addObjectsFromArray:  groupsAndElements];
@@ -784,6 +784,8 @@ extern int delayedTileWindows;
 	
 	id item = [array objectAtIndex: 0];
 	id object = [array objectAtIndex: 1];
+	
+	object = [[[NSString alloc] initWithData: [object dataUsingEncoding: NSASCIIStringEncoding allowLossyConversion: YES] encoding: NSASCIIStringEncoding] autorelease];
 	
 	if( [table rowForItem: item] > 0)
 	{
