@@ -8348,91 +8348,94 @@ END_CREATE_ROIS:
 	else
 		argbImage = malloc( totSize);
 	
-	switch( [TIFFRep bitsPerPixel])
+	
+	if( srcImage != nil && argbImage != nil)
 	{
-		case 8:
-			tmpPtr = argbImage;
-			for( y = 0 ; y < height; y++)
-			{
-				srcPtr = srcImage + y*[TIFFRep bytesPerRow];
-				
-				x = width;
-				while( x-->0)
+		switch( [TIFFRep bitsPerPixel])
+		{
+			case 8:
+				tmpPtr = argbImage;
+				for( y = 0 ; y < height; y++)
 				{
-					tmpPtr++;
-					*tmpPtr++ = *srcPtr;
-					*tmpPtr++ = *srcPtr;
-					*tmpPtr++ = *srcPtr;
-					srcPtr++;
-				}
-			}
-		break;
-			
-		case 32:
-			tmpPtr = argbImage;
-			for( y = 0 ; y < height; y++)
-			{
-				srcPtr = srcImage + y*[TIFFRep bytesPerRow];
-				
-				x = width;
-				while( x-->0)
-				{
-					*tmpPtr++ = 255;
-					*tmpPtr++ = *srcPtr++;
-					*tmpPtr++ = *srcPtr++;
-					*tmpPtr++ = *srcPtr++;
-					srcPtr++;
-				}
-			}
-		break;
-			
-		case 24:
-			tmpPtr = argbImage;
-			for( y = 0 ; y < height; y++)
-			{
-				srcPtr = srcImage + y*[TIFFRep bytesPerRow];
-				
-				x = width;
-				while( x-->0)
-				{
-					tmpPtr++;
+					srcPtr = srcImage + y*[TIFFRep bytesPerRow];
 					
-					*((short*)tmpPtr) = *((short*)srcPtr);
-					tmpPtr+=2;
-					srcPtr+=2;
-					
-					*tmpPtr++ = *srcPtr++;
+					x = width;
+					while( x-->0)
+					{
+						tmpPtr++;
+						*tmpPtr++ = *srcPtr;
+						*tmpPtr++ = *srcPtr;
+						*tmpPtr++ = *srcPtr;
+						srcPtr++;
+					}
 				}
-			}
-		break;
-			
-		case 48:
-			tmpPtr = argbImage;
-			for( y = 0 ; y < height; y++)
-			{
-				srcPtr = srcImage + y*[TIFFRep bytesPerRow];
+			break;
 				
-				x = width;
-				while( x-->0)
+			case 32:
+				tmpPtr = argbImage;
+				for( y = 0 ; y < height; y++)
 				{
-					tmpPtr++;
-					*tmpPtr++ = *srcPtr;	srcPtr += 2;
-					*tmpPtr++ = *srcPtr;	srcPtr += 2;
-					*tmpPtr++ = *srcPtr;	srcPtr += 2;
+					srcPtr = srcImage + y*[TIFFRep bytesPerRow];
+					
+					x = width;
+					while( x-->0)
+					{
+						*tmpPtr++ = 255;
+						*tmpPtr++ = *srcPtr++;
+						*tmpPtr++ = *srcPtr++;
+						*tmpPtr++ = *srcPtr++;
+						srcPtr++;
+					}
 				}
-			}
-		break;
-			
-		default:
-			NSLog(@"Error - Unknow bitsPerPixel ...");
-		break;
+			break;
+				
+			case 24:
+				tmpPtr = argbImage;
+				for( y = 0 ; y < height; y++)
+				{
+					srcPtr = srcImage + y*[TIFFRep bytesPerRow];
+					
+					x = width;
+					while( x-->0)
+					{
+						tmpPtr++;
+						
+						*((short*)tmpPtr) = *((short*)srcPtr);
+						tmpPtr+=2;
+						srcPtr+=2;
+						
+						*tmpPtr++ = *srcPtr++;
+					}
+				}
+			break;
+				
+			case 48:
+				tmpPtr = argbImage;
+				for( y = 0 ; y < height; y++)
+				{
+					srcPtr = srcImage + y*[TIFFRep bytesPerRow];
+					
+					x = width;
+					while( x-->0)
+					{
+						tmpPtr++;
+						*tmpPtr++ = *srcPtr;	srcPtr += 2;
+						*tmpPtr++ = *srcPtr;	srcPtr += 2;
+						*tmpPtr++ = *srcPtr;	srcPtr += 2;
+					}
+				}
+			break;
+				
+			default:
+				NSLog(@"Error - Unknow bitsPerPixel ...");
+			break;
+		}
+		
+		fImage = (float*) argbImage;
+		isRGB = YES;
 	}
 	
-	fImage = (float*) argbImage;
-	isRGB = YES;
-	
 	[TIFFRep release];
-	
 }
 
 - (void) getFrameFromMovie:(NSString*) extension
