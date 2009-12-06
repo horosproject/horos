@@ -37,9 +37,9 @@
 	}
 	[super showWindow: sender];
 	[[self window] makeKeyAndOrderFront: sender];
-	[[self window] display];
-	[NSThread sleepForTimeInterval: 0.05];
-	[[self window] flushWindow];
+	
+	[self run];
+	
 	[[self window] display];
 	[[self window] flushWindow];
 	
@@ -170,7 +170,9 @@
 				[NSApp beginSheet: [self window] modalForWindow: sheetForWindow modalDelegate: self didEndSelector: nil contextInfo: nil];
 			}
 			else
+			{
 				session = [NSApp beginModalSessionForWindow:[self window]];
+			}
 		}
 		
 		if( sheetForWindow == nil)

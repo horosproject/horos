@@ -32,12 +32,12 @@
 	
 	[super showWindow: sender];
 	[[self window] makeKeyAndOrderFront: sender];
-	[[self window] display];
-	[NSThread sleepForTimeInterval: 0.05];
-	[[self window] flushWindow];
-	[[self window] display];
-	[[self window] flushWindow];
 	[[self window] setDelegate: self];
+	
+	[self incrementBy: 0];
+	
+	[[self window] display];
+	[[self window] flushWindow];
 	
 	displayedTime = [NSDate timeIntervalSinceReferenceDate];
 	aborted = NO;
@@ -129,8 +129,8 @@
 		
 		[progress displayIfNeeded];
 	
-		if( openSession)
-			[NSApp runModalSession:session];
+		if( session)
+			[NSApp runModalSession: session];
 	}
 }
 
