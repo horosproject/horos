@@ -168,8 +168,8 @@
 		
 		if(lastImageOfSeries)
 		{
-			seriesName = asciiString( [NSMutableString stringWithString:[[series objectAtIndex:i] valueForKey: @"name"]]);
-			fileName = [NSMutableString stringWithFormat:@"%@ - %@", asciiString( [[series objectAtIndex:i] valueForKeyPath:@"study.studyName"]), [[series objectAtIndex:i] valueForKeyPath:@"study.id"]];
+			seriesName = asciiString( [BrowserController replaceNotAdmitted: [NSMutableString stringWithString:[[series objectAtIndex:i] valueForKey: @"name"]]]);
+			fileName = [BrowserController replaceNotAdmitted: [NSMutableString stringWithFormat:@"%@ - %@", asciiString( [[series objectAtIndex:i] valueForKeyPath:@"study.studyName"]), [[series objectAtIndex:i] valueForKeyPath:@"study.id"]]];
 			[fileName appendFormat:@"/%@_%@", seriesName, [[series objectAtIndex:i] valueForKey: @"id"]];
 			
 			thumbnailName = [NSMutableString stringWithFormat:@"%@_thumb.jpg", fileName];

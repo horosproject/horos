@@ -14469,7 +14469,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			}
 			first = NO;
 			
-			tempPath = [tempPath stringByAppendingPathComponent: [NSString stringWithFormat: @"%@ - %@", asciiString( [curImage valueForKeyPath: @"series.study.studyName"]), [curImage valueForKeyPath: @"series.study.id"]]];
+			tempPath = [tempPath stringByAppendingPathComponent: [BrowserController replaceNotAdmitted: [NSMutableString stringWithFormat: @"%@ - %@", asciiString( [curImage valueForKeyPath: @"series.study.studyName"]), [curImage valueForKeyPath: @"series.study.id"]]]];
 			if( [[curImage valueForKeyPath: @"series.study.id"] isEqualToString:previousStudy] == NO)
 			{
 				previousStudy = [curImage valueForKeyPath: @"series.study.id"];
@@ -14680,7 +14680,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 				}
 			}
 			
-			tempPath = [tempPath stringByAppendingPathComponent: [NSString stringWithFormat: @"%@ - %@", [curImage valueForKeyPath: @"series.study.studyName"], [curImage valueForKeyPath: @"series.study.id"]]];
+			tempPath = [tempPath stringByAppendingPathComponent: [BrowserController replaceNotAdmitted: [NSMutableString stringWithFormat: @"%@ - %@", [curImage valueForKeyPath: @"series.study.studyName"], [curImage valueForKeyPath: @"series.study.id"]]]];
 			
 			// Find the STUDY folder
 			if (![[NSFileManager defaultManager] fileExistsAtPath:tempPath]) [[NSFileManager defaultManager] createDirectoryAtPath:tempPath attributes:nil];
@@ -14769,7 +14769,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[self exportImageAs: @"tif" sender: sender];
 }
 
-+ (void)replaceNotAdmitted: (NSMutableString*)name
++ (NSString*) replaceNotAdmitted: (NSMutableString*)name
 {
 	[name replaceOccurrencesOfString:@" " withString:@"" options:0 range:NSMakeRange(0, [name length])];
 	[name replaceOccurrencesOfString:@"." withString:@"" options:0 range:NSMakeRange(0, [name length])];
@@ -14785,6 +14785,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[name replaceOccurrencesOfString:@">" withString:@"" options:0 range:NSMakeRange(0, [name length])];
 	[name replaceOccurrencesOfString:@"?" withString:@"" options:0 range:NSMakeRange(0, [name length])];
 	[name replaceOccurrencesOfString:@"#" withString:@"" options:0 range:NSMakeRange(0, [name length])];
+	
+	return name;
 }
 
 - (void) importCommentsAndStatusFromDictionary:(NSDictionary*) d
@@ -14966,7 +14968,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		NSString *tempPath;
 		// if creating DICOMDIR. Limit length to 8 char
 		if (!addDICOMDIR)  
-			tempPath = [path stringByAppendingPathComponent:[curImage valueForKeyPath: @"series.study.name"]];
+			tempPath = [path stringByAppendingPathComponent: [BrowserController replaceNotAdmitted: [NSMutableString stringWithString: [curImage valueForKeyPath: @"series.study.name"]]]];
 		else
 		{
 			NSMutableString *name;
@@ -15015,13 +15017,13 @@ static volatile int numberOfThreadsForJPEG = 0;
 		
 		if( [folderTree selectedTag] == 0)
 		{
-			NSString *studyId = [curImage valueForKeyPath: @"series.study.id"];
-			NSString *studyName = [curImage valueForKeyPath: @"series.study.studyName"];
+			NSString *studyId = [BrowserController replaceNotAdmitted: [NSMutableString stringWithString: [curImage valueForKeyPath: @"series.study.id"]]];
+			NSString *studyName = [BrowserController replaceNotAdmitted: [NSMutableString stringWithString: [curImage valueForKeyPath: @"series.study.studyName"]]];
 			
-			if( studyId == nil)
+			if( studyId == nil || [studyId length] == 0)
 				studyId = [NSString stringWithString: @"0"];
 			
-			if( studyName == nil)
+			if( studyName == nil || [studyName length] == 0)
 				studyName = [NSString stringWithString: @"unnamed"];
 			
 			if (!addDICOMDIR)
@@ -15056,12 +15058,12 @@ static volatile int numberOfThreadsForJPEG = 0;
 			}
 			
 			NSNumber *seriesId = [curImage valueForKeyPath: @"series.id"];
-			NSString *seriesName = [curImage valueForKeyPath: @"series.name"];
+			NSString *seriesName = [BrowserController replaceNotAdmitted: [NSMutableString stringWithString: [curImage valueForKeyPath: @"series.name"]]];
 			
 			if( seriesId == nil)
 				seriesId = [NSNumber numberWithInt: 0];
 			
-			if( seriesName == nil)
+			if( seriesName == nil || [seriesName length] == 0)
 				seriesName = [NSString stringWithString: @"unnamed"];
 			
 			if ( !addDICOMDIR)
@@ -15148,7 +15150,13 @@ static volatile int numberOfThreadsForJPEG = 0;
 			t++;
 		}
 		
-		[[NSFileManager defaultManager] copyPath:[filesToExport objectAtIndex:i] toPath:dest handler:nil];
+		NSError *error = nil;
+		if( [[NSFileManager defaultManager] copyItemAtPath:[filesToExport objectAtIndex:i] toPath:dest error: &error] == NO)
+		{
+			NSLog( @"***** %@", error);
+			NSLog( @"***** src = %@", [filesToExport objectAtIndex:i]);
+			NSLog( @"***** dst = %@", dest);
+		}
 		
 		if( [[curImage valueForKey: @"fileType"] hasPrefix:@"DICOM"])
 		{

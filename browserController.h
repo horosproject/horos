@@ -284,7 +284,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 
 + (int) compressionForModality: (NSString*) mod quality:(int*) quality resolution: (int) resolution;
 + (BrowserController*) currentBrowser;
-+ (void) replaceNotAdmitted:(NSMutableString*) name;
++ (NSMutableString*) replaceNotAdmitted: (NSMutableString*)name;
 + (NSArray*) statesArray;
 + (void) updateActivity;
 + (BOOL) isHardDiskFull;

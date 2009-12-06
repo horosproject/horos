@@ -34,8 +34,6 @@
 	[[self window] makeKeyAndOrderFront: sender];
 	[[self window] setDelegate: self];
 	
-	[self incrementBy: 0];
-	
 	[[self window] display];
 	[[self window] flushWindow];
 	
