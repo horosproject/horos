@@ -149,7 +149,7 @@ static NSArray*	statesArray = nil;
 
 @class DCMTKStudyQueryNode;
 
-@synthesize checkIncomingLock, CDpassword, DateTimeFormat;
+@synthesize checkIncomingLock, CDpassword, DateTimeFormat, passwordForExportEncryption;
 @synthesize DateOfBirthFormat,TimeFormat, TimeWithSecondsFormat;
 @synthesize DateTimeWithSecondsFormat, matrixViewArray, oMatrix;
 @synthesize COLUMN, databaseOutline, albumTable, currentDatabasePath;
