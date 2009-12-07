@@ -154,10 +154,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	IBOutlet NSWindow				*urlWindow, *CDpasswordWindow;
 	IBOutlet NSTextField			*urlString;
 	
-	IBOutlet NSForm					*rdPatientForm;
-	IBOutlet NSForm					*rdPixelForm;
-	IBOutlet NSForm					*rdVoxelForm;
-	IBOutlet NSForm					*rdOffsetForm;
+	IBOutlet NSForm					*rdPatientForm, *rdPixelForm, *rdVoxelForm, *rdOffsetForm;
 	IBOutlet NSMatrix				*rdPixelTypeMatrix;
 	IBOutlet NSView					*rdAccessory;
 	
@@ -165,9 +162,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	IBOutlet NSButton				*exportHTMLButton;
 	
 	IBOutlet NSView					*exportAccessoryView;
-	IBOutlet NSButton				*addDICOMDIRButton;
-	IBOutlet NSMatrix				*compressionMatrix;
-    IBOutlet NSMatrix				*folderTree;
+	IBOutlet NSMatrix				*compressionMatrix, *folderTree;
 	
 	NSRecursiveLock					*checkIncomingLock;
 	NSLock							*checkBonjourUpToDateThreadLock;
@@ -178,11 +173,10 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	
 	IBOutlet NSScrollView			*thumbnailsScrollView;
 	
-	NSPredicate						*_fetchPredicate;
-	NSPredicate						*_filterPredicate;
+	NSPredicate						*_fetchPredicate, *_filterPredicate;
 	NSString						*_filterPredicateDescription;
 	
-	NSString						*fixedDocumentsDirectory, *CDpassword;
+	NSString						*fixedDocumentsDirectory, *CDpassword, *pathToEncryptedFile, *passwordForExportEncryption;
 	
 	char							cfixedDocumentsDirectory[ 4096], cfixedIncomingDirectory[ 4096];
 	
@@ -211,12 +205,8 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	NSConditionLock					*newFilesConditionLock;
 	NSMutableArray					*viewersListToReload, *viewersListToRebuild;
 	
-	NSImage							*notFoundImage;
-	
 	volatile BOOL					newFilesInIncoming;
-	NSImage							*standardOsiriXIcon;
-	NSImage							*downloadingOsiriXIcon;
-	NSImage							*currentIcon;
+	NSImage							*notFoundImage, *standardOsiriXIcon, *downloadingOsiriXIcon, *currentIcon;
 	
 	BOOL							ROIsAndKeyImagesButtonAvailable;
 	
@@ -272,7 +262,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 @property(readonly) NSString *fixedDocumentsDirectory;
 @property(readonly) char *cfixedDocumentsDirectory, *cfixedIncomingDirectory;
 
-@property(retain) NSString *searchString, *CDpassword;
+@property(retain) NSString *searchString, *CDpassword, *pathToEncryptedFile, *passwordForExportEncryption;
 @property(retain) NSPredicate *fetchPredicate;
 @property(readonly) NSPredicate *filterPredicate;
 @property(readonly) NSString *filterPredicateDescription;
@@ -291,6 +281,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 + (NSData*) produceJPEGThumbnail:(NSImage*) image;
 + (int) DefaultFolderSizeForDB;
 + (void) computeDATABASEINDEXforDatabase:(NSString*) path;
++ (void) encryptFolder: (NSString*) srcFolder inZIPFile: (NSString*) destFile password: (NSString*) password;
 - (IBAction) createDatabaseFolder:(id) sender;
 - (void) openDatabasePath: (NSString*) path;
 - (BOOL) shouldTerminate: (id) sender;
@@ -417,6 +408,9 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (NSArray*) addFilesToDatabase:(NSArray*) newFilesArray onlyDICOM:(BOOL) onlyDICOM safeRebuild:(BOOL) safeProcess produceAddedFiles:(BOOL) produceAddedFiles parseExistingObject:(BOOL) parseExistingObject;
 - (NSArray*) addFilesToDatabase:(NSArray*) newFilesArray onlyDICOM:(BOOL) onlyDICOM safeRebuild:(BOOL) safeProcess produceAddedFiles:(BOOL) produceAddedFiles parseExistingObject:(BOOL) parseExistingObject context: (NSManagedObjectContext*) context dbFolder:(NSString*) dbFolder;
 - (void) createDBContextualMenu;
+- (BOOL) unzipFile: (NSString*) file withPassword: (NSString*) pass destination: (NSString*) destination;
+- (int) askForZIPPassword: (NSString*) file destination: (NSString*) destination;
+
 //- (short) createAnonymizedFile:(NSString*) srcFile :(NSString*) dstFile;
 
 //- (void)runSendQueue:(id)object;

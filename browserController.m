@@ -155,7 +155,7 @@ static NSArray*	statesArray = nil;
 @synthesize COLUMN, databaseOutline, albumTable, currentDatabasePath;
 @synthesize isCurrentDatabaseBonjour, bonjourDownloading, bonjourSourcesBox;
 @synthesize bonjourServiceName, bonjourPasswordTextField = bonjourPassword, bonjourSharingCheck;
-@synthesize bonjourPasswordCheck, bonjourBrowser;
+@synthesize bonjourPasswordCheck, bonjourBrowser, pathToEncryptedFile;
 @synthesize searchString = _searchString, fetchPredicate = _fetchPredicate;
 @synthesize filterPredicate = _filterPredicate, filterPredicateDescription = _filterPredicateDescription;
 @synthesize rtstructProgressBar, rtstructProgressPercent, pluginManagerController;
@@ -1301,7 +1301,11 @@ static NSArray*	statesArray = nil;
 				}
 				else    // A file
 				{
-					if( [[filename lastPathComponent] isEqualToString: @"CommentAndStatus.xml"])
+					if( [[filename pathExtension] isEqualToString: @"zip"])
+					{
+						[self askForZIPPassword: filename destination: [[self documentsDirectory] stringByAppendingPathComponent: INCOMINGPATH]];
+					}
+					else if( [[filename lastPathComponent] isEqualToString: @"CommentAndStatus.xml"])
 					{
 						[commentsAndStatus addObject: filename];
 					}
@@ -1352,6 +1356,7 @@ static NSArray*	statesArray = nil;
 	}
 	#endif
 	
+	[self checkIncomingNow: self];
 	[self outlineViewRefresh];
 	
 	return newImages;
@@ -13115,9 +13120,9 @@ static NSArray*	openSubSeriesArray = nil;
 	return nil;
 }
 
-- (BOOL) unzipFile: (NSString*) file withPassword: (NSString*) pass
+- (BOOL) unzipFile: (NSString*) file withPassword: (NSString*) pass destination: (NSString*) destination
 {
-	[[NSFileManager defaultManager] removeFileAtPath: @"/tmp/zippedCD/" handler: nil];
+	[[NSFileManager defaultManager] removeFileAtPath: @"/tmp/zippedFile/" handler: nil];
 	
 	NSTask *t;
 	NSArray *args;
@@ -13125,7 +13130,10 @@ static NSArray*	openSubSeriesArray = nil;
 	t = [[[NSTask alloc] init] autorelease];
 	[t setLaunchPath: @"/usr/bin/unzip"];
 	[t setCurrentDirectoryPath: @"/tmp/"];
-	args = [NSArray arrayWithObjects: @"-o", @"-d", @"zippedCD/", @"-P", pass, file, nil];
+	if( pass)
+		args = [NSArray arrayWithObjects: @"-o", @"-d", destination, @"-P", pass, file, nil];
+	else
+		args = [NSArray arrayWithObjects: @"-o", @"-d", destination, file, nil];
 	[t setArguments: args];
 	[t launch];
 	[t waitUntilExit];
@@ -13134,6 +13142,37 @@ static NSArray*	openSubSeriesArray = nil;
 		return YES;
 	
 	return NO;
+}
+
+- (int) askForZIPPassword: (NSString*) file destination: (NSString*) destination
+{
+	// first, try without password
+	int result = 0;
+	
+	if( [self unzipFile: file withPassword: nil destination: destination] == NO)
+	{
+		self.pathToEncryptedFile = [NSString stringWithFormat: @"File: %@", file];
+		self.CDpassword = @"";
+		do
+		{
+			[NSApp beginSheet: CDpasswordWindow
+			   modalForWindow: self.window
+				modalDelegate: nil
+			   didEndSelector: nil
+				  contextInfo: nil];
+			
+			result = [NSApp runModalForWindow: CDpasswordWindow];
+			[CDpasswordWindow makeFirstResponder: nil];
+			
+			[NSApp endSheet: CDpasswordWindow];
+			[CDpasswordWindow orderOut: self];
+		}
+		while( [self unzipFile: file withPassword: self.CDpassword destination: destination] == NO && result == NSRunStoppedResponse);
+	}
+	else
+		result = NSRunStoppedResponse;
+	
+	return result;
 }
 
 -(void) ReadDicomCDRom:(id) sender
@@ -13174,27 +13213,11 @@ static NSArray*	openSubSeriesArray = nil;
 				{
 					if( [[p lastPathComponent] isEqualToString: @"encryptedDICOM.zip"]) // See BurnerWindowController
 					{
-						self.CDpassword = @"";
-						int result = 0;
-						do
-						{
-							[NSApp beginSheet: CDpasswordWindow
-							   modalForWindow: self.window
-								modalDelegate: nil
-							   didEndSelector: nil
-								  contextInfo: nil];
-							
-							result = [NSApp runModalForWindow: CDpasswordWindow];
-							[CDpasswordWindow makeFirstResponder: nil];
-							
-							[NSApp endSheet: CDpasswordWindow];
-							[CDpasswordWindow orderOut: self];
-						}
-						while( [self unzipFile: [aPath stringByAppendingPathComponent: p] withPassword: self.CDpassword] == NO && result == NSRunStoppedResponse);
+						int result = [self askForZIPPassword: [aPath stringByAppendingPathComponent: p] destination: @"/tmp/zippedFile/"];
 						
 						if( result == NSRunStoppedResponse)
 						{
-							mediaPath = @"/tmp/zippedCD/";
+							mediaPath = @"/tmp/zippedFile/";
 							break;
 						}
 						else return;
@@ -14651,7 +14674,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 	{
 		NSString			*dest, *path = [[sPanel filenames] objectAtIndex:0];
 		Wait                *splash = [[Wait alloc] initWithString:NSLocalizedString(@"Export...", nil)];
-		BOOL				addDICOMDIR = [addDICOMDIRButton state];
 		
 		[splash setCancel:YES];
 		[splash showWindow:self];
@@ -14706,10 +14728,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			int t = 2;
 			while( [[NSFileManager defaultManager] fileExistsAtPath: dest])
 			{
-				if (!addDICOMDIR)
-					dest = [NSString stringWithFormat:@"%@/IM-%4.4d-%4.4d #%d.%@", tempPath, serieCount, imageNo, t, extension];
-				else
-					dest = [NSString stringWithFormat:@"%@/%4.4d%d", tempPath,  imageNo, t];
+				dest = [NSString stringWithFormat:@"%@/IM-%4.4d-%4.4d #%d.%@", tempPath, serieCount, imageNo, t, extension];
 				t++;
 			}
 			
@@ -14935,13 +14954,14 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 	NSString			*dest, *path = location;
 	Wait                *splash = [[Wait alloc] initWithString:NSLocalizedString(@"Export...", nil)];
-	BOOL				addDICOMDIR = [addDICOMDIRButton state];
+	BOOL				addDICOMDIR = [[NSUserDefaults standardUserDefaults] boolForKey:@"AddDICOMDIRForExport"];
 	long				previousSeries = -1;
 	long				serieCount		= 0;
 	NSMutableArray		*result = [NSMutableArray array];
 	NSMutableArray		*files2Compress = [NSMutableArray array];
 	BOOL				exportROIs = [[NSUserDefaults standardUserDefaults] boolForKey:@"AddROIsForExport"];
 	DicomStudy			*previousStudy = nil;
+	BOOL				exportAborted = NO;
 	
 	[splash setCancel:YES];
 	[splash showWindow:self];
@@ -15201,8 +15221,11 @@ static volatile int numberOfThreadsForJPEG = 0;
 		
 		[splash incrementBy:1];
 		
-		if( [splash aborted]) 
+		if( [splash aborted])
+		{
 			i = [filesToExport count];
+			exportAborted = YES;
+		}
 		
 		[pool release];
 	}
@@ -15211,7 +15234,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[splash close];
 	[splash release];
 	
-	if( [files2Compress count] > 0)
+	if( [files2Compress count] > 0 && exportAborted == NO)
 	{
 		[waitCompressionWindow showWindow:self];
 		[[waitCompressionWindow progress] setMaxValue: [files2Compress count]];
@@ -15235,7 +15258,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	// ANR - I had to create this loop, otherwise, if I export a folder on the desktop, the dcmkdir will scan all files and folders available on the desktop.... not only the exported folder.
 	
-	if (addDICOMDIR)
+	if (addDICOMDIR && exportAborted == NO)
 	{
 		for( int i = 0; i < [filesToExport count]; i++)
 		{
@@ -15258,7 +15281,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 			{
 				NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 				
-				NSLog(@" ADD dicomdir");
 				NSTask *theTask;
 				NSMutableArray *theArguments = [NSMutableArray arrayWithObjects:@"+r", @"-Pfl", @"-W", @"-Nxc",@"+I",@"+id", tempPath,  nil];
 				
@@ -15276,8 +15298,63 @@ static volatile int numberOfThreadsForJPEG = 0;
 			}
 		}
 	}
+	
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"encryptForExport"] == YES && exportAborted == NO)
+	{
+		for( int i = 0; i < [filesToExport count]; i++)
+		{
+			NSManagedObject	*curImage = [dicomFiles2Export objectAtIndex:i];
+			NSMutableString *name;
+			NSString *tempPath;
+			
+			if( !addDICOMDIR)  
+				tempPath = [path stringByAppendingPathComponent: [BrowserController replaceNotAdmitted: [NSMutableString stringWithString: [curImage valueForKeyPath: @"series.study.name"]]]];
+			else
+			{
+				if ([(NSString*)[curImage valueForKeyPath: @"series.study.name"] length] > 8)
+					name = [NSMutableString stringWithString:[[[curImage valueForKeyPath: @"series.study.name"] substringToIndex:7] uppercaseString]];
+				else
+					name = [NSMutableString stringWithString:[[curImage valueForKeyPath: @"series.study.name"] uppercaseString]];
+			
+				NSData* asciiData = [name dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];
+				name = [[[NSMutableString alloc] initWithData:asciiData encoding:NSASCIIStringEncoding] autorelease];	
+			
+				[BrowserController replaceNotAdmitted: name];
+			
+				tempPath = [path stringByAppendingPathComponent:name];
+			}
+			
+			if( [[NSFileManager defaultManager] fileExistsAtPath: [tempPath stringByAppendingPathExtension: @"zip"]] == NO)
+			{
+				[BrowserController encryptFolder: tempPath inZIPFile: [tempPath stringByAppendingPathExtension: @"zip"] password: passwordForExportEncryption];
+			}
+		}
+	}
 		
 	return result;
+}
+
++ (void) encryptFolder: (NSString*) srcFolder inZIPFile: (NSString*) destFile password: (NSString*) password
+{
+	NSTask *t;
+	NSArray *args;
+	
+	[[NSFileManager defaultManager] removeItemAtPath: destFile error: nil];
+	
+	t = [[[NSTask alloc] init] autorelease];
+	[t setLaunchPath: @"/usr/bin/zip"];
+	[t setCurrentDirectoryPath: [srcFolder stringByDeletingLastPathComponent]];
+	
+	if( [password length] > 0)
+		args = [NSArray arrayWithObjects: @"-r", @"-e", @"-P", password, destFile, [srcFolder lastPathComponent], nil];
+	else
+		args = [NSArray arrayWithObjects: @"-r", destFile, [srcFolder lastPathComponent], nil];
+	[t setArguments: args];
+	[t launch];
+	[t waitUntilExit];
+	
+	if( [t terminationStatus] == 0)
+		[[NSFileManager defaultManager] removeItemAtPath: srcFolder error: nil];
 }
 
 - (void)exportDICOMFile: (id)sender
@@ -15633,10 +15710,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 		
 		for( int x = 0 ; x < [files2Copy count]; x++)
 		{
-			NSString			*dstPath, *srcPath = [files2Copy objectAtIndex:x];
-			NSString			*extension = [srcPath pathExtension];
-			NSString			*tempPath;
-			NSManagedObject		*curImage = [dicomFiles2Copy objectAtIndex:x];
+			NSString *dstPath, *srcPath = [files2Copy objectAtIndex:x], *extension = [srcPath pathExtension], *tempPath;
+			NSManagedObject *curImage = [dicomFiles2Copy objectAtIndex:x];
 			
 			if([curImage valueForKey: @"fileType"])
 			{

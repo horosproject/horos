@@ -949,18 +949,7 @@ NSString* asciiString (NSString* name);
 		{
 			// ZIP method - zip test.zip /testFolder -r -e -P hello
 			
-			NSTask *t;
-			NSArray *args;
-			
-			[[NSFileManager defaultManager] removeItemAtPath: [[burnFolder stringByDeletingLastPathComponent] stringByAppendingPathComponent: @"encryptedDICOM.zip"] error: nil];
-			
-			t = [[[NSTask alloc] init] autorelease];
-			[t setLaunchPath: @"/usr/bin/zip"];
-			[t setCurrentDirectoryPath: [burnFolder stringByDeletingLastPathComponent]];
-			args = [NSArray arrayWithObjects: @"-P", self.password, @"-r", @"-e", [[burnFolder stringByDeletingLastPathComponent] stringByAppendingPathComponent: @"encryptedDICOM.zip"], [burnFolder lastPathComponent], nil];
-			[t setArguments: args];
-			[t launch];
-			[t waitUntilExit];
+			[BrowserController encryptFolder: burnFolder inZIPFile: [[burnFolder stringByDeletingLastPathComponent] stringByAppendingPathComponent: @"encryptedDICOM.zip"] password: self.password];
 			
 			[[NSFileManager defaultManager] removeItemAtPath: burnFolder error: nil];
 			[[NSFileManager defaultManager] createDirectoryAtPath: burnFolder attributes: nil];
