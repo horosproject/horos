@@ -14788,7 +14788,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[self exportImageAs: @"tif" sender: sender];
 }
 
-+ (NSString*) replaceNotAdmitted: (NSMutableString*)name
++ (NSMutableString*) replaceNotAdmitted: (NSMutableString*)name
 {
 	[name replaceOccurrencesOfString:@" " withString:@"" options:0 range:NSMakeRange(0, [name length])];
 	[name replaceOccurrencesOfString:@"." withString:@"" options:0 range:NSMakeRange(0, [name length])];
@@ -14948,7 +14948,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		return nil;
 }
 
-- (NSArray*)exportDICOMFileInt: (NSString*) location files: (NSMutableArray*)filesToExport objects: (NSMutableArray*)dicomFiles2Export
+- (NSArray*) exportDICOMFileInt: (NSString*) location files: (NSMutableArray*)filesToExport objects: (NSMutableArray*)dicomFiles2Export
 {
 	[filesToExport removeDuplicatedStringsInSyncWithThisArray: dicomFiles2Export];
 
@@ -15357,9 +15357,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[[NSFileManager defaultManager] removeItemAtPath: srcFolder error: nil];
 }
 
-- (void)exportDICOMFile: (id)sender
+- (void) exportDICOMFile: (id)sender
 {
-	NSOpenPanel			*sPanel			= [NSOpenPanel openPanel];
+	NSOpenPanel *sPanel = [NSOpenPanel openPanel];
 	
 	[sPanel setCanChooseDirectories:YES];
 	[sPanel setCanChooseFiles:NO];
@@ -15372,8 +15372,10 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	[compressionMatrix selectCellWithTag: [[NSUserDefaults standardUserDefaults] integerForKey: @"Compression Mode for Export"]];
 	
-	if ([sPanel runModalForDirectory:nil file:nil types:nil] == NSFileHandlingPanelOKButton)
+	if ([sPanel runModalForDirectory: nil file: nil types: nil] == NSFileHandlingPanelOKButton)
 	{
+		[sPanel makeFirstResponder: nil];
+		
 		NSMutableArray *dicomFiles2Export = [NSMutableArray array];
 		NSMutableArray *filesToExport;
 		
