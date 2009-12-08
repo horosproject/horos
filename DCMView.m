@@ -4528,7 +4528,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 		if (clickCount == 1)
 		{
-			if ([self is2DViewer] && [self menu] == nil)
+			if ([self is2DViewer])
 			{
 				ROI* roi = [self clickInROI:[self ConvertFromNSView2GL:[self convertPoint:[event locationInWindow] fromView:NULL]]];
 				if (roi)

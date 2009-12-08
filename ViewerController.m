@@ -1893,13 +1893,12 @@ static volatile int numberOfThreadsForRelisce = 0;
 - (void)computeContextualMenuForROI:(ROI*)roi
 {
 	NSLog(@"2D Viewer Contextual Menu - Generate for ROI: %@", roi);
-	NSMenu* menu = [[[self contextualMenuForROI:roi] copy] autorelease];
-	
+	NSMenu* menu = [[self contextualMenuForROI:roi] copy];
 	[[NSNotificationCenter defaultCenter] postNotificationName:OsirixPopulatedContextualMenuNotification object:menu
 													  userInfo:[NSDictionary dictionaryWithObjectsAndKeys: 
 																self, [ViewerController className],
 																roi, [ROI className], NULL]];
-	[imageView setMenu:menu];
+	[imageView setMenu:[menu autorelease]];
 }
 
 -(NSMenu*)contextualMenuForROI:(ROI*)roi
