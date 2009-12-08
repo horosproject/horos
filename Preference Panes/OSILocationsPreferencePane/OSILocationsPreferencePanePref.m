@@ -32,6 +32,7 @@
 @implementation OSILocationsPreferencePanePref
 
 @synthesize WADOPort, WADOTransferSyntax, WADOUrl;
+@synthesize TLSEnabled, TLSAuthenticated, TLSCertificatesURL, TLSSupportedCipherSuite;
 
 - (void) checkUniqueAETitle
 {
@@ -193,6 +194,10 @@
 	
 	[WADOUrl release];
 	[stringEncoding release];
+	
+	[TLSCertificatesURL release];
+	[TLSSupportedCipherSuite release];
+	
 	[super dealloc];
 }
 
@@ -272,6 +277,61 @@
 		
 		[[NSUserDefaults standardUserDefaults] setObject: [dicomNodes arrangedObjects] forKey: @"SERVERS"];
 		[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"updateServers"];
+	}
+}
+
+- (IBAction) editTLS: (id) sender
+{	
+	NSMutableDictionary *aServer = [[dicomNodes arrangedObjects] objectAtIndex: [[dicomNodes tableView] selectedRow]];
+	
+//	self.WADOPort = [[aServer valueForKey: @"WADOPort"] intValue];
+//	self.WADOUrl = [aServer valueForKey: @"WADOUrl"];
+//	self.WADOTransferSyntax = [[aServer valueForKey: @"WADOTransferSyntax"] intValue];
+	
+	self.TLSEnabled = [[aServer valueForKey: @"TLSEnabled"] boolValue];
+	self.TLSAuthenticated = [[aServer valueForKey: @"TLSAuthenticated"] boolValue];
+	self.TLSCertificatesURL = [aServer valueForKey: @"TLSCertificatesURL"];//[NSURL fileURLWithPath:@"/Users/joris/Desktop/certificates/my_cert.p12"];
+	
+	self.TLSSupportedCipherSuite = [NSArray arrayWithObjects:	[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES], @"Supported", @"TLS1_TXT_RSA_WITH_AES_128_SHA", @"Cipher", nil],
+																[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES], @"Supported", @"SSL3_TXT_RSA_DES_192_CBC3_SHA", @"Cipher", nil],
+																[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:NO], @"Supported", @"TLS1_TXT_ADH_WITH_AES_256_SHA", @"Cipher", nil],
+																nil];
+	
+	[NSApp beginSheet: TLSSettings
+	   modalForWindow: [[self mainView] window]
+		modalDelegate: nil
+	   didEndSelector: nil
+		  contextInfo: nil];
+	
+	int result = [NSApp runModalForWindow: TLSSettings];
+	[TLSSettings makeFirstResponder: nil];
+	
+	[NSApp endSheet: TLSSettings];
+	[TLSSettings orderOut: self];
+	
+	if( result == NSRunStoppedResponse)
+	{
+		[aServer setObject:[NSNumber numberWithBool:self.TLSEnabled] forKey:@"TLSEnabled"];
+		
+		if (self.TLSEnabled)
+		{
+			[aServer setObject:[NSNumber numberWithBool:self.TLSAuthenticated] forKey:@"TLSAuthenticated"];
+			
+			if (self.TLSAuthenticated)
+			{
+				[aServer setObject:self.TLSCertificatesURL forKey:@"TLSCertificatesURL"];
+				// password ...
+			}
+			
+			
+		}
+				
+//		[aServer setObject: [NSNumber numberWithInt: WADOPort] forKey: @"WADOPort"];
+//		[aServer setObject: [NSNumber numberWithInt: WADOTransferSyntax] forKey: @"WADOTransferSyntax"];
+//		[aServer setObject: WADOUrl forKey: @"WADOUrl"];
+//		
+		[[NSUserDefaults standardUserDefaults] setObject:[dicomNodes arrangedObjects] forKey: @"SERVERS"];
+		[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"updateServers"];
 	}
 }
 
@@ -583,4 +643,20 @@
 	
 	[[[self mainView] window] makeKeyAndOrderFront: self];
 }
+
+//- (BOOL)tableView:(NSTableView *)aTableView acceptDrop:(id < NSDraggingInfo >)info row:(NSInteger)row dropOperation:(NSTableViewDropOperation)operation
+//{
+//	return YES;
+//}
+//
+//- (NSDragOperation)tableView:(NSTableView *)aTableView validateDrop:(id < NSDraggingInfo >)info proposedRow:(NSInteger)row proposedDropOperation:(NSTableViewDropOperation)operation
+//{
+//	return NSDragOperationEvery;
+//}
+//
+//- (BOOL)tableView:(NSTableView *)aTableView writeRowsWithIndexes:(NSIndexSet *)rowIndexes toPasteboard:(NSPasteboard *)pboard
+//{
+//	return YES;
+//}
+
 @end

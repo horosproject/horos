@@ -31,11 +31,23 @@
 	int								WADOTransferSyntax;
 	NSString						*WADOUrl;
 	
+	IBOutlet NSWindow				*TLSSettings;
+	BOOL							TLSEnabled;
+	BOOL							TLSAuthenticated;
+	NSURL							*TLSCertificatesURL;
+	IBOutlet DNDArrayController		*TLSCipherSuitesArrayController;
+	NSArray							*TLSSupportedCipherSuite;
+	NSArray							*TLSAvailableCipherSuite;
+	
 	IBOutlet SFAuthorizationView	*_authView;
 }
 
 @property int WADOPort, WADOTransferSyntax;
 @property (retain) NSString *WADOUrl;
+
+@property BOOL TLSEnabled, TLSAuthenticated;
+@property (retain) NSURL *TLSCertificatesURL;
+@property (retain) NSArray *TLSSupportedCipherSuite;
 
 - (IBAction) refreshNodesListURL: (id) sender;
 - (void) mainViewDidLoad;
@@ -54,5 +66,7 @@
 - (IBAction) cancel:(id)sender;
 - (IBAction) ok:(id)sender;
 - (IBAction) editWADO: (id) sender;
+
+- (IBAction) editTLS: (id) sender;
 
 @end
