@@ -1273,7 +1273,11 @@ static NSArray*	statesArray = nil;
 								{
 									if( [[itemPath lastPathComponent] characterAtIndex: 0] != '.')
 									{
-										if( [[itemPath lastPathComponent] isEqualToString: @"CommentAndStatus.xml"])
+										if( [[filename pathExtension] isEqualToString: @"zip"])
+										{
+											[self askForZIPPassword: filename destination: [[self documentsDirectory] stringByAppendingPathComponent: INCOMINGPATH]];
+										}
+										else if( [[itemPath lastPathComponent] isEqualToString: @"CommentAndStatus.xml"])
 										{
 											[commentsAndStatus addObject: itemPath];
 										}
@@ -2067,6 +2071,64 @@ static NSArray*	statesArray = nil;
 	[NSApp beginSheet: urlWindow modalForWindow:self.window modalDelegate:self didEndSelector:nil contextInfo:nil];
 }
 
+- (void) subSelectFilesAndFoldersToAdd: (NSArray*) filenames
+{
+	if( [filenames count] == 1 && [[[filenames objectAtIndex: 0] pathExtension] isEqualToString: @"sql"])  // It's a database file!
+	{
+		[self openDatabaseIn: [filenames objectAtIndex: 0] Bonjour:NO];
+	}
+	else
+	{
+		NSMutableArray *filenamesWithoutPlugins = [NSMutableArray arrayWithArray: filenames];
+		NSMutableArray *pluginsArray = [NSMutableArray array];
+		
+		for( int i = 0; i < [filenames count]; i++)
+		{
+			NSString *aPath = [filenames objectAtIndex:i];
+			if([[aPath pathExtension] isEqualToString:@"osirixplugin"])
+				[pluginsArray addObject:aPath];
+		}
+		
+		[filenamesWithoutPlugins removeObjectsInArray: pluginsArray];
+		
+		NSArray	*newImages = [self addFilesAndFolderToDatabase: filenamesWithoutPlugins];
+		
+		// Are we adding new files in a album?
+		
+		//can't add to smart Album
+		if( albumTable.selectedRow > 0)
+		{
+			NSManagedObject *album = [self.albumArray objectAtIndex: albumTable.selectedRow];
+			
+			if ([[album valueForKey:@"smartAlbum"] boolValue] == NO)
+			{
+				NSMutableSet	*studies = [album mutableSetValueForKey: @"studies"];
+				
+				for( NSManagedObject *object in newImages)
+				{
+					[studies addObject: [object valueForKeyPath:@"series.study"]];
+				}
+				
+				needDBRefresh = YES;
+				[self outlineViewRefresh];
+			}
+		}
+		
+		if( [newImages count] > 0)
+		{
+			NSManagedObject		*object = [[newImages objectAtIndex: 0] valueForKeyPath:@"series.study"];
+			
+			[databaseOutline selectRowIndexes: [NSIndexSet indexSetWithIndex: [databaseOutline rowForItem: object]] byExtendingSelection: NO];
+			[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
+		}
+		
+		if( [pluginsArray count] > 0)
+		{
+			[[AppController sharedAppController] installPlugins: pluginsArray];
+		}
+	}
+}
+
 - (IBAction)selectFilesAndFoldersToAdd: (id)sender
 {
     NSOpenPanel         *oPanel = [NSOpenPanel openPanel];
@@ -2080,43 +2142,7 @@ static NSArray*	statesArray = nil;
     
     if (result == NSOKButton)
 	{
-		if( [[oPanel filenames] count] == 1 && [[[[oPanel filenames] objectAtIndex: 0] pathExtension] isEqualToString: @"sql"])  // It's a database file!
-		{
-			[self openDatabaseIn: [[oPanel filenames] objectAtIndex: 0] Bonjour:NO];
-		}
-		else
-		{	
-			NSArray	*newImages = [self addFilesAndFolderToDatabase: [oPanel filenames]];
-			
-			// Are we adding new files in a album?
-			
-			//can't add to smart Album
-			if( albumTable.selectedRow > 0)
-			{
-				NSManagedObject *album = [self.albumArray objectAtIndex: albumTable.selectedRow];
-				
-				if ([[album valueForKey:@"smartAlbum"] boolValue] == NO)
-				{
-					NSMutableSet	*studies = [album mutableSetValueForKey: @"studies"];
-					
-					for( NSManagedObject *object in newImages)
-					{
-						[studies addObject: [object valueForKeyPath:@"series.study"]];
-					}
-					
-					needDBRefresh = YES;
-					[self outlineViewRefresh];
-				}
-			}
-			
-			if( [newImages count] > 0)
-			{
-				NSManagedObject		*object = [[newImages objectAtIndex: 0] valueForKeyPath:@"series.study"];
-				
-				[databaseOutline selectRowIndexes: [NSIndexSet indexSetWithIndex: [databaseOutline rowForItem: object]] byExtendingSelection: NO];
-				[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
-			}
-		}
+		[self subSelectFilesAndFoldersToAdd: [oPanel filenames]];
 	}
 }
 

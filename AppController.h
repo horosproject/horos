@@ -144,7 +144,7 @@ extern "C"
 - (void) restartSTORESCP; /**< Restart listener (Q/R SCP) */
 - (void) startSTORESCP:(id) sender; /**< Start listener (Q/R SCP) */
 - (void) startDICOMBonjourSearch; /**< Use Bonjour to search for other DICOM services */
-
+- (void) installPlugins: (NSArray*) pluginsArray;
 
 
 #pragma mark-

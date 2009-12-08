@@ -16,6 +16,7 @@
 			<key>CFBundleTypeMIMETypes</key>
 			<array>
 				<string>application/dicom</string>
+				<string>application/zip</string>
 			</array>
 			<key>CFBundleTypeName</key>
 			<string>DICOM Image</string>
@@ -25,6 +26,7 @@
 				<string>****</string>
 				<string>fold</string>
 				<string>disk</string>
+				<string>zip</string>
 			</array>
 			<key>CFBundleTypeRole</key>
 			<string>Viewer</string>

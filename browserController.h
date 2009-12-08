@@ -291,6 +291,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (void) emptyDeleteQueueNow: (id) sender;
 - (void) setDockIcon;
 - (void) showEntireDatabase;
+- (void) subSelectFilesAndFoldersToAdd: (NSArray*) filenames;
 - (void)matrixNewIcon:(long) index: (NSManagedObject*)curFile;
 - (IBAction) querySelectedStudy:(id) sender;
 - (NSPredicate*) smartAlbumPredicate:(NSManagedObject*) album;
