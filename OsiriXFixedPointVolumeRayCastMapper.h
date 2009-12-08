@@ -3,6 +3,7 @@
 
 #include "vtkFixedPointVolumeRayCastMapper.h"
 
+
 class VTK_VOLUMERENDERING_EXPORT OsiriXFixedPointVolumeRayCastMapper : public vtkFixedPointVolumeRayCastMapper
 {
 public:
