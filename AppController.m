@@ -1699,12 +1699,16 @@ static NSDate *lastWarningDate = nil;
 		NSString *otherString = [[[NSString alloc] initWithData: [d valueForKey: @"sn"] encoding: NSUTF8StringEncoding] autorelease];
 		NSString *otherMAC = [[[NSString alloc] initWithData: [d valueForKey: @"MAC"] encoding: NSUTF8StringEncoding] autorelease];
 		
+		
 		if( [checkSN64String length] > 4 && [otherString length] > 4)
 		{
 			if( [checkSN64String isEqualToString: otherString] == YES && [otherMAC isEqualToString: getMacAddress()] == NO)
 			{
 				[checkSN64Service release];
 				checkSN64Service = nil;
+				
+				NSLog( @"Other : %@ : %@", otherString, otherMAC);
+				NSLog( @"Self  : %@ : %@", checkSN64String, getMacAddress());
 				
 				NSRunCriticalAlertPanel( NSLocalizedString( @"64-bit Extension License", nil), NSLocalizedString( @"There is already another running OsiriX application using this 64-bit extension serial number. Buy a site license to run an unlimited number of OsiriX applications at the same time.", nil), NSLocalizedString( @"OK", nil), nil, nil);
 				exit(0);
@@ -2680,6 +2684,8 @@ static BOOL initialized = NO;
 	if (NSCancelButton == button)
 		[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.osirix-viewer.com"]];
 	#endif
+	
+	[[NSUserDefaults standardUserDefaults] setBool: hasMacOSXSnowLeopard() forKey: @"hasMacOSXSnowLeopard"];
 	
 //	*(long*)0 = 0xDEADBEEF;	// Test for ILCrashReporter
 }

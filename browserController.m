@@ -15365,7 +15365,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	NSTask *t;
 	NSArray *args;
 	
-	if( hasMacOSXSnowLeopard() == YES)
+	if( hasMacOSXSnowLeopard() == NO && [password length] > 0)
 	{
 		password = nil;
 		NSRunCriticalAlertPanel(NSLocalizedString(@"ZIP Encryption", nil), NSLocalizedString(@"ZIP encryption requires MacOS 10.6 or higher The ZIP file will be generated, but NOT encrypted with a password.", nil), NSLocalizedString(@"OK",nil),nil, nil);
