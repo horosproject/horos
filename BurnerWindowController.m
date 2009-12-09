@@ -950,6 +950,7 @@ NSString* asciiString (NSString* name);
 			// ZIP method - zip test.zip /testFolder -r -e -P hello
 			
 			[BrowserController encryptFolder: burnFolder inZIPFile: [[burnFolder stringByDeletingLastPathComponent] stringByAppendingPathComponent: @"encryptedDICOM.zip"] password: self.password];
+			self.password = @"";
 			
 			[[NSFileManager defaultManager] removeItemAtPath: burnFolder error: nil];
 			[[NSFileManager defaultManager] createDirectoryAtPath: burnFolder attributes: nil];

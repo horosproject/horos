@@ -13153,16 +13153,30 @@ static NSArray*	openSubSeriesArray = nil;
 	NSTask *t;
 	NSArray *args;
 	
+	WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Decompressing the files...", nil)];
+	[wait showWindow:self];
+	
 	t = [[[NSTask alloc] init] autorelease];
-	[t setLaunchPath: @"/usr/bin/unzip"];
-	[t setCurrentDirectoryPath: @"/tmp/"];
-	if( pass)
-		args = [NSArray arrayWithObjects: @"-o", @"-d", destination, @"-P", pass, file, nil];
-	else
-		args = [NSArray arrayWithObjects: @"-o", @"-d", destination, file, nil];
-	[t setArguments: args];
-	[t launch];
-	[t waitUntilExit];
+	
+	@try
+	{
+		[t setLaunchPath: @"/usr/bin/unzip"];
+		[t setCurrentDirectoryPath: @"/tmp/"];
+		if( pass)
+			args = [NSArray arrayWithObjects: @"-o", @"-d", destination, @"-P", pass, file, nil];
+		else
+			args = [NSArray arrayWithObjects: @"-o", @"-d", destination, file, nil];
+		[t setArguments: args];
+		[t launch];
+		[t waitUntilExit];
+	}
+	@catch ( NSException *e)
+	{
+		NSLog( @"***** unzipFile exception: %@", e);
+	}
+	
+	[wait close];
+	[wait release];
 	
 	if( [t terminationStatus] == 0)
 		return YES;
@@ -15353,6 +15367,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			if( [[NSFileManager defaultManager] fileExistsAtPath: [tempPath stringByAppendingPathExtension: @"zip"]] == NO)
 			{
 				[BrowserController encryptFolder: tempPath inZIPFile: [tempPath stringByAppendingPathExtension: @"zip"] password: passwordForExportEncryption];
+				self.passwordForExportEncryption = @"";
 			}
 		}
 	}
@@ -15373,20 +15388,33 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	[[NSFileManager defaultManager] removeItemAtPath: destFile error: nil];
 	
-	t = [[[NSTask alloc] init] autorelease];
-	[t setLaunchPath: @"/usr/bin/zip"];
-	[t setCurrentDirectoryPath: [srcFolder stringByDeletingLastPathComponent]];
+	WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Compressing the files...", nil)];
+	[wait showWindow:self];
 	
-	if( [password length] > 0)
-		args = [NSArray arrayWithObjects: @"-r", @"-e", @"-P", password, destFile, [srcFolder lastPathComponent], nil];
-	else
-		args = [NSArray arrayWithObjects: @"-r", destFile, [srcFolder lastPathComponent], nil];
-	[t setArguments: args];
-	[t launch];
-	[t waitUntilExit];
+	@try
+	{
+		t = [[[NSTask alloc] init] autorelease];
+		[t setLaunchPath: @"/usr/bin/zip"];
+		[t setCurrentDirectoryPath: [srcFolder stringByDeletingLastPathComponent]];
+		
+		if( [password length] > 0)
+			args = [NSArray arrayWithObjects: @"-r", @"-e", @"-P", password, destFile, [srcFolder lastPathComponent], nil];
+		else
+			args = [NSArray arrayWithObjects: @"-r", destFile, [srcFolder lastPathComponent], nil];
+		[t setArguments: args];
+		[t launch];
+		[t waitUntilExit];
+		
+		if( [t terminationStatus] == 0)
+			[[NSFileManager defaultManager] removeItemAtPath: srcFolder error: nil];
+	}
+	@catch (NSException *e)
+	{
+		NSLog( @"**** encryptFolder exception: %@", e);
+	}
 	
-	if( [t terminationStatus] == 0)
-		[[NSFileManager defaultManager] removeItemAtPath: srcFolder error: nil];
+	[wait close];
+	[wait release];
 }
 
 - (void) exportDICOMFile: (id)sender
