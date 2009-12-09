@@ -632,11 +632,10 @@
 		
 		if (self.TLSEnabled)
 		{
-			[aServer setObject:[NSNumber numberWithBool:self.TLSAuthenticated] forKey:@"TLSAuthenticated"];
+			[aServer setObject:[NSNumber numberWithBool: self.TLSAuthenticated] forKey:@"TLSAuthenticated"];
 			
 			if (self.TLSAuthenticated)
 			{
-				[aServer setObject:[self.TLSAuthenticated path] forKey:@"TLSAuthenticated"];
 				[aServer setObject:[self.TLSCertificatesURL path] forKey:@"TLSCertificatesURL"];
 				// password ...
 			}
