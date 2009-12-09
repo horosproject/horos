@@ -2687,6 +2687,12 @@ static BOOL initialized = NO;
 	
 	[[NSUserDefaults standardUserDefaults] setBool: hasMacOSXSnowLeopard() forKey: @"hasMacOSXSnowLeopard"];
 	
+	if( hasMacOSXSnowLeopard() == NO)
+	{
+		[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"EncryptCD"];
+		[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"encryptForExport"];
+	}
+	
 //	*(long*)0 = 0xDEADBEEF;	// Test for ILCrashReporter
 }
 
