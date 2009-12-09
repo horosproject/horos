@@ -1088,7 +1088,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		#ifdef WITH_OPENSSL
 
 		//disable TLS
-		_secureConnection = OFFalse;
+		//_secureConnection = OFFalse;
 		
 		//enable TLS
 		//        _secureConnection = OFTrue;
@@ -1259,8 +1259,11 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 			}
 			
 			//anonymous-tls
-			//DcmCertificateVerification _certVerification = DCV_ignoreCertificate;// joris
-			//tLayer->setCertificateVerification(_certVerification);// joris
+			DcmCertificateVerification _certVerification = DCV_ignoreCertificate;// joris
+			if(_doAuthenticate)// joris
+				_certVerification = DCV_requireCertificate;// joris
+			
+			tLayer->setCertificateVerification(_certVerification);// joris
 			
 			cond = ASC_setTransportLayer(net, tLayer, 0);
 			if (cond.bad())

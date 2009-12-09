@@ -68,5 +68,7 @@
 - (IBAction) editWADO: (id) sender;
 
 - (IBAction) editTLS: (id) sender;
+- (NSArray*)availableCipherSuites;
+- (NSArray*)defaultCipherSuites;
 
 @end

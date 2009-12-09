@@ -57,14 +57,20 @@
 		
 		//SSL
 		//_keyFileFormat = SSL_FILETYPE_PEM;
-		_doAuthenticate = NO;
+		_secureConnection = [[extraParameters objectForKey:@"TLSEnabled"] boolValue];
+		_doAuthenticate = [[extraParameters objectForKey:@"TLSAuthenticated"] boolValue];
 		_privateKeyFile = NULL;
 		_certificateFile = NULL;
 		_passwd = NULL;
 		
 		_readSeedFile = NULL;
 		_writeSeedFile = NULL;
-		//_certVerification = DCV_requireCertificate;
+		
+//		if(!_doAuthenticate)
+//			_certVerification = DCV_ignoreCertificate;
+//		else
+//			_certVerification = DCV_requireCertificate;
+		
 		_dhparam = NULL;
 	}
 	return self;

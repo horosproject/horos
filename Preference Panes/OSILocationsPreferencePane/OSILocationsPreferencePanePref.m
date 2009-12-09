@@ -216,6 +216,10 @@
 	[aServer setObject: [NSNumber numberWithInt: -1] forKey: @"WADOTransferSyntax"]; // useOrig=true
 	[aServer setObject: @"wado" forKey: @"WADOUrl"];
 	
+	[aServer setObject:[NSNumber numberWithBool:NO] forKey:@"TLSEnabled"];
+	[aServer setObject:[NSNumber numberWithBool:NO] forKey:@"TLSAuthenticated"];
+	[aServer setObject:NSHomeDirectory() forKey:@"TLSCertificatesURL"];
+		
 	[dicomNodes addObject:aServer];
 	[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"updateServers"];
 	
@@ -277,61 +281,6 @@
 		
 		[[NSUserDefaults standardUserDefaults] setObject: [dicomNodes arrangedObjects] forKey: @"SERVERS"];
 		[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"updateServers"];
-	}
-}
-
-- (IBAction) editTLS: (id) sender
-{	
-	NSMutableDictionary *aServer = [[dicomNodes arrangedObjects] objectAtIndex: [[dicomNodes tableView] selectedRow]];
-	
-//	self.WADOPort = [[aServer valueForKey: @"WADOPort"] intValue];
-//	self.WADOUrl = [aServer valueForKey: @"WADOUrl"];
-//	self.WADOTransferSyntax = [[aServer valueForKey: @"WADOTransferSyntax"] intValue];
-	
-	self.TLSEnabled = [[aServer valueForKey: @"TLSEnabled"] boolValue];
-	self.TLSAuthenticated = [[aServer valueForKey: @"TLSAuthenticated"] boolValue];
-	self.TLSCertificatesURL = [aServer valueForKey: @"TLSCertificatesURL"];//[NSURL fileURLWithPath:@"/Users/joris/Desktop/certificates/my_cert.p12"];
-	
-	self.TLSSupportedCipherSuite = [NSArray arrayWithObjects:	[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES], @"Supported", @"TLS1_TXT_RSA_WITH_AES_128_SHA", @"Cipher", nil],
-																[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES], @"Supported", @"SSL3_TXT_RSA_DES_192_CBC3_SHA", @"Cipher", nil],
-																[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:NO], @"Supported", @"TLS1_TXT_ADH_WITH_AES_256_SHA", @"Cipher", nil],
-																nil];
-	
-	[NSApp beginSheet: TLSSettings
-	   modalForWindow: [[self mainView] window]
-		modalDelegate: nil
-	   didEndSelector: nil
-		  contextInfo: nil];
-	
-	int result = [NSApp runModalForWindow: TLSSettings];
-	[TLSSettings makeFirstResponder: nil];
-	
-	[NSApp endSheet: TLSSettings];
-	[TLSSettings orderOut: self];
-	
-	if( result == NSRunStoppedResponse)
-	{
-		[aServer setObject:[NSNumber numberWithBool:self.TLSEnabled] forKey:@"TLSEnabled"];
-		
-		if (self.TLSEnabled)
-		{
-			[aServer setObject:[NSNumber numberWithBool:self.TLSAuthenticated] forKey:@"TLSAuthenticated"];
-			
-			if (self.TLSAuthenticated)
-			{
-				[aServer setObject:self.TLSCertificatesURL forKey:@"TLSCertificatesURL"];
-				// password ...
-			}
-			
-			
-		}
-				
-//		[aServer setObject: [NSNumber numberWithInt: WADOPort] forKey: @"WADOPort"];
-//		[aServer setObject: [NSNumber numberWithInt: WADOTransferSyntax] forKey: @"WADOTransferSyntax"];
-//		[aServer setObject: WADOUrl forKey: @"WADOUrl"];
-//		
-		[[NSUserDefaults standardUserDefaults] setObject:[dicomNodes arrangedObjects] forKey: @"SERVERS"];
-		[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"updateServers"];
 	}
 }
 
@@ -644,19 +593,130 @@
 	[[[self mainView] window] makeKeyAndOrderFront: self];
 }
 
-//- (BOOL)tableView:(NSTableView *)aTableView acceptDrop:(id < NSDraggingInfo >)info row:(NSInteger)row dropOperation:(NSTableViewDropOperation)operation
-//{
-//	return YES;
-//}
-//
-//- (NSDragOperation)tableView:(NSTableView *)aTableView validateDrop:(id < NSDraggingInfo >)info proposedRow:(NSInteger)row proposedDropOperation:(NSTableViewDropOperation)operation
-//{
-//	return NSDragOperationEvery;
-//}
-//
-//- (BOOL)tableView:(NSTableView *)aTableView writeRowsWithIndexes:(NSIndexSet *)rowIndexes toPasteboard:(NSPasteboard *)pboard
-//{
-//	return YES;
-//}
+#pragma mark DICOM TLS Support
+
+- (IBAction) editTLS: (id) sender
+{	
+	NSMutableDictionary *aServer = [[dicomNodes arrangedObjects] objectAtIndex: [[dicomNodes tableView] selectedRow]];
+	
+	self.TLSEnabled = [[aServer valueForKey:@"TLSEnabled"] boolValue];
+	self.TLSAuthenticated = [[aServer valueForKey:@"TLSAuthenticated"] boolValue];
+	
+	NSString *certificatesURL = [aServer valueForKey:@"TLSCertificatesURL"];
+	if(!certificatesURL)
+		certificatesURL = NSHomeDirectory();
+	self.TLSCertificatesURL = [NSURL fileURLWithPath:certificatesURL];
+	
+	NSArray *selectedCipherSuites = [aServer valueForKey:@"TLSCipherSuites"];
+
+	if ([selectedCipherSuites count])
+		self.TLSSupportedCipherSuite = selectedCipherSuites;
+	else
+		self.TLSSupportedCipherSuite = [self defaultCipherSuites];
+
+	[NSApp beginSheet: TLSSettings
+	   modalForWindow: [[self mainView] window]
+		modalDelegate: nil
+	   didEndSelector: nil
+		  contextInfo: nil];
+	
+	int result = [NSApp runModalForWindow: TLSSettings];
+	[TLSSettings makeFirstResponder: nil];
+	
+	[NSApp endSheet: TLSSettings];
+	[TLSSettings orderOut: self];
+	
+	if( result == NSRunStoppedResponse)
+	{
+		[aServer setObject:[NSNumber numberWithBool:self.TLSEnabled] forKey:@"TLSEnabled"];
+		
+		if (self.TLSEnabled)
+		{
+			[aServer setObject:[NSNumber numberWithBool:self.TLSAuthenticated] forKey:@"TLSAuthenticated"];
+			
+			if (self.TLSAuthenticated)
+			{
+				[aServer setObject:[self.TLSAuthenticated path] forKey:@"TLSAuthenticated"];
+				[aServer setObject:[self.TLSCertificatesURL path] forKey:@"TLSCertificatesURL"];
+				// password ...
+			}
+			
+			[aServer setObject:self.TLSSupportedCipherSuite forKey:@"TLSCipherSuites"];
+		}
+
+		[[NSUserDefaults standardUserDefaults] setObject:[dicomNodes arrangedObjects] forKey:@"SERVERS"];
+		[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"updateServers"];
+	}
+}
+
+- (NSArray*)availableCipherSuites;
+{
+	// list taken from "tlslayer.cc"
+	NSArray *cipherSuites = [NSArray arrayWithObjects:	@"TLS_RSA_WITH_NULL_MD5",
+							 @"TLS_RSA_WITH_NULL_SHA",
+							 @"TLS_RSA_EXPORT_WITH_RC4_40_MD5",
+							 @"TLS_RSA_WITH_RC4_128_MD5",
+							 @"TLS_RSA_WITH_RC4_128_SHA",
+							 @"TLS_RSA_EXPORT_WITH_RC2_CBC_40_MD5",
+							 @"TLS_RSA_WITH_IDEA_CBC_SHA",
+							 @"TLS_RSA_EXPORT_WITH_DES40_CBC_SHA",
+							 @"TLS_RSA_WITH_DES_CBC_SHA",
+							 @"TLS_RSA_WITH_3DES_EDE_CBC_SHA",
+							 @"TLS_DH_DSS_EXPORT_WITH_DES40_CBC_SHA",
+							 @"TLS_DH_DSS_WITH_DES_CBC_SHA",        
+							 @"TLS_DH_DSS_WITH_3DES_EDE_CBC_SHA",   
+							 @"TLS_DH_RSA_EXPORT_WITH_DES40_CBC_SHA",
+							 @"TLS_DH_RSA_WITH_DES_CBC_SHA",        
+							 @"TLS_DH_RSA_WITH_3DES_EDE_CBC_SHA",   
+							 @"TLS_DHE_DSS_EXPORT_WITH_DES40_CBC_SHA",
+							 @"TLS_DHE_DSS_WITH_DES_CBC_SHA",            
+							 @"TLS_DHE_DSS_WITH_3DES_EDE_CBC_SHA",       
+							 @"TLS_DHE_RSA_EXPORT_WITH_DES40_CBC_SHA",   
+							 @"TLS_DHE_RSA_WITH_DES_CBC_SHA",            
+							 @"TLS_DHE_RSA_WITH_3DES_EDE_CBC_SHA",       
+							 @"TLS_DH_anon_EXPORT_WITH_RC4_40_MD5",      
+							 @"TLS_DH_anon_WITH_RC4_128_MD5",            
+							 @"TLS_DH_anon_EXPORT_WITH_DES40_CBC_SHA",   
+							 @"TLS_DH_anon_WITH_DES_CBC_SHA",            
+							 @"TLS_DH_anon_WITH_3DES_EDE_CBC_SHA",       
+							 @"TLS_RSA_EXPORT1024_WITH_DES_CBC_SHA",     
+							 @"TLS_RSA_EXPORT1024_WITH_RC4_56_SHA",      
+							 @"TLS_DHE_DSS_EXPORT1024_WITH_DES_CBC_SHA", 
+							 @"TLS_DHE_DSS_EXPORT1024_WITH_RC4_56_SHA",  
+							 @"TLS_DHE_DSS_WITH_RC4_128_SHA",            
+							 //if OPENSSL_VERSION_NUMBER >= 0x0090700fL
+							 // cipersuites added in OpenSSL 0.9.7
+							 @"TLS_RSA_EXPORT_WITH_RC4_56_MD5",         
+							 @"TLS_RSA_EXPORT_WITH_RC2_CBC_56_MD5",     
+							 /* AES ciphersuites from RFC3268 */
+							 @"TLS_RSA_WITH_AES_128_CBC_SHA",           
+							 @"TLS_DH_DSS_WITH_AES_128_CBC_SHA",        
+							 @"TLS_DH_RSA_WITH_AES_128_CBC_SHA",        
+							 @"TLS_DHE_DSS_WITH_AES_128_CBC_SHA",       
+							 @"TLS_DHE_RSA_WITH_AES_128_CBC_SHA",       
+							 @"TLS_DH_anon_WITH_AES_128_CBC_SHA",       
+							 @"TLS_RSA_WITH_AES_256_CBC_SHA",           
+							 @"TLS_DH_DSS_WITH_AES_256_CBC_SHA",        
+							 @"TLS_DH_RSA_WITH_AES_256_CBC_SHA",        
+							 @"TLS_DHE_DSS_WITH_AES_256_CBC_SHA",       
+							 @"TLS_DHE_RSA_WITH_AES_256_CBC_SHA",       
+							 @"TLS_DH_anon_WITH_AES_256_CBC_SHA",
+							 nil];
+	return cipherSuites;
+}
+
+- (NSArray*)defaultCipherSuites;
+{
+	NSArray *availableCipherSuites = [self availableCipherSuites];
+	NSMutableArray *cipherSuites = [NSMutableArray arrayWithCapacity:[availableCipherSuites count]];
+	
+	for (NSString *suite in availableCipherSuites)
+	{
+		[cipherSuites addObject:[NSMutableDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:NO], @"Supported", suite, @"Cipher", nil]];
+	}
+	
+	return [NSArray arrayWithArray:cipherSuites];
+}
+
 
 @end
