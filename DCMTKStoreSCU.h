@@ -32,6 +32,10 @@ int runStoreSCU(const char *myAET, const char*peerAET, const char*hostname, int 
 	BOOL _shouldAbort;
 	int _transferSyntax;
 	float _compression;
+	
+	BOOL _secureConnection;
+	BOOL _doAuthenticate;
+
 	NSMutableArray *_filesToSend;
 	int _numberOfFiles;
 	int _numberSent;
@@ -39,8 +43,6 @@ int runStoreSCU(const char *myAET, const char*peerAET, const char*hostname, int 
 	NSString *_patientName;
 	NSString *_studyDescription; 
 	id _logEntry;
-	
-
 }
 
 - (id) initWithCallingAET:(NSString *)myAET  

@@ -1175,14 +1175,6 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 			[queryException raise];
 		}
 		
-	#ifdef WITH_OPENSSL
-
-		if (_secureConnection)
-		{
-		}
-
-	#endif
-
 	#ifdef WITH_OPENSSL // joris
 		
 		DcmTLSTransportLayer *tLayer = NULL;

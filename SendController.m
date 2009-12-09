@@ -339,7 +339,7 @@ static volatile int sendControllerObjects = 0;
 			filesToSend:files
 			transferSyntax: [[NSUserDefaults standardUserDefaults] integerForKey:@"syntaxListOffis"]
 			compression: 1.0
-			extraParameters:nil];
+			extraParameters:[self server]];
 	
 	@try
 	{

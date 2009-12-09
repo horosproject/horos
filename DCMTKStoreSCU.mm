@@ -121,7 +121,6 @@ static OFString patientNamePrefix("OFFIS^TEST_PN_");   // PatientName is PN (max
 static OFString patientIDPrefix("PID_"); // PatientID is LO (maximum 64 chars)
 static OFString studyIDPrefix("SID_");   // StudyID is SH (maximum 16 chars)
 static OFString accessionNumberPrefix;  // AccessionNumber is SH (maximum 16 chars)
-static OFBool opt_secureConnection = OFFalse; /* default: no secure connection */
 static const char *opt_configFile = NULL;
 static const char *opt_profileName = NULL;
 T_DIMSE_BlockingMode opt_blockMode = DIMSE_NONBLOCKING;
@@ -905,6 +904,9 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 		_transferSyntax = transferSyntax;
 		_compression = compression;
 		
+		_secureConnection = [[extraParameters objectForKey:@"TLSEnabled"] boolValue];
+		_doAuthenticate = [[extraParameters objectForKey:@"TLSAuthenticated"] boolValue];
+		
 		_filesToSend = [[NSMutableArray arrayWithArray: filesToSend] retain];
 		[_filesToSend removeDuplicatedStrings];
 		_numberOfFiles = [filesToSend count];
@@ -1114,16 +1116,16 @@ NS_DURING
 #ifdef WITH_OPENSSL
 
 	//disable TLS
-	opt_secureConnection = OFFalse;
+	// _secureConnection = OFFalse; //joris
 	
 	//enable TLS
-	//        opt_secureConnection = OFTrue;
+	//        _secureConnection = OFTrue;
 	//opt_doAuthenticate = OFTrue;
 	//app.checkValue(cmd.getValue(opt_privateKeyFile));
 	//app.checkValue(cmd.getValue(opt_certificateFile));
 	
 	//anonymous-tls
-	// opt_secureConnection = OFTrue;
+	// _secureConnection = OFTrue;
 	
 	//Password
 	//opt_passwd
@@ -1277,13 +1279,92 @@ NS_DURING
         //return;
     }
 	
-#ifdef WITH_OPENSSL
-
+#ifdef WITH_OPENSSL //joris
+	
+	// from http://dcmtk.sourcearchive.com/documentation/3.5.3/storescu_8cc-source.html
+	
     DcmTLSTransportLayer *tLayer = NULL;
-    if (opt_secureConnection)
+    if (_secureConnection)
     {
-	}
-
+		tLayer = new DcmTLSTransportLayer(DICOM_APPLICATION_REQUESTOR, opt_readSeedFile);
+		if (tLayer == NULL)
+		{
+			NSLog(@"unable to create TLS transport layer");
+		}
+		
+//		if (cmd.findOption("--add-cert-file", 0, OFCommandLine::FOM_First))
+//		{
+//			const char *current = NULL;
+//			do
+//			{
+//				app.checkValue(cmd.getValue(current));
+//				if (TCS_ok != tLayer->addTrustedCertificateFile(current, opt_keyFileFormat))
+//				{
+//					CERR << "warning unable to load certificate file '" << current << "', ignoring" << endl;
+//				}
+//			} while (cmd.findOption("--add-cert-file", 0, OFCommandLine::FOM_Next));
+//		}
+		
+//		if (cmd.findOption("--add-cert-dir", 0, OFCommandLine::FOM_First))
+//		{
+//			const char *current = NULL;
+//			do
+//			{
+//				app.checkValue(cmd.getValue(current));
+//				if (TCS_ok != tLayer->addTrustedCertificateDir(current, opt_keyFileFormat))
+//				{
+//					CERR << "warning unable to load certificates from directory '" << current << "', ignoring" << endl;
+//				}
+//			} while (cmd.findOption("--add-cert-dir", 0, OFCommandLine::FOM_Next));
+//		}
+		
+//		if (opt_dhparam && ! (tLayer->setTempDHParameters(opt_dhparam)))
+//		{
+//			CERR << "warning unable to load temporary DH parameter file '" << opt_dhparam << "', ignoring" << endl;
+//		}
+		
+//		if (opt_doAuthenticate)
+//		{
+//			if (opt_passwd) tLayer->setPrivateKeyPasswd(opt_passwd);
+//			
+//			if (TCS_ok != tLayer->setPrivateKeyFile(opt_privateKeyFile, opt_keyFileFormat))
+//			{
+//				CERR << "unable to load private TLS key from '" << opt_privateKeyFile << "'" << endl;
+//				return 1;
+//			}
+//			if (TCS_ok != tLayer->setCertificateFile(opt_certificateFile, opt_keyFileFormat))
+//			{
+//				CERR << "unable to load certificate from '" << opt_certificateFile << "'" << endl;
+//				return 1;
+//			}
+//			if (! tLayer->checkPrivateKeyMatchesCertificate())
+//			{
+//				CERR << "private key '" << opt_privateKeyFile << "' and certificate '" << opt_certificateFile << "' do not match" << endl;
+//				return 1;
+//			}
+//		}
+		
+		if (TCS_ok != tLayer->setCipherSuites(opt_ciphersuites.c_str()))
+		{
+			NSLog(@"unable to set selected cipher suites");
+		}
+		
+		//anonymous-tls
+		DcmCertificateVerification _certVerification = DCV_ignoreCertificate;// joris
+		if(_doAuthenticate)// joris
+			_certVerification = DCV_requireCertificate;// joris
+		
+		tLayer->setCertificateVerification(_certVerification);
+		
+		cond = ASC_setTransportLayer(net, tLayer, 0);
+		if (cond.bad())
+		{
+			DimseCondition::dump(cond);
+			NSLog(@"ASC_setTransportLayer - %04x:%04x %s", cond.module(), cond.code(), cond.text());
+			return;
+		}
+    }
+	
 #endif
 
  /* initialize asscociation parameters, i.e. create an instance of T_ASC_Parameters*. */
@@ -1304,7 +1385,7 @@ NS_DURING
 	/* Set the transport layer type (type of network connection) in the params */
 	/* strucutre. The default is an insecure connection; where OpenSSL is  */
 	/* available the user is able to request an encrypted,secure connection. */
-	cond = ASC_setTransportLayerType(params, opt_secureConnection);
+	cond = ASC_setTransportLayerType(params, _secureConnection);
 	if (cond.bad()) {
 		DimseCondition::dump(cond);
 		localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:[NSString stringWithFormat: @"ASC_setTransportLayerType %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] retain];
