@@ -49,6 +49,8 @@
 @property (retain) NSURL *TLSCertificatesURL;
 @property (retain) NSArray *TLSSupportedCipherSuite;
 
++ (BOOL) echoServer:(NSDictionary*)serverParameters;
+
 - (IBAction) refreshNodesListURL: (id) sender;
 - (void) mainViewDidLoad;
 - (IBAction) newServer:(id)sender;

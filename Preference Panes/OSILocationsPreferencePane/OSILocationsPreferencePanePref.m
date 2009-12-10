@@ -86,6 +86,67 @@
 	return [theTask terminationStatus];
 }
 
++ (BOOL) echoServer:(NSDictionary*)serverParameters
+{
+	NSString *address = [serverParameters objectForKey:@"Address"];
+	NSNumber *port = [serverParameters objectForKey:@"Port"];
+	NSString *aet = [serverParameters objectForKey:@"AETitle"];
+	
+	NSTask* theTask = [[[NSTask alloc]init]autorelease];
+	
+	[theTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/echoscu"]];
+	
+	[theTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];
+	[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/echoscu"]];
+	
+	//NSArray *args = [NSArray arrayWithObjects: address, [NSString stringWithFormat:@"%d", port], @"-aet", [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"], @"-aec", aet, @"-to", [[NSUserDefaults standardUserDefaults] stringForKey:@"DICOMTimeout"], @"-ta", [[NSUserDefaults standardUserDefaults] stringForKey:@"DICOMTimeout"], @"-td", [[NSUserDefaults standardUserDefaults] stringForKey:@"DICOMTimeout"], nil];
+	
+	NSMutableArray *args = [NSMutableArray array];
+	[args addObject:address];
+	[args addObject:[NSString stringWithFormat:@"%d", [port intValue]]];
+	[args addObject:@"-aet"]; // set my calling AE title
+	[args addObject:[[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"]];
+	[args addObject:@"-aec"]; // set called AE title of peer
+	[args addObject:aet];
+	[args addObject:@"-to"]; // timeout for connection requests
+	[args addObject:[[NSUserDefaults standardUserDefaults] stringForKey:@"DICOMTimeout"]];
+	[args addObject:@"-ta"]; // timeout for ACSE messages
+	[args addObject:[[NSUserDefaults standardUserDefaults] stringForKey:@"DICOMTimeout"]];
+	[args addObject:@"-td"]; // timeout for DIMSE messages
+	[args addObject:[[NSUserDefaults standardUserDefaults] stringForKey:@"DICOMTimeout"]];
+	
+	if([[serverParameters objectForKey:@"TLSEnabled"] boolValue])
+	{
+		// TLS support. Work in progress.
+		// Other options listed here http://support.dcmtk.org/docs/echoscu.html
+		
+		if([[serverParameters objectForKey:@"TLSAuthenticated"] boolValue])
+		{
+			[args addObject:@"+tls"]; // use authenticated secure TLS connection
+		}
+		else
+			[args addObject:@"+tla"]; // use secure TLS connection without certificate
+		
+		for (NSDictionary *suite in [serverParameters objectForKey:@"TLSCipherSuites"])
+		{
+			if ([[suite objectForKey:@"Supported"] boolValue])
+			{
+				[args addObject:@"+cs"]; // add ciphersuite to list of negotiated suites
+				[args addObject:[suite objectForKey:@"Cipher"]];
+			}
+		}
+		
+		[args addObject:@"-ic"]; //don't verify peer certificate	
+	}
+	
+	[theTask setArguments:args];
+	[theTask launch];
+	[theTask waitUntilExit];
+	
+	if( [theTask terminationStatus] == 0) return YES;
+	else return NO;
+}
+
 - (void) enableControls: (BOOL) val
 {
 	[characterSetPopup setEnabled: val];
@@ -491,8 +552,11 @@
 		int numberPacketsReceived = 0;
 		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"Ping"] == NO || (SimplePing( [[aServer objectForKey:@"Address"] UTF8String], 1, [[NSUserDefaults standardUserDefaults] integerForKey:@"DICOMTimeout"], 1,  &numberPacketsReceived) == 0 && numberPacketsReceived > 0))
 		{
-			if( [self echoAddress:[aServer objectForKey:@"Address"] port:[[aServer objectForKey:@"Port"] intValue] AET:[aServer objectForKey:@"AETitle"]] == 0) status = 0;
-			else status = -1;
+			//if( [self echoAddress:[aServer objectForKey:@"Address"] port:[[aServer objectForKey:@"Port"] intValue] AET:[aServer objectForKey:@"AETitle"]] == 0) status = 0;
+			if ([OSILocationsPreferencePanePref echoServer:aServer])
+				status = 0;
+			else
+				status = -1;
 		}
 		else status = -2;
 		
