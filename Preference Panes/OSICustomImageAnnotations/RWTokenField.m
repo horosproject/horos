@@ -36,6 +36,8 @@
 
 - (void)_string:(id)fp8 tokenizeIndex:(int)fp12 inTextStorage:(id)fp16
 {
+	NSLog( @"*********** unsupported on 64-bit");
+	
 	[super _string:fp8 tokenizeIndex:fp12 inTextStorage:fp16];
 
 	if(![[self controlView] respondsToSelector:@selector(tokenFieldCellDidTokenizeString)]) return;
@@ -45,6 +47,8 @@
 
 - (void) setObjectValue:(id<NSCopying>)object
 {
+	NSLog( @"*********** unsupported on 64-bit");
+	
 	[super setObjectValue:object];
 	
 	if(![[self controlView] respondsToSelector:@selector(tokenFieldCellDidTokenizeString)]) return;
