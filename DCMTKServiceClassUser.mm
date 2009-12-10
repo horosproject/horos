@@ -58,7 +58,7 @@
 		//SSL
 		//_keyFileFormat = SSL_FILETYPE_PEM;
 		_secureConnection = [[extraParameters objectForKey:@"TLSEnabled"] boolValue];
-		_doAuthenticate = [[extraParameters objectForKey:@"TLSAuthenticated"] boolValue];
+		_doAuthenticate = (_secureConnection) ? [[extraParameters objectForKey:@"TLSAuthenticated"] boolValue] : NO ;
 		_privateKeyFile = NULL;
 		_certificateFile = NULL;
 		_passwd = NULL;
@@ -72,6 +72,22 @@
 //			_certVerification = DCV_requireCertificate;
 		
 		_dhparam = NULL;
+		
+		if (_secureConnection)
+		{
+			NSArray *suites = [extraParameters objectForKey:@"TLSCipherSuites"];
+			NSMutableArray *selectedCipherSuites = [NSMutableArray array];
+			
+			for (NSDictionary *suite in suites)
+			{
+				if ([[suite objectForKey:@"Supported"] boolValue])
+					[selectedCipherSuites addObject:[suite objectForKey:@"Cipher"]];
+			}
+			
+			_cipherSuites = [[NSArray arrayWithArray:selectedCipherSuites] retain];
+		}
+		else _cipherSuites = nil;
+		
 	}
 	return self;
 }
@@ -84,7 +100,8 @@
 	[_privateKeyFile release];
 	[_certificateFile release];
 	[_passwd release];
-
+	[_cipherSuites release];
+	
 	[super dealloc];
 }
 

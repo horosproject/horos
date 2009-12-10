@@ -67,6 +67,7 @@ Super Class for SCU classes such as verifySCU, storeSCU, moveSCU, findSCU
 	NSString *_privateKeyFile;
 	NSString *_certificateFile;
 	NSString *_passwd;
+	NSArray *_cipherSuites;
 	
 	const char *_readSeedFile;
 	const char *_writeSeedFile;

@@ -1159,6 +1159,40 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 			} while (cmd.findOption("--cipher", 0, OFCommandLine::FOM_Next));
 		  }
 		*/
+		
+		if(_cipherSuites)
+		{
+			const char *current = NULL;
+			const char *currentOpenSSL;
+			
+			opt_ciphersuites.clear();
+			
+			for (NSString *suite in _cipherSuites)
+			{
+				current = [suite cStringUsingEncoding:NSUTF8StringEncoding];
+				
+				if (NULL == (currentOpenSSL = DcmTLSTransportLayer::findOpenSSLCipherSuiteName(current)))
+				{
+					NSLog(@"ciphersuite '%s' is unknown.", current);
+					NSLog(@"Known ciphersuites are:");
+					unsigned long numSuites = DcmTLSTransportLayer::getNumberOfCipherSuites();
+					for (unsigned long cs=0; cs < numSuites; cs++)
+					{
+						NSLog(@"%s", DcmTLSTransportLayer::getTLSCipherSuiteName(cs));
+					}
+					
+					queryException = [NSException exceptionWithName:@"DICOM Network Failure (TLS query)" reason:[NSString stringWithFormat:@"Ciphersuite '%s' is unknown.", current] userInfo:nil];
+					[queryException raise];
+				}
+				else
+				{
+					if (opt_ciphersuites.length() > 0) opt_ciphersuites += ":";
+					opt_ciphersuites += currentOpenSSL;
+				}
+				
+			}
+		}
+		
 	#endif
 
 		/* make sure data dictionary is loaded */
@@ -1246,7 +1280,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 			{
 //				CERR << "unable to set selected cipher suites" << endl;
 //				return 1;
-				queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:@"unable to set selected cipher suites" userInfo:nil];
+				queryException = [NSException exceptionWithName:@"DICOM Network Failure (TLS query)" reason:@"Unable to set selected cipher suites" userInfo:nil];
 				[queryException raise];
 			}
 			
@@ -1261,7 +1295,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 			if (cond.bad())
 			{
 				DimseCondition::dump(cond);
-				queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"ASC_setTransportLayer - %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
+				queryException = [NSException exceptionWithName:@"DICOM Network Failure (TLS query)" reason:[NSString stringWithFormat: @"ASC_setTransportLayer - %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
 				[queryException raise];
 			}
 		}
