@@ -1166,13 +1166,15 @@
 					
 					[[NSFileManager defaultManager] createDirectoryAtPath: srcFolder attributes: nil];
 					
-					for( DicomImage *im in  imagesArray)
-					{
-						[[NSFileManager defaultManager] copyItemAtPath: [im valueForKey: @"completePath"] toPath: [srcFolder stringByAppendingPathComponent: [[im valueForKey: @"completePath"] lastPathComponent]] error: nil];
-					}
+//					for( DicomImage *im in  imagesArray)
+//					{
+//						[[NSFileManager defaultManager] copyItemAtPath: [im valueForKey: @"completePath"] toPath: [srcFolder stringByAppendingPathComponent: [[im valueForKey: @"completePath"] lastPathComponent]] error: nil];
+//					}
+//					
+//					[BrowserController encryptFolder: srcFolder inZIPFile: destFile password: nil];
 					
-					[BrowserController encryptFolder: srcFolder inZIPFile: destFile password: nil];
-					
+					[BrowserController encryptFiles: [imagesArray valueForKey: @"completePath"] inZIPFile: destFile password: nil];
+
 					data = [NSData dataWithContentsOfFile: destFile];
 					
 					[[NSFileManager defaultManager] removeItemAtPath: srcFolder error: nil];
