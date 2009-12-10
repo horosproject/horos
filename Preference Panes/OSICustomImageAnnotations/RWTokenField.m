@@ -69,6 +69,8 @@
 
 - (void) tokenFieldCellDidTokenizeString:(NSTokenFieldCell*)tokenFieldCell
 {
+	NSLog( @"*********** unsupported on 64-bit");
+	
 	NSDictionary* valueBindingInformation = [self infoForBinding:@"value"];
 	if(valueBindingInformation != nil)
 	{
@@ -88,18 +90,24 @@
 
 - (void)concludeDragOperation:(id <NSDraggingInfo>)sender
 {
+	NSLog( @"*********** unsupported on 64-bit");
+	
 	NSLog(@"concludeDragOperation");
 	[super concludeDragOperation:sender];
 }
 
 - (void)draggingEnded:(id <NSDraggingInfo>)sender
 {
+	NSLog( @"*********** unsupported on 64-bit");
+	
 	NSLog(@"draggingEnded");
 	[super draggingEnded:sender];
 }
 
 - (BOOL)performDragOperation:(id <NSDraggingInfo>)sender
 {
+	NSLog( @"*********** unsupported on 64-bit");
+	
 	NSLog(@"performDragOperation");
 	return [super performDragOperation:sender];
 }
