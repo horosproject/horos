@@ -16,6 +16,8 @@
 #import "HTTPServer.h"
 #import "DicomStudy.h"
 
+extern NSString* asciiString (NSString* name);
+
 @interface WebServicesMethods : NSObject
 {
 	HTTPServer	*httpServ;

@@ -118,11 +118,21 @@ li.StudyListItemSeriesSeparator
 	font-size:10pt;
 }
 
+.DownloadAsZIP
+{
+	color: #666666;
+	font-size:10pt;
+}
+
 .tdSeriesName
 {
 }
 
 .tdSeriesImageNumber
+{
+}
+
+.tdDownloadAsZIP
 {
 }
 

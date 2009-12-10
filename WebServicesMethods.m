@@ -33,6 +33,8 @@
 
 #import "DCMTransferSyntax.h"
 
+
+
 #define maxResolution 1024
 
 @interface NSImage (ProportionalScaling)
@@ -566,6 +568,7 @@
 		}
 		//NSLog(@"requestedFile : %@", requestedFile);
 		data = [NSData dataWithContentsOfFile:requestedFile];
+		#pragma mark index.html
 		if([requestedFile isEqualToString:[webDirectory stringByAppendingPathComponent:@"index.html"]])
 		{
 			NSMutableString *templateString = [NSMutableString stringWithContentsOfFile:[webDirectory stringByAppendingPathComponent:@"index.html"]];
@@ -607,7 +610,8 @@
 			
 			data = [returnHTML dataUsingEncoding:NSUTF8StringEncoding];
 		}
-		else if([fileURL isEqualToString:@"/wado"])
+		#pragma mark wado
+		else if([fileURL isEqualToString:@"/wado"]) 
 		{
 			if([[[parameters objectForKey:@"requestType"] lowercaseString] isEqualToString: @"wado"])
 			{
@@ -824,6 +828,7 @@
 				[context unlock];
 			}
 		}
+		#pragma mark studyList
 		else if([fileURL isEqualToString:@"/studyList"])
 		{
 			NSPredicate *browsePredicate;
@@ -917,6 +922,7 @@
 			data = [html dataUsingEncoding:NSUTF8StringEncoding];
 			err = NO;
 		}
+		#pragma mark study
 		else if([fileURL isEqualToString:@"/study"])
 		{
 			NSPredicate *browsePredicate;
@@ -1005,6 +1011,7 @@
 			}
 			err = NO;
 		}
+		#pragma mark thumbnail
 		else if([fileURL isEqualToString:@"/thumbnail"])
 		{
 			NSPredicate *browsePredicate;
@@ -1013,7 +1020,7 @@
 				if( [[parameters allKeys] containsObject:@"studyID"])
 					browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", [[parameters objectForKey:@"studyID"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[parameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
 				else
-					browsePredicate = [NSPredicate predicateWithFormat:@"seriesInstanceUID == %@", [[parameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+					browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@", [[parameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
 			}
 			else
 				browsePredicate = [NSPredicate predicateWithValue:NO];
@@ -1029,6 +1036,7 @@
 			}
 			err = NO;
 		}
+		#pragma mark series
 		else if([fileURL isEqualToString:@"/series"])
 		{
 			NSMutableString *templateString = [NSMutableString stringWithContentsOfFile:[webDirectory stringByAppendingPathComponent:@"series.html"]];			
@@ -1049,7 +1057,7 @@
 				if( [[parameters allKeys] containsObject:@"studyID"])
 					browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", [[parameters objectForKey:@"studyID"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[parameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
 				else
-					browsePredicate = [NSPredicate predicateWithFormat:@"seriesInstanceUID == %@", [[parameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+					browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@", [[parameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
 			}
 			else
 				browsePredicate = [NSPredicate predicateWithValue:NO];
@@ -1123,6 +1131,62 @@
 			data = [templateString dataUsingEncoding:NSUTF8StringEncoding];
 			err = NO;
 		}
+		#pragma mark ZIP
+		else if( [fileURL hasSuffix:@".zip"])
+		{
+			NSPredicate *browsePredicate;
+			if([[parameters allKeys] containsObject:@"id"])
+			{
+				if( [[parameters allKeys] containsObject:@"studyID"])
+					browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", [[parameters objectForKey:@"studyID"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[parameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+				else
+					browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@", [[parameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+			}
+			else
+				browsePredicate = [NSPredicate predicateWithValue:NO];
+			
+			NSArray *series = [self seriesForPredicate:browsePredicate];
+			
+			NSMutableArray *imagesArray = [NSMutableArray array];
+			for( DicomSeries *s in series)
+				[imagesArray addObjectsFromArray: [[s valueForKey:@"images"] allObjects]];
+			
+			if( [imagesArray count])
+			{
+				@try
+				{
+					NSString *srcFolder = @"/tmp";
+					NSString *destFile = @"/tmp";
+					
+					srcFolder = [srcFolder stringByAppendingPathComponent: asciiString( [[imagesArray lastObject] valueForKeyPath: @"series.study.name"])];
+					destFile = [[destFile stringByAppendingPathComponent: asciiString( [[imagesArray lastObject] valueForKeyPath: @"series.study.name"])] stringByAppendingPathExtension: @"zip"];
+					
+					[[NSFileManager defaultManager] removeItemAtPath: srcFolder error: nil];
+					[[NSFileManager defaultManager] removeItemAtPath: destFile error: nil];
+					
+					[[NSFileManager defaultManager] createDirectoryAtPath: srcFolder attributes: nil];
+					
+					for( DicomImage *im in  imagesArray)
+					{
+						[[NSFileManager defaultManager] copyItemAtPath: [im valueForKey: @"completePath"] toPath: [srcFolder stringByAppendingPathComponent: [[im valueForKey: @"completePath"] lastPathComponent]] error: nil];
+					}
+					
+					[BrowserController encryptFolder: srcFolder inZIPFile: destFile password: nil];
+					
+					data = [NSData dataWithContentsOfFile: destFile];
+					
+					[[NSFileManager defaultManager] removeItemAtPath: srcFolder error: nil];
+					[[NSFileManager defaultManager] removeItemAtPath: destFile error: nil];
+					
+					err = NO;
+				}
+				@catch( NSException *e)
+				{
+					NSLog( @"**** web seriesAsZIP exception : %@", e);
+				}
+			}
+		}
+		#pragma mark image
 		else if([fileURL isEqualToString:@"/image"])
 		{
 			NSPredicate *browsePredicate;
@@ -1131,7 +1195,7 @@
 				if( [[parameters allKeys] containsObject:@"studyID"])
 					browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", [[parameters objectForKey:@"studyID"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[parameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
 				else
-					browsePredicate = [NSPredicate predicateWithFormat:@"seriesInstanceUID == %@", [[parameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+					browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@", [[parameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
 			}
 			else
 				browsePredicate = [NSPredicate predicateWithValue:NO];
@@ -1207,6 +1271,7 @@
 			
 			err = NO;
 		}
+		#pragma mark movie
 		else if([fileURL isEqualToString:@"/movie"])
 		{
 			NSPredicate *browsePredicate;
@@ -1215,11 +1280,13 @@
 				if( [[parameters allKeys] containsObject:@"studyID"])
 					browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", [[parameters objectForKey:@"studyID"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[parameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
 				else
-					browsePredicate = [NSPredicate predicateWithFormat:@"seriesInstanceUID == %@", [[parameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+					browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@", [[parameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
 			}
 			else
 				browsePredicate = [NSPredicate predicateWithValue:NO];
+			
 			NSArray *series = [self seriesForPredicate:browsePredicate];
+			
 			if([series count]==1)
 			{
 				NSArray *dicomImageArray = [[[series lastObject] valueForKey:@"images"] allObjects];
@@ -1270,6 +1337,7 @@
 			
 			err = NO;
 		}
+		#pragma mark report
 		else if([fileURL isEqualToString:@"/report"])
 		{
 			NSPredicate *browsePredicate;
@@ -1318,6 +1386,7 @@
 					err = YES;
 			}
 		}
+		#pragma mark m4v
 		else if([fileURL hasSuffix:@".m4v"])
 		{
 			data = [NSData dataWithContentsOfFile:requestedFile];
@@ -1484,6 +1553,7 @@
 	
 	NSMutableString *templateString = [NSMutableString stringWithContentsOfFile:[webDirectory stringByAppendingPathComponent:@"studyList.html"]];
 	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_Home%" withString:NSLocalizedString(@"Home", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_DownloadAsZIP%" withString:NSLocalizedString(@"ZIP file", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 	
 	NSArray *tempArray = [templateString componentsSeparatedByString:@"%StudyListItem%"];
 	NSString *templateStringStart = [tempArray objectAtIndex:0];
@@ -1514,6 +1584,8 @@
 		[tempHTML replaceOccurrencesOfString:@"%StudyDate%" withString:[NSString stringWithFormat:@"%@", [WebServicesMethods iPhoneCompatibleNumericalFormat:date]] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 		[tempHTML replaceOccurrencesOfString:@"%SeriesCount%" withString:[NSString stringWithFormat:@"%d Series", count] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 		[tempHTML replaceOccurrencesOfString:@"%StudyComment%" withString:[WebServicesMethods nonNilString:[study valueForKey:@"comment"]] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+		[tempHTML replaceOccurrencesOfString:@"%StudyDescription%" withString:[WebServicesMethods nonNilString:[study valueForKey:@"studyName"]] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+		[tempHTML replaceOccurrencesOfString:@"%StudyModality%" withString:[WebServicesMethods nonNilString:[study valueForKey:@"modality"]] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 		
 		NSString *stateText = @"";
 		if( [[study valueForKey:@"stateText"] intValue])
@@ -1545,10 +1617,13 @@
 	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_StudyDate%" withString:NSLocalizedString(@"Study Date", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_StudyState%" withString:NSLocalizedString(@"Study Status", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_StudyComment%" withString:NSLocalizedString(@"Study Comment", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_StudyDescription%" withString:NSLocalizedString(@"Study Description", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_StudyModality%" withString:NSLocalizedString(@"Modality", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_Series%" withString:NSLocalizedString(@"Series", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_DICOMTransfer%" withString:NSLocalizedString(@"DICOM Transfer", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_SendSelectedSeriesTo%" withString:NSLocalizedString(@"Send selected Series to", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_Send%" withString:NSLocalizedString(@"Send", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_DownloadAsZIP%" withString:NSLocalizedString(@"ZIP file", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 
 	NSString *browse = [WebServicesMethods nonNilString:[parameters objectForKey:@"browse"]];
 	NSString *search = [WebServicesMethods nonNilString:[parameters objectForKey:@"search"]];
@@ -1602,6 +1677,9 @@
 	[returnHTML replaceOccurrencesOfString:@"%PatientID%" withString:[WebServicesMethods nonNilString:[study valueForKey:@"patientID"]] options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
 	[returnHTML replaceOccurrencesOfString:@"%PatientName%" withString:[WebServicesMethods nonNilString:[study valueForKey:@"name"]] options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
 	[returnHTML replaceOccurrencesOfString:@"%StudyComment%" withString:[WebServicesMethods nonNilString:[study valueForKey:@"comment"]] options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
+	[returnHTML replaceOccurrencesOfString:@"%StudyDescription%" withString:[WebServicesMethods nonNilString:[study valueForKey:@"studyName"]] options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
+	[returnHTML replaceOccurrencesOfString:@"%StudyModality%" withString:[WebServicesMethods nonNilString:[study valueForKey:@"modality"]] options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
+		
 	NSString *stateText = [[BrowserController statesArray] objectAtIndex: [[study valueForKey:@"stateText"] intValue]];
 	if( [[study valueForKey:@"stateText"] intValue] == 0)
 		stateText = nil;
@@ -1634,6 +1712,7 @@
 		[tempHTML replaceOccurrencesOfString:@"%thumbnail%" withString:[NSString stringWithFormat:@"thumbnail?id=%@&studyID=%@", [WebServicesMethods nonNilString:[series valueForKey:@"seriesInstanceUID"]], [WebServicesMethods nonNilString:[study valueForKey:@"studyInstanceUID"]]] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 		[tempHTML replaceOccurrencesOfString:@"%SeriesID%" withString:[WebServicesMethods nonNilString:[series valueForKey:@"seriesInstanceUID"]] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 		[tempHTML replaceOccurrencesOfString:@"%SeriesComment%" withString:[WebServicesMethods nonNilString:[series valueForKey:@"comment"]] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+		[tempHTML replaceOccurrencesOfString:@"%PatientName%" withString:[WebServicesMethods nonNilString:[series valueForKeyPath:@"study.name"]] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 		
 		NSString *stateText = [[BrowserController statesArray] objectAtIndex: [[series valueForKey:@"stateText"] intValue]];
 		if( [[series valueForKey:@"stateText"] intValue] == 0)

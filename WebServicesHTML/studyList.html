@@ -26,10 +26,18 @@
 				<li class="StudyListItemDate">%StudyDate%</li>
 				<li class="StudyListItemSeriesSeparator">-</li>
 				<li class="StudyListItemSeriesCount">%SeriesCount%</li>
+				<li class="StudyListItemSeriesSeparator">-</li>
+				<li class="StudyListItemSeriesCount">%StudyModality%</li>
+				<li class="StudyListItemSeriesSeparator">-</li>
+				<li class="StudyListItemSeriesCount">%StudyDescription%</li>
 				<li class="StudyListItemSeriesSeparator"> </li>
 				<li class="StudyListItemSeriesCount">%StudyComment%</li>
 				<li class="StudyListItemSeriesSeparator"> </li>
 				<li class="StudyListItemSeriesCount">%StudyState%</li>
+				<li class="StudyListItemSeriesCount">
+				<a href="%StudyListItemName%.zip?dicomcstoreport=%DicomCStorePort%&id=%StudyListItemID%%browse%%search%%album%">
+				<span class="StudyListItemSeriesCount">%LocalizedLabel_DownloadAsZIP%</span>
+			</a>
 			</ul>
 			
 		</li>

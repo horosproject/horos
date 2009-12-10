@@ -41,6 +41,8 @@
 			<li>%LocalizedLabel_PatientName%: %PatientName%</li>
 			<li>%LocalizedLabel_PatientDateOfBirth%: %PatientDOB%</li>
 			<li>%LocalizedLabel_StudyDate%: %StudyDate%</li>
+			<li>%LocalizedLabel_StudyModality%: %StudyModality%</li>
+			<li>%LocalizedLabel_StudyDescription%: %StudyDescription%</li>
 			<li>%LocalizedLabel_StudyComment%: %StudyComment%</li>
 			<li>%LocalizedLabel_StudyState%: %StudyState%</li>
 		</ul>
@@ -52,10 +54,10 @@
 				<li class="image">
 					<table>
 						<tr>
-							<td rowspan="2">
+							<td rowspan="3">
 								<input type="checkbox" class="checkbox" name="selected" value="%SeriesID%" %checked% />
 							</td>
-							<td rowspan="2">
+							<td rowspan="3">
 								<a class="series" href="series?dicomcstoreport=%DicomCStorePort%&id=%SeriesID%&studyID=%StudyID%&browse=%browse%&search=%search%&album=%album%">
 									<img src="%thumbnail%" class="thumbnail">
 								</a>
@@ -70,6 +72,13 @@
 							<td class="tdSeriesImageNumber">
 								<a class="series" href="series?dicomcstoreport=%DicomCStorePort%&id=%SeriesID%&studyID=%StudyID%&browse=%browse%&search=%search%&album=%album%">
 									<span class="SeriesImageNumber">%SeriesImageNumber%</span>
+								</a>
+							</td>
+						</tr>
+						<tr>
+							<td class="tdDownloadAsZIP">
+								<a class="series" href="%PatientName%.zip?dicomcstoreport=%DicomCStorePort%&id=%SeriesID%&studyID=%StudyID%&browse=%browse%&search=%search%&album=%album%">
+									<span class="DownloadAsZIP">%LocalizedLabel_DownloadAsZIP%</span>
 								</a>
 							</td>
 						</tr>
