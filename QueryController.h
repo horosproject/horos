@@ -81,6 +81,7 @@
 + (QueryController*) currentQueryController;
 + (QueryController*) currentAutoQueryController;
 + (BOOL) echo: (NSString*) address port:(int) port AET:(NSString*) aet;
++ (BOOL) echoServer:(NSDictionary*)serverParameters;
 + (int) queryAndRetrieveAccessionNumber:(NSString*) an server: (NSDictionary*) aServer;
 + (NSArray*) queryStudyInstanceUID:(NSString*) an server: (NSDictionary*) aServer;
 
