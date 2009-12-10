@@ -15375,51 +15375,51 @@ static volatile int numberOfThreadsForJPEG = 0;
 	return result;
 }
 
-+ (void) encryptFiles: (NSArray*) srcFiles inZIPFile: (NSString*) destFile password: (NSString*) password
-{
-	NSTask *t;
-	NSArray *args;
-	
-	if( hasMacOSXSnowLeopard() == NO && [password length] > 0)
-	{
-		password = nil;
-		NSRunCriticalAlertPanel(NSLocalizedString(@"ZIP Encryption", nil), NSLocalizedString(@"ZIP encryption requires MacOS 10.6 or higher The ZIP file will be generated, but NOT encrypted with a password.", nil), NSLocalizedString(@"OK",nil),nil, nil);
-	}
-	
-	[[NSFileManager defaultManager] removeItemAtPath: destFile error: nil];
-	
-	WaitRendering *wait = nil;
-	if( [NSThread currentThread] == [AppController mainThread])
-	{
-		wait = [[WaitRendering alloc] init: NSLocalizedString(@"Compressing the files...", nil)];
-		[wait showWindow:self];
-	}
-	
-	@try
-	{
-		t = [[[NSTask alloc] init] autorelease];
-		[t setLaunchPath: @"/usr/bin/zip"];
-		[t setCurrentDirectoryPath: [srcFolder stringByDeletingLastPathComponent]];
-		
-		if( [password length] > 0)
-			args = [NSArray arrayWithObjects: @"-r", @"-e", @"-P", password, destFile, [srcFolder lastPathComponent], nil];
-		else
-			args = [NSArray arrayWithObjects: @"-r", destFile, [srcFolder lastPathComponent], nil];
-		[t setArguments: args];
-		[t launch];
-		[t waitUntilExit];
-		
-		if( [t terminationStatus] == 0)
-			[[NSFileManager defaultManager] removeItemAtPath: srcFolder error: nil];
-	}
-	@catch (NSException *e)
-	{
-		NSLog( @"**** encryptFolder exception: %@", e);
-	}
-	
-	[wait close];
-	[wait release];
-}
+//+ (void) encryptFiles: (NSArray*) srcFiles inZIPFile: (NSString*) destFile password: (NSString*) password
+//{
+//	NSTask *t;
+//	NSArray *args;
+//	
+//	if( hasMacOSXSnowLeopard() == NO && [password length] > 0)
+//	{
+//		password = nil;
+//		NSRunCriticalAlertPanel(NSLocalizedString(@"ZIP Encryption", nil), NSLocalizedString(@"ZIP encryption requires MacOS 10.6 or higher The ZIP file will be generated, but NOT encrypted with a password.", nil), NSLocalizedString(@"OK",nil),nil, nil);
+//	}
+//	
+//	[[NSFileManager defaultManager] removeItemAtPath: destFile error: nil];
+//	
+//	WaitRendering *wait = nil;
+//	if( [NSThread currentThread] == [AppController mainThread])
+//	{
+//		wait = [[WaitRendering alloc] init: NSLocalizedString(@"Compressing the files...", nil)];
+//		[wait showWindow:self];
+//	}
+//	
+//	@try
+//	{
+//		t = [[[NSTask alloc] init] autorelease];
+//		[t setLaunchPath: @"/usr/bin/zip"];
+//		[t setCurrentDirectoryPath: [srcFolder stringByDeletingLastPathComponent]];
+//		
+//		if( [password length] > 0)
+//			args = [NSArray arrayWithObjects: @"-r", @"-e", @"-P", password, destFile, [srcFolder lastPathComponent], nil];
+//		else
+//			args = [NSArray arrayWithObjects: @"-r", destFile, [srcFolder lastPathComponent], nil];
+//		[t setArguments: args];
+//		[t launch];
+//		[t waitUntilExit];
+//		
+//		if( [t terminationStatus] == 0)
+//			[[NSFileManager defaultManager] removeItemAtPath: srcFolder error: nil];
+//	}
+//	@catch (NSException *e)
+//	{
+//		NSLog( @"**** encryptFolder exception: %@", e);
+//	}
+//	
+//	[wait close];
+//	[wait release];
+//}
 
 + (void) encryptFolder: (NSString*) srcFolder inZIPFile: (NSString*) destFile password: (NSString*) password
 {
