@@ -34,10 +34,13 @@
 	IBOutlet NSWindow				*TLSSettings;
 	BOOL							TLSEnabled;
 	BOOL							TLSAuthenticated;
-	NSURL							*TLSCertificatesURL;
+	NSURL							*TLSCertificatesURL; // todo: remove this variable (replace by TLSCertificateFileURL)
+	NSURL							*TLSCertificateFileURL, *TLSPrivateKeyFileURL, *TLSTrustedCACertificatesFolderURL;
 	IBOutlet DNDArrayController		*TLSCipherSuitesArrayController;
 	NSArray							*TLSSupportedCipherSuite;
 	NSArray							*TLSAvailableCipherSuite;
+	BOOL							TLSUsePrivateKeyFilePassword, TLSAskPrivateKeyFilePassword;
+	NSString						*TLSPrivateKeyFilePassword;
 	
 	IBOutlet SFAuthorizationView	*_authView;
 }
