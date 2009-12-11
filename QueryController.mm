@@ -1238,7 +1238,7 @@ static const char *GetPrivateIP()
 	
 	[autoQueryLock lock];
 	
-	[[NSUserDefaults standardUserDefaults] setObject:sourcesArray forKey: @"SavedQueryArray"];
+	[[NSUserDefaults standardUserDefaults] setObject:sourcesArray forKey: queryArrayPrefs];
 	
 	BOOL showErrorCopy = [[NSUserDefaults standardUserDefaults] boolForKey: @"showErrorsIfQueryFailed"];
 	[[NSUserDefaults standardUserDefaults] setBool: showError forKey: @"showErrorsIfQueryFailed"];
@@ -2450,10 +2450,10 @@ static const char *GetPrivateIP()
 
 - (void) refreshSources
 {
-	[[NSUserDefaults standardUserDefaults] setObject:sourcesArray forKey: @"SavedQueryArray"];
+	[[NSUserDefaults standardUserDefaults] setObject:sourcesArray forKey: queryArrayPrefs];
 	
 	NSMutableArray		*serversArray		= [[[DCMNetServiceDelegate DICOMServersList] mutableCopy] autorelease];
-	NSArray				*savedArray			= [[NSUserDefaults standardUserDefaults] arrayForKey: @"SavedQueryArray"];
+	NSArray				*savedArray			= [[NSUserDefaults standardUserDefaults] arrayForKey: queryArrayPrefs];
 	
 	[self willChangeValueForKey:@"sourcesArray"];
 	 
@@ -2536,7 +2536,14 @@ static const char *GetPrivateIP()
 		previousAutoRetrieve = [[NSMutableDictionary dictionary] retain];
 		autoQueryLock = [[NSRecursiveLock alloc] init];
 		
-		sourcesArray = [[[NSUserDefaults standardUserDefaults] objectForKey: @"SavedQueryArray"] mutableCopy];
+		if( autoQuery == NO)
+			queryArrayPrefs = @"SavedQueryArray";
+		else 
+			queryArrayPrefs = @"SavedQueryArrayAuto";
+		
+		[queryArrayPrefs retain];
+		
+		sourcesArray = [[[NSUserDefaults standardUserDefaults] objectForKey: queryArrayPrefs] mutableCopy];
 		if( sourcesArray == nil) sourcesArray = [[NSMutableArray array] retain];
 		
 		[self refreshSources];
@@ -2569,7 +2576,7 @@ static const char *GetPrivateIP()
 	[autoQueryLock unlock];
 	
 	
-	[[NSUserDefaults standardUserDefaults] setObject:sourcesArray forKey: @"SavedQueryArray"];
+	[[NSUserDefaults standardUserDefaults] setObject:sourcesArray forKey: queryArrayPrefs];
 
 	NSLog( @"dealloc QueryController");
 	[NSObject cancelPreviousPerformRequestsWithTarget: pressedKeys];
@@ -2592,7 +2599,7 @@ static const char *GetPrivateIP()
 	studyArrayCache = nil;
 	[studyArrayInstanceUID release];
 	studyArrayInstanceUID = nil;
-	
+	[queryArrayPrefs release];
 	
 	[super dealloc];
 	
@@ -2696,7 +2703,7 @@ static const char *GetPrivateIP()
 
 - (void)windowWillClose:(NSNotification *)notification
 {
-	[[NSUserDefaults standardUserDefaults] setObject: sourcesArray forKey: @"SavedQueryArray"];
+	[[NSUserDefaults standardUserDefaults] setObject: sourcesArray forKey: queryArrayPrefs];
 	
 	[self saveSettings];
 	

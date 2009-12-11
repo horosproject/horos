@@ -741,9 +741,10 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	if( [[dict valueForKey: @"retrieveMode"] intValue] == CGETRetrieveMode && retrieveMode == CGETRetrieveMode)
 	{
 		DcmDataset *dataset = [self moveDataset];
-		if ([self setupNetworkWithSyntax: UID_GETStudyRootQueryRetrieveInformationModel dataset:dataset destination: [dict objectForKey:@"moveDestination"]])
+		if ([self setupNetworkWithSyntax: UID_GETPatientStudyOnlyQueryRetrieveInformationModel  dataset:dataset destination: [dict objectForKey:@"moveDestination"]])
 		{
-		
+			//UID_GETStudyRootQueryRetrieveInformationModel
+			//UID_GETStudyRootQueryRetrieveInformationModel
 		}
 		
 		if (dataset != NULL) delete dataset;
@@ -1502,7 +1503,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 			if( destination) cond = [self cmove:assoc network:net dataset:dataset destination: (char*) [destination UTF8String]];
 			else cond = [self cmove:assoc network:net dataset:dataset];
 		}
-		else if (strcmp(abstractSyntax, UID_GETStudyRootQueryRetrieveInformationModel) == 0)
+		else if (strcmp(abstractSyntax, UID_GETStudyRootQueryRetrieveInformationModel) == 0 || strcmp(abstractSyntax, UID_GETPatientStudyOnlyQueryRetrieveInformationModel) == 0)
 		{
 			cond = [self cget:assoc network:net dataset:dataset];
 		}
@@ -1952,7 +1953,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
    // sopClass = querySyntax[opt_queryModel].moveSyntax;
 
     /* which presentation context should be used */
-    presId = ASC_findAcceptedPresentationContextID(assoc, UID_GETStudyRootQueryRetrieveInformationModel);
+    presId = ASC_findAcceptedPresentationContextID(assoc, UID_GETStudyRootQueryRetrieveInformationModel); //UID_GETStudyRootQueryRetrieveInformationModel UID_GETPatientStudyOnlyQueryRetrieveInformationModel
     if (presId == 0) return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
 
     if (_verbose)
@@ -1968,7 +1969,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	callbackData.node = self;
 	
     req.MessageID = msgId;
-    strcpy(req.AffectedSOPClassUID, UID_GETStudyRootQueryRetrieveInformationModel);
+    strcpy(req.AffectedSOPClassUID, UID_GETStudyRootQueryRetrieveInformationModel); //UID_GETStudyRootQueryRetrieveInformationModel UID_GETPatientStudyOnlyQueryRetrieveInformationModel
     req.Priority = DIMSE_PRIORITY_MEDIUM;
     req.DataSetType = DIMSE_DATASET_PRESENT;
  

@@ -55,7 +55,7 @@
 	NSMutableDictionary						*previousAutoRetrieve;
 	
 	QueryFilter								*dateQueryFilter, *timeQueryFilter, *modalityQueryFilter;
-	NSString								*currentQueryKey;
+	NSString								*currentQueryKey, *queryArrayPrefs;
 	BOOL									echoSuccess;
 	NSMutableDictionary						*activeMoves;
 	int										checkAndViewTry;
