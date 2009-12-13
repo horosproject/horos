@@ -776,7 +776,7 @@ typedef unsigned short ushort;
 //#define WITH_LIBXML 
 
 /* Define if we are compiling with OpenSSL support */
-//#define WITH_OPENSSL 
+#define WITH_OPENSSL 
 
 /* Define if we are compiling for built-in private tag dictionary */
 /* #undef WITH_PRIVATE_TAGS */
