@@ -741,7 +741,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	if( [[dict valueForKey: @"retrieveMode"] intValue] == CGETRetrieveMode && retrieveMode == CGETRetrieveMode)
 	{
 		DcmDataset *dataset = [self moveDataset];
-		if ([self setupNetworkWithSyntax: UID_GETPatientStudyOnlyQueryRetrieveInformationModel  dataset:dataset destination: [dict objectForKey:@"moveDestination"]])
+		if ([self setupNetworkWithSyntax: UID_GETStudyRootQueryRetrieveInformationModel  dataset:dataset destination: [dict objectForKey:@"moveDestination"]])
 		{
 			//UID_GETStudyRootQueryRetrieveInformationModel
 			//UID_GETStudyRootQueryRetrieveInformationModel
