@@ -16,6 +16,27 @@
 #import <SecurityInterface/SFAuthorizationView.h>
 #import "DNDArrayController.h"
 
+typedef enum
+{
+	PasswordString = 0,
+	PasswordNone,
+	PasswordAsk
+} TLSPasswordType;
+
+typedef enum
+{
+	PEM = 0,
+	DER
+} TLSFileFormat;
+
+typedef enum
+{
+	RequirePeerCertificate = 0,
+	VerifyPeerCertificate,
+	IgnorePeerCertificate
+} TLSCertificateVerificationType;
+
+
 @interface OSILocationsPreferencePanePref : NSPreferencePane 
 {
 	IBOutlet NSPopUpButton			*characterSetPopup;
@@ -25,22 +46,26 @@
 	
 	IBOutlet DNDArrayController		*localPaths, *osiriXServers, *dicomNodes;
 	
+	// WADO
 	IBOutlet NSWindow				*WADOSettings;
-	
 	int								WADOPort;
 	int								WADOTransferSyntax;
 	NSString						*WADOUrl;
 	
+	// TLS
 	IBOutlet NSWindow				*TLSSettings;
 	BOOL							TLSEnabled;
 	BOOL							TLSAuthenticated;
-	NSURL							*TLSCertificatesURL; // todo: remove this variable (replace by TLSCertificateFileURL)
-	NSURL							*TLSCertificateFileURL, *TLSPrivateKeyFileURL, *TLSTrustedCACertificatesFolderURL;
+	NSURL							*TLSCertificateFileURL, *TLSPrivateKeyFileURL;
+	BOOL							TLSUsePrivateKeyFilePassword;
+	TLSPasswordType					TLSPrivateKeyFilePasswordType;
+	NSString						*TLSPrivateKeyFilePassword;
+	TLSFileFormat					TLSKeyAndCertificateFileFormat;
 	IBOutlet DNDArrayController		*TLSCipherSuitesArrayController;
 	NSArray							*TLSSupportedCipherSuite;
-	NSArray							*TLSAvailableCipherSuite;
-	BOOL							TLSUsePrivateKeyFilePassword, TLSAskPrivateKeyFilePassword;
-	NSString						*TLSPrivateKeyFilePassword;
+	BOOL							TLSUseTrustedCACertificatesFolderURL, TLSUseDHParameterFileURL;
+	NSURL							*TLSTrustedCACertificatesFolderURL, *TLSDHParameterFileURL;
+	TLSCertificateVerificationType	TLSCertificateVerification;
 	
 	IBOutlet SFAuthorizationView	*_authView;
 }
@@ -48,9 +73,14 @@
 @property int WADOPort, WADOTransferSyntax;
 @property (retain) NSString *WADOUrl;
 
-@property BOOL TLSEnabled, TLSAuthenticated;
-@property (retain) NSURL *TLSCertificatesURL;
+@property BOOL TLSEnabled, TLSAuthenticated, TLSUseTrustedCACertificatesFolderURL, TLSUseDHParameterFileURL;
+@property (retain) NSURL *TLSCertificateFileURL, *TLSPrivateKeyFileURL, *TLSTrustedCACertificatesFolderURL, *TLSDHParameterFileURL;
+@property BOOL TLSUsePrivateKeyFilePassword;
+@property (setter=setTLSPrivateKeyFilePasswordType:) TLSPasswordType TLSPrivateKeyFilePasswordType;
+@property (retain) NSString *TLSPrivateKeyFilePassword;
+@property TLSFileFormat TLSKeyAndCertificateFileFormat;
 @property (retain) NSArray *TLSSupportedCipherSuite;
+@property TLSCertificateVerificationType TLSCertificateVerification;
 
 + (BOOL) echoServer:(NSDictionary*)serverParameters;
 

@@ -32,7 +32,15 @@
 @implementation OSILocationsPreferencePanePref
 
 @synthesize WADOPort, WADOTransferSyntax, WADOUrl;
-@synthesize TLSEnabled, TLSAuthenticated, TLSCertificatesURL, TLSSupportedCipherSuite;
+
+@synthesize TLSEnabled, TLSAuthenticated, TLSUseTrustedCACertificatesFolderURL, TLSUseDHParameterFileURL;
+@synthesize TLSCertificateFileURL, TLSPrivateKeyFileURL, TLSTrustedCACertificatesFolderURL, TLSDHParameterFileURL;
+@synthesize TLSUsePrivateKeyFilePassword;
+@synthesize TLSPrivateKeyFilePasswordType;
+@synthesize TLSPrivateKeyFilePassword;
+@synthesize TLSKeyAndCertificateFileFormat;
+@synthesize TLSSupportedCipherSuite;
+@synthesize TLSCertificateVerification;
 
 - (void) checkUniqueAETitle
 {
@@ -256,7 +264,11 @@
 	[WADOUrl release];
 	[stringEncoding release];
 	
-	[TLSCertificatesURL release];
+	[TLSCertificateFileURL release];
+	[TLSPrivateKeyFileURL release];
+	[TLSTrustedCACertificatesFolderURL release];
+	[TLSDHParameterFileURL release];
+	[TLSPrivateKeyFilePassword release];
 	[TLSSupportedCipherSuite release];
 	
 	[super dealloc];
@@ -279,8 +291,7 @@
 	
 	[aServer setObject:[NSNumber numberWithBool:NO] forKey:@"TLSEnabled"];
 	[aServer setObject:[NSNumber numberWithBool:NO] forKey:@"TLSAuthenticated"];
-	[aServer setObject:NSHomeDirectory() forKey:@"TLSCertificatesURL"];
-		
+	
 	[dicomNodes addObject:aServer];
 	[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"updateServers"];
 	
@@ -661,16 +672,27 @@
 
 - (IBAction) editTLS: (id) sender
 {	
-	NSMutableDictionary *aServer = [[dicomNodes arrangedObjects] objectAtIndex: [[dicomNodes tableView] selectedRow]];
+	NSMutableDictionary *aServer = [[dicomNodes arrangedObjects] objectAtIndex:[[dicomNodes tableView] selectedRow]];
 	
 	self.TLSEnabled = [[aServer valueForKey:@"TLSEnabled"] boolValue];
 	self.TLSAuthenticated = [[aServer valueForKey:@"TLSAuthenticated"] boolValue];
+
+	NSString *certificateFileURL = [aServer valueForKey:@"TLSCertificateFileURL"];
+	if(!certificateFileURL)
+		certificateFileURL = NSHomeDirectory();
+	self.TLSCertificateFileURL = [NSURL fileURLWithPath:certificateFileURL];
+
+	NSString *privateKeyFileURL = [aServer valueForKey:@"TLSPrivateKeyFileURL"];
+	if(!privateKeyFileURL)
+		privateKeyFileURL = NSHomeDirectory();
+	self.TLSPrivateKeyFileURL = [NSURL fileURLWithPath:privateKeyFileURL];
 	
-	NSString *certificatesURL = [aServer valueForKey:@"TLSCertificatesURL"];
-	if(!certificatesURL)
-		certificatesURL = NSHomeDirectory();
-	self.TLSCertificatesURL = [NSURL fileURLWithPath:certificatesURL];
+	self.TLSPrivateKeyFilePasswordType = [[aServer valueForKey:@"TLSPrivateKeyFilePasswordType"] intValue];
 	
+	self.TLSPrivateKeyFilePassword = [aServer valueForKey:@"TLSPrivateKeyFilePassword"];
+
+	self.TLSKeyAndCertificateFileFormat = [[aServer valueForKey:@"TLSKeyAndCertificateFileFormat"] intValue];
+
 	NSArray *selectedCipherSuites = [aServer valueForKey:@"TLSCipherSuites"];
 
 	if ([selectedCipherSuites count])
@@ -678,6 +700,23 @@
 	else
 		self.TLSSupportedCipherSuite = [self defaultCipherSuites];
 
+	self.TLSUseDHParameterFileURL = [[aServer valueForKey:@"TLSUseDHParameterFileURL"] boolValue];
+	NSString *dhParameterFileURL = [aServer valueForKey:@"TLSDHParameterFileURL"];
+	if(!dhParameterFileURL)
+		dhParameterFileURL = NSHomeDirectory();
+	self.TLSDHParameterFileURL = [NSURL fileURLWithPath:dhParameterFileURL];
+
+	self.TLSUseTrustedCACertificatesFolderURL = [[aServer valueForKey:@"TLSUseTrustedCACertificatesFolderURL"] boolValue];
+	NSString *trustedCACertificatesFolderURL = [aServer valueForKey:@"TLSTrustedCACertificatesFolderURL"];
+	if(!trustedCACertificatesFolderURL)
+		trustedCACertificatesFolderURL = NSHomeDirectory();
+	self.TLSTrustedCACertificatesFolderURL = [NSURL fileURLWithPath:trustedCACertificatesFolderURL];
+	
+	if([aServer valueForKey:@"TLSCertificateVerification"])
+		self.TLSCertificateVerification = [[aServer valueForKey:@"TLSCertificateVerification"] intValue];
+	else
+		self.TLSCertificateVerification = IgnorePeerCertificate;
+		
 	[NSApp beginSheet: TLSSettings
 	   modalForWindow: [[self mainView] window]
 		modalDelegate: nil
@@ -700,11 +739,26 @@
 			
 			if (self.TLSAuthenticated)
 			{
-				[aServer setObject:[self.TLSCertificatesURL path] forKey:@"TLSCertificatesURL"];
-				// password ...
+				[aServer setObject:[self.TLSCertificateFileURL path] forKey:@"TLSCertificateFileURL"];
+				[aServer setObject:[self.TLSPrivateKeyFileURL path] forKey:@"TLSPrivateKeyFileURL"];
+				[aServer setObject:[NSNumber numberWithInt:self.TLSPrivateKeyFilePasswordType] forKey:@"TLSPrivateKeyFilePasswordType"];
+				if(self.TLSPrivateKeyFilePasswordType==PasswordString && self.TLSPrivateKeyFilePassword)
+					[aServer setObject:self.TLSPrivateKeyFilePassword forKey:@"TLSPrivateKeyFilePassword"]; // PASSWORD STORED IN CLEAR. TODO: ENCRYPTION?
+				else
+					[aServer setObject:@"" forKey:@"TLSPrivateKeyFilePassword"];
+				
+				[aServer setObject:[NSNumber numberWithInt:self.TLSKeyAndCertificateFileFormat] forKey:@"TLSKeyAndCertificateFileFormat"];				
 			}
 			
 			[aServer setObject:self.TLSSupportedCipherSuite forKey:@"TLSCipherSuites"];
+			
+			[aServer setObject:[NSNumber numberWithBool:self.TLSUseDHParameterFileURL] forKey:@"TLSUseDHParameterFileURL"];
+			[aServer setObject:[self.TLSDHParameterFileURL path] forKey:@"TLSDHParameterFileURL"];
+
+			[aServer setObject:[NSNumber numberWithBool:self.TLSUseTrustedCACertificatesFolderURL] forKey:@"TLSUseTrustedCACertificatesFolderURL"];
+			[aServer setObject:[self.TLSTrustedCACertificatesFolderURL path] forKey:@"TLSTrustedCACertificatesFolderURL"];
+			
+			[aServer setObject:[NSNumber numberWithInt:self.TLSCertificateVerification] forKey:@"TLSCertificateVerification"];
 		}
 
 		[[NSUserDefaults standardUserDefaults] setObject:[dicomNodes arrangedObjects] forKey:@"SERVERS"];
@@ -781,5 +835,10 @@
 	return [NSArray arrayWithArray:cipherSuites];
 }
 
+- (void)setTLSPrivateKeyFilePasswordType:(TLSPasswordType)type;
+{
+	TLSPrivateKeyFilePasswordType = type;
+	self.TLSUsePrivateKeyFilePassword = (TLSPrivateKeyFilePasswordType==PasswordString);
+}
 
 @end
