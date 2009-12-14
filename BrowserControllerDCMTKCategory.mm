@@ -212,12 +212,46 @@ extern NSRecursiveLock *PapyrusLock;
 	if( dest == nil)
 		dest = @"sameAsDestination";
 	
-	NSTask *theTask = [[NSTask alloc] init];
-	[theTask setArguments: [[NSArray arrayWithObjects: dest, @"compress", nil] arrayByAddingObjectsFromArray: paths]];
-	[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Decompress"]];
-	[theTask launch];
-	while( [theTask isRunning]) [NSThread sleepForTimeInterval: 0.01];
-	[theTask release];
+	#define CHUNK 500
+	
+	int total = [paths count];
+	NSMutableArray *result = [NSMutableArray arrayWithCapacity: total];
+	
+	for( int i = 0; i < total;)
+	{
+		int no;
+		
+		if( i + CHUNK >= total) no = total - i; 
+		else no = CHUNK;
+		
+		NSRange range = NSMakeRange( i, no);
+		
+		id *objs = (id*) malloc( no * sizeof( id));
+		if( objs)
+		{
+			[paths getObjects: objs range: range];
+			
+			NSArray *subArray = [NSArray arrayWithObjects: objs count: no];
+			
+			NSTask *theTask = [[NSTask alloc] init];
+			@try
+			{
+				[theTask setArguments: [[NSArray arrayWithObjects: dest, @"compress", nil] arrayByAddingObjectsFromArray: paths]];
+				[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Decompress"]];
+				[theTask launch];
+				while( [theTask isRunning]) [NSThread sleepForTimeInterval: 0.01];
+			}
+			@catch ( NSException *e)
+			{
+				NSLog( @"***** compressDICOMWithJPEG exception : %@", e);
+			}
+			[theTask release];
+			
+			free( objs);
+		}
+		
+		i += no;
+	}
 	
 	return YES;
 }
@@ -241,21 +275,53 @@ extern NSRecursiveLock *PapyrusLock;
 //	
 //	return YES;
 	
-	// ARG_MAX
-	
-	NSTask *theTask = [[NSTask alloc] init];
-	
 	if( dest == nil)
 		dest = @"sameAsDestination";
 	
-	NSArray *parameters = [[NSArray arrayWithObjects: dest, @"decompressList", nil] arrayByAddingObjectsFromArray: files];
+	#define CHUNK 500
 	
-	[theTask setArguments: parameters];
-	[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Decompress"]];
-	[theTask launch];
+	int total = [files count];
+	NSMutableArray *result = [NSMutableArray arrayWithCapacity: total];
 	
-	while( [theTask isRunning]) [NSThread sleepForTimeInterval: 0.01];
-	[theTask release];
+	for( int i = 0; i < total;)
+	{
+		int no;
+		
+		if( i + CHUNK >= total) no = total - i; 
+		else no = CHUNK;
+		
+		NSRange range = NSMakeRange( i, no);
+		
+		id *objs = (id*) malloc( no * sizeof( id));
+		if( objs)
+		{
+			[files getObjects: objs range: range];
+			
+			NSArray *subArray = [NSArray arrayWithObjects: objs count: no];
+			
+			NSTask *theTask = [[NSTask alloc] init];
+			
+			@try
+			{
+				NSArray *parameters = [[NSArray arrayWithObjects: dest, @"decompressList", nil] arrayByAddingObjectsFromArray: files];
+				
+				[theTask setArguments: parameters];
+				[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Decompress"]];
+				[theTask launch];
+				
+				while( [theTask isRunning]) [NSThread sleepForTimeInterval: 0.01];
+			}
+			@catch ( NSException *e)
+			{
+				NSLog( @"***** decompressDICOMList exception : %@", e);
+			}
+			[theTask release];
+			
+			free( objs);
+		}
+		
+		i += no;
+	}
 	
 	return YES;
 }
