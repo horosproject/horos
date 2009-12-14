@@ -37,8 +37,8 @@ extern NSString* asciiString (NSString* name);
 - (NSArray*)seriesForPredicate:(NSPredicate *)predicate;
 - (NSArray*)studiesForAlbum:(NSString *)albumName;
 
-- (NSMutableString*)htmlStudyListForStudies:(NSArray*)studies;
-- (NSMutableString*)htmlStudy:(DicomStudy*)study parameters:(NSDictionary*)parameters isiPhone:(BOOL)isiPhone;
+- (NSMutableString*)htmlStudyListForStudies:(NSArray*)studies settings: (NSDictionary*) settings;
+- (NSMutableString*)htmlStudy:(DicomStudy*)study parameters:(NSDictionary*)parameters settings: (NSDictionary*) settings;
 - (NSTimeInterval) startOfDay:(NSCalendarDate *)day;
 - (void)dicomSend:(id)sender;
 - (void)dicomSendToDo:(NSDictionary*)todo;

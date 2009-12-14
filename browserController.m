@@ -68,6 +68,7 @@
 #import "XMLController.h"
 #import "MutableArrayCategory.h"
 #import "Notifications.h"
+#import "NSAppleScript+HandlerCalls.h"
 
 #define DATABASEVERSION @"2.4"
 #define DATABASEPATH @"/DATABASE.noindex/"
@@ -121,6 +122,7 @@ NSString *asciiString( NSString* name)
 static NSString* 	DatabaseToolbarIdentifier			= @"DicomDatabase Toolbar Identifier";
 static NSString*	ImportToolbarItemIdentifier			= @"Import.icns";
 static NSString*	iDiskSendToolbarItemIdentifier		= @"iDiskSend.icns";
+static NSString*	QTSaveToolbarItemIdentifier			= @"QTExport.icns";
 static NSString*	iDiskGetToolbarItemIdentifier		= @"iDiskGet.icns";
 static NSString*	ExportToolbarItemIdentifier			= @"Export.icns";
 static NSString*	AnonymizerToolbarItemIdentifier		= @"Anonymizer.icns";
@@ -136,6 +138,7 @@ static NSString*	ToggleDrawerToolbarItemIdentifier   = @"StartupDisk.tif";
 static NSString*	SearchToolbarItemIdentifier			= @"Search";
 static NSString*	TimeIntervalToolbarItemIdentifier	= @"TimeInterval";
 static NSString*	XMLToolbarItemIdentifier			= @"XML.icns";
+static NSString*	MailToolbarItemIdentifier			= @"Mail.icns";
 static NSString*	OpenKeyImagesAndROIsToolbarItemIdentifier	= @"ROIsAndKeys.tif";
 static NSString*	OpenKeyImagesToolbarItemIdentifier	= @"Keys.tif";
 static NSString*	OpenROIsToolbarItemIdentifier	= @"ROIs.tif";
@@ -1273,7 +1276,7 @@ static NSArray*	statesArray = nil;
 								{
 									if( [[itemPath lastPathComponent] characterAtIndex: 0] != '.')
 									{
-										if( [[filename pathExtension] isEqualToString: @"zip"])
+										if( [[filename pathExtension] isEqualToString: @"zip"] || [[filename pathExtension] isEqualToString: @"osirixzip"])
 										{
 											[self askForZIPPassword: filename destination: [[self documentsDirectory] stringByAppendingPathComponent: INCOMINGPATH]];
 										}
@@ -1305,7 +1308,7 @@ static NSArray*	statesArray = nil;
 				}
 				else    // A file
 				{
-					if( [[filename pathExtension] isEqualToString: @"zip"])
+					if( [[filename pathExtension] isEqualToString: @"zip"] || [[filename pathExtension] isEqualToString: @"osirixzip"])
 					{
 						[self askForZIPPassword: filename destination: [[self documentsDirectory] stringByAppendingPathComponent: INCOMINGPATH]];
 					}
@@ -13152,9 +13155,13 @@ static NSArray*	openSubSeriesArray = nil;
 	
 	NSTask *t;
 	NSArray *args;
+	WaitRendering *wait = nil;
 	
-	WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Decompressing the files...", nil)];
-	[wait showWindow:self];
+	if( [NSThread currentThread] == [AppController mainThread])
+	{
+		wait = [[WaitRendering alloc] init: NSLocalizedString(@"Decompressing the files...", nil)];
+		[wait showWindow:self];
+	}
 	
 	t = [[[NSTask alloc] init] autorelease];
 	
@@ -13179,7 +13186,35 @@ static NSArray*	openSubSeriesArray = nil;
 	[wait release];
 	
 	if( [t terminationStatus] == 0)
+	{
+		// Is it on writable media? Ask if the user want to delete the original file?
+		
+		if( [NSThread currentThread] == [AppController mainThread] && [[NSFileManager defaultManager] isWritableFileAtPath: file])
+		{
+			if ([[NSUserDefaults standardUserDefaults] boolForKey: @"HideZIPSuppressionMessage"] == NO)
+			{
+				NSAlert* alert = [[NSAlert new] autorelease];
+				[alert setMessageText: NSLocalizedString(@"Delete ZIP file", nil)];
+				[alert setInformativeText: NSLocalizedString(@"The ZIP file was successfully decompressed and the images sucessfully incorporated in OsiriX database. Should I delete the ZIP file?", nil)];
+				[alert setShowsSuppressionButton: YES];
+				[alert addButtonWithTitle: NSLocalizedString( @"OK", nil)];
+				[alert addButtonWithTitle: NSLocalizedString( @"Cancel", nil)];
+				int result = [alert runModal];
+				
+				if( result == NSAlertFirstButtonReturn)
+					[[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"deleteZIPfile"];
+				else
+					[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"deleteZIPfile"];
+				
+				if ([[alert suppressionButton] state] == NSOnState)
+					[[NSUserDefaults standardUserDefaults] setBool:YES forKey: @"HideZIPSuppressionMessage"];
+			}
+			
+			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"deleteZIPfile"]) 
+				[[NSFileManager defaultManager] removeItemAtPath: file error: nil];
+		}
 		return YES;
+	}
 	
 	return NO;
 }
@@ -14138,88 +14173,97 @@ static volatile int numberOfThreadsForJPEG = 0;
 						}
 						else if( fattrs != nil && [[fattrs objectForKey:NSFileBusy] boolValue] == NO && [[fattrs objectForKey:NSFileSize] longLongValue] > 0)
 						{
-							BOOL isDicomFile, isJPEGCompressed, isImage;
-							NSString *dstPath = [OUTpath stringByAppendingPathComponent:[srcPath lastPathComponent]];
-							
-							isDicomFile = [DicomFile isDICOMFile:srcPath compressed: &isJPEGCompressed image: &isImage];
-							
-							if( isDicomFile == YES ||
-							   (([DicomFile isFVTiffFile:srcPath] ||
-								 [DicomFile isTiffFile:srcPath] ||
-								 [DicomFile isNRRDFile:srcPath])
-								&& [[NSFileManager defaultManager] fileExistsAtPath:dstPath] == NO))
+							if( [[srcPath pathExtension] isEqualToString: @"zip"] || [[srcPath pathExtension] isEqualToString: @"osirixzip"])
 							{
-								newFilesInIncoming = YES;
-								
-								if (isDicomFile && isImage)
-								{
-									if( (isJPEGCompressed == YES && ListenerCompressionSettings == 1) || (isJPEGCompressed == NO && ListenerCompressionSettings == 2 && [self needToCompressFile: srcPath]))
-									{
-										NSString	*compressedPath = [DECOMPRESSIONpath stringByAppendingPathComponent:[srcPath lastPathComponent]];
-										
-										[[NSFileManager defaultManager] movePath:srcPath toPath:compressedPath handler:nil];
-										
-										[compressedPathArray addObject: compressedPath];
-										
-										continue;
-									}
-									
-									dstPath = [self getNewFileDatabasePath:@"dcm" dbFolder: dbFolder];
-								}
-								else dstPath = [self getNewFileDatabasePath: [[srcPath pathExtension] lowercaseString] dbFolder: dbFolder];
-								
-								if( isAlias)
-								{
-									if( twoStepsIndexing)
-									{
-										NSString *stepsPath = [toBeIndexed stringByAppendingPathComponent: [dstPath lastPathComponent]];
-										
-										result = [[NSFileManager defaultManager] copyPath:srcPath toPath: stepsPath handler:nil];
-										[[NSFileManager defaultManager] removeFileAtPath:originalPath handler:nil];
-										
-										if( result)
-										{
-											[twoStepsIndexingArrayFrom addObject: stepsPath];
-											[twoStepsIndexingArrayTo addObject: dstPath];
-										}
-									}
-									else
-									{
-										result = [[NSFileManager defaultManager] copyPath:srcPath toPath: dstPath handler:nil];
-										[[NSFileManager defaultManager] removeFileAtPath:originalPath handler:nil];
-									}
-								}
-								else
-								{
-									if( twoStepsIndexing)
-									{
-										NSString *stepsPath = [toBeIndexed stringByAppendingPathComponent: [dstPath lastPathComponent]];
-										
-										result = [[NSFileManager defaultManager] movePath:srcPath toPath: stepsPath handler:nil];
-										
-										if( result)
-										{
-											[twoStepsIndexingArrayFrom addObject: stepsPath];
-											[twoStepsIndexingArrayTo addObject: dstPath];
-										}
-									}
-									else
-										result = [[NSFileManager defaultManager] movePath:srcPath toPath: dstPath handler:nil];
-								}
-								
-								if( result == YES)
-									[filesArray addObject:dstPath];
+								NSString *compressedPath = [DECOMPRESSIONpath stringByAppendingPathComponent: [srcPath lastPathComponent]];
+								[[NSFileManager defaultManager] movePath:srcPath toPath:compressedPath handler:nil];
+								[compressedPathArray addObject: compressedPath];
 							}
-							else // DELETE or MOVE THIS UNKNOWN FILE ?
+							else
 							{
-								if ( DELETEFILELISTENER)
-									[[NSFileManager defaultManager] removeFileAtPath:srcPath handler:nil];
-								else
+								BOOL isDicomFile, isJPEGCompressed, isImage;
+								NSString *dstPath = [OUTpath stringByAppendingPathComponent:[srcPath lastPathComponent]];
+								
+								isDicomFile = [DicomFile isDICOMFile:srcPath compressed: &isJPEGCompressed image: &isImage];
+								
+								if( isDicomFile == YES ||
+								   (([DicomFile isFVTiffFile:srcPath] ||
+									 [DicomFile isTiffFile:srcPath] ||
+									 [DicomFile isNRRDFile:srcPath])
+									&& [[NSFileManager defaultManager] fileExistsAtPath:dstPath] == NO))
 								{
-									//	NSLog( [ERRpath stringByAppendingPathComponent: [srcPath lastPathComponent]]);
+									newFilesInIncoming = YES;
 									
-									if( [[NSFileManager defaultManager] movePath:srcPath toPath:[ERRpath stringByAppendingPathComponent: [srcPath lastPathComponent]]  handler:nil] == NO)
+									if (isDicomFile && isImage)
+									{
+										if( (isJPEGCompressed == YES && ListenerCompressionSettings == 1) || (isJPEGCompressed == NO && ListenerCompressionSettings == 2 && [self needToCompressFile: srcPath]))
+										{
+											NSString *compressedPath = [DECOMPRESSIONpath stringByAppendingPathComponent: [srcPath lastPathComponent]];
+											
+											[[NSFileManager defaultManager] movePath:srcPath toPath:compressedPath handler:nil];
+											
+											[compressedPathArray addObject: compressedPath];
+											
+											continue;
+										}
+										
+										dstPath = [self getNewFileDatabasePath:@"dcm" dbFolder: dbFolder];
+									}
+									else dstPath = [self getNewFileDatabasePath: [[srcPath pathExtension] lowercaseString] dbFolder: dbFolder];
+									
+									if( isAlias)
+									{
+										if( twoStepsIndexing)
+										{
+											NSString *stepsPath = [toBeIndexed stringByAppendingPathComponent: [dstPath lastPathComponent]];
+											
+											result = [[NSFileManager defaultManager] copyPath:srcPath toPath: stepsPath handler:nil];
+											[[NSFileManager defaultManager] removeFileAtPath:originalPath handler:nil];
+											
+											if( result)
+											{
+												[twoStepsIndexingArrayFrom addObject: stepsPath];
+												[twoStepsIndexingArrayTo addObject: dstPath];
+											}
+										}
+										else
+										{
+											result = [[NSFileManager defaultManager] copyPath:srcPath toPath: dstPath handler:nil];
+											[[NSFileManager defaultManager] removeFileAtPath:originalPath handler:nil];
+										}
+									}
+									else
+									{
+										if( twoStepsIndexing)
+										{
+											NSString *stepsPath = [toBeIndexed stringByAppendingPathComponent: [dstPath lastPathComponent]];
+											
+											result = [[NSFileManager defaultManager] movePath:srcPath toPath: stepsPath handler:nil];
+											
+											if( result)
+											{
+												[twoStepsIndexingArrayFrom addObject: stepsPath];
+												[twoStepsIndexingArrayTo addObject: dstPath];
+											}
+										}
+										else
+											result = [[NSFileManager defaultManager] movePath:srcPath toPath: dstPath handler:nil];
+									}
+									
+									if( result == YES)
+										[filesArray addObject:dstPath];
+								}
+								else // DELETE or MOVE THIS UNKNOWN FILE ?
+								{
+									if ( DELETEFILELISTENER)
 										[[NSFileManager defaultManager] removeFileAtPath:srcPath handler:nil];
+									else
+									{
+										//	NSLog( [ERRpath stringByAppendingPathComponent: [srcPath lastPathComponent]]);
+										
+										if( [[NSFileManager defaultManager] movePath:srcPath toPath:[ERRpath stringByAppendingPathComponent: [srcPath lastPathComponent]]  handler:nil] == NO)
+											[[NSFileManager defaultManager] removeFileAtPath:srcPath handler:nil];
+									}
 								}
 							}
 						}
@@ -14299,7 +14343,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			[decompressArray addObjectsFromArray: compressedPathArray];
 			[decompressArrayLock unlock];
 			
-			if( ListenerCompressionSettings == 1)		// Decompress
+			if( ListenerCompressionSettings == 1 || ListenerCompressionSettings == 0)		// Decompress, ListenerCompressionSettings == 0 for zip support !
 				[self decompressThread: [NSNumber numberWithChar: 'I']];
 			else if( ListenerCompressionSettings == 2)	// Compress
 				[self decompressThread: [NSNumber numberWithChar: 'X']];
@@ -14826,6 +14870,121 @@ static volatile int numberOfThreadsForJPEG = 0;
 - (void)exportTIFF: (id)sender
 {
 	[self exportImageAs: @"tif" sender: sender];
+}
+
+- (IBAction) sendMail: (id) sender
+{
+	#define kScriptName (@"Mail")
+	#define kScriptType (@"scpt")
+	#define kHandlerName (@"mail_images")
+	#define noScriptErr 0
+	
+	/* Locate the script within the bundle */
+	NSString *scriptPath = [[NSBundle mainBundle] pathForResource: kScriptName ofType: kScriptType];
+	NSURL *scriptURL = [NSURL fileURLWithPath: scriptPath];
+
+	NSDictionary *errorInfo = nil;
+	
+	/* Here I am using "initWithContentsOfURL:" to load a pre-compiled script, rather than using "initWithSource:" to load a text file with AppleScript source.  The main reason for this is that the latter technique seems to give rise to inexplicable -1708 (errAEEventNotHandled) errors on Jaguar. */
+	NSAppleScript *script = [[NSAppleScript alloc] initWithContentsOfURL: scriptURL error: &errorInfo];
+	
+	/* See if there were any errors loading the script */
+	if (!script || errorInfo)
+		NSLog(@"%@", errorInfo);
+	
+	/* We have to construct an AppleEvent descriptor to contain the arguments for our handler call.  Remember that this list is 1, rather than 0, based. */
+	NSAppleEventDescriptor *arguments = [[NSAppleEventDescriptor alloc] initListDescriptor];
+	[arguments insertDescriptor: [NSAppleEventDescriptor descriptorWithString: @"subject"] atIndex: 1];
+	[arguments insertDescriptor: [NSAppleEventDescriptor descriptorWithString: @"defaultaddress@mac.com"] atIndex: 2];
+	
+	NSAppleEventDescriptor *listFiles = [NSAppleEventDescriptor listDescriptor];
+	NSAppleEventDescriptor *listCaptions = [NSAppleEventDescriptor listDescriptor];
+	NSAppleEventDescriptor *listComments = [NSAppleEventDescriptor listDescriptor];
+	
+	[[NSUserDefaults standardUserDefaults] setValue: @"" forKey:@"defaultZIPPasswordForEmail"];
+	
+	redoZIPpassword:
+	
+	[NSApp beginSheet: ZIPpasswordWindow
+	   modalForWindow: self.window
+		modalDelegate: nil
+	   didEndSelector: nil
+		  contextInfo: nil];
+	
+	int result = [NSApp runModalForWindow: ZIPpasswordWindow];
+	
+	[NSApp endSheet: ZIPpasswordWindow];
+	[ZIPpasswordWindow orderOut: self];
+	
+	if( result == NSRunStoppedResponse)
+	{
+		if( [[[NSUserDefaults standardUserDefaults] valueForKey: @"defaultZIPPasswordForEmail"] length] < 8)
+		{
+			NSBeep();
+			goto redoZIPpassword;
+		}
+		
+		NSMutableArray *dicomFiles2Export = [NSMutableArray array];
+		NSMutableArray *filesToExport = [self filesForDatabaseOutlineSelection: dicomFiles2Export];
+		
+		[[NSFileManager defaultManager] removeItemAtPath: @"/tmp/zipFilesForMail" error: nil];
+		[[NSFileManager defaultManager] createDirectoryAtPath: @"/tmp/zipFilesForMail" attributes: nil];
+		
+		BOOL encrypt = [[NSUserDefaults standardUserDefaults] boolForKey: @"encryptForExport"];
+		
+		[[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"encryptForExport"];
+		
+		self.passwordForExportEncryption = [[NSUserDefaults standardUserDefaults] valueForKey: @"defaultZIPPasswordForEmail"];
+		
+		NSArray *r = [self exportDICOMFileInt: @"/tmp/zipFilesForMail/" files: filesToExport objects: dicomFiles2Export];
+		
+		if( [r count] > 0)
+		{
+			[[NSUserDefaults standardUserDefaults] setBool: encrypt forKey: @"encryptForExport"];
+			
+			int f = 0;
+			NSString *root = @"/tmp/zipFilesForMail";
+			NSArray *files = [[NSFileManager defaultManager] contentsOfDirectoryAtPath: root error: nil];
+			for( int x = 0; x < [files count] ; x++)
+			{
+				if( [[[files objectAtIndex: x] pathExtension] isEqualToString: @"zip"])
+				{
+					[listFiles insertDescriptor: [NSAppleEventDescriptor descriptorWithString: [root stringByAppendingPathComponent: [files objectAtIndex: x]]] atIndex:1+f];
+					[listCaptions insertDescriptor: [NSAppleEventDescriptor descriptorWithString: @""] atIndex:1+f];
+					[listComments insertDescriptor: [NSAppleEventDescriptor descriptorWithString: @""] atIndex:1+f];
+					f++;
+				}
+			}
+			
+			[arguments insertDescriptor: [NSAppleEventDescriptor descriptorWithInt32: f] atIndex: 3];
+			[arguments insertDescriptor: listFiles atIndex: 4];
+			[arguments insertDescriptor: listCaptions atIndex: 5];
+			[arguments insertDescriptor: listComments atIndex: 6];
+			
+			[arguments insertDescriptor: [NSAppleEventDescriptor descriptorWithString: @"Cancel"] atIndex: 7];
+
+			errorInfo = nil;
+
+			/* Call the handler using the method in our special category */
+			NSAppleEventDescriptor *result = [script callHandler: kHandlerName withArguments: arguments errorInfo: &errorInfo];
+			
+			int scriptResult = [result int32Value];
+
+			/* Check for errors in running the handler */
+			if (errorInfo)
+			{
+				NSLog(@"%@", errorInfo);
+			}
+			/* Check the handler's return value */
+			else if (scriptResult != noScriptErr)
+			{
+				NSRunAlertPanel(NSLocalizedString(@"Script Failure", @"Title on script failure window."), [NSString stringWithFormat: @"%@ %d", NSLocalizedString(@"The script failed:", @"Message on script failure window."), scriptResult], NSLocalizedString(@"OK", @""), nil, nil);
+			}
+		}
+	}
+	
+	[script release];
+	[arguments release];
 }
 
 + (NSMutableString*) replaceNotAdmitted: (NSMutableString*)name
@@ -16967,9 +17126,24 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(selectFilesAndFoldersToAdd:)];
     }
+	else if ([itemIdent isEqualToString: QTSaveToolbarItemIdentifier])
+	{
+		[toolbarItem setLabel: NSLocalizedString(@"Movie Export", nil)];
+		[toolbarItem setPaletteLabel: NSLocalizedString(@"Movie Export", nil)];
+		[toolbarItem setImage: [NSImage imageNamed: QTSaveToolbarItemIdentifier]];
+		[toolbarItem setTarget: self];
+		[toolbarItem setAction: @selector( exportQuicktime:)];
+    }
+	else if ([itemIdent isEqualToString: MailToolbarItemIdentifier])
+	{
+		[toolbarItem setLabel: NSLocalizedString(@"Email", nil)];
+		[toolbarItem setPaletteLabel: NSLocalizedString(@"Email", nil)];
+		[toolbarItem setImage: [NSImage imageNamed: MailToolbarItemIdentifier]];
+		[toolbarItem setTarget: self];
+		[toolbarItem setAction: @selector( sendMail:)];
+	}
     else if ([itemIdent isEqualToString: ExportToolbarItemIdentifier])
 	{
-        
 		[toolbarItem setLabel: NSLocalizedString(@"Export",nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Export",nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"Export selected study/series to a DICOM folder",@"Export selected study/series to a DICOM folder")];
@@ -17189,6 +17363,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 			ImportToolbarItemIdentifier,
 			ExportToolbarItemIdentifier,
 			CDRomToolbarItemIdentifier,
+			MailToolbarItemIdentifier,
+			QTSaveToolbarItemIdentifier,
 			QueryToolbarItemIdentifier,
 			SendToolbarItemIdentifier,
 			AnonymizerToolbarItemIdentifier,
@@ -17222,6 +17398,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 			 NSToolbarSeparatorItemIdentifier,
 			 ImportToolbarItemIdentifier,
 			 CDRomToolbarItemIdentifier,
+			 MailToolbarItemIdentifier,
+			 QTSaveToolbarItemIdentifier,
 			 QueryToolbarItemIdentifier,
 			 ExportToolbarItemIdentifier,
 			 AnonymizerToolbarItemIdentifier,

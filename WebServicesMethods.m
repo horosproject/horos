@@ -423,6 +423,14 @@
 	{
 		CFHTTPMessageSetHeaderFieldValue(response, CFSTR("Content-Type"), CFSTR("application/zip"));
 	}
+	else if([fileURL isEqualToString:@"/zip"])
+	{
+		CFHTTPMessageSetHeaderFieldValue(response, CFSTR("Content-Type"), CFSTR("application/zip"));
+	}
+	else if([fileURL isEqualToString:@"/osirixzip"])
+	{
+		CFHTTPMessageSetHeaderFieldValue(response, CFSTR("Content-Type"), CFSTR("application/osirixzip"));
+	}
 	
 	return response;
 }
@@ -454,9 +462,12 @@
 	
 	NSScanner *scan = [NSScanner scannerWithString:userAgent];
 	BOOL isSafari = NO;
-	while(![scan isAtEnd] && !isSafari)
+	BOOL isMacOS = NO;
+	
+	while(![scan isAtEnd])
 	{
-		isSafari = [scan scanString:@"Safari/" intoString:nil];
+		if( !isSafari) isSafari = [scan scanString:@"Safari/" intoString:nil];
+		if( !isMacOS) isMacOS = [scan scanString:@"Mac OS" intoString: nil];
 		[scan setScanLocation:[scan scanLocation]+1];
 	}
 
@@ -895,13 +906,13 @@
 				pageTitle = NSLocalizedString(@"Study List", @"");
 			}
 			
-			NSMutableString *html = [self htmlStudyListForStudies:[self studiesForPredicate:browsePredicate]];
+			NSMutableString *html = [self htmlStudyListForStudies:[self studiesForPredicate:browsePredicate] settings: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: isMacOS], @"MacOS", nil]];
 			
 			if([parameters objectForKey:@"album"])
 			{
 				if(![[parameters objectForKey:@"album"] isEqualToString:@""])
 				{
-					html = [self htmlStudyListForStudies:[self studiesForAlbum:[WebServicesMethods decodeURLString:[[parameters objectForKey:@"album"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]]];
+					html = [self htmlStudyListForStudies: [self studiesForAlbum:[WebServicesMethods decodeURLString:[[parameters objectForKey:@"album"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]] settings: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: isMacOS], @"MacOS", nil]];
 					pageTitle = [WebServicesMethods decodeURLString:[[parameters objectForKey:@"album"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
 				}
 			}
@@ -983,7 +994,7 @@
 						ipAddressString = [[NSString stringWithCString:buffer] retain];
 				}
 				
-				NSMutableString *html = [self htmlStudy:[studies lastObject] parameters:parameters isiPhone:isiPhone];
+				NSMutableString *html = [self htmlStudy:[studies lastObject] parameters:parameters settings: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: isiPhone], @"iPhone", [NSNumber numberWithBool: isMacOS], @"MacOS", nil]];
 				
 				[html replaceOccurrencesOfString:@"%StudyID%" withString:[parameters objectForKey:@"id"] options:NSLiteralSearch range:NSMakeRange(0, [html length])];
 				
@@ -1132,7 +1143,7 @@
 			err = NO;
 		}
 		#pragma mark ZIP
-		else if( [fileURL hasSuffix:@".zip"])
+		else if( [fileURL hasSuffix:@".zip"] || [fileURL hasSuffix:@".osirixzip"])
 		{
 			NSPredicate *browsePredicate;
 			if([[parameters allKeys] containsObject:@"id"])
@@ -1159,7 +1170,13 @@
 					NSString *destFile = @"/tmp";
 					
 					srcFolder = [srcFolder stringByAppendingPathComponent: asciiString( [[imagesArray lastObject] valueForKeyPath: @"series.study.name"])];
-					destFile = [[destFile stringByAppendingPathComponent: asciiString( [[imagesArray lastObject] valueForKeyPath: @"series.study.name"])] stringByAppendingPathExtension: @"zip"];
+					
+					destFile = [destFile stringByAppendingPathComponent: asciiString( [[imagesArray lastObject] valueForKeyPath: @"series.study.name"])];
+					
+					if( isMacOS)
+						destFile = [destFile  stringByAppendingPathExtension: @"zip"];
+					else
+						destFile = [destFile  stringByAppendingPathExtension: @"osirixzip"];
 					
 					[[NSFileManager defaultManager] removeItemAtPath: srcFolder error: nil];
 					[[NSFileManager defaultManager] removeItemAtPath: destFile error: nil];
@@ -1547,7 +1564,7 @@
 	return studiesArray;
 }
 
-- (NSMutableString*)htmlStudyListForStudies:(NSArray*)studies;
+- (NSMutableString*)htmlStudyListForStudies:(NSArray*)studies settings: (NSDictionary*) settings
 {
 	NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
 	
@@ -1556,6 +1573,7 @@
 	NSMutableString *templateString = [NSMutableString stringWithContentsOfFile:[webDirectory stringByAppendingPathComponent:@"studyList.html"]];
 	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_Home%" withString:NSLocalizedString(@"Home", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_DownloadAsZIP%" withString:NSLocalizedString(@"ZIP file", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+	[templateString replaceOccurrencesOfString:@"%zipextension%" withString: ([[settings valueForKey:@"MacOS"] boolValue]?@"osirixzip":@"zip") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 	
 	NSArray *tempArray = [templateString componentsSeparatedByString:@"%StudyListItem%"];
 	NSString *templateStringStart = [tempArray objectAtIndex:0];
@@ -1604,7 +1622,7 @@
 	return returnHTML;
 }
 
-- (NSMutableString*)htmlStudy:(DicomStudy*)study parameters:(NSDictionary*)parameters isiPhone:(BOOL)isiPhone;
+- (NSMutableString*)htmlStudy:(DicomStudy*)study parameters:(NSDictionary*)parameters settings: (NSDictionary*) settings;
 {
 	NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
 	
@@ -1626,6 +1644,7 @@
 	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_SendSelectedSeriesTo%" withString:NSLocalizedString(@"Send selected Series to", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_Send%" withString:NSLocalizedString(@"Send", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_DownloadAsZIP%" withString:NSLocalizedString(@"ZIP file", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+	[templateString replaceOccurrencesOfString:@"%zipextension%" withString: ([[settings valueForKey:@"MacOS"] boolValue]?@"osirixzip":@"zip") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 
 	NSString *browse = [WebServicesMethods nonNilString:[parameters objectForKey:@"browse"]];
 	NSString *search = [WebServicesMethods nonNilString:[parameters objectForKey:@"search"]];
@@ -1654,7 +1673,7 @@
 	
 	NSArray *tempArray, *tempArray2;
 	
-	if([study valueForKey:@"reportURL"] && !isiPhone)
+	if([study valueForKey:@"reportURL"] && ![[settings valueForKey:@"iPhone"] boolValue])
 	{
 		[templateString replaceOccurrencesOfString:@"%LocalizedLabel_GetReport%" withString:NSLocalizedString(@"Download Report", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 		[templateString replaceOccurrencesOfString:@"%Report%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
@@ -1762,12 +1781,12 @@
 		NSString *dicomNodeAETitle = @"This Computer";
 		
 		NSString *dicomNodeSyntax;
-		if( isiPhone) dicomNodeSyntax = @"5";
+		if( [[settings valueForKey:@"iPhone"] boolValue]) dicomNodeSyntax = @"5";
 		else dicomNodeSyntax = @"0";
 		NSString *dicomNodeDescription = @"This Computer";
 		
 		NSMutableString *tempHTML = [NSMutableString stringWithString:dicomNodesListItemString];
-		if(isiPhone) [tempHTML replaceOccurrencesOfString:@"[%dicomNodeAddress%:%dicomNodePort%]" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+		if([[settings valueForKey:@"iPhone"] boolValue]) [tempHTML replaceOccurrencesOfString:@"[%dicomNodeAddress%:%dicomNodePort%]" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 		[tempHTML replaceOccurrencesOfString:@"%dicomNodeAddress%" withString:dicomNodeAddress options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 		[tempHTML replaceOccurrencesOfString:@"%dicomNodePort%" withString:dicomNodePort options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 		[tempHTML replaceOccurrencesOfString:@"%dicomNodeAETitle%" withString:dicomNodeAETitle options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
@@ -1787,7 +1806,7 @@
 		NSString *dicomNodeDescription = [WebServicesMethods nonNilString:[node objectForKey:@"Description"]];
 		
 		NSMutableString *tempHTML = [NSMutableString stringWithString:dicomNodesListItemString];
-		if(isiPhone) [tempHTML replaceOccurrencesOfString:@"[%dicomNodeAddress%:%dicomNodePort%]" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+		if([[settings valueForKey:@"iPhone"] boolValue]) [tempHTML replaceOccurrencesOfString:@"[%dicomNodeAddress%:%dicomNodePort%]" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 		[tempHTML replaceOccurrencesOfString:@"%dicomNodeAddress%" withString:dicomNodeAddress options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 		[tempHTML replaceOccurrencesOfString:@"%dicomNodePort%" withString:dicomNodePort options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 		[tempHTML replaceOccurrencesOfString:@"%dicomNodeAETitle%" withString:dicomNodeAETitle options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];

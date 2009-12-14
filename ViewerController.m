@@ -4434,14 +4434,14 @@ static ViewerController *draggedController = nil;
     // The toolbar will use this method to obtain toolbar items that can be displayed in the customization sheet, or in the toolbar itself 
     NSToolbarItem *toolbarItem = [[NSToolbarItem alloc] initWithItemIdentifier: itemIdent];
     
-    if ([itemIdent isEqualToString: QTSaveToolbarItemIdentifier]) {
-        
-	[toolbarItem setLabel: NSLocalizedString(@"Movie Export", nil)];
-	[toolbarItem setPaletteLabel: NSLocalizedString(@"Movie Export", nil)];
+    if ([itemIdent isEqualToString: QTSaveToolbarItemIdentifier])
+	{
+		[toolbarItem setLabel: NSLocalizedString(@"Movie Export", nil)];
+		[toolbarItem setPaletteLabel: NSLocalizedString(@"Movie Export", nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"Export this series in a Quicktime file", nil)];
-	[toolbarItem setImage: [NSImage imageNamed: QTSaveToolbarItemIdentifier]];
-	[toolbarItem setTarget: self];
-	[toolbarItem setAction: @selector(exportQuicktime:)];
+		[toolbarItem setImage: [NSImage imageNamed: QTSaveToolbarItemIdentifier]];
+		[toolbarItem setTarget: self];
+		[toolbarItem setAction: @selector(exportQuicktime:)];
     }
 	else if ([itemIdent isEqualToString: PrintToolbarItemIdentifier]) {
 		
@@ -4467,15 +4467,15 @@ static ViewerController *draggedController = nil;
 //	[toolbarItem setMinSize:NSMakeSize(NSWidth([iPhotoView frame]), NSHeight([iPhotoView frame]))];
 	[toolbarItem setMaxSize:NSMakeSize(NSWidth([iPhotoView frame]), NSHeight([iPhotoView frame]))];
     }
-	else if ([itemIdent isEqualToString: MailToolbarItemIdentifier]) {
-        
-	[toolbarItem setLabel: NSLocalizedString(@"Email", nil)];
-	[toolbarItem setPaletteLabel: NSLocalizedString(@"Email", nil)];
+	else if ([itemIdent isEqualToString: MailToolbarItemIdentifier])
+	{
+		[toolbarItem setLabel: NSLocalizedString(@"Email", nil)];
+		[toolbarItem setPaletteLabel: NSLocalizedString(@"Email", nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"Email this image", nil)];
-	[toolbarItem setImage: [NSImage imageNamed: MailToolbarItemIdentifier]];
-	[toolbarItem setTarget: self];
-	[toolbarItem setAction: @selector( sendMail:)];
-    }
+		[toolbarItem setImage: [NSImage imageNamed: MailToolbarItemIdentifier]];
+		[toolbarItem setTarget: self];
+		[toolbarItem setAction: @selector( sendMail:)];
+	}
 //	else if ([itemIdent isEqual: BrushToolsToolbarItemIdentifier])
 //	{        
 //		[toolbarItem setLabel: @"BrushTool"];

@@ -154,132 +154,37 @@ int main(int argc, const char *argv[])
 				else
 					curFileDest = [curFile stringByAppendingString: @" temp"];
 				
-				DcmFileFormat fileformat;
-				OFCondition cond = fileformat.loadFile( [curFile UTF8String]);
-				// if we can't read it stop
-				if( cond.good())
+				if( [[curFile pathExtension] isEqualToString: @"zip"] || [[curFile pathExtension] isEqualToString: @"osirixzip"])
 				{
-					DcmDataset *dataset = fileformat.getDataset();
-					DcmItem *metaInfo = fileformat.getMetaInfo();
-					DcmXfer original_xfer(dataset->getOriginalXfer());
-					if (original_xfer.isEncapsulated())
+					NSTask *t = [[[NSTask alloc] init] autorelease];
+	
+					@try
 					{
-						if( destDirec)
-						{
-							[[NSFileManager defaultManager] removeFileAtPath: curFileDest handler: nil];
-							[[NSFileManager defaultManager] movePath: curFile toPath: curFileDest handler: nil];
-							[[NSFileManager defaultManager] removeFileAtPath: curFile handler: nil];
-						}
+						[t setLaunchPath: @"/usr/bin/unzip"];
+						[t setCurrentDirectoryPath: @"/tmp/"];
+						NSArray *args = [NSArray arrayWithObjects: @"-o", @"-d", curFileDest, curFile, nil];
+						[t setArguments: args];
+						[t launch];
+						[t waitUntilExit];
 					}
-					else
+					@catch ( NSException *e)
 					{
-						const char *string = NULL;
-						NSString *modality;
-						if (dataset->findAndGetString(DCM_Modality, string, OFFalse).good() && string != NULL)
-							modality = [NSString stringWithCString:string encoding: NSASCIIStringEncoding];
-						else
-							modality = @"OT";
-						
-						int resolution = 0;
-						unsigned short rows = 0;
-						if (dataset->findAndGetUint16( DCM_Rows, rows, OFFalse).good())
-						{
-							if( resolution == 0 || resolution > rows)
-								resolution = rows;
-						}
-						unsigned short columns = 0;
-						if (dataset->findAndGetUint16( DCM_Columns, columns, OFFalse).good())
-						{
-							if( resolution == 0 || resolution > columns)
-								resolution = columns;
-						}
-						
-						int quality, compression = compressionForModality( compressionSettings, compressionSettingsLowRes, limit, modality, &quality, resolution);
-						
-						if( compression == compression_JPEG2000)
-						{
-							DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile: curFile decodingPixelData: NO];
-							
-							BOOL succeed = NO;
-							
-							@try
-							{
-								DCMTransferSyntax *tsx = [DCMTransferSyntax JPEG2000LossyTransferSyntax];
-								succeed = [dcmObject writeToFile: curFileDest withTransferSyntax: tsx quality: quality AET:@"OsiriX" atomically:YES];
-							}
-							@catch (NSException *e)
-							{
-								NSLog( @"dcmObject writeToFile failed: %@", e);
-							}
-							[dcmObject release];
-							
-							if( succeed)
-							{
-								[[NSFileManager defaultManager] removeFileAtPath: curFile handler: nil];
-								if( destDirec == nil)
-									[[NSFileManager defaultManager] movePath: curFileDest toPath: curFile handler: nil];
-							}
-							else
-							{
-								[[NSFileManager defaultManager] removeFileAtPath: curFileDest handler:nil];
-								
-								if( destDirec)
-								{
-									[[NSFileManager defaultManager] removeFileAtPath: curFile handler: nil];
-									NSLog( @"failed to compress file: %@, the file is deleted", curFile);
-								}
-								else
-									NSLog( @"failed to compress file: %@", curFile);
-							}
-						}
-						else if( compression == compression_JPEG)
-						{
-							DJ_RPLossless losslessParams(6,0);
-							
-							DcmRepresentationParameter *params = &losslessParams;
-							E_TransferSyntax tSyntax = EXS_JPEGProcess14SV1TransferSyntax;
-							
-							// this causes the lossless JPEG version of the dataset to be created
-							DcmXfer oxferSyn( tSyntax);
-							dataset->chooseRepresentation(tSyntax, params);
-							
-							// check if everything went well
-							if (dataset->canWriteXfer(tSyntax))
-							{
-								// force the meta-header UIDs to be re-generated when storing the file 
-								// since the UIDs in the data set may have changed 
-								
-								//only need to do this for lossy
-								delete metaInfo->remove(DCM_MediaStorageSOPClassUID);
-								delete metaInfo->remove(DCM_MediaStorageSOPInstanceUID);
-								
-								// store in lossless JPEG format
-								fileformat.loadAllDataIntoMemory();
-								
-								[[NSFileManager defaultManager] removeFileAtPath: curFileDest handler:nil];
-								cond = fileformat.saveFile( [curFileDest UTF8String], tSyntax);
-								status =  (cond.good()) ? YES : NO;
-								
-								if( status == NO)
-								{
-									[[NSFileManager defaultManager] removeFileAtPath: curFileDest handler:nil];
-									if( destDirec)
-									{
-										[[NSFileManager defaultManager] removeFileAtPath: curFile handler: nil];
-										NSLog( @"failed to compress file: %@, the file is deleted", curFile);
-									}
-									else
-										NSLog( @"failed to compress file: %@", curFile);
-								}
-								else
-								{
-									[[NSFileManager defaultManager] removeFileAtPath: curFile handler: nil];
-									if( destDirec == nil)
-										[[NSFileManager defaultManager] movePath: curFileDest toPath: curFile handler: nil];
-								}
-							}
-						}
-						else
+						NSLog( @"***** unzipFile exception: %@", e);
+					}
+					
+					[[NSFileManager defaultManager] removeItemAtPath: curFile error: nil];
+				}
+				else
+				{
+					DcmFileFormat fileformat;
+					OFCondition cond = fileformat.loadFile( [curFile UTF8String]);
+					// if we can't read it stop
+					if( cond.good())
+					{
+						DcmDataset *dataset = fileformat.getDataset();
+						DcmItem *metaInfo = fileformat.getMetaInfo();
+						DcmXfer original_xfer(dataset->getOriginalXfer());
+						if (original_xfer.isEncapsulated())
 						{
 							if( destDirec)
 							{
@@ -288,10 +193,128 @@ int main(int argc, const char *argv[])
 								[[NSFileManager defaultManager] removeFileAtPath: curFile handler: nil];
 							}
 						}
+						else
+						{
+							const char *string = NULL;
+							NSString *modality;
+							if (dataset->findAndGetString(DCM_Modality, string, OFFalse).good() && string != NULL)
+								modality = [NSString stringWithCString:string encoding: NSASCIIStringEncoding];
+							else
+								modality = @"OT";
+							
+							int resolution = 0;
+							unsigned short rows = 0;
+							if (dataset->findAndGetUint16( DCM_Rows, rows, OFFalse).good())
+							{
+								if( resolution == 0 || resolution > rows)
+									resolution = rows;
+							}
+							unsigned short columns = 0;
+							if (dataset->findAndGetUint16( DCM_Columns, columns, OFFalse).good())
+							{
+								if( resolution == 0 || resolution > columns)
+									resolution = columns;
+							}
+							
+							int quality, compression = compressionForModality( compressionSettings, compressionSettingsLowRes, limit, modality, &quality, resolution);
+							
+							if( compression == compression_JPEG2000)
+							{
+								DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile: curFile decodingPixelData: NO];
+								
+								BOOL succeed = NO;
+								
+								@try
+								{
+									DCMTransferSyntax *tsx = [DCMTransferSyntax JPEG2000LossyTransferSyntax];
+									succeed = [dcmObject writeToFile: curFileDest withTransferSyntax: tsx quality: quality AET:@"OsiriX" atomically:YES];
+								}
+								@catch (NSException *e)
+								{
+									NSLog( @"dcmObject writeToFile failed: %@", e);
+								}
+								[dcmObject release];
+								
+								if( succeed)
+								{
+									[[NSFileManager defaultManager] removeFileAtPath: curFile handler: nil];
+									if( destDirec == nil)
+										[[NSFileManager defaultManager] movePath: curFileDest toPath: curFile handler: nil];
+								}
+								else
+								{
+									[[NSFileManager defaultManager] removeFileAtPath: curFileDest handler:nil];
+									
+									if( destDirec)
+									{
+										[[NSFileManager defaultManager] removeFileAtPath: curFile handler: nil];
+										NSLog( @"failed to compress file: %@, the file is deleted", curFile);
+									}
+									else
+										NSLog( @"failed to compress file: %@", curFile);
+								}
+							}
+							else if( compression == compression_JPEG)
+							{
+								DJ_RPLossless losslessParams(6,0);
+								
+								DcmRepresentationParameter *params = &losslessParams;
+								E_TransferSyntax tSyntax = EXS_JPEGProcess14SV1TransferSyntax;
+								
+								// this causes the lossless JPEG version of the dataset to be created
+								DcmXfer oxferSyn( tSyntax);
+								dataset->chooseRepresentation(tSyntax, params);
+								
+								// check if everything went well
+								if (dataset->canWriteXfer(tSyntax))
+								{
+									// force the meta-header UIDs to be re-generated when storing the file 
+									// since the UIDs in the data set may have changed 
+									
+									//only need to do this for lossy
+									delete metaInfo->remove(DCM_MediaStorageSOPClassUID);
+									delete metaInfo->remove(DCM_MediaStorageSOPInstanceUID);
+									
+									// store in lossless JPEG format
+									fileformat.loadAllDataIntoMemory();
+									
+									[[NSFileManager defaultManager] removeFileAtPath: curFileDest handler:nil];
+									cond = fileformat.saveFile( [curFileDest UTF8String], tSyntax);
+									status =  (cond.good()) ? YES : NO;
+									
+									if( status == NO)
+									{
+										[[NSFileManager defaultManager] removeFileAtPath: curFileDest handler:nil];
+										if( destDirec)
+										{
+											[[NSFileManager defaultManager] removeFileAtPath: curFile handler: nil];
+											NSLog( @"failed to compress file: %@, the file is deleted", curFile);
+										}
+										else
+											NSLog( @"failed to compress file: %@", curFile);
+									}
+									else
+									{
+										[[NSFileManager defaultManager] removeFileAtPath: curFile handler: nil];
+										if( destDirec == nil)
+											[[NSFileManager defaultManager] movePath: curFileDest toPath: curFile handler: nil];
+									}
+								}
+							}
+							else
+							{
+								if( destDirec)
+								{
+									[[NSFileManager defaultManager] removeFileAtPath: curFileDest handler: nil];
+									[[NSFileManager defaultManager] movePath: curFile toPath: curFileDest handler: nil];
+									[[NSFileManager defaultManager] removeFileAtPath: curFile handler: nil];
+								}
+							}
+						}
 					}
+					else
+						NSLog( @"compress : cannot read file: %@", curFile);
 				}
-				else
-					NSLog( @"compress : cannot read file: %@", curFile);
 			}
 		}
 		
@@ -316,67 +339,47 @@ int main(int argc, const char *argv[])
 					curFileDest = [destDirec stringByAppendingPathComponent: [curFile lastPathComponent]];
 				else
 					curFileDest = [curFile stringByAppendingString: @" temp"];
-					
-				OFCondition cond;
+				
 				OFBool status = NO;
-				const char *fname = (const char *)[curFile UTF8String];
-				const char *destination = (const char *)[curFileDest UTF8String];
 				
-				DcmFileFormat fileformat;
-				cond = fileformat.loadFile(fname);
-				
-				if (cond.good())
+				if( [[curFile pathExtension] isEqualToString: @"zip"] || [[curFile pathExtension] isEqualToString: @"osirixzip"])
 				{
-					DcmXfer filexfer(fileformat.getDataset()->getOriginalXfer());
-					
-					//hopefully dcmtk willsupport jpeg2000 compression and decompression in the future
-					
-					if (filexfer.getXfer() == EXS_JPEG2000LosslessOnly || filexfer.getXfer() == EXS_JPEG2000)
+					NSTask *t = [[[NSTask alloc] init] autorelease];
+	
+					@try
 					{
-						DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile: curFile decodingPixelData: NO];
-						@try
-						{
-							status = [dcmObject writeToFile: curFileDest withTransferSyntax:[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax] quality:1 AET:@"OsiriX" atomically:YES];	//ImplicitVRLittleEndianTransferSyntax
-						}
-						@catch (NSException *e)
-						{
-							NSLog( @"dcmObject writeToFile failed: %@", e);
-						}
-						[dcmObject release];
-						
-						if( status == NO)
-						{
-							[[NSFileManager defaultManager] removeFileAtPath: curFileDest handler:nil];
-							
-							if( destDirec)
-							{
-								[[NSFileManager defaultManager] removeFileAtPath: curFile handler: nil];
-								NSLog( @"failed to decompress file: %@, the file is deleted", curFile);
-							}
-							else
-								NSLog( @"failed to decompress file: %@", curFile);
-						}
+						[t setLaunchPath: @"/usr/bin/unzip"];
+						[t setCurrentDirectoryPath: @"/tmp/"];
+						NSArray *args = [NSArray arrayWithObjects: @"-o", @"-d", curFileDest, curFile, nil];
+						[t setArguments: args];
+						[t launch];
+						[t waitUntilExit];
 					}
-					else if( filexfer.getXfer() != EXS_LittleEndianExplicit || filexfer.getXfer() != EXS_LittleEndianImplicit)
+					@catch ( NSException *e)
 					{
-						DcmDataset *dataset = fileformat.getDataset();
+						NSLog( @"***** unzipFile exception: %@", e);
+					}
+					
+					[[NSFileManager defaultManager] removeItemAtPath: curFile error: nil];
+				}
+				else
+				{
+					OFCondition cond;
+					
+					const char *fname = (const char *)[curFile UTF8String];
+					const char *destination = (const char *)[curFileDest UTF8String];
+					
+					DcmFileFormat fileformat;
+					cond = fileformat.loadFile(fname);
+					
+					if (cond.good())
+					{
+						DcmXfer filexfer(fileformat.getDataset()->getOriginalXfer());
 						
-						// decompress data set if compressed
-						dataset->chooseRepresentation(EXS_LittleEndianExplicit, NULL);
+						//hopefully dcmtk willsupport jpeg2000 compression and decompression in the future
 						
-						// check if everything went well
-						if (dataset->canWriteXfer(EXS_LittleEndianExplicit))
+						if (filexfer.getXfer() == EXS_JPEG2000LosslessOnly || filexfer.getXfer() == EXS_JPEG2000)
 						{
-							fileformat.loadAllDataIntoMemory();
-							cond = fileformat.saveFile(destination, EXS_LittleEndianExplicit);
-							status =  (cond.good()) ? YES : NO;
-						}
-						else status = NO;
-						
-						if( status == NO) // Try DCM Framework...
-						{
-							[[NSFileManager defaultManager] removeFileAtPath: curFileDest handler:nil];
-							
 							DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile: curFile decodingPixelData: NO];
 							@try
 							{
@@ -387,30 +390,75 @@ int main(int argc, const char *argv[])
 								NSLog( @"dcmObject writeToFile failed: %@", e);
 							}
 							[dcmObject release];
-						}
-						
-						if( status == NO)
-						{
-							[[NSFileManager defaultManager] removeFileAtPath: curFileDest handler:nil];
 							
+							if( status == NO)
+							{
+								[[NSFileManager defaultManager] removeFileAtPath: curFileDest handler:nil];
+								
+								if( destDirec)
+								{
+									[[NSFileManager defaultManager] removeFileAtPath: curFile handler: nil];
+									NSLog( @"failed to decompress file: %@, the file is deleted", curFile);
+								}
+								else
+									NSLog( @"failed to decompress file: %@", curFile);
+							}
+						}
+						else if( filexfer.getXfer() != EXS_LittleEndianExplicit || filexfer.getXfer() != EXS_LittleEndianImplicit)
+						{
+							DcmDataset *dataset = fileformat.getDataset();
+							
+							// decompress data set if compressed
+							dataset->chooseRepresentation(EXS_LittleEndianExplicit, NULL);
+							
+							// check if everything went well
+							if (dataset->canWriteXfer(EXS_LittleEndianExplicit))
+							{
+								fileformat.loadAllDataIntoMemory();
+								cond = fileformat.saveFile(destination, EXS_LittleEndianExplicit);
+								status =  (cond.good()) ? YES : NO;
+							}
+							else status = NO;
+							
+							if( status == NO) // Try DCM Framework...
+							{
+								[[NSFileManager defaultManager] removeFileAtPath: curFileDest handler:nil];
+								
+								DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile: curFile decodingPixelData: NO];
+								@try
+								{
+									status = [dcmObject writeToFile: curFileDest withTransferSyntax:[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax] quality:1 AET:@"OsiriX" atomically:YES];	//ImplicitVRLittleEndianTransferSyntax
+								}
+								@catch (NSException *e)
+								{
+									NSLog( @"dcmObject writeToFile failed: %@", e);
+								}
+								[dcmObject release];
+							}
+							
+							if( status == NO)
+							{
+								[[NSFileManager defaultManager] removeFileAtPath: curFileDest handler:nil];
+								
+								if( destDirec)
+								{
+									[[NSFileManager defaultManager] removeFileAtPath: curFile handler: nil];
+									NSLog( @"failed to decompress file: %@, the file is deleted", curFile);
+								}
+								else
+									NSLog( @"failed to decompress file: %@", curFile);
+							}
+						}
+						else
+						{
 							if( destDirec)
 							{
+								[[NSFileManager defaultManager] removeFileAtPath: curFileDest handler: nil];
+								[[NSFileManager defaultManager] movePath: curFile toPath: curFileDest handler: nil];
 								[[NSFileManager defaultManager] removeFileAtPath: curFile handler: nil];
-								NSLog( @"failed to decompress file: %@, the file is deleted", curFile);
 							}
-							else
-								NSLog( @"failed to decompress file: %@", curFile);
+							status = NO;
 						}
-					}
-					else
-					{
-						if( destDirec)
-						{
-							[[NSFileManager defaultManager] removeFileAtPath: curFileDest handler: nil];
-							[[NSFileManager defaultManager] movePath: curFile toPath: curFileDest handler: nil];
-							[[NSFileManager defaultManager] removeFileAtPath: curFile handler: nil];
-						}
-						status = NO;
 					}
 				}
 				

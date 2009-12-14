@@ -151,7 +151,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	
 	IBOutlet NSWindow				*mainWindow;
 	IBOutlet NSMenu					*imageTileMenu;
-	IBOutlet NSWindow				*urlWindow, *CDpasswordWindow;
+	IBOutlet NSWindow				*urlWindow, *CDpasswordWindow, *ZIPpasswordWindow;
 	IBOutlet NSTextField			*urlString;
 	
 	IBOutlet NSForm					*rdPatientForm, *rdPixelForm, *rdVoxelForm, *rdOffsetForm;
