@@ -241,6 +241,8 @@ extern NSRecursiveLock *PapyrusLock;
 //	
 //	return YES;
 	
+	// ARG_MAX
+	
 	NSTask *theTask = [[NSTask alloc] init];
 	
 	if( dest == nil)
