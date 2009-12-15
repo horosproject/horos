@@ -130,21 +130,97 @@
 		
 		if([[serverParameters objectForKey:@"TLSAuthenticated"] boolValue])
 		{
-			[args addObject:@"+tls"]; // use authenticated secure TLS connection
+			[args addObject:@"--enable-tls"]; // use authenticated secure TLS connection
+			
+			TLSPasswordType passwordType = [[serverParameters objectForKey:@"TLSPrivateKeyFilePasswordType"] intValue];
+			if(passwordType==PasswordNone)
+			{
+				// do nothing
+			}
+			else if(passwordType==PasswordString)
+			{
+				NSString *pass = [serverParameters objectForKey:@"TLSPrivateKeyFilePassword"];
+				if([pass isEqualToString:@""])
+				{
+					[args addObject:@"--null-passwd"]; // use empty string as password
+				}
+				else
+				{
+					[args addObject:@"--use-passwd"]; // use specified password
+					[args addObject:pass];
+				}
+			}
+			else if(passwordType==PasswordAsk)
+			{
+				// should we ask for the password?
+				// todo ...
+			}
 		}
 		else
-			[args addObject:@"+tla"]; // use secure TLS connection without certificate
+			[args addObject:@"--anonymous-tls"]; // use secure TLS connection without certificate
 		
+		// key and certificate file format options:
+		TLSFileFormat format = [[serverParameters objectForKey:@"TLSKeyAndCertificateFileFormat"] intValue];
+		if(format==DER)
+			[args addObject:@"--der-keys"]; // read keys and certificates as DER file
+		else
+			[args addObject:@"--pem-keys"]; // read keys and certificates as PEM file (default)
+		
+		// certification authority options:
+		if([[serverParameters objectForKey:@"TLSUseTrustedCACertificatesFolderURL"] boolValue])
+		{
+			NSString *path = [serverParameters objectForKey:@"TLSTrustedCACertificatesFolderURL"];
+			BOOL isDirectory = NO;
+			BOOL fileExists = [[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDirectory];
+			if(fileExists)
+			{
+				if(isDirectory)
+					[args addObject:@"--add-cert-dir"]; // add certificates in d to list of certificates  .... needs to use OpenSSL & rename files (see http://forum.dicom-cd.de/viewtopic.php?p=3237&sid=bd17bd76876a8fd9e7fdf841b90cf639 )
+				else
+					[args addObject:@"--add-cert-file"]; // add certificate file to list of certificates
+				
+				[args addObject:path];
+			}
+		}
+
+		//ciphersuite options:
 		for (NSDictionary *suite in [serverParameters objectForKey:@"TLSCipherSuites"])
 		{
 			if ([[suite objectForKey:@"Supported"] boolValue])
 			{
-				[args addObject:@"+cs"]; // add ciphersuite to list of negotiated suites
+				[args addObject:@"--cipher"]; // add ciphersuite to list of negotiated suites
 				[args addObject:[suite objectForKey:@"Cipher"]];
 			}
 		}
+
+		if([[serverParameters objectForKey:@"TLSUseDHParameterFileURL"] boolValue])
+		{
+			[args addObject:@"--dhparam"]; // read DH parameters for DH/DSS ciphersuites
+			[args addObject:[serverParameters objectForKey:@"TLSDHParameterFileURL"]];
+		}
 		
-		[args addObject:@"-ic"]; //don't verify peer certificate	
+		// TODO : what should we do with this? :
+		/* 
+		 pseudo random generator options:
+		 
+		 +rs   --seed  [f]ilename: string
+		 seed random generator with contents of f
+		 
+		 +ws   --write-seed
+		 write back modified seed (only with --seed)
+		 
+		 +wf   --write-seed-file  [f]ilename: string (only with --seed)
+		 write modified seed to file f		 
+		 */
+
+		// peer authentication options:
+		TLSCertificateVerificationType verification = [[serverParameters objectForKey:@"TLSCertificateVerification"] intValue];
+		if(verification==RequirePeerCertificate)
+			[args addObject:@"--require-peer-cert"]; //verify peer certificate, fail if absent (default)
+		else if(verification==VerifyPeerCertificate)
+			[args addObject:@"--verify-peer-cert"]; //verify peer certificate if present
+		else //IgnorePeerCertificate
+			[args addObject:@"--ignore-peer-cert"]; //don't verify peer certificate	
 	}
 	
 	[theTask setArguments:args];
@@ -746,9 +822,9 @@
 					[aServer setObject:self.TLSPrivateKeyFilePassword forKey:@"TLSPrivateKeyFilePassword"]; // PASSWORD STORED IN CLEAR. TODO: ENCRYPTION?
 				else
 					[aServer setObject:@"" forKey:@"TLSPrivateKeyFilePassword"];
-				
-				[aServer setObject:[NSNumber numberWithInt:self.TLSKeyAndCertificateFileFormat] forKey:@"TLSKeyAndCertificateFileFormat"];				
 			}
+			
+			[aServer setObject:[NSNumber numberWithInt:self.TLSKeyAndCertificateFileFormat] forKey:@"TLSKeyAndCertificateFileFormat"];
 			
 			[aServer setObject:self.TLSSupportedCipherSuite forKey:@"TLSCipherSuites"];
 			
