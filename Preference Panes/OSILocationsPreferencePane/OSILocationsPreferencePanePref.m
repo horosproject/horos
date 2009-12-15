@@ -224,17 +224,7 @@
 		else //IgnorePeerCertificate
 			[args addObject:@"--ignore-peer-cert"]; //don't verify peer certificate	
 	}
-	
-	NSMutableString *cmd = [NSMutableString string];
-	[cmd appendString:[theTask launchPath]];
-	for (NSString *arg in args)
-	{
-		[cmd appendString:arg];
-		[cmd appendString:@" "];
-	}
-	
-	NSLog(@"cmd : %@", cmd);
-	
+		
 	[theTask setArguments:args];
 	[theTask launch];
 	[theTask waitUntilExit];
