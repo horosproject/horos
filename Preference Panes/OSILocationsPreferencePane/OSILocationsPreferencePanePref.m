@@ -131,6 +131,8 @@
 		if([[serverParameters objectForKey:@"TLSAuthenticated"] boolValue])
 		{
 			[args addObject:@"--enable-tls"]; // use authenticated secure TLS connection
+			[args addObject:[serverParameters objectForKey:@"TLSPrivateKeyFileURL"]]; // [p]rivate key file
+			[args addObject:[serverParameters objectForKey:@"TLSCertificateFileURL"]]; // [c]ertificate file: string
 			
 			TLSPasswordType passwordType = [[serverParameters objectForKey:@"TLSPrivateKeyFilePasswordType"] intValue];
 			if(passwordType==PasswordNone)
@@ -223,10 +225,20 @@
 			[args addObject:@"--ignore-peer-cert"]; //don't verify peer certificate	
 	}
 	
+	NSMutableString *cmd = [NSMutableString string];
+	[cmd appendString:[theTask launchPath]];
+	for (NSString *arg in args)
+	{
+		[cmd appendString:arg];
+		[cmd appendString:@" "];
+	}
+	
+	NSLog(@"cmd : %@", cmd);
+	
 	[theTask setArguments:args];
 	[theTask launch];
 	[theTask waitUntilExit];
-	
+
 	if( [theTask terminationStatus] == 0) return YES;
 	else return NO;
 }
@@ -762,6 +774,9 @@
 	if(!privateKeyFileURL)
 		privateKeyFileURL = NSHomeDirectory();
 	self.TLSPrivateKeyFileURL = [NSURL fileURLWithPath:privateKeyFileURL];
+	
+	// certificates and keys should be chosen from the Keychain, not from files
+	// see Wil Shipley's comment and examples http://www.wilshipley.com/blog/2006/10/pimp-my-code-part-12-frozen-in.html
 	
 	self.TLSPrivateKeyFilePasswordType = [[aServer valueForKey:@"TLSPrivateKeyFilePasswordType"] intValue];
 	

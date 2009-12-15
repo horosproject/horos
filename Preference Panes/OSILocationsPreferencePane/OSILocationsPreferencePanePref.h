@@ -18,9 +18,9 @@
 
 typedef enum
 {
-	PasswordString = 0,
-	PasswordNone,
-	PasswordAsk
+	PasswordNone = 0,
+	PasswordAsk,
+	PasswordString
 } TLSPasswordType;
 
 typedef enum
