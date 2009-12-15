@@ -15580,9 +15580,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 				[t setLaunchPath: @"/usr/bin/zip"];
 				
 				if( [password length] > 0)
-					args = [NSArray arrayWithObjects: @"-1", @"-j", @"-e", @"-P", password, destFile, nil];
+					args = [NSArray arrayWithObjects: @"-j", @"-e", @"-P", password, destFile, nil];
 				else
-					args = [NSArray arrayWithObjects: @"-1", @"-j", destFile, nil];
+					args = [NSArray arrayWithObjects: @"-j", destFile, nil];
 					
 				args = [args arrayByAddingObjectsFromArray: subArray];
 				
