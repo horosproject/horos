@@ -439,9 +439,11 @@
 {
 	[[[BrowserController currentBrowser] managedObjectContext] lock];
 	
+	BOOL lockReleased = NO;
+	
 	@try
 	{
-		[self HTTPConnectionProtected:conn didReceiveRequest:mess];
+		lockReleased = [self HTTPConnectionProtected:conn didReceiveRequest:mess];
 	}
 	
 	@catch (NSException * e)
@@ -449,11 +451,15 @@
 		NSLog( @"HTTPConnection WebServices : %@", e);
 	}
 	
-	[[[BrowserController currentBrowser] managedObjectContext] unlock];
+	if( lockReleased == NO)
+		[[[BrowserController currentBrowser] managedObjectContext] unlock];
 }
 
-- (void)HTTPConnectionProtected:(HTTPConnection *)conn didReceiveRequest:(HTTPServerRequest *)mess
+// return NO, if the lock was NOT released, return YES if the lock was released
+- (BOOL) HTTPConnectionProtected:(HTTPConnection *)conn didReceiveRequest:(HTTPServerRequest *)mess
 {
+	BOOL lockReleased = NO;
+	
     CFHTTPMessageRef request = [mess request];
 	
 	NSString *contentRange = [(id)CFHTTPMessageCopyHeaderFieldValue(request, (CFStringRef)@"Range") autorelease];
@@ -512,7 +518,7 @@
         CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 505, NULL, vers ? (CFStringRef)vers : kCFHTTPVersion1_0); // Version Not Supported
         [mess setResponse:response];
         CFRelease(response);
-        return;
+        return lockReleased;
     }
 
     NSString *method = [(id)CFHTTPMessageCopyRequestMethod(request) autorelease];
@@ -521,7 +527,7 @@
         CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 400, NULL, (CFStringRef) vers); // Bad Request
         [mess setResponse:response];
         CFRelease(response);
-        return;
+        return lockReleased;
     }
 	
 	int totalLength;
@@ -1170,7 +1176,6 @@
 					NSString *destFile = @"/tmp";
 					
 					srcFolder = [srcFolder stringByAppendingPathComponent: asciiString( [[imagesArray lastObject] valueForKeyPath: @"series.study.name"])];
-					
 					destFile = [destFile stringByAppendingPathComponent: asciiString( [[imagesArray lastObject] valueForKeyPath: @"series.study.name"])];
 					
 					if( isMacOS)
@@ -1183,21 +1188,21 @@
 					
 					[[NSFileManager defaultManager] createDirectoryAtPath: srcFolder attributes: nil];
 					
-//					for( DicomImage *im in  imagesArray)
-//					{
-//						[[NSFileManager defaultManager] copyItemAtPath: [im valueForKey: @"completePath"] toPath: [srcFolder stringByAppendingPathComponent: [[im valueForKey: @"completePath"] lastPathComponent]] error: nil];
-//					}
-//					
-//					[BrowserController encryptFolder: srcFolder inZIPFile: destFile password: nil];
+					if( lockReleased == NO)
+					{
+						[[[BrowserController currentBrowser] managedObjectContext] unlock];
+						lockReleased = YES;
+					}
 					
 					[BrowserController encryptFiles: [imagesArray valueForKey: @"completePath"] inZIPFile: destFile password: nil];
-
+					
 					data = [NSData dataWithContentsOfFile: destFile];
 					
 					[[NSFileManager defaultManager] removeItemAtPath: srcFolder error: nil];
 					[[NSFileManager defaultManager] removeItemAtPath: destFile error: nil];
 					
-					err = NO;
+					if( data)
+						err = NO;
 				}
 				@catch( NSException *e)
 				{
@@ -1350,7 +1355,7 @@
 					
 //					[NSThread detachNewThreadSelector:@selector( generateMovie:) toTarget: self withObject: dict];		// <- not very stable......
 					
-					return;
+					return lockReleased;
 				}
 			}
 			
@@ -1431,21 +1436,23 @@
 			CFHTTPMessageSetHeaderFieldValue(response, (CFStringRef)@"Content-Length", (CFStringRef)[NSString stringWithFormat:@"%d", 0]);
 			[mess setResponse:response];
 			CFRelease(response);
-			return;
+			return lockReleased;
 		}
 
-		CFHTTPMessageRef response = [self prepareResponse:  data fileURL:  fileURL contentRange: contentRange totalLength: totalLength mess: mess parameters: parameters];
+		CFHTTPMessageRef response = [self prepareResponse: data fileURL: fileURL contentRange: contentRange totalLength: totalLength mess: mess parameters: parameters];
 		
 		CFHTTPMessageSetBody(response, (CFDataRef)data);
 		[mess setResponse:response];
 		CFRelease(response);
-		return;
+		return lockReleased;
 	}
 
     CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 405, NULL, (CFStringRef) vers); // Method Not Allowed
 	CFHTTPMessageSetHeaderFieldValue(response, (CFStringRef)@"Content-Length", (CFStringRef)[NSString stringWithFormat:@"%d", 0]);
     [mess setResponse:response];
     CFRelease(response);
+	
+	return lockReleased;
 }
 
 - (NSArray*)studiesForPredicate:(NSPredicate *)predicate;

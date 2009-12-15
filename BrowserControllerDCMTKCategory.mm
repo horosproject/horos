@@ -215,7 +215,6 @@ extern NSRecursiveLock *PapyrusLock;
 	#define CHUNK 500
 	
 	int total = [paths count];
-	NSMutableArray *result = [NSMutableArray arrayWithCapacity: total];
 	
 	for( int i = 0; i < total;)
 	{
@@ -281,7 +280,6 @@ extern NSRecursiveLock *PapyrusLock;
 	#define CHUNK 500
 	
 	int total = [files count];
-	NSMutableArray *result = [NSMutableArray arrayWithCapacity: total];
 	
 	for( int i = 0; i < total;)
 	{

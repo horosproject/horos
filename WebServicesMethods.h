@@ -31,7 +31,7 @@ extern NSString* asciiString (NSString* name);
 	NSNetService *bonjourService;
 }
 
-- (void)HTTPConnectionProtected:(HTTPConnection *)conn didReceiveRequest:(HTTPServerRequest *)mess;
+- (BOOL) HTTPConnectionProtected:(HTTPConnection *)conn didReceiveRequest:(HTTPServerRequest *)mess;
 
 - (NSArray*)studiesForPredicate:(NSPredicate *)predicate;
 - (NSArray*)seriesForPredicate:(NSPredicate *)predicate;

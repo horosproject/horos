@@ -15556,19 +15556,45 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	@try
 	{
-		t = [[[NSTask alloc] init] autorelease];
-		[t setLaunchPath: @"/usr/bin/zip"];
+		#define CHUNKZIP 1000
 		
-		if( [password length] > 0)
-			args = [NSArray arrayWithObjects: @"-j", @"-e", @"-P", password, destFile, nil];
-		else
-			args = [NSArray arrayWithObjects: @"-j", destFile, nil];
+		int total = [srcFiles count];
+		
+		for( int i = 0; i < total;)
+		{
+			int no;
 			
-		args = [args arrayByAddingObjectsFromArray: srcFiles];
+			if( i + CHUNKZIP >= total) no = total - i; 
+			else no = CHUNKZIP;
 			
-		[t setArguments: args];
-		[t launch];
-		[t waitUntilExit];
+			NSRange range = NSMakeRange( i, no);
+			
+			id *objs = (id*) malloc( no * sizeof( id));
+			if( objs)
+			{
+				[srcFiles getObjects: objs range: range];
+				
+				NSArray *subArray = [NSArray arrayWithObjects: objs count: no];
+				
+				t = [[[NSTask alloc] init] autorelease];
+				[t setLaunchPath: @"/usr/bin/zip"];
+				
+				if( [password length] > 0)
+					args = [NSArray arrayWithObjects: @"-1", @"-j", @"-e", @"-P", password, destFile, nil];
+				else
+					args = [NSArray arrayWithObjects: @"-1", @"-j", destFile, nil];
+					
+				args = [args arrayByAddingObjectsFromArray: subArray];
+				
+				[t setArguments: args];
+				[t launch];
+				[t waitUntilExit];
+				
+				free( objs);
+			}
+			
+			i += no;
+		}
 	}
 	@catch (NSException *e)
 	{
