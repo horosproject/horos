@@ -2695,8 +2695,6 @@ PutBufferInGroup3 (PapyShort inFileNb, unsigned char *ioBuffP, SElement *ioGroup
   /* the number of elements of this group */
   theMaxElem = gArrGroup [theEnumGrNb].size;
   
-
-
   if (inPapyGrNb >= 0x6000 && inPapyGrNb <= 0x6FFF)	/* overlay or UIN overlay */
   {      
     for (j = 0, theArrElemP = ioGroupP; j < (PapyULong)theMaxElem; j++, theArrElemP++)
@@ -2773,8 +2771,6 @@ PutBufferInGroup3 (PapyShort inFileNb, unsigned char *ioBuffP, SElement *ioGroup
       /* the theIsOld variable will be used later in the code of this routine */
       if (strcmp (theFoo, "OB") == 0) theIsOld = FALSE;
     } /* if ...group 2 */
-    
-    
     
     /* test wether the transfert syntax is the little-endian explicit VR one */
     if (gArrTransfSyntax [inFileNb] == LITTLE_ENDIAN_EXPL || gArrTransfSyntax [inFileNb] == BIG_ENDIAN_EXPL)

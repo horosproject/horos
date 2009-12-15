@@ -973,18 +973,18 @@ ReadGroup3 (PapyShort inFileNb, PapyUShort *outGroupNbP, unsigned char **outBuff
   /* group with no length set, so compute it... we will compute it anyways and compare it with the stored value... */
 //  else
   {
-  theErr = Papy3FSeek (theFp, (int) SEEK_CUR, - (long) theFirstElemLength);
-  if (*outGroupNbP != 0x7FE0)
-  {
-      theGrLength = ComputeUndefinedGroupLength3 (inFileNb, theGrLength);
-	  if( theGrLength == 0xFFFFFFFF)
-		RETURN (papReadFile)
-  }
-  else
-  {
-	if (gArrTransfSyntax [inFileNb] == LITTLE_ENDIAN_EXPL || gArrTransfSyntax [inFileNb] == BIG_ENDIAN_EXPL) theGrLength = 12L;
-	else theGrLength = 8L;
-  } /* else ...group 0x7FE0 */
+	  theErr = Papy3FSeek (theFp, (int) SEEK_CUR, - (long) theFirstElemLength);
+	  if (*outGroupNbP != 0x7FE0)
+	  {
+		  theGrLength = ComputeUndefinedGroupLength3 (inFileNb, theGrLength);
+		  if( theGrLength == 0xFFFFFFFF)
+			RETURN (papReadFile)
+	  }
+	  else
+	  {
+		if (gArrTransfSyntax [inFileNb] == LITTLE_ENDIAN_EXPL || gArrTransfSyntax [inFileNb] == BIG_ENDIAN_EXPL) theGrLength = 12L;
+		else theGrLength = 8L;
+	  } /* else ...group 0x7FE0 */
   }
   
   /* tell Papy3GroupRead to fill the group length element */
@@ -2268,7 +2268,7 @@ ComputeUndefinedGroupLength3 (PapyShort inFileNb, PapyULong storedGrLength)
   {
 	if( theGroupLength != storedGrLength + 12)
 	{
-		printf("*** DICOM Papyrus warning - computed length is not equal to stored length ! corrupted DICOM file?\r%s\n", gPapyFilePath [inFileNb]);
+		printf("*** DICOM Papyrus warning - computed length (%d) is not equal to stored length (%d) ! corrupted DICOM file?\r%s\n", theGroupLength, storedGrLength + 12, gPapyFilePath [inFileNb]);
 	}
   }
   
