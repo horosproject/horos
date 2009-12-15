@@ -1068,8 +1068,7 @@ ReadGroup3 (PapyShort inFileNb, PapyUShort *outGroupNbP, unsigned char **outBuff
         theReadLength  = theCurrPos - theStartPos;
         *outBytesReadP += theReadLength;
         /* realloc more place for the group buffer */
-        *outBuffP = (unsigned char *) erealloc3 (*outBuffP, (PapyULong) (theBufPos + theReadLength),
-						 (PapyULong)theBufPos); /* OLB */
+        *outBuffP = (unsigned char *) erealloc3 (*outBuffP, (PapyULong) (theBufPos + theReadLength), (PapyULong)theBufPos); /* OLB */
 	
 	/* read in the group buffer */
 	theErr = Papy3FSeek (theFp, (int) SEEK_SET, (PapyLong) theStartPos);

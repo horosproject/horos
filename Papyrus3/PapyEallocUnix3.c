@@ -47,7 +47,8 @@ checkvp3 (void *pointer)
 void *
 emalloc3 (PapyULong size)
 {
-	return checkvp3 (malloc ((size_t) size));
+	printf("*");
+	return checkvp3 (malloc ((size_t) size + 12));
 } /* endof emalloc3 */
 
 
@@ -61,7 +62,8 @@ emalloc3 (PapyULong size)
 void *
 ecalloc3 (PapyULong nelem, PapyULong elsize)
 {
-	return checkvp3 (calloc ((size_t) nelem, (size_t) elsize));
+	printf("*");
+	return checkvp3 (calloc ((size_t) nelem, (size_t) elsize + 12));
 } /* endof ecalloc3 */
 
 
@@ -75,7 +77,8 @@ ecalloc3 (PapyULong nelem, PapyULong elsize)
 void *
 erealloc3 (void *ptr, PapyULong size,PapyULong size2)
 {
-  return checkvp3 (realloc ((char *)ptr, (size_t) size));
+	printf("*");
+  return checkvp3 (realloc ((char *)ptr, (size_t) size + 12));
 
 } /* endof erealloc3 */
 
