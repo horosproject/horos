@@ -47,7 +47,7 @@
 		[innerPool release];
 	}
 	
-	NSLog(@"%p: RunLoop closing down", self);
+//	NSLog(@"%p: RunLoop closing down", self);
 	
 	[pool release];
 }
@@ -57,7 +57,7 @@
 	// The moveToRunLoop method must be called on the socket's existing runloop/thread
 	[asyncSocket moveToRunLoop:myRunLoop];
 	
-	NSLog(@"%p: Run loop up", self);
+//	NSLog(@"%p: Run loop up", self);
 }
 
 /**

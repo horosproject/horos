@@ -36,7 +36,7 @@
 		[runLoopsLoad addObject:[NSNumber numberWithUnsignedInt:0]];
 	}
 	
-	NSLog(@"Starting thread %@", threadNum);
+//	NSLog(@"Starting thread %@", threadNum);
 	
 	// We can't run the run loop unless it has an associated input source or a timer.
 	// So we'll just create a timer that will never fire - unless the server runs for 10,000 years.
@@ -82,7 +82,7 @@
 		[runLoopsLoad replaceObjectAtIndex:m withObject:[NSNumber numberWithUnsignedInt:(mLoad + 1)]];
 	}
 	
-	NSLog(@"Choosing run loop %u with load %u", m, mLoad);
+//	NSLog(@"Choosing run loop %u with load %u", m, mLoad);
 	
 	// And finally, return the proper run loop
 	return mLoop;

@@ -34,6 +34,7 @@
 #import "DCMTransferSyntax.h"
 
 #import "ThreadPoolServer.h"
+#import "ThreadPerConnectionServer.h"
 #import "OsiriXHTTPConnection.h"
 
 #define maxResolution 1024
@@ -195,7 +196,7 @@
 		NSLog( @"********************* TEST NEW http server - TO BE REMOVED");
 		
 		ThreadPoolServer *httpServer = [[ThreadPoolServer alloc] init];
-		//	httpServer = [[ThreadPerConnectionServer alloc] init];
+//		ThreadPerConnectionServer *httpServer = [[ThreadPerConnectionServer alloc] init];
 		
 		[httpServer setConnectionClass: [OsiriXHTTPConnection class]];
 		

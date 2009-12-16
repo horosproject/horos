@@ -26,9 +26,9 @@
 
 // Define the various timeouts (in seconds) for various parts of the HTTP process
 #define READ_TIMEOUT          -1
-#define WRITE_HEAD_TIMEOUT    30
+#define WRITE_HEAD_TIMEOUT   120
 #define WRITE_BODY_TIMEOUT    -1
-#define WRITE_ERROR_TIMEOUT   30
+#define WRITE_ERROR_TIMEOUT  120
 #define NONCE_TIMEOUT        300
 
 // Define the various limits

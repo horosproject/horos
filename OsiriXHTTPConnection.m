@@ -20,6 +20,8 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
+static NSRecursiveLock *movieLock = nil;
+
 #define maxResolution 1024
 @interface NSImage (ProportionalScaling)
 - (NSImage*)imageByScalingProportionallyToSize:(NSSize)targetSize;
@@ -859,6 +861,9 @@
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
+	if( movieLock == 0L)
+		movieLock = [[NSRecursiveLock alloc] init];
+	
 	NSString* contentRange = [dict objectForKey: @"contentRange"];
 	NSString *outFile = [dict objectForKey: @"outFile"];
 	NSString *fileName = [dict objectForKey: @"fileName"];
@@ -945,6 +950,8 @@
 		
 		[context unlock];	// It's important because writeMovie will call performonmainthread !!!
 		
+		[movieLock lock];
+		
 		if( isiPhone)
 		{
 			[[BrowserController currentBrowser] writeMovie:imagesArray name:fileName];
@@ -953,7 +960,8 @@
 		}
 		else
 			[[BrowserController currentBrowser] writeMovie:imagesArray name:outFile];
-
+		
+		[movieLock unlock];
 		
 		[context lock];
 	}
