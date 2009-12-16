@@ -43,7 +43,7 @@ static NSTimeInterval lastConnection = 0;
 	self = [super init];
 	if (self != nil)
 	{
-		httpServ = [[HTTPServer alloc] init];
+		httpServ = [[basicHTTPServer alloc] init];
 		[httpServ setType:@"_http._tcp."];
 		[httpServ setName:@"OsiriXXMLRPCServer"];
 		[httpServ setPort: [[NSUserDefaults standardUserDefaults] integerForKey:@"httpXMLRPCServerPort"]];
@@ -72,12 +72,12 @@ static NSTimeInterval lastConnection = 0;
 #pragma mark-
 #pragma mark Methods
 
-- (void)HTTPConnection:(HTTPConnection *)conn didSendResponse:(HTTPServerRequest *)mess
+- (void)HTTPConnection:(basicHTTPConnection *)conn didSendResponse:(HTTPServerRequest *)mess
 {
 
 }
 
-- (void)HTTPConnection:(HTTPConnection *)conn didReceiveRequest:(HTTPServerRequest *)mess
+- (void)HTTPConnection:(basicHTTPConnection *)conn didReceiveRequest:(HTTPServerRequest *)mess
 {
 	[[[BrowserController currentBrowser] managedObjectContext] lock];
 	
@@ -124,7 +124,7 @@ static NSTimeInterval lastConnection = 0;
 	return paramDict;
 }
 
-- (void)HTTPConnectionProtected:(HTTPConnection *)conn didReceiveRequest:(HTTPServerRequest *)mess
+- (void)HTTPConnectionProtected:(basicHTTPConnection *)conn didReceiveRequest:(HTTPServerRequest *)mess
 {
     CFHTTPMessageRef request = [mess request];
 	

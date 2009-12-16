@@ -13,15 +13,15 @@
 =========================================================================*/
 
 #import <Cocoa/Cocoa.h>
-#import "HTTPServer.h"
+#import "basicHTTPServer.h"
 
 
 /** \brief XML-RPC for RIS integration */
 @interface XMLRPCMethods : NSObject
 {
-	HTTPServer	*httpServ;
+	basicHTTPServer	*httpServ;
 }
 
-- (void)HTTPConnectionProtected:(HTTPConnection *)conn didReceiveRequest:(HTTPServerRequest *)mess;
+- (void)HTTPConnectionProtected:(basicHTTPConnection *)conn didReceiveRequest:(HTTPServerRequest *)mess;
 
 @end

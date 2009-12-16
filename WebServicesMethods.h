@@ -13,14 +13,14 @@
  =========================================================================*/
 
 #import <Cocoa/Cocoa.h>
-#import "HTTPServer.h"
+#import "basicHTTPServer.h"
 #import "DicomStudy.h"
 
 extern NSString* asciiString (NSString* name);
 
 @interface WebServicesMethods : NSObject
 {
-	HTTPServer	*httpServ;
+	basicHTTPServer	*httpServ;
 	NSString *webDirectory;
 	NSMutableArray *selectedImages;
 	NSMutableDictionary *selectedDICOMNode;
@@ -31,7 +31,7 @@ extern NSString* asciiString (NSString* name);
 	NSNetService *bonjourService;
 }
 
-- (BOOL) HTTPConnectionProtected:(HTTPConnection *)conn didReceiveRequest:(HTTPServerRequest *)mess;
+- (BOOL) HTTPConnectionProtected:(basicHTTPConnection *)conn didReceiveRequest:(HTTPServerRequest *)mess;
 
 - (NSArray*)studiesForPredicate:(NSPredicate *)predicate;
 - (NSArray*)seriesForPredicate:(NSPredicate *)predicate;

@@ -126,7 +126,7 @@
 {
 	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
 
-	httpServ = [[HTTPServer alloc] init];
+	httpServ = [[basicHTTPServer alloc] init];
 	[httpServ setType:@"_http._tcp."];
 	[httpServ setName:@"OsiriXWebServer"];
 	[httpServ setPort:[[NSUserDefaults standardUserDefaults] integerForKey:@"httpWebServerPort"]];
@@ -435,7 +435,7 @@
 	return response;
 }
 
-- (void)HTTPConnection:(HTTPConnection *)conn didReceiveRequest:(HTTPServerRequest *)mess
+- (void)HTTPConnection:(basicHTTPConnection *)conn didReceiveRequest:(HTTPServerRequest *)mess
 {
 	[[[BrowserController currentBrowser] managedObjectContext] lock];
 	
@@ -456,7 +456,7 @@
 }
 
 // return NO, if the lock was NOT released, return YES if the lock was released
-- (BOOL) HTTPConnectionProtected:(HTTPConnection *)conn didReceiveRequest:(HTTPServerRequest *)mess
+- (BOOL) HTTPConnectionProtected:(basicHTTPConnection *)conn didReceiveRequest:(HTTPServerRequest *)mess
 {
 	BOOL lockReleased = NO;
 	
