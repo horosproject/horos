@@ -37,6 +37,29 @@ Super Class for SCU classes such as verifySCU, storeSCU, moveSCU, findSCU
 * based on DCMTK 
 */
 
+typedef enum
+{
+	PasswordNone = 0,
+	PasswordAsk,
+	PasswordString
+} TLSPasswordType;
+
+typedef enum
+{
+	PEM = 0,
+	DER
+} TLSFileFormat;
+
+typedef enum
+{
+	RequirePeerCertificate = 0,
+	VerifyPeerCertificate,
+	IgnorePeerCertificate
+} TLSCertificateVerificationType;
+
+#define TLS_SEED_FILE "/tmp/OsiriXTLSSeed"
+#define TLS_WRITE_SEED_FILE "/tmp/OsiriXTLSSeedWrite"
+
 @interface DCMTKServiceClassUser : NSObject {
 	NSString *_callingAET;
 	NSString *_calledAET;
@@ -57,21 +80,27 @@ Super Class for SCU classes such as verifySCU, storeSCU, moveSCU, findSCU
 	int _cancelAfterNResponses;
 	E_TransferSyntax _networkTransferSyntax;
 	T_DIMSE_BlockingMode    _blockMode;
-	BOOL _secureConnection;
 	int  _dimse_timeout;
 	int  _acse_timeout;
 	
-	//SSL settings
-	int  _keyFileFormat;
+	//TLS settings
+	BOOL _secureConnection;
 	BOOL _doAuthenticate;
 	NSString *_privateKeyFile;
 	NSString *_certificateFile;
+	TLSPasswordType passwordType;
 	NSString *_passwd;
+	int  _keyFileFormat;
+	
 	NSArray *_cipherSuites;
+
+	BOOL _useTrustedCA;
+	NSString *_trustedCAURL;
 	
 	const char *_readSeedFile;
 	const char *_writeSeedFile;
 	//DcmCertificateVerification _certVerification;
+	TLSCertificateVerificationType certVerification;
 	const char *_dhparam;
 
 

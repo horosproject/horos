@@ -67,6 +67,9 @@ typedef enum
 	NSURL							*TLSTrustedCACertificatesFolderURL, *TLSDHParameterFileURL;
 	TLSCertificateVerificationType	TLSCertificateVerification;
 	
+	IBOutlet NSWindow				*TLSAskPasswordWindow;
+	NSString						*TLSAskPasswordValue, *TLSAskPasswordServerName;
+	
 	IBOutlet SFAuthorizationView	*_authView;
 }
 
@@ -81,6 +84,8 @@ typedef enum
 @property TLSFileFormat TLSKeyAndCertificateFileFormat;
 @property (retain) NSArray *TLSSupportedCipherSuite;
 @property TLSCertificateVerificationType TLSCertificateVerification;
+@property (retain) NSString *TLSAskPasswordValue, *TLSAskPasswordServerName;
+
 
 + (BOOL) echoServer:(NSDictionary*)serverParameters;
 

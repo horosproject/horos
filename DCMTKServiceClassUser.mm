@@ -56,25 +56,35 @@
 		_acse_timeout = _dimse_timeout = [[NSUserDefaults standardUserDefaults] integerForKey:@"DICOMTimeout"];
 		
 		//SSL
-		//_keyFileFormat = SSL_FILETYPE_PEM;
 		_secureConnection = [[extraParameters objectForKey:@"TLSEnabled"] boolValue];
-		_doAuthenticate = (_secureConnection) ? [[extraParameters objectForKey:@"TLSAuthenticated"] boolValue] : NO ;
+		_doAuthenticate = NO;
 		_privateKeyFile = NULL;
 		_certificateFile = NULL;
 		_passwd = NULL;
-		
-		_readSeedFile = NULL;
-		_writeSeedFile = NULL;
-		
-//		if(!_doAuthenticate)
-//			_certVerification = DCV_ignoreCertificate;
-//		else
-//			_certVerification = DCV_requireCertificate;
-		
+		_cipherSuites = nil;
 		_dhparam = NULL;
 		
 		if (_secureConnection)
 		{
+			_doAuthenticate = [[extraParameters objectForKey:@"TLSAuthenticated"] boolValue];
+			if(_doAuthenticate)
+			{
+				_privateKeyFile = [[extraParameters objectForKey:@"TLSPrivateKeyFileURL"] retain];
+				_certificateFile = [[extraParameters objectForKey:@"TLSCertificateFileURL"] retain];
+				
+				passwordType = (TLSPasswordType)[[extraParameters objectForKey:@"TLSPrivateKeyFilePasswordType"] intValue];
+				if(passwordType==PasswordString) _passwd = [[extraParameters objectForKey:@"TLSPrivateKeyFilePassword"] retain];
+			}
+			
+			TLSFileFormat fileFormat = (TLSFileFormat)[[extraParameters objectForKey:@"TLSKeyAndCertificateFileFormat"] intValue];
+			if(fileFormat==DER)
+				_keyFileFormat = SSL_FILETYPE_ASN1;
+			else
+				_keyFileFormat = SSL_FILETYPE_PEM;
+		
+			_useTrustedCA = [[extraParameters objectForKey:@"TLSUseTrustedCACertificatesFolderURL"] boolValue];
+			if(_useTrustedCA) _trustedCAURL = [extraParameters objectForKey:@"TLSTrustedCACertificatesFolderURL"];
+			
 			NSArray *suites = [extraParameters objectForKey:@"TLSCipherSuites"];
 			NSMutableArray *selectedCipherSuites = [NSMutableArray array];
 			
@@ -85,9 +95,16 @@
 			}
 			
 			_cipherSuites = [[NSArray arrayWithArray:selectedCipherSuites] retain];
+			
+			if([[extraParameters objectForKey:@"TLSUseDHParameterFileURL"] boolValue])
+				_dhparam = [[extraParameters objectForKey:@"TLSDHParameterFileURL"] cStringUsingEncoding:NSUTF8StringEncoding];
+			
+			_readSeedFile = TLS_SEED_FILE;
+			_writeSeedFile = TLS_WRITE_SEED_FILE;
+			
+			certVerification = (TLSCertificateVerificationType)[[extraParameters objectForKey:@"TLSCertificateVerification"] intValue];
 		}
-		else _cipherSuites = nil;
-		
+
 	}
 	return self;
 }

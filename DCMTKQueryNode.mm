@@ -1086,81 +1086,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	
 	@try
 	{
-		#ifdef WITH_OPENSSL
-
-		//disable TLS
-		//_secureConnection = OFFalse;
-		
-		//enable TLS
-		//        _secureConnection = OFTrue;
-		//_doAuthenticate = OFTrue;
-		//app.checkValue(cmd.getValue(opt_privateKeyFile));
-		//app.checkValue(cmd.getValue(opt_certificateFile));
-		
-		//anonymous-tls
-		//_secureConnection = OFTrue; // joris
-		
-		//Password
-		//opt_passwd
-		
-		//pem-keys 
-		//_keyFileFormat = SSL_FILETYPE_PEM;
-		
-		/*
-		 if (cmd.findOption("--dhparam"))
-		  {
-			app.checkValue(cmd.getValue(_dhparam));
-		  }
-
-		  if (cmd.findOption("--seed"))
-		  {
-			app.checkValue(cmd.getValue(_readSeedFile));
-		  }
-
-		  cmd.beginOptionBlock();
-		  if (cmd.findOption("--write-seed"))
-		  {
-			if (_readSeedFile == NULL) app.printError("--write-seed only with --seed");
-			_writeSeedFile = _readSeedFile;
-		  }
-		  if (cmd.findOption("--write-seed-file"))
-		  {
-			if (_readSeedFile == NULL) app.printError("--write-seed-file only with --seed");
-			app.checkValue(cmd.getValue(_writeSeedFile));
-		  }
-		  cmd.endOptionBlock();
-
-		  cmd.beginOptionBlock();
-		  if (cmd.findOption("--require-peer-cert")) _certVerification = DCV_requireCertificate;
-		  if (cmd.findOption("--verify-peer-cert"))  _certVerification = DCV_checkCertificate;
-		  if (cmd.findOption("--ignore-peer-cert"))  _certVerification = DCV_ignoreCertificate;
-		  cmd.endOptionBlock();
-
-		  const char *current = NULL;
-		  const char *currentOpenSSL;
-		  if (cmd.findOption("--cipher", 0, OFCommandLine::FOM_First))
-		  {
-			opt_ciphersuites.clear();
-			do
-			{
-			  app.checkValue(cmd.getValue(current));
-			  if (NULL == (currentOpenSSL = DcmTLSTransportLayer::findOpenSSLCipherSuiteName(current)))
-			  {
-				CERR << "ciphersuite '" << current << "' is unknown. Known ciphersuites are:" << endl;
-				unsigned long numSuites = DcmTLSTransportLayer::getNumberOfCipherSuites();
-				for (unsigned long cs=0; cs < numSuites; cs++)
-				{
-				  CERR << "    " << DcmTLSTransportLayer::getTLSCipherSuiteName(cs) << endl;
-				}
-				return 1;
-			  } else {
-				if (opt_ciphersuites.length() > 0) opt_ciphersuites += ":";
-				opt_ciphersuites += currentOpenSSL;
-			  }
-			} while (cmd.findOption("--cipher", 0, OFCommandLine::FOM_Next));
-		  }
-		*/
-		
+		#ifdef WITH_OPENSSL		
 		if(_cipherSuites)
 		{
 			const char *current = NULL;
@@ -1194,7 +1120,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 			}
 		}
 		
-	#endif
+		#endif
 
 		/* make sure data dictionary is loaded */
 		if (!dcmDataDict.isDictionaryLoaded()) {
@@ -1215,82 +1141,101 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		DcmTLSTransportLayer *tLayer = NULL;
 		if (_secureConnection)
 		{
-			const char *opt_readSeedFile = NULL; //"/tmp/dcmtk_seed";
-			tLayer = new DcmTLSTransportLayer(DICOM_APPLICATION_REQUESTOR, opt_readSeedFile);
+			tLayer = new DcmTLSTransportLayer(DICOM_APPLICATION_REQUESTOR, _readSeedFile);
 			if (tLayer == NULL)
 			{
 				NSLog(@"unable to create TLS transport layer");
-				queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:@"unable to create TLS transport layer" userInfo:nil];
+				queryException = [NSException exceptionWithName:@"DICOM Network Failure (TLS query)" reason:@"unable to create TLS transport layer" userInfo:nil];
 				[queryException raise];
 			}
 			
+			if(_useTrustedCA) // TODO: use Trusted CA
+			{
+				BOOL isDirectory = NO;
+				BOOL fileExists = [[NSFileManager defaultManager] fileExistsAtPath:_trustedCAURL isDirectory:&isDirectory];
+				if(fileExists)
+				{
+					if(isDirectory)
+					{
+						//--add-cert-dir //// add certificates in d to list of certificates
+						//.... needs to use OpenSSL & rename files (see http://forum.dicom-cd.de/viewtopic.php?p=3237&sid=bd17bd76876a8fd9e7fdf841b90cf639 )
+						
+						//			if (cmd.findOption("--add-cert-dir", 0, OFCommandLine::FOM_First))
+						//			{
+						//				const char *current = NULL;
+						//				do
+						//				{
+						//					app.checkValue(cmd.getValue(current));
+						//					if (TCS_ok != tLayer->addTrustedCertificateDir(current, opt_keyFileFormat))
+						//					{
+						//						CERR << "warning unable to load certificates from directory '" << current << "', ignoring" << endl;
+						//					}
+						//				} while (cmd.findOption("--add-cert-dir", 0, OFCommandLine::FOM_Next));
+						//			}
+						
+						
+						 // TODO: use --add-cert-file for each file in the directory (in stead of --add-cert-dir)
+						
+					}
+					else
+					{
+						//--add-cert-file //// add certificate file to list of certificates
+						
+						if (TCS_ok != tLayer->addTrustedCertificateFile([_trustedCAURL cStringUsingEncoding:NSUTF8StringEncoding], _keyFileFormat))
+						{
+							queryException = [NSException exceptionWithName:@"DICOM Network Failure (TLS query)" reason:[NSString stringWithFormat:@"Unable to load certificate file %@", _trustedCAURL] userInfo:nil];
+							[queryException raise];
+						}						
+					}
+				}
+			}		
 			
-//			if (cmd.findOption("--add-cert-file", 0, OFCommandLine::FOM_First))
-//			{
-//				const char *current = NULL;
-//				do
-//				{
-//					app.checkValue(cmd.getValue(current));
-//					if (TCS_ok != tLayer->addTrustedCertificateFile(current, opt_keyFileFormat))
-//					{
-//						CERR << "warning unable to load certificate file '" << current << "', ignoring" << endl;
-//					}
-//				} while (cmd.findOption("--add-cert-file", 0, OFCommandLine::FOM_Next));
-//			}
+			if (_dhparam && ! (tLayer->setTempDHParameters(_dhparam)))
+			{
+				queryException = [NSException exceptionWithName:@"DICOM Network Failure (TLS query)" reason:[NSString stringWithFormat:@"Unable to load temporary DH parameter file %s", _dhparam] userInfo:nil];
+				[queryException raise];
+			}
 			
-//			if (cmd.findOption("--add-cert-dir", 0, OFCommandLine::FOM_First))
-//			{
-//				const char *current = NULL;
-//				do
-//				{
-//					app.checkValue(cmd.getValue(current));
-//					if (TCS_ok != tLayer->addTrustedCertificateDir(current, opt_keyFileFormat))
-//					{
-//						CERR << "warning unable to load certificates from directory '" << current << "', ignoring" << endl;
-//					}
-//				} while (cmd.findOption("--add-cert-dir", 0, OFCommandLine::FOM_Next));
-//			}
-			
-//			if (opt_dhparam && ! (tLayer->setTempDHParameters(opt_dhparam)))
-//			{
-//				CERR << "warning unable to load temporary DH parameter file '" << opt_dhparam << "', ignoring" << endl;
-//			}
-			
-//			if (opt_doAuthenticate)
-//			{
-//				if (opt_passwd) tLayer->setPrivateKeyPasswd(opt_passwd);
-//				
-//				if (TCS_ok != tLayer->setPrivateKeyFile(opt_privateKeyFile, opt_keyFileFormat))
-//				{
-//					CERR << "unable to load private TLS key from '" << opt_privateKeyFile << "'" << endl;
-//					return 1;
-//				}
-//				if (TCS_ok != tLayer->setCertificateFile(opt_certificateFile, opt_keyFileFormat))
-//				{
-//					CERR << "unable to load certificate from '" << opt_certificateFile << "'" << endl;
-//					return 1;
-//				}
-//				if (! tLayer->checkPrivateKeyMatchesCertificate())
-//				{
-//					CERR << "private key '" << opt_privateKeyFile << "' and certificate '" << opt_certificateFile << "' do not match" << endl;
-//					return 1;
-//				}
-//			}
+			if (_doAuthenticate)
+			{
+				// TODO: handle password (ask)
+				if (_passwd) tLayer->setPrivateKeyPasswd([_passwd cStringUsingEncoding:NSUTF8StringEncoding]);
+				
+				if (TCS_ok != tLayer->setPrivateKeyFile([_privateKeyFile cStringUsingEncoding:NSUTF8StringEncoding], _keyFileFormat))
+				{
+					queryException = [NSException exceptionWithName:@"DICOM Network Failure (TLS query)" reason:[NSString stringWithFormat:@"Unable to load private TLS key from %@", _privateKeyFile] userInfo:nil];
+					[queryException raise];
+				}
+				
+				if (TCS_ok != tLayer->setCertificateFile([_certificateFile cStringUsingEncoding:NSUTF8StringEncoding], _keyFileFormat))
+				{
+					queryException = [NSException exceptionWithName:@"DICOM Network Failure (TLS query)" reason:[NSString stringWithFormat:@"Unable to load certificate from %@", _certificateFile] userInfo:nil];
+					[queryException raise];
+				}
+				
+				if (!tLayer->checkPrivateKeyMatchesCertificate())
+				{
+					queryException = [NSException exceptionWithName:@"DICOM Network Failure (TLS query)" reason:[NSString stringWithFormat:@"private key '%@' and certificate '%@' do not match", _privateKeyFile, _certificateFile] userInfo:nil];
+					[queryException raise];
+				}
+			}
 			
 			if (TCS_ok != tLayer->setCipherSuites(opt_ciphersuites.c_str()))
 			{
-//				CERR << "unable to set selected cipher suites" << endl;
-//				return 1;
 				queryException = [NSException exceptionWithName:@"DICOM Network Failure (TLS query)" reason:@"Unable to set selected cipher suites" userInfo:nil];
 				[queryException raise];
 			}
 			
-			//anonymous-tls
-			DcmCertificateVerification _certVerification = DCV_ignoreCertificate;// joris
-			if(_doAuthenticate)// joris
-				_certVerification = DCV_requireCertificate;// joris
+			DcmCertificateVerification _certVerification;
 			
-			tLayer->setCertificateVerification(_certVerification);// joris
+			if(certVerification==RequirePeerCertificate)
+				_certVerification = DCV_requireCertificate;
+			else if(certVerification==VerifyPeerCertificate)
+				_certVerification = DCV_checkCertificate;
+			else
+				_certVerification = DCV_ignoreCertificate;
+			
+			tLayer->setCertificateVerification(_certVerification);
 			
 			cond = ASC_setTransportLayer(net, tLayer, 0);
 			if (cond.bad())

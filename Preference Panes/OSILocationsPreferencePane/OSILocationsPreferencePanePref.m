@@ -43,8 +43,10 @@
 @synthesize TLSKeyAndCertificateFileFormat;
 @synthesize TLSSupportedCipherSuite;
 @synthesize TLSCertificateVerification;
+@synthesize TLSAskPasswordValue, TLSAskPasswordServerName;
 
 #define TLS_SEED_FILE @"/tmp/OsiriXTLSSeed"
+#define TLS_WRITE_SEED_FILE @"/tmp/OsiriXTLSSeedWrite"
 
 - (void) checkUniqueAETitle
 {
@@ -129,8 +131,7 @@
 	
 	if([[serverParameters objectForKey:@"TLSEnabled"] boolValue])
 	{
-		// TLS support. Work in progress.
-		// Other options listed here http://support.dcmtk.org/docs/echoscu.html
+		// TLS support. Options listed here http://support.dcmtk.org/docs/echoscu.html
 		
 		if([[serverParameters objectForKey:@"TLSAuthenticated"] boolValue])
 		{
@@ -139,27 +140,23 @@
 			[args addObject:[serverParameters objectForKey:@"TLSCertificateFileURL"]]; // [c]ertificate file: string
 			
 			TLSPasswordType passwordType = [[serverParameters objectForKey:@"TLSPrivateKeyFilePasswordType"] intValue];
-			if(passwordType==PasswordNone)
+			if(passwordType!=PasswordNone)
 			{
-				// do nothing
-			}
-			else if(passwordType==PasswordString)
-			{
-				NSString *pass = [serverParameters objectForKey:@"TLSPrivateKeyFilePassword"];
-				if([pass isEqualToString:@""])
+				NSString *password = nil;
+				if(passwordType==PasswordString)
+					password = [serverParameters objectForKey:@"TLSPrivateKeyFilePassword"];
+				else if(passwordType==PasswordAsk)
+					password = [serverParameters objectForKey:@"TLSAskPasswordValue"];
+				
+				if([password isEqualToString:@""] || !password)
 				{
 					[args addObject:@"--null-passwd"]; // use empty string as password
 				}
 				else
 				{
 					[args addObject:@"--use-passwd"]; // use specified password
-					[args addObject:pass];
+					[args addObject:password];
 				}
-			}
-			else if(passwordType==PasswordAsk)
-			{
-				// should we ask for the password?
-				// todo ...
 			}
 		}
 		else
@@ -180,7 +177,7 @@
 			BOOL fileExists = [[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDirectory];
 			if(fileExists)
 			{
-				if(isDirectory)
+				if(isDirectory) // TODO: use --add-cert-file for each file in the directory (in stead of --add-cert-dir)
 					[args addObject:@"--add-cert-dir"]; // add certificates in d to list of certificates  .... needs to use OpenSSL & rename files (see http://forum.dicom-cd.de/viewtopic.php?p=3237&sid=bd17bd76876a8fd9e7fdf841b90cf639 )
 				else
 					[args addObject:@"--add-cert-file"]; // add certificate file to list of certificates
@@ -345,6 +342,8 @@
 	[TLSDHParameterFileURL release];
 	[TLSPrivateKeyFilePassword release];
 	[TLSSupportedCipherSuite release];
+	[TLSAskPasswordValue release];
+	[TLSAskPasswordServerName release];
 	
 	[super dealloc];
 }
@@ -639,6 +638,31 @@
 		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"Ping"] == NO || (SimplePing( [[aServer objectForKey:@"Address"] UTF8String], 1, [[NSUserDefaults standardUserDefaults] integerForKey:@"DICOMTimeout"], 1,  &numberPacketsReceived) == 0 && numberPacketsReceived > 0))
 		{
 			//if( [self echoAddress:[aServer objectForKey:@"Address"] port:[[aServer objectForKey:@"Port"] intValue] AET:[aServer objectForKey:@"AETitle"]] == 0) status = 0;
+			
+			TLSPasswordType passwordType = [[aServer objectForKey:@"TLSPrivateKeyFilePasswordType"] intValue];
+			if(passwordType==PasswordAsk)
+			{
+				self.TLSAskPasswordServerName = [aServer objectForKey:@"Description"];
+				self.TLSAskPasswordValue = @"";
+				
+				[NSApp beginSheet: TLSAskPasswordWindow
+				   modalForWindow: [[self mainView] window]
+					modalDelegate: nil
+				   didEndSelector: nil
+					  contextInfo: nil];
+								
+				int result = [NSApp runModalForWindow: TLSAskPasswordWindow];
+				[TLSAskPasswordWindow makeFirstResponder: nil];
+				
+				[NSApp endSheet: TLSAskPasswordWindow];
+				[TLSAskPasswordWindow orderOut: self];
+				
+				if(result == NSRunStoppedResponse)
+				{
+					if(self.TLSAskPasswordValue)[aServer setObject:self.TLSAskPasswordValue forKey:@"TLSAskPasswordValue"];
+				}			
+			}
+			
 			if ([OSILocationsPreferencePanePref echoServer:aServer])
 				status = 0;
 			else
