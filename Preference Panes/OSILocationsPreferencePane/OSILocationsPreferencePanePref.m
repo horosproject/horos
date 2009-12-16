@@ -15,6 +15,8 @@
 #import "OSILocationsPreferencePanePref.h"
 #include "SimplePing.h"
 
+#import "OpenGLScreenReader.h"
+
 /************ Transfer Syntaxes *******************
 	@"Explicit Little Endian"
 	@"JPEG 2000 Lossless"
@@ -41,6 +43,8 @@
 @synthesize TLSKeyAndCertificateFileFormat;
 @synthesize TLSSupportedCipherSuite;
 @synthesize TLSCertificateVerification;
+
+#define TLS_SEED_FILE @"/tmp/OsiriXTLSSeed"
 
 - (void) checkUniqueAETitle
 {
@@ -201,20 +205,13 @@
 			[args addObject:[serverParameters objectForKey:@"TLSDHParameterFileURL"]];
 		}
 		
-		// TODO : what should we do with this? :
-		/* 
-		 pseudo random generator options:
-		 
-		 +rs   --seed  [f]ilename: string
-		 seed random generator with contents of f
-		 
-		 +ws   --write-seed
-		 write back modified seed (only with --seed)
-		 
-		 +wf   --write-seed-file  [f]ilename: string (only with --seed)
-		 write modified seed to file f		 
-		 */
-
+		// pseudo random generator options.
+		// We initialize the pseudo-random number generator with the content of the screen which is is hardly predictable for an attacker
+		// see http://www.mevis-research.de/~meyer/dcmtk/docs_352/dcmtls/randseed.txt
+		[OSILocationsPreferencePanePref screenSnapshot]; 
+		[args addObject:@"--seed"]; // seed random generator with contents of f
+		[args addObject:TLS_SEED_FILE];
+		
 		// peer authentication options:
 		TLSCertificateVerificationType verification = [[serverParameters objectForKey:@"TLSCertificateVerification"] intValue];
 		if(verification==RequirePeerCertificate)
@@ -921,5 +918,22 @@
 	TLSPrivateKeyFilePasswordType = type;
 	self.TLSUsePrivateKeyFilePassword = (TLSPrivateKeyFilePasswordType==PasswordString);
 }
+
+// Take a "snapshot" of the screen and save the image to a TIFF file on disk
++ (void)screenSnapshot
+{
+    // Create a screen reader object
+	OpenGLScreenReader *mOpenGLScreenReader = [[OpenGLScreenReader alloc] init];
+    
+	// Read the screen bits
+    [mOpenGLScreenReader readFullScreenToBuffer];
+	
+    // Write our image to a TIFF file on disk
+    [mOpenGLScreenReader createTIFFImageFileToPath:TLS_SEED_FILE];
+	
+    // Finished, so let's cleanup
+    [mOpenGLScreenReader release];
+}
+
 
 @end

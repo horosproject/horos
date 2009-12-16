@@ -105,5 +105,6 @@ typedef enum
 - (IBAction) editTLS: (id) sender;
 - (NSArray*)availableCipherSuites;
 - (NSArray*)defaultCipherSuites;
++ (void)screenSnapshot;
 
 @end
