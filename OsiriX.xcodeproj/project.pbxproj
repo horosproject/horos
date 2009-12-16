@@ -2338,6 +2338,7 @@
 		CE291D8F0F5A99B700F95B43 /* OsiriXFixedPointVolumeRayCastMapper.cxx in Sources */ = {isa = PBXBuildFile; fileRef = CE291D8D0F5A99B700F95B43 /* OsiriXFixedPointVolumeRayCastMapper.cxx */; };
 		CE2C82E30C708B310093C162 /* InstantMessage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2C82E20C708B310093C162 /* InstantMessage.framework */; };
 		CE2C82EC0C708B380093C162 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF5F14C20B14E12700B309B9 /* CoreVideo.framework */; };
+		CE30BB1D10D97E8A009E297C /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB6B75DE0A53F60600F0CA8F /* QTKit.framework */; };
 		CE3563CA0EED998F005A823F /* vtk3DS.h in Headers */ = {isa = PBXBuildFile; fileRef = CE355D860EED998A005A823F /* vtk3DS.h */; };
 		CE3563CB0EED998F005A823F /* vtk3DSImporter.h in Headers */ = {isa = PBXBuildFile; fileRef = CE355D870EED998A005A823F /* vtk3DSImporter.h */; };
 		CE3563CC0EED998F005A823F /* vtk3DWidget.h in Headers */ = {isa = PBXBuildFile; fileRef = CE355D880EED998A005A823F /* vtk3DWidget.h */; };
@@ -11781,6 +11782,7 @@
 				CE8D062A0FD8731B00165DDE /* libDCM StaticLibrary.a in Frameworks */,
 				CE8D062C0FD8733C00165DDE /* Accelerate.framework in Frameworks */,
 				CECBF93A0FE6B1C200425ED4 /* libopenjpeg.a in Frameworks */,
+				CE30BB1D10D97E8A009E297C /* QTKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -13131,9 +13133,9 @@
 				CE9101AA0C86A6B800D8D273 /* XML-XPC HTTP Server */,
 				8417219210D8D707001A833F /* HTTP Server */,
 				AB4E3CAE05ADDE13001411D1 /* DicomDirParser.h */,
-				ABBCCDA505643A4C00A4E47A /* browserController.m */,
 				AB4E3CAF05ADDE13001411D1 /* DicomDirParser.m */,
 				ABBCCDA605643A4C00A4E47A /* browserController.h */,
+				ABBCCDA505643A4C00A4E47A /* browserController.m */,
 				ABC47B570C031397001CEA21 /* BrowserMatrix.h */,
 				ABC47B580C031397001CEA21 /* BrowserMatrix.m */,
 				BFA7D2160A51D1460013F76E /* BrowserControllerDCMTKCategory.h */,

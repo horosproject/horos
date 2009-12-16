@@ -876,7 +876,7 @@ static NSRecursiveLock *movieLock = nil;
 	
 	NSMutableArray *imagesArray = [NSMutableArray array];
 	
-	if(![[NSFileManager defaultManager] fileExistsAtPath: outFile])
+	if( ![[NSFileManager defaultManager] fileExistsAtPath: outFile])
 	{
 		int maxWidth, maxHeight;
 		
@@ -895,7 +895,7 @@ static NSRecursiveLock *movieLock = nil;
 		{
 			NSAutoreleasePool *pool2 = [[NSAutoreleasePool alloc] init];
 			
-			DCMPix* dcmPix = [[DCMPix alloc] initWithPath:[im valueForKey:@"completePathResolved"] :0 :1 :nil :[[im valueForKey:@"frameID"] intValue] :[[im valueForKeyPath:@"series.id"] intValue] isBonjour:NO imageObj:im];
+			DCMPix* dcmPix = [[DCMPix alloc] initWithPath: [im valueForKey:@"completePathResolved"] :0 :1 :nil :[[im valueForKey:@"frameID"] intValue] :[[im valueForKeyPath:@"series.id"] intValue] isBonjour:NO imageObj:im];
 			
 			if(dcmPix)
 			{
@@ -950,7 +950,17 @@ static NSRecursiveLock *movieLock = nil;
 		
 		[context unlock];	// It's important because writeMovie will call performonmainthread !!!
 		
-		[movieLock lock];
+		
+		[[NSFileManager defaultManager] removeItemAtPath: [outFile stringByAppendingString: @" dir"] error: nil];
+		[[NSFileManager defaultManager] createDirectoryAtPath: [outFile stringByAppendingString: @" dir"] attributes: nil];
+		
+		NSNumber *inc = [NSNumber numberWithInt: 0];
+		for( NSImage *img in imagesArray)
+		{
+			[[img TIFFRepresentation] writeToFile: [[outFile stringByAppendingString: @" dir"] stringByAppendingPathComponent: [inc stringValue]] atomically: YES];
+			
+			inc = [NSNumber numberWithInt: [inc intValue]+1];
+		}
 		
 		if( isiPhone)
 		{
@@ -959,7 +969,26 @@ static NSRecursiveLock *movieLock = nil;
 			[[NSFileManager defaultManager] removeFileAtPath: fileName handler:nil];
 		}
 		else
-			[[BrowserController currentBrowser] writeMovie:imagesArray name:outFile];
+		{
+			NSTask *theTask = [[NSTask alloc] init];
+			
+			@try
+			{
+				NSArray *parameters = [NSArray arrayWithObjects: outFile, @"writeMovie", [outFile stringByAppendingString: @" dir"], nil];
+				
+				[theTask setArguments: parameters];
+				[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Decompress"]];
+				[theTask launch];
+				
+				while( [theTask isRunning]) [NSThread sleepForTimeInterval: 0.01];
+			}
+			@catch ( NSException *e)
+			{
+				NSLog( @"***** decompressDICOMList exception : %@", e);
+			}
+			[theTask release];
+		}
+//			[[BrowserController currentBrowser] writeMovie:imagesArray name:outFile];
 		
 		[movieLock unlock];
 		

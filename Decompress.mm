@@ -5,6 +5,7 @@
 #import <OsiriX/DCMPixelDataAttribute.h>
 #import "DefaultsOsiriX.h"
 #import "AppController.h"
+#import "QTKit/QTMovie.h"
 
 #undef verify
 #include "osconfig.h" /* make sure OS specific configuration is included first */
@@ -469,6 +470,39 @@ int main(int argc, const char *argv[])
 						[[NSFileManager defaultManager] movePath: curFileDest toPath: curFile handler: nil];
 				}
 			}
+		}
+		
+		if( [what isEqualToString: @"writeMovie"])
+		{
+			QTMovie *mMovie = nil;
+			
+			[[QTMovie movie] writeToFile: [path stringByAppendingString:@"temp"] withAttributes: nil];
+			mMovie = [QTMovie movieWithFile:[path stringByAppendingString:@"temp"] error:nil];
+			
+			[mMovie setAttribute:[NSNumber numberWithBool:YES] forKey:QTMovieEditableAttribute];
+			
+			long long timeValue = 60;
+			long timeScale = 600;
+			
+			QTTime curTime = QTMakeTime(timeValue, timeScale);
+			
+			NSMutableDictionary *myDict = [NSMutableDictionary dictionaryWithObject: @"jpeg" forKey: QTAddImageCodecType];
+			
+			NSString *root = [NSString stringWithCString: argv[ 3]];
+			
+			for( NSString *img in [[NSFileManager defaultManager] contentsOfDirectoryAtPath: root error: nil])
+			{
+				NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
+				
+				[mMovie addImage: [[[NSImage alloc] initWithContentsOfFile: [root stringByAppendingPathComponent: img]] autorelease] forDuration:curTime withAttributes: myDict];
+				
+				[pool release];
+			}
+			
+			[mMovie writeToFile: path withAttributes: [NSDictionary dictionaryWithObject: [NSNumber numberWithBool: YES] forKey: QTMovieFlatten]];
+			[[NSFileManager defaultManager] removeFileAtPath:[path stringByAppendingString:@"temp"] handler: nil];
+			
+			[[NSFileManager defaultManager] removeItemAtPath: root error: nil];
 		}
 		
 	    // deregister JPEG codecs
