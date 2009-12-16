@@ -12,13 +12,13 @@
      PURPOSE.
 =========================================================================*/
 
-#import "HTTPServer.h"
+#import "basicHTTPServer.h"
 
 
-@implementation HTTPServer
+@implementation basicHTTPServer
 
 - (id)init {
-    connClass = [HTTPConnection self];
+    connClass = [basicHTTPConnection self];
     return self;
 }
 
@@ -47,14 +47,14 @@
 
 // Converts the TCPServer delegate notification into the HTTPServer delegate method.
 - (void)handleNewConnectionFromAddress:(NSData *)addr inputStream:(NSInputStream *)istr outputStream:(NSOutputStream *)ostr {
-    HTTPConnection *connection = [[connClass alloc] initWithPeerAddress:addr inputStream:istr outputStream:ostr forServer:self runloopMode: runloopmode];
+    basicHTTPConnection *connection = [[connClass alloc] initWithPeerAddress:addr inputStream:istr outputStream:ostr forServer:self runloopMode: runloopmode];
     [connection setDelegate:[self delegate]];
-    if ([self delegate] && [[self delegate] respondsToSelector:@selector(HTTPServer:didMakeNewConnection:)]) { 
+    if ([self delegate] && [[self delegate] respondsToSelector:@selector(basicHTTPServer:didMakeNewConnection:)]) { 
         [[self delegate] HTTPServer:self didMakeNewConnection:connection];
     }
     // The connection at this point is turned loose to exist on its
     // own, and not released or autoreleased.  Alternatively, the
-    // HTTPServer could keep a list of connections, and HTTPConnection
+    // HTTPServer could keep a list of connections, and basicHTTPConnection
     // would have to tell the server to delete one at invalidation
     // time.  This would perhaps be more correct and ensure no
     // spurious leaks get reported by the tools, but HTTPServer
@@ -65,14 +65,14 @@
 @end
 
 
-@implementation HTTPConnection
+@implementation basicHTTPConnection
 
 - (id)init {
     [self release];
     return nil;
 }
 
-- (id)initWithPeerAddress:(NSData *)addr inputStream:(NSInputStream *)istr outputStream:(NSOutputStream *)ostr forServer:(HTTPServer *)serv runloopMode: (NSString*) r {
+- (id)initWithPeerAddress:(NSData *)addr inputStream:(NSInputStream *)istr outputStream:(NSOutputStream *)ostr forServer:(basicHTTPServer *)serv runloopMode: (NSString*) r {
     peerAddress = [addr copy];
     server = serv;
     istream = [istr retain];
@@ -109,7 +109,7 @@
     return peerAddress;
 }
 
-- (HTTPServer *)server {
+- (basicHTTPServer *)server {
     return server;
 }
 
@@ -150,7 +150,7 @@
         requests = nil;
         [self release];
 		
-        // This last line removes the implicit retain the HTTPConnection
+        // This last line removes the implicit retain the basicHTTPConnection
         // has on itself, given by the HTTPServer when it abandoned the
         // new connection.
     }
@@ -174,7 +174,7 @@
     // (lots of bytes being copied around), but the only API available for
     // the server to use, short of doing the parsing itself.
     
-    // HTTPConnection does not handle the chunked transfer encoding
+    // basicHTTPConnection does not handle the chunked transfer encoding
     // described in the HTTP spec.  And if there is no Content-Length
     // header, then the request is the remainder of the stream bytes.
     
@@ -229,7 +229,7 @@
 	}
 	@catch (NSException * e)
 	{
-		NSLog( @"HTTPConnection didReceiveRequest exception: %@", e);
+		NSLog( @"basicHTTPConnection didReceiveRequest exception: %@", e);
 	}
 	
 	CFRelease(working);
@@ -393,7 +393,7 @@
         }
         break;
     case NSStreamEventErrorOccurred:;
-        NSLog(@"HTTPServer stream error: %@", [stream streamError]);
+        NSLog(@"basicHTTPServer stream error: %@", [stream streamError]);
         break;
     default:
         break;
@@ -456,7 +456,7 @@
     return nil;
 }
 
-- (id)initWithRequest:(CFHTTPMessageRef)req connection:(HTTPConnection *)conn {
+- (id)initWithRequest:(CFHTTPMessageRef)req connection:(basicHTTPConnection *)conn {
     connection = conn;
     request = (CFHTTPMessageRef)CFRetain(req);
     return self;
@@ -469,7 +469,7 @@
     [super dealloc];
 }
 
-- (HTTPConnection *)connection {
+- (basicHTTPConnection *)connection {
     return connection;
 }
 

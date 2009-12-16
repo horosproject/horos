@@ -14,10 +14,10 @@
 
 #import "TCPServer.h"
 
-@class HTTPConnection, HTTPServerRequest;
+@class basicHTTPConnection, HTTPServerRequest;
 /** \brief HTTP server for RIS integration */
 
-@interface HTTPServer : TCPServer {
+@interface basicHTTPServer : TCPServer {
 @private
     Class connClass;
     NSURL *docRoot;
@@ -26,8 +26,8 @@
 
 - (Class)connectionClass;
 - (void)setConnectionClass:(Class)value;
-// used to configure the subclass of HTTPConnection to create when  
-// a new connection comes in; by default, this is HTTPConnection
+// used to configure the subclass of basicHTTPConnection to create when  
+// a new connection comes in; by default, this is basicHTTPConnection
 
 - (NSURL *)documentRoot;
 - (void)setDocumentRoot:(NSURL *)value;
@@ -36,8 +36,8 @@
 
 
 
-@interface HTTPServer (HTTPServerDelegateMethods)
-- (void)HTTPServer:(HTTPServer *)serv didMakeNewConnection:(HTTPConnection *)conn;
+@interface basicHTTPServer (HTTPServerDelegateMethods)
+- (void)HTTPServer:(basicHTTPServer *)serv didMakeNewConnection:(basicHTTPConnection *)conn;
 // If the delegate implements this method, this is called  
 // by an HTTPServer when a new connection comes in.  If the
 // delegate wishes to refuse the connection, then it should
@@ -46,11 +46,11 @@
 
 
 // This class represents each incoming client connection.
-@interface HTTPConnection : NSObject {
+@interface basicHTTPConnection : NSObject {
 @private
     id delegate;
     NSData *peerAddress;
-    HTTPServer *server;
+    basicHTTPServer *server;
     NSMutableArray *requests;
     NSInputStream *istream;
     NSOutputStream *ostream;
@@ -61,14 +61,14 @@
 	NSTimer *closeTimer;
 }
 
-- (id)initWithPeerAddress:(NSData *)addr inputStream:(NSInputStream *)istr outputStream:(NSOutputStream *)ostr forServer:(HTTPServer *)serv runloopMode: (NSString*) r;
+- (id)initWithPeerAddress:(NSData *)addr inputStream:(NSInputStream *)istr outputStream:(NSOutputStream *)ostr forServer:(basicHTTPServer *)serv runloopMode: (NSString*) r;
 
 - (id)delegate;
 - (void)setDelegate:(id)value;
 
 - (NSData *)peerAddress;
 
-- (HTTPServer *)server;
+- (basicHTTPServer *)server;
 
 - (HTTPServerRequest *)nextRequest;
 // get the next request that needs to be responded to
@@ -83,9 +83,9 @@
 
 @end
 
-@interface HTTPConnection (HTTPConnectionDelegateMethods)
-- (void)HTTPConnection:(HTTPConnection *)conn didReceiveRequest:(HTTPServerRequest *)mess;
-- (void)HTTPConnection:(HTTPConnection *)conn didSendResponse:(HTTPServerRequest *)mess;
+@interface basicHTTPConnection (HTTPConnectionDelegateMethods)
+- (void)HTTPConnection:(basicHTTPConnection *)conn didReceiveRequest:(HTTPServerRequest *)mess;
+- (void)HTTPConnection:(basicHTTPConnection *)conn didSendResponse:(HTTPServerRequest *)mess;
 // The "didReceiveRequest:" is the most interesting -- 
 // tells the delegate when a new request comes in.
 @end
@@ -97,15 +97,15 @@
 // request and other info for convenience.
 @interface HTTPServerRequest : NSObject {
 @private
-    HTTPConnection *connection;
+    basicHTTPConnection *connection;
     CFHTTPMessageRef request;
     CFHTTPMessageRef response;
     NSInputStream *responseStream;
 }
 
-- (id)initWithRequest:(CFHTTPMessageRef)req connection:(HTTPConnection *)conn;
+- (id)initWithRequest:(CFHTTPMessageRef)req connection:(basicHTTPConnection *)conn;
 
-- (HTTPConnection *)connection;
+- (basicHTTPConnection *)connection;
 
 - (CFHTTPMessageRef)request;
 
