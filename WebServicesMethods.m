@@ -33,7 +33,8 @@
 
 #import "DCMTransferSyntax.h"
 
-
+#import "ThreadPoolServer.h"
+#import "OsiriXHTTPConnection.h"
 
 #define maxResolution 1024
 
@@ -187,6 +188,23 @@
 		[bonjourService publish];
 		
 		[NSThread detachNewThreadSelector:@selector(serverThread) toTarget:self withObject:nil];
+		
+		
+		///// TEST NEW http server
+		
+		NSLog( @"********************* TEST NEW http server - TO BE REMOVED");
+		
+		ThreadPoolServer *httpServer = [[ThreadPoolServer alloc] init];
+		//	httpServer = [[ThreadPerConnectionServer alloc] init];
+		
+		[httpServer setConnectionClass: [OsiriXHTTPConnection class]];
+		
+		[httpServer setType:@"_http._tcp."];
+		[httpServer setPort: [[NSUserDefaults standardUserDefaults] integerForKey:@"httpWebServerPort"]+1];
+		[httpServer setDocumentRoot:[NSURL fileURLWithPath:[@"~/Sites" stringByExpandingTildeInPath]]];
+		
+		NSError *error;
+		BOOL success = [httpServer start:&error];
 	}
 	return self;
 }

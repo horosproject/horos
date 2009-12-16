@@ -56,4 +56,6 @@
 
 - (uint)numberOfHTTPConnections;
 
+- (void)connectionDidDie:(NSNotification *)notification;
+
 @end
