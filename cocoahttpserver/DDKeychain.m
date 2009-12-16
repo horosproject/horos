@@ -200,7 +200,8 @@
 	                                                     @"-inkey", privateKeyPath,
 	                                                     @"-passout", @"pass:password",
 	                                                     @"-out", certWrapperPath,
-	                                                     @"-name", @"SecureHTTPServer"];
+	                                                     @"-name", @"SecureHTTPServer",
+														nil];
 	
 	NSTask *genCertWrapperTask = [[[NSTask alloc] init] autorelease];
 	
