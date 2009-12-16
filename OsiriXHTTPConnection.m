@@ -20,8 +20,6 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
-static NSRecursiveLock *movieLock = nil;
-
 #define maxResolution 1024
 @interface NSImage (ProportionalScaling)
 - (NSImage*)imageByScalingProportionallyToSize:(NSSize)targetSize;
@@ -803,7 +801,6 @@ static NSRecursiveLock *movieLock = nil;
 {
     NSError *error = nil;
 	
-	
 	QTMovie *aMovie = nil;
 	
     // create a QTMovie from the file
@@ -860,9 +857,6 @@ static NSRecursiveLock *movieLock = nil;
 - (void) generateMovie: (NSMutableDictionary*) dict
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	
-	if( movieLock == 0L)
-		movieLock = [[NSRecursiveLock alloc] init];
 	
 	NSString* contentRange = [dict objectForKey: @"contentRange"];
 	NSString *outFile = [dict objectForKey: @"outFile"];
@@ -954,24 +948,37 @@ static NSRecursiveLock *movieLock = nil;
 		[[NSFileManager defaultManager] removeItemAtPath: [outFile stringByAppendingString: @" dir"] error: nil];
 		[[NSFileManager defaultManager] createDirectoryAtPath: [outFile stringByAppendingString: @" dir"] attributes: nil];
 		
-		NSNumber *inc = [NSNumber numberWithInt: 0];
+		int inc = 0;
 		for( NSImage *img in imagesArray)
 		{
-			[[img TIFFRepresentation] writeToFile: [[outFile stringByAppendingString: @" dir"] stringByAppendingPathComponent: [inc stringValue]] atomically: YES];
-			
-			inc = [NSNumber numberWithInt: [inc intValue]+1];
+			[[img TIFFRepresentation] writeToFile: [[outFile stringByAppendingString: @" dir"] stringByAppendingPathComponent: [NSString stringWithFormat: @"%6.6d", inc]] atomically: YES];
+			inc++;
 		}
+		
+		NSTask *theTask = [[NSTask alloc] init];
 		
 		if( isiPhone)
 		{
-			[[BrowserController currentBrowser] writeMovie:imagesArray name:fileName];
+			@try
+			{
+				NSArray *parameters = [NSArray arrayWithObjects: fileName, @"writeMovie", [fileName stringByAppendingString: @" dir"], nil];
+				
+				[theTask setArguments: parameters];
+				[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Decompress"]];
+				[theTask launch];
+				
+				while( [theTask isRunning]) [NSThread sleepForTimeInterval: 0.01];
+			}
+			@catch ( NSException *e)
+			{
+				NSLog( @"***** writeMovie exception : %@", e);
+			}
+			
 			[self exportMovieToiPhone:fileName newFileName: outFile];
 			[[NSFileManager defaultManager] removeFileAtPath: fileName handler:nil];
 		}
 		else
 		{
-			NSTask *theTask = [[NSTask alloc] init];
-			
 			@try
 			{
 				NSArray *parameters = [NSArray arrayWithObjects: outFile, @"writeMovie", [outFile stringByAppendingString: @" dir"], nil];
@@ -984,13 +991,10 @@ static NSRecursiveLock *movieLock = nil;
 			}
 			@catch ( NSException *e)
 			{
-				NSLog( @"***** decompressDICOMList exception : %@", e);
+				NSLog( @"***** writeMovie exception : %@", e);
 			}
-			[theTask release];
 		}
-//			[[BrowserController currentBrowser] writeMovie:imagesArray name:outFile];
-		
-		[movieLock unlock];
+		[theTask release];
 		
 		[context lock];
 	}
@@ -1523,7 +1527,7 @@ static NSRecursiveLock *movieLock = nil;
 //			}
 			
 			ipAddressString = [[asyncSocket connectedHost] copy];
-			NSLog( @"********* %@", [asyncSocket connectedHost]);
+			NSLog( @"********* asyncSocket connectedHost : %@", [asyncSocket connectedHost]);
 			
 			NSMutableString *html = [self htmlStudy:[studies lastObject] parameters:parameters settings: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: isiPhone], @"iPhone", [NSNumber numberWithBool: isMacOS], @"MacOS", nil]];
 			
