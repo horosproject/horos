@@ -1595,6 +1595,45 @@ static NSDate *lastWarningDate = nil;
 	[[DCMNetServiceDelegate sharedNetServiceDelegate] setPublisher: BonjourDICOMService];
 }
 
+- (void) startHTTPserver: (id) sender
+{
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	
+	if( webServer == nil) webServer = [[ThreadPoolServer alloc] init];
+//		if( webServer == nil) webServer = [[ThreadPerConnectionServer alloc] init];
+		
+	[webServer setConnectionClass: [OsiriXHTTPConnection class]];
+	
+	[webServer setType:@"_http._tcp."];
+	[webServer setPort: [[NSUserDefaults standardUserDefaults] integerForKey:@"httpWebServerPort"]];
+	[webServer setDocumentRoot:[NSURL fileURLWithPath:[@"~/Sites" stringByExpandingTildeInPath]]];
+	
+	NSError *error;
+	BOOL success = [webServer start:&error];
+	
+	if( success == NO)
+	{
+		NSLog( @"************ WEB SERVER ERROR: %@", error);
+	}
+	else
+	{
+		[NSTimer scheduledTimerWithTimeInterval:DBL_MAX target:self selector:@selector(ignore:) userInfo:nil repeats:NO];
+		
+		@try
+		{
+			BOOL shouldKeepRunning = YES;        // global
+			NSRunLoop *theRL = [NSRunLoop currentRunLoop];
+			while (shouldKeepRunning && [theRL runMode: @"OsiriXHTTPLoop" beforeDate:[NSDate distantFuture]]);
+		}
+		@catch( NSException *e)
+		{
+			NSLog( @"******* startHTTPserver exception: %@", e);
+		}
+	}
+	
+	[pool release];
+}
+
 -(void) restartSTORESCP
 {
 	NSLog(@"restartSTORESCP");
@@ -1674,22 +1713,7 @@ static NSDate *lastWarningDate = nil;
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"httpWebServer"])
 	{
-		if( webServer == nil) webServer = [[ThreadPoolServer alloc] init];
-//		if( webServer == nil) webServer = [[ThreadPerConnectionServer alloc] init];
-		
-		[webServer setConnectionClass: [OsiriXHTTPConnection class]];
-		
-		[webServer setType:@"_http._tcp."];
-		[webServer setPort: [[NSUserDefaults standardUserDefaults] integerForKey:@"httpWebServerPort"]];
-		[webServer setDocumentRoot:[NSURL fileURLWithPath:[@"~/Sites" stringByExpandingTildeInPath]]];
-		
-		NSError *error;
-		BOOL success = [webServer start:&error];
-		
-		if( success == NO)
-		{
-			NSLog( @"************ WEB SERVER ERROR: %@", error);
-		}
+		[NSThread detachNewThreadSelector: @selector( startHTTPserver:) toTarget: self withObject:nil];
 	}
 	#endif
 	

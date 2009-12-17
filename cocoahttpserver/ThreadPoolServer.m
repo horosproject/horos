@@ -48,7 +48,7 @@
 	{
 		BOOL shouldKeepRunning = YES;        // global
 		NSRunLoop *theRL = [NSRunLoop currentRunLoop];
-		while (shouldKeepRunning && [theRL runMode: NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]]);
+		while (shouldKeepRunning && [theRL runMode: @"OsiriXHTTPLoop" beforeDate:[NSDate distantFuture]]);
 		
 	}
 	@catch( NSException *e)
