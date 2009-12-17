@@ -246,7 +246,6 @@
 		A92155FA0ADCF319008D881E /* OsiriX Report.template in Resources */ = {isa = PBXBuildFile; fileRef = A92155E50ADCF319008D881E /* OsiriX Report.template */; };
 		A922F3BB0C631F3C0007AB98 /* CustomImageAnnotations.png in Resources */ = {isa = PBXBuildFile; fileRef = A922F3BA0C631F3C0007AB98 /* CustomImageAnnotations.png */; };
 		A926BFC90A76577600F1B366 /* QTExportSeriesTemplate.html in Resources */ = {isa = PBXBuildFile; fileRef = A926BFC80A76577600F1B366 /* QTExportSeriesTemplate.html */; };
-		A930149410DA63C200AF0051 /* OpenGLScreenReader.h in Headers */ = {isa = PBXBuildFile; fileRef = A930149210DA63C200AF0051 /* OpenGLScreenReader.h */; };
 		A930149510DA63C200AF0051 /* OpenGLScreenReader.m in Sources */ = {isa = PBXBuildFile; fileRef = A930149310DA63C200AF0051 /* OpenGLScreenReader.m */; };
 		A932B959094D722D0085B58A /* EndoscopyViewer.h in Headers */ = {isa = PBXBuildFile; fileRef = A932B957094D722D0085B58A /* EndoscopyViewer.h */; };
 		A932B95A094D722D0085B58A /* EndoscopyViewer.m in Sources */ = {isa = PBXBuildFile; fileRef = A932B958094D722D0085B58A /* EndoscopyViewer.m */; };
