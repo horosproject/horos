@@ -99,9 +99,7 @@ static NSRecursiveLock *movieLock = nil;
 
 - (BOOL)isPasswordProtected:(NSString *)path
 {
-	// We're only going to password protect the "secret" directory.
-	
-	return [path hasPrefix:@"/secret"];
+	return YES;
 }
 
 - (BOOL)useDigestAccessAuthentication
@@ -132,7 +130,7 @@ static NSRecursiveLock *movieLock = nil;
 - (BOOL)isSecureServer
 {
 	// Create an HTTPS server (all connections will be secured via SSL/TLS)
-	return NO;
+	return YES;
 }
 
 /**
