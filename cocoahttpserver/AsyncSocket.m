@@ -438,7 +438,7 @@ static void MyCFWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventType t
 		theContext.copyDescription = nil;
 		
 		// Default run loop modes
-		theRunLoopModes = [[NSArray arrayWithObject:NSDefaultRunLoopMode] retain];
+		theRunLoopModes = [[NSArray arrayWithObject: NSDefaultRunLoopMode] retain];
 	}
 	return self;
 }
@@ -452,6 +452,8 @@ static void MyCFWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventType t
 	[theRunLoopModes release];
 	[partialReadBuffer release];
 	[NSObject cancelPreviousPerformRequestsWithTarget:self];
+	[lock release];
+	
 	[super dealloc];
 }
 

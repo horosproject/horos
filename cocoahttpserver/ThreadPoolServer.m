@@ -46,8 +46,10 @@
 	
 	@try
 	{
-		// Start the run loop
-		[[NSRunLoop currentRunLoop] run];
+		BOOL shouldKeepRunning = YES;        // global
+		NSRunLoop *theRL = [NSRunLoop currentRunLoop];
+		while (shouldKeepRunning && [theRL runMode: NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]]);
+		
 	}
 	@catch( NSException *e)
 	{

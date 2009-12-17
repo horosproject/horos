@@ -198,8 +198,6 @@
 		8417221410D8DB72001A833F /* TCPServer.m in Sources */ = {isa = PBXBuildFile; fileRef = 8417221210D8DB72001A833F /* TCPServer.m */; };
 		8417221910D8DB93001A833F /* basicHTTPServer.h in Headers */ = {isa = PBXBuildFile; fileRef = 8417221710D8DB93001A833F /* basicHTTPServer.h */; };
 		8417221A10D8DB93001A833F /* basicHTTPServer.m in Sources */ = {isa = PBXBuildFile; fileRef = 8417221810D8DB93001A833F /* basicHTTPServer.m */; };
-		8417225210D8F01C001A833F /* ThreadPerConnectionServer.h in Headers */ = {isa = PBXBuildFile; fileRef = 8417224E10D8F01C001A833F /* ThreadPerConnectionServer.h */; };
-		8417225310D8F01C001A833F /* ThreadPerConnectionServer.m in Sources */ = {isa = PBXBuildFile; fileRef = 8417224F10D8F01C001A833F /* ThreadPerConnectionServer.m */; };
 		8417225410D8F01C001A833F /* ThreadPoolServer.h in Headers */ = {isa = PBXBuildFile; fileRef = 8417225010D8F01C001A833F /* ThreadPoolServer.h */; };
 		8417225510D8F01C001A833F /* ThreadPoolServer.m in Sources */ = {isa = PBXBuildFile; fileRef = 8417225110D8F01C001A833F /* ThreadPoolServer.m */; };
 		8417228A10D9043B001A833F /* OsiriXHTTPConnection.h in Headers */ = {isa = PBXBuildFile; fileRef = 8417228810D9043B001A833F /* OsiriXHTTPConnection.h */; };
@@ -18865,7 +18863,6 @@
 				841721FC10D8D8A0001A833F /* HTTPServer.h in Headers */,
 				8417221310D8DB72001A833F /* TCPServer.h in Headers */,
 				8417221910D8DB93001A833F /* basicHTTPServer.h in Headers */,
-				8417225210D8F01C001A833F /* ThreadPerConnectionServer.h in Headers */,
 				8417225410D8F01C001A833F /* ThreadPoolServer.h in Headers */,
 				8417228A10D9043B001A833F /* OsiriXHTTPConnection.h in Headers */,
 				841722B010D90595001A833F /* DDKeychain.h in Headers */,
@@ -23242,7 +23239,6 @@
 				841721CB10D8D745001A833F /* SSCrypto.m in Sources */,
 				8417221410D8DB72001A833F /* TCPServer.m in Sources */,
 				8417221A10D8DB93001A833F /* basicHTTPServer.m in Sources */,
-				8417225310D8F01C001A833F /* ThreadPerConnectionServer.m in Sources */,
 				8417225510D8F01C001A833F /* ThreadPoolServer.m in Sources */,
 				8417228B10D9043B001A833F /* OsiriXHTTPConnection.m in Sources */,
 				841722B110D90595001A833F /* DDKeychain.m in Sources */,

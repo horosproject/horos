@@ -22,7 +22,21 @@
 	%/image%
 
 	%movie%
-	<div style="margin-top:20px;">		
+	<div style="margin-top:20px;">
+	
+	<OBJECT CLASSID="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B" WIDTH="%width%" HEIGHT="%height%" CODEBASE="http://www.apple.com/qtactivex/qtplugin.cab">
+	<PARAM name="SRC" VALUE="/image?id=%SeriesID%&studyID=%StudyID%">
+	<PARAM name="AUTOPLAY" VALUE="true">
+	<PARAM name="LOOP" VALUE="true">
+	<PARAM name="CONTROLLER" VALUE="true">
+	<EMBED SRC="sample.mov" WIDTH="160" HEIGHT="144" AUTOPLAY="true"
+	CONTROLLER="false"
+	PLUGINSPAGE="http://www.apple.com/quicktime/download/">
+	</EMBED>
+	</OBJECT>
+	
+	xxxx
+	
 		<embed src="/image?id=%SeriesID%&studyID=%StudyID%" href="/movie?id=%SeriesID%&studyID=%StudyID%" width="%width%" height="%height%" type="video/x-m4v" target="myself" scale="1" loop="true">
 	</div>
 	%/movie%

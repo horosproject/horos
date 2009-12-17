@@ -34,6 +34,7 @@
 #import <AppKit/AppKit.h>
 #import "XMLRPCMethods.h"
 #import "ThreadPoolServer.h"
+#import "ThreadPerConnectionServer.h"
 
 #import "IChatTheatreDelegate.h"
 
