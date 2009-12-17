@@ -505,6 +505,42 @@ int main(int argc, const char *argv[])
 			[[NSFileManager defaultManager] removeItemAtPath: root error: nil];
 		}
 		
+		if( [what isEqualToString: @"writeMovieiPhone"])
+		{
+			NSError *error = nil;
+			
+			NSString *inFile = [NSString stringWithCString: argv[ 3]];
+			NSString *outFile = path;
+			
+			QTMovie *aMovie = [QTMovie movieWithFile: inFile error:nil];
+			
+			if (aMovie && error == nil)
+			{
+				if (NO == [aMovie attributeForKey:QTMovieHasApertureModeDimensionsAttribute])
+				{
+					[aMovie generateApertureModeDimensions];
+				}
+				
+				[aMovie setAttribute:QTMovieApertureModeClean forKey:QTMovieApertureModeAttribute];
+				
+				NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+												   [NSNumber numberWithBool:YES], QTMovieExport,
+												   [NSNumber numberWithLong:'M4VP'], QTMovieExportType, nil];
+				
+				BOOL status = [aMovie writeToFile:outFile withAttributes:dictionary];
+				
+				if (NO == status)
+				{
+					// something didn't go right during the export process
+					NSLog(@"%@ encountered a problem when writeMovieiPhone.\n", [outFile lastPathComponent]);
+				}
+			}
+			else
+				NSLog(@"writeMovieiPhone Error : %@", error);
+				
+			[[NSFileManager defaultManager] removeItemAtPath: inFile error: nil];
+		}
+		
 	    // deregister JPEG codecs
 		//DJDecoderRegistration::cleanup();	We dont care: we are just a small app : our memory will be killed by the system. Dont loose time here !
 		//DJEncoderRegistration::cleanup();	We dont care: we are just a small app : our memory will be killed by the system. Dont loose time here !

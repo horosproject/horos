@@ -797,62 +797,62 @@
 	[e detachFromCurrentThread];
 }
 
-- (void)exportMovieToiPhone:(NSString *)inFile newFileName:(NSString *)outFile;
-{
-    NSError *error = nil;
-	
-	QTMovie *aMovie = nil;
-	
-    // create a QTMovie from the file
-	if( [AppController mainThread] != [NSThread currentThread])
-	{
-		[QTMovie enterQTKitOnThread];
-		
-		NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: inFile, @"file", nil];
-		[self performSelectorOnMainThread: @selector( movieWithFile:) withObject: dict waitUntilDone: YES];
-		aMovie = [dict objectForKey:@"movie"];
-		[aMovie attachToCurrentThread];
-	}
-	else
-	{
-		aMovie = [QTMovie movieWithFile: inFile error:nil];
-	}
-	
-    if (aMovie && nil == error)
-	{
-		if (NO == [aMovie attributeForKey:QTMovieHasApertureModeDimensionsAttribute])
-		{
-			[aMovie generateApertureModeDimensions];
-		}
-		
-		[aMovie setAttribute:QTMovieApertureModeClean forKey:QTMovieApertureModeAttribute];
-		
-		NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-										   [NSNumber numberWithBool:YES], QTMovieExport,
-										   [NSNumber numberWithLong:'M4VP'], QTMovieExportType, nil];
-		
-		BOOL status = [aMovie writeToFile:outFile withAttributes:dictionary];
-		
-		if (NO == status)
-		{
-            // something didn't go right during the export process
-            NSLog(@"%@ encountered a problem when exporting.\n", [outFile lastPathComponent]);
-        }
-    }
-	else
-	{
-        // couldn't open the movie
-        //NSAlert *alert = [NSAlert alertWithError:error];
-        //[alert runModal];
-		NSLog(@"exportMovieToiPhone Error : %@", error);
-    }
-	
-	if( [AppController mainThread] != [NSThread currentThread])
-	{
-		[aMovie detachFromCurrentThread];
-		[QTMovie exitQTKitOnThread];
-	}
-}
+//- (void)exportMovieToiPhone:(NSString *)inFile newFileName:(NSString *)outFile;
+//{
+//    NSError *error = nil;
+//	
+//	QTMovie *aMovie = nil;
+//	
+//    // create a QTMovie from the file
+//	if( [AppController mainThread] != [NSThread currentThread])
+//	{
+//		[QTMovie enterQTKitOnThread];
+//		
+//		NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: inFile, @"file", nil];
+//		[self performSelectorOnMainThread: @selector( movieWithFile:) withObject: dict waitUntilDone: YES];
+//		aMovie = [dict objectForKey:@"movie"];
+//		[aMovie attachToCurrentThread];
+//	}
+//	else
+//	{
+//		aMovie = [QTMovie movieWithFile: inFile error:nil];
+//	}
+//	
+//    if (aMovie && nil == error)
+//	{
+//		if (NO == [aMovie attributeForKey:QTMovieHasApertureModeDimensionsAttribute])
+//		{
+//			[aMovie generateApertureModeDimensions];
+//		}
+//		
+//		[aMovie setAttribute:QTMovieApertureModeClean forKey:QTMovieApertureModeAttribute];
+//		
+//		NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+//										   [NSNumber numberWithBool:YES], QTMovieExport,
+//										   [NSNumber numberWithLong:'M4VP'], QTMovieExportType, nil];
+//		
+//		BOOL status = [aMovie writeToFile:outFile withAttributes:dictionary];
+//		
+//		if (NO == status)
+//		{
+//            // something didn't go right during the export process
+//            NSLog(@"%@ encountered a problem when exporting.\n", [outFile lastPathComponent]);
+//        }
+//    }
+//	else
+//	{
+//        // couldn't open the movie
+//        //NSAlert *alert = [NSAlert alertWithError:error];
+//        //[alert runModal];
+//		NSLog(@"exportMovieToiPhone Error : %@", error);
+//    }
+//	
+//	if( [AppController mainThread] != [NSThread currentThread])
+//	{
+//		[aMovie detachFromCurrentThread];
+//		[QTMovie exitQTKitOnThread];
+//	}
+//}
 
 - (void) generateMovie: (NSMutableDictionary*) dict
 {
@@ -955,7 +955,9 @@
 			inc++;
 		}
 		
-		NSTask *theTask = [[NSTask alloc] init];
+		NSTask *theTask = [[[NSTask alloc] init] autorelease];
+		
+		isiPhone = YES;
 		
 		if( isiPhone)
 		{
@@ -974,8 +976,22 @@
 				NSLog( @"***** writeMovie exception : %@", e);
 			}
 			
-			[self exportMovieToiPhone:fileName newFileName: outFile];
-			[[NSFileManager defaultManager] removeFileAtPath: fileName handler:nil];
+			theTask = [[[NSTask alloc] init] autorelease];
+			
+			@try
+			{
+				NSArray *parameters = [NSArray arrayWithObjects: outFile, @"writeMovieiPhone", fileName, nil];
+				
+				[theTask setArguments: parameters];
+				[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Decompress"]];
+				[theTask launch];
+				
+				while( [theTask isRunning]) [NSThread sleepForTimeInterval: 0.01];
+			}
+			@catch ( NSException *e)
+			{
+				NSLog( @"***** writeMovieiPhone exception : %@", e);
+			}
 		}
 		else
 		{
@@ -994,7 +1010,6 @@
 				NSLog( @"***** writeMovie exception : %@", e);
 			}
 		}
-		[theTask release];
 		
 		[context lock];
 	}
