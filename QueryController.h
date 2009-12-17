@@ -76,7 +76,7 @@
 	
 	IBOutlet NSWindow						*TLSAskPasswordWindow;
 	NSString								*TLSAskPasswordValue, *TLSAskPasswordServerName;
-
+	NSMutableDictionary						*TLSPasswordValues;
 }
 
 @property BOOL autoQuery;
@@ -132,6 +132,9 @@
 
 //TLS
 - (NSDictionary*)TLSAskPrivateKeyPasswordForServer:(NSDictionary*)server;
+- (BOOL)TLSIsValidPrivateKeyPassword:(NSString*)password forServer:(NSDictionary*)server;
+- (void)TLSSavePrivateKeyPassword:(NSString*)password forServer:(NSDictionary*)server;
+- (NSString*)TLSSavedPrivateKeyPasswordForServer:(NSDictionary*)server;
 - (IBAction)TLSAskPrivateKeyPasswordCancel:(id)sender;
 - (IBAction)TLSAskPrivateKeyPasswordOK:(id)sender;
 + (void)screenSnapshot;

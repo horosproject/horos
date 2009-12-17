@@ -55,7 +55,7 @@
 		
 		_acse_timeout = _dimse_timeout = [[NSUserDefaults standardUserDefaults] integerForKey:@"DICOMTimeout"];
 		
-		//SSL
+		//TLS
 		_secureConnection = [[extraParameters objectForKey:@"TLSEnabled"] boolValue];
 		_doAuthenticate = NO;
 		_privateKeyFile = NULL;
