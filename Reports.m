@@ -596,7 +596,7 @@ CHECK;
 	unzip = [[[NSTask alloc] init] autorelease];
 	[unzip setLaunchPath:@"/usr/bin/zip"];
 	[unzip setCurrentDirectoryPath: [[aPath stringByDeletingLastPathComponent] stringByAppendingPathComponent: @"OOOsiriX"]];
-	[unzip setArguments: [NSArray arrayWithObjects: @"-r", aPath, @"content.xml", nil]];
+	[unzip setArguments: [NSArray arrayWithObjects: @"--quiet", @"-r", aPath, @"content.xml", nil]];
 	[unzip launch];
 
 	[unzip waitUntilExit];

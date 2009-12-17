@@ -796,7 +796,7 @@ static char *GetPrivateIP()
 							NSTask *zipTask   = [[NSTask alloc] init];
 							[zipTask setLaunchPath:@"/usr/bin/zip"];
 							[zipTask setCurrentDirectoryPath:[[path stringByDeletingLastPathComponent] stringByAppendingString:@"/"]];
-							[zipTask setArguments:[NSArray arrayWithObjects:@"-r" , zipFileName, [path lastPathComponent], nil]];
+							[zipTask setArguments:[NSArray arrayWithObjects: @"--quiet", @"-r" , zipFileName, [path lastPathComponent], nil]];
 							[zipTask launch];
 							while( [zipTask isRunning]) [NSThread sleepForTimeInterval: 0.01];
 							int result = [zipTask terminationStatus];

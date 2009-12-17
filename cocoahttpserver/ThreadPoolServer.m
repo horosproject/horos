@@ -42,8 +42,19 @@
 	// So we'll just create a timer that will never fire - unless the server runs for 10,000 years.
 	[NSTimer scheduledTimerWithTimeInterval:DBL_MAX target:self selector:@selector(ignore:) userInfo:nil repeats:NO];
 	
-	// Start the run loop
-	[[NSRunLoop currentRunLoop] run];
+	redo:
+	
+	@try
+	{
+		// Start the run loop
+		[[NSRunLoop currentRunLoop] run];
+	}
+	@catch( NSException *e)
+	{
+		NSLog( @"******* ThreadPoolServer exception: %@", e);
+	}
+	
+	goto redo;
 	
 	[pool release];
 }

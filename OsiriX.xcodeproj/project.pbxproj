@@ -322,7 +322,6 @@
 		A9944C110A52A54D004C5E0A /* LLDCMView.h in Headers */ = {isa = PBXBuildFile; fileRef = A9944C0D0A52A54C004C5E0A /* LLDCMView.h */; };
 		A9944C120A52A54D004C5E0A /* LLDCMView.m in Sources */ = {isa = PBXBuildFile; fileRef = A9944C0E0A52A54D004C5E0A /* LLDCMView.m */; };
 		A99B7ECB0885A61F004328C0 /* BonjourPublisher.m in Sources */ = {isa = PBXBuildFile; fileRef = A99B7E5108858D31004328C0 /* BonjourPublisher.m */; };
-		A99B7ECC0885A620004328C0 /* BonjourPublisher.h in Headers */ = {isa = PBXBuildFile; fileRef = A99B7E5008858D31004328C0 /* BonjourPublisher.h */; };
 		A99B7ECD0885A621004328C0 /* BonjourBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = A99B7E5508858D4F004328C0 /* BonjourBrowser.m */; };
 		A99B7ECE0885A621004328C0 /* BonjourBrowser.h in Headers */ = {isa = PBXBuildFile; fileRef = A99B7E5408858D4F004328C0 /* BonjourBrowser.h */; };
 		A9A9F4C10A74C9A9005A1CA7 /* QTExportStyle.css in Resources */ = {isa = PBXBuildFile; fileRef = A9A9F4C00A74C9A9005A1CA7 /* QTExportStyle.css */; };
@@ -907,6 +906,7 @@
 		AB8CC235067E4147008D5ED7 /* PapyTypeDef3.h in Headers */ = {isa = PBXBuildFile; fileRef = AB8CC222067E4147008D5ED7 /* PapyTypeDef3.h */; };
 		AB8CC236067E4147008D5ED7 /* Papyrus3.h in Headers */ = {isa = PBXBuildFile; fileRef = AB8CC223067E4147008D5ED7 /* Papyrus3.h */; };
 		AB8CC237067E4147008D5ED7 /* PapyPubFunctionDef3.h in Headers */ = {isa = PBXBuildFile; fileRef = AB8CC224067E4147008D5ED7 /* PapyPubFunctionDef3.h */; };
+		AB91224E10DA7199006E0AAB /* BonjourPublisher.h in Headers */ = {isa = PBXBuildFile; fileRef = A99B7E5008858D31004328C0 /* BonjourPublisher.h */; };
 		AB9139B906839830006F3936 /* PIC.icns in Resources */ = {isa = PBXBuildFile; fileRef = AB9139B706839830006F3936 /* PIC.icns */; };
 		AB9139BA06839830006F3936 /* lsm.icns in Resources */ = {isa = PBXBuildFile; fileRef = AB9139B806839830006F3936 /* lsm.icns */; };
 		AB92A3A90642B32D0048DC15 /* SmallLogo.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB92A3A70642B32D0048DC15 /* SmallLogo.tif */; };
@@ -16720,7 +16720,6 @@
 				CEE1922F08636FA100DED1F0 /* DicomImage.h in Headers */,
 				CE9DD285086B35050058DD2A /* DicomStudy.h in Headers */,
 				CE9DD286086B35050058DD2A /* DicomSeries.h in Headers */,
-				A99B7ECC0885A620004328C0 /* BonjourPublisher.h in Headers */,
 				A99B7ECE0885A621004328C0 /* BonjourBrowser.h in Headers */,
 				7EBE4B2708917A7500FC1C36 /* LogTableView.h in Headers */,
 				CE88575E08AF938800B72DA7 /* ROIVolumeView.h in Headers */,
@@ -18871,7 +18870,7 @@
 				8417225410D8F01C001A833F /* ThreadPoolServer.h in Headers */,
 				8417228A10D9043B001A833F /* OsiriXHTTPConnection.h in Headers */,
 				841722B010D90595001A833F /* DDKeychain.h in Headers */,
-				A930149410DA63C200AF0051 /* OpenGLScreenReader.h in Headers */,
+				AB91224E10DA7199006E0AAB /* BonjourPublisher.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

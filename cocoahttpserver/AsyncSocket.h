@@ -172,6 +172,8 @@ typedef enum AsyncSocketError AsyncSocketError;
 	UInt16 theFlags;
 	
 	long theUserData;
+	
+	NSRecursiveLock *lock;
 }
 
 - (id)init;

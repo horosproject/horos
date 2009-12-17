@@ -15580,15 +15580,15 @@ static volatile int numberOfThreadsForJPEG = 0;
 				[t setLaunchPath: @"/usr/bin/zip"];
 				
 				if( [password length] > 0)
-					args = [NSArray arrayWithObjects: @"-j", @"-e", @"-P", password, destFile, nil];
+					args = [NSArray arrayWithObjects: @"--quiet", @"-j", @"-e", @"-P", password, destFile, nil];
 				else
-					args = [NSArray arrayWithObjects: @"-j", destFile, nil];
+					args = [NSArray arrayWithObjects: @"--quiet", @"-j", destFile, nil];
 					
 				args = [args arrayByAddingObjectsFromArray: subArray];
 				
 				[t setArguments: args];
 				[t launch];
-				[t waitUntilExit];
+				while( [t isRunning]) [NSThread sleepForTimeInterval: 0.01];
 				
 				free( objs);
 			}
@@ -15632,9 +15632,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[t setCurrentDirectoryPath: [srcFolder stringByDeletingLastPathComponent]];
 		
 		if( [password length] > 0)
-			args = [NSArray arrayWithObjects: @"-r", @"-e", @"-P", password, destFile, [srcFolder lastPathComponent], nil];
+			args = [NSArray arrayWithObjects: @"--quiet", @"-r", @"-e", @"-P", password, destFile, [srcFolder lastPathComponent], nil];
 		else
-			args = [NSArray arrayWithObjects: @"-r", destFile, [srcFolder lastPathComponent], nil];
+			args = [NSArray arrayWithObjects: @"--quiet", @"-r", destFile, [srcFolder lastPathComponent], nil];
 		[t setArguments: args];
 		[t launch];
 		[t waitUntilExit];

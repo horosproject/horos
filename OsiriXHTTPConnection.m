@@ -21,7 +21,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
-static NSRecursiveLock *movieLock = nil;
+static NSMutableDictionary *movieLock = nil;
 
 #define maxResolution 1024
 @interface NSImage (ProportionalScaling)
@@ -860,9 +860,7 @@ static NSRecursiveLock *movieLock = nil;
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
 	if( movieLock == nil)
-		movieLock = [[NSRecursiveLock alloc] init];
-	
-	[movieLock lock];
+		movieLock = [[NSMutableDictionary alloc] init];
 	
 	NSString *outFile = [dict objectForKey: @"outFile"];
 	NSString *fileName = [dict objectForKey: @"fileName"];
@@ -870,6 +868,11 @@ static NSRecursiveLock *movieLock = nil;
 	BOOL isiPhone = [[dict objectForKey:@"isiPhone"] boolValue];
 	
 	NSMutableArray *imagesArray = [NSMutableArray array];
+	
+	if( [movieLock objectForKey: outFile] == nil)
+		[movieLock setObject: [[[NSRecursiveLock alloc] init] autorelease] forKey: outFile];
+	
+	[[movieLock objectForKey: outFile] lock];
 	
 	if( ![[NSFileManager defaultManager] fileExistsAtPath: outFile])
 	{
@@ -1012,7 +1015,13 @@ static NSRecursiveLock *movieLock = nil;
 		}
 	}
 	
-	[movieLock unlock];
+	[[movieLock objectForKey: outFile] unlock];
+	
+	if( [[movieLock objectForKey: outFile] tryLock])
+	{
+		[[movieLock objectForKey: outFile] unlock];
+		[movieLock removeObjectForKey: outFile];
+	}
 	
 	[pool release];
 }
@@ -1195,16 +1204,13 @@ static NSRecursiveLock *movieLock = nil;
 			
 			NSError *error = nil;
 			NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-			[dbRequest setEntity:[[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey:@"Study"]];
-			
-			NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
-			[context lock];
+			[dbRequest setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey:@"Study"]];
 			
 			@try
 			{
 				[dbRequest setPredicate: [NSPredicate predicateWithFormat: @"studyInstanceUID == %@", studyUID]];
 				
-				NSArray *studies = [context executeFetchRequest: dbRequest error: &error];
+				NSArray *studies = [[[BrowserController currentBrowser] managedObjectContext] executeFetchRequest: dbRequest error: &error];
 				
 				if( [studies count] == 0)
 					NSLog( @"****** WADO Server : study not found");
@@ -1376,7 +1382,6 @@ static NSRecursiveLock *movieLock = nil;
 			{
 				NSLog( @"****** WADO Server exception: %@", e);
 			}
-			[context unlock];
 		}
 	}
 #pragma mark studyList
@@ -1888,7 +1893,6 @@ static NSRecursiveLock *movieLock = nil;
 				lockReleased = YES;
 				[self generateMovie: dict];
 				
-				
 				data = [NSData dataWithContentsOfFile: outFile];
 			}
 		}
@@ -1921,7 +1925,7 @@ static NSRecursiveLock *movieLock = nil;
 				[zipTask setLaunchPath:@"/usr/bin/zip"];
 				[zipTask setCurrentDirectoryPath:[[reportFilePath stringByDeletingLastPathComponent] stringByAppendingString:@"/"]];
 				if([reportType isEqualToString:@"pages"])
-					[zipTask setArguments:[NSArray arrayWithObjects:@"-r" , zipFileName, [reportFilePath lastPathComponent], nil]];
+					[zipTask setArguments:[NSArray arrayWithObjects: @"--quiet", @"-r" , zipFileName, [reportFilePath lastPathComponent], nil]];
 				else
 					[zipTask setArguments:[NSArray arrayWithObjects: zipFileName, [reportFilePath lastPathComponent], nil]];
 				[zipTask launch];

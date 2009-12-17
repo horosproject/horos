@@ -19,6 +19,8 @@
 #import <CFNetwork/CFNetwork.h>
 #endif
 
+static NSRecursiveLock *globalLock = nil;
+
 #pragma mark Declarations
 
 #define DEFAULT_PREBUFFERING YES        // Whether pre-buffering is enabled by default
@@ -1461,6 +1463,11 @@ Failed:
 **/
 - (void)doStreamOpen
 {
+	if( lock == nil)
+		lock = [[NSRecursiveLock alloc] init];
+		
+	[lock lock];
+	
 	NSError *err = nil;
 	if ((theFlags & kDidCompleteOpenForRead) && (theFlags & kDidCompleteOpenForWrite))
 	{
@@ -1469,6 +1476,7 @@ Failed:
 		{
 			NSLog (@"AsyncSocket %p couldn't get socket from streams, %@. Disconnecting.", self, err);
 			[self closeWithError:err];
+			[lock unlock];
 			return;
 		}
 		
@@ -1484,6 +1492,7 @@ Failed:
 		[self maybeDequeueRead];
 		[self maybeDequeueWrite];
 	}
+	[lock unlock];
 }
 
 - (BOOL)setSocketFromStreamsAndReturnError:(NSError **)errPtr
@@ -2343,6 +2352,11 @@ Failed:
 **/
 - (void)maybeDequeueRead
 {
+	if( lock == nil)
+		lock = [[NSRecursiveLock alloc] init];
+	
+	[lock lock];
+	
 	// Unset the flag indicating a call to this method is scheduled
 	theFlags &= ~kDequeueReadScheduled;
 	
@@ -2394,6 +2408,8 @@ Failed:
 			}
 		}
 	}
+	
+	[lock unlock];
 }
 
 /**
@@ -2676,6 +2692,11 @@ Failed:
 // Start a new write.
 - (void)maybeDequeueWrite
 {
+	if( lock == nil)
+		lock = [[NSRecursiveLock alloc] init];
+			
+	[lock lock];
+	
 	// Unset the flag indicating a call to this method is scheduled
 	theFlags &= ~kDequeueWriteScheduled;
 	
@@ -2727,6 +2748,8 @@ Failed:
 			}
 		}
 	}
+	
+	[lock unlock];
 }
 
 - (void)doSendBytes
@@ -2859,6 +2882,11 @@ Failed:
 
 - (void)maybeStartTLS
 {
+	if( globalLock == nil)
+		globalLock = [[NSRecursiveLock alloc] init];
+		
+	[globalLock lock];
+	
 	// We can't start TLS until:
 	// - All queued reads prior to the user calling StartTLS are complete
 	// - All queued writes prior to the user calling StartTLS are complete
@@ -2879,6 +2907,8 @@ Failed:
             [self closeWithError:[self getSocketError]];
 		}
 	}
+	
+	[globalLock unlock];
 }
 
 - (void)onTLSHandshakeSuccessful
