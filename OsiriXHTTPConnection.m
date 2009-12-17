@@ -130,7 +130,7 @@ static NSMutableDictionary *movieLock = nil;
 - (BOOL)isSecureServer
 {
 	// Create an HTTPS server (all connections will be secured via SSL/TLS)
-	return YES;
+	return NO;
 }
 
 /**
@@ -1752,7 +1752,7 @@ static NSMutableDictionary *movieLock = nil;
 		}
 	}
 #pragma mark image
-	else if([fileURL isEqualToString:@"/image"])
+	else if([fileURL isEqualToString:@"/image.png"])
 	{
 		NSPredicate *browsePredicate;
 		if( [[parameters allKeys] containsObject:@"id"])
@@ -1837,7 +1837,7 @@ static NSMutableDictionary *movieLock = nil;
 		err = NO;
 	}
 #pragma mark movie
-	else if([fileURL isEqualToString:@"/movie"])
+	else if([fileURL isEqualToString:@"/movie.mov"])
 	{
 		NSPredicate *browsePredicate;
 		if([[parameters allKeys] containsObject:@"id"])
