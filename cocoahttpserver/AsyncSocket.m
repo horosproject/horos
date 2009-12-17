@@ -407,6 +407,10 @@ static void MyCFWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventType t
 {
 	if((self = [super init]))
 	{
+
+		if( lock == nil)
+			lock = [[NSRecursiveLock alloc] init];
+	
 		theFlags = DEFAULT_PREBUFFERING ? kEnablePreBuffering : 0;
 		theDelegate = delegate;
 		theUserData = userData;
@@ -1467,9 +1471,6 @@ Failed:
 **/
 - (void)doStreamOpen
 {
-//	if( lock == nil)
-//		lock = [[NSRecursiveLock alloc] init];
-		
 	[lock lock];
 	
 	NSError *err = nil;
@@ -2356,9 +2357,6 @@ Failed:
 **/
 - (void)maybeDequeueRead
 {
-//	if( lock == nil)
-//		lock = [[NSRecursiveLock alloc] init];
-	
 	[lock lock];
 	
 	// Unset the flag indicating a call to this method is scheduled
@@ -2696,9 +2694,6 @@ Failed:
 // Start a new write.
 - (void)maybeDequeueWrite
 {
-//	if( lock == nil)
-//		lock = [[NSRecursiveLock alloc] init];
-			
 	[lock lock];
 	
 	// Unset the flag indicating a call to this method is scheduled

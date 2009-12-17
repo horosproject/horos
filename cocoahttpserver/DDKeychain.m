@@ -14,8 +14,8 @@
 {
 	NSString *password = nil;
 	
-	const char *service = [@"HTTP Server" UTF8String];
-	const char *account = [@"Deusty" UTF8String];
+	const char *service = [@"OsiriX HTTP Server" UTF8String];
+	const char *account = [@"OsiriX" UTF8String];
 	
 	UInt32 passwordLength = 0;
 	void *passwordBytes = nil;
@@ -51,9 +51,9 @@
 **/
 + (BOOL)setPasswordForHTTPServer:(NSString *)password
 {
-	const char *service = [@"HTTP Server" UTF8String];
-	const char *account = [@"Deusty" UTF8String];
-	const char *kind    = [@"Deusty password" UTF8String];
+	const char *service = [@"OsiriX HTTP Server" UTF8String];
+	const char *account = [@"OsiriX" UTF8String];
+	const char *kind    = [@"OsiriX password" UTF8String];
 	const char *passwd  = [password UTF8String];
 	
 	SecKeychainItemRef itemRef = NULL;
@@ -157,13 +157,13 @@
 	[mStr appendFormat:@"%@\n", @"prompt              = no"];
 	[mStr appendFormat:@"%@\n", @""];
 	[mStr appendFormat:@"%@\n", @"[ req_distinguished_name ]"];
-	[mStr appendFormat:@"%@\n", @"C                   = US"];
-	[mStr appendFormat:@"%@\n", @"ST                  = Missouri"];
-	[mStr appendFormat:@"%@\n", @"L                   = Springfield"];
-	[mStr appendFormat:@"%@\n", @"O                   = Deusty Designs, LLC"];
+	[mStr appendFormat:@"%@\n", @"C                   = CH"];
+	[mStr appendFormat:@"%@\n", @"ST                  = Geneva"];
+	[mStr appendFormat:@"%@\n", @"L                   = Geneva"];
+	[mStr appendFormat:@"%@\n", @"O                   = OsiriX Team"];
 	[mStr appendFormat:@"%@\n", @"OU                  = Open Source"];
-	[mStr appendFormat:@"%@\n", @"CN                  = SecureHTTPServer"];
-	[mStr appendFormat:@"%@\n", @"emailAddress        = robbiehanson@deusty.com"];
+	[mStr appendFormat:@"%@\n", @"CN                  = OsiriX HTTP Server"];
+	[mStr appendFormat:@"%@\n", @"emailAddress        = osirix@osirix-viewer.com"];
 	
 	[mStr writeToFile:reqConfPath atomically:NO encoding:NSUTF8StringEncoding error:nil];
 	
@@ -200,7 +200,7 @@
 	                                                     @"-inkey", privateKeyPath,
 	                                                     @"-passout", @"pass:password",
 	                                                     @"-out", certWrapperPath,
-	                                                     @"-name", @"SecureHTTPServer",
+	                                                     @"-name", @"OsiriX HTTP Server",
 														nil];
 	
 	NSTask *genCertWrapperTask = [[[NSTask alloc] init] autorelease];
@@ -457,7 +457,7 @@
 				// Ugly Hack
 				// For some reason, name sometimes contains odd characters at the end of it
 				// I'm not sure why, and I don't know of a proper fix, thus the use of the hasPrefix: method
-				if([name hasPrefix:@"SecureHTTPServer"])
+				if([name hasPrefix:@"OsiriX HTTP Server"])
 				{
 					// It's possible for there to be more than one private key with the above prefix
 					// But we're only allowed to have one identity, so we make sure to only add one to the array
@@ -496,7 +496,7 @@
 + (NSString *)applicationTemporaryDirectory
 {
 	NSString *userTempDir = NSTemporaryDirectory();
-	NSString *appTempDir = [userTempDir stringByAppendingPathComponent:@"SecureHTTPServer"];
+	NSString *appTempDir = [userTempDir stringByAppendingPathComponent:@"OsiriX HTTP Server"];
 	
 	NSFileManager *fileManager = [NSFileManager defaultManager];
 	if([fileManager fileExistsAtPath:appTempDir] == NO)

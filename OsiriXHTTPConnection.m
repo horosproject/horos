@@ -130,7 +130,7 @@ static NSMutableDictionary *movieLock = nil;
 - (BOOL)isSecureServer
 {
 	// Create an HTTPS server (all connections will be secured via SSL/TLS)
-	return NO;
+	return YES;
 }
 
 /**
