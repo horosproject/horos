@@ -1621,9 +1621,10 @@ static NSDate *lastWarningDate = nil;
 		
 		@try
 		{
-			BOOL shouldKeepRunning = YES;        // global
-			NSRunLoop *theRL = [NSRunLoop currentRunLoop];
-			while (shouldKeepRunning && [theRL runMode: @"OsiriXHTTPLoop" beforeDate:[NSDate distantFuture]]);
+			[[NSRunLoop currentRunLoop] run];
+//			BOOL shouldKeepRunning = YES;        // global
+//			NSRunLoop *theRL = [NSRunLoop currentRunLoop];
+//			while (shouldKeepRunning && [theRL runMode: NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]]);
 		}
 		@catch( NSException *e)
 		{

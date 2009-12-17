@@ -1,6 +1,5 @@
 #import "ThreadPoolServer.h"
 
-
 @implementation ThreadPoolServer
 
 - (id)init
@@ -46,10 +45,11 @@
 	
 	@try
 	{
-		BOOL shouldKeepRunning = YES;        // global
-		NSRunLoop *theRL = [NSRunLoop currentRunLoop];
-		while (shouldKeepRunning && [theRL runMode: @"OsiriXHTTPLoop" beforeDate:[NSDate distantFuture]]);
+//		BOOL shouldKeepRunning = YES;        // global
+//		NSRunLoop *theRL = [NSRunLoop currentRunLoop];
+//		while (shouldKeepRunning && [theRL runMode: NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]]);
 		
+		[[NSRunLoop currentRunLoop] run];
 	}
 	@catch( NSException *e)
 	{

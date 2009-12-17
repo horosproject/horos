@@ -19,6 +19,8 @@
 #import <CFNetwork/CFNetwork.h>
 #endif
 
+extern NSString *privateRunLoop;
+
 static NSRecursiveLock *globalLock = nil;
 
 #pragma mark Declarations
@@ -438,7 +440,7 @@ static void MyCFWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventType t
 		theContext.copyDescription = nil;
 		
 		// Default run loop modes
-		theRunLoopModes = [[NSArray arrayWithObject: @"OsiriXHTTPLoop"] retain];
+		theRunLoopModes = [[NSArray arrayWithObject: NSDefaultRunLoopMode] retain];
 	}
 	return self;
 }
@@ -1465,8 +1467,8 @@ Failed:
 **/
 - (void)doStreamOpen
 {
-	if( lock == nil)
-		lock = [[NSRecursiveLock alloc] init];
+//	if( lock == nil)
+//		lock = [[NSRecursiveLock alloc] init];
 		
 	[lock lock];
 	
@@ -2354,8 +2356,8 @@ Failed:
 **/
 - (void)maybeDequeueRead
 {
-	if( lock == nil)
-		lock = [[NSRecursiveLock alloc] init];
+//	if( lock == nil)
+//		lock = [[NSRecursiveLock alloc] init];
 	
 	[lock lock];
 	
@@ -2694,8 +2696,8 @@ Failed:
 // Start a new write.
 - (void)maybeDequeueWrite
 {
-	if( lock == nil)
-		lock = [[NSRecursiveLock alloc] init];
+//	if( lock == nil)
+//		lock = [[NSRecursiveLock alloc] init];
 			
 	[lock lock];
 	
@@ -2884,8 +2886,8 @@ Failed:
 
 - (void)maybeStartTLS
 {
-	if( globalLock == nil)
-		globalLock = [[NSRecursiveLock alloc] init];
+//	if( globalLock == nil)
+//		globalLock = [[NSRecursiveLock alloc] init];
 		
 	[globalLock lock];
 	
