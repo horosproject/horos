@@ -21,6 +21,8 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
+static NSRecursiveLock *movieLock = nil;
+
 #define maxResolution 1024
 @interface NSImage (ProportionalScaling)
 - (NSImage*)imageByScalingProportionallyToSize:(NSSize)targetSize;
@@ -343,7 +345,7 @@
 	if([seriesArray count]<=1) checkAllStyle = @"style='display:none;'";
 	[returnHTML replaceOccurrencesOfString:@"%CheckAllStyle%" withString:checkAllStyle options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
 	
-	if( [[parameters objectForKey: @"dicomcstoreport"] intValue] > 0 && ipAddressString != 0L)
+	if( [[parameters objectForKey: @"dicomcstoreport"] intValue] > 0 && [ipAddressString length] >= 7)
 	{
 		NSString *dicomNodeAddress = ipAddressString;
 		NSString *dicomNodePort = [parameters objectForKey: @"dicomcstoreport"];
@@ -859,15 +861,15 @@
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
-	NSString* contentRange = [dict objectForKey: @"contentRange"];
+	if( movieLock == nil)
+		movieLock = [[NSRecursiveLock alloc] init];
+	
+	[movieLock lock];
+	
 	NSString *outFile = [dict objectForKey: @"outFile"];
 	NSString *fileName = [dict objectForKey: @"fileName"];
-	NSThread *httpServerThread = [dict objectForKey: @"thread"];
 	NSArray *dicomImageArray = [dict objectForKey: @"dicomImageArray"];
 	BOOL isiPhone = [[dict objectForKey:@"isiPhone"] boolValue];
-	
-	NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
-	[context lock];
 	
 	NSMutableArray *imagesArray = [NSMutableArray array];
 	
@@ -885,6 +887,8 @@
 			maxWidth = maxResolution;
 			maxHeight = maxResolution;
 		}
+		
+		[[[BrowserController currentBrowser] managedObjectContext] lock];
 		
 		for (DicomImage *im in dicomImageArray)
 		{
@@ -943,8 +947,7 @@
 			[pool2 release];
 		}
 		
-		[context unlock];	// It's important because writeMovie will call performonmainthread !!!
-		
+		[[[BrowserController currentBrowser] managedObjectContext] unlock];
 		
 		[[NSFileManager defaultManager] removeItemAtPath: [fileName stringByAppendingString: @" dir"] error: nil];
 		[[NSFileManager defaultManager] createDirectoryAtPath: [fileName stringByAppendingString: @" dir"] attributes: nil];
@@ -1009,11 +1012,9 @@
 				NSLog( @"***** writeMovie exception : %@", e);
 			}
 		}
-		
-		[context lock];
 	}
 	
-	[context unlock];
+	[movieLock unlock];
 	
 	[pool release];
 }
@@ -1288,13 +1289,12 @@
 							else
 								outFile = fileName;
 							
-							NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: isiPhone], @"isiPhone", fileURL, @"fileURL", fileName, @"fileName", outFile, @"outFile", parameters, @"parameters", dicomImageArray, @"dicomImageArray", [NSThread currentThread], @"thread", contentRange, @"contentRange", nil];
+							NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: isiPhone], @"isiPhone", fileURL, @"fileURL", fileName, @"fileName", outFile, @"outFile", parameters, @"parameters", dicomImageArray, @"dicomImageArray", nil];
 							
-							[[[BrowserController currentBrowser] managedObjectContext] unlock];	// It's important because writeMovie will call performonmainthread !!!
+							lockReleased = YES;
+							[[[BrowserController currentBrowser] managedObjectContext] unlock];
 							
 							[self generateMovie: dict];
-							
-							[[[BrowserController currentBrowser] managedObjectContext] lock];
 							
 							data = [NSData dataWithContentsOfFile: outFile];
 							
@@ -1537,7 +1537,6 @@
 //			}
 			
 			ipAddressString = [[asyncSocket connectedHost] copy];
-			NSLog( @"********* asyncSocket connectedHost : %@", [asyncSocket connectedHost]);
 			
 			NSMutableString *html = [self htmlStudy:[studies lastObject] parameters:parameters settings: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: isiPhone], @"iPhone", [NSNumber numberWithBool: isMacOS], @"MacOS", nil]];
 			
@@ -1884,13 +1883,13 @@
 				else
 					outFile = fileName;
 				
-				NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: isiPhone], @"isiPhone", fileURL, @"fileURL", fileName, @"fileName", outFile, @"outFile", parameters, @"parameters", dicomImageArray, @"dicomImageArray", [NSThread currentThread], @"thread", contentRange, @"contentRange", nil];
+				NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: isiPhone], @"isiPhone", fileURL, @"fileURL", fileName, @"fileName", outFile, @"outFile", parameters, @"parameters", dicomImageArray, @"dicomImageArray", nil];
 				
-				[[[BrowserController currentBrowser] managedObjectContext] unlock];	// It's important because writeMovie will call performonmainthread !!!
+				[[[BrowserController currentBrowser] managedObjectContext] unlock];	
 				
+				lockReleased = YES;
 				[self generateMovie: dict];
 				
-				[[[BrowserController currentBrowser] managedObjectContext] lock];
 				
 				data = [NSData dataWithContentsOfFile: outFile];
 			}

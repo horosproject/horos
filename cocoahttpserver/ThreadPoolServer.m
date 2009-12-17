@@ -108,7 +108,7 @@
 			
 			[runLoopsLoad replaceObjectAtIndex:runLoopIndex withObject:newLoad];
 			
-			NSLog(@"Updating run loop %u with load %@", runLoopIndex, newLoad);
+//			NSLog(@"Updating run loop %u with load %@", runLoopIndex, newLoad);
 		}
 	}
 	
