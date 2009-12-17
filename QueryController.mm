@@ -31,6 +31,7 @@
 #include "SimplePing.h"
 
 #import "PieChartImage.h"
+#import "OpenGLScreenReader.h"
 
 static NSString *PatientName = @"PatientsName";
 static NSString *PatientID = @"PatientID";
@@ -62,6 +63,7 @@ static const char *GetPrivateIP()
 @implementation QueryController
 
 @synthesize autoQuery;
+@synthesize TLSAskPasswordValue, TLSAskPasswordServerName;
 
 + (NSArray*) queryStudyInstanceUID:(NSString*) an server: (NSDictionary*) aServer
 {
@@ -170,10 +172,10 @@ static const char *GetPrivateIP()
 	NSTask* theTask = [[[NSTask alloc]init]autorelease];
 	
 	[theTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/echoscu"]];
-
+	
 	[theTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];
 	[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/echoscu"]];
-
+	
 	//NSArray *args = [NSArray arrayWithObjects: address, [NSString stringWithFormat:@"%d", port], @"-aet", [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"], @"-aec", aet, @"-to", [[NSUserDefaults standardUserDefaults] stringForKey:@"DICOMTimeout"], @"-ta", [[NSUserDefaults standardUserDefaults] stringForKey:@"DICOMTimeout"], @"-td", [[NSUserDefaults standardUserDefaults] stringForKey:@"DICOMTimeout"], nil];
 	
 	NSMutableArray *args = [NSMutableArray array];
@@ -192,26 +194,92 @@ static const char *GetPrivateIP()
 	
 	if([[serverParameters objectForKey:@"TLSEnabled"] boolValue])
 	{
-		// TLS support. Work in progress.
-		// Other options listed here http://support.dcmtk.org/docs/echoscu.html
+		// TLS support. Options listed here http://support.dcmtk.org/docs/echoscu.html
 		
 		if([[serverParameters objectForKey:@"TLSAuthenticated"] boolValue])
 		{
-			[args addObject:@"+tls"]; // use authenticated secure TLS connection
+			[args addObject:@"--enable-tls"]; // use authenticated secure TLS connection
+			[args addObject:[serverParameters objectForKey:@"TLSPrivateKeyFileURL"]]; // [p]rivate key file
+			[args addObject:[serverParameters objectForKey:@"TLSCertificateFileURL"]]; // [c]ertificate file: string
+			
+			TLSPasswordType passwordType = (TLSPasswordType)[[serverParameters objectForKey:@"TLSPrivateKeyFilePasswordType"] intValue];
+			if(passwordType!=PasswordNone)
+			{
+				NSString *password = nil;
+				if(passwordType==PasswordString)
+					password = [serverParameters objectForKey:@"TLSPrivateKeyFilePassword"];
+				else if(passwordType==PasswordAsk)
+					password = [serverParameters objectForKey:@"TLSAskPasswordValue"];
+				
+				if([password isEqualToString:@""] || !password)
+				{
+					[args addObject:@"--null-passwd"]; // use empty string as password
+				}
+				else
+				{
+					[args addObject:@"--use-passwd"]; // use specified password
+					[args addObject:password];
+				}
+			}
 		}
 		else
-			[args addObject:@"+tla"]; // use secure TLS connection without certificate
+			[args addObject:@"--anonymous-tls"]; // use secure TLS connection without certificate
 		
+		// key and certificate file format options:
+		TLSFileFormat format = (TLSFileFormat)[[serverParameters objectForKey:@"TLSKeyAndCertificateFileFormat"] intValue];
+		if(format==DER)
+			[args addObject:@"--der-keys"]; // read keys and certificates as DER file
+		else
+			[args addObject:@"--pem-keys"]; // read keys and certificates as PEM file (default)
+		
+		// certification authority options:
+		if([[serverParameters objectForKey:@"TLSUseTrustedCACertificatesFolderURL"] boolValue])
+		{
+			NSString *path = [serverParameters objectForKey:@"TLSTrustedCACertificatesFolderURL"];
+			BOOL isDirectory = NO;
+			BOOL fileExists = [[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDirectory];
+			if(fileExists)
+			{
+				if(isDirectory) // TODO: use --add-cert-file for each file in the directory (in stead of --add-cert-dir)
+					[args addObject:@"--add-cert-dir"]; // add certificates in d to list of certificates  .... needs to use OpenSSL & rename files (see http://forum.dicom-cd.de/viewtopic.php?p=3237&sid=bd17bd76876a8fd9e7fdf841b90cf639 )
+				else
+					[args addObject:@"--add-cert-file"]; // add certificate file to list of certificates
+				
+				[args addObject:path];
+			}
+		}
+		
+		//ciphersuite options:
 		for (NSDictionary *suite in [serverParameters objectForKey:@"TLSCipherSuites"])
 		{
 			if ([[suite objectForKey:@"Supported"] boolValue])
 			{
-				[args addObject:@"+cs"]; // add ciphersuite to list of negotiated suites
+				[args addObject:@"--cipher"]; // add ciphersuite to list of negotiated suites
 				[args addObject:[suite objectForKey:@"Cipher"]];
 			}
 		}
-
-		[args addObject:@"-ic"]; //don't verify peer certificate	
+		
+		if([[serverParameters objectForKey:@"TLSUseDHParameterFileURL"] boolValue])
+		{
+			[args addObject:@"--dhparam"]; // read DH parameters for DH/DSS ciphersuites
+			[args addObject:[serverParameters objectForKey:@"TLSDHParameterFileURL"]];
+		}
+		
+		// pseudo random generator options.
+		// We initialize the pseudo-random number generator with the content of the screen which is is hardly predictable for an attacker
+		// see http://www.mevis-research.de/~meyer/dcmtk/docs_352/dcmtls/randseed.txt
+		[QueryController screenSnapshot]; 
+		[args addObject:@"--seed"]; // seed random generator with contents of f
+		[args addObject:TLS_SEED_FILE];
+		
+		// peer authentication options:
+		TLSCertificateVerificationType verification = (TLSCertificateVerificationType)[[serverParameters objectForKey:@"TLSCertificateVerification"] intValue];
+		if(verification==RequirePeerCertificate)
+			[args addObject:@"--require-peer-cert"]; //verify peer certificate, fail if absent (default)
+		else if(verification==VerifyPeerCertificate)
+			[args addObject:@"--verify-peer-cert"]; //verify peer certificate if present
+		else //IgnorePeerCertificate
+			[args addObject:@"--ignore-peer-cert"]; //don't verify peer certificate	
 	}
 	
 	[theTask setArguments:args];
@@ -1280,10 +1348,12 @@ static const char *GetPrivateIP()
 					[self setModalityQuery: modalityFilterMatrix];
 					
 					//get rid of white space at end and append "*"
+						
+					aServer = [self TLSAskPrivateKeyPasswordForServer:aServer];
 					
 					[queryManager release];
 					queryManager = nil;
-					
+
 					queryManager = [[QueryArrayController alloc] initWithCallingAET: [[NSUserDefaults standardUserDefaults] objectForKey: @"AETITLE"] distantServer: aServer];
 					// add filters as needed
 					
@@ -2726,6 +2796,7 @@ static const char *GetPrivateIP()
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"Ping"] == NO || (SimplePing( [hostname UTF8String], 1, [[NSUserDefaults standardUserDefaults] integerForKey:@"DICOMTimeout"], 1,  &numberPacketsReceived) == 0 && numberPacketsReceived > 0))
 	{
 		//status = [QueryController echo: hostname port: [port intValue] AET: theirAET];
+		aServer = [self TLSAskPrivateKeyPasswordForServer:aServer];
 		status = [QueryController echoServer:aServer];
 	}
 	else status = -1;
@@ -2807,4 +2878,67 @@ static const char *GetPrivateIP()
 		break;
 	}
 }
+
+- (NSDictionary*)TLSAskPrivateKeyPasswordForServer:(NSDictionary*)server;
+{
+	if([[server objectForKey:@"TLSEnabled"] boolValue])
+	{
+		TLSPasswordType passwordType = (TLSPasswordType)[[server objectForKey:@"TLSPrivateKeyFilePasswordType"] intValue];
+		if(passwordType==PasswordAsk)
+		{
+			
+			self.TLSAskPasswordServerName = [server objectForKey:@"Description"];
+			self.TLSAskPasswordValue = @"";
+			
+			[NSApp beginSheet: TLSAskPasswordWindow
+			   modalForWindow: [self window]
+				modalDelegate: nil
+			   didEndSelector: nil
+				  contextInfo: nil];
+			
+			int result = [NSApp runModalForWindow: TLSAskPasswordWindow];
+			[TLSAskPasswordWindow makeFirstResponder: nil];
+			
+			[NSApp endSheet: TLSAskPasswordWindow];
+			[TLSAskPasswordWindow orderOut: self];
+			
+			NSMutableDictionary *newServer = [NSMutableDictionary dictionaryWithDictionary:server];
+			
+			if(result == NSRunStoppedResponse)
+			{
+				if(self.TLSAskPasswordValue)[newServer setObject:self.TLSAskPasswordValue forKey:@"TLSAskPasswordValue"];
+			}
+			
+			return [NSDictionary dictionaryWithDictionary:newServer];
+		}
+	}
+	return server;
+}
+
+- (IBAction)TLSAskPrivateKeyPasswordCancel:(id)sender;
+{
+	[NSApp abortModal];
+}
+
+- (IBAction)TLSAskPrivateKeyPasswordOK:(id)sender;
+{
+	[NSApp stopModal];
+}
+
+// Take a "snapshot" of the screen and save the image to a TIFF file on disk
++ (void)screenSnapshot;
+{
+    // Create a screen reader object
+	OpenGLScreenReader *mOpenGLScreenReader = [[OpenGLScreenReader alloc] init];
+    
+	// Read the screen bits
+    [mOpenGLScreenReader readFullScreenToBuffer];
+	
+    // Write our image to a TIFF file on disk
+    [mOpenGLScreenReader createTIFFImageFileToPath:TLS_SEED_FILE];
+	
+    // Finished, so let's cleanup
+    [mOpenGLScreenReader release];
+}
+
 @end

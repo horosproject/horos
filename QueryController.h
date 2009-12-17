@@ -73,10 +73,15 @@
 	
 	NSInteger								autoRefreshQueryResults;
 	NSRecursiveLock							*autoQueryLock;
+	
+	IBOutlet NSWindow						*TLSAskPasswordWindow;
+	NSString								*TLSAskPasswordValue, *TLSAskPasswordServerName;
+
 }
 
 @property BOOL autoQuery;
 @property NSInteger autoRefreshQueryResults;
+@property (retain) NSString *TLSAskPasswordValue, *TLSAskPasswordServerName;
 
 + (QueryController*) currentQueryController;
 + (QueryController*) currentAutoQueryController;
@@ -124,4 +129,11 @@
 - (void) displayAndRetrieveQueryResults;
 - (void) autoQueryThread;
 - (void) autoQueryTimerFunction:(NSTimer*) t;
+
+//TLS
+- (NSDictionary*)TLSAskPrivateKeyPasswordForServer:(NSDictionary*)server;
+- (IBAction)TLSAskPrivateKeyPasswordCancel:(id)sender;
+- (IBAction)TLSAskPrivateKeyPasswordOK:(id)sender;
++ (void)screenSnapshot;
+
 @end

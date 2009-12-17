@@ -246,6 +246,8 @@
 		A92155FA0ADCF319008D881E /* OsiriX Report.template in Resources */ = {isa = PBXBuildFile; fileRef = A92155E50ADCF319008D881E /* OsiriX Report.template */; };
 		A922F3BB0C631F3C0007AB98 /* CustomImageAnnotations.png in Resources */ = {isa = PBXBuildFile; fileRef = A922F3BA0C631F3C0007AB98 /* CustomImageAnnotations.png */; };
 		A926BFC90A76577600F1B366 /* QTExportSeriesTemplate.html in Resources */ = {isa = PBXBuildFile; fileRef = A926BFC80A76577600F1B366 /* QTExportSeriesTemplate.html */; };
+		A930149410DA63C200AF0051 /* OpenGLScreenReader.h in Headers */ = {isa = PBXBuildFile; fileRef = A930149210DA63C200AF0051 /* OpenGLScreenReader.h */; };
+		A930149510DA63C200AF0051 /* OpenGLScreenReader.m in Sources */ = {isa = PBXBuildFile; fileRef = A930149310DA63C200AF0051 /* OpenGLScreenReader.m */; };
 		A932B959094D722D0085B58A /* EndoscopyViewer.h in Headers */ = {isa = PBXBuildFile; fileRef = A932B957094D722D0085B58A /* EndoscopyViewer.h */; };
 		A932B95A094D722D0085B58A /* EndoscopyViewer.m in Sources */ = {isa = PBXBuildFile; fileRef = A932B958094D722D0085B58A /* EndoscopyViewer.m */; };
 		A932BAEB094D87C90085B58A /* EndoscopyVRController.h in Headers */ = {isa = PBXBuildFile; fileRef = A932BAE9094D87C90085B58A /* EndoscopyVRController.h */; };
@@ -8101,6 +8103,8 @@
 		A92155E50ADCF319008D881E /* OsiriX Report.template */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "OsiriX Report.template"; path = "Binaries/OsiriX Report.template"; sourceTree = "<group>"; };
 		A922F3BA0C631F3C0007AB98 /* CustomImageAnnotations.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = CustomImageAnnotations.png; sourceTree = "<group>"; };
 		A926BFC80A76577600F1B366 /* QTExportSeriesTemplate.html */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.html; path = QTExportSeriesTemplate.html; sourceTree = "<group>"; };
+		A930149210DA63C200AF0051 /* OpenGLScreenReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenGLScreenReader.h; sourceTree = "<group>"; };
+		A930149310DA63C200AF0051 /* OpenGLScreenReader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OpenGLScreenReader.m; sourceTree = "<group>"; };
 		A932B957094D722D0085B58A /* EndoscopyViewer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EndoscopyViewer.h; sourceTree = "<group>"; };
 		A932B958094D722D0085B58A /* EndoscopyViewer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EndoscopyViewer.m; sourceTree = "<group>"; };
 		A932BAE9094D87C90085B58A /* EndoscopyVRController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EndoscopyVRController.h; sourceTree = "<group>"; };
@@ -12782,6 +12786,8 @@
 				AB08564C059211F9009962D7 /* NSSplitViewSave.m */,
 				ABCA5BA20625FC1100637E73 /* OpacityTransferView.h */,
 				ABCA5BA30625FC1100637E73 /* OpacityTransferView.m */,
+				A930149210DA63C200AF0051 /* OpenGLScreenReader.h */,
+				A930149310DA63C200AF0051 /* OpenGLScreenReader.m */,
 				CE6CD06B0CFB0462001DF429 /* OsiriXToolbar.h */,
 				CE6CD06C0CFB0462001DF429 /* OsiriXToolbar.m */,
 				BF09B13D0B2E681D00AA97E2 /* OSIWindowController.h */,
@@ -18865,6 +18871,7 @@
 				8417225410D8F01C001A833F /* ThreadPoolServer.h in Headers */,
 				8417228A10D9043B001A833F /* OsiriXHTTPConnection.h in Headers */,
 				841722B010D90595001A833F /* DDKeychain.h in Headers */,
+				A930149410DA63C200AF0051 /* OpenGLScreenReader.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23241,6 +23248,7 @@
 				8417225510D8F01C001A833F /* ThreadPoolServer.m in Sources */,
 				8417228B10D9043B001A833F /* OsiriXHTTPConnection.m in Sources */,
 				841722B110D90595001A833F /* DDKeychain.m in Sources */,
+				A930149510DA63C200AF0051 /* OpenGLScreenReader.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

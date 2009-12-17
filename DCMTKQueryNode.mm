@@ -1199,6 +1199,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 			if (_doAuthenticate)
 			{
 				// TODO: handle password (ask)
+				
 				if (_passwd) tLayer->setPrivateKeyPasswd([_passwd cStringUsingEncoding:NSUTF8StringEncoding]);
 				
 				if (TCS_ok != tLayer->setPrivateKeyFile([_privateKeyFile cStringUsingEncoding:NSUTF8StringEncoding], _keyFileFormat))

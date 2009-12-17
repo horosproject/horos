@@ -57,7 +57,7 @@ typedef enum
 	IgnorePeerCertificate
 } TLSCertificateVerificationType;
 
-#define TLS_SEED_FILE "/tmp/OsiriXTLSSeed"
+#define TLS_SEED_FILE @"/tmp/OsiriXTLSSeed"
 #define TLS_WRITE_SEED_FILE "/tmp/OsiriXTLSSeedWrite"
 
 @interface DCMTKServiceClassUser : NSObject {

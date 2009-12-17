@@ -74,6 +74,7 @@
 				
 				passwordType = (TLSPasswordType)[[extraParameters objectForKey:@"TLSPrivateKeyFilePasswordType"] intValue];
 				if(passwordType==PasswordString) _passwd = [[extraParameters objectForKey:@"TLSPrivateKeyFilePassword"] retain];
+				else if(passwordType==PasswordAsk) _passwd = [[extraParameters objectForKey:@"TLSAskPasswordValue"] retain];
 			}
 			
 			TLSFileFormat fileFormat = (TLSFileFormat)[[extraParameters objectForKey:@"TLSKeyAndCertificateFileFormat"] intValue];
@@ -99,7 +100,7 @@
 			if([[extraParameters objectForKey:@"TLSUseDHParameterFileURL"] boolValue])
 				_dhparam = [[extraParameters objectForKey:@"TLSDHParameterFileURL"] cStringUsingEncoding:NSUTF8StringEncoding];
 			
-			_readSeedFile = TLS_SEED_FILE;
+			_readSeedFile = [TLS_SEED_FILE cStringUsingEncoding:NSUTF8StringEncoding];
 			_writeSeedFile = TLS_WRITE_SEED_FILE;
 			
 			certVerification = (TLSCertificateVerificationType)[[extraParameters objectForKey:@"TLSCertificateVerification"] intValue];

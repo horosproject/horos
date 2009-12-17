@@ -7417,6 +7417,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<reference ref="573615482"/>
 						</array>
 						<reference key="parent" ref="0"/>
+						<string key="objectName">TLS password</string>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">933</int>
