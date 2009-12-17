@@ -303,8 +303,6 @@
 		A978DEA80CB0D4BE00FB2C3D /* NSImage+FrameworkImage.h in Headers */ = {isa = PBXBuildFile; fileRef = A978DE7F0CB0D4BE00FB2C3D /* NSImage+FrameworkImage.h */; };
 		A978DEB00CB0D4BE00FB2C3D /* NFHUDPopUpButton.m in Sources */ = {isa = PBXBuildFile; fileRef = A978DE870CB0D4BE00FB2C3D /* NFHUDPopUpButton.m */; };
 		A978DEB10CB0D4BE00FB2C3D /* NFHUDPopUpButton.h in Headers */ = {isa = PBXBuildFile; fileRef = A978DE880CB0D4BE00FB2C3D /* NFHUDPopUpButton.h */; };
-		A979EF7B0D19023E00F4F8F2 /* WebServicesMethods.h in Headers */ = {isa = PBXBuildFile; fileRef = A979EF790D19023E00F4F8F2 /* WebServicesMethods.h */; };
-		A979EF7C0D19023E00F4F8F2 /* WebServicesMethods.m in Sources */ = {isa = PBXBuildFile; fileRef = A979EF7A0D19023E00F4F8F2 /* WebServicesMethods.m */; };
 		A97B73980CB380EF00E5348D /* osirixplugin.icns in Resources */ = {isa = PBXBuildFile; fileRef = A97B73970CB380EF00E5348D /* osirixplugin.icns */; };
 		A97D4C610CE3459D003FE2E6 /* PieChartImage.h in Headers */ = {isa = PBXBuildFile; fileRef = A97D4C5F0CE3459D003FE2E6 /* PieChartImage.h */; };
 		A97D4C620CE3459D003FE2E6 /* PieChartImage.m in Sources */ = {isa = PBXBuildFile; fileRef = A97D4C600CE3459D003FE2E6 /* PieChartImage.m */; };
@@ -8160,8 +8158,6 @@
 		A978DE7F0CB0D4BE00FB2C3D /* NSImage+FrameworkImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSImage+FrameworkImage.h"; sourceTree = "<group>"; };
 		A978DE870CB0D4BE00FB2C3D /* NFHUDPopUpButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NFHUDPopUpButton.m; sourceTree = "<group>"; };
 		A978DE880CB0D4BE00FB2C3D /* NFHUDPopUpButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NFHUDPopUpButton.h; sourceTree = "<group>"; };
-		A979EF790D19023E00F4F8F2 /* WebServicesMethods.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebServicesMethods.h; sourceTree = "<group>"; };
-		A979EF7A0D19023E00F4F8F2 /* WebServicesMethods.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WebServicesMethods.m; sourceTree = "<group>"; };
 		A97B73970CB380EF00E5348D /* osirixplugin.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = osirixplugin.icns; sourceTree = "<group>"; };
 		A97D4C5F0CE3459D003FE2E6 /* PieChartImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PieChartImage.h; sourceTree = "<group>"; };
 		A97D4C600CE3459D003FE2E6 /* PieChartImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PieChartImage.m; sourceTree = "<group>"; };
@@ -12379,7 +12375,7 @@
 			name = Routing;
 			sourceTree = "<group>";
 		};
-		8417219210D8D707001A833F /* HTTP Server */ = {
+		8417219210D8D707001A833F /* HTTP-HTTPS Server */ = {
 			isa = PBXGroup;
 			children = (
 				841721A410D8D745001A833F /* AsyncSocket.h */,
@@ -12409,7 +12405,7 @@
 				8417225010D8F01C001A833F /* ThreadPoolServer.h */,
 				8417225110D8F01C001A833F /* ThreadPoolServer.m */,
 			);
-			name = "HTTP Server";
+			name = "HTTP-HTTPS Server";
 			sourceTree = "<group>";
 		};
 		84AA013C104EA39E0091E49B /* Log Window */ = {
@@ -12697,6 +12693,17 @@
 				CE96D1170BEE732900C4E397 /* mdfdsman.cc */,
 			);
 			name = XML;
+			sourceTree = "<group>";
+		};
+		AB9120A110DA2D5C006E0AAB /* basic HTTP Server */ = {
+			isa = PBXGroup;
+			children = (
+				8417221110D8DB72001A833F /* TCPServer.h */,
+				8417221210D8DB72001A833F /* TCPServer.m */,
+				8417221710D8DB93001A833F /* basicHTTPServer.h */,
+				8417221810D8DB93001A833F /* basicHTTPServer.m */,
+			);
+			name = "basic HTTP Server";
 			sourceTree = "<group>";
 		};
 		AB9723880C684B4E00DC727C /* DB_Previous_Models */ = {
@@ -13131,7 +13138,6 @@
 				CE9DD29A086B35740058DD2A /* CoreData */,
 				A99B7E4F08858D0D004328C0 /* Bonjour */,
 				CE9101AA0C86A6B800D8D273 /* XML-XPC HTTP Server */,
-				8417219210D8D707001A833F /* HTTP Server */,
 				AB4E3CAE05ADDE13001411D1 /* DicomDirParser.h */,
 				AB4E3CAF05ADDE13001411D1 /* DicomDirParser.m */,
 				ABBCCDA605643A4C00A4E47A /* browserController.h */,
@@ -16358,14 +16364,10 @@
 		CE9101AA0C86A6B800D8D273 /* XML-XPC HTTP Server */ = {
 			isa = PBXGroup;
 			children = (
-				8417221110D8DB72001A833F /* TCPServer.h */,
-				8417221210D8DB72001A833F /* TCPServer.m */,
-				8417221710D8DB93001A833F /* basicHTTPServer.h */,
-				8417221810D8DB93001A833F /* basicHTTPServer.m */,
+				AB9120A110DA2D5C006E0AAB /* basic HTTP Server */,
 				CE882AC40C889B6500D4F982 /* XMLRPCMethods.h */,
 				CE882AC50C889B6500D4F982 /* XMLRPCMethods.m */,
-				A979EF790D19023E00F4F8F2 /* WebServicesMethods.h */,
-				A979EF7A0D19023E00F4F8F2 /* WebServicesMethods.m */,
+				8417219210D8D707001A833F /* HTTP-HTTPS Server */,
 				8417228810D9043B001A833F /* OsiriXHTTPConnection.h */,
 				8417228910D9043B001A833F /* OsiriXHTTPConnection.m */,
 			);
@@ -17247,7 +17249,6 @@
 				CE6CD06D0CFB0462001DF429 /* OsiriXToolbar.h in Headers */,
 				CEE8CED10D00AA71009FA5F9 /* NSAppleScript+HandlerCalls.h in Headers */,
 				ABDEB38E0D1827440079C938 /* openjpeg.h in Headers */,
-				A979EF7B0D19023E00F4F8F2 /* WebServicesMethods.h in Headers */,
 				A910FB310D5767610095A956 /* NavigatorWindowController.h in Headers */,
 				A910FB370D57728A0095A956 /* NavigatorView.h in Headers */,
 				CE40ED530D86D54D007C6D49 /* ThreeDPositionController.h in Headers */,
@@ -23201,7 +23202,6 @@
 				A97D4C620CE3459D003FE2E6 /* PieChartImage.m in Sources */,
 				CE6CD06E0CFB0462001DF429 /* OsiriXToolbar.m in Sources */,
 				CEE8CED00D00AA71009FA5F9 /* NSAppleScript+HandlerCalls.m in Sources */,
-				A979EF7C0D19023E00F4F8F2 /* WebServicesMethods.m in Sources */,
 				A910FB320D5767610095A956 /* NavigatorWindowController.m in Sources */,
 				A910FB380D57728A0095A956 /* NavigatorView.m in Sources */,
 				CE40ED540D86D54D007C6D49 /* ThreeDPositionController.m in Sources */,

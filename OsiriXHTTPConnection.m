@@ -3,6 +3,7 @@
 #import "DDKeychain.h"
 #import "BrowserController.h"
 #import "DicomSeries.h"
+#import "DicomStudy.h"
 #import "DicomImage.h"
 #import "DCMTKStoreSCU.h"
 #import "DCMPix.h"
@@ -219,14 +220,14 @@
 	NSString *album = [OsiriXHTTPConnection nonNilString:[parameters objectForKey:@"album"]];
 	
 	[templateString replaceOccurrencesOfString:@"%browse%" withString:browse options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-	[templateString replaceOccurrencesOfString:@"%search%" withString:[WebServicesMethods decodeURLString:search] options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-	[templateString replaceOccurrencesOfString:@"%album%" withString:[WebServicesMethods decodeURLString:[album stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+	[templateString replaceOccurrencesOfString:@"%search%" withString:[OsiriXHTTPConnection decodeURLString:search] options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+	[templateString replaceOccurrencesOfString:@"%album%" withString:[OsiriXHTTPConnection decodeURLString:[album stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 	
 	NSString *LocalizedLabel_StudyList = @"";
 	if(![search isEqualToString:@""])
-		LocalizedLabel_StudyList = [NSString stringWithFormat:@"%@ : %@", NSLocalizedString(@"Search Result for", @""), [[WebServicesMethods decodeURLString:search] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+		LocalizedLabel_StudyList = [NSString stringWithFormat:@"%@ : %@", NSLocalizedString(@"Search Result for", @""), [[OsiriXHTTPConnection decodeURLString:search] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
 	else if(![album isEqualToString:@""])
-		LocalizedLabel_StudyList = [NSString stringWithFormat:@"%@ : %@", NSLocalizedString(@"Album", @""), [[WebServicesMethods decodeURLString:album] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+		LocalizedLabel_StudyList = [NSString stringWithFormat:@"%@ : %@", NSLocalizedString(@"Album", @""), [[OsiriXHTTPConnection decodeURLString:album] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
 	else
 	{
 		if([browse isEqualToString:@"6hours"])
@@ -280,7 +281,7 @@
 	[dateFormat setDateFormat: [[NSUserDefaults standardUserDefaults] stringForKey:@"DBDateFormat2"]];
 	
 	[returnHTML replaceOccurrencesOfString:@"%PatientDOB%" withString:[OsiriXHTTPConnection nonNilString:[dobDateFormat stringFromDate:[study valueForKey:@"dateOfBirth"]]] options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
-	[returnHTML replaceOccurrencesOfString:@"%StudyDate%" withString:[WebServicesMethods iPhoneCompatibleNumericalFormat:[OsiriXHTTPConnection nonNilString:[dateFormat stringFromDate:[study valueForKey:@"date"]]]] options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
+	[returnHTML replaceOccurrencesOfString:@"%StudyDate%" withString:[OsiriXHTTPConnection iPhoneCompatibleNumericalFormat:[OsiriXHTTPConnection nonNilString:[dateFormat stringFromDate:[study valueForKey:@"date"]]]] options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
 	
 	NSArray *seriesArray = [study valueForKey:@"imageSeries"];
 	
@@ -488,7 +489,7 @@
 		
 		NSString *date = [dateFormat stringFromDate:[study valueForKey:@"date"]];
 		
-		[tempHTML replaceOccurrencesOfString:@"%StudyDate%" withString:[NSString stringWithFormat:@"%@", [WebServicesMethods iPhoneCompatibleNumericalFormat:date]] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+		[tempHTML replaceOccurrencesOfString:@"%StudyDate%" withString:[NSString stringWithFormat:@"%@", [OsiriXHTTPConnection iPhoneCompatibleNumericalFormat:date]] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 		[tempHTML replaceOccurrencesOfString:@"%SeriesCount%" withString:[NSString stringWithFormat:@"%d Series", count] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 		[tempHTML replaceOccurrencesOfString:@"%StudyComment%" withString:[OsiriXHTTPConnection nonNilString:[study valueForKey:@"comment"]] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 		[tempHTML replaceOccurrencesOfString:@"%StudyDescription%" withString:[OsiriXHTTPConnection nonNilString:[study valueForKey:@"studyName"]] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
@@ -797,62 +798,62 @@
 	[e detachFromCurrentThread];
 }
 
-//- (void)exportMovieToiPhone:(NSString *)inFile newFileName:(NSString *)outFile;
-//{
-//    NSError *error = nil;
-//	
-//	QTMovie *aMovie = nil;
-//	
-//    // create a QTMovie from the file
-//	if( [AppController mainThread] != [NSThread currentThread])
-//	{
-//		[QTMovie enterQTKitOnThread];
-//		
-//		NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: inFile, @"file", nil];
-//		[self performSelectorOnMainThread: @selector( movieWithFile:) withObject: dict waitUntilDone: YES];
-//		aMovie = [dict objectForKey:@"movie"];
-//		[aMovie attachToCurrentThread];
-//	}
-//	else
-//	{
-//		aMovie = [QTMovie movieWithFile: inFile error:nil];
-//	}
-//	
-//    if (aMovie && nil == error)
-//	{
-//		if (NO == [aMovie attributeForKey:QTMovieHasApertureModeDimensionsAttribute])
-//		{
-//			[aMovie generateApertureModeDimensions];
-//		}
-//		
-//		[aMovie setAttribute:QTMovieApertureModeClean forKey:QTMovieApertureModeAttribute];
-//		
-//		NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-//										   [NSNumber numberWithBool:YES], QTMovieExport,
-//										   [NSNumber numberWithLong:'M4VP'], QTMovieExportType, nil];
-//		
-//		BOOL status = [aMovie writeToFile:outFile withAttributes:dictionary];
-//		
-//		if (NO == status)
-//		{
-//            // something didn't go right during the export process
-//            NSLog(@"%@ encountered a problem when exporting.\n", [outFile lastPathComponent]);
-//        }
-//    }
-//	else
-//	{
-//        // couldn't open the movie
-//        //NSAlert *alert = [NSAlert alertWithError:error];
-//        //[alert runModal];
-//		NSLog(@"exportMovieToiPhone Error : %@", error);
-//    }
-//	
-//	if( [AppController mainThread] != [NSThread currentThread])
-//	{
-//		[aMovie detachFromCurrentThread];
-//		[QTMovie exitQTKitOnThread];
-//	}
-//}
+- (void)exportMovieToiPhone:(NSString *)inFile newFileName:(NSString *)outFile;
+{
+    NSError *error = nil;
+	
+	QTMovie *aMovie = nil;
+	
+    // create a QTMovie from the file
+	if( [AppController mainThread] != [NSThread currentThread])
+	{
+		[QTMovie enterQTKitOnThread];
+		
+		NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: inFile, @"file", nil];
+		[self performSelectorOnMainThread: @selector( movieWithFile:) withObject: dict waitUntilDone: YES];
+		aMovie = [dict objectForKey:@"movie"];
+		[aMovie attachToCurrentThread];
+	}
+	else
+	{
+		aMovie = [QTMovie movieWithFile: inFile error:nil];
+	}
+	
+    if (aMovie && nil == error)
+	{
+		if (NO == [aMovie attributeForKey:QTMovieHasApertureModeDimensionsAttribute])
+		{
+			[aMovie generateApertureModeDimensions];
+		}
+		
+		[aMovie setAttribute:QTMovieApertureModeClean forKey:QTMovieApertureModeAttribute];
+		
+		NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+										   [NSNumber numberWithBool:YES], QTMovieExport,
+										   [NSNumber numberWithLong:'M4VP'], QTMovieExportType, nil];
+		
+		BOOL status = [aMovie writeToFile:outFile withAttributes:dictionary];
+		
+		if (NO == status)
+		{
+            // something didn't go right during the export process
+            NSLog(@"%@ encountered a problem when exporting.\n", [outFile lastPathComponent]);
+        }
+    }
+	else
+	{
+        // couldn't open the movie
+        //NSAlert *alert = [NSAlert alertWithError:error];
+        //[alert runModal];
+		NSLog(@"exportMovieToiPhone Error : %@", error);
+    }
+	
+	if( [AppController mainThread] != [NSThread currentThread])
+	{
+		[aMovie detachFromCurrentThread];
+		[QTMovie exitQTKitOnThread];
+	}
+}
 
 - (void) generateMovie: (NSMutableDictionary*) dict
 {
@@ -945,19 +946,17 @@
 		[context unlock];	// It's important because writeMovie will call performonmainthread !!!
 		
 		
-		[[NSFileManager defaultManager] removeItemAtPath: [outFile stringByAppendingString: @" dir"] error: nil];
-		[[NSFileManager defaultManager] createDirectoryAtPath: [outFile stringByAppendingString: @" dir"] attributes: nil];
+		[[NSFileManager defaultManager] removeItemAtPath: [fileName stringByAppendingString: @" dir"] error: nil];
+		[[NSFileManager defaultManager] createDirectoryAtPath: [fileName stringByAppendingString: @" dir"] attributes: nil];
 		
 		int inc = 0;
 		for( NSImage *img in imagesArray)
 		{
-			[[img TIFFRepresentation] writeToFile: [[outFile stringByAppendingString: @" dir"] stringByAppendingPathComponent: [NSString stringWithFormat: @"%6.6d", inc]] atomically: YES];
+			[[img TIFFRepresentationUsingCompression: NSTIFFCompressionLZW factor: 1.0] writeToFile: [[fileName stringByAppendingString: @" dir"] stringByAppendingPathComponent: [NSString stringWithFormat: @"%6.6d.tiff", inc]] atomically: YES];
 			inc++;
 		}
 		
 		NSTask *theTask = [[[NSTask alloc] init] autorelease];
-		
-		isiPhone = YES;
 		
 		if( isiPhone)
 		{
@@ -1067,10 +1066,6 @@
 		
 		isiPhone = isiPhoneOS;
 	}
-	//	
-	//	if( isiPhone)
-	//		NSLog(@"isiPhone : %d", isiPhone);
-	
 	
 	int totalLength;
 	
@@ -1155,7 +1150,7 @@
 			{
 				NSMutableString *tempString = [NSMutableString stringWithString:albumListItemString];
 				[tempString replaceOccurrencesOfString:@"%AlbumName%" withString:[album valueForKey:@"name"] options:NSLiteralSearch range:NSMakeRange(0, [tempString length])];
-				[tempString replaceOccurrencesOfString:@"%AlbumNameURL%" withString:[WebServicesMethods encodeURLString:[album valueForKey:@"name"]] options:NSLiteralSearch range:NSMakeRange(0, [tempString length])];
+				[tempString replaceOccurrencesOfString:@"%AlbumNameURL%" withString:[OsiriXHTTPConnection encodeURLString:[album valueForKey:@"name"]] options:NSLiteralSearch range:NSMakeRange(0, [tempString length])];
 				[returnHTML appendString:tempString];
 			}
 		}
@@ -1411,7 +1406,7 @@
 		{
 			NSMutableString *search = [NSMutableString string];
 			NSString *searchString = [NSString stringWithString:[[parameters objectForKey:@"search"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-			searchString = [WebServicesMethods decodeURLString:searchString];
+			searchString = [OsiriXHTTPConnection decodeURLString:searchString];
 			
 			NSArray *components = [searchString componentsSeparatedByString:@" "];
 			NSMutableArray *newComponents = [NSMutableArray array];
@@ -1431,7 +1426,7 @@
 		{
 			NSMutableString *search = [NSMutableString string];
 			NSString *searchString = [NSString stringWithString: [[parameters objectForKey:@"searchID"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-			searchString = [WebServicesMethods decodeURLString:searchString];
+			searchString = [OsiriXHTTPConnection decodeURLString:searchString];
 			
 			NSArray *components = [searchString componentsSeparatedByString:@" "];
 			NSMutableArray *newComponents = [NSMutableArray array];
@@ -1459,8 +1454,8 @@
 		{
 			if(![[parameters objectForKey:@"album"] isEqualToString:@""])
 			{
-				html = [self htmlStudyListForStudies: [self studiesForAlbum:[WebServicesMethods decodeURLString:[[parameters objectForKey:@"album"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]] settings: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: isMacOS], @"MacOS", nil]];
-				pageTitle = [WebServicesMethods decodeURLString:[[parameters objectForKey:@"album"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+				html = [self htmlStudyListForStudies: [self studiesForAlbum:[OsiriXHTTPConnection decodeURLString:[[parameters objectForKey:@"album"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]] settings: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: isMacOS], @"MacOS", nil]];
+				pageTitle = [OsiriXHTTPConnection decodeURLString:[[parameters objectForKey:@"album"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
 			}
 		}
 		
@@ -1609,8 +1604,8 @@
 		NSString *album = [OsiriXHTTPConnection nonNilString:[parameters objectForKey:@"album"]];
 		
 		[templateString replaceOccurrencesOfString:@"%browse%" withString:browse options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-		[templateString replaceOccurrencesOfString:@"%search%" withString:[WebServicesMethods decodeURLString:search] options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-		[templateString replaceOccurrencesOfString:@"%album%" withString:[WebServicesMethods decodeURLString:[album stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+		[templateString replaceOccurrencesOfString:@"%search%" withString:[OsiriXHTTPConnection decodeURLString:search] options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+		[templateString replaceOccurrencesOfString:@"%album%" withString:[OsiriXHTTPConnection decodeURLString:[album stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 		
 		NSPredicate *browsePredicate;
 		if([[parameters allKeys] containsObject:@"id"])

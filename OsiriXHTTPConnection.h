@@ -1,6 +1,7 @@
 #import <Cocoa/Cocoa.h>
 #import "HTTPConnection.h"
 
+extern NSString* asciiString (NSString* name);
 
 @interface OsiriXHTTPConnection : HTTPConnection
 {
@@ -10,5 +11,9 @@
 	NSLock *sendLock, *running;
 	NSString *ipAddressString;
 }
+
++ (NSString*)decodeURLString:(NSString*)aString;
++ (NSString*)iPhoneCompatibleNumericalFormat:(NSString*)aString;
++ (NSString*)encodeURLString:(NSString*)aString;
 
 @end

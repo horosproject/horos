@@ -33,7 +33,7 @@
 
 #import <AppKit/AppKit.h>
 #import "XMLRPCMethods.h"
-#import "WebServicesMethods.h"
+#import "ThreadPoolServer.h"
 
 #import "IChatTheatreDelegate.h"
 
@@ -113,7 +113,7 @@ extern "C"
 	NSTimer							*updateTimer;
 	DCMNetServiceDelegate			*dicomNetServiceDelegate;
 	XMLRPCMethods					*XMLRPCServer;
-	WebServicesMethods				*webServer;
+	ThreadPoolServer				*webServer;
 	
 	BOOL							checkAllWindowsAreVisibleIsOff;
 }

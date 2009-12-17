@@ -26,7 +26,6 @@
 #import "NSFont_OpenGL.h"
 #import "Survey.h"
 #import "DicomFile.h"
-#import "HTTPServer.h"
 #import <OsiriX/DCM.h>
 #import "PluginManager.h"
 #import "DCMTKQueryRetrieveSCP.h"
@@ -47,6 +46,7 @@
 #import "OSIWindowController.h"
 #import "Notifications.h"
 #import "WaitRendering.h"
+#import "OsiriXHTTPConnection.h"
 
 #define BUILTIN_DCMTK YES
 
@@ -1674,7 +1674,22 @@ static NSDate *lastWarningDate = nil;
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"httpWebServer"])
 	{
-		if(webServer == nil) webServer = [[WebServicesMethods alloc] init];
+		if( webServer == nil) webServer = [[ThreadPoolServer alloc] init];
+//		if( webServer == nil) webServer = [[ThreadPerConnectionServer alloc] init];
+		
+		[webServer setConnectionClass: [OsiriXHTTPConnection class]];
+		
+		[webServer setType:@"_http._tcp."];
+		[webServer setPort: [[NSUserDefaults standardUserDefaults] integerForKey:@"httpWebServerPort"]];
+		[webServer setDocumentRoot:[NSURL fileURLWithPath:[@"~/Sites" stringByExpandingTildeInPath]]];
+		
+		NSError *error;
+		BOOL success = [webServer start:&error];
+		
+		if( success == NO)
+		{
+			NSLog( @"************ WEB SERVER ERROR: %@", error);
+		}
 	}
 	#endif
 	
