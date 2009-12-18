@@ -140,6 +140,22 @@
 
 @implementation OpenGLScreenReader
 
+// Take a "snapshot" of the screen and save the image to a TIFF file on disk
++ (void) screenSnapshotToFilePath:(NSString*)path;
+{
+    // Create a screen reader object
+	OpenGLScreenReader *mOpenGLScreenReader = [[OpenGLScreenReader alloc] init];
+    
+	// Read the screen bits
+    [mOpenGLScreenReader readFullScreenToBuffer];
+	
+    // Write our image to a TIFF file on disk
+    [mOpenGLScreenReader createTIFFImageFileToPath:path];
+	
+    // Finished, so let's cleanup
+    [mOpenGLScreenReader release];
+}
+
 #pragma mark ---------- Initialization ----------
 
 -(id) init

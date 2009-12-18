@@ -115,6 +115,8 @@
 	[_calledAET release];
 	[_hostname release];
 	[_extraParameters release];
+	
+	// TLS
 	[_privateKeyFile release];
 	[_certificateFile release];
 	[_passwd release];

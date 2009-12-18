@@ -16,6 +16,29 @@
 
 #import <Cocoa/Cocoa.h>
 
+typedef enum
+{
+	PasswordNone = 0,
+	PasswordAsk,
+	PasswordString
+} TLSPasswordType;
+
+typedef enum
+{
+	PEM = 0,
+	DER
+} TLSFileFormat;
+
+typedef enum
+{
+	RequirePeerCertificate = 0,
+	VerifyPeerCertificate,
+	IgnorePeerCertificate
+} TLSCertificateVerificationType;
+
+#define TLS_SEED_FILE @"/tmp/OsiriXTLSSeed"
+#define TLS_WRITE_SEED_FILE "/tmp/OsiriXTLSSeedWrite"
+
 int runStoreSCU(const char *myAET, const char*peerAET, const char*hostname, int port, NSDictionary *extraParameters);
 
 /** \brief  DICOM Send 
@@ -32,9 +55,6 @@ int runStoreSCU(const char *myAET, const char*peerAET, const char*hostname, int 
 	BOOL _shouldAbort;
 	int _transferSyntax;
 	float _compression;
-	
-	BOOL _secureConnection;
-	BOOL _doAuthenticate;
 
 	NSMutableArray *_filesToSend;
 	int _numberOfFiles;
@@ -43,6 +63,22 @@ int runStoreSCU(const char *myAET, const char*peerAET, const char*hostname, int 
 	NSString *_patientName;
 	NSString *_studyDescription; 
 	id _logEntry;
+	
+	//TLS settings
+	BOOL _secureConnection;
+	BOOL _doAuthenticate;
+	NSString *_privateKeyFile;
+	NSString *_certificateFile;
+	TLSPasswordType passwordType;
+	NSString *_passwd;
+	int  _keyFileFormat;
+	NSArray *_cipherSuites;
+	BOOL _useTrustedCA;
+	NSString *_trustedCAURL;
+	const char *_readSeedFile;
+	const char *_writeSeedFile;
+	TLSCertificateVerificationType certVerification;
+	const char *_dhparam;	
 }
 
 - (id) initWithCallingAET:(NSString *)myAET  

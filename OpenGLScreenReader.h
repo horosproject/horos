@@ -57,6 +57,7 @@
     long mByteWidth, mWidth, mHeight;
 }
 
++ (void) screenSnapshotToFilePath:(NSString*)path;
 - (void) readPartialScreenToBuffer: (size_t) width bufferHeight:(size_t) height bufferBaseAddress: (void *) baseAddress;
 - (void) readFullScreenToBuffer;
 - (void) createTIFFImageFileOnDesktop;

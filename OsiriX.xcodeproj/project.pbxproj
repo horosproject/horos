@@ -374,6 +374,7 @@
 		A9F6E55608FEB5C00060285A /* sameWidthsSplitView.tif in Resources */ = {isa = PBXBuildFile; fileRef = A9F6E55508FEB5C00060285A /* sameWidthsSplitView.tif */; };
 		A9F8A4180B5F6460002CC763 /* CLUTOpacityView.h in Headers */ = {isa = PBXBuildFile; fileRef = A9F8A4160B5F6460002CC763 /* CLUTOpacityView.h */; };
 		A9F8A4190B5F6460002CC763 /* CLUTOpacityView.mm in Sources */ = {isa = PBXBuildFile; fileRef = A9F8A4170B5F6460002CC763 /* CLUTOpacityView.mm */; };
+		A9FE55F410DB7DCF000D0395 /* OpenGLScreenReader.h in Headers */ = {isa = PBXBuildFile; fileRef = A930149210DA63C200AF0051 /* OpenGLScreenReader.h */; };
 		A9FEC1400907EBA600B218BE /* orthogonalReslice.tif in Resources */ = {isa = PBXBuildFile; fileRef = A9FEC13F0907EBA600B218BE /* orthogonalReslice.tif */; };
 		AB0128640635991400A74AA1 /* QuicktimeExport.h in Headers */ = {isa = PBXBuildFile; fileRef = AB0128620635991400A74AA1 /* QuicktimeExport.h */; };
 		AB0128650635991400A74AA1 /* QuicktimeExport.m in Sources */ = {isa = PBXBuildFile; fileRef = AB0128630635991400A74AA1 /* QuicktimeExport.m */; };
@@ -18867,6 +18868,7 @@
 				8417228A10D9043B001A833F /* OsiriXHTTPConnection.h in Headers */,
 				841722B010D90595001A833F /* DDKeychain.h in Headers */,
 				AB91224E10DA7199006E0AAB /* BonjourPublisher.h in Headers */,
+				A9FE55F410DB7DCF000D0395 /* OpenGLScreenReader.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

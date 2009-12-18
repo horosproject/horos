@@ -137,6 +137,5 @@
 - (NSString*)TLSSavedPrivateKeyPasswordForServer:(NSDictionary*)server;
 - (IBAction)TLSAskPrivateKeyPasswordCancel:(id)sender;
 - (IBAction)TLSAskPrivateKeyPasswordOK:(id)sender;
-+ (void)screenSnapshot;
 
 @end

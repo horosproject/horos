@@ -270,7 +270,7 @@ static const char *GetPrivateIP()
 		// pseudo random generator options.
 		// We initialize the pseudo-random number generator with the content of the screen which is is hardly predictable for an attacker
 		// see http://www.mevis-research.de/~meyer/dcmtk/docs_352/dcmtls/randseed.txt
-		[QueryController screenSnapshot]; 
+		[OpenGLScreenReader screenSnapshotToFilePath:TLS_SEED_FILE];
 		[args addObject:@"--seed"]; // seed random generator with contents of f
 		[args addObject:TLS_SEED_FILE];
 		
@@ -2675,6 +2675,8 @@ static const char *GetPrivateIP()
 	studyArrayInstanceUID = nil;
 	[queryArrayPrefs release];
 	
+	[TLSAskPasswordValue release];
+	[TLSAskPasswordServerName release];
 	[TLSPasswordValues release];
 	
 	[super dealloc];
@@ -2965,22 +2967,6 @@ static const char *GetPrivateIP()
 - (IBAction)TLSAskPrivateKeyPasswordOK:(id)sender;
 {
 	[NSApp stopModal];
-}
-
-// Take a "snapshot" of the screen and save the image to a TIFF file on disk
-+ (void)screenSnapshot;
-{
-    // Create a screen reader object
-	OpenGLScreenReader *mOpenGLScreenReader = [[OpenGLScreenReader alloc] init];
-    
-	// Read the screen bits
-    [mOpenGLScreenReader readFullScreenToBuffer];
-	
-    // Write our image to a TIFF file on disk
-    [mOpenGLScreenReader createTIFFImageFileToPath:TLS_SEED_FILE];
-	
-    // Finished, so let's cleanup
-    [mOpenGLScreenReader release];
 }
 
 @end

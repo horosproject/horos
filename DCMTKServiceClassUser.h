@@ -91,19 +91,13 @@ typedef enum
 	TLSPasswordType passwordType;
 	NSString *_passwd;
 	int  _keyFileFormat;
-	
 	NSArray *_cipherSuites;
-
 	BOOL _useTrustedCA;
 	NSString *_trustedCAURL;
-	
 	const char *_readSeedFile;
 	const char *_writeSeedFile;
-	//DcmCertificateVerification _certVerification;
 	TLSCertificateVerificationType certVerification;
 	const char *_dhparam;
-
-
 }
 
 - (id) initWithCallingAET:(NSString *)myAET  

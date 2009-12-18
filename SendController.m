@@ -22,10 +22,14 @@
 #import "DCMTKStoreSCU.h"
 #import "MutableArrayCategory.h"
 #import "Notifications.h"
+#import "QueryController.h"
 
 static volatile int sendControllerObjects = 0;
+static NSMutableDictionary *TLSPasswordValues = nil;
 
 @implementation SendController
+
+@synthesize TLSAskPasswordValue, TLSAskPasswordServerName;
 
 +(int) sendControllerObjects
 {
@@ -143,6 +147,9 @@ static volatile int sendControllerObjects = 0;
 	[_lock lock];
 	[_lock unlock];
 	[_lock release];
+	
+	[TLSAskPasswordValue release];
+	[TLSAskPasswordServerName release];
 	
 	[super dealloc];
 }
@@ -263,15 +270,26 @@ static volatile int sendControllerObjects = 0;
 			
 			if( files2Send)
 			{
-				_waitSendWindow = [[Wait alloc] initWithString: NSLocalizedString(@"Sending files...", nil) :NO];
-				[_waitSendWindow  setTarget:self];
-				[_waitSendWindow showWindow:self];
-				[[_waitSendWindow progress] setMaxValue:[files2Send count]];
-				
-				[_waitSendWindow setCancel:YES];
-				
-				sendROIs = [[NSUserDefaults standardUserDefaults] boolForKey:@"sendROIs"];
-				[NSThread detachNewThreadSelector: @selector(sendDICOMFilesOffis:) toTarget:self withObject: objectsToSend];
+				[_destinationServer release];
+				_destinationServer = [[self TLSAskPrivateKeyPasswordForServer:[self server]] retain];
+				if([self TLSIsValidPrivateKeyPassword:[_destinationServer objectForKey:@"TLSAskPasswordValue"] forServer:_destinationServer])
+				{
+					_waitSendWindow = [[Wait alloc] initWithString: NSLocalizedString(@"Sending files...", nil) :NO];
+					[_waitSendWindow  setTarget:self];
+					[_waitSendWindow showWindow:self];
+					[[_waitSendWindow progress] setMaxValue:[files2Send count]];
+					
+					[_waitSendWindow setCancel:YES];
+					
+					sendROIs = [[NSUserDefaults standardUserDefaults] boolForKey:@"sendROIs"];
+					[NSThread detachNewThreadSelector: @selector(sendDICOMFilesOffis:) toTarget:self withObject: objectsToSend];
+				}
+				else
+				{
+					NSRunAlertPanel(NSLocalizedString(@"TLS Connection Error", @""), NSLocalizedString(@"Wrong password for Private Key.", @""), NSLocalizedString(@"OK", @""), nil, nil);
+					[_lock unlock];
+					sendControllerObjects--;
+				}
 			}
 			else [_lock unlock];	// Will release the object
 		}
@@ -286,16 +304,26 @@ static volatile int sendControllerObjects = 0;
 
 - (void) sendToNode: (NSDictionary*) node
 {
-	_destinationServer = [node retain];
-	
-	_waitSendWindow = [[Wait alloc] initWithString: NSLocalizedString(@"Sending files...", nil) :NO];
-	[_waitSendWindow  setTarget:self];
-	[_waitSendWindow showWindow:self];
-	[[_waitSendWindow progress] setMaxValue:[_files count]];
-	
-	[_waitSendWindow setCancel:YES];
-	sendROIs = [[NSUserDefaults standardUserDefaults] boolForKey:@"sendROIs"];
-	[NSThread detachNewThreadSelector: @selector(sendDICOMFilesOffis:) toTarget:self withObject: _files];
+	//	_destinationServer = [node retain];
+	[_destinationServer release];
+	_destinationServer = [[self TLSAskPrivateKeyPasswordForServer:node] retain];
+	if([self TLSIsValidPrivateKeyPassword:[_destinationServer objectForKey:@"TLSAskPasswordValue"] forServer:_destinationServer])
+	{
+		_waitSendWindow = [[Wait alloc] initWithString: NSLocalizedString(@"Sending files...", nil) :NO];
+		[_waitSendWindow  setTarget:self];
+		[_waitSendWindow showWindow:self];
+		[[_waitSendWindow progress] setMaxValue:[_files count]];
+		
+		[_waitSendWindow setCancel:YES];
+		sendROIs = [[NSUserDefaults standardUserDefaults] boolForKey:@"sendROIs"];
+		[NSThread detachNewThreadSelector: @selector(sendDICOMFilesOffis:) toTarget:self withObject: _files];
+	}
+	else
+	{
+		NSRunAlertPanel(NSLocalizedString(@"TLS Connection Error", @""), NSLocalizedString(@"Wrong password for Private Key.", @""), NSLocalizedString(@"OK", @""), nil, nil);
+		[_lock unlock];
+		sendControllerObjects--;
+	}
 }
 
 #pragma mark Sending functions	
@@ -486,5 +514,88 @@ static volatile int sendControllerObjects = 0;
 	_abort = YES;
 }
 
+#pragma mark TLS
+
+- (NSDictionary*)TLSAskPrivateKeyPasswordForServer:(NSDictionary*)server;
+{
+	if([[server objectForKey:@"TLSEnabled"] boolValue])
+	{
+		TLSPasswordType passwordType = (TLSPasswordType)[[server objectForKey:@"TLSPrivateKeyFilePasswordType"] intValue];
+		if(passwordType==PasswordAsk)
+		{
+			self.TLSAskPasswordServerName = [server objectForKey:@"Description"];
+			self.TLSAskPasswordValue = @"";
+			
+			// check if the user already provided a correct password
+			NSString *pass = [self TLSSavedPrivateKeyPasswordForServer:server];
+			int result;
+			
+			if(pass)
+			{
+				self.TLSAskPasswordValue = pass;
+				result = NSRunStoppedResponse; // to artificially pass the next if()
+			}
+			else // no (correct) password was previously provided, so we ask it to the user
+			{
+				[NSApp beginSheet: TLSAskPasswordWindow
+				   modalForWindow: [NSApp mainWindow]
+					modalDelegate: nil
+				   didEndSelector: nil
+					  contextInfo: nil];
+				
+				result = [NSApp runModalForWindow: TLSAskPasswordWindow];
+				[TLSAskPasswordWindow makeFirstResponder: nil];
+				
+				[NSApp endSheet: TLSAskPasswordWindow];
+				[TLSAskPasswordWindow orderOut: self];
+			}
+			
+			NSMutableDictionary *newServer = [NSMutableDictionary dictionaryWithDictionary:server];
+			
+			if(result == NSRunStoppedResponse)
+			{
+				if(self.TLSAskPasswordValue)
+				{
+					[newServer setObject:self.TLSAskPasswordValue forKey:@"TLSAskPasswordValue"];
+					
+					// if the provided password is correct, we save it for the current session (until OsiriX quits)
+					if([self TLSIsValidPrivateKeyPassword:self.TLSAskPasswordValue forServer:server])
+						[self TLSSavePrivateKeyPassword:self.TLSAskPasswordValue forServer:server];
+				}
+			}
+			
+			return [NSDictionary dictionaryWithDictionary:newServer];
+		}
+	}
+	return server;
+}
+
+- (BOOL)TLSIsValidPrivateKeyPassword:(NSString*)password forServer:(NSDictionary*)server;
+{
+	NSMutableDictionary *newServer = [NSMutableDictionary dictionaryWithDictionary:server];
+	[newServer setObject:password forKey:@"TLSAskPasswordValue"];
+	return [QueryController echoServer:newServer]==1;
+}
+
+- (void)TLSSavePrivateKeyPassword:(NSString*)password forServer:(NSDictionary*)server;
+{
+	if(!TLSPasswordValues) TLSPasswordValues = [[NSMutableDictionary dictionary] retain];
+	[TLSPasswordValues setObject:password forKey:[server objectForKey:@"TLSPrivateKeyFileURL"]];
+}
+
+- (NSString*)TLSSavedPrivateKeyPasswordForServer:(NSDictionary*)server;
+{
+	return [TLSPasswordValues objectForKey:[server objectForKey:@"TLSPrivateKeyFileURL"]];
+}
+
+- (IBAction)TLSAskPrivateKeyPasswordCancel:(id)sender;
+{
+	[NSApp abortModal];
+}
+
+- (IBAction)TLSAskPrivateKeyPasswordOK:(id)sender;
+{
+	[NSApp stopModal];
+}
 
 @end

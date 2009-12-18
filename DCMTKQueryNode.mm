@@ -1149,7 +1149,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 				[queryException raise];
 			}
 			
-			if(_useTrustedCA) // TODO: use Trusted CA
+			if(_useTrustedCA)
 			{
 				BOOL isDirectory = NO;
 				BOOL fileExists = [[NSFileManager defaultManager] fileExistsAtPath:_trustedCAURL isDirectory:&isDirectory];
@@ -1197,9 +1197,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 			}
 			
 			if (_doAuthenticate)
-			{
-				// TODO: handle password (ask)
-				
+			{				
 				if (_passwd) tLayer->setPrivateKeyPasswd([_passwd cStringUsingEncoding:NSUTF8StringEncoding]);
 				
 				if (TCS_ok != tLayer->setPrivateKeyFile([_privateKeyFile cStringUsingEncoding:NSUTF8StringEncoding], _keyFileFormat))
