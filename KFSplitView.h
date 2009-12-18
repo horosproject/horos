@@ -66,6 +66,6 @@
 
 // notifications: 'object' will be sender, 'userInfo' will have key @"subview".
 // The delegate is automatically registered to receive these notifications.
-extern NSString *KFSplitViewDidCollapseSubviewNotification;
-extern NSString *KFSplitViewDidExpandSubviewNotification;
+extern NSString* const KFSplitViewDidCollapseSubviewNotification;
+extern NSString* const KFSplitViewDidExpandSubviewNotification;
 

@@ -32,8 +32,8 @@
 @end
 
 // strings for notification center
-extern NSString* BLAuthenticatedNotification;
-extern NSString* BLDeauthenticatedNotification;
+extern NSString* const BLAuthenticatedNotification;
+extern NSString* const BLDeauthenticatedNotification;
 
 
 
