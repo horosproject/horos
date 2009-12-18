@@ -889,12 +889,13 @@ static NSMutableDictionary *movieLock = nil;
 			maxHeight = maxResolution;
 		}
 		
+		
+		NSMutableArray *pixs = [NSMutableArray arrayWithCapacity: [dicomImageArray count]];
+		
 		[[[BrowserController currentBrowser] managedObjectContext] lock];
 		
 		for (DicomImage *im in dicomImageArray)
 		{
-			NSAutoreleasePool *pool2 = [[NSAutoreleasePool alloc] init];
-			
 			DCMPix* dcmPix = [[DCMPix alloc] initWithPath: [im valueForKey:@"completePathResolved"] :0 :1 :nil :[[im valueForKey:@"frameID"] intValue] :[[im valueForKeyPath:@"series.id"] intValue] isBonjour:NO imageObj:im];
 			
 			if(dcmPix)
@@ -913,42 +914,45 @@ static NSMutableDictionary *movieLock = nil;
 				else
 					[dcmPix checkImageAvailble:[dcmPix savedWW] :[dcmPix savedWL]];
 				
-				NSImage *im = [dcmPix image];
-				
-				int width = [dcmPix pwidth];
-				int height = [dcmPix pheight];
-				
-				BOOL resize = NO;
-				
-				if(width>maxWidth)
-				{
-					height = height * maxWidth / width;
-					width = maxWidth;
-					resize = YES;
-				}
-				
-				if(height>maxHeight)
-				{
-					width = width * maxHeight / height;
-					height = maxHeight;
-					resize = YES;
-				}
-				
-				NSImage *newImage;
-				
-				if( resize)
-					newImage = [im imageByScalingProportionallyToSize:NSMakeSize(width, height)];
-				else
-					newImage = im;
-				
-				[imagesArray addObject: newImage];
+				[pixs addObject: dcmPix];
 				[dcmPix release];
 			}
-			
-			[pool2 release];
 		}
 		
 		[[[BrowserController currentBrowser] managedObjectContext] unlock];
+				
+		for (DCMPix *dcmPix in pixs)
+		{
+			NSImage *im = [dcmPix image];
+			
+			int width = [dcmPix pwidth];
+			int height = [dcmPix pheight];
+			
+			BOOL resize = NO;
+			
+			if(width>maxWidth)
+			{
+				height = height * maxWidth / width;
+				width = maxWidth;
+				resize = YES;
+			}
+			
+			if(height>maxHeight)
+			{
+				width = width * maxHeight / height;
+				height = maxHeight;
+				resize = YES;
+			}
+			
+			NSImage *newImage;
+			
+			if( resize)
+				newImage = [im imageByScalingProportionallyToSize:NSMakeSize(width, height)];
+			else
+				newImage = im;
+			
+			[imagesArray addObject: newImage];
+		}
 		
 		[[NSFileManager defaultManager] removeItemAtPath: [fileName stringByAppendingString: @" dir"] error: nil];
 		[[NSFileManager defaultManager] createDirectoryAtPath: [fileName stringByAppendingString: @" dir"] attributes: nil];
@@ -1101,10 +1105,11 @@ static NSMutableDictionary *movieLock = nil;
 		if([selected count])
 			[parameters setObject:selected forKey:@"selected"];
 	}
-	//NSLog(@"parameters : %@", parameters);	
+	//NSLog(@"parameters : %@", parameters);
 	
 	NSString *portString = [parameters objectForKey: @"dicomcstoreport"];
-	if( portString == 0L) portString = @"0";
+	if( portString == 0L)
+		portString = @"11112";
 	
 	// find the name of the requested file
 	urlComponenents = [(NSString*)[urlComponenents objectAtIndex:0] componentsSeparatedByString:@"?"];
@@ -1965,5 +1970,5 @@ static NSMutableDictionary *movieLock = nil;
 	
 	return [[[HTTPDataResponse alloc] initWithData: data] autorelease];
 }
-
+	
 @end
