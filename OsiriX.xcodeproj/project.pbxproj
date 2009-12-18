@@ -207,6 +207,7 @@
 		8440039A0E8CF99500A00EBD /* dciodvfy in Resources */ = {isa = PBXBuildFile; fileRef = 844003990E8CF99500A00EBD /* dciodvfy */; };
 		8447756C10BD378100F62DAB /* OsiriX Lite.zip in Frameworks */ = {isa = PBXBuildFile; fileRef = ABB5F95810A81736003924FD /* OsiriX Lite.zip */; };
 		8459A7270F5D63EF00146B28 /* VREmpty.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8459A7250F5D63EF00146B28 /* VREmpty.xib */; };
+		8474A3F810DBE7F300D192D0 /* user.xcdatamodel in Sources */ = {isa = PBXBuildFile; fileRef = 8474A3F710DBE7F300D192D0 /* user.xcdatamodel */; };
 		8483ABA60E1BE33900C21B31 /* crossCursor.tif in Resources */ = {isa = PBXBuildFile; fileRef = 8483ABA50E1BE33900C21B31 /* crossCursor.tif */; };
 		848631C30FE77E1F00B96E99 /* jpeg_memdest.h in Headers */ = {isa = PBXBuildFile; fileRef = 848631C10FE77E1F00B96E99 /* jpeg_memdest.h */; };
 		848631C40FE77E1F00B96E99 /* jpeg_memdest.c in Sources */ = {isa = PBXBuildFile; fileRef = 848631C20FE77E1F00B96E99 /* jpeg_memdest.c */; };
@@ -8066,6 +8067,7 @@
 		844003990E8CF99500A00EBD /* dciodvfy */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = dciodvfy; path = Binaries/dciodvfy; sourceTree = "<group>"; };
 		844719AF0FD8EF50003BFDF8 /* OsiriX.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = OsiriX.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8459A7260F5D63EF00146B28 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/VREmpty.xib; sourceTree = "<group>"; };
+		8474A3F710DBE7F300D192D0 /* user.xcdatamodel */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = wrapper.xcdatamodel; path = user.xcdatamodel; sourceTree = "<group>"; };
 		8483ABA50E1BE33900C21B31 /* crossCursor.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = crossCursor.tif; path = Cursors/crossCursor.tif; sourceTree = "<group>"; };
 		848631C10FE77E1F00B96E99 /* jpeg_memdest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = jpeg_memdest.h; path = Papyrus3/jpeg_memdest.h; sourceTree = "<group>"; };
 		848631C20FE77E1F00B96E99 /* jpeg_memdest.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = jpeg_memdest.c; path = Papyrus3/jpeg_memdest.c; sourceTree = "<group>"; };
@@ -12145,6 +12147,7 @@
 			isa = PBXGroup;
 			children = (
 				CE0718FD0C71D5F3006332F3 /* OsiriXDB_DataModel.xcdatamodel */,
+				8474A3F710DBE7F300D192D0 /* user.xcdatamodel */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -23245,6 +23248,7 @@
 				8417228B10D9043B001A833F /* OsiriXHTTPConnection.m in Sources */,
 				841722B110D90595001A833F /* DDKeychain.m in Sources */,
 				A930149510DA63C200AF0051 /* OpenGLScreenReader.m in Sources */,
+				8474A3F810DBE7F300D192D0 /* user.xcdatamodel in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
