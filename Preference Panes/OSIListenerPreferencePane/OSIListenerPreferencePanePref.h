@@ -29,6 +29,7 @@
 	IBOutlet NSButton *singleProcessButton;
 	IBOutlet NSPopUpButton *logDurationPopup;
 	IBOutlet SFAuthorizationView *_authView;
+	IBOutlet NSWindow *webServerSettingsWindow;
 }
 
 - (void) mainViewDidLoad;
@@ -42,4 +43,5 @@
 - (IBAction)setCheckInterval:(id) sender;
 - (IBAction)setDecompress:(id)sender;
 - (IBAction)setCompress:(id)sender;
+- (IBAction)webServerSettings:(id)sender;
 @end

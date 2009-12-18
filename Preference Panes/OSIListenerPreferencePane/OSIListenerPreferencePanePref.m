@@ -14,6 +14,7 @@
 
 #import "OSIListenerPreferencePanePref.h"
 #import "DefaultsOsiriX.h"
+#import "BrowserController.h"
 
 #include <netdb.h>
 #include <unistd.h>
@@ -35,6 +36,11 @@ char *GetPrivateIP()
 }
 
 @implementation OSIListenerPreferencePanePref
+
+- (NSManagedObjectContext*) managedObjectContext
+{
+	return [[BrowserController currentBrowser] userManagedObjectContext];
+}
 
 -(NSArray*)IPv4Address;
 {
@@ -224,6 +230,7 @@ char *GetPrivateIP()
 - (IBAction)setAnonymizeListenerOnOff:(id)sender{
 	[[NSUserDefaults standardUserDefaults] setBool:[sender state] forKey:@"ANONYMIZELISTENER"];
 }
+
 - (void) willUnselect
 {
 	NSLog(@"willUnselect");
@@ -233,5 +240,16 @@ char *GetPrivateIP()
 	
 	if( [[NSUserDefaults standardUserDefaults] integerForKey:@"DICOMTimeout"] > 480)
 		[[NSUserDefaults standardUserDefaults] setObject:@"480" forKey:@"DICOMTimeout"];
+}
+
+- (IBAction) webServerSettings: (id) sender
+{
+	[NSApp beginSheet: webServerSettingsWindow modalForWindow: [[self mainView] window] modalDelegate:self didEndSelector:nil contextInfo:nil];
+
+	[NSApp runModalForWindow: webServerSettingsWindow];
+	
+    [NSApp endSheet: webServerSettingsWindow];
+	
+    [webServerSettingsWindow orderOut: self];
 }
 @end
