@@ -38,9 +38,9 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 
 @interface BrowserController : NSWindowController   //NSObject
 {
-	NSManagedObjectModel			*managedObjectModel;
-    NSManagedObjectContext			*managedObjectContext;
-	NSPersistentStoreCoordinator	*persistentStoreCoordinator;
+	NSManagedObjectModel			*managedObjectModel, *userManagedObjectModel;
+    NSManagedObjectContext			*managedObjectContext, *userManagedObjectContext;
+	NSPersistentStoreCoordinator	*persistentStoreCoordinator, *userPersistentStoreCoordinator;
 	
 	NSDateFormatter			*DateTimeFormat, *DateOfBirthFormat, *TimeFormat, *TimeWithSecondsFormat, *DateTimeWithSecondsFormat;
 	
@@ -231,13 +231,10 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	NSArray							*mountedVolumes;
 }
 
-@property(readonly) NSDateFormatter *DateTimeFormat;
-@property(readonly) NSDateFormatter *DateOfBirthFormat;
-@property(readonly) NSDateFormatter *TimeFormat;
-@property(readonly) NSDateFormatter *TimeWithSecondsFormat;
-@property(readonly) NSDateFormatter *DateTimeWithSecondsFormat;
+@property(readonly) NSDateFormatter *DateTimeFormat, *DateOfBirthFormat, *TimeFormat, *TimeWithSecondsFormat, *DateTimeWithSecondsFormat;
 @property(readonly) NSRecursiveLock *checkIncomingLock;
-
+@property(readonly) NSManagedObjectContext *userManagedObjectContext;
+@property(readonly) NSManagedObjectModel *userManagedObjectModel;
 @property(readonly) NSArray *matrixViewArray;
 @property(readonly) NSMatrix *oMatrix;
 @property(readonly) long COLUMN;
@@ -521,6 +518,8 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (void)updateReportToolbarIcon:(NSNotification *)note;
 - (void) decompressWaitIncrementation: (NSNumber*) n;
 - (void) initAnimationSlider;
+
+- (long) saveUserDatabase;
 
 + (NSString*) DateTimeWithSecondsFormat:(NSDate*) t;
 + (NSString*) TimeWithSecondsFormat:(NSDate*) t;
