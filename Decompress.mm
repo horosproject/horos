@@ -486,7 +486,7 @@ int main(int argc, const char *argv[])
 			
 			QTTime curTime = QTMakeTime(timeValue, timeScale);
 			
-			NSMutableDictionary *myDict = [NSMutableDictionary dictionaryWithObject: @"jpeg" forKey: QTAddImageCodecType];
+			NSMutableDictionary *myDict = [NSMutableDictionary dictionaryWithObjectsAndKeys: @"jpeg", QTAddImageCodecType, [NSNumber numberWithInt: codecNormalQuality], QTAddImageCodecQuality, nil];
 			
 			NSString *root = [NSString stringWithCString: argv[ 3]];
 			
