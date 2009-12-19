@@ -12,22 +12,13 @@
      PURPOSE.
 =========================================================================*/
 
-
 #import <Cocoa/Cocoa.h>
 
-/** \brief  Core Data Entity for a Series */
+/** \brief  Core Data Entity for a web user */
 
-@interface DicomSeries : NSManagedObject
+@interface UserTable : NSManagedObject
 {
-	NSNumber	*dicomTime;
+	
 }
-
-- (NSSet *)paths;
-- (NSSet *)keyImages;
-- (NSArray *)sortedImages;
-- (NSString *)dicomSeriesInstanceUID;
-- (NSDictionary *)dictionary;
-- (NSComparisonResult)compareName:(DicomSeries*)series;
-- (NSNumber *) noFilesExcludingMultiFrames;
 
 @end

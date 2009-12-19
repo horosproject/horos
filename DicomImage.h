@@ -13,7 +13,6 @@
 =========================================================================*/
 
 #import <Cocoa/Cocoa.h>
-#import "DicomImage.h"
 
 NSString* sopInstanceUIDDecode( unsigned char *r, int length);
 void* sopInstanceUIDEncode( NSString *sopuid);

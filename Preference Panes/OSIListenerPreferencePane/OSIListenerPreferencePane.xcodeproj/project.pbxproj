@@ -17,6 +17,8 @@
 		CE162F2310DC2DD300BF9C81 /* browserController.h in Headers */ = {isa = PBXBuildFile; fileRef = CE162F2210DC2DD300BF9C81 /* browserController.h */; };
 		CE50FF1E0E481B5000959A84 /* DefaultsOsiriX.h in Headers */ = {isa = PBXBuildFile; fileRef = CE50FF1D0E481B5000959A84 /* DefaultsOsiriX.h */; };
 		CEB0705D0C87502F0011AEE1 /* OSIListenerPreferencePanePref.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEB0705B0C87502F0011AEE1 /* OSIListenerPreferencePanePref.xib */; };
+		CEDDD87510DCC89B00FFE72B /* PSGenerator.h in Headers */ = {isa = PBXBuildFile; fileRef = CEDDD87310DCC89B00FFE72B /* PSGenerator.h */; };
+		CEDDD87610DCC89B00FFE72B /* PSGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = CEDDD87410DCC89B00FFE72B /* PSGenerator.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,6 +33,8 @@
 		CE162F2210DC2DD300BF9C81 /* browserController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = browserController.h; path = ../../browserController.h; sourceTree = SOURCE_ROOT; };
 		CE50FF1D0E481B5000959A84 /* DefaultsOsiriX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DefaultsOsiriX.h; path = ../../DefaultsOsiriX.h; sourceTree = SOURCE_ROOT; };
 		CEB0705C0C87502F0011AEE1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/OSIListenerPreferencePanePref.xib; sourceTree = "<group>"; };
+		CEDDD87310DCC89B00FFE72B /* PSGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PSGenerator.h; sourceTree = "<group>"; };
+		CEDDD87410DCC89B00FFE72B /* PSGenerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PSGenerator.m; sourceTree = "<group>"; };
 		F506C035013D953901CA16C8 /* PreferencePanes.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PreferencePanes.framework; path = /System/Library/Frameworks/PreferencePanes.framework; sourceTree = "<absolute>"; };
 		F506C03C013D9D7901CA16C8 /* OSIListenerPreferencePanePref.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSIListenerPreferencePanePref.h; sourceTree = "<group>"; };
 		F506C03D013D9D7901CA16C8 /* OSIListenerPreferencePanePref.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSIListenerPreferencePanePref.m; sourceTree = "<group>"; };
@@ -85,9 +89,11 @@
 			isa = PBXGroup;
 			children = (
 				F506C03C013D9D7901CA16C8 /* OSIListenerPreferencePanePref.h */,
-				CE50FF1D0E481B5000959A84 /* DefaultsOsiriX.h */,
 				F506C03D013D9D7901CA16C8 /* OSIListenerPreferencePanePref.m */,
+				CE50FF1D0E481B5000959A84 /* DefaultsOsiriX.h */,
 				CE162F2210DC2DD300BF9C81 /* browserController.h */,
+				CEDDD87310DCC89B00FFE72B /* PSGenerator.h */,
+				CEDDD87410DCC89B00FFE72B /* PSGenerator.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -138,6 +144,7 @@
 				8D202CEB0486D31800D8A456 /* OSIListenerPreferencePanePref.h in Headers */,
 				CE50FF1E0E481B5000959A84 /* DefaultsOsiriX.h in Headers */,
 				CE162F2310DC2DD300BF9C81 /* browserController.h in Headers */,
+				CEDDD87510DCC89B00FFE72B /* PSGenerator.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -209,6 +216,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8D202CF10486D31800D8A456 /* OSIListenerPreferencePanePref.m in Sources */,
+				CEDDD87610DCC89B00FFE72B /* PSGenerator.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -70,7 +70,7 @@
 #import "Notifications.h"
 #import "NSAppleScript+HandlerCalls.h"
 
-#define DEFAULTUSERDATABASEPATH @"~/Library/Application Support/OsiriX/WebUsers.dat"
+#define DEFAULTUSERDATABASEPATH @"~/Library/Application Support/OsiriX/WebUsers.sql"
 #define USERDATABASEVERSION @"1.0"
 #define DATABASEVERSION @"2.4"
 #define DATABASEPATH @"/DATABASE.noindex/"
@@ -1941,54 +1941,6 @@ static NSArray*	statesArray = nil;
     return managedObjectModel;
 }
 
-- (NSManagedObjectModel *) userManagedObjectModel
-{
-    if( userManagedObjectModel) return userManagedObjectModel;
-	
-	NSMutableSet *allBundles = [[NSMutableSet alloc] init];
-	[allBundles addObject: [NSBundle mainBundle]];
-	[allBundles addObjectsFromArray: [NSBundle allFrameworks]];
-    
-    userManagedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL: [NSURL fileURLWithPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/user.mom"]]];
-    [allBundles release];
-    
-    return userManagedObjectModel;
-}
-
-- (NSManagedObjectContext *) userManagedObjectContext
-{
-    NSError *error = nil;
-    NSString *localizedDescription;
-	NSFileManager *fileManager;
-	
-    if( userManagedObjectContext)
-		return userManagedObjectContext;
-	
-	fileManager = [NSFileManager defaultManager];
-	
-	[userPersistentStoreCoordinator release];
-	userPersistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel: self.userManagedObjectModel];
-	
-    userManagedObjectContext = [[NSManagedObjectContext alloc] init];
-    [userManagedObjectContext setPersistentStoreCoordinator: userPersistentStoreCoordinator];
-	
-    NSURL *url = [NSURL fileURLWithPath: DEFAULTUSERDATABASEPATH];
-	
-	if( ![userPersistentStoreCoordinator addPersistentStoreWithType: NSSQLiteStoreType configuration:nil URL:url options:nil error:&error])
-	{
-		localizedDescription = [error localizedDescription];
-		error = [NSError errorWithDomain:@"OsiriXDomain" code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:error, NSUnderlyingErrorKey, [NSString stringWithFormat:@"Store Configuration Failure: %@", ((localizedDescription != nil) ? localizedDescription : @"Unknown Error")], NSLocalizedDescriptionKey, nil]];
-    }
-	
-	[[userManagedObjectContext undoManager] setLevelsOfUndo: 1];
-	[[userManagedObjectContext undoManager] disableUndoRegistration];
-
-	// This line is very important, if there is NO database.sql file
-	[self saveUserDatabase];
-	
-    return userManagedObjectContext;
-}
-
 - (NSManagedObjectContext *) managedObjectContextLoadIfNecessary:(BOOL) loadIfNecessary
 {
     NSError *error = nil;
@@ -3087,41 +3039,6 @@ static NSArray*	statesArray = nil;
 //	}
 //
 //	[context unlock];
-}
-
--(long) saveUserDatabase
-{
-	long retError = 0;
-	
-	@try
-	{
-		NSError *error = nil;
-		
-		[userManagedObjectContext lock];
-		
-		[userManagedObjectContext save: &error];
-		if (error)
-		{
-			NSLog(@"error saving DB: %@", [[error userInfo] description]);
-			NSLog( @"saveDatabase ERROR: %@", [error localizedDescription]);
-			retError = -1L;
-		}
-		
-		NSString *path = [NSString stringWithString: DEFAULTUSERDATABASEPATH];
-		
-		[[NSString stringWithString: USERDATABASEVERSION] writeToFile: [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"DB_VERSION"] atomically:YES];
-		[[NSUserDefaults standardUserDefaults] setObject:DATABASEVERSION forKey: @"DATABASEVERSION"];
-		
-		[userManagedObjectContext unlock];
-	}
-	
-	@catch( NSException *ne)
-	{
-		NSLog( @"%@", [ne name]);
-		NSLog( @"%@", [ne reason]);
-	}
-	
-	return retError;
 }
 
 -(long) saveDatabase: (NSString*)path context: (NSManagedObjectContext*) context
@@ -4463,6 +4380,94 @@ static NSArray*	statesArray = nil;
 		}
 	}
 }
+
+
+#pragma mark-
+#pragma mark User Database functions
+
+-(long) saveUserDatabase
+{
+	long retError = 0;
+	
+	@try
+	{
+		NSError *error = nil;
+		
+		[userManagedObjectContext lock];
+		
+		[userManagedObjectContext save: &error];
+		if (error)
+		{
+			NSLog(@"error saving DB: %@", [[error userInfo] description]);
+			NSLog( @"saveDatabase ERROR: %@", [error localizedDescription]);
+			retError = -1L;
+		}
+		
+		NSString *path = [DEFAULTUSERDATABASEPATH stringByExpandingTildeInPath];
+		
+		[[NSString stringWithString: USERDATABASEVERSION] writeToFile: [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"WebUsers.vers"] atomically:YES];
+		[[NSUserDefaults standardUserDefaults] setObject: USERDATABASEVERSION forKey: @"USERS_DATABASEVERSION"];
+		
+		[userManagedObjectContext unlock];
+	}
+	
+	@catch( NSException *ne)
+	{
+		NSLog( @"%@", [ne name]);
+		NSLog( @"%@", [ne reason]);
+	}
+	
+	return retError;
+}
+
+- (NSManagedObjectModel *) userManagedObjectModel
+{
+    if( userManagedObjectModel) return userManagedObjectModel;
+	
+	NSMutableSet *allBundles = [[NSMutableSet alloc] init];
+	[allBundles addObject: [NSBundle mainBundle]];
+	[allBundles addObjectsFromArray: [NSBundle allFrameworks]];
+    
+    userManagedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL: [NSURL fileURLWithPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/user.mom"]]];
+    [allBundles release];
+    
+    return userManagedObjectModel;
+}
+
+- (NSManagedObjectContext *) userManagedObjectContext
+{
+    NSError *error = nil;
+    NSString *localizedDescription;
+	NSFileManager *fileManager;
+	
+    if( userManagedObjectContext)
+		return userManagedObjectContext;
+	
+	fileManager = [NSFileManager defaultManager];
+	
+	[userPersistentStoreCoordinator release];
+	userPersistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel: self.userManagedObjectModel];
+	
+    userManagedObjectContext = [[NSManagedObjectContext alloc] init];
+    [userManagedObjectContext setPersistentStoreCoordinator: userPersistentStoreCoordinator];
+	
+    NSURL *url = [NSURL fileURLWithPath: [DEFAULTUSERDATABASEPATH stringByExpandingTildeInPath]];
+	
+	if( ![userPersistentStoreCoordinator addPersistentStoreWithType: NSSQLiteStoreType configuration:nil URL:url options:nil error:&error])
+	{
+		localizedDescription = [error localizedDescription];
+		error = [NSError errorWithDomain:@"OsiriXDomain" code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:error, NSUnderlyingErrorKey, [NSString stringWithFormat:@"Store Configuration Failure: %@", ((localizedDescription != nil) ? localizedDescription : @"Unknown Error")], NSLocalizedDescriptionKey, nil]];
+    }
+	
+	[[userManagedObjectContext undoManager] setLevelsOfUndo: 1];
+	[[userManagedObjectContext undoManager] disableUndoRegistration];
+
+	// This line is very important, if there is NO database.sql file
+	[self saveUserDatabase];
+	
+    return userManagedObjectContext;
+}
+
 
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 
@@ -12479,6 +12484,8 @@ static NSArray*	openSubSeriesArray = nil;
 	if( autoroutingInProgress == nil) autoroutingInProgress = [[NSLock alloc] init];
 	
 	[wait showWindow:self];
+	
+	[self userManagedObjectContext];
 	
 	@try
 	{

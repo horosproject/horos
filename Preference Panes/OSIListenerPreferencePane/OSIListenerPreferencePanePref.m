@@ -248,8 +248,12 @@ char *GetPrivateIP()
 
 	[NSApp runModalForWindow: webServerSettingsWindow];
 	
+	[webServerSettingsWindow makeFirstResponder: nil];
+	
     [NSApp endSheet: webServerSettingsWindow];
 	
     [webServerSettingsWindow orderOut: self];
+	
+	[[BrowserController currentBrowser] saveUserDatabase];
 }
 @end

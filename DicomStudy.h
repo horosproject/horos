@@ -13,9 +13,7 @@
 =========================================================================*/
 
 
-
 #import <Cocoa/Cocoa.h>
-#import "DicomStudy.h"
 
 /** \brief  Core Data Entity for a Study */
 @interface DicomStudy : NSManagedObject
