@@ -55,7 +55,7 @@
 					<table>
 						<tr>
 							<td rowspan="3">
-								<input type="checkbox" class="checkbox" name="selected" value="%SeriesID%" %checked% />
+								%SendingFunctions1%<input type="checkbox" class="checkbox" name="selected" value="%SeriesID%" %checked% />%/SendingFunctions1%
 							</td>
 							<td rowspan="3">
 								<a class="series" href="series?dicomcstoreport=%DicomCStorePort%&id=%SeriesID%&studyID=%StudyID%&browse=%browse%&search=%search%&album=%album%">
@@ -76,24 +76,26 @@
 							</td>
 						</tr>
 						<tr>
-							<td class="tdDownloadAsZIP">
+							%ZIPFunctions%<td class="tdDownloadAsZIP">
 								<a class="series" href="%PatientName%.%zipextension%?dicomcstoreport=%DicomCStorePort%&id=%SeriesID%&studyID=%StudyID%&browse=%browse%&search=%search%&album=%album%">
 									<span class="DownloadAsZIP">%LocalizedLabel_DownloadAsZIP%</span>
 								</a>
-							</td>
+							</td>%/ZIPFunctions%
 						</tr>
 					</table>
 				</li>
 			%/SeriesListItem%
+				%SendingFunctions2%
 				<li class="image" id="CheckAll" %CheckAllStyle% >
 					<table><tr>
 						<td><input type="checkbox" class="checkbox" name="CheckAll" onClick="if(document.selectDicomDestination.CheckAll.checked == true){checkAll(document.selectDicomDestination.selected);} else {uncheckAll(document.selectDicomDestination.selected);}" %CheckAllChecked% /></td>
 						<td><span id="CheckAllLabel" class="SeriesName" >%CheckAllLabel%</span></td>
 					</tr></table>
 				</li>
+				%/SendingFunctions2%
 		</ul>
+		%SendingFunctions3%
 		<h2 style="padding-top:10px">%LocalizedLabel_DICOMTransfer%</h2>
-		
 			%LocalizedLabel_SendSelectedSeriesTo%:
 			<select name="dicomDestination" id="dicomDestination">
 				%dicomNodesListItem%
@@ -106,6 +108,7 @@
 			<input type="hidden" name="album" value="%album%"/>
 			<input type="hidden" name="dicomcstoreport" value="%DicomCStorePort%" name="search"/>
 			<input type="submit" name="dicomSend" id="dicomSend" value="%LocalizedLabel_Send%"/>
+		%/SendingFunctions3%
 		</form>
     </div>
   </body>

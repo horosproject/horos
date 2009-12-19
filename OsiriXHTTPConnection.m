@@ -282,6 +282,43 @@ static NSMutableDictionary *movieLock = nil;
 	[context lock];
 	
 	NSMutableString *templateString = [NSMutableString stringWithContentsOfFile:[webDirectory stringByAppendingPathComponent:@"study.html"]];
+	NSArray *tempArray, *tempArray2;
+
+	if( [[currentUser valueForKey: @"sendDICOMtoSelfIP"] boolValue] == NO && [[currentUser valueForKey: @"sendDICOMtoAnyNodes"] boolValue] == NO)
+	{
+		tempArray = [templateString componentsSeparatedByString:@"%SendingFunctions1%"];
+		tempArray2 = [[tempArray lastObject] componentsSeparatedByString:@"%/SendingFunctions1%"];
+		templateString = [NSMutableString stringWithFormat:@"%@%@",[tempArray objectAtIndex:0], [tempArray2 lastObject]];
+		
+		tempArray = [templateString componentsSeparatedByString:@"%SendingFunctions2%"];
+		tempArray2 = [[tempArray lastObject] componentsSeparatedByString:@"%/SendingFunctions2%"];
+		templateString = [NSMutableString stringWithFormat:@"%@%@",[tempArray objectAtIndex:0], [tempArray2 lastObject]];
+		
+		tempArray = [templateString componentsSeparatedByString:@"%SendingFunctions3%"];
+		tempArray2 = [[tempArray lastObject] componentsSeparatedByString:@"%/SendingFunctions3%"];
+		templateString = [NSMutableString stringWithFormat:@"%@%@",[tempArray objectAtIndex:0], [tempArray2 lastObject]];
+	}
+	else
+	{
+		[templateString replaceOccurrencesOfString:@"%SendingFunctions1%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+		[templateString replaceOccurrencesOfString:@"%/SendingFunctions1%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+		[templateString replaceOccurrencesOfString:@"%SendingFunctions2%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+		[templateString replaceOccurrencesOfString:@"%/SendingFunctions2%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+		[templateString replaceOccurrencesOfString:@"%SendingFunctions3%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+		[templateString replaceOccurrencesOfString:@"%/SendingFunctions3%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+	}
+	
+	if( [[currentUser valueForKey: @"downloadZIP"] boolValue] == NO)
+	{
+		tempArray = [templateString componentsSeparatedByString:@"%ZIPFunctions%"];
+		tempArray2 = [[tempArray lastObject] componentsSeparatedByString:@"%/ZIPFunctions%"];
+		templateString = [NSMutableString stringWithFormat:@"%@%@",[tempArray objectAtIndex:0], [tempArray2 lastObject]];
+	}
+	else
+	{
+		[templateString replaceOccurrencesOfString:@"%ZIPFunctions%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+		[templateString replaceOccurrencesOfString:@"%/ZIPFunctions%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+	}
 	
 	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_PatientInfo%" withString:NSLocalizedString(@"Patient Info", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_PatientID%" withString:NSLocalizedString(@"ID", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
@@ -324,7 +361,7 @@ static NSMutableDictionary *movieLock = nil;
 	
 	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_StudyList%" withString:LocalizedLabel_StudyList options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 	
-	NSArray *tempArray, *tempArray2;
+	
 	
 	if([study valueForKey:@"reportURL"] && ![[settings valueForKey:@"iPhone"] boolValue])
 	{
@@ -427,7 +464,7 @@ static NSMutableDictionary *movieLock = nil;
 	if([seriesArray count]<=1) checkAllStyle = @"style='display:none;'";
 	[returnHTML replaceOccurrencesOfString:@"%CheckAllStyle%" withString:checkAllStyle options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
 	
-	if( [[parameters objectForKey: @"dicomcstoreport"] intValue] > 0 && [ipAddressString length] >= 7)
+	if( [[currentUser valueForKey: @"sendDICOMtoSelfIP"] boolValue] == YES && [[parameters objectForKey: @"dicomcstoreport"] intValue] > 0 && [ipAddressString length] >= 7)
 	{
 		NSString *dicomNodeAddress = ipAddressString;
 		NSString *dicomNodePort = [parameters objectForKey: @"dicomcstoreport"];
@@ -449,73 +486,76 @@ static NSMutableDictionary *movieLock = nil;
 		[returnHTML appendString:tempHTML];
 	}
 	
-	NSArray *nodes = [DCMNetServiceDelegate DICOMServersListSendOnly:YES QROnly:NO];
-	for(NSDictionary *node in nodes)
+	if( [[currentUser valueForKey: @"sendDICOMtoAnyNodes"] boolValue] == YES)
 	{
-		NSString *dicomNodeAddress = [OsiriXHTTPConnection nonNilString:[node objectForKey:@"Address"]];
-		NSString *dicomNodePort = [NSString stringWithFormat:@"%d", [[node objectForKey:@"Port"] intValue]];
-		NSString *dicomNodeAETitle = [OsiriXHTTPConnection nonNilString:[node objectForKey:@"AETitle"]];
-		NSString *dicomNodeSyntax = [NSString stringWithFormat:@"%d", [[node objectForKey:@"TransferSyntax"] intValue]];
-		NSString *dicomNodeDescription = [OsiriXHTTPConnection nonNilString:[node objectForKey:@"Description"]];
-		
-		NSMutableString *tempHTML = [NSMutableString stringWithString:dicomNodesListItemString];
-		if([[settings valueForKey:@"iPhone"] boolValue]) [tempHTML replaceOccurrencesOfString:@"[%dicomNodeAddress%:%dicomNodePort%]" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
-		[tempHTML replaceOccurrencesOfString:@"%dicomNodeAddress%" withString:dicomNodeAddress options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
-		[tempHTML replaceOccurrencesOfString:@"%dicomNodePort%" withString:dicomNodePort options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
-		[tempHTML replaceOccurrencesOfString:@"%dicomNodeAETitle%" withString:dicomNodeAETitle options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
-		[tempHTML replaceOccurrencesOfString:@"%dicomNodeSyntax%" withString:dicomNodeSyntax options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
-		[tempHTML replaceOccurrencesOfString:@"%dicomNodeDescription%" withString:dicomNodeDescription options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
-		
-		NSString *selected = @"";
-		
-		if( [parameters objectForKey:@"dicomDestination"])
+		NSArray *nodes = [DCMNetServiceDelegate DICOMServersListSendOnly:YES QROnly:NO];
+		for(NSDictionary *node in nodes)
 		{
-			NSString * s = [[parameters objectForKey:@"dicomDestination"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+			NSString *dicomNodeAddress = [OsiriXHTTPConnection nonNilString:[node objectForKey:@"Address"]];
+			NSString *dicomNodePort = [NSString stringWithFormat:@"%d", [[node objectForKey:@"Port"] intValue]];
+			NSString *dicomNodeAETitle = [OsiriXHTTPConnection nonNilString:[node objectForKey:@"AETitle"]];
+			NSString *dicomNodeSyntax = [NSString stringWithFormat:@"%d", [[node objectForKey:@"TransferSyntax"] intValue]];
+			NSString *dicomNodeDescription = [OsiriXHTTPConnection nonNilString:[node objectForKey:@"Description"]];
 			
-			NSArray *sArray = [s componentsSeparatedByString: @":"];
+			NSMutableString *tempHTML = [NSMutableString stringWithString:dicomNodesListItemString];
+			if([[settings valueForKey:@"iPhone"] boolValue]) [tempHTML replaceOccurrencesOfString:@"[%dicomNodeAddress%:%dicomNodePort%]" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+			[tempHTML replaceOccurrencesOfString:@"%dicomNodeAddress%" withString:dicomNodeAddress options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+			[tempHTML replaceOccurrencesOfString:@"%dicomNodePort%" withString:dicomNodePort options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+			[tempHTML replaceOccurrencesOfString:@"%dicomNodeAETitle%" withString:dicomNodeAETitle options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+			[tempHTML replaceOccurrencesOfString:@"%dicomNodeSyntax%" withString:dicomNodeSyntax options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+			[tempHTML replaceOccurrencesOfString:@"%dicomNodeDescription%" withString:dicomNodeDescription options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 			
-			if( [sArray count] >= 2)
+			NSString *selected = @"";
+			
+			if( [parameters objectForKey:@"dicomDestination"])
 			{
-				if( [[sArray objectAtIndex: 0] isEqualToString: dicomNodeAddress] && 
-				   [[sArray objectAtIndex: 1] isEqualToString: dicomNodePort])
-					selected = @"selected";
-			}
-		}
-		else if( ipAddressString && [[parameters objectForKey: @"dicomcstoreport"] intValue] == 0)
-		{
-			// Try to match the calling http client in our destination nodes
-			
-			struct sockaddr_in service;
-			const char	*host_name = [[node valueForKey:@"Address"] UTF8String];
-			
-			bzero((char *) &service, sizeof(service));
-			service.sin_family = AF_INET;
-			
-			if( host_name)
-			{
-				if (isalpha(host_name[0]))
-				{
-					struct hostent *hp;
-					
-					hp = gethostbyname( host_name);
-					if( hp) bcopy(hp->h_addr, (char *) &service.sin_addr, hp->h_length);
-					else service.sin_addr.s_addr = inet_addr( host_name);
-				}
-				else service.sin_addr.s_addr = inet_addr( host_name);
+				NSString * s = [[parameters objectForKey:@"dicomDestination"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 				
-				char buffer[256];
+				NSArray *sArray = [s componentsSeparatedByString: @":"];
 				
-				if (inet_ntop(AF_INET, &service.sin_addr, buffer, sizeof(buffer)))
+				if( [sArray count] >= 2)
 				{
-					if( [[NSString stringWithCString:buffer] isEqualToString: ipAddressString])
+					if( [[sArray objectAtIndex: 0] isEqualToString: dicomNodeAddress] && 
+					   [[sArray objectAtIndex: 1] isEqualToString: dicomNodePort])
 						selected = @"selected";
 				}
 			}
+			else if( ipAddressString && [[parameters objectForKey: @"dicomcstoreport"] intValue] == 0)
+			{
+				// Try to match the calling http client in our destination nodes
+				
+				struct sockaddr_in service;
+				const char	*host_name = [[node valueForKey:@"Address"] UTF8String];
+				
+				bzero((char *) &service, sizeof(service));
+				service.sin_family = AF_INET;
+				
+				if( host_name)
+				{
+					if (isalpha(host_name[0]))
+					{
+						struct hostent *hp;
+						
+						hp = gethostbyname( host_name);
+						if( hp) bcopy(hp->h_addr, (char *) &service.sin_addr, hp->h_length);
+						else service.sin_addr.s_addr = inet_addr( host_name);
+					}
+					else service.sin_addr.s_addr = inet_addr( host_name);
+					
+					char buffer[256];
+					
+					if (inet_ntop(AF_INET, &service.sin_addr, buffer, sizeof(buffer)))
+					{
+						if( [[NSString stringWithCString:buffer] isEqualToString: ipAddressString])
+							selected = @"selected";
+					}
+				}
+			}
+			
+			[tempHTML replaceOccurrencesOfString:@"%selected%" withString:selected options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+			
+			[returnHTML appendString:tempHTML];
 		}
-		
-		[tempHTML replaceOccurrencesOfString:@"%selected%" withString:selected options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
-		
-		[returnHTML appendString:tempHTML];
 	}
 	
 	[returnHTML appendString:templateStringEnd];
@@ -543,11 +583,24 @@ static NSMutableDictionary *movieLock = nil;
 	[context lock];
 	
 	NSMutableString *templateString = [NSMutableString stringWithContentsOfFile:[webDirectory stringByAppendingPathComponent:@"studyList.html"]];
+	NSArray *tempArray, *tempArray2;
+	if( [[currentUser valueForKey: @"downloadZIP"] boolValue] == NO)
+	{
+		tempArray = [templateString componentsSeparatedByString:@"%ZIPFunctions%"];
+		tempArray2 = [[tempArray lastObject] componentsSeparatedByString:@"%/ZIPFunctions%"];
+		templateString = [NSMutableString stringWithFormat:@"%@%@",[tempArray objectAtIndex:0], [tempArray2 lastObject]];
+	}
+	else
+	{
+		[templateString replaceOccurrencesOfString:@"%ZIPFunctions%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+		[templateString replaceOccurrencesOfString:@"%/ZIPFunctions%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+	}
+	
 	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_Home%" withString:NSLocalizedString(@"Home", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_DownloadAsZIP%" withString:NSLocalizedString(@"ZIP file", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 	[templateString replaceOccurrencesOfString:@"%zipextension%" withString: ([[settings valueForKey:@"MacOS"] boolValue]?@"osirixzip":@"zip") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 	
-	NSArray *tempArray = [templateString componentsSeparatedByString:@"%StudyListItem%"];
+	tempArray = [templateString componentsSeparatedByString:@"%StudyListItem%"];
 	NSString *templateStringStart = [tempArray objectAtIndex:0];
 	tempArray = [[tempArray lastObject] componentsSeparatedByString:@"%/StudyListItem%"];
 	NSString *studyListItemString = [tempArray objectAtIndex:0];
@@ -727,16 +780,26 @@ static NSMutableDictionary *movieLock = nil;
 }
 
 - (void)dicomSend:(id)sender;
-{	
-	NSDictionary *todo = [NSDictionary dictionaryWithObjectsAndKeys: [selectedDICOMNode objectForKey:@"Address"], @"Address", [selectedDICOMNode objectForKey:@"TransferSyntax"], @"TransferSyntax", [selectedDICOMNode objectForKey:@"Port"], @"Port", [selectedDICOMNode objectForKey:@"AETitle"], @"AETitle", [selectedImages valueForKey: @"completePath"], @"Files", nil];
-	[NSThread detachNewThreadSelector:@selector(dicomSendToDo:) toTarget:self withObject:todo];
+{
+	[self updateLogEntryForStudy: [[selectedImages lastObject] valueForKeyPath: @"series.study"] withMessage: [NSString stringWithFormat: @"DICOM Send to: %@", [selectedDICOMNode objectForKey:@"Address"]]];
+	
+	@try
+	{
+		NSDictionary *todo = [NSDictionary dictionaryWithObjectsAndKeys: [selectedDICOMNode objectForKey:@"Address"], @"Address", [selectedDICOMNode objectForKey:@"TransferSyntax"], @"TransferSyntax", [selectedDICOMNode objectForKey:@"Port"], @"Port", [selectedDICOMNode objectForKey:@"AETitle"], @"AETitle", [selectedImages valueForKey: @"completePath"], @"Files", nil];
+		[NSThread detachNewThreadSelector:@selector(dicomSendToDo:) toTarget:self withObject:todo];
+	}
+	@catch( NSException *e)
+	{
+		NSLog( @"***** - (void)dicomSend:(id)sender; :%@", e);
+	}
 }
 
 - (void)dicomSendToDo:(NSDictionary*)todo;
 {
 	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
 	
-	if( sendLock == nil) sendLock = [[NSLock alloc] init];
+	if( sendLock == nil)
+		sendLock = [[NSLock alloc] init];
 	
 	[sendLock lock];
 	
@@ -1133,6 +1196,7 @@ static NSMutableDictionary *movieLock = nil;
 - (NSObject<HTTPResponse> *)httpResponseForMethod:(NSString *)method URI:(NSString *)path
 {
 	BOOL lockReleased = NO;
+	BOOL dicomSendFailed = NO;
 	
 	NSString *contentRange = [(id)CFHTTPMessageCopyHeaderFieldValue(request, (CFStringRef)@"Range") autorelease];
 	NSString *userAgent = [(id)CFHTTPMessageCopyHeaderFieldValue(request, (CFStringRef)@"User-Agent") autorelease];
@@ -1594,6 +1658,7 @@ static NSMutableDictionary *movieLock = nil;
 		else
 			browsePredicate = [NSPredicate predicateWithValue:NO];
 		
+		#pragma mark dicomSend
 		if( [[parameters allKeys] containsObject:@"dicomSend"])
 		{
 			NSString *dicomDestination = [parameters objectForKey:@"dicomDestination"];
@@ -1603,31 +1668,39 @@ static NSMutableDictionary *movieLock = nil;
 			NSString *dicomDestinationAETitle = [[tempArray objectAtIndex:2] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 			NSString *dicomDestinationSyntax = [tempArray objectAtIndex:3];
 			
-			[selectedDICOMNode release];
-			selectedDICOMNode = [NSMutableDictionary dictionary];
-			[selectedDICOMNode setObject:dicomDestinationAddress forKey:@"Address"];
-			[selectedDICOMNode setObject:dicomDestinationPort forKey:@"Port"];
-			[selectedDICOMNode setObject:dicomDestinationAETitle forKey:@"AETitle"];
-			[selectedDICOMNode setObject:dicomDestinationSyntax forKey:@"TransferSyntax"];
-			[selectedDICOMNode retain];
-			
-			[selectedImages release];
-			selectedImages = [NSMutableArray array];
-			NSArray *seriesArray;
-			for(NSString* selectedID in [parameters objectForKey:@"selected"])
+			if( dicomDestinationAddress && dicomDestinationPort && dicomDestinationAETitle && dicomDestinationSyntax)
 			{
-				NSPredicate *pred = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", [parameters objectForKey:@"id"], [[selectedID stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding] stringByReplacingOccurrencesOfString:@"+" withString:@" "]];
+				[selectedDICOMNode release];
+				selectedDICOMNode = [NSMutableDictionary dictionary];
+				[selectedDICOMNode setObject:dicomDestinationAddress forKey:@"Address"];
+				[selectedDICOMNode setObject:dicomDestinationPort forKey:@"Port"];
+				[selectedDICOMNode setObject:dicomDestinationAETitle forKey:@"AETitle"];
+				[selectedDICOMNode setObject:dicomDestinationSyntax forKey:@"TransferSyntax"];
+				[selectedDICOMNode retain];
 				
-				seriesArray = [self seriesForPredicate: pred];
-				for(NSManagedObject *series in seriesArray)
+				[selectedImages release];
+				selectedImages = [NSMutableArray array];
+				NSArray *seriesArray;
+				for(NSString* selectedID in [parameters objectForKey:@"selected"])
 				{
-					NSArray *images = [[series valueForKey:@"images"] allObjects];
-					[selectedImages addObjectsFromArray:images];
+					NSPredicate *pred = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", [parameters objectForKey:@"id"], [[selectedID stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding] stringByReplacingOccurrencesOfString:@"+" withString:@" "]];
+					
+					seriesArray = [self seriesForPredicate: pred];
+					for(NSManagedObject *series in seriesArray)
+					{
+						NSArray *images = [[series valueForKey:@"images"] allObjects];
+						[selectedImages addObjectsFromArray:images];
+					}
 				}
+				
+				[selectedImages retain];
+				if( [selectedImages count])
+					[self dicomSend: self];
+				else
+					dicomSendFailed = YES;
 			}
-			
-			[selectedImages retain];
-			[self dicomSend: self];
+			else
+				dicomSendFailed = YES;
 		}
 		
 		NSArray *studies = [self studiesForPredicate:browsePredicate];
@@ -1648,7 +1721,10 @@ static NSMutableDictionary *movieLock = nil;
 				NSString *dicomDestinationAETitle = [[tempArray objectAtIndex:2] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 				NSString *dicomDestinationAddress = [[tempArray objectAtIndex:0] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 				
-				[html replaceOccurrencesOfString:@"%LocalizedLabel_SendStatus%" withString: [NSString stringWithFormat: NSLocalizedString( @"Images sent to DICOM node: %@ - %@", nil), dicomDestinationAddress, dicomDestinationAETitle] options:NSLiteralSearch range:NSMakeRange(0, [html length])];
+				if( dicomSendFailed)
+					[html replaceOccurrencesOfString:@"%LocalizedLabel_SendStatus%" withString: [NSString stringWithFormat: NSLocalizedString( @"DICOM Transfer failed.", nil), dicomDestinationAddress, dicomDestinationAETitle] options:NSLiteralSearch range:NSMakeRange(0, [html length])];
+				else
+					[html replaceOccurrencesOfString:@"%LocalizedLabel_SendStatus%" withString: [NSString stringWithFormat: NSLocalizedString( @"Images sent to DICOM node: %@ - %@", nil), dicomDestinationAddress, dicomDestinationAETitle] options:NSLiteralSearch range:NSMakeRange(0, [html length])];
 			}
 			else
 				[html replaceOccurrencesOfString:@"%LocalizedLabel_SendStatus%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [html length])];
@@ -1807,8 +1883,11 @@ static NSMutableDictionary *movieLock = nil;
 		
 		if( [imagesArray count])
 		{
-			[self updateLogEntryForStudy: [[series lastObject] valueForKey: @"study"] withMessage: @"Download DICOM ZIP"];
-			
+			if( [[currentUser valueForKey: @"encryptedZIP"] boolValue])
+				[self updateLogEntryForStudy: [[series lastObject] valueForKey: @"study"] withMessage: @"Download encrypted DICOM ZIP"];
+			else
+				[self updateLogEntryForStudy: [[series lastObject] valueForKey: @"study"] withMessage: @"Download DICOM ZIP"];
+				
 			@try
 			{
 				NSString *srcFolder = @"/tmp";
@@ -1833,7 +1912,10 @@ static NSMutableDictionary *movieLock = nil;
 					lockReleased = YES;
 				}
 				
-				[BrowserController encryptFiles: [imagesArray valueForKey: @"completePath"] inZIPFile: destFile password: nil];
+				if( [[currentUser valueForKey: @"encryptedZIP"] boolValue])
+					[BrowserController encryptFiles: [imagesArray valueForKey: @"completePath"] inZIPFile: destFile password: [currentUser valueForKey: @"password"]];
+				else
+					[BrowserController encryptFiles: [imagesArray valueForKey: @"completePath"] inZIPFile: destFile password: nil];
 				
 				data = [NSData dataWithContentsOfFile: destFile];
 				
