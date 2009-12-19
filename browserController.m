@@ -13267,9 +13267,9 @@ static NSArray*	openSubSeriesArray = nil;
 		[t setLaunchPath: @"/usr/bin/unzip"];
 		[t setCurrentDirectoryPath: @"/tmp/"];
 		if( pass)
-			args = [NSArray arrayWithObjects: @"-o", @"-d", destination, @"-P", pass, file, nil];
+			args = [NSArray arrayWithObjects: @"-qq", @"-o", @"-d", destination, @"-P", pass, file, nil];
 		else
-			args = [NSArray arrayWithObjects: @"-o", @"-d", destination, file, nil];
+			args = [NSArray arrayWithObjects: @"-qq", @"-o", @"-d", destination, file, nil];
 		[t setArguments: args];
 		[t launch];
 		[t waitUntilExit];
