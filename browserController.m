@@ -6897,7 +6897,7 @@ static NSArray*	statesArray = nil;
 					
 					for( NSString *curSeriesUID in series4D)
 					{
-						NSFetchRequest			*request = [[[NSFetchRequest alloc] init] autorelease];
+						NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
 						[request setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"Series"]];
 						[request setPredicate: [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", studyUID, curSeriesUID]];
 						
@@ -9089,8 +9089,7 @@ static BOOL withReset = NO;
 				if( [dict valueForKey: @"smartAlbum"])
 					[a setValue: [dict valueForKey: @"smartAlbum"] forKey:@"smartAlbum"];
 				else
-					[a setValue: [NSNumber numberWithBool: NO]
- forKey:@"smartAlbum"];
+					[a setValue: [NSNumber numberWithBool: NO]  forKey:@"smartAlbum"];
 					
 				[a setValue: [dict valueForKey: @"predicateString"] forKey:@"predicateString"];
 			}

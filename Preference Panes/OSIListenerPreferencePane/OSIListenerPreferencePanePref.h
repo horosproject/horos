@@ -44,4 +44,5 @@
 - (IBAction)setDecompress:(id)sender;
 - (IBAction)setCompress:(id)sender;
 - (IBAction)webServerSettings:(id)sender;
+- (IBAction)smartAlbumHelpButton: (id)sender;
 @end

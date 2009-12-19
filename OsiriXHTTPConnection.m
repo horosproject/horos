@@ -13,6 +13,7 @@
 #import "BrowserControllerDCMTKCategory.h"
 #import "DCM.h"
 #import "HTTPResponse.h"
+#import "HTTPAuthenticationRequest.h"
 
 #include <netdb.h>
 #include <sys/socket.h>
@@ -97,9 +98,42 @@ static NSMutableDictionary *movieLock = nil;
 
 @implementation OsiriXHTTPConnection
 
+- (void) updateLogEntryForStudy: (NSManagedObject*) study withMessage:(NSString*) message
+{
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"logWebServer"] == NO) return;
+	
+	NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContextLoadIfNecessary: NO];
+	if( context == nil)
+		return;
+	
+	[context lock];
+	
+	@try
+	{
+		NSManagedObject *logEntry = nil;
+		
+		logEntry = [NSEntityDescription insertNewObjectForEntityForName:@"LogEntry" inManagedObjectContext:context];
+		[logEntry setValue: [NSDate date] forKey:@"startTime"];
+		[logEntry setValue: @"Web" forKey:@"type"];
+		
+		if( study)
+			[logEntry setValue: [study valueForKey: @"name"] forKey:@"patientName"];
+		if( study)
+			[logEntry setValue: [study valueForKey: @"studyName"] forKey:@"studyName"];
+		[logEntry setValue: message forKey: @"message"];
+		[logEntry setValue: [asyncSocket connectedHost] forKey: @"originName"];
+	}
+	@catch (NSException * e)
+	{
+		NSLog( @"****** OsiriX HTTPConnection updateLogEntry exception : %@", e);
+	}
+
+	[context unlock];
+}
+
 - (BOOL)isPasswordProtected:(NSString *)path
 {
-	return YES;
+	return [[NSUserDefaults standardUserDefaults] boolForKey: @"passwordWebServer"];
 }
 
 - (BOOL)useDigestAccessAuthentication
@@ -116,12 +150,61 @@ static NSMutableDictionary *movieLock = nil;
 	return YES;
 }
 
-- (NSString *)passwordForUser:(NSString *)username
+- (void)handleAuthenticationFailed
 {
-	// You can do all kinds of cool stuff here.
-	// For simplicity, we're not going to check the username, only the password.
+	[super handleAuthenticationFailed];
 	
-	return @"secret";
+	HTTPAuthenticationRequest *auth = [[[HTTPAuthenticationRequest alloc] initWithRequest:request] autorelease];
+	
+	if( [self useDigestAccessAuthentication])
+	{
+		if(![auth isDigest])
+			return ;
+		
+		if( [auth username])
+			[self updateLogEntryForStudy: nil withMessage: [NSString stringWithFormat: @"Wrong password for user %@", [auth username]]];
+	}
+}
+
+- (NSString *) passwordForUser:(NSString *)username
+{
+	[[[BrowserController currentBrowser] userManagedObjectContext] lock];
+	
+	if( [username length] > 3)
+	{
+		NSArray	*users = nil;
+		@try
+		{
+			NSFetchRequest *r = [[[NSFetchRequest alloc] init] autorelease];
+			[r setEntity: [[[[BrowserController currentBrowser] userManagedObjectModel] entitiesByName] objectForKey:@"User"]];
+			[r setPredicate: [NSPredicate predicateWithFormat:@"name == %@", username]];
+			
+			NSError *error = nil;
+			users = [[[BrowserController currentBrowser] userManagedObjectContext] executeFetchRequest: r error: &error];
+		}
+		@catch ( NSException *e)
+		{
+			NSLog( @"******* passwordForUser exception: %@", e);
+		}
+		
+		[[[BrowserController currentBrowser] userManagedObjectContext] unlock];
+		
+		if( [users count] == 0)
+		{
+			[self updateLogEntryForStudy: nil withMessage: [NSString stringWithFormat: @"Unknown user: %@", username]];
+			return nil;
+		}
+		if( [users count] > 1)
+		{
+			NSLog( @"******** WARNING multiple users with identical user name : %@", username);
+		}
+		
+		[currentUser release];
+		currentUser = [[users lastObject] retain];
+	}
+	else return nil;
+	
+	return [currentUser valueForKey: @"password"];
 }
 
 /**
@@ -130,7 +213,7 @@ static NSMutableDictionary *movieLock = nil;
 - (BOOL)isSecureServer
 {
 	// Create an HTTPS server (all connections will be secured via SSL/TLS)
-	return YES;
+	return [[NSUserDefaults standardUserDefaults] boolForKey: @"encryptedWebServer"];
 }
 
 /**
@@ -176,6 +259,7 @@ static NSMutableDictionary *movieLock = nil;
 	[selectedImages release];
 	[webDirectory release];
 	[ipAddressString release];
+	[currentUser release];
 	
 	[super dealloc];
 }
@@ -518,6 +602,22 @@ static NSMutableDictionary *movieLock = nil;
 	
 	[context retain];
 	[context lock];
+	
+	if( [[currentUser valueForKey: @"studyPredicate"] length] > 0)
+	{
+		@try
+		{
+			NSString *userPredicateString = [currentUser valueForKey: @"studyPredicate"];
+			predicate = [NSCompoundPredicate andPredicateWithSubpredicates: [NSArray arrayWithObjects: predicate, [[BrowserController currentBrowser] smartAlbumPredicateString: userPredicateString], nil]];
+		}
+		@catch( NSException *e)
+		{
+			NSLog( @"****** User Filter Error : %@", e);
+			NSLog( @"****** NO studies will be displayed.");
+			
+			predicate = [NSPredicate predicateWithValue: NO];
+		}
+	}
 	
 	@try
 	{
@@ -1456,7 +1556,7 @@ static NSMutableDictionary *movieLock = nil;
 			pageTitle = NSLocalizedString(@"Study List", @"");
 		}
 		
-		NSMutableString *html = [self htmlStudyListForStudies:[self studiesForPredicate:browsePredicate] settings: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: isMacOS], @"MacOS", nil]];
+		NSMutableString *html = [self htmlStudyListForStudies: [self studiesForPredicate: browsePredicate] settings: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: isMacOS], @"MacOS", nil]];
 		
 		if([parameters objectForKey:@"album"])
 		{
@@ -1531,18 +1631,9 @@ static NSMutableDictionary *movieLock = nil;
 		}
 		
 		NSArray *studies = [self studiesForPredicate:browsePredicate];
-		if([studies count]==1)
+		if( [studies count] == 1)
 		{
-			// We want the ip address of the client
-//			char buffer[256];
-//			[ipAddressString release];
-//			ipAddressString = nil;
-//			struct sockaddr *addr = (struct sockaddr *) [[asyncSocket connectedHost] bytes];
-//			if( addr->sa_family == AF_INET)
-//			{
-//				if (inet_ntop(AF_INET, &((struct sockaddr_in *)addr)->sin_addr, buffer, sizeof(buffer)))
-//					ipAddressString = [[NSString stringWithCString:buffer] retain];
-//			}
+			[self updateLogEntryForStudy: [studies lastObject] withMessage: @"Display Study"];
 			
 			ipAddressString = [[asyncSocket connectedHost] copy];
 			
@@ -1716,6 +1807,8 @@ static NSMutableDictionary *movieLock = nil;
 		
 		if( [imagesArray count])
 		{
+			[self updateLogEntryForStudy: [[series lastObject] valueForKey: @"study"] withMessage: @"Download DICOM ZIP"];
+			
 			@try
 			{
 				NSString *srcFolder = @"/tmp";
@@ -1915,8 +2008,11 @@ static NSMutableDictionary *movieLock = nil;
 		else
 			browsePredicate = [NSPredicate predicateWithValue:NO];
 		NSArray *studies = [self studiesForPredicate:browsePredicate];
-		if([studies count]==1)
+		
+		if( [studies count] == 1)
 		{
+			[self updateLogEntryForStudy: [studies lastObject] withMessage: @"Download Report"];
+			
 			NSString *reportFilePath = [[studies lastObject] valueForKey:@"reportURL"];
 			//NSLog(@"reportFilePath: %@", reportFilePath);
 			

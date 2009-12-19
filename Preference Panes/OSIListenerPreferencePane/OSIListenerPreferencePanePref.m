@@ -242,6 +242,15 @@ char *GetPrivateIP()
 		[[NSUserDefaults standardUserDefaults] setObject:@"480" forKey:@"DICOMTimeout"];
 }
 
+- (IBAction)smartAlbumHelpButton: (id)sender
+{
+	if( [sender tag] == 0)
+		[[NSWorkspace sharedWorkspace] openFile:[[NSBundle mainBundle] pathForResource:@"OsiriXTables" ofType:@"pdf"]];
+	
+	if( [sender tag] == 1)
+		[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://developer.apple.com/documentation/Cocoa/Conceptual/Predicates/Articles/pSyntax.html#//apple_ref/doc/uid/TP40001795"]];
+}
+
 - (IBAction) webServerSettings: (id) sender
 {
 	[NSApp beginSheet: webServerSettingsWindow modalForWindow: [[self mainView] window] modalDelegate:self didEndSelector:nil contextInfo:nil];

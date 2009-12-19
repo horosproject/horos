@@ -10,10 +10,12 @@ extern NSString* asciiString (NSString* name);
 	NSMutableDictionary *selectedDICOMNode;
 	NSLock *sendLock, *running;
 	NSString *ipAddressString;
+	NSManagedObject *currentUser;
 }
 
 + (NSString*)decodeURLString:(NSString*)aString;
 + (NSString*)iPhoneCompatibleNumericalFormat:(NSString*)aString;
 + (NSString*)encodeURLString:(NSString*)aString;
+- (void) updateLogEntryForStudy: (NSManagedObject*) study withMessage:(NSString*) message;
 
 @end

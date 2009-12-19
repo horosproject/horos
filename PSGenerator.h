@@ -2,7 +2,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface PSGenerator : NSObject <NSCoding>
+@interface PSGenerator : NSObject
 {
 	// Parameters
 	NSMutableString		*formatString;
