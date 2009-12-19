@@ -41,7 +41,18 @@
 			<li class="index"><a href="studyList?dicomcstoreport=%DicomCStorePort%&album=%AlbumNameURL%">%AlbumName%</a></li>
 			%/AlbumListItem%
 		</ul>
-
+		
+		%AuthorizedUploadDICOMFiles%
+		<h2 style="padding-top:10px">%LocalizedLabel_UploadDICOMFilesHeader%</h2>
+		<form action="" method="post" enctype="multipart/form-data" name="form1" id="form1">
+		<label>%LocalizedLabel_UploadDICOMFiles%
+		<input type="file" name="file" id="file" />
+		</label>
+		<label>
+		<input type="submit" name="button" id="button" value="Submit" />
+		</label>
+		</form>
+		%/AuthorizedUploadDICOMFiles%
 	</div>
 </body>
 </html>

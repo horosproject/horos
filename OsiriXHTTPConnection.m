@@ -22,9 +22,12 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
+#define INCOMINGPATH @"/INCOMING.noindex/"
+
 static NSMutableDictionary *movieLock = nil;
 
 #define maxResolution 1024
+
 @interface NSImage (ProportionalScaling)
 - (NSImage*)imageByScalingProportionallyToSize:(NSSize)targetSize;
 @end
@@ -261,6 +264,9 @@ static NSMutableDictionary *movieLock = nil;
 	[ipAddressString release];
 	[currentUser release];
 	
+	[multipartData release];
+	[postBoundary release];
+
 	[super dealloc];
 }
 
@@ -1312,6 +1318,9 @@ static NSMutableDictionary *movieLock = nil;
 		[templateString replaceOccurrencesOfString:@"%LocalizedLabel_StudyList%" withString:NSLocalizedString(@"Study List", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 		[templateString replaceOccurrencesOfString:@"%LocalizedLabel_Albums%" withString:NSLocalizedString(@"Albums", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 		
+		if( currentUser == nil || (currentUser && [[currentUser valueForKey: @"uploadDICOM"] boolValue] == YES))
+			[self supportsPOST: nil withSize: 0];
+		
 		NSArray *tempArray = [templateString componentsSeparatedByString:@"%AlbumListItem%"];
 		NSString *templateStringStart = [tempArray objectAtIndex:0];
 		tempArray = [[tempArray lastObject] componentsSeparatedByString:@"%/AlbumListItem%"];
@@ -2131,13 +2140,18 @@ static NSMutableDictionary *movieLock = nil;
 				err = YES;
 		}
 	}
-#pragma mark m4v
+	#pragma mark m4v
 	else if([fileURL hasSuffix:@".m4v"])
 	{
 		data = [NSData dataWithContentsOfFile:requestedFile];
 		totalLength = [data length];
 		
 		err = NO;
+	}
+	#pragma mark account.html
+	else if( [fileURL isEqualToString: @"account.html"])
+	{
+		
 	}
 	
 	if( lockReleased == NO)
@@ -2148,5 +2162,159 @@ static NSMutableDictionary *movieLock = nil;
 	
 	return [[[HTTPDataResponse alloc] initWithData: data] autorelease];
 }
+
+- (BOOL)supportsMethod:(NSString *)method atPath:(NSString *)relativePath
+{
+	if( [@"POST" isEqualToString:method])
+	{
+		return YES;
+	}
 	
+	return [super supportsMethod:method atPath:relativePath];
+}
+
+- (BOOL)supportsPOST:(NSString *)path withSize:(UInt64)contentLength
+{
+	dataStartIndex = 0;
+	[multipartData release];
+	multipartData = [[NSMutableArray alloc] init];
+	postHeaderOK = FALSE;
+	
+	[postBoundary release];
+	postBoundary = nil;
+	
+	return YES;
+}
+
+- (void)processDataChunk:(NSData *)postDataChunk
+{
+	// Override me to do something useful with a POST.
+	// If the post is small, such as a simple form, you may want to simply append the data to the request.
+	// If the post is big, such as a file upload, you may want to store the file to disk.
+	// 
+	// Remember: In order to support LARGE POST uploads, the data is read in chunks.
+	// This prevents a 50 MB upload from being stored in RAM.
+	// The size of the chunks are limited by the POST_CHUNKSIZE definition.
+	// Therefore, this method may be called multiple times for the same POST request.
+	
+	//NSLog(@"processPostDataChunk");
+	
+	if (!postHeaderOK)
+	{
+		if( multipartData == nil)
+			[self supportsPOST: nil withSize: 0];
+		
+		UInt16 separatorBytes = 0x0A0D;
+		NSData* separatorData = [NSData dataWithBytes:&separatorBytes length:2];
+		
+		int l = [separatorData length];
+		
+		for (int i = 0; i < [postDataChunk length] - l; i++)
+		{
+			NSRange searchRange = {i, l};
+
+			if ([[postDataChunk subdataWithRange:searchRange] isEqualToData:separatorData])
+			{
+				NSRange newDataRange = {dataStartIndex, i - dataStartIndex};
+				dataStartIndex = i + l;
+				i += l - 1;
+				NSData *newData = [postDataChunk subdataWithRange:newDataRange];
+				
+				if ([newData length])
+				{
+					[multipartData addObject:newData];
+				}
+				else
+				{
+					postHeaderOK = TRUE;
+					
+					NSString* postInfo = [[NSString alloc] initWithBytes:[[multipartData objectAtIndex:1] bytes] length:[[multipartData objectAtIndex:1] length] encoding:NSUTF8StringEncoding];
+					
+					[postBoundary release];
+					postBoundary = [[multipartData objectAtIndex:0] copy];
+					
+					NSLog( @"start boundary: %@", postBoundary);
+					
+					@try
+					{
+						NSArray* postInfoComponents = [postInfo componentsSeparatedByString:@"; filename="];
+						postInfoComponents = [[postInfoComponents lastObject] componentsSeparatedByString:@"\""];
+						postInfoComponents = [[postInfoComponents objectAtIndex:1] componentsSeparatedByString:@"\\"];
+						
+						NSString *extension = [[postInfoComponents lastObject] pathExtension];
+						
+						//NSString* root = [[[BrowserController currentBrowser] localDocumentsDirectory] stringByAppendingPathComponent:INCOMINGPATH];
+						NSString* root = @"/tmp/";
+						
+						NSString* filename = nil;
+						int inc = 1;
+						
+						do
+						{
+							filename = [[root stringByAppendingPathComponent: [NSString stringWithFormat: @"WebServer Upload %d", inc++]] stringByAppendingPathExtension: extension];
+						}
+						while( [[NSFileManager defaultManager] fileExistsAtPath: filename]);
+						
+						NSRange fileDataRange = {dataStartIndex, [postDataChunk length] - dataStartIndex};
+						
+						int l = [postBoundary length];
+						for( int x = dataStartIndex; x < [postDataChunk length]-l; x++)
+						{
+							NSRange searchRange = {x, l};
+
+							if ([[postDataChunk subdataWithRange:searchRange] isEqualToData: postBoundary])
+							{
+								fileDataRange.length -= ([postDataChunk length] - x) +2; // -2 = 0x0A0D
+								break;
+							}
+						}
+						
+						[[NSFileManager defaultManager] createFileAtPath:filename contents: [postDataChunk subdataWithRange:fileDataRange] attributes:nil];
+						NSFileHandle *file = [[NSFileHandle fileHandleForUpdatingAtPath:filename] retain];
+
+						if (file)
+						{
+							[file seekToEndOfFile];
+							[multipartData addObject:file];
+						}
+						else NSLog( @"***** Failed to create file - processDataChunk : %@", filename);
+					}
+					@catch ( NSException *e)
+					{
+						NSLog( @"******* POST processDataChunk : %@", e);
+					}
+					[postInfo release];
+					
+					break;
+				}
+			}
+		}
+	}
+	else
+	{
+		int l = [postBoundary length];
+		NSRange fileDataRange = { 0, [postDataChunk length]};
+		
+		for( int x = 0; x < [postDataChunk length]-l; x++)
+		{
+			NSRange searchRange = {x, l};
+
+			if ([[postDataChunk subdataWithRange:searchRange] isEqualToData: postBoundary])
+			{
+				fileDataRange.length -= ([postDataChunk length] - x) +2; // -2 = 0x0A0D
+				break;
+			}
+		}
+		
+		@try
+		{
+			[(NSFileHandle*)[multipartData lastObject] writeData: [postDataChunk subdataWithRange: fileDataRange]];
+		}
+		@catch (NSException * e)
+		{
+			NSLog( @"******* writeData processDataChunk exception: %@", e);
+		}
+	}
+}
+
 @end

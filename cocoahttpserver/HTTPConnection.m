@@ -21,7 +21,7 @@
 #if TARGET_OS_IPHONE
   #define POST_CHUNKSIZE  (1024 * 32)
 #else
-  #define POST_CHUNKSIZE  (1024 * 128)
+  #define POST_CHUNKSIZE  (1024 * 2048)
 #endif
 
 // Define the various timeouts (in seconds) for various parts of the HTTP process

@@ -11,11 +11,18 @@ extern NSString* asciiString (NSString* name);
 	NSLock *sendLock, *running;
 	NSString *ipAddressString;
 	NSManagedObject *currentUser;
+	
+	// POST / PUT support
+	int dataStartIndex;
+	NSMutableArray* multipartData;
+	BOOL postHeaderOK;
+	NSData *postBoundary;
 }
 
 + (NSString*)decodeURLString:(NSString*)aString;
 + (NSString*)iPhoneCompatibleNumericalFormat:(NSString*)aString;
 + (NSString*)encodeURLString:(NSString*)aString;
 - (void) updateLogEntryForStudy: (NSManagedObject*) study withMessage:(NSString*) message;
+- (BOOL)supportsPOST:(NSString *)path withSize:(UInt64)contentLength;
 
 @end
