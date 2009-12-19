@@ -1967,7 +1967,8 @@ static NSArray*	statesArray = nil;
     NSURL *url = [NSURL fileURLWithPath: currentDatabasePath];
 	
 	if (![persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:url options:nil error:&error])
-	{	// NSSQLiteStoreType - NSXMLStoreType
+	{
+		NSLog(@"********** managedObjectContextLoadIfNecessary FAILED: %@", error);
 		localizedDescription = [error localizedDescription];
 		error = [NSError errorWithDomain:@"OsiriXDomain" code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:error, NSUnderlyingErrorKey, [NSString stringWithFormat:@"Store Configuration Failure: %@", ((localizedDescription != nil) ? localizedDescription : @"Unknown Error")], NSLocalizedDescriptionKey, nil]];
     }
@@ -2000,7 +2001,7 @@ static NSArray*	statesArray = nil;
 		
 		if (![pSC addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:url options:nil error:&error])
 		{
-			NSLog(@"********** defaultManagerObjectContext FAILED");
+			NSLog(@"********** defaultManagerObjectContext FAILED: %@", error);
 		}
 		
 		[[mOC undoManager] setLevelsOfUndo: 1];
@@ -2344,8 +2345,11 @@ static NSArray*	statesArray = nil;
 			[[NSFileManager defaultManager] removeFileAtPath: [[self documentsDirectory] stringByAppendingPathComponent:@"/Database3.sql"] handler: nil];
 			[[NSFileManager defaultManager] removeFileAtPath: [[self documentsDirectory] stringByAppendingPathComponent:@"/Database3.sql-journal"] handler: nil];
 			
-			[previousSC addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL: [NSURL fileURLWithPath: currentDatabasePath] options:nil error:&error];
-			[currentSC addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL: [NSURL fileURLWithPath: [[self documentsDirectory] stringByAppendingPathComponent:@"/Database3.sql"]] options:nil error:&error];
+			if( [previousSC addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL: [NSURL fileURLWithPath: currentDatabasePath] options:nil error:&error] == nil)
+				NSLog( @"****** previousSC addPersistentStoreWithType error: %@", error);
+				
+			if( [currentSC addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL: [NSURL fileURLWithPath: [[self documentsDirectory] stringByAppendingPathComponent:@"/Database3.sql"]] options:nil error:&error] == nil)
+				NSLog( @"****** currentSC addPersistentStoreWithType error: %@", error);
 			
 			NSEntityDescription		*currentStudyTable, *currentSeriesTable, *currentImageTable, *currentAlbumTable;
 			NSArray					*albumProperties, *studyProperties, *seriesProperties, *imageProperties;
@@ -4455,6 +4459,7 @@ static NSArray*	statesArray = nil;
 	
 	if( ![userPersistentStoreCoordinator addPersistentStoreWithType: NSSQLiteStoreType configuration:nil URL:url options:nil error:&error])
 	{
+		NSLog( @"*********** userManagedObjectContext : %@", error);
 		localizedDescription = [error localizedDescription];
 		error = [NSError errorWithDomain:@"OsiriXDomain" code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:error, NSUnderlyingErrorKey, [NSString stringWithFormat:@"Store Configuration Failure: %@", ((localizedDescription != nil) ? localizedDescription : @"Unknown Error")], NSLocalizedDescriptionKey, nil]];
     }
@@ -10218,7 +10223,8 @@ static BOOL needToRezoom;
 						}
 						NSError	*error = nil;
 						NSArray *copiedObjects = nil;
-						[sc addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:[NSURL fileURLWithPath: sqlFile] options:nil error:&error];
+						if( [sc addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:[NSURL fileURLWithPath: sqlFile] options:nil error:&error] == nil)
+							NSLog( @"****** tableView acceptDrop addPersistentStoreWithType error: %@", error);
 						
 						if( [dbFolder isEqualToString: [self.documentsDirectory stringByDeletingLastPathComponent]] && isCurrentDatabaseBonjour == NO)	// same database folder - we don't need to copy the files
 						{
