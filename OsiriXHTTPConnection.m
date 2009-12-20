@@ -171,6 +171,9 @@ static NSMutableDictionary *movieLock = nil;
 
 - (NSString *) passwordForUser:(NSString *)username
 {
+	[currentUser release];
+	currentUser = nil;
+	
 	[[[BrowserController currentBrowser] userManagedObjectContext] lock];
 	
 	if( [username length] > 3)
@@ -202,7 +205,6 @@ static NSMutableDictionary *movieLock = nil;
 			NSLog( @"******** WARNING multiple users with identical user name : %@", username);
 		}
 		
-		[currentUser release];
 		currentUser = [[users lastObject] retain];
 	}
 	else return nil;
@@ -291,7 +293,7 @@ static NSMutableDictionary *movieLock = nil;
 	NSMutableString *templateString = [NSMutableString stringWithContentsOfFile:[webDirectory stringByAppendingPathComponent:@"study.html"]];
 	NSArray *tempArray, *tempArray2;
 
-	if( [[currentUser valueForKey: @"sendDICOMtoSelfIP"] boolValue] == NO && [[currentUser valueForKey: @"sendDICOMtoAnyNodes"] boolValue] == NO)
+	if( currentUser && [[currentUser valueForKey: @"sendDICOMtoSelfIP"] boolValue] == NO && [[currentUser valueForKey: @"sendDICOMtoAnyNodes"] boolValue] == NO)
 	{
 		tempArray = [templateString componentsSeparatedByString:@"%SendingFunctions1%"];
 		tempArray2 = [[tempArray lastObject] componentsSeparatedByString:@"%/SendingFunctions1%"];
@@ -315,7 +317,7 @@ static NSMutableDictionary *movieLock = nil;
 		[templateString replaceOccurrencesOfString:@"%/SendingFunctions3%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 	}
 	
-	if( [[currentUser valueForKey: @"downloadZIP"] boolValue] == NO)
+	if( currentUser && [[currentUser valueForKey: @"downloadZIP"] boolValue] == NO)
 	{
 		tempArray = [templateString componentsSeparatedByString:@"%ZIPFunctions%"];
 		tempArray2 = [[tempArray lastObject] componentsSeparatedByString:@"%/ZIPFunctions%"];
@@ -471,7 +473,7 @@ static NSMutableDictionary *movieLock = nil;
 	if([seriesArray count]<=1) checkAllStyle = @"style='display:none;'";
 	[returnHTML replaceOccurrencesOfString:@"%CheckAllStyle%" withString:checkAllStyle options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
 	
-	if( [[currentUser valueForKey: @"sendDICOMtoSelfIP"] boolValue] == YES && [[parameters objectForKey: @"dicomcstoreport"] intValue] > 0 && [ipAddressString length] >= 7)
+	if( (currentUser == nil || [[currentUser valueForKey: @"sendDICOMtoSelfIP"] boolValue] == YES) && [[parameters objectForKey: @"dicomcstoreport"] intValue] > 0 && [ipAddressString length] >= 7)
 	{
 		NSString *dicomNodeAddress = ipAddressString;
 		NSString *dicomNodePort = [parameters objectForKey: @"dicomcstoreport"];
@@ -493,7 +495,7 @@ static NSMutableDictionary *movieLock = nil;
 		[returnHTML appendString:tempHTML];
 	}
 	
-	if( [[currentUser valueForKey: @"sendDICOMtoAnyNodes"] boolValue] == YES)
+	if( currentUser == nil || [[currentUser valueForKey: @"sendDICOMtoAnyNodes"] boolValue] == YES)
 	{
 		NSArray *nodes = [DCMNetServiceDelegate DICOMServersListSendOnly:YES QROnly:NO];
 		for(NSDictionary *node in nodes)
@@ -591,7 +593,7 @@ static NSMutableDictionary *movieLock = nil;
 	
 	NSMutableString *templateString = [NSMutableString stringWithContentsOfFile:[webDirectory stringByAppendingPathComponent:@"studyList.html"]];
 	NSArray *tempArray, *tempArray2;
-	if( [[currentUser valueForKey: @"downloadZIP"] boolValue] == NO)
+	if( currentUser && [[currentUser valueForKey: @"downloadZIP"] boolValue] == NO)
 	{
 		tempArray = [templateString componentsSeparatedByString:@"%ZIPFunctions%"];
 		tempArray2 = [[tempArray lastObject] componentsSeparatedByString:@"%/ZIPFunctions%"];
@@ -663,7 +665,7 @@ static NSMutableDictionary *movieLock = nil;
 	[context retain];
 	[context lock];
 	
-	if( [[currentUser valueForKey: @"studyPredicate"] length] > 0)
+	if( currentUser && [[currentUser valueForKey: @"studyPredicate"] length] > 0)
 	{
 		@try
 		{
@@ -1310,6 +1312,47 @@ static NSMutableDictionary *movieLock = nil;
 	{
 		NSMutableString *templateString = [NSMutableString stringWithContentsOfFile:[webDirectory stringByAppendingPathComponent:@"index.html"]];
 		
+		if( currentUser == nil)
+		{
+			NSArray *tempArray, *tempArray2;
+			
+			tempArray = [templateString componentsSeparatedByString:@"%userAccount%"];
+			tempArray2 = [[tempArray lastObject] componentsSeparatedByString:@"%/userAccount%"];
+			templateString = [NSMutableString stringWithFormat:@"%@%@",[tempArray objectAtIndex:0], [tempArray2 lastObject]];
+		}
+		else
+		{
+			[templateString replaceOccurrencesOfString:@"%userAccount%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+			[templateString replaceOccurrencesOfString:@"%/userAccount%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+			
+			NSMutableString *userAccount = [NSMutableString stringWithString: NSLocalizedString(@"Current User : ", nil)];
+			
+			[userAccount appendString: [currentUser valueForKey: @"name"]];
+			[userAccount appendString: @" - "];
+			[userAccount appendString: [currentUser valueForKey: @"email"]];
+			[userAccount appendString: @" - "];
+			[userAccount appendString: [currentUser valueForKey: @"phone"]];
+			
+			[templateString replaceOccurrencesOfString:@"%LocalizedLabel_Account%" withString: userAccount options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+		}
+		
+		if( currentUser && [[currentUser valueForKey: @"uploadDICOM"] boolValue] == NO)
+		{
+			NSArray *tempArray, *tempArray2;
+			
+			tempArray = [templateString componentsSeparatedByString:@"%AuthorizedUploadDICOMFiles%"];
+			tempArray2 = [[tempArray lastObject] componentsSeparatedByString:@"%/AuthorizedUploadDICOMFiles%"];
+			templateString = [NSMutableString stringWithFormat:@"%@%@",[tempArray objectAtIndex:0], [tempArray2 lastObject]];
+		}
+		else
+		{
+			[templateString replaceOccurrencesOfString:@"%AuthorizedUploadDICOMFiles%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+			[templateString replaceOccurrencesOfString:@"%/AuthorizedUploadDICOMFiles%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+		}
+		
+		[templateString replaceOccurrencesOfString:@"%LocalizedLabel_Submit%" withString:NSLocalizedString(@"Submit", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+		[templateString replaceOccurrencesOfString:@"%LocalizedLabel_UploadDICOMFilesHeader%" withString:NSLocalizedString(@"Upload Files", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+		[templateString replaceOccurrencesOfString:@"%LocalizedLabel_UploadDICOMFiles%" withString:NSLocalizedString(@"Select a DICOM file or a zip file containing DICOM files:  ", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 		[templateString replaceOccurrencesOfString:@"%LocalizedLabel_SearchPatient%" withString:NSLocalizedString(@"Search Patient", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 		[templateString replaceOccurrencesOfString:@"%LocalizedLabel_SearchPatientID%" withString:NSLocalizedString(@"Search Patient ID", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 		[templateString replaceOccurrencesOfString:@"%LocalizedLabel_SearchButton%" withString:NSLocalizedString(@"Search", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
@@ -1570,13 +1613,13 @@ static NSMutableDictionary *movieLock = nil;
 		NSString *pageTitle;
 		if([(NSString*)[parameters objectForKey:@"browse"] isEqualToString:@"today"])
 		{
-			browsePredicate = [NSPredicate predicateWithFormat: @"dateAdded >= CAST(%lf, \"NSDate\")", [self startOfDay:[NSCalendarDate calendarDate]]];
+			browsePredicate = [NSPredicate predicateWithFormat: @"date >= CAST(%lf, \"NSDate\")", [self startOfDay:[NSCalendarDate calendarDate]]];
 			pageTitle = NSLocalizedString(@"Today", @"");
 		}
 		else if([(NSString*)[parameters objectForKey:@"browse"] isEqualToString:@"6hours"])
 		{
 			NSCalendarDate *now = [NSCalendarDate calendarDate];
-			browsePredicate = [NSPredicate predicateWithFormat: @"dateAdded >= CAST(%lf, \"NSDate\")", [[NSCalendarDate dateWithYear:[now yearOfCommonEra] month:[now monthOfYear] day:[now dayOfMonth] hour:[now hourOfDay]-6 minute:[now minuteOfHour] second:[now secondOfMinute] timeZone:nil] timeIntervalSinceReferenceDate]];
+			browsePredicate = [NSPredicate predicateWithFormat: @"date >= CAST(%lf, \"NSDate\")", [[NSCalendarDate dateWithYear:[now yearOfCommonEra] month:[now monthOfYear] day:[now dayOfMonth] hour:[now hourOfDay]-6 minute:[now minuteOfHour] second:[now secondOfMinute] timeZone:nil] timeIntervalSinceReferenceDate]];
 			pageTitle = NSLocalizedString(@"Last 6 hours", @"");
 		}
 		else if([(NSString*)[parameters objectForKey:@"browse"] isEqualToString:@"all"])
@@ -2213,6 +2256,25 @@ static NSMutableDictionary *movieLock = nil;
 	return NO;
 }
 
+- (void) closeFileHandleAndClean
+{
+	int inc = 1;
+	NSString *file;
+	NSString *root = [[[BrowserController currentBrowser] localDocumentsDirectory] stringByAppendingPathComponent:INCOMINGPATH];
+	
+	do
+	{
+		file = [[root stringByAppendingPathComponent: [NSString stringWithFormat: @"WebServer Upload %d", inc++]] stringByAppendingPathExtension: [POSTfilename pathExtension]];
+	}
+	while( [[NSFileManager defaultManager] fileExistsAtPath: file]);
+				
+	[[NSFileManager defaultManager] moveItemAtPath: POSTfilename toPath: file error: nil];
+	
+	[multipartData release];	multipartData = nil;
+	[postBoundary release];		postBoundary = nil;
+	[POSTfilename release];		POSTfilename = nil;
+}
+
 - (void)processDataChunk:(NSData *)postDataChunk
 {
 	// Override me to do something useful with a POST.
@@ -2293,6 +2355,9 @@ static NSMutableDictionary *movieLock = nil;
 							[multipartData addObject:file];
 						}
 						else NSLog( @"***** Failed to create file - processDataChunk : %@", POSTfilename);
+						
+						if( eof)
+							[self closeFileHandleAndClean];
 					}
 					@catch ( NSException *e)
 					{
@@ -2321,23 +2386,7 @@ static NSMutableDictionary *movieLock = nil;
 		}
 		
 		if( eof)
-		{
-			int inc = 1;
-			NSString *file;
-			NSString* root = [[[BrowserController currentBrowser] localDocumentsDirectory] stringByAppendingPathComponent:INCOMINGPATH];
-			
-			do
-			{
-				file = [[root stringByAppendingPathComponent: [NSString stringWithFormat: @"WebServer Upload %d", inc++]] stringByAppendingPathExtension: [POSTfilename pathExtension]];
-			}
-			while( [[NSFileManager defaultManager] fileExistsAtPath: file]);
-						
-			[[NSFileManager defaultManager] moveItemAtPath: POSTfilename toPath: file error: nil];
-			
-			[multipartData release];	multipartData = nil;
-			[postBoundary release];		postBoundary = nil;
-			[POSTfilename release];		POSTfilename = nil;
-		}
+			[self closeFileHandleAndClean];
 	}
 }
 
