@@ -266,7 +266,8 @@ static NSMutableDictionary *movieLock = nil;
 	
 	[multipartData release];
 	[postBoundary release];
-
+	[POSTfilename release];
+	
 	[super dealloc];
 }
 
@@ -2183,7 +2184,33 @@ static NSMutableDictionary *movieLock = nil;
 	[postBoundary release];
 	postBoundary = nil;
 	
+	[POSTfilename release];
+	POSTfilename = nil;
+	
 	return YES;
+}
+
+- (BOOL) checkEOF:(NSData*) postDataChunk range: (NSRange*) r
+{
+	BOOL eof = NO;
+	int l = [postBoundary length];
+	
+	#define CHECKLASTPART 4096
+	
+	for( int x = [postDataChunk length]-CHECKLASTPART; x < [postDataChunk length]-l; x++)
+	{
+		if( x >= 0)
+		{
+			NSRange searchRange = {x, l};
+
+			if ([[postDataChunk subdataWithRange:searchRange] isEqualToData: postBoundary])
+			{
+				r->length -= ([postDataChunk length] - x) +2; // -2 = 0x0A0D
+				return YES;
+			}
+		}
+	}
+	return NO;
 }
 
 - (void)processDataChunk:(NSData *)postDataChunk
@@ -2233,8 +2260,6 @@ static NSMutableDictionary *movieLock = nil;
 					[postBoundary release];
 					postBoundary = [[multipartData objectAtIndex:0] copy];
 					
-					NSLog( @"start boundary: %@", postBoundary);
-					
 					@try
 					{
 						NSArray* postInfoComponents = [postInfo componentsSeparatedByString:@"; filename="];
@@ -2243,41 +2268,31 @@ static NSMutableDictionary *movieLock = nil;
 						
 						NSString *extension = [[postInfoComponents lastObject] pathExtension];
 						
-						//NSString* root = [[[BrowserController currentBrowser] localDocumentsDirectory] stringByAppendingPathComponent:INCOMINGPATH];
 						NSString* root = @"/tmp/";
 						
-						NSString* filename = nil;
 						int inc = 1;
 						
 						do
 						{
-							filename = [[root stringByAppendingPathComponent: [NSString stringWithFormat: @"WebServer Upload %d", inc++]] stringByAppendingPathExtension: extension];
+							POSTfilename = [[root stringByAppendingPathComponent: [NSString stringWithFormat: @"WebServer Upload %d", inc++]] stringByAppendingPathExtension: extension];
 						}
-						while( [[NSFileManager defaultManager] fileExistsAtPath: filename]);
+						while( [[NSFileManager defaultManager] fileExistsAtPath: POSTfilename]);
+						
+						[POSTfilename retain];
 						
 						NSRange fileDataRange = {dataStartIndex, [postDataChunk length] - dataStartIndex};
 						
-						int l = [postBoundary length];
-						for( int x = dataStartIndex; x < [postDataChunk length]-l; x++)
-						{
-							NSRange searchRange = {x, l};
-
-							if ([[postDataChunk subdataWithRange:searchRange] isEqualToData: postBoundary])
-							{
-								fileDataRange.length -= ([postDataChunk length] - x) +2; // -2 = 0x0A0D
-								break;
-							}
-						}
+						BOOL eof = [self checkEOF: postDataChunk range: &fileDataRange];
 						
-						[[NSFileManager defaultManager] createFileAtPath:filename contents: [postDataChunk subdataWithRange:fileDataRange] attributes:nil];
-						NSFileHandle *file = [[NSFileHandle fileHandleForUpdatingAtPath:filename] retain];
-
+						[[NSFileManager defaultManager] createFileAtPath:POSTfilename contents: [postDataChunk subdataWithRange:fileDataRange] attributes:nil];
+						NSFileHandle *file = [[NSFileHandle fileHandleForUpdatingAtPath:POSTfilename] retain];
+						
 						if (file)
 						{
 							[file seekToEndOfFile];
 							[multipartData addObject:file];
 						}
-						else NSLog( @"***** Failed to create file - processDataChunk : %@", filename);
+						else NSLog( @"***** Failed to create file - processDataChunk : %@", POSTfilename);
 					}
 					@catch ( NSException *e)
 					{
@@ -2292,19 +2307,9 @@ static NSMutableDictionary *movieLock = nil;
 	}
 	else
 	{
-		int l = [postBoundary length];
 		NSRange fileDataRange = { 0, [postDataChunk length]};
 		
-		for( int x = 0; x < [postDataChunk length]-l; x++)
-		{
-			NSRange searchRange = {x, l};
-
-			if ([[postDataChunk subdataWithRange:searchRange] isEqualToData: postBoundary])
-			{
-				fileDataRange.length -= ([postDataChunk length] - x) +2; // -2 = 0x0A0D
-				break;
-			}
-		}
+		BOOL eof = [self checkEOF: postDataChunk range: &fileDataRange];
 		
 		@try
 		{
@@ -2313,6 +2318,25 @@ static NSMutableDictionary *movieLock = nil;
 		@catch (NSException * e)
 		{
 			NSLog( @"******* writeData processDataChunk exception: %@", e);
+		}
+		
+		if( eof)
+		{
+			int inc = 1;
+			NSString *file;
+			NSString* root = [[[BrowserController currentBrowser] localDocumentsDirectory] stringByAppendingPathComponent:INCOMINGPATH];
+			
+			do
+			{
+				file = [[root stringByAppendingPathComponent: [NSString stringWithFormat: @"WebServer Upload %d", inc++]] stringByAppendingPathExtension: [POSTfilename pathExtension]];
+			}
+			while( [[NSFileManager defaultManager] fileExistsAtPath: file]);
+						
+			[[NSFileManager defaultManager] moveItemAtPath: POSTfilename toPath: file error: nil];
+			
+			[multipartData release];	multipartData = nil;
+			[postBoundary release];		postBoundary = nil;
+			[POSTfilename release];		POSTfilename = nil;
 		}
 	}
 }

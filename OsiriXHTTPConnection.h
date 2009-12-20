@@ -17,6 +17,7 @@ extern NSString* asciiString (NSString* name);
 	NSMutableArray* multipartData;
 	BOOL postHeaderOK;
 	NSData *postBoundary;
+	NSString *POSTfilename;
 }
 
 + (NSString*)decodeURLString:(NSString*)aString;
