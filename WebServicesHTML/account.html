@@ -1,0 +1,38 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>User Account</title>
+	<meta http-equiv=content-type content="text/html; charset=UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+	<link rel="stylesheet" type="text/css" href="style.css" title="standard" />
+	<link rel="alternate stylesheet" type="text/css" href="iPhoneStyle.css" title="iPhone" />
+	<script type="text/javascript" language="javascript" src="styleswitcher.js"></script>
+</head> 
+
+<body>
+    <h1 id="pageTitle">User Account : %userAccount%</h1>
+	<a id="backButton" class="button" href="/?dicomcstoreport=%DicomCStorePort%">%LocalizedLabel_Home%</a>
+ 
+	<div id="Home" class="panel">
+		<form action="/accountPassword" method="get">
+			Username : %name%<br><br>
+			<HR>
+			Previous Password : <input type="password" id="previouspassword" name="previouspassword"/><br><br>
+			New Password : <input type="password" id="password" name="password"/><br><br>
+			Repeat New Password : <input type="password" id="password2" name="password2"/><br><br>
+			<input type="submit" id="accountPassword" value="%LocalizedLabel_UpdatePasswordButton%"/>
+			<HR>
+		</form>
+		<form action="/accountSettings" method="get">
+			Email : %email% <input type="text" id="email" name="email" value="%email%"/><br><br>
+			Address : %address% <input type="text" id="address" name="address" value="%address%"/><br><br>
+			Phone : %phone% <input type="text" id="phone" name="phone" value="%phone%"/><br><br>
+			Email Notification: <input type="checkbox" id="emailNotification" name="emailNotification" value="%emailNotification%"/><br><br>
+			<input type="hidden" name="dicomcstoreport" value="%DicomCStorePort%" name="search"/>
+			<input type="submit" id="accountSettings" value="%LocalizedLabel_UpdateSettingsButton%"/>
+		</form>	
+	</div>
+</body>
+</html>
