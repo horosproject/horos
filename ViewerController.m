@@ -13356,7 +13356,10 @@ int i,j,l;
 		SYNCSERIES = !SYNCSERIES;
 		
 		if( SYNCSERIES)
-			[self checkEverythingLoaded];
+		{
+			for( ViewerController *v in [ViewerController getDisplayed2DViewers])
+				[v checkEverythingLoaded];
+		}
 		
 		float sliceLocation =  [[[imageView dcmPixList] objectAtIndex:[imageView  curImage]] sliceLocation];
 		NSDictionary *userInfo = [NSDictionary dictionaryWithObject: [NSNumber numberWithFloat:sliceLocation] forKey:@"sliceLocation"];
