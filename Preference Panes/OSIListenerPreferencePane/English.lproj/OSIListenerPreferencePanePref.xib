@@ -1807,7 +1807,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 								<object class="NSButtonCell" id="188432915">
 									<int key="NSCellFlags">-2080244224</int>
 									<int key="NSCellFlags2">0</int>
-									<string key="NSContents">User authentification with password:</string>
+									<string key="NSContents">User authentication with password:</string>
 									<reference key="NSSupport" ref="349069678"/>
 									<reference key="NSControlView" ref="379674509"/>
 									<int key="NSTag">1</int>
@@ -2827,7 +2827,7 @@ bmdQaHlzaWNpYW4gQ09OVEFJTlNbY2RdICdQcm9mLiBST1NTRVQnKQ</string>
 							<object class="NSTextFieldCell" key="NSCell" id="478364195">
 								<int key="NSCellFlags">68288064</int>
 								<int key="NSCellFlags2">272630784</int>
-								<string key="NSContents">Authentifications:</string>
+								<string key="NSContents">Authentication:</string>
 								<reference key="NSSupport" ref="349069678"/>
 								<reference key="NSControlView" ref="833481009"/>
 								<reference key="NSBackgroundColor" ref="319257802"/>

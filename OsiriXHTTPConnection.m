@@ -758,7 +758,6 @@ static NSMutableDictionary *movieLock = nil;
 	
 	@try
 	{
-		// Find all studies
 		NSError *error = nil;
 		NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
 		[dbRequest setEntity:[[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey:@"Album"]];
@@ -778,11 +777,26 @@ static NSMutableDictionary *movieLock = nil;
 	NSManagedObject *album = [albumArray lastObject];
 	if([[album valueForKey:@"smartAlbum"] intValue]==1)
 	{
-		studiesArray = [self studiesForPredicate:[[BrowserController currentBrowser] smartAlbumPredicateString: [album valueForKey:@"predicateString"]]];
+		studiesArray = [self studiesForPredicate: [[BrowserController currentBrowser] smartAlbumPredicateString: [album valueForKey:@"predicateString"]]];
 	}
 	else
 	{
 		studiesArray = [[album valueForKey:@"studies"] allObjects];
+		
+		if( currentUser && [[currentUser valueForKey: @"studyPredicate"] length] > 0)
+		{
+			@try
+			{
+				studiesArray = [studiesArray filteredArrayUsingPredicate: [currentUser valueForKey: @"studyPredicate"]];
+			}
+			@catch( NSException *e)
+			{
+				NSLog( @"****** User Filter Error : %@", e);
+				NSLog( @"****** NO studies will be displayed.");
+				
+				studiesArray = nil;
+			}
+		}
 	}
 	
 	return studiesArray;
