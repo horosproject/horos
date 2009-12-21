@@ -334,20 +334,20 @@ static NSMutableDictionary *movieLock = nil;
 		[templateString replaceOccurrencesOfString:@"%/ZIPFunctions%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 	}
 	
-	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_PatientInfo%" withString:NSLocalizedString(@"Patient Info", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_PatientID%" withString:NSLocalizedString(@"ID", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_PatientName%" withString:NSLocalizedString(@"Patient Name", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_PatientDateOfBirth%" withString:NSLocalizedString(@"Date of Birth", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_StudyDate%" withString:NSLocalizedString(@"Study Date", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_StudyState%" withString:NSLocalizedString(@"Study Status", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_StudyComment%" withString:NSLocalizedString(@"Study Comment", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_StudyDescription%" withString:NSLocalizedString(@"Study Description", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_StudyModality%" withString:NSLocalizedString(@"Modality", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_Series%" withString:NSLocalizedString(@"Series", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_DICOMTransfer%" withString:NSLocalizedString(@"DICOM Transfer", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_SendSelectedSeriesTo%" withString:NSLocalizedString(@"Send selected Series to", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_Send%" withString:NSLocalizedString(@"Send", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_DownloadAsZIP%" withString:NSLocalizedString(@"ZIP file", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_PatientInfo%" withString:NSLocalizedString(@"Patient Info", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_PatientID%" withString:NSLocalizedString(@"ID", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_PatientName%" withString:NSLocalizedString(@"Patient Name", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_PatientDateOfBirth%" withString:NSLocalizedString(@"Date of Birth", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_StudyDate%" withString:NSLocalizedString(@"Study Date", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_StudyState%" withString:NSLocalizedString(@"Study Status", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_StudyComment%" withString:NSLocalizedString(@"Study Comment", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_StudyDescription%" withString:NSLocalizedString(@"Study Description", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_StudyModality%" withString:NSLocalizedString(@"Modality", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_Series%" withString:NSLocalizedString(@"Series", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_DICOMTransfer%" withString:NSLocalizedString(@"DICOM Transfer", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_SendSelectedSeriesTo%" withString:NSLocalizedString(@"Send selected Series to", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_Send%" withString:NSLocalizedString(@"Send", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_DownloadAsZIP%" withString:NSLocalizedString(@"ZIP file", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 	[templateString replaceOccurrencesOfString:@"%zipextension%" withString: ([[settings valueForKey:@"MacOS"] boolValue]?@"osirixzip":@"zip") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 	
 	NSString *browse = [OsiriXHTTPConnection nonNilString:[parameters objectForKey:@"browse"]];
@@ -360,17 +360,17 @@ static NSMutableDictionary *movieLock = nil;
 	
 	NSString *LocalizedLabel_StudyList = @"";
 	if(![search isEqualToString:@""])
-		LocalizedLabel_StudyList = [NSString stringWithFormat:@"%@ : %@", NSLocalizedString(@"Search Result for", @""), [[OsiriXHTTPConnection decodeURLString:search] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+		LocalizedLabel_StudyList = [NSString stringWithFormat:@"%@ : %@", NSLocalizedString(@"Search Result for", nil), [[OsiriXHTTPConnection decodeURLString:search] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
 	else if(![album isEqualToString:@""])
-		LocalizedLabel_StudyList = [NSString stringWithFormat:@"%@ : %@", NSLocalizedString(@"Album", @""), [[OsiriXHTTPConnection decodeURLString:album] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+		LocalizedLabel_StudyList = [NSString stringWithFormat:@"%@ : %@", NSLocalizedString(@"Album", nil), [[OsiriXHTTPConnection decodeURLString:album] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
 	else
 	{
 		if([browse isEqualToString:@"6hours"])
-			LocalizedLabel_StudyList = NSLocalizedString(@"Last 6 Hours", @"");
+			LocalizedLabel_StudyList = NSLocalizedString(@"Last 6 Hours", nil);
 		else if([browse isEqualToString:@"today"])
-			LocalizedLabel_StudyList = NSLocalizedString(@"Today", @"");
+			LocalizedLabel_StudyList = NSLocalizedString(@"Today", nil);
 		else
-			LocalizedLabel_StudyList = NSLocalizedString(@"Study List", @"");
+			LocalizedLabel_StudyList = NSLocalizedString(@"Study List", nil);
 	}
 	
 	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_StudyList%" withString:LocalizedLabel_StudyList options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
@@ -379,7 +379,7 @@ static NSMutableDictionary *movieLock = nil;
 	
 	if([study valueForKey:@"reportURL"] && ![[settings valueForKey:@"iPhone"] boolValue])
 	{
-		[templateString replaceOccurrencesOfString:@"%LocalizedLabel_GetReport%" withString:NSLocalizedString(@"Download Report", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+		[templateString replaceOccurrencesOfString:@"%LocalizedLabel_GetReport%" withString:NSLocalizedString(@"Download Report", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 		[templateString replaceOccurrencesOfString:@"%Report%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 		[templateString replaceOccurrencesOfString:@"%/Report%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 	}
@@ -451,7 +451,7 @@ static NSMutableDictionary *movieLock = nil;
 			if( nbFiles == 0)
 				nbFiles = 1;
 		}
-		NSString *imagesLabel = (nbFiles>1)? NSLocalizedString(@"Images", @"") : NSLocalizedString(@"Image", @"");
+		NSString *imagesLabel = (nbFiles>1)? NSLocalizedString(@"Images", nil) : NSLocalizedString(@"Image", nil);
 		[tempHTML replaceOccurrencesOfString:@"%SeriesImageNumber%" withString:[NSString stringWithFormat:@"%d %@", nbFiles, imagesLabel] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 		
 		NSString *checked = @"";
@@ -576,12 +576,12 @@ static NSMutableDictionary *movieLock = nil;
 	
 	if([[parameters objectForKey:@"CheckAll"] isEqualToString:@"on"] || [[parameters objectForKey:@"CheckAll"] isEqualToString:@"checked"])
 	{
-		[returnHTML replaceOccurrencesOfString:@"%CheckAllLabel%" withString:NSLocalizedString(@"Uncheck All", @"") options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
-		[returnHTML replaceOccurrencesOfString:@"%CheckAllChecked%" withString:NSLocalizedString(@"checked", @"") options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
+		[returnHTML replaceOccurrencesOfString:@"%CheckAllLabel%" withString:NSLocalizedString(@"Uncheck All", nil) options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
+		[returnHTML replaceOccurrencesOfString:@"%CheckAllChecked%" withString:NSLocalizedString(@"checked", nil) options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
 	}
 	else
 	{
-		[returnHTML replaceOccurrencesOfString:@"%CheckAllLabel%" withString:NSLocalizedString(@"Check All", @"") options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
+		[returnHTML replaceOccurrencesOfString:@"%CheckAllLabel%" withString:NSLocalizedString(@"Check All", nil) options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
 		[returnHTML replaceOccurrencesOfString:@"%CheckAllChecked%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
 	}
 	
@@ -610,8 +610,8 @@ static NSMutableDictionary *movieLock = nil;
 		[templateString replaceOccurrencesOfString:@"%/ZIPFunctions%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 	}
 	
-	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_Home%" withString:NSLocalizedString(@"Home", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_DownloadAsZIP%" withString:NSLocalizedString(@"ZIP file", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_Home%" withString:NSLocalizedString(@"Home", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_DownloadAsZIP%" withString:NSLocalizedString(@"ZIP file", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 	[templateString replaceOccurrencesOfString:@"%zipextension%" withString: ([[settings valueForKey:@"MacOS"] boolValue]?@"osirixzip":@"zip") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 	
 	tempArray = [templateString componentsSeparatedByString:@"%StudyListItem%"];
@@ -1297,7 +1297,6 @@ static NSMutableDictionary *movieLock = nil;
 		if([selected count])
 			[parameters setObject:selected forKey:@"selected"];
 	}
-	//NSLog(@"parameters : %@", parameters);
 	
 	NSString *portString = [parameters objectForKey: @"dicomcstoreport"];
 	if( portString == 0L)
@@ -1369,17 +1368,17 @@ static NSMutableDictionary *movieLock = nil;
 			[templateString replaceOccurrencesOfString:@"%/AuthorizedUploadDICOMFiles%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 		}
 		
-		[templateString replaceOccurrencesOfString:@"%LocalizedLabel_Submit%" withString:NSLocalizedString(@"Submit", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-		[templateString replaceOccurrencesOfString:@"%LocalizedLabel_UploadDICOMFilesHeader%" withString:NSLocalizedString(@"Upload Files", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-		[templateString replaceOccurrencesOfString:@"%LocalizedLabel_UploadDICOMFiles%" withString:NSLocalizedString(@"Select a DICOM file or a zip file containing DICOM files:  ", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-		[templateString replaceOccurrencesOfString:@"%LocalizedLabel_SearchPatient%" withString:NSLocalizedString(@"Search Patient", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-		[templateString replaceOccurrencesOfString:@"%LocalizedLabel_SearchPatientID%" withString:NSLocalizedString(@"Search Patient ID", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-		[templateString replaceOccurrencesOfString:@"%LocalizedLabel_SearchButton%" withString:NSLocalizedString(@"Search", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-		[templateString replaceOccurrencesOfString:@"%LocalizedLabel_Browse%" withString:NSLocalizedString(@"Browse", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-		[templateString replaceOccurrencesOfString:@"%LocalizedLabel_Last6Hours%" withString:NSLocalizedString(@"Last 6 Hours", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-		[templateString replaceOccurrencesOfString:@"%LocalizedLabel_Today%" withString:NSLocalizedString(@"Today", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-		[templateString replaceOccurrencesOfString:@"%LocalizedLabel_StudyList%" withString:NSLocalizedString(@"Study List", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-		[templateString replaceOccurrencesOfString:@"%LocalizedLabel_Albums%" withString:NSLocalizedString(@"Albums", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+		[templateString replaceOccurrencesOfString:@"%LocalizedLabel_Submit%" withString:NSLocalizedString(@"Submit", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+		[templateString replaceOccurrencesOfString:@"%LocalizedLabel_UploadDICOMFilesHeader%" withString:NSLocalizedString(@"Upload Files", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+		[templateString replaceOccurrencesOfString:@"%LocalizedLabel_UploadDICOMFiles%" withString:NSLocalizedString(@"Select a DICOM file or a zip file containing DICOM files:  ", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+		[templateString replaceOccurrencesOfString:@"%LocalizedLabel_SearchPatient%" withString:NSLocalizedString(@"Search Patient", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+		[templateString replaceOccurrencesOfString:@"%LocalizedLabel_SearchPatientID%" withString:NSLocalizedString(@"Search Patient ID", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+		[templateString replaceOccurrencesOfString:@"%LocalizedLabel_SearchButton%" withString:NSLocalizedString(@"Search", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+		[templateString replaceOccurrencesOfString:@"%LocalizedLabel_Browse%" withString:NSLocalizedString(@"Browse", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+		[templateString replaceOccurrencesOfString:@"%LocalizedLabel_Last6Hours%" withString:NSLocalizedString(@"Last 6 Hours", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+		[templateString replaceOccurrencesOfString:@"%LocalizedLabel_Today%" withString:NSLocalizedString(@"Today", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+		[templateString replaceOccurrencesOfString:@"%LocalizedLabel_StudyList%" withString:NSLocalizedString(@"Study List", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+		[templateString replaceOccurrencesOfString:@"%LocalizedLabel_Albums%" withString:NSLocalizedString(@"Albums", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 		
 		if( currentUser == nil || (currentUser && [[currentUser valueForKey: @"uploadDICOM"] boolValue] == YES))
 			[self supportsPOST: nil withSize: 0];
@@ -1395,7 +1394,7 @@ static NSMutableDictionary *movieLock = nil;
 		NSArray	*albumArray = [[BrowserController currentBrowser] albumArray];
 		for(NSManagedObject *album in albumArray)
 		{
-			if(![[album valueForKey:@"name"] isEqualToString:NSLocalizedString(@"Database", @"")])
+			if(![[album valueForKey:@"name"] isEqualToString:NSLocalizedString(@"Database", nil)])
 			{
 				NSMutableString *tempString = [NSMutableString stringWithString:albumListItemString];
 				[tempString replaceOccurrencesOfString:@"%AlbumName%" withString:[album valueForKey:@"name"] options:NSLiteralSearch range:NSMakeRange(0, [tempString length])];
@@ -1631,18 +1630,18 @@ static NSMutableDictionary *movieLock = nil;
 		if([(NSString*)[parameters objectForKey:@"browse"] isEqualToString:@"today"])
 		{
 			browsePredicate = [NSPredicate predicateWithFormat: @"date >= CAST(%lf, \"NSDate\")", [self startOfDay:[NSCalendarDate calendarDate]]];
-			pageTitle = NSLocalizedString(@"Today", @"");
+			pageTitle = NSLocalizedString(@"Today", nil);
 		}
 		else if([(NSString*)[parameters objectForKey:@"browse"] isEqualToString:@"6hours"])
 		{
 			NSCalendarDate *now = [NSCalendarDate calendarDate];
 			browsePredicate = [NSPredicate predicateWithFormat: @"date >= CAST(%lf, \"NSDate\")", [[NSCalendarDate dateWithYear:[now yearOfCommonEra] month:[now monthOfYear] day:[now dayOfMonth] hour:[now hourOfDay]-6 minute:[now minuteOfHour] second:[now secondOfMinute] timeZone:nil] timeIntervalSinceReferenceDate]];
-			pageTitle = NSLocalizedString(@"Last 6 hours", @"");
+			pageTitle = NSLocalizedString(@"Last 6 hours", nil);
 		}
 		else if([(NSString*)[parameters objectForKey:@"browse"] isEqualToString:@"all"])
 		{
 			browsePredicate = [NSPredicate predicateWithValue:YES];
-			pageTitle = NSLocalizedString(@"Study List", @"");
+			pageTitle = NSLocalizedString(@"Study List", nil);
 		}
 		else if([parameters objectForKey:@"search"])
 		{
@@ -1662,7 +1661,7 @@ static NSMutableDictionary *movieLock = nil;
 			
 			[search appendFormat:@"name CONTAINS[cd] '%@'", searchString]; // [c] is for 'case INsensitive' and [d] is to ignore accents (diacritic)
 			browsePredicate = [NSPredicate predicateWithFormat:search];
-			pageTitle = NSLocalizedString(@"Search Result", @"");
+			pageTitle = NSLocalizedString(@"Search Result", nil);
 		}
 		else if([parameters objectForKey:@"searchID"])
 		{
@@ -1682,12 +1681,12 @@ static NSMutableDictionary *movieLock = nil;
 			
 			[search appendFormat:@"patientID CONTAINS[cd] '%@'", searchString]; // [c] is for 'case INsensitive' and [d] is to ignore accents (diacritic)
 			browsePredicate = [NSPredicate predicateWithFormat:search];
-			pageTitle = NSLocalizedString(@"Search Result", @"");
+			pageTitle = NSLocalizedString(@"Search Result", nil);
 		}
 		else
 		{
 			browsePredicate = [NSPredicate predicateWithValue:YES];
-			pageTitle = NSLocalizedString(@"Study List", @"");
+			pageTitle = NSLocalizedString(@"Study List", nil);
 		}
 		
 		NSMutableString *html = [self htmlStudyListForStudies: [self studiesForPredicate: browsePredicate] settings: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: isMacOS], @"MacOS", nil]];
@@ -2214,12 +2213,33 @@ static NSMutableDictionary *movieLock = nil;
 	{
 		if( currentUser)
 		{
+			if( multipartData) // through POST
+			{
+				NSLog( [[[NSString alloc] initWithBytes: [[multipartData lastObject] bytes] length: [[multipartData lastObject] length] encoding: NSUTF8StringEncoding] autorelease]);
+			}
+			
 			NSMutableString *templateString = [NSMutableString stringWithContentsOfFile:[webDirectory stringByAppendingPathComponent:@"account.html"]];
 			
-			[templateString replaceOccurrencesOfString:@"%name%" withString: [currentUser valueForKey: @"name"] options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+			[templateString replaceOccurrencesOfString: @"%LocalizedLabel_Home%" withString:NSLocalizedString(@"Home", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 			
+			[templateString replaceOccurrencesOfString: @"%LocalizedLabel_MessageAccount%" withString:NSLocalizedString(@"Home", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+			
+			[templateString replaceOccurrencesOfString: @"%name%" withString: [currentUser valueForKey: @"name"] options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+			[templateString replaceOccurrencesOfString: @"%DicomCStorePort%" withString: portString options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+			
+			[templateString replaceOccurrencesOfString: @"%LocalizedLabel_ChangePassword%" withString:NSLocalizedString(@"Change Password:", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+			[templateString replaceOccurrencesOfString: @"%LocalizedLabel_UpdatePasswordButton%" withString: NSLocalizedString( @"Change Password", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+			
+			[templateString replaceOccurrencesOfString: @"%LocalizedLabel_ChangeSettings%" withString:NSLocalizedString(@"Change Personal Information:", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+			[templateString replaceOccurrencesOfString: @"%email%" withString: [currentUser valueForKey: @"email"] options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+			[templateString replaceOccurrencesOfString: @"%address%" withString: [currentUser valueForKey: @"address"] options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+			[templateString replaceOccurrencesOfString: @"%phone%" withString: [currentUser valueForKey: @"phone"] options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+			[templateString replaceOccurrencesOfString: @"%emailNotification%" withString: ([[currentUser valueForKey: @"emailNotification"] boolValue]?@"checked":@"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+			[templateString replaceOccurrencesOfString: @"%LocalizedLabel_UpdateSettingsButton%" withString: NSLocalizedString( @"Update", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 			
 			data = [templateString dataUsingEncoding: NSUTF8StringEncoding];
+			
+			err = NO;
 		}
 	}
 	
@@ -2313,7 +2333,7 @@ static NSMutableDictionary *movieLock = nil;
 	
 	//NSLog(@"processPostDataChunk");
 	
-	if (!postHeaderOK)
+	if( !postHeaderOK)
 	{
 		if( multipartData == nil)
 			[self supportsPOST: nil withSize: 0];
@@ -2342,7 +2362,7 @@ static NSMutableDictionary *movieLock = nil;
 				{
 					postHeaderOK = TRUE;
 					
-					NSString* postInfo = [[NSString alloc] initWithBytes:[[multipartData objectAtIndex:1] bytes] length:[[multipartData objectAtIndex:1] length] encoding:NSUTF8StringEncoding];
+					NSString* postInfo = [[NSString alloc] initWithBytes: [[multipartData objectAtIndex:1] bytes] length:[[multipartData objectAtIndex:1] length] encoding:NSUTF8StringEncoding];
 					
 					[postBoundary release];
 					postBoundary = [[multipartData objectAtIndex:0] copy];
@@ -2394,6 +2414,12 @@ static NSMutableDictionary *movieLock = nil;
 				}
 			}
 		}
+		
+		// For other POST, like accountPassword update
+		
+		[multipartData release];
+		multipartData = [[NSMutableArray array] retain];
+		[multipartData addObject: postDataChunk];
 	}
 	else
 	{

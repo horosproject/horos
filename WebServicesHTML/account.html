@@ -12,26 +12,36 @@
 </head> 
 
 <body>
-    <h1 id="pageTitle">User Account for : %name%</h1>
+    <h1 id="pageTitle">%UserAccountFor% : %name%</h1>
 	<a id="backButton" class="button" href="/?dicomcstoreport=%DicomCStorePort%">%LocalizedLabel_Home%</a>
  
 	<div id="Home" class="panel">
-		<form action="/accountPassword" method="get">
-			Username : %name%<br><br>
+		<form action="/account" method="POST">
 			<HR>
-			Previous Password : <input type="password" id="previouspassword" name="previouspassword"/><br><br>
-			New Password : <input type="password" id="password" name="password"/><br><br>
-			Repeat New Password : <input type="password" id="password2" name="password2"/><br><br>
-			<input type="submit" id="accountPassword" value="%LocalizedLabel_UpdatePasswordButton%"/>
+			<br>
+			<h2 style="padding-top:10px">%LocalizedLabel_MessageAccount%</h2>
+			%Username% : %name%<br>
+			<br>
+			<HR>
+			<h2 style="padding-top:10px">%LocalizedLabel_ChangePassword%</h2>
+			%PreviousPassword% : <input type="password" id="previouspassword" name="previouspassword"/><br><br>
+			%NewPassword% : <input type="password" id="password" name="password"/><br><br>
+			%RepeatNewPassword% : <input type="password" id="password2" name="password2"/><br><br>
+			<input type="hidden" name="dicomcstoreport" value="%DicomCStorePort%" name="search"/>
+			<input type="hidden" name="what" value="changePassword" name="search"/>
+			<input type="submit" id="updatePassword" value="%LocalizedLabel_UpdatePasswordButton%"/>
 			<HR>
 		</form>
-		<form action="/accountSettings" method="get">
-			Email : %email% <input type="text" id="email" name="email" value="%email%"/><br><br>
-			Address : %address% <input type="text" id="address" name="address" value="%address%"/><br><br>
-			Phone : %phone% <input type="text" id="phone" name="phone" value="%phone%"/><br><br>
-			Email Notification: <input type="checkbox" id="emailNotification" name="emailNotification" value="%emailNotification%"/><br><br>
+		<form action="/account" method="POST">
+			<h2 style="padding-top:10px">%LocalizedLabel_ChangeSettings%</h2>
+			%Email% : %email% <input type="text" id="email" name="email" value="%email%"/><br><br>
+			%Address% : %address% <input type="text" id="address" name="address" value="%address%"/><br><br>
+			%Phone% : %phone% <input type="text" id="phone" name="phone" value="%phone%"/><br><br>
+			%EmailNotification% : <input type="checkbox" id="emailNotification" name="emailNotification" %emailNotification%/><br><br>
 			<input type="hidden" name="dicomcstoreport" value="%DicomCStorePort%" name="search"/>
-			<input type="submit" id="accountSettings" value="%LocalizedLabel_UpdateSettingsButton%"/>
+			<input type="hidden" name="what" value="changeSettings" name="search"/>
+			<input type="submit" id="updateSettings" value="%LocalizedLabel_UpdateSettingsButton%"/>
+			<HR>
 		</form>	
 	</div>
 </body>
