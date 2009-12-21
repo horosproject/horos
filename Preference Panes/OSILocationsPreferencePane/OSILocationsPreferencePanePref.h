@@ -70,6 +70,8 @@ typedef enum
 	IBOutlet NSWindow				*TLSAskPasswordWindow;
 	NSString						*TLSAskPasswordValue, *TLSAskPasswordServerName;
 	
+	NSArray							*keychainCertificates;
+	
 	IBOutlet SFAuthorizationView	*_authView;
 }
 
@@ -85,6 +87,8 @@ typedef enum
 @property (retain) NSArray *TLSSupportedCipherSuite;
 @property TLSCertificateVerificationType TLSCertificateVerification;
 @property (retain) NSString *TLSAskPasswordValue, *TLSAskPasswordServerName;
+
+@property (retain) NSArray *keychainCertificates;
 
 
 + (BOOL) echoServer:(NSDictionary*)serverParameters;

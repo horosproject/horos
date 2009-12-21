@@ -17,4 +17,6 @@
 + (NSString *)stringForSecExternalItemType:(SecExternalItemType)itemType;
 + (NSString *)stringForSecKeychainAttrType:(SecKeychainAttrType)attrType;
 
++ (NSArray *)KeychainAccessCertificates;
+
 @end

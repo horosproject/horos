@@ -601,4 +601,102 @@
 	}
 }
 
+# pragma Keychain Access
+
+// Returns the list of Certificates stored in Keychain Access
++ (NSArray *)KeychainAccessCertificates;
+{
+	// Declare any Carbon variables we may create
+	// We do this here so it's easier to compare to the bottom of this method where we release them all
+	SecKeychainRef keychain = NULL;
+	SecIdentitySearchRef searchRef = NULL;
+	
+	// Create array to hold the results
+	NSMutableArray *result = [NSMutableArray array];
+	
+	SecKeychainCopyDefault(&keychain);
+	SecIdentitySearchCreate(keychain, CSSM_KEYUSE_ANY, &searchRef);
+	
+	SecIdentityRef currentIdentityRef = NULL;
+	while(searchRef && (SecIdentitySearchCopyNext(searchRef, &currentIdentityRef) != errSecItemNotFound))
+	{
+		// Extract the Certificate from the identity, and examine it to see if it will work for us
+		SecCertificateRef certificateRef = NULL;
+		SecIdentityCopyCertificate(currentIdentityRef, &certificateRef);
+		
+		if(certificateRef)
+		{
+			CFStringRef commonName = NULL;
+			OSStatus status = SecCertificateCopyCommonName(certificateRef, &commonName);
+			
+			if(status==0)
+			{
+				//NSLog(@"KeychainAccessCertificates, commonName : %@", (NSString*)commonName);
+				[result addObject:[NSDictionary dictionaryWithObject:(NSString*)commonName forKey:@"commonName"]];
+				//[result addObject:(id)currentIdentityRef];
+			}
+			
+			//			SecItemAttr itemAttributes[] = {kSecSubjectItemAttr, kSecIssuerItemAttr, kSecSubjectKeyIdentifierItemAttr};
+			//			
+			//			SecExternalFormat externalFormats[] = {kSecFormatUnknown, kSecFormatUnknown, kSecFormatUnknown};
+			//			
+			//			int itemAttributesSize  = sizeof(itemAttributes) / sizeof(*itemAttributes);
+			//			int externalFormatsSize = sizeof(externalFormats) / sizeof(*externalFormats);
+			//			NSAssert(itemAttributesSize == externalFormatsSize, @"Arrays must have identical counts!");
+			//			
+			//			SecKeychainAttributeInfo info = {itemAttributesSize, (void *)&itemAttributes, (void *)&externalFormats};
+			//			
+			//			SecKeychainAttributeList *privateKeyAttributeList = NULL;
+			//			SecKeychainItemCopyAttributesAndData((SecKeychainItemRef)certificateRef,
+			//			                                     &info, NULL, &privateKeyAttributeList, NULL, NULL);
+			//			
+			//			if(privateKeyAttributeList)
+			//			{
+			//				SecKeychainAttribute nameAttribute;
+			//				NSString *name;
+			//				
+			//				int i, count = privateKeyAttributeList->count;
+			//				for (i = 0; i<count; i++)
+			//				{
+			//					nameAttribute = privateKeyAttributeList->attr[i];
+			//					name = [[[NSString alloc] initWithBytes:nameAttribute.data
+			//															   length:(nameAttribute.length)
+			//															 encoding:NSUTF8StringEncoding] autorelease];
+			//					NSLog(@"KeychainAccessCertificates : count:%d | %d | %@", count, i, name);
+			//					
+			//				}
+			//				nameAttribute = privateKeyAttributeList->attr[0];
+			//				
+			//				name = [[[NSString alloc] initWithBytes:nameAttribute.data
+			//														   length:(nameAttribute.length)
+			//														 encoding:NSUTF8StringEncoding] autorelease];
+			//				NSLog(@"KeychainAccessCertificates : %@", name);
+			//				if(name)[result addObject:name];
+			//				// Ugly Hack
+			//				// For some reason, name sometimes contains odd characters at the end of it
+			//				// I'm not sure why, and I don't know of a proper fix, thus the use of the hasPrefix: method
+			////				if([name hasPrefix:@"OsiriX HTTP Server"])
+			////				{
+			////					// It's possible for there to be more than one private key with the above prefix
+			////					// But we're only allowed to have one identity, so we make sure to only add one to the array
+			////					if([result count] == 0)
+			////					{
+			////						[result addObject:(id)currentIdentityRef];
+			////					}
+			////				}
+			//				
+			//				SecKeychainItemFreeAttributesAndData(privateKeyAttributeList, NULL);
+			//			}
+			
+			CFRelease(certificateRef);
+		}
+		CFRelease(currentIdentityRef);
+	}
+	
+	if(keychain)  CFRelease(keychain);
+	if(searchRef) CFRelease(searchRef);
+	
+	return result;	
+}
+
 @end

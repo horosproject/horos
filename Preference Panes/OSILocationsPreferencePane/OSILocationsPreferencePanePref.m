@@ -16,6 +16,7 @@
 #include "SimplePing.h"
 
 #import "OpenGLScreenReader.h"
+#import "DDKeychain.h"
 
 /************ Transfer Syntaxes *******************
 	@"Explicit Little Endian"
@@ -44,6 +45,8 @@
 @synthesize TLSSupportedCipherSuite;
 @synthesize TLSCertificateVerification;
 @synthesize TLSAskPasswordValue, TLSAskPasswordServerName;
+
+@synthesize keychainCertificates;
 
 #define TLS_SEED_FILE @"/tmp/OsiriXTLSSeed"
 #define TLS_WRITE_SEED_FILE @"/tmp/OsiriXTLSSeedWrite"
@@ -322,6 +325,8 @@
 		if( [aServer valueForKey:@"Send"] == 0L)
 			[aServer setValue:[NSNumber numberWithBool:YES] forKey:@"Send"];
 	}
+	
+	self.keychainCertificates = [DDKeychain KeychainAccessCertificates];
 }
 
 - (void) willUnselect
@@ -344,6 +349,8 @@
 	[TLSSupportedCipherSuite release];
 	[TLSAskPasswordValue release];
 	[TLSAskPasswordServerName release];
+	
+	[keychainCertificates release];
 	
 	[super dealloc];
 }
@@ -958,6 +965,5 @@
     // Finished, so let's cleanup
     [mOpenGLScreenReader release];
 }
-
 
 @end
