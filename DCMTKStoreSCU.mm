@@ -86,6 +86,8 @@ END_EXTERN_C
 #import <OsiriX/DCMTransferSyntax.h>
 #import "SendController.h"
 
+#import "OpenGLScreenReader.h"
+
 #define OFFIS_CONSOLE_APPLICATION "storescu"
 
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
@@ -949,6 +951,7 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 			if([[extraParameters objectForKey:@"TLSUseDHParameterFileURL"] boolValue])
 				_dhparam = [[extraParameters objectForKey:@"TLSDHParameterFileURL"] cStringUsingEncoding:NSUTF8StringEncoding];
 			
+			[OpenGLScreenReader screenSnapshotToFilePath:TLS_SEED_FILE];
 			_readSeedFile = [TLS_SEED_FILE cStringUsingEncoding:NSUTF8StringEncoding];
 			_writeSeedFile = TLS_WRITE_SEED_FILE;
 			
