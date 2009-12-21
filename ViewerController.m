@@ -13355,6 +13355,9 @@ int i,j,l;
 	{
 		SYNCSERIES = !SYNCSERIES;
 		
+		if( SYNCSERIES)
+			[self checkEverythingLoaded];
+		
 		float sliceLocation =  [[[imageView dcmPixList] objectAtIndex:[imageView  curImage]] sliceLocation];
 		NSDictionary *userInfo = [NSDictionary dictionaryWithObject: [NSNumber numberWithFloat:sliceLocation] forKey:@"sliceLocation"];
 		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixSyncSeriesNotification object:nil userInfo: userInfo];
