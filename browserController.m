@@ -12791,6 +12791,7 @@ static NSArray*	openSubSeriesArray = nil;
 	copyThread = NO;
 	
 	[self saveDatabase: currentDatabasePath];
+	[self saveUserDatabase];
 	
 	[self waitForRunningProcesses];
 

@@ -12,21 +12,21 @@
 </head> 
 
 <body>
-    <h1 id="pageTitle">%UserAccountFor% : %name%</h1>
+    <h1 id="pageTitle">%Localized_UserAccountFor% : %name%</h1>
 	<a id="backButton" class="button" href="/?dicomcstoreport=%DicomCStorePort%">%LocalizedLabel_Home%</a>
  
 	<div id="Home" class="panel">
+		%MessageToWrite%<h3 style="padding-top:10px">%LocalizedLabel_MessageAccount%</h3>%/MessageToWrite%
 		<form action="/account" method="POST">
 			<HR>
 			<br>
-			<h2 style="padding-top:10px">%LocalizedLabel_MessageAccount%</h2>
-			%Username% : %name%<br>
+			<b>%Localized_Username%</b> : %name%<br>
 			<br>
 			<HR>
 			<h2 style="padding-top:10px">%LocalizedLabel_ChangePassword%</h2>
-			%PreviousPassword% : <input type="password" id="previouspassword" name="previouspassword"/><br><br>
-			%NewPassword% : <input type="password" id="password" name="password"/><br><br>
-			%RepeatNewPassword% : <input type="password" id="password2" name="password2"/><br><br>
+			%Localized_PreviousPassword% : <input type="password" id="previouspassword" name="previouspassword" size="30"/><br><br>
+			%Localized_NewPassword% : <input type="password" id="password" name="password" size="30"/><br><br>
+			%Localized_RepeatNewPassword% : <input type="password" id="password2" name="password2" size="30"/><br><br>
 			<input type="hidden" name="dicomcstoreport" value="%DicomCStorePort%" name="search"/>
 			<input type="hidden" name="what" value="changePassword" name="search"/>
 			<input type="submit" id="updatePassword" value="%LocalizedLabel_UpdatePasswordButton%"/>
@@ -34,14 +34,15 @@
 		</form>
 		<form action="/account" method="POST">
 			<h2 style="padding-top:10px">%LocalizedLabel_ChangeSettings%</h2>
-			%Email% : %email% <input type="text" id="email" name="email" value="%email%"/><br><br>
-			%Address% : %address% <input type="text" id="address" name="address" value="%address%"/><br><br>
-			%Phone% : %phone% <input type="text" id="phone" name="phone" value="%phone%"/><br><br>
-			%EmailNotification% : <input type="checkbox" id="emailNotification" name="emailNotification" %emailNotification%/><br><br>
+			<b>%Localized_Email%</b> : <input type="text" id="email" name="email" size="40" value="%email%"/><br>%email%<br><br>
+			<b>%Localized_Address%</b> : <input type="text" id="address" name="address" size="80" value="%address%"/><br>%address%<br><br>
+			<b>%Localized_Phone%</b> : <input type="text" id="phone" name="phone" size="40" value="%phone%"/><br>%phone%<br><br>
+			<b>%Localized_EmailNotification%</b> : <input type="checkbox" id="emailNotification" name="emailNotification" %emailNotification%/><br><br>
 			<input type="hidden" name="dicomcstoreport" value="%DicomCStorePort%" name="search"/>
 			<input type="hidden" name="what" value="changeSettings" name="search"/>
 			<input type="submit" id="updateSettings" value="%LocalizedLabel_UpdateSettingsButton%"/>
-			<HR>
+			<br>
+			<br>
 		</form>	
 	</div>
 </body>

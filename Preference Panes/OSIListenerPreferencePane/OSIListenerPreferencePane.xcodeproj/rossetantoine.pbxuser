@@ -76,9 +76,11 @@
 			PBXWorkspaceStateSaveDate = 283079930;
 		};
 		perUserProjectItems = {
-			AB52E74B0A19FC0F00726305 = AB52E74B0A19FC0F00726305 /* PBXTextBookmark */;
-			AB80AB470A19CF1800FED357 = AB80AB470A19CF1800FED357 /* PBXTextBookmark */;
-			ABF8345B0AC7CD680035413E = ABF8345B0AC7CD680035413E /* PBXTextBookmark */;
+			AB52E74B0A19FC0F00726305 /* PBXTextBookmark */ = AB52E74B0A19FC0F00726305 /* PBXTextBookmark */;
+			AB80AB470A19CF1800FED357 /* PBXTextBookmark */ = AB80AB470A19CF1800FED357 /* PBXTextBookmark */;
+			AB918EF510DFB92E00CD52E1 /* PBXTextBookmark */ = AB918EF510DFB92E00CD52E1 /* PBXTextBookmark */;
+			AB918EF610DFB92E00CD52E1 /* PBXTextBookmark */ = AB918EF610DFB92E00CD52E1 /* PBXTextBookmark */;
+			AB918EF710DFB92E00CD52E1 /* PBXTextBookmark */ = AB918EF710DFB92E00CD52E1 /* PBXTextBookmark */;
 		};
 		sourceControlManager = AB34B6EA09AA0E9A0057FE0E /* Source Control */;
 		userBuildSettings = {
@@ -174,29 +176,50 @@
 		path = "/Users/rossetantoine/osirix/osirix/Preference Panes/OSIViewerPreferencePane/OSIViewerPreferencePanePref.m";
 		sourceTree = "<absolute>";
 	};
-	ABF8345B0AC7CD680035413E /* PBXTextBookmark */ = {
+	AB918EF510DFB92E00CD52E1 /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
 		fRef = F506C03D013D9D7901CA16C8 /* OSIListenerPreferencePanePref.m */;
-		name = "OSIListenerPreferencePanePref.m: 197";
-		rLen = 0;
-		rLoc = 6234;
+		name = "OSIListenerPreferencePanePref.m: 254";
+		rLen = 43;
+		rLoc = 8249;
 		rType = 0;
-		vrLen = 1534;
-		vrLoc = 5665;
+		vrLen = 1303;
+		vrLoc = 7463;
+	};
+	AB918EF610DFB92E00CD52E1 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F506C03C013D9D7901CA16C8 /* OSIListenerPreferencePanePref.h */;
+		name = "OSIListenerPreferencePanePref.h: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 1243;
+		vrLoc = 0;
+	};
+	AB918EF710DFB92E00CD52E1 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F506C03C013D9D7901CA16C8 /* OSIListenerPreferencePanePref.h */;
+		name = "OSIListenerPreferencePanePref.h: 48";
+		rLen = 0;
+		rLoc = 1740;
+		rType = 0;
+		vrLen = 1269;
+		vrLoc = 477;
 	};
 	F506C03C013D9D7901CA16C8 /* OSIListenerPreferencePanePref.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {859, 700}}";
-			sepNavSelRange = "{1262, 0}";
+			sepNavIntBoundsRect = "{{0, 0}, {749, 700}}";
+			sepNavSelRange = "{1740, 0}";
+			sepNavVisRange = "{477, 1269}";
 			sepNavVisRect = "{{0, 70}, {859, 605}}";
 			sepNavWindowFrame = "{{15, 5}, {1245, 871}}";
 		};
 	};
 	F506C03D013D9D7901CA16C8 /* OSIListenerPreferencePanePref.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1186, 3892}}";
-			sepNavSelRange = "{0, 0}";
-			sepNavVisRange = "{0, 1397}";
+			sepNavIntBoundsRect = "{{0, 0}, {1182, 3542}}";
+			sepNavSelRange = "{8249, 43}";
+			sepNavVisRange = "{7463, 1303}";
 			sepNavVisRect = "{{0, 2666}, {1287, 199}}";
 			sepNavWindowFrame = "{{787, 213}, {1245, 871}}";
 		};

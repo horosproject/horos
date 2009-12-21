@@ -457,7 +457,7 @@ static NSMutableDictionary *movieLock = nil;
 		NSString *checked = @"";
 		for(NSString* selectedID in [parameters objectForKey:@"selected"])
 		{
-			if([[series valueForKey:@"seriesInstanceUID"] isEqualToString:[[selectedID stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding] stringByReplacingOccurrencesOfString:@"+" withString:@" "]])
+			if([[series valueForKey:@"seriesInstanceUID"] isEqualToString:[[selectedID stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding]])
 				checked = @"checked";
 		}
 		
@@ -1275,10 +1275,16 @@ static NSMutableDictionary *movieLock = nil;
 	
 	NSString *url = [[(id)CFHTTPMessageCopyRequestURL(request) autorelease] description];
 	
+	if( [method isEqualToString: @"POST"] && multipartData && [multipartData count] == 1) // through POST
+	{
+		url = [url stringByAppendingString: @"?"];
+		url = [url stringByAppendingString: [[[NSString alloc] initWithBytes: [[multipartData lastObject] bytes] length: [[multipartData lastObject] length] encoding: NSUTF8StringEncoding] autorelease]];
+	}
+	
 	// parse the URL to find the parameters (if any)
 	NSArray *urlComponenents = [url componentsSeparatedByString:@"?"];
 	NSString *parameterString = @"";
-	if([urlComponenents count]==2) parameterString = [urlComponenents lastObject];
+	if([urlComponenents count] == 2) parameterString = [urlComponenents lastObject];
 	NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
 	if(![parameterString isEqualToString:@""])
 	{
@@ -1305,7 +1311,6 @@ static NSMutableDictionary *movieLock = nil;
 	// find the name of the requested file
 	urlComponenents = [(NSString*)[urlComponenents objectAtIndex:0] componentsSeparatedByString:@"?"];
 	NSString *fileURL = [urlComponenents objectAtIndex:0];
-	//NSLog(@"fileURL : %@", fileURL);
 	
 	NSString *requestedFile, *reportType;
 	NSData *data;
@@ -1318,8 +1323,12 @@ static NSMutableDictionary *movieLock = nil;
 	}
 	else
 	{
-		requestedFile = [webDirectory stringByAppendingPathComponent:fileURL];
-		err = ![[NSFileManager defaultManager] fileExistsAtPath:requestedFile];
+		requestedFile = [webDirectory stringByAppendingPathComponent: fileURL];
+		
+		// SECURITY : we cannot allow the client to read any file on the hard disk !?!?!!!
+		requestedFile = [requestedFile stringByReplacingOccurrencesOfString: @".." withString: @""];
+		
+		err = ![[NSFileManager defaultManager] fileExistsAtPath: requestedFile];
 	}
 	
 	[[[BrowserController currentBrowser] managedObjectContext] lock];
@@ -1646,7 +1655,7 @@ static NSMutableDictionary *movieLock = nil;
 		else if([parameters objectForKey:@"search"])
 		{
 			NSMutableString *search = [NSMutableString string];
-			NSString *searchString = [NSString stringWithString:[[parameters objectForKey:@"search"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+			NSString *searchString = [NSString stringWithString: [[[parameters objectForKey:@"search"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding]];
 			searchString = [OsiriXHTTPConnection decodeURLString:searchString];
 			
 			NSArray *components = [searchString componentsSeparatedByString:@" "];
@@ -1666,7 +1675,7 @@ static NSMutableDictionary *movieLock = nil;
 		else if([parameters objectForKey:@"searchID"])
 		{
 			NSMutableString *search = [NSMutableString string];
-			NSString *searchString = [NSString stringWithString: [[parameters objectForKey:@"searchID"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+			NSString *searchString = [NSString stringWithString: [[[parameters objectForKey:@"searchID"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding]];
 			searchString = [OsiriXHTTPConnection decodeURLString:searchString];
 			
 			NSArray *components = [searchString componentsSeparatedByString:@" "];
@@ -1752,7 +1761,7 @@ static NSMutableDictionary *movieLock = nil;
 				NSArray *seriesArray;
 				for(NSString* selectedID in [parameters objectForKey:@"selected"])
 				{
-					NSPredicate *pred = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", [parameters objectForKey:@"id"], [[selectedID stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding] stringByReplacingOccurrencesOfString:@"+" withString:@" "]];
+					NSPredicate *pred = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", [parameters objectForKey:@"id"], [[selectedID stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding]];
 					
 					seriesArray = [self seriesForPredicate: pred];
 					for(NSManagedObject *series in seriesArray)
@@ -2213,12 +2222,76 @@ static NSMutableDictionary *movieLock = nil;
 	{
 		if( currentUser)
 		{
-			if( multipartData) // through POST
+			NSString *message = @"";
+			
+			if( [[parameters valueForKey: @"what"] isEqualToString: @"changePassword"])
 			{
-				NSLog( [[[NSString alloc] initWithBytes: [[multipartData lastObject] bytes] length: [[multipartData lastObject] length] encoding: NSUTF8StringEncoding] autorelease]);
+				NSString * previouspassword = [[[parameters valueForKey: @"previouspassword"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
+				NSString * password = [[[parameters valueForKey: @"password"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
+				
+				if( [previouspassword isEqualToString: [currentUser valueForKey: @"password"]])
+				{
+					if( [[parameters valueForKey: @"password"] isEqualToString: [parameters valueForKey: @"password2"]])
+					{
+						if( [password length] >= 4)
+						{
+							// We can update the user password
+							[currentUser setValue: password forKey: @"password"];
+							message = NSLocalizedString( @"Password updated successfully !", nil);
+							[self updateLogEntryForStudy: nil withMessage: [NSString stringWithFormat: @"User changed his password"]];
+						}
+						else message = NSLocalizedString( @"Password needs to be at least 4 characters !", nil);
+					}
+					else message = NSLocalizedString( @"New passwords are not identical !", nil);
+				}
+				else message = NSLocalizedString( @"Wrong current password !", nil);
+			}
+			
+			if( [[parameters valueForKey: @"what"] isEqualToString: @"changeSettings"])
+			{
+				NSString * email = [[[parameters valueForKey: @"email"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
+				NSString * address = [[[parameters valueForKey: @"address"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
+				NSString * phone = [[[parameters valueForKey: @"phone"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
+				
+				[currentUser setValue: email forKey: @"email"];
+				[currentUser setValue: address forKey: @"address"];
+				[currentUser setValue: phone forKey: @"phone"];
+				
+				if( [[[parameters valueForKey: @"emailNotification"] lowercaseString] isEqualToString: @"on"])
+					[currentUser setValue: [NSNumber numberWithBool: YES] forKey: @"emailNotification"];
+				else
+					[currentUser setValue: [NSNumber numberWithBool: NO] forKey: @"emailNotification"];
+					
+				message = NSLocalizedString( @"Personal Information updated successfully !", nil);
 			}
 			
 			NSMutableString *templateString = [NSMutableString stringWithContentsOfFile:[webDirectory stringByAppendingPathComponent:@"account.html"]];
+			
+			if( [message length] == 0)
+			{
+				NSArray *tempArray, *tempArray2;
+			
+				tempArray = [templateString componentsSeparatedByString:@"%MessageToWrite%"];
+				tempArray2 = [[tempArray lastObject] componentsSeparatedByString:@"%/MessageToWrite%"];
+				templateString = [NSMutableString stringWithFormat:@"%@%@",[tempArray objectAtIndex:0], [tempArray2 lastObject]];
+			}
+			else
+			{
+				[templateString replaceOccurrencesOfString:@"%MessageToWrite%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+				[templateString replaceOccurrencesOfString:@"%/MessageToWrite%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+			}
+			
+			[templateString replaceOccurrencesOfString: @"%LocalizedLabel_MessageAccount%" withString: message options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+			
+			[templateString replaceOccurrencesOfString: @"%Localized_Username%" withString:NSLocalizedString(@"Username", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+			[templateString replaceOccurrencesOfString: @"%Localized_PreviousPassword%" withString:NSLocalizedString(@"Previous Password", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+			[templateString replaceOccurrencesOfString: @"%Localized_UserAccountFor%" withString:NSLocalizedString(@"User Account For", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+			[templateString replaceOccurrencesOfString: @"%Localized_NewPassword%" withString:NSLocalizedString(@"New Password", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+			[templateString replaceOccurrencesOfString: @"%Localized_RepeatNewPassword%" withString:NSLocalizedString(@"Repeat New Password", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+			[templateString replaceOccurrencesOfString: @"%Localized_Email%" withString:NSLocalizedString(@"Email", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+			[templateString replaceOccurrencesOfString: @"%Localized_Address%" withString:NSLocalizedString(@"Address", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+			[templateString replaceOccurrencesOfString: @"%Localized_Phone%" withString:NSLocalizedString(@"Phone", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+			[templateString replaceOccurrencesOfString: @"%Localized_EmailNotification%" withString:NSLocalizedString(@"Email Notification", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 			
 			[templateString replaceOccurrencesOfString: @"%LocalizedLabel_Home%" withString:NSLocalizedString(@"Home", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 			
@@ -2238,6 +2311,8 @@ static NSMutableDictionary *movieLock = nil;
 			[templateString replaceOccurrencesOfString: @"%LocalizedLabel_UpdateSettingsButton%" withString: NSLocalizedString( @"Update", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 			
 			data = [templateString dataUsingEncoding: NSUTF8StringEncoding];
+			
+			[[BrowserController currentBrowser] saveUserDatabase];
 			
 			err = NO;
 		}
@@ -2415,11 +2490,14 @@ static NSMutableDictionary *movieLock = nil;
 			}
 		}
 		
-		// For other POST, like accountPassword update
+		// For other POST, like account update
 		
-		[multipartData release];
-		multipartData = [[NSMutableArray array] retain];
-		[multipartData addObject: postDataChunk];
+		if( [postDataChunk length] < 4096)
+		{
+			[multipartData release];
+			multipartData = [[NSMutableArray array] retain];
+			[multipartData addObject: postDataChunk];
+		}
 	}
 	else
 	{
