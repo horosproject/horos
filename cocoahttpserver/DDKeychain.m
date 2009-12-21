@@ -634,6 +634,7 @@
 				//NSLog(@"KeychainAccessCertificates, commonName : %@", (NSString*)commonName);
 				[result addObject:[NSDictionary dictionaryWithObject:(NSString*)commonName forKey:@"commonName"]];
 				//[result addObject:(id)currentIdentityRef];
+				CFRelease(commonName);
 			}
 			
 			//			SecItemAttr itemAttributes[] = {kSecSubjectItemAttr, kSecIssuerItemAttr, kSecSubjectKeyIdentifierItemAttr};
