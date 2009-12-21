@@ -251,6 +251,11 @@ char *GetPrivateIP()
 		[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://developer.apple.com/documentation/Cocoa/Conceptual/Predicates/Articles/pSyntax.html#//apple_ref/doc/uid/TP40001795"]];
 }
 
+- (IBAction) openKeyChainAccess:(id) sender
+{
+	[[NSWorkspace sharedWorkspace] fullPathForApplication:@"Keychain Access"];
+}
+
 - (IBAction) webServerSettings: (id) sender
 {
 	[NSApp beginSheet: webServerSettingsWindow modalForWindow: [[self mainView] window] modalDelegate:self didEndSelector:nil contextInfo:nil];

@@ -45,4 +45,5 @@
 - (IBAction)setCompress:(id)sender;
 - (IBAction)webServerSettings:(id)sender;
 - (IBAction)smartAlbumHelpButton: (id)sender;
+- (IBAction) openKeyChainAccess:(id) sender;
 @end

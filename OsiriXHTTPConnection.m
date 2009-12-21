@@ -111,6 +111,11 @@ static NSMutableDictionary *movieLock = nil;
 	
 	[context lock];
 	
+	if( currentUser)
+	{
+		message = [[currentUser valueForKey: @"name"] stringByAppendingFormat:@" : %@", message];
+	}
+	
 	@try
 	{
 		NSManagedObject *logEntry = nil;
@@ -1403,8 +1408,6 @@ static NSMutableDictionary *movieLock = nil;
 		
 		[returnHTML replaceOccurrencesOfString: @"%DicomCStorePort%" withString: portString options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
 		
-		[returnHTML replaceOccurrencesOfString: @"%DicomCStorePort%" withString: portString options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
-		
 		data = [returnHTML dataUsingEncoding:NSUTF8StringEncoding];
 	}
 #pragma mark wado
@@ -2206,10 +2209,18 @@ static NSMutableDictionary *movieLock = nil;
 		
 		err = NO;
 	}
-	#pragma mark account.html
-	else if( [fileURL isEqualToString: @"account.html"])
+	#pragma mark account
+	else if( [fileURL isEqualToString: @"/account"])
 	{
-		
+		if( currentUser)
+		{
+			NSMutableString *templateString = [NSMutableString stringWithContentsOfFile:[webDirectory stringByAppendingPathComponent:@"account.html"]];
+			
+			[templateString replaceOccurrencesOfString:@"%name%" withString: [currentUser valueForKey: @"name"] options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+			
+			
+			data = [templateString dataUsingEncoding: NSUTF8StringEncoding];
+		}
 	}
 	
 	if( lockReleased == NO)

@@ -4460,6 +4460,9 @@ static NSArray*	statesArray = nil;
 	if( ![userPersistentStoreCoordinator addPersistentStoreWithType: NSSQLiteStoreType configuration:nil URL:url options:nil error:&error])
 	{
 		NSLog( @"*********** userManagedObjectContext : %@", error);
+		
+		NSRunCriticalAlertPanel( NSLocalizedString( @"Web Users Database Error", nil), [error localizedDescription], NSLocalizedString( @"OK", nil), nil, nil);
+		
 		localizedDescription = [error localizedDescription];
 		error = [NSError errorWithDomain:@"OsiriXDomain" code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:error, NSUnderlyingErrorKey, [NSString stringWithFormat:@"Store Configuration Failure: %@", ((localizedDescription != nil) ? localizedDescription : @"Unknown Error")], NSLocalizedDescriptionKey, nil]];
     }
@@ -4467,7 +4470,7 @@ static NSArray*	statesArray = nil;
 	[[userManagedObjectContext undoManager] setLevelsOfUndo: 1];
 	[[userManagedObjectContext undoManager] disableUndoRegistration];
 
-	// This line is very important, if there is NO database.sql file
+	// This line is very important, if there is NO sql file
 	[self saveUserDatabase];
 	
     return userManagedObjectContext;
@@ -12489,8 +12492,6 @@ static NSArray*	openSubSeriesArray = nil;
 	if( autoroutingInProgress == nil) autoroutingInProgress = [[NSLock alloc] init];
 	
 	[wait showWindow:self];
-	
-	[self userManagedObjectContext];
 	
 	@try
 	{

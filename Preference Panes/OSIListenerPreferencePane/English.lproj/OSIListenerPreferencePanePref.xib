@@ -1743,28 +1743,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 								<int key="NSPeriodicInterval">25</int>
 							</object>
 						</object>
-						<object class="NSButton" id="933542230">
-							<reference key="NSNextResponder" ref="673116498"/>
-							<int key="NSvFlags">268</int>
-							<string key="NSFrame">{{32, 36}, {376, 18}}</string>
-							<reference key="NSSuperview" ref="673116498"/>
-							<bool key="NSEnabled">YES</bool>
-							<object class="NSButtonCell" key="NSCell" id="117187709">
-								<int key="NSCellFlags">-2080244224</int>
-								<int key="NSCellFlags2">0</int>
-								<string key="NSContents">Users have to change their password each month</string>
-								<reference key="NSSupport" ref="349069678"/>
-								<reference key="NSControlView" ref="933542230"/>
-								<int key="NSButtonFlags">1211912703</int>
-								<int key="NSButtonFlags2">2</int>
-								<reference key="NSNormalImage" ref="244386217"/>
-								<reference key="NSAlternateImage" ref="385854006"/>
-								<string key="NSAlternateContents"/>
-								<string key="NSKeyEquivalent"/>
-								<int key="NSPeriodicDelay">200</int>
-								<int key="NSPeriodicInterval">25</int>
-							</object>
-						</object>
 						<object class="NSTextField" id="849549175">
 							<reference key="NSNextResponder" ref="673116498"/>
 							<int key="NSvFlags">268</int>
@@ -3943,7 +3921,7 @@ bmdQaHlzaWNpYW4gQ09OVEFJTlNbY2RdICdQcm9mLiBST1NTRVQnKQ</string>
 						<string key="label">enabled2: values.passwordWebServer</string>
 						<reference key="source" ref="1054612477"/>
 						<reference key="destination" ref="896066363"/>
-						<object class="NSNibBindingConnector" key="connector">
+						<object class="NSNibBindingConnector" key="connector" id="1024">
 							<reference key="NSSource" ref="1054612477"/>
 							<reference key="NSDestination" ref="896066363"/>
 							<string key="NSLabel">enabled2: values.passwordWebServer</string>
@@ -3960,29 +3938,6 @@ bmdQaHlzaWNpYW4gQ09OVEFJTlNbY2RdICdQcm9mLiBST1NTRVQnKQ</string>
 						</object>
 					</object>
 					<int key="connectionID">629</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled2: values.passwordWebServer</string>
-						<reference key="source" ref="496773730"/>
-						<reference key="destination" ref="896066363"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="496773730"/>
-							<reference key="NSDestination" ref="896066363"/>
-							<string key="NSLabel">enabled2: values.passwordWebServer</string>
-							<string key="NSBinding">enabled2</string>
-							<string key="NSKeyPath">values.passwordWebServer</string>
-							<dictionary key="NSOptions">
-								<integer value="-1" key="NSMultipleValuesPlaceholder"/>
-								<integer value="-1" key="NSNoSelectionPlaceholder"/>
-								<integer value="-1" key="NSNotApplicablePlaceholder"/>
-								<integer value="-1" key="NSNullPlaceholder"/>
-							</dictionary>
-							<reference key="NSPreviousConnector" ref="707849476"/>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">630</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
@@ -4147,22 +4102,6 @@ bmdQaHlzaWNpYW4gQ09OVEFJTlNbY2RdICdQcm9mLiBST1NTRVQnKQ</string>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
 						<string key="label">enabled: values.passwordWebServer</string>
-						<reference key="source" ref="933542230"/>
-						<reference key="destination" ref="896066363"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="933542230"/>
-							<reference key="NSDestination" ref="896066363"/>
-							<string key="NSLabel">enabled: values.passwordWebServer</string>
-							<string key="NSBinding">enabled</string>
-							<string key="NSKeyPath">values.passwordWebServer</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">641</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled: values.passwordWebServer</string>
 						<reference key="source" ref="13842723"/>
 						<reference key="destination" ref="896066363"/>
 						<object class="NSNibBindingConnector" key="connector">
@@ -4191,22 +4130,6 @@ bmdQaHlzaWNpYW4gQ09OVEFJTlNbY2RdICdQcm9mLiBST1NTRVQnKQ</string>
 						<reference key="destination" ref="808233742"/>
 					</object>
 					<int key="connectionID">650</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: values.changeUserPasswordServer</string>
-						<reference key="source" ref="933542230"/>
-						<reference key="destination" ref="896066363"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="933542230"/>
-							<reference key="NSDestination" ref="896066363"/>
-							<string key="NSLabel">value: values.changeUserPasswordServer</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">values.changeUserPasswordServer</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">651</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
@@ -4326,6 +4249,56 @@ bmdQaHlzaWNpYW4gQ09OVEFJTlNbY2RdICdQcm9mLiBST1NTRVQnKQ</string>
 						</object>
 					</object>
 					<int key="connectionID">667</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">hidden: values.passwordWebServer</string>
+						<reference key="source" ref="496773730"/>
+						<reference key="destination" ref="896066363"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="496773730"/>
+							<reference key="NSDestination" ref="896066363"/>
+							<string key="NSLabel">hidden: values.passwordWebServer</string>
+							<string key="NSBinding">hidden</string>
+							<string key="NSKeyPath">values.passwordWebServer</string>
+							<object class="NSDictionary" key="NSOptions">
+								<string key="NS.key.0">NSValueTransformerName</string>
+								<string key="NS.object.0">NSNegateBoolean</string>
+							</object>
+							<reference key="NSPreviousConnector" ref="707849476"/>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">669</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">hidden: values.passwordWebServer</string>
+						<reference key="source" ref="1054612477"/>
+						<reference key="destination" ref="896066363"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="1054612477"/>
+							<reference key="NSDestination" ref="896066363"/>
+							<string key="NSLabel">hidden: values.passwordWebServer</string>
+							<string key="NSBinding">hidden</string>
+							<string key="NSKeyPath">values.passwordWebServer</string>
+							<object class="NSDictionary" key="NSOptions">
+								<string key="NS.key.0">NSValueTransformerName</string>
+								<string key="NS.object.0">NSNegateBoolean</string>
+							</object>
+							<reference key="NSPreviousConnector" ref="1024"/>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">672</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">openKeyChainAccess:</string>
+						<reference key="source" ref="649897355"/>
+						<reference key="destination" ref="891904232"/>
+					</object>
+					<int key="connectionID">673</int>
 				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -5195,7 +5168,6 @@ bmdQaHlzaWNpYW4gQ09OVEFJTlNbY2RdICdQcm9mLiBST1NTRVQnKQ</string>
 							<reference ref="833481009"/>
 							<reference ref="236395217"/>
 							<reference ref="891904232"/>
-							<reference ref="933542230"/>
 							<reference ref="518942174"/>
 						</array>
 						<reference key="parent" ref="528076346"/>
@@ -5628,19 +5600,6 @@ bmdQaHlzaWNpYW4gQ09OVEFJTlNbY2RdICdQcm9mLiBST1NTRVQnKQ</string>
 						<int key="objectID">570</int>
 						<reference key="object" ref="1048233961"/>
 						<reference key="parent" ref="13842723"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">593</int>
-						<reference key="object" ref="933542230"/>
-						<array class="NSMutableArray" key="children">
-							<reference ref="117187709"/>
-						</array>
-						<reference key="parent" ref="673116498"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">594</int>
-						<reference key="object" ref="117187709"/>
-						<reference key="parent" ref="933542230"/>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">596</int>
@@ -6131,8 +6090,6 @@ bmdQaHlzaWNpYW4gQ09OVEFJTlNbY2RdICdQcm9mLiBST1NTRVQnKQ</string>
 				<string key="563.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="569.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="570.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="593.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="594.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="596.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="597.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="598.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -6170,7 +6127,7 @@ bmdQaHlzaWNpYW4gQ09OVEFJTlNbY2RdICdQcm9mLiBST1NTRVQnKQ</string>
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">667</int>
+			<int key="maxID">673</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -6199,6 +6156,7 @@ bmdQaHlzaWNpYW4gQ09OVEFJTlNbY2RdICdQcm9mLiBST1NTRVQnKQ</string>
 					<string key="superclassName">NSPreferencePane</string>
 					<dictionary class="NSMutableDictionary" key="actions">
 						<string key="helpstorescp:">id</string>
+						<string key="openKeyChainAccess:">id</string>
 						<string key="setAnonymizeListenerOnOff:">id</string>
 						<string key="setCheckInterval:">id</string>
 						<string key="setCompress:">id</string>

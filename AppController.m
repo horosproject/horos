@@ -1714,6 +1714,7 @@ static NSDate *lastWarningDate = nil;
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"httpWebServer"])
 	{
+		[[BrowserController currentBrowser] userManagedObjectContext];
 		[NSThread detachNewThreadSelector: @selector( startHTTPserver:) toTarget: self withObject:nil];
 	}
 	#endif
