@@ -1519,8 +1519,7 @@ static const char *GetPrivateIP()
 							{
 								if( [[[tempResultArray objectAtIndex: index] valueForKey: @"numberImages"] intValue] < [[[curResult objectAtIndex: x] valueForKey: @"numberImages"] intValue])
 								{
-									[tempResultArray removeObjectAtIndex: index];
-									[tempResultArray addObject: [curResult objectAtIndex: x]];
+									[tempResultArray replaceObjectAtIndex: index withObject: [curResult objectAtIndex: x]];
 								}
 							}
 						}
