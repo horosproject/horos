@@ -992,6 +992,37 @@
 	if(identity)
 	{
 		name = [DDKeychain KeychainAccessCertificateCommonNameForIdentity:identity];
+		
+		// BEGIN tests (work in progress)
+		
+		// - get the certificate from the identity
+		// - write it to disk
+		SecCertificateRef certificate = NULL;
+		OSStatus status = SecIdentityCopyCertificate(identity, &certificate);
+		if(status==0)
+		{
+			CSSM_DATA certData;
+			status = SecCertificateGetData(certificate, &certData);
+			if(status==0)
+			{
+				[[NSData dataWithBytes:certData.Data length:certData.Length] writeToFile:@"/tmp/test_osirix_tls_cert.cert" atomically:YES];
+			}			
+			CFRelease(certificate);	
+		}
+		else NSLog(@"SecIdentityCopyCertificate : error : %@", [DDKeychain stringForError:status]);
+		
+		// identity to private key
+		SecKeyRef privateKey = NULL;
+		status = SecIdentityCopyPrivateKey(identity, &privateKey);
+		if(status==0)
+		{
+			
+			CFRelease(privateKey);
+		}
+		else NSLog(@"SecIdentityCopyPrivateKey : error : %@", [DDKeychain stringForError:status]);		
+		
+		// END tests (work in progress)
+		
 		CFRelease(identity);
 	}
 	
