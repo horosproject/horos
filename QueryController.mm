@@ -2944,7 +2944,11 @@ static const char *GetPrivateIP()
 - (BOOL)TLSIsValidPrivateKeyPassword:(NSString*)password forServer:(NSDictionary*)server;
 {
 	NSMutableDictionary *newServer = [NSMutableDictionary dictionaryWithDictionary:server];
-	[newServer setObject:password forKey:@"TLSAskPasswordValue"];
+	if( password)
+		[newServer setObject:password forKey:@"TLSAskPasswordValue"];
+	else
+		[newServer setObject:@"" forKey:@"TLSAskPasswordValue"];
+
 	return [QueryController echoServer:newServer]==1;
 }
 

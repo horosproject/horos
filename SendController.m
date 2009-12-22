@@ -272,7 +272,7 @@ static NSMutableDictionary *TLSPasswordValues = nil;
 			{
 				[_destinationServer release];
 				_destinationServer = [[self TLSAskPrivateKeyPasswordForServer:[self server]] retain];
-				if([self TLSIsValidPrivateKeyPassword:[_destinationServer objectForKey:@"TLSAskPasswordValue"] forServer:_destinationServer])
+				if( [self TLSIsValidPrivateKeyPassword:[_destinationServer objectForKey:@"TLSAskPasswordValue"] forServer:_destinationServer])
 				{
 					_waitSendWindow = [[Wait alloc] initWithString: NSLocalizedString(@"Sending files...", nil) :NO];
 					[_waitSendWindow  setTarget:self];
@@ -307,7 +307,7 @@ static NSMutableDictionary *TLSPasswordValues = nil;
 	//	_destinationServer = [node retain];
 	[_destinationServer release];
 	_destinationServer = [[self TLSAskPrivateKeyPasswordForServer:node] retain];
-	if([self TLSIsValidPrivateKeyPassword:[_destinationServer objectForKey:@"TLSAskPasswordValue"] forServer:_destinationServer])
+	if( [self TLSIsValidPrivateKeyPassword:[_destinationServer objectForKey:@"TLSAskPasswordValue"] forServer:_destinationServer])
 	{
 		_waitSendWindow = [[Wait alloc] initWithString: NSLocalizedString(@"Sending files...", nil) :NO];
 		[_waitSendWindow  setTarget:self];
@@ -573,7 +573,12 @@ static NSMutableDictionary *TLSPasswordValues = nil;
 - (BOOL)TLSIsValidPrivateKeyPassword:(NSString*)password forServer:(NSDictionary*)server;
 {
 	NSMutableDictionary *newServer = [NSMutableDictionary dictionaryWithDictionary:server];
-	[newServer setObject:password forKey:@"TLSAskPasswordValue"];
+	
+	if( password)
+		[newServer setObject:password forKey: @"TLSAskPasswordValue"];
+	else
+		[newServer setObject: @"" forKey: @"TLSAskPasswordValue"];
+
 	return [QueryController echoServer:newServer]==1;
 }
 
