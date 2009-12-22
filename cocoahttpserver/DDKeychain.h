@@ -16,6 +16,7 @@
 + (NSString *)stringForSecExternalFormat:(SecExternalFormat)extFormat;
 + (NSString *)stringForSecExternalItemType:(SecExternalItemType)itemType;
 + (NSString *)stringForSecKeychainAttrType:(SecKeychainAttrType)attrType;
++ (NSString *)stringForError:(OSStatus)status;
 
 + (NSArray *)KeychainAccessIdentityList;
 + (SecIdentityRef)KeychainAccessPreferredIdentityForName:(NSString*)name keyUse:(int)keyUse;

@@ -601,7 +601,60 @@
 	}
 }
 
-# pragma Keychain Access
+/**
+ * Simple utility class to convert a SecKeychainAttrType into a string suitable for printing/logging.
+ **/
++ (NSString *)stringForError:(OSStatus)status;
+{
+	switch(status)
+	{
+		#if MAC_OS_X_VERSION_MIN_ALLOWED > MAC_OS_X_VERSION_10_5
+		case errSecSuccess					: return @"No error."; // Available in Mac OS X v10.6 and later.
+		case errSecUnimplemented			: return @"The function or operation is not implemented."; // Available in Mac OS X v10.6 and later.
+		case errSecParam					: return @"One or more parameters passed to a function were not valid."; // Available in Mac OS X v10.6 and later.
+		case errSecAllocate					: return @"Failed to allocate memory."; // Available in Mac OS X v10.6 and later.
+		#endif
+		case errSecNotAvailable				: return @"No keychain is available."; // Available in Mac OS X v10.2 and later.
+		case errSecReadOnly					: return @"A read-only error occurred."; // Available in Mac OS X v10.2 and later.
+		case errSecAuthFailed				: return @"Authorization or authentication failed."; // Available in Mac OS X v10.2 and later.
+		case errSecNoSuchKeychain			: return @"The keychain does not exist."; // Available in Mac OS X v10.2 and later.
+		case errSecInvalidKeychain			: return @"The keychain is not valid."; // Available in Mac OS X v10.2 and later.
+		case errSecDuplicateKeychain		: return @"A keychain with the same name already exists."; // Available in Mac OS X v10.2 and later.
+		case errSecDuplicateItem			: return @"An item with the same primary key attributes already exists."; // Available in Mac OS X v10.2 and later.
+		case errSecItemNotFound				: return @"The item cannot be found."; // Available in Mac OS X v10.2 and later.
+		case errSecBufferTooSmall			: return @"The buffer is too small."; // Available in Mac OS X v10.2 and later.
+		case errSecDataTooLarge				: return @"The data is too large for the particular data type."; // Available in Mac OS X v10.2 and later.
+		case errSecNoSuchAttr				: return @"The attribute does not exist."; // Available in Mac OS X v10.2 and later.
+		case errSecInvalidItemRef			: return @"The item object is invalid."; // Available in Mac OS X v10.2 and later.
+		case errSecInvalidSearchRef			: return @"The search object is invalid."; // Available in Mac OS X v10.2 and later.
+		case errSecNoSuchClass				: return @"The specified item does not appear to be a valid keychain item."; // Available in Mac OS X v10.2 and later.
+		case errSecNoDefaultKeychain		: return @"A default keychain does not exist."; // Available in Mac OS X v10.2 and later.
+		case errSecInteractionNotAllowed	: return @"Interaction with the user is required in order to grant access or process a request; however, user interaction with the Security Server has been disabled by the program."; // Available in Mac OS X v10.2 and later.
+		case errSecReadOnlyAttr				: return @"The attribute is read-only."; // Available in Mac OS X v10.2 and later.
+		case errSecWrongSecVersion			: return @"The version is incorrect."; // Available in Mac OS X v10.2 and later.
+		case errSecKeySizeNotAllowed		: return @"The key size is not allowed."; // Available in Mac OS X v10.2 and later.
+		case errSecNoStorageModule			: return @"No storage module is available."; // Available in Mac OS X v10.2 and later.
+		case errSecNoCertificateModule		: return @"No certificate module is available."; // Available in Mac OS X v10.2 and later.
+		case errSecNoPolicyModule			: return @"No policy module is available."; // Available in Mac OS X v10.2 and later.
+		case errSecInteractionRequired		: return @"Interaction with the user is required in order to grant access or process a request; however, user interaction with the Security Server is impossible because the program is operating in a session incapable of graphics (such as a root session or ssh session)."; // Available in Mac OS X v10.2 and later.
+		case errSecDataNotAvailable			: return @"The data is not available."; // Available in Mac OS X v10.2 and later.
+		case errSecDataNotModifiable		: return @"The data is not modifiable."; // Available in Mac OS X v10.2 and later.
+		case errSecCreateChainFailed		: return @"One or more certificates required in order to validate this certificate cannot be found."; // Available in Mac OS X v10.2 and later.
+		case errSecInvalidPrefsDomain		: return @"The preference domain specified is invalid. This error can occur in Mac OS X v10.3 and later."; // Available in Mac OS X v10.3 and later.
+		case errSecACLNotSimple				: return @"The access control list is not in standard simple form."; // Available in Mac OS X v10.2 and later.
+		case errSecPolicyNotFound			: return @"The policy specified cannot be found."; // Available in Mac OS X v10.2 and later.
+		case errSecInvalidTrustSetting		: return @"The trust setting is invalid."; // Available in Mac OS X v10.2 and later.
+		case errSecNoAccessForItem			: return @"The specified item has no access control."; // Available in Mac OS X v10.2 and later.
+		case errSecInvalidOwnerEdit			: return @"An invalid attempt has been made to change the owner of an item."; // Available in Mac OS X v10.2 and later.
+		case errSecTrustNotAvailable		: return @"No trust results are available."; // Available in Mac OS X v10.3 and later.
+		#if MAC_OS_X_VERSION_MIN_ALLOWED > MAC_OS_X_VERSION_10_5
+		case errSecDecode					: return @"Unable to decode the provided data."; // Available in Mac OS X v10.6 and later.
+		#endif
+		default                             : return @"Unknown";
+	}
+}
+
+# pragma mark Keychain Access
 
 // Returns the list of Certificates stored in Keychain Access
 + (NSArray *)KeychainAccessIdentityList;
@@ -642,7 +695,7 @@
 {
 	SecIdentityRef identity = NULL;
 	OSStatus status = SecIdentityCopyPreference((CFStringRef)name, keyUse, NULL, &identity);
-	if(status!=0) NSLog(@"KeychainAccessPreferredIdentityForName:keyUse: error: %d", status);
+	if(status!=0) NSLog(@"KeychainAccessPreferredIdentityForName:keyUse: error: %@", [DDKeychain stringForError:status]);
 	return identity;
 }
 
@@ -651,7 +704,7 @@
 	if(identity)
 	{
 		OSStatus status = SecIdentitySetPreference(identity, (CFStringRef)name, keyUse);
-		if(status!=0) NSLog(@"KeychainAccessSetPreferredIdentity:forName:keyUse: error: %d", status);
+		if(status!=0) NSLog(@"KeychainAccessSetPreferredIdentity:forName:keyUse: error: %@", [DDKeychain stringForError:status]);
 	}
 }	
 
@@ -671,7 +724,7 @@
 				name = [NSString stringWithString:(NSString*)commonName];
 				CFRelease(commonName);
 			}
-			else NSLog(@"KeychainAccessCertificateCommonNameForIdentity: error: %d", status);
+			else NSLog(@"KeychainAccessCertificateCommonNameForIdentity: error: %@", [DDKeychain stringForError:status]);
 
 			CFRelease(certificateRef);
 		}		
