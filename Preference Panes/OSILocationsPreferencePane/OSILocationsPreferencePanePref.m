@@ -326,7 +326,7 @@
 			[aServer setValue:[NSNumber numberWithBool:YES] forKey:@"Send"];
 	}
 	
-	[self getCertificate];
+	[self getTLSCertificate];
 }
 
 - (void) willUnselect
@@ -977,7 +977,7 @@
 		if(identity)
 		{
 			[DDKeychain KeychainAccessSetPreferredIdentity:identity forName:@"com.osirixviewer.dicomtls-client" keyUse:CSSM_KEYUSE_ANY];
-			[self getCertificate];
+			[self getTLSCertificate];
 		}
 	}
 	else if(clickedButton==NSCancelButton)
