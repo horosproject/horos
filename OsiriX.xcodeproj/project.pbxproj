@@ -319,6 +319,7 @@
 		A98FFBEC0CA92B58000291C8 /* altivecFunctions.c in Sources */ = {isa = PBXBuildFile; fileRef = A98FFBE30CA92B58000291C8 /* altivecFunctions.c */; };
 		A9944C110A52A54D004C5E0A /* LLDCMView.h in Headers */ = {isa = PBXBuildFile; fileRef = A9944C0D0A52A54C004C5E0A /* LLDCMView.h */; };
 		A9944C120A52A54D004C5E0A /* LLDCMView.m in Sources */ = {isa = PBXBuildFile; fileRef = A9944C0E0A52A54D004C5E0A /* LLDCMView.m */; };
+		A997B15710E0C412004C5BB1 /* SecurityInterface.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A997B15610E0C412004C5BB1 /* SecurityInterface.framework */; };
 		A99B7ECB0885A61F004328C0 /* BonjourPublisher.m in Sources */ = {isa = PBXBuildFile; fileRef = A99B7E5108858D31004328C0 /* BonjourPublisher.m */; };
 		A99B7ECD0885A621004328C0 /* BonjourBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = A99B7E5508858D4F004328C0 /* BonjourBrowser.m */; };
 		A99B7ECE0885A621004328C0 /* BonjourBrowser.h in Headers */ = {isa = PBXBuildFile; fileRef = A99B7E5408858D4F004328C0 /* BonjourBrowser.h */; };
@@ -8183,6 +8184,7 @@
 		A98FFBE40CA92B58000291C8 /* altivecFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = altivecFunctions.h; sourceTree = "<group>"; };
 		A9944C0D0A52A54C004C5E0A /* LLDCMView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LLDCMView.h; sourceTree = "<group>"; };
 		A9944C0E0A52A54D004C5E0A /* LLDCMView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LLDCMView.m; sourceTree = "<group>"; };
+		A997B15610E0C412004C5BB1 /* SecurityInterface.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SecurityInterface.framework; path = System/Library/Frameworks/SecurityInterface.framework; sourceTree = SDKROOT; };
 		A99B7E5008858D31004328C0 /* BonjourPublisher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BonjourPublisher.h; sourceTree = "<group>"; };
 		A99B7E5108858D31004328C0 /* BonjourPublisher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BonjourPublisher.m; sourceTree = "<group>"; };
 		A99B7E5408858D4F004328C0 /* BonjourBrowser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BonjourBrowser.h; sourceTree = "<group>"; };
@@ -11777,6 +11779,7 @@
 				59FF1CE31097107A00F5EDA0 /* Nitrogen.framework in Frameworks */,
 				8406956310B6800E00C37AD0 /* SystemConfiguration.framework in Frameworks */,
 				8447756C10BD378100F62DAB /* OsiriX Lite.zip in Frameworks */,
+				A997B15710E0C412004C5BB1 /* SecurityInterface.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -11931,6 +11934,7 @@
 				ABFF0970056D92460066794C /* QuickTime.framework */,
 				ABD95D170625BAEC00C77D11 /* ScreenSaver.framework */,
 				CE790A18105D4DE200CE6AAF /* Security.framework */,
+				A997B15610E0C412004C5BB1 /* SecurityInterface.framework */,
 				8406956210B6800E00C37AD0 /* SystemConfiguration.framework */,
 				CE790A19105D4DE200CE6AAF /* WebKit.framework */,
 			);

@@ -17,6 +17,9 @@
 + (NSString *)stringForSecExternalItemType:(SecExternalItemType)itemType;
 + (NSString *)stringForSecKeychainAttrType:(SecKeychainAttrType)attrType;
 
-+ (NSArray *)KeychainAccessCertificates;
++ (NSArray *)KeychainAccessIdentityList;
++ (SecIdentityRef)KeychainAccessPreferredIdentityForName:(NSString*)name keyUse:(int)keyUse;
++ (void)KeychainAccessSetPreferredIdentity:(SecIdentityRef)identity forName:(NSString*)name keyUse:(int)keyUse;
++ (NSString*)KeychainAccessCertificateCommonNameForIdentity:(SecIdentityRef)identity;
 
 @end

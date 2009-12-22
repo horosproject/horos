@@ -20,6 +20,7 @@
 		A951F06410DFCCEE00165D8C /* DDKeychain.h in Headers */ = {isa = PBXBuildFile; fileRef = A951F06210DFCCEE00165D8C /* DDKeychain.h */; };
 		A951F06510DFCCEE00165D8C /* DDKeychain.m in Sources */ = {isa = PBXBuildFile; fileRef = A951F06310DFCCEE00165D8C /* DDKeychain.m */; };
 		A96539D410D9038A000788B2 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A96539D310D9038A000788B2 /* OpenGL.framework */; };
+		A997B16910E0C45E004C5BB1 /* SecurityInterface.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A997B16810E0C45E004C5BB1 /* SecurityInterface.framework */; };
 		ABEBD15A106B963D009CE1FF /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABEBD159106B963D009CE1FF /* Security.framework */; };
 		CE1DD8DF0B4FF18700B4AC4B /* SimplePing.h in Headers */ = {isa = PBXBuildFile; fileRef = CE1DD8DD0B4FF18700B4AC4B /* SimplePing.h */; };
 		CE1DD8E00B4FF18700B4AC4B /* SimplePing.c in Sources */ = {isa = PBXBuildFile; fileRef = CE1DD8DE0B4FF18700B4AC4B /* SimplePing.c */; };
@@ -44,6 +45,7 @@
 		A951F06210DFCCEE00165D8C /* DDKeychain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DDKeychain.h; path = ../../cocoahttpserver/DDKeychain.h; sourceTree = SOURCE_ROOT; };
 		A951F06310DFCCEE00165D8C /* DDKeychain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DDKeychain.m; path = ../../cocoahttpserver/DDKeychain.m; sourceTree = SOURCE_ROOT; };
 		A96539D310D9038A000788B2 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
+		A997B16810E0C45E004C5BB1 /* SecurityInterface.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SecurityInterface.framework; path = System/Library/Frameworks/SecurityInterface.framework; sourceTree = SDKROOT; };
 		ABEBD159106B963D009CE1FF /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		CE1DD8DD0B4FF18700B4AC4B /* SimplePing.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = SimplePing.h; path = ../../SimplePing.h; sourceTree = SOURCE_ROOT; };
 		CE1DD8DE0B4FF18700B4AC4B /* SimplePing.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = SimplePing.c; path = ../../SimplePing.c; sourceTree = SOURCE_ROOT; };
@@ -65,6 +67,7 @@
 				8D202CF40486D31800D8A456 /* PreferencePanes.framework in Frameworks */,
 				ABEBD15A106B963D009CE1FF /* Security.framework in Frameworks */,
 				A96539D410D9038A000788B2 /* OpenGL.framework in Frameworks */,
+				A997B16910E0C45E004C5BB1 /* SecurityInterface.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -126,6 +129,7 @@
 			isa = PBXGroup;
 			children = (
 				ABEBD159106B963D009CE1FF /* Security.framework */,
+				A997B16810E0C45E004C5BB1 /* SecurityInterface.framework */,
 				1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */,
 				F506C035013D953901CA16C8 /* PreferencePanes.framework */,
 			);

@@ -14,6 +14,7 @@
 
 #import <PreferencePanes/PreferencePanes.h>
 #import <SecurityInterface/SFAuthorizationView.h>
+#import <SecurityInterface/SFChooseIdentityPanel.h>
 #import "DNDArrayController.h"
 
 typedef enum
@@ -70,7 +71,7 @@ typedef enum
 	IBOutlet NSWindow				*TLSAskPasswordWindow;
 	NSString						*TLSAskPasswordValue, *TLSAskPasswordServerName;
 	
-	NSArray							*keychainCertificates;
+	NSString						*keychainCertificate;
 	
 	IBOutlet SFAuthorizationView	*_authView;
 }
@@ -88,7 +89,7 @@ typedef enum
 @property TLSCertificateVerificationType TLSCertificateVerification;
 @property (retain) NSString *TLSAskPasswordValue, *TLSAskPasswordServerName;
 
-@property (retain) NSArray *keychainCertificates;
+@property (retain) NSString *keychainCertificate;
 
 
 + (BOOL) echoServer:(NSDictionary*)serverParameters;
@@ -115,5 +116,8 @@ typedef enum
 - (NSArray*)availableCipherSuites;
 - (NSArray*)defaultCipherSuites;
 + (void)screenSnapshot;
+
+- (IBAction)chooseTLSCertificate:(id)sender;
+- (void)getTLSCertificate;
 
 @end

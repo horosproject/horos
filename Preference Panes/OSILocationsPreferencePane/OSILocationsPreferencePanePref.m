@@ -46,7 +46,7 @@
 @synthesize TLSCertificateVerification;
 @synthesize TLSAskPasswordValue, TLSAskPasswordServerName;
 
-@synthesize keychainCertificates;
+@synthesize keychainCertificate;
 
 #define TLS_SEED_FILE @"/tmp/OsiriXTLSSeed"
 #define TLS_WRITE_SEED_FILE @"/tmp/OsiriXTLSSeedWrite"
@@ -326,7 +326,7 @@
 			[aServer setValue:[NSNumber numberWithBool:YES] forKey:@"Send"];
 	}
 	
-	self.keychainCertificates = [DDKeychain KeychainAccessCertificates];
+	[self getCertificate];
 }
 
 - (void) willUnselect
@@ -350,7 +350,7 @@
 	[TLSAskPasswordValue release];
 	[TLSAskPasswordServerName release];
 	
-	[keychainCertificates release];
+	[keychainCertificate release];
 	
 	[super dealloc];
 }
@@ -964,6 +964,39 @@
 	
     // Finished, so let's cleanup
     [mOpenGLScreenReader release];
+}
+
+- (IBAction)chooseTLSCertificate:(id)sender
+{
+	NSArray *identities = [DDKeychain KeychainAccessIdentityList];
+	NSInteger clickedButton = [[SFChooseIdentityPanel sharedChooseIdentityPanel] runModalForIdentities:identities message:@"Choose a certificate."];
+	
+	if(clickedButton==NSOKButton)
+	{
+		SecIdentityRef identity = [[SFChooseIdentityPanel sharedChooseIdentityPanel] identity];
+		if(identity)
+		{
+			[DDKeychain KeychainAccessSetPreferredIdentity:identity forName:@"com.osirixviewer.dicomtls-client" keyUse:CSSM_KEYUSE_ANY];
+			[self getCertificate];
+		}
+	}
+	else if(clickedButton==NSCancelButton)
+		return;
+}
+
+- (void)getTLSCertificate;
+{	
+	SecIdentityRef identity = [DDKeychain KeychainAccessPreferredIdentityForName:@"com.osirixviewer.dicomtls-client" keyUse:CSSM_KEYUSE_ANY];
+
+	NSString *name = nil;
+	if(identity)
+	{
+		name = [DDKeychain KeychainAccessCertificateCommonNameForIdentity:identity];
+		CFRelease(identity);
+	}
+	
+	if(!name) name = @"no certificate selected";
+	self.keychainCertificate = name;
 }
 
 @end
