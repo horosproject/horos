@@ -12,9 +12,6 @@
      PURPOSE.
 =========================================================================*/
 
-
-
-
 #import "ROI.h"
 #import "PlotWindow.h"
 #import "DCMPix.h"

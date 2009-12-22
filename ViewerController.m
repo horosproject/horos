@@ -4270,7 +4270,7 @@ static ViewerController *draggedController = nil;
 
 - (void) setHighLighted: (float) b
 {
-	if( b != highLighted && [[NSUserDefaults standardUserDefaults] boolForKey: @"highLightViewer"])
+	if( b != highLighted)
 	{
 		highLighted = b;
 		

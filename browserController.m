@@ -6835,6 +6835,38 @@ static NSArray*	statesArray = nil;
 			r = YES;
 		}
 		
+		if( ([[[im valueForKey:@"modality"] lowercaseString] isEqualToString:@"pdf"] || [DCMAbstractSyntaxUID isPDF: [im valueForKeyPath: @"series.seriesSOPClassUID"]]) && [[NSUserDefaults standardUserDefaults] boolForKey: @"openPDFwithPreview"])
+		{
+			NSString *path = nil;
+			
+			if( [DCMAbstractSyntaxUID isPDF: [im valueForKeyPath: @"series.seriesSOPClassUID"]])
+			{
+				DCMObject *dcmObject = [DCMObject objectWithContentsOfFile: [im valueForKey: @"completePath"] decodingPixelData:NO];
+				
+				if ([[dcmObject attributeValueWithName:@"SOPClassUID"] isEqualToString:[DCMAbstractSyntaxUID pdfStorageClassUID]])
+				{
+					NSData *pdfData = [dcmObject attributeValueWithName:@"EncapsulatedDocument"];
+					
+					NSString *filename = [dcmObject attributeValueWithName:@"DocumentTitle"];
+					if( [filename length] <= 0)
+						filename = @"PDFFile.pdf";
+					
+					if( [[[filename pathExtension] lowercaseString] isEqualToString: @"pdf"] == NO)
+						filename = [filename stringByAppendingPathExtension: @"pdf"];
+					
+					path = [[[self documentsDirectory] stringByAppendingPathComponent: @"/TEMP.noindex/"] stringByAppendingPathComponent: filename];
+					[[NSFileManager defaultManager] removeItemAtPath: path error: nil];
+					[pdfData writeToFile: path atomically: YES];
+				}
+			}
+			else path = [im valueForKey: @"completePath"];
+			
+			if( path && [[NSWorkspace sharedWorkspace] openFile: path] == NO)
+				r = NO;
+			else
+				r = YES;
+		}
+		
 		[managedObjectContext unlock];
 	}
 	

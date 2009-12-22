@@ -253,7 +253,9 @@ char *GetPrivateIP()
 
 - (IBAction) openKeyChainAccess:(id) sender
 {
-	[[NSWorkspace sharedWorkspace] fullPathForApplication:@"Keychain Access"];
+	NSString *path = [[NSWorkspace sharedWorkspace] absolutePathForAppBundleWithIdentifier:@"com.apple.keychainaccess"];
+	
+	[[NSWorkspace sharedWorkspace] launchApplication: path];
 }
 
 - (IBAction) webServerSettings: (id) sender

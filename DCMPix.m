@@ -5380,10 +5380,10 @@ END_CREATE_ROIS:
 		NSImage *pdfImage = [[[NSImage alloc] init] autorelease];
 		[pdfImage addRepresentation: rep];
 		
-		NSSize newSize = [pdfImage size];
+		NSSize newSize;
 		
-		newSize.width *= 1.5;		// Increase PDF resolution to 72 * X DPI !
-		newSize.height *= 1.5;		// KEEP THIS VALUE IN SYNC WITH DICOMFILE.M
+		newSize.width = ceil( [rep bounds].size.width * 1.5);		// Increase PDF resolution to 72 * X DPI !
+		newSize.height = ceil( [rep bounds].size.height * 1.5);		// KEEP THIS VALUE IN SYNC WITH DICOMFILE.M
 		
 		[pdfImage setScalesWhenResized:YES];
 		[pdfImage setSize: newSize];
@@ -7746,11 +7746,11 @@ END_CREATE_ROIS:
 									NSImage *pdfImage = [[[NSImage alloc] init] autorelease];
 									[pdfImage addRepresentation: rep];
 									
-									NSSize newSize = [pdfImage size];
+									NSSize newSize;
 									
-									newSize.width *= 1.5;		// Increase PDF resolution to 72 * X DPI !
-									newSize.height *= 1.5;		// KEEP THIS VALUE IN SYNC WITH DICOMFILE.M
-									
+									newSize.width = ceil( [rep bounds].size.width * 1.5);		// Increase PDF resolution to 72 * X DPI !
+									newSize.height = ceil( [rep bounds].size.height * 1.5);		// KEEP THIS VALUE IN SYNC WITH DICOMFILE.M
+
 									[pdfImage setScalesWhenResized:YES];
 									[pdfImage setSize: newSize];
 									
@@ -8325,7 +8325,7 @@ END_CREATE_ROIS:
 	
 	if( savedHeightInDB != 0 && savedHeightInDB != height)
 	{
-		NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height");
+		NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height. New: %d / DB: %d", height, savedHeightInDB);
 		[imageObj setValue: [NSNumber numberWithInt: height] forKey: @"height"];
 		if( height > savedHeightInDB)
 			height = savedHeightInDB;
@@ -8333,7 +8333,7 @@ END_CREATE_ROIS:
 	
 	if( savedWidthInDB != 0 && savedWidthInDB != width)
 	{
-		NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width");
+		NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width. New: %d / DB: %d", width, savedWidthInDB);
 		[imageObj setValue: [NSNumber numberWithInt: width] forKey: @"width"];
 		if( width > savedWidthInDB)
 			width = savedWidthInDB;
@@ -9260,10 +9260,10 @@ END_CREATE_ROIS:
 					
 					if( [extension isEqualToString:@"pdf"])
 					{
-						NSSize			newSize = [otherImage size];
+						NSSize newSize;
 						
-						newSize.width *= 1.5;		// Increase PDF resolution to 72 * X DPI !
-						newSize.height *= 1.5;		// KEEP THIS VALUE IN SYNC WITH DICOMFILE.M
+						newSize.width = ceil( [otherImage size].width * 1.5);		// Increase PDF resolution to 72 * X DPI !
+						newSize.height = ceil( [otherImage size].height * 1.5);		// KEEP THIS VALUE IN SYNC WITH DICOMFILE.M
 						
 						[otherImage setScalesWhenResized:YES];
 						[otherImage setSize: newSize];

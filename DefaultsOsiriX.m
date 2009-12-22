@@ -871,7 +871,7 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject:[NSNumber numberWithInt: 2] forKey: @"preferredSyntaxForIncoming"]; // 2 = EXS_LittleEndianExplicit See dcmqrsrv.mm
 	[defaultValues setObject :@"ISO_IR 100" forKey: @"STRINGENCODING"];
 	[defaultValues setObject:@"1" forKey:@"syncPreviewList"];
-	[defaultValues setObject:@"1" forKey:@"highLightViewer"];
+	[defaultValues setObject:@"1" forKey:@"openPDFwithPreview"];
 	[defaultValues setObject:@"1" forKey:@"ROIArrowThickness"];
 	[defaultValues setObject:@"1" forKey:@"showErrorsIfQueryFailed"];
 	[defaultValues setObject:@"1" forKey:@"loopScrollWheel"];
