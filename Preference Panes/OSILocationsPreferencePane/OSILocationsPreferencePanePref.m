@@ -140,8 +140,8 @@
 //			[args addObject:[serverParameters objectForKey:@"TLSCertificateFileURL"]]; // [c]ertificate file: string
 
 			[DDKeychain DICOMTLSGenerateCertificateAndKeyForServerAddress:address port:port AETitle:aet]; // test
-			[args addObject:[DDKeychain DICOMTLSKeyPathForDCMTKForServerAddress:address port:[port intValue] AETitle:aet]]; // test
-			[args addObject:[DDKeychain DICOMTLSCertificatePathForDCMTKForServerAddress:address port:[port intValue] AETitle:aet]]; // test
+			[args addObject:[DDKeychain DICOMTLSKeyPathForServerAddress:address port:[port intValue] AETitle:aet]]; // test
+			[args addObject:[DDKeychain DICOMTLSCertificatePathForServerAddress:address port:[port intValue] AETitle:aet]]; // test
 			
 //			TLSPasswordType passwordType = [[serverParameters objectForKey:@"TLSPrivateKeyFilePasswordType"] intValue];
 //			if(passwordType!=PasswordNone)
@@ -997,7 +997,7 @@
 	if(!name) name = @"No certificate selected.";
 	self.keychainCertificate = name;
 	
-//	[DDKeychain DICOMTLSGenerateCertificateAndKeyForDCMTKForLabel:label]; // test
+//	[DDKeychain DICOMTLSGenerateCertificateAndKeyForLabel:label]; // test
 }
 
 - (NSString*)DICOMTLSUniqueLabelForSelectedServer;

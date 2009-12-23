@@ -27,12 +27,12 @@
 
 + (SecIdentityRef)DICOMTLSIdentityForLabel:(NSString*)label;
 + (NSString*)DICOMTLSCertificateNameForLabel:(NSString*)label;
-+ (void)DICOMTLSGenerateCertificateAndKeyForDCMTKForLabel:(NSString*)label;
++ (void)DICOMTLSGenerateCertificateAndKeyForLabel:(NSString*)label;
 + (void)DICOMTLSGenerateCertificateAndKeyForServerAddress:(NSString*)address port:(int)port AETitle:(NSString*)aetitle;
 + (NSString*)DICOMTLSUniqueLabelForServerAddress:(NSString*)address port:(NSString*)port AETitle:(NSString*)aetitle;
-+ (NSString*)DICOMTLSKeyPathForDCMTKForLabel:(NSString*)label;
-+ (NSString*)DICOMTLSKeyPathForDCMTKForServerAddress:(NSString*)address port:(int)port AETitle:(NSString*)aetitle;
-+ (NSString*)DICOMTLSCertificatePathForDCMTKForLabel:(NSString*)label;
-+ (NSString*)DICOMTLSCertificatePathForDCMTKForServerAddress:(NSString*)address port:(int)port AETitle:(NSString*)aetitle;
++ (NSString*)DICOMTLSKeyPathForLabel:(NSString*)label;
++ (NSString*)DICOMTLSKeyPathForServerAddress:(NSString*)address port:(int)port AETitle:(NSString*)aetitle;
++ (NSString*)DICOMTLSCertificatePathForLabel:(NSString*)label;
++ (NSString*)DICOMTLSCertificatePathForServerAddress:(NSString*)address port:(int)port AETitle:(NSString*)aetitle;
 
 @end

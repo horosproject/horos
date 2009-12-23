@@ -766,22 +766,22 @@
 	return name;
 }
 
-+ (void)DICOMTLSGenerateCertificateAndKeyForDCMTKForLabel:(NSString*)label;
++ (void)DICOMTLSGenerateCertificateAndKeyForLabel:(NSString*)label;
 {	
 	SecIdentityRef identity = [DDKeychain DICOMTLSIdentityForLabel:label];
 	if(identity)
 	{		
 		// identity to certificate
-		[DDKeychain KeychainAccessExportCertificateForIdentity:identity toPath:[DDKeychain DICOMTLSCertificatePathForDCMTKForLabel:label]];
+		[DDKeychain KeychainAccessExportCertificateForIdentity:identity toPath:[DDKeychain DICOMTLSCertificatePathForLabel:label]];
 		// identity to private key
-		[DDKeychain KeychainAccessExportPrivateKeyForIdentity:identity toPath:[DDKeychain DICOMTLSKeyPathForDCMTKForLabel:label] cryptWithPassword:@"SuperSecretPassword"];
+		[DDKeychain KeychainAccessExportPrivateKeyForIdentity:identity toPath:[DDKeychain DICOMTLSKeyPathForLabel:label] cryptWithPassword:@"SuperSecretPassword"];
 		CFRelease(identity);
 	}
 }
 
 + (void)DICOMTLSGenerateCertificateAndKeyForServerAddress:(NSString*)address port:(int)port AETitle:(NSString*)aetitle;
 {	
-	[DDKeychain DICOMTLSGenerateCertificateAndKeyForDCMTKForLabel:[DDKeychain DICOMTLSUniqueLabelForServerAddress:address port:[NSString stringWithFormat:@"%d",port] AETitle:aetitle]];
+	[DDKeychain DICOMTLSGenerateCertificateAndKeyForLabel:[DDKeychain DICOMTLSUniqueLabelForServerAddress:address port:[NSString stringWithFormat:@"%d",port] AETitle:aetitle]];
 }
 
 + (NSString*)DICOMTLSUniqueLabelForServerAddress:(NSString*)address port:(NSString*)port AETitle:(NSString*)aetitle;
@@ -798,24 +798,24 @@
 	return [NSString stringWithString:label];
 }
 
-+ (NSString*)DICOMTLSKeyPathForDCMTKForLabel:(NSString*)label;
++ (NSString*)DICOMTLSKeyPathForLabel:(NSString*)label;
 {
 	return [NSString stringWithFormat:@"%@.%@", TLS_PRIVATE_KEY_FILE, label];
 }
 
-+ (NSString*)DICOMTLSKeyPathForDCMTKForServerAddress:(NSString*)address port:(int)port AETitle:(NSString*)aetitle;
++ (NSString*)DICOMTLSKeyPathForServerAddress:(NSString*)address port:(int)port AETitle:(NSString*)aetitle;
 {
-	return [DDKeychain DICOMTLSKeyPathForDCMTKForLabel:[DDKeychain DICOMTLSUniqueLabelForServerAddress:address port:[NSString stringWithFormat:@"%d",port] AETitle:aetitle]];
+	return [DDKeychain DICOMTLSKeyPathForLabel:[DDKeychain DICOMTLSUniqueLabelForServerAddress:address port:[NSString stringWithFormat:@"%d",port] AETitle:aetitle]];
 }
 
-+ (NSString*)DICOMTLSCertificatePathForDCMTKForLabel:(NSString*)label;
++ (NSString*)DICOMTLSCertificatePathForLabel:(NSString*)label;
 {
 	return [NSString stringWithFormat:@"%@.%@", TLS_CERTIFICATE_FILE, label];
 }
 
-+ (NSString*)DICOMTLSCertificatePathForDCMTKForServerAddress:(NSString*)address port:(int)port AETitle:(NSString*)aetitle;
++ (NSString*)DICOMTLSCertificatePathForServerAddress:(NSString*)address port:(int)port AETitle:(NSString*)aetitle;
 {
-	return [DDKeychain DICOMTLSCertificatePathForDCMTKForLabel:[DDKeychain DICOMTLSUniqueLabelForServerAddress:address port:[NSString stringWithFormat:@"%d",port] AETitle:aetitle]];
+	return [DDKeychain DICOMTLSCertificatePathForLabel:[DDKeychain DICOMTLSUniqueLabelForServerAddress:address port:[NSString stringWithFormat:@"%d",port] AETitle:aetitle]];
 }
 
 @end
