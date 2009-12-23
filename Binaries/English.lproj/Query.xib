@@ -12,8 +12,8 @@
 		</object>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
+			<integer value="551"/>
 			<integer value="968"/>
-			<integer value="145"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -1478,9 +1478,6 @@ OAA</bytes>
 												<object class="NSDate" key="NSMinDate">
 													<double key="NS.time">-347587200</double>
 												</object>
-												<object class="NSDate" key="NSMaxDate">
-													<double key="NS.time">283132800</double>
-												</object>
 												<reference key="NSBackgroundColor" ref="574050674"/>
 												<reference key="NSTextColor" ref="1043597042"/>
 											</object>
@@ -1503,9 +1500,6 @@ OAA</bytes>
 												<int key="NSDatePickerElements">224</int>
 												<object class="NSDate" key="NSMinDate">
 													<double key="NS.time">-347587200</double>
-												</object>
-												<object class="NSDate" key="NSMaxDate">
-													<double key="NS.time">283132800</double>
 												</object>
 												<reference key="NSBackgroundColor" ref="574050674"/>
 												<reference key="NSTextColor" ref="1043597042"/>
@@ -6328,7 +6322,10 @@ ZWQgZHVyaW5nIG5leHQgJ3JlZnJlc2gnLg</string>
 					<string>743.IBPluginDependency</string>
 					<string>743.ImportedFromIB2</string>
 					<string>746.IBPluginDependency</string>
+					<string>746.datePicker.hasMaxDate</string>
 					<string>747.IBPluginDependency</string>
+					<string>747.datePicker.hasMaxDate</string>
+					<string>747.datePicker.maxDate</string>
 					<string>748.IBPluginDependency</string>
 					<string>749.IBPluginDependency</string>
 					<string>750.IBPluginDependency</string>
@@ -6717,7 +6714,12 @@ ZWQgZHVyaW5nIG5leHQgJ3JlZnJlc2gnLg</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<integer value="1"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<boolean value="NO"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<boolean value="NO"/>
+					<object class="NSDate">
+						<double key="NS.time">3124180800</double>
+					</object>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -7823,6 +7825,27 @@ ZWQgZHVyaW5nIG5leHQgJ3JlZnJlc2gnLg</string>
 				</object>
 				<object class="IBPartialClassDescription">
 					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier" id="116633351">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">SecurityInterface.framework/Headers/SFAuthorizationView.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">SecurityInterface.framework/Headers/SFCertificatePanel.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">SecurityInterface.framework/Headers/SFChooseIdentityPanel.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBFrameworkSource</string>
 						<string key="minorKey">WebKit.framework/Headers/WebDownload.h</string>
@@ -8128,6 +8151,11 @@ ZWQgZHVyaW5nIG5leHQgJ3JlZnJlc2gnLg</string>
 						<string key="majorKey">IBFrameworkSource</string>
 						<string key="minorKey">AppKit.framework/Headers/NSWindowController.h</string>
 					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">SFAuthorizationView</string>
+					<string key="superclassName">NSView</string>
+					<reference key="sourceIdentifier" ref="116633351"/>
 				</object>
 			</object>
 		</object>

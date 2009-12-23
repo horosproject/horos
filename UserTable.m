@@ -35,6 +35,9 @@ static PSGenerator *generator = nil;
 	if( [self primitiveValueForKey: @"passwordCreationDate"] == nil)
 		[self setPrimitiveValue: [NSDate date] forKey: @"passwordCreationDate"];
 	
+	if( [self primitiveValueForKey: @"creationDate"] == nil)
+		[self setPrimitiveValue: [NSDate date] forKey: @"creationDate"];
+	
 	[self generatePassword];
 
 	// Create a unique name
