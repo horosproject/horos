@@ -20,6 +20,7 @@ extern NSString* asciiString (NSString* name);
 	NSString *POSTfilename;
 }
 
++ (void) startEmailNotificationsTimer;
 + (NSString*)decodeURLString:(NSString*)aString;
 + (NSString*)iPhoneCompatibleNumericalFormat:(NSString*)aString;
 + (NSString*)encodeURLString:(NSString*)aString;

@@ -126,8 +126,10 @@ static NSMutableDictionary *movieLock = nil;
 		
 		if( study)
 			[logEntry setValue: [study valueForKey: @"name"] forKey:@"patientName"];
+		
 		if( study)
 			[logEntry setValue: [study valueForKey: @"studyName"] forKey:@"studyName"];
+		
 		[logEntry setValue: message forKey: @"message"];
 		[logEntry setValue: [asyncSocket connectedHost] forKey: @"originName"];
 	}
@@ -137,6 +139,13 @@ static NSMutableDictionary *movieLock = nil;
 	}
 
 	[context unlock];
+}
+
++ (void) emailNotifications
+{
+	// Lets check if new studies are available !
+	
+	
 }
 
 - (BOOL)isPasswordProtected:(NSString *)path

@@ -11,8 +11,9 @@
 			<string key="NS.object.0">732</string>
 		</object>
 		<array class="NSMutableArray" key="IBDocument.EditedObjectIDs">
-			<integer value="13844"/>
 			<integer value="13806"/>
+			<integer value="11610"/>
+			<integer value="13844"/>
 		</array>
 		<array key="IBDocument.PluginDependencies">
 			<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -6542,7 +6543,7 @@
 				<string key="NSWindowContentMaxSize">{1.79769e+308, 1.79769e+308}</string>
 				<string key="NSWindowContentMinSize">{213, 107}</string>
 				<object class="NSView" key="NSWindowView" id="309213809">
-					<nil key="NSNextResponder"/>
+					<reference key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<array class="NSMutableArray" key="NSSubviews">
 						<object class="NSDatePicker" id="55962122">
@@ -6799,6 +6800,7 @@ U1QAQ0VUAAAAAQEAAAEBA</bytes>
 						</object>
 					</array>
 					<string key="NSFrameSize">{593, 282}</string>
+					<reference key="NSSuperview"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1440, 878}}</string>
 				<string key="NSMinSize">{213, 129}</string>
@@ -7214,9 +7216,6 @@ U1QAQ0VUAAAAAQEAAAEBA</bytes>
 				<string key="NSMaxSize">{1.79769e+308, 1.79769e+308}</string>
 			</object>
 			<object class="NSUserDefaultsController" id="149985806">
-				<array class="NSMutableArray" key="NSDeclaredKeys">
-					<string>defaultZIPPasswordForEmail</string>
-				</array>
 				<bool key="NSSharedInstance">YES</bool>
 			</object>
 			<object class="NSCustomView" id="130318253">
@@ -19344,9 +19343,9 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 				<integer value="1" key="13803.ImportedFromIB2"/>
 				<string key="13804.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<integer value="1" key="13804.ImportedFromIB2"/>
-				<string key="13805.IBEditorWindowLastContentRect">{{314, 1037}, {508, 149}}</string>
+				<string key="13805.IBEditorWindowLastContentRect">{{314, 1007}, {508, 149}}</string>
 				<string key="13805.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="13805.IBWindowTemplateEditedContentRect">{{314, 1037}, {508, 149}}</string>
+				<string key="13805.IBWindowTemplateEditedContentRect">{{314, 1007}, {508, 149}}</string>
 				<boolean value="NO" key="13805.NSWindowTemplate.visibleAtLaunch"/>
 				<boolean value="NO" key="13805.windowTemplate.hasMaxSize"/>
 				<string key="13805.windowTemplate.maxSize">{508, 123}</string>
@@ -19375,9 +19374,9 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 				<string key="13834.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="13837.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="13838.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="13843.IBEditorWindowLastContentRect">{{430, 1254}, {554, 127}}</string>
+				<string key="13843.IBEditorWindowLastContentRect">{{430, 1029}, {554, 127}}</string>
 				<string key="13843.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="13843.IBWindowTemplateEditedContentRect">{{430, 1254}, {554, 127}}</string>
+				<string key="13843.IBWindowTemplateEditedContentRect">{{430, 1029}, {554, 127}}</string>
 				<boolean value="NO" key="13843.NSWindowTemplate.visibleAtLaunch"/>
 				<boolean value="NO" key="13843.windowTemplate.hasMaxSize"/>
 				<string key="13843.windowTemplate.maxSize">{508, 123}</string>
@@ -20171,6 +20170,13 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier" id="72548236">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">ViewerController.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">cocoahttpserver/AsyncSocket.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
@@ -21967,6 +21973,27 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBFrameworkSource</string>
 						<string key="minorKey">QuickLookUI.framework/Headers/QLPreviewPanel.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">SecurityInterface.framework/Headers/SFAuthorizationView.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">SecurityInterface.framework/Headers/SFCertificatePanel.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">SecurityInterface.framework/Headers/SFChooseIdentityPanel.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">

@@ -1595,6 +1595,14 @@ static NSDate *lastWarningDate = nil;
 	[[DCMNetServiceDelegate sharedNetServiceDelegate] setPublisher: BonjourDICOMService];
 }
 
+#pragma mark-
+#pragma mark http server
+
+- (void) webServerEmailNotifications: (NSTimer*) t
+{
+	[OsiriXHTTPConnection emailNotifications];
+}
+
 - (void) startHTTPserver: (id) sender
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -1603,13 +1611,14 @@ static NSDate *lastWarningDate = nil;
 //		if( webServer == nil) webServer = [[ThreadPerConnectionServer alloc] init];
 		
 	[webServer setConnectionClass: [OsiriXHTTPConnection class]];
-	
 	[webServer setType:@"_http._tcp."];
 	[webServer setPort: [[NSUserDefaults standardUserDefaults] integerForKey:@"httpWebServerPort"]];
 	[webServer setDocumentRoot:[NSURL fileURLWithPath:[@"~/Sites" stringByExpandingTildeInPath]]];
 	
-	NSError *error;
-	BOOL success = [webServer start:&error];
+	NSError *error = nil;
+	BOOL success = [webServer start: &error];
+	
+	NSTimer *t = [NSTimer scheduledTimerWithTimeInterval: 60 * 5 target: self selector: @selector( webServerEmailNotifications:) userInfo: nil repeats: YES];
 	
 	if( success == NO)
 	{
@@ -1617,23 +1626,23 @@ static NSDate *lastWarningDate = nil;
 	}
 	else
 	{
-		[NSTimer scheduledTimerWithTimeInterval:DBL_MAX target:self selector:@selector(ignore:) userInfo:nil repeats:NO];
+		[NSTimer scheduledTimerWithTimeInterval:DBL_MAX target:self selector:@selector( ignore:) userInfo:nil repeats:NO];
 		
 		@try
 		{
 			[[NSRunLoop currentRunLoop] run];
-//			BOOL shouldKeepRunning = YES;        // global
-//			NSRunLoop *theRL = [NSRunLoop currentRunLoop];
-//			while (shouldKeepRunning && [theRL runMode: NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]]);
 		}
+		
 		@catch( NSException *e)
 		{
-			NSLog( @"******* startHTTPserver exception: %@", e);
+			NSLog( @"************ startHTTPserver exception: %@", e);
 		}
 	}
 	
 	[pool release];
 }
+
+#pragma mark-
 
 -(void) restartSTORESCP
 {
