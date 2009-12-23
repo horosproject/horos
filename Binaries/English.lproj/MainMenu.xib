@@ -12,8 +12,9 @@
 		</object>
 		<array class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<integer value="13806"/>
-			<integer value="11610"/>
 			<integer value="13844"/>
+			<integer value="13788"/>
+			<integer value="11610"/>
 		</array>
 		<array key="IBDocument.PluginDependencies">
 			<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -626,7 +627,7 @@
 								</object>
 								<object class="NSMenuItem" id="825592703">
 									<reference key="NSMenu" ref="259848458"/>
-									<string key="NSTitle">Query / Retrieve...</string>
+									<string key="NSTitle">Query / Retrieve Window...</string>
 									<string key="NSKeyEquiv">r</string>
 									<int key="NSKeyEquivModMask">262401</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -644,7 +645,7 @@
 								</object>
 								<object class="NSMenuItem" id="172874769">
 									<reference key="NSMenu" ref="259848458"/>
-									<string key="NSTitle">Auto Query / Retrieve...</string>
+									<string key="NSTitle">Auto Query / Retrieve Window...</string>
 									<string key="NSKeyEquiv"/>
 									<int key="NSMnemonicLoc">2147483647</int>
 									<reference key="NSOnImage" ref="125626618"/>

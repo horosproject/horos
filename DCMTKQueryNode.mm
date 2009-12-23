@@ -572,7 +572,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	{
 	
 	}
-	else NSLog( @"setupNetworkWithSyntax error");
+	else NSLog( @"setupNetworkWithSyntax error : queryWithValues DCMTKQueryNode");
 	 
 	if (dataset != NULL) delete dataset;
 }
