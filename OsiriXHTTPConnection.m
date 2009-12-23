@@ -15,6 +15,8 @@
 #import "HTTPResponse.h"
 #import "HTTPAuthenticationRequest.h"
 
+#import <Message/NSMailDelivery.h>
+
 #include <netdb.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -146,6 +148,13 @@ static NSMutableDictionary *movieLock = nil;
 	// Lets check if new studies are available for each users!
 	
 	NSDate *lastCheckDate = [NSDate dateWithTimeIntervalSinceReferenceDate: [[NSUserDefaults standardUserDefaults] doubleForKey: @"lastNotificationsDate"]];
+	
+	if( [[NSUserDefaults standardUserDefaults] objectForKey: @"lastNotificationsDate"] == nil)
+	{
+		[[NSUserDefaults standardUserDefaults] setValue: [NSString stringWithFormat: @"%lf", [NSDate timeIntervalSinceReferenceDate]] forKey: @"lastNotificationsDate"];
+		return;
+	}
+	
 	[[NSUserDefaults standardUserDefaults] setValue: [NSString stringWithFormat: @"%lf", [NSDate timeIntervalSinceReferenceDate]] forKey: @"lastNotificationsDate"];
 	
 	[[[BrowserController currentBrowser] userManagedObjectContext] lock];
@@ -173,7 +182,21 @@ static NSMutableDictionary *movieLock = nil;
 		
 		for( NSManagedObject *user in users)
 		{
-			NSPredicate *predicate = [user valueForKey: @"studyPredicate"];
+			NSArray *filteredStudies = studies;
+			
+			if( [user valueForKey: @"studyPredicate"])
+				filteredStudies = [studies filteredArrayUsingPredicate: [user valueForKey: @"studyPredicate"]];
+			
+			/// EMAIL
+			
+			NSMutableString *emailMessage = [NSMutableString stringWithString: @""];
+			
+			NSString *emailAddress = [user valueForKey: @"email"];
+			NSString *emailSubject = NSLocalizedString( @"A new DICOM study is available for you", nil);
+			
+			[NSMailDelivery deliverMessage: emailMessage subject: emailSubject to: emailAddress];
+			
+			////////////////////////
 		}
 	}
 	@catch (NSException *e)
