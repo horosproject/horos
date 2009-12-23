@@ -650,7 +650,7 @@
 {
 	SecIdentityRef identity = NULL;
 	OSStatus status = SecIdentityCopyPreference((CFStringRef)name, keyUse, NULL, &identity);
-	if(status!=0) NSLog(@"KeychainAccessPreferredIdentityForName:keyUse: error: %@", [DDKeychain stringForError:status]);
+	if(status!=0) NSLog(@"KeychainAccessPreferredIdentityForName:%@ keyUse: error: %@", name, [DDKeychain stringForError:status]);
 	return identity;
 }
 
@@ -735,6 +735,9 @@
 			[convertTask setLaunchPath:@"/usr/bin/openssl"];
 			[convertTask setArguments:args];
 			[convertTask launch];
+			
+			[convertTask waitUntilExit];
+			[[NSFileManager defaultManager] removeFileAtPath:[path stringByAppendingPathExtension:@"p12"] handler:nil]; // remove the .p12 file
 		}
 		else NSLog(@"SecKeychainItemExport : error : %@", [DDKeychain stringForError:status]);
 		

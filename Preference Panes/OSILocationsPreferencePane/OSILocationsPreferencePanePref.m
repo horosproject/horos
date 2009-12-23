@@ -230,6 +230,9 @@
 	[theTask launch];
 	[theTask waitUntilExit];
 
+	[[NSFileManager defaultManager] removeFileAtPath:[DDKeychain DICOMTLSKeyPathForServerAddress:address port:[port intValue] AETitle:aet] handler:nil]; // test
+	[[NSFileManager defaultManager] removeFileAtPath:[DDKeychain DICOMTLSCertificatePathForServerAddress:address port:[port intValue] AETitle:aet] handler:nil]; // test
+	
 	if( [theTask terminationStatus] == 0) return YES;
 	else return NO;
 }
