@@ -143,9 +143,46 @@ static NSMutableDictionary *movieLock = nil;
 
 + (void) emailNotifications
 {
-	// Lets check if new studies are available !
+	// Lets check if new studies are available for each users!
 	
+	NSDate *lastCheckDate = [NSDate dateWithTimeIntervalSinceReferenceDate: [[NSUserDefaults standardUserDefaults] doubleForKey: @"lastNotificationsDate"]];
+	[[NSUserDefaults standardUserDefaults] setValue: [NSString stringWithFormat: @"%lf", [NSDate timeIntervalSinceReferenceDate]] forKey: @"lastNotificationsDate"];
 	
+	[[[BrowserController currentBrowser] userManagedObjectContext] lock];
+	[[[BrowserController currentBrowser] managedObjectContext] lock];
+	
+	@try
+	{
+		// Find all users
+		NSError *error = nil;
+		NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+		[dbRequest setEntity: [[[[BrowserController currentBrowser] userManagedObjectModel] entitiesByName] objectForKey: @"User"]];
+		[dbRequest setPredicate: [NSPredicate predicateWithValue: YES]];
+		
+		error = nil;
+		NSArray *users = [[[BrowserController currentBrowser] userManagedObjectContext] executeFetchRequest: dbRequest error:&error];
+		
+		// Find all studies AFTER the lastCheckDate
+		error = nil;
+		dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+		[dbRequest setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey: @"Study"]];
+		[dbRequest setPredicate: [NSPredicate predicateWithFormat: @"studyDate >= CAST(%lf, \"NSDate\"", [lastCheckDate timeIntervalSinceReferenceDate]]];
+		
+		error = nil;
+		NSArray *studies = [[[BrowserController currentBrowser] managedObjectContext] executeFetchRequest: dbRequest error:&error];
+		
+		for( NSManagedObject *user in users)
+		{
+			NSPredicate *predicate = [user valueForKey: @"studyPredicate"];
+		}
+	}
+	@catch (NSException *e)
+	{
+		NSLog( @"***** emailNotifications exception:", e);
+	}
+	
+	[[[BrowserController currentBrowser] userManagedObjectContext] unlock];
+	[[[BrowserController currentBrowser] managedObjectContext] unlock];
 }
 
 - (BOOL)isPasswordProtected:(NSString *)path

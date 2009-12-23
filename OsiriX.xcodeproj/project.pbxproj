@@ -21220,7 +21220,7 @@
 				BuildIndependentTargetsInParallel = NO;
 				ORGANIZATIONNAME = "OsiriX Team";
 			};
-			buildConfigurationList = 7E76BED8085757B70073649A /* Build configuration list for PBXProject "osirix" */;
+			buildConfigurationList = 7E76BED8085757B70073649A /* Build configuration list for PBXProject "OsiriX" */;
 			compatibilityVersion = "Xcode 3.2";
 			hasScannedForEncodings = 1;
 			knownRegions = (
@@ -26329,7 +26329,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Development;
 		};
-		7E76BED8085757B70073649A /* Build configuration list for PBXProject "osirix" */ = {
+		7E76BED8085757B70073649A /* Build configuration list for PBXProject "OsiriX" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				7E76BED9085757B70073649A /* Development */,
