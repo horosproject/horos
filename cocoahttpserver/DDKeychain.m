@@ -192,8 +192,7 @@
 	
 	// Mac OS X has problems importing private keys, so we wrap everything in PKCS#12 format
 	// You can create a p12 wrapper by running the following command in the terminal:
-	// openssl pkcs12 -export -in certificate.crt -inkey private.pem \
-	//   -passout pass:password -out certificate.p12 -name "Open Source"
+	// openssl pkcs12 -export -in certificate.crt -inkey private.pem -passout pass:password -out certificate.p12 -name "Open Source"
 	
 	NSArray *certWrapperArgs = [NSArray arrayWithObjects:@"pkcs12", @"-export", @"-export",
 														 @"-in", certificatePath,
@@ -686,6 +685,62 @@
 		}		
 	}	
 	return name;
+}
+
++ (void)KeychainAccessExportCertificateForIdentity:(SecIdentityRef)identity toPath:(NSString*)path;
+{
+	SecCertificateRef certificate = NULL;
+	OSStatus status = SecIdentityCopyCertificate(identity, &certificate);
+	if(status==0)
+	{
+		CFDataRef certificateDataRef = NULL;
+		status = SecKeychainItemExport(certificate, kSecFormatX509Cert, kSecItemPemArmour, NULL, &certificateDataRef);
+		
+		if(status==0)
+		{
+			[(NSData*)certificateDataRef writeToFile:path atomically:YES];
+		}
+		else NSLog(@"SecKeychainItemExport : status : %@", [DDKeychain stringForError:status]);
+		
+		CFRelease(certificate);	
+	}
+	else NSLog(@"SecIdentityCopyCertificate : error : %@", [DDKeychain stringForError:status]);	
+}
+
++ (void)KeychainAccessExportPrivateKeyForIdentity:(SecIdentityRef)identity toPath:(NSString*)path cryptWithPassword:(NSString*)password;
+{
+	SecKeyRef privateKey = NULL;
+	OSStatus status = SecIdentityCopyPrivateKey(identity, &privateKey);
+	if(status==0)
+	{
+		CFDataRef privateKeyDataRef = NULL;
+		SecKeyImportExportParameters exportParameters = {.passphrase=(CFStringRef)password};
+		
+		status = SecKeychainItemExport(privateKey, kSecFormatPKCS12, 0, &exportParameters, &privateKeyDataRef);
+		
+		if(status==0)
+		{
+			[(NSData*)privateKeyDataRef writeToFile:[path stringByAppendingPathExtension:@"p12"] atomically:YES];
+			
+			// convert the private key file from PKCS#12 format to PEM format:
+			// $ openssl pkcs12 -in key.p12 -out key.pem -passin pass:passwordIN -passout pass:passwordOUT
+			
+			NSArray *args = [NSArray arrayWithObjects:	@"pkcs12",
+							 @"-in", [path stringByAppendingPathExtension:@"p12"],
+							 @"-out", path,
+							 @"-passin", [NSString stringWithFormat:@"pass:%@", password],
+							 @"-passout", [NSString stringWithFormat:@"pass:%@", password], nil];
+			
+			NSTask *convertTask = [[[NSTask alloc] init] autorelease];
+			[convertTask setLaunchPath:@"/usr/bin/openssl"];
+			[convertTask setArguments:args];
+			[convertTask launch];
+		}
+		else NSLog(@"SecKeychainItemExport : status : %@", [DDKeychain stringForError:status]);
+		
+		CFRelease(privateKey);
+	}
+	else NSLog(@"SecIdentityCopyPrivateKey : error : %@", [DDKeychain stringForError:status]);			
 }
 
 @end

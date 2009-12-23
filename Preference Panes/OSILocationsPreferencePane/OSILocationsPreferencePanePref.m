@@ -141,6 +141,8 @@
 			[args addObject:@"--enable-tls"]; // use authenticated secure TLS connection
 			[args addObject:[serverParameters objectForKey:@"TLSPrivateKeyFileURL"]]; // [p]rivate key file
 			[args addObject:[serverParameters objectForKey:@"TLSCertificateFileURL"]]; // [c]ertificate file: string
+			//[args addObject:@"/tmp/test_osirix_tls_key.pem"]; // test
+			//[args addObject:@"/tmp/test_osirix_tls_cert.pem"]; // test
 			
 			TLSPasswordType passwordType = [[serverParameters objectForKey:@"TLSPrivateKeyFilePasswordType"] intValue];
 			if(passwordType!=PasswordNone)
@@ -161,6 +163,9 @@
 					[args addObject:password];
 				}
 			}
+			
+			//[args addObject:@"--use-passwd"]; // test
+			//[args addObject:@"SuperSecretPassword"]; // test
 		}
 		else
 			[args addObject:@"--anonymous-tls"]; // use secure TLS connection without certificate
@@ -994,33 +999,10 @@
 		name = [DDKeychain KeychainAccessCertificateCommonNameForIdentity:identity];
 		
 		// BEGIN tests (work in progress)
-		
-		// - get the certificate from the identity
-		// - write it to disk
-		SecCertificateRef certificate = NULL;
-		OSStatus status = SecIdentityCopyCertificate(identity, &certificate);
-		if(status==0)
-		{
-			CSSM_DATA certData;
-			status = SecCertificateGetData(certificate, &certData);
-			if(status==0)
-			{
-				[[NSData dataWithBytes:certData.Data length:certData.Length] writeToFile:@"/tmp/test_osirix_tls_cert.cert" atomically:YES];
-			}			
-			CFRelease(certificate);	
-		}
-		else NSLog(@"SecIdentityCopyCertificate : error : %@", [DDKeychain stringForError:status]);
-		
-		// identity to private key
-		SecKeyRef privateKey = NULL;
-		status = SecIdentityCopyPrivateKey(identity, &privateKey);
-		if(status==0)
-		{
-			
-			CFRelease(privateKey);
-		}
-		else NSLog(@"SecIdentityCopyPrivateKey : error : %@", [DDKeychain stringForError:status]);		
-		
+		// identity to PEM certificate
+		[DDKeychain KeychainAccessExportCertificateForIdentity:identity toPath:@"/tmp/test_osirix_tls_cert.pem"];		
+		// identity to PKCS12 private key
+		[DDKeychain KeychainAccessExportPrivateKeyForIdentity:identity toPath:@"/tmp/test_osirix_tls_key.pem" cryptWithPassword:@"SuperSecretPassword"];
 		// END tests (work in progress)
 		
 		CFRelease(identity);
