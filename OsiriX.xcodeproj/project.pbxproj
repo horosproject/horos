@@ -327,6 +327,8 @@
 		A9ADBBD10ADE80E60022DFC7 /* ReportPages.icns in Resources */ = {isa = PBXBuildFile; fileRef = A9ADBBCE0ADE80E60022DFC7 /* ReportPages.icns */; };
 		A9ADBBD20ADE80E60022DFC7 /* ReportRTF.icns in Resources */ = {isa = PBXBuildFile; fileRef = A9ADBBCF0ADE80E60022DFC7 /* ReportRTF.icns */; };
 		A9ADBBD30ADE80E60022DFC7 /* ReportWord.icns in Resources */ = {isa = PBXBuildFile; fileRef = A9ADBBD00ADE80E60022DFC7 /* ReportWord.icns */; };
+		A9B34A0010E24E3C008C507B /* DICOMTLS.h in Headers */ = {isa = PBXBuildFile; fileRef = A9B349FF10E24E3C008C507B /* DICOMTLS.h */; };
+		A9B34A0110E24E3C008C507B /* DICOMTLS.h in Headers */ = {isa = PBXBuildFile; fileRef = A9B349FF10E24E3C008C507B /* DICOMTLS.h */; };
 		A9B4119D0890423C00913770 /* osirix16x16.tif in Resources */ = {isa = PBXBuildFile; fileRef = A9B4119C0890423C00913770 /* osirix16x16.tif */; };
 		A9B411B70890492F00913770 /* small_album.tif in Resources */ = {isa = PBXBuildFile; fileRef = A9B411B30890492F00913770 /* small_album.tif */; };
 		A9B411B80890492F00913770 /* small_smartAlbum.tif in Resources */ = {isa = PBXBuildFile; fileRef = A9B411B40890492F00913770 /* small_smartAlbum.tif */; };
@@ -8193,6 +8195,7 @@
 		A9ADBBCE0ADE80E60022DFC7 /* ReportPages.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = ReportPages.icns; sourceTree = "<group>"; };
 		A9ADBBCF0ADE80E60022DFC7 /* ReportRTF.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = ReportRTF.icns; sourceTree = "<group>"; };
 		A9ADBBD00ADE80E60022DFC7 /* ReportWord.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = ReportWord.icns; sourceTree = "<group>"; };
+		A9B349FF10E24E3C008C507B /* DICOMTLS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DICOMTLS.h; sourceTree = "<group>"; };
 		A9B4119C0890423C00913770 /* osirix16x16.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = osirix16x16.tif; sourceTree = "<group>"; };
 		A9B411B30890492F00913770 /* small_album.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = small_album.tif; sourceTree = "<group>"; };
 		A9B411B40890492F00913770 /* small_smartAlbum.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = small_smartAlbum.tif; sourceTree = "<group>"; };
@@ -13389,6 +13392,7 @@
 				BF8E5ABD09CA0D8200DE02FF /* DCMTKQueryRetrieveSCP.mm */,
 				BF9998FE0A1E695800F50753 /* DCMTKPrintSCU.h */,
 				BF9998FF0A1E695800F50753 /* DCMTKPrintSCU.mm */,
+				A9B349FF10E24E3C008C507B /* DICOMTLS.h */,
 			);
 			name = Network;
 			sourceTree = "<group>";
@@ -18894,6 +18898,7 @@
 				A9FE55F410DB7DCF000D0395 /* OpenGLScreenReader.h in Headers */,
 				CEF7BCB910DCBE0000B009D1 /* UserTable.h in Headers */,
 				CEDDD87F10DCC93500FFE72B /* PSGenerator.h in Headers */,
+				A9B34A0010E24E3C008C507B /* DICOMTLS.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -18974,6 +18979,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CEC4467C10664C2B0061B338 /* ViewerController.h in Headers */,
+				A9B34A0110E24E3C008C507B /* DICOMTLS.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21214,7 +21220,7 @@
 				BuildIndependentTargetsInParallel = NO;
 				ORGANIZATIONNAME = "OsiriX Team";
 			};
-			buildConfigurationList = 7E76BED8085757B70073649A /* Build configuration list for PBXProject "OsiriX" */;
+			buildConfigurationList = 7E76BED8085757B70073649A /* Build configuration list for PBXProject "osirix" */;
 			compatibilityVersion = "Xcode 3.2";
 			hasScannedForEncodings = 1;
 			knownRegions = (
@@ -26323,7 +26329,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Development;
 		};
-		7E76BED8085757B70073649A /* Build configuration list for PBXProject "OsiriX" */ = {
+		7E76BED8085757B70073649A /* Build configuration list for PBXProject "osirix" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				7E76BED9085757B70073649A /* Development */,

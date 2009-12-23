@@ -21,6 +21,7 @@
 		A951F06510DFCCEE00165D8C /* DDKeychain.m in Sources */ = {isa = PBXBuildFile; fileRef = A951F06310DFCCEE00165D8C /* DDKeychain.m */; };
 		A96539D410D9038A000788B2 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A96539D310D9038A000788B2 /* OpenGL.framework */; };
 		A997B16910E0C45E004C5BB1 /* SecurityInterface.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A997B16810E0C45E004C5BB1 /* SecurityInterface.framework */; };
+		A9B34A1510E24ED3008C507B /* DICOMTLS.h in Headers */ = {isa = PBXBuildFile; fileRef = A9B34A1410E24ED3008C507B /* DICOMTLS.h */; };
 		ABEBD15A106B963D009CE1FF /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABEBD159106B963D009CE1FF /* Security.framework */; };
 		CE1DD8DF0B4FF18700B4AC4B /* SimplePing.h in Headers */ = {isa = PBXBuildFile; fileRef = CE1DD8DD0B4FF18700B4AC4B /* SimplePing.h */; };
 		CE1DD8E00B4FF18700B4AC4B /* SimplePing.c in Sources */ = {isa = PBXBuildFile; fileRef = CE1DD8DE0B4FF18700B4AC4B /* SimplePing.c */; };
@@ -46,6 +47,7 @@
 		A951F06310DFCCEE00165D8C /* DDKeychain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DDKeychain.m; path = ../../cocoahttpserver/DDKeychain.m; sourceTree = SOURCE_ROOT; };
 		A96539D310D9038A000788B2 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		A997B16810E0C45E004C5BB1 /* SecurityInterface.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SecurityInterface.framework; path = System/Library/Frameworks/SecurityInterface.framework; sourceTree = SDKROOT; };
+		A9B34A1410E24ED3008C507B /* DICOMTLS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DICOMTLS.h; path = ../../DICOMTLS.h; sourceTree = SOURCE_ROOT; };
 		ABEBD159106B963D009CE1FF /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		CE1DD8DD0B4FF18700B4AC4B /* SimplePing.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = SimplePing.h; path = ../../SimplePing.h; sourceTree = SOURCE_ROOT; };
 		CE1DD8DE0B4FF18700B4AC4B /* SimplePing.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = SimplePing.c; path = ../../SimplePing.c; sourceTree = SOURCE_ROOT; };
@@ -121,6 +123,7 @@
 				A951F04910DFCB2600165D8C /* OpenGLScreenReader.m */,
 				A951F06210DFCCEE00165D8C /* DDKeychain.h */,
 				A951F06310DFCCEE00165D8C /* DDKeychain.m */,
+				A9B34A1410E24ED3008C507B /* DICOMTLS.h */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -176,6 +179,7 @@
 				CEE6C1FB0C3BCECE00C4AB99 /* DNDArrayController.h in Headers */,
 				A951F03E10DFCA9C00165D8C /* OpenGLScreenReader.h in Headers */,
 				A951F06410DFCCEE00165D8C /* DDKeychain.h in Headers */,
+				A9B34A1510E24ED3008C507B /* DICOMTLS.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

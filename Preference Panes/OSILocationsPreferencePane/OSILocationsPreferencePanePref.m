@@ -48,9 +48,6 @@
 
 @synthesize keychainCertificate;
 
-#define TLS_SEED_FILE @"/tmp/OsiriXTLSSeed"
-#define TLS_WRITE_SEED_FILE @"/tmp/OsiriXTLSSeedWrite"
-
 - (void) checkUniqueAETitle
 {
 	int i, x;

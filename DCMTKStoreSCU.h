@@ -16,28 +16,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-typedef enum
-{
-	PasswordNone = 0,
-	PasswordAsk,
-	PasswordString
-} TLSPasswordType;
-
-typedef enum
-{
-	PEM = 0,
-	DER
-} TLSFileFormat;
-
-typedef enum
-{
-	RequirePeerCertificate = 0,
-	VerifyPeerCertificate,
-	IgnorePeerCertificate
-} TLSCertificateVerificationType;
-
-#define TLS_SEED_FILE @"/tmp/OsiriXTLSSeed"
-#define TLS_WRITE_SEED_FILE "/tmp/OsiriXTLSSeedWrite"
+#import "DICOMTLS.h"
 
 int runStoreSCU(const char *myAET, const char*peerAET, const char*hostname, int port, NSDictionary *extraParameters);
 

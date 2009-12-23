@@ -37,28 +37,7 @@ Super Class for SCU classes such as verifySCU, storeSCU, moveSCU, findSCU
 * based on DCMTK 
 */
 
-typedef enum
-{
-	PasswordNone = 0,
-	PasswordAsk,
-	PasswordString
-} TLSPasswordType;
-
-typedef enum
-{
-	PEM = 0,
-	DER
-} TLSFileFormat;
-
-typedef enum
-{
-	RequirePeerCertificate = 0,
-	VerifyPeerCertificate,
-	IgnorePeerCertificate
-} TLSCertificateVerificationType;
-
-#define TLS_SEED_FILE @"/tmp/OsiriXTLSSeed"
-#define TLS_WRITE_SEED_FILE "/tmp/OsiriXTLSSeedWrite"
+#import "DICOMTLS.h"
 
 @interface DCMTKServiceClassUser : NSObject {
 	NSString *_callingAET;
