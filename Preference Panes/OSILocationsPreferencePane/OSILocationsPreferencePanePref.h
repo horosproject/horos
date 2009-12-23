@@ -100,5 +100,6 @@
 
 - (IBAction)chooseTLSCertificate:(id)sender;
 - (void)getTLSCertificate;
+- (NSString*)DICOMTLSUniqueLabelForSelectedServer;
 
 @end

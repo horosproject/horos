@@ -700,7 +700,7 @@
 		{
 			[(NSData*)certificateDataRef writeToFile:path atomically:YES];
 		}
-		else NSLog(@"SecKeychainItemExport : status : %@", [DDKeychain stringForError:status]);
+		else NSLog(@"SecKeychainItemExport : error : %@", [DDKeychain stringForError:status]);
 		
 		CFRelease(certificate);	
 	}
@@ -736,7 +736,7 @@
 			[convertTask setArguments:args];
 			[convertTask launch];
 		}
-		else NSLog(@"SecKeychainItemExport : status : %@", [DDKeychain stringForError:status]);
+		else NSLog(@"SecKeychainItemExport : error : %@", [DDKeychain stringForError:status]);
 		
 		CFRelease(privateKey);
 	}
@@ -747,14 +747,14 @@
 
 // Returns a reference to the preferred identity for DICOM TLS, or NULL if none was found.
 // Call the CFRelease function to release this object when you are finished with it.
-+ (SecIdentityRef)DICOMTLSIdentity;
++ (SecIdentityRef)DICOMTLSIdentityForLabel:(NSString*)label;
 {
-	return [DDKeychain KeychainAccessPreferredIdentityForName:@"com.osirixviewer.dicomtls-client" keyUse:CSSM_KEYUSE_ANY];
+	return [DDKeychain KeychainAccessPreferredIdentityForName:label keyUse:CSSM_KEYUSE_ANY];
 }
 
-+ (NSString*)DICOMTLSCertificateName;
++ (NSString*)DICOMTLSCertificateNameForLabel:(NSString*)label;
 {
-	SecIdentityRef identity = [DDKeychain DICOMTLSIdentity];
+	SecIdentityRef identity = [DDKeychain DICOMTLSIdentityForLabel:label];
 	
 	NSString *name = nil;
 	if(identity)
@@ -766,18 +766,56 @@
 	return name;
 }
 
-+ (void)DICOMTLSGenerateCertificateAndKeyForDCMTK;
++ (void)DICOMTLSGenerateCertificateAndKeyForDCMTKForLabel:(NSString*)label;
 {	
-	SecIdentityRef identity = [DDKeychain DICOMTLSIdentity];
+	SecIdentityRef identity = [DDKeychain DICOMTLSIdentityForLabel:label];
 	if(identity)
-	{
-		// identity to PEM certificate
-		[DDKeychain KeychainAccessExportCertificateForIdentity:identity toPath:@"/tmp/test_osirix_tls_cert.pem"];
-		// identity to PKCS12 private key
-		[DDKeychain KeychainAccessExportPrivateKeyForIdentity:identity toPath:@"/tmp/test_osirix_tls_key.pem" cryptWithPassword:@"SuperSecretPassword"];
+	{		
+		// identity to certificate
+		[DDKeychain KeychainAccessExportCertificateForIdentity:identity toPath:[DDKeychain DICOMTLSCertificatePathForDCMTKForLabel:label]];
+		// identity to private key
+		[DDKeychain KeychainAccessExportPrivateKeyForIdentity:identity toPath:[DDKeychain DICOMTLSKeyPathForDCMTKForLabel:label] cryptWithPassword:@"SuperSecretPassword"];
 		CFRelease(identity);
 	}
 }
 
++ (void)DICOMTLSGenerateCertificateAndKeyForServerAddress:(NSString*)address port:(int)port AETitle:(NSString*)aetitle;
+{	
+	[DDKeychain DICOMTLSGenerateCertificateAndKeyForDCMTKForLabel:[DDKeychain DICOMTLSUniqueLabelForServerAddress:address port:[NSString stringWithFormat:@"%d",port] AETitle:aetitle]];
+}
+
++ (NSString*)DICOMTLSUniqueLabelForServerAddress:(NSString*)address port:(NSString*)port AETitle:(NSString*)aetitle;
+{
+	NSMutableString *label = [NSMutableString string];
+	[label appendString:TLS_KEYCHAIN_IDENTITY_NAME];
+	[label appendString:@"."];
+	[label appendString:address];
+	[label appendString:@"."];
+	[label appendString:port];
+	[label appendString:@"."];
+	[label appendString:aetitle];
+	
+	return [NSString stringWithString:label];
+}
+
++ (NSString*)DICOMTLSKeyPathForDCMTKForLabel:(NSString*)label;
+{
+	return [NSString stringWithFormat:@"%@.%@", TLS_PRIVATE_KEY_FILE, label];
+}
+
++ (NSString*)DICOMTLSKeyPathForDCMTKForServerAddress:(NSString*)address port:(int)port AETitle:(NSString*)aetitle;
+{
+	return [DDKeychain DICOMTLSKeyPathForDCMTKForLabel:[DDKeychain DICOMTLSUniqueLabelForServerAddress:address port:[NSString stringWithFormat:@"%d",port] AETitle:aetitle]];
+}
+
++ (NSString*)DICOMTLSCertificatePathForDCMTKForLabel:(NSString*)label;
+{
+	return [NSString stringWithFormat:@"%@.%@", TLS_CERTIFICATE_FILE, label];
+}
+
++ (NSString*)DICOMTLSCertificatePathForDCMTKForServerAddress:(NSString*)address port:(int)port AETitle:(NSString*)aetitle;
+{
+	return [DDKeychain DICOMTLSCertificatePathForDCMTKForLabel:[DDKeychain DICOMTLSUniqueLabelForServerAddress:address port:[NSString stringWithFormat:@"%d",port] AETitle:aetitle]];
+}
 
 @end

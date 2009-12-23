@@ -136,33 +136,35 @@
 		if([[serverParameters objectForKey:@"TLSAuthenticated"] boolValue])
 		{
 			[args addObject:@"--enable-tls"]; // use authenticated secure TLS connection
-			[args addObject:[serverParameters objectForKey:@"TLSPrivateKeyFileURL"]]; // [p]rivate key file
-			[args addObject:[serverParameters objectForKey:@"TLSCertificateFileURL"]]; // [c]ertificate file: string
-			//[args addObject:@"/tmp/test_osirix_tls_key.pem"]; // test
-			//[args addObject:@"/tmp/test_osirix_tls_cert.pem"]; // test
+//			[args addObject:[serverParameters objectForKey:@"TLSPrivateKeyFileURL"]]; // [p]rivate key file
+//			[args addObject:[serverParameters objectForKey:@"TLSCertificateFileURL"]]; // [c]ertificate file: string
+
+			[DDKeychain DICOMTLSGenerateCertificateAndKeyForServerAddress:address port:port AETitle:aet]; // test
+			[args addObject:[DDKeychain DICOMTLSKeyPathForDCMTKForServerAddress:address port:[port intValue] AETitle:aet]]; // test
+			[args addObject:[DDKeychain DICOMTLSCertificatePathForDCMTKForServerAddress:address port:[port intValue] AETitle:aet]]; // test
 			
-			TLSPasswordType passwordType = [[serverParameters objectForKey:@"TLSPrivateKeyFilePasswordType"] intValue];
-			if(passwordType!=PasswordNone)
-			{
-				NSString *password = nil;
-				if(passwordType==PasswordString)
-					password = [serverParameters objectForKey:@"TLSPrivateKeyFilePassword"];
-				else if(passwordType==PasswordAsk)
-					password = [serverParameters objectForKey:@"TLSAskPasswordValue"];
-				
-				if([password isEqualToString:@""] || !password)
-				{
-					[args addObject:@"--null-passwd"]; // use empty string as password
-				}
-				else
-				{
-					[args addObject:@"--use-passwd"]; // use specified password
-					[args addObject:password];
-				}
-			}
+//			TLSPasswordType passwordType = [[serverParameters objectForKey:@"TLSPrivateKeyFilePasswordType"] intValue];
+//			if(passwordType!=PasswordNone)
+//			{
+//				NSString *password = nil;
+//				if(passwordType==PasswordString)
+//					password = [serverParameters objectForKey:@"TLSPrivateKeyFilePassword"];
+//				else if(passwordType==PasswordAsk)
+//					password = [serverParameters objectForKey:@"TLSAskPasswordValue"];
+//				
+//				if([password isEqualToString:@""] || !password)
+//				{
+//					[args addObject:@"--null-passwd"]; // use empty string as password
+//				}
+//				else
+//				{
+//					[args addObject:@"--use-passwd"]; // use specified password
+//					[args addObject:password];
+//				}
+//			}
 			
-			//[args addObject:@"--use-passwd"]; // test
-			//[args addObject:@"SuperSecretPassword"]; // test
+			[args addObject:@"--use-passwd"]; // test
+			[args addObject:@"SuperSecretPassword"]; // test
 		}
 		else
 			[args addObject:@"--anonymous-tls"]; // use secure TLS connection without certificate
@@ -785,6 +787,8 @@
 	self.TLSEnabled = [[aServer valueForKey:@"TLSEnabled"] boolValue];
 	self.TLSAuthenticated = [[aServer valueForKey:@"TLSAuthenticated"] boolValue];
 
+	[self getTLSCertificate];
+	
 	NSString *certificateFileURL = [aServer valueForKey:@"TLSCertificateFileURL"];
 	if(!certificateFileURL)
 		certificateFileURL = NSHomeDirectory();
@@ -978,7 +982,7 @@
 		SecIdentityRef identity = [[SFChooseIdentityPanel sharedChooseIdentityPanel] identity];
 		if(identity)
 		{
-			[DDKeychain KeychainAccessSetPreferredIdentity:identity forName:@"com.osirixviewer.dicomtls-client" keyUse:CSSM_KEYUSE_ANY];
+			[DDKeychain KeychainAccessSetPreferredIdentity:identity forName:[self DICOMTLSUniqueLabelForSelectedServer] keyUse:CSSM_KEYUSE_ANY];
 			[self getTLSCertificate];
 		}
 	}
@@ -988,11 +992,18 @@
 
 - (void)getTLSCertificate;
 {	
-	NSString *name = [DDKeychain DICOMTLSCertificateName];
-	if(!name) name = @"no certificate selected";
+	NSString *label = [self DICOMTLSUniqueLabelForSelectedServer];
+	NSString *name = [DDKeychain DICOMTLSCertificateNameForLabel:label];
+	if(!name) name = @"No certificate selected.";
 	self.keychainCertificate = name;
 	
-	[DDKeychain DICOMTLSGenerateCertificateAndKeyForDCMTK]; // test
+//	[DDKeychain DICOMTLSGenerateCertificateAndKeyForDCMTKForLabel:label]; // test
+}
+
+- (NSString*)DICOMTLSUniqueLabelForSelectedServer;
+{
+	NSMutableDictionary *aServer = [[dicomNodes arrangedObjects] objectAtIndex:[[dicomNodes tableView] selectedRow]];
+	return [DDKeychain DICOMTLSUniqueLabelForServerAddress:[aServer valueForKey:@"Address"] port:[NSString stringWithFormat:@"%d",[[aServer valueForKey:@"Port"] intValue]] AETitle:[aServer valueForKey:@"AETitle"]];
 }
 
 @end

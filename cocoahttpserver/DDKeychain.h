@@ -25,8 +25,14 @@
 + (void)KeychainAccessExportCertificateForIdentity:(SecIdentityRef)identity toPath:(NSString*)path;
 + (void)KeychainAccessExportPrivateKeyForIdentity:(SecIdentityRef)identity toPath:(NSString*)path cryptWithPassword:(NSString*)password;
 
-+ (SecIdentityRef)DICOMTLSIdentity;
-+ (NSString*)DICOMTLSCertificateName;
-+ (void)DICOMTLSGenerateCertificateAndKeyForDCMTK;
++ (SecIdentityRef)DICOMTLSIdentityForLabel:(NSString*)label;
++ (NSString*)DICOMTLSCertificateNameForLabel:(NSString*)label;
++ (void)DICOMTLSGenerateCertificateAndKeyForDCMTKForLabel:(NSString*)label;
++ (void)DICOMTLSGenerateCertificateAndKeyForServerAddress:(NSString*)address port:(int)port AETitle:(NSString*)aetitle;
++ (NSString*)DICOMTLSUniqueLabelForServerAddress:(NSString*)address port:(NSString*)port AETitle:(NSString*)aetitle;
++ (NSString*)DICOMTLSKeyPathForDCMTKForLabel:(NSString*)label;
++ (NSString*)DICOMTLSKeyPathForDCMTKForServerAddress:(NSString*)address port:(int)port AETitle:(NSString*)aetitle;
++ (NSString*)DICOMTLSCertificatePathForDCMTKForLabel:(NSString*)label;
++ (NSString*)DICOMTLSCertificatePathForDCMTKForServerAddress:(NSString*)address port:(int)port AETitle:(NSString*)aetitle;
 
 @end
