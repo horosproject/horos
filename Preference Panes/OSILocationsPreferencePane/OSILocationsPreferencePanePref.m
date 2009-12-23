@@ -991,25 +991,11 @@
 
 - (void)getTLSCertificate;
 {	
-	SecIdentityRef identity = [DDKeychain KeychainAccessPreferredIdentityForName:@"com.osirixviewer.dicomtls-client" keyUse:CSSM_KEYUSE_ANY];
-
-	NSString *name = nil;
-	if(identity)
-	{
-		name = [DDKeychain KeychainAccessCertificateCommonNameForIdentity:identity];
-		
-		// BEGIN tests (work in progress)
-		// identity to PEM certificate
-		[DDKeychain KeychainAccessExportCertificateForIdentity:identity toPath:@"/tmp/test_osirix_tls_cert.pem"];		
-		// identity to PKCS12 private key
-		[DDKeychain KeychainAccessExportPrivateKeyForIdentity:identity toPath:@"/tmp/test_osirix_tls_key.pem" cryptWithPassword:@"SuperSecretPassword"];
-		// END tests (work in progress)
-		
-		CFRelease(identity);
-	}
-	
+	NSString *name = [DDKeychain DICOMTLSCertificateName];
 	if(!name) name = @"no certificate selected";
 	self.keychainCertificate = name;
+	
+	[DDKeychain DICOMTLSGenerateCertificateAndKeyForDCMTK]; // test
 }
 
 @end

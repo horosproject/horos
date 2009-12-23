@@ -25,4 +25,8 @@
 + (void)KeychainAccessExportCertificateForIdentity:(SecIdentityRef)identity toPath:(NSString*)path;
 + (void)KeychainAccessExportPrivateKeyForIdentity:(SecIdentityRef)identity toPath:(NSString*)path cryptWithPassword:(NSString*)password;
 
++ (SecIdentityRef)DICOMTLSIdentity;
++ (NSString*)DICOMTLSCertificateName;
++ (void)DICOMTLSGenerateCertificateAndKeyForDCMTK;
+
 @end

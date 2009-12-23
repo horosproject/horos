@@ -743,4 +743,41 @@
 	else NSLog(@"SecIdentityCopyPrivateKey : error : %@", [DDKeychain stringForError:status]);			
 }
 
+#pragma mark DICOM TLS Specific methods
+
+// Returns a reference to the preferred identity for DICOM TLS, or NULL if none was found.
+// Call the CFRelease function to release this object when you are finished with it.
++ (SecIdentityRef)DICOMTLSIdentity;
+{
+	return [DDKeychain KeychainAccessPreferredIdentityForName:@"com.osirixviewer.dicomtls-client" keyUse:CSSM_KEYUSE_ANY];
+}
+
++ (NSString*)DICOMTLSCertificateName;
+{
+	SecIdentityRef identity = [DDKeychain DICOMTLSIdentity];
+	
+	NSString *name = nil;
+	if(identity)
+	{
+		name = [NSString stringWithString:[DDKeychain KeychainAccessCertificateCommonNameForIdentity:identity]];
+		CFRelease(identity);
+	}
+	
+	return name;
+}
+
++ (void)DICOMTLSGenerateCertificateAndKeyForDCMTK;
+{	
+	SecIdentityRef identity = [DDKeychain DICOMTLSIdentity];
+	if(identity)
+	{
+		// identity to PEM certificate
+		[DDKeychain KeychainAccessExportCertificateForIdentity:identity toPath:@"/tmp/test_osirix_tls_cert.pem"];		
+		// identity to PKCS12 private key
+		[DDKeychain KeychainAccessExportPrivateKeyForIdentity:identity toPath:@"/tmp/test_osirix_tls_key.pem" cryptWithPassword:@"SuperSecretPassword"];
+		CFRelease(identity);
+	}
+}
+
+
 @end
