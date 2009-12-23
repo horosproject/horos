@@ -2411,7 +2411,9 @@ static NSMutableDictionary *movieLock = nil;
 		if( x >= 0)
 		{
 			NSRange searchRange = {x, l};
-
+			
+			// If MacOS 10.6 : we should use - (NSRange)rangeOfData:(NSData *)dataToFind options:(NSDataSearchOptions)mask range:(NSRange)searchRange
+			
 			if ([[postDataChunk subdataWithRange:searchRange] isEqualToData: postBoundary])
 			{
 				r->length -= ([postDataChunk length] - x) +2; // -2 = 0x0A0D
@@ -2467,7 +2469,9 @@ static NSMutableDictionary *movieLock = nil;
 		for (int i = 0; i < [postDataChunk length] - l; i++)
 		{
 			NSRange searchRange = {i, l};
-
+			
+			// If MacOS 10.6 : we should use - (NSRange)rangeOfData:(NSData *)dataToFind options:(NSDataSearchOptions)mask range:(NSRange)searchRange
+			
 			if ([[postDataChunk subdataWithRange:searchRange] isEqualToData:separatorData])
 			{
 				NSRange newDataRange = {dataStartIndex, i - dataStartIndex};
