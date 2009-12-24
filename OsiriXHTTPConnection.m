@@ -184,8 +184,8 @@ static NSMutableDictionary *movieLock = nil;
 		{
 			NSArray *filteredStudies = studies;
 			
-			if( [user valueForKey: @"studyPredicate"])
-				filteredStudies = [studies filteredArrayUsingPredicate: [user valueForKey: @"studyPredicate"]];
+			if( [[user valueForKey: @"studyPredicate"] length] > 0)
+				filteredStudies = [studies filteredArrayUsingPredicate: [[BrowserController currentBrowser] smartAlbumPredicateString: [currentUser valueForKey: @"studyPredicate"]]];
 			
 			/// EMAIL
 			
@@ -743,8 +743,7 @@ static NSMutableDictionary *movieLock = nil;
 	{
 		@try
 		{
-			NSString *userPredicateString = [currentUser valueForKey: @"studyPredicate"];
-			predicate = [NSCompoundPredicate andPredicateWithSubpredicates: [NSArray arrayWithObjects: predicate, [[BrowserController currentBrowser] smartAlbumPredicateString: userPredicateString], nil]];
+			predicate = [NSCompoundPredicate andPredicateWithSubpredicates: [NSArray arrayWithObjects: predicate, [[BrowserController currentBrowser] smartAlbumPredicateString: [currentUser valueForKey: @"studyPredicate"]], nil]];
 		}
 		@catch( NSException *e)
 		{
@@ -784,17 +783,39 @@ static NSMutableDictionary *movieLock = nil;
 {
 	NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
 	
-	NSArray *seriesArray;
-	
-	[context retain];
+	NSArray *seriesArray = nil;
+	NSArray *studiesArray = nil;
 	[context lock];
+	
+	if( [[currentUser valueForKey: @"studyPredicate"] length] > 0) // First, take all the available studies for this user, and then get the series : SECURITY : we want to be sure that he cannot access to unauthorized images
+	{
+		@try
+		{
+			NSError *error = nil;
+			NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+			[dbRequest setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey:@"Study"]];
+			[dbRequest setPredicate: [[BrowserController currentBrowser] smartAlbumPredicateString: [currentUser valueForKey: @"studyPredicate"]]];
+			
+			error = nil;
+			studiesArray = [[context executeFetchRequest:dbRequest error:&error] valueForKey: @"patientUID"];
+		}
+		
+		@catch(NSException *e)
+		{
+			NSLog(@"seriesForPredicate exception: %@", e.description);
+		}
+	}
 	
 	@try
 	{
 		NSError *error = nil;
 		NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-		[dbRequest setEntity:[[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey:@"Series"]];
-		[dbRequest setPredicate:predicate];
+		[dbRequest setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey:@"Series"]];
+		
+		if( studiesArray)
+			predicate = [NSCompoundPredicate andPredicateWithSubpredicates: [NSArray arrayWithObjects: predicate, [NSPredicate predicateWithFormat: @"study.patientUID IN %@", studiesArray], nil]];
+		
+		[dbRequest setPredicate: predicate];
 		
 		error = nil;
 		seriesArray = [context executeFetchRequest:dbRequest error:&error];
@@ -805,8 +826,8 @@ static NSMutableDictionary *movieLock = nil;
 		NSLog(@"seriesForPredicate exception: %@", e.description);
 	}
 	
+	
 	[context unlock];
-	[context release];
 	
 	NSSortDescriptor * sortid = [[NSSortDescriptor alloc] initWithKey:@"seriesInstanceUID" ascending:YES selector:@selector(numericCompare:)];		//id
 	NSSortDescriptor * sortdate = [[NSSortDescriptor alloc] initWithKey:@"date" ascending:YES];
@@ -861,7 +882,7 @@ static NSMutableDictionary *movieLock = nil;
 		{
 			@try
 			{
-				studiesArray = [studiesArray filteredArrayUsingPredicate: [currentUser valueForKey: @"studyPredicate"]];
+				studiesArray = [studiesArray filteredArrayUsingPredicate: [[BrowserController currentBrowser] smartAlbumPredicateString: [currentUser valueForKey: @"studyPredicate"]]];
 			}
 			@catch( NSException *e)
 			{
@@ -1851,6 +1872,7 @@ static NSMutableDictionary *movieLock = nil;
 		}
 		
 		NSArray *studies = [self studiesForPredicate:browsePredicate];
+		
 		if( [studies count] == 1)
 		{
 			[self updateLogEntryForStudy: [studies lastObject] withMessage: @"Display Study"];
@@ -1901,8 +1923,10 @@ static NSMutableDictionary *movieLock = nil;
 		}
 		else
 			browsePredicate = [NSPredicate predicateWithValue:NO];
+			
 		NSArray *series = [self seriesForPredicate:browsePredicate];
-		if([series count]==1)
+		
+		if( [series count] == 1)
 		{
 			if(![[series lastObject] valueForKey:@"thumbnail"])
 				[[BrowserController currentBrowser] buildThumbnail:[series lastObject]];
