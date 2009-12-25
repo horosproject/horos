@@ -395,7 +395,7 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
 		fusionPluginsMenu = [[NSMenu alloc] initWithTitle:@""];
 		[fusionPluginsMenu insertItemWithTitle:NSLocalizedString(@"Select a fusion plug-in", nil) action:nil keyEquivalent:@"" atIndex:0];
 		
-		NSLog( @"*********** Plugins loading START ***********");
+		NSLog( @"|||||||||||||||||| Plugins loading START ||||||||||||||||||");
 		#ifndef OSIRIX_LIGHT
 		for ( path in paths )
 		{
@@ -489,7 +489,7 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
 			}
 		}
 		#endif
-		NSLog( @"*********** Plugins loading END ***********");
+		NSLog( @"|||||||||||||||||| Plugins loading END ||||||||||||||||||");
 	}
 	@catch (NSException * e)
 	{

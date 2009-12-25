@@ -28,6 +28,7 @@
 #define INCOMINGPATH @"/INCOMING.noindex/"
 
 static NSMutableDictionary *movieLock = nil;
+static NSString *webDirectory = nil;
 
 #define maxResolution 1024
 
@@ -144,6 +145,20 @@ static NSMutableDictionary *movieLock = nil;
 	[context unlock];
 }
 
++ (void) checkWebDirectory
+{
+	if( webDirectory == nil)
+	{
+		webDirectory = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"WebServicesHTML"];
+		
+		BOOL isDirectory = NO;
+		if( [[NSFileManager defaultManager] fileExistsAtPath: [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent: @"WebServicesHTML"] isDirectory: &isDirectory] == YES && isDirectory == YES)
+			webDirectory = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent: @"WebServicesHTML"];
+		
+		[webDirectory retain];
+	}
+}
+
 + (void) emailNotifications
 {
 	if( [NSThread isMainThread] == NO)
@@ -151,6 +166,8 @@ static NSMutableDictionary *movieLock = nil;
 		NSLog( @"********* applescript needs to be in the main thread");
 		return;
 	}
+	
+	[OsiriXHTTPConnection checkWebDirectory];
 
 	// Lets check if new studies are available for each users!
 	
@@ -220,19 +237,27 @@ static NSMutableDictionary *movieLock = nil;
 					if( [filteredStudies count] > 0)
 					{
 						/// EMAIL
+						NSMutableAttributedString *emailMessage = [[[NSMutableAttributedString alloc] initWithPath: [webDirectory stringByAppendingPathComponent:@"emailTemplate.txt"] documentAttributes: nil] autorelease];
 						
-						NSMutableString *emailMessage = [NSMutableString stringWithFormat: NSLocalizedString( @"Dear %@ ,\r\rClick on the following URLs to review and download your radiological exam(s):\r\r", nil), [user valueForKey: @"name"]];
-						
-						for( NSManagedObject *s in filteredStudies)
+						if( emailMessage)
 						{
-							[emailMessage appendFormat: @"http://%@:%d/study?id=%@\r", webServerAddress, webPort, [s valueForKey: @"studyInstanceUID"]]; 
+							[[emailMessage mutableString] replaceOccurrencesOfString: @"%Username%" withString: [user valueForKey: @"name"] options: NSLiteralSearch range: NSMakeRange(0, [emailMessage length])];
+							
+							NSMutableString *urls = [NSMutableString string];
+							for( NSManagedObject *s in filteredStudies)
+							{
+								[urls appendFormat: @"%@ - %@ (%@)\r", [s valueForKey: @"name"], [s valueForKey: @"studyName"], [s valueForKey: @"date"]]; 
+								[urls appendFormat: @"http://%@:%d/study?id=%@&browse=all\r\r", webServerAddress, webPort, [s valueForKey: @"studyInstanceUID"]]; 
+							}
+							[[emailMessage mutableString] replaceOccurrencesOfString: @"%URLsList%" withString: urls options: NSLiteralSearch range: NSMakeRange(0, [emailMessage length])];
+							
+							
+							NSString *emailAddress = [user valueForKey: @"email"];
+							NSString *emailSubject = NSLocalizedString( @"A new radiology exam is available for you !", nil);
+							
+							[[CSMailMailClient mailClient] deliverMessage: emailMessage headers: [NSDictionary dictionaryWithObjectsAndKeys: emailAddress, @"To", fromEmailAddress, @"Sender", emailSubject, @"Subject", nil]];
 						}
-						
-						NSString *emailAddress = [user valueForKey: @"email"];
-						NSString *emailSubject = NSLocalizedString( @"A new radiology exam is available for you !", nil);
-						
-						[[CSMailMailClient mailClient] deliverMessage: [[[NSAttributedString alloc] initWithString: emailMessage] autorelease] headers: [NSDictionary dictionaryWithObjectsAndKeys: emailAddress, @"To", fromEmailAddress, @"Sender", emailSubject, @"Subject", nil]];
-						
+						else NSLog( @"********* warning : CANNOT send notifications emails, because emailTemplate.rtfd == nil");
 						////////////////////////
 					}
 				}
@@ -241,7 +266,7 @@ static NSMutableDictionary *movieLock = nil;
 	}
 	@catch (NSException *e)
 	{
-		NSLog( @"***** emailNotifications exception:", e);
+		NSLog( @"***** emailNotifications exception: %@", e);
 	}
 	
 	[[[BrowserController currentBrowser] userManagedObjectContext] unlock];
@@ -356,14 +381,7 @@ static NSMutableDictionary *movieLock = nil;
 {
     if ((self = [super initWithAsyncSocket: newSocket forServer: myServer]))
 	{
-		NSString *bundlePath = [NSMutableString stringWithString:[[NSBundle mainBundle] resourcePath]];
-		webDirectory = [bundlePath stringByAppendingPathComponent: @"WebServicesHTML"];
-		
-		BOOL isDirectory = NO;
-		if( [[NSFileManager defaultManager] fileExistsAtPath: [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent: @"WebServicesHTML"] isDirectory: &isDirectory] == YES && isDirectory == YES)
-			webDirectory = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent: @"WebServicesHTML"];
-		
-		[webDirectory retain];
+		[OsiriXHTTPConnection checkWebDirectory];
     }
     return self;
 }
@@ -376,7 +394,6 @@ static NSMutableDictionary *movieLock = nil;
 	
 	[selectedDICOMNode release];
 	[selectedImages release];
-	[webDirectory release];
 	[ipAddressString release];
 	[currentUser release];
 	

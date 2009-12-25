@@ -1321,8 +1321,6 @@ static NSDate *lastWarningDate = nil;
 	[DCMView setDefaults];
 	[ROI loadDefaultSettings];
 	
-	NSLog( @"runPreferencesUpdateCheck");
-	
 	if( restartListener)
 	{
 		if( [defaults boolForKey: @"UseHostNameForAETitle"])

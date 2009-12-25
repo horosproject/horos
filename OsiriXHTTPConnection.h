@@ -5,7 +5,6 @@ extern NSString* asciiString (NSString* name);
 
 @interface OsiriXHTTPConnection : HTTPConnection
 {
-	NSString *webDirectory;
 	NSMutableArray *selectedImages;
 	NSMutableDictionary *selectedDICOMNode;
 	NSLock *sendLock, *running;
