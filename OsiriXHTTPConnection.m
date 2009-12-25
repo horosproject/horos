@@ -14,6 +14,7 @@
 #import "DCM.h"
 #import "HTTPResponse.h"
 #import "HTTPAuthenticationRequest.h"
+#import "CSMailMailClient.h"
 
 #import <Message/NSMailDelivery.h>
 
@@ -145,15 +146,21 @@ static NSMutableDictionary *movieLock = nil;
 
 + (void) emailNotifications
 {
+	if( [NSThread isMainThread] == NO)
+	{
+		NSLog( @"********* applescript needs to be in the main thread");
+		return;
+	}
+
 	// Lets check if new studies are available for each users!
 	
 	NSDate *lastCheckDate = [NSDate dateWithTimeIntervalSinceReferenceDate: [[NSUserDefaults standardUserDefaults] doubleForKey: @"lastNotificationsDate"]];
 	
-	if( [[NSUserDefaults standardUserDefaults] objectForKey: @"lastNotificationsDate"] == nil)
-	{
-		[[NSUserDefaults standardUserDefaults] setValue: [NSString stringWithFormat: @"%lf", [NSDate timeIntervalSinceReferenceDate]] forKey: @"lastNotificationsDate"];
-		return;
-	}
+//	if( [[NSUserDefaults standardUserDefaults] objectForKey: @"lastNotificationsDate"] == nil)
+//	{
+//		[[NSUserDefaults standardUserDefaults] setValue: [NSString stringWithFormat: @"%lf", [NSDate timeIntervalSinceReferenceDate]] forKey: @"lastNotificationsDate"];
+//		return;
+//	}
 	
 	[[NSUserDefaults standardUserDefaults] setValue: [NSString stringWithFormat: @"%lf", [NSDate timeIntervalSinceReferenceDate]] forKey: @"lastNotificationsDate"];
 	
@@ -162,41 +169,74 @@ static NSMutableDictionary *movieLock = nil;
 	
 	@try
 	{
-		// Find all users
 		NSError *error = nil;
-		NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-		[dbRequest setEntity: [[[[BrowserController currentBrowser] userManagedObjectModel] entitiesByName] objectForKey: @"User"]];
-		[dbRequest setPredicate: [NSPredicate predicateWithValue: YES]];
-		
-		error = nil;
-		NSArray *users = [[[BrowserController currentBrowser] userManagedObjectContext] executeFetchRequest: dbRequest error:&error];
+		NSFetchRequest *dbRequest = nil;
 		
 		// Find all studies AFTER the lastCheckDate
 		error = nil;
 		dbRequest = [[[NSFetchRequest alloc] init] autorelease];
 		[dbRequest setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey: @"Study"]];
-		[dbRequest setPredicate: [NSPredicate predicateWithFormat: @"studyDate >= CAST(%lf, \"NSDate\"", [lastCheckDate timeIntervalSinceReferenceDate]]];
+		[dbRequest setPredicate: [NSPredicate predicateWithFormat: @"dateAdded >= CAST(%lf, \"NSDate\")", [lastCheckDate timeIntervalSinceReferenceDate]]];
 		
 		error = nil;
 		NSArray *studies = [[[BrowserController currentBrowser] managedObjectContext] executeFetchRequest: dbRequest error:&error];
 		
-		for( NSManagedObject *user in users)
+		NSString *webServerAddress = [[NSUserDefaults standardUserDefaults] valueForKey: @"webServerAddress"];
+		
+		if( [webServerAddress length] == 0)
+			webServerAddress = [[AppController sharedAppController] privateIP];
+		
+		NSString *fromEmailAddress = [[NSUserDefaults standardUserDefaults] valueForKey: @"notificationsEmailsSender"];
+		
+		int webPort = [[NSUserDefaults standardUserDefaults] integerForKey:@"httpWebServerPort"];
+		
+		if( [studies count] > 0)
 		{
-			NSArray *filteredStudies = studies;
+			// Find all users
+			error = nil;
+			dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+			[dbRequest setEntity: [[[[BrowserController currentBrowser] userManagedObjectModel] entitiesByName] objectForKey: @"User"]];
+			[dbRequest setPredicate: [NSPredicate predicateWithValue: YES]];
 			
-			if( [[user valueForKey: @"studyPredicate"] length] > 0)
-				filteredStudies = [studies filteredArrayUsingPredicate: [[BrowserController currentBrowser] smartAlbumPredicateString: [currentUser valueForKey: @"studyPredicate"]]];
+			error = nil;
+			NSArray *users = [[[BrowserController currentBrowser] userManagedObjectContext] executeFetchRequest: dbRequest error:&error];
 			
-			/// EMAIL
-			
-			NSMutableString *emailMessage = [NSMutableString stringWithString: @""];
-			
-			NSString *emailAddress = [user valueForKey: @"email"];
-			NSString *emailSubject = NSLocalizedString( @"A new DICOM study is available for you", nil);
-			
-			[NSMailDelivery deliverMessage: emailMessage subject: emailSubject to: emailAddress];
-			
-			////////////////////////
+			for( NSManagedObject *user in users)
+			{
+				if( [[user valueForKey: @"emailNotification"] boolValue] == YES && [[user valueForKey: @"email"] length] > 2)
+				{
+					NSArray *filteredStudies = studies;
+					
+					@try
+					{
+						if( [[user valueForKey: @"studyPredicate"] length] > 0)
+						filteredStudies = [studies filteredArrayUsingPredicate: [[BrowserController currentBrowser] smartAlbumPredicateString: [user valueForKey: @"studyPredicate"]]];
+					}
+					@catch (NSException * e)
+					{
+						NSLog( @"******* studyPredicate exception : %@ %@", e, user);
+					}
+					
+					if( [filteredStudies count] > 0)
+					{
+						/// EMAIL
+						
+						NSMutableString *emailMessage = [NSMutableString stringWithFormat: NSLocalizedString( @"Dear %@ ,\r\rClick on the following URLs to review and download your radiological exam(s):\r\r", nil), [user valueForKey: @"name"]];
+						
+						for( NSManagedObject *s in filteredStudies)
+						{
+							[emailMessage appendFormat: @"http://%@:%d/study?id=%@\r", webServerAddress, webPort, [s valueForKey: @"studyInstanceUID"]]; 
+						}
+						
+						NSString *emailAddress = [user valueForKey: @"email"];
+						NSString *emailSubject = NSLocalizedString( @"A new radiology exam is available for you !", nil);
+						
+						[[CSMailMailClient mailClient] deliverMessage: [[[NSAttributedString alloc] initWithString: emailMessage] autorelease] headers: [NSDictionary dictionaryWithObjectsAndKeys: emailAddress, @"To", fromEmailAddress, @"Sender", emailSubject, @"Subject", nil]];
+						
+						////////////////////////
+					}
+				}
+			}
 		}
 	}
 	@catch (NSException *e)

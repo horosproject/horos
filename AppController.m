@@ -1615,10 +1615,12 @@ static NSDate *lastWarningDate = nil;
 	[webServer setPort: [[NSUserDefaults standardUserDefaults] integerForKey:@"httpWebServerPort"]];
 	[webServer setDocumentRoot:[NSURL fileURLWithPath:[@"~/Sites" stringByExpandingTildeInPath]]];
 	
+	NSString *webServerAddress = [[NSUserDefaults standardUserDefaults] valueForKey: @"webServerAddress"];
+	if( [webServerAddress length] == 0)
+		[[NSUserDefaults standardUserDefaults] setValue: [self privateIP] forKey: @"webServerAddress"];
+	
 	NSError *error = nil;
 	BOOL success = [webServer start: &error];
-	
-	NSTimer *t = [NSTimer scheduledTimerWithTimeInterval: 60 * 5 target: self selector: @selector( webServerEmailNotifications:) userInfo: nil repeats: YES];
 	
 	if( success == NO)
 	{
@@ -1725,6 +1727,7 @@ static NSDate *lastWarningDate = nil;
 	{
 		[[BrowserController currentBrowser] userManagedObjectContext];
 		[NSThread detachNewThreadSelector: @selector( startHTTPserver:) toTarget: self withObject:nil];
+		NSTimer *t = [NSTimer scheduledTimerWithTimeInterval: 5 target: self selector: @selector( webServerEmailNotifications:) userInfo: nil repeats: YES];
 	}
 	#endif
 	

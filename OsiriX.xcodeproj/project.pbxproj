@@ -2321,6 +2321,8 @@
 		CE1E7F5D07E2DD0D00A85908 /* DatabaseWindow.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE1E7F5A07E2DD0D00A85908 /* DatabaseWindow.icns */; };
 		CE1F6C4C07D715EB00165CBE /* Reset.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE1F6C4907D715EB00165CBE /* Reset.tif */; };
 		CE2028FB094EFFC300C00310 /* Endoscopy.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE2028F8094EFFC300C00310 /* Endoscopy.tif */; };
+		CE2119C910E4C25300F9C50C /* CSMailMailClient.h in Headers */ = {isa = PBXBuildFile; fileRef = CE2119C710E4C25300F9C50C /* CSMailMailClient.h */; };
+		CE2119CA10E4C25300F9C50C /* CSMailMailClient.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2119C810E4C25300F9C50C /* CSMailMailClient.m */; };
 		CE24491C0DA42A7600B8D506 /* libvtkGenericFiltering.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2449010DA42A7600B8D506 /* libvtkGenericFiltering.a */; };
 		CE24491D0DA42A7600B8D506 /* libvtkCommon.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2449020DA42A7600B8D506 /* libvtkCommon.a */; };
 		CE24491F0DA42A7600B8D506 /* libvtkVolumeRendering.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2449040DA42A7600B8D506 /* libvtkVolumeRendering.a */; };
@@ -9740,6 +9742,8 @@
 		CE1E7F5A07E2DD0D00A85908 /* DatabaseWindow.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = DatabaseWindow.icns; sourceTree = "<group>"; };
 		CE1F6C4907D715EB00165CBE /* Reset.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Reset.tif; sourceTree = "<group>"; };
 		CE2028F8094EFFC300C00310 /* Endoscopy.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Endoscopy.tif; sourceTree = "<group>"; };
+		CE2119C710E4C25300F9C50C /* CSMailMailClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSMailMailClient.h; sourceTree = "<group>"; };
+		CE2119C810E4C25300F9C50C /* CSMailMailClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CSMailMailClient.m; sourceTree = "<group>"; };
 		CE2448FE0DA42A7600B8D506 /* libvtksys.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtksys.a; path = Binaries/VTKLibs/libvtksys.a; sourceTree = "<group>"; };
 		CE2448FF0DA42A7600B8D506 /* libvtkWidgets.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkWidgets.a; path = Binaries/VTKLibs/libvtkWidgets.a; sourceTree = "<group>"; };
 		CE2449000DA42A7600B8D506 /* libvtkFiltering.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkFiltering.a; path = Binaries/VTKLibs/libvtkFiltering.a; sourceTree = "<group>"; };
@@ -16399,6 +16403,8 @@
 				8417219210D8D707001A833F /* HTTP-HTTPS Server */,
 				8417228810D9043B001A833F /* OsiriXHTTPConnection.h */,
 				8417228910D9043B001A833F /* OsiriXHTTPConnection.m */,
+				CE2119C710E4C25300F9C50C /* CSMailMailClient.h */,
+				CE2119C810E4C25300F9C50C /* CSMailMailClient.m */,
 			);
 			name = "XML-XPC HTTP Server";
 			sourceTree = "<group>";
@@ -18899,6 +18905,7 @@
 				CEF7BCB910DCBE0000B009D1 /* UserTable.h in Headers */,
 				CEDDD87F10DCC93500FFE72B /* PSGenerator.h in Headers */,
 				A9B34A0010E24E3C008C507B /* DICOMTLS.h in Headers */,
+				CE2119C910E4C25300F9C50C /* CSMailMailClient.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23281,6 +23288,7 @@
 				8474A3F810DBE7F300D192D0 /* user.xcdatamodel in Sources */,
 				CEF7BCBA10DCBE0000B009D1 /* UserTable.m in Sources */,
 				CEDDD88010DCC93500FFE72B /* PSGenerator.m in Sources */,
+				CE2119CA10E4C25300F9C50C /* CSMailMailClient.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

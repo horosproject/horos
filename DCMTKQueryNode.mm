@@ -1371,7 +1371,9 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 				queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"Association Rejected : %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
 				[queryException raise];
 
-			} else {
+			}
+			else
+			{
 				errmsg("Association Request Failed:");
 				DimseCondition::dump(cond);
 				queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"Association Request Failed : %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
