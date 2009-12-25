@@ -246,18 +246,17 @@ static NSString *webDirectory = nil;
 							NSMutableString *urls = [NSMutableString string];
 							for( NSManagedObject *s in filteredStudies)
 							{
-								[urls appendFormat: @"%@ - %@ (%@)\r", [s valueForKey: @"name"], [s valueForKey: @"studyName"], [s valueForKey: @"date"]]; 
+								[urls appendFormat: @"%@ - %@ (%@)\r", [s valueForKey: @"modality"], [s valueForKey: @"studyName"], [BrowserController DateTimeFormat: [s valueForKey: @"date"]]]; 
 								[urls appendFormat: @"http://%@:%d/study?id=%@&browse=all\r\r", webServerAddress, webPort, [s valueForKey: @"studyInstanceUID"]]; 
 							}
 							[[emailMessage mutableString] replaceOccurrencesOfString: @"%URLsList%" withString: urls options: NSLiteralSearch range: NSMakeRange(0, [emailMessage length])];
-							
 							
 							NSString *emailAddress = [user valueForKey: @"email"];
 							NSString *emailSubject = NSLocalizedString( @"A new radiology exam is available for you !", nil);
 							
 							[[CSMailMailClient mailClient] deliverMessage: emailMessage headers: [NSDictionary dictionaryWithObjectsAndKeys: emailAddress, @"To", fromEmailAddress, @"Sender", emailSubject, @"Subject", nil]];
 						}
-						else NSLog( @"********* warning : CANNOT send notifications emails, because emailTemplate.rtfd == nil");
+						else NSLog( @"********* warning : CANNOT send notifications emails, because emailTemplate.txt == nil");
 						////////////////////////
 					}
 				}
