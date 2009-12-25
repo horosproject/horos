@@ -169,7 +169,7 @@
 /* Begin PBXProject section */
 		089C1669FE841209C02AAC07 /* Project object */ = {
 			isa = PBXProject;
-			buildConfigurationList = CE3E1F5408758851007FFD6F /* Build configuration list for PBXProject "OSIListenerPreferencePane" */;
+			buildConfigurationList = CE3E1F5408758851007FFD6F /* Build configuration list for PBXProject "OSIWebSharingPreferencePane" */;
 			compatibilityVersion = "Xcode 3.2";
 			hasScannedForEncodings = 1;
 			mainGroup = 089C166AFE841209C02AAC07 /* OSIListenerPreferencePane */;
@@ -300,7 +300,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Development;
 		};
-		CE3E1F5408758851007FFD6F /* Build configuration list for PBXProject "OSIListenerPreferencePane" */ = {
+		CE3E1F5408758851007FFD6F /* Build configuration list for PBXProject "OSIWebSharingPreferencePane" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CE3E1F5508758851007FFD6F /* Development */,
