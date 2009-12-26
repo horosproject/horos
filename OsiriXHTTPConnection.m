@@ -173,11 +173,11 @@ static NSString *webDirectory = nil;
 	
 	NSDate *lastCheckDate = [NSDate dateWithTimeIntervalSinceReferenceDate: [[NSUserDefaults standardUserDefaults] doubleForKey: @"lastNotificationsDate"]];
 	
-//	if( [[NSUserDefaults standardUserDefaults] objectForKey: @"lastNotificationsDate"] == nil)
-//	{
-//		[[NSUserDefaults standardUserDefaults] setValue: [NSString stringWithFormat: @"%lf", [NSDate timeIntervalSinceReferenceDate]] forKey: @"lastNotificationsDate"];
-//		return;
-//	}
+	if( [[NSUserDefaults standardUserDefaults] objectForKey: @"lastNotificationsDate"] == nil)
+	{
+		[[NSUserDefaults standardUserDefaults] setValue: [NSString stringWithFormat: @"%lf", [NSDate timeIntervalSinceReferenceDate]] forKey: @"lastNotificationsDate"];
+		return;
+	}
 	
 	[[NSUserDefaults standardUserDefaults] setValue: [NSString stringWithFormat: @"%lf", [NSDate timeIntervalSinceReferenceDate]] forKey: @"lastNotificationsDate"];
 	
@@ -242,13 +242,22 @@ static NSString *webDirectory = nil;
 						if( emailMessage)
 						{
 							[[emailMessage mutableString] replaceOccurrencesOfString: @"%Username%" withString: [user valueForKey: @"name"] options: NSLiteralSearch range: NSMakeRange(0, [emailMessage length])];
+							[[emailMessage mutableString] replaceOccurrencesOfString: @"%WebServerAddress%" withString: [NSString stringWithFormat: @"%@://%@:%d", [[NSUserDefaults standardUserDefaults] boolForKey: @"encryptedWebServer"] ? @"https":@"http", webServerAddress, webPort] options: NSLiteralSearch range: NSMakeRange(0, [emailMessage length])];
 							
 							NSMutableString *urls = [NSMutableString string];
+							
+							if( [filteredStudies count] > 1)
+							{
+								[urls appendString: NSLocalizedString( @"To view this entire list, including patients names:\r", nil)]; 
+								[urls appendFormat: @"%@ : http://%@:%d/studyList?browse=newAddedStudies&browseParameter=%lf\r\r\r\r", NSLocalizedString( @"Click here", nil), webServerAddress, webPort, [lastCheckDate timeIntervalSinceReferenceDate]]; 
+							}
+							
 							for( NSManagedObject *s in filteredStudies)
 							{
 								[urls appendFormat: @"%@ - %@ (%@)\r", [s valueForKey: @"modality"], [s valueForKey: @"studyName"], [BrowserController DateTimeFormat: [s valueForKey: @"date"]]]; 
-								[urls appendFormat: @"http://%@:%d/study?id=%@&browse=all\r\r", webServerAddress, webPort, [s valueForKey: @"studyInstanceUID"]]; 
+								[urls appendFormat: @"%@ : http://%@:%d/study?id=%@&browse=all\r\r", NSLocalizedString( @"Click here", nil), webServerAddress, webPort, [s valueForKey: @"studyInstanceUID"]]; 
 							}
+							
 							[[emailMessage mutableString] replaceOccurrencesOfString: @"%URLsList%" withString: urls options: NSLiteralSearch range: NSMakeRange(0, [emailMessage length])];
 							
 							NSString *emailAddress = [user valueForKey: @"email"];
@@ -476,10 +485,12 @@ static NSString *webDirectory = nil;
 	[templateString replaceOccurrencesOfString:@"%zipextension%" withString: ([[settings valueForKey:@"MacOS"] boolValue]?@"osirixzip":@"zip") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 	
 	NSString *browse = [OsiriXHTTPConnection nonNilString:[parameters objectForKey:@"browse"]];
+	NSString *browseParameter = [OsiriXHTTPConnection nonNilString:[parameters objectForKey:@"browseParameter"]];
 	NSString *search = [OsiriXHTTPConnection nonNilString:[parameters objectForKey:@"search"]];
 	NSString *album = [OsiriXHTTPConnection nonNilString:[parameters objectForKey:@"album"]];
 	
 	[templateString replaceOccurrencesOfString:@"%browse%" withString:browse options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+	[templateString replaceOccurrencesOfString:@"%browseParameter%" withString:browseParameter options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 	[templateString replaceOccurrencesOfString:@"%search%" withString:[OsiriXHTTPConnection decodeURLString:search] options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 	[templateString replaceOccurrencesOfString:@"%album%" withString:[OsiriXHTTPConnection decodeURLString:[album stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 	
@@ -1782,7 +1793,12 @@ static NSString *webDirectory = nil;
 	{
 		NSPredicate *browsePredicate;
 		NSString *pageTitle;
-		if([(NSString*)[parameters objectForKey:@"browse"] isEqualToString:@"today"])
+		if( [[parameters objectForKey:@"browse"] isEqualToString: @"newAddedStudies"] && [[parameters objectForKey:@"browseParameter"] doubleValue] > 0)
+		{
+			browsePredicate = [NSPredicate predicateWithFormat: @"dateAdded >= CAST(%lf, \"NSDate\")", [[parameters objectForKey:@"browseParameter"] doubleValue]];
+			pageTitle = NSLocalizedString(@"New Studies Available", nil);
+		}
+		else if([(NSString*)[parameters objectForKey:@"browse"] isEqualToString:@"today"])
 		{
 			browsePredicate = [NSPredicate predicateWithFormat: @"date >= CAST(%lf, \"NSDate\")", [self startOfDay:[NSCalendarDate calendarDate]]];
 			pageTitle = NSLocalizedString(@"Today", nil);
@@ -1859,6 +1875,9 @@ static NSString *webDirectory = nil;
 		
 		if([parameters objectForKey:@"browse"])[html replaceOccurrencesOfString:@"%browse%" withString:[NSString stringWithFormat:@"&browse=%@",[parameters objectForKey:@"browse"]] options:NSLiteralSearch range:NSMakeRange(0, [html length])];
 		else [html replaceOccurrencesOfString:@"%browse%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [html length])]; 
+		
+		if([parameters objectForKey:@"browseParameter"])[html replaceOccurrencesOfString:@"%browseParameter%" withString:[NSString stringWithFormat:@"&browseParameter=%@",[parameters objectForKey:@"browseParameter"]] options:NSLiteralSearch range:NSMakeRange(0, [html length])];
+		else [html replaceOccurrencesOfString:@"%browseParameter%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [html length])]; 
 		
 		if([parameters objectForKey:@"search"])[html replaceOccurrencesOfString:@"%search%" withString:[NSString stringWithFormat:@"&search=%@",[parameters objectForKey:@"search"]] options:NSLiteralSearch range:NSMakeRange(0, [html length])];
 		else [html replaceOccurrencesOfString:@"%search%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [html length])];
@@ -1957,6 +1976,9 @@ static NSString *webDirectory = nil;
 			if([parameters objectForKey:@"browse"])[html replaceOccurrencesOfString:@"%browse%" withString:[NSString stringWithFormat:@"&browse=%@",[parameters objectForKey:@"browse"]] options:NSLiteralSearch range:NSMakeRange(0, [html length])];
 			else [html replaceOccurrencesOfString:@"%browse%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [html length])];
 			
+			if([parameters objectForKey:@"browseParameter"])[html replaceOccurrencesOfString:@"%browseParameter%" withString:[NSString stringWithFormat:@"&browseParameter=%@",[parameters objectForKey:@"browseParameter"]] options:NSLiteralSearch range:NSMakeRange(0, [html length])];
+			else [html replaceOccurrencesOfString:@"%browseParameter%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [html length])];
+			
 			if([parameters objectForKey:@"search"])[html replaceOccurrencesOfString:@"%search%" withString:[NSString stringWithFormat:@"&search=%@",[parameters objectForKey:@"search"]] options:NSLiteralSearch range:NSMakeRange(0, [html length])];
 			else [html replaceOccurrencesOfString:@"%search%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [html length])];
 			
@@ -2001,10 +2023,12 @@ static NSString *webDirectory = nil;
 		[templateString replaceOccurrencesOfString:@"%SeriesID%" withString:[parameters objectForKey:@"id"] options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 		
 		NSString *browse = [OsiriXHTTPConnection nonNilString:[parameters objectForKey:@"browse"]];
+		NSString *browseParameter = [OsiriXHTTPConnection nonNilString:[parameters objectForKey:@"browseParameter"]];
 		NSString *search = [OsiriXHTTPConnection nonNilString:[parameters objectForKey:@"search"]];
 		NSString *album = [OsiriXHTTPConnection nonNilString:[parameters objectForKey:@"album"]];
 		
 		[templateString replaceOccurrencesOfString:@"%browse%" withString:browse options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+		[templateString replaceOccurrencesOfString:@"%browseParameter%" withString:browseParameter options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 		[templateString replaceOccurrencesOfString:@"%search%" withString:[OsiriXHTTPConnection decodeURLString:search] options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 		[templateString replaceOccurrencesOfString:@"%album%" withString:[OsiriXHTTPConnection decodeURLString:[album stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 		

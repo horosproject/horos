@@ -7,16 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		8D202CEA0486D31800D8A456 /* OSIListenerPreferencePane_Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = 32DBCFA20370C41700C91783 /* OSIListenerPreferencePane_Prefix.pch */; };
-		8D202CEB0486D31800D8A456 /* OSIListenerPreferencePanePref.h in Headers */ = {isa = PBXBuildFile; fileRef = F506C03C013D9D7901CA16C8 /* OSIListenerPreferencePanePref.h */; };
 		8D202CED0486D31800D8A456 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C167DFE841241C02AAC07 /* InfoPlist.strings */; };
-		8D202CF10486D31800D8A456 /* OSIListenerPreferencePanePref.m in Sources */ = {isa = PBXBuildFile; fileRef = F506C03D013D9D7901CA16C8 /* OSIListenerPreferencePanePref.m */; };
 		8D202CF30486D31800D8A456 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */; };
 		8D202CF40486D31800D8A456 /* PreferencePanes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F506C035013D953901CA16C8 /* PreferencePanes.framework */; };
 		AB80A1BE0A19C3C000FED357 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB80A1BD0A19C3C000FED357 /* Security.framework */; };
 		CE162F2310DC2DD300BF9C81 /* browserController.h in Headers */ = {isa = PBXBuildFile; fileRef = CE162F2210DC2DD300BF9C81 /* browserController.h */; };
+		CE4B5C7210E5F6B300C11948 /* OSIWebSharingPreferencePanePref.h in Headers */ = {isa = PBXBuildFile; fileRef = CE4B5C7010E5F6B300C11948 /* OSIWebSharingPreferencePanePref.h */; };
+		CE4B5C7310E5F6B300C11948 /* OSIWebSharingPreferencePanePref.m in Sources */ = {isa = PBXBuildFile; fileRef = CE4B5C7110E5F6B300C11948 /* OSIWebSharingPreferencePanePref.m */; };
+		CE4B5C7510E5F6BF00C11948 /* OSIWebSharingPreferencePane_Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = CE4B5C7410E5F6BF00C11948 /* OSIWebSharingPreferencePane_Prefix.pch */; };
+		CE4B5C7F10E5F70000C11948 /* OSIWebSharingPreferencePanePref.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE4B5C7D10E5F70000C11948 /* OSIWebSharingPreferencePanePref.xib */; };
 		CE50FF1E0E481B5000959A84 /* DefaultsOsiriX.h in Headers */ = {isa = PBXBuildFile; fileRef = CE50FF1D0E481B5000959A84 /* DefaultsOsiriX.h */; };
-		CEB0705D0C87502F0011AEE1 /* OSIListenerPreferencePanePref.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEB0705B0C87502F0011AEE1 /* OSIListenerPreferencePanePref.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,16 +24,16 @@
 		089C167EFE841241C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		089C167FFE841241C02AAC07 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
-		32DBCFA20370C41700C91783 /* OSIListenerPreferencePane_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSIListenerPreferencePane_Prefix.pch; sourceTree = "<group>"; };
 		8D202CF70486D31800D8A456 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		8D202CF80486D31800D8A456 /* OSIWebSharingPreferencePane.prefPane */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OSIWebSharingPreferencePane.prefPane; sourceTree = BUILT_PRODUCTS_DIR; };
 		AB80A1BD0A19C3C000FED357 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		CE162F2210DC2DD300BF9C81 /* browserController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = browserController.h; path = ../../browserController.h; sourceTree = SOURCE_ROOT; };
+		CE4B5C7010E5F6B300C11948 /* OSIWebSharingPreferencePanePref.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSIWebSharingPreferencePanePref.h; sourceTree = "<group>"; };
+		CE4B5C7110E5F6B300C11948 /* OSIWebSharingPreferencePanePref.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSIWebSharingPreferencePanePref.m; sourceTree = "<group>"; };
+		CE4B5C7410E5F6BF00C11948 /* OSIWebSharingPreferencePane_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSIWebSharingPreferencePane_Prefix.pch; sourceTree = "<group>"; };
+		CE4B5C7E10E5F70000C11948 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/OSIWebSharingPreferencePanePref.xib; sourceTree = "<group>"; };
 		CE50FF1D0E481B5000959A84 /* DefaultsOsiriX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DefaultsOsiriX.h; path = ../../DefaultsOsiriX.h; sourceTree = SOURCE_ROOT; };
-		CEB0705C0C87502F0011AEE1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/OSIListenerPreferencePanePref.xib; sourceTree = "<group>"; };
 		F506C035013D953901CA16C8 /* PreferencePanes.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PreferencePanes.framework; path = /System/Library/Frameworks/PreferencePanes.framework; sourceTree = "<absolute>"; };
-		F506C03C013D9D7901CA16C8 /* OSIListenerPreferencePanePref.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSIListenerPreferencePanePref.h; sourceTree = "<group>"; };
-		F506C03D013D9D7901CA16C8 /* OSIListenerPreferencePanePref.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSIListenerPreferencePanePref.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -75,8 +75,8 @@
 			isa = PBXGroup;
 			children = (
 				8D202CF70486D31800D8A456 /* Info.plist */,
+				CE4B5C7D10E5F70000C11948 /* OSIWebSharingPreferencePanePref.xib */,
 				089C167DFE841241C02AAC07 /* InfoPlist.strings */,
-				CEB0705B0C87502F0011AEE1 /* OSIListenerPreferencePanePref.xib */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -84,8 +84,8 @@
 		08FB77AFFE84173DC02AAC07 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				F506C03C013D9D7901CA16C8 /* OSIListenerPreferencePanePref.h */,
-				F506C03D013D9D7901CA16C8 /* OSIListenerPreferencePanePref.m */,
+				CE4B5C7010E5F6B300C11948 /* OSIWebSharingPreferencePanePref.h */,
+				CE4B5C7110E5F6B300C11948 /* OSIWebSharingPreferencePanePref.m */,
 				CE50FF1D0E481B5000959A84 /* DefaultsOsiriX.h */,
 				CE162F2210DC2DD300BF9C81 /* browserController.h */,
 			);
@@ -122,7 +122,7 @@
 		32DBCFA10370C40200C91783 /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
-				32DBCFA20370C41700C91783 /* OSIListenerPreferencePane_Prefix.pch */,
+				CE4B5C7410E5F6BF00C11948 /* OSIWebSharingPreferencePane_Prefix.pch */,
 			);
 			name = "Other Sources";
 			sourceTree = "<group>";
@@ -134,10 +134,10 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8D202CEA0486D31800D8A456 /* OSIListenerPreferencePane_Prefix.pch in Headers */,
-				8D202CEB0486D31800D8A456 /* OSIListenerPreferencePanePref.h in Headers */,
 				CE50FF1E0E481B5000959A84 /* DefaultsOsiriX.h in Headers */,
 				CE162F2310DC2DD300BF9C81 /* browserController.h in Headers */,
+				CE4B5C7210E5F6B300C11948 /* OSIWebSharingPreferencePanePref.h in Headers */,
+				CE4B5C7510E5F6BF00C11948 /* OSIWebSharingPreferencePane_Prefix.pch in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -187,7 +187,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8D202CED0486D31800D8A456 /* InfoPlist.strings in Resources */,
-				CEB0705D0C87502F0011AEE1 /* OSIListenerPreferencePanePref.xib in Resources */,
+				CE4B5C7F10E5F70000C11948 /* OSIWebSharingPreferencePanePref.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -208,7 +208,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8D202CF10486D31800D8A456 /* OSIListenerPreferencePanePref.m in Sources */,
+				CE4B5C7310E5F6B300C11948 /* OSIWebSharingPreferencePanePref.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -223,12 +223,12 @@
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
 		};
-		CEB0705B0C87502F0011AEE1 /* OSIListenerPreferencePanePref.xib */ = {
+		CE4B5C7D10E5F70000C11948 /* OSIWebSharingPreferencePanePref.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				CEB0705C0C87502F0011AEE1 /* English */,
+				CE4B5C7E10E5F70000C11948 /* English */,
 			);
-			name = OSIListenerPreferencePanePref.xib;
+			name = OSIWebSharingPreferencePanePref.xib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

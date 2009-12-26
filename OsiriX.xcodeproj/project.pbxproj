@@ -3980,6 +3980,9 @@
 		CE49E2CA0760B93500444203 /* Empty.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE49E2C50760B93500444203 /* Empty.tif */; };
 		CE4A922D06DBF255006DAAF7 /* ITKSegmentation3D.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE4A922B06DBF255006DAAF7 /* ITKSegmentation3D.mm */; settings = {COMPILER_FLAGS = "-I ./ITK180 -I ./ITK180/Code -I ./ITK180/Code/Algorithms -I ./ITK180/Code/BasicFilters -I ./ITK180/Code/Common -I ./ITK180/Code/Numerics -I ./ITK180/Code/IO -I ./ITK180/Code/Numerics/FEM -I ./ITK180/Code/Numerics/Statistics -I ./ITK180/Code/SpatialObject -I ./ITK180/Code/Utilities/MetaIO -I ./ITK180/Code/Utilities/expat -I ./ITK180/Code/Utilities/NrrdIO -I ./ITK180/Code/Utilities/DICOMParser -I ./ITK180/Utilities -I ./ITK180/Utilities/vxl/vcl -I ./ITK180/Utilities/vxl/core"; }; };
 		CE4A922E06DBF255006DAAF7 /* ITKSegmentation3D.h in Headers */ = {isa = PBXBuildFile; fileRef = CE4A922C06DBF255006DAAF7 /* ITKSegmentation3D.h */; };
+		CE4B5CEC10E5F94700C11948 /* OSIWebSharingPreferencePane.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = CE4B5CE610E5F94700C11948 /* OSIWebSharingPreferencePane.prefPane */; };
+		CE4B5CFC10E5F9DE00C11948 /* Safari.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE4B5CFB10E5F9DE00C11948 /* Safari.tif */; };
+		CE4B5CFD10E5F9DE00C11948 /* Safari.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE4B5CFB10E5F9DE00C11948 /* Safari.tif */; };
 		CE4CD8DD0890DAC700CF4FE4 /* Realised2.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE4CD8D80890DAC700CF4FE4 /* Realised2.tif */; };
 		CE4CD8DE0890DAC700CF4FE4 /* Realised4.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE4CD8D90890DAC700CF4FE4 /* Realised4.tif */; };
 		CE4CD8DF0890DAC700CF4FE4 /* Realised3.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE4CD8DA0890DAC700CF4FE4 /* Realised3.tif */; };
@@ -7662,6 +7665,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 8D202CE80486D31800D8A456;
 			remoteInfo = OSICustomImageAnnotations;
+		};
+		CE4B5CD410E5F92000C11948 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CE4B5CD010E5F91F00C11948 /* OSIWebSharingPreferencePane.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 8D202CF80486D31800D8A456;
+			remoteInfo = OSIWebSharingPreferencePane;
 		};
 		CE4E42F808758A1800D0AFDB /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -11428,6 +11438,9 @@
 		CE49E2C50760B93500444203 /* Empty.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = Empty.tif; path = Binaries/Icons/Empty.tif; sourceTree = SOURCE_ROOT; };
 		CE4A922B06DBF255006DAAF7 /* ITKSegmentation3D.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = ITKSegmentation3D.mm; sourceTree = "<group>"; };
 		CE4A922C06DBF255006DAAF7 /* ITKSegmentation3D.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ITKSegmentation3D.h; sourceTree = "<group>"; };
+		CE4B5CD010E5F91F00C11948 /* OSIWebSharingPreferencePane.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = OSIWebSharingPreferencePane.xcodeproj; path = "Preference Panes/OSIWebSharingPreferencePane/OSIWebSharingPreferencePane.xcodeproj"; sourceTree = "<group>"; };
+		CE4B5CE610E5F94700C11948 /* OSIWebSharingPreferencePane.prefPane */ = {isa = PBXFileReference; lastKnownFileType = folder; name = OSIWebSharingPreferencePane.prefPane; path = "Preference Panes/OSIWebSharingPreferencePane/build/Development/OSIWebSharingPreferencePane.prefPane"; sourceTree = "<group>"; };
+		CE4B5CFB10E5F9DE00C11948 /* Safari.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Safari.tif; sourceTree = "<group>"; };
 		CE4CD8D80890DAC700CF4FE4 /* Realised2.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = Realised2.tif; path = DatabaseStates/Realised2.tif; sourceTree = "<group>"; };
 		CE4CD8D90890DAC700CF4FE4 /* Realised4.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = Realised4.tif; path = DatabaseStates/Realised4.tif; sourceTree = "<group>"; };
 		CE4CD8DA0890DAC700CF4FE4 /* Realised3.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = Realised3.tif; path = DatabaseStates/Realised3.tif; sourceTree = "<group>"; };
@@ -12188,6 +12201,7 @@
 		4A2F58D9078D119600C514A2 /* Dependencies */ = {
 			isa = PBXGroup;
 			children = (
+				CE4B5CD010E5F91F00C11948 /* OSIWebSharingPreferencePane.xcodeproj */,
 				CEA048460C76E2A600B4CA0A /* DICOMQuickLook.xcodeproj */,
 				A9FF849B0C5F187800D50C95 /* OSICustomImageAnnotations.xcodeproj */,
 				BF2EEC300B1F82F4007E9088 /* OSIHotKeysPreferencePane.xcodeproj */,
@@ -13083,6 +13097,7 @@
 				CE6C77EC09739B3100F951C2 /* Rotate3DCameraCursor.tif */,
 				CE6C77EB09739B3100F951C2 /* Rotate3DCursor.tif */,
 				7E2BE3D00715DB9A0017898A /* route.tif */,
+				CE4B5CFB10E5F9DE00C11948 /* Safari.tif */,
 				ABBB64A1063587B200D9531F /* Sag.tif */,
 				CE74DEAF08CCE0C1005D12A7 /* SagOpposite.tif */,
 				ABD559F50AEE146900108895 /* SagSmall.tif */,
@@ -16302,6 +16317,14 @@
 			name = "Curved MPR";
 			sourceTree = "<group>";
 		};
+		CE4B5CD110E5F91F00C11948 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				CE4B5CD510E5F92000C11948 /* OSIWebSharingPreferencePane.prefPane */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		CE4E42DF08758A1700D0AFDB /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -16437,6 +16460,7 @@
 		CEBD8A4B0875B029000E42D6 /* Pane */ = {
 			isa = PBXGroup;
 			children = (
+				CE4B5CE610E5F94700C11948 /* OSIWebSharingPreferencePane.prefPane */,
 				A918A4D40C621BED00DD88D1 /* OSICustomImageAnnotations.prefPane */,
 				BF2EEC750B1F8741007E9088 /* OSIHotKeys.prefPane */,
 				ABD908C60AF2119200E47345 /* AYDicomPrint.prefPane */,
@@ -21310,6 +21334,10 @@
 					ProductGroup = CE4E42E208758A1700D0AFDB /* Products */;
 					ProjectRef = CE4E42E108758A1700D0AFDB /* OSIViewerPreferencePane.xcodeproj */;
 				},
+				{
+					ProductGroup = CE4B5CD110E5F91F00C11948 /* Products */;
+					ProjectRef = CE4B5CD010E5F91F00C11948 /* OSIWebSharingPreferencePane.xcodeproj */;
+				},
 			);
 			projectRoot = "";
 			targets = (
@@ -21376,6 +21404,13 @@
 			fileType = wrapper.cfbundle;
 			path = OSIHotKeys.prefPane;
 			remoteRef = BF2EEC390B1F82F4007E9088 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		CE4B5CD510E5F92000C11948 /* OSIWebSharingPreferencePane.prefPane */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = OSIWebSharingPreferencePane.prefPane;
+			remoteRef = CE4B5CD410E5F92000C11948 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		CE4E42F908758A1800D0AFDB /* OSILocationsPreferencePane.prefPane */ = {
@@ -21854,6 +21889,8 @@
 				CED1FD1B1035E9BB0076AB33 /* SetPixelValue.png in Resources */,
 				CED1FD1C1035E9BB0076AB33 /* GrowingRegion.png in Resources */,
 				CEFB8A9910C19902000DCCB0 /* ReportTemplate.odt in Resources */,
+				CE4B5CEC10E5F94700C11948 /* OSIWebSharingPreferencePane.prefPane in Resources */,
+				CE4B5CFC10E5F9DE00C11948 /* Safari.tif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22208,6 +22245,7 @@
 				CEC706E910A5C844008935EA /* tagDictionary.plist in Resources */,
 				CEC706EB10A5C844008935EA /* SetPixelValue.png in Resources */,
 				CEC706EC10A5C844008935EA /* GrowingRegion.png in Resources */,
+				CE4B5CFD10E5F9DE00C11948 /* Safari.tif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

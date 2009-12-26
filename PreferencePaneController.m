@@ -316,6 +316,10 @@ extern OSStatus SetupAuthorization(void)
 			pathToPrefPaneBundle = [[NSBundle mainBundle] pathForResource: @"OSICustomImageAnnotations" ofType: @"prefPane"];
 			[[self window] setTitle: NSLocalizedString( @"Annotations", nil)];
 			break;
+		case 13:
+			pathToPrefPaneBundle = [[NSBundle mainBundle] pathForResource: @"OSIWebSharingPreferencePane" ofType: @"prefPane"];
+			[[self window] setTitle: NSLocalizedString( @"Web Server", nil)];
+			break;
 
 	}
 	

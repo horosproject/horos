@@ -18,7 +18,7 @@
 	<ul id="studyList" title="Study List" class="studyList">
         %StudyListItem%
 		<li title="%StudyListItemName%" class="studyListItem">
-			<a href="study?dicomcstoreport=%DicomCStorePort%&id=%StudyListItemID%%browse%%search%%album%">
+			<a href="study?dicomcstoreport=%DicomCStorePort%&id=%StudyListItemID%%browse%%browseParameter%%search%%album%">
 				<span class="StudyListItemName">%StudyListItemName%</span>
 			</a>
 
@@ -35,7 +35,7 @@
 				<li class="StudyListItemSeriesSeparator"> </li>
 				<li class="StudyListItemSeriesCount">%StudyState%</li>
 				<li class="StudyListItemSeriesCount">
-				<a href="%StudyListItemName%.%zipextension%?dicomcstoreport=%DicomCStorePort%&id=%StudyListItemID%%browse%%search%%album%">
+				<a href="%StudyListItemName%.%zipextension%?dicomcstoreport=%DicomCStorePort%&id=%StudyListItemID%%browse%%browseParameter%%search%%album%">
 				%ZIPFunctions%<span class="StudyListItemSeriesCount">%LocalizedLabel_DownloadAsZIP%</span>%/ZIPFunctions%
 			</a>
 			</ul>

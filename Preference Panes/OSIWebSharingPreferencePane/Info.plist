@@ -21,7 +21,7 @@
 	<key>NSMainNibFile</key>
 	<string>OSIWebSharingPreferencePanePref</string>
 	<key>NSPrefPaneIconLabel</key>
-	<string>OSIListenerPreferencePane</string>
+	<string>OSIWebSharingPreferencePane</string>
 	<key>NSPrincipalClass</key>
 	<string>OSIWebSharingPreferencePanePref</string>
 </dict>
