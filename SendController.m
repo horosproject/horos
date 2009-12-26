@@ -572,6 +572,8 @@ static NSMutableDictionary *TLSPasswordValues = nil;
 
 - (BOOL)TLSIsValidPrivateKeyPassword:(NSString*)password forServer:(NSDictionary*)server;
 {
+	#ifndef OSIRIX_LIGHT
+	
 	NSMutableDictionary *newServer = [NSMutableDictionary dictionaryWithDictionary:server];
 	
 	if( password)
@@ -579,7 +581,13 @@ static NSMutableDictionary *TLSPasswordValues = nil;
 	else
 		[newServer setObject: @"" forKey: @"TLSAskPasswordValue"];
 
-	return [QueryController echoServer:newServer]==1;
+	return [QueryController echoServer: newServer] == 1;
+	
+	#else
+	
+	return YES;
+	
+	#endif
 }
 
 - (void)TLSSavePrivateKeyPassword:(NSString*)password forServer:(NSDictionary*)server;

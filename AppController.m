@@ -1513,6 +1513,7 @@ static NSDate *lastWarningDate = nil;
 	[[mainMenuCLUTMenu itemWithTitle:[note object]] setState:NSOnState];
 }
 
+#ifndef OSIRIX_LIGHT
 - (void) checkSN64:(NSTimer*) t
 {
 	@try
@@ -1543,6 +1544,7 @@ static NSDate *lastWarningDate = nil;
 		}
 	}
 }
+#endif
 
 #define INCOMINGPATH @"/INCOMING.noindex/"
 
@@ -1596,6 +1598,8 @@ static NSDate *lastWarningDate = nil;
 #pragma mark-
 #pragma mark http server
 
+#ifndef OSIRIX_LIGHT
+
 - (void) webServerEmailNotifications: (NSTimer*) t
 {
 	[OsiriXHTTPConnection emailNotifications];
@@ -1641,6 +1645,7 @@ static NSDate *lastWarningDate = nil;
 	
 	[pool release];
 }
+#endif
 
 #pragma mark-
 
@@ -1741,6 +1746,8 @@ static NSDate *lastWarningDate = nil;
 	#endif
 }
 
+#ifndef OSIRIX_LIGHT
+
 - (void)netServiceDidResolveAddress:(NSNetService *) aNetService
 {
 	if( [[aNetService type] isEqualToString: @"_snosirix._tcp."])
@@ -1767,6 +1774,8 @@ static NSDate *lastWarningDate = nil;
 		}
 	}
 }
+
+#endif
 
 -(void) displayListenerError: (NSString*) err
 {

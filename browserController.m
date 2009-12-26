@@ -6835,6 +6835,8 @@ static NSArray*	statesArray = nil;
 			r = YES;
 		}
 		
+		#ifndef OSIRIX_LIGHT
+		
 		if( ([[[im valueForKey:@"modality"] lowercaseString] isEqualToString:@"pdf"] || [DCMAbstractSyntaxUID isPDF: [im valueForKeyPath: @"series.seriesSOPClassUID"]]) && [[NSUserDefaults standardUserDefaults] boolForKey: @"openPDFwithPreview"])
 		{
 			NSString *path = nil;
@@ -6866,6 +6868,8 @@ static NSArray*	statesArray = nil;
 			else
 				r = YES;
 		}
+		
+		#endif
 		
 		[managedObjectContext unlock];
 	}

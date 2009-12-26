@@ -4052,6 +4052,7 @@
 		CE7C7E950CF2201F0028A7F2 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEF0E6DA06AEF5CB001FF9E5 /* Carbon.framework */; };
 		CE7E5D4506AC8DDC0058C3AA /* Anonymizer.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE7E5D4406AC8DDC0058C3AA /* Anonymizer.icns */; };
 		CE81E2A50FDA9F00000D3D96 /* OsiriX.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE8D057D0FD8505000165DDE /* OsiriX.framework */; };
+		CE85FF5D10E6764100175CEB /* OpenGLScreenReader.m in Sources */ = {isa = PBXBuildFile; fileRef = A930149310DA63C200AF0051 /* OpenGLScreenReader.m */; };
 		CE882AC60C889B6500D4F982 /* XMLRPCMethods.h in Headers */ = {isa = PBXBuildFile; fileRef = CE882AC40C889B6500D4F982 /* XMLRPCMethods.h */; };
 		CE882AC70C889B6500D4F982 /* XMLRPCMethods.m in Sources */ = {isa = PBXBuildFile; fileRef = CE882AC50C889B6500D4F982 /* XMLRPCMethods.m */; };
 		CE88575E08AF938800B72DA7 /* ROIVolumeView.h in Headers */ = {isa = PBXBuildFile; fileRef = CE88575A08AF938800B72DA7 /* ROIVolumeView.h */; };
@@ -24462,6 +24463,7 @@
 				CEFA967610A760E700F9512D /* DCMCalendarDate.m in Sources */,
 				CEF7BCBC10DCBE0000B009D1 /* UserTable.m in Sources */,
 				CEDDD88210DCC93500FFE72B /* PSGenerator.m in Sources */,
+				CE85FF5D10E6764100175CEB /* OpenGLScreenReader.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
