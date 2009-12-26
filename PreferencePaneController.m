@@ -262,7 +262,8 @@ extern OSStatus SetupAuthorization(void)
 	NSBundle *prefBundle;
 	Class prefPaneClass;
 	
-	switch ( index) {
+	switch ( index)
+	{
 		case 0:
 		default:
 			pathToPrefPaneBundle = [[NSBundle mainBundle] pathForResource: @"OSIGeneralPreferencePane" ofType: @"prefPane"];
@@ -320,7 +321,6 @@ extern OSStatus SetupAuthorization(void)
 			pathToPrefPaneBundle = [[NSBundle mainBundle] pathForResource: @"OSIWebSharingPreferencePane" ofType: @"prefPane"];
 			[[self window] setTitle: NSLocalizedString( @"Web Server", nil)];
 			break;
-
 	}
 	
 	#ifdef OSIRIX_LIGHT

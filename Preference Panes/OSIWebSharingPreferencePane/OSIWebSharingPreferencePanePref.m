@@ -64,6 +64,8 @@ char *GetPrivateIP()
 
 - (void) enableControls: (BOOL) val
 {
+	[[NSUserDefaults standardUserDefaults] setBool: val forKey: @"authorizedToEdit"];
+	
 	[self checkView: [self mainView] :val];
 }
 
@@ -74,7 +76,10 @@ char *GetPrivateIP()
 
 - (void)authorizationViewDidDeauthorize:(SFAuthorizationView *)view
 {    
-    if( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTHENTICATION"]) [self enableControls: NO];
+    if( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTHENTICATION"])
+		[self enableControls: NO];
+	else
+		[[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"authorizedToEdit"];
 }
 
 - (void) dealloc
@@ -91,6 +96,8 @@ char *GetPrivateIP()
 	[_authView setDelegate:self];
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTHENTICATION"])
 	{
+		[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"authorizedToEdit"];
+		
 		[_authView setString:"com.rossetantoine.osirix.preferences.listener"];
 		if( [_authView authorizationState] == SFAuthorizationViewUnlockedState) [self enableControls: YES];
 		else [self enableControls: NO];
@@ -105,6 +112,15 @@ char *GetPrivateIP()
 
 - (void) willUnselect
 {
+}
+
+- (IBAction)smartAlbumHelpButton: (id)sender
+{
+	if( [sender tag] == 0)
+		[[NSWorkspace sharedWorkspace] openFile:[[NSBundle mainBundle] pathForResource:@"OsiriXTables" ofType:@"pdf"]];
+	
+	if( [sender tag] == 1)
+		[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://developer.apple.com/documentation/Cocoa/Conceptual/Predicates/Articles/pSyntax.html#//apple_ref/doc/uid/TP40001795"]];
 }
 
 - (IBAction) openKeyChainAccess:(id) sender

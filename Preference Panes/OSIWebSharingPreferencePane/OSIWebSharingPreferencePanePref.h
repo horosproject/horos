@@ -23,4 +23,5 @@
 
 - (void) mainViewDidLoad;
 - (IBAction) openKeyChainAccess:(id) sender;
+- (IBAction)smartAlbumHelpButton: (id)sender;
 @end
