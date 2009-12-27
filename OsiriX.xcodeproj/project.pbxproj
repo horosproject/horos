@@ -22,6 +22,7 @@
 				CEACC7B30878781000CF466E /* PBXTargetDependency */,
 				ABC3990209F527E7000A6508 /* PBXTargetDependency */,
 				ABC3990409F527EA000A6508 /* PBXTargetDependency */,
+				CE316B9A10E77D3000EA3B34 /* PBXTargetDependency */,
 				CEACC7B50878781000CF466E /* PBXTargetDependency */,
 				CEACC7B70878781000CF466E /* PBXTargetDependency */,
 				CEACC7B90878781000CF466E /* PBXTargetDependency */,
@@ -7666,6 +7667,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 8D202CE80486D31800D8A456;
 			remoteInfo = OSICustomImageAnnotations;
+		};
+		CE316B9910E77D3000EA3B34 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CE4B5CD010E5F91F00C11948 /* OSIWebSharingPreferencePane.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 8D202CE80486D31800D8A456 /* OSIWebSharingPreferencePane */;
+			remoteInfo = OSIWebSharingPreferencePane;
 		};
 		CE4B5CD410E5F92000C11948 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -24540,6 +24548,11 @@
 			isa = PBXTargetDependency;
 			name = OSICustomImageAnnotations;
 			targetProxy = CE0630ED0C625B9C001027D9 /* PBXContainerItemProxy */;
+		};
+		CE316B9A10E77D3000EA3B34 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = OSIWebSharingPreferencePane;
+			targetProxy = CE316B9910E77D3000EA3B34 /* PBXContainerItemProxy */;
 		};
 		CE8DF1260B470DC50035C230 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;

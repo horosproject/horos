@@ -45,6 +45,17 @@ static PSGenerator *generator = nil;
 	[self setPrimitiveValue: [NSString stringWithFormat: @"user %llu", uid] forKey: @"name"];
 }
 
+
+- (void) setAutoDelete: (NSNumber*) v
+{
+	if( [v boolValue])
+	{
+		[self setValue: [NSDate dateWithTimeIntervalSinceReferenceDate: [NSDate timeIntervalSinceReferenceDate] + [[NSUserDefaults standardUserDefaults] integerForKey: @"temporaryUserDuration"]] forKey: @"deletionDate"];
+	}
+	
+	[self setPrimitiveValue: v forKey: @"autoDelete"];
+}
+
 - (void) setPassword: (NSString*) newPassword
 {
 	if( [newPassword isEqualToString: [self primitiveValueForKey: @"password"]] == NO)

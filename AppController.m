@@ -1207,6 +1207,15 @@ static NSDate *lastWarningDate = nil;
 		[[BrowserController currentBrowser] outlineViewRefresh];
 	}
 	
+	if( [defaults integerForKey: @"httpWebServer"])
+	{
+		if( hasMacOSXSnowLeopard() == NO)
+		{
+			[defaults setBool: NO forKey: @"httpWebServer"];
+			NSRunCriticalAlertPanel( NSLocalizedString( @"Unsupported", nil), NSLocalizedString( @"This function requires MacOS 10.6 or higher.", nil), NSLocalizedString( @"OK", nil) , nil, nil);
+		}
+	}
+	
 	if (restartListener)
 	{
 		NSString *c = [[NSUserDefaults standardUserDefaults] stringForKey:@"AETITLE"];

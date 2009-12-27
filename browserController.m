@@ -145,6 +145,7 @@ static NSString*	OpenKeyImagesAndROIsToolbarItemIdentifier	= @"ROIsAndKeys.tif";
 static NSString*	OpenKeyImagesToolbarItemIdentifier	= @"Keys.tif";
 static NSString*	OpenROIsToolbarItemIdentifier	= @"ROIs.tif";
 static NSString*	ViewersToolbarItemIdentifier	= @"windows.tif";
+static NSString*	WebServerSingleNotification	= @"Safari.tif";
 
 static NSTimeInterval	gLastActivity = 0;
 static BOOL DICOMDIRCDMODE = NO;
@@ -15007,119 +15008,128 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[self exportImageAs: @"tif" sender: sender];
 }
 
+- (IBAction) sendEmailNotification: (id) sender
+{
+	
+}
+
 - (IBAction) sendMail: (id) sender
 {
-	#define kScriptName (@"Mail")
-	#define kScriptType (@"scpt")
-	#define kHandlerName (@"mail_images")
-	#define noScriptErr 0
-	
-	/* Locate the script within the bundle */
-	NSString *scriptPath = [[NSBundle mainBundle] pathForResource: kScriptName ofType: kScriptType];
-	NSURL *scriptURL = [NSURL fileURLWithPath: scriptPath];
-
-	NSDictionary *errorInfo = nil;
-	
-	/* Here I am using "initWithContentsOfURL:" to load a pre-compiled script, rather than using "initWithSource:" to load a text file with AppleScript source.  The main reason for this is that the latter technique seems to give rise to inexplicable -1708 (errAEEventNotHandled) errors on Jaguar. */
-	NSAppleScript *script = [[NSAppleScript alloc] initWithContentsOfURL: scriptURL error: &errorInfo];
-	
-	/* See if there were any errors loading the script */
-	if (!script || errorInfo)
-		NSLog(@"%@", errorInfo);
-	
-	/* We have to construct an AppleEvent descriptor to contain the arguments for our handler call.  Remember that this list is 1, rather than 0, based. */
-	NSAppleEventDescriptor *arguments = [[NSAppleEventDescriptor alloc] initListDescriptor];
-	[arguments insertDescriptor: [NSAppleEventDescriptor descriptorWithString: @"subject"] atIndex: 1];
-	[arguments insertDescriptor: [NSAppleEventDescriptor descriptorWithString: @"defaultaddress@mac.com"] atIndex: 2];
-	
-	NSAppleEventDescriptor *listFiles = [NSAppleEventDescriptor listDescriptor];
-	NSAppleEventDescriptor *listCaptions = [NSAppleEventDescriptor listDescriptor];
-	NSAppleEventDescriptor *listComments = [NSAppleEventDescriptor listDescriptor];
-	
-	[[NSUserDefaults standardUserDefaults] setValue: @"" forKey:@"defaultZIPPasswordForEmail"];
-	
-	redoZIPpassword:
-	
-	[NSApp beginSheet: ZIPpasswordWindow
-	   modalForWindow: self.window
-		modalDelegate: nil
-	   didEndSelector: nil
-		  contextInfo: nil];
-	
-	int result = [NSApp runModalForWindow: ZIPpasswordWindow];
-	
-	[NSApp endSheet: ZIPpasswordWindow];
-	[ZIPpasswordWindow orderOut: self];
-	
-	if( result == NSRunStoppedResponse)
+	if( hasMacOSXSnowLeopard())
 	{
-		if( [[[NSUserDefaults standardUserDefaults] valueForKey: @"defaultZIPPasswordForEmail"] length] < 8)
+		#define kScriptName (@"Mail")
+		#define kScriptType (@"scpt")
+		#define kHandlerName (@"mail_images")
+		#define noScriptErr 0
+		
+		/* Locate the script within the bundle */
+		NSString *scriptPath = [[NSBundle mainBundle] pathForResource: kScriptName ofType: kScriptType];
+		NSURL *scriptURL = [NSURL fileURLWithPath: scriptPath];
+
+		NSDictionary *errorInfo = nil;
+		
+		/* Here I am using "initWithContentsOfURL:" to load a pre-compiled script, rather than using "initWithSource:" to load a text file with AppleScript source.  The main reason for this is that the latter technique seems to give rise to inexplicable -1708 (errAEEventNotHandled) errors on Jaguar. */
+		NSAppleScript *script = [[NSAppleScript alloc] initWithContentsOfURL: scriptURL error: &errorInfo];
+		
+		/* See if there were any errors loading the script */
+		if (!script || errorInfo)
+			NSLog(@"%@", errorInfo);
+		
+		/* We have to construct an AppleEvent descriptor to contain the arguments for our handler call.  Remember that this list is 1, rather than 0, based. */
+		NSAppleEventDescriptor *arguments = [[NSAppleEventDescriptor alloc] initListDescriptor];
+		[arguments insertDescriptor: [NSAppleEventDescriptor descriptorWithString: @"subject"] atIndex: 1];
+		[arguments insertDescriptor: [NSAppleEventDescriptor descriptorWithString: @"defaultaddress@mac.com"] atIndex: 2];
+		
+		NSAppleEventDescriptor *listFiles = [NSAppleEventDescriptor listDescriptor];
+		NSAppleEventDescriptor *listCaptions = [NSAppleEventDescriptor listDescriptor];
+		NSAppleEventDescriptor *listComments = [NSAppleEventDescriptor listDescriptor];
+		
+		[[NSUserDefaults standardUserDefaults] setValue: @"" forKey:@"defaultZIPPasswordForEmail"];
+		
+		redoZIPpassword:
+		
+		[NSApp beginSheet: ZIPpasswordWindow
+		   modalForWindow: self.window
+			modalDelegate: nil
+		   didEndSelector: nil
+			  contextInfo: nil];
+		
+		int result = [NSApp runModalForWindow: ZIPpasswordWindow];
+		
+		[NSApp endSheet: ZIPpasswordWindow];
+		[ZIPpasswordWindow orderOut: self];
+		
+		if( result == NSRunStoppedResponse)
 		{
-			NSBeep();
-			goto redoZIPpassword;
-		}
-		
-		NSMutableArray *dicomFiles2Export = [NSMutableArray array];
-		NSMutableArray *filesToExport = [self filesForDatabaseOutlineSelection: dicomFiles2Export];
-		
-		[[NSFileManager defaultManager] removeItemAtPath: @"/tmp/zipFilesForMail" error: nil];
-		[[NSFileManager defaultManager] createDirectoryAtPath: @"/tmp/zipFilesForMail" attributes: nil];
-		
-		BOOL encrypt = [[NSUserDefaults standardUserDefaults] boolForKey: @"encryptForExport"];
-		
-		[[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"encryptForExport"];
-		
-		self.passwordForExportEncryption = [[NSUserDefaults standardUserDefaults] valueForKey: @"defaultZIPPasswordForEmail"];
-		
-		NSArray *r = [self exportDICOMFileInt: @"/tmp/zipFilesForMail/" files: filesToExport objects: dicomFiles2Export];
-		
-		if( [r count] > 0)
-		{
-			[[NSUserDefaults standardUserDefaults] setBool: encrypt forKey: @"encryptForExport"];
-			
-			int f = 0;
-			NSString *root = @"/tmp/zipFilesForMail";
-			NSArray *files = [[NSFileManager defaultManager] contentsOfDirectoryAtPath: root error: nil];
-			for( int x = 0; x < [files count] ; x++)
+			if( [[[NSUserDefaults standardUserDefaults] valueForKey: @"defaultZIPPasswordForEmail"] length] < 8)
 			{
-				if( [[[files objectAtIndex: x] pathExtension] isEqualToString: @"zip"])
+				NSBeep();
+				goto redoZIPpassword;
+			}
+			
+			NSMutableArray *dicomFiles2Export = [NSMutableArray array];
+			NSMutableArray *filesToExport = [self filesForDatabaseOutlineSelection: dicomFiles2Export];
+			
+			[[NSFileManager defaultManager] removeItemAtPath: @"/tmp/zipFilesForMail" error: nil];
+			[[NSFileManager defaultManager] createDirectoryAtPath: @"/tmp/zipFilesForMail" attributes: nil];
+			
+			BOOL encrypt = [[NSUserDefaults standardUserDefaults] boolForKey: @"encryptForExport"];
+			
+			[[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"encryptForExport"];
+			
+			self.passwordForExportEncryption = [[NSUserDefaults standardUserDefaults] valueForKey: @"defaultZIPPasswordForEmail"];
+			
+			NSArray *r = [self exportDICOMFileInt: @"/tmp/zipFilesForMail/" files: filesToExport objects: dicomFiles2Export];
+			
+			if( [r count] > 0)
+			{
+				[[NSUserDefaults standardUserDefaults] setBool: encrypt forKey: @"encryptForExport"];
+				
+				int f = 0;
+				NSString *root = @"/tmp/zipFilesForMail";
+				NSArray *files = [[NSFileManager defaultManager] contentsOfDirectoryAtPath: root error: nil];
+				for( int x = 0; x < [files count] ; x++)
 				{
-					[listFiles insertDescriptor: [NSAppleEventDescriptor descriptorWithString: [root stringByAppendingPathComponent: [files objectAtIndex: x]]] atIndex:1+f];
-					[listCaptions insertDescriptor: [NSAppleEventDescriptor descriptorWithString: @""] atIndex:1+f];
-					[listComments insertDescriptor: [NSAppleEventDescriptor descriptorWithString: @""] atIndex:1+f];
-					f++;
+					if( [[[files objectAtIndex: x] pathExtension] isEqualToString: @"zip"])
+					{
+						[listFiles insertDescriptor: [NSAppleEventDescriptor descriptorWithString: [root stringByAppendingPathComponent: [files objectAtIndex: x]]] atIndex:1+f];
+						[listCaptions insertDescriptor: [NSAppleEventDescriptor descriptorWithString: @""] atIndex:1+f];
+						[listComments insertDescriptor: [NSAppleEventDescriptor descriptorWithString: @""] atIndex:1+f];
+						f++;
+					}
+				}
+				
+				[arguments insertDescriptor: [NSAppleEventDescriptor descriptorWithInt32: f] atIndex: 3];
+				[arguments insertDescriptor: listFiles atIndex: 4];
+				[arguments insertDescriptor: listCaptions atIndex: 5];
+				[arguments insertDescriptor: listComments atIndex: 6];
+				
+				[arguments insertDescriptor: [NSAppleEventDescriptor descriptorWithString: @"Cancel"] atIndex: 7];
+
+				errorInfo = nil;
+
+				/* Call the handler using the method in our special category */
+				NSAppleEventDescriptor *result = [script callHandler: kHandlerName withArguments: arguments errorInfo: &errorInfo];
+				
+				int scriptResult = [result int32Value];
+
+				/* Check for errors in running the handler */
+				if (errorInfo)
+				{
+					NSLog(@"%@", errorInfo);
+				}
+				/* Check the handler's return value */
+				else if (scriptResult != noScriptErr)
+				{
+					NSRunAlertPanel(NSLocalizedString(@"Script Failure", @"Title on script failure window."), [NSString stringWithFormat: @"%@ %d", NSLocalizedString(@"The script failed:", @"Message on script failure window."), scriptResult], NSLocalizedString(@"OK", @""), nil, nil);
 				}
 			}
-			
-			[arguments insertDescriptor: [NSAppleEventDescriptor descriptorWithInt32: f] atIndex: 3];
-			[arguments insertDescriptor: listFiles atIndex: 4];
-			[arguments insertDescriptor: listCaptions atIndex: 5];
-			[arguments insertDescriptor: listComments atIndex: 6];
-			
-			[arguments insertDescriptor: [NSAppleEventDescriptor descriptorWithString: @"Cancel"] atIndex: 7];
-
-			errorInfo = nil;
-
-			/* Call the handler using the method in our special category */
-			NSAppleEventDescriptor *result = [script callHandler: kHandlerName withArguments: arguments errorInfo: &errorInfo];
-			
-			int scriptResult = [result int32Value];
-
-			/* Check for errors in running the handler */
-			if (errorInfo)
-			{
-				NSLog(@"%@", errorInfo);
-			}
-			/* Check the handler's return value */
-			else if (scriptResult != noScriptErr)
-			{
-				NSRunAlertPanel(NSLocalizedString(@"Script Failure", @"Title on script failure window."), [NSString stringWithFormat: @"%@ %d", NSLocalizedString(@"The script failed:", @"Message on script failure window."), scriptResult], NSLocalizedString(@"OK", @""), nil, nil);
-			}
 		}
+		
+		[script release];
+		[arguments release];
 	}
-	
-	[script release];
-	[arguments release];
+	else NSRunCriticalAlertPanel( NSLocalizedString( @"Unsupported", nil), NSLocalizedString( @"This function requires MacOS 10.6 or higher.", nil), NSLocalizedString( @"OK", nil) , nil, nil);
 }
 
 + (NSMutableString*) replaceNotAdmitted: (NSMutableString*)name
@@ -17295,6 +17305,14 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector( exportQuicktime:)];
     }
+	else if ([itemIdent isEqualToString: WebServerSingleNotification])
+	{
+		[toolbarItem setLabel: NSLocalizedString(@"Notification", nil)];
+		[toolbarItem setPaletteLabel: NSLocalizedString(@"Notification", nil)];
+		[toolbarItem setImage: [NSImage imageNamed: WebServerSingleNotification]];
+		[toolbarItem setTarget: self];
+		[toolbarItem setAction: @selector( sendEmailNotification:)];
+	}
 	else if ([itemIdent isEqualToString: MailToolbarItemIdentifier])
 	{
 		[toolbarItem setLabel: NSLocalizedString(@"Email", nil)];
@@ -17525,6 +17543,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			ExportToolbarItemIdentifier,
 			CDRomToolbarItemIdentifier,
 			MailToolbarItemIdentifier,
+			WebServerSingleNotification,
 			QTSaveToolbarItemIdentifier,
 			QueryToolbarItemIdentifier,
 			SendToolbarItemIdentifier,
@@ -17560,6 +17579,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			 ImportToolbarItemIdentifier,
 			 CDRomToolbarItemIdentifier,
 			 MailToolbarItemIdentifier,
+			 WebServerSingleNotification,
 			 QTSaveToolbarItemIdentifier,
 			 QueryToolbarItemIdentifier,
 			 ExportToolbarItemIdentifier,
@@ -17959,6 +17979,14 @@ static volatile int numberOfThreadsForJPEG = 0;
 	{
 		if( [ViewerController numberOf2DViewer] >= 1) return YES;
 		else return NO;
+	}
+	
+	if( [[toolbarItem itemIdentifier] isEqualToString: WebServerSingleNotification])
+	{
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"httpWebServer"]  == NO || [[NSUserDefaults standardUserDefaults] boolForKey: @"passwordWebServer"] == NO || [[NSUserDefaults standardUserDefaults] boolForKey: @"notificationsEmails"] == NO)
+		{
+			return NO;
+		}
 	}
 	
     return YES;
