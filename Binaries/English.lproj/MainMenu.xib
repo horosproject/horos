@@ -9364,7 +9364,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 															<reference key="NSBackgroundColor" ref="629680496"/>
 															<reference key="NSGridColor" ref="1037829291"/>
 															<double key="NSRowHeight">14</double>
-															<int key="NSTvFlags">-608141312</int>
+															<int key="NSTvFlags">-624918528</int>
 															<reference key="NSDelegate"/>
 															<reference key="NSDataSource"/>
 															<string key="NSAutosaveName">emailNotificationTable</string>

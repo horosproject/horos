@@ -105,7 +105,7 @@ static NSString *webDirectory = nil;
 
 @implementation OsiriXHTTPConnection
 
-- (void) updateLogEntryForStudy: (NSManagedObject*) study withMessage:(NSString*) message
++ (void) updateLogEntryForStudy: (NSManagedObject*) study withMessage:(NSString*) message forUser: (NSString*) user ip: (NSString*) ip
 {
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"logWebServer"] == NO) return;
 	
@@ -115,10 +115,8 @@ static NSString *webDirectory = nil;
 	
 	[context lock];
 	
-	if( currentUser)
-	{
-		message = [[currentUser valueForKey: @"name"] stringByAppendingFormat:@" : %@", message];
-	}
+	if( user)
+		message = [user stringByAppendingFormat:@" : %@", message];
 	
 	@try
 	{
@@ -135,7 +133,9 @@ static NSString *webDirectory = nil;
 			[logEntry setValue: [study valueForKey: @"studyName"] forKey:@"studyName"];
 		
 		[logEntry setValue: message forKey: @"message"];
-		[logEntry setValue: [asyncSocket connectedHost] forKey: @"originName"];
+		
+		if( ip)
+			[logEntry setValue: ip forKey: @"originName"];
 	}
 	@catch (NSException * e)
 	{
@@ -143,6 +143,11 @@ static NSString *webDirectory = nil;
 	}
 
 	[context unlock];
+}
+
+- (void) updateLogEntryForStudy: (NSManagedObject*) study withMessage:(NSString*) message
+{
+	[OsiriXHTTPConnection updateLogEntryForStudy: study withMessage: message forUser: [currentUser valueForKey: @"name"] ip: [asyncSocket connectedHost]];
 }
 
 + (void) checkWebDirectory
@@ -194,6 +199,11 @@ static NSString *webDirectory = nil;
 			NSString *emailSubject = NSLocalizedString( @"A new radiology exam is available for you !", nil);
 			
 			[[CSMailMailClient mailClient] deliverMessage: emailMessage headers: [NSDictionary dictionaryWithObjectsAndKeys: emailAddress, @"To", fromEmailAddress, @"Sender", emailSubject, @"Subject", nil]];
+			
+			for( NSManagedObject *s in filteredStudies)
+			{
+				[OsiriXHTTPConnection updateLogEntryForStudy: s withMessage: @"notification email" forUser: [user valueForKey: @"name"] ip: webServerAddress];
+			}
 		}
 		else NSLog( @"********* warning : CANNOT send notifications emails, because emailTemplate.txt == nil");
 	}
@@ -211,7 +221,7 @@ static NSString *webDirectory = nil;
 	
 	[OsiriXHTTPConnection checkWebDirectory];
 
-	// Lets check if new studies are available for each users!
+	// Lets check if new studies are available for each users! and if temporary users reached the end of their life.....
 	
 	NSDate *lastCheckDate = [NSDate dateWithTimeIntervalSinceReferenceDate: [[NSUserDefaults standardUserDefaults] doubleForKey: @"lastNotificationsDate"]];
 	NSString *newCheckString = [NSString stringWithFormat: @"%lf", [NSDate timeIntervalSinceReferenceDate]];
@@ -224,6 +234,40 @@ static NSString *webDirectory = nil;
 	
 	[[[BrowserController currentBrowser] userManagedObjectContext] lock];
 	[[[BrowserController currentBrowser] managedObjectContext] lock];
+	
+	@try
+	{
+		BOOL toBeSaved = NO;
+		
+		// Find all users
+		NSError *error = nil;
+		NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+		[dbRequest setEntity: [[[[BrowserController currentBrowser] userManagedObjectModel] entitiesByName] objectForKey: @"User"]];
+		[dbRequest setPredicate: [NSPredicate predicateWithValue: YES]];
+		
+		error = nil;
+		NSArray *users = [[[BrowserController currentBrowser] userManagedObjectContext] executeFetchRequest: dbRequest error:&error];
+		
+		for( NSManagedObject *user in users)
+		{
+			if( [[user valueForKey: @"autoDelete"] boolValue] == YES && [[user valueForKey: @"deletionDate"] timeIntervalSinceDate: [NSDate date]] < 0)
+			{
+				NSLog( @"----- Temporary User reached the EOL (end-of-life) : %@", [user valueForKey: @"name"]);
+				
+				[OsiriXHTTPConnection updateLogEntryForStudy: nil withMessage: @"temporary user deleted" forUser: [user valueForKey: @"name"] ip: [[NSUserDefaults standardUserDefaults] valueForKey: @"webServerAddress"]];
+				
+				toBeSaved = YES;
+				[[[BrowserController currentBrowser] userManagedObjectContext] deleteObject: user];
+			}
+		}
+		
+		if( toBeSaved)
+			[[[BrowserController currentBrowser] userManagedObjectContext] save: nil];
+	}
+	@catch (NSException *e)
+	{
+		NSLog( @"***** emailNotifications exception for deleting temporary users: %@", e);
+	}
 	
 	@try
 	{
