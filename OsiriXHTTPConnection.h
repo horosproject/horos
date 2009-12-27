@@ -20,6 +20,7 @@ extern NSString* asciiString (NSString* name);
 }
 
 + (void) emailNotifications;
++ (BOOL) sendNotificationsEmailsTo: (NSArray*) users aboutStudies: (NSArray*) filteredStudies predicate: (NSString*) predicate;
 + (NSString*)decodeURLString:(NSString*)aString;
 + (NSString*)iPhoneCompatibleNumericalFormat:(NSString*)aString;
 + (NSString*)encodeURLString:(NSString*)aString;

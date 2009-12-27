@@ -7672,7 +7672,7 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = CE4B5CD010E5F91F00C11948 /* OSIWebSharingPreferencePane.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = 8D202CE80486D31800D8A456 /* OSIWebSharingPreferencePane */;
+			remoteGlobalIDString = 8D202CE80486D31800D8A456;
 			remoteInfo = OSIWebSharingPreferencePane;
 		};
 		CE4B5CD410E5F92000C11948 /* PBXContainerItemProxy */ = {
@@ -13193,7 +13193,7 @@
 				BF6290670A2B7E2900BB0B62 /* Reports */,
 				CE9DD29A086B35740058DD2A /* CoreData */,
 				A99B7E4F08858D0D004328C0 /* Bonjour */,
-				CE9101AA0C86A6B800D8D273 /* XML-XPC HTTP Server */,
+				CE9101AA0C86A6B800D8D273 /* Web Server */,
 				AB4E3CAE05ADDE13001411D1 /* DicomDirParser.h */,
 				AB4E3CAF05ADDE13001411D1 /* DicomDirParser.m */,
 				ABBCCDA605643A4C00A4E47A /* browserController.h */,
@@ -16426,7 +16426,7 @@
 			name = ROIVolume;
 			sourceTree = "<group>";
 		};
-		CE9101AA0C86A6B800D8D273 /* XML-XPC HTTP Server */ = {
+		CE9101AA0C86A6B800D8D273 /* Web Server */ = {
 			isa = PBXGroup;
 			children = (
 				AB9120A110DA2D5C006E0AAB /* basic HTTP Server */,
@@ -16438,7 +16438,7 @@
 				CE2119C710E4C25300F9C50C /* CSMailMailClient.h */,
 				CE2119C810E4C25300F9C50C /* CSMailMailClient.m */,
 			);
-			name = "XML-XPC HTTP Server";
+			name = "Web Server";
 			sourceTree = "<group>";
 		};
 		CE9DD29A086B35740058DD2A /* CoreData */ = {

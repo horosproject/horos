@@ -159,6 +159,48 @@ static NSString *webDirectory = nil;
 	}
 }
 
++ (BOOL) sendNotificationsEmailsTo: (NSArray*) users aboutStudies: (NSArray*) filteredStudies predicate: (NSString*) predicate
+{
+	NSString *webServerAddress = [[NSUserDefaults standardUserDefaults] valueForKey: @"webServerAddress"];
+	int webPort = [[NSUserDefaults standardUserDefaults] integerForKey:@"httpWebServerPort"];
+	NSString *fromEmailAddress = [[NSUserDefaults standardUserDefaults] valueForKey: @"notificationsEmailsSender"];
+
+	for( NSManagedObject *user in users)
+	{
+		NSMutableAttributedString *emailMessage = [[[NSMutableAttributedString alloc] initWithPath: [webDirectory stringByAppendingPathComponent:@"emailTemplate.txt"] documentAttributes: nil] autorelease];
+		
+		if( emailMessage)
+		{
+			[[emailMessage mutableString] replaceOccurrencesOfString: @"%Username%" withString: [user valueForKey: @"name"] options: NSLiteralSearch range: NSMakeRange(0, [emailMessage length])];
+			[[emailMessage mutableString] replaceOccurrencesOfString: @"%WebServerAddress%" withString: [NSString stringWithFormat: @"%@://%@:%d", [[NSUserDefaults standardUserDefaults] boolForKey: @"encryptedWebServer"] ? @"https":@"http", webServerAddress, webPort] options: NSLiteralSearch range: NSMakeRange(0, [emailMessage length])];
+			
+			NSMutableString *urls = [NSMutableString string];
+			
+			if( [filteredStudies count] > 1 && predicate != nil)
+			{
+				[urls appendString: NSLocalizedString( @"To view this entire list, including patients names:\r", nil)]; 
+				[urls appendFormat: @"%@ : http://%@:%d/studyList?%@\r\r\r\r", NSLocalizedString( @"Click here", nil), predicate]; 
+			}
+			
+			for( NSManagedObject *s in filteredStudies)
+			{
+				[urls appendFormat: @"%@ - %@ (%@)\r", [s valueForKey: @"modality"], [s valueForKey: @"studyName"], [BrowserController DateTimeFormat: [s valueForKey: @"date"]]]; 
+				[urls appendFormat: @"%@ : http://%@:%d/study?id=%@&browse=all\r\r", NSLocalizedString( @"Click here", nil), webServerAddress, webPort, [s valueForKey: @"studyInstanceUID"]]; 
+			}
+			
+			[[emailMessage mutableString] replaceOccurrencesOfString: @"%URLsList%" withString: urls options: NSLiteralSearch range: NSMakeRange(0, [emailMessage length])];
+			
+			NSString *emailAddress = [user valueForKey: @"email"];
+			NSString *emailSubject = NSLocalizedString( @"A new radiology exam is available for you !", nil);
+			
+			[[CSMailMailClient mailClient] deliverMessage: emailMessage headers: [NSDictionary dictionaryWithObjectsAndKeys: emailAddress, @"To", fromEmailAddress, @"Sender", emailSubject, @"Subject", nil]];
+		}
+		else NSLog( @"********* warning : CANNOT send notifications emails, because emailTemplate.txt == nil");
+	}
+	
+	return YES; // succeeded
+}
+
 + (void) emailNotifications
 {
 	if( [NSThread isMainThread] == NO)
@@ -172,14 +214,13 @@ static NSString *webDirectory = nil;
 	// Lets check if new studies are available for each users!
 	
 	NSDate *lastCheckDate = [NSDate dateWithTimeIntervalSinceReferenceDate: [[NSUserDefaults standardUserDefaults] doubleForKey: @"lastNotificationsDate"]];
+	NSString *newCheckString = [NSString stringWithFormat: @"%lf", [NSDate timeIntervalSinceReferenceDate]];
 	
 	if( [[NSUserDefaults standardUserDefaults] objectForKey: @"lastNotificationsDate"] == nil)
 	{
 		[[NSUserDefaults standardUserDefaults] setValue: [NSString stringWithFormat: @"%lf", [NSDate timeIntervalSinceReferenceDate]] forKey: @"lastNotificationsDate"];
 		return;
 	}
-	
-	[[NSUserDefaults standardUserDefaults] setValue: [NSString stringWithFormat: @"%lf", [NSDate timeIntervalSinceReferenceDate]] forKey: @"lastNotificationsDate"];
 	
 	[[[BrowserController currentBrowser] userManagedObjectContext] lock];
 	[[[BrowserController currentBrowser] managedObjectContext] lock];
@@ -202,8 +243,6 @@ static NSString *webDirectory = nil;
 		
 		if( [webServerAddress length] == 0)
 			webServerAddress = [[AppController sharedAppController] privateIP];
-		
-		NSString *fromEmailAddress = [[NSUserDefaults standardUserDefaults] valueForKey: @"notificationsEmailsSender"];
 		
 		int webPort = [[NSUserDefaults standardUserDefaults] integerForKey:@"httpWebServerPort"];
 		
@@ -236,37 +275,7 @@ static NSString *webDirectory = nil;
 					
 					if( [filteredStudies count] > 0)
 					{
-						/// EMAIL
-						NSMutableAttributedString *emailMessage = [[[NSMutableAttributedString alloc] initWithPath: [webDirectory stringByAppendingPathComponent:@"emailTemplate.txt"] documentAttributes: nil] autorelease];
-						
-						if( emailMessage)
-						{
-							[[emailMessage mutableString] replaceOccurrencesOfString: @"%Username%" withString: [user valueForKey: @"name"] options: NSLiteralSearch range: NSMakeRange(0, [emailMessage length])];
-							[[emailMessage mutableString] replaceOccurrencesOfString: @"%WebServerAddress%" withString: [NSString stringWithFormat: @"%@://%@:%d", [[NSUserDefaults standardUserDefaults] boolForKey: @"encryptedWebServer"] ? @"https":@"http", webServerAddress, webPort] options: NSLiteralSearch range: NSMakeRange(0, [emailMessage length])];
-							
-							NSMutableString *urls = [NSMutableString string];
-							
-							if( [filteredStudies count] > 1)
-							{
-								[urls appendString: NSLocalizedString( @"To view this entire list, including patients names:\r", nil)]; 
-								[urls appendFormat: @"%@ : http://%@:%d/studyList?browse=newAddedStudies&browseParameter=%lf\r\r\r\r", NSLocalizedString( @"Click here", nil), webServerAddress, webPort, [lastCheckDate timeIntervalSinceReferenceDate]]; 
-							}
-							
-							for( NSManagedObject *s in filteredStudies)
-							{
-								[urls appendFormat: @"%@ - %@ (%@)\r", [s valueForKey: @"modality"], [s valueForKey: @"studyName"], [BrowserController DateTimeFormat: [s valueForKey: @"date"]]]; 
-								[urls appendFormat: @"%@ : http://%@:%d/study?id=%@&browse=all\r\r", NSLocalizedString( @"Click here", nil), webServerAddress, webPort, [s valueForKey: @"studyInstanceUID"]]; 
-							}
-							
-							[[emailMessage mutableString] replaceOccurrencesOfString: @"%URLsList%" withString: urls options: NSLiteralSearch range: NSMakeRange(0, [emailMessage length])];
-							
-							NSString *emailAddress = [user valueForKey: @"email"];
-							NSString *emailSubject = NSLocalizedString( @"A new radiology exam is available for you !", nil);
-							
-							[[CSMailMailClient mailClient] deliverMessage: emailMessage headers: [NSDictionary dictionaryWithObjectsAndKeys: emailAddress, @"To", fromEmailAddress, @"Sender", emailSubject, @"Subject", nil]];
-						}
-						else NSLog( @"********* warning : CANNOT send notifications emails, because emailTemplate.txt == nil");
-						////////////////////////
+						[OsiriXHTTPConnection sendNotificationsEmailsTo: [NSArray arrayWithObject: user] aboutStudies: filteredStudies predicate: [NSString stringWithFormat: @"browse=newAddedStudies&browseParameter=%lf", [lastCheckDate timeIntervalSinceReferenceDate]]];
 					}
 				}
 			}
@@ -279,6 +288,8 @@ static NSString *webDirectory = nil;
 	
 	[[[BrowserController currentBrowser] userManagedObjectContext] unlock];
 	[[[BrowserController currentBrowser] managedObjectContext] unlock];
+	
+	[[NSUserDefaults standardUserDefaults] setValue: newCheckString forKey: @"lastNotificationsDate"];
 }
 
 - (BOOL)isPasswordProtected:(NSString *)path
