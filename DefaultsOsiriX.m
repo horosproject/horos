@@ -835,6 +835,7 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject:@"0" forKey:@"DATABASEINDEX"];
 	[defaultValues setObject: @"2" forKey: @"ANNOTATIONS"];
 	[defaultValues setObject: @"3" forKey :@"CLUTBARS"];
+	[defaultValues setObject: @"60" forKey: @"temporaryUserDuration"];
 	[defaultValues setObject:@"3" forKey:@"COPYDATABASEMODE"];
 	[defaultValues setObject:@"7" forKey:@"LOGCLEANINGDAYS"];
 	[defaultValues setObject:@"1" forKey:@"AUTOMATIC FUSE"];

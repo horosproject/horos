@@ -156,7 +156,7 @@ static NSArray*	statesArray = nil;
 @class DCMTKStudyQueryNode;
 
 @synthesize checkIncomingLock, CDpassword, DateTimeFormat, passwordForExportEncryption;
-@synthesize DateOfBirthFormat,TimeFormat, TimeWithSecondsFormat;
+@synthesize DateOfBirthFormat,TimeFormat, TimeWithSecondsFormat, temporaryNotificationEmail;
 @synthesize DateTimeWithSecondsFormat, matrixViewArray, oMatrix;
 @synthesize COLUMN, databaseOutline, albumTable, currentDatabasePath;
 @synthesize isCurrentDatabaseBonjour, bonjourDownloading, bonjourSourcesBox;
@@ -15010,7 +15010,35 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (IBAction) sendEmailNotification: (id) sender
 {
+	self.temporaryNotificationEmail = @"";
 	
+	[notificationEmailArrayController setSelectionIndexes: [NSIndexSet indexSet]];
+	
+	[NSApp beginSheet: notificationEmailWindow
+		   modalForWindow: self.window
+			modalDelegate: nil
+		   didEndSelector: nil
+			  contextInfo: nil];
+		
+	int result = [NSApp runModalForWindow: notificationEmailWindow];
+	
+	[notificationEmailWindow makeFirstResponder: nil];
+	
+	if( result == NSRunStoppedResponse)
+	{
+		if( [[notificationEmailArrayController selectedObjects] count] == 0 && [temporaryNotificationEmail length] <= 0)
+		{
+			NSRunCriticalAlertPanel( NSLocalizedString( @"Error", nil), NSLocalizedString( @"No user(s) selected, no emails will be sent.", nil), NSLocalizedString( @"OK", nil) , nil, nil);
+		}
+		else
+		{
+			NSLog( @"%@", [notificationEmailArrayController selectedObjects]);
+			NSLog( @"%@", temporaryNotificationEmail);
+		}
+	}
+	
+	[NSApp endSheet: notificationEmailWindow];
+	[notificationEmailWindow orderOut: self];
 }
 
 - (IBAction) sendMail: (id) sender
