@@ -146,6 +146,7 @@ static NSString*	OpenKeyImagesToolbarItemIdentifier	= @"Keys.tif";
 static NSString*	OpenROIsToolbarItemIdentifier	= @"ROIs.tif";
 static NSString*	ViewersToolbarItemIdentifier	= @"windows.tif";
 static NSString*	WebServerSingleNotification	= @"Safari.tif";
+static NSString*	AddStudiesToUserItemIdentifier	= @"NSUserAccounts";
 
 static NSTimeInterval	gLastActivity = 0;
 static BOOL DICOMDIRCDMODE = NO;
@@ -9279,6 +9280,8 @@ static BOOL withReset = NO;
 	[contextual addItem:item];
 	[item release];
 	
+	[contextual addItem: [NSMenuItem separatorItem]];
+	
 	[oMatrix setMenu: contextual];
 	
 	// Create alternate contextual menu for RT objects
@@ -12413,8 +12416,19 @@ static NSArray*	openSubSeriesArray = nil;
 	
 	item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Export to iDisk", nil) action: @selector(sendiDisk:) keyEquivalent:@""] autorelease];
 	[menu addItem:item];
-	
+		
+	item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Export to Email", nil)  action:@selector(sendEmail:) keyEquivalent:@""] autorelease];
+	[contextual addItem:item];
+		
 	[menu addItem: [NSMenuItem separatorItem]];
+	
+	item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Add selected study(s) to user(s)", nil)  action:@selector( addStudiesToUser:) keyEquivalent:@""] autorelease];
+	[contextual addItem:item];
+	
+	item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Send an email notification to user(s)", nil)  action:@selector( sendEmailNotification:) keyEquivalent:@""] autorelease];
+	[contextual addItem:item];
+	
+	[contextual addItem: [NSMenuItem separatorItem]];
 	
 	item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Compress DICOM files", nil)  action:@selector(compressSelectedFiles:) keyEquivalent:@""] autorelease];
 	[menu addItem:item];
@@ -15008,6 +15022,83 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[self exportImageAs: @"tif" sender: sender];
 }
 
+- (IBAction) addStudiesToUser: (id) sender
+{
+	[notificationEmailArrayController setSelectionIndexes: [NSIndexSet indexSet]];
+	
+	[NSApp beginSheet: addStudiesToUserWindow
+		   modalForWindow: self.window
+			modalDelegate: nil
+		   didEndSelector: nil
+			  contextInfo: nil];
+		
+	int result = [NSApp runModalForWindow: addStudiesToUserWindow];
+	
+	[addStudiesToUserWindow makeFirstResponder: nil];
+	
+	if( result == NSRunStoppedResponse)
+	{
+		if( [[notificationEmailArrayController selectedObjects] count] == 0)
+		{
+			NSRunCriticalAlertPanel( NSLocalizedString( @"Error", nil), NSLocalizedString( @"No user(s) selected, no studies will be added.", nil), NSLocalizedString( @"OK", nil) , nil, nil);
+		}
+		else
+		{
+			[self.userManagedObjectContext lock];
+			
+			// Get the selected studies
+			NSMutableArray *studies = [NSMutableArray array];
+			NSIndexSet *rowEnumerator = [databaseOutline selectedRowIndexes];
+			
+			NSUInteger row = [rowEnumerator firstIndex];
+			while (row != NSNotFound)
+			{
+				NSManagedObject *curObj = [databaseOutline itemAtRow: row];
+				
+				if( [[curObj valueForKey:@"type"] isEqualToString:@"Series"])
+					[studies addObject: [curObj valueForKey:@"study"]];
+				
+				if( [[curObj valueForKey:@"type"] isEqualToString:@"Study"])
+					[studies addObject: curObj];
+				
+				row = [rowEnumerator indexGreaterThanIndex: row];
+			}
+
+			// Add them to select users
+			
+			for( NSManagedObject *user in [notificationEmailArrayController selectedObjects])
+			{
+				NSArray *studiesArrayStudyInstanceUID = [[[user valueForKey: @"studies"] allObjects] valueForKey: @"studyInstanceUID"];
+				NSArray *studiesArrayPatientUID = [[[user valueForKey: @"studies"] allObjects] valueForKey: @"patientUID"];
+				
+				for( NSManagedObject *study in studies)
+				{
+					if( [studiesArrayStudyInstanceUID indexOfObject: [study valueForKey: @"studyInstanceUID"]] == NSNotFound || [studiesArrayPatientUID indexOfObject: [study valueForKey: @"patientUID"]]  == NSNotFound)
+					{
+						NSManagedObject *studyLink = [NSEntityDescription insertNewObjectForEntityForName: @"Study" inManagedObjectContext: self.userManagedObjectContext];
+					
+						[studyLink setValue: [[[study valueForKey: @"studyInstanceUID"] copy] autorelease] forKey: @"studyInstanceUID"];
+						[studyLink setValue: [[[study valueForKey: @"patientUID"] copy] autorelease] forKey: @"patientUID"];
+						
+						[studyLink setValue: user forKey:@"user"];
+						
+						[self.userManagedObjectContext save: nil];
+						
+						studiesArrayStudyInstanceUID = [[[user valueForKey: @"studies"] allObjects] valueForKey: @"studyInstanceUID"];
+						studiesArrayPatientUID = [[[user valueForKey: @"studies"] allObjects] valueForKey: @"patientUID"];
+					}
+				}
+			}
+			
+			[self.userManagedObjectContext unlock];
+		}
+	}
+	
+	[NSApp endSheet: addStudiesToUserWindow];
+	[addStudiesToUserWindow orderOut: self];
+}
+
+
 - (IBAction) sendEmailNotification: (id) sender
 {
 	self.temporaryNotificationEmail = @"";
@@ -17341,6 +17432,14 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector( sendEmailNotification:)];
 	}
+	else if ([itemIdent isEqualToString: AddStudiesToUserItemIdentifier])
+	{
+		[toolbarItem setLabel: NSLocalizedString(@"Add Studies", nil)];
+		[toolbarItem setPaletteLabel: NSLocalizedString(@"Add Studies", nil)];
+		[toolbarItem setImage: [NSImage imageNamed: AddStudiesToUserItemIdentifier]];
+		[toolbarItem setTarget: self];
+		[toolbarItem setAction: @selector( addStudiesToUser:)];
+	}
 	else if ([itemIdent isEqualToString: MailToolbarItemIdentifier])
 	{
 		[toolbarItem setLabel: NSLocalizedString(@"Email", nil)];
@@ -17572,6 +17671,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			CDRomToolbarItemIdentifier,
 			MailToolbarItemIdentifier,
 			WebServerSingleNotification,
+			AddStudiesToUserItemIdentifier,
 			QTSaveToolbarItemIdentifier,
 			QueryToolbarItemIdentifier,
 			SendToolbarItemIdentifier,
@@ -17608,6 +17708,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			 CDRomToolbarItemIdentifier,
 			 MailToolbarItemIdentifier,
 			 WebServerSingleNotification,
+			 AddStudiesToUserItemIdentifier,
 			 QTSaveToolbarItemIdentifier,
 			 QueryToolbarItemIdentifier,
 			 ExportToolbarItemIdentifier,
@@ -18012,6 +18113,14 @@ static volatile int numberOfThreadsForJPEG = 0;
 	if( [[toolbarItem itemIdentifier] isEqualToString: WebServerSingleNotification])
 	{
 		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"httpWebServer"]  == NO || [[NSUserDefaults standardUserDefaults] boolForKey: @"passwordWebServer"] == NO || [[NSUserDefaults standardUserDefaults] boolForKey: @"notificationsEmails"] == NO)
+		{
+			return NO;
+		}
+	}
+	
+	if( [[toolbarItem itemIdentifier] isEqualToString: AddStudiesToUserItemIdentifier])
+	{
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"httpWebServer"]  == NO || [[NSUserDefaults standardUserDefaults] boolForKey: @"passwordWebServer"] == NO)
 		{
 			return NO;
 		}

@@ -114,6 +114,11 @@ char *GetPrivateIP()
 {
 }
 
+- (IBAction) showButton: (id) sender
+{
+	NSLog( @"%@", sender);
+}
+
 - (IBAction)smartAlbumHelpButton: (id)sender
 {
 	if( [sender tag] == 0)

@@ -12,7 +12,7 @@
 		</object>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="6"/>
+			<integer value="334"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -565,7 +565,7 @@
 												<bool key="NSEnabled">YES</bool>
 												<object class="NSSearchFieldCell" key="NSCell" id="331606832">
 													<int key="NSCellFlags">341966400</int>
-													<int key="NSCellFlags2">132160</int>
+													<int key="NSCellFlags2">132096</int>
 													<reference key="NSSupport" ref="26"/>
 													<string key="NSPlaceholderString">All</string>
 													<reference key="NSControlView" ref="136782117"/>
@@ -1118,7 +1118,7 @@
 												<bool key="NSEnabled">YES</bool>
 												<object class="NSSearchFieldCell" key="NSCell" id="787307844">
 													<int key="NSCellFlags">341966400</int>
-													<int key="NSCellFlags2">132160</int>
+													<int key="NSCellFlags2">132096</int>
 													<reference key="NSSupport" ref="26"/>
 													<string key="NSPlaceholderString">All</string>
 													<reference key="NSControlView" ref="584880189"/>
@@ -1639,7 +1639,7 @@
 												<bool key="NSEnabled">YES</bool>
 												<object class="NSSearchFieldCell" key="NSCell" id="841084910">
 													<int key="NSCellFlags">341966400</int>
-													<int key="NSCellFlags2">132160</int>
+													<int key="NSCellFlags2">132096</int>
 													<reference key="NSSupport" ref="26"/>
 													<string key="NSPlaceholderString">All</string>
 													<reference key="NSControlView" ref="511876294"/>
@@ -2046,7 +2046,7 @@
 												<bool key="NSEnabled">YES</bool>
 												<object class="NSSearchFieldCell" key="NSCell" id="377306553">
 													<int key="NSCellFlags">341966400</int>
-													<int key="NSCellFlags2">132160</int>
+													<int key="NSCellFlags2">132096</int>
 													<reference key="NSSupport" ref="26"/>
 													<string key="NSPlaceholderString">All</string>
 													<reference key="NSControlView" ref="925606880"/>

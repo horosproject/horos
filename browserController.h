@@ -202,6 +202,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	IBOutlet NSPopUpButton			*reportTemplatesListPopUpButton;
 	int								reportToolbarItemType;
 	
+	IBOutlet NSWindow				*addStudiesToUserWindow;
 	IBOutlet NSWindow				*notificationEmailWindow;
 	IBOutlet NSArrayController		*notificationEmailArrayController;
 	NSString						*temporaryNotificationEmail;
