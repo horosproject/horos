@@ -55,7 +55,7 @@
 				if( [[o valueForKey: name] isKindOfClass: [NSDate class]])
 					[line appendString: [[BrowserController DateTimeFormat: [o valueForKey: name]] stringByReplacingOccurrencesOfString: @"," withString: @" "]];
 				else
-					[line appendString: [[o valueForKey: name] stringByReplacingOccurrencesOfString: @"," withString: @" "]];
+					[line appendString: [[[o valueForKey: name] description] stringByReplacingOccurrencesOfString: @"," withString: @" "]];
 			}
 			else
 				[line appendString: @"void"];
