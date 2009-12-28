@@ -19,8 +19,10 @@
 /** \brief  Window Controller for network logs */
 @interface LogWindowController : NSWindowController
 {
+	IBOutlet NSArrayController *receive, *move, *send, *web;
 }
 
 - (NSManagedObjectContext*) managedObjectContext;
+- (IBAction) export:(id) sender;
 
 @end

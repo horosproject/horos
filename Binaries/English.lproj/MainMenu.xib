@@ -8482,8 +8482,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<string>subTo</string>
 					<string>subInterval</string>
 					<string>subMax</string>
-					<string>OsiriX64bit</string>
-					<string>DONTCOPYWLWWSETTINGS</string>
 				</array>
 				<bool key="NSEditable">YES</bool>
 				<object class="_NSManagedProxy" key="_NSManagedProxy"/>
