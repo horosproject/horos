@@ -66,7 +66,7 @@
 #import "DicomStudy.h"
 #import "PluginManager.h"
 #import "XMLController.h"
-#import "MutableArrayCategory.h"
+#import "OsiriXHTTPConnection.h"
 #import "Notifications.h"
 #import "NSAppleScript+HandlerCalls.h"
 
@@ -4639,7 +4639,10 @@ static NSArray*	statesArray = nil;
 
 - (NSPredicate*) smartAlbumPredicateString:(NSString*) string
 {
-	NSMutableString		*pred = [NSMutableString stringWithString: string];
+	if( string == nil || [string length] == 0)
+		return [NSPredicate predicateWithValue: YES];
+	
+	NSMutableString *pred = [NSMutableString stringWithString: string];
 	
 	// DATES
 	
@@ -4876,7 +4879,7 @@ static NSArray*	statesArray = nil;
 	
 	description = [description stringByAppendingFormat: NSLocalizedString(@" / Result = %@ studies (%@ images)", nil), [numFmt stringForObjectValue:[NSNumber numberWithInt: [outlineViewArray count]]], [numFmt stringForObjectValue:[NSNumber numberWithInt:images]]];
 	
-	NSSortDescriptor * sortdate = [[[NSSortDescriptor alloc] initWithKey:@"date" ascending:NO] autorelease];
+	NSSortDescriptor * sortdate = [[[NSSortDescriptor alloc] initWithKey: @"date" ascending:NO] autorelease];
 	NSArray * sortDescriptors;
 	if( [databaseOutline sortDescriptors] == nil || [[databaseOutline sortDescriptors] count] == 0)
 	{
@@ -12418,17 +12421,17 @@ static NSArray*	openSubSeriesArray = nil;
 	[menu addItem:item];
 		
 	item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Export to Email", nil)  action:@selector(sendEmail:) keyEquivalent:@""] autorelease];
-	[contextual addItem:item];
+	[menu addItem:item];
 		
 	[menu addItem: [NSMenuItem separatorItem]];
 	
 	item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Add selected study(s) to user(s)", nil)  action:@selector( addStudiesToUser:) keyEquivalent:@""] autorelease];
-	[contextual addItem:item];
+	[menu addItem:item];
 	
 	item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Send an email notification to user(s)", nil)  action:@selector( sendEmailNotification:) keyEquivalent:@""] autorelease];
-	[contextual addItem:item];
+	[menu addItem:item];
 	
-	[contextual addItem: [NSMenuItem separatorItem]];
+	[menu addItem: [NSMenuItem separatorItem]];
 	
 	item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Compress DICOM files", nil)  action:@selector(compressSelectedFiles:) keyEquivalent:@""] autorelease];
 	[menu addItem:item];
@@ -15046,24 +15049,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 		{
 			[self.userManagedObjectContext lock];
 			
-			// Get the selected studies
-			NSMutableArray *studies = [NSMutableArray array];
-			NSIndexSet *rowEnumerator = [databaseOutline selectedRowIndexes];
-			
-			NSUInteger row = [rowEnumerator firstIndex];
-			while (row != NSNotFound)
-			{
-				NSManagedObject *curObj = [databaseOutline itemAtRow: row];
-				
-				if( [[curObj valueForKey:@"type"] isEqualToString:@"Series"])
-					[studies addObject: [curObj valueForKey:@"study"]];
-				
-				if( [[curObj valueForKey:@"type"] isEqualToString:@"Study"])
-					[studies addObject: curObj];
-				
-				row = [rowEnumerator indexGreaterThanIndex: row];
-			}
-
 			// Add them to select users
 			
 			for( NSManagedObject *user in [notificationEmailArrayController selectedObjects])
@@ -15071,8 +15056,11 @@ static volatile int numberOfThreadsForJPEG = 0;
 				NSArray *studiesArrayStudyInstanceUID = [[[user valueForKey: @"studies"] allObjects] valueForKey: @"studyInstanceUID"];
 				NSArray *studiesArrayPatientUID = [[[user valueForKey: @"studies"] allObjects] valueForKey: @"patientUID"];
 				
-				for( NSManagedObject *study in studies)
+				for( NSManagedObject *study in [self databaseSelection])
 				{
+					if( [[study valueForKey: @"type"] isEqualToString:@"Series"])
+						study = [study valueForKey:@"study"];
+						
 					if( [studiesArrayStudyInstanceUID indexOfObject: [study valueForKey: @"studyInstanceUID"]] == NSNotFound || [studiesArrayPatientUID indexOfObject: [study valueForKey: @"patientUID"]]  == NSNotFound)
 					{
 						NSManagedObject *studyLink = [NSEntityDescription insertNewObjectForEntityForName: @"Study" inManagedObjectContext: self.userManagedObjectContext];
@@ -15080,12 +15068,21 @@ static volatile int numberOfThreadsForJPEG = 0;
 						[studyLink setValue: [[[study valueForKey: @"studyInstanceUID"] copy] autorelease] forKey: @"studyInstanceUID"];
 						[studyLink setValue: [[[study valueForKey: @"patientUID"] copy] autorelease] forKey: @"patientUID"];
 						
-						[studyLink setValue: user forKey:@"user"];
+						[studyLink setValue: user forKey: @"user"];
 						
-						[self.userManagedObjectContext save: nil];
+						@try
+						{
+							[self.userManagedObjectContext save: nil];
+						}
+						@catch (NSException * e)
+						{
+							NSLog( @"[self.userManagedObjectContext save: nil]");
+						}
 						
 						studiesArrayStudyInstanceUID = [[[user valueForKey: @"studies"] allObjects] valueForKey: @"studyInstanceUID"];
 						studiesArrayPatientUID = [[[user valueForKey: @"studies"] allObjects] valueForKey: @"patientUID"];
+						
+						[OsiriXHTTPConnection updateLogEntryForStudy: study withMessage: @"Add Study to User" forUser: [user valueForKey: @"name"] ip: nil];
 					}
 				}
 			}
@@ -15123,8 +15120,45 @@ static volatile int numberOfThreadsForJPEG = 0;
 		}
 		else
 		{
-			NSLog( @"%@", [notificationEmailArrayController selectedObjects]);
-			NSLog( @"%@", temporaryNotificationEmail);
+			// Add them to select users AND send a notification email
+			
+			for( NSManagedObject *user in [notificationEmailArrayController selectedObjects])
+			{
+				NSArray *studiesArrayStudyInstanceUID = [[[user valueForKey: @"studies"] allObjects] valueForKey: @"studyInstanceUID"];
+				NSArray *studiesArrayPatientUID = [[[user valueForKey: @"studies"] allObjects] valueForKey: @"patientUID"];
+				
+				for( NSManagedObject *study in [self databaseSelection])
+				{
+					if( [[study valueForKey: @"type"] isEqualToString:@"Series"])
+						study = [study valueForKey:@"study"];
+					
+					if( [studiesArrayStudyInstanceUID indexOfObject: [study valueForKey: @"studyInstanceUID"]] == NSNotFound || [studiesArrayPatientUID indexOfObject: [study valueForKey: @"patientUID"]]  == NSNotFound)
+					{
+						NSManagedObject *studyLink = [NSEntityDescription insertNewObjectForEntityForName: @"Study" inManagedObjectContext: self.userManagedObjectContext];
+						
+						[studyLink setValue: [[[study valueForKey: @"studyInstanceUID"] copy] autorelease] forKey: @"studyInstanceUID"];
+						[studyLink setValue: [[[study valueForKey: @"patientUID"] copy] autorelease] forKey: @"patientUID"];
+						
+						[studyLink setValue: user forKey: @"user"];
+						
+						@try
+						{
+							[self.userManagedObjectContext save: nil];
+						}
+						@catch (NSException * e)
+						{
+							NSLog( @"[self.userManagedObjectContext save: nil]");
+						}
+						
+						studiesArrayStudyInstanceUID = [[[user valueForKey: @"studies"] allObjects] valueForKey: @"studyInstanceUID"];
+						studiesArrayPatientUID = [[[user valueForKey: @"studies"] allObjects] valueForKey: @"patientUID"];
+						
+						[OsiriXHTTPConnection updateLogEntryForStudy: study withMessage: @"Single Email Notification to User" forUser: [user valueForKey: @"name"] ip: nil];
+					}
+				}
+			}
+			
+			[OsiriXHTTPConnection sendNotificationsEmailsTo: [notificationEmailArrayController selectedObjects] aboutStudies: [self databaseSelection] predicate: nil];
 		}
 	}
 	

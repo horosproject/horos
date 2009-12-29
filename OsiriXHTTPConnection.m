@@ -118,6 +118,9 @@ static NSString *webDirectory = nil;
 	if( user)
 		message = [user stringByAppendingFormat:@" : %@", message];
 	
+	if( ip == nil)
+		ip = [[AppController sharedAppController] privateIP];
+	
 	@try
 	{
 		NSManagedObject *logEntry = nil;
@@ -278,7 +281,7 @@ static NSString *webDirectory = nil;
 		error = nil;
 		dbRequest = [[[NSFetchRequest alloc] init] autorelease];
 		[dbRequest setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey: @"Study"]];
-		[dbRequest setPredicate: [NSPredicate predicateWithFormat: @"dateAdded >= CAST(%lf, \"NSDate\")", [lastCheckDate timeIntervalSinceReferenceDate]]];
+		[dbRequest setPredicate: [NSPredicate predicateWithValue: YES]];
 		
 		error = nil;
 		NSArray *studies = [[[BrowserController currentBrowser] managedObjectContext] executeFetchRequest: dbRequest error:&error];
@@ -309,8 +312,10 @@ static NSString *webDirectory = nil;
 					
 					@try
 					{
-						if( [[user valueForKey: @"studyPredicate"] length] > 0)
 						filteredStudies = [studies filteredArrayUsingPredicate: [[BrowserController currentBrowser] smartAlbumPredicateString: [user valueForKey: @"studyPredicate"]]];
+						filteredStudies = [OsiriXHTTPConnection addSpecificStudiesToArray: filteredStudies forUser: user];
+						filteredStudies = [filteredStudies filteredArrayUsingPredicate: [NSPredicate predicateWithFormat: @"dateAdded >= CAST(%lf, \"NSDate\")", [lastCheckDate timeIntervalSinceReferenceDate]]]; 
+						filteredStudies = [filteredStudies sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"date" ascending:NO] autorelease]]];
 					}
 					@catch (NSException * e)
 					{
@@ -376,11 +381,12 @@ static NSString *webDirectory = nil;
 	[currentUser release];
 	currentUser = nil;
 	
-	[[[BrowserController currentBrowser] userManagedObjectContext] lock];
-	
 	if( [username length] > 3)
 	{
 		NSArray	*users = nil;
+		
+		[[[BrowserController currentBrowser] userManagedObjectContext] lock];
+		
 		@try
 		{
 			NSFetchRequest *r = [[[NSFetchRequest alloc] init] autorelease];
@@ -852,40 +858,65 @@ static NSString *webDirectory = nil;
 	return returnHTML;
 }
 
-- (NSArray*)studiesForPredicate:(NSPredicate *)predicate;
+- (NSArray*) addSpecificStudiesToArray: (NSArray*) array
 {
-	NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
-	
-	NSArray *studiesArray;
-	
-	[context retain];
-	[context lock];
-	
-	if( currentUser && [[currentUser valueForKey: @"studyPredicate"] length] > 0)
-	{
-		@try
-		{
-			predicate = [NSCompoundPredicate andPredicateWithSubpredicates: [NSArray arrayWithObjects: predicate, [[BrowserController currentBrowser] smartAlbumPredicateString: [currentUser valueForKey: @"studyPredicate"]], nil]];
-		}
-		@catch( NSException *e)
-		{
-			NSLog( @"****** User Filter Error : %@", e);
-			NSLog( @"****** NO studies will be displayed.");
-			
-			predicate = [NSPredicate predicateWithValue: NO];
-		}
-	}
+	return [OsiriXHTTPConnection addSpecificStudiesToArray: array forUser: currentUser];
+}
+
++ (NSArray*) addSpecificStudiesToArray: (NSArray*) array forUser: (NSManagedObject*) user
+{
+	NSMutableArray *specificArray = [NSMutableArray array];
 	
 	@try
 	{
-		// Find all studies
+		if( [[[user valueForKey: @"studies"] allObjects] count])
+		{
+			// Find all studies
+			NSError *error = nil;
+			NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+			[dbRequest setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey:@"Study"]];
+			[dbRequest setPredicate: [NSPredicate predicateWithValue: YES]];
+			
+			error = nil;
+			NSArray *studiesArray = [[[BrowserController currentBrowser] managedObjectContext] executeFetchRequest: dbRequest error: &error];
+			
+			for( NSManagedObject *study in [user valueForKey: @"studies"])
+			{
+				NSArray *obj = [studiesArray filteredArrayUsingPredicate: [NSPredicate predicateWithFormat: @"patientUID == %@ AND studyInstanceUID == %@", [study valueForKey: @"patientUID"], [study valueForKey: @"studyInstanceUID"]]];
+				
+				if( [obj count] == 1)
+					[specificArray addObject: [obj lastObject]];
+				else if( [obj count] > 1)
+					NSLog( @"********** warning multiple studies with same instanceUID and patientUID : %@", obj);
+			}
+		 }
+	}
+	@catch (NSException * e)
+	{
+		NSLog( @"********** addSpecificStudiesToArray : %@", e);
+	}
+	
+	return [array arrayByAddingObjectsFromArray: specificArray];
+}
+
+- (NSArray*)studiesForPredicate:(NSPredicate *)predicate;
+{
+	NSArray *studiesArray;
+	
+	[[BrowserController currentBrowser].managedObjectContext lock];
+	
+	@try
+	{
 		NSError *error = nil;
 		NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-		[dbRequest setEntity:[[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey:@"Study"]];
-		[dbRequest setPredicate:predicate];
+		[dbRequest setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey:@"Study"]];
+		[dbRequest setPredicate: [[BrowserController currentBrowser] smartAlbumPredicateString: [currentUser valueForKey: @"studyPredicate"]]];
 		
 		error = nil;
-		studiesArray = [context executeFetchRequest:dbRequest error:&error];
+		studiesArray = [[BrowserController currentBrowser].managedObjectContext executeFetchRequest:dbRequest error: &error];
+		studiesArray = [self addSpecificStudiesToArray: studiesArray];
+		studiesArray = [studiesArray filteredArrayUsingPredicate: predicate];
+		studiesArray = [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"date" ascending:NO] autorelease]]];
 	}
 	
 	@catch(NSException *e)
@@ -893,21 +924,17 @@ static NSString *webDirectory = nil;
 		NSLog(@"studiesForPredicate exception: %@", e.description);
 	}
 	
-	[context unlock];
-	[context release];
-	
-	studiesArray = [studiesArray sortedArrayUsingSelector:@selector(compareName:)];
+	[[BrowserController currentBrowser].managedObjectContext unlock];
 	
 	return studiesArray;
 }
 
 - (NSArray*)seriesForPredicate:(NSPredicate *)predicate;
 {
-	NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
-	
 	NSArray *seriesArray = nil;
 	NSArray *studiesArray = nil;
-	[context lock];
+	
+	[[BrowserController currentBrowser].managedObjectContext lock];
 	
 	if( [[currentUser valueForKey: @"studyPredicate"] length] > 0) // First, take all the available studies for this user, and then get the series : SECURITY : we want to be sure that he cannot access to unauthorized images
 	{
@@ -919,7 +946,8 @@ static NSString *webDirectory = nil;
 			[dbRequest setPredicate: [[BrowserController currentBrowser] smartAlbumPredicateString: [currentUser valueForKey: @"studyPredicate"]]];
 			
 			error = nil;
-			studiesArray = [[context executeFetchRequest:dbRequest error:&error] valueForKey: @"patientUID"];
+			studiesArray = [self addSpecificStudiesToArray: [[BrowserController currentBrowser].managedObjectContext executeFetchRequest:dbRequest error:&error]];
+			studiesArray = [studiesArray valueForKey: @"patientUID"];
 		}
 		
 		@catch(NSException *e)
@@ -940,7 +968,7 @@ static NSString *webDirectory = nil;
 		[dbRequest setPredicate: predicate];
 		
 		error = nil;
-		seriesArray = [context executeFetchRequest:dbRequest error:&error];
+		seriesArray = [[BrowserController currentBrowser].managedObjectContext executeFetchRequest:dbRequest error:&error];
 	}
 	
 	@catch(NSException *e)
@@ -949,7 +977,7 @@ static NSString *webDirectory = nil;
 	}
 	
 	
-	[context unlock];
+	[[BrowserController currentBrowser].managedObjectContext unlock];
 	
 	NSSortDescriptor * sortid = [[NSSortDescriptor alloc] initWithKey:@"seriesInstanceUID" ascending:YES selector:@selector(numericCompare:)];		//id
 	NSSortDescriptor * sortdate = [[NSSortDescriptor alloc] initWithKey:@"date" ascending:YES];
@@ -970,15 +998,14 @@ static NSString *webDirectory = nil;
 	
 	NSArray *studiesArray, *albumArray;
 	
-	[context retain];
 	[context lock];
 	
 	@try
 	{
 		NSError *error = nil;
 		NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-		[dbRequest setEntity:[[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey:@"Album"]];
-		[dbRequest setPredicate:[NSPredicate predicateWithFormat:@"name == %@", albumName]];
+		[dbRequest setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey:@"Album"]];
+		[dbRequest setPredicate: [NSPredicate predicateWithFormat:@"name == %@", albumName]];
 		error = nil;
 		albumArray = [context executeFetchRequest:dbRequest error:&error];
 	}
@@ -989,22 +1016,32 @@ static NSString *webDirectory = nil;
 	}
 	
 	[context unlock];
-	[context release];
 	
 	NSManagedObject *album = [albumArray lastObject];
-	if([[album valueForKey:@"smartAlbum"] intValue]==1)
+	
+	if([[album valueForKey:@"smartAlbum"] intValue] == 1)
 	{
 		studiesArray = [self studiesForPredicate: [[BrowserController currentBrowser] smartAlbumPredicateString: [album valueForKey:@"predicateString"]]];
 	}
 	else
 	{
-		studiesArray = [[album valueForKey:@"studies"] allObjects];
+		NSArray *originalAlbum = [[album valueForKey:@"studies"] allObjects];
 		
 		if( currentUser && [[currentUser valueForKey: @"studyPredicate"] length] > 0)
 		{
 			@try
 			{
-				studiesArray = [studiesArray filteredArrayUsingPredicate: [[BrowserController currentBrowser] smartAlbumPredicateString: [currentUser valueForKey: @"studyPredicate"]]];
+				studiesArray = [originalAlbum filteredArrayUsingPredicate: [[BrowserController currentBrowser] smartAlbumPredicateString: [currentUser valueForKey: @"studyPredicate"]]];
+				
+				NSArray *specificArray = [self addSpecificStudiesToArray: [NSArray array]];
+				
+				for( NSManagedObject *specificStudy in specificArray)
+				{
+					if( [originalAlbum containsObject: specificStudy] == YES && [studiesArray containsObject: specificStudy] == NO)
+					{
+						studiesArray = [studiesArray arrayByAddingObject: specificStudy];
+					}
+				}
 			}
 			@catch( NSException *e)
 			{
@@ -1014,9 +1051,10 @@ static NSString *webDirectory = nil;
 				studiesArray = nil;
 			}
 		}
+		else studiesArray = originalAlbum;
 	}
 	
-	return studiesArray;
+	return [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"date" ascending:NO] autorelease]]];
 }
 
 - (void)dicomSend:(id)sender;
@@ -1631,9 +1669,9 @@ static NSString *webDirectory = nil;
 		data = [returnHTML dataUsingEncoding:NSUTF8StringEncoding];
 	}
 #pragma mark wado
-	else if([fileURL isEqualToString:@"/wado"]) 
+	else if( [fileURL isEqualToString:@"/wado"] && [[NSUserDefaults standardUserDefaults] boolForKey: @"wadoServer"])
 	{
-		if([[[parameters objectForKey:@"requestType"] lowercaseString] isEqualToString: @"wado"])
+		if( [[[parameters objectForKey:@"requestType"] lowercaseString] isEqualToString: @"wado"])
 		{
 			NSString *studyUID = [[parameters objectForKey:@"studyUID"] lowercaseString];
 			NSString *seriesUID = [[parameters objectForKey:@"seriesUID"] lowercaseString];
@@ -1728,7 +1766,7 @@ static NSString *webDirectory = nil;
 							NSSortDescriptor *sort = [[NSSortDescriptor alloc] initWithKey:@"instanceNumber" ascending:YES];
 							NSArray *sortDescriptors = [NSArray arrayWithObject:sort];
 							[sort release];
-							dicomImageArray = [dicomImageArray sortedArrayUsingDescriptors:sortDescriptors];
+							dicomImageArray = [dicomImageArray sortedArrayUsingDescriptors: sortDescriptors];
 							
 						}
 						@catch (NSException * e)
@@ -2087,6 +2125,10 @@ static NSString *webDirectory = nil;
 		[templateString replaceOccurrencesOfString:@"%search%" withString:[OsiriXHTTPConnection decodeURLString:search] options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 		[templateString replaceOccurrencesOfString:@"%album%" withString:[OsiriXHTTPConnection decodeURLString:[album stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 		
+		[templateString replaceOccurrencesOfString:@"%VideoType%" withString: isiPhone? @"video/x-m4v":@"video/x-mov" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+		
+		
+		
 		NSPredicate *browsePredicate;
 		if([[parameters allKeys] containsObject:@"id"])
 		{
@@ -2348,7 +2390,7 @@ static NSString *webDirectory = nil;
 				NSSortDescriptor *sort = [[NSSortDescriptor alloc] initWithKey:@"instanceNumber" ascending:YES];
 				NSArray *sortDescriptors = [NSArray arrayWithObject:sort];
 				[sort release];
-				dicomImageArray = [dicomImageArray sortedArrayUsingDescriptors:sortDescriptors];
+				dicomImageArray = [dicomImageArray sortedArrayUsingDescriptors: sortDescriptors];
 				
 			}
 			@catch (NSException * e)
@@ -2367,6 +2409,7 @@ static NSString *webDirectory = nil;
 				NSString *fileName = [path stringByAppendingPathComponent:name];
 				fileName = [fileName stringByAppendingString:@".mov"];
 				NSString *outFile;
+				
 				if( isiPhone)
 					outFile = [NSString stringWithFormat:@"%@2.m4v", [fileName stringByDeletingPathExtension]];
 				else

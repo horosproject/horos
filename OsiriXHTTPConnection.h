@@ -27,5 +27,6 @@ extern NSString* asciiString (NSString* name);
 + (NSString*)encodeURLString:(NSString*)aString;
 - (void) updateLogEntryForStudy: (NSManagedObject*) study withMessage:(NSString*) message;
 - (BOOL)supportsPOST:(NSString *)path withSize:(UInt64)contentLength;
-
+- (NSArray*) addSpecificStudiesToArray: (NSArray*) array;
++ (NSArray*) addSpecificStudiesToArray: (NSArray*) array forUser: (NSManagedObject*) user;
 @end

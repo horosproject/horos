@@ -76,7 +76,7 @@ char *GetPrivateIP()
 
 - (void)authorizationViewDidDeauthorize:(SFAuthorizationView *)view
 {    
-    if( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTHENTICATION"])
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTHENTICATION"])
 		[self enableControls: NO];
 	else
 		[[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"authorizedToEdit"];
@@ -108,6 +108,15 @@ char *GetPrivateIP()
 		[_authView setEnabled: NO];
 	}
 	[_authView updateStatus:self];
+	
+	[studiesArrayController addObserver:self forKeyPath: @"selection" options:(NSKeyValueObservingOptionNew) context:NULL];
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+	// Automatically display the selected study in the main DB window
+	if( [[studiesArrayController selectedObjects] lastObject])
+		[[BrowserController currentBrowser]	findObject:	[NSString stringWithFormat: @"patientUID =='%@' AND studyInstanceUID == '%@'", [[[studiesArrayController selectedObjects] lastObject] valueForKey:@"patientUID"], [[[studiesArrayController selectedObjects] lastObject] valueForKey:@"studyInstanceUID"]] table: @"Study" execute: @"Select" elements: nil];
 }
 
 - (void) willUnselect
@@ -116,7 +125,8 @@ char *GetPrivateIP()
 
 - (IBAction) showButton: (id) sender
 {
-	NSLog( @"%@", sender);
+	if( [[studiesArrayController selectedObjects] lastObject])
+		[[BrowserController currentBrowser]	findObject:	[NSString stringWithFormat: @"patientUID =='%@' AND studyInstanceUID == '%@'", [[[studiesArrayController selectedObjects] lastObject] valueForKey:@"patientUID"], [[[studiesArrayController selectedObjects] lastObject] valueForKey:@"studyInstanceUID"]] table: @"Study" execute: @"Open" elements: nil];
 }
 
 - (IBAction)smartAlbumHelpButton: (id)sender

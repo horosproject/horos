@@ -18,7 +18,7 @@
 @interface OSIWebSharingPreferencePanePref : NSPreferencePane 
 {
 	IBOutlet SFAuthorizationView *_authView;
-	IBOutlet NSWindow *webServerSettingsWindow;
+	IBOutlet NSArrayController *studiesArrayController;
 }
 
 - (void) mainViewDidLoad;

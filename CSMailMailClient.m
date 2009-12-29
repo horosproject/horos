@@ -28,15 +28,19 @@
     while (![scanner isAtEnd]) {
       NSString *tmp;
       
-      if ([scanner scanUpToCharactersFromSet:interestingSet intoString:&tmp]) {
-	if ([scanner scanString:@"<" intoString:NULL]) {
-	  name = tmp;
-	  [scanner scanUpToString:@">" intoString:&tmp];
-	  [scanner scanString:@">" intoString:NULL];
-	  addr = tmp;
-	} else {
-	  addr = tmp;
-	}
+      if ([scanner scanUpToCharactersFromSet:interestingSet intoString:&tmp])
+	  {
+		  if ([scanner scanString:@"<" intoString:NULL])
+		  {
+			name = tmp;
+			  [scanner scanUpToString:@">" intoString:&tmp];
+			  [scanner scanString:@">" intoString:NULL];
+			  addr = tmp;
+		  }
+		  else
+		  {
+			  addr = tmp;
+		  }
         
 	if ([scanner scanString:@"," intoString:NULL]) {
 	  if ([addr length]) {
