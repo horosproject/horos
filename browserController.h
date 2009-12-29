@@ -167,6 +167,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	NSRecursiveLock					*checkIncomingLock;
 	NSLock							*checkBonjourUpToDateThreadLock;
 	NSTimeInterval					lastSaved;
+	NSPredicate						*testPredicate;
 	
     BOOL							showAllImages, DatabaseIsEdited, isNetworkLogsActive, displayEmptyDatabase;
 	NSConditionLock					*queueLock;
@@ -265,7 +266,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 @property(readonly) char *cfixedDocumentsDirectory, *cfixedIncomingDirectory;
 
 @property(retain) NSString *searchString, *CDpassword, *pathToEncryptedFile, *passwordForExportEncryption, *temporaryNotificationEmail;
-@property(retain) NSPredicate *fetchPredicate;
+@property(retain) NSPredicate *fetchPredicate, *testPredicate;
 @property(readonly) NSPredicate *filterPredicate;
 @property(readonly) NSString *filterPredicateDescription;
 

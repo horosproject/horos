@@ -158,7 +158,7 @@ static NSArray*	statesArray = nil;
 
 @synthesize checkIncomingLock, CDpassword, DateTimeFormat, passwordForExportEncryption;
 @synthesize DateOfBirthFormat,TimeFormat, TimeWithSecondsFormat, temporaryNotificationEmail;
-@synthesize DateTimeWithSecondsFormat, matrixViewArray, oMatrix;
+@synthesize DateTimeWithSecondsFormat, matrixViewArray, oMatrix, testPredicate;
 @synthesize COLUMN, databaseOutline, albumTable, currentDatabasePath;
 @synthesize isCurrentDatabaseBonjour, bonjourDownloading, bonjourSourcesBox;
 @synthesize bonjourServiceName, bonjourPasswordTextField = bonjourPassword, bonjourSharingCheck;
@@ -4805,6 +4805,9 @@ static NSArray*	statesArray = nil;
 		filtered = YES;
 	}
 	
+	if( testPredicate)
+		predicate = testPredicate;
+	
 	[request setPredicate: predicate];
 	
 	NSManagedObjectContext *context = self.managedObjectContext;
@@ -9341,6 +9344,7 @@ static BOOL withReset = NO;
     // Sheet is up here.
     [NSApp endSheet: sheet];
     [sheet orderOut: self];
+	
 	NSMutableArray *criteria = [smartWindowController criteria];
 	if ([criteria count] > 0)
 	{
@@ -9529,6 +9533,23 @@ static BOOL needToRezoom;
 	
 	if( [sender tag] == 1)
 		[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://developer.apple.com/documentation/Cocoa/Conceptual/Predicates/Articles/pSyntax.html#//apple_ref/doc/uid/TP40001795"]];
+
+	if( [sender tag] == 2)
+	{
+		[[self window] makeFirstResponder: nil];
+		
+		@try
+		{
+			self.testPredicate = [[BrowserController currentBrowser] smartAlbumPredicateString: [editSmartAlbumQuery stringValue]];
+			[self outlineViewRefresh];
+			self.testPredicate = nil;
+			NSRunInformationalAlertPanel( NSLocalizedString(@"It works !",nil), NSLocalizedString(@"This filter works: the result is now displayed in the Database Window.", nil), NSLocalizedString(@"OK",nil), nil, nil);
+		}
+		@catch (NSException * e)
+		{
+			NSRunCriticalAlertPanel( NSLocalizedString(@"Error",nil), [NSString stringWithFormat: NSLocalizedString(@"This filter is NOT working: %@", nil), e], NSLocalizedString(@"OK",nil), nil, nil);
+		}
+	}
 }
 
 - (IBAction) albumTableDoublePressed: (id)sender
@@ -9561,6 +9582,9 @@ static BOOL needToRezoom;
 			
 			[NSApp endSheet: editSmartAlbum];
 			[editSmartAlbum orderOut: self];
+			
+			self.testPredicate = nil;
+			[self outlineViewRefresh];
 			
 			if( result == NSRunStoppedResponse)
 			{

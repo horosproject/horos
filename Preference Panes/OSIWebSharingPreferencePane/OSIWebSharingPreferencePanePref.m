@@ -121,21 +121,34 @@ char *GetPrivateIP()
 
 - (void) willUnselect
 {
-}
-
-- (IBAction) showButton: (id) sender
-{
-	if( [[studiesArrayController selectedObjects] lastObject])
-		[[BrowserController currentBrowser]	findObject:	[NSString stringWithFormat: @"patientUID =='%@' AND studyInstanceUID == '%@'", [[[studiesArrayController selectedObjects] lastObject] valueForKey:@"patientUID"], [[[studiesArrayController selectedObjects] lastObject] valueForKey:@"studyInstanceUID"]] table: @"Study" execute: @"Open" elements: nil];
+	[BrowserController currentBrowser].testPredicate = nil;
+	[[BrowserController currentBrowser] outlineViewRefresh];
 }
 
 - (IBAction)smartAlbumHelpButton: (id)sender
 {
 	if( [sender tag] == 0)
-		[[NSWorkspace sharedWorkspace] openFile:[[NSBundle mainBundle] pathForResource:@"OsiriXTables" ofType:@"pdf"]];
+		[[NSWorkspace sharedWorkspace] openFile:[[NSBundle mainBundle] pathForResource: @"OsiriXTables" ofType:@"pdf"]];
 	
 	if( [sender tag] == 1)
-		[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://developer.apple.com/documentation/Cocoa/Conceptual/Predicates/Articles/pSyntax.html#//apple_ref/doc/uid/TP40001795"]];
+		[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString: @"http://developer.apple.com/documentation/Cocoa/Conceptual/Predicates/Articles/pSyntax.html#//apple_ref/doc/uid/TP40001795"]];
+
+	if( [sender tag] == 2)
+	{
+		[[[self mainView] window] makeFirstResponder: nil];
+		
+		@try
+		{
+			[BrowserController currentBrowser].testPredicate = [[BrowserController currentBrowser] smartAlbumPredicateString: [[[userArrayController selectedObjects] lastObject] valueForKey: @"studyPredicate"]];
+			[[BrowserController currentBrowser] outlineViewRefresh];
+			[BrowserController currentBrowser].testPredicate = nil;
+			NSRunInformationalAlertPanel( NSLocalizedString(@"It works !",nil), NSLocalizedString(@"This filter works: the result is now displayed in the Database Window.", nil), NSLocalizedString(@"OK",nil), nil, nil);
+		}
+		@catch (NSException * e)
+		{
+			NSRunCriticalAlertPanel( NSLocalizedString(@"Error",nil), [NSString stringWithFormat: NSLocalizedString(@"This filter is NOT working: %@", nil), e], NSLocalizedString(@"OK",nil), nil, nil);
+		}
+	}
 }
 
 - (IBAction) openKeyChainAccess:(id) sender

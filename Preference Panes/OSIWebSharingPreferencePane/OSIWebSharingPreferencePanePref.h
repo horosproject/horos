@@ -18,11 +18,10 @@
 @interface OSIWebSharingPreferencePanePref : NSPreferencePane 
 {
 	IBOutlet SFAuthorizationView *_authView;
-	IBOutlet NSArrayController *studiesArrayController;
+	IBOutlet NSArrayController *studiesArrayController, *userArrayController;
 }
 
 - (void) mainViewDidLoad;
 - (IBAction) openKeyChainAccess:(id) sender;
 - (IBAction) smartAlbumHelpButton: (id) sender;
-- (IBAction) showButton: (id) sender;
 @end
