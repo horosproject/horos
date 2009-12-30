@@ -182,21 +182,23 @@ static NSString *webDirectory = nil;
 		
 		if( emailMessage)
 		{
+			NSString *http = [[NSUserDefaults standardUserDefaults] boolForKey: @"encryptedWebServer"] ? @"https":@"http";
+			
 			[[emailMessage mutableString] replaceOccurrencesOfString: @"%Username%" withString: [user valueForKey: @"name"] options: NSLiteralSearch range: NSMakeRange(0, [emailMessage length])];
-			[[emailMessage mutableString] replaceOccurrencesOfString: @"%WebServerAddress%" withString: [NSString stringWithFormat: @"%@://%@:%d", [[NSUserDefaults standardUserDefaults] boolForKey: @"encryptedWebServer"] ? @"https":@"http", webServerAddress, webPort] options: NSLiteralSearch range: NSMakeRange(0, [emailMessage length])];
+			[[emailMessage mutableString] replaceOccurrencesOfString: @"%WebServerAddress%" withString: [NSString stringWithFormat: @"%@://%@:%d", http, webServerAddress, webPort] options: NSLiteralSearch range: NSMakeRange(0, [emailMessage length])];
 			
 			NSMutableString *urls = [NSMutableString string];
 			
 			if( [filteredStudies count] > 1 && predicate != nil)
 			{
 				[urls appendString: NSLocalizedString( @"To view this entire list, including patients names:\r", nil)]; 
-				[urls appendFormat: @"%@ : http://%@:%d/studyList?%@\r\r\r\r", NSLocalizedString( @"Click here", nil), predicate]; 
+				[urls appendFormat: @"%@ : %@://%@:%d/studyList?%@\r\r\r\r", NSLocalizedString( @"Click here", nil), http, predicate]; 
 			}
 			
 			for( NSManagedObject *s in filteredStudies)
 			{
 				[urls appendFormat: @"%@ - %@ (%@)\r", [s valueForKey: @"modality"], [s valueForKey: @"studyName"], [BrowserController DateTimeFormat: [s valueForKey: @"date"]]]; 
-				[urls appendFormat: @"%@ : http://%@:%d/study?id=%@&browse=all\r\r", NSLocalizedString( @"Click here", nil), webServerAddress, webPort, [s valueForKey: @"studyInstanceUID"]]; 
+				[urls appendFormat: @"%@ : %@://%@:%d/study?id=%@&browse=all\r\r", NSLocalizedString( @"Click here", nil), http, webServerAddress, webPort, [s valueForKey: @"studyInstanceUID"]]; 
 			}
 			
 			[[emailMessage mutableString] replaceOccurrencesOfString: @"%URLsList%" withString: urls options: NSLiteralSearch range: NSMakeRange(0, [emailMessage length])];
