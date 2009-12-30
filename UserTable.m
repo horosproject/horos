@@ -38,6 +38,9 @@ static PSGenerator *generator = nil;
 	if( [self primitiveValueForKey: @"creationDate"] == nil)
 		[self setPrimitiveValue: [NSDate date] forKey: @"creationDate"];
 	
+	if( [self primitiveValueForKey: @"dateAdded"] == nil)
+		[self setPrimitiveValue: [NSDate date] forKey: @"dateAdded"];
+	
 	[self generatePassword];
 
 	// Create a unique name
@@ -83,11 +86,11 @@ static PSGenerator *generator = nil;
 	
 	if( [key isEqualToString: @"name"])
 	{
-		if( [*value length] < 4) // Length
+		if( [*value length] < 2) // Length
 		{
 			if( error)
 			{
-				NSDictionary *info = [NSDictionary dictionaryWithObject: NSLocalizedString( @"Name needs to be at least 4 characters.", nil) forKey: NSLocalizedDescriptionKey];
+				NSDictionary *info = [NSDictionary dictionaryWithObject: NSLocalizedString( @"Name needs to be at least 2 characters.", nil) forKey: NSLocalizedDescriptionKey];
 				*error = [NSError errorWithDomain: @"OsiriXDomain" code: -31 userInfo: info];
 			}	
 			return NO;

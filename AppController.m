@@ -1788,8 +1788,7 @@ static NSDate *lastWarningDate = nil;
 
 -(void) displayListenerError: (NSString*) err
 {
-	NSString *alertSuppress = @"hideListenerError";
-	if ([[NSUserDefaults standardUserDefaults] boolForKey: alertSuppress] == NO)
+	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"] == NO)
 	{
 		NSAlert* alert = [[NSAlert new] autorelease];
 		[alert setMessageText: NSLocalizedString( @"DICOM Listener Error", nil)];
@@ -1798,7 +1797,7 @@ static NSDate *lastWarningDate = nil;
 		[alert addButtonWithTitle: NSLocalizedString(@"OK", nil)];
 		
 		if ([[alert suppressionButton] state] == NSOnState)
-			[[NSUserDefaults standardUserDefaults] setBool:YES forKey:alertSuppress];
+			[[NSUserDefaults standardUserDefaults] setBool:YES forKey: @"hideListenerError"];
 	}
 	else
 		NSLog( @"*** listener error (not displayed - hideListenerError): %@", err);

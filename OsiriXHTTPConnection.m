@@ -172,7 +172,10 @@ static NSString *webDirectory = nil;
 	NSString *webServerAddress = [[NSUserDefaults standardUserDefaults] valueForKey: @"webServerAddress"];
 	int webPort = [[NSUserDefaults standardUserDefaults] integerForKey:@"httpWebServerPort"];
 	NSString *fromEmailAddress = [[NSUserDefaults standardUserDefaults] valueForKey: @"notificationsEmailsSender"];
-
+	
+	if( fromEmailAddress == nil)
+		fromEmailAddress = @"";
+	
 	for( NSManagedObject *user in users)
 	{
 		NSMutableAttributedString *emailMessage = [[[NSMutableAttributedString alloc] initWithPath: [webDirectory stringByAppendingPathComponent:@"emailTemplate.txt"] documentAttributes: nil] autorelease];
@@ -238,6 +241,8 @@ static NSString *webDirectory = nil;
 	[[[BrowserController currentBrowser] userManagedObjectContext] lock];
 	[[[BrowserController currentBrowser] managedObjectContext] lock];
 	
+	// TEMPORARY USERS
+	
 	@try
 	{
 		BOOL toBeSaved = NO;
@@ -271,6 +276,8 @@ static NSString *webDirectory = nil;
 	{
 		NSLog( @"***** emailNotifications exception for deleting temporary users: %@", e);
 	}
+	
+	// CHECK dateAdded
 	
 	@try
 	{
@@ -313,7 +320,7 @@ static NSString *webDirectory = nil;
 					@try
 					{
 						filteredStudies = [studies filteredArrayUsingPredicate: [[BrowserController currentBrowser] smartAlbumPredicateString: [user valueForKey: @"studyPredicate"]]];
-						filteredStudies = [OsiriXHTTPConnection addSpecificStudiesToArray: filteredStudies forUser: user];
+						filteredStudies = [OsiriXHTTPConnection addSpecificStudiesToArray: filteredStudies forUser: user predicate: [NSPredicate predicateWithFormat: @"dateAdded >= CAST(%lf, \"NSDate\")", [lastCheckDate timeIntervalSinceReferenceDate]]];
 						filteredStudies = [filteredStudies filteredArrayUsingPredicate: [NSPredicate predicateWithFormat: @"dateAdded >= CAST(%lf, \"NSDate\")", [lastCheckDate timeIntervalSinceReferenceDate]]]; 
 						filteredStudies = [filteredStudies sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"date" ascending:NO] autorelease]]];
 					}
@@ -860,12 +867,15 @@ static NSString *webDirectory = nil;
 
 - (NSArray*) addSpecificStudiesToArray: (NSArray*) array
 {
-	return [OsiriXHTTPConnection addSpecificStudiesToArray: array forUser: currentUser];
+	return [OsiriXHTTPConnection addSpecificStudiesToArray: array forUser: currentUser predicate: nil];
 }
 
-+ (NSArray*) addSpecificStudiesToArray: (NSArray*) array forUser: (NSManagedObject*) user
++ (NSArray*) addSpecificStudiesToArray: (NSArray*) array forUser: (NSManagedObject*) user predicate: (NSPredicate*) predicate
 {
 	NSMutableArray *specificArray = [NSMutableArray array];
+	
+	if( predicate == nil)
+		predicate = [NSPredicate predicateWithValue: YES];
 	
 	@try
 	{
@@ -875,7 +885,7 @@ static NSString *webDirectory = nil;
 			NSError *error = nil;
 			NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
 			[dbRequest setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey:@"Study"]];
-			[dbRequest setPredicate: [NSPredicate predicateWithValue: YES]];
+			[dbRequest setPredicate: predicate];
 			
 			error = nil;
 			NSArray *studiesArray = [[[BrowserController currentBrowser] managedObjectContext] executeFetchRequest: dbRequest error: &error];
@@ -2126,8 +2136,6 @@ static NSString *webDirectory = nil;
 		[templateString replaceOccurrencesOfString:@"%album%" withString:[OsiriXHTTPConnection decodeURLString:[album stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 		
 		[templateString replaceOccurrencesOfString:@"%VideoType%" withString: isiPhone? @"video/x-m4v":@"video/x-mov" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-		
-		
 		
 		NSPredicate *browsePredicate;
 		if([[parameters allKeys] containsObject:@"id"])
