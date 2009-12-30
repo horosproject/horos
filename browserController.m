@@ -15132,8 +15132,12 @@ static volatile int numberOfThreadsForJPEG = 0;
 			modalDelegate: nil
 		   didEndSelector: nil
 			  contextInfo: nil];
-		
-	int result = [NSApp runModalForWindow: notificationEmailWindow];
+	
+	int result;
+	restart:
+	{
+		result = [NSApp runModalForWindow: notificationEmailWindow];
+	}
 	
 	[notificationEmailWindow makeFirstResponder: nil];
 	
@@ -15141,7 +15145,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	{
 		if( [[notificationEmailArrayController selectedObjects] count] == 0 && [temporaryNotificationEmail length] <= 3)
 		{
-			NSRunCriticalAlertPanel( NSLocalizedString( @"Error", nil), NSLocalizedString( @"No user(s) selected, no emails will be sent.", nil), NSLocalizedString( @"OK", nil) , nil, nil);
+			NSRunCriticalAlertPanelRelativeToWindow( NSLocalizedString( @"Error", nil), NSLocalizedString( @"Select one or more users.", nil), NSLocalizedString( @"OK", nil) , nil, nil, notificationEmailWindow);
+			goto restart;
 		}
 		else
 		{
@@ -15192,11 +15197,10 @@ static volatile int numberOfThreadsForJPEG = 0;
 			{
 				// First, create a temporary user
 				
-				NSManagedObject *user = [NSEntityDescription insertNewObjectForEntityForName: @"User" inManagedObjectContext: self.userManagedObjectContext];
-				
 				if( [temporaryNotificationEmail rangeOfString: @"@"].location == NSNotFound)
 				{
-					NSRunCriticalAlertPanel( NSLocalizedString( @"Error", nil), NSLocalizedString( @"Is the user email correct? the @ character is not found.", nil), NSLocalizedString( @"OK", nil) , nil, nil);
+					NSRunCriticalAlertPanelRelativeToWindow( NSLocalizedString( @"Error", nil), NSLocalizedString( @"Is the user email correct? the @ character is not found.", nil), NSLocalizedString( @"OK", nil) , nil, nil, notificationEmailWindow);
+					goto restart;
 				}
 				else
 				{
@@ -15204,10 +15208,13 @@ static volatile int numberOfThreadsForJPEG = 0;
 					
 					if( [name length] < 2)
 					{
-						NSRunCriticalAlertPanel( NSLocalizedString( @"Error", nil), NSLocalizedString( @"Name needs to be at least 2 characters.", nil), NSLocalizedString( @"OK", nil) , nil, nil);
+						NSRunCriticalAlertPanelRelativeToWindow( NSLocalizedString( @"Error", nil), NSLocalizedString( @"Name needs to be at least 2 characters.", nil), NSLocalizedString( @"OK", nil) , nil, nil, notificationEmailWindow);
+						goto restart;
 					}
 					else
 					{
+						NSManagedObject *user = [NSEntityDescription insertNewObjectForEntityForName: @"User" inManagedObjectContext: self.userManagedObjectContext];
+						
 						[user setValue: name forKey: @"name"];
 						[user setValue: temporaryNotificationEmail forKey: @"email"];
 						[user setValue: [NSNumber numberWithBool: YES] forKey: @"autoDelete"];
