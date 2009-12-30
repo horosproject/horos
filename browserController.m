@@ -8046,10 +8046,14 @@ static BOOL withReset = NO;
 	float reverseScrollWheel;
 	
 	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"Scroll Wheel Reversed"])
-		reverseScrollWheel=-1.0;
+		reverseScrollWheel = -1.0;
 	else
-		reverseScrollWheel=1.0;
+		reverseScrollWheel = 1.0;
+	
 	float change = reverseScrollWheel * [theEvent deltaY];
+	
+	if( [theEvent deltaY] == 0)
+		return;
 	
 	int	pos = [animationSlider intValue];
 	
@@ -15219,6 +15223,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 						[user setValue: temporaryNotificationEmail forKey: @"email"];
 						[user setValue: [NSNumber numberWithBool: YES] forKey: @"autoDelete"];
 						
+						[OsiriXHTTPConnection updateLogEntryForStudy: [[notificationEmailArrayController selectedObjects] lastObject] withMessage: @"Temporary User Created" forUser: [user valueForKey: @"name"] ip: nil];
 						[OsiriXHTTPConnection sendNotificationsEmailsTo: [NSArray arrayWithObject: user] aboutStudies: [self databaseSelection] predicate: nil];
 						
 						// And send a separate email with user name and password
@@ -15238,6 +15243,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 						[emailMessage appendString: [user valueForKey: @"password"]];
 						[emailMessage appendString: @"\r\r"];
 						[emailMessage appendFormat: NSLocalizedString( @"This account is a temporary account. It will be automatically deleted in %d days.", nil), [[NSUserDefaults standardUserDefaults] integerForKey: @"temporaryUserDuration"]];
+						
+						[OsiriXHTTPConnection updateLogEntryForStudy: [[notificationEmailArrayController selectedObjects] lastObject] withMessage: @"Temporary User name & password sent by email" forUser: [user valueForKey: @"name"] ip: nil];
 						
 						[[CSMailMailClient mailClient] deliverMessage: [[[NSAttributedString alloc] initWithString: emailMessage] autorelease] headers: [NSDictionary dictionaryWithObjectsAndKeys: temporaryNotificationEmail, @"To", fromEmailAddress, @"Sender", emailSubject, @"Subject", nil]];
 					}

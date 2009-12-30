@@ -4187,9 +4187,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"ZoomWithHorizonScroll"] == NO) deltaX = 0;
 	
 	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"Scroll Wheel Reversed"])
-		reverseScrollWheel=-1.0;
+		reverseScrollWheel = -1.0;
 	else
-		reverseScrollWheel=1.0;
+		reverseScrollWheel = 1.0;
 	
 	if( flippedData) reverseScrollWheel *= -1.0;
 	
@@ -4202,7 +4202,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			[[self controller] saveCrossPositions];
 			float change;
 			
-			if( fabs( [theEvent deltaY]) >  fabs( deltaX) )
+			if( fabs( [theEvent deltaY]) > fabs( deltaX))
 			{
 				if( [theEvent modifierFlags]  & NSCommandKeyMask)
 				{
@@ -4219,7 +4219,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					// 4D Direction scroll - Cardiac CT eg	
 					float change = [theEvent deltaY] / -2.5f;
 					
-					if( change > 0)
+					if( change >= 0)
 					{
 						change = ceil( change);
 						if( change < 1) change = 1;
@@ -4241,7 +4241,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				else
 				{
 					change = reverseScrollWheel * [theEvent deltaY];
-					if( change > 0)
+					if( change >= 0)
 					{
 						change = ceil( change);
 						if( change < 1) change = 1;
@@ -4261,7 +4261,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			else
 			{
 				change = reverseScrollWheel * deltaX;
-				if( change > 0)
+				if( change >= 0)
 				{
 					change = ceil( change);
 					if( change < 1) change = 1;
@@ -4305,7 +4305,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						// 4D Direction scroll - Cardiac CT eg	
 						float change = [theEvent deltaY] / -2.5f;
 						
-						if( change > 0)
+						if( change >= 0)
 						{
 							change = ceil( change);
 							if( change < 1) change = 1;
@@ -4329,7 +4329,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				{
 					float change = reverseScrollWheel * [theEvent deltaY] / 2.5f;
 					
-					if( change > 0)
+					if( change >= 0)
 					{
 						change = ceil( change);
 						if( change < 1) change = 1;
