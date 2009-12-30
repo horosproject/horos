@@ -11,7 +11,7 @@
 			<string key="NS.object.0">732</string>
 		</object>
 		<array class="NSMutableArray" key="IBDocument.EditedObjectIDs">
-			<integer value="484"/>
+			<integer value="127"/>
 		</array>
 		<array key="IBDocument.PluginDependencies">
 			<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -1512,13 +1512,13 @@ bmdQaHlzaWNpYW4gQ09OVEFJTlNbY2RdICdQcm9mLiBST1NTRVQnKQ</string>
 										<object class="NSTextField" id="909526999">
 											<reference key="NSNextResponder" ref="395241014"/>
 											<int key="NSvFlags">268</int>
-											<string key="NSFrame">{{305, 616}, {134, 17}}</string>
+											<string key="NSFrame">{{264, 616}, {175, 17}}</string>
 											<reference key="NSSuperview" ref="395241014"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSTextFieldCell" key="NSCell" id="313130885">
 												<int key="NSCellFlags">68288064</int>
 												<int key="NSCellFlags2">71304192</int>
-												<string key="NSContents">Sender address:</string>
+												<string key="NSContents">Sender Email address:</string>
 												<reference key="NSSupport" ref="349069678"/>
 												<reference key="NSControlView" ref="909526999"/>
 												<reference key="NSBackgroundColor" ref="319257802"/>
@@ -1730,10 +1730,6 @@ bmdQaHlzaWNpYW4gQ09OVEFJTlNbY2RdICdQcm9mLiBST1NTRVQnKQ</string>
 				<string key="NSMaxSize">{1.79769e+308, 1.79769e+308}</string>
 			</object>
 			<object class="NSUserDefaultsController" id="896066363">
-				<array class="NSMutableArray" key="NSDeclaredKeys">
-					<string>passwordWebServer</string>
-					<string>notificationsEmails</string>
-				</array>
 				<bool key="NSSharedInstance">YES</bool>
 			</object>
 			<object class="NSArrayController" id="596395762">

@@ -1636,6 +1636,7 @@ static NSDate *lastWarningDate = nil;
 	if( success == NO)
 	{
 		NSLog( @"************ WEB SERVER ERROR: %@", error);
+		[self performSelectorOnMainThread:@selector( displayError:) withObject: NSLocalizedString( @"Cannot start Web Server. TCP/IP port is probably already used by another process.", nil) waitUntilDone: YES];
 	}
 	else
 	{
@@ -1785,6 +1786,11 @@ static NSDate *lastWarningDate = nil;
 }
 
 #endif
+
+-(void) displayError: (NSString*) err
+{
+	NSRunCriticalAlertPanel( NSLocalizedString( @"Error", nil), err, NSLocalizedString( @"OK", nil), nil, nil);
+}
 
 -(void) displayListenerError: (NSString*) err
 {
