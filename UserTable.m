@@ -53,7 +53,7 @@ static PSGenerator *generator = nil;
 {
 	if( [v boolValue])
 	{
-		[self setValue: [NSDate dateWithTimeIntervalSinceReferenceDate: [NSDate timeIntervalSinceReferenceDate] + [[NSUserDefaults standardUserDefaults] integerForKey: @"temporaryUserDuration"]] forKey: @"deletionDate"];
+		[self setValue: [NSDate dateWithTimeIntervalSinceReferenceDate: [NSDate timeIntervalSinceReferenceDate] + [[NSUserDefaults standardUserDefaults] integerForKey: @"temporaryUserDuration"] * 60L*60L*24L] forKey: @"deletionDate"];
 	}
 	
 	[self setPrimitiveValue: v forKey: @"autoDelete"];

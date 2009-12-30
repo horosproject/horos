@@ -15145,7 +15145,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	{
 		if( [[notificationEmailArrayController selectedObjects] count] == 0 && [temporaryNotificationEmail length] <= 3)
 		{
-			NSRunCriticalAlertPanelRelativeToWindow( NSLocalizedString( @"Error", nil), NSLocalizedString( @"Select one or more users.", nil), NSLocalizedString( @"OK", nil) , nil, nil, notificationEmailWindow);
+			NSRunCriticalAlertPanel( NSLocalizedString( @"Error", nil), NSLocalizedString( @"Select one or more users.", nil), NSLocalizedString( @"OK", nil) , nil, nil);
 			goto restart;
 		}
 		else
@@ -15199,7 +15199,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 				
 				if( [temporaryNotificationEmail rangeOfString: @"@"].location == NSNotFound)
 				{
-					NSRunCriticalAlertPanelRelativeToWindow( NSLocalizedString( @"Error", nil), NSLocalizedString( @"Is the user email correct? the @ character is not found.", nil), NSLocalizedString( @"OK", nil) , nil, nil, notificationEmailWindow);
+					NSRunCriticalAlertPanel( NSLocalizedString( @"Error", nil), NSLocalizedString( @"Is the user email correct? the @ character is not found.", nil), NSLocalizedString( @"OK", nil) , nil, nil);
 					goto restart;
 				}
 				else
@@ -15208,7 +15208,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 					
 					if( [name length] < 2)
 					{
-						NSRunCriticalAlertPanelRelativeToWindow( NSLocalizedString( @"Error", nil), NSLocalizedString( @"Name needs to be at least 2 characters.", nil), NSLocalizedString( @"OK", nil) , nil, nil, notificationEmailWindow);
+						NSRunCriticalAlertPanel( NSLocalizedString( @"Error", nil), NSLocalizedString( @"Name needs to be at least 2 characters.", nil), NSLocalizedString( @"OK", nil) , nil, nil);
 						goto restart;
 					}
 					else
