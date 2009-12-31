@@ -156,20 +156,24 @@ static NSString *webDirectory = nil;
 
 + (void) checkWebDirectory
 {
+	#define PATH2HTML @"~/Library/Application Support/OsiriX/"
+	
 	if( webDirectory == nil)
 	{
+		NSString *supportPath = [PATH2HTML stringByExpandingTildeInPath];
+		
 		webDirectory = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"WebServicesHTML"];
 		
 		BOOL isDirectory = NO;
 		
-		if( [[NSFileManager defaultManager] fileExistsAtPath: [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent: @"WebServicesHTML"] isDirectory: &isDirectory] == YES && isDirectory == YES)
-			webDirectory = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent: @"WebServicesHTML"];
+		if( [[NSFileManager defaultManager] fileExistsAtPath: [supportPath stringByAppendingPathComponent: @"WebServicesHTML"] isDirectory: &isDirectory] == YES && isDirectory == YES)
+			webDirectory = [supportPath stringByAppendingPathComponent: @"WebServicesHTML"];
 		else
 		{
-			[[NSFileManager defaultManager] copyItemAtPath: webDirectory toPath: [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent: [webDirectory lastPathComponent]] error: nil];
+			[[NSFileManager defaultManager] copyItemAtPath: webDirectory toPath: [supportPath stringByAppendingPathComponent: [webDirectory lastPathComponent]] error: nil];
 			
-			if( [[NSFileManager defaultManager] fileExistsAtPath: [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent: @"WebServicesHTML"] isDirectory: &isDirectory] == YES && isDirectory == YES)
-				webDirectory = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent: @"WebServicesHTML"];
+			if( [[NSFileManager defaultManager] fileExistsAtPath: [supportPath stringByAppendingPathComponent: @"WebServicesHTML"] isDirectory: &isDirectory] == YES && isDirectory == YES)
+				webDirectory = [supportPath stringByAppendingPathComponent: @"WebServicesHTML"];
 		}
 		
 		[webDirectory retain];
