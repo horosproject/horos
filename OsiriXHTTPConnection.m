@@ -354,22 +354,22 @@ static NSString *webDirectory = nil;
 {
 	if( [path hasPrefix: @"/images/"])
 		return NO;
-		
+	
 	if( [path isEqualToString: @"/"])
 		return NO;
-
+	
 	if( [path isEqualToString: @"/style.css"])
 		return NO;
-		
+	
 	if( [path isEqualToString: @"/styleswitcher.js"])
 		return NO;
-		
+	
 	if( [path isEqualToString: @"/iPhoneStyle.css"])
 		return NO;
-		
+	
 	if( [path hasPrefix: @"/password_forgotten"])
 		return NO;
-		
+	
 	if( [path hasPrefix: @"/index"])
 		return NO;
 	
@@ -2576,8 +2576,58 @@ static NSString *webDirectory = nil;
 			NSString *username = [[[parameters valueForKey: @"username"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
 			
 			// TRY TO FIND THIS USER
+			
+			// Find all users
+			NSError *error = nil;
+			NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+			[dbRequest setEntity: [[[[BrowserController currentBrowser] userManagedObjectModel] entitiesByName] objectForKey: @"User"]];
+			
+			if( [email length] > [username length])
+				[dbRequest setPredicate: [NSPredicate predicateWithFormat: @"(email BEGINSWITH[cd] %@) AND (email ENDSWITH[cd] %@)", email, email]];
+			else
+				[dbRequest setPredicate: [NSPredicate predicateWithFormat: @"(name BEGINSWITH[cd] %@) AND (name ENDSWITH[cd] %@)", username, username]];
 				
-			message = NSLocalizedString( @"This user doesn't exist!", nil);
+			error = nil;
+			NSArray *users = [[[BrowserController currentBrowser] userManagedObjectContext] executeFetchRequest: dbRequest error:&error];
+			
+			if( [users count] >= 1)
+			{
+				for( user in users)
+				{
+					NSString *fromEmailAddress = [[NSUserDefaults standardUserDefaults] valueForKey: @"notificationsEmailsSender"];
+					
+					if( fromEmailAddress == nil)
+						fromEmailAddress = @"";
+					
+					NSString *emailSubject = NSLocalizedString( @"Your password has been resetted.", nil);
+					NSMutableString *emailMessage = [NSMutableString stringWithString: @""];
+					
+					[user generatePassword];
+					
+					[emailMessage appendString: NSLocalizedString( @"Username:\r\r", nil)];
+					[emailMessage appendString: name];
+					[emailMessage appendString: @"\r\r"];
+					[emailMessage appendString: NSLocalizedString( @"Password:\r\r", nil)];
+					[emailMessage appendString: [user valueForKey: @"password"]];
+					[emailMessage appendString: @"\r\r"];
+					
+					[OsiriXHTTPConnection updateLogEntryForStudy: nil withMessage: @"Password resetted for user" forUser: [user valueForKey: @"name"] ip: nil];
+					
+					[[CSMailMailClient mailClient] deliverMessage: [[[NSAttributedString alloc] initWithString: emailMessage] autorelease] headers: [NSDictionary dictionaryWithObjectsAndKeys: temporaryNotificationEmail, @"To", fromEmailAddress, @"Sender", emailSubject, @"Subject", nil]];
+				
+					message = NSLocalizedString( @"You will receive shortly an email with a new password.", nil);
+				}
+			}
+			else
+			{
+				// To avoid someone scanning for the username
+				
+				[NSThread sleepForTimeInterval: 3];
+				
+				[OsiriXHTTPConnection updateLogEntryForStudy: nil withMessage: @"Unknown user" forUser: [NSString stringWithFormat: @"%@ %@", username, email] ip: nil];
+				
+				message = NSLocalizedString( @"This user doesn't exist in our database.", nil);
+			}
 		}
 		
 		if( [message length] == 0)
@@ -2594,7 +2644,7 @@ static NSString *webDirectory = nil;
 			[templateString replaceOccurrencesOfString:@"%/MessageToWrite%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 		}
 		
-		[templateString replaceOccurrencesOfString: @"%Localized_Message%" withString:NSLocalizedString(@"User Account For", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+		[templateString replaceOccurrencesOfString: @"%Localized_Message%" withString: message options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 		
 		data = [templateString dataUsingEncoding: NSUTF8StringEncoding];
 		
