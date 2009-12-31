@@ -25,7 +25,7 @@ static PSGenerator *generator = nil;
 	if( generator == nil)
 		generator = [[PSGenerator alloc] initWithSourceString: @"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789" minLength: 12 maxLength: 12];
 	
-	[self setPrimitiveValue: [[generator generate: 1] lastObject] forKey: @"password"];
+	[self setValue: [[generator generate: 1] lastObject] forKey: @"password"];
 }
 
 - (void)awakeFromInsert

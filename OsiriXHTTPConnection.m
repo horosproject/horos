@@ -249,8 +249,8 @@ static NSString *webDirectory = nil;
 		return;
 	}
 	
-	[[[BrowserController currentBrowser] userManagedObjectContext] lock];
 	[[[BrowserController currentBrowser] managedObjectContext] lock];
+	[[[BrowserController currentBrowser] userManagedObjectContext] lock];
 	
 	// TEMPORARY USERS
 	
@@ -1520,8 +1520,7 @@ static NSString *webDirectory = nil;
 
 - (NSObject<HTTPResponse> *)httpResponseForMethod:(NSString *)method URI:(NSString *)path
 {
-	BOOL lockReleased = NO;
-	BOOL dicomSendFailed = NO;
+	BOOL lockReleased = NO, waitBeforeReturning = NO, dicomSendFailed = NO;
 	
 	NSString *contentRange = [(id)CFHTTPMessageCopyHeaderFieldValue(request, (CFStringRef)@"Range") autorelease];
 	NSString *userAgent = [(id)CFHTTPMessageCopyHeaderFieldValue(request, (CFStringRef)@"User-Agent") autorelease];
@@ -2639,8 +2638,7 @@ static NSString *webDirectory = nil;
 				else
 				{
 					// To avoid someone scanning for the username
-					
-					[NSThread sleepForTimeInterval: 3];
+					waitBeforeReturning = YES;
 					
 					[OsiriXHTTPConnection updateLogEntryForStudy: nil withMessage: @"Unknown user" forUser: [NSString stringWithFormat: @"%@ %@", username, email] ip: nil];
 					
@@ -2779,8 +2777,11 @@ static NSString *webDirectory = nil;
 	if( lockReleased == NO)
 		[[[BrowserController currentBrowser] managedObjectContext] unlock];
 	
+	if( waitBeforeReturning)
+		[NSThread sleepForTimeInterval: 3];
+	
 	if( err)
-		return nil;
+		data = [[NSString stringWithString: NSLocalizedString( @"Error 404\r\rFailed to process this request.\r\rOur security team and our webmaster have been notified. They will arrive shortly at this computer location.", nil)] dataUsingEncoding: NSUTF8StringEncoding];
 	
 	return [[[HTTPDataResponse alloc] initWithData: data] autorelease];
 }

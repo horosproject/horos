@@ -1740,7 +1740,7 @@ static NSDate *lastWarningDate = nil;
 	{
 		[[BrowserController currentBrowser] userManagedObjectContext];
 		[NSThread detachNewThreadSelector: @selector( startHTTPserver:) toTarget: self withObject:nil];
-		NSTimer *t = [NSTimer scheduledTimerWithTimeInterval: 5 target: self selector: @selector( webServerEmailNotifications:) userInfo: nil repeats: YES];
+		NSTimer *t = [[NSTimer scheduledTimerWithTimeInterval: 60 target: self selector: @selector( webServerEmailNotifications:) userInfo: nil repeats: YES] retain];
 	}
 	#endif
 	

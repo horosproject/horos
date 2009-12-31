@@ -15156,47 +15156,56 @@ static volatile int numberOfThreadsForJPEG = 0;
 		}
 		else
 		{
-			// Add them to select users AND send a notification email
-			if( [[notificationEmailArrayController selectedObjects] count] > 0)
+			[self.userManagedObjectContext lock];
+			
+			@try
 			{
-				for( NSManagedObject *user in [notificationEmailArrayController selectedObjects])
+				// Add them to select users AND send a notification email
+				if( [[notificationEmailArrayController selectedObjects] count] > 0)
 				{
-					NSArray *studiesArrayStudyInstanceUID = [[[user valueForKey: @"studies"] allObjects] valueForKey: @"studyInstanceUID"];
-					NSArray *studiesArrayPatientUID = [[[user valueForKey: @"studies"] allObjects] valueForKey: @"patientUID"];
-					
-					for( NSManagedObject *study in [self databaseSelection])
+					for( NSManagedObject *user in [notificationEmailArrayController selectedObjects])
 					{
-						if( [[study valueForKey: @"type"] isEqualToString:@"Series"])
-							study = [study valueForKey:@"study"];
+						NSArray *studiesArrayStudyInstanceUID = [[[user valueForKey: @"studies"] allObjects] valueForKey: @"studyInstanceUID"];
+						NSArray *studiesArrayPatientUID = [[[user valueForKey: @"studies"] allObjects] valueForKey: @"patientUID"];
 						
-						if( [studiesArrayStudyInstanceUID indexOfObject: [study valueForKey: @"studyInstanceUID"]] == NSNotFound || [studiesArrayPatientUID indexOfObject: [study valueForKey: @"patientUID"]]  == NSNotFound)
+						for( NSManagedObject *study in [self databaseSelection])
 						{
-							NSManagedObject *studyLink = [NSEntityDescription insertNewObjectForEntityForName: @"Study" inManagedObjectContext: self.userManagedObjectContext];
+							if( [[study valueForKey: @"type"] isEqualToString:@"Series"])
+								study = [study valueForKey:@"study"];
 							
-							[studyLink setValue: [[[study valueForKey: @"studyInstanceUID"] copy] autorelease] forKey: @"studyInstanceUID"];
-							[studyLink setValue: [[[study valueForKey: @"patientUID"] copy] autorelease] forKey: @"patientUID"];
-							[studyLink setValue: [NSDate dateWithTimeIntervalSinceReferenceDate: [[NSUserDefaults standardUserDefaults] doubleForKey: @"lastNotificationsDate"]] forKey: @"dateAdded"];
-							
-							[studyLink setValue: user forKey: @"user"];
-							
-							@try
+							if( [studiesArrayStudyInstanceUID indexOfObject: [study valueForKey: @"studyInstanceUID"]] == NSNotFound || [studiesArrayPatientUID indexOfObject: [study valueForKey: @"patientUID"]]  == NSNotFound)
 							{
-								[self.userManagedObjectContext save: nil];
+								NSManagedObject *studyLink = [NSEntityDescription insertNewObjectForEntityForName: @"Study" inManagedObjectContext: self.userManagedObjectContext];
+								
+								[studyLink setValue: [[[study valueForKey: @"studyInstanceUID"] copy] autorelease] forKey: @"studyInstanceUID"];
+								[studyLink setValue: [[[study valueForKey: @"patientUID"] copy] autorelease] forKey: @"patientUID"];
+								[studyLink setValue: [NSDate dateWithTimeIntervalSinceReferenceDate: [[NSUserDefaults standardUserDefaults] doubleForKey: @"lastNotificationsDate"]] forKey: @"dateAdded"];
+								
+								[studyLink setValue: user forKey: @"user"];
+								
+								@try
+								{
+									[self.userManagedObjectContext save: nil];
+								}
+								@catch (NSException * e)
+								{
+									NSLog( @"[self.userManagedObjectContext save: nil]");
+								}
+								
+								studiesArrayStudyInstanceUID = [[[user valueForKey: @"studies"] allObjects] valueForKey: @"studyInstanceUID"];
+								studiesArrayPatientUID = [[[user valueForKey: @"studies"] allObjects] valueForKey: @"patientUID"];
+								
+								[OsiriXHTTPConnection updateLogEntryForStudy: study withMessage: @"Add Study to User" forUser: [user valueForKey: @"name"] ip: nil];
 							}
-							@catch (NSException * e)
-							{
-								NSLog( @"[self.userManagedObjectContext save: nil]");
-							}
-							
-							studiesArrayStudyInstanceUID = [[[user valueForKey: @"studies"] allObjects] valueForKey: @"studyInstanceUID"];
-							studiesArrayPatientUID = [[[user valueForKey: @"studies"] allObjects] valueForKey: @"patientUID"];
-							
-							[OsiriXHTTPConnection updateLogEntryForStudy: study withMessage: @"Add Study to User" forUser: [user valueForKey: @"name"] ip: nil];
 						}
 					}
+					
+					[OsiriXHTTPConnection sendNotificationsEmailsTo: [notificationEmailArrayController selectedObjects] aboutStudies: [self databaseSelection] predicate: nil];
 				}
-				
-				[OsiriXHTTPConnection sendNotificationsEmailsTo: [notificationEmailArrayController selectedObjects] aboutStudies: [self databaseSelection] predicate: nil];
+			}
+			@catch( NSException *e)
+			{
+				NSLog( @"***** sendEmailNotification exception: %@", e);
 			}
 			
 			if( [temporaryNotificationEmail length] > 3)
