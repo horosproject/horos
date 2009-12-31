@@ -3,7 +3,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-	<title>User Account</title>
+	<title>>%Localized_UserAccountFor% : %name%</title>
 	<meta http-equiv=content-type content="text/html; charset=UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
 	<link rel="stylesheet" type="text/css" href="style.css" title="standard" />
@@ -27,8 +27,8 @@
 			%Localized_PreviousPassword% : <input type="password" id="previouspassword" name="previouspassword" size="30"/><br><br>
 			%Localized_NewPassword% : <input type="password" id="password" name="password" size="30"/><br><br>
 			%Localized_RepeatNewPassword% : <input type="password" id="password2" name="password2" size="30"/><br><br>
-			<input type="hidden" name="dicomcstoreport" value="%DicomCStorePort%" name="search"/>
-			<input type="hidden" name="what" value="changePassword" name="search"/>
+			<input type="hidden" name="dicomcstoreport" value="%DicomCStorePort%" name="cstoreport"/>
+			<input type="hidden" name="what" value="changePassword" name="changePassword"/>
 			<input type="submit" id="updatePassword" value="%LocalizedLabel_UpdatePasswordButton%"/>
 			<HR>
 		</form>
@@ -38,8 +38,8 @@
 			<b>%Localized_Address%</b> : <input type="text" id="address" name="address" size="80" value="%address%"/><br>%address%<br><br>
 			<b>%Localized_Phone%</b> : <input type="text" id="phone" name="phone" size="40" value="%phone%"/><br>%phone%<br><br>
 			<b>%Localized_EmailNotification%</b> : <input type="checkbox" id="emailNotification" name="emailNotification" %emailNotification%/><br><br>
-			<input type="hidden" name="dicomcstoreport" value="%DicomCStorePort%" name="search"/>
-			<input type="hidden" name="what" value="changeSettings" name="search"/>
+			<input type="hidden" name="dicomcstoreport" value="%DicomCStorePort%" name="cstoreport"/>
+			<input type="hidden" name="what" value="changeSettings" name="changeSettings"/>
 			<input type="submit" id="updateSettings" value="%LocalizedLabel_UpdateSettingsButton%"/>
 			<br>
 			<br>

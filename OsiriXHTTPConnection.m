@@ -352,6 +352,9 @@ static NSString *webDirectory = nil;
 
 - (BOOL)isPasswordProtected:(NSString *)path
 {
+	if( [[path lastPathComponent] isEqualToString: @"password_forgotten.html"])
+		return NO;
+	
 	return [[NSUserDefaults standardUserDefaults] boolForKey: @"passwordWebServer"];
 }
 
@@ -1596,8 +1599,10 @@ static NSString *webDirectory = nil;
 	[[[BrowserController currentBrowser] managedObjectContext] lock];
 	
 	data = [NSData dataWithContentsOfFile:requestedFile];
-#pragma mark index.html
-	if([requestedFile isEqualToString:[webDirectory stringByAppendingPathComponent:@"index.html"]])
+
+	#pragma mark index.html
+	
+	if([requestedFile isEqualToString: [webDirectory stringByAppendingPathComponent:@"index.html"]])
 	{
 		NSMutableString *templateString = [NSMutableString stringWithContentsOfFile:[webDirectory stringByAppendingPathComponent:@"index.html"]];
 		
@@ -2495,6 +2500,15 @@ static NSString *webDirectory = nil;
 	{
 		data = [NSData dataWithContentsOfFile:requestedFile];
 		totalLength = [data length];
+		
+		err = NO;
+	}
+	#pragma password_forgotten
+	else if( [fileURL isEqualToString: @"password_forgotten"])
+	{
+		NSMutableString *templateString = [NSMutableString stringWithContentsOfFile: [webDirectory stringByAppendingPathComponent:@"password_forgotten.html"]];
+		
+		data = [templateString dataUsingEncoding: NSUTF8StringEncoding];
 		
 		err = NO;
 	}
