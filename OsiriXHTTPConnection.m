@@ -15,6 +15,7 @@
 #import "HTTPResponse.h"
 #import "HTTPAuthenticationRequest.h"
 #import "CSMailMailClient.h"
+#import "UserTable.h"
 
 #import <Message/NSMailDelivery.h>
 
@@ -160,8 +161,16 @@ static NSString *webDirectory = nil;
 		webDirectory = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"WebServicesHTML"];
 		
 		BOOL isDirectory = NO;
+		
 		if( [[NSFileManager defaultManager] fileExistsAtPath: [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent: @"WebServicesHTML"] isDirectory: &isDirectory] == YES && isDirectory == YES)
 			webDirectory = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent: @"WebServicesHTML"];
+		else
+		{
+			[[NSFileManager defaultManager] copyItemAtPath: webDirectory toPath: [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent: [webDirectory lastPathComponent]] error: nil];
+			
+			if( [[NSFileManager defaultManager] fileExistsAtPath: [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent: @"WebServicesHTML"] isDirectory: &isDirectory] == YES && isDirectory == YES)
+				webDirectory = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent: @"WebServicesHTML"];
+		}
 		
 		[webDirectory retain];
 	}
@@ -2190,10 +2199,10 @@ static NSString *webDirectory = nil;
 		NSString *search = [OsiriXHTTPConnection nonNilString:[parameters objectForKey:@"search"]];
 		NSString *album = [OsiriXHTTPConnection nonNilString:[parameters objectForKey:@"album"]];
 		
-		[templateString replaceOccurrencesOfString:@"%browse%" withString:browse options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-		[templateString replaceOccurrencesOfString:@"%browseParameter%" withString:browseParameter options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-		[templateString replaceOccurrencesOfString:@"%search%" withString:[OsiriXHTTPConnection decodeURLString:search] options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-		[templateString replaceOccurrencesOfString:@"%album%" withString:[OsiriXHTTPConnection decodeURLString:[album stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+		[templateString replaceOccurrencesOfString:@"%browse%" withString:browse options: NSLiteralSearch range: NSMakeRange(0, [templateString length])];
+		[templateString replaceOccurrencesOfString:@"%browseParameter%" withString: browseParameter options: NSLiteralSearch range: NSMakeRange(0, [templateString length])];
+		[templateString replaceOccurrencesOfString:@"%search%" withString: [OsiriXHTTPConnection decodeURLString:search] options: NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+		[templateString replaceOccurrencesOfString:@"%album%" withString: [OsiriXHTTPConnection decodeURLString: [album stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 		
 		[templateString replaceOccurrencesOfString:@"%VideoType%" withString: isiPhone? @"video/x-m4v":@"video/x-mov" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 		
@@ -2264,6 +2273,10 @@ static NSString *webDirectory = nil;
 			//NSLog(@"NEW w: %d, h: %d", width, height);
 			[templateString replaceOccurrencesOfString:@"%width%" withString:[NSString stringWithFormat:@"%d", width] options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 			[templateString replaceOccurrencesOfString:@"%height%" withString:[NSString stringWithFormat:@"%d", height] options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+			
+			NSString *url = [NSString stringWithFormat: @"/movie.mov?id=%@&studyID=%@", [parameters objectForKey:@"id"], [parameters objectForKey:@"studyID"]];
+			[templateString replaceOccurrencesOfString:@"%DownloadMovieURL%" withString: [NSString stringWithFormat: @"<a href=\"%@\">%@</a>", url, NSLocalizedString( @"Link to Quicktime Movie File", nil)] options: NSLiteralSearch range: NSMakeRange(0, [templateString length])];
+			[templateString replaceOccurrencesOfString:@"%Localized_QuicktimeRequired%" withString: NSLocalizedString( @"Viewing these movies requires <a href=\"http://www.apple.com/quicktime\">Apple Quicktime</a>", nil) options: NSLiteralSearch range: NSMakeRange(0, [templateString length])];
 		}
 		
 		NSString *seriesName = [OsiriXHTTPConnection nonNilString:[[series lastObject] valueForKey:@"name"]];
@@ -2568,7 +2581,7 @@ static NSString *webDirectory = nil;
 		[templateString replaceOccurrencesOfString: @"%Localized_RestorePassword%" withString:NSLocalizedString(@"Enter your username or your email to receive a new password by email:", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 		[templateString replaceOccurrencesOfString: @"%Localized_RestorePasswordButton%" withString:NSLocalizedString(@"Reset Password", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 		
-		NSString *message = nil;
+		NSString *message = @"";
 		
 		if( [[parameters valueForKey: @"what"] isEqualToString: @"restorePassword"])
 		{
@@ -2577,57 +2590,69 @@ static NSString *webDirectory = nil;
 			
 			// TRY TO FIND THIS USER
 			
-			// Find all users
-			NSError *error = nil;
-			NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-			[dbRequest setEntity: [[[[BrowserController currentBrowser] userManagedObjectModel] entitiesByName] objectForKey: @"User"]];
+			[[[BrowserController currentBrowser] userManagedObjectContext] lock];
 			
-			if( [email length] > [username length])
-				[dbRequest setPredicate: [NSPredicate predicateWithFormat: @"(email BEGINSWITH[cd] %@) AND (email ENDSWITH[cd] %@)", email, email]];
-			else
-				[dbRequest setPredicate: [NSPredicate predicateWithFormat: @"(name BEGINSWITH[cd] %@) AND (name ENDSWITH[cd] %@)", username, username]];
-				
-			error = nil;
-			NSArray *users = [[[BrowserController currentBrowser] userManagedObjectContext] executeFetchRequest: dbRequest error:&error];
-			
-			if( [users count] >= 1)
+			@try
 			{
-				for( user in users)
-				{
-					NSString *fromEmailAddress = [[NSUserDefaults standardUserDefaults] valueForKey: @"notificationsEmailsSender"];
-					
-					if( fromEmailAddress == nil)
-						fromEmailAddress = @"";
-					
-					NSString *emailSubject = NSLocalizedString( @"Your password has been resetted.", nil);
-					NSMutableString *emailMessage = [NSMutableString stringWithString: @""];
-					
-					[user generatePassword];
-					
-					[emailMessage appendString: NSLocalizedString( @"Username:\r\r", nil)];
-					[emailMessage appendString: name];
-					[emailMessage appendString: @"\r\r"];
-					[emailMessage appendString: NSLocalizedString( @"Password:\r\r", nil)];
-					[emailMessage appendString: [user valueForKey: @"password"]];
-					[emailMessage appendString: @"\r\r"];
-					
-					[OsiriXHTTPConnection updateLogEntryForStudy: nil withMessage: @"Password resetted for user" forUser: [user valueForKey: @"name"] ip: nil];
-					
-					[[CSMailMailClient mailClient] deliverMessage: [[[NSAttributedString alloc] initWithString: emailMessage] autorelease] headers: [NSDictionary dictionaryWithObjectsAndKeys: temporaryNotificationEmail, @"To", fromEmailAddress, @"Sender", emailSubject, @"Subject", nil]];
+				NSError *error = nil;
+				NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+				[dbRequest setEntity: [[[[BrowserController currentBrowser] userManagedObjectModel] entitiesByName] objectForKey: @"User"]];
 				
-					message = NSLocalizedString( @"You will receive shortly an email with a new password.", nil);
+				if( [email length] > [username length])
+					[dbRequest setPredicate: [NSPredicate predicateWithFormat: @"(email BEGINSWITH[cd] %@) AND (email ENDSWITH[cd] %@)", email, email]];
+				else
+					[dbRequest setPredicate: [NSPredicate predicateWithFormat: @"(name BEGINSWITH[cd] %@) AND (name ENDSWITH[cd] %@)", username, username]];
+					
+				error = nil;
+				NSArray *users = [[[BrowserController currentBrowser] userManagedObjectContext] executeFetchRequest: dbRequest error:&error];
+				
+				if( [users count] >= 1)
+				{
+					for( UserTable *user in users)
+					{
+						NSString *fromEmailAddress = [[NSUserDefaults standardUserDefaults] valueForKey: @"notificationsEmailsSender"];
+						
+						if( fromEmailAddress == nil)
+							fromEmailAddress = @"";
+						
+						NSString *emailSubject = NSLocalizedString( @"Your password has been resetted.", nil);
+						NSMutableString *emailMessage = [NSMutableString stringWithString: @""];
+						
+						[user generatePassword];
+						
+						[emailMessage appendString: NSLocalizedString( @"Username:\r\r", nil)];
+						[emailMessage appendString: [user valueForKey: @"name"]];
+						[emailMessage appendString: @"\r\r"];
+						[emailMessage appendString: NSLocalizedString( @"Password:\r\r", nil)];
+						[emailMessage appendString: [user valueForKey: @"password"]];
+						[emailMessage appendString: @"\r\r"];
+						
+						[OsiriXHTTPConnection updateLogEntryForStudy: nil withMessage: @"Password resetted for user" forUser: [user valueForKey: @"name"] ip: nil];
+						
+						[[CSMailMailClient mailClient] deliverMessage: [[[NSAttributedString alloc] initWithString: emailMessage] autorelease] headers: [NSDictionary dictionaryWithObjectsAndKeys: [user valueForKey: @"email"], @"To", fromEmailAddress, @"Sender", emailSubject, @"Subject", nil]];
+					
+						message = NSLocalizedString( @"You will receive shortly an email with a new password.", nil);
+						
+						[[BrowserController currentBrowser] saveUserDatabase];
+					}
+				}
+				else
+				{
+					// To avoid someone scanning for the username
+					
+					[NSThread sleepForTimeInterval: 3];
+					
+					[OsiriXHTTPConnection updateLogEntryForStudy: nil withMessage: @"Unknown user" forUser: [NSString stringWithFormat: @"%@ %@", username, email] ip: nil];
+					
+					message = NSLocalizedString( @"This user doesn't exist in our database.", nil);
 				}
 			}
-			else
+			@catch( NSException *e)
 			{
-				// To avoid someone scanning for the username
-				
-				[NSThread sleepForTimeInterval: 3];
-				
-				[OsiriXHTTPConnection updateLogEntryForStudy: nil withMessage: @"Unknown user" forUser: [NSString stringWithFormat: @"%@ %@", username, email] ip: nil];
-				
-				message = NSLocalizedString( @"This user doesn't exist in our database.", nil);
+				NSLog( @"******* password_forgotten: %@", e);
 			}
+			
+			[[[BrowserController currentBrowser] userManagedObjectContext] unlock];
 		}
 		
 		if( [message length] == 0)

@@ -21,4 +21,6 @@
 	
 }
 
+- (void) generatePassword;
+
 @end

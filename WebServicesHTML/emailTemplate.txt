@@ -10,7 +10,7 @@ New radiology exam(s) are available on your account. Click on the following URLs
 
 Your username (%Username%) and password are required to log on the web server.
 
-These studies can be downloaded as DICOM files, and directly reviewed on the OsiriX software, availble for free at this address: http://www.osirix-viewer.com
+These studies can be downloaded as DICOM files, and directly reviewed on the OsiriX software, available for free at this address: http://www.osirix-viewer.com
 
 
 Sincerely,
