@@ -350,9 +350,27 @@ static NSString *webDirectory = nil;
 	[[NSUserDefaults standardUserDefaults] setValue: newCheckString forKey: @"lastNotificationsDate"];
 }
 
-- (BOOL)isPasswordProtected:(NSString *)path
+- (BOOL) isPasswordProtected:(NSString *)path
 {
-	if( [[path lastPathComponent] isEqualToString: @"password_forgotten.html"])
+	if( [path hasPrefix: @"/images/"])
+		return NO;
+		
+	if( [path isEqualToString: @"/"])
+		return NO;
+
+	if( [path isEqualToString: @"/style.css"])
+		return NO;
+		
+	if( [path isEqualToString: @"/styleswitcher.js"])
+		return NO;
+		
+	if( [path isEqualToString: @"/iPhoneStyle.css"])
+		return NO;
+		
+	if( [path hasPrefix: @"/password_forgotten"])
+		return NO;
+		
+	if( [path hasPrefix: @"/index"])
 		return NO;
 	
 	return [[NSUserDefaults standardUserDefaults] boolForKey: @"passwordWebServer"];
@@ -1486,6 +1504,11 @@ static NSString *webDirectory = nil;
 	[pool release];
 }
 
+- (NSString *)realm
+{
+	return NSLocalizedString( @"OsiriX Secured Web Portal", nil);
+}
+
 - (NSObject<HTTPResponse> *)httpResponseForMethod:(NSString *)method URI:(NSString *)path
 {
 	BOOL lockReleased = NO;
@@ -1599,12 +1622,40 @@ static NSString *webDirectory = nil;
 	[[[BrowserController currentBrowser] managedObjectContext] lock];
 	
 	data = [NSData dataWithContentsOfFile:requestedFile];
-
-	#pragma mark index.html
 	
-	if([requestedFile isEqualToString: [webDirectory stringByAppendingPathComponent:@"index.html"]])
+	#pragma mark index
+	if( [fileURL isEqualToString: @"/index.html"] || [fileURL isEqualToString: @"/"])
 	{
-		NSMutableString *templateString = [NSMutableString stringWithContentsOfFile:[webDirectory stringByAppendingPathComponent:@"index.html"]];
+		NSMutableString *templateString = [NSMutableString stringWithContentsOfFile: [webDirectory stringByAppendingPathComponent:@"index.html"]];
+		
+		[templateString replaceOccurrencesOfString:@"%Localized_OsiriXWebPortal%" withString:NSLocalizedString(@"OsiriX Web Portal", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+		[templateString replaceOccurrencesOfString:@"%Localized_PasswordForgotten%" withString:NSLocalizedString(@"Password Forgotten?", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+		[templateString replaceOccurrencesOfString:@"%Localized_Login%" withString:NSLocalizedString(@"Login", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+		
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"restorePasswordWebServer"] == NO)
+		{
+			NSArray *tempArray, *tempArray2;
+			
+			tempArray = [templateString componentsSeparatedByString:@"%AuthorizedRestorePasswordWebServer%"];
+			tempArray2 = [[tempArray lastObject] componentsSeparatedByString:@"%/AuthorizedRestorePasswordWebServer%"];
+			templateString = [NSMutableString stringWithFormat:@"%@%@",[tempArray objectAtIndex:0], [tempArray2 lastObject]];
+		}
+		else
+		{
+			[templateString replaceOccurrencesOfString:@"%AuthorizedRestorePasswordWebServer%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+			[templateString replaceOccurrencesOfString:@"%/AuthorizedRestorePasswordWebServer%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+		}
+		
+		data = [templateString dataUsingEncoding: NSUTF8StringEncoding];
+		
+		err = NO;
+	}
+	
+	#pragma mark main
+	
+	if([fileURL isEqualToString: @"/main"])
+	{
+		NSMutableString *templateString = [NSMutableString stringWithContentsOfFile:[webDirectory stringByAppendingPathComponent:@"main.html"]];
 		
 		if( currentUser == nil)
 		{
@@ -1684,6 +1735,8 @@ static NSString *webDirectory = nil;
 		[returnHTML replaceOccurrencesOfString: @"%DicomCStorePort%" withString: portString options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
 		
 		data = [returnHTML dataUsingEncoding:NSUTF8StringEncoding];
+		
+		err = NO;
 	}
 #pragma mark wado
 	else if( [fileURL isEqualToString:@"/wado"] && [[NSUserDefaults standardUserDefaults] boolForKey: @"wadoServer"])
@@ -2503,10 +2556,45 @@ static NSString *webDirectory = nil;
 		
 		err = NO;
 	}
-	#pragma password_forgotten
-	else if( [fileURL isEqualToString: @"password_forgotten"])
+	#pragma mark password forgotten
+	else if( [fileURL isEqualToString: @"/password_forgotten"] && [[NSUserDefaults standardUserDefaults] boolForKey: @"restorePasswordWebServer"])
 	{
 		NSMutableString *templateString = [NSMutableString stringWithContentsOfFile: [webDirectory stringByAppendingPathComponent:@"password_forgotten.html"]];
+		
+		[templateString replaceOccurrencesOfString: @"%Localized_PasswordForgotten%" withString:NSLocalizedString(@"Password Forgotten", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+		[templateString replaceOccurrencesOfString: @"%LocalizedLabel_Home%" withString:NSLocalizedString(@"Home", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+		[templateString replaceOccurrencesOfString: @"%Localized_Email%" withString:NSLocalizedString(@"Email", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+		[templateString replaceOccurrencesOfString: @"%Localized_Username%" withString:NSLocalizedString(@"Username", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+		[templateString replaceOccurrencesOfString: @"%Localized_RestorePassword%" withString:NSLocalizedString(@"Enter your username or your email to receive a new password by email:", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+		[templateString replaceOccurrencesOfString: @"%Localized_RestorePasswordButton%" withString:NSLocalizedString(@"Reset Password", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+		
+		NSString *message = nil;
+		
+		if( [[parameters valueForKey: @"what"] isEqualToString: @"restorePassword"])
+		{
+			NSString *email = [[[parameters valueForKey: @"email"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
+			NSString *username = [[[parameters valueForKey: @"username"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
+			
+			// TRY TO FIND THIS USER
+				
+			message = NSLocalizedString( @"This user doesn't exist!", nil);
+		}
+		
+		if( [message length] == 0)
+		{
+			NSArray *tempArray, *tempArray2;
+		
+			tempArray = [templateString componentsSeparatedByString:@"%MessageToWrite%"];
+			tempArray2 = [[tempArray lastObject] componentsSeparatedByString:@"%/MessageToWrite%"];
+			templateString = [NSMutableString stringWithFormat:@"%@%@",[tempArray objectAtIndex:0], [tempArray2 lastObject]];
+		}
+		else
+		{
+			[templateString replaceOccurrencesOfString:@"%MessageToWrite%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+			[templateString replaceOccurrencesOfString:@"%/MessageToWrite%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+		}
+		
+		[templateString replaceOccurrencesOfString: @"%Localized_Message%" withString:NSLocalizedString(@"User Account For", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 		
 		data = [templateString dataUsingEncoding: NSUTF8StringEncoding];
 		

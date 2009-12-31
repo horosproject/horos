@@ -12873,6 +12873,8 @@ static NSArray*	openSubSeriesArray = nil;
 	
 	copyThread = NO;
 	
+	
+	[self saveUserDatabase];
 	[self saveDatabase: currentDatabasePath];
 	[self saveUserDatabase];
 	

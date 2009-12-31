@@ -135,6 +135,12 @@ li.StudyListItemSeriesSeparator
 	margin-left:10px;
 }
 
+.small
+{
+	color: #222266;
+	font-size:10pt;
+}
+
 a.series:hover
 {
 	text-decoration:none;

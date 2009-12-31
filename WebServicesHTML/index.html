@@ -3,7 +3,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-	<title>OsiriX</title>
+	<title>%Localized_OsiriXWebPortal%</title>
 	<meta http-equiv=content-type content="text/html; charset=UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
 	<link rel="stylesheet" type="text/css" href="style.css" title="standard" />
@@ -12,60 +12,19 @@
 </head> 
 
 <body>
-    <h1 id="pageTitle">OsiriX%userAccount%<td class="tdDownloadAsZIP">
-								<a class="series" href="account?dicomcstoreport=%DicomCStorePort%">
-									<span class="DownloadAsZIP">%LocalizedLabel_Account%</span>
-								</a></td>%/userAccount%</h1>
+    <h1 id="pageTitle">%Localized_OsiriXWebPortal%</h1>
 
 	<div id="Home" class="panel">
-		<h2 style="padding-top:10px">%LocalizedLabel_SearchPatient%</h2>
-		<form action="/studyList" method="get">
-			<input type="text" id="search" name="search"/>
-			<input type="hidden" name="dicomcstoreport" value="%DicomCStorePort%" name="search"/>
-			<input type="submit" id="searchButton" value="%LocalizedLabel_SearchButton%"/>
-		</form>	
-		<h2 style="padding-top:10px">%LocalizedLabel_SearchPatientID%</h2>
-		<form action="/studyList" method="get">
-			<input type="text" id="searchID" name="searchID"/>
-			<input type="hidden" name="dicomcstoreport" value="%DicomCStorePort%" name="search"/>
-			<input type="submit" id="searchButton" value="%LocalizedLabel_SearchButton%"/>
+		<br>
+		<br>
+		<form action="/main" method="get">
+			<input type="submit" id="login" value="%Localized_Login%"/>
 		</form>	
 		<br>
-		
-		<HR>
-		
-		<h2 style="padding-top:10px">%LocalizedLabel_Browse%</h2>
-		<ul>
-			<li class="index"><a href="studyList?dicomcstoreport=%DicomCStorePort%&browse=6hours">%LocalizedLabel_Last6Hours%</a></li>
-			<li class="index"><a href="studyList?dicomcstoreport=%DicomCStorePort%&browse=today">%LocalizedLabel_Today%</a></li>
-			<li class="index"><a href="studyList?dicomcstoreport=%DicomCStorePort%&browse=all">%LocalizedLabel_StudyList%</a></li>
-		</ul>
-		
-		<HR>
-		
-		<h2 style="padding-top:10px">%LocalizedLabel_Albums%</h2>
-		<ul>
-			%AlbumListItem%
-			<li class="index"><a href="studyList?dicomcstoreport=%DicomCStorePort%&album=%AlbumNameURL%">%AlbumName%</a></li>
-			%/AlbumListItem%
-		</ul>
-		
-		%AuthorizedUploadDICOMFiles%
-		<HR>
-		
-		<h2 style="padding-top:10px">%LocalizedLabel_UploadDICOMFilesHeader%</h2>
-			<form action="" method="post" enctype="multipart/form-data" name="form1" id="form1">
-			<label>
-			%LocalizedLabel_UploadDICOMFiles%<br><br>
-			<input type="file" name="file" id="file" />
-			</label>
-			<br><br>
-			<label> 
-			<input type="submit" name="button" id="button" value="%LocalizedLabel_Submit%" />
-			</label>
-			</form>
-			<br>
-		%/AuthorizedUploadDICOMFiles%
+		<br>
+		%AuthorizedRestorePasswordWebServer%<a href="password_forgotten"><span class="small">%Localized_PasswordForgotten%</span></a>%AuthorizedRestorePasswordWebServer%
+		<br>
+		<br>
 	</div>
 </body>
 </html>

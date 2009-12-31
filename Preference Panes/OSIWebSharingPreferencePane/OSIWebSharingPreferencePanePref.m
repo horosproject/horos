@@ -86,8 +86,6 @@ char *GetPrivateIP()
 {
 	NSLog(@"dealloc OSIWebSharingPreferencePanePref");
 	
-	[[BrowserController currentBrowser] saveUserDatabase];
-	
 	[super dealloc];
 }
 
@@ -121,6 +119,8 @@ char *GetPrivateIP()
 
 - (void) willUnselect
 {
+	[[BrowserController currentBrowser] saveUserDatabase];
+	
 	[BrowserController currentBrowser].testPredicate = nil;
 	[[BrowserController currentBrowser] outlineViewRefresh];
 }
