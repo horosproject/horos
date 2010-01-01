@@ -866,7 +866,7 @@ static NSArray*	statesArray = nil;
 								
 								[image setValue:[curDict objectForKey: @"studyDate"]  forKey:@"date"];
 								
-								[image setValue:[curDict objectForKey: [@"SOPUID" stringByAppendingString:SeriesNum]] forKey:@"sopInstanceUID"];
+								[image setValue:[curDict objectForKey: [@"SOPUID" stringByAppendingString: SeriesNum]] forKey:@"sopInstanceUID"];
 								[image setValue:[curDict objectForKey: @"sliceLocation"] forKey:@"sliceLocation"];
 								[image setValue:[[newFile pathExtension] lowercaseString] forKey:@"extension"];
 								[image setValue:[curDict objectForKey: @"fileType"] forKey:@"fileType"];
@@ -14562,7 +14562,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	}
 }
 
-- (void)checkIncomingNow: (id)sender
+- (void)checkIncomingNow: (id) sender
 {
 	if( DatabaseIsEdited == YES && [[self window] isKeyWindow] == YES) return;
 	if( managedObjectContext == nil) return;
@@ -15107,7 +15107,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 						}
 						@catch (NSException * e)
 						{
-							NSLog( @"[self.userManagedObjectContext save: nil]");
+							NSLog( @"********** [self.userManagedObjectContext save: nil]");
 						}
 						
 						studiesArrayStudyInstanceUID = [[[user valueForKey: @"studies"] allObjects] valueForKey: @"studyInstanceUID"];
@@ -15189,7 +15189,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 								}
 								@catch (NSException * e)
 								{
-									NSLog( @"[self.userManagedObjectContext save: nil]");
+									NSLog( @"************ [self.userManagedObjectContext save: nil]");
 								}
 								
 								studiesArrayStudyInstanceUID = [[[user valueForKey: @"studies"] allObjects] valueForKey: @"studyInstanceUID"];

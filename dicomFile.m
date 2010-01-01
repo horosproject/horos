@@ -3123,7 +3123,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 
 - (long) NoOfFrames{ return NoOfFrames;}
 
-- (NSMutableDictionary *)dicomElements
+- (NSMutableDictionary *) dicomElements
 {
 	return dicomElements;
 }
@@ -3202,7 +3202,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		else	
 			[dicomElements setObject:name forKey:@"patientName"];
 			
-		[dicomElements setObject:[self patientUID] forKey:@"patientUID"];
+		[dicomElements setObject:[self patientUID] forKey: @"patientUID"];
 
 		if ([decoder seriesID])
 			[dicomElements setObject:[decoder seriesID] forKey:@"seriesID"];

@@ -16,7 +16,7 @@
 #import "HTTPAuthenticationRequest.h"
 #import "CSMailMailClient.h"
 #import "UserTable.h"
-
+#import "DicomFile.h"
 #import <Message/NSMailDelivery.h>
 
 #include <netdb.h>
@@ -947,7 +947,7 @@ static NSString *webDirectory = nil;
 
 - (NSArray*)studiesForPredicate:(NSPredicate *)predicate;
 {
-	NSArray *studiesArray;
+	NSArray *studiesArray = nil;
 	
 	[[BrowserController currentBrowser].managedObjectContext lock];
 	
@@ -967,7 +967,7 @@ static NSString *webDirectory = nil;
 	
 	@catch(NSException *e)
 	{
-		NSLog(@"studiesForPredicate exception: %@", e.description);
+		NSLog(@"********** studiesForPredicate exception: %@", e.description);
 	}
 	
 	[[BrowserController currentBrowser].managedObjectContext unlock];
@@ -998,7 +998,7 @@ static NSString *webDirectory = nil;
 		
 		@catch(NSException *e)
 		{
-			NSLog(@"seriesForPredicate exception: %@", e.description);
+			NSLog(@"************ seriesForPredicate exception: %@", e.description);
 		}
 	}
 	
@@ -1019,7 +1019,7 @@ static NSString *webDirectory = nil;
 	
 	@catch(NSException *e)
 	{
-		NSLog(@"seriesForPredicate exception: %@", e.description);
+		NSLog(@"*********** seriesForPredicate exception: %@", e.description);
 	}
 	
 	
@@ -1042,7 +1042,7 @@ static NSString *webDirectory = nil;
 {
 	NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
 	
-	NSArray *studiesArray, *albumArray;
+	NSArray *studiesArray = nil, *albumArray = nil;
 	
 	[context lock];
 	
@@ -2847,6 +2847,12 @@ static NSString *webDirectory = nil;
 	NSString *file;
 	NSString *root = [[[BrowserController currentBrowser] localDocumentsDirectory] stringByAppendingPathComponent:INCOMINGPATH];
 	
+	// We want to find this file after db insert: get studyInstanceUID, patientUID and instanceSOPUID
+	
+	DicomFile *f = [[[DicomFile alloc] init: POSTfilename DICOMOnly: YES] autorelease];
+	
+	NSString *studyInstanceUID = [f elementForKey: @"studyID"], *patientUID = [f elementForKey: @"patientUID"];	//, *sopInstanceUID = [f elementForKey: @"SOPUID"];
+	
 	do
 	{
 		file = [[root stringByAppendingPathComponent: [NSString stringWithFormat: @"WebServer Upload %d", inc++]] stringByAppendingPathExtension: [POSTfilename pathExtension]];
@@ -2854,6 +2860,67 @@ static NSString *webDirectory = nil;
 	while( [[NSFileManager defaultManager] fileExistsAtPath: file]);
 				
 	[[NSFileManager defaultManager] moveItemAtPath: POSTfilename toPath: file error: nil];
+	
+	[[BrowserController currentBrowser] checkIncomingNow: self];
+	
+	if( studyInstanceUID && patientUID)
+	{
+		[[[BrowserController currentBrowser] managedObjectContext] lock];
+		
+		@try
+		{
+			NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+			[dbRequest setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey: @"Study"]];
+			[dbRequest setPredicate: [NSPredicate predicateWithFormat: @"(patientUID == %@) AND (studyInstanceUID == %@)", patientUID, studyInstanceUID]];
+			
+			NSError *error = nil;
+			NSArray *studies = [[[BrowserController currentBrowser] managedObjectContext] executeFetchRequest: dbRequest error:&error];
+			
+			// Add study to specific study list for this user
+			
+			NSArray *studiesArrayStudyInstanceUID = [[[currentUser valueForKey: @"studies"] allObjects] valueForKey: @"studyInstanceUID"];
+			NSArray *studiesArrayPatientUID = [[[currentUser valueForKey: @"studies"] allObjects] valueForKey: @"patientUID"];
+			
+			for( NSManagedObject *study in studies)
+			{
+				if( [[study valueForKey: @"type"] isEqualToString:@"Series"])
+					study = [study valueForKey:@"study"];
+				
+				if( [studiesArrayStudyInstanceUID indexOfObject: [study valueForKey: @"studyInstanceUID"]] == NSNotFound || [studiesArrayPatientUID indexOfObject: [study valueForKey: @"patientUID"]]  == NSNotFound)
+				{
+					NSManagedObject *studyLink = [NSEntityDescription insertNewObjectForEntityForName: @"Study" inManagedObjectContext: [BrowserController currentBrowser].userManagedObjectContext];
+					
+					[studyLink setValue: [[[study valueForKey: @"studyInstanceUID"] copy] autorelease] forKey: @"studyInstanceUID"];
+					[studyLink setValue: [[[study valueForKey: @"patientUID"] copy] autorelease] forKey: @"patientUID"];
+					[studyLink setValue: [NSDate dateWithTimeIntervalSinceReferenceDate: [[NSUserDefaults standardUserDefaults] doubleForKey: @"lastNotificationsDate"]] forKey: @"dateAdded"];
+					
+					[studyLink setValue: currentUser forKey: @"user"];
+					
+					@try
+					{
+						[[BrowserController currentBrowser].userManagedObjectContext save: nil];
+					}
+					@catch (NSException * e)
+					{
+						NSLog( @"*********** [[BrowserController currentBrowser].userManagedObjectContext save: nil]");
+					}
+					
+					studiesArrayStudyInstanceUID = [[[currentUser valueForKey: @"studies"] allObjects] valueForKey: @"studyInstanceUID"];
+					studiesArrayPatientUID = [[[currentUser valueForKey: @"studies"] allObjects] valueForKey: @"patientUID"];
+					
+					[OsiriXHTTPConnection updateLogEntryForStudy: study withMessage: @"Add Study to User" forUser: [currentUser valueForKey: @"name"] ip: nil];
+				}
+			}
+		}
+		@catch( NSException *e)
+		{
+			NSLog( @"********* OsiriXHTTPConnection closeFileHandleAndClean exception : %@", e);
+		}
+		///
+		
+		[[[BrowserController currentBrowser] managedObjectContext] unlock];
+	}
+	else NSLog( @"****** studyInstanceUID && patientUID == nil upload POST");
 	
 	[multipartData release];	multipartData = nil;
 	[postBoundary release];		postBoundary = nil;

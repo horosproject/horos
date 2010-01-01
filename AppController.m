@@ -1640,11 +1640,17 @@ static NSDate *lastWarningDate = nil;
 	}
 	else
 	{
-		[NSTimer scheduledTimerWithTimeInterval:DBL_MAX target:self selector:@selector( ignore:) userInfo:nil repeats:NO];
+//		[NSTimer scheduledTimerWithTimeInterval:DBL_MAX target:self selector:@selector( ignore:) userInfo:nil repeats:NO];
+		
+		[[NSRunLoop currentRunLoop] addTimer: [NSTimer scheduledTimerWithTimeInterval:DBL_MAX target:self selector:@selector( ignore:) userInfo:nil repeats:NO] forMode: @"privateHTTPWebServerRunMode"];
 		
 		@try
 		{
-			[[NSRunLoop currentRunLoop] run];
+//			[[NSRunLoop currentRunLoop] run];
+			
+			BOOL shouldKeepRunning = YES;
+			NSRunLoop *theRL = [NSRunLoop currentRunLoop];
+			while (shouldKeepRunning && [theRL runMode: @"privateHTTPWebServerRunMode" beforeDate: [NSDate distantFuture]]);
 		}
 		
 		@catch( NSException *e)
