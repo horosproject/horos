@@ -118,8 +118,8 @@ int main(int argc, const char *argv[])
 		// register RLE decompression codec
 		DcmRLEDecoderRegistration::registerCodecs();
 		
-		NSString	*path = [NSString stringWithCString:argv[ 1]];
-		NSString	*what = [NSString stringWithCString:argv[ 2]];
+		NSString	*path = [NSString stringWithUTF8String:argv[ 1]];
+		NSString	*what = [NSString stringWithUTF8String:argv[ 2]];
 		
 		NSMutableDictionary	*dict = [DefaultsOsiriX getDefaults];
 		[dict addEntriesFromDictionary: [[NSUserDefaults standardUserDefaults] persistentDomainForName:@"com.rossetantoine.osirix"]];
@@ -128,7 +128,7 @@ int main(int argc, const char *argv[])
 		
 		if( [what isEqualToString:@"compress"])
 		{
-			int quality = [[NSString stringWithCString:argv[ 3]] intValue];
+			int quality = [[NSString stringWithUTF8String:argv[ 3]] intValue];
 			
 			[DCMPixelDataAttribute setUseOpenJpeg: [[dict objectForKey:@"UseOpenJpegForJPEG2000"] intValue]];
 			
@@ -146,7 +146,7 @@ int main(int argc, const char *argv[])
 			int i;
 			for( i = 3; i < argc; i++)
 			{
-				NSString *curFile = [NSString stringWithCString:argv[ i]];
+				NSString *curFile = [NSString stringWithUTF8String:argv[ i]];
 				OFBool status = YES;
 				NSString *curFileDest;
 				
@@ -332,7 +332,7 @@ int main(int argc, const char *argv[])
 			int i;
 			for( i = 3; i < argc ; i++)
 			{
-				NSString *curFile = [NSString stringWithCString:argv[ i]];
+				NSString *curFile = [NSString stringWithUTF8String:argv[ i]];
 				
 				NSString *curFileDest;
 				
@@ -488,7 +488,7 @@ int main(int argc, const char *argv[])
 			
 			NSMutableDictionary *myDict = [NSMutableDictionary dictionaryWithObjectsAndKeys: @"jpeg", QTAddImageCodecType, [NSNumber numberWithInt: codecNormalQuality], QTAddImageCodecQuality, nil];
 			
-			NSString *root = [NSString stringWithCString: argv[ 3]];
+			NSString *root = [NSString stringWithUTF8String: argv[ 3]];
 			
 			for( NSString *img in [[NSFileManager defaultManager] contentsOfDirectoryAtPath: root error: nil])
 			{
@@ -509,7 +509,7 @@ int main(int argc, const char *argv[])
 		{
 			NSError *error = nil;
 			
-			NSString *inFile = [NSString stringWithCString: argv[ 3]];
+			NSString *inFile = [NSString stringWithUTF8String: argv[ 3]];
 			NSString *outFile = path;
 			
 			QTMovie *aMovie = [QTMovie movieWithFile: inFile error:nil];

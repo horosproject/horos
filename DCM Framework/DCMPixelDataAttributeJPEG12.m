@@ -72,7 +72,7 @@ METHODDEF(void) JPEG12ErrorExit(j_common_ptr cinfo)
 	char buffer[JMSG_LENGTH_MAX]; 
 	(*cinfo->err->format_message) (cinfo, buffer);
 	NSLog(@"JPEG error %s", buffer);
-	dcmException = [NSException exceptionWithName:@"DCM JPEG Encoding error" reason:[NSString stringWithCString:buffer] userInfo:nil];
+	dcmException = [NSException exceptionWithName:@"DCM JPEG Encoding error" reason:[NSString stringWithCString:buffer encoding: NSISOLatin1StringEncoding] userInfo:nil];
 }
 
 METHODDEF(void) JPEG12OutputMessage(j_common_ptr cinfo)

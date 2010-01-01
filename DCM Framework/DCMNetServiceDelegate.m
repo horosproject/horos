@@ -400,7 +400,7 @@ static NSLock *currentHostLock = nil;
 		NSString *result = nil;
 		
 		if (inet_ntop(AF_INET, &service.sin_addr, buffer, sizeof(buffer)))
-			result = [NSString stringWithCString:buffer];
+			result = [NSString stringWithCString:buffer encoding: NSISOLatin1StringEncoding];
 		
 		return result;
 	}
@@ -424,7 +424,7 @@ static NSLock *currentHostLock = nil;
 		{
 			if (inet_ntop(AF_INET, &((struct sockaddr_in *)result)->sin_addr, buffer, sizeof(buffer)))
 			{
-				hostname = [NSString stringWithCString:buffer];
+				hostname = [NSString stringWithCString:buffer encoding: NSISOLatin1StringEncoding];
 				portString = [NSString stringWithFormat:@"%d", ntohs(((struct sockaddr_in *)result)->sin_port)];
 				
 				if(port) *port = [portString intValue];

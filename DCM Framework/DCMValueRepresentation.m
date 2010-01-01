@@ -496,7 +496,7 @@ const char *vr = [vrString UTF8String];
 
 
 + (NSString *)stringValue:(char *)vr{
-	return [NSString stringWithCString:vr];
+	return [NSString stringWithCString:vr encoding: NSISOLatin1StringEncoding];
 }
 
 + (int)getWordLengthOfValueAffectedByEndianness:(NSString *)vrString{

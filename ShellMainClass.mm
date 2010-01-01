@@ -126,8 +126,8 @@ int executeProcess(int argc, char *argv[])
 		
 	if( argv[ 1] && argv[ 2])
 	{
-		NSString	*what = [NSString stringWithCString:argv[ 1]];
-		NSString	*path = [NSString stringWithCString:argv[ 2]];
+		NSString	*what = [NSString stringWithUTF8String:argv[ 1]];
+		NSString	*path = [NSString stringWithUTF8String:argv[ 2]];
 		
 		if( [what isEqualToString:@"DNSResolve"])
 		{
@@ -145,12 +145,12 @@ int executeProcess(int argc, char *argv[])
 		
 		if( [what isEqualToString:@"OSAScript"])
 		{
-			[mainClass runScript: [NSString stringWithContentsOfFile: path]];
+			[mainClass runScript: [NSString stringWithContentsOfFile: path encoding: NSISOLatin1StringEncoding error: nil]];
 		}
 		
 		if( [what isEqualToString:@"getFilesFromiDisk"])
 		{
-			BOOL deleteFolder = [[NSString stringWithCString:argv[ 2]] intValue];
+			BOOL deleteFolder = [[NSString stringWithUTF8String:argv[ 2]] intValue];
 			BOOL success = YES;
 			
 			NSMutableArray  *filesArray = [NSMutableArray array];
@@ -225,7 +225,7 @@ int executeProcess(int argc, char *argv[])
 		
 		if( [what isEqualToString:@"sendFilesToiDisk"])
 		{
-			NSArray	*files2Copy = [NSArray arrayWithContentsOfFile: [NSString stringWithCString:argv[ 2]]];
+			NSArray	*files2Copy = [NSArray arrayWithContentsOfFile: [NSString stringWithUTF8String:argv[ 2]]];
 			
 			NSLog( @"%@", [files2Copy description]);
 			
@@ -284,7 +284,7 @@ int executeProcess(int argc, char *argv[])
 		
 		if( [what isEqualToString:@"getFrame"])
 		{
-			int frameNo = [[NSString stringWithCString:argv[ 3]] intValue];
+			int frameNo = [[NSString stringWithUTF8String:argv[ 3]] intValue];
 			
 			QTMovie *movie = [[QTMovie alloc] initWithFile:path error: nil];
 			
@@ -314,7 +314,7 @@ int executeProcess(int argc, char *argv[])
 		{
 			// argv[ 3] = frameNo
 			
-			int frameNo = [[NSString stringWithCString:argv[ 3]] intValue];
+			int frameNo = [[NSString stringWithUTF8String:argv[ 3]] intValue];
 			
 			FSRef				fsref;
 			FSSpec				spec, newspec;
@@ -341,7 +341,7 @@ int executeProcess(int argc, char *argv[])
 			
 			if( aMovie)
 			{
-				NSDictionary *component = [NSDictionary dictionaryWithContentsOfFile: [NSString stringWithCString:argv[ 3]]];
+				NSDictionary *component = [NSDictionary dictionaryWithContentsOfFile: [NSString stringWithUTF8String:argv[ 3]]];
 				
 				NSLog( @"%@", [component description]);
 				
@@ -367,7 +367,7 @@ int executeProcess(int argc, char *argv[])
 				
 				ComponentResult err;
 				
-				NSData *data = [NSData dataWithContentsOfFile: [NSString stringWithCString:argv[ 4]]];
+				NSData *data = [NSData dataWithContentsOfFile: [NSString stringWithUTF8String:argv[ 4]]];
 				char	*ptr = (char*) [data bytes];
 				
 				if( data) MovieExportSetSettingsFromAtomContainer (exporter, &ptr);
@@ -390,7 +390,7 @@ int executeProcess(int argc, char *argv[])
 						
 						// **************************
 						
-						NSString	*dataPath = [NSString stringWithCString:argv[ 5]];
+						NSString	*dataPath = [NSString stringWithUTF8String:argv[ 5]];
 						[[NSFileManager defaultManager] removeFileAtPath: dataPath handler: nil];
 						[data writeToFile: dataPath atomically: YES];
 					}
@@ -504,7 +504,7 @@ CHECK;
             switch(socketAddress->sa_family) {
                 case AF_INET:
                     if (inet_ntop(AF_INET, &((struct sockaddr_in *)socketAddress)->sin_addr, buffer, sizeof(buffer))) {
-                        ipAddressString = [NSString stringWithCString:buffer];
+                        ipAddressString = [NSString stringWithUTF8String:buffer];
                         portString = [NSString stringWithFormat:@"%d", ntohs(((struct sockaddr_in *)socketAddress)->sin_port)];
                     }
                     

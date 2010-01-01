@@ -11,7 +11,7 @@
 			<string key="NS.object.0">732</string>
 		</object>
 		<array class="NSMutableArray" key="IBDocument.EditedObjectIDs">
-			<integer value="127"/>
+			<integer value="484"/>
 		</array>
 		<array key="IBDocument.PluginDependencies">
 			<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -633,6 +633,28 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 																<string key="NSContents">Authorized to download DICOM ZIP files</string>
 																<reference key="NSSupport" ref="349069678"/>
 																<reference key="NSControlView" ref="785257215"/>
+																<int key="NSButtonFlags">1211912703</int>
+																<int key="NSButtonFlags2">0</int>
+																<reference key="NSNormalImage" ref="413341662"/>
+																<reference key="NSAlternateImage" ref="385854006"/>
+																<string key="NSKeyEquivalent"/>
+																<int key="NSPeriodicDelay">400</int>
+																<int key="NSPeriodicInterval">75</int>
+															</object>
+														</object>
+														<object class="NSButton" id="125678885">
+															<reference key="NSNextResponder" ref="1011292588"/>
+															<int key="NSvFlags">258</int>
+															<string key="NSFrame">{{349, 71}, {347, 18}}</string>
+															<reference key="NSSuperview" ref="1011292588"/>
+															<int key="NSTag">-1</int>
+															<bool key="NSEnabled">YES</bool>
+															<object class="NSButtonCell" key="NSCell" id="414345148">
+																<int key="NSCellFlags">67239424</int>
+																<int key="NSCellFlags2">0</int>
+																<string key="NSContents">Authorized to share a study with another user</string>
+																<reference key="NSSupport" ref="349069678"/>
+																<reference key="NSControlView" ref="125678885"/>
 																<int key="NSButtonFlags">1211912703</int>
 																<int key="NSButtonFlags2">0</int>
 																<reference key="NSNormalImage" ref="413341662"/>
@@ -1753,7 +1775,7 @@ bmdQaHlzaWNpYW4gQ09OVEFJTlNbY2RdICdQcm9mLiBST1NTRVQnKQ</string>
 			</object>
 			<object class="NSUserDefaultsController" id="896066363">
 				<array class="NSMutableArray" key="NSDeclaredKeys">
-					<string>restorePasswordWebServer</string>
+					<string>shareStudyWebServer</string>
 				</array>
 				<bool key="NSSharedInstance">YES</bool>
 			</object>
@@ -3262,6 +3284,38 @@ bmdQaHlzaWNpYW4gQ09OVEFJTlNbY2RdICdQcm9mLiBST1NTRVQnKQ</string>
 					</object>
 					<int key="connectionID">835</int>
 				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: selection.downloadZIP</string>
+						<reference key="source" ref="125678885"/>
+						<reference key="destination" ref="596395762"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="125678885"/>
+							<reference key="NSDestination" ref="596395762"/>
+							<string key="NSLabel">value: selection.downloadZIP</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">selection.downloadZIP</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">839</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: values.shareStudyWebServer</string>
+						<reference key="source" ref="125678885"/>
+						<reference key="destination" ref="896066363"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="125678885"/>
+							<reference key="NSDestination" ref="896066363"/>
+							<string key="NSLabel">enabled: values.shareStudyWebServer</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">values.shareStudyWebServer</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">840</int>
+				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
 				<array key="orderedObjects">
@@ -3533,6 +3587,7 @@ bmdQaHlzaWNpYW4gQ09OVEFJTlNbY2RdICdQcm9mLiBST1NTRVQnKQ</string>
 							<reference ref="207624081"/>
 							<reference ref="511962652"/>
 							<reference ref="808233742"/>
+							<reference ref="125678885"/>
 						</array>
 						<reference key="parent" ref="754822185"/>
 					</object>
@@ -4231,15 +4286,28 @@ bmdQaHlzaWNpYW4gQ09OVEFJTlNbY2RdICdQcm9mLiBST1NTRVQnKQ</string>
 						<reference key="object" ref="918154156"/>
 						<reference key="parent" ref="969383826"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">836</int>
+						<reference key="object" ref="125678885"/>
+						<array class="NSMutableArray" key="children">
+							<reference ref="414345148"/>
+						</array>
+						<reference key="parent" ref="236395217"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">837</int>
+						<reference key="object" ref="414345148"/>
+						<reference key="parent" ref="125678885"/>
+					</object>
 				</array>
 			</object>
 			<dictionary class="NSMutableDictionary" key="flattenedProperties">
 				<string key="-3.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="12.IBEditorWindowLastContentRect">{{76, 4}, {793, 852}}</string>
+				<string key="12.IBEditorWindowLastContentRect">{{663, 164}, {793, 852}}</string>
 				<string key="12.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<integer value="0" key="12.IBViewEditorWindowController.showingBoundsRectangles"/>
 				<integer value="0" key="12.IBViewEditorWindowController.showingLayoutRectangles"/>
-				<string key="12.IBWindowTemplateEditedContentRect">{{76, 4}, {793, 852}}</string>
+				<string key="12.IBWindowTemplateEditedContentRect">{{663, 164}, {793, 852}}</string>
 				<integer value="1" key="12.ImportedFromIB2"/>
 				<string key="12.editorWindowContentRectSynchronizationRect">{{770, 336}, {725, 672}}</string>
 				<integer value="0" key="12.windowTemplate.hasMaxSize"/>
@@ -4395,12 +4463,14 @@ bmdQaHlzaWNpYW4gQ09OVEFJTlNbY2RdICdQcm9mLiBST1NTRVQnKQ</string>
 				<string key="786.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="832.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="833.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="836.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="837.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 			</dictionary>
 			<dictionary class="NSMutableDictionary" key="unlocalizedProperties"/>
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">835</int>
+			<int key="maxID">840</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">

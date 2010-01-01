@@ -67,5 +67,6 @@
 - (void) updateMousePosition: (NSEvent*) theEvent;
 - (void) detect2DPointInThisSlice;
 - (void) magicTrick;
+- (void) removeROI: (NSNotification*) note;
 
 @end

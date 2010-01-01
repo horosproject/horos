@@ -47,6 +47,7 @@
 #import "Notifications.h"
 #import "WaitRendering.h"
 #import "OsiriXHTTPConnection.h"
+#import "ThreadPoolServer.h"
 
 #define BUILTIN_DCMTK YES
 

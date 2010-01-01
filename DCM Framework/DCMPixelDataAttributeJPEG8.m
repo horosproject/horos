@@ -74,7 +74,7 @@ METHODDEF(void) JPEG8ErrorExit(j_common_ptr cinfo)
 	char buffer[JMSG_LENGTH_MAX]; 
 	(*cinfo->err->format_message) (cinfo, buffer);
 	NSLog(@"JPEG error %s", buffer);
-	[NSException raise:@"DCM JPEG Encoding error" format:@"%@", [NSString stringWithCString:buffer]];
+	[NSException raise:@"DCM JPEG Encoding error" format:@"%@", [NSString stringWithCString:buffer encoding: NSISOLatin1StringEncoding]];
 	//dcmException = [NSException exceptionWithName:@"DCM JPEG Encoding error" reason:[NSString stringWithCString:buffer] userInfo:nil];
 	//localException = [NSException exceptionWithName:@"DCM JPEG Encoding error" reason:[NSString stringWithCString:buffer] userInfo:nil];
 }
