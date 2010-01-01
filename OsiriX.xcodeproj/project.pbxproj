@@ -25953,6 +25953,11 @@
 		CE9CED840C75BD8D00752D4B /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					x86_64,
+					ppc,
+					i386,
+				);
 				GCC_ALTIVEC_EXTENSIONS = YES;
 				INSTALL_PATH = /usr/local/lib;
 				LIBRARY_SEARCH_PATHS = (
@@ -25968,6 +25973,11 @@
 		CE9CED860C75BD8D00752D4B /* Deployment Universal 32-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					x86_64,
+					ppc,
+					i386,
+				);
 				GCC_ALTIVEC_EXTENSIONS = YES;
 				INSTALL_PATH = /usr/local/lib;
 				LIBRARY_SEARCH_PATHS = (
@@ -25983,6 +25993,11 @@
 		CE9CED870C75BD8D00752D4B /* Deployment Universal 64-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					x86_64,
+					ppc,
+					i386,
+				);
 				GCC_ALTIVEC_EXTENSIONS = YES;
 				INSTALL_PATH = /usr/local/lib;
 				LIBRARY_SEARCH_PATHS = (

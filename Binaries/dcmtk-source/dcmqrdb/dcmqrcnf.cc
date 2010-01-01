@@ -276,7 +276,7 @@ int DcmQueryRetrieveConfig::readConfigLines(FILE *cnffp)
          sscanf(valueptr, "%d", &networkTCPPort_);
       }
       else if (!strcmp("MaxPDUSize", mnemonic)) {
-      	 unsigned int ul = 0;
+      	 long unsigned int ul = 0;
          sscanf(valueptr, "%lu", &ul);
          maxPDUSize_ = OFstatic_cast(Uint32, ul);
       }
@@ -792,7 +792,7 @@ void DcmQueryRetrieveConfig::printConfig()
    }
    printf("\nGlobal Parameters:\n%s\n%s\n%s\n%s\n%s\n%d\n%lu\n%d\n",
       applicationTitle_.c_str(), applicationContext_.c_str(), implementationClass_.c_str(),
-      implementationVersion_.c_str(), networkType_.c_str(), networkTCPPort_, OFstatic_cast(unsigned int, maxPDUSize_),
+      implementationVersion_.c_str(), networkType_.c_str(), networkTCPPort_, OFstatic_cast(long unsigned int, maxPDUSize_),
       maxAssociations_);
    printf("\nAEEntries: %d\n", CNF_Config.noOfAEEntries);
    for(i = 0; i < CNF_Config.noOfAEEntries; i++) {

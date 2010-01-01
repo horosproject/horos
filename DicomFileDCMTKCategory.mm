@@ -208,7 +208,7 @@ extern NSRecursiveLock *PapyrusLock;
 		//TransferSyntax
 		if (fileformat.getMetaInfo()->findAndGetString(DCM_TransferSyntaxUID, string, OFFalse).good() && string != NULL)
 		{
-			if( [[NSString stringWithCString:string] isEqualToString:@"1.2.840.10008.1.2.4.100"])
+			if( [[NSString stringWithCString:string encoding: NSASCIIStringEncoding] isEqualToString:@"1.2.840.10008.1.2.4.100"])
 			{
 				fileType = [[NSString stringWithString:@"DICOMMPEG2"] retain];
 				[dicomElements setObject:fileType forKey:@"fileType"];
@@ -284,8 +284,8 @@ extern NSRecursiveLock *PapyrusLock;
 		//SOPClass
 		NSString *sopClassUID = nil;
 		if (dataset->findAndGetString(DCM_SOPClassUID, string, OFFalse).good() && string != NULL){
-			[dicomElements setObject:[NSString stringWithCString:string] forKey:@"SOPClassUID"];
-			sopClassUID = [NSString stringWithCString:string] ;
+			[dicomElements setObject:[NSString stringWithCString:string encoding: NSASCIIStringEncoding] forKey:@"SOPClassUID"];
+			sopClassUID = [NSString stringWithCString: string encoding: NSASCIIStringEncoding] ;
 		}
 		
 		if ([sopClassUID isEqualToString:[DCMAbstractSyntaxUID pdfStorageClassUID]])
@@ -320,7 +320,7 @@ extern NSRecursiveLock *PapyrusLock;
 		//Image Type
 		if (dataset->findAndGetString(DCM_ImageType, string, OFFalse).good() && string != NULL)
 		{
-			imageTypeArray = [NSMutableArray arrayWithArray: [[NSString stringWithCString:string] componentsSeparatedByString:@"\\"]];
+			imageTypeArray = [NSMutableArray arrayWithArray: [[NSString stringWithCString:string encoding: NSISOLatin1StringEncoding] componentsSeparatedByString:@"\\"]];
 			
 			if( [imageTypeArray count] > 2)
 			{
