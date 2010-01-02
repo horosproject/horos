@@ -8088,8 +8088,6 @@
 		8417221210D8DB72001A833F /* TCPServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TCPServer.m; sourceTree = "<group>"; };
 		8417221710D8DB93001A833F /* basicHTTPServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = basicHTTPServer.h; sourceTree = "<group>"; };
 		8417221810D8DB93001A833F /* basicHTTPServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = basicHTTPServer.m; sourceTree = "<group>"; };
-		8417224E10D8F01C001A833F /* ThreadPerConnectionServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ThreadPerConnectionServer.h; path = cocoahttpserver/ThreadPerConnectionServer.h; sourceTree = "<group>"; };
-		8417224F10D8F01C001A833F /* ThreadPerConnectionServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ThreadPerConnectionServer.m; path = cocoahttpserver/ThreadPerConnectionServer.m; sourceTree = "<group>"; };
 		8417225010D8F01C001A833F /* ThreadPoolServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ThreadPoolServer.h; path = cocoahttpserver/ThreadPoolServer.h; sourceTree = "<group>"; };
 		8417225110D8F01C001A833F /* ThreadPoolServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ThreadPoolServer.m; path = cocoahttpserver/ThreadPoolServer.m; sourceTree = "<group>"; };
 		8417228810D9043B001A833F /* OsiriXHTTPConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OsiriXHTTPConnection.h; sourceTree = "<group>"; };
@@ -12451,8 +12449,6 @@
 				841721B510D8D745001A833F /* HTTPServer.m */,
 				841721B610D8D745001A833F /* SSCrypto.h */,
 				841721B710D8D745001A833F /* SSCrypto.m */,
-				8417224E10D8F01C001A833F /* ThreadPerConnectionServer.h */,
-				8417224F10D8F01C001A833F /* ThreadPerConnectionServer.m */,
 				8417225010D8F01C001A833F /* ThreadPoolServer.h */,
 				8417225110D8F01C001A833F /* ThreadPoolServer.m */,
 			);

@@ -385,6 +385,9 @@ static NSString *webDirectory = nil;
 	
 	if( [path hasPrefix: @"/index"])
 		return NO;
+		
+	if( [path isEqualToString: @"/favicon.ico"])
+		return NO;
 	
 	return [[NSUserDefaults standardUserDefaults] boolForKey: @"passwordWebServer"];
 }
@@ -527,6 +530,26 @@ static NSString *webDirectory = nil;
 	return (!aString)? @"" : aString;
 }
 
+- (NSMutableString*) setBlock: (NSString*) b visible: (BOOL) v forString: (NSMutableString*) s
+{
+	NSString *begin = [NSString stringWithFormat: @"%%%@%%", b];
+	NSString *end = [NSString stringWithFormat: @"%%/%@%%", b];
+	
+	if( v == NO)
+	{
+		NSArray *tempArray = [s componentsSeparatedByString: begin];
+		NSArray *tempArray2 = [[tempArray lastObject] componentsSeparatedByString: end];
+		s = [NSMutableString stringWithFormat: @"%@%@", [tempArray objectAtIndex:0], [tempArray2 lastObject]];
+	}
+	else
+	{
+		[s replaceOccurrencesOfString: begin withString: @"" options: NSLiteralSearch range: NSMakeRange(0, [s length])];
+		[s replaceOccurrencesOfString: end withString: @"" options: NSLiteralSearch range: NSMakeRange(0, [s length])];
+	}
+	
+	return s;
+}
+
 - (NSMutableString*)htmlStudy:(DicomStudy*)study parameters:(NSDictionary*)parameters settings: (NSDictionary*) settings;
 {
 	NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
@@ -534,43 +557,12 @@ static NSString *webDirectory = nil;
 	[context lock];
 	
 	NSMutableString *templateString = [NSMutableString stringWithContentsOfFile:[webDirectory stringByAppendingPathComponent:@"study.html"]];
-	NSArray *tempArray, *tempArray2;
-
-	if( currentUser && [[currentUser valueForKey: @"sendDICOMtoSelfIP"] boolValue] == NO && [[currentUser valueForKey: @"sendDICOMtoAnyNodes"] boolValue] == NO)
-	{
-		tempArray = [templateString componentsSeparatedByString:@"%SendingFunctions1%"];
-		tempArray2 = [[tempArray lastObject] componentsSeparatedByString:@"%/SendingFunctions1%"];
-		templateString = [NSMutableString stringWithFormat:@"%@%@",[tempArray objectAtIndex:0], [tempArray2 lastObject]];
-		
-		tempArray = [templateString componentsSeparatedByString:@"%SendingFunctions2%"];
-		tempArray2 = [[tempArray lastObject] componentsSeparatedByString:@"%/SendingFunctions2%"];
-		templateString = [NSMutableString stringWithFormat:@"%@%@",[tempArray objectAtIndex:0], [tempArray2 lastObject]];
-		
-		tempArray = [templateString componentsSeparatedByString:@"%SendingFunctions3%"];
-		tempArray2 = [[tempArray lastObject] componentsSeparatedByString:@"%/SendingFunctions3%"];
-		templateString = [NSMutableString stringWithFormat:@"%@%@",[tempArray objectAtIndex:0], [tempArray2 lastObject]];
-	}
-	else
-	{
-		[templateString replaceOccurrencesOfString:@"%SendingFunctions1%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-		[templateString replaceOccurrencesOfString:@"%/SendingFunctions1%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-		[templateString replaceOccurrencesOfString:@"%SendingFunctions2%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-		[templateString replaceOccurrencesOfString:@"%/SendingFunctions2%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-		[templateString replaceOccurrencesOfString:@"%SendingFunctions3%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-		[templateString replaceOccurrencesOfString:@"%/SendingFunctions3%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-	}
 	
-	if( currentUser && [[currentUser valueForKey: @"downloadZIP"] boolValue] == NO)
-	{
-		tempArray = [templateString componentsSeparatedByString:@"%ZIPFunctions%"];
-		tempArray2 = [[tempArray lastObject] componentsSeparatedByString:@"%/ZIPFunctions%"];
-		templateString = [NSMutableString stringWithFormat:@"%@%@",[tempArray objectAtIndex:0], [tempArray2 lastObject]];
-	}
-	else
-	{
-		[templateString replaceOccurrencesOfString:@"%ZIPFunctions%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-		[templateString replaceOccurrencesOfString:@"%/ZIPFunctions%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-	}
+	templateString = [self setBlock: @"SendingFunctions1" visible: (currentUser && ([[currentUser valueForKey: @"sendDICOMtoSelfIP"] boolValue] || [[currentUser valueForKey: @"sendDICOMtoAnyNodes"] boolValue] || [[currentUser valueForKey: @"shareStudyWithUser"] boolValue])) forString: templateString];
+	templateString = [self setBlock: @"SendingFunctions2" visible: (currentUser && ([[currentUser valueForKey: @"sendDICOMtoSelfIP"] boolValue] || [[currentUser valueForKey: @"sendDICOMtoAnyNodes"] boolValue] || [[currentUser valueForKey: @"shareStudyWithUser"] boolValue])) forString: templateString];
+	templateString = [self setBlock: @"SendingFunctions3" visible: (currentUser && ([[currentUser valueForKey: @"sendDICOMtoSelfIP"] boolValue] || [[currentUser valueForKey: @"sendDICOMtoAnyNodes"] boolValue])) forString: templateString];
+	templateString = [self setBlock: @"SharingFunctions" visible: (currentUser && [[currentUser valueForKey: @"shareStudyWithUser"] boolValue]) forString: templateString];
+	templateString = [self setBlock: @"ZIPFunctions" visible: (currentUser && [[currentUser valueForKey: @"downloadZIP"] boolValue]) forString: templateString];
 	
 	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_PatientInfo%" withString:NSLocalizedString(@"Patient Info", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_PatientID%" withString:NSLocalizedString(@"ID", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
@@ -614,23 +606,11 @@ static NSString *webDirectory = nil;
 	}
 	
 	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_StudyList%" withString:LocalizedLabel_StudyList options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_GetReport%" withString:NSLocalizedString(@"Download Report", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 	
+	templateString = [self setBlock: @"Report" visible: ([study valueForKey:@"reportURL"] && ![[settings valueForKey:@"iPhone"] boolValue]) forString: templateString];
 	
-	
-	if([study valueForKey:@"reportURL"] && ![[settings valueForKey:@"iPhone"] boolValue])
-	{
-		[templateString replaceOccurrencesOfString:@"%LocalizedLabel_GetReport%" withString:NSLocalizedString(@"Download Report", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-		[templateString replaceOccurrencesOfString:@"%Report%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-		[templateString replaceOccurrencesOfString:@"%/Report%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-	}
-	else
-	{
-		tempArray = [templateString componentsSeparatedByString:@"%Report%"];
-		tempArray2 = [[tempArray lastObject] componentsSeparatedByString:@"%/Report%"];
-		templateString = [NSMutableString stringWithFormat:@"%@%@",[tempArray objectAtIndex:0], [tempArray2 lastObject]];
-	}
-	
-	tempArray = [templateString componentsSeparatedByString:@"%SeriesListItem%"];
+	NSArray *tempArray = [templateString componentsSeparatedByString:@"%SeriesListItem%"];
 	NSString *templateStringStart = [tempArray objectAtIndex:0];
 	tempArray = [[tempArray lastObject] componentsSeparatedByString:@"%/SeriesListItem%"];
 	NSString *seriesListItemString = [tempArray objectAtIndex:0];
@@ -706,11 +686,15 @@ static NSString *webDirectory = nil;
 		[returnHTML appendString:tempHTML];
 	}
 	
-	tempArray = [templateStringEnd componentsSeparatedByString:@"%dicomNodesListItem%"];
-	templateStringStart = [tempArray objectAtIndex:0];
-	tempArray = [[tempArray lastObject] componentsSeparatedByString:@"%/dicomNodesListItem%"];
-	NSString *dicomNodesListItemString = [tempArray objectAtIndex:0];
-	templateStringEnd = [tempArray lastObject];
+	NSString *dicomNodesListItemString = @"";
+	if( currentUser && ([[currentUser valueForKey: @"sendDICOMtoSelfIP"] boolValue] || [[currentUser valueForKey: @"sendDICOMtoAnyNodes"] boolValue]))
+	{
+		tempArray = [templateStringEnd componentsSeparatedByString:@"%dicomNodesListItem%"];
+		templateStringStart = [tempArray objectAtIndex:0];
+		tempArray = [[tempArray lastObject] componentsSeparatedByString:@"%/dicomNodesListItem%"];
+		dicomNodesListItemString = [tempArray objectAtIndex:0];
+		templateStringEnd = [tempArray lastObject];
+	}
 	
 	[returnHTML appendString:templateStringStart];
 	
@@ -837,24 +821,14 @@ static NSString *webDirectory = nil;
 	[context lock];
 	
 	NSMutableString *templateString = [NSMutableString stringWithContentsOfFile:[webDirectory stringByAppendingPathComponent:@"studyList.html"]];
-	NSArray *tempArray, *tempArray2;
-	if( currentUser && [[currentUser valueForKey: @"downloadZIP"] boolValue] == NO)
-	{
-		tempArray = [templateString componentsSeparatedByString:@"%ZIPFunctions%"];
-		tempArray2 = [[tempArray lastObject] componentsSeparatedByString:@"%/ZIPFunctions%"];
-		templateString = [NSMutableString stringWithFormat:@"%@%@",[tempArray objectAtIndex:0], [tempArray2 lastObject]];
-	}
-	else
-	{
-		[templateString replaceOccurrencesOfString:@"%ZIPFunctions%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-		[templateString replaceOccurrencesOfString:@"%/ZIPFunctions%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-	}
+	
+	templateString = [self setBlock: @"ZIPFunctions" visible: ( currentUser && [[currentUser valueForKey: @"downloadZIP"] boolValue]) forString: templateString];
 	
 	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_Home%" withString:NSLocalizedString(@"Home", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_DownloadAsZIP%" withString:NSLocalizedString(@"ZIP file", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 	[templateString replaceOccurrencesOfString:@"%zipextension%" withString: ([[settings valueForKey:@"MacOS"] boolValue]?@"osirixzip":@"zip") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 	
-	tempArray = [templateString componentsSeparatedByString:@"%StudyListItem%"];
+	NSArray *tempArray = [templateString componentsSeparatedByString:@"%StudyListItem%"];
 	NSString *templateStringStart = [tempArray objectAtIndex:0];
 	tempArray = [[tempArray lastObject] componentsSeparatedByString:@"%/StudyListItem%"];
 	NSString *studyListItemString = [tempArray objectAtIndex:0];
@@ -1633,1149 +1607,1104 @@ static NSString *webDirectory = nil;
 	
 	[[[BrowserController currentBrowser] managedObjectContext] lock];
 	
-	data = [NSData dataWithContentsOfFile:requestedFile];
-	
-	#pragma mark index
-	if( [fileURL isEqualToString: @"/index.html"] || [fileURL isEqualToString: @"/"])
+	@try
 	{
-		NSMutableString *templateString = [NSMutableString stringWithContentsOfFile: [webDirectory stringByAppendingPathComponent:@"index.html"]];
+		data = [NSData dataWithContentsOfFile:requestedFile];
 		
-		[templateString replaceOccurrencesOfString:@"%Localized_OsiriXWebPortal%" withString:NSLocalizedString(@"OsiriX Web Portal", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-		[templateString replaceOccurrencesOfString:@"%Localized_PasswordForgotten%" withString:NSLocalizedString(@"Password Forgotten?", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-		[templateString replaceOccurrencesOfString:@"%Localized_Login%" withString:NSLocalizedString(@"Login", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-		
-		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"restorePasswordWebServer"] == NO)
+		#pragma mark index
+		if( [fileURL isEqualToString: @"/index.html"] || [fileURL isEqualToString: @"/"])
 		{
-			NSArray *tempArray, *tempArray2;
+			NSMutableString *templateString = [NSMutableString stringWithContentsOfFile: [webDirectory stringByAppendingPathComponent:@"index.html"]];
 			
-			tempArray = [templateString componentsSeparatedByString:@"%AuthorizedRestorePasswordWebServer%"];
-			tempArray2 = [[tempArray lastObject] componentsSeparatedByString:@"%/AuthorizedRestorePasswordWebServer%"];
-			templateString = [NSMutableString stringWithFormat:@"%@%@",[tempArray objectAtIndex:0], [tempArray2 lastObject]];
-		}
-		else
-		{
-			[templateString replaceOccurrencesOfString:@"%AuthorizedRestorePasswordWebServer%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-			[templateString replaceOccurrencesOfString:@"%/AuthorizedRestorePasswordWebServer%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+			[templateString replaceOccurrencesOfString:@"%Localized_OsiriXWebPortal%" withString:NSLocalizedString(@"OsiriX Web Portal", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+			[templateString replaceOccurrencesOfString:@"%Localized_PasswordForgotten%" withString:NSLocalizedString(@"Password Forgotten?", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+			[templateString replaceOccurrencesOfString:@"%Localized_Login%" withString:NSLocalizedString(@"Login", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+			
+			templateString = [self setBlock: @"AuthorizedRestorePasswordWebServer" visible: [[NSUserDefaults standardUserDefaults] boolForKey: @"restorePasswordWebServer"] forString: templateString];
+			
+			data = [templateString dataUsingEncoding: NSUTF8StringEncoding];
+			
+			err = NO;
 		}
 		
-		data = [templateString dataUsingEncoding: NSUTF8StringEncoding];
+		#pragma mark main
 		
-		err = NO;
-	}
-	
-	#pragma mark main
-	
-	if([fileURL isEqualToString: @"/main"])
-	{
-		NSMutableString *templateString = [NSMutableString stringWithContentsOfFile:[webDirectory stringByAppendingPathComponent:@"main.html"]];
-		
-		if( currentUser == nil)
+		if([fileURL isEqualToString: @"/main"])
 		{
-			NSArray *tempArray, *tempArray2;
+			NSMutableString *templateString = [NSMutableString stringWithContentsOfFile:[webDirectory stringByAppendingPathComponent:@"main.html"]];
 			
-			tempArray = [templateString componentsSeparatedByString:@"%userAccount%"];
-			tempArray2 = [[tempArray lastObject] componentsSeparatedByString:@"%/userAccount%"];
-			templateString = [NSMutableString stringWithFormat:@"%@%@",[tempArray objectAtIndex:0], [tempArray2 lastObject]];
-		}
-		else
-		{
-			[templateString replaceOccurrencesOfString:@"%userAccount%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-			[templateString replaceOccurrencesOfString:@"%/userAccount%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+			templateString = [self setBlock: @"userAccount" visible: currentUser ? YES : NO forString: templateString];
 			
-			NSMutableString *userAccount = [NSMutableString stringWithString: NSLocalizedString(@"Current User : ", nil)];
-			
-			[userAccount appendString: [currentUser valueForKey: @"name"]];
-			[userAccount appendString: @" - "];
-			[userAccount appendString: [currentUser valueForKey: @"email"]];
-			[userAccount appendString: @" - "];
-			[userAccount appendString: [currentUser valueForKey: @"phone"]];
-			
-			[templateString replaceOccurrencesOfString:@"%LocalizedLabel_Account%" withString: userAccount options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-		}
-		
-		if( currentUser && [[currentUser valueForKey: @"uploadDICOM"] boolValue] == NO)
-		{
-			NSArray *tempArray, *tempArray2;
-			
-			tempArray = [templateString componentsSeparatedByString:@"%AuthorizedUploadDICOMFiles%"];
-			tempArray2 = [[tempArray lastObject] componentsSeparatedByString:@"%/AuthorizedUploadDICOMFiles%"];
-			templateString = [NSMutableString stringWithFormat:@"%@%@",[tempArray objectAtIndex:0], [tempArray2 lastObject]];
-		}
-		else
-		{
-			[templateString replaceOccurrencesOfString:@"%AuthorizedUploadDICOMFiles%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-			[templateString replaceOccurrencesOfString:@"%/AuthorizedUploadDICOMFiles%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-		}
-		
-		[templateString replaceOccurrencesOfString:@"%LocalizedLabel_Submit%" withString:NSLocalizedString(@"Submit", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-		[templateString replaceOccurrencesOfString:@"%LocalizedLabel_UploadDICOMFilesHeader%" withString:NSLocalizedString(@"Upload Files", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-		[templateString replaceOccurrencesOfString:@"%LocalizedLabel_UploadDICOMFiles%" withString:NSLocalizedString(@"Select a DICOM file or a zip file containing DICOM files:  ", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-		[templateString replaceOccurrencesOfString:@"%LocalizedLabel_SearchPatient%" withString:NSLocalizedString(@"Search Patient", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-		[templateString replaceOccurrencesOfString:@"%LocalizedLabel_SearchPatientID%" withString:NSLocalizedString(@"Search Patient ID", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-		[templateString replaceOccurrencesOfString:@"%LocalizedLabel_SearchButton%" withString:NSLocalizedString(@"Search", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-		[templateString replaceOccurrencesOfString:@"%LocalizedLabel_Browse%" withString:NSLocalizedString(@"Browse", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-		[templateString replaceOccurrencesOfString:@"%LocalizedLabel_Last6Hours%" withString:NSLocalizedString(@"Last 6 Hours", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-		[templateString replaceOccurrencesOfString:@"%LocalizedLabel_Today%" withString:NSLocalizedString(@"Today", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-		[templateString replaceOccurrencesOfString:@"%LocalizedLabel_StudyList%" withString:NSLocalizedString(@"Study List", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-		[templateString replaceOccurrencesOfString:@"%LocalizedLabel_Albums%" withString:NSLocalizedString(@"Albums", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-		
-		if( currentUser == nil || (currentUser && [[currentUser valueForKey: @"uploadDICOM"] boolValue] == YES))
-			[self supportsPOST: nil withSize: 0];
-		
-		NSArray *tempArray = [templateString componentsSeparatedByString:@"%AlbumListItem%"];
-		NSString *templateStringStart = [tempArray objectAtIndex:0];
-		tempArray = [[tempArray lastObject] componentsSeparatedByString:@"%/AlbumListItem%"];
-		NSString *albumListItemString = [tempArray objectAtIndex:0];
-		NSString *templateStringEnd = [tempArray lastObject];
-		
-		NSMutableString *returnHTML = [NSMutableString stringWithString:templateStringStart];
-		
-		NSArray	*albumArray = [[BrowserController currentBrowser] albumArray];
-		for(NSManagedObject *album in albumArray)
-		{
-			if(![[album valueForKey:@"name"] isEqualToString:NSLocalizedString(@"Database", nil)])
+			if( currentUser)
 			{
-				NSMutableString *tempString = [NSMutableString stringWithString:albumListItemString];
-				[tempString replaceOccurrencesOfString:@"%AlbumName%" withString:[album valueForKey:@"name"] options:NSLiteralSearch range:NSMakeRange(0, [tempString length])];
-				[tempString replaceOccurrencesOfString:@"%AlbumNameURL%" withString:[OsiriXHTTPConnection encodeURLString:[album valueForKey:@"name"]] options:NSLiteralSearch range:NSMakeRange(0, [tempString length])];
-				[returnHTML appendString:tempString];
-			}
-		}
-		
-		[returnHTML appendString:templateStringEnd];
-		
-		[returnHTML replaceOccurrencesOfString: @"%DicomCStorePort%" withString: portString options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
-		
-		data = [returnHTML dataUsingEncoding:NSUTF8StringEncoding];
-		
-		err = NO;
-	}
-#pragma mark wado
-	else if( [fileURL isEqualToString:@"/wado"] && [[NSUserDefaults standardUserDefaults] boolForKey: @"wadoServer"])
-	{
-		if( [[[parameters objectForKey:@"requestType"] lowercaseString] isEqualToString: @"wado"])
-		{
-			NSString *studyUID = [[parameters objectForKey:@"studyUID"] lowercaseString];
-			NSString *seriesUID = [[parameters objectForKey:@"seriesUID"] lowercaseString];
-			NSString *objectUID = [[parameters objectForKey:@"objectUID"] lowercaseString];
-			NSString *contentType = [[[[parameters objectForKey:@"contentType"] lowercaseString] componentsSeparatedByString: @","] objectAtIndex: 0];
-			int rows = [[parameters objectForKey:@"rows"] intValue];
-			int columns = [[parameters objectForKey:@"columns"] intValue];
-			int windowCenter = [[parameters objectForKey:@"windowCenter"] intValue];
-			int windowWidth = [[parameters objectForKey:@"windowWidth"] intValue];
-			//				int frameNumber = [[parameters objectForKey:@"frameNumber"] intValue]; -> OsiriX stores frames as images
-			int imageQuality = DCMLosslessQuality;
-			
-			if( [parameters objectForKey:@"imageQuality"])
-			{
-				if( [[parameters objectForKey:@"imageQuality"] intValue] > 80)
-					imageQuality = DCMLosslessQuality;
-				else if( [[parameters objectForKey:@"imageQuality"] intValue] > 60)
-					imageQuality = DCMHighQuality;
-				else if( [[parameters objectForKey:@"imageQuality"] intValue] > 30)
-					imageQuality = DCMMediumQuality;
-				else if( [[parameters objectForKey:@"imageQuality"] intValue] >= 0)
-					imageQuality = DCMLowQuality;
+				NSMutableString *userAccount = [NSMutableString stringWithString: NSLocalizedString(@"Current User : ", nil)];
+				
+				[userAccount appendString: [currentUser valueForKey: @"name"]];
+				[userAccount appendString: @" - "];
+				[userAccount appendString: [currentUser valueForKey: @"email"]];
+				[userAccount appendString: @" - "];
+				[userAccount appendString: [currentUser valueForKey: @"phone"]];
+				
+				[templateString replaceOccurrencesOfString:@"%LocalizedLabel_Account%" withString: userAccount options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 			}
 			
-			NSString *transferSyntax = [[parameters objectForKey:@"transferSyntax"] lowercaseString];
-			NSString *useOrig = [[parameters objectForKey:@"useOrig"] lowercaseString];
+			templateString = [self setBlock: @"AuthorizedUploadDICOMFiles" visible: ( currentUser && [[currentUser valueForKey: @"uploadDICOM"] boolValue]) forString: templateString];
 			
-			NSError *error = nil;
-			NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-			[dbRequest setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey:@"Study"]];
+			[templateString replaceOccurrencesOfString:@"%LocalizedLabel_Submit%" withString:NSLocalizedString(@"Submit", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+			[templateString replaceOccurrencesOfString:@"%LocalizedLabel_UploadDICOMFilesHeader%" withString:NSLocalizedString(@"Upload Files", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+			[templateString replaceOccurrencesOfString:@"%LocalizedLabel_UploadDICOMFiles%" withString:NSLocalizedString(@"Select a DICOM file or a zip file containing DICOM files:  ", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+			[templateString replaceOccurrencesOfString:@"%LocalizedLabel_SearchPatient%" withString:NSLocalizedString(@"Search Patient", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+			[templateString replaceOccurrencesOfString:@"%LocalizedLabel_SearchPatientID%" withString:NSLocalizedString(@"Search Patient ID", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+			[templateString replaceOccurrencesOfString:@"%LocalizedLabel_SearchButton%" withString:NSLocalizedString(@"Search", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+			[templateString replaceOccurrencesOfString:@"%LocalizedLabel_Browse%" withString:NSLocalizedString(@"Browse", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+			[templateString replaceOccurrencesOfString:@"%LocalizedLabel_Last6Hours%" withString:NSLocalizedString(@"Last 6 Hours", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+			[templateString replaceOccurrencesOfString:@"%LocalizedLabel_Today%" withString:NSLocalizedString(@"Today", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+			[templateString replaceOccurrencesOfString:@"%LocalizedLabel_StudyList%" withString:NSLocalizedString(@"Study List", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+			[templateString replaceOccurrencesOfString:@"%LocalizedLabel_Albums%" withString:NSLocalizedString(@"Albums", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 			
-			@try
+			if( currentUser == nil || (currentUser && [[currentUser valueForKey: @"uploadDICOM"] boolValue] == YES))
+				[self supportsPOST: nil withSize: 0];
+			
+			NSArray *tempArray = [templateString componentsSeparatedByString:@"%AlbumListItem%"];
+			NSString *templateStringStart = [tempArray objectAtIndex:0];
+			tempArray = [[tempArray lastObject] componentsSeparatedByString:@"%/AlbumListItem%"];
+			NSString *albumListItemString = [tempArray objectAtIndex:0];
+			NSString *templateStringEnd = [tempArray lastObject];
+			
+			NSMutableString *returnHTML = [NSMutableString stringWithString:templateStringStart];
+			
+			NSArray	*albumArray = [[BrowserController currentBrowser] albumArray];
+			for(NSManagedObject *album in albumArray)
 			{
-				[dbRequest setPredicate: [NSPredicate predicateWithFormat: @"studyInstanceUID == %@", studyUID]];
-				
-				NSArray *studies = [[[BrowserController currentBrowser] managedObjectContext] executeFetchRequest: dbRequest error: &error];
-				
-				if( [studies count] == 0)
-					NSLog( @"****** WADO Server : study not found");
-				
-				if( [studies count] > 1)
-					NSLog( @"****** WADO Server : more than 1 study with same uid");
-				
-				NSArray *allSeries = [[[studies lastObject] valueForKey: @"series"] allObjects];
-				allSeries = [allSeries filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"seriesDICOMUID == %@", seriesUID]];
-				
-				NSArray *allImages = [NSArray array];
-				for( id series in allSeries)
-					allImages = [allImages arrayByAddingObjectsFromArray: [[series valueForKey: @"images"] allObjects]];
-				
-				NSPredicate *predicate = [NSComparisonPredicate predicateWithLeftExpression: [NSExpression expressionForKeyPath: @"compressedSopInstanceUID"] rightExpression: [NSExpression expressionForConstantValue: [DicomImage sopInstanceUIDEncodeString: objectUID]] customSelector: @selector( isEqualToSopInstanceUID:)];
-				NSPredicate *notNilPredicate = [NSPredicate predicateWithFormat:@"compressedSopInstanceUID != NIL"];
-				
-				NSArray *images = [[allImages filteredArrayUsingPredicate: notNilPredicate] filteredArrayUsingPredicate: predicate];
-				
-				if( [images count])
+				if(![[album valueForKey:@"name"] isEqualToString:NSLocalizedString(@"Database", nil)])
 				{
-					if( [contentType isEqualToString: @"application/dicom"])
+					NSMutableString *tempString = [NSMutableString stringWithString:albumListItemString];
+					[tempString replaceOccurrencesOfString:@"%AlbumName%" withString:[album valueForKey:@"name"] options:NSLiteralSearch range:NSMakeRange(0, [tempString length])];
+					[tempString replaceOccurrencesOfString:@"%AlbumNameURL%" withString:[OsiriXHTTPConnection encodeURLString:[album valueForKey:@"name"]] options:NSLiteralSearch range:NSMakeRange(0, [tempString length])];
+					[returnHTML appendString:tempString];
+				}
+			}
+			
+			[returnHTML appendString:templateStringEnd];
+			
+			[returnHTML replaceOccurrencesOfString: @"%DicomCStorePort%" withString: portString options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
+			
+			data = [returnHTML dataUsingEncoding:NSUTF8StringEncoding];
+			
+			err = NO;
+		}
+	#pragma mark wado
+		else if( [fileURL isEqualToString:@"/wado"] && [[NSUserDefaults standardUserDefaults] boolForKey: @"wadoServer"])
+		{
+			if( [[[parameters objectForKey:@"requestType"] lowercaseString] isEqualToString: @"wado"])
+			{
+				NSString *studyUID = [[parameters objectForKey:@"studyUID"] lowercaseString];
+				NSString *seriesUID = [[parameters objectForKey:@"seriesUID"] lowercaseString];
+				NSString *objectUID = [[parameters objectForKey:@"objectUID"] lowercaseString];
+				NSString *contentType = [[[[parameters objectForKey:@"contentType"] lowercaseString] componentsSeparatedByString: @","] objectAtIndex: 0];
+				int rows = [[parameters objectForKey:@"rows"] intValue];
+				int columns = [[parameters objectForKey:@"columns"] intValue];
+				int windowCenter = [[parameters objectForKey:@"windowCenter"] intValue];
+				int windowWidth = [[parameters objectForKey:@"windowWidth"] intValue];
+				//				int frameNumber = [[parameters objectForKey:@"frameNumber"] intValue]; -> OsiriX stores frames as images
+				int imageQuality = DCMLosslessQuality;
+				
+				if( [parameters objectForKey:@"imageQuality"])
+				{
+					if( [[parameters objectForKey:@"imageQuality"] intValue] > 80)
+						imageQuality = DCMLosslessQuality;
+					else if( [[parameters objectForKey:@"imageQuality"] intValue] > 60)
+						imageQuality = DCMHighQuality;
+					else if( [[parameters objectForKey:@"imageQuality"] intValue] > 30)
+						imageQuality = DCMMediumQuality;
+					else if( [[parameters objectForKey:@"imageQuality"] intValue] >= 0)
+						imageQuality = DCMLowQuality;
+				}
+				
+				NSString *transferSyntax = [[parameters objectForKey:@"transferSyntax"] lowercaseString];
+				NSString *useOrig = [[parameters objectForKey:@"useOrig"] lowercaseString];
+				
+				NSError *error = nil;
+				NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+				[dbRequest setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey:@"Study"]];
+				
+				@try
+				{
+					[dbRequest setPredicate: [NSPredicate predicateWithFormat: @"studyInstanceUID == %@", studyUID]];
+					
+					NSArray *studies = [[[BrowserController currentBrowser] managedObjectContext] executeFetchRequest: dbRequest error: &error];
+					
+					if( [studies count] == 0)
+						NSLog( @"****** WADO Server : study not found");
+					
+					if( [studies count] > 1)
+						NSLog( @"****** WADO Server : more than 1 study with same uid");
+					
+					NSArray *allSeries = [[[studies lastObject] valueForKey: @"series"] allObjects];
+					allSeries = [allSeries filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"seriesDICOMUID == %@", seriesUID]];
+					
+					NSArray *allImages = [NSArray array];
+					for( id series in allSeries)
+						allImages = [allImages arrayByAddingObjectsFromArray: [[series valueForKey: @"images"] allObjects]];
+					
+					NSPredicate *predicate = [NSComparisonPredicate predicateWithLeftExpression: [NSExpression expressionForKeyPath: @"compressedSopInstanceUID"] rightExpression: [NSExpression expressionForConstantValue: [DicomImage sopInstanceUIDEncodeString: objectUID]] customSelector: @selector( isEqualToSopInstanceUID:)];
+					NSPredicate *notNilPredicate = [NSPredicate predicateWithFormat:@"compressedSopInstanceUID != NIL"];
+					
+					NSArray *images = [[allImages filteredArrayUsingPredicate: notNilPredicate] filteredArrayUsingPredicate: predicate];
+					
+					if( [images count])
 					{
-						if( [useOrig isEqualToString: @"true"] || [useOrig isEqualToString: @"1"] || [useOrig isEqualToString: @"yes"])
+						if( [contentType isEqualToString: @"application/dicom"])
 						{
-							data = [NSData dataWithContentsOfFile: [[images lastObject] valueForKey: @"completePath"]];
-						}
-						else
-						{
-							DCMTransferSyntax *ts = [[[DCMTransferSyntax alloc] initWithTS: transferSyntax] autorelease];
-							
-							if( [ts isEqualToTransferSyntax: [DCMTransferSyntax JPEG2000LosslessTransferSyntax]] ||
-							   [ts isEqualToTransferSyntax: [DCMTransferSyntax JPEG2000LossyTransferSyntax]] ||
-							   [ts isEqualToTransferSyntax: [DCMTransferSyntax JPEGBaselineTransferSyntax]] ||
-							   [ts isEqualToTransferSyntax: [DCMTransferSyntax JPEGLossless14TransferSyntax]] ||
-							   [ts isEqualToTransferSyntax: [DCMTransferSyntax JPEGBaselineTransferSyntax]])
+							if( [useOrig isEqualToString: @"true"] || [useOrig isEqualToString: @"1"] || [useOrig isEqualToString: @"yes"])
 							{
+								data = [NSData dataWithContentsOfFile: [[images lastObject] valueForKey: @"completePath"]];
+							}
+							else
+							{
+								DCMTransferSyntax *ts = [[[DCMTransferSyntax alloc] initWithTS: transferSyntax] autorelease];
+								
+								if( [ts isEqualToTransferSyntax: [DCMTransferSyntax JPEG2000LosslessTransferSyntax]] ||
+								   [ts isEqualToTransferSyntax: [DCMTransferSyntax JPEG2000LossyTransferSyntax]] ||
+								   [ts isEqualToTransferSyntax: [DCMTransferSyntax JPEGBaselineTransferSyntax]] ||
+								   [ts isEqualToTransferSyntax: [DCMTransferSyntax JPEGLossless14TransferSyntax]] ||
+								   [ts isEqualToTransferSyntax: [DCMTransferSyntax JPEGBaselineTransferSyntax]])
+								{
+									
+								}
+								else // Explicit VR Little Endian
+									ts = [DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax];
+								
+								data = [[BrowserController currentBrowser] getDICOMFile: [[images lastObject] valueForKey: @"completePath"] inSyntax: ts.transferSyntax quality: imageQuality];
+							}
+							err = NO;
+						}
+						else if( [contentType isEqualToString: @"video/mpeg"])
+						{
+							DicomImage *im = [images lastObject];
+							
+							NSArray *dicomImageArray = [[[im valueForKey: @"series"] valueForKey:@"images"] allObjects];
+							
+							@try
+							{
+								// Sort images with "instanceNumber"
+								NSSortDescriptor *sort = [[NSSortDescriptor alloc] initWithKey:@"instanceNumber" ascending:YES];
+								NSArray *sortDescriptors = [NSArray arrayWithObject:sort];
+								[sort release];
+								dicomImageArray = [dicomImageArray sortedArrayUsingDescriptors: sortDescriptors];
 								
 							}
-							else // Explicit VR Little Endian
-								ts = [DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax];
-							
-							data = [[BrowserController currentBrowser] getDICOMFile: [[images lastObject] valueForKey: @"completePath"] inSyntax: ts.transferSyntax quality: imageQuality];
-						}
-						err = NO;
-					}
-					else if( [contentType isEqualToString: @"video/mpeg"])
-					{
-						DicomImage *im = [images lastObject];
-						
-						NSArray *dicomImageArray = [[[im valueForKey: @"series"] valueForKey:@"images"] allObjects];
-						
-						@try
-						{
-							// Sort images with "instanceNumber"
-							NSSortDescriptor *sort = [[NSSortDescriptor alloc] initWithKey:@"instanceNumber" ascending:YES];
-							NSArray *sortDescriptors = [NSArray arrayWithObject:sort];
-							[sort release];
-							dicomImageArray = [dicomImageArray sortedArrayUsingDescriptors: sortDescriptors];
-							
-						}
-						@catch (NSException * e)
-						{
-							NSLog( @"%@", [e description]);
-						}
-						
-						if( [dicomImageArray count] > 1)
-						{
-							NSString *path = @"/tmp/osirixwebservices";
-							[[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
-							
-							NSString *name = [NSString stringWithFormat:@"%@",[parameters objectForKey:@"id"]];
-							name = [name stringByAppendingFormat:@"-NBIM-%d", [dicomImageArray count]];
-							
-							NSString *fileName = [path stringByAppendingPathComponent:name];
-							fileName = [fileName stringByAppendingString:@".mov"];
-							NSString *outFile;
-							if( isiPhone)
-								outFile = [NSString stringWithFormat:@"%@2.m4v", [fileName stringByDeletingPathExtension]];
-							else
-								outFile = fileName;
-							
-							NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: isiPhone], @"isiPhone", fileURL, @"fileURL", fileName, @"fileName", outFile, @"outFile", parameters, @"parameters", dicomImageArray, @"dicomImageArray", nil];
-							
-							lockReleased = YES;
-							[[[BrowserController currentBrowser] managedObjectContext] unlock];
-							
-							[self generateMovie: dict];
-							
-							data = [NSData dataWithContentsOfFile: outFile];
-							
-							if( data)
-								err = NO;
-						}
-					}
-					else // image/jpeg
-					{
-						DicomImage *im = [images lastObject];
-						
-						DCMPix* dcmPix = [[[DCMPix alloc] initWithPath:[im valueForKey:@"completePathResolved"] :0 :1 :nil :0 :[[im valueForKeyPath:@"series.id"] intValue] isBonjour:NO imageObj:im] autorelease];
-						
-						if(dcmPix)
-						{
-							NSImage *image = nil;
-							
-							float curWW = windowWidth;
-							float curWL = windowCenter;
-							
-							if( curWW == 0 && [[im valueForKey:@"series"] valueForKey:@"windowWidth"])
+							@catch (NSException * e)
 							{
-								curWW = [[[im valueForKey:@"series"] valueForKey:@"windowWidth"] floatValue];
-								curWL = [[[im valueForKey:@"series"] valueForKey:@"windowLevel"] floatValue];
+								NSLog( @"%@", [e description]);
 							}
 							
-							if( curWW != 0)
-								[dcmPix checkImageAvailble:curWW :curWL];
-							else
-								[dcmPix checkImageAvailble:[dcmPix savedWW] :[dcmPix savedWL]];
-							
-							image = [dcmPix image];
-							float width = [image size].width;
-							float height = [image size].height;
-							
-							int maxWidth = columns;
-							int maxHeight = rows;
-							
-							BOOL resize = NO;
-							
-							if(width > maxWidth && maxWidth > 0)
+							if( [dicomImageArray count] > 1)
 							{
-								height =  height * maxWidth / width;
-								width = maxWidth;
-								resize = YES;
+								NSString *path = @"/tmp/osirixwebservices";
+								[[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
+								
+								NSString *name = [NSString stringWithFormat:@"%@",[parameters objectForKey:@"id"]];
+								name = [name stringByAppendingFormat:@"-NBIM-%d", [dicomImageArray count]];
+								
+								NSString *fileName = [path stringByAppendingPathComponent:name];
+								fileName = [fileName stringByAppendingString:@".mov"];
+								NSString *outFile;
+								if( isiPhone)
+									outFile = [NSString stringWithFormat:@"%@2.m4v", [fileName stringByDeletingPathExtension]];
+								else
+									outFile = fileName;
+								
+								NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: isiPhone], @"isiPhone", fileURL, @"fileURL", fileName, @"fileName", outFile, @"outFile", parameters, @"parameters", dicomImageArray, @"dicomImageArray", nil];
+								
+								lockReleased = YES;
+								[[[BrowserController currentBrowser] managedObjectContext] unlock];
+								
+								[self generateMovie: dict];
+								
+								data = [NSData dataWithContentsOfFile: outFile];
+								
+								if( data)
+									err = NO;
 							}
-							if(height > maxHeight && maxHeight > 0)
+						}
+						else // image/jpeg
+						{
+							DicomImage *im = [images lastObject];
+							
+							DCMPix* dcmPix = [[[DCMPix alloc] initWithPath:[im valueForKey:@"completePathResolved"] :0 :1 :nil :0 :[[im valueForKeyPath:@"series.id"] intValue] isBonjour:NO imageObj:im] autorelease];
+							
+							if(dcmPix)
 							{
-								width = width * maxHeight / height;
-								height = maxHeight;
-								resize = YES;
+								NSImage *image = nil;
+								
+								float curWW = windowWidth;
+								float curWL = windowCenter;
+								
+								if( curWW == 0 && [[im valueForKey:@"series"] valueForKey:@"windowWidth"])
+								{
+									curWW = [[[im valueForKey:@"series"] valueForKey:@"windowWidth"] floatValue];
+									curWL = [[[im valueForKey:@"series"] valueForKey:@"windowLevel"] floatValue];
+								}
+								
+								if( curWW != 0)
+									[dcmPix checkImageAvailble:curWW :curWL];
+								else
+									[dcmPix checkImageAvailble:[dcmPix savedWW] :[dcmPix savedWL]];
+								
+								image = [dcmPix image];
+								float width = [image size].width;
+								float height = [image size].height;
+								
+								int maxWidth = columns;
+								int maxHeight = rows;
+								
+								BOOL resize = NO;
+								
+								if(width > maxWidth && maxWidth > 0)
+								{
+									height =  height * maxWidth / width;
+									width = maxWidth;
+									resize = YES;
+								}
+								if(height > maxHeight && maxHeight > 0)
+								{
+									width = width * maxHeight / height;
+									height = maxHeight;
+									resize = YES;
+								}
+								
+								NSImage *newImage;
+								
+								if( resize)
+									newImage = [image imageByScalingProportionallyToSize: NSMakeSize(width, height)];
+								else
+									newImage = image;
+								
+								NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData:[newImage TIFFRepresentation]];
+								NSDictionary *imageProps = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:1.0] forKey:NSImageCompressionFactor];
+								
+								if( [contentType isEqualToString: @"image/gif"])
+									data = [imageRep representationUsingType: NSGIFFileType properties:imageProps];
+								else if( [contentType isEqualToString: @"image/png"])
+									data = [imageRep representationUsingType: NSPNGFileType properties:imageProps];
+								else if( [contentType isEqualToString: @"image/jp2"])
+									data = [imageRep representationUsingType: NSJPEG2000FileType properties:imageProps];
+								else
+									data = [imageRep representationUsingType: NSJPEGFileType properties:imageProps];
+								
+								if( data)
+									err = NO;
 							}
-							
-							NSImage *newImage;
-							
-							if( resize)
-								newImage = [image imageByScalingProportionallyToSize: NSMakeSize(width, height)];
-							else
-								newImage = image;
-							
-							NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData:[newImage TIFFRepresentation]];
-							NSDictionary *imageProps = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:1.0] forKey:NSImageCompressionFactor];
-							
-							if( [contentType isEqualToString: @"image/gif"])
-								data = [imageRep representationUsingType: NSGIFFileType properties:imageProps];
-							else if( [contentType isEqualToString: @"image/png"])
-								data = [imageRep representationUsingType: NSPNGFileType properties:imageProps];
-							else if( [contentType isEqualToString: @"image/jp2"])
-								data = [imageRep representationUsingType: NSJPEG2000FileType properties:imageProps];
-							else
-								data = [imageRep representationUsingType: NSJPEGFileType properties:imageProps];
-							
-							if( data)
-								err = NO;
 						}
 					}
+					else NSLog( @"****** WADO Server : image uid not found !");
 				}
-				else NSLog( @"****** WADO Server : image uid not found !");
-			}
-			@catch (NSException * e)
-			{
-				NSLog( @"****** WADO Server exception: %@", e);
-			}
-		}
-	}
-#pragma mark studyList
-	else if([fileURL isEqualToString:@"/studyList"])
-	{
-		NSPredicate *browsePredicate;
-		NSString *pageTitle;
-		if( [[parameters objectForKey:@"browse"] isEqualToString: @"newAddedStudies"] && [[parameters objectForKey:@"browseParameter"] doubleValue] > 0)
-		{
-			browsePredicate = [NSPredicate predicateWithFormat: @"dateAdded >= CAST(%lf, \"NSDate\")", [[parameters objectForKey:@"browseParameter"] doubleValue]];
-			pageTitle = NSLocalizedString(@"New Studies Available", nil);
-		}
-		else if([(NSString*)[parameters objectForKey:@"browse"] isEqualToString:@"today"])
-		{
-			browsePredicate = [NSPredicate predicateWithFormat: @"date >= CAST(%lf, \"NSDate\")", [self startOfDay:[NSCalendarDate calendarDate]]];
-			pageTitle = NSLocalizedString(@"Today", nil);
-		}
-		else if([(NSString*)[parameters objectForKey:@"browse"] isEqualToString:@"6hours"])
-		{
-			NSCalendarDate *now = [NSCalendarDate calendarDate];
-			browsePredicate = [NSPredicate predicateWithFormat: @"date >= CAST(%lf, \"NSDate\")", [[NSCalendarDate dateWithYear:[now yearOfCommonEra] month:[now monthOfYear] day:[now dayOfMonth] hour:[now hourOfDay]-6 minute:[now minuteOfHour] second:[now secondOfMinute] timeZone:nil] timeIntervalSinceReferenceDate]];
-			pageTitle = NSLocalizedString(@"Last 6 hours", nil);
-		}
-		else if([(NSString*)[parameters objectForKey:@"browse"] isEqualToString:@"all"])
-		{
-			browsePredicate = [NSPredicate predicateWithValue:YES];
-			pageTitle = NSLocalizedString(@"Study List", nil);
-		}
-		else if([parameters objectForKey:@"search"])
-		{
-			NSMutableString *search = [NSMutableString string];
-			NSString *searchString = [NSString stringWithString: [[[parameters objectForKey:@"search"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding]];
-			searchString = [OsiriXHTTPConnection decodeURLString:searchString];
-			
-			NSArray *components = [searchString componentsSeparatedByString:@" "];
-			NSMutableArray *newComponents = [NSMutableArray array];
-			for (NSString *comp in components)
-			{
-				if(![comp isEqualToString:@""])
-					[newComponents addObject:comp];
-			}
-			
-			searchString = [newComponents componentsJoinedByString:@" "];
-			
-			[search appendFormat:@"name CONTAINS[cd] '%@'", searchString]; // [c] is for 'case INsensitive' and [d] is to ignore accents (diacritic)
-			browsePredicate = [NSPredicate predicateWithFormat:search];
-			pageTitle = NSLocalizedString(@"Search Result", nil);
-		}
-		else if([parameters objectForKey:@"searchID"])
-		{
-			NSMutableString *search = [NSMutableString string];
-			NSString *searchString = [NSString stringWithString: [[[parameters objectForKey:@"searchID"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding]];
-			searchString = [OsiriXHTTPConnection decodeURLString:searchString];
-			
-			NSArray *components = [searchString componentsSeparatedByString:@" "];
-			NSMutableArray *newComponents = [NSMutableArray array];
-			for (NSString *comp in components)
-			{
-				if(![comp isEqualToString:@""])
-					[newComponents addObject:comp];
-			}
-			
-			searchString = [newComponents componentsJoinedByString:@" "];
-			
-			[search appendFormat:@"patientID CONTAINS[cd] '%@'", searchString]; // [c] is for 'case INsensitive' and [d] is to ignore accents (diacritic)
-			browsePredicate = [NSPredicate predicateWithFormat:search];
-			pageTitle = NSLocalizedString(@"Search Result", nil);
-		}
-		else
-		{
-			browsePredicate = [NSPredicate predicateWithValue:YES];
-			pageTitle = NSLocalizedString(@"Study List", nil);
-		}
-		
-		NSMutableString *html = [self htmlStudyListForStudies: [self studiesForPredicate: browsePredicate] settings: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: isMacOS], @"MacOS", nil]];
-		
-		if([parameters objectForKey:@"album"])
-		{
-			if(![[parameters objectForKey:@"album"] isEqualToString:@""])
-			{
-				html = [self htmlStudyListForStudies: [self studiesForAlbum:[OsiriXHTTPConnection decodeURLString:[[parameters objectForKey:@"album"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]] settings: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: isMacOS], @"MacOS", nil]];
-				pageTitle = [OsiriXHTTPConnection decodeURLString:[[parameters objectForKey:@"album"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-			}
-		}
-		
-		[html replaceOccurrencesOfString:@"%PageTitle%" withString:pageTitle options:NSLiteralSearch range:NSMakeRange(0, [html length])];
-		
-		if([parameters objectForKey:@"browse"])[html replaceOccurrencesOfString:@"%browse%" withString:[NSString stringWithFormat:@"&browse=%@",[parameters objectForKey:@"browse"]] options:NSLiteralSearch range:NSMakeRange(0, [html length])];
-		else [html replaceOccurrencesOfString:@"%browse%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [html length])]; 
-		
-		if([parameters objectForKey:@"browseParameter"])[html replaceOccurrencesOfString:@"%browseParameter%" withString:[NSString stringWithFormat:@"&browseParameter=%@",[parameters objectForKey:@"browseParameter"]] options:NSLiteralSearch range:NSMakeRange(0, [html length])];
-		else [html replaceOccurrencesOfString:@"%browseParameter%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [html length])]; 
-		
-		if([parameters objectForKey:@"search"])[html replaceOccurrencesOfString:@"%search%" withString:[NSString stringWithFormat:@"&search=%@",[parameters objectForKey:@"search"]] options:NSLiteralSearch range:NSMakeRange(0, [html length])];
-		else [html replaceOccurrencesOfString:@"%search%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [html length])];
-		
-		if([parameters objectForKey:@"album"])[html replaceOccurrencesOfString:@"%album%" withString:[NSString stringWithFormat:@"&album=%@",[parameters objectForKey:@"album"]] options:NSLiteralSearch range:NSMakeRange(0, [html length])];
-		else [html replaceOccurrencesOfString:@"%album%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [html length])];
-		
-		[html replaceOccurrencesOfString: @"%DicomCStorePort%" withString: portString options:NSLiteralSearch range:NSMakeRange(0, [html length])];
-		
-		data = [html dataUsingEncoding:NSUTF8StringEncoding];
-		err = NO;
-	}
-#pragma mark study
-	else if([fileURL isEqualToString:@"/study"])
-	{
-		NSPredicate *browsePredicate;
-		if([[parameters allKeys] containsObject:@"id"])
-		{
-			browsePredicate = [NSPredicate predicateWithFormat:@"studyInstanceUID == %@", [parameters objectForKey:@"id"]];
-		}
-		else
-			browsePredicate = [NSPredicate predicateWithValue:NO];
-		
-		#pragma mark dicomSend
-		if( [[parameters allKeys] containsObject:@"dicomSend"])
-		{
-			NSString *dicomDestination = [parameters objectForKey:@"dicomDestination"];
-			NSArray *tempArray = [dicomDestination componentsSeparatedByString:@"%3A"];
-			NSString *dicomDestinationAddress = [[tempArray objectAtIndex:0] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-			NSString *dicomDestinationPort = [tempArray objectAtIndex:1];
-			NSString *dicomDestinationAETitle = [[tempArray objectAtIndex:2] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-			NSString *dicomDestinationSyntax = [tempArray objectAtIndex:3];
-			
-			if( dicomDestinationAddress && dicomDestinationPort && dicomDestinationAETitle && dicomDestinationSyntax)
-			{
-				[selectedDICOMNode release];
-				selectedDICOMNode = [NSMutableDictionary dictionary];
-				[selectedDICOMNode setObject:dicomDestinationAddress forKey:@"Address"];
-				[selectedDICOMNode setObject:dicomDestinationPort forKey:@"Port"];
-				[selectedDICOMNode setObject:dicomDestinationAETitle forKey:@"AETitle"];
-				[selectedDICOMNode setObject:dicomDestinationSyntax forKey:@"TransferSyntax"];
-				[selectedDICOMNode retain];
-				
-				[selectedImages release];
-				selectedImages = [NSMutableArray array];
-				NSArray *seriesArray;
-				for(NSString* selectedID in [parameters objectForKey:@"selected"])
+				@catch (NSException * e)
 				{
-					NSPredicate *pred = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", [parameters objectForKey:@"id"], [[selectedID stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding]];
-					
-					seriesArray = [self seriesForPredicate: pred];
-					for(NSManagedObject *series in seriesArray)
-					{
-						NSArray *images = [[series valueForKey:@"images"] allObjects];
-						[selectedImages addObjectsFromArray:images];
-					}
+					NSLog( @"****** WADO Server exception: %@", e);
+				}
+			}
+		}
+	#pragma mark studyList
+		else if([fileURL isEqualToString:@"/studyList"])
+		{
+			NSPredicate *browsePredicate;
+			NSString *pageTitle;
+			if( [[parameters objectForKey:@"browse"] isEqualToString: @"newAddedStudies"] && [[parameters objectForKey:@"browseParameter"] doubleValue] > 0)
+			{
+				browsePredicate = [NSPredicate predicateWithFormat: @"dateAdded >= CAST(%lf, \"NSDate\")", [[parameters objectForKey:@"browseParameter"] doubleValue]];
+				pageTitle = NSLocalizedString(@"New Studies Available", nil);
+			}
+			else if([(NSString*)[parameters objectForKey:@"browse"] isEqualToString:@"today"])
+			{
+				browsePredicate = [NSPredicate predicateWithFormat: @"date >= CAST(%lf, \"NSDate\")", [self startOfDay:[NSCalendarDate calendarDate]]];
+				pageTitle = NSLocalizedString(@"Today", nil);
+			}
+			else if([(NSString*)[parameters objectForKey:@"browse"] isEqualToString:@"6hours"])
+			{
+				NSCalendarDate *now = [NSCalendarDate calendarDate];
+				browsePredicate = [NSPredicate predicateWithFormat: @"date >= CAST(%lf, \"NSDate\")", [[NSCalendarDate dateWithYear:[now yearOfCommonEra] month:[now monthOfYear] day:[now dayOfMonth] hour:[now hourOfDay]-6 minute:[now minuteOfHour] second:[now secondOfMinute] timeZone:nil] timeIntervalSinceReferenceDate]];
+				pageTitle = NSLocalizedString(@"Last 6 hours", nil);
+			}
+			else if([(NSString*)[parameters objectForKey:@"browse"] isEqualToString:@"all"])
+			{
+				browsePredicate = [NSPredicate predicateWithValue:YES];
+				pageTitle = NSLocalizedString(@"Study List", nil);
+			}
+			else if([parameters objectForKey:@"search"])
+			{
+				NSMutableString *search = [NSMutableString string];
+				NSString *searchString = [NSString stringWithString: [[[parameters objectForKey:@"search"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding]];
+				searchString = [OsiriXHTTPConnection decodeURLString:searchString];
+				
+				NSArray *components = [searchString componentsSeparatedByString:@" "];
+				NSMutableArray *newComponents = [NSMutableArray array];
+				for (NSString *comp in components)
+				{
+					if(![comp isEqualToString:@""])
+						[newComponents addObject:comp];
 				}
 				
-				[selectedImages retain];
-				if( [selectedImages count])
-					[self dicomSend: self];
-				else
-					dicomSendFailed = YES;
-			}
-			else
-				dicomSendFailed = YES;
-		}
-		
-		NSArray *studies = [self studiesForPredicate:browsePredicate];
-		
-		if( [studies count] == 1)
-		{
-			[self updateLogEntryForStudy: [studies lastObject] withMessage: @"Display Study"];
-			
-			ipAddressString = [[asyncSocket connectedHost] copy];
-			
-			NSMutableString *html = [self htmlStudy:[studies lastObject] parameters:parameters settings: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: isiPhone], @"iPhone", [NSNumber numberWithBool: isMacOS], @"MacOS", nil]];
-			
-			[html replaceOccurrencesOfString:@"%StudyID%" withString:[parameters objectForKey:@"id"] options:NSLiteralSearch range:NSMakeRange(0, [html length])];
-			
-			if( [[parameters allKeys] containsObject:@"dicomSend"])
-			{
-				NSString *dicomDestination = [parameters objectForKey:@"dicomDestination"];
-				NSArray *tempArray = [dicomDestination componentsSeparatedByString:@"%3A"];
-				NSString *dicomDestinationAETitle = [[tempArray objectAtIndex:2] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-				NSString *dicomDestinationAddress = [[tempArray objectAtIndex:0] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+				searchString = [newComponents componentsJoinedByString:@" "];
 				
-				if( dicomSendFailed)
-					[html replaceOccurrencesOfString:@"%LocalizedLabel_SendStatus%" withString: [NSString stringWithFormat: NSLocalizedString( @"DICOM Transfer failed.", nil), dicomDestinationAddress, dicomDestinationAETitle] options:NSLiteralSearch range:NSMakeRange(0, [html length])];
-				else
-					[html replaceOccurrencesOfString:@"%LocalizedLabel_SendStatus%" withString: [NSString stringWithFormat: NSLocalizedString( @"Images sent to DICOM node: %@ - %@", nil), dicomDestinationAddress, dicomDestinationAETitle] options:NSLiteralSearch range:NSMakeRange(0, [html length])];
+				[search appendFormat:@"name CONTAINS[cd] '%@'", searchString]; // [c] is for 'case INsensitive' and [d] is to ignore accents (diacritic)
+				browsePredicate = [NSPredicate predicateWithFormat:search];
+				pageTitle = NSLocalizedString(@"Search Result", nil);
+			}
+			else if([parameters objectForKey:@"searchID"])
+			{
+				NSMutableString *search = [NSMutableString string];
+				NSString *searchString = [NSString stringWithString: [[[parameters objectForKey:@"searchID"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding]];
+				searchString = [OsiriXHTTPConnection decodeURLString:searchString];
+				
+				NSArray *components = [searchString componentsSeparatedByString:@" "];
+				NSMutableArray *newComponents = [NSMutableArray array];
+				for (NSString *comp in components)
+				{
+					if(![comp isEqualToString:@""])
+						[newComponents addObject:comp];
+				}
+				
+				searchString = [newComponents componentsJoinedByString:@" "];
+				
+				[search appendFormat:@"patientID CONTAINS[cd] '%@'", searchString]; // [c] is for 'case INsensitive' and [d] is to ignore accents (diacritic)
+				browsePredicate = [NSPredicate predicateWithFormat:search];
+				pageTitle = NSLocalizedString(@"Search Result", nil);
 			}
 			else
-				[html replaceOccurrencesOfString:@"%LocalizedLabel_SendStatus%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [html length])];
+			{
+				browsePredicate = [NSPredicate predicateWithValue:YES];
+				pageTitle = NSLocalizedString(@"Study List", nil);
+			}
+			
+			NSMutableString *html = [self htmlStudyListForStudies: [self studiesForPredicate: browsePredicate] settings: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: isMacOS], @"MacOS", nil]];
+			
+			if([parameters objectForKey:@"album"])
+			{
+				if(![[parameters objectForKey:@"album"] isEqualToString:@""])
+				{
+					html = [self htmlStudyListForStudies: [self studiesForAlbum:[OsiriXHTTPConnection decodeURLString:[[parameters objectForKey:@"album"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]] settings: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: isMacOS], @"MacOS", nil]];
+					pageTitle = [OsiriXHTTPConnection decodeURLString:[[parameters objectForKey:@"album"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+				}
+			}
+			
+			[html replaceOccurrencesOfString:@"%PageTitle%" withString:pageTitle options:NSLiteralSearch range:NSMakeRange(0, [html length])];
 			
 			if([parameters objectForKey:@"browse"])[html replaceOccurrencesOfString:@"%browse%" withString:[NSString stringWithFormat:@"&browse=%@",[parameters objectForKey:@"browse"]] options:NSLiteralSearch range:NSMakeRange(0, [html length])];
-			else [html replaceOccurrencesOfString:@"%browse%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [html length])];
+			else [html replaceOccurrencesOfString:@"%browse%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [html length])]; 
 			
 			if([parameters objectForKey:@"browseParameter"])[html replaceOccurrencesOfString:@"%browseParameter%" withString:[NSString stringWithFormat:@"&browseParameter=%@",[parameters objectForKey:@"browseParameter"]] options:NSLiteralSearch range:NSMakeRange(0, [html length])];
-			else [html replaceOccurrencesOfString:@"%browseParameter%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [html length])];
+			else [html replaceOccurrencesOfString:@"%browseParameter%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [html length])]; 
 			
 			if([parameters objectForKey:@"search"])[html replaceOccurrencesOfString:@"%search%" withString:[NSString stringWithFormat:@"&search=%@",[parameters objectForKey:@"search"]] options:NSLiteralSearch range:NSMakeRange(0, [html length])];
 			else [html replaceOccurrencesOfString:@"%search%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [html length])];
 			
+			if([parameters objectForKey:@"album"])[html replaceOccurrencesOfString:@"%album%" withString:[NSString stringWithFormat:@"&album=%@",[parameters objectForKey:@"album"]] options:NSLiteralSearch range:NSMakeRange(0, [html length])];
+			else [html replaceOccurrencesOfString:@"%album%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [html length])];
+			
 			[html replaceOccurrencesOfString: @"%DicomCStorePort%" withString: portString options:NSLiteralSearch range:NSMakeRange(0, [html length])];
 			
 			data = [html dataUsingEncoding:NSUTF8StringEncoding];
+			err = NO;
 		}
-		err = NO;
-	}
-#pragma mark thumbnail
-	else if([fileURL isEqualToString:@"/thumbnail"])
-	{
-		NSPredicate *browsePredicate;
-		if([[parameters allKeys] containsObject:@"id"])
+	#pragma mark study
+		else if([fileURL isEqualToString:@"/study"])
 		{
-			if( [[parameters allKeys] containsObject:@"studyID"])
-				browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", [[parameters objectForKey:@"studyID"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[parameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-			else
-				browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@", [[parameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-		}
-		else
-			browsePredicate = [NSPredicate predicateWithValue:NO];
-			
-		NSArray *series = [self seriesForPredicate:browsePredicate];
-		
-		if( [series count] == 1)
-		{
-			if(![[series lastObject] valueForKey:@"thumbnail"])
-				[[BrowserController currentBrowser] buildThumbnail:[series lastObject]];
-			
-			NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData:[[series lastObject] valueForKey:@"thumbnail"]];				
-			NSDictionary *imageProps = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:1.0] forKey:NSImageCompressionFactor];
-			data = [imageRep representationUsingType:NSPNGFileType properties:imageProps];
-		}
-		err = NO;
-	}
-#pragma mark series
-	else if([fileURL isEqualToString:@"/series"])
-	{
-		NSMutableString *templateString = [NSMutableString stringWithContentsOfFile:[webDirectory stringByAppendingPathComponent:@"series.html"]];			
-		[templateString replaceOccurrencesOfString:@"%StudyID%" withString:[parameters objectForKey:@"studyID"] options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-		[templateString replaceOccurrencesOfString:@"%SeriesID%" withString:[parameters objectForKey:@"id"] options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-		
-		NSString *browse = [OsiriXHTTPConnection nonNilString:[parameters objectForKey:@"browse"]];
-		NSString *browseParameter = [OsiriXHTTPConnection nonNilString:[parameters objectForKey:@"browseParameter"]];
-		NSString *search = [OsiriXHTTPConnection nonNilString:[parameters objectForKey:@"search"]];
-		NSString *album = [OsiriXHTTPConnection nonNilString:[parameters objectForKey:@"album"]];
-		
-		[templateString replaceOccurrencesOfString:@"%browse%" withString:browse options: NSLiteralSearch range: NSMakeRange(0, [templateString length])];
-		[templateString replaceOccurrencesOfString:@"%browseParameter%" withString: browseParameter options: NSLiteralSearch range: NSMakeRange(0, [templateString length])];
-		[templateString replaceOccurrencesOfString:@"%search%" withString: [OsiriXHTTPConnection decodeURLString:search] options: NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-		[templateString replaceOccurrencesOfString:@"%album%" withString: [OsiriXHTTPConnection decodeURLString: [album stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-		
-		[templateString replaceOccurrencesOfString:@"%VideoType%" withString: isiPhone? @"video/x-m4v":@"video/x-mov" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-		
-		NSPredicate *browsePredicate;
-		if([[parameters allKeys] containsObject:@"id"])
-		{
-			if( [[parameters allKeys] containsObject:@"studyID"])
-				browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", [[parameters objectForKey:@"studyID"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[parameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-			else
-				browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@", [[parameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-		}
-		else
-			browsePredicate = [NSPredicate predicateWithValue:NO];
-		
-		NSArray *series = [self seriesForPredicate:browsePredicate];
-		NSArray *imagesArray = [[[series lastObject] valueForKey:@"images"] allObjects];
-		
-		if([imagesArray count] == 1)
-		{
-			[templateString replaceOccurrencesOfString:@"<!--[if !IE]>-->" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-			[templateString replaceOccurrencesOfString:@"<!--<![endif]-->" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-			
-			[templateString replaceOccurrencesOfString:@"%movie%" withString:@"<!--" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-			[templateString replaceOccurrencesOfString:@"%/movie%" withString:@"-->" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-			
-			[templateString replaceOccurrencesOfString:@"%image%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-			[templateString replaceOccurrencesOfString:@"%/image%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-		}
-		else
-		{
-			[templateString replaceOccurrencesOfString:@"%image%" withString:@"<!--" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-			[templateString replaceOccurrencesOfString:@"%/image%" withString:@"-->" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];			
-			[templateString replaceOccurrencesOfString:@"%movie%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-			[templateString replaceOccurrencesOfString:@"%/movie%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-			
-			DicomImage *lastImage = [imagesArray lastObject];
-			int width = [[lastImage valueForKey:@"width"] intValue];
-			int height = [[lastImage valueForKey:@"height"] intValue];
-			
-			int maxWidth = width;
-			int maxHeight = height;
-			
-			if( isiPhone)
+			NSPredicate *browsePredicate;
+			if([[parameters allKeys] containsObject:@"id"])
 			{
-				maxWidth = 300; // for the poster frame of the movie to fit in the iphone screen (vertically)
-				maxHeight = 310;
+				browsePredicate = [NSPredicate predicateWithFormat:@"studyInstanceUID == %@", [parameters objectForKey:@"id"]];
 			}
 			else
+				browsePredicate = [NSPredicate predicateWithValue:NO];
+			
+			#pragma mark dicomSend
+			if( [[parameters allKeys] containsObject:@"dicomSend"])
 			{
-				maxWidth = maxResolution;
-				maxHeight = maxResolution;
-			}
-			
-			if(width>maxWidth)
-			{
-				height = (float)height * (float)maxWidth / (float)width;
-				width = maxWidth;
-			}
-			
-			if(height>maxHeight)
-			{
-				width = (float)width * (float)maxHeight / (float)height;
-				height = maxHeight;
-			}
-			
-			height += 15; // quicktime controller height
-			
-			//NSLog(@"NEW w: %d, h: %d", width, height);
-			[templateString replaceOccurrencesOfString:@"%width%" withString:[NSString stringWithFormat:@"%d", width] options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-			[templateString replaceOccurrencesOfString:@"%height%" withString:[NSString stringWithFormat:@"%d", height] options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-			
-			NSString *url = [NSString stringWithFormat: @"/movie.mov?id=%@&studyID=%@", [parameters objectForKey:@"id"], [parameters objectForKey:@"studyID"]];
-			[templateString replaceOccurrencesOfString:@"%DownloadMovieURL%" withString: [NSString stringWithFormat: @"<a href=\"%@\">%@</a>", url, NSLocalizedString( @"Link to Quicktime Movie File", nil)] options: NSLiteralSearch range: NSMakeRange(0, [templateString length])];
-			[templateString replaceOccurrencesOfString:@"%Localized_QuicktimeRequired%" withString: NSLocalizedString( @"Viewing these movies requires <a href=\"http://www.apple.com/quicktime\">Apple Quicktime</a>", nil) options: NSLiteralSearch range: NSMakeRange(0, [templateString length])];
-		}
-		
-		NSString *seriesName = [OsiriXHTTPConnection nonNilString:[[series lastObject] valueForKey:@"name"]];
-		[templateString replaceOccurrencesOfString:@"%PageTitle%" withString:seriesName options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-		
-		NSString *studyName = [OsiriXHTTPConnection nonNilString:[[series lastObject] valueForKeyPath:@"study.name"]];
-		[templateString replaceOccurrencesOfString:@"%LocalizedLabel_Home%" withString:studyName options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-		
-		[templateString replaceOccurrencesOfString: @"%DicomCStorePort%" withString: portString options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-		
-		data = [templateString dataUsingEncoding:NSUTF8StringEncoding];
-		err = NO;
-	}
-#pragma mark ZIP
-	else if( [fileURL hasSuffix:@".zip"] || [fileURL hasSuffix:@".osirixzip"])
-	{
-		NSPredicate *browsePredicate;
-		if([[parameters allKeys] containsObject:@"id"])
-		{
-			if( [[parameters allKeys] containsObject:@"studyID"])
-				browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", [[parameters objectForKey:@"studyID"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[parameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-			else
-				browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@", [[parameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-		}
-		else
-			browsePredicate = [NSPredicate predicateWithValue:NO];
-		
-		NSArray *series = [self seriesForPredicate:browsePredicate];
-		
-		NSMutableArray *imagesArray = [NSMutableArray array];
-		for( DicomSeries *s in series)
-			[imagesArray addObjectsFromArray: [[s valueForKey:@"images"] allObjects]];
-		
-		if( [imagesArray count])
-		{
-			if( [[currentUser valueForKey: @"encryptedZIP"] boolValue])
-				[self updateLogEntryForStudy: [[series lastObject] valueForKey: @"study"] withMessage: @"Download encrypted DICOM ZIP"];
-			else
-				[self updateLogEntryForStudy: [[series lastObject] valueForKey: @"study"] withMessage: @"Download DICOM ZIP"];
+				NSString *dicomDestination = [parameters objectForKey:@"dicomDestination"];
+				NSArray *tempArray = [dicomDestination componentsSeparatedByString:@"%3A"];
+				NSString *dicomDestinationAddress = [[tempArray objectAtIndex:0] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+				NSString *dicomDestinationPort = [tempArray objectAtIndex:1];
+				NSString *dicomDestinationAETitle = [[tempArray objectAtIndex:2] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+				NSString *dicomDestinationSyntax = [tempArray objectAtIndex:3];
 				
-			@try
-			{
-				NSString *srcFolder = @"/tmp";
-				NSString *destFile = @"/tmp";
-				
-				srcFolder = [srcFolder stringByAppendingPathComponent: asciiString( [[imagesArray lastObject] valueForKeyPath: @"series.study.name"])];
-				destFile = [destFile stringByAppendingPathComponent: asciiString( [[imagesArray lastObject] valueForKeyPath: @"series.study.name"])];
-				
-				if( isMacOS)
-					destFile = [destFile  stringByAppendingPathExtension: @"zip"];
-				else
-					destFile = [destFile  stringByAppendingPathExtension: @"osirixzip"];
-				
-				[[NSFileManager defaultManager] removeItemAtPath: srcFolder error: nil];
-				[[NSFileManager defaultManager] removeItemAtPath: destFile error: nil];
-				
-				[[NSFileManager defaultManager] createDirectoryAtPath: srcFolder attributes: nil];
-				
-				if( lockReleased == NO)
+				if( dicomDestinationAddress && dicomDestinationPort && dicomDestinationAETitle && dicomDestinationSyntax)
 				{
-					[[[BrowserController currentBrowser] managedObjectContext] unlock];
-					lockReleased = YES;
+					[selectedDICOMNode release];
+					selectedDICOMNode = [NSMutableDictionary dictionary];
+					[selectedDICOMNode setObject:dicomDestinationAddress forKey:@"Address"];
+					[selectedDICOMNode setObject:dicomDestinationPort forKey:@"Port"];
+					[selectedDICOMNode setObject:dicomDestinationAETitle forKey:@"AETitle"];
+					[selectedDICOMNode setObject:dicomDestinationSyntax forKey:@"TransferSyntax"];
+					[selectedDICOMNode retain];
+					
+					[selectedImages release];
+					selectedImages = [NSMutableArray array];
+					NSArray *seriesArray;
+					for(NSString* selectedID in [parameters objectForKey:@"selected"])
+					{
+						NSPredicate *pred = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", [parameters objectForKey:@"id"], [[selectedID stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding]];
+						
+						seriesArray = [self seriesForPredicate: pred];
+						for(NSManagedObject *series in seriesArray)
+						{
+							NSArray *images = [[series valueForKey:@"images"] allObjects];
+							[selectedImages addObjectsFromArray:images];
+						}
+					}
+					
+					[selectedImages retain];
+					if( [selectedImages count])
+						[self dicomSend: self];
+					else
+						dicomSendFailed = YES;
 				}
-				
-				if( [[currentUser valueForKey: @"encryptedZIP"] boolValue])
-					[BrowserController encryptFiles: [imagesArray valueForKey: @"completePath"] inZIPFile: destFile password: [currentUser valueForKey: @"password"]];
 				else
-					[BrowserController encryptFiles: [imagesArray valueForKey: @"completePath"] inZIPFile: destFile password: nil];
-				
-				data = [NSData dataWithContentsOfFile: destFile];
-				
-				[[NSFileManager defaultManager] removeItemAtPath: srcFolder error: nil];
-				[[NSFileManager defaultManager] removeItemAtPath: destFile error: nil];
-				
-				if( data)
-					err = NO;
+					dicomSendFailed = YES;
 			}
-			@catch( NSException *e)
-			{
-				NSLog( @"**** web seriesAsZIP exception : %@", e);
-			}
-		}
-	}
-#pragma mark image
-	else if([fileURL isEqualToString:@"/image.png"])
-	{
-		NSPredicate *browsePredicate;
-		if( [[parameters allKeys] containsObject:@"id"])
-		{
-			if( [[parameters allKeys] containsObject:@"studyID"])
-				browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", [[parameters objectForKey:@"studyID"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[parameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-			else
-				browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@", [[parameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-		}
-		else
-			browsePredicate = [NSPredicate predicateWithValue:NO];
-		
-		NSArray *series = [self seriesForPredicate:browsePredicate];
-		if([series count]==1)
-		{
-			NSMutableArray *imagesArray = [NSMutableArray array];
-			NSArray *dicomImageArray = [[[series lastObject] valueForKey:@"images"] allObjects];
-			DicomImage *im;
-			if([dicomImageArray count] == 1)
-				im = [dicomImageArray lastObject];
-			else
-				im = [dicomImageArray objectAtIndex:[dicomImageArray count]/2];
 			
-			DCMPix* dcmPix = [[DCMPix alloc] initWithPath:[im valueForKey:@"completePathResolved"] :0 :1 :nil :[[im valueForKey: @"numberOfFrames"] intValue]/2 :[[im valueForKeyPath:@"series.id"] intValue] isBonjour:NO imageObj:im];
+			NSArray *studies = [self studiesForPredicate:browsePredicate];
 			
-			if(dcmPix)
+			if( [studies count] == 1)
 			{
-				float curWW = 0;
-				float curWL = 0;
+				[self updateLogEntryForStudy: [studies lastObject] withMessage: @"Display Study"];
 				
-				if([[im valueForKey:@"series"] valueForKey:@"windowWidth"])
+				ipAddressString = [[asyncSocket connectedHost] copy];
+				
+				NSMutableString *html = [self htmlStudy:[studies lastObject] parameters:parameters settings: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: isiPhone], @"iPhone", [NSNumber numberWithBool: isMacOS], @"MacOS", nil]];
+				
+				[html replaceOccurrencesOfString:@"%StudyID%" withString:[parameters objectForKey:@"id"] options:NSLiteralSearch range:NSMakeRange(0, [html length])];
+				
+				if( [[parameters allKeys] containsObject:@"dicomSend"])
 				{
-					curWW = [[[im valueForKey:@"series"] valueForKey:@"windowWidth"] floatValue];
-					curWL = [[[im valueForKey:@"series"] valueForKey:@"windowLevel"] floatValue];
+					NSString *dicomDestination = [parameters objectForKey:@"dicomDestination"];
+					NSArray *tempArray = [dicomDestination componentsSeparatedByString:@"%3A"];
+					NSString *dicomDestinationAETitle = [[tempArray objectAtIndex:2] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+					NSString *dicomDestinationAddress = [[tempArray objectAtIndex:0] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+					
+					if( dicomSendFailed)
+						[html replaceOccurrencesOfString:@"%LocalizedLabel_SendStatus%" withString: [NSString stringWithFormat: NSLocalizedString( @"DICOM Transfer failed.", nil), dicomDestinationAddress, dicomDestinationAETitle] options:NSLiteralSearch range:NSMakeRange(0, [html length])];
+					else
+						[html replaceOccurrencesOfString:@"%LocalizedLabel_SendStatus%" withString: [NSString stringWithFormat: NSLocalizedString( @"Images sent to DICOM node: %@ - %@", nil), dicomDestinationAddress, dicomDestinationAETitle] options:NSLiteralSearch range:NSMakeRange(0, [html length])];
 				}
-				
-				if( curWW != 0)
-					[dcmPix checkImageAvailble:curWW :curWL];
 				else
-					[dcmPix checkImageAvailble:[dcmPix savedWW] :[dcmPix savedWL]];
+					[html replaceOccurrencesOfString:@"%LocalizedLabel_SendStatus%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [html length])];
 				
-				[imagesArray addObject:[dcmPix image]];
-				[dcmPix release];
+				if([parameters objectForKey:@"browse"])[html replaceOccurrencesOfString:@"%browse%" withString:[NSString stringWithFormat:@"&browse=%@",[parameters objectForKey:@"browse"]] options:NSLiteralSearch range:NSMakeRange(0, [html length])];
+				else [html replaceOccurrencesOfString:@"%browse%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [html length])];
+				
+				if([parameters objectForKey:@"browseParameter"])[html replaceOccurrencesOfString:@"%browseParameter%" withString:[NSString stringWithFormat:@"&browseParameter=%@",[parameters objectForKey:@"browseParameter"]] options:NSLiteralSearch range:NSMakeRange(0, [html length])];
+				else [html replaceOccurrencesOfString:@"%browseParameter%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [html length])];
+				
+				if([parameters objectForKey:@"search"])[html replaceOccurrencesOfString:@"%search%" withString:[NSString stringWithFormat:@"&search=%@",[parameters objectForKey:@"search"]] options:NSLiteralSearch range:NSMakeRange(0, [html length])];
+				else [html replaceOccurrencesOfString:@"%search%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [html length])];
+				
+				[html replaceOccurrencesOfString: @"%DicomCStorePort%" withString: portString options:NSLiteralSearch range:NSMakeRange(0, [html length])];
+				
+				data = [html dataUsingEncoding:NSUTF8StringEncoding];
 			}
-			NSImage *image = [imagesArray lastObject];
-			float width = [image size].width;
-			float height = [image size].height;
-			
-			int maxWidth = width;
-			int maxHeight = height;
-			
-			maxWidth = maxResolution;
-			maxHeight = maxResolution;
-			
-			BOOL resize = NO;
-			
-			if(width>maxWidth)
-			{
-				height =  height * maxWidth / width;
-				width = maxWidth;
-				resize = YES;
-			}
-			if(height>maxHeight)
-			{
-				width = width * maxHeight / height;
-				height = maxHeight;
-				resize = YES;
-			}
-			
-			NSImage *newImage;
-			
-			if( resize)
-				newImage = [image imageByScalingProportionallyToSize:NSMakeSize(width, height)];
-			else
-				newImage = image;
-			
-			NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData:[newImage TIFFRepresentation]];
-			NSDictionary *imageProps = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:1.0] forKey:NSImageCompressionFactor];
-			data = [imageRep representationUsingType:NSPNGFileType properties:imageProps];
+			err = NO;
 		}
-		
-		err = NO;
-	}
-#pragma mark movie
-	else if([fileURL isEqualToString:@"/movie.mov"])
-	{
-		NSPredicate *browsePredicate;
-		if([[parameters allKeys] containsObject:@"id"])
+	#pragma mark thumbnail
+		else if([fileURL isEqualToString:@"/thumbnail"])
 		{
-			if( [[parameters allKeys] containsObject:@"studyID"])
-				browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", [[parameters objectForKey:@"studyID"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[parameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+			NSPredicate *browsePredicate;
+			if([[parameters allKeys] containsObject:@"id"])
+			{
+				if( [[parameters allKeys] containsObject:@"studyID"])
+					browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", [[parameters objectForKey:@"studyID"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[parameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+				else
+					browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@", [[parameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+			}
 			else
-				browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@", [[parameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+				browsePredicate = [NSPredicate predicateWithValue:NO];
+				
+			NSArray *series = [self seriesForPredicate:browsePredicate];
+			
+			if( [series count] == 1)
+			{
+				if(![[series lastObject] valueForKey:@"thumbnail"])
+					[[BrowserController currentBrowser] buildThumbnail:[series lastObject]];
+				
+				NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData:[[series lastObject] valueForKey:@"thumbnail"]];				
+				NSDictionary *imageProps = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:1.0] forKey:NSImageCompressionFactor];
+				data = [imageRep representationUsingType:NSPNGFileType properties:imageProps];
+			}
+			err = NO;
 		}
-		else
-			browsePredicate = [NSPredicate predicateWithValue:NO];
-		
-		NSArray *series = [self seriesForPredicate:browsePredicate];
-		
-		if([series count]==1)
+	#pragma mark series
+		else if([fileURL isEqualToString:@"/series"])
 		{
-			NSArray *dicomImageArray = [[[series lastObject] valueForKey:@"images"] allObjects];
+			NSMutableString *templateString = [NSMutableString stringWithContentsOfFile:[webDirectory stringByAppendingPathComponent:@"series.html"]];			
+			[templateString replaceOccurrencesOfString:@"%StudyID%" withString:[parameters objectForKey:@"studyID"] options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+			[templateString replaceOccurrencesOfString:@"%SeriesID%" withString:[parameters objectForKey:@"id"] options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 			
-			@try
-			{
-				// Sort images with "instanceNumber"
-				NSSortDescriptor *sort = [[NSSortDescriptor alloc] initWithKey:@"instanceNumber" ascending:YES];
-				NSArray *sortDescriptors = [NSArray arrayWithObject:sort];
-				[sort release];
-				dicomImageArray = [dicomImageArray sortedArrayUsingDescriptors: sortDescriptors];
-				
-			}
-			@catch (NSException * e)
-			{
-				NSLog( @"%@", [e description]);
-			}
+			NSString *browse = [OsiriXHTTPConnection nonNilString:[parameters objectForKey:@"browse"]];
+			NSString *browseParameter = [OsiriXHTTPConnection nonNilString:[parameters objectForKey:@"browseParameter"]];
+			NSString *search = [OsiriXHTTPConnection nonNilString:[parameters objectForKey:@"search"]];
+			NSString *album = [OsiriXHTTPConnection nonNilString:[parameters objectForKey:@"album"]];
 			
-			if([dicomImageArray count] > 1)
+			[templateString replaceOccurrencesOfString:@"%browse%" withString:browse options: NSLiteralSearch range: NSMakeRange(0, [templateString length])];
+			[templateString replaceOccurrencesOfString:@"%browseParameter%" withString: browseParameter options: NSLiteralSearch range: NSMakeRange(0, [templateString length])];
+			[templateString replaceOccurrencesOfString:@"%search%" withString: [OsiriXHTTPConnection decodeURLString:search] options: NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+			[templateString replaceOccurrencesOfString:@"%album%" withString: [OsiriXHTTPConnection decodeURLString: [album stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+			
+			[templateString replaceOccurrencesOfString:@"%VideoType%" withString: isiPhone? @"video/x-m4v":@"video/x-mov" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+			
+			NSPredicate *browsePredicate;
+			if([[parameters allKeys] containsObject:@"id"])
 			{
-				NSString *path = @"/tmp/osirixwebservices";
-				[[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
+				if( [[parameters allKeys] containsObject:@"studyID"])
+					browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", [[parameters objectForKey:@"studyID"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[parameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+				else
+					browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@", [[parameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+			}
+			else
+				browsePredicate = [NSPredicate predicateWithValue:NO];
+			
+			NSArray *series = [self seriesForPredicate:browsePredicate];
+			NSArray *imagesArray = [[[series lastObject] valueForKey:@"images"] allObjects];
+			
+			if([imagesArray count] == 1)
+			{
+				[templateString replaceOccurrencesOfString:@"<!--[if !IE]>-->" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+				[templateString replaceOccurrencesOfString:@"<!--<![endif]-->" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 				
-				NSString *name = [NSString stringWithFormat:@"%@",[parameters objectForKey:@"id"]];//[[series lastObject] valueForKey:@"id"];
-				name = [name stringByAppendingFormat:@"-NBIM-%d", [dicomImageArray count]];
+				[templateString replaceOccurrencesOfString:@"%movie%" withString:@"<!--" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+				[templateString replaceOccurrencesOfString:@"%/movie%" withString:@"-->" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 				
-				NSString *fileName = [path stringByAppendingPathComponent:name];
-				fileName = [fileName stringByAppendingString:@".mov"];
-				NSString *outFile;
+				[templateString replaceOccurrencesOfString:@"%image%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+				[templateString replaceOccurrencesOfString:@"%/image%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+			}
+			else
+			{
+				[templateString replaceOccurrencesOfString:@"%image%" withString:@"<!--" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+				[templateString replaceOccurrencesOfString:@"%/image%" withString:@"-->" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];			
+				[templateString replaceOccurrencesOfString:@"%movie%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+				[templateString replaceOccurrencesOfString:@"%/movie%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+				
+				DicomImage *lastImage = [imagesArray lastObject];
+				int width = [[lastImage valueForKey:@"width"] intValue];
+				int height = [[lastImage valueForKey:@"height"] intValue];
+				
+				int maxWidth = width;
+				int maxHeight = height;
 				
 				if( isiPhone)
-					outFile = [NSString stringWithFormat:@"%@2.m4v", [fileName stringByDeletingPathExtension]];
-				else
-					outFile = fileName;
-				
-				NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: isiPhone], @"isiPhone", fileURL, @"fileURL", fileName, @"fileName", outFile, @"outFile", parameters, @"parameters", dicomImageArray, @"dicomImageArray", nil];
-				
-				[[[BrowserController currentBrowser] managedObjectContext] unlock];	
-				
-				lockReleased = YES;
-				[self generateMovie: dict];
-				
-				data = [NSData dataWithContentsOfFile: outFile];
-			}
-		}
-		
-		err = NO;
-	}
-#pragma mark report
-	else if([fileURL isEqualToString:@"/report"])
-	{
-		NSPredicate *browsePredicate;
-		if([[parameters allKeys] containsObject:@"id"])
-		{
-			browsePredicate = [NSPredicate predicateWithFormat:@"studyInstanceUID == %@", [parameters objectForKey:@"id"]];
-		}
-		else
-			browsePredicate = [NSPredicate predicateWithValue:NO];
-		NSArray *studies = [self studiesForPredicate:browsePredicate];
-		
-		if( [studies count] == 1)
-		{
-			[self updateLogEntryForStudy: [studies lastObject] withMessage: @"Download Report"];
-			
-			NSString *reportFilePath = [[studies lastObject] valueForKey:@"reportURL"];
-			//NSLog(@"reportFilePath: %@", reportFilePath);
-			
-			reportType = [reportFilePath pathExtension];
-			
-			if(reportFilePath)
-			{
-				NSString *zipFileName = [NSString stringWithFormat:@"%@.zip", [reportFilePath lastPathComponent]];
-				// zip the directory into a single archive file
-				NSTask *zipTask   = [[NSTask alloc] init];
-				[zipTask setLaunchPath:@"/usr/bin/zip"];
-				[zipTask setCurrentDirectoryPath:[[reportFilePath stringByDeletingLastPathComponent] stringByAppendingString:@"/"]];
-				if([reportType isEqualToString:@"pages"])
-					[zipTask setArguments:[NSArray arrayWithObjects: @"--quiet", @"-r" , zipFileName, [reportFilePath lastPathComponent], nil]];
-				else
-					[zipTask setArguments:[NSArray arrayWithObjects: zipFileName, [reportFilePath lastPathComponent], nil]];
-				[zipTask launch];
-				while( [zipTask isRunning]) [NSThread sleepForTimeInterval: 0.01];
-				int result = [zipTask terminationStatus];
-				[zipTask release];
-				
-				if(result==0)
 				{
-					reportFilePath = [[reportFilePath stringByDeletingLastPathComponent] stringByAppendingFormat:@"/%@", zipFileName];
-				}
-				
-				data = [NSData dataWithContentsOfFile:reportFilePath];
-				
-				[[NSFileManager defaultManager] removeFileAtPath:reportFilePath handler:nil];
-				
-				err = NO;
-			}
-			else
-				err = YES;
-		}
-	}
-	#pragma mark m4v
-	else if([fileURL hasSuffix:@".m4v"])
-	{
-		data = [NSData dataWithContentsOfFile:requestedFile];
-		totalLength = [data length];
-		
-		err = NO;
-	}
-	#pragma mark password forgotten
-	else if( [fileURL isEqualToString: @"/password_forgotten"] && [[NSUserDefaults standardUserDefaults] boolForKey: @"restorePasswordWebServer"])
-	{
-		NSMutableString *templateString = [NSMutableString stringWithContentsOfFile: [webDirectory stringByAppendingPathComponent:@"password_forgotten.html"]];
-		
-		[templateString replaceOccurrencesOfString: @"%Localized_PasswordForgotten%" withString:NSLocalizedString(@"Password Forgotten", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-		[templateString replaceOccurrencesOfString: @"%LocalizedLabel_Home%" withString:NSLocalizedString(@"Home", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-		[templateString replaceOccurrencesOfString: @"%Localized_Email%" withString:NSLocalizedString(@"Email", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-		[templateString replaceOccurrencesOfString: @"%Localized_Username%" withString:NSLocalizedString(@"Username", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-		[templateString replaceOccurrencesOfString: @"%Localized_RestorePassword%" withString:NSLocalizedString(@"Enter your username or your email to receive a new password by email:", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-		[templateString replaceOccurrencesOfString: @"%Localized_RestorePasswordButton%" withString:NSLocalizedString(@"Reset Password", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-		
-		NSString *message = @"";
-		
-		if( [[parameters valueForKey: @"what"] isEqualToString: @"restorePassword"])
-		{
-			NSString *email = [[[parameters valueForKey: @"email"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
-			NSString *username = [[[parameters valueForKey: @"username"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
-			
-			// TRY TO FIND THIS USER
-			
-			[[[BrowserController currentBrowser] userManagedObjectContext] lock];
-			
-			@try
-			{
-				NSError *error = nil;
-				NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-				[dbRequest setEntity: [[[[BrowserController currentBrowser] userManagedObjectModel] entitiesByName] objectForKey: @"User"]];
-				
-				if( [email length] > [username length])
-					[dbRequest setPredicate: [NSPredicate predicateWithFormat: @"(email BEGINSWITH[cd] %@) AND (email ENDSWITH[cd] %@)", email, email]];
-				else
-					[dbRequest setPredicate: [NSPredicate predicateWithFormat: @"(name BEGINSWITH[cd] %@) AND (name ENDSWITH[cd] %@)", username, username]];
-					
-				error = nil;
-				NSArray *users = [[[BrowserController currentBrowser] userManagedObjectContext] executeFetchRequest: dbRequest error:&error];
-				
-				if( [users count] >= 1)
-				{
-					for( UserTable *user in users)
-					{
-						NSString *fromEmailAddress = [[NSUserDefaults standardUserDefaults] valueForKey: @"notificationsEmailsSender"];
-						
-						if( fromEmailAddress == nil)
-							fromEmailAddress = @"";
-						
-						NSString *emailSubject = NSLocalizedString( @"Your password has been resetted.", nil);
-						NSMutableString *emailMessage = [NSMutableString stringWithString: @""];
-						
-						[user generatePassword];
-						
-						[emailMessage appendString: NSLocalizedString( @"Username:\r\r", nil)];
-						[emailMessage appendString: [user valueForKey: @"name"]];
-						[emailMessage appendString: @"\r\r"];
-						[emailMessage appendString: NSLocalizedString( @"Password:\r\r", nil)];
-						[emailMessage appendString: [user valueForKey: @"password"]];
-						[emailMessage appendString: @"\r\r"];
-						
-						[OsiriXHTTPConnection updateLogEntryForStudy: nil withMessage: @"Password resetted for user" forUser: [user valueForKey: @"name"] ip: nil];
-						
-						[[CSMailMailClient mailClient] deliverMessage: [[[NSAttributedString alloc] initWithString: emailMessage] autorelease] headers: [NSDictionary dictionaryWithObjectsAndKeys: [user valueForKey: @"email"], @"To", fromEmailAddress, @"Sender", emailSubject, @"Subject", nil]];
-					
-						message = NSLocalizedString( @"You will receive shortly an email with a new password.", nil);
-						
-						[[BrowserController currentBrowser] saveUserDatabase];
-					}
+					maxWidth = 300; // for the poster frame of the movie to fit in the iphone screen (vertically)
+					maxHeight = 310;
 				}
 				else
 				{
-					// To avoid someone scanning for the username
-					waitBeforeReturning = YES;
-					
-					[OsiriXHTTPConnection updateLogEntryForStudy: nil withMessage: @"Unknown user" forUser: [NSString stringWithFormat: @"%@ %@", username, email] ip: nil];
-					
-					message = NSLocalizedString( @"This user doesn't exist in our database.", nil);
+					maxWidth = maxResolution;
+					maxHeight = maxResolution;
 				}
-			}
-			@catch( NSException *e)
-			{
-				NSLog( @"******* password_forgotten: %@", e);
-			}
-			
-			[[[BrowserController currentBrowser] userManagedObjectContext] unlock];
-		}
-		
-		if( [message length] == 0)
-		{
-			NSArray *tempArray, *tempArray2;
-		
-			tempArray = [templateString componentsSeparatedByString:@"%MessageToWrite%"];
-			tempArray2 = [[tempArray lastObject] componentsSeparatedByString:@"%/MessageToWrite%"];
-			templateString = [NSMutableString stringWithFormat:@"%@%@",[tempArray objectAtIndex:0], [tempArray2 lastObject]];
-		}
-		else
-		{
-			[templateString replaceOccurrencesOfString:@"%MessageToWrite%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-			[templateString replaceOccurrencesOfString:@"%/MessageToWrite%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-		}
-		
-		[templateString replaceOccurrencesOfString: @"%Localized_Message%" withString: message options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-		
-		data = [templateString dataUsingEncoding: NSUTF8StringEncoding];
-		
-		err = NO;
-	}
-	#pragma mark account
-	else if( [fileURL isEqualToString: @"/account"])
-	{
-		if( currentUser)
-		{
-			NSString *message = @"";
-			
-			if( [[parameters valueForKey: @"what"] isEqualToString: @"changePassword"])
-			{
-				NSString * previouspassword = [[[parameters valueForKey: @"previouspassword"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
-				NSString * password = [[[parameters valueForKey: @"password"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
 				
-				if( [previouspassword isEqualToString: [currentUser valueForKey: @"password"]])
+				if(width>maxWidth)
 				{
-					if( [[parameters valueForKey: @"password"] isEqualToString: [parameters valueForKey: @"password2"]])
-					{
-						if( [password length] >= 4)
-						{
-							// We can update the user password
-							[currentUser setValue: password forKey: @"password"];
-							message = NSLocalizedString( @"Password updated successfully !", nil);
-							[self updateLogEntryForStudy: nil withMessage: [NSString stringWithFormat: @"User changed his password"]];
-						}
-						else message = NSLocalizedString( @"Password needs to be at least 4 characters !", nil);
-					}
-					else message = NSLocalizedString( @"New passwords are not identical !", nil);
+					height = (float)height * (float)maxWidth / (float)width;
+					width = maxWidth;
 				}
-				else message = NSLocalizedString( @"Wrong current password !", nil);
-			}
-			
-			if( [[parameters valueForKey: @"what"] isEqualToString: @"changeSettings"])
-			{
-				NSString * email = [[[parameters valueForKey: @"email"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
-				NSString * address = [[[parameters valueForKey: @"address"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
-				NSString * phone = [[[parameters valueForKey: @"phone"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
 				
-				[currentUser setValue: email forKey: @"email"];
-				[currentUser setValue: address forKey: @"address"];
-				[currentUser setValue: phone forKey: @"phone"];
+				if(height>maxHeight)
+				{
+					width = (float)width * (float)maxHeight / (float)height;
+					height = maxHeight;
+				}
 				
-				if( [[[parameters valueForKey: @"emailNotification"] lowercaseString] isEqualToString: @"on"])
-					[currentUser setValue: [NSNumber numberWithBool: YES] forKey: @"emailNotification"];
-				else
-					[currentUser setValue: [NSNumber numberWithBool: NO] forKey: @"emailNotification"];
-					
-				message = NSLocalizedString( @"Personal Information updated successfully !", nil);
+				height += 15; // quicktime controller height
+				
+				//NSLog(@"NEW w: %d, h: %d", width, height);
+				[templateString replaceOccurrencesOfString:@"%width%" withString:[NSString stringWithFormat:@"%d", width] options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+				[templateString replaceOccurrencesOfString:@"%height%" withString:[NSString stringWithFormat:@"%d", height] options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+				
+				NSString *url = [NSString stringWithFormat: @"/movie.mov?id=%@&studyID=%@", [parameters objectForKey:@"id"], [parameters objectForKey:@"studyID"]];
+				[templateString replaceOccurrencesOfString:@"%DownloadMovieURL%" withString: [NSString stringWithFormat: @"<a href=\"%@\">%@</a>", url, NSLocalizedString( @"Link to Quicktime Movie File", nil)] options: NSLiteralSearch range: NSMakeRange(0, [templateString length])];
+				[templateString replaceOccurrencesOfString:@"%Localized_QuicktimeRequired%" withString: NSLocalizedString( @"Viewing these movies requires <a href=\"http://www.apple.com/quicktime\">Apple Quicktime</a>", nil) options: NSLiteralSearch range: NSMakeRange(0, [templateString length])];
 			}
 			
-			NSMutableString *templateString = [NSMutableString stringWithContentsOfFile:[webDirectory stringByAppendingPathComponent:@"account.html"]];
+			NSString *seriesName = [OsiriXHTTPConnection nonNilString:[[series lastObject] valueForKey:@"name"]];
+			[templateString replaceOccurrencesOfString:@"%PageTitle%" withString:seriesName options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 			
-			if( [message length] == 0)
-			{
-				NSArray *tempArray, *tempArray2;
+			NSString *studyName = [OsiriXHTTPConnection nonNilString:[[series lastObject] valueForKeyPath:@"study.name"]];
+			[templateString replaceOccurrencesOfString:@"%LocalizedLabel_Home%" withString:studyName options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 			
-				tempArray = [templateString componentsSeparatedByString:@"%MessageToWrite%"];
-				tempArray2 = [[tempArray lastObject] componentsSeparatedByString:@"%/MessageToWrite%"];
-				templateString = [NSMutableString stringWithFormat:@"%@%@",[tempArray objectAtIndex:0], [tempArray2 lastObject]];
-			}
-			else
-			{
-				[templateString replaceOccurrencesOfString:@"%MessageToWrite%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-				[templateString replaceOccurrencesOfString:@"%/MessageToWrite%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-			}
-			
-			[templateString replaceOccurrencesOfString: @"%LocalizedLabel_MessageAccount%" withString: message options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-			
-			[templateString replaceOccurrencesOfString: @"%Localized_Username%" withString:NSLocalizedString(@"Username", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-			[templateString replaceOccurrencesOfString: @"%Localized_PreviousPassword%" withString:NSLocalizedString(@"Previous Password", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-			[templateString replaceOccurrencesOfString: @"%Localized_UserAccountFor%" withString:NSLocalizedString(@"User Account For", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-			[templateString replaceOccurrencesOfString: @"%Localized_NewPassword%" withString:NSLocalizedString(@"New Password", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-			[templateString replaceOccurrencesOfString: @"%Localized_RepeatNewPassword%" withString:NSLocalizedString(@"Repeat New Password", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-			[templateString replaceOccurrencesOfString: @"%Localized_Email%" withString:NSLocalizedString(@"Email", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-			[templateString replaceOccurrencesOfString: @"%Localized_Address%" withString:NSLocalizedString(@"Address", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-			[templateString replaceOccurrencesOfString: @"%Localized_Phone%" withString:NSLocalizedString(@"Phone", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-			[templateString replaceOccurrencesOfString: @"%Localized_EmailNotification%" withString:NSLocalizedString(@"Email Notification", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-			
-			[templateString replaceOccurrencesOfString: @"%LocalizedLabel_Home%" withString:NSLocalizedString(@"Home", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-			
-			[templateString replaceOccurrencesOfString: @"%LocalizedLabel_MessageAccount%" withString:NSLocalizedString(@"Home", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-			
-			[templateString replaceOccurrencesOfString: @"%name%" withString: [currentUser valueForKey: @"name"] options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 			[templateString replaceOccurrencesOfString: @"%DicomCStorePort%" withString: portString options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 			
-			[templateString replaceOccurrencesOfString: @"%LocalizedLabel_ChangePassword%" withString:NSLocalizedString(@"Change Password:", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-			[templateString replaceOccurrencesOfString: @"%LocalizedLabel_UpdatePasswordButton%" withString: NSLocalizedString( @"Change Password", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+			data = [templateString dataUsingEncoding:NSUTF8StringEncoding];
+			err = NO;
+		}
+	#pragma mark ZIP
+		else if( [fileURL hasSuffix:@".zip"] || [fileURL hasSuffix:@".osirixzip"])
+		{
+			NSPredicate *browsePredicate;
+			if([[parameters allKeys] containsObject:@"id"])
+			{
+				if( [[parameters allKeys] containsObject:@"studyID"])
+					browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", [[parameters objectForKey:@"studyID"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[parameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+				else
+					browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@", [[parameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+			}
+			else
+				browsePredicate = [NSPredicate predicateWithValue:NO];
 			
-			[templateString replaceOccurrencesOfString: @"%LocalizedLabel_ChangeSettings%" withString:NSLocalizedString(@"Change Personal Information:", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-			[templateString replaceOccurrencesOfString: @"%email%" withString: [currentUser valueForKey: @"email"] options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-			[templateString replaceOccurrencesOfString: @"%address%" withString: [currentUser valueForKey: @"address"] options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-			[templateString replaceOccurrencesOfString: @"%phone%" withString: [currentUser valueForKey: @"phone"] options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-			[templateString replaceOccurrencesOfString: @"%emailNotification%" withString: ([[currentUser valueForKey: @"emailNotification"] boolValue]?@"checked":@"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-			[templateString replaceOccurrencesOfString: @"%LocalizedLabel_UpdateSettingsButton%" withString: NSLocalizedString( @"Update", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+			NSArray *series = [self seriesForPredicate:browsePredicate];
 			
-			data = [templateString dataUsingEncoding: NSUTF8StringEncoding];
+			NSMutableArray *imagesArray = [NSMutableArray array];
+			for( DicomSeries *s in series)
+				[imagesArray addObjectsFromArray: [[s valueForKey:@"images"] allObjects]];
 			
-			[[BrowserController currentBrowser] saveUserDatabase];
+			if( [imagesArray count])
+			{
+				if( [[currentUser valueForKey: @"encryptedZIP"] boolValue])
+					[self updateLogEntryForStudy: [[series lastObject] valueForKey: @"study"] withMessage: @"Download encrypted DICOM ZIP"];
+				else
+					[self updateLogEntryForStudy: [[series lastObject] valueForKey: @"study"] withMessage: @"Download DICOM ZIP"];
+					
+				@try
+				{
+					NSString *srcFolder = @"/tmp";
+					NSString *destFile = @"/tmp";
+					
+					srcFolder = [srcFolder stringByAppendingPathComponent: asciiString( [[imagesArray lastObject] valueForKeyPath: @"series.study.name"])];
+					destFile = [destFile stringByAppendingPathComponent: asciiString( [[imagesArray lastObject] valueForKeyPath: @"series.study.name"])];
+					
+					if( isMacOS)
+						destFile = [destFile  stringByAppendingPathExtension: @"zip"];
+					else
+						destFile = [destFile  stringByAppendingPathExtension: @"osirixzip"];
+					
+					[[NSFileManager defaultManager] removeItemAtPath: srcFolder error: nil];
+					[[NSFileManager defaultManager] removeItemAtPath: destFile error: nil];
+					
+					[[NSFileManager defaultManager] createDirectoryAtPath: srcFolder attributes: nil];
+					
+					if( lockReleased == NO)
+					{
+						[[[BrowserController currentBrowser] managedObjectContext] unlock];
+						lockReleased = YES;
+					}
+					
+					if( [[currentUser valueForKey: @"encryptedZIP"] boolValue])
+						[BrowserController encryptFiles: [imagesArray valueForKey: @"completePath"] inZIPFile: destFile password: [currentUser valueForKey: @"password"]];
+					else
+						[BrowserController encryptFiles: [imagesArray valueForKey: @"completePath"] inZIPFile: destFile password: nil];
+					
+					data = [NSData dataWithContentsOfFile: destFile];
+					
+					[[NSFileManager defaultManager] removeItemAtPath: srcFolder error: nil];
+					[[NSFileManager defaultManager] removeItemAtPath: destFile error: nil];
+					
+					if( data)
+						err = NO;
+				}
+				@catch( NSException *e)
+				{
+					NSLog( @"**** web seriesAsZIP exception : %@", e);
+				}
+			}
+		}
+	#pragma mark image
+		else if([fileURL isEqualToString:@"/image.png"])
+		{
+			NSPredicate *browsePredicate;
+			if( [[parameters allKeys] containsObject:@"id"])
+			{
+				if( [[parameters allKeys] containsObject:@"studyID"])
+					browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", [[parameters objectForKey:@"studyID"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[parameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+				else
+					browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@", [[parameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+			}
+			else
+				browsePredicate = [NSPredicate predicateWithValue:NO];
+			
+			NSArray *series = [self seriesForPredicate:browsePredicate];
+			if([series count]==1)
+			{
+				NSMutableArray *imagesArray = [NSMutableArray array];
+				NSArray *dicomImageArray = [[[series lastObject] valueForKey:@"images"] allObjects];
+				DicomImage *im;
+				if([dicomImageArray count] == 1)
+					im = [dicomImageArray lastObject];
+				else
+					im = [dicomImageArray objectAtIndex:[dicomImageArray count]/2];
+				
+				DCMPix* dcmPix = [[DCMPix alloc] initWithPath:[im valueForKey:@"completePathResolved"] :0 :1 :nil :[[im valueForKey: @"numberOfFrames"] intValue]/2 :[[im valueForKeyPath:@"series.id"] intValue] isBonjour:NO imageObj:im];
+				
+				if(dcmPix)
+				{
+					float curWW = 0;
+					float curWL = 0;
+					
+					if([[im valueForKey:@"series"] valueForKey:@"windowWidth"])
+					{
+						curWW = [[[im valueForKey:@"series"] valueForKey:@"windowWidth"] floatValue];
+						curWL = [[[im valueForKey:@"series"] valueForKey:@"windowLevel"] floatValue];
+					}
+					
+					if( curWW != 0)
+						[dcmPix checkImageAvailble:curWW :curWL];
+					else
+						[dcmPix checkImageAvailble:[dcmPix savedWW] :[dcmPix savedWL]];
+					
+					[imagesArray addObject:[dcmPix image]];
+					[dcmPix release];
+				}
+				NSImage *image = [imagesArray lastObject];
+				float width = [image size].width;
+				float height = [image size].height;
+				
+				int maxWidth = width;
+				int maxHeight = height;
+				
+				maxWidth = maxResolution;
+				maxHeight = maxResolution;
+				
+				BOOL resize = NO;
+				
+				if(width>maxWidth)
+				{
+					height =  height * maxWidth / width;
+					width = maxWidth;
+					resize = YES;
+				}
+				if(height>maxHeight)
+				{
+					width = width * maxHeight / height;
+					height = maxHeight;
+					resize = YES;
+				}
+				
+				NSImage *newImage;
+				
+				if( resize)
+					newImage = [image imageByScalingProportionallyToSize:NSMakeSize(width, height)];
+				else
+					newImage = image;
+				
+				NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData:[newImage TIFFRepresentation]];
+				NSDictionary *imageProps = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:1.0] forKey:NSImageCompressionFactor];
+				data = [imageRep representationUsingType:NSPNGFileType properties:imageProps];
+			}
 			
 			err = NO;
 		}
+	#pragma mark movie
+		else if([fileURL isEqualToString:@"/movie.mov"])
+		{
+			NSPredicate *browsePredicate;
+			if([[parameters allKeys] containsObject:@"id"])
+			{
+				if( [[parameters allKeys] containsObject:@"studyID"])
+					browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", [[parameters objectForKey:@"studyID"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[parameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+				else
+					browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@", [[parameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+			}
+			else
+				browsePredicate = [NSPredicate predicateWithValue:NO];
+			
+			NSArray *series = [self seriesForPredicate:browsePredicate];
+			
+			if([series count]==1)
+			{
+				NSArray *dicomImageArray = [[[series lastObject] valueForKey:@"images"] allObjects];
+				
+				@try
+				{
+					// Sort images with "instanceNumber"
+					NSSortDescriptor *sort = [[NSSortDescriptor alloc] initWithKey:@"instanceNumber" ascending:YES];
+					NSArray *sortDescriptors = [NSArray arrayWithObject:sort];
+					[sort release];
+					dicomImageArray = [dicomImageArray sortedArrayUsingDescriptors: sortDescriptors];
+					
+				}
+				@catch (NSException * e)
+				{
+					NSLog( @"%@", [e description]);
+				}
+				
+				if([dicomImageArray count] > 1)
+				{
+					NSString *path = @"/tmp/osirixwebservices";
+					[[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
+					
+					NSString *name = [NSString stringWithFormat:@"%@",[parameters objectForKey:@"id"]];//[[series lastObject] valueForKey:@"id"];
+					name = [name stringByAppendingFormat:@"-NBIM-%d", [dicomImageArray count]];
+					
+					NSString *fileName = [path stringByAppendingPathComponent:name];
+					fileName = [fileName stringByAppendingString:@".mov"];
+					NSString *outFile;
+					
+					if( isiPhone)
+						outFile = [NSString stringWithFormat:@"%@2.m4v", [fileName stringByDeletingPathExtension]];
+					else
+						outFile = fileName;
+					
+					NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: isiPhone], @"isiPhone", fileURL, @"fileURL", fileName, @"fileName", outFile, @"outFile", parameters, @"parameters", dicomImageArray, @"dicomImageArray", nil];
+					
+					[[[BrowserController currentBrowser] managedObjectContext] unlock];	
+					
+					lockReleased = YES;
+					[self generateMovie: dict];
+					
+					data = [NSData dataWithContentsOfFile: outFile];
+				}
+			}
+			
+			err = NO;
+		}
+	#pragma mark report
+		else if([fileURL isEqualToString:@"/report"])
+		{
+			NSPredicate *browsePredicate;
+			if([[parameters allKeys] containsObject:@"id"])
+			{
+				browsePredicate = [NSPredicate predicateWithFormat:@"studyInstanceUID == %@", [parameters objectForKey:@"id"]];
+			}
+			else
+				browsePredicate = [NSPredicate predicateWithValue:NO];
+			NSArray *studies = [self studiesForPredicate:browsePredicate];
+			
+			if( [studies count] == 1)
+			{
+				[self updateLogEntryForStudy: [studies lastObject] withMessage: @"Download Report"];
+				
+				NSString *reportFilePath = [[studies lastObject] valueForKey:@"reportURL"];
+				//NSLog(@"reportFilePath: %@", reportFilePath);
+				
+				reportType = [reportFilePath pathExtension];
+				
+				if(reportFilePath)
+				{
+					NSString *zipFileName = [NSString stringWithFormat:@"%@.zip", [reportFilePath lastPathComponent]];
+					// zip the directory into a single archive file
+					NSTask *zipTask   = [[NSTask alloc] init];
+					[zipTask setLaunchPath:@"/usr/bin/zip"];
+					[zipTask setCurrentDirectoryPath:[[reportFilePath stringByDeletingLastPathComponent] stringByAppendingString:@"/"]];
+					if([reportType isEqualToString:@"pages"])
+						[zipTask setArguments:[NSArray arrayWithObjects: @"--quiet", @"-r" , zipFileName, [reportFilePath lastPathComponent], nil]];
+					else
+						[zipTask setArguments:[NSArray arrayWithObjects: zipFileName, [reportFilePath lastPathComponent], nil]];
+					[zipTask launch];
+					while( [zipTask isRunning]) [NSThread sleepForTimeInterval: 0.01];
+					int result = [zipTask terminationStatus];
+					[zipTask release];
+					
+					if(result==0)
+					{
+						reportFilePath = [[reportFilePath stringByDeletingLastPathComponent] stringByAppendingFormat:@"/%@", zipFileName];
+					}
+					
+					data = [NSData dataWithContentsOfFile:reportFilePath];
+					
+					[[NSFileManager defaultManager] removeFileAtPath:reportFilePath handler:nil];
+					
+					err = NO;
+				}
+				else
+					err = YES;
+			}
+		}
+		#pragma mark m4v
+		else if([fileURL hasSuffix:@".m4v"])
+		{
+			data = [NSData dataWithContentsOfFile:requestedFile];
+			totalLength = [data length];
+			
+			err = NO;
+		}
+		#pragma mark password forgotten
+		else if( [fileURL isEqualToString: @"/password_forgotten"] && [[NSUserDefaults standardUserDefaults] boolForKey: @"restorePasswordWebServer"])
+		{
+			NSMutableString *templateString = [NSMutableString stringWithContentsOfFile: [webDirectory stringByAppendingPathComponent:@"password_forgotten.html"]];
+			
+			[templateString replaceOccurrencesOfString: @"%Localized_PasswordForgotten%" withString:NSLocalizedString(@"Password Forgotten", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+			[templateString replaceOccurrencesOfString: @"%LocalizedLabel_Home%" withString:NSLocalizedString(@"Home", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+			[templateString replaceOccurrencesOfString: @"%Localized_Email%" withString:NSLocalizedString(@"Email", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+			[templateString replaceOccurrencesOfString: @"%Localized_Username%" withString:NSLocalizedString(@"Username", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+			[templateString replaceOccurrencesOfString: @"%Localized_RestorePassword%" withString:NSLocalizedString(@"Enter your username or your email to receive a new password by email:", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+			[templateString replaceOccurrencesOfString: @"%Localized_RestorePasswordButton%" withString:NSLocalizedString(@"Reset Password", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+			
+			NSString *message = @"";
+			
+			if( [[parameters valueForKey: @"what"] isEqualToString: @"restorePassword"])
+			{
+				NSString *email = [[[parameters valueForKey: @"email"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
+				NSString *username = [[[parameters valueForKey: @"username"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
+				
+				// TRY TO FIND THIS USER
+				if( [email length] > 0 || [username length] > 0)
+				{
+					[[[BrowserController currentBrowser] userManagedObjectContext] lock];
+					
+					@try
+					{
+						NSError *error = nil;
+						NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+						[dbRequest setEntity: [[[[BrowserController currentBrowser] userManagedObjectModel] entitiesByName] objectForKey: @"User"]];
+						
+						if( [email length] > [username length])
+							[dbRequest setPredicate: [NSPredicate predicateWithFormat: @"(email BEGINSWITH[cd] %@) AND (email ENDSWITH[cd] %@)", email, email]];
+						else
+							[dbRequest setPredicate: [NSPredicate predicateWithFormat: @"(name BEGINSWITH[cd] %@) AND (name ENDSWITH[cd] %@)", username, username]];
+							
+						error = nil;
+						NSArray *users = [[[BrowserController currentBrowser] userManagedObjectContext] executeFetchRequest: dbRequest error:&error];
+						
+						if( [users count] >= 1)
+						{
+							for( UserTable *user in users)
+							{
+								NSString *fromEmailAddress = [[NSUserDefaults standardUserDefaults] valueForKey: @"notificationsEmailsSender"];
+								
+								if( fromEmailAddress == nil)
+									fromEmailAddress = @"";
+								
+								NSString *emailSubject = NSLocalizedString( @"Your password has been resetted.", nil);
+								NSMutableString *emailMessage = [NSMutableString stringWithString: @""];
+								
+								[user generatePassword];
+								
+								[emailMessage appendString: NSLocalizedString( @"Username:\r\r", nil)];
+								[emailMessage appendString: [user valueForKey: @"name"]];
+								[emailMessage appendString: @"\r\r"];
+								[emailMessage appendString: NSLocalizedString( @"Password:\r\r", nil)];
+								[emailMessage appendString: [user valueForKey: @"password"]];
+								[emailMessage appendString: @"\r\r"];
+								
+								[OsiriXHTTPConnection updateLogEntryForStudy: nil withMessage: @"Password resetted for user" forUser: [user valueForKey: @"name"] ip: nil];
+								
+								[[CSMailMailClient mailClient] deliverMessage: [[[NSAttributedString alloc] initWithString: emailMessage] autorelease] headers: [NSDictionary dictionaryWithObjectsAndKeys: [user valueForKey: @"email"], @"To", fromEmailAddress, @"Sender", emailSubject, @"Subject", nil]];
+							
+								message = NSLocalizedString( @"You will receive shortly an email with a new password.", nil);
+								
+								[[BrowserController currentBrowser] saveUserDatabase];
+							}
+						}
+						else
+						{
+							// To avoid someone scanning for the username
+							waitBeforeReturning = YES;
+							
+							[OsiriXHTTPConnection updateLogEntryForStudy: nil withMessage: @"Unknown user" forUser: [NSString stringWithFormat: @"%@ %@", username, email] ip: nil];
+							
+							message = NSLocalizedString( @"This user doesn't exist in our database.", nil);
+						}
+					}
+					@catch( NSException *e)
+					{
+						NSLog( @"******* password_forgotten: %@", e);
+					}
+					
+					[[[BrowserController currentBrowser] userManagedObjectContext] unlock];
+				}
+			}
+			
+			templateString = [self setBlock: @"MessageToWrite" visible: [message length] forString: templateString];
+			
+			[templateString replaceOccurrencesOfString: @"%Localized_Message%" withString: message options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+			
+			data = [templateString dataUsingEncoding: NSUTF8StringEncoding];
+			
+			err = NO;
+		}
+		#pragma mark account
+		else if( [fileURL isEqualToString: @"/account"])
+		{
+			if( currentUser)
+			{
+				NSString *message = @"";
+				
+				if( [[parameters valueForKey: @"what"] isEqualToString: @"changePassword"])
+				{
+					NSString * previouspassword = [[[parameters valueForKey: @"previouspassword"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
+					NSString * password = [[[parameters valueForKey: @"password"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
+					
+					if( [previouspassword isEqualToString: [currentUser valueForKey: @"password"]])
+					{
+						if( [[parameters valueForKey: @"password"] isEqualToString: [parameters valueForKey: @"password2"]])
+						{
+							if( [password length] >= 4)
+							{
+								// We can update the user password
+								[currentUser setValue: password forKey: @"password"];
+								message = NSLocalizedString( @"Password updated successfully !", nil);
+								[self updateLogEntryForStudy: nil withMessage: [NSString stringWithFormat: @"User changed his password"]];
+							}
+							else message = NSLocalizedString( @"Password needs to be at least 4 characters !", nil);
+						}
+						else message = NSLocalizedString( @"New passwords are not identical !", nil);
+					}
+					else message = NSLocalizedString( @"Wrong current password !", nil);
+				}
+				
+				if( [[parameters valueForKey: @"what"] isEqualToString: @"changeSettings"])
+				{
+					NSString * email = [[[parameters valueForKey: @"email"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
+					NSString * address = [[[parameters valueForKey: @"address"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
+					NSString * phone = [[[parameters valueForKey: @"phone"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
+					
+					[currentUser setValue: email forKey: @"email"];
+					[currentUser setValue: address forKey: @"address"];
+					[currentUser setValue: phone forKey: @"phone"];
+					
+					if( [[[parameters valueForKey: @"emailNotification"] lowercaseString] isEqualToString: @"on"])
+						[currentUser setValue: [NSNumber numberWithBool: YES] forKey: @"emailNotification"];
+					else
+						[currentUser setValue: [NSNumber numberWithBool: NO] forKey: @"emailNotification"];
+						
+					message = NSLocalizedString( @"Personal Information updated successfully !", nil);
+				}
+				
+				NSMutableString *templateString = [NSMutableString stringWithContentsOfFile:[webDirectory stringByAppendingPathComponent:@"account.html"]];
+				
+				templateString = [self setBlock: @"MessageToWrite" visible: [message length] forString: templateString];
+				
+				[templateString replaceOccurrencesOfString: @"%LocalizedLabel_MessageAccount%" withString: message options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+				
+				[templateString replaceOccurrencesOfString: @"%Localized_Username%" withString:NSLocalizedString(@"Username", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+				[templateString replaceOccurrencesOfString: @"%Localized_PreviousPassword%" withString:NSLocalizedString(@"Previous Password", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+				[templateString replaceOccurrencesOfString: @"%Localized_UserAccountFor%" withString:NSLocalizedString(@"User Account For", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+				[templateString replaceOccurrencesOfString: @"%Localized_NewPassword%" withString:NSLocalizedString(@"New Password", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+				[templateString replaceOccurrencesOfString: @"%Localized_RepeatNewPassword%" withString:NSLocalizedString(@"Repeat New Password", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+				[templateString replaceOccurrencesOfString: @"%Localized_Email%" withString:NSLocalizedString(@"Email", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+				[templateString replaceOccurrencesOfString: @"%Localized_Address%" withString:NSLocalizedString(@"Address", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+				[templateString replaceOccurrencesOfString: @"%Localized_Phone%" withString:NSLocalizedString(@"Phone", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+				[templateString replaceOccurrencesOfString: @"%Localized_EmailNotification%" withString:NSLocalizedString(@"Email Notification", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+				
+				[templateString replaceOccurrencesOfString: @"%LocalizedLabel_Home%" withString:NSLocalizedString(@"Home", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+				
+				[templateString replaceOccurrencesOfString: @"%LocalizedLabel_MessageAccount%" withString:NSLocalizedString(@"Home", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+				
+				[templateString replaceOccurrencesOfString: @"%name%" withString: [currentUser valueForKey: @"name"] options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+				[templateString replaceOccurrencesOfString: @"%DicomCStorePort%" withString: portString options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+				
+				[templateString replaceOccurrencesOfString: @"%LocalizedLabel_ChangePassword%" withString:NSLocalizedString(@"Change Password:", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+				[templateString replaceOccurrencesOfString: @"%LocalizedLabel_UpdatePasswordButton%" withString: NSLocalizedString( @"Change Password", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+				
+				[templateString replaceOccurrencesOfString: @"%LocalizedLabel_ChangeSettings%" withString:NSLocalizedString(@"Change Personal Information:", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+				[templateString replaceOccurrencesOfString: @"%email%" withString: [currentUser valueForKey: @"email"] options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+				[templateString replaceOccurrencesOfString: @"%address%" withString: [currentUser valueForKey: @"address"] options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+				[templateString replaceOccurrencesOfString: @"%phone%" withString: [currentUser valueForKey: @"phone"] options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+				[templateString replaceOccurrencesOfString: @"%emailNotification%" withString: ([[currentUser valueForKey: @"emailNotification"] boolValue]?@"checked":@"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+				[templateString replaceOccurrencesOfString: @"%LocalizedLabel_UpdateSettingsButton%" withString: NSLocalizedString( @"Update", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+				
+				data = [templateString dataUsingEncoding: NSUTF8StringEncoding];
+				
+				[[BrowserController currentBrowser] saveUserDatabase];
+				
+				err = NO;
+			}
+		}
+	}
+	
+	@catch( NSException *e)
+	{
+		NSLog( @"******** httpResponseForMethod OsiriXHTTPConnection exception: %@", e);
+		NSLog( @"******** method : %@ path : %@", method, path);
+		err = YES;
 	}
 	
 	if( lockReleased == NO)

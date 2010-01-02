@@ -94,7 +94,16 @@
 				</li>
 				%/SendingFunctions2%
 		</ul>
+		<input type="hidden" name="id" value="%StudyID%"/>
+		<input type="hidden" name="search" value="%search%"/>
+		<input type="hidden" name="browse" value="%browse%"/>
+		<input type="hidden" name="browseParameter" value="%browseParameter%"/>
+		<input type="hidden" name="album" value="%album%"/>
+		<input type="hidden" name="dicomcstoreport" value="%DicomCStorePort%" name="search"/>
 		%SendingFunctions3%
+		<HR>
+		<br>
+		<br>
 		<h2 style="padding-top:10px">%LocalizedLabel_DICOMTransfer%</h2>
 			%LocalizedLabel_SendSelectedSeriesTo%:
 			<select name="dicomDestination" id="dicomDestination">
@@ -102,14 +111,25 @@
 				<option value="%dicomNodeAddress%:%dicomNodePort%:%dicomNodeAETitle%:%dicomNodeSyntax%" %selected% >%dicomNodeDescription% [%dicomNodeAddress%:%dicomNodePort%]</option>
 				%/dicomNodesListItem%
 			</select>
-			<input type="hidden" name="id" value="%StudyID%"/>
-			<input type="hidden" name="search" value="%search%"/>
-			<input type="hidden" name="browse" value="%browse%"/>
-			<input type="hidden" name="browseParameter" value="%browseParameter%"/>
-			<input type="hidden" name="album" value="%album%"/>
-			<input type="hidden" name="dicomcstoreport" value="%DicomCStorePort%" name="search"/>
 			<input type="submit" name="dicomSend" id="dicomSend" value="%LocalizedLabel_Send%"/>
+		<br>
+		<br>
 		%/SendingFunctions3%
+		%SharingFunctions%
+		<HR>
+		<br>
+		<br>
+		<h2 style="padding-top:10px">%LocalizedLabel_ShareThisStudy%</h2>
+			%LocalizedLabel_ShareThisStudyWithThisUser%:
+			<select name="userDestination" id="userDestination">
+				%userListItem%
+				<option value="%username%" %selected% >%username% (%email%)</option>
+				%/userListItem%
+			</select>
+			<input type="submit" name="shareStudy" id="shareStudy" value="%LocalizedLabel_Share%"/>
+		%/SharingFunctions%
+		<br>
+		<br>
 		</form>
     </div>
   </body>

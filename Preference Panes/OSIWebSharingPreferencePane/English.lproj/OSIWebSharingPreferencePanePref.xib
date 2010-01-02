@@ -601,7 +601,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 														<object class="NSButton" id="839517142">
 															<reference key="NSNextResponder" ref="1011292588"/>
 															<int key="NSvFlags">258</int>
-															<string key="NSFrame">{{349, 31}, {344, 18}}</string>
+															<string key="NSFrame">{{349, 51}, {344, 18}}</string>
 															<reference key="NSSuperview" ref="1011292588"/>
 															<int key="NSTag">-1</int>
 															<bool key="NSEnabled">YES</bool>
@@ -623,7 +623,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 														<object class="NSButton" id="785257215">
 															<reference key="NSNextResponder" ref="1011292588"/>
 															<int key="NSvFlags">258</int>
-															<string key="NSFrame">{{349, 51}, {344, 18}}</string>
+															<string key="NSFrame">{{349, 71}, {344, 18}}</string>
 															<reference key="NSSuperview" ref="1011292588"/>
 															<int key="NSTag">-1</int>
 															<bool key="NSEnabled">YES</bool>
@@ -645,7 +645,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 														<object class="NSButton" id="125678885">
 															<reference key="NSNextResponder" ref="1011292588"/>
 															<int key="NSvFlags">258</int>
-															<string key="NSFrame">{{349, 71}, {347, 18}}</string>
+															<string key="NSFrame">{{15, 11}, {347, 18}}</string>
 															<reference key="NSSuperview" ref="1011292588"/>
 															<int key="NSTag">-1</int>
 															<bool key="NSEnabled">YES</bool>
@@ -711,7 +711,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 														<object class="NSButton" id="652201303">
 															<reference key="NSNextResponder" ref="1011292588"/>
 															<int key="NSvFlags">258</int>
-															<string key="NSFrame">{{15, 11}, {303, 18}}</string>
+															<string key="NSFrame">{{349, 31}, {303, 18}}</string>
 															<reference key="NSSuperview" ref="1011292588"/>
 															<int key="NSTag">-1</int>
 															<bool key="NSEnabled">YES</bool>
@@ -1775,7 +1775,7 @@ bmdQaHlzaWNpYW4gQ09OVEFJTlNbY2RdICdQcm9mLiBST1NTRVQnKQ</string>
 			</object>
 			<object class="NSUserDefaultsController" id="896066363">
 				<array class="NSMutableArray" key="NSDeclaredKeys">
-					<string>shareStudyWebServer</string>
+					<string>passwordWebServer</string>
 				</array>
 				<bool key="NSSharedInstance">YES</bool>
 			</object>
@@ -1799,6 +1799,7 @@ bmdQaHlzaWNpYW4gQ09OVEFJTlNbY2RdICdQcm9mLiBST1NTRVQnKQ</string>
 					<string>deletionDate</string>
 					<string>autoDelete</string>
 					<string>studies</string>
+					<string>shareStudyWithUser</string>
 				</array>
 				<bool key="NSEditable">YES</bool>
 				<bool key="NSAutomaticallyPreparesContent">YES</bool>
@@ -3286,35 +3287,35 @@ bmdQaHlzaWNpYW4gQ09OVEFJTlNbY2RdICdQcm9mLiBST1NTRVQnKQ</string>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: selection.downloadZIP</string>
-						<reference key="source" ref="125678885"/>
-						<reference key="destination" ref="596395762"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="125678885"/>
-							<reference key="NSDestination" ref="596395762"/>
-							<string key="NSLabel">value: selection.downloadZIP</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">selection.downloadZIP</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">839</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled: values.shareStudyWebServer</string>
+						<string key="label">enabled: values.passwordWebServer</string>
 						<reference key="source" ref="125678885"/>
 						<reference key="destination" ref="896066363"/>
 						<object class="NSNibBindingConnector" key="connector">
 							<reference key="NSSource" ref="125678885"/>
 							<reference key="NSDestination" ref="896066363"/>
-							<string key="NSLabel">enabled: values.shareStudyWebServer</string>
+							<string key="NSLabel">enabled: values.passwordWebServer</string>
 							<string key="NSBinding">enabled</string>
-							<string key="NSKeyPath">values.shareStudyWebServer</string>
+							<string key="NSKeyPath">values.passwordWebServer</string>
 							<int key="NSNibBindingConnectorVersion">2</int>
 						</object>
 					</object>
-					<int key="connectionID">840</int>
+					<int key="connectionID">841</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: selection.shareStudyWithUser</string>
+						<reference key="source" ref="125678885"/>
+						<reference key="destination" ref="596395762"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="125678885"/>
+							<reference key="NSDestination" ref="596395762"/>
+							<string key="NSLabel">value: selection.shareStudyWithUser</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">selection.shareStudyWithUser</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">842</int>
 				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -3553,11 +3554,8 @@ bmdQaHlzaWNpYW4gQ09OVEFJTlNbY2RdICdQcm9mLiBST1NTRVQnKQ</string>
 						<reference key="object" ref="236395217"/>
 						<array class="NSMutableArray" key="children">
 							<reference ref="1016993944"/>
-							<reference ref="652201303"/>
 							<reference ref="797994667"/>
 							<reference ref="406441264"/>
-							<reference ref="785257215"/>
-							<reference ref="839517142"/>
 							<reference ref="110072123"/>
 							<reference ref="13842723"/>
 							<reference ref="1054612477"/>
@@ -3588,6 +3586,9 @@ bmdQaHlzaWNpYW4gQ09OVEFJTlNbY2RdICdQcm9mLiBST1NTRVQnKQ</string>
 							<reference ref="511962652"/>
 							<reference ref="808233742"/>
 							<reference ref="125678885"/>
+							<reference ref="839517142"/>
+							<reference ref="785257215"/>
+							<reference ref="652201303"/>
 						</array>
 						<reference key="parent" ref="754822185"/>
 					</object>
@@ -4470,7 +4471,7 @@ bmdQaHlzaWNpYW4gQ09OVEFJTlNbY2RdICdQcm9mLiBST1NTRVQnKQ</string>
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">840</int>
+			<int key="maxID">842</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">

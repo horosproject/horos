@@ -29,4 +29,5 @@ extern NSString* asciiString (NSString* name);
 - (BOOL)supportsPOST:(NSString *)path withSize:(UInt64)contentLength;
 - (NSArray*) addSpecificStudiesToArray: (NSArray*) array;
 + (NSArray*) addSpecificStudiesToArray: (NSArray*) array forUser: (NSManagedObject*) user predicate: (NSPredicate*) predicate;
+- (NSMutableString*) setBlock: (NSString*) b visible: (BOOL) v forString: (NSMutableString*) s;
 @end
