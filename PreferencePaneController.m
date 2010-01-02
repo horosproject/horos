@@ -248,8 +248,8 @@ extern OSStatus SetupAuthorization(void)
 		}
 	}
 	
-	if( curPaneIndex < 0) curPaneIndex = 12;
-	if( curPaneIndex > 12) curPaneIndex = 0;
+	if( curPaneIndex < 0) curPaneIndex = 13;
+	if( curPaneIndex > 13) curPaneIndex = 0;
 	
 	[self selectPaneIndex: curPaneIndex];
 }
