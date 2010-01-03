@@ -532,11 +532,8 @@ static NSString *webDirectory = nil;
 
 - (NSMutableString*) setBlock: (NSString*) b visible: (BOOL) v forString: (NSMutableString*) s
 {
-	BOOL checkBoxList = NO;
-	BOOL sendDICOM = NO;
-	BOOL shareFile = NO;
-	
-	NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
+	NSString *begin = [NSString stringWithFormat: @"%%%@%%", b];
+	NSString *end = [NSString stringWithFormat: @"%%/%@%%", b];
 	
 	if( v == NO)
 	{
@@ -555,17 +552,27 @@ static NSString *webDirectory = nil;
 
 - (NSMutableString*)htmlStudy:(DicomStudy*)study parameters:(NSDictionary*)parameters settings: (NSDictionary*) settings;
 {
+	BOOL checkBoxList = NO;
+	BOOL dicomSend = NO;
+	BOOL shareSend = NO;
+
+	if( currentUser == nil || ([[currentUser valueForKey: @"sendDICOMtoSelfIP"] boolValue] || [[currentUser valueForKey: @"sendDICOMtoAnyNodes"] boolValue] || [[currentUser valueForKey: @"shareStudyWithUser"] boolValue]))
+		checkBoxList = YES;
+	
+	if( currentUser == nil || ([[currentUser valueForKey: @"sendDICOMtoSelfIP"] boolValue] || [[currentUser valueForKey: @"sendDICOMtoAnyNodes"] boolValue]))
+		dicomSend = YES;
+		
 	NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
 	
 	[context lock];
 	
 	NSMutableString *templateString = [NSMutableString stringWithContentsOfFile:[webDirectory stringByAppendingPathComponent:@"study.html"]];
 	
-	templateString = [self setBlock: @"SendingFunctions1" visible: (currentUser && ([[currentUser valueForKey: @"sendDICOMtoSelfIP"] boolValue] || [[currentUser valueForKey: @"sendDICOMtoAnyNodes"] boolValue] || [[currentUser valueForKey: @"shareStudyWithUser"] boolValue])) forString: templateString];
-	templateString = [self setBlock: @"SendingFunctions2" visible: (currentUser && ([[currentUser valueForKey: @"sendDICOMtoSelfIP"] boolValue] || [[currentUser valueForKey: @"sendDICOMtoAnyNodes"] boolValue] || [[currentUser valueForKey: @"shareStudyWithUser"] boolValue])) forString: templateString];
-	templateString = [self setBlock: @"SendingFunctions3" visible: (currentUser && ([[currentUser valueForKey: @"sendDICOMtoSelfIP"] boolValue] || [[currentUser valueForKey: @"sendDICOMtoAnyNodes"] boolValue])) forString: templateString];
+	templateString = [self setBlock: @"SendingFunctions1" visible: checkBoxList forString: templateString];
+	templateString = [self setBlock: @"SendingFunctions2" visible: checkBoxList forString: templateString];
+	templateString = [self setBlock: @"SendingFunctions3" visible: dicomSend forString: templateString];
 	templateString = [self setBlock: @"SharingFunctions" visible: (currentUser && [[currentUser valueForKey: @"shareStudyWithUser"] boolValue]) forString: templateString];
-	templateString = [self setBlock: @"ZIPFunctions" visible: (currentUser && [[currentUser valueForKey: @"downloadZIP"] boolValue]) forString: templateString];
+	templateString = [self setBlock: @"ZIPFunctions" visible: (currentUser == nil || [[currentUser valueForKey: @"downloadZIP"] boolValue]) forString: templateString];
 	
 	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_PatientInfo%" withString:NSLocalizedString(@"Patient Info", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_PatientID%" withString:NSLocalizedString(@"ID", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
@@ -2178,44 +2185,9 @@ static NSString *webDirectory = nil;
 			else
 				browsePredicate = [NSPredicate predicateWithValue:NO];
 			
-			if( [[parameters allKeys] containsObject:@"previewForMovie"])
-			{
-				[newImage lockFocus];
-				
-				NSImage *r = [NSImage imageNamed: @"PlayTemplate.png"];
-				
-				[r drawInRect: [self centerRect: NSMakeRect( 0,  0, [r size].width, [r size].height) inRect: NSMakeRect( 0,  0, [newImage size].width, [newImage size].height)] fromRect: NSMakeRect( 0,  0, [r size].width, [r size].height)  operation: NSCompositeSourceOver fraction: 1.0];
-				
-				[newImage unlockFocus];
-			}
-			
-			NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData:[newImage TIFFRepresentation]];
-			NSDictionary *imageProps = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:1.0] forKey:NSImageCompressionFactor];
-			data = [imageRep representationUsingType:NSPNGFileType properties:imageProps];
-		}
-		
-		err = NO;
-	}
-#pragma mark movie
-	else if([fileURL isEqualToString:@"/movie.mov"])
-	{
-		NSPredicate *browsePredicate;
-		if([[parameters allKeys] containsObject:@"id"])
-		{
-			if( [[parameters allKeys] containsObject:@"studyID"])
-				browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", [[parameters objectForKey:@"studyID"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[parameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-			else
-				browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@", [[parameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-		}
-		else
-			browsePredicate = [NSPredicate predicateWithValue:NO];
-		
-		NSArray *series = [self seriesForPredicate:browsePredicate];
-		
-		if([series count]==1)
-		{
-			NSArray *dicomImageArray = [[[series lastObject] valueForKey:@"images"] allObjects];
-			
+			NSArray *series = [self seriesForPredicate:browsePredicate];
+			NSArray *imagesArray = [[[series lastObject] valueForKey:@"images"] allObjects];
+
 			if([imagesArray count] == 1)
 			{
 				[templateString replaceOccurrencesOfString:@"<!--[if !IE]>-->" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
@@ -2433,6 +2405,17 @@ static NSString *webDirectory = nil;
 					newImage = [image imageByScalingProportionallyToSize:NSMakeSize(width, height)];
 				else
 					newImage = image;
+				
+				if( [[parameters allKeys] containsObject:@"previewForMovie"])
+				{
+					[newImage lockFocus];
+					
+					NSImage *r = [NSImage imageNamed: @"PlayTemplate.png"];
+					
+					[r drawInRect: [self centerRect: NSMakeRect( 0,  0, [r size].width, [r size].height) inRect: NSMakeRect( 0,  0, [newImage size].width, [newImage size].height)] fromRect: NSMakeRect( 0,  0, [r size].width, [r size].height)  operation: NSCompositeSourceOver fraction: 1.0];
+					
+					[newImage unlockFocus];
+				}
 				
 				NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData:[newImage TIFFRepresentation]];
 				NSDictionary *imageProps = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:1.0] forKey:NSImageCompressionFactor];
