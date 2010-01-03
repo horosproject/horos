@@ -2300,6 +2300,7 @@
 		BFF97D710BDE8BE6008333CF /* ShadingArrayController.h in Headers */ = {isa = PBXBuildFile; fileRef = BFF97D6B0BDE8BE6008333CF /* ShadingArrayController.h */; };
 		BFF97D720BDE8BE6008333CF /* ShadingArrayController.m in Sources */ = {isa = PBXBuildFile; fileRef = BFF97D6C0BDE8BE6008333CF /* ShadingArrayController.m */; };
 		CE03A3CC0EA2AE0300951EF4 /* iPhone.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE03A3CB0EA2AE0300951EF4 /* iPhone.tif */; };
+		CE06475210F12DA500551AD9 /* PlayTemplate.png in Resources */ = {isa = PBXBuildFile; fileRef = CE06475110F12DA500551AD9 /* PlayTemplate.png */; };
 		CE0718FE0C71D5F3006332F3 /* OsiriXDB_DataModel.xcdatamodel in Sources */ = {isa = PBXBuildFile; fileRef = CE0718FD0C71D5F3006332F3 /* OsiriXDB_DataModel.xcdatamodel */; };
 		CE0817B90C0FEEAE00BBD907 /* iPodEjectOff.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE0817B70C0FEEAE00BBD907 /* iPodEjectOff.tif */; };
 		CE0817BA0C0FEEAE00BBD907 /* iPodEjectOn.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE0817B80C0FEEAE00BBD907 /* iPodEjectOn.tif */; };
@@ -9738,6 +9739,7 @@
 		BFF9D57809CDCA5600B3B940 /* dcmqrdbq.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dcmqrdbq.h; sourceTree = "<group>"; };
 		BFF9D57909CDCA5600B3B940 /* dcmqrdbq.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = dcmqrdbq.mm; sourceTree = "<group>"; };
 		CE03A3CB0EA2AE0300951EF4 /* iPhone.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = iPhone.tif; sourceTree = "<group>"; };
+		CE06475110F12DA500551AD9 /* PlayTemplate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = PlayTemplate.png; sourceTree = "<group>"; };
 		CE0718FD0C71D5F3006332F3 /* OsiriXDB_DataModel.xcdatamodel */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = wrapper.xcdatamodel; path = OsiriXDB_DataModel.xcdatamodel; sourceTree = "<group>"; };
 		CE0817B70C0FEEAE00BBD907 /* iPodEjectOff.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = iPodEjectOff.tif; sourceTree = "<group>"; };
 		CE0817B80C0FEEAE00BBD907 /* iPodEjectOn.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = iPodEjectOn.tif; sourceTree = "<group>"; };
@@ -12934,6 +12936,7 @@
 		ABBB647A063587B200D9531F /* Icons */ = {
 			isa = PBXGroup;
 			children = (
+				CE06475110F12DA500551AD9 /* PlayTemplate.png */,
 				CED1FD191035E9BB0076AB33 /* SetPixelValue.png */,
 				CED1FD1A1035E9BB0076AB33 /* GrowingRegion.png */,
 				84A220E60F25E41800C6C3EB /* ROIs.tif */,
@@ -21896,6 +21899,7 @@
 				CEFB8A9910C19902000DCCB0 /* ReportTemplate.odt in Resources */,
 				CE4B5CEC10E5F94700C11948 /* OSIWebSharingPreferencePane.prefPane in Resources */,
 				CE4B5CFC10E5F9DE00C11948 /* Safari.tif in Resources */,
+				CE06475210F12DA500551AD9 /* PlayTemplate.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

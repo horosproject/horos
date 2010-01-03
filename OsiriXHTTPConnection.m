@@ -532,8 +532,11 @@ static NSString *webDirectory = nil;
 
 - (NSMutableString*) setBlock: (NSString*) b visible: (BOOL) v forString: (NSMutableString*) s
 {
-	NSString *begin = [NSString stringWithFormat: @"%%%@%%", b];
-	NSString *end = [NSString stringWithFormat: @"%%/%@%%", b];
+	BOOL checkBoxList = NO;
+	BOOL sendDICOM = NO;
+	BOOL shareFile = NO;
+	
+	NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
 	
 	if( v == NO)
 	{
@@ -1496,6 +1499,18 @@ static NSString *webDirectory = nil;
 	return NSLocalizedString( @"OsiriX Secured Web Portal", nil);
 }
 
+- (NSRect) centerRect: (NSRect) smallRect
+               inRect: (NSRect) bigRect
+{
+    NSRect centerRect;
+    centerRect.size = smallRect.size;
+
+    centerRect.origin.x = (bigRect.size.width - smallRect.size.width) / 2.0;
+    centerRect.origin.y = (bigRect.size.height - smallRect.size.height) / 2.0;
+
+    return (centerRect);
+}
+
 - (NSObject<HTTPResponse> *)httpResponseForMethod:(NSString *)method URI:(NSString *)path
 {
 	BOOL lockReleased = NO, waitBeforeReturning = NO, dicomSendFailed = NO;
@@ -2163,8 +2178,43 @@ static NSString *webDirectory = nil;
 			else
 				browsePredicate = [NSPredicate predicateWithValue:NO];
 			
-			NSArray *series = [self seriesForPredicate:browsePredicate];
-			NSArray *imagesArray = [[[series lastObject] valueForKey:@"images"] allObjects];
+			if( [[parameters allKeys] containsObject:@"previewForMovie"])
+			{
+				[newImage lockFocus];
+				
+				NSImage *r = [NSImage imageNamed: @"PlayTemplate.png"];
+				
+				[r drawInRect: [self centerRect: NSMakeRect( 0,  0, [r size].width, [r size].height) inRect: NSMakeRect( 0,  0, [newImage size].width, [newImage size].height)] fromRect: NSMakeRect( 0,  0, [r size].width, [r size].height)  operation: NSCompositeSourceOver fraction: 1.0];
+				
+				[newImage unlockFocus];
+			}
+			
+			NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData:[newImage TIFFRepresentation]];
+			NSDictionary *imageProps = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:1.0] forKey:NSImageCompressionFactor];
+			data = [imageRep representationUsingType:NSPNGFileType properties:imageProps];
+		}
+		
+		err = NO;
+	}
+#pragma mark movie
+	else if([fileURL isEqualToString:@"/movie.mov"])
+	{
+		NSPredicate *browsePredicate;
+		if([[parameters allKeys] containsObject:@"id"])
+		{
+			if( [[parameters allKeys] containsObject:@"studyID"])
+				browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", [[parameters objectForKey:@"studyID"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[parameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+			else
+				browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@", [[parameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+		}
+		else
+			browsePredicate = [NSPredicate predicateWithValue:NO];
+		
+		NSArray *series = [self seriesForPredicate:browsePredicate];
+		
+		if([series count]==1)
+		{
+			NSArray *dicomImageArray = [[[series lastObject] valueForKey:@"images"] allObjects];
 			
 			if([imagesArray count] == 1)
 			{
