@@ -1084,6 +1084,8 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		[wait start];
 	}
 	
+	DcmTLSTransportLayer *tLayer = NULL;
+	
 	@try
 	{
 		#ifdef WITH_OPENSSL		
@@ -1138,7 +1140,6 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		
 	#ifdef WITH_OPENSSL // joris
 		
-		DcmTLSTransportLayer *tLayer = NULL;
 		if (_secureConnection)
 		{
 			tLayer = new DcmTLSTransportLayer(DICOM_APPLICATION_REQUESTOR, _readSeedFile);
@@ -1198,15 +1199,21 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 			
 			if (_doAuthenticate)
 			{				
-				if (_passwd) tLayer->setPrivateKeyPasswd([_passwd cStringUsingEncoding:NSUTF8StringEncoding]);
+				//if (_passwd) tLayer->setPrivateKeyPasswd([_passwd cStringUsingEncoding:NSUTF8StringEncoding]);
+				NSString *_passwd = TLS_PRIVATE_KEY_PASSWORD;
+				tLayer->setPrivateKeyPasswd([_passwd cStringUsingEncoding:NSUTF8StringEncoding]);
 				
-				if (TCS_ok != tLayer->setPrivateKeyFile([_privateKeyFile cStringUsingEncoding:NSUTF8StringEncoding], _keyFileFormat))
+				[DDKeychain DICOMTLSGenerateCertificateAndKeyForServerAddress:_hostname port:_port AETitle:_calledAET]; // export certificate/key from the Keychain to the disk
+				NSString *_privateKeyFile = [DDKeychain DICOMTLSKeyPathForServerAddress:_hostname port:_port AETitle:_calledAET]; // generates the PEM file for the private key
+				NSString *_certificateFile = [DDKeychain DICOMTLSCertificatePathForServerAddress:_hostname port:_port AETitle:_calledAET]; // generates the PEM file for the certificate
+				
+				if (TCS_ok != tLayer->setPrivateKeyFile([_privateKeyFile cStringUsingEncoding:NSUTF8StringEncoding], SSL_FILETYPE_PEM))
 				{
 					queryException = [NSException exceptionWithName:@"DICOM Network Failure (TLS query)" reason:[NSString stringWithFormat:@"Unable to load private TLS key from %@", _privateKeyFile] userInfo:nil];
 					[queryException raise];
 				}
 				
-				if (TCS_ok != tLayer->setCertificateFile([_certificateFile cStringUsingEncoding:NSUTF8StringEncoding], _keyFileFormat))
+				if (TCS_ok != tLayer->setCertificateFile([_certificateFile cStringUsingEncoding:NSUTF8StringEncoding], SSL_FILETYPE_PEM))
 				{
 					queryException = [NSException exceptionWithName:@"DICOM Network Failure (TLS query)" reason:[NSString stringWithFormat:@"Unable to load certificate from %@", _certificateFile] userInfo:nil];
 					[queryException raise];
@@ -1591,6 +1598,9 @@ subOpCallback(void * /*subOpCallbackData*/ ,
     }
     delete tLayer;
 */
+	delete tLayer;
+	[[NSFileManager defaultManager] removeFileAtPath:[DDKeychain DICOMTLSKeyPathForServerAddress:_hostname port:_port AETitle:_calledAET] handler:nil]; // cleanup
+	[[NSFileManager defaultManager] removeFileAtPath:[DDKeychain DICOMTLSCertificatePathForServerAddress:_hostname port:_port AETitle:_calledAET] handler:nil]; // cleanup
 #endif
 
 	[pool release];

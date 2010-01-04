@@ -909,8 +909,8 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 		//TLS
 		_secureConnection = [[extraParameters objectForKey:@"TLSEnabled"] boolValue];
 		_doAuthenticate = NO;
-		_privateKeyFile = NULL;
-		_certificateFile = NULL;
+		//_privateKeyFile = NULL;
+		//_certificateFile = NULL;
 		_passwd = NULL;
 		_cipherSuites = nil;
 		_dhparam = NULL;
@@ -920,8 +920,8 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 			_doAuthenticate = [[extraParameters objectForKey:@"TLSAuthenticated"] boolValue];
 			if(_doAuthenticate)
 			{
-				_privateKeyFile = [[extraParameters objectForKey:@"TLSPrivateKeyFileURL"] retain];
-				_certificateFile = [[extraParameters objectForKey:@"TLSCertificateFileURL"] retain];
+				//_privateKeyFile = [[extraParameters objectForKey:@"TLSPrivateKeyFileURL"] retain];
+				//_certificateFile = [[extraParameters objectForKey:@"TLSCertificateFileURL"] retain];
 				
 				passwordType = (TLSPasswordType)[[extraParameters objectForKey:@"TLSPrivateKeyFilePasswordType"] intValue];
 				if(passwordType==PasswordString) _passwd = [[extraParameters objectForKey:@"TLSPrivateKeyFilePassword"] retain];
@@ -1013,8 +1013,8 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 	[_studyDescription release];
 	
 	// TLS
-	[_privateKeyFile release];
-	[_certificateFile release];
+	//[_privateKeyFile release];
+	//[_certificateFile release];
 	[_passwd release];
 	[_cipherSuites release];
 	
@@ -1168,9 +1168,11 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 	//opt_maxSendPDULength = 
 	//dcmMaxOutgoingPDUSize.set((Uint32)opt_maxSendPDULength);
 	
+	DcmTLSTransportLayer *tLayer = NULL;
+	
 NS_DURING
 	
-#ifdef WITH_OPENSSL		
+#ifdef WITH_OPENSSL
 	if(_cipherSuites)
 	{
 		const char *current = NULL;
@@ -1298,7 +1300,6 @@ NS_DURING
 	
 #ifdef WITH_OPENSSL // joris
 	
-	DcmTLSTransportLayer *tLayer = NULL;
 	if (_secureConnection)
 	{
 		tLayer = new DcmTLSTransportLayer(DICOM_APPLICATION_REQUESTOR, _readSeedFile);
@@ -1358,15 +1359,21 @@ NS_DURING
 		
 		if (_doAuthenticate)
 		{			
-			if (_passwd) tLayer->setPrivateKeyPasswd([_passwd cStringUsingEncoding:NSUTF8StringEncoding]);
+			//if (_passwd) tLayer->setPrivateKeyPasswd([_passwd cStringUsingEncoding:NSUTF8StringEncoding]);
 			
-			if (TCS_ok != tLayer->setPrivateKeyFile([_privateKeyFile cStringUsingEncoding:NSUTF8StringEncoding], _keyFileFormat))
+			tLayer->setPrivateKeyPasswd([TLS_PRIVATE_KEY_PASSWORD cStringUsingEncoding:NSUTF8StringEncoding]);
+			
+			[DDKeychain DICOMTLSGenerateCertificateAndKeyForServerAddress:_hostname port:_port AETitle:_calledAET]; // export certificate/key from the Keychain to the disk
+			NSString *_privateKeyFile = [DDKeychain DICOMTLSKeyPathForServerAddress:_hostname port:_port AETitle:_calledAET]; // generates the PEM file for the private key
+			NSString *_certificateFile = [DDKeychain DICOMTLSCertificatePathForServerAddress:_hostname port:_port AETitle:_calledAET]; // generates the PEM file for the certificate		
+			
+			if (TCS_ok != tLayer->setPrivateKeyFile([_privateKeyFile cStringUsingEncoding:NSUTF8StringEncoding], SSL_FILETYPE_PEM))
 			{
 				localException = [NSException exceptionWithName:@"DICOM Network Failure (storescu TLS)" reason:[NSString stringWithFormat:@"Unable to load private TLS key from %@", _privateKeyFile] userInfo:nil];
 				[localException raise];
 			}
 			
-			if (TCS_ok != tLayer->setCertificateFile([_certificateFile cStringUsingEncoding:NSUTF8StringEncoding], _keyFileFormat))
+			if (TCS_ok != tLayer->setCertificateFile([_certificateFile cStringUsingEncoding:NSUTF8StringEncoding], SSL_FILETYPE_PEM))
 			{
 				localException = [NSException exceptionWithName:@"DICOM Network Failure (storescu TLS)" reason:[NSString stringWithFormat:@"Unable to load certificate from %@", _certificateFile] userInfo:nil];
 				[localException raise];
@@ -1658,6 +1665,9 @@ NS_ENDHANDLER
     }
     delete tLayer;
 */
+	delete tLayer;
+	[[NSFileManager defaultManager] removeFileAtPath:[DDKeychain DICOMTLSKeyPathForServerAddress:_hostname port:_port AETitle:_calledAET] handler:nil]; // cleanup
+	[[NSFileManager defaultManager] removeFileAtPath:[DDKeychain DICOMTLSCertificatePathForServerAddress:_hostname port:_port AETitle:_calledAET] handler:nil]; // cleanup
 #endif
 
     if (opt_haltOnUnsuccessfulStore && unsuccessfulStoreEncountered)

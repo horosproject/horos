@@ -777,7 +777,7 @@
 		// identity to certificate
 		[DDKeychain KeychainAccessExportCertificateForIdentity:identity toPath:[DDKeychain DICOMTLSCertificatePathForLabel:label]];
 		// identity to private key
-		[DDKeychain KeychainAccessExportPrivateKeyForIdentity:identity toPath:[DDKeychain DICOMTLSKeyPathForLabel:label] cryptWithPassword:@"SuperSecretPassword"];
+		[DDKeychain KeychainAccessExportPrivateKeyForIdentity:identity toPath:[DDKeychain DICOMTLSKeyPathForLabel:label] cryptWithPassword:TLS_PRIVATE_KEY_PASSWORD];
 		CFRelease(identity);
 	}
 }

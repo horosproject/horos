@@ -112,9 +112,7 @@
 	
 	[theTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];
 	[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/echoscu"]];
-	
-	//NSArray *args = [NSArray arrayWithObjects: address, [NSString stringWithFormat:@"%d", port], @"-aet", [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"], @"-aec", aet, @"-to", [[NSUserDefaults standardUserDefaults] stringForKey:@"DICOMTimeout"], @"-ta", [[NSUserDefaults standardUserDefaults] stringForKey:@"DICOMTimeout"], @"-td", [[NSUserDefaults standardUserDefaults] stringForKey:@"DICOMTimeout"], nil];
-	
+		
 	NSMutableArray *args = [NSMutableArray array];
 	[args addObject:address];
 	[args addObject:[NSString stringWithFormat:@"%d", [port intValue]]];
@@ -139,9 +137,9 @@
 //			[args addObject:[serverParameters objectForKey:@"TLSPrivateKeyFileURL"]]; // [p]rivate key file
 //			[args addObject:[serverParameters objectForKey:@"TLSCertificateFileURL"]]; // [c]ertificate file: string
 
-			[DDKeychain DICOMTLSGenerateCertificateAndKeyForServerAddress:address port: [port intValue] AETitle:aet]; // test
-			[args addObject:[DDKeychain DICOMTLSKeyPathForServerAddress:address port:[port intValue] AETitle:aet]]; // test
-			[args addObject:[DDKeychain DICOMTLSCertificatePathForServerAddress:address port:[port intValue] AETitle:aet]]; // test
+			[DDKeychain DICOMTLSGenerateCertificateAndKeyForServerAddress:address port: [port intValue] AETitle:aet]; // export certificate/key from the Keychain to the disk
+			[args addObject:[DDKeychain DICOMTLSKeyPathForServerAddress:address port:[port intValue] AETitle:aet]]; // test // [p]rivate key file
+			[args addObject:[DDKeychain DICOMTLSCertificatePathForServerAddress:address port:[port intValue] AETitle:aet]]; // test // [c]ertificate file: string
 			
 //			TLSPasswordType passwordType = [[serverParameters objectForKey:@"TLSPrivateKeyFilePasswordType"] intValue];
 //			if(passwordType!=PasswordNone)
@@ -164,17 +162,18 @@
 //			}
 			
 			[args addObject:@"--use-passwd"]; // test
-			[args addObject:@"SuperSecretPassword"]; // test
+			[args addObject:TLS_PRIVATE_KEY_PASSWORD]; // test
 		}
 		else
 			[args addObject:@"--anonymous-tls"]; // use secure TLS connection without certificate
 		
 		// key and certificate file format options:
-		TLSFileFormat format = [[serverParameters objectForKey:@"TLSKeyAndCertificateFileFormat"] intValue];
-		if(format==DER)
-			[args addObject:@"--der-keys"]; // read keys and certificates as DER file
-		else
-			[args addObject:@"--pem-keys"]; // read keys and certificates as PEM file (default)
+//		TLSFileFormat format = [[serverParameters objectForKey:@"TLSKeyAndCertificateFileFormat"] intValue];
+//		if(format==DER)
+//			[args addObject:@"--der-keys"]; // read keys and certificates as DER file
+//		else
+//			[args addObject:@"--pem-keys"]; // read keys and certificates as PEM file (default)
+		[args addObject:@"--pem-keys"];
 		
 		// certification authority options:
 		if([[serverParameters objectForKey:@"TLSUseTrustedCACertificatesFolderURL"] boolValue])

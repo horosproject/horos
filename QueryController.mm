@@ -201,38 +201,46 @@ static const char *GetPrivateIP()
 		if([[serverParameters objectForKey:@"TLSAuthenticated"] boolValue])
 		{
 			[args addObject:@"--enable-tls"]; // use authenticated secure TLS connection
-			[args addObject:[serverParameters objectForKey:@"TLSPrivateKeyFileURL"]]; // [p]rivate key file
-			[args addObject:[serverParameters objectForKey:@"TLSCertificateFileURL"]]; // [c]ertificate file: string
+			//[args addObject:[serverParameters objectForKey:@"TLSPrivateKeyFileURL"]]; // [p]rivate key file
+			//[args addObject:[serverParameters objectForKey:@"TLSCertificateFileURL"]]; // [c]ertificate file: string
+
+			[DDKeychain DICOMTLSGenerateCertificateAndKeyForServerAddress:address port: [port intValue] AETitle:aet]; // export certificate/key from the Keychain to the disk
+			[args addObject:[DDKeychain DICOMTLSKeyPathForServerAddress:address port:[port intValue] AETitle:aet]]; // test // [p]rivate key file
+			[args addObject:[DDKeychain DICOMTLSCertificatePathForServerAddress:address port:[port intValue] AETitle:aet]]; // test // [c]ertificate file: string
 			
-			TLSPasswordType passwordType = (TLSPasswordType)[[serverParameters objectForKey:@"TLSPrivateKeyFilePasswordType"] intValue];
-			if(passwordType!=PasswordNone)
-			{
-				NSString *password = nil;
-				if(passwordType==PasswordString)
-					password = [serverParameters objectForKey:@"TLSPrivateKeyFilePassword"];
-				else if(passwordType==PasswordAsk)
-					password = [serverParameters objectForKey:@"TLSAskPasswordValue"];
-				
-				if([password isEqualToString:@""] || !password)
-				{
-					[args addObject:@"--null-passwd"]; // use empty string as password
-				}
-				else
-				{
-					[args addObject:@"--use-passwd"]; // use specified password
-					[args addObject:password];
-				}
-			}
+//			TLSPasswordType passwordType = (TLSPasswordType)[[serverParameters objectForKey:@"TLSPrivateKeyFilePasswordType"] intValue];
+//			if(passwordType!=PasswordNone)
+//			{
+//				NSString *password = nil;
+//				if(passwordType==PasswordString)
+//					password = [serverParameters objectForKey:@"TLSPrivateKeyFilePassword"];
+//				else if(passwordType==PasswordAsk)
+//					password = [serverParameters objectForKey:@"TLSAskPasswordValue"];
+//				
+//				if([password isEqualToString:@""] || !password)
+//				{
+//					[args addObject:@"--null-passwd"]; // use empty string as password
+//				}
+//				else
+//				{
+//					[args addObject:@"--use-passwd"]; // use specified password
+//					[args addObject:password];
+//				}
+//			}
+			
+			[args addObject:@"--use-passwd"]; // test
+			[args addObject:TLS_PRIVATE_KEY_PASSWORD]; // test
 		}
 		else
 			[args addObject:@"--anonymous-tls"]; // use secure TLS connection without certificate
 		
 		// key and certificate file format options:
-		TLSFileFormat format = (TLSFileFormat)[[serverParameters objectForKey:@"TLSKeyAndCertificateFileFormat"] intValue];
-		if(format==DER)
-			[args addObject:@"--der-keys"]; // read keys and certificates as DER file
-		else
-			[args addObject:@"--pem-keys"]; // read keys and certificates as PEM file (default)
+//		TLSFileFormat format = (TLSFileFormat)[[serverParameters objectForKey:@"TLSKeyAndCertificateFileFormat"] intValue];
+//		if(format==DER)
+//			[args addObject:@"--der-keys"]; // read keys and certificates as DER file
+//		else
+//			[args addObject:@"--pem-keys"]; // read keys and certificates as PEM file (default)
+		[args addObject:@"--pem-keys"];
 		
 		// certification authority options:
 		if([[serverParameters objectForKey:@"TLSUseTrustedCACertificatesFolderURL"] boolValue])
@@ -287,6 +295,9 @@ static const char *GetPrivateIP()
 	[theTask setArguments:args];
 	[theTask launch];
 	[theTask waitUntilExit];
+	
+	[[NSFileManager defaultManager] removeFileAtPath:[DDKeychain DICOMTLSKeyPathForServerAddress:address port:[port intValue] AETitle:aet] handler:nil]; // test
+	[[NSFileManager defaultManager] removeFileAtPath:[DDKeychain DICOMTLSCertificatePathForServerAddress:address port:[port intValue] AETitle:aet] handler:nil]; // test
 	
 	if( [theTask terminationStatus] == 0) return YES;
 	else return NO;

@@ -38,6 +38,7 @@ Super Class for SCU classes such as verifySCU, storeSCU, moveSCU, findSCU
 */
 
 #import "DICOMTLS.h"
+#import "DDKeychain.h"
 
 @interface DCMTKServiceClassUser : NSObject {
 	NSString *_callingAET;
@@ -65,10 +66,10 @@ Super Class for SCU classes such as verifySCU, storeSCU, moveSCU, findSCU
 	//TLS settings
 	BOOL _secureConnection;
 	BOOL _doAuthenticate;
-	NSString *_privateKeyFile;
-	NSString *_certificateFile;
+//	NSString *_privateKeyFile;
+//	NSString *_certificateFile;
 	TLSPasswordType passwordType;
-	NSString *_passwd;
+//	NSString *_passwd;
 	int  _keyFileFormat;
 	NSArray *_cipherSuites;
 	BOOL _useTrustedCA;
