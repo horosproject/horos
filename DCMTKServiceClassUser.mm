@@ -58,24 +58,12 @@
 		//TLS
 		_secureConnection = [[extraParameters objectForKey:@"TLSEnabled"] boolValue];
 		_doAuthenticate = NO;
-		//_privateKeyFile = NULL;
-		//_certificateFile = NULL;
-		//_passwd = NULL;
 		_cipherSuites = nil;
 		_dhparam = NULL;
 		
 		if (_secureConnection)
 		{
 			_doAuthenticate = [[extraParameters objectForKey:@"TLSAuthenticated"] boolValue];
-			if(_doAuthenticate)
-			{
-				//_privateKeyFile = [[extraParameters objectForKey:@"TLSPrivateKeyFileURL"] retain];
-				//_certificateFile = [[extraParameters objectForKey:@"TLSCertificateFileURL"] retain];
-				
-				passwordType = (TLSPasswordType)[[extraParameters objectForKey:@"TLSPrivateKeyFilePasswordType"] intValue];
-				//if(passwordType==PasswordString) _passwd = [[extraParameters objectForKey:@"TLSPrivateKeyFilePassword"] retain];
-				//else if(passwordType==PasswordAsk) _passwd = [[extraParameters objectForKey:@"TLSAskPasswordValue"] retain];
-			}
 			
 			TLSFileFormat fileFormat = (TLSFileFormat)[[extraParameters objectForKey:@"TLSKeyAndCertificateFileFormat"] intValue];
 			if(fileFormat==DER)
@@ -117,9 +105,6 @@
 	[_extraParameters release];
 	
 	// TLS
-	//[_privateKeyFile release];
-	//[_certificateFile release];
-	//[_passwd release];
 	[_cipherSuites release];
 	
 	[super dealloc];

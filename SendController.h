@@ -59,13 +59,7 @@ enum SendServerType { osirixServer, offisServer };
 	IBOutlet NSMatrix		*keyImageMatrix;
 	IBOutlet NSTextField	*numberImagesTextField, *addressAndPort;
 	IBOutlet NSPopUpButton	*syntaxListOffis;
-	
-	// TLS password
-	IBOutlet NSWindow *TLSAskPasswordWindow;
-	NSString *TLSAskPasswordValue, *TLSAskPasswordServerName;
 }
-
-@property (retain) NSString *TLSAskPasswordValue, *TLSAskPasswordServerName;
 
 + (void)sendFiles:(NSArray *)files;
 + (void)sendFiles:(NSArray *)files toNode: (NSDictionary*) node;
@@ -85,13 +79,5 @@ enum SendServerType { osirixServer, offisServer };
 - (IBAction)selectServer: (id)sender;
 - (void) sendToNode: (NSDictionary*) node;
 - (void) updateDestinationPopup:(NSNotification*) note;
-
-
-- (NSDictionary*)TLSAskPrivateKeyPasswordForServer:(NSDictionary*)server;
-- (BOOL)TLSIsValidPrivateKeyPassword:(NSString*)password forServer:(NSDictionary*)server;
-- (void)TLSSavePrivateKeyPassword:(NSString*)password forServer:(NSDictionary*)server;
-- (NSString*)TLSSavedPrivateKeyPasswordForServer:(NSDictionary*)server;
-- (IBAction)TLSAskPrivateKeyPasswordCancel:(id)sender;
-- (IBAction)TLSAskPrivateKeyPasswordOK:(id)sender;
 
 @end

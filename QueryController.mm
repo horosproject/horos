@@ -63,7 +63,6 @@ static const char *GetPrivateIP()
 @implementation QueryController
 
 @synthesize autoQuery;
-@synthesize TLSAskPasswordValue, TLSAskPasswordServerName;
 
 + (NSArray*) queryStudyInstanceUID:(NSString*) an server: (NSDictionary*) aServer
 {
@@ -201,45 +200,18 @@ static const char *GetPrivateIP()
 		if([[serverParameters objectForKey:@"TLSAuthenticated"] boolValue])
 		{
 			[args addObject:@"--enable-tls"]; // use authenticated secure TLS connection
-			//[args addObject:[serverParameters objectForKey:@"TLSPrivateKeyFileURL"]]; // [p]rivate key file
-			//[args addObject:[serverParameters objectForKey:@"TLSCertificateFileURL"]]; // [c]ertificate file: string
 
 			[DDKeychain DICOMTLSGenerateCertificateAndKeyForServerAddress:address port: [port intValue] AETitle:aet]; // export certificate/key from the Keychain to the disk
-			[args addObject:[DDKeychain DICOMTLSKeyPathForServerAddress:address port:[port intValue] AETitle:aet]]; // test // [p]rivate key file
-			[args addObject:[DDKeychain DICOMTLSCertificatePathForServerAddress:address port:[port intValue] AETitle:aet]]; // test // [c]ertificate file: string
-			
-//			TLSPasswordType passwordType = (TLSPasswordType)[[serverParameters objectForKey:@"TLSPrivateKeyFilePasswordType"] intValue];
-//			if(passwordType!=PasswordNone)
-//			{
-//				NSString *password = nil;
-//				if(passwordType==PasswordString)
-//					password = [serverParameters objectForKey:@"TLSPrivateKeyFilePassword"];
-//				else if(passwordType==PasswordAsk)
-//					password = [serverParameters objectForKey:@"TLSAskPasswordValue"];
-//				
-//				if([password isEqualToString:@""] || !password)
-//				{
-//					[args addObject:@"--null-passwd"]; // use empty string as password
-//				}
-//				else
-//				{
-//					[args addObject:@"--use-passwd"]; // use specified password
-//					[args addObject:password];
-//				}
-//			}
-			
-			[args addObject:@"--use-passwd"]; // test
-			[args addObject:TLS_PRIVATE_KEY_PASSWORD]; // test
+			[args addObject:[DDKeychain DICOMTLSKeyPathForServerAddress:address port:[port intValue] AETitle:aet]]; // [p]rivate key file
+			[args addObject:[DDKeychain DICOMTLSCertificatePathForServerAddress:address port:[port intValue] AETitle:aet]]; // [c]ertificate file: string
+					
+			[args addObject:@"--use-passwd"];
+			[args addObject:TLS_PRIVATE_KEY_PASSWORD];
 		}
 		else
 			[args addObject:@"--anonymous-tls"]; // use secure TLS connection without certificate
 		
 		// key and certificate file format options:
-//		TLSFileFormat format = (TLSFileFormat)[[serverParameters objectForKey:@"TLSKeyAndCertificateFileFormat"] intValue];
-//		if(format==DER)
-//			[args addObject:@"--der-keys"]; // read keys and certificates as DER file
-//		else
-//			[args addObject:@"--pem-keys"]; // read keys and certificates as PEM file (default)
 		[args addObject:@"--pem-keys"];
 		
 		// certification authority options:
@@ -1290,8 +1262,6 @@ static const char *GetPrivateIP()
 				int numberPacketsReceived = 0;
 				if( [[NSUserDefaults standardUserDefaults] boolForKey:@"Ping"] == NO || (SimplePing( [hostname UTF8String], 1, [[NSUserDefaults standardUserDefaults] integerForKey:@"DICOMTimeout"], 1,  &numberPacketsReceived) == 0 && numberPacketsReceived > 0))
 				{
-					aServer = [self TLSAskPrivateKeyPasswordForServer:aServer];
-					
 					QueryArrayController *qm = [[QueryArrayController alloc] initWithCallingAET: [[NSUserDefaults standardUserDefaults] objectForKey:@"AETITLE"] distantServer: aServer];
 					
 					[qm addFilter:filterValue forDescription: PatientID];
@@ -1364,8 +1334,6 @@ static const char *GetPrivateIP()
 					
 					//get rid of white space at end and append "*"
 						
-					aServer = [self TLSAskPrivateKeyPasswordForServer:aServer];
-					
 					[queryManager release];
 					queryManager = nil;
 
@@ -2687,11 +2655,7 @@ static const char *GetPrivateIP()
 	[studyArrayInstanceUID release];
 	studyArrayInstanceUID = nil;
 	[queryArrayPrefs release];
-	
-	[TLSAskPasswordValue release];
-	[TLSAskPasswordServerName release];
-	[TLSPasswordValues release];
-	
+		
 	[super dealloc];
 	
 	[autoQueryLock release];
@@ -2814,7 +2778,6 @@ static const char *GetPrivateIP()
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"Ping"] == NO || (SimplePing( [hostname UTF8String], 1, [[NSUserDefaults standardUserDefaults] integerForKey:@"DICOMTimeout"], 1,  &numberPacketsReceived) == 0 && numberPacketsReceived > 0))
 	{
 		//status = [QueryController echo: hostname port: [port intValue] AET: theirAET];
-		aServer = [self TLSAskPrivateKeyPasswordForServer:aServer];
 		status = [QueryController echoServer:aServer];
 	}
 	else status = -1;
@@ -2895,92 +2858,6 @@ static const char *GetPrivateIP()
 			[self querySelectedStudy: self];
 		break;
 	}
-}
-
-- (NSDictionary*)TLSAskPrivateKeyPasswordForServer:(NSDictionary*)server;
-{
-	if([[server objectForKey:@"TLSEnabled"] boolValue])
-	{
-		TLSPasswordType passwordType = (TLSPasswordType)[[server objectForKey:@"TLSPrivateKeyFilePasswordType"] intValue];
-		if(passwordType==PasswordAsk)
-		{
-			self.TLSAskPasswordServerName = [server objectForKey:@"Description"];
-			self.TLSAskPasswordValue = @"";
-			
-			// check if the user already provided a correct password
-			NSString *pass = [self TLSSavedPrivateKeyPasswordForServer:server];
-			int result;
-			
-			if(pass)
-			{
-				self.TLSAskPasswordValue = pass;
-				result = NSRunStoppedResponse; // to artificially pass the next if()
-			}
-			else // no (correct) password was previously provided, so we ask it to the user
-			{
-				[NSApp beginSheet: TLSAskPasswordWindow
-				   modalForWindow: [self window]
-					modalDelegate: nil
-				   didEndSelector: nil
-					  contextInfo: nil];
-				
-				result = [NSApp runModalForWindow: TLSAskPasswordWindow];
-				[TLSAskPasswordWindow makeFirstResponder: nil];
-				
-				[NSApp endSheet: TLSAskPasswordWindow];
-				[TLSAskPasswordWindow orderOut: self];
-			}
-			
-			NSMutableDictionary *newServer = [NSMutableDictionary dictionaryWithDictionary:server];
-			
-			if(result == NSRunStoppedResponse)
-			{
-				if(self.TLSAskPasswordValue)
-				{
-					[newServer setObject:self.TLSAskPasswordValue forKey:@"TLSAskPasswordValue"];
-					
-					// if the provided password is correct, we save it for the current session (until OsiriX quits)
-					if([self TLSIsValidPrivateKeyPassword:self.TLSAskPasswordValue forServer:server])
-						[self TLSSavePrivateKeyPassword:self.TLSAskPasswordValue forServer:server];
-				}
-			}
-			
-			return [NSDictionary dictionaryWithDictionary:newServer];
-		}
-	}
-	return server;
-}
-
-- (BOOL)TLSIsValidPrivateKeyPassword:(NSString*)password forServer:(NSDictionary*)server;
-{
-	NSMutableDictionary *newServer = [NSMutableDictionary dictionaryWithDictionary:server];
-	if( password)
-		[newServer setObject:password forKey:@"TLSAskPasswordValue"];
-	else
-		[newServer setObject:@"" forKey:@"TLSAskPasswordValue"];
-
-	return [QueryController echoServer:newServer]==1;
-}
-
-- (void)TLSSavePrivateKeyPassword:(NSString*)password forServer:(NSDictionary*)server;
-{
-	if(!TLSPasswordValues) TLSPasswordValues = [[NSMutableDictionary dictionary] retain];
-	[TLSPasswordValues setObject:password forKey:[server objectForKey:@"TLSPrivateKeyFileURL"]];
-}
-
-- (NSString*)TLSSavedPrivateKeyPasswordForServer:(NSDictionary*)server;
-{
-	return [TLSPasswordValues objectForKey:[server objectForKey:@"TLSPrivateKeyFileURL"]];
-}
-
-- (IBAction)TLSAskPrivateKeyPasswordCancel:(id)sender;
-{
-	[NSApp abortModal];
-}
-
-- (IBAction)TLSAskPrivateKeyPasswordOK:(id)sender;
-{
-	[NSApp stopModal];
 }
 
 @end

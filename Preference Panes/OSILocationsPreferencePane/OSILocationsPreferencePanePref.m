@@ -37,16 +37,11 @@
 @synthesize WADOPort, WADOTransferSyntax, WADOUrl;
 
 @synthesize TLSEnabled, TLSAuthenticated, TLSUseTrustedCACertificatesFolderURL, TLSUseDHParameterFileURL;
-@synthesize TLSCertificateFileURL, TLSPrivateKeyFileURL, TLSTrustedCACertificatesFolderURL, TLSDHParameterFileURL;
-@synthesize TLSUsePrivateKeyFilePassword;
-@synthesize TLSPrivateKeyFilePasswordType;
-@synthesize TLSPrivateKeyFilePassword;
+@synthesize TLSTrustedCACertificatesFolderURL, TLSDHParameterFileURL;
 @synthesize TLSKeyAndCertificateFileFormat;
 @synthesize TLSSupportedCipherSuite;
 @synthesize TLSCertificateVerification;
-@synthesize TLSAskPasswordValue, TLSAskPasswordServerName;
-
-@synthesize keychainCertificate;
+@synthesize TLSAuthenticationCertificate;
 
 - (void) checkUniqueAETitle
 {
@@ -106,9 +101,9 @@
 	NSNumber *port = [serverParameters objectForKey:@"Port"];
 	NSString *aet = [serverParameters objectForKey:@"AETitle"];
 	
-	NSTask* theTask = [[[NSTask alloc]init]autorelease];
+	NSTask* theTask = [[[NSTask alloc] init] autorelease];
 	
-	[theTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/echoscu"]];
+	[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/echoscu"]];
 	
 	[theTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];
 	[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/echoscu"]];
@@ -134,45 +129,18 @@
 		if([[serverParameters objectForKey:@"TLSAuthenticated"] boolValue])
 		{
 			[args addObject:@"--enable-tls"]; // use authenticated secure TLS connection
-//			[args addObject:[serverParameters objectForKey:@"TLSPrivateKeyFileURL"]]; // [p]rivate key file
-//			[args addObject:[serverParameters objectForKey:@"TLSCertificateFileURL"]]; // [c]ertificate file: string
 
 			[DDKeychain DICOMTLSGenerateCertificateAndKeyForServerAddress:address port: [port intValue] AETitle:aet]; // export certificate/key from the Keychain to the disk
-			[args addObject:[DDKeychain DICOMTLSKeyPathForServerAddress:address port:[port intValue] AETitle:aet]]; // test // [p]rivate key file
-			[args addObject:[DDKeychain DICOMTLSCertificatePathForServerAddress:address port:[port intValue] AETitle:aet]]; // test // [c]ertificate file: string
+			[args addObject:[DDKeychain DICOMTLSKeyPathForServerAddress:address port:[port intValue] AETitle:aet]]; // [p]rivate key file
+			[args addObject:[DDKeychain DICOMTLSCertificatePathForServerAddress:address port:[port intValue] AETitle:aet]]; // [c]ertificate file: string
 			
-//			TLSPasswordType passwordType = [[serverParameters objectForKey:@"TLSPrivateKeyFilePasswordType"] intValue];
-//			if(passwordType!=PasswordNone)
-//			{
-//				NSString *password = nil;
-//				if(passwordType==PasswordString)
-//					password = [serverParameters objectForKey:@"TLSPrivateKeyFilePassword"];
-//				else if(passwordType==PasswordAsk)
-//					password = [serverParameters objectForKey:@"TLSAskPasswordValue"];
-//				
-//				if([password isEqualToString:@""] || !password)
-//				{
-//					[args addObject:@"--null-passwd"]; // use empty string as password
-//				}
-//				else
-//				{
-//					[args addObject:@"--use-passwd"]; // use specified password
-//					[args addObject:password];
-//				}
-//			}
-			
-			[args addObject:@"--use-passwd"]; // test
-			[args addObject:TLS_PRIVATE_KEY_PASSWORD]; // test
+			[args addObject:@"--use-passwd"];
+			[args addObject:TLS_PRIVATE_KEY_PASSWORD];
 		}
 		else
 			[args addObject:@"--anonymous-tls"]; // use secure TLS connection without certificate
 		
 		// key and certificate file format options:
-//		TLSFileFormat format = [[serverParameters objectForKey:@"TLSKeyAndCertificateFileFormat"] intValue];
-//		if(format==DER)
-//			[args addObject:@"--der-keys"]; // read keys and certificates as DER file
-//		else
-//			[args addObject:@"--pem-keys"]; // read keys and certificates as PEM file (default)
 		[args addObject:@"--pem-keys"];
 		
 		// certification authority options:
@@ -347,16 +315,10 @@
 	[WADOUrl release];
 	[stringEncoding release];
 	
-	[TLSCertificateFileURL release];
-	[TLSPrivateKeyFileURL release];
 	[TLSTrustedCACertificatesFolderURL release];
 	[TLSDHParameterFileURL release];
-	[TLSPrivateKeyFilePassword release];
 	[TLSSupportedCipherSuite release];
-	[TLSAskPasswordValue release];
-	[TLSAskPasswordServerName release];
-	
-	[keychainCertificate release];
+	[TLSAuthenticationCertificate release];
 	
 	[super dealloc];
 }
@@ -652,30 +614,6 @@
 		{
 			//if( [self echoAddress:[aServer objectForKey:@"Address"] port:[[aServer objectForKey:@"Port"] intValue] AET:[aServer objectForKey:@"AETitle"]] == 0) status = 0;
 			
-			TLSPasswordType passwordType = [[aServer objectForKey:@"TLSPrivateKeyFilePasswordType"] intValue];
-			if(passwordType==PasswordAsk)
-			{
-				self.TLSAskPasswordServerName = [aServer objectForKey:@"Description"];
-				self.TLSAskPasswordValue = @"";
-				
-				[NSApp beginSheet: TLSAskPasswordWindow
-				   modalForWindow: [[self mainView] window]
-					modalDelegate: nil
-				   didEndSelector: nil
-					  contextInfo: nil];
-								
-				int result = [NSApp runModalForWindow: TLSAskPasswordWindow];
-				[TLSAskPasswordWindow makeFirstResponder: nil];
-				
-				[NSApp endSheet: TLSAskPasswordWindow];
-				[TLSAskPasswordWindow orderOut: self];
-				
-				if(result == NSRunStoppedResponse)
-				{
-					if(self.TLSAskPasswordValue)[aServer setObject:self.TLSAskPasswordValue forKey:@"TLSAskPasswordValue"];
-				}			
-			}
-			
 			if ([OSILocationsPreferencePanePref echoServer:aServer])
 				status = 0;
 			else
@@ -791,22 +729,8 @@
 
 	[self getTLSCertificate];
 	
-	NSString *certificateFileURL = [aServer valueForKey:@"TLSCertificateFileURL"];
-	if(!certificateFileURL)
-		certificateFileURL = NSHomeDirectory();
-	self.TLSCertificateFileURL = [NSURL fileURLWithPath:certificateFileURL];
-
-	NSString *privateKeyFileURL = [aServer valueForKey:@"TLSPrivateKeyFileURL"];
-	if(!privateKeyFileURL)
-		privateKeyFileURL = NSHomeDirectory();
-	self.TLSPrivateKeyFileURL = [NSURL fileURLWithPath:privateKeyFileURL];
-	
 	// certificates and keys should be chosen from the Keychain, not from files
 	// see Wil Shipley's comment and examples http://www.wilshipley.com/blog/2006/10/pimp-my-code-part-12-frozen-in.html
-	
-	self.TLSPrivateKeyFilePasswordType = [[aServer valueForKey:@"TLSPrivateKeyFilePasswordType"] intValue];
-	
-	self.TLSPrivateKeyFilePassword = [aServer valueForKey:@"TLSPrivateKeyFilePassword"];
 
 	self.TLSKeyAndCertificateFileFormat = [[aServer valueForKey:@"TLSKeyAndCertificateFileFormat"] intValue];
 
@@ -853,17 +777,6 @@
 		if (self.TLSEnabled)
 		{
 			[aServer setObject:[NSNumber numberWithBool: self.TLSAuthenticated] forKey:@"TLSAuthenticated"];
-			
-			if (self.TLSAuthenticated)
-			{
-				[aServer setObject:[self.TLSCertificateFileURL path] forKey:@"TLSCertificateFileURL"];
-				[aServer setObject:[self.TLSPrivateKeyFileURL path] forKey:@"TLSPrivateKeyFileURL"];
-				[aServer setObject:[NSNumber numberWithInt:self.TLSPrivateKeyFilePasswordType] forKey:@"TLSPrivateKeyFilePasswordType"];
-				if(self.TLSPrivateKeyFilePasswordType==PasswordString && self.TLSPrivateKeyFilePassword)
-					[aServer setObject:self.TLSPrivateKeyFilePassword forKey:@"TLSPrivateKeyFilePassword"]; // PASSWORD STORED IN CLEAR. TODO: ENCRYPTION?
-				else
-					[aServer setObject:@"" forKey:@"TLSPrivateKeyFilePassword"];
-			}
 			
 			[aServer setObject:[NSNumber numberWithInt:self.TLSKeyAndCertificateFileFormat] forKey:@"TLSKeyAndCertificateFileFormat"];
 			
@@ -952,12 +865,6 @@
 	return [NSArray arrayWithArray:cipherSuites];
 }
 
-- (void)setTLSPrivateKeyFilePasswordType:(TLSPasswordType)type;
-{
-	TLSPrivateKeyFilePasswordType = type;
-	self.TLSUsePrivateKeyFilePassword = (TLSPrivateKeyFilePasswordType==PasswordString);
-}
-
 // Take a "snapshot" of the screen and save the image to a TIFF file on disk
 + (void)screenSnapshot
 {
@@ -997,7 +904,7 @@
 	NSString *label = [self DICOMTLSUniqueLabelForSelectedServer];
 	NSString *name = [DDKeychain DICOMTLSCertificateNameForLabel:label];
 	if(!name) name = @"No certificate selected.";
-	self.keychainCertificate = name;
+	self.TLSAuthenticationCertificate = name;
 	
 //	[DDKeychain DICOMTLSGenerateCertificateAndKeyForLabel:label]; // test
 }
