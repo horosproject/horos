@@ -15,6 +15,7 @@
 #import <PreferencePanes/PreferencePanes.h>
 #import <SecurityInterface/SFAuthorizationView.h>
 #import <SecurityInterface/SFChooseIdentityPanel.h>
+#import <SecurityInterface/SFCertificateView.h>
 #import "DNDArrayController.h"
 
 #import "DICOMTLS.h"
@@ -46,6 +47,9 @@
 	TLSCertificateVerificationType	TLSCertificateVerification;
 	NSString						*TLSAuthenticationCertificate;
 	
+	IBOutlet NSButton				*TLSChooseCertificateButton, *TLSViewCertificateButton;
+	IBOutlet SFCertificateView		*TLSCertificateView;
+	IBOutlet NSImageView			*TLSCertificateIcon;
 	IBOutlet SFAuthorizationView	*_authView;
 }
 
@@ -87,6 +91,7 @@
 + (void)screenSnapshot;
 
 - (IBAction)chooseTLSCertificate:(id)sender;
+- (IBAction)viewTLSCertificate:(id)sender;
 - (void)getTLSCertificate;
 - (NSString*)DICOMTLSUniqueLabelForSelectedServer;
 

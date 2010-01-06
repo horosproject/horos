@@ -899,12 +899,53 @@
 		return;
 }
 
+- (IBAction)viewTLSCertificate:(id)sender;
+{
+	NSString *label = [self DICOMTLSUniqueLabelForSelectedServer];
+	[DDKeychain DICOMTLSOpenCertificatePanelForLabel:label];
+}
+
 - (void)getTLSCertificate;
 {	
 	NSString *label = [self DICOMTLSUniqueLabelForSelectedServer];
 	NSString *name = [DDKeychain DICOMTLSCertificateNameForLabel:label];
-	if(!name) name = @"No certificate selected.";
+	NSImage *icon = [DDKeychain DICOMTLSCertificateIconForLabel:label];
+	
+	if(!name)
+	{
+		name = NSLocalizedString(@"No certificate selected.", @"No certificate selected.");	
+		[TLSCertificateIcon setHidden:YES];
+		[TLSViewCertificateButton setHidden:YES];
+		[TLSChooseCertificateButton setTitle:NSLocalizedString(@"Choose", @"Choose")];
+	}
+	else
+	{
+		[TLSCertificateIcon setHidden:NO];
+		[TLSCertificateIcon setImage:icon];
+		[TLSViewCertificateButton setHidden:NO];
+		[TLSChooseCertificateButton setTitle:NSLocalizedString(@"Change", @"Change")];
+	}
+
 	self.TLSAuthenticationCertificate = name;
+	
+	[TLSCertificateView setCertificate:NULL];
+	SecIdentityRef identity = [DDKeychain DICOMTLSIdentityForLabel:label];
+	if(identity)
+	{
+		SecCertificateRef certificateRef = NULL;
+		SecIdentityCopyCertificate(identity, &certificateRef);
+		
+		if(certificateRef)
+		{		
+			[TLSCertificateView setCertificate:certificateRef];
+			CFRelease(certificateRef);
+		}
+		CFRelease(identity);
+	}
+	
+	[TLSCertificateView setDisplayDetails:NO];
+	[TLSCertificateView setDisplayTrust:NO];
+	[TLSCertificateView setEditableTrust:NO];
 	
 //	[DDKeychain DICOMTLSGenerateCertificateAndKeyForLabel:label]; // test
 }

@@ -1,5 +1,6 @@
 #import <Cocoa/Cocoa.h>
 #import <Security/Security.h>
+#import <SecurityInterface/SFCertificatePanel.h>
 
 @interface DDKeychain : NSObject
 {
@@ -22,11 +23,15 @@
 + (SecIdentityRef)KeychainAccessPreferredIdentityForName:(NSString*)name keyUse:(int)keyUse;
 + (void)KeychainAccessSetPreferredIdentity:(SecIdentityRef)identity forName:(NSString*)name keyUse:(int)keyUse;
 + (NSString*)KeychainAccessCertificateCommonNameForIdentity:(SecIdentityRef)identity;
++ (NSImage*)KeychainAccessCertificateIconForIdentity:(SecIdentityRef)identity;
 + (void)KeychainAccessExportCertificateForIdentity:(SecIdentityRef)identity toPath:(NSString*)path;
 + (void)KeychainAccessExportPrivateKeyForIdentity:(SecIdentityRef)identity toPath:(NSString*)path cryptWithPassword:(NSString*)password;
++ (void)KeychainAccessOpenCertificatePanelForIdentity:(SecIdentityRef)identity;
 
 + (SecIdentityRef)DICOMTLSIdentityForLabel:(NSString*)label;
 + (NSString*)DICOMTLSCertificateNameForLabel:(NSString*)label;
++ (NSImage*)DICOMTLSCertificateIconForLabel:(NSString*)label;
++ (void)DICOMTLSOpenCertificatePanelForLabel:(NSString*)label;
 + (void)DICOMTLSGenerateCertificateAndKeyForLabel:(NSString*)label;
 + (void)DICOMTLSGenerateCertificateAndKeyForServerAddress:(NSString*)address port:(int)port AETitle:(NSString*)aetitle;
 + (NSString*)DICOMTLSUniqueLabelForServerAddress:(NSString*)address port:(NSString*)port AETitle:(NSString*)aetitle;

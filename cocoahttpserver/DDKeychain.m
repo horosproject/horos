@@ -629,7 +629,7 @@
 		// Extract the Certificate from the identity, and examine it to see if it will work for us
 		SecCertificateRef certificateRef = NULL;
 		SecIdentityCopyCertificate(currentIdentityRef, &certificateRef);
-		
+				
 		if(certificateRef)
 		{		
 			[result addObject:(id)currentIdentityRef];
@@ -680,11 +680,88 @@
 				CFRelease(commonName);
 			}
 			else NSLog(@"KeychainAccessCertificateCommonNameForIdentity: error: %@", [DDKeychain stringForError:status]);
-
+			
 			CFRelease(certificateRef);
 		}		
 	}	
 	return name;
+}
+
+/*
+ * The following method returns the correct icon for a certificate:
+ *	- the blue icon for "Standard certificates"
+ *	- the gold icon for "Self signed certificates"
+ *
+ *	The hypothese is : if the subject == the issuer then it is a Self signed certificate
+ *	It _seems_ to work (Joris)
+ */
++ (NSImage*)KeychainAccessCertificateIconForIdentity:(SecIdentityRef)identity;
+{
+	NSImage *icon = nil;
+	
+	if(identity)
+	{	
+		SecCertificateRef certificateRef = NULL;
+		SecIdentityCopyCertificate(identity, &certificateRef);	
+		if(certificateRef)
+		{
+			const CSSM_X509_NAME *subject, *issuer;
+			SecCertificateGetSubject(certificateRef, &subject);
+			SecCertificateGetIssuer(certificateRef, &issuer);
+			
+			BOOL equal = YES;
+			if(subject->numberOfRDNs==issuer->numberOfRDNs)
+			{
+				int i, j;
+				for (i=0; i<subject->numberOfRDNs; i++)
+				{
+					CSSM_X509_RDN issuerRDN = issuer->RelativeDistinguishedName[i];
+					CSSM_X509_RDN subjectRDN = subject->RelativeDistinguishedName[i];
+										
+					if(issuerRDN.numberOfPairs==subjectRDN.numberOfPairs)
+					{
+						for (j=0; j<subjectRDN.numberOfPairs; j++)
+						{
+							CSSM_X509_TYPE_VALUE_PAIR issuerVP = issuerRDN.AttributeTypeAndValue[j];
+							CSSM_X509_TYPE_VALUE_PAIR subjectVP = subjectRDN.AttributeTypeAndValue[j];
+
+							NSData *issuerVPData = [NSData dataWithBytes:issuerVP.value.Data length:issuerVP.value.Length];
+							NSData *subjectVPData = [NSData dataWithBytes:subjectVP.value.Data length:subjectVP.value.Length];
+							
+							if ([issuerVPData isEqualToData:subjectVPData])
+								equal &= YES;
+							else
+							{
+								equal = NO;
+								break;
+							}
+						}
+					}
+					else
+					{
+						equal = NO;
+						break;
+					}
+				}
+			}
+			else
+				equal = NO;
+
+			CFRelease(certificateRef);
+			
+			if(equal)
+			{
+				// Self signed certificate
+				icon = [NSImage imageNamed:@"CertSmallRoot.tif"];
+			}
+			else 
+			{
+				// Standard certificate
+				icon = [NSImage imageNamed:@"CertSmallStd.tif"];
+			}
+		}	
+	}	
+	return icon;
 }
 
 + (void)KeychainAccessExportCertificateForIdentity:(SecIdentityRef)identity toPath:(NSString*)path;
@@ -746,6 +823,20 @@
 	else NSLog(@"SecIdentityCopyPrivateKey : error : %@", [DDKeychain stringForError:status]);			
 }
 
++ (void)KeychainAccessOpenCertificatePanelForIdentity:(SecIdentityRef)identity;
+{
+	if(identity)
+	{		
+		SecCertificateRef certificateRef = NULL;
+		SecIdentityCopyCertificate(identity, &certificateRef);
+		if(certificateRef)
+		{
+			[[SFCertificatePanel sharedCertificatePanel] runModalForCertificates:[NSArray arrayWithObject:(id)certificateRef] showGroup:NO];		
+			CFRelease(certificateRef);
+		}
+	}
+}
+
 #pragma mark DICOM TLS Specific methods
 
 // Returns a reference to the preferred identity for DICOM TLS, or NULL if none was found.
@@ -767,6 +858,25 @@
 	}
 	
 	return name;
+}
+
++ (NSImage*)DICOMTLSCertificateIconForLabel:(NSString*)label;
+{
+	SecIdentityRef identity = [DDKeychain DICOMTLSIdentityForLabel:label];
+	
+	NSImage *icon = nil;
+	if(identity)
+	{
+		icon = [DDKeychain KeychainAccessCertificateIconForIdentity:identity];
+		CFRelease(identity);
+	}
+	
+	return icon;
+}
+
++ (void)DICOMTLSOpenCertificatePanelForLabel:(NSString*)label;
+{
+	[DDKeychain KeychainAccessOpenCertificatePanelForIdentity:[DDKeychain DICOMTLSIdentityForLabel:label]];
 }
 
 + (void)DICOMTLSGenerateCertificateAndKeyForLabel:(NSString*)label;
