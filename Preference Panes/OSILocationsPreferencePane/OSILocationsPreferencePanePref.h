@@ -46,10 +46,9 @@
 	NSURL							*TLSTrustedCACertificatesFolderURL, *TLSDHParameterFileURL;
 	TLSCertificateVerificationType	TLSCertificateVerification;
 	NSString						*TLSAuthenticationCertificate;
-	
 	IBOutlet NSButton				*TLSChooseCertificateButton, *TLSViewCertificateButton;
-	IBOutlet SFCertificateView		*TLSCertificateView;
 	IBOutlet NSImageView			*TLSCertificateIcon;
+	
 	IBOutlet SFAuthorizationView	*_authView;
 }
 

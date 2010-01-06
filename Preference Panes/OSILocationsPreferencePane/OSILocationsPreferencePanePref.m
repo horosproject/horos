@@ -927,26 +927,7 @@
 	}
 
 	self.TLSAuthenticationCertificate = name;
-	
-	[TLSCertificateView setCertificate:NULL];
-	SecIdentityRef identity = [DDKeychain DICOMTLSIdentityForLabel:label];
-	if(identity)
-	{
-		SecCertificateRef certificateRef = NULL;
-		SecIdentityCopyCertificate(identity, &certificateRef);
-		
-		if(certificateRef)
-		{		
-			[TLSCertificateView setCertificate:certificateRef];
-			CFRelease(certificateRef);
-		}
-		CFRelease(identity);
-	}
-	
-	[TLSCertificateView setDisplayDetails:NO];
-	[TLSCertificateView setDisplayTrust:NO];
-	[TLSCertificateView setEditableTrust:NO];
-	
+			
 //	[DDKeychain DICOMTLSGenerateCertificateAndKeyForLabel:label]; // test
 }
 
