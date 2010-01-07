@@ -18,32 +18,32 @@
 								</a></td>%/userAccount%</h1>
 
 	<div id="Home" class="panel">
-		<h2 style="padding-top:10px">%LocalizedLabel_SearchPatient%</h2>
+		<h2 style="padding-top:10px">Search Patient</h2>
 		<form action="/studyList" method="get">
 			<input type="text" id="search" name="search"/>
 			<input type="hidden" name="dicomcstoreport" value="%DicomCStorePort%" name="search"/>
-			<input type="submit" id="searchButton" value="%LocalizedLabel_SearchButton%"/>
+			<input type="submit" id="searchButton" value="Search"/>
 		</form>	
-		<h2 style="padding-top:10px">%LocalizedLabel_SearchPatientID%</h2>
+		<h2 style="padding-top:10px">Search Patient ID</h2>
 		<form action="/studyList" method="get">
 			<input type="text" id="searchID" name="searchID"/>
 			<input type="hidden" name="dicomcstoreport" value="%DicomCStorePort%" name="search"/>
-			<input type="submit" id="searchButton" value="%LocalizedLabel_SearchButton%"/>
+			<input type="submit" id="searchButton" value="Search"/>
 		</form>	
 		<br>
 		
 		<HR>
 		
-		<h2 style="padding-top:10px">%LocalizedLabel_Browse%</h2>
+		<h2 style="padding-top:10px">Browse</h2>
 		<ul>
-			<li class="index"><a href="studyList?dicomcstoreport=%DicomCStorePort%&browse=6hours">%LocalizedLabel_Last6Hours%</a></li>
-			<li class="index"><a href="studyList?dicomcstoreport=%DicomCStorePort%&browse=today">%LocalizedLabel_Today%</a></li>
-			<li class="index"><a href="studyList?dicomcstoreport=%DicomCStorePort%&browse=all">%LocalizedLabel_StudyList%</a></li>
+			<li class="index"><a href="studyList?dicomcstoreport=%DicomCStorePort%&browse=6hours">Last 6 hours</a></li>
+			<li class="index"><a href="studyList?dicomcstoreport=%DicomCStorePort%&browse=today">Today</a></li>
+			<li class="index"><a href="studyList?dicomcstoreport=%DicomCStorePort%&browse=all">Study List</a></li>
 		</ul>
 		
 		<HR>
 		
-		<h2 style="padding-top:10px">%LocalizedLabel_Albums%</h2>
+		<h2 style="padding-top:10px">Albums</h2>
 		<ul>
 			%AlbumListItem%
 			<li class="index"><a href="studyList?dicomcstoreport=%DicomCStorePort%&album=%AlbumNameURL%">%AlbumName%</a></li>
@@ -53,15 +53,15 @@
 		%AuthorizedUploadDICOMFiles%
 		<HR>
 		
-		<h2 style="padding-top:10px">%LocalizedLabel_UploadDICOMFilesHeader%</h2>
+		<h2 style="padding-top:10px">DICOM Upload</h2>
 			<form action="" method="post" enctype="multipart/form-data" name="form1" id="form1">
 			<label>
-			%LocalizedLabel_UploadDICOMFiles%<br><br>
+			Upload a file (DICOM file or zip file containing DICOM files): <br><br>
 			<input type="file" name="file" id="file" />
 			</label>
 			<br><br>
 			<label> 
-			<input type="submit" name="button" id="button" value="%LocalizedLabel_Submit%" />
+			<input type="submit" name="button" id="button" value="Upload" />
 			</label>
 			</form>
 			<br>

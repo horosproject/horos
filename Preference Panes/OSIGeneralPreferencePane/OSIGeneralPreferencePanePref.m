@@ -83,8 +83,7 @@
 	[[NSUserDefaults standardUserDefaults] setBool:[sender state] forKey:@"AUTHENTICATION"];
 	
 	// Reload our view !
-	[[[[self mainView] window] windowController] selectPaneIndex: 0];
-	
+	//[[[[self mainView] window] windowController] selectPaneIndex: 0];
 }
 
 - (void) mainViewDidLoad

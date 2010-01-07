@@ -3,16 +3,16 @@
 	<data>
 		<int key="IBDocument.SystemTarget">1050</int>
 		<string key="IBDocument.SystemVersion">10C540</string>
-		<string key="IBDocument.InterfaceBuilderVersion">732</string>
+		<string key="IBDocument.InterfaceBuilderVersion">740</string>
 		<string key="IBDocument.AppKitVersion">1038.25</string>
 		<string key="IBDocument.HIToolboxVersion">458.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin</string>
-			<string key="NS.object.0">732</string>
+			<string key="NS.object.0">740</string>
 		</object>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="536"/>
+			<integer value="6"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -41,7 +41,7 @@
 			<object class="NSWindowTemplate" id="958708969">
 				<int key="NSWindowStyleMask">7</int>
 				<int key="NSWindowBacking">2</int>
-				<string key="NSWindowRect">{{350, 733}, {889, 709}}</string>
+				<string key="NSWindowRect">{{350, 727}, {889, 715}}</string>
 				<int key="NSWTFlags">1081606144</int>
 				<string key="NSWindowTitle">&lt;&lt; do not localize &gt;&gt;</string>
 				<string key="NSWindowClass">NSWindow</string>
@@ -651,22 +651,18 @@ ZSBDb21wdXRlciwgSW5jLiwgMjAwNQAAAAA</bytes>
 										<object class="NSButton" id="881662743">
 											<reference key="NSNextResponder" ref="284143828"/>
 											<int key="NSvFlags">256</int>
-											<string key="NSFrame">{{323, 29}, {93, 32}}</string>
+											<string key="NSFrame">{{323, 33}, {93, 28}}</string>
 											<reference key="NSSuperview" ref="284143828"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSButtonCell" key="NSCell" id="280679865">
 												<int key="NSCellFlags">67239424</int>
-												<int key="NSCellFlags2">134217728</int>
+												<int key="NSCellFlags2">134348800</int>
 												<string key="NSContents">Reset</string>
-												<reference key="NSSupport" ref="679354208"/>
+												<reference key="NSSupport" ref="26"/>
 												<reference key="NSControlView" ref="881662743"/>
 												<int key="NSButtonFlags">-2038284033</int>
 												<int key="NSButtonFlags2">1</int>
-												<object class="NSFont" key="NSAlternateImage" id="142060002">
-													<string key="NSName">LucidaGrande</string>
-													<double key="NSSize">13</double>
-													<int key="NSfFlags">16</int>
-												</object>
+												<reference key="NSAlternateImage" ref="442524038"/>
 												<string key="NSAlternateContents"/>
 												<object class="NSMutableString" key="NSKeyEquivalent">
 													<characters key="NS.bytes"/>
@@ -711,18 +707,18 @@ ZSBDb21wdXRlciwgSW5jLiwgMjAwNQAAAAA</bytes>
 										<object class="NSButton" id="762397093">
 											<reference key="NSNextResponder" ref="284143828"/>
 											<int key="NSvFlags">256</int>
-											<string key="NSFrame">{{742, 29}, {93, 32}}</string>
+											<string key="NSFrame">{{742, 33}, {93, 28}}</string>
 											<reference key="NSSuperview" ref="284143828"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSButtonCell" key="NSCell" id="822805060">
 												<int key="NSCellFlags">67239424</int>
-												<int key="NSCellFlags2">134217728</int>
+												<int key="NSCellFlags2">134348800</int>
 												<string key="NSContents">Reset</string>
-												<reference key="NSSupport" ref="679354208"/>
+												<reference key="NSSupport" ref="26"/>
 												<reference key="NSControlView" ref="762397093"/>
 												<int key="NSButtonFlags">-2038284033</int>
 												<int key="NSButtonFlags2">1</int>
-												<reference key="NSAlternateImage" ref="142060002"/>
+												<reference key="NSAlternateImage" ref="442524038"/>
 												<string key="NSAlternateContents"/>
 												<object class="NSMutableString" key="NSKeyEquivalent">
 													<characters key="NS.bytes"/>
@@ -2331,7 +2327,11 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 								<int key="NSCellFlags">67239424</int>
 								<int key="NSCellFlags2">0</int>
 								<string key="NSContents">Series Parsing</string>
-								<reference key="NSSupport" ref="142060002"/>
+								<object class="NSFont" key="NSSupport" id="142060002">
+									<string key="NSName">LucidaGrande</string>
+									<double key="NSSize">13</double>
+									<int key="NSfFlags">16</int>
+								</object>
 								<reference key="NSBackgroundColor" ref="99005634"/>
 								<object class="NSColor" key="NSTextColor">
 									<int key="NSColorSpace">3</int>
@@ -2514,7 +2514,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<string key="NSExtension">NSView</string>
 						</object>
 					</object>
-					<string key="NSFrameSize">{889, 709}</string>
+					<string key="NSFrameSize">{889, 715}</string>
 					<reference key="NSSuperview"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {2560, 1578}}</string>
@@ -4581,9 +4581,9 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<integer value="1"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<integer value="1"/>
-					<string>{{161, 147}, {889, 709}}</string>
+					<string>{{37, 141}, {889, 715}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{161, 147}, {889, 709}}</string>
+					<string>{{37, 141}, {889, 715}}</string>
 					<integer value="1"/>
 					<string>{{110, -136}, {893, 757}}</string>
 					<integer value="0"/>
@@ -4703,7 +4703,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<integer value="1"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<integer value="1"/>
-					<string>{{394, 128}, {282, 113}}</string>
+					<string>{{270, 128}, {282, 113}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<integer value="1"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>

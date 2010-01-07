@@ -161,11 +161,10 @@ static NSMutableDictionary *paneBundles = nil;
 //Pane management
 - (void) setPane: (NSPreferencePane *) aPane
 {
-	if ([aPane loadMainView] ) {
-		//NSLog(@"load Main View");
-		if ([pane shouldUnselect] || !pane) {
-			NSLog(@"pane added");
-			
+	if ([aPane loadMainView])
+	{
+		if ([pane shouldUnselect] || !pane)
+		{
 			[aPane willSelect];
 			/* Add view to window */
 			float y, newY, deltaH;

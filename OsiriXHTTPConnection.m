@@ -30,6 +30,7 @@
 
 static NSMutableDictionary *movieLock = nil;
 static NSString *webDirectory = nil;
+static NSString *language = nil;
 
 #define maxResolution 1024
 
@@ -156,20 +157,22 @@ static NSString *webDirectory = nil;
 
 + (void) checkWebDirectory
 {
-	NSString *language = [[[NSBundle mainBundle] preferredLocalizations] objectAtIndex: 0];
-	
-	if( language == nil)
-		language = @"English";
-	
 	#define PATH2HTML @"~/Library/Application Support/OsiriX/"
 	
 	if( webDirectory == nil)
 	{
+		language = [[[NSBundle mainBundle] preferredLocalizations] objectAtIndex: 0];
+		
+		if( language == nil)
+			language = @"English";
+		
+		[language retain];
+		
 		NSString *supportPath = [PATH2HTML stringByExpandingTildeInPath];
 		
 		webDirectory = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"WebServicesHTML"];
 		
-		BOOL isDirectory = NO;
+		BOOL isDirectory;
 		
 		if( [[NSFileManager defaultManager] fileExistsAtPath: [supportPath stringByAppendingPathComponent: @"WebServicesHTML"] isDirectory: &isDirectory] == YES && isDirectory == YES)
 			webDirectory = [supportPath stringByAppendingPathComponent: @"WebServicesHTML"];
@@ -180,6 +183,11 @@ static NSString *webDirectory = nil;
 			if( [[NSFileManager defaultManager] fileExistsAtPath: [supportPath stringByAppendingPathComponent: @"WebServicesHTML"] isDirectory: &isDirectory] == YES && isDirectory == YES)
 				webDirectory = [supportPath stringByAppendingPathComponent: @"WebServicesHTML"];
 		}
+		
+		if( [[NSFileManager defaultManager] fileExistsAtPath: [webDirectory stringByAppendingPathComponent: language] isDirectory: &isDirectory] == YES && isDirectory == YES)
+			webDirectory = [webDirectory stringByAppendingPathComponent: language];
+		else
+			webDirectory = [webDirectory stringByAppendingPathComponent: @"English"];
 		
 		[webDirectory retain];
 	}
@@ -557,42 +565,35 @@ static NSString *webDirectory = nil;
 
 - (NSMutableString*)htmlStudy:(DicomStudy*)study parameters:(NSDictionary*)parameters settings: (NSDictionary*) settings;
 {
-	BOOL checkBoxList = NO;
 	BOOL dicomSend = NO;
 	BOOL shareSend = NO;
-
-	if( currentUser == nil || ([[currentUser valueForKey: @"sendDICOMtoSelfIP"] boolValue] || [[currentUser valueForKey: @"sendDICOMtoAnyNodes"] boolValue] || [[currentUser valueForKey: @"shareStudyWithUser"] boolValue]))
-		checkBoxList = YES;
 	
-	if( currentUser == nil || ([[currentUser valueForKey: @"sendDICOMtoSelfIP"] boolValue] || [[currentUser valueForKey: @"sendDICOMtoAnyNodes"] boolValue]))
+	if( currentUser == nil || [[currentUser valueForKey: @"sendDICOMtoSelfIP"] boolValue])
 		dicomSend = YES;
 		
+	if( currentUser && [[currentUser valueForKey: @"shareStudyWithUser"] boolValue])
+		shareSend = YES;
+	
+	if( currentUser && [[currentUser valueForKey: @"sendDICOMtoSelfIP"] boolValue] == YES && [[currentUser valueForKey: @"sendDICOMtoAnyNodes"] boolValue] == NO)
+	{
+		if( [[parameters objectForKey: @"dicomcstoreport"] intValue] > 0 && [ipAddressString length] >= 7)
+		{
+		}
+		else dicomSend = NO;
+	}
+	
 	NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
 	
 	[context lock];
 	
 	NSMutableString *templateString = [NSMutableString stringWithContentsOfFile:[webDirectory stringByAppendingPathComponent:@"study.html"]];
 	
-	templateString = [self setBlock: @"SendingFunctions1" visible: checkBoxList forString: templateString];
-	templateString = [self setBlock: @"SendingFunctions2" visible: checkBoxList forString: templateString];
+	templateString = [self setBlock: @"SendingFunctions1" visible: dicomSend forString: templateString];
+	templateString = [self setBlock: @"SendingFunctions2" visible: dicomSend forString: templateString];
 	templateString = [self setBlock: @"SendingFunctions3" visible: dicomSend forString: templateString];
-	templateString = [self setBlock: @"SharingFunctions" visible: (currentUser && [[currentUser valueForKey: @"shareStudyWithUser"] boolValue]) forString: templateString];
+	templateString = [self setBlock: @"SharingFunctions" visible: shareSend forString: templateString];
 	templateString = [self setBlock: @"ZIPFunctions" visible: (currentUser == nil || [[currentUser valueForKey: @"downloadZIP"] boolValue]) forString: templateString];
 	
-	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_PatientInfo%" withString:NSLocalizedString(@"Patient Info", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_PatientID%" withString:NSLocalizedString(@"ID", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_PatientName%" withString:NSLocalizedString(@"Patient Name", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_PatientDateOfBirth%" withString:NSLocalizedString(@"Date of Birth", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_StudyDate%" withString:NSLocalizedString(@"Study Date", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_StudyState%" withString:NSLocalizedString(@"Study Status", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_StudyComment%" withString:NSLocalizedString(@"Study Comment", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_StudyDescription%" withString:NSLocalizedString(@"Study Description", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_StudyModality%" withString:NSLocalizedString(@"Modality", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_Series%" withString:NSLocalizedString(@"Series", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_DICOMTransfer%" withString:NSLocalizedString(@"DICOM Transfer", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_SendSelectedSeriesTo%" withString:NSLocalizedString(@"Send selected Series to", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_Send%" withString:NSLocalizedString(@"Send", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_DownloadAsZIP%" withString:NSLocalizedString(@"ZIP file", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 	[templateString replaceOccurrencesOfString:@"%zipextension%" withString: ([[settings valueForKey:@"MacOS"] boolValue]?@"osirixzip":@"zip") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 	
 	NSString *browse = [OsiriXHTTPConnection nonNilString:[parameters objectForKey:@"browse"]];
@@ -621,7 +622,6 @@ static NSString *webDirectory = nil;
 	}
 	
 	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_StudyList%" withString:LocalizedLabel_StudyList options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_GetReport%" withString:NSLocalizedString(@"Download Report", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 	
 	templateString = [self setBlock: @"Report" visible: ([study valueForKey:@"reportURL"] && ![[settings valueForKey:@"iPhone"] boolValue]) forString: templateString];
 	
@@ -631,7 +631,7 @@ static NSString *webDirectory = nil;
 	NSString *seriesListItemString = [tempArray objectAtIndex:0];
 	NSString *templateStringEnd = [tempArray lastObject];
 	
-	NSMutableString *returnHTML = [NSMutableString stringWithString:templateStringStart];
+	NSMutableString *returnHTML = [NSMutableString stringWithString: templateStringStart];
 	
 	[returnHTML replaceOccurrencesOfString:@"%PageTitle%" withString:[OsiriXHTTPConnection nonNilString:[study valueForKey:@"name"]] options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
 	[returnHTML replaceOccurrencesOfString:@"%PatientID%" withString:[OsiriXHTTPConnection nonNilString:[study valueForKey:@"patientID"]] options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
@@ -679,7 +679,6 @@ static NSString *webDirectory = nil;
 			stateText = nil;
 		[tempHTML replaceOccurrencesOfString:@"%SeriesState%" withString:[OsiriXHTTPConnection nonNilString:stateText] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 		
-		
 		int nbFiles = [[series valueForKey:@"noFiles"] intValue];
 		if( nbFiles <= 1)
 		{
@@ -702,53 +701,29 @@ static NSString *webDirectory = nil;
 	}
 	
 	NSString *dicomNodesListItemString = @"";
-	if( currentUser && ([[currentUser valueForKey: @"sendDICOMtoSelfIP"] boolValue] || [[currentUser valueForKey: @"sendDICOMtoAnyNodes"] boolValue]))
+	if( dicomSend)
 	{
 		tempArray = [templateStringEnd componentsSeparatedByString:@"%dicomNodesListItem%"];
 		templateStringStart = [tempArray objectAtIndex:0];
 		tempArray = [[tempArray lastObject] componentsSeparatedByString:@"%/dicomNodesListItem%"];
 		dicomNodesListItemString = [tempArray objectAtIndex:0];
 		templateStringEnd = [tempArray lastObject];
-	}
-	
-	[returnHTML appendString:templateStringStart];
-	
-	NSString *checkAllStyle = @"";
-	if([seriesArray count]<=1) checkAllStyle = @"style='display:none;'";
-	[returnHTML replaceOccurrencesOfString:@"%CheckAllStyle%" withString:checkAllStyle options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
-	
-	if( (currentUser == nil || [[currentUser valueForKey: @"sendDICOMtoSelfIP"] boolValue] == YES) && [[parameters objectForKey: @"dicomcstoreport"] intValue] > 0 && [ipAddressString length] >= 7)
-	{
-		NSString *dicomNodeAddress = ipAddressString;
-		NSString *dicomNodePort = [parameters objectForKey: @"dicomcstoreport"];
-		NSString *dicomNodeAETitle = @"This Computer";
+		[returnHTML appendString:templateStringStart];
 		
-		NSString *dicomNodeSyntax;
-		if( [[settings valueForKey:@"iPhone"] boolValue]) dicomNodeSyntax = @"5";
-		else dicomNodeSyntax = @"0";
-		NSString *dicomNodeDescription = @"This Computer";
+		NSString *checkAllStyle = @"";
+		if([seriesArray count]<=1) checkAllStyle = @"style='display:none;'";
+		[returnHTML replaceOccurrencesOfString:@"%CheckAllStyle%" withString:checkAllStyle options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
 		
-		NSMutableString *tempHTML = [NSMutableString stringWithString:dicomNodesListItemString];
-		if([[settings valueForKey:@"iPhone"] boolValue]) [tempHTML replaceOccurrencesOfString:@"[%dicomNodeAddress%:%dicomNodePort%]" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
-		[tempHTML replaceOccurrencesOfString:@"%dicomNodeAddress%" withString:dicomNodeAddress options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
-		[tempHTML replaceOccurrencesOfString:@"%dicomNodePort%" withString:dicomNodePort options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
-		[tempHTML replaceOccurrencesOfString:@"%dicomNodeAETitle%" withString:dicomNodeAETitle options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
-		[tempHTML replaceOccurrencesOfString:@"%dicomNodeSyntax%" withString:dicomNodeSyntax options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
-		[tempHTML replaceOccurrencesOfString:@"%dicomNodeDescription%" withString:dicomNodeDescription options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
-		
-		[returnHTML appendString:tempHTML];
-	}
-	
-	if( currentUser == nil || [[currentUser valueForKey: @"sendDICOMtoAnyNodes"] boolValue] == YES)
-	{
-		NSArray *nodes = [DCMNetServiceDelegate DICOMServersListSendOnly:YES QROnly:NO];
-		for(NSDictionary *node in nodes)
+		if( [[currentUser valueForKey: @"sendDICOMtoSelfIP"] boolValue] == YES)
 		{
-			NSString *dicomNodeAddress = [OsiriXHTTPConnection nonNilString:[node objectForKey:@"Address"]];
-			NSString *dicomNodePort = [NSString stringWithFormat:@"%d", [[node objectForKey:@"Port"] intValue]];
-			NSString *dicomNodeAETitle = [OsiriXHTTPConnection nonNilString:[node objectForKey:@"AETitle"]];
-			NSString *dicomNodeSyntax = [NSString stringWithFormat:@"%d", [[node objectForKey:@"TransferSyntax"] intValue]];
-			NSString *dicomNodeDescription = [OsiriXHTTPConnection nonNilString:[node objectForKey:@"Description"]];
+			NSString *dicomNodeAddress = ipAddressString;
+			NSString *dicomNodePort = [parameters objectForKey: @"dicomcstoreport"];
+			NSString *dicomNodeAETitle = @"This Computer";
+			
+			NSString *dicomNodeSyntax;
+			if( [[settings valueForKey:@"iPhone"] boolValue]) dicomNodeSyntax = @"5";
+			else dicomNodeSyntax = @"0";
+			NSString *dicomNodeDescription = @"This Computer";
 			
 			NSMutableString *tempHTML = [NSMutableString stringWithString:dicomNodesListItemString];
 			if([[settings valueForKey:@"iPhone"] boolValue]) [tempHTML replaceOccurrencesOfString:@"[%dicomNodeAddress%:%dicomNodePort%]" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
@@ -758,70 +733,105 @@ static NSString *webDirectory = nil;
 			[tempHTML replaceOccurrencesOfString:@"%dicomNodeSyntax%" withString:dicomNodeSyntax options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 			[tempHTML replaceOccurrencesOfString:@"%dicomNodeDescription%" withString:dicomNodeDescription options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 			
-			NSString *selected = @"";
-			
-			if( [parameters objectForKey:@"dicomDestination"])
+			[returnHTML appendString:tempHTML];
+		}
+	
+		if( [[currentUser valueForKey: @"sendDICOMtoAnyNodes"] boolValue] == YES)
+		{
+			NSArray *nodes = [DCMNetServiceDelegate DICOMServersListSendOnly:YES QROnly:NO];
+			for(NSDictionary *node in nodes)
 			{
-				NSString * s = [[parameters objectForKey:@"dicomDestination"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+				NSString *dicomNodeAddress = [OsiriXHTTPConnection nonNilString:[node objectForKey:@"Address"]];
+				NSString *dicomNodePort = [NSString stringWithFormat:@"%d", [[node objectForKey:@"Port"] intValue]];
+				NSString *dicomNodeAETitle = [OsiriXHTTPConnection nonNilString:[node objectForKey:@"AETitle"]];
+				NSString *dicomNodeSyntax = [NSString stringWithFormat:@"%d", [[node objectForKey:@"TransferSyntax"] intValue]];
+				NSString *dicomNodeDescription = [OsiriXHTTPConnection nonNilString:[node objectForKey:@"Description"]];
 				
-				NSArray *sArray = [s componentsSeparatedByString: @":"];
+				NSMutableString *tempHTML = [NSMutableString stringWithString:dicomNodesListItemString];
+				if([[settings valueForKey:@"iPhone"] boolValue]) [tempHTML replaceOccurrencesOfString:@"[%dicomNodeAddress%:%dicomNodePort%]" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+				[tempHTML replaceOccurrencesOfString:@"%dicomNodeAddress%" withString:dicomNodeAddress options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+				[tempHTML replaceOccurrencesOfString:@"%dicomNodePort%" withString:dicomNodePort options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+				[tempHTML replaceOccurrencesOfString:@"%dicomNodeAETitle%" withString:dicomNodeAETitle options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+				[tempHTML replaceOccurrencesOfString:@"%dicomNodeSyntax%" withString:dicomNodeSyntax options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+				[tempHTML replaceOccurrencesOfString:@"%dicomNodeDescription%" withString:dicomNodeDescription options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 				
-				if( [sArray count] >= 2)
+				NSString *selected = @"";
+				
+				if( [parameters objectForKey:@"dicomDestination"])
 				{
-					if( [[sArray objectAtIndex: 0] isEqualToString: dicomNodeAddress] && 
-					   [[sArray objectAtIndex: 1] isEqualToString: dicomNodePort])
-						selected = @"selected";
-				}
-			}
-			else if( ipAddressString && [[parameters objectForKey: @"dicomcstoreport"] intValue] == 0)
-			{
-				// Try to match the calling http client in our destination nodes
-				
-				struct sockaddr_in service;
-				const char	*host_name = [[node valueForKey:@"Address"] UTF8String];
-				
-				bzero((char *) &service, sizeof(service));
-				service.sin_family = AF_INET;
-				
-				if( host_name)
-				{
-					if (isalpha(host_name[0]))
-					{
-						struct hostent *hp;
-						
-						hp = gethostbyname( host_name);
-						if( hp) bcopy(hp->h_addr, (char *) &service.sin_addr, hp->h_length);
-						else service.sin_addr.s_addr = inet_addr( host_name);
-					}
-					else service.sin_addr.s_addr = inet_addr( host_name);
+					NSString * s = [[parameters objectForKey:@"dicomDestination"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 					
-					char buffer[256];
+					NSArray *sArray = [s componentsSeparatedByString: @":"];
 					
-					if (inet_ntop(AF_INET, &service.sin_addr, buffer, sizeof(buffer)))
+					if( [sArray count] >= 2)
 					{
-						if( [[NSString stringWithCString:buffer] isEqualToString: ipAddressString])
+						if( [[sArray objectAtIndex: 0] isEqualToString: dicomNodeAddress] && 
+						   [[sArray objectAtIndex: 1] isEqualToString: dicomNodePort])
 							selected = @"selected";
 					}
 				}
+				else if( ipAddressString && [[parameters objectForKey: @"dicomcstoreport"] intValue] == 0)
+				{
+					// Try to match the calling http client in our destination nodes
+					
+					struct sockaddr_in service;
+					const char	*host_name = [[node valueForKey:@"Address"] UTF8String];
+					
+					bzero((char *) &service, sizeof(service));
+					service.sin_family = AF_INET;
+					
+					if( host_name)
+					{
+						if (isalpha(host_name[0]))
+						{
+							struct hostent *hp;
+							
+							hp = gethostbyname( host_name);
+							if( hp) bcopy(hp->h_addr, (char *) &service.sin_addr, hp->h_length);
+							else service.sin_addr.s_addr = inet_addr( host_name);
+						}
+						else service.sin_addr.s_addr = inet_addr( host_name);
+						
+						char buffer[256];
+						
+						if (inet_ntop(AF_INET, &service.sin_addr, buffer, sizeof(buffer)))
+						{
+							if( [[NSString stringWithCString:buffer] isEqualToString: ipAddressString])
+								selected = @"selected";
+						}
+					}
+				}
+				
+				[tempHTML replaceOccurrencesOfString:@"%selected%" withString:selected options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+				
+				[returnHTML appendString:tempHTML];
 			}
-			
-			[tempHTML replaceOccurrencesOfString:@"%selected%" withString:selected options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
-			
-			[returnHTML appendString:tempHTML];
+		}
+		
+		[returnHTML appendString:templateStringEnd];
+		
+		if([[parameters objectForKey:@"CheckAll"] isEqualToString:@"on"] || [[parameters objectForKey:@"CheckAll"] isEqualToString:@"checked"])
+		{
+			[returnHTML replaceOccurrencesOfString:@"%CheckAllChecked%" withString: @"checked" options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
+		}
+		else
+		{
+			[returnHTML replaceOccurrencesOfString:@"%CheckAllChecked%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
 		}
 	}
+	else [returnHTML appendString:templateStringEnd];
 	
-	[returnHTML appendString:templateStringEnd];
-	
-	if([[parameters objectForKey:@"CheckAll"] isEqualToString:@"on"] || [[parameters objectForKey:@"CheckAll"] isEqualToString:@"checked"])
+	if( shareSend)
 	{
-		[returnHTML replaceOccurrencesOfString:@"%CheckAllLabel%" withString:NSLocalizedString(@"Uncheck All", nil) options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
-		[returnHTML replaceOccurrencesOfString:@"%CheckAllChecked%" withString:NSLocalizedString(@"checked", nil) options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
-	}
-	else
-	{
-		[returnHTML replaceOccurrencesOfString:@"%CheckAllLabel%" withString:NSLocalizedString(@"Check All", nil) options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
-		[returnHTML replaceOccurrencesOfString:@"%CheckAllChecked%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
+//		tempArray = [returnHTML componentsSeparatedByString:@"%userListItem%"];
+//		templateStringStart = [tempArray objectAtIndex:0];
+//		tempArray = [[tempArray lastObject] componentsSeparatedByString:@"%/userListItem%"];
+//		userListItemString = [tempArray objectAtIndex:0];
+//		templateStringEnd = [tempArray lastObject];
+//		
+//		[returnHTML appendString:templateStringStart];
+//		
+//		[returnHTML appendString:templateStringEnd];
 	}
 	
 	[context unlock];
@@ -839,8 +849,6 @@ static NSString *webDirectory = nil;
 	
 	templateString = [self setBlock: @"ZIPFunctions" visible: ( currentUser && [[currentUser valueForKey: @"downloadZIP"] boolValue]) forString: templateString];
 	
-	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_Home%" withString:NSLocalizedString(@"Home", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_DownloadAsZIP%" withString:NSLocalizedString(@"ZIP file", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 	[templateString replaceOccurrencesOfString:@"%zipextension%" withString: ([[settings valueForKey:@"MacOS"] boolValue]?@"osirixzip":@"zip") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 	
 	NSArray *tempArray = [templateString componentsSeparatedByString:@"%StudyListItem%"];
@@ -1508,7 +1516,7 @@ static NSString *webDirectory = nil;
 
 - (NSString *)realm
 {
-	return NSLocalizedString( @"OsiriX Secured Web Portal", nil);
+	return NSLocalizedString( @"OsiriX Web Portal", nil);
 }
 
 - (NSRect) centerRect: (NSRect) smallRect
@@ -1643,10 +1651,6 @@ static NSString *webDirectory = nil;
 		{
 			NSMutableString *templateString = [NSMutableString stringWithContentsOfFile: [webDirectory stringByAppendingPathComponent:@"index.html"]];
 			
-			[templateString replaceOccurrencesOfString:@"%Localized_OsiriXWebPortal%" withString:NSLocalizedString(@"OsiriX Web Portal", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-			[templateString replaceOccurrencesOfString:@"%Localized_PasswordForgotten%" withString:NSLocalizedString(@"Password Forgotten?", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-			[templateString replaceOccurrencesOfString:@"%Localized_Login%" withString:NSLocalizedString(@"Login", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-			
 			templateString = [self setBlock: @"AuthorizedRestorePasswordWebServer" visible: [[NSUserDefaults standardUserDefaults] boolForKey: @"restorePasswordWebServer"] forString: templateString];
 			
 			data = [templateString dataUsingEncoding: NSUTF8StringEncoding];
@@ -1677,18 +1681,6 @@ static NSString *webDirectory = nil;
 			
 			templateString = [self setBlock: @"AuthorizedUploadDICOMFiles" visible: ( currentUser && [[currentUser valueForKey: @"uploadDICOM"] boolValue]) forString: templateString];
 			
-			[templateString replaceOccurrencesOfString:@"%LocalizedLabel_Submit%" withString:NSLocalizedString(@"Submit", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-			[templateString replaceOccurrencesOfString:@"%LocalizedLabel_UploadDICOMFilesHeader%" withString:NSLocalizedString(@"Upload Files", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-			[templateString replaceOccurrencesOfString:@"%LocalizedLabel_UploadDICOMFiles%" withString:NSLocalizedString(@"Select a DICOM file or a zip file containing DICOM files:  ", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-			[templateString replaceOccurrencesOfString:@"%LocalizedLabel_SearchPatient%" withString:NSLocalizedString(@"Search Patient", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-			[templateString replaceOccurrencesOfString:@"%LocalizedLabel_SearchPatientID%" withString:NSLocalizedString(@"Search Patient ID", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-			[templateString replaceOccurrencesOfString:@"%LocalizedLabel_SearchButton%" withString:NSLocalizedString(@"Search", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-			[templateString replaceOccurrencesOfString:@"%LocalizedLabel_Browse%" withString:NSLocalizedString(@"Browse", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-			[templateString replaceOccurrencesOfString:@"%LocalizedLabel_Last6Hours%" withString:NSLocalizedString(@"Last 6 Hours", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-			[templateString replaceOccurrencesOfString:@"%LocalizedLabel_Today%" withString:NSLocalizedString(@"Today", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-			[templateString replaceOccurrencesOfString:@"%LocalizedLabel_StudyList%" withString:NSLocalizedString(@"Study List", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-			[templateString replaceOccurrencesOfString:@"%LocalizedLabel_Albums%" withString:NSLocalizedString(@"Albums", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-			
 			if( currentUser == nil || (currentUser && [[currentUser valueForKey: @"uploadDICOM"] boolValue] == YES))
 				[self supportsPOST: nil withSize: 0];
 			
@@ -1703,11 +1695,11 @@ static NSString *webDirectory = nil;
 			NSArray	*albumArray = [[BrowserController currentBrowser] albumArray];
 			for(NSManagedObject *album in albumArray)
 			{
-				if(![[album valueForKey:@"name"] isEqualToString:NSLocalizedString(@"Database", nil)])
+				if(![[album valueForKey:@"name"] isEqualToString: NSLocalizedString(@"Database", nil)])
 				{
 					NSMutableString *tempString = [NSMutableString stringWithString:albumListItemString];
-					[tempString replaceOccurrencesOfString:@"%AlbumName%" withString:[album valueForKey:@"name"] options:NSLiteralSearch range:NSMakeRange(0, [tempString length])];
-					[tempString replaceOccurrencesOfString:@"%AlbumNameURL%" withString:[OsiriXHTTPConnection encodeURLString:[album valueForKey:@"name"]] options:NSLiteralSearch range:NSMakeRange(0, [tempString length])];
+					[tempString replaceOccurrencesOfString: @"%AlbumName%" withString: [album valueForKey:@"name"] options:NSLiteralSearch range:NSMakeRange(0, [tempString length])];
+					[tempString replaceOccurrencesOfString: @"%AlbumNameURL%" withString: [OsiriXHTTPConnection encodeURLString:[album valueForKey:@"name"]] options:NSLiteralSearch range:NSMakeRange(0, [tempString length])];
 					[returnHTML appendString:tempString];
 				}
 			}
@@ -1941,18 +1933,18 @@ static NSString *webDirectory = nil;
 			if( [[parameters objectForKey:@"browse"] isEqualToString: @"newAddedStudies"] && [[parameters objectForKey:@"browseParameter"] doubleValue] > 0)
 			{
 				browsePredicate = [NSPredicate predicateWithFormat: @"dateAdded >= CAST(%lf, \"NSDate\")", [[parameters objectForKey:@"browseParameter"] doubleValue]];
-				pageTitle = NSLocalizedString(@"New Studies Available", nil);
+				pageTitle = NSLocalizedString( @"New Studies Available", nil);
 			}
 			else if([(NSString*)[parameters objectForKey:@"browse"] isEqualToString:@"today"])
 			{
 				browsePredicate = [NSPredicate predicateWithFormat: @"date >= CAST(%lf, \"NSDate\")", [self startOfDay:[NSCalendarDate calendarDate]]];
-				pageTitle = NSLocalizedString(@"Today", nil);
+				pageTitle = NSLocalizedString( @"Today", nil);
 			}
 			else if([(NSString*)[parameters objectForKey:@"browse"] isEqualToString:@"6hours"])
 			{
 				NSCalendarDate *now = [NSCalendarDate calendarDate];
 				browsePredicate = [NSPredicate predicateWithFormat: @"date >= CAST(%lf, \"NSDate\")", [[NSCalendarDate dateWithYear:[now yearOfCommonEra] month:[now monthOfYear] day:[now dayOfMonth] hour:[now hourOfDay]-6 minute:[now minuteOfHour] second:[now secondOfMinute] timeZone:nil] timeIntervalSinceReferenceDate]];
-				pageTitle = NSLocalizedString(@"Last 6 hours", nil);
+				pageTitle = NSLocalizedString( @"Last 6 hours", nil);
 			}
 			else if([(NSString*)[parameters objectForKey:@"browse"] isEqualToString:@"all"])
 			{
@@ -2249,14 +2241,13 @@ static NSString *webDirectory = nil;
 				
 				NSString *url = [NSString stringWithFormat: @"/movie.mov?id=%@&studyID=%@", [parameters objectForKey:@"id"], [parameters objectForKey:@"studyID"]];
 				[templateString replaceOccurrencesOfString:@"%DownloadMovieURL%" withString: [NSString stringWithFormat: @"<a href=\"%@\">%@</a>", url, NSLocalizedString( @"Link to Quicktime Movie File", nil)] options: NSLiteralSearch range: NSMakeRange(0, [templateString length])];
-				[templateString replaceOccurrencesOfString:@"%Localized_QuicktimeRequired%" withString: NSLocalizedString( @"Viewing these movies requires <a href=\"http://www.apple.com/quicktime\">Apple Quicktime</a>", nil) options: NSLiteralSearch range: NSMakeRange(0, [templateString length])];
 			}
 			
 			NSString *seriesName = [OsiriXHTTPConnection nonNilString:[[series lastObject] valueForKey:@"name"]];
 			[templateString replaceOccurrencesOfString:@"%PageTitle%" withString:seriesName options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 			
 			NSString *studyName = [OsiriXHTTPConnection nonNilString:[[series lastObject] valueForKeyPath:@"study.name"]];
-			[templateString replaceOccurrencesOfString:@"%LocalizedLabel_Home%" withString:studyName options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+			[templateString replaceOccurrencesOfString:@"%LinkToStudyLevel%" withString:studyName options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 			
 			[templateString replaceOccurrencesOfString: @"%DicomCStorePort%" withString: portString options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 			
@@ -2558,13 +2549,6 @@ static NSString *webDirectory = nil;
 		{
 			NSMutableString *templateString = [NSMutableString stringWithContentsOfFile: [webDirectory stringByAppendingPathComponent:@"password_forgotten.html"]];
 			
-			[templateString replaceOccurrencesOfString: @"%Localized_PasswordForgotten%" withString:NSLocalizedString(@"Password Forgotten", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-			[templateString replaceOccurrencesOfString: @"%LocalizedLabel_Home%" withString:NSLocalizedString(@"Home", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-			[templateString replaceOccurrencesOfString: @"%Localized_Email%" withString:NSLocalizedString(@"Email", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-			[templateString replaceOccurrencesOfString: @"%Localized_Username%" withString:NSLocalizedString(@"Username", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-			[templateString replaceOccurrencesOfString: @"%Localized_RestorePassword%" withString:NSLocalizedString(@"Enter your username or your email to receive a new password by email:", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-			[templateString replaceOccurrencesOfString: @"%Localized_RestorePasswordButton%" withString:NSLocalizedString(@"Reset Password", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-			
 			NSString *message = @"";
 			
 			if( [[parameters valueForKey: @"what"] isEqualToString: @"restorePassword"])
@@ -2702,32 +2686,13 @@ static NSString *webDirectory = nil;
 				
 				[templateString replaceOccurrencesOfString: @"%LocalizedLabel_MessageAccount%" withString: message options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 				
-				[templateString replaceOccurrencesOfString: @"%Localized_Username%" withString:NSLocalizedString(@"Username", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-				[templateString replaceOccurrencesOfString: @"%Localized_PreviousPassword%" withString:NSLocalizedString(@"Previous Password", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-				[templateString replaceOccurrencesOfString: @"%Localized_UserAccountFor%" withString:NSLocalizedString(@"User Account For", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-				[templateString replaceOccurrencesOfString: @"%Localized_NewPassword%" withString:NSLocalizedString(@"New Password", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-				[templateString replaceOccurrencesOfString: @"%Localized_RepeatNewPassword%" withString:NSLocalizedString(@"Repeat New Password", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-				[templateString replaceOccurrencesOfString: @"%Localized_Email%" withString:NSLocalizedString(@"Email", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-				[templateString replaceOccurrencesOfString: @"%Localized_Address%" withString:NSLocalizedString(@"Address", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-				[templateString replaceOccurrencesOfString: @"%Localized_Phone%" withString:NSLocalizedString(@"Phone", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-				[templateString replaceOccurrencesOfString: @"%Localized_EmailNotification%" withString:NSLocalizedString(@"Email Notification", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-				
-				[templateString replaceOccurrencesOfString: @"%LocalizedLabel_Home%" withString:NSLocalizedString(@"Home", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-				
-				[templateString replaceOccurrencesOfString: @"%LocalizedLabel_MessageAccount%" withString:NSLocalizedString(@"Home", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-				
 				[templateString replaceOccurrencesOfString: @"%name%" withString: [currentUser valueForKey: @"name"] options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 				[templateString replaceOccurrencesOfString: @"%DicomCStorePort%" withString: portString options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 				
-				[templateString replaceOccurrencesOfString: @"%LocalizedLabel_ChangePassword%" withString:NSLocalizedString(@"Change Password:", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-				[templateString replaceOccurrencesOfString: @"%LocalizedLabel_UpdatePasswordButton%" withString: NSLocalizedString( @"Change Password", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-				
-				[templateString replaceOccurrencesOfString: @"%LocalizedLabel_ChangeSettings%" withString:NSLocalizedString(@"Change Personal Information:", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 				[templateString replaceOccurrencesOfString: @"%email%" withString: [currentUser valueForKey: @"email"] options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 				[templateString replaceOccurrencesOfString: @"%address%" withString: [currentUser valueForKey: @"address"] options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 				[templateString replaceOccurrencesOfString: @"%phone%" withString: [currentUser valueForKey: @"phone"] options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 				[templateString replaceOccurrencesOfString: @"%emailNotification%" withString: ([[currentUser valueForKey: @"emailNotification"] boolValue]?@"checked":@"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-				[templateString replaceOccurrencesOfString: @"%LocalizedLabel_UpdateSettingsButton%" withString: NSLocalizedString( @"Update", nil) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 				
 				data = [templateString dataUsingEncoding: NSUTF8StringEncoding];
 				

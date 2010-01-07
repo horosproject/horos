@@ -1,0 +1,49 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>User account for : %name%</title>
+	<meta http-equiv=content-type content="text/html; charset=UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+	<link rel="stylesheet" type="text/css" href="style.css" title="standard" />
+	<link rel="alternate stylesheet" type="text/css" href="iPhoneStyle.css" title="iPhone" />
+	<script type="text/javascript" language="javascript" src="styleswitcher.js"></script>
+</head> 
+
+<body>
+    <h1 id="pageTitle">User account for : %name%</h1>
+	<a id="backButton" class="button" href="/main?dicomcstoreport=%DicomCStorePort%">Home</a>
+ 
+	<div id="Home" class="panel">
+		%MessageToWrite%<h3 style="padding-top:10px">%LocalizedLabel_MessageAccount%</h3>%/MessageToWrite%
+		<form action="/account" method="POST">
+			<HR>
+			<br>
+			<b>Username</b> : %name%<br>
+			<br>
+			<HR>
+			<h2 style="padding-top:10px">Change Password</h2>
+			Previous Password : <input type="password" id="previouspassword" name="previouspassword" size="30"/><br><br>
+			New Password : <input type="password" id="password" name="password" size="30"/><br><br>
+			Repeat New Password : <input type="password" id="password2" name="password2" size="30"/><br><br>
+			<input type="hidden" name="dicomcstoreport" value="%DicomCStorePort%" name="cstoreport"/>
+			<input type="hidden" name="what" value="changePassword" name="changePassword"/>
+			<input type="submit" id="updatePassword" value="Update"/>
+			<HR>
+		</form>
+		<form action="/account" method="POST">
+			<h2 style="padding-top:10px">Change Settings</h2>
+			<b>Email</b> : <input type="text" id="email" name="email" size="40" value="%email%"/><br>%email%<br><br>
+			<b>Address</b> : <input type="text" id="address" name="address" size="80" value="%address%"/><br>%address%<br><br>
+			<b>Phone</b> : <input type="text" id="phone" name="phone" size="40" value="%phone%"/><br>%phone%<br><br>
+			<b>Notification Email</b> : <input type="checkbox" id="emailNotification" name="emailNotification" %emailNotification%/><br><br>
+			<input type="hidden" name="dicomcstoreport" value="%DicomCStorePort%" name="cstoreport"/>
+			<input type="hidden" name="what" value="changeSettings" name="changeSettings"/>
+			<input type="submit" id="updateSettings" value="Update"/>
+			<br>
+			<br>
+		</form>	
+	</div>
+</body>
+</html>

@@ -13,7 +13,7 @@
 
 <body onorientationchange="updateOrientation()">
     <h1 id="pageTitle">%PageTitle%</h1>
-    <a id="backButton" class="button" href="/main?dicomcstoreport=%DicomCStorePort%">%LocalizedLabel_Home%</a>
+    <a id="backButton" class="button" href="/main?dicomcstoreport=%DicomCStorePort%">Home</a>
 
 	<ul id="studyList" title="Study List" class="studyList">
         %StudyListItem%
@@ -36,7 +36,7 @@
 				<li class="StudyListItemSeriesCount">%StudyState%</li>
 				<li class="StudyListItemSeriesCount">
 				<a href="%StudyListItemName%.%zipextension%?dicomcstoreport=%DicomCStorePort%&id=%StudyListItemID%%browse%%browseParameter%%search%%album%">
-				%ZIPFunctions%<span class="StudyListItemSeriesCount">%LocalizedLabel_DownloadAsZIP%</span>%/ZIPFunctions%
+				%ZIPFunctions%<span class="StudyListItemSeriesCount">Download As ZIP</span>%/ZIPFunctions%
 			</a>
 			</ul>
 			

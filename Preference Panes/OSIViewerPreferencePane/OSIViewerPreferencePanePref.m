@@ -45,7 +45,7 @@
 		[[NSUserDefaults standardUserDefaults] setBool:[[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"] forKey: @"AUTOTILING"];
 		[totoku12Bit setEnabled: [[NSUserDefaults standardUserDefaults] boolForKey:@"is12bitPluginAvailable"]];
 	}
-	NSLog(@"%@", totoku12Bit);
+//	NSLog(@"%@", totoku12Bit);
 //	[characterSetPopup setEnabled: val];
 //	[addServerDICOM setEnabled: val];
 //	[addServerSharing setEnabled: val];

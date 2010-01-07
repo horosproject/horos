@@ -35,20 +35,20 @@
     <a id="backButton" class="button" href="studyList?dicomcstoreport=%DicomCStorePort%&browse=%browse%&browseParameter=%browseParameter%&search=%search%&album=%album%">%LocalizedLabel_StudyList%</a>
 	<div id="Home" class="panel">
 		<h2>%LocalizedLabel_SendStatus%</h2>
-		<h2>%LocalizedLabel_PatientInfo%</h2>
+		<h2>Patient Informations</h2>
 		<ul>
-			<li>%LocalizedLabel_PatientID%: %PatientID%</li>
-			<li>%LocalizedLabel_PatientName%: %PatientName%</li>
-			<li>%LocalizedLabel_PatientDateOfBirth%: %PatientDOB%</li>
-			<li>%LocalizedLabel_StudyDate%: %StudyDate%</li>
-			<li>%LocalizedLabel_StudyModality%: %StudyModality%</li>
-			<li>%LocalizedLabel_StudyDescription%: %StudyDescription%</li>
-			<li>%LocalizedLabel_StudyComment%: %StudyComment%</li>
-			<li>%LocalizedLabel_StudyState%: %StudyState%</li>
+			<li>Patient ID: %PatientID%</li>
+			<li>Patient name: %PatientName%</li>
+			<li>Date of birth: %PatientDOB%</li>
+			<li>Study Date: %StudyDate%</li>
+			<li>Modality: %StudyModality%</li>
+			<li>Description: %StudyDescription%</li>
+			<li>Comment: %StudyComment%</li>
+			<li>Study State: %StudyState%</li>
 		</ul>
-		%Report%<div><a href="report?dicomcstoreport=%DicomCStorePort%&id=%StudyID%" class="report">%LocalizedLabel_GetReport%</a></div>%/Report%
+		%Report%<div><a href="report?dicomcstoreport=%DicomCStorePort%&id=%StudyID%" class="report">Get Report</a></div>%/Report%
 		<form id="selectDicomDestination" name="selectDicomDestination">
-		<h2 style="padding-top:10px">%LocalizedLabel_Series%</h2>
+		<h2 style="padding-top:10px">Series</h2>
 		<ul id="imageList" class="images">
 			%SeriesListItem%
 				<li class="image">
@@ -78,7 +78,7 @@
 						<tr>
 							%ZIPFunctions%<td class="tdDownloadAsZIP">
 								<a class="series" href="%PatientName%.%zipextension%?dicomcstoreport=%DicomCStorePort%&id=%SeriesID%&studyID=%StudyID%&browse=%browse%&browseParameter=%browseParameter%&search=%search%&album=%album%">
-									<span class="DownloadAsZIP">%LocalizedLabel_DownloadAsZIP%</span>
+									<span class="DownloadAsZIP">Download As ZIP</span>
 								</a>
 							</td>%/ZIPFunctions%
 						</tr>
@@ -89,7 +89,7 @@
 				<li class="image" id="CheckAll" %CheckAllStyle% >
 					<table><tr>
 						<td><input type="checkbox" class="checkbox" name="CheckAll" onClick="if(document.selectDicomDestination.CheckAll.checked == true){checkAll(document.selectDicomDestination.selected);} else {uncheckAll(document.selectDicomDestination.selected);}" %CheckAllChecked% /></td>
-						<td><span id="CheckAllLabel" class="SeriesName" >%CheckAllLabel%</span></td>
+						<td><span id="CheckAllLabel" class="SeriesName">Check All</span></td>
 					</tr></table>
 				</li>
 				%/SendingFunctions2%
@@ -104,14 +104,14 @@
 		<HR>
 		<br>
 		<br>
-		<h2 style="padding-top:10px">%LocalizedLabel_DICOMTransfer%</h2>
-			%LocalizedLabel_SendSelectedSeriesTo%:
+		<h2 style="padding-top:10px">DICOM Transfer</h2>
+			Send selected series to:
 			<select name="dicomDestination" id="dicomDestination">
 				%dicomNodesListItem%
 				<option value="%dicomNodeAddress%:%dicomNodePort%:%dicomNodeAETitle%:%dicomNodeSyntax%" %selected% >%dicomNodeDescription% [%dicomNodeAddress%:%dicomNodePort%]</option>
 				%/dicomNodesListItem%
 			</select>
-			<input type="submit" name="dicomSend" id="dicomSend" value="%LocalizedLabel_Send%"/>
+			<input type="submit" name="dicomSend" id="dicomSend" value="Send"/>
 		<br>
 		<br>
 		%/SendingFunctions3%
@@ -119,18 +119,19 @@
 		<HR>
 		<br>
 		<br>
-		<h2 style="padding-top:10px">%LocalizedLabel_ShareThisStudy%</h2>
-			%LocalizedLabel_ShareThisStudyWithThisUser%:
+		<h2 style="padding-top:10px">Share This Study</h2>
+			Share This Study with user:
 			<select name="userDestination" id="userDestination">
 				%userListItem%
 				<option value="%username%" %selected% >%username% (%email%)</option>
 				%/userListItem%
 			</select>
-			<input type="submit" name="shareStudy" id="shareStudy" value="%LocalizedLabel_Share%"/>
+			<input type="submit" name="shareStudy" id="shareStudy" value="Share"/>
 		%/SharingFunctions%
 		<br>
 		<br>
 		</form>
+		XXXXXXXXXXX
     </div>
   </body>
 </html>

@@ -42,31 +42,9 @@ char *GetPrivateIP()
 	return [[BrowserController currentBrowser] userManagedObjectContext];
 }
 
-- (void)checkView:(NSView *)aView :(BOOL) OnOff
-{
-    id view;
-    NSEnumerator *enumerator;
-	
-	if( aView == _authView) return;
-	
-    if ([aView isKindOfClass: [NSControl class] ])
-	{
-       [(NSControl*) aView setEnabled: OnOff];
-	   return;
-    }
-
-	// Recursively check all the subviews in the view
-    enumerator = [ [aView subviews] objectEnumerator];
-    while (view = [enumerator nextObject]) {
-        [self checkView:view :OnOff];
-    }
-}
-
 - (void) enableControls: (BOOL) val
 {
 	[[NSUserDefaults standardUserDefaults] setBool: val forKey: @"authorizedToEdit"];
-	
-	[self checkView: [self mainView] :val];
 }
 
 - (void)authorizationViewDidAuthorize:(SFAuthorizationView *)view
@@ -91,7 +69,10 @@ char *GetPrivateIP()
 
 - (void) mainViewDidLoad
 {
+	[studiesArrayController addObserver:self forKeyPath: @"selection" options:(NSKeyValueObservingOptionNew) context:NULL];
+	
 	[_authView setDelegate:self];
+	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTHENTICATION"])
 	{
 		[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"authorizedToEdit"];
@@ -102,15 +83,12 @@ char *GetPrivateIP()
 	}
 	else
 	{
+		[[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"authorizedToEdit"];
+		
 		[_authView setString:"com.rossetantoine.osirix.preferences.allowalways"];
 		[_authView setEnabled: NO];
 	}
 	[_authView updateStatus:self];
-	
-	[studiesArrayController addObserver:self forKeyPath: @"selection" options:(NSKeyValueObservingOptionNew) context:NULL];
-
-	[[NSUserDefaults standardUserDefaults] setInteger: ![[NSUserDefaults standardUserDefaults] integerForKey: @"passwordWebServer"] forKey: @"passwordWebServer"];
-	[[NSUserDefaults standardUserDefaults] setInteger: ![[NSUserDefaults standardUserDefaults] integerForKey: @"passwordWebServer"] forKey: @"passwordWebServer"];
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
