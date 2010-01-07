@@ -19,7 +19,8 @@
 + (NSString *)stringForSecKeychainAttrType:(SecKeychainAttrType)attrType;
 + (NSString *)stringForError:(OSStatus)status;
 
-+ (NSArray *)KeychainAccessIdentityList;
++ (NSArray *)KeychainAccessCertificatesList;
++ (NSArray *)KeychainAccessTrustedCertificatesList;
 + (SecIdentityRef)KeychainAccessPreferredIdentityForName:(NSString*)name keyUse:(int)keyUse;
 + (void)KeychainAccessSetPreferredIdentity:(SecIdentityRef)identity forName:(NSString*)name keyUse:(int)keyUse;
 + (NSString*)KeychainAccessCertificateCommonNameForIdentity:(SecIdentityRef)identity;

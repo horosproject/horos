@@ -1,6 +1,55 @@
 #import "DDKeychain.h"
 #import "DICOMTLS.h"
 
+// from : http://www.opensource.apple.com/source/Kerberos/Kerberos-75.9/KerberosFramework/KerberosLogin/Sources/KerberosLoginServer/SFKerberosCredentialSelector.m?f=text
+static char *kcItemPrintableName(SecKeychainItemRef certRef)
+{
+    char *crtn = NULL;
+	
+    /* just search for the one attr we want */
+#if USE_KEY_NAME
+    UInt32 tag = kSecKeyPrintName;
+#else
+    UInt32 tag = kSecLabelItemAttr;
+#endif
+    SecKeychainAttributeInfo attrInfo;
+    attrInfo.count = 1;
+    attrInfo.tag = &tag;
+    attrInfo.format = NULL;
+    SecKeychainAttributeList *attrList = NULL;
+    SecKeychainAttribute *attr = NULL;
+    
+    OSStatus ortn = SecKeychainItemCopyAttributesAndData(
+														 (SecKeychainItemRef)certRef, 
+														 &attrInfo,
+														 NULL,			// itemClass
+														 &attrList, 
+														 NULL,			// length - don't need the data
+														 NULL);			// outData
+    if(ortn) {
+		cssmPerror("SecKeychainItemCopyAttributesAndData", ortn);
+		/* may want to be a bit more robust here, but this should
+		 * never happen */
+		return strdup("Unnamed KeychainItem");
+    }
+    /* subsequent errors to errOut: */
+    
+    if((attrList == NULL) || (attrList->count != 1)) {
+		printf("***Unexpected result fetching label attr\n");
+		crtn = strdup("Unnamed KeychainItem");
+		goto errOut;
+    }
+    /* We're assuming 8-bit ASCII attribute data here... */
+    attr = attrList->attr;
+    crtn = (char *)malloc(attr->length + 1);
+    memmove(crtn, attr->data, attr->length);
+    crtn[attr->length] = '\0';
+    
+errOut:
+    SecKeychainItemFreeAttributesAndData(attrList, NULL);
+    return crtn;
+}
+
 @implementation DDKeychain
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -276,7 +325,7 @@
 	 *     If this bit is 1, no access object is attached to the keychain item for imported private keys.
 	 * CSSM_KEYUSE keyUsage
 	 *     A word of bits constituting the low-level use flags for imported keys as defined in cssmtype.h.
-	 *     If this field is 0 or keyParams is NULL, the default value is CSSM_KEYUSE_ANY.
+	 *     If this field is 0 or keyParams is NULL, the default value is CSSM_KEYUSE_ANYCSSM_KEYUSE_ANY.
 	 * CSSM_KEYATTR_FLAGS keyAttributes
 	 *     The following are valid values for these flags:
 	 *     CSSM_KEYATTR_PERMANENT, CSSM_KEYATTR_SENSITIVE, and CSSM_KEYATTR_EXTRACTABLE.
@@ -612,7 +661,7 @@
 # pragma mark Keychain Access
 
 // Returns the list of Certificates stored in Keychain Access
-+ (NSArray *)KeychainAccessIdentityList;
++ (NSArray *)KeychainAccessCertificatesList;
 {
 	SecKeychainRef keychain = NULL;
 	SecIdentitySearchRef searchRef = NULL;
@@ -642,6 +691,34 @@
 	if(searchRef) CFRelease(searchRef);
 	
 	return result;	
+}
+
+
+// WORK IN PROGRESS - DOES NOTHING YET
++ (NSArray *)KeychainAccessTrustedCertificatesList;
+{
+	SecKeychainRef keychain = NULL;
+	
+	// Create array to hold the results
+	NSMutableArray *trustedCertificates = [NSMutableArray array];
+		
+	SecKeychainCopyDefault(&keychain);
+
+	SecKeychainSearchRef searchRef = NULL;
+	SecKeychainSearchCreateFromAttributes(keychain, kSecCertificateItemClass, NULL, &searchRef);
+			
+	SecKeychainItemRef itemRef = NULL;
+	while(searchRef && (SecKeychainSearchCopyNext(searchRef, &itemRef) != errSecItemNotFound))
+	{
+		const char *name = kcItemPrintableName(itemRef);
+		NSLog(@"kcItemPrintableName : %@", [NSString stringWithUTF8String:name]);
+		CFRelease(itemRef);
+	}
+	
+	if(keychain)  CFRelease(keychain);
+	if(searchRef) CFRelease(searchRef);
+	
+	return [NSArray arrayWithArray:trustedCertificates];	
 }
 
 // Returns a reference to the preferred identity, or NULL if none was found.

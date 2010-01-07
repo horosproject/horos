@@ -883,10 +883,13 @@
 
 - (IBAction)chooseTLSCertificate:(id)sender
 {
-	NSArray *identities = [DDKeychain KeychainAccessIdentityList];
+	NSArray *certificates = [DDKeychain KeychainAccessCertificatesList];
+
+	NSArray *trustedCertificates = [DDKeychain KeychainAccessTrustedCertificatesList]; // test
+
 	
 	[[SFChooseIdentityPanel sharedChooseIdentityPanel] setAlternateButtonTitle:NSLocalizedString(@"Cancel", @"Cancel")];
-	NSInteger clickedButton = [[SFChooseIdentityPanel sharedChooseIdentityPanel] runModalForIdentities:identities message:NSLocalizedString(@"Choose a certificate from the following list.", @"Choose a certificate from the following list.")];
+	NSInteger clickedButton = [[SFChooseIdentityPanel sharedChooseIdentityPanel] runModalForIdentities:certificates message:NSLocalizedString(@"Choose a certificate from the following list.", @"Choose a certificate from the following list.")];
 	
 	if(clickedButton==NSOKButton)
 	{
