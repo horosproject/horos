@@ -823,15 +823,48 @@ static NSString *language = nil;
 	
 	if( shareSend)
 	{
-//		tempArray = [returnHTML componentsSeparatedByString:@"%userListItem%"];
-//		templateStringStart = [tempArray objectAtIndex:0];
-//		tempArray = [[tempArray lastObject] componentsSeparatedByString:@"%/userListItem%"];
-//		userListItemString = [tempArray objectAtIndex:0];
-//		templateStringEnd = [tempArray lastObject];
-//		
-//		[returnHTML appendString:templateStringStart];
-//		
-//		[returnHTML appendString:templateStringEnd];
+		tempArray = [returnHTML componentsSeparatedByString:@"%userListItem%"];
+		templateStringStart = [tempArray objectAtIndex:0];
+		
+		tempArray = [[tempArray lastObject] componentsSeparatedByString:@"%/userListItem%"];
+		NSString *userListItemString = [tempArray objectAtIndex:0];
+		
+		templateStringEnd = [tempArray lastObject];
+		
+		returnHTML = [NSMutableString stringWithString: templateStringStart];
+		
+		@try
+		{
+			// Find all users
+			NSError *error = nil;
+			NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+			[dbRequest setEntity: [[[[BrowserController currentBrowser] userManagedObjectModel] entitiesByName] objectForKey: @"User"]];
+			[dbRequest setPredicate: [NSPredicate predicateWithValue: YES]];
+			
+			error = nil;
+			NSArray *users = [[[BrowserController currentBrowser] userManagedObjectContext] executeFetchRequest: dbRequest error: &error];
+			
+			users = [users sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"name" ascending: YES] autorelease]]];
+			
+			for( NSManagedObject *user in users)
+			{
+				if( user != currentUser)
+				{
+					NSMutableString *tempHTML = [NSMutableString stringWithString: userListItemString];
+					
+					[tempHTML replaceOccurrencesOfString:@"%username%" withString: [user valueForKey: @"name"] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+					[tempHTML replaceOccurrencesOfString:@"%email%" withString: [user valueForKey: @"email"] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+					
+					[returnHTML appendString: tempHTML];
+				}
+			}
+		}
+		@catch ( NSException *e)
+		{
+			NSLog( @"****** exception in find all users htmlStudy: %@", e);
+		}
+		
+		[returnHTML appendString: templateStringEnd];
 	}
 	
 	[context unlock];
