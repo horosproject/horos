@@ -355,6 +355,8 @@ static NSMutableDictionary *paneBundles = nil;
 		aPane = [[[prefPaneClass alloc] initWithBundle:prefBundle] autorelease];
 		
 		[paneBundles setObject: aPane forKey: pathToPrefPaneBundle];
+		
+		NSLog( @"Preference Bundle loaded: %@", [pathToPrefPaneBundle lastPathComponent]);
 	}
 	else
 		aPane = [paneBundles objectForKey: pathToPrefPaneBundle];
