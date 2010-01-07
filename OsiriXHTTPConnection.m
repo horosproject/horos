@@ -156,6 +156,11 @@ static NSString *webDirectory = nil;
 
 + (void) checkWebDirectory
 {
+	NString *language = [[[NSBundle mainBundle] preferredLocalizations] objectAtIndex: 0]);
+	
+	if( language == nil)
+		language = @"English";
+	
 	#define PATH2HTML @"~/Library/Application Support/OsiriX/"
 	
 	if( webDirectory == nil)

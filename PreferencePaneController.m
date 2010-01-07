@@ -89,6 +89,8 @@ extern OSStatus SetupAuthorization(void)
 #import "DicomFile.h"
 #import "DCMView.h"
 
+static NSMutableDictionary *paneBundles = nil;
+
 #define DATAFILEPATH @"/Database.dat"
 
 @implementation PreferencePaneController
@@ -341,11 +343,23 @@ extern OSStatus SetupAuthorization(void)
 		[bundles setObject: prefBundle forKey: pathToPrefPaneBundle];
 	}
 	
-	prefBundle = [bundles objectForKey: pathToPrefPaneBundle];
+	if( paneBundles == nil)
+		paneBundles = [[NSMutableDictionary alloc] init];
 	
-	prefPaneClass = [prefBundle principalClass];
-	NSPreferencePane *aPane = [[[prefPaneClass alloc] initWithBundle:prefBundle] autorelease];
-	[self setPane:aPane];
+	NSPreferencePane *aPane = nil;
+	
+	if( [paneBundles objectForKey: pathToPrefPaneBundle] == nil)
+	{
+		prefBundle = [bundles objectForKey: pathToPrefPaneBundle];
+		prefPaneClass = [prefBundle principalClass];
+		aPane = [[[prefPaneClass alloc] initWithBundle:prefBundle] autorelease];
+		
+		[paneBundles setObject: aPane forKey: pathToPrefPaneBundle];
+	}
+	else
+		aPane = [paneBundles objectForKey: pathToPrefPaneBundle];
+
+	[self setPane: aPane];
 }
 
 - (IBAction)selectPane:(id)sender

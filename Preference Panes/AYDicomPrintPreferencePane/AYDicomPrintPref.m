@@ -57,7 +57,6 @@
 - (void) dealloc
 {
 	[m_PrinterDefaults release];
-	m_PrinterDefaults = nil;
 
 	[super dealloc];
 }

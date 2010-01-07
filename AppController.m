@@ -99,21 +99,7 @@ void exitOsiriX(void)
 #endif
 
 
-static char *GetPrivateIP()
-{
-	struct			hostent *h;
-	static char		hostname[100];
-	
-	gethostname(hostname, 99);
-	
-	if( (h=gethostbyname(hostname)) == NULL)
-	{
-        NSLog( @"**** Cannot GetPrivateIP -> return nil");
-        return nil;
-    }
-	
-    return (char*) inet_ntoa(*((struct in_addr *)h->h_addr));
-}
+extern char *GetPrivateIP();
 
 int GetAllPIDsForProcessName(const char* ProcessName, 
                              pid_t ArrayOfReturnedPIDs[], 
@@ -985,16 +971,7 @@ static NSDate *lastWarningDate = nil;
 
 - (NSString*) privateIP
 {
-	NSString *ip = nil;
-	char *c = GetPrivateIP();
-	
-	if( c)
-		ip = [NSString stringWithCString: c];
-	
-	if( ip == nil || [ip length] == 0)
-		ip = [self computerName];
-	
-	return ip;
+	return [NSString stringWithCString: GetPrivateIP()];
 }
 
 - (IBAction)cancelModal:(id)sender

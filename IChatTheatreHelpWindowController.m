@@ -21,7 +21,7 @@
 {
 	[super windowDidLoad];
 	
-	NSString	*source = [NSString stringWithFormat:@"iChatTheatre-%@", [[[NSBundle mainBundle] preferredLocalizations] objectAtIndex: 0]];
+	NSString *source = [NSString stringWithFormat:@"iChatTheatre-%@", [[[NSBundle mainBundle] preferredLocalizations] objectAtIndex: 0]];
 	
 	NSString *path = [[NSBundle mainBundle] pathForResource: source ofType:@"html"];
 	

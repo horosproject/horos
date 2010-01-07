@@ -248,7 +248,7 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
     NSString *name1 = [plugin1 objectForKey:@"name"];
     NSString *name2 = [plugin2 objectForKey:@"name"];
     
-	return [name1 compare:name2];
+	return [name1 compare:name2 options: NSCaseInsensitiveSearch];
 }
 
 - (NSArray*) availablePlugins;

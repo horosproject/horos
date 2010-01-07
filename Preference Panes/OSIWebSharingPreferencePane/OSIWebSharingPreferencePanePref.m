@@ -108,6 +108,9 @@ char *GetPrivateIP()
 	[_authView updateStatus:self];
 	
 	[studiesArrayController addObserver:self forKeyPath: @"selection" options:(NSKeyValueObservingOptionNew) context:NULL];
+
+	[[NSUserDefaults standardUserDefaults] setInteger: ![[NSUserDefaults standardUserDefaults] integerForKey: @"passwordWebServer"] forKey: @"passwordWebServer"];
+	[[NSUserDefaults standardUserDefaults] setInteger: ![[NSUserDefaults standardUserDefaults] integerForKey: @"passwordWebServer"] forKey: @"passwordWebServer"];
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context

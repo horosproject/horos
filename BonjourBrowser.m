@@ -45,21 +45,7 @@ volatile static BOOL threadIsRunning = NO;
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
-static char *GetPrivateIP()
-{
-	struct			hostent *h;
-	static char		hostname[100];
-	
-	gethostname(hostname, 99);
-	
-	if ((h=gethostbyname(hostname)) == NULL)
-	{
-		NSLog( @"**** Cannot GetPrivateIP -> will use hostname");
-		return hostname; 
-    }
-	
-    return (char*) inet_ntoa(*((struct in_addr *)h->h_addr));
-}
+extern const char *GetPrivateIP();
 
 @implementation BonjourBrowser
 
