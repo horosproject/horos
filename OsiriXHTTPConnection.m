@@ -156,7 +156,7 @@ static NSString *webDirectory = nil;
 
 + (void) checkWebDirectory
 {
-	NString *language = [[[NSBundle mainBundle] preferredLocalizations] objectAtIndex: 0]);
+	NSString *language = [[[NSBundle mainBundle] preferredLocalizations] objectAtIndex: 0];
 	
 	if( language == nil)
 		language = @"English";
