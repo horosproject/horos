@@ -443,7 +443,7 @@
 {
 	if ([_values count] > 0)
 		return [_values objectAtIndex:0];
-	NSLog(@"No value attribute: %@", self.description);
+	
 	return nil;
 }
 
