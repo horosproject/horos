@@ -39,11 +39,10 @@
 	IBOutlet NSWindow				*TLSSettings;
 	BOOL							TLSEnabled;
 	BOOL							TLSAuthenticated;
-	TLSFileFormat					TLSKeyAndCertificateFileFormat;
 	IBOutlet DNDArrayController		*TLSCipherSuitesArrayController;
 	NSArray							*TLSSupportedCipherSuite;
 	BOOL							TLSUseTrustedCACertificatesFolderURL, TLSUseDHParameterFileURL;
-	NSURL							*TLSTrustedCACertificatesFolderURL, *TLSDHParameterFileURL;
+	NSURL							*TLSDHParameterFileURL;
 	TLSCertificateVerificationType	TLSCertificateVerification;
 	NSString						*TLSAuthenticationCertificate;
 	IBOutlet NSButton				*TLSChooseCertificateButton, *TLSCertificateButton;
@@ -55,8 +54,7 @@
 @property (retain) NSString *WADOUrl;
 
 @property BOOL TLSEnabled, TLSAuthenticated, TLSUseTrustedCACertificatesFolderURL, TLSUseDHParameterFileURL;
-@property (retain) NSURL *TLSTrustedCACertificatesFolderURL, *TLSDHParameterFileURL;
-@property TLSFileFormat TLSKeyAndCertificateFileFormat;
+@property (retain) NSURL *TLSDHParameterFileURL;
 @property (retain) NSArray *TLSSupportedCipherSuite;
 @property TLSCertificateVerificationType TLSCertificateVerification;
 

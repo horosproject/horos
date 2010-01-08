@@ -37,8 +37,7 @@
 @synthesize WADOPort, WADOTransferSyntax, WADOUrl;
 
 @synthesize TLSEnabled, TLSAuthenticated, TLSUseTrustedCACertificatesFolderURL, TLSUseDHParameterFileURL;
-@synthesize TLSTrustedCACertificatesFolderURL, TLSDHParameterFileURL;
-@synthesize TLSKeyAndCertificateFileFormat;
+@synthesize TLSDHParameterFileURL;
 @synthesize TLSSupportedCipherSuite;
 @synthesize TLSCertificateVerification;
 @synthesize TLSAuthenticationCertificate;
@@ -143,23 +142,6 @@
 		// key and certificate file format options:
 		[args addObject:@"--pem-keys"];
 		
-		// certification authority options:
-		if([[serverParameters objectForKey:@"TLSUseTrustedCACertificatesFolderURL"] boolValue])
-		{
-			NSString *path = [serverParameters objectForKey:@"TLSTrustedCACertificatesFolderURL"];
-			BOOL isDirectory = NO;
-			BOOL fileExists = [[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDirectory];
-			if(fileExists)
-			{
-				if(isDirectory) // TODO: use --add-cert-file for each file in the directory (in stead of --add-cert-dir)
-					[args addObject:@"--add-cert-dir"]; // add certificates in d to list of certificates  .... needs to use OpenSSL & rename files (see http://forum.dicom-cd.de/viewtopic.php?p=3237&sid=bd17bd76876a8fd9e7fdf841b90cf639 )
-				else
-					[args addObject:@"--add-cert-file"]; // add certificate file to list of certificates
-				
-				[args addObject:path];
-			}
-		}
-
 		//ciphersuite options:
 		for (NSDictionary *suite in [serverParameters objectForKey:@"TLSCipherSuites"])
 		{
@@ -175,14 +157,7 @@
 			[args addObject:@"--dhparam"]; // read DH parameters for DH/DSS ciphersuites
 			[args addObject:[serverParameters objectForKey:@"TLSDHParameterFileURL"]];
 		}
-		
-		// pseudo random generator options.
-		// We initialize the pseudo-random number generator with the content of the screen which is is hardly predictable for an attacker
-		// see http://www.mevis-research.de/~meyer/dcmtk/docs_352/dcmtls/randseed.txt
-		[OSILocationsPreferencePanePref screenSnapshot]; 
-		[args addObject:@"--seed"]; // seed random generator with contents of f
-		[args addObject:TLS_SEED_FILE];
-		
+
 		// peer authentication options:
 		TLSCertificateVerificationType verification = [[serverParameters objectForKey:@"TLSCertificateVerification"] intValue];
 		if(verification==RequirePeerCertificate)
@@ -191,6 +166,27 @@
 			[args addObject:@"--verify-peer-cert"]; //verify peer certificate if present
 		else //IgnorePeerCertificate
 			[args addObject:@"--ignore-peer-cert"]; //don't verify peer certificate	
+		
+		// certification authority options:
+		if(verification==RequirePeerCertificate || verification==VerifyPeerCertificate)
+		{
+			[DDKeychain KeychainAccessExportTrustedCertificatesToDirectory:TLS_TRUSTED_CERTIFICATES_DIR];
+			NSArray *trustedCertificates = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:TLS_TRUSTED_CERTIFICATES_DIR error:nil];
+		
+			//[args addObject:@"--add-cert-dir"]; // add certificates in d to list of certificates  .... needs to use OpenSSL & rename files (see http://forum.dicom-cd.de/viewtopic.php?p=3237&sid=bd17bd76876a8fd9e7fdf841b90cf639 )
+			for (NSString *cert in trustedCertificates)
+			{
+				[args addObject:@"--add-cert-file"];
+				[args addObject:[TLS_TRUSTED_CERTIFICATES_DIR stringByAppendingPathComponent:cert]];
+			}
+		}
+		
+		// pseudo random generator options.
+		// We initialize the pseudo-random number generator with the content of the screen which is is hardly predictable for an attacker
+		// see http://www.mevis-research.de/~meyer/dcmtk/docs_352/dcmtls/randseed.txt
+		[OSILocationsPreferencePanePref screenSnapshot]; 
+		[args addObject:@"--seed"]; // seed random generator with contents of f
+		[args addObject:TLS_SEED_FILE];		
 	}
 		
 	[theTask setArguments:args];
@@ -199,6 +195,7 @@
 
 	[[NSFileManager defaultManager] removeFileAtPath:[DDKeychain DICOMTLSKeyPathForServerAddress:address port:[port intValue] AETitle:aet] handler:nil]; // test
 	[[NSFileManager defaultManager] removeFileAtPath:[DDKeychain DICOMTLSCertificatePathForServerAddress:address port:[port intValue] AETitle:aet] handler:nil]; // test
+	[[NSFileManager defaultManager] removeItemAtPath:TLS_TRUSTED_CERTIFICATES_DIR error:nil];
 	
 	if( [theTask terminationStatus] == 0) return YES;
 	else return NO;
@@ -315,7 +312,6 @@
 	[WADOUrl release];
 	[stringEncoding release];
 	
-	[TLSTrustedCACertificatesFolderURL release];
 	[TLSDHParameterFileURL release];
 	[TLSSupportedCipherSuite release];
 	[TLSAuthenticationCertificate release];
@@ -732,8 +728,6 @@
 	// certificates and keys should be chosen from the Keychain, not from files
 	// see Wil Shipley's comment and examples http://www.wilshipley.com/blog/2006/10/pimp-my-code-part-12-frozen-in.html
 
-	self.TLSKeyAndCertificateFileFormat = [[aServer valueForKey:@"TLSKeyAndCertificateFileFormat"] intValue];
-
 	NSArray *selectedCipherSuites = [aServer valueForKey:@"TLSCipherSuites"];
 
 	if ([selectedCipherSuites count])
@@ -748,10 +742,6 @@
 	self.TLSDHParameterFileURL = [NSURL fileURLWithPath:dhParameterFileURL];
 
 	self.TLSUseTrustedCACertificatesFolderURL = [[aServer valueForKey:@"TLSUseTrustedCACertificatesFolderURL"] boolValue];
-	NSString *trustedCACertificatesFolderURL = [aServer valueForKey:@"TLSTrustedCACertificatesFolderURL"];
-	if(!trustedCACertificatesFolderURL)
-		trustedCACertificatesFolderURL = NSHomeDirectory();
-	self.TLSTrustedCACertificatesFolderURL = [NSURL fileURLWithPath:trustedCACertificatesFolderURL];
 	
 	if([aServer valueForKey:@"TLSCertificateVerification"])
 		self.TLSCertificateVerification = [[aServer valueForKey:@"TLSCertificateVerification"] intValue];
@@ -777,16 +767,13 @@
 		if (self.TLSEnabled)
 		{
 			[aServer setObject:[NSNumber numberWithBool: self.TLSAuthenticated] forKey:@"TLSAuthenticated"];
-			
-			[aServer setObject:[NSNumber numberWithInt:self.TLSKeyAndCertificateFileFormat] forKey:@"TLSKeyAndCertificateFileFormat"];
-			
+						
 			[aServer setObject:self.TLSSupportedCipherSuite forKey:@"TLSCipherSuites"];
 			
 			[aServer setObject:[NSNumber numberWithBool:self.TLSUseDHParameterFileURL] forKey:@"TLSUseDHParameterFileURL"];
 			[aServer setObject:[self.TLSDHParameterFileURL path] forKey:@"TLSDHParameterFileURL"];
 
 			[aServer setObject:[NSNumber numberWithBool:self.TLSUseTrustedCACertificatesFolderURL] forKey:@"TLSUseTrustedCACertificatesFolderURL"];
-			[aServer setObject:[self.TLSTrustedCACertificatesFolderURL path] forKey:@"TLSTrustedCACertificatesFolderURL"];
 			
 			[aServer setObject:[NSNumber numberWithInt:self.TLSCertificateVerification] forKey:@"TLSCertificateVerification"];
 		}
@@ -884,10 +871,7 @@
 - (IBAction)chooseTLSCertificate:(id)sender
 {
 	NSArray *certificates = [DDKeychain KeychainAccessCertificatesList];
-
-	NSArray *trustedCertificates = [DDKeychain KeychainAccessTrustedCertificatesList]; // test
-
-	
+		
 	[[SFChooseIdentityPanel sharedChooseIdentityPanel] setAlternateButtonTitle:NSLocalizedString(@"Cancel", @"Cancel")];
 	NSInteger clickedButton = [[SFChooseIdentityPanel sharedChooseIdentityPanel] runModalForIdentities:certificates message:NSLocalizedString(@"Choose a certificate from the following list.", @"Choose a certificate from the following list.")];
 	

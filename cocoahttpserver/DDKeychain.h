@@ -20,7 +20,7 @@
 + (NSString *)stringForError:(OSStatus)status;
 
 + (NSArray *)KeychainAccessCertificatesList;
-+ (NSArray *)KeychainAccessTrustedCertificatesList;
++ (void)KeychainAccessExportTrustedCertificatesToDirectory:(NSString*)directory;
 + (SecIdentityRef)KeychainAccessPreferredIdentityForName:(NSString*)name keyUse:(int)keyUse;
 + (void)KeychainAccessSetPreferredIdentity:(SecIdentityRef)identity forName:(NSString*)name keyUse:(int)keyUse;
 + (NSString*)KeychainAccessCertificateCommonNameForIdentity:(SecIdentityRef)identity;

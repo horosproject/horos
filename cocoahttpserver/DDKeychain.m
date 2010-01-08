@@ -12,6 +12,7 @@ static char *kcItemPrintableName(SecKeychainItemRef certRef)
 #else
     UInt32 tag = kSecLabelItemAttr;
 #endif
+		
     SecKeychainAttributeInfo attrInfo;
     attrInfo.count = 1;
     attrInfo.tag = &tag;
@@ -694,31 +695,41 @@ errOut:
 }
 
 
-// WORK IN PROGRESS - DOES NOTHING YET
-+ (NSArray *)KeychainAccessTrustedCertificatesList;
++ (void)KeychainAccessExportTrustedCertificatesToDirectory:(NSString*)directory;
 {
-	SecKeychainRef keychain = NULL;
-	
-	// Create array to hold the results
-	NSMutableArray *trustedCertificates = [NSMutableArray array];
+	BOOL isDirectory, directoryExists;
+	directoryExists = [[NSFileManager defaultManager] fileExistsAtPath:directory isDirectory:&isDirectory];
+	if(!directoryExists)[[NSFileManager defaultManager] createDirectoryAtPath:directory withIntermediateDirectories:NO attributes:nil error:nil];
 		
-	SecKeychainCopyDefault(&keychain);
-
-	SecKeychainSearchRef searchRef = NULL;
-	SecKeychainSearchCreateFromAttributes(keychain, kSecCertificateItemClass, NULL, &searchRef);
-			
-	SecKeychainItemRef itemRef = NULL;
-	while(searchRef && (SecKeychainSearchCopyNext(searchRef, &itemRef) != errSecItemNotFound))
+	int domains[3] = {kSecTrustSettingsDomainUser, kSecTrustSettingsDomainAdmin, kSecTrustSettingsDomainSystem};
+	
+	CFArrayRef certArray = NULL;
+	OSStatus status;
+	CFIndex numCerts, dex;
+	int i;
+	for (i=0; i<3; i++)
 	{
-		const char *name = kcItemPrintableName(itemRef);
-		NSLog(@"kcItemPrintableName : %@", [NSString stringWithUTF8String:name]);
-		CFRelease(itemRef);
+		status = SecTrustSettingsCopyCertificates(domains[i], &certArray);
+		if(status) cssmPerror("SecTrustSettingsCopyCertificates", status);
+		
+		numCerts = CFArrayGetCount(certArray);
+
+		for(dex=0; dex<numCerts; dex++)
+		{
+			SecCertificateRef certRef = (SecCertificateRef)CFArrayGetValueAtIndex(certArray, dex);			
+			CFDataRef certificateDataRef = NULL;
+			status = SecKeychainItemExport(certRef, kSecFormatX509Cert, kSecItemPemArmour, NULL, &certificateDataRef);
+			
+			if(status==0)
+			{
+				[(NSData*)certificateDataRef writeToFile:[directory stringByAppendingPathComponent:[NSString stringWithFormat:@"%d_%d.pem", i, dex]] atomically:YES];
+			}
+			else NSLog(@"SecKeychainItemExport : error : %@", [DDKeychain stringForError:status]);
+			
+		}
+		
+		CFRelease(certArray);
 	}
-	
-	if(keychain)  CFRelease(keychain);
-	if(searchRef) CFRelease(searchRef);
-	
-	return [NSArray arrayWithArray:trustedCertificates];	
 }
 
 // Returns a reference to the preferred identity, or NULL if none was found.
