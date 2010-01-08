@@ -36,7 +36,7 @@
 
 @synthesize WADOPort, WADOTransferSyntax, WADOUrl;
 
-@synthesize TLSEnabled, TLSAuthenticated, TLSUseTrustedCACertificatesFolderURL, TLSUseDHParameterFileURL;
+@synthesize TLSEnabled, TLSAuthenticated, TLSUseDHParameterFileURL;
 @synthesize TLSDHParameterFileURL;
 @synthesize TLSSupportedCipherSuite;
 @synthesize TLSCertificateVerification;
@@ -193,8 +193,8 @@
 	[theTask launch];
 	[theTask waitUntilExit];
 
-	[[NSFileManager defaultManager] removeFileAtPath:[DDKeychain DICOMTLSKeyPathForServerAddress:address port:[port intValue] AETitle:aet] handler:nil]; // test
-	[[NSFileManager defaultManager] removeFileAtPath:[DDKeychain DICOMTLSCertificatePathForServerAddress:address port:[port intValue] AETitle:aet] handler:nil]; // test
+	[[NSFileManager defaultManager] removeFileAtPath:[DDKeychain DICOMTLSKeyPathForServerAddress:address port:[port intValue] AETitle:aet] handler:nil];
+	[[NSFileManager defaultManager] removeFileAtPath:[DDKeychain DICOMTLSCertificatePathForServerAddress:address port:[port intValue] AETitle:aet] handler:nil];
 	[[NSFileManager defaultManager] removeItemAtPath:TLS_TRUSTED_CERTIFICATES_DIR error:nil];
 	
 	if( [theTask terminationStatus] == 0) return YES;
@@ -740,8 +740,6 @@
 	if(!dhParameterFileURL)
 		dhParameterFileURL = NSHomeDirectory();
 	self.TLSDHParameterFileURL = [NSURL fileURLWithPath:dhParameterFileURL];
-
-	self.TLSUseTrustedCACertificatesFolderURL = [[aServer valueForKey:@"TLSUseTrustedCACertificatesFolderURL"] boolValue];
 	
 	if([aServer valueForKey:@"TLSCertificateVerification"])
 		self.TLSCertificateVerification = [[aServer valueForKey:@"TLSCertificateVerification"] intValue];
@@ -772,8 +770,6 @@
 			
 			[aServer setObject:[NSNumber numberWithBool:self.TLSUseDHParameterFileURL] forKey:@"TLSUseDHParameterFileURL"];
 			[aServer setObject:[self.TLSDHParameterFileURL path] forKey:@"TLSDHParameterFileURL"];
-
-			[aServer setObject:[NSNumber numberWithBool:self.TLSUseTrustedCACertificatesFolderURL] forKey:@"TLSUseTrustedCACertificatesFolderURL"];
 			
 			[aServer setObject:[NSNumber numberWithInt:self.TLSCertificateVerification] forKey:@"TLSCertificateVerification"];
 		}

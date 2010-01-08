@@ -64,15 +64,8 @@
 		if (_secureConnection)
 		{
 			_doAuthenticate = [[extraParameters objectForKey:@"TLSAuthenticated"] boolValue];
-			
-			TLSFileFormat fileFormat = (TLSFileFormat)[[extraParameters objectForKey:@"TLSKeyAndCertificateFileFormat"] intValue];
-			if(fileFormat==DER)
-				_keyFileFormat = SSL_FILETYPE_ASN1;
-			else
-				_keyFileFormat = SSL_FILETYPE_PEM;
-		
-			_useTrustedCA = [[extraParameters objectForKey:@"TLSUseTrustedCACertificatesFolderURL"] boolValue];
-			if(_useTrustedCA) _trustedCAURL = [extraParameters objectForKey:@"TLSTrustedCACertificatesFolderURL"];
+			_keyFileFormat = SSL_FILETYPE_PEM;
+			certVerification = (TLSCertificateVerificationType)[[extraParameters objectForKey:@"TLSCertificateVerification"] intValue];
 			
 			NSArray *suites = [extraParameters objectForKey:@"TLSCipherSuites"];
 			NSMutableArray *selectedCipherSuites = [NSMutableArray array];
@@ -90,8 +83,6 @@
 			
 			_readSeedFile = [TLS_SEED_FILE cStringUsingEncoding:NSUTF8StringEncoding];
 			_writeSeedFile = TLS_WRITE_SEED_FILE;
-			
-			certVerification = (TLSCertificateVerificationType)[[extraParameters objectForKey:@"TLSCertificateVerification"] intValue];
 		}
 
 	}

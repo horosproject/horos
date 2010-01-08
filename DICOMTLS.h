@@ -14,19 +14,6 @@
 
 typedef enum
 {
-	PasswordNone = 0,
-	PasswordAsk,
-	PasswordString
-} TLSPasswordType;
-
-typedef enum
-{
-	PEM = 0,
-	DER
-} TLSFileFormat;
-
-typedef enum
-{
 	RequirePeerCertificate = 0,
 	VerifyPeerCertificate,
 	IgnorePeerCertificate

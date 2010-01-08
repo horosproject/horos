@@ -47,14 +47,8 @@ int runStoreSCU(const char *myAET, const char*peerAET, const char*hostname, int 
 	//TLS settings
 	BOOL _secureConnection;
 	BOOL _doAuthenticate;
-//	NSString *_privateKeyFile;
-//	NSString *_certificateFile;
-	TLSPasswordType passwordType;
-	NSString *_passwd;
 	int  _keyFileFormat;
 	NSArray *_cipherSuites;
-	BOOL _useTrustedCA;
-	NSString *_trustedCAURL;
 	const char *_readSeedFile;
 	const char *_writeSeedFile;
 	TLSCertificateVerificationType certVerification;

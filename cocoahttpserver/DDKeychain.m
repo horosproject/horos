@@ -1,56 +1,6 @@
 #import "DDKeychain.h"
 #import "DICOMTLS.h"
 
-// from : http://www.opensource.apple.com/source/Kerberos/Kerberos-75.9/KerberosFramework/KerberosLogin/Sources/KerberosLoginServer/SFKerberosCredentialSelector.m?f=text
-static char *kcItemPrintableName(SecKeychainItemRef certRef)
-{
-    char *crtn = NULL;
-	
-    /* just search for the one attr we want */
-#if USE_KEY_NAME
-    UInt32 tag = kSecKeyPrintName;
-#else
-    UInt32 tag = kSecLabelItemAttr;
-#endif
-		
-    SecKeychainAttributeInfo attrInfo;
-    attrInfo.count = 1;
-    attrInfo.tag = &tag;
-    attrInfo.format = NULL;
-    SecKeychainAttributeList *attrList = NULL;
-    SecKeychainAttribute *attr = NULL;
-    
-    OSStatus ortn = SecKeychainItemCopyAttributesAndData(
-														 (SecKeychainItemRef)certRef, 
-														 &attrInfo,
-														 NULL,			// itemClass
-														 &attrList, 
-														 NULL,			// length - don't need the data
-														 NULL);			// outData
-    if(ortn) {
-		cssmPerror("SecKeychainItemCopyAttributesAndData", ortn);
-		/* may want to be a bit more robust here, but this should
-		 * never happen */
-		return strdup("Unnamed KeychainItem");
-    }
-    /* subsequent errors to errOut: */
-    
-    if((attrList == NULL) || (attrList->count != 1)) {
-		printf("***Unexpected result fetching label attr\n");
-		crtn = strdup("Unnamed KeychainItem");
-		goto errOut;
-    }
-    /* We're assuming 8-bit ASCII attribute data here... */
-    attr = attrList->attr;
-    crtn = (char *)malloc(attr->length + 1);
-    memmove(crtn, attr->data, attr->length);
-    crtn[attr->length] = '\0';
-    
-errOut:
-    SecKeychainItemFreeAttributesAndData(attrList, NULL);
-    return crtn;
-}
-
 @implementation DDKeychain
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

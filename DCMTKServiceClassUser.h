@@ -68,8 +68,6 @@ Super Class for SCU classes such as verifySCU, storeSCU, moveSCU, findSCU
 	BOOL _doAuthenticate;
 	int  _keyFileFormat;
 	NSArray *_cipherSuites;
-	BOOL _useTrustedCA;
-	NSString *_trustedCAURL;
 	const char *_readSeedFile;
 	const char *_writeSeedFile;
 	TLSCertificateVerificationType certVerification;

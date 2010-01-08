@@ -1150,14 +1150,19 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 				[queryException raise];
 			}
 			
-			if(_useTrustedCA)
+			if(certVerification==VerifyPeerCertificate || certVerification==RequirePeerCertificate)
 			{
-				BOOL isDirectory = NO;
-				BOOL fileExists = [[NSFileManager defaultManager] fileExistsAtPath:_trustedCAURL isDirectory:&isDirectory];
-				if(fileExists)
+				[DDKeychain KeychainAccessExportTrustedCertificatesToDirectory:TLS_TRUSTED_CERTIFICATES_DIR];
+				NSArray *trustedCertificates = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:TLS_TRUSTED_CERTIFICATES_DIR error:nil];
+				
+				for (NSString *cert in trustedCertificates)
 				{
-					if(isDirectory)
+					if (TCS_ok != tLayer->addTrustedCertificateFile([[TLS_TRUSTED_CERTIFICATES_DIR stringByAppendingPathComponent:cert] cStringUsingEncoding:NSUTF8StringEncoding], _keyFileFormat))
 					{
+						queryException = [NSException exceptionWithName:@"DICOM Network Failure (TLS query)" reason:[NSString stringWithFormat:@"Unable to load certificate file %@", [TLS_TRUSTED_CERTIFICATES_DIR stringByAppendingPathComponent:cert]] userInfo:nil];
+						[queryException raise];
+					}
+				}
 						//--add-cert-dir //// add certificates in d to list of certificates
 						//.... needs to use OpenSSL & rename files (see http://forum.dicom-cd.de/viewtopic.php?p=3237&sid=bd17bd76876a8fd9e7fdf841b90cf639 )
 						
@@ -1173,22 +1178,6 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 						//					}
 						//				} while (cmd.findOption("--add-cert-dir", 0, OFCommandLine::FOM_Next));
 						//			}
-						
-						
-						 // TODO: use --add-cert-file for each file in the directory (in stead of --add-cert-dir)
-						
-					}
-					else
-					{
-						//--add-cert-file //// add certificate file to list of certificates
-						
-						if (TCS_ok != tLayer->addTrustedCertificateFile([_trustedCAURL cStringUsingEncoding:NSUTF8StringEncoding], _keyFileFormat))
-						{
-							queryException = [NSException exceptionWithName:@"DICOM Network Failure (TLS query)" reason:[NSString stringWithFormat:@"Unable to load certificate file %@", _trustedCAURL] userInfo:nil];
-							[queryException raise];
-						}						
-					}
-				}
 			}		
 			
 			if (_dhparam && ! (tLayer->setTempDHParameters(_dhparam)))
@@ -1199,9 +1188,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 			
 			if (_doAuthenticate)
 			{				
-				//if (_passwd) tLayer->setPrivateKeyPasswd([_passwd cStringUsingEncoding:NSUTF8StringEncoding]);
-				NSString *_passwd = TLS_PRIVATE_KEY_PASSWORD;
-				tLayer->setPrivateKeyPasswd([_passwd cStringUsingEncoding:NSUTF8StringEncoding]);
+				tLayer->setPrivateKeyPasswd([TLS_PRIVATE_KEY_PASSWORD cStringUsingEncoding:NSUTF8StringEncoding]);
 				
 				[DDKeychain DICOMTLSGenerateCertificateAndKeyForServerAddress:_hostname port:_port AETitle:_calledAET]; // export certificate/key from the Keychain to the disk
 				NSString *_privateKeyFile = [DDKeychain DICOMTLSKeyPathForServerAddress:_hostname port:_port AETitle:_calledAET]; // generates the PEM file for the private key
@@ -1599,8 +1586,12 @@ subOpCallback(void * /*subOpCallbackData*/ ,
     delete tLayer;
 */
 	delete tLayer;
-	[[NSFileManager defaultManager] removeFileAtPath:[DDKeychain DICOMTLSKeyPathForServerAddress:_hostname port:_port AETitle:_calledAET] handler:nil]; // cleanup
-	[[NSFileManager defaultManager] removeFileAtPath:[DDKeychain DICOMTLSCertificatePathForServerAddress:_hostname port:_port AETitle:_calledAET] handler:nil]; // cleanup
+	
+	// cleanup
+	[[NSFileManager defaultManager] removeFileAtPath:[DDKeychain DICOMTLSKeyPathForServerAddress:_hostname port:_port AETitle:_calledAET] handler:nil];
+	[[NSFileManager defaultManager] removeFileAtPath:[DDKeychain DICOMTLSCertificatePathForServerAddress:_hostname port:_port AETitle:_calledAET] handler:nil];
+	[[NSFileManager defaultManager] removeItemAtPath:TLS_TRUSTED_CERTIFICATES_DIR error:nil];
+
 #endif
 
 	[pool release];

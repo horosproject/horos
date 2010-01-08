@@ -137,9 +137,6 @@ static OFCmdUnsignedInt opt_compressionLevel = 0;
 #ifdef WITH_OPENSSL
 static int         opt_keyFileFormat = SSL_FILETYPE_PEM;
 static OFBool      opt_doAuthenticate = OFFalse;
-static const char *opt_privateKeyFile = NULL;
-static const char *opt_certificateFile = NULL;
-static const char *opt_passwd = NULL;
 #if OPENSSL_VERSION_NUMBER >= 0x0090700fL
 static OFString    opt_ciphersuites(TLS1_TXT_RSA_WITH_AES_128_SHA ":" SSL3_TXT_RSA_DES_192_CBC3_SHA);
 #else
@@ -909,33 +906,14 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 		//TLS
 		_secureConnection = [[extraParameters objectForKey:@"TLSEnabled"] boolValue];
 		_doAuthenticate = NO;
-		//_privateKeyFile = NULL;
-		//_certificateFile = NULL;
-		_passwd = NULL;
 		_cipherSuites = nil;
 		_dhparam = NULL;
 		
 		if (_secureConnection)
 		{
 			_doAuthenticate = [[extraParameters objectForKey:@"TLSAuthenticated"] boolValue];
-			if(_doAuthenticate)
-			{
-				//_privateKeyFile = [[extraParameters objectForKey:@"TLSPrivateKeyFileURL"] retain];
-				//_certificateFile = [[extraParameters objectForKey:@"TLSCertificateFileURL"] retain];
-				
-				passwordType = (TLSPasswordType)[[extraParameters objectForKey:@"TLSPrivateKeyFilePasswordType"] intValue];
-				if(passwordType==PasswordString) _passwd = [[extraParameters objectForKey:@"TLSPrivateKeyFilePassword"] retain];
-				else if(passwordType==PasswordAsk) _passwd = [[extraParameters objectForKey:@"TLSAskPasswordValue"] retain];
-			}
-			
-			TLSFileFormat fileFormat = (TLSFileFormat)[[extraParameters objectForKey:@"TLSKeyAndCertificateFileFormat"] intValue];
-			if(fileFormat==DER)
-				_keyFileFormat = SSL_FILETYPE_ASN1;
-			else
-				_keyFileFormat = SSL_FILETYPE_PEM;
-			
-			_useTrustedCA = [[extraParameters objectForKey:@"TLSUseTrustedCACertificatesFolderURL"] boolValue];
-			if(_useTrustedCA) _trustedCAURL = [extraParameters objectForKey:@"TLSTrustedCACertificatesFolderURL"];
+			_keyFileFormat = SSL_FILETYPE_PEM;
+			certVerification = (TLSCertificateVerificationType)[[extraParameters objectForKey:@"TLSCertificateVerification"] intValue];
 			
 			NSArray *suites = [extraParameters objectForKey:@"TLSCipherSuites"];
 			NSMutableArray *selectedCipherSuites = [NSMutableArray array];
@@ -954,8 +932,6 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 			[OpenGLScreenReader screenSnapshotToFilePath:TLS_SEED_FILE];
 			_readSeedFile = [TLS_SEED_FILE cStringUsingEncoding:NSUTF8StringEncoding];
 			_writeSeedFile = TLS_WRITE_SEED_FILE;
-			
-			certVerification = (TLSCertificateVerificationType)[[extraParameters objectForKey:@"TLSCertificateVerification"] intValue];
 		}
 		
 		_filesToSend = [[NSMutableArray arrayWithArray: filesToSend] retain];
@@ -1013,9 +989,6 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 	[_studyDescription release];
 	
 	// TLS
-	//[_privateKeyFile release];
-	//[_certificateFile release];
-	[_passwd release];
 	[_cipherSuites release];
 	
 	NSLog( @"dealloc DICOM Send");
@@ -1310,14 +1283,20 @@ NS_DURING
 			[localException raise];
 		}
 		
-		if(_useTrustedCA)
+		if(certVerification==VerifyPeerCertificate || certVerification==RequirePeerCertificate)
 		{
-			BOOL isDirectory = NO;
-			BOOL fileExists = [[NSFileManager defaultManager] fileExistsAtPath:_trustedCAURL isDirectory:&isDirectory];
-			if(fileExists)
+			[DDKeychain KeychainAccessExportTrustedCertificatesToDirectory:TLS_TRUSTED_CERTIFICATES_DIR];
+			NSArray *trustedCertificates = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:TLS_TRUSTED_CERTIFICATES_DIR error:nil];
+			
+			for (NSString *cert in trustedCertificates)
 			{
-				if(isDirectory)
+				if (TCS_ok != tLayer->addTrustedCertificateFile([[TLS_TRUSTED_CERTIFICATES_DIR stringByAppendingPathComponent:cert] cStringUsingEncoding:NSUTF8StringEncoding], _keyFileFormat))
 				{
+					localException = [NSException exceptionWithName:@"DICOM Network Failure (storescu TLS)" reason:[NSString stringWithFormat:@"Unable to load certificate file %@", [TLS_TRUSTED_CERTIFICATES_DIR stringByAppendingPathComponent:cert]] userInfo:nil];
+					[localException raise];
+				}
+			}
+				
 					//--add-cert-dir //// add certificates in d to list of certificates
 					//.... needs to use OpenSSL & rename files (see http://forum.dicom-cd.de/viewtopic.php?p=3237&sid=bd17bd76876a8fd9e7fdf841b90cf639 )
 					
@@ -1333,22 +1312,6 @@ NS_DURING
 					//					}
 					//				} while (cmd.findOption("--add-cert-dir", 0, OFCommandLine::FOM_Next));
 					//			}
-					
-					
-					// TODO: use --add-cert-file for each file in the directory (in stead of --add-cert-dir)
-					
-				}
-				else
-				{
-					//--add-cert-file //// add certificate file to list of certificates
-					
-					if (TCS_ok != tLayer->addTrustedCertificateFile([_trustedCAURL cStringUsingEncoding:NSUTF8StringEncoding], _keyFileFormat))
-					{
-						localException = [NSException exceptionWithName:@"DICOM Network Failure (storescu TLS)" reason:[NSString stringWithFormat:@"Unable to load certificate file %@", _trustedCAURL] userInfo:nil];
-						[localException raise];
-					}						
-				}
-			}
 		}		
 		
 		if (_dhparam && ! (tLayer->setTempDHParameters(_dhparam)))
@@ -1359,8 +1322,6 @@ NS_DURING
 		
 		if (_doAuthenticate)
 		{			
-			//if (_passwd) tLayer->setPrivateKeyPasswd([_passwd cStringUsingEncoding:NSUTF8StringEncoding]);
-			
 			tLayer->setPrivateKeyPasswd([TLS_PRIVATE_KEY_PASSWORD cStringUsingEncoding:NSUTF8StringEncoding]);
 			
 			[DDKeychain DICOMTLSGenerateCertificateAndKeyForServerAddress:_hostname port:_port AETitle:_calledAET]; // export certificate/key from the Keychain to the disk
@@ -1666,8 +1627,12 @@ NS_ENDHANDLER
     delete tLayer;
 */
 	delete tLayer;
-	[[NSFileManager defaultManager] removeFileAtPath:[DDKeychain DICOMTLSKeyPathForServerAddress:_hostname port:_port AETitle:_calledAET] handler:nil]; // cleanup
-	[[NSFileManager defaultManager] removeFileAtPath:[DDKeychain DICOMTLSCertificatePathForServerAddress:_hostname port:_port AETitle:_calledAET] handler:nil]; // cleanup
+
+	// cleanup
+	[[NSFileManager defaultManager] removeFileAtPath:[DDKeychain DICOMTLSKeyPathForServerAddress:_hostname port:_port AETitle:_calledAET] handler:nil];
+	[[NSFileManager defaultManager] removeFileAtPath:[DDKeychain DICOMTLSCertificatePathForServerAddress:_hostname port:_port AETitle:_calledAET] handler:nil];
+	[[NSFileManager defaultManager] removeItemAtPath:TLS_TRUSTED_CERTIFICATES_DIR error:nil];
+	
 #endif
 
     if (opt_haltOnUnsuccessfulStore && unsuccessfulStoreEncountered)
