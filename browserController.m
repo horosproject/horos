@@ -13778,7 +13778,15 @@ static NSArray*	openSubSeriesArray = nil;
 	{
 		NSString *destPath = [file stringByAppendingString:@"temp"];
 		
-		[DCMObject anonymizeContentsOfFile: file  tags:tags  writingToFile:destPath];
+		@try
+		{
+			[DCMObject anonymizeContentsOfFile: file  tags:tags  writingToFile:destPath];
+		}
+		@catch (NSException * e)
+		{
+			NSLog( @"**** listenerAnonymizeFiles : %@", e);
+		}
+
 		[[NSFileManager defaultManager] removeFileAtPath: file handler: nil];
 		[[NSFileManager defaultManager] movePath:destPath toPath: file handler: nil];
 	}
@@ -16150,8 +16158,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	[filesToAnonymize removeDuplicatedStringsInSyncWithThisArray: dicomFiles2Anonymize];
 	
-    [anonymizerController showWindow:self];
-	
 	NSString *file;
 	for (file in filesToAnonymize)
 	{
@@ -16171,8 +16177,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[pool release];
 		
 	}
-	if(!anonymizerController)
-		anonymizerController = [[AnonymizerWindowController alloc] init];
+	
+	
+	AnonymizerWindowController	*anonymizerController = [[AnonymizerWindowController alloc] init];
 	
 	[anonymizerController setFilesToAnonymize:paths :dicomFiles2Anonymize];
 	[anonymizerController showWindow:self];
@@ -16213,6 +16220,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 			[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
 		}
 	}
+	
+	[anonymizerController release];
 	
 	[filesToAnonymize release];
 }	

@@ -38,7 +38,7 @@
 		}
 	}
 	
-	NSLog( @"%@", [dict description]);
+//	NSLog( @"%@", [dict description]);
 	
 	return dict;
 }
@@ -153,6 +153,8 @@
 	[tagMatrixfirstColumn release];
 	[tagMatrixsecondColumn release];
 	[accessoryView release];
+	[tags release];
+	
 	[super dealloc];
 }
 
@@ -198,7 +200,7 @@
 		dcm = [dcmObjects objectAtIndex: i];
 
 		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];			
-		NSString *extension		= [file pathExtension], *dest;
+		NSString *extension = [file pathExtension], *dest;
 		long previousSeries	= -1;
 		long serieCount		= 0;
 		
@@ -257,7 +259,7 @@
 			//if([[xmlDoc  XMLData] writeToFile:dst atomically:YES])
 			//	NSLog(@"Wrote xml");
 		
-			[DCMObject anonymizeContentsOfFile:file  tags: tt  writingToFile:dest];
+			[DCMObject anonymizeContentsOfFile:file tags: tt writingToFile:dest];
 			
 			[producedFiles addObject: dest];
 		}
@@ -281,8 +283,9 @@
 {
 	[checkReplace setHidden: YES];
 	
+	[templates release];
 	templates = [[NSMutableDictionary alloc] initWithDictionary: [[NSUserDefaults standardUserDefaults] dictionaryForKey:@"anonymizeTemplate"]];
-	NSLog( @"%@", [templates description]);
+//	NSLog( @"%@", [templates description]);
 	
 	[templatesMenu removeAllItems];
 	[templatesMenu addItemsWithTitles: [templates allKeys]];
@@ -325,8 +328,9 @@
 {
 	[checkReplace setHidden: NO];
 	
+	[templates release];
 	templates = [[NSMutableDictionary alloc] initWithDictionary: [[NSUserDefaults standardUserDefaults] dictionaryForKey:@"anonymizeTemplate"]];
-	NSLog( @"%@", [templates description]);
+//	NSLog( @"%@", [templates description]);
 	
 	[templatesMenu removeAllItems];
 	[templatesMenu addItemsWithTitles: [templates allKeys]];

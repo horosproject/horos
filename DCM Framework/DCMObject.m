@@ -70,8 +70,10 @@ void exitOsiriX(void)
 	
 	[object removePrivateTags];
 	
-	for ( NSArray *tagArray in tags )
+	for( int x = 0 ; x < [tags count]; x++)
 	{
+		NSArray *tagArray = [tags objectAtIndex: x];
+		
 		DCMAttributeTag *tag = [tagArray objectAtIndex:0];
 		
 		id value = nil;
@@ -1097,9 +1099,12 @@ PixelRepresentation
 		NSMutableArray *values = attr.values;
 		id newValue = nil;
 		NSString *format = nil;
-		for ( id value in values ) {
-			NSInteger index = [values indexOfObject:value];
-			switch (vr) {
+		for ( int index = 0 ; index < [values count]; index++)
+		{
+			id value = [values objectAtIndex: index];
+			
+			switch (vr)
+			{
 					//NSNumbers
 				case AT:	//Attribute Tag 16bit unsigned integer 
 				case UL:	//unsigned Long            
@@ -1117,9 +1122,9 @@ PixelRepresentation
 				case DT:	if (!format)
 								format = @"%Y%m%d%H%M%S";
 					newValue = [DCMCalendarDate dateWithYear:[value yearOfCommonEra] month:[value monthOfYear] day:1 hour:12 minute:00 second:00 timeZone:[value timeZone]];
-					if (aValue && [aValue isMemberOfClass:[NSCalendarDate class]]){
+					if (aValue && [aValue isMemberOfClass:[NSCalendarDate class]])
+					{
 						DCMCalendarDate *date = [DCMCalendarDate dateWithString:[aValue descriptionWithCalendarFormat:format] calendarFormat:format];
-						//[aValue release];
 						aValue = date;
 					}
 					else
@@ -1135,22 +1140,22 @@ PixelRepresentation
 				case UN:	//unknown
 				case OB:	//other Byte byte string not little/big endian sensitive
 				case OW:	//other word 16bit word
-						newValue = [NSMutableData dataWithLength:[(NSData *)value length]];
-						break;
+					newValue = [NSMutableData dataWithLength:[(NSData *)value length]];
+				break;
 					//NUmber strings	
 				case SH:	//short string	
 				case DS:	//Decimal String  representing floating point number 16 byte max
 				case IS:	//Integer String 12 bytes max
-						newValue =  @"0";
-						break;
+					newValue =  @"0";
+				break;
 					//Age string					
 				case AS:	//Age String Format mmmM,dddD,nnnY ie 018Y
 					newValue = @"000Y";
-						break;
+				break;
 					//code string
 				case CS:	//Code String   16 byte max
 					newValue = @"0000";
-					break;
+				break;
 				case AE:	//Application Entity  String 16bytes max
 				case LO:	//Character String 64 char max
 				case LT:	//Long Text 10240 char Max
@@ -1167,20 +1172,21 @@ PixelRepresentation
 						newValue = @"";
 					}
 					*/
-					if(index!=NSNotFound)
-						newValue = [self anonymizeString:[values objectAtIndex:index]];
-					break;
-	 			}
-
-			if (aValue) {
+					newValue = [self anonymizeString:[values objectAtIndex:index]];
+				break;
+	 		}
+			
+			if (aValue)
+			{
 				if (DCMDEBUG)
 					NSLog(@"Anonymize Values: %@ to value: %@", attr.description, [aValue description]);
-				if(index!=NSNotFound)[values replaceObjectAtIndex:index withObject:aValue];
+				[values replaceObjectAtIndex:index withObject:aValue];
 			}
-			else {
+			else
+			{
 				if (DCMDEBUG)
 					NSLog(@"Anonymize Values: %@ to value: %@", attr.description, [newValue description]);
-				if(index!=NSNotFound)[values replaceObjectAtIndex:index withObject:newValue];
+				[values replaceObjectAtIndex:index withObject:newValue];
 			}
 		}	
 		
@@ -1188,7 +1194,8 @@ PixelRepresentation
 
 }
 
-- (NSString *)anonymizeString:(NSString *)string{
+- (NSString *)anonymizeString:(NSString *)string
+{
 	int root = 0;
 	int i = 0;
 	int value = 0;

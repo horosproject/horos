@@ -63,7 +63,6 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	NSMutableDictionary		*activeReceives;
 	NSMutableArray			*receiveLog;
 	
-	AnonymizerWindowController	*anonymizerController;
 	BurnerWindowController		*burnerWindowController;
 	LogWindowController			*logWindowController;
 	
