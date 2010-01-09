@@ -2122,38 +2122,71 @@ static NSString *language = nil;
 					message = [NSString stringWithFormat: NSLocalizedString( @"DICOM Transfer failed to node : %@ - %@", nil), dicomDestinationAddress, dicomDestinationAETitle];
 			}
 			
-			if( [[parameters allKeys] containsObject:@"shareStudy"])
-			{
-				NSString *userDestination = [[[parameters objectForKey:@"userDestination"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
-				NSString *message = [[[parameters objectForKey:@"message"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
-				
-				if( userDestination)
-				{
-					// Find this user
-					NSError *error = nil;
-					NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-					[dbRequest setEntity: [[[[BrowserController currentBrowser] userManagedObjectModel] entitiesByName] objectForKey: @"User"]];
-					[dbRequest setPredicate: [NSPredicate predicateWithFormat: @"name == %@", userDestination]];
-					
-					error = nil;
-					NSArray *users = [[[BrowserController currentBrowser] userManagedObjectContext] executeFetchRequest: dbRequest error:&error];
-					
-					if( [users count] == 1)
-					{
-						
-						
-						message = [NSString stringWithFormat: NSLocalizedString( @"This study is now shared with %@.", nil), userDestination];
-					}
-				}
-				
-				if( message == nil)
-					message = [NSString stringWithFormat: NSLocalizedString( @"Failed to share this study with %@.", nil), userDestination];
-			}
-			
 			NSArray *studies = [self studiesForPredicate:browsePredicate];
 			
 			if( [studies count] == 1)
 			{
+				if( [[parameters allKeys] containsObject:@"shareStudy"])
+				{
+					NSString *userDestination = [[[parameters objectForKey:@"userDestination"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
+					NSString *message = [[[parameters objectForKey:@"message"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
+					
+					if( userDestination)
+					{
+						id study = [studies lastObject];
+						
+						// Find this user
+						NSError *error = nil;
+						NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+						[dbRequest setEntity: [[[[BrowserController currentBrowser] userManagedObjectModel] entitiesByName] objectForKey: @"User"]];
+						[dbRequest setPredicate: [NSPredicate predicateWithFormat: @"name == %@", userDestination]];
+						
+						error = nil;
+						NSArray *users = [[[BrowserController currentBrowser] userManagedObjectContext] executeFetchRequest: dbRequest error:&error];
+						
+						if( [users count] == 1)
+						{
+							// Add study to specific study list for this user
+							NSManagedObject *destUser = [users lastObject];
+							
+							NSArray *studiesArrayStudyInstanceUID = [[[destUser valueForKey: @"studies"] allObjects] valueForKey: @"studyInstanceUID"];
+							NSArray *studiesArrayPatientUID = [[[destUser valueForKey: @"studies"] allObjects] valueForKey: @"patientUID"];
+							
+							if( [studiesArrayStudyInstanceUID indexOfObject: [study valueForKey: @"studyInstanceUID"]] == NSNotFound || [studiesArrayPatientUID indexOfObject: [study valueForKey: @"patientUID"]]  == NSNotFound)
+							{
+								NSManagedObject *studyLink = [NSEntityDescription insertNewObjectForEntityForName: @"Study" inManagedObjectContext: [BrowserController currentBrowser].userManagedObjectContext];
+							
+								[studyLink setValue: [[[study valueForKey: @"studyInstanceUID"] copy] autorelease] forKey: @"studyInstanceUID"];
+								[studyLink setValue: [[[study valueForKey: @"patientUID"] copy] autorelease] forKey: @"patientUID"];
+								[studyLink setValue: [NSDate dateWithTimeIntervalSinceReferenceDate: [[NSUserDefaults standardUserDefaults] doubleForKey: @"lastNotificationsDate"]] forKey: @"dateAdded"];
+								
+								[studyLink setValue: destUser forKey: @"user"];
+								
+								@try
+								{
+									[[BrowserController currentBrowser].userManagedObjectContext save: nil];
+								}
+								@catch (NSException * e)
+								{
+									NSLog( @"*********** [[BrowserController currentBrowser].userManagedObjectContext save: nil]");
+								}
+							}
+							
+							// Send the email
+							
+							
+							
+							[OsiriXHTTPConnection updateLogEntryForStudy: study withMessage: [NSString stringWithFormat: @"Share Study with User: %@", userDestination] forUser: [currentUser valueForKey: @"name"] ip: [asyncSocket connectedHost]];
+							
+							message = [NSString stringWithFormat: NSLocalizedString( @"This study is now shared with %@.", nil), userDestination];
+						}
+					}
+					
+					if( message == nil)
+						message = [NSString stringWithFormat: NSLocalizedString( @"Failed to share this study with %@.", nil), userDestination];
+				}
+			
+			
 				[self updateLogEntryForStudy: [studies lastObject] withMessage: @"Display Study"];
 				
 				ipAddressString = [[asyncSocket connectedHost] copy];
@@ -2173,10 +2206,12 @@ static NSString *language = nil;
 				if( message)
 					[html replaceOccurrencesOfString:@"%LocalizedLabel_SendStatus%" withString: message options:NSLiteralSearch range:NSMakeRange(0, [html length])];
 				else
-					[html replaceOccurrencesOfString:@"%LocalizedLabel_SendStatus%" withString: @"" options:NSLiteralSearch range:NSMakeRange(0, [html length])]
+					[html replaceOccurrencesOfString:@"%LocalizedLabel_SendStatus%" withString: @"" options:NSLiteralSearch range:NSMakeRange(0, [html length])];
 				
-				if([parameters objectForKey:@"browse"])[html replaceOccurrencesOfString:@"%browse%" withString:[NSString stringWithFormat:@"&browse=%@",[parameters objectForKey:@"browse"]] options:NSLiteralSearch range:NSMakeRange(0, [html length])];
-				else [html replaceOccurrencesOfString:@"%browse%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [html length])];
+				if( [parameters objectForKey:@"browse"])
+					[html replaceOccurrencesOfString:@"%browse%" withString:[NSString stringWithFormat:@"&browse=%@",[parameters objectForKey:@"browse"]] options:NSLiteralSearch range:NSMakeRange(0, [html length])];
+				else
+					[html replaceOccurrencesOfString:@"%browse%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [html length])];
 				
 				if([parameters objectForKey:@"browseParameter"])[html replaceOccurrencesOfString:@"%browseParameter%" withString:[NSString stringWithFormat:@"&browseParameter=%@",[parameters objectForKey:@"browseParameter"]] options:NSLiteralSearch range:NSMakeRange(0, [html length])];
 				else [html replaceOccurrencesOfString:@"%browseParameter%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [html length])];
