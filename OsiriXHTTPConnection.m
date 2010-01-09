@@ -1566,7 +1566,7 @@ static NSString *language = nil;
 
 - (NSObject<HTTPResponse> *)httpResponseForMethod:(NSString *)method URI:(NSString *)path
 {
-	BOOL lockReleased = NO, waitBeforeReturning = NO, dicomSendFailed = NO;
+	BOOL lockReleased = NO, waitBeforeReturning = NO;
 	
 	NSString *contentRange = [(id)CFHTTPMessageCopyHeaderFieldValue(request, (CFStringRef)@"Range") autorelease];
 	NSString *userAgent = [(id)CFHTTPMessageCopyHeaderFieldValue(request, (CFStringRef)@"User-Agent") autorelease];
@@ -2063,6 +2063,8 @@ static NSString *language = nil;
 	#pragma mark study
 		else if([fileURL isEqualToString:@"/study"])
 		{
+			NSString *message = nil;
+			
 			NSPredicate *browsePredicate;
 			if([[parameters allKeys] containsObject:@"id"])
 			{
@@ -2074,11 +2076,11 @@ static NSString *language = nil;
 			#pragma mark dicomSend
 			if( [[parameters allKeys] containsObject:@"dicomSend"])
 			{
-				NSString *dicomDestination = [parameters objectForKey:@"dicomDestination"];
+				NSString *dicomDestination = [[[parameters objectForKey:@"dicomDestination"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
 				NSArray *tempArray = [dicomDestination componentsSeparatedByString:@"%3A"];
-				NSString *dicomDestinationAddress = [[tempArray objectAtIndex:0] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+				NSString *dicomDestinationAddress = [[[tempArray objectAtIndex:0]  stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
 				NSString *dicomDestinationPort = [tempArray objectAtIndex:1];
-				NSString *dicomDestinationAETitle = [[tempArray objectAtIndex:2] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+				NSString *dicomDestinationAETitle = [[[tempArray objectAtIndex:2]  stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
 				NSString *dicomDestinationSyntax = [tempArray objectAtIndex:3];
 				
 				if( dicomDestinationAddress && dicomDestinationPort && dicomDestinationAETitle && dicomDestinationSyntax)
@@ -2107,13 +2109,45 @@ static NSString *language = nil;
 					}
 					
 					[selectedImages retain];
+					
 					if( [selectedImages count])
+					{
 						[self dicomSend: self];
-					else
-						dicomSendFailed = YES;
+						
+						message = [NSString stringWithFormat: NSLocalizedString( @"Images sent to DICOM node: %@ - %@", nil), dicomDestinationAddress, dicomDestinationAETitle];
+					}
 				}
-				else
-					dicomSendFailed = YES;
+				
+				if( message == nil)
+					message = [NSString stringWithFormat: NSLocalizedString( @"DICOM Transfer failed to node : %@ - %@", nil), dicomDestinationAddress, dicomDestinationAETitle];
+			}
+			
+			if( [[parameters allKeys] containsObject:@"shareStudy"])
+			{
+				NSString *userDestination = [[[parameters objectForKey:@"userDestination"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
+				NSString *message = [[[parameters objectForKey:@"message"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
+				
+				if( userDestination)
+				{
+					// Find this user
+					NSError *error = nil;
+					NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+					[dbRequest setEntity: [[[[BrowserController currentBrowser] userManagedObjectModel] entitiesByName] objectForKey: @"User"]];
+					[dbRequest setPredicate: [NSPredicate predicateWithFormat: @"name == %@", userDestination]];
+					
+					error = nil;
+					NSArray *users = [[[BrowserController currentBrowser] userManagedObjectContext] executeFetchRequest: dbRequest error:&error];
+					
+					if( [users count] == 1)
+					{
+						
+						
+						message = [NSString stringWithFormat: NSLocalizedString( @"This study is now shared with %@.", nil), userDestination];
+					}
+				}
+				
+				if( message == nil)
+					message = [NSString stringWithFormat: NSLocalizedString( @"Failed to share this study with %@.", nil), userDestination];
 			}
 			
 			NSArray *studies = [self studiesForPredicate:browsePredicate];
@@ -2134,14 +2168,12 @@ static NSString *language = nil;
 					NSArray *tempArray = [dicomDestination componentsSeparatedByString:@"%3A"];
 					NSString *dicomDestinationAETitle = [[tempArray objectAtIndex:2] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 					NSString *dicomDestinationAddress = [[tempArray objectAtIndex:0] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-					
-					if( dicomSendFailed)
-						[html replaceOccurrencesOfString:@"%LocalizedLabel_SendStatus%" withString: [NSString stringWithFormat: NSLocalizedString( @"DICOM Transfer failed.", nil), dicomDestinationAddress, dicomDestinationAETitle] options:NSLiteralSearch range:NSMakeRange(0, [html length])];
-					else
-						[html replaceOccurrencesOfString:@"%LocalizedLabel_SendStatus%" withString: [NSString stringWithFormat: NSLocalizedString( @"Images sent to DICOM node: %@ - %@", nil), dicomDestinationAddress, dicomDestinationAETitle] options:NSLiteralSearch range:NSMakeRange(0, [html length])];
 				}
+				
+				if( message)
+					[html replaceOccurrencesOfString:@"%LocalizedLabel_SendStatus%" withString: message options:NSLiteralSearch range:NSMakeRange(0, [html length])];
 				else
-					[html replaceOccurrencesOfString:@"%LocalizedLabel_SendStatus%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [html length])];
+					[html replaceOccurrencesOfString:@"%LocalizedLabel_SendStatus%" withString: @"" options:NSLiteralSearch range:NSMakeRange(0, [html length])]
 				
 				if([parameters objectForKey:@"browse"])[html replaceOccurrencesOfString:@"%browse%" withString:[NSString stringWithFormat:@"&browse=%@",[parameters objectForKey:@"browse"]] options:NSLiteralSearch range:NSMakeRange(0, [html length])];
 				else [html replaceOccurrencesOfString:@"%browse%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [html length])];

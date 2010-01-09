@@ -120,14 +120,15 @@
 		<br>
 		<br>
 		<h2 style="padding-top:10px">Share This Study</h2>
-			Share This Study with user:
+			Share This Study with user:<br>
 			<select name="userDestination" id="userDestination">
 				%userListItem%
 				<option value="%username%" %selected% >%username% (%email%)</option>
 				%/userListItem%
 			</select>
 			<br>
-			Message: <TEXTAREA NAME="message", ROWS=5, COLS=100>Enter here a message for this user. He will receive it by email.</TEXTAREA>
+			<br>
+			Message:<br><textarea name="message", rows=5, cols=100>Enter here a message for this user. He will receive it by email.</textarea>
 			<br>
 			<input type="submit" name="shareStudy" id="shareStudy" value="Send"/>
 		%/SharingFunctions%
