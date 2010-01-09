@@ -3,16 +3,16 @@
 	<data>
 		<int key="IBDocument.SystemTarget">1050</int>
 		<string key="IBDocument.SystemVersion">10C540</string>
-		<string key="IBDocument.InterfaceBuilderVersion">740</string>
+		<string key="IBDocument.InterfaceBuilderVersion">732</string>
 		<string key="IBDocument.AppKitVersion">1038.25</string>
 		<string key="IBDocument.HIToolboxVersion">458.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin</string>
-			<string key="NS.object.0">740</string>
+			<string key="NS.object.0">732</string>
 		</object>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="96"/>
+			<integer value="674"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -127,7 +127,7 @@
 								<string key="NSColorName">controlColor</string>
 								<object class="NSColor" key="NSColor">
 									<int key="NSColorSpace">3</int>
-									<bytes key="NSWhite">MC42NjY2NjY2ODY1AA</bytes>
+									<bytes key="NSWhite">MC42NjY2NjY2NjY3AA</bytes>
 								</object>
 							</object>
 							<object class="NSColor" key="NSTextColor" id="379737172">
@@ -163,7 +163,7 @@
 											<bool key="EncodedWithXMLCoder">YES</bool>
 											<object class="NSTextFieldCell" id="664067738">
 												<int key="NSCellFlags">-1805517311</int>
-												<int key="NSCellFlags2">4456512</int>
+												<int key="NSCellFlags2">4456448</int>
 												<string key="NSContents">Anonymized</string>
 												<object class="NSFont" key="NSSupport" id="22">
 													<string key="NSName">LucidaGrande</string>
@@ -190,7 +190,7 @@
 											</object>
 											<object class="NSTextFieldCell" id="456212032">
 												<int key="NSCellFlags">-1805517311</int>
-												<int key="NSCellFlags2">4456512</int>
+												<int key="NSCellFlags2">4456448</int>
 												<string key="NSContents"/>
 												<reference key="NSSupport" ref="22"/>
 												<reference key="NSControlView" ref="465628460"/>
@@ -201,7 +201,7 @@
 											</object>
 											<object class="NSTextFieldCell" id="121664760">
 												<int key="NSCellFlags">-1805517311</int>
-												<int key="NSCellFlags2">4456512</int>
+												<int key="NSCellFlags2">4456448</int>
 												<string key="NSContents"/>
 												<reference key="NSSupport" ref="22"/>
 												<reference key="NSControlView" ref="465628460"/>
@@ -212,7 +212,7 @@
 											</object>
 											<object class="NSTextFieldCell" id="761597842">
 												<int key="NSCellFlags">-1805517311</int>
-												<int key="NSCellFlags2">-2143027136</int>
+												<int key="NSCellFlags2">-2143027200</int>
 												<string key="NSContents"/>
 												<reference key="NSSupport" ref="22"/>
 												<object class="NSDateFormatter" key="NSFormatter" id="779877619">
@@ -242,7 +242,7 @@
 											</object>
 											<object class="NSTextFieldCell" id="111325068">
 												<int key="NSCellFlags">-1805517311</int>
-												<int key="NSCellFlags2">4456512</int>
+												<int key="NSCellFlags2">4456448</int>
 												<string key="NSContents"/>
 												<reference key="NSSupport" ref="22"/>
 												<reference key="NSControlView" ref="465628460"/>
@@ -253,7 +253,7 @@
 											</object>
 											<object class="NSTextFieldCell" id="714641293">
 												<int key="NSCellFlags">-1805517311</int>
-												<int key="NSCellFlags2">4456512</int>
+												<int key="NSCellFlags2">4456448</int>
 												<string key="NSContents"/>
 												<reference key="NSSupport" ref="22"/>
 												<reference key="NSControlView" ref="465628460"/>
@@ -264,7 +264,7 @@
 											</object>
 											<object class="NSTextFieldCell" id="336283658">
 												<int key="NSCellFlags">-1805517311</int>
-												<int key="NSCellFlags2">-2143027136</int>
+												<int key="NSCellFlags2">-2143027200</int>
 												<string key="NSContents"/>
 												<reference key="NSSupport" ref="22"/>
 												<object class="NSDateFormatter" key="NSFormatter" id="25144710">
@@ -296,7 +296,7 @@
 											</object>
 											<object class="NSTextFieldCell" id="165121295">
 												<int key="NSCellFlags">-1805517311</int>
-												<int key="NSCellFlags2">-2143027136</int>
+												<int key="NSCellFlags2">-2143027200</int>
 												<string key="NSContents"/>
 												<reference key="NSSupport" ref="22"/>
 												<object class="NSDateFormatter" key="NSFormatter" id="87981535">
@@ -328,7 +328,7 @@
 											</object>
 											<object class="NSTextFieldCell" id="239595864">
 												<int key="NSCellFlags">-1805517311</int>
-												<int key="NSCellFlags2">-2143027136</int>
+												<int key="NSCellFlags2">-2143027200</int>
 												<string key="NSContents"/>
 												<reference key="NSSupport" ref="22"/>
 												<object class="NSDateFormatter" key="NSFormatter" id="507800756">
@@ -360,7 +360,7 @@
 											</object>
 											<object class="NSTextFieldCell" id="1023539281">
 												<int key="NSCellFlags">-1805517311</int>
-												<int key="NSCellFlags2">-2143027136</int>
+												<int key="NSCellFlags2">-2143027200</int>
 												<string key="NSContents"/>
 												<reference key="NSSupport" ref="22"/>
 												<object class="NSDateFormatter" key="NSFormatter" id="711361606">
@@ -392,7 +392,7 @@
 											</object>
 											<object class="NSTextFieldCell" id="556496284">
 												<int key="NSCellFlags">-1805517311</int>
-												<int key="NSCellFlags2">-2143027136</int>
+												<int key="NSCellFlags2">-2143027200</int>
 												<string key="NSContents"/>
 												<reference key="NSSupport" ref="22"/>
 												<object class="NSDateFormatter" key="NSFormatter" id="919695429">
@@ -424,7 +424,7 @@
 											</object>
 											<object class="NSTextFieldCell" id="519406471">
 												<int key="NSCellFlags">-1805517311</int>
-												<int key="NSCellFlags2">-2143027136</int>
+												<int key="NSCellFlags2">-2143027200</int>
 												<string key="NSContents"/>
 												<reference key="NSSupport" ref="22"/>
 												<object class="NSDateFormatter" key="NSFormatter" id="197487204">
@@ -456,7 +456,7 @@
 											</object>
 											<object class="NSTextFieldCell" id="828066877">
 												<int key="NSCellFlags">-1805517311</int>
-												<int key="NSCellFlags2">-2143027136</int>
+												<int key="NSCellFlags2">-2143027200</int>
 												<string key="NSContents"/>
 												<reference key="NSSupport" ref="22"/>
 												<object class="NSDateFormatter" key="NSFormatter" id="373526989">
@@ -488,7 +488,7 @@
 											</object>
 											<object class="NSTextFieldCell" id="859314319">
 												<int key="NSCellFlags">-1805517311</int>
-												<int key="NSCellFlags2">4456512</int>
+												<int key="NSCellFlags2">4456448</int>
 												<string key="NSContents"/>
 												<reference key="NSSupport" ref="22"/>
 												<reference key="NSControlView" ref="465628460"/>
@@ -499,7 +499,7 @@
 											</object>
 											<object class="NSTextFieldCell" id="569696514">
 												<int key="NSCellFlags">-1805517311</int>
-												<int key="NSCellFlags2">4456512</int>
+												<int key="NSCellFlags2">4456448</int>
 												<string key="NSContents"/>
 												<reference key="NSSupport" ref="22"/>
 												<reference key="NSControlView" ref="465628460"/>
@@ -515,7 +515,7 @@
 										<string key="NSCellClass">NSActionCell</string>
 										<object class="NSTextFieldCell" key="NSProtoCell" id="470327202">
 											<int key="NSCellFlags">-1805517311</int>
-											<int key="NSCellFlags2">4456512</int>
+											<int key="NSCellFlags2">4456448</int>
 											<string key="NSContents"/>
 											<reference key="NSSupport" ref="22"/>
 											<int key="NSTag">-1</int>
@@ -523,8 +523,8 @@
 											<reference key="NSBackgroundColor" ref="986368147"/>
 											<reference key="NSTextColor" ref="364769861"/>
 										</object>
-										<int key="NSSelectedRow">-1</int>
-										<int key="NSSelectedCol">-1</int>
+										<int key="NSSelectedRow">13</int>
+										<reference key="NSSelectedCell" ref="859314319"/>
 										<reference key="NSBackgroundColor" ref="346508496"/>
 										<reference key="NSCellBackgroundColor" ref="346508496"/>
 									</object>
@@ -861,7 +861,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 											<bool key="EncodedWithXMLCoder">YES</bool>
 											<object class="NSTextFieldCell" id="804873111">
 												<int key="NSCellFlags">-1805517311</int>
-												<int key="NSCellFlags2">4456512</int>
+												<int key="NSCellFlags2">4456448</int>
 												<string key="NSContents"/>
 												<reference key="NSSupport" ref="22"/>
 												<reference key="NSControlView" ref="834527036"/>
@@ -872,7 +872,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 											</object>
 											<object class="NSTextFieldCell" id="902044022">
 												<int key="NSCellFlags">-1805517311</int>
-												<int key="NSCellFlags2">4456512</int>
+												<int key="NSCellFlags2">4456448</int>
 												<string key="NSContents"/>
 												<reference key="NSSupport" ref="22"/>
 												<reference key="NSControlView" ref="834527036"/>
@@ -883,7 +883,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 											</object>
 											<object class="NSTextFieldCell" id="964920833">
 												<int key="NSCellFlags">-1805517311</int>
-												<int key="NSCellFlags2">4456512</int>
+												<int key="NSCellFlags2">4456448</int>
 												<string key="NSContents"/>
 												<reference key="NSSupport" ref="22"/>
 												<reference key="NSControlView" ref="834527036"/>
@@ -894,7 +894,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 											</object>
 											<object class="NSTextFieldCell" id="285467640">
 												<int key="NSCellFlags">-1805517311</int>
-												<int key="NSCellFlags2">4456512</int>
+												<int key="NSCellFlags2">4456448</int>
 												<string key="NSContents"/>
 												<reference key="NSSupport" ref="22"/>
 												<reference key="NSControlView" ref="834527036"/>
@@ -905,7 +905,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 											</object>
 											<object class="NSTextFieldCell" id="73978144">
 												<int key="NSCellFlags">-1805517311</int>
-												<int key="NSCellFlags2">4456512</int>
+												<int key="NSCellFlags2">4456448</int>
 												<string key="NSContents"/>
 												<reference key="NSSupport" ref="22"/>
 												<reference key="NSControlView" ref="834527036"/>
@@ -916,7 +916,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 											</object>
 											<object class="NSTextFieldCell" id="105607514">
 												<int key="NSCellFlags">-1805517311</int>
-												<int key="NSCellFlags2">4456512</int>
+												<int key="NSCellFlags2">4456448</int>
 												<string key="NSContents"/>
 												<reference key="NSSupport" ref="22"/>
 												<reference key="NSControlView" ref="834527036"/>
@@ -927,7 +927,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 											</object>
 											<object class="NSTextFieldCell" id="789514949">
 												<int key="NSCellFlags">-1805517311</int>
-												<int key="NSCellFlags2">4456512</int>
+												<int key="NSCellFlags2">4456448</int>
 												<string key="NSContents"/>
 												<reference key="NSSupport" ref="22"/>
 												<reference key="NSControlView" ref="834527036"/>
@@ -938,7 +938,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 											</object>
 											<object class="NSTextFieldCell" id="433080674">
 												<int key="NSCellFlags">-1805517311</int>
-												<int key="NSCellFlags2">4456512</int>
+												<int key="NSCellFlags2">4456448</int>
 												<string key="NSContents"/>
 												<reference key="NSSupport" ref="22"/>
 												<reference key="NSControlView" ref="834527036"/>
@@ -949,7 +949,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 											</object>
 											<object class="NSTextFieldCell" id="709024134">
 												<int key="NSCellFlags">-1805517311</int>
-												<int key="NSCellFlags2">4456512</int>
+												<int key="NSCellFlags2">4456448</int>
 												<string key="NSContents"/>
 												<reference key="NSSupport" ref="22"/>
 												<reference key="NSControlView" ref="834527036"/>
@@ -960,7 +960,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 											</object>
 											<object class="NSTextFieldCell" id="901158123">
 												<int key="NSCellFlags">-1805517311</int>
-												<int key="NSCellFlags2">4456512</int>
+												<int key="NSCellFlags2">4456448</int>
 												<string key="NSContents"/>
 												<reference key="NSSupport" ref="22"/>
 												<reference key="NSControlView" ref="834527036"/>
@@ -971,7 +971,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 											</object>
 											<object class="NSTextFieldCell" id="77629705">
 												<int key="NSCellFlags">-1805517311</int>
-												<int key="NSCellFlags2">4456512</int>
+												<int key="NSCellFlags2">4456448</int>
 												<string key="NSContents"/>
 												<reference key="NSSupport" ref="22"/>
 												<reference key="NSControlView" ref="834527036"/>
@@ -982,7 +982,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 											</object>
 											<object class="NSTextFieldCell" id="134462933">
 												<int key="NSCellFlags">-1805517311</int>
-												<int key="NSCellFlags2">4456512</int>
+												<int key="NSCellFlags2">4456448</int>
 												<string key="NSContents"/>
 												<reference key="NSSupport" ref="22"/>
 												<reference key="NSControlView" ref="834527036"/>
@@ -993,7 +993,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 											</object>
 											<object class="NSTextFieldCell" id="76409978">
 												<int key="NSCellFlags">-1805517311</int>
-												<int key="NSCellFlags2">4456512</int>
+												<int key="NSCellFlags2">4456448</int>
 												<string key="NSContents"/>
 												<reference key="NSSupport" ref="22"/>
 												<reference key="NSControlView" ref="834527036"/>
@@ -1004,7 +1004,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 											</object>
 											<object class="NSTextFieldCell" id="320584847">
 												<int key="NSCellFlags">-1805517311</int>
-												<int key="NSCellFlags2">4456512</int>
+												<int key="NSCellFlags2">4456448</int>
 												<string key="NSContents"/>
 												<reference key="NSSupport" ref="22"/>
 												<reference key="NSControlView" ref="834527036"/>
@@ -1020,7 +1020,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 										<string key="NSCellClass">NSActionCell</string>
 										<object class="NSTextFieldCell" key="NSProtoCell" id="349557942">
 											<int key="NSCellFlags">-1805517311</int>
-											<int key="NSCellFlags2">4456512</int>
+											<int key="NSCellFlags2">4456448</int>
 											<string key="NSContents"/>
 											<reference key="NSSupport" ref="22"/>
 											<int key="NSTag">-1</int>
@@ -1588,7 +1588,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<object class="NSMutableString" key="NSViewClass">
 					<characters key="NS.bytes">View</characters>
 				</object>
-				<string key="NSWindowContentMaxSize">{3.40282e+38, 3.40282e+38}</string>
+				<string key="NSWindowContentMaxSize">{1.79769e+308, 1.79769e+308}</string>
 				<string key="NSWindowContentMinSize">{213, 107}</string>
 				<object class="NSView" key="NSWindowView" id="884034154">
 					<nil key="NSNextResponder"/>
@@ -1650,7 +1650,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {2560, 1577}}</string>
 				<string key="NSMinSize">{213, 129}</string>
-				<string key="NSMaxSize">{3.40282e+38, 3.40282e+38}</string>
+				<string key="NSMaxSize">{1.79769e+308, 1.79769e+308}</string>
 			</object>
 		</object>
 		<object class="IBObjectContainer" key="IBDocument.Objects">

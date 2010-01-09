@@ -23,7 +23,7 @@
 #import <DiscRecordingUI/DRBurnProgressPanel.h>
 #import  "BrowserController.h"
 
-NSString* asciiString (NSString* name);
+extern NSString* asciiString (NSString* name);
 
 @implementation BurnerWindowController
 @synthesize password, buttonsDisabled;

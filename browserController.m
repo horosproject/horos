@@ -14776,13 +14776,14 @@ static volatile int numberOfThreadsForJPEG = 0;
 			}
 			
 			// Find the STUDY folder
-			if (![[NSFileManager defaultManager] fileExistsAtPath:tempPath]) [[NSFileManager defaultManager] createDirectoryAtPath:tempPath attributes:nil];
+			if (![[NSFileManager defaultManager] fileExistsAtPath:tempPath])
+				[[NSFileManager defaultManager] createDirectoryAtPath:tempPath attributes:nil];
 			
 			NSMutableString *seriesStr = [NSMutableString stringWithString: asciiString( [curImage valueForKeyPath: @"series.name"])];
-			[BrowserController replaceNotAdmitted:seriesStr];
+			[BrowserController replaceNotAdmitted: seriesStr];
 			
 			tempPath = [tempPath stringByAppendingPathComponent: seriesStr ];
-			tempPath = [tempPath stringByAppendingFormat:@"_%@", [curImage valueForKeyPath: @"series.id"]];
+			tempPath = [tempPath stringByAppendingFormat: @"_%@", [curImage valueForKeyPath: @"series.id"]];
 			
 			if( previousSeries != [[curImage valueForKeyPath: @"series.id"] intValue])
 			{
@@ -15411,6 +15412,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[name replaceOccurrencesOfString:@">" withString:@"" options:0 range:NSMakeRange(0, [name length])];
 	[name replaceOccurrencesOfString:@"?" withString:@"" options:0 range:NSMakeRange(0, [name length])];
 	[name replaceOccurrencesOfString:@"#" withString:@"" options:0 range:NSMakeRange(0, [name length])];
+	[name replaceOccurrencesOfString:@"%" withString:@"" options:0 range:NSMakeRange(0, [name length])];
 	
 	return name;
 }
