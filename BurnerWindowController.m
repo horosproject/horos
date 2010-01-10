@@ -58,7 +58,8 @@ extern NSString* asciiString (NSString* name);
 	
 	if( [savePanel runModalForDirectory:nil file: [[self folderToBurn] lastPathComponent]] == NSFileHandlingPanelOKButton)
 	{
-		WaitRendering		*wait = [[WaitRendering alloc] init: NSLocalizedString(@"Writing DMG file...", nil)];
+		WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Writing DMG file...", nil)];
+		
 		[wait showWindow:self];
 		
 		[self createDMG:[[savePanel URL] path] withSource:[self folderToBurn]];
@@ -666,7 +667,7 @@ extern NSString* asciiString (NSString* name);
 
 - (void) produceHtml:(NSString*) burnFolder
 {
-	[[BrowserController currentBrowser] exportQuicktimeInt:dbObjects :burnFolder :YES];
+	[[BrowserController currentBrowser] exportQuicktimeInt: dbObjects :burnFolder :YES];
 }
 
 - (NSNumber*) getSizeOfDirectory: (NSString*) path
@@ -879,7 +880,7 @@ extern NSString* asciiString (NSString* name);
 		
 		if ( [[NSUserDefaults standardUserDefaults] boolForKey: @"BurnHtml"] == YES && [[NSUserDefaults standardUserDefaults] boolForKey:@"anonymizedBeforeBurning"] == NO)
 		{
-			[self performSelectorOnMainThread:@selector(produceHtml:) withObject:burnFolder waitUntilDone:YES];
+			[self performSelectorOnMainThread:@selector( produceHtml:) withObject:burnFolder waitUntilDone:YES];
 		}
 			
 		// Look for and if present copy a second folder for eg windows viewer or html files.

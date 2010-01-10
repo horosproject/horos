@@ -14714,7 +14714,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 -(void) exportQuicktimeInt:(NSArray*) dicomFiles2Export :(NSString*) path :(BOOL) html
 {
-	Wait                *splash = [[Wait alloc] initWithString:NSLocalizedString(@"Export...", nil) :NO];
+	Wait                *splash = nil;
 	NSMutableArray		*imagesArray = [NSMutableArray array];
 	NSString			*tempPath, *previousPath = nil;
 	long				previousSeries = -1;
@@ -14722,6 +14722,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 	BOOL				createHTML = html;
 	
 	NSMutableDictionary *htmlExportDictionary = [NSMutableDictionary dictionary];
+	
+	if( [NSThread isMainThread])
+		splash = [[Wait alloc] initWithString: NSLocalizedString( @"Export...", nil) :NO];
 	
 	[splash setCancel:YES];
 	[splash showWindow:self];
