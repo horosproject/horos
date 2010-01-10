@@ -151,6 +151,9 @@
     @"\n"
     @"on deliver_message(sendr, recip, subj, ccrec, bccrec, msgbody,"
     @"                   attachfiles)\n"
+	@"tell application \"Mail\" to quit\n" // To allow the modification in nsuserdefault com.apple.mail (reply to)
+	@"delay 0.5\n"
+	@"tell application \"Mail\" to activate\n"
     @"  set msg to build_message(sendr, recip, subj, ccrec, bccrec, msgbody,"
     @"                           attachfiles)\n"
     @"  tell application \"Mail\"\n"
@@ -259,7 +262,7 @@
   NSString *tmpdir = NSTemporaryDirectory ();
   NSString *attachtmp = nil;
   NSFileManager *fileManager = [NSFileManager defaultManager];
-  NSString *sendr = @"", *subj = @"";
+  NSString *sendr = @"", *subj = @"", *replyto = @"";
   NSAppleEventDescriptor *recip
     = [self recipientListFromString:[messageHeaders objectForKey:@"To"]];
   NSAppleEventDescriptor *ccrec
@@ -273,6 +276,8 @@
 
   if ([messageHeaders objectForKey:@"Subject"])
     subj = [messageHeaders objectForKey:@"Subject"];
+  if ([messageHeaders objectForKey:@"ReplyTo"])
+    replyto = [messageHeaders objectForKey:@"ReplyTo"];	
   if ([messageHeaders objectForKey:@"Sender"])
     sendr = [messageHeaders objectForKey:@"Sender"];
 
@@ -339,13 +344,45 @@
   [params insertDescriptor:files atIndex:7];
 
   [event setParamDescriptor:params forKeyword:keyDirectObject];
+  
+  NSDictionary* UserHeaders = [[[[[NSUserDefaults standardUserDefaults] persistentDomainForName: @"com.apple.Mail"] objectForKey: @"UserHeaders"] mutableCopy] autorelease];
+  
+  if( [replyto length])
+  {
+	NSMutableDictionary* defaults = [[[[NSUserDefaults standardUserDefaults] persistentDomainForName: @"com.apple.Mail"] mutableCopy] autorelease];
+	NSMutableDictionary* MutableUserHeaders = [[[defaults objectForKey: @"UserHeaders"] mutableCopy] autorelease];
+	
+	if( MutableUserHeaders == nil)
+		MutableUserHeaders = [NSMutableDictionary dictionary];
+	
+	[MutableUserHeaders setValue: replyto forKey: @"Reply-To"];
+	
+	[defaults setObject: MutableUserHeaders forKey: @"UserHeaders"];
+	
+	[[NSUserDefaults standardUserDefaults] setPersistentDomain: defaults forName: @"com.apple.Mail"];
+	[[NSUserDefaults standardUserDefaults] synchronize];
+  }
 
-  if (![[self script] executeAppleEvent:event error:&errorInfo]) {
+  if (![[self script] executeAppleEvent:event error:&errorInfo])
+  {
     NSLog (@"Unable to communicate with Mail.app.  Error was %@.\n",
 	   errorInfo);
     return NO;
   }
 
+ if( [replyto length])
+ {
+	NSMutableDictionary* defaults = [[[[NSUserDefaults standardUserDefaults] persistentDomainForName: @"com.apple.Mail"] mutableCopy] autorelease];
+	
+	if( UserHeaders)
+		[defaults setObject: UserHeaders forKey: @"UserHeaders"];
+	else
+		[defaults removeObjectForKey: @"UserHeaders"];
+		
+	[[NSUserDefaults standardUserDefaults] setPersistentDomain: defaults forName: @"com.apple.Mail"];
+	[[NSUserDefaults standardUserDefaults] synchronize];
+ }
+ 
   return YES;
 }
 

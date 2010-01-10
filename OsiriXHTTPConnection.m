@@ -193,7 +193,7 @@ static NSString *language = nil;
 	}
 }
 
-+ (BOOL) sendNotificationsEmailsTo: (NSArray*) users aboutStudies: (NSArray*) filteredStudies predicate: (NSString*) predicate
++ (BOOL) sendNotificationsEmailsTo: (NSArray*) users aboutStudies: (NSArray*) filteredStudies predicate: (NSString*) predicate message: (NSString*) message replyTo: (NSString*) replyto
 {
 	NSString *webServerAddress = [[NSUserDefaults standardUserDefaults] valueForKey: @"webServerAddress"];
 	int webPort = [[NSUserDefaults standardUserDefaults] integerForKey:@"httpWebServerPort"];
@@ -204,7 +204,12 @@ static NSString *language = nil;
 	
 	for( NSManagedObject *user in users)
 	{
-		NSMutableAttributedString *emailMessage = [[[NSMutableAttributedString alloc] initWithPath: [webDirectory stringByAppendingPathComponent:@"emailTemplate.txt"] documentAttributes: nil] autorelease];
+		NSMutableAttributedString *emailMessage = nil;
+		
+		if( message == nil)
+			emailMessage = [[[NSMutableAttributedString alloc] initWithPath: [webDirectory stringByAppendingPathComponent:@"emailTemplate.txt"] documentAttributes: nil] autorelease];
+		else
+			emailMessage = [[[NSMutableAttributedString alloc] initWithString: message] autorelease];
 		
 		if( emailMessage)
 		{
@@ -230,9 +235,14 @@ static NSString *language = nil;
 			[[emailMessage mutableString] replaceOccurrencesOfString: @"%URLsList%" withString: urls options: NSLiteralSearch range: NSMakeRange(0, [emailMessage length])];
 			
 			NSString *emailAddress = [user valueForKey: @"email"];
-			NSString *emailSubject = NSLocalizedString( @"A new radiology exam is available for you !", nil);
 			
-			[[CSMailMailClient mailClient] deliverMessage: emailMessage headers: [NSDictionary dictionaryWithObjectsAndKeys: emailAddress, @"To", fromEmailAddress, @"Sender", emailSubject, @"Subject", nil]];
+			NSString *emailSubject = nil;
+			if( replyto)
+				emailSubject = [NSString stringWithFormat: NSLocalizedString( @"A new radiology exam is available for you, from %@", nil), replyto];
+			else
+				emailSubject = NSLocalizedString( @"A new radiology exam is available for you !", nil);
+			
+			[[CSMailMailClient mailClient] deliverMessage: emailMessage headers: [NSDictionary dictionaryWithObjectsAndKeys: emailAddress, @"To", fromEmailAddress, @"Sender", emailSubject, @"Subject", replyto, @"ReplyTo", nil]];
 			
 			for( NSManagedObject *s in filteredStudies)
 			{
@@ -359,7 +369,7 @@ static NSString *language = nil;
 					
 					if( [filteredStudies count] > 0)
 					{
-						[OsiriXHTTPConnection sendNotificationsEmailsTo: [NSArray arrayWithObject: user] aboutStudies: filteredStudies predicate: [NSString stringWithFormat: @"browse=newAddedStudies&browseParameter=%lf", [lastCheckDate timeIntervalSinceReferenceDate]]];
+						[OsiriXHTTPConnection sendNotificationsEmailsTo: [NSArray arrayWithObject: user] aboutStudies: filteredStudies predicate: [NSString stringWithFormat: @"browse=newAddedStudies&browseParameter=%lf", [lastCheckDate timeIntervalSinceReferenceDate]] message: nil replyTo: nil];
 					}
 				}
 			}
@@ -2152,29 +2162,32 @@ static NSString *language = nil;
 							NSArray *studiesArrayStudyInstanceUID = [[[destUser valueForKey: @"studies"] allObjects] valueForKey: @"studyInstanceUID"];
 							NSArray *studiesArrayPatientUID = [[[destUser valueForKey: @"studies"] allObjects] valueForKey: @"patientUID"];
 							
+							NSManagedObject *studyLink = nil;
+							
 							if( [studiesArrayStudyInstanceUID indexOfObject: [study valueForKey: @"studyInstanceUID"]] == NSNotFound || [studiesArrayPatientUID indexOfObject: [study valueForKey: @"patientUID"]]  == NSNotFound)
 							{
 								NSManagedObject *studyLink = [NSEntityDescription insertNewObjectForEntityForName: @"Study" inManagedObjectContext: [BrowserController currentBrowser].userManagedObjectContext];
 							
 								[studyLink setValue: [[[study valueForKey: @"studyInstanceUID"] copy] autorelease] forKey: @"studyInstanceUID"];
 								[studyLink setValue: [[[study valueForKey: @"patientUID"] copy] autorelease] forKey: @"patientUID"];
-								[studyLink setValue: [NSDate dateWithTimeIntervalSinceReferenceDate: [[NSUserDefaults standardUserDefaults] doubleForKey: @"lastNotificationsDate"]] forKey: @"dateAdded"];
-								
-								[studyLink setValue: destUser forKey: @"user"];
-								
-								@try
-								{
-									[[BrowserController currentBrowser].userManagedObjectContext save: nil];
-								}
-								@catch (NSException * e)
-								{
-									NSLog( @"*********** [[BrowserController currentBrowser].userManagedObjectContext save: nil]");
-								}
+							}
+							else studyLink = [studiesArrayStudyInstanceUID objectAtIndex: [studiesArrayStudyInstanceUID indexOfObject: [study valueForKey: @"studyInstanceUID"]]];
+							
+							[studyLink setValue: [NSDate dateWithTimeIntervalSinceReferenceDate: [[NSUserDefaults standardUserDefaults] doubleForKey: @"lastNotificationsDate"]] forKey: @"dateAdded"];
+							[studyLink setValue: destUser forKey: @"user"];
+							
+							@try
+							{
+								[[BrowserController currentBrowser].userManagedObjectContext save: nil];
+							}
+							@catch (NSException * e)
+							{
+								NSLog( @"*********** [[BrowserController currentBrowser].userManagedObjectContext save: nil]");
 							}
 							
 							// Send the email
 							
-							
+							[OsiriXHTTPConnection sendNotificationsEmailsTo: users aboutStudies: [NSArray arrayWithObject: study] predicate: nil message: [message stringByAppendingFormat: @"\r\r\r%@\r%URLsList%", NSLocalizedString( @"To view this study, click on the following link:", nil)] replyTo: [currentUser valueForKey: @"email"]];
 							
 							[OsiriXHTTPConnection updateLogEntryForStudy: study withMessage: [NSString stringWithFormat: @"Share Study with User: %@", userDestination] forUser: [currentUser valueForKey: @"name"] ip: [asyncSocket connectedHost]];
 							

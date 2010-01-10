@@ -15209,7 +15209,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 						}
 					}
 					
-					[OsiriXHTTPConnection sendNotificationsEmailsTo: [notificationEmailArrayController selectedObjects] aboutStudies: [self databaseSelection] predicate: nil];
+					[OsiriXHTTPConnection sendNotificationsEmailsTo: [notificationEmailArrayController selectedObjects] aboutStudies: [self databaseSelection] predicate: nil message: nil replyTo: nil];
 				}
 			}
 			@catch( NSException *e)
@@ -15244,7 +15244,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 						[user setValue: [NSNumber numberWithBool: YES] forKey: @"autoDelete"];
 						
 						[OsiriXHTTPConnection updateLogEntryForStudy: [[notificationEmailArrayController selectedObjects] lastObject] withMessage: @"Temporary User Created" forUser: [user valueForKey: @"name"] ip: nil];
-						[OsiriXHTTPConnection sendNotificationsEmailsTo: [NSArray arrayWithObject: user] aboutStudies: [self databaseSelection] predicate: nil];
+						[OsiriXHTTPConnection sendNotificationsEmailsTo: [NSArray arrayWithObject: user] aboutStudies: [self databaseSelection] predicate: nil message: nil replyTo: nil];
 						
 						// And send a separate email with user name and password
 						
