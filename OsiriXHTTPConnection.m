@@ -199,6 +199,9 @@ static NSString *language = nil;
 	int webPort = [[NSUserDefaults standardUserDefaults] integerForKey:@"httpWebServerPort"];
 	NSString *fromEmailAddress = [[NSUserDefaults standardUserDefaults] valueForKey: @"notificationsEmailsSender"];
 	
+	if( webServerAddress == nil)
+		webServerAddress = [[AppController sharedAppController] privateIP];
+	
 	if( fromEmailAddress == nil)
 		fromEmailAddress = @"";
 	
@@ -584,6 +587,23 @@ static NSString *language = nil;
 	if( currentUser && [[currentUser valueForKey: @"shareStudyWithUser"] boolValue])
 		shareSend = YES;
 	
+	NSArray *users = nil;
+	
+	if( shareSend)
+	{
+		// Find all users
+		NSError *error = nil;
+		NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+		[dbRequest setEntity: [[[[BrowserController currentBrowser] userManagedObjectModel] entitiesByName] objectForKey: @"User"]];
+		[dbRequest setPredicate: [NSPredicate predicateWithValue: YES]];
+		
+		error = nil;
+		users = [[[BrowserController currentBrowser] userManagedObjectContext] executeFetchRequest: dbRequest error: &error];
+		
+		if( [users count] == 1) // only current user...
+			shareSend = NO;
+	}
+	
 	if( currentUser && [[currentUser valueForKey: @"sendDICOMtoSelfIP"] boolValue] == YES && [[currentUser valueForKey: @"sendDICOMtoAnyNodes"] boolValue] == NO)
 	{
 		if( [[parameters objectForKey: @"dicomcstoreport"] intValue] > 0 && [ipAddressString length] >= 7)
@@ -845,15 +865,6 @@ static NSString *language = nil;
 		
 		@try
 		{
-			// Find all users
-			NSError *error = nil;
-			NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-			[dbRequest setEntity: [[[[BrowserController currentBrowser] userManagedObjectModel] entitiesByName] objectForKey: @"User"]];
-			[dbRequest setPredicate: [NSPredicate predicateWithValue: YES]];
-			
-			error = nil;
-			NSArray *users = [[[BrowserController currentBrowser] userManagedObjectContext] executeFetchRequest: dbRequest error: &error];
-			
 			users = [users sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"name" ascending: YES] autorelease]]];
 			
 			for( NSManagedObject *user in users)
@@ -2139,7 +2150,7 @@ static NSString *language = nil;
 				if( [[parameters allKeys] containsObject:@"shareStudy"])
 				{
 					NSString *userDestination = [[[parameters objectForKey:@"userDestination"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
-					NSString *message = [[[parameters objectForKey:@"message"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
+					NSString *messageFromUser = [[[parameters objectForKey:@"message"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
 					
 					if( userDestination)
 					{
@@ -2187,7 +2198,7 @@ static NSString *language = nil;
 							
 							// Send the email
 							
-							[OsiriXHTTPConnection sendNotificationsEmailsTo: users aboutStudies: [NSArray arrayWithObject: study] predicate: nil message: [message stringByAppendingFormat: @"\r\r\r%@\r\r%URLsList%", NSLocalizedString( @"To view this study, click on the following link:", nil)] replyTo: [currentUser valueForKey: @"email"]];
+							[OsiriXHTTPConnection sendNotificationsEmailsTo: users aboutStudies: [NSArray arrayWithObject: study] predicate: nil message: [messageFromUser stringByAppendingFormat: @"\r\r\r%@\r\r%%URLsList%%", NSLocalizedString( @"To view this study, click on the following link:", nil)] replyTo: [currentUser valueForKey: @"email"]];
 							
 							[OsiriXHTTPConnection updateLogEntryForStudy: study withMessage: [NSString stringWithFormat: @"Share Study with User: %@", userDestination] forUser: [currentUser valueForKey: @"name"] ip: [asyncSocket connectedHost]];
 							
