@@ -880,6 +880,7 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject:@"0" forKey:@"displayCobbAngle"];
 	[defaultValues setObject:@"0" forKey:@"onlyDisplayImagesOfSamePatient"];
 	[defaultValues setObject:@"1" forKey:@"activateCGETSCP"];
+	[defaultValues setObject:@"0" forKey:@"notificationsEmails"];
 	
 	// ** ROI Default
 	[defaultValues setObject:[NSNumber numberWithFloat: 2] forKey:@"ROIThickness"];
