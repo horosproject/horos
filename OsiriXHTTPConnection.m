@@ -195,11 +195,11 @@ static NSString *language = nil;
 
 + (BOOL) sendNotificationsEmailsTo: (NSArray*) users aboutStudies: (NSArray*) filteredStudies predicate: (NSString*) predicate message: (NSString*) message replyTo: (NSString*) replyto
 {
-	NSString *webServerAddress = [[NSUserDefaults standardUserDefaults] valueForKey: @"webServerAddress"];
 	int webPort = [[NSUserDefaults standardUserDefaults] integerForKey:@"httpWebServerPort"];
 	NSString *fromEmailAddress = [[NSUserDefaults standardUserDefaults] valueForKey: @"notificationsEmailsSender"];
 	
-	if( webServerAddress == nil)
+	NSString *webServerAddress = [[NSUserDefaults standardUserDefaults] valueForKey: @"webServerAddress"];
+	if( [webServerAddress length] == 0)
 		webServerAddress = [[AppController sharedAppController] privateIP];
 	
 	if( fromEmailAddress == nil)
@@ -335,7 +335,6 @@ static NSString *language = nil;
 		NSArray *studies = [[[BrowserController currentBrowser] managedObjectContext] executeFetchRequest: dbRequest error:&error];
 		
 		NSString *webServerAddress = [[NSUserDefaults standardUserDefaults] valueForKey: @"webServerAddress"];
-		
 		if( [webServerAddress length] == 0)
 			webServerAddress = [[AppController sharedAppController] privateIP];
 		

@@ -10,6 +10,7 @@
 		8D202CED0486D31800D8A456 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C167DFE841241C02AAC07 /* InfoPlist.strings */; };
 		8D202CF30486D31800D8A456 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */; };
 		8D202CF40486D31800D8A456 /* PreferencePanes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F506C035013D953901CA16C8 /* PreferencePanes.framework */; };
+		AB09CC4910FB2A0500FDF098 /* AppController.h in Headers */ = {isa = PBXBuildFile; fileRef = AB09CC4810FB2A0500FDF098 /* AppController.h */; };
 		AB80A1BE0A19C3C000FED357 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB80A1BD0A19C3C000FED357 /* Security.framework */; };
 		CE162F2310DC2DD300BF9C81 /* browserController.h in Headers */ = {isa = PBXBuildFile; fileRef = CE162F2210DC2DD300BF9C81 /* browserController.h */; };
 		CE4B5C7210E5F6B300C11948 /* OSIWebSharingPreferencePanePref.h in Headers */ = {isa = PBXBuildFile; fileRef = CE4B5C7010E5F6B300C11948 /* OSIWebSharingPreferencePanePref.h */; };
@@ -26,6 +27,7 @@
 		1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		8D202CF70486D31800D8A456 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		8D202CF80486D31800D8A456 /* OSIWebSharingPreferencePane.prefPane */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OSIWebSharingPreferencePane.prefPane; sourceTree = BUILT_PRODUCTS_DIR; };
+		AB09CC4810FB2A0500FDF098 /* AppController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppController.h; path = ../../AppController.h; sourceTree = SOURCE_ROOT; };
 		AB80A1BD0A19C3C000FED357 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		CE162F2210DC2DD300BF9C81 /* browserController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = browserController.h; path = ../../browserController.h; sourceTree = SOURCE_ROOT; };
 		CE4B5C7010E5F6B300C11948 /* OSIWebSharingPreferencePanePref.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSIWebSharingPreferencePanePref.h; sourceTree = "<group>"; };
@@ -88,6 +90,7 @@
 				CE4B5C7110E5F6B300C11948 /* OSIWebSharingPreferencePanePref.m */,
 				CE50FF1D0E481B5000959A84 /* DefaultsOsiriX.h */,
 				CE162F2210DC2DD300BF9C81 /* browserController.h */,
+				AB09CC4810FB2A0500FDF098 /* AppController.h */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -138,6 +141,7 @@
 				CE162F2310DC2DD300BF9C81 /* browserController.h in Headers */,
 				CE4B5C7210E5F6B300C11948 /* OSIWebSharingPreferencePanePref.h in Headers */,
 				CE4B5C7510E5F6BF00C11948 /* OSIWebSharingPreferencePane_Prefix.pch in Headers */,
+				AB09CC4910FB2A0500FDF098 /* AppController.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

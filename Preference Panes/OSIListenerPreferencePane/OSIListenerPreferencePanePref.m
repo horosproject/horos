@@ -233,7 +233,7 @@ char *GetPrivateIP()
 
 - (void) willUnselect
 {
-	NSLog(@"willUnselect");
+	[[[self mainView] window] makeFirstResponder: nil];
 	
 	if( [[NSUserDefaults standardUserDefaults] integerForKey:@"DICOMTimeout"] < 1)
 		[[NSUserDefaults standardUserDefaults] setObject:@"1" forKey:@"DICOMTimeout"];

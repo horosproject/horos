@@ -184,9 +184,9 @@ NSComparisonResult  compareViewTags(id firstView, id secondView, void * context)
 	return self;
 }
 
-- (void) willUnselect
+-(void) willUnselect
 {
-
+	[[[self mainView] window] makeFirstResponder: nil];
 }
 
 - (void)willSelect

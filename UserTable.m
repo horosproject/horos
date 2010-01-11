@@ -126,6 +126,34 @@ static PSGenerator *generator = nil;
 		}
 	}
 	
+	if( [key isEqualToString: @"studyPredicate"])
+	{
+		NSArray	*users = nil;
+		@try
+		{
+			NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+			[request setEntity: [[[[BrowserController currentBrowser] userManagedObjectModel] entitiesByName] objectForKey:@"User"]];
+			[request setPredicate: [[BrowserController currentBrowser] smartAlbumPredicateString: *value]];
+			
+			NSError *err = nil;
+			[[[BrowserController currentBrowser] userManagedObjectContext] executeFetchRequest: request error: &err];
+			
+			if( err)
+			{
+				NSDictionary *info = [NSDictionary dictionaryWithObject: NSLocalizedString( @"Syntax Error in Study Filter.", nil) forKey: NSLocalizedDescriptionKey];
+				*error = [NSError errorWithDomain: @"OsiriXDomain" code: -31 userInfo: info];
+				return NO;
+			}
+		}
+		@catch ( NSException *e)
+		{
+			NSLog( @"******* validateValue UserTable exception: %@", e);
+			NSDictionary *info = [NSDictionary dictionaryWithObject: NSLocalizedString( @"Syntax Error in Study Filter.", nil) forKey: NSLocalizedDescriptionKey];
+			*error = [NSError errorWithDomain: @"OsiriXDomain" code: -31 userInfo: info];
+			return NO;
+		}
+	}
+	
 	return YES;
 }
 @end

@@ -113,6 +113,8 @@
 
 -(void) willUnselect
 {
+	[[[self mainView] window] makeFirstResponder: nil];
+
 	[[NSUserDefaults standardUserDefaults] setObject: routesArray forKey:@"AUTOROUTINGDICTIONARY"];
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTOROUTINGACTIVATED"])

@@ -86,6 +86,11 @@
 	//[[[[self mainView] window] windowController] selectPaneIndex: 0];
 }
 
+-(void) willUnselect
+{
+	[[[self mainView] window] makeFirstResponder: nil];
+}
+
 - (void) mainViewDidLoad
 {
 	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];

@@ -15,25 +15,12 @@
 #import "OSIWebSharingPreferencePanePref.h"
 #import "DefaultsOsiriX.h"
 #import "BrowserController.h"
+#import "AppController.h"
 
 #include <netdb.h>
 #include <unistd.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
-
-char *GetPrivateIP()
-{
-	struct			hostent *h;
-	char			hostname[100];
-	gethostname(hostname, 99);
-	if ((h=gethostbyname(hostname)) == NULL)
-	{
-        perror("Error: ");
-        return "(Error locating Private IP Address)";
-    }
-	
-    return (char*) inet_ntoa(*((struct in_addr *)h->h_addr));
-}
 
 @implementation OSIWebSharingPreferencePanePref
 
@@ -69,7 +56,7 @@ char *GetPrivateIP()
 
 - (void) mainViewDidLoad
 {
-	[studiesArrayController addObserver:self forKeyPath: @"selection" options:(NSKeyValueObservingOptionNew) context:NULL];
+	[studiesArrayController addObserver: self forKeyPath: @"selection" options:(NSKeyValueObservingOptionNew) context:NULL];
 	
 	[_authView setDelegate:self];
 	
@@ -93,13 +80,18 @@ char *GetPrivateIP()
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
-	// Automatically display the selected study in the main DB window
-	if( [[studiesArrayController selectedObjects] lastObject])
-		[[BrowserController currentBrowser]	findObject:	[NSString stringWithFormat: @"patientUID =='%@' AND studyInstanceUID == '%@'", [[[studiesArrayController selectedObjects] lastObject] valueForKey:@"patientUID"], [[[studiesArrayController selectedObjects] lastObject] valueForKey:@"studyInstanceUID"]] table: @"Study" execute: @"Select" elements: nil];
+	if( [keyPath isEqualToString: @"selection"])
+	{
+		// Automatically display the selected study in the main DB window
+		if( [[studiesArrayController selectedObjects] lastObject])
+			[[BrowserController currentBrowser]	findObject:	[NSString stringWithFormat: @"patientUID =='%@' AND studyInstanceUID == '%@'", [[[studiesArrayController selectedObjects] lastObject] valueForKey:@"patientUID"], [[[studiesArrayController selectedObjects] lastObject] valueForKey:@"studyInstanceUID"]] table: @"Study" execute: @"Select" elements: nil];
+	}
 }
 
 - (void) willUnselect
 {
+	[[[self mainView] window] makeFirstResponder: nil];
+	
 	[[BrowserController currentBrowser] saveUserDatabase];
 	
 	[BrowserController currentBrowser].testPredicate = nil;
@@ -123,7 +115,7 @@ char *GetPrivateIP()
 			[BrowserController currentBrowser].testPredicate = [[BrowserController currentBrowser] smartAlbumPredicateString: [[[userArrayController selectedObjects] lastObject] valueForKey: @"studyPredicate"]];
 			[[BrowserController currentBrowser] outlineViewRefresh];
 			[BrowserController currentBrowser].testPredicate = nil;
-			NSRunInformationalAlertPanel( NSLocalizedString(@"It works !",nil), NSLocalizedString(@"This filter works: the result is now displayed in the Database Window.", nil), NSLocalizedString(@"OK",nil), nil, nil);
+			NSRunInformationalAlertPanel( NSLocalizedString(@"Study Filter",nil), NSLocalizedString(@"The result is now displayed in the Database Window.", nil), NSLocalizedString(@"OK",nil), nil, nil);
 		}
 		@catch (NSException * e)
 		{

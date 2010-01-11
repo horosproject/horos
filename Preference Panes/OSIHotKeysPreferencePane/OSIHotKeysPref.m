@@ -57,6 +57,11 @@ static OSIHotKeysPref *currentKeysPref = 0L;
 	[super dealloc];
 }
 
+-(void) willUnselect
+{
+	[[[self mainView] window] makeFirstResponder: nil];
+}
+
 - (void) mainViewDidLoad
 {
 	currentKeysPref = self;

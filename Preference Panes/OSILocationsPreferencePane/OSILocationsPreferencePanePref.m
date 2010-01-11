@@ -302,6 +302,8 @@
 
 - (void) willUnselect
 {
+	[[[self mainView] window] makeFirstResponder: nil];
+	
 	[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"updateServers"];
 }
 

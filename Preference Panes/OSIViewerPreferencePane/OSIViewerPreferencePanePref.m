@@ -63,6 +63,8 @@
 
 - (void) willUnselect
 {
+	[[[self mainView] window] makeFirstResponder: nil];
+	
 	[[NSUserDefaults standardUserDefaults] setObject:[iPhotoAlbumName stringValue] forKey: @"ALBUMNAME"];
 }
 

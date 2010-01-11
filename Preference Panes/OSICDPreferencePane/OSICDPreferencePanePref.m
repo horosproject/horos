@@ -58,6 +58,11 @@
 	[super dealloc];
 }
 
+-(void) willUnselect
+{
+	[[[self mainView] window] makeFirstResponder: nil];
+}
+
 - (void) mainViewDidLoad
 {
 	[_authView setDelegate:self];

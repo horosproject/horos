@@ -57,6 +57,8 @@
 
 - (void) willUnselect
 {
+	[[[self mainView] window] makeFirstResponder: nil];
+	
 	[[NSUserDefaults standardUserDefaults] setObject:[DefaultCLUTMenu title] forKey: @"PET Default CLUT"];
 	[[NSUserDefaults standardUserDefaults] setObject:[CLUTBlendingMenu title] forKey: @"PET Blending CLUT"];
 	[[NSUserDefaults standardUserDefaults] setObject:[OpacityTableMenu title] forKey: @"PET Default Opacity Table"];

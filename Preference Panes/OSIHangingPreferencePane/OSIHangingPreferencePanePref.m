@@ -217,7 +217,10 @@
 	_controlsAuthorized = authorized;
 }
 
-- (void)willUnselect{
+-(void) willUnselect
+{
+	[[[self mainView] window] makeFirstResponder: nil];
+	
 	[[NSUserDefaults standardUserDefaults] setObject:[bodyRegionController content] forKey:@"bodyRegions"];
 }
 
