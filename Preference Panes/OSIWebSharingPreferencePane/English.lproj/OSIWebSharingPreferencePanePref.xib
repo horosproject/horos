@@ -451,30 +451,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<reference key="NSCellBackgroundColor" ref="767523977"/>
 							<reference key="NSFont" ref="349069678"/>
 						</object>
-						<object class="NSButton" id="891904232">
-							<reference key="NSNextResponder" ref="738391672"/>
-							<int key="NSvFlags">268</int>
-							<string key="NSFrame">{{615, 758}, {126, 17}}</string>
-							<reference key="NSSuperview" ref="738391672"/>
-							<bool key="NSEnabled">YES</bool>
-							<object class="NSButtonCell" key="NSCell" id="805036124">
-								<int key="NSCellFlags">-2080244224</int>
-								<int key="NSCellFlags2">134348800</int>
-								<string key="NSContents">Keychain access</string>
-								<object class="NSFont" key="NSSupport" id="26">
-									<string key="NSName">LucidaGrande</string>
-									<double key="NSSize">11</double>
-									<int key="NSfFlags">3100</int>
-								</object>
-								<reference key="NSControlView" ref="891904232"/>
-								<int key="NSButtonFlags">-2038152961</int>
-								<int key="NSButtonFlags2">164</int>
-								<string key="NSAlternateContents"/>
-								<string key="NSKeyEquivalent"/>
-								<int key="NSPeriodicDelay">400</int>
-								<int key="NSPeriodicInterval">75</int>
-							</object>
-						</object>
 						<object class="NSBox" id="236395217">
 							<reference key="NSNextResponder" ref="738391672"/>
 							<int key="NSvFlags">274</int>
@@ -845,7 +821,11 @@ ZW1wdHkgbGlzdC4</string>
 												<int key="NSCellFlags">341966336</int>
 												<int key="NSCellFlags2">131072</int>
 												<string key="NSContents"/>
-												<reference key="NSSupport" ref="26"/>
+												<object class="NSFont" key="NSSupport" id="26">
+													<string key="NSName">LucidaGrande</string>
+													<double key="NSSize">11</double>
+													<int key="NSfFlags">3100</int>
+												</object>
 												<string key="NSPlaceholderString">An empty filter allows the user to see ALL studies</string>
 												<reference key="NSControlView" ref="106438391"/>
 												<bool key="NSDrawsBackground">YES</bool>
@@ -1770,10 +1750,6 @@ ZW1wdHkgbGlzdC4</string>
 				<string key="NSMaxSize">{1.79769e+308, 1.79769e+308}</string>
 			</object>
 			<object class="NSUserDefaultsController" id="896066363">
-				<array class="NSMutableArray" key="NSDeclaredKeys">
-					<string>encryptedWebServer</string>
-					<string>authorizedToEdit</string>
-				</array>
 				<bool key="NSSharedInstance">YES</bool>
 			</object>
 			<object class="NSArrayController" id="596395762">
@@ -2839,14 +2815,6 @@ ZW1wdHkgbGlzdC4</string>
 					<int key="connectionID">672</int>
 				</object>
 				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">openKeyChainAccess:</string>
-						<reference key="source" ref="649897355"/>
-						<reference key="destination" ref="891904232"/>
-					</object>
-					<int key="connectionID">673</int>
-				</object>
-				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
 						<string key="label">enabled: values.passwordWebServer</string>
 						<reference key="source" ref="426784300"/>
@@ -3475,22 +3443,6 @@ ZW1wdHkgbGlzdC4</string>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
 						<string key="label">enabled: values.authorizedToEdit</string>
-						<reference key="source" ref="891904232"/>
-						<reference key="destination" ref="896066363"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="891904232"/>
-							<reference key="NSDestination" ref="896066363"/>
-							<string key="NSLabel">enabled: values.authorizedToEdit</string>
-							<string key="NSBinding">enabled</string>
-							<string key="NSKeyPath">values.authorizedToEdit</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">853</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled: values.authorizedToEdit</string>
 						<reference key="source" ref="605011559"/>
 						<reference key="destination" ref="896066363"/>
 						<object class="NSNibBindingConnector" key="connector">
@@ -3883,7 +3835,6 @@ ZW1wdHkgbGlzdC4</string>
 							<reference ref="727779864"/>
 							<reference ref="372921936"/>
 							<reference ref="927135998"/>
-							<reference ref="891904232"/>
 						</array>
 						<reference key="parent" ref="689525341"/>
 					</object>
@@ -4044,19 +3995,6 @@ ZW1wdHkgbGlzdC4</string>
 						<int key="objectID">471</int>
 						<reference key="object" ref="196971188"/>
 						<reference key="parent" ref="379674509"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">475</int>
-						<reference key="object" ref="891904232"/>
-						<array class="NSMutableArray" key="children">
-							<reference ref="805036124"/>
-						</array>
-						<reference key="parent" ref="738391672"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">476</int>
-						<reference key="object" ref="805036124"/>
-						<reference key="parent" ref="891904232"/>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">484</int>
@@ -4847,8 +4785,6 @@ ZW1wdHkgbGlzdC4</string>
 				<string key="469.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="470.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="471.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="475.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="476.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="481.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="482.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="483.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
