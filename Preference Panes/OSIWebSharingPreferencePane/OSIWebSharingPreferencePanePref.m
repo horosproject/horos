@@ -12,10 +12,15 @@
      PURPOSE.
 =========================================================================*/
 
+#import <SecurityInterface/SFAuthorizationView.h>
+#import <SecurityInterface/SFChooseIdentityPanel.h>
+#import <SecurityInterface/SFCertificateView.h>
+
 #import "OSIWebSharingPreferencePanePref.h"
 #import "DefaultsOsiriX.h"
 #import "BrowserController.h"
 #import "AppController.h"
+#import "DDKeychain.h"
 
 #include <netdb.h>
 #include <unistd.h>
@@ -23,6 +28,61 @@
 #include <arpa/inet.h>
 
 @implementation OSIWebSharingPreferencePanePref
+
+@synthesize TLSAuthenticationCertificate;
+
+- (NSString*) UniqueLabelForSelectedServer;
+{
+	return @"com.osirixviewer.osirixwebserver";
+}
+
+- (void)getTLSCertificate;
+{	
+	NSString *label = [self UniqueLabelForSelectedServer];
+	NSString *name = [DDKeychain DICOMTLSCertificateNameForLabel:label];
+	NSImage *icon = [DDKeychain DICOMTLSCertificateIconForLabel:label];
+	
+	if(!name)
+	{
+		name = NSLocalizedString(@"No certificate selected.", @"No certificate selected.");	
+		[TLSCertificateButton setHidden:YES];
+		[TLSChooseCertificateButton setTitle:NSLocalizedString(@"Choose", @"Choose")];
+	}
+	else
+	{
+		[TLSCertificateButton setHidden:NO];
+		[TLSCertificateButton setImage:icon];
+		[TLSChooseCertificateButton setTitle:NSLocalizedString(@"Change", @"Change")];
+	}
+
+	self.TLSAuthenticationCertificate = name;
+}
+
+- (IBAction)chooseTLSCertificate:(id)sender
+{
+	NSArray *certificates = [DDKeychain KeychainAccessCertificatesList];
+		
+	[[SFChooseIdentityPanel sharedChooseIdentityPanel] setAlternateButtonTitle:NSLocalizedString(@"Cancel", @"Cancel")];
+	NSInteger clickedButton = [[SFChooseIdentityPanel sharedChooseIdentityPanel] runModalForIdentities:certificates message:NSLocalizedString(@"Choose a certificate from the following list.", @"Choose a certificate from the following list.")];
+	
+	if(clickedButton==NSOKButton)
+	{
+		SecIdentityRef identity = [[SFChooseIdentityPanel sharedChooseIdentityPanel] identity];
+		if(identity)
+		{
+			[DDKeychain KeychainAccessSetPreferredIdentity:identity forName:[self UniqueLabelForSelectedServer] keyUse:CSSM_KEYUSE_ANY];
+			[self getTLSCertificate];
+		}
+	}
+	else if(clickedButton==NSCancelButton)
+		return;
+}
+
+- (IBAction)viewTLSCertificate:(id)sender;
+{
+	NSString *label = [self UniqueLabelForSelectedServer];
+	[DDKeychain DICOMTLSOpenCertificatePanelForLabel:label];
+}
 
 - (NSManagedObjectContext*) managedObjectContext
 {
@@ -72,10 +132,12 @@
 	{
 		[[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"authorizedToEdit"];
 		
-		[_authView setString:"com.rossetantoine.osirix.preferences.allowalways"];
+		[_authView setString: "com.rossetantoine.osirix.preferences.allowalways"];
 		[_authView setEnabled: NO];
 	}
-	[_authView updateStatus:self];
+	[_authView updateStatus: self];
+	
+	[self getTLSCertificate];
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context

@@ -456,7 +456,7 @@
 				// Ugly Hack
 				// For some reason, name sometimes contains odd characters at the end of it
 				// I'm not sure why, and I don't know of a proper fix, thus the use of the hasPrefix: method
-				if([name hasPrefix:@"OsiriX HTTP Server"])
+				if([name hasPrefix: @"com.osirixviewer.osirixwebserver"])
 				{
 					// It's possible for there to be more than one private key with the above prefix
 					// But we're only allowed to have one identity, so we make sure to only add one to the array

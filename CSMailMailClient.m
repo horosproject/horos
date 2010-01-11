@@ -12,6 +12,20 @@
 #import <CoreServices/CoreServices.h>
 #import <Carbon/Carbon.h>
 
+void QuitAndSleep(NSString* bundleIdentifier, float seconds)
+{
+	const char* identifier = [bundleIdentifier UTF8String] ;
+	NSAppleEventDescriptor *as = [NSAppleEventDescriptor descriptorWithDescriptorType:typeApplicationBundleID bytes:identifier length:strlen(identifier)]; 
+	NSAppleEventDescriptor *ae = [NSAppleEventDescriptor appleEventWithEventClass:kCoreEventClass  eventID:kAEQuitApplication  targetDescriptor:as returnID:kAutoGenerateReturnID  transactionID:kAnyTransactionID];
+	
+	AppleEvent *quitApplicationAppleEventPtr = (AEDesc*)[ae aeDesc];
+	if (quitApplicationAppleEventPtr)
+	{
+		OSStatus err = AESendMessage(quitApplicationAppleEventPtr, NULL, kAENoReply, kAEDefaultTimeout) ;
+	}
+	[NSThread sleepForTimeInterval: seconds];
+}
+
 @implementation CSMailMailClient
 
 - (NSAppleEventDescriptor *)recipientListFromString:(NSString *)string
@@ -42,8 +56,10 @@
 			  addr = tmp;
 		  }
         
-	if ([scanner scanString:@"," intoString:NULL]) {
-	  if ([addr length]) {
+	if ([scanner scanString:@"," intoString:NULL])
+	{
+	  if ([addr length])
+	  {
 	    NSAppleEventDescriptor *record
               = [NSAppleEventDescriptor listDescriptor];
 	    NSAppleEventDescriptor *userRecord 
@@ -151,8 +167,6 @@
     @"\n"
     @"on deliver_message(sendr, recip, subj, ccrec, bccrec, msgbody,"
     @"                   attachfiles)\n"
-	@"tell application \"Mail\" to quit\n" // To allow the modification in nsuserdefault com.apple.mail (reply to)
-	@"delay 0.5\n"
 	@"tell application \"Mail\" to activate\n"
     @"  set msg to build_message(sendr, recip, subj, ccrec, bccrec, msgbody,"
     @"                           attachfiles)\n"
@@ -173,7 +187,7 @@
     @"  end tell\n"
     @"end construct_message\n";
   
-  script = [[NSAppleScript alloc] initWithSource:ourScript];
+  script = [[NSAppleScript alloc] initWithSource: ourScript];
   
   if (![script compileAndReturnError:&errorInfo]) {
     NSLog (@"Unable to compile script: %@", errorInfo);
@@ -361,6 +375,8 @@
 	
 	[[NSUserDefaults standardUserDefaults] setPersistentDomain: defaults forName: @"com.apple.Mail"];
 	[[NSUserDefaults standardUserDefaults] synchronize];
+	
+	QuitAndSleep( @"com.apple.mail", 0.5);
   }
 
   if (![[self script] executeAppleEvent:event error:&errorInfo])

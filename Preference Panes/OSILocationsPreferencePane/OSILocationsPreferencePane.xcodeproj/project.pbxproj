@@ -18,16 +18,13 @@
 		A951F03E10DFCA9C00165D8C /* OpenGLScreenReader.h in Headers */ = {isa = PBXBuildFile; fileRef = A951F03D10DFCA9C00165D8C /* OpenGLScreenReader.h */; };
 		A951F04A10DFCB2600165D8C /* OpenGLScreenReader.m in Sources */ = {isa = PBXBuildFile; fileRef = A951F04910DFCB2600165D8C /* OpenGLScreenReader.m */; };
 		A951F06410DFCCEE00165D8C /* DDKeychain.h in Headers */ = {isa = PBXBuildFile; fileRef = A951F06210DFCCEE00165D8C /* DDKeychain.h */; };
-		A951F06510DFCCEE00165D8C /* DDKeychain.m in Sources */ = {isa = PBXBuildFile; fileRef = A951F06310DFCCEE00165D8C /* DDKeychain.m */; };
 		A96539D410D9038A000788B2 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A96539D310D9038A000788B2 /* OpenGL.framework */; };
 		A997B16910E0C45E004C5BB1 /* SecurityInterface.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A997B16810E0C45E004C5BB1 /* SecurityInterface.framework */; };
 		A9B34A1510E24ED3008C507B /* DICOMTLS.h in Headers */ = {isa = PBXBuildFile; fileRef = A9B34A1410E24ED3008C507B /* DICOMTLS.h */; };
 		ABEBD15A106B963D009CE1FF /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABEBD159106B963D009CE1FF /* Security.framework */; };
 		CE1DD8DF0B4FF18700B4AC4B /* SimplePing.h in Headers */ = {isa = PBXBuildFile; fileRef = CE1DD8DD0B4FF18700B4AC4B /* SimplePing.h */; };
-		CE1DD8E00B4FF18700B4AC4B /* SimplePing.c in Sources */ = {isa = PBXBuildFile; fileRef = CE1DD8DE0B4FF18700B4AC4B /* SimplePing.c */; };
 		CE1EF6DE0AF0072000A728F2 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = CE1EF6DC0AF0072000A728F2 /* Localizable.strings */; };
 		CE83E5F20C96D0E500E0611C /* OSILocationsPreferencePanePref.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE83E5F00C96D0E500E0611C /* OSILocationsPreferencePanePref.xib */; };
-		CEE6C1FA0C3BCECE00C4AB99 /* DNDArrayController.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE6C1F80C3BCECE00C4AB99 /* DNDArrayController.m */; };
 		CEE6C1FB0C3BCECE00C4AB99 /* DNDArrayController.h in Headers */ = {isa = PBXBuildFile; fileRef = CEE6C1F90C3BCECE00C4AB99 /* DNDArrayController.h */; };
 /* End PBXBuildFile section */
 
@@ -44,16 +41,13 @@
 		A951F03D10DFCA9C00165D8C /* OpenGLScreenReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OpenGLScreenReader.h; path = ../../OpenGLScreenReader.h; sourceTree = "<group>"; };
 		A951F04910DFCB2600165D8C /* OpenGLScreenReader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OpenGLScreenReader.m; path = ../../OpenGLScreenReader.m; sourceTree = "<group>"; };
 		A951F06210DFCCEE00165D8C /* DDKeychain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DDKeychain.h; path = ../../cocoahttpserver/DDKeychain.h; sourceTree = SOURCE_ROOT; };
-		A951F06310DFCCEE00165D8C /* DDKeychain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DDKeychain.m; path = ../../cocoahttpserver/DDKeychain.m; sourceTree = SOURCE_ROOT; };
 		A96539D310D9038A000788B2 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		A997B16810E0C45E004C5BB1 /* SecurityInterface.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SecurityInterface.framework; path = System/Library/Frameworks/SecurityInterface.framework; sourceTree = SDKROOT; };
 		A9B34A1410E24ED3008C507B /* DICOMTLS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DICOMTLS.h; path = ../../DICOMTLS.h; sourceTree = SOURCE_ROOT; };
 		ABEBD159106B963D009CE1FF /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		CE1DD8DD0B4FF18700B4AC4B /* SimplePing.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = SimplePing.h; path = ../../SimplePing.h; sourceTree = SOURCE_ROOT; };
-		CE1DD8DE0B4FF18700B4AC4B /* SimplePing.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = SimplePing.c; path = ../../SimplePing.c; sourceTree = SOURCE_ROOT; };
 		CE1EF6DD0AF0072000A728F2 /* English */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/Localizable.strings; sourceTree = "<group>"; };
 		CE83E5F10C96D0E500E0611C /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/OSILocationsPreferencePanePref.xib; sourceTree = "<group>"; };
-		CEE6C1F80C3BCECE00C4AB99 /* DNDArrayController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = DNDArrayController.m; path = ../../DNDArrayController.m; sourceTree = SOURCE_ROOT; };
 		CEE6C1F90C3BCECE00C4AB99 /* DNDArrayController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = DNDArrayController.h; path = ../../DNDArrayController.h; sourceTree = SOURCE_ROOT; };
 		F506C035013D953901CA16C8 /* PreferencePanes.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PreferencePanes.framework; path = /System/Library/Frameworks/PreferencePanes.framework; sourceTree = "<absolute>"; };
 		F506C03C013D9D7901CA16C8 /* OSILocationsPreferencePanePref.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSILocationsPreferencePanePref.h; sourceTree = "<group>"; };
@@ -111,10 +105,8 @@
 		08FB77AFFE84173DC02AAC07 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				CEE6C1F80C3BCECE00C4AB99 /* DNDArrayController.m */,
 				CEE6C1F90C3BCECE00C4AB99 /* DNDArrayController.h */,
 				CE1DD8DD0B4FF18700B4AC4B /* SimplePing.h */,
-				CE1DD8DE0B4FF18700B4AC4B /* SimplePing.c */,
 				7EC5847507298EDC00429FC7 /* ServerTableView.h */,
 				7EC5847607298EDC00429FC7 /* ServerTableView.m */,
 				F506C03C013D9D7901CA16C8 /* OSILocationsPreferencePanePref.h */,
@@ -122,7 +114,6 @@
 				A951F03D10DFCA9C00165D8C /* OpenGLScreenReader.h */,
 				A951F04910DFCB2600165D8C /* OpenGLScreenReader.m */,
 				A951F06210DFCCEE00165D8C /* DDKeychain.h */,
-				A951F06310DFCCEE00165D8C /* DDKeychain.m */,
 				A9B34A1410E24ED3008C507B /* DICOMTLS.h */,
 			);
 			name = Classes;
@@ -253,10 +244,7 @@
 			files = (
 				8D202CF10486D31800D8A456 /* OSILocationsPreferencePanePref.m in Sources */,
 				7EC5847807298EDC00429FC7 /* ServerTableView.m in Sources */,
-				CE1DD8E00B4FF18700B4AC4B /* SimplePing.c in Sources */,
-				CEE6C1FA0C3BCECE00C4AB99 /* DNDArrayController.m in Sources */,
 				A951F04A10DFCB2600165D8C /* OpenGLScreenReader.m in Sources */,
-				A951F06510DFCCEE00165D8C /* DDKeychain.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -317,6 +305,8 @@
 				OTHER_LDFLAGS = (
 					"-bundle",
 					"-twolevel_namespace",
+					"-undefined",
+					dynamic_lookup,
 				);
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = OSILocationsPreferencePane;

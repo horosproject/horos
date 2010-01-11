@@ -19,9 +19,16 @@
 {
 	IBOutlet SFAuthorizationView *_authView;
 	IBOutlet NSArrayController *studiesArrayController, *userArrayController;
+	
+	NSString *TLSAuthenticationCertificate;
+	IBOutlet NSButton *TLSChooseCertificateButton, *TLSCertificateButton;
 }
+@property (retain) NSString *TLSAuthenticationCertificate;
 
 - (void) mainViewDidLoad;
 - (IBAction) openKeyChainAccess:(id) sender;
 - (IBAction) smartAlbumHelpButton: (id) sender;
+- (IBAction) chooseTLSCertificate: (id) sender;
+- (IBAction) viewTLSCertificate: (id) sender;
+
 @end
