@@ -81,6 +81,7 @@
 			if([[extraParameters objectForKey:@"TLSUseDHParameterFileURL"] boolValue])
 				_dhparam = [[extraParameters objectForKey:@"TLSDHParameterFileURL"] cStringUsingEncoding:NSUTF8StringEncoding];
 			
+			[DDKeychain generatePseudoRandomFileToPath:TLS_SEED_FILE];
 			_readSeedFile = [TLS_SEED_FILE cStringUsingEncoding:NSUTF8StringEncoding];
 			_writeSeedFile = TLS_WRITE_SEED_FILE;
 		}

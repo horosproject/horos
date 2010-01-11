@@ -41,4 +41,8 @@
 + (NSString*)DICOMTLSCertificatePathForLabel:(NSString*)label;
 + (NSString*)DICOMTLSCertificatePathForServerAddress:(NSString*)address port:(int)port AETitle:(NSString*)aetitle;
 
++ (void)generatePseudoRandomFileToPath:(NSString*)path;
++ (void)lockFile:(NSString*)path;
++ (void)unlockFile:(NSString*)path;
+
 @end

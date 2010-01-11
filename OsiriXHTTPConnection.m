@@ -508,13 +508,14 @@ static NSString *language = nil;
  **/
 - (NSArray *)sslIdentityAndCertificates
 {
-	NSArray *result = [DDKeychain SSLIdentityAndCertificates];
-	if([result count] == 0)
+//	NSArray *result = [DDKeychain SSLIdentityAndCertificates];
+	id identity = (id)[DDKeychain KeychainAccessPreferredIdentityForName:@"com.osirixviewer.osirixwebserver" keyUse:CSSM_KEYUSE_ANY];
+	if( identity == nil)
 	{
 		[DDKeychain createNewIdentity];
-		return [DDKeychain SSLIdentityAndCertificates];
+		identity = (id)[DDKeychain KeychainAccessPreferredIdentityForName:@"com.osirixviewer.osirixwebserver" keyUse:CSSM_KEYUSE_ANY];
 	}
-	return result;
+	return [NSArray arrayWithObject:identity];
 }
 
 - (id)initWithAsyncSocket:(AsyncSocket *)newSocket forServer:(HTTPServer *)myServer

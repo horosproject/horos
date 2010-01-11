@@ -207,6 +207,9 @@ extern "C"
 	[args addObject:@"-td"]; // timeout for DIMSE messages
 	[args addObject:[[NSUserDefaults standardUserDefaults] stringForKey:@"DICOMTimeout"]];
 	
+	BOOL needsUnlockFiles = NO;
+	BOOL needsUnlockDir = NO;
+	
 	if([[serverParameters objectForKey:@"TLSEnabled"] boolValue])
 	{
 		// TLS support. Options listed here http://support.dcmtk.org/docs/echoscu.html
@@ -216,6 +219,9 @@ extern "C"
 			[args addObject:@"--enable-tls"]; // use authenticated secure TLS connection
 
 			[DDKeychain DICOMTLSGenerateCertificateAndKeyForServerAddress:address port: [port intValue] AETitle:aet]; // export certificate/key from the Keychain to the disk
+			[DDKeychain lockFile:[DDKeychain DICOMTLSKeyPathForServerAddress:address port:[port intValue] AETitle:aet]];
+			[DDKeychain lockFile:[DDKeychain DICOMTLSCertificatePathForServerAddress:address port:[port intValue] AETitle:aet]];
+			needsUnlockFiles = YES;
 			[args addObject:[DDKeychain DICOMTLSKeyPathForServerAddress:address port:[port intValue] AETitle:aet]]; // [p]rivate key file
 			[args addObject:[DDKeychain DICOMTLSCertificatePathForServerAddress:address port:[port intValue] AETitle:aet]]; // [c]ertificate file: string
 					
@@ -227,24 +233,7 @@ extern "C"
 		
 		// key and certificate file format options:
 		[args addObject:@"--pem-keys"];
-		
-		// certification authority options:
-		if([[serverParameters objectForKey:@"TLSUseTrustedCACertificatesFolderURL"] boolValue])
-		{
-			NSString *path = [serverParameters objectForKey:@"TLSTrustedCACertificatesFolderURL"];
-			BOOL isDirectory = NO;
-			BOOL fileExists = [[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDirectory];
-			if(fileExists)
-			{
-				if(isDirectory) // TODO: use --add-cert-file for each file in the directory (in stead of --add-cert-dir)
-					[args addObject:@"--add-cert-dir"]; // add certificates in d to list of certificates  .... needs to use OpenSSL & rename files (see http://forum.dicom-cd.de/viewtopic.php?p=3237&sid=bd17bd76876a8fd9e7fdf841b90cf639 )
-				else
-					[args addObject:@"--add-cert-file"]; // add certificate file to list of certificates
 				
-				[args addObject:path];
-			}
-		}
-		
 		//ciphersuite options:
 		for (NSDictionary *suite in [serverParameters objectForKey:@"TLSCipherSuites"])
 		{
@@ -261,13 +250,6 @@ extern "C"
 			[args addObject:[serverParameters objectForKey:@"TLSDHParameterFileURL"]];
 		}
 		
-		// pseudo random generator options.
-		// We initialize the pseudo-random number generator with the content of the screen which is is hardly predictable for an attacker
-		// see http://www.mevis-research.de/~meyer/dcmtk/docs_352/dcmtls/randseed.txt
-		[OpenGLScreenReader screenSnapshotToFilePath:TLS_SEED_FILE];
-		[args addObject:@"--seed"]; // seed random generator with contents of f
-		[args addObject:TLS_SEED_FILE];
-		
 		// peer authentication options:
 		TLSCertificateVerificationType verification = (TLSCertificateVerificationType)[[serverParameters objectForKey:@"TLSCertificateVerification"] intValue];
 		if(verification==RequirePeerCertificate)
@@ -276,14 +258,43 @@ extern "C"
 			[args addObject:@"--verify-peer-cert"]; //verify peer certificate if present
 		else //IgnorePeerCertificate
 			[args addObject:@"--ignore-peer-cert"]; //don't verify peer certificate	
+		
+		// certification authority options:
+		if(verification==RequirePeerCertificate || verification==VerifyPeerCertificate)
+		{
+			[DDKeychain KeychainAccessExportTrustedCertificatesToDirectory:TLS_TRUSTED_CERTIFICATES_DIR];
+			[DDKeychain lockFile:TLS_TRUSTED_CERTIFICATES_DIR];
+			needsUnlockDir = YES;
+			NSArray *trustedCertificates = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:TLS_TRUSTED_CERTIFICATES_DIR error:nil];
+			
+			//[args addObject:@"--add-cert-dir"]; // add certificates in d to list of certificates  .... needs to use OpenSSL & rename files (see http://forum.dicom-cd.de/viewtopic.php?p=3237&sid=bd17bd76876a8fd9e7fdf841b90cf639 )
+			for (NSString *cert in trustedCertificates)
+			{
+				[args addObject:@"--add-cert-file"];
+				[args addObject:[TLS_TRUSTED_CERTIFICATES_DIR stringByAppendingPathComponent:cert]];
+			}
+		}
+		
+		// pseudo random generator options.
+		// We initialize the pseudo-random number generator with the content of the screen which is is hardly predictable for an attacker
+		// see http://www.mevis-research.de/~meyer/dcmtk/docs_352/dcmtls/randseed.txt
+		[DDKeychain generatePseudoRandomFileToPath:TLS_SEED_FILE];
+		[args addObject:@"--seed"]; // seed random generator with contents of f
+		[args addObject:TLS_SEED_FILE];		
 	}
 	
 	[theTask setArguments:args];
 	[theTask launch];
 	[theTask waitUntilExit];
 	
-	[[NSFileManager defaultManager] removeFileAtPath:[DDKeychain DICOMTLSKeyPathForServerAddress:address port:[port intValue] AETitle:aet] handler:nil]; // test
-	[[NSFileManager defaultManager] removeFileAtPath:[DDKeychain DICOMTLSCertificatePathForServerAddress:address port:[port intValue] AETitle:aet] handler:nil]; // test
+	//[[NSFileManager defaultManager] removeFileAtPath:[DDKeychain DICOMTLSKeyPathForServerAddress:address port:[port intValue] AETitle:aet] handler:nil]; // test
+	//[[NSFileManager defaultManager] removeFileAtPath:[DDKeychain DICOMTLSCertificatePathForServerAddress:address port:[port intValue] AETitle:aet] handler:nil]; // test
+	if(needsUnlockFiles)
+	{
+		[DDKeychain unlockFile:[DDKeychain DICOMTLSKeyPathForServerAddress:address port:[port intValue] AETitle:aet]];
+		[DDKeychain unlockFile:[DDKeychain DICOMTLSCertificatePathForServerAddress:address port:[port intValue] AETitle:aet]];
+	}
+	if(needsUnlockDir)[DDKeychain unlockFile:TLS_TRUSTED_CERTIFICATES_DIR];
 	
 	if( [theTask terminationStatus] == 0) return YES;
 	else return NO;

@@ -1,6 +1,8 @@
 #import "DDKeychain.h"
 #import "DICOMTLS.h"
 
+static NSMutableDictionary *lockedFiles = nil;
+
 @implementation DDKeychain
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -354,6 +356,9 @@
 	
 	NSLog(@"outItems: %@", (NSArray *)outItems);
 	
+	SecIdentityRef identity = (SecIdentityRef)[(NSArray *)outItems lastObject];
+	[DDKeychain KeychainAccessSetPreferredIdentity:identity forName:@"com.osirixviewer.osirixwebserver" keyUse:CSSM_KEYUSE_ANY];
+	
 	// Don't forget to delete the temporary files
 	[[NSFileManager defaultManager] removeFileAtPath:privateKeyPath handler:nil];
 	[[NSFileManager defaultManager] removeFileAtPath:reqConfPath handler:nil];
@@ -649,6 +654,7 @@
 {
 	BOOL isDirectory, directoryExists;
 	directoryExists = [[NSFileManager defaultManager] fileExistsAtPath:directory isDirectory:&isDirectory];
+	if(directoryExists) return;
 	if(!directoryExists)[[NSFileManager defaultManager] createDirectoryAtPath:directory withIntermediateDirectories:NO attributes:nil error:nil];
 		
 	int domains[3] = {kSecTrustSettingsDomainUser, kSecTrustSettingsDomainAdmin, kSecTrustSettingsDomainSystem};
@@ -672,7 +678,9 @@
 			
 			if(status==0)
 			{
-				[(NSData*)certificateDataRef writeToFile:[directory stringByAppendingPathComponent:[NSString stringWithFormat:@"%d_%d.pem", i, dex]] atomically:YES];
+				NSString *path = [directory stringByAppendingPathComponent:[NSString stringWithFormat:@"%d_%d.pem", i, dex]];
+				if(![[NSFileManager defaultManager] fileExistsAtPath:path])
+					[(NSData*)certificateDataRef writeToFile:path atomically:YES];
 			}
 			else NSLog(@"SecKeychainItemExport : error : %@", [DDKeychain stringForError:status]);
 			
@@ -804,6 +812,8 @@
 
 + (void)KeychainAccessExportCertificateForIdentity:(SecIdentityRef)identity toPath:(NSString*)path;
 {
+	if([[NSFileManager defaultManager] fileExistsAtPath:path]) return;
+	
 	SecCertificateRef certificate = NULL;
 	OSStatus status = SecIdentityCopyCertificate(identity, &certificate);
 	if(status==0)
@@ -824,6 +834,8 @@
 
 + (void)KeychainAccessExportPrivateKeyForIdentity:(SecIdentityRef)identity toPath:(NSString*)path cryptWithPassword:(NSString*)password;
 {
+	if([[NSFileManager defaultManager] fileExistsAtPath:path]) return;
+		
 	SecKeyRef privateKey = NULL;
 	OSStatus status = SecIdentityCopyPrivateKey(identity, &privateKey);
 	if(status==0)
@@ -967,6 +979,61 @@
 + (NSString*)DICOMTLSCertificatePathForServerAddress:(NSString*)address port:(int)port AETitle:(NSString*)aetitle;
 {
 	return [DDKeychain DICOMTLSCertificatePathForLabel:[DDKeychain DICOMTLSUniqueLabelForServerAddress:address port:[NSString stringWithFormat:@"%d",port] AETitle:aetitle]];
+}
+
+#pragma mark Other Utilities
+
++ (void)generatePseudoRandomFileToPath:(NSString*)path;
+{
+	NSPoint mouseLocation = [NSEvent mouseLocation];
+	NSTimeInterval time = [[NSDate date] timeIntervalSince1970];
+
+	NSString *string = [NSString stringWithFormat:@"%f%f%lf", mouseLocation.x, mouseLocation.y, time];
+	[string writeToFile:path atomically:YES encoding:NSUTF8StringEncoding error:nil];
+}
+
++ (void)lockFile:(NSString*)path;
+{
+	if(!lockedFiles) lockedFiles = [[NSMutableDictionary dictionary] retain];
+	
+	@synchronized( lockedFiles)
+	{
+		int n=0;
+		
+		if([[lockedFiles allKeys] containsObject:path])
+		{
+			n = [(NSNumber*)[lockedFiles objectForKey:path] intValue];
+		}
+		
+		[lockedFiles setObject:[NSNumber numberWithInt:n+1] forKey:path];
+		NSLog(@"lockFile: %d %@", n+1, path);
+	}
+}
+
++ (void)unlockFile:(NSString*)path;
+{
+	@synchronized( lockedFiles)
+	{
+		int n=0;
+		
+		if(lockedFiles)
+		{
+			if([[lockedFiles allKeys] containsObject:path])
+			{
+				n = [(NSNumber*)[lockedFiles objectForKey:path] intValue];
+				n--;
+				[lockedFiles setObject:[NSNumber numberWithInt:n] forKey:path];
+				NSLog(@"unlockFile: %d %@", n, path);
+			}
+		}
+		
+		if(n==0)
+		{
+			[lockedFiles removeObjectForKey:path];
+			[[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
+			NSLog(@"removeFileAtPath: %@", path);
+		}
+	}
 }
 
 @end

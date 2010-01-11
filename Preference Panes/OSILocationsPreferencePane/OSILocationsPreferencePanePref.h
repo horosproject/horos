@@ -84,7 +84,6 @@
 - (IBAction) editTLS: (id) sender;
 - (NSArray*)availableCipherSuites;
 - (NSArray*)defaultCipherSuites;
-+ (void)screenSnapshot;
 
 - (IBAction)chooseTLSCertificate:(id)sender;
 - (IBAction)viewTLSCertificate:(id)sender;
