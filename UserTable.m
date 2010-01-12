@@ -28,7 +28,31 @@ static PSGenerator *generator = nil;
 	[self setValue: [[generator generate: 1] lastObject] forKey: @"password"];
 }
 
-- (void)awakeFromInsert
+- (NSString*) email
+{
+	if( [self primitiveValueForKey: @"email"] == nil)
+		return @"";
+	
+	return [self primitiveValueForKey: @"email"];
+}
+
+- (NSString*) phone
+{
+	if( [self primitiveValueForKey: @"phone"] == nil)
+		return @"";
+	
+	return [self primitiveValueForKey: @"phone"];
+}
+
+- (NSString*) address
+{
+	if( [self primitiveValueForKey: @"address"] == nil)
+		return @"";
+	
+	return [self primitiveValueForKey: @"address"];
+}
+
+- (void) awakeFromInsert
 {
 	[super awakeFromInsert];
 	
