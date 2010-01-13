@@ -14718,7 +14718,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	NSMutableArray		*imagesArray = [NSMutableArray array];
 	NSString			*tempPath, *previousPath = nil;
 	long				previousSeries = -1;
-	NSString			*previousStudy = @"";
+	NSString			*previousStudy = @"", *previousPatientUID = @"", *previousSeriesInstanceUID = @"";
 	BOOL				createHTML = html;
 	
 	NSMutableDictionary *htmlExportDictionary = [NSMutableDictionary dictionary];
@@ -14734,10 +14734,10 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	@try
 	{
+		int uniqueSeriesID = 0;
 		BOOL first = YES;
 		for( NSManagedObject *curImage in dicomFiles2Export)
 		{
-			
 			NSString *conv = asciiString( [curImage valueForKeyPath: @"series.study.name"]);
 			
 			tempPath = [path stringByAppendingPathComponent: conv];
@@ -14772,10 +14772,13 @@ static volatile int numberOfThreadsForJPEG = 0;
 			first = NO;
 			
 			tempPath = [tempPath stringByAppendingPathComponent: [BrowserController replaceNotAdmitted: [NSMutableString stringWithFormat: @"%@ - %@", asciiString( [curImage valueForKeyPath: @"series.study.studyName"]), [curImage valueForKeyPath: @"series.study.id"]]]];
-			if( [[curImage valueForKeyPath: @"series.study.id"] isEqualToString:previousStudy] == NO)
+			if( [[curImage valueForKeyPath: @"series.study.id"] isEqualToString: previousStudy] == NO || [[curImage valueForKeyPath: @"series.study.patientUID"] isEqualToString: previousPatientUID] == NO)
 			{
+				previousPatientUID = [curImage valueForKeyPath: @"series.study.patientUID"];
 				previousStudy = [curImage valueForKeyPath: @"series.study.id"];
 				previousSeries = -1;
+				uniqueSeriesID = 0;
+				previousSeriesInstanceUID = @"";
 			}
 			
 			// Find the STUDY folder
@@ -14788,8 +14791,12 @@ static volatile int numberOfThreadsForJPEG = 0;
 			tempPath = [tempPath stringByAppendingPathComponent: seriesStr ];
 			tempPath = [tempPath stringByAppendingFormat: @"_%@", [curImage valueForKeyPath: @"series.id"]];
 			
-			if( previousSeries != [[curImage valueForKeyPath: @"series.id"] intValue])
+			
+			if( previousSeries != [[curImage valueForKeyPath: @"series.id"] intValue] || [[curImage valueForKeyPath: @"series.seriesInstanceUID"] isEqualToString: previousSeriesInstanceUID] == NO)
 			{
+				previousSeriesInstanceUID = [curImage valueForKeyPath: @"series.seriesInstanceUID"];
+				uniqueSeriesID++;
+				
 				if( [imagesArray count] > 1)
 				{
 					[self writeMovie: imagesArray name: [previousPath stringByAppendingString:@".mov"]];
@@ -14813,13 +14820,15 @@ static volatile int numberOfThreadsForJPEG = 0;
 						NSData *bitmapData = nil;
 						NSArray *representations = [thumbnail representations];
 						bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
-						[bitmapData writeToFile:[tempPath stringByAppendingString:@"_thumb.jpg"] atomically:YES];
+						[bitmapData writeToFile:[[tempPath stringByAppendingFormat: @"_%d", uniqueSeriesID] stringByAppendingString:@"_thumb.jpg"] atomically:YES];
 					}
 				}
 				
 				[imagesArray removeAllObjects];
 				previousSeries = [[curImage valueForKeyPath: @"series.id"] intValue];
 			}
+			
+			tempPath = [tempPath stringByAppendingFormat: @"_%d", uniqueSeriesID];
 			
 			previousPath = [NSString stringWithString: tempPath];
 			

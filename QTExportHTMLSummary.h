@@ -23,7 +23,7 @@ extern NSString* asciiString (NSString* name);
 	NSString *patientsListTemplate, *examsListTemplate, *seriesTemplate; // whole template
 	NSDictionary *patientsDictionary;
 	NSString *rootPath, *footerString;
-	
+	int uniqueSeriesID;
 	NSDateFormatter	*dateFormat, *timeFormat;
 }
 

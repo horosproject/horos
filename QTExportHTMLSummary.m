@@ -154,23 +154,31 @@
 	BOOL lastImageOfSeries, lastImageOfStudy;
 	lastImageOfSeries = lastImageOfStudy = NO;
 	
+	uniqueSeriesID = 0;
+	
 	for(i=0; i<[series count]; i++)
 	{
 		imagesCount++;
-		if(i==[series count]-1)
+		if( i == [series count]-1)
 			lastImageOfSeries = YES;
 		else if([[[series objectAtIndex:i] valueForKey: @"id"] intValue] != [[[series objectAtIndex:i+1] valueForKey: @"id"] intValue])
 			lastImageOfSeries = YES;
-		else if([[[series objectAtIndex:i] valueForKeyPath: @"study.id"] isEqualToString: [[series objectAtIndex:i+1] valueForKeyPath: @"study.id"]] == NO)
+		else if([[[series objectAtIndex:i] valueForKey: @"seriesInstanceUID"] isEqualToString: [[series objectAtIndex:i+1] valueForKey: @"seriesInstanceUID"]] == NO)
+			lastImageOfSeries = YES;
+		else if( [[[series objectAtIndex:i] valueForKeyPath: @"study.id"] isEqualToString: [[series objectAtIndex:i+1] valueForKeyPath: @"study.id"]] == NO || [[[series objectAtIndex:i] valueForKeyPath: @"study.patientUID"] isEqualToString: [[series objectAtIndex:i+1] valueForKeyPath: @"study.patientUID"]] == NO)
 			lastImageOfSeries = YES;
 		else
 			lastImageOfSeries = NO;
 		
-		if(lastImageOfSeries)
+		if( lastImageOfSeries)
 		{
+			uniqueSeriesID++;
+			
 			seriesName = asciiString( [BrowserController replaceNotAdmitted: [NSMutableString stringWithString:[[series objectAtIndex:i] valueForKey: @"name"]]]);
 			fileName = [BrowserController replaceNotAdmitted: [NSMutableString stringWithFormat:@"%@ - %@", asciiString( [[series objectAtIndex:i] valueForKeyPath:@"study.studyName"]), [[series objectAtIndex:i] valueForKeyPath:@"study.id"]]];
 			[fileName appendFormat:@"/%@_%@", seriesName, [[series objectAtIndex:i] valueForKey: @"id"]];
+			
+			[fileName appendFormat: @"_%d", uniqueSeriesID];
 			
 			thumbnailName = [NSMutableString stringWithFormat:@"%@_thumb.jpg", fileName];
 			htmlName = [NSMutableString stringWithFormat:@"%@.html", fileName];
@@ -193,13 +201,16 @@
 				lastImageOfStudy = YES;
 			else if([[[series objectAtIndex:i] valueForKeyPath: @"study.studyInstanceUID"] isEqualToString: [[series objectAtIndex:i+1] valueForKeyPath: @"study.studyInstanceUID"]] == NO)
 				lastImageOfStudy = YES;
+			else if([[[series objectAtIndex:i] valueForKeyPath: @"study.patientUID"] isEqualToString: [[series objectAtIndex:i+1] valueForKeyPath: @"study.patientUID"]] == NO)
+				lastImageOfStudy = YES;
 			else if([[[series objectAtIndex:i] valueForKeyPath: @"study.studyName"]isEqualToString: [[series objectAtIndex:i+1] valueForKeyPath: @"study.studyName"]] == NO)
 				lastImageOfStudy = YES;
 			else
 				lastImageOfStudy = NO;
 				
 			if(lastImageOfStudy)
-			{			
+			{
+				uniqueSeriesID = 0;
 				tempStudyBlockStart = [NSMutableString stringWithString:studyBlockStart];
 				[tempStudyBlockStart replaceOccurrencesOfString:@"%study_i_name%" withString:[QTExportHTMLSummary nonNilString:[[series objectAtIndex:i] valueForKeyPath:@"study.studyName"]] options:NSLiteralSearch range:NSMakeRange(0, [tempStudyBlockStart length])];
 				studyDate = [dateFormat stringFromDate: [[series objectAtIndex:i] valueForKeyPath:@"study.date"]];
@@ -234,8 +245,14 @@
 	[tempHTML replaceOccurrencesOfString:@"%series_name%" withString:[QTExportHTMLSummary nonNilString:[series valueForKey:@"name"]] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 	[tempHTML replaceOccurrencesOfString:@"%series_id%" withString:[QTExportHTMLSummary nonNilString:[NSString stringWithFormat:@"%@",[series valueForKey: @"id"]]] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 	[tempHTML replaceOccurrencesOfString:@"%series_images_count%" withString:[QTExportHTMLSummary nonNilString:[NSString stringWithFormat:@"%d", imagesCount]] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
-
-	NSMutableString *fileName = [NSMutableString stringWithFormat:@"./%@_%@", asciiString([NSMutableString stringWithString:[series valueForKey: @"name"]]), [series valueForKey: @"id"]];
+	
+	NSMutableString *seriesStr = [NSMutableString stringWithString: asciiString( [series valueForKey: @"name"])];
+	[BrowserController replaceNotAdmitted: seriesStr];
+			
+	NSMutableString *fileName = [NSMutableString stringWithFormat:@"./%@_%@", seriesStr, [series valueForKey: @"id"]];
+	
+	[fileName appendFormat: @"_%d", uniqueSeriesID];
+	
 	NSString *extension = (imagesCount>1)? @"mov": @"jpg";
 	[fileName appendFormat:@".%@",extension];
 	
