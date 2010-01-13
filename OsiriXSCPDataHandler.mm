@@ -930,13 +930,15 @@ extern NSManagedObjectContext *staticContext;
 			dataset ->putAndInsertString(DCM_PatientsBirthDate, NULL);
 		}
 		
-		if ([fetchedObject valueForKey:@"date"]){
+		if ([fetchedObject valueForKey:@"date"])
+		{
 			DCMCalendarDate *dicomDate = [DCMCalendarDate dicomDateWithDate:[fetchedObject valueForKey:@"date"]];
 			DCMCalendarDate *dicomTime = [DCMCalendarDate dicomTimeWithDate:[fetchedObject valueForKey:@"date"]];
 			dataset ->putAndInsertString(DCM_StudyDate, [[dicomDate dateString] cStringUsingEncoding:NSISOLatin1StringEncoding]);
 			dataset ->putAndInsertString(DCM_StudyTime, [[dicomTime timeString] cStringUsingEncoding:NSISOLatin1StringEncoding]);	
 		}
-		else {
+		else
+		{
 			dataset ->putAndInsertString(DCM_StudyDate, NULL);
 			dataset ->putAndInsertString(DCM_StudyTime, NULL);
 		}
@@ -1007,10 +1009,10 @@ extern NSManagedObjectContext *staticContext;
 			int numberInstances = [[fetchedObject valueForKey:@"series"] count];
 			char value[10];
 			sprintf(value, "%d", numberInstances);
-			dataset ->putAndInsertString(DCM_NumberOfStudyRelatedSeries, value);
+			dataset->putAndInsertString(DCM_NumberOfStudyRelatedSeries, value);
 		}
 		
-		dataset ->putAndInsertString(DCM_QueryRetrieveLevel, "STUDY");
+		dataset->putAndInsertString(DCM_QueryRetrieveLevel, "STUDY");
 	}
 	
 	@catch (NSException *e)
@@ -1067,7 +1069,6 @@ extern NSManagedObjectContext *staticContext;
 			char value[10];
 			sprintf(value, "%d", numberInstances);
 			dataset ->putAndInsertString(DCM_NumberOfSeriesRelatedInstances, value);
-
 		}
 		
 		dataset ->putAndInsertString(DCM_QueryRetrieveLevel, "SERIES");
