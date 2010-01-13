@@ -6637,6 +6637,54 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					</object>
 				</object>
 			</array>
+			<array class="NSMutableArray" key="referencedPartialClassDescriptionsV3.1+">
+				<object class="IBPartialClassDescription">
+					<string key="className">OSILocationsPreferencePanePref</string>
+					<string key="superclassName">NSPreferencePane</string>
+					<dictionary class="NSMutableDictionary" key="actions">
+						<string key="OsiriXDBloadFrom:">id</string>
+						<string key="OsiriXDBsaveAs:">id</string>
+						<string key="addPath:">id</string>
+						<string key="cancel:">id</string>
+						<string key="chooseTLSCertificate:">id</string>
+						<string key="editTLS:">id</string>
+						<string key="editWADO:">id</string>
+						<string key="loadFrom:">id</string>
+						<string key="newServer:">id</string>
+						<string key="ok:">id</string>
+						<string key="osirixNewServer:">id</string>
+						<string key="refreshNodesListURL:">id</string>
+						<string key="refreshNodesOsiriXDB:">id</string>
+						<string key="saveAs:">id</string>
+						<string key="setStringEncoding:">id</string>
+						<string key="test:">id</string>
+						<string key="viewTLSCertificate:">id</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="outlets">
+						<string key="TLSCertificateButton">NSButton</string>
+						<string key="TLSChooseCertificateButton">NSButton</string>
+						<string key="TLSCipherSuitesArrayController">DNDArrayController</string>
+						<string key="TLSSettings">NSWindow</string>
+						<string key="WADOSettings">NSWindow</string>
+						<string key="_authView">SFAuthorizationView</string>
+						<string key="addLocalPath">NSButton</string>
+						<string key="addServerDICOM">NSButton</string>
+						<string key="addServerSharing">NSButton</string>
+						<string key="characterSetPopup">NSPopUpButton</string>
+						<string key="dicomNodes">DNDArrayController</string>
+						<string key="loadNodes">NSButton</string>
+						<string key="localPaths">DNDArrayController</string>
+						<string key="osiriXServers">DNDArrayController</string>
+						<string key="progress">NSProgressIndicator</string>
+						<string key="searchDICOMBonjourNodes">NSButton</string>
+						<string key="verifyPing">NSButton</string>
+					</dictionary>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBDocumentRelativeSource</string>
+						<string key="minorKey">../OSILocationsPreferencePanePref.h</string>
+					</object>
+				</object>
+			</array>
 			<array class="NSMutableArray" key="referencedPartialClassDescriptionsV3.2+">
 				<object class="IBPartialClassDescription">
 					<string key="className">NSActionCell</string>

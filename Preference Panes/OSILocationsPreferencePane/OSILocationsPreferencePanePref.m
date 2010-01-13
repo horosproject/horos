@@ -15,7 +15,6 @@
 #import "OSILocationsPreferencePanePref.h"
 #include "SimplePing.h"
 
-#import "OpenGLScreenReader.h"
 #import "DDKeychain.h"
 
 /************ Transfer Syntaxes *******************

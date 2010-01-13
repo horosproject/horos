@@ -15,8 +15,6 @@
 		8D202CF10486D31800D8A456 /* OSILocationsPreferencePanePref.m in Sources */ = {isa = PBXBuildFile; fileRef = F506C03D013D9D7901CA16C8 /* OSILocationsPreferencePanePref.m */; };
 		8D202CF30486D31800D8A456 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */; };
 		8D202CF40486D31800D8A456 /* PreferencePanes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F506C035013D953901CA16C8 /* PreferencePanes.framework */; };
-		A951F03E10DFCA9C00165D8C /* OpenGLScreenReader.h in Headers */ = {isa = PBXBuildFile; fileRef = A951F03D10DFCA9C00165D8C /* OpenGLScreenReader.h */; };
-		A951F04A10DFCB2600165D8C /* OpenGLScreenReader.m in Sources */ = {isa = PBXBuildFile; fileRef = A951F04910DFCB2600165D8C /* OpenGLScreenReader.m */; };
 		A951F06410DFCCEE00165D8C /* DDKeychain.h in Headers */ = {isa = PBXBuildFile; fileRef = A951F06210DFCCEE00165D8C /* DDKeychain.h */; };
 		A96539D410D9038A000788B2 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A96539D310D9038A000788B2 /* OpenGL.framework */; };
 		A997B16910E0C45E004C5BB1 /* SecurityInterface.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A997B16810E0C45E004C5BB1 /* SecurityInterface.framework */; };
@@ -38,8 +36,6 @@
 		7EC5847607298EDC00429FC7 /* ServerTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ServerTableView.m; sourceTree = "<group>"; };
 		8D202CF70486D31800D8A456 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		8D202CF80486D31800D8A456 /* OSILocationsPreferencePane.prefPane */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OSILocationsPreferencePane.prefPane; sourceTree = BUILT_PRODUCTS_DIR; };
-		A951F03D10DFCA9C00165D8C /* OpenGLScreenReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OpenGLScreenReader.h; path = ../../OpenGLScreenReader.h; sourceTree = "<group>"; };
-		A951F04910DFCB2600165D8C /* OpenGLScreenReader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OpenGLScreenReader.m; path = ../../OpenGLScreenReader.m; sourceTree = "<group>"; };
 		A951F06210DFCCEE00165D8C /* DDKeychain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DDKeychain.h; path = ../../cocoahttpserver/DDKeychain.h; sourceTree = SOURCE_ROOT; };
 		A96539D310D9038A000788B2 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		A997B16810E0C45E004C5BB1 /* SecurityInterface.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SecurityInterface.framework; path = System/Library/Frameworks/SecurityInterface.framework; sourceTree = SDKROOT; };
@@ -111,8 +107,6 @@
 				7EC5847607298EDC00429FC7 /* ServerTableView.m */,
 				F506C03C013D9D7901CA16C8 /* OSILocationsPreferencePanePref.h */,
 				F506C03D013D9D7901CA16C8 /* OSILocationsPreferencePanePref.m */,
-				A951F03D10DFCA9C00165D8C /* OpenGLScreenReader.h */,
-				A951F04910DFCB2600165D8C /* OpenGLScreenReader.m */,
 				A951F06210DFCCEE00165D8C /* DDKeychain.h */,
 				A9B34A1410E24ED3008C507B /* DICOMTLS.h */,
 			);
@@ -168,7 +162,6 @@
 				7EC5847707298EDC00429FC7 /* ServerTableView.h in Headers */,
 				CE1DD8DF0B4FF18700B4AC4B /* SimplePing.h in Headers */,
 				CEE6C1FB0C3BCECE00C4AB99 /* DNDArrayController.h in Headers */,
-				A951F03E10DFCA9C00165D8C /* OpenGLScreenReader.h in Headers */,
 				A951F06410DFCCEE00165D8C /* DDKeychain.h in Headers */,
 				A9B34A1510E24ED3008C507B /* DICOMTLS.h in Headers */,
 			);
@@ -244,7 +237,6 @@
 			files = (
 				8D202CF10486D31800D8A456 /* OSILocationsPreferencePanePref.m in Sources */,
 				7EC5847807298EDC00429FC7 /* ServerTableView.m in Sources */,
-				A951F04A10DFCB2600165D8C /* OpenGLScreenReader.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

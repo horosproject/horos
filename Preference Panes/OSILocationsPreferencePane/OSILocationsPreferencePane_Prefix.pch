@@ -2,6 +2,8 @@
 // Prefix header for all source files of the 'OSILocationsPreferencePane' target in the 'OSILocationsPreferencePane' project.
 //
 
+#define OSIRIX 1
+
 #ifdef __OBJC__
     #import <Foundation/Foundation.h>
     #import <AppKit/AppKit.h>

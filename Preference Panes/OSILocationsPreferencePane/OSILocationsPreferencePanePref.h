@@ -18,7 +18,9 @@
 #import <SecurityInterface/SFCertificateView.h>
 #import "DNDArrayController.h"
 
+#if defined(OSIRIX)
 #import "DICOMTLS.h"
+#endif
 
 @interface OSILocationsPreferencePanePref : NSPreferencePane 
 {
@@ -45,7 +47,9 @@
 	NSArray							*TLSSupportedCipherSuite;
 	BOOL							TLSUseDHParameterFileURL;
 	NSURL							*TLSDHParameterFileURL;
+	#if defined(OSIRIX)
 	TLSCertificateVerificationType	TLSCertificateVerification;
+	#endif
 	
 	IBOutlet SFAuthorizationView	*_authView;
 }
@@ -56,7 +60,9 @@
 @property BOOL TLSEnabled, TLSAuthenticated, TLSUseDHParameterFileURL;
 @property (retain) NSURL *TLSDHParameterFileURL;
 @property (retain) NSArray *TLSSupportedCipherSuite;
+#if defined(OSIRIX)
 @property TLSCertificateVerificationType TLSCertificateVerification;
+#endif
 
 @property (retain) NSString *TLSAuthenticationCertificate;
 
