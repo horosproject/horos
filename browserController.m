@@ -4396,11 +4396,11 @@ static NSArray*	statesArray = nil;
 {
 	long retError = 0;
 	
+	[userManagedObjectContext lock];
+	
 	@try
 	{
 		NSError *error = nil;
-		
-		[userManagedObjectContext lock];
 		
 		[userManagedObjectContext save: &error];
 		if (error)
@@ -4415,14 +4415,15 @@ static NSArray*	statesArray = nil;
 		[[NSString stringWithString: USERDATABASEVERSION] writeToFile: [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"WebUsers.vers"] atomically:YES];
 		[[NSUserDefaults standardUserDefaults] setObject: USERDATABASEVERSION forKey: @"USERS_DATABASEVERSION"];
 		
-		[userManagedObjectContext unlock];
+		
 	}
-	
 	@catch( NSException *ne)
 	{
 		NSLog( @"%@", [ne name]);
 		NSLog( @"%@", [ne reason]);
 	}
+	
+	[userManagedObjectContext unlock];
 	
 	return retError;
 }
@@ -5977,7 +5978,9 @@ static NSArray*	statesArray = nil;
 		[wait showWindow:self];
 		
 		@try
-		{	[context save: nil];}
+		{
+			[context save: nil];
+		}
 		@catch( NSException *e)
 		{	NSLog( @"context save: nil: %@", e);}
 		
@@ -6003,7 +6006,9 @@ static NSArray*	statesArray = nil;
 			}
 			
 			@try
-			{	[context save: nil];}
+			{
+				[context save: nil];
+			}
 			@catch( NSException *e)
 			{	NSLog( @"context save: nil: %@", e);}
 				
