@@ -2,7 +2,7 @@
 #import "DICOMTLS.h"
 
 static NSMutableDictionary *lockedFiles = nil;
-static NSLock *lockFile = nil;
+static NSRecursiveLock *lockFile = nil;
 
 @implementation DDKeychain
 
@@ -992,7 +992,7 @@ static NSLock *lockFile = nil;
 
 + (void)lockTmpFiles;
 {
-	if(!lockFile) lockFile = [[NSLock alloc] init];
+	if(!lockFile) lockFile = [[NSRecursiveLock alloc] init];
 	
 	[lockFile lock];
 }

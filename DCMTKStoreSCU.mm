@@ -1141,451 +1141,453 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 	//dcmMaxOutgoingPDUSize.set((Uint32)opt_maxSendPDULength);
 	
 	DcmTLSTransportLayer *tLayer = NULL;
-	[DDKeychain lockTmpFiles];
 	
-NS_DURING
+	if( _secureConnection)
+		[DDKeychain lockTmpFiles];
 	
-#ifdef WITH_OPENSSL
-	if(_cipherSuites)
+	@try
 	{
-		const char *current = NULL;
-		const char *currentOpenSSL;
-		
-		opt_ciphersuites.clear();
-		
-		for (NSString *suite in _cipherSuites)
+	#ifdef WITH_OPENSSL
+		if(_cipherSuites)
 		{
-			current = [suite cStringUsingEncoding:NSUTF8StringEncoding];
+			const char *current = NULL;
+			const char *currentOpenSSL;
 			
-			if (NULL == (currentOpenSSL = DcmTLSTransportLayer::findOpenSSLCipherSuiteName(current)))
+			opt_ciphersuites.clear();
+			
+			for (NSString *suite in _cipherSuites)
 			{
-				NSLog(@"ciphersuite '%s' is unknown.", current);
-				NSLog(@"Known ciphersuites are:");
-				unsigned long numSuites = DcmTLSTransportLayer::getNumberOfCipherSuites();
-				for (unsigned long cs=0; cs < numSuites; cs++)
+				current = [suite cStringUsingEncoding:NSUTF8StringEncoding];
+				
+				if (NULL == (currentOpenSSL = DcmTLSTransportLayer::findOpenSSLCipherSuiteName(current)))
 				{
-					NSLog(@"%s", DcmTLSTransportLayer::getTLSCipherSuiteName(cs));
+					NSLog(@"ciphersuite '%s' is unknown.", current);
+					NSLog(@"Known ciphersuites are:");
+					unsigned long numSuites = DcmTLSTransportLayer::getNumberOfCipherSuites();
+					for (unsigned long cs=0; cs < numSuites; cs++)
+					{
+						NSLog(@"%s", DcmTLSTransportLayer::getTLSCipherSuiteName(cs));
+					}
+					
+					localException = [NSException exceptionWithName:@"DICOM Network Failure (storescu TLS)" reason:[NSString stringWithFormat:@"Ciphersuite '%s' is unknown.", current] userInfo:nil];
+					[localException raise];
+				}
+				else
+				{
+					if (opt_ciphersuites.length() > 0) opt_ciphersuites += ":";
+					opt_ciphersuites += currentOpenSSL;
 				}
 				
-				localException = [NSException exceptionWithName:@"DICOM Network Failure (storescu TLS)" reason:[NSString stringWithFormat:@"Ciphersuite '%s' is unknown.", current] userInfo:nil];
-				[localException raise];
+			}
+		}
+		
+	#endif
+		
+		  int paramCount = [_filesToSend count];
+		  const char *currentFilename = NULL;
+		  OFString errormsg;
+		  char sopClassUID[128];
+		  char sopInstanceUID[128];
+		  OFBool ignoreName;
+		  
+		 /* finally parse filenames */
+		  for (int i=0; i < paramCount; i++)
+		  {
+			[paths addObject:[_filesToSend objectAtIndex:i]];
+		  }
+		  
+		  for (int i=0; i < paramCount; i++)
+		  {
+			ignoreName = OFFalse;
+			currentFilename = [[paths objectAtIndex:i] UTF8String];
+			
+			if (access(currentFilename, R_OK) < 0)
+			{
+			  errormsg = "cannot access file: ";
+			  errormsg += currentFilename;
+			  if (opt_haltOnUnsuccessfulStore)
+				 errmsg(errormsg.c_str());
+				 else CERR << "warning: " << errormsg << ", ignoring file" << endl;
 			}
 			else
 			{
-				if (opt_ciphersuites.length() > 0) opt_ciphersuites += ":";
-				opt_ciphersuites += currentOpenSSL;
+			  if (opt_proposeOnlyRequiredPresentationContexts)
+			  {
+				  if (!DU_findSOPClassAndInstanceInFile(currentFilename, sopClassUID, sopInstanceUID))
+				  {
+					ignoreName = OFTrue;
+					errormsg = "missing SOP class (or instance) in file: ";
+					errormsg += currentFilename;
+					if (opt_haltOnUnsuccessfulStore)
+					   errmsg(errormsg.c_str());
+					   else CERR << "warning: " << errormsg << ", ignoring file" << endl;
+				  }
+				  else if (!dcmIsaStorageSOPClassUID(sopClassUID))
+				  {
+					ignoreName = OFTrue;
+					errormsg = "unknown storage sop class in file: ";
+					errormsg += currentFilename;
+					errormsg += ": ";
+					errormsg += sopClassUID;
+					if (opt_haltOnUnsuccessfulStore)
+					   errmsg(errormsg.c_str());
+					   else CERR << "warning: " << errormsg << ", ignoring file" << endl;
+				  }
+				  else
+				  {
+					sopClassUIDList.push_back(sopClassUID);
+					sopInstanceUIDList.push_back(sopInstanceUID);
+				  }
+			  }
+			  if (!ignoreName) fileNameList.push_back(currentFilename);
 			}
-			
-		}
-	}
-	
-#endif
-	
-      int paramCount = [_filesToSend count];
-      const char *currentFilename = NULL;
-      OFString errormsg;
-      char sopClassUID[128];
-      char sopInstanceUID[128];
-      OFBool ignoreName;
-	  
-	 /* finally parse filenames */
-	  for (int i=0; i < paramCount; i++)
-      {
-		[paths addObject:[_filesToSend objectAtIndex:i]];
-	  }
-	  
-	   for (int i=0; i < paramCount; i++)
-      {
-        ignoreName = OFFalse;
-		currentFilename = [[paths objectAtIndex:i] UTF8String];
-		
-        if (access(currentFilename, R_OK) < 0)
-        {
-          errormsg = "cannot access file: ";
-          errormsg += currentFilename;
-          if (opt_haltOnUnsuccessfulStore)
-             errmsg(errormsg.c_str());
-             else CERR << "warning: " << errormsg << ", ignoring file" << endl;
-        }
-        else
-        {
-          if (opt_proposeOnlyRequiredPresentationContexts)
-          {
-              if (!DU_findSOPClassAndInstanceInFile(currentFilename, sopClassUID, sopInstanceUID))
-              {
-                ignoreName = OFTrue;
-                errormsg = "missing SOP class (or instance) in file: ";
-                errormsg += currentFilename;
-                if (opt_haltOnUnsuccessfulStore)
-                   errmsg(errormsg.c_str());
-                   else CERR << "warning: " << errormsg << ", ignoring file" << endl;
-              }
-              else if (!dcmIsaStorageSOPClassUID(sopClassUID))
-              {
-                ignoreName = OFTrue;
-                errormsg = "unknown storage sop class in file: ";
-                errormsg += currentFilename;
-                errormsg += ": ";
-                errormsg += sopClassUID;
-                if (opt_haltOnUnsuccessfulStore)
-                   errmsg(errormsg.c_str());
-                   else CERR << "warning: " << errormsg << ", ignoring file" << endl;
-              }
-              else
-              {
-                sopClassUIDList.push_back(sopClassUID);
-                sopInstanceUIDList.push_back(sopInstanceUID);
-              }
-          }
-          if (!ignoreName) fileNameList.push_back(currentFilename);
-        }
-      }
+		  }
 
-#ifdef ON_THE_FLY_COMPRESSION
-    // register global JPEG decompression codecs
-   // DJDecoderRegistration::registerCodecs();
+	#ifdef ON_THE_FLY_COMPRESSION
+		// register global JPEG decompression codecs
+	   // DJDecoderRegistration::registerCodecs();
 
-    // register global JPEG compression codecs
-  //  DJEncoderRegistration::registerCodecs();
+		// register global JPEG compression codecs
+	  //  DJEncoderRegistration::registerCodecs();
 
-    // register RLE compression codec
- //   DcmRLEEncoderRegistration::registerCodecs();
+		// register RLE compression codec
+	 //   DcmRLEEncoderRegistration::registerCodecs();
 
-    // register RLE decompression codec
-//    DcmRLEDecoderRegistration::registerCodecs();
-#endif
+		// register RLE decompression codec
+	//    DcmRLEDecoderRegistration::registerCodecs();
+	#endif
 
-    /* make sure data dictionary is loaded */
-    if (!dcmDataDict.isDictionaryLoaded()) {
-        fprintf(stderr, "Warning: no data dictionary loaded, check environment variable: %s\n",
-                DCM_DICT_ENVIRONMENT_VARIABLE);
-    }
-	
-	/* initialize network, i.e. create an instance of T_ASC_Network*. */
-    cond = ASC_initializeNetwork(NET_REQUESTOR, 0, opt_acse_timeout, &net);
-    if (cond.bad())
-	{
-        DimseCondition::dump(cond);
-		localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:[NSString stringWithFormat: @"ASC_initializeNetwork %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] retain];
-		[localException raise];
-        //return;
-    }
-	
-#ifdef WITH_OPENSSL // joris
-	
-	if (_secureConnection)
-	{
-		tLayer = new DcmTLSTransportLayer(DICOM_APPLICATION_REQUESTOR, _readSeedFile);
-		if (tLayer == NULL)
-		{
-			NSLog(@"unable to create TLS transport layer");
-			localException = [NSException exceptionWithName:@"DICOM Network Failure (storescu TLS)" reason:@"unable to create TLS transport layer" userInfo:nil];
-			[localException raise];
+		/* make sure data dictionary is loaded */
+		if (!dcmDataDict.isDictionaryLoaded()) {
+			fprintf(stderr, "Warning: no data dictionary loaded, check environment variable: %s\n",
+					DCM_DICT_ENVIRONMENT_VARIABLE);
 		}
 		
-		if(certVerification==VerifyPeerCertificate || certVerification==RequirePeerCertificate)
-		{
-			[DDKeychain KeychainAccessExportTrustedCertificatesToDirectory:TLS_TRUSTED_CERTIFICATES_DIR];
-			NSArray *trustedCertificates = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:TLS_TRUSTED_CERTIFICATES_DIR error:nil];
-			
-			for (NSString *cert in trustedCertificates)
-			{
-				if (TCS_ok != tLayer->addTrustedCertificateFile([[TLS_TRUSTED_CERTIFICATES_DIR stringByAppendingPathComponent:cert] cStringUsingEncoding:NSUTF8StringEncoding], _keyFileFormat))
-				{
-					localException = [NSException exceptionWithName:@"DICOM Network Failure (storescu TLS)" reason:[NSString stringWithFormat:@"Unable to load certificate file %@", [TLS_TRUSTED_CERTIFICATES_DIR stringByAppendingPathComponent:cert]] userInfo:nil];
-					[localException raise];
-				}
-			}
-				
-					//--add-cert-dir //// add certificates in d to list of certificates
-					//.... needs to use OpenSSL & rename files (see http://forum.dicom-cd.de/viewtopic.php?p=3237&sid=bd17bd76876a8fd9e7fdf841b90cf639 )
-					
-					//			if (cmd.findOption("--add-cert-dir", 0, OFCommandLine::FOM_First))
-					//			{
-					//				const char *current = NULL;
-					//				do
-					//				{
-					//					app.checkValue(cmd.getValue(current));
-					//					if (TCS_ok != tLayer->addTrustedCertificateDir(current, opt_keyFileFormat))
-					//					{
-					//						CERR << "warning unable to load certificates from directory '" << current << "', ignoring" << endl;
-					//					}
-					//				} while (cmd.findOption("--add-cert-dir", 0, OFCommandLine::FOM_Next));
-					//			}
-		}		
-		
-		if (_dhparam && ! (tLayer->setTempDHParameters(_dhparam)))
-		{
-			localException = [NSException exceptionWithName:@"DICOM Network Failure (storescu TLS)" reason:[NSString stringWithFormat:@"Unable to load temporary DH parameter file %s", _dhparam] userInfo:nil];
-			[localException raise];
-		}
-		
-		if (_doAuthenticate)
-		{			
-			tLayer->setPrivateKeyPasswd([TLS_PRIVATE_KEY_PASSWORD cStringUsingEncoding:NSUTF8StringEncoding]);
-			
-			[DICOMTLS generateCertificateAndKeyForServerAddress:_hostname port:_port AETitle:_calledAET]; // export certificate/key from the Keychain to the disk
-			
-			NSString *_privateKeyFile = [DICOMTLS keyPathForServerAddress:_hostname port:_port AETitle:_calledAET]; // generates the PEM file for the private key
-			NSString *_certificateFile = [DICOMTLS certificatePathForServerAddress:_hostname port:_port AETitle:_calledAET]; // generates the PEM file for the certificate		
-			
-			if (TCS_ok != tLayer->setPrivateKeyFile([_privateKeyFile cStringUsingEncoding:NSUTF8StringEncoding], SSL_FILETYPE_PEM))
-			{
-				localException = [NSException exceptionWithName:@"DICOM Network Failure (storescu TLS)" reason:[NSString stringWithFormat:@"Unable to load private TLS key from %@", _privateKeyFile] userInfo:nil];
-				[localException raise];
-			}
-			
-			if (TCS_ok != tLayer->setCertificateFile([_certificateFile cStringUsingEncoding:NSUTF8StringEncoding], SSL_FILETYPE_PEM))
-			{
-				localException = [NSException exceptionWithName:@"DICOM Network Failure (storescu TLS)" reason:[NSString stringWithFormat:@"Unable to load certificate from %@", _certificateFile] userInfo:nil];
-				[localException raise];
-			}
-			
-			if (!tLayer->checkPrivateKeyMatchesCertificate())
-			{
-				localException = [NSException exceptionWithName:@"DICOM Network Failure (storescu TLS)" reason:[NSString stringWithFormat:@"private key '%@' and certificate '%@' do not match", _privateKeyFile, _certificateFile] userInfo:nil];
-				[localException raise];
-			}
-		}
-		
-		if (TCS_ok != tLayer->setCipherSuites(opt_ciphersuites.c_str()))
-		{
-			localException = [NSException exceptionWithName:@"DICOM Network Failure (storescu TLS)" reason:@"Unable to set selected cipher suites" userInfo:nil];
-			[localException raise];
-		}
-		
-		DcmCertificateVerification _certVerification;
-		
-		if(certVerification==RequirePeerCertificate)
-			_certVerification = DCV_requireCertificate;
-		else if(certVerification==VerifyPeerCertificate)
-			_certVerification = DCV_checkCertificate;
-		else
-			_certVerification = DCV_ignoreCertificate;
-		
-		tLayer->setCertificateVerification(_certVerification);
-		
-		cond = ASC_setTransportLayer(net, tLayer, 0);
+		/* initialize network, i.e. create an instance of T_ASC_Network*. */
+		cond = ASC_initializeNetwork(NET_REQUESTOR, 0, opt_acse_timeout, &net);
 		if (cond.bad())
 		{
 			DimseCondition::dump(cond);
-			localException = [NSException exceptionWithName:@"DICOM Network Failure (storescu TLS)" reason:[NSString stringWithFormat: @"ASC_setTransportLayer - %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
+			localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:[NSString stringWithFormat: @"ASC_initializeNetwork %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] retain];
 			[localException raise];
+			//return;
 		}
-	}
-	
-#endif
-	
- /* initialize asscociation parameters, i.e. create an instance of T_ASC_Parameters*. */
-    cond = ASC_createAssociationParameters(&params, opt_maxReceivePDULength);
-	DimseCondition::dump(cond);
-    if (cond.bad())
-	{
-        DimseCondition::dump(cond);
-		localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:[NSString stringWithFormat: @"ASC_createAssociationParameters %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] retain];
-		[localException raise];
-		//return;
-    }
-	
-	/* sets this application's title and the called application's title in the params */
-	/* structure. The default values to be set here are "STORESCU" and "ANY-SCP". */
-	ASC_setAPTitles(params, opt_ourTitle, opt_peerTitle, NULL);
-
-	/* Set the transport layer type (type of network connection) in the params */
-	/* strucutre. The default is an insecure connection; where OpenSSL is  */
-	/* available the user is able to request an encrypted,secure connection. */
-	cond = ASC_setTransportLayerType(params, _secureConnection);
-	if (cond.bad()) {
+		
+	#ifdef WITH_OPENSSL // joris
+		
+		if( _secureConnection)
+		{
+			tLayer = new DcmTLSTransportLayer(DICOM_APPLICATION_REQUESTOR, _readSeedFile);
+			if (tLayer == NULL)
+			{
+				NSLog(@"unable to create TLS transport layer");
+				localException = [NSException exceptionWithName:@"DICOM Network Failure (storescu TLS)" reason:@"unable to create TLS transport layer" userInfo:nil];
+				[localException raise];
+			}
+			
+			if(certVerification==VerifyPeerCertificate || certVerification==RequirePeerCertificate)
+			{
+				[DDKeychain KeychainAccessExportTrustedCertificatesToDirectory:TLS_TRUSTED_CERTIFICATES_DIR];
+				NSArray *trustedCertificates = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:TLS_TRUSTED_CERTIFICATES_DIR error:nil];
+				
+				for (NSString *cert in trustedCertificates)
+				{
+					if (TCS_ok != tLayer->addTrustedCertificateFile([[TLS_TRUSTED_CERTIFICATES_DIR stringByAppendingPathComponent:cert] cStringUsingEncoding:NSUTF8StringEncoding], _keyFileFormat))
+					{
+						localException = [NSException exceptionWithName:@"DICOM Network Failure (storescu TLS)" reason:[NSString stringWithFormat:@"Unable to load certificate file %@", [TLS_TRUSTED_CERTIFICATES_DIR stringByAppendingPathComponent:cert]] userInfo:nil];
+						[localException raise];
+					}
+				}
+					
+						//--add-cert-dir //// add certificates in d to list of certificates
+						//.... needs to use OpenSSL & rename files (see http://forum.dicom-cd.de/viewtopic.php?p=3237&sid=bd17bd76876a8fd9e7fdf841b90cf639 )
+						
+						//			if (cmd.findOption("--add-cert-dir", 0, OFCommandLine::FOM_First))
+						//			{
+						//				const char *current = NULL;
+						//				do
+						//				{
+						//					app.checkValue(cmd.getValue(current));
+						//					if (TCS_ok != tLayer->addTrustedCertificateDir(current, opt_keyFileFormat))
+						//					{
+						//						CERR << "warning unable to load certificates from directory '" << current << "', ignoring" << endl;
+						//					}
+						//				} while (cmd.findOption("--add-cert-dir", 0, OFCommandLine::FOM_Next));
+						//			}
+			}		
+			
+			if (_dhparam && ! (tLayer->setTempDHParameters(_dhparam)))
+			{
+				localException = [NSException exceptionWithName:@"DICOM Network Failure (storescu TLS)" reason:[NSString stringWithFormat:@"Unable to load temporary DH parameter file %s", _dhparam] userInfo:nil];
+				[localException raise];
+			}
+			
+			if (_doAuthenticate)
+			{			
+				tLayer->setPrivateKeyPasswd([TLS_PRIVATE_KEY_PASSWORD cStringUsingEncoding:NSUTF8StringEncoding]);
+				
+				[DICOMTLS generateCertificateAndKeyForServerAddress:_hostname port:_port AETitle:_calledAET]; // export certificate/key from the Keychain to the disk
+				
+				NSString *_privateKeyFile = [DICOMTLS keyPathForServerAddress:_hostname port:_port AETitle:_calledAET]; // generates the PEM file for the private key
+				NSString *_certificateFile = [DICOMTLS certificatePathForServerAddress:_hostname port:_port AETitle:_calledAET]; // generates the PEM file for the certificate		
+				
+				if (TCS_ok != tLayer->setPrivateKeyFile([_privateKeyFile cStringUsingEncoding:NSUTF8StringEncoding], SSL_FILETYPE_PEM))
+				{
+					localException = [NSException exceptionWithName:@"DICOM Network Failure (storescu TLS)" reason:[NSString stringWithFormat:@"Unable to load private TLS key from %@", _privateKeyFile] userInfo:nil];
+					[localException raise];
+				}
+				
+				if (TCS_ok != tLayer->setCertificateFile([_certificateFile cStringUsingEncoding:NSUTF8StringEncoding], SSL_FILETYPE_PEM))
+				{
+					localException = [NSException exceptionWithName:@"DICOM Network Failure (storescu TLS)" reason:[NSString stringWithFormat:@"Unable to load certificate from %@", _certificateFile] userInfo:nil];
+					[localException raise];
+				}
+				
+				if (!tLayer->checkPrivateKeyMatchesCertificate())
+				{
+					localException = [NSException exceptionWithName:@"DICOM Network Failure (storescu TLS)" reason:[NSString stringWithFormat:@"private key '%@' and certificate '%@' do not match", _privateKeyFile, _certificateFile] userInfo:nil];
+					[localException raise];
+				}
+			}
+			
+			if (TCS_ok != tLayer->setCipherSuites(opt_ciphersuites.c_str()))
+			{
+				localException = [NSException exceptionWithName:@"DICOM Network Failure (storescu TLS)" reason:@"Unable to set selected cipher suites" userInfo:nil];
+				[localException raise];
+			}
+			
+			DcmCertificateVerification _certVerification;
+			
+			if(certVerification==RequirePeerCertificate)
+				_certVerification = DCV_requireCertificate;
+			else if(certVerification==VerifyPeerCertificate)
+				_certVerification = DCV_checkCertificate;
+			else
+				_certVerification = DCV_ignoreCertificate;
+			
+			tLayer->setCertificateVerification(_certVerification);
+			
+			cond = ASC_setTransportLayer(net, tLayer, 0);
+			if (cond.bad())
+			{
+				DimseCondition::dump(cond);
+				localException = [NSException exceptionWithName:@"DICOM Network Failure (storescu TLS)" reason:[NSString stringWithFormat: @"ASC_setTransportLayer - %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
+				[localException raise];
+			}
+		}
+		
+	#endif
+		
+	 /* initialize asscociation parameters, i.e. create an instance of T_ASC_Parameters*. */
+		cond = ASC_createAssociationParameters(&params, opt_maxReceivePDULength);
 		DimseCondition::dump(cond);
-		localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:[NSString stringWithFormat: @"ASC_setTransportLayerType %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] retain];
-		[localException raise];
-		//return;
-	}
-	
-	/* Figure out the presentation addresses and copy the */
-	/* corresponding values into the association parameters.*/
-	gethostname(localHost, sizeof(localHost) - 1);
-	sprintf(peerHost, "%s:%d", opt_peer, (int)opt_port);
-	//NSLog(@"peer host: %s", peerHost);
-	ASC_setPresentationAddresses(params, localHost, peerHost);
-	
-
-	/* Set the presentation contexts which will be negotiated */
-	/* when the network connection will be established */
-	cond = addStoragePresentationContexts(params, sopClassUIDList);
-	if (cond.bad()) {
-		DimseCondition::dump(cond);
-		localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:[NSString stringWithFormat: @"addStoragePresentationContexts %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] retain];
-		[localException raise];
-		//return;
-	}
-
-	
-	/* dump presentation contexts if required */
-    if (opt_showPresentationContexts || opt_debug) {
-        printf("Request Parameters:\n");
-        ASC_dumpParameters(params, COUT);
-    }
-	
-	
-	/* create association, i.e. try to establish a network connection to another */
-	/* DICOM application. This call creates an instance of T_ASC_Association*. */
-	if (opt_verbose)
-		printf("Requesting Association\n");
-	cond = ASC_requestAssociation(net, params, &assoc);
-	if (cond.bad()) {
-		if (cond == DUL_ASSOCIATIONREJECTED) {
-			T_ASC_RejectParameters rej;
-			ASC_getRejectParameters(params, &rej);
-			errmsg("Association Rejected:");
-			ASC_printRejectParameters(stderr, &rej);
-			localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:[NSString stringWithFormat: @"Association Rejected %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] retain];
-			[localException raise];
-
-		} else {
-			errmsg("Association Request Failed:");
+		if (cond.bad())
+		{
 			DimseCondition::dump(cond);
-			localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:[NSString stringWithFormat: @"Association Request Failed %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] retain];
+			localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:[NSString stringWithFormat: @"ASC_createAssociationParameters %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] retain];
 			[localException raise];
+			//return;
 		}
-	}
-	
-	
-	/* dump the connection parameters if in debug mode*/
-	if (opt_debug)
-	{
-		ostream& out = ofConsole.lockCout();     
-		ASC_dumpConnectionParameters(assoc, out);
-		ofConsole.unlockCout();
-	}
+		
+		/* sets this application's title and the called application's title in the params */
+		/* structure. The default values to be set here are "STORESCU" and "ANY-SCP". */
+		ASC_setAPTitles(params, opt_ourTitle, opt_peerTitle, NULL);
 
-	/* dump the presentation contexts which have been accepted/refused */
-	if (opt_showPresentationContexts || opt_debug) {
-		printf("Association Parameters Negotiated:\n");
-		ASC_dumpParameters(params, COUT);
-	}
+		/* Set the transport layer type (type of network connection) in the params */
+		/* strucutre. The default is an insecure connection; where OpenSSL is  */
+		/* available the user is able to request an encrypted,secure connection. */
+		cond = ASC_setTransportLayerType(params, _secureConnection);
+		if (cond.bad()) {
+			DimseCondition::dump(cond);
+			localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:[NSString stringWithFormat: @"ASC_setTransportLayerType %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] retain];
+			[localException raise];
+			//return;
+		}
+		
+		/* Figure out the presentation addresses and copy the */
+		/* corresponding values into the association parameters.*/
+		gethostname(localHost, sizeof(localHost) - 1);
+		sprintf(peerHost, "%s:%d", opt_peer, (int)opt_port);
+		//NSLog(@"peer host: %s", peerHost);
+		ASC_setPresentationAddresses(params, localHost, peerHost);
+		
 
-	
-	
-		/* count the presentation contexts which have been accepted by the SCP */
-		/* If there are none, finish the execution */
-		if (ASC_countAcceptedPresentationContexts(params) == 0) {
-			errmsg("No Acceptable Presentation Contexts");
-			localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:@"No acceptable presentation contexts" userInfo:nil] retain];
+		/* Set the presentation contexts which will be negotiated */
+		/* when the network connection will be established */
+		cond = addStoragePresentationContexts(params, sopClassUIDList);
+		if (cond.bad()) {
+			DimseCondition::dump(cond);
+			localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:[NSString stringWithFormat: @"addStoragePresentationContexts %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] retain];
 			[localException raise];
 			//return;
 		}
 
-
-
-		/* dump general information concerning the establishment of the network connection if required */
-		if (opt_verbose) {
-			printf("Association Accepted (Max Send PDV: %u)\n",
-					assoc->sendPDVLength);
-		}
-
-	
-	 /* do the real work, i.e. for all files which were specified in the */
-    /* command line, transmit the encapsulated DICOM objects to the SCP. */
-    cond = EC_Normal;
-    OFListIterator(OFString) iter = fileNameList.begin();
-    OFListIterator(OFString) enditer = fileNameList.end();
-
-    while ((iter != enditer) && (cond == EC_Normal) && !_shouldAbort) // compare with EC_Normal since DUL_PEERREQUESTEDRELEASE is also good()
-    {
-        cond = cstore(assoc, *iter);
-        ++iter;
-		if (cond == EC_Normal)  _numberSent++;
-		else _numberErrors = _numberOfFiles - _numberSent;
 		
-		NSMutableDictionary  *userInfo = [NSMutableDictionary dictionary];
-		[userInfo setObject:[NSNumber numberWithInt:_numberOfFiles] forKey:@"SendTotal"];
-		[userInfo setObject:[NSNumber numberWithInt:_numberSent] forKey:@"NumberSent"];
-		[userInfo setObject:[NSNumber numberWithInt:_numberErrors] forKey:@"ErrorCount"];
-		if (_numberSent + _numberErrors < _numberOfFiles) {
-			[userInfo setObject:[NSNumber numberWithInt:NO] forKey:@"Sent"];
-			[userInfo setObject:@"In Progress" forKey:@"Message"];
-		}
-		else{
-			[userInfo setObject:[NSNumber numberWithInt:YES] forKey:@"Sent"];
-			[userInfo setObject:@"Complete" forKey:@"Message"];
+		/* dump presentation contexts if required */
+		if (opt_showPresentationContexts || opt_debug) {
+			printf("Request Parameters:\n");
+			ASC_dumpParameters(params, COUT);
 		}
 		
-		[self updateLogEntry: userInfo];
 		
-		[self performSelectorOnMainThread:@selector( sendStatusNotification:) withObject:userInfo waitUntilDone:NO];
-    }
-	
-    /* tear down association, i.e. terminate network connection to SCP */
-    if (cond == EC_Normal)
-    {
-        if (opt_abortAssociation)
-		{
-            if (opt_verbose)
-                printf("Aborting Association\n");
-            cond = ASC_abortAssociation(assoc);
-            if (cond.bad())
-			{
-                errmsg("Association Abort Failed:");
-                DimseCondition::dump(cond);
-                localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:[NSString stringWithFormat: @"Association Abort Failed %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] retain];
+		/* create association, i.e. try to establish a network connection to another */
+		/* DICOM application. This call creates an instance of T_ASC_Association*. */
+		if (opt_verbose)
+			printf("Requesting Association\n");
+		cond = ASC_requestAssociation(net, params, &assoc);
+		if (cond.bad()) {
+			if (cond == DUL_ASSOCIATIONREJECTED) {
+				T_ASC_RejectParameters rej;
+				ASC_getRejectParameters(params, &rej);
+				errmsg("Association Rejected:");
+				ASC_printRejectParameters(stderr, &rej);
+				localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:[NSString stringWithFormat: @"Association Rejected %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] retain];
 				[localException raise];
-            }
-        } else
-		{
-            /* release association */
-            if (opt_verbose)
-                printf("Releasing Association\n");
-            cond = ASC_releaseAssociation(assoc);
-            if (cond.bad())
-            {
-                errmsg("Association Release Failed:");
-                DimseCondition::dump(cond);
-                localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:[NSString stringWithFormat: @"Association Release Failed %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] retain];
+
+			} else {
+				errmsg("Association Request Failed:");
+				DimseCondition::dump(cond);
+				localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:[NSString stringWithFormat: @"Association Request Failed %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] retain];
 				[localException raise];
-            }
-        }
-    }
-    else if (cond == DUL_PEERREQUESTEDRELEASE)
-    {
-        errmsg("Protocol Error: peer requested release (Aborting)");
-        if (opt_verbose)
-            printf("Aborting Association\n");
-		localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:[NSString stringWithFormat: @"Protocol Error: peer requested release (Aborting) %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] retain];
-        cond = ASC_abortAssociation(assoc);
-        if (cond.bad())
-		{
-            errmsg("Association Abort Failed:");
-            DimseCondition::dump(cond);
-        }
-		[localException raise];
-    }
-    else if (cond == DUL_PEERABORTEDASSOCIATION)
-    {
-        if (opt_verbose) printf("Peer Aborted Association\n");
-    }
-    else
-    {
-        errmsg("SCU Failed:");
-        DimseCondition::dump(cond);
-        if (opt_verbose)
-            printf("Aborting Association\n");
+			}
+		}
 		
-		localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:[NSString stringWithFormat: @"SCU Failed %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] retain];
-        cond = ASC_abortAssociation(assoc);
-        if (cond.bad())
+		
+		/* dump the connection parameters if in debug mode*/
+		if (opt_debug)
 		{
-            errmsg("Association Abort Failed:");
-            DimseCondition::dump(cond);
+			ostream& out = ofConsole.lockCout();     
+			ASC_dumpConnectionParameters(assoc, out);
+			ofConsole.unlockCout();
+		}
+
+		/* dump the presentation contexts which have been accepted/refused */
+		if (opt_showPresentationContexts || opt_debug) {
+			printf("Association Parameters Negotiated:\n");
+			ASC_dumpParameters(params, COUT);
+		}
+
+		
+		
+			/* count the presentation contexts which have been accepted by the SCP */
+			/* If there are none, finish the execution */
+			if (ASC_countAcceptedPresentationContexts(params) == 0) {
+				errmsg("No Acceptable Presentation Contexts");
+				localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:@"No acceptable presentation contexts" userInfo:nil] retain];
+				[localException raise];
+				//return;
+			}
+
+
+
+			/* dump general information concerning the establishment of the network connection if required */
+			if (opt_verbose) {
+				printf("Association Accepted (Max Send PDV: %u)\n",
+						assoc->sendPDVLength);
+			}
+
+		
+		 /* do the real work, i.e. for all files which were specified in the */
+		/* command line, transmit the encapsulated DICOM objects to the SCP. */
+		cond = EC_Normal;
+		OFListIterator(OFString) iter = fileNameList.begin();
+		OFListIterator(OFString) enditer = fileNameList.end();
+
+		while ((iter != enditer) && (cond == EC_Normal) && !_shouldAbort) // compare with EC_Normal since DUL_PEERREQUESTEDRELEASE is also good()
+		{
+			cond = cstore(assoc, *iter);
+			++iter;
+			if (cond == EC_Normal)  _numberSent++;
+			else _numberErrors = _numberOfFiles - _numberSent;
 			
-        }
-		[localException raise];
-    }
-	
-
-NS_HANDLER
-	NSLog(@"Store Exception: %@", [localException description]);
-NS_ENDHANDLER
+			NSMutableDictionary  *userInfo = [NSMutableDictionary dictionary];
+			[userInfo setObject:[NSNumber numberWithInt:_numberOfFiles] forKey:@"SendTotal"];
+			[userInfo setObject:[NSNumber numberWithInt:_numberSent] forKey:@"NumberSent"];
+			[userInfo setObject:[NSNumber numberWithInt:_numberErrors] forKey:@"ErrorCount"];
+			if (_numberSent + _numberErrors < _numberOfFiles) {
+				[userInfo setObject:[NSNumber numberWithInt:NO] forKey:@"Sent"];
+				[userInfo setObject:@"In Progress" forKey:@"Message"];
+			}
+			else{
+				[userInfo setObject:[NSNumber numberWithInt:YES] forKey:@"Sent"];
+				[userInfo setObject:@"Complete" forKey:@"Message"];
+			}
+			
+			[self updateLogEntry: userInfo];
+			
+			[self performSelectorOnMainThread:@selector( sendStatusNotification:) withObject:userInfo waitUntilDone:NO];
+		}
+		
+		/* tear down association, i.e. terminate network connection to SCP */
+		if (cond == EC_Normal)
+		{
+			if (opt_abortAssociation)
+			{
+				if (opt_verbose)
+					printf("Aborting Association\n");
+				cond = ASC_abortAssociation(assoc);
+				if (cond.bad())
+				{
+					errmsg("Association Abort Failed:");
+					DimseCondition::dump(cond);
+					localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:[NSString stringWithFormat: @"Association Abort Failed %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] retain];
+					[localException raise];
+				}
+			} else
+			{
+				/* release association */
+				if (opt_verbose)
+					printf("Releasing Association\n");
+				cond = ASC_releaseAssociation(assoc);
+				if (cond.bad())
+				{
+					errmsg("Association Release Failed:");
+					DimseCondition::dump(cond);
+					localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:[NSString stringWithFormat: @"Association Release Failed %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] retain];
+					[localException raise];
+				}
+			}
+		}
+		else if (cond == DUL_PEERREQUESTEDRELEASE)
+		{
+			errmsg("Protocol Error: peer requested release (Aborting)");
+			if (opt_verbose)
+				printf("Aborting Association\n");
+			localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:[NSString stringWithFormat: @"Protocol Error: peer requested release (Aborting) %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] retain];
+			cond = ASC_abortAssociation(assoc);
+			if (cond.bad())
+			{
+				errmsg("Association Abort Failed:");
+				DimseCondition::dump(cond);
+			}
+			[localException raise];
+		}
+		else if (cond == DUL_PEERABORTEDASSOCIATION)
+		{
+			if (opt_verbose) printf("Peer Aborted Association\n");
+		}
+		else
+		{
+			errmsg("SCU Failed:");
+			DimseCondition::dump(cond);
+			if (opt_verbose)
+				printf("Aborting Association\n");
+			
+			localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:[NSString stringWithFormat: @"SCU Failed %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] retain];
+			cond = ASC_abortAssociation(assoc);
+			if (cond.bad())
+			{
+				errmsg("Association Abort Failed:");
+				DimseCondition::dump(cond);
+				
+			}
+			[localException raise];
+		}
+	}
+	@catch ( NSException *e)
+	{
+		NSLog(@"Store Exception: %@", e);
+	}
 	
 	// CLEANUP
 
@@ -1630,7 +1632,9 @@ NS_ENDHANDLER
 	delete tLayer;
 
 	// cleanup
-	[DDKeychain unlockTmpFiles];
+	if( _secureConnection)
+		[DDKeychain unlockTmpFiles];
+
 #endif
 
     if (opt_haltOnUnsuccessfulStore && unsuccessfulStoreEncountered)

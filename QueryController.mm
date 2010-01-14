@@ -207,10 +207,10 @@ extern "C"
 	[args addObject:@"-td"]; // timeout for DIMSE messages
 	[args addObject:[[NSUserDefaults standardUserDefaults] stringForKey:@"DICOMTimeout"]];
 	
-	[DDKeychain lockTmpFiles];
-	
 	if([[serverParameters objectForKey:@"TLSEnabled"] boolValue])
 	{
+		[DDKeychain lockTmpFiles];
+		
 		// TLS support. Options listed here http://support.dcmtk.org/docs/echoscu.html
 		
 		if([[serverParameters objectForKey:@"TLSAuthenticated"] boolValue])
@@ -281,7 +281,8 @@ extern "C"
 	[theTask launch];
 	[theTask waitUntilExit];
 	
-	[DDKeychain unlockTmpFiles];
+	if([[serverParameters objectForKey:@"TLSEnabled"] boolValue])
+		[DDKeychain unlockTmpFiles];
 	
 	if( [theTask terminationStatus] == 0) return YES;
 	else return NO;
