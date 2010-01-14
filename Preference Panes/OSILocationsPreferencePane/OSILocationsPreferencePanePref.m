@@ -725,15 +725,12 @@
 
 	[self getTLSCertificate];
 	
-	// certificates and keys should be chosen from the Keychain, not from files
-	// see Wil Shipley's comment and examples http://www.wilshipley.com/blog/2006/10/pimp-my-code-part-12-frozen-in.html
-
 	NSArray *selectedCipherSuites = [aServer valueForKey:@"TLSCipherSuites"];
 
 	if ([selectedCipherSuites count])
 		self.TLSSupportedCipherSuite = selectedCipherSuites;
 	else
-		self.TLSSupportedCipherSuite = [self defaultCipherSuites];
+		self.TLSSupportedCipherSuite = [DICOMTLS defaultCipherSuites];
 
 	self.TLSUseDHParameterFileURL = [[aServer valueForKey:@"TLSUseDHParameterFileURL"] boolValue];
 	NSString *dhParameterFileURL = [aServer valueForKey:@"TLSDHParameterFileURL"];
@@ -777,19 +774,6 @@
 		[[NSUserDefaults standardUserDefaults] setObject:[dicomNodes arrangedObjects] forKey:@"SERVERS"];
 		[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"updateServers"];
 	}
-}
-
-- (NSArray*)defaultCipherSuites;
-{
-	NSArray *availableCipherSuites = [DICOMTLS availableCipherSuites];
-	NSMutableArray *cipherSuites = [NSMutableArray arrayWithCapacity:[availableCipherSuites count]];
-	
-	for (NSString *suite in availableCipherSuites)
-	{
-		[cipherSuites addObject:[NSMutableDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:NO], @"Supported", suite, @"Cipher", nil]];
-	}
-	
-	return [NSArray arrayWithArray:cipherSuites];
 }
 
 - (IBAction)chooseTLSCertificate:(id)sender

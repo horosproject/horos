@@ -88,8 +88,6 @@
 - (IBAction)editWADO:(id)sender;
 
 - (IBAction)editTLS:(id)sender;
-- (NSArray*)defaultCipherSuites;
-
 - (IBAction)chooseTLSCertificate:(id)sender;
 - (IBAction)viewTLSCertificate:(id)sender;
 - (void)getTLSCertificate;

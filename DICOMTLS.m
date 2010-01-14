@@ -10,6 +10,8 @@
 
 @implementation DICOMTLS
 
+#pragma mark Cipher Suites
+
 + (NSArray*)availableCipherSuites;
 {
 	// list taken from "tlslayer.cc"
@@ -66,6 +68,19 @@
 	return cipherSuites;
 }
 
++ (NSArray*)defaultCipherSuites;
+{
+	NSArray *availableCipherSuites = [DICOMTLS availableCipherSuites];
+	NSMutableArray *cipherSuites = [NSMutableArray arrayWithCapacity:[availableCipherSuites count]];
+	
+	for (NSString *suite in availableCipherSuites)
+	{
+		[cipherSuites addObject:[NSMutableDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:NO], @"Supported", suite, @"Cipher", nil]];
+	}
+	
+	return [NSArray arrayWithArray:cipherSuites];
+}
+
 #pragma mark Keychain Access
 
 + (void)generateCertificateAndKeyForLabel:(NSString*)label;
@@ -89,7 +104,7 @@
 + (NSString*)uniqueLabelForServerAddress:(NSString*)address port:(NSString*)port AETitle:(NSString*)aetitle;
 {
 	NSMutableString *label = [NSMutableString string];
-	[label appendString:TLS_KEYCHAIN_IDENTITY_NAME];
+	[label appendString:TLS_KEYCHAIN_IDENTITY_NAME_CLIENT];
 	[label appendString:@"."];
 	[label appendString:address];
 	[label appendString:@"."];

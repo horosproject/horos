@@ -15,6 +15,8 @@
 #import "OSIListenerPreferencePanePref.h"
 #import "DefaultsOsiriX.h"
 #import "BrowserController.h"
+#import "DDKeychain.h"
+#import <SecurityInterface/SFChooseIdentityPanel.h>
 
 #include <netdb.h>
 #include <unistd.h>
@@ -36,6 +38,12 @@ char *GetPrivateIP()
 }
 
 @implementation OSIListenerPreferencePanePref
+
+@synthesize TLSAuthenticationCertificate;
+@synthesize TLSSupportedCipherSuite;
+@synthesize TLSCertificateVerification;
+@synthesize TLSUseDHParameterFileURL;
+@synthesize TLSDHParameterFileURL;
 
 - (NSManagedObjectContext*) managedObjectContext
 {
@@ -104,6 +112,10 @@ char *GetPrivateIP()
 {
 	NSLog(@"dealloc OSIListenerPreferencePanePref");
 	
+	[TLSAuthenticationCertificate release];
+	[TLSSupportedCipherSuite release];
+	[TLSDHParameterFileURL release];
+
 	[super dealloc];
 }
 
@@ -202,6 +214,8 @@ char *GetPrivateIP()
 	[logDurationPopup selectItemWithTag: [defaults integerForKey:@"LOGCLEANINGDAYS"]];
 	
 	[checkIntervalField setIntValue: [defaults integerForKey:@"LISTENERCHECKINTERVAL"]];
+	
+	[self getTLSCertificate];
 }
 
 - (IBAction)setLogDuration:(id)sender
@@ -276,7 +290,25 @@ char *GetPrivateIP()
 #pragma mark TLS
 
 - (IBAction)editTLS:(id)sender;
-{		
+{
+	NSArray *selectedCipherSuites = [[NSUserDefaults standardUserDefaults] valueForKey:@"TLSStoreSCPCipherSuites"];
+	
+	if ([selectedCipherSuites count])
+		self.TLSSupportedCipherSuite = selectedCipherSuites;
+	else
+		self.TLSSupportedCipherSuite = [DICOMTLS defaultCipherSuites];
+
+	self.TLSUseDHParameterFileURL = [[[NSUserDefaults standardUserDefaults] valueForKey:@"TLSStoreSCPUseDHParameterFileURL"] boolValue];
+	NSString *dhParameterFileURL = [[NSUserDefaults standardUserDefaults] valueForKey:@"TLSStoreSCPDHParameterFileURL"];
+	if(!dhParameterFileURL)
+		dhParameterFileURL = NSHomeDirectory();
+	self.TLSDHParameterFileURL = [NSURL fileURLWithPath:dhParameterFileURL];
+	
+	if([[NSUserDefaults standardUserDefaults] valueForKey:@"TLSStoreSCPCertificateVerification"])
+		self.TLSCertificateVerification = [[[NSUserDefaults standardUserDefaults] valueForKey:@"TLSStoreSCPCertificateVerification"] intValue];
+	else
+		self.TLSCertificateVerification = IgnorePeerCertificate;
+	
 	[NSApp beginSheet: TLSSettingsWindow
 	   modalForWindow: [[self mainView] window]
 		modalDelegate: nil
@@ -291,8 +323,10 @@ char *GetPrivateIP()
 	
 	if( result == NSRunStoppedResponse)
 	{
-	
-		
+		[[NSUserDefaults standardUserDefaults] setObject:self.TLSSupportedCipherSuite forKey:@"TLSStoreSCPCipherSuites"];
+		[[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:self.TLSUseDHParameterFileURL] forKey:@"TLSStoreSCPUseDHParameterFileURL"];
+		[[NSUserDefaults standardUserDefaults] setObject:[self.TLSDHParameterFileURL path] forKey:@"TLSStoreSCPDHParameterFileURL"];
+		[[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithInt:self.TLSCertificateVerification] forKey:@"TLSStoreSCPCertificateVerification"];
 	}
 }
 
@@ -304,6 +338,52 @@ char *GetPrivateIP()
 - (IBAction)ok:(id)sender;
 {
 	[NSApp stopModal];
+}
+
+- (IBAction)chooseTLSCertificate:(id)sender;
+{
+	NSArray *certificates = [DDKeychain KeychainAccessCertificatesList];
+	
+	[[SFChooseIdentityPanel sharedChooseIdentityPanel] setAlternateButtonTitle:NSLocalizedString(@"Cancel", @"Cancel")];
+	NSInteger clickedButton = [[SFChooseIdentityPanel sharedChooseIdentityPanel] runModalForIdentities:certificates message:NSLocalizedString(@"Choose a certificate from the following list.", @"Choose a certificate from the following list.")];
+	
+	if(clickedButton==NSOKButton)
+	{
+		SecIdentityRef identity = [[SFChooseIdentityPanel sharedChooseIdentityPanel] identity];
+		if(identity)
+		{
+			[DDKeychain KeychainAccessSetPreferredIdentity:identity forName:TLS_KEYCHAIN_IDENTITY_NAME_SERVER keyUse:CSSM_KEYUSE_ANY];
+			[self getTLSCertificate];
+		}
+	}
+	else if(clickedButton==NSCancelButton)
+		return;
+}
+
+- (IBAction)viewTLSCertificate:(id)sender;
+{
+	[DDKeychain openCertificatePanelForLabel:TLS_KEYCHAIN_IDENTITY_NAME_SERVER];
+}
+
+- (void)getTLSCertificate;
+{	
+	NSString *name = [DDKeychain certificateNameForLabel:TLS_KEYCHAIN_IDENTITY_NAME_SERVER];
+	NSImage *icon = [DDKeychain certificateIconForLabel:TLS_KEYCHAIN_IDENTITY_NAME_SERVER];
+	
+	if(!name)
+	{
+		name = NSLocalizedString(@"No certificate selected.", @"No certificate selected.");	
+		[TLSCertificateButton setHidden:YES];
+		[TLSChooseCertificateButton setTitle:NSLocalizedString(@"Choose", @"Choose")];
+	}
+	else
+	{
+		[TLSCertificateButton setHidden:NO];
+		[TLSCertificateButton setImage:icon];
+		[TLSChooseCertificateButton setTitle:NSLocalizedString(@"Change", @"Change")];
+	}
+	
+	self.TLSAuthenticationCertificate = name;
 }
 
 @end

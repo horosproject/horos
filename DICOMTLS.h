@@ -27,7 +27,8 @@ typedef enum
 #define TLS_PRIVATE_KEY_FILE @"/tmp/OsiriXTLSKey"
 #define TLS_CERTIFICATE_FILE @"/tmp/OsiriXTLSCertificate"
 #define TLS_TRUSTED_CERTIFICATES_DIR @"/tmp/OsiriXTLSTrustedCertificates" 
-#define TLS_KEYCHAIN_IDENTITY_NAME @"com.osirixviewer.dicomtlsclient"
+#define TLS_KEYCHAIN_IDENTITY_NAME_CLIENT @"com.osirixviewer.dicomtlsclient"
+#define TLS_KEYCHAIN_IDENTITY_NAME_SERVER @"com.osirixviewer.dicomtlsserver"
 #define TLS_PRIVATE_KEY_PASSWORD @"SuperSecretPassword"
 
 
@@ -35,7 +36,9 @@ typedef enum
 
 }
 
+#pragma mark Cipher Suites
 + (NSArray*)availableCipherSuites;
++ (NSArray*)defaultCipherSuites;
 
 #pragma mark Keychain Access
 + (void)generateCertificateAndKeyForLabel:(NSString*)label;

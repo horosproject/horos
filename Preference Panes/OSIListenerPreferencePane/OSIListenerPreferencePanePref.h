@@ -14,6 +14,9 @@
 
 #import <PreferencePanes/PreferencePanes.h>
 #import <SecurityInterface/SFAuthorizationView.h>
+#if defined(OSIRIX)
+#import "DICOMTLS.h"
+#endif
 
 @interface OSIListenerPreferencePanePref : NSPreferencePane 
 {
@@ -32,7 +35,23 @@
 	IBOutlet NSWindow *webServerSettingsWindow;
 	
 	IBOutlet NSWindow *TLSSettingsWindow;
+	NSString *TLSAuthenticationCertificate;
+	IBOutlet NSButton *TLSChooseCertificateButton, *TLSCertificateButton;
+	NSArray *TLSSupportedCipherSuite;
+	BOOL TLSUseDHParameterFileURL;
+	NSURL *TLSDHParameterFileURL;
+	#if defined(OSIRIX)
+	TLSCertificateVerificationType	TLSCertificateVerification;
+	#endif
 }
+
+@property (retain) NSString *TLSAuthenticationCertificate;
+@property (retain) NSArray *TLSSupportedCipherSuite;
+@property BOOL TLSUseDHParameterFileURL;
+@property (retain) NSURL *TLSDHParameterFileURL;
+#if defined(OSIRIX)
+@property TLSCertificateVerificationType TLSCertificateVerification;
+#endif
 
 - (void) mainViewDidLoad;
 - (IBAction)setDeleteFileMode:(id)sender;
@@ -53,5 +72,8 @@
 - (IBAction)editTLS:(id)sender;
 - (IBAction)cancel:(id)sender;
 - (IBAction)ok:(id)sender;
+- (IBAction)chooseTLSCertificate:(id)sender;
+- (IBAction)viewTLSCertificate:(id)sender;
+- (void)getTLSCertificate;
 
 @end

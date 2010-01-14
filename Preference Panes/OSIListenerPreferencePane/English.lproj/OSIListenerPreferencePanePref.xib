@@ -11,7 +11,7 @@
 			<string key="NS.object.0">740</string>
 		</object>
 		<array class="NSMutableArray" key="IBDocument.EditedObjectIDs">
-			<integer value="732"/>
+			<integer value="731"/>
 			<integer value="6"/>
 		</array>
 		<array key="IBDocument.PluginDependencies">
@@ -1593,18 +1593,18 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 								<int key="NSPeriodicInterval">75</int>
 							</object>
 						</object>
-						<object class="NSButton" id="316239253">
+						<object class="NSButton" id="1069196781">
 							<reference key="NSNextResponder" ref="738391672"/>
 							<int key="NSvFlags">268</int>
 							<string key="NSFrame">{{23, 65}, {201, 18}}</string>
 							<reference key="NSSuperview" ref="738391672"/>
 							<bool key="NSEnabled">YES</bool>
-							<object class="NSButtonCell" key="NSCell" id="192588663">
+							<object class="NSButtonCell" key="NSCell" id="8263878">
 								<int key="NSCellFlags">-2080244224</int>
 								<int key="NSCellFlags2">0</int>
 								<string key="NSContents">Activate DICOM TLS Listener</string>
 								<reference key="NSSupport" ref="349069678"/>
-								<reference key="NSControlView" ref="316239253"/>
+								<reference key="NSControlView" ref="1069196781"/>
 								<int key="NSButtonFlags">1211912703</int>
 								<int key="NSButtonFlags2">2</int>
 								<reference key="NSNormalImage" ref="244386217"/>
@@ -1624,6 +1624,10 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<string key="NSMaxSize">{1.79769e+308, 1.79769e+308}</string>
 			</object>
 			<object class="NSUserDefaultsController" id="896066363">
+				<array class="NSMutableArray" key="NSDeclaredKeys">
+					<string>TLSStoreSCPAETITLE</string>
+					<string>TLSStoreSCPAEPORT</string>
+				</array>
 				<bool key="NSSharedInstance">YES</bool>
 			</object>
 			<object class="NSWindowTemplate" id="590408922">
@@ -2289,6 +2293,19 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<string key="NSScreenRect">{{0, 0}, {1680, 1028}}</string>
 				<string key="NSMaxSize">{1.79769e+308, 1.79769e+308}</string>
 			</object>
+			<object class="NSArrayController" id="547275663">
+				<array class="NSMutableArray" key="NSDeclaredKeys">
+					<string>Cipher</string>
+					<string>Supported</string>
+				</array>
+				<bool key="NSEditable">YES</bool>
+				<object class="_NSManagedProxy" key="_NSManagedProxy"/>
+				<bool key="NSAvoidsEmptySelection">YES</bool>
+				<bool key="NSPreservesSelection">YES</bool>
+				<bool key="NSSelectsInsertedObjects">YES</bool>
+				<bool key="NSFilterRestrictsInsertion">YES</bool>
+				<bool key="NSClearsFilterPredicateOnInsertion">YES</bool>
+			</object>
 		</array>
 		<object class="IBObjectContainer" key="IBDocument.Objects">
 			<array class="NSMutableArray" key="connectionRecords">
@@ -2697,38 +2714,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<int key="connectionID">453</int>
 				</object>
 				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: values.TLSAETITLE</string>
-						<reference key="source" ref="97678359"/>
-						<reference key="destination" ref="896066363"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="97678359"/>
-							<reference key="NSDestination" ref="896066363"/>
-							<string key="NSLabel">value: values.TLSAETITLE</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">values.TLSAETITLE</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">778</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: values.TLSAEPORT</string>
-						<reference key="source" ref="1005489986"/>
-						<reference key="destination" ref="896066363"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="1005489986"/>
-							<reference key="NSDestination" ref="896066363"/>
-							<string key="NSLabel">value: values.TLSAEPORT</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">values.TLSAEPORT</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">779</int>
-				</object>
-				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
 						<string key="label">TLSSettingsWindow</string>
 						<reference key="source" ref="649897355"/>
@@ -2759,6 +2744,226 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<reference key="destination" ref="705294414"/>
 					</object>
 					<int key="connectionID">785</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">TLSCertificateButton</string>
+						<reference key="source" ref="649897355"/>
+						<reference key="destination" ref="507655545"/>
+					</object>
+					<int key="connectionID">788</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">TLSChooseCertificateButton</string>
+						<reference key="source" ref="649897355"/>
+						<reference key="destination" ref="934170035"/>
+					</object>
+					<int key="connectionID">789</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">title: TLSAuthenticationCertificate</string>
+						<reference key="source" ref="507655545"/>
+						<reference key="destination" ref="649897355"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="507655545"/>
+							<reference key="NSDestination" ref="649897355"/>
+							<string key="NSLabel">title: TLSAuthenticationCertificate</string>
+							<string key="NSBinding">title</string>
+							<string key="NSKeyPath">TLSAuthenticationCertificate</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">790</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">chooseTLSCertificate:</string>
+						<reference key="source" ref="649897355"/>
+						<reference key="destination" ref="934170035"/>
+					</object>
+					<int key="connectionID">791</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">viewTLSCertificate:</string>
+						<reference key="source" ref="649897355"/>
+						<reference key="destination" ref="507655545"/>
+					</object>
+					<int key="connectionID">792</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">content: arrangedObjects</string>
+						<reference key="source" ref="829550268"/>
+						<reference key="destination" ref="547275663"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="829550268"/>
+							<reference key="NSDestination" ref="547275663"/>
+							<string key="NSLabel">content: arrangedObjects</string>
+							<string key="NSBinding">content</string>
+							<string key="NSKeyPath">arrangedObjects</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">795</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">contentArray: TLSSupportedCipherSuite</string>
+						<reference key="source" ref="547275663"/>
+						<reference key="destination" ref="649897355"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="547275663"/>
+							<reference key="NSDestination" ref="649897355"/>
+							<string key="NSLabel">contentArray: TLSSupportedCipherSuite</string>
+							<string key="NSBinding">contentArray</string>
+							<string key="NSKeyPath">TLSSupportedCipherSuite</string>
+							<object class="NSDictionary" key="NSOptions">
+								<string key="NS.key.0">NSHandlesContentAsCompoundValue</string>
+								<boolean value="YES" key="NS.object.0"/>
+							</object>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">796</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: arrangedObjects.Cipher</string>
+						<reference key="source" ref="241370480"/>
+						<reference key="destination" ref="547275663"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="241370480"/>
+							<reference key="NSDestination" ref="547275663"/>
+							<string key="NSLabel">value: arrangedObjects.Cipher</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">arrangedObjects.Cipher</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">798</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: arrangedObjects.Supported</string>
+						<reference key="source" ref="867648473"/>
+						<reference key="destination" ref="547275663"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="867648473"/>
+							<reference key="NSDestination" ref="547275663"/>
+							<string key="NSLabel">value: arrangedObjects.Supported</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">arrangedObjects.Supported</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">799</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">tableView</string>
+						<reference key="source" ref="547275663"/>
+						<reference key="destination" ref="829550268"/>
+					</object>
+					<int key="connectionID">800</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">dataSource</string>
+						<reference key="source" ref="829550268"/>
+						<reference key="destination" ref="547275663"/>
+					</object>
+					<int key="connectionID">801</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">delegate</string>
+						<reference key="source" ref="829550268"/>
+						<reference key="destination" ref="547275663"/>
+					</object>
+					<int key="connectionID">802</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: values.TLSStoreSCPAETITLE</string>
+						<reference key="source" ref="97678359"/>
+						<reference key="destination" ref="896066363"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="97678359"/>
+							<reference key="NSDestination" ref="896066363"/>
+							<string key="NSLabel">value: values.TLSStoreSCPAETITLE</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">values.TLSStoreSCPAETITLE</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">803</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: values.TLSStoreSCPAEPORT</string>
+						<reference key="source" ref="1005489986"/>
+						<reference key="destination" ref="896066363"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="1005489986"/>
+							<reference key="NSDestination" ref="896066363"/>
+							<string key="NSLabel">value: values.TLSStoreSCPAEPORT</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">values.TLSStoreSCPAEPORT</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">804</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">selectedTag: TLSCertificateVerification</string>
+						<reference key="source" ref="116652252"/>
+						<reference key="destination" ref="649897355"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="116652252"/>
+							<reference key="NSDestination" ref="649897355"/>
+							<string key="NSLabel">selectedTag: TLSCertificateVerification</string>
+							<string key="NSBinding">selectedTag</string>
+							<string key="NSKeyPath">TLSCertificateVerification</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">805</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: TLSUseDHParameterFileURL</string>
+						<reference key="source" ref="195555414"/>
+						<reference key="destination" ref="649897355"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="195555414"/>
+							<reference key="NSDestination" ref="649897355"/>
+							<string key="NSLabel">value: TLSUseDHParameterFileURL</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">TLSUseDHParameterFileURL</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">806</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: TLSDHParameterFileURL</string>
+						<reference key="source" ref="358074476"/>
+						<reference key="destination" ref="649897355"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="358074476"/>
+							<reference key="NSDestination" ref="649897355"/>
+							<string key="NSLabel">value: TLSDHParameterFileURL</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">TLSDHParameterFileURL</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">807</int>
 				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -2832,7 +3037,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<reference ref="1013877116"/>
 							<reference ref="182036525"/>
 							<reference ref="587212795"/>
-							<reference ref="316239253"/>
+							<reference ref="1069196781"/>
 							<reference ref="435539784"/>
 							<reference ref="727779864"/>
 						</array>
@@ -3918,16 +4123,22 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">782</int>
-						<reference key="object" ref="316239253"/>
+						<reference key="object" ref="1069196781"/>
 						<array class="NSMutableArray" key="children">
-							<reference ref="192588663"/>
+							<reference ref="8263878"/>
 						</array>
 						<reference key="parent" ref="738391672"/>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">783</int>
-						<reference key="object" ref="192588663"/>
-						<reference key="parent" ref="316239253"/>
+						<reference key="object" ref="8263878"/>
+						<reference key="parent" ref="1069196781"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">793</int>
+						<reference key="object" ref="547275663"/>
+						<reference key="parent" ref="0"/>
+						<string key="objectName">TLSSupportedCipherSuite</string>
 					</object>
 				</array>
 			</object>
@@ -3949,11 +4160,11 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<integer value="1" key="115.ImportedFromIB2"/>
 				<string key="116.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<integer value="1" key="116.ImportedFromIB2"/>
-				<string key="12.IBEditorWindowLastContentRect">{{136, 249}, {680, 739}}</string>
+				<string key="12.IBEditorWindowLastContentRect">{{19, -4}, {680, 739}}</string>
 				<string key="12.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<integer value="0" key="12.IBViewEditorWindowController.showingBoundsRectangles"/>
 				<integer value="0" key="12.IBViewEditorWindowController.showingLayoutRectangles"/>
-				<string key="12.IBWindowTemplateEditedContentRect">{{136, 249}, {680, 739}}</string>
+				<string key="12.IBWindowTemplateEditedContentRect">{{19, -4}, {680, 739}}</string>
 				<integer value="1" key="12.ImportedFromIB2"/>
 				<string key="12.editorWindowContentRectSynchronizationRect">{{770, 336}, {725, 672}}</string>
 				<integer value="0" key="12.windowTemplate.hasMaxSize"/>
@@ -4170,9 +4381,9 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<integer value="1" key="721.ImportedFromIB2"/>
 				<string key="724.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="725.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="726.IBEditorWindowLastContentRect">{{520, 302}, {413, 469}}</string>
+				<string key="726.IBEditorWindowLastContentRect">{{544, 343}, {413, 469}}</string>
 				<string key="726.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="726.IBWindowTemplateEditedContentRect">{{520, 302}, {413, 469}}</string>
+				<string key="726.IBWindowTemplateEditedContentRect">{{544, 343}, {413, 469}}</string>
 				<boolean value="NO" key="726.NSWindowTemplate.visibleAtLaunch"/>
 				<boolean value="NO" key="726.windowTemplate.hasMaxSize"/>
 				<boolean value="NO" key="726.windowTemplate.hasMinSize"/>
@@ -4212,7 +4423,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<string key="760.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="761.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="762.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="763.IBEditorWindowLastContentRect">{{138, 462}, {159, 48}}</string>
+				<string key="763.IBEditorWindowLastContentRect">{{661, 411}, {90, 48}}</string>
 				<string key="763.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="764.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="765.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -4230,15 +4441,33 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<string key="777.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="782.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="783.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="793.CustomClassName">DNDArrayController</string>
+				<string key="793.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 			</dictionary>
 			<dictionary class="NSMutableDictionary" key="unlocalizedProperties"/>
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">787</int>
+			<int key="maxID">807</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
+				<object class="IBPartialClassDescription">
+					<string key="className">DNDArrayController</string>
+					<string key="superclassName">NSArrayController</string>
+					<object class="NSMutableDictionary" key="actions">
+						<string key="NS.key.0">deleteSelectedRow:</string>
+						<string key="NS.object.0">id</string>
+					</object>
+					<dictionary class="NSMutableDictionary" key="outlets">
+						<string key="_authView">SFAuthorizationView</string>
+						<string key="tableView">NSTableView</string>
+					</dictionary>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">../../DNDArrayController.h</string>
+					</object>
+				</object>
 				<object class="IBPartialClassDescription">
 					<string key="className">FirstResponder</string>
 					<string key="superclassName">NSObject</string>
@@ -4264,6 +4493,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string key="superclassName">NSPreferencePane</string>
 					<dictionary class="NSMutableDictionary" key="actions">
 						<string key="cancel:">id</string>
+						<string key="chooseTLSCertificate:">id</string>
 						<string key="editTLS:">id</string>
 						<string key="helpstorescp:">id</string>
 						<string key="ok:">id</string>
@@ -4278,9 +4508,12 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<string key="setLogDuration:">id</string>
 						<string key="setSingleProcess:">id</string>
 						<string key="smartAlbumHelpButton:">id</string>
+						<string key="viewTLSCertificate:">id</string>
 						<string key="webServerSettings:">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="outlets">
+						<string key="TLSCertificateButton">NSButton</string>
+						<string key="TLSChooseCertificateButton">NSButton</string>
 						<string key="TLSSettingsWindow">NSWindow</string>
 						<string key="_authView">SFAuthorizationView</string>
 						<string key="aeForm">NSForm</string>
@@ -4370,6 +4603,14 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBFrameworkSource</string>
 						<string key="minorKey">AppKit.framework/Headers/NSUserInterfaceItemSearching.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSArrayController</string>
+					<string key="superclassName">NSObjectController</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">AppKit.framework/Headers/NSArrayController.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
@@ -4729,6 +4970,35 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier" id="33962738">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">SecurityInterface.framework/Headers/SFAuthorizationView.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">SecurityInterface.framework/Headers/SFCertificatePanel.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">SecurityInterface.framework/Headers/SFChooseIdentityPanel.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObjectController</string>
+					<string key="superclassName">NSController</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">AppKit.framework/Headers/NSObjectController.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
 					<string key="className">NSPathCell</string>
 					<string key="superclassName">NSActionCell</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
@@ -4886,6 +5156,11 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<string key="majorKey">IBFrameworkSource</string>
 						<string key="minorKey">AppKit.framework/Headers/NSWindowScripting.h</string>
 					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">SFAuthorizationView</string>
+					<string key="superclassName">NSView</string>
+					<reference key="sourceIdentifier" ref="33962738"/>
 				</object>
 			</array>
 		</object>
