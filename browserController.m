@@ -16814,9 +16814,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 #ifndef OSIRIX_LIGHT
 - (IBAction)importRawData:(id)sender
 {
-	[[rdPatientForm cellWithTag:0] setStringValue:@"Raw Data"]; //Patient Name
-	[[rdPatientForm cellWithTag:1] setStringValue:@"RD0001"];	//Patient ID
-	[[rdPatientForm cellWithTag:2] setStringValue:@"Raw Data Secondary Capture"]; //Study Descripition
+	[[rdPatientForm cellWithTag:0] setStringValue: @"Raw Data"]; //Patient Name
+	[[rdPatientForm cellWithTag:1] setStringValue: @"RD0001"];	//Patient ID
+	[[rdPatientForm cellWithTag:2] setStringValue: @"Raw Data Secondary Capture"]; //Study Descripition
 	
 	[[rdPixelForm cellWithTag:0] setObjectValue:[NSNumber numberWithInt:512]];		//rows
 	[[rdPixelForm cellWithTag:1] setObjectValue:[NSNumber numberWithInt:512]];		//columns
@@ -16832,14 +16832,14 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[openPanel setAccessoryView:rdAccessory];
 	[openPanel setPrompt:NSLocalizedString(@"Import", nil)];
 	[openPanel setTitle:NSLocalizedString(@"Import Raw Data", nil)];
-	//[openPanel setNameFieldLabel:NSLocalizedString(@"Save in:", nil)];
+	
 	[openPanel setMessage:NSLocalizedString(@"Choose file containing raw data:", nil)];
 	
-	if ([openPanel runModalForTypes:nil] == NSOKButton){
+	if ([openPanel runModalForTypes:nil] == NSOKButton)
+	{
 		NSData *data = [NSData dataWithContentsOfFile:[openPanel filename]];
 		if (data)
 		{
-			
 			NSString *patientName = [[rdPatientForm cellWithTag:0] stringValue];
 			NSString *patientID = [[rdPatientForm cellWithTag:1] stringValue];
 			NSString *studyDescription = [[rdPatientForm cellWithTag:2] stringValue];
