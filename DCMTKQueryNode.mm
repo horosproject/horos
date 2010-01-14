@@ -1086,7 +1086,8 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	
 	DcmTLSTransportLayer *tLayer = NULL;
 	
-	[DDKeychain lockTmpFiles];
+	if (_secureConnection)
+		[DDKeychain lockTmpFiles];
 	
 	@try
 	{
@@ -1592,7 +1593,8 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	delete tLayer;
 	
 	// cleanup
-	[DDKeychain unlockTmpFiles];
+	if (_secureConnection)
+		[DDKeychain unlockTmpFiles];
 #endif
 
 	[pool release];
