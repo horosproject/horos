@@ -67,28 +67,27 @@
 @property (retain) NSString *TLSAuthenticationCertificate;
 
 
-+ (BOOL) echoServer:(NSDictionary*)serverParameters;
++ (BOOL)echoServer:(NSDictionary*)serverParameters;
 
-- (IBAction) refreshNodesListURL: (id) sender;
-- (void) mainViewDidLoad;
-- (IBAction) newServer:(id)sender;
-- (IBAction) osirixNewServer:(id)sender;
-- (IBAction) setStringEncoding:(id)sender;
-- (IBAction) test:(id) sender;
-- (void) resetTest;
-- (IBAction) saveAs:(id) sender;
-- (IBAction) loadFrom:(id) sender;
-- (IBAction) addPath:(id) sender;
-- (IBAction) OsiriXDBsaveAs:(id) sender;
-- (IBAction) refreshNodesOsiriXDB: (id) sender;
-- (IBAction) OsiriXDBloadFrom:(id) sender;
+- (IBAction)refreshNodesListURL:(id)sender;
+- (void)mainViewDidLoad;
+- (IBAction)newServer:(id)sender;
+- (IBAction)osirixNewServer:(id)sender;
+- (IBAction)setStringEncoding:(id)sender;
+- (IBAction)test:(id)sender;
+- (void)resetTest;
+- (IBAction)saveAs:(id)sender;
+- (IBAction)loadFrom:(id)sender;
+- (IBAction)addPath:(id)sender;
+- (IBAction)OsiriXDBsaveAs:(id)sender;
+- (IBAction)refreshNodesOsiriXDB:(id)sender;
+- (IBAction)OsiriXDBloadFrom:(id)sender;
 
-- (IBAction) cancel:(id)sender;
-- (IBAction) ok:(id)sender;
-- (IBAction) editWADO: (id) sender;
+- (IBAction)cancel:(id)sender;
+- (IBAction)ok:(id)sender;
+- (IBAction)editWADO:(id)sender;
 
-- (IBAction) editTLS: (id) sender;
-- (NSArray*)availableCipherSuites;
+- (IBAction)editTLS:(id)sender;
 - (NSArray*)defaultCipherSuites;
 
 - (IBAction)chooseTLSCertificate:(id)sender;

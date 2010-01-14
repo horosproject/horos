@@ -207,8 +207,7 @@ extern "C"
 	[args addObject:@"-td"]; // timeout for DIMSE messages
 	[args addObject:[[NSUserDefaults standardUserDefaults] stringForKey:@"DICOMTimeout"]];
 	
-	BOOL needsUnlockFiles = NO;
-	BOOL needsUnlockDir = NO;
+	[DDKeychain lockTmpFiles];
 	
 	if([[serverParameters objectForKey:@"TLSEnabled"] boolValue])
 	{
@@ -218,12 +217,9 @@ extern "C"
 		{
 			[args addObject:@"--enable-tls"]; // use authenticated secure TLS connection
 
-			[DDKeychain DICOMTLSGenerateCertificateAndKeyForServerAddress:address port: [port intValue] AETitle:aet]; // export certificate/key from the Keychain to the disk
-			[DDKeychain lockFile:[DDKeychain DICOMTLSKeyPathForServerAddress:address port:[port intValue] AETitle:aet]];
-			[DDKeychain lockFile:[DDKeychain DICOMTLSCertificatePathForServerAddress:address port:[port intValue] AETitle:aet]];
-			needsUnlockFiles = YES;
-			[args addObject:[DDKeychain DICOMTLSKeyPathForServerAddress:address port:[port intValue] AETitle:aet]]; // [p]rivate key file
-			[args addObject:[DDKeychain DICOMTLSCertificatePathForServerAddress:address port:[port intValue] AETitle:aet]]; // [c]ertificate file: string
+			[DICOMTLS generateCertificateAndKeyForServerAddress:address port: [port intValue] AETitle:aet]; // export certificate/key from the Keychain to the disk
+			[args addObject:[DICOMTLS keyPathForServerAddress:address port:[port intValue] AETitle:aet]]; // [p]rivate key file
+			[args addObject:[DICOMTLS certificatePathForServerAddress:address port:[port intValue] AETitle:aet]]; // [c]ertificate file: string
 					
 			[args addObject:@"--use-passwd"];
 			[args addObject:TLS_PRIVATE_KEY_PASSWORD];
@@ -263,8 +259,6 @@ extern "C"
 		if(verification==RequirePeerCertificate || verification==VerifyPeerCertificate)
 		{
 			[DDKeychain KeychainAccessExportTrustedCertificatesToDirectory:TLS_TRUSTED_CERTIFICATES_DIR];
-			[DDKeychain lockFile:TLS_TRUSTED_CERTIFICATES_DIR];
-			needsUnlockDir = YES;
 			NSArray *trustedCertificates = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:TLS_TRUSTED_CERTIFICATES_DIR error:nil];
 			
 			//[args addObject:@"--add-cert-dir"]; // add certificates in d to list of certificates  .... needs to use OpenSSL & rename files (see http://forum.dicom-cd.de/viewtopic.php?p=3237&sid=bd17bd76876a8fd9e7fdf841b90cf639 )
@@ -287,14 +281,7 @@ extern "C"
 	[theTask launch];
 	[theTask waitUntilExit];
 	
-	//[[NSFileManager defaultManager] removeFileAtPath:[DDKeychain DICOMTLSKeyPathForServerAddress:address port:[port intValue] AETitle:aet] handler:nil]; // test
-	//[[NSFileManager defaultManager] removeFileAtPath:[DDKeychain DICOMTLSCertificatePathForServerAddress:address port:[port intValue] AETitle:aet] handler:nil]; // test
-	if(needsUnlockFiles)
-	{
-		[DDKeychain unlockFile:[DDKeychain DICOMTLSKeyPathForServerAddress:address port:[port intValue] AETitle:aet]];
-		[DDKeychain unlockFile:[DDKeychain DICOMTLSCertificatePathForServerAddress:address port:[port intValue] AETitle:aet]];
-	}
-	if(needsUnlockDir)[DDKeychain unlockFile:TLS_TRUSTED_CERTIFICATES_DIR];
+	[DDKeychain unlockTmpFiles];
 	
 	if( [theTask terminationStatus] == 0) return YES;
 	else return NO;

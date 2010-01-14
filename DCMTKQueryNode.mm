@@ -1086,8 +1086,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	
 	DcmTLSTransportLayer *tLayer = NULL;
 	
-	BOOL needsUnlockFiles = NO;
-	BOOL needsUnlockDir = NO;
+	[DDKeychain lockTmpFiles];
 	
 	@try
 	{
@@ -1157,8 +1156,6 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 			if(certVerification==VerifyPeerCertificate || certVerification==RequirePeerCertificate)
 			{
 				[DDKeychain KeychainAccessExportTrustedCertificatesToDirectory:TLS_TRUSTED_CERTIFICATES_DIR];
-				[DDKeychain lockFile:TLS_TRUSTED_CERTIFICATES_DIR];
-				needsUnlockDir = YES;
 				NSArray *trustedCertificates = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:TLS_TRUSTED_CERTIFICATES_DIR error:nil];
 				
 				for (NSString *cert in trustedCertificates)
@@ -1196,13 +1193,10 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 			{				
 				tLayer->setPrivateKeyPasswd([TLS_PRIVATE_KEY_PASSWORD cStringUsingEncoding:NSUTF8StringEncoding]);
 				
-				[DDKeychain DICOMTLSGenerateCertificateAndKeyForServerAddress:_hostname port:_port AETitle:_calledAET]; // export certificate/key from the Keychain to the disk
-				[DDKeychain lockFile:[DDKeychain DICOMTLSKeyPathForServerAddress:_hostname port:_port AETitle:_calledAET]];
-				[DDKeychain lockFile:[DDKeychain DICOMTLSCertificatePathForServerAddress:_hostname port:_port AETitle:_calledAET]];
-				needsUnlockFiles = YES;
+				[DICOMTLS generateCertificateAndKeyForServerAddress:_hostname port:_port AETitle:_calledAET]; // export certificate/key from the Keychain to the disk
 				
-				NSString *_privateKeyFile = [DDKeychain DICOMTLSKeyPathForServerAddress:_hostname port:_port AETitle:_calledAET]; // generates the PEM file for the private key
-				NSString *_certificateFile = [DDKeychain DICOMTLSCertificatePathForServerAddress:_hostname port:_port AETitle:_calledAET]; // generates the PEM file for the certificate
+				NSString *_privateKeyFile = [DICOMTLS keyPathForServerAddress:_hostname port:_port AETitle:_calledAET]; // generates the PEM file for the private key
+				NSString *_certificateFile = [DICOMTLS certificatePathForServerAddress:_hostname port:_port AETitle:_calledAET]; // generates the PEM file for the certificate
 				
 				if (TCS_ok != tLayer->setPrivateKeyFile([_privateKeyFile cStringUsingEncoding:NSUTF8StringEncoding], SSL_FILETYPE_PEM))
 				{
@@ -1598,14 +1592,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	delete tLayer;
 	
 	// cleanup
-//	[[NSFileManager defaultManager] removeFileAtPath:[DDKeychain DICOMTLSKeyPathForServerAddress:_hostname port:_port AETitle:_calledAET] handler:nil];
-//	[[NSFileManager defaultManager] removeFileAtPath:[DDKeychain DICOMTLSCertificatePathForServerAddress:_hostname port:_port AETitle:_calledAET] handler:nil];
-	if(needsUnlockFiles)
-	{
-		[DDKeychain unlockFile:[DDKeychain DICOMTLSKeyPathForServerAddress:_hostname port:_port AETitle:_calledAET]];
-		[DDKeychain unlockFile:[DDKeychain DICOMTLSCertificatePathForServerAddress:_hostname port:_port AETitle:_calledAET]];
-	}
-	if(needsUnlockDir)[DDKeychain unlockFile:TLS_TRUSTED_CERTIFICATES_DIR];
+	[DDKeychain unlockTmpFiles];
 #endif
 
 	[pool release];

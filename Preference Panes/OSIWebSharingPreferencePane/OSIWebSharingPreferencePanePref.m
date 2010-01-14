@@ -39,8 +39,8 @@
 - (void)getTLSCertificate;
 {	
 	NSString *label = [self UniqueLabelForSelectedServer];
-	NSString *name = [DDKeychain DICOMTLSCertificateNameForLabel:label];
-	NSImage *icon = [DDKeychain DICOMTLSCertificateIconForLabel:label];
+	NSString *name = [DDKeychain certificateNameForLabel:label];
+	NSImage *icon = [DDKeychain certificateIconForLabel:label];
 	
 	if(!name)
 	{
@@ -81,7 +81,7 @@
 - (IBAction)viewTLSCertificate:(id)sender;
 {
 	NSString *label = [self UniqueLabelForSelectedServer];
-	[DDKeychain DICOMTLSOpenCertificatePanelForLabel:label];
+	[DDKeychain openCertificatePanelForLabel:label];
 }
 
 - (NSManagedObjectContext*) managedObjectContext

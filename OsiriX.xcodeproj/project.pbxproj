@@ -330,8 +330,6 @@
 		A9ADBBD10ADE80E60022DFC7 /* ReportPages.icns in Resources */ = {isa = PBXBuildFile; fileRef = A9ADBBCE0ADE80E60022DFC7 /* ReportPages.icns */; };
 		A9ADBBD20ADE80E60022DFC7 /* ReportRTF.icns in Resources */ = {isa = PBXBuildFile; fileRef = A9ADBBCF0ADE80E60022DFC7 /* ReportRTF.icns */; };
 		A9ADBBD30ADE80E60022DFC7 /* ReportWord.icns in Resources */ = {isa = PBXBuildFile; fileRef = A9ADBBD00ADE80E60022DFC7 /* ReportWord.icns */; };
-		A9B34A0010E24E3C008C507B /* DICOMTLS.h in Headers */ = {isa = PBXBuildFile; fileRef = A9B349FF10E24E3C008C507B /* DICOMTLS.h */; };
-		A9B34A0110E24E3C008C507B /* DICOMTLS.h in Headers */ = {isa = PBXBuildFile; fileRef = A9B349FF10E24E3C008C507B /* DICOMTLS.h */; };
 		A9B4119D0890423C00913770 /* osirix16x16.tif in Resources */ = {isa = PBXBuildFile; fileRef = A9B4119C0890423C00913770 /* osirix16x16.tif */; };
 		A9B411B70890492F00913770 /* small_album.tif in Resources */ = {isa = PBXBuildFile; fileRef = A9B411B30890492F00913770 /* small_album.tif */; };
 		A9B411B80890492F00913770 /* small_smartAlbum.tif in Resources */ = {isa = PBXBuildFile; fileRef = A9B411B40890492F00913770 /* small_smartAlbum.tif */; };
@@ -340,6 +338,8 @@
 		A9BDE5920C9823DC000A161F /* IChatTheatreDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = A9BDE5900C9823DC000A161F /* IChatTheatreDelegate.h */; };
 		A9BDE5930C9823DC000A161F /* IChatTheatreDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A9BDE5910C9823DC000A161F /* IChatTheatreDelegate.m */; };
 		A9C4D9470F72987900B5B9A1 /* Loupe.xib in Resources */ = {isa = PBXBuildFile; fileRef = A9C4D9450F72987900B5B9A1 /* Loupe.xib */; };
+		A9C5496510FF2C9F0026EA70 /* DICOMTLS.h in Headers */ = {isa = PBXBuildFile; fileRef = A9C5496310FF2C9F0026EA70 /* DICOMTLS.h */; };
+		A9C5496610FF2C9F0026EA70 /* DICOMTLS.m in Sources */ = {isa = PBXBuildFile; fileRef = A9C5496410FF2C9F0026EA70 /* DICOMTLS.m */; };
 		A9C63A9C09BD7C5D00E312AE /* cerveau_icon.jpg in Resources */ = {isa = PBXBuildFile; fileRef = A9C63A9B09BD7C5D00E312AE /* cerveau_icon.jpg */; };
 		A9D18CE60F65120000476DBD /* RotateAxisCursor.png in Resources */ = {isa = PBXBuildFile; fileRef = A9D18CE50F65120000476DBD /* RotateAxisCursor.png */; };
 		A9D4D0490F738BEA00483A3A /* loupe.png in Resources */ = {isa = PBXBuildFile; fileRef = A9D4D0480F738BEA00483A3A /* loupe.png */; };
@@ -8219,7 +8219,6 @@
 		A9ADBBCE0ADE80E60022DFC7 /* ReportPages.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = ReportPages.icns; sourceTree = "<group>"; };
 		A9ADBBCF0ADE80E60022DFC7 /* ReportRTF.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = ReportRTF.icns; sourceTree = "<group>"; };
 		A9ADBBD00ADE80E60022DFC7 /* ReportWord.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = ReportWord.icns; sourceTree = "<group>"; };
-		A9B349FF10E24E3C008C507B /* DICOMTLS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DICOMTLS.h; sourceTree = "<group>"; };
 		A9B4119C0890423C00913770 /* osirix16x16.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = osirix16x16.tif; sourceTree = "<group>"; };
 		A9B411B30890492F00913770 /* small_album.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = small_album.tif; sourceTree = "<group>"; };
 		A9B411B40890492F00913770 /* small_smartAlbum.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = small_smartAlbum.tif; sourceTree = "<group>"; };
@@ -8235,6 +8234,8 @@
 		A9C4D9170F7297E700B5B9A1 /* LoupeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoupeView.h; sourceTree = "<group>"; };
 		A9C4D9180F7297E700B5B9A1 /* LoupeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoupeView.m; sourceTree = "<group>"; };
 		A9C4D9460F72987900B5B9A1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/Loupe.xib; sourceTree = "<group>"; };
+		A9C5496310FF2C9F0026EA70 /* DICOMTLS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DICOMTLS.h; sourceTree = "<group>"; };
+		A9C5496410FF2C9F0026EA70 /* DICOMTLS.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DICOMTLS.m; sourceTree = "<group>"; };
 		A9C63A9B09BD7C5D00E312AE /* cerveau_icon.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = cerveau_icon.jpg; sourceTree = "<group>"; };
 		A9D18CE50F65120000476DBD /* RotateAxisCursor.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = RotateAxisCursor.png; sourceTree = "<group>"; };
 		A9D4D0480F738BEA00483A3A /* loupe.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = loupe.png; sourceTree = "<group>"; };
@@ -13425,7 +13426,8 @@
 				BF8E5ABD09CA0D8200DE02FF /* DCMTKQueryRetrieveSCP.mm */,
 				BF9998FE0A1E695800F50753 /* DCMTKPrintSCU.h */,
 				BF9998FF0A1E695800F50753 /* DCMTKPrintSCU.mm */,
-				A9B349FF10E24E3C008C507B /* DICOMTLS.h */,
+				A9C5496310FF2C9F0026EA70 /* DICOMTLS.h */,
+				A9C5496410FF2C9F0026EA70 /* DICOMTLS.m */,
 			);
 			name = Network;
 			sourceTree = "<group>";
@@ -18942,8 +18944,8 @@
 				A9FE55F410DB7DCF000D0395 /* OpenGLScreenReader.h in Headers */,
 				CEF7BCB910DCBE0000B009D1 /* UserTable.h in Headers */,
 				CEDDD87F10DCC93500FFE72B /* PSGenerator.h in Headers */,
-				A9B34A0010E24E3C008C507B /* DICOMTLS.h in Headers */,
 				CE2119C910E4C25300F9C50C /* CSMailMailClient.h in Headers */,
+				A9C5496510FF2C9F0026EA70 /* DICOMTLS.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -19024,7 +19026,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				CEC4467C10664C2B0061B338 /* ViewerController.h in Headers */,
-				A9B34A0110E24E3C008C507B /* DICOMTLS.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23344,6 +23345,7 @@
 				CEF7BCBA10DCBE0000B009D1 /* UserTable.m in Sources */,
 				CEDDD88010DCC93500FFE72B /* PSGenerator.m in Sources */,
 				CE2119CA10E4C25300F9C50C /* CSMailMailClient.m in Sources */,
+				A9C5496610FF2C9F0026EA70 /* DICOMTLS.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

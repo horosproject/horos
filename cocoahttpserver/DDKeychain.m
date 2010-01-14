@@ -2,6 +2,7 @@
 #import "DICOMTLS.h"
 
 static NSMutableDictionary *lockedFiles = nil;
+static NSLock *lockFile = nil;
 
 @implementation DDKeychain
 
@@ -887,18 +888,18 @@ static NSMutableDictionary *lockedFiles = nil;
 	}
 }
 
-#pragma mark DICOM TLS Specific methods
+#pragma mark-
 
 // Returns a reference to the preferred identity for DICOM TLS, or NULL if none was found.
 // Call the CFRelease function to release this object when you are finished with it.
-+ (SecIdentityRef)DICOMTLSIdentityForLabel:(NSString*)label;
++ (SecIdentityRef)identityForLabel:(NSString*)label;
 {
 	return [DDKeychain KeychainAccessPreferredIdentityForName:label keyUse:CSSM_KEYUSE_ANY];
 }
 
-+ (NSString*)DICOMTLSCertificateNameForLabel:(NSString*)label;
++ (NSString*)certificateNameForLabel:(NSString*)label;
 {
-	SecIdentityRef identity = [DDKeychain DICOMTLSIdentityForLabel:label];
+	SecIdentityRef identity = [DDKeychain identityForLabel:label];
 	
 	NSString *name = nil;
 	if(identity)
@@ -910,9 +911,9 @@ static NSMutableDictionary *lockedFiles = nil;
 	return name;
 }
 
-+ (NSImage*)DICOMTLSCertificateIconForLabel:(NSString*)label;
++ (NSImage*)certificateIconForLabel:(NSString*)label;
 {
-	SecIdentityRef identity = [DDKeychain DICOMTLSIdentityForLabel:label];
+	SecIdentityRef identity = [DDKeychain identityForLabel:label];
 	
 	NSImage *icon = nil;
 	if(identity)
@@ -924,61 +925,14 @@ static NSMutableDictionary *lockedFiles = nil;
 	return icon;
 }
 
-+ (void)DICOMTLSOpenCertificatePanelForLabel:(NSString*)label;
++ (void)openCertificatePanelForLabel:(NSString*)label;
 {
-	[DDKeychain KeychainAccessOpenCertificatePanelForIdentity:[DDKeychain DICOMTLSIdentityForLabel:label]];
-}
-
-+ (void)DICOMTLSGenerateCertificateAndKeyForLabel:(NSString*)label;
-{	
-	SecIdentityRef identity = [DDKeychain DICOMTLSIdentityForLabel:label];
+	SecIdentityRef identity = [DDKeychain identityForLabel:label];
 	if(identity)
-	{		
-		// identity to certificate
-		[DDKeychain KeychainAccessExportCertificateForIdentity:identity toPath:[DDKeychain DICOMTLSCertificatePathForLabel:label]];
-		// identity to private key
-		[DDKeychain KeychainAccessExportPrivateKeyForIdentity:identity toPath:[DDKeychain DICOMTLSKeyPathForLabel:label] cryptWithPassword:TLS_PRIVATE_KEY_PASSWORD];
+	{
+		[DDKeychain KeychainAccessOpenCertificatePanelForIdentity:identity];
 		CFRelease(identity);
 	}
-}
-
-+ (void)DICOMTLSGenerateCertificateAndKeyForServerAddress:(NSString*)address port:(int)port AETitle:(NSString*)aetitle;
-{	
-	[DDKeychain DICOMTLSGenerateCertificateAndKeyForLabel:[DDKeychain DICOMTLSUniqueLabelForServerAddress:address port:[NSString stringWithFormat:@"%d",port] AETitle:aetitle]];
-}
-
-+ (NSString*)DICOMTLSUniqueLabelForServerAddress:(NSString*)address port:(NSString*)port AETitle:(NSString*)aetitle;
-{
-	NSMutableString *label = [NSMutableString string];
-	[label appendString:TLS_KEYCHAIN_IDENTITY_NAME];
-	[label appendString:@"."];
-	[label appendString:address];
-	[label appendString:@"."];
-	[label appendString:port];
-	[label appendString:@"."];
-	[label appendString:aetitle];
-	
-	return [NSString stringWithString:label];
-}
-
-+ (NSString*)DICOMTLSKeyPathForLabel:(NSString*)label;
-{
-	return [NSString stringWithFormat:@"%@.%@", TLS_PRIVATE_KEY_FILE, label];
-}
-
-+ (NSString*)DICOMTLSKeyPathForServerAddress:(NSString*)address port:(int)port AETitle:(NSString*)aetitle;
-{
-	return [DDKeychain DICOMTLSKeyPathForLabel:[DDKeychain DICOMTLSUniqueLabelForServerAddress:address port:[NSString stringWithFormat:@"%d",port] AETitle:aetitle]];
-}
-
-+ (NSString*)DICOMTLSCertificatePathForLabel:(NSString*)label;
-{
-	return [NSString stringWithFormat:@"%@.%@", TLS_CERTIFICATE_FILE, label];
-}
-
-+ (NSString*)DICOMTLSCertificatePathForServerAddress:(NSString*)address port:(int)port AETitle:(NSString*)aetitle;
-{
-	return [DDKeychain DICOMTLSCertificatePathForLabel:[DDKeychain DICOMTLSUniqueLabelForServerAddress:address port:[NSString stringWithFormat:@"%d",port] AETitle:aetitle]];
 }
 
 #pragma mark Other Utilities
@@ -1011,7 +965,7 @@ static NSMutableDictionary *lockedFiles = nil;
 }
 
 + (void)unlockFile:(NSString*)path;
-{
+{	
 	@synchronized( lockedFiles)
 	{
 		int n=0;
@@ -1030,10 +984,24 @@ static NSMutableDictionary *lockedFiles = nil;
 		if(n==0)
 		{
 			[lockedFiles removeObjectForKey:path];
-			[[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
-			NSLog(@"removeFileAtPath: %@", path);
+			//[[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
+			//NSLog(@"removeFileAtPath: %@", path);
 		}
 	}
+}
+
++ (void)lockTmpFiles;
+{
+	if(!lockFile) lockFile = [[NSLock alloc] init];
+	
+	[lockFile lock];
+}
+
++ (void)unlockTmpFiles;
+{
+	[lockFile unlock];
+	//NSString *cmd = [NSString stringWithFormat:@"rm %@* %@*", TLS_PRIVATE_KEY_FILE, TLS_CERTIFICATE_FILE];
+	//system([cmd cStringUsingEncoding:NSUTF8StringEncoding]);
 }
 
 @end

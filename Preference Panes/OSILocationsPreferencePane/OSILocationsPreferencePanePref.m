@@ -120,8 +120,7 @@
 	[args addObject:@"-td"]; // timeout for DIMSE messages
 	[args addObject:[[NSUserDefaults standardUserDefaults] stringForKey:@"DICOMTimeout"]];
 	
-	BOOL needsUnlockFiles = NO;
-	BOOL needsUnlockDir = NO;
+	[DDKeychain lockTmpFiles];
 	
 	if([[serverParameters objectForKey:@"TLSEnabled"] boolValue])
 	{
@@ -131,12 +130,9 @@
 		{
 			[args addObject:@"--enable-tls"]; // use authenticated secure TLS connection
 
-			[DDKeychain DICOMTLSGenerateCertificateAndKeyForServerAddress:address port: [port intValue] AETitle:aet]; // export certificate/key from the Keychain to the disk
-			[DDKeychain lockFile:[DDKeychain DICOMTLSKeyPathForServerAddress:address port:[port intValue] AETitle:aet]];
-			[DDKeychain lockFile:[DDKeychain DICOMTLSCertificatePathForServerAddress:address port:[port intValue] AETitle:aet]];
-			needsUnlockFiles = YES;
-			[args addObject:[DDKeychain DICOMTLSKeyPathForServerAddress:address port:[port intValue] AETitle:aet]]; // [p]rivate key file
-			[args addObject:[DDKeychain DICOMTLSCertificatePathForServerAddress:address port:[port intValue] AETitle:aet]]; // [c]ertificate file: string
+			[DICOMTLS generateCertificateAndKeyForServerAddress:address port: [port intValue] AETitle:aet]; // export certificate/key from the Keychain to the disk
+			[args addObject:[DICOMTLS keyPathForServerAddress:address port:[port intValue] AETitle:aet]]; // [p]rivate key file
+			[args addObject:[DICOMTLS certificatePathForServerAddress:address port:[port intValue] AETitle:aet]]; // [c]ertificate file: string
 			
 			[args addObject:@"--use-passwd"];
 			[args addObject:TLS_PRIVATE_KEY_PASSWORD];
@@ -176,8 +172,6 @@
 		if(verification==RequirePeerCertificate || verification==VerifyPeerCertificate)
 		{
 			[DDKeychain KeychainAccessExportTrustedCertificatesToDirectory:TLS_TRUSTED_CERTIFICATES_DIR];
-			[DDKeychain lockFile:TLS_TRUSTED_CERTIFICATES_DIR];
-			needsUnlockDir = YES;
 			NSArray *trustedCertificates = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:TLS_TRUSTED_CERTIFICATES_DIR error:nil];
 		
 			//[args addObject:@"--add-cert-dir"]; // add certificates in d to list of certificates  .... needs to use OpenSSL & rename files (see http://forum.dicom-cd.de/viewtopic.php?p=3237&sid=bd17bd76876a8fd9e7fdf841b90cf639 )
@@ -199,14 +193,7 @@
 	[theTask launch];
 	[theTask waitUntilExit];
 
-	//[[NSFileManager defaultManager] removeFileAtPath:[DDKeychain DICOMTLSKeyPathForServerAddress:address port:[port intValue] AETitle:aet] handler:nil];
-	//[[NSFileManager defaultManager] removeFileAtPath:[DDKeychain DICOMTLSCertificatePathForServerAddress:address port:[port intValue] AETitle:aet] handler:nil];
-	if(needsUnlockFiles)
-	{
-		[DDKeychain unlockFile:[DDKeychain DICOMTLSKeyPathForServerAddress:address port:[port intValue] AETitle:aet]];
-		[DDKeychain unlockFile:[DDKeychain DICOMTLSCertificatePathForServerAddress:address port:[port intValue] AETitle:aet]];
-	}
-	if(needsUnlockDir)[DDKeychain unlockFile:TLS_TRUSTED_CERTIFICATES_DIR];
+	[DDKeychain unlockTmpFiles];
 	
 	if( [theTask terminationStatus] == 0) return YES;
 	else return NO;
@@ -792,65 +779,9 @@
 	}
 }
 
-- (NSArray*)availableCipherSuites;
-{
-	// list taken from "tlslayer.cc"
-	NSArray *cipherSuites = [NSArray arrayWithObjects:	@"TLS_RSA_WITH_NULL_MD5",
-							 @"TLS_RSA_WITH_NULL_SHA",
-							 @"TLS_RSA_EXPORT_WITH_RC4_40_MD5",
-							 @"TLS_RSA_WITH_RC4_128_MD5",
-							 @"TLS_RSA_WITH_RC4_128_SHA",
-							 @"TLS_RSA_EXPORT_WITH_RC2_CBC_40_MD5",
-							 @"TLS_RSA_WITH_IDEA_CBC_SHA",
-							 @"TLS_RSA_EXPORT_WITH_DES40_CBC_SHA",
-							 @"TLS_RSA_WITH_DES_CBC_SHA",
-							 @"TLS_RSA_WITH_3DES_EDE_CBC_SHA",
-							 @"TLS_DH_DSS_EXPORT_WITH_DES40_CBC_SHA",
-							 @"TLS_DH_DSS_WITH_DES_CBC_SHA",        
-							 @"TLS_DH_DSS_WITH_3DES_EDE_CBC_SHA",   
-							 @"TLS_DH_RSA_EXPORT_WITH_DES40_CBC_SHA",
-							 @"TLS_DH_RSA_WITH_DES_CBC_SHA",        
-							 @"TLS_DH_RSA_WITH_3DES_EDE_CBC_SHA",   
-							 @"TLS_DHE_DSS_EXPORT_WITH_DES40_CBC_SHA",
-							 @"TLS_DHE_DSS_WITH_DES_CBC_SHA",            
-							 @"TLS_DHE_DSS_WITH_3DES_EDE_CBC_SHA",       
-							 @"TLS_DHE_RSA_EXPORT_WITH_DES40_CBC_SHA",   
-							 @"TLS_DHE_RSA_WITH_DES_CBC_SHA",            
-							 @"TLS_DHE_RSA_WITH_3DES_EDE_CBC_SHA",       
-							 @"TLS_DH_anon_EXPORT_WITH_RC4_40_MD5",      
-							 @"TLS_DH_anon_WITH_RC4_128_MD5",            
-							 @"TLS_DH_anon_EXPORT_WITH_DES40_CBC_SHA",   
-							 @"TLS_DH_anon_WITH_DES_CBC_SHA",            
-							 @"TLS_DH_anon_WITH_3DES_EDE_CBC_SHA",       
-							 @"TLS_RSA_EXPORT1024_WITH_DES_CBC_SHA",     
-							 @"TLS_RSA_EXPORT1024_WITH_RC4_56_SHA",      
-							 @"TLS_DHE_DSS_EXPORT1024_WITH_DES_CBC_SHA", 
-							 @"TLS_DHE_DSS_EXPORT1024_WITH_RC4_56_SHA",  
-							 @"TLS_DHE_DSS_WITH_RC4_128_SHA",            
-							 //if OPENSSL_VERSION_NUMBER >= 0x0090700fL
-							 // cipersuites added in OpenSSL 0.9.7
-							 @"TLS_RSA_EXPORT_WITH_RC4_56_MD5",         
-							 @"TLS_RSA_EXPORT_WITH_RC2_CBC_56_MD5",     
-							 /* AES ciphersuites from RFC3268 */
-							 @"TLS_RSA_WITH_AES_128_CBC_SHA",           
-							 @"TLS_DH_DSS_WITH_AES_128_CBC_SHA",        
-							 @"TLS_DH_RSA_WITH_AES_128_CBC_SHA",        
-							 @"TLS_DHE_DSS_WITH_AES_128_CBC_SHA",       
-							 @"TLS_DHE_RSA_WITH_AES_128_CBC_SHA",       
-							 @"TLS_DH_anon_WITH_AES_128_CBC_SHA",       
-							 @"TLS_RSA_WITH_AES_256_CBC_SHA",           
-							 @"TLS_DH_DSS_WITH_AES_256_CBC_SHA",        
-							 @"TLS_DH_RSA_WITH_AES_256_CBC_SHA",        
-							 @"TLS_DHE_DSS_WITH_AES_256_CBC_SHA",       
-							 @"TLS_DHE_RSA_WITH_AES_256_CBC_SHA",       
-							 @"TLS_DH_anon_WITH_AES_256_CBC_SHA",
-							 nil];
-	return cipherSuites;
-}
-
 - (NSArray*)defaultCipherSuites;
 {
-	NSArray *availableCipherSuites = [self availableCipherSuites];
+	NSArray *availableCipherSuites = [DICOMTLS availableCipherSuites];
 	NSMutableArray *cipherSuites = [NSMutableArray arrayWithCapacity:[availableCipherSuites count]];
 	
 	for (NSString *suite in availableCipherSuites)
@@ -884,14 +815,14 @@
 - (IBAction)viewTLSCertificate:(id)sender;
 {
 	NSString *label = [self DICOMTLSUniqueLabelForSelectedServer];
-	[DDKeychain DICOMTLSOpenCertificatePanelForLabel:label];
+	[DDKeychain openCertificatePanelForLabel:label];
 }
 
 - (void)getTLSCertificate;
 {	
 	NSString *label = [self DICOMTLSUniqueLabelForSelectedServer];
-	NSString *name = [DDKeychain DICOMTLSCertificateNameForLabel:label];
-	NSImage *icon = [DDKeychain DICOMTLSCertificateIconForLabel:label];
+	NSString *name = [DDKeychain certificateNameForLabel:label];
+	NSImage *icon = [DDKeychain certificateIconForLabel:label];
 	
 	if(!name)
 	{
@@ -907,14 +838,12 @@
 	}
 
 	self.TLSAuthenticationCertificate = name;
-			
-//	[DDKeychain DICOMTLSGenerateCertificateAndKeyForLabel:label]; // test
 }
 
 - (NSString*)DICOMTLSUniqueLabelForSelectedServer;
 {
 	NSMutableDictionary *aServer = [[dicomNodes arrangedObjects] objectAtIndex:[[dicomNodes tableView] selectedRow]];
-	return [DDKeychain DICOMTLSUniqueLabelForServerAddress:[aServer valueForKey:@"Address"] port:[NSString stringWithFormat:@"%d",[[aServer valueForKey:@"Port"] intValue]] AETitle:[aServer valueForKey:@"AETitle"]];
+	return [DICOMTLS uniqueLabelForServerAddress:[aServer valueForKey:@"Address"] port:[NSString stringWithFormat:@"%d",[[aServer valueForKey:@"Port"] intValue]] AETitle:[aServer valueForKey:@"AETitle"]];
 }
 
 @end

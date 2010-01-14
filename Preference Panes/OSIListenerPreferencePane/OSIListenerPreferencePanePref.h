@@ -30,6 +30,8 @@
 	IBOutlet NSPopUpButton *logDurationPopup;
 	IBOutlet SFAuthorizationView *_authView;
 	IBOutlet NSWindow *webServerSettingsWindow;
+	
+	IBOutlet NSWindow *TLSSettingsWindow;
 }
 
 - (void) mainViewDidLoad;
@@ -44,6 +46,12 @@
 - (IBAction)setDecompress:(id)sender;
 - (IBAction)setCompress:(id)sender;
 - (IBAction)webServerSettings:(id)sender;
-- (IBAction)smartAlbumHelpButton: (id)sender;
-- (IBAction) openKeyChainAccess:(id) sender;
+- (IBAction)smartAlbumHelpButton:(id)sender;
+- (IBAction)openKeyChainAccess:(id)sender;
+
+#pragma mark TLS
+- (IBAction)editTLS:(id)sender;
+- (IBAction)cancel:(id)sender;
+- (IBAction)ok:(id)sender;
+
 @end

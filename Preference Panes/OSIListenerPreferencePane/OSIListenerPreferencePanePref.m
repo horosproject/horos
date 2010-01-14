@@ -272,4 +272,38 @@ char *GetPrivateIP()
 	
 	[[BrowserController currentBrowser] saveUserDatabase];
 }
+
+#pragma mark TLS
+
+- (IBAction)editTLS:(id)sender;
+{		
+	[NSApp beginSheet: TLSSettingsWindow
+	   modalForWindow: [[self mainView] window]
+		modalDelegate: nil
+	   didEndSelector: nil
+		  contextInfo: nil];
+	
+	int result = [NSApp runModalForWindow: TLSSettingsWindow];
+	[TLSSettingsWindow makeFirstResponder: nil];
+	
+	[NSApp endSheet: TLSSettingsWindow];
+	[TLSSettingsWindow orderOut: self];
+	
+	if( result == NSRunStoppedResponse)
+	{
+	
+		
+	}
+}
+
+- (IBAction)cancel:(id)sender;
+{
+	[NSApp abortModal];
+}
+
+- (IBAction)ok:(id)sender;
+{
+	[NSApp stopModal];
+}
+
 @end
