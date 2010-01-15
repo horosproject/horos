@@ -535,19 +535,22 @@ extern NSRecursiveLock *PapyrusLock;
 		}
 		
 		//Protocol Name
-		if (dataset->findAndGetString(DCM_ProtocolName, string, OFFalse).good() && string != NULL){
+		if (dataset->findAndGetString(DCM_ProtocolName, string, OFFalse).good() && string != NULL)
+		{
 			NSString *protocol  = [[NSString alloc] initWithCString:string encoding: NSASCIIStringEncoding];
 			[dicomElements setObject:protocol  forKey:@"protocolName"];	
 			[protocol   release];
 		}
 		
 		//Echo Time
-		if (dataset->findAndGetString(DCM_EchoTime, string, OFFalse).good() && string != NULL){
+		if (dataset->findAndGetString(DCM_EchoTime, string, OFFalse).good() && string != NULL)
+		{
 			echoTime = [[[NSString alloc] initWithCString:string encoding: NSASCIIStringEncoding] autorelease];		
 		}
 		
 		//Image Number
-		if (dataset->findAndGetString(DCM_InstanceNumber, string, OFFalse).good() && string != NULL){
+		if (dataset->findAndGetString(DCM_InstanceNumber, string, OFFalse).good() && string != NULL)
+		{
 			imageID = [[NSString alloc] initWithCString:string encoding: NSASCIIStringEncoding];
 			int val = [imageID intValue];
 			[imageID release];
@@ -593,7 +596,8 @@ extern NSRecursiveLock *PapyrusLock;
 		[dicomElements setObject:[NSNumber numberWithLong: [imageID intValue]] forKey:@"imageID"];
 		
 		//Series Number
-		if (dataset->findAndGetString(DCM_SeriesNumber, string, OFFalse).good() && string != NULL){
+		if (dataset->findAndGetString(DCM_SeriesNumber, string, OFFalse).good() && string != NULL)
+		{
 			seriesNo = [[NSString alloc] initWithCString:string encoding: NSASCIIStringEncoding];
 		}
 		else
@@ -601,7 +605,8 @@ extern NSRecursiveLock *PapyrusLock;
 		if( seriesNo) [dicomElements setObject:[NSNumber numberWithInt:[seriesNo intValue]]  forKey:@"seriesNumber"];
 		
 		//Series Instance UID		
-		if (dataset->findAndGetString(DCM_SeriesInstanceUID, string, OFFalse).good() && string != NULL){
+		if (dataset->findAndGetString(DCM_SeriesInstanceUID, string, OFFalse).good() && string != NULL)
+		{
 			serieID = [[NSString alloc] initWithCString:string encoding: NSASCIIStringEncoding];
 			[dicomElements setObject:serieID forKey:@"seriesDICOMUID"];
 		}
@@ -657,7 +662,8 @@ extern NSRecursiveLock *PapyrusLock;
 		}
 		
 		//Study Instance UID
-		if (dataset->findAndGetString(DCM_StudyInstanceUID, string, OFFalse).good() && string != NULL){
+		if (dataset->findAndGetString(DCM_StudyInstanceUID, string, OFFalse).good() && string != NULL)
+		{
 			studyID = [[NSString alloc] initWithCString:string encoding: NSASCIIStringEncoding];
 		}
 		else
@@ -665,7 +671,8 @@ extern NSRecursiveLock *PapyrusLock;
 		[dicomElements setObject:studyID forKey:@"studyID"];
 			
 		//StudyID
-		if (dataset->findAndGetString(DCM_StudyID, string, OFFalse).good() && string != NULL){
+		if (dataset->findAndGetString(DCM_StudyID, string, OFFalse).good() && string != NULL)
+		{
 			studyIDs = [[NSString alloc] initWithCString:string encoding: NSASCIIStringEncoding];
 		}
 		else
@@ -674,19 +681,22 @@ extern NSRecursiveLock *PapyrusLock;
 		
 		//Rows
 		unsigned short rows = 0;
-		if (dataset->findAndGetUint16(DCM_Rows, rows, OFFalse).good()){
+		if (dataset->findAndGetUint16(DCM_Rows, rows, OFFalse).good())
+		{
 			height = rows;
 		}
 		
 		//Columns
 		
 		unsigned short columns = 0;
-		if (dataset->findAndGetUint16(DCM_Columns, columns, OFFalse).good()){
+		if (dataset->findAndGetUint16(DCM_Columns, columns, OFFalse).good())
+		{
 			width = columns;
 		}
 		
 		//Number of Frames
-		if (dataset->findAndGetString(DCM_NumberOfFrames, string, OFFalse).good() && string != NULL){
+		if (dataset->findAndGetString(DCM_NumberOfFrames, string, OFFalse).good() && string != NULL)
+		{
 			NoOfFrames = atoi(string);
 		}
 		
@@ -722,7 +732,7 @@ extern NSRecursiveLock *PapyrusLock;
 		{
 			[dicomElements setObject: [serieID stringByAppendingString: [filePath lastPathComponent]] forKey:@"seriesID"];
 		}
-		else if (([Modality isEqualToString:@"CR"] || [Modality isEqualToString:@"DR"] || [Modality isEqualToString:@"DX"] || [Modality  isEqualToString:@"RF"]) && [self combineProjectionSeries])
+		else if ( [self combineProjectionSeries] && ([Modality isEqualToString:@"CR"] || [Modality isEqualToString:@"DR"] || [Modality isEqualToString:@"DX"] || [Modality  isEqualToString:@"RF"]))
 		{
 			if( [self combineProjectionSeriesMode] == 0)		// *******Combine all CR and DR Modality series in a study into one series
 			{

@@ -386,6 +386,8 @@ static NSArray*	statesArray = nil;
 	NSMutableArray			*vlToReload = [NSMutableArray arrayWithCapacity: 0];
 	BOOL					isCDMedia = NO, onlyDICOMROI = YES;
 	NSMutableArray			*dicomFilesArray = [NSMutableArray arrayWithCapacity: [newFilesArray count]];
+	int combineProjectionSeries = [[NSUserDefaults standardUserDefaults] boolForKey: @"combineProjectionSeries"];
+	int combineProjectionSeriesMode = [[NSUserDefaults standardUserDefaults] boolForKey: @"combineProjectionSeriesMode"];
 	
 	NSString *reportsDirectory = [INpath stringByAppendingPathComponent:@"/REPORTS/"];
 	if ([[NSFileManager defaultManager] fileExistsAtPath: reportsDirectory] == NO)
@@ -848,15 +850,25 @@ static NSArray*	statesArray = nil;
 									[seriesTable setValue:today forKey:@"dateAdded"];
 								}
 								
-								[image setValue:[curDict objectForKey: @"modality"] forKey:@"modality"];
+								[image setValue: [curDict objectForKey: @"modality"] forKey:@"modality"];
 								
 								if( numberOfFrames > 1)
 								{
-									[image setValue:[NSNumber numberWithInt: f] forKey:@"frameID"];
-									[image setValue:[NSNumber numberWithInt: f] forKey:@"instanceNumber"];
+									[image setValue: [NSNumber numberWithInt: f] forKey:@"frameID"];
+									
+									NSString *Modality = [study valueForKey: @"modality"];
+									if( combineProjectionSeries && combineProjectionSeriesMode == 0 && ([Modality isEqualToString:@"CR"] || [Modality isEqualToString:@"DR"] || [Modality isEqualToString:@"DX"] || [Modality  isEqualToString:@"RF"]))
+									{
+										// *******Combine all CR and DR Modality series in a study into one series
+										long imageInstance = [[curDict objectForKey: [ @"imageID" stringByAppendingString: SeriesNum]] intValue];
+										imageInstance *= 10000;
+										imageInstance += f;
+										[image setValue: [NSNumber numberWithLong: imageInstance] forKey:@"instanceNumber"];
+									}
+									else [image setValue: [NSNumber numberWithInt: f] forKey:@"instanceNumber"];
 								}
 								else
-									[image setValue:[curDict objectForKey: [@"imageID" stringByAppendingString: SeriesNum]] forKey:@"instanceNumber"];
+									[image setValue: [curDict objectForKey: [@"imageID" stringByAppendingString: SeriesNum]] forKey:@"instanceNumber"];
 									
 								if( local) [image setValue: [newFile lastPathComponent] forKey:@"path"];
 								else [image setValue:newFile forKey:@"path"];

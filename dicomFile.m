@@ -2431,12 +2431,12 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		{
 			[dicomElements setObject: [serieID stringByAppendingString: [filePath lastPathComponent]] forKey:@"seriesID"];
 		}
-		else if (([Modality isEqualToString:@"CR"] || [Modality isEqualToString:@"DR"] || [Modality isEqualToString:@"DX"] || [Modality  isEqualToString:@"RF"]) && combineProjectionSeries)
+		else if (combineProjectionSeries && ([Modality isEqualToString:@"CR"] || [Modality isEqualToString:@"DR"] || [Modality isEqualToString:@"DX"] || [Modality  isEqualToString:@"RF"]))
 		{
 			if( combineProjectionSeriesMode == 0)		// *******Combine all CR and DR Modality series in a study into one series
 			{
-				[dicomElements setObject:studyID forKey:@"seriesID"];
-				[dicomElements setObject:[NSNumber numberWithLong: [serieID intValue] * 1000 + [imageID intValue]] forKey:@"imageID"];
+				[dicomElements setObject: studyID forKey: @"seriesID"];
+				[dicomElements setObject: [NSNumber numberWithLong: [serieID intValue] * 1000 + [imageID intValue]] forKey: @"imageID"];
 			}
 			else if( combineProjectionSeriesMode == 1)	// *******Split all CR and DR Modality series in a study into one series
 			{
@@ -2881,7 +2881,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		{
 			[dicomElements setObject: [serieID stringByAppendingString: [filePath lastPathComponent]] forKey:@"seriesID"];
 		}
-		else if (([Modality isEqualToString:@"CR"] || [Modality isEqualToString:@"DR"] || [Modality isEqualToString:@"DX"] || [Modality  isEqualToString:@"RF"]) &&  combineProjectionSeries)
+		else if( combineProjectionSeries && ([Modality isEqualToString:@"CR"] || [Modality isEqualToString:@"DR"] || [Modality isEqualToString:@"DX"] || [Modality  isEqualToString:@"RF"]))
 		{
 			if( combineProjectionSeriesMode == 0)		// *******Combine all CR and DR Modality series in a study into one series
 			{

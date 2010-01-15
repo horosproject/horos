@@ -8205,7 +8205,7 @@ END_CREATE_ROIS:
 								oImage = nil;
 							}
 							
-							if( oData && gDisplayDICOMOverlays)
+							if( oData && gDisplayDICOMOverlays && fImage)
 							{
 								int			y, x;
 								

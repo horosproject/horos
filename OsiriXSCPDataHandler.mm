@@ -213,12 +213,11 @@ extern NSManagedObjectContext *staticContext;
 				{
 					value = [attr value];
 					NSArray *values = [[value queryString] componentsSeparatedByString:@"-"];
-					if ([values count] == 2){
+					if ([values count] == 2)
+					{
 						NSNumber *startDate = [NSNumber numberWithInt:[[values objectAtIndex:0] intValue]];
 						NSNumber *endDate = [NSNumber numberWithInt:[[values objectAtIndex:1] intValue]];
-						//NSLog(@"startDate: %@", [startDate description]);
-						//NSLog(@"endDate :%@", [endDate description]);
-						//need two predicates for range
+						
 						NSPredicate *predicate1 = [NSPredicate predicateWithFormat:@"dicomTime >= %@",startDate];
 						
 						//expression = [NSExpression expressionForConstantValue:(NSDate *)endDate];
