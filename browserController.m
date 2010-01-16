@@ -4408,6 +4408,8 @@ static NSArray*	statesArray = nil;
 {
 	long retError = 0;
 	
+	#ifndef OSIRIX_LIGHT
+	
 	[userManagedObjectContext lock];
 	
 	@try
@@ -4437,6 +4439,8 @@ static NSArray*	statesArray = nil;
 	
 	[userManagedObjectContext unlock];
 	
+	#endif
+	
 	return retError;
 }
 
@@ -4462,6 +4466,9 @@ static NSArray*	statesArray = nil;
 	
     if( userManagedObjectContext)
 		return userManagedObjectContext;
+	
+	if( self.userManagedObjectModel == nil)
+		return nil;
 	
 	fileManager = [NSFileManager defaultManager];
 	
@@ -15094,6 +15101,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[self exportImageAs: @"tif" sender: sender];
 }
 
+#ifndef OSIRIX_LIGHT
+
 - (IBAction) addStudiesToUser: (id) sender
 {
 	[notificationEmailArrayController setSelectionIndexes: [NSIndexSet indexSet]];
@@ -15163,7 +15172,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[NSApp endSheet: addStudiesToUserWindow];
 	[addStudiesToUserWindow orderOut: self];
 }
-
 
 - (IBAction) sendEmailNotification: (id) sender
 {
@@ -15424,6 +15432,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	}
 	else NSRunCriticalAlertPanel( NSLocalizedString( @"Unsupported", nil), NSLocalizedString( @"This function requires MacOS 10.6 or higher.", nil), NSLocalizedString( @"OK", nil) , nil, nil);
 }
+
+#endif
 
 + (NSMutableString*) replaceNotAdmitted: (NSMutableString*)name
 {

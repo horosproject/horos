@@ -42,6 +42,20 @@ extern NSRecursiveLock *PapyrusLock;
 
 @implementation BrowserController (BrowserControllerDCMTKCategory)
 
++ (NSString*) compressionString: (NSString*) string
+{
+	if( [string isEqualToString: @"1.2.840.10008.1.2"])
+		return NSLocalizedString( @"Uncompressed", nil);
+	if( [string isEqualToString: @"1.2.840.10008.1.2.1"])
+		return NSLocalizedString( @"Uncompressed", nil);
+	if( [string isEqualToString: @"1.2.840.10008.1.2.2"])
+		return NSLocalizedString( @"Uncompressed BigEndian", nil);
+	
+	return [NSString stringWithFormat:@"%s", dcmFindNameOfUID( [string UTF8String])];
+}
+
+#ifndef OSIRIX_LIGHT
+
 - (NSData*) getDICOMFile:(NSString*) file inSyntax:(NSString*) syntax quality: (int) quality
 {
 	OFCondition cond;
@@ -139,18 +153,6 @@ extern NSRecursiveLock *PapyrusLock;
 	}
 	
 	return NO;
-}
-
-+ (NSString*) compressionString: (NSString*) string
-{
-	if( [string isEqualToString: @"1.2.840.10008.1.2"])
-		return NSLocalizedString( @"Uncompressed", nil);
-	if( [string isEqualToString: @"1.2.840.10008.1.2.1"])
-		return NSLocalizedString( @"Uncompressed", nil);
-	if( [string isEqualToString: @"1.2.840.10008.1.2.2"])
-		return NSLocalizedString( @"Uncompressed BigEndian", nil);
-	
-	return [NSString stringWithFormat:@"%s", dcmFindNameOfUID( [string UTF8String])];
 }
 
 - (BOOL)compressDICOMWithJPEG:(NSArray *) paths
@@ -323,4 +325,7 @@ extern NSRecursiveLock *PapyrusLock;
 	
 	return YES;
 }
+
+#endif
+
 @end

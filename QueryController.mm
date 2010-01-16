@@ -43,35 +43,9 @@ static NSString *ReferringPhysician = @"ReferringPhysiciansName";
 static QueryController *currentQueryController = nil;
 static QueryController *currentAutoQueryController = nil;
 
-static char *privateIPstring = nil;
-
 extern "C"
 {
-	const char *GetPrivateIP()
-	{
-		if( privateIPstring == nil)
-		{
-			struct			hostent *h;
-			static char		hostname[ 100];
-			
-			gethostname(hostname, 99);
-			
-			if ((h=gethostbyname(hostname)) == NULL)
-			{
-				NSLog( @"**** Cannot GetPrivateIP -> will use hostname");
-				
-				privateIPstring = (char*) malloc( 100);
-				strcpy( privateIPstring, hostname);
-			}
-			else
-			{
-				privateIPstring = (char*) malloc( 100);
-				strcpy( privateIPstring, (char*) inet_ntoa(*((struct in_addr *)h->h_addr)));
-			}
-		}
-		
-		return privateIPstring;
-	}
+	extern const char *GetPrivateIP();
 };
 
 @implementation QueryController

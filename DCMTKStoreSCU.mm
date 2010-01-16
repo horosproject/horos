@@ -1142,11 +1142,14 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 	
 	DcmTLSTransportLayer *tLayer = NULL;
 	
+	#ifndef OSIRIX_LIGHT
 	if( _secureConnection)
 		[DDKeychain lockTmpFiles];
+	#endif
 	
 	@try
 	{
+	#ifndef OSIRIX_LIGHT
 	#ifdef WITH_OPENSSL
 		if(_cipherSuites)
 		{
@@ -1181,6 +1184,7 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 			}
 		}
 		
+	#endif
 	#endif
 		
 		  int paramCount = [_filesToSend count];
@@ -1272,7 +1276,8 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 			[localException raise];
 			//return;
 		}
-		
+	
+	#ifndef OSIRIX_LIGHT
 	#ifdef WITH_OPENSSL // joris
 		
 		if( _secureConnection)
@@ -1376,6 +1381,7 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 			}
 		}
 		
+	#endif
 	#endif
 		
 	 /* initialize asscociation parameters, i.e. create an instance of T_ASC_Parameters*. */
@@ -1613,6 +1619,7 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
     WSACleanup();
 #endif
 
+#ifndef OSIRIX_LIGHT
 #ifdef WITH_OPENSSL
 /*
     if (tLayer && opt_writeSeedFile)
@@ -1635,6 +1642,7 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 	if( _secureConnection)
 		[DDKeychain unlockTmpFiles];
 
+#endif
 #endif
 
     if (opt_haltOnUnsuccessfulStore && unsuccessfulStoreEncountered)

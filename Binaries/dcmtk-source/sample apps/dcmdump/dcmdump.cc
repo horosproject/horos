@@ -49,6 +49,9 @@
 
 #define OFFIS_CONSOLE_APPLICATION "dcmdump"
 
+extern void prepareCmdLineArgs(int& /* argc */, char** /* argv */, 
+			const char* /* progname */);
+
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 
@@ -115,7 +118,7 @@ static OFBool addPrintTagName(const char* tagName)
 #define SHORTCOL 3
 #define LONGCOL 20
 
-int main(int argc, char *argv[])
+int maindcmdump(int argc, char *argv[])
 {
     int opt_debugMode = 0;
     OFBool loadIntoMemory = OFTrue;

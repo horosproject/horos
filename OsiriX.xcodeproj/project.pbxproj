@@ -4379,6 +4379,7 @@
 		CEAE02E00DE7E33B00E9BD01 /* DICOMDestination.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEAE02DF0DE7E33B00E9BD01 /* DICOMDestination.tif */; };
 		CEAF4ECF089D6E9400DE46AF /* OsiriXTables.pdf in Resources */ = {isa = PBXBuildFile; fileRef = CEAF4ECC089D6E9400DE46AF /* OsiriXTables.pdf */; };
 		CEB1DA6908A3B1040058C303 /* smalltrash.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEB1DA6608A3B1040058C303 /* smalltrash.tif */; };
+		CEB57C7811020A06009A7202 /* user.xcdatamodel in Sources */ = {isa = PBXBuildFile; fileRef = 8474A3F710DBE7F300D192D0 /* user.xcdatamodel */; };
 		CEB7179906CE7CBD00084CA5 /* libjasper2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CEB7179706CE7CBD00084CA5 /* libjasper2.a */; };
 		CEBA30130EEDB3FF00D920B4 /* libvtkexpat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE24490D0DA42A7600B8D506 /* libvtkexpat.a */; };
 		CEBA30160EEDB4EB00D920B4 /* libvtkFiltering.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2449000DA42A7600B8D506 /* libvtkFiltering.a */; };
@@ -7213,6 +7214,7 @@
 		CEE2146806B95E0100368199 /* OsiriX.scriptTerminology in Resources */ = {isa = PBXBuildFile; fileRef = CEE2146706B95E0100368199 /* OsiriX.scriptTerminology */; };
 		CEE619EF0912C73000C31D78 /* OrientationWidget.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEE619EE0912C73000C31D78 /* OrientationWidget.tif */; };
 		CEE6717D077D5ECF00E4BB10 /* SyncLock.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEE67176077D5ECE00E4BB10 /* SyncLock.tif */; };
+		CEE72C091101F14A00758DCA /* BrowserControllerDCMTKCategory.mm in Sources */ = {isa = PBXBuildFile; fileRef = BFA7D2170A51D1460013F76E /* BrowserControllerDCMTKCategory.mm */; };
 		CEE73FC908F44724002A395F /* FVTiff.h in Headers */ = {isa = PBXBuildFile; fileRef = CEE73FC708F44724002A395F /* FVTiff.h */; };
 		CEE73FCA08F44724002A395F /* FVTiff.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE73FC808F44724002A395F /* FVTiff.m */; };
 		CEE73FD308F44749002A395F /* stringNumericCompare.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE73FD108F44749002A395F /* stringNumericCompare.m */; };
@@ -7237,8 +7239,6 @@
 		CEF6A444080324E0001A8BF7 /* 3DCut.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEF6A441080324E0001A8BF7 /* 3DCut.tif */; };
 		CEF7BCB910DCBE0000B009D1 /* UserTable.h in Headers */ = {isa = PBXBuildFile; fileRef = CEF7BCB710DCBE0000B009D1 /* UserTable.h */; };
 		CEF7BCBA10DCBE0000B009D1 /* UserTable.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF7BCB810DCBE0000B009D1 /* UserTable.m */; };
-		CEF7BCBB10DCBE0000B009D1 /* UserTable.h in Headers */ = {isa = PBXBuildFile; fileRef = CEF7BCB710DCBE0000B009D1 /* UserTable.h */; };
-		CEF7BCBC10DCBE0000B009D1 /* UserTable.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF7BCB810DCBE0000B009D1 /* UserTable.m */; };
 		CEF9E7CB0811B64D00412C8A /* Schedulable.h in Headers */ = {isa = PBXBuildFile; fileRef = CEF9E7CA0811B64D00412C8A /* Schedulable.h */; };
 		CEF9E7D10811B66500412C8A /* Scheduler.h in Headers */ = {isa = PBXBuildFile; fileRef = CEF9E7D00811B66500412C8A /* Scheduler.h */; };
 		CEF9E7D70811B67D00412C8A /* Scheduler.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF9E7D60811B67D00412C8A /* Scheduler.m */; };
@@ -21101,7 +21101,6 @@
 				CEFA963B10A75DBF00F9512D /* DCMAbstractSyntaxUID.h in Headers */,
 				CEFA965010A75E5A00F9512D /* DCMNetServiceDelegate.h in Headers */,
 				CEFA967710A760E800F9512D /* DCMCalendarDate.h in Headers */,
-				CEF7BCBB10DCBE0000B009D1 /* UserTable.h in Headers */,
 				CEDDD88110DCC93500FFE72B /* PSGenerator.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -24479,9 +24478,10 @@
 				CEFA963C10A75DC000F9512D /* DCMAbstractSyntaxUID.m in Sources */,
 				CEFA965110A75E5B00F9512D /* DCMNetServiceDelegate.m in Sources */,
 				CEFA967610A760E700F9512D /* DCMCalendarDate.m in Sources */,
-				CEF7BCBC10DCBE0000B009D1 /* UserTable.m in Sources */,
 				CEDDD88210DCC93500FFE72B /* PSGenerator.m in Sources */,
 				CE85FF5D10E6764100175CEB /* OpenGLScreenReader.m in Sources */,
+				CEE72C091101F14A00758DCA /* BrowserControllerDCMTKCategory.mm in Sources */,
+				CEB57C7811020A06009A7202 /* user.xcdatamodel in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
