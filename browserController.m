@@ -158,7 +158,7 @@ static NSArray*	statesArray = nil;
 @class DCMTKStudyQueryNode;
 
 @synthesize checkIncomingLock, CDpassword, DateTimeFormat, passwordForExportEncryption;
-@synthesize DateOfBirthFormat,TimeFormat, TimeWithSecondsFormat, temporaryNotificationEmail;
+@synthesize DateOfBirthFormat,TimeFormat, TimeWithSecondsFormat, temporaryNotificationEmail, customTextNotificationEmail;
 @synthesize DateTimeWithSecondsFormat, matrixViewArray, oMatrix, testPredicate;
 @synthesize COLUMN, databaseOutline, albumTable, currentDatabasePath;
 @synthesize isCurrentDatabaseBonjour, bonjourDownloading, bonjourSourcesBox;
@@ -15176,6 +15176,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 - (IBAction) sendEmailNotification: (id) sender
 {
 	self.temporaryNotificationEmail = @"";
+	self.customTextNotificationEmail = @"";
 	
 	[notificationEmailArrayController setSelectionIndexes: [NSIndexSet indexSet]];
 	
@@ -15246,7 +15247,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 						}
 					}
 					
-					[OsiriXHTTPConnection sendNotificationsEmailsTo: [notificationEmailArrayController selectedObjects] aboutStudies: [self databaseSelection] predicate: nil message: nil replyTo: nil];
+					[OsiriXHTTPConnection sendNotificationsEmailsTo: [notificationEmailArrayController selectedObjects] aboutStudies: [self databaseSelection] predicate: nil message: nil replyTo: nil customText: self.customTextNotificationEmail];
 				}
 			}
 			@catch( NSException *e)
@@ -15281,7 +15282,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 						[user setValue: [NSNumber numberWithBool: YES] forKey: @"autoDelete"];
 						
 						[OsiriXHTTPConnection updateLogEntryForStudy: [[notificationEmailArrayController selectedObjects] lastObject] withMessage: @"Temporary User Created" forUser: [user valueForKey: @"name"] ip: nil];
-						[OsiriXHTTPConnection sendNotificationsEmailsTo: [NSArray arrayWithObject: user] aboutStudies: [self databaseSelection] predicate: nil message: nil replyTo: nil];
+						[OsiriXHTTPConnection sendNotificationsEmailsTo: [NSArray arrayWithObject: user] aboutStudies: [self databaseSelection] predicate: nil message: nil replyTo: nil customText: nil];
 						
 						// And send a separate email with user name and password
 						

@@ -193,7 +193,7 @@ static NSString *language = nil;
 	}
 }
 
-+ (BOOL) sendNotificationsEmailsTo: (NSArray*) users aboutStudies: (NSArray*) filteredStudies predicate: (NSString*) predicate message: (NSString*) message replyTo: (NSString*) replyto
++ (BOOL) sendNotificationsEmailsTo: (NSArray*) users aboutStudies: (NSArray*) filteredStudies predicate: (NSString*) predicate message: (NSString*) message replyTo: (NSString*) replyto customText: (NSString*) customText
 {
 	int webPort = [[NSUserDefaults standardUserDefaults] integerForKey:@"httpWebServerPort"];
 	NSString *fromEmailAddress = [[NSUserDefaults standardUserDefaults] valueForKey: @"notificationsEmailsSender"];
@@ -218,6 +218,8 @@ static NSString *language = nil;
 		{
 			NSString *http = [[NSUserDefaults standardUserDefaults] boolForKey: @"encryptedWebServer"] ? @"https":@"http";
 			
+			if( customText == nil) customText = @"";
+			[[emailMessage mutableString] replaceOccurrencesOfString: @"%customText%" withString: [customText stringByAppendingString:@"\r"] options: NSLiteralSearch range: NSMakeRange(0, [emailMessage length])];
 			[[emailMessage mutableString] replaceOccurrencesOfString: @"%Username%" withString: [user valueForKey: @"name"] options: NSLiteralSearch range: NSMakeRange(0, [emailMessage length])];
 			[[emailMessage mutableString] replaceOccurrencesOfString: @"%WebServerAddress%" withString: [NSString stringWithFormat: @"%@://%@:%d", http, webServerAddress, webPort] options: NSLiteralSearch range: NSMakeRange(0, [emailMessage length])];
 			
@@ -371,7 +373,7 @@ static NSString *language = nil;
 					
 					if( [filteredStudies count] > 0)
 					{
-						[OsiriXHTTPConnection sendNotificationsEmailsTo: [NSArray arrayWithObject: user] aboutStudies: filteredStudies predicate: [NSString stringWithFormat: @"browse=newAddedStudies&browseParameter=%lf", [lastCheckDate timeIntervalSinceReferenceDate]] message: nil replyTo: nil];
+						[OsiriXHTTPConnection sendNotificationsEmailsTo: [NSArray arrayWithObject: user] aboutStudies: filteredStudies predicate: [NSString stringWithFormat: @"browse=newAddedStudies&browseParameter=%lf", [lastCheckDate timeIntervalSinceReferenceDate]] message: nil replyTo: nil customText: nil];
 					}
 				}
 			}
@@ -2198,7 +2200,7 @@ static NSString *language = nil;
 							
 							// Send the email
 							
-							[OsiriXHTTPConnection sendNotificationsEmailsTo: users aboutStudies: [NSArray arrayWithObject: study] predicate: nil message: [messageFromUser stringByAppendingFormat: @"\r\r\r%@\r\r%%URLsList%%", NSLocalizedString( @"To view this study, click on the following link:", nil)] replyTo: [currentUser valueForKey: @"email"]];
+							[OsiriXHTTPConnection sendNotificationsEmailsTo: users aboutStudies: [NSArray arrayWithObject: study] predicate: nil message: [messageFromUser stringByAppendingFormat: @"\r\r\r%@\r\r%%URLsList%%", NSLocalizedString( @"To view this study, click on the following link:", nil)] replyTo: [currentUser valueForKey: @"email"] customText: nil];
 							
 							[OsiriXHTTPConnection updateLogEntryForStudy: study withMessage: [NSString stringWithFormat: @"Share Study with User: %@", userDestination] forUser: [currentUser valueForKey: @"name"] ip: [asyncSocket connectedHost]];
 							

@@ -205,7 +205,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	IBOutlet NSWindow				*addStudiesToUserWindow;
 	IBOutlet NSWindow				*notificationEmailWindow;
 	IBOutlet NSArrayController		*notificationEmailArrayController;
-	NSString						*temporaryNotificationEmail;
+	NSString						*temporaryNotificationEmail, *customTextNotificationEmail;
 	
 	NSConditionLock					*newFilesConditionLock;
 	NSMutableArray					*viewersListToReload, *viewersListToRebuild;
@@ -264,7 +264,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 @property(readonly) NSString *fixedDocumentsDirectory;
 @property(readonly) char *cfixedDocumentsDirectory, *cfixedIncomingDirectory;
 
-@property(retain) NSString *searchString, *CDpassword, *pathToEncryptedFile, *passwordForExportEncryption, *temporaryNotificationEmail;
+@property(retain) NSString *searchString, *CDpassword, *pathToEncryptedFile, *passwordForExportEncryption, *temporaryNotificationEmail, *customTextNotificationEmail;
 @property(retain) NSPredicate *fetchPredicate, *testPredicate;
 @property(readonly) NSPredicate *filterPredicate;
 @property(readonly) NSString *filterPredicateDescription;

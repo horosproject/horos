@@ -2,6 +2,7 @@ Dear %Username%,
 
 You are registered on an OsiriX Web Portal server (%WebServerAddress%).
 
+%customText%
 New radiology exam(s) are available on your account. Click on the following URLs to log in and review them :
 
 
