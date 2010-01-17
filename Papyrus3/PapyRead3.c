@@ -672,6 +672,10 @@ PapyShort ExtractJPEG2000 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong i
 	
 	int succeed = 0;
 	
+	#ifdef OSIRIX_LIGHT
+	UseOpenJpeg = 1;
+	#endif
+	
 	if( UseOpenJpeg == 1)
 	{
 		PapyrusLockFunction( 0);
@@ -679,6 +683,7 @@ PapyShort ExtractJPEG2000 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong i
 		PapyrusLockFunction( 1);
 	}
 	
+	#ifndef OSIRIX_LIGHT
 	if( succeed == 0)
 	{
 		jas_image_t *jasImage;
@@ -782,6 +787,7 @@ PapyShort ExtractJPEG2000 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong i
 		
 		
 	}
+	#endif
 	
 	free( theCompressedP);
 	return (0);

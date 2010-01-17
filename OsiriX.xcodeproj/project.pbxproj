@@ -6473,7 +6473,6 @@
 		CEC709CB10A5C844008935EA /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB6B75DE0A53F60600F0CA8F /* QTKit.framework */; };
 		CEC709CC10A5C844008935EA /* InstantMessage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2C82E20C708B310093C162 /* InstantMessage.framework */; };
 		CEC709CD10A5C844008935EA /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF5F14C20B14E12700B309B9 /* CoreVideo.framework */; };
-		CEC709D010A5C844008935EA /* libjasper2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CEB7179706CE7CBD00084CA5 /* libjasper2.a */; };
 		CEC709D110A5C844008935EA /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = BFBF3A9D09B681F500545F5E /* libcrypto.dylib */; };
 		CEC709D210A5C844008935EA /* libssl.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = BFBF3A9E09B681F500545F5E /* libssl.dylib */; };
 		CEC709D310A5C844008935EA /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = BFBF3A9F09B681F500545F5E /* libxml2.dylib */; };
@@ -11866,7 +11865,6 @@
 				CEC709CB10A5C844008935EA /* QTKit.framework in Frameworks */,
 				CEC709CC10A5C844008935EA /* InstantMessage.framework in Frameworks */,
 				CEC709CD10A5C844008935EA /* CoreVideo.framework in Frameworks */,
-				CEC709D010A5C844008935EA /* libjasper2.a in Frameworks */,
 				CEC709D110A5C844008935EA /* libcrypto.dylib in Frameworks */,
 				CEC709D210A5C844008935EA /* libssl.dylib in Frameworks */,
 				CEC709D310A5C844008935EA /* libxml2.dylib in Frameworks */,
