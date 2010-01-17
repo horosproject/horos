@@ -195,6 +195,8 @@ static NSString *language = nil;
 
 + (BOOL) sendNotificationsEmailsTo: (NSArray*) users aboutStudies: (NSArray*) filteredStudies predicate: (NSString*) predicate message: (NSString*) message replyTo: (NSString*) replyto customText: (NSString*) customText
 {
+	[OsiriXHTTPConnection checkWebDirectory];
+	
 	int webPort = [[NSUserDefaults standardUserDefaults] integerForKey:@"httpWebServerPort"];
 	NSString *fromEmailAddress = [[NSUserDefaults standardUserDefaults] valueForKey: @"notificationsEmailsSender"];
 	
@@ -219,7 +221,7 @@ static NSString *language = nil;
 			NSString *http = [[NSUserDefaults standardUserDefaults] boolForKey: @"encryptedWebServer"] ? @"https":@"http";
 			
 			if( customText == nil) customText = @"";
-			[[emailMessage mutableString] replaceOccurrencesOfString: @"%customText%" withString: [customText stringByAppendingString:@"\r"] options: NSLiteralSearch range: NSMakeRange(0, [emailMessage length])];
+			[[emailMessage mutableString] replaceOccurrencesOfString: @"%customText%" withString: [customText stringByAppendingString:@"\r\r"] options: NSLiteralSearch range: NSMakeRange(0, [emailMessage length])];
 			[[emailMessage mutableString] replaceOccurrencesOfString: @"%Username%" withString: [user valueForKey: @"name"] options: NSLiteralSearch range: NSMakeRange(0, [emailMessage length])];
 			[[emailMessage mutableString] replaceOccurrencesOfString: @"%WebServerAddress%" withString: [NSString stringWithFormat: @"%@://%@:%d", http, webServerAddress, webPort] options: NSLiteralSearch range: NSMakeRange(0, [emailMessage length])];
 			

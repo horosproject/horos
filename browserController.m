@@ -15207,47 +15207,122 @@ static volatile int numberOfThreadsForJPEG = 0;
 			
 			@try
 			{
-				// Add them to select users AND send a notification email
-				if( [[notificationEmailArrayController selectedObjects] count] > 0)
+				NSArray *destinationUsers = [notificationEmailArrayController selectedObjects];
+				
+				if( [temporaryNotificationEmail length] > 3)
 				{
-					for( NSManagedObject *user in [notificationEmailArrayController selectedObjects])
+					// First, create a temporary user
+					
+					if( [temporaryNotificationEmail rangeOfString: @"@"].location == NSNotFound)
 					{
-						NSArray *studiesArrayStudyInstanceUID = [[[user valueForKey: @"studies"] allObjects] valueForKey: @"studyInstanceUID"];
-						NSArray *studiesArrayPatientUID = [[[user valueForKey: @"studies"] allObjects] valueForKey: @"patientUID"];
+						NSRunCriticalAlertPanel( NSLocalizedString( @"Error", nil), NSLocalizedString( @"Is the user email correct? the @ character is not found.", nil), NSLocalizedString( @"OK", nil) , nil, nil);
+						goto restart;
+					}
+					else
+					{
+						NSString *name = [temporaryNotificationEmail substringToIndex: [temporaryNotificationEmail rangeOfString: @"@"].location];
 						
-						for( NSManagedObject *study in [self databaseSelection])
+						if( [name length] < 2)
 						{
-							if( [[study valueForKey: @"type"] isEqualToString:@"Series"])
-								study = [study valueForKey:@"study"];
+							NSRunCriticalAlertPanel( NSLocalizedString( @"Error", nil), NSLocalizedString( @"Name needs to be at least 2 characters.", nil), NSLocalizedString( @"OK", nil) , nil, nil);
+							goto restart;
+						}
+						else
+						{
+							NSManagedObject *user = [NSEntityDescription insertNewObjectForEntityForName: @"User" inManagedObjectContext: self.userManagedObjectContext];
 							
-							if( [studiesArrayStudyInstanceUID indexOfObject: [study valueForKey: @"studyInstanceUID"]] == NSNotFound || [studiesArrayPatientUID indexOfObject: [study valueForKey: @"patientUID"]]  == NSNotFound)
+							//Find a unique name
+							do
 							{
-								NSManagedObject *studyLink = [NSEntityDescription insertNewObjectForEntityForName: @"Study" inManagedObjectContext: self.userManagedObjectContext];
+								[user setValue: name forKey: @"name"];
 								
-								[studyLink setValue: [[[study valueForKey: @"studyInstanceUID"] copy] autorelease] forKey: @"studyInstanceUID"];
-								[studyLink setValue: [[[study valueForKey: @"patientUID"] copy] autorelease] forKey: @"patientUID"];
-								[studyLink setValue: [NSDate dateWithTimeIntervalSinceReferenceDate: [[NSUserDefaults standardUserDefaults] doubleForKey: @"lastNotificationsDate"]] forKey: @"dateAdded"];
+								name = [name stringByAppendingString: @"1"];
 								
-								[studyLink setValue: user forKey: @"user"];
-								
-								@try
-								{
-									[self.userManagedObjectContext save: nil];
-								}
-								@catch (NSException * e)
-								{
-									NSLog( @"************ [self.userManagedObjectContext save: nil]");
-								}
-								
-								studiesArrayStudyInstanceUID = [[[user valueForKey: @"studies"] allObjects] valueForKey: @"studyInstanceUID"];
-								studiesArrayPatientUID = [[[user valueForKey: @"studies"] allObjects] valueForKey: @"patientUID"];
-								
-								[OsiriXHTTPConnection updateLogEntryForStudy: study withMessage: @"Add Study to User" forUser: [user valueForKey: @"name"] ip: nil];
-							}
+							}while( [user validateForInsert: nil] == NO);
+							
+							name = [user valueForKey: @"name"];
+							
+							[user setValue: temporaryNotificationEmail forKey: @"email"];
+							[user setValue: [NSNumber numberWithBool: YES] forKey: @"autoDelete"];
+							[user setValue: @"NO == YES" forKey: @"studyPredicate"];
+							
+							[OsiriXHTTPConnection updateLogEntryForStudy: [[self databaseSelection] lastObject] withMessage: @"Temporary User Created" forUser: [user valueForKey: @"name"] ip: nil];
+							
+							// Send a separate email with user name and password
+							
+							NSString *fromEmailAddress = [[NSUserDefaults standardUserDefaults] valueForKey: @"notificationsEmailsSender"];
+							
+							if( fromEmailAddress == nil)
+								fromEmailAddress = @"";
+							
+							NSString *emailSubject = NSLocalizedString( @"Your username and password for accessing your account on the OsiriX Web Portal.", nil);
+							NSMutableString *emailMessage = [NSMutableString stringWithString: @""];
+							
+							[emailMessage appendString: NSLocalizedString( @"Username:\r\r", nil)];
+							[emailMessage appendString: name];
+							[emailMessage appendString: @"\r\r"];
+							[emailMessage appendString: NSLocalizedString( @"Password:\r\r", nil)];
+							[emailMessage appendString: [user valueForKey: @"password"]];
+							[emailMessage appendString: @"\r\r"];
+							[emailMessage appendFormat: NSLocalizedString( @"This account is a temporary account. It will be automatically deleted in %d days.", nil), [[NSUserDefaults standardUserDefaults] integerForKey: @"temporaryUserDuration"]];
+							
+							[OsiriXHTTPConnection updateLogEntryForStudy: [[self databaseSelection] lastObject] withMessage: @"Temporary User name & password sent by email" forUser: [user valueForKey: @"name"] ip: nil];
+							
+							[[CSMailMailClient mailClient] deliverMessage: [[[NSAttributedString alloc] initWithString: emailMessage] autorelease] headers: [NSDictionary dictionaryWithObjectsAndKeys: temporaryNotificationEmail, @"To", fromEmailAddress, @"Sender", emailSubject, @"Subject", nil]];
+						
+							destinationUsers = [destinationUsers arrayByAddingObject: user];
 						}
 					}
-					
-					[OsiriXHTTPConnection sendNotificationsEmailsTo: [notificationEmailArrayController selectedObjects] aboutStudies: [self databaseSelection] predicate: nil message: nil replyTo: nil customText: self.customTextNotificationEmail];
+				}
+				
+				@try
+				{
+					// Add them to select users AND send a notification email
+					if( [destinationUsers count] > 0)
+					{
+						for( NSManagedObject *user in destinationUsers)
+						{
+							NSArray *studiesArrayStudyInstanceUID = [[[user valueForKey: @"studies"] allObjects] valueForKey: @"studyInstanceUID"];
+							NSArray *studiesArrayPatientUID = [[[user valueForKey: @"studies"] allObjects] valueForKey: @"patientUID"];
+							
+							for( NSManagedObject *study in [self databaseSelection])
+							{
+								if( [[study valueForKey: @"type"] isEqualToString:@"Series"])
+									study = [study valueForKey:@"study"];
+								
+								if( [studiesArrayStudyInstanceUID indexOfObject: [study valueForKey: @"studyInstanceUID"]] == NSNotFound || [studiesArrayPatientUID indexOfObject: [study valueForKey: @"patientUID"]]  == NSNotFound)
+								{
+									NSManagedObject *studyLink = [NSEntityDescription insertNewObjectForEntityForName: @"Study" inManagedObjectContext: self.userManagedObjectContext];
+									
+									[studyLink setValue: [[[study valueForKey: @"studyInstanceUID"] copy] autorelease] forKey: @"studyInstanceUID"];
+									[studyLink setValue: [[[study valueForKey: @"patientUID"] copy] autorelease] forKey: @"patientUID"];
+									[studyLink setValue: [NSDate dateWithTimeIntervalSinceReferenceDate: [[NSUserDefaults standardUserDefaults] doubleForKey: @"lastNotificationsDate"]] forKey: @"dateAdded"];
+									
+									[studyLink setValue: user forKey: @"user"];
+									
+									@try
+									{
+										[self.userManagedObjectContext save: nil];
+									}
+									@catch (NSException * e)
+									{
+										NSLog( @"************ [self.userManagedObjectContext save: nil]");
+									}
+									
+									studiesArrayStudyInstanceUID = [[[user valueForKey: @"studies"] allObjects] valueForKey: @"studyInstanceUID"];
+									studiesArrayPatientUID = [[[user valueForKey: @"studies"] allObjects] valueForKey: @"patientUID"];
+									
+									[OsiriXHTTPConnection updateLogEntryForStudy: study withMessage: @"Add Study to User" forUser: [user valueForKey: @"name"] ip: nil];
+								}
+							}
+						}
+						
+						[OsiriXHTTPConnection sendNotificationsEmailsTo: destinationUsers aboutStudies: [self databaseSelection] predicate: nil message: nil replyTo: nil customText: self.customTextNotificationEmail];
+					}
+				}
+				@catch( NSException *e)
+				{
+					NSLog( @"***** sendEmailNotification exception: %@", e);
 				}
 			}
 			@catch( NSException *e)
@@ -15255,59 +15330,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 				NSLog( @"***** sendEmailNotification exception: %@", e);
 			}
 			
-			if( [temporaryNotificationEmail length] > 3)
-			{
-				// First, create a temporary user
-				
-				if( [temporaryNotificationEmail rangeOfString: @"@"].location == NSNotFound)
-				{
-					NSRunCriticalAlertPanel( NSLocalizedString( @"Error", nil), NSLocalizedString( @"Is the user email correct? the @ character is not found.", nil), NSLocalizedString( @"OK", nil) , nil, nil);
-					goto restart;
-				}
-				else
-				{
-					NSString *name = [temporaryNotificationEmail substringToIndex: [temporaryNotificationEmail rangeOfString: @"@"].location];
-					
-					if( [name length] < 2)
-					{
-						NSRunCriticalAlertPanel( NSLocalizedString( @"Error", nil), NSLocalizedString( @"Name needs to be at least 2 characters.", nil), NSLocalizedString( @"OK", nil) , nil, nil);
-						goto restart;
-					}
-					else
-					{
-						NSManagedObject *user = [NSEntityDescription insertNewObjectForEntityForName: @"User" inManagedObjectContext: self.userManagedObjectContext];
-						
-						[user setValue: name forKey: @"name"];
-						[user setValue: temporaryNotificationEmail forKey: @"email"];
-						[user setValue: [NSNumber numberWithBool: YES] forKey: @"autoDelete"];
-						
-						[OsiriXHTTPConnection updateLogEntryForStudy: [[notificationEmailArrayController selectedObjects] lastObject] withMessage: @"Temporary User Created" forUser: [user valueForKey: @"name"] ip: nil];
-						[OsiriXHTTPConnection sendNotificationsEmailsTo: [NSArray arrayWithObject: user] aboutStudies: [self databaseSelection] predicate: nil message: nil replyTo: nil customText: nil];
-						
-						// And send a separate email with user name and password
-						
-						NSString *fromEmailAddress = [[NSUserDefaults standardUserDefaults] valueForKey: @"notificationsEmailsSender"];
-						
-						if( fromEmailAddress == nil)
-							fromEmailAddress = @"";
-						
-						NSString *emailSubject = NSLocalizedString( @"Your username and password for accessing your account on the OsiriX Web Portal.", nil);
-						NSMutableString *emailMessage = [NSMutableString stringWithString: @""];
-						
-						[emailMessage appendString: NSLocalizedString( @"Username:\r\r", nil)];
-						[emailMessage appendString: name];
-						[emailMessage appendString: @"\r\r"];
-						[emailMessage appendString: NSLocalizedString( @"Password:\r\r", nil)];
-						[emailMessage appendString: [user valueForKey: @"password"]];
-						[emailMessage appendString: @"\r\r"];
-						[emailMessage appendFormat: NSLocalizedString( @"This account is a temporary account. It will be automatically deleted in %d days.", nil), [[NSUserDefaults standardUserDefaults] integerForKey: @"temporaryUserDuration"]];
-						
-						[OsiriXHTTPConnection updateLogEntryForStudy: [[notificationEmailArrayController selectedObjects] lastObject] withMessage: @"Temporary User name & password sent by email" forUser: [user valueForKey: @"name"] ip: nil];
-						
-						[[CSMailMailClient mailClient] deliverMessage: [[[NSAttributedString alloc] initWithString: emailMessage] autorelease] headers: [NSDictionary dictionaryWithObjectsAndKeys: temporaryNotificationEmail, @"To", fromEmailAddress, @"Sender", emailSubject, @"Subject", nil]];
-					}
-				}
-			}
+			[self.userManagedObjectContext unlock];
 		}
 	}
 	
