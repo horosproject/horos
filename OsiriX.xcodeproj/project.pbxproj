@@ -2274,8 +2274,6 @@
 		BFBF421209B6828D00545F5E /* oftimer.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3E6B09B6828B00545F5E /* oftimer.h */; };
 		BFBF421309B6828D00545F5E /* oftypes.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3E6C09B6828B00545F5E /* oftypes.h */; };
 		BFBF421409B6828D00545F5E /* ofuoset.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3E6D09B6828B00545F5E /* ofuoset.h */; };
-		BFC9C2A909B697DB003717B1 /* DCMTKVerifySCU.h in Headers */ = {isa = PBXBuildFile; fileRef = BFC9C2A709B697DB003717B1 /* DCMTKVerifySCU.h */; };
-		BFC9C2AA09B697DB003717B1 /* DCMTKVerifySCU.mm in Sources */ = {isa = PBXBuildFile; fileRef = BFC9C2A809B697DB003717B1 /* DCMTKVerifySCU.mm */; };
 		BFD4BFFC06F2A96900EC9A90 /* ContrastCursor.tif in Resources */ = {isa = PBXBuildFile; fileRef = BFD4BFF006F2A96900EC9A90 /* ContrastCursor.tif */; };
 		BFD4BFFD06F2A96900EC9A90 /* RotateCursor.tif in Resources */ = {isa = PBXBuildFile; fileRef = BFD4BFF106F2A96900EC9A90 /* RotateCursor.tif */; };
 		BFD4BFFE06F2A96900EC9A90 /* StackCursor.tif in Resources */ = {isa = PBXBuildFile; fileRef = BFD4BFF206F2A96900EC9A90 /* StackCursor.tif */; };
@@ -8226,12 +8224,6 @@
 		A9B412D4089180A200913770 /* bonjour.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = bonjour.tif; sourceTree = "<group>"; };
 		A9BDE5900C9823DC000A161F /* IChatTheatreDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IChatTheatreDelegate.h; sourceTree = "<group>"; };
 		A9BDE5910C9823DC000A161F /* IChatTheatreDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IChatTheatreDelegate.m; sourceTree = "<group>"; };
-		A9C4D9130F7297E600B5B9A1 /* LoupeWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoupeWindow.h; sourceTree = "<group>"; };
-		A9C4D9140F7297E600B5B9A1 /* LoupeWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoupeWindow.m; sourceTree = "<group>"; };
-		A9C4D9150F7297E600B5B9A1 /* LoupeController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoupeController.h; sourceTree = "<group>"; };
-		A9C4D9160F7297E600B5B9A1 /* LoupeController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoupeController.m; sourceTree = "<group>"; };
-		A9C4D9170F7297E700B5B9A1 /* LoupeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoupeView.h; sourceTree = "<group>"; };
-		A9C4D9180F7297E700B5B9A1 /* LoupeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoupeView.m; sourceTree = "<group>"; };
 		A9C4D9460F72987900B5B9A1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/Loupe.xib; sourceTree = "<group>"; };
 		A9C5496310FF2C9F0026EA70 /* DICOMTLS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DICOMTLS.h; sourceTree = "<group>"; };
 		A9C5496410FF2C9F0026EA70 /* DICOMTLS.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DICOMTLS.m; sourceTree = "<group>"; };
@@ -9716,8 +9708,6 @@
 		BFBF3E6B09B6828B00545F5E /* oftimer.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = oftimer.h; sourceTree = "<group>"; };
 		BFBF3E6C09B6828B00545F5E /* oftypes.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = oftypes.h; sourceTree = "<group>"; };
 		BFBF3E6D09B6828B00545F5E /* ofuoset.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ofuoset.h; sourceTree = "<group>"; };
-		BFC9C2A709B697DB003717B1 /* DCMTKVerifySCU.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DCMTKVerifySCU.h; sourceTree = "<group>"; };
-		BFC9C2A809B697DB003717B1 /* DCMTKVerifySCU.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = DCMTKVerifySCU.mm; sourceTree = "<group>"; };
 		BFD4BFF006F2A96900EC9A90 /* ContrastCursor.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ContrastCursor.tif; sourceTree = "<group>"; };
 		BFD4BFF106F2A96900EC9A90 /* RotateCursor.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = RotateCursor.tif; sourceTree = "<group>"; };
 		BFD4BFF206F2A96900EC9A90 /* StackCursor.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = StackCursor.tif; sourceTree = "<group>"; };
@@ -11931,7 +11921,6 @@
 				A9F2E558092227A400055899 /* DarkWindow.m */,
 				A9F2E5E509224ED600055899 /* DarkPanel.h */,
 				A9F2E5E609224ED600055899 /* DarkPanel.m */,
-				A9C4D9480F72988200B5B9A1 /* Loupe */,
 			);
 			name = Classes;
 			sourceTree = SOURCE_ROOT;
@@ -12535,19 +12524,6 @@
 			name = Bonjour;
 			sourceTree = "<group>";
 		};
-		A9C4D9480F72988200B5B9A1 /* Loupe */ = {
-			isa = PBXGroup;
-			children = (
-				A9C4D9130F7297E600B5B9A1 /* LoupeWindow.h */,
-				A9C4D9140F7297E600B5B9A1 /* LoupeWindow.m */,
-				A9C4D9150F7297E600B5B9A1 /* LoupeController.h */,
-				A9C4D9160F7297E600B5B9A1 /* LoupeController.m */,
-				A9C4D9170F7297E700B5B9A1 /* LoupeView.h */,
-				A9C4D9180F7297E700B5B9A1 /* LoupeView.m */,
-			);
-			name = Loupe;
-			sourceTree = "<group>";
-		};
 		A9F6E4B108FEAEFC0060285A /* OrthogonalReslice */ = {
 			isa = PBXGroup;
 			children = (
@@ -12894,8 +12870,6 @@
 			children = (
 				CE3DDDAD0D8AC94C00AE9588 /* QueryOutlineView.h */,
 				CE3DDDAE0D8AC94C00AE9588 /* QueryOutlineView.m */,
-				BFC9C2A709B697DB003717B1 /* DCMTKVerifySCU.h */,
-				BFC9C2A809B697DB003717B1 /* DCMTKVerifySCU.mm */,
 				7EB4AAE5079494CB007AD271 /* QueryArrayController.h */,
 				7EB4AAE6079494CB007AD271 /* QueryArrayController.mm */,
 				AB425D72058FC58E00224020 /* QueryController.h */,
@@ -17106,7 +17080,6 @@
 				BFBF421209B6828D00545F5E /* oftimer.h in Headers */,
 				BFBF421309B6828D00545F5E /* oftypes.h in Headers */,
 				BFBF421409B6828D00545F5E /* ofuoset.h in Headers */,
-				BFC9C2A909B697DB003717B1 /* DCMTKVerifySCU.h in Headers */,
 				BF7A835F09B8B8E70051F091 /* DICOMToNSString.h in Headers */,
 				BF7A838009B8D1C20051F091 /* DCMTKStoreSCU.h in Headers */,
 				A9E5AC9309BF301F00F408B7 /* ITKTransform.h in Headers */,
@@ -22963,7 +22936,6 @@
 				BFBF420C09B6828D00545F5E /* ofstring.cc in Sources */,
 				BFBF420E09B6828D00545F5E /* ofthread.cc in Sources */,
 				BFBF421009B6828D00545F5E /* oftime.cc in Sources */,
-				BFC9C2AA09B697DB003717B1 /* DCMTKVerifySCU.mm in Sources */,
 				BF7A836009B8B8E70051F091 /* DICOMToNSString.m in Sources */,
 				BF7A838109B8D1C20051F091 /* DCMTKStoreSCU.mm in Sources */,
 				A9E5AC9409BF301F00F408B7 /* ITKTransform.mm in Sources */,

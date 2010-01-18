@@ -22,7 +22,6 @@
 #import <OsiriX/DCMNetServiceDelegate.h>
 #import "QueryArrayController.h"
 #import "AdvancedQuerySubview.h"
-#include "DCMTKVerifySCU.h"
 #import "DCMTKRootQueryNode.h"
 #import "DCMTKStudyQueryNode.h"
 #import "DCMTKSeriesQueryNode.h"
