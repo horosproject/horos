@@ -861,11 +861,14 @@
 		// implicit is the default. Could still be Big Endian
 		else{
 			const char *vrChars = [vr UTF8String];
-			char flipVR[2];
+			char flipVR[3];
 			flipVR[0] = vrChars[1];
 			flipVR[1] = vrChars[0];
-			NSString *newVR = [NSString stringWithCString:flipVR length:2];
-			if ([DCMValueRepresentation isValidVR:newVR]) {
+			flipVR[2] = 0;
+			
+			NSString *newVR = [NSString stringWithCString:flipVR encoding: NSASCIIStringEncoding];
+			if ([DCMValueRepresentation isValidVR:newVR])
+			{
 				[transferSyntaxForDataset release];
 				transferSyntaxForDataset = [[DCMTransferSyntax ExplicitVRBigEndianTransferSyntax] retain];
 				
