@@ -1114,7 +1114,7 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 
     if (ASC_associationWaiting(theNet, timeout))
     {
-        cond = ASC_receiveAssociation(theNet, &assoc, (int)options_.maxPDU_);
+        cond = ASC_receiveAssociation(theNet, &assoc, (int)options_.maxPDU_, NULL, NULL, secureConnection_); // joris added , NULL, NULL, true)
         if (cond.bad())
         {
           if (options_.verbose_)
@@ -1359,6 +1359,11 @@ void DcmQueryRetrieveSCP::setDatabaseFlags(
   dbDebug_ = dbDebug;
 }
 
+
+void DcmQueryRetrieveSCP::setSecureConnection(OFBool secureConnection)
+{
+	secureConnection_ = secureConnection;
+}
 
 /*
  * CVS Log

@@ -99,6 +99,9 @@ public:
     OFBool dbCheckMoveIdentifier,
     OFBool dbDebug);
 
+	
+	void setSecureConnection(OFBool secureConnection);
+	
   /** clean up terminated child processes.
    *  @param verbose verbose mode flag
    */
@@ -179,6 +182,9 @@ private:
   OFBool dbDebug_;
   OFBool activateCGETSCP_;
 
+	
+  OFBool secureConnection_;
+	
   /// factory object used to create database handles
   const DcmQueryRetrieveDatabaseHandleFactory& factory_;
 

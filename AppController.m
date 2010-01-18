@@ -67,10 +67,10 @@ BOOL					COMPLETEREBUILD = NO;
 BOOL					USETOOLBARPANEL = NO;
 short					Altivec = 1, UseOpenJpeg = 1;
 AppController			*appController = nil;
-DCMTKQueryRetrieveSCP   *dcmtkQRSCP = nil;
+DCMTKQueryRetrieveSCP   *dcmtkQRSCP = nil, *dcmtkQRSCPTLS = nil;
 NSString				*checkSN64String = nil;
 NSNetService			*checkSN64Service = nil;
-NSRecursiveLock			*PapyrusLock = nil, *STORESCP = nil;			// Papyrus is NOT thread-safe
+NSRecursiveLock			*PapyrusLock = nil, *STORESCP = nil, *STORESCPTLS = nil;			// Papyrus is NOT thread-safe
 NSMutableArray			*accumulateAnimationsArray = nil;
 BOOL					accumulateAnimations = NO;
 
@@ -1712,7 +1712,7 @@ static NSDate *lastWarningDate = nil;
 		}
 		
 		//make sure that there exist a receiver folder at @"folder" path
-		NSString            *path = [documentsDirectory() stringByAppendingPathComponent:INCOMINGPATH];
+		NSString *path = [documentsDirectory() stringByAppendingPathComponent:INCOMINGPATH];
 		
 		[AppController createNoIndexDirectoryIfNecessary: path];
 		
@@ -1725,8 +1725,27 @@ static NSDate *lastWarningDate = nil;
 				[STORESCP unlock];
 			}
 			else NSRunCriticalAlertPanel( NSLocalizedString( @"DICOM Listener Error", nil), NSLocalizedString( @"Cannot start DICOM Listener. Another thread is already running. Restart OsiriX.", nil), NSLocalizedString( @"OK", nil), nil, nil);
-		}
+		}		
 	}
+	
+	if([[NSUserDefaults standardUserDefaults] boolForKey:@"STORESCPTLS"])
+	{
+		[dcmtkQRSCPTLS release];
+		dcmtkQRSCPTLS = nil;
+		
+		//make sure that there exist a receiver folder at @"folder" path
+		NSString *path = [documentsDirectory() stringByAppendingPathComponent:INCOMINGPATH];
+		[AppController createNoIndexDirectoryIfNecessary: path];	
+		
+		if( [STORESCPTLS tryLock])
+		{
+			[NSThread detachNewThreadSelector: @selector(startSTORESCPTLS:) toTarget: self withObject: self];
+			
+			[STORESCPTLS unlock];
+		}
+		else NSRunCriticalAlertPanel( NSLocalizedString( @"DICOM TLS Listener Error", nil), NSLocalizedString( @"Cannot start DICOM TLS Listener. Another thread is already running. Restart OsiriX.", nil), NSLocalizedString( @"OK", nil), nil, nil);
+	}
+	
 	
 	NS_HANDLER
 		NSLog(@"Exception restarting storeSCP");
@@ -1842,16 +1861,16 @@ static NSDate *lastWarningDate = nil;
 		
 		NSString *aeTitle = [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"];
 		int port = [[[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"] intValue];
-		NSDictionary *params = nil;
-		
+		NSDictionary *params = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:NO] forKey:@"TLSEnabled"];
+	
 		dcmtkQRSCP = [[DCMTKQueryRetrieveSCP alloc] initWithPort:port  aeTitle:(NSString *)aeTitle  extraParamaters:(NSDictionary *)params];
 		[dcmtkQRSCP run];
-		
 		
 		[pool release];
 	
 	[STORESCP unlock];
 	#endif
+	
 	return;
 	
 //	// this method is always executed as a new thread detached from the NSthread command of RestartSTORESCP method
@@ -1920,6 +1939,37 @@ static NSDate *lastWarningDate = nil;
 //	[pool release];
 }
 
+-(void) startSTORESCPTLS:(id) sender
+{
+	// this method is always executed as a new thread detached from the NSthread command of RestartSTORESCP method
+#ifndef OSIRIX_LIGHT
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	
+	if([[NSUserDefaults standardUserDefaults] boolForKey:@"STORESCPTLS"])
+	{
+		[STORESCPTLS lock];
+		
+		NSString *c = [[NSUserDefaults standardUserDefaults] stringForKey:@"TLSStoreSCPAETITLE"];
+		if( [c length] > 16)
+		{
+			c = [c substringToIndex: 16];
+			[[NSUserDefaults standardUserDefaults] setObject: c forKey:@"TLSStoreSCPAETITLE"];
+		}
+		
+		NSString *aeTitle = [[NSUserDefaults standardUserDefaults] stringForKey: @"TLSStoreSCPAETITLE"];
+		int port = [[[NSUserDefaults standardUserDefaults] stringForKey: @"TLSStoreSCPAEPORT"] intValue];
+		NSDictionary *params = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:@"TLSEnabled"];
+		
+		dcmtkQRSCPTLS = [[DCMTKQueryRetrieveSCP alloc] initWithPort:port aeTitle:aeTitle extraParamaters:params];
+		[dcmtkQRSCPTLS run];
+		
+		[STORESCPTLS unlock];
+	}	
+	
+	[pool release];
+#endif
+	return;
+}
 
 
 - (void)getUrl:(NSAppleEventDescriptor *)event withReplyEvent:(NSAppleEventDescriptor *)replyEvent
@@ -2035,6 +2085,9 @@ static NSDate *lastWarningDate = nil;
 	{
 		[dcmtkQRSCP release];
 		dcmtkQRSCP = nil;
+
+		[dcmtkQRSCPTLS release];
+		dcmtkQRSCPTLS = nil;
 	}
 	
 	[self destroyDCMTK];
@@ -2069,6 +2122,8 @@ static NSDate *lastWarningDate = nil;
 	if( [[BrowserController currentBrowser] shouldTerminate: sender] == NO) return;
 	
 	[dcmtkQRSCP abort];
+	[dcmtkQRSCPTLS abort];
+	
 	[NSThread sleepForTimeInterval: 1];
 	
 	for( NSWindow *w in [NSApp windows])
@@ -2091,6 +2146,7 @@ static NSDate *lastWarningDate = nil;
 	
 	PapyrusLock = [[NSRecursiveLock alloc] init];
 	STORESCP = [[NSRecursiveLock alloc] init];
+	STORESCPTLS = [[NSRecursiveLock alloc] init];
 	
 	[[NSAppleEventManager sharedAppleEventManager] setEventHandler:self andSelector:@selector(getUrl:withReplyEvent:) forEventClass:kInternetEventClass andEventID:kAEGetURL];
 	
@@ -2511,6 +2567,7 @@ static BOOL initialized = NO;
 - (void) killDICOMListenerWait: (BOOL) wait
 {
 	[dcmtkQRSCP abort];
+	[dcmtkQRSCPTLS abort];
 	
 	#ifndef OSIRIX_LIGHT
 	[QueryController echo: [self privateIP] port:[dcmtkQRSCP port] AET: [dcmtkQRSCP aeTitle]];
@@ -2525,10 +2582,17 @@ static BOOL initialized = NO;
 			NSLog( @"waiting for listener to stop...");
 			[NSThread sleepForTimeInterval: 0.1];
 		}
+		while( [dcmtkQRSCPTLS running])
+		{
+			NSLog( @"waiting for listener to stop...");
+			[NSThread sleepForTimeInterval: 0.1];
+		}
 	}
 	
 	[dcmtkQRSCP release];
 	dcmtkQRSCP = nil;
+	[dcmtkQRSCPTLS release];
+	dcmtkQRSCPTLS = nil;
 }
 
 - (void) switchHandler:(NSNotification*) notification
@@ -3028,6 +3092,9 @@ static BOOL initialized = NO;
     [browserController release];
 	[dcmtkQRSCP release];
 	dcmtkQRSCP = nil;
+	
+	[dcmtkQRSCPTLS release];
+	dcmtkQRSCPTLS = nil;
 	
 	#ifndef OSIRIX_LIGHT
 	[IChatTheatreDelegate releaseSharedDelegate];

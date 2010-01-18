@@ -14,6 +14,7 @@
 
 #import "DCMTKQueryRetrieveSCP.h"
 #import "AppController.h"
+#import "DICOMTLS.h"
 
 #undef verify
 
@@ -78,6 +79,13 @@ END_EXTERN_C
 //#include "dcmqrdbi.h"
 //#endif
 
+#define OPENSSL_DISABLE_OLD_DES_SUPPORT // joris
+
+#ifdef WITH_OPENSSL // joris
+#include "tlstrans.h"
+#include "tlslayer.h"
+#endif
+
 #ifdef WITH_ZLIB
 #include <zlib.h>        /* for zlibVersion() */
 #endif
@@ -88,22 +96,39 @@ END_EXTERN_C
 
 #define APPLICATIONTITLE    "DCMQRSCP"
 
-const char *opt_configFileName = "dcmqrscp.cfg";
-OFBool      opt_checkFindIdentifier = OFFalse;
-OFBool      opt_checkMoveIdentifier = OFFalse;
-OFCmdUnsignedInt opt_port = 0;
+//const char *opt_configFileName = "dcmqrscp.cfg";
+//OFBool      opt_checkFindIdentifier = OFFalse;
+//OFBool      opt_checkMoveIdentifier = OFFalse;
+//OFCmdUnsignedInt opt_port = 0;
+
 DcmQueryRetrieveSCP *scp = nil;
+DcmQueryRetrieveSCP *scptls = nil;
 
 
 OFCondition mainStoreSCP(T_ASC_Association * assoc, T_DIMSE_C_StoreRQ * request, T_ASC_PresentationContextID presId, DcmQueryRetrieveDatabaseHandle *dbHandle)
 {
-	if( scp == nil)
+	OFBool isTLS = assoc->params->DULparams.useSecureLayer;
+	if(!isTLS)
 	{
-		NSLog( @"***** scp == nil !");
-		return EC_IllegalCall;
+		if( scp == nil)
+		{
+			NSLog( @"***** scp == nil !");
+			return EC_IllegalCall;
+		}
+		else
+			return scp->storeSCP( assoc, request, presId, *dbHandle, FALSE);
 	}
 	else
-		return scp->storeSCP( assoc, request, presId, *dbHandle, FALSE);
+	{
+		if( scptls == nil)
+		{
+			NSLog( @"***** scptls == nil !");
+			return EC_IllegalCall;
+		}
+		else
+			return scptls->storeSCP( assoc, request, presId, *dbHandle, FALSE);
+	}
+	return EC_IllegalCall;
 }
 
 void errmsg(const char* msg, ...)
@@ -122,7 +147,7 @@ void errmsg(const char* msg, ...)
 
 + (BOOL) storeSCP
 {
-	if( scp)
+	if( scp || scptls)
 		return YES;
 	else
 		return NO;
@@ -159,6 +184,13 @@ void errmsg(const char* msg, ...)
 		 scp->cleanChildren(OFTrue);  // clean up any child processes 		 
 		 delete scp;
 		 scp = nil;
+	}
+
+	if (scptls != NULL)
+	{
+		scptls->cleanChildren(OFTrue);  // clean up any child processes 		 
+		delete scptls;
+		scptls = nil;
 	}
 
 	[_aeTitle release];
@@ -254,7 +286,7 @@ void errmsg(const char* msg, ...)
 	options.maxAssociations_ = 800;
 	
 	//port
-	opt_port = _port;
+//	opt_port = _port;
 	
 	//max PDU size
 	options.maxPDU_ = ASC_DEFAULTMAXPDU;
@@ -268,7 +300,7 @@ void errmsg(const char* msg, ...)
     }
 	
 	//init the network
-	cond = ASC_initializeNetwork(NET_ACCEPTORREQUESTOR, (int)opt_port, options.acse_timeout_, &options.net_);
+	cond = ASC_initializeNetwork(NET_ACCEPTORREQUESTOR, (int)_port, options.acse_timeout_, &options.net_);
     if (cond.bad())
 	{
 		errmsg("Error initialising network:");
@@ -287,6 +319,194 @@ void errmsg(const char* msg, ...)
     setuid(getuid());
 #endif
 
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+#ifdef WITH_OPENSSL // joris
+	
+	//if([[NSUserDefaults standardUserDefaults] boolForKey:@"STORESCPTLS"])
+	if([[_params objectForKey:@"TLSEnabled"] boolValue])
+	{
+		DcmTLSTransportLayer *tLayer = new DcmTLSTransportLayer(DICOM_APPLICATION_ACCEPTOR, [TLS_SEED_FILE cStringUsingEncoding:NSUTF8StringEncoding]); // joris DICOM_APPLICATION_ACCEPTOR for server!!
+		if (tLayer == NULL)
+		{
+			NSLog(@"unable to create TLS transport layer");
+			//localException = [NSException exceptionWithName:@"DICOM Network Failure (storescp TLS)" reason:@"unable to create TLS transport layer" userInfo:nil];
+			//[localException raise];
+		}
+		
+		TLSCertificateVerificationType certVerification = (TLSCertificateVerificationType)[[[NSUserDefaults standardUserDefaults] valueForKey:@"TLSStoreSCPCertificateVerification"] intValue];
+		
+		if(certVerification==VerifyPeerCertificate || certVerification==RequirePeerCertificate)
+		{
+			[DDKeychain KeychainAccessExportTrustedCertificatesToDirectory:TLS_TRUSTED_CERTIFICATES_DIR];
+			NSArray *trustedCertificates = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:TLS_TRUSTED_CERTIFICATES_DIR error:nil];
+			
+			for (NSString *cert in trustedCertificates)
+			{
+				if (TCS_ok != tLayer->addTrustedCertificateFile([[TLS_TRUSTED_CERTIFICATES_DIR stringByAppendingPathComponent:cert] cStringUsingEncoding:NSUTF8StringEncoding], SSL_FILETYPE_PEM))
+				{
+					NSLog(@"DICOM Network Failure (storescp TLS) : Unable to load certificate file %@", [TLS_TRUSTED_CERTIFICATES_DIR stringByAppendingPathComponent:cert]);
+//					localException = [NSException exceptionWithName:@"DICOM Network Failure (storescp TLS)" reason:[NSString stringWithFormat:@"Unable to load certificate file %@", [TLS_TRUSTED_CERTIFICATES_DIR stringByAppendingPathComponent:cert]] userInfo:nil];
+//					[localException raise];
+				}
+			}
+			
+			//--add-cert-dir //// add certificates in d to list of certificates
+			//.... needs to use OpenSSL & rename files (see http://forum.dicom-cd.de/viewtopic.php?p=3237&sid=bd17bd76876a8fd9e7fdf841b90cf639 )
+			
+			//			if (cmd.findOption("--add-cert-dir", 0, OFCommandLine::FOM_First))
+			//			{
+			//				const char *current = NULL;
+			//				do
+			//				{
+			//					app.checkValue(cmd.getValue(current));
+			//					if (TCS_ok != tLayer->addTrustedCertificateDir(current, opt_keyFileFormat))
+			//					{
+			//						CERR << "warning unable to load certificates from directory '" << current << "', ignoring" << endl;
+			//					}
+			//				} while (cmd.findOption("--add-cert-dir", 0, OFCommandLine::FOM_Next));
+			//			}
+		}		
+		
+//		if (_dhparam && ! (tLayer->setTempDHParameters(_dhparam)))
+//		{
+//			localException = [NSException exceptionWithName:@"DICOM Network Failure (storescu TLS)" reason:[NSString stringWithFormat:@"Unable to load temporary DH parameter file %s", _dhparam] userInfo:nil];
+//			[localException raise];
+//		}
+		
+//		if (_doAuthenticate)
+		{			
+			tLayer->setPrivateKeyPasswd([TLS_PRIVATE_KEY_PASSWORD cStringUsingEncoding:NSUTF8StringEncoding]);
+			
+			[DICOMTLS generateCertificateAndKeyForLabel:TLS_KEYCHAIN_IDENTITY_NAME_SERVER]; // export certificate/key from the Keychain to the disk
+			
+			NSString *_privateKeyFile = [DICOMTLS keyPathForLabel:TLS_KEYCHAIN_IDENTITY_NAME_SERVER]; // generates the PEM file for the private key
+			NSString *_certificateFile = [DICOMTLS certificatePathForLabel:TLS_KEYCHAIN_IDENTITY_NAME_SERVER]; // generates the PEM file for the certificate
+			
+			if (TCS_ok != tLayer->setPrivateKeyFile([_privateKeyFile cStringUsingEncoding:NSUTF8StringEncoding], SSL_FILETYPE_PEM))
+			{
+				NSLog(@"DICOM Network Failure (storescp TLS) : Unable to load private TLS key from %@", _privateKeyFile);
+//				localException = [NSException exceptionWithName:@"DICOM Network Failure (storescp TLS)" reason:[NSString stringWithFormat:@"Unable to load private TLS key from %@", _privateKeyFile] userInfo:nil];
+//				[localException raise];
+			}
+			
+			if (TCS_ok != tLayer->setCertificateFile([_certificateFile cStringUsingEncoding:NSUTF8StringEncoding], SSL_FILETYPE_PEM))
+			{
+				NSLog(@"DICOM Network Failure (storescp TLS) : Unable to load certificate from %@", _certificateFile);
+//				localException = [NSException exceptionWithName:@"DICOM Network Failure (storescp TLS)" reason:[NSString stringWithFormat:@"Unable to load certificate from %@", _certificateFile] userInfo:nil];
+//				[localException raise];
+			}
+			
+			if (!tLayer->checkPrivateKeyMatchesCertificate())
+			{
+				NSLog(@"DICOM Network Failure (storescp TLS) : Unable to load certificate from %@private key '%@' and certificate '%@' do not match", _privateKeyFile, _certificateFile);
+//				localException = [NSException exceptionWithName:@"DICOM Network Failure (storescp TLS)" reason:[NSString stringWithFormat:@"private key '%@' and certificate '%@' do not match", _privateKeyFile, _certificateFile] userInfo:nil];
+//				[localException raise];
+			}
+		}
+		
+		NSArray *suites = [[NSUserDefaults standardUserDefaults] objectForKey:@"TLSStoreSCPCipherSuites"];
+		NSMutableArray *selectedCipherSuites = [NSMutableArray array];
+		
+		for (NSDictionary *suite in suites)
+		{
+			if ([[suite objectForKey:@"Supported"] boolValue])
+				[selectedCipherSuites addObject:[suite objectForKey:@"Cipher"]];
+		}
+		
+		NSArray *_cipherSuites = [NSArray arrayWithArray:selectedCipherSuites];
+		
+		if(_cipherSuites)
+		{
+			const char *current = NULL;
+			const char *currentOpenSSL;
+			
+			static OFString opt_ciphersuites(TLS1_TXT_RSA_WITH_AES_128_SHA ":" SSL3_TXT_RSA_DES_192_CBC3_SHA);
+			opt_ciphersuites.clear();
+			
+			for (NSString *suite in _cipherSuites)
+			{
+				current = [suite cStringUsingEncoding:NSUTF8StringEncoding];
+				
+				if (NULL == (currentOpenSSL = DcmTLSTransportLayer::findOpenSSLCipherSuiteName(current)))
+				{
+					NSLog(@"ciphersuite '%s' is unknown.", current);
+					NSLog(@"Known ciphersuites are:");
+					unsigned long numSuites = DcmTLSTransportLayer::getNumberOfCipherSuites();
+					for (unsigned long cs=0; cs < numSuites; cs++)
+					{
+						NSLog(@"%s", DcmTLSTransportLayer::getTLSCipherSuiteName(cs));
+					}
+					
+					NSLog(@"DICOM Network Failure (storescp TLS) : Ciphersuite '%s' is unknown.", current);
+//					localException = [NSException exceptionWithName:@"DICOM Network Failure (storescp TLS)" reason:[NSString stringWithFormat:@"Ciphersuite '%s' is unknown.", current] userInfo:nil];
+//					[localException raise];
+				}
+				else
+				{
+					if (opt_ciphersuites.length() > 0) opt_ciphersuites += ":";
+					opt_ciphersuites += currentOpenSSL;
+				}
+				
+			}
+		
+			if (TCS_ok != tLayer->setCipherSuites(opt_ciphersuites.c_str()))
+			{
+				NSLog(@"DICOM Network Failure (storescp TLS) : Unable to set selected cipher suites.");
+
+	//			localException = [NSException exceptionWithName:@"DICOM Network Failure (storescp TLS)" reason:@"Unable to set selected cipher suites" userInfo:nil];
+	//			[localException raise];
+			}
+		}
+
+		DcmCertificateVerification _certVerification;
+		
+		if(certVerification==RequirePeerCertificate)
+			_certVerification = DCV_requireCertificate;
+		else if(certVerification==VerifyPeerCertificate)
+			_certVerification = DCV_checkCertificate;
+		else
+			_certVerification = DCV_ignoreCertificate;
+		
+		tLayer->setCertificateVerification(_certVerification);
+		
+		cond = ASC_setTransportLayer(options.net_, tLayer, 0);
+		if (cond.bad())
+		{
+			DimseCondition::dump(cond);
+			NSLog(@"DICOM Network Failure (storescp TLS) : ASC_setTransportLayer - %04x:%04x %s", cond.module(), cond.code(), cond.text());
+//			localException = [NSException exceptionWithName:@"DICOM Network Failure (storescp TLS)" reason:[NSString stringWithFormat: @"ASC_setTransportLayer - %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
+//			[localException raise];
+		}
+	}
+	
+#endif
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 // Have this to avoid errors until I can get rid of it
 DcmQueryRetrieveConfig config;
@@ -300,10 +520,23 @@ DcmQueryRetrieveConfig config;
 //#endif
 	 //use if static scp rather than pointer
     //DcmQueryRetrieveSCP scp(config, options, factory);
-	//scp.setDatabaseFlags(opt_checkFindIdentifier, opt_checkMoveIdentifier, options.debug_);
-   scp = new DcmQueryRetrieveSCP(config, options, factory);
-   scp->setDatabaseFlags(opt_checkFindIdentifier, opt_checkMoveIdentifier, options.debug_);
-    	
+	//scp.setDatabaseFlags(OFFalse, OFFalse, options.debug_);
+
+	DcmQueryRetrieveSCP *localSCP = nil;
+	
+	localSCP = new DcmQueryRetrieveSCP(config, options, factory);
+	
+	if([[_params objectForKey:@"TLSEnabled"] boolValue])
+		scptls = localSCP;
+	else
+		scp = localSCP;
+	
+   localSCP->setDatabaseFlags(OFFalse, OFFalse, options.debug_);
+
+	localSCP->setSecureConnection(OFFalse);
+	if([[_params objectForKey:@"TLSEnabled"] boolValue])
+		localSCP->setSecureConnection(OFTrue);
+	
 	_abort = NO;
 	running = YES;
 	
@@ -314,17 +547,17 @@ DcmQueryRetrieveConfig config;
     while (cond.good() && !_abort)
     {
 		if( _abort == NO)
-			cond = scp->waitForAssociation(options.net_);
+			cond = localSCP->waitForAssociation(options.net_);
 		
 		if( _abort == NO)
-			scp->cleanChildren(OFTrue);  /* clean up any child processes  This needs to be here*/
+			localSCP->cleanChildren(OFTrue);  /* clean up any child processes  This needs to be here*/
 	}
 	
 	if( _abort)
 		NSLog( @"**** store-SCP aborted");
 	
-	delete scp;
-	scp = NULL;
+	delete localSCP;
+	localSCP = NULL;
 	
 	if (cond.bad())
 		errmsg("****** cond.good() != normal ---- DCMTKQueryRetrieve");
