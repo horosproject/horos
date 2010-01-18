@@ -1501,7 +1501,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 				bytesPerRow:width
 				bitsPerPixel:8] autorelease];
 		
-		memcpy( [rep bitmapData], baseAddr, height*width);
+		memcpy( [rep bitmapData], [self baseAddr], height*width);
 		
 		imageRep = [[[NSImage alloc] init] autorelease];
 		[imageRep addRepresentation:rep];
