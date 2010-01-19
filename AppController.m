@@ -2804,16 +2804,6 @@ static BOOL initialized = NO;
 		}
 	}
 	
-	/// *****************************
-	/// *****************************
-	// HUG SPECIFIC CODE - DO NOT REMOVE - Thanks! Antoine Rosset
-//	if([DefaultsOsiriX isHUG])
-//	{
-//		[self HUGDisableBonjourFeature];
-//		[self HUGVerifyComPACSPlugin];
-//	}
-	/// *****************************
-	/// *****************************
 		
 	//Checks for Bonjour enabled dicom servers. Most likely other copies of OsiriX
 	[self startDICOMBonjourSearch];
@@ -4004,24 +3994,6 @@ static BOOL initialized = NO;
 		}
 	}
 }
-
-// Hide the Bonjour Panel in the side drawer
-- (void) HUGDisableBonjourFeature
-{
-	return;
-	// disable Bonjour
-	[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"bonjourSharing"];
-	[browserController setBonjourSharingEnabled:NO];
-	// change the GUI
-	[[browserController bonjourSharingCheck] setState:NSOffState];
-	[[browserController bonjourSharingCheck] setEnabled:NO];
-	[[browserController bonjourServiceName] setStringValue:@""];
-	[[browserController bonjourServiceName] setEnabled:NO];
-	[[browserController bonjourPasswordCheck] setEnabled:NO];
-	[[browserController bonjourPasswordTextField] setEnabled:NO];
-	[[browserController bonjourSourcesBox] setNeedsDisplay:YES];
-}
-
 
 #pragma mark-
 #pragma mark HTML Templates
