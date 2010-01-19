@@ -948,7 +948,6 @@
 		ABBB64B2063587B200D9531F /* Axial.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB6480063587B200D9531F /* Axial.tif */; };
 		ABBB64B3063587B200D9531F /* BSRSettings.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB6481063587B200D9531F /* BSRSettings.tif */; };
 		ABBB64B4063587B200D9531F /* Capture.icns in Resources */ = {isa = PBXBuildFile; fileRef = ABBB6482063587B200D9531F /* Capture.icns */; };
-		ABBB64B5063587B200D9531F /* CDRom.icns in Resources */ = {isa = PBXBuildFile; fileRef = ABBB6483063587B200D9531F /* CDRom.icns */; };
 		ABBB64B6063587B200D9531F /* Closed Polygon.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB6484063587B200D9531F /* Closed Polygon.tif */; };
 		ABBB64B7063587B200D9531F /* Cor.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB6485063587B200D9531F /* Cor.tif */; };
 		ABBB64B8063587B200D9531F /* Cropping.icns in Resources */ = {isa = PBXBuildFile; fileRef = ABBB6486063587B200D9531F /* Cropping.icns */; };
@@ -5804,7 +5803,6 @@
 		CEC7056B10A5C844008935EA /* Axial.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB6480063587B200D9531F /* Axial.tif */; };
 		CEC7056C10A5C844008935EA /* BSRSettings.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB6481063587B200D9531F /* BSRSettings.tif */; };
 		CEC7056D10A5C844008935EA /* Capture.icns in Resources */ = {isa = PBXBuildFile; fileRef = ABBB6482063587B200D9531F /* Capture.icns */; };
-		CEC7056E10A5C844008935EA /* CDRom.icns in Resources */ = {isa = PBXBuildFile; fileRef = ABBB6483063587B200D9531F /* CDRom.icns */; };
 		CEC7056F10A5C844008935EA /* Closed Polygon.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB6484063587B200D9531F /* Closed Polygon.tif */; };
 		CEC7057010A5C844008935EA /* Cor.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB6485063587B200D9531F /* Cor.tif */; };
 		CEC7057110A5C844008935EA /* Cropping.icns in Resources */ = {isa = PBXBuildFile; fileRef = ABBB6486063587B200D9531F /* Cropping.icns */; };
@@ -8469,7 +8467,6 @@
 		ABBB6480063587B200D9531F /* Axial.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Axial.tif; sourceTree = "<group>"; };
 		ABBB6481063587B200D9531F /* BSRSettings.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = BSRSettings.tif; sourceTree = "<group>"; };
 		ABBB6482063587B200D9531F /* Capture.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Capture.icns; sourceTree = "<group>"; };
-		ABBB6483063587B200D9531F /* CDRom.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = CDRom.icns; sourceTree = "<group>"; };
 		ABBB6484063587B200D9531F /* Closed Polygon.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = "Closed Polygon.tif"; sourceTree = "<group>"; };
 		ABBB6485063587B200D9531F /* Cor.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Cor.tif; sourceTree = "<group>"; };
 		ABBB6486063587B200D9531F /* Cropping.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Cropping.icns; sourceTree = "<group>"; };
@@ -12958,7 +12955,6 @@
 				ABBB6482063587B200D9531F /* Capture.icns */,
 				7E2BE3D90715DBC50017898A /* cd.icns */,
 				7E2BE4180715E5040017898A /* CD.tif */,
-				ABBB6483063587B200D9531F /* CDRom.icns */,
 				CEEB5CCA0CCDD161008803E2 /* Centerline.tif */,
 				A917F37B10F4F20C00344C5D /* CertSmallRoot.tif */,
 				A917F37C10F4F20C00344C5D /* CertSmallStd.tif */,
@@ -21493,7 +21489,6 @@
 				ABBB64B2063587B200D9531F /* Axial.tif in Resources */,
 				ABBB64B3063587B200D9531F /* BSRSettings.tif in Resources */,
 				ABBB64B4063587B200D9531F /* Capture.icns in Resources */,
-				ABBB64B5063587B200D9531F /* CDRom.icns in Resources */,
 				ABBB64B6063587B200D9531F /* Closed Polygon.tif in Resources */,
 				ABBB64B7063587B200D9531F /* Cor.tif in Resources */,
 				ABBB64B8063587B200D9531F /* Cropping.icns in Resources */,
@@ -21898,7 +21893,6 @@
 				CEC7056B10A5C844008935EA /* Axial.tif in Resources */,
 				CEC7056C10A5C844008935EA /* BSRSettings.tif in Resources */,
 				CEC7056D10A5C844008935EA /* Capture.icns in Resources */,
-				CEC7056E10A5C844008935EA /* CDRom.icns in Resources */,
 				CEC7056F10A5C844008935EA /* Closed Polygon.tif in Resources */,
 				CEC7057010A5C844008935EA /* Cor.tif in Resources */,
 				CEC7057110A5C844008935EA /* Cropping.icns in Resources */,
