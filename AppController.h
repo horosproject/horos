@@ -98,6 +98,7 @@ extern "C"
 	IBOutlet NSMenu					*othersMenu;
 	IBOutlet NSMenu					*dbMenu;
 	IBOutlet NSWindow				*dbWindow;
+	IBOutlet NSMenu					*windowsTilingMenuRows, *windowsTilingMenuColumns;
 	
 	NSDictionary					*previousDefaults;
 	
@@ -118,10 +119,12 @@ extern "C"
 	ThreadPoolServer				*webServer;
 	
 	BOOL							checkAllWindowsAreVisibleIsOff;
+	
+	int								lastColumns, lastRows;
 }
 
 @property BOOL checkAllWindowsAreVisibleIsOff;
-@property (readonly) NSMenu *filtersMenu;
+@property (readonly) NSMenu *filtersMenu, *windowsTilingMenuRows, *windowsTilingMenuColumns;
 
 #pragma mark-
 #pragma mark initialization of the main event loop singleton
@@ -157,6 +160,9 @@ extern "C"
 - (IBAction) showPreferencePanel:(id)sender; /**< Show Preferences window */
 - (IBAction) checkForUpdates:(id) sender;  /**< Check for update */
 //===============WINDOW========================
+- (IBAction) setFixedTilingRows: (id) sender;
+- (IBAction) setFixedTilingColumns: (id) sender;
+- (void) initTilingWindows;
 - (void) tileWindows:(id)sender;  /**< Tile open window */
 - (void) scaleToFit:(id)sender;    /**< Scale opened windows */
 - (IBAction) closeAllViewers: (id) sender;  /**< Close All Viewers */

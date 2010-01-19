@@ -676,7 +676,7 @@ static NSDate *lastWarningDate = nil;
 
 @implementation AppController
 
-@synthesize checkAllWindowsAreVisibleIsOff, filtersMenu;
+@synthesize checkAllWindowsAreVisibleIsOff, filtersMenu, windowsTilingMenuRows, windowsTilingMenuColumns;
 
 - (void) pause
 {
@@ -2843,6 +2843,8 @@ static BOOL initialized = NO;
 		[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"encryptForExport"];
 	}
 	
+	[self initTilingWindows];
+	
 //	*(long*)0 = 0xDEADBEEF;	// Test for ILCrashReporter
 }
 
@@ -3453,6 +3455,57 @@ static BOOL initialized = NO;
 	return NSMakePoint( i + [w frame].origin.x + [w frame].size.width/2, i + [w frame].origin.y + [w frame].size.height/2);
 }
 
+- (void) initTilingWindows
+{
+	for( NSMenuItem *item in [windowsTilingMenuRows itemArray])
+	{
+		[item setTarget: self];
+		[item setAction: @selector( setFixedTilingRows:)];
+	}
+	
+	for( NSMenuItem *item in [windowsTilingMenuColumns itemArray])
+	{
+		[item setTarget: self];
+		[item setAction: @selector( setFixedTilingColumns:)];
+	}
+}
+
+- (IBAction) setFixedTilingRows: (id) sender
+{
+	[self tileWindows: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: [sender tag]], @"rows", nil]];
+}
+
+- (IBAction) setFixedTilingColumns: (id) sender
+{
+	[self tileWindows: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: [sender tag]], @"columns", nil]];
+}
+
+- (BOOL) validateMenuItem:(NSMenuItem *) item
+{
+    if( [item action] == @selector(setFixedTilingRows:) || [item action] == @selector(setFixedTilingColumns:))
+	{
+		if( [item action] == @selector(setFixedTilingColumns:))
+		{
+		   if( [item tag] == lastColumns)
+				[item setState: NSOnState];
+			else
+				[item setState: NSOffState];
+		}
+		
+		if( [item action] == @selector(setFixedTilingRows:))
+		{
+			if( [item tag] == lastRows)
+				[item setState: NSOnState];
+			else
+			   [item setState: NSOffState];
+		}
+		
+		if( [item tag] > [[ViewerController getDisplayed2DViewers] count])
+			return NO;
+    }
+    return YES;
+}
+
 - (void) tileWindows:(id)sender
 {
 	long				i, x;
@@ -3469,6 +3522,7 @@ static BOOL initialized = NO;
 	NSMutableArray		*studyList = [NSMutableArray array];
 	int					keyWindow = 0, numberOfMonitors;	
 	NSArray				*screens = [self viewerScreens];
+	
 //	BOOL				fixedTiling = [[NSUserDefaults standardUserDefaults] boolForKey: @"FixedTiling"];
 //	int					fixedTilingRows = [[NSUserDefaults standardUserDefaults] integerForKey: @"FixedTilingRows"];
 //	int					fixedTilingColumns = [[NSUserDefaults standardUserDefaults] integerForKey: @"fixedTilingColumns"];
@@ -3571,38 +3625,6 @@ static BOOL initialized = NO;
 	
 	viewersList = cResult;
 	
-//	if( fixedTiling)
-//	{
-//		while( [viewersList count] > fixedTilingRows * fixedTilingColumns * numberOfMonitors)
-//		{
-//			for( int i = 0; i < [viewersList count] ; i++)
-//			{
-//				if( [[[viewersList objectAtIndex: i] window] isKeyWindow] == NO)
-//				{
-//					if( [hiddenWindows count])
-//					{
-//						[[[hiddenWindows lastObject] window] setFrame: [[[viewersList objectAtIndex: i] window] frame] display: NO];
-//						[[[hiddenWindows lastObject] window] makeKeyAndOrderFront : self]; 
-//						
-//						[viewersList removeObject: [hiddenWindows lastObject]];
-//						
-//						[[[viewersList objectAtIndex: i] window] close];
-//						
-//						[viewersList replaceObjectAtIndex: i withObject: [hiddenWindows lastObject]];
-//						
-//						[hiddenWindows removeLastObject];
-//					}
-//					else
-//					{
-//						[[[viewersList objectAtIndex: i] window] close];
-//						[viewersList removeObjectAtIndex: i];
-//					}
-//					break;
-//				}
-//			}
-//		}
-//	}
-	
 	for( i = 0; i < [viewersList count]; i++)
 	{
 		if( [[[viewersList objectAtIndex: i] window] isKeyWindow]) keyWindow = i;
@@ -3669,7 +3691,21 @@ static BOOL initialized = NO;
 	int rows = [[[[WindowLayoutManager sharedWindowLayoutManager] currentHangingProtocol] objectForKey:@"Rows"] intValue];
 	int columns = [[[[WindowLayoutManager sharedWindowLayoutManager] currentHangingProtocol] objectForKey:@"Columns"] intValue];
 	
-	if (![[WindowLayoutManager sharedWindowLayoutManager] currentHangingProtocol] || viewerCount < rows * columns)
+	if( [sender isKindOfClass: [NSDictionary class]])
+	{
+		if( [[sender objectForKey: @"rows"] intValue])
+		{
+			rows = [[sender objectForKey: @"rows"] intValue];
+			columns = floor( (float) viewerCount / (float) rows);
+		}
+		if( [[sender objectForKey: @"columns"] intValue])
+		{
+			columns = [[sender objectForKey: @"columns"] intValue];
+			rows = floor( (float) viewerCount / (float) columns);
+		}
+	}
+	
+	if( ![[WindowLayoutManager sharedWindowLayoutManager] currentHangingProtocol] || viewerCount < rows * columns)
 	{
 		if (landscape)
 		{
@@ -3695,16 +3731,26 @@ static BOOL initialized = NO;
 		
 		while (viewerCountPerScreen > (rows * columns))
 		{
-			float ratio = (float) columns / (float) rows;
+			if( [sender isKindOfClass: [NSDictionary class]] && [sender objectForKey: @"rows"])
+				columns++;
+			else if( [sender isKindOfClass: [NSDictionary class]] && [sender objectForKey: @"columns"])
+				rows++;
+			else
+			{
+				float ratio = (float) columns / (float) rows;
 			
-			if (ratio > ratioValue)
-				rows ++;
-			else 
-				columns ++;
+				if (ratio > ratioValue)
+					rows ++;
+				else 
+					columns ++;
+			}
 		}
 		
 		columns *= numberOfMonitors;
 	}
+	
+	lastColumns = columns;
+	lastRows = rows;
 	
 	accumulateAnimations = YES;
 	

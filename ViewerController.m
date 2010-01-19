@@ -2053,6 +2053,20 @@ static volatile int numberOfThreadsForRelisce = 0;
 		[contextualMenu addItem:item];
 		[item release];
 		[menu release];
+		
+		menu = [[AppController sharedAppController].windowsTilingMenuRows copy];
+		item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Windows Tiling - Rows", nil) action: nil keyEquivalent:@""];
+		[item setSubmenu:menu];
+		[contextualMenu addItem:item];
+		[item release];
+		[menu release];
+		
+		menu = [[AppController sharedAppController].windowsTilingMenuColumns copy];
+		item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Windows Tiling - Columns", nil) action: nil keyEquivalent:@""];
+		[item setSubmenu:menu];
+		[contextualMenu addItem:item];
+		[item release];
+		[menu release];
 
 		/********** Orientation submenu ************/ 
 		
