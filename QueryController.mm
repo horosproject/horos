@@ -42,6 +42,8 @@ static NSString *ReferringPhysician = @"ReferringPhysiciansName";
 static QueryController *currentQueryController = nil;
 static QueryController *currentAutoQueryController = nil;
 
+static int inc = 0;
+
 extern "C"
 {
 	extern const char *GetPrivateIP();
@@ -157,6 +159,8 @@ extern "C"
 	NSNumber *port = [serverParameters objectForKey:@"Port"];
 	NSString *aet = [serverParameters objectForKey:@"AETitle"];
 	
+	NSString *uniqueStringID = [NSString stringWithFormat:@"%d.%d.%d", getpid(), inc++, random()];	
+	
 	NSTask* theTask = [[[NSTask alloc]init]autorelease];
 	
 	[theTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/echoscu"]];
@@ -182,7 +186,7 @@ extern "C"
 	
 	if([[serverParameters objectForKey:@"TLSEnabled"] boolValue])
 	{
-		[DDKeychain lockTmpFiles];
+		//[DDKeychain lockTmpFiles];
 		
 		// TLS support. Options listed here http://support.dcmtk.org/docs/echoscu.html
 		
@@ -190,9 +194,9 @@ extern "C"
 		{
 			[args addObject:@"--enable-tls"]; // use authenticated secure TLS connection
 
-			[DICOMTLS generateCertificateAndKeyForServerAddress:address port: [port intValue] AETitle:aet]; // export certificate/key from the Keychain to the disk
-			[args addObject:[DICOMTLS keyPathForServerAddress:address port:[port intValue] AETitle:aet]]; // [p]rivate key file
-			[args addObject:[DICOMTLS certificatePathForServerAddress:address port:[port intValue] AETitle:aet]]; // [c]ertificate file: string
+			[DICOMTLS generateCertificateAndKeyForServerAddress:address port:[port intValue] AETitle:aet withStringID:uniqueStringID]; // export certificate/key from the Keychain to the disk
+			[args addObject:[DICOMTLS keyPathForServerAddress:address port:[port intValue] AETitle:aet withStringID:uniqueStringID]]; // [p]rivate key file
+			[args addObject:[DICOMTLS certificatePathForServerAddress:address port:[port intValue] AETitle:aet withStringID:uniqueStringID]]; // [c]ertificate file: string
 					
 			[args addObject:@"--use-passwd"];
 			[args addObject:TLS_PRIVATE_KEY_PASSWORD];
@@ -231,14 +235,15 @@ extern "C"
 		// certification authority options:
 		if(verification==RequirePeerCertificate || verification==VerifyPeerCertificate)
 		{
-			[DDKeychain KeychainAccessExportTrustedCertificatesToDirectory:TLS_TRUSTED_CERTIFICATES_DIR];
-			NSArray *trustedCertificates = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:TLS_TRUSTED_CERTIFICATES_DIR error:nil];
+			NSString *trustedCertificatesDir = [NSString stringWithFormat:@"%@%@", TLS_TRUSTED_CERTIFICATES_DIR, uniqueStringID];
+			[DDKeychain KeychainAccessExportTrustedCertificatesToDirectory:trustedCertificatesDir];
+			NSArray *trustedCertificates = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:trustedCertificatesDir error:nil];
 			
 			//[args addObject:@"--add-cert-dir"]; // add certificates in d to list of certificates  .... needs to use OpenSSL & rename files (see http://forum.dicom-cd.de/viewtopic.php?p=3237&sid=bd17bd76876a8fd9e7fdf841b90cf639 )
 			for (NSString *cert in trustedCertificates)
 			{
 				[args addObject:@"--add-cert-file"];
-				[args addObject:[TLS_TRUSTED_CERTIFICATES_DIR stringByAppendingPathComponent:cert]];
+				[args addObject:[trustedCertificatesDir stringByAppendingPathComponent:cert]];
 			}
 		}
 		
@@ -255,7 +260,12 @@ extern "C"
 	[theTask waitUntilExit];
 	
 	if([[serverParameters objectForKey:@"TLSEnabled"] boolValue])
-		[DDKeychain unlockTmpFiles];
+	{
+		//[DDKeychain unlockTmpFiles];
+		[[NSFileManager defaultManager] removeFileAtPath:[DICOMTLS keyPathForServerAddress:address port:[port intValue] AETitle:aet withStringID:uniqueStringID] handler:nil];
+		[[NSFileManager defaultManager] removeFileAtPath:[DICOMTLS certificatePathForServerAddress:address port:[port intValue] AETitle:aet withStringID:uniqueStringID] handler:nil];
+		[[NSFileManager defaultManager] removeFileAtPath:[NSString stringWithFormat:@"%@%@", TLS_TRUSTED_CERTIFICATES_DIR, uniqueStringID] handler:nil];		
+	}
 	
 	if( [theTask terminationStatus] == 0) return YES;
 	else return NO;

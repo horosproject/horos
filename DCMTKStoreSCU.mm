@@ -148,6 +148,8 @@ static DcmCertificateVerification opt_certVerification = DCV_requireCertificate;
 static const char *opt_dhparam = NULL;
 #endif
 
+static int inc = 0;
+
 static void
 errmsg(const char *msg,...)
 {
@@ -1143,8 +1145,9 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 	DcmTLSTransportLayer *tLayer = NULL;
 	
 	#ifndef OSIRIX_LIGHT
-	if( _secureConnection)
-		[DDKeychain lockTmpFiles];
+//	if( _secureConnection)
+//		[DDKeychain lockTmpFiles];
+	NSString *uniqueStringID = [NSString stringWithFormat:@"%d.%d.%d", getpid(), inc++, random()];	
 	#endif
 	
 	@try
@@ -1292,14 +1295,15 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 			
 			if(certVerification==VerifyPeerCertificate || certVerification==RequirePeerCertificate)
 			{
-				[DDKeychain KeychainAccessExportTrustedCertificatesToDirectory:TLS_TRUSTED_CERTIFICATES_DIR];
-				NSArray *trustedCertificates = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:TLS_TRUSTED_CERTIFICATES_DIR error:nil];
+				NSString *trustedCertificatesDir = [NSString stringWithFormat:@"%@%@", TLS_TRUSTED_CERTIFICATES_DIR, uniqueStringID];
+				[DDKeychain KeychainAccessExportTrustedCertificatesToDirectory:trustedCertificatesDir];
+				NSArray *trustedCertificates = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:trustedCertificatesDir error:nil];
 				
 				for (NSString *cert in trustedCertificates)
 				{
-					if (TCS_ok != tLayer->addTrustedCertificateFile([[TLS_TRUSTED_CERTIFICATES_DIR stringByAppendingPathComponent:cert] cStringUsingEncoding:NSUTF8StringEncoding], _keyFileFormat))
+					if (TCS_ok != tLayer->addTrustedCertificateFile([[trustedCertificatesDir stringByAppendingPathComponent:cert] cStringUsingEncoding:NSUTF8StringEncoding], _keyFileFormat))
 					{
-						localException = [NSException exceptionWithName:@"DICOM Network Failure (storescu TLS)" reason:[NSString stringWithFormat:@"Unable to load certificate file %@", [TLS_TRUSTED_CERTIFICATES_DIR stringByAppendingPathComponent:cert]] userInfo:nil];
+						localException = [NSException exceptionWithName:@"DICOM Network Failure (storescu TLS)" reason:[NSString stringWithFormat:@"Unable to load certificate file %@", [trustedCertificatesDir stringByAppendingPathComponent:cert]] userInfo:nil];
 						[localException raise];
 					}
 				}
@@ -1331,10 +1335,10 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 			{			
 				tLayer->setPrivateKeyPasswd([TLS_PRIVATE_KEY_PASSWORD cStringUsingEncoding:NSUTF8StringEncoding]);
 				
-				[DICOMTLS generateCertificateAndKeyForServerAddress:_hostname port:_port AETitle:_calledAET]; // export certificate/key from the Keychain to the disk
+				[DICOMTLS generateCertificateAndKeyForServerAddress:_hostname port:_port AETitle:_calledAET withStringID:uniqueStringID]; // export certificate/key from the Keychain to the disk
 				
-				NSString *_privateKeyFile = [DICOMTLS keyPathForServerAddress:_hostname port:_port AETitle:_calledAET]; // generates the PEM file for the private key
-				NSString *_certificateFile = [DICOMTLS certificatePathForServerAddress:_hostname port:_port AETitle:_calledAET]; // generates the PEM file for the certificate		
+				NSString *_privateKeyFile = [DICOMTLS keyPathForServerAddress:_hostname port:_port AETitle:_calledAET withStringID:uniqueStringID]; // generates the PEM file for the private key
+				NSString *_certificateFile = [DICOMTLS certificatePathForServerAddress:_hostname port:_port AETitle:_calledAET withStringID:uniqueStringID]; // generates the PEM file for the certificate		
 				
 				if (TCS_ok != tLayer->setPrivateKeyFile([_privateKeyFile cStringUsingEncoding:NSUTF8StringEncoding], SSL_FILETYPE_PEM))
 				{
@@ -1640,7 +1644,12 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 
 	// cleanup
 	if( _secureConnection)
-		[DDKeychain unlockTmpFiles];
+	{
+//		[DDKeychain unlockTmpFiles];
+		[[NSFileManager defaultManager] removeFileAtPath:[DICOMTLS keyPathForServerAddress:_hostname port:_port AETitle:_calledAET withStringID:uniqueStringID] handler:nil];
+		[[NSFileManager defaultManager] removeFileAtPath:[DICOMTLS certificatePathForServerAddress:_hostname port:_port AETitle:_calledAET withStringID:uniqueStringID] handler:nil];
+		[[NSFileManager defaultManager] removeFileAtPath:[NSString stringWithFormat:@"%@%@", TLS_TRUSTED_CERTIFICATES_DIR, uniqueStringID] handler:nil];				
+	}
 
 #endif
 #endif

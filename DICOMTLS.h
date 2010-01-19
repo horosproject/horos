@@ -24,9 +24,9 @@ typedef enum
 
 #define TLS_SEED_FILE @"/tmp/OsiriXTLSSeed"
 #define TLS_WRITE_SEED_FILE "/tmp/OsiriXTLSSeedWrite"
-#define TLS_PRIVATE_KEY_FILE @"/tmp/OsiriXTLSKey"
-#define TLS_CERTIFICATE_FILE @"/tmp/OsiriXTLSCertificate"
-#define TLS_TRUSTED_CERTIFICATES_DIR @"/tmp/OsiriXTLSTrustedCertificates" 
+#define TLS_PRIVATE_KEY_FILE @"/tmp/TLSKey"
+#define TLS_CERTIFICATE_FILE @"/tmp/TLSCert"
+#define TLS_TRUSTED_CERTIFICATES_DIR @"/tmp/TLSTrustedCert" 
 #define TLS_KEYCHAIN_IDENTITY_NAME_CLIENT @"com.osirixviewer.dicomtlsclient"
 #define TLS_KEYCHAIN_IDENTITY_NAME_SERVER @"com.osirixviewer.dicomtlsserver"
 #define TLS_PRIVATE_KEY_PASSWORD @"SuperSecretPassword"
@@ -41,12 +41,18 @@ typedef enum
 + (NSArray*)defaultCipherSuites;
 
 #pragma mark Keychain Access
++ (void)generateCertificateAndKeyForLabel:(NSString*)label withStringID:(NSString*)stringID;
 + (void)generateCertificateAndKeyForLabel:(NSString*)label;
++ (void)generateCertificateAndKeyForServerAddress:(NSString*)address port:(int)port AETitle:(NSString*)aetitle withStringID:(NSString*)stringID;
 + (void)generateCertificateAndKeyForServerAddress:(NSString*)address port:(int)port AETitle:(NSString*)aetitle;
 + (NSString*)uniqueLabelForServerAddress:(NSString*)address port:(NSString*)port AETitle:(NSString*)aetitle;
++ (NSString*)keyPathForLabel:(NSString*)label withStringID:(NSString*)stringID;
 + (NSString*)keyPathForLabel:(NSString*)label;
++ (NSString*)keyPathForServerAddress:(NSString*)address port:(int)port AETitle:(NSString*)aetitle withStringID:(NSString*)stringID;
 + (NSString*)keyPathForServerAddress:(NSString*)address port:(int)port AETitle:(NSString*)aetitle;
++ (NSString*)certificatePathForLabel:(NSString*)label withStringID:(NSString*)stringID;
 + (NSString*)certificatePathForLabel:(NSString*)label;
++ (NSString*)certificatePathForServerAddress:(NSString*)address port:(int)port AETitle:(NSString*)aetitle withStringID:(NSString*)stringID;
 + (NSString*)certificatePathForServerAddress:(NSString*)address port:(int)port AETitle:(NSString*)aetitle;
 	
 @end

@@ -104,6 +104,7 @@ END_EXTERN_C
 DcmQueryRetrieveSCP *scp = nil;
 DcmQueryRetrieveSCP *scptls = nil;
 
+static int inc = 0;
 
 OFCondition mainStoreSCP(T_ASC_Association * assoc, T_DIMSE_C_StoreRQ * request, T_ASC_PresentationContextID presId, DcmQueryRetrieveDatabaseHandle *dbHandle)
 {
@@ -191,6 +192,10 @@ void errmsg(const char* msg, ...)
 		scptls->cleanChildren(OFTrue);  // clean up any child processes 		 
 		delete scptls;
 		scptls = nil;
+		
+		[[NSFileManager defaultManager] removeFileAtPath:[DICOMTLS keyPathForLabel:TLS_KEYCHAIN_IDENTITY_NAME_SERVER withStringID:@"StoreSCPTLS"] handler:nil];
+		[[NSFileManager defaultManager] removeFileAtPath:[DICOMTLS certificatePathForLabel:TLS_KEYCHAIN_IDENTITY_NAME_SERVER withStringID:@"StoreSCPTLS"] handler:nil];
+		[[NSFileManager defaultManager] removeFileAtPath:[NSString stringWithFormat:@"%@%@", TLS_TRUSTED_CERTIFICATES_DIR, @"StoreSCPTLS"] handler:nil];		
 	}
 
 	[_aeTitle release];
@@ -326,12 +331,6 @@ void errmsg(const char* msg, ...)
 	
 	
 	
-	
-	
-	
-	
-	
-	
 #ifdef WITH_OPENSSL // joris
 	
 	//if([[NSUserDefaults standardUserDefaults] boolForKey:@"STORESCPTLS"])
@@ -349,15 +348,16 @@ void errmsg(const char* msg, ...)
 		
 		if(certVerification==VerifyPeerCertificate || certVerification==RequirePeerCertificate)
 		{
-			[DDKeychain KeychainAccessExportTrustedCertificatesToDirectory:TLS_TRUSTED_CERTIFICATES_DIR];
-			NSArray *trustedCertificates = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:TLS_TRUSTED_CERTIFICATES_DIR error:nil];
+			NSString *trustedCertificatesDir = [NSString stringWithFormat:@"%@%@", TLS_TRUSTED_CERTIFICATES_DIR, @"StoreSCPTLS"];
+			[DDKeychain KeychainAccessExportTrustedCertificatesToDirectory:trustedCertificatesDir];
+			NSArray *trustedCertificates = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:trustedCertificatesDir error:nil];
 			
 			for (NSString *cert in trustedCertificates)
 			{
-				if (TCS_ok != tLayer->addTrustedCertificateFile([[TLS_TRUSTED_CERTIFICATES_DIR stringByAppendingPathComponent:cert] cStringUsingEncoding:NSUTF8StringEncoding], SSL_FILETYPE_PEM))
+				if (TCS_ok != tLayer->addTrustedCertificateFile([[trustedCertificatesDir stringByAppendingPathComponent:cert] cStringUsingEncoding:NSUTF8StringEncoding], SSL_FILETYPE_PEM))
 				{
-					NSLog(@"DICOM Network Failure (storescp TLS) : Unable to load certificate file %@", [TLS_TRUSTED_CERTIFICATES_DIR stringByAppendingPathComponent:cert]);
-//					localException = [NSException exceptionWithName:@"DICOM Network Failure (storescp TLS)" reason:[NSString stringWithFormat:@"Unable to load certificate file %@", [TLS_TRUSTED_CERTIFICATES_DIR stringByAppendingPathComponent:cert]] userInfo:nil];
+					NSLog(@"DICOM Network Failure (storescp TLS) : Unable to load certificate file %@", [trustedCertificatesDir stringByAppendingPathComponent:cert]);
+//					localException = [NSException exceptionWithName:@"DICOM Network Failure (storescp TLS)" reason:[NSString stringWithFormat:@"Unable to load certificate file %@", [trustedCertificatesDir stringByAppendingPathComponent:cert]] userInfo:nil];
 //					[localException raise];
 				}
 			}
@@ -389,10 +389,10 @@ void errmsg(const char* msg, ...)
 		{			
 			tLayer->setPrivateKeyPasswd([TLS_PRIVATE_KEY_PASSWORD cStringUsingEncoding:NSUTF8StringEncoding]);
 			
-			[DICOMTLS generateCertificateAndKeyForLabel:TLS_KEYCHAIN_IDENTITY_NAME_SERVER]; // export certificate/key from the Keychain to the disk
+			[DICOMTLS generateCertificateAndKeyForLabel:TLS_KEYCHAIN_IDENTITY_NAME_SERVER withStringID:@"StoreSCPTLS"]; // export certificate/key from the Keychain to the disk
 			
-			NSString *_privateKeyFile = [DICOMTLS keyPathForLabel:TLS_KEYCHAIN_IDENTITY_NAME_SERVER]; // generates the PEM file for the private key
-			NSString *_certificateFile = [DICOMTLS certificatePathForLabel:TLS_KEYCHAIN_IDENTITY_NAME_SERVER]; // generates the PEM file for the certificate
+			NSString *_privateKeyFile = [DICOMTLS keyPathForLabel:TLS_KEYCHAIN_IDENTITY_NAME_SERVER withStringID:@"StoreSCPTLS"]; // generates the PEM file for the private key
+			NSString *_certificateFile = [DICOMTLS certificatePathForLabel:TLS_KEYCHAIN_IDENTITY_NAME_SERVER withStringID:@"StoreSCPTLS"]; // generates the PEM file for the certificate
 			
 			if (TCS_ok != tLayer->setPrivateKeyFile([_privateKeyFile cStringUsingEncoding:NSUTF8StringEncoding], SSL_FILETYPE_PEM))
 			{

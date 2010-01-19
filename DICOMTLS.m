@@ -83,22 +83,32 @@
 
 #pragma mark Keychain Access
 
-+ (void)generateCertificateAndKeyForLabel:(NSString*)label;
++ (void)generateCertificateAndKeyForLabel:(NSString*)label withStringID:(NSString*)stringID;
 {	
 	SecIdentityRef identity = [DDKeychain identityForLabel:label];
 	if(identity)
 	{		
 		// identity to certificate
-		[DDKeychain KeychainAccessExportCertificateForIdentity:identity toPath:[DICOMTLS certificatePathForLabel:label]];
+		[DDKeychain KeychainAccessExportCertificateForIdentity:identity toPath:[[DICOMTLS certificatePathForLabel:label] stringByAppendingFormat:@"%@", stringID]];
 		// identity to private key
-		[DDKeychain KeychainAccessExportPrivateKeyForIdentity:identity toPath:[DICOMTLS keyPathForLabel:label] cryptWithPassword:TLS_PRIVATE_KEY_PASSWORD];
+		[DDKeychain KeychainAccessExportPrivateKeyForIdentity:identity toPath:[[DICOMTLS keyPathForLabel:label] stringByAppendingFormat:@"%@", stringID] cryptWithPassword:TLS_PRIVATE_KEY_PASSWORD];
 		CFRelease(identity);
 	}
 }
 
++ (void)generateCertificateAndKeyForLabel:(NSString*)label;
+{
+	[DICOMTLS generateCertificateAndKeyForLabel:label withStringID:@""];
+}
+
++ (void)generateCertificateAndKeyForServerAddress:(NSString*)address port:(int)port AETitle:(NSString*)aetitle withStringID:(NSString*)stringID;
+{	
+	[DICOMTLS generateCertificateAndKeyForLabel:[DICOMTLS uniqueLabelForServerAddress:address port:[NSString stringWithFormat:@"%d",port] AETitle:aetitle] withStringID:stringID];
+}
+
 + (void)generateCertificateAndKeyForServerAddress:(NSString*)address port:(int)port AETitle:(NSString*)aetitle;
 {	
-	[DICOMTLS generateCertificateAndKeyForLabel:[DICOMTLS uniqueLabelForServerAddress:address port:[NSString stringWithFormat:@"%d",port] AETitle:aetitle]];
+	[DICOMTLS generateCertificateAndKeyForServerAddress:address port:port AETitle:aetitle withStringID:@""];
 }
 
 + (NSString*)uniqueLabelForServerAddress:(NSString*)address port:(NSString*)port AETitle:(NSString*)aetitle;
@@ -115,24 +125,44 @@
 	return [NSString stringWithString:label];
 }
 
++ (NSString*)keyPathForLabel:(NSString*)label withStringID:(NSString*)stringID;
+{
+	return [NSString stringWithFormat:@"%@.%@.%@", TLS_PRIVATE_KEY_FILE, label, stringID];
+}
+
 + (NSString*)keyPathForLabel:(NSString*)label;
 {
-	return [NSString stringWithFormat:@"%@.%@", TLS_PRIVATE_KEY_FILE, label];
+	return [DICOMTLS keyPathForLabel:label withStringID:@""];
+}
+
++ (NSString*)keyPathForServerAddress:(NSString*)address port:(int)port AETitle:(NSString*)aetitle withStringID:(NSString*)stringID;
+{
+	return [DICOMTLS keyPathForLabel:[DICOMTLS uniqueLabelForServerAddress:address port:[NSString stringWithFormat:@"%d",port] AETitle:aetitle] withStringID:stringID];
 }
 
 + (NSString*)keyPathForServerAddress:(NSString*)address port:(int)port AETitle:(NSString*)aetitle;
 {
-	return [DICOMTLS keyPathForLabel:[DICOMTLS uniqueLabelForServerAddress:address port:[NSString stringWithFormat:@"%d",port] AETitle:aetitle]];
+	return [DICOMTLS keyPathForServerAddress:address port:port AETitle:aetitle withStringID:@""];
+}
+
++ (NSString*)certificatePathForLabel:(NSString*)label withStringID:(NSString*)stringID;
+{
+	return [NSString stringWithFormat:@"%@.%@.%@", TLS_CERTIFICATE_FILE, label, stringID];
 }
 
 + (NSString*)certificatePathForLabel:(NSString*)label;
 {
-	return [NSString stringWithFormat:@"%@.%@", TLS_CERTIFICATE_FILE, label];
+	return [DICOMTLS certificatePathForLabel:label withStringID:@""];
 }
 
-+ (NSString*)certificatePathForServerAddress:(NSString*)address port:(int)port AETitle:(NSString*)aetitle;
++ (NSString*)certificatePathForServerAddress:(NSString*)address port:(int)port AETitle:(NSString*)aetitle withStringID:(NSString*)stringID;
 {
-	return [DICOMTLS certificatePathForLabel:[DICOMTLS uniqueLabelForServerAddress:address port:[NSString stringWithFormat:@"%d",port] AETitle:aetitle]];
+	return [DICOMTLS certificatePathForLabel:[DICOMTLS uniqueLabelForServerAddress:address port:[NSString stringWithFormat:@"%d",port] AETitle:aetitle] withStringID:stringID];
+}
+
++ (NSString*)certificatePathForServerAddress:(NSString*)address port:(int)port AETitle:(NSString*)aetitle
+{
+	return [DICOMTLS certificatePathForServerAddress:address port:port AETitle:aetitle withStringID:@""];
 }
 
 @end
