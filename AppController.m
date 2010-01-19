@@ -3476,7 +3476,7 @@ static BOOL initialized = NO;
 	{
 		if( [item action] == @selector(setFixedTilingColumns:))
 		{
-		   if( [item tag] == lastColumns)
+		   if( [item tag] == lastColumns && [item tag] <= [[ViewerController getDisplayed2DViewers] count])
 				[item setState: NSOnState];
 			else
 				[item setState: NSOffState];
@@ -3484,7 +3484,7 @@ static BOOL initialized = NO;
 		
 		if( [item action] == @selector(setFixedTilingRows:))
 		{
-			if( [item tag] == lastRows)
+			if( [item tag] == lastRows && [item tag] <= [[ViewerController getDisplayed2DViewers] count])
 				[item setState: NSOnState];
 			else
 			   [item setState: NSOffState];
@@ -3789,6 +3789,8 @@ static BOOL initialized = NO;
 			
 			[[viewersList objectAtIndex:i] setWindowFrame: frame showWindow:YES animate: YES];			
 		}
+		
+		lastColumns = numberOfMonitors;
 	}
 	
 	/* Will have columns but no rows. 
@@ -3813,6 +3815,9 @@ static BOOL initialized = NO;
 			
 			[[viewersList objectAtIndex:i] setWindowFrame: frame showWindow:YES animate: YES];
 		}
+		
+		lastRows = 1;
+		lastColumns = viewerCount;
 	} 
 	//have different number of columns in each window
 	else if( viewerCount <= columns) 
@@ -3850,6 +3855,9 @@ static BOOL initialized = NO;
 			
 			[[viewersList objectAtIndex:i] setWindowFrame:frame showWindow:YES animate: YES];
 		}
+		
+		lastRows = 1;
+		lastColumns = viewerCount;
 	}
 	//adjust for actual number of rows needed
 	else if (viewerCount <=  columns * rows)  
