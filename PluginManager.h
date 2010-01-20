@@ -25,6 +25,7 @@
 
 @property(retain,readwrite) NSMutableArray *downloadQueue;
 
++ (int) compareVersion: (NSString *) v1 withVersion: (NSString *) v2;
 + (NSMutableDictionary*) plugins;
 + (NSMutableDictionary*) pluginsDict;
 + (NSMutableDictionary*) fileFormatPlugins;

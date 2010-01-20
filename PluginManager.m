@@ -34,6 +34,52 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
 
 @synthesize downloadQueue;
 
++ (int) compareVersion: (NSString *) v1 withVersion: (NSString *) v2
+{
+	@try
+	{
+		NSArray *v1Tokens = [v1 componentsSeparatedByString: @"."];
+		NSArray *v2Tokens = [v2 componentsSeparatedByString: @"."];
+		int maxLen;
+		
+		if ( [v1Tokens count] > [v2Tokens count])
+			maxLen = [v1Tokens count];
+		else
+			maxLen = [v2Tokens count];
+		
+		for (int i = 0; i < maxLen; i++)
+		{
+			int n1, n2;
+			
+			n1 = n2 = 0;
+			
+			if (i < [v1Tokens count])
+				n1 = [[v1Tokens objectAtIndex: i] intValue];
+			
+			if (n1 <= 0)
+				[NSException raise: @"compareVersion raised" format: @"compareVersion raised"];
+			
+			if (i < [v2Tokens count])
+				n2 = [[v2Tokens objectAtIndex: i] intValue];
+			
+			if (n2 <= 0)
+				[NSException raise: @"compareVersion raised" format: @"compareVersion raised"];
+			
+			if (n1 > n2)
+				return 1;
+			else if (n1 < n2)
+				return -1;
+		}
+		
+		return 0;
+	}
+	@catch (NSException *e)
+	{
+		return -1;
+	}
+	return -1;
+}
+
 + (BOOL) isComPACS
 {
 	if( ComPACSTested == NO)
@@ -926,6 +972,7 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
 				NSString *name = [[[plugin valueForKey:@"download_url"] lastPathComponent] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 				name = [name stringByDeletingPathExtension]; // removes the .zip extension
 				name = [name stringByDeletingPathExtension]; // removes the .osirixplugin extension
+				
 				if([pluginName isEqualToString:name])
 				{
 					onlinePlugin = plugin;
@@ -933,14 +980,14 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
 				}
 			}
 			
-			if(onlinePlugin)
+			if( onlinePlugin)
 			{
 				NSString *currVersion = [installedPlugin objectForKey:@"version"];
 				NSString *onlineVersion = [onlinePlugin objectForKey:@"version"];
 				
 				if(currVersion && onlineVersion)
 				{
-					if(![currVersion isEqualToString:onlineVersion])
+					if( [currVersion isEqualToString:onlineVersion] == NO && [PluginManager compareVersion: currVersion withVersion: onlineVersion] < 0)
 					{
 						NSMutableDictionary *modifiedOnlinePlugin = [NSMutableDictionary dictionaryWithDictionary:onlinePlugin];
 						[modifiedOnlinePlugin setObject:pluginName forKey:@"name"];
