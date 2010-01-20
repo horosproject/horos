@@ -303,7 +303,7 @@ void errmsg(const char* msg, ...)
         DCM_DICT_ENVIRONMENT_VARIABLE);
 		return;
     }
-	
+
 	//init the network
 	cond = ASC_initializeNetwork(NET_ACCEPTORREQUESTOR, (int)_port, options.acse_timeout_, &options.net_);
     if (cond.bad())
@@ -333,10 +333,11 @@ void errmsg(const char* msg, ...)
 	
 #ifdef WITH_OPENSSL // joris
 	
-	//if([[NSUserDefaults standardUserDefaults] boolForKey:@"STORESCPTLS"])
+	DcmTLSTransportLayer *tLayer = NULL;
+	
 	if([[_params objectForKey:@"TLSEnabled"] boolValue])
 	{
-		DcmTLSTransportLayer *tLayer = new DcmTLSTransportLayer(DICOM_APPLICATION_ACCEPTOR, [TLS_SEED_FILE cStringUsingEncoding:NSUTF8StringEncoding]); // joris DICOM_APPLICATION_ACCEPTOR for server!!
+		tLayer = new DcmTLSTransportLayer(DICOM_APPLICATION_ACCEPTOR, [TLS_SEED_FILE cStringUsingEncoding:NSUTF8StringEncoding]); // joris DICOM_APPLICATION_ACCEPTOR for server!!
 		if (tLayer == NULL)
 		{
 			NSLog(@"unable to create TLS transport layer");
@@ -495,18 +496,6 @@ void errmsg(const char* msg, ...)
 	
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 
 // Have this to avoid errors until I can get rid of it
 DcmQueryRetrieveConfig config;
@@ -539,7 +528,7 @@ DcmQueryRetrieveConfig config;
 	
 	_abort = NO;
 	running = YES;
-	
+		
 	// ********* WARNING -- NEVER NEVER CALL ANY COCOA (NSobject) functions after this point... fork() will be used ! fork is INCOMPATIBLE with NSObject ! See http://www.cocoadev.com/index.pl?ForkSafety
 	// Even a simple NSLog() will cause many many problems......
 	
@@ -569,6 +558,10 @@ DcmQueryRetrieveConfig config;
     }
 	
 	running = NO;
+	
+#ifdef WITH_OPENSSL // joris
+	delete tLayer;
+#endif
 	
 	return;
 }

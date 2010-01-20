@@ -1126,6 +1126,16 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
         }
     } else return EC_Normal;
 
+	if (! go_cleanup && secureConnection_) // joris
+    {
+		cond = ASC_setTransportLayerType(assoc->params, secureConnection_);
+		if (cond.bad())
+		{
+			DimseCondition::dump(cond);
+			go_cleanup = OFTrue;
+		}
+    }
+	
     if (! go_cleanup)
     {
         if (options_.verbose_)
@@ -1154,7 +1164,7 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
             go_cleanup = OFTrue;
         }
     }
-
+	
     if (! go_cleanup)
     {
         /* Application Context Name */
@@ -1242,7 +1252,7 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
             go_cleanup = OFTrue;
         }
     }
-
+	
     if (! go_cleanup)
     {
 
@@ -1301,6 +1311,7 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 			}
             else
             {
+				//sleep(30); // debug - Joris
                 /* child process, handle the association */
                 cond = handleAssociation(assoc, options_.correctUIDPadding_);
 				
