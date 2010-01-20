@@ -5787,7 +5787,14 @@ END_CREATE_ROIS:
 			
 			NSString *colorspace = [dcmObject attributeValueWithName:@"PhotometricInterpretation"];		
 			if ([colorspace rangeOfString:@"MONOCHROME1"].location != NSNotFound)
-				{inverseVal = YES; savedWL = -savedWL;}													
+			{
+				if( [[dcmObject attributeValueWithName:@"Modality"] isEqualToString:@"PT"] == YES || ([[NSUserDefaults standardUserDefaults] boolForKey:@"OpacityTableNM"] == YES && [[dcmObject attributeValueWithName:@"Modality"] isEqualToString:@"NM"] == YES))
+				{
+					
+				}
+				else
+					inverseVal = YES; savedWL = -savedWL;
+			}
 			/*else if ( [colorspace hasPrefix:@"MONOCHROME2"])	{inverseVal = NO; savedWL = savedWL;} */
 			if ( [colorspace hasPrefix:@"YBR"]) isRGB = YES;		
 			if ( [colorspace hasPrefix:@"PALETTE"])	{ bitsAllocated = 8; isRGB = YES; NSLog(@"Palette depth conveted to 8 bit");}
@@ -7818,8 +7825,15 @@ END_CREATE_ROIS:
 								
 								if( gArrPhotoInterpret [fileNb] == MONOCHROME1) // INVERSE IMAGE!
 								{
-									inverseVal = YES;
-									savedWL = -savedWL;
+									if( [modalityString isEqualToString:@"PT"] == YES || ([[NSUserDefaults standardUserDefaults] boolForKey:@"OpacityTableNM"] == YES && [modalityString isEqualToString:@"NM"] == YES))
+									{
+										inverseVal = NO;
+									}
+									else
+									{
+										inverseVal = YES;
+										savedWL = -savedWL;
+									}
 								}
 								else inverseVal = NO;
 								
