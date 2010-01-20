@@ -662,6 +662,11 @@ NSString* notNil( NSString *s)
 	
 	templateString = [self setBlock: @"Report" visible: ([study valueForKey:@"reportURL"] && ![[settings valueForKey:@"iPhone"] boolValue]) forString: templateString];
 	
+	if( [[[study valueForKey:@"reportURL"] pathExtension] isEqualToString: @"pages"])
+		[templateString replaceOccurrencesOfString:@"%reportExtension%" withString: notNil( @"zip") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+	else
+		[templateString replaceOccurrencesOfString:@"%reportExtension%" withString: notNil( [[study valueForKey:@"reportURL"] pathExtension]) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+		
 	NSArray *tempArray = [templateString componentsSeparatedByString:@"%SeriesListItem%"];
 	NSString *templateStringStart = [tempArray objectAtIndex:0];
 	tempArray = [[tempArray lastObject] componentsSeparatedByString:@"%/SeriesListItem%"];
@@ -2386,6 +2391,64 @@ NSString* notNil( NSString *s)
 			data = [templateString dataUsingEncoding:NSUTF8StringEncoding];
 			err = NO;
 		}
+#pragma mark report
+		else if( [fileURL hasPrefix:@"/report"])
+		{
+			NSPredicate *browsePredicate;
+			if([[parameters allKeys] containsObject:@"id"])
+			{
+				browsePredicate = [NSPredicate predicateWithFormat:@"studyInstanceUID == %@", [parameters objectForKey:@"id"]];
+			}
+			else
+				browsePredicate = [NSPredicate predicateWithValue:NO];
+			
+			NSArray *studies = [self studiesForPredicate:browsePredicate];
+			
+			if( [studies count] == 1)
+			{
+				[self updateLogEntryForStudy: [studies lastObject] withMessage: @"Download Report"];
+				
+				NSString *reportFilePath = [[studies lastObject] valueForKey:@"reportURL"];
+				
+				reportType = [reportFilePath pathExtension];
+				
+				if( [reportType isEqualToString: @"pages"])
+				{
+					NSString *zipFileName = [NSString stringWithFormat:@"%@.zip", [reportFilePath lastPathComponent]];
+					// zip the directory into a single archive file
+					NSTask *zipTask   = [[NSTask alloc] init];
+					[zipTask setLaunchPath:@"/usr/bin/zip"];
+					[zipTask setCurrentDirectoryPath:[[reportFilePath stringByDeletingLastPathComponent] stringByAppendingString:@"/"]];
+					if([reportType isEqualToString:@"pages"])
+						[zipTask setArguments:[NSArray arrayWithObjects: @"--quiet", @"-r" , zipFileName, [reportFilePath lastPathComponent], nil]];
+					else
+						[zipTask setArguments:[NSArray arrayWithObjects: zipFileName, [reportFilePath lastPathComponent], nil]];
+					[zipTask launch];
+					while( [zipTask isRunning]) [NSThread sleepForTimeInterval: 0.01];
+					int result = [zipTask terminationStatus];
+					[zipTask release];
+					
+					if(result==0)
+					{
+						reportFilePath = [[reportFilePath stringByDeletingLastPathComponent] stringByAppendingFormat:@"/%@", zipFileName];
+					}
+					
+					data = [NSData dataWithContentsOfFile: reportFilePath];
+					
+					[[NSFileManager defaultManager] removeFileAtPath:reportFilePath handler:nil];
+					
+					if( data)
+						err = NO;
+				}
+				else
+				{
+					data = [NSData dataWithContentsOfFile: reportFilePath];
+					
+					if( data)
+						err = NO;
+				}
+			}
+		}
 	#pragma mark ZIP
 		else if( [fileURL hasSuffix:@".zip"] || [fileURL hasSuffix:@".osirixzip"])
 		{
@@ -2615,58 +2678,6 @@ NSString* notNil( NSString *s)
 			}
 			
 			err = NO;
-		}
-	#pragma mark report
-		else if([fileURL isEqualToString:@"/report"])
-		{
-			NSPredicate *browsePredicate;
-			if([[parameters allKeys] containsObject:@"id"])
-			{
-				browsePredicate = [NSPredicate predicateWithFormat:@"studyInstanceUID == %@", [parameters objectForKey:@"id"]];
-			}
-			else
-				browsePredicate = [NSPredicate predicateWithValue:NO];
-			NSArray *studies = [self studiesForPredicate:browsePredicate];
-			
-			if( [studies count] == 1)
-			{
-				[self updateLogEntryForStudy: [studies lastObject] withMessage: @"Download Report"];
-				
-				NSString *reportFilePath = [[studies lastObject] valueForKey:@"reportURL"];
-				//NSLog(@"reportFilePath: %@", reportFilePath);
-				
-				reportType = [reportFilePath pathExtension];
-				
-				if(reportFilePath)
-				{
-					NSString *zipFileName = [NSString stringWithFormat:@"%@.zip", [reportFilePath lastPathComponent]];
-					// zip the directory into a single archive file
-					NSTask *zipTask   = [[NSTask alloc] init];
-					[zipTask setLaunchPath:@"/usr/bin/zip"];
-					[zipTask setCurrentDirectoryPath:[[reportFilePath stringByDeletingLastPathComponent] stringByAppendingString:@"/"]];
-					if([reportType isEqualToString:@"pages"])
-						[zipTask setArguments:[NSArray arrayWithObjects: @"--quiet", @"-r" , zipFileName, [reportFilePath lastPathComponent], nil]];
-					else
-						[zipTask setArguments:[NSArray arrayWithObjects: zipFileName, [reportFilePath lastPathComponent], nil]];
-					[zipTask launch];
-					while( [zipTask isRunning]) [NSThread sleepForTimeInterval: 0.01];
-					int result = [zipTask terminationStatus];
-					[zipTask release];
-					
-					if(result==0)
-					{
-						reportFilePath = [[reportFilePath stringByDeletingLastPathComponent] stringByAppendingFormat:@"/%@", zipFileName];
-					}
-					
-					data = [NSData dataWithContentsOfFile:reportFilePath];
-					
-					[[NSFileManager defaultManager] removeFileAtPath:reportFilePath handler:nil];
-					
-					err = NO;
-				}
-				else
-					err = YES;
-			}
 		}
 		#pragma mark m4v
 		else if([fileURL hasSuffix:@".m4v"])
