@@ -5814,7 +5814,14 @@ END_CREATE_ROIS:
 				ptr   = tmpImage;
 				
 				if( bitsAllocated > 8)
-				{ // RGB_FFF
+				{
+					if( [pixData length] < height*width*2*3)
+					{
+						NSLog( @"************* [pixData length] < height*width*2*3");
+						loop = [pixData length]/6;
+					}
+					
+					// RGB_FFF
 					unsigned short   *bufPtr;
 					bufPtr = (unsigned short*) oImage;
 					while( loop-- > 0)
@@ -5826,7 +5833,14 @@ END_CREATE_ROIS:
 					}
 				}
 				else
-				{ // RGB_888
+				{
+					if( [pixData length] < height*width*3)
+					{
+						NSLog( @"************* [pixData length] < height*width*3");
+						loop = [pixData length]/3;
+					}
+					
+					// RGB_888
 					unsigned char   *bufPtr;
 					bufPtr = (unsigned char*) oImage;
 					
@@ -5843,7 +5857,8 @@ END_CREATE_ROIS:
 				oImage = (short*) tmpImage;
 			}
 			else if( bitsAllocated == 8)
-			{	// Planar 8
+			{
+				// Planar 8
 				//-> 16 bits image
 				unsigned char   *bufPtr;
 				short			*ptr, *tmpImage;
@@ -5856,6 +5871,13 @@ END_CREATE_ROIS:
 				ptr    = tmpImage;
 				
 				loop = totSize/2;
+				
+				if( [pixData length] < loop)
+				{
+					NSLog( @"************* [pixData length] < height * width");
+					loop = [pixData length];
+				}
+				
 				while( loop-- > 0)
 				{
 					*ptr++ = *bufPtr++;
@@ -5899,7 +5921,7 @@ END_CREATE_ROIS:
 			{
 				if( bitsAllocated == 32) // 32-bit float
 				{
-					float			*sfloat = (float*) oImage;
+					float *sfloat = (float*) oImage;
 					
 					if( fExternalOwnedImage)
 						fImage = fExternalOwnedImage;
@@ -5930,13 +5952,9 @@ END_CREATE_ROIS:
 					src16.data = oImage;
 					
 					if( fExternalOwnedImage)
-					{
 						fImage = fExternalOwnedImage;
-					}
 					else
-					{
 						fImage = malloc(width*height*sizeof(float) + 100);
-					}
 					
 					dstf.data = fImage;
 					

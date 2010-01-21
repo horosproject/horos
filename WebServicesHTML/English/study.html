@@ -58,19 +58,19 @@
 								%SendingFunctions1%<input type="checkbox" class="checkbox" name="selected" value="%SeriesID%" %checked% />%/SendingFunctions1%
 							</td>
 							<td rowspan="3">
-								<a class="series" href="series?dicomcstoreport=%DicomCStorePort%&id=%SeriesID%&studyID=%StudyID%&browse=%browse%&browseParameter=%browseParameter%&search=%search%&album=%album%">
+								<a class="series" href="series%seriesExtension%?dicomcstoreport=%DicomCStorePort%&id=%SeriesID%&studyID=%StudyID%&browse=%browse%&browseParameter=%browseParameter%&search=%search%&album=%album%">
 									<img src="%thumbnail%" class="thumbnail">
 								</a>
 							</td>
 							<td class="tdSeriesName">
-								<a class="series" href="series?dicomcstoreport=%DicomCStorePort%&id=%SeriesID%&studyID=%StudyID%&browse=%browse%&browseParameter=%browseParameter%&search=%search%&album=%album%">
+								<a class="series" href="series%seriesExtension%?dicomcstoreport=%DicomCStorePort%&id=%SeriesID%&studyID=%StudyID%&browse=%browse%&browseParameter=%browseParameter%&search=%search%&album=%album%">
 									<span class="SeriesName">%SeriesName% %SeriesComment% %SeriesState%</span>
 								</a>
 							</td>
 						</tr>
 						<tr>
 							<td class="tdSeriesImageNumber">
-								<a class="series" href="series?dicomcstoreport=%DicomCStorePort%&id=%SeriesID%&studyID=%StudyID%&browse=%browse%&browseParameter=%browseParameter%&search=%search%&album=%album%">
+								<a class="series" href="series%seriesExtension%?dicomcstoreport=%DicomCStorePort%&id=%SeriesID%&studyID=%StudyID%&browse=%browse%&browseParameter=%browseParameter%&search=%search%&album=%album%">
 									<span class="SeriesImageNumber">%SeriesImageNumber%</span>
 								</a>
 							</td>

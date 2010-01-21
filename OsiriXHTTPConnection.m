@@ -18,6 +18,7 @@
 #import "UserTable.h"
 #import "DicomFile.h"
 #import <Message/NSMailDelivery.h>
+#import <OsiriX/DCMAbstractSyntaxUID.h>
 
 #include <netdb.h>
 #include <sys/socket.h>
@@ -716,7 +717,12 @@ NSString* notNil( NSString *s)
 		[tempHTML replaceOccurrencesOfString:@"%SeriesComment%" withString: notNil( [series valueForKey:@"comment"]) options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 		[tempHTML replaceOccurrencesOfString:@"%PatientName%" withString: notNil( [series valueForKeyPath:@"study.name"]) options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 		
-		NSString *stateText = [[BrowserController statesArray] objectAtIndex: [[series valueForKey:@"stateText"] intValue]];
+		if( [DCMAbstractSyntaxUID isPDF: [series valueForKey: @"seriesSOPClassUID"]])
+			[tempHTML replaceOccurrencesOfString:@"%seriesExtension%" withString: @".pdf"  options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+		else
+			[tempHTML replaceOccurrencesOfString:@"%seriesExtension%" withString: @""  options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+
+		NSString *stateText = [[BrowserController statesArray] objectAtIndex: [[series valueForKey: @"stateText"] intValue]];
 		if( [[series valueForKey:@"stateText"] intValue] == 0)
 			stateText = nil;
 		[tempHTML replaceOccurrencesOfString:@"%SeriesState%" withString: notNil( stateText) options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
@@ -2289,8 +2295,40 @@ NSString* notNil( NSString *s)
 			}
 			err = NO;
 		}
+	#pragma mark series.pdf
+		else if( [fileURL isEqualToString:@"/series.pdf"])
+		{
+			NSPredicate *browsePredicate;
+			if([[parameters allKeys] containsObject:@"id"])
+			{
+				if( [[parameters allKeys] containsObject:@"studyID"])
+					browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", [[parameters objectForKey:@"studyID"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[parameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+				else
+					browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@", [[parameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+			}
+			else
+				browsePredicate = [NSPredicate predicateWithValue:NO];
+			
+			NSArray *series = [self seriesForPredicate: browsePredicate];
+			
+			if( [series count] == 1)
+			{
+				if( [DCMAbstractSyntaxUID isPDF: [[series lastObject] valueForKey: @"seriesSOPClassUID"]])
+				{
+					DCMObject *dcmObject = [DCMObject objectWithContentsOfFile: [[[[series lastObject] valueForKey: @"images"] anyObject] valueForKey: @"completePath"]  decodingPixelData:NO];
+				
+					if ([[dcmObject attributeValueWithName:@"SOPClassUID"] isEqualToString: [DCMAbstractSyntaxUID pdfStorageClassUID]])
+					{
+						data = [dcmObject attributeValueWithName:@"EncapsulatedDocument"];
+						
+						if( data)
+							err = NO;
+					}
+				}
+			}
+		}
 	#pragma mark series
-		else if([fileURL isEqualToString:@"/series"])
+		else if( [fileURL isEqualToString:@"/series"])
 		{
 			NSMutableString *templateString = [NSMutableString stringWithContentsOfFile:[webDirectory stringByAppendingPathComponent:@"series.html"]];			
 			[templateString replaceOccurrencesOfString:@"%StudyID%" withString: notNil( [parameters objectForKey:@"studyID"]) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
