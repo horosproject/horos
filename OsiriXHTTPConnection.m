@@ -1592,7 +1592,8 @@ NSString* notNil( NSString *s)
 
 - (NSString *)realm
 {
-	return NSLocalizedString( @"OsiriX Web Portal", nil);
+	// Change the realm each day
+	return [NSString stringWithFormat: @"OsiriX Web Portal (%@ - %@)" , [[AppController sharedAppController] privateIP], [BrowserController  DateOfBirthFormat: [NSDate date]] ];
 }
 
 - (NSRect) centerRect: (NSRect) smallRect
