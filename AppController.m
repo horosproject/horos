@@ -1210,7 +1210,7 @@ static NSDate *lastWarningDate = nil;
 		[[BrowserController currentBrowser] outlineViewRefresh];
 	}
 	
-	if( [[defaults valueForKey: @"webServerAddress"] length] == 0)
+	if( [(NSString*) [defaults valueForKey: @"webServerAddress"] length] == 0)
 		[defaults setValue: [[AppController sharedAppController] privateIP] forKey: @"webServerAddress"];
 	
 	if( [defaults integerForKey: @"httpWebServer"])

@@ -366,7 +366,7 @@ NSString* notNil( NSString *s)
 			
 			for( NSManagedObject *user in users)
 			{
-				if( [[user valueForKey: @"emailNotification"] boolValue] == YES && [[user valueForKey: @"email"] length] > 2)
+				if( [[user valueForKey: @"emailNotification"] boolValue] == YES && [(NSString*) [user valueForKey: @"email"] length] > 2)
 				{
 					NSArray *filteredStudies = studies;
 					
@@ -1051,7 +1051,7 @@ NSString* notNil( NSString *s)
 	
 	[[BrowserController currentBrowser].managedObjectContext lock];
 	
-	if( [[currentUser valueForKey: @"studyPredicate"] length] > 0) // First, take all the available studies for this user, and then get the series : SECURITY : we want to be sure that he cannot access to unauthorized images
+	if( [(NSString*) [currentUser valueForKey: @"studyPredicate"] length] > 0) // First, take all the available studies for this user, and then get the series : SECURITY : we want to be sure that he cannot access to unauthorized images
 	{
 		@try
 		{
@@ -1142,7 +1142,7 @@ NSString* notNil( NSString *s)
 	{
 		NSArray *originalAlbum = [[album valueForKey:@"studies"] allObjects];
 		
-		if( currentUser && [[currentUser valueForKey: @"studyPredicate"] length] > 0)
+		if( currentUser && [(NSString*) [currentUser valueForKey: @"studyPredicate"] length] > 0)
 		{
 			@try
 			{
@@ -1664,7 +1664,7 @@ NSString* notNil( NSString *s)
 	if( [method isEqualToString: @"POST"] && multipartData && [multipartData count] == 1) // through POST
 	{
 		url = [url stringByAppendingString: @"?"];
-		url = [url stringByAppendingString: [[[NSString alloc] initWithBytes: [[multipartData lastObject] bytes] length: [[multipartData lastObject] length] encoding: NSUTF8StringEncoding] autorelease]];
+		url = [url stringByAppendingString: [[[NSString alloc] initWithBytes: [[multipartData lastObject] bytes] length: [(NSData*) [multipartData lastObject] length] encoding: NSUTF8StringEncoding] autorelease]];
 	}
 	
 	// parse the URL to find the parameters (if any)
@@ -3085,7 +3085,7 @@ NSString* notNil( NSString *s)
 				{
 					postHeaderOK = TRUE;
 					
-					NSString* postInfo = [[NSString alloc] initWithBytes: [[multipartData objectAtIndex:1] bytes] length:[[multipartData objectAtIndex:1] length] encoding:NSUTF8StringEncoding];
+					NSString* postInfo = [[NSString alloc] initWithBytes: [[multipartData objectAtIndex:1] bytes] length:[(NSData*) [multipartData objectAtIndex:1] length] encoding:NSUTF8StringEncoding];
 					
 					[postBoundary release];
 					postBoundary = [[multipartData objectAtIndex:0] copy];

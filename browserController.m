@@ -4979,6 +4979,10 @@ static NSArray*	statesArray = nil;
 	[pool release];
 }
 
+- (void) refreshBonjourSource: (id) sender
+{
+}
+
 -(void)checkBonjourUpToDate: (id)sender
 {
 	[self testAutorouting];
@@ -9746,7 +9750,7 @@ static BOOL needToRezoom;
 
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 #pragma mark-
-#pragma mark Albums/send & ReceiveLog/Bonjour TableView functions
+#pragma mark Albums/Bonjour TableView functions
 
 //NSTableView delegate and datasource
 - (NSInteger)numberOfRowsInTableView: (NSTableView *)aTableView
@@ -9950,9 +9954,18 @@ static BOOL needToRezoom;
 		{
 			[(ImageAndTextCell*) aCell setImage:[NSImage imageNamed:@"osirix16x16.tif"]];
 		}
-		else if( [[dict valueForKey:@"type"] isEqualToString:@"bonjour"])
+		else if( [[dict valueForKey:@"type"] isEqualToString: @"bonjour"])
 		{
 			[(ImageAndTextCell*) aCell setImage:[NSImage imageNamed:@"bonjour.tif"]];
+			
+			if( [aCell isHighlighted])
+			{
+				NSMenu *menu = [[[NSMenu alloc] initWithTitle: @""] autorelease];
+				[menu addItemWithTitle: NSLocalizedString( @"Refresh", nil) action: @selector( refreshBonjourSource:) keyEquivalent: @""];
+				[aCell setMenu: menu];
+			}
+			else
+				[aCell setMenu: nil];
 		}
 		else
 		{
@@ -9968,7 +9981,18 @@ static BOOL needToRezoom;
 			}
 			
 			if( [type isEqualToString:@"fixedIP"])
+			{
 				[(ImageAndTextCell*) aCell setImage:[NSImage imageNamed:@"FixedIP.tif"]];
+			
+				if( [aCell isHighlighted])
+				{
+					NSMenu *menu = [[[NSMenu alloc] initWithTitle: @""] autorelease];
+					[menu addItemWithTitle: NSLocalizedString( @"Refresh", nil) action: @selector( refreshBonjourSource:) keyEquivalent: @""];
+					[aCell setMenu: menu];
+				}
+				else
+					[aCell setMenu: nil];
+			}
 			
 			if( [type isEqualToString:@"localPath"])
 			{
@@ -15386,7 +15410,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		
 		if( result == NSRunStoppedResponse)
 		{
-			if( [[[NSUserDefaults standardUserDefaults] valueForKey: @"defaultZIPPasswordForEmail"] length] < 8)
+			if( [(NSString*) [[NSUserDefaults standardUserDefaults] valueForKey: @"defaultZIPPasswordForEmail"] length] < 8)
 			{
 				NSBeep();
 				goto redoZIPpassword;
