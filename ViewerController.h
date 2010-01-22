@@ -12,6 +12,8 @@
      PURPOSE.
 =========================================================================*/
 
+#define MAX4D 500
+
 #import <Cocoa/Cocoa.h>
 #import <AppKit/AppKit.h>
 
@@ -238,9 +240,9 @@ enum
 	
 	IBOutlet NSMatrix		*buttonToolMatrix;
 	
-	NSMutableArray			*fileList[200];
-    NSMutableArray          *pixList[200], *roiList[200];
-	NSData					*volumeData[200];
+	NSMutableArray			*fileList[ MAX4D];
+    NSMutableArray          *pixList[ MAX4D], *roiList[ MAX4D];
+	NSData					*volumeData[ MAX4D];
 	short					curMovieIndex, maxMovieIndex, orientationVector;
     NSToolbar               *toolbar;
 	

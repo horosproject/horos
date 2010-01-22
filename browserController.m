@@ -4981,6 +4981,7 @@ static NSArray*	statesArray = nil;
 
 - (void) refreshBonjourSource: (id) sender
 {
+	[self checkBonjourUpToDate: sender];
 }
 
 -(void)checkBonjourUpToDate: (id)sender
@@ -9961,7 +9962,7 @@ static BOOL needToRezoom;
 			if( [aCell isHighlighted])
 			{
 				NSMenu *menu = [[[NSMenu alloc] initWithTitle: @""] autorelease];
-				[menu addItemWithTitle: NSLocalizedString( @"Refresh", nil) action: @selector( refreshBonjourSource:) keyEquivalent: @""];
+				[[menu addItemWithTitle: NSLocalizedString( @"Refresh", nil) action: @selector( refreshBonjourSource:) keyEquivalent: @""] setTarget: self];
 				[aCell setMenu: menu];
 			}
 			else
@@ -10800,7 +10801,7 @@ static BOOL needToRezoom;
 	BOOL				multiFrame = NO;
 	float				*fVolumePtr = nil;
 	NSData				*volumeData = nil;
-	NSMutableArray		*viewerPix[ 200];
+	NSMutableArray		*viewerPix[ MAX4D];
 	ViewerController	*movieController = nil;
 	ViewerController	*createdViewer = viewer;
 	
@@ -11293,9 +11294,9 @@ static BOOL needToRezoom;
 			NSRunCriticalAlertPanel( NSLocalizedString(@"4D Player",@"4D Player"), NSLocalizedString(@"To see an animated series, you have to select multiple series of the same area at different times: e.g. a cardiac CT", nil), NSLocalizedString(@"OK",nil), nil, nil);
 			movieError = YES;
 		}
-		else if( [toOpenArray count] >= 200)
+		else if( [toOpenArray count] >= MAX4D)
 		{
-			NSRunCriticalAlertPanel( NSLocalizedString(@"4D Player",@"4D Player"), NSLocalizedString(@"4D Player is limited to a maximum number of 200 series.", nil), NSLocalizedString(@"OK",nil), nil, nil);
+			NSRunCriticalAlertPanel( NSLocalizedString(@"4D Player",@"4D Player"), [NSString stringWithFormat: NSLocalizedString(@"4D Player is limited to a maximum number of %d series.", nil), MAX4D], NSLocalizedString(@"OK",nil), nil, nil);
 			movieError = YES;
 		}
 		else

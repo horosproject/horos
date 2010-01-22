@@ -101,7 +101,7 @@
 	NSMutableArray			*roi2DPointsArray, *sliceNumber2DPointsArray, *x2DPointsArray, *y2DPointsArray, *z2DPointsArray;
 	
 	// ROIs Volumes
-	NSMutableArray			*roiVolumes[200];
+	NSMutableArray			*roiVolumes[ MAX4D];
 	
 	NSString				*_renderingMode;
 	

@@ -6747,7 +6747,7 @@ static ViewerController *draggedController = nil;
 	int index = [imageView curImage];
 	BOOL isResampled = YES;
 	
-	NSMutableArray *savedROIs[ 200];
+	NSMutableArray *savedROIs[ MAX4D];
 	
 	for( int j = 0 ; j < maxMovieIndex && isResampled == YES ; j ++)
 	{	

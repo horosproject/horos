@@ -49,9 +49,9 @@
 	VRController *hiddenVRController;
 	VRView *hiddenVRView;
 		
-	NSMutableArray *filesList[200], *pixList[200];
+	NSMutableArray *filesList[ MAX4D], *pixList[ MAX4D];
 	DCMPix *originalPix;
-	NSData *volumeData[200];
+	NSData *volumeData[ MAX4D];
 	BOOL avoidReentry;
 	
 	// 4D Data support
