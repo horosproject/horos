@@ -2671,7 +2671,7 @@ static BOOL initialized = NO;
 
 - (void) applicationWillFinishLaunching: (NSNotification *) aNotification
 {
-	[N2Debug setActive:[[NSUserDefaults standardUserDefaults] boolForKey:@"DEBUG"]];
+//	[N2Debug setActive:[[NSUserDefaults standardUserDefaults] boolForKey:@"DEBUG"]];
 	
 	BOOL dialog = NO;
 	
