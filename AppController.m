@@ -48,6 +48,7 @@
 #import "WaitRendering.h"
 #import "OsiriXHTTPConnection.h"
 #import "ThreadPoolServer.h"
+#import <Nitrogen/N2Debug.h>
 
 #define BUILTIN_DCMTK YES
 
@@ -2670,6 +2671,8 @@ static BOOL initialized = NO;
 
 - (void) applicationWillFinishLaunching: (NSNotification *) aNotification
 {
+	[N2Debug setActive:[[NSUserDefaults standardUserDefaults] boolForKey:@"DEBUG"]];
+	
 	BOOL dialog = NO;
 	
 	if( dialog == NO)

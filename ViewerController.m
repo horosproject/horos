@@ -1987,7 +1987,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		item = [[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"ROI", nil) action: nil keyEquivalent:@""];
 		[item setTag: -1];
 		[item setTarget: self];
-		[item setImage: [NSImage imageNamed:image]];
+		[item setImage: [self imageForROI: [imageView currentTool]]];
 		[contextualMenu addItem:item];
 		[item release];
 		
@@ -12104,10 +12104,10 @@ int i,j,l;
 	[toolsMatrix selectCellAtRow:0 column:5];
 	
 	[self setDefaultToolMenu:[toolsMatrix selectedCell]];
-	//change Image in contextual menu 4/22/04
-	NSMenu *menu = [imageView menu];
-	[[menu itemAtIndex:5] setImage: [self imageForROI: roitype]];
-	[[menu itemAtIndex:5] setTag: -1];
+	//change Image in contextual menu 4/22/04, removed on 2010-01-22 because menus are now regenerated when rightclick happens
+//	NSMenu *menu = [imageView menu];
+//	[[menu itemAtIndex:5] setImage: [self imageForROI: roitype]];
+//	[[menu itemAtIndex:5] setTag: -1];
 }
 
 -(void) setROITool:(id) sender

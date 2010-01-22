@@ -892,6 +892,9 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 	
 	[c reduceTextureIfPossible];
 	
+	c->_hasIsSpline = _hasIsSpline;
+	c->_isSpline = _isSpline;
+	
 	return c;
 }
 
