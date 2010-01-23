@@ -1201,7 +1201,13 @@ static NSDate *lastWarningDate = nil;
 		refreshViewer = YES;
 	if ([[previousDefaults valueForKey: @"publishDICOMBonjour"] intValue] != [defaults integerForKey: @"publishDICOMBonjour"])
 		restartListener = YES;
-		
+	
+	if( [defaults integerForKey: @"httpWebServer"] == 1 && [defaults integerForKey: @"httpWebServer"] != [[previousDefaults valueForKey: @"httpWebServer"] intValue])
+	{
+		if( hasMacOSXSnowLeopard() == NO)
+			NSRunCriticalAlertPanel( NSLocalizedString( @"Unsupported", nil), NSLocalizedString( @"It is highly recommend to upgrade to MacOS 10.6 or higher to use the OsiriX Web Server.", nil), NSLocalizedString( @"OK", nil) , nil, nil);
+	}
+	
 	[previousDefaults release];
 	previousDefaults = [dictionaryRepresentation retain];
 	
@@ -1213,12 +1219,6 @@ static NSDate *lastWarningDate = nil;
 	
 	if( [(NSString*) [defaults valueForKey: @"webServerAddress"] length] == 0)
 		[defaults setValue: [[AppController sharedAppController] privateIP] forKey: @"webServerAddress"];
-	
-	if( [defaults integerForKey: @"httpWebServer"])
-	{
-		if( hasMacOSXSnowLeopard() == NO)
-			NSRunCriticalAlertPanel( NSLocalizedString( @"Unsupported", nil), NSLocalizedString( @"It is highly recommend to upgrade to MacOS 10.6 or higher to use the OsiriX Web Server.", nil), NSLocalizedString( @"OK", nil) , nil, nil);
-	}
 	
 	if (restartListener)
 	{
