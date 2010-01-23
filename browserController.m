@@ -15479,7 +15479,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[script release];
 		[arguments release];
 	}
-	else NSRunCriticalAlertPanel( NSLocalizedString( @"Unsupported", nil), NSLocalizedString( @"This function requires MacOS 10.6 or higher.", nil), NSLocalizedString( @"OK", nil) , nil, nil);
+	else if( [NSThread isMainThread] NSRunCriticalAlertPanel( NSLocalizedString( @"Unsupported", nil), NSLocalizedString( @"This function requires MacOS 10.6 or higher.", nil), NSLocalizedString( @"OK", nil) , nil, nil);
 }
 
 #endif
@@ -16037,7 +16037,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	NSTask *t;
 	NSArray *args;
 	
-	if( hasMacOSXSnowLeopard() == NO && [password length] > 0)
+	if( hasMacOSXSnowLeopard() == NO && [password length] > 0 && [NSThread isMainThread])
 	{
 		password = nil;
 		NSRunCriticalAlertPanel(NSLocalizedString(@"ZIP Encryption", nil), NSLocalizedString(@"ZIP encryption requires MacOS 10.6 or higher The ZIP file will be generated, but NOT encrypted with a password.", nil), NSLocalizedString(@"OK",nil),nil, nil);
@@ -16108,7 +16108,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	NSTask *t;
 	NSArray *args;
 	
-	if( hasMacOSXSnowLeopard() == NO && [password length] > 0)
+	if( hasMacOSXSnowLeopard() == NO && [password length] > 0 && [NSThread isMainThread])
 	{
 		password = nil;
 		NSRunCriticalAlertPanel(NSLocalizedString(@"ZIP Encryption", nil), NSLocalizedString(@"ZIP encryption requires MacOS 10.6 or higher The ZIP file will be generated, but NOT encrypted with a password.", nil), NSLocalizedString(@"OK",nil),nil, nil);

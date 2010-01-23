@@ -1217,10 +1217,7 @@ static NSDate *lastWarningDate = nil;
 	if( [defaults integerForKey: @"httpWebServer"])
 	{
 		if( hasMacOSXSnowLeopard() == NO)
-		{
-			[defaults setBool: NO forKey: @"httpWebServer"];
-			NSRunCriticalAlertPanel( NSLocalizedString( @"Unsupported", nil), NSLocalizedString( @"This function requires MacOS 10.6 or higher.", nil), NSLocalizedString( @"OK", nil) , nil, nil);
-		}
+			NSRunCriticalAlertPanel( NSLocalizedString( @"Unsupported", nil), NSLocalizedString( @"It is highly recommend to upgrade to MacOS 10.6 or higher to use the OsiriX Web Server.", nil), NSLocalizedString( @"OK", nil) , nil, nil);
 	}
 	
 	if (restartListener)
