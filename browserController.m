@@ -15479,7 +15479,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[script release];
 		[arguments release];
 	}
-	else if( [NSThread isMainThread] NSRunCriticalAlertPanel( NSLocalizedString( @"Unsupported", nil), NSLocalizedString( @"This function requires MacOS 10.6 or higher.", nil), NSLocalizedString( @"OK", nil) , nil, nil);
+	else if( [NSThread isMainThread]) NSRunCriticalAlertPanel( NSLocalizedString( @"Unsupported", nil), NSLocalizedString( @"This function requires MacOS 10.6 or higher.", nil), NSLocalizedString( @"OK", nil) , nil, nil);
 }
 
 #endif
