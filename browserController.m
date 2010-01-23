@@ -4979,11 +4979,6 @@ static NSArray*	statesArray = nil;
 	[pool release];
 }
 
-- (void) refreshBonjourSource: (id) sender
-{
-	[self checkBonjourUpToDate: sender];
-}
-
 -(void)checkBonjourUpToDate: (id)sender
 {
 	[self testAutorouting];
@@ -5021,6 +5016,11 @@ static NSArray*	statesArray = nil;
 		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"syncOsiriXDB"])
 			[[NSNotificationCenter defaultCenter] postNotificationName: OsirixServerArrayChangedNotification object:nil];
 	}
+}
+
+- (void) refreshBonjourSource: (id) sender
+{
+	[self checkBonjourUpToDate: sender];
 }
 
 - (void)refreshSmartAlbums
