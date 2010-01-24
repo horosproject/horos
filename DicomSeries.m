@@ -171,31 +171,6 @@
 	return [imageArray sortedArrayUsingDescriptors:sortDescriptors];
 }
 
-- (NSString *)dicomSeriesInstanceUID
-{
-	[[self managedObjectContext] lock];
-	
-	//core data stores the series uid int the form: seriesNumber, uid,  a bunch of other strings
-	int seriesNumber = 0;
-	if ([self primitiveValueForKey:@"id"])
-		seriesNumber = [[self primitiveValueForKey:@"id"] intValue];
-
-	NSString *numberString = [NSString stringWithFormat:@"%8.8d",seriesNumber];
-	NSString *uid = [self primitiveValueForKey:@"seriesInstanceUID"];
-	NSArray *array = [uid componentsSeparatedByString:@" "];
-	
-	[[self managedObjectContext] unlock];
-	
-	if ([array count] < 2)
-		return uid;
-		
-	if ([numberString isEqualToString:[array objectAtIndex: 0]])
-		return [array objectAtIndex:1];
-				
-	return
-		[array objectAtIndex:0];
-}
-
 - (NSDictionary *)dictionary
 {
 	NSMutableDictionary *dict = [NSMutableDictionary dictionary];

@@ -1078,12 +1078,10 @@ extern NSManagedObjectContext *staticContext;
 		else
 			dataset ->putAndInsertString(DCM_SeriesNumber, NULL);
 				
-		if ([fetchedObject valueForKey:@"dicomSeriesInstanceUID"])
-			dataset ->putAndInsertString(DCM_SeriesInstanceUID, [[fetchedObject valueForKey:@"dicomSeriesInstanceUID"]  cStringUsingEncoding:NSISOLatin1StringEncoding]) ;
-			
-
+		if ([fetchedObject valueForKey:@"seriesDICOMUID"])
+			dataset ->putAndInsertString(DCM_SeriesInstanceUID, [[fetchedObject valueForKey:@"seriesDICOMUID"]  cStringUsingEncoding:NSISOLatin1StringEncoding]) ;
 		else
-			dataset ->putAndInsertString(DCM_StudyInstanceUID, NULL);
+			dataset ->putAndInsertString(DCM_SeriesInstanceUID, NULL);
 		
 
 		if ([fetchedObject valueForKey:@"noFiles"])

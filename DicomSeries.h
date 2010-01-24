@@ -25,7 +25,6 @@
 - (NSSet *)paths;
 - (NSSet *)keyImages;
 - (NSArray *)sortedImages;
-- (NSString *)dicomSeriesInstanceUID;
 - (NSDictionary *)dictionary;
 - (NSComparisonResult)compareName:(DicomSeries*)series;
 - (NSNumber *) noFilesExcludingMultiFrames;
