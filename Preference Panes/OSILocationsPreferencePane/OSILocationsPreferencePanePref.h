@@ -33,8 +33,7 @@
 	
 	// WADO
 	IBOutlet NSWindow				*WADOSettings;
-	int								WADOPort;
-	int								WADOTransferSyntax;
+	int								WADOPort, WADOTransferSyntax, WADOhttps;
 	NSString						*WADOUrl;
 	
 	// TLS
@@ -54,7 +53,7 @@
 	IBOutlet SFAuthorizationView	*_authView;
 }
 
-@property int WADOPort, WADOTransferSyntax;
+@property int WADOhttps, WADOPort, WADOTransferSyntax;
 @property (retain) NSString *WADOUrl;
 
 @property BOOL TLSEnabled, TLSAuthenticated, TLSUseDHParameterFileURL;

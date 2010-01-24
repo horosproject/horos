@@ -403,6 +403,9 @@ NSString* notNil( NSString *s)
 
 - (BOOL) isPasswordProtected:(NSString *)path
 {
+	if( [path hasPrefix: @"/wado"])
+		return NO;
+		
 	if( [path hasPrefix: @"/images/"])
 		return NO;
 	

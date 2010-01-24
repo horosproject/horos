@@ -33,7 +33,7 @@
 
 @implementation OSILocationsPreferencePanePref
 
-@synthesize WADOPort, WADOTransferSyntax, WADOUrl;
+@synthesize WADOPort, WADOhttps, WADOTransferSyntax, WADOUrl;
 
 @synthesize TLSEnabled, TLSAuthenticated, TLSUseDHParameterFileURL;
 @synthesize TLSDHParameterFileURL;
@@ -332,6 +332,7 @@
 	[aServer setObject: [NSNumber numberWithInt: 0] forKey: @"retrieveMode"]; // CMove
 	[aServer setObject: [NSNumber numberWithInt: 8080] forKey: @"WADOPort"];
 	[aServer setObject: [NSNumber numberWithInt: -1] forKey: @"WADOTransferSyntax"]; // useOrig=true
+	[aServer setObject: [NSNumber numberWithInt: 0] forKey: @"WADOhttps"];
 	[aServer setObject: @"wado" forKey: @"WADOUrl"];
 	
 	[aServer setObject:[NSNumber numberWithBool:NO] forKey:@"TLSEnabled"];
@@ -376,6 +377,7 @@
 	self.WADOPort = [[aServer valueForKey: @"WADOPort"] intValue];
 	self.WADOUrl = [aServer valueForKey: @"WADOUrl"];
 	self.WADOTransferSyntax = [[aServer valueForKey: @"WADOTransferSyntax"] intValue];
+	self.WADOhttps = [[aServer valueForKey: @"WADOhttps"] intValue];
 	
 	[NSApp beginSheet: WADOSettings
 		modalForWindow: [[self mainView] window]
@@ -394,6 +396,7 @@
 		[aServer setObject: [NSNumber numberWithInt: 2] forKey: @"retrieveMode"]; // WADORetrieveMode
 		[aServer setObject: [NSNumber numberWithInt: WADOPort] forKey: @"WADOPort"];
 		[aServer setObject: [NSNumber numberWithInt: WADOTransferSyntax] forKey: @"WADOTransferSyntax"];
+		[aServer setObject: [NSNumber numberWithInt: WADOhttps] forKey: @"WADOhttps"];
 		[aServer setObject: WADOUrl forKey: @"WADOUrl"];
 		
 		[[NSUserDefaults standardUserDefaults] setObject: [dicomNodes arrangedObjects] forKey: @"SERVERS"];

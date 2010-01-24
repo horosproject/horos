@@ -156,7 +156,7 @@ static PSGenerator *generator = nil;
 		@try
 		{
 			NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
-			[request setEntity: [[[[BrowserController currentBrowser] userManagedObjectModel] entitiesByName] objectForKey:@"User"]];
+			[request setEntity: [[[[BrowserController currentBrowser] userManagedObjectModel] entitiesByName] objectForKey:@"Study"]];
 			[request setPredicate: [[BrowserController currentBrowser] smartAlbumPredicateString: *value]];
 			
 			NSError *err = nil;

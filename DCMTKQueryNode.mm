@@ -633,8 +633,6 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		break;
 	}
 	
-	NSLog( @"****** unknown transfer syntax");
-	
 	return [NSString stringWithFormat: @"&useOrig=true"];
 }
 
@@ -676,7 +674,8 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 
 - (void) WADORetrieve: (DCMTKStudyQueryNode*) study // requestService: WFIND?
 {
-	NSString *baseURL = [NSString stringWithFormat: @"http://%@:%d/%@?requestType=WADO", _hostname, [[_extraParameters valueForKey: @"WADOPort"] intValue], [_extraParameters valueForKey: @"WADOUrl"]];
+	NSString *protocol = [[_extraParameters valueForKey: @"WADOhttps"] intValue] ? @"https" : @"http";
+	NSString *baseURL = [NSString stringWithFormat: @"%@://%@:%d/%@?requestType=WADO", protocol, _hostname, [[_extraParameters valueForKey: @"WADOPort"] intValue], [_extraParameters valueForKey: @"WADOUrl"]];
 	
 	int quality = 100;
 	NSString *ts = [self syntaxStringFor: [[_extraParameters valueForKey: @"WADOTransferSyntax"] intValue] imageQuality: &quality];

@@ -2161,7 +2161,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				[dicomElements setObject:[NSNumber numberWithLong: cardiacTime] forKey:@"cardiacTime"];
 				
 				val = Papy3GetElement (theGroupP, papProtocolNameGr, &nbVal, &itemType);
-				if (val != NULL) [dicomElements setObject: [DicomFile stringWithBytes: (char*) val->a encodings:encoding] forKey:@"protocolName"];
+				if (val != NULL) [dicomElements setObject: [DicomFile stringWithBytes: (char*) val->a encodings:encoding] forKey: @"protocolName"];
 				
 				//Get TE for Dual Echo and multiecho MRI sequences
 				

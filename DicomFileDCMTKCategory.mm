@@ -537,7 +537,8 @@ extern NSRecursiveLock *PapyrusLock;
 		//Protocol Name
 		if (dataset->findAndGetString(DCM_ProtocolName, string, OFFalse).good() && string != NULL)
 		{
-			NSString *protocol  = [[NSString alloc] initWithCString:string encoding: NSASCIIStringEncoding];
+			NSString *protocol = [[DicomFile stringWithBytes: (char*) string encodings: encoding] retain];
+			if( protocol == nil) protocol = [[NSString alloc] initWithCString: string encoding: encoding[ 0]];
 			[dicomElements setObject:protocol  forKey:@"protocolName"];	
 			[protocol   release];
 		}

@@ -15486,7 +15486,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 + (NSMutableString*) replaceNotAdmitted: (NSMutableString*)name
 {
-	[name replaceOccurrencesOfString:@" " withString:@"" options:0 range:NSMakeRange(0, [name length])];
+	[name replaceOccurrencesOfString:@" " withString:@"_" options:0 range:NSMakeRange(0, [name length])];
 	[name replaceOccurrencesOfString:@"." withString:@"" options:0 range:NSMakeRange(0, [name length])];
 	[name replaceOccurrencesOfString:@"," withString:@"" options:0 range:NSMakeRange(0, [name length])]; 
 	[name replaceOccurrencesOfString:@"^" withString:@"" options:0 range:NSMakeRange(0, [name length])]; 
