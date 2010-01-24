@@ -169,9 +169,21 @@
 }
 
 
-- (void)addChild:(DcmDataset *)dataset{
+- (void)addChild:(DcmDataset *)dataset
+{
 	if (!_children)
 		_children = [[NSMutableArray alloc] init];
+	
+	NSDictionary *dict = _extraParameters;
+	
+	if( [_extraParameters valueForKey: @"StudyInstanceUID"] == nil && _uid != nil)
+	{
+		NSMutableDictionary *newDict = [NSMutableDictionary dictionaryWithDictionary: _extraParameters];
+		[newDict setValue: _uid forKey: @"StudyInstanceUID"];
+		[_extraParameters release];
+		_extraParameters = [newDict retain];
+	}
+	
 	[_children addObject:[DCMTKSeriesQueryNode queryNodeWithDataset:dataset
 			callingAET:_callingAET  
 			calledAET:_calledAET
@@ -179,7 +191,7 @@
 			port:_port 
 			transferSyntax:_transferSyntax
 			compression: _compression
-			extraParameters:_extraParameters]];
+			extraParameters: _extraParameters]];
 }
 
 @end

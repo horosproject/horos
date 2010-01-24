@@ -62,8 +62,6 @@
 		_studyInstanceUID = nil;
 		const char *string = nil;
 		
-//		dataset ->print( COUT);
-		
 		if (dataset ->findAndGetString(DCM_SpecificCharacterSet, string).good() && string != nil)
 			_specificCharacterSet = [[NSString alloc] initWithCString:string encoding:NSISOLatin1StringEncoding];
 
@@ -72,7 +70,9 @@
 			
 		if (dataset ->findAndGetString(DCM_StudyInstanceUID, string).good() && string != nil) 
 			_studyInstanceUID = [[NSString alloc] initWithCString:string encoding:NSISOLatin1StringEncoding];	
-			
+		else
+			_studyInstanceUID = [[extraParameters valueForKey: @"StudyInstanceUID"] retain];
+		
 		if (dataset ->findAndGetString(DCM_SeriesDescription, string).good() && string != nil) 
 			_theDescription = [[NSString alloc] initWithCString:string  DICOMEncoding:_specificCharacterSet];
 			

@@ -390,9 +390,10 @@ extern NSManagedObjectContext *staticContext;
 	return predicate;
 }
 
-- (NSPredicate *)predicateForDataset:( DcmDataset *)dataset compressedSOPInstancePredicate: (NSPredicate**) csopPredicate
+- (NSPredicate *)predicateForDataset:( DcmDataset *)dataset compressedSOPInstancePredicate: (NSPredicate**) csopPredicate seriesLevelPredicate: (NSPredicate**) SLPredicate
 {
 	NSPredicate *compoundPredicate = nil;
+	NSPredicate *seriesLevelPredicate = nil;
 	const char *sType = NULL;
 	const char *scs = NULL;
 	
@@ -785,14 +786,34 @@ extern NSManagedObjectContext *staticContext;
 			{
 				char *string;
 				if (dcelem->getString(string).good() && string != NULL)
-					predicate = [NSPredicate predicateWithFormat:@"series.study.studyInstanceUID == %@", [NSString stringWithCString:string  DICOMEncoding:nil]];
+				{
+					predicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@", [NSString stringWithCString:string  DICOMEncoding:nil]];
+				
+					if( seriesLevelPredicate == nil)
+						seriesLevelPredicate = predicate;
+					else
+						seriesLevelPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects: predicate, seriesLevelPredicate, nil]];
+						
+					*SLPredicate = seriesLevelPredicate;
+					
+					predicate = nil;
+				}
 			}
 			else if (key == DCM_SeriesInstanceUID)
 			{
 				char *string;
 				if (dcelem->getString(string).good() && string != NULL)
 				{
-					predicate = [NSPredicate predicateWithFormat:@"series.seriesDICOMUID == %@", [NSString stringWithCString:string  DICOMEncoding:nil]];
+					predicate = [NSPredicate predicateWithFormat:@"seriesDICOMUID == %@", [NSString stringWithCString:string  DICOMEncoding:nil]];
+					
+					if( seriesLevelPredicate == nil)
+						seriesLevelPredicate = predicate;
+					else
+						seriesLevelPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects: predicate, seriesLevelPredicate, nil]];
+					
+					*SLPredicate = seriesLevelPredicate;
+					
+					predicate = nil;
 				}
 			} 
 			else if (key == DCM_SOPInstanceUID)
@@ -827,6 +848,7 @@ extern NSManagedObjectContext *staticContext;
 				if (dcelem->getString(string).good() && string != NULL)
 					predicate = [NSPredicate predicateWithFormat:@"numberOfFrames == %d", [[NSString stringWithCString:string  DICOMEncoding:nil] intValue]];
 			}
+			else NSLog( @"hh");
 		}
 		else
 		{
@@ -888,6 +910,9 @@ extern NSManagedObjectContext *staticContext;
 		NSLog(@"Exception getting predicate: %@ for dataset\n", [localException description]);
 		dataset->print(COUT);
 	NS_ENDHANDLER
+	
+	
+	
 	return compoundPredicate;
 }
 
@@ -1107,8 +1132,8 @@ extern NSManagedObjectContext *staticContext;
 	NSManagedObjectModel *model = [[BrowserController currentBrowser] managedObjectModel];
 	NSError *error = nil;
 	NSEntityDescription *entity;
-	NSPredicate *compressedSOPInstancePredicate = nil;
-	NSPredicate *predicate = [self predicateForDataset: dataset compressedSOPInstancePredicate: &compressedSOPInstancePredicate];
+	NSPredicate *compressedSOPInstancePredicate = nil, *seriesLevelPredicate = nil;
+	NSPredicate *predicate = [self predicateForDataset: dataset compressedSOPInstancePredicate: &compressedSOPInstancePredicate seriesLevelPredicate: &seriesLevelPredicate];
 	NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
 	const char *sType;
 	dataset->findAndGetString (DCM_QueryRetrieveLevel, sType, OFFalse);
@@ -1125,8 +1150,7 @@ extern NSManagedObjectContext *staticContext;
 	
 	if (entity)
 	{
-		[request setEntity:entity];
-		
+		[request setEntity: entity];
 		[request setPredicate: predicate];
 					
 		error = nil;
@@ -1142,7 +1166,27 @@ extern NSManagedObjectContext *staticContext;
 		
 		@try
 		{
-			findArray = [context executeFetchRequest:request error:&error];
+			if( seriesLevelPredicate) // First find at series level, then move to image level
+			{
+				NSFetchRequest *seriesRequest = [[[NSFetchRequest alloc] init] autorelease];
+				
+				[seriesRequest setEntity: [[model entitiesByName] objectForKey:@"Series"]];
+				[seriesRequest setPredicate: seriesLevelPredicate];
+				
+				NSArray *allSeries = [context executeFetchRequest: seriesRequest error: &error];
+				
+				findArray = [NSArray array];
+				
+				for( id series in allSeries)
+					findArray = [findArray arrayByAddingObjectsFromArray: [[series valueForKey: @"images"] allObjects]];
+				
+				findArray = [findArray filteredArrayUsingPredicate: predicate];
+			}
+			else
+				findArray = [context executeFetchRequest:request error:&error];
+			
+			NSLog( @"%@", predicate);
+			NSLog( @"%@", seriesLevelPredicate);
 			
 			if( strcmp(sType, "IMAGE") == 0 && compressedSOPInstancePredicate)
 				findArray = [findArray filteredArrayUsingPredicate: compressedSOPInstancePredicate];
@@ -1278,8 +1322,8 @@ extern NSManagedObjectContext *staticContext;
 	NSManagedObjectModel *model = [[BrowserController currentBrowser] managedObjectModel];
 	NSError *error = nil;
 	NSEntityDescription *entity;
-	NSPredicate *compressedSOPInstancePredicate = nil;
-	NSPredicate *predicate = [self predicateForDataset:dataset compressedSOPInstancePredicate: &compressedSOPInstancePredicate];
+	NSPredicate *compressedSOPInstancePredicate = nil, *seriesLevelPredicate = nil;
+	NSPredicate *predicate = [self predicateForDataset:dataset compressedSOPInstancePredicate: &compressedSOPInstancePredicate seriesLevelPredicate: &seriesLevelPredicate];
 	NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
 	const char *sType;
 	dataset->findAndGetString (DCM_QueryRetrieveLevel, sType, OFFalse);
@@ -1293,8 +1337,7 @@ extern NSManagedObjectContext *staticContext;
 	else 
 		entity = nil;
 	
-	[request setEntity:entity];
-	
+	[request setEntity: entity];
 	[request setPredicate: predicate];
 	
 	error = nil;
@@ -1311,7 +1354,24 @@ extern NSManagedObjectContext *staticContext;
 	
 	@try
 	{
-		array = [context executeFetchRequest:request error:&error];
+		if( seriesLevelPredicate) // First find at series level, then move to image level
+		{
+			NSFetchRequest *seriesRequest = [[[NSFetchRequest alloc] init] autorelease];
+			
+			[seriesRequest setEntity: [[model entitiesByName] objectForKey:@"Series"]];
+			[seriesRequest setPredicate: seriesLevelPredicate];
+			
+			NSArray *allSeries = [context executeFetchRequest: seriesRequest error: &error];
+			
+			array = [NSArray array];
+			
+			for( id series in allSeries)
+				array = [array arrayByAddingObjectsFromArray: [[series valueForKey: @"images"] allObjects]];
+			
+			array = [array filteredArrayUsingPredicate: predicate];
+		}
+		else
+			array = [context executeFetchRequest:request error:&error];
 		
 		if( strcmp(sType, "IMAGE") == 0 && compressedSOPInstancePredicate)
 			array = [array filteredArrayUsingPredicate: compressedSOPInstancePredicate];
