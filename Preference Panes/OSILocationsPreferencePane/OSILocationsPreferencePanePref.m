@@ -295,7 +295,7 @@
 			[aServer setValue:[NSNumber numberWithBool:YES] forKey:@"Send"];
 	}
 	
-	[self getTLSCertificate];
+	[self getTLSCertificate]; // JORIS, why this???
 }
 
 - (void) willUnselect
