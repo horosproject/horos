@@ -724,7 +724,7 @@ extern NSRecursiveLock *PapyrusLock;
 			serie = [[NSString alloc] initWithString: @"Localizers"];
 			[dicomElements setObject:serie forKey:@"seriesDescription"];
 			
-			[dicomElements setObject: [studyID stringByAppendingString: serieID] forKey: @"seriesDICOMUID"];
+			[dicomElements setObject: [serieID stringByAppendingString: studyID] forKey: @"seriesDICOMUID"];
 		}		
 		
 		[dicomElements setObject:[self patientUID] forKey:@"patientUID"];

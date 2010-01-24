@@ -2351,7 +2351,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 					serie = [[NSString alloc] initWithString: @"Localizers"];
 					[dicomElements setObject: serie forKey: @"seriesDescription"];
 					
-					[dicomElements setObject: [studyID stringByAppendingString: serieID] forKey: @"seriesDICOMUID"];
+					[dicomElements setObject: [serieID stringByAppendingString: studyID] forKey: @"seriesDICOMUID"];
 				}
 				
 				val = Papy3GetElement (theGroupP, papStudyIDGr, &nbVal, &itemType);
@@ -2857,7 +2857,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			serie = [[NSString alloc] initWithString: @"Localizers"];
 			[dicomElements setObject:serie forKey:@"seriesDescription"];
 			
-			[dicomElements setObject: [studyID stringByAppendingString: serieID] forKey: @"seriesDICOMUID"];
+			[dicomElements setObject: [serieID stringByAppendingString: studyID] forKey: @"seriesDICOMUID"];
 		}
 		
 		NSString *echoTime = nil;
