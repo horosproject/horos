@@ -809,7 +809,7 @@ extern NSManagedObjectContext *staticContext;
 					if( seriesLevelPredicate == nil)
 						seriesLevelPredicate = predicate;
 					else
-						seriesLevelPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects: predicate, seriesLevelPredicate, nil]];
+						seriesLevelPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects: seriesLevelPredicate, predicate, nil]];
 					
 					*SLPredicate = seriesLevelPredicate;
 					
@@ -848,7 +848,6 @@ extern NSManagedObjectContext *staticContext;
 				if (dcelem->getString(string).good() && string != NULL)
 					predicate = [NSPredicate predicateWithFormat:@"numberOfFrames == %d", [[NSString stringWithCString:string  DICOMEncoding:nil] intValue]];
 			}
-			else NSLog( @"hh");
 		}
 		else
 		{
@@ -856,7 +855,7 @@ extern NSManagedObjectContext *staticContext;
 		}
 		
 		if (predicate)
-			compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects: predicate, compoundPredicate, nil]];
+			compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects: compoundPredicate, predicate, nil]];
 	}
 	
 	{
@@ -1185,8 +1184,8 @@ extern NSManagedObjectContext *staticContext;
 			else
 				findArray = [context executeFetchRequest:request error:&error];
 			
-			NSLog( @"%@", predicate);
-			NSLog( @"%@", seriesLevelPredicate);
+//			NSLog( @"%@", predicate);
+//			NSLog( @"%@", seriesLevelPredicate);
 			
 			if( strcmp(sType, "IMAGE") == 0 && compressedSOPInstancePredicate)
 				findArray = [findArray filteredArrayUsingPredicate: compressedSOPInstancePredicate];
