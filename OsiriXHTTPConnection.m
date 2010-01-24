@@ -1797,9 +1797,9 @@ NSString* notNil( NSString *s)
 		{
 			if( [[[parameters objectForKey:@"requestType"] lowercaseString] isEqualToString: @"wado"])
 			{
-				NSString *studyUID = [[parameters objectForKey:@"studyUID"] lowercaseString];
-				NSString *seriesUID = [[parameters objectForKey:@"seriesUID"] lowercaseString];
-				NSString *objectUID = [[parameters objectForKey:@"objectUID"] lowercaseString];
+				NSString *studyUID = [parameters objectForKey:@"studyUID"];
+				NSString *seriesUID = [parameters objectForKey:@"seriesUID"];
+				NSString *objectUID = [parameters objectForKey:@"objectUID"];
 				NSString *contentType = [[[[parameters objectForKey:@"contentType"] lowercaseString] componentsSeparatedByString: @","] objectAtIndex: 0];
 				int rows = [[parameters objectForKey:@"rows"] intValue];
 				int columns = [[parameters objectForKey:@"columns"] intValue];

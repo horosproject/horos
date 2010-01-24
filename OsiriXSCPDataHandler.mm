@@ -407,7 +407,8 @@ extern NSManagedObjectContext *staticContext;
 		specificCharacterSet = [[NSString stringWithCString:scs] retain];
 		encoding = [NSString encodingForDICOMCharacterSet:specificCharacterSet];
 	}
-	else {
+	else
+	{
 		[specificCharacterSet release];
 		specificCharacterSet = [[NSString stringWithString:@"ISO_IR 100"] retain];
 		encoding = NSISOLatin1StringEncoding;
@@ -825,8 +826,7 @@ extern NSManagedObjectContext *staticContext;
 					NSArray *uids = [[NSString stringWithCString:string  DICOMEncoding:nil] componentsSeparatedByString:@"\\"];
 					NSArray *predicateArray = [NSArray array];
 					
-					int x;
-					for(x = 0; x < [uids count]; x++)
+					for(int x = 0; x < [uids count]; x++)
 					{
 						NSPredicate	*p = [NSComparisonPredicate predicateWithLeftExpression: [NSExpression expressionForKeyPath: @"compressedSopInstanceUID"] rightExpression: [NSExpression expressionForConstantValue: [DicomImage sopInstanceUIDEncodeString: [uids objectAtIndex: x]]] customSelector: @selector( isEqualToSopInstanceUID:)];
 						predicateArray = [predicateArray arrayByAddingObject: p];

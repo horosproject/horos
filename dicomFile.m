@@ -2332,26 +2332,27 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 					serieID = n;
 				}
 				
-			   if( NOLOCALIZER && ([self containsString: @"LOCALIZER" inArray: imageTypeArray] || [self containsString: @"REF" inArray: imageTypeArray] || [serie rangeOfString:@"scout" options:NSCaseInsensitiveSearch].location != NSNotFound || [serie rangeOfString:@"localizer" options:NSCaseInsensitiveSearch].location != NSNotFound))
-			   {
-				   NSString	*n;
-				   
-				   n = [[NSString alloc] initWithString: @"LOCALIZER"];
-				   [serieID release];
-				   serieID = n;
-				   
-				   [serie release];
-				   serie = [[NSString alloc] initWithString: @"Localizers"];
-				   [dicomElements setObject:serie forKey:@"seriesDescription"];
-			   }
-			   
 				val = Papy3GetElement (theGroupP, papStudyInstanceUIDGr, &nbVal, &itemType);
 				if (val != NULL) studyID = [[NSString alloc] initWithCString:val->a encoding: NSASCIIStringEncoding];
 				else
-				{
 					studyID = [[NSString alloc] initWithString:name];
-				}
+					
 				[dicomElements setObject:studyID forKey:@"studyID"];
+				
+				if( NOLOCALIZER && ([self containsString: @"LOCALIZER" inArray: imageTypeArray] || [self containsString: @"REF" inArray: imageTypeArray] || [serie rangeOfString:@"scout" options:NSCaseInsensitiveSearch].location != NSNotFound || [serie rangeOfString:@"localizer" options:NSCaseInsensitiveSearch].location != NSNotFound))
+				{
+					NSString	*n;
+
+					n = [[NSString alloc] initWithString: @"LOCALIZER"];
+					[serieID release];
+					serieID = n;
+
+					[serie release];
+					serie = [[NSString alloc] initWithString: @"Localizers"];
+					[dicomElements setObject: serie forKey: @"seriesDescription"];
+					
+					[dicomElements setObject: [studyID stringByAppendingString: serieID] forKey: @"seriesDICOMUID"];
+				}
 				
 				val = Papy3GetElement (theGroupP, papStudyIDGr, &nbVal, &itemType);
 				if (val != NULL) studyIDs = [[NSString alloc] initWithCString:val->a encoding: NSASCIIStringEncoding];
@@ -2855,6 +2856,8 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			[serie release];
 			serie = [[NSString alloc] initWithString: @"Localizers"];
 			[dicomElements setObject:serie forKey:@"seriesDescription"];
+			
+			[dicomElements setObject: [studyID stringByAppendingString: serieID] forKey: @"seriesDICOMUID"];
 		}
 		
 		NSString *echoTime = nil;
