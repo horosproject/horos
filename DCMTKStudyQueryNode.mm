@@ -157,7 +157,6 @@
 	dataset-> putAndInsertString(DCM_QueryRetrieveLevel, "SERIES", OFTrue);
 	
 	return dataset;
-	
 }
 
 - (DcmDataset *)moveDataset
