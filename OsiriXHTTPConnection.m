@@ -1998,6 +1998,12 @@ NSString* notNil( NSString *s)
 						}
 					}
 					else NSLog( @"****** WADO Server : image uid not found !");
+				
+					if( err)
+					{
+						data = [NSData data];
+						err = NO;
+					}
 				}
 				@catch (NSException * e)
 				{
