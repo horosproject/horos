@@ -93,3 +93,8 @@
 - (NSString*)DICOMTLSUniqueLabelForSelectedServer;
 
 @end
+
+
+@interface NotWADOValueTransformer: NSValueTransformer
+{}
+@end

@@ -397,6 +397,9 @@
 		[aServer setObject: [NSNumber numberWithInt: WADOhttps] forKey: @"WADOhttps"];
 		[aServer setObject: WADOUrl forKey: @"WADOUrl"];
 		
+		// disable TLS
+		[aServer setObject:[NSNumber numberWithBool:NO] forKey:@"TLSEnabled"];
+		
 		[[NSUserDefaults standardUserDefaults] setObject: [dicomNodes arrangedObjects] forKey: @"SERVERS"];
 		[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"updateServers"];
 	}
@@ -829,6 +832,33 @@
 {
 	NSMutableDictionary *aServer = [[dicomNodes arrangedObjects] objectAtIndex:[[dicomNodes tableView] selectedRow]];
 	return [DICOMTLS uniqueLabelForServerAddress:[aServer valueForKey:@"Address"] port:[NSString stringWithFormat:@"%d",[[aServer valueForKey:@"Port"] intValue]] AETitle:[aServer valueForKey:@"AETitle"]];
+}
+
+@end
+
+
+@implementation NotWADOValueTransformer
+
++ (Class)transformedValueClass
+{
+    return [NSNumber class];
+}
+
++ (BOOL)allowsReverseTransformation
+{
+    return NO;
+}
+
+- (id)transformedValue:(id)value
+{
+	if (value != nil)
+	{
+		float retrieveMode = [value intValue]; // this should be the tag of the retrieve mode
+		if (retrieveMode==2)
+			return [NSNumber numberWithInt:0];
+		return [NSNumber numberWithInt:1];
+	}
+	return [NSNumber numberWithInt:1];
 }
 
 @end
