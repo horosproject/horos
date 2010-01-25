@@ -264,10 +264,12 @@ DIMSE_readNextPDV(T_ASC_Association * assoc,
         /* check return value, if it is different from DUL_PDATAPDUARRIVED, an error occured */
         if (cond != DUL_PDATAPDUARRIVED)
         {
-            if (cond == DUL_NULLKEY || cond == DUL_ILLEGALKEY) return DIMSE_ILLEGALASSOCIATION;
-            else if (cond == DUL_PEERREQUESTEDRELEASE ||
-                     cond == DUL_PEERABORTEDASSOCIATION) return cond;
-            else return makeDcmnetSubCondition(DIMSEC_READPDVFAILED, OF_error, "DIMSE Read PDV failed", cond);
+            if (cond == DUL_NULLKEY || cond == DUL_ILLEGALKEY)
+				return DIMSE_ILLEGALASSOCIATION;
+            else if (cond == DUL_PEERREQUESTEDRELEASE || cond == DUL_PEERABORTEDASSOCIATION)
+				return cond;
+            else
+				return makeDcmnetSubCondition(DIMSEC_READPDVFAILED, OF_error, "DIMSE Read PDV failed", cond);
         }
 
         /* get the next PDV, assign it to pdv */

@@ -7607,7 +7607,7 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 59A63E7A1042C702003F4069 /* Nitrogen.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 591403A21105B88A00D6A504 /* Unit Tests.octest */;
+			remoteGlobalIDString = 591403A21105B88A00D6A504;
 			remoteInfo = "Unit Tests";
 		};
 		AB72503B0ADE6F7000A212A0 /* PBXContainerItemProxy */ = {

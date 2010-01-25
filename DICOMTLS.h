@@ -31,12 +31,19 @@ typedef enum
 #define TLS_KEYCHAIN_IDENTITY_NAME_SERVER @"com.osirixviewer.dicomtlsserver"
 #define TLS_PRIVATE_KEY_PASSWORD @"SuperSecretPassword"
 
-
+/** \brief
+ A utility class for secure DICOM connections with TLS.
+ It provides an access to Mac OS X Keychain.
+ */
 @interface DICOMTLS : NSObject {
 
 }
 
 #pragma mark Cipher Suites
+/**
+	Returns the list of available Ciphersuites.
+	These are basically the one available through DCMTK.
+ */
 + (NSArray*)availableCipherSuites;
 + (NSArray*)defaultCipherSuites;
 

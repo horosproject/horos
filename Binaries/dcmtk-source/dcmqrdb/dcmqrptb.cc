@@ -53,11 +53,20 @@ public:
     const char *calledAETitle,
     int processId,
     time_t startTime,
-    OFBool hasStorageAbility);
+    OFBool hasStorageAbility,
+	T_ASC_Association *assoc);
 
   /// destructor
   virtual ~DcmQueryRetrieveProcessSlot() {}
 
+	
+	/** check if this instance matches the given process ID
+	 */
+	T_ASC_Association * association()
+	{
+		return association_;
+	}
+	
   /** check if this instance matches the given process ID
    */
   OFBool matchesPID(int pid) const
@@ -75,6 +84,8 @@ private:
     /// hostname or IP address of peer system
     OFString peerName_;
 
+	T_ASC_Association *association_;
+	
     /// calling aetitle of peer
     OFString callingAETitle_;
 
@@ -98,7 +109,8 @@ DcmQueryRetrieveProcessSlot::DcmQueryRetrieveProcessSlot(
       const char *calledAETitle,
       int processId,
       time_t startTime,
-      OFBool hasStorageAbility)
+      OFBool hasStorageAbility,
+	  T_ASC_Association *assoc)
 : peerName_()        
 , callingAETitle_()
 , calledAETitle_()    
@@ -108,7 +120,8 @@ DcmQueryRetrieveProcessSlot::DcmQueryRetrieveProcessSlot(
 {
   if (peerName) peerName_ = peerName;
   if (callingAETitle) callingAETitle_ = callingAETitle; 
-  if (calledAETitle) calledAETitle_ = calledAETitle; 
+  if (calledAETitle) calledAETitle_ = calledAETitle;
+  if (assoc) association_ = assoc;
 }
 
 
@@ -152,7 +165,7 @@ void DcmQueryRetrieveProcessTable::addProcessToTable(int pid, T_ASC_Association 
     }
 
     DcmQueryRetrieveProcessSlot *slot = new DcmQueryRetrieveProcessSlot(
-      peerName, callingAETitle, calledAETitle, pid, time(NULL), hasStorageAbility);
+      peerName, callingAETitle, calledAETitle, pid, time(NULL), hasStorageAbility, assoc);
 
     /* add to start of list */
     table_.push_front(slot);
@@ -166,6 +179,29 @@ void DcmQueryRetrieveProcessTable::removeProcessFromTable(int pid)
   {
     if ((*first)->matchesPID(pid))
     {
+		// cleanup code // occurs only in multiprocess mode (fork)
+		// cleanup code for single process is done in : dcmqrsrv.mm
+		// if( true)
+		{
+			T_ASC_Association *assoc = (*first)->association();
+			OFCondition cond;
+			
+			/* the child will handle the association, we can drop it */
+			cond = ASC_dropAssociation(assoc);
+			if (cond.bad())
+			{
+				//DcmQueryRetrieveOptions::errmsg("Cannot Drop Association:");
+				DimseCondition::dump(cond);
+			}
+			
+			cond = ASC_destroyAssociation(&assoc);
+			if (cond.bad())
+			{
+				//DcmQueryRetrieveOptions::errmsg("Cannot Destroy Association:");
+				DimseCondition::dump(cond);
+			}
+		}
+		
       delete (*first);
       table_.erase(first);
       return;

@@ -1282,74 +1282,75 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 #ifdef HAVE_FORK
         else
         {
-			[[[BrowserController currentBrowser] checkIncomingLock] lock];
-			[staticContext lock]; //Try to avoid deadlock
-			
-			[DCMNetServiceDelegate DICOMServersList];
-			
-			lockFile();
-			
-            /* spawn a sub-process to handle the association */
-            pid = (int)(fork());
-            if (pid < 0)
-            {
-				printf("pid < 0. Cannot spawn new process\n");
-                DcmQueryRetrieveOptions::errmsg("Cannot create association sub-process: %s", strerror(errno));
-                cond = refuseAssociation(&assoc, CTN_CannotFork);
-                go_cleanup = OFTrue;
-            }
-            else if (pid > 0)
-            {
-                /* parent process, note process in table */
-                processtable_.addProcessToTable(pid, assoc);
+			if( cond != ASC_SHUTDOWNAPPLICATION)
+			{
+				[[[BrowserController currentBrowser] checkIncomingLock] lock];
+				[staticContext lock]; //Try to avoid deadlock
 				
-				waitUnlockFileWithPID( pid);
+				[DCMNetServiceDelegate DICOMServersList];
 				
-				NSString *str = getErrorMessage();
-				if( str)
-					[[AppController sharedAppController] performSelectorOnMainThread: @selector( displayListenerError:) withObject: str waitUntilDone: NO];
+				lockFile();
+				
+				/* spawn a sub-process to handle the association */
+				pid = (int)(fork());
+				if (pid < 0)
+				{
+					printf("pid < 0. Cannot spawn new process\n");
+					DcmQueryRetrieveOptions::errmsg("Cannot create association sub-process: %s", strerror(errno));
+					cond = refuseAssociation(&assoc, CTN_CannotFork);
+					go_cleanup = OFTrue;
+				}
+				else if (pid > 0)
+				{
+					/* parent process, note process in table */
+					processtable_.addProcessToTable(pid, assoc);
+					
+					waitUnlockFileWithPID( pid);
+					
+					NSString *str = getErrorMessage();
+					if( str)
+						[[AppController sharedAppController] performSelectorOnMainThread: @selector( displayListenerError:) withObject: str waitUntilDone: NO];
+				}
+				else
+				{
+					/* child process, handle the association */
+					cond = handleAssociation(assoc, options_.correctUIDPadding_);
+					
+					unlockFile();
+					
+					/* the child process is done so exit */
+					_Exit(3);	//to avoid spin_lock
+				}
+				
+				[staticContext unlock];
+				
+				[[[BrowserController currentBrowser] checkIncomingLock] unlock];
 			}
-            else
-            {
-				//sleep(30); // debug - Joris
-                /* child process, handle the association */
-                cond = handleAssociation(assoc, options_.correctUIDPadding_);
-				
-				unlockFile();
-				
-                /* the child process is done so exit */
-                _Exit(3);	//to avoid spin_lock
-            }
-			
-			[staticContext unlock];
-			
-			[[[BrowserController currentBrowser] checkIncomingLock] unlock];
 		}
 		[staticContext release];
 		staticContext = nil;
 #endif
     }
 
-    // cleanup code
-    OFCondition oldcond = cond;    /* store condition flag for later use */
-    if (!singleProcess && (cond != ASC_SHUTDOWNAPPLICATION))
-    {
-        /* the child will handle the association, we can drop it */
-        cond = ASC_dropAssociation(assoc);
-        if (cond.bad())
-        {
-            DcmQueryRetrieveOptions::errmsg("Cannot Drop Association:");
-            DimseCondition::dump(cond);
-        }
-        cond = ASC_destroyAssociation(&assoc);
-        if (cond.bad())
-        {
-            DcmQueryRetrieveOptions::errmsg("Cannot Destroy Association:");
-            DimseCondition::dump(cond);
-        }
-    }
-
-    if (oldcond == ASC_SHUTDOWNAPPLICATION) cond = oldcond; /* abort flag is reported to top-level wait loop */
+//    // cleanup code: this code is now done in dcmqrptb.cc
+//     OFCondition oldcond = cond;    /* store condition flag for later use */
+//    if (!singleProcess && (cond != ASC_SHUTDOWNAPPLICATION))
+//    {
+//        /* the child will handle the association, we can drop it */
+//        cond = ASC_dropAssociation(assoc);
+//        if (cond.bad())
+//        {
+//            DcmQueryRetrieveOptions::errmsg("Cannot Drop Association:");
+//            DimseCondition::dump(cond);
+//        }
+//        cond = ASC_destroyAssociation(&assoc);
+//        if (cond.bad())
+//        {
+//            DcmQueryRetrieveOptions::errmsg("Cannot Destroy Association:");
+//            DimseCondition::dump(cond);
+//        }
+//    }
+//   if (oldcond == ASC_SHUTDOWNAPPLICATION) cond = oldcond; /* abort flag is reported to top-level wait loop */
     return cond;
 }
 
