@@ -17,8 +17,9 @@
 #import "DCMTKQueryNode.h"
 
 /** \brief Image level DCMTKQueryNode*/
-@interface DCMTKImageQueryNode : DCMTKQueryNode {
-
+@interface DCMTKImageQueryNode : DCMTKQueryNode
+{
+	NSString *_studyInstanceUID, *_seriesInstanceUID;
 }
 
 @end

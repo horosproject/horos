@@ -1980,9 +1980,6 @@ extern "C"
 
 - (void) performRetrieve:(NSArray*) array
 {
-	if( [DCMTKQueryRetrieveSCP storeSCP] == NO)
-		return;
-	
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
 	NSMutableArray *moveArray = [NSMutableArray array];

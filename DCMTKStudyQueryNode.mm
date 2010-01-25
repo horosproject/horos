@@ -16,6 +16,7 @@
 #import "DCMTKStudyQueryNode.h"
 #import <OsiriX/DCMCalendarDate.h>
 #import "DCMTKSeriesQueryNode.h"
+#import "DCMTKImageQueryNode.h"
 #import "DICOMToNSString.h"
 
 #undef verify
@@ -183,14 +184,33 @@
 		_extraParameters = [newDict retain];
 	}
 	
-	[_children addObject:[DCMTKSeriesQueryNode queryNodeWithDataset:dataset
-			callingAET:_callingAET  
-			calledAET:_calledAET
-			hostname:_hostname 
-			port:_port 
-			transferSyntax:_transferSyntax
-			compression: _compression
-			extraParameters: _extraParameters]];
+	const char *queryLevel = nil;
+	
+	if (dataset->findAndGetString(DCM_QueryRetrieveLevel, queryLevel).good()){}
+	
+	if( strcmp( queryLevel, "IMAGE") == 0)
+	{
+		[_children addObject:[DCMTKImageQueryNode queryNodeWithDataset:dataset
+				callingAET:_callingAET  
+				calledAET:_calledAET
+				hostname:_hostname 
+				port:_port 
+				transferSyntax:_transferSyntax
+				compression: _compression
+				extraParameters: _extraParameters]];
+	}
+	else if( strcmp( queryLevel, "SERIES") == 0)
+	{
+		[_children addObject:[DCMTKSeriesQueryNode queryNodeWithDataset:dataset
+				callingAET:_callingAET  
+				calledAET:_calledAET
+				hostname:_hostname 
+				port:_port 
+				transferSyntax:_transferSyntax
+				compression: _compression
+				extraParameters: _extraParameters]];
+	}
+	else NSLog( @"******** unknown queryLevel *****");
 }
 
 @end

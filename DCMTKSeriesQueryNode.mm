@@ -108,7 +108,8 @@
 	return self;
 }
 
-- (void)dealloc{
+- (void)dealloc
+{
 	[_studyInstanceUID release];
 	[super dealloc];
 }

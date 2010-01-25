@@ -17,7 +17,8 @@
 #import "DCMTKQueryNode.h"
 
 /** \brief Series level DCMTKQueryNode */
-@interface DCMTKSeriesQueryNode : DCMTKQueryNode {
+@interface DCMTKSeriesQueryNode : DCMTKQueryNode
+{
 	NSString *_studyInstanceUID;
 }
 

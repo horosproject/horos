@@ -65,12 +65,16 @@
 
 		if (dataset ->findAndGetString(DCM_SOPInstanceUID, string).good() && string != nil) 
 			_uid = [[NSString alloc] initWithCString:string encoding:NSISOLatin1StringEncoding];
-
 			
+		if (dataset ->findAndGetString(DCM_SeriesInstanceUID, string).good() && string != nil) 
+			_seriesInstanceUID = [[NSString alloc] initWithCString:string encoding:NSISOLatin1StringEncoding];
+		
+		if (dataset ->findAndGetString(DCM_StudyInstanceUID, string).good() && string != nil) 
+			_studyInstanceUID = [[NSString alloc] initWithCString:string encoding:NSISOLatin1StringEncoding];
+		
 		if (dataset ->findAndGetString(DCM_InstanceNumber, string).good() && string != nil) 
 			_name = [[NSString alloc] initWithCString:string  DICOMEncoding:_specificCharacterSet];
-			
-			
+		
 		if (dataset ->findAndGetString(DCM_InstanceCreationDate, string).good() && string != nil) {
 			NSString *dateString = [[NSString alloc] initWithCString:string encoding:NSISOLatin1StringEncoding];
 			_date = [[DCMCalendarDate dicomDate:dateString] retain];
@@ -86,6 +90,14 @@
 
 	}
 	return self;
+}
+
+- (void) dealloc
+{
+	[_seriesInstanceUID release];
+	[_studyInstanceUID release];
+	
+	[super dealloc];
 }
 
 - (DcmDataset *)moveDataset{

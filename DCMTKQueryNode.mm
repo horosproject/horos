@@ -24,6 +24,7 @@
 #import "browserController.h"
 #import "AppController.h"
 #import "SendController.h"
+#import "DCMTKQueryRetrieveSCP.h"
 
 #undef verify
 #include "osconfig.h" /* make sure OS specific configuration is included first */
@@ -67,6 +68,7 @@ static OFString    opt_ciphersuites(SSL3_TXT_RSA_DES_192_CBC3_SHA);
 #endif
 
 static int inc = 0;
+static BOOL firstWadoErrorDisplayed = NO;
 
 NSException* queryException = nil;
 int debugLevel = 0;
@@ -666,7 +668,17 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		NSData *dicom = [NSData dataWithContentsOfURL: url options: 0 error: &error];
 		
 		if( error)
+		{
 			NSLog( @"****** error WADO download: %@ - url: %@", error, url);
+			
+			if( firstWadoErrorDisplayed == NO)
+			{
+				firstWadoErrorDisplayed = YES;
+				
+				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"showErrorsIfQueryFailed"])
+					[self performSelectorOnMainThread :@selector(errorMessage:) withObject: [NSArray arrayWithObjects: NSLocalizedString(@"WADO Retrieve Failed", nil), [NSString stringWithFormat: @"%@ - %@", [error localizedDescription], url], NSLocalizedString(@"Continue", nil), nil] waitUntilDone:NO];
+			}
+		}
 		
 		NSString *path = [NSString stringWithFormat:@"%s/INCOMING.noindex/", [[BrowserController currentBrowser] cfixedIncomingDirectory]];
 		
@@ -693,28 +705,33 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	int quality = 100;
 	NSString *ts = [self syntaxStringFor: [[_extraParameters valueForKey: @"WADOTransferSyntax"] intValue] imageQuality: &quality];
 	
-	// search the series
-	if( [self children] == nil)
-		[self queryWithValues: nil];
-	
 	NSMutableArray *urlToDownload = [NSMutableArray array];
 	
 	if( [self isMemberOfClass:[DCMTKStudyQueryNode class]])
 	{
-		for( DCMTKQueryNode *series in [self children])
+		// We are at STUDY level, and we want to go direclty to IMAGE level
+		
+		DcmDataset *dataset = new DcmDataset();
+		
+		dataset-> insertEmptyElement(DCM_StudyInstanceUID, OFTrue);
+		dataset-> insertEmptyElement(DCM_SeriesInstanceUID, OFTrue);
+		dataset-> insertEmptyElement(DCM_SOPInstanceUID, OFTrue);
+		dataset-> putAndInsertString(DCM_StudyInstanceUID, [_uid UTF8String], OFTrue);
+		dataset-> putAndInsertString(DCM_QueryRetrieveLevel, "IMAGE", OFTrue);
+
+		[self queryWithValues: nil dataset: dataset];
+		
+		for( DCMTKQueryNode *image in [self children])
 		{
-			// search the images
-			if( [series children] == nil)
-				[series queryWithValues: nil];
-			
-			for( DCMTKQueryNode *image in [series children])
+			if( [image uid])
 			{
-				NSURL *url = [NSURL URLWithString: [baseURL stringByAppendingFormat:@"&studyUID=%@&seriesUID=%@&objectUID=%@&contentType=application/dicom%@", [self uid], [series uid], [image uid], ts]];
+				NSURL *url = [NSURL URLWithString: [baseURL stringByAppendingFormat:@"&studyUID=%@&objectUID=%@&contentType=application/dicom%@", [self uid], [image uid], ts]];
 				[urlToDownload addObject: url];
 			}
-			
-			[series purgeChildren];
+			else NSLog( @"****** no image uid !");
 		}
+		
+		[self purgeChildren];
 	}
 	
 	if( [self isMemberOfClass:[DCMTKSeriesQueryNode class]])
@@ -725,8 +742,12 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		
 		for( DCMTKQueryNode *image in [self children])
 		{
-			NSURL *url = [NSURL URLWithString: [baseURL stringByAppendingFormat:@"&studyUID=%@&seriesUID=%@&objectUID=%@&contentType=application/dicom%@", [study uid], [self uid], [image uid], ts]];
-			[urlToDownload addObject: url];
+			if( [image uid])
+			{
+				NSURL *url = [NSURL URLWithString: [baseURL stringByAppendingFormat:@"&studyUID=%@&objectUID=%@&contentType=application/dicom%@", [study uid], [image uid], ts]];
+				[urlToDownload addObject: url];
+			}
+			else NSLog( @"****** no image uid !");
 		}
 		
 		[self purgeChildren];
@@ -735,6 +756,8 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	if( [urlToDownload count])
 	{
 		NSLog( @"------ WADO downloading : %d files", [urlToDownload count]);
+		
+		firstWadoErrorDisplayed = NO;
 		
 		#define NumberOfWADOThreads 3
 		NSRange range = NSMakeRange( 0, 1+ ([urlToDownload count] / NumberOfWADOThreads));
@@ -754,14 +777,22 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 {
 	if( [[dict valueForKey: @"retrieveMode"] intValue] == CGETRetrieveMode && retrieveMode == CGETRetrieveMode)
 	{
-		DcmDataset *dataset = [self moveDataset];
-		if ([self setupNetworkWithSyntax: UID_GETStudyRootQueryRetrieveInformationModel  dataset:dataset destination: [dict objectForKey:@"moveDestination"]])
+		if( [DCMTKQueryRetrieveSCP storeSCP] == NO)
 		{
-			//UID_GETStudyRootQueryRetrieveInformationModel
-			//UID_GETStudyRootQueryRetrieveInformationModel
+			NSException *queryException = [NSException exceptionWithName: @"DICOM Network Failure" reason: [NSString stringWithFormat: @"DICOM Listener is not activated"] userInfo:nil];
+			[queryException raise];
 		}
-		
-		if (dataset != NULL) delete dataset;
+		else
+		{
+			DcmDataset *dataset = [self moveDataset];
+			if ([self setupNetworkWithSyntax: UID_GETStudyRootQueryRetrieveInformationModel  dataset:dataset destination: [dict objectForKey:@"moveDestination"]])
+			{
+				//UID_GETStudyRootQueryRetrieveInformationModel
+				//UID_GETStudyRootQueryRetrieveInformationModel
+			}
+			
+			if (dataset != NULL) delete dataset;
+		}
 	}
 	else if( [[dict valueForKey: @"retrieveMode"] intValue] == WADORetrieveMode && retrieveMode == WADORetrieveMode)
 	{
@@ -769,13 +800,21 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	}
 	else
 	{
-		DcmDataset *dataset = [self moveDataset];
-		if ([self setupNetworkWithSyntax:UID_MOVEStudyRootQueryRetrieveInformationModel dataset:dataset destination: [dict objectForKey:@"moveDestination"]])
+		if( [DCMTKQueryRetrieveSCP storeSCP] == NO && [dict objectForKey: @"moveDestination"] == nil)
 		{
-		
+			NSException *queryException = [NSException exceptionWithName: @"DICOM Network Failure" reason: [NSString stringWithFormat: @"DICOM Listener is not activated"] userInfo:nil];
+			[queryException raise];
 		}
-		
-		if (dataset != NULL) delete dataset;
+		else
+		{
+			DcmDataset *dataset = [self moveDataset];
+			if ([self setupNetworkWithSyntax:UID_MOVEStudyRootQueryRetrieveInformationModel dataset:dataset destination: [dict objectForKey: @"moveDestination"]])
+			{
+			
+			}
+			
+			if (dataset != NULL) delete dataset;
+		}
 	}
 }
 
@@ -1150,7 +1189,8 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		
 		/* initialize network, i.e. create an instance of T_ASC_Network*. */
 		cond = ASC_initializeNetwork(NET_REQUESTOR, 0, _acse_timeout, &net);
-		if (cond.bad()) {
+		if (cond.bad())
+		{
 			DimseCondition::dump(cond);
 			queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"ASC_initializeNetwork - %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
 			[queryException raise];
