@@ -1800,6 +1800,10 @@ NSString* notNil( NSString *s)
 				NSString *studyUID = [parameters objectForKey:@"studyUID"];
 				NSString *seriesUID = [parameters objectForKey:@"seriesUID"];
 				NSString *objectUID = [parameters objectForKey:@"objectUID"];
+				
+				if( objectUID == nil)
+					NSLog( @"***** WADO with objectUID == nil -> wado will fail");
+				
 				NSString *contentType = [[[[parameters objectForKey:@"contentType"] lowercaseString] componentsSeparatedByString: @","] objectAtIndex: 0];
 				int rows = [[parameters objectForKey:@"rows"] intValue];
 				int columns = [[parameters objectForKey:@"columns"] intValue];
