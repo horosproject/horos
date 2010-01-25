@@ -7681,6 +7681,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 - (void) drawRect:(NSRect)aRect withContext:(NSOpenGLContext *)ctx
 {
+	NSRect savedDrawingFrameRect;
 	long		clutBars	= CLUTBARS;
 	long		annotations	= ANNOTATIONS;
 	
@@ -7725,6 +7726,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		[[self openGLContext] clearDrawable];
 		[[self openGLContext] setView: self];
 	}
+	
+	if( ctx == _alternateContext)
+		savedDrawingFrameRect = drawingFrameRect;
 	
 	drawingFrameRect = aRect;
 	
@@ -8633,11 +8637,17 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	[ctx  flushBuffer];
 //	[NSOpenGLContext clearCurrentContext];
 	
+	
+	drawingFrameRect = [self frame];
+	
+	if( ctx == _alternateContext)
+		drawingFrameRect = savedDrawingFrameRect;
+	
+	
 	if(iChatRunning) [drawLock unlock];
 	
 	(void)[self _checkHasChanged:YES];
 	
-	drawingFrameRect = [self frame];
 }
 
 - (void) reshape	// scrolled, moved or resized
