@@ -7356,14 +7356,16 @@ static NSArray*	statesArray = nil;
 	[self checkIncoming: self];
 	// We cannot call checkIncomingNow, because we currently have the lock for context, and IF a separate checkIncoming thread has started, he is currently waiting for the context lock, and we will wait for the checkIncomingLock...
 	
+	
+	NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+	[dbRequest setEntity: [[self.managedObjectModel entitiesByName] objectForKey: table]];
+	[dbRequest setPredicate: [NSPredicate predicateWithFormat: request]];
+	
+	[context retain];
+	[context lock];
+	
 	@try
 	{
-		NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-		[dbRequest setEntity: [[self.managedObjectModel entitiesByName] objectForKey: table]];
-		[dbRequest setPredicate: [NSPredicate predicateWithFormat: request]];
-		
-		[context retain];
-		[context lock];
 		error = nil;
 		array = [context executeFetchRequest:dbRequest error:&error];
 		
@@ -7379,8 +7381,6 @@ static NSArray*	statesArray = nil;
 		{
 			element = [array objectAtIndex: 0];	// We select the first object 
 		}
-		[context unlock];
-		[context release];
 	}
 	
 	@catch (NSException * e)
@@ -7388,6 +7388,10 @@ static NSArray*	statesArray = nil;
 		NSLog( @"******* BrowserController findObject Exception");
 		NSLog( @"%@", [e description]);
 	}
+
+	[context unlock];
+	[context release];
+	
 	
 	if( element)
 	{		
@@ -7502,10 +7506,11 @@ static NSArray*	statesArray = nil;
 		
 		if( [execute isEqualToString: @"Delete"])
 		{
+			[context retain];
+			[context lock];
+			
 			@try
 			{
-				[context retain];
-				[context lock];
 				
 				for( NSManagedObject *curElement in array)
 				{
@@ -7521,9 +7526,6 @@ static NSArray*	statesArray = nil;
 				}
 				
 				[self saveDatabase: currentDatabasePath];
-				
-				[context unlock];
-				[context release];
 			}
 			
 			@catch (NSException * e)
@@ -7531,6 +7533,9 @@ static NSArray*	statesArray = nil;
 				NSLog( @"******* BrowserController findObject Exception - Delete");
 				NSLog( @"%@", [e description]);
 			}
+			
+			[context unlock];
+			[context release];
 		}
 		
 		return 0;
