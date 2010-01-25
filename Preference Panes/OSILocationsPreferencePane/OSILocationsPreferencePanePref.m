@@ -294,8 +294,6 @@
 		if( [aServer valueForKey:@"Send"] == 0L)
 			[aServer setValue:[NSNumber numberWithBool:YES] forKey:@"Send"];
 	}
-	
-	[self getTLSCertificate]; // JORIS, why this???
 }
 
 - (void) willUnselect
