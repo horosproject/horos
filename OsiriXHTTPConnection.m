@@ -2336,6 +2336,12 @@ NSString* notNil( NSString *s)
 					}
 				}
 			}
+			
+			if( err)
+			{
+				data = [NSData data];
+				err = NO;
+			}
 		}
 	#pragma mark series
 		else if( [fileURL isEqualToString:@"/series"])
@@ -2560,6 +2566,11 @@ NSString* notNil( NSString *s)
 					
 					if( data)
 						err = NO;
+					else
+					{
+						data = [NSData data];
+						err = NO;
+					}
 				}
 				@catch( NSException *e)
 				{
