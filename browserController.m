@@ -7180,21 +7180,24 @@ static NSArray*	statesArray = nil;
 	[self checkResponder];
 	if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix)
 	{
-		NSManagedObject		*curObj = [matrixViewArray objectAtIndex: [[oMatrix selectedCell] tag]];
-		
-		if( [[curObj valueForKey:@"type"] isEqualToString:@"Image"])
-		{ 
-			files = [self filesForDatabaseMatrixSelection: dicomFiles];
-			
-			if( [databaseOutline isItemExpanded: [curObj valueForKeyPath:@"series.study"]])
-				[databaseOutline collapseItem: [curObj valueForKeyPath:@"series.study"]];
-			
-			//	[self findAndSelectFile:nil image:[dicomFiles objectAtIndex: 0] shouldExpand:NO];
-		}
-		else
+		if( [matrixViewArray count] > [[oMatrix selectedCell] tag])
 		{
-			files = [self filesForDatabaseMatrixSelection: dicomFiles];
-			[self findAndSelectFile:nil image:[dicomFiles objectAtIndex: 0] shouldExpand:YES];
+			NSManagedObject		*curObj = [matrixViewArray objectAtIndex: [[oMatrix selectedCell] tag]];
+			
+			if( [[curObj valueForKey:@"type"] isEqualToString:@"Image"])
+			{ 
+				files = [self filesForDatabaseMatrixSelection: dicomFiles];
+				
+				if( [databaseOutline isItemExpanded: [curObj valueForKeyPath:@"series.study"]])
+					[databaseOutline collapseItem: [curObj valueForKeyPath:@"series.study"]];
+				
+				//	[self findAndSelectFile:nil image:[dicomFiles objectAtIndex: 0] shouldExpand:NO];
+			}
+			else
+			{
+				files = [self filesForDatabaseMatrixSelection: dicomFiles];
+				[self findAndSelectFile:nil image:[dicomFiles objectAtIndex: 0] shouldExpand:YES];
+			}
 		}
 	}
 }
@@ -7390,10 +7393,7 @@ static NSArray*	statesArray = nil;
 				else if( [[element valueForKey: @"type"] isEqualToString: @"Study"]) study = element;
 				
 				if( [[study valueForKey: @"imageSeries"] count] == 0)
-				{
 					element = nil;
-					array = nil;
-				}
 			}
 		}
 	}

@@ -235,15 +235,22 @@ static NSTimeInterval lastConnection = 0;
 						NSString *listOfElements = nil;
 						NSNumber *ret = nil;
 						
-						if ([selName isEqual:@"DisplayStudy"])
+						@try
 						{
-							//ret = [NSNumber numberWithInt: [[BrowserController currentBrowser]	findObject:	[NSString stringWithFormat: @"patientID =='%@' AND id == '%@'", [paramDict valueForKey:@"PatientID"], [paramDict valueForKey:@"StudyID"]] table: @"Study" execute: @"Open" elements: &listOfElements]];
-							ret = [NSNumber numberWithInt:[[BrowserController currentBrowser] findObject:[NSString stringWithFormat: @"patientID =='%@' AND studyInstanceUID == '%@'", [paramDict valueForKey:@"PatientID"], [paramDict valueForKey:@"StudyInstanceUID"]] table: @"Study" execute: @"Open" elements: &listOfElements]];
+							if ([selName isEqual:@"DisplayStudy"])
+							{
+								//ret = [NSNumber numberWithInt: [[BrowserController currentBrowser]	findObject:	[NSString stringWithFormat: @"patientID =='%@' AND id == '%@'", [paramDict valueForKey:@"PatientID"], [paramDict valueForKey:@"StudyID"]] table: @"Study" execute: @"Open" elements: &listOfElements]];
+								ret = [NSNumber numberWithInt:[[BrowserController currentBrowser] findObject:[NSString stringWithFormat: @"patientID =='%@' AND studyInstanceUID == '%@'", [paramDict valueForKey:@"PatientID"], [paramDict valueForKey:@"StudyInstanceUID"]] table: @"Study" execute: @"Open" elements: &listOfElements]];
+							}
+							
+							if ([selName isEqual:@"DisplaySeries"])
+							{
+								ret = [NSNumber numberWithInt: [[BrowserController currentBrowser]	findObject:	[NSString stringWithFormat: @"study.patientID =='%@' AND seriesDICOMUID == '%@'", [paramDict valueForKey:@"PatientID"], [paramDict valueForKey:@"SeriesInstanceUID"]] table: @"Series" execute: @"Open" elements: &listOfElements]];
+							}
 						}
-						
-						if ([selName isEqual:@"DisplaySeries"])
+						@catch (NSException *e)
 						{
-							ret = [NSNumber numberWithInt: [[BrowserController currentBrowser]	findObject:	[NSString stringWithFormat: @"study.patientID =='%@' AND seriesDICOMUID == '%@'", [paramDict valueForKey:@"PatientID"], [paramDict valueForKey:@"SeriesInstanceUID"]] table: @"Series" execute: @"Open" elements: &listOfElements]];
+							NSLog( @"****** XML-RPC Exception: %@", e);
 						}
 						
 						// *****
