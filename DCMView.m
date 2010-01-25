@@ -7720,7 +7720,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	NSPoint offset = { 0.0f, 0.0f };
 	
-	if( NSEqualRects( drawingFrameRect, aRect) == NO)
+	if( NSEqualRects( drawingFrameRect, aRect) == NO && ctx!=_alternateContext)
 	{
 		[[self openGLContext] clearDrawable];
 		[[self openGLContext] setView: self];
