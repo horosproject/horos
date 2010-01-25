@@ -7379,7 +7379,22 @@ static NSArray*	statesArray = nil;
 		
 		if( [array count])
 		{
-			element = [array objectAtIndex: 0];	// We select the first object 
+			element = [array objectAtIndex: 0];	// We select the first object
+			
+			if( [execute isEqualToString: @"Delete"] == NO)
+			{
+				NSManagedObject	*study = nil;
+				
+				if( [[element valueForKey: @"type"] isEqualToString: @"Image"]) study = [element valueForKeyPath: @"series.study"];
+				else if( [[element valueForKey: @"type"] isEqualToString: @"Series"]) study = [element valueForKey: @"study"];
+				else if( [[element valueForKey: @"type"] isEqualToString: @"Study"]) study = element;
+				
+				if( [[study valueForKey: @"imageSeries"] count] == 0)
+				{
+					element = nil;
+					array = nil;
+				}
+			}
 		}
 	}
 	
@@ -11836,7 +11851,7 @@ static BOOL needToRezoom;
 	}
 	else
 	{
-		if( [self isUsingExternalViewer: [matrixViewArray objectAtIndex: [[oMatrix selectedCell] tag]]] == NO)
+		if( [matrixViewArray count] > [[oMatrix selectedCell] tag] && [self isUsingExternalViewer: [matrixViewArray objectAtIndex: [[oMatrix selectedCell] tag]]] == NO)
 		{
 			[self viewerDICOMInt:NO	dcmFile: [self databaseSelection] viewer: nil];
 		}

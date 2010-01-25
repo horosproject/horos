@@ -41,6 +41,7 @@
 #import "altivecFunctions.h"
 #ifndef OSIRIX_LIGHT
 #import <ILCrashReporter/ILCrashReporter.h>
+#import <Nitrogen/N2Debug.h>
 #endif
 #import "PluginManagerController.h"
 #import "OSIWindowController.h"
@@ -48,7 +49,6 @@
 #import "WaitRendering.h"
 #import "OsiriXHTTPConnection.h"
 #import "ThreadPoolServer.h"
-#import <Nitrogen/N2Debug.h>
 
 #define BUILTIN_DCMTK YES
 
@@ -2668,8 +2668,6 @@ static BOOL initialized = NO;
 
 - (void) applicationWillFinishLaunching: (NSNotification *) aNotification
 {
-//	[N2Debug setActive:[[NSUserDefaults standardUserDefaults] boolForKey:@"DEBUG"]];
-	
 	BOOL dialog = NO;
 	
 	if( dialog == NO)
@@ -2678,6 +2676,9 @@ static BOOL initialized = NO;
 	}
 	
 	#ifndef OSIRIX_LIGHT
+
+	[N2Debug setActive:[[NSUserDefaults standardUserDefaults] boolForKey:@"DEBUG"]];
+
 	@try
 	{
 		[[ILCrashReporter defaultReporter] launchReporterForCompany:@"OsiriX Developers" reportAddr:@"crash@osirix-viewer.com"];
