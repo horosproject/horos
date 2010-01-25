@@ -1829,7 +1829,10 @@ NSString* notNil( NSString *s)
 				
 				@try
 				{
-					[dbRequest setPredicate: [NSPredicate predicateWithFormat: @"studyInstanceUID == %@", studyUID]];
+					if( studyUID)
+						[dbRequest setPredicate: [NSPredicate predicateWithFormat: @"studyInstanceUID == %@", studyUID]];
+					else
+						[dbRequest setPredicate: [NSPredicate predicateWithValue: YES]];
 					
 					NSArray *studies = [[[BrowserController currentBrowser] managedObjectContext] executeFetchRequest: dbRequest error: &error];
 					
@@ -1840,7 +1843,9 @@ NSString* notNil( NSString *s)
 						NSLog( @"****** WADO Server : more than 1 study with same uid");
 					
 					NSArray *allSeries = [[[studies lastObject] valueForKey: @"series"] allObjects];
-					allSeries = [allSeries filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"seriesDICOMUID == %@", seriesUID]];
+					
+					if( seriesUID)
+						allSeries = [allSeries filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"seriesDICOMUID == %@", seriesUID]];
 					
 					NSArray *allImages = [NSArray array];
 					for( id series in allSeries)
