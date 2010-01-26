@@ -4488,7 +4488,13 @@ static NSArray*	statesArray = nil;
 		
 		localizedDescription = [error localizedDescription];
 		error = [NSError errorWithDomain:@"OsiriXDomain" code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:error, NSUnderlyingErrorKey, [NSString stringWithFormat:@"Store Configuration Failure: %@", ((localizedDescription != nil) ? localizedDescription : @"Unknown Error")], NSLocalizedDescriptionKey, nil]];
-    }
+		
+		// Delete the old non-working file...
+		
+		[[NSFileManager defaultManager] removeItemAtPath: [DEFAULTUSERDATABASEPATH stringByExpandingTildeInPath] error: nil];
+		[[NSFileManager defaultManager] removeItemAtPath: [[[DEFAULTUSERDATABASEPATH stringByExpandingTildeInPath] stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"WebUsers.vers"] error: nil];
+		[userPersistentStoreCoordinator addPersistentStoreWithType: NSSQLiteStoreType configuration:nil URL:url options:nil error: &error];
+	}
 	
 	[[userManagedObjectContext undoManager] setLevelsOfUndo: 1];
 	[[userManagedObjectContext undoManager] disableUndoRegistration];
