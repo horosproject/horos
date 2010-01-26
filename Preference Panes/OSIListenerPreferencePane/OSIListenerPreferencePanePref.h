@@ -43,11 +43,13 @@
 	#if defined(OSIRIX)
 	TLSCertificateVerificationType	TLSCertificateVerification;
 	#endif
+	BOOL TLSUseSameAETITLE;
+	NSString *TLSStoreSCPAETITLE;
 }
 
-@property (retain) NSString *TLSAuthenticationCertificate;
+@property (retain) NSString *TLSAuthenticationCertificate, *TLSStoreSCPAETITLE;
 @property (retain) NSArray *TLSSupportedCipherSuite;
-@property BOOL TLSUseDHParameterFileURL;
+@property BOOL TLSUseDHParameterFileURL, TLSUseSameAETITLE;
 @property (retain) NSURL *TLSDHParameterFileURL;
 #if defined(OSIRIX)
 @property TLSCertificateVerificationType TLSCertificateVerification;
@@ -75,5 +77,6 @@
 - (IBAction)chooseTLSCertificate:(id)sender;
 - (IBAction)viewTLSCertificate:(id)sender;
 - (void)getTLSCertificate;
+- (IBAction)useSameAETitleForTLSListener:(id)sender;
 
 @end
