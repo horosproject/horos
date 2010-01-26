@@ -17,7 +17,6 @@
 #import "CSMailMailClient.h"
 #import "UserTable.h"
 #import "DicomFile.h"
-#import <Message/NSMailDelivery.h>
 #import <OsiriX/DCMAbstractSyntaxUID.h>
 
 #include <netdb.h>

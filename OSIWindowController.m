@@ -413,9 +413,11 @@ static BOOL protectedReentryWindowDidResize = NO;
 
 - (void) dealloc
 {
+	BOOL m = magneticWindowActivated;
+	
 	[super dealloc];
 	
-	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"] == YES && magneticWindowActivated == YES)
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"] == YES && m == YES)
 	{
 		if( delayedTileWindows)
 			[NSObject cancelPreviousPerformRequestsWithTarget: [AppController sharedAppController] selector:@selector(tileWindows:) object:nil];

@@ -1021,7 +1021,6 @@
 		ABD7BC5F063F00A900E24B0E /* GrayRainbow.plist in Resources */ = {isa = PBXBuildFile; fileRef = ABD7BC51063F00A900E24B0E /* GrayRainbow.plist */; };
 		ABD7BC60063F00A900E24B0E /* HotIron.plist in Resources */ = {isa = PBXBuildFile; fileRef = ABD7BC52063F00A900E24B0E /* HotIron.plist */; };
 		ABD908D80AF2119200E47345 /* AYDicomPrint.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = ABD908C60AF2119200E47345 /* AYDicomPrint.prefPane */; };
-		ABD95D180625BAEC00C77D11 /* ScreenSaver.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABD95D170625BAEC00C77D11 /* ScreenSaver.framework */; };
 		ABDC3C760670FF440042069D /* ToolBarNSWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = ABDC3C720670FF440042069D /* ToolBarNSWindow.m */; };
 		ABDC3C770670FF440042069D /* ToolBarNSWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = ABDC3C730670FF440042069D /* ToolBarNSWindow.h */; };
 		ABDE6E1906398E3400F0C5DD /* port.h in Headers */ = {isa = PBXBuildFile; fileRef = ABDE6E0B06398E3400F0C5DD /* port.h */; };
@@ -2285,7 +2284,6 @@
 		BFE0652B06755B7200AC4B67 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 		BFE2CDA609D1FE6400AE615D /* dcmqrdbq.h in Headers */ = {isa = PBXBuildFile; fileRef = BFF9D57809CDCA5600B3B940 /* dcmqrdbq.h */; };
 		BFE2CDA809D1FFAE00AE615D /* dcmqrdbq.mm in Sources */ = {isa = PBXBuildFile; fileRef = BFF9D57909CDCA5600B3B940 /* dcmqrdbq.mm */; };
-		BFEA82E00940F1D500B90699 /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BFEA82DF0940F1D500B90699 /* Quartz.framework */; };
 		BFEB763D0677FDA700F242F3 /* DCMTagDictionary.h in Headers */ = {isa = PBXBuildFile; fileRef = BFEB76370677FDA700F242F3 /* DCMTagDictionary.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BFEB763E0677FDA700F242F3 /* DCMTagDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = BFEB76380677FDA700F242F3 /* DCMTagDictionary.m */; };
 		BFEB763F0677FDA700F242F3 /* DCMTagForNameDictionary.h in Headers */ = {isa = PBXBuildFile; fileRef = BFEB76390677FDA700F242F3 /* DCMTagForNameDictionary.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -6194,7 +6192,6 @@
 		CEC7072C10A5C844008935EA /* SearchSubview.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E879E9E067F9BE100CB2F8A /* SearchSubview.m */; };
 		CEC7073010A5C844008935EA /* ButtonAndTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = BF76A59806ACC6FD00FABE42 /* ButtonAndTextField.m */; };
 		CEC7073110A5C844008935EA /* ButtonAndTextCell.m in Sources */ = {isa = PBXBuildFile; fileRef = BF76A5A606ACC70C00FABE42 /* ButtonAndTextCell.m */; };
-		CEC7073210A5C844008935EA /* Survey.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF0E50806AEDA89001FF9E5 /* Survey.m */; };
 		CEC7073310A5C844008935EA /* Mailer.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF0E60006AEF326001FF9E5 /* Mailer.m */; };
 		CEC7073410A5C844008935EA /* Scripting_Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE39BFA006BC5DAE006D6824 /* Scripting_Additions.m */; };
 		CEC7073510A5C844008935EA /* SeriesView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E55ADDC06C7FFCD0059D6EB /* SeriesView.m */; };
@@ -6460,7 +6457,6 @@
 		CEC709C110A5C844008935EA /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB6D320C05B3159D0002F793 /* IOKit.framework */; };
 		CEC709C210A5C844008935EA /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABFF0970056D92460066794C /* QuickTime.framework */; };
 		CEC709C310A5C844008935EA /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB5E1A300595697700C48BEB /* Accelerate.framework */; };
-		CEC709C410A5C844008935EA /* ScreenSaver.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABD95D170625BAEC00C77D11 /* ScreenSaver.framework */; };
 		CEC709C510A5C844008935EA /* Message.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEF0E4BB06AEC91F001FF9E5 /* Message.framework */; };
 		CEC709C610A5C844008935EA /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEF0E6DA06AEF5CB001FF9E5 /* Carbon.framework */; };
 		CEC709C710A5C844008935EA /* PreferencePanes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E3E38650715FFDC0049E72E /* PreferencePanes.framework */; };
@@ -6536,7 +6532,6 @@
 		CEC7FCBA10A5C844008935EA /* SearchSubview.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E879E9D067F9BE100CB2F8A /* SearchSubview.h */; };
 		CEC7FCBE10A5C844008935EA /* ButtonAndTextField.h in Headers */ = {isa = PBXBuildFile; fileRef = BF76A59706ACC6FD00FABE42 /* ButtonAndTextField.h */; };
 		CEC7FCBF10A5C844008935EA /* ButtonAndTextCell.h in Headers */ = {isa = PBXBuildFile; fileRef = BF76A5A506ACC70C00FABE42 /* ButtonAndTextCell.h */; };
-		CEC7FCC010A5C844008935EA /* Survey.h in Headers */ = {isa = PBXBuildFile; fileRef = CEF0E50706AEDA89001FF9E5 /* Survey.h */; };
 		CEC7FCC110A5C844008935EA /* Mailer.h in Headers */ = {isa = PBXBuildFile; fileRef = CEF0E5FF06AEF326001FF9E5 /* Mailer.h */; };
 		CEC7FCC210A5C844008935EA /* Scripting_Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = CE39BF9F06BC5DAE006D6824 /* Scripting_Additions.h */; };
 		CEC7FCC310A5C844008935EA /* SeriesView.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E55ADDB06C7FFCD0059D6EB /* SeriesView.h */; };
@@ -7222,8 +7217,6 @@
 		CEEDA35706A061EB00DEAB22 /* ThickSlabVR.h in Headers */ = {isa = PBXBuildFile; fileRef = CEEDA35306A061EB00DEAB22 /* ThickSlabVR.h */; };
 		CEEDA35806A061EB00DEAB22 /* ThickSlabVR.mm in Sources */ = {isa = PBXBuildFile; fileRef = CEEDA35406A061EB00DEAB22 /* ThickSlabVR.mm */; };
 		CEF0E4BC06AEC91F001FF9E5 /* Message.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEF0E4BB06AEC91F001FF9E5 /* Message.framework */; };
-		CEF0E50B06AEDA89001FF9E5 /* Survey.h in Headers */ = {isa = PBXBuildFile; fileRef = CEF0E50706AEDA89001FF9E5 /* Survey.h */; };
-		CEF0E50C06AEDA89001FF9E5 /* Survey.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF0E50806AEDA89001FF9E5 /* Survey.m */; };
 		CEF0E60306AEF326001FF9E5 /* Mailer.h in Headers */ = {isa = PBXBuildFile; fileRef = CEF0E5FF06AEF326001FF9E5 /* Mailer.h */; };
 		CEF0E60406AEF326001FF9E5 /* Mailer.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF0E60006AEF326001FF9E5 /* Mailer.m */; };
 		CEF0E6DC06AEF5CB001FF9E5 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEF0E6DA06AEF5CB001FF9E5 /* Carbon.framework */; };
@@ -8017,8 +8010,6 @@
 		7E2BE3F40715DBFB0017898A /* Network.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Network.tif; sourceTree = "<group>"; };
 		7E2BE3FD0715DC0D0017898A /* StartupDisk.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = StartupDisk.tif; sourceTree = "<group>"; };
 		7E2BE4180715E5040017898A /* CD.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = CD.tif; sourceTree = "<group>"; };
-		7E350843097C512200B7F40D /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = /System/Library/Frameworks/CoreFoundation.framework; sourceTree = "<absolute>"; };
-		7E350845097C514C00B7F40D /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = /System/Library/Frameworks/CoreServices.framework; sourceTree = "<absolute>"; };
 		7E3E38650715FFDC0049E72E /* PreferencePanes.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PreferencePanes.framework; path = /System/Library/Frameworks/PreferencePanes.framework; sourceTree = "<absolute>"; };
 		7E54303B07A05E7100500ABB /* DiscRecording.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DiscRecording.framework; path = /System/Library/Frameworks/DiscRecording.framework; sourceTree = "<absolute>"; };
 		7E54303C07A05E7100500ABB /* DiscRecordingUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DiscRecordingUI.framework; path = /System/Library/Frameworks/DiscRecordingUI.framework; sourceTree = "<absolute>"; };
@@ -8553,7 +8544,6 @@
 		ABD7BC52063F00A900E24B0E /* HotIron.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.xml; path = HotIron.plist; sourceTree = "<group>"; };
 		ABD908C60AF2119200E47345 /* AYDicomPrint.prefPane */ = {isa = PBXFileReference; lastKnownFileType = folder; name = AYDicomPrint.prefPane; path = "Preference Panes/AYDicomPrintPreferencePane/build/Release/AYDicomPrint.prefPane"; sourceTree = "<group>"; };
 		ABD908DB0AF211BB00E47345 /* AYDicomPrint.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = AYDicomPrint.xcodeproj; path = "Preference Panes/AYDicomPrintPreferencePane/AYDicomPrint.xcodeproj"; sourceTree = "<group>"; };
-		ABD95D170625BAEC00C77D11 /* ScreenSaver.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ScreenSaver.framework; path = /System/Library/Frameworks/ScreenSaver.framework; sourceTree = "<absolute>"; };
 		ABDC3C720670FF440042069D /* ToolBarNSWindow.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = ToolBarNSWindow.m; sourceTree = "<group>"; };
 		ABDC3C730670FF440042069D /* ToolBarNSWindow.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ToolBarNSWindow.h; sourceTree = "<group>"; };
 		ABDE6E0B06398E3400F0C5DD /* port.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = port.h; sourceTree = "<group>"; };
@@ -9721,7 +9711,6 @@
 		BFDDE5BF091717F80033317B /* DCMEncapsulatedPDF.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMEncapsulatedPDF.h; sourceTree = "<group>"; };
 		BFDDE5C0091717F80033317B /* DCMEncapsulatedPDF.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMEncapsulatedPDF.m; sourceTree = "<group>"; };
 		BFDF1D5409E06985008A4EC4 /* dcmqrcbm.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = dcmqrcbm.mm; sourceTree = "<group>"; };
-		BFEA82DF0940F1D500B90699 /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = /System/Library/Frameworks/Quartz.framework; sourceTree = "<absolute>"; };
 		BFEB76370677FDA700F242F3 /* DCMTagDictionary.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DCMTagDictionary.h; sourceTree = "<group>"; };
 		BFEB76380677FDA700F242F3 /* DCMTagDictionary.m */ = {isa = PBXFileReference; fileEncoding = 30; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = DCMTagDictionary.m; sourceTree = "<group>"; };
 		BFEB76390677FDA700F242F3 /* DCMTagForNameDictionary.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DCMTagForNameDictionary.h; sourceTree = "<group>"; };
@@ -11670,8 +11659,6 @@
 		CEEDA35306A061EB00DEAB22 /* ThickSlabVR.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThickSlabVR.h; sourceTree = "<group>"; };
 		CEEDA35406A061EB00DEAB22 /* ThickSlabVR.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ThickSlabVR.mm; sourceTree = "<group>"; };
 		CEF0E4BB06AEC91F001FF9E5 /* Message.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Message.framework; path = /System/Library/Frameworks/Message.framework; sourceTree = "<absolute>"; };
-		CEF0E50706AEDA89001FF9E5 /* Survey.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Survey.h; sourceTree = "<group>"; };
-		CEF0E50806AEDA89001FF9E5 /* Survey.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Survey.m; sourceTree = "<group>"; };
 		CEF0E5FF06AEF326001FF9E5 /* Mailer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Mailer.h; sourceTree = "<group>"; };
 		CEF0E60006AEF326001FF9E5 /* Mailer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Mailer.m; sourceTree = "<group>"; };
 		CEF0E6DA06AEF5CB001FF9E5 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
@@ -11705,7 +11692,6 @@
 				BFE0652B06755B7200AC4B67 /* Cocoa.framework in Frameworks */,
 				7E47658007428C80000C9A74 /* Accelerate.framework in Frameworks */,
 				BFB8F7F7087B805F007ABE20 /* libjasper2.a in Frameworks */,
-				BFEA82E00940F1D500B90699 /* Quartz.framework in Frameworks */,
 				CECBF93C0FE6B1C300425ED4 /* libopenjpeg.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -11731,7 +11717,6 @@
 				AB28B93505B79D5D00A9906C /* IOKit.framework in Frameworks */,
 				AB28B93605B79D5E00A9906C /* QuickTime.framework in Frameworks */,
 				AB28B93705B79D5E00A9906C /* Accelerate.framework in Frameworks */,
-				ABD95D180625BAEC00C77D11 /* ScreenSaver.framework in Frameworks */,
 				CEF0E4BC06AEC91F001FF9E5 /* Message.framework in Frameworks */,
 				CEF0E6DC06AEF5CB001FF9E5 /* Carbon.framework in Frameworks */,
 				7E3E38660715FFDC0049E72E /* PreferencePanes.framework in Frameworks */,
@@ -11850,7 +11835,6 @@
 				CEC709C110A5C844008935EA /* IOKit.framework in Frameworks */,
 				CEC709C210A5C844008935EA /* QuickTime.framework in Frameworks */,
 				CEC709C310A5C844008935EA /* Accelerate.framework in Frameworks */,
-				CEC709C410A5C844008935EA /* ScreenSaver.framework in Frameworks */,
 				CEC709C510A5C844008935EA /* Message.framework in Frameworks */,
 				CEC709C610A5C844008935EA /* Carbon.framework in Frameworks */,
 				CEC709C710A5C844008935EA /* PreferencePanes.framework in Frameworks */,
@@ -11939,8 +11923,6 @@
 				ABFF0A95056D97800066794C /* ApplicationServices.framework */,
 				CEF0E6DA06AEF5CB001FF9E5 /* Carbon.framework */,
 				1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */,
-				7E350843097C512200B7F40D /* CoreFoundation.framework */,
-				7E350845097C514C00B7F40D /* CoreServices.framework */,
 				BF5F14C20B14E12700B309B9 /* CoreVideo.framework */,
 				7E54303B07A05E7100500ABB /* DiscRecording.framework */,
 				7E54303C07A05E7100500ABB /* DiscRecordingUI.framework */,
@@ -11955,9 +11937,7 @@
 				AB0EA93B056EDC7E004BBDD3 /* OpenGL.framework */,
 				7E3E38650715FFDC0049E72E /* PreferencePanes.framework */,
 				AB6B75DE0A53F60600F0CA8F /* QTKit.framework */,
-				BFEA82DF0940F1D500B90699 /* Quartz.framework */,
 				ABFF0970056D92460066794C /* QuickTime.framework */,
-				ABD95D170625BAEC00C77D11 /* ScreenSaver.framework */,
 				CE790A18105D4DE200CE6AAF /* Security.framework */,
 				A997B15610E0C412004C5BB1 /* SecurityInterface.framework */,
 				8406956210B6800E00C37AD0 /* SystemConfiguration.framework */,
@@ -12844,8 +12824,6 @@
 				CEE73FD108F44749002A395F /* stringNumericCompare.m */,
 				ABF68A41061DD18600FEED6D /* StringTexture.h */,
 				ABF68A40061DD18600FEED6D /* StringTexture.m */,
-				CEF0E50706AEDA89001FF9E5 /* Survey.h */,
-				CEF0E50806AEDA89001FF9E5 /* Survey.m */,
 				CE569B720E29612100F4A234 /* ThumbnailCell.h */,
 				CE569B730E29612100F4A234 /* ThumbnailCell.m */,
 				ABDC3C730670FF440042069D /* ToolBarNSWindow.h */,
@@ -16696,7 +16674,6 @@
 				CE0E08E806A106D700F2C01C /* ThickSlabController.h in Headers */,
 				BF76A59906ACC6FD00FABE42 /* ButtonAndTextField.h in Headers */,
 				BF76A5A706ACC70C00FABE42 /* ButtonAndTextCell.h in Headers */,
-				CEF0E50B06AEDA89001FF9E5 /* Survey.h in Headers */,
 				CEF0E60306AEF326001FF9E5 /* Mailer.h in Headers */,
 				CE39BFA306BC5DAE006D6824 /* Scripting_Additions.h in Headers */,
 				7E55ADDD06C7FFCD0059D6EB /* SeriesView.h in Headers */,
@@ -19067,7 +19044,6 @@
 				CEC7FCBA10A5C844008935EA /* SearchSubview.h in Headers */,
 				CEC7FCBE10A5C844008935EA /* ButtonAndTextField.h in Headers */,
 				CEC7FCBF10A5C844008935EA /* ButtonAndTextCell.h in Headers */,
-				CEC7FCC010A5C844008935EA /* Survey.h in Headers */,
 				CEC7FCC110A5C844008935EA /* Mailer.h in Headers */,
 				CEC7FCC210A5C844008935EA /* Scripting_Additions.h in Headers */,
 				CEC7FCC310A5C844008935EA /* SeriesView.h in Headers */,
@@ -22658,7 +22634,6 @@
 				CE0E08E906A106D700F2C01C /* ThickSlabController.mm in Sources */,
 				BF76A59A06ACC6FD00FABE42 /* ButtonAndTextField.m in Sources */,
 				BF76A5A806ACC70C00FABE42 /* ButtonAndTextCell.m in Sources */,
-				CEF0E50C06AEDA89001FF9E5 /* Survey.m in Sources */,
 				CEF0E60406AEF326001FF9E5 /* Mailer.m in Sources */,
 				CE39BFA406BC5DAE006D6824 /* Scripting_Additions.m in Sources */,
 				7E55ADDE06C7FFCD0059D6EB /* SeriesView.m in Sources */,
@@ -23971,7 +23946,6 @@
 				CEC7072C10A5C844008935EA /* SearchSubview.m in Sources */,
 				CEC7073010A5C844008935EA /* ButtonAndTextField.m in Sources */,
 				CEC7073110A5C844008935EA /* ButtonAndTextCell.m in Sources */,
-				CEC7073210A5C844008935EA /* Survey.m in Sources */,
 				CEC7073310A5C844008935EA /* Mailer.m in Sources */,
 				CEC7073410A5C844008935EA /* Scripting_Additions.m in Sources */,
 				CEC7073510A5C844008935EA /* SeriesView.m in Sources */,

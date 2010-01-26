@@ -24,7 +24,6 @@
 #import "XMLController.h"
 #import "SplashScreen.h"
 #import "NSFont_OpenGL.h"
-#import "Survey.h"
 #import "DicomFile.h"
 #import <OsiriX/DCM.h>
 #import "PluginManager.h"
@@ -49,6 +48,7 @@
 #import "WaitRendering.h"
 #import "OsiriXHTTPConnection.h"
 #import "ThreadPoolServer.h"
+//#import "Survey.h"
 
 #define BUILTIN_DCMTK YES
 
