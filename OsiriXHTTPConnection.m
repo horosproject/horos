@@ -710,9 +710,14 @@ NSString* notNil( NSString *s)
 	
 	seriesArray = [seriesArray sortedArrayUsingDescriptors: sortDescriptors];
 	
+	int lineNumber=0;
 	for(DicomSeries *series in seriesArray)
 	{
 		NSMutableString *tempHTML = [NSMutableString stringWithString:seriesListItemString];
+		
+		[tempHTML replaceOccurrencesOfString:@"%lineParity%" withString:[NSString stringWithFormat:@"%d",lineNumber%2] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+		lineNumber++;
+		
 		[tempHTML replaceOccurrencesOfString:@"%SeriesName%" withString: notNil( [series valueForKey:@"name"]) options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 		[tempHTML replaceOccurrencesOfString:@"%thumbnail%" withString: [NSString stringWithFormat:@"thumbnail?id=%@&studyID=%@", notNil( [series valueForKey:@"seriesInstanceUID"]), notNil( [study valueForKey:@"studyInstanceUID"])] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 		[tempHTML replaceOccurrencesOfString:@"%SeriesID%" withString: notNil( [series valueForKey:@"seriesInstanceUID"]) options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
@@ -749,6 +754,10 @@ NSString* notNil( NSString *s)
 		
 		[returnHTML appendString:tempHTML];
 	}
+	
+	NSMutableString *tempHTML = [NSMutableString stringWithString:templateStringEnd];
+	[tempHTML replaceOccurrencesOfString:@"%lineParity%" withString:[NSString stringWithFormat:@"%d",lineNumber%2] options:NSLiteralSearch range:NSMakeRange(0, [templateStringEnd length])];
+	templateStringEnd = [NSString stringWithString:tempHTML];
 	
 	NSString *dicomNodesListItemString = @"";
 	if( dicomSend)
@@ -933,9 +942,14 @@ NSString* notNil( NSString *s)
 	
 	NSMutableString *returnHTML = [NSMutableString stringWithString:templateStringStart];
 	
+	int lineNumber = 0;
 	for(DicomStudy *study in studies)
 	{
 		NSMutableString *tempHTML = [NSMutableString stringWithString:studyListItemString];
+		
+		[tempHTML replaceOccurrencesOfString:@"%lineParity%" withString:[NSString stringWithFormat:@"%d",lineNumber%2] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+		lineNumber++;
+		
 		// asciiString?
 		[tempHTML replaceOccurrencesOfString:@"%StudyListItemName%" withString: notNil( [study valueForKey:@"name"]) options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 		
@@ -951,16 +965,64 @@ NSString* notNil( NSString *s)
 		
 		NSString *date = [dateFormat stringFromDate:[study valueForKey:@"date"]];
 		
-		[tempHTML replaceOccurrencesOfString:@"%StudyDate%" withString:[NSString stringWithFormat:@"%@", [OsiriXHTTPConnection iPhoneCompatibleNumericalFormat:date]] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
-		[tempHTML replaceOccurrencesOfString:@"%SeriesCount%" withString:[NSString stringWithFormat:@"%d Series", count] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
-		[tempHTML replaceOccurrencesOfString:@"%StudyComment%" withString: notNil( [study valueForKey:@"comment"]) options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
-		[tempHTML replaceOccurrencesOfString:@"%StudyDescription%" withString: notNil( [study valueForKey:@"studyName"]) options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
-		[tempHTML replaceOccurrencesOfString:@"%StudyModality%" withString: notNil( [study valueForKey:@"modality"]) options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+		NSString *dateLabel = [NSString stringWithFormat:@"%@", [OsiriXHTTPConnection iPhoneCompatibleNumericalFormat:date]];
+		BOOL displayBlock = YES;
+		if([dateLabel length])
+			[tempHTML replaceOccurrencesOfString:@"%StudyDate%" withString:dateLabel options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+		else
+			displayBlock = NO;
+			
+		tempHTML = [self setBlock:@"StudyDateBlock" visible:displayBlock forString:tempHTML];
+
+		NSString *seriesCountLabel = [NSString stringWithFormat:@"%d Series", count];
+		displayBlock = YES;
+		if([seriesCountLabel length])
+			[tempHTML replaceOccurrencesOfString:@"%SeriesCount%" withString:seriesCountLabel options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+		else
+			displayBlock = NO;
+			
+		tempHTML = [self setBlock:@"SeriesCountBlock" visible:displayBlock forString:tempHTML];
 		
+		NSString *studyCommentLabel = notNil([study valueForKey:@"comment"]);
+		displayBlock = YES;
+		if([studyCommentLabel length])
+			[tempHTML replaceOccurrencesOfString:@"%StudyComment%" withString:studyCommentLabel options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+		else
+			displayBlock = NO;
+			
+		tempHTML = [self setBlock:@"StudyCommentBlock" visible:displayBlock forString:tempHTML];
+		
+		NSString *studyDescriptionLabel = notNil([study valueForKey:@"studyName"]);
+		displayBlock = YES;
+		if([studyDescriptionLabel length])
+			[tempHTML replaceOccurrencesOfString:@"%StudyDescription%" withString:studyDescriptionLabel options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+		else
+			displayBlock = NO;
+			
+		tempHTML = [self setBlock:@"StudyDescriptionBlock" visible:displayBlock forString:tempHTML];
+		
+		NSString *studyModalityLabel = notNil([study valueForKey:@"modality"]);
+		displayBlock = YES;
+		if([studyModalityLabel length])
+			[tempHTML replaceOccurrencesOfString:@"%StudyModality%" withString:studyModalityLabel options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+		else
+			displayBlock = NO;
+			
+		tempHTML = [self setBlock:@"StudyModalityBlock" visible:displayBlock forString:tempHTML];
+				
 		NSString *stateText = @"";
 		if( [[study valueForKey:@"stateText"] intValue])
 			stateText = [[BrowserController statesArray] objectAtIndex: [[study valueForKey:@"stateText"] intValue]];
-		[tempHTML replaceOccurrencesOfString:@"%StudyState%" withString: notNil( stateText) options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+		
+		NSString *studyStateLabel = notNil( stateText);
+		displayBlock = YES;
+		if([studyStateLabel length])
+			[tempHTML replaceOccurrencesOfString:@"%StudyState%" withString:studyStateLabel options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+		else
+			displayBlock = NO;
+		
+		tempHTML = [self setBlock:@"StudyStateBlock" visible:displayBlock forString:tempHTML];
+		
 		[tempHTML replaceOccurrencesOfString:@"%StudyListItemID%" withString: notNil( [study valueForKey:@"studyInstanceUID"]) options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 		[returnHTML appendString:tempHTML];
 	}

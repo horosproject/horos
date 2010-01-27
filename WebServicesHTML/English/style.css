@@ -5,7 +5,6 @@ body
 	font-size:12pt;
     background: #FFFFFF;
     color: #000000;
-	border-bottom: #555555 solid thin;
 }
 
 h1
@@ -26,7 +25,6 @@ h3
 	font-size:14pt;
 }
 
-
 #backButton
 {
     background: url(images/chevron_left.png) no-repeat left center;
@@ -38,20 +36,44 @@ ul
 	list-style-type: none;
 }
 
-li.image
-{
-	padding: 5px;
-}
-
 ul.studyList
 {
-	list-style-type: disc;
+	list-style-type: none;
+	background-color: #999999;
+	padding: 1px;
+	margin-left: 10%;
+	margin-right: 10%;
 }
 
-li.studyListItem
+li.studyListItem0
 {
-	padding: 2px;
+	padding: 10px;
 	line-height:12pt;
+	margin-bottom: 1px;
+	background-color: #eeEEee;
+}
+
+li.studyListItem0:hover
+{
+	background-color: #fdfed6;
+}
+
+li.studyListItem1
+{
+	padding: 10px;
+	line-height:12pt;
+	margin-bottom: 1px;
+	background-color: #ffFFff;
+}
+
+li.studyListItem1:hover
+{
+	background-color: #fdfed6;
+}
+
+a.studyListItem:hover
+{
+	text-decoration:none;
 }
 
 li a
@@ -62,7 +84,7 @@ li a
 
 li a:hover
 {
-	text-decoration:underline;
+	text-decoration:none;
 }
 
 a
@@ -79,6 +101,7 @@ a:hover
 .thumbnail
 {
 	vertical-align: middle;
+	width:50px;
 }
 
 .SeriesName
@@ -86,43 +109,140 @@ a:hover
 	margin-left:10px;
 }
 
-ul.StudyListItemDetails
+span.StudyListItemName
 {
-	padding-left:50px;
+	color: black;
 }
 
-li.StudyListItemDate
+span.StudyListItemDate
+{
+	display:block;
+	color: #666666;
+	font-size:10pt;
+	float: right;
+}
+
+span.StudyListItemState
+{
+	display:block;
+	color: #666666;
+	font-size: 10pt;
+	float: right;
+	font-style: italic;
+}
+
+div.StudyListItemDetails
+{
+	padding-left:20px;
+	padding-right:100px;
+}
+
+span.StudyListItemDetailItem
 {
 	display:inline;
 	color: #666666;
 	font-size:10pt;
-	padding-left:0px;
 }
 
-li.StudyListItemSeriesCount
+span.StudyListItemComment
 {
-	display:inline;
 	color: #666666;
-	font-size:10pt;
-	padding-left:5px;
+	font-size: 10pt;
+	font-style: italic;
 }
 
-li.StudyListItemSeriesSeparator
+span.StudyListItemLabel
 {
-	display:inline;
-	color: #666666;
 	font-size:10pt;
-	padding-left:5px;
+}
+
+.StudyInformation
+{
+	margin-left: 10%;
+	margin-right: 10%;
+	padding:1px;
+	font-size:11pt;
+}
+
+.StudyInformation td
+{
+}
+
+.StudyInformationLabel
+{
+	vertical-align:top;
+	color: #666666;
+	padding-right: 10px;
+}
+
+#imageList
+{
+	width:80%;
+	margin-left: 10%;
+	margin-right: 10%;
+	padding: 0px;
+	border: 1px solid #999999;
+	border-spacing: 0px;
+	border-collapse: collapse;
+}
+
+.image0
+{
+	padding: 10px;
+	line-height:12pt;
+	margin-bottom: 1px;
+	background-color: #eeEEee;
+	padding:5px;
+}
+
+.image0:hover
+{
+	background-color: #fdfed6;
+}
+
+.image0 td
+{
+	padding:5px;
+}
+
+.image1
+{
+	padding: 10px;
+	line-height:12pt;
+	margin-bottom: 1px;
+	background-color: #ffFFff;
+	padding:5px;
+}
+
+.image1:hover
+{
+	background-color: #fdfed6;
+}
+
+.image1 td
+{
+	padding:5px;
+}
+
+.tdThumbnail
+{
+	width:50px;
+}
+
+.tdCheckbox
+{
+	width:20px;
 }
 
 #CheckAll
 {
-	margin-top:20px;
+	padding-top:20px;
 	font-size:10pt;
 }
 
 .SeriesImageNumber
 {
+	display:block;
 	color: #666666;
 	font-size:10pt;
 	margin-left:10px;
@@ -130,9 +250,17 @@ li.StudyListItemSeriesSeparator
 
 .DownloadAsZIP
 {
-	color: #222266;
-	font-size:10pt;
-	margin-left:10px;
+	background:url(images/zip.png) no-repeat left center;
+	width:32px;
+	height:32px;
+	float:right;
+	margin-top:auto;
+	margin-bottom:auto;
+}
+
+.tdSeriesImageNumber
+{
+	display:block;
 }
 
 .small
@@ -151,4 +279,16 @@ a.report
 	background:url(images/mail-attachment24.png) no-repeat left center;
 	padding-left:24px;
 	padding-top:2px;
+}
+
+#footer
+{
+	width: auto;
+	border-top: #555555 solid thin;
+	right: 0;
+	left: 0;
+	padding-top: 20px;
+	margin-top: 50px;
+	text-align: center;
+	font-size:10pt;
 }

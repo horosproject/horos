@@ -17,32 +17,47 @@
 
 	<ul id="studyList" title="Study List" class="studyList">
         %StudyListItem%
-		<li title="%StudyListItemName%" class="studyListItem">
-			<a href="study?dicomcstoreport=%DicomCStorePort%&id=%StudyListItemID%%browse%%browseParameter%%search%%album%">
+		<a href="study?dicomcstoreport=%DicomCStorePort%&id=%StudyListItemID%%browse%%browseParameter%%search%%album%" class="studyListItem">
+			<li title="%StudyListItemName%" class="studyListItem%lineParity%">
 				<span class="StudyListItemName">%StudyListItemName%</span>
-			</a>
-
-			<ul class="StudyListItemDetails">
-				<li class="StudyListItemDate">%StudyDate%</li>
-				<li class="StudyListItemSeriesSeparator">-</li>
-				<li class="StudyListItemSeriesCount">%SeriesCount%</li>
-				<li class="StudyListItemSeriesSeparator">-</li>
-				<li class="StudyListItemSeriesCount">%StudyModality%</li>
-				<li class="StudyListItemSeriesSeparator">-</li>
-				<li class="StudyListItemSeriesCount">%StudyDescription%</li>
-				<li class="StudyListItemSeriesSeparator"> </li>
-				<li class="StudyListItemSeriesCount">%StudyComment%</li>
-				<li class="StudyListItemSeriesSeparator"> </li>
-				<li class="StudyListItemSeriesCount">%StudyState%</li>
-				<li class="StudyListItemSeriesCount">
-				<a href="%StudyListItemName%.%zipextension%?dicomcstoreport=%DicomCStorePort%&id=%StudyListItemID%%browse%%browseParameter%%search%%album%">
-				%ZIPFunctions%<span class="StudyListItemSeriesCount">Download As ZIP</span>%/ZIPFunctions%
-			</a>
-			</ul>
-			
-		</li>
+				
+				%StudyDateBlock%<span class="StudyListItemDate">%StudyDate%</span>%/StudyDateBlock%
+				%StudyModalityBlock%<span class="StudyListItemDetailItem">%StudyModality%</span>%/StudyModalityBlock%
+				%SeriesCountBlock%<span class="StudyListItemDetailItem">%SeriesCount%</span>%/SeriesCountBlock%
+				
+				%StudyStateBlock%
+				<div>
+					<span class="StudyListItemState">%StudyState%</span>
+				</div>
+				%/StudyStateBlock%
+				
+				<div class="StudyListItemDetails">
+					%StudyDescriptionBlock%
+					<div>
+						<span class="StudyListItemDetailItem">%StudyDescription%</span>
+					</div>
+					%/StudyDescriptionBlock%
+				
+					%StudyCommentBlock%
+						<span class="StudyListItemLabel">Comment: </span>
+						<span class="StudyListItemComment">%StudyComment%</span>
+					%/StudyCommentBlock%
+				
+					%ZIPFunctions%
+					<span class="StudyListItemDetailItem">
+						<a href="%StudyListItemName%.%zipextension%?dicomcstoreport=%DicomCStorePort%&id=%StudyListItemID%%browse%%browseParameter%%search%%album%">
+							<span class="StudyListItemSeriesCount">Download As ZIP</span>
+						</a>
+					</span>
+					%/ZIPFunctions%
+					
+				</div>
+				
+			</li>
+		</a>
 		%/StudyListItem%
     </ul>
 
+	<div id="footer">Service provided by <a href="http://www.osirix-viewer.com">OsiriX</a>.<div>
   </body>
 </html>

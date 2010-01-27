@@ -35,65 +35,81 @@
     <a id="backButton" class="button" href="studyList?dicomcstoreport=%DicomCStorePort%&browse=%browse%&browseParameter=%browseParameter%&search=%search%&album=%album%">%LocalizedLabel_StudyList%</a>
 	<div id="Home" class="panel">
 		<h2>%LocalizedLabel_SendStatus%</h2>
-		<h2>Patient Informations</h2>
-		<ul>
-			<li>Patient ID: %PatientID%</li>
-			<li>Patient name: %PatientName%</li>
-			<li>Date of birth: %PatientDOB%</li>
-			<li>Study Date: %StudyDate%</li>
-			<li>Modality: %StudyModality%</li>
-			<li>Description: %StudyDescription%</li>
-			<li>Comment: %StudyComment%</li>
-			<li>Study State: %StudyState%</li>
-		</ul>
+		<h2>Study Informations</h2>
+		<table class="StudyInformation">
+			<tr>
+				<td class="StudyInformationLabel">Patient&nbsp;ID</td>
+				<td>%PatientID%</td>
+			</tr>
+			<tr>
+				<td class="StudyInformationLabel">Patient&nbsp;name</td>
+				<td>%PatientName%</td>
+			</tr>
+			<tr>
+				<td class="StudyInformationLabel">Date&nbsp;of&nbsp;birth</td>
+				<td>%PatientDOB%</td>
+			</tr>
+			<tr>
+				<td class="StudyInformationLabel">Study&nbsp;Date</td>
+				<td>%StudyDate%</td>
+			</tr>
+			<tr>
+				<td class="StudyInformationLabel">Modality</td>
+				<td>%StudyModality%</td>
+			</tr>
+			<tr>
+				<td class="StudyInformationLabel">Description</td>
+				<td>%StudyDescription%</td>
+			</tr>
+			<tr>
+				<td class="StudyInformationLabel">Comment</td>
+				<td>%StudyComment%</td>
+			</tr>
+			<tr>
+				<td class="StudyInformationLabel">Study&nbsp;State</td>
+				<td>%StudyState%</td>
+			</tr>
+		</table>
 		%Report%<div><a href="report.%reportExtension%?dicomcstoreport=%DicomCStorePort%&id=%StudyID%" class="report">Get Report</a></div>%/Report%
 		<form id="selectDicomDestination" name="selectDicomDestination">
 		<h2 style="padding-top:10px">Series</h2>
-		<ul id="imageList" class="images">
+		<table id="imageList" class="images">
 			%SeriesListItem%
-				<li class="image">
-					<table>
-						<tr>
-							<td rowspan="3">
-								%SendingFunctions1%<input type="checkbox" class="checkbox" name="selected" value="%SeriesID%" %checked% />%/SendingFunctions1%
-							</td>
-							<td rowspan="3">
-								<a class="series" href="series%seriesExtension%?dicomcstoreport=%DicomCStorePort%&id=%SeriesID%&studyID=%StudyID%&browse=%browse%&browseParameter=%browseParameter%&search=%search%&album=%album%">
-									<img src="%thumbnail%" class="thumbnail">
-								</a>
-							</td>
-							<td class="tdSeriesName">
-								<a class="series" href="series%seriesExtension%?dicomcstoreport=%DicomCStorePort%&id=%SeriesID%&studyID=%StudyID%&browse=%browse%&browseParameter=%browseParameter%&search=%search%&album=%album%">
-									<span class="SeriesName">%SeriesName% %SeriesComment% %SeriesState%</span>
-								</a>
-							</td>
-						</tr>
-						<tr>
-							<td class="tdSeriesImageNumber">
-								<a class="series" href="series%seriesExtension%?dicomcstoreport=%DicomCStorePort%&id=%SeriesID%&studyID=%StudyID%&browse=%browse%&browseParameter=%browseParameter%&search=%search%&album=%album%">
-									<span class="SeriesImageNumber">%SeriesImageNumber%</span>
-								</a>
-							</td>
-						</tr>
-						<tr>
-							%ZIPFunctions%<td class="tdDownloadAsZIP">
-								<a class="series" href="%PatientName%.%zipextension%?dicomcstoreport=%DicomCStorePort%&id=%SeriesID%&studyID=%StudyID%&browse=%browse%&browseParameter=%browseParameter%&search=%search%&album=%album%">
-									<span class="DownloadAsZIP">Download As ZIP</span>
-								</a>
-							</td>%/ZIPFunctions%
-						</tr>
-					</table>
-				</li>
+				<tr class="image%lineParity%">				
+					%SendingFunctions1%
+					<td class="tdCheckbox">
+						<input type="checkbox" class="checkbox" name="selected" value="%SeriesID%" %checked% />
+					</td>
+					%/SendingFunctions1%
+					<td class="tdThumbnail">
+						<a class="series" href="series%seriesExtension%?dicomcstoreport=%DicomCStorePort%&id=%SeriesID%&studyID=%StudyID%&browse=%browse%&browseParameter=%browseParameter%&search=%search%&album=%album%">
+							<img src="%thumbnail%" class="thumbnail">
+						</a>
+					</td>
+					<td class="tdSeriesInfo">
+						<a class="series" href="series%seriesExtension%?dicomcstoreport=%DicomCStorePort%&id=%SeriesID%&studyID=%StudyID%&browse=%browse%&browseParameter=%browseParameter%&search=%search%&album=%album%">
+							<span class="SeriesName">%SeriesName% %SeriesComment% %SeriesState%</span>
+							<span class="SeriesImageNumber">%SeriesImageNumber%</span>
+						</a>
+					</td>
+					
+					<td>
+						%ZIPFunctions%
+						<a class="series" href="%PatientName%.%zipextension%?dicomcstoreport=%DicomCStorePort%&id=%SeriesID%&studyID=%StudyID%&browse=%browse%&browseParameter=%browseParameter%&search=%search%&album=%album%">
+							<div class="DownloadAsZIP"></div>
+						</a>
+						%/ZIPFunctions%
+					</td>
+				</tr>
 			%/SeriesListItem%
-				%SendingFunctions2%
-				<li class="image" id="CheckAll" %CheckAllStyle% >
-					<table><tr>
-						<td><input type="checkbox" class="checkbox" name="CheckAll" onClick="if(document.selectDicomDestination.CheckAll.checked == true){checkAll(document.selectDicomDestination.selected);} else {uncheckAll(document.selectDicomDestination.selected);}" %CheckAllChecked% /></td>
-						<td><span id="CheckAllLabel" class="SeriesName">Check All</span></td>
-					</tr></table>
-				</li>
-				%/SendingFunctions2%
-		</ul>
+
+			%SendingFunctions2%
+			<tr class="image%lineParity%" id="CheckAll" %CheckAllStyle% >
+				<td><input type="checkbox" class="checkbox" name="CheckAll" onClick="if(document.selectDicomDestination.CheckAll.checked == true){checkAll(document.selectDicomDestination.selected);} else {uncheckAll(document.selectDicomDestination.selected);}" %CheckAllChecked% /></td>
+				<td colspan="3"><span id="CheckAllLabel" class="SeriesName">Check All</span></td>
+			</tr>
+			%/SendingFunctions2%
+		</table>
 		<input type="hidden" name="id" value="%StudyID%"/>
 		<input type="hidden" name="search" value="%search%"/>
 		<input type="hidden" name="browse" value="%browse%"/>
@@ -136,5 +152,6 @@
 		<br>
 		</form>
     </div>
+	<div id="footer">Service provided by <a href="http://www.osirix-viewer.com">OsiriX</a>.<div>
   </body>
 </html>
