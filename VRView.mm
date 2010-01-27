@@ -6351,7 +6351,7 @@ public:
 	
 	if( fullDepthCapture)
 	{
-		vImage_Buffer			sf, d8;
+		vImage_Buffer sf, d8;
 		BOOL rgb;
 		
 		sf.data = [self imageInFullDepthWidth: width height:height isRGB: &rgb];

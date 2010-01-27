@@ -9315,11 +9315,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				
 				argbsrcVimage = srcVimage;
 				argbsrcVimage.rowBytes =  *width * 4;
-				argbsrcVimage.data = malloc( argbsrcVimage.rowBytes * argbsrcVimage.height);
+				argbsrcVimage.data = calloc( argbsrcVimage.rowBytes * argbsrcVimage.height, 1);
 				
 				argbdstVimage = dstVimage;
 				argbdstVimage.rowBytes =  *width * 4;
-				argbdstVimage.data = malloc( argbdstVimage.rowBytes * argbdstVimage.height);
+				argbdstVimage.data = calloc( argbdstVimage.rowBytes * argbdstVimage.height, 1);
 				
 				vImageConvert_RGB888toARGB8888( &srcVimage, nil, 0, &argbsrcVimage, 0, 0);
 				vImageScale_ARGB8888( &argbsrcVimage, &argbdstVimage, nil, kvImageHighQualityResampling);
@@ -9403,11 +9403,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				
 					argbsrcVimage = src;
 					argbsrcVimage.rowBytes =  src.width * 4;
-					argbsrcVimage.data = malloc( argbsrcVimage.rowBytes * argbsrcVimage.height);
+					argbsrcVimage.data = calloc( argbsrcVimage.rowBytes * argbsrcVimage.height, 1);
 					
 					argbdstVimage = dest;
 					argbdstVimage.rowBytes =  dest.width * 4;
-					argbdstVimage.data = malloc( argbdstVimage.rowBytes * argbdstVimage.height);
+					argbdstVimage.data = calloc( argbdstVimage.rowBytes * argbdstVimage.height, 1);
 				
 					vImageConvert_RGB888toARGB8888( &src, nil, 0, &argbsrcVimage, 0, 0);
 					vImageScale_ARGB8888( &argbsrcVimage, &argbdstVimage, nil, kvImageHighQualityResampling);
