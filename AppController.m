@@ -2079,14 +2079,14 @@ static NSDate *lastWarningDate = nil;
     [theTask interrupt];
 	[theTask release];
 	
-	if (BUILTIN_DCMTK == YES)
-	{
-		[dcmtkQRSCP release];
-		dcmtkQRSCP = nil;
-
-		[dcmtkQRSCPTLS release];
-		dcmtkQRSCPTLS = nil;
-	}
+//	if (BUILTIN_DCMTK == YES)
+//	{
+//		[dcmtkQRSCP release];
+//		dcmtkQRSCP = nil;
+//
+//		[dcmtkQRSCPTLS release];
+//		dcmtkQRSCPTLS = nil;
+//	}
 	
 	[self destroyDCMTK];
 	
