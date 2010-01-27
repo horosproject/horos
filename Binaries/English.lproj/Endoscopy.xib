@@ -11,8 +11,9 @@
 			<string key="NS.object.0">732</string>
 		</object>
 		<array class="NSMutableArray" key="IBDocument.EditedObjectIDs">
-			<integer value="59"/>
 			<integer value="214"/>
+			<integer value="58"/>
+			<integer value="41"/>
 		</array>
 		<array key="IBDocument.PluginDependencies">
 			<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -115,7 +116,7 @@
 				<string key="NSClassName">OrthogonalMPRController</string>
 			</object>
 			<object class="NSCustomView" id="144079199">
-				<nil key="NSNextResponder"/>
+				<reference key="NSNextResponder"/>
 				<int key="NSvFlags">256</int>
 				<array class="NSMutableArray" key="NSSubviews">
 					<object class="NSMatrix" id="960576406">
@@ -174,7 +175,7 @@
 								<reference key="NSControlView" ref="960576406"/>
 								<int key="NSTag">2</int>
 								<int key="NSButtonFlags">-1228652289</int>
-								<int key="NSButtonFlags2">2</int>
+								<int key="NSButtonFlags2">66</int>
 								<object class="NSCustomResource" key="NSNormalImage" id="770867467">
 									<string key="NSClassName">NSImage</string>
 									<string key="NSResourceName">Zoom</string>
@@ -228,7 +229,7 @@
 								<reference key="NSControlView" ref="960576406"/>
 								<int key="NSTag">18</int>
 								<int key="NSButtonFlags">-1232322305</int>
-								<int key="NSButtonFlags2">2</int>
+								<int key="NSButtonFlags2">66</int>
 								<object class="NSCustomResource" key="NSNormalImage">
 									<string key="NSClassName">NSImage</string>
 									<string key="NSResourceName">3DRotateCamera</string>
@@ -246,7 +247,7 @@
 								<reference key="NSControlView" ref="960576406"/>
 								<int key="NSTag">16</int>
 								<int key="NSButtonFlags">-1228652289</int>
-								<int key="NSButtonFlags2">2</int>
+								<int key="NSButtonFlags2">66</int>
 								<object class="NSCustomResource" key="NSNormalImage">
 									<string key="NSClassName">NSImage</string>
 									<string key="NSResourceName">Point</string>
@@ -288,6 +289,7 @@
 					</object>
 				</array>
 				<string key="NSFrameSize">{210, 33}</string>
+				<reference key="NSSuperview"/>
 				<object class="NSMutableString" key="NSClassName">
 					<characters key="NS.bytes">NSView</characters>
 				</object>
@@ -5806,6 +5808,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<integer value="1" key="399.windowTemplate.hasMinSize"/>
 				<string key="399.windowTemplate.maxSize">{3.40282e+38, 3.40282e+38}</string>
 				<string key="399.windowTemplate.minSize">{213, 113}</string>
+				<string key="40.IBEditorWindowLastContentRect">{{88, 1012}, {210, 33}}</string>
 				<string key="40.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<integer value="1" key="40.ImportedFromIB2"/>
 				<string key="400.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
