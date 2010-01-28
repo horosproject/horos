@@ -1808,16 +1808,10 @@ NSString* notNil( NSString *s)
 			templateString = [self setBlock: @"userAccount" visible: currentUser ? YES : NO forString: templateString];
 			
 			if( currentUser)
-			{
-				NSMutableString *userAccount = [NSMutableString stringWithString: NSLocalizedString(@"Current User : ", nil)];
-				
-				[userAccount appendString: [currentUser valueForKey: @"name"]];
-				[userAccount appendString: @" - "];
-				[userAccount appendString: [currentUser valueForKey: @"email"]];
-				[userAccount appendString: @" - "];
-				[userAccount appendString: [currentUser valueForKey: @"phone"]];
-				
-				[templateString replaceOccurrencesOfString:@"%LocalizedLabel_Account%" withString: notNil( userAccount) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+			{				
+				[templateString replaceOccurrencesOfString:@"%UserNameLabel%" withString: notNil([currentUser valueForKey: @"name"]) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+				[templateString replaceOccurrencesOfString:@"%UserEmailLabel%" withString: notNil([currentUser valueForKey: @"email"]) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+				[templateString replaceOccurrencesOfString:@"%UserPhoneLabel%" withString: notNil([currentUser valueForKey: @"phone"]) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 			}
 			
 			templateString = [self setBlock: @"AuthorizedUploadDICOMFiles" visible: ( currentUser && [[currentUser valueForKey: @"uploadDICOM"] boolValue]) forString: templateString];

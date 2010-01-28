@@ -25,6 +25,48 @@ h3
 	font-size:14pt;
 }
 
+/* Current user infos */
+#userAccountLabel
+{
+	float:right;
+	font-size:10pt;
+	padding:5px;
+	background-color:#eeEEee;
+	border:thin dotted #ddDDdd;
+}
+
+#userAccountLabel:hover
+{
+	background-color:#fdfed6;
+	border:thin solid #fad51b;
+}
+
+#CurrentlyLoggedLabel
+{
+	color:#666666;
+}
+
+#UserNameLabel
+{
+	text-align:center;
+	margin:5px;
+}
+
+#UserEmailLabel
+{
+	color:#666666;
+	text-align:right;
+	font-style: italic;
+}
+
+#UserPhoneLabel
+{
+	display:block;
+	color:#666666;
+	text-align:right;
+	font-style: italic;
+}
+
 #backButton
 {
     background: url(images/chevron_left.png) no-repeat left center;
