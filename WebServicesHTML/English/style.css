@@ -200,9 +200,12 @@ div.StudyListItemDetails
 	font-size:10pt;
 }
 
+/* Series List */
+
 .StudyInformation
 {
-	margin-left: 10px;
+	margin-left:10%;
+	width:80%;
 	padding:1px;
 	font-size:11pt;
 }
@@ -218,7 +221,6 @@ div.StudyListItemDetails
 	padding-right: 10px;
 }
 
-/* Series List */
 
 .thumbnail
 {

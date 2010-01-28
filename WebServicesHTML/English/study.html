@@ -69,8 +69,14 @@
 				<td class="StudyInformationLabel">Study&nbsp;State</td>
 				<td>%StudyState%</td>
 			</tr>
+			%Report%
+			<tr>
+				<td class="StudyInformationLabel">Report</td>
+				<td><a href="report.%reportExtension%?dicomcstoreport=%DicomCStorePort%&id=%StudyID%" class="report">Download Report</a></td>
+			</tr>
+			%/Report%
 		</table>
-		%Report%<div><a href="report.%reportExtension%?dicomcstoreport=%DicomCStorePort%&id=%StudyID%" class="report">Get Report</a></div>%/Report%
+		
 		<form id="selectDicomDestination" name="selectDicomDestination">
 		<h2 style="padding-top:10px">Series</h2>
 		<table id="imageList" class="images">
@@ -117,7 +123,7 @@
 		<input type="hidden" name="album" value="%album%"/>
 		<input type="hidden" name="dicomcstoreport" value="%DicomCStorePort%" name="search"/>
 		%SendingFunctions3%
-		<HR>
+		
 		<br>
 		<br>
 		<h2 style="padding-top:10px">DICOM Transfer</h2>
@@ -132,7 +138,7 @@
 		<br>
 		%/SendingFunctions3%
 		%SharingFunctions%
-		<HR>
+		
 		<br>
 		<br>
 		<h2 style="padding-top:10px">Share This Study</h2>
