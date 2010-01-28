@@ -989,6 +989,7 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
 				{
 					if( [currVersion isEqualToString:onlineVersion] == NO && [PluginManager compareVersion: currVersion withVersion: onlineVersion] < 0)
 					{
+						NSLog( @"PLUGIN UPDATE NEEDED -------> current vers: %@ versus online vers: %@ - %@", currVersion, onlineVersion, pluginName);
 						NSMutableDictionary *modifiedOnlinePlugin = [NSMutableDictionary dictionaryWithDictionary:onlinePlugin];
 						[modifiedOnlinePlugin setObject:pluginName forKey:@"name"];
 						[pluginsToUpdate addObject:modifiedOnlinePlugin];
