@@ -40,6 +40,7 @@ h2
 	vertical-align:middle;
 	text-align: center;	
 	background-color:#aa0000;
+	border:thin solid #330000;
 	color:#ffFFff;
 	font-size:14pt;
 }
@@ -64,7 +65,8 @@ h2
 	padding:20px;
 	vertical-align:middle;
 	text-align: center;	
-	background-color:#555555;
+	background-color:#333333;
+	border:thin solid black;
 	color:#ffFFff;
 	font-size:14pt;
 }
