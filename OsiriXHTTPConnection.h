@@ -10,6 +10,7 @@ extern NSString* asciiString (NSString* name);
 	NSLock *sendLock, *running;
 	NSString *ipAddressString;
 	NSManagedObject *currentUser;
+	NSMutableDictionary *urlParameters;
 	
 	// POST / PUT support
 	int dataStartIndex;
@@ -31,4 +32,5 @@ extern NSString* asciiString (NSString* name);
 - (NSArray*) addSpecificStudiesToArray: (NSArray*) array;
 + (NSArray*) addSpecificStudiesToArray: (NSArray*) array forUser: (NSManagedObject*) user predicate: (NSPredicate*) predicate;
 - (NSMutableString*) setBlock: (NSString*) b visible: (BOOL) v forString: (NSMutableString*) s;
+- (NSArray*)studiesForPredicate:(NSPredicate *)predicate sortBy: (NSString*) sortValue;
 @end
