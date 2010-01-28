@@ -176,20 +176,23 @@ NSString* notNil( NSString *s)
 		
 		[language retain];
 		
-		NSString *supportPath = [PATH2HTML stringByExpandingTildeInPath];
-		
 		webDirectory = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"WebServicesHTML"];
 		
 		BOOL isDirectory;
 		
-		if( [[NSFileManager defaultManager] fileExistsAtPath: [supportPath stringByAppendingPathComponent: @"WebServicesHTML"] isDirectory: &isDirectory] == YES && isDirectory == YES)
-			webDirectory = [supportPath stringByAppendingPathComponent: @"WebServicesHTML"];
-		else
+		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"customWebPages"])
 		{
-			[[NSFileManager defaultManager] copyItemAtPath: webDirectory toPath: [supportPath stringByAppendingPathComponent: [webDirectory lastPathComponent]] error: nil];
+			NSString *supportPath = [PATH2HTML stringByExpandingTildeInPath];
 			
 			if( [[NSFileManager defaultManager] fileExistsAtPath: [supportPath stringByAppendingPathComponent: @"WebServicesHTML"] isDirectory: &isDirectory] == YES && isDirectory == YES)
 				webDirectory = [supportPath stringByAppendingPathComponent: @"WebServicesHTML"];
+			else
+			{
+				[[NSFileManager defaultManager] copyItemAtPath: webDirectory toPath: [supportPath stringByAppendingPathComponent: [webDirectory lastPathComponent]] error: nil];
+				
+				if( [[NSFileManager defaultManager] fileExistsAtPath: [supportPath stringByAppendingPathComponent: @"WebServicesHTML"] isDirectory: &isDirectory] == YES && isDirectory == YES)
+					webDirectory = [supportPath stringByAppendingPathComponent: @"WebServicesHTML"];
+			}
 		}
 		
 		if( [[NSFileManager defaultManager] fileExistsAtPath: [webDirectory stringByAppendingPathComponent: language] isDirectory: &isDirectory] == YES && isDirectory == YES)
@@ -197,6 +200,7 @@ NSString* notNil( NSString *s)
 		else
 			webDirectory = [webDirectory stringByAppendingPathComponent: @"English"];
 		
+			
 		[webDirectory retain];
 	}
 }

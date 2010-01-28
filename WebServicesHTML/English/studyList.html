@@ -9,15 +9,44 @@
 	<link rel="stylesheet" type="text/css" href="style.css" title="standard" />
 	<link rel="alternate stylesheet" type="text/css" href="iPhoneStyle.css" title="iPhone" />
 	<script type="text/javascript" language="javascript" src="styleswitcher.js"></script>
+	
+	<script language="JavaScript">
+	function insertParam(key, value) {
+        key = escape(key); value = escape(value);
+		
+        var kvp = document.location.search.substr(1).split('&');
+        if (kvp == "") {
+            document.location.search = key + "=" + value;
+        }
+        else {
+
+            var i = kvp.length; var x; while (i--) {
+                x = kvp[i].split('=');
+
+                if (x[0] == key) {
+                    x[1] = value;
+                    kvp[i] = x.join('=');
+                    break;
+                }
+            }
+
+            if (i < 0) { kvp[kvp.length] = [key, value].join('='); }
+			
+            document.location.search = kvp.join('&');
+        }
+    }
+	</script>
 </head>
 
 <body onorientationchange="updateOrientation()">
     <h1 id="pageTitle">%PageTitle%</h1>
     <a id="backButton" class="button" href="/main?dicomcstoreport=%DicomCStorePort%">Home</a>
-
+	<br>
+	<a href="javascript:insertParam( 'order', 'name');"> sort by name </a>
+	<a href="javascript:insertParam( 'order', 'date');"> sort by date </a>
+	
 	<table id="studyList" title="Study List" class="studyList">
         %StudyListItem%
-		
 			<tr title="%StudyListItemName%" class="studyListItem%lineParity%">	
 				<td>
 					<a href="study?dicomcstoreport=%DicomCStorePort%&id=%StudyListItemID%%browse%%browseParameter%%search%%album%" class="studyListItem">
