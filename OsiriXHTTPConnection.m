@@ -638,7 +638,7 @@ NSString* notNil( NSString *s)
 	templateString = [self setBlock: @"SendingFunctions2" visible: dicomSend forString: templateString];
 	templateString = [self setBlock: @"SendingFunctions3" visible: dicomSend forString: templateString];
 	templateString = [self setBlock: @"SharingFunctions" visible: shareSend forString: templateString];
-	templateString = [self setBlock: @"ZIPFunctions" visible: (currentUser == nil || [[currentUser valueForKey: @"downloadZIP"] boolValue]) forString: templateString];
+	templateString = [self setBlock: @"ZIPFunctions" visible:((currentUser == nil || [[currentUser valueForKey: @"downloadZIP"] boolValue]) && ![[settings valueForKey:@"iPhone"] boolValue]) forString: templateString];
 	
 	[templateString replaceOccurrencesOfString:@"%zipextension%" withString: ([[settings valueForKey:@"MacOS"] boolValue]?@"osirixzip":@"zip") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 	
@@ -936,7 +936,7 @@ NSString* notNil( NSString *s)
 	
 	NSMutableString *templateString = [NSMutableString stringWithContentsOfFile:[webDirectory stringByAppendingPathComponent:@"studyList.html"]];
 	
-	templateString = [self setBlock: @"ZIPFunctions" visible: ( currentUser && [[currentUser valueForKey: @"downloadZIP"] boolValue]) forString: templateString];
+	templateString = [self setBlock: @"ZIPFunctions" visible: ( currentUser && [[currentUser valueForKey: @"downloadZIP"] boolValue] && ![[settings valueForKey:@"iPhone"] boolValue]) forString: templateString];
 	
 	[templateString replaceOccurrencesOfString:@"%zipextension%" withString: ([[settings valueForKey:@"MacOS"] boolValue]?@"osirixzip":@"zip") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 	
@@ -2190,7 +2190,7 @@ NSString* notNil( NSString *s)
 				pageTitle = NSLocalizedString(@"Study List", nil);
 			}
 			
-			NSMutableString *html = [self htmlStudyListForStudies: [self studiesForPredicate: browsePredicate sortBy: [urlParameters objectForKey:@"order"]] settings: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: isMacOS], @"MacOS", nil]];
+			NSMutableString *html = [self htmlStudyListForStudies: [self studiesForPredicate: browsePredicate sortBy: [urlParameters objectForKey:@"order"]] settings: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: isMacOS], @"MacOS", [NSNumber numberWithBool: isiPhone], @"iPhone", nil]];
 			
 			if([urlParameters objectForKey:@"album"])
 			{

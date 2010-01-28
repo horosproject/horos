@@ -4,7 +4,6 @@ body
 	font-size:12pt;
     background: #FFFFFF;
     color: #000000;
-	border-bottom: #555555 solid thin;
 }
 
 h1
@@ -19,12 +18,6 @@ h2
 	font-size:14pt;
 }
 
-h3
-{
-	color:#FF0000;
-	font-size:14pt;
-}
-
 #backButton
 {
     background: url(images/chevron_left.png) no-repeat left center;
@@ -34,11 +27,12 @@ h3
 ul
 {
 	list-style-type: none;
+	margin-left:10px;
 }
 
 li
 {
-	margin-left: -30px;
+	padding: 10px;
 }
 
 li.image
@@ -64,31 +58,15 @@ li a
 	text-decoration:none;
 }
 
-li a:hover
-{
-	text-decoration:none;
-}
-
 a
 {
-	color: #333355;
+	color: #333355;	
 	text-decoration:none;
 }
-
-a:hover
-{
-	text-decoration:none;
-}
-
 
 .thumbnail
 {
 	vertical-align: middle;
-}
-
-ul.StudyListItemDetails
-{
-	padding-left:20px;
 }
 
 li.StudyListItemDate
@@ -164,20 +142,6 @@ input[type=checkbox]
 	height:25px;
 }
 
-#searchField
-{
-	font-size:14pt;
-	width:285px;
-}
-
-#searchButton
-{
-	font-size:14pt;
-	margin-top:10px;
-	width:305px;
-	text-align:center;
-}
-
 table
 {
 	border-spacing:10px;
@@ -186,4 +150,408 @@ table
 li.index
 {
 	padding:3px;
+}
+
+
+
+
+
+
+.block
+{
+	border-bottom:thin dotted #aaAAaa;
+	padding:10px;
+	margin-top:10px;
+	margin-bottom:10px;
+}
+
+.blockEnd
+{
+	padding:10px;
+	margin-top:10px;
+	margin-bottom:0px;
+	padding-bottom:0px;
+}
+
+/* Toolbar */
+
+#toolbar
+{
+	width:100%;
+}
+
+#backButton
+{
+    background: url(images/chevron_left.png) no-repeat left center;
+	padding-left: 15px;
+}
+
+#sortBy
+{
+	float:right;
+	font-size:10pt;
+}
+
+#sortByName
+{
+}
+
+#sortByDate
+{
+}
+
+.sortedBy
+{
+	text-decoration:underline;
+}
+
+
+
+/* Current user infos */
+#userAccountLabel
+{
+	font-size:12pt;
+	padding:5px;
+	background-color:#eeEEee;
+	border:thin dotted #ddDDdd;
+}
+
+#CurrentlyLoggedLabel
+{
+	color:#666666;
+	display:inline;
+}
+
+#UserNameLabel
+{
+	display:inline;
+}
+
+#UserEmailLabel
+{
+	display:none;
+}
+
+#UserPhoneLabel
+{
+	display:none;
+}
+
+/* Search Patient */
+#searchPatient
+{
+	margin-left:0px;
+	width:100%;
+}
+
+.searchPatientLabel
+{
+	padding:3px;
+	padding-left:0px;
+	vertical-align:top;
+	text-align: right;
+}
+
+.searchPatientForm
+{
+	display:inline;
+}
+
+#search
+{
+	font-size:12pt;
+	width:180px;
+	height:30px;
+}
+
+#searchID
+{
+	font-size:12pt;
+	width:180px;
+	height:30px;
+}
+
+#searchButton
+{
+	font-size:14pt;
+	margin-top:10px;
+	width:200px;
+	text-align:center;
+}
+
+/* Browse*/
+.timeFrameStudyList
+{
+	background:url(images/clock.png) no-repeat left center;
+	padding-left:24px;
+	padding-top:12px;
+}
+
+.peopleStudyList
+{
+	background:url(images/users.png) no-repeat left center;
+	padding-left:24px;
+	padding-top:12px;
+}
+
+/* Albums */
+
+h3.albums
+{
+	margin-left:30px;
+}
+
+.Album
+{
+	background:url(images/album.png) no-repeat left center;
+	padding-left:24px;
+	padding-top:12px;
+}
+
+.SmartAlbum
+{
+	background:url(images/smartAlbum.png) no-repeat left center;
+	padding-left:24px;
+	padding-top:12px;
+}
+
+/* File Upload */
+/* DISABLED FOR IPHONE */
+.uploadBlock
+{
+	display:none;
+}
+
+/* Study List */
+
+.studyList
+{
+	margin-left: 1px;
+	margin-right: 1px;
+	margin-top: 10px;
+	width:300px;
+	overflow-x:hidden;
+	border: 1px solid #999999;
+	border-collapse: collapse;
+}
+
+.studyListItem0
+{
+	padding: 2px;
+	line-height:12pt;
+	margin-bottom: 0px;
+	padding-left: 5px;
+	background-color: #eeEEee;
+	vertical-align:top;
+	width:300px;
+}
+
+.studyListItem0 td
+{
+	padding:2px;	
+}
+
+.studyListItem1
+{
+	padding: 2px;
+	line-height:12pt;
+	margin-bottom: 0px;
+	background-color: #ffFFff;
+	vertical-align:top;
+	width:300px;
+}
+
+.studyListItem1 td
+{
+	padding:2px;	
+}
+
+.StudyListItemName
+{
+	color: black;
+}
+
+.StudyListItemDate
+{
+	display:block;
+	color: #666666;
+	font-size:10pt;
+	width:60px;
+	overflow-x:scroll;
+	height:15px;
+	overflow-x:hidden;
+}
+
+.StudyListItemState
+{
+	color: #666666;
+	font-size: 10pt;
+	font-style: italic;
+}
+
+div.StudyListItemDetails
+{
+	margin-left:5px;
+	margin-right:5px;
+	width:200px;
+}
+
+.StudyListItemDetailItem
+{
+	display:inline;
+	color: #666666;
+	font-size:10pt;
+}
+
+.StudyListItemComment
+{
+	color: #666666;
+	font-size: 10pt;
+	font-style: italic;
+}
+
+.StudyListItemLabel
+{
+	font-size:10pt;
+}
+
+/* Series List */
+
+.StudyInformation
+{
+	margin-left:10%;
+	width:80%;
+	padding:1px;
+	font-size:11pt;
+}
+
+.StudyInformation td
+{
+}
+
+.StudyInformationLabel
+{
+	vertical-align:top;
+	color: #666666;
+	padding-right: 10px;
+	width:100px;
+}
+
+
+.thumbnail
+{
+	vertical-align: middle;
+	width:50px;
+}
+
+.SeriesName
+{
+	margin-left:10px;
+}
+
+#imageList
+{
+	width:80%;
+	margin-left: 10%;
+	margin-right: 10%;
+	padding: 0px;
+	border: 1px solid #999999;
+	border-spacing: 0px;
+	border-collapse: collapse;
+}
+
+.image0
+{
+	padding: 10px;
+	line-height:12pt;
+	margin-bottom: 1px;
+	background-color: #eeEEee;
+	padding:5px;
+}
+
+.image0 td
+{
+	padding:5px;
+}
+
+.image1
+{
+	padding: 10px;
+	line-height:12pt;
+	margin-bottom: 1px;
+	background-color: #ffFFff;
+	padding:5px;
+}
+
+.image1 td
+{
+	padding:5px;
+}
+
+.tdThumbnail
+{
+	width:50px;
+}
+
+.tdCheckbox
+{
+	width:20px;
+}
+
+#CheckAll
+{
+	padding-top:20px;
+	font-size:10pt;
+}
+
+.SeriesImageNumber
+{
+	display:block;
+	color: #666666;
+	font-size:10pt;
+	margin-left:10px;
+}
+
+.tdDownloadAsZIP
+{
+	width:0px;
+}
+
+.DownloadAsZIP
+{
+	display:none;
+	background:url(images/download.png) no-repeat left center;
+	width:32px;
+	height:32px;
+	float:right;
+}
+
+.tdSeriesImageNumber
+{
+	display:block;
+}
+
+.small
+{
+	font-size:10pt;
+}
+
+a.report
+{
+	background:url(images/mail-attachment24.png) no-repeat left center;
+	padding-left:24px;
+	padding-top:2px;
+}
+
+/* Footer */
+#footer
+{
+	width: auto;
+	border-top: #555555 solid thin;
+	right: 0;
+	left: 0;
+	padding-top: 20px;
+	margin-top: 50px;
+	text-align: center;
+	font-size:10pt;
 }
