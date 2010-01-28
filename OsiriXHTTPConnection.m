@@ -2936,6 +2936,7 @@ NSString* notNil( NSString *s)
 			if( currentUser)
 			{
 				NSString *message = @"";
+				BOOL messageIsError = NO;
 				
 				if( [[urlParameters valueForKey: @"what"] isEqualToString: @"changePassword"])
 				{
@@ -2953,11 +2954,23 @@ NSString* notNil( NSString *s)
 								message = NSLocalizedString( @"Password updated successfully !", nil);
 								[self updateLogEntryForStudy: nil withMessage: [NSString stringWithFormat: @"User changed his password"]];
 							}
-							else message = NSLocalizedString( @"Password needs to be at least 4 characters !", nil);
+							else
+							{
+								message = NSLocalizedString( @"Password needs to be at least 4 characters !", nil);
+								messageIsError = YES;
+							}
 						}
-						else message = NSLocalizedString( @"New passwords are not identical !", nil);
+						else
+						{
+							message = NSLocalizedString( @"New passwords are not identical !", nil);
+							messageIsError = YES;
+						}
 					}
-					else message = NSLocalizedString( @"Wrong current password !", nil);
+					else
+					{
+						message = NSLocalizedString( @"Wrong current password !", nil);
+						messageIsError = YES;
+					}
 				}
 				
 				if( [[urlParameters valueForKey: @"what"] isEqualToString: @"changeSettings"])
@@ -2980,7 +2993,16 @@ NSString* notNil( NSString *s)
 				
 				NSMutableString *templateString = [NSMutableString stringWithContentsOfFile:[webDirectory stringByAppendingPathComponent:@"account.html"]];
 				
-				templateString = [self setBlock: @"MessageToWrite" visible: [message length] forString: templateString];
+				NSString *block = @"MessageToWrite";
+				if(messageIsError)
+				{
+					block = @"ErrorToWrite";
+					templateString = [self setBlock:@"MessageToWrite" visible:NO forString:templateString];
+				}
+				else
+					templateString = [self setBlock:@"ErrorToWrite" visible:NO forString:templateString];
+
+				templateString = [self setBlock:block visible:[message length] forString:templateString];
 				
 				[templateString replaceOccurrencesOfString: @"%LocalizedLabel_MessageAccount%" withString: notNil( message) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 				

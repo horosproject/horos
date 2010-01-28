@@ -16,34 +16,95 @@
 	<a id="backButton" class="button" href="/main?dicomcstoreport=%DicomCStorePort%">Home</a>
  
 	<div id="Home" class="panel">
-		%MessageToWrite%<h3 style="padding-top:10px">%LocalizedLabel_MessageAccount%</h3>%/MessageToWrite%
-		<form action="/account" method="POST">
-			<HR>
-			<br>
-			<b>Username</b> : %name%<br>
-			<br>
-			<HR>
+		
+		%MessageToWrite%
+		<div id="notification" onClick="document.getElementById('notification').style.display='none';">
+			
+			<div id="notificationMessage" onClick="document.getElementById('notification').style.display='none';">
+				<div>%LocalizedLabel_MessageAccount%</div>
+				<input type="button" onClick="document.getElementById('notification').style.display='none';" value="OK"/>
+			</div>
+		</div>
+		%/MessageToWrite%
+		
+		%ErrorToWrite%
+		<div id="error" onClick="document.getElementById('error').style.display='none';">
+			
+			<div id="errorMessage" onClick="document.getElementById('error').style.display='none';">
+				<div>Error:</div>
+				<div>%LocalizedLabel_MessageAccount%</div>
+				<input type="button" onClick="document.getElementById('error').style.display='none';" value="OK"/>
+			</div>
+		</div>
+		%/ErrorToWrite%
+		
+		<div class="block">
+			<h2>Username</h2>
+			<span>%name%</span>
+		</div>
+		
+		<div class="block">
 			<h2>Change Password</h2>
-			Previous Password : <input type="password" id="previouspassword" name="previouspassword" size="30"/><br><br>
-			New Password : <input type="password" id="password" name="password" size="30"/><br><br>
-			Repeat New Password : <input type="password" id="password2" name="password2" size="30"/><br><br>
-			<input type="hidden" name="dicomcstoreport" value="%DicomCStorePort%" name="cstoreport"/>
-			<input type="hidden" name="what" value="changePassword" name="changePassword"/>
-			<input type="submit" id="updatePassword" value="Update"/>
-			<HR>
-		</form>
-		<form action="/account" method="POST">
-			<h2>Change Settings</h2>
-			<b>Email</b> : <input type="text" id="email" name="email" size="40" value="%email%"/><br>%email%<br><br>
-			<b>Address</b> : <input type="text" id="address" name="address" size="80" value="%address%"/><br>%address%<br><br>
-			<b>Phone</b> : <input type="text" id="phone" name="phone" size="40" value="%phone%"/><br>%phone%<br><br>
-			<b>Notification Email</b> : <input type="checkbox" id="emailNotification" name="emailNotification" %emailNotification%/><br><br>
-			<input type="hidden" name="dicomcstoreport" value="%DicomCStorePort%" name="cstoreport"/>
-			<input type="hidden" name="what" value="changeSettings" name="changeSettings"/>
-			<input type="submit" id="updateSettings" value="Update"/>
-			<br>
-			<br>
-		</form>	
+			<form action="/account" method="POST">
+				<table>
+					<tr>
+						<td>Previous Password</td>
+						<td><input type="password" id="previouspassword" name="previouspassword" size="30"/></td>
+					</tr>
+					<tr>
+						<td>New Password</td>
+						<td><input type="password" id="password" name="password" size="30"/></td>
+					</tr>
+					<tr>
+						<td>Repeat New Password</td>
+						<td><input type="password" id="password2" name="password2" size="30"/></td>
+					</tr>
+				</table>
+				<input type="hidden" name="dicomcstoreport" value="%DicomCStorePort%" name="cstoreport"/>
+				<input type="hidden" name="what" value="changePassword" name="changePassword"/>
+				<input type="submit" id="updatePassword" value="Update"/>
+			</form>
+		</div>
+		
+		<div class="blockEnd">
+			<h2>Change Informations</h2>
+			<form action="/account" method="POST">
+				<table>
+					<tr>
+						<td>Email</td>
+						<td><input type="text" id="email" name="email" size="40" value="%email%"/></td>
+					</tr>
+					<tr>
+						<td></td>
+						<td class="small">%email%</td>
+					</tr>
+					<tr>
+						<td>Address</td>
+						<td><input type="text" id="address" name="address" size="80" value="%address%"/></td>
+					</tr>
+					<tr>
+						<td></td>
+						<td class="small">%address%</td>
+					</tr>
+					<tr>
+						<td>Phone</td>
+						<td><input type="text" id="phone" name="phone" size="40" value="%phone%"/></td>
+					</tr>
+					<tr>
+						<td></td>
+						<td class="small">%phone%</td>
+					</tr>
+					<tr>
+						<td>Notification Email</td>
+						<td><input type="checkbox" id="emailNotification" name="emailNotification" %emailNotification%/></td>
+					</tr>
+				</table>
+				
+				<input type="hidden" name="dicomcstoreport" value="%DicomCStorePort%" name="cstoreport"/>
+				<input type="hidden" name="what" value="changeSettings" name="changeSettings"/>
+				<input type="submit" id="updateSettings" value="Update"/>
+			</form>	
+		</div>
 	</div>
 	<div id="footer">Service provided by <a href="http://www.osirix-viewer.com">OsiriX</a>.<div>
 </body>

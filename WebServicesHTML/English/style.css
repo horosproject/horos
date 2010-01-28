@@ -19,9 +19,53 @@ h2
 	font-size:14pt;
 }
 
-h2.warning
+#error
 {
-	color:#FF0000;
+	background-color:#ffFFff;
+	opacity:0.8;
+	position:absolute;
+	left:0;
+	right:0;
+	top:0;
+	bottom:0;
+}
+
+#errorMessage
+{
+	position:absolute;
+	top:35%;
+	margin-left:30%;
+	margin-right:30%;
+	padding:20px;
+	vertical-align:middle;
+	text-align: center;	
+	background-color:#aa0000;
+	color:#ffFFff;
+	font-size:14pt;
+}
+
+#notification
+{
+	background-color:#ffFFff;
+	opacity:0.8;
+	position:absolute;
+	left:0;
+	right:0;
+	top:0;
+	bottom:0;
+}
+
+#notificationMessage
+{
+	position:absolute;
+	top:35%;
+	margin-left:30%;
+	margin-right:30%;
+	padding:20px;
+	vertical-align:middle;
+	text-align: center;	
+	background-color:#555555;
+	color:#ffFFff;
 	font-size:14pt;
 }
 
