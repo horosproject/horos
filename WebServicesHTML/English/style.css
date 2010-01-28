@@ -104,12 +104,6 @@ a:hover
 	text-decoration:underline;
 }
 
-#backButton
-{
-    background: url(images/chevron_left.png) no-repeat left center;
-	padding-left: 15px;
-}
-
 .block
 {
 	border-bottom:thin dotted #aaAAaa;
@@ -123,6 +117,37 @@ a:hover
 	margin:10px;
 	margin-bottom:0px;
 	padding-bottom:0px;
+}
+/* Toolbar */
+
+#toolbar
+{
+	width:100%;
+}
+
+#backButton
+{
+    background: url(images/chevron_left.png) no-repeat left center;
+	padding-left: 15px;
+}
+
+#sortBy
+{
+	float:right;
+	font-size:10pt;
+}
+
+#sortByName
+{
+}
+
+#sortByDate
+{
+}
+
+.sortedBy
+{
+	text-decoration:underline;
 }
 
 /* Search Patient */

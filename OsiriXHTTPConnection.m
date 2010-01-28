@@ -2203,6 +2203,25 @@ NSString* notNil( NSString *s)
 			
 			if([urlParameters objectForKey:@"album"])[html replaceOccurrencesOfString:@"%album%" withString:[NSString stringWithFormat:@"&album=%@",[urlParameters objectForKey:@"album"]] options:NSLiteralSearch range:NSMakeRange(0, [html length])];
 			else [html replaceOccurrencesOfString:@"%album%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [html length])];
+
+			if([urlParameters objectForKey:@"order"])
+			{
+				if([[urlParameters objectForKey:@"order"] isEqualToString:@"name"])
+				{
+					[html replaceOccurrencesOfString:@"%orderByName%" withString:@"sortedBy" options:NSLiteralSearch range:NSMakeRange(0, [html length])];
+					[html replaceOccurrencesOfString:@"%orderByDate%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [html length])];
+				}
+				else
+				{
+					[html replaceOccurrencesOfString:@"%orderByDate%" withString:@"sortedBy" options:NSLiteralSearch range:NSMakeRange(0, [html length])];
+					[html replaceOccurrencesOfString:@"%orderByName%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [html length])];
+				}
+			}
+			else
+			{
+				[html replaceOccurrencesOfString:@"%orderByDate%" withString:@"sortedBy" options:NSLiteralSearch range:NSMakeRange(0, [html length])];
+				[html replaceOccurrencesOfString:@"%orderByName%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [html length])];
+			}
 			
 			[html replaceOccurrencesOfString: @"%DicomCStorePort%" withString: notNil( portString) options:NSLiteralSearch range:NSMakeRange(0, [html length])];
 			

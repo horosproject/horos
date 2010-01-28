@@ -40,11 +40,16 @@
 
 <body onorientationchange="updateOrientation()">
     <h1 id="pageTitle">%PageTitle%</h1>
-    <a id="backButton" class="button" href="/main?dicomcstoreport=%DicomCStorePort%">Home</a>
-	<br>
-	<a href="javascript:insertParam( 'order', 'name');"> sort by name </a>
-	<a href="javascript:insertParam( 'order', 'date');"> sort by date </a>
-	
+ 	
+	<div id="toolbar">
+		<a id="backButton" class="button" href="/main?dicomcstoreport=%DicomCStorePort%">Home</a>
+		<span id="sortBy">
+			Sorted by:
+			<a id="sortByName" class='%orderByName%' href="javascript:insertParam('order', 'name');">Name</a>
+			<a id="sortByDate" class='%orderByDate%'href="javascript:insertParam('order', 'date');">Date</a>
+		</span>
+	</div>
+		
 	<table id="studyList" title="Study List" class="studyList">
         %StudyListItem%
 			<tr title="%StudyListItemName%" class="studyListItem%lineParity%">	
