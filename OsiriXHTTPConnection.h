@@ -33,4 +33,6 @@ extern NSString* asciiString (NSString* name);
 + (NSArray*) addSpecificStudiesToArray: (NSArray*) array forUser: (NSManagedObject*) user predicate: (NSPredicate*) predicate;
 - (NSMutableString*) setBlock: (NSString*) b visible: (BOOL) v forString: (NSMutableString*) s;
 - (NSArray*)studiesForPredicate:(NSPredicate *)predicate sortBy: (NSString*) sortValue;
+- (NSArray*)studiesForAlbum:(NSString *)albumName sortBy: (NSString*) sortValue;
+
 @end

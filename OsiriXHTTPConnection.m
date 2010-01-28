@@ -1189,6 +1189,11 @@ NSString* notNil( NSString *s)
 
 - (NSArray*)studiesForAlbum:(NSString *)albumName;
 {
+	return [self studiesForAlbum: albumName sortBy: nil];
+}
+
+- (NSArray*)studiesForAlbum:(NSString *)albumName sortBy: (NSString*) sortValue;
+{
 	NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
 	
 	NSArray *studiesArray = nil, *albumArray = nil;
@@ -1234,7 +1239,7 @@ NSString* notNil( NSString *s)
 				{
 					if( [originalAlbum containsObject: specificStudy] == YES && [studiesArray containsObject: specificStudy] == NO)
 					{
-						studiesArray = [studiesArray arrayByAddingObject: specificStudy];
+						studiesArray = [studiesArray arrayByAddingObject: specificStudy];						
 					}
 				}
 			}
@@ -1247,9 +1252,15 @@ NSString* notNil( NSString *s)
 			}
 		}
 		else studiesArray = originalAlbum;
+		
+		if( [sortValue length] && [sortValue isEqualToString: @"date"] == NO)
+			studiesArray = [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: sortValue ascending: YES] autorelease]]];
+		else
+			studiesArray = [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"date" ascending:NO] autorelease]]];								
 	}
 	
-	return [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"date" ascending:NO] autorelease]]];
+	//return [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"date" ascending:NO] autorelease]]];
+	return studiesArray;
 }
 
 - (void)dicomSend:(id)sender;
@@ -2185,7 +2196,7 @@ NSString* notNil( NSString *s)
 			{
 				if(![[urlParameters objectForKey:@"album"] isEqualToString:@""])
 				{
-					html = [self htmlStudyListForStudies: [self studiesForAlbum:[OsiriXHTTPConnection decodeURLString:[[urlParameters objectForKey:@"album"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]] settings: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: isMacOS], @"MacOS", nil]];
+					html = [self htmlStudyListForStudies: [self studiesForAlbum:[OsiriXHTTPConnection decodeURLString:[[urlParameters objectForKey:@"album"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] sortBy:[urlParameters objectForKey:@"order"]] settings: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: isMacOS], @"MacOS", nil]];
 					pageTitle = [OsiriXHTTPConnection decodeURLString:[[urlParameters objectForKey:@"album"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
 				}
 			}
