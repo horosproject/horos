@@ -3,7 +3,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-	<title>OsiriX</title>
+	<title>OsiriX Web Server</title>
 	<meta http-equiv=content-type content="text/html; charset=UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
 	<link rel="stylesheet" type="text/css" href="style.css" title="standard" />
@@ -12,7 +12,7 @@
 </head> 
 
 <body>
-    <h1 id="pageTitle">OsiriX</h1>
+    <h1 id="pageTitle">OsiriX Web Server</h1>
 	%userAccount%
 	<a class="series" href="account?dicomcstoreport=%DicomCStorePort%">
 		<div id="userAccountLabel">
@@ -25,53 +25,64 @@
 	%/userAccount%
 
 	<div id="Home" class="panel">
-		<h2 style="padding-top:10px">Search Patient</h2>
-		<form action="/studyList" method="get">
-			<input type="text" id="search" name="search"/>
-			<input type="hidden" name="dicomcstoreport" value="%DicomCStorePort%" name="search"/>
-			<input type="submit" id="searchButton" value="Search"/>
-		</form>	
-		<h2 style="padding-top:10px">Search Patient ID</h2>
-		<form action="/studyList" method="get">
-			<input type="text" id="searchID" name="searchID"/>
-			<input type="hidden" name="dicomcstoreport" value="%DicomCStorePort%" name="search"/>
-			<input type="submit" id="searchButton" value="Search"/>
-		</form>	
-		<br>
 		
-		<HR>
+		<div class="block">
+		<h2>Search Patient</h2>
+		<table id="searchPatient">
+			<tr>
+			<td class="searchPatientLabel">Name</td>
+			<td>
+				<form class="searchPatientForm" action="/studyList" method="get">
+					<input type="text" id="search" name="search"/>
+					<input type="hidden" name="dicomcstoreport" value="%DicomCStorePort%" name="search"/>
+					<input type="submit" id="searchButton" value="Search"/>
+				</form>
+			</td>
+			</tr>
+			<tr>
+			<td class="searchPatientLabel">ID</td>
+			<td>
+				<form class="searchPatientForm" action="/studyList" method="get">
+					<input type="text" id="searchID" name="searchID"/>
+					<input type="hidden" name="dicomcstoreport" value="%DicomCStorePort%" name="search"/>
+					<input type="submit" id="searchButton" value="Search"/>
+				</form>	
+			</td>
+			</tr>
+		</table>
+		</div>
 		
-		<h2 style="padding-top:10px">Browse</h2>
+		<div class="block">
+		<h2>Browse</h2>
 		<ul>
-			<li class="index"><a href="studyList?dicomcstoreport=%DicomCStorePort%&browse=6hours">Last 6 hours</a></li>
-			<li class="index"><a href="studyList?dicomcstoreport=%DicomCStorePort%&browse=today">Today</a></li>
-			<li class="index"><a href="studyList?dicomcstoreport=%DicomCStorePort%&browse=all">Study List</a></li>
+			<li class="timeFrameStudyList"><a href="studyList?dicomcstoreport=%DicomCStorePort%&browse=6hours">Last 6 hours</a></li>
+			<li class="timeFrameStudyList"><a href="studyList?dicomcstoreport=%DicomCStorePort%&browse=today">Today</a></li>
+			<li class="peopleStudyList"><a href="studyList?dicomcstoreport=%DicomCStorePort%&browse=all">Study List</a></li>
 		</ul>
-		
-		<HR>
-		
-		<h2 style="padding-top:10px">Albums</h2>
+				
+		<h3 class="albums">Albums</h3>
 		<ul>
 			%AlbumListItem%
-			<li class="index"><a href="studyList?dicomcstoreport=%DicomCStorePort%&album=%AlbumNameURL%">%AlbumName%</a></li>
+			<li class="%AlbumType%"><a href="studyList?dicomcstoreport=%DicomCStorePort%&album=%AlbumNameURL%">%AlbumName%</a></li>
 			%/AlbumListItem%
 		</ul>
+		</div>
 		
 		%AuthorizedUploadDICOMFiles%
-		<HR>
 		
-		<h2 style="padding-top:10px">DICOM Upload</h2>
-			<form action="" method="post" enctype="multipart/form-data" name="form1" id="form1">
-			<label>
-			Upload a file (DICOM file or zip file containing DICOM files): <br><br>
-			<input type="file" name="file" id="file" />
-			</label>
-			<br><br>
-			<label> 
-			<input type="submit" name="button" id="button" value="Upload" />
-			</label>
-			</form>
-			<br>
+		<div class="blockEnd">
+		<h2>DICOM Upload</h2>
+			<div class="uploadBlock">
+				<form action="" method="post" enctype="multipart/form-data" name="form1" id="form1">
+					<div>Upload a file</div>
+					<div class="small">Choose a file from you computer. It can be a single DICOM file or a zip file containing several DICOM files.</div>
+					<div class="upload">
+						<input type="file" name="file" id="file" />
+						<input type="submit" name="button" id="button" value="Upload" />
+					</div>
+				</form>
+			</div>
+		</div>
 		%/AuthorizedUploadDICOMFiles%
 	</div>
 	<div id="footer">Service provided by <a href="http://www.osirix-viewer.com">OsiriX</a>.<div>

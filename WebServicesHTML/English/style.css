@@ -19,10 +19,16 @@ h2
 	font-size:14pt;
 }
 
-h3
+h2.warning
 {
 	color:#FF0000;
 	font-size:14pt;
+}
+
+h3
+{
+	color:#333333;
+	font-size:12pt;
 }
 
 ul
@@ -56,6 +62,87 @@ a:hover
 {
     background: url(images/chevron_left.png) no-repeat left center;
 	padding-left: 15px;
+}
+
+.block
+{
+	border-bottom:thin dotted #aaAAaa;
+	padding:10px;
+	margin:10px;
+}
+
+.blockEnd
+{
+	padding:10px;
+	margin:10px;
+	margin-bottom:0px;
+	padding-bottom:0px;
+}
+
+/* Search Patient */
+#searchPatient
+{
+	margin-left:40px;
+}
+
+.searchPatientLabel
+{
+	padding:10px;
+	padding-left:0px;
+	vertical-align:middle;
+	text-align: right;
+}
+
+.searchPatientForm
+{
+	display:inline;
+}
+
+/* Browse*/
+.timeFrameStudyList
+{
+	background:url(images/clock.png) no-repeat left center;
+	padding-left:24px;
+	padding-top:2px;
+}
+
+.peopleStudyList
+{
+	background:url(images/users.png) no-repeat left center;
+	padding-left:24px;
+	padding-top:2px;
+}
+
+/* Albums */
+
+h3.albums
+{
+	margin-left:30px;
+}
+
+.Album
+{
+	background:url(images/album.png) no-repeat left center;
+	padding-left:24px;
+	padding-top:2px;
+}
+
+.SmartAlbum
+{
+	background:url(images/smartAlbum.png) no-repeat left center;
+	padding-left:24px;
+	padding-top:2px;
+}
+
+/* File Upload */
+
+.uploadBlock
+{
+	margin-left:30px;
+}
+.upload
+{
+	margin:10px;
 }
 
 /* Current user infos */
@@ -322,7 +409,6 @@ div.StudyListItemDetails
 
 .small
 {
-	color: #222266;
 	font-size:10pt;
 }
 

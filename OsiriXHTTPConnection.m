@@ -1863,6 +1863,10 @@ NSString* notNil( NSString *s)
 					NSMutableString *tempString = [NSMutableString stringWithString:albumListItemString];
 					[tempString replaceOccurrencesOfString: @"%AlbumName%" withString: notNil( [album valueForKey:@"name"]) options:NSLiteralSearch range:NSMakeRange(0, [tempString length])];
 					[tempString replaceOccurrencesOfString: @"%AlbumNameURL%" withString: [OsiriXHTTPConnection encodeURLString: [album valueForKey:@"name"]] options:NSLiteralSearch range:NSMakeRange(0, [tempString length])];
+					if([[album valueForKey:@"smartAlbum"] intValue] == 1)
+						[tempString replaceOccurrencesOfString: @"%AlbumType%" withString:@"SmartAlbum" options:NSLiteralSearch range:NSMakeRange(0, [tempString length])];
+					else
+						[tempString replaceOccurrencesOfString: @"%AlbumType%" withString:@"Album" options:NSLiteralSearch range:NSMakeRange(0, [tempString length])];
 					[returnHTML appendString:tempString];
 				}
 			}
