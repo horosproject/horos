@@ -1087,7 +1087,7 @@ NSString* notNil( NSString *s)
 
 - (NSArray*)studiesForPredicate:(NSPredicate *)predicate;
 {
-	return [self studiesForPredicate: predicate];
+	return [self studiesForPredicate: predicate sortBy: nil];
 }
 
 - (NSArray*)studiesForPredicate:(NSPredicate *)predicate sortBy: (NSString*) sortValue
