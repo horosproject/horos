@@ -25,6 +25,39 @@ h3
 	font-size:14pt;
 }
 
+ul
+{
+	list-style-type: none;
+}
+
+li a
+{
+	color: black;
+	text-decoration:none;
+}
+
+li a:hover
+{
+	text-decoration:none;
+}
+
+a
+{
+	color: #333355;
+	text-decoration:none;
+}
+
+a:hover
+{
+	text-decoration:underline;
+}
+
+#backButton
+{
+    background: url(images/chevron_left.png) no-repeat left center;
+	padding-left: 15px;
+}
+
 /* Current user infos */
 #userAccountLabel
 {
@@ -67,48 +100,53 @@ h3
 	font-style: italic;
 }
 
-#backButton
+/* Study List */
+
+.studyList
 {
-    background: url(images/chevron_left.png) no-repeat left center;
-	padding-left: 15px;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 30px;
+	width:80%;	
+	border: 1px solid #999999;
+	border-collapse: collapse;
 }
 
-ul
-{
-	list-style-type: none;
-}
-
-ul.studyList
-{
-	list-style-type: none;
-	background-color: #999999;
-	padding: 1px;
-	margin-left: 10%;
-	margin-right: 10%;
-}
-
-li.studyListItem0
+.studyListItem0
 {
 	padding: 10px;
 	line-height:12pt;
-	margin-bottom: 1px;
+	margin-bottom: 0px;
+	padding-left: 10px;
 	background-color: #eeEEee;
+	vertical-align:top;
 }
 
-li.studyListItem0:hover
+.studyListItem0 td
+{
+	padding:10px;	
+}
+
+.studyListItem0:hover
 {
 	background-color: #fdfed6;
 }
 
-li.studyListItem1
+.studyListItem1
 {
 	padding: 10px;
 	line-height:12pt;
 	margin-bottom: 1px;
 	background-color: #ffFFff;
+	vertical-align:top;
 }
 
-li.studyListItem1:hover
+.studyListItem1 td
+{
+	padding:10px;	
+}
+
+.studyListItem1:hover
 {
 	background-color: #fdfed6;
 }
@@ -118,90 +156,53 @@ a.studyListItem:hover
 	text-decoration:none;
 }
 
-li a
-{
-	color: black;
-	text-decoration:none;
-}
-
-li a:hover
-{
-	text-decoration:none;
-}
-
-a
-{
-	color: #333355;
-	text-decoration:none;
-}
-
-a:hover
-{
-	text-decoration:underline;
-}
-
-.thumbnail
-{
-	vertical-align: middle;
-	width:50px;
-}
-
-.SeriesName
-{
-	margin-left:10px;
-}
-
-span.StudyListItemName
+.StudyListItemName
 {
 	color: black;
 }
 
-span.StudyListItemDate
+.StudyListItemDate
 {
 	display:block;
 	color: #666666;
 	font-size:10pt;
-	float: right;
 }
 
-span.StudyListItemState
+.StudyListItemState
 {
-	display:block;
 	color: #666666;
 	font-size: 10pt;
-	float: right;
 	font-style: italic;
 }
 
 div.StudyListItemDetails
 {
-	padding-left:20px;
-	padding-right:100px;
+	margin-left:20px;
+	margin-right:10px;
 }
 
-span.StudyListItemDetailItem
+.StudyListItemDetailItem
 {
 	display:inline;
 	color: #666666;
 	font-size:10pt;
 }
 
-span.StudyListItemComment
+.StudyListItemComment
 {
 	color: #666666;
 	font-size: 10pt;
 	font-style: italic;
 }
 
-span.StudyListItemLabel
+.StudyListItemLabel
 {
 	font-size:10pt;
 }
 
 .StudyInformation
 {
-	margin-left: 10%;
-	margin-right: 10%;
+	margin-left: 10px;
 	padding:1px;
 	font-size:11pt;
 }
@@ -215,6 +216,19 @@ span.StudyListItemLabel
 	vertical-align:top;
 	color: #666666;
 	padding-right: 10px;
+}
+
+/* Series List */
+
+.thumbnail
+{
+	vertical-align: middle;
+	width:50px;
+}
+
+.SeriesName
+{
+	margin-left:10px;
 }
 
 #imageList
@@ -296,8 +310,6 @@ span.StudyListItemLabel
 	width:32px;
 	height:32px;
 	float:right;
-	margin-top:auto;
-	margin-bottom:auto;
 }
 
 .tdSeriesImageNumber

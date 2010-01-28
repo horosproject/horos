@@ -24,6 +24,7 @@ extern NSString* asciiString (NSString* name);
 + (void) updateLogEntryForStudy: (NSManagedObject*) study withMessage:(NSString*) message forUser: (NSString*) user ip: (NSString*) ip;
 + (NSString*)decodeURLString:(NSString*)aString;
 + (NSString*)iPhoneCompatibleNumericalFormat:(NSString*)aString;
++ (NSString*)unbreakableStringWithString:(NSString*)aString;
 + (NSString*)encodeURLString:(NSString*)aString;
 - (void) updateLogEntryForStudy: (NSManagedObject*) study withMessage:(NSString*) message;
 - (BOOL)supportsPOST:(NSString *)path withSize:(UInt64)contentLength;

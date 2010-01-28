@@ -15,48 +15,56 @@
     <h1 id="pageTitle">%PageTitle%</h1>
     <a id="backButton" class="button" href="/main?dicomcstoreport=%DicomCStorePort%">Home</a>
 
-	<ul id="studyList" title="Study List" class="studyList">
+	<table id="studyList" title="Study List" class="studyList">
         %StudyListItem%
-		<a href="study?dicomcstoreport=%DicomCStorePort%&id=%StudyListItemID%%browse%%browseParameter%%search%%album%" class="studyListItem">
-			<li title="%StudyListItemName%" class="studyListItem%lineParity%">
-				<span class="StudyListItemName">%StudyListItemName%</span>
+		
+			<tr title="%StudyListItemName%" class="studyListItem%lineParity%">	
+				<td>
+					<a href="study?dicomcstoreport=%DicomCStorePort%&id=%StudyListItemID%%browse%%browseParameter%%search%%album%" class="studyListItem">
+					<span class="StudyListItemName">%StudyListItemName%</span>
+					%StudyModalityBlock%
+					<span class="StudyListItemDetailItem">%StudyModality%</span>
+					%/StudyModalityBlock%
+					%SeriesCountBlock%
+					<span class="StudyListItemDetailItem">%SeriesCount%</span>
+					%/SeriesCountBlock%
 				
-				%StudyDateBlock%<span class="StudyListItemDate">%StudyDate%</span>%/StudyDateBlock%
-				%StudyModalityBlock%<span class="StudyListItemDetailItem">%StudyModality%</span>%/StudyModalityBlock%
-				%SeriesCountBlock%<span class="StudyListItemDetailItem">%SeriesCount%</span>%/SeriesCountBlock%
 				
-				%StudyStateBlock%
-				<div>
-					<span class="StudyListItemState">%StudyState%</span>
-				</div>
-				%/StudyStateBlock%
+					<div class="StudyListItemDetails">
+						%StudyDescriptionBlock%
+						<div>
+							<span class="StudyListItemDetailItem">%StudyDescription%</span>
+						</div>
+						%/StudyDescriptionBlock%
 				
-				<div class="StudyListItemDetails">
-					%StudyDescriptionBlock%
-					<div>
-						<span class="StudyListItemDetailItem">%StudyDescription%</span>
+						%StudyCommentBlock%
+							<span class="StudyListItemLabel">Comment: </span>
+							<span class="StudyListItemComment">%StudyComment%</span>
+						%/StudyCommentBlock%
 					</div>
-					%/StudyDescriptionBlock%
+					</a>
+				</td>
 				
-					%StudyCommentBlock%
-						<span class="StudyListItemLabel">Comment: </span>
-						<span class="StudyListItemComment">%StudyComment%</span>
-					%/StudyCommentBlock%
+				<td align="right">
+					%StudyDateBlock%
+					<span class="StudyListItemDate">%StudyDate%</span>
+					%/StudyDateBlock%
+			
+					%StudyStateBlock%
+					<span class="StudyListItemState">%StudyState%</span>
+					%/StudyStateBlock%						
+				</td>
 				
-					%ZIPFunctions%
-					<span class="StudyListItemDetailItem">
-						<a href="%StudyListItemName%.%zipextension%?dicomcstoreport=%DicomCStorePort%&id=%StudyListItemID%%browse%%browseParameter%%search%%album%">
-							<span class="StudyListItemSeriesCount">Download As ZIP</span>
-						</a>
-					</span>
-					%/ZIPFunctions%
-					
-				</div>
-				
-			</li>
-		</a>
+				%ZIPFunctions%
+				<td width="32px">
+					<a href="%StudyListItemName%.%zipextension%?dicomcstoreport=%DicomCStorePort%&id=%StudyListItemID%%browse%%browseParameter%%search%%album%">
+						<div class="DownloadAsZIP"></div>
+					</a>
+				</td>
+				%/ZIPFunctions%
+			</tr>
 		%/StudyListItem%
-    </ul>
+    </table>
 
 	<div id="footer">Service provided by <a href="http://www.osirix-viewer.com">OsiriX</a>.<div>
   </body>

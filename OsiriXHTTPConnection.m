@@ -966,6 +966,7 @@ NSString* notNil( NSString *s)
 		NSString *date = [dateFormat stringFromDate:[study valueForKey:@"date"]];
 		
 		NSString *dateLabel = [NSString stringWithFormat:@"%@", [OsiriXHTTPConnection iPhoneCompatibleNumericalFormat:date]];
+		dateLabel = [OsiriXHTTPConnection unbreakableStringWithString:dateLabel];
 		BOOL displayBlock = YES;
 		if([dateLabel length])
 			[tempHTML replaceOccurrencesOfString:@"%StudyDate%" withString:dateLabel options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
@@ -1412,6 +1413,13 @@ NSString* notNil( NSString *s)
 		[newString appendString:spanEnd];
 	}
 	return newString;
+}
+
++ (NSString*)unbreakableStringWithString:(NSString*)aString;
+{
+	NSMutableString* newString = [NSMutableString stringWithString:aString];
+	[newString replaceOccurrencesOfString:@" " withString:@"&nbsp;" options:NSLiteralSearch range:NSMakeRange(0, [newString length])];
+	return [NSString stringWithString:newString];
 }
 
 - (void) movieWithFile:(NSMutableDictionary*) dict
